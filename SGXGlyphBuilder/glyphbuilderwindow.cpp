@@ -1,6 +1,7 @@
 #include "glyphbuilderwindow.h"
 #include <QtWidgets/QMenuBar>
 #include <QtWidgets/QDockWidget>
+#include <QtWidgets/QInputDialog>
 
 GlyphBuilderWindow::GlyphBuilderWindow(QWidget *parent)
     : QMainWindow(parent),
@@ -21,10 +22,6 @@ void GlyphBuilderWindow::CreateMenus() {
     
     //Create File Menu
     m_fileMenu = menuBar()->addMenu(tr("&File"));
-    QAction* newGlyphAction = m_fileMenu->addAction(tr("Create New Glyph"));
-    QObject::connect(newGlyphAction, SIGNAL(triggered()), this, SLOT(CreateNewGlyph()));
-
-    m_fileMenu->addSeparator();
 
     QAction* saveAction = m_fileMenu->addAction(tr("&Save"));
     QObject::connect(saveAction, SIGNAL(triggered()), this, SLOT(SaveGlyph()));
@@ -36,6 +33,12 @@ void GlyphBuilderWindow::CreateMenus() {
 
     //Create View Menu
     m_viewMenu = menuBar()->addMenu(tr("&View"));
+
+    //Create Glyph Menu
+    m_glyphMenu = menuBar()->addMenu(tr("Glyph"));
+
+    QAction* newGlyphTreeAction = m_glyphMenu->addAction(tr("Create New Glyph Tree"));
+    QObject::connect(newGlyphTreeAction, SIGNAL(triggered()), this, SLOT(CreateNewGlyphTree()));
 }
 
 void GlyphBuilderWindow::CreateDockWidgets() {
@@ -48,8 +51,13 @@ void GlyphBuilderWindow::CreateDockWidgets() {
     m_viewMenu->addAction(leftDockWidget->toggleViewAction());
 }
 
-void GlyphBuilderWindow::CreateNewGlyph() {
+void GlyphBuilderWindow::CreateNewGlyphTree() {
+    bool createTree = false;
 
+    int numberOfLevels = QInputDialog::getInt(this, "Create Glyph Tree", "Number Of Levels In Glyph Tree", 6, 1, 214783647, 1, &createTree);
+    if (createTree) {
+
+    }
 }
 
 void GlyphBuilderWindow::SaveGlyph() {

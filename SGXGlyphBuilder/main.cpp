@@ -7,8 +7,7 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
-    //QPixmap pixmap(":/Resources/synglyphx_splash.png");
-    QPixmap pixmap("D:\\Development\\ANTzPlus\\SGXGlyphBuilder\\Resources\\synglyphx_splash.png");
+    QPixmap pixmap(":GlyphBuilderWindow/Resources/synglyphx_splash.png");
     QSplashScreen splash;
     splash.setPixmap(pixmap);
     splash.show();
@@ -18,9 +17,11 @@ int main(int argc, char *argv[])
     a.processEvents();
 
     GlyphBuilderWindow w;
+    w.resize(600, 400);
 
-    QTimer::singleShot(2500, &splash, SLOT(close()));
-    QTimer::singleShot(2600, &w, SLOT(show()));
+    //Need to figure out better way to not have the splash screen disappear without the user seeing it
+    QTimer::singleShot(1500, &splash, SLOT(close()));
+    QTimer::singleShot(1600, &w, SLOT(show()));
 
     //w.show();
     //splash.finish(&w);

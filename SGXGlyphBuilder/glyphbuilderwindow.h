@@ -13,7 +13,7 @@ public:
     ~GlyphBuilderWindow();
 
 private slots:
-    void CreateNewGlyph();
+    void CreateNewGlyphTree();
     void SaveGlyph();
 
 private:
@@ -24,6 +24,7 @@ private:
 
     QMenu* m_fileMenu;
     QMenu* m_viewMenu;
+    QMenu* m_glyphMenu;
 };
 
 #endif // GLYPHBUILDERWINDOW_H
