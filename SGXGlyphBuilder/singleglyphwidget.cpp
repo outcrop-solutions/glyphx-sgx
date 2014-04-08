@@ -1,7 +1,6 @@
 #include "singleglyphwidget.h"
 #include <QtWidgets/QFormLayout>
 #include <QtWidgets/QGroupBox>
-#include <limits>
 #include "typedefs.h"
 
 SingleGlyphWidget::SingleGlyphWidget(bool showNumberOfChildrenWidget, QWidget *parent)
@@ -20,7 +19,6 @@ SingleGlyphWidget::~SingleGlyphWidget()
 void SingleGlyphWidget::CreateWidgets() {
     
     QFormLayout* form = new QFormLayout(this);
-    setLayout(form);
 
     m_childrenSpinBox = new QSpinBox(this);
     m_childrenSpinBox->setMinimum(1);
@@ -41,41 +39,46 @@ void SingleGlyphWidget::CreateWidgets() {
     }
 
     QGroupBox* colorGroupBox = new QGroupBox(tr("Color"), this);
-    QHBoxLayout* colorBoxLayout = new QHBoxLayout(this);
-    m_colorWidget = new ColorAlphaWidget(this);
+    QHBoxLayout* colorBoxLayout = new QHBoxLayout(colorGroupBox);
+    m_colorWidget = new ColorAlphaWidget(colorGroupBox);
     colorBoxLayout->addWidget(m_colorWidget);
     colorGroupBox->setLayout(colorBoxLayout);
 
     QGroupBox* translateGroupBox = new QGroupBox(tr("Translate"), this);
-    QHBoxLayout* translateBoxLayout = new QHBoxLayout(this);
-    m_translateWidget = new XYZWidget(this);
-    m_translateWidget->SetRange(std::numeric_limits<double>::min(), std::numeric_limits<double>::max());
-    translateBoxLayout->addWidget(m_translateWidget);
+    QHBoxLayout* translateBoxLayout = new QHBoxLayout(translateGroupBox);
     translateGroupBox->setLayout(translateBoxLayout);
+    m_translateWidget = new XYZWidget(translateGroupBox);
+    m_translateWidget->SetRange(-100000000000000.0, 100000000000000.0);
+    m_translateWidget->SetDecimal(8);
+    translateBoxLayout->addWidget(m_translateWidget);
 
     QGroupBox* rotateGroupBox = new QGroupBox(tr("Rotate"), this);
     QHBoxLayout* rotateBoxLayout = new QHBoxLayout(this);
     m_rotateWidget = new XYZWidget(this);
     m_rotateWidget->SetRange(0.0, 360.0);
     m_rotateWidget->SetWrapping(true);
+    m_rotateWidget->SetDecimal(5);
     rotateBoxLayout->addWidget(m_rotateWidget);
     rotateGroupBox->setLayout(rotateBoxLayout);
 
     QGroupBox* scaleGroupBox = new QGroupBox(tr("Scale"), this);
     QHBoxLayout* scaleBoxLayout = new QHBoxLayout(this);
     m_scaleWidget = new XYZWidget(this);
-    m_scaleWidget->SetRange(0.0, std::numeric_limits<double>::max());
+    m_scaleWidget->SetRange(0.0, 100000000000000.0);
+    m_scaleWidget->SetDecimal(5);
     scaleBoxLayout->addWidget(m_scaleWidget);
     scaleGroupBox->setLayout(scaleBoxLayout);
 
-    form->addRow(tr("Number of Children"), m_childrenSpinBox);
-    form->addRow(tr("Shape"), m_geometryShapeComboBox);
-    form->addRow(tr("Surface"), m_geometrySurfaceComboBox);
-    form->addRow(tr("Topology"), m_topologyComboBox);
+    form->addRow(tr("Number of Children:"), m_childrenSpinBox);
+    form->addRow(tr("Shape:"), m_geometryShapeComboBox);
+    form->addRow(tr("Surface:"), m_geometrySurfaceComboBox);
+    form->addRow(tr("Topology:"), m_topologyComboBox);
     form->addRow(colorGroupBox);
     form->addRow(translateGroupBox);
     form->addRow(rotateGroupBox);
     form->addRow(scaleGroupBox);
+
+    setLayout(form);
 }
 
 QString SingleGlyphWidget::ShapeToString(SynGlyphX::Geometry::Shape shape) {

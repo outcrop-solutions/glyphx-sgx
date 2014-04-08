@@ -20,7 +20,7 @@ private slots:
     void OnAlphaSpinBoxChanged(int value);
 
 private:
-    void UpdateButtonPalette();
+    void UpdateButtonColor();
 
     QColor m_color;
     QPushButton* m_button;

@@ -7,21 +7,23 @@ XYZWidget::XYZWidget(QWidget *parent)
 {
     QHBoxLayout* layout = new QHBoxLayout(this);
 
-    QLabel* labelX = new QLabel(tr("X: "), this);
+    QLabel* labelX = new QLabel(tr("X:"), this);
     m_xSpinBox = new QDoubleSpinBox(this);
-    QLabel* labelY = new QLabel(tr("Y: "), this);
+    
+    QLabel* labelY = new QLabel(tr("Y:"), this);
     m_ySpinBox = new QDoubleSpinBox(this);
-    QLabel* labelZ = new QLabel(tr("Z: "), this);
+    
+    QLabel* labelZ = new QLabel(tr("Z:"), this);
     m_zSpinBox = new QDoubleSpinBox(this);
 
     layout->addWidget(labelX);
-    layout->addWidget(m_xSpinBox);
-    layout->addStretch(1);
+    layout->addWidget(m_xSpinBox, 1);
+    
     layout->addWidget(labelY);
-    layout->addWidget(m_ySpinBox);
-    layout->addStretch(1);
+    layout->addWidget(m_ySpinBox, 1);
+    
     layout->addWidget(labelZ);
-    layout->addWidget(m_zSpinBox);
+    layout->addWidget(m_zSpinBox, 1);
 
     setLayout(layout);
 }
@@ -65,4 +67,10 @@ void XYZWidget::SetWrapping(bool wrapping) {
     m_xSpinBox->setWrapping(wrapping);
     m_ySpinBox->setWrapping(wrapping);
     m_zSpinBox->setWrapping(wrapping);
+}
+
+void XYZWidget::SetDecimal(int decimals) {
+    m_xSpinBox->setDecimals(decimals);
+    m_ySpinBox->setDecimals(decimals);
+    m_zSpinBox->setDecimals(decimals);
 }

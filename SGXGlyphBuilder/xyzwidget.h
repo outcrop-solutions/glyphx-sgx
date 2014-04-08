@@ -22,6 +22,7 @@ public:
     double GetZ() const;
 
     void SetWrapping(bool wrapping);
+    void SetDecimal(int decimals);
 
 private:
     QDoubleSpinBox* m_xSpinBox;

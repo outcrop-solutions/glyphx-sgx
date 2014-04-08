@@ -12,20 +12,20 @@ ColorAlphaWidget::ColorAlphaWidget(QWidget *parent)
     m_button->setAutoFillBackground(true);
     QObject::connect(m_button, SIGNAL(clicked()), this, SLOT(OnButtonClicked()));
 
-    QLabel* alphaLabel = new QLabel(tr("Alpha: "), this);
+    QLabel* alphaLabel = new QLabel(tr("Alpha:"), this);
 
     m_alphaSpinBox = new QSpinBox(this);
     m_alphaSpinBox->setRange(0, 255);
     QObject::connect(m_alphaSpinBox, SIGNAL(valueChanged(int)), this, SLOT(OnAlphaSpinBoxChanged(int)));
 
     layout->addWidget(m_button);
-    layout->addStretch(1);
     layout->addWidget(alphaLabel);
     layout->addWidget(m_alphaSpinBox);
+    layout->addStretch(1);
 
     setLayout(layout);
 
-    SetColor(Qt::white);
+    SetColor(Qt::gray);
 }
 
 ColorAlphaWidget::~ColorAlphaWidget()
@@ -36,7 +36,7 @@ ColorAlphaWidget::~ColorAlphaWidget()
 void ColorAlphaWidget::SetColor(const QColor& color) {
 
     m_color = color;
-    UpdateButtonPalette();
+    UpdateButtonColor();
     m_alphaSpinBox->setValue(color.alpha());
 }
 
@@ -50,12 +50,13 @@ void ColorAlphaWidget::OnButtonClicked() {
     }
 }
 
-void ColorAlphaWidget::UpdateButtonPalette() {
+void ColorAlphaWidget::UpdateButtonColor() {
 
     QColor color = m_color;
     color.setAlpha(255);
-    QPalette palette(color);
-    m_button->setPalette(palette);
+    QPixmap pixmap(m_button->iconSize());
+    pixmap.fill(color);
+    m_button->setIcon(QIcon(pixmap));
 }
 
 void ColorAlphaWidget::OnAlphaSpinBoxChanged(int value) {

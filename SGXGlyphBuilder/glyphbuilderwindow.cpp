@@ -2,6 +2,9 @@
 #include <QtWidgets/QMenuBar>
 #include <QtWidgets/QDockWidget>
 #include <QtWidgets/QInputDialog>
+#include <QtWidgets/QWizard>
+#include <QtWidgets/QVBoxLayout>
+#include "singleglyphwidget.h"
 
 GlyphBuilderWindow::GlyphBuilderWindow(QWidget *parent)
     : QMainWindow(parent),
@@ -54,9 +57,25 @@ void GlyphBuilderWindow::CreateDockWidgets() {
 void GlyphBuilderWindow::CreateNewGlyphTree() {
     bool createTree = false;
 
-    int numberOfLevels = QInputDialog::getInt(this, "Create Glyph Tree", "Number Of Levels In Glyph Tree", 6, 1, 214783647, 1, &createTree);
+    int numberOfBranches = QInputDialog::getInt(this, "Create Glyph Tree", "Number Of Branches In Glyph Tree", 6, 1, 214783647, 1, &createTree);
     if (createTree) {
+        QWizard wizard(this);
+        wizard.setOptions(QWizard::IndependentPages | QWizard::IgnoreSubTitles | QWizard::NoBackButtonOnStartPage);
+        wizard.setWindowTitle(tr("Create Glyph Tree"));
 
+        for (int i = 1; i <= numberOfBranches; ++i) {
+            QWizardPage* page = new QWizardPage(&wizard);
+            QVBoxLayout* layout = new QVBoxLayout(this);
+            page->setLayout(layout);
+            page->setTitle(QString::number(i).prepend("Glyphs for branch level "));
+            SingleGlyphWidget* glyphWidget = new SingleGlyphWidget((i != numberOfBranches), page);
+            layout->addWidget(glyphWidget);
+            wizard.addPage(page);
+        }
+
+        if (wizard.exec() == QDialog::Accepted) {
+
+        }
     }
 }
 
