@@ -62,9 +62,6 @@
     <ClCompile Include="glyph.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="cvsreaderwriter.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="singleglyphwidget.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -91,6 +88,9 @@
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Release\moc_xyzwidget.cpp">
       <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="csvreaderwriter.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -128,7 +128,7 @@
     <ClInclude Include="typedefs.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="cvsreaderwriter.h">
+    <ClInclude Include="csvreaderwriter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

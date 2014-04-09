@@ -2,18 +2,21 @@
 
 namespace SynGlyphX {
 
+    boost::shared_ptr<Glyph> Glyph::s_root = CreateRootPin();
+    boost::shared_ptr<Glyph> Glyph::s_template(new Glyph());
+
     Glyph::Glyph()
         : m_tagOffset{ { 0.0, 1.5, 0.0 } },
         m_scale{ { 1.0, 1.0, 1.0 } },
-        m_translate{ { 0.0, 0.0, 180.0 } },
+        m_translate{ { 0.0, 0.0, 0.0 } },
         m_rotate{ { 0.0, 0.0, 0.0 } },
+        m_color{ { 50, 101, 101, 255 } },
         m_ratio(0.1),
         m_geometryShape(Geometry::Torus),
         m_geometrySurface(Geometry::Solid),
         m_topology(Topology::Torus) {
         
     }
-
 
     Glyph::~Glyph()
     {
@@ -68,6 +71,10 @@ namespace SynGlyphX {
         return m_ratio;
     }
 
+    void Glyph::AddChild(boost::shared_ptr<Glyph> glyph) {
+        m_children.push_back(glyph);
+    }
+
     boost::shared_ptr<Glyph> Glyph::GetChild(unsigned int index) {
         return m_children[index];
     }
@@ -91,6 +98,27 @@ namespace SynGlyphX {
 
     Topology::Type Glyph::GetTopology() const {
         return m_topology;
+    }
+
+    boost::shared_ptr<Glyph> Glyph::GetRoot() {
+        return s_root;
+    }
+
+    boost::shared_ptr<Glyph> Glyph::CreateRootPin() {
+        boost::shared_ptr<Glyph> root(new Glyph());
+
+        root->SetGeometry(Geometry::Pin, Geometry::Solid);
+        root->SetTopology(Topology::Pin);
+
+        return root;
+    }
+
+    boost::shared_ptr<const Glyph> Glyph::GetTemplate() {
+        return s_template;
+    }
+
+    void Glyph::ClearChildren() {
+        m_children.clear();
     }
 
 } //namespace SynGlyphX

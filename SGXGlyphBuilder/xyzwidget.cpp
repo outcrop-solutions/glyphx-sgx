@@ -74,3 +74,10 @@ void XYZWidget::SetDecimal(int decimals) {
     m_ySpinBox->setDecimals(decimals);
     m_zSpinBox->setDecimals(decimals);
 }
+
+void XYZWidget::Set(const SynGlyphX::Vector3& vec) {
+
+    m_xSpinBox->setValue(vec[0]);
+    m_ySpinBox->setValue(vec[1]);
+    m_zSpinBox->setValue(vec[2]);
+}

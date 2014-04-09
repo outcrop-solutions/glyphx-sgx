@@ -62,3 +62,30 @@ void ColorAlphaWidget::UpdateButtonColor() {
 void ColorAlphaWidget::OnAlphaSpinBoxChanged(int value) {
     m_color.setAlpha(value);
 }
+
+void ColorAlphaWidget::SetColor(const SynGlyphX::Color& color) {
+    
+    m_color.setRed(color[0]);
+    m_color.setGreen(color[1]);
+    m_color.setBlue(color[2]);
+    //m_color.setAlpha(color[3]);
+
+    UpdateButtonColor();
+    m_alphaSpinBox->setValue(color[3]);
+}
+
+const QColor& ColorAlphaWidget::GetColor() const {
+    return m_color;
+}
+
+SynGlyphX::Color ColorAlphaWidget::ConvertQColorToColor(const QColor& qColor) {
+
+    SynGlyphX::Color color;
+
+    color[0] = qColor.red();
+    color[1] = qColor.green();
+    color[2] = qColor.blue();
+    color[3] = qColor.alpha();
+
+    return color;
+}

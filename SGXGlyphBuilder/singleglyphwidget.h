@@ -6,9 +6,11 @@
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QSpinBox>
+#include <boost/shared_ptr.hpp>
 #include "coloralphawidget.h"
 #include "xyzwidget.h"
 #include "typedefs.h"
+#include "glyph.h"
 
 class SingleGlyphWidget : public QWidget
 {
@@ -17,6 +19,9 @@ class SingleGlyphWidget : public QWidget
 public:
     SingleGlyphWidget(bool showNumberOfChildrenWidget = true, QWidget *parent = 0);
     ~SingleGlyphWidget();
+
+    void SetWidgetFromGlyph(boost::shared_ptr<const SynGlyphX::Glyph> glyph);
+    void SetGlyphFromWidget(boost::shared_ptr<SynGlyphX::Glyph> glyph);
 
 private slots:
     

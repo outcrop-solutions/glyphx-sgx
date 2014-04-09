@@ -3,6 +3,7 @@
 
 #include <QtWidgets/QWidget>
 #include <QtWidgets/QDoubleSpinBox>
+#include "typedefs.h"
 
 class XYZWidget : public QWidget
 {
@@ -20,6 +21,8 @@ public:
     double GetY() const;
     void SetZ(double value);
     double GetZ() const;
+
+    void Set(const SynGlyphX::Vector3& vec);
 
     void SetWrapping(bool wrapping);
     void SetDecimal(int decimals);

@@ -22,7 +22,7 @@ void SingleGlyphWidget::CreateWidgets() {
 
     m_childrenSpinBox = new QSpinBox(this);
     m_childrenSpinBox->setMinimum(1);
-    m_childrenSpinBox->setValue(3);
+    m_childrenSpinBox->setValue(1);
 
     m_geometryShapeComboBox = new QComboBox(this);
     for (int i = 0; i < 10; ++i) {
@@ -44,7 +44,7 @@ void SingleGlyphWidget::CreateWidgets() {
     colorBoxLayout->addWidget(m_colorWidget);
     colorGroupBox->setLayout(colorBoxLayout);
 
-    QGroupBox* translateGroupBox = new QGroupBox(tr("Translate"), this);
+    QGroupBox* translateGroupBox = new QGroupBox(tr("Position"), this);
     QHBoxLayout* translateBoxLayout = new QHBoxLayout(translateGroupBox);
     translateGroupBox->setLayout(translateBoxLayout);
     m_translateWidget = new XYZWidget(translateGroupBox);
@@ -79,6 +79,34 @@ void SingleGlyphWidget::CreateWidgets() {
     form->addRow(scaleGroupBox);
 
     setLayout(form);
+}
+
+void SingleGlyphWidget::SetWidgetFromGlyph(boost::shared_ptr<const SynGlyphX::Glyph> glyph) {
+
+    m_geometryShapeComboBox->setCurrentIndex(glyph->GetShape());
+    m_geometrySurfaceComboBox->setCurrentIndex(glyph->GetSurface());
+    //Because null is not in the list of topologies, shift by one
+    m_topologyComboBox->setCurrentIndex(glyph->GetTopology() - 1);
+
+    m_colorWidget->SetColor(glyph->GetColor());
+
+    m_translateWidget->Set(glyph->GetTranslate());
+    m_rotateWidget->Set(glyph->GetRotate());
+    m_scaleWidget->Set(glyph->GetScale());
+}
+
+void SingleGlyphWidget::SetGlyphFromWidget(boost::shared_ptr<SynGlyphX::Glyph> glyph) {
+
+    glyph->SetGeometry(static_cast<SynGlyphX::Geometry::Shape>(m_geometryShapeComboBox->currentIndex()), static_cast<SynGlyphX::Geometry::Surface>(m_geometrySurfaceComboBox->currentIndex()));
+    //Because null is not in the list of topologies, shift by one
+    glyph->SetTopology(static_cast<SynGlyphX::Topology::Type>(m_topologyComboBox->currentIndex() + 1));
+
+    const QColor& color = m_colorWidget->GetColor();
+    glyph->SetColor(color.red(), color.green(), color.blue(), color.alpha());
+
+    glyph->SetTranslate(m_translateWidget->GetX(), m_translateWidget->GetY(), m_translateWidget->GetZ());
+    glyph->SetRotate(m_rotateWidget->GetX(), m_rotateWidget->GetY(), m_rotateWidget->GetZ());
+    glyph->SetScale(m_scaleWidget->GetX(), m_scaleWidget->GetY(), m_scaleWidget->GetZ());
 }
 
 QString SingleGlyphWidget::ShapeToString(SynGlyphX::Geometry::Shape shape) {

@@ -3,6 +3,7 @@
 
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QSpinBox>
+#include "typedefs.h"
 
 class ColorAlphaWidget : public QWidget
 {
@@ -12,8 +13,11 @@ public:
     ColorAlphaWidget(QWidget *parent = 0);
     ~ColorAlphaWidget();
 
+    void SetColor(const SynGlyphX::Color& color);
     void SetColor(const QColor& color);
     const QColor& GetColor() const;
+    
+    static SynGlyphX::Color ConvertQColorToColor(const QColor& qColor);
 
 private slots:
     void OnButtonClicked();

@@ -15,11 +15,13 @@ namespace SynGlyphX {
         CSVReaderWriter();
         ~CSVReaderWriter();
 
-        void Write(const boost::shared_ptr<Glyph> treeRoot, unsigned long startingIndex = 32);
+        void Write(const std::string& filename, const boost::shared_ptr<Glyph> treeRoot, unsigned long startingId = 32);
 
-        
+        static CSVReaderWriter& GetInstance();
 
     private:
+        static CSVReaderWriter s_instance;
+
         unsigned short GetColorIndex(const Color& color);
 
         Color m_predefinedColors[MaxPredefinedColors];

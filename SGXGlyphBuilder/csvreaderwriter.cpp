@@ -1,6 +1,8 @@
-#include "cvsreaderwriter.h"
+#include "csvreaderwriter.h"
 
 namespace SynGlyphX {
+
+    CSVReaderWriter CSVReaderWriter::s_instance;
 
     CSVReaderWriter::CSVReaderWriter()
     {
@@ -31,8 +33,12 @@ namespace SynGlyphX {
     {
     }
 
-    void CSVReaderWriter::Write(const boost::shared_ptr<Glyph> treeRoot, unsigned long startingIndex) {
+    void CSVReaderWriter::Write(const std::string& filename, const boost::shared_ptr<Glyph> treeRoot, unsigned long startingId) {
 
+    }
+
+    CSVReaderWriter& CSVReaderWriter::GetInstance() {
+        return s_instance;
     }
 
     unsigned short CSVReaderWriter::GetColorIndex(const Color& color) {
