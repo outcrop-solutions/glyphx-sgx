@@ -27,7 +27,7 @@ namespace SynGlyphX {
         double GetRatio() const;
 
         void AddChild(boost::shared_ptr<Glyph> glyph);
-        boost::shared_ptr<Glyph> GetChild(unsigned int index);
+        boost::shared_ptr<Glyph> GetChild(unsigned int index) const;
 
         void SetGeometry(Geometry::Shape shape, Geometry::Surface surface);
         Geometry::Shape GetShape() const;
@@ -40,6 +40,11 @@ namespace SynGlyphX {
         static boost::shared_ptr<const Glyph> GetTemplate();
 
         void ClearChildren();
+
+        unsigned int GetNumberOfChildren() const;
+
+        void SetTagOffset(double x, double y, double z);
+        const Vector3& GetTagOffset() const;
 
     private:
         static boost::shared_ptr<Glyph> CreateRootPin();

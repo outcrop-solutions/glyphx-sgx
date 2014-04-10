@@ -1,4 +1,5 @@
 #include "csvreaderwriter.h"
+#include <fstream>
 
 namespace SynGlyphX {
 
@@ -33,8 +34,57 @@ namespace SynGlyphX {
     {
     }
 
-    void CSVReaderWriter::Write(const std::string& filename, const boost::shared_ptr<Glyph> treeRoot, unsigned long startingId) {
+    void CSVReaderWriter::Write(const std::string& filename, boost::shared_ptr<const Glyph> treeRoot, unsigned long startingId) {
 
+        std::ofstream file;
+        try {
+            file.open(filename);
+
+            //Write out header, cameras, and grid lines
+
+            file << "id,type,data,selected,parent_id,branch_level,child_id,child_index,child_count,ch_input_id,ch_output_id,ch_last_updated,average,sample,aux_a_x,aux_a_y,aux_a_z,aux_b_x,aux_b_y,aux_b_z,color_shift,rotate_vec_x,rotate_vec_y,rotate_vec_z,rotate_vec_s,scale_x,scale_y,scale_z,translate_x,translate_y,translate_z,tag_offset_x,tag_offset_y,tag_offset_z,rotate_rate_x,rotate_rate_y,rotate_rate_z,rotate_x,rotate_y,rotate_z,scale_rate_x,scale_rate_y,scale_rate_z,translate_rate_x,translate_rate_y,translate_rate_z,translate_vec_x,translate_vec_y,translate_vec_z,shader,geometry,line_width,point_size,ratio,color_index,color_r,color_g,color_b,color_a,color_fade,texture_id,hide,freeze,topo,facet,auto_zoom_x,auto_zoom_y,auto_zoom_z,trigger_hi_x,trigger_hi_y,trigger_hi_z,trigger_lo_x,trigger_lo_y,trigger_lo_z,set_hi_x,set_hi_y,set_hi_z,set_lo_x,set_lo_y,set_lo_z,proximity_x,proximity_y,proximity_z,proximity_mode_x,proximity_mode_y,proximity_mode_z,segments_x,segments_y,segments_z,tag_mode,format_id,table_id,record_id,size" << std::endl;
+            file << "1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0, 0, 1.000000, 0.000000, 0.100000, 0, 50, 101, 101, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0, 0, 0, 16, 16, 0, 0, 0, 0, 0, 420" << std::endl;
+            file << "2, 1, 2, 0, 0, 0, 0, 2, 3, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0.000000, 0.000000, -0.143424, -0.826509, -0.544345, 1.000000, 1.000000, 1.000000, 1.344855, 7.749982, 6.275580, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 57.020073, 189.844513, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, -0.000000, 0.000000, 0.000000, 0, 0, 1.000000, 0.000000, 0.100000, 0, 50, 101, 101, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 9.376762, 0.000000, 0.000000, 0, 0, 0, 16, 16, 0, 0, 0, 0, 0, 420" << std::endl;
+            file << "3, 1, 3, 0, 2, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0.000000, 0.000000, 0.000000, 0.000000, -1.000000, 1.000000, 1.000000, 1.000000, -0.500000, 0.000000, 571.750000, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0, 0, 1.000000, 0.000000, 0.100000, 0, 50, 101, 101, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0, 0, 0, 16, 16, 0, 0, 0, 0, 0, 420" << std::endl;
+            file << "4, 1, 4, 0, 2, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0.000000, 0.000000, 0.000000, 1.000000, -0.000000, 1.000000, 1.000000, 1.000000, 0.000000, -90.000000, 7.000000, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 90.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0, 0, 1.000000, 0.000000, 0.100000, 0, 50, 101, 101, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0, 0, 0, 16, 16, 0, 0, 0, 0, 0, 420" << std::endl;
+            file << "5, 1, 5, 0, 2, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0.000000, 0.000000, -1.000000, 0.000000, -0.000000, 1.000000, 1.000000, 1.000000, 85.000000, 0.000000, 7.000000, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 90.000000, 270.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0, 0, 1.000000, 0.000000, 0.100000, 0, 50, 101, 101, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0, 0, 0, 16, 16, 0, 0, 0, 0, 0, 420" << std::endl;
+            file << "6, 6, 6, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0, 0, 1.000000, 0.000000, 0.100000, 0, 255, 0, 0, 150, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0, 0, 0, 12, 12, 0, 0, 0, 0, 0, 420" << std::endl;
+
+            WriteGlyph(file, treeRoot, startingId, 0, 0);
+
+            file.close();
+        }
+        catch (const std::exception& e) {
+            file.close();
+            throw;
+        }
+    }
+
+    //This function only handles the one child case.  Need to update
+    void CSVReaderWriter::WriteGlyph(std::ofstream& file, boost::shared_ptr<const Glyph> glyph, unsigned long id, unsigned long parentId, unsigned long branchLevel) {
+
+        unsigned int numberOfChildren = glyph->GetNumberOfChildren();
+
+        file << id << ", 5, " << id << ", 0, " << parentId << ", " << branchLevel << ", 0, 0, " << numberOfChildren << ", 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, ";
+        Vector3 scale = glyph->GetScale();
+        Vector3 translate = glyph->GetTranslate();
+        file << scale[0] << ", " << scale[1] << ", " << scale[2] << ", " << translate[0] << ", " << translate[1] << ", " << translate[2] << ", ";
+        Vector3 tagOffset = glyph->GetTagOffset();
+        Vector3 rotate = glyph->GetRotate();
+        file << tagOffset[0] << ", " << tagOffset[1] << ", " << tagOffset[2] << ", 0, 0, 0, " << rotate[0] << ", " << rotate[1] << ", " << rotate[2] << ", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ";
+        Color color = glyph->GetColor();
+        file << ConvertGeometryToCSVInt(glyph->GetShape(), glyph->GetSurface()) << ", 1, 0, " << glyph->GetRatio() << ", " << GetColorIndex(color) << ", " << static_cast<int>(color[0]) << ", ";
+        file << static_cast<int>(color[1]) << ", " << static_cast<int>(color[2]) << ", " << static_cast<int>(color[3]) << ", 0, 0, 0, 0, " << static_cast<int>(glyph->GetTopology()) << ", ";
+        file << "0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 16, 16, 0, 0, 0, 0, " << id << ", 420" << std::endl;
+        
+        if (numberOfChildren > 0) {
+            WriteGlyph(file, glyph->GetChild(0), id + 1, id, branchLevel + 1);
+        }
+    }
+
+    unsigned int CSVReaderWriter::ConvertGeometryToCSVInt(Geometry::Shape shape, Geometry::Surface surface) {
+
+        return (2 * shape) + surface;
     }
 
     CSVReaderWriter& CSVReaderWriter::GetInstance() {

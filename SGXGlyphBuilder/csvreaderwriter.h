@@ -3,7 +3,9 @@
 
 #include <boost/noncopyable.hpp>
 #include <boost/shared_ptr.hpp>
+#include <fstream>
 #include "glyph.h"
+#include "typedefs.h"
 
 namespace SynGlyphX {
 
@@ -15,13 +17,15 @@ namespace SynGlyphX {
         CSVReaderWriter();
         ~CSVReaderWriter();
 
-        void Write(const std::string& filename, const boost::shared_ptr<Glyph> treeRoot, unsigned long startingId = 32);
+        void Write(const std::string& filename, boost::shared_ptr<const Glyph> treeRoot, unsigned long startingId = 32);
 
         static CSVReaderWriter& GetInstance();
 
     private:
         static CSVReaderWriter s_instance;
 
+        void WriteGlyph(std::ofstream& file, boost::shared_ptr<const Glyph> glyph, unsigned long id, unsigned long parentId, unsigned long branchLevel);
+        unsigned int ConvertGeometryToCSVInt(Geometry::Shape shape, Geometry::Surface surface);
         unsigned short GetColorIndex(const Color& color);
 
         Color m_predefinedColors[MaxPredefinedColors];

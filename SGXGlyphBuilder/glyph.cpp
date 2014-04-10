@@ -75,7 +75,7 @@ namespace SynGlyphX {
         m_children.push_back(glyph);
     }
 
-    boost::shared_ptr<Glyph> Glyph::GetChild(unsigned int index) {
+    boost::shared_ptr<Glyph> Glyph::GetChild(unsigned int index) const {
         return m_children[index];
     }
 
@@ -119,6 +119,20 @@ namespace SynGlyphX {
 
     void Glyph::ClearChildren() {
         m_children.clear();
+    }
+
+    unsigned int Glyph::GetNumberOfChildren() const {
+        return m_children.size();
+    }
+
+    void Glyph::SetTagOffset(double x, double y, double z) {
+        m_tagOffset[0] = x;
+        m_tagOffset[1] = y;
+        m_tagOffset[2] = z;
+    }
+
+    const Vector3& Glyph::GetTagOffset() const {
+        return m_tagOffset;
     }
 
 } //namespace SynGlyphX

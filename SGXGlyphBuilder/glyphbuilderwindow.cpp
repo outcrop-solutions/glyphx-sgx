@@ -5,6 +5,7 @@
 #include <QtWidgets/QWizard>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QFileDialog>
+#include <QtWidgets/QMessageBox>
 #include "singleglyphwidget.h"
 #include "csvreaderwriter.h"
 
@@ -106,6 +107,13 @@ void GlyphBuilderWindow::SaveGlyph() {
     QString saveFile = QFileDialog::getSaveFileName(this, tr("Save Glyph Tree To CSV"), "", tr("CSV Files (*.csv)"));
     if (!saveFile.isEmpty()) {
         SynGlyphX::CSVReaderWriter& writer = SynGlyphX::CSVReaderWriter::GetInstance();
-        writer.Write(saveFile.toStdString(), SynGlyphX::Glyph::GetRoot());
+        try {
+            writer.Write(saveFile.toStdString(), SynGlyphX::Glyph::GetRoot());
+            QMessageBox::information(this, "Save File Succeeded", "CSV file successfully saved");
+        }
+        catch (const std::exception& e) {
+            QString title = "Save File Failed";
+            QMessageBox::warning(this, title, title + ": " + e.what());
+        }
     }
 }
