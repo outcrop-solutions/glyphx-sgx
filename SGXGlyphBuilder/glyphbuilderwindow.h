@@ -3,6 +3,7 @@
 
 #include <QtWidgets/QMainWindow>
 #include "glyphtreeview.h"
+#include "antzwidget.h"
 
 class GlyphBuilderWindow : public QMainWindow
 {
@@ -19,6 +20,8 @@ private slots:
 private:
     void CreateMenus();
     void CreateDockWidgets();
+
+    ANTzWidget* m_3dView;
 
     GlyphTreeView* m_treeView;
 

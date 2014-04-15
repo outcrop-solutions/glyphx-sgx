@@ -17,6 +17,9 @@ GlyphBuilderWindow::GlyphBuilderWindow(QWidget *parent)
 
     CreateMenus();
     CreateDockWidgets();
+
+    m_3dView = new ANTzWidget(this);
+    setCentralWidget(m_3dView);
 }
 
 GlyphBuilderWindow::~GlyphBuilderWindow()
