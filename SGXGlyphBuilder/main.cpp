@@ -7,6 +7,10 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
+    //Set the default application icon
+    QApplication::setWindowIcon(QIcon(":GlyphBuilderWindow/Resources/synglyphx_x.ico"));
+
+    //Setup and show the splash screen
     QPixmap pixmap(":GlyphBuilderWindow/Resources/synglyphx_splash.png");
     QSplashScreen splash;
     splash.setPixmap(pixmap);
@@ -19,7 +23,7 @@ int main(int argc, char *argv[])
     GlyphBuilderWindow w;
     w.resize(600, 400);
 
-    //Need to figure out better way to not have the splash screen disappear without the user seeing it
+    //Need to figure out better way to not have the splash screen disappear before the user sees it
     QTimer::singleShot(1500, &splash, SLOT(close()));
     QTimer::singleShot(1600, &w, SLOT(show()));
 

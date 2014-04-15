@@ -13,7 +13,7 @@ GlyphBuilderWindow::GlyphBuilderWindow(QWidget *parent)
     : QMainWindow(parent),
     m_treeView(NULL)
 {
-    setWindowTitle("SynGlyphX Glyph Builder");
+    setWindowTitle(tr("SynGlyphX Glyph Builder"));
 
     CreateMenus();
     CreateDockWidgets();
