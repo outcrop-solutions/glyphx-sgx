@@ -27,6 +27,10 @@
 
 #include "../npdata.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 //JJ
 
 //channel methods allow live IO or file based track data to animate the scene
@@ -97,6 +101,10 @@ void npchPause (void* dataRef);			//zz-JJ
 void npSyncChMap (void* dataRef); 		//zz-JJ
 
 //JJ-end
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
 

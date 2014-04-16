@@ -25,10 +25,15 @@
 #ifndef NPFILE_H_
 #define NPFILE_H_
 
+#include "../ANTzCore.h"
 
 #include "../npdata.h"
 #include "../data/npmapfile.h"
 #include "file/npcsv.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #define kNPfileMax 4096
 
@@ -94,7 +99,9 @@ void npFileOpenChMap (const char* filePath, void* dataRef);
 //closes the file set, typically antzch000x.csv would be the only open file
 void npFileCloseChTracks (const char* filePath, void* dataRef);
 
-
+#ifdef __cplusplus
+}
+#endif
 
 #endif
 

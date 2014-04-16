@@ -11,8 +11,17 @@ public:
     ANTzWidget(QWidget *parent = 0);
     ~ANTzWidget();
 
+protected:
+    void initializeGL();
+    void resizeGL(int w, int h);
+    void paintGL();
+
 private:
-    
+    void InitIO();
+
+    static QGLFormat s_format;
+
+    void* m_antzData;
 };
 
 #endif // ANTZWIDGET_H

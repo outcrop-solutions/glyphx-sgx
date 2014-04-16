@@ -33,7 +33,9 @@
 #include "gl/npgeometry.h"
 #include "gl/npcolor.h"
 
-
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 //MB//
 //--- Data -----
@@ -57,6 +59,10 @@ void npPostMode (pNPnode node, void* dataRef);
 ANTZCORE_API void npPostTool(pNPnode node, void* dataRef);
 
 ANTZCORE_API void npPickTool(pNPnode node, void* dataRef);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
 
