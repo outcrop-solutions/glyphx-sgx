@@ -2,13 +2,14 @@
 #define ANTZWIDGET_H
 
 #include <QtOpenGL/QGLWidget>
+#include "glyphtreemodel.h"
 
 class ANTzWidget : public QGLWidget
 {
     Q_OBJECT
 
 public:
-    ANTzWidget(QWidget *parent = 0);
+    ANTzWidget(GlyphTreeModel* model, QWidget *parent = 0);
     ~ANTzWidget();
 
 protected:
@@ -21,7 +22,7 @@ private:
 
     static QGLFormat s_format;
 
-    void* m_antzData;
+    GlyphTreeModel* m_model;
 };
 
 #endif // ANTZWIDGET_H

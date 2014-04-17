@@ -1,13 +1,14 @@
 #ifndef SYNGLYPHX_GLYPH
 #define SYNGLYPHX_GLYPH
 
+#include "ANTzBridge.h"
 #include <boost/shared_ptr.hpp>
 #include <vector>
 #include "typedefs.h"
 
 namespace SynGlyphX {
 
-    class Glyph
+    class ANTZBRIDGE_API Glyph
     {
     public:
         Glyph();

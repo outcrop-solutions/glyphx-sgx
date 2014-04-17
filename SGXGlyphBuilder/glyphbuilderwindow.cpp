@@ -15,10 +15,12 @@ GlyphBuilderWindow::GlyphBuilderWindow(QWidget *parent)
 {
     setWindowTitle(tr("SynGlyphX Glyph Builder"));
 
+    m_glyphTreeModel = new GlyphTreeModel(this);
+
     CreateMenus();
     CreateDockWidgets();
 
-    m_3dView = new ANTzWidget(this);
+    m_3dView = new ANTzWidget(m_glyphTreeModel, this);
     setCentralWidget(m_3dView);
 }
 
@@ -109,7 +111,7 @@ void GlyphBuilderWindow::SaveGlyph() {
 
     QString saveFile = QFileDialog::getSaveFileName(this, tr("Save Glyph Tree To CSV"), "", tr("CSV Files (*.csv)"));
     if (!saveFile.isEmpty()) {
-        SynGlyphX::CSVReaderWriter& writer = SynGlyphX::CSVReaderWriter::GetInstance();
+        /*SynGlyphX::CSVReaderWriter& writer = SynGlyphX::CSVReaderWriter::GetInstance();
         try {
             writer.Write(saveFile.toStdString(), SynGlyphX::Glyph::GetRoot());
             QMessageBox::information(this, "Save File Succeeded", "CSV file successfully saved");
@@ -117,6 +119,6 @@ void GlyphBuilderWindow::SaveGlyph() {
         catch (const std::exception& e) {
             QString title = "Save File Failed";
             QMessageBox::warning(this, title, title + ": " + e.what());
-        }
+        }*/
     }
 }

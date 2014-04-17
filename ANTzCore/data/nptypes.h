@@ -27,8 +27,10 @@
 
 #include <time.h>
 #include <stdio.h>
-#include "stdbool.h"
 
+#ifndef __cplusplus
+#include "stdbool.h"
+#endif
 
 #define kPI			 3.141593f
 #define k2PI		 6.283185f

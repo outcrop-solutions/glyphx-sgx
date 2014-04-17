@@ -4,6 +4,7 @@
 #include <QtWidgets/QMainWindow>
 #include "glyphtreeview.h"
 #include "antzwidget.h"
+#include "glyphtreemodel.h"
 
 class GlyphBuilderWindow : public QMainWindow
 {
@@ -28,6 +29,8 @@ private:
     QMenu* m_fileMenu;
     QMenu* m_viewMenu;
     QMenu* m_glyphMenu;
+
+    GlyphTreeModel* m_glyphTreeModel;
 };
 
 #endif // GLYPHBUILDERWINDOW_H

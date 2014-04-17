@@ -1,36 +1,37 @@
 #include "antzwidget.h"
 
-#include "npdata.h"
 #include "io/npfile.h"
 #include "io/npch.h"
 #include "npctrl.h"
 #include "io/npgl.h"
+#include "npui.h"
 
 //The default QGLFormat works for now except we want alpha enabled.  May want to turn on stereo at some point
 QGLFormat ANTzWidget::s_format(QGL::AlphaChannel);
 
-ANTzWidget::ANTzWidget(QWidget *parent)
-    : QGLWidget(s_format, parent)
+ANTzWidget::ANTzWidget(GlyphTreeModel* model, QWidget *parent)
+    : QGLWidget(s_format, parent),
+    m_model(model)
 {
-    m_antzData = npInitData(0, NULL);
+    void* antzData = m_model->GetANTzData();
     InitIO();
-    npInitFile(m_antzData);
-    npInitCh(m_antzData);
-    npInitCtrl(m_antzData);
+    npInitFile(antzData);
+    npInitCh(antzData);
+    npInitCtrl(antzData);
 }
 
 ANTzWidget::~ANTzWidget()
 {
-    npCloseGL(m_antzData);
-    npCloseCtrl(m_antzData);
-    npCloseFile(m_antzData);
-    npCloseCh(m_antzData);
-    npCloseData();
+    void* antzData = m_model->GetANTzData();
+    npCloseGL(antzData);
+    npCloseCtrl(antzData);
+    npCloseFile(antzData);
+    npCloseCh(antzData);
 }
 
 void ANTzWidget::InitIO()
 {
-    pData data = (pData)m_antzData;
+    pData data = (pData)m_model->GetANTzData();
 
     //zz-CAMERA
     //compare intialization values with working project, debug zz
@@ -94,7 +95,11 @@ void ANTzWidget::InitIO()
 
 void ANTzWidget::initializeGL() {
     
-    npInitGL(m_antzData);
+    pData data = (pData)m_model->GetANTzData();
+    npInitGL(m_model->GetANTzData());
+    //npSelectNode(m_model->GetRootGlyph(), m_model->GetANTzData());
+    data->map.selectedPinNode = m_model->GetRootGlyph();
+    npSetCamTarget(m_model->GetANTzData());
 }
 
 void ANTzWidget::resizeGL(int w, int h) {
@@ -104,8 +109,9 @@ void ANTzWidget::resizeGL(int w, int h) {
 
 void ANTzWidget::paintGL() {
 
-    npUpdateCtrl((pData)m_antzData);
-    npGLDrawScene(m_antzData);
+    void* antzData = m_model->GetANTzData();
+    npUpdateCtrl(antzData);
+    npGLDrawScene(antzData);
 
     int err = glGetError();
     if (err) {

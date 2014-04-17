@@ -3,6 +3,10 @@
 
 #include "ANTzCore.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 void npInitKey(void* dataRef);
 void npCloseKey(void* dataRef);
 
@@ -13,5 +17,9 @@ ANTZCORE_API void npSetCamTarget(void* dataRef);
 void npUpdateIO(void* dataRef);
 
 void npUpdateMouse(void* dataRef);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif //NPUI_H
