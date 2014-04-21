@@ -110,6 +110,8 @@ void GlyphBuilderWindow::CreateNewGlyphTree() {
                 parentGlyph->AddChild(childGlyph);
                 parentGlyph = childGlyph;
             }
+            m_glyphTreeModel->CreateFromTemplates(SynGlyphX::Glyph::GetRoot());
+            m_3dView->ResetCamera();
         }
     }
 }

@@ -9,11 +9,11 @@ GlyphTreeModel::GlyphTreeModel(QObject *parent)
     m_antzData = npInitData(0, NULL);
 
     m_rootGlyph = npNodeNew(kNodePin, NULL, m_antzData);
-    npNodeNew(kNodePin, m_rootGlyph, m_antzData);
+    /*npNodeNew(kNodePin, m_rootGlyph, m_antzData);
     pNPnode child = npNodeNew(kNodePin, m_rootGlyph, m_antzData);
     npNodeNew(kNodePin, child, m_antzData);
     pNPnode grandchild = npNodeNew(kNodePin, child, m_antzData);
-    npNodeNew(kNodePin, grandchild, m_antzData);
+    npNodeNew(kNodePin, grandchild, m_antzData);*/
 }
 
 GlyphTreeModel::~GlyphTreeModel()
@@ -140,4 +140,51 @@ pNPnode GlyphTreeModel::GetRootGlyph() const {
 bool GlyphTreeModel::SaveToCSV(const std::string& filename) const {
 
     return (npFileSaveMap(filename.c_str(), 1, filename.length(), m_antzData) != 0);
+}
+
+void GlyphTreeModel::CreateFromTemplates(boost::shared_ptr<const SynGlyphX::Glyph> newGlyphTemplates) {
+
+    beginResetModel();
+    npNodeDelete(m_rootGlyph, m_antzData);
+    CreateNodeFromTemplate(NULL, newGlyphTemplates);
+    endResetModel();
+}
+
+void GlyphTreeModel::CreateNodeFromTemplate(pNPnode parent, boost::shared_ptr<const SynGlyphX::Glyph> glyphTemplate) {
+
+    pNPnode glyph = npNodeNew(kNodePin, parent, m_antzData);
+    if (parent == NULL) {
+        m_rootGlyph = glyph;
+    }
+
+    glyph->selected = 0;
+
+    SynGlyphX::Vector3 scale = glyphTemplate->GetScale();
+    glyph->scale.x = scale[0];
+    glyph->scale.y = scale[1];
+    glyph->scale.z = scale[2];
+
+    SynGlyphX::Vector3 translate = glyphTemplate->GetTranslate();
+    glyph->translate.x = translate[0];
+    glyph->translate.y = translate[1];
+    glyph->translate.z = translate[2];
+
+    SynGlyphX::Vector3 rotation = glyphTemplate->GetRotate();
+    glyph->rotate.x = rotation[0];
+    glyph->rotate.y = rotation[1];
+    glyph->rotate.z = rotation[2];
+
+    glyph->geometry = 2 * glyphTemplate->GetShape() + glyphTemplate->GetSurface();
+
+    SynGlyphX::Color color = glyphTemplate->GetColor();
+    glyph->color.r = color[0];
+    glyph->color.g = color[1];
+    glyph->color.b = color[2];
+    glyph->color.a = color[3];
+
+    glyph->topo = glyphTemplate->GetTopology();
+
+    if (glyphTemplate->GetNumberOfChildren() > 0) {
+        CreateNodeFromTemplate(glyph, glyphTemplate->GetChild(0));
+    }
 }

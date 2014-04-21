@@ -2,10 +2,12 @@
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QSplashScreen>
 #include <QtCore/QTimer>
+#include <QtCore/QDir>
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
+    a.addLibraryPath(QDir::currentPath() + QDir::separator() + "qt_plugins");
 
     //Set the default application icon
     QApplication::setWindowIcon(QIcon(":GlyphBuilderWindow/Resources/synglyphx_x.ico"));

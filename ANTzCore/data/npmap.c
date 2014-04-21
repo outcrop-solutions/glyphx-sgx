@@ -356,7 +356,7 @@ void npInitMap (void* dataRef)
 }
 
 //------------------------------------------------------------------------------
-int npGetRootIndex (pNPnode node, void* dataRef)
+ANTZCORE_API int npGetRootIndex(pNPnode node, void* dataRef)
 {
 	int i = 0;
 	int index = 0;

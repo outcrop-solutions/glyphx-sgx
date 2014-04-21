@@ -15,6 +15,7 @@ public:
 
 public slots:
     void UpdateSelection(const QItemSelection& selected, const QItemSelection& deselected);
+    void ResetCamera();
 
 protected:
     void initializeGL();

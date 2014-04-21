@@ -368,19 +368,20 @@ pNPnode npNodeNewLink (pNPnode linkA, pNPnode linkB, void* dataRef)
 }
 
 //------------------------------------------------------------------------------
-void npNodeDelete (pNPnode node, void* dataRef)
+ANTZCORE_API void npNodeDelete(pNPnode node, void* dataRef)
 {
 	pData data = (pData) dataRef;
 	pNPnode parent = NULL;
+    int type = node->type;
 
 	data->io.mouse.linkA = NULL;	//in case of delete while using link tool
 
-	npNodeRemove (true, node, dataRef);	//set 
+    parent = node->parent;
 
-	if (node->type != kNodeLink && node->parent != NULL)
+    npNodeRemove(true, node, dataRef);	//set 
+
+	if (type != kNodeLink && parent != NULL)
 	{
-		parent = node->parent;
-
 		if (parent != NULL)	//check if null in case of orphan node
 		{
 			if (parent->childCount <= 0)
@@ -397,7 +398,7 @@ void npNodeDelete (pNPnode node, void* dataRef)
 
 // removes node from tree and recursively traverses tree to free memory
 //------------------------------------------------------------------------------
-void npNodeRemove (bool freeNode, pNPnode node, void* dataRef)
+ANTZCORE_API void npNodeRemove(bool freeNode, pNPnode node, void* dataRef)
 {
 	int i = 0;
 	int count = 0;

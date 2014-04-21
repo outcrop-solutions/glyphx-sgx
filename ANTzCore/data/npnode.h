@@ -42,8 +42,8 @@ int	npNewNodeID();
 ANTZCORE_API pNPnode npNodeNew(int nodeType, pNPnode nodeParent, void* dataRef);
 pNPnode npNodeNewLink (pNPnode linkA, pNPnode linkB, void* dataRef);
 bool npNodeAttach (pNPnode node, pNPnode parent, void* dataRef);
-void npNodeDelete (pNPnode node, void* dataRef);
-void npNodeRemove (bool freeNode, pNPnode node, void* dataRef);
+ANTZCORE_API void npNodeDelete(pNPnode node, void* dataRef);
+ANTZCORE_API void npNodeRemove(bool freeNode, pNPnode node, void* dataRef);
 
 void npSetTagOffset (pNPnode node);
 

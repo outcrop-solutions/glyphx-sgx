@@ -3,7 +3,9 @@
 
 #include <QtCore/QAbstractItemModel>
 #include <vector>
+#include <boost/shared_ptr.hpp>
 #include "data/nptypes.h"
+#include "glyph.h"
 
 class GlyphTreeModel : public QAbstractItemModel
 {
@@ -28,8 +30,11 @@ public:
     pNPnode GetRootGlyph() const;
 
     bool SaveToCSV(const std::string& filename) const;
+    void CreateFromTemplates(boost::shared_ptr<const SynGlyphX::Glyph> newGlyphTemplates);
 
 private:
+    void CreateNodeFromTemplate(pNPnode parent, boost::shared_ptr<const SynGlyphX::Glyph> glyphTemplate);
+
     pNPnode m_rootGlyph;
     void* m_antzData;
 };

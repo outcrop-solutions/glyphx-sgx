@@ -95,11 +95,8 @@ void ANTzWidget::InitIO()
 
 void ANTzWidget::initializeGL() {
     
-    pData data = (pData)m_model->GetANTzData();
     npInitGL(m_model->GetANTzData());
-    //npSelectNode(m_model->GetRootGlyph(), m_model->GetANTzData());
-    data->map.selectedPinNode = m_model->GetRootGlyph();
-    npSetCamTarget(m_model->GetANTzData());
+    ResetCamera();
 }
 
 void ANTzWidget::resizeGL(int w, int h) {
@@ -135,4 +132,15 @@ void ANTzWidget::UpdateSelection(const QItemSelection& selected, const QItemSele
     }
     npSetCamTarget(antzData);
     //update();
+}
+
+void ANTzWidget::ResetCamera() {
+    pData data = (pData)m_model->GetANTzData();
+    //npSelectNode(m_model->GetRootGlyph(), m_model->GetANTzData());
+    int rootIndex = npGetRootIndex(m_model->GetRootGlyph(), data);
+    //data->map.selectedPinIndex = rootIndex;
+    data->map.selectedPinNode = m_model->GetRootGlyph();
+    data->map.currentNode = m_model->GetRootGlyph();
+    data->map.nodeRootIndex = rootIndex;
+    npSetCamTarget(data);
 }

@@ -41,7 +41,7 @@ void npGetMaps (void* dataRef);
 void npGetMapIO (void* dataRef); //Ports, GL (Sort Visible, Sort-Z, screen 1/2/3 )
 void npGetMapNPE (void* dataRef); // collision, rotation, translation...
 
-int npGetRootIndex (pNPnode node, void* dataRef);
+ANTZCORE_API int npGetRootIndex(pNPnode node, void* dataRef);
 ANTZCORE_API void npSelectNode(pNPnode node, void* dataRef);
 
 void* npGetNodeByID (int id, void* dataRef);
