@@ -35,6 +35,9 @@
 
 #include "../npdata.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 void npInitMapFile (void* dataRef);
 void npCloseMapFile (void* dataRef);
@@ -65,7 +68,7 @@ int npExportMapFile (FILE* file, int type, void* dataRef);
 int npGetMapFile (char* buffer, int wordSize, int size, void* dataRef);
 
 int npFileOpenMap (char* filePath, int wordSize, int size, void* dataRef);
-int npFileSaveMap (char* filePath, int wordSize, int size, void* dataRef);
+ANTZCORE_API int npFileSaveMap(const char* filePath, int wordSize, int size, void* dataRef);
 
 void npLoadMapFile (char* buffer, int wordSize, int size, void* dataRef);
 
@@ -87,6 +90,9 @@ int npMapTraverseTree (char* buffer, pNPnode node, int format, void* dataRef);
 //zzsql
 int npMapTraverseTreeLL(char* buffer, int* index, pNPnode node, int format, void* dataRef);
 
+#ifdef __cplusplus
+}
+#endif
 
 #endif
 

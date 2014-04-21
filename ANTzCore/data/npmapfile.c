@@ -819,7 +819,7 @@ int npFileOpenMap (char* filePath, int wordSize, int size, void* dataRef)
 
 
 //-----------------------------------------------------------------------------
-int npFileSaveMap (char* filePath, int wordSize, int size, void* dataRef)
+ANTZCORE_API int npFileSaveMap(const char* filePath, int wordSize, int size, void* dataRef)
 {
 	int i = 0;
 	int err = 0;

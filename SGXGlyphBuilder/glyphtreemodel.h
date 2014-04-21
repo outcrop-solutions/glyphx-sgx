@@ -27,6 +27,8 @@ public:
 
     pNPnode GetRootGlyph() const;
 
+    bool SaveToCSV(const std::string& filename) const;
+
 private:
     pNPnode m_rootGlyph;
     void* m_antzData;

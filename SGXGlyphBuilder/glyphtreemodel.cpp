@@ -1,5 +1,6 @@
 #include "glyphtreemodel.h"
 #include "npdata.h"
+#include "data/npmapfile.h"
 #include <Windows.h>
 
 GlyphTreeModel::GlyphTreeModel(QObject *parent)
@@ -134,4 +135,9 @@ void* GlyphTreeModel::GetANTzData() const {
 
 pNPnode GlyphTreeModel::GetRootGlyph() const {
     return m_rootGlyph;
+}
+
+bool GlyphTreeModel::SaveToCSV(const std::string& filename) const {
+
+    return (npFileSaveMap(filename.c_str(), 1, filename.length(), m_antzData) != 0);
 }

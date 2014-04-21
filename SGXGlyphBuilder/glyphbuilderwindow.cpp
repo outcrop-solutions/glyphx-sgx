@@ -6,6 +6,7 @@
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QFileDialog>
 #include <QtWidgets/QMessageBox>
+#include <QtWidgets/QStatusBar>
 #include "singleglyphwidget.h"
 #include "csvreaderwriter.h"
 
@@ -22,6 +23,8 @@ GlyphBuilderWindow::GlyphBuilderWindow(QWidget *parent)
 
     CreateMenus();
     CreateDockWidgets();
+
+    statusBar()->showMessage("Glyph Builder Started", 3000);
 }
 
 GlyphBuilderWindow::~GlyphBuilderWindow()
@@ -124,5 +127,13 @@ void GlyphBuilderWindow::SaveGlyph() {
             QString title = "Save File Failed";
             QMessageBox::warning(this, title, title + ": " + e.what());
         }*/
+
+        if (m_glyphTreeModel->SaveToCSV(saveFile.toStdString())) {
+            statusBar()->showMessage("File successfully saved", 3000);
+        }
+        else {
+            QString title = "Save File Failed";
+            QMessageBox::warning(this, title, "Failed to save file");
+        }
     }
 }
