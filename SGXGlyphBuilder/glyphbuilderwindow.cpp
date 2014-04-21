@@ -17,11 +17,11 @@ GlyphBuilderWindow::GlyphBuilderWindow(QWidget *parent)
 
     m_glyphTreeModel = new GlyphTreeModel(this);
 
-    CreateMenus();
-    CreateDockWidgets();
-
     m_3dView = new ANTzWidget(m_glyphTreeModel, this);
     setCentralWidget(m_3dView);
+
+    CreateMenus();
+    CreateDockWidgets();
 }
 
 GlyphBuilderWindow::~GlyphBuilderWindow()
@@ -58,6 +58,8 @@ void GlyphBuilderWindow::CreateDockWidgets() {
     QDockWidget* leftDockWidget = new QDockWidget("Glyph Tree", this);
     m_treeView = new GlyphTreeView(leftDockWidget);
     m_treeView->setModel(m_glyphTreeModel);
+
+    QObject::connect(m_treeView->selectionModel(), SIGNAL(selectionChanged(const QItemSelection&, const QItemSelection&)), m_3dView, SLOT(UpdateSelection(const QItemSelection&, const QItemSelection&)));
     
     leftDockWidget->setWidget(m_treeView);
     addDockWidget(Qt::LeftDockWidgetArea, leftDockWidget);

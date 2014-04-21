@@ -2,6 +2,7 @@
 #define ANTZWIDGET_H
 
 #include <QtOpenGL/QGLWidget>
+#include <QtCore/QItemSelection>
 #include "glyphtreemodel.h"
 
 class ANTzWidget : public QGLWidget
@@ -11,6 +12,9 @@ class ANTzWidget : public QGLWidget
 public:
     ANTzWidget(GlyphTreeModel* model, QWidget *parent = 0);
     ~ANTzWidget();
+
+public slots:
+    void UpdateSelection(const QItemSelection& selected, const QItemSelection& deselected);
 
 protected:
     void initializeGL();

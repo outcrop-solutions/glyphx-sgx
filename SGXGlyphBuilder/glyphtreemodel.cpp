@@ -118,7 +118,8 @@ Qt::ItemFlags GlyphTreeModel::flags(const QModelIndex& index) const {
         return 0;
     }
     
-    return Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsEnabled;
+    //return Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsEnabled;
+    return Qt::ItemIsSelectable | Qt::ItemIsEnabled;
 }
 
 QVariant GlyphTreeModel::headerData(int section, Qt::Orientation orientation, int role) const {

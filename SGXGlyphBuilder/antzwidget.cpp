@@ -118,5 +118,21 @@ void ANTzWidget::paintGL() {
         printf("err: 2388 - OpenGL error: %d\n", err);
     }
 
+    //ANTz assumes that redraw constantly happens.  Need to put this in a thread
+    update();
+
     //QGLWidget takes care of swapping buffers
+}
+
+void ANTzWidget::UpdateSelection(const QItemSelection& selected, const QItemSelection& deselected) {
+
+    void* antzData = m_model->GetANTzData();
+    if (!selected.indexes()[0].isValid()) {
+        npSelectNode(NULL, antzData);
+    }
+    else {
+        npSelectNode(static_cast<pNPnode>(selected.indexes()[0].internalPointer()), antzData);
+    }
+    npSetCamTarget(antzData);
+    //update();
 }
