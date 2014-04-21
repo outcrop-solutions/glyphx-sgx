@@ -1,9 +1,9 @@
 #include "glyphtreeview.h"
 
 GlyphTreeView::GlyphTreeView(QWidget *parent)
-    : QTreeWidget(parent)
+    : QTreeView(parent)
 {
-    setColumnCount(0);
+    
 }
 
 GlyphTreeView::~GlyphTreeView()

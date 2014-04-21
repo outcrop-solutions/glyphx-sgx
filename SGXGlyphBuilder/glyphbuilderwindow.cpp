@@ -57,6 +57,8 @@ void GlyphBuilderWindow::CreateDockWidgets() {
     //Add Tree View to dock widget on left side
     QDockWidget* leftDockWidget = new QDockWidget("Glyph Tree", this);
     m_treeView = new GlyphTreeView(leftDockWidget);
+    m_treeView->setModel(m_glyphTreeModel);
+    
     leftDockWidget->setWidget(m_treeView);
     addDockWidget(Qt::LeftDockWidgetArea, leftDockWidget);
     m_viewMenu->addAction(leftDockWidget->toggleViewAction());

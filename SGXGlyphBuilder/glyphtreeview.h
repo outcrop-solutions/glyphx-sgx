@@ -1,9 +1,9 @@
 #ifndef GLYPHTREEVIEW_H
 #define GLYPHTREEVIEW_H
 
-#include <QtWidgets/QTreeWidget>
+#include <QtWidgets/QTreeView>
 
-class GlyphTreeView : public QTreeWidget
+class GlyphTreeView : public QTreeView
 {
     Q_OBJECT
 
