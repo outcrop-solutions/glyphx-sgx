@@ -769,7 +769,7 @@ void npLoadMapFile (char* buffer, int wordSize, int size, void* dataRef)
 
 
 //-----------------------------------------------------------------------------
-int npFileOpenMap (char* filePath, int wordSize, int size, void* dataRef)
+ANTZCORE_API int npFileOpenMap (const char* filePath, int wordSize, int size, void* dataRef)
 {
 	FILE* file = NULL;
 	size_t count = 0;

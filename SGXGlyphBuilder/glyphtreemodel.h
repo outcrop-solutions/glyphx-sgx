@@ -29,14 +29,16 @@ public:
 
     pNPnode GetRootGlyph() const;
 
+    bool LoadFromFile(const std::string& filename);
     bool SaveToCSV(const std::string& filename) const;
     void CreateFromTemplates(boost::shared_ptr<const SynGlyphX::Glyph> newGlyphTemplates);
 
 private:
     void CreateNodeFromTemplate(pNPnode parent, boost::shared_ptr<const SynGlyphX::Glyph> glyphTemplate);
+    void CreateRootPinNode();
 
     pNPnode m_rootGlyph;
-    void* m_antzData;
+    pData m_antzData;
 };
 
 #endif // GLYPHTREEMODEL_H

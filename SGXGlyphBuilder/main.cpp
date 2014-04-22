@@ -6,8 +6,8 @@
 
 int main(int argc, char *argv[])
 {
+    QApplication::addLibraryPath(QDir::currentPath() + QDir::separator() + "qt_plugins");
     QApplication a(argc, argv);
-    a.addLibraryPath(QDir::currentPath() + QDir::separator() + "qt_plugins");
 
     //Set the default application icon
     QApplication::setWindowIcon(QIcon(":GlyphBuilderWindow/Resources/synglyphx_x.ico"));

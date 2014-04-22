@@ -6,14 +6,8 @@
 GlyphTreeModel::GlyphTreeModel(QObject *parent)
     : QAbstractItemModel(parent)
 {
-    m_antzData = npInitData(0, NULL);
-
-    m_rootGlyph = npNodeNew(kNodePin, NULL, m_antzData);
-    /*npNodeNew(kNodePin, m_rootGlyph, m_antzData);
-    pNPnode child = npNodeNew(kNodePin, m_rootGlyph, m_antzData);
-    npNodeNew(kNodePin, child, m_antzData);
-    pNPnode grandchild = npNodeNew(kNodePin, child, m_antzData);
-    npNodeNew(kNodePin, grandchild, m_antzData);*/
+    m_antzData = static_cast<pData>(npInitData(0, NULL));
+    CreateRootPinNode();
 }
 
 GlyphTreeModel::~GlyphTreeModel()
@@ -137,6 +131,22 @@ pNPnode GlyphTreeModel::GetRootGlyph() const {
     return m_rootGlyph;
 }
 
+bool GlyphTreeModel::LoadFromFile(const std::string& filename) {
+    
+    beginResetModel();
+    npNodeDelete(m_rootGlyph, m_antzData);
+    bool success = (npFileOpenMap(filename.c_str(), 1, filename.length(), m_antzData) != 0);
+    if (success) {
+        m_rootGlyph = static_cast<pNPnode>(m_antzData->map.node[m_antzData->map.nodeRootCount - 1]);
+    }
+    else {
+        CreateRootPinNode();
+    }
+    endResetModel();
+
+    return success;
+}
+
 bool GlyphTreeModel::SaveToCSV(const std::string& filename) const {
 
     return (npFileSaveMap(filename.c_str(), 1, filename.length(), m_antzData) != 0);
@@ -187,4 +197,8 @@ void GlyphTreeModel::CreateNodeFromTemplate(pNPnode parent, boost::shared_ptr<co
     if (glyphTemplate->GetNumberOfChildren() > 0) {
         CreateNodeFromTemplate(glyph, glyphTemplate->GetChild(0));
     }
+}
+
+void GlyphTreeModel::CreateRootPinNode() {
+    m_rootGlyph = npNodeNew(kNodePin, NULL, m_antzData);
 }

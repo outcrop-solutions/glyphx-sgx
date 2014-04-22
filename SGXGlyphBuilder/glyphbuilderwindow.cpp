@@ -37,8 +37,16 @@ void GlyphBuilderWindow::CreateMenus() {
     //Create File Menu
     m_fileMenu = menuBar()->addMenu(tr("&File"));
 
-    QAction* saveAction = m_fileMenu->addAction(tr("&Save"));
-    QObject::connect(saveAction, SIGNAL(triggered()), this, SLOT(SaveGlyph()));
+    QAction* openAction = m_fileMenu->addAction(tr("&Open Template"));
+    QObject::connect(openAction, SIGNAL(triggered()), this, SLOT(OpenTemplate()));
+
+    QAction* saveAction = m_fileMenu->addAction(tr("&Save As Template"));
+    QObject::connect(saveAction, SIGNAL(triggered()), this, SLOT(SaveAsTemplate()));
+
+    m_fileMenu->addSeparator();
+
+    QAction* exportAction = m_fileMenu->addAction(tr("Export to CSV"));
+    QObject::connect(exportAction, SIGNAL(triggered()), this, SLOT(SaveGlyph()));
 
     m_fileMenu->addSeparator();
 
@@ -136,6 +144,36 @@ void GlyphBuilderWindow::SaveGlyph() {
         else {
             QString title = "Save File Failed";
             QMessageBox::warning(this, title, "Failed to save file");
+        }
+    }
+}
+
+void GlyphBuilderWindow::OpenTemplate() {
+
+    QString openFile = QFileDialog::getOpenFileName(this, tr("Open Template"), "", tr("SynGlyphX Glyph Template Files (*.sgt)"));
+    if (!openFile.isEmpty()) {
+        if (m_glyphTreeModel->LoadFromFile(openFile.toStdString())) {
+            statusBar()->showMessage("Template successfully opened", 3000);
+            m_3dView->ResetCamera();
+        }
+        else {
+            QString title = "Loading Template Failed";
+            QMessageBox::warning(this, title, "Failed to load template");
+        }
+    }
+}
+
+void GlyphBuilderWindow::SaveAsTemplate() {
+    
+    QString saveFile = QFileDialog::getSaveFileName(this, tr("Save Glyph Tree As Template"), "", tr("SynGlyphX Glyph Template Files (*.sgt)"));
+    if (!saveFile.isEmpty()) {
+
+        if (m_glyphTreeModel->SaveToCSV(saveFile.toStdString())) {
+            statusBar()->showMessage("Template successfully saved", 3000);
+        }
+        else {
+            QString title = "Saving Template Failed";
+            QMessageBox::warning(this, title, "Failed to save template");
         }
     }
 }

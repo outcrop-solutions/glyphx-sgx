@@ -17,6 +17,9 @@ public:
 private slots:
     void CreateNewGlyphTree();
     void SaveGlyph();
+    void SaveAsTemplate();
+    void OpenTemplate();
+    
 
 private:
     void CreateMenus();
