@@ -10,7 +10,7 @@ class ANTzWidget : public QGLWidget
     Q_OBJECT
 
 public:
-    ANTzWidget(GlyphTreeModel* model, QWidget *parent = 0);
+    ANTzWidget(GlyphTreeModel* model, QItemSelectionModel* selectionModel, QWidget *parent = 0);
     ~ANTzWidget();
 
 public slots:
@@ -18,9 +18,12 @@ public slots:
     void ResetCamera();
 
 protected:
-    void initializeGL();
-    void resizeGL(int w, int h);
-    void paintGL();
+    virtual void initializeGL();
+    virtual void resizeGL(int w, int h);
+    virtual void paintGL();
+    virtual void mousePressEvent(QMouseEvent* event);
+    virtual void mouseReleaseEvent(QMouseEvent* event);
+    virtual void mouseMoveEvent(QMouseEvent* event);
 
 private:
     void InitIO();
@@ -28,6 +31,9 @@ private:
     static QGLFormat s_format;
 
     GlyphTreeModel* m_model;
+    QItemSelectionModel* m_selectionModel;
+
+    QPoint m_lastMousePosition;
 };
 
 #endif // ANTZWIDGET_H

@@ -25,12 +25,22 @@
 #ifndef npengine_H_
 #define npengine_H_
 
+#include "../ANTzCore.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 //--- Functions ----------------------------------------------------------------
 
 void npInitEngine (void* dataRef);
 void npCloseEngine (void* dataRef);
 
-void npUpdateEngine (void* dataRef);
+ANTZCORE_API void npUpdateEngine (void* dataRef);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
 

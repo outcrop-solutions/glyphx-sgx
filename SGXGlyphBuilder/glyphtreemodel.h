@@ -25,7 +25,7 @@ public:
     virtual Qt::ItemFlags flags(const QModelIndex& index) const;
     virtual QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
 
-    void* GetANTzData() const;
+    pData GetANTzData() const;
 
     pNPnode GetRootGlyph() const;
 
@@ -33,9 +33,12 @@ public:
     bool SaveToCSV(const std::string& filename) const;
     void CreateFromTemplates(boost::shared_ptr<const SynGlyphX::Glyph> newGlyphTemplates);
 
+    QModelIndex IndexFromANTzID(int id);
+
 private:
     void CreateNodeFromTemplate(pNPnode parent, boost::shared_ptr<const SynGlyphX::Glyph> glyphTemplate);
     void CreateRootPinNode();
+    int GetChildIndexFromParent(pNPnode node) const;
 
     pNPnode m_rootGlyph;
     pData m_antzData;

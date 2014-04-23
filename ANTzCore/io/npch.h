@@ -88,7 +88,7 @@ void npChDelete (int channel, void* dataRef);
 void npChSubscribeNode (pNPnode node, void* dataRef);
 void npChRemoveNode (pNPnode node, void* dataRef);
 
-void npUpdateCh (void* dataRef);
+ANTZCORE_API void npUpdateCh(void* dataRef);
 void npUpdateNodes(void* dataRef);
 
 //--- will add stream functions such as local IO and UDP

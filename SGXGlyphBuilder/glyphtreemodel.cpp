@@ -78,14 +78,7 @@ QModelIndex	GlyphTreeModel::parent(const QModelIndex& index) const {
             return createIndex(0, 0, parent);
         }
         else {
-            pNPnode grandparent = parent->parent;
-            unsigned int i = 0;
-            for (; i < grandparent->childCount; ++i) {
-                if (grandparent->child[i] == parent) {
-                    break;
-                }
-            }
-            return createIndex(i, 0, parent);
+            return createIndex(GetChildIndexFromParent(parent), 0, parent);
         }
     }
 }
@@ -123,7 +116,7 @@ QVariant GlyphTreeModel::headerData(int section, Qt::Orientation orientation, in
     return "";
 }
 
-void* GlyphTreeModel::GetANTzData() const {
+pData GlyphTreeModel::GetANTzData() const {
     return m_antzData;
 }
 
@@ -149,7 +142,15 @@ bool GlyphTreeModel::LoadFromFile(const std::string& filename) {
 
 bool GlyphTreeModel::SaveToCSV(const std::string& filename) const {
 
-    return (npFileSaveMap(filename.c_str(), 1, filename.length(), m_antzData) != 0);
+    //need to unselect for saving since selection will get saved with the CSV
+    pNPnode selectedNode = m_antzData->map.selectedPinNode;
+    npSelectNode(NULL, m_antzData);
+
+    bool success = (npFileSaveMap(filename.c_str(), 1, filename.length(), m_antzData) != 0);
+
+    //reselect the previously selected node
+    npSelectNode(selectedNode, m_antzData);
+    return success;
 }
 
 void GlyphTreeModel::CreateFromTemplates(boost::shared_ptr<const SynGlyphX::Glyph> newGlyphTemplates) {
@@ -201,4 +202,29 @@ void GlyphTreeModel::CreateNodeFromTemplate(pNPnode parent, boost::shared_ptr<co
 
 void GlyphTreeModel::CreateRootPinNode() {
     m_rootGlyph = npNodeNew(kNodePin, NULL, m_antzData);
+}
+
+QModelIndex GlyphTreeModel::IndexFromANTzID(int id) {
+
+    pNPnode node = static_cast<pNPnode>(m_antzData->map.nodeID[id]);
+
+    if (node == m_rootGlyph) {
+        return createIndex(0, 0, node);
+    }
+    else {
+        return createIndex(GetChildIndexFromParent(node), 0, node);
+    }
+}
+
+int GlyphTreeModel::GetChildIndexFromParent(pNPnode node) const {
+    
+    pNPnode parent = node->parent;
+    int i = 0;
+    for (; i < parent->childCount; ++i) {
+        if (parent->child[i] == node) {
+            break;
+        }
+    }
+    
+    return i;
 }

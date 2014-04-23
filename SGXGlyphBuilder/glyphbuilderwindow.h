@@ -34,6 +34,7 @@ private:
     QMenu* m_glyphMenu;
 
     GlyphTreeModel* m_glyphTreeModel;
+    QItemSelectionModel* m_selectionModel;
 };
 
 #endif // GLYPHBUILDERWINDOW_H

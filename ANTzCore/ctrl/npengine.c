@@ -60,7 +60,7 @@ void npCloseEngine (void* dataRef)
 
 // traverses all nodes, updates translation, rotation, scale, color, physics...
 //------------------------------------------------------------------------------
-void npUpdateEngine (void* dataRef)
+ANTZCORE_API void npUpdateEngine(void* dataRef)
 {
 	int i = 0;
 

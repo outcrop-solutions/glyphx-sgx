@@ -1114,7 +1114,7 @@ void npUpdateNodes(void *dataRef)
 //3rd, update nodes using track to node-attrib ptr lists
 //lastly, output streams, such as live IO devices buffers or to a file
 //------------------------------------------------------------------------------
-void npUpdateCh (void* dataRef)
+ANTZCORE_API void npUpdateCh(void* dataRef)
 {
 	pData data = (pData) dataRef;
 	pNPch ch = &data->io.ch;

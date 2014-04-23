@@ -17,8 +17,9 @@ GlyphBuilderWindow::GlyphBuilderWindow(QWidget *parent)
     setWindowTitle(tr("SynGlyphX Glyph Builder"));
 
     m_glyphTreeModel = new GlyphTreeModel(this);
+    m_selectionModel = new QItemSelectionModel(m_glyphTreeModel, this);
 
-    m_3dView = new ANTzWidget(m_glyphTreeModel, this);
+    m_3dView = new ANTzWidget(m_glyphTreeModel, m_selectionModel, this);
     setCentralWidget(m_3dView);
 
     CreateMenus();
@@ -69,8 +70,7 @@ void GlyphBuilderWindow::CreateDockWidgets() {
     QDockWidget* leftDockWidget = new QDockWidget("Glyph Tree", this);
     m_treeView = new GlyphTreeView(leftDockWidget);
     m_treeView->setModel(m_glyphTreeModel);
-
-    QObject::connect(m_treeView->selectionModel(), SIGNAL(selectionChanged(const QItemSelection&, const QItemSelection&)), m_3dView, SLOT(UpdateSelection(const QItemSelection&, const QItemSelection&)));
+    m_treeView->setSelectionModel(m_selectionModel);
     
     leftDockWidget->setWidget(m_treeView);
     addDockWidget(Qt::LeftDockWidgetArea, leftDockWidget);

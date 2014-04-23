@@ -10,3 +10,9 @@ GlyphTreeView::~GlyphTreeView()
 {
 
 }
+
+void GlyphTreeView::selectionChanged(const QItemSelection& selected, const QItemSelection& deselected) {
+
+    QTreeView::selectionChanged(selected, deselected);
+    scrollTo(selected.indexes()[0]);
+}
