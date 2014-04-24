@@ -140,11 +140,12 @@ void ANTzWidget::paintGL() {
 void ANTzWidget::UpdateSelection(const QItemSelection& selected, const QItemSelection& deselected) {
 
     void* antzData = m_model->GetANTzData();
-    if (!selected.indexes()[0].isValid()) {
-        npSelectNode(NULL, antzData);
+    const QModelIndexList& indicies = selected.indexes();
+    if ((indicies.length() > 0) && (indicies[0].isValid())) {
+        npSelectNode(static_cast<pNPnode>(indicies[0].internalPointer()), antzData);
     }
     else {
-        npSelectNode(static_cast<pNPnode>(selected.indexes()[0].internalPointer()), antzData);
+        npSelectNode(NULL, antzData);
     }
     npSetCamTarget(antzData);
     //update();

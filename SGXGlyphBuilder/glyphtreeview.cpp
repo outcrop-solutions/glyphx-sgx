@@ -14,5 +14,8 @@ GlyphTreeView::~GlyphTreeView()
 void GlyphTreeView::selectionChanged(const QItemSelection& selected, const QItemSelection& deselected) {
 
     QTreeView::selectionChanged(selected, deselected);
-    scrollTo(selected.indexes()[0]);
+    const QModelIndexList& indicies = selected.indexes();
+    if ((indicies.length() > 0) && (indicies[0].isValid())) {
+        scrollTo(indicies[0]);
+    }
 }

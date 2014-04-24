@@ -2,15 +2,14 @@
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QSplashScreen>
 #include <QtCore/QTimer>
-#include <QtCore/QDir>
+#include "application.h"
 
 int main(int argc, char *argv[])
 {
-    QApplication::addLibraryPath(QDir::currentPath() + QDir::separator() + "qt_plugins");
-    QApplication a(argc, argv);
+    SynGlyphX::Application::Setup("Glyph Builder", "0.5");
+    SynGlyphX::Application a(argc, argv);
 
-    //Set the default application icon
-    QApplication::setWindowIcon(QIcon(":GlyphBuilderWindow/Resources/synglyphx_x.ico"));
+    SynGlyphX::Application::SetupIcons(QIcon(":GlyphBuilderWindow/Resources/synglyphx_x.ico"));
 
     //Setup and show the splash screen
     QPixmap pixmap(":GlyphBuilderWindow/Resources/synglyphx_splash.png");
