@@ -2,6 +2,7 @@
 #define NPUI_H
 
 #include "ANTzCore.h"
+#include "data/nptypes.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -13,6 +14,7 @@ void npCloseKey(void* dataRef);
 float npLowPassFilter(float start, float target, float fac);
 
 ANTZCORE_API void npSetCamTarget(void* dataRef);
+ANTZCORE_API void npSetCamTargetNode(pNPnode node, void* dataRef);
 
 void npUpdateIO(void* dataRef);
 

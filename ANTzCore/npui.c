@@ -220,13 +220,20 @@ float npLowPassFilter(float start, float target, float fac)
 
 ANTZCORE_API void npSetCamTarget(void* dataRef)
 {
+    pData data = (pData)dataRef;
+    pNPnode node = data->map.selectedPinNode; //.node[data->map.selectedPinIndex];
+    npSetCamTargetNode(node, data);
+}
+
+ANTZCORE_API void npSetCamTargetNode(pNPnode node, void* dataRef)
+{
     float dX = 0.0f, dY = 0.0f, dZ = 0.0f;
     float cdX = 0.0f, cdY = 0.0f, cdZ = 0.0f;
 
     pData data = (pData)dataRef;
 
     pNPnode cam = data->map.currentCam;
-    pNPnode node = data->map.selectedPinNode; //.node[data->map.selectedPinIndex];
+    
     pNPnode rootGrid = data->map.node[kNPnodeRootGrid];
     pNPmouse mouse = (pNPmouse)&data->io.mouse;
 

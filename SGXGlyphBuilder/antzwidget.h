@@ -28,6 +28,7 @@ private slots:
     void UpdateSelection(const QItemSelection& selected, const QItemSelection& deselected);
 
 private:
+    void CenterCameraOnNode(pNPnode node);
     void InitIO();
 
     static QGLFormat s_format;

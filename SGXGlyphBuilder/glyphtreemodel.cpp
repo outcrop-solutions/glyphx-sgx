@@ -127,7 +127,7 @@ pNPnode GlyphTreeModel::GetRootGlyph() const {
 bool GlyphTreeModel::LoadFromFile(const std::string& filename) {
     
     //Need to select so that npNodeDelete works properly.  ANTz assumes that the root pin being deleted is selected.  Easier to work around this way
-    npSelectNode(m_rootGlyph, m_antzData);
+    m_antzData->map.nodeRootIndex = m_rootGlyph->id;
 
     beginResetModel();
     npNodeDelete(m_rootGlyph, m_antzData);
@@ -140,7 +140,7 @@ bool GlyphTreeModel::LoadFromFile(const std::string& filename) {
     }
 
     //Undo previous select node at the beginning of this function
-    npSelectNode(NULL, m_antzData);
+    m_antzData->map.nodeRootIndex = 0;
 
     endResetModel();
 
@@ -162,10 +162,16 @@ bool GlyphTreeModel::SaveToCSV(const std::string& filename) const {
 
 void GlyphTreeModel::CreateFromTemplates(boost::shared_ptr<const SynGlyphX::Glyph> newGlyphTemplates) {
 
+    //Need to select so that npNodeDelete works properly.  ANTz assumes that the root pin being deleted is selected.  Easier to work around this way
+    m_antzData->map.nodeRootIndex = m_rootGlyph->id;
+
     beginResetModel();
     npNodeDelete(m_rootGlyph, m_antzData);
     CreateNodeFromTemplate(NULL, newGlyphTemplates);
     endResetModel();
+
+    //Undo previous select node at the beginning of this function
+    m_antzData->map.nodeRootIndex = 0;
 }
 
 void GlyphTreeModel::CreateNodeFromTemplate(pNPnode parent, boost::shared_ptr<const SynGlyphX::Glyph> glyphTemplate) {

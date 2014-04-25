@@ -60,10 +60,10 @@ void ANTzWidget::InitIO()
     data->io.mouse.z = 0;						//typically the scroll wheel
 
     data->io.mouse.mode = kNPmouseModeNull;
-    //	data->io.mouse.pickMode = kNPmodeNull;
+    //data->io.mouse.pickMode = kNPmodeNull;
     //	data->io.mouse.pickMode = kNPmodeCamera;
     data->io.mouse.pickMode = kNPmodePin;
-    data->io.mouse.tool = kNPtoolCombo;
+    data->io.mouse.tool = kNPtoolNull;
 
     data->io.mouse.buttonL = false;					//true when pressed
     data->io.mouse.buttonC = false;
@@ -122,7 +122,9 @@ void ANTzWidget::paintGL() {
     antzData->io.mouse.delta.x = 0.0f;											//debug, zz
     antzData->io.mouse.delta.y = 0.0f;
 
+    //antzData->io.mouse.pickMode = kNPmodePin;
     npGLDrawScene(antzData);
+    //antzData->io.mouse.pickMode = kNPmodeNull;
 
     int err = glGetError();
     if (err) {
@@ -148,25 +150,22 @@ void ANTzWidget::UpdateSelection(const QItemSelection& selected, const QItemSele
         }
     }
 
-    //Set the cam target if there is only one object selected
-    const QModelIndexList& currentSelection = m_selectionModel->selectedIndexes();
-    if (currentSelection.length() == 1) {
-        const QModelIndex& index = currentSelection[0];
-        if (index.isValid()) {
-            npSelectNode(static_cast<pNPnode>(index.internalPointer()), antzData);
-            npSetCamTarget(antzData);
-            npSelectNode(NULL, antzData);
-            antzData->map.nodeRootIndex = m_model->GetRootGlyph()->id;
+    //select all newly selected nodes
+    const QModelIndexList& selectedIndicies = selected.indexes();
+    for (int i = 0; i < selectedIndicies.length(); ++i) {
+        if (selectedIndicies[i].isValid()) {
+            pNPnode node = static_cast<pNPnode>(selectedIndicies[i].internalPointer());
+            node->selected = true;
         }
     }
-    else {
-        //select all newly selected nodes
-        const QModelIndexList& selectedIndicies = selected.indexes();
-        for (int i = 0; i < selectedIndicies.length(); ++i) {
-            if (selectedIndicies[i].isValid()) {
-                pNPnode node = static_cast<pNPnode>(selectedIndicies[i].internalPointer());
-                node->selected = true;
-            }
+
+    //Set the cam target if there is only one object selected
+    const QModelIndexList& currentSelection = m_selectionModel->selectedIndexes();
+    
+    if (currentSelection.length() > 0)  {
+        const QModelIndex& last = currentSelection.back();
+        if (last.isValid()) {
+            CenterCameraOnNode(static_cast<pNPnode>(last.internalPointer()));
         }
     }
 }
@@ -178,14 +177,26 @@ void ANTzWidget::ResetCamera() {
 
     if (root != NULL) {
         int rootIndex = root->id;
-        antzData->map.selectedPinNode = root;
-        antzData->map.currentNode = root;
-        antzData->map.nodeRootIndex = rootIndex;
-        antzData->map.selectedPinIndex = rootIndex;
-        npSetCamTarget(antzData);
-        npSelectNode(NULL, antzData);
+        //antzData->map.selectedPinNode = root;
+        //antzData->map.currentNode = root;
         //antzData->map.nodeRootIndex = rootIndex;
+       // antzData->map.selectedPinIndex = rootIndex;
+        CenterCameraOnNode(root);
+        //npSelectNode(NULL, antzData);
+        antzData->map.nodeRootIndex = 0;
+        
     }
+}
+
+void ANTzWidget::CenterCameraOnNode(pNPnode node) {
+
+    pData antzData = m_model->GetANTzData();
+    npSetCamTargetNode(node, antzData);
+    //antzData->map.currentNode = antzData->map.currentCam;
+    antzData->map.selectedPinNode = node;
+    antzData->map.currentNode = node;
+    //antzData->map.nodeRootIndex = rootIndex;
+    antzData->map.selectedPinIndex = node->id;
 }
 
 void ANTzWidget::mousePressEvent(QMouseEvent* event) {
