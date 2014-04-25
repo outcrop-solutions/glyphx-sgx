@@ -24,8 +24,6 @@ ANTzWidget::ANTzWidget(GlyphTreeModel* model, QItemSelectionModel* selectionMode
     npInitCtrl(antzData);
 
     QObject::connect(m_selectionModel, SIGNAL(selectionChanged(const QItemSelection&, const QItemSelection&)), this, SLOT(UpdateSelection(const QItemSelection&, const QItemSelection&)));
-
-    //setMouseTracking(true);
 }
 
 ANTzWidget::~ANTzWidget()
@@ -139,22 +137,43 @@ void ANTzWidget::paintGL() {
 
 void ANTzWidget::UpdateSelection(const QItemSelection& selected, const QItemSelection& deselected) {
 
-    void* antzData = m_model->GetANTzData();
-    const QModelIndexList& indicies = selected.indexes();
-    if ((indicies.length() > 0) && (indicies[0].isValid())) {
-        npSelectNode(static_cast<pNPnode>(indicies[0].internalPointer()), antzData);
+    pData antzData = m_model->GetANTzData();
+
+    //unselect all nodes that are no longer selected
+    const QModelIndexList& deselectedIndicies = deselected.indexes();
+    for (int i = 0; i < deselectedIndicies.length(); ++i) {
+        if (deselectedIndicies[i].isValid()) {
+            pNPnode node = static_cast<pNPnode>(deselectedIndicies[i].internalPointer());
+            node->selected = false;
+        }
+    }
+
+    //Set the cam target if there is only one object selected
+    const QModelIndexList& currentSelection = m_selectionModel->selectedIndexes();
+    if (currentSelection.length() == 1) {
+        const QModelIndex& index = currentSelection[0];
+        if (index.isValid()) {
+            npSelectNode(static_cast<pNPnode>(index.internalPointer()), antzData);
+            npSetCamTarget(antzData);
+            npSelectNode(NULL, antzData);
+            antzData->map.nodeRootIndex = m_model->GetRootGlyph()->id;
+        }
     }
     else {
-        npSelectNode(NULL, antzData);
+        //select all newly selected nodes
+        const QModelIndexList& selectedIndicies = selected.indexes();
+        for (int i = 0; i < selectedIndicies.length(); ++i) {
+            if (selectedIndicies[i].isValid()) {
+                pNPnode node = static_cast<pNPnode>(selectedIndicies[i].internalPointer());
+                node->selected = true;
+            }
+        }
     }
-    npSetCamTarget(antzData);
-    //update();
 }
 
 void ANTzWidget::ResetCamera() {
     
     pData antzData = m_model->GetANTzData();
-    //npSelectNode(m_model->GetRootGlyph(), m_model->GetANTzData());
     pNPnode root = m_model->GetRootGlyph();
 
     if (root != NULL) {
@@ -164,6 +183,8 @@ void ANTzWidget::ResetCamera() {
         antzData->map.nodeRootIndex = rootIndex;
         antzData->map.selectedPinIndex = rootIndex;
         npSetCamTarget(antzData);
+        npSelectNode(NULL, antzData);
+        //antzData->map.nodeRootIndex = rootIndex;
     }
 }
 
@@ -174,7 +195,12 @@ void ANTzWidget::mousePressEvent(QMouseEvent* event) {
         npPick(event->x(), antzData->io.gl.height - event->y(), antzData);
 
         if (antzData->io.gl.pickID != 0) {
-            m_selectionModel->select(m_model->IndexFromANTzID(antzData->io.gl.pickID), QItemSelectionModel::ClearAndSelect);
+            if (event->modifiers() == Qt::ControlModifier) {
+                m_selectionModel->select(m_model->IndexFromANTzID(antzData->io.gl.pickID), QItemSelectionModel::Toggle);
+            }
+            else {
+                m_selectionModel->select(m_model->IndexFromANTzID(antzData->io.gl.pickID), QItemSelectionModel::ClearAndSelect);
+            }
         }
     }
 
@@ -190,9 +216,6 @@ void ANTzWidget::mouseReleaseEvent(QMouseEvent* event) {
 void ANTzWidget::mouseMoveEvent(QMouseEvent* event) {
 
     pData antzData = m_model->GetANTzData();
-        
-    //npSelectNode(antzData->map.currentCam, antzData);
-    antzData->map.currentNode = antzData->map.currentCam;
 
     antzData->io.mouse.previous.x = m_lastMousePosition.x();
     antzData->io.mouse.previous.y = m_lastMousePosition.y();
@@ -202,10 +225,12 @@ void ANTzWidget::mouseMoveEvent(QMouseEvent* event) {
     antzData->io.mouse.y = event->y();
 
     if (event->buttons() & Qt::LeftButton) {
-        antzData->io.mouse.mode = kNPmouseModeCamExamXY;
-    }
-    else if (event->buttons() & Qt::RightButton) {
-        antzData->io.mouse.mode = kNPmouseModeCamFlyA;
+        if (event->buttons() & Qt::RightButton) {
+            antzData->io.mouse.mode = kNPmouseModeCamExamXZ;
+        }
+        else {
+            antzData->io.mouse.mode = kNPmouseModeCamExamXY;
+        }
     }
 
     m_lastMousePosition = event->pos();

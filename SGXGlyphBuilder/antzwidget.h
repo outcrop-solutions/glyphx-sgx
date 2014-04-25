@@ -14,7 +14,6 @@ public:
     ~ANTzWidget();
 
 public slots:
-    void UpdateSelection(const QItemSelection& selected, const QItemSelection& deselected);
     void ResetCamera();
 
 protected:
@@ -24,6 +23,9 @@ protected:
     virtual void mousePressEvent(QMouseEvent* event);
     virtual void mouseReleaseEvent(QMouseEvent* event);
     virtual void mouseMoveEvent(QMouseEvent* event);
+
+private slots:
+    void UpdateSelection(const QItemSelection& selected, const QItemSelection& deselected);
 
 private:
     void InitIO();

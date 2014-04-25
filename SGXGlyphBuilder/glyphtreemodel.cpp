@@ -126,6 +126,9 @@ pNPnode GlyphTreeModel::GetRootGlyph() const {
 
 bool GlyphTreeModel::LoadFromFile(const std::string& filename) {
     
+    //Need to select so that npNodeDelete works properly.  ANTz assumes that the root pin being deleted is selected.  Easier to work around this way
+    npSelectNode(m_rootGlyph, m_antzData);
+
     beginResetModel();
     npNodeDelete(m_rootGlyph, m_antzData);
     bool success = (npFileOpenMap(filename.c_str(), 1, filename.length(), m_antzData) != 0);
@@ -135,6 +138,10 @@ bool GlyphTreeModel::LoadFromFile(const std::string& filename) {
     else {
         CreateRootPinNode();
     }
+
+    //Undo previous select node at the beginning of this function
+    npSelectNode(NULL, m_antzData);
+
     endResetModel();
 
     return success;
