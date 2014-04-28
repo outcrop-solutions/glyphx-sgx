@@ -9,12 +9,13 @@
 #include <QtWidgets/QStatusBar>
 #include "singleglyphwidget.h"
 #include "csvreaderwriter.h"
+#include "application.h"
 
 GlyphBuilderWindow::GlyphBuilderWindow(QWidget *parent)
     : QMainWindow(parent),
     m_treeView(NULL)
 {
-    setWindowTitle(tr("SynGlyphX Glyph Builder"));
+    setWindowTitle(SynGlyphX::Application::organizationName() + " " + SynGlyphX::Application::applicationName());
 
     m_glyphTreeModel = new GlyphTreeModel(this);
     m_selectionModel = new QItemSelectionModel(m_glyphTreeModel, this);
@@ -25,7 +26,7 @@ GlyphBuilderWindow::GlyphBuilderWindow(QWidget *parent)
     CreateMenus();
     CreateDockWidgets();
 
-    statusBar()->showMessage("Glyph Builder Started", 3000);
+    statusBar()->showMessage(SynGlyphX::Application::applicationName() + " Started", 3000);
 }
 
 GlyphBuilderWindow::~GlyphBuilderWindow()
@@ -62,6 +63,10 @@ void GlyphBuilderWindow::CreateMenus() {
 
     QAction* newGlyphTreeAction = m_glyphMenu->addAction(tr("Create New Glyph Tree"));
     QObject::connect(newGlyphTreeAction, SIGNAL(triggered()), this, SLOT(CreateNewGlyphTree()));
+
+    m_helpMenu = menuBar()->addMenu(tr("Help"));
+    QAction* aboutBoxAction = m_helpMenu->addAction("About " + SynGlyphX::Application::organizationName() + " " + SynGlyphX::Application::applicationName());
+    QObject::connect(aboutBoxAction, SIGNAL(triggered()), this, SLOT(ShowAboutBox()));
 }
 
 void GlyphBuilderWindow::CreateDockWidgets() {
@@ -108,17 +113,15 @@ void GlyphBuilderWindow::CreateNewGlyphTree() {
         }
 
         if (wizard.exec() == QDialog::Accepted) {
-            //This code needs to be updated to handle more than one child
-            boost::shared_ptr<SynGlyphX::Glyph> parentGlyph = SynGlyphX::Glyph::GetRoot();
-            parentGlyph->ClearChildren();
-            glyphWidgets[0]->SetGlyphFromWidget(parentGlyph);
-            for (int i = 1; i < numberOfBranches; ++i) {
-                boost::shared_ptr<SynGlyphX::Glyph> childGlyph(new SynGlyphX::Glyph());
-                glyphWidgets[i]->SetGlyphFromWidget(childGlyph);
-                parentGlyph->AddChild(childGlyph);
-                parentGlyph = childGlyph;
+            
+            std::vector<boost::shared_ptr<SynGlyphX::Glyph>> glyphs;
+            
+            for (int i = 0; i < numberOfBranches; ++i) {
+                boost::shared_ptr<SynGlyphX::Glyph> glyph(new SynGlyphX::Glyph());
+                glyphWidgets[i]->SetGlyphFromWidget(glyph);
+                glyphs.push_back(glyph);
             }
-            m_glyphTreeModel->CreateFromTemplates(SynGlyphX::Glyph::GetRoot());
+            m_glyphTreeModel->CreateNewTree(glyphs);
             m_3dView->ResetCamera();
         }
     }
@@ -176,4 +179,10 @@ void GlyphBuilderWindow::SaveAsTemplate() {
             QMessageBox::warning(this, title, "Failed to save template");
         }
     }
+}
+
+void GlyphBuilderWindow::ShowAboutBox() {
+
+    QString appName = SynGlyphX::Application::organizationName() + " " + SynGlyphX::Application::applicationName();
+    QMessageBox::about(this, "About " + appName, appName + " " + SynGlyphX::Application::applicationVersion());
 }

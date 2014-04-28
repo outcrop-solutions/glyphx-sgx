@@ -63,7 +63,7 @@ namespace SynGlyphX {
     //This function only handles the one child case.  Need to update
     void CSVReaderWriter::WriteGlyph(std::ofstream& file, boost::shared_ptr<const Glyph> glyph, unsigned long id, unsigned long parentId, unsigned long branchLevel) {
 
-        unsigned int numberOfChildren = glyph->GetNumberOfChildren();
+        unsigned int numberOfChildren = 0;// glyph->GetNumberOfChildren();
 
         file << id << ", 5, " << id << ", 0, " << parentId << ", " << branchLevel << ", 0, 0, " << numberOfChildren << ", 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, ";
         Vector3 scale = glyph->GetScale();
@@ -78,7 +78,7 @@ namespace SynGlyphX {
         file << "0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 16, 16, 0, 0, 0, 0, " << id << ", 420" << std::endl;
         
         if (numberOfChildren > 0) {
-            WriteGlyph(file, glyph->GetChild(0), id + 1, id, branchLevel + 1);
+            //WriteGlyph(file, glyph->GetChild(0), id + 1, id, branchLevel + 1);
         }
     }
 

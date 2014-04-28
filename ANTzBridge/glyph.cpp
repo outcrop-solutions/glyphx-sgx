@@ -70,14 +70,14 @@ namespace SynGlyphX {
     double Glyph::GetRatio() const {
         return m_ratio;
     }
-
+    /*
     void Glyph::AddChild(boost::shared_ptr<Glyph> glyph) {
         m_children.push_back(glyph);
     }
 
     boost::shared_ptr<Glyph> Glyph::GetChild(unsigned int index) const {
         return m_children[index];
-    }
+    }*/
 
     void Glyph::SetGeometry(Geometry::Shape shape, Geometry::Surface surface) {
         m_geometryShape = shape;
@@ -99,7 +99,7 @@ namespace SynGlyphX {
     Topology::Type Glyph::GetTopology() const {
         return m_topology;
     }
-
+    
     boost::shared_ptr<Glyph> Glyph::GetRoot() {
         return s_root;
     }
@@ -116,13 +116,17 @@ namespace SynGlyphX {
     boost::shared_ptr<const Glyph> Glyph::GetTemplate() {
         return s_template;
     }
-
+    /*
     void Glyph::ClearChildren() {
         m_children.clear();
-    }
+    }*/
 
     unsigned int Glyph::GetNumberOfChildren() const {
-        return m_children.size();
+        return m_numberOfChildren;
+    }
+    
+    void Glyph::SetNumberOfChildren(unsigned int numberOfChildren) {
+        m_numberOfChildren = numberOfChildren;
     }
 
     void Glyph::SetTagOffset(double x, double y, double z) {

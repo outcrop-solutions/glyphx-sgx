@@ -93,6 +93,8 @@ void SingleGlyphWidget::SetWidgetFromGlyph(boost::shared_ptr<const SynGlyphX::Gl
     m_translateWidget->Set(glyph->GetTranslate());
     m_rotateWidget->Set(glyph->GetRotate());
     m_scaleWidget->Set(glyph->GetScale());
+
+    m_childrenSpinBox->setValue(glyph->GetNumberOfChildren());
 }
 
 void SingleGlyphWidget::SetGlyphFromWidget(boost::shared_ptr<SynGlyphX::Glyph> glyph) {
@@ -107,6 +109,8 @@ void SingleGlyphWidget::SetGlyphFromWidget(boost::shared_ptr<SynGlyphX::Glyph> g
     glyph->SetTranslate(m_translateWidget->GetX(), m_translateWidget->GetY(), m_translateWidget->GetZ());
     glyph->SetRotate(m_rotateWidget->GetX(), m_rotateWidget->GetY(), m_rotateWidget->GetZ());
     glyph->SetScale(m_scaleWidget->GetX(), m_scaleWidget->GetY(), m_scaleWidget->GetZ());
+
+    glyph->SetNumberOfChildren(static_cast<unsigned int>(m_childrenSpinBox->value()));
 }
 
 QString SingleGlyphWidget::ShapeToString(SynGlyphX::Geometry::Shape shape) {

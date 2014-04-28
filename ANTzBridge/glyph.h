@@ -40,9 +40,10 @@ namespace SynGlyphX {
         static boost::shared_ptr<Glyph> GetRoot();
         static boost::shared_ptr<const Glyph> GetTemplate();
 
-        void ClearChildren();
+        //void ClearChildren();
 
         unsigned int GetNumberOfChildren() const;
+        void SetNumberOfChildren(unsigned int numberOfChildren);
 
         void SetTagOffset(double x, double y, double z);
         const Vector3& GetTagOffset() const;
@@ -67,7 +68,8 @@ namespace SynGlyphX {
 
         Topology::Type m_topology;
 
-        std::vector<boost::shared_ptr<Glyph>> m_children;
+        unsigned int m_numberOfChildren;
+        //std::vector<boost::shared_ptr<Glyph>> m_children;
     };
 
 } //namespace SynGlyphX

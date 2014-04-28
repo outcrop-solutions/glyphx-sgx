@@ -19,7 +19,7 @@ private slots:
     void SaveGlyph();
     void SaveAsTemplate();
     void OpenTemplate();
-    
+    void ShowAboutBox();
 
 private:
     void CreateMenus();
@@ -32,6 +32,7 @@ private:
     QMenu* m_fileMenu;
     QMenu* m_viewMenu;
     QMenu* m_glyphMenu;
+    QMenu* m_helpMenu;
 
     GlyphTreeModel* m_glyphTreeModel;
     QItemSelectionModel* m_selectionModel;

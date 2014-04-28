@@ -166,21 +166,39 @@ bool GlyphTreeModel::SaveToCSV(const std::string& filename, const QModelIndexLis
     return success;
 }
 
-void GlyphTreeModel::CreateFromTemplates(boost::shared_ptr<const SynGlyphX::Glyph> newGlyphTemplates) {
+void GlyphTreeModel::CreateNewTree(const std::vector<boost::shared_ptr<SynGlyphX::Glyph>>& newGlyphTemplates) {
 
     //Need to select so that npNodeDelete works properly.  ANTz assumes that the root pin being deleted is selected.  Easier to work around this way
     m_antzData->map.nodeRootIndex = m_rootGlyph->id;
 
     beginResetModel();
     npNodeDelete(m_rootGlyph, m_antzData);
-    CreateNodeFromTemplate(NULL, newGlyphTemplates);
+
+    std::vector<pNPnode> parents;
+    parents.push_back(CreateNodeFromTemplate(NULL, newGlyphTemplates[0]));
+    for (int i = 1; i < newGlyphTemplates.size(); ++i) {
+        std::vector<pNPnode> children;
+        for (int j = 0; j < parents.size(); ++j) {
+            for (int k = 0; k < newGlyphTemplates[i-1]->GetNumberOfChildren(); ++k) {
+                pNPnode glyph = CreateNodeFromTemplate(parents[j], newGlyphTemplates[i]);
+                if (glyph != NULL) {
+                    children.push_back(glyph);
+                }
+                else{
+                    //throw exception
+                }
+            }
+        }
+        parents.swap(children);
+    }
+
     endResetModel();
 
     //Undo previous select node at the beginning of this function
     m_antzData->map.nodeRootIndex = 0;
 }
 
-void GlyphTreeModel::CreateNodeFromTemplate(pNPnode parent, boost::shared_ptr<const SynGlyphX::Glyph> glyphTemplate) {
+pNPnode GlyphTreeModel::CreateNodeFromTemplate(pNPnode parent, boost::shared_ptr<const SynGlyphX::Glyph> glyphTemplate) {
 
     pNPnode glyph = npNodeNew(kNodePin, parent, m_antzData);
     if (parent == NULL) {
@@ -194,10 +212,10 @@ void GlyphTreeModel::CreateNodeFromTemplate(pNPnode parent, boost::shared_ptr<co
     glyph->scale.y = scale[1];
     glyph->scale.z = scale[2];
 
-    SynGlyphX::Vector3 translate = glyphTemplate->GetTranslate();
+    /*SynGlyphX::Vector3 translate = glyphTemplate->GetTranslate();
     glyph->translate.x = translate[0];
     glyph->translate.y = translate[1];
-    glyph->translate.z = translate[2];
+    glyph->translate.z = translate[2];*/
 
     SynGlyphX::Vector3 rotation = glyphTemplate->GetRotate();
     glyph->rotate.x = rotation[0];
@@ -214,9 +232,7 @@ void GlyphTreeModel::CreateNodeFromTemplate(pNPnode parent, boost::shared_ptr<co
 
     glyph->topo = glyphTemplate->GetTopology();
 
-    if (glyphTemplate->GetNumberOfChildren() > 0) {
-        CreateNodeFromTemplate(glyph, glyphTemplate->GetChild(0));
-    }
+    return glyph;
 }
 
 void GlyphTreeModel::CreateRootPinNode() {
