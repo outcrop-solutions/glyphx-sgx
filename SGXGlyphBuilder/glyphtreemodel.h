@@ -30,7 +30,7 @@ public:
     pNPnode GetRootGlyph() const;
 
     bool LoadFromFile(const std::string& filename);
-    bool SaveToCSV(const std::string& filename) const;
+    bool SaveToCSV(const std::string& filename, const QModelIndexList& selectedItems) const;
     void CreateFromTemplates(boost::shared_ptr<const SynGlyphX::Glyph> newGlyphTemplates);
 
     QModelIndex IndexFromANTzID(int id);

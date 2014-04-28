@@ -138,7 +138,7 @@ void GlyphBuilderWindow::SaveGlyph() {
             QMessageBox::warning(this, title, title + ": " + e.what());
         }*/
 
-        if (m_glyphTreeModel->SaveToCSV(saveFile.toStdString())) {
+        if (m_glyphTreeModel->SaveToCSV(saveFile.toStdString(), m_selectionModel->selectedIndexes())) {
             statusBar()->showMessage("File successfully saved", 3000);
         }
         else {
@@ -168,7 +168,7 @@ void GlyphBuilderWindow::SaveAsTemplate() {
     QString saveFile = QFileDialog::getSaveFileName(this, tr("Save Glyph Tree As Template"), "", tr("SynGlyphX Glyph Template Files (*.sgt)"));
     if (!saveFile.isEmpty()) {
 
-        if (m_glyphTreeModel->SaveToCSV(saveFile.toStdString())) {
+        if (m_glyphTreeModel->SaveToCSV(saveFile.toStdString(), m_selectionModel->selectedIndexes())) {
             statusBar()->showMessage("Template successfully saved", 3000);
         }
         else {

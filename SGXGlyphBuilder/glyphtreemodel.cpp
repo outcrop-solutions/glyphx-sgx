@@ -147,16 +147,22 @@ bool GlyphTreeModel::LoadFromFile(const std::string& filename) {
     return success;
 }
 
-bool GlyphTreeModel::SaveToCSV(const std::string& filename) const {
+bool GlyphTreeModel::SaveToCSV(const std::string& filename, const QModelIndexList& selectedItems) const {
 
-    //need to unselect for saving since selection will get saved with the CSV
-    pNPnode selectedNode = m_antzData->map.selectedPinNode;
-    npSelectNode(NULL, m_antzData);
+    //need to unselect node(s) for saving since selection will get saved with the CSV
+    for (int i = 0; i < selectedItems.length(); ++i) {
+        pNPnode selectedNode = static_cast<pNPnode>(selectedItems[i].internalPointer());
+        selectedNode->selected = false;
+    }
 
     bool success = (npFileSaveMap(filename.c_str(), 1, filename.length(), m_antzData) != 0);
 
-    //reselect the previously selected node
-    npSelectNode(selectedNode, m_antzData);
+    //reselect the previously selected node(s)
+    for (int i = 0; i < selectedItems.length(); ++i) {
+        pNPnode selectedNode = static_cast<pNPnode>(selectedItems[i].internalPointer());
+        selectedNode->selected = true;
+    }
+    
     return success;
 }
 
