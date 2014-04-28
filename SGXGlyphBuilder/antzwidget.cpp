@@ -176,13 +176,8 @@ void ANTzWidget::ResetCamera() {
     pNPnode root = m_model->GetRootGlyph();
 
     if (root != NULL) {
-        int rootIndex = root->id;
-        //antzData->map.selectedPinNode = root;
-        //antzData->map.currentNode = root;
-        //antzData->map.nodeRootIndex = rootIndex;
-       // antzData->map.selectedPinIndex = rootIndex;
+
         CenterCameraOnNode(root);
-        //npSelectNode(NULL, antzData);
         antzData->map.nodeRootIndex = 0;
         
     }
@@ -191,12 +186,13 @@ void ANTzWidget::ResetCamera() {
 void ANTzWidget::CenterCameraOnNode(pNPnode node) {
 
     pData antzData = m_model->GetANTzData();
+
     npSetCamTargetNode(node, antzData);
-    //antzData->map.currentNode = antzData->map.currentCam;
     antzData->map.selectedPinNode = node;
-    antzData->map.currentNode = node;
-    //antzData->map.nodeRootIndex = rootIndex;
     antzData->map.selectedPinIndex = node->id;
+
+    //Always keep current node set to current cam
+    antzData->map.currentNode = antzData->map.currentCam;
 }
 
 void ANTzWidget::mousePressEvent(QMouseEvent* event) {
