@@ -3,40 +3,87 @@
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QDialogButtonBox>
+#include <QtWidgets/QFormLayout>
+#include <QtWidgets/QMessageBox>
+#include <QtCore/QFileInfo>
 
 KMLToCSVDialog::KMLToCSVDialog(QWidget *parent)
     : QDialog(parent)
 {
     QVBoxLayout* verticalLayout = new QVBoxLayout(this);
 
-    QGridLayout* gridLayout = new QGridLayout(this);
+    QFormLayout* formLayout = new QFormLayout(this);
 
-    QLabel* kmlLabel = new QLabel(tr("KML/KMZ file:"), this);
-    gridLayout->addWidget(kmlLabel, 0, 0);
-    m_inputKML = new QLineEdit(this);
-    gridLayout->addWidget(m_inputKML, 0, 1);
-    QPushButton* kmlFileButton = new QPushButton("...", this);
-    gridLayout->addWidget(kmlFileButton, 0, 2);
+    m_inputKML = new SynGlyphX::FileLineEdit("KML/KMZ files (*.kml, *.kmz)", this);
+    formLayout->addRow(tr("KML/KMZ file:"), m_inputKML);
 
-    QLabel* glyphLabel = new QLabel(tr("Glyph file:"), this);
-    gridLayout->addWidget(glyphLabel, 1, 0);
-    m_inputGlyph = new QLineEdit(this);
-    gridLayout->addWidget(m_inputGlyph, 1, 1);
-    QPushButton* glyphFileButton = new QPushButton("...", this);
-    gridLayout->addWidget(glyphFileButton, 1, 2);
+    m_inputGlyph = new SynGlyphX::FileLineEdit("CSV files (*.csv)", this);
+    formLayout->addRow(tr("Glyph file:"), m_inputGlyph);
 
-    gridLayout->setColumnStretch(1, 1);
-
-    verticalLayout->addLayout(gridLayout);
+    verticalLayout->addLayout(formLayout);
+    verticalLayout->addStretch();
 
     QDialogButtonBox* dialogButtonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Close, this);
 
     verticalLayout->addWidget(dialogButtonBox);
 
     setLayout(verticalLayout);
+
+    QObject::connect(dialogButtonBox, SIGNAL(rejected()), this, SLOT(reject()));
+    QObject::connect(dialogButtonBox, SIGNAL(accepted()), this, SLOT(accept()));
 }
 
 KMLToCSVDialog::~KMLToCSVDialog()
 {
 
+}
+
+QString KMLToCSVDialog::GetKMLFilename() const {
+
+    QFileInfo fileInfo(m_inputKML->GetFilename());
+    return fileInfo.canonicalFilePath();
+}
+
+QString KMLToCSVDialog::GetCSVFilename() const {
+
+    QFileInfo fileInfo(m_inputGlyph->GetFilename());
+    return fileInfo.canonicalFilePath();
+}
+
+void KMLToCSVDialog::accept() {
+
+    QString kmlFilename = m_inputKML->GetFilename();
+    QString csvFilename = m_inputGlyph->GetFilename();
+
+    if (kmlFilename.isEmpty()) {
+        QMessageBox::warning(this, tr("Error"), tr("KML/KMZ file field is empty"));
+        return;
+    }
+
+    if (csvFilename.isEmpty()) {
+        QMessageBox::warning(this, tr("Error"), tr("Glyph file field is empty"));
+        return;
+    }
+
+    if ((kmlFilename.right(4) != ".kml") && (kmlFilename.right(4) != ".kmz")) {
+        QMessageBox::warning(this, tr("Error"), tr("KML/KMZ file is not in either kml or kmz format"));
+        return;
+    }
+
+    if (csvFilename.right(4) != ".csv") {
+        QMessageBox::warning(this, tr("Error"), tr("CSV file is not in csv format"));
+        return;
+    }
+
+    if (!QFileInfo::exists(kmlFilename)) {
+        QMessageBox::warning(this, tr("Error"), tr("KML/KMZ file does not exist"));
+        return;
+    }
+
+    if (!QFileInfo::exists(csvFilename)) {
+        QMessageBox::warning(this, tr("Error"), tr("CSV file does not exist"));
+        return;
+    }
+
+    QDialog::accept();
 }

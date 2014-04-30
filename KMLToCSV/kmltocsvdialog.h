@@ -2,7 +2,7 @@
 #define KMLTOCSVDIALOG_H
 
 #include <QtWidgets/QDialog>
-#include <QtWidgets/QLineEdit>
+#include "filelineedit.h"
 
 class KMLToCSVDialog : public QDialog
 {
@@ -12,9 +12,15 @@ public:
     KMLToCSVDialog(QWidget *parent = 0);
     ~KMLToCSVDialog();
 
+    QString GetKMLFilename() const;
+    QString GetCSVFilename() const;
+
+private slots:
+    virtual void accept();
+
 private:
-    QLineEdit* m_inputKML;
-    QLineEdit* m_inputGlyph;
+    SynGlyphX::FileLineEdit* m_inputKML;
+    SynGlyphX::FileLineEdit* m_inputGlyph;
 };
 
 #endif // KMLTOCSVDIALOG_H
