@@ -17,8 +17,12 @@ public:
 
 private slots:
     virtual void accept();
+    virtual void reject();
 
 private:
+    void ReadSettings();
+    void WriteSettings();
+
     SynGlyphX::FileLineEdit* m_inputKML;
     SynGlyphX::FileLineEdit* m_inputGlyph;
 };

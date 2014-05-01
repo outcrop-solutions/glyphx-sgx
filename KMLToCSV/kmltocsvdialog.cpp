@@ -6,6 +6,11 @@
 #include <QtWidgets/QFormLayout>
 #include <QtWidgets/QMessageBox>
 #include <QtCore/QFileInfo>
+#include <QtCore/QProcess>
+#include <QtCore/QSettings>
+#include <QtCore/QDir>
+#include <QtGui/QCloseEvent>
+#include "application.h"
 
 KMLToCSVDialog::KMLToCSVDialog(QWidget *parent)
     : QDialog(parent)
@@ -31,6 +36,8 @@ KMLToCSVDialog::KMLToCSVDialog(QWidget *parent)
 
     QObject::connect(dialogButtonBox, SIGNAL(rejected()), this, SLOT(reject()));
     QObject::connect(dialogButtonBox, SIGNAL(accepted()), this, SLOT(accept()));
+
+    ReadSettings();
 }
 
 KMLToCSVDialog::~KMLToCSVDialog()
@@ -85,5 +92,50 @@ void KMLToCSVDialog::accept() {
         return;
     }
 
-    QDialog::accept();
+    QStringList args;
+    args.append(GetKMLFilename());
+    args.append(GetCSVFilename());
+    int result = QProcess::execute("GPSToCSV.exe", args);
+
+    if (result == -2) {
+        QMessageBox::critical(this, tr("Error"), tr("Conversion failed to start"));
+    }
+    else if (result == -1) {
+        QMessageBox::critical(this, tr("Error"), tr("Conversion crashed and failed"));
+    }
+    else {
+        QMessageBox::information(this, tr("Success"), tr("File successfully converted"));
+    }
+}
+
+void KMLToCSVDialog::ReadSettings() {
+
+    QSettings settings;
+
+    settings.beginGroup("Dialog");
+    resize(settings.value("size", QSize(800, 120)).toSize());
+    settings.endGroup();
+
+    settings.beginGroup("params");
+    m_inputGlyph->SetFilename(settings.value("glyph", QDir::toNativeSeparators(QDir::currentPath() + "/pin.csv")).toString());
+    settings.endGroup();
+}
+
+void KMLToCSVDialog::WriteSettings() {
+
+    QSettings settings;
+
+    settings.beginGroup("Dialog");
+    settings.setValue("size", size());
+    settings.endGroup();
+
+    settings.beginGroup("params");
+    settings.setValue("glyph", m_inputGlyph->GetFilename());
+    settings.endGroup();
+}
+
+void KMLToCSVDialog::reject() {
+
+    WriteSettings();
+    QDialog::reject();
 }

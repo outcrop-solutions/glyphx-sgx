@@ -7,11 +7,8 @@ int main(int argc, char *argv[])
     SynGlyphX::Application a(argc, argv);
     
     KMLToCSVDialog w;
-    w.resize(800, 120);
 
-    if (w.exec() == QDialog::Accepted) {
-        
-    }
+    w.show();
 
-    return 0;
+    return a.exec();
 }
