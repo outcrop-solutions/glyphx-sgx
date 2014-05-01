@@ -41,7 +41,7 @@ QString FileLineEdit::GetFilename() const {
 
 void FileLineEdit::FileBrowserButtonActivated() {
 
-    QString filename = QFileDialog::getOpenFileName(this, tr("Find File"), QString(), m_filters);
+    QString filename = QFileDialog::getOpenFileName(this, tr("Find File"), m_lineEdit->text(), m_filters);
     if (!filename.isEmpty()) {
         m_lineEdit->setText(filename);
     }
