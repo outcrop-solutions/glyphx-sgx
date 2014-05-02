@@ -22,6 +22,8 @@ private slots:
 private:
     void ReadSettings();
     void WriteSettings();
+    bool RunCommand(const QString& program, const QStringList& args, const QString& stdOutFile);
+    bool ValidateInput();
 
     SynGlyphX::FileLineEdit* m_inputKML;
     SynGlyphX::FileLineEdit* m_inputGlyph;
