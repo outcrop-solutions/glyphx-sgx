@@ -34,7 +34,7 @@ void SingleGlyphWidget::CreateWidgets() {
     m_geometrySurfaceComboBox->addItem(SurfaceToString(SynGlyphX::Geometry::Solid));
 
     m_topologyComboBox = new QComboBox(this);
-    for (int i = 1; i < 8; ++i) {
+    for (int i = 0; i < 8; ++i) {
         m_topologyComboBox->addItem(TopologyTypeToString((SynGlyphX::Topology::Type)i));
     }
 
@@ -114,6 +114,7 @@ void SingleGlyphWidget::SetGlyphFromWidget(boost::shared_ptr<SynGlyphX::Glyph> g
 }
 
 QString SingleGlyphWidget::ShapeToString(SynGlyphX::Geometry::Shape shape) {
+
     if (shape == SynGlyphX::Geometry::Cube) {
         return "Cube";
     }
@@ -149,6 +150,7 @@ QString SingleGlyphWidget::ShapeToString(SynGlyphX::Geometry::Shape shape) {
 }
 
 QString SingleGlyphWidget::SurfaceToString(SynGlyphX::Geometry::Surface surface) {
+
     if (surface == SynGlyphX::Geometry::Wireframe) {
         return "Wireframe";
     }
@@ -160,7 +162,11 @@ QString SingleGlyphWidget::SurfaceToString(SynGlyphX::Geometry::Surface surface)
 }
 
 QString SingleGlyphWidget::TopologyTypeToString(SynGlyphX::Topology::Type topo) {
-    if (topo == SynGlyphX::Topology::Cube) {
+    
+    if (topo == SynGlyphX::Topology::Null) {
+        return "Euclidean";
+    }
+    else if (topo == SynGlyphX::Topology::Cube) {
         return "Cube";
     }
     else if (topo == SynGlyphX::Topology::Sphere) {

@@ -1,4 +1,5 @@
 #include "glyph.h"
+#include "data/nptypes.h"
 
 namespace SynGlyphX {
 
@@ -16,6 +17,36 @@ namespace SynGlyphX {
         m_geometrySurface(Geometry::Solid),
         m_topology(Topology::Torus) {
         
+    }
+
+    Glyph::Glyph(pNPnode node) {
+
+        m_tagOffset[0] = node->tagOffset.x;
+        m_tagOffset[1] = node->tagOffset.y;
+        m_tagOffset[2] = node->tagOffset.z;
+
+        m_scale[0] = node->scale.x;
+        m_scale[1] = node->scale.y;
+        m_scale[2] = node->scale.z;
+
+        m_translate[0] = node->translate.x;
+        m_translate[1] = node->translate.y;
+        m_translate[2] = node->translate.z;
+
+        m_rotate[0] = node->rotate.x;
+        m_rotate[1] = node->rotate.y;
+        m_rotate[2] = node->rotate.z;
+
+        m_color[0] = node->color.r;
+        m_color[1] = node->color.g;
+        m_color[2] = node->color.b;
+        m_color[3] = node->color.a;
+
+        m_ratio = node->ratio;
+
+        m_geometryShape = static_cast<Geometry::Shape>(node->geometry / 2);
+        m_geometrySurface = static_cast<Geometry::Surface>(node->geometry % 2);
+        m_topology = static_cast<Topology::Type>(node->topo);
     }
 
     Glyph::~Glyph()

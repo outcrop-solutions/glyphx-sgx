@@ -218,7 +218,7 @@ void GlyphTreeModel::CreateRootPinNode() {
 
 void GlyphTreeModel::UpdateNode(const QModelIndex& index, boost::shared_ptr<const SynGlyphX::Glyph> glyph) {
 
-    UpdateNode(static_cast<pNPnode>(index.internalPointer), glyph, true);
+    UpdateNode(static_cast<pNPnode>(index.internalPointer()), glyph, true);
 }
 
 void GlyphTreeModel::UpdateNode(pNPnode glyph, boost::shared_ptr<const SynGlyphX::Glyph> glyphTemplate, bool updateTranslate) {

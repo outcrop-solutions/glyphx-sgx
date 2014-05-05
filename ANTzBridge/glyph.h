@@ -5,6 +5,7 @@
 #include <boost/shared_ptr.hpp>
 #include <vector>
 #include "typedefs.h"
+#include "data/nptypes.h"
 
 namespace SynGlyphX {
 
@@ -12,6 +13,7 @@ namespace SynGlyphX {
     {
     public:
         Glyph();
+        Glyph(pNPnode node);
         ~Glyph();
 
         void SetRotate(double x, double y, double z);
@@ -27,8 +29,8 @@ namespace SynGlyphX {
         void SetRatio(double ratio);
         double GetRatio() const;
 
-        void AddChild(boost::shared_ptr<Glyph> glyph);
-        boost::shared_ptr<Glyph> GetChild(unsigned int index) const;
+        //void AddChild(boost::shared_ptr<Glyph> glyph);
+        //boost::shared_ptr<Glyph> GetChild(unsigned int index) const;
 
         void SetGeometry(Geometry::Shape shape, Geometry::Surface surface);
         Geometry::Shape GetShape() const;

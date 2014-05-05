@@ -23,7 +23,7 @@ GlyphBuilderWindow::GlyphBuilderWindow(QWidget *parent)
     m_3dView = new ANTzWidget(m_glyphTreeModel, m_selectionModel, this);
     setCentralWidget(m_3dView);
 
-    m_sharedActions = new SharedActionManager(m_selectionModel, this);
+    m_sharedActions = new SharedActionManager(m_glyphTreeModel, m_selectionModel, this);
 
     CreateMenus();
     CreateDockWidgets();
