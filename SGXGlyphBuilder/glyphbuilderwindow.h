@@ -5,6 +5,7 @@
 #include "glyphtreeview.h"
 #include "antzwidget.h"
 #include "glyphtreemodel.h"
+#include "sharedactionmanager.h"
 
 class GlyphBuilderWindow : public QMainWindow
 {
@@ -36,6 +37,8 @@ private:
 
     GlyphTreeModel* m_glyphTreeModel;
     QItemSelectionModel* m_selectionModel;
+
+    SharedActionManager* m_sharedActions;
 };
 
 #endif // GLYPHBUILDERWINDOW_H

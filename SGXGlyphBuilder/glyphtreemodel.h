@@ -32,6 +32,7 @@ public:
     bool LoadFromFile(const std::string& filename);
     bool SaveToCSV(const std::string& filename, const QModelIndexList& selectedItems) const;
     void CreateNewTree(const std::vector<boost::shared_ptr<SynGlyphX::Glyph>>& newGlyphTemplates);
+    void UpdateNode(const QModelIndex& index, boost::shared_ptr<const SynGlyphX::Glyph> glyph);
 
     QModelIndex IndexFromANTzID(int id);
 
@@ -39,6 +40,7 @@ private:
     pNPnode CreateNodeFromTemplate(pNPnode parent, boost::shared_ptr<const SynGlyphX::Glyph> glyphTemplate);
     void CreateRootPinNode();
     int GetChildIndexFromParent(pNPnode node) const;
+    void UpdateNode(pNPnode glyph, boost::shared_ptr<const SynGlyphX::Glyph> glyphTemplate, bool updateTranslate = false);
 
     pNPnode m_rootGlyph;
     pData m_antzData;

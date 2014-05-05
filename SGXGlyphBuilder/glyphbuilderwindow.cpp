@@ -23,6 +23,8 @@ GlyphBuilderWindow::GlyphBuilderWindow(QWidget *parent)
     m_3dView = new ANTzWidget(m_glyphTreeModel, m_selectionModel, this);
     setCentralWidget(m_3dView);
 
+    m_sharedActions = new SharedActionManager(m_selectionModel, this);
+
     CreateMenus();
     CreateDockWidgets();
 
@@ -64,6 +66,9 @@ void GlyphBuilderWindow::CreateMenus() {
     QAction* newGlyphTreeAction = m_glyphMenu->addAction(tr("Create New Glyph Tree"));
     QObject::connect(newGlyphTreeAction, SIGNAL(triggered()), this, SLOT(CreateNewGlyphTree()));
 
+    m_glyphMenu->addSeparator();
+    m_glyphMenu->addActions(m_sharedActions->GetGlyphActions());
+
     m_helpMenu = menuBar()->addMenu(tr("Help"));
     QAction* aboutBoxAction = m_helpMenu->addAction("About " + SynGlyphX::Application::organizationName() + " " + SynGlyphX::Application::applicationName());
     QObject::connect(aboutBoxAction, SIGNAL(triggered()), this, SLOT(ShowAboutBox()));
@@ -76,6 +81,8 @@ void GlyphBuilderWindow::CreateDockWidgets() {
     m_treeView = new GlyphTreeView(leftDockWidget);
     m_treeView->setModel(m_glyphTreeModel);
     m_treeView->setSelectionModel(m_selectionModel);
+    m_treeView->addActions(m_sharedActions->GetGlyphActions());
+    m_treeView->setContextMenuPolicy(Qt::ActionsContextMenu);
     
     leftDockWidget->setWidget(m_treeView);
     addDockWidget(Qt::LeftDockWidgetArea, leftDockWidget);

@@ -104,6 +104,15 @@
     <ClCompile Include="GeneratedFiles\Release\moc_glyphtreemodel.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="sharedactionmanager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_sharedactionmanager.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_sharedactionmanager.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="glyphbuilderwindow.h">
@@ -128,6 +137,9 @@
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="glyphtreemodel.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="sharedactionmanager.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>

@@ -207,15 +207,33 @@ pNPnode GlyphTreeModel::CreateNodeFromTemplate(pNPnode parent, boost::shared_ptr
 
     glyph->selected = 0;
 
+    UpdateNode(glyph, glyphTemplate);
+
+    return glyph;
+}
+
+void GlyphTreeModel::CreateRootPinNode() {
+    m_rootGlyph = npNodeNew(kNodePin, NULL, m_antzData);
+}
+
+void GlyphTreeModel::UpdateNode(const QModelIndex& index, boost::shared_ptr<const SynGlyphX::Glyph> glyph) {
+
+    UpdateNode(static_cast<pNPnode>(index.internalPointer), glyph, true);
+}
+
+void GlyphTreeModel::UpdateNode(pNPnode glyph, boost::shared_ptr<const SynGlyphX::Glyph> glyphTemplate, bool updateTranslate) {
+
     SynGlyphX::Vector3 scale = glyphTemplate->GetScale();
     glyph->scale.x = scale[0];
     glyph->scale.y = scale[1];
     glyph->scale.z = scale[2];
 
-    /*SynGlyphX::Vector3 translate = glyphTemplate->GetTranslate();
-    glyph->translate.x = translate[0];
-    glyph->translate.y = translate[1];
-    glyph->translate.z = translate[2];*/
+    if (updateTranslate) {
+        SynGlyphX::Vector3 translate = glyphTemplate->GetTranslate();
+        glyph->translate.x = translate[0];
+        glyph->translate.y = translate[1];
+        glyph->translate.z = translate[2];
+    }
 
     SynGlyphX::Vector3 rotation = glyphTemplate->GetRotate();
     glyph->rotate.x = rotation[0];
@@ -231,12 +249,6 @@ pNPnode GlyphTreeModel::CreateNodeFromTemplate(pNPnode parent, boost::shared_ptr
     glyph->color.a = color[3];
 
     glyph->topo = glyphTemplate->GetTopology();
-
-    return glyph;
-}
-
-void GlyphTreeModel::CreateRootPinNode() {
-    m_rootGlyph = npNodeNew(kNodePin, NULL, m_antzData);
 }
 
 QModelIndex GlyphTreeModel::IndexFromANTzID(int id) {
