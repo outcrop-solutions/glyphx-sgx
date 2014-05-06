@@ -4,7 +4,8 @@
 #include <Windows.h>
 
 GlyphTreeModel::GlyphTreeModel(QObject *parent)
-    : QAbstractItemModel(parent)
+    : QAbstractItemModel(parent),
+    m_clipboardGlyph()
 {
     m_antzData = static_cast<pData>(npInitData(0, NULL));
     CreateRootPinNode();
@@ -274,4 +275,53 @@ int GlyphTreeModel::GetChildIndexFromParent(pNPnode node) const {
     }
     
     return i;
+}
+
+void GlyphTreeModel::AppendChild(const QModelIndex& parent, boost::shared_ptr<const SynGlyphX::Glyph> glyph, unsigned int numberOfChildren) {
+
+    if (parent.isValid()) {
+        pNPnode parentNode = static_cast<pNPnode>(parent.internalPointer());
+        beginInsertRows(parent, parentNode->childCount, parentNode->childCount + numberOfChildren - 1);
+        for (int i = 0; i < numberOfChildren; ++i) {
+            CreateNodeFromTemplate(parentNode, glyph);
+        }
+        endInsertRows();
+    }
+}
+
+void GlyphTreeModel::DeleteNode(const QModelIndex& index) {
+
+    if ((index.isValid()) && (index.parent().isValid())) {
+        int row = index.row();
+        beginRemoveRows(index.parent(), row, row);
+        npNodeDelete(static_cast<pNPnode>(index.internalPointer()), m_antzData);
+        endRemoveRows();
+    }
+}
+
+void GlyphTreeModel::DeleteChildren(const QModelIndex& parent) {
+
+    if (parent.isValid()) {
+        pNPnode parentNode = static_cast<pNPnode>(parent.internalPointer());
+        beginRemoveRows(parent, 0, parentNode->childCount);
+        for (int i = parentNode->childCount - 1; i >= 0; --i) {
+            npNodeDelete(parentNode->child[i], m_antzData);
+        }
+        endRemoveRows();
+    }
+}
+
+bool GlyphTreeModel::IsClipboardEmpty() const {
+
+    return (m_clipboardGlyph.get() == NULL);
+}
+
+boost::shared_ptr<const SynGlyphX::Glyph> GlyphTreeModel::GetClipboardGlyph() const {
+
+    return m_clipboardGlyph;
+}
+
+void GlyphTreeModel::CopyToClipboard(const QModelIndex& index, bool removeFromTree) {
+
+    //m_clipboardGlyph.reset(new SynGlyphX::Glyph(index.))
 }

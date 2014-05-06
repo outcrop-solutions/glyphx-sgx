@@ -86,7 +86,7 @@ void SingleGlyphWidget::SetWidgetFromGlyph(boost::shared_ptr<const SynGlyphX::Gl
     m_geometryShapeComboBox->setCurrentIndex(glyph->GetShape());
     m_geometrySurfaceComboBox->setCurrentIndex(glyph->GetSurface());
     //Because null is not in the list of topologies, shift by one
-    m_topologyComboBox->setCurrentIndex(glyph->GetTopology() - 1);
+    m_topologyComboBox->setCurrentIndex(glyph->GetTopology());
 
     m_colorWidget->SetColor(glyph->GetColor());
 
@@ -101,7 +101,7 @@ void SingleGlyphWidget::SetGlyphFromWidget(boost::shared_ptr<SynGlyphX::Glyph> g
 
     glyph->SetGeometry(static_cast<SynGlyphX::Geometry::Shape>(m_geometryShapeComboBox->currentIndex()), static_cast<SynGlyphX::Geometry::Surface>(m_geometrySurfaceComboBox->currentIndex()));
     //Because null is not in the list of topologies, shift by one
-    glyph->SetTopology(static_cast<SynGlyphX::Topology::Type>(m_topologyComboBox->currentIndex() + 1));
+    glyph->SetTopology(static_cast<SynGlyphX::Topology::Type>(m_topologyComboBox->currentIndex()));
 
     const QColor& color = m_colorWidget->GetColor();
     glyph->SetColor(color.red(), color.green(), color.blue(), color.alpha());

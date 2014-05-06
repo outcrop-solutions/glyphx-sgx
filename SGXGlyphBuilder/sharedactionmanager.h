@@ -17,21 +17,41 @@ public:
     ~SharedActionManager();
 
     const QList<QAction*>& GetGlyphActions() const;
+    const QList<QAction*>& GetEditActions() const;
 
 private slots:
     void SelectionChanged(const QItemSelection& selected, const QItemSelection& deselected);
     void PropertiesActivated();
+    void DeleteSelected();
+    void DeleteChildrenFromSelected();
+    void AddChildren();
 
 private:
-    void CreateDialogs();
-    void EnableActions(bool enable);
+    void CreateGlyphActions();
+    void CreateEditActions();
+    void CreatePropertiesDialog();
+    void CreateAddChildrenDialog();
+    void EnableActions();
+    QAction* CreateSeparator();
 
     QDialog* m_propertiesDialog;
     SingleGlyphWidget* m_glyphWidget;
 
+    QDialog* m_addChildrenDialog;
+    SingleGlyphWidget* m_childrenGlyphWidget;
+
     GlyphTreeModel* m_model;
     QItemSelectionModel* m_selectionModel;
     QList<QAction*> m_glyphActions;
+    QList<QAction*> m_editActions;
+    QAction* m_cutAction;
+    QAction* m_copyAction;
+    QAction* m_pasteAction;
+    QAction* m_deleteAction;
+    QAction* m_deleteChildrenAction;
+    QAction* m_propertiesAction;
+
+    QAction* m_addChildrenAction;
 };
 
 #endif // SHAREDACTIONMANAGER_H

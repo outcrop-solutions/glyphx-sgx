@@ -36,6 +36,14 @@ public:
 
     QModelIndex IndexFromANTzID(int id);
 
+    void AppendChild(const QModelIndex& parent, boost::shared_ptr<const SynGlyphX::Glyph> glyph, unsigned int numberOfChildren = 1);
+    void DeleteNode(const QModelIndex& index);
+    void DeleteChildren(const QModelIndex& parent);
+
+    bool IsClipboardEmpty() const;
+    boost::shared_ptr<const SynGlyphX::Glyph> GetClipboardGlyph() const;
+    void CopyToClipboard(const QModelIndex& index, bool removeFromTree = false);
+
 private:
     pNPnode CreateNodeFromTemplate(pNPnode parent, boost::shared_ptr<const SynGlyphX::Glyph> glyphTemplate);
     void CreateRootPinNode();
@@ -44,6 +52,7 @@ private:
 
     pNPnode m_rootGlyph;
     pData m_antzData;
+    boost::shared_ptr<SynGlyphX::Glyph> m_clipboardGlyph;
 };
 
 #endif // GLYPHTREEMODEL_H

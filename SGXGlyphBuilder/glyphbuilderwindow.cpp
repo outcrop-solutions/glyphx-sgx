@@ -57,6 +57,10 @@ void GlyphBuilderWindow::CreateMenus() {
     QAction* exitAction = m_fileMenu->addAction(tr("E&xit"));
     QObject::connect(exitAction, SIGNAL(triggered()), this, SLOT(close()));
 
+    //Create Edit Menu
+    m_editMenu = menuBar()->addMenu(tr("Edit"));
+    m_editMenu->addActions(m_sharedActions->GetEditActions());
+
     //Create View Menu
     m_viewMenu = menuBar()->addMenu(tr("&View"));
 
@@ -82,6 +86,10 @@ void GlyphBuilderWindow::CreateDockWidgets() {
     m_treeView->setModel(m_glyphTreeModel);
     m_treeView->setSelectionModel(m_selectionModel);
     m_treeView->addActions(m_sharedActions->GetGlyphActions());
+    QAction* separator = new QAction(this);
+    separator->setSeparator(true);
+    m_treeView->addAction(separator);
+    m_treeView->addActions(m_sharedActions->GetEditActions());
     m_treeView->setContextMenuPolicy(Qt::ActionsContextMenu);
     
     leftDockWidget->setWidget(m_treeView);
