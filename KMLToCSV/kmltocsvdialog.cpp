@@ -100,29 +100,43 @@ void KMLToCSVDialog::accept() {
     if (ValidateInput()) {
 
         QString kmlFilename = GetKMLFilename();
-
+        QString tempKMLFilename;
         QStringList args;
 
         if (kmlFilename.right(4) == ".kml") {
             args.append("kml_parser.py");
-            QFile::copy(kmlFilename, QDir::toNativeSeparators(QDir::currentPath() + "/doc.kml"));
+            tempKMLFilename = QDir::toNativeSeparators(QDir::currentPath() + "/doc.kml");
         }
         else {
             args.append("kmz_parser.py");
-            QFile::copy(kmlFilename, QDir::toNativeSeparators(QDir::currentPath() + "/test.kmz"));
+            tempKMLFilename = QDir::toNativeSeparators(QDir::currentPath() + "/test.kmz");
         }
+        QFile::copy(kmlFilename, tempKMLFilename);
 
-        if (!RunCommand("python.exe", args, "data_in.csv")) {
+        QString dataInFilename = QDir::toNativeSeparators(QDir::currentPath() + "/data_in.csv");
+
+        if (!RunCommand("python.exe", args, dataInFilename)) {
             return;
         }
 
         args.clear();
+        args.append("-p");
+        args.append("-k");
         args.append("-G");
         args.append(GetCSVFilename());
 
-        if (!RunCommand(SynGlyphX::Application::applicationDirPath() + "/gps2csv.exe", args, kmlFilename + ".csv")) {
+        QString kmlPrefix = kmlFilename.left(kmlFilename.length() - 4);
+
+        if (!RunCommand(SynGlyphX::Application::applicationDirPath() + "/gps2csv.exe", args, kmlPrefix + ".csv")) {
             return;
         }
+
+        QFile::rename(QDir::toNativeSeparators(QDir::currentPath() + "/corners.txt"), kmlPrefix + "_corners.txt");
+        QFile::rename(QDir::toNativeSeparators(QDir::currentPath() + "/corners.kml"), kmlPrefix + "_corners.kml");
+
+        //Cleanup
+        QFile::remove(tempKMLFilename);
+        QFile::remove(dataInFilename);
 
         QMessageBox::information(this, tr("Success"), tr("File successfully converted"));
     }
