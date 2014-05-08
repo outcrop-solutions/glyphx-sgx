@@ -43,7 +43,7 @@ void FileLineEdit::FileBrowserButtonActivated() {
 
     QString filename = QFileDialog::getOpenFileName(this, tr("Find File"), m_lineEdit->text(), m_filters);
     if (!filename.isEmpty()) {
-        m_lineEdit->setText(filename);
+        m_lineEdit->setText(QDir::toNativeSeparators(filename));
     }
 }
 
