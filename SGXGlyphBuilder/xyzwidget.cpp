@@ -81,3 +81,10 @@ void XYZWidget::Set(const SynGlyphX::Vector3& vec) {
     m_ySpinBox->setValue(vec[1]);
     m_zSpinBox->setValue(vec[2]);
 }
+
+void XYZWidget::SetSuffix(const QString& suffix) {
+
+    m_xSpinBox->setSuffix(suffix);
+    m_ySpinBox->setSuffix(suffix);
+    m_zSpinBox->setSuffix(suffix);
+}

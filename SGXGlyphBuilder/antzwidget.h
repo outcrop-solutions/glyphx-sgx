@@ -10,11 +10,18 @@ class ANTzWidget : public QGLWidget
     Q_OBJECT
 
 public:
+    enum EditingMode {
+        Move = 0,
+        Rotate,
+        Size
+    };
+
     ANTzWidget(GlyphTreeModel* model, QItemSelectionModel* selectionModel, QWidget *parent = 0);
     ~ANTzWidget();
 
 public slots:
     void ResetCamera();
+    void SetEditingMode(EditingMode mode);
 
 protected:
     virtual void initializeGL();
@@ -37,6 +44,8 @@ private:
     QItemSelectionModel* m_selectionModel;
 
     QPoint m_lastMousePosition;
+
+    EditingMode m_editingMode;
 };
 
 #endif // ANTZWIDGET_H

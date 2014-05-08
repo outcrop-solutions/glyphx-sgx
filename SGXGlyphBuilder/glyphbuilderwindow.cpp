@@ -60,6 +60,27 @@ void GlyphBuilderWindow::CreateMenus() {
     //Create Edit Menu
     m_editMenu = menuBar()->addMenu(tr("Edit"));
     m_editMenu->addActions(m_sharedActions->GetEditActions());
+    QMenu* editingModeMenu = m_editMenu->addMenu(tr("Editing Mode"));
+
+    QActionGroup* editingActionGroup = new QActionGroup(editingModeMenu);
+    QAction* moveEditModeAction = new QAction(tr("Move"), editingModeMenu);
+    moveEditModeAction->setCheckable(true);
+    moveEditModeAction->setData(ANTzWidget::Move);
+    editingActionGroup->addAction(moveEditModeAction);
+    
+    QAction* rotateEditModeAction = new QAction(tr("Rotate"), editingModeMenu);
+    rotateEditModeAction->setCheckable(true);
+    rotateEditModeAction->setData(ANTzWidget::Rotate);
+    editingActionGroup->addAction(rotateEditModeAction);
+
+    QAction* sizeEditModeAction = new QAction(tr("Size"), editingModeMenu);
+    sizeEditModeAction->setCheckable(true);
+    sizeEditModeAction->setData(ANTzWidget::Size);
+    editingActionGroup->addAction(sizeEditModeAction);
+
+    moveEditModeAction->setChecked(true);
+    editingModeMenu->addActions(editingActionGroup->actions());
+    QObject::connect(editingActionGroup, SIGNAL(triggered(QAction*)), this, SLOT(EditingModeChanged(QAction*)));
 
     //Create View Menu
     m_viewMenu = menuBar()->addMenu(tr("&View"));
@@ -200,4 +221,9 @@ void GlyphBuilderWindow::ShowAboutBox() {
 
     QString appName = SynGlyphX::Application::organizationName() + " " + SynGlyphX::Application::applicationName();
     QMessageBox::about(this, "About " + appName, appName + " " + SynGlyphX::Application::applicationVersion());
+}
+
+void GlyphBuilderWindow::EditingModeChanged(QAction* action) {
+
+    m_3dView->SetEditingMode(static_cast<ANTzWidget::EditingMode>(action->data().toInt()));
 }

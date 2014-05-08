@@ -15,7 +15,8 @@ QGLFormat ANTzWidget::s_format(QGL::AlphaChannel);
 ANTzWidget::ANTzWidget(GlyphTreeModel* model, QItemSelectionModel* selectionModel, QWidget *parent)
     : QGLWidget(s_format, parent),
     m_model(model),
-    m_selectionModel(selectionModel)
+    m_selectionModel(selectionModel),
+    m_editingMode(Move)
 {
     void* antzData = m_model->GetANTzData();
     InitIO();
@@ -216,8 +217,11 @@ void ANTzWidget::mousePressEvent(QMouseEvent* event) {
 
 void ANTzWidget::mouseReleaseEvent(QMouseEvent* event) {
 
+    //Reset ANTz mouse values back to the original values
     pData antzData = m_model->GetANTzData();
     antzData->io.mouse.mode = kNPmouseModeNull;
+    antzData->io.mouse.tool = kNPtoolNull;
+    antzData->io.mouse.buttonR = false;
 }
 
 void ANTzWidget::mouseMoveEvent(QMouseEvent* event) {
@@ -231,14 +235,33 @@ void ANTzWidget::mouseMoveEvent(QMouseEvent* event) {
     antzData->io.mouse.x = event->x();
     antzData->io.mouse.y = event->y();
 
-    if (event->buttons() & Qt::LeftButton) {
+    if (event->modifiers() == Qt::ShiftModifier) {
+        antzData->io.mouse.tool = kNPtoolMove + m_editingMode;
         if (event->buttons() & Qt::RightButton) {
-            antzData->io.mouse.mode = kNPmouseModeCamExamXZ;
+            antzData->io.mouse.mode = kNPmouseModeDragXZ;
+            antzData->io.mouse.buttonR = true;
         }
-        else {
-            antzData->io.mouse.mode = kNPmouseModeCamExamXY;
+        else if (event->buttons() & Qt::LeftButton) {
+            antzData->io.mouse.mode = kNPmouseModeDragXY;
+            antzData->io.mouse.buttonR = false;
+        }
+    }
+    else {
+        antzData->io.mouse.tool = kNPtoolNull;
+        if (event->buttons() & Qt::LeftButton) {
+            if (event->buttons() & Qt::RightButton) {
+                antzData->io.mouse.mode = kNPmouseModeCamExamXZ;
+            }
+            else {
+                antzData->io.mouse.mode = kNPmouseModeCamExamXY;
+            }
         }
     }
 
     m_lastMousePosition = event->pos();
+}
+
+void ANTzWidget::SetEditingMode(EditingMode mode) {
+
+    m_editingMode = mode;
 }

@@ -26,6 +26,7 @@ public:
 
     void SetWrapping(bool wrapping);
     void SetDecimal(int decimals);
+    void SetSuffix(const QString& suffix);
 
 private:
     QDoubleSpinBox* m_xSpinBox;

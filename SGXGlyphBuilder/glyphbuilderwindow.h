@@ -21,6 +21,7 @@ private slots:
     void SaveAsTemplate();
     void OpenTemplate();
     void ShowAboutBox();
+    void EditingModeChanged(QAction* action);
 
 private:
     void CreateMenus();

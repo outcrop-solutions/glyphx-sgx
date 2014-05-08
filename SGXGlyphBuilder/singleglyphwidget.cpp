@@ -52,19 +52,24 @@ void SingleGlyphWidget::CreateWidgets() {
     m_translateWidget->SetDecimal(8);
     translateBoxLayout->addWidget(m_translateWidget);
 
+    //Degree symbol gets displayed incorrectly unless we use QChar
+    QChar degree = QChar('°');
+    QString degreeSuffix = degree;
+
     QGroupBox* rotateGroupBox = new QGroupBox(tr("Rotate"), this);
     QHBoxLayout* rotateBoxLayout = new QHBoxLayout(this);
     m_rotateWidget = new XYZWidget(this);
     m_rotateWidget->SetRange(0.0, 360.0);
     m_rotateWidget->SetWrapping(true);
     m_rotateWidget->SetDecimal(5);
+    m_rotateWidget->SetSuffix(degreeSuffix);
     rotateBoxLayout->addWidget(m_rotateWidget);
     rotateGroupBox->setLayout(rotateBoxLayout);
 
     QGroupBox* scaleGroupBox = new QGroupBox(tr("Scale"), this);
     QHBoxLayout* scaleBoxLayout = new QHBoxLayout(this);
     m_scaleWidget = new XYZWidget(this);
-    m_scaleWidget->SetRange(0.0, 100000000000000.0);
+    m_scaleWidget->SetRange(0.000001, 100000000000000.0);
     m_scaleWidget->SetDecimal(5);
     scaleBoxLayout->addWidget(m_scaleWidget);
     scaleGroupBox->setLayout(scaleBoxLayout);
