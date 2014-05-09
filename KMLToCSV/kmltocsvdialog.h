@@ -3,6 +3,7 @@
 
 #include <QtWidgets/QDialog>
 #include "filelineedit.h"
+#include "directorylineedit.h"
 
 class KMLToCSVDialog : public QDialog
 {
@@ -19,6 +20,8 @@ private slots:
     virtual void accept();
     virtual void reject();
 
+    void UpdateOutputDirectory(const QString& inputFile);
+
 private:
     void ReadSettings();
     void WriteSettings();
@@ -27,6 +30,7 @@ private:
 
     SynGlyphX::FileLineEdit* m_inputKML;
     SynGlyphX::FileLineEdit* m_inputGlyph;
+    SynGlyphX::DirectoryLineEdit* m_outputDirectory;
 };
 
 #endif // KMLTOCSVDIALOG_H
