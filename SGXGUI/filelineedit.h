@@ -3,13 +3,11 @@
 
 #include "sgxgui_global.h"
 
-#include <QtWidgets/QWidget>
-#include <QtWidgets/QLineEdit>
-#include <QtWidgets/QPushButton>
+#include "browselineedit.h"
 
 namespace SynGlyphX {
 
-    class SGXGUI_EXPORT FileLineEdit : public QWidget
+    class SGXGUI_EXPORT FileLineEdit : public BrowseLineEdit
     {
         Q_OBJECT
 
@@ -17,16 +15,14 @@ namespace SynGlyphX {
         FileLineEdit(const QString& filters, QWidget *parent = 0);
         ~FileLineEdit();
 
-        void SetFilename(const QString& filename);
-        QString GetFilename() const;
+        void SetInitalBrowseDirectory(const QString& dir);
 
-        private slots:
-        void FileBrowserButtonActivated();
+    protected:
+        virtual QString GetFromDialog();
 
     private:
-        QLineEdit* m_lineEdit;
-        QPushButton* m_fileBrowserButton;
         QString m_filters;
+        QString m_initialBrowseDirectory;
     };
 
 } //namespace SynGlyphX

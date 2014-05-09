@@ -1,27 +1,13 @@
 #include "filelineedit.h"
-#include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QFileDialog>
 
 namespace SynGlyphX {
 
 FileLineEdit::FileLineEdit(const QString& filters, QWidget *parent)
-    : QWidget(parent),
+    : BrowseLineEdit(true, parent),
     m_filters(filters)
 {
-    m_lineEdit = new QLineEdit(this);
-
-    m_fileBrowserButton = new QPushButton("Browse", this);
-
-    QObject::connect(m_fileBrowserButton, SIGNAL(clicked()), this, SLOT(FileBrowserButtonActivated()));
-
-    QHBoxLayout* layout = new QHBoxLayout(this);
-
-    layout->setContentsMargins(0, 0, 0, 0);
-
-    layout->addWidget(m_lineEdit, 1);
-    layout->addWidget(m_fileBrowserButton, 0);
-
-    setLayout(layout);
+    
 }
 
 FileLineEdit::~FileLineEdit()
@@ -29,22 +15,18 @@ FileLineEdit::~FileLineEdit()
 
 }
 
-void FileLineEdit::SetFilename(const QString& filename) {
-    
-    m_lineEdit->setText(filename);
-}
+QString FileLineEdit::GetFromDialog() {
 
-QString FileLineEdit::GetFilename() const {
-
-    return m_lineEdit->text();
-}
-
-void FileLineEdit::FileBrowserButtonActivated() {
-
-    QString filename = QFileDialog::getOpenFileName(this, tr("Find File"), m_lineEdit->text(), m_filters);
-    if (!filename.isEmpty()) {
-        m_lineEdit->setText(QDir::toNativeSeparators(filename));
+    QString dir = m_initialBrowseDirectory;
+    if (!m_lineEdit->text().isEmpty()) {
+        dir = m_lineEdit->text();
     }
+    return QFileDialog::getOpenFileName(this, tr("Find File"), dir, m_filters);
+}
+
+void FileLineEdit::SetInitalBrowseDirectory(const QString& dir) {
+
+    m_initialBrowseDirectory = dir;
 }
 
 } //namespace SynGlyphX
