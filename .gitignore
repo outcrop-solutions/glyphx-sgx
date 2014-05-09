@@ -217,4 +217,7 @@ pip-log.txt
 ###########
 # Qt
 ###########
-GeneratedFiles/
+
+#Qt generated files
+moc_*.cpp
+qrc_*.cpp
