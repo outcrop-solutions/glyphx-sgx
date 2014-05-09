@@ -1,6 +1,5 @@
 <RCC>
-    <qresource prefix="GlyphBuilderWindow">
-      <file>Resources/synglyphx_splash.png</file>
-      <file>Resources/synglyphx_x.ico</file>
+    <qresource prefix="GlyphDesigner">
+      
     </qresource>
 </RCC>

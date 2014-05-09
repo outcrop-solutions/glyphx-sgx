@@ -179,10 +179,6 @@
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="Resources\synglyphx_splash.png" />
-    <Image Include="Resources\synglyphx_x.ico" />
-  </ItemGroup>
-  <ItemGroup>
     <CustomBuild Include="sharedactionmanager.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing sharedactionmanager.h...</Message>

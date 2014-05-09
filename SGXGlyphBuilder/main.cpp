@@ -6,13 +6,13 @@
 
 int main(int argc, char *argv[])
 {
-    SynGlyphX::Application::Setup("Glyph Builder", "0.5");
+    SynGlyphX::Application::Setup("Glyph Designer", "0.5");
     SynGlyphX::Application a(argc, argv);
 
-    SynGlyphX::Application::SetupIcons(QIcon(":GlyphBuilderWindow/Resources/synglyphx_x.ico"));
+    SynGlyphX::Application::SetupIcons(QIcon(":SGXGUI/Resources/synglyphx_x.ico"));
 
     //Setup and show the splash screen
-    QPixmap pixmap(":GlyphBuilderWindow/Resources/synglyphx_splash.png");
+    QPixmap pixmap(":SGXGUI/Resources/synglyphx_splash.png");
     QSplashScreen splash;
     splash.setPixmap(pixmap);
     splash.show();
