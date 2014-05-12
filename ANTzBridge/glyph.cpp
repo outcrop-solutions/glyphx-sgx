@@ -46,6 +46,12 @@ namespace SynGlyphX {
 
         m_geometryShape = static_cast<Geometry::Shape>(node->geometry / 2);
         m_geometrySurface = static_cast<Geometry::Surface>(node->geometry % 2);
+
+        //This is necessary because the enum for geometries in ANTz is screwed up
+        if (m_geometryShape == Geometry::Pin) {
+            m_geometrySurface = static_cast<Geometry::Surface>(1 - m_geometrySurface);
+        }
+
         m_topology = static_cast<Topology::Type>(node->topo);
     }
 

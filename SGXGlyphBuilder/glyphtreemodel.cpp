@@ -214,7 +214,9 @@ pNPnode GlyphTreeModel::CreateNodeFromTemplate(pNPnode parent, boost::shared_ptr
 }
 
 void GlyphTreeModel::CreateRootPinNode() {
+    
     m_rootGlyph = npNodeNew(kNodePin, NULL, m_antzData);
+    npNodeNew(kNodePin, m_rootGlyph, m_antzData);
 }
 
 void GlyphTreeModel::UpdateNode(const QModelIndex& index, boost::shared_ptr<const SynGlyphX::Glyph> glyph) {
@@ -241,7 +243,15 @@ void GlyphTreeModel::UpdateNode(pNPnode glyph, boost::shared_ptr<const SynGlyphX
     glyph->rotate.y = rotation[1];
     glyph->rotate.z = rotation[2];
 
-    glyph->geometry = 2 * glyphTemplate->GetShape() + glyphTemplate->GetSurface();
+    glyph->geometry = 2 * glyphTemplate->GetShape();
+    
+    //This is necessary because ANTz screwed up the enum for geometries
+    if (glyphTemplate->GetShape() == SynGlyphX::Geometry::Pin) {
+        glyph->geometry += (1 - glyphTemplate->GetSurface());
+    }
+    else {
+        glyph->geometry += glyphTemplate->GetSurface();
+    }
 
     SynGlyphX::Color color = glyphTemplate->GetColor();
     glyph->color.r = color[0];
