@@ -28,6 +28,12 @@ public:
     void SetDecimal(int decimals);
     void SetSuffix(const QString& suffix);
 
+signals:
+    void ValuesChanged(double x, double y, double z);
+
+private slots:
+    void OnSpinBoxesChanged();
+
 private:
     QDoubleSpinBox* m_xSpinBox;
     QDoubleSpinBox* m_ySpinBox;

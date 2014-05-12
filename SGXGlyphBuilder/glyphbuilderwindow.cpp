@@ -10,6 +10,7 @@
 #include "singleglyphwidget.h"
 #include "csvreaderwriter.h"
 #include "application.h"
+#include "modalglyphwidget.h"
 
 GlyphBuilderWindow::GlyphBuilderWindow(QWidget *parent)
     : QMainWindow(parent),
@@ -60,6 +61,8 @@ void GlyphBuilderWindow::CreateMenus() {
     //Create Edit Menu
     m_editMenu = menuBar()->addMenu(tr("Edit"));
     m_editMenu->addActions(m_sharedActions->GetEditActions());
+    m_editMenu->addSeparator();
+
     QMenu* editingModeMenu = m_editMenu->addMenu(tr("Editing Mode"));
 
     QActionGroup* editingActionGroup = new QActionGroup(editingModeMenu);
@@ -116,6 +119,13 @@ void GlyphBuilderWindow::CreateDockWidgets() {
     leftDockWidget->setWidget(m_treeView);
     addDockWidget(Qt::LeftDockWidgetArea, leftDockWidget);
     m_viewMenu->addAction(leftDockWidget->toggleViewAction());
+
+    QDockWidget* rightDockWidget = new QDockWidget("Properties", this);
+    ModalGlyphWidget* modalGlyphWidget = new ModalGlyphWidget(m_glyphTreeModel, m_selectionModel, rightDockWidget);
+    rightDockWidget->setWidget(modalGlyphWidget);
+    addDockWidget(Qt::RightDockWidgetArea, rightDockWidget);
+    m_viewMenu->addAction(rightDockWidget->toggleViewAction());
+    QObject::connect(m_3dView, SIGNAL(ObjectEdited(boost::shared_ptr<const SynGlyphX::Glyph>)), modalGlyphWidget, SLOT(SetWidgetFromGlyph(boost::shared_ptr<const SynGlyphX::Glyph>)));
 }
 
 void GlyphBuilderWindow::CreateNewGlyphTree() {

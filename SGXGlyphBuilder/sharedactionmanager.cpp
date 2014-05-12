@@ -112,9 +112,9 @@ void SharedActionManager::EnableActions() {
         const QModelIndex& index = selected.last();
         bool isRootObjectSelected = (index.internalPointer() == m_model->GetRootGlyph());
 
-        m_cutAction->setEnabled(!isRootObjectSelected);
-        m_copyAction->setEnabled(true);
-        m_pasteAction->setEnabled(!m_model->IsClipboardEmpty());
+        //m_cutAction->setEnabled(!isRootObjectSelected);
+        //m_copyAction->setEnabled(true);
+        //m_pasteAction->setEnabled(!m_model->IsClipboardEmpty());
         m_deleteAction->setEnabled(!isRootObjectSelected);
         m_deleteChildrenAction->setEnabled(m_model->hasChildren(index));
         m_propertiesAction->setEnabled(true);

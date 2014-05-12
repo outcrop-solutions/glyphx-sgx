@@ -20,13 +20,12 @@ public:
     SingleGlyphWidget(bool showNumberOfChildrenWidget = true, QWidget *parent = 0);
     ~SingleGlyphWidget();
 
-    void SetWidgetFromGlyph(boost::shared_ptr<const SynGlyphX::Glyph> glyph);
     void SetGlyphFromWidget(boost::shared_ptr<SynGlyphX::Glyph> glyph);
 
-private slots:
+public slots:
+    void SetWidgetFromGlyph(boost::shared_ptr<const SynGlyphX::Glyph> glyph);
     
-
-private:
+protected:
     void CreateWidgets();
     QString ShapeToString(SynGlyphX::Geometry::Shape shape);
     QString SurfaceToString(SynGlyphX::Geometry::Surface surface);

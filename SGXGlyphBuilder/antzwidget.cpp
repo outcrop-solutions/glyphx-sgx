@@ -16,7 +16,8 @@ ANTzWidget::ANTzWidget(GlyphTreeModel* model, QItemSelectionModel* selectionMode
     : QGLWidget(s_format, parent),
     m_model(model),
     m_selectionModel(selectionModel),
-    m_editingMode(Move)
+    m_editingMode(Move),
+    m_selectionEdited(false)
 {
     void* antzData = m_model->GetANTzData();
     InitIO();
@@ -126,6 +127,16 @@ void ANTzWidget::paintGL() {
     //antzData->io.mouse.pickMode = kNPmodePin;
     npGLDrawScene(antzData);
     //antzData->io.mouse.pickMode = kNPmodeNull;
+
+    //since changes from editing don't happen until drawing emit the ObjectEdited signal here
+    if (m_selectionEdited) {
+        const QModelIndexList& selected = m_selectionModel->selectedIndexes();
+        if (!selected.isEmpty()) {
+            boost::shared_ptr<SynGlyphX::Glyph> glyph(new SynGlyphX::Glyph(static_cast<pNPnode>(selected.back().internalPointer())));
+            emit ObjectEdited(glyph);
+        }
+        m_selectionEdited = false;
+    }
 
     int err = glGetError();
     if (err) {
@@ -240,10 +251,12 @@ void ANTzWidget::mouseMoveEvent(QMouseEvent* event) {
         if (event->buttons() & Qt::RightButton) {
             antzData->io.mouse.mode = kNPmouseModeDragXZ;
             antzData->io.mouse.buttonR = true;
+            m_selectionEdited = true;
         }
         else if (event->buttons() & Qt::LeftButton) {
             antzData->io.mouse.mode = kNPmouseModeDragXY;
             antzData->io.mouse.buttonR = false;
+            m_selectionEdited = true;
         }
     }
     else {

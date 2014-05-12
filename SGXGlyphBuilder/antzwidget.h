@@ -23,6 +23,9 @@ public slots:
     void ResetCamera();
     void SetEditingMode(EditingMode mode);
 
+signals:
+    void ObjectEdited(boost::shared_ptr<const SynGlyphX::Glyph> glyph);
+
 protected:
     virtual void initializeGL();
     virtual void resizeGL(int w, int h);
@@ -46,6 +49,7 @@ private:
     QPoint m_lastMousePosition;
 
     EditingMode m_editingMode;
+    bool m_selectionEdited;
 };
 
 #endif // ANTZWIDGET_H

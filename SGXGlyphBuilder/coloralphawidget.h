@@ -19,6 +19,9 @@ public:
     
     static SynGlyphX::Color ConvertQColorToColor(const QColor& qColor);
 
+signals:
+    void ColorChanged(const QColor& color);
+
 private slots:
     void OnButtonClicked();
     void OnAlphaSpinBoxChanged(int value);

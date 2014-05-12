@@ -40,37 +40,45 @@ void SingleGlyphWidget::CreateWidgets() {
 
     QGroupBox* colorGroupBox = new QGroupBox(tr("Color"), this);
     QHBoxLayout* colorBoxLayout = new QHBoxLayout(colorGroupBox);
+    colorBoxLayout->setContentsMargins(0, 0, 0, 0);
     m_colorWidget = new ColorAlphaWidget(colorGroupBox);
+    m_colorWidget->setContentsMargins(0, 0, 0, 0);
     colorBoxLayout->addWidget(m_colorWidget);
     colorGroupBox->setLayout(colorBoxLayout);
 
     QGroupBox* translateGroupBox = new QGroupBox(tr("Position"), this);
     QHBoxLayout* translateBoxLayout = new QHBoxLayout(translateGroupBox);
+    translateBoxLayout->setContentsMargins(0, 0, 0, 0);
     translateGroupBox->setLayout(translateBoxLayout);
     m_translateWidget = new XYZWidget(translateGroupBox);
-    m_translateWidget->SetRange(-100000000000000.0, 100000000000000.0);
-    m_translateWidget->SetDecimal(8);
+    m_translateWidget->SetRange(-1000.0, 1000.0);
+    m_translateWidget->SetDecimal(5);
+    m_translateWidget->setContentsMargins(0, 0, 0, 0);
     translateBoxLayout->addWidget(m_translateWidget);
 
     //Degree symbol gets displayed incorrectly unless we use QChar
     QChar degree = QChar('°');
     QString degreeSuffix = degree;
 
-    QGroupBox* rotateGroupBox = new QGroupBox(tr("Rotate"), this);
+    QGroupBox* rotateGroupBox = new QGroupBox(tr("Rotation"), this);
     QHBoxLayout* rotateBoxLayout = new QHBoxLayout(this);
+    rotateBoxLayout->setContentsMargins(0, 0, 0, 0);
     m_rotateWidget = new XYZWidget(this);
-    m_rotateWidget->SetRange(0.0, 360.0);
+    m_rotateWidget->SetRange(-180.0, 180.0);
     m_rotateWidget->SetWrapping(true);
     m_rotateWidget->SetDecimal(5);
     m_rotateWidget->SetSuffix(degreeSuffix);
+    m_rotateWidget->setContentsMargins(0, 0, 0, 0);
     rotateBoxLayout->addWidget(m_rotateWidget);
     rotateGroupBox->setLayout(rotateBoxLayout);
 
     QGroupBox* scaleGroupBox = new QGroupBox(tr("Scale"), this);
     QHBoxLayout* scaleBoxLayout = new QHBoxLayout(this);
+    scaleBoxLayout->setContentsMargins(0, 0, 0, 0);
     m_scaleWidget = new XYZWidget(this);
-    m_scaleWidget->SetRange(0.000001, 100000000000000.0);
+    m_scaleWidget->SetRange(0.000001, 1000.0);
     m_scaleWidget->SetDecimal(5);
+    m_scaleWidget->setContentsMargins(0, 0, 0, 0);
     scaleBoxLayout->addWidget(m_scaleWidget);
     scaleGroupBox->setLayout(scaleBoxLayout);
 

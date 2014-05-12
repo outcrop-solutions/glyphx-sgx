@@ -46,7 +46,11 @@ void ColorAlphaWidget::OnButtonClicked() {
     colorDialog.setOption(QColorDialog::ShowAlphaChannel);
     colorDialog.setCurrentColor(m_color);
     if (colorDialog.exec() == QDialog::Accepted) {
-        SetColor(colorDialog.currentColor());
+        QColor newColor = colorDialog.currentColor();
+        if (m_color != newColor) {
+            SetColor(newColor);
+            emit ColorChanged(m_color);
+        }
     }
 }
 
@@ -60,7 +64,9 @@ void ColorAlphaWidget::UpdateButtonColor() {
 }
 
 void ColorAlphaWidget::OnAlphaSpinBoxChanged(int value) {
+
     m_color.setAlpha(value);
+    emit ColorChanged(m_color);
 }
 
 void ColorAlphaWidget::SetColor(const SynGlyphX::Color& color) {
