@@ -3,12 +3,10 @@
 #include <QtWidgets/QGroupBox>
 #include "typedefs.h"
 
-SingleGlyphWidget::SingleGlyphWidget(bool showNumberOfChildrenWidget, QWidget *parent)
+SingleGlyphWidget::SingleGlyphWidget(ChildOptions childOptions, QWidget *parent)
     : QWidget(parent)
 {
-    CreateWidgets();
-
-    m_childrenSpinBox->setEnabled(showNumberOfChildrenWidget);
+    CreateWidgets(childOptions);
 }
 
 SingleGlyphWidget::~SingleGlyphWidget()
@@ -16,13 +14,42 @@ SingleGlyphWidget::~SingleGlyphWidget()
 
 }
 
-void SingleGlyphWidget::CreateWidgets() {
+QWidget* SingleGlyphWidget::CreateChildrenWidget(ChildOptions childOptions) {
+
+    QWidget* childWidget = new QWidget(this);
+    QHBoxLayout* layout = new QHBoxLayout(this);
+
+    QLabel* label = new QLabel(tr("Number of Children:"), childWidget);
+    layout->addWidget(label);
+
+    m_childrenSpinBox = new QSpinBox(childWidget);
+
+    if (childOptions & EnabledSpinBox) {
+        m_childrenSpinBox->setMinimum(1);
+        m_childrenSpinBox->setValue(1);
+    }
+    else {
+        m_childrenSpinBox->setMinimum(0);
+        m_childrenSpinBox->setButtonSymbols(QAbstractSpinBox::NoButtons);
+        m_childrenSpinBox->setEnabled(false);
+    }
+
+    layout->addWidget(m_childrenSpinBox, 1);
+
+    if (childOptions & AddChildrenButton) {
+        QPushButton* addChildrenButton = new QPushButton(tr("Add Children"), childWidget);
+        QObject::connect(addChildrenButton, SIGNAL(clicked()), this, SIGNAL(AddChildrenButtonClicked()));
+        layout->addWidget(addChildrenButton);
+    }
+
+    childWidget->setLayout(layout);
+
+    return childWidget;
+}
+
+void SingleGlyphWidget::CreateWidgets(ChildOptions childOptions) {
     
     QFormLayout* form = new QFormLayout(this);
-
-    m_childrenSpinBox = new QSpinBox(this);
-    m_childrenSpinBox->setMinimum(1);
-    m_childrenSpinBox->setValue(1);
 
     m_geometryShapeComboBox = new QComboBox(this);
     for (int i = 0; i < 10; ++i) {
@@ -82,7 +109,7 @@ void SingleGlyphWidget::CreateWidgets() {
     scaleBoxLayout->addWidget(m_scaleWidget);
     scaleGroupBox->setLayout(scaleBoxLayout);
 
-    form->addRow(tr("Number of Children:"), m_childrenSpinBox);
+    
     form->addRow(tr("Shape:"), m_geometryShapeComboBox);
     form->addRow(tr("Surface:"), m_geometrySurfaceComboBox);
     form->addRow(tr("Topology:"), m_topologyComboBox);
@@ -90,6 +117,17 @@ void SingleGlyphWidget::CreateWidgets() {
     form->addRow(translateGroupBox);
     form->addRow(rotateGroupBox);
     form->addRow(scaleGroupBox);
+
+    if ((childOptions & ShowOnBottom) || (childOptions & ShowOnTop)) {
+
+        QWidget* childrenWidget = CreateChildrenWidget(childOptions);
+        if (childOptions & ShowOnBottom) {
+            form->addRow(childrenWidget);
+        }
+        else {
+            form->insertRow(0, childrenWidget);
+        }
+    }
 
     setLayout(form);
 }

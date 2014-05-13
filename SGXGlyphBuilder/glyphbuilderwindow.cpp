@@ -122,6 +122,7 @@ void GlyphBuilderWindow::CreateDockWidgets() {
 
     QDockWidget* rightDockWidget = new QDockWidget("Properties", this);
     ModalGlyphWidget* modalGlyphWidget = new ModalGlyphWidget(m_glyphTreeModel, m_selectionModel, rightDockWidget);
+    QObject::connect(modalGlyphWidget, SIGNAL(AddChildrenButtonClicked()), m_sharedActions, SLOT(AddChildren()));
     rightDockWidget->setWidget(modalGlyphWidget);
     addDockWidget(Qt::RightDockWidgetArea, rightDockWidget);
     m_viewMenu->addAction(rightDockWidget->toggleViewAction());
@@ -144,7 +145,11 @@ void GlyphBuilderWindow::CreateNewGlyphTree() {
             QWizardPage* page = new QWizardPage(&wizard);
             QVBoxLayout* layout = new QVBoxLayout(this);
             page->setLayout(layout);
-            SingleGlyphWidget* glyphWidget = new SingleGlyphWidget((i != numberOfBranches), page);
+            SingleGlyphWidget::ChildOptions childOptions = SingleGlyphWidget::Invisible;
+            if (i != numberOfBranches - 1) {
+                childOptions = SingleGlyphWidget::ShowOnBottom | SingleGlyphWidget::EnabledSpinBox;
+            }
+            SingleGlyphWidget* glyphWidget = new SingleGlyphWidget(childOptions, page);
             glyphWidgets.push_back(glyphWidget);
             if (i == 0) {
                 page->setTitle("Glyphs for root level");
@@ -199,7 +204,7 @@ void GlyphBuilderWindow::SaveGlyph() {
 
 void GlyphBuilderWindow::OpenTemplate() {
 
-    QString openFile = QFileDialog::getOpenFileName(this, tr("Open Template"), "", tr("SynGlyphX Glyph Template Files (*.sgt)"));
+    QString openFile = QFileDialog::getOpenFileName(this, tr("Open Template"), "", tr("SynGlyphX Glyph Template Files (*.sgt *.csv)"));
     if (!openFile.isEmpty()) {
         if (m_glyphTreeModel->LoadFromFile(openFile.toStdString())) {
             statusBar()->showMessage("Template successfully opened", 3000);

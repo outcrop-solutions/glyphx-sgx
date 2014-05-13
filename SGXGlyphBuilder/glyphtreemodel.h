@@ -44,6 +44,9 @@ public:
     boost::shared_ptr<const SynGlyphX::Glyph> GetClipboardGlyph() const;
     void CopyToClipboard(const QModelIndex& index, bool removeFromTree = false);
 
+signals:
+    void NodeUpdated(const QModelIndex& index);
+
 private:
     pNPnode CreateNodeFromTemplate(pNPnode parent, boost::shared_ptr<const SynGlyphX::Glyph> glyphTemplate);
     void CreateRootPinNode();

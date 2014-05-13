@@ -14,10 +14,15 @@ public:
     ~ModalGlyphWidget();
 
 private slots:
-    void OnUpdated();
+    void OnWidgetUpdated();
     void SelectionChanged(const QItemSelection& selected, const QItemSelection& deselected);
+    void OnNodeUpdated(const QModelIndex& index);
 
 private:
+    void ConnectWidgetSignals();
+    void DisconnectWidgetSignals();
+    void UpdateWidget(pNPnode node);
+    
     GlyphTreeModel* m_model;
     QItemSelectionModel* m_selectionModel;
 };

@@ -7,6 +7,7 @@
 #include <QtWidgets/QDialog>
 #include "glyphtreemodel.h"
 #include "singleglyphwidget.h"
+#include "addchildrendialog.h"
 
 class SharedActionManager : public QObject
 {
@@ -19,12 +20,14 @@ public:
     const QList<QAction*>& GetGlyphActions() const;
     const QList<QAction*>& GetEditActions() const;
 
+public slots:
+    void AddChildren();
+
 private slots:
     void SelectionChanged(const QItemSelection& selected, const QItemSelection& deselected);
     void PropertiesActivated();
     void DeleteSelected();
     void DeleteChildrenFromSelected();
-    void AddChildren();
 
 private:
     void CreateGlyphActions();
@@ -37,8 +40,7 @@ private:
     QDialog* m_propertiesDialog;
     SingleGlyphWidget* m_glyphWidget;
 
-    QDialog* m_addChildrenDialog;
-    SingleGlyphWidget* m_childrenGlyphWidget;
+    AddChildrenDialog* m_addChildrenDialog;
 
     GlyphTreeModel* m_model;
     QItemSelectionModel* m_selectionModel;

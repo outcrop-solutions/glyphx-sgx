@@ -53,6 +53,8 @@ namespace SynGlyphX {
         }
 
         m_topology = static_cast<Topology::Type>(node->topo);
+
+        m_numberOfChildren = node->childCount;
     }
 
     Glyph::~Glyph()

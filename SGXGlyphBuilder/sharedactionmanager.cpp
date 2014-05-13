@@ -63,7 +63,9 @@ void SharedActionManager::CreatePropertiesDialog() {
 
     m_propertiesDialog = new QDialog(SynGlyphX::Application::activeWindow());
     QVBoxLayout* layout = new QVBoxLayout(m_propertiesDialog);
-    m_glyphWidget = new SingleGlyphWidget(false, m_propertiesDialog);
+    m_glyphWidget = new SingleGlyphWidget(SingleGlyphWidget::ShowOnBottom, m_propertiesDialog);
+    //m_glyphWidget = new SingleGlyphWidget(SingleGlyphWidget::ShowOnBottom | SingleGlyphWidget::AddChildrenButton, m_propertiesDialog);
+    //QObject::connect(m_glyphWidget, SIGNAL(AddChildrenButtonClicked()), this, SLOT(AddChildren()));
     layout->addWidget(m_glyphWidget);
     QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, m_propertiesDialog);
     layout->addWidget(buttonBox);
@@ -75,16 +77,7 @@ void SharedActionManager::CreatePropertiesDialog() {
 
 void SharedActionManager::CreateAddChildrenDialog() {
 
-    m_addChildrenDialog = new QDialog(SynGlyphX::Application::activeWindow());
-    QVBoxLayout* layout = new QVBoxLayout(m_addChildrenDialog);
-    m_childrenGlyphWidget = new SingleGlyphWidget(true, m_addChildrenDialog);
-    layout->addWidget(m_childrenGlyphWidget);
-    QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, m_addChildrenDialog);
-    layout->addWidget(buttonBox);
-    m_addChildrenDialog->setLayout(layout);
-    m_addChildrenDialog->setWindowTitle(tr("Add Children"));
-    QObject::connect(buttonBox, SIGNAL(accepted()), m_addChildrenDialog, SLOT(accept()));
-    QObject::connect(buttonBox, SIGNAL(rejected()), m_addChildrenDialog, SLOT(reject()));
+    m_addChildrenDialog = new AddChildrenDialog(SynGlyphX::Application::activeWindow());   
 }
 
 QAction* SharedActionManager::CreateSeparator() {
@@ -158,10 +151,10 @@ void SharedActionManager::AddChildren() {
 
     const QModelIndexList& selectedItems = m_selectionModel->selectedIndexes();
 
-    m_childrenGlyphWidget->SetWidgetFromGlyph(SynGlyphX::Glyph::GetTemplate());
+    m_addChildrenDialog->SetDialogFromGlyph(SynGlyphX::Glyph::GetTemplate());
     if (m_addChildrenDialog->exec() == QDialog::Accepted) {
         boost::shared_ptr<SynGlyphX::Glyph> glyph(new SynGlyphX::Glyph());
-        m_childrenGlyphWidget->SetGlyphFromWidget(glyph);
+        m_addChildrenDialog->SetGlyphFromDialog(glyph);
         m_model->AppendChild(selectedItems.back(), glyph, glyph->GetNumberOfChildren());
     }
 }
