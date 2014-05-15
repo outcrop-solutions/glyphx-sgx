@@ -2,10 +2,9 @@
 #define MAPDOWNLOADING_H
 
 #include "mapdownloading_global.h"
-#include <boost/geometry/geometry.hpp>
-
-typedef boost::geometry::model::point<double, 2, boost::geometry::cs::geographic<boost::geometry::degree>> GeographicPoint;
-typedef boost::geometry::strategy::distance::haversine<double> DistanceStrategy;
+#include "typedefs.h"
+#include <QtCore/QSize>
+#include "geographicboundingbox.h"
 
 class MAPDOWNLOADING_EXPORT MapDownloading
 {
@@ -13,10 +12,13 @@ public:
     MapDownloading();
     ~MapDownloading();
 
+
 private:
-    unsigned int GetZoomLevel(const GeographicPoint& sw, const GeographicPoint& ne, unsigned int imageWidth);
+    unsigned int GetZoomLevel(const GeographicBoundingBox& boundingBox, const QSize& imageSize);
+    void CalculateImageBoundingBox(const GeographicPoint& center, unsigned int zoomLevel, const QSize& imageSize);
 
     DistanceStrategy m_distanceStrategy;
+    //GeographicBoundingBox m_outputBoundingBox;
 };
 
 #endif // MAPDOWNLOADING_H
