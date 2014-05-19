@@ -121,14 +121,6 @@
     <ClInclude Include="resource2.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="kml_parser.py">
-      <DeploymentContent>true</DeploymentContent>
-    </None>
-    <None Include="kmz_parser.py">
-      <DeploymentContent>true</DeploymentContent>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
     <ResourceCompile Include="Resource.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

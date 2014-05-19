@@ -16,10 +16,10 @@ GeographicBoundingBox::GeographicBoundingBox(const GeographicPoint& swCorner, co
 
 GeographicBoundingBox::GeographicBoundingBox(const GeographicPoint& center, double latRadius, double lonRadius) :
     m_center(center),
-    m_swCorner(m_center.get<0>() - lonRadius, m_center.get<1>() - latRadius),
-    m_neCorner(m_center.get<0>() + lonRadius, m_center.get<1>() + latRadius),
-    m_westCenter(m_center.get<0>() - lonRadius, m_center.get<1>()),
-    m_eastCenter(m_center.get<0>() + lonRadius, m_center.get<1>()) {
+    m_swCorner(center.get<0>() - lonRadius, center.get<1>() - latRadius),
+    m_neCorner(center.get<0>() + lonRadius, center.get<1>() + latRadius),
+    m_westCenter(center.get<0>() - lonRadius, center.get<1>()),
+    m_eastCenter(center.get<0>() + lonRadius, center.get<1>()) {
     
 
 }

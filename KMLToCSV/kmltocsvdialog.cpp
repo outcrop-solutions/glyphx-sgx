@@ -162,6 +162,7 @@ void KMLToCSVDialog::accept() {
 		}
 
 		args.clear();
+        args.append("-p");
 		args.append("-k");
 		args.append("-G");
 		args.append(GetCSVFilename());
@@ -171,7 +172,11 @@ void KMLToCSVDialog::accept() {
 			DownloadedMap map(pointsFromCSV, mapfilename.toStdString(), QSize(2048, 1024));
 
 			args.append("-c");
-			args.append(QString::fromStdString(map.GetGeographicBoundingBox().ToString()));
+            const GeographicBoundingBox& boundingBox = map.GetGeographicBoundingBox();
+			args.append(QString::number(boundingBox.GetSWCorner().get<1>()));
+            args.append(QString::number(boundingBox.GetSWCorner().get<0>()));
+            args.append(QString::number(boundingBox.GetNECorner().get<1>()));
+            args.append(QString::number(boundingBox.GetNECorner().get<0>()));
 		}
 		catch (const DownloadException& e) {
 			QMessageBox::critical(this, "Error", e.what());

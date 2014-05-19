@@ -51,7 +51,6 @@ private:
 	MapType m_mapType;
 	bool m_showPointsInMap;
 
-	QNetworkAccessManager m_networkManager;
 	DistanceStrategy m_distanceStrategy;
 
 	QString m_mapQuestOpenKey;

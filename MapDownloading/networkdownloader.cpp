@@ -7,6 +7,7 @@
 #include <QtCore/QSettings>
 #include <QtCore/QFile>
 #include <cmath>
+#include <QtGui/QDesktopServices>
 
 /*
 1. Calculate Center
@@ -20,7 +21,7 @@ Longitude: 1 deg = 111.320*cos(latitude) km
 
 const unsigned int MaxZoomLevel = 18;
 const double MetersPerPixel = 156543.034;
-const double EarthRadiusInMeters = 63727982.0;
+const double EarthRadiusInMeters = 6372798.2;
 const double MetersPerDegreeLongitude = 111319.892;
 const double DegToRad = 3.14159 / 180.0;
 
@@ -97,13 +98,16 @@ GeographicBoundingBox NetworkDownloader::DownloadMap(const std::vector<Geographi
 	else {
 		//eventually will implement download from Google Maps
 	}
+
+    //Leave this line in for testing purposes if needed later
+    //QDesktopServices::openUrl(QUrl(imageUrl));
 	 
-	std::string url = imageUrl.toStdString();
 	QNetworkRequest request(imageUrl);
-	QNetworkReply *reply = m_networkManager.get(request);
+    QNetworkAccessManager networkManager;
+	QNetworkReply *reply = networkManager.get(request);
 
 	QEventLoop loop;
-	QObject::connect(reply, SIGNAL(readyRead()), &loop, SLOT(quit()));
+	QObject::connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
 
 	// Execute the event loop here, now we will wait here until readyRead() signal is emitted
 	// which in turn will trigger event loop quit.
@@ -122,13 +126,9 @@ GeographicBoundingBox NetworkDownloader::DownloadMap(const std::vector<Geographi
 		throw DownloadException("Download returned no data");
 	}
 
-	QFile file(QString::fromStdString(filename));
-	file.open(QIODevice::WriteOnly);
-	file.write(imageData);
-	file.close();
-
-	QImage image;
-	if (!image.loadFromData(imageData, ImageFormat)) {
+    QImage image = QImage::fromData(imageData, ImageFormat);
+	if (image.isNull()) {
+        
 		throw DownloadException("Failed to get data into image");
 	}
 
@@ -136,8 +136,8 @@ GeographicBoundingBox NetworkDownloader::DownloadMap(const std::vector<Geographi
 		throw DownloadException("Failed to save image");
 	}
 
-	double lonRadiusInDegrees = ((MetersPerPixel * std::cos(pointsBoundingBox.GetCenter().get<1>()) / std::pow(2.0, zoomLevel)) * imageSize.width() / 2.0) / MetersPerDegreeLongitude;
-	double latRadiusInDegrees = lonRadiusInDegrees * (imageSize.height() / static_cast<double>(imageSize.width()));
+	double lonRadiusInDegrees = std::abs(((MetersPerPixel * std::cos(pointsBoundingBox.GetCenter().get<1>()) / std::pow(2.0, zoomLevel)) * (imageSize.width() / 2.0)) / MetersPerDegreeLongitude);
+	double latRadiusInDegrees = std::abs(lonRadiusInDegrees * (imageSize.height() / static_cast<double>(imageSize.width())));
 
 	return GeographicBoundingBox(pointsBoundingBox.GetCenter(), latRadiusInDegrees, lonRadiusInDegrees);
 }
@@ -146,7 +146,7 @@ unsigned int NetworkDownloader::GetZoomLevel(const GeographicBoundingBox& boundi
 
 	double distanceInMeters = std::abs(boost::geometry::distance(boundingBox.GetWestCenter(), boundingBox.GetEastCenter(), m_distanceStrategy));
 
-	double zoomLevel = std::log(imageSize.width() * MetersPerPixel * std::cos(boundingBox.GetCenter().get<1>() * DegToRad) / distanceInMeters) / std::log(2.0);
+    double zoomLevel = std::log((MetersPerPixel * std::cos(boundingBox.GetCenter().get<1>() * DegToRad)) / (distanceInMeters / imageSize.width())) / std::log(2.0);
 
 	//Zoom level can never go above 18
 	return std::min(static_cast<unsigned int>(zoomLevel), MaxZoomLevel);
@@ -168,13 +168,13 @@ QString NetworkDownloader::GenerateMapQuestOpenString(const GeographicPoint& cen
 		url += "hyb";
 	}
 	url += "&imagetype=png";
-
+    //url += "&declutter=true";
 	url += "&pois=";
 
 	if ((m_showPointsInMap) && (!points.empty())) {
-		//for (int i = 0; i < points.size(); ++i) {
-		//	url += QString::number(i) + "," + QString::number(points[i].get<1>()) + "," + QString::number(points[i].get<0>()) + "|";
-		//}
+		for (int i = 0; i < points.size(); ++i) {
+			url += "red-circle," + QString::number(points[i].get<1>()) + "," + QString::number(points[i].get<0>()) + ",0,0" + QChar('|');
+		}
 	}
 
 	return url;
