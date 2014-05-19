@@ -12,6 +12,11 @@
 #include <QtGui/QCloseEvent>
 #include <QtGui/QDesktopServices>
 #include "application.h"
+#include "geographicboundingbox.h"
+#include <fstream>
+#include <boost/tokenizer.hpp>
+#include "downloadedmap.h"
+#include "downloadexception.h"
 
 KMLToCSVDialog::KMLToCSVDialog(QWidget *parent)
     : QDialog(parent)
@@ -31,10 +36,22 @@ KMLToCSVDialog::KMLToCSVDialog(QWidget *parent)
 
     verticalLayout->addLayout(formLayout);
     verticalLayout->addStretch();
+	
+	QHBoxLayout* buttonsLayout = new QHBoxLayout(this);
+
+	m_optionsButton = new QPushButton(tr("Options"), this);
+	QObject::connect(m_optionsButton, SIGNAL(clicked()), this, SLOT(OnOptionsClicked()));
+	buttonsLayout->addWidget(m_optionsButton);
+
+	/*m_downloadMapButton = new QPushButton(tr("Download Map"), this);
+	QObject::connect(m_downloadMapButton, SIGNAL(clicked()), this, SLOT(OnDownloadMapClicked()));
+	buttonsLayout->addWidget(m_downloadMapButton);*/
 
     QDialogButtonBox* dialogButtonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Close, this);
 
-    verticalLayout->addWidget(dialogButtonBox);
+	buttonsLayout->addWidget(dialogButtonBox);
+
+	verticalLayout->addLayout(buttonsLayout);
 
     setLayout(verticalLayout);
 
@@ -134,11 +151,32 @@ void KMLToCSVDialog::accept() {
             return;
         }
 
-        args.clear();
-        args.append("-p");
-        args.append("-k");
-        args.append("-G");
-        args.append(GetCSVFilename());
+		std::vector<GeographicPoint> pointsFromCSV;
+		if (!ReadPointsFromCSV(dataInFilename, pointsFromCSV)) {
+			QMessageBox::critical(this, "Error", tr("Failed to read intermediate CSV so base map couldn't be downloaded"));
+			return;
+		}
+		if (pointsFromCSV.empty()) {
+			QMessageBox::critical(this, "Error", tr("No points found in intermediate CSV so base map couldn't be downloaded"));
+			return;
+		}
+
+		args.clear();
+		args.append("-k");
+		args.append("-G");
+		args.append(GetCSVFilename());
+
+		try {
+			QString mapfilename = outputDirectory + kmlFileInfo.baseName() + ".png";
+			DownloadedMap map(pointsFromCSV, mapfilename.toStdString(), QSize(2048, 1024));
+
+			args.append("-c");
+			args.append(QString::fromStdString(map.GetGeographicBoundingBox().ToString()));
+		}
+		catch (const DownloadException& e) {
+			QMessageBox::critical(this, "Error", e.what());
+			return;
+		}
 
         if (!RunCommand(SynGlyphX::Application::applicationDirPath() + "/gps2csv.exe", args, outputDirectory + kmlFileInfo.baseName() + ".csv")) {
             return;
@@ -220,4 +258,58 @@ void KMLToCSVDialog::UpdateOutputDirectory(const QString& inputFile) {
     
     QFileInfo fileInfo(inputFile);
     m_outputDirectory->SetText(fileInfo.dir().canonicalPath() + "/Converted");
+}
+
+//void KMLToCSVDialog::OnDownloadMapClicked() {
+//	
+//}
+
+void KMLToCSVDialog::OnOptionsClicked() {
+
+}
+
+bool KMLToCSVDialog::ReadPointsFromCSV(const QString& csvfilename, std::vector<GeographicPoint>& points) {
+
+	std::ifstream csvfile; 
+	csvfile.open(csvfilename.toStdString().c_str());
+
+	if (!csvfile.is_open()) {
+		return false;
+	}
+
+	boost::char_separator<char> commaSeparator(",");
+	
+	std::string line;
+	while (std::getline(csvfile, line)) {
+
+		boost::tokenizer<boost::char_separator<char>> tokenizer(line, commaSeparator);
+		boost::tokenizer<boost::char_separator<char>>::iterator iterator = tokenizer.begin();
+		
+		//There should be at least 3 tokens.  Otherwise skip the line
+		if (iterator == tokenizer.end()) {
+			continue;
+		}
+		std::string lonStr(*iterator);
+		++iterator;
+
+		if (iterator == tokenizer.end()) {
+			continue;
+		}
+		std::string latStr(*iterator);
+		++iterator;
+
+		if (iterator != tokenizer.end()) {
+			try {
+				GeographicPoint point(boost::lexical_cast<double>(lonStr), boost::lexical_cast<double>(latStr));
+				points.push_back(point);
+			}
+			catch (const boost::bad_lexical_cast &e) {
+				//if there is a problem with the conversion than the line was bad so skip it
+				continue;
+			}
+		}
+	}
+
+	csvfile.close();
+	return true;
 }

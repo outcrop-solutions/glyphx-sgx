@@ -4,6 +4,8 @@
 #include <QtWidgets/QDialog>
 #include "filelineedit.h"
 #include "directorylineedit.h"
+#include "geographicboundingbox.h" 
+#include <vector>
 
 class KMLToCSVDialog : public QDialog
 {
@@ -21,6 +23,8 @@ private slots:
     virtual void reject();
 
     void UpdateOutputDirectory(const QString& inputFile);
+	//void OnDownloadMapClicked();
+	void OnOptionsClicked();
 
 private:
     void ReadSettings();
@@ -28,9 +32,13 @@ private:
     bool RunCommand(const QString& program, const QStringList& args, const QString& stdOutFile);
     bool ValidateInput();
 
+	bool ReadPointsFromCSV(const QString& csvfilename, std::vector<GeographicPoint>& points);
+
     SynGlyphX::FileLineEdit* m_inputKML;
     SynGlyphX::FileLineEdit* m_inputGlyph;
     SynGlyphX::DirectoryLineEdit* m_outputDirectory;
+	QPushButton* m_optionsButton;
+	QPushButton* m_downloadMapButton;
 };
 
 #endif // KMLTOCSVDIALOG_H

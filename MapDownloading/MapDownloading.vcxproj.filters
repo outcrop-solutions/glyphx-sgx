@@ -35,9 +35,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="mapdownloading.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="geographicboundingbox.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -50,11 +47,14 @@
     <ClCompile Include="GeneratedFiles\Release\moc_downloadedmap.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="networkdownloader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="downloadexception.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="mapdownloading.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="mapdownloading_global.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -62,6 +62,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="geographicboundingbox.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="networkdownloader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="downloadexception.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
