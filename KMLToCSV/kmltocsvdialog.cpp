@@ -10,6 +10,7 @@
 #include <QtCore/QSettings>
 #include <QtCore/QDir>
 #include <QtGui/QCloseEvent>
+#include <QtGui/QDesktopServices>
 #include "application.h"
 
 KMLToCSVDialog::KMLToCSVDialog(QWidget *parent)
@@ -19,11 +20,14 @@ KMLToCSVDialog::KMLToCSVDialog(QWidget *parent)
 
     QFormLayout* formLayout = new QFormLayout(this);
 
-    m_inputKML = new SynGlyphX::FileLineEdit("KML/KMZ files (*.kml, *.kmz)", this);
+    m_inputKML = new SynGlyphX::FileLineEdit("KML & KMZ files (*.kmz *.kml)", this);
     formLayout->addRow(tr("KML/KMZ file:"), m_inputKML);
 
     m_inputGlyph = new SynGlyphX::FileLineEdit("CSV files (*.csv)", this);
     formLayout->addRow(tr("Glyph file:"), m_inputGlyph);
+
+    m_outputDirectory = new SynGlyphX::DirectoryLineEdit(this);
+    formLayout->addRow(tr("Output Directory:"), m_outputDirectory);
 
     verticalLayout->addLayout(formLayout);
     verticalLayout->addStretch();
@@ -37,6 +41,8 @@ KMLToCSVDialog::KMLToCSVDialog(QWidget *parent)
     QObject::connect(dialogButtonBox, SIGNAL(rejected()), this, SLOT(reject()));
     QObject::connect(dialogButtonBox, SIGNAL(accepted()), this, SLOT(accept()));
 
+    QObject::connect(m_inputKML, SIGNAL(TextChanged(QString)), this, SLOT(UpdateOutputDirectory(QString)));
+
     ReadSettings();
 }
 
@@ -47,65 +53,132 @@ KMLToCSVDialog::~KMLToCSVDialog()
 
 QString KMLToCSVDialog::GetKMLFilename() const {
 
-    QFileInfo fileInfo(m_inputKML->GetFilename());
+    QFileInfo fileInfo(m_inputKML->GetText());
     return fileInfo.canonicalFilePath();
 }
 
 QString KMLToCSVDialog::GetCSVFilename() const {
 
-    QFileInfo fileInfo(m_inputGlyph->GetFilename());
+    QFileInfo fileInfo(m_inputGlyph->GetText());
     return fileInfo.canonicalFilePath();
 }
 
-void KMLToCSVDialog::accept() {
+bool KMLToCSVDialog::ValidateInput() {
 
-    QString kmlFilename = m_inputKML->GetFilename();
-    QString csvFilename = m_inputGlyph->GetFilename();
+    QString kmlFilename = m_inputKML->GetText();
+    QString glyphFilename = m_inputGlyph->GetText();
+    QString outputDirectory = m_outputDirectory->GetText();
 
     if (kmlFilename.isEmpty()) {
         QMessageBox::warning(this, tr("Error"), tr("KML/KMZ file field is empty"));
-        return;
+        return false;
     }
 
-    if (csvFilename.isEmpty()) {
+    if (glyphFilename.isEmpty()) {
         QMessageBox::warning(this, tr("Error"), tr("Glyph file field is empty"));
-        return;
+        return false;
     }
 
     if ((kmlFilename.right(4) != ".kml") && (kmlFilename.right(4) != ".kmz")) {
         QMessageBox::warning(this, tr("Error"), tr("KML/KMZ file is not in either kml or kmz format"));
-        return;
+        return false;
     }
 
-    if (csvFilename.right(4) != ".csv") {
+    if (glyphFilename.right(4) != ".csv") {
         QMessageBox::warning(this, tr("Error"), tr("CSV file is not in csv format"));
-        return;
+        return false;
     }
 
     if (!QFileInfo::exists(kmlFilename)) {
         QMessageBox::warning(this, tr("Error"), tr("KML/KMZ file does not exist"));
-        return;
+        return false;
     }
 
-    if (!QFileInfo::exists(csvFilename)) {
+    if (!QFileInfo::exists(glyphFilename)) {
         QMessageBox::warning(this, tr("Error"), tr("CSV file does not exist"));
-        return;
+        return false;
     }
 
-    QStringList args;
-    args.append(GetKMLFilename());
-    args.append(GetCSVFilename());
-    int result = QProcess::execute("GPSToCSV.exe", args);
+    QDir dir;
+    if (!dir.mkpath(outputDirectory)) {
+        QMessageBox::warning(this, tr("Error"), tr("Could not create output directory"));
+        return false;
+    }
 
-    if (result == -2) {
-        QMessageBox::critical(this, tr("Error"), tr("Conversion failed to start"));
+    return true;
+}
+
+void KMLToCSVDialog::accept() {
+
+    if (ValidateInput()) {
+
+        QFileInfo kmlFileInfo(GetKMLFilename());
+        QString tempKMLFilename;
+        QStringList args;
+
+        QString outputDirectory = m_outputDirectory->GetText() + QDir::separator();
+
+        if (kmlFileInfo.suffix() == "kml") {
+            args.append("kml_parser.py");
+            tempKMLFilename = QDir::toNativeSeparators(QDir::currentPath() + "/doc.kml");
+        }
+        else {
+            args.append("kmz_parser.py");
+            tempKMLFilename = QDir::toNativeSeparators(QDir::currentPath() + "/test.kmz");
+        }
+        QFile::copy(kmlFileInfo.canonicalFilePath(), tempKMLFilename);
+
+        QString dataInFilename = QDir::toNativeSeparators(QDir::currentPath() + "/data_in.csv");
+
+        if (!RunCommand("python.exe", args, dataInFilename)) {
+            return;
+        }
+
+        args.clear();
+        args.append("-p");
+        args.append("-k");
+        args.append("-G");
+        args.append(GetCSVFilename());
+
+        if (!RunCommand(SynGlyphX::Application::applicationDirPath() + "/gps2csv.exe", args, outputDirectory + kmlFileInfo.baseName() + ".csv")) {
+            return;
+        }
+
+        QFile::copy(QDir::currentPath() + "/corners.txt", outputDirectory + kmlFileInfo.baseName() + "_corners.txt");
+        QFile::copy(QDir::currentPath() + "/corners.kml", outputDirectory + kmlFileInfo.baseName() + "_corners.kml");
+
+        //Cleanup
+        QFile::remove(tempKMLFilename);
+        QFile::remove(dataInFilename);
+        QFile::remove(QDir::currentPath() + "/corners.txt");
+        QFile::remove(QDir::currentPath() + "/corners.kml");
+        QFile::remove(QDir::currentPath() + "/output.csv");
+        QFile::remove(QDir::currentPath() + "/test.csv");
+
+        QDesktopServices::openUrl(QUrl("file:///" + outputDirectory));
+        //QMessageBox::information(this, tr("Success"), tr("File successfully converted"));
     }
-    else if (result == -1) {
-        QMessageBox::critical(this, tr("Error"), tr("Conversion crashed and failed"));
+}
+
+bool KMLToCSVDialog::RunCommand(const QString& program, const QStringList& args, const QString& stdOutFile) {
+
+    QProcess process;
+    process.setProgram(program);
+    process.setArguments(args);
+    process.setStandardOutputFile(stdOutFile);
+    process.start();
+
+    if (!process.waitForFinished()) {
+        QMessageBox::critical(this, tr("Error"), program + tr(" failed to finish"));
+        return false;
     }
-    else {
-        QMessageBox::information(this, tr("Success"), tr("File successfully converted"));
+
+    if (process.exitStatus() != QProcess::NormalExit) {
+        QMessageBox::critical(this, tr("Error"), program + tr(" crashed and failed"));
+        return false;
     }
+    
+    return true;
 }
 
 void KMLToCSVDialog::ReadSettings() {
@@ -117,7 +190,8 @@ void KMLToCSVDialog::ReadSettings() {
     settings.endGroup();
 
     settings.beginGroup("params");
-    m_inputGlyph->SetFilename(settings.value("glyph", QDir::toNativeSeparators(QDir::currentPath() + "/pin.csv")).toString());
+    m_inputGlyph->SetText(settings.value("glyph", QDir::currentPath() + "/pin.csv").toString());
+    m_inputKML->SetInitalBrowseDirectory(settings.value("inputDir", "").toString());
     settings.endGroup();
 }
 
@@ -130,7 +204,9 @@ void KMLToCSVDialog::WriteSettings() {
     settings.endGroup();
 
     settings.beginGroup("params");
-    settings.setValue("glyph", m_inputGlyph->GetFilename());
+    settings.setValue("glyph", m_inputGlyph->GetText());
+    QFileInfo fileInfo(m_inputKML->GetText());
+    settings.setValue("inputDir", fileInfo.canonicalPath());
     settings.endGroup();
 }
 
@@ -138,4 +214,10 @@ void KMLToCSVDialog::reject() {
 
     WriteSettings();
     QDialog::reject();
+}
+
+void KMLToCSVDialog::UpdateOutputDirectory(const QString& inputFile) {
+    
+    QFileInfo fileInfo(inputFile);
+    m_outputDirectory->SetText(fileInfo.dir().canonicalPath() + "/Converted");
 }
