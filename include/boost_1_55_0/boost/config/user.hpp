@@ -88,7 +88,7 @@
 // be statically linked (Boost.Test for example) and others which may only 
 // be dynamically linked (Boost.Threads for example), in these cases this 
 // macro has no effect.
-// #define BOOST_ALL_DYN_LINK
+#define BOOST_ALL_DYN_LINK
  
 // BOOST_WHATEVER_DYN_LINK: Forces library "whatever" to be linked as a dll 
 // rather than a static library on Microsoft Windows: replace the WHATEVER 
@@ -108,7 +108,7 @@
 // build variant will be automatically selected and linked against, 
 // simply by the act of including one of that library's headers.  
 // This macro turns that feature off.
-// #define BOOST_ALL_NO_LIB
+#define BOOST_ALL_NO_LIB
  
 // BOOST_WHATEVER_NO_LIB: Tells the config system not to automatically 
 // select which library to link against for library "whatever", 
