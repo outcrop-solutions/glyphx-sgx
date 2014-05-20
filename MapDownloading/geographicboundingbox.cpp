@@ -1,5 +1,7 @@
 #include "GeographicBoundingBox.h"
 #include <sstream>
+#include <fstream>
+#include <boost/filesystem.hpp>
 
 GeographicBoundingBox::GeographicBoundingBox() {
 
@@ -94,7 +96,97 @@ std::string GeographicBoundingBox::ToString() const {
 	return stream.str();
 }
 
-void GeographicBoundingBox::WriteToKMLFile(const std::string& path) const {
+void GeographicBoundingBox::WriteToKMLFile(const std::string& filename) const {
 
-	//This should probably use an KML library to write out the file eventually
+	//This should probably use an KML library to write out the file eventually.  Right now just using this code for development speed
+
+    const std::string pointNames[4] = { "NW Corner", "SW Corner", "SE Corner", "NE Corner" };
+    GeographicPoint ccwPoints[4];
+
+    boost::filesystem::path kmlpath(filename);
+
+    std::ofstream kmlfile;
+    kmlfile.open(filename, std::ios_base::out | std::ios_base::trunc);
+
+    if (!kmlfile.is_open()) {
+        throw std::exception("Failed to write bounding box KML file");
+    }
+
+    kmlfile << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" << std::endl;
+    kmlfile << "<kml xmlns = \"http://www.opengis.net/kml/2.2\" xmlns:gx = \"http://www.google.com/kml/ext/2.2\" xmlns:kml = \"http://www.opengis.net/kml/2.2\" xmlns:atom = \"http://www.w3.org/2005/Atom\">" << std::endl;
+    kmlfile << "<Document>" << std::endl;
+    kmlfile << "\t<name>" << kmlpath.filename() << "</name>" << std::endl;
+    kmlfile << "\t<Style id = \"s_ylw-pushpin\">" << std::endl;
+    kmlfile << "\t\t<IconStyle>" << std::endl;
+    kmlfile << "\t\t\t<scale>1.1</scale>" << std::endl;
+    kmlfile << "\t\t\t<Icon>" << std::endl;
+    kmlfile << "\t\t\t\t<href>http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png</href>" << std::endl;
+    kmlfile << "\t\t\t</Icon>" << std::endl;
+    kmlfile << "\t\t\t<hotSpot x = \"20\" y = \"2\" xunits = \"pixels\" yunits = \"pixels\"/>" << std::endl;
+    kmlfile << "\t\t</IconStyle>" << std::endl;
+    kmlfile << "\t</Style>" << std::endl;
+    kmlfile << "\t<Style id = \"s_ylw-pushpin_hl\">" << std::endl;
+    kmlfile << "\t\t<IconStyle>" << std::endl;
+    kmlfile << "\t\t\t<scale>1.3</scale>" << std::endl;
+    kmlfile << "\t\t\t<Icon>" << std::endl;
+    kmlfile << "\t\t\t\t<href>http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png</href>" << std::endl;
+    kmlfile << "\t\t\t</Icon>" << std::endl;
+    kmlfile << "\t\t\t<hotSpot x = \"20\" y = \"2\" xunits = \"pixels\" yunits = \"pixels\"/>" << std::endl;
+    kmlfile << "\t\t</IconStyle>" << std::endl;
+    kmlfile << "\t</Style>" << std::endl;
+    kmlfile << "\t<StyleMap id = \"m_ylw-pushpin\">" << std::endl;
+    kmlfile << "\t\t<Pair>" << std::endl;
+    kmlfile << "\t\t\t<key>normal</key>" << std::endl;
+    kmlfile << "\t\t\t<styleUrl>#s_ylw-pushpin</styleUrl>" << std::endl;
+    kmlfile << "\t\t</Pair>" << std::endl;
+    kmlfile << "\t\t<Pair>" << std::endl;
+    kmlfile << "\t\t\t<key>highlight</key>" << std::endl;
+    kmlfile << "\t\t\t<styleUrl>#s_ylw-pushpin_hl</styleUrl>" << std::endl;
+    kmlfile << "\t\t</Pair>" << std::endl;
+    kmlfile << "\t</StyleMap>" << std::endl;
+    kmlfile << "\t<Folder>" << std::endl;
+    kmlfile << "\t\t<name>" << kmlpath.stem() << " Bounding Box</name>" << std::endl;
+    kmlfile << "\t\t<open>1</open >" << std::endl;
+
+    for (int i = 0; i < 4; ++i) {
+
+        double lon, lat;
+        if (i < 2) {
+            lon = m_swCorner.get<0>();
+        }
+        else {
+            lon = m_neCorner.get<0>();
+        }
+
+        if ((i == 0) || (i == 3)) {
+            lat = m_neCorner.get<1>();
+        }
+        else {
+            lat = m_swCorner.get<1>();
+        }
+
+        kmlfile << "\t\t<Placemark>" << std::endl;
+        kmlfile << "\t\t\t<name>" << pointNames[i] << "</name>" << std::endl;
+        kmlfile << "\t\t\t<LookAt>" << std::endl;
+        kmlfile << "\t\t\t\t<longitude>" << lon << "</longitude>" << std::endl;
+        kmlfile << "\t\t\t\t<latitude>" << lat << "</latitude>" << std::endl;
+        kmlfile << "\t\t\t\t<altitude>0</altitude>" << std::endl;
+        kmlfile << "\t\t\t\t<heading>0</heading>" << std::endl;
+        kmlfile << "\t\t\t\t<tilt>0</tilt>" << std::endl;
+        kmlfile << "\t\t\t\t<range>100000</range>" << std::endl;
+        kmlfile << "\t\t\t\t<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>" << std::endl;
+        kmlfile << "\t\t\t</LookAt>" << std::endl;
+        kmlfile << "\t\t\t<styleUrl>#m_ylw-pushpin</styleUrl>" << std::endl;
+        kmlfile << "\t\t\t<Point>" << std::endl;
+        kmlfile << "\t\t\t\t<gx:drawOrder>1</gx:drawOrder>" << std::endl;
+        kmlfile << "\t\t\t\t<coordinates>" << lon << "," << lat << ", 0</coordinates>" << std::endl;
+        kmlfile << "\t\t\t</Point>" << std::endl;
+        kmlfile << "\t\t</Placemark>" << std::endl;
+    }
+
+    kmlfile << "\t</Folder>" << std::endl;
+    kmlfile << "</Document>" << std::endl;
+    kmlfile << "</kml>" << std::endl;
+
+    kmlfile.close();
 }

@@ -23,7 +23,7 @@ public:
 
 	std::string ToString() const;
 
-	void WriteToKMLFile(const std::string& path) const;
+    void WriteToKMLFile(const std::string& filename) const;
 
 private:
     GeographicPoint m_swCorner;

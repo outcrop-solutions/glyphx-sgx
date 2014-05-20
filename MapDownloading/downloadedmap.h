@@ -15,7 +15,8 @@ public:
 	DownloadedMap(const std::vector<GeographicPoint>& points, const std::string& filename, const QSize& imageSize, QObject *parent = NULL);
     ~DownloadedMap();
 
-    const GeographicBoundingBox& GetGeographicBoundingBox();
+    const GeographicBoundingBox& GetImageBoundingBox();
+    const GeographicBoundingBox& GetPointsBoundingBox();
 
 	NetworkDownloader::MapSource GetMapSource();
 	NetworkDownloader::MapType GetMapType();
@@ -25,7 +26,8 @@ private:
 	void CreateGeoreferencedImage(const std::string& inputImage);
 
 	std::string m_filename;
-    GeographicBoundingBox m_geographicBoundingBox;
+    GeographicBoundingBox m_imageBoundingBox;
+    GeographicBoundingBox m_pointsBoundingBox;
 
 	NetworkDownloader::MapSource m_mapSource;
 	NetworkDownloader::MapType m_mapType;

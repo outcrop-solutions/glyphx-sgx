@@ -9,13 +9,14 @@
 DownloadedMap::DownloadedMap(const std::vector<GeographicPoint>& points, const std::string& filename, const QSize& imageSize, QObject *parent)
     : QObject(parent),
 	m_filename(filename),
-    m_geographicBoundingBox()
+    m_imageBoundingBox(),
+    m_pointsBoundingBox(points)
 {
 	QString tempImageFilename = QDir::tempPath() + "/tempimage.png";
 
 	NetworkDownloader& downloader = NetworkDownloader::Instance();
 	
-	m_geographicBoundingBox = downloader.DownloadMap(points, tempImageFilename.toStdString(), imageSize);
+	m_imageBoundingBox = downloader.DownloadMap(points, tempImageFilename.toStdString(), imageSize);
 
 	m_mapSource = downloader.GetMapSource();
 	m_mapType = downloader.GetMapType();
@@ -34,9 +35,14 @@ DownloadedMap::~DownloadedMap()
 
 }
 
-const GeographicBoundingBox& DownloadedMap::GetGeographicBoundingBox() {
+const GeographicBoundingBox& DownloadedMap::GetImageBoundingBox() {
 
-    return m_geographicBoundingBox;
+    return m_imageBoundingBox;
+}
+
+const GeographicBoundingBox& DownloadedMap::GetPointsBoundingBox() {
+
+    return m_pointsBoundingBox;
 }
 
 NetworkDownloader::MapSource DownloadedMap::GetMapSource() {
@@ -67,10 +73,10 @@ void DownloadedMap::CreateGeoreferencedImage(const std::string& inputImage) {
 	
 	//Add bounding box in format of <top_left_lon> <top_left_lat> <bottom_right_lon> <bottom_right_lat>
 	args.append("-a_ullr");
-	args.append(QString::number(m_geographicBoundingBox.GetSWCorner().get<0>()));
-	args.append(QString::number(m_geographicBoundingBox.GetNECorner().get<1>()));
-	args.append(QString::number(m_geographicBoundingBox.GetNECorner().get<0>()));
-	args.append(QString::number(m_geographicBoundingBox.GetSWCorner().get<1>()));
+	args.append(QString::number(m_imageBoundingBox.GetSWCorner().get<0>()));
+    args.append(QString::number(m_imageBoundingBox.GetNECorner().get<1>()));
+    args.append(QString::number(m_imageBoundingBox.GetNECorner().get<0>()));
+    args.append(QString::number(m_imageBoundingBox.GetSWCorner().get<1>()));
 	
 	//Mapquest images are in spherical mercator so give it that geo reference
 	args.append("-a_srs EPSG: 4326");

@@ -10,9 +10,6 @@
 #include <QtGui/QDesktopServices>
 
 /*
-1. Calculate Center
-2. Find nearest but larger zoom level
-3. Find new bounding box based on zoom level
 
 Latitude: 1 deg = 110.54 km
 Longitude: 1 deg = 111.320*cos(latitude) km
@@ -118,7 +115,7 @@ GeographicBoundingBox NetworkDownloader::DownloadMap(const std::vector<Geographi
 	reply->deleteLater();
 
 	if (reply->error() != QNetworkReply::NoError) {
-		throw DownloadException(reply->errorString().toStdString().c_str());
+		throw DownloadException(("Network Error: "+ reply->errorString().toStdString()).c_str());
 	}
 
 	QByteArray imageData = reply->readAll();

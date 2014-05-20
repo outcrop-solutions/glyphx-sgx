@@ -129,81 +129,84 @@ void KMLToCSVDialog::accept() {
 
     if (ValidateInput()) {
 
-        QFileInfo kmlFileInfo(GetKMLFilename());
+        SynGlyphX::Application::setOverrideCursor(Qt::WaitCursor);
+
         QString tempKMLFilename;
-        QStringList args;
-
-        QString outputDirectory = m_outputDirectory->GetText() + QDir::separator();
-
-        if (kmlFileInfo.suffix() == "kml") {
-            args.append("kml_parser.py");
-            tempKMLFilename = QDir::toNativeSeparators(QDir::currentPath() + "/doc.kml");
-        }
-        else {
-            args.append("kmz_parser.py");
-            tempKMLFilename = QDir::toNativeSeparators(QDir::currentPath() + "/test.kmz");
-        }
-        QFile::copy(kmlFileInfo.canonicalFilePath(), tempKMLFilename);
-
         QString dataInFilename = QDir::toNativeSeparators(QDir::currentPath() + "/data_in.csv");
 
-        if (!RunCommand("python.exe", args, dataInFilename)) {
-            return;
+        try {
+
+            QFileInfo kmlFileInfo(GetKMLFilename());
+            QStringList args;
+
+            QString outputDirectory = m_outputDirectory->GetText() + QDir::separator();
+
+            if (kmlFileInfo.suffix() == "kml") {
+                args.append("kml_parser.py");
+                tempKMLFilename = QDir::toNativeSeparators(QDir::currentPath() + "/doc.kml");
+            }
+            else {
+                args.append("kmz_parser.py");
+                tempKMLFilename = QDir::toNativeSeparators(QDir::currentPath() + "/test.kmz");
+            }
+            QFile::copy(kmlFileInfo.canonicalFilePath(), tempKMLFilename);
+
+            RunCommand("python.exe", args, dataInFilename);
+
+            std::vector<GeographicPoint> pointsFromCSV;
+            if (!ReadPointsFromCSV(dataInFilename, pointsFromCSV)) {
+                QMessageBox::critical(this, "Error", tr("Failed to read intermediate CSV so base map couldn't be downloaded"));
+                return;
+            }
+            if (pointsFromCSV.empty()) {
+                QMessageBox::critical(this, "Error", tr("No points found in intermediate CSV so base map couldn't be downloaded"));
+                return;
+            }
+
+            QString mapfilename = outputDirectory + kmlFileInfo.baseName() + ".png";
+            DownloadedMap map(pointsFromCSV, mapfilename.toStdString(), QSize(2048, 1024));
+
+            args.clear();
+            args.append("-k");
+            args.append("-G");
+            args.append(GetCSVFilename());
+
+            args.append("-c");
+            const GeographicBoundingBox& imageBoundingBox = map.GetImageBoundingBox();
+            args.append(QString::number(imageBoundingBox.GetSWCorner().get<1>()));
+            args.append(QString::number(imageBoundingBox.GetSWCorner().get<0>()));
+            args.append(QString::number(imageBoundingBox.GetNECorner().get<1>()));
+            args.append(QString::number(imageBoundingBox.GetNECorner().get<0>()));
+
+            RunCommand(SynGlyphX::Application::applicationDirPath() + "/gps2csv.exe", args, outputDirectory + kmlFileInfo.baseName() + ".csv");
+
+            //QFile::copy(QDir::currentPath() + "/corners.txt", outputDirectory + kmlFileInfo.baseName() + "_corners.txt");
+            //QFile::copy(QDir::currentPath() + "/corners.kml", outputDirectory + kmlFileInfo.baseName() + "_corners.kml");
+
+            imageBoundingBox.WriteToKMLFile(outputDirectory.toStdString() + kmlFileInfo.baseName().toStdString() + "_image_bounding_box.kml");
+            map.GetPointsBoundingBox().WriteToKMLFile(outputDirectory.toStdString() + kmlFileInfo.baseName().toStdString() + "_points_bounding_box.kml");
+
+            QDesktopServices::openUrl(QUrl("file:///" + outputDirectory));
+            //QMessageBox::information(this, tr("Success"), tr("File successfully converted"));
+
+        }
+        catch (const std::exception& e) {
+            QMessageBox::critical(this, "Conversion Failed", e.what());
         }
 
-		std::vector<GeographicPoint> pointsFromCSV;
-		if (!ReadPointsFromCSV(dataInFilename, pointsFromCSV)) {
-			QMessageBox::critical(this, "Error", tr("Failed to read intermediate CSV so base map couldn't be downloaded"));
-			return;
-		}
-		if (pointsFromCSV.empty()) {
-			QMessageBox::critical(this, "Error", tr("No points found in intermediate CSV so base map couldn't be downloaded"));
-			return;
-		}
-
-		args.clear();
-        args.append("-p");
-		args.append("-k");
-		args.append("-G");
-		args.append(GetCSVFilename());
-
-		try {
-			QString mapfilename = outputDirectory + kmlFileInfo.baseName() + ".png";
-			DownloadedMap map(pointsFromCSV, mapfilename.toStdString(), QSize(2048, 1024));
-
-			args.append("-c");
-            const GeographicBoundingBox& boundingBox = map.GetGeographicBoundingBox();
-			args.append(QString::number(boundingBox.GetSWCorner().get<1>()));
-            args.append(QString::number(boundingBox.GetSWCorner().get<0>()));
-            args.append(QString::number(boundingBox.GetNECorner().get<1>()));
-            args.append(QString::number(boundingBox.GetNECorner().get<0>()));
-		}
-		catch (const DownloadException& e) {
-			QMessageBox::critical(this, "Error", e.what());
-			return;
-		}
-
-        if (!RunCommand(SynGlyphX::Application::applicationDirPath() + "/gps2csv.exe", args, outputDirectory + kmlFileInfo.baseName() + ".csv")) {
-            return;
-        }
-
-        QFile::copy(QDir::currentPath() + "/corners.txt", outputDirectory + kmlFileInfo.baseName() + "_corners.txt");
-        QFile::copy(QDir::currentPath() + "/corners.kml", outputDirectory + kmlFileInfo.baseName() + "_corners.kml");
+        SynGlyphX::Application::restoreOverrideCursor();
 
         //Cleanup
         QFile::remove(tempKMLFilename);
         QFile::remove(dataInFilename);
-        QFile::remove(QDir::currentPath() + "/corners.txt");
-        QFile::remove(QDir::currentPath() + "/corners.kml");
+        //QFile::remove(QDir::currentPath() + "/corners.txt");
+        //QFile::remove(QDir::currentPath() + "/corners.kml");
         QFile::remove(QDir::currentPath() + "/output.csv");
         QFile::remove(QDir::currentPath() + "/test.csv");
-
-        QDesktopServices::openUrl(QUrl("file:///" + outputDirectory));
-        //QMessageBox::information(this, tr("Success"), tr("File successfully converted"));
     }
 }
 
-bool KMLToCSVDialog::RunCommand(const QString& program, const QStringList& args, const QString& stdOutFile) {
+void KMLToCSVDialog::RunCommand(const QString& program, const QStringList& args, const QString& stdOutFile) {
 
     QProcess process;
     process.setProgram(program);
@@ -212,16 +215,12 @@ bool KMLToCSVDialog::RunCommand(const QString& program, const QStringList& args,
     process.start();
 
     if (!process.waitForFinished()) {
-        QMessageBox::critical(this, tr("Error"), program + tr(" failed to finish"));
-        return false;
+        throw std::exception((program.toStdString() + " failed to finish").c_str());
     }
 
     if (process.exitStatus() != QProcess::NormalExit) {
-        QMessageBox::critical(this, tr("Error"), program + tr(" crashed and failed"));
-        return false;
+        throw std::exception((program.toStdString() + " crashed and failed").c_str());
     }
-    
-    return true;
 }
 
 void KMLToCSVDialog::ReadSettings() {
