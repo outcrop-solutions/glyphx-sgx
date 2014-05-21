@@ -9,6 +9,7 @@
 #include "geographicboundingbox.h" 
 #include <vector>
 #include "networkdownloader.h"
+#include "sizewidget.h"
 
 class KMLToCSVDialog : public QDialog
 {
@@ -28,6 +29,7 @@ private slots:
     void UpdateOutputDirectory(const QString& inputFile);
 	//void OnDownloadMapClicked();
 	void OnOptionsClicked();
+    void OnMapSourceChanged();
 
 private:
     NetworkDownloader::MapSource GetSource();
@@ -47,6 +49,7 @@ private:
     QRadioButton* m_mapquestRadioButton;
     QRadioButton* m_googleRadioButton;
     QComboBox* m_mapTypeComboBox;
+    SynGlyphX::SizeWidget* m_imageSizeWidget;
 };
 
 #endif // KMLTOCSVDIALOG_H

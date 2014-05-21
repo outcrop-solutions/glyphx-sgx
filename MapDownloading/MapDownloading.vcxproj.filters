@@ -53,6 +53,15 @@
     <ClCompile Include="downloadexception.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="downloadoptionsdialog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_downloadoptionsdialog.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_downloadoptionsdialog.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="mapdownloading_global.h">
@@ -73,6 +82,9 @@
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="downloadedmap.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="downloadoptionsdialog.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>

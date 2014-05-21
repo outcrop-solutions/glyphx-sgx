@@ -27,13 +27,13 @@ NetworkDownloader NetworkDownloader::s_instance;
 const char* NetworkDownloader::ImageFormat("PNG");
 
 NetworkDownloader::NetworkDownloader() :
-	m_showPointsInMap(true),
+	m_showPointsInMap(false),
 	m_distanceStrategy(EarthRadiusInMeters)
 {
 	QSettings settings;
 	settings.beginGroup("MapQuestOpenSettings");
 	m_mapQuestOpenKey = settings.value("AppKey", "Fmjtd%7Cluur2du8nl%2C2l%3Do5-9arx0r").toString();
-	m_showPointsInMap = settings.value("AddPOIs", true).toBool();
+	m_showPointsInMap = settings.value("AddPOIs", false).toBool();
 	settings.endGroup();
 }
 
@@ -125,12 +125,14 @@ GeographicBoundingBox NetworkDownloader::DownloadMap(const std::vector<Geographi
 
 unsigned int NetworkDownloader::GetZoomLevel(const GeographicBoundingBox& boundingBox, const QSize& imageSize) {
 
-	double distanceInMeters = std::abs(boost::geometry::distance(boundingBox.GetWestCenter(), boundingBox.GetEastCenter(), m_distanceStrategy));
+	double hDistanceInMeters = std::abs(boost::geometry::distance(boundingBox.GetWestCenter(), boundingBox.GetEastCenter(), m_distanceStrategy));
+    double vDistanceInMeters = std::abs(boost::geometry::distance(boundingBox.GetNorthCenter(), boundingBox.GetSouthCenter(), m_distanceStrategy));
 
-    double zoomLevel = std::log((MetersPerPixelAtZoom0 * std::cos(boundingBox.GetCenter().get<1>() * DegToRad)) / (distanceInMeters / imageSize.width())) / std::log(2.0);
+    double hZoomLevel = std::log((MetersPerPixelAtZoom0 * std::cos(boundingBox.GetCenter().get<1>() * DegToRad)) / (hDistanceInMeters / imageSize.width())) / std::log(2.0);
+    double vZoomLevel = std::log((MetersPerPixelAtZoom0 * std::cos(boundingBox.GetCenter().get<1>() * DegToRad)) / (vDistanceInMeters / imageSize.height())) / std::log(2.0);
 
-	//Zoom level can never go above 18
-	return std::min(static_cast<unsigned int>(zoomLevel), MaxZoomLevel);
+	//Zoom level can never go above 18 on MapQuest Open
+	return std::min(static_cast<unsigned int>(std::min(hZoomLevel, vZoomLevel)), MaxZoomLevel);
 }
 
 QString NetworkDownloader::GenerateMapQuestOpenString(const GeographicPoint& center, const QSize& imageSize, unsigned int zoomLevel, MapType mapType, const std::vector<GeographicPoint>& points) {
@@ -159,4 +161,14 @@ QString NetworkDownloader::GenerateMapQuestOpenString(const GeographicPoint& cen
 	}
 
 	return url;
+}
+
+void NetworkDownloader::SetMapQuestOpenKey(const QString& key) {
+
+    m_mapQuestOpenKey = key;
+}
+
+const QString& NetworkDownloader::GetMapQuestOpenKey() const {
+
+    return m_mapQuestOpenKey;
 }

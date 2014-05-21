@@ -34,8 +34,13 @@ public:
     GeographicBoundingBox DownloadMap(const std::vector<GeographicPoint>& points, const std::string& filename, const QSize& imageSize, MapSource source, MapType mapType);
 
 	void SetShowPointsInMap(bool show);
-
 	bool GetShowPointsInMap();
+
+    void SetMapQuestOpenKey(const QString& key);
+    const QString& GetMapQuestOpenKey() const;
+
+    //void SetGoogleMapsKey(const QString& key);
+    //const QString& GetGoogleMapsKey() const;
 
 private:
 	unsigned int GetZoomLevel(const GeographicBoundingBox& boundingBox, const QSize& imageSize);
@@ -48,6 +53,7 @@ private:
 	DistanceStrategy m_distanceStrategy;
 
 	QString m_mapQuestOpenKey;
+    //QString m_googlemapsOpenKey;
 };
 
 #endif //NETWORKDOWNLOADER_H

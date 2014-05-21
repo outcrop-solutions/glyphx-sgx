@@ -12,7 +12,9 @@ GeographicBoundingBox::GeographicBoundingBox(const GeographicPoint& swCorner, co
     m_neCorner(neCorner),
     m_center(((swCorner.get<0>() + neCorner.get<0>()) / 2.0, (swCorner.get<1>() + neCorner.get<1>()) / 2.0)),
     m_westCenter(swCorner.get<0>(), m_center.get<1>()),
-    m_eastCenter(neCorner.get<0>(), m_center.get<1>())
+    m_eastCenter(neCorner.get<0>(), m_center.get<1>()),
+    m_northCenter(m_center.get<0>(), neCorner.get<1>()),
+    m_southCenter(m_center.get<0>(), swCorner.get<1>())
 {
 }
 
@@ -21,7 +23,9 @@ GeographicBoundingBox::GeographicBoundingBox(const GeographicPoint& center, doub
     m_swCorner(center.get<0>() - lonRadius, center.get<1>() - latRadius),
     m_neCorner(center.get<0>() + lonRadius, center.get<1>() + latRadius),
     m_westCenter(center.get<0>() - lonRadius, center.get<1>()),
-    m_eastCenter(center.get<0>() + lonRadius, center.get<1>()) {
+    m_eastCenter(center.get<0>() + lonRadius, center.get<1>()),
+    m_northCenter(center.get<0>(), center.get<1>() - latRadius),
+    m_southCenter(center.get<0>(), center.get<1>() + latRadius) {
     
 
 }
@@ -56,6 +60,12 @@ GeographicBoundingBox::GeographicBoundingBox(const std::vector<GeographicPoint>&
 
 	m_eastCenter.set<0>(m_neCorner.get<0>());
 	m_eastCenter.set<1>(m_center.get<1>());
+
+    m_northCenter.set<0>(m_center.get<0>());
+    m_northCenter.set<1>(m_neCorner.get<1>());
+
+    m_southCenter.set<0>(m_center.get<0>());
+    m_southCenter.set<1>(m_swCorner.get<1>());
 }
 
 GeographicBoundingBox::~GeographicBoundingBox()
@@ -85,6 +95,16 @@ const GeographicPoint& GeographicBoundingBox::GetWestCenter() const {
 const GeographicPoint& GeographicBoundingBox::GetEastCenter() const {
 
     return m_eastCenter;
+}
+
+const GeographicPoint& GeographicBoundingBox::GetNorthCenter() const {
+
+    return m_northCenter;
+}
+
+const GeographicPoint& GeographicBoundingBox::GetSouthCenter() const {
+
+    return m_southCenter;
 }
 
 std::string GeographicBoundingBox::ToString() const {
