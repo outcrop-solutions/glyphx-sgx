@@ -74,6 +74,15 @@
     <ClCompile Include="browselineedit.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="sizewidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_sizewidget.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_sizewidget.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="sgxgui_global.h">
@@ -94,6 +103,9 @@
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="browselineedit.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="sizewidget.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>
