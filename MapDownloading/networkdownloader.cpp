@@ -17,17 +17,16 @@ Longitude: 1 deg = 111.320*cos(latitude) km
 */
 
 const unsigned int MaxZoomLevel = 18;
-const double MetersPerPixel = 156543.034;
+const double MetersPerPixelAtZoom0 = 156543.034;
 const double EarthRadiusInMeters = 6372798.2;
 const double MetersPerDegreeLongitude = 111319.892;
+const double MetersPerDegreeLatitude = 110540.0;
 const double DegToRad = 3.14159 / 180.0;
 
 NetworkDownloader NetworkDownloader::s_instance;
 const char* NetworkDownloader::ImageFormat("PNG");
 
 NetworkDownloader::NetworkDownloader() :
-	m_mapSource(MapQuestOpen),
-	m_mapType(Hybrid),
 	m_showPointsInMap(true),
 	m_distanceStrategy(EarthRadiusInMeters)
 {
@@ -52,29 +51,9 @@ NetworkDownloader& NetworkDownloader::Instance() {
 	return s_instance;
 }
 
-void NetworkDownloader::SetMapSource(MapSource source) {
-
-	m_mapSource = source;
-}
-
-void NetworkDownloader::SetMapType(MapType type) {
-
-	m_mapType = type;
-}
-
 void NetworkDownloader::SetShowPointsInMap(bool show) {
 
 	m_showPointsInMap = show;
-}
-
-NetworkDownloader::MapSource NetworkDownloader::GetMapSource() {
-
-	return m_mapSource;
-}
-
-NetworkDownloader::MapType NetworkDownloader::GetMapType() {
-
-	return m_mapType;
 }
 
 bool NetworkDownloader::GetShowPointsInMap() {
@@ -82,15 +61,15 @@ bool NetworkDownloader::GetShowPointsInMap() {
 	return m_showPointsInMap;
 }
 
-GeographicBoundingBox NetworkDownloader::DownloadMap(const std::vector<GeographicPoint>& points, const std::string& filename, const QSize& imageSize) {
+GeographicBoundingBox NetworkDownloader::DownloadMap(const std::vector<GeographicPoint>& points, const std::string& filename, const QSize& imageSize, MapSource source, MapType mapType) {
 	
 	GeographicBoundingBox pointsBoundingBox(points);
 	unsigned int zoomLevel = GetZoomLevel(pointsBoundingBox, imageSize);
 	
 	QString imageUrl;
 
-	if (m_mapSource == MapQuestOpen) {
-		imageUrl = GenerateMapQuestOpenString(pointsBoundingBox.GetCenter(), imageSize, zoomLevel, points);
+    if (source == MapQuestOpen) {
+        imageUrl = GenerateMapQuestOpenString(pointsBoundingBox.GetCenter(), imageSize, zoomLevel, mapType, points);
 	}
 	else {
 		//eventually will implement download from Google Maps
@@ -133,8 +112,13 @@ GeographicBoundingBox NetworkDownloader::DownloadMap(const std::vector<Geographi
 		throw DownloadException("Failed to save image");
 	}
 
-	double lonRadiusInDegrees = std::abs(((MetersPerPixel * std::cos(pointsBoundingBox.GetCenter().get<1>()) / std::pow(2.0, zoomLevel)) * (imageSize.width() / 2.0)) / MetersPerDegreeLongitude);
-	double latRadiusInDegrees = std::abs(lonRadiusInDegrees * (imageSize.height() / static_cast<double>(imageSize.width())));
+    double cosineAtCenter = std::cos(pointsBoundingBox.GetCenter().get<1>() * DegToRad);
+    double metersPerPixelAtCurrentZoom = (MetersPerPixelAtZoom0 * cosineAtCenter) / std::pow(2.0, static_cast<double>(zoomLevel));
+
+    //double lonRadiusInDegrees = std::abs(((MetersPerPixelAtZoom0 * std::cos(pointsBoundingBox.GetCenter().get<1>() * DegToRad) / std::pow(2.0, zoomLevel)) * (imageSize.width() / 2.0)) / MetersPerDegreeLongitude);
+    double lonRadiusInDegrees = (metersPerPixelAtCurrentZoom  * (imageSize.width() / 2.0)) / (MetersPerDegreeLongitude  * cosineAtCenter);
+	//double latRadiusInDegrees = lonRadiusInDegrees * (imageSize.height() / static_cast<double>(imageSize.width()));
+    double latRadiusInDegrees = (metersPerPixelAtCurrentZoom * (imageSize.height() / 2.0)) / MetersPerDegreeLatitude;
 
 	return GeographicBoundingBox(pointsBoundingBox.GetCenter(), latRadiusInDegrees, lonRadiusInDegrees);
 }
@@ -143,22 +127,22 @@ unsigned int NetworkDownloader::GetZoomLevel(const GeographicBoundingBox& boundi
 
 	double distanceInMeters = std::abs(boost::geometry::distance(boundingBox.GetWestCenter(), boundingBox.GetEastCenter(), m_distanceStrategy));
 
-    double zoomLevel = std::log((MetersPerPixel * std::cos(boundingBox.GetCenter().get<1>() * DegToRad)) / (distanceInMeters / imageSize.width())) / std::log(2.0);
+    double zoomLevel = std::log((MetersPerPixelAtZoom0 * std::cos(boundingBox.GetCenter().get<1>() * DegToRad)) / (distanceInMeters / imageSize.width())) / std::log(2.0);
 
 	//Zoom level can never go above 18
 	return std::min(static_cast<unsigned int>(zoomLevel), MaxZoomLevel);
 }
 
-QString NetworkDownloader::GenerateMapQuestOpenString(const GeographicPoint& center, const QSize& imageSize, unsigned int zoomLevel, const std::vector<GeographicPoint>& points) {
+QString NetworkDownloader::GenerateMapQuestOpenString(const GeographicPoint& center, const QSize& imageSize, unsigned int zoomLevel, MapType mapType, const std::vector<GeographicPoint>& points) {
 
 	QString url = "http://open.mapquestapi.com/staticmap/v4/getmap?key=" + m_mapQuestOpenKey;
 	url += "&center=" + QString::number(center.get<1>()) + "," + QString::number(center.get<0>());
 	url += "&zoom=" + QString::number(zoomLevel) + "&size=" + QString::number(imageSize.width()) + "," + QString::number(imageSize.height());
 	url += "&type=";
-	if (m_mapType == Map) {
+	if (mapType == Map) {
 		url += "map";
 	}
-	else if (m_mapType == Satellite) {
+	else if (mapType == Satellite) {
 		url += "sat";
 	}
 	else {

@@ -2,10 +2,13 @@
 #define KMLTOCSVDIALOG_H
 
 #include <QtWidgets/QDialog>
+#include <QtWidgets/QRadioButton>
+#include <QtWidgets/QComboBox>
 #include "filelineedit.h"
 #include "directorylineedit.h"
 #include "geographicboundingbox.h" 
 #include <vector>
+#include "networkdownloader.h"
 
 class KMLToCSVDialog : public QDialog
 {
@@ -27,6 +30,8 @@ private slots:
 	void OnOptionsClicked();
 
 private:
+    NetworkDownloader::MapSource GetSource();
+    void SetRadioButtonsFromMapSource(NetworkDownloader::MapSource source);
     void ReadSettings();
     void WriteSettings();
     void RunCommand(const QString& program, const QStringList& args, const QString& stdOutFile);
@@ -39,6 +44,9 @@ private:
     SynGlyphX::DirectoryLineEdit* m_outputDirectory;
 	QPushButton* m_optionsButton;
 	QPushButton* m_downloadMapButton;
+    QRadioButton* m_mapquestRadioButton;
+    QRadioButton* m_googleRadioButton;
+    QComboBox* m_mapTypeComboBox;
 };
 
 #endif // KMLTOCSVDIALOG_H

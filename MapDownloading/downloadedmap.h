@@ -12,7 +12,7 @@ class MAPDOWNLOADING_EXPORT DownloadedMap : public QObject
     Q_OBJECT
 
 public:
-	DownloadedMap(const std::vector<GeographicPoint>& points, const std::string& filename, const QSize& imageSize, QObject *parent = NULL);
+    DownloadedMap(const std::vector<GeographicPoint>& points, const std::string& filename, const QSize& imageSize, NetworkDownloader::MapSource source, NetworkDownloader::MapType mapType, QObject *parent = NULL);
     ~DownloadedMap();
 
     const GeographicBoundingBox& GetImageBoundingBox();

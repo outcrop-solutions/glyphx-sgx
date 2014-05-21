@@ -17,6 +17,7 @@
 #include <boost/tokenizer.hpp>
 #include "downloadedmap.h"
 #include "downloadexception.h"
+#include <QtWidgets/QGroupBox>
 
 KMLToCSVDialog::KMLToCSVDialog(QWidget *parent)
     : QDialog(parent)
@@ -36,6 +37,31 @@ KMLToCSVDialog::KMLToCSVDialog(QWidget *parent)
 
     verticalLayout->addLayout(formLayout);
     verticalLayout->addStretch();
+
+    QGroupBox* mapOptionsGroupBox = new QGroupBox(tr("Map Options"), this);
+
+    QHBoxLayout* mapOptionsLayout = new QHBoxLayout(this);
+    m_mapquestRadioButton = new QRadioButton("MapQuest Open (OpenStreetMap)", mapOptionsGroupBox);
+    m_googleRadioButton = new QRadioButton("Google Maps", mapOptionsGroupBox);
+    m_mapquestRadioButton->setChecked(true);
+    QLabel* mapTypeLabel = new QLabel(tr("Type:"), mapOptionsGroupBox);
+    m_mapTypeComboBox = new QComboBox(mapOptionsGroupBox);
+    m_mapTypeComboBox->addItem(tr("Map"), NetworkDownloader::Map);
+    m_mapTypeComboBox->addItem(tr("Satellite"), NetworkDownloader::Satellite);
+    m_mapTypeComboBox->addItem(tr("Hybrid"), NetworkDownloader::Hybrid);
+
+    mapOptionsLayout->addWidget(m_mapquestRadioButton);
+    mapOptionsLayout->addWidget(m_googleRadioButton);
+    mapOptionsLayout->addStretch(1);
+    mapOptionsLayout->addWidget(mapTypeLabel);
+    mapOptionsLayout->addWidget(m_mapTypeComboBox);
+
+    mapOptionsGroupBox->setLayout(mapOptionsLayout);
+
+    //Google Maps Download is not implemented yet so keep the option disabled
+    m_googleRadioButton->setEnabled(false);
+
+    verticalLayout->addWidget(mapOptionsGroupBox);
 	
 	QHBoxLayout* buttonsLayout = new QHBoxLayout(this);
 
@@ -164,7 +190,7 @@ void KMLToCSVDialog::accept() {
             }
 
             QString mapfilename = outputDirectory + kmlFileInfo.baseName() + ".png";
-            DownloadedMap map(pointsFromCSV, mapfilename.toStdString(), QSize(2048, 1024));
+            DownloadedMap map(pointsFromCSV, mapfilename.toStdString(), QSize(2048, 1024), GetSource(), static_cast<NetworkDownloader::MapType>(m_mapTypeComboBox->currentData().toInt()));
 
             args.clear();
             args.append("-k");
@@ -234,6 +260,8 @@ void KMLToCSVDialog::ReadSettings() {
     settings.beginGroup("params");
     m_inputGlyph->SetText(settings.value("glyph", QDir::currentPath() + "/pin.csv").toString());
     m_inputKML->SetInitalBrowseDirectory(settings.value("inputDir", "").toString());
+    SetRadioButtonsFromMapSource(static_cast<NetworkDownloader::MapSource>(settings.value("MapSource", NetworkDownloader::Hybrid).toInt()));
+    m_mapTypeComboBox->setCurrentIndex(settings.value("MapType").toInt());
     settings.endGroup();
 }
 
@@ -249,7 +277,29 @@ void KMLToCSVDialog::WriteSettings() {
     settings.setValue("glyph", m_inputGlyph->GetText());
     QFileInfo fileInfo(m_inputKML->GetText());
     settings.setValue("inputDir", fileInfo.canonicalPath());
+    settings.setValue("MapSource", GetSource());
+    settings.setValue("MapType", m_mapTypeComboBox->currentIndex());
     settings.endGroup();
+}
+
+NetworkDownloader::MapSource KMLToCSVDialog::GetSource() {
+
+    if (m_googleRadioButton->isChecked()) {
+        return NetworkDownloader::GoogleMaps;
+    }
+    else {
+        return NetworkDownloader::MapQuestOpen;
+    }
+}
+
+void KMLToCSVDialog::SetRadioButtonsFromMapSource(NetworkDownloader::MapSource source) {
+
+    if (source == NetworkDownloader::GoogleMaps) {
+        m_googleRadioButton->setChecked(true);
+    }
+    else {
+        m_mapquestRadioButton->setChecked(true);
+    }
 }
 
 void KMLToCSVDialog::reject() {

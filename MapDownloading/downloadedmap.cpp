@@ -6,23 +6,30 @@
 #include "downloadexception.h"
 #include "networkdownloader.h"
 
-DownloadedMap::DownloadedMap(const std::vector<GeographicPoint>& points, const std::string& filename, const QSize& imageSize, QObject *parent)
+DownloadedMap::DownloadedMap(const std::vector<GeographicPoint>& points, const std::string& filename, const QSize& imageSize, NetworkDownloader::MapSource source, NetworkDownloader::MapType mapType, QObject *parent)
     : QObject(parent),
 	m_filename(filename),
     m_imageBoundingBox(),
-    m_pointsBoundingBox(points)
+    m_pointsBoundingBox(points),
+    m_mapSource(source),
+    m_mapType(mapType)
 {
 	QString tempImageFilename = QDir::tempPath() + "/tempimage.png";
 
 	NetworkDownloader& downloader = NetworkDownloader::Instance();
 	
-	m_imageBoundingBox = downloader.DownloadMap(points, tempImageFilename.toStdString(), imageSize);
+	m_imageBoundingBox = downloader.DownloadMap(points, tempImageFilename.toStdString(), imageSize, source, mapType);
 
-	m_mapSource = downloader.GetMapSource();
-	m_mapType = downloader.GetMapType();
 	m_showPointsInMap = downloader.GetShowPointsInMap();
 
-	QFile::copy(tempImageFilename, QString::fromStdString(filename));
+    QString imageFilename = QString::fromStdString(filename);
+
+    //if image with this filename exists delete it
+    if (QFile::exists(imageFilename)) {
+        QFile::remove(imageFilename);
+    }
+
+    QFile::copy(tempImageFilename, imageFilename);
 
 	//CreateGeoreferencedImage(tempImageFilename.toStdString());
 

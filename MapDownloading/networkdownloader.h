@@ -31,24 +31,18 @@ public:
 
 	static NetworkDownloader& Instance();
 	
-	GeographicBoundingBox DownloadMap(const std::vector<GeographicPoint>& points, const std::string& filename, const QSize& imageSize);
+    GeographicBoundingBox DownloadMap(const std::vector<GeographicPoint>& points, const std::string& filename, const QSize& imageSize, MapSource source, MapType mapType);
 
-	void SetMapSource(MapSource source);
-	void SetMapType(MapType type);
 	void SetShowPointsInMap(bool show);
 
-	MapSource GetMapSource();
-	MapType GetMapType();
 	bool GetShowPointsInMap();
 
 private:
 	unsigned int GetZoomLevel(const GeographicBoundingBox& boundingBox, const QSize& imageSize);
-	QString GenerateMapQuestOpenString(const GeographicPoint& center, const QSize& imageSize, unsigned int zoomLevel, const std::vector<GeographicPoint>& points);
+    QString GenerateMapQuestOpenString(const GeographicPoint& center, const QSize& imageSize, unsigned int zoomLevel, MapType mapType, const std::vector<GeographicPoint>& points);
 
 	static NetworkDownloader s_instance;
 
-	MapSource m_mapSource;
-	MapType m_mapType;
 	bool m_showPointsInMap;
 
 	DistanceStrategy m_distanceStrategy;
