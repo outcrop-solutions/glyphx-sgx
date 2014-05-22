@@ -167,17 +167,24 @@ void KMLToCSVDialog::accept() {
 
     if (ValidateInput()) {
 
+        QFileInfo kmlFileInfo(GetKMLFilename());
+        QString outputDirectory = m_outputDirectory->GetText() + QDir::separator();
+        QString outputCSVFilename = outputDirectory + kmlFileInfo.baseName() + ".csv";
+
+        if (QFile::exists(outputCSVFilename)) {
+            if (QMessageBox::question(this, "Output Directory Already Exists", "There is already output in the output directory.  Do you wish to overwrite it? If not, then change the name of the output directory.") == QMessageBox::No) {
+                return;
+            }
+        }
+
         SynGlyphX::Application::setOverrideCursor(Qt::WaitCursor);
 
         QString tempKMLFilename;
         QString dataInFilename = QDir::toNativeSeparators(QDir::currentPath() + "/data_in.csv");
 
         try {
-
-            QFileInfo kmlFileInfo(GetKMLFilename());
+            
             QStringList args;
-
-            QString outputDirectory = m_outputDirectory->GetText() + QDir::separator();
 
             if (kmlFileInfo.suffix() == "kml") {
                 args.append("kml_parser.py");
@@ -187,6 +194,14 @@ void KMLToCSVDialog::accept() {
                 args.append("kmz_parser.py");
                 tempKMLFilename = QDir::toNativeSeparators(QDir::currentPath() + "/test.kmz");
             }
+
+            //Cleanup - Do it at the beginning for the last run so that intermediate files can be investigated if part of the process failed
+            QFile::remove(tempKMLFilename);
+            QFile::remove(dataInFilename);
+            QFile::remove(QDir::currentPath() + "/output.csv");
+            QFile::remove(QDir::currentPath() + "/test.csv");
+            QFile::remove(QDir::currentPath() + "/doc.csv");
+
             QFile::copy(kmlFileInfo.canonicalFilePath(), tempKMLFilename);
 
             RunCommand("python.exe", args, dataInFilename);
@@ -216,13 +231,37 @@ void KMLToCSVDialog::accept() {
             args.append(QString::number(imageBoundingBox.GetNECorner().get<1>()));
             args.append(QString::number(imageBoundingBox.GetNECorner().get<0>()));
 
-            RunCommand(SynGlyphX::Application::applicationDirPath() + "/gps2csv.exe", args, outputDirectory + kmlFileInfo.baseName() + ".csv");
+            RunCommand(SynGlyphX::Application::applicationDirPath() + "/gps2csv.exe", args, outputCSVFilename);
 
             //QFile::copy(QDir::currentPath() + "/corners.txt", outputDirectory + kmlFileInfo.baseName() + "_corners.txt");
             //QFile::copy(QDir::currentPath() + "/corners.kml", outputDirectory + kmlFileInfo.baseName() + "_corners.kml");
 
             imageBoundingBox.WriteToKMLFile(outputDirectory.toStdString() + kmlFileInfo.baseName().toStdString() + "_image_bounding_box.kml");
             map.GetPointsBoundingBox().WriteToKMLFile(outputDirectory.toStdString() + kmlFileInfo.baseName().toStdString() + "_points_bounding_box.kml");
+
+            args.clear();
+            args.append(QDir::toNativeSeparators(QDir::currentPath() + "/ANTzTemplate/*"));
+            args.append(outputDirectory);
+#ifdef WIN32
+            args.append("/E");
+            args.append("/Y");
+            args.append("/Q");
+            RunCommand("xcopy", args);
+#else
+            args.append("-R";)
+            RunCommand("cp", args);
+#endif
+            QString antzMapFilename = outputDirectory + "/usr/images/map00001.jpg";
+            if (QFile::exists(antzMapFilename)) {
+                QFile::remove(antzMapFilename);
+            }
+            QFile::copy(mapfilename, antzMapFilename);
+
+            QString antzCSVFilename = outputDirectory + "/usr/csv/ANTz0001.csv";
+            if (QFile::exists(antzCSVFilename)) {
+                QFile::remove(antzCSVFilename);
+            }
+            QFile::copy(outputCSVFilename, antzCSVFilename);
 
             QDesktopServices::openUrl(QUrl("file:///" + outputDirectory));
             //QMessageBox::information(this, tr("Success"), tr("File successfully converted"));
@@ -233,14 +272,6 @@ void KMLToCSVDialog::accept() {
         }
 
         SynGlyphX::Application::restoreOverrideCursor();
-
-        //Cleanup
-        QFile::remove(tempKMLFilename);
-        QFile::remove(dataInFilename);
-        //QFile::remove(QDir::currentPath() + "/corners.txt");
-        //QFile::remove(QDir::currentPath() + "/corners.kml");
-        QFile::remove(QDir::currentPath() + "/output.csv");
-        QFile::remove(QDir::currentPath() + "/test.csv");
     }
 }
 
@@ -249,7 +280,9 @@ void KMLToCSVDialog::RunCommand(const QString& program, const QStringList& args,
     QProcess process;
     process.setProgram(program);
     process.setArguments(args);
-    process.setStandardOutputFile(stdOutFile);
+    if (!stdOutFile.isEmpty()) {
+        process.setStandardOutputFile(stdOutFile);
+    }
     process.start();
 
     if (!process.waitForFinished()) {
@@ -336,7 +369,7 @@ void KMLToCSVDialog::reject() {
 void KMLToCSVDialog::UpdateOutputDirectory(const QString& inputFile) {
     
     QFileInfo fileInfo(inputFile);
-    m_outputDirectory->SetText(fileInfo.dir().canonicalPath() + "/Converted");
+    m_outputDirectory->SetText(fileInfo.dir().canonicalPath() + "/" + fileInfo.baseName() + "_Converted");
 }
 
 //void KMLToCSVDialog::OnDownloadMapClicked() {

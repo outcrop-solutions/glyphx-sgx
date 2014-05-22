@@ -36,7 +36,7 @@ private:
     void SetRadioButtonsFromMapSource(NetworkDownloader::MapSource source);
     void ReadSettings();
     void WriteSettings();
-    void RunCommand(const QString& program, const QStringList& args, const QString& stdOutFile);
+    void RunCommand(const QString& program, const QStringList& args, const QString& stdOutFile = "");
     bool ValidateInput();
 
 	bool ReadPointsFromCSV(const QString& csvfilename, std::vector<GeographicPoint>& points);
