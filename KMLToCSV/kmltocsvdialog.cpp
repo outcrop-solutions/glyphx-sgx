@@ -19,6 +19,7 @@
 #include "downloadexception.h"
 #include <QtWidgets/QGroupBox>
 #include "downloadoptionsdialog.h"
+#include "ogrconvert.h"
 
 KMLToCSVDialog::KMLToCSVDialog(QWidget *parent)
     : QDialog(parent)
@@ -179,32 +180,20 @@ void KMLToCSVDialog::accept() {
 
         SynGlyphX::Application::setOverrideCursor(Qt::WaitCursor);
 
-        QString tempKMLFilename;
         QString dataInFilename = QDir::toNativeSeparators(QDir::currentPath() + "/data_in.csv");
 
         try {
             
             QStringList args;
 
-            if (kmlFileInfo.suffix() == "kml") {
-                args.append("kml_parser.py");
-                tempKMLFilename = QDir::toNativeSeparators(QDir::currentPath() + "/doc.kml");
-            }
-            else {
-                args.append("kmz_parser.py");
-                tempKMLFilename = QDir::toNativeSeparators(QDir::currentPath() + "/test.kmz");
-            }
-
             //Cleanup - Do it at the beginning for the last run so that intermediate files can be investigated if part of the process failed
-            QFile::remove(tempKMLFilename);
             QFile::remove(dataInFilename);
             QFile::remove(QDir::currentPath() + "/output.csv");
             QFile::remove(QDir::currentPath() + "/test.csv");
             QFile::remove(QDir::currentPath() + "/doc.csv");
 
-            QFile::copy(kmlFileInfo.canonicalFilePath(), tempKMLFilename);
-
-            RunCommand("python.exe", args, dataInFilename);
+            SynGlyphX::OGRConvert& ogrConvert = SynGlyphX::OGRConvert::Instance();
+            ogrConvert.ConvertKMLToCSV(QDir::toNativeSeparators(kmlFileInfo.canonicalFilePath()).toStdString(), QDir::toNativeSeparators(dataInFilename).toStdString());
 
             std::vector<GeographicPoint> pointsFromCSV;
             if (!ReadPointsFromCSV(dataInFilename, pointsFromCSV)) {
