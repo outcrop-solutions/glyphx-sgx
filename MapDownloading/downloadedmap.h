@@ -23,8 +23,6 @@ public:
 	bool GetShowPointsInMap();
 
 private:
-	void CreateGeoreferencedImage(const std::string& inputImage);
-
 	std::string m_filename;
     GeographicBoundingBox m_imageBoundingBox;
     GeographicBoundingBox m_pointsBoundingBox;

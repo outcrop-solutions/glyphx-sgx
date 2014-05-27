@@ -5,6 +5,7 @@
 #include <QtCore/QDir>
 #include "downloadexception.h"
 #include "networkdownloader.h"
+#include "georeference.h"
 
 DownloadedMap::DownloadedMap(const std::vector<GeographicPoint>& points, const std::string& filename, const QSize& imageSize, NetworkDownloader::MapSource source, NetworkDownloader::MapType mapType, QObject *parent)
     : QObject(parent),
@@ -14,7 +15,7 @@ DownloadedMap::DownloadedMap(const std::vector<GeographicPoint>& points, const s
     m_mapSource(source),
     m_mapType(mapType)
 {
-	QString tempImageFilename = QDir::tempPath() + "/tempimage.png";
+    QString tempImageFilename = QDir::toNativeSeparators(QDir::tempPath() + "/tempimage.png");
 
 	NetworkDownloader& downloader = NetworkDownloader::Instance();
 	
@@ -29,9 +30,10 @@ DownloadedMap::DownloadedMap(const std::vector<GeographicPoint>& points, const s
         QFile::remove(imageFilename);
     }
 
-    QFile::copy(tempImageFilename, imageFilename);
+    //QFile::copy(tempImageFilename, imageFilename);
 
-	//CreateGeoreferencedImage(tempImageFilename.toStdString());
+    SynGlyphX::GeoReference& geoReference = SynGlyphX::GeoReference::Instance();
+    geoReference.GeoReferenceImage(tempImageFilename.toStdString(), imageFilename.toStdString(), m_imageBoundingBox);
 
 	//Cleanup temporary image file since GDAL will make a copy
 	QFile::remove(tempImageFilename);
@@ -65,43 +67,4 @@ NetworkDownloader::MapType DownloadedMap::GetMapType() {
 bool DownloadedMap::GetShowPointsInMap() {
 	
 	return m_showPointsInMap;
-}
-
-void DownloadedMap::CreateGeoreferencedImage(const std::string& inputImage) {
-
-	//This should probably use GDAL as a library but for faster initial development this will call gdal_translate
-
-	QProcess process;
-	process.setProgram(SynGlyphX::Application::applicationDirPath() + "/gdal_translate.exe");
-
-	QStringList args;
-	args.append("-of"); 
-	args.append(NetworkDownloader::ImageFormat);
-	
-	//Add bounding box in format of <top_left_lon> <top_left_lat> <bottom_right_lon> <bottom_right_lat>
-	args.append("-a_ullr");
-	args.append(QString::number(m_imageBoundingBox.GetSWCorner().get<0>()));
-    args.append(QString::number(m_imageBoundingBox.GetNECorner().get<1>()));
-    args.append(QString::number(m_imageBoundingBox.GetNECorner().get<0>()));
-    args.append(QString::number(m_imageBoundingBox.GetSWCorner().get<1>()));
-	
-	//Mapquest images are in spherical mercator so give it that geo reference
-	args.append("-a_srs EPSG: 4326");
-
-	args.append(QString::fromStdString(inputImage));
-	args.append(QString::fromStdString(m_filename));
-
-	process.setArguments(args);
-	
-	process.start();
-
-	if (!process.waitForFinished()) {
-		
-		throw DownloadException("Failed to georeference: gdal_translate failed to finish");
-	}
-
-	if (process.exitStatus() != QProcess::NormalExit) {
-		
-		throw DownloadException("Failed to georeference: gdal_translate failed");
-	}
 }

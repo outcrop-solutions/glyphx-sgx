@@ -209,7 +209,6 @@ void KMLToCSVDialog::accept() {
             DownloadedMap map(pointsFromCSV, mapfilename.toStdString(), m_imageSizeWidget->GetSize(), GetSource(), static_cast<NetworkDownloader::MapType>(m_mapTypeComboBox->currentData().toInt()));
 
             args.clear();
-            args.append("-k");
             args.append("-G");
             args.append(GetCSVFilename());
 
@@ -220,10 +219,9 @@ void KMLToCSVDialog::accept() {
             args.append(QString::number(imageBoundingBox.GetNECorner().get<1>()));
             args.append(QString::number(imageBoundingBox.GetNECorner().get<0>()));
 
-            RunCommand(SynGlyphX::Application::applicationDirPath() + "/gps2csv.exe", args, outputCSVFilename);
+            args.append("-p");
 
-            //QFile::copy(QDir::currentPath() + "/corners.txt", outputDirectory + kmlFileInfo.baseName() + "_corners.txt");
-            //QFile::copy(QDir::currentPath() + "/corners.kml", outputDirectory + kmlFileInfo.baseName() + "_corners.kml");
+            RunCommand(SynGlyphX::Application::applicationDirPath() + "/gps2csv.exe", args, outputCSVFilename);
 
             imageBoundingBox.WriteToKMLFile(outputDirectory.toStdString() + kmlFileInfo.baseName().toStdString() + "_image_bounding_box.kml");
             map.GetPointsBoundingBox().WriteToKMLFile(outputDirectory.toStdString() + kmlFileInfo.baseName().toStdString() + "_points_bounding_box.kml");
