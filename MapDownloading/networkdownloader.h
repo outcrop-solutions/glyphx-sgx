@@ -4,10 +4,11 @@
 #include "mapdownloading_global.h"
 #include <QtCore/QObject>
 #include <string>
-#include "typedefs.h"
 #include <vector>
 #include "geographicboundingbox.h"
 #include <QtNetwork/QNetworkAccessManager>
+
+typedef boost::geometry::strategy::distance::haversine<double> DistanceStrategy;
 
 class MAPDOWNLOADING_EXPORT NetworkDownloader
 {

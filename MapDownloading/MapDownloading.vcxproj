@@ -47,7 +47,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <PreprocessorDefinitions>UNICODE;WIN32;WIN64;QT_DLL;QT_CORE_LIB;QT_GUI_LIB;QT_WIDGETS_LIB;MAPDOWNLOADING_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.\GeneratedFiles;.;..\..\3rdParty\include\Qt_5_2_1\;.\GeneratedFiles\$(ConfigurationName);..\..\3rdParty\include\boost_1_55_0;..\..\GUI\SGXGUI\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\GeneratedFiles;.;..\..\3rdParty\include\Qt_5_2_1\;.\GeneratedFiles\$(ConfigurationName);..\..\3rdParty\include\boost_1_55_0;..\..\Core\SGXGeospatial\;..\..\GUI\SGXGUI\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Disabled</Optimization>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -58,14 +58,14 @@
       <OutputFile>$(OutDir)\$(ProjectName).dll</OutputFile>
       <AdditionalLibraryDirectories>..\..\3rdParty\lib\$(Platform)\$(Configuration)\;..\..\lib\$(Platform)\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>boost_system-vc120-mt-gd-1_55.lib;boost_filesystem-vc120-mt-gd-1_55.lib;qtmaind.lib;Qt5Cored.lib;Qt5Guid.lib;Qt5Widgetsd.lib;Qt5Networkd.lib;%(AdditionalDependencies);SGXGUI.lib</AdditionalDependencies>
+      <AdditionalDependencies>boost_system-vc120-mt-gd-1_55.lib;boost_filesystem-vc120-mt-gd-1_55.lib;qtmaind.lib;Qt5Cored.lib;Qt5Guid.lib;Qt5Widgetsd.lib;Qt5Networkd.lib;%(AdditionalDependencies);SGXGUI.lib;SGXGeospatial.lib;SGXGeospatial.lib</AdditionalDependencies>
       <ImportLibrary>..\..\lib\$(Platform)\$(Configuration)\$(TargetName).lib</ImportLibrary>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <PreprocessorDefinitions>UNICODE;WIN32;WIN64;QT_DLL;QT_NO_DEBUG;NDEBUG;QT_CORE_LIB;QT_GUI_LIB;QT_WIDGETS_LIB;MAPDOWNLOADING_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.\GeneratedFiles;.;..\..\3rdParty\include\Qt_5_2_1\;.\GeneratedFiles\$(ConfigurationName);..\..\3rdParty\include\boost_1_55_0;..\..\GUI\SGXGUI\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\GeneratedFiles;.;..\..\3rdParty\include\Qt_5_2_1\;.\GeneratedFiles\$(ConfigurationName);..\..\3rdParty\include\boost_1_55_0;..\..\Core\SGXGeospatial\;..\..\GUI\SGXGUI\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat />
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
@@ -75,7 +75,7 @@
       <OutputFile>$(OutDir)\$(ProjectName).dll</OutputFile>
       <AdditionalLibraryDirectories>..\..\3rdParty\lib\$(Platform)\$(Configuration)\;..\..\lib\$(Platform)\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>false</GenerateDebugInformation>
-      <AdditionalDependencies>boost_system-vc120-mt-1_55.lib;boost_filesystem-vc120-mt-1_55.lib;qtmain.lib;Qt5Core.lib;Qt5Gui.lib;Qt5Widgets.lib;Qt5Network.lib;%(AdditionalDependencies);SGXGUI.lib</AdditionalDependencies>
+      <AdditionalDependencies>boost_system-vc120-mt-1_55.lib;boost_filesystem-vc120-mt-1_55.lib;qtmain.lib;Qt5Core.lib;Qt5Gui.lib;Qt5Widgets.lib;Qt5Network.lib;%(AdditionalDependencies);SGXGUI.lib;SGXGeospatial.lib;SGXGeospatial.lib</AdditionalDependencies>
       <ImportLibrary>..\..\lib\$(Platform)\$(Configuration)\$(TargetName).lib</ImportLibrary>
     </Link>
   </ItemDefinitionGroup>
@@ -95,7 +95,6 @@
     <ClCompile Include="GeneratedFiles\Release\moc_downloadoptionsdialog.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="geographicboundingbox.cpp" />
     <ClCompile Include="networkdownloader.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -120,10 +119,8 @@
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DWIN64 -DQT_DLL -DQT_NO_DEBUG -DNDEBUG -DQT_CORE_LIB -DQT_GUI_LIB -DQT_WIDGETS_LIB -DMAPDOWNLOADING_LIB -D_WINDLL "-I.\GeneratedFiles" "-I." "-I.\..\..\3rdParty\include\Qt_5_2_1" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I.\..\..\3rdParty\include\boost_1_55_0" "-I.\..\..\GUI\SGXGUI"</Command>
     </CustomBuild>
-    <ClInclude Include="geographicboundingbox.h" />
     <ClInclude Include="mapdownloading_global.h" />
     <ClInclude Include="networkdownloader.h" />
-    <ClInclude Include="typedefs.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

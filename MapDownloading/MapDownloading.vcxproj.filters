@@ -35,9 +35,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="geographicboundingbox.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="downloadedmap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -65,12 +62,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="mapdownloading_global.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="typedefs.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="geographicboundingbox.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="networkdownloader.h">
