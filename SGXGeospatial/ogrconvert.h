@@ -1,13 +1,13 @@
 #ifndef OGRCONVERT_H
 #define OGRCONVERT_H
 
-#include "sgxgdal.h"
+#include "sgxggeospatial.h"
 #include <string>
 #include <boost/filesystem.hpp>
 
 namespace SynGlyphX {
 
-    class SGXGDAL_API OGRConvert
+	class SGXGGEOSPATIAL_API OGRConvert
     {
     public:
         OGRConvert();

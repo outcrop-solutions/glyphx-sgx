@@ -35,9 +35,10 @@ namespace SynGlyphX {
         boost::filesystem::path inputPath(inputFilename);
 
         //This should be replaced with using GDAL as a library at some point
-        std::wstring ogr2ogrCommand = ogr2ogrExe.native() + L" -where \"OGR_GEOMETRY='Point'\" -lco GEOMETRY=AS_XYZ -select Name -f CSV " + intermediateCSV.native();
+        std::wstring ogr2ogrCommand = ogr2ogrExe.native() + L" -append -where \"OGR_GEOMETRY='Point'\" -lco GEOMETRY=AS_XYZ -select Name -f CSV " + intermediateCSV.native();
         if (inputPath.extension().string() == ".kmz") {
-            ogr2ogrCommand += L" /vsizip/" + inputPath.generic_wstring() + L"/doc.kml";
+			std::wstring genericInputPath = inputPath.generic_wstring();
+			ogr2ogrCommand += L" \"/vsizip/" + genericInputPath + L"/doc.kml\"";
         }
         else {
             ogr2ogrCommand += L" " + inputPath.native();
@@ -88,7 +89,9 @@ namespace SynGlyphX {
                 while (!inputCSV.eof()) {
 
                     std::getline(inputCSV, line);
-                    outputCSV << line << std::endl;
+					if (!line.empty()) {
+						outputCSV << line << std::endl;
+					}
                 }
 
                 inputCSV.close();
