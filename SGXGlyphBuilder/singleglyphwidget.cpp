@@ -4,7 +4,8 @@
 #include "typedefs.h"
 
 SingleGlyphWidget::SingleGlyphWidget(ChildOptions childOptions, QWidget *parent)
-    : QWidget(parent)
+    : QWidget(parent),
+    m_childrenSpinBox(NULL)
 {
     CreateWidgets(childOptions);
 }
@@ -145,7 +146,9 @@ void SingleGlyphWidget::SetWidgetFromGlyph(boost::shared_ptr<const SynGlyphX::Gl
     m_rotateWidget->Set(glyph->GetRotate());
     m_scaleWidget->Set(glyph->GetScale());
 
-    m_childrenSpinBox->setValue(glyph->GetNumberOfChildren());
+    if (m_childrenSpinBox != NULL) {
+        m_childrenSpinBox->setValue(glyph->GetNumberOfChildren());
+    }
 }
 
 void SingleGlyphWidget::SetGlyphFromWidget(boost::shared_ptr<SynGlyphX::Glyph> glyph) {
@@ -161,7 +164,12 @@ void SingleGlyphWidget::SetGlyphFromWidget(boost::shared_ptr<SynGlyphX::Glyph> g
     glyph->SetRotate(m_rotateWidget->GetX(), m_rotateWidget->GetY(), m_rotateWidget->GetZ());
     glyph->SetScale(m_scaleWidget->GetX(), m_scaleWidget->GetY(), m_scaleWidget->GetZ());
 
-    glyph->SetNumberOfChildren(static_cast<unsigned int>(m_childrenSpinBox->value()));
+    if (m_childrenSpinBox != NULL) {
+        glyph->SetNumberOfChildren(static_cast<unsigned int>(m_childrenSpinBox->value()));
+    }
+    else {
+        glyph->SetNumberOfChildren(0);
+    }
 }
 
 QString SingleGlyphWidget::ShapeToString(SynGlyphX::Geometry::Shape shape) {
