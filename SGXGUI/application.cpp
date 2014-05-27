@@ -17,9 +17,6 @@ namespace SynGlyphX {
 
     void Application::Setup(const QString& appName, const QString& appVersion) {
 
-        addLibraryPath(QDir::currentPath() + QDir::separator() + "qt_plugins");
-        //Set the default application icon
-        
         setOrganizationName("SynGlyphX");
         setOrganizationDomain("www.synglyphx.com");
 
@@ -29,6 +26,7 @@ namespace SynGlyphX {
 
     void Application::SetupIcons(const QIcon& windowIcon) {
 
+		//Set the default application icon
         setWindowIcon(windowIcon);
     }
 

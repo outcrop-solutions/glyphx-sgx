@@ -3,4 +3,7 @@
       <file>Resources/synglyphx_splash.png</file>
       <file>Resources/synglyphx_x.ico</file>
     </qresource>
+    <qresource prefix="/qt/etc">
+      <file alias="qt.conf">Resources/qt.conf</file>
+    </qresource>
 </RCC>
