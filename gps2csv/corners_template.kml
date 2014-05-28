@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<boundingbox>
+                <sw>_SW_lat_,_SW_lon_</sw>
+                <ne>_NE_lat_,_NE_lon_</ne>
+<units>degrees</units>
+</boundingbox>
