@@ -30,20 +30,32 @@ NetworkDownloader::NetworkDownloader() :
 	m_showPointsInMap(false),
 	m_distanceStrategy(EarthRadiusInMeters)
 {
-	QSettings settings;
-	settings.beginGroup("MapQuestOpenSettings");
-	m_mapQuestOpenKey = settings.value("AppKey", "Fmjtd%7Cluur2du8nl%2C2l%3Do5-9arx0r").toString();
-	m_showPointsInMap = settings.value("AddPOIs", false).toBool();
-	settings.endGroup();
+    ReadSettings();
 }
 
 NetworkDownloader::~NetworkDownloader()
 {
-	QSettings settings;
-	settings.beginGroup("MapQuestOpenSettings");
-	settings.setValue("AppKey", m_mapQuestOpenKey);
-	settings.setValue("AddPOIs", m_showPointsInMap);
-	settings.endGroup();
+	
+}
+
+void NetworkDownloader::ReadSettings() {
+
+    QSettings settings("SynGlyphX", "MapDownloading");
+    settings.beginGroup("MapQuestOpenSettings");
+
+    m_mapQuestOpenKey = settings.value("AppKey", "").toString();
+
+    m_showPointsInMap = settings.value("AddPOIs", false).toBool();
+    settings.endGroup();
+}
+
+void NetworkDownloader::WriteSettings() {
+
+    QSettings settings("SynGlyphX", "MapDownloading");
+    settings.beginGroup("MapQuestOpenSettings");
+    settings.setValue("AppKey", m_mapQuestOpenKey);
+    settings.setValue("AddPOIs", m_showPointsInMap);
+    settings.endGroup();
 }
 
 NetworkDownloader& NetworkDownloader::Instance() {
@@ -54,6 +66,7 @@ NetworkDownloader& NetworkDownloader::Instance() {
 void NetworkDownloader::SetShowPointsInMap(bool show) {
 
 	m_showPointsInMap = show;
+    WriteSettings();
 }
 
 bool NetworkDownloader::GetShowPointsInMap() {
@@ -166,6 +179,7 @@ QString NetworkDownloader::GenerateMapQuestOpenString(const GeographicPoint& cen
 void NetworkDownloader::SetMapQuestOpenKey(const QString& key) {
 
     m_mapQuestOpenKey = key;
+    WriteSettings();
 }
 
 const QString& NetworkDownloader::GetMapQuestOpenKey() const {

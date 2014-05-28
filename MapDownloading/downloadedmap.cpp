@@ -15,7 +15,7 @@ DownloadedMap::DownloadedMap(const std::vector<GeographicPoint>& points, const s
     m_mapSource(source),
     m_mapType(mapType)
 {
-    QString tempImageFilename = QDir::toNativeSeparators(QDir::tempPath() + "/tempimage.png");
+    QString tempImageFilename = QDir::toNativeSeparators(QDir::currentPath() + "/tempimage.png");
 
 	NetworkDownloader& downloader = NetworkDownloader::Instance();
 	

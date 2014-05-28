@@ -11,8 +11,11 @@ DownloadOptionsDialog::DownloadOptionsDialog(QWidget *parent)
     setMinimumWidth(500);
 
     QVBoxLayout* layout = new QVBoxLayout(this);
+
+#ifdef _DEBUG
     m_addPointsToMap = new QCheckBox(tr("Add Points To Map"), this);
     layout->addWidget(m_addPointsToMap);
+#endif
 
     m_mapquestKeyLineEdit = new QLineEdit(this);
     m_googleMapsKeyLineEdit = new QLineEdit(this);
@@ -31,11 +34,14 @@ DownloadOptionsDialog::DownloadOptionsDialog(QWidget *parent)
 
     setLayout(layout);
 
-    setWindowTitle(tr("Map Download Options"));
+    setWindowTitle(tr("Map Download Settings"));
 
     NetworkDownloader& networkDownloader = NetworkDownloader::Instance();
     m_mapquestKeyLineEdit->setText(networkDownloader.GetMapQuestOpenKey());
+
+#ifdef _DEBUG
     m_addPointsToMap->setChecked(networkDownloader.GetShowPointsInMap());
+#endif
 }
 
 DownloadOptionsDialog::~DownloadOptionsDialog()
@@ -54,7 +60,10 @@ void DownloadOptionsDialog::accept() {
     }
 
     networkDownloader.SetMapQuestOpenKey(m_mapquestKeyLineEdit->text());
+
+#ifdef _DEBUG
     networkDownloader.SetShowPointsInMap(m_addPointsToMap->isChecked());
+#endif
 
     QDialog::accept();
 }

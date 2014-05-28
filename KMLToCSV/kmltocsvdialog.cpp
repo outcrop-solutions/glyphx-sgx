@@ -76,7 +76,7 @@ KMLToCSVDialog::KMLToCSVDialog(QWidget *parent)
 	
 	QHBoxLayout* buttonsLayout = new QHBoxLayout(this);
 
-	m_optionsButton = new QPushButton(tr("Options"), this);
+	m_optionsButton = new QPushButton(tr("Settings"), this);
 	QObject::connect(m_optionsButton, SIGNAL(clicked()), this, SLOT(OnOptionsClicked()));
 	buttonsLayout->addWidget(m_optionsButton);
 
@@ -164,9 +164,36 @@ bool KMLToCSVDialog::ValidateInput() {
     return true;
 }
 
+bool KMLToCSVDialog::VerifyKeys() {
+
+    NetworkDownloader& downloader = NetworkDownloader::Instance();
+    NetworkDownloader::MapSource source = GetSource();
+    if (source == NetworkDownloader::MapQuestOpen) {
+
+        if (downloader.GetMapQuestOpenKey().isEmpty()) {
+            
+            QMessageBox messageBox(QMessageBox::Critical, tr("MapQuest Key Missing"), "MapQuest needs a key to download imagery.  To get a key, go to:<br/><A HREF=\"http://developer.mapquest.com/\">http://developer.mapquest.com/</A><br/><br/>You are responsible for obeying MapQuest licensing when downloading imagery.<br/><A HREF=\"http://developer.mapquest.com/web/tools/getting-started/terms-overview\">http://developer.mapquest.com/web/tools/getting-started/terms-overview</A>", QMessageBox::Ok);
+            messageBox.setTextFormat(Qt::RichText);
+            messageBox.setTextInteractionFlags(Qt::TextBrowserInteraction);
+            messageBox.exec();
+            
+            return false;
+        }
+        else {
+            return true;
+        }
+    }
+    else if (source == NetworkDownloader::GoogleMaps) {
+
+        return false;
+    }
+
+    return false;
+}
+
 void KMLToCSVDialog::accept() {
 
-    if (ValidateInput()) {
+    if (VerifyKeys() && ValidateInput()) {
 
         QFileInfo kmlFileInfo(GetKMLFilename());
         QString outputDirectory = m_outputDirectory->GetText() + QDir::separator();
@@ -249,6 +276,11 @@ void KMLToCSVDialog::accept() {
                 QFile::remove(antzCSVFilename);
             }
             QFile::copy(outputCSVFilename, antzCSVFilename);
+
+            //Copy aux.xml file
+            QString cornersXMLFilename = QDir::toNativeSeparators(QDir::currentPath() + "/corners.xml");
+            QFile::copy(cornersXMLFilename, outputCSVFilename + ".aux.xml");
+            QFile::remove(cornersXMLFilename);
 
             QDesktopServices::openUrl(QUrl("file:///" + outputDirectory));
             //QMessageBox::information(this, tr("Success"), tr("File successfully converted"));

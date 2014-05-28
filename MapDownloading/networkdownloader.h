@@ -46,6 +46,8 @@ public:
 private:
 	unsigned int GetZoomLevel(const GeographicBoundingBox& boundingBox, const QSize& imageSize);
     QString GenerateMapQuestOpenString(const GeographicPoint& center, const QSize& imageSize, unsigned int zoomLevel, MapType mapType, const std::vector<GeographicPoint>& points);
+    void ReadSettings();
+    void WriteSettings();
 
 	static NetworkDownloader s_instance;
 

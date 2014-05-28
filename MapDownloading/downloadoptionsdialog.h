@@ -20,7 +20,10 @@ public slots:
 private:
     QLineEdit* m_mapquestKeyLineEdit;
     QLineEdit* m_googleMapsKeyLineEdit;
+
+#ifdef _DEBUG
     QCheckBox* m_addPointsToMap;
+#endif
 };
 
 #endif // DOWNLOADOPTIONSDIALOG_H
