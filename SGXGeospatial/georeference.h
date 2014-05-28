@@ -15,7 +15,8 @@ namespace SynGlyphX {
 
 		static GeoReference& Instance();
 
-		void GeoReferenceImage(const std::string& inputFilename, const std::string& outputFilename, const GeographicBoundingBox& boundingBox) const;
+        //Mapquest images are in spherical mercator so default to that geo reference
+        void GeoReferenceImage(const std::string& inputFilename, const std::string& outputFilename, const GeographicBoundingBox& boundingBox, const std::string& spatialRef = "EPSG:4326") const;
 
 	private:
 		static GeoReference s_instance;

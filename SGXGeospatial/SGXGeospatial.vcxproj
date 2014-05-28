@@ -11,7 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{013D7675-2364-40EB-8766-6B0CEB0B33CB}</ProjectGuid>
+    <ProjectGuid>{3A2E1233-CA11-41E6-AEC0-8BE69721493B}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>OGRConversion</RootNamespace>
     <ProjectName>SGXGeospatial</ProjectName>

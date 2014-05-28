@@ -109,9 +109,11 @@ const GeographicPoint& GeographicBoundingBox::GetSouthCenter() const {
 
 std::string GeographicBoundingBox::ToString() const {
 
+    //Print bounding box in format of <top_left_lon> <top_left_lat> <bottom_right_lon> <bottom_right_lat> to follow gdal_translate order of values 
+
 	std::stringstream stream;
 	stream.precision(8);
-	stream << m_swCorner.get<1>() << " " << m_swCorner.get<0>() << " " << m_neCorner.get<1>() << " " << m_neCorner.get<0>();
+    stream << m_swCorner.get<0>() << " " << m_neCorner.get<1>() << " " << m_neCorner.get<0>() << " " << m_swCorner.get<1>();
 
 	return stream.str();
 }
