@@ -248,6 +248,11 @@ void KMLToCSVDialog::accept() {
 
             args.append("-p");
 
+            QString tagsFilename = outputDirectory + kmlFileInfo.baseName() + ".tags.csv";
+
+            args.append("-T");
+            args.append(tagsFilename);
+
             RunCommand(SynGlyphX::Application::applicationDirPath() + "/gps2csv.exe", args, outputCSVFilename);
 
             imageBoundingBox.WriteToKMLFile(outputDirectory.toStdString() + kmlFileInfo.baseName().toStdString() + "_image_bounding_box.kml");
@@ -276,6 +281,12 @@ void KMLToCSVDialog::accept() {
                 QFile::remove(antzCSVFilename);
             }
             QFile::copy(outputCSVFilename, antzCSVFilename);
+
+            QString antzTagsFilename = outputDirectory + "/usr/csv/ANTzTag0001.csv";
+            if (QFile::exists(antzTagsFilename)) {
+                QFile::remove(antzTagsFilename);
+            }
+            QFile::copy(tagsFilename, antzTagsFilename);
 
             //Copy aux.xml file
             QString cornersXMLFilename = QDir::toNativeSeparators(QDir::currentPath() + "/corners.xml");
