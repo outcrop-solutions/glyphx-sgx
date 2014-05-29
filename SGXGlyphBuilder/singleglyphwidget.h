@@ -9,7 +9,6 @@
 #include <boost/shared_ptr.hpp>
 #include "coloralphawidget.h"
 #include "xyzwidget.h"
-#include "typedefs.h"
 #include "glyph.h"
 
 class SingleGlyphWidget : public QWidget

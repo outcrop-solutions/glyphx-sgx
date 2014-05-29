@@ -1,7 +1,6 @@
 #include "singleglyphwidget.h"
 #include <QtWidgets/QFormLayout>
 #include <QtWidgets/QGroupBox>
-#include "typedefs.h"
 
 SingleGlyphWidget::SingleGlyphWidget(ChildOptions childOptions, QWidget *parent)
     : QWidget(parent),

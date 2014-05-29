@@ -77,15 +77,6 @@
     <ClCompile Include="coloralphawidget.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="xyzwidget.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_xyzwidget.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_xyzwidget.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
     <ClCompile Include="antzwidget.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -146,9 +137,6 @@
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="coloralphawidget.h">
-      <Filter>Header Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="xyzwidget.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="antzwidget.h">

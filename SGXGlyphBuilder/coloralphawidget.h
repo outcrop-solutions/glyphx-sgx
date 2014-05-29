@@ -3,7 +3,7 @@
 
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QSpinBox>
-#include "typedefs.h"
+#include "foundationtypes.h"
 
 class ColorAlphaWidget : public QWidget
 {

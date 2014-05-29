@@ -4,7 +4,7 @@
 #include "ANTzBridge.h"
 #include <boost/shared_ptr.hpp>
 #include <vector>
-#include "typedefs.h"
+#include "foundationtypes.h"
 #include "data/nptypes.h"
 
 namespace SynGlyphX {
