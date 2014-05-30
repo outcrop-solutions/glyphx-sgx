@@ -99,7 +99,7 @@ KMLToCSVDialog::KMLToCSVDialog(QWidget *parent)
 
     ReadSettings();
 
-    setWindowTitle(tr("KML To CSV Converter"));
+    setWindowTitle(tr("KML 2 Glyph Viewer"));
 }
 
 KMLToCSVDialog::~KMLToCSVDialog()

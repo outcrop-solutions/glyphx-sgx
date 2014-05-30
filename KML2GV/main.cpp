@@ -5,7 +5,7 @@
 
 int main(int argc, char *argv[])
 {
-    SynGlyphX::Application::Setup("KMLToCSV", "0.8");
+    SynGlyphX::Application::Setup("KML2GSV", "1.0");
     SynGlyphX::Application a(argc, argv);
 
     SynGlyphX::Application::SetupIcons(QIcon(":SGXGUI/Resources/synglyphx_x.ico"));
@@ -16,7 +16,7 @@ int main(int argc, char *argv[])
     splash.setPixmap(pixmap);
     splash.show();
 
-    splash.showMessage("Loading KML To CSV Converter", Qt::AlignHCenter | Qt::AlignBottom);
+    splash.showMessage("Loading KML 2 Glyph Viewer", Qt::AlignHCenter | Qt::AlignBottom);
 
     a.processEvents();
 
