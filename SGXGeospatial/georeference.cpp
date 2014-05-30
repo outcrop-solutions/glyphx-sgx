@@ -43,7 +43,12 @@ namespace SynGlyphX {
 
         if (std::system(gdalCommand.c_str()) == -1) {
 
-            throw std::exception(_strerror("Failed to georeference image."));
+            throw std::exception(_strerror("Georeferce command failed:"));
+        }
+
+        if (!boost::filesystem::exists(outputFilename)) {
+            
+            throw std::exception("Georefercing failed.");
         }
 
 #ifdef _DEBUG
