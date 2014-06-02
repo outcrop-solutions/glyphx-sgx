@@ -14,7 +14,7 @@ public:
     ~ModalGlyphWidget();
 
 private slots:
-    void OnWidgetUpdated();
+    void OnWidgetUpdated(GlyphTreeModel::PropertyUpdates updates);
     void SelectionChanged(const QItemSelection& selected, const QItemSelection& deselected);
     void OnNodeUpdated(const QModelIndex& index);
 
@@ -25,6 +25,7 @@ private:
     
     GlyphTreeModel* m_model;
     QItemSelectionModel* m_selectionModel;
+    std::vector<QMetaObject::Connection> m_propertyConnections;
 };
 
 #endif // MODALGLYPHWIDGET_H

@@ -21,31 +21,26 @@ ModalGlyphWidget::~ModalGlyphWidget()
 
 void ModalGlyphWidget::ConnectWidgetSignals() {
 
-    QObject::connect(m_geometryShapeComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(OnWidgetUpdated()));
-    QObject::connect(m_geometrySurfaceComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(OnWidgetUpdated()));
-    QObject::connect(m_topologyComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(OnWidgetUpdated()));
+    m_propertyConnections.push_back(QObject::connect(m_geometryShapeComboBox, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, [this]{ OnWidgetUpdated(GlyphTreeModel::UpdateGeometry); }));
+    m_propertyConnections.push_back(QObject::connect(m_geometrySurfaceComboBox, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, [this]{ OnWidgetUpdated(GlyphTreeModel::UpdateSurface); }));
+    m_propertyConnections.push_back(QObject::connect(m_topologyComboBox, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, [this]{ OnWidgetUpdated(GlyphTreeModel::UpdateTopology); }));
 
-    QObject::connect(m_colorWidget, SIGNAL(ColorChanged(const QColor&)), this, SLOT(OnWidgetUpdated()));
+    m_propertyConnections.push_back(QObject::connect(m_colorWidget, &ColorAlphaWidget::ColorChanged, this, [this]{ OnWidgetUpdated(GlyphTreeModel::UpdateColor); }));
 
-    QObject::connect(m_translateWidget, SIGNAL(ValuesChanged(double, double, double)), this, SLOT(OnWidgetUpdated()));
-    QObject::connect(m_rotateWidget, SIGNAL(ValuesChanged(double, double, double)), this, SLOT(OnWidgetUpdated()));
-    QObject::connect(m_scaleWidget, SIGNAL(ValuesChanged(double, double, double)), this, SLOT(OnWidgetUpdated()));
+    m_propertyConnections.push_back(QObject::connect(m_translateWidget, &XYZWidget::ValuesChanged, this, [this]{ OnWidgetUpdated(GlyphTreeModel::UpdatePosition); }));
+    m_propertyConnections.push_back(QObject::connect(m_rotateWidget, &XYZWidget::ValuesChanged, this, [this]{ OnWidgetUpdated(GlyphTreeModel::UpdateRotation); }));
+    m_propertyConnections.push_back(QObject::connect(m_scaleWidget, &XYZWidget::ValuesChanged, this, [this]{ OnWidgetUpdated(GlyphTreeModel::UpdateScale); }));
 }
 
 void ModalGlyphWidget::DisconnectWidgetSignals() {
 
-    QObject::disconnect(m_geometryShapeComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(OnWidgetUpdated()));
-    QObject::disconnect(m_geometrySurfaceComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(OnWidgetUpdated()));
-    QObject::disconnect(m_topologyComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(OnWidgetUpdated()));
-
-    QObject::disconnect(m_colorWidget, SIGNAL(ColorChanged(const QColor&)), this, SLOT(OnWidgetUpdated()));
-
-    QObject::disconnect(m_translateWidget, SIGNAL(ValuesChanged(double, double, double)), this, SLOT(OnWidgetUpdated()));
-    QObject::disconnect(m_rotateWidget, SIGNAL(ValuesChanged(double, double, double)), this, SLOT(OnWidgetUpdated()));
-    QObject::disconnect(m_scaleWidget, SIGNAL(ValuesChanged(double, double, double)), this, SLOT(OnWidgetUpdated()));
+    for (int i = 0; i < m_propertyConnections.size(); ++i) {
+        QObject::disconnect(m_propertyConnections[i]);
+    }
+    m_propertyConnections.clear();
 }
 
-void ModalGlyphWidget::OnWidgetUpdated() {
+void ModalGlyphWidget::OnWidgetUpdated(GlyphTreeModel::PropertyUpdates updates) {
 
     const QModelIndexList& selected = m_selectionModel->selectedIndexes();
     if (!selected.isEmpty()) {
@@ -53,7 +48,7 @@ void ModalGlyphWidget::OnWidgetUpdated() {
         boost::shared_ptr<SynGlyphX::Glyph> glyph(new SynGlyphX::Glyph());
         SetGlyphFromWidget(glyph);
 
-        m_model->UpdateNode(selected.back(), glyph);
+        m_model->UpdateNodes(selected, glyph, updates);
     }
 }
 
@@ -79,7 +74,9 @@ void ModalGlyphWidget::UpdateWidget(pNPnode node) {
 
 void ModalGlyphWidget::OnNodeUpdated(const QModelIndex& index) {
 
-    if (m_selectionModel->isSelected(index)) {
+    const QModelIndexList& selectedList = m_selectionModel->selectedIndexes();
+    if (selectedList.back() == index) {
+
         DisconnectWidgetSignals();
         UpdateWidget(static_cast<pNPnode>(index.internalPointer()));
         ConnectWidgetSignals();

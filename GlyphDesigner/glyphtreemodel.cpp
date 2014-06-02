@@ -208,7 +208,8 @@ pNPnode GlyphTreeModel::CreateNodeFromTemplate(pNPnode parent, boost::shared_ptr
 
     glyph->selected = 0;
 
-    UpdateNode(glyph, glyphTemplate);
+    PropertyUpdates updates = UpdateAll ^ UpdatePosition;
+    UpdateNode(glyph, glyphTemplate, updates);
 
     return glyph;
 }
@@ -219,48 +220,68 @@ void GlyphTreeModel::CreateRootPinNode() {
     npNodeNew(kNodePin, m_rootGlyph, m_antzData);
 }
 
-void GlyphTreeModel::UpdateNode(const QModelIndex& index, boost::shared_ptr<const SynGlyphX::Glyph> glyph) {
+void GlyphTreeModel::UpdateNodes(const QModelIndexList& indexList, boost::shared_ptr<const SynGlyphX::Glyph> glyph, PropertyUpdates updates) {
 
-    UpdateNode(static_cast<pNPnode>(index.internalPointer()), glyph, true);
-    emit NodeUpdated(index);
+    for (int i = 0; i < indexList.length(); ++i) {
+        
+        UpdateNode(indexList[i], glyph, updates);
+    }
 }
 
-void GlyphTreeModel::UpdateNode(pNPnode glyph, boost::shared_ptr<const SynGlyphX::Glyph> glyphTemplate, bool updateTranslate) {
+void GlyphTreeModel::UpdateNode(const QModelIndex& index, boost::shared_ptr<const SynGlyphX::Glyph> glyph, PropertyUpdates updates) {
 
-    SynGlyphX::Vector3 scale = glyphTemplate->GetScale();
-    glyph->scale.x = scale[0];
-    glyph->scale.y = scale[1];
-    glyph->scale.z = scale[2];
+    if (index.isValid()) {
+        UpdateNode(static_cast<pNPnode>(index.internalPointer()), glyph, updates);
+        emit NodeUpdated(index);
+    }
+}
 
-    if (updateTranslate) {
+void GlyphTreeModel::UpdateNode(pNPnode glyph, boost::shared_ptr<const SynGlyphX::Glyph> glyphTemplate, PropertyUpdates updates) {
+
+    if (updates.testFlag(UpdateScale)) {
+        SynGlyphX::Vector3 scale = glyphTemplate->GetScale();
+        glyph->scale.x = scale[0];
+        glyph->scale.y = scale[1];
+        glyph->scale.z = scale[2];
+    }
+
+    if (updates.testFlag(UpdatePosition)) {
         SynGlyphX::Vector3 translate = glyphTemplate->GetTranslate();
         glyph->translate.x = translate[0];
         glyph->translate.y = translate[1];
         glyph->translate.z = translate[2];
     }
 
-    SynGlyphX::Vector3 rotation = glyphTemplate->GetRotate();
-    glyph->rotate.x = rotation[0];
-    glyph->rotate.y = rotation[1];
-    glyph->rotate.z = rotation[2];
-
-    glyph->geometry = 2 * glyphTemplate->GetShape();
-    
-    //This is necessary because ANTz screwed up the enum for geometries
-    if (glyphTemplate->GetShape() == SynGlyphX::Geometry::Pin) {
-        glyph->geometry += (1 - glyphTemplate->GetSurface());
-    }
-    else {
-        glyph->geometry += glyphTemplate->GetSurface();
+    if (updates.testFlag(UpdateRotation)) {
+        SynGlyphX::Vector3 rotation = glyphTemplate->GetRotate();
+        glyph->rotate.x = rotation[0];
+        glyph->rotate.y = rotation[1];
+        glyph->rotate.z = rotation[2];
     }
 
-    SynGlyphX::Color color = glyphTemplate->GetColor();
-    glyph->color.r = color[0];
-    glyph->color.g = color[1];
-    glyph->color.b = color[2];
-    glyph->color.a = color[3];
+    if ((updates.testFlag(UpdateGeometry)) || (updates.testFlag(UpdateSurface))) {
+        glyph->geometry = 2 * glyphTemplate->GetShape();
 
-    glyph->topo = glyphTemplate->GetTopology();
+        //This is necessary because ANTz screwed up the enum for geometries
+        if (glyphTemplate->GetShape() == SynGlyphX::Geometry::Pin) {
+            glyph->geometry += (1 - glyphTemplate->GetSurface());
+        }
+        else {
+            glyph->geometry += glyphTemplate->GetSurface();
+        }
+    }
+
+    if (updates.testFlag(UpdateColor)) {
+        SynGlyphX::Color color = glyphTemplate->GetColor();
+        glyph->color.r = color[0];
+        glyph->color.g = color[1];
+        glyph->color.b = color[2];
+        glyph->color.a = color[3];
+    }
+
+    if (updates.testFlag(UpdateTopology)) {
+        glyph->topo = glyphTemplate->GetTopology();
+    }
 }
 
 QModelIndex GlyphTreeModel::IndexFromANTzID(int id) {
@@ -336,4 +357,39 @@ boost::shared_ptr<const SynGlyphX::Glyph> GlyphTreeModel::GetClipboardGlyph() co
 void GlyphTreeModel::CopyToClipboard(const QModelIndex& index, bool removeFromTree) {
 
     //m_clipboardGlyph.reset(new SynGlyphX::Glyph(index.))
+}
+
+GlyphTreeModel::PropertyUpdates GlyphTreeModel::FindUpdates(boost::shared_ptr<const SynGlyphX::Glyph> oldGlyph, boost::shared_ptr<const SynGlyphX::Glyph> newGlyph) {
+
+    PropertyUpdates updates = UpdateNone;
+
+    if (oldGlyph->GetColor() != newGlyph->GetColor()) {
+        updates |= UpdateColor;
+    }
+
+    if (oldGlyph->GetShape() != newGlyph->GetShape()) {
+        updates |= UpdateGeometry;
+    }
+
+    if (oldGlyph->GetTopology() != newGlyph->GetTopology()) {
+        updates |= UpdateTopology;
+    }
+
+    if (oldGlyph->GetSurface() != newGlyph->GetSurface()) {
+        updates |= UpdateSurface;
+    }
+
+    if (oldGlyph->GetTranslate() != newGlyph->GetTranslate()) {
+        updates |= UpdatePosition;
+    }
+
+    if (oldGlyph->GetRotate() != newGlyph->GetRotate()) {
+        updates |= UpdateRotation;
+    }
+
+    if (oldGlyph->GetScale() != newGlyph->GetScale()) {
+        updates |= UpdateScale;
+    }
+
+    return updates;
 }
