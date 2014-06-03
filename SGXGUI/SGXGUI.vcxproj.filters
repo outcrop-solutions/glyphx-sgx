@@ -83,6 +83,15 @@
     <ClCompile Include="coloralphawidget.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="groupboxsinglewidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_groupboxsinglewidget.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_groupboxsinglewidget.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="sgxgui_global.h">
@@ -106,6 +115,9 @@
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="coloralphawidget.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="groupboxsinglewidget.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>
