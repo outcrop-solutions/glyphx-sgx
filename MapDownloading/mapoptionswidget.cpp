@@ -28,8 +28,6 @@ MapOptionsWidget::MapOptionsWidget(QWidget *parent)
     mapOptionsLayout->addWidget(mapTypeLabel);
     mapOptionsLayout->addWidget(m_mapTypeComboBox);
 
-    mapOptionsLayout->setContentsMargins(0, 0, 0, 0);
-
     setLayout(mapOptionsLayout);
 
     ReadSettings();
