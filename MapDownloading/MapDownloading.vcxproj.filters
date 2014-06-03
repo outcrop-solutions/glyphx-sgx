@@ -59,6 +59,15 @@
     <ClCompile Include="GeneratedFiles\Release\moc_downloadoptionsdialog.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="mapoptionswidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_mapoptionswidget.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_mapoptionswidget.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="mapdownloading_global.h">
@@ -76,6 +85,9 @@
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="downloadoptionsdialog.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="mapoptionswidget.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>

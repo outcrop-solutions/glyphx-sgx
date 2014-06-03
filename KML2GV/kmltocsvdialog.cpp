@@ -28,13 +28,15 @@ KMLToCSVDialog::KMLToCSVDialog(QWidget *parent)
 
     QFormLayout* formLayout = new QFormLayout(this);
 
-    m_inputKML = new SynGlyphX::FileLineEdit("KML & KMZ files (*.kmz *.kml)", this);
+    m_inputKML = new SynGlyphX::BrowseLineEdit(SynGlyphX::BrowseLineEdit::FileOpen, true, this);
+    m_inputKML->SetFilters("KML & KMZ files (*.kmz *.kml)");
     formLayout->addRow(tr("KML/KMZ file:"), m_inputKML);
 
-    m_inputGlyph = new SynGlyphX::FileLineEdit("CSV files (*.csv)", this);
+    m_inputGlyph = new SynGlyphX::BrowseLineEdit(SynGlyphX::BrowseLineEdit::FileOpen, true, this);
+    m_inputGlyph->SetFilters("CSV files (*.csv)");
     formLayout->addRow(tr("Glyph file:"), m_inputGlyph);
 
-    m_outputDirectory = new SynGlyphX::DirectoryLineEdit(this);
+    m_outputDirectory = new SynGlyphX::BrowseLineEdit(SynGlyphX::BrowseLineEdit::Directory, true, this);
     formLayout->addRow(tr("Output Directory:"), m_outputDirectory);
 
     verticalLayout->addLayout(formLayout);
@@ -42,35 +44,10 @@ KMLToCSVDialog::KMLToCSVDialog(QWidget *parent)
 
     QGroupBox* mapOptionsGroupBox = new QGroupBox(tr("Map Options"), this);
 
+    m_mapOptionsWidget = new MapOptionsWidget(this);
     QHBoxLayout* mapOptionsLayout = new QHBoxLayout(this);
-
-    m_mapquestRadioButton = new QRadioButton("MapQuest Open (OpenStreetMap)", mapOptionsGroupBox);
-    m_googleRadioButton = new QRadioButton("Google Maps", mapOptionsGroupBox);
-    QObject::connect(m_mapquestRadioButton, SIGNAL(clicked()), this, SLOT(OnMapSourceChanged()));
-    QObject::connect(m_googleRadioButton, SIGNAL(clicked()), this, SLOT(OnMapSourceChanged()));
-
-    m_imageSizeWidget = new SynGlyphX::SizeWidget(this);
-
-    //Disabling size widget until image size limitations in our viewer are removed
-    m_imageSizeWidget->setEnabled(false);
-
-    QLabel* mapTypeLabel = new QLabel(tr("Type:"), mapOptionsGroupBox);
-    m_mapTypeComboBox = new QComboBox(mapOptionsGroupBox);
-    m_mapTypeComboBox->addItem(tr("Map"), NetworkDownloader::Map);
-    m_mapTypeComboBox->addItem(tr("Satellite"), NetworkDownloader::Satellite);
-    m_mapTypeComboBox->addItem(tr("Hybrid"), NetworkDownloader::Hybrid);
-
-    mapOptionsLayout->addWidget(m_mapquestRadioButton);
-    mapOptionsLayout->addWidget(m_googleRadioButton);
-    mapOptionsLayout->addStretch(1);
-    mapOptionsLayout->addWidget(m_imageSizeWidget);
-    mapOptionsLayout->addWidget(mapTypeLabel);
-    mapOptionsLayout->addWidget(m_mapTypeComboBox);
-
+    mapOptionsLayout->addWidget(m_mapOptionsWidget);
     mapOptionsGroupBox->setLayout(mapOptionsLayout);
-
-    //Google Maps Download is not implemented yet so keep the option disabled
-    m_googleRadioButton->setEnabled(false);
 
     verticalLayout->addWidget(mapOptionsGroupBox);
 	
@@ -79,10 +56,6 @@ KMLToCSVDialog::KMLToCSVDialog(QWidget *parent)
 	m_optionsButton = new QPushButton(tr("Settings"), this);
 	QObject::connect(m_optionsButton, SIGNAL(clicked()), this, SLOT(OnOptionsClicked()));
 	buttonsLayout->addWidget(m_optionsButton);
-
-	/*m_downloadMapButton = new QPushButton(tr("Download Map"), this);
-	QObject::connect(m_downloadMapButton, SIGNAL(clicked()), this, SLOT(OnDownloadMapClicked()));
-	buttonsLayout->addWidget(m_downloadMapButton);*/
 
     QDialogButtonBox* dialogButtonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Close, this);
 
@@ -167,7 +140,7 @@ bool KMLToCSVDialog::ValidateInput() {
 bool KMLToCSVDialog::VerifyKeys() {
 
     NetworkDownloader& downloader = NetworkDownloader::Instance();
-    NetworkDownloader::MapSource source = GetSource();
+    NetworkDownloader::MapSource source = m_mapOptionsWidget->GetMapSource();
     if (source == NetworkDownloader::MapQuestOpen) {
 
         if (downloader.GetMapQuestOpenKey().isEmpty()) {
@@ -233,7 +206,7 @@ void KMLToCSVDialog::accept() {
             }
 
             QString mapfilename = outputDirectory + kmlFileInfo.baseName() + ".png";
-            DownloadedMap map(pointsFromCSV, mapfilename.toStdString(), m_imageSizeWidget->GetSize(), GetSource(), static_cast<NetworkDownloader::MapType>(m_mapTypeComboBox->currentData().toInt()));
+            DownloadedMap map(pointsFromCSV, mapfilename.toStdString(), m_mapOptionsWidget->GetMapSize(), m_mapOptionsWidget->GetMapSource(), m_mapOptionsWidget->GetMapType());
 
             args.clear();
             args.append("-G");
@@ -335,9 +308,6 @@ void KMLToCSVDialog::ReadSettings() {
     settings.beginGroup("params");
     m_inputGlyph->SetText(settings.value("glyph", QDir::currentPath() + "/pin.csv").toString());
     m_inputKML->SetInitalBrowseDirectory(settings.value("inputDir", "").toString());
-    SetRadioButtonsFromMapSource(static_cast<NetworkDownloader::MapSource>(settings.value("MapSource", NetworkDownloader::Hybrid).toInt()));
-    m_mapTypeComboBox->setCurrentIndex(settings.value("MapType").toInt());
-    m_imageSizeWidget->SetSize(settings.value("MapSize", QSize(2048, 1024)).toSize());
     settings.endGroup();
 }
 
@@ -353,41 +323,7 @@ void KMLToCSVDialog::WriteSettings() {
     settings.setValue("glyph", m_inputGlyph->GetText());
     QFileInfo fileInfo(m_inputKML->GetText());
     settings.setValue("inputDir", fileInfo.canonicalPath());
-    settings.setValue("MapSource", GetSource());
-    settings.setValue("MapType", m_mapTypeComboBox->currentIndex());
-    settings.setValue("MapSize", m_imageSizeWidget->GetSize());
     settings.endGroup();
-}
-
-NetworkDownloader::MapSource KMLToCSVDialog::GetSource() {
-
-    if (m_googleRadioButton->isChecked()) {
-        return NetworkDownloader::GoogleMaps;
-    }
-    else {
-        return NetworkDownloader::MapQuestOpen;
-    }
-}
-
-void KMLToCSVDialog::SetRadioButtonsFromMapSource(NetworkDownloader::MapSource source) {
-
-    if (source == NetworkDownloader::GoogleMaps) {
-        m_googleRadioButton->setChecked(true);
-    }
-    else {
-        m_mapquestRadioButton->setChecked(true);
-    }
-    OnMapSourceChanged();
-}
-
-void KMLToCSVDialog::OnMapSourceChanged() {
-
-    if (m_googleRadioButton->isChecked()) {
-        m_imageSizeWidget->SetRange(1, 2048);
-    }
-    else {
-        m_imageSizeWidget->SetRange(1, 3840);
-    }
 }
 
 void KMLToCSVDialog::reject() {
