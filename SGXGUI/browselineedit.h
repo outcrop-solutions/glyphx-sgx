@@ -14,8 +14,17 @@ namespace SynGlyphX {
         Q_OBJECT
 
     public:
-        BrowseLineEdit(bool convertToNativeSeparators = true, QWidget *parent = 0);
+        enum FileDialogType {
+            FileOpen,
+            FileSave,
+            Directory
+        };
+
+        BrowseLineEdit(FileDialogType type, bool convertToNativeSeparators = true, QWidget *parent = 0);
         ~BrowseLineEdit();
+
+        void SetFilters(const QString& filters);
+        void SetInitalBrowseDirectory(const QString& dir);
 
         QString GetText() const;
 
@@ -25,15 +34,17 @@ namespace SynGlyphX {
     signals:
         void TextChanged(QString text);
 
-    protected slots:
+    private slots:
         void BrowseButtonActivated();
+        void OnEditingFinished();
 
-    protected:
-        virtual QString GetFromDialog() = 0;
-
+    private:
+        FileDialogType m_dialogType;
         QLineEdit* m_lineEdit;
         QPushButton* m_browseButton;
         bool m_convertToNativeSeparators;
+        QString m_filters;
+        QString m_initialBrowseDirectory;
     };
 
 } //namespace SynGlyphX

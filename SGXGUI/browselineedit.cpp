@@ -4,15 +4,17 @@
 
 namespace SynGlyphX {
 
-BrowseLineEdit::BrowseLineEdit(bool convertToNativeSeparators, QWidget *parent)
+BrowseLineEdit::BrowseLineEdit(FileDialogType type, bool convertToNativeSeparators, QWidget *parent)
     : QWidget(parent),
-    m_convertToNativeSeparators(convertToNativeSeparators)
+    m_dialogType(type),
+    m_convertToNativeSeparators(convertToNativeSeparators),
+    m_filters(QString())
 {
     m_lineEdit = new QLineEdit(this);
+    QObject::connect(m_lineEdit, &QLineEdit::editingFinished, this, &BrowseLineEdit::OnEditingFinished);
 
     m_browseButton = new QPushButton("Browse", this);
-
-    QObject::connect(m_browseButton, SIGNAL(clicked()), this, SLOT(BrowseButtonActivated()));
+    QObject::connect(m_browseButton, &QPushButton::clicked, this, &BrowseLineEdit::BrowseButtonActivated);
 
     QHBoxLayout* layout = new QHBoxLayout(this);
 
@@ -24,12 +26,12 @@ BrowseLineEdit::BrowseLineEdit(bool convertToNativeSeparators, QWidget *parent)
     setLayout(layout);
 }
 
- BrowseLineEdit::~BrowseLineEdit()
+BrowseLineEdit::~BrowseLineEdit()
 {
 
 }
 
- void BrowseLineEdit::SetText(const QString& text) {
+void BrowseLineEdit::SetText(const QString& text) {
     
     if (m_convertToNativeSeparators) {
         m_lineEdit->setText(QDir::toNativeSeparators(text));
@@ -39,26 +41,63 @@ BrowseLineEdit::BrowseLineEdit(bool convertToNativeSeparators, QWidget *parent)
     }
 }
 
- QString BrowseLineEdit::GetText() const {
+QString BrowseLineEdit::GetText() const {
 
     return m_lineEdit->text();
 }
 
- void BrowseLineEdit::BrowseButtonActivated() {
+void BrowseLineEdit::SetInitalBrowseDirectory(const QString& dir) {
+
+     m_initialBrowseDirectory = dir;
+ }
+
+void BrowseLineEdit::BrowseButtonActivated() {
 
     QString text;
-    if (m_convertToNativeSeparators) {
-        text = QDir::toNativeSeparators(GetFromDialog());
+    QString initialDir;
+    if (m_lineEdit->text().isEmpty()) {
+        initialDir = m_initialBrowseDirectory;
     }
     else {
-        text = GetFromDialog();
+        initialDir = m_lineEdit->text();
     }
-    
-    if ((!text.isEmpty()) && (text != m_lineEdit->text())) {
-        m_lineEdit->setText(text);
 
-        emit TextChanged(text);
+    if (m_dialogType == FileOpen) {
+        text = QFileDialog::getOpenFileName(this, tr("Open File"), initialDir, m_filters);
     }
+    else if (m_dialogType == FileSave) {
+        text = QFileDialog::getSaveFileName(this, tr("Save File"), initialDir, m_filters);
+    } 
+    else if (m_dialogType == Directory) {
+        text = QFileDialog::getExistingDirectory(this, tr("Select Directory"), initialDir);
+    }
+
+    if (!text.isEmpty()) {
+
+        if (m_convertToNativeSeparators) {
+
+            text = QDir::toNativeSeparators(text);
+        }
+        if (text != m_lineEdit->text()) {
+            
+            m_lineEdit->setText(text);
+            emit TextChanged(text);
+        }
+    }
+}
+
+void BrowseLineEdit::OnEditingFinished() {
+
+    if (m_lineEdit->isModified()) {
+
+        m_lineEdit->setModified(false);
+        emit TextChanged(m_lineEdit->text());
+    }
+}
+
+void BrowseLineEdit::SetFilters(const QString& filters) {
+
+    m_filters = filters;
 }
 
 } //namespace SynGlyphX
