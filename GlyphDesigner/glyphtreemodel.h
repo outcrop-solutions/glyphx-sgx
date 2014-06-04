@@ -64,6 +64,7 @@ public:
 
 signals:
     void NodeUpdated(const QModelIndex& index);
+    void ModelChanged();
 
 private:
     pNPnode CreateNodeFromTemplate(pNPnode parent, boost::shared_ptr<const SynGlyphX::Glyph> glyphTemplate);

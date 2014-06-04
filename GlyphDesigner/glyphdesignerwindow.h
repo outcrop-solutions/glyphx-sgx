@@ -1,13 +1,13 @@
 #ifndef GLYPHDESIGNERWINDOW_H
 #define GLYPHDESIGNERWINDOW_H
 
-#include <QtWidgets/QMainWindow>
+#include "mainwindow.h"
 #include "glyphtreeview.h"
 #include "antzwidget.h"
 #include "glyphtreemodel.h"
 #include "sharedactionmanager.h"
 
-class GlyphDesignerWindow : public QMainWindow
+class GlyphDesignerWindow : public SynGlyphX::MainWindow
 {
     Q_OBJECT
 
@@ -15,9 +15,14 @@ public:
     GlyphDesignerWindow(QWidget *parent = 0);
     ~GlyphDesignerWindow();
 
+protected:
+    virtual void LoadRecentFile(const QString& filename);
+    virtual void closeEvent(QCloseEvent* event);
+
 private slots:
     void CreateNewGlyphTree();
-    void SaveGlyph();
+    void ExportToCSV();
+    void SaveTemplate();
     void SaveAsTemplate();
     void OpenTemplate();
     void ShowAboutBox();
@@ -26,6 +31,9 @@ private slots:
 private:
     void CreateMenus();
     void CreateDockWidgets();
+    void LoadTemplate(const QString& filename);
+    void SaveTemplateFile(const QString& filename);
+    void AskUserToSave();
 
     ANTzWidget* m_3dView;
 

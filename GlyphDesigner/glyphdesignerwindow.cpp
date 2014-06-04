@@ -13,11 +13,9 @@
 #include "modalglyphwidget.h"
 
 GlyphDesignerWindow::GlyphDesignerWindow(QWidget *parent)
-    : QMainWindow(parent),
+    : SynGlyphX::MainWindow(parent),
     m_treeView(NULL)
 {
-    setWindowTitle(SynGlyphX::Application::organizationName() + " " + SynGlyphX::Application::applicationName());
-
     m_glyphTreeModel = new GlyphTreeModel(this);
     m_selectionModel = new QItemSelectionModel(m_glyphTreeModel, this);
 
@@ -28,6 +26,11 @@ GlyphDesignerWindow::GlyphDesignerWindow(QWidget *parent)
 
     CreateMenus();
     CreateDockWidgets();
+
+    QObject::connect(m_glyphTreeModel, &GlyphTreeModel::ModelChanged, this, [this]{ setWindowModified(true); });
+    QObject::connect(m_glyphTreeModel, &GlyphTreeModel::modelReset, this, [this]{ setWindowModified(false); });
+
+    ReadSettings();
 
     statusBar()->showMessage(SynGlyphX::Application::applicationName() + " Started", 3000);
 }
@@ -43,20 +46,26 @@ void GlyphDesignerWindow::CreateMenus() {
     m_fileMenu = menuBar()->addMenu(tr("&File"));
 
     QAction* openAction = m_fileMenu->addAction(tr("&Open Template"));
-    QObject::connect(openAction, SIGNAL(triggered()), this, SLOT(OpenTemplate()));
+    QObject::connect(openAction, &QAction::triggered, this, &GlyphDesignerWindow::OpenTemplate);
 
-    QAction* saveAction = m_fileMenu->addAction(tr("&Save As Template"));
-    QObject::connect(saveAction, SIGNAL(triggered()), this, SLOT(SaveAsTemplate()));
+    QAction* saveAction = m_fileMenu->addAction(tr("Save Template"));
+    QObject::connect(saveAction, &QAction::triggered, this, &GlyphDesignerWindow::SaveTemplate);
+
+    QAction* saveAsAction = m_fileMenu->addAction(tr("&Save As Template"));
+    QObject::connect(saveAsAction, &QAction::triggered, this, &GlyphDesignerWindow::SaveAsTemplate);
 
     m_fileMenu->addSeparator();
 
     QAction* exportAction = m_fileMenu->addAction(tr("Export to CSV"));
-    QObject::connect(exportAction, SIGNAL(triggered()), this, SLOT(SaveGlyph()));
+    QObject::connect(exportAction, &QAction::triggered, this, &GlyphDesignerWindow::ExportToCSV);
 
+    m_fileMenu->addActions(m_recentFileActions);
+    
     m_fileMenu->addSeparator();
 
     QAction* exitAction = m_fileMenu->addAction(tr("E&xit"));
-    QObject::connect(exitAction, SIGNAL(triggered()), this, SLOT(close()));
+    exitAction->setShortcuts(QKeySequence::Quit);
+    QObject::connect(exitAction, &QAction::triggered, this, &GlyphDesignerWindow::close);
 
     //Create Edit Menu
     m_editMenu = menuBar()->addMenu(tr("Edit"));
@@ -92,14 +101,14 @@ void GlyphDesignerWindow::CreateMenus() {
     m_glyphMenu = menuBar()->addMenu(tr("Glyph"));
 
     QAction* newGlyphTreeAction = m_glyphMenu->addAction(tr("Create New Glyph Tree"));
-    QObject::connect(newGlyphTreeAction, SIGNAL(triggered()), this, SLOT(CreateNewGlyphTree()));
+    QObject::connect(newGlyphTreeAction, &QAction::triggered, this, &GlyphDesignerWindow::CreateNewGlyphTree);
 
     m_glyphMenu->addSeparator();
     m_glyphMenu->addActions(m_sharedActions->GetGlyphActions());
 
     m_helpMenu = menuBar()->addMenu(tr("Help"));
     QAction* aboutBoxAction = m_helpMenu->addAction("About " + SynGlyphX::Application::organizationName() + " " + SynGlyphX::Application::applicationName());
-    QObject::connect(aboutBoxAction, SIGNAL(triggered()), this, SLOT(ShowAboutBox()));
+    QObject::connect(aboutBoxAction, &QAction::triggered, this, &GlyphDesignerWindow::ShowAboutBox);
 }
 
 void GlyphDesignerWindow::CreateDockWidgets() {
@@ -178,7 +187,7 @@ void GlyphDesignerWindow::CreateNewGlyphTree() {
     }
 }
 
-void GlyphDesignerWindow::SaveGlyph() {
+void GlyphDesignerWindow::ExportToCSV() {
 
     QString saveFile = QFileDialog::getSaveFileName(this, tr("Save Glyph Tree To CSV"), "", tr("CSV Files (*.csv)"));
     if (!saveFile.isEmpty()) {
@@ -202,11 +211,27 @@ void GlyphDesignerWindow::SaveGlyph() {
     }
 }
 
+void GlyphDesignerWindow::LoadRecentFile(const QString& filename) {
+
+    LoadTemplate(filename);
+}
+
 void GlyphDesignerWindow::OpenTemplate() {
 
     QString openFile = QFileDialog::getOpenFileName(this, tr("Open Template"), "", tr("SynGlyphX Glyph Template Files (*.sgt *.csv)"));
-    if (!openFile.isEmpty()) {
-        if (m_glyphTreeModel->LoadFromFile(openFile.toStdString())) {
+    LoadTemplate(openFile);
+}
+
+void GlyphDesignerWindow::LoadTemplate(const QString& filename) {
+
+    if (!filename.isEmpty()) {
+
+        SynGlyphX::Application::setOverrideCursor(Qt::WaitCursor);
+        bool fileLoaded = m_glyphTreeModel->LoadFromFile(filename.toStdString());
+        SynGlyphX::Application::restoreOverrideCursor();
+
+        if (fileLoaded) {
+            SetCurrentFile(filename);
             statusBar()->showMessage("Template successfully opened", 3000);
             m_3dView->ResetCamera();
         }
@@ -217,12 +242,32 @@ void GlyphDesignerWindow::OpenTemplate() {
     }
 }
 
-void GlyphDesignerWindow::SaveAsTemplate() {
-    
-    QString saveFile = QFileDialog::getSaveFileName(this, tr("Save Glyph Tree As Template"), "", tr("SynGlyphX Glyph Template Files (*.sgt)"));
-    if (!saveFile.isEmpty()) {
+void GlyphDesignerWindow::SaveTemplate() {
 
-        if (m_glyphTreeModel->SaveToCSV(saveFile.toStdString(), m_selectionModel->selectedIndexes())) {
+    if (m_currentFilename.isEmpty()) {
+        SaveAsTemplate();
+    }
+    else {
+        SaveTemplateFile(m_currentFilename);
+    }
+}
+
+void GlyphDesignerWindow::SaveAsTemplate() {
+
+    QString saveFile = QFileDialog::getSaveFileName(this, tr("Save Glyph Tree As Template"), "", tr("SynGlyphX Glyph Template Files (*.sgt)"));
+    SaveTemplateFile(saveFile);
+}
+    
+void GlyphDesignerWindow::SaveTemplateFile(const QString& filename) {
+
+    if (!filename.isEmpty()) {
+
+        SynGlyphX::Application::setOverrideCursor(Qt::WaitCursor);
+        bool fileSaved = m_glyphTreeModel->SaveToCSV(filename.toStdString(), m_selectionModel->selectedIndexes());
+        SynGlyphX::Application::restoreOverrideCursor();
+
+        if (fileSaved) {
+            SetCurrentFile(filename);
             statusBar()->showMessage("Template successfully saved", 3000);
         }
         else {
@@ -241,4 +286,15 @@ void GlyphDesignerWindow::ShowAboutBox() {
 void GlyphDesignerWindow::EditingModeChanged(QAction* action) {
 
     m_3dView->SetEditingMode(static_cast<ANTzWidget::EditingMode>(action->data().toInt()));
+}
+
+void GlyphDesignerWindow::closeEvent(QCloseEvent* event) {
+
+}
+
+void GlyphDesignerWindow::AskUserToSave() {
+
+    if (isWindowModified()) {
+
+    }
 }

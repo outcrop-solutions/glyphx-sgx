@@ -9,6 +9,11 @@ GlyphTreeModel::GlyphTreeModel(QObject *parent)
 {
     m_antzData = static_cast<pData>(npInitData(0, NULL));
     CreateRootPinNode();
+
+    QObject::connect(this, &GlyphTreeModel::NodeUpdated, this, &GlyphTreeModel::ModelChanged);
+    QObject::connect(this, &GlyphTreeModel::rowsInserted, this, &GlyphTreeModel::ModelChanged);
+    QObject::connect(this, &GlyphTreeModel::rowsMoved, this, &GlyphTreeModel::ModelChanged);
+    QObject::connect(this, &GlyphTreeModel::rowsRemoved, this, &GlyphTreeModel::ModelChanged);
 }
 
 GlyphTreeModel::~GlyphTreeModel()
