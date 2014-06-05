@@ -22,8 +22,8 @@ protected:
 private slots:
     void CreateNewGlyphTree();
     void ExportToCSV();
-    void SaveTemplate();
-    void SaveAsTemplate();
+    bool SaveTemplate();
+    bool SaveAsTemplate();
     void OpenTemplate();
     void ShowAboutBox();
     void EditingModeChanged(QAction* action);
@@ -32,8 +32,8 @@ private:
     void CreateMenus();
     void CreateDockWidgets();
     void LoadTemplate(const QString& filename);
-    void SaveTemplateFile(const QString& filename);
-    void AskUserToSave();
+    bool SaveTemplateFile(const QString& filename);
+    bool AskUserToSave();
 
     ANTzWidget* m_3dView;
 

@@ -7,6 +7,7 @@
 #include <QtWidgets/QFileDialog>
 #include <QtWidgets/QMessageBox>
 #include <QtWidgets/QStatusBar>
+#include <QtGui/QCloseEvent>
 #include "singleglyphwidget.h"
 #include "csvreaderwriter.h"
 #include "application.h"
@@ -43,15 +44,15 @@ GlyphDesignerWindow::~GlyphDesignerWindow()
 void GlyphDesignerWindow::CreateMenus() {
     
     //Create File Menu
-    m_fileMenu = menuBar()->addMenu(tr("&File"));
+    m_fileMenu = menuBar()->addMenu(tr("File"));
 
-    QAction* openAction = m_fileMenu->addAction(tr("&Open Template"));
+    QAction* openAction = CreateMenuAction(m_fileMenu, tr("Open Template"), QKeySequence::Open);
     QObject::connect(openAction, &QAction::triggered, this, &GlyphDesignerWindow::OpenTemplate);
 
-    QAction* saveAction = m_fileMenu->addAction(tr("Save Template"));
+    QAction* saveAction = CreateMenuAction(m_fileMenu, tr("Save Template"), QKeySequence::Save);
     QObject::connect(saveAction, &QAction::triggered, this, &GlyphDesignerWindow::SaveTemplate);
 
-    QAction* saveAsAction = m_fileMenu->addAction(tr("&Save As Template"));
+    QAction* saveAsAction = CreateMenuAction(m_fileMenu, tr("Save As Template"), QKeySequence::SaveAs);
     QObject::connect(saveAsAction, &QAction::triggered, this, &GlyphDesignerWindow::SaveAsTemplate);
 
     m_fileMenu->addSeparator();
@@ -63,8 +64,7 @@ void GlyphDesignerWindow::CreateMenus() {
     
     m_fileMenu->addSeparator();
 
-    QAction* exitAction = m_fileMenu->addAction(tr("E&xit"));
-    exitAction->setShortcuts(QKeySequence::Quit);
+    QAction* exitAction = CreateMenuAction(m_fileMenu, tr("Exit"), QKeySequence::Quit);
     QObject::connect(exitAction, &QAction::triggered, this, &GlyphDesignerWindow::close);
 
     //Create Edit Menu
@@ -92,10 +92,11 @@ void GlyphDesignerWindow::CreateMenus() {
 
     moveEditModeAction->setChecked(true);
     editingModeMenu->addActions(editingActionGroup->actions());
-    QObject::connect(editingActionGroup, SIGNAL(triggered(QAction*)), this, SLOT(EditingModeChanged(QAction*)));
+    //QObject::connect(editingActionGroup, SIGNAL(triggered(QAction*)), this, SLOT(EditingModeChanged(QAction*)));
+    QObject::connect(editingActionGroup, &QActionGroup::triggered, this, &GlyphDesignerWindow::EditingModeChanged);
 
     //Create View Menu
-    m_viewMenu = menuBar()->addMenu(tr("&View"));
+    m_viewMenu = menuBar()->addMenu(tr("View"));
 
     //Create Glyph Menu
     m_glyphMenu = menuBar()->addMenu(tr("Glyph"));
@@ -139,50 +140,53 @@ void GlyphDesignerWindow::CreateDockWidgets() {
 }
 
 void GlyphDesignerWindow::CreateNewGlyphTree() {
-    bool createTree = false;
+    
+    if (AskUserToSave()) {
 
-    int numberOfBranches = QInputDialog::getInt(this, "Create Glyph Tree", "Number Of Branches In Glyph Tree (Including Root)", 6, 1, 214783647, 1, &createTree);
-    if (createTree) {
-        QWizard wizard(this);
-        wizard.setOptions(QWizard::IndependentPages | QWizard::IgnoreSubTitles | QWizard::NoBackButtonOnStartPage);
-        wizard.setWindowTitle(tr("Create Glyph Tree"));
+        bool createTree = false;
+        int numberOfBranches = QInputDialog::getInt(this, "Create Glyph Tree", "Number Of Branches In Glyph Tree (Including Root)", 6, 1, 214783647, 1, &createTree);
+        if (createTree) {
+            QWizard wizard(this);
+            wizard.setOptions(QWizard::IndependentPages | QWizard::IgnoreSubTitles | QWizard::NoBackButtonOnStartPage);
+            wizard.setWindowTitle(tr("Create Glyph Tree"));
 
-        //Qt will take care of deleting the objects in this vector
-        std::vector<SingleGlyphWidget*> glyphWidgets;
+            //Qt will take care of deleting the objects in this vector
+            std::vector<SingleGlyphWidget*> glyphWidgets;
 
-        for (int i = 0; i < numberOfBranches; ++i) {
-            QWizardPage* page = new QWizardPage(&wizard);
-            QVBoxLayout* layout = new QVBoxLayout(this);
-            page->setLayout(layout);
-            SingleGlyphWidget::ChildOptions childOptions = SingleGlyphWidget::Invisible;
-            if (i != numberOfBranches - 1) {
-                childOptions = SingleGlyphWidget::ShowOnBottom | SingleGlyphWidget::EnabledSpinBox;
-            }
-            SingleGlyphWidget* glyphWidget = new SingleGlyphWidget(childOptions, page);
-            glyphWidgets.push_back(glyphWidget);
-            if (i == 0) {
-                page->setTitle("Glyphs for root level");
-                glyphWidget->SetWidgetFromGlyph(SynGlyphX::Glyph::GetRoot());
-            }
-            else {
-                page->setTitle(QString::number(i).prepend("Glyphs for branch level "));
-                glyphWidget->SetWidgetFromGlyph(SynGlyphX::Glyph::GetTemplate());
-            }
-            layout->addWidget(glyphWidget);
-            wizard.addPage(page);
-        }
-
-        if (wizard.exec() == QDialog::Accepted) {
-            
-            std::vector<boost::shared_ptr<SynGlyphX::Glyph>> glyphs;
-            
             for (int i = 0; i < numberOfBranches; ++i) {
-                boost::shared_ptr<SynGlyphX::Glyph> glyph(new SynGlyphX::Glyph());
-                glyphWidgets[i]->SetGlyphFromWidget(glyph);
-                glyphs.push_back(glyph);
+                QWizardPage* page = new QWizardPage(&wizard);
+                QVBoxLayout* layout = new QVBoxLayout(this);
+                page->setLayout(layout);
+                SingleGlyphWidget::ChildOptions childOptions = SingleGlyphWidget::Invisible;
+                if (i != numberOfBranches - 1) {
+                    childOptions = SingleGlyphWidget::ShowOnBottom | SingleGlyphWidget::EnabledSpinBox;
+                }
+                SingleGlyphWidget* glyphWidget = new SingleGlyphWidget(childOptions, page);
+                glyphWidgets.push_back(glyphWidget);
+                if (i == 0) {
+                    page->setTitle("Glyphs for root level");
+                    glyphWidget->SetWidgetFromGlyph(SynGlyphX::Glyph::GetRoot());
+                }
+                else {
+                    page->setTitle(QString::number(i).prepend("Glyphs for branch level "));
+                    glyphWidget->SetWidgetFromGlyph(SynGlyphX::Glyph::GetTemplate());
+                }
+                layout->addWidget(glyphWidget);
+                wizard.addPage(page);
             }
-            m_glyphTreeModel->CreateNewTree(glyphs);
-            m_3dView->ResetCamera();
+
+            if (wizard.exec() == QDialog::Accepted) {
+
+                std::vector<boost::shared_ptr<SynGlyphX::Glyph>> glyphs;
+
+                for (int i = 0; i < numberOfBranches; ++i) {
+                    boost::shared_ptr<SynGlyphX::Glyph> glyph(new SynGlyphX::Glyph());
+                    glyphWidgets[i]->SetGlyphFromWidget(glyph);
+                    glyphs.push_back(glyph);
+                }
+                m_glyphTreeModel->CreateNewTree(glyphs);
+                m_3dView->ResetCamera();
+            }
         }
     }
 }
@@ -213,13 +217,17 @@ void GlyphDesignerWindow::ExportToCSV() {
 
 void GlyphDesignerWindow::LoadRecentFile(const QString& filename) {
 
-    LoadTemplate(filename);
+    if (AskUserToSave()) {
+        LoadTemplate(filename);
+    }
 }
 
 void GlyphDesignerWindow::OpenTemplate() {
 
-    QString openFile = QFileDialog::getOpenFileName(this, tr("Open Template"), "", tr("SynGlyphX Glyph Template Files (*.sgt *.csv)"));
-    LoadTemplate(openFile);
+    if (AskUserToSave()) {
+        QString openFile = QFileDialog::getOpenFileName(this, tr("Open Template"), "", tr("SynGlyphX Glyph Template Files (*.sgt *.csv)"));
+        LoadTemplate(openFile);
+    }
 }
 
 void GlyphDesignerWindow::LoadTemplate(const QString& filename) {
@@ -242,23 +250,23 @@ void GlyphDesignerWindow::LoadTemplate(const QString& filename) {
     }
 }
 
-void GlyphDesignerWindow::SaveTemplate() {
+bool GlyphDesignerWindow::SaveTemplate() {
 
     if (m_currentFilename.isEmpty()) {
-        SaveAsTemplate();
+        return SaveAsTemplate();
     }
     else {
-        SaveTemplateFile(m_currentFilename);
+        return SaveTemplateFile(m_currentFilename);
     }
 }
 
-void GlyphDesignerWindow::SaveAsTemplate() {
+bool GlyphDesignerWindow::SaveAsTemplate() {
 
     QString saveFile = QFileDialog::getSaveFileName(this, tr("Save Glyph Tree As Template"), "", tr("SynGlyphX Glyph Template Files (*.sgt)"));
-    SaveTemplateFile(saveFile);
+    return SaveTemplateFile(saveFile);
 }
     
-void GlyphDesignerWindow::SaveTemplateFile(const QString& filename) {
+bool GlyphDesignerWindow::SaveTemplateFile(const QString& filename) {
 
     if (!filename.isEmpty()) {
 
@@ -269,12 +277,15 @@ void GlyphDesignerWindow::SaveTemplateFile(const QString& filename) {
         if (fileSaved) {
             SetCurrentFile(filename);
             statusBar()->showMessage("Template successfully saved", 3000);
+            return true;
         }
         else {
             QString title = "Saving Template Failed";
             QMessageBox::warning(this, title, "Failed to save template");
         }
     }
+
+    return false;
 }
 
 void GlyphDesignerWindow::ShowAboutBox() {
@@ -290,11 +301,26 @@ void GlyphDesignerWindow::EditingModeChanged(QAction* action) {
 
 void GlyphDesignerWindow::closeEvent(QCloseEvent* event) {
 
+    if (AskUserToSave()) {
+        SynGlyphX::MainWindow::closeEvent(event);
+    }
+    else {
+        event->ignore();
+    }
 }
 
-void GlyphDesignerWindow::AskUserToSave() {
+bool GlyphDesignerWindow::AskUserToSave() {
 
     if (isWindowModified()) {
 
+        QMessageBox::StandardButton result = QMessageBox::warning(this, tr("Save Changes"), tr("The template has been modified.  Do you wish to save your changes?"), QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
+        if (result == QMessageBox::Save) {
+            return SaveTemplate();
+        }
+        else if (result == QMessageBox::Cancel) {
+            return false;
+        }
     }
+
+    return true;
 }

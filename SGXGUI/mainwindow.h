@@ -27,6 +27,7 @@ namespace SynGlyphX {
         void UpdateRecentFileList();
         void UpdateFilenameWindowTitle(const QString& title);
         void SetCurrentFile(const QString& filename);
+        QAction* CreateMenuAction(QMenu* menu, const QString& title, QKeySequence shortcut = QKeySequence());
 
         QList<QAction*> m_recentFileActions;
         QString m_currentFilename;

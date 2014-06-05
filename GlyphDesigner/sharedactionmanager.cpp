@@ -18,7 +18,7 @@ SharedActionManager::SharedActionManager(GlyphTreeModel* model, QItemSelectionMo
     CreateAddChildrenDialog();
     EnableActions();
 
-    QObject::connect(m_selectionModel, SIGNAL(selectionChanged(const QItemSelection&, const QItemSelection&)), this, SLOT(SelectionChanged(const QItemSelection&, const QItemSelection&)));
+    QObject::connect(m_selectionModel, &QItemSelectionModel::selectionChanged, this, &SharedActionManager::SelectionChanged);
 }
 
 SharedActionManager::~SharedActionManager()
@@ -29,7 +29,7 @@ SharedActionManager::~SharedActionManager()
 void SharedActionManager::CreateGlyphActions() {
 
     m_addChildrenAction = new QAction(tr("Add Children"), this);
-    QObject::connect(m_addChildrenAction, SIGNAL(triggered()), this, SLOT(AddChildren()));
+    QObject::connect(m_addChildrenAction, &QAction::triggered, this, &SharedActionManager::AddChildren);
 
     m_glyphActions.append(m_addChildrenAction);
 }
@@ -37,21 +37,29 @@ void SharedActionManager::CreateGlyphActions() {
 void SharedActionManager::CreateEditActions() {
 
     m_cutAction = new QAction(tr("Cut"), this);
-    QObject::connect(m_cutAction, SIGNAL(triggered()), m_model, SLOT(CutToClipboard()));
+    m_cutAction->setShortcut(QKeySequence::Cut);
+    //QObject::connect(m_cutAction, &QAction::triggered, m_model, &GlyphTreeModel::CutToClipboard);
     m_copyAction = new QAction(tr("Copy"), this);
-    QObject::connect(m_copyAction, SIGNAL(triggered()), m_model, SLOT(CopyToClipboard()));
-    m_pasteAction = new QAction(tr("Paste As Child"), this);
-    QObject::connect(m_pasteAction, SIGNAL(triggered()), m_model, SLOT(PasteFromClipboard()));
+    m_copyAction->setShortcut(QKeySequence::Copy);
+    //QObject::connect(m_copyAction, &QAction::triggered, m_model, &GlyphTreeModel::CopyToClipboard);
+    m_pasteAction = new QAction(tr("Paste"), this);
+    m_pasteAction->setShortcut(QKeySequence::Paste);
+    //QObject::connect(m_pasteAction, &QAction::triggered, m_model, &GlyphTreeModel::PasteFromClipboard);
+    m_pasteAsChildAction = new QAction(tr("Paste As Child"), this);
+    //QObject::connect(m_pasteAction, &QAction::triggered, m_model, &GlyphTreeModel::PasteFromClipboard);
+
     m_deleteAction = new QAction(tr("Delete"), this);
-    QObject::connect(m_deleteAction, SIGNAL(triggered()), this, SLOT(DeleteSelected()));
+    m_deleteAction->setShortcut(QKeySequence::Delete);
+    QObject::connect(m_deleteAction, &QAction::triggered, this, &SharedActionManager::DeleteSelected);
     m_deleteChildrenAction = new QAction(tr("Delete Children"), this);
-    QObject::connect(m_deleteChildrenAction, SIGNAL(triggered()), this, SLOT(DeleteChildrenFromSelected()));
+    QObject::connect(m_deleteChildrenAction, &QAction::triggered, this, &SharedActionManager::DeleteChildrenFromSelected);
     m_propertiesAction = new QAction(tr("Properties"), this);
-    QObject::connect(m_propertiesAction, SIGNAL(triggered()), this, SLOT(PropertiesActivated()));
+    QObject::connect(m_propertiesAction, &QAction::triggered, this, &SharedActionManager::PropertiesActivated);
 
     m_editActions.append(m_cutAction);
     m_editActions.append(m_copyAction);
     m_editActions.append(m_pasteAction);
+    m_editActions.append(m_pasteAsChildAction);
     m_editActions.append(CreateSeparator());
     m_editActions.append(m_deleteAction);
     m_editActions.append(m_deleteChildrenAction);
@@ -64,15 +72,14 @@ void SharedActionManager::CreatePropertiesDialog() {
     m_propertiesDialog = new QDialog(SynGlyphX::Application::activeWindow());
     QVBoxLayout* layout = new QVBoxLayout(m_propertiesDialog);
     m_glyphWidget = new SingleGlyphWidget(SingleGlyphWidget::ShowOnBottom, m_propertiesDialog);
-    //m_glyphWidget = new SingleGlyphWidget(SingleGlyphWidget::ShowOnBottom | SingleGlyphWidget::AddChildrenButton, m_propertiesDialog);
-    //QObject::connect(m_glyphWidget, SIGNAL(AddChildrenButtonClicked()), this, SLOT(AddChildren()));
     layout->addWidget(m_glyphWidget);
     QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, m_propertiesDialog);
     layout->addWidget(buttonBox);
     m_propertiesDialog->setLayout(layout);
     m_propertiesDialog->setWindowTitle(tr("Properties"));
-    QObject::connect(buttonBox, SIGNAL(accepted()), m_propertiesDialog, SLOT(accept()));
-    QObject::connect(buttonBox, SIGNAL(rejected()), m_propertiesDialog, SLOT(reject()));
+
+    QObject::connect(buttonBox, &QDialogButtonBox::accepted, m_propertiesDialog, &QDialog::accept);
+    QObject::connect(buttonBox, &QDialogButtonBox::rejected, m_propertiesDialog, &QDialog::reject);
 }
 
 void SharedActionManager::CreateAddChildrenDialog() {
@@ -108,6 +115,7 @@ void SharedActionManager::EnableActions() {
         //m_cutAction->setEnabled(!isRootObjectSelected);
         //m_copyAction->setEnabled(true);
         //m_pasteAction->setEnabled(!m_model->IsClipboardEmpty());
+        //m_pasteAsChildAction->setEnabled(!m_model->IsClipboardEmpty());
         m_deleteAction->setEnabled(!isRootObjectSelected);
         m_deleteChildrenAction->setEnabled(m_model->hasChildren(index));
         m_propertiesAction->setEnabled(true);

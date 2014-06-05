@@ -49,6 +49,7 @@ private:
     QAction* m_cutAction;
     QAction* m_copyAction;
     QAction* m_pasteAction;
+    QAction* m_pasteAsChildAction;
     QAction* m_deleteAction;
     QAction* m_deleteChildrenAction;
     QAction* m_propertiesAction;

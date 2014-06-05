@@ -2,6 +2,7 @@
 #include <QtCore/QSettings>
 #include <QtWidgets/QAction>
 #include <QtCore/QFileInfo>
+#include <QtWidgets/QMenu>
 #include "application.h"
 
 namespace SynGlyphX {
@@ -116,6 +117,20 @@ namespace SynGlyphX {
         UpdateRecentFileList();
         UpdateFilenameWindowTitle(QFileInfo(filename).fileName());
         setWindowModified(false);
+    }
+
+    QAction* MainWindow::CreateMenuAction(QMenu* menu, const QString& title, QKeySequence shortcut) {
+
+        QString titleWithShortcut = title;
+#ifdef WIN32
+        //ALT+F4 exits on windows but does not show up in the menu even though the key sequence exits the program so add the sequence to the title manually
+        if (title == "Exit") {
+            titleWithShortcut += "\tAlt+F4";
+        } 
+#endif
+        QAction* action = menu->addAction(titleWithShortcut);
+        action->setShortcut(shortcut);
+        return action;
     }
 
 } //namespace SynGlyphX
