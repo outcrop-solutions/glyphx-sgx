@@ -97,6 +97,10 @@ void GlyphDesignerWindow::CreateMenus() {
 
     //Create View Menu
     m_viewMenu = menuBar()->addMenu(tr("View"));
+    m_fullScreenAction = CreateMenuAction(m_viewMenu, tr("Full Screen"), QKeySequence::FullScreen);
+    QObject::connect(m_fullScreenAction, &QAction::triggered, this, &GlyphDesignerWindow::SwitchBetweenFullAndNormalScreen);
+
+    m_viewMenu->addSeparator();
 
     //Create Glyph Menu
     m_glyphMenu = menuBar()->addMenu(tr("Glyph"));
@@ -323,4 +327,16 @@ bool GlyphDesignerWindow::AskUserToSave() {
     }
 
     return true;
+}
+
+void GlyphDesignerWindow::SwitchBetweenFullAndNormalScreen() {
+
+    if (isFullScreen()) {
+        showNormal();
+        m_fullScreenAction->setText(tr("Full Screen"));
+    }
+    else {
+        showFullScreen();
+        m_fullScreenAction->setText(tr("Return to window"));
+    }
 }

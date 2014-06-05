@@ -27,6 +27,7 @@ private slots:
     void OpenTemplate();
     void ShowAboutBox();
     void EditingModeChanged(QAction* action);
+    void SwitchBetweenFullAndNormalScreen();
 
 private:
     void CreateMenus();
@@ -49,6 +50,8 @@ private:
     QItemSelectionModel* m_selectionModel;
 
     SharedActionManager* m_sharedActions;
+
+    QAction* m_fullScreenAction;
 };
 
 #endif // GLYPHDESIGNERWINDOW_H

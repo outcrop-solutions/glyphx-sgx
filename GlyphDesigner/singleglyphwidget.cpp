@@ -77,7 +77,7 @@ void SingleGlyphWidget::CreateWidgets(ChildOptions childOptions) {
     QHBoxLayout* translateBoxLayout = new QHBoxLayout(translateGroupBox);
     translateBoxLayout->setContentsMargins(0, 0, 0, 0);
     translateGroupBox->setLayout(translateBoxLayout);
-    m_translateWidget = new XYZWidget(translateGroupBox);
+    m_translateWidget = new XYZWidget(false, translateGroupBox);
     m_translateWidget->SetRange(-1000.0, 1000.0);
     m_translateWidget->SetDecimal(5);
     m_translateWidget->setContentsMargins(0, 0, 0, 0);
@@ -90,7 +90,7 @@ void SingleGlyphWidget::CreateWidgets(ChildOptions childOptions) {
     QGroupBox* rotateGroupBox = new QGroupBox(tr("Rotation"), this);
     QHBoxLayout* rotateBoxLayout = new QHBoxLayout(this);
     rotateBoxLayout->setContentsMargins(0, 0, 0, 0);
-    m_rotateWidget = new XYZWidget(this);
+    m_rotateWidget = new XYZWidget(false, this);
     m_rotateWidget->SetRange(-180.0, 180.0);
     m_rotateWidget->SetWrapping(true);
     m_rotateWidget->SetDecimal(5);
@@ -102,10 +102,11 @@ void SingleGlyphWidget::CreateWidgets(ChildOptions childOptions) {
     QGroupBox* scaleGroupBox = new QGroupBox(tr("Scale"), this);
     QHBoxLayout* scaleBoxLayout = new QHBoxLayout(this);
     scaleBoxLayout->setContentsMargins(0, 0, 0, 0);
-    m_scaleWidget = new XYZWidget(this);
+    m_scaleWidget = new XYZWidget(true, this);
     m_scaleWidget->SetRange(0.000001, 1000.0);
     m_scaleWidget->SetDecimal(5);
     m_scaleWidget->setContentsMargins(0, 0, 0, 0);
+    m_scaleWidget->SetSpinBoxesLocked(true);
     scaleBoxLayout->addWidget(m_scaleWidget);
     scaleGroupBox->setLayout(scaleBoxLayout);
 

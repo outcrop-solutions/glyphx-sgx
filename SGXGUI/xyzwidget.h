@@ -4,6 +4,7 @@
 #include "sgxgui_global.h"
 #include <QtWidgets/QWidget>
 #include <QtWidgets/QDoubleSpinBox>
+#include <QtWidgets/QCheckBox>
 #include "foundationtypes.h"
 
 class SGXGUI_EXPORT XYZWidget : public QWidget
@@ -11,7 +12,7 @@ class SGXGUI_EXPORT XYZWidget : public QWidget
     Q_OBJECT
 
 public:
-    XYZWidget(QWidget *parent = 0);
+    XYZWidget(bool includeLockCheckbox = false, QWidget *parent = 0);
     ~XYZWidget();
 
     void SetRange(double min, double max);
@@ -29,16 +30,26 @@ public:
     void SetDecimal(int decimals);
     void SetSuffix(const QString& suffix);
 
+public slots:
+    void SetSpinBoxesLocked(bool lock);
+
 signals:
     void ValuesChanged(double x, double y, double z);
 
 private slots:
-    void OnSpinBoxesChanged();
+    void OnXSpinBoxChanged();
+    void OnYSpinBoxChanged();
+    void OnZSpinBoxChanged();
+    void UpdateSpinBoxLock(bool lock);
 
 private:
+    void SetSpinBoxWithoutSignals(QDoubleSpinBox* spinBox, double value);
+
     QDoubleSpinBox* m_xSpinBox;
     QDoubleSpinBox* m_ySpinBox;
     QDoubleSpinBox* m_zSpinBox;
+    QCheckBox* m_lockCheckBox;
+    bool m_spinBoxesLocked;
 };
 
 #endif // XYZWIDGET_H
