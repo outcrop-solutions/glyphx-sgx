@@ -36,9 +36,12 @@ public:
     virtual QModelIndex	index(int row, int column = 0, const QModelIndex& parent = QModelIndex()) const;
     virtual QModelIndex	parent(const QModelIndex& index) const;
     virtual int	rowCount(const QModelIndex& parent = QModelIndex()) const;
-    //virtual bool setData(const QModelIndex& index, const QVariant& value, int role = Qt::EditRole);
+    virtual bool setData(const QModelIndex& index, const QVariant& value, int role = Qt::EditRole);
     virtual Qt::ItemFlags flags(const QModelIndex& index) const;
     virtual QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
+    virtual Qt::DropActions supportedDropActions() const;
+    virtual bool removeRows(int row, int count, const QModelIndex& parent = QModelIndex());
+    virtual bool insertRows(int row, int count, const QModelIndex & parent = QModelIndex());
 
     pData GetANTzData() const;
 
@@ -53,14 +56,13 @@ public:
     QModelIndex IndexFromANTzID(int id);
 
     void AppendChild(const QModelIndex& parent, boost::shared_ptr<const SynGlyphX::Glyph> glyph, unsigned int numberOfChildren = 1);
-    void DeleteNode(const QModelIndex& index);
-    void DeleteChildren(const QModelIndex& parent);
 
     bool IsClipboardEmpty() const;
     boost::shared_ptr<const SynGlyphX::Glyph> GetClipboardGlyph() const;
     void CopyToClipboard(const QModelIndex& index, bool removeFromTree = false);
 
     static PropertyUpdates FindUpdates(boost::shared_ptr<const SynGlyphX::Glyph> oldGlyph, boost::shared_ptr<const SynGlyphX::Glyph> newGlyph);
+    static bool GreaterBranchLevel(const QModelIndex& left, const QModelIndex& right);
 
 signals:
     void NodeUpdated(const QModelIndex& index);

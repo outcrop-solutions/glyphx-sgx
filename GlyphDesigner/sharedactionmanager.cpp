@@ -5,6 +5,7 @@
 #include "glyph.h"
 #include "data/nptypes.h"
 #include "application.h"
+#include <algorithm>
 
 SharedActionManager::SharedActionManager(GlyphTreeModel* model, QItemSelectionModel* selectionModel, QObject *parent)
     : QObject(parent),
@@ -104,20 +105,30 @@ void SharedActionManager::EnableActions() {
     const QModelIndexList& selected = m_selectionModel->selectedIndexes();
     bool isObjectSelected = !selected.isEmpty();
 
+    bool hasChildren = false;
+    for (int j = 0; j < selected.count(); ++j) {
+        if (m_model->hasChildren(selected[j])) {
+            hasChildren = true;
+            break;
+        }
+    }
+
     for (int i = 0; i < m_glyphActions.length(); ++i) {
         m_glyphActions[i]->setEnabled(isObjectSelected);
     }
 
+    bool areMultipleObjectsSelected = (selected.count() > 1);
+
     if (isObjectSelected) {
         const QModelIndex& index = selected.last();
-        bool isRootObjectSelected = (index.internalPointer() == m_model->GetRootGlyph());
+        bool isRootObjectOnlySelected = (index.internalPointer() == m_model->GetRootGlyph()) && areMultipleObjectsSelected;
 
         //m_cutAction->setEnabled(!isRootObjectSelected);
         //m_copyAction->setEnabled(true);
         //m_pasteAction->setEnabled(!m_model->IsClipboardEmpty());
         //m_pasteAsChildAction->setEnabled(!m_model->IsClipboardEmpty());
-        m_deleteAction->setEnabled(!isRootObjectSelected);
-        m_deleteChildrenAction->setEnabled(m_model->hasChildren(index));
+        m_deleteAction->setEnabled(!isRootObjectOnlySelected);
+        m_deleteChildrenAction->setEnabled(hasChildren);
         m_propertiesAction->setEnabled(true);
     }
     else {
@@ -142,17 +153,19 @@ void SharedActionManager::PropertiesActivated() {
 
 void SharedActionManager::DeleteSelected() {
 
-    const QModelIndexList& selectedItems = m_selectionModel->selectedIndexes();
-    if (!selectedItems.isEmpty()) {
-        m_model->DeleteNode(selectedItems.last());
+    while (m_selectionModel->hasSelection()) {
+        const QModelIndexList& selectedItems = m_selectionModel->selectedIndexes();
+        m_model->removeRow(selectedItems.back().row(), selectedItems.back().parent());
     }
 }
 
 void SharedActionManager::DeleteChildrenFromSelected() {
 
-    const QModelIndexList& selectedItems = m_selectionModel->selectedIndexes();
-    if (!selectedItems.isEmpty()) {
-        m_model->DeleteChildren(selectedItems.last());
+    //const QModelIndexList& selectedItems = m_selectionModel->selectedIndexes();
+    QModelIndexList selectedItems = m_selectionModel->selectedIndexes();
+    std::sort(selectedItems.begin(), selectedItems.end(), GlyphTreeModel::GreaterBranchLevel);
+    for (int i = 0; i < selectedItems.length(); ++i) {
+        m_model->removeRows(0, m_model->rowCount(selectedItems[i]), selectedItems[i]);
     }
 }
 
@@ -164,7 +177,9 @@ void SharedActionManager::AddChildren() {
     if (m_addChildrenDialog->exec() == QDialog::Accepted) {
         boost::shared_ptr<SynGlyphX::Glyph> glyph(new SynGlyphX::Glyph());
         m_addChildrenDialog->SetGlyphFromDialog(glyph);
-        m_model->AppendChild(selectedItems.back(), glyph, glyph->GetNumberOfChildren());
+        for (int i = 0; i < selectedItems.length(); ++i) {
+            m_model->AppendChild(selectedItems[i], glyph, glyph->GetNumberOfChildren());
+        }
     }
 }
 

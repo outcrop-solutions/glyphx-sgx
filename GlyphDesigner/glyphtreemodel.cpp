@@ -100,26 +100,36 @@ int	GlyphTreeModel::rowCount(const QModelIndex& parent) const {
     }
     return glyph->childCount;
 }
-/*
+
 bool GlyphTreeModel::setData(const QModelIndex& index, const QVariant& value, int role) {
 
-    return true;
-}*/
+    return QAbstractItemModel::setData(index, value, role);
+}
 
 Qt::ItemFlags GlyphTreeModel::flags(const QModelIndex& index) const {
     
     if (!index.isValid()) {
         return 0;
     }
+
+    Qt::ItemFlags flags = Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsDropEnabled;
+
+    if (index.parent().isValid()) {
+        flags |= Qt::ItemIsDragEnabled;
+    }
     
-    //return Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsEnabled;
-    return Qt::ItemIsSelectable | Qt::ItemIsEnabled;
+    return flags;
 }
 
 QVariant GlyphTreeModel::headerData(int section, Qt::Orientation orientation, int role) const {
 
     //We don't need column headers in views so this gets rid of them
     return "";
+}
+
+Qt::DropActions GlyphTreeModel::supportedDropActions() const {
+
+    return Qt::MoveAction;
 }
 
 pData GlyphTreeModel::GetANTzData() const {
@@ -327,26 +337,26 @@ void GlyphTreeModel::AppendChild(const QModelIndex& parent, boost::shared_ptr<co
     }
 }
 
-void GlyphTreeModel::DeleteNode(const QModelIndex& index) {
+bool GlyphTreeModel::insertRows(int row, int count, const QModelIndex & parent) {
 
-    if ((index.isValid()) && (index.parent().isValid())) {
-        int row = index.row();
-        beginRemoveRows(index.parent(), row, row);
-        npNodeDelete(static_cast<pNPnode>(index.internalPointer()), m_antzData);
-        endRemoveRows();
-    }
+    return QAbstractItemModel::insertRows(row, count, parent);
 }
 
-void GlyphTreeModel::DeleteChildren(const QModelIndex& parent) {
+bool GlyphTreeModel::removeRows(int row, int count, const QModelIndex& parent) {
 
-    if (parent.isValid()) {
+    if ((parent.isValid()) && (hasIndex(parent.row(), 0, parent.parent())) && (count > 0)) {
+
+        int lastRow = row + count - 1;
         pNPnode parentNode = static_cast<pNPnode>(parent.internalPointer());
-        beginRemoveRows(parent, 0, parentNode->childCount);
-        for (int i = parentNode->childCount - 1; i >= 0; --i) {
+        beginRemoveRows(parent, row, lastRow);
+        for (int i = lastRow; i >= row; --i) {
             npNodeDelete(parentNode->child[i], m_antzData);
         }
         endRemoveRows();
+        return true;
     }
+
+    return false;
 }
 
 bool GlyphTreeModel::IsClipboardEmpty() const {
@@ -397,4 +407,12 @@ GlyphTreeModel::PropertyUpdates GlyphTreeModel::FindUpdates(boost::shared_ptr<co
     }
 
     return updates;
+}
+
+bool GlyphTreeModel::GreaterBranchLevel(const QModelIndex& left, const QModelIndex& right) {
+
+    pNPnode leftNode = static_cast<pNPnode>(left.internalPointer());
+    pNPnode rightNode = static_cast<pNPnode>(right.internalPointer());
+
+    return (leftNode->branchLevel > rightNode->branchLevel);
 }
