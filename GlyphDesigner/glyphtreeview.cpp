@@ -5,9 +5,10 @@ GlyphTreeView::GlyphTreeView(QWidget *parent)
 {
     setSelectionMode(QAbstractItemView::ExtendedSelection);
     setDragEnabled(true);
-    setAcceptDrops(true);
+    setAcceptDrops(false);
     setDropIndicatorShown(true);
     setDragDropMode(QAbstractItemView::InternalMove);
+    setDefaultDropAction(Qt::MoveAction);
 }
 
 GlyphTreeView::~GlyphTreeView()

@@ -24,7 +24,7 @@ public slots:
     void SetEditingMode(EditingMode mode);
 
 signals:
-    void ObjectEdited(boost::shared_ptr<const SynGlyphX::Glyph> glyph);
+    void ObjectEdited(boost::shared_ptr<const SynGlyphX::GlyphProperties> glyph);
 
 protected:
     virtual void initializeGL();

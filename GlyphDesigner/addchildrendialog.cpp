@@ -7,6 +7,7 @@ AddChildrenDialog::AddChildrenDialog(QWidget *parent)
 {
     QVBoxLayout* layout = new QVBoxLayout(this);
     m_childrenGlyphWidget = new SingleGlyphWidget(SingleGlyphWidget::ShowOnTop | SingleGlyphWidget::EnabledSpinBox, this);
+    m_childrenGlyphWidget->SetNumberOfChildren(1);
     layout->addWidget(m_childrenGlyphWidget);
 
     QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, this);
@@ -23,12 +24,18 @@ AddChildrenDialog::~AddChildrenDialog()
 
 }
 
-void AddChildrenDialog::SetGlyphFromDialog(boost::shared_ptr<SynGlyphX::Glyph> glyph) {
+void AddChildrenDialog::SetGlyphFromDialog(boost::shared_ptr<SynGlyphX::GlyphProperties> glyph) {
 
     m_childrenGlyphWidget->SetGlyphFromWidget(glyph);
 }
 
-void AddChildrenDialog::SetDialogFromGlyph(boost::shared_ptr<const SynGlyphX::Glyph> glyph) {
+void AddChildrenDialog::SetDialogFromGlyph(boost::shared_ptr<const SynGlyphX::GlyphProperties> glyph) {
 
     m_childrenGlyphWidget->SetWidgetFromGlyph(glyph);
+    m_childrenGlyphWidget->SetNumberOfChildren(1);
+}
+
+unsigned int AddChildrenDialog::GetNumberOfChildren() const {
+
+    return m_childrenGlyphWidget->GetNumberOfChildren();
 }

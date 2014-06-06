@@ -29,10 +29,13 @@ public:
     SingleGlyphWidget(ChildOptions childOptions = Invisible, QWidget *parent = 0);
     ~SingleGlyphWidget();
 
-    void SetGlyphFromWidget(boost::shared_ptr<SynGlyphX::Glyph> glyph);
+    void SetNumberOfChildren(unsigned int numChildren);
+    unsigned int GetNumberOfChildren() const;
+
+    void SetGlyphFromWidget(boost::shared_ptr<SynGlyphX::GlyphProperties> glyph);
 
 public slots:
-    void SetWidgetFromGlyph(boost::shared_ptr<const SynGlyphX::Glyph> glyph);
+    void SetWidgetFromGlyph(boost::shared_ptr<const SynGlyphX::GlyphProperties> glyph);
 
 signals:
     void AddChildrenButtonClicked();

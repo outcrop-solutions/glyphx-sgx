@@ -133,7 +133,7 @@ void SingleGlyphWidget::CreateWidgets(ChildOptions childOptions) {
     setLayout(form);
 }
 
-void SingleGlyphWidget::SetWidgetFromGlyph(boost::shared_ptr<const SynGlyphX::Glyph> glyph) {
+void SingleGlyphWidget::SetWidgetFromGlyph(boost::shared_ptr<const SynGlyphX::GlyphProperties> glyph) {
 
     m_geometryShapeComboBox->setCurrentIndex(glyph->GetShape());
     m_geometrySurfaceComboBox->setCurrentIndex(glyph->GetSurface());
@@ -147,11 +147,11 @@ void SingleGlyphWidget::SetWidgetFromGlyph(boost::shared_ptr<const SynGlyphX::Gl
     m_scaleWidget->Set(glyph->GetScale());
 
     if (m_childrenSpinBox != NULL) {
-        m_childrenSpinBox->setValue(glyph->GetNumberOfChildren());
+        m_childrenSpinBox->setValue(glyph.get()->GetNumberOfChildren());
     }
 }
 
-void SingleGlyphWidget::SetGlyphFromWidget(boost::shared_ptr<SynGlyphX::Glyph> glyph) {
+void SingleGlyphWidget::SetGlyphFromWidget(boost::shared_ptr<SynGlyphX::GlyphProperties> glyph) {
 
     glyph->SetGeometry(static_cast<SynGlyphX::Geometry::Shape>(m_geometryShapeComboBox->currentIndex()), static_cast<SynGlyphX::Geometry::Surface>(m_geometrySurfaceComboBox->currentIndex()));
     //Because null is not in the list of topologies, shift by one
@@ -163,13 +163,6 @@ void SingleGlyphWidget::SetGlyphFromWidget(boost::shared_ptr<SynGlyphX::Glyph> g
     glyph->SetTranslate(m_translateWidget->GetX(), m_translateWidget->GetY(), m_translateWidget->GetZ());
     glyph->SetRotate(m_rotateWidget->GetX(), m_rotateWidget->GetY(), m_rotateWidget->GetZ());
     glyph->SetScale(m_scaleWidget->GetX(), m_scaleWidget->GetY(), m_scaleWidget->GetZ());
-
-    if (m_childrenSpinBox != NULL) {
-        glyph->SetNumberOfChildren(static_cast<unsigned int>(m_childrenSpinBox->value()));
-    }
-    else {
-        glyph->SetNumberOfChildren(0);
-    }
 }
 
 QString SingleGlyphWidget::ShapeToString(SynGlyphX::Geometry::Shape shape) {
@@ -248,4 +241,21 @@ QString SingleGlyphWidget::TopologyTypeToString(SynGlyphX::Topology::Type topo) 
     }
 
     return "";
+}
+
+void SingleGlyphWidget::SetNumberOfChildren(unsigned int numChildren) {
+
+    if (m_childrenSpinBox != NULL) {
+        m_childrenSpinBox->setValue(numChildren);
+    }
+}
+
+unsigned int SingleGlyphWidget::GetNumberOfChildren() const {
+
+    if (m_childrenSpinBox == NULL) {
+        return 0;
+    }
+    else {
+        return static_cast<unsigned int>(m_childrenSpinBox->value());
+    }
 }

@@ -140,7 +140,7 @@ void GlyphDesignerWindow::CreateDockWidgets() {
     rightDockWidget->setWidget(modalGlyphWidget);
     addDockWidget(Qt::RightDockWidgetArea, rightDockWidget);
     m_viewMenu->addAction(rightDockWidget->toggleViewAction());
-    QObject::connect(m_3dView, SIGNAL(ObjectEdited(boost::shared_ptr<const SynGlyphX::Glyph>)), modalGlyphWidget, SLOT(SetWidgetFromGlyph(boost::shared_ptr<const SynGlyphX::Glyph>)));
+    QObject::connect(m_3dView, &ANTzWidget::ObjectEdited, modalGlyphWidget, &ModalGlyphWidget::SetWidgetFromGlyph);
 }
 
 void GlyphDesignerWindow::CreateNewGlyphTree() {
@@ -181,14 +181,19 @@ void GlyphDesignerWindow::CreateNewGlyphTree() {
 
             if (wizard.exec() == QDialog::Accepted) {
 
-                std::vector<boost::shared_ptr<SynGlyphX::Glyph>> glyphs;
+                std::vector<boost::shared_ptr<SynGlyphX::GlyphProperties>> glyphs;
+                std::vector<unsigned int> numberOfChildren;
 
                 for (int i = 0; i < numberOfBranches; ++i) {
-                    boost::shared_ptr<SynGlyphX::Glyph> glyph(new SynGlyphX::Glyph());
+                    boost::shared_ptr<SynGlyphX::GlyphProperties> glyph(new SynGlyphX::GlyphProperties());
                     glyphWidgets[i]->SetGlyphFromWidget(glyph);
                     glyphs.push_back(glyph);
+                    numberOfChildren.push_back(glyphWidgets[i]->GetNumberOfChildren());
                 }
-                m_glyphTreeModel->CreateNewTree(glyphs);
+
+                boost::shared_ptr<SynGlyphX::Glyph> newGlyph(new SynGlyphX::Glyph(glyphs, numberOfChildren));
+
+                m_glyphTreeModel->CreateNewTree(newGlyph);
                 m_3dView->ResetCamera();
             }
         }

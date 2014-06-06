@@ -145,7 +145,7 @@ void SharedActionManager::PropertiesActivated() {
     boost::shared_ptr<SynGlyphX::Glyph> oldGlyph(new SynGlyphX::Glyph(static_cast<pNPnode>(selectedItems.back().internalPointer())));
     m_glyphWidget->SetWidgetFromGlyph(oldGlyph);
     if (m_propertiesDialog->exec() == QDialog::Accepted) {
-        boost::shared_ptr<SynGlyphX::Glyph> newGlyph(new SynGlyphX::Glyph());
+        boost::shared_ptr<SynGlyphX::GlyphProperties> newGlyph(new SynGlyphX::GlyphProperties());
         m_glyphWidget->SetGlyphFromWidget(newGlyph);
         m_model->UpdateNodes(selectedItems, newGlyph, GlyphTreeModel::FindUpdates(oldGlyph, newGlyph));
     }
@@ -173,12 +173,12 @@ void SharedActionManager::AddChildren() {
 
     const QModelIndexList& selectedItems = m_selectionModel->selectedIndexes();
 
-    m_addChildrenDialog->SetDialogFromGlyph(SynGlyphX::Glyph::GetTemplate());
+    m_addChildrenDialog->SetDialogFromGlyph(SynGlyphX::GlyphProperties::GetTemplate());
     if (m_addChildrenDialog->exec() == QDialog::Accepted) {
-        boost::shared_ptr<SynGlyphX::Glyph> glyph(new SynGlyphX::Glyph());
+        boost::shared_ptr<SynGlyphX::GlyphProperties> glyph(new SynGlyphX::GlyphProperties());
         m_addChildrenDialog->SetGlyphFromDialog(glyph);
         for (int i = 0; i < selectedItems.length(); ++i) {
-            m_model->AppendChild(selectedItems[i], glyph, glyph->GetNumberOfChildren());
+            m_model->AppendChild(selectedItems[i], glyph, m_addChildrenDialog->GetNumberOfChildren());
         }
     }
 }

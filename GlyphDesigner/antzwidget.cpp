@@ -132,7 +132,7 @@ void ANTzWidget::paintGL() {
     if (m_selectionEdited) {
         const QModelIndexList& selected = m_selectionModel->selectedIndexes();
         if (!selected.isEmpty()) {
-            boost::shared_ptr<SynGlyphX::Glyph> glyph(new SynGlyphX::Glyph(static_cast<pNPnode>(selected.back().internalPointer())));
+            boost::shared_ptr<SynGlyphX::GlyphProperties> glyph(new SynGlyphX::GlyphProperties(static_cast<pNPnode>(selected.back().internalPointer())));
             emit ObjectEdited(glyph);
         }
         m_selectionEdited = false;

@@ -45,7 +45,7 @@ void ModalGlyphWidget::OnWidgetUpdated(GlyphTreeModel::PropertyUpdates updates) 
     const QModelIndexList& selected = m_selectionModel->selectedIndexes();
     if (!selected.isEmpty()) {
 
-        boost::shared_ptr<SynGlyphX::Glyph> glyph(new SynGlyphX::Glyph());
+        boost::shared_ptr<SynGlyphX::GlyphProperties> glyph(new SynGlyphX::GlyphProperties());
         SetGlyphFromWidget(glyph);
 
         m_model->UpdateNodes(selected, glyph, updates);

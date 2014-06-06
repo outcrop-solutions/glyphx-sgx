@@ -12,10 +12,12 @@ public:
     AddChildrenDialog(QWidget *parent = 0);
     ~AddChildrenDialog();
 
-    void SetGlyphFromDialog(boost::shared_ptr<SynGlyphX::Glyph> glyph);
+    void SetGlyphFromDialog(boost::shared_ptr<SynGlyphX::GlyphProperties> glyph);
+
+    unsigned int GetNumberOfChildren() const;
 
 public slots:
-    void SetDialogFromGlyph(boost::shared_ptr<const SynGlyphX::Glyph> glyph);
+    void SetDialogFromGlyph(boost::shared_ptr<const SynGlyphX::GlyphProperties> glyph);
 
 private:
     SingleGlyphWidget* m_childrenGlyphWidget;

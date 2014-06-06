@@ -36,12 +36,16 @@ public:
     virtual QModelIndex	index(int row, int column = 0, const QModelIndex& parent = QModelIndex()) const;
     virtual QModelIndex	parent(const QModelIndex& index) const;
     virtual int	rowCount(const QModelIndex& parent = QModelIndex()) const;
-    virtual bool setData(const QModelIndex& index, const QVariant& value, int role = Qt::EditRole);
+    //virtual bool setData(const QModelIndex& index, const QVariant& value, int role = Qt::EditRole);
     virtual Qt::ItemFlags flags(const QModelIndex& index) const;
     virtual QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
     virtual Qt::DropActions supportedDropActions() const;
     virtual bool removeRows(int row, int count, const QModelIndex& parent = QModelIndex());
-    virtual bool insertRows(int row, int count, const QModelIndex & parent = QModelIndex());
+    //virtual bool insertRows(int row, int count, const QModelIndex & parent = QModelIndex());
+
+    virtual QStringList mimeTypes() const;
+    virtual QMimeData* mimeData(const QModelIndexList& indexes) const;
+    virtual bool dropMimeData(const QMimeData* data, Qt::DropAction action, int row, int column, const QModelIndex& parent);
 
     pData GetANTzData() const;
 
@@ -49,19 +53,19 @@ public:
 
     bool LoadFromFile(const std::string& filename);
     bool SaveToCSV(const std::string& filename, const QModelIndexList& selectedItems) const;
-    void CreateNewTree(const std::vector<boost::shared_ptr<SynGlyphX::Glyph>>& newGlyphTemplates);
-    void UpdateNode(const QModelIndex& index, boost::shared_ptr<const SynGlyphX::Glyph> glyph, PropertyUpdates updates = UpdateAll);
-    void UpdateNodes(const QModelIndexList& indexList, boost::shared_ptr<const SynGlyphX::Glyph> glyph, PropertyUpdates updates = UpdateAll);
+    void CreateNewTree(boost::shared_ptr<const SynGlyphX::Glyph> newGlyph);
+    void UpdateNode(const QModelIndex& index, boost::shared_ptr<const SynGlyphX::GlyphProperties> glyph, PropertyUpdates updates = UpdateAll);
+    void UpdateNodes(const QModelIndexList& indexList, boost::shared_ptr<const SynGlyphX::GlyphProperties> glyph, PropertyUpdates updates = UpdateAll);
 
     QModelIndex IndexFromANTzID(int id);
 
-    void AppendChild(const QModelIndex& parent, boost::shared_ptr<const SynGlyphX::Glyph> glyph, unsigned int numberOfChildren = 1);
+    void AppendChild(const QModelIndex& parent, boost::shared_ptr<const SynGlyphX::GlyphProperties> glyph, unsigned int numberOfChildren = 1);
 
     bool IsClipboardEmpty() const;
     boost::shared_ptr<const SynGlyphX::Glyph> GetClipboardGlyph() const;
     void CopyToClipboard(const QModelIndex& index, bool removeFromTree = false);
 
-    static PropertyUpdates FindUpdates(boost::shared_ptr<const SynGlyphX::Glyph> oldGlyph, boost::shared_ptr<const SynGlyphX::Glyph> newGlyph);
+    static PropertyUpdates FindUpdates(boost::shared_ptr<const SynGlyphX::GlyphProperties> oldGlyph, boost::shared_ptr<const SynGlyphX::GlyphProperties> newGlyph);
     static bool GreaterBranchLevel(const QModelIndex& left, const QModelIndex& right);
 
 signals:
@@ -69,10 +73,11 @@ signals:
     void ModelChanged();
 
 private:
-    pNPnode CreateNodeFromTemplate(pNPnode parent, boost::shared_ptr<const SynGlyphX::Glyph> glyphTemplate);
+    pNPnode CreateNodeFromTemplate(pNPnode parent, boost::shared_ptr<const SynGlyphX::GlyphProperties> glyphTemplate);
     void CreateRootPinNode();
     int GetChildIndexFromParent(pNPnode node) const;
-    void UpdateNode(pNPnode glyph, boost::shared_ptr<const SynGlyphX::Glyph> glyphTemplate, PropertyUpdates updates = UpdateAll);
+    void UpdateNode(pNPnode glyph, boost::shared_ptr<const SynGlyphX::GlyphProperties> glyphTemplate, PropertyUpdates updates = UpdateAll);
+    void CreateNewSubTree(pNPnode parent, boost::shared_ptr<const SynGlyphX::Glyph> newGlyph, bool needResetModelSignals = true);
 
     pNPnode m_rootGlyph;
     pData m_antzData;
