@@ -322,7 +322,7 @@ ANTZCORE_API pNPnode npNodeNew(int nodeType, pNPnode nodeParent, void* dataRef)
 }
 
 //------------------------------------------------------------------------------
-bool npNodeAttach (pNPnode node, pNPnode parent, void* dataRef)
+ANTZCORE_API bool npNodeAttach(pNPnode node, pNPnode parent, void* dataRef)
 {
 	if (parent->childCount >= kNPnodeChildMax)
 	{
