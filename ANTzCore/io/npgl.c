@@ -1038,6 +1038,56 @@ ANTZCORE_API void npPick(int x, int y, void* dataRef)
 	data->io.gl.pickPass = false;	//clear the flag to draw normal colors
 }
 
+//------------------------------------------------------------------------------
+ANTZCORE_API int npPickPin(int x, int y, void* dataRef) {
+
+	int id = 0;
+
+	GLubyte r, g, b;	//Unsigned Byte 8-bit Range: 0-255 // changed from u_int8_t, zz debug
+	GLubyte pixels[4];		//4 Bytes
+
+	pNPnode node = NULL;
+	pData data = (pData)dataRef;
+
+	//pickPass flag tells all object draw routines to use node ID mapped color
+	data->io.gl.pickPass = true;
+
+	//draw entire scene as flat 100% ambient with color mapped by node ID
+	//think of it as a draw picture by numbers coloring book
+	npGLDrawScene(data);			//optimize to draw only picked region, debug zz
+
+	//upgrade to read a 9x9 region as to allow picking near an object, zz debug
+	//then spiral out from the center looking for any object that is close
+	//must handle edges of screen
+	//read the pixel that was picked
+	glReadPixels(x, y, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
+
+	r = pixels[0];
+	g = pixels[1];
+	b = pixels[2];			// 2^24 rgb limit, does not use alpha
+
+	id = npRGBtoID(r, g, b);
+
+	if (id >= kNPnodeMax)	//mouse selection crashing workaround, debug zz
+		id = 0;				//add additional handling for bad picking IDs
+
+	if (id != 0)
+	{
+		node = data->map.nodeID[id];	//get node by id
+
+		if (node != NULL)
+		{
+			if (node->type != kNodePin)
+			{
+				id = 0;
+			}
+		}
+	}
+
+	data->io.gl.pickPass = false;	//clear the flag to draw normal colors
+
+	return id;
+}
 
 //------------------------------------------------------------------------------
 void npResizeConsole (void* dataRef)
