@@ -172,4 +172,82 @@ namespace SynGlyphX {
         return m_tagOffset;
     }
 
+	std::wstring GlyphProperties::ShapeToString(Geometry::Shape shape) {
+
+		if (shape == SynGlyphX::Geometry::Cube) {
+			return L"Cube";
+		}
+		else if (shape == SynGlyphX::Geometry::Sphere) {
+			return L"Sphere";
+		}
+		else if (shape == SynGlyphX::Geometry::Cone) {
+			return L"Cone";
+		}
+		else if (shape == SynGlyphX::Geometry::Torus) {
+			return L"Torus";
+		}
+		else if (shape == SynGlyphX::Geometry::Dodecahedron) {
+			return L"Dodecahedron";
+		}
+		else if (shape == SynGlyphX::Geometry::Octahedron) {
+			return L"Octahedron";
+		}
+		else if (shape == SynGlyphX::Geometry::Tetrahedron) {
+			return L"Tetrahedron";
+		}
+		else if (shape == SynGlyphX::Geometry::Icosahedron) {
+			return L"Icosahedron";
+		}
+		else if (shape == SynGlyphX::Geometry::Pin) {
+			return L"Pin";
+		}
+		else if (shape == SynGlyphX::Geometry::Cylinder) {
+			return L"Cylinder";
+		}
+
+		return L"";
+	}
+
+	std::wstring GlyphProperties::SurfaceToString(Geometry::Surface surface) {
+
+		if (surface == SynGlyphX::Geometry::Wireframe) {
+			return L"Wireframe";
+		}
+		else if (surface == SynGlyphX::Geometry::Solid) {
+			return L"Solid";
+		}
+
+		return L"";
+	}
+
+	std::wstring GlyphProperties::TopologyTypeToString(Topology::Type topo) {
+
+		if (topo == SynGlyphX::Topology::Null) {
+			return L"Euclidean";
+		}
+		else if (topo == SynGlyphX::Topology::Cube) {
+			return L"Cube";
+		}
+		else if (topo == SynGlyphX::Topology::Sphere) {
+			return L"Sphere";
+		}
+		else if (topo == SynGlyphX::Topology::Torus) {
+			return L"Torus";
+		}
+		else if (topo == SynGlyphX::Topology::Cylinder) {
+			return L"Cylinder";
+		}
+		else if (topo == SynGlyphX::Topology::Pin) {
+			return L"Pin";
+		}
+		else if (topo == SynGlyphX::Topology::Rod) {
+			return L"Rod";
+		}
+		else if (topo == SynGlyphX::Topology::Point) {
+			return L"Point";
+		}
+
+		return L"";
+	}
+
 } //namespace SynGlyphX

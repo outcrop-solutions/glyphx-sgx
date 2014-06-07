@@ -44,6 +44,10 @@ namespace SynGlyphX {
         void SetTagOffset(double x, double y, double z);
         const Vector3& GetTagOffset() const;
 
+		static std::wstring ShapeToString(Geometry::Shape shape);
+		static std::wstring SurfaceToString(Geometry::Surface surface);
+		static std::wstring TopologyTypeToString(Topology::Type topo);
+
     private:
         static boost::shared_ptr<GlyphProperties> CreateRootPin();
 
