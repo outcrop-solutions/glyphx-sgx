@@ -44,10 +44,6 @@ protected:
     void CreateWidgets(ChildOptions childOptions);
     QWidget* CreateChildrenWidget(ChildOptions childOptions);
 
-    QString ShapeToString(SynGlyphX::Geometry::Shape shape);
-    QString SurfaceToString(SynGlyphX::Geometry::Surface surface);
-    QString TopologyTypeToString(SynGlyphX::Topology::Type topo);
-
     QComboBox* m_geometryShapeComboBox;
     QComboBox* m_geometrySurfaceComboBox;
     QComboBox* m_topologyComboBox;

@@ -53,16 +53,16 @@ void SingleGlyphWidget::CreateWidgets(ChildOptions childOptions) {
 
     m_geometryShapeComboBox = new QComboBox(this);
     for (int i = 0; i < 10; ++i) {
-        m_geometryShapeComboBox->addItem(ShapeToString((SynGlyphX::Geometry::Shape)i));
+        m_geometryShapeComboBox->addItem(QString::fromStdWString(SynGlyphX::GlyphProperties::ShapeToString(static_cast<SynGlyphX::Geometry::Shape>(i))));
     }
 
     m_geometrySurfaceComboBox = new QComboBox(this);
-    m_geometrySurfaceComboBox->addItem(SurfaceToString(SynGlyphX::Geometry::Wireframe));
-    m_geometrySurfaceComboBox->addItem(SurfaceToString(SynGlyphX::Geometry::Solid));
+	m_geometrySurfaceComboBox->addItem(QString::fromStdWString(SynGlyphX::GlyphProperties::SurfaceToString(SynGlyphX::Geometry::Wireframe)));
+	m_geometrySurfaceComboBox->addItem(QString::fromStdWString(SynGlyphX::GlyphProperties::SurfaceToString(SynGlyphX::Geometry::Solid)));
 
     m_topologyComboBox = new QComboBox(this);
     for (int i = 0; i < 8; ++i) {
-        m_topologyComboBox->addItem(TopologyTypeToString((SynGlyphX::Topology::Type)i));
+		m_topologyComboBox->addItem(QString::fromStdWString(SynGlyphX::GlyphProperties::TopologyTypeToString(static_cast<SynGlyphX::Topology::Type>(i))));
     }
 
     QGroupBox* colorGroupBox = new QGroupBox(tr("Color"), this);
@@ -163,84 +163,6 @@ void SingleGlyphWidget::SetGlyphFromWidget(boost::shared_ptr<SynGlyphX::GlyphPro
     glyph->SetTranslate(m_translateWidget->GetX(), m_translateWidget->GetY(), m_translateWidget->GetZ());
     glyph->SetRotate(m_rotateWidget->GetX(), m_rotateWidget->GetY(), m_rotateWidget->GetZ());
     glyph->SetScale(m_scaleWidget->GetX(), m_scaleWidget->GetY(), m_scaleWidget->GetZ());
-}
-
-QString SingleGlyphWidget::ShapeToString(SynGlyphX::Geometry::Shape shape) {
-
-    if (shape == SynGlyphX::Geometry::Cube) {
-        return "Cube";
-    }
-    else if (shape == SynGlyphX::Geometry::Sphere) {
-        return "Sphere";
-    }
-    else if (shape == SynGlyphX::Geometry::Cone) {
-        return "Cone";
-    }
-    else if (shape == SynGlyphX::Geometry::Torus) {
-        return "Torus";
-    }
-    else if (shape == SynGlyphX::Geometry::Dodecahedron) {
-        return "Dodecahedron";
-    }
-    else if (shape == SynGlyphX::Geometry::Octahedron) {
-        return "Octahedron";
-    }
-    else if (shape == SynGlyphX::Geometry::Tetrahedron) {
-        return "Tetrahedron";
-    }
-    else if (shape == SynGlyphX::Geometry::Icosahedron) {
-        return "Icosahedron";
-    }
-    else if (shape == SynGlyphX::Geometry::Pin) {
-        return "Pin";
-    }
-    else if (shape == SynGlyphX::Geometry::Cylinder) {
-        return "Cylinder";
-    }
-
-    return "";
-}
-
-QString SingleGlyphWidget::SurfaceToString(SynGlyphX::Geometry::Surface surface) {
-
-    if (surface == SynGlyphX::Geometry::Wireframe) {
-        return "Wireframe";
-    }
-    else if (surface == SynGlyphX::Geometry::Solid) {
-        return "Solid";
-    }
-
-    return "";
-}
-
-QString SingleGlyphWidget::TopologyTypeToString(SynGlyphX::Topology::Type topo) {
-    
-    if (topo == SynGlyphX::Topology::Null) {
-        return "Euclidean";
-    }
-    else if (topo == SynGlyphX::Topology::Cube) {
-        return "Cube";
-    }
-    else if (topo == SynGlyphX::Topology::Sphere) {
-        return "Sphere";
-    }
-    else if (topo == SynGlyphX::Topology::Torus) {
-        return "Torus";
-    }
-    else if (topo == SynGlyphX::Topology::Cylinder) {
-        return "Cylinder";
-    }
-    else if (topo == SynGlyphX::Topology::Pin) {
-        return "Pin";
-    }
-    else if (topo == SynGlyphX::Topology::Rod) {
-        return "Rod";
-    }
-    else if (topo == SynGlyphX::Topology::Point) {
-        return "Point";
-    }
-
-    return "";
 }
 
 void SingleGlyphWidget::SetNumberOfChildren(unsigned int numChildren) {

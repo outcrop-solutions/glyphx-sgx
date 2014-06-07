@@ -28,8 +28,7 @@ GlyphDesignerWindow::GlyphDesignerWindow(QWidget *parent)
     CreateMenus();
     CreateDockWidgets();
 
-    QObject::connect(m_glyphTreeModel, &GlyphTreeModel::ModelChanged, this, [this]{ setWindowModified(true); });
-    QObject::connect(m_glyphTreeModel, &GlyphTreeModel::modelReset, this, [this]{ setWindowModified(false); });
+	QObject::connect(m_glyphTreeModel, &GlyphTreeModel::ModelChanged, this, &GlyphDesignerWindow::setWindowModified);
 
     ReadSettings();
 

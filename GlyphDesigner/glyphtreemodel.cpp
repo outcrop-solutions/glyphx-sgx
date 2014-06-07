@@ -10,10 +10,11 @@ GlyphTreeModel::GlyphTreeModel(QObject *parent)
     m_antzData = static_cast<pData>(npInitData(0, NULL));
     CreateRootPinNode();
 
-    QObject::connect(this, &GlyphTreeModel::NodeUpdated, this, &GlyphTreeModel::ModelChanged);
-    QObject::connect(this, &GlyphTreeModel::rowsInserted, this, &GlyphTreeModel::ModelChanged);
-    QObject::connect(this, &GlyphTreeModel::rowsMoved, this, &GlyphTreeModel::ModelChanged);
-    QObject::connect(this, &GlyphTreeModel::rowsRemoved, this, &GlyphTreeModel::ModelChanged);
+	QObject::connect(this, &GlyphTreeModel::NodeUpdated, this, &GlyphTreeModel::MarkDifferentNotifyModelUpdate);
+	QObject::connect(this, &GlyphTreeModel::rowsInserted, this, &GlyphTreeModel::MarkDifferentNotifyModelUpdate);
+	QObject::connect(this, &GlyphTreeModel::rowsMoved, this, &GlyphTreeModel::MarkDifferentNotifyModelUpdate);
+	QObject::connect(this, &GlyphTreeModel::rowsRemoved, this, &GlyphTreeModel::MarkDifferentNotifyModelUpdate);
+	QObject::connect(this, &GlyphTreeModel::modelReset, this, &GlyphTreeModel::NotifyModelUpdate);
 }
 
 GlyphTreeModel::~GlyphTreeModel()
@@ -34,15 +35,16 @@ QVariant GlyphTreeModel::data(const QModelIndex& index, int role) const {
     if (role != Qt::DisplayRole) {
         return QVariant();
     }
-
+	
     pNPnode glyph = static_cast<pNPnode>(index.internalPointer());
 
+	std::wstring displayedData = SynGlyphX::GlyphProperties::ShapeToString(static_cast<SynGlyphX::Geometry::Shape>(glyph->geometry / 2)) + L": ";
+	displayedData += SynGlyphX::GlyphProperties::TopologyTypeToString(static_cast<SynGlyphX::Topology::Type>(glyph->topo));
     if (glyph == m_rootGlyph) {
-        return "ID: " + QString::number(glyph->id) + " (Root Pin)";
+		displayedData += L" (Root)";
     }
-    else {
-        return "ID: " + QString::number(glyph->id);
-    }
+    
+	return QString::fromStdWString(displayedData);
 }
 
 QModelIndex	GlyphTreeModel::index(int row, int column, const QModelIndex& parent) const {
@@ -142,7 +144,7 @@ pNPnode GlyphTreeModel::GetRootGlyph() const {
 
 bool GlyphTreeModel::LoadFromFile(const std::string& filename) {
     
-    //Need to select so that npNodeDelete works properly.  ANTz assumes that the root pin being deleted is selected.  Easier to work around this way
+    //Need to select so that npNodeDelete works properly.  ANTz assumes that the root pin being deleted is selected.  Easier to work around this for now
     m_antzData->map.nodeRootIndex = m_rootGlyph->id;
 
     beginResetModel();
@@ -154,6 +156,7 @@ bool GlyphTreeModel::LoadFromFile(const std::string& filename) {
     else {
         CreateRootPinNode();
     }
+	m_isDifferentFromSavedFileOrDefaultGlyph = false;
 
     //Undo previous select node at the beginning of this function
     m_antzData->map.nodeRootIndex = 0;
@@ -163,7 +166,7 @@ bool GlyphTreeModel::LoadFromFile(const std::string& filename) {
     return success;
 }
 
-bool GlyphTreeModel::SaveToCSV(const std::string& filename, const QModelIndexList& selectedItems) const {
+bool GlyphTreeModel::SaveToCSV(const std::string& filename, const QModelIndexList& selectedItems) {
 
     //need to unselect node(s) for saving since selection will get saved with the CSV
     for (int i = 0; i < selectedItems.length(); ++i) {
@@ -178,6 +181,11 @@ bool GlyphTreeModel::SaveToCSV(const std::string& filename, const QModelIndexLis
         pNPnode selectedNode = static_cast<pNPnode>(selectedItems[i].internalPointer());
         selectedNode->selected = true;
     }
+	
+	if (success) {
+		m_isDifferentFromSavedFileOrDefaultGlyph = false;
+		NotifyModelUpdate();
+	}
     
     return success;
 }
@@ -195,6 +203,7 @@ void GlyphTreeModel::CreateNewTree(boost::shared_ptr<const SynGlyphX::Glyph> new
 
         CreateNewSubTree(m_rootGlyph, newGlyph->GetChild(i), false);
     }
+	m_isDifferentFromSavedFileOrDefaultGlyph = true;
 
     endResetModel();
 
@@ -217,6 +226,7 @@ void GlyphTreeModel::CreateNewSubTree(pNPnode parent, boost::shared_ptr<const Sy
 
         CreateNewSubTree(child, newGlyph->GetChild(i), false);
     }
+	m_isDifferentFromSavedFileOrDefaultGlyph = true;
 
     if (needResetModelSignals) {
         endResetModel();
@@ -242,6 +252,7 @@ void GlyphTreeModel::CreateRootPinNode() {
     
     m_rootGlyph = npNodeNew(kNodePin, NULL, m_antzData);
     npNodeNew(kNodePin, m_rootGlyph, m_antzData);
+	m_isDifferentFromSavedFileOrDefaultGlyph = false;
 }
 
 void GlyphTreeModel::UpdateNodes(const QModelIndexList& indexList, boost::shared_ptr<const SynGlyphX::GlyphProperties> glyph, PropertyUpdates updates) {
@@ -456,30 +467,26 @@ bool GlyphTreeModel::dropMimeData(const QMimeData* data, Qt::DropAction action, 
     
     if ((glyphData != NULL) && (row == -1)) {
 
-        /*const std::vector<boost::shared_ptr<SynGlyphX::Glyph>>& glyphs = glyphData->GetGlyphs();
+		pNPnode newParentNode = static_cast<pNPnode>(parent.internalPointer());
+        const QModelIndexList& indexes = glyphData->GetGlyphs();
+		std::vector<boost::shared_ptr<SynGlyphX::Glyph>> glyphs;
 
-        beginResetModel();
-        pNPnode newParentNode = static_cast<pNPnode>(parent.internalPointer());
+		beginResetModel();
+		for (int j = 0; j < indexes.length(); ++j) {
+			
+			pNPnode node = static_cast<pNPnode>(indexes[j].internalPointer());
+
+			//If the node is being dropped on its own parent, do nothing
+			if (node->parent != newParentNode) {
+				boost::shared_ptr<SynGlyphX::Glyph> glyph(new SynGlyphX::Glyph(node));
+				glyphs.push_back(glyph);
+				npNodeDelete(node, m_antzData);
+			}
+		}
+
         for (int i = 0; i < glyphs.size(); ++i) {
-            
-            CreateNewSubTree(newParentNode, glyphs[0], false);
-        }
-        endResetModel();*/
 
-        const QModelIndexList& glyphs = glyphData->GetGlyphs();
-
-        beginResetModel();
-        pNPnode newParentNode = static_cast<pNPnode>(parent.internalPointer());
-        for (int i = 0; i < glyphs.size(); ++i) {
-
-            pNPnode node = static_cast<pNPnode>(glyphs[i].internalPointer());
-
-            pNPnode oldParentNode = node->parent;
-            if (oldParentNode != newParentNode) {
-                npNodeRemove(false, node, m_antzData);
-                npNodeAttach(node, newParentNode, m_antzData);
-                node->selected = 0;
-            }
+			CreateNewSubTree(newParentNode, glyphs[i], false);
         }
         endResetModel();
         m_antzData->map.nodeRootIndex = 0;
@@ -488,4 +495,15 @@ bool GlyphTreeModel::dropMimeData(const QMimeData* data, Qt::DropAction action, 
     }
 
     return false;
+}
+
+void GlyphTreeModel::NotifyModelUpdate() {
+
+	emit ModelChanged(m_isDifferentFromSavedFileOrDefaultGlyph);
+}
+
+void GlyphTreeModel::MarkDifferentNotifyModelUpdate() {
+
+	m_isDifferentFromSavedFileOrDefaultGlyph = true;
+	emit ModelChanged(m_isDifferentFromSavedFileOrDefaultGlyph);
 }

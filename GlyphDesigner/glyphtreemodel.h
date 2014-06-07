@@ -52,7 +52,7 @@ public:
     pNPnode GetRootGlyph() const;
 
     bool LoadFromFile(const std::string& filename);
-    bool SaveToCSV(const std::string& filename, const QModelIndexList& selectedItems) const;
+    bool SaveToCSV(const std::string& filename, const QModelIndexList& selectedItems);
     void CreateNewTree(boost::shared_ptr<const SynGlyphX::Glyph> newGlyph);
     void UpdateNode(const QModelIndex& index, boost::shared_ptr<const SynGlyphX::GlyphProperties> glyph, PropertyUpdates updates = UpdateAll);
     void UpdateNodes(const QModelIndexList& indexList, boost::shared_ptr<const SynGlyphX::GlyphProperties> glyph, PropertyUpdates updates = UpdateAll);
@@ -70,7 +70,11 @@ public:
 
 signals:
     void NodeUpdated(const QModelIndex& index);
-    void ModelChanged();
+    void ModelChanged(bool isDifferentFromSavedFileOrDefaultGlyph);
+
+private slots:
+	void NotifyModelUpdate();
+	void MarkDifferentNotifyModelUpdate();
 
 private:
     pNPnode CreateNodeFromTemplate(pNPnode parent, boost::shared_ptr<const SynGlyphX::GlyphProperties> glyphTemplate);
@@ -78,10 +82,11 @@ private:
     int GetChildIndexFromParent(pNPnode node) const;
     void UpdateNode(pNPnode glyph, boost::shared_ptr<const SynGlyphX::GlyphProperties> glyphTemplate, PropertyUpdates updates = UpdateAll);
     void CreateNewSubTree(pNPnode parent, boost::shared_ptr<const SynGlyphX::Glyph> newGlyph, bool needResetModelSignals = true);
-
+	
     pNPnode m_rootGlyph;
     pData m_antzData;
     boost::shared_ptr<SynGlyphX::Glyph> m_clipboardGlyph;
+	bool m_isDifferentFromSavedFileOrDefaultGlyph;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(GlyphTreeModel::PropertyUpdates)
