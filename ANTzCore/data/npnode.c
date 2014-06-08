@@ -333,6 +333,7 @@ ANTZCORE_API bool npNodeAttach(pNPnode node, pNPnode parent, void* dataRef)
 
 	parent->childIndex = parent->childCount++;
 	parent->child[parent->childIndex] = node;
+	node->parent = parent;
 
 	return true;
 }
