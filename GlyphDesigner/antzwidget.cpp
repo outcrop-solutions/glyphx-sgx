@@ -293,12 +293,13 @@ void ANTzWidget::OnNodeDeleted(const QModelIndex& parent, int start, int end) {
 
 	if (!m_selectionModel->hasSelection()) {
 
-		pNPnode parentNode = static_cast<pNPnode>(parent.internalPointer());
-		if (parentNode->childCount > 0) {
-			CenterCameraOnNode(parentNode->child[parentNode->childCount - 1]);
+		if (parent.isValid()) {
+
+			pNPnode parentNode = static_cast<pNPnode>(parent.internalPointer());
+			CenterCameraOnNode(parentNode);
 		}
 		else {
-			CenterCameraOnNode(parentNode);
+			CenterCameraOnNode(m_model->GetRootGlyph());
 		}
 
 		pData antzData = m_model->GetANTzData();

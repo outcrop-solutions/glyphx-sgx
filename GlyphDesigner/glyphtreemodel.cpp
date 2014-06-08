@@ -198,7 +198,7 @@ void GlyphTreeModel::CreateNewTree(boost::shared_ptr<const SynGlyphX::Glyph> new
     beginResetModel();
     npNodeDelete(m_rootGlyph, m_antzData);
 
-    CreateNodeFromTemplate(NULL, newGlyph);
+    CreateNodeFromTemplate(NULL, newGlyph, false);
     for (int i = 0; i < newGlyph->GetNumberOfChildren(); ++i) {
 
         CreateNewSubTree(m_rootGlyph, newGlyph->GetChild(i), false);
@@ -211,29 +211,22 @@ void GlyphTreeModel::CreateNewTree(boost::shared_ptr<const SynGlyphX::Glyph> new
     m_antzData->map.nodeRootIndex = 0;
 }
 
-void GlyphTreeModel::CreateNewSubTree(pNPnode parent, boost::shared_ptr<const SynGlyphX::Glyph> newGlyph, bool needResetModelSignals) {
+void GlyphTreeModel::CreateNewSubTree(pNPnode parent, boost::shared_ptr<const SynGlyphX::Glyph> newGlyph, bool updatePosition) {
 
     if (parent == NULL) {
         return;
     }
 
-    if (needResetModelSignals) {
-        beginResetModel();
-    }
-
-    pNPnode child = CreateNodeFromTemplate(parent, newGlyph);
+    pNPnode child = CreateNodeFromTemplate(parent, newGlyph, updatePosition);
     for (int i = 0; i < newGlyph->GetNumberOfChildren(); ++i) {
 
-        CreateNewSubTree(child, newGlyph->GetChild(i), false);
+		CreateNewSubTree(child, newGlyph->GetChild(i), updatePosition);
     }
 	m_isDifferentFromSavedFileOrDefaultGlyph = true;
 
-    if (needResetModelSignals) {
-        endResetModel();
-    }
 }
 
-pNPnode GlyphTreeModel::CreateNodeFromTemplate(pNPnode parent, boost::shared_ptr<const SynGlyphX::GlyphProperties> glyphTemplate) {
+pNPnode GlyphTreeModel::CreateNodeFromTemplate(pNPnode parent, boost::shared_ptr<const SynGlyphX::GlyphProperties> glyphTemplate, bool updatePosition) {
 
     pNPnode glyph = npNodeNew(kNodePin, parent, m_antzData);
     if (parent == NULL) {
@@ -242,7 +235,10 @@ pNPnode GlyphTreeModel::CreateNodeFromTemplate(pNPnode parent, boost::shared_ptr
 
     glyph->selected = 0;
 
-    PropertyUpdates updates = UpdateAll ^ UpdatePosition;
+	PropertyUpdates updates = UpdateAll;
+	if (!updatePosition) {
+		updates ^= UpdatePosition;
+	}
     UpdateNode(glyph, glyphTemplate, updates);
 
     return glyph;
@@ -350,7 +346,7 @@ void GlyphTreeModel::AppendChild(const QModelIndex& parent, boost::shared_ptr<co
         pNPnode parentNode = static_cast<pNPnode>(parent.internalPointer());
         beginInsertRows(parent, parentNode->childCount, parentNode->childCount + numberOfChildren - 1);
         for (int i = 0; i < numberOfChildren; ++i) {
-            CreateNodeFromTemplate(parentNode, glyph);
+            CreateNodeFromTemplate(parentNode, glyph, false);
         }
         endInsertRows();
         emit NodeUpdated(parent);
@@ -381,6 +377,11 @@ bool GlyphTreeModel::removeRows(int row, int count, const QModelIndex& parent) {
 
     return false;
 }
+/*
+bool GlyphTreeModel::moveRows(const QModelIndex& sourceParent, int sourceRow, int count, const QModelIndex& destinationParent, int destinationChild) {
+
+	return QAbstractItemModel::moveRows(sourceParent, sourceRow, count, destinationParent, destinationChild);
+}*/
 
 bool GlyphTreeModel::IsClipboardEmpty() const {
 
@@ -469,29 +470,18 @@ bool GlyphTreeModel::dropMimeData(const QMimeData* data, Qt::DropAction action, 
 
 		pNPnode newParentNode = static_cast<pNPnode>(parent.internalPointer());
         const QModelIndexList& indexes = glyphData->GetGlyphs();
-		std::vector<boost::shared_ptr<SynGlyphX::Glyph>> glyphs;
 
-		beginResetModel();
 		for (int j = 0; j < indexes.length(); ++j) {
-			
+
 			pNPnode node = static_cast<pNPnode>(indexes[j].internalPointer());
 
-			//If the node is being dropped on its own parent, do nothing
-			if (node->parent != newParentNode) {
-				boost::shared_ptr<SynGlyphX::Glyph> glyph(new SynGlyphX::Glyph(node));
-				glyphs.push_back(glyph);
-				npNodeRemove(true, node, m_antzData);
-			}
+			boost::shared_ptr<SynGlyphX::Glyph> glyph(new SynGlyphX::Glyph(node));
+
+			//If new parent is the same as the node's current parent then keep the object's position
+			CreateNewSubTree(newParentNode, glyph, node->parent == newParentNode);
 		}
-
-        for (int i = 0; i < glyphs.size(); ++i) {
-
-			CreateNewSubTree(newParentNode, glyphs[i], false);
-        }
-        endResetModel();
-        m_antzData->map.nodeRootIndex = 0;
-        
-        return true;
+			
+		return true;
     }
 
     return false;

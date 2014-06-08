@@ -42,6 +42,7 @@ public:
     virtual Qt::DropActions supportedDropActions() const;
     virtual bool removeRows(int row, int count, const QModelIndex& parent = QModelIndex());
     //virtual bool insertRows(int row, int count, const QModelIndex & parent = QModelIndex());
+	//virtual bool moveRows(const QModelIndex& sourceParent, int sourceRow, int count, const QModelIndex& destinationParent, int destinationChild);
 
     virtual QStringList mimeTypes() const;
     virtual QMimeData* mimeData(const QModelIndexList& indexes) const;
@@ -77,12 +78,12 @@ private slots:
 	void MarkDifferentNotifyModelUpdate();
 
 private:
-    pNPnode CreateNodeFromTemplate(pNPnode parent, boost::shared_ptr<const SynGlyphX::GlyphProperties> glyphTemplate);
+	pNPnode CreateNodeFromTemplate(pNPnode parent, boost::shared_ptr<const SynGlyphX::GlyphProperties> glyphTemplate, bool updatePosition = false);
     void CreateRootPinNode();
     int GetChildIndexFromParent(pNPnode node) const;
     void UpdateNode(pNPnode glyph, boost::shared_ptr<const SynGlyphX::GlyphProperties> glyphTemplate, PropertyUpdates updates = UpdateAll);
-    void CreateNewSubTree(pNPnode parent, boost::shared_ptr<const SynGlyphX::Glyph> newGlyph, bool needResetModelSignals = true);
-	
+	void CreateNewSubTree(pNPnode parent, boost::shared_ptr<const SynGlyphX::Glyph> newGlyph, bool updatePosition = false);
+
     pNPnode m_rootGlyph;
     pData m_antzData;
     boost::shared_ptr<SynGlyphX::Glyph> m_clipboardGlyph;
