@@ -300,7 +300,7 @@ ANTZCORE_API pNPnode npNodeNew(int nodeType, pNPnode nodeParent, void* dataRef)
 //	else 
 
 	node->world = node->translate;	//zz debug, workaround for cam jump
-	node->world.z += kNPoffsetPin;
+	//node->world.z += kNPoffsetPin;
 
 	if(0)//!data->io.file.loading)		//resolved in n^2 behavior during load	//zzhp
 	{
