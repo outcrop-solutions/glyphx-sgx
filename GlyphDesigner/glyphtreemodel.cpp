@@ -372,7 +372,7 @@ bool GlyphTreeModel::removeRows(int row, int count, const QModelIndex& parent) {
             
             beginRemoveRows(parent, row, lastRow);
             for (int i = lastRow; i >= row; --i) {
-                npNodeDelete(parentNode->child[i], m_antzData);
+                npNodeRemove(true, parentNode->child[i], m_antzData);
             }
             endRemoveRows();
         }
@@ -480,7 +480,7 @@ bool GlyphTreeModel::dropMimeData(const QMimeData* data, Qt::DropAction action, 
 			if (node->parent != newParentNode) {
 				boost::shared_ptr<SynGlyphX::Glyph> glyph(new SynGlyphX::Glyph(node));
 				glyphs.push_back(glyph);
-				npNodeDelete(node, m_antzData);
+				npNodeRemove(true, node, m_antzData);
 			}
 		}
 

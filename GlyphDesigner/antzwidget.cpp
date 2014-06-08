@@ -25,7 +25,8 @@ ANTzWidget::ANTzWidget(GlyphTreeModel* model, QItemSelectionModel* selectionMode
     npInitCh(antzData);
     npInitCtrl(antzData);
 
-    QObject::connect(m_selectionModel, SIGNAL(selectionChanged(const QItemSelection&, const QItemSelection&)), this, SLOT(UpdateSelection(const QItemSelection&, const QItemSelection&)));
+	QObject::connect(m_selectionModel, &QItemSelectionModel::selectionChanged, this, &ANTzWidget::UpdateSelection);
+	QObject::connect(m_model, &GlyphTreeModel::rowsRemoved, this, &ANTzWidget::OnNodeDeleted);
 }
 
 ANTzWidget::~ANTzWidget()
@@ -120,8 +121,14 @@ void ANTzWidget::paintGL() {
     
     npUpdateEngine(antzData);		//position, physics, interactions...
 
+
+
+	//We may need to have a selected pin node during update to position the camera, but we don't want it during drawing
+	antzData->map.selectedPinNode = NULL;
+	antzData->map.selectedPinIndex = 0;
+
     // zero out our mouse to prevent drifting objects
-    antzData->io.mouse.delta.x = 0.0f;											//debug, zz
+    antzData->io.mouse.delta.x = 0.0f;
     antzData->io.mouse.delta.y = 0.0f;
 
     //antzData->io.mouse.pickMode = kNPmodePin;
@@ -190,18 +197,19 @@ void ANTzWidget::ResetCamera() {
     if (root != NULL) {
 
         CenterCameraOnNode(root);
-        antzData->map.nodeRootIndex = 0;
+        //antzData->map.nodeRootIndex = 0;
         
     }
 }
 
 void ANTzWidget::CenterCameraOnNode(pNPnode node) {
-
+	
     pData antzData = m_model->GetANTzData();
 
     npSetCamTargetNode(node, antzData);
+	antzData->io.mouse.targeting = false;
     antzData->map.selectedPinNode = node;
-    antzData->map.selectedPinIndex = node->id;
+	antzData->map.selectedPinIndex = node->id;
 
     //Always keep current node set to current cam
     antzData->map.currentNode = antzData->map.currentCam;
@@ -210,15 +218,17 @@ void ANTzWidget::CenterCameraOnNode(pNPnode node) {
 void ANTzWidget::mousePressEvent(QMouseEvent* event) {
 
     if (event->button() == Qt::LeftButton) {
-        pData antzData = m_model->GetANTzData();
-        npPick(event->x(), antzData->io.gl.height - event->y(), antzData);
+		pData antzData = m_model->GetANTzData();
+		int pickID = npPickPin(event->x(), antzData->io.gl.height - event->y(), antzData);
 
-        if (antzData->io.gl.pickID != 0) {
+		if (pickID != 0) {
             if (event->modifiers() == Qt::ControlModifier) {
-                m_selectionModel->select(m_model->IndexFromANTzID(antzData->io.gl.pickID), QItemSelectionModel::Toggle);
+
+				m_selectionModel->select(m_model->IndexFromANTzID(pickID), QItemSelectionModel::Toggle);
             }
-            else {
-                m_selectionModel->select(m_model->IndexFromANTzID(antzData->io.gl.pickID), QItemSelectionModel::ClearAndSelect);
+			else {
+				
+				m_selectionModel->select(m_model->IndexFromANTzID(pickID), QItemSelectionModel::ClearAndSelect);
             }
         }
     }
@@ -277,4 +287,21 @@ void ANTzWidget::mouseMoveEvent(QMouseEvent* event) {
 void ANTzWidget::SetEditingMode(EditingMode mode) {
 
     m_editingMode = mode;
+}
+
+void ANTzWidget::OnNodeDeleted(const QModelIndex& parent, int start, int end) {
+
+	if (!m_selectionModel->hasSelection()) {
+
+		pNPnode parentNode = static_cast<pNPnode>(parent.internalPointer());
+		if (parentNode->childCount > 0) {
+			CenterCameraOnNode(parentNode->child[parentNode->childCount - 1]);
+		}
+		else {
+			CenterCameraOnNode(parentNode);
+		}
+
+		pData antzData = m_model->GetANTzData();
+		antzData->map.nodeRootIndex = 0;
+	}
 }

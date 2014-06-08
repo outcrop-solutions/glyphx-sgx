@@ -47,7 +47,7 @@ void SharedActionManager::CreateEditActions() {
     m_pasteAction->setShortcut(QKeySequence::Paste);
     //QObject::connect(m_pasteAction, &QAction::triggered, m_model, &GlyphTreeModel::PasteFromClipboard);
     m_pasteAsChildAction = new QAction(tr("Paste As Child"), this);
-    //QObject::connect(m_pasteAction, &QAction::triggered, m_model, &GlyphTreeModel::PasteFromClipboard);
+    //QObject::connect(m_pasteAction, &QAction::triggered, m_model, &GlyphTreeModel::PasteChildFromClipboard);
 
     m_deleteAction = new QAction(tr("Delete"), this);
     m_deleteAction->setShortcut(QKeySequence::Delete);
@@ -121,7 +121,7 @@ void SharedActionManager::EnableActions() {
 
     if (isObjectSelected) {
         const QModelIndex& index = selected.last();
-        bool isRootObjectOnlySelected = (index.internalPointer() == m_model->GetRootGlyph()) && areMultipleObjectsSelected;
+        bool isRootObjectOnlySelected = (index.internalPointer() == m_model->GetRootGlyph()) && !areMultipleObjectsSelected;
 
         //m_cutAction->setEnabled(!isRootObjectSelected);
         //m_copyAction->setEnabled(true);
