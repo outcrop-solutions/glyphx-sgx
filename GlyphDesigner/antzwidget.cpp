@@ -181,12 +181,16 @@ void ANTzWidget::UpdateSelection(const QItemSelection& selected, const QItemSele
     //Set the cam target if there is only one object selected
     const QModelIndexList& currentSelection = m_selectionModel->selectedIndexes();
     
+    int nodeRootIndex = 0;
     if (currentSelection.length() > 0)  {
         const QModelIndex& last = currentSelection.back();
         if (last.isValid()) {
             CenterCameraOnNode(static_cast<pNPnode>(last.internalPointer()));
+            nodeRootIndex = m_model->GetRootGlyph()->id;
         }
     }
+
+    antzData->map.nodeRootIndex = nodeRootIndex;
 }
 
 void ANTzWidget::ResetCamera() {
@@ -197,7 +201,6 @@ void ANTzWidget::ResetCamera() {
     if (root != NULL) {
 
         CenterCameraOnNode(root);
-        //antzData->map.nodeRootIndex = 0;
         
     }
 }
