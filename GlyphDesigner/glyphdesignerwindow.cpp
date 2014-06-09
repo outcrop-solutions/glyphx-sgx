@@ -30,7 +30,7 @@ GlyphDesignerWindow::GlyphDesignerWindow(QWidget *parent)
 
 	QObject::connect(m_glyphTreeModel, &GlyphTreeModel::ModelChanged, this, &GlyphDesignerWindow::setWindowModified);
 
-    ReadSettings();
+    //ReadSettings();
 
     statusBar()->showMessage(SynGlyphX::Application::applicationName() + " Started", 3000);
 }

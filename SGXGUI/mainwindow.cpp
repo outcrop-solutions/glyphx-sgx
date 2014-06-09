@@ -8,7 +8,8 @@
 namespace SynGlyphX {
 
     MainWindow::MainWindow(QWidget *parent)
-        : QMainWindow(parent)
+        : QMainWindow(parent),
+		m_needToReadSettings(true)
     {
         //Make sure Status Bar gets created for all applications
         statusBar();
@@ -37,7 +38,7 @@ namespace SynGlyphX {
         QSettings settings;
         settings.beginGroup("Window");
         resize(settings.value("size", QSize(900, 720)).toSize());
-        //restoreGeometry(settings.value("geometry").toByteArray());
+        restoreGeometry(settings.value("geometry").toByteArray());
         restoreState(settings.value("state").toByteArray());
         settings.endGroup();
 
@@ -49,10 +50,19 @@ namespace SynGlyphX {
         QSettings settings;
         settings.beginGroup("Window");
         settings.setValue("size", size());
-        //settings.setValue("geometry", saveGeometry());
+        settings.setValue("geometry", saveGeometry());
         settings.setValue("state", saveState());
         settings.endGroup();
     }
+
+	void MainWindow::showEvent(QShowEvent* event) {
+
+		if (m_needToReadSettings) {
+			ReadSettings();
+			m_needToReadSettings = false;
+		}
+		QMainWindow::showEvent(event);
+	}
 
     void MainWindow::closeEvent(QCloseEvent* event) {
 

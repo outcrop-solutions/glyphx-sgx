@@ -17,6 +17,7 @@ namespace SynGlyphX {
         ~MainWindow();
 
     protected:
+		virtual void showEvent(QShowEvent* event);
         virtual void closeEvent(QCloseEvent* event);
 
         virtual void ReadSettings();
@@ -34,6 +35,9 @@ namespace SynGlyphX {
 
     private slots:
         void OnRecentFileSelected();
+
+	private:
+		bool m_needToReadSettings;
     };
 
 } //namespace SynGlyphX
