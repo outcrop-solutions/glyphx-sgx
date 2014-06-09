@@ -274,6 +274,8 @@ void GlyphTreeModel::UpdateNode(pNPnode glyph, boost::shared_ptr<const SynGlyphX
         glyph->scale.x = scale[0];
         glyph->scale.y = scale[1];
         glyph->scale.z = scale[2];
+
+        glyph->ratio = glyphTemplate->GetRatio();
     }
 
     if (updates.testFlag(UpdatePosition)) {
@@ -426,7 +428,7 @@ GlyphTreeModel::PropertyUpdates GlyphTreeModel::FindUpdates(boost::shared_ptr<co
         updates |= UpdateRotation;
     }
 
-    if (oldGlyph->GetScale() != newGlyph->GetScale()) {
+    if ((oldGlyph->GetScale() != newGlyph->GetScale()) || (oldGlyph->GetRatio() != newGlyph->GetRatio())) {
         updates |= UpdateScale;
     }
 

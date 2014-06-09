@@ -1,6 +1,5 @@
 #include "singleglyphwidget.h"
 #include <QtWidgets/QFormLayout>
-#include <QtWidgets/QGroupBox>
 
 SingleGlyphWidget::SingleGlyphWidget(ChildOptions childOptions, QWidget *parent)
     : QWidget(parent),
@@ -65,6 +64,9 @@ void SingleGlyphWidget::CreateWidgets(ChildOptions childOptions) {
 		m_topologyComboBox->addItem(QString::fromStdWString(SynGlyphX::GlyphProperties::TopologyTypeToString(static_cast<SynGlyphX::Topology::Type>(i))));
     }
 
+    QHBoxLayout* colorAndRatioLayout = new QHBoxLayout(this);
+    colorAndRatioLayout->setContentsMargins(0, 0, 0, 0);
+
     QGroupBox* colorGroupBox = new QGroupBox(tr("Color"), this);
     QHBoxLayout* colorBoxLayout = new QHBoxLayout(colorGroupBox);
     colorBoxLayout->setContentsMargins(0, 0, 0, 0);
@@ -72,6 +74,18 @@ void SingleGlyphWidget::CreateWidgets(ChildOptions childOptions) {
     m_colorWidget->setContentsMargins(0, 0, 0, 0);
     colorBoxLayout->addWidget(m_colorWidget);
     colorGroupBox->setLayout(colorBoxLayout);
+
+    colorAndRatioLayout->addWidget(colorGroupBox);
+
+    m_ratioGroupBox = new QGroupBox(tr("Torus Ratio"), this);
+    QHBoxLayout* ratioBoxLayout = new QHBoxLayout(m_ratioGroupBox);
+    m_ratioSpinBox = new QDoubleSpinBox(m_ratioGroupBox);
+    m_ratioSpinBox->setSingleStep(0.05);
+    m_ratioSpinBox->setDecimals(2);
+    ratioBoxLayout->addWidget(m_ratioSpinBox);
+    m_ratioGroupBox->setLayout(ratioBoxLayout);
+
+    colorAndRatioLayout->addWidget(m_ratioGroupBox);
 
     QGroupBox* translateGroupBox = new QGroupBox(tr("Position"), this);
     QHBoxLayout* translateBoxLayout = new QHBoxLayout(translateGroupBox);
@@ -114,7 +128,7 @@ void SingleGlyphWidget::CreateWidgets(ChildOptions childOptions) {
     form->addRow(tr("Shape:"), m_geometryShapeComboBox);
     form->addRow(tr("Surface:"), m_geometrySurfaceComboBox);
     form->addRow(tr("Topology:"), m_topologyComboBox);
-    form->addRow(colorGroupBox);
+    form->addRow(colorAndRatioLayout);
     form->addRow(translateGroupBox);
     form->addRow(rotateGroupBox);
     form->addRow(scaleGroupBox);
@@ -146,6 +160,8 @@ void SingleGlyphWidget::SetWidgetFromGlyph(boost::shared_ptr<const SynGlyphX::Gl
     m_rotateWidget->Set(glyph->GetRotate());
     m_scaleWidget->Set(glyph->GetScale());
 
+    m_ratioSpinBox->setValue(glyph->GetRatio());
+
     if (m_childrenSpinBox != NULL) {
         m_childrenSpinBox->setValue(glyph.get()->GetNumberOfChildren());
     }
@@ -163,6 +179,8 @@ void SingleGlyphWidget::SetGlyphFromWidget(boost::shared_ptr<SynGlyphX::GlyphPro
     glyph->SetTranslate(m_translateWidget->GetX(), m_translateWidget->GetY(), m_translateWidget->GetZ());
     glyph->SetRotate(m_rotateWidget->GetX(), m_rotateWidget->GetY(), m_rotateWidget->GetZ());
     glyph->SetScale(m_scaleWidget->GetX(), m_scaleWidget->GetY(), m_scaleWidget->GetZ());
+
+    glyph->SetRatio(m_ratioSpinBox->value());
 }
 
 void SingleGlyphWidget::SetNumberOfChildren(unsigned int numChildren) {

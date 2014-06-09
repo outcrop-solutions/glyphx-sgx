@@ -25,6 +25,8 @@ void ModalGlyphWidget::ConnectWidgetSignals() {
     m_propertyConnections.push_back(QObject::connect(m_geometrySurfaceComboBox, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, [this]{ OnWidgetUpdated(GlyphTreeModel::UpdateSurface); }));
     m_propertyConnections.push_back(QObject::connect(m_topologyComboBox, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, [this]{ OnWidgetUpdated(GlyphTreeModel::UpdateTopology); }));
 
+    m_propertyConnections.push_back(QObject::connect(m_ratioSpinBox, static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), this, [this]{ OnWidgetUpdated(GlyphTreeModel::UpdateScale); }));
+
     m_propertyConnections.push_back(QObject::connect(m_colorWidget, &ColorAlphaWidget::ColorChanged, this, [this]{ OnWidgetUpdated(GlyphTreeModel::UpdateColor); }));
 
     m_propertyConnections.push_back(QObject::connect(m_translateWidget, &XYZWidget::ValuesChanged, this, [this]{ OnWidgetUpdated(GlyphTreeModel::UpdatePosition); }));

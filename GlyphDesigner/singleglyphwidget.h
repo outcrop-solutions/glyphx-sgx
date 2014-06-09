@@ -6,6 +6,8 @@
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QSpinBox>
+#include <QtWidgets/QDoubleSpinBox>
+#include <QtWidgets/QGroupBox>
 #include <boost/shared_ptr.hpp>
 #include "coloralphawidget.h"
 #include "xyzwidget.h"
@@ -55,6 +57,9 @@ protected:
     XYZWidget* m_translateWidget;
     XYZWidget* m_rotateWidget;
     XYZWidget* m_scaleWidget;
+
+    QDoubleSpinBox* m_ratioSpinBox;
+    QGroupBox* m_ratioGroupBox;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(SingleGlyphWidget::ChildOptions)
