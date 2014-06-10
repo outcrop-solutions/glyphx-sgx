@@ -92,8 +92,8 @@ void SingleGlyphWidget::CreateWidgets(ChildOptions childOptions) {
     translateBoxLayout->setContentsMargins(0, 0, 0, 0);
     translateGroupBox->setLayout(translateBoxLayout);
     m_translateWidget = new XYZWidget(false, translateGroupBox);
-    m_translateWidget->SetRange(-1000.0, 1000.0);
-    m_translateWidget->SetDecimal(5);
+    m_translateWidget->SetRange(-10000.0, 10000.0);
+    m_translateWidget->SetDecimal(4);
     m_translateWidget->setContentsMargins(0, 0, 0, 0);
     translateBoxLayout->addWidget(m_translateWidget);
 
