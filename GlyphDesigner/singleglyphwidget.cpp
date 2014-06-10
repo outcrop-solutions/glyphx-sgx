@@ -145,6 +145,9 @@ void SingleGlyphWidget::CreateWidgets(ChildOptions childOptions) {
     }
 
     setLayout(form);
+
+    QObject::connect(m_geometryShapeComboBox, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &SingleGlyphWidget::OnShapeComboBoxChanged);
+    m_ratioGroupBox->setVisible(false);
 }
 
 void SingleGlyphWidget::SetWidgetFromGlyph(boost::shared_ptr<const SynGlyphX::GlyphProperties> glyph) {
@@ -198,4 +201,11 @@ unsigned int SingleGlyphWidget::GetNumberOfChildren() const {
     else {
         return static_cast<unsigned int>(m_childrenSpinBox->value());
     }
+}
+
+void SingleGlyphWidget::OnShapeComboBoxChanged(int index) {
+
+    SynGlyphX::Geometry::Shape shape = static_cast<SynGlyphX::Geometry::Shape>(index);
+
+    m_ratioGroupBox->setVisible(shape == SynGlyphX::Geometry::Torus);
 }

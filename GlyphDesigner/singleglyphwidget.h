@@ -60,6 +60,9 @@ protected:
 
     QDoubleSpinBox* m_ratioSpinBox;
     QGroupBox* m_ratioGroupBox;
+
+private slots:
+    void OnShapeComboBoxChanged(int index);
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(SingleGlyphWidget::ChildOptions)
