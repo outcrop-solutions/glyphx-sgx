@@ -11,11 +11,18 @@ public:
     DataMapperWindow(QWidget *parent = 0);
     ~DataMapperWindow();
 
+protected:
+    virtual void LoadRecentFile(const QString& filename);
+
 private slots:
     void ShowAboutBox();
     void CreateNewProject();
+    void OpenProject();
+    void SaveProject();
+    void SaveAsProject();
     void AddDataFiles();
     void ExportToGlyphViewer();
+    void ChangeBaseImage();
 
 private:
     void CreateMenus();

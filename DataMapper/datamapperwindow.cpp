@@ -23,6 +23,17 @@ void DataMapperWindow::CreateMenus() {
     QAction* newProjectAction = CreateMenuAction(m_fileMenu, tr("New Project"), QKeySequence::New);
     QObject::connect(newProjectAction, &QAction::triggered, this, &DataMapperWindow::CreateNewProject);
 
+    QAction* openProjectAction = CreateMenuAction(m_fileMenu, tr("Open Project"), QKeySequence::Open);
+    QObject::connect(openProjectAction, &QAction::triggered, this, &DataMapperWindow::OpenProject);
+
+    QAction* saveProjectAction = CreateMenuAction(m_fileMenu, tr("Save Project"), QKeySequence::Save);
+    QObject::connect(saveProjectAction, &QAction::triggered, this, &DataMapperWindow::SaveProject);
+
+    QAction* saveAsProjectAction = CreateMenuAction(m_fileMenu, tr("Save As Project"), QKeySequence::SaveAs);
+    QObject::connect(saveAsProjectAction, &QAction::triggered, this, &DataMapperWindow::SaveAsProject);
+
+    m_fileMenu->addActions(m_recentFileActions);
+
     m_fileMenu->addSeparator();
 
     QAction* exportAction = CreateMenuAction(m_fileMenu, tr("Export to Glyph Viewer"));
@@ -41,8 +52,8 @@ void DataMapperWindow::CreateMenus() {
 
     m_projectMenu->addSeparator();
 
-    QMenu* mapMenu = m_projectMenu->addMenu(tr("Base Image"));
-
+    QAction* baseImageAction = m_projectMenu->addAction(tr("Choose Base Image"));
+    QObject::connect(baseImageAction, &QAction::triggered, this, &DataMapperWindow::ChangeBaseImage);
 
     //Create View Menu
     m_viewMenu = menuBar()->addMenu(tr("View"));
@@ -63,10 +74,30 @@ void DataMapperWindow::CreateNewProject() {
 
 }
 
+void DataMapperWindow::OpenProject() {
+
+}
+
+void DataMapperWindow::SaveProject() {
+
+}
+
+void DataMapperWindow::SaveAsProject() {
+
+}
+
+void DataMapperWindow::LoadRecentFile(const QString& filename) {
+
+}
+
 void DataMapperWindow::AddDataFiles() {
 
 }
 
 void DataMapperWindow::ExportToGlyphViewer() {
+
+}
+
+void DataMapperWindow::ChangeBaseImage() {
 
 }
