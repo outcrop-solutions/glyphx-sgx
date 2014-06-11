@@ -1,9 +1,9 @@
 #ifndef DATAMAPPERWINDOW_H
 #define DATAMAPPERWINDOW_H
 
-#include <QtWidgets/QMainWindow>
+#include "mainwindow.h"
 
-class DataMapperWindow : public QMainWindow
+class DataMapperWindow : public SynGlyphX::MainWindow
 {
     Q_OBJECT
 

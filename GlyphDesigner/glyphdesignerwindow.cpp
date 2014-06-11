@@ -96,8 +96,7 @@ void GlyphDesignerWindow::CreateMenus() {
 
     //Create View Menu
     m_viewMenu = menuBar()->addMenu(tr("View"));
-    m_fullScreenAction = CreateMenuAction(m_viewMenu, tr("Full Screen"), QKeySequence::FullScreen);
-    QObject::connect(m_fullScreenAction, &QAction::triggered, this, &GlyphDesignerWindow::SwitchBetweenFullAndNormalScreen);
+    CreateFullScreenAction(m_viewMenu);
 
     m_viewMenu->addSeparator();
 
@@ -110,9 +109,7 @@ void GlyphDesignerWindow::CreateMenus() {
     m_glyphMenu->addSeparator();
     m_glyphMenu->addActions(m_sharedActions->GetGlyphActions());
 
-    m_helpMenu = menuBar()->addMenu(tr("Help"));
-    QAction* aboutBoxAction = m_helpMenu->addAction("About " + SynGlyphX::Application::organizationName() + " " + SynGlyphX::Application::applicationName());
-    QObject::connect(aboutBoxAction, &QAction::triggered, this, &GlyphDesignerWindow::ShowAboutBox);
+    CreateHelpMenu();
 }
 
 void GlyphDesignerWindow::CreateDockWidgets() {
@@ -296,12 +293,6 @@ bool GlyphDesignerWindow::SaveTemplateFile(const QString& filename) {
     return false;
 }
 
-void GlyphDesignerWindow::ShowAboutBox() {
-
-    QString appName = SynGlyphX::Application::organizationName() + " " + SynGlyphX::Application::applicationName();
-    QMessageBox::about(this, "About " + appName, appName + " " + SynGlyphX::Application::applicationVersion());
-}
-
 void GlyphDesignerWindow::EditingModeChanged(QAction* action) {
 
     m_3dView->SetEditingMode(static_cast<ANTzWidget::EditingMode>(action->data().toInt()));
@@ -331,16 +322,4 @@ bool GlyphDesignerWindow::AskUserToSave() {
     }
 
     return true;
-}
-
-void GlyphDesignerWindow::SwitchBetweenFullAndNormalScreen() {
-
-    if (isFullScreen()) {
-        showNormal();
-        m_fullScreenAction->setText(tr("Full Screen"));
-    }
-    else {
-        showFullScreen();
-        m_fullScreenAction->setText(tr("Return to window"));
-    }
 }

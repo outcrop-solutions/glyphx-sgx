@@ -3,7 +3,9 @@
 #include <QtWidgets/QAction>
 #include <QtCore/QFileInfo>
 #include <QtWidgets/QMenu>
+#include <QtWidgets/QMenuBar>
 #include "application.h"
+#include <QtWidgets/QMessageBox>
 
 namespace SynGlyphX {
 
@@ -141,6 +143,37 @@ namespace SynGlyphX {
         QAction* action = menu->addAction(titleWithShortcut);
         action->setShortcut(shortcut);
         return action;
+    }
+
+    void MainWindow::CreateHelpMenu() {
+
+        m_helpMenu = menuBar()->addMenu(tr("Help"));
+        QAction* aboutBoxAction = m_helpMenu->addAction("About " + SynGlyphX::Application::organizationName() + " " + SynGlyphX::Application::applicationName());
+        QObject::connect(aboutBoxAction, &QAction::triggered, this, &MainWindow::ShowAboutBox);
+    }
+
+    void MainWindow::ShowAboutBox() {
+
+        QString appName = SynGlyphX::Application::organizationName() + " " + SynGlyphX::Application::applicationName();
+        QMessageBox::about(this, "About " + appName, appName + " " + SynGlyphX::Application::applicationVersion());
+    }
+
+    void MainWindow::SwitchBetweenFullAndNormalScreen() {
+
+        if (isFullScreen()) {
+            showNormal();
+            m_fullScreenAction->setText(tr("Full Screen"));
+        }
+        else {
+            showFullScreen();
+            m_fullScreenAction->setText(tr("Return to window"));
+        }
+    }
+
+    void MainWindow::CreateFullScreenAction(QMenu* menu) {
+
+        m_fullScreenAction = CreateMenuAction(menu, tr("Full Screen"), QKeySequence::FullScreen);
+        QObject::connect(m_fullScreenAction, &QAction::triggered, this, &MainWindow::SwitchBetweenFullAndNormalScreen);
     }
 
 } //namespace SynGlyphX

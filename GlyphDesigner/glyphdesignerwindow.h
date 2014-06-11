@@ -25,9 +25,7 @@ private slots:
     bool SaveTemplate();
     bool SaveAsTemplate();
     void OpenTemplate();
-    void ShowAboutBox();
     void EditingModeChanged(QAction* action);
-    void SwitchBetweenFullAndNormalScreen();
 
 private:
     void CreateMenus();
@@ -44,14 +42,11 @@ private:
     QMenu* m_editMenu;
     QMenu* m_viewMenu;
     QMenu* m_glyphMenu;
-    QMenu* m_helpMenu;
 
     GlyphTreeModel* m_glyphTreeModel;
     QItemSelectionModel* m_selectionModel;
 
     SharedActionManager* m_sharedActions;
-
-    QAction* m_fullScreenAction;
 };
 
 #endif // GLYPHDESIGNERWINDOW_H

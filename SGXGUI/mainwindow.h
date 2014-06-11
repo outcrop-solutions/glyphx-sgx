@@ -16,6 +16,9 @@ namespace SynGlyphX {
         MainWindow(QWidget *parent = 0);
         ~MainWindow();
 
+    protected slots:
+        void SwitchBetweenFullAndNormalScreen();
+
     protected:
 		virtual void showEvent(QShowEvent* event);
         virtual void closeEvent(QCloseEvent* event);
@@ -29,12 +32,17 @@ namespace SynGlyphX {
         void UpdateFilenameWindowTitle(const QString& title);
         void SetCurrentFile(const QString& filename);
         QAction* CreateMenuAction(QMenu* menu, const QString& title, QKeySequence shortcut = QKeySequence());
+        void CreateHelpMenu();
+        void CreateFullScreenAction(QMenu* menu);
 
         QList<QAction*> m_recentFileActions;
         QString m_currentFilename;
+        QMenu* m_helpMenu;
+        QAction* m_fullScreenAction;
 
     private slots:
         void OnRecentFileSelected();
+        void ShowAboutBox();
 
 	private:
 		bool m_needToReadSettings;
