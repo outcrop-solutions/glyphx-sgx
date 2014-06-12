@@ -2,12 +2,14 @@
 #include <QtWidgets/QFileDialog>
 #include <QtWidgets/QMessageBox>
 #include <QtWidgets/QMenuBar>
+#include <QtWidgets/QDockWidget>
 #include "application.h"
 
 DataMapperWindow::DataMapperWindow(QWidget *parent)
     : SynGlyphX::MainWindow(parent)
 {
     CreateMenus();
+    CreateDockWidgets();
 }
 
 DataMapperWindow::~DataMapperWindow()
@@ -47,8 +49,8 @@ void DataMapperWindow::CreateMenus() {
     //Create Edit Menu
     m_projectMenu = menuBar()->addMenu(tr("Project"));
     
-    QAction* addDataFilesAction = m_projectMenu->addAction(tr("Add Files"));
-    QObject::connect(addDataFilesAction, &QAction::triggered, this, &DataMapperWindow::AddDataFiles);
+    QAction* addDataSourcesAction = m_projectMenu->addAction(tr("Add Data Sources"));
+    QObject::connect(addDataSourcesAction, &QAction::triggered, this, &DataMapperWindow::AddDataSources);
 
     m_projectMenu->addSeparator();
 
@@ -59,9 +61,25 @@ void DataMapperWindow::CreateMenus() {
     m_viewMenu = menuBar()->addMenu(tr("View"));
     CreateFullScreenAction(m_viewMenu);
 
+    m_viewMenu->addSeparator();
+
     m_helpMenu = menuBar()->addMenu(tr("Help"));
     QAction* aboutBoxAction = m_helpMenu->addAction("About " + SynGlyphX::Application::organizationName() + " " + SynGlyphX::Application::applicationName());
     QObject::connect(aboutBoxAction, SIGNAL(triggered()), this, SLOT(ShowAboutBox()));
+}
+
+void DataMapperWindow::CreateDockWidgets() {
+
+    //Add Tree View to dock widget on left side
+    QDockWidget* leftDockWidget = new QDockWidget("Glyph Tree", this);
+    m_glyphTreeView = new QTreeView(leftDockWidget);
+    //m_treeView->setModel(m_glyphTreeModel);
+    //m_treeView->setSelectionModel(m_selectionModel);
+    m_glyphTreeView->setSelectionMode(QAbstractItemView::SingleSelection);
+
+    leftDockWidget->setWidget(m_glyphTreeView);
+    addDockWidget(Qt::LeftDockWidgetArea, leftDockWidget);
+    m_viewMenu->addAction(leftDockWidget->toggleViewAction());
 }
 
 void DataMapperWindow::ShowAboutBox() {
@@ -90,7 +108,7 @@ void DataMapperWindow::LoadRecentFile(const QString& filename) {
 
 }
 
-void DataMapperWindow::AddDataFiles() {
+void DataMapperWindow::AddDataSources() {
 
 }
 

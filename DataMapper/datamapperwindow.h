@@ -2,6 +2,7 @@
 #define DATAMAPPERWINDOW_H
 
 #include "mainwindow.h"
+#include <QtWidgets/QTreeView>
 
 class DataMapperWindow : public SynGlyphX::MainWindow
 {
@@ -20,17 +21,18 @@ private slots:
     void OpenProject();
     void SaveProject();
     void SaveAsProject();
-    void AddDataFiles();
+    void AddDataSources();
     void ExportToGlyphViewer();
     void ChangeBaseImage();
 
 private:
     void CreateMenus();
+    void CreateDockWidgets();
 
     QMenu* m_fileMenu;
     QMenu* m_projectMenu;
     QMenu* m_viewMenu;
-    QMenu* m_helpMenu;
+    QTreeView* m_glyphTreeView;
 };
 
 #endif // DATAMAPPERWINDOW_H
