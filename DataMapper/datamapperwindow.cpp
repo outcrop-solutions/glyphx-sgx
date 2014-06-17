@@ -3,6 +3,8 @@
 #include <QtWidgets/QMessageBox>
 #include <QtWidgets/QMenuBar>
 #include <QtWidgets/QDockWidget>
+#include <QtGui/QCloseEvent>
+#include <QtWidgets/QStatusBar>
 #include "application.h"
 
 DataMapperWindow::DataMapperWindow(QWidget *parent)
@@ -10,11 +12,21 @@ DataMapperWindow::DataMapperWindow(QWidget *parent)
 {
     CreateMenus();
     CreateDockWidgets();
+	CreateInMemoryDatabase();
+
+	statusBar()->showMessage(SynGlyphX::Application::applicationName() + " Started", 3000);
 }
 
 DataMapperWindow::~DataMapperWindow()
 {
 
+}
+
+void DataMapperWindow::CreateInMemoryDatabase() {
+
+	m_projectDatabase = QSqlDatabase::addDatabase("QSQLITE");
+	m_projectDatabase.setDatabaseName(":memory:");
+	CopyDatabaseFileToMemory(QDir::currentPath() + "template.sdt");
 }
 
 void DataMapperWindow::CreateMenus() {
@@ -71,7 +83,7 @@ void DataMapperWindow::CreateMenus() {
 void DataMapperWindow::CreateDockWidgets() {
 
     //Add Tree View to dock widget on left side
-    QDockWidget* leftDockWidget = new QDockWidget("Glyph Tree", this);
+    QDockWidget* leftDockWidget = new QDockWidget(tr("Glyph Tree"), this);
     m_glyphTreeView = new QTreeView(leftDockWidget);
     //m_treeView->setModel(m_glyphTreeModel);
     //m_treeView->setSelectionModel(m_selectionModel);
@@ -80,6 +92,13 @@ void DataMapperWindow::CreateDockWidgets() {
     leftDockWidget->setWidget(m_glyphTreeView);
     addDockWidget(Qt::LeftDockWidgetArea, leftDockWidget);
     m_viewMenu->addAction(leftDockWidget->toggleViewAction());
+
+	QDockWidget* bottomDockWidget = new QDockWidget(tr("Data Stats"), this);
+	m_dataSourceStats = new DataSourceStatsWidget(bottomDockWidget);
+
+	bottomDockWidget->setWidget(m_dataSourceStats);
+	addDockWidget(Qt::BottomDockWidgetArea, bottomDockWidget);
+	m_viewMenu->addAction(bottomDockWidget->toggleViewAction());
 }
 
 void DataMapperWindow::ShowAboutBox() {
@@ -90,22 +109,61 @@ void DataMapperWindow::ShowAboutBox() {
 
 void DataMapperWindow::CreateNewProject() {
 
+	if (!AskUserToSave()) {
+		return;
+	}
+
+
 }
 
 void DataMapperWindow::OpenProject() {
 
+	if (!AskUserToSave()) {
+		return;
+	}
+
+	QString openFile = QFileDialog::getOpenFileName(this, tr("Open Project"), "", tr("SynGlyphX Data Mapper Project Files (*.sdt)"));
+	LoadProjectDatabase(openFile);
 }
 
-void DataMapperWindow::SaveProject() {
+bool DataMapperWindow::SaveProject() {
 
+	if (m_currentFilename.isEmpty()) {
+		return SaveAsProject();
+	}
+	else {
+		return SaveProjectDatabase(m_currentFilename);
+	}
 }
 
-void DataMapperWindow::SaveAsProject() {
+bool DataMapperWindow::SaveAsProject() {
 
+	QString saveFile = QFileDialog::getSaveFileName(this, tr("Save Project"), "", tr("SynGlyphX Data Mapper Project Files (*.sdt)"));
+	return SaveProjectDatabase(saveFile);
 }
 
 void DataMapperWindow::LoadRecentFile(const QString& filename) {
 
+	if (AskUserToSave()) {
+		LoadProjectDatabase(filename);
+	}
+}
+
+void DataMapperWindow::LoadProjectDatabase(const QString& filename) {
+
+}
+
+bool DataMapperWindow::SaveProjectDatabase(const QString& filename) {
+
+	return false;
+}
+
+void DataMapperWindow::CopyDatabaseFileToMemory(const QString& filename) {
+
+	/*QSqlDatabase database = QSqlDatabase::addDatabase("QSQLITE");
+	database.setDatabaseName(filename);
+	QSqlDatabase::cloneDatabase(m_projectDatabase, )*/
+	
 }
 
 void DataMapperWindow::AddDataSources() {
@@ -118,4 +176,30 @@ void DataMapperWindow::ExportToGlyphViewer() {
 
 void DataMapperWindow::ChangeBaseImage() {
 
+}
+
+bool DataMapperWindow::AskUserToSave() {
+
+	if (isWindowModified()) {
+
+		QMessageBox::StandardButton result = QMessageBox::warning(this, tr("Save Changes"), tr("The project has been modified.  Do you wish to save your changes?"), QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
+		if (result == QMessageBox::Save) {
+			return SaveProject();
+		}
+		else if (result == QMessageBox::Cancel) {
+			return false;
+		}
+	}
+
+	return true;
+}
+
+void DataMapperWindow::closeEvent(QCloseEvent* event) {
+
+	if (AskUserToSave()) {
+		SynGlyphX::MainWindow::closeEvent(event);
+	}
+	else {
+		event->ignore();
+	}
 }

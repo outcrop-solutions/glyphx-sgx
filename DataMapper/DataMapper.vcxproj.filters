@@ -28,7 +28,7 @@
       <Extensions>cpp;moc</Extensions>
       <SourceControlFiles>False</SourceControlFiles>
     </Filter>
-    <Filter Include="Generated Files\Release">
+    <Filter Include="Generated Files\Debug\Release">
       <UniqueIdentifier>{0e406e71-bb2b-4220-8d66-32a7cca48940}</UniqueIdentifier>
       <Extensions>cpp;moc</Extensions>
       <SourceControlFiles>False</SourceControlFiles>
@@ -45,7 +45,7 @@
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Release\moc_datamapperwindow.cpp">
-      <Filter>Generated Files\Release</Filter>
+      <Filter>Generated Files\Debug\Release</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\qrc_datamapperwindow.cpp">
       <Filter>Generated Files</Filter>
@@ -57,7 +57,7 @@
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Release\moc_glyphpropertyminmaxview.cpp">
-      <Filter>Generated Files\Release</Filter>
+      <Filter>Generated Files\Debug\Release</Filter>
     </ClCompile>
     <ClCompile Include="glyphtagview.cpp">
       <Filter>Source Files</Filter>
@@ -66,7 +66,16 @@
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Release\moc_glyphtagview.cpp">
-      <Filter>Generated Files\Release</Filter>
+      <Filter>Generated Files\Debug\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="datasourcestatswidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_datasourcestatswidget.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_datasourcestatswidget.cpp">
+      <Filter>Generated Files\Debug\Release</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -82,8 +91,19 @@
     <CustomBuild Include="glyphtagview.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
+    <CustomBuild Include="datasourcestatswidget.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="datasourcestatswidget.ui">
+      <Filter>Form Files</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="DataMapper.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="GeneratedFiles\ui_datasourcestatswidget.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

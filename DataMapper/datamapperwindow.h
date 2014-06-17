@@ -3,6 +3,8 @@
 
 #include "mainwindow.h"
 #include <QtWidgets/QTreeView>
+#include <QtSql/QSqlDatabase>
+#include "datasourcestatswidget.h"
 
 class DataMapperWindow : public SynGlyphX::MainWindow
 {
@@ -14,13 +16,14 @@ public:
 
 protected:
     virtual void LoadRecentFile(const QString& filename);
+	virtual void closeEvent(QCloseEvent* event);
 
 private slots:
     void ShowAboutBox();
     void CreateNewProject();
     void OpenProject();
-    void SaveProject();
-    void SaveAsProject();
+    bool SaveProject();
+    bool SaveAsProject();
     void AddDataSources();
     void ExportToGlyphViewer();
     void ChangeBaseImage();
@@ -28,11 +31,18 @@ private slots:
 private:
     void CreateMenus();
     void CreateDockWidgets();
+	void CreateInMemoryDatabase();
+	void LoadProjectDatabase(const QString& filename);
+	bool SaveProjectDatabase(const QString& filename);
+	bool AskUserToSave();
+	void CopyDatabaseFileToMemory(const QString& filename);
 
     QMenu* m_fileMenu;
     QMenu* m_projectMenu;
     QMenu* m_viewMenu;
     QTreeView* m_glyphTreeView;
+	QSqlDatabase m_projectDatabase;
+	DataSourceStatsWidget* m_dataSourceStats;
 };
 
 #endif // DATAMAPPERWINDOW_H
