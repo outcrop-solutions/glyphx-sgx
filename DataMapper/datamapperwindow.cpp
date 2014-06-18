@@ -163,14 +163,7 @@ void DataMapperWindow::LoadProjectDatabase(const QString& filename) {
 		return;
 	}
 
-	QSqlQuery dataSourceListQuery;
-	dataSourceListQuery.prepare("SELECT DatabaseName,TableName FROM DataSources");
-	dataSourceListQuery.exec();
-
-	while (dataSourceListQuery.next()) {
-		QSqlRecord record = dataSourceListQuery.record();
-		m_dataSourceStats->addTab(new QWidget(this), record.value(0).toString() + ":" + record.value(1).toString());
-	}
+	m_dataSourceStats->RebuildStatsViews();
 
 	SetCurrentFile(filename);
 
