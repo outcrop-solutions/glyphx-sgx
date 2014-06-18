@@ -5,6 +5,9 @@
 #include <QtWidgets/QDockWidget>
 #include <QtGui/QCloseEvent>
 #include <QtWidgets/QStatusBar>
+#include <QtSql/QSqlError>
+#include <QtSql/QSqlQuery>
+#include <QtSql/QSqlRecord>
 #include "application.h"
 
 DataMapperWindow::DataMapperWindow(QWidget *parent)
@@ -12,7 +15,6 @@ DataMapperWindow::DataMapperWindow(QWidget *parent)
 {
     CreateMenus();
     CreateDockWidgets();
-	CreateInMemoryDatabase();
 
 	statusBar()->showMessage(SynGlyphX::Application::applicationName() + " Started", 3000);
 }
@@ -20,13 +22,6 @@ DataMapperWindow::DataMapperWindow(QWidget *parent)
 DataMapperWindow::~DataMapperWindow()
 {
 
-}
-
-void DataMapperWindow::CreateInMemoryDatabase() {
-
-	m_projectDatabase = QSqlDatabase::addDatabase("QSQLITE");
-	m_projectDatabase.setDatabaseName(":memory:");
-	CopyDatabaseFileToMemory(QDir::currentPath() + "template.sdt");
 }
 
 void DataMapperWindow::CreateMenus() {
@@ -46,12 +41,12 @@ void DataMapperWindow::CreateMenus() {
     QAction* saveAsProjectAction = CreateMenuAction(m_fileMenu, tr("Save As Project"), QKeySequence::SaveAs);
     QObject::connect(saveAsProjectAction, &QAction::triggered, this, &DataMapperWindow::SaveAsProject);
 
-    m_fileMenu->addActions(m_recentFileActions);
-
     m_fileMenu->addSeparator();
 
     QAction* exportAction = CreateMenuAction(m_fileMenu, tr("Export to Glyph Viewer"));
     QObject::connect(exportAction, &QAction::triggered, this, &DataMapperWindow::ExportToGlyphViewer);
+
+	m_fileMenu->addActions(m_recentFileActions);
 
     m_fileMenu->addSeparator();
 
@@ -151,19 +146,40 @@ void DataMapperWindow::LoadRecentFile(const QString& filename) {
 
 void DataMapperWindow::LoadProjectDatabase(const QString& filename) {
 
+	m_projectDatabase = QSqlDatabase::addDatabase("QSQLITE");
+	m_projectDatabase.setDatabaseName(filename);
+	if (!m_projectDatabase.open()) {
+
+		QMessageBox::critical(this, tr("Failed To Open Project"), tr("Failed to open project.  Error: ") + m_projectDatabase.lastError().text(), QMessageBox::Ok);
+		return;
+	}
+
+	QStringList tables = m_projectDatabase.tables();
+
+	if (!tables.contains("DataSources")) {
+
+		QMessageBox::critical(this, tr("Failed To Open Project"), tr("Failed to open project.  Error: Incorrect format for project"), QMessageBox::Ok);
+		m_projectDatabase.close();
+		return;
+	}
+
+	QSqlQuery dataSourceListQuery;
+	dataSourceListQuery.prepare("SELECT DatabaseName,TableName FROM DataSources");
+	dataSourceListQuery.exec();
+
+	while (dataSourceListQuery.next()) {
+		QSqlRecord record = dataSourceListQuery.record();
+		m_dataSourceStats->addTab(new QWidget(this), record.value(0).toString() + ":" + record.value(1).toString());
+	}
+
+	SetCurrentFile(filename);
+
+	statusBar()->showMessage("Project successfully opened", 3000);
 }
 
 bool DataMapperWindow::SaveProjectDatabase(const QString& filename) {
 
 	return false;
-}
-
-void DataMapperWindow::CopyDatabaseFileToMemory(const QString& filename) {
-
-	/*QSqlDatabase database = QSqlDatabase::addDatabase("QSQLITE");
-	database.setDatabaseName(filename);
-	QSqlDatabase::cloneDatabase(m_projectDatabase, )*/
-	
 }
 
 void DataMapperWindow::AddDataSources() {

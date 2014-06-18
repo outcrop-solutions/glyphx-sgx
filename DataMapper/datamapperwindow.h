@@ -31,11 +31,9 @@ private slots:
 private:
     void CreateMenus();
     void CreateDockWidgets();
-	void CreateInMemoryDatabase();
 	void LoadProjectDatabase(const QString& filename);
 	bool SaveProjectDatabase(const QString& filename);
 	bool AskUserToSave();
-	void CopyDatabaseFileToMemory(const QString& filename);
 
     QMenu* m_fileMenu;
     QMenu* m_projectMenu;

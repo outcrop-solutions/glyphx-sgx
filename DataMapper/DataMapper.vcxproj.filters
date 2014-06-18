@@ -94,16 +94,8 @@
     <CustomBuild Include="datasourcestatswidget.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
-    <CustomBuild Include="datasourcestatswidget.ui">
-      <Filter>Form Files</Filter>
-    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="DataMapper.rc" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="GeneratedFiles\ui_datasourcestatswidget.h">
-      <Filter>Generated Files</Filter>
-    </ClInclude>
   </ItemGroup>
 </Project>
