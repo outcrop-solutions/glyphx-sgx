@@ -37,14 +37,17 @@ void DataMapperWindow::CreateMenus() {
 
     QAction* saveProjectAction = CreateMenuAction(m_fileMenu, tr("Save Project"), QKeySequence::Save);
     QObject::connect(saveProjectAction, &QAction::triggered, this, &DataMapperWindow::SaveProject);
+	m_projectDependentActions.push_back(saveProjectAction);
 
     QAction* saveAsProjectAction = CreateMenuAction(m_fileMenu, tr("Save As Project"), QKeySequence::SaveAs);
     QObject::connect(saveAsProjectAction, &QAction::triggered, this, &DataMapperWindow::SaveAsProject);
+	m_projectDependentActions.push_back(saveAsProjectAction);
 
     m_fileMenu->addSeparator();
 
     QAction* exportAction = CreateMenuAction(m_fileMenu, tr("Export to Glyph Viewer"));
     QObject::connect(exportAction, &QAction::triggered, this, &DataMapperWindow::ExportToGlyphViewer);
+	m_projectDependentActions.push_back(exportAction);
 
 	m_fileMenu->addActions(m_recentFileActions);
 
@@ -58,11 +61,13 @@ void DataMapperWindow::CreateMenus() {
     
     QAction* addDataSourcesAction = m_projectMenu->addAction(tr("Add Data Sources"));
     QObject::connect(addDataSourcesAction, &QAction::triggered, this, &DataMapperWindow::AddDataSources);
+	m_projectDependentActions.push_back(addDataSourcesAction);
 
     m_projectMenu->addSeparator();
 
     QAction* baseImageAction = m_projectMenu->addAction(tr("Choose Base Image"));
     QObject::connect(baseImageAction, &QAction::triggered, this, &DataMapperWindow::ChangeBaseImage);
+	m_projectDependentActions.push_back(baseImageAction);
 
     //Create View Menu
     m_viewMenu = menuBar()->addMenu(tr("View"));
@@ -73,6 +78,8 @@ void DataMapperWindow::CreateMenus() {
     m_helpMenu = menuBar()->addMenu(tr("Help"));
     QAction* aboutBoxAction = m_helpMenu->addAction("About " + SynGlyphX::Application::organizationName() + " " + SynGlyphX::Application::applicationName());
     QObject::connect(aboutBoxAction, SIGNAL(triggered()), this, SLOT(ShowAboutBox()));
+
+	EnableProjectDependentActions(false);
 }
 
 void DataMapperWindow::CreateDockWidgets() {
@@ -108,7 +115,7 @@ void DataMapperWindow::CreateNewProject() {
 		return;
 	}
 
-
+	EnableProjectDependentActions(true);
 }
 
 void DataMapperWindow::OpenProject() {
@@ -167,6 +174,8 @@ void DataMapperWindow::LoadProjectDatabase(const QString& filename) {
 
 	SetCurrentFile(filename);
 
+	EnableProjectDependentActions(true);
+
 	statusBar()->showMessage("Project successfully opened", 3000);
 }
 
@@ -210,5 +219,12 @@ void DataMapperWindow::closeEvent(QCloseEvent* event) {
 	}
 	else {
 		event->ignore();
+	}
+}
+
+void DataMapperWindow::EnableProjectDependentActions(bool enable) {
+
+	for (int i = 0; i < m_projectDependentActions.length(); ++i) {
+		m_projectDependentActions[i]->setEnabled(enable);
 	}
 }

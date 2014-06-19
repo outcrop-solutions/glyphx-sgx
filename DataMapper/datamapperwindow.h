@@ -34,6 +34,7 @@ private:
 	void LoadProjectDatabase(const QString& filename);
 	bool SaveProjectDatabase(const QString& filename);
 	bool AskUserToSave();
+	void EnableProjectDependentActions(bool enable);
 
     QMenu* m_fileMenu;
     QMenu* m_projectMenu;
@@ -41,6 +42,7 @@ private:
     QTreeView* m_glyphTreeView;
 	QSqlDatabase m_projectDatabase;
 	DataSourceStatsWidget* m_dataSourceStats;
+	QList<QAction*> m_projectDependentActions;
 };
 
 #endif // DATAMAPPERWINDOW_H
