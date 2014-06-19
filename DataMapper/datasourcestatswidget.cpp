@@ -2,7 +2,7 @@
 #include <QtSql/QSqlQuery>
 #include <QtSql/QSqlRecord>
 #include <QtCore/QVariant>
-#include <QtSql/QSqlQueryModel>
+#include "datastatsmodel.h"
 
 DataSourceStatsWidget::DataSourceStatsWidget(QWidget *parent)
 	: QTabWidget(parent)
@@ -27,8 +27,10 @@ void DataSourceStatsWidget::RebuildStatsViews() {
 	while (dataSourceListQuery.next()) {
 		QSqlRecord record = dataSourceListQuery.record();
 		QTableView* view = new QTableView(this);
-		QSqlQueryModel* model = new QSqlQueryModel(this);
-		model->setQuery("SELECT * FROM DataSource" + record.value(0).toString());
+
+		QString tableName = "DataSource" + record.value(0).toString();
+
+		DataStatsModel* model = new DataStatsModel(tableName, this);
 		view->setModel(model);
 		view->resizeColumnsToContents();
 		addTab(view, record.value(1).toString() + ":" + record.value(2).toString());
