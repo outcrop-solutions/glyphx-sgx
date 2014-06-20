@@ -9,7 +9,7 @@ class DataStatsModel : public QAbstractTableModel
 	Q_OBJECT
 
 public:
-	DataStatsModel(const QString& tableName, QObject *parent = 0);
+	DataStatsModel(const QSqlDatabase& db, const QString& tableName, QObject *parent = 0);
 	~DataStatsModel();
 
 	virtual int rowCount(const QModelIndex& parent = QModelIndex()) const;

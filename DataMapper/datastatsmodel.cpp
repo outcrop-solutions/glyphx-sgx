@@ -2,13 +2,12 @@
 #include <QtSql/QSqlRecord>
 #include <QtSql/QSqlField>
 
-DataStatsModel::DataStatsModel(const QString& tableName, QObject *parent)
+DataStatsModel::DataStatsModel(const QSqlDatabase& db, const QString& tableName, QObject *parent)
 	: QAbstractTableModel(parent)
 {
-	QSqlDatabase database = QSqlDatabase::database();
-	QSqlRecord columnNamesRecord = database.record(tableName);
+	QSqlRecord columnNamesRecord = db.record(tableName);
 
-	QSqlQuery query;
+	QSqlQuery query(db);
 	//query.prepare("SELECT min(:colName), max(:colName), AVG(:colName), COUNT(:colName) FROM " + tableName);
 
 	for (int i = 0; i < columnNamesRecord.count(); ++i) {

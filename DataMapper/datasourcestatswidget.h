@@ -16,6 +16,9 @@ public:
 	void RebuildStatsViews();
 
 private:
+	void ClearTabs();
+	void CreateTablesFromDB(const QSqlDatabase& db);
+	void CreateTableView(const QSqlDatabase& db, const QString& tableName);
 	QList<QTableView*> m_statViews;
 };
 

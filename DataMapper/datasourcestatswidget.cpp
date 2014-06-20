@@ -3,6 +3,7 @@
 #include <QtSql/QSqlRecord>
 #include <QtCore/QVariant>
 #include "datastatsmodel.h"
+#include "databaseservices.h"
 
 DataSourceStatsWidget::DataSourceStatsWidget(QWidget *parent)
 	: QTabWidget(parent)
@@ -17,22 +18,48 @@ DataSourceStatsWidget::~DataSourceStatsWidget()
 
 void DataSourceStatsWidget::RebuildStatsViews() {
 
-	clear();
-	m_statViews.clear();
+	ClearTabs();
 
-	QSqlQuery dataSourceListQuery;
-	dataSourceListQuery.prepare("SELECT ID,DatabaseName,TableName FROM DataSources");
+	QSqlDatabase projectDatabase = QSqlDatabase::database(DatabaseServices::GetProjectDBConnectionName());
+	QSqlQuery dataSourceListQuery(projectDatabase);
+	dataSourceListQuery.prepare("SELECT ConnectionName,DatabaseName FROM DataSources");
 	dataSourceListQuery.exec();
 
 	while (dataSourceListQuery.next()) {
 		QSqlRecord record = dataSourceListQuery.record();
-		QTableView* view = new QTableView(this);
+		QSqlDatabase newDataSourceDB = QSqlDatabase::addDatabase("QSQLITE", record.value(0).toString());
+		newDataSourceDB.setDatabaseName(record.value(1).toString());
 
-		QString tableName = "DataSource" + record.value(0).toString();
+		if (!newDataSourceDB.open()) {
+			ClearTabs();
+			throw std::exception("Failed to load data sources");
+		}
 
-		DataStatsModel* model = new DataStatsModel(tableName, this);
-		view->setModel(model);
-		view->resizeColumnsToContents();
-		addTab(view, record.value(1).toString() + ":" + record.value(2).toString());
+		CreateTablesFromDB(newDataSourceDB);
 	}
+}
+
+void DataSourceStatsWidget::ClearTabs() {
+
+	clear();
+	m_statViews.clear();
+}
+
+void DataSourceStatsWidget::CreateTablesFromDB(const QSqlDatabase& db) {
+
+	QStringList tables = db.tables();
+	tables.removeAll("sqlite_sequence");
+	for (int i = 0; i < tables.length(); ++i) {
+		CreateTableView(db, tables[i]);
+	}
+}
+
+void DataSourceStatsWidget::CreateTableView(const QSqlDatabase& db, const QString& tableName) {
+
+	QTableView* view = new QTableView(this);
+
+	DataStatsModel* model = new DataStatsModel(db, tableName, this);
+	view->setModel(model);
+	view->resizeColumnsToContents();
+	addTab(view, DatabaseServices::GetFormattedDBName(db) + ":" + tableName);
 }

@@ -9,6 +9,7 @@
 #include <QtSql/QSqlQuery>
 #include <QtSql/QSqlRecord>
 #include "application.h"
+#include "databaseservices.h"
 
 DataMapperWindow::DataMapperWindow(QWidget *parent)
     : SynGlyphX::MainWindow(parent)
@@ -153,7 +154,7 @@ void DataMapperWindow::LoadRecentFile(const QString& filename) {
 
 void DataMapperWindow::LoadProjectDatabase(const QString& filename) {
 
-	m_projectDatabase = QSqlDatabase::addDatabase("QSQLITE");
+	m_projectDatabase = QSqlDatabase::addDatabase("QSQLITE", DatabaseServices::GetProjectDBConnectionName());
 	m_projectDatabase.setDatabaseName(filename);
 	if (!m_projectDatabase.open()) {
 
@@ -170,7 +171,13 @@ void DataMapperWindow::LoadProjectDatabase(const QString& filename) {
 		return;
 	}
 
-	m_dataSourceStats->RebuildStatsViews();
+	try {
+		m_dataSourceStats->RebuildStatsViews();
+	}
+	catch (const std::exception& e) {
+		QMessageBox::critical(this, tr("Failed To Open Project"), tr("Failed to open project.  Error: ") + e.what(), QMessageBox::Ok);
+		return;
+	}
 
 	SetCurrentFile(filename);
 
