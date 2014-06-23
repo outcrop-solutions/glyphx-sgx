@@ -19,7 +19,7 @@ public:
 
 private:
 	QList<QStringList> m_stats;
-	QStringList m_columnNames;
+	QStringList m_fieldNames;
 };
 
 #endif // DATASTATSMODEL_H

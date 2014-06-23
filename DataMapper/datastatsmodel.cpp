@@ -14,25 +14,25 @@ DataStatsModel::DataStatsModel(const QSqlDatabase& db, const QString& tableName,
 
 		QSqlField field = columnNamesRecord.field(i);
 		query.prepare(QString("SELECT TYPEOF(%1), MIN(%1), MAX(%1), AVG(%1), COUNT(%1) FROM ").arg("\"" + field.name() + "\"") + tableName);
-		m_columnNames.append(field.name());
+		m_fieldNames.append(field.name());
 		//query.bindValue(":colName", "\"" + columnNamesRecord.fieldName(i) + "\"");
 		query.exec();
 		query.first();
 
 		QSqlRecord record = query.record();
-		QStringList columnStats;
+		QStringList fieldStats;
 		//columnStats.append(QVariant::typeToName(field.type()));
-		columnStats.append(record.value(0).toString());
-		columnStats.append(record.value(1).toString());
-		columnStats.append(record.value(2).toString());
+		fieldStats.append(record.value(0).toString());
+		fieldStats.append(record.value(1).toString());
+		fieldStats.append(record.value(2).toString());
 		if (field.type() == QVariant::String) {
-			columnStats.append("N/A");
+			fieldStats.append("N/A");
 		}
 		else {
-			columnStats.append(record.value(3).toString());
+			fieldStats.append(record.value(3).toString());
 		}
-		columnStats.append(record.value(4).toString());
-		m_stats.append(columnStats);
+		fieldStats.append(record.value(4).toString());
+		m_stats.append(fieldStats);
 	}
 	
 	/*
@@ -62,19 +62,19 @@ DataStatsModel::~DataStatsModel()
 
 int DataStatsModel::rowCount(const QModelIndex& parent) const {
 
-	return 5;
+	return m_fieldNames.length();
 }
 
 int DataStatsModel::columnCount(const QModelIndex& parent) const {
 
-	return m_columnNames.length();
+	return 5;
 }
 
 QVariant DataStatsModel::data(const QModelIndex& index, int role) const {
 
 	if ((role == Qt::DisplayRole) && (index.isValid())) {
 		
-		return m_stats.at(index.column()).at(index.row());
+		return m_stats.at(index.row()).at(index.column());
 	}
 
 	return QVariant();
@@ -83,9 +83,9 @@ QVariant DataStatsModel::data(const QModelIndex& index, int role) const {
 QVariant DataStatsModel::headerData(int section, Qt::Orientation orientation, int role) const {
 
 	if (role == Qt::DisplayRole) {
-		if (orientation == Qt::Horizontal) {
+		if (orientation == Qt::Vertical) {
 
-			return m_columnNames[section];
+			return m_fieldNames[section];
 		}
 		else {
 			if (section == 0) {

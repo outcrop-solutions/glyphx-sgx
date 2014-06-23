@@ -96,12 +96,12 @@ void DataMapperWindow::CreateDockWidgets() {
     addDockWidget(Qt::LeftDockWidgetArea, leftDockWidget);
     m_viewMenu->addAction(leftDockWidget->toggleViewAction());
 
-	QDockWidget* bottomDockWidget = new QDockWidget(tr("Data Stats"), this);
-	m_dataSourceStats = new DataSourceStatsWidget(bottomDockWidget);
+	QDockWidget* rightDockWidget = new QDockWidget(tr("Data Stats"), this);
+	m_dataSourceStats = new DataSourceStatsWidget(rightDockWidget);
 
-	bottomDockWidget->setWidget(m_dataSourceStats);
-	addDockWidget(Qt::BottomDockWidgetArea, bottomDockWidget);
-	m_viewMenu->addAction(bottomDockWidget->toggleViewAction());
+	rightDockWidget->setWidget(m_dataSourceStats);
+	addDockWidget(Qt::RightDockWidgetArea, rightDockWidget);
+	m_viewMenu->addAction(rightDockWidget->toggleViewAction());
 }
 
 void DataMapperWindow::ShowAboutBox() {
@@ -192,6 +192,13 @@ bool DataMapperWindow::SaveProjectDatabase(const QString& filename) {
 }
 
 void DataMapperWindow::AddDataSources() {
+
+	QString dataSource = QFileDialog::getOpenFileName(this, tr("Add Data Source"), "", "SQLite databases (*.*)");
+	if (!DatabaseServices::IsSQLiteDB(dataSource)) {
+		QMessageBox::critical(this, tr("Failed To Add Data Source"), tr("Data source was not added because it was not a recognized type"), QMessageBox::Ok);
+		return;
+	}
+
 
 }
 
