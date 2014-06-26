@@ -16,7 +16,7 @@ SingleGlyphWidget::~SingleGlyphWidget()
 QWidget* SingleGlyphWidget::CreateChildrenWidget(ChildOptions childOptions) {
 
     QWidget* childWidget = new QWidget(this);
-    QHBoxLayout* layout = new QHBoxLayout(this);
+	QHBoxLayout* layout = new QHBoxLayout(childWidget);
 
     QLabel* label = new QLabel(tr("Number of Children:"), childWidget);
     layout->addWidget(label);
@@ -67,63 +67,48 @@ void SingleGlyphWidget::CreateWidgets(ChildOptions childOptions) {
     QHBoxLayout* colorAndRatioLayout = new QHBoxLayout(this);
     colorAndRatioLayout->setContentsMargins(0, 0, 0, 0);
 
-    QGroupBox* colorGroupBox = new QGroupBox(tr("Color"), this);
-    QHBoxLayout* colorBoxLayout = new QHBoxLayout(colorGroupBox);
-    colorBoxLayout->setContentsMargins(0, 0, 0, 0);
-    m_colorWidget = new ColorAlphaWidget(colorGroupBox);
-    m_colorWidget->setContentsMargins(0, 0, 0, 0);
-    colorBoxLayout->addWidget(m_colorWidget);
-    colorGroupBox->setLayout(colorBoxLayout);
+	m_colorWidget = new SynGlyphX::ColorAlphaWidget(this);
+	//m_colorWidget->setContentsMargins(0, 0, 0, 0);
+	SynGlyphX::GroupBoxSingleWidget* colorGroupBox = new SynGlyphX::GroupBoxSingleWidget(tr("Color"), m_colorWidget, this);
 
     colorAndRatioLayout->addWidget(colorGroupBox);
 
-    m_ratioGroupBox = new QGroupBox(tr("Torus Ratio"), this);
-    QHBoxLayout* ratioBoxLayout = new QHBoxLayout(m_ratioGroupBox);
-    m_ratioSpinBox = new QDoubleSpinBox(m_ratioGroupBox);
-    m_ratioSpinBox->setSingleStep(0.05);
-    m_ratioSpinBox->setDecimals(2);
-    ratioBoxLayout->addWidget(m_ratioSpinBox);
-    m_ratioGroupBox->setLayout(ratioBoxLayout);
+	colorAndRatioLayout->addStretch(1);
+
+	m_ratioSpinBox = new QDoubleSpinBox(this);
+	m_ratioSpinBox->setSingleStep(0.05);
+	m_ratioSpinBox->setDecimals(2);
+	m_ratioGroupBox = new SynGlyphX::GroupBoxSingleWidget(tr("Torus Ratio"), m_ratioSpinBox, this); 
 
     colorAndRatioLayout->addWidget(m_ratioGroupBox);
 
-    QGroupBox* translateGroupBox = new QGroupBox(tr("Position"), this);
-    QHBoxLayout* translateBoxLayout = new QHBoxLayout(translateGroupBox);
-    translateBoxLayout->setContentsMargins(0, 0, 0, 0);
-    translateGroupBox->setLayout(translateBoxLayout);
-    m_translateWidget = new XYZWidget(false, translateGroupBox);
-    m_translateWidget->SetRange(-10000.0, 10000.0);
-    m_translateWidget->SetDecimal(4);
-    m_translateWidget->setContentsMargins(0, 0, 0, 0);
-    translateBoxLayout->addWidget(m_translateWidget);
+	m_translateWidget = new XYZWidget(false, this);
+	m_translateWidget->SetRange(-10000.0, 10000.0);
+	m_translateWidget->SetDecimal(4);
+	m_translateWidget->setContentsMargins(0, 0, 0, 0);
+
+	SynGlyphX::GroupBoxSingleWidget* translateGroupBox = new SynGlyphX::GroupBoxSingleWidget(tr("Position"), m_translateWidget, this);
 
     //Degree symbol gets displayed incorrectly unless we use QChar
     QChar degree = QChar('°');
     QString degreeSuffix = degree;
 
-    QGroupBox* rotateGroupBox = new QGroupBox(tr("Rotation"), this);
-    QHBoxLayout* rotateBoxLayout = new QHBoxLayout(this);
-    rotateBoxLayout->setContentsMargins(0, 0, 0, 0);
-    m_rotateWidget = new XYZWidget(false, this);
-    m_rotateWidget->SetRange(-180.0, 180.0);
-    m_rotateWidget->SetWrapping(true);
-    m_rotateWidget->SetDecimal(5);
-    m_rotateWidget->SetSuffix(degreeSuffix);
-    m_rotateWidget->setContentsMargins(0, 0, 0, 0);
-    rotateBoxLayout->addWidget(m_rotateWidget);
-    rotateGroupBox->setLayout(rotateBoxLayout);
+	m_rotateWidget = new XYZWidget(false, this);
+	m_rotateWidget->SetRange(-180.0, 180.0);
+	m_rotateWidget->SetWrapping(true);
+	m_rotateWidget->SetDecimal(5);
+	m_rotateWidget->SetSuffix(degreeSuffix);
+	m_rotateWidget->setContentsMargins(0, 0, 0, 0);
 
-    QGroupBox* scaleGroupBox = new QGroupBox(tr("Scale"), this);
-    QHBoxLayout* scaleBoxLayout = new QHBoxLayout(this);
-    scaleBoxLayout->setContentsMargins(0, 0, 0, 0);
-    m_scaleWidget = new XYZWidget(true, this);
-    m_scaleWidget->SetRange(0.000001, 1000.0);
-    m_scaleWidget->SetDecimal(5);
-    m_scaleWidget->setContentsMargins(0, 0, 0, 0);
-    m_scaleWidget->SetSpinBoxesLocked(true);
-    scaleBoxLayout->addWidget(m_scaleWidget);
-    scaleGroupBox->setLayout(scaleBoxLayout);
+	SynGlyphX::GroupBoxSingleWidget* rotateGroupBox = new SynGlyphX::GroupBoxSingleWidget(tr("Rotation"), m_rotateWidget, this);
 
+	m_scaleWidget = new XYZWidget(true, this);
+	m_scaleWidget->SetRange(0.000001, 1000.0);
+	m_scaleWidget->SetDecimal(5);
+	m_scaleWidget->setContentsMargins(0, 0, 0, 0);
+	m_scaleWidget->SetSpinBoxesLocked(true);
+
+	SynGlyphX::GroupBoxSingleWidget* scaleGroupBox = new SynGlyphX::GroupBoxSingleWidget(tr("Scale"), m_scaleWidget, this);
     
     form->addRow(tr("Shape:"), m_geometryShapeComboBox);
     form->addRow(tr("Surface:"), m_geometrySurfaceComboBox);

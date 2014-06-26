@@ -12,6 +12,7 @@
 #include "coloralphawidget.h"
 #include "xyzwidget.h"
 #include "glyph.h"
+#include "groupboxsinglewidget.h"
 
 class SingleGlyphWidget : public QWidget
 {
@@ -52,14 +53,14 @@ protected:
 
     QSpinBox* m_childrenSpinBox;
 
-    ColorAlphaWidget* m_colorWidget;
+    SynGlyphX::ColorAlphaWidget* m_colorWidget;
 
     XYZWidget* m_translateWidget;
     XYZWidget* m_rotateWidget;
     XYZWidget* m_scaleWidget;
 
     QDoubleSpinBox* m_ratioSpinBox;
-    QGroupBox* m_ratioGroupBox;
+	SynGlyphX::GroupBoxSingleWidget* m_ratioGroupBox;
 
 private slots:
     void OnShapeComboBoxChanged(int index);

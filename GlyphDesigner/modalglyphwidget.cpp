@@ -27,7 +27,7 @@ void ModalGlyphWidget::ConnectWidgetSignals() {
 
     m_propertyConnections.push_back(QObject::connect(m_ratioSpinBox, static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), this, [this]{ OnWidgetUpdated(GlyphTreeModel::UpdateScale); }));
 
-    m_propertyConnections.push_back(QObject::connect(m_colorWidget, &ColorAlphaWidget::ColorChanged, this, [this]{ OnWidgetUpdated(GlyphTreeModel::UpdateColor); }));
+    m_propertyConnections.push_back(QObject::connect(m_colorWidget, &SynGlyphX::ColorAlphaWidget::ColorChanged, this, [this]{ OnWidgetUpdated(GlyphTreeModel::UpdateColor); }));
 
     m_propertyConnections.push_back(QObject::connect(m_translateWidget, &XYZWidget::ValuesChanged, this, [this]{ OnWidgetUpdated(GlyphTreeModel::UpdatePosition); }));
     m_propertyConnections.push_back(QObject::connect(m_rotateWidget, &XYZWidget::ValuesChanged, this, [this]{ OnWidgetUpdated(GlyphTreeModel::UpdateRotation); }));

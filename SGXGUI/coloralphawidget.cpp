@@ -1,97 +1,74 @@
 #include "coloralphawidget.h"
-#include <QtWidgets/QColorDialog>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QHBoxLayout>
 
-ColorAlphaWidget::ColorAlphaWidget(QWidget *parent)
-    : QWidget(parent)
-{
-    QHBoxLayout* layout = new QHBoxLayout(this);
+namespace SynGlyphX {
 
-    m_button = new QPushButton(this);
-    m_button->setAutoFillBackground(true);
-    QObject::connect(m_button, SIGNAL(clicked()), this, SLOT(OnButtonClicked()));
+	ColorAlphaWidget::ColorAlphaWidget(QWidget *parent)
+		: QWidget(parent)
+	{
+		QHBoxLayout* layout = new QHBoxLayout(this);
 
-    QLabel* alphaLabel = new QLabel(tr("Alpha:"), this);
+		m_button = new ColorButton(true, this);
 
-    m_alphaSpinBox = new QSpinBox(this);
-    m_alphaSpinBox->setRange(0, 255);
-    QObject::connect(m_alphaSpinBox, SIGNAL(valueChanged(int)), this, SLOT(OnAlphaSpinBoxChanged(int)));
+		QLabel* alphaLabel = new QLabel(tr("Alpha:"), this);
 
-    layout->addWidget(m_button);
-    layout->addWidget(alphaLabel);
-    layout->addWidget(m_alphaSpinBox);
-    layout->addStretch(1);
+		m_alphaSpinBox = new QSpinBox(this);
+		m_alphaSpinBox->setRange(0, 255);
+		QObject::connect(m_alphaSpinBox, SIGNAL(valueChanged(int)), this, SLOT(OnAlphaSpinBoxChanged(int)));
 
-    setLayout(layout);
+		QObject::connect(m_button, &ColorButton::ColorChanged, this, static_cast<void (ColorAlphaWidget::*)(const QColor&)>(&ColorAlphaWidget::SetColor));
 
-    SetColor(Qt::gray);
-}
+		layout->addWidget(m_button);
+		layout->addWidget(alphaLabel);
+		layout->addWidget(m_alphaSpinBox);
 
-ColorAlphaWidget::~ColorAlphaWidget()
-{
+		setLayout(layout);
 
-}
+		SetColor(Qt::gray);
+	}
 
-void ColorAlphaWidget::SetColor(const QColor& color) {
+	ColorAlphaWidget::~ColorAlphaWidget()
+	{
 
-    m_color = color;
-    UpdateButtonColor();
-    m_alphaSpinBox->setValue(color.alpha());
-}
+	}
 
-void ColorAlphaWidget::OnButtonClicked() {
+	void ColorAlphaWidget::SetColor(const QColor& color) {
 
-    QColorDialog colorDialog(this);
-    colorDialog.setOption(QColorDialog::ShowAlphaChannel);
-    colorDialog.setCurrentColor(m_color);
-    if (colorDialog.exec() == QDialog::Accepted) {
-        QColor newColor = colorDialog.currentColor();
-        if (m_color != newColor) {
-            SetColor(newColor);
-            emit ColorChanged(m_color);
-        }
-    }
-}
+		bool isButtonSender = (sender() == m_button);
+		m_color = color;
+		if (!isButtonSender) {
+			m_button->SetColor(color);
+		}
+		m_alphaSpinBox->setValue(color.alpha());
+		if (isButtonSender) {
+			emit ColorChanged(m_color);
+		}
+	}
 
-void ColorAlphaWidget::UpdateButtonColor() {
+	void ColorAlphaWidget::OnAlphaSpinBoxChanged(int value) {
 
-    QColor color = m_color;
-    color.setAlpha(255);
-    QPixmap pixmap(m_button->iconSize());
-    pixmap.fill(color);
-    m_button->setIcon(QIcon(pixmap));
-}
+		m_color.setAlpha(value);
+		m_button->SetColor(m_color);
+		if (sender() == m_alphaSpinBox) {
+			emit ColorChanged(m_color);
+		}
+	}
 
-void ColorAlphaWidget::OnAlphaSpinBoxChanged(int value) {
+	void ColorAlphaWidget::SetColor(const SynGlyphX::Color& color) {
 
-    m_color.setAlpha(value);
-    emit ColorChanged(m_color);
-}
+		m_color.setRed(color[0]);
+		m_color.setGreen(color[1]);
+		m_color.setBlue(color[2]);
+		//m_color.setAlpha(color[3]);
 
-void ColorAlphaWidget::SetColor(const SynGlyphX::Color& color) {
-    
-    m_color.setRed(color[0]);
-    m_color.setGreen(color[1]);
-    m_color.setBlue(color[2]);
-    //m_color.setAlpha(color[3]);
+		m_alphaSpinBox->setValue(color[3]);
 
-    UpdateButtonColor();
-    m_alphaSpinBox->setValue(color[3]);
-}
+		m_button->SetColor(m_color);
+	}
 
-const QColor& ColorAlphaWidget::GetColor() const {
-    return m_color;
-}
+	const QColor& ColorAlphaWidget::GetColor() const {
+		return m_color;
+	}
 
-SynGlyphX::Color ColorAlphaWidget::ConvertQColorToColor(const QColor& qColor) {
-
-    SynGlyphX::Color color;
-
-    color[0] = qColor.red();
-    color[1] = qColor.green();
-    color[2] = qColor.blue();
-    color[3] = qColor.alpha();
-
-    return color;
-}
+} //namespace SynGlyphX

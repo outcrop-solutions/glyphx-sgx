@@ -1,38 +1,40 @@
-#ifndef COLORBUTTON_H
-#define COLORBUTTON_H
+#ifndef COLORALPHAWIDGET_H
+#define COLORALPHAWIDGET_H
 
 #include "sgxgui_global.h"
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QSpinBox>
 #include "foundationtypes.h"
+#include "colorbutton.h"
 
-class SGXGUI_EXPORT ColorAlphaWidget : public QWidget
-{
-    Q_OBJECT
+namespace SynGlyphX {
 
-public:
-    ColorAlphaWidget(QWidget *parent = 0);
-    ~ColorAlphaWidget();
+	class SGXGUI_EXPORT ColorAlphaWidget : public QWidget
+	{
+		Q_OBJECT
 
-    void SetColor(const SynGlyphX::Color& color);
-    void SetColor(const QColor& color);
-    const QColor& GetColor() const;
-    
-    static SynGlyphX::Color ConvertQColorToColor(const QColor& qColor);
+	public:
+		ColorAlphaWidget(QWidget *parent = 0);
+		~ColorAlphaWidget();
 
-signals:
-    void ColorChanged(const QColor& color);
+		void SetColor(const SynGlyphX::Color& color);
+		const QColor& GetColor() const;
 
-private slots:
-    void OnButtonClicked();
-    void OnAlphaSpinBoxChanged(int value);
+	public slots:
+		void SetColor(const QColor& color);
 
-private:
-    void UpdateButtonColor();
+	signals:
+		void ColorChanged(const QColor& color);
 
-    QColor m_color;
-    QPushButton* m_button;
-    QSpinBox* m_alphaSpinBox;
-};
+	private slots:
+		void OnAlphaSpinBoxChanged(int value);
 
-#endif // COLORBUTTON_H
+	private:
+		QColor m_color;
+		ColorButton* m_button;
+		QSpinBox* m_alphaSpinBox;
+	};
+
+} //namespace SynGlyphX
+
+#endif // COLORALPHAWIDGET_H

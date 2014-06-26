@@ -8,7 +8,9 @@ namespace SynGlyphX {
     {
         QHBoxLayout* layout = new QHBoxLayout(this);
         layout->addWidget(widget);
-        layout->setContentsMargins(0, 0, 0, 0);
+		if (widget->layout() != NULL) {
+			layout->setContentsMargins(0, 0, 0, 0);
+		}
         setLayout(layout);
     }
 
