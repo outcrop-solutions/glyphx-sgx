@@ -4,6 +4,7 @@
 #include "sgxgui_global.h"
 #include <QtWidgets/QToolButton>
 #include <QtWidgets/QMenu>
+#include <QtWidgets/QPushButton>
 #include "foundationtypes.h"
 
 namespace SynGlyphX {
@@ -31,12 +32,15 @@ namespace SynGlyphX {
 
 	private slots:
 		void OnCustomColor();
+		void SetColorFromMenu(const QColor& color);
 
 	private:
 		void UpdateButtonColor();
+		QIcon CreateColorIcon(const QColor& color, const QSize& size);
 
 		QColor m_color;
 		QMenu* m_menu;
+		QWidget* m_standardColorsWidget;
 		bool m_showAlphaInColorDialog;
 	};
 
