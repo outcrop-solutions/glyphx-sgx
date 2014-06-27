@@ -5,6 +5,7 @@
 #include <QtWidgets/QTreeView>
 #include <QtSql/QSqlDatabase>
 #include "datasourcestatswidget.h"
+#include "databindingwidget.h"
 
 class DataMapperWindow : public SynGlyphX::MainWindow
 {
@@ -43,6 +44,7 @@ private:
 	QSqlDatabase m_projectDatabase;
 	DataSourceStatsWidget* m_dataSourceStats;
 	QList<QAction*> m_projectDependentActions;
+	DataBindingWidget* m_dataBindingWidget;
 };
 
 #endif // DATAMAPPERWINDOW_H

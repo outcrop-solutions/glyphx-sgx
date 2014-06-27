@@ -17,6 +17,9 @@ DataMapperWindow::DataMapperWindow(QWidget *parent)
     CreateMenus();
     CreateDockWidgets();
 
+	m_dataBindingWidget = new DataBindingWidget(this);
+	setCentralWidget(m_dataBindingWidget);
+
 	statusBar()->showMessage(SynGlyphX::Application::applicationName() + " Started", 3000);
 }
 

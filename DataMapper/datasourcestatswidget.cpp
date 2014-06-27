@@ -2,6 +2,7 @@
 #include <QtSql/QSqlQuery>
 #include <QtSql/QSqlRecord>
 #include <QtCore/QVariant>
+#include <QtWidgets/QHeaderView>
 #include "datastatsmodel.h"
 #include "databaseservices.h"
 
@@ -57,9 +58,24 @@ void DataSourceStatsWidget::CreateTablesFromDB(const QSqlDatabase& db) {
 void DataSourceStatsWidget::CreateTableView(const QSqlDatabase& db, const QString& tableName) {
 
 	QTableView* view = new QTableView(this);
+	view->setSelectionBehavior(QAbstractItemView::SelectRows);
+	view->setSelectionMode(QAbstractItemView::SingleSelection);
+	view->setDragEnabled(true);
+	view->setDragDropMode(QAbstractItemView::DragDrop);
+	view->setAcceptDrops(false);
+	view->setDropIndicatorShown(true);
+	QHeaderView* fieldsHeader = view->verticalHeader();
+	fieldsHeader->setSectionResizeMode(QHeaderView::ResizeToContents);
+	fieldsHeader->setSelectionMode(QAbstractItemView::SingleSelection);
+	fieldsHeader->setDragEnabled(true);
+	fieldsHeader->setDragDropMode(QAbstractItemView::DragDrop);
+	fieldsHeader->setAcceptDrops(false);
+	fieldsHeader->setDropIndicatorShown(true);
+
+	view->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 
 	DataStatsModel* model = new DataStatsModel(db, tableName, this);
 	view->setModel(model);
-	view->resizeColumnsToContents();
+	//view->resizeColumnsToContents();
 	addTab(view, DatabaseServices::GetFormattedDBName(db) + ":" + tableName);
 }

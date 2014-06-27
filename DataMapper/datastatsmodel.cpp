@@ -1,6 +1,7 @@
 #include "datastatsmodel.h"
 #include <QtSql/QSqlRecord>
 #include <QtSql/QSqlField>
+#include <QtCore/QMimeData>
 
 DataStatsModel::DataStatsModel(const QSqlDatabase& db, const QString& tableName, QObject *parent)
 	: QAbstractTableModel(parent)
@@ -107,4 +108,18 @@ QVariant DataStatsModel::headerData(int section, Qt::Orientation orientation, in
 	}
 
 	return QVariant();
+}
+
+QStringList DataStatsModel::mimeTypes() const {
+
+	QStringList list;
+	list.push_back("text/plain");
+	return list;
+}
+
+QMimeData* DataStatsModel::mimeData(const QModelIndexList& indexes) const {
+
+	QMimeData* mimeData = new QMimeData();
+	mimeData->setText(m_fieldNames[indexes.front().row()]);
+	return mimeData;
 }
