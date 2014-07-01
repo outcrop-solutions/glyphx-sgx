@@ -4,6 +4,7 @@
 #include <QtWidgets/QSplitter>
 #include <QtWidgets/QTextEdit>
 #include <QtWidgets/QGridLayout>
+#include <QtWidgets/QDataWidgetMapper>
 #include "bindinglineedit.h"
 #include "richtexteditor.h"
 
@@ -21,11 +22,15 @@ public slots:
 private:
 	void CreateTagAndDescriptionWidget();
 	void CreatePropertiesTable();
-	void CreatePropertyWidgets(QGridLayout* layout);
+	void CreateIntegerPropertyWidgets(QGridLayout* layout, const QString& name, int row);
+	void CreateDoublePropertyWidgets(QGridLayout* layout, const QString& name, int row);
+	void CreateColorPropertyWidgets(QGridLayout* layout, const QString& name, int row);
+	void CreateRowOfPropertyWidgets(QGridLayout* layout, const QString& name, QWidget* minWidget, QWidget* maxWidget, int row);
 	void CreateGridLine(QGridLayout* layout, QFrame::Shape shape, int index, int thickness = 1);
 
 	BindingLineEdit* m_tagLineEdit;
 	SynGlyphX::RichTextEditor* m_descriptionEdit;
+	QList<QDataWidgetMapper*> m_dataWidgetMappers;
 };
 
 #endif // DATABINDINGWIDGET_H
