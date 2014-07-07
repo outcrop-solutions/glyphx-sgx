@@ -75,7 +75,7 @@ namespace SynGlyphX {
 
     void GlyphMappableProperties::SetRatio(double ratio) {
         
-        m_ratio;
+        m_ratio = ratio;
     }
 
     double GlyphMappableProperties::GetRatio() const {
