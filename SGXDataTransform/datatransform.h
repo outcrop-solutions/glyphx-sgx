@@ -4,6 +4,7 @@
 #include "sgxdatatransform_global.h"
 #include "datasource.h"
 #include <map>
+#include <boost/property_tree/ptree.hpp>
 
 namespace SynGlyphX {
 
@@ -13,13 +14,14 @@ namespace SynGlyphX {
         DataTransform();
         ~DataTransform();
 
-        void ReadFromFile(const std::wstring& filename);
-        void WriteToFile(const std::wstring& filename) const;
+        void ReadFromFile(const std::string& filename);
+        void WriteToFile(const std::string& filename) const;
 
         const std::map<std::wstring, Datasource>& GetDatasources() const;
 
     private:
         void Clear();
+		void AddDatasourcesToPropertyTree(boost::property_tree::wptree& propertyTree) const;
 
         std::map<std::wstring, Datasource> m_datasources;
     };

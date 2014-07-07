@@ -24,6 +24,8 @@ namespace SynGlyphX {
         const std::wstring& GetPassword() const;
         const std::vector<std::wstring>& GetTables() const;
 
+		void AddTable(const std::wstring& table);
+
     private:
         std::wstring m_dbName;
         std::wstring m_type;

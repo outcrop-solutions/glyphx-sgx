@@ -76,4 +76,9 @@ namespace SynGlyphX {
         return m_tables;
     }
 
+	void Datasource::AddTable(const std::wstring& table) {
+
+		m_tables.push_back(table);
+	}
+
 } //namespace SynGlyphX
