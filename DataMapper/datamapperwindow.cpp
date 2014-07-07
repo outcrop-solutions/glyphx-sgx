@@ -5,6 +5,7 @@
 #include <QtWidgets/QDockWidget>
 #include <QtGui/QCloseEvent>
 #include <QtWidgets/QStatusBar>
+#include <QtSql/QSqlDatabase>
 #include <QtSql/QSqlError>
 #include <QtSql/QSqlQuery>
 #include <QtSql/QSqlRecord>
@@ -14,6 +15,7 @@
 DataMapperWindow::DataMapperWindow(QWidget *parent)
     : SynGlyphX::MainWindow(parent)
 {
+	m_transform.reset(new SynGlyphX::DataTransform());
     CreateMenus();
     CreateDockWidgets();
 
@@ -65,13 +67,11 @@ void DataMapperWindow::CreateMenus() {
     
     QAction* addDataSourcesAction = m_projectMenu->addAction(tr("Add Data Sources"));
     QObject::connect(addDataSourcesAction, &QAction::triggered, this, &DataMapperWindow::AddDataSources);
-	m_projectDependentActions.push_back(addDataSourcesAction);
 
     m_projectMenu->addSeparator();
 
     QAction* baseImageAction = m_projectMenu->addAction(tr("Choose Base Image"));
     QObject::connect(baseImageAction, &QAction::triggered, this, &DataMapperWindow::ChangeBaseImage);
-	m_projectDependentActions.push_back(baseImageAction);
 
     //Create View Menu
     m_viewMenu = menuBar()->addMenu(tr("View"));
@@ -128,8 +128,8 @@ void DataMapperWindow::OpenProject() {
 		return;
 	}
 
-	QString openFile = QFileDialog::getOpenFileName(this, tr("Open Project"), "", tr("SynGlyphX Data Mapper Project Files (*.sdt)"));
-	LoadProjectDatabase(openFile);
+	QString openFile = QFileDialog::getOpenFileName(this, tr("Open Project"), "", tr("SynGlyphX Data Transform Project Files (*.sdt)"));
+	LoadDataTransform(openFile);
 }
 
 bool DataMapperWindow::SaveProject() {
@@ -138,43 +138,28 @@ bool DataMapperWindow::SaveProject() {
 		return SaveAsProject();
 	}
 	else {
-		return SaveProjectDatabase(m_currentFilename);
+		return SaveDataTransform(m_currentFilename);
 	}
 }
 
 bool DataMapperWindow::SaveAsProject() {
 
-	QString saveFile = QFileDialog::getSaveFileName(this, tr("Save Project"), "", tr("SynGlyphX Data Mapper Project Files (*.sdt)"));
-	return SaveProjectDatabase(saveFile);
+	QString saveFile = QFileDialog::getSaveFileName(this, tr("Save Project"), "", tr("SynGlyphX Data Transform Project Files (*.sdt)"));
+	return SaveDataTransform(saveFile);
 }
 
 void DataMapperWindow::LoadRecentFile(const QString& filename) {
 
 	if (AskUserToSave()) {
-		LoadProjectDatabase(filename);
+		LoadDataTransform(filename);
 	}
 }
 
-void DataMapperWindow::LoadProjectDatabase(const QString& filename) {
-
-	m_projectDatabase = QSqlDatabase::addDatabase("QSQLITE", DatabaseServices::GetProjectDBConnectionName());
-	m_projectDatabase.setDatabaseName(filename);
-	if (!m_projectDatabase.open()) {
-
-		QMessageBox::critical(this, tr("Failed To Open Project"), tr("Failed to open project.  Error: ") + m_projectDatabase.lastError().text(), QMessageBox::Ok);
-		return;
-	}
-
-	QStringList tables = m_projectDatabase.tables();
-
-	if (!tables.contains("DataSources")) {
-
-		QMessageBox::critical(this, tr("Failed To Open Project"), tr("Failed to open project.  Error: Incorrect format for project"), QMessageBox::Ok);
-		m_projectDatabase.close();
-		return;
-	}
+void DataMapperWindow::LoadDataTransform(const QString& filename) {
 
 	try {
+		m_transform->ReadFromFile(filename.toStdString());
+
 		m_dataSourceStats->RebuildStatsViews();
 	}
 	catch (const std::exception& e) {
@@ -189,7 +174,7 @@ void DataMapperWindow::LoadProjectDatabase(const QString& filename) {
 	statusBar()->showMessage("Project successfully opened", 3000);
 }
 
-bool DataMapperWindow::SaveProjectDatabase(const QString& filename) {
+bool DataMapperWindow::SaveDataTransform(const QString& filename) {
 
 	return false;
 }
@@ -197,12 +182,17 @@ bool DataMapperWindow::SaveProjectDatabase(const QString& filename) {
 void DataMapperWindow::AddDataSources() {
 
 	QString dataSource = QFileDialog::getOpenFileName(this, tr("Add Data Source"), "", "SQLite databases (*.*)");
+
+	if (dataSource.isEmpty()) {
+		return;
+	}
+
 	if (!DatabaseServices::IsSQLiteDB(dataSource)) {
 		QMessageBox::critical(this, tr("Failed To Add Data Source"), tr("Data source was not added because it was not a recognized type"), QMessageBox::Ok);
 		return;
 	}
 
-
+	EnableProjectDependentActions(true);
 }
 
 void DataMapperWindow::ExportToGlyphViewer() {
@@ -211,6 +201,7 @@ void DataMapperWindow::ExportToGlyphViewer() {
 
 void DataMapperWindow::ChangeBaseImage() {
 
+	EnableProjectDependentActions(true);
 }
 
 bool DataMapperWindow::AskUserToSave() {

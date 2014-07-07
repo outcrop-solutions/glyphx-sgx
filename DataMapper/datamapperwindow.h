@@ -3,7 +3,8 @@
 
 #include "mainwindow.h"
 #include <QtWidgets/QTreeView>
-#include <QtSql/QSqlDatabase>
+#include <boost/shared_ptr.hpp>
+#include "datatransform.h"
 #include "datasourcestatswidget.h"
 #include "databindingwidget.h"
 
@@ -32,8 +33,8 @@ private slots:
 private:
     void CreateMenus();
     void CreateDockWidgets();
-	void LoadProjectDatabase(const QString& filename);
-	bool SaveProjectDatabase(const QString& filename);
+	void LoadDataTransform(const QString& filename);
+	bool SaveDataTransform(const QString& filename);
 	bool AskUserToSave();
 	void EnableProjectDependentActions(bool enable);
 
@@ -41,7 +42,7 @@ private:
     QMenu* m_projectMenu;
     QMenu* m_viewMenu;
     QTreeView* m_glyphTreeView;
-	QSqlDatabase m_projectDatabase;
+	boost::shared_ptr<SynGlyphX::DataTransform> m_transform;
 	DataSourceStatsWidget* m_dataSourceStats;
 	QList<QAction*> m_projectDependentActions;
 	DataBindingWidget* m_dataBindingWidget;
