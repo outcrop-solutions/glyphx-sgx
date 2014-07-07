@@ -81,10 +81,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="datasource.h" />
+    <ClInclude Include="datatransform.h" />
     <ClInclude Include="sgxdatatransform_global.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="datasource.cpp" />
+    <ClCompile Include="datatransform.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
