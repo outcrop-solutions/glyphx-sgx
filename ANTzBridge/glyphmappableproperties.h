@@ -1,0 +1,43 @@
+#ifndef SYNGLYPHX_GLYPHMAPPABLEPROPERTIES
+#define SYNGLYPHX_GLYPHMAPPABLEPROPERTIES
+
+#include "ANTzBridge.h"
+#include "foundationtypes.h"
+
+namespace SynGlyphX {
+
+    class ANTZBRIDGE_API GlyphMappableProperties
+    {
+    public:
+        GlyphMappableProperties();
+        GlyphMappableProperties(const GlyphMappableProperties& properties);
+        ~GlyphMappableProperties();
+
+        void SetRotate(double x, double y, double z);
+        const Vector3& GetRotate() const;
+        void SetTranslate(double x, double y, double z);
+        const Vector3& GetTranslate() const;
+        void SetScale(double x, double y, double z);
+        const Vector3& GetScale() const;
+
+        void SetColor(unsigned char red, unsigned char green, unsigned char blue, unsigned char alpha = 255);
+        const Color& GetColor() const;
+
+        void SetRatio(double ratio);
+        double GetRatio() const;
+
+        virtual unsigned int GetNumberOfChildren() const;
+
+    protected:
+        Vector3 m_rotate;
+        Vector3 m_scale;
+        Vector3 m_translate;
+
+        double m_ratio;
+
+        Color m_color;
+    };
+
+} //namespace SynGlyphX
+
+#endif //SYNGLYPHX_GLYPHMAPPABLEPROPERTIES

@@ -1,4 +1,5 @@
 #include "glyphproperties.h"
+#include "data/nptypes.h"
 
 namespace SynGlyphX {
 
@@ -6,12 +7,8 @@ namespace SynGlyphX {
     boost::shared_ptr<GlyphProperties> GlyphProperties::s_template(new GlyphProperties());
 
     GlyphProperties::GlyphProperties()
-        : m_tagOffset{ { 0.0, 1.5, 0.0 } },
-        m_scale{ { 1.0, 1.0, 1.0 } },
-        m_translate{ { 0.0, 0.0, 0.0 } },
-        m_rotate{ { 0.0, 0.0, 0.0 } },
-        m_color{ { 50, 101, 101, 255 } },
-        m_ratio(0.1),
+        : GlyphMappableProperties(),
+        m_tagOffset{ { 0.0, 1.5, 0.0 } },
         m_geometryShape(Geometry::Torus),
         m_geometrySurface(Geometry::Solid),
         m_topology(Topology::Torus) {
@@ -55,12 +52,8 @@ namespace SynGlyphX {
     }
 
     GlyphProperties::GlyphProperties(const GlyphProperties& properties) : 
+        GlyphMappableProperties(properties),
         m_tagOffset(properties.m_tagOffset),
-        m_scale(properties.m_scale),
-        m_translate(properties.m_translate),
-        m_rotate(properties.m_rotate),
-        m_color(properties.m_color),
-        m_ratio(properties.m_ratio),
         m_geometryShape(properties.m_geometryShape),
         m_geometrySurface(properties.m_geometrySurface),
         m_topology(properties.m_topology) {
@@ -69,55 +62,6 @@ namespace SynGlyphX {
 
     GlyphProperties::~GlyphProperties()
     {
-    }
-
-    void GlyphProperties::SetRotate(double x, double y, double z) {
-        m_rotate[0] = x;
-        m_rotate[1] = y;
-        m_rotate[2] = z;
-    }
-
-    const Vector3& GlyphProperties::GetRotate() const {
-        return m_rotate;
-    }
-
-    void GlyphProperties::SetTranslate(double x, double y, double z) {
-        m_translate[0] = x;
-        m_translate[1] = y;
-        m_translate[2] = z;
-    }
-
-    const Vector3& GlyphProperties::GetTranslate() const {
-        return m_translate;
-    }
-
-    void GlyphProperties::SetScale(double x, double y, double z) {
-        m_scale[0] = x;
-        m_scale[1] = y;
-        m_scale[2] = z;
-    }
-
-    const Vector3& GlyphProperties::GetScale() const {
-        return m_scale;
-    }
-
-    void GlyphProperties::SetColor(unsigned char red, unsigned char green, unsigned char blue, unsigned char alpha) {
-        m_color[0] = red;
-        m_color[1] = green;
-        m_color[2] = blue;
-        m_color[3] = alpha;
-    }
-
-    const Color& GlyphProperties::GetColor() const {
-        return m_color;
-    }
-
-    void GlyphProperties::SetRatio(double ratio) {
-        m_ratio;
-    }
-
-    double GlyphProperties::GetRatio() const {
-        return m_ratio;
     }
 
     void GlyphProperties::SetGeometry(Geometry::Shape shape, Geometry::Surface surface) {
@@ -156,10 +100,6 @@ namespace SynGlyphX {
 
     boost::shared_ptr<const GlyphProperties> GlyphProperties::GetTemplate() {
         return s_template;
-    }
-
-    unsigned int GlyphProperties::GetNumberOfChildren() const {
-        return 0;
     }
 
     void GlyphProperties::SetTagOffset(double x, double y, double z) {

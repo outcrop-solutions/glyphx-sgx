@@ -94,6 +94,7 @@
     <ClInclude Include="ANTzBridge.h" />
     <ClInclude Include="csvreaderwriter.h" />
     <ClInclude Include="glyph.h" />
+    <ClInclude Include="glyphmappableproperties.h" />
     <ClInclude Include="glyphproperties.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
@@ -110,6 +111,7 @@
       </PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="glyph.cpp" />
+    <ClCompile Include="glyphmappableproperties.cpp" />
     <ClCompile Include="glyphproperties.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
