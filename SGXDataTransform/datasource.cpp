@@ -76,9 +76,9 @@ namespace SynGlyphX {
         return m_tables;
     }
 
-	void Datasource::AddTable(const std::wstring& table) {
+    void Datasource::AddTables(const std::vector<std::wstring>& tables) {
 
-		m_tables.push_back(table);
+		m_tables.insert(m_tables.end(), tables.begin(), tables.end());
 	}
 
 } //namespace SynGlyphX

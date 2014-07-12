@@ -1,6 +1,7 @@
 #include "datatransform.h"
 #include <boost/property_tree/xml_parser.hpp>
 #include <algorithm>
+#include <boost/uuid/uuid_io.hpp>
 
 namespace SynGlyphX {
 
@@ -31,12 +32,14 @@ namespace SynGlyphX {
 					datasourceValue.second.get<std::wstring>(L"Username"),
 					datasourceValue.second.get<std::wstring>(L"Password"));
 
+                std::vector<std::wstring> tables;
 				for (boost::property_tree::wptree::value_type& tableValue : datasourceValue.second.get_child(L"Tables")) {
 
 					if (tableValue.first == L"Table") {
-						datasource.AddTable(tableValue.second.data());
+                        tables.push_back(tableValue.second.data());
 					}
 				}
+                datasource.AddTables(tables);
 
 				m_datasources.insert(std::pair<std::wstring, Datasource>(datasourceValue.second.get<std::wstring>(L"<xmlattr>.id"), datasource));
 			}
@@ -82,6 +85,27 @@ namespace SynGlyphX {
     void DataTransform::Clear() {
 
         m_datasources.clear();
+    }
+
+    std::wstring DataTransform::AddDatasource(const std::wstring& name,
+        const std::wstring& type,
+        const std::wstring& host,
+        const unsigned int port,
+        const std::wstring& username,
+        const std::wstring& password) {
+
+        std::wstring id = boost::uuids::to_wstring(m_uuidGenerator());
+
+        Datasource datasource(name, type, host, port, username, password);
+
+        m_datasources.insert(std::pair<std::wstring, Datasource>(id, datasource));
+
+        return id;
+    }
+
+    void DataTransform::AddTables(const std::wstring& id, const std::vector<std::wstring>& tables) {
+
+        m_datasources.at(id).AddTables(tables);
     }
 
 } //namespace SynGlyphX
