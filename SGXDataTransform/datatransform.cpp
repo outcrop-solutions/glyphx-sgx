@@ -41,7 +41,7 @@ namespace SynGlyphX {
 				}
                 datasource.AddTables(tables);
 
-				m_datasources.insert(std::pair<std::wstring, Datasource>(datasourceValue.second.get<std::wstring>(L"<xmlattr>.id"), datasource));
+				m_datasources.insert(std::pair<boost::uuids::uuid, Datasource>(datasourceValue.second.get<boost::uuids::uuid>(L"<xmlattr>.id"), datasource));
 			}
 		}
     }
@@ -77,7 +77,7 @@ namespace SynGlyphX {
 		}
 	}
 
-	const std::unordered_map<std::wstring, Datasource>& DataTransform::GetDatasources() const {
+	const DataTransform::DatasourceMap& DataTransform::GetDatasources() const {
 
         return m_datasources;
     }
@@ -87,23 +87,23 @@ namespace SynGlyphX {
         m_datasources.clear();
     }
 
-    std::wstring DataTransform::AddDatasource(const std::wstring& name,
+	boost::uuids::uuid DataTransform::AddDatasource(const std::wstring& name,
         const std::wstring& type,
         const std::wstring& host,
         const unsigned int port,
         const std::wstring& username,
         const std::wstring& password) {
 
-        std::wstring id = boost::uuids::to_wstring(m_uuidGenerator());
+		boost::uuids::uuid id = m_uuidGenerator();
 
         Datasource datasource(name, type, host, port, username, password);
 
-        m_datasources.insert(std::pair<std::wstring, Datasource>(id, datasource));
+		m_datasources.insert(std::pair<boost::uuids::uuid, Datasource>(id, datasource));
 
         return id;
     }
 
-    void DataTransform::AddTables(const std::wstring& id, const std::vector<std::wstring>& tables) {
+	void DataTransform::AddTables(const boost::uuids::uuid& id, const std::vector<std::wstring>& tables) {
 
         m_datasources.at(id).AddTables(tables);
     }

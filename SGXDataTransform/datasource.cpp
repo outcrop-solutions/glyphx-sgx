@@ -81,4 +81,10 @@ namespace SynGlyphX {
 		m_tables.insert(m_tables.end(), tables.begin(), tables.end());
 	}
 
+	bool Datasource::IsOriginalDatasourceADatabase() const {
+
+		//For now return true in all cases since we are only handling databases
+		return true;
+	}
+
 } //namespace SynGlyphX

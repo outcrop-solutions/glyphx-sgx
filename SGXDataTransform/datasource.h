@@ -26,6 +26,8 @@ namespace SynGlyphX {
 
 		void AddTables(const std::vector<std::wstring>& table);
 
+		bool IsOriginalDatasourceADatabase() const;
+
     private:
         std::wstring m_dbName;
         std::wstring m_type;
