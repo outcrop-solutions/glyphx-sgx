@@ -15,7 +15,7 @@ public:
 	~DataSourceStatsWidget();
 
 	void RebuildStatsViews();
-    void AddNewStatsViews();
+	void AddNewStatsViews(const unsigned int numNewDatasources);
 
 private:
 	void ClearTabs();

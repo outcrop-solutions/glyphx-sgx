@@ -37,6 +37,7 @@ private:
 	bool SaveDataTransform(const QString& filename);
 	bool AskUserToSave();
 	void EnableProjectDependentActions(bool enable);
+	bool ValidateNewDatasource(const QString& datasource);
 
     QMenu* m_fileMenu;
     QMenu* m_projectMenu;

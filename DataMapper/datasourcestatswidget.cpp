@@ -21,14 +21,14 @@ DataSourceStatsWidget::~DataSourceStatsWidget()
 void DataSourceStatsWidget::RebuildStatsViews() {
 
     ClearTabs();
-	
+	AddNewStatsViews(m_transform->GetDatasources().size());
 }
 
-void DataSourceStatsWidget::AddNewStatsViews() {
+void DataSourceStatsWidget::AddNewStatsViews(const unsigned int numNewDatasources) {
 
-    const std::map<std::wstring, SynGlyphX::Datasource>& datasources = m_transform->GetDatasources();
-    std::map<std::wstring, SynGlyphX::Datasource>::const_iterator iT = datasources.begin();
-    std::advance(iT, m_statViews.length());
+    const std::unordered_map<std::wstring, SynGlyphX::Datasource>& datasources = m_transform->GetDatasources();
+	std::unordered_map<std::wstring, SynGlyphX::Datasource>::const_iterator iT = datasources.begin();
+	std::advance(iT, datasources.size() - numNewDatasources);
     for (; iT != datasources.end(); ++iT) {
 
         QSqlDatabase newDataSourceDB = QSqlDatabase::addDatabase(QString::fromStdWString(iT->second.GetType()), QString::fromStdWString(iT->first));
@@ -85,6 +85,6 @@ void DataSourceStatsWidget::CreateTableView(const QSqlDatabase& db, const QStrin
 
 	DataStatsModel* model = new DataStatsModel(db, tableName, this);
 	view->setModel(model);
-	//view->resizeColumnsToContents();
+	m_statViews.push_back(view);
 	addTab(view, DatabaseServices::GetFormattedDBName(db) + ":" + tableName);
 }
