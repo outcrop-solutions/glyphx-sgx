@@ -3,7 +3,7 @@
 
 #include "sgxdatatransform_global.h"
 #include "datasource.h"
-#include <map>
+#include <unordered_map>
 #include <boost/property_tree/ptree.hpp>
 #include <boost/uuid/uuid.hpp>
 #include <boost/uuid/uuid_generators.hpp>
@@ -19,7 +19,7 @@ namespace SynGlyphX {
         void ReadFromFile(const std::string& filename);
         void WriteToFile(const std::string& filename) const;
 
-        const std::map<std::wstring, Datasource>& GetDatasources() const;
+		const std::unordered_map<std::wstring, Datasource>& GetDatasources() const;
 
         std::wstring AddDatasource(const std::wstring& name,
             const std::wstring& type,
@@ -34,7 +34,7 @@ namespace SynGlyphX {
         void Clear();
 		void AddDatasourcesToPropertyTree(boost::property_tree::wptree& propertyTree) const;
 
-        std::map<std::wstring, Datasource> m_datasources;
+		std::unordered_map<std::wstring, Datasource> m_datasources;
         boost::uuids::random_generator m_uuidGenerator;
     };
 

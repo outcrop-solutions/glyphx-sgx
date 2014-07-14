@@ -48,19 +48,19 @@ namespace SynGlyphX {
 
     void DataTransform::WriteToFile(const std::string& filename) const {
 
-		boost::property_tree::wptree dataTransformPropertyTree(L"DataTransform");
+		boost::property_tree::wptree dataTransformPropertyTreeRoot;
 
-		boost::property_tree::wptree& datasourcesPropertyTree = dataTransformPropertyTree.add(L"Datasources", L"");
-		AddDatasourcesToPropertyTree(datasourcesPropertyTree);
+		AddDatasourcesToPropertyTree(dataTransformPropertyTreeRoot);
 
-		boost::property_tree::write_xml(filename, dataTransformPropertyTree);
+		boost::property_tree::write_xml(filename, dataTransformPropertyTreeRoot);
     }
 
-	void DataTransform::AddDatasourcesToPropertyTree(boost::property_tree::wptree& propertyTree) const {
+	void DataTransform::AddDatasourcesToPropertyTree(boost::property_tree::wptree& propertyTreeRoot) const {
 
+		boost::property_tree::wptree& datasourcesPropertyTree = propertyTreeRoot.add(L"Datasources", L"");
 		for (auto datasource : m_datasources) {
 
-			boost::property_tree::wptree& datasourcePropertyTree = propertyTree.add(L"Datasource", L"");
+			boost::property_tree::wptree& datasourcePropertyTree = datasourcesPropertyTree.add(L"Datasource", L"");
 
 			datasourcePropertyTree.put(L"<xmlattr>.id", datasource.first);
 			datasourcePropertyTree.put(L"Name", datasource.second.GetDBName());
@@ -72,12 +72,12 @@ namespace SynGlyphX {
 
 			boost::property_tree::wptree& tablesPropertyTree = datasourcePropertyTree.add(L"Tables", L"");
 			for (const std::wstring& table : datasource.second.GetTables()) {
-				tablesPropertyTree.put(L"Table", table);
+				tablesPropertyTree.add(L"Table", table);
 			}
 		}
 	}
 
-    const std::map<std::wstring, Datasource>& DataTransform::GetDatasources() const {
+	const std::unordered_map<std::wstring, Datasource>& DataTransform::GetDatasources() const {
 
         return m_datasources;
     }
