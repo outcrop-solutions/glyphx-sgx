@@ -207,9 +207,9 @@ void DataMapperWindow::AddDataSources() {
 			continue;
 		}
 			
-		std::wstring newDBID = m_transform->AddDatasource(datasource.toStdWString(), L"QSQLITE");
+		boost::uuids::uuid newDBID = m_transform->AddDatasource(datasource.toStdWString(), L"QSQLITE");
 		std::vector<std::wstring> tables;
-		QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", QString::fromStdWString(newDBID));
+		QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", QString::fromStdString(boost::uuids::to_string(newDBID)));
 		db.setDatabaseName(datasource);
 
 		try {
@@ -237,7 +237,7 @@ void DataMapperWindow::AddDataSources() {
 		}
 		catch (const std::exception& e) {
 
-			QSqlDatabase::removeDatabase(QString::fromStdWString(newDBID));
+			QSqlDatabase::removeDatabase(QString::fromStdString(boost::uuids::to_string(newDBID)));
 			QMessageBox::critical(this, tr("Failed To Add Data Source"), datasource + tr(" could not be opened"), QMessageBox::Ok);
 			continue;
 		}

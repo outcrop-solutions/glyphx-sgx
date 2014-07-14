@@ -23,6 +23,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ANTzBridge", "..\..\ANTzPlu
 		{7D8A83E2-8F45-4F90-9F84-F1120904E0CE} = {7D8A83E2-8F45-4F90-9F84-F1120904E0CE}
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SGXFoundation", "..\..\Core\SGXFoundation\SGXFoundation.vcxproj", "{1917E85B-C54C-4A57-8D29-DAC16021149E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -49,6 +51,10 @@ Global
 		{5E827F64-EBFA-4D08-9C78-FF91E2BAB5A7}.Debug|Win32.Build.0 = Debug|Win32
 		{5E827F64-EBFA-4D08-9C78-FF91E2BAB5A7}.Release|Win32.ActiveCfg = Release|Win32
 		{5E827F64-EBFA-4D08-9C78-FF91E2BAB5A7}.Release|Win32.Build.0 = Release|Win32
+		{1917E85B-C54C-4A57-8D29-DAC16021149E}.Debug|Win32.ActiveCfg = Debug|Win32
+		{1917E85B-C54C-4A57-8D29-DAC16021149E}.Debug|Win32.Build.0 = Debug|Win32
+		{1917E85B-C54C-4A57-8D29-DAC16021149E}.Release|Win32.ActiveCfg = Release|Win32
+		{1917E85B-C54C-4A57-8D29-DAC16021149E}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -26,12 +26,12 @@ void DataSourceStatsWidget::RebuildStatsViews() {
 
 void DataSourceStatsWidget::AddNewStatsViews(const unsigned int numNewDatasources) {
 
-    const std::unordered_map<std::wstring, SynGlyphX::Datasource>& datasources = m_transform->GetDatasources();
-	std::unordered_map<std::wstring, SynGlyphX::Datasource>::const_iterator iT = datasources.begin();
+    const SynGlyphX::DataTransform::DatasourceMap& datasources = m_transform->GetDatasources();
+	SynGlyphX::DataTransform::DatasourceMap::const_iterator iT = datasources.begin();
 	std::advance(iT, datasources.size() - numNewDatasources);
     for (; iT != datasources.end(); ++iT) {
 
-        QSqlDatabase newDataSourceDB = QSqlDatabase::addDatabase(QString::fromStdWString(iT->second.GetType()), QString::fromStdWString(iT->first));
+        QSqlDatabase newDataSourceDB = QSqlDatabase::addDatabase(QString::fromStdWString(iT->second.GetType()), QString::fromStdString(boost::uuids::to_string(iT->first)));
         newDataSourceDB.setDatabaseName(QString::fromStdWString(iT->second.GetDBName()));
 
         if (!newDataSourceDB.open()) {
