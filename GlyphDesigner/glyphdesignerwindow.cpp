@@ -165,11 +165,11 @@ void GlyphDesignerWindow::CreateNewGlyphTree() {
                 glyphWidgets.push_back(glyphWidget);
                 if (i == 0) {
                     page->setTitle("Glyphs for root level");
-                    glyphWidget->SetWidgetFromGlyph(SynGlyphX::Glyph::GetRoot());
+                    glyphWidget->SetWidgetFromGlyph(SynGlyphX::GlyphProperties::GetRoot());
                 }
                 else {
                     page->setTitle(QString::number(i).prepend("Glyphs for branch level "));
-                    glyphWidget->SetWidgetFromGlyph(SynGlyphX::Glyph::GetTemplate());
+                    glyphWidget->SetWidgetFromGlyph(SynGlyphX::GlyphProperties::GetTemplate());
                 }
                 layout->addWidget(glyphWidget);
                 wizard.addPage(page);
@@ -177,19 +177,23 @@ void GlyphDesignerWindow::CreateNewGlyphTree() {
 
             if (wizard.exec() == QDialog::Accepted) {
 
-                std::vector<boost::shared_ptr<SynGlyphX::GlyphProperties>> glyphs;
-                std::vector<unsigned int> numberOfChildren;
+				boost::shared_ptr<SynGlyphX::GlyphProperties> rootGlyph(new SynGlyphX::GlyphProperties());
+				glyphWidgets[0]->SetGlyphFromWidget(rootGlyph);
+				SynGlyphX::GlyphTree::SharedPtr newGlyphTree(new SynGlyphX::GlyphTree(*rootGlyph));
 
-                for (int i = 0; i < numberOfBranches; ++i) {
-                    boost::shared_ptr<SynGlyphX::GlyphProperties> glyph(new SynGlyphX::GlyphProperties());
-                    glyphWidgets[i]->SetGlyphFromWidget(glyph);
-                    glyphs.push_back(glyph);
-                    numberOfChildren.push_back(glyphWidgets[i]->GetNumberOfChildren());
+				std::vector<SynGlyphX::GlyphProperties::ConstSharedPtr> templates;
+				std::vector<unsigned int> instanceCounts;
+				for (int i = 1; i < numberOfBranches; ++i) {
+					boost::shared_ptr<SynGlyphX::GlyphProperties> glyph(new SynGlyphX::GlyphProperties());
+					glyphWidgets[i]->SetGlyphFromWidget(glyph);
+
+					templates.push_back(glyph);
+					instanceCounts.push_back(glyphWidgets[i - 1]->GetNumberOfChildren());
                 }
 
-                boost::shared_ptr<SynGlyphX::Glyph> newGlyph(new SynGlyphX::Glyph(glyphs, numberOfChildren));
+				newGlyphTree->AllocateChildSubtree(templates, instanceCounts, newGlyphTree->root());
 
-                m_glyphTreeModel->CreateNewTree(newGlyph);
+                m_glyphTreeModel->CreateNewTree(newGlyphTree);
                 m_3dView->ResetCamera();
             }
         }

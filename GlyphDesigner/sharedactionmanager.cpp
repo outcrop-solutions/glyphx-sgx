@@ -142,7 +142,7 @@ void SharedActionManager::PropertiesActivated() {
     
     const QModelIndexList& selectedItems = m_selectionModel->selectedIndexes();
     
-    boost::shared_ptr<SynGlyphX::Glyph> oldGlyph(new SynGlyphX::Glyph(static_cast<pNPnode>(selectedItems.back().internalPointer())));
+    boost::shared_ptr<SynGlyphX::GlyphProperties> oldGlyph(new SynGlyphX::GlyphProperties(static_cast<pNPnode>(selectedItems.back().internalPointer())));
     m_glyphWidget->SetWidgetFromGlyph(oldGlyph);
     if (m_propertiesDialog->exec() == QDialog::Accepted) {
         boost::shared_ptr<SynGlyphX::GlyphProperties> newGlyph(new SynGlyphX::GlyphProperties());

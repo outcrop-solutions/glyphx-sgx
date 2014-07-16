@@ -190,7 +190,7 @@ bool GlyphTreeModel::SaveToCSV(const std::string& filename, const QModelIndexLis
     return success;
 }
 
-void GlyphTreeModel::CreateNewTree(boost::shared_ptr<const SynGlyphX::Glyph> newGlyph) {
+void GlyphTreeModel::CreateNewTree(SynGlyphX::GlyphTree::ConstSharedPtr newGlyphTree) {
 
     //Need to select so that npNodeDelete works properly.  ANTz assumes that the root pin being deleted is selected.  Easier to work around this way
     m_antzData->map.nodeRootIndex = m_rootGlyph->id;
@@ -198,12 +198,17 @@ void GlyphTreeModel::CreateNewTree(boost::shared_ptr<const SynGlyphX::Glyph> new
     beginResetModel();
     npNodeDelete(m_rootGlyph, m_antzData);
 
-    CreateNodeFromTemplate(NULL, newGlyph, false);
-    for (int i = 0; i < newGlyph->GetNumberOfChildren(); ++i) {
+	CreateNewSubTree(NULL, newGlyphTree, newGlyphTree->root(), false);
 
-        CreateNewSubTree(m_rootGlyph, newGlyph->GetChild(i), false);
+	/*SynGlyphX::GlyphProperties::SharedPtr glyphProperties(&(newGlyphTree->begin().node->data));
+	CreateNodeFromTemplate(NULL, glyphProperties, false);
+
+	SynGlyphX::GlyphTree::sibling_iterator iT = newGlyphTree->begin();
+	for (; iT != newGlyphTree->end(newGlyphTree->begin()); ++iT) {
+
+        CreateNewSubTree(m_rootGlyph, iT, false);
     }
-	m_isDifferentFromSavedFileOrDefaultGlyph = true;
+	m_isDifferentFromSavedFileOrDefaultGlyph = true;*/
 
     endResetModel();
 
@@ -211,22 +216,23 @@ void GlyphTreeModel::CreateNewTree(boost::shared_ptr<const SynGlyphX::Glyph> new
     m_antzData->map.nodeRootIndex = 0;
 }
 
-void GlyphTreeModel::CreateNewSubTree(pNPnode parent, boost::shared_ptr<const SynGlyphX::Glyph> newGlyph, bool updatePosition) {
+void GlyphTreeModel::CreateNewSubTree(pNPnode parent, SynGlyphX::GlyphTree::ConstSharedPtr newGlyphTree, const SynGlyphX::GlyphTree::const_iterator& location, bool updatePosition) {
 
-    if (parent == NULL) {
+    /*if (parent == NULL) {
         return;
+    }*/
+
+	pNPnode child = CreateNodeFromTemplate(parent, *location, updatePosition);
+
+	for (int i = 0; i < newGlyphTree->children(location); ++i) {
+
+		CreateNewSubTree(child, newGlyphTree, newGlyphTree->child(location, i), updatePosition);
     }
 
-    pNPnode child = CreateNodeFromTemplate(parent, newGlyph, updatePosition);
-    for (int i = 0; i < newGlyph->GetNumberOfChildren(); ++i) {
-
-		CreateNewSubTree(child, newGlyph->GetChild(i), updatePosition);
-    }
 	m_isDifferentFromSavedFileOrDefaultGlyph = true;
-
 }
 
-pNPnode GlyphTreeModel::CreateNodeFromTemplate(pNPnode parent, boost::shared_ptr<const SynGlyphX::GlyphProperties> glyphTemplate, bool updatePosition) {
+pNPnode GlyphTreeModel::CreateNodeFromTemplate(pNPnode parent, const SynGlyphX::GlyphProperties& glyphTemplate, bool updatePosition) {
 
     pNPnode glyph = npNodeNew(kNodePin, parent, m_antzData);
     if (parent == NULL) {
@@ -262,50 +268,50 @@ void GlyphTreeModel::UpdateNodes(const QModelIndexList& indexList, boost::shared
 void GlyphTreeModel::UpdateNode(const QModelIndex& index, boost::shared_ptr<const SynGlyphX::GlyphProperties> glyph, PropertyUpdates updates) {
 
     if (index.isValid()) {
-        UpdateNode(static_cast<pNPnode>(index.internalPointer()), glyph, updates);
+        UpdateNode(static_cast<pNPnode>(index.internalPointer()), *glyph, updates);
         emit NodeUpdated(index);
     }
 }
 
-void GlyphTreeModel::UpdateNode(pNPnode glyph, boost::shared_ptr<const SynGlyphX::GlyphProperties> glyphTemplate, PropertyUpdates updates) {
+void GlyphTreeModel::UpdateNode(pNPnode glyph, const SynGlyphX::GlyphProperties& glyphTemplate, PropertyUpdates updates) {
 
     if (updates.testFlag(UpdateScale)) {
-        SynGlyphX::Vector3 scale = glyphTemplate->GetScale();
+        SynGlyphX::Vector3 scale = glyphTemplate.GetScale();
         glyph->scale.x = scale[0];
         glyph->scale.y = scale[1];
         glyph->scale.z = scale[2];
 
-        glyph->ratio = glyphTemplate->GetRatio();
+        glyph->ratio = glyphTemplate.GetRatio();
     }
 
     if (updates.testFlag(UpdatePosition)) {
-        SynGlyphX::Vector3 translate = glyphTemplate->GetTranslate();
+		SynGlyphX::Vector3 translate = glyphTemplate.GetTranslate();
         glyph->translate.x = translate[0];
         glyph->translate.y = translate[1];
         glyph->translate.z = translate[2];
     }
 
     if (updates.testFlag(UpdateRotation)) {
-        SynGlyphX::Vector3 rotation = glyphTemplate->GetRotate();
+		SynGlyphX::Vector3 rotation = glyphTemplate.GetRotate();
         glyph->rotate.x = rotation[0];
         glyph->rotate.y = rotation[1];
         glyph->rotate.z = rotation[2];
     }
 
     if ((updates.testFlag(UpdateGeometry)) || (updates.testFlag(UpdateSurface))) {
-        glyph->geometry = 2 * glyphTemplate->GetShape();
+		glyph->geometry = 2 * glyphTemplate.GetShape();
 
         //This is necessary because ANTz screwed up the enum for geometries
-        if (glyphTemplate->GetShape() == SynGlyphX::Geometry::Pin) {
-            glyph->geometry += (1 - glyphTemplate->GetSurface());
+        if (glyphTemplate.GetShape() == SynGlyphX::Geometry::Pin) {
+            glyph->geometry += (1 - glyphTemplate.GetSurface());
         }
         else {
-            glyph->geometry += glyphTemplate->GetSurface();
+            glyph->geometry += glyphTemplate.GetSurface();
         }
     }
 
     if (updates.testFlag(UpdateColor)) {
-        SynGlyphX::Color color = glyphTemplate->GetColor();
+        SynGlyphX::Color color = glyphTemplate.GetColor();
         glyph->color.r = color[0];
         glyph->color.g = color[1];
         glyph->color.b = color[2];
@@ -313,7 +319,7 @@ void GlyphTreeModel::UpdateNode(pNPnode glyph, boost::shared_ptr<const SynGlyphX
     }
 
     if (updates.testFlag(UpdateTopology)) {
-        glyph->topo = glyphTemplate->GetTopology();
+        glyph->topo = glyphTemplate.GetTopology();
     }
 }
 
@@ -348,7 +354,7 @@ void GlyphTreeModel::AppendChild(const QModelIndex& parent, boost::shared_ptr<co
         pNPnode parentNode = static_cast<pNPnode>(parent.internalPointer());
         beginInsertRows(parent, parentNode->childCount, parentNode->childCount + numberOfChildren - 1);
         for (int i = 0; i < numberOfChildren; ++i) {
-            CreateNodeFromTemplate(parentNode, glyph, false);
+            CreateNodeFromTemplate(parentNode, *glyph, false);
         }
         endInsertRows();
         emit NodeUpdated(parent);
@@ -390,7 +396,7 @@ bool GlyphTreeModel::IsClipboardEmpty() const {
     return (m_clipboardGlyph.get() == NULL);
 }
 
-boost::shared_ptr<const SynGlyphX::Glyph> GlyphTreeModel::GetClipboardGlyph() const {
+SynGlyphX::GlyphProperties::ConstSharedPtr GlyphTreeModel::GetClipboardGlyph() const {
 
     return m_clipboardGlyph;
 }
@@ -477,10 +483,10 @@ bool GlyphTreeModel::dropMimeData(const QMimeData* data, Qt::DropAction action, 
 
 			pNPnode node = static_cast<pNPnode>(indexes[j].internalPointer());
 
-			boost::shared_ptr<SynGlyphX::Glyph> glyph(new SynGlyphX::Glyph(node));
+			SynGlyphX::GlyphTree::ConstSharedPtr glyph(new SynGlyphX::GlyphTree(node));
 
 			//If new parent is the same as the node's current parent then keep the object's position
-			CreateNewSubTree(newParentNode, glyph, node->parent == newParentNode);
+			CreateNewSubTree(newParentNode, glyph, glyph->root(), node->parent == newParentNode);
 		}
 			
 		return true;

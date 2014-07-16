@@ -70,7 +70,7 @@ void ModalGlyphWidget::SelectionChanged(const QItemSelection& selected, const QI
 
 void ModalGlyphWidget::UpdateWidget(pNPnode node) {
 
-    boost::shared_ptr<SynGlyphX::Glyph> glyph(new SynGlyphX::Glyph(node));
+    boost::shared_ptr<SynGlyphX::GlyphProperties> glyph(new SynGlyphX::GlyphProperties(node));
     SetWidgetFromGlyph(glyph);
 }
 

@@ -54,7 +54,7 @@ public:
 
     bool LoadFromFile(const std::string& filename);
     bool SaveToCSV(const std::string& filename, const QModelIndexList& selectedItems);
-    void CreateNewTree(boost::shared_ptr<const SynGlyphX::Glyph> newGlyph);
+	void CreateNewTree(SynGlyphX::GlyphTree::ConstSharedPtr newGlyphTree);
     void UpdateNode(const QModelIndex& index, boost::shared_ptr<const SynGlyphX::GlyphProperties> glyph, PropertyUpdates updates = UpdateAll);
     void UpdateNodes(const QModelIndexList& indexList, boost::shared_ptr<const SynGlyphX::GlyphProperties> glyph, PropertyUpdates updates = UpdateAll);
 
@@ -63,7 +63,7 @@ public:
     void AppendChild(const QModelIndex& parent, boost::shared_ptr<const SynGlyphX::GlyphProperties> glyph, unsigned int numberOfChildren = 1);
 
     bool IsClipboardEmpty() const;
-    boost::shared_ptr<const SynGlyphX::Glyph> GetClipboardGlyph() const;
+    SynGlyphX::GlyphProperties::ConstSharedPtr GetClipboardGlyph() const;
     void CopyToClipboard(const QModelIndex& index, bool removeFromTree = false);
 
     static PropertyUpdates FindUpdates(boost::shared_ptr<const SynGlyphX::GlyphProperties> oldGlyph, boost::shared_ptr<const SynGlyphX::GlyphProperties> newGlyph);
@@ -78,15 +78,15 @@ private slots:
 	void MarkDifferentNotifyModelUpdate();
 
 private:
-	pNPnode CreateNodeFromTemplate(pNPnode parent, boost::shared_ptr<const SynGlyphX::GlyphProperties> glyphTemplate, bool updatePosition = false);
+	pNPnode CreateNodeFromTemplate(pNPnode parent, const SynGlyphX::GlyphProperties& glyphTemplate, bool updatePosition = false);
     void CreateRootPinNode();
     int GetChildIndexFromParent(pNPnode node) const;
-    void UpdateNode(pNPnode glyph, boost::shared_ptr<const SynGlyphX::GlyphProperties> glyphTemplate, PropertyUpdates updates = UpdateAll);
-	void CreateNewSubTree(pNPnode parent, boost::shared_ptr<const SynGlyphX::Glyph> newGlyph, bool updatePosition = false);
+	void UpdateNode(pNPnode glyph, const SynGlyphX::GlyphProperties& glyphTemplate, PropertyUpdates updates = UpdateAll);
+	void CreateNewSubTree(pNPnode parent, SynGlyphX::GlyphTree::ConstSharedPtr newGlyphTree, const SynGlyphX::GlyphTree::const_iterator& location, bool updatePosition = false);
 
     pNPnode m_rootGlyph;
     pData m_antzData;
-    boost::shared_ptr<SynGlyphX::Glyph> m_clipboardGlyph;
+	SynGlyphX::GlyphProperties::SharedPtr m_clipboardGlyph;
 	bool m_isDifferentFromSavedFileOrDefaultGlyph;
 };
 
