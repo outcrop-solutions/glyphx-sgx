@@ -4,7 +4,7 @@
 #include "glyphproperties.h"
 #include "glyph.h"
 #include <vector>
-#include <tree.hh>
+#include <containers/ntree.hpp>
 
 namespace SynGlyphX {
 
@@ -25,7 +25,7 @@ namespace SynGlyphX {
 		GlyphProperties m_max;
 	};
 
-	typedef tree<MinMaxGlyph> MinMaxGlyphTree;
+	typedef stlplus::ntree<MinMaxGlyph> MinMaxGlyphTree;
 
 } //namespace SynGlyphX
 
