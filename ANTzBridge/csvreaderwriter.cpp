@@ -34,7 +34,7 @@ namespace SynGlyphX {
     {
     }
 
-    void CSVReaderWriter::Write(const std::string& filename, boost::shared_ptr<const Glyph> treeRoot, unsigned long startingId) {
+	void CSVReaderWriter::Write(const std::string& filename, GlyphTree::ConstSharedPtr treeRoot, unsigned long startingId) {
 
         std::ofstream file;
         try {
@@ -50,7 +50,7 @@ namespace SynGlyphX {
             file << "5, 1, 5, 0, 2, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0.000000, 0.000000, -1.000000, 0.000000, -0.000000, 1.000000, 1.000000, 1.000000, 85.000000, 0.000000, 7.000000, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 90.000000, 270.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0, 0, 1.000000, 0.000000, 0.100000, 0, 50, 101, 101, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0, 0, 0, 16, 16, 0, 0, 0, 0, 0, 420" << std::endl;
             file << "6, 6, 6, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0, 0, 1.000000, 0.000000, 0.100000, 0, 255, 0, 0, 150, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0, 0, 0, 12, 12, 0, 0, 0, 0, 0, 420" << std::endl;
 
-            WriteGlyph(file, treeRoot, startingId, 0, 0);
+			WriteGlyph(file, *treeRoot->root(), startingId, 0, 0);
 
             file.close();
         }
@@ -61,20 +61,20 @@ namespace SynGlyphX {
     }
 
     //This function only handles the one child case.  Need to update
-    void CSVReaderWriter::WriteGlyph(std::ofstream& file, boost::shared_ptr<const Glyph> glyph, unsigned long id, unsigned long parentId, unsigned long branchLevel) {
+	void CSVReaderWriter::WriteGlyph(std::ofstream& file, const GlyphProperties& glyph, unsigned long id, unsigned long parentId, unsigned long branchLevel) {
 
         unsigned int numberOfChildren = 0;// glyph->GetNumberOfChildren();
 
         file << id << ", 5, " << id << ", 0, " << parentId << ", " << branchLevel << ", 0, 0, " << numberOfChildren << ", 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, ";
-        Vector3 scale = glyph->GetScale();
-        Vector3 translate = glyph->GetTranslate();
+        Vector3 scale = glyph.GetScale();
+        Vector3 translate = glyph.GetTranslate();
         file << scale[0] << ", " << scale[1] << ", " << scale[2] << ", " << translate[0] << ", " << translate[1] << ", " << translate[2] << ", ";
-        Vector3 tagOffset = glyph->GetTagOffset();
-        Vector3 rotate = glyph->GetRotate();
+        Vector3 tagOffset = glyph.GetTagOffset();
+        Vector3 rotate = glyph.GetRotate();
         file << tagOffset[0] << ", " << tagOffset[1] << ", " << tagOffset[2] << ", 0, 0, 0, " << rotate[0] << ", " << rotate[1] << ", " << rotate[2] << ", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ";
-        Color color = glyph->GetColor();
-        file << ConvertGeometryToCSVInt(glyph->GetShape(), glyph->GetSurface()) << ", 1, 0, " << glyph->GetRatio() << ", " << GetColorIndex(color) << ", " << static_cast<int>(color[0]) << ", ";
-        file << static_cast<int>(color[1]) << ", " << static_cast<int>(color[2]) << ", " << static_cast<int>(color[3]) << ", 0, 0, 0, 0, " << static_cast<int>(glyph->GetTopology()) << ", ";
+        Color color = glyph.GetColor();
+        file << ConvertGeometryToCSVInt(glyph.GetShape(), glyph.GetSurface()) << ", 1, 0, " << glyph.GetRatio() << ", " << GetColorIndex(color) << ", " << static_cast<int>(color[0]) << ", ";
+        file << static_cast<int>(color[1]) << ", " << static_cast<int>(color[2]) << ", " << static_cast<int>(color[3]) << ", 0, 0, 0, 0, " << static_cast<int>(glyph.GetTopology()) << ", ";
         file << "0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 16, 16, 0, 0, 0, 0, " << id << ", 420" << std::endl;
         
         if (numberOfChildren > 0) {

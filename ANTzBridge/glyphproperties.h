@@ -13,10 +13,16 @@ namespace SynGlyphX {
     class ANTZBRIDGE_API GlyphProperties : public GlyphMappableProperties
     {
     public:
+		typedef boost::shared_ptr<GlyphProperties> SharedPtr;
+		typedef boost::shared_ptr<const GlyphProperties> ConstSharedPtr;
+
         GlyphProperties();
         GlyphProperties(pNPnode node);
         GlyphProperties(const GlyphProperties& properties);
         ~GlyphProperties();
+
+		GlyphProperties& operator=(const GlyphProperties& properties);
+		bool operator==(const GlyphProperties& properties) const;
 
         void SetGeometry(Geometry::Shape shape, Geometry::Surface surface);
         Geometry::Shape GetShape() const;

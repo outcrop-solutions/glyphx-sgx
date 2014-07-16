@@ -3,7 +3,76 @@
 
 namespace SynGlyphX {
 
-    Glyph::Glyph()
+	GlyphTree::GlyphTree()
+		: stlplus::ntree<GlyphProperties>() {
+
+	}
+
+	GlyphTree::GlyphTree(pNPnode node) :
+		stlplus::ntree<GlyphProperties>() {
+
+		GlyphProperties rootProperties(node);
+		insert(rootProperties);
+
+		for (int i = 0; i < node->childCount; ++i) {
+
+			GlyphTree childTree(node->child[i]);
+			insert(root(), childTree);
+		}
+	}
+
+	GlyphTree::GlyphTree(const GlyphProperties& rootProperties) :
+		stlplus::ntree<GlyphProperties>() {
+
+		insert(rootProperties);
+	}
+
+	GlyphTree::GlyphTree(const std::vector<SynGlyphX::GlyphProperties::ConstSharedPtr>& templates, const std::vector<unsigned int> instances, unsigned int depth) :
+		stlplus::ntree<GlyphProperties>() {
+
+		insert(*templates[depth]);
+		++depth;
+
+		if (depth == instances.size() - 1) {
+
+			for (unsigned int i = 0; i < instances[depth]; ++i) {
+
+				insert(root(), *templates[depth]);
+			}
+		}
+		else {
+
+			for (unsigned int i = 0; i < instances[depth]; ++i) {
+
+				GlyphTree childTree(templates, instances, depth);
+				insert(root(), childTree);
+			}
+		}
+	}
+
+	GlyphTree::~GlyphTree()
+	{
+	}
+
+	void GlyphTree::AllocateChildSubtree(const std::vector<SynGlyphX::GlyphProperties::ConstSharedPtr>& templates, const std::vector<unsigned int> instances, const GlyphTree::iterator& parent) {
+
+		if (instances.size() == 1) {
+
+			for (unsigned int i = 0; i < instances[0]; ++i) {
+
+				insert(root(), *templates[0]);
+			}
+		}
+		else {
+			for (unsigned int i = 0; i < instances[0]; ++i) {
+
+				GlyphTree childTree(templates, instances, 0);
+				insert(parent, childTree);
+			}
+		}
+	}
+
+    /*Glyph::Glyph()
         : GlyphProperties() {
         
     }
@@ -59,6 +128,6 @@ namespace SynGlyphX {
 
     unsigned int Glyph::GetNumberOfChildren() const {
         return m_children.size();
-    }
+    }*/
 
 } //namespace SynGlyphX

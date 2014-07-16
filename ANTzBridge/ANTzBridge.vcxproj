@@ -56,7 +56,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;ANTZBRIDGE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\..\3rdParty\include\boost_1_55_0;..\ANTzCore;..\..\Core\SGXFoundation\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\3rdParty\include\boost_1_55_0;..\ANTzCore;..\..\Core\SGXFoundation\;..\..\3rdParty\include\stlplus_3_11</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -75,7 +75,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;ANTZBRIDGE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\..\3rdParty\include\boost_1_55_0;..\ANTzCore;..\..\Core\SGXFoundation\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\3rdParty\include\boost_1_55_0;..\ANTzCore;..\..\Core\SGXFoundation\;..\..\3rdParty\include\stlplus_3_11</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

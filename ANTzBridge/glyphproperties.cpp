@@ -64,6 +64,48 @@ namespace SynGlyphX {
     {
     }
 
+	GlyphProperties& GlyphProperties::operator=(const GlyphProperties& properties) {
+
+		GlyphMappableProperties::operator=(properties);
+
+		m_tagOffset = properties.m_tagOffset;
+		m_geometryShape = properties.m_geometryShape;
+		m_geometrySurface = properties.m_geometrySurface;
+		m_topology = properties.m_topology;
+
+		return *this;
+	}
+
+	bool GlyphProperties::operator==(const GlyphProperties& properties) const {
+
+		if (!GlyphMappableProperties::operator==(properties)) {
+
+			return false;
+		}
+		
+		if (m_tagOffset != properties.m_tagOffset) {
+
+			return false;
+		}
+
+		if (m_geometryShape != properties.m_geometryShape) {
+
+			return false;
+		}
+
+		if (m_geometrySurface != properties.m_geometrySurface) {
+
+			return false;
+		}
+
+		if (m_topology != properties.m_topology) {
+
+			return false;
+		}
+
+		return true;
+	}
+
     void GlyphProperties::SetGeometry(Geometry::Shape shape, Geometry::Surface surface) {
         m_geometryShape = shape;
         m_geometrySurface = surface;

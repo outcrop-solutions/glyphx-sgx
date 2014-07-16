@@ -5,12 +5,34 @@
 #include <boost/shared_ptr.hpp>
 #include <vector>
 #include "glyphproperties.h"
+#include <containers/ntree.hpp>
 
 namespace SynGlyphX {
 
-    class ANTZBRIDGE_API Glyph : public GlyphProperties
+	class ANTZBRIDGE_API GlyphTree : public stlplus::ntree < GlyphProperties >
+	{
+	public:
+		typedef boost::shared_ptr<GlyphTree> SharedPtr;
+		typedef boost::shared_ptr<const GlyphTree> ConstSharedPtr;
+
+		GlyphTree();
+		GlyphTree(pNPnode node);
+		GlyphTree(const GlyphProperties& rootProperties);
+		~GlyphTree();
+
+		void AllocateChildSubtree(const std::vector<SynGlyphX::GlyphProperties::ConstSharedPtr>& templates, const std::vector<unsigned int> instances, const GlyphTree::iterator& parent);
+
+	private:
+
+		GlyphTree(const std::vector<SynGlyphX::GlyphProperties::ConstSharedPtr>& templates, const std::vector<unsigned int> instances, unsigned int depth);
+	};
+
+    /*class ANTZBRIDGE_API Glyph : public GlyphProperties
     {
     public:
+		typedef boost::shared_ptr<Glyph> SharedPtr;
+		typedef boost::shared_ptr<const Glyph> ConstSharedPtr;
+
         Glyph();
         Glyph(pNPnode node);
         Glyph(const std::vector<boost::shared_ptr<GlyphProperties>>& templates, const std::vector<unsigned int>& numberOfChildren);
@@ -25,7 +47,7 @@ namespace SynGlyphX {
 
     private:
         std::vector<boost::shared_ptr<Glyph>> m_children;
-    };
+    };*/
 
 } //namespace SynGlyphX
 

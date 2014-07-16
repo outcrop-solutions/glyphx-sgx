@@ -13,6 +13,10 @@ namespace SynGlyphX {
         GlyphMappableProperties(const GlyphMappableProperties& properties);
         ~GlyphMappableProperties();
 
+		GlyphMappableProperties& operator=(const GlyphMappableProperties& properties);
+		bool operator==(const GlyphMappableProperties& properties) const;
+		bool operator<(const GlyphMappableProperties& properties) const;
+
         void SetRotate(double x, double y, double z);
         const Vector3& GetRotate() const;
         void SetTranslate(double x, double y, double z);

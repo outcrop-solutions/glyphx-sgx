@@ -24,6 +24,53 @@ namespace SynGlyphX {
     {
     }
 
+	GlyphMappableProperties& GlyphMappableProperties::operator=(const GlyphMappableProperties& properties) {
+
+		m_scale = properties.m_scale;
+		m_translate = properties.m_translate;
+		m_rotate = properties.m_rotate;
+		m_color = properties.m_color;
+		m_ratio = properties.m_ratio;
+
+		return *this;
+	}
+
+	bool GlyphMappableProperties::operator==(const GlyphMappableProperties& properties) const {
+
+		if (m_scale != properties.m_scale) {
+
+			return false;
+		}
+
+		if (m_translate != properties.m_translate) {
+
+			return false;
+		}
+
+		if (m_rotate != properties.m_rotate) {
+
+			return false;
+		}
+
+		if (m_color != properties.m_color) {
+
+			return false;
+		}
+
+		if (m_ratio != properties.m_ratio) {
+
+			return false;
+		}
+
+		return true;
+	}
+
+	bool GlyphMappableProperties::operator<(const GlyphMappableProperties& properties) const {
+
+		//Need a less than operator for the tree class.  Since less than doesn't make sense WRT glyphs, just compare the x position since that is currently used as coordinate for child topology positioning
+		return m_translate[0] < properties.m_translate[0];
+	}
+
     void GlyphMappableProperties::SetRotate(double x, double y, double z) {
         
         m_rotate[0] = x;
