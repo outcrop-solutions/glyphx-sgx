@@ -7,7 +7,7 @@
 #include <boost/property_tree/ptree.hpp>
 #include "UUID.h"
 #include <boost/uuid/uuid_generators.hpp>
-#include "glyphmappableproperties.h"
+#include "minmaxglyph.h"
 
 namespace SynGlyphX {
 
@@ -38,8 +38,7 @@ namespace SynGlyphX {
 
 		DatasourceMap m_datasources;
         boost::uuids::random_generator m_uuidGenerator;
-		GlyphMappableProperties m_minGlyph;
-		GlyphMappableProperties m_maxGlyph;
+		MinMaxGlyph m_glyph;
     };
 
 } //namespace SynGlyphX

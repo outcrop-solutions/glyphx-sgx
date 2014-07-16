@@ -28,18 +28,22 @@ namespace SynGlyphX {
 				Datasource datasource(datasourceValue.second.get<std::wstring>(L"Name"), 
 					datasourceValue.second.get<std::wstring>(L"Type"),
 					datasourceValue.second.get<std::wstring>(L"Host"),
-					datasourceValue.second.get<unsigned int>(L"Port"),
-					datasourceValue.second.get<std::wstring>(L"Username"),
-					datasourceValue.second.get<std::wstring>(L"Password"));
+					datasourceValue.second.get<unsigned int>(L"Port", 0),
+					datasourceValue.second.get<std::wstring>(L"Username", L""),
+					datasourceValue.second.get<std::wstring>(L"Password", L""));
 
-                std::vector<std::wstring> tables;
-				for (boost::property_tree::wptree::value_type& tableValue : datasourceValue.second.get_child(L"Tables")) {
+				boost::optional<boost::property_tree::wptree&> tablePropertyTree = datasourceValue.second.get_child_optional(L"Tables");
 
-					if (tableValue.first == L"Table") {
-                        tables.push_back(tableValue.second.data());
+				if (tablePropertyTree.is_initialized()) {
+					std::vector<std::wstring> tables;
+					for (boost::property_tree::wptree::value_type& tableValue : tablePropertyTree.get()) {
+
+						if (tableValue.first == L"Table") {
+							tables.push_back(tableValue.second.data());
+						}
 					}
+					datasource.AddTables(tables);
 				}
-                datasource.AddTables(tables);
 
 				m_datasources.insert(std::pair<boost::uuids::uuid, Datasource>(datasourceValue.second.get<boost::uuids::uuid>(L"<xmlattr>.id"), datasource));
 			}
@@ -66,13 +70,28 @@ namespace SynGlyphX {
 			datasourcePropertyTree.put(L"Name", datasource.second.GetDBName());
 			datasourcePropertyTree.put(L"Type", datasource.second.GetType());
 			datasourcePropertyTree.put(L"Host", datasource.second.GetHost());
-			datasourcePropertyTree.put(L"Port", datasource.second.GetPort());
-			datasourcePropertyTree.put(L"Username", datasource.second.GetUsername());
-			datasourcePropertyTree.put(L"Password", datasource.second.GetPassword());
 
-			boost::property_tree::wptree& tablesPropertyTree = datasourcePropertyTree.add(L"Tables", L"");
-			for (const std::wstring& table : datasource.second.GetTables()) {
-				tablesPropertyTree.add(L"Table", table);
+			unsigned int port = datasource.second.GetPort();
+			if (port != 0) {
+				datasourcePropertyTree.put(L"Port", port);
+			}
+			
+			const std::wstring& username = datasource.second.GetUsername();
+			if (!username.empty()) {
+				datasourcePropertyTree.put(L"Username", username);
+			}
+
+			const std::wstring& password = datasource.second.GetPassword();
+			if (!password.empty()) {
+				datasourcePropertyTree.put(L"Password", password);
+			}
+
+			const SynGlyphX::WStringVector& tables = datasource.second.GetTables();
+			if (!tables.empty()) {
+				boost::property_tree::wptree& tablesPropertyTree = datasourcePropertyTree.add(L"Tables", L"");
+				for (const std::wstring& table : tables) {
+					tablesPropertyTree.add(L"Table", table);
+				}
 			}
 		}
 	}

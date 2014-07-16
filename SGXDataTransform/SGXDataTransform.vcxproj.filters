@@ -40,6 +40,9 @@
     <ClInclude Include="datamapping.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="minmaxglyph.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="datasource.cpp">
@@ -52,6 +55,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="datamapping.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="minmaxglyph.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

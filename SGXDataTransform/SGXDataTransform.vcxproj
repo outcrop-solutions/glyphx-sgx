@@ -47,7 +47,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <PreprocessorDefinitions>UNICODE;WIN32;WIN64;QT_DLL;QT_CORE_LIB;QT_NETWORK_LIB;QT_SQL_LIB;QT_XML_LIB;QT_XMLPATTERNS_LIB;SGXDATATRANSFORM_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.\GeneratedFiles;.;..\..\3rdParty\include\Qt_5_2_1;.\GeneratedFiles\$(PlatformName)\$(ConfigurationName);..\..\ANTzPlus\ANTzBridge;..\..\3rdParty\include\boost_1_55_0;..\..\Core\SGXFoundation;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\GeneratedFiles;.;..\..\3rdParty\include\Qt_5_2_1;.\GeneratedFiles\$(PlatformName)\$(ConfigurationName);..\..\ANTzPlus\ANTzBridge;..\..\3rdParty\include\boost_1_55_0;..\..\Core\SGXFoundation;..\..\3rdParty\include\treehh_2_8_1;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Disabled</Optimization>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -65,7 +65,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <PreprocessorDefinitions>UNICODE;WIN32;WIN64;QT_DLL;QT_NO_DEBUG;NDEBUG;QT_CORE_LIB;QT_NETWORK_LIB;QT_SQL_LIB;QT_XML_LIB;QT_XMLPATTERNS_LIB;SGXDATATRANSFORM_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.\GeneratedFiles;.;..\..\3rdParty\include\Qt_5_2_1;.\GeneratedFiles\$(PlatformName)\$(ConfigurationName);..\..\ANTzPlus\ANTzBridge;..\..\3rdParty\include\boost_1_55_0;..\..\Core\SGXFoundation;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\GeneratedFiles;.;..\..\3rdParty\include\Qt_5_2_1;.\GeneratedFiles\$(PlatformName)\$(ConfigurationName);..\..\ANTzPlus\ANTzBridge;..\..\3rdParty\include\boost_1_55_0;..\..\Core\SGXFoundation;..\..\3rdParty\include\treehh_2_8_1;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat />
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
@@ -84,6 +84,7 @@
     <ClInclude Include="datasource.h" />
     <ClInclude Include="datatransform.h" />
     <ClInclude Include="inputfield.h" />
+    <ClInclude Include="minmaxglyph.h" />
     <ClInclude Include="sgxdatatransform_global.h" />
   </ItemGroup>
   <ItemGroup>
@@ -91,6 +92,7 @@
     <ClCompile Include="datasource.cpp" />
     <ClCompile Include="datatransform.cpp" />
     <ClCompile Include="inputfield.cpp" />
+    <ClCompile Include="minmaxglyph.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
