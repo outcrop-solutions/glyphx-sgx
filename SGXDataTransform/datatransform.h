@@ -15,7 +15,9 @@ namespace SynGlyphX {
     {
     public:
 		typedef std::unordered_map<boost::uuids::uuid, Datasource, SynGlyphX::UUIDHash> DatasourceMap;
+
         DataTransform();
+		DataTransform(const GlyphTree& glyphTree);
         ~DataTransform();
 
         void ReadFromFile(const std::string& filename);
@@ -24,9 +26,9 @@ namespace SynGlyphX {
 		const DatasourceMap& GetDatasources() const;
 
 		boost::uuids::uuid AddDatasource(const std::wstring& name,
-            const std::wstring& type,
+			Datasource::SourceType type,
             const std::wstring& host = L"localhost",
-            const unsigned int port = 0,
+            unsigned int port = 0,
             const std::wstring& username = L"",
             const std::wstring& password = L"");
 
@@ -35,10 +37,11 @@ namespace SynGlyphX {
     private:
         void Clear();
 		void AddDatasourcesToPropertyTree(boost::property_tree::wptree& propertyTree) const;
+		void CreateDatasourcesFromPropertyTree(boost::property_tree::wptree& propertyTree);
 
 		DatasourceMap m_datasources;
         boost::uuids::random_generator m_uuidGenerator;
-		MinMaxGlyph m_glyph;
+		MinMaxGlyphTree m_glyphTree;
     };
 
 } //namespace SynGlyphX

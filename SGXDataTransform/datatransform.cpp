@@ -9,6 +9,10 @@ namespace SynGlyphX {
     {
     }
 
+	DataTransform::DataTransform(const GlyphTree& glyphTree) {
+
+
+	}
 
     DataTransform::~DataTransform()
     {
@@ -21,12 +25,17 @@ namespace SynGlyphX {
         boost::property_tree::wptree dataTransformPropertyTree;
 		boost::property_tree::read_xml(filename, dataTransformPropertyTree);
 
-		for (boost::property_tree::wptree::value_type& datasourceValue : dataTransformPropertyTree.get_child(L"Datasources")) {
+		CreateDatasourcesFromPropertyTree(dataTransformPropertyTree);
+    }
+
+	void DataTransform::CreateDatasourcesFromPropertyTree(boost::property_tree::wptree& propertyTree) {
+
+		for (boost::property_tree::wptree::value_type& datasourceValue : propertyTree.get_child(L"Datasources")) {
 
 			if (datasourceValue.first == L"Datasource") {
 
-				Datasource datasource(datasourceValue.second.get<std::wstring>(L"Name"), 
-					datasourceValue.second.get<std::wstring>(L"Type"),
+				Datasource datasource(datasourceValue.second.get<std::wstring>(L"Name"),
+					Datasource::s_sourceTypeStrings.right.at(datasourceValue.second.get<std::wstring>(L"<xmlattr>.type")),
 					datasourceValue.second.get<std::wstring>(L"Host"),
 					datasourceValue.second.get<unsigned int>(L"Port", 0),
 					datasourceValue.second.get<std::wstring>(L"Username", L""),
@@ -48,7 +57,7 @@ namespace SynGlyphX {
 				m_datasources.insert(std::pair<boost::uuids::uuid, Datasource>(datasourceValue.second.get<boost::uuids::uuid>(L"<xmlattr>.id"), datasource));
 			}
 		}
-    }
+	}
 
     void DataTransform::WriteToFile(const std::string& filename) const {
 
@@ -68,7 +77,7 @@ namespace SynGlyphX {
 
 			datasourcePropertyTree.put(L"<xmlattr>.id", datasource.first);
 			datasourcePropertyTree.put(L"Name", datasource.second.GetDBName());
-			datasourcePropertyTree.put(L"Type", datasource.second.GetType());
+			datasourcePropertyTree.put(L"<xmlattr>.type", Datasource::s_sourceTypeStrings.left.at(datasource.second.GetType()));
 			datasourcePropertyTree.put(L"Host", datasource.second.GetHost());
 
 			unsigned int port = datasource.second.GetPort();
@@ -107,9 +116,9 @@ namespace SynGlyphX {
     }
 
 	boost::uuids::uuid DataTransform::AddDatasource(const std::wstring& name,
-        const std::wstring& type,
+        Datasource::SourceType type,
         const std::wstring& host,
-        const unsigned int port,
+        unsigned int port,
         const std::wstring& username,
         const std::wstring& password) {
 

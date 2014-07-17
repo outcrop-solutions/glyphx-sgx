@@ -1,8 +1,14 @@
 #include "datasource.h"
+#include <boost/assign/list_of.hpp>
+#include <boost/bimap/list_of.hpp>
 
 namespace SynGlyphX {
 
-    Datasource::Datasource(const std::wstring& dbName, const std::wstring& type, const std::wstring& host, unsigned int port, const std::wstring& username, const std::wstring& password) :
+	const boost::bimap<Datasource::SourceType, std::wstring> Datasource::s_sourceTypeStrings;// = boost::assign::list_of < const boost::bimap<Datasource::SourceType, std::wstring>::relation >
+	//( SourceType::SQLITE3, "SQLITE3" )
+	//( SourceType::CSV, "CSV" );
+
+	Datasource::Datasource(const std::wstring& dbName, SourceType type, const std::wstring& host, unsigned int port, const std::wstring& username, const std::wstring& password) :
         m_dbName(dbName),
         m_type(type),
         m_host(host),
@@ -10,6 +16,11 @@ namespace SynGlyphX {
         m_username(username),
         m_password(password)
 	{
+	}
+
+	Datasource::Datasource(boost::property_tree::wptree& propertyTree) {
+
+
 	}
 
     Datasource::Datasource(const Datasource& datasource) :
@@ -46,7 +57,7 @@ namespace SynGlyphX {
         return m_dbName;
     }
 
-    const std::wstring& Datasource::GetType() const {
+	Datasource::SourceType Datasource::GetType() const {
 
         return m_type;
     }
