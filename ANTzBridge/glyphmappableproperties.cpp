@@ -130,9 +130,4 @@ namespace SynGlyphX {
         return m_ratio;
     }
 
-    unsigned int GlyphMappableProperties::GetNumberOfChildren() const {
-        
-        return 0;
-    }
-
 } //namespace SynGlyphX

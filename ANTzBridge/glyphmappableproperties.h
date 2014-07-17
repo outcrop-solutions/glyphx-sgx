@@ -30,8 +30,6 @@ namespace SynGlyphX {
         void SetRatio(double ratio);
         double GetRatio() const;
 
-        virtual unsigned int GetNumberOfChildren() const;
-
     protected:
         Vector3 m_rotate;
         Vector3 m_scale;
