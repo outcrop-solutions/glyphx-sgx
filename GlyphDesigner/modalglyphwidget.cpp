@@ -72,6 +72,7 @@ void ModalGlyphWidget::UpdateWidget(pNPnode node) {
 
     boost::shared_ptr<SynGlyphX::GlyphProperties> glyph(new SynGlyphX::GlyphProperties(node));
     SetWidgetFromGlyph(glyph);
+	SetNumberOfChildren(node->childCount);
 }
 
 void ModalGlyphWidget::OnNodeUpdated(const QModelIndex& index) {

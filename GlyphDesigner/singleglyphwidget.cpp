@@ -149,10 +149,6 @@ void SingleGlyphWidget::SetWidgetFromGlyph(boost::shared_ptr<const SynGlyphX::Gl
     m_scaleWidget->Set(glyph->GetScale());
 
     m_ratioSpinBox->setValue(glyph->GetRatio());
-
-    if (m_childrenSpinBox != NULL) {
-        m_childrenSpinBox->setValue(glyph.get()->GetNumberOfChildren());
-    }
 }
 
 void SingleGlyphWidget::SetGlyphFromWidget(boost::shared_ptr<SynGlyphX::GlyphProperties> glyph) {
