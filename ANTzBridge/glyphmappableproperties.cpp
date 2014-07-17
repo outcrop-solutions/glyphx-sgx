@@ -2,6 +2,8 @@
 
 namespace SynGlyphX {
 
+	GlyphMappableProperties GlyphMappableProperties::s_zero = CreatePropertiesZero();
+
     GlyphMappableProperties::GlyphMappableProperties() :
         m_scale{ { 1.0, 1.0, 1.0 } },
         m_translate{ { 0.0, 0.0, 0.0 } },
@@ -129,5 +131,21 @@ namespace SynGlyphX {
         
         return m_ratio;
     }
+
+	const GlyphMappableProperties& GlyphMappableProperties::GetPropertiesZero() {
+
+		return s_zero;
+	}
+
+	GlyphMappableProperties GlyphMappableProperties::CreatePropertiesZero() {
+
+		GlyphMappableProperties properties;
+
+		properties.SetScale(0.0, 0.0, 0.0);
+		properties.SetRatio(0.0);
+		properties.SetColor(0, 0, 0, 0);
+
+		return properties;
+	}
 
 } //namespace SynGlyphX

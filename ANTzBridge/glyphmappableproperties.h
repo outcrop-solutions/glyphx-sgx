@@ -30,6 +30,8 @@ namespace SynGlyphX {
         void SetRatio(double ratio);
         double GetRatio() const;
 
+		static const GlyphMappableProperties& GetPropertiesZero();
+
     protected:
         Vector3 m_rotate;
         Vector3 m_scale;
@@ -38,6 +40,10 @@ namespace SynGlyphX {
         double m_ratio;
 
         Color m_color;
+
+	private:
+		static GlyphMappableProperties CreatePropertiesZero();
+		static GlyphMappableProperties s_zero;
     };
 
 } //namespace SynGlyphX
