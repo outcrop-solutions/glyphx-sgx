@@ -13,6 +13,35 @@ namespace SynGlyphX {
     class ANTZBRIDGE_API GlyphProperties : public GlyphMappableProperties
     {
     public:
+		enum Shape {
+			Cube = 0,				//length 2, currently is something else, what? //zz debug
+			Sphere,			//radius 1
+			Cone,				//radius 1, height 2
+			Torus,			//ratio 0.1, radius 1.5 should we change to 1.0 ?
+			Dodecahedron,		//size ?
+			Octahedron,		//size ?
+			Tetrahedron,		//should have edge length of 2, actual size ?
+			Icosahedron,		//should have edge length of 2, actual size ?
+			Pin,				//height 5.5, 5 from tip to center of sphere
+			Cylinder,			//radius 1, height 2
+		};
+
+		enum Surface {
+			Wireframe = 0,
+			Solid
+		};
+
+		enum Topology {
+			Null = 0,		// linear 3D euclidean space
+			CubePlane,			//six facet coord system for each side of cube
+			SphereNonZeroRadius,			//spherical coords compatible with KML
+			Circle,			//default branchLevel = 1 attached to pin
+			CylinderSide,
+			LinePin,				//default root pin shaped as icecream cone
+			LineRod,
+			SphereZeroRadius,			//zero origin offset with spherical coords
+		};
+
 		typedef boost::shared_ptr<GlyphProperties> SharedPtr;
 		typedef boost::shared_ptr<const GlyphProperties> ConstSharedPtr;
 
@@ -24,12 +53,12 @@ namespace SynGlyphX {
 		GlyphProperties& operator=(const GlyphProperties& properties);
 		bool operator==(const GlyphProperties& properties) const;
 
-        void SetGeometry(Geometry::Shape shape, Geometry::Surface surface);
-        Geometry::Shape GetShape() const;
-        Geometry::Surface GetSurface() const;
+        void SetGeometry(Shape shape, Surface surface);
+        Shape GetShape() const;
+        Surface GetSurface() const;
 
-        void SetTopology(Topology::Type topology);
-        Topology::Type GetTopology() const;
+        void SetTopology(Topology topology);
+        Topology GetTopology() const;
 
         static boost::shared_ptr<GlyphProperties> GetRoot();
         static boost::shared_ptr<const GlyphProperties> GetTemplate();
@@ -37,9 +66,9 @@ namespace SynGlyphX {
         void SetTagOffset(double x, double y, double z);
         const Vector3& GetTagOffset() const;
 
-		static std::wstring ShapeToString(Geometry::Shape shape);
-		static std::wstring SurfaceToString(Geometry::Surface surface);
-		static std::wstring TopologyTypeToString(Topology::Type topo);
+		static const std::unordered_map<Shape, std::wstring> s_shapeNames;
+		static const std::unordered_map<Surface, std::wstring> s_surfaceNames;
+		static const std::unordered_map<Topology, std::wstring> s_topologyNames;
 
     protected:
         static boost::shared_ptr<GlyphProperties> CreateRootPin();
@@ -49,10 +78,10 @@ namespace SynGlyphX {
 
         Vector3 m_tagOffset;
 
-        Geometry::Shape m_geometryShape;
-        Geometry::Surface m_geometrySurface;
+        Shape m_geometryShape;
+        Surface m_geometrySurface;
 
-        Topology::Type m_topology;
+        Topology m_topology;
     };
 
 } //namespace SynGlyphX

@@ -82,9 +82,14 @@ namespace SynGlyphX {
         }
     }
 
-    unsigned int CSVReaderWriter::ConvertGeometryToCSVInt(Geometry::Shape shape, Geometry::Surface surface) {
+	unsigned int CSVReaderWriter::ConvertGeometryToCSVInt(GlyphProperties::Shape shape, GlyphProperties::Surface surface) {
 
-        return (2 * shape) + surface;
+		if (shape == GlyphProperties::Shape::Pin) {
+			return (2 * shape) + 1 - surface;
+		}
+		else {
+			return (2 * shape) + surface;
+		}
     }
 
     CSVReaderWriter& CSVReaderWriter::GetInstance() {

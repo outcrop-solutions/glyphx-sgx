@@ -3,15 +3,47 @@
 
 namespace SynGlyphX {
 
+	const std::unordered_map<GlyphProperties::Shape, std::wstring> GlyphProperties::s_shapeNames = 
+	{
+		{ Shape::Cube, L"Cube" },
+		{ Shape::Sphere, L"Sphere" },
+		{ Shape::Cone, L"Cone" },
+		{ Shape::Torus, L"Torus" },
+		{ Shape::Dodecahedron, L"Dodecahedron" },
+		{ Shape::Octahedron, L"Octahedron" },
+		{ Shape::Tetrahedron, L"Tetrahedron" },
+		{ Shape::Icosahedron, L"Icosahedron" },
+		{ Shape::Pin, L"Pin" },
+		{ Shape::Cylinder, L"Cylinder" }
+	};
+
+	const std::unordered_map<GlyphProperties::Surface, std::wstring> GlyphProperties::s_surfaceNames =
+	{
+		{ Surface::Wireframe, L"Wireframe" },
+		{ Surface::Solid, L"Solid" }
+	};
+
+	const std::unordered_map<GlyphProperties::Topology, std::wstring> GlyphProperties::s_topologyNames =
+	{
+		{ Topology::Null, L"Euclidean" },
+		{ Topology::CubePlane, L"Cube" },
+		{ Topology::SphereNonZeroRadius, L"Sphere" },
+		{ Topology::Circle, L"Torus" },
+		{ Topology::CylinderSide, L"Cylinder" },
+		{ Topology::LinePin, L"Pin" },
+		{ Topology::LineRod, L"Rod" },
+		{ Topology::SphereZeroRadius, L"Point" }
+	};
+
     boost::shared_ptr<GlyphProperties> GlyphProperties::s_root = CreateRootPin();
     boost::shared_ptr<GlyphProperties> GlyphProperties::s_template(new GlyphProperties());
 
     GlyphProperties::GlyphProperties()
         : GlyphMappableProperties(),
         m_tagOffset{ { 0.0, 1.5, 0.0 } },
-        m_geometryShape(Geometry::Torus),
-        m_geometrySurface(Geometry::Solid),
-        m_topology(Topology::Torus) {
+        m_geometryShape(Shape::Torus),
+        m_geometrySurface(Surface::Solid),
+        m_topology(Topology::Circle) {
 
     }
 
@@ -40,15 +72,15 @@ namespace SynGlyphX {
 
         m_ratio = node->ratio;
 
-        m_geometryShape = static_cast<Geometry::Shape>(node->geometry / 2);
-        m_geometrySurface = static_cast<Geometry::Surface>(node->geometry % 2);
+        m_geometryShape = static_cast<Shape>(node->geometry / 2);
+        m_geometrySurface = static_cast<Surface>(node->geometry % 2);
 
         //This is necessary because the enum for geometries in ANTz is screwed up
-        if (m_geometryShape == Geometry::Pin) {
-            m_geometrySurface = static_cast<Geometry::Surface>(1 - m_geometrySurface);
+        if (m_geometryShape == Shape::Pin) {
+            m_geometrySurface = static_cast<Surface>(1 - m_geometrySurface);
         }
 
-        m_topology = static_cast<Topology::Type>(node->topo);
+        m_topology = static_cast<Topology>(node->topo);
     }
 
     GlyphProperties::GlyphProperties(const GlyphProperties& properties) : 
@@ -106,24 +138,24 @@ namespace SynGlyphX {
 		return true;
 	}
 
-    void GlyphProperties::SetGeometry(Geometry::Shape shape, Geometry::Surface surface) {
+    void GlyphProperties::SetGeometry(Shape shape, Surface surface) {
         m_geometryShape = shape;
         m_geometrySurface = surface;
     }
 
-    Geometry::Shape GlyphProperties::GetShape() const {
+	GlyphProperties::Shape GlyphProperties::GetShape() const {
         return m_geometryShape;
     }
 
-    Geometry::Surface GlyphProperties::GetSurface() const {
+	GlyphProperties::Surface GlyphProperties::GetSurface() const {
         return m_geometrySurface;
     }
 
-    void GlyphProperties::SetTopology(Topology::Type topology) {
+    void GlyphProperties::SetTopology(Topology topology) {
         m_topology = topology;
     }
 
-    Topology::Type GlyphProperties::GetTopology() const {
+	GlyphProperties::Topology GlyphProperties::GetTopology() const {
         return m_topology;
     }
 
@@ -134,8 +166,8 @@ namespace SynGlyphX {
     boost::shared_ptr<GlyphProperties> GlyphProperties::CreateRootPin() {
         boost::shared_ptr<GlyphProperties> root(new GlyphProperties());
 
-        root->SetGeometry(Geometry::Pin, Geometry::Solid);
-        root->SetTopology(Topology::Pin);
+        root->SetGeometry(Shape::Pin, Surface::Solid);
+        root->SetTopology(Topology::LinePin);
 
         return root;
     }
@@ -153,83 +185,5 @@ namespace SynGlyphX {
     const Vector3& GlyphProperties::GetTagOffset() const {
         return m_tagOffset;
     }
-
-	std::wstring GlyphProperties::ShapeToString(Geometry::Shape shape) {
-
-		if (shape == SynGlyphX::Geometry::Cube) {
-			return L"Cube";
-		}
-		else if (shape == SynGlyphX::Geometry::Sphere) {
-			return L"Sphere";
-		}
-		else if (shape == SynGlyphX::Geometry::Cone) {
-			return L"Cone";
-		}
-		else if (shape == SynGlyphX::Geometry::Torus) {
-			return L"Torus";
-		}
-		else if (shape == SynGlyphX::Geometry::Dodecahedron) {
-			return L"Dodecahedron";
-		}
-		else if (shape == SynGlyphX::Geometry::Octahedron) {
-			return L"Octahedron";
-		}
-		else if (shape == SynGlyphX::Geometry::Tetrahedron) {
-			return L"Tetrahedron";
-		}
-		else if (shape == SynGlyphX::Geometry::Icosahedron) {
-			return L"Icosahedron";
-		}
-		else if (shape == SynGlyphX::Geometry::Pin) {
-			return L"Pin";
-		}
-		else if (shape == SynGlyphX::Geometry::Cylinder) {
-			return L"Cylinder";
-		}
-
-		return L"";
-	}
-
-	std::wstring GlyphProperties::SurfaceToString(Geometry::Surface surface) {
-
-		if (surface == SynGlyphX::Geometry::Wireframe) {
-			return L"Wireframe";
-		}
-		else if (surface == SynGlyphX::Geometry::Solid) {
-			return L"Solid";
-		}
-
-		return L"";
-	}
-
-	std::wstring GlyphProperties::TopologyTypeToString(Topology::Type topo) {
-
-		if (topo == SynGlyphX::Topology::Null) {
-			return L"Euclidean";
-		}
-		else if (topo == SynGlyphX::Topology::Cube) {
-			return L"Cube";
-		}
-		else if (topo == SynGlyphX::Topology::Sphere) {
-			return L"Sphere";
-		}
-		else if (topo == SynGlyphX::Topology::Torus) {
-			return L"Torus";
-		}
-		else if (topo == SynGlyphX::Topology::Cylinder) {
-			return L"Cylinder";
-		}
-		else if (topo == SynGlyphX::Topology::Pin) {
-			return L"Pin";
-		}
-		else if (topo == SynGlyphX::Topology::Rod) {
-			return L"Rod";
-		}
-		else if (topo == SynGlyphX::Topology::Point) {
-			return L"Point";
-		}
-
-		return L"";
-	}
 
 } //namespace SynGlyphX

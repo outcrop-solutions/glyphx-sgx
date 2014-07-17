@@ -24,7 +24,7 @@ namespace SynGlyphX {
         static CSVReaderWriter s_instance;
 
 		void WriteGlyph(std::ofstream& file, const GlyphProperties& glyph, unsigned long id, unsigned long parentId, unsigned long branchLevel);
-        unsigned int ConvertGeometryToCSVInt(Geometry::Shape shape, Geometry::Surface surface);
+		unsigned int ConvertGeometryToCSVInt(GlyphProperties::Shape shape, GlyphProperties::Surface surface);
         unsigned short GetColorIndex(const Color& color);
 
         Color m_predefinedColors[MaxPredefinedColors];
