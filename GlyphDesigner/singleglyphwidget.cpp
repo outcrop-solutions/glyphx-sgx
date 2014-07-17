@@ -52,16 +52,16 @@ void SingleGlyphWidget::CreateWidgets(ChildOptions childOptions) {
 
     m_geometryShapeComboBox = new QComboBox(this);
     for (int i = 0; i < 10; ++i) {
-        m_geometryShapeComboBox->addItem(QString::fromStdWString(SynGlyphX::GlyphProperties::ShapeToString(static_cast<SynGlyphX::Geometry::Shape>(i))));
+		m_geometryShapeComboBox->addItem(QString::fromStdWString(SynGlyphX::GlyphProperties::s_shapeNames.at(static_cast<SynGlyphX::GlyphProperties::Shape>(i))));
     }
 
     m_geometrySurfaceComboBox = new QComboBox(this);
-	m_geometrySurfaceComboBox->addItem(QString::fromStdWString(SynGlyphX::GlyphProperties::SurfaceToString(SynGlyphX::Geometry::Wireframe)));
-	m_geometrySurfaceComboBox->addItem(QString::fromStdWString(SynGlyphX::GlyphProperties::SurfaceToString(SynGlyphX::Geometry::Solid)));
+	m_geometrySurfaceComboBox->addItem(QString::fromStdWString(SynGlyphX::GlyphProperties::s_surfaceNames.at(SynGlyphX::GlyphProperties::Wireframe)));
+	m_geometrySurfaceComboBox->addItem(QString::fromStdWString(SynGlyphX::GlyphProperties::s_surfaceNames.at(SynGlyphX::GlyphProperties::Solid)));
 
     m_topologyComboBox = new QComboBox(this);
     for (int i = 0; i < 8; ++i) {
-		m_topologyComboBox->addItem(QString::fromStdWString(SynGlyphX::GlyphProperties::TopologyTypeToString(static_cast<SynGlyphX::Topology::Type>(i))));
+		m_topologyComboBox->addItem(QString::fromStdWString(SynGlyphX::GlyphProperties::s_topologyNames.at(static_cast<SynGlyphX::GlyphProperties::Topology>(i))));
     }
 
     QHBoxLayout* colorAndRatioLayout = new QHBoxLayout(this);
@@ -153,9 +153,9 @@ void SingleGlyphWidget::SetWidgetFromGlyph(boost::shared_ptr<const SynGlyphX::Gl
 
 void SingleGlyphWidget::SetGlyphFromWidget(boost::shared_ptr<SynGlyphX::GlyphProperties> glyph) {
 
-    glyph->SetGeometry(static_cast<SynGlyphX::Geometry::Shape>(m_geometryShapeComboBox->currentIndex()), static_cast<SynGlyphX::Geometry::Surface>(m_geometrySurfaceComboBox->currentIndex()));
+	glyph->SetGeometry(static_cast<SynGlyphX::GlyphProperties::Shape>(m_geometryShapeComboBox->currentIndex()), static_cast<SynGlyphX::GlyphProperties::Surface>(m_geometrySurfaceComboBox->currentIndex()));
     //Because null is not in the list of topologies, shift by one
-    glyph->SetTopology(static_cast<SynGlyphX::Topology::Type>(m_topologyComboBox->currentIndex()));
+	glyph->SetTopology(static_cast<SynGlyphX::GlyphProperties::Topology>(m_topologyComboBox->currentIndex()));
 
     const QColor& color = m_colorWidget->GetColor();
     glyph->SetColor(color.red(), color.green(), color.blue(), color.alpha());
@@ -186,7 +186,7 @@ unsigned int SingleGlyphWidget::GetNumberOfChildren() const {
 
 void SingleGlyphWidget::OnShapeComboBoxChanged(int index) {
 
-    SynGlyphX::Geometry::Shape shape = static_cast<SynGlyphX::Geometry::Shape>(index);
+	SynGlyphX::GlyphProperties::Shape shape = static_cast<SynGlyphX::GlyphProperties::Shape>(index);
 
-    m_ratioGroupBox->setVisible(shape == SynGlyphX::Geometry::Torus);
+	m_ratioGroupBox->setVisible(shape == SynGlyphX::GlyphProperties::Torus);
 }
