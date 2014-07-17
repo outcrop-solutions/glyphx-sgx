@@ -207,7 +207,7 @@ void DataMapperWindow::AddDataSources() {
 			continue;
 		}
 			
-		boost::uuids::uuid newDBID = m_transform->AddDatasource(datasource.toStdWString(), L"QSQLITE");
+		boost::uuids::uuid newDBID = m_transform->AddDatasource(datasource.toStdWString(), SynGlyphX::Datasource::SQLITE3);
 		std::vector<std::wstring> tables;
 		QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", QString::fromStdString(boost::uuids::to_string(newDBID)));
 		db.setDatabaseName(datasource);
