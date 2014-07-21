@@ -8,7 +8,7 @@ namespace SynGlyphX {
         m_scale{ { 1.0, 1.0, 1.0 } },
         m_translate{ { 0.0, 0.0, 0.0 } },
         m_rotate{ { 0.0, 0.0, 0.0 } },
-        m_color{ { 50, 101, 101, 255 } },
+        m_color({ { 50, 101, 101, 255 } }),
         m_ratio(0.1)
     {
     }

@@ -5,6 +5,8 @@
 #include <boost/shared_ptr.hpp>
 #include <fstream>
 #include "glyph.h"
+#include "color.h"
+#include <array>
 
 namespace SynGlyphX {
 
@@ -27,7 +29,7 @@ namespace SynGlyphX {
 		unsigned int ConvertGeometryToCSVInt(GlyphProperties::Shape shape, GlyphProperties::Surface surface);
         unsigned short GetColorIndex(const Color& color);
 
-        Color m_predefinedColors[MaxPredefinedColors];
+		Color m_predefinedColors[MaxPredefinedColors];
     };
 
 } //namespace SynGlyphX

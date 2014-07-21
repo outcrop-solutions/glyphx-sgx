@@ -3,6 +3,7 @@
 
 #include "ANTzBridge.h"
 #include "foundationtypes.h"
+#include "color.h"
 
 namespace SynGlyphX {
 
