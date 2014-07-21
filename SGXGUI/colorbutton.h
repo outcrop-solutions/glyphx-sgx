@@ -6,6 +6,7 @@
 #include <QtWidgets/QMenu>
 #include <QtWidgets/QPushButton>
 #include "foundationtypes.h"
+#include "color.h"
 
 namespace SynGlyphX {
 
