@@ -29,6 +29,7 @@ private slots:
     void AddDataSources();
     void ExportToGlyphViewer();
     void ChangeBaseImage();
+	void AddGlyphTemplate();
 
 private:
     void CreateMenus();

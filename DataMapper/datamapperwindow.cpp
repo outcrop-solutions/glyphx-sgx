@@ -64,6 +64,9 @@ void DataMapperWindow::CreateMenus() {
 
     //Create Edit Menu
     m_projectMenu = menuBar()->addMenu(tr("Project"));
+
+	QAction* addGlyphTemplateAction = m_projectMenu->addAction(tr("Add Glyph Template"));
+	QObject::connect(addGlyphTemplateAction, &QAction::triggered, this, &DataMapperWindow::AddGlyphTemplate);
     
     QAction* addDataSourcesAction = m_projectMenu->addAction(tr("Add Data Sources"));
     QObject::connect(addDataSourcesAction, &QAction::triggered, this, &DataMapperWindow::AddDataSources);
@@ -209,7 +212,7 @@ void DataMapperWindow::AddDataSources() {
 			
 		boost::uuids::uuid newDBID = m_transform->AddDatasource(datasource.toStdWString(), SynGlyphX::Datasource::SQLITE3);
 		std::vector<std::wstring> tables;
-		QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", QString::fromStdString(boost::uuids::to_string(newDBID)));
+		QSqlDatabase db = QSqlDatabase::addDatabase(DatabaseServices::GetQtDBType(SynGlyphX::Datasource::SQLITE3), QString::fromStdString(boost::uuids::to_string(newDBID)));
 		db.setDatabaseName(datasource);
 
 		try {
@@ -256,6 +259,17 @@ void DataMapperWindow::ExportToGlyphViewer() {
 }
 
 void DataMapperWindow::ChangeBaseImage() {
+
+	EnableProjectDependentActions(true);
+}
+
+void DataMapperWindow::AddGlyphTemplate() {
+
+	QStringList glyphTemplates = QFileDialog::getOpenFileNames(this, tr("Add Glyph Templates"), "", "SynGlyphX Glyph Template Files (*.sgt)");
+
+	if (glyphTemplates.isEmpty()) {
+		return;
+	}
 
 	EnableProjectDependentActions(true);
 }
