@@ -4,9 +4,11 @@
 
 namespace SynGlyphX {
 
-	const boost::bimap<Datasource::SourceType, std::wstring> Datasource::s_sourceTypeStrings;// = boost::assign::list_of < const boost::bimap<Datasource::SourceType, std::wstring>::relation >
-	//( SourceType::SQLITE3, "SQLITE3" )
-	//( SourceType::CSV, "CSV" );
+	const Datasource::SourceTypeBimap Datasource::s_sourceTypeStrings = boost::assign::list_of < Datasource::SourceTypeBimap::relation >
+		( Datasource::SourceType::SQLITE3, L"SQLITE3" )
+		( Datasource::SourceType::ODBC, L"ODBC" )
+		( Datasource::SourceType::CSV, L"CSV")
+		( Datasource::SourceType::KML, L"KML/KMZ");
 
 	Datasource::Datasource(const std::wstring& dbName, SourceType type, const std::wstring& host, unsigned int port, const std::wstring& username, const std::wstring& password) :
         m_dbName(dbName),
@@ -18,9 +20,27 @@ namespace SynGlyphX {
 	{
 	}
 
-	Datasource::Datasource(boost::property_tree::wptree& propertyTree) {
+	Datasource::Datasource(const boost::property_tree::wptree& propertyTree) :
+		m_dbName(propertyTree.get<std::wstring>(L"Name")),
+		m_type(s_sourceTypeStrings.right.at(propertyTree.get<std::wstring>(L"<xmlattr>.type"))),
+		m_host(propertyTree.get<std::wstring>(L"Host")),
+		m_port(propertyTree.get<unsigned int>(L"Port", 0)),
+		m_username(propertyTree.get<std::wstring>(L"Username", L"")),
+		m_password(propertyTree.get<std::wstring>(L"Password", L"")) {
 
+		boost::optional<const boost::property_tree::wptree&> tablePropertyTree = propertyTree.get_child_optional(L"Tables");
 
+		if (tablePropertyTree.is_initialized()) {
+
+			std::vector<std::wstring> tables;
+			for (const boost::property_tree::wptree::value_type& tableValue : tablePropertyTree.get()) {
+
+				if (tableValue.first == L"Table") {
+					tables.push_back(tableValue.second.data());
+				}
+			}
+			AddTables(tables);
+		}
 	}
 
     Datasource::Datasource(const Datasource& datasource) :
@@ -96,6 +116,32 @@ namespace SynGlyphX {
 
 		//For now return true in all cases since we are only handling databases
 		return true;
+	}
+
+	void Datasource::ExportToPropertyTree(boost::property_tree::wptree& propertyTree) {
+
+		propertyTree.put(L"Name", m_dbName);
+		propertyTree.put(L"<xmlattr>.type", s_sourceTypeStrings.left.at(m_type));
+		propertyTree.put(L"Host", m_host);
+
+		if (m_port != 0) {
+			propertyTree.put(L"Port", m_port);
+		}
+
+		if (!m_username.empty()) {
+			propertyTree.put(L"Username", m_username);
+		}
+
+		if (!m_password.empty()) {
+			propertyTree.put(L"Password", m_password);
+		}
+
+		if (!m_tables.empty()) {
+			boost::property_tree::wptree& tablesPropertyTree = propertyTree.add(L"Tables", L"");
+			for (const std::wstring& table : m_tables) {
+				tablesPropertyTree.add(L"Table", table);
+			}
+		}
 	}
 
 } //namespace SynGlyphX

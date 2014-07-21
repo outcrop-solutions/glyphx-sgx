@@ -8,9 +8,28 @@ namespace SynGlyphX {
 	{
 	}
 
+	MinMaxGlyph::MinMaxGlyph(const boost::property_tree::wptree& propertyTree) :
+		m_difference(GlyphMappableProperties::GetPropertiesZero()) {
+
+
+	}
+
+	MinMaxGlyph::MinMaxGlyph(const MinMaxGlyph& glyph) :
+		m_minGlyph(glyph.m_minGlyph),
+		m_difference(glyph.m_difference) {
+
+	}
 
 	MinMaxGlyph::~MinMaxGlyph()
 	{
+	}
+
+	MinMaxGlyph& MinMaxGlyph::operator=(const MinMaxGlyph& glyph) {
+
+		m_minGlyph = glyph.m_minGlyph;
+		m_difference = glyph.m_difference;
+
+		return *this;
 	}
 
 	const GlyphProperties& MinMaxGlyph::GetMinGlyph() const {
@@ -31,6 +50,10 @@ namespace SynGlyphX {
 	void MinMaxGlyph::SetDifference(const GlyphMappableProperties& difference) {
 
 		m_difference = difference;
+	}
+
+	void MinMaxGlyph::ExportToPropertyTree(boost::property_tree::wptree& propertyTree) {
+
 	}
 
 } //namespace SynGlyphX

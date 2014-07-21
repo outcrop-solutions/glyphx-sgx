@@ -85,6 +85,7 @@
     <ClInclude Include="datatransform.h" />
     <ClInclude Include="inputfield.h" />
     <ClInclude Include="minmaxglyph.h" />
+    <ClInclude Include="minmaxglyphtree.h" />
     <ClInclude Include="sgxdatatransform_global.h" />
   </ItemGroup>
   <ItemGroup>
@@ -93,6 +94,7 @@
     <ClCompile Include="datatransform.cpp" />
     <ClCompile Include="inputfield.cpp" />
     <ClCompile Include="minmaxglyph.cpp" />
+    <ClCompile Include="minmaxglyphtree.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

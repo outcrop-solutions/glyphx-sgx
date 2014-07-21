@@ -7,7 +7,7 @@
 #include <boost/property_tree/ptree.hpp>
 #include "UUID.h"
 #include <boost/uuid/uuid_generators.hpp>
-#include "minmaxglyph.h"
+#include "minmaxglyphtree.h"
 
 namespace SynGlyphX {
 
@@ -15,6 +15,7 @@ namespace SynGlyphX {
     {
     public:
 		typedef std::unordered_map<boost::uuids::uuid, Datasource, SynGlyphX::UUIDHash> DatasourceMap;
+		typedef std::unordered_map<boost::uuids::uuid, MinMaxGlyphTree::SharedPtr, SynGlyphX::UUIDHash> MinMaxGlyphTreeMap;
 
         DataTransform();
 		DataTransform(const GlyphTree& glyphTree);
@@ -34,14 +35,17 @@ namespace SynGlyphX {
 
 		void AddTables(const boost::uuids::uuid& id, const std::vector<std::wstring>& tables);
 
+		boost::uuids::uuid AddGlyphTree(const MinMaxGlyphTree::SharedPtr glyphTree);
+		const MinMaxGlyphTreeMap& DataTransform::GetGlyphTrees() const;
+
+		bool IsTransformable() const;
+
     private:
         void Clear();
-		void AddDatasourcesToPropertyTree(boost::property_tree::wptree& propertyTree) const;
-		void CreateDatasourcesFromPropertyTree(boost::property_tree::wptree& propertyTree);
 
 		DatasourceMap m_datasources;
         boost::uuids::random_generator m_uuidGenerator;
-		MinMaxGlyphTree m_glyphTree;
+		MinMaxGlyphTreeMap m_glyphTrees;
     };
 
 } //namespace SynGlyphX
