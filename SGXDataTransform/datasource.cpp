@@ -20,7 +20,7 @@ namespace SynGlyphX {
 	{
 	}
 
-	Datasource::Datasource(const boost::property_tree::wptree& propertyTree) :
+	Datasource::Datasource(const PropertyTree& propertyTree) :
 		m_dbName(propertyTree.get<std::wstring>(L"Name")),
 		m_type(s_sourceTypeStrings.right.at(propertyTree.get<std::wstring>(L"<xmlattr>.type"))),
 		m_host(propertyTree.get<std::wstring>(L"Host")),
@@ -118,7 +118,9 @@ namespace SynGlyphX {
 		return true;
 	}
 
-	void Datasource::ExportToPropertyTree(boost::property_tree::wptree& propertyTree) {
+	Datasource::PropertyTree& Datasource::ExportToPropertyTree(boost::property_tree::wptree& parentPropertyTree) {
+
+		PropertyTree& propertyTree = parentPropertyTree.add(L"Datasource", L"");
 
 		propertyTree.put(L"Name", m_dbName);
 		propertyTree.put(L"<xmlattr>.type", s_sourceTypeStrings.left.at(m_type));
@@ -142,6 +144,8 @@ namespace SynGlyphX {
 				tablesPropertyTree.add(L"Table", table);
 			}
 		}
+
+		return propertyTree;
 	}
 
 } //namespace SynGlyphX

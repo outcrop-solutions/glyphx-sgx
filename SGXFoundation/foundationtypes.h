@@ -11,7 +11,6 @@ namespace SynGlyphX {
 	typedef std::vector<std::string> StringVector;
 
     typedef std::array<double, 3> Vector3;
-    typedef std::array<unsigned char, 4> Color;
 
 } //namespace SynGlyphX
 

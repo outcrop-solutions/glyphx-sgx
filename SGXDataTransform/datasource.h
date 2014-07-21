@@ -20,9 +20,10 @@ namespace SynGlyphX {
 		};
 
 		typedef boost::bimap<SourceType, std::wstring> SourceTypeBimap;
+		typedef boost::property_tree::wptree PropertyTree;
 
 		Datasource(const std::wstring& dbName, SourceType type, const std::wstring& host = L"localhost", unsigned int port = 0, const std::wstring& username = L"", const std::wstring& password = L"");
-		Datasource(const boost::property_tree::wptree& propertyTree);
+		Datasource(const PropertyTree& propertyTree);
         Datasource(const Datasource& datasource);
         ~Datasource();
 
@@ -40,7 +41,7 @@ namespace SynGlyphX {
 
 		bool IsOriginalDatasourceADatabase() const;
 
-		void ExportToPropertyTree(boost::property_tree::wptree& propertyTree);
+		PropertyTree& ExportToPropertyTree(boost::property_tree::wptree& parentPropertyTree);
 
 		static const SourceTypeBimap s_sourceTypeStrings;
 

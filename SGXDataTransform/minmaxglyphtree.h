@@ -13,14 +13,15 @@ namespace SynGlyphX {
 	public:
 		typedef boost::shared_ptr<MinMaxGlyphTree> SharedPtr;
 		typedef boost::shared_ptr<const MinMaxGlyphTree> ConstSharedPtr;
+		typedef boost::property_tree::wptree PropertyTree;
 
 		MinMaxGlyphTree();
 		MinMaxGlyphTree(const boost::property_tree::wptree& propertyTree);
-		MinMaxGlyphTree(const std::string& filename);
 		~MinMaxGlyphTree();
 
-		void ExportToPropertyTree(boost::property_tree::wptree& propertyTree);
-		void WriteToFile(const std::string& filename);
+		PropertyTree& ExportToPropertyTree(boost::property_tree::wptree& propertyTreeParent) const;
+		void WriteToFile(const std::string& filename) const;
+		void ReadFromFile(const std::string& filename);
 
 	private:
 		void ProcessPropertyTree(const boost::property_tree::wptree& propertyTree);

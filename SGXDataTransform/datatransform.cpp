@@ -25,7 +25,6 @@ namespace SynGlyphX {
 			if (datasourceValue.first == L"Datasource") {
 
 				Datasource datasource(datasourceValue.second);
-
 				m_datasources.insert(std::pair<boost::uuids::uuid, Datasource>(datasourceValue.second.get<boost::uuids::uuid>(L"<xmlattr>.id"), datasource));
 			}
 		}
@@ -35,7 +34,6 @@ namespace SynGlyphX {
 			if (glyphPropertyTree.first == L"Glyph") {
 
 				MinMaxGlyphTree::SharedPtr glyphTree(new MinMaxGlyphTree(glyphPropertyTree.second));
-
 				m_glyphTrees.insert(std::pair<boost::uuids::uuid, MinMaxGlyphTree::SharedPtr>(glyphPropertyTree.second.get<boost::uuids::uuid>(L"<xmlattr>.id"), glyphTree));
 			}
 		}
@@ -48,19 +46,15 @@ namespace SynGlyphX {
 		boost::property_tree::wptree& datasourcesPropertyTree = dataTransformPropertyTreeRoot.add(L"Datasources", L"");
 		for (auto datasource : m_datasources) {
 
-			boost::property_tree::wptree& datasourcePropertyTree = datasourcesPropertyTree.add(L"Datasource", L"");
-
+			Datasource::PropertyTree& datasourcePropertyTree = datasource.second.ExportToPropertyTree(datasourcesPropertyTree);
 			datasourcePropertyTree.put(L"<xmlattr>.id", datasource.first);
-			datasource.second.ExportToPropertyTree(datasourcePropertyTree);
 		}
 
-		boost::property_tree::wptree& glyphsPropertyTree = dataTransformPropertyTreeRoot.add(L"Glyphs", L"");
+		boost::property_tree::wptree& glyphTreesPropertyTree = dataTransformPropertyTreeRoot.add(L"Glyphs", L"");
 		for (auto glyphTree : m_glyphTrees) {
-
-			boost::property_tree::wptree& glyphPropertyTree = glyphsPropertyTree.add(L"Glyph", L"");
-
+			
+			boost::property_tree::wptree& glyphPropertyTree = glyphTree.second->ExportToPropertyTree(glyphTreesPropertyTree);
 			glyphPropertyTree.put(L"<xmlattr>.id", glyphTree.first);
-			glyphTree.second->ExportToPropertyTree(glyphPropertyTree);
 		}
 
 		boost::property_tree::write_xml(filename, dataTransformPropertyTreeRoot);
