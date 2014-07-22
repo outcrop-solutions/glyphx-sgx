@@ -18,14 +18,14 @@ namespace SynGlyphX {
 		bool operator==(const GlyphMappableProperties& properties) const;
 		bool operator<(const GlyphMappableProperties& properties) const;
 
-        void SetRotate(double x, double y, double z);
-        const Vector3& GetRotate() const;
-        void SetTranslate(double x, double y, double z);
-        const Vector3& GetTranslate() const;
-        void SetScale(double x, double y, double z);
+        void SetRotation(const Vector3& rotation);
+        const Vector3& GetRotation() const;
+		void SetPosition(const Vector3& position);
+        const Vector3& GetPosition() const;
+        void SetScale(const Vector3& scale);
         const Vector3& GetScale() const;
 
-        void SetColor(unsigned char red, unsigned char green, unsigned char blue, unsigned char alpha = 255);
+        void SetColor(const Color& color);
         const Color& GetColor() const;
 
         void SetRatio(double ratio);
@@ -34,9 +34,9 @@ namespace SynGlyphX {
 		static const GlyphMappableProperties& GetPropertiesZero();
 
     protected:
-        Vector3 m_rotate;
+		Vector3 m_rotation;
         Vector3 m_scale;
-        Vector3 m_translate;
+        Vector3 m_position;
 
         double m_ratio;
 

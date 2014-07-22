@@ -67,10 +67,10 @@ namespace SynGlyphX {
 
         file << id << ", 5, " << id << ", 0, " << parentId << ", " << branchLevel << ", 0, 0, " << numberOfChildren << ", 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, ";
         Vector3 scale = glyph.GetScale();
-        Vector3 translate = glyph.GetTranslate();
+        Vector3 translate = glyph.GetPosition();
         file << scale[0] << ", " << scale[1] << ", " << scale[2] << ", " << translate[0] << ", " << translate[1] << ", " << translate[2] << ", ";
         Vector3 tagOffset = glyph.GetTagOffset();
-        Vector3 rotate = glyph.GetRotate();
+        Vector3 rotate = glyph.GetRotation();
         file << tagOffset[0] << ", " << tagOffset[1] << ", " << tagOffset[2] << ", 0, 0, 0, " << rotate[0] << ", " << rotate[1] << ", " << rotate[2] << ", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ";
         Color color = glyph.GetColor();
         file << ConvertGeometryToCSVInt(glyph.GetShape(), glyph.GetSurface()) << ", 1, 0, " << glyph.GetRatio() << ", " << GetColorIndex(color) << ", " << static_cast<int>(color[0]) << ", ";

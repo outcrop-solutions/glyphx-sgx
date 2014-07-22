@@ -53,13 +53,13 @@ namespace SynGlyphX {
         m_scale[1] = node->scale.y;
         m_scale[2] = node->scale.z;
 
-        m_translate[0] = node->translate.x;
-        m_translate[1] = node->translate.y;
-        m_translate[2] = node->translate.z;
+        m_position[0] = node->translate.x;
+		m_position[1] = node->translate.y;
+		m_position[2] = node->translate.z;
 
-        m_rotate[0] = node->rotate.x;
-        m_rotate[1] = node->rotate.y;
-        m_rotate[2] = node->rotate.z;
+        m_rotation[0] = node->rotate.x;
+		m_rotation[1] = node->rotate.y;
+		m_rotation[2] = node->rotate.z;
 
         m_color[0] = node->color.r;
         m_color[1] = node->color.g;

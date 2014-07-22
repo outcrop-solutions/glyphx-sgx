@@ -6,8 +6,8 @@ namespace SynGlyphX {
 
     GlyphMappableProperties::GlyphMappableProperties() :
         m_scale{ { 1.0, 1.0, 1.0 } },
-        m_translate{ { 0.0, 0.0, 0.0 } },
-        m_rotate{ { 0.0, 0.0, 0.0 } },
+        m_position{ { 0.0, 0.0, 0.0 } },
+		m_rotation{ { 0.0, 0.0, 0.0 } },
         m_color({ { 50, 101, 101, 255 } }),
         m_ratio(0.1)
     {
@@ -15,8 +15,8 @@ namespace SynGlyphX {
 
     GlyphMappableProperties::GlyphMappableProperties(const GlyphMappableProperties& properties) :
         m_scale(properties.m_scale),
-        m_translate(properties.m_translate),
-        m_rotate(properties.m_rotate),
+        m_position(properties.m_position),
+		m_rotation(properties.m_rotation),
         m_color(properties.m_color),
         m_ratio(properties.m_ratio) {
 
@@ -29,8 +29,8 @@ namespace SynGlyphX {
 	GlyphMappableProperties& GlyphMappableProperties::operator=(const GlyphMappableProperties& properties) {
 
 		m_scale = properties.m_scale;
-		m_translate = properties.m_translate;
-		m_rotate = properties.m_rotate;
+		m_position = properties.m_position;
+		m_rotation = properties.m_rotation;
 		m_color = properties.m_color;
 		m_ratio = properties.m_ratio;
 
@@ -44,12 +44,12 @@ namespace SynGlyphX {
 			return false;
 		}
 
-		if (m_translate != properties.m_translate) {
+		if (m_position != properties.m_position) {
 
 			return false;
 		}
 
-		if (m_rotate != properties.m_rotate) {
+		if (m_rotation != properties.m_rotation) {
 
 			return false;
 		}
@@ -70,38 +70,32 @@ namespace SynGlyphX {
 	bool GlyphMappableProperties::operator<(const GlyphMappableProperties& properties) const {
 
 		//Need a less than operator for the tree class.  Since less than doesn't make sense WRT glyphs, just compare the x position since that is currently used as coordinate for child topology positioning
-		return m_translate[0] < properties.m_translate[0];
+		return m_position[0] < properties.m_position[0];
 	}
 
-    void GlyphMappableProperties::SetRotate(double x, double y, double z) {
+	void GlyphMappableProperties::SetRotation(const Vector3& rotation) {
         
-        m_rotate[0] = x;
-        m_rotate[1] = y;
-        m_rotate[2] = z;
+		m_rotation = rotation;
     }
 
-    const Vector3& GlyphMappableProperties::GetRotate() const {
+    const Vector3& GlyphMappableProperties::GetRotation() const {
         
-        return m_rotate;
+		return m_rotation;
     }
 
-    void GlyphMappableProperties::SetTranslate(double x, double y, double z) {
+    void GlyphMappableProperties::SetPosition(const Vector3& position) {
         
-        m_translate[0] = x;
-        m_translate[1] = y;
-        m_translate[2] = z;
+		m_position = position;
     }
 
-    const Vector3& GlyphMappableProperties::GetTranslate() const {
+    const Vector3& GlyphMappableProperties::GetPosition() const {
         
-        return m_translate;
+        return m_position;
     }
 
-    void GlyphMappableProperties::SetScale(double x, double y, double z) {
+    void GlyphMappableProperties::SetScale(const Vector3& scale) {
         
-        m_scale[0] = x;
-        m_scale[1] = y;
-        m_scale[2] = z;
+		m_scale = scale;
     }
 
     const Vector3& GlyphMappableProperties::GetScale() const {
@@ -109,12 +103,9 @@ namespace SynGlyphX {
         return m_scale;
     }
 
-    void GlyphMappableProperties::SetColor(unsigned char red, unsigned char green, unsigned char blue, unsigned char alpha) {
+    void GlyphMappableProperties::SetColor(const Color& color) {
         
-        m_color[0] = red;
-        m_color[1] = green;
-        m_color[2] = blue;
-        m_color[3] = alpha;
+		m_color = color;
     }
 
     const Color& GlyphMappableProperties::GetColor() const {
@@ -141,9 +132,9 @@ namespace SynGlyphX {
 
 		GlyphMappableProperties properties;
 
-		properties.SetScale(0.0, 0.0, 0.0);
+		properties.SetScale({ { 0.0, 0.0, 0.0 } });
 		properties.SetRatio(0.0);
-		properties.SetColor(0, 0, 0, 0);
+		properties.SetColor(Color( { { 0, 0, 0, 0 } } ));
 
 		return properties;
 	}
