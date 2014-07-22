@@ -1,39 +1,35 @@
 #include "glyphproperties.h"
 #include "data/nptypes.h"
+#include <boost/assign/list_of.hpp>
+#include <boost/bimap/list_of.hpp>
 
 namespace SynGlyphX {
 
-	const std::unordered_map<GlyphProperties::Shape, std::wstring> GlyphProperties::s_shapeNames = 
-	{
-		{ Shape::Cube, L"Cube" },
-		{ Shape::Sphere, L"Sphere" },
-		{ Shape::Cone, L"Cone" },
-		{ Shape::Torus, L"Torus" },
-		{ Shape::Dodecahedron, L"Dodecahedron" },
-		{ Shape::Octahedron, L"Octahedron" },
-		{ Shape::Tetrahedron, L"Tetrahedron" },
-		{ Shape::Icosahedron, L"Icosahedron" },
-		{ Shape::Pin, L"Pin" },
-		{ Shape::Cylinder, L"Cylinder" }
-	};
+	const GlyphProperties::ShapeBimap GlyphProperties::s_shapeNames = boost::assign::list_of < GlyphProperties::ShapeBimap::relation >
+		( Shape::Cube, L"Cube" )
+		( Shape::Sphere, L"Sphere" )
+		( Shape::Cone, L"Cone" )
+		( Shape::Torus, L"Torus" )
+		( Shape::Dodecahedron, L"Dodecahedron" )
+		( Shape::Octahedron, L"Octahedron" )
+		( Shape::Tetrahedron, L"Tetrahedron" )
+		( Shape::Icosahedron, L"Icosahedron" )
+		( Shape::Pin, L"Pin" )
+		( Shape::Cylinder, L"Cylinder" );
 
-	const std::unordered_map<GlyphProperties::Surface, std::wstring> GlyphProperties::s_surfaceNames =
-	{
-		{ Surface::Wireframe, L"Wireframe" },
-		{ Surface::Solid, L"Solid" }
-	};
+	const GlyphProperties::SurfaceBimap GlyphProperties::s_surfaceNames = boost::assign::list_of < GlyphProperties::SurfaceBimap::relation >
+		( Surface::Wireframe, L"Wireframe" )
+		( Surface::Solid, L"Solid" );
 
-	const std::unordered_map<GlyphProperties::Topology, std::wstring> GlyphProperties::s_topologyNames =
-	{
-		{ Topology::Null, L"Euclidean" },
-		{ Topology::CubePlane, L"Cube" },
-		{ Topology::SphereNonZeroRadius, L"Sphere" },
-		{ Topology::Circle, L"Torus" },
-		{ Topology::CylinderSide, L"Cylinder" },
-		{ Topology::LinePin, L"Pin" },
-		{ Topology::LineRod, L"Rod" },
-		{ Topology::SphereZeroRadius, L"Point" }
-	};
+	const GlyphProperties::TopologyBimap GlyphProperties::s_topologyNames = boost::assign::list_of < GlyphProperties::TopologyBimap::relation >
+		( Topology::Null, L"Euclidean" )
+		( Topology::CubePlane, L"Cube" )
+		( Topology::SphereNonZeroRadius, L"Sphere" )
+		( Topology::Circle, L"Torus" )
+		( Topology::CylinderSide, L"Cylinder" )
+		( Topology::LinePin, L"Pin" )
+		( Topology::LineRod, L"Rod" )
+		( Topology::SphereZeroRadius, L"Point" );
 
     boost::shared_ptr<GlyphProperties> GlyphProperties::s_root = CreateRootPin();
     boost::shared_ptr<GlyphProperties> GlyphProperties::s_template(new GlyphProperties());

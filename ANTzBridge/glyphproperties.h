@@ -3,6 +3,7 @@
 
 #include "ANTzBridge.h"
 #include <boost/shared_ptr.hpp>
+#include <boost/bimap.hpp>
 #include "glyphmappableproperties.h"
 
 struct NPnode;
@@ -45,6 +46,10 @@ namespace SynGlyphX {
 		typedef boost::shared_ptr<GlyphProperties> SharedPtr;
 		typedef boost::shared_ptr<const GlyphProperties> ConstSharedPtr;
 
+		typedef boost::bimap<Shape, std::wstring> ShapeBimap;
+		typedef boost::bimap<Surface, std::wstring> SurfaceBimap;
+		typedef boost::bimap<Topology, std::wstring> TopologyBimap;
+
         GlyphProperties();
         GlyphProperties(pNPnode node);
         GlyphProperties(const GlyphProperties& properties);
@@ -66,9 +71,9 @@ namespace SynGlyphX {
         void SetTagOffset(double x, double y, double z);
         const Vector3& GetTagOffset() const;
 
-		static const std::unordered_map<Shape, std::wstring> s_shapeNames;
-		static const std::unordered_map<Surface, std::wstring> s_surfaceNames;
-		static const std::unordered_map<Topology, std::wstring> s_topologyNames;
+		static const ShapeBimap s_shapeNames;
+		static const SurfaceBimap s_surfaceNames;
+		static const TopologyBimap s_topologyNames;
 
     protected:
         static boost::shared_ptr<GlyphProperties> CreateRootPin();
