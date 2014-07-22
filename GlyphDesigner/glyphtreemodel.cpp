@@ -285,14 +285,14 @@ void GlyphTreeModel::UpdateNode(pNPnode glyph, const SynGlyphX::GlyphProperties&
     }
 
     if (updates.testFlag(UpdatePosition)) {
-		SynGlyphX::Vector3 translate = glyphTemplate.GetTranslate();
+		SynGlyphX::Vector3 translate = glyphTemplate.GetPosition();
         glyph->translate.x = translate[0];
         glyph->translate.y = translate[1];
         glyph->translate.z = translate[2];
     }
 
     if (updates.testFlag(UpdateRotation)) {
-		SynGlyphX::Vector3 rotation = glyphTemplate.GetRotate();
+		SynGlyphX::Vector3 rotation = glyphTemplate.GetRotation();
         glyph->rotate.x = rotation[0];
         glyph->rotate.y = rotation[1];
         glyph->rotate.z = rotation[2];
@@ -426,11 +426,11 @@ GlyphTreeModel::PropertyUpdates GlyphTreeModel::FindUpdates(boost::shared_ptr<co
         updates |= UpdateSurface;
     }
 
-    if (oldGlyph->GetTranslate() != newGlyph->GetTranslate()) {
+    if (oldGlyph->GetPosition() != newGlyph->GetPosition()) {
         updates |= UpdatePosition;
     }
 
-    if (oldGlyph->GetRotate() != newGlyph->GetRotate()) {
+	if (oldGlyph->GetRotation() != newGlyph->GetRotation()) {
         updates |= UpdateRotation;
     }
 

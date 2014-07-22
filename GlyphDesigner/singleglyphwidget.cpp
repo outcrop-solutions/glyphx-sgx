@@ -144,8 +144,8 @@ void SingleGlyphWidget::SetWidgetFromGlyph(boost::shared_ptr<const SynGlyphX::Gl
 
     m_colorWidget->SetColor(glyph->GetColor());
 
-    m_translateWidget->Set(glyph->GetTranslate());
-    m_rotateWidget->Set(glyph->GetRotate());
+    m_translateWidget->Set(glyph->GetPosition());
+    m_rotateWidget->Set(glyph->GetRotation());
     m_scaleWidget->Set(glyph->GetScale());
 
     m_ratioSpinBox->setValue(glyph->GetRatio());
@@ -157,12 +157,11 @@ void SingleGlyphWidget::SetGlyphFromWidget(boost::shared_ptr<SynGlyphX::GlyphPro
     //Because null is not in the list of topologies, shift by one
 	glyph->SetTopology(static_cast<SynGlyphX::GlyphProperties::Topology>(m_topologyComboBox->currentIndex()));
 
-    const QColor& color = m_colorWidget->GetColor();
-    glyph->SetColor(color.red(), color.green(), color.blue(), color.alpha());
+	glyph->SetColor(SynGlyphX::ColorButton::ConvertQColorToColor(m_colorWidget->GetColor()));
 
-    glyph->SetTranslate(m_translateWidget->GetX(), m_translateWidget->GetY(), m_translateWidget->GetZ());
-    glyph->SetRotate(m_rotateWidget->GetX(), m_rotateWidget->GetY(), m_rotateWidget->GetZ());
-    glyph->SetScale(m_scaleWidget->GetX(), m_scaleWidget->GetY(), m_scaleWidget->GetZ());
+	glyph->SetPosition({ { m_translateWidget->GetX(), m_translateWidget->GetY(), m_translateWidget->GetZ() } });
+	glyph->SetRotation({ { m_rotateWidget->GetX(), m_rotateWidget->GetY(), m_rotateWidget->GetZ() } });
+	glyph->SetScale({ { m_scaleWidget->GetX(), m_scaleWidget->GetY(), m_scaleWidget->GetZ() } });
 
     glyph->SetRatio(m_ratioSpinBox->value());
 }
