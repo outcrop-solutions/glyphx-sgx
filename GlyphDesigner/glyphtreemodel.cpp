@@ -38,8 +38,8 @@ QVariant GlyphTreeModel::data(const QModelIndex& index, int role) const {
 	
     pNPnode glyph = static_cast<pNPnode>(index.internalPointer());
 
-	std::wstring displayedData = SynGlyphX::GlyphProperties::s_shapeNames.at(static_cast<SynGlyphX::GlyphProperties::Shape>(glyph->geometry / 2)) + L": ";
-	displayedData += SynGlyphX::GlyphProperties::s_topologyNames.at(static_cast<SynGlyphX::GlyphProperties::Topology>(glyph->topo));
+	std::wstring displayedData = SynGlyphX::GlyphProperties::s_shapeNames.left.at(static_cast<SynGlyphX::GlyphProperties::Shape>(glyph->geometry / 2)) + L": ";
+	displayedData += SynGlyphX::GlyphProperties::s_topologyNames.left.at(static_cast<SynGlyphX::GlyphProperties::Topology>(glyph->topo));
     if (glyph == m_rootGlyph) {
 		displayedData += L" (Root)";
     }
