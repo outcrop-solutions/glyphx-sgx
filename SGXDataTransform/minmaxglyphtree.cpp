@@ -70,6 +70,7 @@ namespace SynGlyphX {
 
 	void MinMaxGlyphTree::ProcessPropertyTree(const boost::property_tree::wptree& propertyTree) {
 
+
 	}
 
 } //namespace SynGlyphX

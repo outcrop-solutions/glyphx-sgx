@@ -11,7 +11,39 @@ namespace SynGlyphX {
 	MinMaxGlyph::MinMaxGlyph(const boost::property_tree::wptree& propertyTree) :
 		m_difference(GlyphMappableProperties::GetPropertiesZero()) {
 
+		Vector3 minVec3;
+		Vector3 differenceVec3;
+		double min, difference;
 
+		GetVector3FromPropertyTree(propertyTree.get_child(L"Position"), minVec3, differenceVec3);
+		m_minGlyph.SetPosition(minVec3);
+		m_difference.SetPosition(differenceVec3);
+
+		GetVector3FromPropertyTree(propertyTree.get_child(L"Rotation"), minVec3, differenceVec3);
+		m_minGlyph.SetRotation(minVec3);
+		m_difference.SetRotation(differenceVec3);
+
+		GetVector3FromPropertyTree(propertyTree.get_child(L"Scale"), minVec3, differenceVec3);
+		m_minGlyph.SetScale(minVec3);
+		m_difference.SetScale(differenceVec3);
+
+		Color minColor;
+		Color differenceColor;
+		GetColorFromPropertyTree(propertyTree, minColor, differenceColor);
+		m_minGlyph.SetColor(minColor);
+		m_difference.SetColor(differenceColor);
+
+		boost::optional<const boost::property_tree::wptree&> torusRatioTree = propertyTree.get_child_optional(L"TorusRatio");
+
+		if (torusRatioTree.is_initialized()) {
+			GetValueFromPropertyTree(torusRatioTree.get(), min, difference);
+			m_minGlyph.SetRatio(min);
+			m_difference.SetRatio(difference);
+		}
+
+		m_minGlyph.SetGeometry(GlyphProperties::s_shapeNames.right.at(propertyTree.get<std::wstring>(L"<xmlattr>.Shape")), 
+							   GlyphProperties::s_surfaceNames.right.at(propertyTree.get<std::wstring>(L"<xmlattr>.Surface")));
+		m_minGlyph.SetTopology(GlyphProperties::s_topologyNames.right.at(propertyTree.get<std::wstring>(L"<xmlattr>.Topology")));
 	}
 
 	MinMaxGlyph::MinMaxGlyph(const MinMaxGlyph& glyph) :
@@ -56,17 +88,19 @@ namespace SynGlyphX {
 
 		PropertyTree& rootGlyphPropertyTree = propertyTree.add(L"Glyph", L"");
 
-		AddVector3ToPropertyTree(rootGlyphPropertyTree, L"Position", m_minGlyph.GetTranslate(), m_difference.GetTranslate());
-		AddVector3ToPropertyTree(rootGlyphPropertyTree, L"Rotation", m_minGlyph.GetRotate(), m_difference.GetRotate());
+		AddVector3ToPropertyTree(rootGlyphPropertyTree, L"Position", m_minGlyph.GetPosition(), m_difference.GetPosition());
+		AddVector3ToPropertyTree(rootGlyphPropertyTree, L"Rotation", m_minGlyph.GetRotation(), m_difference.GetRotation());
 		AddVector3ToPropertyTree(rootGlyphPropertyTree, L"Scale", m_minGlyph.GetScale(), m_difference.GetScale());
 
-		rootGlyphPropertyTree.put<std::wstring>(L"Color", m_minGlyph.GetColor().ToHexString(3));
-
-		AddValueToPropertyTree(rootGlyphPropertyTree, L"Transparency", m_minGlyph.GetColor()[3], m_difference.GetColor()[3]);
+		AddColorToPropertyTree(rootGlyphPropertyTree, m_minGlyph.GetColor(), m_difference.GetColor());
 
 		if (m_minGlyph.GetShape() == GlyphProperties::Shape::Torus) {
 			AddValueToPropertyTree(rootGlyphPropertyTree, L"TorusRatio", m_minGlyph.GetRatio(), m_difference.GetRatio());
 		}
+
+		rootGlyphPropertyTree.put<std::wstring>(L"<xmlattr>.Shape", GlyphProperties::s_shapeNames.left.at(m_minGlyph.GetShape()));
+		rootGlyphPropertyTree.put<std::wstring>(L"<xmlattr>.Surface", GlyphProperties::s_surfaceNames.left.at(m_minGlyph.GetSurface()));
+		rootGlyphPropertyTree.put<std::wstring>(L"<xmlattr>.Topology", GlyphProperties::s_topologyNames.left.at(m_minGlyph.GetTopology()));
 
 		return rootGlyphPropertyTree;
 	}
@@ -88,6 +122,44 @@ namespace SynGlyphX {
 
 			valuePropertyTree.put<double>(L"Difference", difference);
 		}
+	}
+
+	void MinMaxGlyph::AddColorToPropertyTree(boost::property_tree::wptree& propertyTreeParent, const Color& min, const Color& difference) const {
+
+		boost::property_tree::wptree& colorPropertyTree = propertyTreeParent.add(L"Color", L"");
+		boost::property_tree::wptree& rgbPropertyTree = colorPropertyTree.add(L"RGB", L"");
+		rgbPropertyTree.put<std::wstring>(L"Min", min.ToHexString(3));
+
+		if ((difference[0] > 0) || (difference[1] > 0) || (difference[2] > 0)) {
+
+			rgbPropertyTree.put<std::wstring>(L"Difference", difference.ToHexString(3));
+		}
+
+		AddValueToPropertyTree(colorPropertyTree, L"Transparency", min[3], difference[3]);
+	}
+
+	void MinMaxGlyph::GetVector3FromPropertyTree(const boost::property_tree::wptree& propertyTreeParent, Vector3& min, Vector3& difference) const {
+
+		GetValueFromPropertyTree(propertyTreeParent.get_child(L"X"), min[0], difference[0]);
+		GetValueFromPropertyTree(propertyTreeParent.get_child(L"Y"), min[1], difference[1]);
+		GetValueFromPropertyTree(propertyTreeParent.get_child(L"Z"), min[2], difference[2]);
+	}
+
+	void MinMaxGlyph::GetValueFromPropertyTree(const boost::property_tree::wptree& propertyTreeParent, double& min, double& difference) const {
+
+		min = propertyTreeParent.get<double>(L"Min");
+		difference = propertyTreeParent.get_optional<double>(L"Difference").get_value_or(0.0);
+	}
+
+	void MinMaxGlyph::GetColorFromPropertyTree(const boost::property_tree::wptree& propertyTreeParent, Color& min, Color& difference) const {
+
+		const boost::property_tree::wptree& rgbPropertyTree = propertyTreeParent.get_child(L"RGB");
+		min.FromHexString(rgbPropertyTree.get<std::wstring>(L"Min"));
+		difference.FromHexString(rgbPropertyTree.get_optional<std::wstring>(L"Difference").get_value_or(L"000000"));
+
+		const boost::property_tree::wptree& alphaPropertyTree = propertyTreeParent.get_child(L"Transparency");
+		min[3] = alphaPropertyTree.get<unsigned char>(L"Min");
+		difference[3] = alphaPropertyTree.get_optional<unsigned char>(L"Difference").get_value_or(0);
 	}
 
 } //namespace SynGlyphX
