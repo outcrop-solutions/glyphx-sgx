@@ -7,6 +7,7 @@
 #include "datatransform.h"
 #include "datasourcestatswidget.h"
 #include "databindingwidget.h"
+#include "glyphtemplatesmodel.h"
 
 class DataMapperWindow : public SynGlyphX::MainWindow
 {
@@ -44,10 +45,11 @@ private:
     QMenu* m_projectMenu;
     QMenu* m_viewMenu;
     QTreeView* m_glyphTreeView;
-	boost::shared_ptr<SynGlyphX::DataTransform> m_transform;
+	SynGlyphX::DataTransform::SharedPtr m_transform;
 	DataSourceStatsWidget* m_dataSourceStats;
 	QList<QAction*> m_projectDependentActions;
 	DataBindingWidget* m_dataBindingWidget;
+	GlyphTemplatesModel* m_glyphTemplatesModel;
 };
 
 #endif // DATAMAPPERWINDOW_H

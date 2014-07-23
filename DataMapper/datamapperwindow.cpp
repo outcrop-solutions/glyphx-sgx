@@ -16,6 +16,7 @@ DataMapperWindow::DataMapperWindow(QWidget *parent)
     : SynGlyphX::MainWindow(parent)
 {
 	m_transform.reset(new SynGlyphX::DataTransform());
+	m_glyphTemplatesModel = new GlyphTemplatesModel(m_transform, this);
     CreateMenus();
     CreateDockWidgets();
 
@@ -94,7 +95,7 @@ void DataMapperWindow::CreateDockWidgets() {
     //Add Tree View to dock widget on left side
     QDockWidget* leftDockWidget = new QDockWidget(tr("Glyph Tree"), this);
     m_glyphTreeView = new QTreeView(leftDockWidget);
-    //m_treeView->setModel(m_glyphTreeModel);
+	m_glyphTreeView->setModel(m_glyphTemplatesModel);
     //m_treeView->setSelectionModel(m_selectionModel);
     m_glyphTreeView->setSelectionMode(QAbstractItemView::SingleSelection);
 
@@ -272,9 +273,7 @@ void DataMapperWindow::AddGlyphTemplate() {
 	}
 
 	try {
-		SynGlyphX::MinMaxGlyphTree::SharedPtr glyphTree(new SynGlyphX::MinMaxGlyphTree());
-		glyphTree->ReadFromFile(glyphTemplates[0].toStdString());
-		m_transform->AddGlyphTree(glyphTree);
+		m_glyphTemplatesModel->AddGlyphFile(glyphTemplates[0]);
 	}
 	catch (const std::exception& e) {
 		QMessageBox::critical(this, tr("Failed To Add Glyph"), e.what(), QMessageBox::Ok);

@@ -103,6 +103,15 @@
     <ClCompile Include="GeneratedFiles\Release\moc_bindinglineedit.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="glyphtemplatesmodel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_glyphtemplatesmodel.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_glyphtemplatesmodel.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="datamapperwindow.h">
@@ -124,6 +133,9 @@
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="bindinglineedit.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="glyphtemplatesmodel.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>
