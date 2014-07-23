@@ -15,11 +15,23 @@ namespace SynGlyphX {
 
 		boost::optional<const PropertyTree&> glyphPropertyTree = propertyTree.get_child_optional(L"Glyph");
 		if (glyphPropertyTree.is_initialized()) {
-			ProcessPropertyTree(glyphPropertyTree.get());
+
+			MinMaxGlyph glyph(glyphPropertyTree.get());
+			insert(glyph);
+			ProcessPropertyTreeChildren(root(), glyphPropertyTree.get());
 		}
 		else {
 			throw std::exception("Property tree does not contain a glyph tree");
 		}
+	}
+
+	MinMaxGlyphTree::MinMaxGlyphTree(const GlyphTree& glyphTree) :
+		stlplus::ntree< MinMaxGlyph >() {
+
+		MinMaxGlyph glyph(*glyphTree.root());
+		insert(glyph);
+
+		AddGlyphSubtree(root(), glyphTree, glyphTree.root());
 	}
 
 	MinMaxGlyphTree::~MinMaxGlyphTree()
@@ -61,16 +73,41 @@ namespace SynGlyphX {
 		boost::property_tree::read_xml(filename, propertyTree);
 		boost::optional<PropertyTree&> glyphPropertyTree = propertyTree.get_child_optional(L"Glyph");
 		if (glyphPropertyTree.is_initialized()) {
-			ProcessPropertyTree(glyphPropertyTree.get());
+
+			MinMaxGlyph glyph(glyphPropertyTree.get());
+			insert(glyph);
+			ProcessPropertyTreeChildren(root(), glyphPropertyTree.get());
 		}
 		else {
 			throw std::exception((filename + " does not have glyph tree").c_str());
 		}
 	}
 
-	void MinMaxGlyphTree::ProcessPropertyTree(const boost::property_tree::wptree& propertyTree) {
+	void MinMaxGlyphTree::ProcessPropertyTreeChildren(const MinMaxGlyphTree::iterator& iT, const boost::property_tree::wptree& propertyTree) {
 
+		boost::optional<const PropertyTree&> glyphTrees = propertyTree.get_child_optional(L"Children");
 
+		if (glyphTrees.is_initialized()) {
+		
+			for (const PropertyTree::value_type& glyphTree : glyphTrees.get()) {
+
+				if (glyphTree.first == L"Glyph") {
+
+					MinMaxGlyph glyph(glyphTree.second);
+					ProcessPropertyTreeChildren(insert(iT, glyph), glyphTree.second);
+				}
+			}
+		}
+	}
+
+	void MinMaxGlyphTree::AddGlyphSubtree(MinMaxGlyphTree::iterator& parentNode, const GlyphTree& glyphTree, const GlyphTree::const_iterator& iT) {
+
+		for (int i = 0; i < glyphTree.children(iT); ++i) {
+
+			const GlyphTree::const_iterator& child = glyphTree.child(iT, i);
+			MinMaxGlyph glyph(*child);
+			AddGlyphSubtree(insert(parentNode, glyph), glyphTree, child);
+		}
 	}
 
 } //namespace SynGlyphX

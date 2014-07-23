@@ -17,6 +17,7 @@ namespace SynGlyphX {
 
 		MinMaxGlyphTree();
 		MinMaxGlyphTree(const boost::property_tree::wptree& propertyTree);
+		MinMaxGlyphTree(const GlyphTree& glyphTree);
 		~MinMaxGlyphTree();
 
 		PropertyTree& ExportToPropertyTree(boost::property_tree::wptree& propertyTreeParent) const;
@@ -24,7 +25,8 @@ namespace SynGlyphX {
 		void ReadFromFile(const std::string& filename);
 
 	private:
-		void ProcessPropertyTree(const boost::property_tree::wptree& propertyTree);
+		void ProcessPropertyTreeChildren(const MinMaxGlyphTree::iterator& iT, const boost::property_tree::wptree& propertyTree);
+		void AddGlyphSubtree(MinMaxGlyphTree::iterator& parentNode, const GlyphTree& glyphTree, const GlyphTree::const_iterator& iT);
 	};
 
 } //namespace SynGlyphX
