@@ -1,6 +1,7 @@
 #ifndef SYNGLYPHX_MINMAXGLYPHTREE_H
 #define SYNGLYPHX_MINMAXGLYPHTREE_H
 
+#include "sgxdatatransform_global.h"
 #include <containers/ntree.hpp>
 #include "minmaxglyph.h"
 #include <boost/property_tree/ptree.hpp>
@@ -8,7 +9,7 @@
 
 namespace SynGlyphX {
 
-	class MinMaxGlyphTree : public stlplus::ntree < MinMaxGlyph >
+	class SGXDATATRANSFORM_EXPORT MinMaxGlyphTree : public stlplus::ntree < MinMaxGlyph >
 	{
 	public:
 		typedef boost::shared_ptr<MinMaxGlyphTree> SharedPtr;
