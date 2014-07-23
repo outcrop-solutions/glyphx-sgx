@@ -17,6 +17,9 @@ namespace SynGlyphX {
 		typedef std::unordered_map<boost::uuids::uuid, Datasource, SynGlyphX::UUIDHash> DatasourceMap;
 		typedef std::unordered_map<boost::uuids::uuid, MinMaxGlyphTree::SharedPtr, SynGlyphX::UUIDHash> MinMaxGlyphTreeMap;
 
+		typedef boost::shared_ptr<DataTransform> SharedPtr;
+		typedef boost::shared_ptr<const DataTransform> ConstSharedPtr;
+
         DataTransform();
 		DataTransform(const GlyphTree& glyphTree);
         ~DataTransform();

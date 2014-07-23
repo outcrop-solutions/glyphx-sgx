@@ -153,11 +153,12 @@ namespace SynGlyphX {
 
 	void MinMaxGlyph::GetColorFromPropertyTree(const boost::property_tree::wptree& propertyTreeParent, Color& min, Color& difference) const {
 
-		const boost::property_tree::wptree& rgbPropertyTree = propertyTreeParent.get_child(L"RGB");
+		const boost::property_tree::wptree& colorPropertyTree = propertyTreeParent.get_child(L"Color");
+		const boost::property_tree::wptree& rgbPropertyTree = colorPropertyTree.get_child(L"RGB");
 		min.FromHexString(rgbPropertyTree.get<std::wstring>(L"Min"));
 		difference.FromHexString(rgbPropertyTree.get_optional<std::wstring>(L"Difference").get_value_or(L"000000"));
 
-		const boost::property_tree::wptree& alphaPropertyTree = propertyTreeParent.get_child(L"Transparency");
+		const boost::property_tree::wptree& alphaPropertyTree = colorPropertyTree.get_child(L"Transparency");
 		min[3] = alphaPropertyTree.get<unsigned char>(L"Min");
 		difference[3] = alphaPropertyTree.get_optional<unsigned char>(L"Difference").get_value_or(0);
 	}

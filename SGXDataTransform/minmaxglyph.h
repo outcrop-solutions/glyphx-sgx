@@ -1,6 +1,7 @@
 #ifndef SYNGLYPHX_MINMAXGLYPH_H
 #define SYNGLYPHX_MINMAXGLYPH_H
 
+#include "sgxdatatransform_global.h"
 #include "glyphproperties.h"
 #include "glyph.h"
 #include <vector>
@@ -9,7 +10,7 @@
 
 namespace SynGlyphX {
 
-	class MinMaxGlyph
+	class SGXDATATRANSFORM_EXPORT MinMaxGlyph
 	{
 	public:
 		typedef boost::property_tree::wptree PropertyTree;

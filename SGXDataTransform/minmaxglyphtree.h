@@ -15,6 +15,7 @@ namespace SynGlyphX {
 		typedef boost::shared_ptr<MinMaxGlyphTree> SharedPtr;
 		typedef boost::shared_ptr<const MinMaxGlyphTree> ConstSharedPtr;
 		typedef boost::property_tree::wptree PropertyTree;
+		typedef stlplus::ntree_node<MinMaxGlyph> Node;
 
 		MinMaxGlyphTree();
 		MinMaxGlyphTree(const boost::property_tree::wptree& propertyTree);
