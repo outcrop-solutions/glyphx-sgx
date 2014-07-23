@@ -271,6 +271,15 @@ void DataMapperWindow::AddGlyphTemplate() {
 		return;
 	}
 
+	try {
+		SynGlyphX::MinMaxGlyphTree::SharedPtr glyphTree(new SynGlyphX::MinMaxGlyphTree());
+		glyphTree->ReadFromFile(glyphTemplates[0].toStdString());
+		m_transform->AddGlyphTree(glyphTree);
+	}
+	catch (const std::exception& e) {
+		QMessageBox::critical(this, tr("Failed To Add Glyph"), e.what(), QMessageBox::Ok);
+	}
+
 	EnableProjectDependentActions(true);
 }
 
