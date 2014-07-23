@@ -2,6 +2,7 @@
 #include "npdata.h"
 #include "data/npmapfile.h"
 #include "glyphmimedata.h"
+#include "minmaxglyphtree.h"
 
 GlyphTreeModel::GlyphTreeModel(QObject *parent)
     : QAbstractItemModel(parent),
@@ -504,4 +505,19 @@ void GlyphTreeModel::MarkDifferentNotifyModelUpdate() {
 
 	m_isDifferentFromSavedFileOrDefaultGlyph = true;
 	emit ModelChanged(m_isDifferentFromSavedFileOrDefaultGlyph);
+}
+
+void GlyphTreeModel::ExportToDataMapper(const std::string& filename) const {
+
+	SynGlyphX::GlyphTree glyphTree(m_rootGlyph);
+	SynGlyphX::MinMaxGlyphTree minMaxGlyphTree(glyphTree);
+	SynGlyphX::MinMaxGlyphTree::iterator iT = minMaxGlyphTree.root();
+	SynGlyphX::GlyphProperties minGlyph = iT->GetMinGlyph();
+	SynGlyphX::GlyphMappableProperties difference = iT->GetDifference();
+	minGlyph.SetPosition({ { -180.0, -90.0, 0.0 } });
+	difference.SetPosition({ { 360.0, 180.0, 0.0 } });
+	iT->SetMinGlyphProperties(minGlyph);
+	iT->SetDifference(difference);
+
+	minMaxGlyphTree.WriteToFile(filename);
 }

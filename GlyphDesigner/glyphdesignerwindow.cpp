@@ -56,6 +56,9 @@ void GlyphDesignerWindow::CreateMenus() {
 
     m_fileMenu->addSeparator();
 
+	QAction* exportDataMapperAction = m_fileMenu->addAction(tr("Export to Data Mapper Template"));
+	QObject::connect(exportDataMapperAction, &QAction::triggered, this, &GlyphDesignerWindow::ExportToDataMapperTemplate);
+
     QAction* exportAction = m_fileMenu->addAction(tr("Export to CSV"));
     QObject::connect(exportAction, &QAction::triggered, this, &GlyphDesignerWindow::ExportToCSV);
 
@@ -326,4 +329,13 @@ bool GlyphDesignerWindow::AskUserToSave() {
     }
 
     return true;
+}
+
+void GlyphDesignerWindow::ExportToDataMapperTemplate() {
+
+	QString saveFile = QFileDialog::getSaveFileName(this, tr("Export to Data Mapper"), "", tr("SynGlyphX Glyph Template Files (*.sgt)"));
+	
+	if (!saveFile.isEmpty()) {
+		m_glyphTreeModel->ExportToDataMapper(saveFile.toStdString());
+	}
 }

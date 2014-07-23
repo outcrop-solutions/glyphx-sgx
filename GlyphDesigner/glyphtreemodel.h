@@ -68,6 +68,8 @@ public:
 
     static PropertyUpdates FindUpdates(boost::shared_ptr<const SynGlyphX::GlyphProperties> oldGlyph, boost::shared_ptr<const SynGlyphX::GlyphProperties> newGlyph);
     static bool GreaterBranchLevel(const QModelIndex& left, const QModelIndex& right);
+	
+	void ExportToDataMapper(const std::string& filename) const;
 
 signals:
     void NodeUpdated(const QModelIndex& index);
