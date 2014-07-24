@@ -180,9 +180,17 @@ void DataMapperWindow::LoadDataTransform(const QString& filename) {
 
 bool DataMapperWindow::SaveDataTransform(const QString& filename) {
 
-	m_transform->WriteToFile(filename.toStdString());
-	statusBar()->showMessage("Data transform successfully saved", 3000);
-	return true;
+	try {
+		m_transform->WriteToFile(filename.toStdString());
+		SetCurrentFile(filename);
+		statusBar()->showMessage("Data transform successfully saved", 3000);
+		return true;
+	}
+	catch (const std::exception& e) {
+
+		QMessageBox::critical(this, tr("Failed To Save Data Transformation"), e.what(), QMessageBox::Ok);
+		return false;
+	}
 }
 
 bool DataMapperWindow::ValidateNewDatasource(const QString& datasource) {
