@@ -7,17 +7,16 @@
 #include <QtWidgets/QDataWidgetMapper>
 #include "bindinglineedit.h"
 #include "richtexteditor.h"
+#include "datatransform.h"
+#include "minmaxglyphmodel.h"
 
 class DataBindingWidget : public QSplitter
 {
 	Q_OBJECT
 
 public:
-	DataBindingWidget(QWidget *parent = 0);
+	DataBindingWidget(MinMaxGlyphModel* model, QWidget *parent = 0);
 	~DataBindingWidget();
-
-public slots:
-	void SetGlyphModelIndex(const QModelIndex& index);
 
 private:
 	void CreateTagAndDescriptionWidget();
@@ -31,6 +30,7 @@ private:
 	BindingLineEdit* m_tagLineEdit;
 	SynGlyphX::RichTextEditor* m_descriptionEdit;
 	QList<QDataWidgetMapper*> m_dataWidgetMappers;
+	MinMaxGlyphModel* m_model;
 };
 
 #endif // DATABINDINGWIDGET_H

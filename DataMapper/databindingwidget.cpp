@@ -5,8 +5,9 @@
 #include <QtCore/QModelIndex>
 #include "colorbutton.h"
 
-DataBindingWidget::DataBindingWidget(QWidget *parent)
-	: QSplitter(Qt::Vertical, parent)
+DataBindingWidget::DataBindingWidget(MinMaxGlyphModel* model, QWidget *parent)
+	: QSplitter(Qt::Vertical, parent),
+	m_model(model)
 {
 	setChildrenCollapsible(false);
 
@@ -115,6 +116,9 @@ void DataBindingWidget::CreateRowOfPropertyWidgets(QGridLayout* layout, const QS
 	QLabel* label = new QLabel(name, this);
 	BindingLineEdit* inputBindingLineEdit = new BindingLineEdit(this);
 
+	mapper->setModel(m_model);
+	mapper->setCurrentIndex(row);
+
 	mapper->addMapping(minWidget, 0);
 	mapper->addMapping(maxWidget, 1);
 	mapper->addMapping(inputBindingLineEdit, 2);
@@ -162,18 +166,5 @@ void DataBindingWidget::CreateGridLine(QGridLayout* layout, QFrame::Shape shape,
 	}
 	else {
 		layout->addWidget(line, index, 0, 1, -1);
-	}
-}
-
-void DataBindingWidget::SetGlyphModelIndex(const QModelIndex& index) {
-
-	int numChildren = index.model()->rowCount(index);
-	if (numChildren != m_dataWidgetMappers.length()) {
-
-		throw std::exception("Data Binding Mismatch");
-	}
-
-	for (int i = 0; i < numChildren; ++i) {
-		
 	}
 }

@@ -20,8 +20,11 @@ DataMapperWindow::DataMapperWindow(QWidget *parent)
     CreateMenus();
     CreateDockWidgets();
 
-	m_dataBindingWidget = new DataBindingWidget(this);
+	m_minMaxGlyphModel = new MinMaxGlyphModel(this);
+	m_dataBindingWidget = new DataBindingWidget(m_minMaxGlyphModel, this);
 	setCentralWidget(m_dataBindingWidget);
+
+	QObject::connect(m_glyphTreeView->selectionModel(), &QItemSelectionModel::selectionChanged, this, [&, this](const QItemSelection& selected, const QItemSelection& seselected){ m_minMaxGlyphModel->SetMinMaxGlyph(selected.indexes()[0]); });
 
 	statusBar()->showMessage(SynGlyphX::Application::applicationName() + " Started", 3000);
 }
@@ -96,7 +99,6 @@ void DataMapperWindow::CreateDockWidgets() {
     QDockWidget* leftDockWidget = new QDockWidget(tr("Glyph Tree"), this);
     m_glyphTreeView = new QTreeView(leftDockWidget);
 	m_glyphTreeView->setModel(m_glyphTemplatesModel);
-    //m_treeView->setSelectionModel(m_selectionModel);
     m_glyphTreeView->setSelectionMode(QAbstractItemView::SingleSelection);
 
     leftDockWidget->setWidget(m_glyphTreeView);

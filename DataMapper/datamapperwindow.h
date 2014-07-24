@@ -8,6 +8,7 @@
 #include "datasourcestatswidget.h"
 #include "databindingwidget.h"
 #include "glyphtemplatesmodel.h"
+#include "minmaxglyphmodel.h"
 
 class DataMapperWindow : public SynGlyphX::MainWindow
 {
@@ -50,6 +51,7 @@ private:
 	QList<QAction*> m_projectDependentActions;
 	DataBindingWidget* m_dataBindingWidget;
 	GlyphTemplatesModel* m_glyphTemplatesModel;
+	MinMaxGlyphModel* m_minMaxGlyphModel;
 };
 
 #endif // DATAMAPPERWINDOW_H
