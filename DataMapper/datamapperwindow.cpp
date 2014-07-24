@@ -15,7 +15,7 @@
 DataMapperWindow::DataMapperWindow(QWidget *parent)
     : SynGlyphX::MainWindow(parent)
 {
-	m_transform.reset(new SynGlyphX::DataTransform());
+	m_dataTransformModel = new DataTransformModel(this);
 	m_glyphTemplatesModel = new GlyphTemplatesModel(m_transform, this);
     CreateMenus();
     CreateDockWidgets();
@@ -106,7 +106,7 @@ void DataMapperWindow::CreateDockWidgets() {
     m_viewMenu->addAction(leftDockWidget->toggleViewAction());
 
 	QDockWidget* rightDockWidget = new QDockWidget(tr("Data Stats"), this);
-    m_dataSourceStats = new DataSourceStatsWidget(m_transform, rightDockWidget);
+    m_dataSourceStats = new DataSourceStatsWidget(m_dataTransformModel->GetDataTransform(), rightDockWidget);
 
 	rightDockWidget->setWidget(m_dataSourceStats);
 	addDockWidget(Qt::RightDockWidgetArea, rightDockWidget);
@@ -164,7 +164,7 @@ void DataMapperWindow::LoadRecentFile(const QString& filename) {
 void DataMapperWindow::LoadDataTransform(const QString& filename) {
 
 	try {
-		m_transform->ReadFromFile(filename.toStdString());
+		m_dataTransformModel->LoadDataTransformFile(filename);
 
 		m_dataSourceStats->RebuildStatsViews();
 	}
@@ -183,7 +183,7 @@ void DataMapperWindow::LoadDataTransform(const QString& filename) {
 bool DataMapperWindow::SaveDataTransform(const QString& filename) {
 
 	try {
-		m_transform->WriteToFile(filename.toStdString());
+		m_dataTransformModel->GetDataTransform()->WriteToFile(filename.toStdString());
 		SetCurrentFile(filename);
 		statusBar()->showMessage("Data transform successfully saved", 3000);
 		return true;

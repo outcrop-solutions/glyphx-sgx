@@ -4,11 +4,11 @@
 #include "mainwindow.h"
 #include <QtWidgets/QTreeView>
 #include <boost/shared_ptr.hpp>
-#include "datatransform.h"
 #include "datasourcestatswidget.h"
 #include "databindingwidget.h"
 #include "glyphtemplatesmodel.h"
 #include "minmaxglyphmodel.h"
+#include "datatransformmodel.h"
 
 class DataMapperWindow : public SynGlyphX::MainWindow
 {
@@ -46,12 +46,12 @@ private:
     QMenu* m_projectMenu;
     QMenu* m_viewMenu;
     QTreeView* m_glyphTreeView;
-	SynGlyphX::DataTransform::SharedPtr m_transform;
 	DataSourceStatsWidget* m_dataSourceStats;
 	QList<QAction*> m_projectDependentActions;
 	DataBindingWidget* m_dataBindingWidget;
 	GlyphTemplatesModel* m_glyphTemplatesModel;
 	MinMaxGlyphModel* m_minMaxGlyphModel;
+	DataTransformModel* m_dataTransformModel;
 };
 
 #endif // DATAMAPPERWINDOW_H
