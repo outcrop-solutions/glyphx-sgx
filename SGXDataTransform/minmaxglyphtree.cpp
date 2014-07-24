@@ -13,16 +13,9 @@ namespace SynGlyphX {
 	MinMaxGlyphTree::MinMaxGlyphTree(const boost::property_tree::wptree& propertyTree) :
 		stlplus::ntree< MinMaxGlyph >() {
 
-		boost::optional<const PropertyTree&> glyphPropertyTree = propertyTree.get_child_optional(L"Glyph");
-		if (glyphPropertyTree.is_initialized()) {
-
-			MinMaxGlyph glyph(glyphPropertyTree.get());
-			insert(glyph);
-			ProcessPropertyTreeChildren(root(), glyphPropertyTree.get());
-		}
-		else {
-			throw std::exception("Property tree does not contain a glyph tree");
-		}
+		MinMaxGlyph glyph(propertyTree);
+		insert(glyph);
+		ProcessPropertyTreeChildren(root(), propertyTree);
 	}
 
 	MinMaxGlyphTree::MinMaxGlyphTree(const GlyphTree& glyphTree) :
