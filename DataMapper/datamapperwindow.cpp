@@ -16,7 +16,7 @@ DataMapperWindow::DataMapperWindow(QWidget *parent)
     : SynGlyphX::MainWindow(parent)
 {
 	m_dataTransformModel = new DataTransformModel(this);
-	m_glyphTemplatesModel = new GlyphTemplatesModel(m_transform, this);
+	//m_glyphTemplatesModel = new GlyphTemplatesModel(m_transform, this);
     CreateMenus();
     CreateDockWidgets();
 
@@ -98,7 +98,7 @@ void DataMapperWindow::CreateDockWidgets() {
     //Add Tree View to dock widget on left side
     QDockWidget* leftDockWidget = new QDockWidget(tr("Glyph Tree"), this);
     m_glyphTreeView = new QTreeView(leftDockWidget);
-	m_glyphTreeView->setModel(m_glyphTemplatesModel);
+	m_glyphTreeView->setModel(m_dataTransformModel);
     m_glyphTreeView->setSelectionMode(QAbstractItemView::SingleSelection);
 
     leftDockWidget->setWidget(m_glyphTreeView);
@@ -165,7 +165,7 @@ void DataMapperWindow::LoadDataTransform(const QString& filename) {
 
 	try {
 		m_dataTransformModel->LoadDataTransformFile(filename);
-
+		m_glyphTreeView->selectionModel()->select(m_dataTransformModel->index(0), QItemSelectionModel::ClearAndSelect);
 		m_dataSourceStats->RebuildStatsViews();
 	}
 	catch (const std::exception& e) {
@@ -221,7 +221,7 @@ void DataMapperWindow::AddDataSources() {
 			continue;
 		}
 			
-		boost::uuids::uuid newDBID = m_transform->AddDatasource(datasource.toStdWString(), SynGlyphX::Datasource::SQLITE3);
+		boost::uuids::uuid newDBID = m_dataTransformModel->GetDataTransform()->AddDatasource(datasource.toStdWString(), SynGlyphX::Datasource::SQLITE3);
 		std::vector<std::wstring> tables;
 		QSqlDatabase db = QSqlDatabase::addDatabase(DatabaseServices::GetQtDBType(SynGlyphX::Datasource::SQLITE3), QString::fromStdString(boost::uuids::to_string(newDBID)));
 		db.setDatabaseName(datasource);
@@ -240,7 +240,7 @@ void DataMapperWindow::AddDataSources() {
 					tables.push_back(qtable.toStdWString());
 				}
 
-				m_transform->AddTables(newDBID, tables);
+				m_dataTransformModel->GetDataTransform()->AddTables(newDBID, tables);
 			}
 			else {
 
@@ -283,7 +283,7 @@ void DataMapperWindow::AddGlyphTemplate() {
 	}
 
 	try {
-		m_glyphTemplatesModel->AddGlyphFile(glyphTemplates[0]);
+		m_dataTransformModel->AddGlyphFile(glyphTemplates[0]);
 	}
 	catch (const std::exception& e) {
 		QMessageBox::critical(this, tr("Failed To Add Glyph"), e.what(), QMessageBox::Ok);

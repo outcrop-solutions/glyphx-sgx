@@ -14,22 +14,7 @@ DataTransformModel::~DataTransformModel()
 
 int DataTransformModel::columnCount(const QModelIndex& parent) const {
 
-	if (!parent.isValid()) {
-		return 1;
-	}
-
-	if (parent.internalPointer() == nullptr) {
-
-		if (parent.parent().internalPointer() != nullptr) {
-
-			return 3;  //Change to 4 when data binding is implemented
-		}
-	}
-	else {
-		return 2;
-	}
-
-	return 0;
+	return 1;
 }
 
 QVariant DataTransformModel::data(const QModelIndex& index, int role) const {
@@ -91,15 +76,20 @@ QModelIndex	DataTransformModel::parent(const QModelIndex& index) const {
 	}
 
 	SynGlyphX::MinMaxGlyphTree::const_iterator iterator(static_cast<SynGlyphX::MinMaxGlyphTree::Node*>(index.internalPointer()));
-	SynGlyphX::MinMaxGlyphTree::const_iterator parent = m_dataTransform->GetGlyphTrees().begin()->second->parent(iterator);
+
+	if (iterator == iterator.owner()->root()) {
+		return QModelIndex();
+	}
+
+	SynGlyphX::MinMaxGlyphTree::const_iterator parent = iterator.owner()->parent(iterator);
 
 	int row = 0;
-	SynGlyphX::MinMaxGlyphTree::const_iterator grandparent = m_dataTransform->GetGlyphTrees().begin()->second->parent(parent);
+	SynGlyphX::MinMaxGlyphTree::const_iterator grandparent = iterator.owner()->parent(parent);
 	if (grandparent.valid()) {
 
-		for (int i = 0; i < m_dataTransform->GetGlyphTrees().begin()->second->children(grandparent); ++i) {
+		for (int i = 0; i < iterator.owner()->children(grandparent); ++i) {
 
-			if (m_dataTransform->GetGlyphTrees().begin()->second->child(grandparent, i) == parent) {
+			if (iterator.owner()->child(grandparent, i) == parent) {
 				row = i;
 				break;
 			}
@@ -119,16 +109,6 @@ int	DataTransformModel::rowCount(const QModelIndex& parent) const {
 		return m_dataTransform->GetGlyphTrees().size();
 	}
 
-	if (parent.internalPointer() == nullptr) {
-
-		if (parent.parent().internalPointer() != nullptr) {
-			return 0;
-		}
-		else {
-			return 11; //Change based on number of available properties
-		}
-	}
-
 	SynGlyphX::MinMaxGlyphTree::const_iterator iterator(static_cast<SynGlyphX::MinMaxGlyphTree::Node*>(parent.internalPointer()));
 	return m_dataTransform->GetGlyphTrees().begin()->second->children(iterator);
 }
@@ -137,9 +117,10 @@ void DataTransformModel::AddGlyphFile(const QString& filename) {
 
 	SynGlyphX::MinMaxGlyphTree::SharedPtr glyphTree(new SynGlyphX::MinMaxGlyphTree());
 	glyphTree->ReadFromFile(filename.toStdString());
-	beginResetModel();
+	int row = m_dataTransform->GetGlyphTrees().size();
+	beginInsertRows(QModelIndex(), row, row + 1);
 	m_dataTransform->AddGlyphTree(glyphTree);
-	endResetModel();
+	endInsertRows();
 }
 
 void DataTransformModel::LoadDataTransformFile(const QString& filename) {

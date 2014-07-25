@@ -93,3 +93,8 @@ QVariant MinMaxGlyphModel::GetDataByRow(const SynGlyphX::GlyphMappableProperties
 
 	return QVariant();
 }
+
+Qt::ItemFlags MinMaxGlyphModel::flags(const QModelIndex & index) const {
+
+	return QAbstractTableModel::flags(index) | Qt::ItemIsEditable;
+}

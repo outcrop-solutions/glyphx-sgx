@@ -116,8 +116,9 @@ void DataBindingWidget::CreateRowOfPropertyWidgets(QGridLayout* layout, const QS
 	QLabel* label = new QLabel(name, this);
 	BindingLineEdit* inputBindingLineEdit = new BindingLineEdit(this);
 
+	mapper->setSubmitPolicy(QDataWidgetMapper::AutoSubmit);
 	mapper->setModel(m_model);
-	mapper->setCurrentIndex(row);
+	mapper->setCurrentIndex(row / 2 - 1);
 
 	mapper->addMapping(minWidget, 0);
 	mapper->addMapping(maxWidget, 1);

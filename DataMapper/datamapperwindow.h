@@ -49,7 +49,7 @@ private:
 	DataSourceStatsWidget* m_dataSourceStats;
 	QList<QAction*> m_projectDependentActions;
 	DataBindingWidget* m_dataBindingWidget;
-	GlyphTemplatesModel* m_glyphTemplatesModel;
+	//GlyphTemplatesModel* m_glyphTemplatesModel;
 	MinMaxGlyphModel* m_minMaxGlyphModel;
 	DataTransformModel* m_dataTransformModel;
 };
