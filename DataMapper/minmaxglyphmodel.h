@@ -18,6 +18,7 @@ public:
 	virtual int	rowCount(const QModelIndex& parent = QModelIndex()) const;
 	virtual QVariant headerData(int section, Qt::Orientation orientation, int role) const;
 	virtual Qt::ItemFlags flags(const QModelIndex & index) const;
+	virtual bool setData(const QModelIndex& index, const QVariant& value, int role = Qt::EditRole);
 
 public slots:
 	void SetMinMaxGlyph(const QModelIndex& index);
@@ -26,6 +27,7 @@ private:
 	QVariant GetDataByRow(const SynGlyphX::GlyphMappableProperties& minProperties, const SynGlyphX::GlyphMappableProperties& diffProperties, int row) const;
 
 	SynGlyphX::MinMaxGlyphTree::iterator m_glyph;
+	QStringList m_labels;
 };
 
 #endif // MINMAXGLYPHMODEL_H

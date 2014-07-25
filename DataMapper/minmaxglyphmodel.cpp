@@ -4,7 +4,17 @@
 MinMaxGlyphModel::MinMaxGlyphModel(QObject *parent)
 	: QAbstractTableModel(parent)
 {
-
+	m_labels << tr("Position X")
+		<< tr("Position Y")
+		<< tr("Position Z")
+		<< tr("Rotation X")
+		<< tr("Rotation Y")
+		<< tr("Rotation Z")
+		<< tr("Scale X")
+		<< tr("Scale Y")
+		<< tr("Scale Z")
+		<< tr("Color")
+		<< tr("Transparency");
 }
 
 MinMaxGlyphModel::~MinMaxGlyphModel()
@@ -14,17 +24,21 @@ MinMaxGlyphModel::~MinMaxGlyphModel()
 
 int MinMaxGlyphModel::columnCount(const QModelIndex& parent) const {
 
-	return 3;
+	return 4;
 }
 
 QVariant MinMaxGlyphModel::data(const QModelIndex& index, int role) const {
 
-	if (index.isValid() && m_glyph.valid() && (role == Qt::DisplayRole)) {
+	if (index.column() == 0) {
+		return m_labels[index.row()];
+	}
 
-		if (index.column() == 0) {
+	if (index.isValid() && m_glyph.valid()) {
+
+		if (index.column() == 1) {
 			return GetDataByRow(m_glyph->GetMinGlyph(), SynGlyphX::GlyphMappableProperties::GetPropertiesZero(), index.row());
 		}
-		else if (index.column() == 1) {
+		else if (index.column() == 2) {
 			return GetDataByRow(m_glyph->GetMinGlyph(), m_glyph->GetDifference(), index.row());
 		}
 	}
@@ -34,12 +48,7 @@ QVariant MinMaxGlyphModel::data(const QModelIndex& index, int role) const {
 
 int	MinMaxGlyphModel::rowCount(const QModelIndex& parent) const {
 
-	if (m_glyph.valid() && !parent.isValid()) {
-		return 11;
-	}
-	else {
-		return 0;
-	}
+	return 11;
 }
 
 QVariant MinMaxGlyphModel::headerData(int section, Qt::Orientation orientation, int role) const {
@@ -97,4 +106,9 @@ QVariant MinMaxGlyphModel::GetDataByRow(const SynGlyphX::GlyphMappableProperties
 Qt::ItemFlags MinMaxGlyphModel::flags(const QModelIndex & index) const {
 
 	return QAbstractTableModel::flags(index) | Qt::ItemIsEditable;
+}
+
+bool MinMaxGlyphModel::setData(const QModelIndex& index, const QVariant& value, int role) {
+
+	return QAbstractTableModel::setData(index, value, role);
 }

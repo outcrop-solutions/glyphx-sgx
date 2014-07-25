@@ -23,6 +23,9 @@ DataMapperWindow::DataMapperWindow(QWidget *parent)
 	m_minMaxGlyphModel = new MinMaxGlyphModel(this);
 	m_dataBindingWidget = new DataBindingWidget(m_minMaxGlyphModel, this);
 	setCentralWidget(m_dataBindingWidget);
+	//QTableView* tableView = new QTableView(this);
+	//tableView->setModel(m_minMaxGlyphModel);
+	//setCentralWidget(tableView);
 
 	QObject::connect(m_glyphTreeView->selectionModel(), &QItemSelectionModel::selectionChanged, this, [&, this](const QItemSelection& selected, const QItemSelection& seselected){ m_minMaxGlyphModel->SetMinMaxGlyph(selected.indexes()[0]); });
 

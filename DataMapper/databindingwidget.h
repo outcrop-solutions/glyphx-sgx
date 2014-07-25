@@ -18,13 +18,16 @@ public:
 	DataBindingWidget(MinMaxGlyphModel* model, QWidget *parent = 0);
 	~DataBindingWidget();
 
+private slots:
+	void OnModelReset();
+
 private:
 	void CreateTagAndDescriptionWidget();
 	void CreatePropertiesTable();
-	void CreateIntegerPropertyWidgets(QGridLayout* layout, const QString& name, int row);
-	void CreateDoublePropertyWidgets(QGridLayout* layout, const QString& name, int row);
-	void CreateColorPropertyWidgets(QGridLayout* layout, const QString& name, int row);
-	void CreateRowOfPropertyWidgets(QGridLayout* layout, const QString& name, QWidget* minWidget, QWidget* maxWidget, int row);
+	void CreateIntegerPropertyWidgets(QGridLayout* layout, int row);
+	void CreateDoublePropertyWidgets(QGridLayout* layout, int row);
+	void CreateColorPropertyWidgets(QGridLayout* layout, int row);
+	void CreateRowOfPropertyWidgets(QGridLayout* layout, QWidget* minWidget, QWidget* maxWidget, int row);
 	void CreateGridLine(QGridLayout* layout, QFrame::Shape shape, int index, int thickness = 1);
 
 	BindingLineEdit* m_tagLineEdit;
