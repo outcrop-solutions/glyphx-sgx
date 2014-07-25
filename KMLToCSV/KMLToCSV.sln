@@ -10,6 +10,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "KMLToCSV", "KMLToCSV.vcxpro
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SGXGUI", "..\..\GUI\SGXGUI\SGXGUI.vcxproj", "{6F25F9F4-52F6-4734-8DA7-9EE08491444D}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MapDownloading", "..\MapDownloading\MapDownloading.vcxproj", "{C1352B61-481F-430E-9B1F-B4FC1001C542}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -24,6 +26,10 @@ Global
 		{6F25F9F4-52F6-4734-8DA7-9EE08491444D}.Debug|Win32.Build.0 = Debug|Win32
 		{6F25F9F4-52F6-4734-8DA7-9EE08491444D}.Release|Win32.ActiveCfg = Release|Win32
 		{6F25F9F4-52F6-4734-8DA7-9EE08491444D}.Release|Win32.Build.0 = Release|Win32
+		{C1352B61-481F-430E-9B1F-B4FC1001C542}.Debug|Win32.ActiveCfg = Debug|Win32
+		{C1352B61-481F-430E-9B1F-B4FC1001C542}.Debug|Win32.Build.0 = Debug|Win32
+		{C1352B61-481F-430E-9B1F-B4FC1001C542}.Release|Win32.ActiveCfg = Release|Win32
+		{C1352B61-481F-430E-9B1F-B4FC1001C542}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

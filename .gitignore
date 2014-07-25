@@ -213,3 +213,12 @@ pip-log.txt
 
 #Mr Developer
 .mr.developer.cfg
+
+
+###########
+# Qt
+###########
+
+#Qt generated files
+moc_*.cpp
+qrc_*.cpp
