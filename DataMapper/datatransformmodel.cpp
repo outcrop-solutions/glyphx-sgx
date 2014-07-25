@@ -14,7 +14,22 @@ DataTransformModel::~DataTransformModel()
 
 int DataTransformModel::columnCount(const QModelIndex& parent) const {
 
-	return 1;
+	if (!parent.isValid()) {
+		return 1;
+	}
+
+	if (parent.internalPointer() == nullptr) {
+
+		if (parent.parent().internalPointer() != nullptr) {
+
+			return 3;  //Change to 4 when data binding is implemented
+		}
+	}
+	else {
+		return 2;
+	}
+
+	return 0;
 }
 
 QVariant DataTransformModel::data(const QModelIndex& index, int role) const {
@@ -44,20 +59,15 @@ QVariant DataTransformModel::data(const QModelIndex& index, int role) const {
 
 QModelIndex	DataTransformModel::index(int row, int column, const QModelIndex& parent) const{
 
-	if (!hasIndex(row, column, parent))  {
+	if ((!hasIndex(row, column, parent)) || (m_dataTransform->GetGlyphTrees().empty())) {
 		return QModelIndex();
-	}
-
-	if (parent.internalPointer() == &(m_dataTransform->GetDatasources())) {
-
-		SynGlyphX::DataTransform::DatasourceMap::const_iterator iterator = m_dataTransform->GetDatasources().begin();
-		std::advance(iterator, row);
-		return createIndex(row, column, static_cast<const void*>(&(iterator->second)));
 	}
 
 	if (!parent.isValid()) {
 
-		return createIndex(row, column, static_cast<void*>(m_dataTransform->GetGlyphTrees().begin()->second->root().node()));
+		SynGlyphX::DataTransform::MinMaxGlyphTreeMap::const_iterator iterator = m_dataTransform->GetGlyphTrees().begin();
+		std::advance(iterator, row);
+		return createIndex(row, column, static_cast<void*>(iterator->second->root().node()));
 	}
 	else {
 
@@ -76,20 +86,12 @@ QModelIndex	DataTransformModel::index(int row, int column, const QModelIndex& pa
 
 QModelIndex	DataTransformModel::parent(const QModelIndex& index) const {
 
-	if (!index.isValid()) {
-		return QModelIndex();
-	}
-
-	if (m_dataTransform->GetGlyphTrees().empty()) {
+	if (m_dataTransform->GetGlyphTrees().empty() || !index.isValid()) {
 		return QModelIndex();
 	}
 
 	SynGlyphX::MinMaxGlyphTree::const_iterator iterator(static_cast<SynGlyphX::MinMaxGlyphTree::Node*>(index.internalPointer()));
 	SynGlyphX::MinMaxGlyphTree::const_iterator parent = m_dataTransform->GetGlyphTrees().begin()->second->parent(iterator);
-
-	if (!parent.valid()) {
-		return QModelIndex();
-	}
 
 	int row = 0;
 	SynGlyphX::MinMaxGlyphTree::const_iterator grandparent = m_dataTransform->GetGlyphTrees().begin()->second->parent(parent);
@@ -109,25 +111,23 @@ QModelIndex	DataTransformModel::parent(const QModelIndex& index) const {
 
 int	DataTransformModel::rowCount(const QModelIndex& parent) const {
 
+	if (m_dataTransform->GetGlyphTrees().empty()) {
+		return 0;
+	}
+
 	if (!parent.isValid()) {
-
-		//Return children of root.  Right now 2 for Datasources and Glyphs
-		return 2;
-	}
-
-	if (parent.internalPointer() == &(m_dataTransform->GetDatasources())) {
-
-		return m_dataTransform->GetDatasources().size();
-	}
-
-	if (parent.internalPointer() == &(m_dataTransform->GetGlyphTrees()))  {
-
 		return m_dataTransform->GetGlyphTrees().size();
 	}
 
-	
+	if (parent.internalPointer() == nullptr) {
 
-	
+		if (parent.parent().internalPointer() != nullptr) {
+			return 0;
+		}
+		else {
+			return 11; //Change based on number of available properties
+		}
+	}
 
 	SynGlyphX::MinMaxGlyphTree::const_iterator iterator(static_cast<SynGlyphX::MinMaxGlyphTree::Node*>(parent.internalPointer()));
 	return m_dataTransform->GetGlyphTrees().begin()->second->children(iterator);

@@ -2,6 +2,7 @@
 #define GLYPHTEMPLATESMODEL_H
 
 #include <QtCore/QAbstractItemModel>
+#include "datatransform.h"
 
 class GlyphTemplatesModel : public QAbstractItemModel
 {
@@ -19,8 +20,13 @@ public:
 	virtual int	rowCount(const QModelIndex& parent = QModelIndex()) const;
 	virtual QVariant headerData(int section, Qt::Orientation orientation, int role) const;
 
+	void AddGlyphFile(const QString& filename);
+	void LoadDataTransformFile(const QString& filename);
+
+	SynGlyphX::DataTransform::SharedPtr GetDataTransform() const;
+
 private:
-	
+	SynGlyphX::DataTransform::SharedPtr m_dataTransform;
 };
 
 #endif // GLYPHTEMPLATESMODEL_H
