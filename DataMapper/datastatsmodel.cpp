@@ -2,9 +2,12 @@
 #include <QtSql/QSqlRecord>
 #include <QtSql/QSqlField>
 #include <QtCore/QMimeData>
+#include "databaseservices.h"
 
 DataStatsModel::DataStatsModel(const QSqlDatabase& db, const QString& tableName, QObject *parent)
-	: QAbstractTableModel(parent)
+	: QAbstractTableModel(parent),
+	m_db(db),
+	m_tableName(tableName)
 {
 	QSqlRecord columnNamesRecord = db.record(tableName);
 
@@ -110,16 +113,31 @@ QVariant DataStatsModel::headerData(int section, Qt::Orientation orientation, in
 	return QVariant();
 }
 
+
 QStringList DataStatsModel::mimeTypes() const {
 
 	QStringList list;
-	list.push_back("text/plain");
+	list.push_back("application/datasource-field");
 	return list;
 }
 
 QMimeData* DataStatsModel::mimeData(const QModelIndexList& indexes) const {
 
 	QMimeData* mimeData = new QMimeData();
-	mimeData->setText(m_fieldNames[indexes.front().row()]);
+	mimeData->setText(DatabaseServices::GetFormattedDBName(m_db) + ":" + m_tableName + ":" + m_fieldNames[indexes.front().row()]);
 	return mimeData;
+}
+
+Qt::ItemFlags DataStatsModel::flags(const QModelIndex & index) const {
+
+	Qt::ItemFlags defaultFlags = QAbstractTableModel::flags(index);
+
+	if (index.isValid()) {
+
+		return Qt::ItemIsDragEnabled | defaultFlags;
+	}
+	else {
+
+		return defaultFlags;
+	}
 }

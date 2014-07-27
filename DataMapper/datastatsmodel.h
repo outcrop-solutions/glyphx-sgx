@@ -17,12 +17,15 @@ public:
 	virtual QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const;
 	virtual QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
 
+	virtual Qt::ItemFlags flags(const QModelIndex & index) const;
 	virtual QStringList mimeTypes() const;
 	virtual QMimeData* mimeData(const QModelIndexList& indexes) const;
 
 private:
 	QList<QStringList> m_stats;
 	QStringList m_fieldNames;
+	QString m_tableName;
+	QSqlDatabase m_db;
 };
 
 #endif // DATASTATSMODEL_H

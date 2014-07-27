@@ -5,6 +5,7 @@
 #include <QtWidgets/QHeaderView>
 #include "datastatsmodel.h"
 #include "databaseservices.h"
+#include "datastatsfieldheaderview.h"
 
 DataSourceStatsWidget::DataSourceStatsWidget(boost::shared_ptr<const SynGlyphX::DataTransform> transform, QWidget *parent)
 	: QTabWidget(parent),
@@ -67,20 +68,14 @@ void DataSourceStatsWidget::CreateTablesFromDatasource(const QSqlDatabase& db, c
 void DataSourceStatsWidget::CreateTableView(const QSqlDatabase& db, const QString& tableName) {
 
 	QTableView* view = new QTableView(this);
-	view->setSelectionBehavior(QAbstractItemView::SelectRows);
 	view->setSelectionMode(QAbstractItemView::SingleSelection);
+	view->setSelectionBehavior(QAbstractItemView::SelectRows);
 	view->setDragEnabled(true);
 	view->setDragDropMode(QAbstractItemView::DragDrop);
-	view->setAcceptDrops(false);
 	view->setDropIndicatorShown(true);
-	QHeaderView* fieldsHeader = view->verticalHeader();
-	fieldsHeader->setSectionResizeMode(QHeaderView::ResizeToContents);
-	fieldsHeader->setSelectionMode(QAbstractItemView::SingleSelection);
-	fieldsHeader->setDragEnabled(true);
-	fieldsHeader->setDragDropMode(QAbstractItemView::DragDrop);
-	fieldsHeader->setAcceptDrops(false);
-	fieldsHeader->setDropIndicatorShown(true);
-
+	view->setAcceptDrops(false);
+	
+	view->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 	view->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 
 	DataStatsModel* model = new DataStatsModel(db, tableName, this);
