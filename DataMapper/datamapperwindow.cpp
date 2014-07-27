@@ -9,7 +9,6 @@
 #include <QtSql/QSqlError>
 #include <QtSql/QSqlQuery>
 #include <QtSql/QSqlRecord>
-#include <QtWidgets/QHeaderView>
 #include "application.h"
 #include "databaseservices.h"
 
@@ -102,7 +101,7 @@ void DataMapperWindow::CreateDockWidgets() {
     m_glyphTreeView = new QTreeView(leftDockWidget);
 	m_glyphTreeView->setModel(m_dataTransformModel);
     m_glyphTreeView->setSelectionMode(QAbstractItemView::SingleSelection);
-	m_glyphTreeView->header()->hide();
+	m_glyphTreeView->setHeaderHidden(true);
 
     leftDockWidget->setWidget(m_glyphTreeView);
     addDockWidget(Qt::LeftDockWidgetArea, leftDockWidget);
@@ -169,7 +168,7 @@ void DataMapperWindow::LoadDataTransform(const QString& filename) {
 
 	try {
 		m_dataTransformModel->LoadDataTransformFile(filename);
-		m_glyphTreeView->selectionModel()->select(m_dataTransformModel->index(0), QItemSelectionModel::ClearAndSelect);
+		m_glyphTreeView->selectionModel()->select(m_dataTransformModel->index(m_dataTransformModel->rowCount() - 1), QItemSelectionModel::ClearAndSelect);
 		m_dataSourceStats->RebuildStatsViews();
 	}
 	catch (const std::exception& e) {
@@ -288,14 +287,19 @@ void DataMapperWindow::AddGlyphTemplate() {
 	}
 
 	try {
-		m_dataTransformModel->AddGlyphFile(glyphTemplates[0]);
-		EnableProjectDependentActions(true);
-		m_dataBindingWidget->setEnabled(true);
-		statusBar()->showMessage("Project successfully opened", 3000);
+		for (const QString& filename : glyphTemplates) {
+			m_dataTransformModel->AddGlyphFile(filename);
+		}
 	}
 	catch (const std::exception& e) {
 		QMessageBox::critical(this, tr("Failed To Add Glyph"), e.what(), QMessageBox::Ok);
+		return;
 	}
+
+	EnableProjectDependentActions(true);
+	m_dataBindingWidget->setEnabled(true);
+	m_glyphTreeView->selectionModel()->select(m_dataTransformModel->index(m_dataTransformModel->rowCount() - 1), QItemSelectionModel::ClearAndSelect);
+	statusBar()->showMessage("Glyph Template successfully added", 3000);
 }
 
 bool DataMapperWindow::AskUserToSave() {
