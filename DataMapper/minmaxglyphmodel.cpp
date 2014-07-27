@@ -4,7 +4,7 @@
 MinMaxGlyphModel::MinMaxGlyphModel(QObject *parent)
 	: QAbstractTableModel(parent)
 {
-	m_labels << tr("Position X")
+	m_propertyHeaders << tr("Position X")
 		<< tr("Position Y")
 		<< tr("Position Z")
 		<< tr("Rotation X")
@@ -15,6 +15,10 @@ MinMaxGlyphModel::MinMaxGlyphModel(QObject *parent)
 		<< tr("Scale Z")
 		<< tr("Color")
 		<< tr("Transparency");
+
+	m_columnHeaders << tr("Min")
+		<< tr("Max")
+		<< tr("Input");
 }
 
 MinMaxGlyphModel::~MinMaxGlyphModel()
@@ -24,21 +28,17 @@ MinMaxGlyphModel::~MinMaxGlyphModel()
 
 int MinMaxGlyphModel::columnCount(const QModelIndex& parent) const {
 
-	return 4;
+	return 3;
 }
 
 QVariant MinMaxGlyphModel::data(const QModelIndex& index, int role) const {
 
-	if (index.column() == 0) {
-		return m_labels[index.row()];
-	}
-
 	if (index.isValid() && m_glyph.valid()) {
 
-		if (index.column() == 1) {
+		if (index.column() == 0) {
 			return GetDataByRow(m_glyph->GetMinGlyph(), SynGlyphX::GlyphMappableProperties::GetPropertiesZero(), index.row());
 		}
-		else if (index.column() == 2) {
+		else if (index.column() == 1) {
 			return GetDataByRow(m_glyph->GetMinGlyph(), m_glyph->GetDifference(), index.row());
 		}
 	}
@@ -49,12 +49,6 @@ QVariant MinMaxGlyphModel::data(const QModelIndex& index, int role) const {
 int	MinMaxGlyphModel::rowCount(const QModelIndex& parent) const {
 
 	return 11;
-}
-
-QVariant MinMaxGlyphModel::headerData(int section, Qt::Orientation orientation, int role) const {
-
-	//We don't need column headers in views so this gets rid of them
-	return "";
 }
 
 void MinMaxGlyphModel::SetMinMaxGlyph(const QModelIndex& index) {
@@ -111,4 +105,25 @@ Qt::ItemFlags MinMaxGlyphModel::flags(const QModelIndex & index) const {
 bool MinMaxGlyphModel::setData(const QModelIndex& index, const QVariant& value, int role) {
 
 	return QAbstractTableModel::setData(index, value, role);
+}
+
+QVariant MinMaxGlyphModel::headerData(int section, Qt::Orientation orientation, int role) const {
+
+	if (role == Qt::DisplayRole) {
+
+		if (orientation == Qt::Horizontal) {
+
+			if (section < columnCount()) {
+				return m_columnHeaders[section];
+			}
+		}
+		else {
+			
+			if (section < rowCount()) {
+				return m_propertyHeaders[section];
+			}
+		}
+	}
+
+	return QVariant();
 }

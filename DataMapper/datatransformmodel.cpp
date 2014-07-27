@@ -35,7 +35,7 @@ QVariant DataTransformModel::data(const QModelIndex& index, int role) const {
 	const SynGlyphX::GlyphProperties& minGlyph = iterator->GetMinGlyph();
 
 	std::wstring displayedData = SynGlyphX::GlyphProperties::s_shapeNames.left.at(minGlyph.GetShape()) + L": " + SynGlyphX::GlyphProperties::s_topologyNames.left.at(minGlyph.GetTopology());
-	if (iterator == m_dataTransform->GetGlyphTrees().begin()->second->root().constify()) {
+	if (iterator == iterator.owner()->root().constify()) {
 		displayedData += L" (Root)";
 	}
 
@@ -56,11 +56,11 @@ QModelIndex	DataTransformModel::index(int row, int column, const QModelIndex& pa
 	}
 	else {
 
-		SynGlyphX::MinMaxGlyphTree::const_iterator parent(static_cast<SynGlyphX::MinMaxGlyphTree::Node*>(parent.internalPointer()));
-		SynGlyphX::MinMaxGlyphTree::const_iterator child = m_dataTransform->GetGlyphTrees().begin()->second->child(parent, row);
-		if (child.valid()) {
+		SynGlyphX::MinMaxGlyphTree::const_iterator parentIterator(static_cast<SynGlyphX::MinMaxGlyphTree::Node*>(parent.internalPointer()));
+		SynGlyphX::MinMaxGlyphTree::const_iterator childIterator = parentIterator.owner()->child(parentIterator, row);
+		if (childIterator.valid()) {
 
-			return createIndex(row, column, static_cast<void*>(child.node()));
+			return createIndex(row, column, static_cast<void*>(childIterator.node()));
 		}
 		else {
 
@@ -110,7 +110,7 @@ int	DataTransformModel::rowCount(const QModelIndex& parent) const {
 	}
 
 	SynGlyphX::MinMaxGlyphTree::const_iterator iterator(static_cast<SynGlyphX::MinMaxGlyphTree::Node*>(parent.internalPointer()));
-	return m_dataTransform->GetGlyphTrees().begin()->second->children(iterator);
+	return iterator.owner()->children(iterator);
 }
 
 void DataTransformModel::AddGlyphFile(const QString& filename) {

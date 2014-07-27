@@ -58,15 +58,22 @@ void DataBindingWidget::CreatePropertiesTable() {
 	QVBoxLayout* layout = new QVBoxLayout(this);
 	QGridLayout* gridLayout = new QGridLayout(this);
 
-	QLabel* label1 = new QLabel(tr("<b>Property</b>"), this);
-	QLabel* label2 = new QLabel(tr("<b>Min</b>"), this);
-	QLabel* label3 = new QLabel(tr("<b>Max</b>"), this);
-	QLabel* label4 = new QLabel(tr("<b>Input</b>"), this);
+	QList<QLabel*> columnHeaders;
+	columnHeaders.push_back(new QLabel(tr("Property"), this));
+	
+	for (int j = 0; j < m_model->columnCount(); ++j) {
 
-	gridLayout->addWidget(label1, 0, 0, Qt::AlignHCenter);
-	gridLayout->addWidget(label2, 0, 2, Qt::AlignHCenter);
-	gridLayout->addWidget(label3, 0, 4, Qt::AlignHCenter);
-	gridLayout->addWidget(label4, 0, 6, Qt::AlignHCenter);
+		columnHeaders.push_back(new QLabel(m_model->headerData(j, Qt::Horizontal, Qt::DisplayRole).toString(), this));
+	}
+
+	for (int i = 0; i < columnHeaders.length(); ++i) {
+
+		QLabel* label = columnHeaders[i];
+		QFont labelFont = label->font();
+		labelFont.setBold(true);
+		label->setFont(labelFont);
+		gridLayout->addWidget(label, 0, i * 2, Qt::AlignHCenter);
+	}
 
 	CreateGridLine(gridLayout, QFrame::VLine, 1);
 	CreateGridLine(gridLayout, QFrame::VLine, 3);
@@ -114,17 +121,21 @@ void DataBindingWidget::CreatePropertiesTable() {
 void DataBindingWidget::CreateRowOfPropertyWidgets(QGridLayout* layout, QWidget* minWidget, QWidget* maxWidget, int row) {
 
 	QDataWidgetMapper* mapper = new QDataWidgetMapper(this);
-	QLineEdit* label = new QLineEdit(this);
-	label->setReadOnly(true);
+
+	QString str = m_model->headerData(row / 2 - 1, Qt::Vertical, Qt::DisplayRole).toString();
+	QLabel* label = new QLabel(m_model->headerData(row/2 - 1, Qt::Vertical, Qt::DisplayRole).toString(), this);
+	QFont labelFont = label->font();
+	labelFont.setBold(true);
+	label->setFont(labelFont);
+
 	BindingLineEdit* inputBindingLineEdit = new BindingLineEdit(this);
 
 	//mapper->setSubmitPolicy(QDataWidgetMapper::AutoSubmit);
 	mapper->setModel(m_model);
 
-	mapper->addMapping(label, 0);
-	mapper->addMapping(minWidget, 1);
-	mapper->addMapping(maxWidget, 2);
-	mapper->addMapping(inputBindingLineEdit, 3);
+	mapper->addMapping(minWidget, 0);
+	mapper->addMapping(maxWidget, 1);
+	mapper->addMapping(inputBindingLineEdit, 2);
 
 	layout->addWidget(label, row, 0, Qt::AlignHCenter);
 	layout->addWidget(minWidget, row, 2, Qt::AlignHCenter);

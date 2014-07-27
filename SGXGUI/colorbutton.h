@@ -13,6 +13,7 @@ namespace SynGlyphX {
 	class SGXGUI_EXPORT ColorButton : public QToolButton
 	{
 		Q_OBJECT
+		Q_PROPERTY(QColor color READ GetColor WRITE SetColor USER true)
 
 	public:
 		ColorButton(bool showAlphaInColorDialog = false, QWidget *parent = 0);

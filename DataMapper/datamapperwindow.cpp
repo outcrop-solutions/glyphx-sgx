@@ -9,23 +9,22 @@
 #include <QtSql/QSqlError>
 #include <QtSql/QSqlQuery>
 #include <QtSql/QSqlRecord>
+#include <QtWidgets/QHeaderView>
 #include "application.h"
 #include "databaseservices.h"
 
 DataMapperWindow::DataMapperWindow(QWidget *parent)
-    : SynGlyphX::MainWindow(parent)
+    : SynGlyphX::MainWindow(parent),
+	m_dataBindingWidget(nullptr)
 {
 	m_dataTransformModel = new DataTransformModel(this);
-	//m_glyphTemplatesModel = new GlyphTemplatesModel(m_transform, this);
     CreateMenus();
     CreateDockWidgets();
 
 	m_minMaxGlyphModel = new MinMaxGlyphModel(this);
 	m_dataBindingWidget = new DataBindingWidget(m_minMaxGlyphModel, this);
+	m_dataBindingWidget->setEnabled(false);
 	setCentralWidget(m_dataBindingWidget);
-	//QTableView* tableView = new QTableView(this);
-	//tableView->setModel(m_minMaxGlyphModel);
-	//setCentralWidget(tableView);
 
 	QObject::connect(m_glyphTreeView->selectionModel(), &QItemSelectionModel::selectionChanged, this, [&, this](const QItemSelection& selected, const QItemSelection& seselected){ m_minMaxGlyphModel->SetMinMaxGlyph(selected.indexes()[0]); });
 
@@ -103,6 +102,7 @@ void DataMapperWindow::CreateDockWidgets() {
     m_glyphTreeView = new QTreeView(leftDockWidget);
 	m_glyphTreeView->setModel(m_dataTransformModel);
     m_glyphTreeView->setSelectionMode(QAbstractItemView::SingleSelection);
+	m_glyphTreeView->header()->hide();
 
     leftDockWidget->setWidget(m_glyphTreeView);
     addDockWidget(Qt::LeftDockWidgetArea, leftDockWidget);
@@ -128,7 +128,8 @@ void DataMapperWindow::CreateNewProject() {
 		return;
 	}
 
-	EnableProjectDependentActions(true);
+	EnableProjectDependentActions(false);
+	m_dataBindingWidget->setEnabled(false);
 }
 
 void DataMapperWindow::OpenProject() {
@@ -179,6 +180,7 @@ void DataMapperWindow::LoadDataTransform(const QString& filename) {
 	SetCurrentFile(filename);
 
 	EnableProjectDependentActions(true);
+	m_dataBindingWidget->setEnabled(true);
 
 	statusBar()->showMessage("Project successfully opened", 3000);
 }
@@ -287,12 +289,13 @@ void DataMapperWindow::AddGlyphTemplate() {
 
 	try {
 		m_dataTransformModel->AddGlyphFile(glyphTemplates[0]);
+		EnableProjectDependentActions(true);
+		m_dataBindingWidget->setEnabled(true);
+		statusBar()->showMessage("Project successfully opened", 3000);
 	}
 	catch (const std::exception& e) {
 		QMessageBox::critical(this, tr("Failed To Add Glyph"), e.what(), QMessageBox::Ok);
 	}
-
-	EnableProjectDependentActions(true);
 }
 
 bool DataMapperWindow::AskUserToSave() {
