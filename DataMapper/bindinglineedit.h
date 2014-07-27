@@ -12,8 +12,8 @@ public:
 	~BindingLineEdit();
 
 protected:
-	//virtual void dragEnterEvent(QDragEnterEvent* event);
-	//virtual void dropEvent(QDropEvent* event);
+	virtual void dragEnterEvent(QDragEnterEvent* event);
+	virtual void dropEvent(QDropEvent* event);
 
 private:
 	

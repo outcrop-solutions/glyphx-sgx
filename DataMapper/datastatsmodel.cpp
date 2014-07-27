@@ -124,7 +124,7 @@ QStringList DataStatsModel::mimeTypes() const {
 QMimeData* DataStatsModel::mimeData(const QModelIndexList& indexes) const {
 
 	QMimeData* mimeData = new QMimeData();
-	mimeData->setText(DatabaseServices::GetFormattedDBName(m_db) + ":" + m_tableName + ":" + m_fieldNames[indexes.front().row()]);
+	mimeData->setData("application/datasource-field", (DatabaseServices::GetFormattedDBName(m_db) + ":" + m_tableName + ":" + m_fieldNames[indexes.front().row()]).toUtf8());
 	return mimeData;
 }
 
