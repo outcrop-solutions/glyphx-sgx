@@ -2,6 +2,10 @@
 #include <boost/property_tree/xml_parser.hpp>
 #include <algorithm>
 #include <boost/uuid/uuid_io.hpp>
+#include "csvreaderwriter.h"
+#include <QtSql/QSqlDatabase>
+#include <QtSql/QSqlQuery>
+#include <QtCore/QVariant>
 
 namespace SynGlyphX {
 
@@ -109,6 +113,60 @@ namespace SynGlyphX {
 	bool DataTransform::IsTransformable() const {
 
 		return ((!m_datasources.empty()) && (!m_glyphTrees.empty()));
+	}
+
+	void DataTransform::TransformToCSV(const std::string& filename) const {
+
+		GlyphTree::ConstSharedVector trees;
+
+		for (auto minMaxTree : m_glyphTrees) {
+
+			MinMaxGlyphTree::iterator minMaxGlyph = minMaxTree.second->root();
+			const InputField& positionX = minMaxGlyph->GetInputField(0);
+			const InputField& positionY = minMaxGlyph->GetInputField(1);
+
+			QSqlDatabase dbPositionX = QSqlDatabase::database(QString::fromStdWString(boost::uuids::to_wstring(positionX.GetDatasourceID())));
+			QSqlDatabase dbPositionY = QSqlDatabase::database(QString::fromStdWString(boost::uuids::to_wstring(positionX.GetDatasourceID())));
+
+			QSqlQuery queryPositionX(dbPositionX);
+			queryPositionX.prepare(QString("SELECT %1 FROM ").arg("\"" + QString::fromStdWString(positionX.GetField()) + "\"") + QString::fromStdWString(positionX.GetTable()));
+
+			QSqlQuery queryPositionY(dbPositionY);
+			queryPositionY.prepare(QString("SELECT %1 FROM ").arg("\"" + QString::fromStdWString(positionY.GetField()) + "\"") + QString::fromStdWString(positionY.GetTable()));
+
+			while (queryPositionX.next()) {
+
+				queryPositionY.next();
+				Vector3 position;
+				Vector3 difference = minMaxGlyph->GetDifference().GetPosition();
+				GlyphProperties glyph = minMaxGlyph->GetMinGlyph();
+				Vector3 min = glyph.GetPosition();
+				position[0] = (queryPositionX.value(0).toDouble() - positionX.GetMin()) / (positionX.GetMax() - positionX.GetMin()) * difference[0] - min[0];
+				position[1] = (queryPositionY.value(0).toDouble() - positionY.GetMin()) / (positionY.GetMax() - positionY.GetMin()) * difference[1] - min[1];
+				position[2] = 0.0;
+				glyph.SetPosition(position);
+
+				GlyphTree::SharedPtr glyphTree(new GlyphTree());
+				glyphTree->insert(glyph);
+
+				AddChildrenToGlyphTree(glyphTree, glyphTree->root(), minMaxTree.second, minMaxGlyph);
+
+				trees.push_back(glyphTree);
+			}
+		}
+
+		CSVReaderWriter& writer = CSVReaderWriter::GetInstance();
+		writer.Write(filename, trees);
+	}
+
+	void DataTransform::AddChildrenToGlyphTree(GlyphTree::SharedPtr tree, GlyphTree::iterator newNode, MinMaxGlyphTree::SharedPtr minMaxTree, MinMaxGlyphTree::iterator node) const {
+
+		for (int i = 0; i < minMaxTree->children(node); ++i) {
+
+			MinMaxGlyphTree::iterator child = minMaxTree->child(node, i);
+			GlyphTree::iterator newChild = tree->insert(newNode, child->GetMinGlyph());
+			AddChildrenToGlyphTree(tree, newChild, minMaxTree, child);
+		}
 	}
 
 } //namespace SynGlyphX

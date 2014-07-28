@@ -43,8 +43,11 @@ namespace SynGlyphX {
 
 		bool IsTransformable() const;
 
+		void TransformToCSV(const std::string& filename) const;
+
     private:
         void Clear();
+		void AddChildrenToGlyphTree(GlyphTree::SharedPtr tree, GlyphTree::iterator newNode, MinMaxGlyphTree::SharedPtr minMaxTree, MinMaxGlyphTree::iterator node) const;
 
 		DatasourceMap m_datasources;
         boost::uuids::random_generator m_uuidGenerator;
