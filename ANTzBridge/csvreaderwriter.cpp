@@ -7,26 +7,26 @@ namespace SynGlyphX {
 
     CSVReaderWriter::CSVReaderWriter()
     {
-        m_predefinedColors[0] = { { 50, 101, 101, 255 } };
-        m_predefinedColors[1] = { { 0, 255, 0, 255 } };
-        m_predefinedColors[2] = { { 255, 0, 0, 255 } };
-        m_predefinedColors[3] = { { 0, 0, 255, 255 } };
-        m_predefinedColors[4] = { { 255, 255, 0, 255 } };
-        m_predefinedColors[5] = { { 152, 0, 255, 255 } };
-        m_predefinedColors[6] = { { 255, 168, 0, 255 } };
-        m_predefinedColors[7] = { { 0, 255, 255, 255 } };
-        m_predefinedColors[8] = { { 255, 0, 255, 255 } };
-        m_predefinedColors[9] = { { 0, 153, 0, 255 } };
-        m_predefinedColors[10] = { { 185, 153, 102, 255 } };
-        m_predefinedColors[11] = { { 255, 180, 255, 255 } };
-        m_predefinedColors[12] = { { 0, 152, 255, 255 } };
-        m_predefinedColors[13] = { { 185, 255, 0, 255 } };
-        m_predefinedColors[14] = { { 152, 0, 0, 255 } };
-        m_predefinedColors[15] = { { 127, 127, 127, 255 } };
-        m_predefinedColors[16] = { { 127, 127, 255, 255 } };
-        m_predefinedColors[17] = { { 197, 82, 0, 255 } };
-        m_predefinedColors[18] = { { 0, 0, 0, 255 } };
-        m_predefinedColors[19] = { { 255, 255, 255, 255 } };
+        m_predefinedColors[0] = SynGlyphX::Color({ { 50, 101, 101, 255 } });
+		m_predefinedColors[1] = SynGlyphX::Color({ { 0, 255, 0, 255 } });
+		m_predefinedColors[2] = SynGlyphX::Color({ { 255, 0, 0, 255 } });
+		m_predefinedColors[3] = SynGlyphX::Color({ { 0, 0, 255, 255 } });
+		m_predefinedColors[4] = SynGlyphX::Color({ { 255, 255, 0, 255 } });
+		m_predefinedColors[5] = SynGlyphX::Color({ { 152, 0, 255, 255 } });
+		m_predefinedColors[6] = SynGlyphX::Color({ { 255, 168, 0, 255 } });
+		m_predefinedColors[7] = SynGlyphX::Color({ { 0, 255, 255, 255 } });
+		m_predefinedColors[8] = SynGlyphX::Color({ { 255, 0, 255, 255 } });
+		m_predefinedColors[9] = SynGlyphX::Color({ { 0, 153, 0, 255 } });
+		m_predefinedColors[10] = SynGlyphX::Color({ { 185, 153, 102, 255 } });
+		m_predefinedColors[11] = SynGlyphX::Color({ { 255, 180, 255, 255 } });
+		m_predefinedColors[12] = SynGlyphX::Color({ { 0, 152, 255, 255 } });
+		m_predefinedColors[13] = SynGlyphX::Color({ { 185, 255, 0, 255 } });
+		m_predefinedColors[14] = SynGlyphX::Color({ { 152, 0, 0, 255 } });
+		m_predefinedColors[15] = SynGlyphX::Color({ { 127, 127, 127, 255 } });
+		m_predefinedColors[16] = SynGlyphX::Color({ { 127, 127, 255, 255 } });
+		m_predefinedColors[17] = SynGlyphX::Color({ { 197, 82, 0, 255 } });
+		m_predefinedColors[18] = SynGlyphX::Color({ { 0, 0, 0, 255 } });
+		m_predefinedColors[19] = SynGlyphX::Color({ { 255, 255, 255, 255 } });
     }
 
 
@@ -34,7 +34,7 @@ namespace SynGlyphX {
     {
     }
 
-	void CSVReaderWriter::Write(const std::string& filename, GlyphTree::ConstSharedPtr treeRoot, unsigned long startingId) {
+	void CSVReaderWriter::Write(const std::string& filename, const GlyphTree::ConstSharedVector& trees, unsigned long startingId) {
 
         std::ofstream file;
         try {
@@ -50,7 +50,9 @@ namespace SynGlyphX {
             file << "5, 1, 5, 0, 2, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0.000000, 0.000000, -1.000000, 0.000000, -0.000000, 1.000000, 1.000000, 1.000000, 85.000000, 0.000000, 7.000000, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 90.000000, 270.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0, 0, 1.000000, 0.000000, 0.100000, 0, 50, 101, 101, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0, 0, 0, 16, 16, 0, 0, 0, 0, 0, 420" << std::endl;
             file << "6, 6, 6, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0, 0, 1.000000, 0.000000, 0.100000, 0, 255, 0, 0, 150, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0, 0, 0, 12, 12, 0, 0, 0, 0, 0, 420" << std::endl;
 
-			WriteGlyph(file, *treeRoot->root(), startingId, 0, 0);
+			for (const GlyphTree::ConstSharedPtr& tree : trees) {
+				startingId = WriteGlyph(file, tree, tree->root(), startingId, 0, 0);
+			}
 
             file.close();
         }
@@ -60,26 +62,28 @@ namespace SynGlyphX {
         }
     }
 
-    //This function only handles the one child case.  Need to update
-	void CSVReaderWriter::WriteGlyph(std::ofstream& file, const GlyphProperties& glyph, unsigned long id, unsigned long parentId, unsigned long branchLevel) {
+	unsigned long CSVReaderWriter::WriteGlyph(std::ofstream& file, const GlyphTree::ConstSharedPtr tree, const GlyphTree::const_iterator& glyph, unsigned long id, unsigned long parentId, unsigned long branchLevel) {
 
-        unsigned int numberOfChildren = 0;// glyph->GetNumberOfChildren();
+		unsigned int numberOfChildren = tree->children(glyph);
 
         file << id << ", 5, " << id << ", 0, " << parentId << ", " << branchLevel << ", 0, 0, " << numberOfChildren << ", 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, ";
-        Vector3 scale = glyph.GetScale();
-        Vector3 translate = glyph.GetPosition();
+        Vector3 scale = glyph->GetScale();
+		Vector3 translate = glyph->GetPosition();
         file << scale[0] << ", " << scale[1] << ", " << scale[2] << ", " << translate[0] << ", " << translate[1] << ", " << translate[2] << ", ";
-        Vector3 tagOffset = glyph.GetTagOffset();
-        Vector3 rotate = glyph.GetRotation();
+		Vector3 tagOffset = glyph->GetTagOffset();
+		Vector3 rotate = glyph->GetRotation();
         file << tagOffset[0] << ", " << tagOffset[1] << ", " << tagOffset[2] << ", 0, 0, 0, " << rotate[0] << ", " << rotate[1] << ", " << rotate[2] << ", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ";
-        Color color = glyph.GetColor();
-        file << ConvertGeometryToCSVInt(glyph.GetShape(), glyph.GetSurface()) << ", 1, 0, " << glyph.GetRatio() << ", " << GetColorIndex(color) << ", " << static_cast<int>(color[0]) << ", ";
-        file << static_cast<int>(color[1]) << ", " << static_cast<int>(color[2]) << ", " << static_cast<int>(color[3]) << ", 0, 0, 0, 0, " << static_cast<int>(glyph.GetTopology()) << ", ";
+		Color color = glyph->GetColor();
+		file << ConvertGeometryToCSVInt(glyph->GetShape(), glyph->GetSurface()) << ", 1, 0, " << glyph->GetRatio() << ", " << GetColorIndex(color) << ", " << static_cast<int>(color[0]) << ", ";
+		file << static_cast<int>(color[1]) << ", " << static_cast<int>(color[2]) << ", " << static_cast<int>(color[3]) << ", 0, 0, 0, 0, " << static_cast<int>(glyph->GetTopology()) << ", ";
         file << "0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 16, 16, 0, 0, 0, 0, " << id << ", 420" << std::endl;
         
-        if (numberOfChildren > 0) {
-            //WriteGlyph(file, glyph->GetChild(0), id + 1, id, branchLevel + 1);
+		unsigned long childId = id + 1;
+		for (unsigned int i = 0; i < numberOfChildren; ++i) {
+            childId = WriteGlyph(file, tree, tree->child(glyph, i), childId, id, branchLevel + 1);
         }
+
+		return childId;
     }
 
 	unsigned int CSVReaderWriter::ConvertGeometryToCSVInt(GlyphProperties::Shape shape, GlyphProperties::Surface surface) {

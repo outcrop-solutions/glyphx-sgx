@@ -3,6 +3,7 @@
 
 #include "ANTzBridge.h"
 #include <boost/shared_ptr.hpp>
+#include <boost/shared_array.hpp>
 #include <vector>
 #include "glyphproperties.h"
 #include <containers/ntree.hpp>
@@ -14,6 +15,7 @@ namespace SynGlyphX {
 	public:
 		typedef boost::shared_ptr<GlyphTree> SharedPtr;
 		typedef boost::shared_ptr<const GlyphTree> ConstSharedPtr;
+		typedef std::vector<ConstSharedPtr> ConstSharedVector;
 
 		GlyphTree();
 		GlyphTree(pNPnode node);
