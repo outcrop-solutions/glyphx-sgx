@@ -27,6 +27,8 @@ DataMapperWindow::DataMapperWindow(QWidget *parent)
 
 	QObject::connect(m_glyphTreeView->selectionModel(), &QItemSelectionModel::selectionChanged, this, [&, this](const QItemSelection& selected, const QItemSelection& seselected){ m_minMaxGlyphModel->SetMinMaxGlyph(selected.indexes()[0]); });
 
+	QObject::connect(m_minMaxGlyphModel, &MinMaxGlyphModel::dataChanged, this, [&, this](const QModelIndex& topLeft, const QModelIndex& bottomRight){ setWindowModified(true); });
+
 	statusBar()->showMessage(SynGlyphX::Application::applicationName() + " Started", 3000);
 }
 
@@ -138,7 +140,9 @@ void DataMapperWindow::OpenProject() {
 	}
 
 	QString openFile = QFileDialog::getOpenFileName(this, tr("Open Project"), "", tr("SynGlyphX Data Transform Project Files (*.sdt)"));
-	LoadDataTransform(openFile);
+	if (!openFile.isEmpty()) {
+		LoadDataTransform(openFile);
+	}
 }
 
 bool DataMapperWindow::SaveProject() {
@@ -190,6 +194,7 @@ bool DataMapperWindow::SaveDataTransform(const QString& filename) {
 		m_dataBindingWidget->CommitChanges();
 		m_dataTransformModel->GetDataTransform()->WriteToFile(filename.toStdString());
 		SetCurrentFile(filename);
+		setWindowModified(false);
 		statusBar()->showMessage("Data transform successfully saved", 3000);
 		return true;
 	}
@@ -265,9 +270,9 @@ void DataMapperWindow::AddDataSources() {
 	if (numNewDatasources > 0) {
 
 		m_dataSourceStats->AddNewStatsViews(numNewDatasources);
+		EnableProjectDependentActions(true);
+		setWindowModified(true);
 	}
-    
-	EnableProjectDependentActions(true);
 }
 
 void DataMapperWindow::ExportToGlyphViewer() {
@@ -305,6 +310,7 @@ void DataMapperWindow::AddGlyphTemplate() {
 	EnableProjectDependentActions(true);
 	m_dataBindingWidget->setEnabled(true);
 	m_glyphTreeView->selectionModel()->select(m_dataTransformModel->index(m_dataTransformModel->rowCount() - 1), QItemSelectionModel::ClearAndSelect);
+	setWindowModified(true);
 	statusBar()->showMessage("Glyph Template successfully added", 3000);
 }
 
