@@ -15,6 +15,8 @@ public:
 	~BindingLineEdit();
 
 	const SynGlyphX::InputField& GetInputField() const;
+
+public slots:
 	void SetInputField(const SynGlyphX::InputField& inputField);
 
 signals:
@@ -24,9 +26,12 @@ signals:
 protected:
 	virtual void dragEnterEvent(QDragEnterEvent* event);
 	virtual void dropEvent(QDropEvent* event);
+	virtual void contextMenuEvent(QContextMenuEvent* event);
 
 private:
 	SynGlyphX::InputField m_inputField;
+	QAction* m_clearAction;
+	//QAction* m_useInputFieldMinMaxActon;
 };
 
 #endif // BINDINGLINEEDIT_H
