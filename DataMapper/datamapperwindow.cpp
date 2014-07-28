@@ -275,6 +275,7 @@ void DataMapperWindow::ExportToGlyphViewer() {
 	QString csvFile = QFileDialog::getSaveFileName(this, tr("Export to Glyph Viewer"), "", tr("CSV Files (*.csv)"));
 	if (!csvFile.isEmpty()) {
 		m_dataTransformModel->GetDataTransform()->TransformToCSV(csvFile.toStdString());
+		statusBar()->showMessage("Data transform sucessfully exported", 3000);
 	}
 }
 
