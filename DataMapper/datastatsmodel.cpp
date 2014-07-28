@@ -75,14 +75,18 @@ int DataStatsModel::rowCount(const QModelIndex& parent) const {
 
 int DataStatsModel::columnCount(const QModelIndex& parent) const {
 
-	return 5;
+	return 6;
 }
 
 QVariant DataStatsModel::data(const QModelIndex& index, int role) const {
 
 	if ((role == Qt::DisplayRole) && (index.isValid())) {
 		
-		return m_stats.at(index.row()).at(index.column());
+		if (index.column() == 0) {
+			return m_fieldNames[index.row()];
+		} else {
+			return m_stats.at(index.row()).at(index.column()-1);
+		}
 	}
 
 	return QVariant();
@@ -91,24 +95,24 @@ QVariant DataStatsModel::data(const QModelIndex& index, int role) const {
 QVariant DataStatsModel::headerData(int section, Qt::Orientation orientation, int role) const {
 
 	if (role == Qt::DisplayRole) {
-		if (orientation == Qt::Vertical) {
+		if (orientation == Qt::Horizontal) {
 
-			return m_fieldNames[section];
-		}
-		else {
 			if (section == 0) {
-				return "Type";
+				return "Field Name";
 			}
 			else if (section == 1) {
-				return "Min";
+				return "Type";
 			}
 			else if (section == 2) {
-				return "Max";
+				return "Min";
 			}
 			else if (section == 3) {
-				return "Average";
+				return "Max";
 			}
 			else if (section == 4) {
+				return "Average";
+			}
+			else if (section == 5) {
 				return "Count";
 			}
 		}
