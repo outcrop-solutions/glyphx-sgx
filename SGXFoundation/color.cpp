@@ -70,6 +70,11 @@ namespace SynGlyphX {
 		std::wostringstream stream;
 		stream << std::hex;
 		for (unsigned int i = 0; i < length; ++i) {
+
+			//If the color channel can be represented with one byte, need to force the leading zero to be written to the stream
+			if (m_color[i] < 16) {
+				stream << 0;
+			}
 			stream << m_color[i];
 		}
 
