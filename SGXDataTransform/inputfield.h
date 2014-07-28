@@ -1,13 +1,14 @@
 #ifndef SYNGLYPHX_INPUTFIELD_H
 #define SYNGLYPHX_INPUTFIELD_H
 
+#include "sgxdatatransform_global.h"
 #include <string>
 #include <boost/uuid/uuid.hpp>
 #include <boost/property_tree/ptree.hpp>
 
 namespace SynGlyphX {
 
-	class InputField
+	class SGXDATATRANSFORM_EXPORT InputField
 	{
 	public:
 		InputField();
