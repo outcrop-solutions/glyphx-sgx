@@ -3,13 +3,16 @@
 
 #include <string>
 #include <boost/uuid/uuid.hpp>
+#include <boost/property_tree/ptree.hpp>
 
 namespace SynGlyphX {
 
 	class InputField
 	{
 	public:
-		InputField(const boost::uuids::uuid& uuid, const std::wstring& table, const std::wstring field);
+		InputField();
+		InputField(const boost::uuids::uuid& datasourceID, const std::wstring& table, const std::wstring field);
+		InputField(const boost::property_tree::wptree& propertyTree);
 		InputField(const InputField& inputField);
 		~InputField();
 
@@ -17,14 +20,18 @@ namespace SynGlyphX {
 
 		void SetMinMax(double min, double max);
 
-		const boost::uuids::uuid& GetUUID() const;
+		const boost::uuids::uuid& GetDatasourceID() const;
 		const std::wstring& GetTable() const;
 		const std::wstring& GetField() const;
 		double GetMin() const;
 		double GetMax() const;
 
+		bool IsValid() const;
+
+		void ExportToPropertyTree(boost::property_tree::wptree& propertyTree) const;
+
 	private:
-		boost::uuids::uuid m_uuid;
+		boost::uuids::uuid m_datasourceID;
 		std::wstring m_table;
 		std::wstring m_field;
 		double m_min;

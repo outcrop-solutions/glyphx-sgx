@@ -7,12 +7,15 @@
 #include <vector>
 #include <containers/ntree.hpp>
 #include <boost/property_tree/ptree.hpp>
+#include "inputfield.h"
 
 namespace SynGlyphX {
 
 	class SGXDATATRANSFORM_EXPORT MinMaxGlyph
 	{
 	public:
+		static const unsigned int NumInputFields = 12;
+		
 		typedef boost::property_tree::wptree PropertyTree;
 
 		MinMaxGlyph(const GlyphProperties& minGlyph);
@@ -31,18 +34,20 @@ namespace SynGlyphX {
 		PropertyTree& ExportToPropertyTree(boost::property_tree::wptree& propertyTree) const;
 
 	private:
-		void AddVector3ToPropertyTree(boost::property_tree::wptree& propertyTreeParent, const std::wstring& name, const Vector3& min, const Vector3& difference) const;
-		void AddValueToPropertyTree(boost::property_tree::wptree& propertyTreeParent, const std::wstring& name, double min, double difference) const;
-		void AddColorToPropertyTree(boost::property_tree::wptree& propertyTreeParent, const Color& min, const Color& difference) const;
+		void AddVector3ToPropertyTree(boost::property_tree::wptree& propertyTreeParent, const std::wstring& name, const Vector3& min, const Vector3& difference, const InputField inputfields[3]) const;
+		void AddValueToPropertyTree(boost::property_tree::wptree& propertyTreeParent, const std::wstring& name, double min, double difference, const InputField& inputfield) const;
+		void AddColorToPropertyTree(boost::property_tree::wptree& propertyTreeParent, const Color& min, const Color& difference, const InputField inputfield[2]) const;
 
-		void GetVector3FromPropertyTree(const boost::property_tree::wptree& propertyTreeParent, Vector3& min, Vector3& difference) const;
-		void GetValueFromPropertyTree(const boost::property_tree::wptree& propertyTreeParent, double& min, double& difference) const;
-		void GetColorFromPropertyTree(const boost::property_tree::wptree& propertyTreeParent, Color& min, Color& difference) const;
+		void GetVector3FromPropertyTree(const boost::property_tree::wptree& propertyTreeParent, Vector3& min, Vector3& difference, InputField inputfields[3]) const;
+		void GetValueFromPropertyTree(const boost::property_tree::wptree& propertyTreeParent, double& min, double& difference, InputField& inputfield) const;
+		void GetColorFromPropertyTree(const boost::property_tree::wptree& propertyTreeParent, Color& min, Color& difference, InputField inputfield[2]) const;
 
 		GlyphProperties m_minGlyph;
 		//Rather than store both a min and a max glyph, the min glyph is stored (listed above) in this class plus an object that stores the difference between min and max
 		//(listed below).  If a value in m_difference is 0 then min and max is the same.  Otherwise the max value is the min value plus the difference value.
 		GlyphMappableProperties m_difference;
+
+		InputField m_inputfields[NumInputFields];
 	};
 
 } //namespace SynGlyphX
