@@ -48,6 +48,7 @@ namespace SynGlyphX {
     private:
         void Clear();
 		void AddChildrenToGlyphTree(GlyphTree::SharedPtr tree, GlyphTree::iterator newNode, MinMaxGlyphTree::SharedPtr minMaxTree, MinMaxGlyphTree::iterator node) const;
+		void RunSqlQuery(const InputField& inputfield, std::vector<double>& results) const;
 
 		DatasourceMap m_datasources;
         boost::uuids::random_generator m_uuidGenerator;

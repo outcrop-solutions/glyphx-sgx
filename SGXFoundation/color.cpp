@@ -85,8 +85,11 @@ namespace SynGlyphX {
 
 		if ((hexString.length() <= 10) && (hexString.length() % 2 == 0)) {
 
-			unsigned int num = std::stoul(hexString, nullptr, 16);
-			std::memcpy(m_color.data(), &num, hexString.length() / 2);
+			for (unsigned int i = 0; i < hexString.length(); i += 2) {
+
+				unsigned int num = std::stoul(hexString.substr(i, 2), nullptr, 16);
+				m_color[i/2] = num;
+			}
 		}
 		else {
 			throw std::invalid_argument("Hexadecimal string is invalid");

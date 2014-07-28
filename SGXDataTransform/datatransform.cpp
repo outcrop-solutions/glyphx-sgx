@@ -115,6 +115,17 @@ namespace SynGlyphX {
 		return ((!m_datasources.empty()) && (!m_glyphTrees.empty()));
 	}
 
+	void DataTransform::RunSqlQuery(const InputField& inputfield, std::vector<double>& results) const {
+
+		QSqlDatabase db= QSqlDatabase::database(QString::fromStdWString(boost::uuids::to_wstring(inputfield.GetDatasourceID())));
+		QSqlQuery query(db);
+		query.prepare(QString("SELECT %1 FROM ").arg("\"" + QString::fromStdWString(inputfield.GetField()) + "\"") + QString::fromStdWString(inputfield.GetTable()));
+		query.exec();
+		while (query.next()) {
+			results.push_back(query.value(0).toDouble());
+		}
+	}
+
 	void DataTransform::TransformToCSV(const std::string& filename) const {
 
 		GlyphTree::ConstSharedVector trees;
@@ -122,31 +133,45 @@ namespace SynGlyphX {
 		for (auto minMaxTree : m_glyphTrees) {
 
 			MinMaxGlyphTree::iterator minMaxGlyph = minMaxTree.second->root();
-			const InputField& positionX = minMaxGlyph->GetInputField(0);
-			const InputField& positionY = minMaxGlyph->GetInputField(1);
+			const InputField& positionXInput = minMaxGlyph->GetInputField(0);
+			const InputField& positionYInput = minMaxGlyph->GetInputField(1);
+			const InputField& positionZInput = minMaxGlyph->GetInputField(2);
 
-			QSqlDatabase dbPositionX = QSqlDatabase::database(QString::fromStdWString(boost::uuids::to_wstring(positionX.GetDatasourceID())));
-			QSqlDatabase dbPositionY = QSqlDatabase::database(QString::fromStdWString(boost::uuids::to_wstring(positionX.GetDatasourceID())));
+			std::vector<double> xPositions;
+			std::vector<double> yPositions;
+			std::vector<double> zPositions;
 
-			QSqlQuery queryPositionX(dbPositionX);
-			queryPositionX.prepare(QString("SELECT %1 FROM ").arg("\"" + QString::fromStdWString(positionX.GetField()) + "\"") + QString::fromStdWString(positionX.GetTable()));
+			if (positionXInput.IsValid()) {
+				RunSqlQuery(positionXInput, xPositions);
+			}
 
-			QSqlQuery queryPositionY(dbPositionY);
-			queryPositionY.prepare(QString("SELECT %1 FROM ").arg("\"" + QString::fromStdWString(positionY.GetField()) + "\"") + QString::fromStdWString(positionY.GetTable()));
+			if (positionYInput.IsValid()) {
+				RunSqlQuery(positionYInput, yPositions);
+			}
 
-			queryPositionX.exec();
-			queryPositionY.exec();
+			if (positionZInput.IsValid()) {
+				RunSqlQuery(positionZInput, zPositions);
+			}
 
-			while (queryPositionX.next()) {
+			for (unsigned int i = 0; i < std::max(std::max(xPositions.size(), yPositions.size()), zPositions.size()); ++i) {
 
-				queryPositionY.next();
 				Vector3 position;
 				Vector3 difference = minMaxGlyph->GetDifference().GetPosition();
 				GlyphProperties glyph = minMaxGlyph->GetMinGlyph();
 				Vector3 min = glyph.GetPosition();
-				position[0] = (queryPositionX.value(0).toDouble() - positionX.GetMin()) / (positionX.GetMax() - positionX.GetMin()) * difference[0] + min[0];
-				position[1] = (queryPositionY.value(0).toDouble() - positionY.GetMin()) / (positionY.GetMax() - positionY.GetMin()) * difference[1] + min[1];
-				position[2] = 0.0;
+				position[0] = min[0];
+				if (!xPositions.empty()) {
+					position[0] += (xPositions[i] - positionXInput.GetMin()) / (positionXInput.GetMax() - positionXInput.GetMin()) * difference[0];
+				}
+				position[1] = min[1];
+				if (!yPositions.empty()) {
+					position[1] += (yPositions[i] - positionYInput.GetMin()) / (positionYInput.GetMax() - positionYInput.GetMin()) * difference[1];
+				}
+				position[2] = min[2];
+				if (!yPositions.empty()) {
+					position[2] += (zPositions[i] - positionZInput.GetMin()) / (positionZInput.GetMax() - positionZInput.GetMin()) * difference[2];
+				}
+
 				glyph.SetPosition(position);
 
 				GlyphTree::SharedPtr glyphTree(new GlyphTree());
