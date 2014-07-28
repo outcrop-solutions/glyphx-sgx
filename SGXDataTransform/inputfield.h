@@ -5,11 +5,13 @@
 #include <string>
 #include <boost/uuid/uuid.hpp>
 #include <boost/property_tree/ptree.hpp>
+#include <QtCore/QMetaType>
 
 namespace SynGlyphX {
 
 	class SGXDATATRANSFORM_EXPORT InputField
 	{
+
 	public:
 		InputField();
 		InputField(const boost::uuids::uuid& datasourceID, const std::wstring& table, const std::wstring field);
@@ -40,6 +42,8 @@ namespace SynGlyphX {
 	};
 
 } //namespace SynGlyphX
+
+Q_DECLARE_METATYPE(SynGlyphX::InputField)
 
 #endif SYNGLYPHX_INPUTFIELD_H
 

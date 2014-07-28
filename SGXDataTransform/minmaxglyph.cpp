@@ -50,6 +50,9 @@ namespace SynGlyphX {
 		m_minGlyph(glyph.m_minGlyph),
 		m_difference(glyph.m_difference) {
 
+		for (int i = 0; i < NumInputFields; ++i) {
+			m_inputfields[i] = glyph.m_inputfields[i];
+		}
 	}
 
 	MinMaxGlyph::~MinMaxGlyph()
@@ -60,6 +63,10 @@ namespace SynGlyphX {
 
 		m_minGlyph = glyph.m_minGlyph;
 		m_difference = glyph.m_difference;
+
+		for (int i = 0; i < NumInputFields; ++i) {
+			m_inputfields[i] = glyph.m_inputfields[i];
+		}
 
 		return *this;
 	}
@@ -183,6 +190,26 @@ namespace SynGlyphX {
 		boost::optional<const boost::property_tree::wptree&> inputFieldTree2 = alphaPropertyTree.get_child_optional(L"InputField");
 		if (inputFieldTree2.is_initialized()) {
 			inputfield[1] = InputField(inputFieldTree2.get());
+		}
+	}
+
+	const InputField& MinMaxGlyph::GetInputField(unsigned int index) const {
+
+		if (index < NumInputFields) {
+			return m_inputfields[index];
+		}
+		else {
+			throw new std::out_of_range("Out of range of number of input fields");
+		}
+	}
+
+	void MinMaxGlyph::SetInputField(unsigned int index, const InputField& inputfield) {
+
+		if (index < NumInputFields) {
+			m_inputfields[index] = inputfield;
+		}
+		else {
+			throw new std::out_of_range("Out of range of number of input fields");
 		}
 	}
 

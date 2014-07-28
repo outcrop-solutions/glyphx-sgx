@@ -33,6 +33,9 @@ namespace SynGlyphX {
 
 		PropertyTree& ExportToPropertyTree(boost::property_tree::wptree& propertyTree) const;
 
+		const InputField& GetInputField(unsigned int index) const;
+		void SetInputField(unsigned int index, const InputField& inputfield);
+
 	private:
 		void AddVector3ToPropertyTree(boost::property_tree::wptree& propertyTreeParent, const std::wstring& name, const Vector3& min, const Vector3& difference, const InputField inputfields[3]) const;
 		void AddValueToPropertyTree(boost::property_tree::wptree& propertyTreeParent, const std::wstring& name, double min, double difference, const InputField& inputfield) const;
