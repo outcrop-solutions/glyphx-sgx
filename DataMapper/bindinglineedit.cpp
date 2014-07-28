@@ -33,6 +33,9 @@ void BindingLineEdit::SetInputField(const SynGlyphX::InputField& inputField) {
 			QString::number(m_inputField.GetMin()) + ":" +
 			QString::number(m_inputField.GetMax()));
 	}
+	else {
+		setText("");
+	}
 }
 
 void BindingLineEdit::dragEnterEvent(QDragEnterEvent *event) {
@@ -49,5 +52,6 @@ void BindingLineEdit::dropEvent(QDropEvent* event) {
 	if (mimeData != nullptr) {
 
 		SetInputField(mimeData->GetInputField());
+		emit ValueChangedByDragAndDrop(mimeData->GetInputField());
 	}
 }

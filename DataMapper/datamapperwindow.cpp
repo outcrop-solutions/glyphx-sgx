@@ -70,7 +70,7 @@ void DataMapperWindow::CreateMenus() {
     //Create Edit Menu
     m_projectMenu = menuBar()->addMenu(tr("Project"));
 
-	QAction* addGlyphTemplateAction = m_projectMenu->addAction(tr("Add Glyph Template"));
+	QAction* addGlyphTemplateAction = m_projectMenu->addAction(tr("Add Glyph Templates"));
 	QObject::connect(addGlyphTemplateAction, &QAction::triggered, this, &DataMapperWindow::AddGlyphTemplate);
     
     QAction* addDataSourcesAction = m_projectMenu->addAction(tr("Add Data Sources"));

@@ -21,6 +21,8 @@ DataBindingWidget::DataBindingWidget(MinMaxGlyphModel* model, QWidget *parent)
 	setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
 	QObject::connect(model, &MinMaxGlyphModel::modelReset, this, &DataBindingWidget::OnModelReset);
 	OnModelReset();
+
+	//QObject::connect(model, &MinMaxGlyphModel::modelAboutToBeReset, this, &DataBindingWidget::CommitChanges);
 }
 
 DataBindingWidget::~DataBindingWidget()
@@ -142,6 +144,8 @@ void DataBindingWidget::CreateRowOfPropertyWidgets(QGridLayout* layout, QWidget*
 	layout->addWidget(maxWidget, row, 4, Qt::AlignHCenter);
 	layout->addWidget(inputBindingLineEdit, row, 6);
 
+	QObject::connect(inputBindingLineEdit, &BindingLineEdit::ValueChangedByDragAndDrop, mapper, &QDataWidgetMapper::submit);
+
 	m_dataWidgetMappers.push_back(mapper);
 }
 
@@ -171,6 +175,9 @@ void DataBindingWidget::CreateColorPropertyWidgets(QGridLayout* layout, int row)
 	SynGlyphX::ColorButton* maxColorButton = new SynGlyphX::ColorButton(false, this);
 
 	CreateRowOfPropertyWidgets(layout, minColorButton, maxColorButton, row);
+
+	QObject::connect(minColorButton, &SynGlyphX::ColorButton::ColorChanged, m_dataWidgetMappers.last(), &QDataWidgetMapper::submit);
+	QObject::connect(maxColorButton, &SynGlyphX::ColorButton::ColorChanged, m_dataWidgetMappers.last(), &QDataWidgetMapper::submit);
 }
 
 void DataBindingWidget::CreateGridLine(QGridLayout* layout, QFrame::Shape shape, int index, int thickness) {

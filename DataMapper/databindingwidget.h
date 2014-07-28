@@ -18,6 +18,7 @@ public:
 	DataBindingWidget(MinMaxGlyphModel* model, QWidget *parent = 0);
 	~DataBindingWidget();
 
+public slots:
 	void CommitChanges();
 
 private slots:

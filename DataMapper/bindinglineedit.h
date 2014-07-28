@@ -19,6 +19,7 @@ public:
 
 signals:
 	void ValueChanged(const SynGlyphX::InputField&);
+	void ValueChangedByDragAndDrop(const SynGlyphX::InputField&);
 
 protected:
 	virtual void dragEnterEvent(QDragEnterEvent* event);

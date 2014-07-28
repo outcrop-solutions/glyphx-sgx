@@ -5,7 +5,6 @@
 #include <QtWidgets/QHeaderView>
 #include "datastatsmodel.h"
 #include "databaseservices.h"
-#include "datastatsfieldheaderview.h"
 
 DataSourceStatsWidget::DataSourceStatsWidget(boost::shared_ptr<const SynGlyphX::DataTransform> transform, QWidget *parent)
 	: QTabWidget(parent),
@@ -75,11 +74,15 @@ void DataSourceStatsWidget::CreateTableView(const boost::uuids::uuid& id, const 
 	view->setDropIndicatorShown(true);
 	view->setAcceptDrops(false);
 	
-	view->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
-	view->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+	view->verticalHeader()->hide();
 
 	DataStatsModel* model = new DataStatsModel(id, tableName, this);
 	view->setModel(model);
+
+	view->resizeColumnsToContents();
+	view->resizeRowsToContents();
+	
 	m_statViews.push_back(view);
+	
 	addTab(view, DatabaseServices::GetFormattedDBName(db) + ":" + tableName);
 }
