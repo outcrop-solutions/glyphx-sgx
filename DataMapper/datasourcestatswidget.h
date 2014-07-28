@@ -19,8 +19,8 @@ public:
 
 private:
 	void ClearTabs();
-    void CreateTablesFromDatasource(const QSqlDatabase& db, const std::vector<std::wstring>& tables);
-	void CreateTableView(const QSqlDatabase& db, const QString& tableName);
+    void CreateTablesFromDatasource(const boost::uuids::uuid& id, QSqlDatabase& db, const std::vector<std::wstring>& tables);
+	void CreateTableView(const boost::uuids::uuid& id, const QSqlDatabase& db, const QString& tableName);
 	QList<QTableView*> m_statViews;
     boost::shared_ptr<const SynGlyphX::DataTransform> m_transform;
 };

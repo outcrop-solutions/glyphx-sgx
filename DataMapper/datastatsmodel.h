@@ -3,13 +3,14 @@
 
 #include <QtCore/QAbstractTableModel>
 #include <QtSql/QSqlQuery>
+#include <boost/uuid/uuid.hpp>
 
 class DataStatsModel : public QAbstractTableModel
 {
 	Q_OBJECT
 
 public:
-	DataStatsModel(const QSqlDatabase& db, const QString& tableName, QObject *parent = 0);
+	DataStatsModel(const boost::uuids::uuid& id, const QString& tableName, QObject *parent = 0);
 	~DataStatsModel();
 
 	virtual int rowCount(const QModelIndex& parent = QModelIndex()) const;
@@ -24,8 +25,9 @@ public:
 private:
 	QList<QStringList> m_stats;
 	QStringList m_fieldNames;
+	QList<QVariant::Type> m_fieldTypes;
 	QString m_tableName;
-	QSqlDatabase m_db;
+	boost::uuids::uuid m_id;
 };
 
 #endif // DATASTATSMODEL_H

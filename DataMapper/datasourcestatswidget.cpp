@@ -40,7 +40,7 @@ void DataSourceStatsWidget::AddNewStatsViews(const unsigned int numNewDatasource
             throw std::exception("Failed to load data sources");
         }
 
-        CreateTablesFromDatasource(newDataSourceDB, iT->second.GetTables());
+        CreateTablesFromDatasource(iT->first, newDataSourceDB, iT->second.GetTables());
     }
 }
 
@@ -50,7 +50,7 @@ void DataSourceStatsWidget::ClearTabs() {
 	m_statViews.clear();
 }
 
-void DataSourceStatsWidget::CreateTablesFromDatasource(const QSqlDatabase& db, const std::vector<std::wstring>& tables) {
+void DataSourceStatsWidget::CreateTablesFromDatasource(const boost::uuids::uuid& id, QSqlDatabase& db, const std::vector<std::wstring>& tables) {
 
     const QStringList& dbTables = db.tables();
 
@@ -61,11 +61,11 @@ void DataSourceStatsWidget::CreateTablesFromDatasource(const QSqlDatabase& db, c
             ClearTabs();
             throw std::exception("Table in datatransform does not exist");
         }
-        CreateTableView(db, qtable);
+        CreateTableView(id, db, qtable);
 	}
 }
 
-void DataSourceStatsWidget::CreateTableView(const QSqlDatabase& db, const QString& tableName) {
+void DataSourceStatsWidget::CreateTableView(const boost::uuids::uuid& id, const QSqlDatabase& db, const QString& tableName) {
 
 	QTableView* view = new QTableView(this);
 	view->setSelectionMode(QAbstractItemView::SingleSelection);
@@ -78,7 +78,7 @@ void DataSourceStatsWidget::CreateTableView(const QSqlDatabase& db, const QStrin
 	view->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 	view->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 
-	DataStatsModel* model = new DataStatsModel(db, tableName, this);
+	DataStatsModel* model = new DataStatsModel(id, tableName, this);
 	view->setModel(model);
 	m_statViews.push_back(view);
 	addTab(view, DatabaseServices::GetFormattedDBName(db) + ":" + tableName);

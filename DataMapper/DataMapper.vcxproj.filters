@@ -130,6 +130,15 @@
     <ClCompile Include="GeneratedFiles\Release\moc_datatransformmodel.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="inputfieldmimedata.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_inputfieldmimedata.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_inputfieldmimedata.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="datamapperwindow.h">
@@ -160,6 +169,9 @@
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="datatransformmodel.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="inputfieldmimedata.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>

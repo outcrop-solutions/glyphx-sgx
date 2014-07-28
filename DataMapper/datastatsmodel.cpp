@@ -3,12 +3,15 @@
 #include <QtSql/QSqlField>
 #include <QtCore/QMimeData>
 #include "databaseservices.h"
+#include "inputfieldmimedata.h"
+#include <boost/uuid/uuid_io.hpp>
 
-DataStatsModel::DataStatsModel(const QSqlDatabase& db, const QString& tableName, QObject *parent)
+DataStatsModel::DataStatsModel(const boost::uuids::uuid& id, const QString& tableName, QObject *parent)
 	: QAbstractTableModel(parent),
-	m_db(db),
+	m_id(id),
 	m_tableName(tableName)
 {
+	QSqlDatabase db = QSqlDatabase::database(QString::fromStdWString(boost::uuids::to_wstring(id)));
 	QSqlRecord columnNamesRecord = db.record(tableName);
 
 	QSqlQuery query(db);
@@ -19,6 +22,7 @@ DataStatsModel::DataStatsModel(const QSqlDatabase& db, const QString& tableName,
 		QSqlField field = columnNamesRecord.field(i);
 		query.prepare(QString("SELECT TYPEOF(%1), MIN(%1), MAX(%1), AVG(%1), COUNT(%1) FROM ").arg("\"" + field.name() + "\"") + tableName);
 		m_fieldNames.append(field.name());
+		m_fieldTypes.append(field.type());
 		//query.bindValue(":colName", "\"" + columnNamesRecord.fieldName(i) + "\"");
 		query.exec();
 		query.first();
@@ -122,13 +126,30 @@ QStringList DataStatsModel::mimeTypes() const {
 }
 
 QMimeData* DataStatsModel::mimeData(const QModelIndexList& indexes) const {
+	
+	if (m_fieldTypes[indexes.front().row()] == QVariant::String) {
 
-	QMimeData* mimeData = new QMimeData();
-	mimeData->setData("application/datasource-field", (DatabaseServices::GetFormattedDBName(m_db) + ":" + m_tableName + ":" + m_fieldNames[indexes.front().row()]).toUtf8());
+		return nullptr;
+	}
+
+	QSqlDatabase db = QSqlDatabase::database(QString::fromStdWString(boost::uuids::to_wstring(m_id)));
+	QString fieldName = m_fieldNames[indexes.front().row()];
+
+	QSqlQuery query(db);
+	query.prepare(QString("SELECT  MIN(%1), MAX(%1) FROM ").arg("\"" + fieldName + "\"") + m_tableName);
+
+	query.exec();
+	query.first();
+	QSqlRecord record = query.record();
+	
+	SynGlyphX::InputField inputfield(m_id, m_tableName.toStdWString(), fieldName.toStdWString());
+	inputfield.SetMinMax(record.value(0).toDouble(), record.value(1).toDouble());
+	InputFieldMimeData* mimeData = new InputFieldMimeData(inputfield);
+	
 	return mimeData;
 }
 
-Qt::ItemFlags DataStatsModel::flags(const QModelIndex & index) const {
+Qt::ItemFlags DataStatsModel::flags(const QModelIndex& index) const {
 
 	Qt::ItemFlags defaultFlags = QAbstractTableModel::flags(index);
 
