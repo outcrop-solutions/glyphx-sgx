@@ -134,6 +134,9 @@ namespace SynGlyphX {
 			QSqlQuery queryPositionY(dbPositionY);
 			queryPositionY.prepare(QString("SELECT %1 FROM ").arg("\"" + QString::fromStdWString(positionY.GetField()) + "\"") + QString::fromStdWString(positionY.GetTable()));
 
+			queryPositionX.exec();
+			queryPositionY.exec();
+
 			while (queryPositionX.next()) {
 
 				queryPositionY.next();
@@ -141,8 +144,8 @@ namespace SynGlyphX {
 				Vector3 difference = minMaxGlyph->GetDifference().GetPosition();
 				GlyphProperties glyph = minMaxGlyph->GetMinGlyph();
 				Vector3 min = glyph.GetPosition();
-				position[0] = (queryPositionX.value(0).toDouble() - positionX.GetMin()) / (positionX.GetMax() - positionX.GetMin()) * difference[0] - min[0];
-				position[1] = (queryPositionY.value(0).toDouble() - positionY.GetMin()) / (positionY.GetMax() - positionY.GetMin()) * difference[1] - min[1];
+				position[0] = (queryPositionX.value(0).toDouble() - positionX.GetMin()) / (positionX.GetMax() - positionX.GetMin()) * difference[0] + min[0];
+				position[1] = (queryPositionY.value(0).toDouble() - positionY.GetMin()) / (positionY.GetMax() - positionY.GetMin()) * difference[1] + min[1];
 				position[2] = 0.0;
 				glyph.SetPosition(position);
 
