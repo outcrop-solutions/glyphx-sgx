@@ -193,3 +193,11 @@ void DataBindingWidget::OnModelReset() {
 		m_dataWidgetMappers[i]->setCurrentIndex(i);
 	}
 }
+
+void DataBindingWidget::CommitChanges() {
+
+	for (QDataWidgetMapper* mapper : m_dataWidgetMappers) {
+
+		mapper->submit();
+	}
+}

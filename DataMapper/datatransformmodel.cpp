@@ -1,4 +1,5 @@
 #include "datatransformmodel.h"
+#include "databaseservices.h"
 
 DataTransformModel::DataTransformModel(QObject *parent)
 	: QAbstractItemModel(parent),
@@ -127,6 +128,7 @@ void DataTransformModel::LoadDataTransformFile(const QString& filename) {
 
 	beginResetModel();
 	m_dataTransform->ReadFromFile(filename.toStdString());
+	DatabaseServices::AddDatabaseConnections(m_dataTransform->GetDatasources(), m_dataTransform->GetDatasources().size());
 	endResetModel();
 }
 

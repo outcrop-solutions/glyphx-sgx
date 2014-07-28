@@ -32,8 +32,8 @@ void DataSourceStatsWidget::AddNewStatsViews(const unsigned int numNewDatasource
 	std::advance(iT, datasources.size() - numNewDatasources);
     for (; iT != datasources.end(); ++iT) {
 
-        QSqlDatabase newDataSourceDB = QSqlDatabase::addDatabase(DatabaseServices::GetQtDBType(iT->second.GetType()), QString::fromStdString(boost::uuids::to_string(iT->first)));
-        newDataSourceDB.setDatabaseName(QString::fromStdWString(iT->second.GetDBName()));
+        QSqlDatabase newDataSourceDB = QSqlDatabase::database(QString::fromStdString(boost::uuids::to_string(iT->first)));
+        //newDataSourceDB.setDatabaseName(QString::fromStdWString(iT->second.GetDBName()));
 
         if (!newDataSourceDB.open()) {
             ClearTabs();

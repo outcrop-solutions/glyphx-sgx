@@ -4,6 +4,7 @@
 #include <QtCore/QFileInfo>
 #include <exception>
 #include <boost/uuid/uuid_io.hpp>
+#include "datatransform.h"
 
 DatabaseServices::DatabaseServices()
 {
@@ -64,4 +65,15 @@ QString DatabaseServices::GetQtDBType(SynGlyphX::Datasource::SourceType sourceTy
 	}
 
 	return "";
+}
+
+void DatabaseServices::AddDatabaseConnections(const SynGlyphX::DataTransform::DatasourceMap& datasources, unsigned int numNewDatasources) {
+
+	SynGlyphX::DataTransform::DatasourceMap::const_iterator iT = datasources.begin();
+	std::advance(iT, datasources.size() - numNewDatasources);
+	for (; iT != datasources.end(); ++iT) {
+
+		QSqlDatabase newDataSourceDB = QSqlDatabase::addDatabase(GetQtDBType(iT->second.GetType()), QString::fromStdString(boost::uuids::to_string(iT->first)));
+		newDataSourceDB.setDatabaseName(QString::fromStdWString(iT->second.GetDBName()));
+	}
 }
