@@ -39,7 +39,7 @@ void DataBindingWidget::CreateTagAndDescriptionWidget() {
 	QHBoxLayout* tagLayout = new QHBoxLayout;
 
 	QLabel* label = new QLabel(tr("<b>Tag:</b>"), this);
-	m_tagLineEdit = new BindingLineEdit(this);
+	m_tagLineEdit = new BindingLineEdit(this, false);
 
 	m_descriptionEdit = new SynGlyphX::RichTextEditor(tr("<b>Description:</b>"), this);
 
@@ -130,7 +130,7 @@ void DataBindingWidget::CreateRowOfPropertyWidgets(QGridLayout* layout, QWidget*
 	labelFont.setBold(true);
 	label->setFont(labelFont);
 
-	BindingLineEdit* inputBindingLineEdit = new BindingLineEdit(this);
+	BindingLineEdit* inputBindingLineEdit = new BindingLineEdit(this, true);
 
 	//mapper->setSubmitPolicy(QDataWidgetMapper::AutoSubmit);
 	mapper->setModel(m_model);

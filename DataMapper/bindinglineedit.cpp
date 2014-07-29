@@ -5,8 +5,9 @@
 #include "inputfieldmimedata.h"
 #include "databaseservices.h"
 
-BindingLineEdit::BindingLineEdit(QWidget *parent)
-	: QLineEdit(parent)
+BindingLineEdit::BindingLineEdit(QWidget *parent, bool onlyAcceptsNumericFields)
+	: QLineEdit(parent),
+	m_onlyAcceptsNumericFields(onlyAcceptsNumericFields)
 {
 	setReadOnly(true);
 	setAcceptDrops(true);
@@ -35,11 +36,14 @@ void BindingLineEdit::SetInputField(const SynGlyphX::InputField& inputField) {
 
 	if (m_inputField.IsValid()) {
 
-		setText(DatabaseServices::GetFormattedDBName(m_inputField.GetDatasourceID()) + ":" +
-			QString::fromStdWString(m_inputField.GetTable()) + ":" +
-			QString::fromStdWString(m_inputField.GetField()) + ":" +
-			QString::number(m_inputField.GetMin()) + ":" +
-			QString::number(m_inputField.GetMax()));
+		QString text = DatabaseServices::GetFormattedDBName(m_inputField.GetDatasourceID()) + ":" + QString::fromStdWString(m_inputField.GetTable()) + ":" + QString::fromStdWString(m_inputField.GetField());
+
+		if (m_inputField.IsNumeric() && m_onlyAcceptsNumericFields) {
+
+			text += ":" + QString::number(m_inputField.GetMin()) + ":" + QString::number(m_inputField.GetMax());
+		}
+
+		setText(text);
 	}
 	else {
 		setText("");
@@ -51,10 +55,20 @@ void BindingLineEdit::SetInputField(const SynGlyphX::InputField& inputField) {
 
 void BindingLineEdit::dragEnterEvent(QDragEnterEvent *event) {
 
-	if (event->mimeData()->hasFormat("application/datasource-field")) {
+	const InputFieldMimeData* mimeData = qobject_cast<const InputFieldMimeData*>(event->mimeData());
+	if (mimeData == nullptr) {
 
-		event->acceptProposedAction();
+		return;
 	}
+
+	if (m_onlyAcceptsNumericFields) {
+		
+		if (!mimeData->GetInputField().IsNumeric()) {
+			return;
+		}
+	}
+		
+	event->acceptProposedAction();
 }
 
 void BindingLineEdit::dropEvent(QDropEvent* event) {

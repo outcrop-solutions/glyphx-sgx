@@ -131,7 +131,7 @@ QStringList DataStatsModel::mimeTypes() const {
 
 QMimeData* DataStatsModel::mimeData(const QModelIndexList& indexes) const {
 	
-	if (m_fieldTypes[indexes.front().row()] == QVariant::String) {
+	if (indexes.isEmpty() || (!indexes.front().isValid())) {
 
 		return nullptr;
 	}
@@ -146,7 +146,7 @@ QMimeData* DataStatsModel::mimeData(const QModelIndexList& indexes) const {
 	query.first();
 	QSqlRecord record = query.record();
 	
-	SynGlyphX::InputField inputfield(m_id, m_tableName.toStdWString(), fieldName.toStdWString());
+	SynGlyphX::InputField inputfield(m_id, m_tableName.toStdWString(), fieldName.toStdWString(), (m_fieldTypes[indexes.front().row()] != QVariant::Type::String));
 	inputfield.SetMinMax(record.value(0).toDouble(), record.value(1).toDouble());
 	InputFieldMimeData* mimeData = new InputFieldMimeData(inputfield);
 	
