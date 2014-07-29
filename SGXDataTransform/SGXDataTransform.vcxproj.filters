@@ -46,6 +46,9 @@
     <ClInclude Include="minmaxglyphtree.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="numericinputfield.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="datasource.cpp">
@@ -64,6 +67,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="minmaxglyphtree.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="numericinputfield.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -6,6 +6,7 @@
 #include <boost/uuid/uuid.hpp>
 #include <boost/property_tree/ptree.hpp>
 #include <QtCore/QMetaType>
+#include <typeinfo>
 
 namespace SynGlyphX {
 
@@ -14,24 +15,26 @@ namespace SynGlyphX {
 
 	public:
 		InputField();
-		InputField(const boost::uuids::uuid& datasourceID, const std::wstring& table, const std::wstring field);
+		InputField(const boost::uuids::uuid& datasourceID, const std::wstring& table, const std::wstring field, bool isFieldNumeric);
 		InputField(const boost::property_tree::wptree& propertyTree);
 		InputField(const InputField& inputField);
 		~InputField();
 
 		InputField& operator=(const InputField& inputField);
 
-		void SetMinMax(double min, double max);
-
 		const boost::uuids::uuid& GetDatasourceID() const;
 		const std::wstring& GetTable() const;
 		const std::wstring& GetField() const;
+
 		double GetMin() const;
 		double GetMax() const;
+		void SetMinMax(double min, double max);
 
 		bool IsValid() const;
 
 		void ExportToPropertyTree(boost::property_tree::wptree& propertyTree) const;
+
+		bool IsNumeric() const;
 
 	private:
 		boost::uuids::uuid m_datasourceID;
@@ -39,6 +42,7 @@ namespace SynGlyphX {
 		std::wstring m_field;
 		double m_min;
 		double m_max;
+		bool m_isNumeric;
 	};
 
 } //namespace SynGlyphX

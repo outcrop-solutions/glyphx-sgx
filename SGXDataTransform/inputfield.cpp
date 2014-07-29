@@ -3,14 +3,16 @@
 
 namespace SynGlyphX {
 
-	InputField::InputField() {
+	InputField::InputField() :
+		m_isNumeric(false) {
 
 	}
 
-	InputField::InputField(const boost::uuids::uuid& datasourceID, const std::wstring& table, const std::wstring field) :
+	InputField::InputField(const boost::uuids::uuid& datasourceID, const std::wstring& table, const std::wstring field, bool isFieldNumeric) :
 		m_datasourceID(datasourceID),
 		m_table(table),
-		m_field(field)
+		m_field(field),
+		m_isNumeric(isFieldNumeric)
 	{
 	}
 
@@ -18,6 +20,7 @@ namespace SynGlyphX {
 		m_datasourceID(propertyTree.get<boost::uuids::uuid>(L"<xmlattr>.id")),
 		m_table(propertyTree.get<std::wstring>(L"<xmlattr>.table")),
 		m_field(propertyTree.get<std::wstring>(L"<xmlattr>.field")),
+		m_isNumeric(propertyTree.get<bool>(L"<xmlattr>.numeric")),
 		m_min(propertyTree.get<double>(L"Min")),
 		m_max(propertyTree.get<double>(L"Max")) {
 
@@ -27,6 +30,7 @@ namespace SynGlyphX {
 		m_datasourceID(inputField.m_datasourceID),
 		m_table(inputField.m_table),
 		m_field(inputField.m_field),
+		m_isNumeric(inputField.m_isNumeric),
 		m_min(inputField.m_min),
 		m_max(inputField.m_max) {
 
@@ -41,6 +45,7 @@ namespace SynGlyphX {
 		m_datasourceID = inputField.m_datasourceID;
 		m_table = inputField.m_table;
 		m_field = inputField.m_field;
+		m_isNumeric = inputField.m_isNumeric;
 		m_min = inputField.m_min;
 		m_max = inputField.m_max;
 
@@ -90,8 +95,14 @@ namespace SynGlyphX {
 		inputFieldPropertyTree.put(L"<xmlattr>.id", m_datasourceID);
 		inputFieldPropertyTree.put(L"<xmlattr>.table", m_table);
 		inputFieldPropertyTree.put(L"<xmlattr>.field", m_field);
+		inputFieldPropertyTree.put(L"<xmlattr>.numeric", m_isNumeric);
 		inputFieldPropertyTree.put(L"Min", m_min);
 		inputFieldPropertyTree.put(L"Max", m_max);
+	}
+
+	bool InputField::IsNumeric() const {
+
+		return m_isNumeric;
 	}
 
 } //namespace SynGlyphX
