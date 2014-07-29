@@ -14,7 +14,7 @@ namespace SynGlyphX {
 	class SGXDATATRANSFORM_EXPORT MinMaxGlyph
 	{
 	public:
-		static const unsigned int NumInputFields = 12;
+		static const unsigned int NumInputFields = 13;
 		
 		typedef boost::property_tree::wptree PropertyTree;
 
@@ -40,10 +40,12 @@ namespace SynGlyphX {
 		void AddVector3ToPropertyTree(boost::property_tree::wptree& propertyTreeParent, const std::wstring& name, const Vector3& min, const Vector3& difference, const InputField inputfields[3]) const;
 		void AddValueToPropertyTree(boost::property_tree::wptree& propertyTreeParent, const std::wstring& name, double min, double difference, const InputField& inputfield) const;
 		void AddColorToPropertyTree(boost::property_tree::wptree& propertyTreeParent, const Color& min, const Color& difference, const InputField inputfield[2]) const;
+		void AddStringToPropertyTree(boost::property_tree::wptree& propertyTreeParent, const std::wstring& name, const InputField& inputfield) const;
 
 		void GetVector3FromPropertyTree(const boost::property_tree::wptree& propertyTreeParent, Vector3& min, Vector3& difference, InputField inputfields[3]) const;
 		void GetValueFromPropertyTree(const boost::property_tree::wptree& propertyTreeParent, double& min, double& difference, InputField& inputfield) const;
 		void GetColorFromPropertyTree(const boost::property_tree::wptree& propertyTreeParent, Color& min, Color& difference, InputField inputfield[2]) const;
+		void GetStringFromPropertyTree(const boost::property_tree::wptree& propertyTreeParent, InputField& inputfield) const;
 
 		GlyphProperties m_minGlyph;
 		//Rather than store both a min and a max glyph, the min glyph is stored (listed above) in this class plus an object that stores the difference between min and max

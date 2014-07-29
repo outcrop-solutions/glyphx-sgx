@@ -41,6 +41,8 @@ namespace SynGlyphX {
 			m_difference.SetRatio(difference);
 		}
 
+		GetStringFromPropertyTree(propertyTree.get_child(L"Tag"), m_inputfields[12]);
+
 		m_minGlyph.SetGeometry(GlyphProperties::s_shapeNames.right.at(propertyTree.get<std::wstring>(L"<xmlattr>.Shape")), 
 							   GlyphProperties::s_surfaceNames.right.at(propertyTree.get<std::wstring>(L"<xmlattr>.Surface")));
 		m_minGlyph.SetTopology(GlyphProperties::s_topologyNames.right.at(propertyTree.get<std::wstring>(L"<xmlattr>.Topology")));
@@ -105,6 +107,8 @@ namespace SynGlyphX {
 			AddValueToPropertyTree(rootGlyphPropertyTree, L"TorusRatio", m_minGlyph.GetRatio(), m_difference.GetRatio(), m_inputfields[11]);
 		}
 
+		AddStringToPropertyTree(rootGlyphPropertyTree, L"Tag", m_inputfields[12]);
+
 		rootGlyphPropertyTree.put<std::wstring>(L"<xmlattr>.Shape", GlyphProperties::s_shapeNames.left.at(m_minGlyph.GetShape()));
 		rootGlyphPropertyTree.put<std::wstring>(L"<xmlattr>.Surface", GlyphProperties::s_surfaceNames.left.at(m_minGlyph.GetSurface()));
 		rootGlyphPropertyTree.put<std::wstring>(L"<xmlattr>.Topology", GlyphProperties::s_topologyNames.left.at(m_minGlyph.GetTopology()));
@@ -153,6 +157,15 @@ namespace SynGlyphX {
 		AddValueToPropertyTree(colorPropertyTree, L"Transparency", min[3], difference[3], inputfield[1]);
 	}
 
+	void MinMaxGlyph::AddStringToPropertyTree(boost::property_tree::wptree& propertyTreeParent, const std::wstring& name, const InputField& inputfield) const {
+
+		boost::property_tree::wptree& valuePropertyTree = propertyTreeParent.add(name, L"");
+
+		if (inputfield.IsValid()) {
+			inputfield.ExportToPropertyTree(valuePropertyTree);
+		}
+	}
+
 	void MinMaxGlyph::GetVector3FromPropertyTree(const boost::property_tree::wptree& propertyTreeParent, Vector3& min, Vector3& difference, InputField inputfield[3]) const {
 
 		GetValueFromPropertyTree(propertyTreeParent.get_child(L"X"), min[0], difference[0], inputfield[0]);
@@ -190,6 +203,14 @@ namespace SynGlyphX {
 		boost::optional<const boost::property_tree::wptree&> inputFieldTree2 = alphaPropertyTree.get_child_optional(L"InputField");
 		if (inputFieldTree2.is_initialized()) {
 			inputfield[1] = InputField(inputFieldTree2.get());
+		}
+	}
+
+	void MinMaxGlyph::GetStringFromPropertyTree(const boost::property_tree::wptree& propertyTreeParent, InputField& inputfield) const {
+
+		boost::optional<const boost::property_tree::wptree&> inputFieldTree = propertyTreeParent.get_child_optional(L"InputField");
+		if (inputFieldTree.is_initialized()) {
+			inputfield = InputField(inputFieldTree.get());
 		}
 	}
 

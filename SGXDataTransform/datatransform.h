@@ -2,6 +2,7 @@
 #define SYNGLYPHX_DATATRANSFORM
 
 #include "sgxdatatransform_global.h"
+#include <string>
 #include "datasource.h"
 #include <unordered_map>
 #include <boost/property_tree/ptree.hpp>
@@ -47,8 +48,12 @@ namespace SynGlyphX {
 
     private:
         void Clear();
-		void AddChildrenToGlyphTree(GlyphTree::SharedPtr tree, GlyphTree::iterator newNode, MinMaxGlyphTree::SharedPtr minMaxTree, MinMaxGlyphTree::iterator node) const;
+		void AddChildrenToGlyphTree(GlyphTree::SharedPtr tree, GlyphTree::iterator newNode, MinMaxGlyphTree::SharedPtr minMaxTree, MinMaxGlyphTree::const_iterator node) const;
 		void RunSqlQuery(const InputField& inputfield, std::vector<double>& results) const;
+		void RunSqlQuery(const InputField& inputfield, std::vector<std::wstring>& results) const;
+		double LinearInterpolate(const InputField& inputfield, double min, double difference, const std::vector<double>& input, int index) const;
+		Color ColorRGBInterpolate(const InputField& inputfield, const Color& min, const Color& difference, const std::vector<double>& input, int index) const;
+		GlyphProperties ProcessMinMaxGlyph(const MinMaxGlyphTree::const_iterator& minMaxGlyph) const;
 
 		DatasourceMap m_datasources;
         boost::uuids::random_generator m_uuidGenerator;
