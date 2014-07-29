@@ -144,7 +144,7 @@ void DataBindingWidget::CreateRowOfPropertyWidgets(QGridLayout* layout, QWidget*
 	layout->addWidget(maxWidget, row, 4, Qt::AlignHCenter);
 	layout->addWidget(inputBindingLineEdit, row, 6);
 
-	QObject::connect(inputBindingLineEdit, &BindingLineEdit::ValueChangedByDragAndDrop, mapper, &QDataWidgetMapper::submit);
+	QObject::connect(inputBindingLineEdit, &BindingLineEdit::ValueChangedByUser, mapper, &QDataWidgetMapper::submit);
 
 	m_dataWidgetMappers.push_back(mapper);
 }

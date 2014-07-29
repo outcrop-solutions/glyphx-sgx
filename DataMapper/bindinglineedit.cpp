@@ -13,7 +13,7 @@ BindingLineEdit::BindingLineEdit(QWidget *parent)
 
 	m_clearAction = new QAction(tr("Clear Input Field"), this);
 	m_clearAction->setEnabled(false);
-	QObject::connect(m_clearAction, &QAction::triggered, this, [this](){ SetInputField(SynGlyphX::InputField()); });
+	QObject::connect(m_clearAction, &QAction::triggered, this, &BindingLineEdit::Clear);
 
 	//m_useInputFieldMinMaxActon = new QAction(tr("Set Min/Max To Input Field Min/Max"), this);
 	//m_useInputFieldMinMaxActon->setEnabled(false);
@@ -63,7 +63,7 @@ void BindingLineEdit::dropEvent(QDropEvent* event) {
 	if (mimeData != nullptr) {
 
 		SetInputField(mimeData->GetInputField());
-		emit ValueChangedByDragAndDrop(mimeData->GetInputField());
+		emit ValueChangedByUser(mimeData->GetInputField());
 	}
 }
 
@@ -77,4 +77,11 @@ void BindingLineEdit::contextMenuEvent(QContextMenuEvent* event) {
 	menu->exec(event->globalPos());
 
 	delete menu;
+}
+
+void BindingLineEdit::Clear() {
+
+	SynGlyphX::InputField emptyInputField;
+	SetInputField(emptyInputField);
+	emit ValueChangedByUser(emptyInputField);
 }

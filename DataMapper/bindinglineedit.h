@@ -18,10 +18,11 @@ public:
 
 public slots:
 	void SetInputField(const SynGlyphX::InputField& inputField);
+	void Clear();
 
 signals:
 	void ValueChanged(const SynGlyphX::InputField&);
-	void ValueChangedByDragAndDrop(const SynGlyphX::InputField&);
+	void ValueChangedByUser(const SynGlyphX::InputField&);
 
 protected:
 	virtual void dragEnterEvent(QDragEnterEvent* event);
