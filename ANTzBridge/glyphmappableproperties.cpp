@@ -9,7 +9,8 @@ namespace SynGlyphX {
         m_position{ { 0.0, 0.0, 0.0 } },
 		m_rotation{ { 0.0, 0.0, 0.0 } },
         m_color({ { 50, 101, 101, 255 } }),
-        m_ratio(0.1)
+        m_ratio(0.1),
+		m_tag(L"")
     {
     }
 
@@ -18,7 +19,8 @@ namespace SynGlyphX {
         m_position(properties.m_position),
 		m_rotation(properties.m_rotation),
         m_color(properties.m_color),
-        m_ratio(properties.m_ratio) {
+        m_ratio(properties.m_ratio),
+		m_tag(properties.m_tag) {
 
     }
 
@@ -33,6 +35,7 @@ namespace SynGlyphX {
 		m_rotation = properties.m_rotation;
 		m_color = properties.m_color;
 		m_ratio = properties.m_ratio;
+		m_tag = properties.m_tag;
 
 		return *this;
 	}
@@ -60,6 +63,11 @@ namespace SynGlyphX {
 		}
 
 		if (m_ratio != properties.m_ratio) {
+
+			return false;
+		}
+
+		if (m_tag != properties.m_tag) {
 
 			return false;
 		}
@@ -122,6 +130,16 @@ namespace SynGlyphX {
         
         return m_ratio;
     }
+
+	void GlyphMappableProperties::SetTag(const std::wstring& tag) {
+
+		m_tag = tag;
+	}
+
+	const std::wstring& GlyphMappableProperties::GetTag() const {
+
+		return m_tag;
+	}
 
 	const GlyphMappableProperties& GlyphMappableProperties::GetPropertiesZero() {
 

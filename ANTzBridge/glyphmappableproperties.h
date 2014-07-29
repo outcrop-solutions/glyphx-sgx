@@ -4,6 +4,7 @@
 #include "ANTzBridge.h"
 #include "foundationtypes.h"
 #include "color.h"
+#include <string>
 
 namespace SynGlyphX {
 
@@ -31,6 +32,9 @@ namespace SynGlyphX {
         void SetRatio(double ratio);
         double GetRatio() const;
 
+		void SetTag(const std::wstring& tag);
+		const std::wstring& GetTag() const;
+
 		static const GlyphMappableProperties& GetPropertiesZero();
 
     protected:
@@ -41,6 +45,8 @@ namespace SynGlyphX {
         double m_ratio;
 
         Color m_color;
+
+		std::wstring m_tag;
 
 	private:
 		static GlyphMappableProperties CreatePropertiesZero();
