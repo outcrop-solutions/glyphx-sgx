@@ -15,7 +15,9 @@ MinMaxGlyphModel::MinMaxGlyphModel(QObject *parent)
 		<< tr("Scale Y")
 		<< tr("Scale Z")
 		<< tr("Color")
-		<< tr("Transparency");
+		<< tr("Transparency")
+		<< tr("Torus Ratio")
+		<< tr("Tag");
 
 	m_columnHeaders << tr("Min")
 		<< tr("Max")
@@ -59,7 +61,7 @@ QVariant MinMaxGlyphModel::data(const QModelIndex& index, int role) const {
 
 int	MinMaxGlyphModel::rowCount(const QModelIndex& parent) const {
 
-	return 11;
+	return SynGlyphX::MinMaxGlyph::NumInputFields;
 }
 
 void MinMaxGlyphModel::SetMinMaxGlyph(const QModelIndex& index) {
@@ -125,7 +127,12 @@ bool MinMaxGlyphModel::setData(const QModelIndex& index, const QVariant& value, 
 
 			SynGlyphX::GlyphMappableProperties minProperties = m_glyph->GetMinGlyph();
 			SynGlyphX::GlyphMappableProperties diffProperties = m_glyph->GetDifference();
-			SetDataByRow(minProperties, diffProperties, value, index);
+
+			if (!SetDataByRow(minProperties, diffProperties, value, index)) {
+				
+				return false;
+			}
+
 			m_glyph->SetMinGlyphProperties(minProperties);
 			m_glyph->SetDifference(diffProperties);
 		}
@@ -137,7 +144,7 @@ bool MinMaxGlyphModel::setData(const QModelIndex& index, const QVariant& value, 
 	return false;
 }
 
-void MinMaxGlyphModel::SetDataByRow(SynGlyphX::GlyphMappableProperties& minProperties, SynGlyphX::GlyphMappableProperties& diffProperties, const QVariant& value, const QModelIndex& index) {
+bool MinMaxGlyphModel::SetDataByRow(SynGlyphX::GlyphMappableProperties& minProperties, SynGlyphX::GlyphMappableProperties& diffProperties, const QVariant& value, const QModelIndex& index) {
 
 	int row = index.row();
 	if ((row == 0) || (row == 1) || (row == 2)) {
@@ -156,6 +163,8 @@ void MinMaxGlyphModel::SetDataByRow(SynGlyphX::GlyphMappableProperties& minPrope
 
 		minProperties.SetPosition(min);
 		diffProperties.SetPosition(diff);
+
+		return true;
 	}
 	else if ((row == 3) || (row == 4) || (row == 5)) {
 		
@@ -174,6 +183,8 @@ void MinMaxGlyphModel::SetDataByRow(SynGlyphX::GlyphMappableProperties& minPrope
 
 		minProperties.SetRotation(min);
 		diffProperties.SetRotation(diff);
+
+		return true;
 	}
 	else if ((row == 6) || (row == 7) || (row == 8)) {
 
@@ -192,6 +203,8 @@ void MinMaxGlyphModel::SetDataByRow(SynGlyphX::GlyphMappableProperties& minPrope
 
 		minProperties.SetScale(min);
 		diffProperties.SetScale(diff);
+
+		return true;
 	}
 	else if (row == 9) {
 
@@ -216,6 +229,8 @@ void MinMaxGlyphModel::SetDataByRow(SynGlyphX::GlyphMappableProperties& minPrope
 
 		minProperties.SetColor(min);
 		diffProperties.SetColor(diff);
+
+		return true;
 	}
 	else if (row == 10) {
 
@@ -233,7 +248,11 @@ void MinMaxGlyphModel::SetDataByRow(SynGlyphX::GlyphMappableProperties& minPrope
 
 		minProperties.SetColor(min);
 		diffProperties.SetColor(diff);
+
+		return true;
 	}
+
+	return false;
 }
 
 QVariant MinMaxGlyphModel::headerData(int section, Qt::Orientation orientation, int role) const {
