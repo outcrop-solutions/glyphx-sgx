@@ -145,8 +145,23 @@ QMimeData* DataStatsModel::mimeData(const QModelIndexList& indexes) const {
 	query.exec();
 	query.first();
 	QSqlRecord record = query.record();
+
+	SynGlyphX::InputField::Type type = SynGlyphX::InputField::Type::Null;
+	QVariant::Type fieldType = m_fieldTypes[indexes.front().row()];
+	if ((fieldType == QVariant::Type::Char) || (fieldType == QVariant::Type::String) || (fieldType == QVariant::Type::Url)) {
+		type = SynGlyphX::InputField::Type::Text;
+	}
+	else if (fieldType == QVariant::Type::Double) {
+		type = SynGlyphX::InputField::Type::Real;
+	}
+	else if ((fieldType == QVariant::Type::Int) || (fieldType == QVariant::Type::UInt) || (fieldType == QVariant::Type::LongLong) || (fieldType == QVariant::Type::ULongLong)) {
+		type = SynGlyphX::InputField::Type::Integer;
+	}
+	else if ((fieldType == QVariant::Type::Date) || (fieldType == QVariant::Type::DateTime) || (fieldType == QVariant::Type::Time)) {
+		type = SynGlyphX::InputField::Type::Date;
+	}
 	
-	SynGlyphX::InputField inputfield(m_id, m_tableName.toStdWString(), fieldName.toStdWString(), (m_fieldTypes[indexes.front().row()] != QVariant::Type::String));
+	SynGlyphX::InputField inputfield(m_id, m_tableName.toStdWString(), fieldName.toStdWString(), type);
 	inputfield.SetMinMax(record.value(0).toDouble(), record.value(1).toDouble());
 	InputFieldMimeData* mimeData = new InputFieldMimeData(inputfield);
 	
