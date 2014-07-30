@@ -143,8 +143,6 @@ namespace SynGlyphX {
 
 		for (auto minMaxTree : m_glyphTrees) {
 
-			GlyphTree::SharedPtr glyphTree(new GlyphTree());
-
 			MinMaxGlyphTree::const_iterator minMaxGlyph = minMaxTree.second->root().constify();
 
 			//subtract 1 since tag input field needs to be handled separately with strings
@@ -174,6 +172,8 @@ namespace SynGlyphX {
 			const GlyphMappableProperties& difference = minMaxGlyph->GetDifference();
 
 			for (unsigned int i = 0; i < numGlyphs; ++i) {
+
+				GlyphTree::SharedPtr glyphTree(new GlyphTree());
 				
 				GlyphProperties glyph = minMaxGlyph->GetMinGlyph();
 
