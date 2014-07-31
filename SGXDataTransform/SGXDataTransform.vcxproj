@@ -83,6 +83,7 @@
     <ClInclude Include="datamapping.h" />
     <ClInclude Include="datasource.h" />
     <ClInclude Include="datatransform.h" />
+    <ClInclude Include="inputbinding.h" />
     <ClInclude Include="inputfield.h" />
     <ClInclude Include="minmaxglyph.h" />
     <ClInclude Include="minmaxglyphtree.h" />
@@ -92,6 +93,7 @@
     <ClCompile Include="datamapping.cpp" />
     <ClCompile Include="datasource.cpp" />
     <ClCompile Include="datatransform.cpp" />
+    <ClCompile Include="inputbinding.cpp" />
     <ClCompile Include="inputfield.cpp" />
     <ClCompile Include="minmaxglyph.cpp" />
     <ClCompile Include="minmaxglyphtree.cpp" />

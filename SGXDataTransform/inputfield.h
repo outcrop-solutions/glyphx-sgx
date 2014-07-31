@@ -7,6 +7,8 @@
 #include <boost/property_tree/ptree.hpp>
 #include <QtCore/QMetaType>
 #include <boost/bimap.hpp>
+#include <boost/shared_ptr.hpp>
+#include <boost/functional/hash.hpp>
 
 namespace SynGlyphX {
 
@@ -22,6 +24,10 @@ namespace SynGlyphX {
 			Date
 		};
 
+		typedef boost::shared_ptr<InputField> SharedPtr;
+		typedef boost::shared_ptr<const InputField> ConstSharedPtr;
+		typedef size_t HashID;
+
 		InputField();
 		InputField(const boost::uuids::uuid& datasourceID, const std::wstring& table, const std::wstring field, Type type);
 		InputField(const boost::property_tree::wptree& propertyTree);
@@ -34,10 +40,6 @@ namespace SynGlyphX {
 		const std::wstring& GetTable() const;
 		const std::wstring& GetField() const;
 
-		double GetMin() const;
-		double GetMax() const;
-		void SetMinMax(double min, double max);
-
 		bool IsValid() const;
 
 		void ExportToPropertyTree(boost::property_tree::wptree& propertyTree) const;
@@ -46,12 +48,20 @@ namespace SynGlyphX {
 
 		static const boost::bimap<Type, std::wstring> s_fieldTypeStrings;
 
+		friend std::size_t hash_value(InputField const& inputfield) {
+
+			std::size_t seed = 0;
+			boost::hash_combine(seed, inputfield.m_datasourceID);
+			boost::hash_combine(seed, inputfield.m_table);
+			boost::hash_combine(seed, inputfield.m_field);
+
+			return seed;
+		}
+
 	private:
 		boost::uuids::uuid m_datasourceID;
 		std::wstring m_table;
 		std::wstring m_field;
-		double m_min;
-		double m_max;
 		Type m_type;
 	};
 

@@ -39,9 +39,7 @@ namespace SynGlyphX {
 		m_datasourceID(inputField.m_datasourceID),
 		m_table(inputField.m_table),
 		m_field(inputField.m_field),
-		m_type(inputField.m_type),
-		m_min(inputField.m_min),
-		m_max(inputField.m_max) {
+		m_type(inputField.m_type) {
 
 	}
 
@@ -55,16 +53,8 @@ namespace SynGlyphX {
 		m_table = inputField.m_table;
 		m_field = inputField.m_field;
 		m_type = inputField.m_type;
-		m_min = inputField.m_min;
-		m_max = inputField.m_max;
 
 		return *this;
-	}
-
-	void InputField::SetMinMax(double min, double max) {
-
-		m_min = min;
-		m_max = max;
 	}
 
 	const boost::uuids::uuid& InputField::GetDatasourceID() const {
@@ -82,16 +72,6 @@ namespace SynGlyphX {
 		return m_field;
 	}
 
-	double InputField::GetMin() const {
-
-		return m_min;
-	}
-
-	double InputField::GetMax() const {
-
-		return m_max;
-	}
-
 	bool InputField::IsValid() const {
 
 		return !(m_datasourceID.is_nil() || m_table.empty() || m_field.empty());
@@ -105,8 +85,6 @@ namespace SynGlyphX {
 		inputFieldPropertyTree.put(L"<xmlattr>.table", m_table);
 		inputFieldPropertyTree.put(L"<xmlattr>.field", m_field);
 		inputFieldPropertyTree.put(L"<xmlattr>.type", s_fieldTypeStrings.left.at(m_type));
-		inputFieldPropertyTree.put(L"Min", m_min);
-		inputFieldPropertyTree.put(L"Max", m_max);
 	}
 
 	bool InputField::IsNumeric() const {

@@ -50,7 +50,10 @@ namespace SynGlyphX {
 			}
 		}
 
-		return propertyTreeParent.rbegin()->second;
+		boost::property_tree::wptree& rootPropertyTree = propertyTreeParent.rbegin()->second;
+		boost::property_tree::wptree& inputFieldsPropertyTree = rootPropertyTree.add(L"InputFields", L"");
+
+		return rootPropertyTree;
 	}
 
 	void MinMaxGlyphTree::WriteToFile(const std::string& filename) const {
@@ -101,6 +104,16 @@ namespace SynGlyphX {
 			MinMaxGlyph glyph(*child);
 			AddGlyphSubtree(insert(parentNode, glyph), glyphTree, child);
 		}
+	}
+
+	void MinMaxGlyphTree::SetInputBinding(MinMaxGlyphTree::const_iterator& iterator, unsigned int index, const InputField& inputfield) {
+
+
+	}
+
+	void MinMaxGlyphTree::ClearInputBinding(MinMaxGlyphTree::const_iterator& iterator, unsigned int index) {
+
+		iterator->SetInputField(index, InputField());
 	}
 
 } //namespace SynGlyphX

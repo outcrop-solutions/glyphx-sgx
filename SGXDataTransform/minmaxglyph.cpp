@@ -15,33 +15,33 @@ namespace SynGlyphX {
 		Vector3 differenceVec3;
 		double min, difference;
 
-		GetVector3FromPropertyTree(propertyTree.get_child(L"Position"), minVec3, differenceVec3, m_inputfields);
+		GetVector3FromPropertyTree(propertyTree.get_child(L"Position"), minVec3, differenceVec3, m_inputBindings);
 		m_minGlyph.SetPosition(minVec3);
 		m_difference.SetPosition(differenceVec3);
 
-		GetVector3FromPropertyTree(propertyTree.get_child(L"Rotation"), minVec3, differenceVec3, &m_inputfields[3]);
+		GetVector3FromPropertyTree(propertyTree.get_child(L"Rotation"), minVec3, differenceVec3, &m_inputBindings[3]);
 		m_minGlyph.SetRotation(minVec3);
 		m_difference.SetRotation(differenceVec3);
 
-		GetVector3FromPropertyTree(propertyTree.get_child(L"Scale"), minVec3, differenceVec3, &m_inputfields[6]);
+		GetVector3FromPropertyTree(propertyTree.get_child(L"Scale"), minVec3, differenceVec3, &m_inputBindings[6]);
 		m_minGlyph.SetScale(minVec3);
 		m_difference.SetScale(differenceVec3);
 
 		Color minColor;
 		Color differenceColor;
-		GetColorFromPropertyTree(propertyTree, minColor, differenceColor, &m_inputfields[9]);
+		GetColorFromPropertyTree(propertyTree, minColor, differenceColor, &m_inputBindings[9]);
 		m_minGlyph.SetColor(minColor);
 		m_difference.SetColor(differenceColor);
 
 		boost::optional<const boost::property_tree::wptree&> torusRatioTree = propertyTree.get_child_optional(L"TorusRatio");
 
 		if (torusRatioTree.is_initialized()) {
-			GetValueFromPropertyTree(torusRatioTree.get(), min, difference, m_inputfields[11]);
+			GetValueFromPropertyTree(torusRatioTree.get(), min, difference, m_inputBindings[11]);
 			m_minGlyph.SetRatio(min);
 			m_difference.SetRatio(difference);
 		}
 
-		GetStringFromPropertyTree(propertyTree.get_child(L"Tag"), m_inputfields[12]);
+		GetStringFromPropertyTree(propertyTree.get_child(L"Tag"), m_inputBindings[12]);
 
 		m_minGlyph.SetGeometry(GlyphProperties::s_shapeNames.right.at(propertyTree.get<std::wstring>(L"<xmlattr>.Shape")), 
 							   GlyphProperties::s_surfaceNames.right.at(propertyTree.get<std::wstring>(L"<xmlattr>.Surface")));
@@ -52,8 +52,8 @@ namespace SynGlyphX {
 		m_minGlyph(glyph.m_minGlyph),
 		m_difference(glyph.m_difference) {
 
-		for (int i = 0; i < NumInputFields; ++i) {
-			m_inputfields[i] = glyph.m_inputfields[i];
+		for (int i = 0; i < NumInputBindings; ++i) {
+			m_inputBindings[i] = glyph.m_inputBindings[i];
 		}
 	}
 
@@ -66,8 +66,8 @@ namespace SynGlyphX {
 		m_minGlyph = glyph.m_minGlyph;
 		m_difference = glyph.m_difference;
 
-		for (int i = 0; i < NumInputFields; ++i) {
-			m_inputfields[i] = glyph.m_inputfields[i];
+		for (int i = 0; i < NumInputBindings; ++i) {
+			m_inputBindings[i] = glyph.m_inputBindings[i];
 		}
 
 		return *this;
@@ -97,17 +97,17 @@ namespace SynGlyphX {
 
 		PropertyTree& rootGlyphPropertyTree = propertyTree.add(L"Glyph", L"");
 
-		AddVector3ToPropertyTree(rootGlyphPropertyTree, L"Position", m_minGlyph.GetPosition(), m_difference.GetPosition(), m_inputfields);
-		AddVector3ToPropertyTree(rootGlyphPropertyTree, L"Rotation", m_minGlyph.GetRotation(), m_difference.GetRotation(), &m_inputfields[3]);
-		AddVector3ToPropertyTree(rootGlyphPropertyTree, L"Scale", m_minGlyph.GetScale(), m_difference.GetScale(), &m_inputfields[6]);
+		AddVector3ToPropertyTree(rootGlyphPropertyTree, L"Position", m_minGlyph.GetPosition(), m_difference.GetPosition(), m_inputBindings);
+		AddVector3ToPropertyTree(rootGlyphPropertyTree, L"Rotation", m_minGlyph.GetRotation(), m_difference.GetRotation(), &m_inputBindings[3]);
+		AddVector3ToPropertyTree(rootGlyphPropertyTree, L"Scale", m_minGlyph.GetScale(), m_difference.GetScale(), &m_inputBindings[6]);
 
-		AddColorToPropertyTree(rootGlyphPropertyTree, m_minGlyph.GetColor(), m_difference.GetColor(), &m_inputfields[9]);
+		AddColorToPropertyTree(rootGlyphPropertyTree, m_minGlyph.GetColor(), m_difference.GetColor(), &m_inputBindings[9]);
 
 		if (m_minGlyph.GetShape() == GlyphProperties::Shape::Torus) {
-			AddValueToPropertyTree(rootGlyphPropertyTree, L"TorusRatio", m_minGlyph.GetRatio(), m_difference.GetRatio(), m_inputfields[11]);
+			AddValueToPropertyTree(rootGlyphPropertyTree, L"TorusRatio", m_minGlyph.GetRatio(), m_difference.GetRatio(), m_inputBindings[11]);
 		}
 
-		AddStringToPropertyTree(rootGlyphPropertyTree, L"Tag", m_inputfields[12]);
+		AddStringToPropertyTree(rootGlyphPropertyTree, L"Tag", m_inputBindings[12]);
 
 		rootGlyphPropertyTree.put<std::wstring>(L"<xmlattr>.Shape", GlyphProperties::s_shapeNames.left.at(m_minGlyph.GetShape()));
 		rootGlyphPropertyTree.put<std::wstring>(L"<xmlattr>.Surface", GlyphProperties::s_surfaceNames.left.at(m_minGlyph.GetSurface()));
@@ -116,15 +116,15 @@ namespace SynGlyphX {
 		return rootGlyphPropertyTree;
 	}
 
-	void MinMaxGlyph::AddVector3ToPropertyTree(boost::property_tree::wptree& propertyTreeParent, const std::wstring& name, const Vector3& min, const Vector3& difference, const InputField inputfield[3]) const {
+	void MinMaxGlyph::AddVector3ToPropertyTree(boost::property_tree::wptree& propertyTreeParent, const std::wstring& name, const Vector3& min, const Vector3& difference, const InputBinding inputBindings[3]) const {
 		
 		boost::property_tree::wptree& vectorPropertyTree = propertyTreeParent.add(name, L"");
-		AddValueToPropertyTree(vectorPropertyTree, L"X", min[0], difference[0], inputfield[0]);
-		AddValueToPropertyTree(vectorPropertyTree, L"Y", min[1], difference[1], inputfield[1]);
-		AddValueToPropertyTree(vectorPropertyTree, L"Z", min[2], difference[2], inputfield[2]);
+		AddValueToPropertyTree(vectorPropertyTree, L"X", min[0], difference[0], inputBindings[0]);
+		AddValueToPropertyTree(vectorPropertyTree, L"Y", min[1], difference[1], inputBindings[1]);
+		AddValueToPropertyTree(vectorPropertyTree, L"Z", min[2], difference[2], inputBindings[2]);
 	}
 
-	void MinMaxGlyph::AddValueToPropertyTree(boost::property_tree::wptree& propertyTreeParent, const std::wstring& name, double min, double difference, const InputField& inputfield) const {
+	void MinMaxGlyph::AddValueToPropertyTree(boost::property_tree::wptree& propertyTreeParent, const std::wstring& name, double min, double difference, const InputBinding& inputBinding) const {
 
 		boost::property_tree::wptree& valuePropertyTree = propertyTreeParent.add(name, L"");
 		valuePropertyTree.put<double>(L"Min", min);
@@ -134,12 +134,12 @@ namespace SynGlyphX {
 			valuePropertyTree.put<double>(L"Difference", difference);
 		}
 
-		if (inputfield.IsValid()) {
-			inputfield.ExportToPropertyTree(valuePropertyTree);
+		if (inputBinding.IsBoundToInputField()) {
+			inputBinding.ExportToPropertyTree(valuePropertyTree);
 		}
 	}
 
-	void MinMaxGlyph::AddColorToPropertyTree(boost::property_tree::wptree& propertyTreeParent, const Color& min, const Color& difference, const InputField inputfield[2]) const {
+	void MinMaxGlyph::AddColorToPropertyTree(boost::property_tree::wptree& propertyTreeParent, const Color& min, const Color& difference, const InputBinding inputBindings[2]) const {
 
 		boost::property_tree::wptree& colorPropertyTree = propertyTreeParent.add(L"Color", L"");
 		boost::property_tree::wptree& rgbPropertyTree = colorPropertyTree.add(L"RGB", L"");
@@ -150,84 +150,84 @@ namespace SynGlyphX {
 			rgbPropertyTree.put<std::wstring>(L"Difference", difference.ToHexString(3));
 		}
 
-		if (inputfield[0].IsValid()) {
-			inputfield[0].ExportToPropertyTree(rgbPropertyTree);
+		if (inputBindings[0].IsBoundToInputField()) {
+			inputBindings[0].ExportToPropertyTree(rgbPropertyTree);
 		}
 
-		AddValueToPropertyTree(colorPropertyTree, L"Transparency", min[3], difference[3], inputfield[1]);
+		AddValueToPropertyTree(colorPropertyTree, L"Transparency", min[3], difference[3], inputBindings[1]);
 	}
 
-	void MinMaxGlyph::AddStringToPropertyTree(boost::property_tree::wptree& propertyTreeParent, const std::wstring& name, const InputField& inputfield) const {
+	void MinMaxGlyph::AddStringToPropertyTree(boost::property_tree::wptree& propertyTreeParent, const std::wstring& name, const InputBinding& inputfield) const {
 
 		boost::property_tree::wptree& valuePropertyTree = propertyTreeParent.add(name, L"");
 
-		if (inputfield.IsValid()) {
+		if (inputfield.IsBoundToInputField()) {
 			inputfield.ExportToPropertyTree(valuePropertyTree);
 		}
 	}
 
-	void MinMaxGlyph::GetVector3FromPropertyTree(const boost::property_tree::wptree& propertyTreeParent, Vector3& min, Vector3& difference, InputField inputfield[3]) const {
+	void MinMaxGlyph::GetVector3FromPropertyTree(const boost::property_tree::wptree& propertyTreeParent, Vector3& min, Vector3& difference, InputBinding inputfield[3]) const {
 
 		GetValueFromPropertyTree(propertyTreeParent.get_child(L"X"), min[0], difference[0], inputfield[0]);
 		GetValueFromPropertyTree(propertyTreeParent.get_child(L"Y"), min[1], difference[1], inputfield[1]);
 		GetValueFromPropertyTree(propertyTreeParent.get_child(L"Z"), min[2], difference[2], inputfield[2]);
 	}
 
-	void MinMaxGlyph::GetValueFromPropertyTree(const boost::property_tree::wptree& propertyTreeParent, double& min, double& difference, InputField& inputfield) const {
+	void MinMaxGlyph::GetValueFromPropertyTree(const boost::property_tree::wptree& propertyTreeParent, double& min, double& difference, InputBinding& inputfield) const {
 
 		min = propertyTreeParent.get<double>(L"Min");
 		difference = propertyTreeParent.get_optional<double>(L"Difference").get_value_or(0.0);
 
-		boost::optional<const boost::property_tree::wptree&> inputFieldTree = propertyTreeParent.get_child_optional(L"InputField");
+		boost::optional<const boost::property_tree::wptree&> inputFieldTree = propertyTreeParent.get_child_optional(InputBinding::PropertyTreeName);
 		if (inputFieldTree.is_initialized()) {
-			inputfield = InputField(inputFieldTree.get());
+			inputfield = InputBinding(inputFieldTree.get());
 		}
 	}
 
-	void MinMaxGlyph::GetColorFromPropertyTree(const boost::property_tree::wptree& propertyTreeParent, Color& min, Color& difference, InputField inputfield[2]) const {
+	void MinMaxGlyph::GetColorFromPropertyTree(const boost::property_tree::wptree& propertyTreeParent, Color& min, Color& difference, InputBinding inputfield[2]) const {
 
 		const boost::property_tree::wptree& colorPropertyTree = propertyTreeParent.get_child(L"Color");
 		const boost::property_tree::wptree& rgbPropertyTree = colorPropertyTree.get_child(L"RGB");
 		min.FromHexString(rgbPropertyTree.get<std::wstring>(L"Min"));
 		difference.FromHexString(rgbPropertyTree.get_optional<std::wstring>(L"Difference").get_value_or(L"000000"));
 
-		boost::optional<const boost::property_tree::wptree&> inputFieldTree = rgbPropertyTree.get_child_optional(L"InputField");
+		boost::optional<const boost::property_tree::wptree&> inputFieldTree = rgbPropertyTree.get_child_optional(InputBinding::PropertyTreeName);
 		if (inputFieldTree.is_initialized()) {
-			inputfield[0] = InputField(inputFieldTree.get());
+			inputfield[0] = InputBinding(inputFieldTree.get());
 		}
 
 		const boost::property_tree::wptree& alphaPropertyTree = colorPropertyTree.get_child(L"Transparency");
 		min[3] = alphaPropertyTree.get<unsigned char>(L"Min");
 		difference[3] = alphaPropertyTree.get_optional<unsigned char>(L"Difference").get_value_or(0);
 
-		boost::optional<const boost::property_tree::wptree&> inputFieldTree2 = alphaPropertyTree.get_child_optional(L"InputField");
+		boost::optional<const boost::property_tree::wptree&> inputFieldTree2 = alphaPropertyTree.get_child_optional(InputBinding::PropertyTreeName);
 		if (inputFieldTree2.is_initialized()) {
-			inputfield[1] = InputField(inputFieldTree2.get());
+			inputfield[1] = InputBinding(inputFieldTree2.get());
 		}
 	}
 
-	void MinMaxGlyph::GetStringFromPropertyTree(const boost::property_tree::wptree& propertyTreeParent, InputField& inputfield) const {
+	void MinMaxGlyph::GetStringFromPropertyTree(const boost::property_tree::wptree& propertyTreeParent, InputBinding& inputBinding) const {
 
-		boost::optional<const boost::property_tree::wptree&> inputFieldTree = propertyTreeParent.get_child_optional(L"InputField");
+		boost::optional<const boost::property_tree::wptree&> inputFieldTree = propertyTreeParent.get_child_optional(InputBinding::PropertyTreeName);
 		if (inputFieldTree.is_initialized()) {
-			inputfield = InputField(inputFieldTree.get());
+			inputBinding = InputBinding(inputFieldTree.get());
 		}
 	}
 
-	const InputField& MinMaxGlyph::GetInputField(unsigned int index) const {
+	const InputBinding& MinMaxGlyph::GetInputBinding(unsigned int index) const {
 
-		if (index < NumInputFields) {
-			return m_inputfields[index];
+		if (index < NumInputBindings) {
+			return m_inputBindings[index];
 		}
 		else {
-			throw new std::out_of_range("Out of range of number of input fields");
+			throw new std::out_of_range("Out of range of number of input bindings");
 		}
 	}
 
-	void MinMaxGlyph::SetInputField(unsigned int index, const InputField& inputfield) {
+	void MinMaxGlyph::SetInputBinding(unsigned int index, InputField::HashID id) {
 
-		if (index < NumInputFields) {
-			m_inputfields[index] = inputfield;
+		if (index < NumInputBindings) {
+			m_inputBindings[index] = InputBinding(id);
 		}
 		else {
 			throw new std::out_of_range("Out of range of number of input fields");

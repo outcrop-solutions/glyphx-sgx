@@ -42,6 +42,8 @@ namespace SynGlyphX {
 		boost::uuids::uuid AddGlyphTree(const MinMaxGlyphTree::SharedPtr glyphTree);
 		const MinMaxGlyphTreeMap& DataTransform::GetGlyphTrees() const;
 
+		void SetInputBinding(const boost::uuids::uuid& treeID, const MinMaxGlyphTree::const_iterator& node, int index, const InputField& inputfield);
+
 		bool IsTransformable() const;
 
 		void TransformToCSV(const std::string& filename) const;
