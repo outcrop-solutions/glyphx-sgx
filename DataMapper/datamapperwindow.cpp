@@ -20,7 +20,7 @@ DataMapperWindow::DataMapperWindow(QWidget *parent)
     CreateMenus();
     CreateDockWidgets();
 
-	m_minMaxGlyphModel = new MinMaxGlyphModel(this);
+	m_minMaxGlyphModel = new MinMaxGlyphModel(m_dataTransformModel, this);
 	m_dataBindingWidget = new DataBindingWidget(m_minMaxGlyphModel, this);
 	m_dataBindingWidget->setEnabled(false);
 	setCentralWidget(m_dataBindingWidget);

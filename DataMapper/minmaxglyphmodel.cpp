@@ -2,8 +2,9 @@
 #include <QtGui/QColor>
 #include "databaseservices.h"
 
-MinMaxGlyphModel::MinMaxGlyphModel(QObject *parent)
-	: QAbstractTableModel(parent)
+MinMaxGlyphModel::MinMaxGlyphModel(DataTransformModel* dataTransformModel, QObject *parent)
+	: QAbstractTableModel(parent),
+	m_dataTransformModel(dataTransformModel)
 {
 	m_propertyHeaders << tr("Position X")
 		<< tr("Position Y")
@@ -66,8 +67,10 @@ int	MinMaxGlyphModel::rowCount(const QModelIndex& parent) const {
 
 void MinMaxGlyphModel::SetMinMaxGlyph(const QModelIndex& index) {
 
+	SynGlyphX::MinMaxGlyphTree::Node* node = static_cast<SynGlyphX::MinMaxGlyphTree::Node*>(index.internalPointer());
 	beginResetModel();
-	m_glyph = SynGlyphX::MinMaxGlyphTree::iterator(static_cast<SynGlyphX::MinMaxGlyphTree::Node*>(index.internalPointer()));
+	m_glyph = SynGlyphX::MinMaxGlyphTree::iterator(node);
+	m_glyphTree = static_cast<const SynGlyphX::MinMaxGlyphTree*>(m_glyph.owner());
 	endResetModel();
 }
 

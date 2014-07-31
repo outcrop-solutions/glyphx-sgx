@@ -3,13 +3,14 @@
 
 #include <QtCore/QAbstractTableModel>
 #include "minmaxglyphtree.h"
+#include "datatransformmodel.h"
 
 class MinMaxGlyphModel : public QAbstractTableModel
 {
 	Q_OBJECT
 
 public:
-	MinMaxGlyphModel(QObject *parent);
+	MinMaxGlyphModel(DataTransformModel* dataTransformModel, QObject *parent = nullptr);
 	~MinMaxGlyphModel();
 
 	//Functions from QAbstractItemModel that need to be implemented
@@ -28,8 +29,10 @@ private:
 	bool SetDataByRow(SynGlyphX::GlyphMappableProperties& minProperties, SynGlyphX::GlyphMappableProperties& diffProperties, const QVariant& value, const QModelIndex& index);
 
 	SynGlyphX::MinMaxGlyphTree::iterator m_glyph;
+	const SynGlyphX::MinMaxGlyphTree* m_glyphTree;
 	QStringList m_propertyHeaders;
 	QStringList m_columnHeaders;
+	DataTransformModel* m_dataTransformModel;
 };
 
 #endif // MINMAXGLYPHMODEL_H
