@@ -10,7 +10,8 @@
 
 namespace SynGlyphX {
 
-    DataTransform::DataTransform()
+    DataTransform::DataTransform() :
+		m_baseImageType(BaseImageType::Default)
     {
     }
 
@@ -24,6 +25,10 @@ namespace SynGlyphX {
 
         boost::property_tree::wptree dataTransformPropertyTree;
 		boost::property_tree::read_xml(filename, dataTransformPropertyTree);
+
+		boost::property_tree::wptree& baseMapPropertyTree = dataTransformPropertyTree.get_child(L"BaseImage");
+		m_baseImageType = baseMapPropertyTree.get<BaseImageType>(L"<xmlattr>.type");
+
 
 		for (boost::property_tree::wptree::value_type& datasourceValue : dataTransformPropertyTree.get_child(L"Datasources")) {
 

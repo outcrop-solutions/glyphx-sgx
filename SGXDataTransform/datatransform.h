@@ -15,6 +15,12 @@ namespace SynGlyphX {
     class SGXDATATRANSFORM_EXPORT DataTransform
     {
     public:
+		enum BaseImageType {
+			Default = 0,
+			DownloadedMap,
+			UserImage
+		};
+
 		typedef std::unordered_map<boost::uuids::uuid, Datasource, SynGlyphX::UUIDHash> DatasourceMap;
 		typedef std::unordered_map<boost::uuids::uuid, MinMaxGlyphTree::SharedPtr, SynGlyphX::UUIDHash> MinMaxGlyphTreeMap;
 
@@ -62,6 +68,7 @@ namespace SynGlyphX {
 		DatasourceMap m_datasources;
         boost::uuids::random_generator m_uuidGenerator;
 		MinMaxGlyphTreeMap m_glyphTrees;
+		BaseImageType m_baseImageType;
     };
 
 } //namespace SynGlyphX
