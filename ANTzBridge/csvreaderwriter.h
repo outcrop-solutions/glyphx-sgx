@@ -19,7 +19,7 @@ namespace SynGlyphX {
         CSVReaderWriter();
         ~CSVReaderWriter();
 
-		void Write(const std::string& filename, const GlyphTree::ConstSharedVector& trees, unsigned long startingId = 32);
+		void Write(const std::string& filename, const std::string& tagFilename, const GlyphTree::ConstSharedVector& trees, unsigned long startingId = 32);
 
         static CSVReaderWriter& GetInstance();
 
@@ -27,10 +27,12 @@ namespace SynGlyphX {
         static CSVReaderWriter s_instance;
 
 		unsigned long WriteGlyph(std::ofstream& file, const GlyphTree::ConstSharedPtr tree, const GlyphTree::const_iterator& glyph, unsigned long id, unsigned long parentId, unsigned long branchLevel);
+		unsigned long WriteGlyphTag(std::ofstream& file, const GlyphTree::ConstSharedPtr tree, const GlyphTree::const_iterator& glyph, unsigned long id);
 		unsigned int ConvertGeometryToCSVInt(GlyphProperties::Shape shape, GlyphProperties::Surface surface);
         unsigned short GetColorIndex(const Color& color);
 
 		Color m_predefinedColors[MaxPredefinedColors];
+		unsigned long m_numTagsWritten;
     };
 
 } //namespace SynGlyphX
