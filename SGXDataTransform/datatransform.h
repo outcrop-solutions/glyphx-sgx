@@ -47,10 +47,11 @@ namespace SynGlyphX {
 
 		bool IsTransformable() const;
 
+		void Clear();
+
 		void TransformToCSV(const std::string& filename) const;
 
     private:
-        void Clear();
 		void AddChildrenToGlyphTree(GlyphTree::SharedPtr tree, GlyphTree::iterator newNode, MinMaxGlyphTree::SharedPtr minMaxTree, MinMaxGlyphTree::const_iterator node, const std::unordered_map<InputField::HashID, QVariantList>& queryResultData, unsigned int index) const;
 		QVariantList RunSqlQuery(const InputField& inputfield) const;
 		void GetMinMax(InputBinding& binding, const InputField& inputField) const;

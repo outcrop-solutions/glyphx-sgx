@@ -47,24 +47,9 @@ namespace SynGlyphX {
 
 	MinMaxGlyphTree::PropertyTree& MinMaxGlyphTree::ExportToPropertyTree(boost::property_tree::wptree& propertyTreeParent) const {
 
-		std::stack<boost::property_tree::wptree*> parentStack;
-		parentStack.push(&propertyTreeParent);
-
-		for (MinMaxGlyphTree::const_prefix_iterator iT = prefix_begin(); iT != prefix_end(); ++iT) {
-
-			MinMaxGlyphTree::const_iterator simpleIterator = iT.simplify();
-			while (depth(simpleIterator) < (parentStack.size() - 1)) {
-				parentStack.pop();
-			}
-			
-			boost::property_tree::wptree& glyphPropertyTree = iT->ExportToPropertyTree(*parentStack.top());
-
-			if (children(simpleIterator) > 0) {
-				parentStack.push(&glyphPropertyTree.add(L"Children", L""));
-			}
-		}
-
-		boost::property_tree::wptree& rootPropertyTree = propertyTreeParent.rbegin()->second;
+		MinMaxGlyphTree::const_iterator iterator = root();
+		boost::property_tree::wptree& rootPropertyTree = iterator->ExportToPropertyTree(propertyTreeParent);
+		ExportToPropertyTree(iterator, rootPropertyTree);
 
 		if (!m_inputFields.empty()) {
 
@@ -77,6 +62,20 @@ namespace SynGlyphX {
 		}
 
 		return rootPropertyTree;
+	}
+
+	void MinMaxGlyphTree::ExportToPropertyTree(const MinMaxGlyphTree::const_iterator& parent, boost::property_tree::wptree& propertyTreeParent) const {
+
+		unsigned int numChildren = children(parent);
+		if (numChildren > 0) {
+
+			boost::property_tree::wptree& childrenPropertyTree = propertyTreeParent.add(L"Children", L"");
+			for (int i = 0; i < numChildren; ++i) {
+
+				MinMaxGlyphTree::const_iterator iterator = child(parent, i);
+				ExportToPropertyTree(iterator, iterator->ExportToPropertyTree(childrenPropertyTree));
+			}
+		}
 	}
 
 	void MinMaxGlyphTree::WriteToFile(const std::string& filename) const {
