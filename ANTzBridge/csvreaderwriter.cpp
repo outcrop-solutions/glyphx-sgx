@@ -83,12 +83,17 @@ namespace SynGlyphX {
 
 		unsigned int numberOfChildren = tree->children(glyph);
 
-		if (!glyph->GetTag().empty()) {
+		std::string tag;
+		if (glyph->GetTag().empty()) {
 
-			std::string tag(glyph->GetTag().begin(), glyph->GetTag().end());
-			++m_numTagsWritten;
-			file << m_numTagsWritten << "," << id << ",0," << tag << ", " << std::endl;
+			tag = "No Tag";
+		} 
+		else {
+
+			tag.assign(glyph->GetTag().begin(), glyph->GetTag().end());
 		}
+
+		file << m_numTagsWritten++ << "," << id << ",0,\"" << tag << "\",\" \"" << std::endl;
 
 		unsigned long childId = id + 1;
 		for (unsigned int i = 0; i < numberOfChildren; ++i) {
