@@ -49,7 +49,7 @@ namespace SynGlyphX {
 
 		void Clear();
 
-		void TransformToCSV(const std::string& filename) const;
+		void TransformToCSV(const std::string& filename, const std::string& tagFilename) const;
 
     private:
 		void AddChildrenToGlyphTree(GlyphTree::SharedPtr tree, GlyphTree::iterator newNode, MinMaxGlyphTree::SharedPtr minMaxTree, MinMaxGlyphTree::const_iterator node, const std::unordered_map<InputField::HashID, QVariantList>& queryResultData, unsigned int index) const;

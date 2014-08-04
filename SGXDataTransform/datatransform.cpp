@@ -130,7 +130,7 @@ namespace SynGlyphX {
 		return results;
 	}
 
-	void DataTransform::TransformToCSV(const std::string& filename) const {
+	void DataTransform::TransformToCSV(const std::string& filename, const std::string& tagFilename) const {
 
 		GlyphTree::ConstSharedVector trees;
 
@@ -160,7 +160,7 @@ namespace SynGlyphX {
 		}
 
 		CSVReaderWriter& writer = CSVReaderWriter::GetInstance();
-		writer.Write(filename, trees);
+		writer.Write(filename, tagFilename, trees);
 	}
 
 	GlyphProperties DataTransform::ProcessMinMaxGlyph(const MinMaxGlyphTree::const_iterator& minMaxGlyph, const std::unordered_map<InputField::HashID, QVariantList>& queryResultData, unsigned int index) const {
@@ -191,7 +191,9 @@ namespace SynGlyphX {
 		color[3] = LinearInterpolate(minMaxGlyph->GetInputBinding(10), glyph.GetColor()[3], difference.GetColor()[3], queryResultData, index);
 		glyph.SetColor(color);
 
-		glyph.SetRatio(LinearInterpolate(minMaxGlyph->GetInputBinding(11), glyph.GetRatio(), difference.GetRatio(), queryResultData, index));
+		//For now since we aren't mapping torus ratio just set it to 0.1
+		glyph.SetRatio(0.1);
+		//glyph.SetRatio(LinearInterpolate(minMaxGlyph->GetInputBinding(11), glyph.GetRatio(), difference.GetRatio(), queryResultData, index));
 
 		InputField::HashID id = minMaxGlyph->GetInputBinding(12).GetInputFieldID();
 		if (id != 0) {
