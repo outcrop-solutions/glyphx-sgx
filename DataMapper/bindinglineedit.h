@@ -2,7 +2,7 @@
 #define BINDINGLINEEDIT_H
 
 #include <QtWidgets/QLineEdit>
-#include "inputfield.h"
+#include "inputbinding.h"
 
 class BindingLineEdit : public QLineEdit
 {
@@ -18,7 +18,7 @@ public:
 	bool OnlyAcceptsNumericField() const;
 
 public slots:
-	void SetInputField(const SynGlyphX::InputField& inputField);
+	void SetInputField(const SynGlyphX::InputField& inputfield);
 	void Clear();
 
 signals:

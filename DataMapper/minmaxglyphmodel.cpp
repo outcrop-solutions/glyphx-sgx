@@ -1,6 +1,7 @@
 #include "minmaxglyphmodel.h"
 #include <QtGui/QColor>
 #include "databaseservices.h"
+#include <QtWidgets/QMessageBox>
 
 MinMaxGlyphModel::MinMaxGlyphModel(DataTransformModel* dataTransformModel, QObject *parent)
 	: QAbstractTableModel(parent),
@@ -47,8 +48,11 @@ QVariant MinMaxGlyphModel::data(const QModelIndex& index, int role) const {
 		}
 		else if (index.column() == 2) {
 
-			const SynGlyphX::InputField& inputfield = m_glyph->GetInputField(index.row());
-			if (inputfield.IsValid()) {
+			const SynGlyphX::InputBinding& binding = m_glyph->GetInputBinding(index.row());
+
+			if (binding.IsBoundToInputField()) {
+
+				const SynGlyphX::InputField& inputfield = m_glyphTree->GetInputFields().at(binding.GetInputFieldID());
 
 				QVariant variant;
 				variant.setValue(inputfield);
@@ -62,7 +66,7 @@ QVariant MinMaxGlyphModel::data(const QModelIndex& index, int role) const {
 
 int	MinMaxGlyphModel::rowCount(const QModelIndex& parent) const {
 
-	return SynGlyphX::MinMaxGlyph::NumInputFields;
+	return SynGlyphX::MinMaxGlyph::NumInputBindings;
 }
 
 void MinMaxGlyphModel::SetMinMaxGlyph(const QModelIndex& index) {
@@ -72,6 +76,14 @@ void MinMaxGlyphModel::SetMinMaxGlyph(const QModelIndex& index) {
 	m_glyph = SynGlyphX::MinMaxGlyphTree::iterator(node);
 	m_glyphTree = static_cast<const SynGlyphX::MinMaxGlyphTree*>(m_glyph.owner());
 	endResetModel();
+
+	for (auto glyphTree : m_dataTransformModel->GetDataTransform()->GetGlyphTrees()) {
+
+		if (glyphTree.second.get() == m_glyphTree) {
+			m_glyphTreeID = glyphTree.first;
+			break;
+		}
+	}
 }
 
 QVariant MinMaxGlyphModel::GetDataByRow(const SynGlyphX::GlyphMappableProperties& minProperties, const SynGlyphX::GlyphMappableProperties& diffProperties, int row) const {
@@ -124,7 +136,21 @@ bool MinMaxGlyphModel::setData(const QModelIndex& index, const QVariant& value, 
 
 		if (index.column() == 2) {
 
-			m_glyph->SetInputField(index.row(), value.value<SynGlyphX::InputField>());
+			try {
+
+				SynGlyphX::InputField inputfield = value.value<SynGlyphX::InputField>();
+				if (inputfield.IsValid()) {
+					m_dataTransformModel->GetDataTransform()->SetInputField(m_glyphTreeID, m_glyph.constify(), index.row(), inputfield);
+				}
+				else {
+					m_dataTransformModel->GetDataTransform()->ClearInputBinding(m_glyphTreeID, m_glyph.constify(), index.row());
+				}
+			}
+			catch (const std::invalid_argument& e) {
+
+				QMessageBox::warning(nullptr, "Data does not match", e.what());
+				return false;
+			}
 		}
 		else {
 

@@ -48,6 +48,9 @@ void DataBindingWidget::CreateTagAndDescriptionWidget() {
 	QDataWidgetMapper* mapper = new QDataWidgetMapper(this);
 	mapper->setModel(m_model);
 	mapper->addMapping(m_tagLineEdit, 2);  //Bind this to section 2 to keep consistent with other input fields
+
+	QObject::connect(m_tagLineEdit, &BindingLineEdit::ValueChangedByUser, mapper, &QDataWidgetMapper::submit);
+
 	m_dataWidgetMappers.push_back(mapper);
 
 	m_descriptionEdit = new SynGlyphX::RichTextEditor(tr("<b>Description:</b>"), this);
@@ -133,7 +136,7 @@ void DataBindingWidget::CreateRowOfPropertyWidgets(QGridLayout* layout, QWidget*
 
 	QDataWidgetMapper* mapper = new QDataWidgetMapper(this);
 
-	QLabel* label = new QLabel(m_model->headerData(row/2 - 1, Qt::Vertical, Qt::DisplayRole).toString(), this);
+	QLabel* label = new QLabel(m_model->headerData(row / 2 - 1, Qt::Vertical, Qt::DisplayRole).toString(), this);
 	QFont labelFont = label->font();
 	labelFont.setBold(true);
 	label->setFont(labelFont);
@@ -151,6 +154,7 @@ void DataBindingWidget::CreateRowOfPropertyWidgets(QGridLayout* layout, QWidget*
 	layout->addWidget(maxWidget, row, 4, Qt::AlignHCenter);
 	layout->addWidget(inputBindingLineEdit, row, 6);
 
+	//QObject::connect(inputBindingLineEdit, &BindingLineEdit::ValueChangedByUser, this, [=]() {if (mapper->submit()) { mapper->setCurrentIndex(row / 2 - 1); } });
 	QObject::connect(inputBindingLineEdit, &BindingLineEdit::ValueChangedByUser, mapper, &QDataWidgetMapper::submit);
 
 	m_dataWidgetMappers.push_back(mapper);

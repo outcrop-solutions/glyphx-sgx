@@ -4,6 +4,8 @@
 #include <QtWidgets/QMenu>
 #include "inputfieldmimedata.h"
 #include "databaseservices.h"
+#include <QtSql/QSqlRecord>
+#include <QtSql/QSqlQuery>
 
 BindingLineEdit::BindingLineEdit(QWidget *parent, bool onlyAcceptsNumericFields)
 	: QLineEdit(parent),
@@ -30,22 +32,22 @@ const SynGlyphX::InputField& BindingLineEdit::GetInputField() const {
 	return m_inputField;
 }
 
-void BindingLineEdit::SetInputField(const SynGlyphX::InputField& inputField) {
+void BindingLineEdit::SetInputField(const SynGlyphX::InputField& inputfield) {
 
-	m_inputField = inputField;
+	if (inputfield.IsValid()) {
 
-	if (m_inputField.IsValid()) {
+		m_inputField = inputfield;
+		QString text = DatabaseServices::GetFormattedDBName(inputfield.GetDatasourceID()) + ":" + QString::fromStdWString(inputfield.GetTable()) + ":" + QString::fromStdWString(inputfield.GetField());
 
-		QString text = DatabaseServices::GetFormattedDBName(m_inputField.GetDatasourceID()) + ":" + QString::fromStdWString(m_inputField.GetTable()) + ":" + QString::fromStdWString(m_inputField.GetField());
+		/*if (inputField.IsNumeric() && m_onlyAcceptsNumericFields) {
 
-		if (m_inputField.IsNumeric() && m_onlyAcceptsNumericFields) {
-
-			text += ":" + QString::number(m_inputField.GetMin()) + ":" + QString::number(m_inputField.GetMax());
-		}
+			text += ":" + record.value(0).toString() + ":" + record.value(1).toString();
+		}*/
 
 		setText(text);
 	}
 	else {
+
 		setText("");
 	}
 
@@ -76,8 +78,9 @@ void BindingLineEdit::dropEvent(QDropEvent* event) {
 	const InputFieldMimeData* mimeData = qobject_cast<const InputFieldMimeData*>(event->mimeData());
 	if (mimeData != nullptr) {
 
-		SetInputField(mimeData->GetInputField());
-		emit ValueChangedByUser(mimeData->GetInputField());
+		//SetInputField(mimeData->GetInputField());
+		m_inputField = mimeData->GetInputField();
+		emit ValueChangedByUser(m_inputField);
 	}
 }
 
@@ -95,7 +98,6 @@ void BindingLineEdit::contextMenuEvent(QContextMenuEvent* event) {
 
 void BindingLineEdit::Clear() {
 
-	SynGlyphX::InputField emptyInputField;
-	SetInputField(emptyInputField);
-	emit ValueChangedByUser(emptyInputField);
+	m_inputField = SynGlyphX::InputField();
+	emit ValueChangedByUser(m_inputField);
 }

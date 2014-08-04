@@ -30,6 +30,7 @@ private:
 
 	SynGlyphX::MinMaxGlyphTree::iterator m_glyph;
 	const SynGlyphX::MinMaxGlyphTree* m_glyphTree;
+	boost::uuids::uuid m_glyphTreeID;
 	QStringList m_propertyHeaders;
 	QStringList m_columnHeaders;
 	DataTransformModel* m_dataTransformModel;

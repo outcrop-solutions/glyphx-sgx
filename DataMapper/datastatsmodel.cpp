@@ -135,16 +135,8 @@ QMimeData* DataStatsModel::mimeData(const QModelIndexList& indexes) const {
 
 		return nullptr;
 	}
-
-	QSqlDatabase db = QSqlDatabase::database(QString::fromStdWString(boost::uuids::to_wstring(m_id)));
+	
 	QString fieldName = m_fieldNames[indexes.front().row()];
-
-	QSqlQuery query(db);
-	query.prepare(QString("SELECT  MIN(%1), MAX(%1) FROM ").arg("\"" + fieldName + "\"") + m_tableName);
-
-	query.exec();
-	query.first();
-	QSqlRecord record = query.record();
 
 	SynGlyphX::InputField::Type type = SynGlyphX::InputField::Type::Null;
 	QVariant::Type fieldType = m_fieldTypes[indexes.front().row()];
@@ -162,7 +154,6 @@ QMimeData* DataStatsModel::mimeData(const QModelIndexList& indexes) const {
 	}
 	
 	SynGlyphX::InputField inputfield(m_id, m_tableName.toStdWString(), fieldName.toStdWString(), type);
-	inputfield.SetMinMax(record.value(0).toDouble(), record.value(1).toDouble());
 	InputFieldMimeData* mimeData = new InputFieldMimeData(inputfield);
 	
 	return mimeData;
