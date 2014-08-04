@@ -11,10 +11,17 @@ namespace SynGlyphX {
 	{
 	}
 
-	InputBinding::InputBinding(InputField::HashID inputFieldID) :
+	InputBinding::InputBinding(InputField::HashID inputFieldID, double min, double max) :
 		m_inputFieldID(inputFieldID),
-		m_min(0.0),
-		m_max(0.0) {
+		m_min(min),
+		m_max(max) {
+
+	}
+
+	InputBinding::InputBinding(const boost::property_tree::wptree& propertyTree) :
+		m_inputFieldID(propertyTree.get<InputField::HashID>(L"<xmlattr>.id")),
+		m_min(propertyTree.get<double>(L"Min")),
+		m_max(propertyTree.get<double>(L"Max")) {
 
 	}
 
@@ -38,7 +45,7 @@ namespace SynGlyphX {
 		return *this;
 	}
 
-	/*void InputBinding::SetMinMax(double min, double max) {
+	void InputBinding::SetMinMax(double min, double max) {
 
 		m_min = min;
 		m_max = max;
@@ -52,14 +59,14 @@ namespace SynGlyphX {
 	double InputBinding::GetMax() const {
 
 		return m_max;
-	}*/
+	}
 
 	void InputBinding::ExportToPropertyTree(boost::property_tree::wptree& propertyTree) const {
 
-		boost::property_tree::wptree& inputFieldPropertyTree = propertyTree.add(s_propertyTreeName, L"");
+		boost::property_tree::wptree& inputFieldPropertyTree = propertyTree.add(PropertyTreeName, L"");
 		inputFieldPropertyTree.put(L"<xmlattr>.id", m_inputFieldID);
-		//inputFieldPropertyTree.put(L"Min", m_min);
-		//inputFieldPropertyTree.put(L"Max", m_max);
+		inputFieldPropertyTree.put(L"Min", m_min);
+		inputFieldPropertyTree.put(L"Max", m_max);
 	}
 
 	bool InputBinding::IsBoundToInputField() const {
@@ -70,6 +77,11 @@ namespace SynGlyphX {
 	InputField::HashID InputBinding::GetInputFieldID() const {
 
 		return m_inputFieldID;
+	}
+
+	void InputBinding::Clear() {
+
+		m_inputFieldID = 0;
 	}
 
 } //namespace SynGlyphX

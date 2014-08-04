@@ -12,21 +12,24 @@ namespace SynGlyphX {
 		static const std::wstring PropertyTreeName;
 
 		InputBinding();
-		InputBinding(InputField::HashID inputFieldID);
+		InputBinding(InputField::HashID inputFieldID, double min = 0.0, double max = 0.0);
+		InputBinding(const boost::property_tree::wptree& propertyTree);
 		InputBinding(const InputBinding& binding);
 		~InputBinding();
 
 		InputBinding& operator=(const InputBinding& binding);
 
-		/*double GetMin() const;
+		double GetMin() const;
 		double GetMax() const;
-		void SetMinMax(double min, double max);*/
+		void SetMinMax(double min, double max);
 
 		void ExportToPropertyTree(boost::property_tree::wptree& propertyTree) const;
 
 		bool IsBoundToInputField() const;
 
 		InputField::HashID GetInputFieldID() const;
+
+		void Clear();
 
 	private:
 		InputField::HashID m_inputFieldID;

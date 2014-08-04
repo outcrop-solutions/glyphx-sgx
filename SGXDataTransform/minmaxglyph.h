@@ -34,7 +34,8 @@ namespace SynGlyphX {
 		PropertyTree& ExportToPropertyTree(boost::property_tree::wptree& propertyTree) const;
 
 		const InputBinding& GetInputBinding(unsigned int index) const;
-		void SetInputBinding(unsigned int index, InputField::HashID id);
+		void SetInputBinding(unsigned int index, const InputBinding& binding);
+		void ClearInputBinding(unsigned int index);
 
 	private:
 		void AddVector3ToPropertyTree(boost::property_tree::wptree& propertyTreeParent, const std::wstring& name, const Vector3& min, const Vector3& difference, const InputBinding inputBindings[3]) const;

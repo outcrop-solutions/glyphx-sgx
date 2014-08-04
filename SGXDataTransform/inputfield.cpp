@@ -29,9 +29,7 @@ namespace SynGlyphX {
 		m_datasourceID(propertyTree.get<boost::uuids::uuid>(L"<xmlattr>.id")),
 		m_table(propertyTree.get<std::wstring>(L"<xmlattr>.table")),
 		m_field(propertyTree.get<std::wstring>(L"<xmlattr>.field")),
-		m_type(s_fieldTypeStrings.right.at(propertyTree.get<std::wstring>(L"<xmlattr>.type"))),
-		m_min(propertyTree.get<double>(L"Min")),
-		m_max(propertyTree.get<double>(L"Max")) {
+		m_type(s_fieldTypeStrings.right.at(propertyTree.get<std::wstring>(L"<xmlattr>.type"))) {
 
 	}
 
@@ -90,6 +88,20 @@ namespace SynGlyphX {
 	bool InputField::IsNumeric() const {
 
 		return ((m_type == Integer) || (m_type == Real));
+	}
+
+	InputField::HashID InputField::GetHashID() const {
+
+		std::size_t seed = 0;
+
+		if (IsValid()) {
+
+			boost::hash_combine(seed, m_datasourceID);
+			boost::hash_combine(seed, m_table);
+			boost::hash_combine(seed, m_field);
+		}
+
+		return seed;
 	}
 
 } //namespace SynGlyphX

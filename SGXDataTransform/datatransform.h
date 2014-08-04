@@ -42,7 +42,8 @@ namespace SynGlyphX {
 		boost::uuids::uuid AddGlyphTree(const MinMaxGlyphTree::SharedPtr glyphTree);
 		const MinMaxGlyphTreeMap& DataTransform::GetGlyphTrees() const;
 
-		void SetInputBinding(const boost::uuids::uuid& treeID, const MinMaxGlyphTree::const_iterator& node, int index, const InputField& inputfield);
+		void SetInputField(const boost::uuids::uuid& treeID, MinMaxGlyphTree::const_iterator& node, int index, const InputField& inputfield);
+		void ClearInputBinding(const boost::uuids::uuid& treeID, MinMaxGlyphTree::const_iterator& node, int index);
 
 		bool IsTransformable() const;
 
@@ -50,12 +51,12 @@ namespace SynGlyphX {
 
     private:
         void Clear();
-		void AddChildrenToGlyphTree(GlyphTree::SharedPtr tree, GlyphTree::iterator newNode, MinMaxGlyphTree::SharedPtr minMaxTree, MinMaxGlyphTree::const_iterator node) const;
-		void RunSqlQuery(const InputField& inputfield, std::vector<double>& results) const;
-		void RunSqlQuery(const InputField& inputfield, std::vector<std::wstring>& results) const;
-		double LinearInterpolate(const InputField& inputfield, double min, double difference, const std::vector<double>& input, int index) const;
-		Color ColorRGBInterpolate(const InputField& inputfield, const Color& min, const Color& difference, const std::vector<double>& input, int index) const;
-		GlyphProperties ProcessMinMaxGlyph(const MinMaxGlyphTree::const_iterator& minMaxGlyph) const;
+		void AddChildrenToGlyphTree(GlyphTree::SharedPtr tree, GlyphTree::iterator newNode, MinMaxGlyphTree::SharedPtr minMaxTree, MinMaxGlyphTree::const_iterator node, const std::unordered_map<InputField::HashID, QVariantList>& queryResultData, unsigned int index) const;
+		QVariantList RunSqlQuery(const InputField& inputfield) const;
+		void GetMinMax(InputBinding& binding, const InputField& inputField) const;
+		double LinearInterpolate(const InputBinding& binding, double min, double difference, const std::unordered_map<InputField::HashID, QVariantList>& queryResultData, unsigned int index) const;
+		Color ColorRGBInterpolate(const InputBinding& binding, const Color& min, const Color& difference, const std::unordered_map<InputField::HashID, QVariantList>& queryResultData, unsigned int index) const;
+		GlyphProperties ProcessMinMaxGlyph(const MinMaxGlyphTree::const_iterator& minMaxGlyph, const std::unordered_map<InputField::HashID, QVariantList>& queryResultData, unsigned int index) const;
 
 		DatasourceMap m_datasources;
         boost::uuids::random_generator m_uuidGenerator;

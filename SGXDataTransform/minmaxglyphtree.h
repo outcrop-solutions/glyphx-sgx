@@ -18,6 +18,7 @@ namespace SynGlyphX {
 		typedef boost::shared_ptr<const MinMaxGlyphTree> ConstSharedPtr;
 		typedef boost::property_tree::wptree PropertyTree;
 		typedef stlplus::ntree_node<MinMaxGlyph> Node;
+		typedef std::unordered_map<InputField::HashID, InputField> InputFieldMap;
 
 		MinMaxGlyphTree();
 		MinMaxGlyphTree(const boost::property_tree::wptree& propertyTree);
@@ -28,14 +29,17 @@ namespace SynGlyphX {
 		void WriteToFile(const std::string& filename) const;
 		void ReadFromFile(const std::string& filename);
 
-		void SetInputBinding(MinMaxGlyphTree::const_iterator& iterator, unsigned int index, const InputField& inputfield);
-		void ClearInputBinding(MinMaxGlyphTree::const_iterator& iterator, unsigned int index);
+		void SetInputField(MinMaxGlyphTree::const_iterator& node, unsigned int index, const InputField& inputfield, double min = 0.0, double max = 0.0);
+		void ClearInputBinding(MinMaxGlyphTree::const_iterator& node, unsigned int index);
+
+		const InputFieldMap& GetInputFields() const;
 
 	private:
 		void ProcessPropertyTreeChildren(const MinMaxGlyphTree::iterator& iT, const boost::property_tree::wptree& propertyTree);
 		void AddGlyphSubtree(MinMaxGlyphTree::iterator& parentNode, const GlyphTree& glyphTree, const GlyphTree::const_iterator& iT);
 
-		std::unordered_map<InputField, unsigned int, boost::hash<InputField>> m_inputFields;
+		InputFieldMap m_inputFields;
+		std::unordered_map<InputField::HashID, unsigned int> m_inputFieldReferenceCounts;
 	};
 
 } //namespace SynGlyphX

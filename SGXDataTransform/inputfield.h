@@ -48,15 +48,7 @@ namespace SynGlyphX {
 
 		static const boost::bimap<Type, std::wstring> s_fieldTypeStrings;
 
-		friend std::size_t hash_value(InputField const& inputfield) {
-
-			std::size_t seed = 0;
-			boost::hash_combine(seed, inputfield.m_datasourceID);
-			boost::hash_combine(seed, inputfield.m_table);
-			boost::hash_combine(seed, inputfield.m_field);
-
-			return seed;
-		}
+		HashID GetHashID() const;
 
 	private:
 		boost::uuids::uuid m_datasourceID;

@@ -2,6 +2,7 @@
 #include <boost/property_tree/xml_parser.hpp>
 #include <exception>
 #include <stack>
+#include <stdexcept>
 
 namespace SynGlyphX {
 
@@ -16,6 +17,19 @@ namespace SynGlyphX {
 		MinMaxGlyph glyph(propertyTree);
 		insert(glyph);
 		ProcessPropertyTreeChildren(root(), propertyTree);
+
+		boost::optional<const PropertyTree&> inputFieldsPropertyTree = propertyTree.get_child_optional(L"InputFields");
+		if (inputFieldsPropertyTree.is_initialized()) {
+
+			for (const PropertyTree::value_type& inputfieldProperties : inputFieldsPropertyTree.get()) {
+
+				if (inputfieldProperties.first == L"InputField") {
+
+					InputField inputfield(inputfieldProperties.second);
+					m_inputFields[inputfield.GetHashID()] = inputfield;
+				}
+			}
+		}
 	}
 
 	MinMaxGlyphTree::MinMaxGlyphTree(const GlyphTree& glyphTree) :
@@ -51,7 +65,16 @@ namespace SynGlyphX {
 		}
 
 		boost::property_tree::wptree& rootPropertyTree = propertyTreeParent.rbegin()->second;
-		boost::property_tree::wptree& inputFieldsPropertyTree = rootPropertyTree.add(L"InputFields", L"");
+
+		if (!m_inputFields.empty()) {
+
+			boost::property_tree::wptree& inputFieldsPropertyTree = rootPropertyTree.add(L"InputFields", L"");
+
+			for (auto inputfield : m_inputFields) {
+
+				inputfield.second.ExportToPropertyTree(inputFieldsPropertyTree);
+			}
+		}
 
 		return rootPropertyTree;
 	}
@@ -73,6 +96,19 @@ namespace SynGlyphX {
 			MinMaxGlyph glyph(glyphPropertyTree.get());
 			insert(glyph);
 			ProcessPropertyTreeChildren(root(), glyphPropertyTree.get());
+
+			boost::optional<PropertyTree&> inputFieldsPropertyTree = glyphPropertyTree.get().get_child_optional(L"InputFields");
+			if (inputFieldsPropertyTree.is_initialized()) {
+
+				for (const PropertyTree::value_type& inputfieldProperties : inputFieldsPropertyTree.get()) {
+
+					if (inputfieldProperties.first == L"InputField") {
+
+						InputField inputfield(inputfieldProperties.second);
+						m_inputFields[inputfield.GetHashID()] = inputfield;
+					}
+				}
+			}
 		}
 		else {
 			throw std::exception((filename + " does not have glyph tree").c_str());
@@ -106,14 +142,55 @@ namespace SynGlyphX {
 		}
 	}
 
-	void MinMaxGlyphTree::SetInputBinding(MinMaxGlyphTree::const_iterator& iterator, unsigned int index, const InputField& inputfield) {
+	void MinMaxGlyphTree::SetInputField(MinMaxGlyphTree::const_iterator& node, unsigned int index, const InputField& inputfield, double min, double max) {
 
+		//Check if new input field is from same table as other input fields.  We shouldn't need to be this restrictive in the future, but that
+		//requires more database work than we have time for right now.
 
+		if (!m_inputFields.empty()) {
+			if ((inputfield.GetDatasourceID() != m_inputFields.begin()->second.GetDatasourceID()) ||
+				(inputfield.GetTable() != m_inputFields.begin()->second.GetTable())) {
+
+				throw std::invalid_argument("Argument inputfield does not match the datasource and table of the other input fields of this tree");
+			}
+		}
+
+		InputField::HashID inputFieldID = inputfield.GetHashID();
+		std::unordered_map<InputField::HashID, unsigned int>::iterator referenceCount = m_inputFieldReferenceCounts.find(inputFieldID);
+		
+		if (referenceCount == m_inputFieldReferenceCounts.end()) {
+
+			m_inputFieldReferenceCounts[inputFieldID] = 1;
+			m_inputFields[inputFieldID] = inputfield;
+		}
+		else {
+
+			++m_inputFieldReferenceCounts[inputFieldID];
+		}
+
+		node.deconstify()->SetInputBinding(index, InputBinding(inputFieldID, min, max));
 	}
 
-	void MinMaxGlyphTree::ClearInputBinding(MinMaxGlyphTree::const_iterator& iterator, unsigned int index) {
+	void MinMaxGlyphTree::ClearInputBinding(MinMaxGlyphTree::const_iterator& node, unsigned int index) {
 
-		iterator->SetInputField(index, InputField());
+		InputField::HashID inputFieldID = node->GetInputBinding(index).GetInputFieldID();
+
+		if (m_inputFieldReferenceCounts[inputFieldID] == 1) {
+
+			m_inputFieldReferenceCounts.erase(m_inputFieldReferenceCounts.find(inputFieldID));
+			m_inputFields.erase(m_inputFields.find(inputFieldID));
+		}
+		else {
+
+			--m_inputFieldReferenceCounts[inputFieldID];
+		}
+
+		node.deconstify()->ClearInputBinding(index);
+	}
+
+	const MinMaxGlyphTree::InputFieldMap& MinMaxGlyphTree::GetInputFields() const {
+
+		return m_inputFields;
 	}
 
 } //namespace SynGlyphX

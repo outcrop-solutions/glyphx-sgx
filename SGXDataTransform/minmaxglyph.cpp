@@ -224,10 +224,20 @@ namespace SynGlyphX {
 		}
 	}
 
-	void MinMaxGlyph::SetInputBinding(unsigned int index, InputField::HashID id) {
+	void MinMaxGlyph::SetInputBinding(unsigned int index, const InputBinding& binding) {
 
 		if (index < NumInputBindings) {
-			m_inputBindings[index] = InputBinding(id);
+			m_inputBindings[index] = binding;
+		}
+		else {
+			throw new std::out_of_range("Out of range of number of input fields");
+		}
+	}
+
+	void MinMaxGlyph::ClearInputBinding(unsigned int index) {
+
+		if (index < NumInputBindings) {
+			m_inputBindings[index].Clear();
 		}
 		else {
 			throw new std::out_of_range("Out of range of number of input fields");

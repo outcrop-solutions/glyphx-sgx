@@ -3,9 +3,10 @@
 #include <algorithm>
 #include <boost/uuid/uuid_io.hpp>
 #include "csvreaderwriter.h"
+#include <QtCore/QVariant>
 #include <QtSql/QSqlDatabase>
 #include <QtSql/QSqlQuery>
-#include <QtCore/QVariant>
+#include <QtSql/QSqlRecord>
 
 namespace SynGlyphX {
 
@@ -115,26 +116,18 @@ namespace SynGlyphX {
 		return ((!m_datasources.empty()) && (!m_glyphTrees.empty()));
 	}
 
-	void DataTransform::RunSqlQuery(const InputField& inputfield, std::vector<double>& results) const {
+	QVariantList DataTransform::RunSqlQuery(const InputField& inputfield) const {
 
+		QVariantList results;
 		QSqlDatabase db= QSqlDatabase::database(QString::fromStdWString(boost::uuids::to_wstring(inputfield.GetDatasourceID())));
 		QSqlQuery query(db);
 		query.prepare(QString("SELECT %1 FROM ").arg("\"" + QString::fromStdWString(inputfield.GetField()) + "\"") + QString::fromStdWString(inputfield.GetTable()));
 		query.exec();
 		while (query.next()) {
-			results.push_back(query.value(0).toDouble());
+			results.push_back(query.value(0));
 		}
-	}
 
-	void DataTransform::RunSqlQuery(const InputField& inputfield, std::vector<std::wstring>& results) const {
-
-		QSqlDatabase db = QSqlDatabase::database(QString::fromStdWString(boost::uuids::to_wstring(inputfield.GetDatasourceID())));
-		QSqlQuery query(db);
-		query.prepare(QString("SELECT %1 FROM ").arg("\"" + QString::fromStdWString(inputfield.GetField()) + "\"") + QString::fromStdWString(inputfield.GetTable()));
-		query.exec();
-		while (query.next()) {
-			results.push_back(query.value(0).toString().toStdWString());
-		}
+		return results;
 	}
 
 	void DataTransform::TransformToCSV(const std::string& filename) const {
@@ -145,66 +138,22 @@ namespace SynGlyphX {
 
 			MinMaxGlyphTree::const_iterator minMaxGlyph = minMaxTree.second->root().constify();
 
-			//subtract 1 since tag input field needs to be handled separately with strings
-			std::vector<double> doubleValues[MinMaxGlyph::NumInputFields - 1];
-			std::vector<std::wstring> tagValues;
+			std::unordered_map<InputField::HashID, QVariantList> queryResultData;
+			const MinMaxGlyphTree::InputFieldMap& inputFields = minMaxTree.second->GetInputFields();
+			for (MinMaxGlyphTree::InputFieldMap::const_iterator iterator = inputFields.begin(); iterator != inputFields.end(); ++iterator) {
 
-			for (int k = 0; k < MinMaxGlyph::NumInputFields - 1; ++k) {
-
-				const InputField& inputField = minMaxGlyph->GetInputField(k);
-				if (inputField.IsValid()) {
-					RunSqlQuery(inputField, doubleValues[k]);
-				}
+				queryResultData[iterator->first] = RunSqlQuery(iterator->second);
 			}
 
-			//Run Tag Sql Query separately
-			const InputField& inputField = minMaxGlyph->GetInputField(MinMaxGlyph::NumInputFields - 1);
-			if (inputField.IsValid()) {
-				RunSqlQuery(inputField, tagValues);
-			}
-
-			size_t numGlyphs = tagValues.size();
-			for (int j = 0; j < MinMaxGlyph::NumInputFields - 1; ++j) {
-				
-				numGlyphs = std::max(numGlyphs, doubleValues[j].size());
-			}
-
-			const GlyphMappableProperties& difference = minMaxGlyph->GetDifference();
+			size_t numGlyphs = queryResultData.begin()->second.length();
 
 			for (unsigned int i = 0; i < numGlyphs; ++i) {
 
 				GlyphTree::SharedPtr glyphTree(new GlyphTree());
 				
-				GlyphProperties glyph = minMaxGlyph->GetMinGlyph();
+				glyphTree->insert(ProcessMinMaxGlyph(minMaxGlyph, queryResultData, i));
 
-				Vector3 mappedVector3;
-
-				mappedVector3[0] = LinearInterpolate(minMaxGlyph->GetInputField(0), glyph.GetPosition()[0], difference.GetPosition()[0], doubleValues[0], i);
-				mappedVector3[1] = LinearInterpolate(minMaxGlyph->GetInputField(1), glyph.GetPosition()[1], difference.GetPosition()[1], doubleValues[1], i);
-				mappedVector3[2] = LinearInterpolate(minMaxGlyph->GetInputField(2), glyph.GetPosition()[2], difference.GetPosition()[2], doubleValues[2], i);
-				glyph.SetPosition(mappedVector3);
-
-				mappedVector3[0] = LinearInterpolate(minMaxGlyph->GetInputField(3), glyph.GetRotation()[0], difference.GetRotation()[0], doubleValues[3], i);
-				mappedVector3[1] = LinearInterpolate(minMaxGlyph->GetInputField(4), glyph.GetRotation()[1], difference.GetRotation()[1], doubleValues[4], i);
-				mappedVector3[2] = LinearInterpolate(minMaxGlyph->GetInputField(5), glyph.GetRotation()[2], difference.GetRotation()[2], doubleValues[5], i);
-				glyph.SetRotation(mappedVector3);
-
-				mappedVector3[0] = LinearInterpolate(minMaxGlyph->GetInputField(6), glyph.GetScale()[0], difference.GetScale()[0], doubleValues[6], i);
-				mappedVector3[1] = LinearInterpolate(minMaxGlyph->GetInputField(7), glyph.GetScale()[1], difference.GetScale()[1], doubleValues[7], i);
-				mappedVector3[2] = LinearInterpolate(minMaxGlyph->GetInputField(8), glyph.GetScale()[2], difference.GetScale()[2], doubleValues[8], i);
-				glyph.SetScale(mappedVector3);
-
-				Color color = ColorRGBInterpolate(minMaxGlyph->GetInputField(9), glyph.GetColor(), difference.GetColor(), doubleValues[9], i);
-				color[3] = LinearInterpolate(minMaxGlyph->GetInputField(10), glyph.GetColor()[3], difference.GetColor()[3], doubleValues[10], i);
-				glyph.SetColor(color);
-
-				glyph.SetRatio(LinearInterpolate(minMaxGlyph->GetInputField(11), glyph.GetRatio(), difference.GetRatio(), doubleValues[11], i));
-
-				glyph.SetTag(tagValues[i]);
-
-				glyphTree->insert(glyph);
-
-				AddChildrenToGlyphTree(glyphTree, glyphTree->root(), minMaxTree.second, minMaxGlyph);
+				AddChildrenToGlyphTree(glyphTree, glyphTree->root(), minMaxTree.second, minMaxGlyph, queryResultData, i);
 
 				trees.push_back(glyphTree);
 			}
@@ -214,41 +163,123 @@ namespace SynGlyphX {
 		writer.Write(filename, trees);
 	}
 
-	GlyphProperties DataTransform::ProcessMinMaxGlyph(const MinMaxGlyphTree::const_iterator& glyph) const {
+	GlyphProperties DataTransform::ProcessMinMaxGlyph(const MinMaxGlyphTree::const_iterator& minMaxGlyph, const std::unordered_map<InputField::HashID, QVariantList>& queryResultData, unsigned int index) const {
 
-		return GlyphProperties();
+		const MinMaxGlyphTree* minMaxGlyphTree = static_cast<const MinMaxGlyphTree*>(minMaxGlyph.owner());
+
+		const GlyphMappableProperties& difference = minMaxGlyph->GetDifference();
+		GlyphProperties glyph = minMaxGlyph->GetMinGlyph();
+
+		Vector3 mappedVector3;
+
+		mappedVector3[0] = LinearInterpolate(minMaxGlyph->GetInputBinding(0), glyph.GetPosition()[0], difference.GetPosition()[0], queryResultData, index);
+		mappedVector3[1] = LinearInterpolate(minMaxGlyph->GetInputBinding(1), glyph.GetPosition()[1], difference.GetPosition()[1], queryResultData, index);
+		mappedVector3[2] = LinearInterpolate(minMaxGlyph->GetInputBinding(2), glyph.GetPosition()[2], difference.GetPosition()[2], queryResultData, index);
+		glyph.SetPosition(mappedVector3);
+
+		mappedVector3[0] = LinearInterpolate(minMaxGlyph->GetInputBinding(3), glyph.GetRotation()[0], difference.GetRotation()[0], queryResultData, index);
+		mappedVector3[1] = LinearInterpolate(minMaxGlyph->GetInputBinding(4), glyph.GetRotation()[1], difference.GetRotation()[1], queryResultData, index);
+		mappedVector3[2] = LinearInterpolate(minMaxGlyph->GetInputBinding(5), glyph.GetRotation()[2], difference.GetRotation()[2], queryResultData, index);
+		glyph.SetRotation(mappedVector3);
+
+		mappedVector3[0] = LinearInterpolate(minMaxGlyph->GetInputBinding(6), glyph.GetScale()[0], difference.GetScale()[0], queryResultData, index);
+		mappedVector3[1] = LinearInterpolate(minMaxGlyph->GetInputBinding(7), glyph.GetScale()[1], difference.GetScale()[1], queryResultData, index);
+		mappedVector3[2] = LinearInterpolate(minMaxGlyph->GetInputBinding(8), glyph.GetScale()[2], difference.GetScale()[2], queryResultData, index);
+		glyph.SetScale(mappedVector3);
+
+		Color color = ColorRGBInterpolate(minMaxGlyph->GetInputBinding(9), glyph.GetColor(), difference.GetColor(), queryResultData, index);
+		color[3] = LinearInterpolate(minMaxGlyph->GetInputBinding(10), glyph.GetColor()[3], difference.GetColor()[3], queryResultData, index);
+		glyph.SetColor(color);
+
+		glyph.SetRatio(LinearInterpolate(minMaxGlyph->GetInputBinding(11), glyph.GetRatio(), difference.GetRatio(), queryResultData, index));
+
+		InputField::HashID id = minMaxGlyph->GetInputBinding(12).GetInputFieldID();
+		if (id != 0) {
+
+			std::unordered_map<InputField::HashID, QVariantList>::const_iterator dataList = queryResultData.find(id);
+			if (dataList != queryResultData.end()) {
+
+				glyph.SetTag(dataList->second[index].toString().toStdWString());
+			}
+		}
+
+		return glyph;
 	}
 
-	Color DataTransform::ColorRGBInterpolate(const InputField& inputfield, const Color& min, const Color& difference, const std::vector<double>& input, int index) const {
+	Color DataTransform::ColorRGBInterpolate(const InputBinding& binding, const Color& min, const Color& difference, const std::unordered_map<InputField::HashID, QVariantList>& queryResultData, unsigned int index) const {
 
 		Color output = min;
-		if (!input.empty()) {
-			output[0] += (input[index] - inputfield.GetMin()) / (inputfield.GetMax() - inputfield.GetMin()) * difference[0];
-			output[1] += (input[index] - inputfield.GetMin()) / (inputfield.GetMax() - inputfield.GetMin()) * difference[1];
-			output[2] += (input[index] - inputfield.GetMin()) / (inputfield.GetMax() - inputfield.GetMin()) * difference[2];
+
+		InputField::HashID id = binding.GetInputFieldID();
+		if (id != 0) {
+
+			std::unordered_map<InputField::HashID, QVariantList>::const_iterator dataList = queryResultData.find(id);
+			if (dataList != queryResultData.end()) {
+
+				output[0] += (dataList->second[index].toDouble() - binding.GetMin()) / (binding.GetMax() - binding.GetMin()) * difference[0];
+				output[1] += (dataList->second[index].toDouble() - binding.GetMin()) / (binding.GetMax() - binding.GetMin()) * difference[1];
+				output[2] += (dataList->second[index].toDouble() - binding.GetMin()) / (binding.GetMax() - binding.GetMin()) * difference[2];
+			}
 		}
 
 		return output;
 	}
 
-	double DataTransform::LinearInterpolate(const InputField& inputfield, double min, double difference, const std::vector<double>& input, int index) const {
+	double DataTransform::LinearInterpolate(const InputBinding& binding, double min, double difference, const std::unordered_map<InputField::HashID, QVariantList>& queryResultData, unsigned int index) const {
 
 		double output = min;
-		if (!input.empty()) {
-			output += (input[index] - inputfield.GetMin()) / (inputfield.GetMax() - inputfield.GetMin()) * difference;
+
+		InputField::HashID id = binding.GetInputFieldID();
+		if (id != 0) {
+
+			std::unordered_map<InputField::HashID, QVariantList>::const_iterator dataList = queryResultData.find(id);
+			if (dataList != queryResultData.end()) {
+
+				output += (dataList->second[index].toDouble() - binding.GetMin()) / (binding.GetMax() - binding.GetMin()) * difference;
+			}
 		}
 
 		return output;
 	}
 
-	void DataTransform::AddChildrenToGlyphTree(GlyphTree::SharedPtr tree, GlyphTree::iterator newNode, MinMaxGlyphTree::SharedPtr minMaxTree, MinMaxGlyphTree::const_iterator node) const {
+	void DataTransform::AddChildrenToGlyphTree(GlyphTree::SharedPtr tree, GlyphTree::iterator newNode, MinMaxGlyphTree::SharedPtr minMaxTree, MinMaxGlyphTree::const_iterator node, const std::unordered_map<InputField::HashID, QVariantList>& queryResultData, unsigned int index) const {
 
 		for (int i = 0; i < minMaxTree->children(node); ++i) {
 
 			MinMaxGlyphTree::const_iterator child = minMaxTree->child(node, i);
-			GlyphTree::iterator newChild = tree->insert(newNode, child->GetMinGlyph());
-			AddChildrenToGlyphTree(tree, newChild, minMaxTree, child);
+			GlyphTree::iterator newChild = tree->insert(newNode, ProcessMinMaxGlyph(child, queryResultData, index));
+			AddChildrenToGlyphTree(tree, newChild, minMaxTree, child, queryResultData, index);
 		}
+	}
+	
+	void DataTransform::SetInputField(const boost::uuids::uuid& treeID, MinMaxGlyphTree::const_iterator& node, int index, const InputField& inputfield) {
+
+		MinMaxGlyphTree::SharedPtr glyphTree = m_glyphTrees[treeID];
+
+		double min = 0.0;
+		double max = 0.0;
+
+		if (inputfield.IsNumeric()) {
+
+			QSqlDatabase db = QSqlDatabase::database(QString::fromStdWString(boost::uuids::to_wstring(inputfield.GetDatasourceID())));
+			QSqlQuery query(db);
+			query.prepare(QString("SELECT  MIN(%1), MAX(%1) FROM ").arg("\"" + QString::fromStdWString(inputfield.GetField()) + "\"") + QString::fromStdWString(inputfield.GetTable()));
+
+			query.exec();
+			query.first();
+			QSqlRecord record = query.record();
+
+			min = record.value(0).toDouble();
+			max = record.value(1).toDouble();
+		}
+
+		glyphTree->SetInputField(node, index, inputfield, min, max);
+	}
+
+	void DataTransform::ClearInputBinding(const boost::uuids::uuid& treeID, MinMaxGlyphTree::const_iterator& node, int index) {
+
+		MinMaxGlyphTree::SharedPtr glyphTree = m_glyphTrees[treeID];
+		glyphTree->ClearInputBinding(node, index);
 	}
 
 } //namespace SynGlyphX
