@@ -32,6 +32,7 @@ private slots:
     void ExportToGlyphViewer();
     void ChangeBaseImage();
 	void AddGlyphTemplate();
+	void ChangeMapDownloadSettings();
 
 private:
     void CreateMenus();
@@ -45,6 +46,7 @@ private:
     QMenu* m_fileMenu;
     QMenu* m_projectMenu;
     QMenu* m_viewMenu;
+	QMenu* m_toolsMenu;
     QTreeView* m_glyphTreeView;
 	DataSourceStatsWidget* m_dataSourceStats;
 	QList<QAction*> m_projectDependentActions;

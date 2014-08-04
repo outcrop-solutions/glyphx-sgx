@@ -11,6 +11,7 @@
 #include <QtSql/QSqlRecord>
 #include "application.h"
 #include "databaseservices.h"
+#include "downloadoptionsdialog.h"
 
 DataMapperWindow::DataMapperWindow(QWidget *parent)
     : SynGlyphX::MainWindow(parent),
@@ -88,6 +89,11 @@ void DataMapperWindow::CreateMenus() {
     CreateFullScreenAction(m_viewMenu);
 
     m_viewMenu->addSeparator();
+
+	m_toolsMenu = menuBar()->addMenu(tr("Tools"));
+
+	QAction* mapDownloadSettingsAction = m_toolsMenu->addAction(tr("Map Download Settings"));
+	QObject::connect(mapDownloadSettingsAction, &QAction::triggered, this, &DataMapperWindow::ChangeMapDownloadSettings);
 
     m_helpMenu = menuBar()->addMenu(tr("Help"));
     QAction* aboutBoxAction = m_helpMenu->addAction("About " + SynGlyphX::Application::organizationName() + " " + SynGlyphX::Application::applicationName());
@@ -350,4 +356,10 @@ void DataMapperWindow::EnableProjectDependentActions(bool enable) {
 	for (int i = 0; i < m_projectDependentActions.length(); ++i) {
 		m_projectDependentActions[i]->setEnabled(enable);
 	}
+}
+
+void DataMapperWindow::ChangeMapDownloadSettings() {
+
+	DownloadOptionsDialog dialog(this);
+	dialog.exec();
 }
