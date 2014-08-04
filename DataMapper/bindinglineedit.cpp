@@ -34,16 +34,10 @@ const SynGlyphX::InputField& BindingLineEdit::GetInputField() const {
 
 void BindingLineEdit::SetInputField(const SynGlyphX::InputField& inputfield) {
 
-	if (inputfield.IsValid()) {
+	m_inputField = inputfield;
+	if (m_inputField.IsValid()) {
 
-		m_inputField = inputfield;
 		QString text = DatabaseServices::GetFormattedDBName(inputfield.GetDatasourceID()) + ":" + QString::fromStdWString(inputfield.GetTable()) + ":" + QString::fromStdWString(inputfield.GetField());
-
-		/*if (inputField.IsNumeric() && m_onlyAcceptsNumericFields) {
-
-			text += ":" + record.value(0).toString() + ":" + record.value(1).toString();
-		}*/
-
 		setText(text);
 	}
 	else {

@@ -129,6 +129,9 @@ void DataMapperWindow::CreateNewProject() {
 		return;
 	}
 
+	m_dataTransformModel->Clear();
+	m_dataSourceStats->ClearTabs();
+
 	EnableProjectDependentActions(false);
 	m_dataBindingWidget->setEnabled(false);
 }

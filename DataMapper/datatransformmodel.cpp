@@ -132,6 +132,13 @@ void DataTransformModel::LoadDataTransformFile(const QString& filename) {
 	endResetModel();
 }
 
+void DataTransformModel::Clear() {
+
+	beginResetModel();
+	m_dataTransform->Clear();
+	endResetModel();
+}
+
 SynGlyphX::DataTransform::SharedPtr DataTransformModel::GetDataTransform() const {
 
 	return m_dataTransform;

@@ -21,6 +21,7 @@ public:
 
 	void AddGlyphFile(const QString& filename);
 	void LoadDataTransformFile(const QString& filename);
+	void Clear();
 
 	SynGlyphX::DataTransform::SharedPtr GetDataTransform() const;
 
