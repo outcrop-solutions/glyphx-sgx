@@ -12,6 +12,9 @@ DataBindingWidget::DataBindingWidget(MinMaxGlyphModel* model, QWidget *parent)
 	setChildrenCollapsible(false);
 
 	CreatePropertiesTable();
+
+	//Until we add torus ratio add in a null to mapper list to make sure everything works right
+	m_dataWidgetMappers.push_back(nullptr);
 	
 	CreateTagAndDescriptionWidget();
 
@@ -208,7 +211,10 @@ void DataBindingWidget::CreateGridLine(QGridLayout* layout, QFrame::Shape shape,
 void DataBindingWidget::OnModelReset() {
 
 	for (int i = 0; i < m_dataWidgetMappers.length(); ++i) {
-		m_dataWidgetMappers[i]->setCurrentIndex(i);
+
+		if (m_dataWidgetMappers[i] != nullptr) {
+			m_dataWidgetMappers[i]->setCurrentIndex(i);
+		}
 	}
 }
 
@@ -216,6 +222,8 @@ void DataBindingWidget::CommitChanges() {
 
 	for (QDataWidgetMapper* mapper : m_dataWidgetMappers) {
 
-		mapper->submit();
+		if (mapper != nullptr) {
+			mapper->submit();
+		}
 	}
 }

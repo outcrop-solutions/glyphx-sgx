@@ -280,9 +280,11 @@ void DataMapperWindow::AddDataSources() {
 
 void DataMapperWindow::ExportToGlyphViewer() {
 
-	QString csvFile = QFileDialog::getSaveFileName(this, tr("Export to Glyph Viewer"), "", tr("CSV Files (*.csv)"));
-	if (!csvFile.isEmpty()) {
-		m_dataTransformModel->GetDataTransform()->TransformToCSV(csvFile.toStdString());
+	QString csvDirectory = QFileDialog::getExistingDirectory(this, tr("Export to Glyph Viewer"), "");
+	if (!csvDirectory.isEmpty()) {
+		QString csvFile = csvDirectory + QDir::separator() + "antz0001.csv";
+		QString tagFile = csvDirectory + QDir::separator() + "antztag0001.csv";
+		m_dataTransformModel->GetDataTransform()->TransformToCSV(csvFile.toStdString(), tagFile.toStdString());
 		statusBar()->showMessage("Data transform sucessfully exported", 3000);
 	}
 }
