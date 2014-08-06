@@ -7,19 +7,19 @@
 #include "networkdownloader.h"
 #include "georeference.h"
 
-DownloadedMap::DownloadedMap(const std::vector<GeographicPoint>& points, const std::string& filename, const QSize& imageSize, NetworkDownloader::MapSource source, NetworkDownloader::MapType mapType, QObject *parent)
+DownloadedMap::DownloadedMap(const std::vector<GeographicPoint>& points, const std::string& filename, const SynGlyphX::DownloadedMapProperties* const properties, QObject *parent)
     : QObject(parent),
 	m_filename(filename),
     m_imageBoundingBox(),
     m_pointsBoundingBox(points),
-    m_mapSource(source),
-    m_mapType(mapType)
+    m_mapSource(properties->GetSource()),
+	m_mapType(properties->GetType())
 {
     QString tempImageFilename = QDir::toNativeSeparators(QDir::currentPath() + "/tempimage.png");
 
 	NetworkDownloader& downloader = NetworkDownloader::Instance();
 	
-	m_imageBoundingBox = downloader.DownloadMap(points, tempImageFilename.toStdString(), imageSize, source, mapType);
+	m_imageBoundingBox = downloader.DownloadMap(points, tempImageFilename.toStdString(), properties);
 
 	m_showPointsInMap = downloader.GetShowPointsInMap();
 
@@ -54,17 +54,17 @@ const GeographicBoundingBox& DownloadedMap::GetPointsBoundingBox() {
     return m_pointsBoundingBox;
 }
 
-NetworkDownloader::MapSource DownloadedMap::GetMapSource() {
+SynGlyphX::DownloadedMapProperties::MapSource DownloadedMap::GetMapSource() const {
 
 	return m_mapSource;
 }
 
-NetworkDownloader::MapType DownloadedMap::GetMapType() {
+SynGlyphX::DownloadedMapProperties::MapType DownloadedMap::GetMapType() const {
 
 	return m_mapType;
 }
 
-bool DownloadedMap::GetShowPointsInMap() {
+bool DownloadedMap::GetShowPointsInMap() const {
 	
 	return m_showPointsInMap;
 }

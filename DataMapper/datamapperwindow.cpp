@@ -12,6 +12,7 @@
 #include "application.h"
 #include "databaseservices.h"
 #include "downloadoptionsdialog.h"
+#include "baseimagedialog.h"
 
 DataMapperWindow::DataMapperWindow(QWidget *parent)
     : SynGlyphX::MainWindow(parent),
@@ -297,7 +298,13 @@ void DataMapperWindow::ExportToGlyphViewer() {
 
 void DataMapperWindow::ChangeBaseImage() {
 
-	EnableProjectDependentActions(true);
+	BaseImageDialog dialog(this);
+	dialog.SetBaseImage(m_dataTransformModel->GetDataTransform()->GetBaseImage());
+	if (dialog.exec() == QDialog::Accepted) {
+
+		m_dataTransformModel->GetDataTransform()->SetBaseImage(dialog.GetBaseImage());
+		EnableProjectDependentActions(true);
+	}
 }
 
 void DataMapperWindow::AddGlyphTemplate() {

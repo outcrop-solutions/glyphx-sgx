@@ -33,6 +33,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SGXFoundation", "..\..\Core
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MapDownloading", "..\MapDownloading\MapDownloading.vcxproj", "{C1352B61-481F-430E-9B1F-B4FC1001C542}"
 	ProjectSection(ProjectDependencies) = postProject
+		{339B5005-8C75-48B9-8F0A-9B60EBF3D067} = {339B5005-8C75-48B9-8F0A-9B60EBF3D067}
 		{3A2E1233-CA11-41E6-AEC0-8BE69721493B} = {3A2E1233-CA11-41E6-AEC0-8BE69721493B}
 	EndProjectSection
 EndProject

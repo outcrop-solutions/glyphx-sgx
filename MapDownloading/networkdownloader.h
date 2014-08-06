@@ -7,6 +7,7 @@
 #include <vector>
 #include "geographicboundingbox.h"
 #include <QtNetwork/QNetworkAccessManager>
+#include "downloadedmapproperties.h"
 
 typedef boost::geometry::strategy::distance::haversine<double> DistanceStrategy;
 
@@ -16,23 +17,12 @@ class MAPDOWNLOADING_EXPORT NetworkDownloader
 public:
 	static const char* ImageFormat;
 
-	enum MapSource {
-		MapQuestOpen, //MapQuestOpen gets data from OpenStreetMap
-		GoogleMaps
-	};
-
-	enum MapType {
-		Map,
-		Satellite,
-		Hybrid
-	};
-
 	NetworkDownloader();
 	~NetworkDownloader();
 
 	static NetworkDownloader& Instance();
 	
-    GeographicBoundingBox DownloadMap(const std::vector<GeographicPoint>& points, const std::string& filename, const QSize& imageSize, MapSource source, MapType mapType);
+	GeographicBoundingBox DownloadMap(const std::vector<GeographicPoint>& points, const std::string& filename, const SynGlyphX::DownloadedMapProperties* const properties);
 
 	void SetShowPointsInMap(bool show);
 	bool GetShowPointsInMap();
@@ -44,8 +34,8 @@ public:
     //const QString& GetGoogleMapsKey() const;
 
 private:
-	unsigned int GetZoomLevel(const GeographicBoundingBox& boundingBox, const QSize& imageSize);
-    QString GenerateMapQuestOpenString(const GeographicPoint& center, const QSize& imageSize, unsigned int zoomLevel, MapType mapType, const std::vector<GeographicPoint>& points);
+	unsigned int GetZoomLevel(const GeographicBoundingBox& boundingBox, const SynGlyphX::DownloadedMapProperties::Size& imageSize);
+	QString GenerateMapQuestOpenString(const GeographicPoint& center, unsigned int zoomLevel, const SynGlyphX::DownloadedMapProperties* const properties, const std::vector<GeographicPoint>& points);
     void ReadSettings();
     void WriteSettings();
 
