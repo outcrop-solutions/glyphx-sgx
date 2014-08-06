@@ -11,7 +11,7 @@
 namespace SynGlyphX {
 
     DataTransform::DataTransform() :
-		m_baseImageType(BaseImageType::Default)
+		m_baseImage(nullptr)
     {
     }
 
@@ -26,8 +26,8 @@ namespace SynGlyphX {
         boost::property_tree::wptree dataTransformPropertyTree;
 		boost::property_tree::read_xml(filename, dataTransformPropertyTree);
 
-		boost::property_tree::wptree& baseMapPropertyTree = dataTransformPropertyTree.get_child(L"BaseImage");
-		m_baseImageType = baseMapPropertyTree.get<BaseImageType>(L"<xmlattr>.type");
+		//boost::property_tree::wptree& baseMapPropertyTree = dataTransformPropertyTree.get_child(L"BaseImage");
+		//m_baseImageType = baseMapPropertyTree.get<BaseImageType>(L"<xmlattr>.type");
 
 
 		for (boost::property_tree::wptree::value_type& datasourceValue : dataTransformPropertyTree.get_child(L"Datasources")) {
@@ -119,6 +119,16 @@ namespace SynGlyphX {
 	bool DataTransform::IsTransformable() const {
 
 		return ((!m_datasources.empty()) && (!m_glyphTrees.empty()));
+	}
+
+	void DataTransform::SetBaseImage(const BaseImage& baseImage) {
+
+		m_baseImage = baseImage;
+	}
+
+	const BaseImage& DataTransform::GetBaseImage() const {
+
+		return m_baseImage;
 	}
 
 	QVariantList DataTransform::RunSqlQuery(const InputField& inputfield) const {

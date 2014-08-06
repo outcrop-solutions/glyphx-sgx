@@ -192,4 +192,9 @@ namespace SynGlyphX {
 		return m_inputFields;
 	}
 
+	bool MinMaxGlyphTree::DoesRootGlyphPositionXYHaveBindings() const {
+
+		return (root()->IsPositionXYBoundToInputFields());
+	}
+
 } //namespace SynGlyphX

@@ -80,9 +80,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="baseimage.h" />
+    <ClInclude Include="baseimageproperties.h" />
     <ClInclude Include="datamapping.h" />
     <ClInclude Include="datasource.h" />
     <ClInclude Include="datatransform.h" />
+    <ClInclude Include="downloadedmapproperties.h" />
     <ClInclude Include="inputbinding.h" />
     <ClInclude Include="inputfield.h" />
     <ClInclude Include="minmaxglyph.h" />
@@ -90,9 +93,12 @@
     <ClInclude Include="sgxdatatransform_global.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="baseimage.cpp" />
+    <ClCompile Include="baseimageproperties.cpp" />
     <ClCompile Include="datamapping.cpp" />
     <ClCompile Include="datasource.cpp" />
     <ClCompile Include="datatransform.cpp" />
+    <ClCompile Include="downloadedmapproperties.cpp" />
     <ClCompile Include="inputbinding.cpp" />
     <ClCompile Include="inputfield.cpp" />
     <ClCompile Include="minmaxglyph.cpp" />

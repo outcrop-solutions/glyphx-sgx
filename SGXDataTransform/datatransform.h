@@ -9,18 +9,13 @@
 #include "UUID.h"
 #include <boost/uuid/uuid_generators.hpp>
 #include "minmaxglyphtree.h"
+#include "baseimage.h"
 
 namespace SynGlyphX {
 
     class SGXDATATRANSFORM_EXPORT DataTransform
     {
     public:
-		enum BaseImageType {
-			Default = 0,
-			DownloadedMap,
-			UserImage
-		};
-
 		typedef std::unordered_map<boost::uuids::uuid, Datasource, SynGlyphX::UUIDHash> DatasourceMap;
 		typedef std::unordered_map<boost::uuids::uuid, MinMaxGlyphTree::SharedPtr, SynGlyphX::UUIDHash> MinMaxGlyphTreeMap;
 
@@ -55,6 +50,9 @@ namespace SynGlyphX {
 
 		void Clear();
 
+		void SetBaseImage(const BaseImage& baseImage);
+		const BaseImage& GetBaseImage() const;
+
 		void TransformToCSV(const std::string& filename, const std::string& tagFilename) const;
 
     private:
@@ -68,7 +66,7 @@ namespace SynGlyphX {
 		DatasourceMap m_datasources;
         boost::uuids::random_generator m_uuidGenerator;
 		MinMaxGlyphTreeMap m_glyphTrees;
-		BaseImageType m_baseImageType;
+		BaseImage m_baseImage;
     };
 
 } //namespace SynGlyphX

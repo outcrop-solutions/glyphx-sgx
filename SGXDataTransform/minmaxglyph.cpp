@@ -244,4 +244,9 @@ namespace SynGlyphX {
 		}
 	}
 
+	bool MinMaxGlyph::IsPositionXYBoundToInputFields() const {
+
+		return (m_inputBindings[0].IsBoundToInputField() && m_inputBindings[1].IsBoundToInputField());
+	}
+
 } //namespace SynGlyphX

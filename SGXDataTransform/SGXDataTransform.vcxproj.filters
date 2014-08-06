@@ -49,6 +49,15 @@
     <ClInclude Include="inputbinding.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="baseimage.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="baseimageproperties.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="downloadedmapproperties.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="datasource.cpp">
@@ -70,6 +79,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="inputbinding.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="baseimage.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="baseimageproperties.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="downloadedmapproperties.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

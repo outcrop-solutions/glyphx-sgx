@@ -37,6 +37,8 @@ namespace SynGlyphX {
 		void SetInputBinding(unsigned int index, const InputBinding& binding);
 		void ClearInputBinding(unsigned int index);
 
+		bool IsPositionXYBoundToInputFields() const;
+
 	private:
 		void AddVector3ToPropertyTree(boost::property_tree::wptree& propertyTreeParent, const std::wstring& name, const Vector3& min, const Vector3& difference, const InputBinding inputBindings[3]) const;
 		void AddValueToPropertyTree(boost::property_tree::wptree& propertyTreeParent, const std::wstring& name, double min, double difference, const InputBinding& inputBinding) const;
