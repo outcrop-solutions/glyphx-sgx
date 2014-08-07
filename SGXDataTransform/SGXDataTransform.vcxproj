@@ -47,7 +47,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <PreprocessorDefinitions>UNICODE;WIN32;WIN64;QT_DLL;QT_CORE_LIB;QT_NETWORK_LIB;QT_SQL_LIB;QT_XML_LIB;QT_XMLPATTERNS_LIB;SGXDATATRANSFORM_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.\GeneratedFiles;.;..\..\3rdParty\include\Qt_5_2_1;.\GeneratedFiles\$(PlatformName)\$(ConfigurationName);..\..\ANTzPlus\ANTzBridge;..\..\3rdParty\include\boost_1_55_0;..\..\Core\SGXFoundation;..\..\3rdParty\include\stlplus_3_11;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\GeneratedFiles;.;..\..\3rdParty\include\Qt_5_2_1;.\GeneratedFiles\$(PlatformName)\$(ConfigurationName);..\..\ANTzPlus\ANTzBridge;..\..\3rdParty\include\boost_1_55_0;..\..\Core\SGXFoundation;..\..\3rdParty\include\stlplus_3_11;..\..\Core\SGXGeospatial;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Disabled</Optimization>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -58,14 +58,14 @@
       <OutputFile>$(OutDir)\$(ProjectName).dll</OutputFile>
       <AdditionalLibraryDirectories>..\..\lib\$(Platform)\$(Configuration)\;..\..\3rdParty\lib\$(Platform)\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>SGXFoundation.lib;qtmaind.lib;Qt5Cored.lib;Qt5Networkd.lib;Qt5Sqld.lib;Qt5Xmld.lib;Qt5XmlPatternsd.lib;%(AdditionalDependencies);ANTzBridge.lib</AdditionalDependencies>
+      <AdditionalDependencies>SGXGeospatial.lib;SGXFoundation.lib;qtmaind.lib;Qt5Cored.lib;Qt5Networkd.lib;Qt5Sqld.lib;Qt5Xmld.lib;Qt5XmlPatternsd.lib;%(AdditionalDependencies);ANTzBridge.lib</AdditionalDependencies>
       <ImportLibrary>..\..\lib\$(Platform)\$(Configuration)\$(TargetName).lib</ImportLibrary>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <PreprocessorDefinitions>UNICODE;WIN32;WIN64;QT_DLL;QT_NO_DEBUG;NDEBUG;QT_CORE_LIB;QT_NETWORK_LIB;QT_SQL_LIB;QT_XML_LIB;QT_XMLPATTERNS_LIB;SGXDATATRANSFORM_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.\GeneratedFiles;.;..\..\3rdParty\include\Qt_5_2_1;.\GeneratedFiles\$(PlatformName)\$(ConfigurationName);..\..\ANTzPlus\ANTzBridge;..\..\3rdParty\include\boost_1_55_0;..\..\Core\SGXFoundation;..\..\3rdParty\include\stlplus_3_11;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\GeneratedFiles;.;..\..\3rdParty\include\Qt_5_2_1;.\GeneratedFiles\$(PlatformName)\$(ConfigurationName);..\..\ANTzPlus\ANTzBridge;..\..\3rdParty\include\boost_1_55_0;..\..\Core\SGXFoundation;..\..\3rdParty\include\stlplus_3_11;..\..\Core\SGXGeospatial;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat />
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
@@ -75,7 +75,7 @@
       <OutputFile>$(OutDir)\$(ProjectName).dll</OutputFile>
       <AdditionalLibraryDirectories>..\..\lib\$(Platform)\$(Configuration)\;..\..\3rdParty\lib\$(Platform)\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>false</GenerateDebugInformation>
-      <AdditionalDependencies>SGXFoundation.lib;qtmain.lib;Qt5Core.lib;Qt5Network.lib;Qt5Sql.lib;Qt5Xml.lib;Qt5XmlPatterns.lib;%(AdditionalDependencies);ANTzBridge.lib</AdditionalDependencies>
+      <AdditionalDependencies>SGXGeospatial.lib;SGXFoundation.lib;qtmain.lib;Qt5Core.lib;Qt5Network.lib;Qt5Sql.lib;Qt5Xml.lib;Qt5XmlPatterns.lib;%(AdditionalDependencies);ANTzBridge.lib</AdditionalDependencies>
       <ImportLibrary>..\..\lib\$(Platform)\$(Configuration)\$(TargetName).lib</ImportLibrary>
     </Link>
   </ItemDefinitionGroup>

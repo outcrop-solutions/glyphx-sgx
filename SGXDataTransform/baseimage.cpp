@@ -17,10 +17,24 @@ namespace SynGlyphX {
 		ChangeProperties(properties);
 	}
 
+	BaseImage::BaseImage(const BaseImage::PropertyTree& propertyTree) :
+		m_type(s_baseImageTypeStrings.right.at(propertyTree.get<std::wstring>(L"<xmlattr>.type"))),
+		m_properties(nullptr) {
+
+		if (m_type == Type::DownloadedMap) {
+
+			m_properties = new DownloadedMapProperties(propertyTree);
+		}
+		else {
+
+			m_properties = new BaseImageProperties();
+		}
+	}
+
 	BaseImage::BaseImage(const BaseImage& baseImage) :
 		m_type(baseImage.m_type) {
 
-		ChangeProperties(baseImage.GetPropertes());
+		ChangeProperties(baseImage.GetProperties());
 	}
 
 	BaseImage::~BaseImage()
@@ -33,7 +47,7 @@ namespace SynGlyphX {
 	BaseImage& BaseImage::operator=(const BaseImage& baseImage) {
 
 		m_type = baseImage.m_type;
-		ChangeProperties(baseImage.GetPropertes());
+		ChangeProperties(baseImage.GetProperties());
 
 		return *this;
 	}
@@ -43,7 +57,7 @@ namespace SynGlyphX {
 		return m_type;
 	}
 
-	const BaseImageProperties* const BaseImage::GetPropertes() const {
+	const BaseImageProperties* const BaseImage::GetProperties() const {
 
 		return m_properties;
 	}
@@ -69,6 +83,13 @@ namespace SynGlyphX {
 
 		m_properties = new BaseImageProperties(*properties);
 		m_type = Type::Default;
+	}
+
+	void BaseImage::ExportToPropertyTree(PropertyTree& parentPropertyTree) const {
+
+		PropertyTree& propertyTree = parentPropertyTree.add(L"BaseImage", L"");
+		propertyTree.put(L"<xmlattr>.type", s_baseImageTypeStrings.left.at(m_type));
+		m_properties->ExportToPropertyTree(propertyTree);
 	}
 
 } //namespace SynGlyphX

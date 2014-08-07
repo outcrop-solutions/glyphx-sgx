@@ -4,6 +4,8 @@
 #include "baseimageproperties.h"
 #include <array>
 #include "sgxdatatransform_global.h"
+#include <boost/property_tree/ptree.hpp>
+#include <boost/bimap.hpp>
 
 namespace SynGlyphX {
 
@@ -24,6 +26,7 @@ namespace SynGlyphX {
 		};
 
 		DownloadedMapProperties(MapSource source, MapType type, Size size = { { 2048, 1024 } });
+		DownloadedMapProperties(const boost::property_tree::wptree& propertyTree);
 		DownloadedMapProperties(const DownloadedMapProperties& properties);
 		virtual ~DownloadedMapProperties();
 
@@ -32,6 +35,11 @@ namespace SynGlyphX {
 		MapSource GetSource() const;
 		MapType GetType() const;
 		Size GetSize() const;
+
+		virtual void ExportToPropertyTree(boost::property_tree::wptree& propertyTree) const;
+
+		static const boost::bimap<MapSource, std::wstring> s_mapSourceStrings;
+		static const boost::bimap<MapType, std::wstring> s_mapTypeStrings;
 
 	private:
 		MapSource m_source;

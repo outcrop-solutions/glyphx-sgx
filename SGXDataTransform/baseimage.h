@@ -4,12 +4,15 @@
 #include "sgxdatatransform_global.h"
 #include "baseimageproperties.h"
 #include <boost/bimap.hpp>
+#include <boost/property_tree/ptree.hpp>
 
 namespace SynGlyphX {
 
 	class SGXDATATRANSFORM_EXPORT BaseImage
 	{
 	public:
+		typedef boost::property_tree::wptree PropertyTree;
+
 		enum Type {
 			Default = 0,
 			DownloadedMap,
@@ -17,6 +20,7 @@ namespace SynGlyphX {
 		};
 
 		BaseImage(const BaseImageProperties* const properties);
+		BaseImage(const PropertyTree& propertyTree);
 		BaseImage(const BaseImage& baseImage);
 		~BaseImage();
 
@@ -24,7 +28,9 @@ namespace SynGlyphX {
 
 		Type GetType() const;
 
-		const BaseImageProperties* const GetPropertes() const;
+		const BaseImageProperties* const GetProperties() const;
+
+		void ExportToPropertyTree(PropertyTree& parentPropertyTree) const;
 
 		static const boost::bimap<Type, std::wstring> s_baseImageTypeStrings;
 

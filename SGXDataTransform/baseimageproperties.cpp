@@ -20,4 +20,9 @@ namespace SynGlyphX {
 		return true;
 	}
 
+	void BaseImageProperties::ExportToPropertyTree(boost::property_tree::wptree& propertyTree) const {
+
+		//Nothing to do here right now since a default base image has no properties
+	}
+
 } //namespace SynGlyphX

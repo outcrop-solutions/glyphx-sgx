@@ -26,9 +26,7 @@ namespace SynGlyphX {
         boost::property_tree::wptree dataTransformPropertyTree;
 		boost::property_tree::read_xml(filename, dataTransformPropertyTree);
 
-		//boost::property_tree::wptree& baseMapPropertyTree = dataTransformPropertyTree.get_child(L"BaseImage");
-		//m_baseImageType = baseMapPropertyTree.get<BaseImageType>(L"<xmlattr>.type");
-
+		m_baseImage = BaseImage(dataTransformPropertyTree.get_child(L"BaseImage"));
 
 		for (boost::property_tree::wptree::value_type& datasourceValue : dataTransformPropertyTree.get_child(L"Datasources")) {
 
@@ -52,6 +50,8 @@ namespace SynGlyphX {
     void DataTransform::WriteToFile(const std::string& filename) const {
 
 		boost::property_tree::wptree dataTransformPropertyTreeRoot;
+
+		m_baseImage.ExportToPropertyTree(dataTransformPropertyTreeRoot);
 
 		boost::property_tree::wptree& datasourcesPropertyTree = dataTransformPropertyTreeRoot.add(L"Datasources", L"");
 		for (auto datasource : m_datasources) {
@@ -79,6 +79,7 @@ namespace SynGlyphX {
 
         m_datasources.clear();
 		m_glyphTrees.clear();
+		m_baseImage = BaseImage(nullptr);
     }
 
 	boost::uuids::uuid DataTransform::AddDatasource(const std::wstring& name,
@@ -297,6 +298,57 @@ namespace SynGlyphX {
 
 		MinMaxGlyphTree::SharedPtr glyphTree = m_glyphTrees[treeID];
 		glyphTree->ClearInputBinding(node, index);
+	}
+
+	void DataTransform::SetPositionXYMinMaxToGeographicForAllGlyphTrees(const GeographicBoundingBox& boundingBox) {
+
+		for (auto minMaxTree : m_glyphTrees) {
+
+			MinMaxGlyphTree::iterator& rootGlyph = minMaxTree.second->root();
+
+			GlyphProperties minProperties = rootGlyph->GetMinGlyph();
+			Vector3 position = minProperties.GetPosition();
+			position[0] = -180.0;
+			position[1] = -90.0;
+			minProperties.SetPosition(position);
+			rootGlyph->SetMinGlyphProperties(minProperties);
+
+			GlyphMappableProperties diffProperties = rootGlyph->GetDifference();
+			Vector3 diffPosition = diffProperties.GetPosition();
+			diffPosition[0] = 360.0;
+			diffPosition[1] = 180.0;
+			diffProperties.SetPosition(diffPosition);
+			rootGlyph->SetDifference(diffProperties);
+
+			InputBinding bindingX = rootGlyph->GetInputBinding(0);
+			InputBinding bindingY = rootGlyph->GetInputBinding(1);
+
+			bindingX.SetMinMax(boundingBox.GetSWCorner().get<0>(), boundingBox.GetNECorner().get<0>());
+			bindingY.SetMinMax(boundingBox.GetSWCorner().get<1>(), boundingBox.GetNECorner().get<1>());
+
+			rootGlyph->SetInputBinding(0, bindingX);
+			rootGlyph->SetInputBinding(1, bindingY);
+		}
+	}
+
+	void DataTransform::GetPositionXYForAllGlyphTrees(std::vector<GeographicPoint>& points) const {
+
+		for (auto minMaxTree : m_glyphTrees) {
+
+			MinMaxGlyphTree::iterator& rootGlyph = minMaxTree.second->root();
+
+			QVariantList queryResultDataX;
+			QVariantList queryResultDataY;
+			const MinMaxGlyphTree::InputFieldMap& inputFields = minMaxTree.second->GetInputFields();
+
+			queryResultDataX = RunSqlQuery(inputFields.at(rootGlyph->GetInputBinding(0).GetInputFieldID()));
+			queryResultDataY = RunSqlQuery(inputFields.at(rootGlyph->GetInputBinding(1).GetInputFieldID()));
+
+			size_t numGlyphs = queryResultDataX.length();
+			for (int i = 0; i < numGlyphs; ++i) {
+				points.push_back(GeographicPoint(queryResultDataX[i].toDouble(), queryResultDataY[i].toDouble()));
+			}
+		}
 	}
 
 } //namespace SynGlyphX

@@ -25,6 +25,9 @@ public:
     const GeographicPoint& GetNorthCenter() const;
     const GeographicPoint& GetSouthCenter() const;
 
+	double GetWidth() const;
+	double GetHeight() const;
+
 	std::string ToString() const;
 
     void WriteToKMLFile(const std::string& filename) const;

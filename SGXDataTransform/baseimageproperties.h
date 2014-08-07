@@ -2,6 +2,7 @@
 #define SYNGLYPHX_BASEIMAGEPROPERTIES_H
 
 #include "sgxdatatransform_global.h"
+#include <boost/property_tree/ptree.hpp>
 
 namespace SynGlyphX {
 
@@ -13,6 +14,7 @@ namespace SynGlyphX {
 		virtual ~BaseImageProperties();
 
 		virtual bool IsGeographic() const;
+		virtual void ExportToPropertyTree(boost::property_tree::wptree& propertyTree) const;
 	};
 
 } //namespace SynGlyphX

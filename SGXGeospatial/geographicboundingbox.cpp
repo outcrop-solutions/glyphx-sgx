@@ -107,6 +107,16 @@ const GeographicPoint& GeographicBoundingBox::GetSouthCenter() const {
     return m_southCenter;
 }
 
+double GeographicBoundingBox::GetWidth() const {
+
+	return (m_eastCenter.get<0>() - m_westCenter.get<0>());
+}
+
+double GeographicBoundingBox::GetHeight() const {
+
+	return (m_northCenter.get<1>() - m_southCenter.get<1>());
+}
+
 std::string GeographicBoundingBox::ToString() const {
 
     //Print bounding box in format of <top_left_lon> <top_left_lat> <bottom_right_lon> <bottom_right_lat> to follow gdal_translate order of values 

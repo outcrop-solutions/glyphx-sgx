@@ -10,6 +10,7 @@
 #include <boost/uuid/uuid_generators.hpp>
 #include "minmaxglyphtree.h"
 #include "baseimage.h"
+#include "geographicboundingbox.h"
 
 namespace SynGlyphX {
 
@@ -54,6 +55,9 @@ namespace SynGlyphX {
 		const BaseImage& GetBaseImage() const;
 
 		void TransformToCSV(const std::string& filename, const std::string& tagFilename) const;
+
+		void SetPositionXYMinMaxToGeographicForAllGlyphTrees(const GeographicBoundingBox& boundingBox);
+		void GetPositionXYForAllGlyphTrees(std::vector<GeographicPoint>& points) const;
 
     private:
 		void AddChildrenToGlyphTree(GlyphTree::SharedPtr tree, GlyphTree::iterator newNode, MinMaxGlyphTree::SharedPtr minMaxTree, MinMaxGlyphTree::const_iterator node, const std::unordered_map<InputField::HashID, QVariantList>& queryResultData, unsigned int index) const;
