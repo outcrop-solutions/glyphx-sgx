@@ -58,7 +58,7 @@
       <OutputFile>$(OutDir)\$(ProjectName).exe</OutputFile>
       <AdditionalLibraryDirectories>..\..\lib\$(Platform)\$(Configuration)\;..\..\3rdParty\lib\$(Platform)\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>boost_system-vc120-mt-gd-1_55.lib;boost_filesystem-vc120-mt-gd-1_55.lib;SGXFoundation.lib;ANTzBridge.lib;SGXDataTransform.lib;SGXGUI.lib;MapDownloading.lib;qtmaind.lib;Qt5Widgetsd.lib;Qt5Sqld.lib;Qt5Cored.lib;Qt5Guid.lib;Qt5OpenGLd.lib;opengl32.lib;glu32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SGXGeospatial.lib;SGXFoundation.lib;ANTzBridge.lib;SGXDataTransform.lib;SGXGUI.lib;MapDownloading.lib;boost_system-vc120-mt-gd-1_55.lib;boost_filesystem-vc120-mt-gd-1_55.lib;qtmaind.lib;Qt5Widgetsd.lib;Qt5Sqld.lib;Qt5Cored.lib;Qt5Guid.lib;Qt5OpenGLd.lib;opengl32.lib;glu32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -74,7 +74,7 @@
       <OutputFile>$(OutDir)\$(ProjectName).exe</OutputFile>
       <AdditionalLibraryDirectories>..\..\lib\$(Platform)\$(Configuration)\;..\..\3rdParty\lib\$(Platform)\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>false</GenerateDebugInformation>
-      <AdditionalDependencies>boost_system-vc120-mt-1_55.lib;boost_filesystem-vc120-mt-1_55.lib;SGXFoundation.lib;ANTzBridge.lib;SGXDataTransform.lib;SGXGUI.lib;MapDownloading.lib;qtmain.lib;Qt5Widgets.lib;Qt5Sql.lib;Qt5Core.lib;Qt5Gui.lib;Qt5OpenGL.lib;opengl32.lib;glu32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SGXGeospatial.lib;SGXFoundation.lib;ANTzBridge.lib;SGXDataTransform.lib;SGXGUI.lib;MapDownloading.lib;boost_system-vc120-mt-1_55.lib;boost_filesystem-vc120-mt-1_55.lib;SGXFoundation.lib;ANTzBridge.lib;SGXDataTransform.lib;SGXGUI.lib;MapDownloading.lib;qtmain.lib;Qt5Widgets.lib;Qt5Sql.lib;Qt5Core.lib;Qt5Gui.lib;Qt5OpenGL.lib;opengl32.lib;glu32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>

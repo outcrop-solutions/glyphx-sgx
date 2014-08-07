@@ -71,6 +71,11 @@ int	MinMaxGlyphModel::rowCount(const QModelIndex& parent) const {
 
 void MinMaxGlyphModel::SetMinMaxGlyph(const QModelIndex& index) {
 
+	if (!index.isValid()) {
+
+		return;
+	}
+
 	SynGlyphX::MinMaxGlyphTree::Node* node = static_cast<SynGlyphX::MinMaxGlyphTree::Node*>(index.internalPointer());
 	beginResetModel();
 	m_glyph = SynGlyphX::MinMaxGlyphTree::iterator(node);
@@ -84,6 +89,15 @@ void MinMaxGlyphModel::SetMinMaxGlyph(const QModelIndex& index) {
 			break;
 		}
 	}
+}
+
+void MinMaxGlyphModel::Clear() {
+
+	beginResetModel();
+	m_glyph = SynGlyphX::MinMaxGlyphTree::iterator();
+	m_glyphTree = nullptr;
+	m_glyphTreeID = boost::uuids::nil_uuid();
+	endResetModel();
 }
 
 QVariant MinMaxGlyphModel::GetDataByRow(const SynGlyphX::GlyphMappableProperties& minProperties, const SynGlyphX::GlyphMappableProperties& diffProperties, int row) const {
@@ -132,7 +146,7 @@ Qt::ItemFlags MinMaxGlyphModel::flags(const QModelIndex & index) const {
 
 bool MinMaxGlyphModel::setData(const QModelIndex& index, const QVariant& value, int role) {
 
-	if (index.isValid()) {
+	if (index.isValid() && m_glyph.valid()) {
 
 		if (index.column() == 2) {
 

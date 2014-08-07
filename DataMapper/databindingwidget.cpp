@@ -98,9 +98,9 @@ void DataBindingWidget::CreatePropertiesTable() {
 
 	CreateGridLine(gridLayout, QFrame::HLine, 1, 2);
 
-	CreateDoublePropertyWidgets(gridLayout, 2);
+	CreateDoublePropertyWidgets(gridLayout, 2, true);
 	CreateGridLine(gridLayout, QFrame::HLine, 3);
-	CreateDoublePropertyWidgets(gridLayout, 4);
+	CreateDoublePropertyWidgets(gridLayout, 4, true);
 	CreateGridLine(gridLayout, QFrame::HLine, 5);
 	CreateDoublePropertyWidgets(gridLayout, 6);
 	CreateGridLine(gridLayout, QFrame::HLine, 7);
@@ -173,7 +173,7 @@ void DataBindingWidget::CreateIntegerPropertyWidgets(QGridLayout* layout, int ro
 	CreateRowOfPropertyWidgets(layout, minSpinBox, maxSpinBox, row);
 }
 
-void DataBindingWidget::CreateDoublePropertyWidgets(QGridLayout* layout, int row) {
+void DataBindingWidget::CreateDoublePropertyWidgets(QGridLayout* layout, int row, bool addToPositionXYList) {
 
 	QDoubleSpinBox* minSpinBox = new QDoubleSpinBox(this);
 	minSpinBox->setRange(-1000.0, 1000.0);
@@ -181,6 +181,11 @@ void DataBindingWidget::CreateDoublePropertyWidgets(QGridLayout* layout, int row
 	maxSpinBox->setRange(-1000.0, 1000.0);
 	
 	CreateRowOfPropertyWidgets(layout, minSpinBox, maxSpinBox, row);
+
+	if (addToPositionXYList) {
+		m_positionXYMinMaxWidgets.push_back(minSpinBox);
+		m_positionXYMinMaxWidgets.push_back(maxSpinBox);
+	}
 }
 
 void DataBindingWidget::CreateColorPropertyWidgets(QGridLayout* layout, int row) {
@@ -224,6 +229,16 @@ void DataBindingWidget::CommitChanges() {
 
 		if (mapper != nullptr) {
 			mapper->submit();
+		}
+	}
+}
+
+void DataBindingWidget::EnablePositionXYMixMaxWidgets(bool enable) {
+
+	for (QWidget* widget : m_positionXYMinMaxWidgets) {
+
+		if (widget != nullptr) {
+			widget->setEnabled(enable);
 		}
 	}
 }

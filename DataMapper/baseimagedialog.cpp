@@ -40,11 +40,14 @@ BaseImageDialog::BaseImageDialog(QWidget *parent)
 
 	QObject::connect(m_baseImageComboBox, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), m_baseImageOptionsStackedWidget, &QStackedWidget::setCurrentIndex);
 
-	QDialogButtonBox* dialogButtonBox = new QDialogButtonBox(this);
+	layout->addStretch(1);
+
+	QDialogButtonBox* dialogButtonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, this);
 	layout->addWidget(dialogButtonBox);
 	QObject::connect(dialogButtonBox, &QDialogButtonBox::accepted, this, &BaseImageDialog::accept);
 	QObject::connect(dialogButtonBox, &QDialogButtonBox::rejected, this, &BaseImageDialog::reject);
 
+	setLayout(layout);
 	setWindowTitle(tr("Choose Base Image"));
 }
 
@@ -59,7 +62,7 @@ void BaseImageDialog::SetBaseImage(const SynGlyphX::BaseImage& baseImage) {
 	m_baseImageComboBox->setCurrentText(QString::fromStdWString(SynGlyphX::BaseImage::s_baseImageTypeStrings.left.at(baseImageType)));
 	if (baseImageType == SynGlyphX::BaseImage::Type::DownloadedMap) {
 
-		const SynGlyphX::DownloadedMapProperties* const properties = dynamic_cast<const SynGlyphX::DownloadedMapProperties* const>(baseImage.GetPropertes());
+		const SynGlyphX::DownloadedMapProperties* const properties = dynamic_cast<const SynGlyphX::DownloadedMapProperties* const>(baseImage.GetProperties());
 		m_downloadedMapOptionsWidget->Set(properties->GetSource(), properties->GetType(), QSize(properties->GetSize()[0], properties->GetSize()[1]));
 	}
 }

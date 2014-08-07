@@ -23,6 +23,7 @@ public:
 
 public slots:
 	void SetMinMaxGlyph(const QModelIndex& index);
+	void Clear();
 
 private:
 	QVariant GetDataByRow(const SynGlyphX::GlyphMappableProperties& minProperties, const SynGlyphX::GlyphMappableProperties& diffProperties, int row) const;

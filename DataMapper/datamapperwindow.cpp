@@ -13,6 +13,7 @@
 #include "databaseservices.h"
 #include "downloadoptionsdialog.h"
 #include "baseimagedialog.h"
+#include "networkdownloader.h"
 
 DataMapperWindow::DataMapperWindow(QWidget *parent)
     : SynGlyphX::MainWindow(parent),
@@ -138,9 +139,11 @@ void DataMapperWindow::CreateNewProject() {
 
 	m_dataTransformModel->Clear();
 	m_dataSourceStats->ClearTabs();
+	m_minMaxGlyphModel->Clear();
 
 	EnableProjectDependentActions(false);
 	m_dataBindingWidget->setEnabled(false);
+	UpdateFilenameWindowTitle("Untitled");
 }
 
 void DataMapperWindow::OpenProject() {
@@ -184,6 +187,7 @@ void DataMapperWindow::LoadDataTransform(const QString& filename) {
 		m_dataTransformModel->LoadDataTransformFile(filename);
 		m_glyphTreeView->selectionModel()->select(m_dataTransformModel->index(m_dataTransformModel->rowCount() - 1), QItemSelectionModel::ClearAndSelect);
 		m_dataSourceStats->RebuildStatsViews();
+		m_dataBindingWidget->EnablePositionXYMixMaxWidgets(m_dataTransformModel->GetDataTransform()->GetBaseImage().GetType() != SynGlyphX::BaseImage::Type::DownloadedMap);
 	}
 	catch (const std::exception& e) {
 		QMessageBox::critical(this, tr("Failed To Open Project"), tr("Failed to open project.  Error: ") + e.what(), QMessageBox::Ok);
@@ -289,9 +293,26 @@ void DataMapperWindow::ExportToGlyphViewer() {
 
 	QString csvDirectory = QFileDialog::getExistingDirectory(this, tr("Export to Glyph Viewer"), "");
 	if (!csvDirectory.isEmpty()) {
+
+		SynGlyphX::Application::setOverrideCursor(Qt::WaitCursor);
+		const SynGlyphX::BaseImage& baseImage = m_dataTransformModel->GetDataTransform()->GetBaseImage();
+
+		if (baseImage.GetType() == SynGlyphX::BaseImage::Type::DownloadedMap) {
+
+			std::vector<GeographicPoint> points;
+			m_dataTransformModel->GetDataTransform()->GetPositionXYForAllGlyphTrees(points);
+			QString baseImageFile = csvDirectory + QDir::separator() + "map00001.jpg";
+			const SynGlyphX::DownloadedMapProperties* const properties = dynamic_cast<const SynGlyphX::DownloadedMapProperties* const>(baseImage.GetProperties());
+			NetworkDownloader& downloader = NetworkDownloader::Instance();
+			GeographicBoundingBox boundingBox = downloader.DownloadMap(points, baseImageFile.toStdString(), properties);
+			m_dataTransformModel->GetDataTransform()->SetPositionXYMinMaxToGeographicForAllGlyphTrees(boundingBox);
+		}
+
 		QString csvFile = csvDirectory + QDir::separator() + "antz0001.csv";
 		QString tagFile = csvDirectory + QDir::separator() + "antztag0001.csv";
 		m_dataTransformModel->GetDataTransform()->TransformToCSV(csvFile.toStdString(), tagFile.toStdString());
+
+		SynGlyphX::Application::restoreOverrideCursor();
 		statusBar()->showMessage("Data transform sucessfully exported", 3000);
 	}
 }
@@ -302,8 +323,11 @@ void DataMapperWindow::ChangeBaseImage() {
 	dialog.SetBaseImage(m_dataTransformModel->GetDataTransform()->GetBaseImage());
 	if (dialog.exec() == QDialog::Accepted) {
 
-		m_dataTransformModel->GetDataTransform()->SetBaseImage(dialog.GetBaseImage());
+		const SynGlyphX::BaseImage& baseImage = dialog.GetBaseImage();
+		m_dataTransformModel->GetDataTransform()->SetBaseImage(baseImage);
 		EnableProjectDependentActions(true);
+		setWindowModified(true);
+		m_dataBindingWidget->EnablePositionXYMixMaxWidgets(baseImage.GetType() != SynGlyphX::BaseImage::Type::DownloadedMap);
 	}
 }
 
