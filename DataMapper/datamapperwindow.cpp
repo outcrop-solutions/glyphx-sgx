@@ -5,6 +5,7 @@
 #include <QtWidgets/QDockWidget>
 #include <QtGui/QCloseEvent>
 #include <QtWidgets/QStatusBar>
+#include <QtWidgets/QSplitter>
 #include <QtSql/QSqlDatabase>
 #include <QtSql/QSqlError>
 #include <QtSql/QSqlQuery>
@@ -23,12 +24,14 @@ DataMapperWindow::DataMapperWindow(QWidget *parent)
     CreateMenus();
     CreateDockWidgets();
 
-	m_minMaxGlyphModel = new MinMaxGlyphModel(m_dataTransformModel, this);
-	m_dataBindingWidget = new DataBindingWidget(m_minMaxGlyphModel, this);
-	m_dataBindingWidget->setEnabled(false);
-	setCentralWidget(m_dataBindingWidget);
+	CreateCenterWidget();
 
-	QObject::connect(m_glyphTreeView->selectionModel(), &QItemSelectionModel::selectionChanged, this, [&, this](const QItemSelection& selected, const QItemSelection& seselected){ m_minMaxGlyphModel->SetMinMaxGlyph(selected.indexes()[0]); });
+	m_selectionTranslator = new SelectionTranslator(m_dataTransformModel, this);
+
+	QObject::connect(m_glyphTreeView->selectionModel(), &QItemSelectionModel::selectionChanged, this, [&, this](const QItemSelection& selected, const QItemSelection& deselected){ m_minMaxGlyphModel->SetMinMaxGlyph(selected.indexes()[0]); });
+
+	QObject::connect(m_glyphTreeView->selectionModel(), &QItemSelectionModel::selectionChanged, m_selectionTranslator, &SelectionTranslator::OnTreeViewSelectionChanged);
+	QObject::connect(m_selectionTranslator, &SelectionTranslator::GlyphTreeChanged, this, &DataMapperWindow::OnNewGlyphTreeSelected);
 
 	QObject::connect(m_minMaxGlyphModel, &MinMaxGlyphModel::dataChanged, this, [&, this](const QModelIndex& topLeft, const QModelIndex& bottomRight){ setWindowModified(true); });
 
@@ -38,6 +41,29 @@ DataMapperWindow::DataMapperWindow(QWidget *parent)
 DataMapperWindow::~DataMapperWindow()
 {
 
+}
+
+void DataMapperWindow::CreateCenterWidget() {
+
+	QSplitter* centerWidget = new QSplitter(Qt::Vertical, this);
+
+	m_glyphTreeModel = new GlyphTreeModel(this);
+	m_antzWidget = new ANTzWidget(m_glyphTreeModel, nullptr, centerWidget);
+	m_antzWidget->SetEditingMode(ANTzWidget::EditingMode::None);
+
+	//m_viewMenu->addAction(glyphViewDockWidget->toggleViewAction());
+
+	m_minMaxGlyphModel = new MinMaxGlyphModel(m_dataTransformModel, this);
+	m_dataBindingWidget = new DataBindingWidget(m_minMaxGlyphModel, centerWidget);
+
+	centerWidget->addWidget(m_dataBindingWidget);
+	centerWidget->addWidget(m_antzWidget);
+
+	centerWidget->setStretchFactor(1, 2);
+	centerWidget->setStretchFactor(0, 0);
+	
+	centerWidget->setEnabled(false);
+	setCentralWidget(centerWidget);
 }
 
 void DataMapperWindow::CreateMenus() {
@@ -106,13 +132,14 @@ void DataMapperWindow::CreateMenus() {
 
 void DataMapperWindow::CreateDockWidgets() {
 
-    //Add Tree View to dock widget on left side
-    QDockWidget* leftDockWidget = new QDockWidget(tr("Glyph Tree"), this);
-    m_glyphTreeView = new QTreeView(leftDockWidget);
+	QDockWidget* leftDockWidget = new QDockWidget(tr("Glyph Tree"), this);
+
+	m_glyphTreeView = new QTreeView(leftDockWidget);
 	m_glyphTreeView->setModel(m_dataTransformModel);
-    m_glyphTreeView->setSelectionMode(QAbstractItemView::SingleSelection);
+	m_glyphTreeView->setSelectionMode(QAbstractItemView::SingleSelection);
 	m_glyphTreeView->setHeaderHidden(true);
 
+    //Add Tree View to dock widget on left side
     leftDockWidget->setWidget(m_glyphTreeView);
     addDockWidget(Qt::LeftDockWidgetArea, leftDockWidget);
     m_viewMenu->addAction(leftDockWidget->toggleViewAction());
@@ -142,7 +169,8 @@ void DataMapperWindow::CreateNewProject() {
 	m_minMaxGlyphModel->Clear();
 
 	EnableProjectDependentActions(false);
-	m_dataBindingWidget->setEnabled(false);
+	centralWidget()->setEnabled(false);
+	m_glyphTreeModel->ShowGlyph(false);
 	UpdateFilenameWindowTitle("Untitled");
 }
 
@@ -197,7 +225,7 @@ void DataMapperWindow::LoadDataTransform(const QString& filename) {
 	SetCurrentFile(filename);
 
 	EnableProjectDependentActions(true);
-	m_dataBindingWidget->setEnabled(true);
+	centralWidget()->setEnabled(true);
 
 	statusBar()->showMessage("Project successfully opened", 3000);
 }
@@ -350,7 +378,7 @@ void DataMapperWindow::AddGlyphTemplate() {
 	}
 
 	EnableProjectDependentActions(true);
-	m_dataBindingWidget->setEnabled(true);
+	centralWidget()->setEnabled(true);
 	m_glyphTreeView->selectionModel()->select(m_dataTransformModel->index(m_dataTransformModel->rowCount() - 1), QItemSelectionModel::ClearAndSelect);
 	setWindowModified(true);
 	statusBar()->showMessage("Glyph Template successfully added", 3000);
@@ -393,4 +421,10 @@ void DataMapperWindow::ChangeMapDownloadSettings() {
 
 	DownloadOptionsDialog dialog(this);
 	dialog.exec();
+}
+
+void DataMapperWindow::OnNewGlyphTreeSelected(boost::uuids::uuid treeID) {
+
+	SynGlyphX::GlyphTree::SharedPtr glyphTree = m_dataTransformModel->GetDataTransform()->GetGlyphTrees().at(treeID)->GetMinGlyphTree();
+	m_glyphTreeModel->CreateNewTree(glyphTree);
 }

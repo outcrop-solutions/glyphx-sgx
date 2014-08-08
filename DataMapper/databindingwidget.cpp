@@ -6,20 +6,15 @@
 #include "colorbutton.h"
 
 DataBindingWidget::DataBindingWidget(MinMaxGlyphModel* model, QWidget *parent)
-	: QSplitter(Qt::Vertical, parent),
+	: QTabWidget(parent),
 	m_model(model)
 {
-	setChildrenCollapsible(false);
-
 	CreatePropertiesTable();
 
 	//Until we add torus ratio add in a null to mapper list to make sure everything works right
 	m_dataWidgetMappers.push_back(nullptr);
 	
 	CreateTagAndDescriptionWidget();
-
-	setStretchFactor(0, 2);
-	setStretchFactor(1, 0);
 
 	setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
 	QObject::connect(model, &MinMaxGlyphModel::modelReset, this, &DataBindingWidget::OnModelReset);
@@ -65,7 +60,7 @@ void DataBindingWidget::CreateTagAndDescriptionWidget() {
 	layout->addWidget(m_descriptionEdit, 1);
 	widget->setLayout(layout);
 
-	addWidget(widget);
+	addTab(widget, tr("Tag && Description"));
 }
 
 void DataBindingWidget::CreatePropertiesTable() {
@@ -132,7 +127,7 @@ void DataBindingWidget::CreatePropertiesTable() {
 	layout->addStretch(1);
 
 	widget->setLayout(layout);
-	addWidget(widget);
+	addTab(widget, tr("Base Properties"));
 }
 
 void DataBindingWidget::CreateRowOfPropertyWidgets(QGridLayout* layout, QWidget* minWidget, QWidget* maxWidget, int row) {

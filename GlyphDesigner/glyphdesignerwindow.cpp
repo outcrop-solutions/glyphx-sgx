@@ -18,6 +18,7 @@ GlyphDesignerWindow::GlyphDesignerWindow(QWidget *parent)
     m_treeView(NULL)
 {
     m_glyphTreeModel = new GlyphTreeModel(this);
+	m_glyphTreeModel->CreateDefaultGlyph();
     m_selectionModel = new QItemSelectionModel(m_glyphTreeModel, this);
 
     m_3dView = new ANTzWidget(m_glyphTreeModel, m_selectionModel, this);

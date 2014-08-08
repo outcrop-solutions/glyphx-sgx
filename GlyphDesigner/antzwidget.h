@@ -13,7 +13,8 @@ public:
     enum EditingMode {
         Move = 0,
         Rotate,
-        Size
+        Size,
+		None
     };
 
     ANTzWidget(GlyphTreeModel* model, QItemSelectionModel* selectionModel, QWidget *parent = 0);

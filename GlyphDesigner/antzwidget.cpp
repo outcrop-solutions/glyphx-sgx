@@ -25,7 +25,10 @@ ANTzWidget::ANTzWidget(GlyphTreeModel* model, QItemSelectionModel* selectionMode
     npInitCh(antzData);
     npInitCtrl(antzData);
 
-	QObject::connect(m_selectionModel, &QItemSelectionModel::selectionChanged, this, &ANTzWidget::UpdateSelection);
+	if (m_selectionModel != nullptr) {
+		QObject::connect(m_selectionModel, &QItemSelectionModel::selectionChanged, this, &ANTzWidget::UpdateSelection);
+	}
+
 	QObject::connect(m_model, &GlyphTreeModel::rowsRemoved, this, &ANTzWidget::OnNodeDeleted);
 }
 
@@ -115,35 +118,37 @@ void ANTzWidget::resizeGL(int w, int h) {
 
 void ANTzWidget::paintGL() {
 
-    pData antzData = m_model->GetANTzData();
+	//if (m_model->GetRootGlyph() != nullptr) {
+		pData antzData = m_model->GetANTzData();
 
-    npUpdateCh(antzData);
-    
-    npUpdateEngine(antzData);		//position, physics, interactions...
+		npUpdateCh(antzData);
+
+		npUpdateEngine(antzData);		//position, physics, interactions...
 
 
 
-	//We may need to have a selected pin node during update to position the camera, but we don't want it during drawing
-	antzData->map.selectedPinNode = NULL;
-	antzData->map.selectedPinIndex = 0;
+		//We may need to have a selected pin node during update to position the camera, but we don't want it during drawing
+		antzData->map.selectedPinNode = NULL;
+		antzData->map.selectedPinIndex = 0;
 
-    // zero out our mouse to prevent drifting objects
-    antzData->io.mouse.delta.x = 0.0f;
-    antzData->io.mouse.delta.y = 0.0f;
+		// zero out our mouse to prevent drifting objects
+		antzData->io.mouse.delta.x = 0.0f;
+		antzData->io.mouse.delta.y = 0.0f;
 
-    //antzData->io.mouse.pickMode = kNPmodePin;
-    npGLDrawScene(antzData);
-    //antzData->io.mouse.pickMode = kNPmodeNull;
+		//antzData->io.mouse.pickMode = kNPmodePin;
+		npGLDrawScene(antzData);
+		//antzData->io.mouse.pickMode = kNPmodeNull;
 
-    //since changes from editing don't happen until drawing emit the ObjectEdited signal here
-    if (m_selectionEdited) {
-        const QModelIndexList& selected = m_selectionModel->selectedIndexes();
-        if (!selected.isEmpty()) {
-            boost::shared_ptr<SynGlyphX::GlyphProperties> glyph(new SynGlyphX::GlyphProperties(static_cast<pNPnode>(selected.back().internalPointer())));
-            emit ObjectEdited(glyph);
-        }
-        m_selectionEdited = false;
-    }
+		//since changes from editing don't happen until drawing emit the ObjectEdited signal here
+		if (m_selectionEdited) {
+			const QModelIndexList& selected = m_selectionModel->selectedIndexes();
+			if (!selected.isEmpty()) {
+				boost::shared_ptr<SynGlyphX::GlyphProperties> glyph(new SynGlyphX::GlyphProperties(static_cast<pNPnode>(selected.back().internalPointer())));
+				emit ObjectEdited(glyph);
+			}
+			m_selectionEdited = false;
+		}
+	//}
 
     int err = glGetError();
     if (err) {

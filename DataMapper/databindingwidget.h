@@ -1,7 +1,7 @@
 #ifndef DATABINDINGWIDGET_H
 #define DATABINDINGWIDGET_H
 
-#include <QtWidgets/QSplitter>
+#include <QtWidgets/QTabWidget>
 #include <QtWidgets/QTextEdit>
 #include <QtWidgets/QGridLayout>
 #include <QtWidgets/QDataWidgetMapper>
@@ -10,7 +10,7 @@
 #include "datatransform.h"
 #include "minmaxglyphmodel.h"
 
-class DataBindingWidget : public QSplitter
+class DataBindingWidget : public QTabWidget
 {
 	Q_OBJECT
 

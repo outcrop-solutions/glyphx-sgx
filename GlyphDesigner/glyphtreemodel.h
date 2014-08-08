@@ -71,6 +71,9 @@ public:
 	
 	void ExportToDataMapper(const std::string& filename) const;
 
+	void CreateDefaultGlyph();
+	void ShowGlyph(bool show);
+
 signals:
     void NodeUpdated(const QModelIndex& index);
     void ModelChanged(bool isDifferentFromSavedFileOrDefaultGlyph);
@@ -80,8 +83,8 @@ private slots:
 	void MarkDifferentNotifyModelUpdate();
 
 private:
+	void CreateDefaultGlyph(bool resetModel);
 	pNPnode CreateNodeFromTemplate(pNPnode parent, const SynGlyphX::GlyphProperties& glyphTemplate, bool updatePosition = false);
-    void CreateRootPinNode();
     int GetChildIndexFromParent(pNPnode node) const;
 	void UpdateNode(pNPnode glyph, const SynGlyphX::GlyphProperties& glyphTemplate, PropertyUpdates updates = UpdateAll);
 	void CreateNewSubTree(pNPnode parent, SynGlyphX::GlyphTree::ConstSharedPtr newGlyphTree, const SynGlyphX::GlyphTree::const_iterator& location, bool updatePosition = false);

@@ -6,10 +6,11 @@
 
 GlyphTreeModel::GlyphTreeModel(QObject *parent)
     : QAbstractItemModel(parent),
-    m_clipboardGlyph()
+    m_clipboardGlyph(),
+	m_rootGlyph(nullptr)
 {
     m_antzData = static_cast<pData>(npInitData(0, NULL));
-    CreateRootPinNode();
+    //CreateRootPinNode();
 
 	QObject::connect(this, &GlyphTreeModel::NodeUpdated, this, &GlyphTreeModel::MarkDifferentNotifyModelUpdate);
 	QObject::connect(this, &GlyphTreeModel::rowsInserted, this, &GlyphTreeModel::MarkDifferentNotifyModelUpdate);
@@ -96,7 +97,12 @@ int	GlyphTreeModel::rowCount(const QModelIndex& parent) const {
     
     pNPnode glyph;
     if (!parent.isValid()) {
-        return 1;
+		if (m_rootGlyph == nullptr) {
+			return 0;
+		}
+		else {
+			return 1;
+		}
     }
     else {
         glyph = static_cast<pNPnode>(parent.internalPointer());
@@ -155,7 +161,7 @@ bool GlyphTreeModel::LoadFromFile(const std::string& filename) {
         m_rootGlyph = static_cast<pNPnode>(m_antzData->map.node[m_antzData->map.nodeRootCount - 1]);
     }
     else {
-        CreateRootPinNode();
+        CreateDefaultGlyph(false);
     }
 	m_isDifferentFromSavedFileOrDefaultGlyph = false;
 
@@ -194,11 +200,14 @@ bool GlyphTreeModel::SaveToCSV(const std::string& filename, const QModelIndexLis
 void GlyphTreeModel::CreateNewTree(SynGlyphX::GlyphTree::ConstSharedPtr newGlyphTree) {
 
     //Need to select so that npNodeDelete works properly.  ANTz assumes that the root pin being deleted is selected.  Easier to work around this way
-    m_antzData->map.nodeRootIndex = m_rootGlyph->id;
+	if (m_rootGlyph != nullptr) {
+		m_antzData->map.nodeRootIndex = m_rootGlyph->id;
+	}
 
     beginResetModel();
-    npNodeDelete(m_rootGlyph, m_antzData);
-
+	if (m_rootGlyph != nullptr) {
+		npNodeDelete(m_rootGlyph, m_antzData);
+	}
 	CreateNewSubTree(NULL, newGlyphTree, newGlyphTree->root(), false);
 
 	/*SynGlyphX::GlyphProperties::SharedPtr glyphProperties(&(newGlyphTree->begin().node->data));
@@ -251,11 +260,33 @@ pNPnode GlyphTreeModel::CreateNodeFromTemplate(pNPnode parent, const SynGlyphX::
     return glyph;
 }
 
-void GlyphTreeModel::CreateRootPinNode() {
+void GlyphTreeModel::CreateDefaultGlyph() {
+
+	CreateDefaultGlyph(true);
+}
+
+void GlyphTreeModel::CreateDefaultGlyph(bool resetModel) {
     
+	if (resetModel) {
+		beginResetModel();
+	}
+
+	if (m_rootGlyph != nullptr) {
+		//Need to select so that npNodeDelete works properly.  ANTz assumes that the root pin being deleted is selected.  Easier to work around this way
+		m_antzData->map.nodeRootIndex = m_rootGlyph->id;
+		npNodeDelete(m_rootGlyph, m_antzData);
+	}
+
     m_rootGlyph = npNodeNew(kNodePin, NULL, m_antzData);
     npNodeNew(kNodePin, m_rootGlyph, m_antzData);
 	m_isDifferentFromSavedFileOrDefaultGlyph = false;
+
+	if (resetModel) {
+		endResetModel();
+	}
+
+	//Undo previous select node at the beginning of this function
+	m_antzData->map.nodeRootIndex = 0;
 }
 
 void GlyphTreeModel::UpdateNodes(const QModelIndexList& indexList, boost::shared_ptr<const SynGlyphX::GlyphProperties> glyph, PropertyUpdates updates) {
@@ -520,4 +551,11 @@ void GlyphTreeModel::ExportToDataMapper(const std::string& filename) const {
 	iT->SetDifference(difference);
 
 	minMaxGlyphTree.WriteToFile(filename);
+}
+
+void GlyphTreeModel::ShowGlyph(bool show) {
+
+	if (m_rootGlyph != nullptr) {
+		m_rootGlyph->hide = !show;
+	}
 }

@@ -9,6 +9,9 @@
 #include "glyphtemplatesmodel.h"
 #include "minmaxglyphmodel.h"
 #include "datatransformmodel.h"
+#include "antzwidget.h"
+#include "glyphtreemodel.h"
+#include "selectiontranslator.h"
 
 class DataMapperWindow : public SynGlyphX::MainWindow
 {
@@ -33,10 +36,12 @@ private slots:
     void ChangeBaseImage();
 	void AddGlyphTemplate();
 	void ChangeMapDownloadSettings();
+	void OnNewGlyphTreeSelected(boost::uuids::uuid treeID);
 
 private:
     void CreateMenus();
     void CreateDockWidgets();
+	void CreateCenterWidget();
 	void LoadDataTransform(const QString& filename);
 	bool SaveDataTransform(const QString& filename);
 	bool AskUserToSave();
@@ -54,6 +59,9 @@ private:
 	//GlyphTemplatesModel* m_glyphTemplatesModel;
 	MinMaxGlyphModel* m_minMaxGlyphModel;
 	DataTransformModel* m_dataTransformModel;
+	ANTzWidget* m_antzWidget;
+	GlyphTreeModel* m_glyphTreeModel;
+	SelectionTranslator* m_selectionTranslator;
 };
 
 #endif // DATAMAPPERWINDOW_H
