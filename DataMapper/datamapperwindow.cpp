@@ -28,8 +28,6 @@ DataMapperWindow::DataMapperWindow(QWidget *parent)
 
 	QObject::connect(m_glyphTreeView->selectionModel(), &QItemSelectionModel::selectionChanged, this, [&, this](const QItemSelection& selected, const QItemSelection& deselected){ m_minMaxGlyphModel->SetMinMaxGlyph(selected.indexes()[0]); });
 
-	QObject::connect(m_glyphTreeView->selectionModel(), &QItemSelectionModel::selectionChanged, m_selectionTranslator, &SelectionTranslator::OnTreeViewSelectionChanged);
-
 	QObject::connect(m_minMaxGlyphModel, &MinMaxGlyphModel::dataChanged, this, [&, this](const QModelIndex& topLeft, const QModelIndex& bottomRight){ setWindowModified(true); });
 
 	statusBar()->showMessage(SynGlyphX::Application::applicationName() + " Started", 3000);
@@ -43,11 +41,11 @@ DataMapperWindow::~DataMapperWindow()
 void DataMapperWindow::CreateCenterWidget() {
 
 	m_glyphTreeModel = new GlyphTreeModel(this);
-	m_selectionTranslator = new SelectionTranslator(m_dataTransformModel, m_glyphTreeModel, this);
+	m_selectionTranslator = new SelectionTranslator(m_dataTransformModel, m_glyphTreeModel, m_glyphTreeView->selectionModel(), this);
 
 	QSplitter* centerWidget = new QSplitter(Qt::Vertical, this);
 	
-	m_antzWidget = new ANTzWidget(m_glyphTreeModel, m_selectionTranslator->GetSelectionModel(), false, centerWidget);
+	m_antzWidget = new ANTzWidget(m_glyphTreeModel, m_selectionTranslator->Get3DViewSelectionModel(), false, centerWidget);
 	m_antzWidget->SetEditingMode(ANTzWidget::EditingMode::None);
 
 	//m_viewMenu->addAction(glyphViewDockWidget->toggleViewAction());

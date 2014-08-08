@@ -14,25 +14,30 @@ class SelectionTranslator : public QObject
 	Q_OBJECT
 
 public:
-	SelectionTranslator(DataTransformModel* dataTransformModel, GlyphTreeModel* glyphTreeModel, QObject *parent);
+	SelectionTranslator(DataTransformModel* dataTransformModel, GlyphTreeModel* glyphTreeModel, QItemSelectionModel* treeViewSelectionModel, QObject *parent);
 	~SelectionTranslator();
 
-	QItemSelectionModel* GetSelectionModel() const;
+	QItemSelectionModel* Get3DViewSelectionModel() const;
 
 	void UpdateSelectedGlyphProperties(SynGlyphX::GlyphProperties::ConstSharedPtr glyph);
 
-signals:
-	
-
-public slots:
+private slots:
+	void On3DViewSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected);
 	void OnTreeViewSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected);
 
 private:
+	void Connect3DViewSelectionModel();
+	void ConnectTreeViewSelectionModel();
+
 	SynGlyphX::MinMaxGlyphTree::iterator m_glyph;
 	const SynGlyphX::MinMaxGlyphTree* m_glyphTree;
+	unsigned int m_glyphTreeIndex;
 	DataTransformModel* m_dataTransformModel;
 	GlyphTreeModel* m_glyphTreeModel;
-	QItemSelectionModel* m_selectionModel;
+	QItemSelectionModel* m_3DViewSelectionModel;
+	QItemSelectionModel* m_treeViewSelectionModel;
+	QMetaObject::Connection m_3DViewConnection;
+	QMetaObject::Connection m_treeViewConnection;
 };
 
 #endif // SELECTIONTRANSLATOR_H

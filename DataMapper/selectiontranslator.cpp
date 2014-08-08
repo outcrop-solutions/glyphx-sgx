@@ -1,12 +1,15 @@
 #include "selectiontranslator.h"
 #include <stack>
 
-SelectionTranslator::SelectionTranslator(DataTransformModel* dataTransformModel, GlyphTreeModel* glyphTreeModel, QObject *parent)
+SelectionTranslator::SelectionTranslator(DataTransformModel* dataTransformModel, GlyphTreeModel* glyphTreeModel, QItemSelectionModel* treeViewSelectionModel, QObject *parent)
 	: QObject(parent),
 	m_dataTransformModel(dataTransformModel),
-	m_glyphTreeModel(glyphTreeModel)
+	m_glyphTreeModel(glyphTreeModel),
+	m_treeViewSelectionModel(treeViewSelectionModel)
 {
-	m_selectionModel = new QItemSelectionModel(m_glyphTreeModel, this);
+	m_3DViewSelectionModel = new QItemSelectionModel(m_glyphTreeModel, this);
+	Connect3DViewSelectionModel();
+	ConnectTreeViewSelectionModel();
 }
 
 SelectionTranslator::~SelectionTranslator()
@@ -14,9 +17,19 @@ SelectionTranslator::~SelectionTranslator()
 
 }
 
-QItemSelectionModel* SelectionTranslator::GetSelectionModel() const {
+void SelectionTranslator::Connect3DViewSelectionModel() {
 
-	return m_selectionModel;
+	m_3DViewConnection = QObject::connect(m_3DViewSelectionModel, &QItemSelectionModel::selectionChanged, this, &SelectionTranslator::On3DViewSelectionChanged);
+}
+
+void SelectionTranslator::ConnectTreeViewSelectionModel() {
+
+	m_treeViewConnection = QObject::connect(m_treeViewSelectionModel, &QItemSelectionModel::selectionChanged, this, &SelectionTranslator::OnTreeViewSelectionChanged);
+}
+
+QItemSelectionModel* SelectionTranslator::Get3DViewSelectionModel() const {
+
+	return m_3DViewSelectionModel;
 }
 
 void SelectionTranslator::OnTreeViewSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected) {
@@ -33,6 +46,7 @@ void SelectionTranslator::OnTreeViewSelectionChanged(const QItemSelection& selec
 
 	if (m_glyphTree != newGlyphTree) {
 
+		m_glyphTreeIndex = 0;
 		m_glyphTree = newGlyphTree;
 		for (auto minMaxGlyphTree : m_dataTransformModel->GetDataTransform()->GetGlyphTrees()) {
 
@@ -43,6 +57,8 @@ void SelectionTranslator::OnTreeViewSelectionChanged(const QItemSelection& selec
 				m_glyphTreeModel->CreateNewTree(glyphTree);
 				break;
 			}
+
+			++m_glyphTreeIndex;
 		}
 	}
 
@@ -67,22 +83,55 @@ void SelectionTranslator::OnTreeViewSelectionChanged(const QItemSelection& selec
 			childPositions.pop();
 		}
 
-		m_selectionModel->select(glyphTreeModelIndex, QItemSelectionModel::ClearAndSelect);
+		QObject::disconnect(m_3DViewConnection);
+		m_3DViewSelectionModel->select(glyphTreeModelIndex, QItemSelectionModel::ClearAndSelect);
+		Connect3DViewSelectionModel();
 	}
+}
+
+void SelectionTranslator::On3DViewSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected) {
+
+	if (selected.empty() || !selected.indexes()[0].isValid()) {
+		return;
+	}
+
+	QModelIndex glyphTreeModelIndex = selected.indexes()[0];
+
+	std::stack<int> childPositions;
+	while (glyphTreeModelIndex.isValid()) {
+
+		childPositions.push(glyphTreeModelIndex.row());
+		glyphTreeModelIndex = glyphTreeModelIndex.parent();
+	}
+
+	//The top position will be 0 which we don't need
+	childPositions.pop();
+
+	QModelIndex minMaxIndex = m_dataTransformModel->index(m_glyphTreeIndex);
+
+	while (!childPositions.empty()) {
+
+		minMaxIndex = m_dataTransformModel->index(childPositions.top(), 0, minMaxIndex);
+		childPositions.pop();
+	}
+
+	QObject::disconnect(m_treeViewConnection);
+	m_treeViewSelectionModel->select(minMaxIndex, QItemSelectionModel::ClearAndSelect);
+	ConnectTreeViewSelectionModel();
 }
 
 void SelectionTranslator::UpdateSelectedGlyphProperties(SynGlyphX::GlyphProperties::ConstSharedPtr glyph) {
 
-	if (m_selectionModel->selectedIndexes().isEmpty()) {
+	if (m_3DViewSelectionModel->selectedIndexes().isEmpty()) {
 		
 		return;
 	}
 
-	QModelIndex index = m_selectionModel->selectedIndexes()[0];
+	QModelIndex index = m_3DViewSelectionModel->selectedIndexes()[0];
 	GlyphTreeModel::PropertyUpdates updates = GlyphTreeModel::UpdateAll;
 	if (!index.parent().isValid()) {
 		//If index is the root glyph don't update its position
 		updates ^= GlyphTreeModel::UpdatePosition;
 	}
-	m_glyphTreeModel->UpdateNode(m_selectionModel->selectedIndexes()[0], glyph, updates);
+	m_glyphTreeModel->UpdateNode(m_3DViewSelectionModel->selectedIndexes()[0], glyph, updates);
 }
