@@ -52,7 +52,7 @@ void DataMapperWindow::CreateCenterWidget() {
 
 	//m_viewMenu->addAction(glyphViewDockWidget->toggleViewAction());
 
-	m_minMaxGlyphModel = new MinMaxGlyphModel(m_dataTransformModel, this);
+	m_minMaxGlyphModel = new MinMaxGlyphModel(m_dataTransformModel, m_selectionTranslator, this);
 	m_dataBindingWidget = new DataBindingWidget(m_minMaxGlyphModel, centerWidget);
 
 	centerWidget->addWidget(m_dataBindingWidget);

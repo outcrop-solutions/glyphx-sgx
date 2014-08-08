@@ -39,6 +39,7 @@ void SelectionTranslator::OnTreeViewSelectionChanged(const QItemSelection& selec
 			if (minMaxGlyphTree.second.get() == m_glyphTree) {
 
 				SynGlyphX::GlyphTree::SharedPtr glyphTree = m_dataTransformModel->GetDataTransform()->GetGlyphTrees().at(minMaxGlyphTree.first)->GetMinGlyphTree();
+				glyphTree->root()->SetPosition({ { 0.0, 0.0, 0.0 } });
 				m_glyphTreeModel->CreateNewTree(glyphTree);
 				break;
 			}
@@ -68,4 +69,20 @@ void SelectionTranslator::OnTreeViewSelectionChanged(const QItemSelection& selec
 
 		m_selectionModel->select(glyphTreeModelIndex, QItemSelectionModel::ClearAndSelect);
 	}
+}
+
+void SelectionTranslator::UpdateSelectedGlyphProperties(SynGlyphX::GlyphProperties::ConstSharedPtr glyph) {
+
+	if (m_selectionModel->selectedIndexes().isEmpty()) {
+		
+		return;
+	}
+
+	QModelIndex index = m_selectionModel->selectedIndexes()[0];
+	GlyphTreeModel::PropertyUpdates updates = GlyphTreeModel::UpdateAll;
+	if (!index.parent().isValid()) {
+		//If index is the root glyph don't update its position
+		updates ^= GlyphTreeModel::UpdatePosition;
+	}
+	m_glyphTreeModel->UpdateNode(m_selectionModel->selectedIndexes()[0], glyph, updates);
 }

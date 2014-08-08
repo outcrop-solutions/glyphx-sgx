@@ -4,13 +4,14 @@
 #include <QtCore/QAbstractTableModel>
 #include "minmaxglyphtree.h"
 #include "datatransformmodel.h"
+#include "selectiontranslator.h"
 
 class MinMaxGlyphModel : public QAbstractTableModel
 {
 	Q_OBJECT
 
 public:
-	MinMaxGlyphModel(DataTransformModel* dataTransformModel, QObject *parent = nullptr);
+	MinMaxGlyphModel(DataTransformModel* dataTransformModel, SelectionTranslator* selectionTranslator, QObject *parent = nullptr);
 	~MinMaxGlyphModel();
 
 	//Functions from QAbstractItemModel that need to be implemented
@@ -35,6 +36,7 @@ private:
 	QStringList m_propertyHeaders;
 	QStringList m_columnHeaders;
 	DataTransformModel* m_dataTransformModel;
+	SelectionTranslator* m_selectionTranslator;
 };
 
 #endif // MINMAXGLYPHMODEL_H

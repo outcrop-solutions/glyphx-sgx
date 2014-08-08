@@ -19,6 +19,8 @@ public:
 
 	QItemSelectionModel* GetSelectionModel() const;
 
+	void UpdateSelectedGlyphProperties(SynGlyphX::GlyphProperties::ConstSharedPtr glyph);
+
 signals:
 	
 
