@@ -197,4 +197,23 @@ namespace SynGlyphX {
 		return (root()->IsPositionXYBoundToInputFields());
 	}
 
+	GlyphTree::SharedPtr MinMaxGlyphTree::GetMinGlyphTree() const {
+
+		GlyphTree::SharedPtr minGlyphTree(new GlyphTree());
+		minGlyphTree->insert(root()->GetMinGlyph());
+
+		CreateMinGlyphSubtree(root(), minGlyphTree->root(), minGlyphTree);
+
+		return minGlyphTree;
+	}
+
+	void MinMaxGlyphTree::CreateMinGlyphSubtree(const MinMaxGlyphTree::const_iterator& parentNode, GlyphTree::iterator& newParent, GlyphTree::SharedPtr newGlyphTree) const {
+
+		for (int i = 0; i < children(parentNode); ++i) {
+
+			const MinMaxGlyphTree::const_iterator& childNode = child(parentNode, i);
+			CreateMinGlyphSubtree(childNode, newGlyphTree->insert(newParent, childNode->GetMinGlyph()), newGlyphTree);
+		}
+	}
+
 } //namespace SynGlyphX

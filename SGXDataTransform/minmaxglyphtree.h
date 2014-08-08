@@ -36,10 +36,13 @@ namespace SynGlyphX {
 
 		bool DoesRootGlyphPositionXYHaveBindings() const;
 
+		GlyphTree::SharedPtr GetMinGlyphTree() const;
+
 	private:
 		void ExportToPropertyTree(const MinMaxGlyphTree::const_iterator& parent, boost::property_tree::wptree& propertyTreeParent) const;
 		void ProcessPropertyTreeChildren(const MinMaxGlyphTree::iterator& iT, const boost::property_tree::wptree& propertyTree);
 		void AddGlyphSubtree(MinMaxGlyphTree::iterator& parentNode, const GlyphTree& glyphTree, const GlyphTree::const_iterator& iT);
+		void CreateMinGlyphSubtree(const MinMaxGlyphTree::const_iterator& parentNode, GlyphTree::iterator& newParent, GlyphTree::SharedPtr newGlyphTree) const;
 
 		InputFieldMap m_inputFields;
 		std::unordered_map<InputField::HashID, unsigned int> m_inputFieldReferenceCounts;
