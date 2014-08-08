@@ -36,7 +36,6 @@ private slots:
     void ChangeBaseImage();
 	void AddGlyphTemplate();
 	void ChangeMapDownloadSettings();
-	void OnNewGlyphTreeSelected(boost::uuids::uuid treeID);
 
 private:
     void CreateMenus();

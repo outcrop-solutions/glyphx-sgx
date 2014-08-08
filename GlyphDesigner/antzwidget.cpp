@@ -12,12 +12,13 @@
 //The default QGLFormat works for now except we want alpha enabled.  May want to turn on stereo at some point
 QGLFormat ANTzWidget::s_format(QGL::AlphaChannel);
 
-ANTzWidget::ANTzWidget(GlyphTreeModel* model, QItemSelectionModel* selectionModel, QWidget *parent)
+ANTzWidget::ANTzWidget(GlyphTreeModel* model, QItemSelectionModel* selectionModel, bool allowMultiSelection, QWidget *parent)
     : QGLWidget(s_format, parent),
     m_model(model),
     m_selectionModel(selectionModel),
     m_editingMode(Move),
-    m_selectionEdited(false)
+    m_selectionEdited(false),
+	m_allowMultiSelection(allowMultiSelection)
 {
     void* antzData = m_model->GetANTzData();
     InitIO();
@@ -230,7 +231,7 @@ void ANTzWidget::mousePressEvent(QMouseEvent* event) {
 		int pickID = npPickPin(event->x(), antzData->io.gl.height - event->y(), antzData);
 
 		if (pickID != 0) {
-            if (event->modifiers() == Qt::ControlModifier) {
+			if ((event->modifiers() == Qt::ControlModifier) && m_allowMultiSelection) {
 
 				m_selectionModel->select(m_model->IndexFromANTzID(pickID), QItemSelectionModel::Toggle);
             }

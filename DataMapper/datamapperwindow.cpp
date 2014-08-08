@@ -26,12 +26,9 @@ DataMapperWindow::DataMapperWindow(QWidget *parent)
 
 	CreateCenterWidget();
 
-	m_selectionTranslator = new SelectionTranslator(m_dataTransformModel, this);
-
 	QObject::connect(m_glyphTreeView->selectionModel(), &QItemSelectionModel::selectionChanged, this, [&, this](const QItemSelection& selected, const QItemSelection& deselected){ m_minMaxGlyphModel->SetMinMaxGlyph(selected.indexes()[0]); });
 
 	QObject::connect(m_glyphTreeView->selectionModel(), &QItemSelectionModel::selectionChanged, m_selectionTranslator, &SelectionTranslator::OnTreeViewSelectionChanged);
-	QObject::connect(m_selectionTranslator, &SelectionTranslator::GlyphTreeChanged, this, &DataMapperWindow::OnNewGlyphTreeSelected);
 
 	QObject::connect(m_minMaxGlyphModel, &MinMaxGlyphModel::dataChanged, this, [&, this](const QModelIndex& topLeft, const QModelIndex& bottomRight){ setWindowModified(true); });
 
@@ -45,10 +42,12 @@ DataMapperWindow::~DataMapperWindow()
 
 void DataMapperWindow::CreateCenterWidget() {
 
-	QSplitter* centerWidget = new QSplitter(Qt::Vertical, this);
-
 	m_glyphTreeModel = new GlyphTreeModel(this);
-	m_antzWidget = new ANTzWidget(m_glyphTreeModel, nullptr, centerWidget);
+	m_selectionTranslator = new SelectionTranslator(m_dataTransformModel, m_glyphTreeModel, this);
+
+	QSplitter* centerWidget = new QSplitter(Qt::Vertical, this);
+	
+	m_antzWidget = new ANTzWidget(m_glyphTreeModel, m_selectionTranslator->GetSelectionModel(), false, centerWidget);
 	m_antzWidget->SetEditingMode(ANTzWidget::EditingMode::None);
 
 	//m_viewMenu->addAction(glyphViewDockWidget->toggleViewAction());
@@ -421,10 +420,4 @@ void DataMapperWindow::ChangeMapDownloadSettings() {
 
 	DownloadOptionsDialog dialog(this);
 	dialog.exec();
-}
-
-void DataMapperWindow::OnNewGlyphTreeSelected(boost::uuids::uuid treeID) {
-
-	SynGlyphX::GlyphTree::SharedPtr glyphTree = m_dataTransformModel->GetDataTransform()->GetGlyphTrees().at(treeID)->GetMinGlyphTree();
-	m_glyphTreeModel->CreateNewTree(glyphTree);
 }

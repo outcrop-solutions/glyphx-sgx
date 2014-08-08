@@ -17,7 +17,7 @@ public:
 		None
     };
 
-    ANTzWidget(GlyphTreeModel* model, QItemSelectionModel* selectionModel, QWidget *parent = 0);
+	ANTzWidget(GlyphTreeModel* model, QItemSelectionModel* selectionModel, bool allowMultiSelection, QWidget *parent = 0);
     ~ANTzWidget();
 
 public slots:
@@ -52,6 +52,7 @@ private:
 
     EditingMode m_editingMode;
     bool m_selectionEdited;
+	bool m_allowMultiSelection;
 };
 
 #endif // ANTZWIDGET_H
