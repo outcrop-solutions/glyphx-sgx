@@ -9,14 +9,15 @@ namespace SynGlyphX {
 	class SGXFOUNDATION_API Color
 	{
 	public:
+		typedef std::array<short, 4> ColorArray;
 		Color();
-		Color(const std::array<unsigned char, 4>& color);
+		Color(const ColorArray& color);
 		Color(const Color& color);
 		~Color();
 
 		Color& operator=(const Color& color);
-		unsigned char& operator[](unsigned int index);
-		unsigned char operator[](unsigned int index) const;
+		void Set(unsigned int index, short value);
+		short operator[](unsigned int index) const;
 		bool operator==(const Color& color) const;
 		bool operator!=(const Color& color) const;
 
@@ -24,7 +25,7 @@ namespace SynGlyphX {
 		void FromHexString(const std::wstring& hexString);
 
 	private:
-		std::array<unsigned char, 4> m_color;
+		ColorArray m_color;
 	};
 
 } //namespace SynGlyphX

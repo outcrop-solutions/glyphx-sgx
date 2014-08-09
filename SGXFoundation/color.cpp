@@ -10,7 +10,7 @@ namespace SynGlyphX {
 	{
 	}
 
-	Color::Color(const std::array<unsigned char, 4>& color) :
+	Color::Color(const ColorArray& color) :
 		m_color(color){
 
 	}
@@ -31,17 +31,24 @@ namespace SynGlyphX {
 		return *this;
 	}
 
-	unsigned char& Color::operator[](unsigned int index) {
+	void Color::Set(unsigned int index, short value) {
 
-		if (index < 4) {
-			return m_color[index];
-		}
+		if ((value < -255) || (value > 255)) {
+
+			throw std::out_of_range("For color, a value outside of [-255, 255] is invalid");
+		} 
 		else {
-			throw std::out_of_range("For color, an index of 4 or greater is invalid");
+
+			if (index < 4) {
+				m_color[index] = value;
+			}
+			else {
+				throw std::out_of_range("For color, an index of 4 or greater is invalid");
+			}
 		}
 	}
 
-	unsigned char Color::operator[](unsigned int index) const {
+	short Color::operator[](unsigned int index) const {
 
 		if (index < 4) {
 			return m_color[index];

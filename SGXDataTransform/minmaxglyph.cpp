@@ -143,11 +143,17 @@ namespace SynGlyphX {
 
 		boost::property_tree::wptree& colorPropertyTree = propertyTreeParent.add(L"Color", L"");
 		boost::property_tree::wptree& rgbPropertyTree = colorPropertyTree.add(L"RGB", L"");
-		rgbPropertyTree.put<std::wstring>(L"Min", min.ToHexString(3));
+		boost::property_tree::wptree& rgbMinPropertyTree = rgbPropertyTree.add(L"Min", L"");
+		rgbMinPropertyTree.put<short>(L"R", min[0]);
+		rgbMinPropertyTree.put<short>(L"G", min[1]);
+		rgbMinPropertyTree.put<short>(L"B", min[2]);
 
-		if ((difference[0] > 0) || (difference[1] > 0) || (difference[2] > 0)) {
+		if ((std::abs(difference[0]) > 0) || (std::abs(difference[1]) > 0) || (std::abs(difference[2]) > 0)) {
 
-			rgbPropertyTree.put<std::wstring>(L"Difference", difference.ToHexString(3));
+			boost::property_tree::wptree& rgbDiffPropertyTree = rgbPropertyTree.add(L"Difference", L"");
+			rgbDiffPropertyTree.put<short>(L"R", min[0]);
+			rgbDiffPropertyTree.put<short>(L"G", min[1]);
+			rgbDiffPropertyTree.put<short>(L"B", min[2]);
 		}
 
 		if (inputBindings[0].IsBoundToInputField()) {
@@ -188,8 +194,21 @@ namespace SynGlyphX {
 
 		const boost::property_tree::wptree& colorPropertyTree = propertyTreeParent.get_child(L"Color");
 		const boost::property_tree::wptree& rgbPropertyTree = colorPropertyTree.get_child(L"RGB");
-		min.FromHexString(rgbPropertyTree.get<std::wstring>(L"Min"));
-		difference.FromHexString(rgbPropertyTree.get_optional<std::wstring>(L"Difference").get_value_or(L"000000"));
+		const boost::property_tree::wptree& rgbMinPropertyTree = rgbPropertyTree.get_child(L"Min");
+		min.Set(0, rgbMinPropertyTree.get<short>(L"R"));
+		min.Set(1, rgbMinPropertyTree.get<short>(L"G"));
+		min.Set(2, rgbMinPropertyTree.get<short>(L"B"));
+
+		boost::optional<const boost::property_tree::wptree&> rgbDiffPropertyTree = rgbPropertyTree.get_child_optional(L"Difference");
+		if (rgbDiffPropertyTree.is_initialized()) {
+
+			difference.Set(0, rgbDiffPropertyTree.get().get<short>(L"R"));
+			difference.Set(1, rgbDiffPropertyTree.get().get<short>(L"G"));
+			difference.Set(2, rgbDiffPropertyTree.get().get<short>(L"B"));
+		}
+		else {
+			difference.FromHexString(L"000000");
+		}
 
 		boost::optional<const boost::property_tree::wptree&> inputFieldTree = rgbPropertyTree.get_child_optional(InputBinding::PropertyTreeName);
 		if (inputFieldTree.is_initialized()) {
@@ -197,8 +216,8 @@ namespace SynGlyphX {
 		}
 
 		const boost::property_tree::wptree& alphaPropertyTree = colorPropertyTree.get_child(L"Transparency");
-		min[3] = alphaPropertyTree.get<unsigned char>(L"Min");
-		difference[3] = alphaPropertyTree.get_optional<unsigned char>(L"Difference").get_value_or(0);
+		min.Set(3, alphaPropertyTree.get<unsigned char>(L"Min"));
+		difference.Set(3, alphaPropertyTree.get_optional<unsigned char>(L"Difference").get_value_or(0));
 
 		boost::optional<const boost::property_tree::wptree&> inputFieldTree2 = alphaPropertyTree.get_child_optional(InputBinding::PropertyTreeName);
 		if (inputFieldTree2.is_initialized()) {

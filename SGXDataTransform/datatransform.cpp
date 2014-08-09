@@ -204,7 +204,7 @@ namespace SynGlyphX {
 		glyph.SetScale(mappedVector3);
 
 		Color color = ColorRGBInterpolate(minMaxGlyph->GetInputBinding(9), glyph.GetColor(), difference.GetColor(), queryResultData, index);
-		color[3] = LinearInterpolate(minMaxGlyph->GetInputBinding(10), glyph.GetColor()[3], difference.GetColor()[3], queryResultData, index);
+		color.Set(3, LinearInterpolate(minMaxGlyph->GetInputBinding(10), glyph.GetColor()[3], difference.GetColor()[3], queryResultData, index));
 		glyph.SetColor(color);
 
 		//For now since we aren't mapping torus ratio just set it to 0.1
@@ -234,9 +234,9 @@ namespace SynGlyphX {
 			std::unordered_map<InputField::HashID, QVariantList>::const_iterator dataList = queryResultData.find(id);
 			if (dataList != queryResultData.end()) {
 
-				output[0] += (dataList->second[index].toDouble() - binding.GetMin()) / (binding.GetMax() - binding.GetMin()) * difference[0];
-				output[1] += (dataList->second[index].toDouble() - binding.GetMin()) / (binding.GetMax() - binding.GetMin()) * difference[1];
-				output[2] += (dataList->second[index].toDouble() - binding.GetMin()) / (binding.GetMax() - binding.GetMin()) * difference[2];
+				output.Set(0, (dataList->second[index].toDouble() - binding.GetMin()) / (binding.GetMax() - binding.GetMin()) * difference[0]);
+				output.Set(1, (dataList->second[index].toDouble() - binding.GetMin()) / (binding.GetMax() - binding.GetMin()) * difference[1]);
+				output.Set(2, (dataList->second[index].toDouble() - binding.GetMin()) / (binding.GetMax() - binding.GetMin()) * difference[2]);
 			}
 		}
 
