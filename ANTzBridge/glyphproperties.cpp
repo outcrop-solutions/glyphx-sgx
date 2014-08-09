@@ -61,10 +61,10 @@ namespace SynGlyphX {
 		m_rotation[1] = node->rotate.y;
 		m_rotation[2] = node->rotate.z;
 
-        m_color[0] = node->color.r;
-        m_color[1] = node->color.g;
-        m_color[2] = node->color.b;
-        m_color[3] = node->color.a;
+        m_color.Set(0, node->color.r);
+		m_color.Set(1, node->color.g);
+		m_color.Set(2, node->color.b);
+		m_color.Set(3, node->color.a);
 
         m_ratio = node->ratio;
 
