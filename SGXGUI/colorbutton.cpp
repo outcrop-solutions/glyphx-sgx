@@ -106,10 +106,10 @@ namespace SynGlyphX {
 
 		SynGlyphX::Color color;
 
-		color[0] = qColor.red();
-		color[1] = qColor.green();
-		color[2] = qColor.blue();
-		color[3] = qColor.alpha();
+		color.Set(0, qColor.red());
+		color.Set(1, qColor.green());
+		color.Set(2, qColor.blue());
+		color.Set(3, qColor.alpha());
 
 		return color;
 	}

@@ -260,18 +260,18 @@ bool MinMaxGlyphModel::SetDataByRow(SynGlyphX::GlyphMappableProperties& minPrope
 		SynGlyphX::Color diff = diffProperties.GetColor();
 		if (index.column() == 0) {
 
-			diff[0] += min[0] - color.red();
-			diff[1] += min[1] - color.green();
-			diff[2] += min[2] - color.blue();
-			min[0] = color.red();
-			min[1] = color.green();
-			min[2] = color.blue();
+			diff.Set(0, diff[0] + min[0] - color.red());
+			diff.Set(1, diff[1] + min[1] - color.green());
+			diff.Set(2, diff[2] + min[2] - color.blue());
+			min.Set(0, color.red());
+			min.Set(1, color.green());
+			min.Set(2, color.blue());
 		}
 		else {
 
-			diff[0] = color.red() - min[0];
-			diff[1] = color.green() - min[1];
-			diff[2] = color.blue() - min[2];
+			diff.Set(0, color.red() - min[0]);
+			diff.Set(1, color.green() - min[1]);
+			diff.Set(2, color.blue() - min[2]);
 		}
 
 		minProperties.SetColor(min);
@@ -286,11 +286,11 @@ bool MinMaxGlyphModel::SetDataByRow(SynGlyphX::GlyphMappableProperties& minPrope
 		SynGlyphX::Color diff = diffProperties.GetColor();
 		if (index.column() == 0) {
 
-			diff[3] += min[3] - alpha;
-			min[3] = alpha;
+			diff.Set(3, diff[3] + min[3] - alpha);
+			min.Set(3, alpha);
 		}
 		else {
-			diff[3] = alpha - min[3];
+			diff.Set(3, alpha - min[3]);
 		}
 
 		minProperties.SetColor(min);
