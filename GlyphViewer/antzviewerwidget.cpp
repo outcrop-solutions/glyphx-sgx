@@ -226,8 +226,11 @@ void ANTzViewerWidget::mousePressEvent(QMouseEvent* event) {
 		pData antzData = m_model->GetANTzData();
 		int pickID = npPickPin(event->x(), antzData->io.gl.height - event->y(), antzData);
 
-		if (pickID != 0) {
-				
+		if (pickID == 0) {
+
+			m_selectionModel->clear();
+		}
+		else {
 			m_selectionModel->select(m_model->IndexFromANTzID(pickID), QItemSelectionModel::ClearAndSelect);
         }
     }
