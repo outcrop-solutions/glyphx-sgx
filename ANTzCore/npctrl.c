@@ -1789,3 +1789,128 @@ void npCmdOpen( char* filePath, void* dataRef)
 	npFileOpenMap( filePath, 1, strlen(filePath), dataRef );
 }
 
+//zz debug replace with keymap array
+// Converts GLUT keycode to native keycode
+//returns the converted key value constant or -1 if unknown input
+//------------------------------------------------------------------------------
+ANTZCORE_API int npKeyRAWASCII(int convertKey)
+{
+	int key = -1;	// -1 for unknown key
+
+	//	printf("%d   %d \n", convertKey, keyCodeType);
+
+	switch (convertKey) {
+		case 8: key = kKeyCodeBackSpace; break;
+		case 9: key = kKeyCodeTab; break;
+		case 13: key = kKeyCodeReturn; break;
+
+			//GLUT re-uses ASCII characters 16, 17, 18 and 20
+			//if context active then key up event when both L and R released
+			// case 16 : key = kKeyCodeShift; break;
+			// case 17 : key = kKeyCodeControl; break;
+			// case 18 : key = kKeyCodeAlt; break;
+			// case 20 : key = kKeyCodeCapsLock; break; //key down event only
+
+		case 27: key = kKeyCodeESC; break;
+		case 32: key = kKeyCodeSpace; break;
+		case 33: key = kKeyCode1; break;
+		case 34: key = kKeyCodeRightQuote; break;  // double "
+		case 35: key = kKeyCode3; break;
+		case 36: key = kKeyCode4; break;
+		case 37: key = kKeyCode5; break;
+		case 38: key = kKeyCode7; break;
+		case 39: key = kKeyCodeRightQuote; break;  // single '
+		case 40: key = kKeyCode9; break;
+		case 41: key = kKeyCodeZero; break;
+		case 42: key = kKeyCode8; break;
+		case 43: key = kKeyCodeEqual; break;
+		case 44: key = kKeyCodeComma; break;
+		case 45: key = kKeyCodeMinus; break;
+		case 46: key = kKeyCodePeriod; break;
+		case 47: key = kKeyCodeSlash; break;
+		case 48: key = kKeyCodeZero; break;
+		case 49: key = kKeyCode1; break;
+		case 50: key = kKeyCode2; break;
+		case 51: key = kKeyCode3; break;
+		case 52: key = kKeyCode4; break;
+		case 53: key = kKeyCode5; break;
+		case 54: key = kKeyCode6; break;
+		case 55: key = kKeyCode7; break;
+		case 56: key = kKeyCode8; break;
+		case 57: key = kKeyCode9; break;
+		case 58: key = kKeyCodeSemiColon; break;
+		case 59: key = kKeyCodeSemiColon; break;
+		case 60: key = kKeyCodeComma; break;
+		case 61: key = kKeyCodeEqual; break;
+		case 62: key = kKeyCodePeriod; break;
+		case 63: key = kKeyCodeSlash; break;
+		case 64: key = kKeyCode2; break;
+		case 65: key = kKeyCodeA; break;
+		case 66: key = kKeyCodeB; break;
+		case 67: key = kKeyCodeC; break;
+		case 68: key = kKeyCodeD; break;
+		case 69: key = kKeyCodeE; break;
+		case 70: key = kKeyCodeF; break;
+		case 71: key = kKeyCodeG; break;
+		case 72: key = kKeyCodeH; break;
+		case 73: key = kKeyCodeI; break;
+		case 74: key = kKeyCodeJ; break;
+		case 75: key = kKeyCodeK; break;
+		case 76: key = kKeyCodeL; break;
+		case 77: key = kKeyCodeM; break;
+		case 78: key = kKeyCodeN; break;
+		case 79: key = kKeyCodeO; break;
+		case 80: key = kKeyCodeP; break;
+		case 81: key = kKeyCodeQ; break;
+		case 82: key = kKeyCodeR; break;
+		case 83: key = kKeyCodeS; break;
+		case 84: key = kKeyCodeT; break;
+		case 85: key = kKeyCodeU; break;
+		case 86: key = kKeyCodeV; break;
+		case 87: key = kKeyCodeW; break;
+		case 88: key = kKeyCodeX; break;
+		case 89: key = kKeyCodeY; break;
+		case 90: key = kKeyCodeZ; break;
+		case 91: key = kKeyCodeLeftBracket; break;
+		case 92: key = kKeyCodeBackSlash; break;
+		case 93: key = kKeyCodeRightBracket; break;
+		case 94: key = kKeyCode6; break;
+		case 95: key = kKeyCodeMinus; break;
+		case 96: key = kKeyCodeTilda; break;
+		case 97: key = kKeyCodeA; break;
+		case 98: key = kKeyCodeB; break;
+		case 99: key = kKeyCodeC; break;
+		case 100: key = kKeyCodeD; break;
+		case 101: key = kKeyCodeE; break;
+		case 102: key = kKeyCodeF; break;
+		case 103: key = kKeyCodeG; break;
+		case 104: key = kKeyCodeH; break;
+		case 105: key = kKeyCodeI; break;
+		case 106: key = kKeyCodeJ; break;
+		case 107: key = kKeyCodeK; break;
+		case 108: key = kKeyCodeL; break;
+		case 109: key = kKeyCodeM; break;
+		case 110: key = kKeyCodeN; break;
+		case 111: key = kKeyCodeO; break;
+		case 112: key = kKeyCodeP; break;
+		case 113: key = kKeyCodeQ; break;
+		case 114: key = kKeyCodeR; break;
+		case 115: key = kKeyCodeS; break;
+		case 116: key = kKeyCodeT; break;
+		case 117: key = kKeyCodeU; break;
+		case 118: key = kKeyCodeV; break;
+		case 119: key = kKeyCodeW; break;
+		case 120: key = kKeyCodeX; break;
+		case 121: key = kKeyCodeY; break;
+		case 122: key = kKeyCodeZ; break;
+		case 123: key = kKeyCodeLeftBracket; break;
+		case 124: key = kKeyCodeBackSlash; break;
+		case 125: key = kKeyCodeRightBracket; break;
+		case 126: key = kKeyCodeTilda; break;
+		case 127: key = kKeyCodeDelete; break;
+		default: break;
+	}
+
+	//return converted keycode
+	return key;
+}

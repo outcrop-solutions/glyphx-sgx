@@ -52,6 +52,8 @@ void npCtrlCommandSet (int command, void* node, void* dataRef);	// specific node
 
 void npCmdOpen( char* filePath, void* dataRef);
 
+ANTZCORE_API int npKeyRAWASCII(int key);
+
 #ifdef __cplusplus
 	}
 #endif
