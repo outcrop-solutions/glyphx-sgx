@@ -8,6 +8,7 @@
 #include "io/npgl.h"
 #include "npui.h"
 #include "ctrl/npengine.h"
+#include "npctrl.h"
 
 //The default QGLFormat works for now except we want alpha enabled.  May want to turn on stereo at some point
 QGLFormat ANTzViewerWidget::s_format(QGL::AlphaChannel);
@@ -17,11 +18,17 @@ ANTzViewerWidget::ANTzViewerWidget(GlyphForestModel* model, QItemSelectionModel*
 	m_model(model),
     m_selectionModel(selectionModel)
 {
-    void* antzData = m_model->GetANTzData();
+	setFocusPolicy(Qt::StrongFocus);
+
+    pData antzData = m_model->GetANTzData();
     InitIO();
     npInitFile(antzData);
     npInitCh(antzData);
     npInitCtrl(antzData);
+
+	//Change fly speeds
+	//antzData->ctrl.slow = 0.5f;
+	//antzData->ctrl.fast = 0.75f;
 
 	if (m_selectionModel != nullptr) {
 		QObject::connect(m_selectionModel, &QItemSelectionModel::selectionChanged, this, &ANTzViewerWidget::UpdateSelection);
@@ -251,7 +258,7 @@ void ANTzViewerWidget::mouseMoveEvent(QMouseEvent* event) {
 
     if (m_selectionModel->selectedIndexes().empty()) {
         
-		
+		antzData->io.mouse.mode = kNPmouseModeCamLook;
     }
     else {
         
@@ -266,4 +273,56 @@ void ANTzViewerWidget::mouseMoveEvent(QMouseEvent* event) {
     }
 
     m_lastMousePosition = event->pos();
+}
+
+void ANTzViewerWidget::keyPressEvent(QKeyEvent* event) {
+
+	if (m_selectionModel->selectedIndexes().empty()) {
+
+		pData antzData = m_model->GetANTzData();
+		if ((event->key() == 'w') ||
+			(event->key() == 'W') ||
+			(event->key() == 'a') ||
+			(event->key() == 'A') ||
+			(event->key() == 's') ||
+			(event->key() == 'S') ||
+			(event->key() == 'd') ||
+			(event->key() == 'D') ||
+			(event->key() == 'e') ||
+			(event->key() == 'E') ||
+			(event->key() == 'q') ||
+			(event->key() == 'Q')) {
+
+			npCtrlCommand(antzData->io.key.map[kKeyDown][npKeyRAWASCII(event->key())], antzData);
+			return;
+		}
+	}
+
+	QGLWidget::keyPressEvent(event);
+}
+
+void ANTzViewerWidget::keyReleaseEvent(QKeyEvent* event) {
+
+	if (m_selectionModel->selectedIndexes().empty()) {
+
+		pData antzData = m_model->GetANTzData();
+		if ((event->key() == 'w') ||
+			(event->key() == 'W') ||
+			(event->key() == 'a') ||
+			(event->key() == 'A') ||
+			(event->key() == 's') ||
+			(event->key() == 'S') ||
+			(event->key() == 'd') ||
+			(event->key() == 'D') ||
+			(event->key() == 'e') ||
+			(event->key() == 'E') ||
+			(event->key() == 'q') ||
+			(event->key() == 'Q')) {
+
+			npCtrlCommand(antzData->io.key.map[kKeyUp][npKeyRAWASCII(event->key())], antzData);
+			return;
+		}
+	}
+
+	QGLWidget::keyReleaseEvent(event);
 }
