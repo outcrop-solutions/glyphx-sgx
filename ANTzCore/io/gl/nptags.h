@@ -25,35 +25,44 @@
 #ifndef NPTAGS_H_
 #define NPTAGS_H_
 
+#include "../../ANTzCore.h"
 #include "../../npdata.h"
 
-//------------------------------------------------------------------------------
-void npInitTags (void* dataRef);
-void npCloseTags (void* dataRef);
+#ifdef __cplusplus
+	extern "C" {
+#endif
 
-void npUpdateTags (void* dataRef);
+//------------------------------------------------------------------------------
+void npInitTags(void* dataRef);
+void npCloseTags(void* dataRef);
+
+void npUpdateTags(void* dataRef);
 
 //below belong in /data/...
 //------------------------------------------------------------------------------
 
 //passed a buffer filled with CSV formatted tags, includes header
-void npImportTagsFromCSV (char* buffer, int size, int wordSize, void* dataRef);
+void npImportTagsFromCSV(char* buffer, int size, int wordSize, void* dataRef);
 
 //allocates buffer and fills with CSV formatted tags, includes header
-void npExportTagsToCSV (char* buffer, int* size, int* wordSize, void* dataRef);
+void npExportTagsToCSV(char* buffer, int* size, int* wordSize, void* dataRef);
 
 //deletes entire tag list
-void npDeleteAllTags (void* dataRef);
+void npDeleteAllTags(void* dataRef);
 
-void npDeleteTag (int recordID, int tableID, void* dataRef);
-void npAddTag (pNPtag tag, void* dataRef);
+void npDeleteTag(int recordID, int tableID, void* dataRef);
+void npAddTag(pNPtag tag, void* dataRef);
 
-pNPtag npGetTag (int recordID, int tableID, void* dataRef);
-void npTagNode (pNPnode node, void* dataRef);
+pNPtag npGetTag(int recordID, int tableID, void* dataRef);
+void npTagNode(pNPnode node, void* dataRef);
 
 //called after loading a new state file or tag list file
 ANTZCORE_API void npUpdateTextTag(pNPtag tag);
 ANTZCORE_API void npSyncTags(void* dataRef);
+
+#ifdef __cplusplus
+	}
+#endif
 
 #endif
 

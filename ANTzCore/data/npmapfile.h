@@ -76,7 +76,7 @@ int npWriteNode (const char* buffer, pNPnode node, int format, void* dataRef);
 
 int npFileVersion (char* buffer, int wordSize, int size);
 
-
+ANTZCORE_API int npFileOpenCore(const char* filePath, FILE* file, void* dataRef);
 
 void npThreadFileOpenMap (void* dataRef);
 

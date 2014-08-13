@@ -1910,13 +1910,26 @@ void npPostMap (pNPrecordSet recSet, void* dataRef)
 //zz debug, read loop with circular buffer, separate str parsing threads
 //thread the process
 //-----------------------------------------------------------------------------
-void npFileOpenThread (void* threadData)
+void npFileOpenThread(void* threadData)
 {
-	pNPthreadFile threadFile = (pNPthreadFile) threadData;
-	pData data = (pData) threadFile->dataRef;	 //get our context dataRef
+	pNPthreadFile threadFile = (pNPthreadFile)threadData;
+	pData data = (pData)threadFile->dataRef;	 //get our context dataRef
 
 	char* filePath = threadFile->filePath; //filePath with filename
 	FILE* file = threadFile->file;		//file handle used to read file
+
+	npFileOpenCore(filePath, file, data);
+
+	npFree(threadFile->filePath, data);	//free the filePath str copy
+	npFree(threadFile, data);				//free the thread container
+
+	//move this out to a thread worker wrapper								//zz debug
+	nposEndThread();
+}
+
+ANTZCORE_API int npFileOpenCore(const char* filePath, FILE* file, void* dataRef)
+{
+	pData data = (pData)dataRef;
 
 	char* read = NULL;				//current read buffer block
 	char* splitBlock = NULL;		//to process data split across read blcoks
@@ -2077,11 +2090,8 @@ endPoint:
 	//free read buffers and threadFile structure
 	npFree (splitBlock, data);
 	npFree (read, data);
-	npFree (threadFile->filePath, data);	//free the filePath str copy
-	npFree (threadFile, data);				//free the thread container
 
-	//move this out to a thread worker wrapper								//zz debug
-	nposEndThread();
+	return 1;
 }
 
 
