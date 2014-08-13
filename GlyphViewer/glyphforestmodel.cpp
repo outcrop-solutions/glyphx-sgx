@@ -1,11 +1,17 @@
 #include "glyphforestmodel.h"
 #include "npdata.h"
 #include "data/npmapfile.h"
+#include <QtCore/QDir>
+#include <QtCore/QThread>
+#include "SOIL.h"
+#include "io/gl/nptags.h"
 
 GlyphForestModel::GlyphForestModel(QObject *parent)
 	: QAbstractItemModel(parent)
 {
 	m_antzData = static_cast<pData>(npInitData(0, NULL));
+	m_defaultBaseImage = QDir::currentPath() + QDir::separator() + "usr" + QDir::separator() + "images" + QDir::separator() + "map00001.jpg";
+	m_textures[m_defaultBaseImage.toStdWString()] = 1;
 }
 
 GlyphForestModel::~GlyphForestModel()
@@ -133,8 +139,9 @@ void GlyphForestModel::LoadANTzFiles(const QStringList& filenames) {
 	beginResetModel();
 	for (const QString& filename : filenames) {
 
-		npFileOpenAuto(filename.toStdString().c_str(), NULL, m_antzData);
+		npFileOpenCore(filename.toStdString().c_str(), NULL, m_antzData);
 	}
+	npSyncTags(static_cast<void*>(m_antzData));
 	endResetModel();
 }
 
@@ -161,4 +168,32 @@ int GlyphForestModel::FindRowForRootNode(pNPnode node) const {
 	}
 
 	return i - kNPnodeRootPin;
+}
+
+void GlyphForestModel::UseDefaultBaseImage() {
+
+	pNPnode grid = static_cast<pNPnode>(m_antzData->map.node[kNPnodeRootGrid]);
+	grid->textureID = m_textures.begin()->second;
+}
+
+void GlyphForestModel::UseLocalBaseImage(const QString& filename) {
+
+	pNPnode grid = static_cast<pNPnode>(m_antzData->map.node[kNPnodeRootGrid]);
+	std::unordered_map<std::wstring, int>::iterator iT = m_textures.find(filename.toStdWString());
+	if (iT == m_textures.end()) {
+
+		int textureID = SOIL_load_OGL_texture(filename.toStdString().c_str(), SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_INVERT_Y);
+		if (textureID == 0) {
+
+			throw std::exception("Failed to load base image");
+		}
+
+		m_textures[filename.toStdWString()] = textureID;
+		grid->textureID = textureID;
+	}
+	else {
+
+		grid->textureID = iT->second;
+	}
+	
 }

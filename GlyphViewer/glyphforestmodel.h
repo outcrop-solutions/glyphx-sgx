@@ -2,6 +2,7 @@
 #define GLYPHFORESTMODEL_H
 
 #include <QtCore/QAbstractItemModel>
+#include <unordered_map>
 #include "data/nptypes.h"
 #include "glyph.h"
 
@@ -28,10 +29,14 @@ public:
 
 	QModelIndex IndexFromANTzID(int id) const;
 
+	void UseDefaultBaseImage();
+	void UseLocalBaseImage(const QString& filename);
+
 private:
 	int GetChildIndexFromParent(pNPnode node) const;
 	int FindRowForRootNode(pNPnode) const;
-
+	std::unordered_map<std::wstring, int> m_textures;
+	QString m_defaultBaseImage;
 	pData m_antzData;
 };
 

@@ -26,7 +26,8 @@ private:
 	void LoadDataTransform(const QString& filename);
 	void CreateMenus();
 	void CreateDockWidgets();
-	void ConvertTransformToANTz(const QString& transformFilename);
+	void ConvertTransformToANTz(SynGlyphX::DataTransform& transform, const QString& cacheDir);
+	bool DoesCacheExist(const QString& cacheDir, bool cacheHasImage) const;
 
 	QMenu* m_fileMenu;
 	QMenu* m_viewMenu;
