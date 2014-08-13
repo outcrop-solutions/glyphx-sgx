@@ -118,18 +118,19 @@ void GlyphViewerWindow::LoadDataTransform(const QString& filename) {
 			ConvertTransformToANTz(transform, transformCacheDir);
 		}
 
+		QStringList files;
+		files.push_back(transformCacheDir + QDir::separator() + "antz0001.csv");
+		files.push_back(transformCacheDir + QDir::separator() + "antztag0001.csv");
+
+		m_glyphForestModel->LoadANTzFiles(files);
+
+		//Base image must come after loading of CSV files
 		if (useNonDefaultImage) {
 			m_glyphForestModel->UseLocalBaseImage(transformCacheDir + QDir::separator() + "map00001.jpg");
 		}
 		else {
 			m_glyphForestModel->UseDefaultBaseImage();
 		}
-
-		QStringList files;
-		files.push_back(transformCacheDir + QDir::separator() + "antz0001.csv");
-		files.push_back(transformCacheDir + QDir::separator() + "antztag0001.csv");
-
-		m_glyphForestModel->LoadANTzFiles(files);
 	}
 	catch (const std::exception& e) {
 

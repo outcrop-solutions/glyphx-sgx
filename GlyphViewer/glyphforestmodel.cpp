@@ -190,6 +190,7 @@ void GlyphForestModel::UseLocalBaseImage(const QString& filename) {
 
 		m_textures[filename.toStdWString()] = textureID;
 		grid->textureID = textureID;
+		m_antzData->io.gl.textureCount = textureID;
 	}
 	else {
 
