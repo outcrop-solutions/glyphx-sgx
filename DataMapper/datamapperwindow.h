@@ -50,7 +50,7 @@ private:
     QMenu* m_fileMenu;
     QMenu* m_projectMenu;
     QMenu* m_viewMenu;
-	QMenu* m_toolsMenu;
+	//QMenu* m_toolsMenu;
     QTreeView* m_glyphTreeView;
 	DataSourceStatsWidget* m_dataSourceStats;
 	QList<QAction*> m_projectDependentActions;

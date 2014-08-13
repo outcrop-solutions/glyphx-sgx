@@ -101,6 +101,12 @@ void GlyphViewerWindow::LoadDataTransform(const QString& filename) {
 		return;
 	}
 
+	if (!m_treeView->selectionModel()->selectedIndexes().empty()) {
+
+		m_treeView->selectionModel()->clearSelection();
+		m_antzWidget->updateGL();
+	}
+
 	try {
 
 		SynGlyphX::Application::setOverrideCursor(Qt::WaitCursor);

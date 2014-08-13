@@ -82,11 +82,11 @@ void DataMapperWindow::CreateMenus() {
     QObject::connect(saveAsProjectAction, &QAction::triggered, this, &DataMapperWindow::SaveAsProject);
 	m_projectDependentActions.push_back(saveAsProjectAction);
 
-    m_fileMenu->addSeparator();
+    /*m_fileMenu->addSeparator();
 
     QAction* exportAction = CreateMenuAction(m_fileMenu, tr("Export to Glyph Viewer"));
     QObject::connect(exportAction, &QAction::triggered, this, &DataMapperWindow::ExportToGlyphViewer);
-	m_projectDependentActions.push_back(exportAction);
+	m_projectDependentActions.push_back(exportAction);*/
 
 	m_fileMenu->addActions(m_recentFileActions);
 
@@ -115,10 +115,10 @@ void DataMapperWindow::CreateMenus() {
 
     m_viewMenu->addSeparator();
 
-	m_toolsMenu = menuBar()->addMenu(tr("Tools"));
+	/*m_toolsMenu = menuBar()->addMenu(tr("Tools"));
 
 	QAction* mapDownloadSettingsAction = m_toolsMenu->addAction(tr("Map Download Settings"));
-	QObject::connect(mapDownloadSettingsAction, &QAction::triggered, this, &DataMapperWindow::ChangeMapDownloadSettings);
+	QObject::connect(mapDownloadSettingsAction, &QAction::triggered, this, &DataMapperWindow::ChangeMapDownloadSettings);*/
 
     m_helpMenu = menuBar()->addMenu(tr("Help"));
     QAction* aboutBoxAction = m_helpMenu->addAction("About " + SynGlyphX::Application::organizationName() + " " + SynGlyphX::Application::applicationName());

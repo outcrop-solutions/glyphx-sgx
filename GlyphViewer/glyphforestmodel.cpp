@@ -136,6 +136,8 @@ int GlyphForestModel::GetChildIndexFromParent(pNPnode node) const {
 
 void GlyphForestModel::LoadANTzFiles(const QStringList& filenames) {
 
+	m_antzData->map.nodeRootIndex = kNPnodeRootPin;
+
 	beginResetModel();
 	while (m_antzData->map.nodeRootCount > kNPnodeRootPin) {
 	
@@ -147,6 +149,8 @@ void GlyphForestModel::LoadANTzFiles(const QStringList& filenames) {
 	}
 	npSyncTags(static_cast<void*>(m_antzData));
 	endResetModel();
+
+	m_antzData->map.nodeRootIndex = 0;
 }
 
 QModelIndex GlyphForestModel::IndexFromANTzID(int id) const {
