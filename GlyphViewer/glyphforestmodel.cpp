@@ -137,6 +137,10 @@ int GlyphForestModel::GetChildIndexFromParent(pNPnode node) const {
 void GlyphForestModel::LoadANTzFiles(const QStringList& filenames) {
 
 	beginResetModel();
+	while (m_antzData->map.nodeRootCount > kNPnodeRootPin) {
+	
+		npNodeDelete(static_cast<pNPnode>(m_antzData->map.node[kNPnodeRootPin]), m_antzData);
+	}
 	for (const QString& filename : filenames) {
 
 		npFileOpenCore(filename.toStdString().c_str(), NULL, m_antzData);

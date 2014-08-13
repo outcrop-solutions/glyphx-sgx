@@ -97,6 +97,10 @@ void GlyphViewerWindow::LoadRecentFile(const QString& filename) {
 
 void GlyphViewerWindow::LoadDataTransform(const QString& filename) {
 
+	if (filename == m_currentFilename) {
+		return;
+	}
+
 	try {
 
 		SynGlyphX::Application::setOverrideCursor(Qt::WaitCursor);
