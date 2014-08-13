@@ -2,7 +2,7 @@
 #define GLYPHVIEWERWINDOW_H
 
 #include <QtWidgets/QMainWindow>
-#include <QtWidgets/QTreeView>
+#include "glyphtreelistview.h"
 #include "mainwindow.h"
 #include "datatransform.h"
 #include "glyphforestmodel.h"
@@ -36,7 +36,7 @@ private:
 
 	GlyphForestModel* m_glyphForestModel;
 	ANTzViewerWidget* m_antzWidget;
-	QTreeView* m_treeView;
+	GlyphTreeListView* m_treeView;
 };
 
 #endif // GLYPHVIEWERWINDOW_H
