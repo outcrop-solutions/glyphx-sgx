@@ -1,6 +1,7 @@
 #include "antzviewerwidget.h"
 
 #include <QtGUI/QMouseEvent>
+#include <QtGUI/QFont>
 
 #include "io/npfile.h"
 #include "io/npch.h"
@@ -19,6 +20,10 @@ ANTzViewerWidget::ANTzViewerWidget(GlyphForestModel* model, QItemSelectionModel*
     m_selectionModel(selectionModel)
 {
 	setFocusPolicy(Qt::StrongFocus);
+
+	QFont newFont = font();
+	newFont.setPointSize(12);
+	setFont(newFont);
 
     pData antzData = m_model->GetANTzData();
     InitIO();
@@ -123,27 +128,61 @@ void ANTzViewerWidget::resizeGL(int w, int h) {
 
 void ANTzViewerWidget::paintGL() {
 
-	//if (m_model->GetRootGlyph() != nullptr) {
-		pData antzData = m_model->GetANTzData();
+	pData antzData = m_model->GetANTzData();
 
-		npUpdateCh(antzData);
+	npUpdateCh(antzData);
 
-		npUpdateEngine(antzData);		//position, physics, interactions...
-
+	npUpdateEngine(antzData);		//position, physics, interactions...
 
 
-		//We may need to have a selected pin node during update to position the camera, but we don't want it during drawing
-		antzData->map.selectedPinNode = NULL;
-		antzData->map.selectedPinIndex = 0;
 
-		// zero out our mouse to prevent drifting objects
-		antzData->io.mouse.delta.x = 0.0f;
-		antzData->io.mouse.delta.y = 0.0f;
+	//We may need to have a selected pin node during update to position the camera, but we don't want it during drawing
+	antzData->map.selectedPinNode = NULL;
+	antzData->map.selectedPinIndex = 0;
 
-		//antzData->io.mouse.pickMode = kNPmodePin;
-		npGLDrawScene(antzData);
-		//antzData->io.mouse.pickMode = kNPmodeNull;
-	//}
+	// zero out our mouse to prevent drifting objects
+	antzData->io.mouse.delta.x = 0.0f;
+	antzData->io.mouse.delta.y = 0.0f;
+
+	//antzData->io.mouse.pickMode = kNPmodePin;
+	npGLDrawScene(antzData);
+	//antzData->io.mouse.pickMode = kNPmodeNull;
+
+	bool reenableDepthTest = glIsEnabled(GL_DEPTH_TEST);
+	if (reenableDepthTest) {
+		glDisable(GL_DEPTH_TEST);
+	}
+
+	//Draw tags
+	qglColor(Qt::white);
+
+	pNPnode selectedNode = nullptr;
+	if (!m_selectionModel->selectedIndexes().empty()) {
+
+		selectedNode = static_cast<pNPnode>(m_selectionModel->selectedIndexes().front().internalPointer());
+		if (strcmp(selectedNode->tag->title, "No Tag") != 0) {
+
+			renderText(selectedNode->world.x, selectedNode->world.y, selectedNode->world.z, selectedNode->tag->title);
+		}
+	}
+
+	//Draw HUD
+	QString positionHUD;
+	if (selectedNode != nullptr) {
+		
+		positionHUD = tr("Glyph Position: X: %1, Y: %2, Z: %3").arg(QString::number(selectedNode->world.x), QString::number(selectedNode->world.y), QString::number(selectedNode->world.z));
+	}
+	else {
+		
+		positionHUD = tr("Camera Position: X: %1, Y: %2, Z: %3").arg(QString::number(antzData->map.currentCam->translate.x), QString::number(antzData->map.currentCam->translate.y), QString::number(antzData->map.currentCam->translate.z));
+	}
+
+	const QFontMetrics& hudFontMetrics = fontMetrics();
+	renderText((width() / 2) - (hudFontMetrics.width(positionHUD) / 2), height() - 16, positionHUD);
+
+	if (reenableDepthTest) {
+		glEnable(GL_DEPTH_TEST);
+	}
 
     int err = glGetError();
     if (err) {
