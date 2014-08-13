@@ -67,7 +67,7 @@ void GlyphViewerWindow::CreateMenus() {
 void GlyphViewerWindow::CreateDockWidgets() {
 
 	//Add Tree View to dock widget on left side
-	QDockWidget* leftDockWidget = new QDockWidget(tr("Glyphs"), this);
+	QDockWidget* leftDockWidget = new QDockWidget(tr("Glyph List"), this);
 	m_treeView = new QTreeView(leftDockWidget);
 	m_treeView->setModel(m_glyphForestModel);
 	m_treeView->setSelectionMode(QAbstractItemView::SingleSelection);

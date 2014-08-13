@@ -33,6 +33,8 @@ ANTzViewerWidget::ANTzViewerWidget(GlyphForestModel* model, QItemSelectionModel*
 	if (m_selectionModel != nullptr) {
 		QObject::connect(m_selectionModel, &QItemSelectionModel::selectionChanged, this, &ANTzViewerWidget::UpdateSelection);
 	}
+
+	QObject::connect(m_model, &GlyphForestModel::modelReset, this, &ANTzViewerWidget::ResetCamera);
 }
 
 ANTzViewerWidget::~ANTzViewerWidget()
@@ -191,7 +193,11 @@ void ANTzViewerWidget::UpdateSelection(const QItemSelection& selected, const QIt
 			}
 			nodeRootIndex = node->id;
         }
-    }
+	}
+	else {
+		//Clear the proximity value so that camera isn't locked to the node even when not selected
+		antzData->map.currentCam->proximity.x = 0;
+	}
 
     antzData->map.nodeRootIndex = nodeRootIndex;
 }
@@ -203,7 +209,15 @@ void ANTzViewerWidget::ResetCamera() {
 	//We only want to center the camera when there are actual root nodes
 	if (antzData->map.nodeRootCount > kNPnodeRootPin) {
 
+		//Need to draw once so that camera centering works properly
+		updateGL();
+
 		CenterCameraOnNode(static_cast<pNPnode>(antzData->map.node[kNPnodeRootPin]));
+		
+		//Need to draw again so that centering on the node works properly before resetting proximity
+		updateGL();
+
+		antzData->map.currentCam->proximity.x = 0;
     }
 }
 
