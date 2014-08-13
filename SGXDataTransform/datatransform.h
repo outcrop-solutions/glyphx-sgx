@@ -28,7 +28,7 @@ namespace SynGlyphX {
         ~DataTransform();
 
         void ReadFromFile(const std::string& filename);
-        void WriteToFile(const std::string& filename) const;
+        void WriteToFile(const std::string& filename, bool resetID);
 
 		const DatasourceMap& GetDatasources() const;
 

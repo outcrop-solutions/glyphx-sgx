@@ -52,11 +52,15 @@ namespace SynGlyphX {
 		}
     }
 
-    void DataTransform::WriteToFile(const std::string& filename) const {
+	void DataTransform::WriteToFile(const std::string& filename, bool resetID) {
+
+		if (resetID) {
+			m_id = m_uuidGenerator();
+		}
 
 		boost::property_tree::wptree filePropertyTree;
 
-		boost::property_tree::wptree dataTransformPropertyTreeRoot = filePropertyTree.add(L"Transform", L"");
+		boost::property_tree::wptree& dataTransformPropertyTreeRoot = filePropertyTree.add(L"Transform", L"");
 		dataTransformPropertyTreeRoot.put(L"<xmlattr>.id", m_id);
 
 		m_baseImage.ExportToPropertyTree(dataTransformPropertyTreeRoot);
