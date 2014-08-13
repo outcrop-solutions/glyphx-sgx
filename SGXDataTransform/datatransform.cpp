@@ -13,6 +13,7 @@ namespace SynGlyphX {
     DataTransform::DataTransform() :
 		m_baseImage(nullptr)
     {
+		m_id = m_uuidGenerator();
     }
 
     DataTransform::~DataTransform()
@@ -23,8 +24,12 @@ namespace SynGlyphX {
 
         Clear();
 
-        boost::property_tree::wptree dataTransformPropertyTree;
-		boost::property_tree::read_xml(filename, dataTransformPropertyTree);
+        boost::property_tree::wptree filePropertyTree;
+		boost::property_tree::read_xml(filename, filePropertyTree);
+
+		boost::property_tree::wptree& dataTransformPropertyTree = filePropertyTree.get_child(L"Transform");
+
+		m_id = dataTransformPropertyTree.get<boost::uuids::uuid>(L"<xmlattr>.id");
 
 		m_baseImage = BaseImage(dataTransformPropertyTree.get_child(L"BaseImage"));
 
@@ -49,7 +54,10 @@ namespace SynGlyphX {
 
     void DataTransform::WriteToFile(const std::string& filename) const {
 
-		boost::property_tree::wptree dataTransformPropertyTreeRoot;
+		boost::property_tree::wptree filePropertyTree;
+
+		boost::property_tree::wptree dataTransformPropertyTreeRoot = filePropertyTree.add(L"Transform", L"");
+		dataTransformPropertyTreeRoot.put(L"<xmlattr>.id", m_id);
 
 		m_baseImage.ExportToPropertyTree(dataTransformPropertyTreeRoot);
 
@@ -67,7 +75,7 @@ namespace SynGlyphX {
 			glyphPropertyTree.put(L"<xmlattr>.id", glyphTree.first);
 		}
 
-		boost::property_tree::write_xml(filename, dataTransformPropertyTreeRoot);
+		boost::property_tree::write_xml(filename, filePropertyTree);
     }
 
 	const DataTransform::DatasourceMap& DataTransform::GetDatasources() const {
@@ -349,6 +357,11 @@ namespace SynGlyphX {
 				points.push_back(GeographicPoint(queryResultDataX[i].toDouble(), queryResultDataY[i].toDouble()));
 			}
 		}
+	}
+
+	const boost::uuids::uuid& DataTransform::GetID() const {
+
+		return m_id;
 	}
 
 } //namespace SynGlyphX

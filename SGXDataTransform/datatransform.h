@@ -59,6 +59,8 @@ namespace SynGlyphX {
 		void SetPositionXYMinMaxToGeographicForAllGlyphTrees(const GeographicBoundingBox& boundingBox);
 		void GetPositionXYForAllGlyphTrees(std::vector<GeographicPoint>& points) const;
 
+		const boost::uuids::uuid& GetID() const;
+
     private:
 		void AddChildrenToGlyphTree(GlyphTree::SharedPtr tree, GlyphTree::iterator newNode, MinMaxGlyphTree::SharedPtr minMaxTree, MinMaxGlyphTree::const_iterator node, const std::unordered_map<InputField::HashID, QVariantList>& queryResultData, unsigned int index) const;
 		QVariantList RunSqlQuery(const InputField& inputfield) const;
@@ -71,6 +73,7 @@ namespace SynGlyphX {
         boost::uuids::random_generator m_uuidGenerator;
 		MinMaxGlyphTreeMap m_glyphTrees;
 		BaseImage m_baseImage;
+		boost::uuids::uuid m_id;
     };
 
 } //namespace SynGlyphX
