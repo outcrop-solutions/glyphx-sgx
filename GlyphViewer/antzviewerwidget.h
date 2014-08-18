@@ -13,8 +13,11 @@ public:
 	ANTzViewerWidget(GlyphForestModel* model, QItemSelectionModel* selectionModel, QWidget *parent = 0);
 	~ANTzViewerWidget();
 
+	bool IsInStereoMode() const;
+
 public slots:
     void ResetCamera();
+	void SetStereo(bool enableStereo);
 
 protected:
     virtual void initializeGL();

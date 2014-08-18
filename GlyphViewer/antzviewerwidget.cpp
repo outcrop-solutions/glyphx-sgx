@@ -12,10 +12,10 @@
 #include "npctrl.h"
 
 //The default QGLFormat works for now except we want alpha enabled.  May want to turn on stereo at some point
-QGLFormat ANTzViewerWidget::s_format(QGL::AlphaChannel);
+QGLFormat ANTzViewerWidget::s_format(QGL::AlphaChannel | QGL::StereoBuffers);
 
 ANTzViewerWidget::ANTzViewerWidget(GlyphForestModel* model, QItemSelectionModel* selectionModel, QWidget *parent)
-    : QGLWidget(s_format, parent),
+	: QGLWidget(s_format, parent),
 	m_model(model),
     m_selectionModel(selectionModel)
 {
@@ -32,8 +32,8 @@ ANTzViewerWidget::ANTzViewerWidget(GlyphForestModel* model, QItemSelectionModel*
     npInitCtrl(antzData);
 
 	//Change fly speeds
-	//antzData->ctrl.slow = 0.5f;
-	//antzData->ctrl.fast = 0.75f;
+	antzData->ctrl.slow = 0.5f;
+	antzData->ctrl.fast = 0.75f;
 
 	if (m_selectionModel != nullptr) {
 		QObject::connect(m_selectionModel, &QItemSelectionModel::selectionChanged, this, &ANTzViewerWidget::UpdateSelection);
@@ -387,4 +387,16 @@ void ANTzViewerWidget::keyReleaseEvent(QKeyEvent* event) {
 	}
 
 	QGLWidget::keyReleaseEvent(event);
+}
+
+void ANTzViewerWidget::SetStereo(bool enableStereo) {
+
+	pData antzData = m_model->GetANTzData();
+	antzData->io.gl.stereo = enableStereo;
+}
+
+bool ANTzViewerWidget::IsInStereoMode() const {
+
+	pData antzData = m_model->GetANTzData();
+	return (antzData->io.gl.stereo);
 }

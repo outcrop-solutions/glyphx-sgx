@@ -50,6 +50,12 @@ void GlyphViewerWindow::CreateMenus() {
 
 	//Create View Menu
 	m_viewMenu = menuBar()->addMenu(tr("View"));
+
+	m_stereoAction = CreateMenuAction(m_viewMenu, tr("Stereo"));
+	m_stereoAction->setCheckable(true);
+	QObject::connect(m_stereoAction, &QAction::triggered, this, &GlyphViewerWindow::ChangeStereoMode);
+
+	m_viewMenu->addSeparator();
 	CreateFullScreenAction(m_viewMenu);
 
 	m_viewMenu->addSeparator();
@@ -60,7 +66,13 @@ void GlyphViewerWindow::CreateMenus() {
 	QObject::connect(mapDownloadSettingsAction, &QAction::triggered, this, &GlyphViewerWindow::ChangeMapDownloadSettings);
 
 	m_helpMenu = menuBar()->addMenu(tr("Help"));
-	QAction* aboutBoxAction = m_helpMenu->addAction("About " + SynGlyphX::Application::organizationName() + " " + SynGlyphX::Application::applicationName());
+
+	QAction* openSettingsAction = m_helpMenu->addAction(tr("OpenGL Settings"));
+	QObject::connect(openSettingsAction, &QAction::triggered, this, &GlyphViewerWindow::ShowOpenGLSettings);
+
+	m_helpMenu->addSeparator();
+
+	QAction* aboutBoxAction = m_helpMenu->addAction(tr("About ") + SynGlyphX::Application::organizationName() + " " + SynGlyphX::Application::applicationName());
 	QObject::connect(aboutBoxAction, &QAction::triggered, this, &GlyphViewerWindow::ShowAboutBox);
 }
 
@@ -202,4 +214,32 @@ void GlyphViewerWindow::ChangeMapDownloadSettings() {
 
 	DownloadOptionsDialog dialog(this);
 	dialog.exec();
+}
+
+void GlyphViewerWindow::ShowOpenGLSettings() {
+
+	const QGLFormat& format = m_antzWidget->context()->format();
+	QString settings = tr("OpenGL Version = ") + QString::number(format.majorVersion()) + "." + QString::number(format.minorVersion()) + '\n';
+		
+	settings += tr("Stereo Support") + " = ";
+	if (m_antzWidget->context()->format().stereo()) {
+		settings += tr("enabled");
+	}
+	else {
+		settings += tr("disabled");
+	}
+	QMessageBox::information(this, tr("OpenGL Settings"), settings);
+}
+
+void GlyphViewerWindow::ChangeStereoMode() {
+
+	if (m_antzWidget->context()->format().stereo()) {
+
+		m_antzWidget->SetStereo(!m_antzWidget->IsInStereoMode());
+	}
+	else {
+
+		m_stereoAction->setChecked(false);
+		QMessageBox::information(this, tr("Stereo not supported"), tr("Stereo is not supported. Check your driver settings or contact the manufacturer of your GPU for assitance"));
+	}
 }

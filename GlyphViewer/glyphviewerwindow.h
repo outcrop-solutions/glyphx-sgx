@@ -20,6 +20,8 @@ private slots:
 	void ShowAboutBox();
 	void OpenProject();
 	void ChangeMapDownloadSettings();
+	void ShowOpenGLSettings();
+	void ChangeStereoMode();
 
 private:
 	virtual void LoadRecentFile(const QString& filename);
@@ -32,6 +34,8 @@ private:
 	QMenu* m_fileMenu;
 	QMenu* m_viewMenu;
 	QMenu* m_toolsMenu;
+	QAction* m_stereoAction;
+
 	QString m_cacheDir;
 
 	GlyphForestModel* m_glyphForestModel;
