@@ -25,6 +25,8 @@ GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 	m_antzWidget = new ANTzViewerWidget(m_glyphForestModel, m_treeView->selectionModel(), this);
 	setCentralWidget(m_antzWidget);
 
+	m_stereoAction->setChecked(m_antzWidget->IsInStereoMode());
+
 	statusBar()->showMessage(SynGlyphX::Application::applicationName() + " Started", 3000);
 }
 
@@ -222,7 +224,7 @@ void GlyphViewerWindow::ShowOpenGLSettings() {
 	QString settings = tr("OpenGL Version = ") + QString::number(format.majorVersion()) + "." + QString::number(format.minorVersion()) + '\n';
 		
 	settings += tr("Stereo Support") + " = ";
-	if (m_antzWidget->context()->format().stereo()) {
+	if (m_antzWidget->IsStereoSupported()) {
 		settings += tr("enabled");
 	}
 	else {
@@ -233,13 +235,13 @@ void GlyphViewerWindow::ShowOpenGLSettings() {
 
 void GlyphViewerWindow::ChangeStereoMode() {
 
-	if (m_antzWidget->context()->format().stereo()) {
+	if (m_antzWidget->IsStereoSupported()) {
 
 		m_antzWidget->SetStereo(!m_antzWidget->IsInStereoMode());
 	}
 	else {
 
 		m_stereoAction->setChecked(false);
-		QMessageBox::information(this, tr("Stereo not supported"), tr("Stereo is not supported. Check your driver settings or contact the manufacturer of your GPU for assitance"));
+		QMessageBox::information(this, tr("Stereo not supported"), tr("Stereo is not supported. Check your driver settings to see if stereo is enabled or contact the manufacturer of your GPU for assitance"));
 	}
 }

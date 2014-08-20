@@ -11,13 +11,20 @@
 #include "ctrl/npengine.h"
 #include "npctrl.h"
 
-//The default QGLFormat works for now except we want alpha enabled.  May want to turn on stereo at some point
+//The default QGLFormat works for now except we want alpha enabled.  Also want to try and get a stereo enabled context
 QGLFormat ANTzViewerWidget::s_format(QGL::AlphaChannel | QGL::StereoBuffers);
 
 ANTzViewerWidget::ANTzViewerWidget(GlyphForestModel* model, QItemSelectionModel* selectionModel, QWidget *parent)
 	: QGLWidget(s_format, parent),
 	m_model(model),
-    m_selectionModel(selectionModel)
+    m_selectionModel(selectionModel),
+	m_zSpaceContext(nullptr),
+	m_zSpaceDisplay(nullptr),
+	m_zSpaceBuffer(nullptr),
+	m_zSpaceViewport(nullptr),
+	m_zSpaceFrustum(nullptr),
+	m_zSpaceStylus(nullptr),
+	m_topLevelWindow(nullptr)
 {
 	setFocusPolicy(Qt::StrongFocus);
 
@@ -40,15 +47,80 @@ ANTzViewerWidget::ANTzViewerWidget(GlyphForestModel* model, QItemSelectionModel*
 	}
 
 	QObject::connect(m_model, &GlyphForestModel::modelReset, this, &ANTzViewerWidget::ResetCamera);
+
+	if (IsStereoSupported()) {
+
+		try {
+			ZSError error = zsInitialize(&m_zSpaceContext);
+			CheckZSpaceError(error);
+
+			error = zsCreateStereoBuffer(m_zSpaceContext, ZS_RENDERER_QUAD_BUFFER_GL, 0, &m_zSpaceBuffer);
+			CheckZSpaceError(error);
+
+			error = zsSetStereoBufferFullScreen(m_zSpaceBuffer, false);
+			CheckZSpaceError(error);
+
+			error = zsCreateViewport(m_zSpaceContext, &m_zSpaceViewport);
+			CheckZSpaceError(error);
+
+			error = zsFindFrustum(m_zSpaceViewport, &m_zSpaceFrustum);
+			CheckZSpaceError(error);
+
+			// Grab a handle to the stylus target.
+			error = zsFindTargetByType(m_zSpaceContext, ZS_TARGET_TYPE_PRIMARY, 0, &m_zSpaceStylus);
+			CheckZSpaceError(error);
+
+			// Find the zSpace display
+			error = zsFindDisplayByType(m_zSpaceContext, ZS_DISPLAY_TYPE_ZSPACE, 0, &m_zSpaceDisplay);
+			CheckZSpaceError(error);
+
+			//Get the top level window so that we can track its movements for zSpace viewport
+			m_topLevelWindow = parentWidget();
+			while (!m_topLevelWindow->isWindow()) {
+
+				m_topLevelWindow = m_topLevelWindow->parentWidget();
+			}
+			m_topLevelWindow->installEventFilter(this);
+
+			error = zsSetMouseEmulationEnabled(m_zSpaceContext, true);
+			CheckZSpaceError(error);
+
+			error = zsSetMouseEmulationTarget(m_zSpaceContext, m_zSpaceStylus);
+			CheckZSpaceError(error);
+
+			error = zsSetMouseEmulationButtonMapping(m_zSpaceContext, 0, ZS_MOUSE_BUTTON_LEFT);
+			CheckZSpaceError(error);
+
+			error = zsSetMouseEmulationButtonMapping(m_zSpaceContext, 1, ZS_MOUSE_BUTTON_RIGHT);
+			CheckZSpaceError(error);
+
+			antzData->io.gl.stereo = true;
+		}
+		catch (const std::exception& e) {
+			throw;
+		}
+	}
 }
 
 ANTzViewerWidget::~ANTzViewerWidget()
 {
+	if (m_zSpaceContext != nullptr) {
+
+		zsShutdown(m_zSpaceContext);
+	}
+
     void* antzData = m_model->GetANTzData();
     npCloseGL(antzData);
     npCloseCtrl(antzData);
     npCloseFile(antzData);
     npCloseCh(antzData);
+}
+
+void ANTzViewerWidget::CheckZSpaceError(ZSError error) {
+
+	if (error != ZS_ERROR_OKAY) {
+		throw std::exception(QString("zSpace error: %1").arg(error).toStdString().c_str());
+	}
 }
 
 void ANTzViewerWidget::InitIO()
@@ -123,18 +195,20 @@ void ANTzViewerWidget::initializeGL() {
 
 void ANTzViewerWidget::resizeGL(int w, int h) {
 
+	ResizeZSpaceViewport();
+
     npGLResizeScene(w, h);
 }
 
 void ANTzViewerWidget::paintGL() {
 
 	pData antzData = m_model->GetANTzData();
+	pNPnode camNode = npGetActiveCam(antzData);
+	NPcameraPtr camData = static_cast<NPcameraPtr>(camNode->data);
 
 	npUpdateCh(antzData);
 
 	npUpdateEngine(antzData);		//position, physics, interactions...
-
-
 
 	//We may need to have a selected pin node during update to position the camera, but we don't want it during drawing
 	antzData->map.selectedPinNode = NULL;
@@ -144,9 +218,89 @@ void ANTzViewerWidget::paintGL() {
 	antzData->io.mouse.delta.x = 0.0f;
 	antzData->io.mouse.delta.y = 0.0f;
 
-	//antzData->io.mouse.pickMode = kNPmodePin;
-	npGLDrawScene(antzData);
-	//antzData->io.mouse.pickMode = kNPmodeNull;
+	if (IsInZSpaceStereo()) {
+
+		ZSError error = zsBeginStereoBufferFrame(m_zSpaceBuffer);
+	}
+
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	npSetLookAtFromCamera(antzData);
+
+	glPushMatrix();
+
+	glMatrixMode(GL_PROJECTION);
+	glPushMatrix();
+
+	if (IsInStereoMode()) {
+
+		ZSMatrix4 originialViewMatrix;
+
+		glDrawBuffer(GL_BACK_RIGHT);
+
+		if (m_zSpaceContext != nullptr) {
+
+			glGetFloatv(GL_MODELVIEW_MATRIX, originialViewMatrix.f);
+			SetZSpaceMatricesForDrawing(ZS_EYE_RIGHT, originialViewMatrix, camData);
+		}
+
+		glMatrixMode(GL_MODELVIEW);
+
+		npGLLighting(antzData);
+		npGLShading(antzData);
+		npDrawNodes(antzData);
+
+		DrawSelectedNodeAndHUDText();
+
+		glMatrixMode(GL_PROJECTION);
+		glPopMatrix();
+		glMatrixMode(GL_MODELVIEW);
+		glPopMatrix();
+
+		glPushMatrix();
+
+		glMatrixMode(GL_PROJECTION);
+		glPushMatrix();
+
+		glDrawBuffer(GL_BACK_LEFT);
+		if (m_zSpaceContext != nullptr) {
+
+			SetZSpaceMatricesForDrawing(ZS_EYE_LEFT, originialViewMatrix, camData);
+		}
+	}
+	else {
+
+		glGetFloatv(GL_MODELVIEW_MATRIX, camData->matrix);
+		npInvertMatrixf(camData->matrix, camData->inverseMatrix);
+	}
+
+	glMatrixMode(GL_MODELVIEW);
+
+	npGLLighting(antzData);
+	npGLShading(antzData);
+	npDrawNodes(antzData);
+
+	DrawSelectedNodeAndHUDText();
+
+	glMatrixMode(GL_PROJECTION);
+	glPopMatrix();
+	glMatrixMode(GL_MODELVIEW);
+	glPopMatrix();
+
+    int err = glGetError();
+    if (err) {
+        printf("err: 2388 - OpenGL error: %d\n", err);
+    }
+
+    //ANTz assumes that redraw constantly happens.  Need to put this in a thread
+    update();
+
+    //QGLWidget takes care of swapping buffers
+}
+
+void ANTzViewerWidget::DrawSelectedNodeAndHUDText() {
+
+	pData antzData = m_model->GetANTzData();
 
 	bool reenableDepthTest = glIsEnabled(GL_DEPTH_TEST);
 	if (reenableDepthTest) {
@@ -169,11 +323,11 @@ void ANTzViewerWidget::paintGL() {
 	//Draw HUD
 	QString positionHUD;
 	if (selectedNode != nullptr) {
-		
+
 		positionHUD = tr("Glyph Position: X: %1, Y: %2, Z: %3").arg(QString::number(selectedNode->world.x), QString::number(selectedNode->world.y), QString::number(selectedNode->world.z));
 	}
 	else {
-		
+
 		positionHUD = tr("Camera Position: X: %1, Y: %2, Z: %3").arg(QString::number(antzData->map.currentCam->translate.x), QString::number(antzData->map.currentCam->translate.y), QString::number(antzData->map.currentCam->translate.z));
 	}
 
@@ -183,16 +337,27 @@ void ANTzViewerWidget::paintGL() {
 	if (reenableDepthTest) {
 		glEnable(GL_DEPTH_TEST);
 	}
+}
 
-    int err = glGetError();
-    if (err) {
-        printf("err: 2388 - OpenGL error: %d\n", err);
-    }
+void ANTzViewerWidget::SetZSpaceMatricesForDrawing(ZSEye eye, const ZSMatrix4& originialViewMatrix, NPcameraPtr camData) {
 
-    //ANTz assumes that redraw constantly happens.  Need to put this in a thread
-    update();
+	ZSMatrix4 zSpaceEyeViewMatrix;
+	ZSError mverror = zsGetFrustumViewMatrix(m_zSpaceFrustum, eye, &zSpaceEyeViewMatrix);
 
-    //QGLWidget takes care of swapping buffers
+	glMatrixMode(GL_MODELVIEW);
+
+	glLoadMatrixf(zSpaceEyeViewMatrix.f);
+	glMultMatrixf(originialViewMatrix.f);
+
+	glMatrixMode(GL_PROJECTION);
+	ZSMatrix4 projectionMatrix;
+	ZSError projError = zsGetFrustumProjectionMatrix(m_zSpaceFrustum, eye, &projectionMatrix);
+
+	glLoadMatrixf(projectionMatrix.f);
+	//glMultMatrixf(m_originialProjectionMatrix.f);
+
+	glGetFloatv(GL_MODELVIEW_MATRIX, camData->matrix);
+	npInvertMatrixf(camData->matrix, camData->inverseMatrix);
 }
 
 void ANTzViewerWidget::UpdateSelection(const QItemSelection& selected, const QItemSelection& deselected) {
@@ -393,10 +558,64 @@ void ANTzViewerWidget::SetStereo(bool enableStereo) {
 
 	pData antzData = m_model->GetANTzData();
 	antzData->io.gl.stereo = enableStereo;
+
+	if ((m_zSpaceContext != nullptr) && enableStereo) {
+
+		SetZSpacePosition();
+		ResizeZSpaceViewport();
+	}
 }
 
 bool ANTzViewerWidget::IsInStereoMode() const {
 
 	pData antzData = m_model->GetANTzData();
 	return (antzData->io.gl.stereo);
+}
+
+bool ANTzViewerWidget::IsStereoSupported() const {
+
+	return (context()->format().stereo());
+}
+
+void ANTzViewerWidget::moveEvent(QMoveEvent* event) {
+
+	SetZSpacePosition();
+	QGLWidget::moveEvent(event);
+}
+
+void ANTzViewerWidget::SetZSpacePosition() {
+
+	if (IsInZSpaceStereo()) {
+
+		QPoint zSpaceViewportPosition = mapToGlobal(QPoint(0, 0));
+		zsSetViewportPosition(m_zSpaceViewport, zSpaceViewportPosition.x(), zSpaceViewportPosition.y());
+
+		ZSError error = zsUpdate(m_zSpaceContext);
+	}
+}
+
+void ANTzViewerWidget::ResizeZSpaceViewport() {
+
+	if (IsInZSpaceStereo()) {
+
+		zsSetViewportSize(m_zSpaceViewport, size().width(), size().height());
+		glGetFloatv(GL_PROJECTION_MATRIX, m_originialProjectionMatrix.f);
+
+		ZSError error = zsUpdate(m_zSpaceContext);
+	}
+}
+
+bool ANTzViewerWidget::eventFilter(QObject *object, QEvent *event) {
+
+	if ((object == m_topLevelWindow) && (event->type() == QEvent::Move)) {
+
+		SetZSpacePosition();
+	}
+
+	return false;
+}
+
+bool ANTzViewerWidget::IsInZSpaceStereo() const {
+
+	return (IsInStereoMode() && (m_zSpaceContext != nullptr));
 }
