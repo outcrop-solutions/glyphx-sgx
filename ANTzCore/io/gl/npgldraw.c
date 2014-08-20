@@ -1419,7 +1419,7 @@ void npClearLinkQue (void* dataRef)
 
 
 //------------------------------------------------------------------------------
-void npDrawNodes (void* dataRef)
+ANTZCORE_API void npDrawNodes(void* dataRef)
 {
 	int test = 0;  //zzhp
 	int i = 0;

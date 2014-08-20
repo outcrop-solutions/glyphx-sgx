@@ -28,6 +28,9 @@
 
 #include "../npdata.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 //--- Functions ---------------------------------------------------------------
 
@@ -47,7 +50,11 @@ ANTZCORE_API void npNodeRemove(bool freeNode, pNPnode node, void* dataRef);
 
 void npSetTagOffset (pNPnode node);
 
-pNPnode npGetActiveCam (void* dataRef);
+ANTZCORE_API pNPnode npGetActiveCam(void* dataRef);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
 

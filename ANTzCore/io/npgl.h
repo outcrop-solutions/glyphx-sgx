@@ -47,6 +47,8 @@ int selectedID;
 ANTZCORE_API void npInitGL(void* dataRef);
 ANTZCORE_API void npCloseGL(void* dataRef);
 
+ANTZCORE_API void npSetLookAtFromCamera(void* dataRef);
+
 ANTZCORE_API void npGLDrawScene(void* dataRef);
 
 ANTZCORE_API void npGLResizeScene(int width, int height);
@@ -60,6 +62,9 @@ void npPostMode (pNPnode node, void* dataRef);
 ANTZCORE_API void npPostTool(pNPnode node, void* dataRef);
 
 ANTZCORE_API void npPickTool(pNPnode node, void* dataRef);
+
+ANTZCORE_API void npGLLighting (void* dataRef);
+ANTZCORE_API void npGLShading(void* dataRef);
 
 #ifdef __cplusplus
 }

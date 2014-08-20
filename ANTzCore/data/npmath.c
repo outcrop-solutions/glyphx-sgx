@@ -88,7 +88,7 @@ void npLocalToWorld (NPfloatXYZ *world, const float *inverseCam, const float *mo
 
 //returns the inverse of a 4x4 matrix m[16]
 //------------------------------------------------------------------------------
-bool npInvertMatrixf (const float m[16], float invOut[16])
+ANTZCORE_API bool npInvertMatrixf(const float m[16], float invOut[16])
 {
     float inv[16], det;
     int i;

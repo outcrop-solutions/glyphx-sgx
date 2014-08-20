@@ -31,10 +31,14 @@
 
 //------------------------------------------------------------------------------
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 void npInitGLDraw (void* dataRef);
 void npCloseGLDraw (void* dataRef);
 
-void npDrawNodes (void* dataRef);
+ANTZCORE_API void npDrawNodes(void* dataRef);
 
 void SetIndexColor (NPubyteRGBA *color, int *colorIndex);
 
@@ -45,5 +49,8 @@ float npDistance (NPfloatXYZ vecA, NPfloatXYZ vecB);		//MB-TRANS
 
 ANTZCORE_API void npDrawSelect(void* dataRef);
 
+#ifdef __cplusplus
+}
 #endif
 
+#endif

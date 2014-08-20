@@ -25,7 +25,12 @@
 #ifndef NPMATH_H_
 #define NPMATH_H_
 
+#include "../ANTzCore.h"
 #include "../npdata.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 //--- Functions ---------------------------------------------------------------
 
@@ -35,7 +40,11 @@ void npMultMatrix (float *matDest, float *matA, float *matB);
 
 void npLocalToWorld (NPfloatXYZ *world, const float *inverseCam, const float *modelView);
 
-bool npInvertMatrixf (const float m[16], float invOut[16]);
+ANTZCORE_API bool npInvertMatrixf (const float m[16], float invOut[16]);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
 

@@ -260,7 +260,7 @@ void npGLLighting (void* dataRef)
 
 
 //------------------------------------------------------------------------------
-void npGLShading (void* dataRef)
+ANTZCORE_API void npGLShading (void* dataRef)
 {
 	pData data = (pData) dataRef;
 
@@ -295,18 +295,35 @@ void npGLShading (void* dataRef)
 }
 
 //------------------------------------------------------------------------------
+
+ANTZCORE_API void npSetLookAtFromCamera(void* dataRef) {
+
+#define BUGFIX_MATRIX 0.0000000001	//prevents 0 vector issue
+
+	GLfloat upX = 0.0f, upY = 0.0f, upZ = 1.0f;
+
+	pData data = (pData)dataRef;
+
+	pNPnode camNode = npGetActiveCam(data);
+	NPcameraPtr camData = camNode->data;
+
+	gluLookAt(camNode->translate.x, camNode->translate.y, camNode->translate.z,
+		camNode->translate.x + camNode->rotateVec.x,
+		camNode->translate.y + camNode->rotateVec.y + BUGFIX_MATRIX,
+		camNode->translate.z + camNode->rotateVec.z,
+		upX, upY, upZ);
+}
+
+//------------------------------------------------------------------------------
 ANTZCORE_API void npGLDrawScene(void* dataRef)
 {
 	int err = 0;
 	
-	GLfloat upX = 0.0f, upY = 0.0f, upZ = 1.0f;
 	GLfloat angle = 0.0;
 
 	pData data = (pData) dataRef;
-	pNPnode camNode = npGetActiveCam (data);
+	pNPnode camNode = npGetActiveCam(data);
 	NPcameraPtr camData = camNode->data;
-
-#define BUGFIX_MATRIX 0.0000000001	//prevents 0 vector issue
 
 	glMatrixMode(GL_MODELVIEW);
 
@@ -317,15 +334,11 @@ ANTZCORE_API void npGLDrawScene(void* dataRef)
 		glDrawBuffer( GL_BACK_RIGHT );
 		glLoadIdentity();
 		
-		gluLookAt (	camNode->translate.x, camNode->translate.y, camNode->translate.z,
-					camNode->translate.x + camNode->rotateVec.x,
-					camNode->translate.y + camNode->rotateVec.y + BUGFIX_MATRIX,
-					camNode->translate.z + camNode->rotateVec.z,
-					upX, upY, upZ );
-	
+		npSetLookAtFromCamera(dataRef);
+
 		//inverse view matrix used to convert local coordinates to world coords
-		glGetFloatv( GL_MODELVIEW_MATRIX, camData->matrix );
-		npInvertMatrixf( camData->matrix, camData->inverseMatrix );
+		glGetFloatv(GL_MODELVIEW_MATRIX, camData->matrix);
+		npInvertMatrixf(camData->matrix, camData->inverseMatrix);
 
 		npGLLighting( dataRef );
 		npGLShading( dataRef );
@@ -336,15 +349,12 @@ ANTZCORE_API void npGLDrawScene(void* dataRef)
 	}
 
 	glLoadIdentity();
-	gluLookAt (	camNode->translate.x, camNode->translate.y, camNode->translate.z,
-				camNode->translate.x + camNode->rotateVec.x,
-				camNode->translate.y + camNode->rotateVec.y + BUGFIX_MATRIX,
-				camNode->translate.z + camNode->rotateVec.z,
-				upX, upY, upZ );
-		
-	//inverse view matrix used to convert local coordinates to world coordinates
-	glGetFloatv (GL_MODELVIEW_MATRIX, camData->matrix);
-	npInvertMatrixf (camData->matrix, camData->inverseMatrix);
+	
+	npSetLookAtFromCamera(dataRef);
+
+	//inverse view matrix used to convert local coordinates to world coords
+	glGetFloatv(GL_MODELVIEW_MATRIX, camData->matrix);
+	npInvertMatrixf(camData->matrix, camData->inverseMatrix);
 
 	npGLLighting (dataRef);				//set lights
 	npGLShading (dataRef);				//set transparency

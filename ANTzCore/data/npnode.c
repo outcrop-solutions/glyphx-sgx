@@ -1012,7 +1012,7 @@ int npNewNodeID()				//improve this to re-use nodeID upon delete, debug zz
 	
 //return the selected camera based on the root camera childIndex
 //------------------------------------------------------------------------------
-pNPnode npGetActiveCam (void* dataRef)
+ANTZCORE_API pNPnode npGetActiveCam(void* dataRef)
 {
 	pData data = (pData) dataRef;
 
