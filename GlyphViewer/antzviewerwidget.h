@@ -16,6 +16,7 @@ public:
 
 	bool IsInStereoMode() const;
 	bool IsStereoSupported() const;
+	bool IsZSpaceAvailable() const;
 
 	bool eventFilter(QObject *object, QEvent *event);
 
@@ -46,6 +47,7 @@ private:
 	bool IsInZSpaceStereo() const;
 	void SetZSpaceMatricesForDrawing(ZSEye eye, const ZSMatrix4& originialViewMatrix, NPcameraPtr camData);
 	void DrawSelectedNodeAndHUDText();
+	void ClearZSpaceContext();
 
     static QGLFormat s_format;
 

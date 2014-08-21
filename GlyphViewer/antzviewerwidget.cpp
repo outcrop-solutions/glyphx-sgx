@@ -51,9 +51,10 @@ ANTzViewerWidget::ANTzViewerWidget(GlyphForestModel* model, QItemSelectionModel*
 	if (IsStereoSupported()) {
 
 		try {
+
 			ZSError error = zsInitialize(&m_zSpaceContext);
 			CheckZSpaceError(error);
-
+			
 			error = zsCreateStereoBuffer(m_zSpaceContext, ZS_RENDERER_QUAD_BUFFER_GL, 0, &m_zSpaceBuffer);
 			CheckZSpaceError(error);
 
@@ -94,6 +95,9 @@ ANTzViewerWidget::ANTzViewerWidget(GlyphForestModel* model, QItemSelectionModel*
 			error = zsSetMouseEmulationButtonMapping(m_zSpaceContext, 1, ZS_MOUSE_BUTTON_RIGHT);
 			CheckZSpaceError(error);
 
+			error = zsSetTrackingEnabled(m_zSpaceContext, true);
+			CheckZSpaceError(error);
+
 			antzData->io.gl.stereo = true;
 		}
 		catch (const std::exception& e) {
@@ -104,16 +108,21 @@ ANTzViewerWidget::ANTzViewerWidget(GlyphForestModel* model, QItemSelectionModel*
 
 ANTzViewerWidget::~ANTzViewerWidget()
 {
-	if (m_zSpaceContext != nullptr) {
-
-		zsShutdown(m_zSpaceContext);
-	}
+	ClearZSpaceContext();
 
     void* antzData = m_model->GetANTzData();
     npCloseGL(antzData);
     npCloseCtrl(antzData);
     npCloseFile(antzData);
     npCloseCh(antzData);
+}
+
+void ANTzViewerWidget::ClearZSpaceContext() {
+
+	if (m_zSpaceContext != nullptr) {
+
+		zsShutdown(m_zSpaceContext);
+	}
 }
 
 void ANTzViewerWidget::CheckZSpaceError(ZSError error) {
@@ -220,7 +229,8 @@ void ANTzViewerWidget::paintGL() {
 
 	if (IsInZSpaceStereo()) {
 
-		ZSError error = zsBeginStereoBufferFrame(m_zSpaceBuffer);
+		ZSError error = zsUpdate(m_zSpaceContext);
+		error = zsBeginStereoBufferFrame(m_zSpaceBuffer);
 	}
 
 	glMatrixMode(GL_MODELVIEW);
@@ -238,7 +248,7 @@ void ANTzViewerWidget::paintGL() {
 
 		glDrawBuffer(GL_BACK_RIGHT);
 
-		if (m_zSpaceContext != nullptr) {
+		if (IsZSpaceAvailable()) {
 
 			glGetFloatv(GL_MODELVIEW_MATRIX, originialViewMatrix.f);
 			SetZSpaceMatricesForDrawing(ZS_EYE_RIGHT, originialViewMatrix, camData);
@@ -263,7 +273,7 @@ void ANTzViewerWidget::paintGL() {
 		glPushMatrix();
 
 		glDrawBuffer(GL_BACK_LEFT);
-		if (m_zSpaceContext != nullptr) {
+		if (IsZSpaceAvailable()) {
 
 			SetZSpaceMatricesForDrawing(ZS_EYE_LEFT, originialViewMatrix, camData);
 		}
@@ -559,7 +569,7 @@ void ANTzViewerWidget::SetStereo(bool enableStereo) {
 	pData antzData = m_model->GetANTzData();
 	antzData->io.gl.stereo = enableStereo;
 
-	if ((m_zSpaceContext != nullptr) && enableStereo) {
+	if (IsZSpaceAvailable() && enableStereo) {
 
 		SetZSpacePosition();
 		ResizeZSpaceViewport();
@@ -590,7 +600,7 @@ void ANTzViewerWidget::SetZSpacePosition() {
 		QPoint zSpaceViewportPosition = mapToGlobal(QPoint(0, 0));
 		zsSetViewportPosition(m_zSpaceViewport, zSpaceViewportPosition.x(), zSpaceViewportPosition.y());
 
-		ZSError error = zsUpdate(m_zSpaceContext);
+		//ZSError error = zsUpdate(m_zSpaceContext);
 	}
 }
 
@@ -601,7 +611,7 @@ void ANTzViewerWidget::ResizeZSpaceViewport() {
 		zsSetViewportSize(m_zSpaceViewport, size().width(), size().height());
 		glGetFloatv(GL_PROJECTION_MATRIX, m_originialProjectionMatrix.f);
 
-		ZSError error = zsUpdate(m_zSpaceContext);
+		//ZSError error = zsUpdate(m_zSpaceContext);
 	}
 }
 
@@ -617,5 +627,10 @@ bool ANTzViewerWidget::eventFilter(QObject *object, QEvent *event) {
 
 bool ANTzViewerWidget::IsInZSpaceStereo() const {
 
-	return (IsInStereoMode() && (m_zSpaceContext != nullptr));
+	return (IsInStereoMode() && IsZSpaceAvailable());
+}
+
+bool ANTzViewerWidget::IsZSpaceAvailable() const {
+
+	return (m_zSpaceContext != nullptr);
 }

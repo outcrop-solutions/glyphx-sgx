@@ -20,16 +20,21 @@ int main(int argc, char *argv[])
 
 	a.processEvents();
 
-	GlyphViewerWindow w;
-	w.move(50, 50);
-	w.resize(1200, 700);
+	try {
+		GlyphViewerWindow w;
+		w.move(50, 50);
+		w.resize(1200, 700);
 
-	//Need to figure out better way to not have the splash screen disappear before the user sees it
-	QTimer::singleShot(1500, &splash, SLOT(close()));
-	QTimer::singleShot(1600, &w, SLOT(show()));
+		//Need to figure out better way to not have the splash screen disappear before the user sees it
+		QTimer::singleShot(1500, &splash, SLOT(close()));
+		QTimer::singleShot(1600, &w, SLOT(show()));
 
-	//w.show();
-	//splash.finish(&w);
+		//w.show();
+		//splash.finish(&w);
 
-	return a.exec();
+		return a.exec();
+	}
+	catch (...) {
+		return 1;
+	}
 }

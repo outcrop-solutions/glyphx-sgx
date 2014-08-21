@@ -21,8 +21,16 @@ GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 	m_cacheDir = QDir::toNativeSeparators(QDir::currentPath()) + QDir::separator() + "cache";
 	CreateMenus();
 	CreateDockWidgets();
+	
+	try {
+		m_antzWidget = new ANTzViewerWidget(m_glyphForestModel, m_treeView->selectionModel(), this);
+	}
+	catch (const std::exception& e) {
 
-	m_antzWidget = new ANTzViewerWidget(m_glyphForestModel, m_treeView->selectionModel(), this);
+		QMessageBox::critical(nullptr, tr("3D view error"), tr("3D view failed to create: ") + e.what());
+		throw;
+	}
+
 	setCentralWidget(m_antzWidget);
 
 	m_stereoAction->setChecked(m_antzWidget->IsInStereoMode());
