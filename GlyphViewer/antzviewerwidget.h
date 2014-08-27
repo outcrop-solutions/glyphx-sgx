@@ -34,6 +34,7 @@ protected:
 	virtual void keyPressEvent(QKeyEvent* event);
 	virtual void keyReleaseEvent(QKeyEvent* event);
 	virtual void moveEvent(QMoveEvent* event);
+	virtual void wheelEvent(QWheelEvent* event);
 
 private slots:
     void UpdateSelection(const QItemSelection& selected, const QItemSelection& deselected);
@@ -41,15 +42,24 @@ private slots:
 private:
     void CenterCameraOnNode(pNPnode node);
     void InitIO();
+	void DrawSelectedNodeAndHUDText();
+	void SelectAtPoint(int x, int y) const;
+
 	void CheckZSpaceError(ZSError error);
 	void SetZSpacePosition();
 	void ResizeZSpaceViewport();
 	bool IsInZSpaceStereo() const;
 	void SetZSpaceMatricesForDrawing(ZSEye eye, const ZSMatrix4& originialViewMatrix, NPcameraPtr camData);
-	void DrawSelectedNodeAndHUDText();
 	void ClearZSpaceContext();
+	void DrawZSpaceStylus(const ZSMatrix4& stylusMatrix, ZSFloat stylusLength, QColor color);
+
+	void ZSpaceButtonPressHandler(ZSHandle targetHandle, const ZSTrackerEventData* eventData);
+	void ZSpaceButtonReleaseHandler(ZSHandle targetHandle, const ZSTrackerEventData* eventData);
+	void ZSpaceStylusMoveHandler(ZSHandle targetHandle, const ZSTrackerEventData* eventData);
+	static void ZSpaceEventDispatcher(ZSHandle targetHandle, const ZSTrackerEventData* eventData, const void* userData);
 
     static QGLFormat s_format;
+	static const float s_stylusLength;
 
     QItemSelectionModel* m_selectionModel;
 	GlyphForestModel* m_model;
@@ -63,6 +73,7 @@ private:
 	ZSHandle m_zSpaceFrustum;
 	ZSHandle m_zSpaceStylus;
 	ZSMatrix4 m_originialProjectionMatrix;
+	ZSVector3 m_zSpaceStylusLastPosition;
 };
 
 #endif // ANTZWIDGET_H

@@ -2,7 +2,8 @@
 
 #include <QtGUI/QMouseEvent>
 #include <QtGUI/QFont>
-
+#include <QtWidgets/QMessageBox>
+#include <glm/glm.hpp>
 #include "io/npfile.h"
 #include "io/npch.h"
 #include "npctrl.h"
@@ -13,6 +14,9 @@
 
 //The default QGLFormat works for now except we want alpha enabled.  Also want to try and get a stereo enabled context
 QGLFormat ANTzViewerWidget::s_format(QGL::AlphaChannel | QGL::StereoBuffers);
+
+//Length of zSpace stylus line
+const float ANTzViewerWidget::s_stylusLength = 0.1f;  // Meters
 
 ANTzViewerWidget::ANTzViewerWidget(GlyphForestModel* model, QItemSelectionModel* selectionModel, QWidget *parent)
 	: QGLWidget(s_format, parent),
@@ -53,8 +57,24 @@ ANTzViewerWidget::ANTzViewerWidget(GlyphForestModel* model, QItemSelectionModel*
 		try {
 
 			ZSError error = zsInitialize(&m_zSpaceContext);
+
+			if (error == ZS_ERROR_RUNTIME_NOT_FOUND) { //If zSpace runtime not found, then don't do anything
+				
+				ClearZSpaceContext();
+				return;
+			}
 			CheckZSpaceError(error);
 			
+			// Find the zSpace display
+			error = zsFindDisplayByType(m_zSpaceContext, ZS_DISPLAY_TYPE_ZSPACE, 0, &m_zSpaceDisplay);
+			
+			if (error == ZS_ERROR_DISPLAY_NOT_FOUND) { //If zSpace display not found, then don't do anything
+
+				ClearZSpaceContext();
+				return;
+			}
+			CheckZSpaceError(error);
+
 			error = zsCreateStereoBuffer(m_zSpaceContext, ZS_RENDERER_QUAD_BUFFER_GL, 0, &m_zSpaceBuffer);
 			CheckZSpaceError(error);
 
@@ -71,10 +91,6 @@ ANTzViewerWidget::ANTzViewerWidget(GlyphForestModel* model, QItemSelectionModel*
 			error = zsFindTargetByType(m_zSpaceContext, ZS_TARGET_TYPE_PRIMARY, 0, &m_zSpaceStylus);
 			CheckZSpaceError(error);
 
-			// Find the zSpace display
-			error = zsFindDisplayByType(m_zSpaceContext, ZS_DISPLAY_TYPE_ZSPACE, 0, &m_zSpaceDisplay);
-			CheckZSpaceError(error);
-
 			//Get the top level window so that we can track its movements for zSpace viewport
 			m_topLevelWindow = parentWidget();
 			while (!m_topLevelWindow->isWindow()) {
@@ -83,9 +99,9 @@ ANTzViewerWidget::ANTzViewerWidget(GlyphForestModel* model, QItemSelectionModel*
 			}
 			m_topLevelWindow->installEventFilter(this);
 
-			error = zsSetMouseEmulationEnabled(m_zSpaceContext, true);
+			error = zsSetMouseEmulationEnabled(m_zSpaceContext, false);
 			CheckZSpaceError(error);
-
+			/*
 			error = zsSetMouseEmulationTarget(m_zSpaceContext, m_zSpaceStylus);
 			CheckZSpaceError(error);
 
@@ -93,9 +109,16 @@ ANTzViewerWidget::ANTzViewerWidget(GlyphForestModel* model, QItemSelectionModel*
 			CheckZSpaceError(error);
 
 			error = zsSetMouseEmulationButtonMapping(m_zSpaceContext, 1, ZS_MOUSE_BUTTON_RIGHT);
-			CheckZSpaceError(error);
+			CheckZSpaceError(error);*/
 
 			error = zsSetTrackingEnabled(m_zSpaceContext, true);
+			CheckZSpaceError(error);
+
+			error = zsAddTrackerEventHandler(m_zSpaceStylus, ZS_TRACKER_EVENT_BUTTON_PRESS, &ZSpaceEventDispatcher, this);
+			CheckZSpaceError(error);
+			error = zsAddTrackerEventHandler(m_zSpaceStylus, ZS_TRACKER_EVENT_BUTTON_RELEASE, &ZSpaceEventDispatcher, this);
+			CheckZSpaceError(error);
+			error = zsAddTrackerEventHandler(m_zSpaceStylus, ZS_TRACKER_EVENT_MOVE, &ZSpaceEventDispatcher, this);
 			CheckZSpaceError(error);
 
 			antzData->io.gl.stereo = true;
@@ -104,6 +127,8 @@ ANTzViewerWidget::ANTzViewerWidget(GlyphForestModel* model, QItemSelectionModel*
 			throw;
 		}
 	}
+
+	setFocus();
 }
 
 ANTzViewerWidget::~ANTzViewerWidget()
@@ -128,7 +153,67 @@ void ANTzViewerWidget::ClearZSpaceContext() {
 void ANTzViewerWidget::CheckZSpaceError(ZSError error) {
 
 	if (error != ZS_ERROR_OKAY) {
-		throw std::exception(QString("zSpace error: %1").arg(error).toStdString().c_str());
+
+		QString zSpaceErrorString = tr("zSpace error in ");
+		zSpaceErrorString += ":";
+		if (error == ZS_ERROR_NOT_IMPLEMENTED) {
+
+			zSpaceErrorString += "Not Implemented";
+		}
+		else if (error == ZS_ERROR_NOT_INITIALIZED) {
+
+			zSpaceErrorString += "Not Initalized";
+		}
+		else if (error == ZS_ERROR_ALREADY_INITIALIZED) {
+
+			zSpaceErrorString += "Already Initalized";
+		}
+		else if (error == ZS_ERROR_INVALID_PARAMETER) {
+
+			zSpaceErrorString += "Invalid Parameter";
+		}
+		else if (error == ZS_ERROR_INVALID_CONTEXT) {
+
+			zSpaceErrorString += "Invalid Context";
+		}
+		else if (error == ZS_ERROR_INVALID_HANDLE) {
+
+			zSpaceErrorString += "Invalid Handle";
+		}
+		else if (error == ZS_ERROR_RUNTIME_INCOMPATIBLE) {
+
+			zSpaceErrorString += "Incompatible Runtime";
+		}
+		else if (error == ZS_ERROR_RUNTIME_NOT_FOUND) {
+
+			zSpaceErrorString += "Runtime Not Found";
+		}
+		else if (error == ZS_ERROR_SYMBOL_NOT_FOUND) {
+
+			zSpaceErrorString += "Symbol Not Found";
+		}
+		else if (error == ZS_ERROR_DISPLAY_NOT_FOUND) {
+
+			zSpaceErrorString += "Display Not Found";
+		}
+		else if (error == ZS_ERROR_DEVICE_NOT_FOUND) {
+
+			zSpaceErrorString += "Device Not Found";
+		}
+		else if (error == ZS_ERROR_TARGET_NOT_FOUND) {
+
+			zSpaceErrorString += "Target Not Found";
+		}
+		else if (error == ZS_ERROR_CAPABILITY_NOT_FOUND) {
+
+			zSpaceErrorString += "Error Capability Not Found";
+		}
+		else if (error == ZS_ERROR_BUFFER_TOO_SMALL) {
+
+			zSpaceErrorString += "Buffer too small";
+		}
+		
+		throw std::exception(zSpaceErrorString.toStdString().c_str());
 	}
 }
 
@@ -227,20 +312,24 @@ void ANTzViewerWidget::paintGL() {
 	antzData->io.mouse.delta.x = 0.0f;
 	antzData->io.mouse.delta.y = 0.0f;
 
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	npSetLookAtFromCamera(antzData);
+
+	ZSMatrix4 zSpaceStylusWorldMatrix;
 	if (IsInZSpaceStereo()) {
 
 		ZSError error = zsUpdate(m_zSpaceContext);
 		error = zsBeginStereoBufferFrame(m_zSpaceBuffer);
 	}
 
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-	npSetLookAtFromCamera(antzData);
-
 	glPushMatrix();
 
 	glMatrixMode(GL_PROJECTION);
 	glPushMatrix();
+
+	ZSFloat stylusLength = s_stylusLength;
+	QColor stylusColor = Qt::red;
 
 	if (IsInStereoMode()) {
 
@@ -251,6 +340,29 @@ void ANTzViewerWidget::paintGL() {
 		if (IsZSpaceAvailable()) {
 
 			glGetFloatv(GL_MODELVIEW_MATRIX, originialViewMatrix.f);
+
+			ZSTrackerPose stylusPose;
+			ZSError error = zsGetTargetPose(m_zSpaceStylus, &stylusPose);
+
+			ZSDisplayIntersectionInfo intersection;
+			error = zsIntersectDisplay(m_zSpaceDisplay, &stylusPose, &intersection);
+			if ((intersection.hit) && (rect().contains(mapFromGlobal(QPoint(intersection.x, intersection.y))))) {
+
+				stylusColor = Qt::green;
+				stylusLength = intersection.distance;
+			}
+
+			// Transform the stylus pose from tracker to camera space.
+			error = zsTransformMatrix(m_zSpaceViewport, ZS_COORDINATE_SPACE_TRACKER, ZS_COORDINATE_SPACE_CAMERA, &stylusPose.matrix);
+
+			ZSMatrix4 originalCameraMatrix;
+			npInvertMatrixf(originialViewMatrix.f, originalCameraMatrix.f);
+
+			// Transform the stylus pose from camera space to world space.
+			// This is done by multiplying the pose (camera space) by the 
+			// application's camera matrix.
+			npMultMatrix(zSpaceStylusWorldMatrix.f, originalCameraMatrix.f, stylusPose.matrix.f);
+
 			SetZSpaceMatricesForDrawing(ZS_EYE_RIGHT, originialViewMatrix, camData);
 		}
 
@@ -259,6 +371,8 @@ void ANTzViewerWidget::paintGL() {
 		npGLLighting(antzData);
 		npGLShading(antzData);
 		npDrawNodes(antzData);
+
+		DrawZSpaceStylus(zSpaceStylusWorldMatrix, stylusLength, stylusColor);
 
 		DrawSelectedNodeAndHUDText();
 
@@ -290,6 +404,8 @@ void ANTzViewerWidget::paintGL() {
 	npGLShading(antzData);
 	npDrawNodes(antzData);
 
+	DrawZSpaceStylus(zSpaceStylusWorldMatrix, stylusLength, stylusColor);
+
 	DrawSelectedNodeAndHUDText();
 
 	glMatrixMode(GL_PROJECTION);
@@ -306,6 +422,31 @@ void ANTzViewerWidget::paintGL() {
     update();
 
     //QGLWidget takes care of swapping buffers
+}
+
+void ANTzViewerWidget::DrawZSpaceStylus(const ZSMatrix4& stylusMatrix, ZSFloat stylusLength, QColor color) {
+
+	if (IsInZSpaceStereo()) {
+
+		qglColor(color);
+
+		// Multiply the model-view matrix by the stylus world matrix.
+		glMatrixMode(GL_MODELVIEW);
+		glPushMatrix();
+		glMultMatrixf(stylusMatrix.f);
+
+		ZSMatrix4 trackerPosition;
+		ZSError error = zsTransformMatrix(m_zSpaceViewport, ZS_COORDINATE_SPACE_TRACKER, ZS_COORDINATE_SPACE_DISPLAY, &trackerPosition);
+
+		// Draw the line.
+		glBegin(GL_LINES);
+		glVertex3f(0.0f, 0.0f, 0.0f);
+		glVertex3f(0.0f, 0.0f, -stylusLength);
+
+		glEnd();
+
+		glPopMatrix();
+	}
 }
 
 void ANTzViewerWidget::DrawSelectedNodeAndHUDText() {
@@ -451,25 +592,34 @@ void ANTzViewerWidget::CenterCameraOnNode(pNPnode node) {
 void ANTzViewerWidget::mousePressEvent(QMouseEvent* event) {
 
     if (event->button() == Qt::LeftButton) {
-		pData antzData = m_model->GetANTzData();
-		int pickID = npPickPin(event->x(), antzData->io.gl.height - event->y(), antzData);
-
-		if (pickID != 0) {
-
-			pNPnode node = static_cast<pNPnode>(antzData->map.nodeID[pickID]);
-			QItemSelectionModel::SelectionFlags flags = QItemSelectionModel::Select;
-			if (node->selected) {
-				flags = QItemSelectionModel::Clear;
-			}
-			else {
-				m_selectionModel->clearSelection();
-			}
-			
-			m_selectionModel->select(m_model->IndexFromANTzID(pickID), flags);
-        }
+		
+		SelectAtPoint(event->x(), event->y());
     }
 
     m_lastMousePosition = event->pos();
+}
+
+void ANTzViewerWidget::SelectAtPoint(int x, int y) const {
+
+	pData antzData = m_model->GetANTzData();
+	bool isStereo = IsInStereoMode();
+	antzData->io.gl.stereo = false;
+	int pickID = npPickPin(x, antzData->io.gl.height - y, antzData);
+	antzData->io.gl.stereo = isStereo;
+
+	if (pickID != 0) {
+
+		pNPnode node = static_cast<pNPnode>(antzData->map.nodeID[pickID]);
+		QItemSelectionModel::SelectionFlags flags = QItemSelectionModel::Select;
+		if (node->selected) {
+			flags = QItemSelectionModel::Clear;
+		}
+		else {
+			m_selectionModel->clearSelection();
+		}
+
+		m_selectionModel->select(m_model->IndexFromANTzID(pickID), flags);
+	}
 }
 
 void ANTzViewerWidget::mouseReleaseEvent(QMouseEvent* event) {
@@ -514,15 +664,15 @@ void ANTzViewerWidget::mouseMoveEvent(QMouseEvent* event) {
 
 void ANTzViewerWidget::keyPressEvent(QKeyEvent* event) {
 
-	if (m_selectionModel->selectedIndexes().empty()) {
+	//if (m_selectionModel->selectedIndexes().empty()) {
 
 		pData antzData = m_model->GetANTzData();
 		if ((event->key() == 'w') ||
 			(event->key() == 'W') ||
-			(event->key() == 'a') ||
-			(event->key() == 'A') ||
 			(event->key() == 's') ||
 			(event->key() == 'S') ||
+			(event->key() == 'a') ||
+			(event->key() == 'A') ||
 			(event->key() == 'd') ||
 			(event->key() == 'D') ||
 			(event->key() == 'e') ||
@@ -533,22 +683,22 @@ void ANTzViewerWidget::keyPressEvent(QKeyEvent* event) {
 			npCtrlCommand(antzData->io.key.map[kKeyDown][npKeyRAWASCII(event->key())], antzData);
 			return;
 		}
-	}
+	//}
 
 	QGLWidget::keyPressEvent(event);
 }
 
 void ANTzViewerWidget::keyReleaseEvent(QKeyEvent* event) {
 
-	if (m_selectionModel->selectedIndexes().empty()) {
+	//if (m_selectionModel->selectedIndexes().empty()) {
 
 		pData antzData = m_model->GetANTzData();
 		if ((event->key() == 'w') ||
 			(event->key() == 'W') ||
-			(event->key() == 'a') ||
-			(event->key() == 'A') ||
 			(event->key() == 's') ||
 			(event->key() == 'S') ||
+			(event->key() == 'a') ||
+			(event->key() == 'A') ||
 			(event->key() == 'd') ||
 			(event->key() == 'D') ||
 			(event->key() == 'e') ||
@@ -559,9 +709,23 @@ void ANTzViewerWidget::keyReleaseEvent(QKeyEvent* event) {
 			npCtrlCommand(antzData->io.key.map[kKeyUp][npKeyRAWASCII(event->key())], antzData);
 			return;
 		}
-	}
+	//}
 
 	QGLWidget::keyReleaseEvent(event);
+}
+
+void ANTzViewerWidget::wheelEvent(QWheelEvent* event) {
+
+	if (!m_selectionModel->selectedIndexes().empty()) {
+
+		pData antzData = m_model->GetANTzData();
+		antzData->io.mouse.mode = kNPmouseModeCamExamXZ;
+		//antzData->io.mouse.delta.x = event->x() - m_lastMousePosition.x();
+		antzData->io.mouse.delta.y = event->delta() / 10;
+		event->accept();
+	}
+
+	event->ignore();
 }
 
 void ANTzViewerWidget::SetStereo(bool enableStereo) {
@@ -633,4 +797,94 @@ bool ANTzViewerWidget::IsInZSpaceStereo() const {
 bool ANTzViewerWidget::IsZSpaceAvailable() const {
 
 	return (m_zSpaceContext != nullptr);
+}
+
+void ANTzViewerWidget::ZSpaceButtonPressHandler(ZSHandle targetHandle, const ZSTrackerEventData* eventData) {
+
+	if (eventData->buttonId == 2) {
+
+		m_zSpaceStylusLastPosition.x = eventData->poseMatrix.m03;
+		m_zSpaceStylusLastPosition.y = eventData->poseMatrix.m13;
+		m_zSpaceStylusLastPosition.z = eventData->poseMatrix.m23;
+	}
+}
+
+void ANTzViewerWidget::ZSpaceButtonReleaseHandler(ZSHandle targetHandle, const ZSTrackerEventData* eventData) {
+
+	if (eventData->buttonId == 0) {
+		//ZSMatrix4 eventMatrix;
+		//memcpy(eventMatrix.f, eventData->poseMatrix.f, sizeof(ZSFloat) * 16);
+
+		ZSTrackerPose stylusPose;
+		ZSDisplayIntersectionInfo intersectionInfo;
+		ZSError error = zsGetTargetPose(m_zSpaceStylus, &stylusPose);
+		error = zsIntersectDisplay(m_zSpaceDisplay, &stylusPose, &intersectionInfo);
+
+		if (intersectionInfo.hit) {
+
+			QPoint localPoint = mapFromGlobal(QPoint(intersectionInfo.x, intersectionInfo.y));
+			SelectAtPoint(localPoint.x(), localPoint.y());
+		}
+	}
+}
+
+void ANTzViewerWidget::ZSpaceStylusMoveHandler(ZSHandle targetHandle, const ZSTrackerEventData* eventData) {
+
+	//QMessageBox::information(this, tr("Stylus Move Handler"), tr("Button ") + QString::number(eventData->buttonId));
+	ZSBool isButton2ButtonPressed = false;
+	ZSBool isButton1ButtonPressed = false;
+	ZSError error = zsIsTargetButtonPressed(targetHandle, 2, &isButton2ButtonPressed);
+	error = zsIsTargetButtonPressed(targetHandle, 1, &isButton1ButtonPressed);
+	if (!isButton2ButtonPressed && !isButton1ButtonPressed) {
+
+		return;
+	}
+
+	pData antzData = m_model->GetANTzData();
+	antzData->io.mouse.delta.x = (eventData->poseMatrix.m03 - m_zSpaceStylusLastPosition.x) * 1000;
+
+	bool isSelectionEmpty = m_selectionModel->selectedIndexes().empty();
+
+	if (isButton2ButtonPressed) {
+
+		if (isSelectionEmpty) {
+
+			antzData->io.mouse.mode = kNPmouseModeCamLook;
+			antzData->io.mouse.delta.y = -(eventData->poseMatrix.m13 - m_zSpaceStylusLastPosition.y) * 1000;
+		}
+		else {
+
+			antzData->io.mouse.mode = kNPmouseModeCamExamXY;
+			antzData->io.mouse.delta.y = -(eventData->poseMatrix.m13 - m_zSpaceStylusLastPosition.y) * 1000;
+		}
+	}
+	else if (isButton1ButtonPressed && !isSelectionEmpty) {
+
+		antzData->io.mouse.mode = kNPmouseModeCamExamXZ;
+		antzData->io.mouse.delta.y = -(eventData->poseMatrix.m23 - m_zSpaceStylusLastPosition.z) * 1000;
+	}
+
+	m_zSpaceStylusLastPosition.x = eventData->poseMatrix.m03;
+	m_zSpaceStylusLastPosition.y = eventData->poseMatrix.m13;
+	m_zSpaceStylusLastPosition.z = eventData->poseMatrix.m23;
+}
+
+void ANTzViewerWidget::ZSpaceEventDispatcher(ZSHandle targetHandle, const ZSTrackerEventData* eventData, const void* userData) {
+
+	if (userData != nullptr) {
+
+		ANTzViewerWidget* widget = const_cast<ANTzViewerWidget*>(static_cast<const ANTzViewerWidget*>(userData));
+		if (eventData->type == ZS_TRACKER_EVENT_BUTTON_RELEASE) {
+			
+			widget->ZSpaceButtonReleaseHandler(targetHandle, eventData);
+		}
+		else if (eventData->type == ZS_TRACKER_EVENT_MOVE) {
+
+			widget->ZSpaceStylusMoveHandler(targetHandle, eventData);
+		}
+		else if (eventData->type == ZS_TRACKER_EVENT_BUTTON_PRESS) {
+
+			widget->ZSpaceButtonPressHandler(targetHandle, eventData);
+		}
+	}
 }
