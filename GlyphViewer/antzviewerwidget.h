@@ -20,6 +20,9 @@ public:
 
 	bool eventFilter(QObject *object, QEvent *event);
 
+signals:
+	void NewStatusMessage(const QString& message, int timeout = 0) const;
+
 public slots:
     void ResetCamera();
 	void SetStereo(bool enableStereo);

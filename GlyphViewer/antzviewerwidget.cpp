@@ -601,6 +601,8 @@ void ANTzViewerWidget::mousePressEvent(QMouseEvent* event) {
 
 void ANTzViewerWidget::SelectAtPoint(int x, int y) const {
 
+	//emit NewStatusMessage(tr("Selection Attempt At: %1, %2").arg(x).arg(y), 4000);
+
 	pData antzData = m_model->GetANTzData();
 	bool isStereo = IsInStereoMode();
 	antzData->io.gl.stereo = false;

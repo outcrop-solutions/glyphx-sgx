@@ -33,6 +33,8 @@ GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 
 	setCentralWidget(m_antzWidget);
 
+	QObject::connect(m_antzWidget, &ANTzViewerWidget::NewStatusMessage, statusBar(), &QStatusBar::showMessage);
+
 	m_stereoAction->setChecked(m_antzWidget->IsInStereoMode());
 
 	statusBar()->showMessage(SynGlyphX::Application::applicationName() + " Started", 3000);
