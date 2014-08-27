@@ -38,7 +38,7 @@ void npCopyMatrix (float dest[], float src[])
 }
 
 //------------------------------------------------------------------------------
-void npMultMatrix (float *matDest, float *matA, float *matB)
+ANTZCORE_API void npMultMatrix(float *matDest, float *matA, float *matB)
 {
     float dest[16];
     int c, d, e;

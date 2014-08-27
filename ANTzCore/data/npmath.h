@@ -36,7 +36,7 @@ extern "C" {
 
 void npCopyMatrix (float dest[], float src[]);
 
-void npMultMatrix (float *matDest, float *matA, float *matB);
+ANTZCORE_API void npMultMatrix(float *matDest, float *matA, float *matB);
 
 void npLocalToWorld (NPfloatXYZ *world, const float *inverseCam, const float *modelView);
 
