@@ -3,7 +3,6 @@
 #include <QtGUI/QMouseEvent>
 #include <QtGUI/QFont>
 #include <QtWidgets/QMessageBox>
-#include <glm/glm.hpp>
 #include "io/npfile.h"
 #include "io/npch.h"
 #include "npctrl.h"

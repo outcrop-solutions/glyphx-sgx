@@ -6,12 +6,11 @@
 #include <QtWidgets/QFileDialog>
 #include <QtWidgets/QDockWidget>
 #include "application.h"
-#include "datatransform.h"
-#include "downloadedmapproperties.h"
-#include "networkdownloader.h"
+#include "datatransformmapping.h"
 #include "downloadoptionsdialog.h"
 #include "data/npmapfile.h"
 #include "databaseservices.h"
+#include "antztransformer.h"
 
 GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 	: SynGlyphX::MainWindow(parent)
@@ -134,36 +133,23 @@ void GlyphViewerWindow::LoadDataTransform(const QString& filename) {
 	try {
 
 		SynGlyphX::Application::setOverrideCursor(Qt::WaitCursor);
-		SynGlyphX::DataTransform transform;
-		transform.ReadFromFile(filename.toStdString());
-		QString cacheSubDir = "cache_" + QString::fromStdWString(boost::uuids::to_wstring(transform.GetID()));
-		QString transformCacheDir = m_cacheDir + QDir::separator() + cacheSubDir;
+		SynGlyphX::DataTransformMapping mapping;
+		mapping.ReadFromFile(filename.toStdString());
 
-		bool useNonDefaultImage = (transform.GetBaseImage().GetType() != SynGlyphX::BaseImage::Type::Default);
+		ANTzTransformer transformer(m_cacheDir);
+		transformer.Transform(mapping);
 
-		QDir dir(m_cacheDir);
-		if (!dir.exists(cacheSubDir)) {
-			if (!dir.mkdir(cacheSubDir)) {
-				throw std::exception("Cache directory was not created");
-			}
-		}
-
-		if (!DoesCacheExist(transformCacheDir, useNonDefaultImage)) {
-			ConvertTransformToANTz(transform, transformCacheDir);
-		}
-
-		QStringList files;
-		files.push_back(transformCacheDir + QDir::separator() + "antz0001.csv");
-		files.push_back(transformCacheDir + QDir::separator() + "antztag0001.csv");
-
-		m_glyphForestModel->LoadANTzFiles(files);
+		m_glyphForestModel->LoadANTzFiles(transformer.GetGeneratedFilenames());
 
 		//Base image must come after loading of CSV files
-		if (useNonDefaultImage) {
-			m_glyphForestModel->UseLocalBaseImage(transformCacheDir + QDir::separator() + "map00001.jpg");
+		const QString& baseImageFilename = transformer.GetBaseImageFilename();
+		if (baseImageFilename.isEmpty()) {
+
+			m_glyphForestModel->UseDefaultBaseImage();
 		}
 		else {
-			m_glyphForestModel->UseDefaultBaseImage();
+			
+			m_glyphForestModel->UseLocalBaseImage(baseImageFilename);
 		}
 	}
 	catch (const std::exception& e) {
@@ -176,50 +162,6 @@ void GlyphViewerWindow::LoadDataTransform(const QString& filename) {
 	SetCurrentFile(filename);
 	SynGlyphX::Application::restoreOverrideCursor();
 	statusBar()->showMessage("Project successfully opened", 3000);
-}
-
-bool GlyphViewerWindow::DoesCacheExist(const QString& cacheDir, bool cacheHasImage) const {
-
-	QFile csvFile(cacheDir + QDir::separator() + "antz0001.csv");
-	if (!csvFile.exists()) {
-		return false;
-	}
-
-	QFile tagFile(cacheDir + QDir::separator() + "antztag0001.csv");
-	if (!tagFile.exists()) {
-		return false;
-	}
-
-	if (cacheHasImage) {
-		QFile baseImage(cacheDir + QDir::separator() + "map00001.jpg");
-		if (!baseImage.exists()) {
-			return false;
-		}
-	}
-
-	return true;
-}
-
-void GlyphViewerWindow::ConvertTransformToANTz(SynGlyphX::DataTransform& transform, const QString& cacheDir) {
-
-	DatabaseServices::AddDatabaseConnections(transform.GetDatasources(), transform.GetDatasources().size());
-
-	const SynGlyphX::BaseImage& baseImage = transform.GetBaseImage();
-
-	if (baseImage.GetType() == SynGlyphX::BaseImage::Type::DownloadedMap) {
-
-		std::vector<GeographicPoint> points;
-		transform.GetPositionXYForAllGlyphTrees(points);
-		QString baseImageFile = cacheDir + QDir::separator() + "map00001.jpg";
-		const SynGlyphX::DownloadedMapProperties* const properties = dynamic_cast<const SynGlyphX::DownloadedMapProperties* const>(baseImage.GetProperties());
-		NetworkDownloader& downloader = NetworkDownloader::Instance();
-		GeographicBoundingBox boundingBox = downloader.DownloadMap(points, baseImageFile.toStdString(), properties);
-		transform.SetPositionXYMinMaxToGeographicForAllGlyphTrees(boundingBox);
-	}
-
-	QString csvFile = cacheDir + QDir::separator() + "antz0001.csv";
-	QString tagFile = cacheDir + QDir::separator() + "antztag0001.csv";
-	transform.TransformToCSV(csvFile.toStdString(), tagFile.toStdString());
 }
 
 void GlyphViewerWindow::ChangeMapDownloadSettings() {

@@ -4,7 +4,7 @@
 #include <QtWidgets/QMainWindow>
 #include "glyphtreelistview.h"
 #include "mainwindow.h"
-#include "datatransform.h"
+#include "datatransformmapping.h"
 #include "glyphforestmodel.h"
 #include "antzviewerwidget.h"
 
@@ -28,8 +28,6 @@ private:
 	void LoadDataTransform(const QString& filename);
 	void CreateMenus();
 	void CreateDockWidgets();
-	void ConvertTransformToANTz(SynGlyphX::DataTransform& transform, const QString& cacheDir);
-	bool DoesCacheExist(const QString& cacheDir, bool cacheHasImage) const;
 
 	QMenu* m_fileMenu;
 	QMenu* m_viewMenu;
