@@ -58,7 +58,7 @@
       <OutputFile>$(OutDir)\$(ProjectName).dll</OutputFile>
       <AdditionalLibraryDirectories>..\..\lib\$(Platform)\$(Configuration)\;..\..\3rdParty\lib\$(Platform)\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>SGXGeospatial.lib;SGXFoundation.lib;qtmaind.lib;Qt5Cored.lib;Qt5Networkd.lib;Qt5Sqld.lib;Qt5Xmld.lib;Qt5XmlPatternsd.lib;%(AdditionalDependencies);ANTzBridge.lib</AdditionalDependencies>
+      <AdditionalDependencies>boost_system-vc120-mt-gd-1_55.lib;boost_filesystem-vc120-mt-gd-1_55.lib;SGXGeospatial.lib;SGXFoundation.lib;qtmaind.lib;Qt5Cored.lib;Qt5Networkd.lib;Qt5Sqld.lib;Qt5Xmld.lib;Qt5XmlPatternsd.lib;%(AdditionalDependencies);ANTzBridge.lib</AdditionalDependencies>
       <ImportLibrary>..\..\lib\$(Platform)\$(Configuration)\$(TargetName).lib</ImportLibrary>
     </Link>
   </ItemDefinitionGroup>
@@ -75,34 +75,38 @@
       <OutputFile>$(OutDir)\$(ProjectName).dll</OutputFile>
       <AdditionalLibraryDirectories>..\..\lib\$(Platform)\$(Configuration)\;..\..\3rdParty\lib\$(Platform)\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>false</GenerateDebugInformation>
-      <AdditionalDependencies>SGXGeospatial.lib;SGXFoundation.lib;qtmain.lib;Qt5Core.lib;Qt5Network.lib;Qt5Sql.lib;Qt5Xml.lib;Qt5XmlPatterns.lib;%(AdditionalDependencies);ANTzBridge.lib</AdditionalDependencies>
+      <AdditionalDependencies>boost_system-vc120-mt-1_55.lib;boost_filesystem-vc120-mt-1_55.lib;SGXGeospatial.lib;SGXFoundation.lib;qtmain.lib;Qt5Core.lib;Qt5Network.lib;Qt5Sql.lib;Qt5Xml.lib;Qt5XmlPatterns.lib;%(AdditionalDependencies);ANTzBridge.lib</AdditionalDependencies>
       <ImportLibrary>..\..\lib\$(Platform)\$(Configuration)\$(TargetName).lib</ImportLibrary>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="baseimage.h" />
     <ClInclude Include="baseimageproperties.h" />
+    <ClInclude Include="databaseservices.h" />
     <ClInclude Include="datamapping.h" />
     <ClInclude Include="datasource.h" />
-    <ClInclude Include="datatransform.h" />
+    <ClInclude Include="datatransformmapping.h" />
     <ClInclude Include="downloadedmapproperties.h" />
     <ClInclude Include="inputbinding.h" />
     <ClInclude Include="inputfield.h" />
     <ClInclude Include="minmaxglyph.h" />
     <ClInclude Include="minmaxglyphtree.h" />
     <ClInclude Include="sgxdatatransform_global.h" />
+    <ClInclude Include="transformer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="baseimage.cpp" />
     <ClCompile Include="baseimageproperties.cpp" />
+    <ClCompile Include="databaseservices.cpp" />
     <ClCompile Include="datamapping.cpp" />
     <ClCompile Include="datasource.cpp" />
-    <ClCompile Include="datatransform.cpp" />
+    <ClCompile Include="datatransformmapping.cpp" />
     <ClCompile Include="downloadedmapproperties.cpp" />
     <ClCompile Include="inputbinding.cpp" />
     <ClCompile Include="inputfield.cpp" />
     <ClCompile Include="minmaxglyph.cpp" />
     <ClCompile Include="minmaxglyphtree.cpp" />
+    <ClCompile Include="transformer.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

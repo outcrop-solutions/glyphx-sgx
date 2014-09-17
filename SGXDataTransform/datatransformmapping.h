@@ -1,5 +1,5 @@
-#ifndef SYNGLYPHX_DATATRANSFORM
-#define SYNGLYPHX_DATATRANSFORM
+#ifndef SYNGLYPHX_DATATRANSFORMMAPPING_H
+#define SYNGLYPHX_DATATRANSFORMMAPPING_H
 
 #include "sgxdatatransform_global.h"
 #include <string>
@@ -11,21 +11,22 @@
 #include "minmaxglyphtree.h"
 #include "baseimage.h"
 #include "geographicboundingbox.h"
+#include "transformer.h"
 
 namespace SynGlyphX {
 
-    class SGXDATATRANSFORM_EXPORT DataTransform
+    class SGXDATATRANSFORM_EXPORT DataTransformMapping
     {
     public:
 		typedef std::unordered_map<boost::uuids::uuid, Datasource, SynGlyphX::UUIDHash> DatasourceMap;
 		typedef std::unordered_map<boost::uuids::uuid, MinMaxGlyphTree::SharedPtr, SynGlyphX::UUIDHash> MinMaxGlyphTreeMap;
 
-		typedef boost::shared_ptr<DataTransform> SharedPtr;
-		typedef boost::shared_ptr<const DataTransform> ConstSharedPtr;
+		typedef boost::shared_ptr<DataTransformMapping> SharedPtr;
+		typedef boost::shared_ptr<const DataTransformMapping> ConstSharedPtr;
 
-        DataTransform();
-		DataTransform(const GlyphTree& glyphTree);
-        ~DataTransform();
+		DataTransformMapping();
+		DataTransformMapping(const GlyphTree& glyphTree);
+		~DataTransformMapping();
 
         void ReadFromFile(const std::string& filename);
         void WriteToFile(const std::string& filename, bool resetID);
@@ -42,7 +43,7 @@ namespace SynGlyphX {
 		void AddTables(const boost::uuids::uuid& id, const std::vector<std::wstring>& tables);
 
 		boost::uuids::uuid AddGlyphTree(const MinMaxGlyphTree::SharedPtr glyphTree);
-		const MinMaxGlyphTreeMap& DataTransform::GetGlyphTrees() const;
+		const MinMaxGlyphTreeMap& GetGlyphTrees() const;
 
 		void SetInputField(const boost::uuids::uuid& treeID, MinMaxGlyphTree::const_iterator& node, int index, const InputField& inputfield);
 		void ClearInputBinding(const boost::uuids::uuid& treeID, MinMaxGlyphTree::const_iterator& node, int index);
@@ -54,28 +55,25 @@ namespace SynGlyphX {
 		void SetBaseImage(const BaseImage& baseImage);
 		const BaseImage& GetBaseImage() const;
 
-		void TransformToCSV(const std::string& filename, const std::string& tagFilename) const;
-
 		void SetPositionXYMinMaxToGeographicForAllGlyphTrees(const GeographicBoundingBox& boundingBox);
 		void GetPositionXYForAllGlyphTrees(std::vector<GeographicPoint>& points) const;
 
 		const boost::uuids::uuid& GetID() const;
+		const unsigned long GetVersion() const;
 
     private:
-		void AddChildrenToGlyphTree(GlyphTree::SharedPtr tree, GlyphTree::iterator newNode, MinMaxGlyphTree::SharedPtr minMaxTree, MinMaxGlyphTree::const_iterator node, const std::unordered_map<InputField::HashID, QVariantList>& queryResultData, unsigned int index) const;
-		QVariantList RunSqlQuery(const InputField& inputfield) const;
 		void GetMinMax(InputBinding& binding, const InputField& inputField) const;
-		double LinearInterpolate(const InputBinding& binding, double min, double difference, const std::unordered_map<InputField::HashID, QVariantList>& queryResultData, unsigned int index) const;
-		Color ColorRGBInterpolate(const InputBinding& binding, const Color& min, const Color& difference, const std::unordered_map<InputField::HashID, QVariantList>& queryResultData, unsigned int index) const;
-		GlyphProperties ProcessMinMaxGlyph(const MinMaxGlyphTree::const_iterator& minMaxGlyph, const std::unordered_map<InputField::HashID, QVariantList>& queryResultData, unsigned int index) const;
+
+		static boost::uuids::random_generator s_uuidGenerator;
 
 		DatasourceMap m_datasources;
-        boost::uuids::random_generator m_uuidGenerator;
 		MinMaxGlyphTreeMap m_glyphTrees;
 		BaseImage m_baseImage;
 		boost::uuids::uuid m_id;
+		bool m_updated;
+		unsigned long m_version;
     };
 
 } //namespace SynGlyphX
 
-#endif //SYNGLYPHX_DATATRANSFORM
+#endif //SYNGLYPHX_DATATRANSFORMMAPPING_H

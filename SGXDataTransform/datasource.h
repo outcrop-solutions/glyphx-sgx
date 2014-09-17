@@ -40,6 +40,7 @@ namespace SynGlyphX {
 		void AddTables(const std::vector<std::wstring>& table);
 
 		bool IsOriginalDatasourceADatabase() const;
+		bool IsFile() const;
 
 		PropertyTree& ExportToPropertyTree(boost::property_tree::wptree& parentPropertyTree);
 

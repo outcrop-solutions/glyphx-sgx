@@ -118,6 +118,16 @@ namespace SynGlyphX {
 		return true;
 	}
 
+	bool Datasource::IsFile() const {
+
+		if ((m_type == SourceType::SQLITE3) || (m_type == SourceType::CSV) || (m_type == SourceType::KML)) {
+
+			return true;
+		}
+
+		return false;
+	}
+
 	Datasource::PropertyTree& Datasource::ExportToPropertyTree(boost::property_tree::wptree& parentPropertyTree) {
 
 		PropertyTree& propertyTree = parentPropertyTree.add(L"Datasource", L"");

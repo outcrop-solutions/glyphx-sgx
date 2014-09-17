@@ -31,9 +31,6 @@
     <ClInclude Include="datasource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="datatransform.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="inputfield.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -58,12 +55,18 @@
     <ClInclude Include="downloadedmapproperties.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="transformer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="databaseservices.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="datatransformmapping.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="datasource.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="datatransform.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="inputfield.cpp">
@@ -88,6 +91,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="downloadedmapproperties.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="transformer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="databaseservices.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="datatransformmapping.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
