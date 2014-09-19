@@ -81,10 +81,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="antztransformer.cpp" />
+    <ClCompile Include="glyphviewerantztransformer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="antzdatatransform_global.h" />
     <ClInclude Include="antztransformer.h" />
+    <ClInclude Include="glyphviewerantztransformer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

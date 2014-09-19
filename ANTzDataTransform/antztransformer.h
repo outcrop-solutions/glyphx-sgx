@@ -11,21 +11,20 @@ class ANTZDATATRANSFORM_EXPORT ANTzTransformer : public SynGlyphX::Transformer
 
 {
 public:
-	ANTzTransformer(const QString& cacheBaseDir);
+	ANTzTransformer(const QString& baseOutputDir);
 	virtual ~ANTzTransformer();
 
-	const QStringList& GetGeneratedFilenames() const;
+	const QStringList& GetCSVFilenames() const;
 	const QString& GetBaseImageFilename() const;
 
 protected:
 	virtual void CreateGlyphsFromMapping(SynGlyphX::DataTransformMapping& mapping);
-	bool DoesCacheNeedToBeRegenerated(const SynGlyphX::DataTransformMapping& mapping, const QStringList& csvFilenames, const QString& baseImageFilename) const;
 	void GenerateCache(SynGlyphX::DataTransformMapping& mapping, const QStringList& csvFilenames, const QString& baseImageFilename);
 	void DownloadBaseImage(SynGlyphX::DataTransformMapping& mapping, const QString& baseImageFilename) const;
 
-	QString m_cacheBaseDir;
-	QStringList m_generatedFilenames;
+	QStringList m_csvFilenames;
 	QString m_baseImageFilename;
+	QString m_baseOutputDir;
 };
 
 #endif //ANTZTRANSFORMER_H

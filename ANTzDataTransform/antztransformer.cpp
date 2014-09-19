@@ -7,9 +7,9 @@
 #include "downloadedmapproperties.h"
 #include "networkdownloader.h"
 
-ANTzTransformer::ANTzTransformer(const QString& cacheBaseDir) :
+ANTzTransformer::ANTzTransformer(const QString& baseOutputDir) :
 	SynGlyphX::Transformer(),
-	m_cacheBaseDir(cacheBaseDir)
+	m_baseOutputDir(baseOutputDir)
 {
 
 }
@@ -19,69 +19,29 @@ ANTzTransformer::~ANTzTransformer()
 
 }
 
-void ANTzTransformer::CreateGlyphsFromMapping(SynGlyphX::DataTransformMapping& mapping) {
+const QStringList& ANTzTransformer::GetCSVFilenames() const {
 
-	QString cacheSubDir = "cache_" + QString::fromStdWString(boost::uuids::to_wstring(mapping.GetID()));
-
-	QDir dir(m_cacheBaseDir);
-	if (!dir.exists(cacheSubDir)) {
-		if (!dir.mkdir(cacheSubDir)) {
-			throw std::exception("Cache directory was not created");
-		}
-	}
-
-	QString cacheDir = m_cacheBaseDir + QDir::separator() + cacheSubDir;
-
-	bool useNonDefaultImage = (mapping.GetBaseImage().GetType() != SynGlyphX::BaseImage::Type::Default);
-
-	QString mappingVersion = QString::number(mapping.GetVersion());
-
-	QStringList csvFiles;
-	csvFiles.push_back(cacheDir + QDir::separator() + "antz_" + mappingVersion + ".csv");
-	csvFiles.push_back(cacheDir + QDir::separator() + "antztag_" + mappingVersion + ".csv");
-	QString baseImageFilename;
-	if (useNonDefaultImage) {
-
-		baseImageFilename = cacheDir + QDir::separator() + "baseimage_" + mappingVersion + ".jpg";
-	}
-	else {
-
-		baseImageFilename = "";
-	}
-
-	if (DoesCacheNeedToBeRegenerated(mapping, csvFiles, baseImageFilename)) {
-
-		GenerateCache(mapping, csvFiles, baseImageFilename);
-	}
-
-	m_generatedFilenames = csvFiles;
-	m_baseImageFilename = baseImageFilename;
+	return m_csvFilenames;
 }
 
-bool ANTzTransformer::DoesCacheNeedToBeRegenerated(const SynGlyphX::DataTransformMapping& mapping, const QStringList& csvFilenames, const QString& baseImageFilename) const {
+const QString& ANTzTransformer::GetBaseImageFilename() const {
 
-	if (csvFilenames.empty()) {
+	return m_baseImageFilename;
+}
 
-		return true;
-	}
+void ANTzTransformer::CreateGlyphsFromMapping(SynGlyphX::DataTransformMapping& mapping) {
 
-	Q_FOREACH(QString csvFilename, csvFilenames) {
+	m_csvFilenames.clear();
+	m_baseImageFilename = "";
 
-		QFile csvFile(csvFilename);
-		if (!csvFile.exists()) {
-			return true;
+	QDir dir(m_baseOutputDir);
+	if (!dir.exists()) {
+		if (!dir.mkpath(m_baseOutputDir)) {
+			throw std::exception("Instance directory was not created");
 		}
 	}
 
-	if (!baseImageFilename.isEmpty()) {
-		QFile baseImage(baseImageFilename);
-		if (!baseImage.exists()) {
-			return true;
-		}
-	}
-
-	boost::filesystem::path firstCSVFilePath(csvFilenames[0].toStdString());
-	return HaveDatasourcesBeenUpdated(mapping, boost::filesystem::last_write_time(firstCSVFilePath));
+	GenerateCache(mapping, m_csvFilenames, m_baseImageFilename);
 }
 
 void ANTzTransformer::GenerateCache(SynGlyphX::DataTransformMapping& mapping, const QStringList& csvFilenames, const QString& baseImageFilename) {
@@ -110,16 +70,9 @@ void ANTzTransformer::GenerateCache(SynGlyphX::DataTransformMapping& mapping, co
 
 	SynGlyphX::CSVReaderWriter& writer = SynGlyphX::CSVReaderWriter::GetInstance();
 	writer.Write(csvFilenames[0].toStdString(), csvFilenames[1].toStdString(), trees);
-}
 
-const QStringList& ANTzTransformer::GetGeneratedFilenames() const {
-
-	return m_generatedFilenames;
-}
-
-const QString& ANTzTransformer::GetBaseImageFilename() const {
-
-	return m_baseImageFilename;
+	m_csvFilenames = csvFilenames;
+	m_baseImageFilename = baseImageFilename;
 }
 
 void ANTzTransformer::DownloadBaseImage(SynGlyphX::DataTransformMapping& mapping, const QString& baseImageFilename) const {
