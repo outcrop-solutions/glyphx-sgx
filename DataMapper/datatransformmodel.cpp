@@ -3,7 +3,7 @@
 
 DataTransformModel::DataTransformModel(QObject *parent)
 	: QAbstractItemModel(parent),
-	m_dataTransform(new SynGlyphX::DataTransform())
+	m_dataTransform(new SynGlyphX::DataTransformMapping())
 {
 
 }
@@ -51,7 +51,7 @@ QModelIndex	DataTransformModel::index(int row, int column, const QModelIndex& pa
 
 	if (!parent.isValid()) {
 
-		SynGlyphX::DataTransform::MinMaxGlyphTreeMap::const_iterator iterator = m_dataTransform->GetGlyphTrees().begin();
+		SynGlyphX::DataTransformMapping::MinMaxGlyphTreeMap::const_iterator iterator = m_dataTransform->GetGlyphTrees().begin();
 		std::advance(iterator, row);
 		return createIndex(row, column, static_cast<void*>(iterator->second->root().node()));
 	}
@@ -128,7 +128,7 @@ void DataTransformModel::LoadDataTransformFile(const QString& filename) {
 
 	beginResetModel();
 	m_dataTransform->ReadFromFile(filename.toStdString());
-	DatabaseServices::AddDatabaseConnections(m_dataTransform->GetDatasources(), m_dataTransform->GetDatasources().size());
+	SynGlyphX::DatabaseServices::AddDatabaseConnections(m_dataTransform->GetDatasources(), m_dataTransform->GetDatasources().size());
 	endResetModel();
 }
 
@@ -139,7 +139,7 @@ void DataTransformModel::Clear() {
 	endResetModel();
 }
 
-SynGlyphX::DataTransform::SharedPtr DataTransformModel::GetDataTransform() const {
+SynGlyphX::DataTransformMapping::SharedPtr DataTransformModel::GetDataTransform() const {
 
 	return m_dataTransform;
 }

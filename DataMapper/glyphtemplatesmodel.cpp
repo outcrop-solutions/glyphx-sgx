@@ -2,7 +2,7 @@
 
 GlyphTemplatesModel::GlyphTemplatesModel(QObject *parent)
 	: QAbstractItemModel(parent),
-	m_dataTransform(new SynGlyphX::DataTransform())
+	m_dataTransform(new SynGlyphX::DataTransformMapping())
 {
 
 }
@@ -132,7 +132,7 @@ void GlyphTemplatesModel::LoadDataTransformFile(const QString& filename) {
 	endResetModel();
 }
 
-SynGlyphX::DataTransform::SharedPtr GlyphTemplatesModel::GetDataTransform() const {
+SynGlyphX::DataTransformMapping::SharedPtr GlyphTemplatesModel::GetDataTransform() const {
 
 	return m_dataTransform;
 }

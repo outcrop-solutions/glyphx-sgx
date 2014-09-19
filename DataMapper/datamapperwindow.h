@@ -32,7 +32,7 @@ private slots:
     bool SaveProject();
     bool SaveAsProject();
     void AddDataSources();
-    void ExportToGlyphViewer();
+    void ExportToANTz();
     void ChangeBaseImage();
 	void AddGlyphTemplate();
 	void ChangeMapDownloadSettings();
@@ -46,6 +46,7 @@ private:
 	bool AskUserToSave();
 	void EnableProjectDependentActions(bool enable);
 	bool ValidateNewDatasource(const QString& datasource);
+	bool DoesANTzTemplateExist() const;
 
     QMenu* m_fileMenu;
     QMenu* m_projectMenu;

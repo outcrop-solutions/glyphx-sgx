@@ -2,7 +2,7 @@
 #define GLYPHTEMPLATESMODEL_H
 
 #include <QtCore/QAbstractItemModel>
-#include "datatransform.h"
+#include "datatransformmapping.h"
 
 class GlyphTemplatesModel : public QAbstractItemModel
 {
@@ -23,10 +23,10 @@ public:
 	void AddGlyphFile(const QString& filename);
 	void LoadDataTransformFile(const QString& filename);
 
-	SynGlyphX::DataTransform::SharedPtr GetDataTransform() const;
+	SynGlyphX::DataTransformMapping::SharedPtr GetDataTransform() const;
 
 private:
-	SynGlyphX::DataTransform::SharedPtr m_dataTransform;
+	SynGlyphX::DataTransformMapping::SharedPtr m_dataTransform;
 };
 
 #endif // GLYPHTEMPLATESMODEL_H

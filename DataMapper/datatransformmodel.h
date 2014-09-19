@@ -2,7 +2,7 @@
 #define DATATRANSFORMMODEL_H
 
 #include <QtCore/QAbstractItemModel>
-#include "datatransform.h"
+#include "datatransformmapping.h"
 
 class DataTransformModel : public QAbstractItemModel
 {
@@ -23,10 +23,10 @@ public:
 	void LoadDataTransformFile(const QString& filename);
 	void Clear();
 
-	SynGlyphX::DataTransform::SharedPtr GetDataTransform() const;
+	SynGlyphX::DataTransformMapping::SharedPtr GetDataTransform() const;
 
 private:
-	SynGlyphX::DataTransform::SharedPtr m_dataTransform;
+	SynGlyphX::DataTransformMapping::SharedPtr m_dataTransform;
 };
 
 #endif // DATATRANSFORMMODEL_H

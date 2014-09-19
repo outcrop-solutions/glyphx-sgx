@@ -6,9 +6,9 @@
 #include "datastatsmodel.h"
 #include "databaseservices.h"
 
-DataSourceStatsWidget::DataSourceStatsWidget(boost::shared_ptr<const SynGlyphX::DataTransform> transform, QWidget *parent)
+DataSourceStatsWidget::DataSourceStatsWidget(boost::shared_ptr<const SynGlyphX::DataTransformMapping> mapping, QWidget *parent)
 	: QTabWidget(parent),
-    m_transform(transform)
+    m_mapping(mapping)
 {
 	
 }
@@ -21,13 +21,13 @@ DataSourceStatsWidget::~DataSourceStatsWidget()
 void DataSourceStatsWidget::RebuildStatsViews() {
 
     ClearTabs();
-	AddNewStatsViews(m_transform->GetDatasources().size());
+	AddNewStatsViews(m_mapping->GetDatasources().size());
 }
 
 void DataSourceStatsWidget::AddNewStatsViews(const unsigned int numNewDatasources) {
 
-    const SynGlyphX::DataTransform::DatasourceMap& datasources = m_transform->GetDatasources();
-	SynGlyphX::DataTransform::DatasourceMap::const_iterator iT = datasources.begin();
+    const SynGlyphX::DataTransformMapping::DatasourceMap& datasources = m_mapping->GetDatasources();
+	SynGlyphX::DataTransformMapping::DatasourceMap::const_iterator iT = datasources.begin();
 	std::advance(iT, datasources.size() - numNewDatasources);
     for (; iT != datasources.end(); ++iT) {
 
@@ -84,5 +84,5 @@ void DataSourceStatsWidget::CreateTableView(const boost::uuids::uuid& id, const 
 	
 	m_statViews.push_back(view);
 	
-	addTab(view, DatabaseServices::GetFormattedDBName(db) + ":" + tableName);
+	addTab(view, SynGlyphX::DatabaseServices::GetFormattedDBName(db) + ":" + tableName);
 }

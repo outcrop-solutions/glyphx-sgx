@@ -7,7 +7,7 @@
 #include <QtWidgets/QDataWidgetMapper>
 #include "bindinglineedit.h"
 #include "richtexteditor.h"
-#include "datatransform.h"
+#include "datatransformmapping.h"
 #include "minmaxglyphmodel.h"
 
 class DataBindingWidget : public QTabWidget

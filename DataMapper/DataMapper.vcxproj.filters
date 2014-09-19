@@ -82,9 +82,6 @@
     <ClCompile Include="GeneratedFiles\Release\moc_datastatsmodel.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
-    <ClCompile Include="databaseservices.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="databindingwidget.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -237,10 +234,5 @@
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="DataMapper.rc" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="databaseservices.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
 </Project>
