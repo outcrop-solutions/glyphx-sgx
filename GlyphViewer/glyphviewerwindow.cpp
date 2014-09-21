@@ -10,7 +10,7 @@
 #include "downloadoptionsdialog.h"
 #include "data/npmapfile.h"
 #include "databaseservices.h"
-#include "antztransformer.h"
+#include "glyphviewerantztransformer.h"
 
 GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 	: SynGlyphX::MainWindow(parent)
@@ -136,10 +136,10 @@ void GlyphViewerWindow::LoadDataTransform(const QString& filename) {
 		SynGlyphX::DataTransformMapping mapping;
 		mapping.ReadFromFile(filename.toStdString());
 
-		ANTzTransformer transformer(m_cacheDir);
+		GlyphViewerANTzTransformer transformer(m_cacheDir);
 		transformer.Transform(mapping);
 
-		m_glyphForestModel->LoadANTzFiles(transformer.GetGeneratedFilenames());
+		m_glyphForestModel->LoadANTzFiles(transformer.GetCSVFilenames());
 
 		//Base image must come after loading of CSV files
 		const QString& baseImageFilename = transformer.GetBaseImageFilename();
