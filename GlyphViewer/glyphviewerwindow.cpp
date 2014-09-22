@@ -11,6 +11,7 @@
 #include "data/npmapfile.h"
 #include "databaseservices.h"
 #include "glyphviewerantztransformer.h"
+#include "changedatasourcefiledialog.h"
 
 GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 	: SynGlyphX::MainWindow(parent)
@@ -137,15 +138,35 @@ void GlyphViewerWindow::LoadDataTransform(const QString& filename) {
 		mapping.ReadFromFile(filename.toStdString());
 
 		bool wereDatasourcesUpdated = false;
-		for (auto datasource : mapping.GetDatasources()) {
 
-			if (!datasource.second.CanDatasourceBeFound()) {
+		std::vector<SynGlyphX::DataTransformMapping::DatasourceMap::const_iterator> datasourcesToBeUpdated;
+		for (SynGlyphX::DataTransformMapping::DatasourceMap::const_iterator datasource = mapping.GetDatasources().begin(); datasource != mapping.GetDatasources().end(); ++datasource) {
 
-				SynGlyphX::Application::restoreOverrideCursor();
+			if (!datasource->second.CanDatasourceBeFound()) {
 
-				SynGlyphX::Application::setOverrideCursor(Qt::WaitCursor);
+				datasourcesToBeUpdated.push_back(datasource);
 			}
 		}
+
+		SynGlyphX::Application::restoreOverrideCursor();
+		for (int i = 0; i < datasourcesToBeUpdated.size(); ++i) {
+
+			QString acceptButtonText = tr("Next");
+			if (i == datasourcesToBeUpdated.size() - 1) {
+				acceptButtonText = tr("Ok");
+			}
+
+			ChangeDatasourceFileDialog dialog(datasourcesToBeUpdated[i]->second, acceptButtonText, this);
+			if (dialog.exec() == QDialog::Accepted) {
+
+				mapping.UpdateDatasourceName(datasourcesToBeUpdated[i]->first, dialog.GetNewDatasourceFile().toStdWString());
+				wereDatasourcesUpdated = true;
+			}
+			else {
+				throw std::exception("One or more datasources weren't found.");
+			}
+		}
+		SynGlyphX::Application::setOverrideCursor(Qt::WaitCursor);
 
 		if (wereDatasourcesUpdated) {
 
