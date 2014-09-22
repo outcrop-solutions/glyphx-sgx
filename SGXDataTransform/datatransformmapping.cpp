@@ -255,4 +255,17 @@ namespace SynGlyphX {
 		return m_version;
 	}
 
+	void DataTransformMapping::UpdateDatasourceName(const boost::uuids::uuid& id, const std::wstring& name) {
+
+		try {
+
+			Datasource& datasource = m_datasources.at(id);
+			datasource.SetDBName(name);
+		}
+		catch (const std::out_of_range& e) {
+
+			throw std::invalid_argument("ID does not exist in datasources for this data transform mapping.");
+		}
+	}
+
 } //namespace SynGlyphX

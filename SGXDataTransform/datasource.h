@@ -37,6 +37,7 @@ namespace SynGlyphX {
         const std::wstring& GetPassword() const;
         const std::vector<std::wstring>& GetTables() const;
 
+		void SetDBName(const std::wstring& name);
 		void AddTables(const std::vector<std::wstring>& table);
 
 		bool IsOriginalDatasourceADatabase() const;

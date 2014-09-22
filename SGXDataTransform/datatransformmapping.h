@@ -61,6 +61,8 @@ namespace SynGlyphX {
 		const boost::uuids::uuid& GetID() const;
 		const unsigned long GetVersion() const;
 
+		void UpdateDatasourceName(const boost::uuids::uuid& id, const std::wstring& name);
+
     private:
 		void GetMinMax(InputBinding& binding, const InputField& inputField) const;
 

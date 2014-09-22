@@ -108,6 +108,11 @@ namespace SynGlyphX {
         return m_tables;
     }
 
+	void Datasource::SetDBName(const std::wstring& name) {
+
+		m_dbName = name;
+	}
+
     void Datasource::AddTables(const std::vector<std::wstring>& tables) {
 
 		m_tables.insert(m_tables.end(), tables.begin(), tables.end());
