@@ -136,6 +136,22 @@ void GlyphViewerWindow::LoadDataTransform(const QString& filename) {
 		SynGlyphX::DataTransformMapping mapping;
 		mapping.ReadFromFile(filename.toStdString());
 
+		bool wereDatasourcesUpdated = false;
+		for (auto datasource : mapping.GetDatasources()) {
+
+			if (!datasource.second.CanDatasourceBeFound()) {
+
+				SynGlyphX::Application::restoreOverrideCursor();
+
+				SynGlyphX::Application::setOverrideCursor(Qt::WaitCursor);
+			}
+		}
+
+		if (wereDatasourcesUpdated) {
+
+			mapping.WriteToFile(filename.toStdString(), false);
+		}
+
 		GlyphViewerANTzTransformer transformer(m_cacheDir);
 		transformer.Transform(mapping);
 
