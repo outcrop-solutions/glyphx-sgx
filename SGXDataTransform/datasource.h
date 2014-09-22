@@ -14,9 +14,9 @@ namespace SynGlyphX {
 	public:
 		enum SourceType {
 			SQLITE3,
-			ODBC,
 			CSV,
-			KML
+			KML,
+			ODBC
 		};
 
 		typedef boost::bimap<SourceType, std::wstring> SourceTypeBimap;
@@ -41,6 +41,7 @@ namespace SynGlyphX {
 
 		bool IsOriginalDatasourceADatabase() const;
 		bool IsFile() const;
+		bool CanDatasourceBeFound() const;
 
 		PropertyTree& ExportToPropertyTree(boost::property_tree::wptree& parentPropertyTree);
 

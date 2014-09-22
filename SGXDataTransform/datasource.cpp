@@ -1,14 +1,15 @@
 #include "datasource.h"
 #include <boost/assign/list_of.hpp>
 #include <boost/bimap/list_of.hpp>
+#include <boost/filesystem.hpp>
 
 namespace SynGlyphX {
 
 	const Datasource::SourceTypeBimap Datasource::s_sourceTypeStrings = boost::assign::list_of < Datasource::SourceTypeBimap::relation >
 		( Datasource::SourceType::SQLITE3, L"SQLITE3" )
-		( Datasource::SourceType::ODBC, L"ODBC" )
-		( Datasource::SourceType::CSV, L"CSV")
-		( Datasource::SourceType::KML, L"KML/KMZ");
+		( Datasource::SourceType::CSV, L"CSV" )
+		( Datasource::SourceType::KML, L"KML/KMZ" )
+		( Datasource::SourceType::ODBC, L"ODBC" );
 
 	Datasource::Datasource(const std::wstring& dbName, SourceType type, const std::wstring& host, unsigned int port, const std::wstring& username, const std::wstring& password) :
         m_dbName(dbName),
@@ -123,6 +124,17 @@ namespace SynGlyphX {
 		if ((m_type == SourceType::SQLITE3) || (m_type == SourceType::CSV) || (m_type == SourceType::KML)) {
 
 			return true;
+		}
+
+		return false;
+	}
+
+	bool Datasource::CanDatasourceBeFound() const {
+
+		if (IsFile()) {
+
+			boost::filesystem::path datasourcePath(m_dbName);
+			return (boost::filesystem::exists(datasourcePath) && boost::filesystem::is_regular_file(datasourcePath));
 		}
 
 		return false;
