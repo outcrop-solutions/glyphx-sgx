@@ -221,3 +221,9 @@ pip-log.txt
 #Qt generated files
 moc_*.cpp
 qrc_*.cpp
+/GlyphViewer/cache
+/GlyphViewer/usr
+/GlyphViewer/antzosc.csv
+/GlyphViewer/antzglobals.csv
+/DataMapper/antzosc.csv
+/DataMapper/antzglobals.csv
