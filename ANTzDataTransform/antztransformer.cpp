@@ -46,7 +46,7 @@ void ANTzTransformer::CreateGlyphsFromMapping(SynGlyphX::DataTransformMapping& m
 
 void ANTzTransformer::GenerateCache(SynGlyphX::DataTransformMapping& mapping, const QStringList& csvFilenames, const QString& baseImageFilename) {
 
-	SynGlyphX::DatabaseServices::AddDatabaseConnections(mapping.GetDatasources(), mapping.GetDatasources().size());
+	SynGlyphX::DatabaseServices::AddDatabaseConnections(mapping.GetDatasources());
 
 	const SynGlyphX::BaseImage& baseImage = mapping.GetBaseImage();
 

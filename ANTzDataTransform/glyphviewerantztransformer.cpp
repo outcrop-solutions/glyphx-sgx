@@ -2,6 +2,7 @@
 #include <QtCore/QFile>
 #include <QtCore/QDir>
 #include <boost/filesystem.hpp>
+#include <boost/uuid/uuid_io.hpp>
 
 GlyphViewerANTzTransformer::GlyphViewerANTzTransformer(const QString& cacheBaseDir) :
 	ANTzTransformer(cacheBaseDir)
