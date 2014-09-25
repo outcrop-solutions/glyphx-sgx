@@ -10,14 +10,12 @@
 
 namespace SynGlyphX {
 
-	boost::uuids::random_generator DataTransformMapping::s_uuidGenerator;
-
 	DataTransformMapping::DataTransformMapping() :
 		m_baseImage(nullptr),
 		m_updated(false),
 		m_version(0L)
     {
-		m_id = s_uuidGenerator();
+		m_id = UUIDGenerator::GetNewRandomUUID();
     }
 
 	DataTransformMapping::~DataTransformMapping()
@@ -38,14 +36,7 @@ namespace SynGlyphX {
 
 		m_baseImage = BaseImage(dataTransformPropertyTree.get_child(L"BaseImage"));
 
-		for (boost::property_tree::wptree::value_type& datasourceValue : dataTransformPropertyTree.get_child(L"Datasources")) {
-
-			if (datasourceValue.first == L"Datasource") {
-
-				Datasource datasource(datasourceValue.second);
-				m_datasources.insert(std::pair<boost::uuids::uuid, Datasource>(datasourceValue.second.get<boost::uuids::uuid>(L"<xmlattr>.id"), datasource));
-			}
-		}
+		m_datasources = DatasourceMaps(dataTransformPropertyTree.get_child(L"Datasources"));
 
 		for (boost::property_tree::wptree::value_type& glyphPropertyTree : dataTransformPropertyTree.get_child(L"Glyphs")) {
 
@@ -75,12 +66,7 @@ namespace SynGlyphX {
 
 		m_baseImage.ExportToPropertyTree(dataTransformPropertyTreeRoot);
 
-		boost::property_tree::wptree& datasourcesPropertyTree = dataTransformPropertyTreeRoot.add(L"Datasources", L"");
-		for (auto datasource : m_datasources) {
-
-			Datasource::PropertyTree& datasourcePropertyTree = datasource.second.ExportToPropertyTree(datasourcesPropertyTree);
-			datasourcePropertyTree.put(L"<xmlattr>.id", datasource.first);
-		}
+		m_datasources.ExportToPropertyTree(dataTransformPropertyTreeRoot);
 
 		boost::property_tree::wptree& glyphTreesPropertyTree = dataTransformPropertyTreeRoot.add(L"Glyphs", L"");
 		for (auto glyphTree : m_glyphTrees) {
@@ -92,30 +78,26 @@ namespace SynGlyphX {
 		boost::property_tree::write_xml(filename, filePropertyTree);
     }
 
-	const DataTransformMapping::DatasourceMap& DataTransformMapping::GetDatasources() const {
+	const DatasourceMaps& DataTransformMapping::GetDatasources() const {
 
-        return m_datasources;
-    }
+		return m_datasources;
+	}
 
 	void DataTransformMapping::Clear() {
 
-        m_datasources.clear();
+		m_datasources.Clear();
 		m_glyphTrees.clear();
 		m_baseImage = BaseImage(nullptr);
     }
 
-	boost::uuids::uuid DataTransformMapping::AddDatasource(const std::wstring& name,
-        Datasource::SourceType type,
+	boost::uuids::uuid DataTransformMapping::AddFileDatasource(FileDatasource::SourceType type,
+		const std::wstring& name,
         const std::wstring& host,
         unsigned int port,
         const std::wstring& username,
         const std::wstring& password) {
 
-		boost::uuids::uuid id = s_uuidGenerator();
-
-        Datasource datasource(name, type, host, port, username, password);
-
-		m_datasources.insert(std::pair<boost::uuids::uuid, Datasource>(id, datasource));
+		boost::uuids::uuid id = m_datasources.AddFileDatasource(type, name, host, port, username, password);
 
 		m_updated = true;
 
@@ -124,13 +106,15 @@ namespace SynGlyphX {
 
 	void DataTransformMapping::AddTables(const boost::uuids::uuid& id, const std::vector<std::wstring>& tables) {
 
-        m_datasources.at(id).AddTables(tables);
-		m_updated = true;
+		if (m_datasources.AddTables(id, tables)) {
+
+			m_updated = true;
+		}
     }
 
 	boost::uuids::uuid DataTransformMapping::AddGlyphTree(const MinMaxGlyphTree::SharedPtr glyphTree) {
 
-		boost::uuids::uuid id = s_uuidGenerator();
+		boost::uuids::uuid id = UUIDGenerator::GetNewRandomUUID();
 
 		m_glyphTrees.insert(std::pair<boost::uuids::uuid, MinMaxGlyphTree::SharedPtr>(id, glyphTree));
 
@@ -146,7 +130,7 @@ namespace SynGlyphX {
 
 	bool DataTransformMapping::IsTransformable() const {
 
-		return ((!m_datasources.empty()) && (!m_glyphTrees.empty()));
+		return (m_datasources.HasDatasources() && (!m_glyphTrees.empty()));
 	}
 
 	void DataTransformMapping::SetBaseImage(const BaseImage& baseImage) {
@@ -259,12 +243,11 @@ namespace SynGlyphX {
 
 		try {
 
-			Datasource& datasource = m_datasources.at(id);
-			datasource.SetDBName(name);
+			m_datasources.ChangeDatasourceName(id, name);
 		}
-		catch (const std::out_of_range& e) {
+		catch (const std::invalid_argument& e) {
 
-			throw std::invalid_argument("ID does not exist in datasources for this data transform mapping.");
+			throw;
 		}
 	}
 

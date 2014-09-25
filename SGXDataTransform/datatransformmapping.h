@@ -3,11 +3,10 @@
 
 #include "sgxdatatransform_global.h"
 #include <string>
-#include "datasource.h"
+#include "datasourcemaps.h"
 #include <unordered_map>
 #include <boost/property_tree/ptree.hpp>
 #include "UUID.h"
-#include <boost/uuid/uuid_generators.hpp>
 #include "minmaxglyphtree.h"
 #include "baseimage.h"
 #include "geographicboundingbox.h"
@@ -18,7 +17,6 @@ namespace SynGlyphX {
     class SGXDATATRANSFORM_EXPORT DataTransformMapping
     {
     public:
-		typedef std::unordered_map<boost::uuids::uuid, Datasource, SynGlyphX::UUIDHash> DatasourceMap;
 		typedef std::unordered_map<boost::uuids::uuid, MinMaxGlyphTree::SharedPtr, SynGlyphX::UUIDHash> MinMaxGlyphTreeMap;
 
 		typedef boost::shared_ptr<DataTransformMapping> SharedPtr;
@@ -31,10 +29,10 @@ namespace SynGlyphX {
         void ReadFromFile(const std::string& filename);
         void WriteToFile(const std::string& filename, bool resetID);
 
-		const DatasourceMap& GetDatasources() const;
+		const DatasourceMaps& GetDatasources() const;
 
-		boost::uuids::uuid AddDatasource(const std::wstring& name,
-			Datasource::SourceType type,
+		boost::uuids::uuid AddFileDatasource(FileDatasource::SourceType type, 
+			const std::wstring& name,
             const std::wstring& host = L"localhost",
             unsigned int port = 0,
             const std::wstring& username = L"",
@@ -66,9 +64,7 @@ namespace SynGlyphX {
     private:
 		void GetMinMax(InputBinding& binding, const InputField& inputField) const;
 
-		static boost::uuids::random_generator s_uuidGenerator;
-
-		DatasourceMap m_datasources;
+		DatasourceMaps m_datasources;
 		MinMaxGlyphTreeMap m_glyphTrees;
 		BaseImage m_baseImage;
 		boost::uuids::uuid m_id;

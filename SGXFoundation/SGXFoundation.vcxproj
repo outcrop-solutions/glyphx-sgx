@@ -98,7 +98,7 @@
     <ClInclude Include="foundationtypes.h" />
     <ClInclude Include="sgxfoundation.h" />
     <ClInclude Include="targetver.h" />
-    <ClInclude Include="UUID.h" />
+    <ClInclude Include="uuid.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="color.cpp" />
@@ -111,6 +111,7 @@
       </PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="filesystem.cpp" />
+    <ClCompile Include="uuid.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

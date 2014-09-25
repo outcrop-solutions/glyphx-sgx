@@ -1,19 +1,9 @@
 #include "datasource.h"
-#include <boost/assign/list_of.hpp>
-#include <boost/bimap/list_of.hpp>
-#include <boost/filesystem.hpp>
 
 namespace SynGlyphX {
 
-	const Datasource::SourceTypeBimap Datasource::s_sourceTypeStrings = boost::assign::list_of < Datasource::SourceTypeBimap::relation >
-		( Datasource::SourceType::SQLITE3, L"SQLITE3" )
-		( Datasource::SourceType::CSV, L"CSV" )
-		( Datasource::SourceType::KML, L"KML/KMZ" )
-		( Datasource::SourceType::ODBC, L"ODBC" );
-
-	Datasource::Datasource(const std::wstring& dbName, SourceType type, const std::wstring& host, unsigned int port, const std::wstring& username, const std::wstring& password) :
+	Datasource::Datasource(const std::wstring& dbName, const std::wstring& host, unsigned int port, const std::wstring& username, const std::wstring& password) :
         m_dbName(dbName),
-        m_type(type),
         m_host(host),
         m_port(port),
         m_username(username),
@@ -23,7 +13,6 @@ namespace SynGlyphX {
 
 	Datasource::Datasource(const PropertyTree& propertyTree) :
 		m_dbName(propertyTree.get<std::wstring>(L"Name")),
-		m_type(s_sourceTypeStrings.right.at(propertyTree.get<std::wstring>(L"<xmlattr>.type"))),
 		m_host(propertyTree.get<std::wstring>(L"Host")),
 		m_port(propertyTree.get<unsigned int>(L"Port", 0)),
 		m_username(propertyTree.get<std::wstring>(L"Username", L"")),
@@ -46,7 +35,6 @@ namespace SynGlyphX {
 
     Datasource::Datasource(const Datasource& datasource) :
         m_dbName(datasource.m_dbName),
-        m_type(datasource.m_type),
         m_host(datasource.m_host),
         m_port(datasource.m_port),
         m_username(datasource.m_username),
@@ -59,10 +47,9 @@ namespace SynGlyphX {
 	{
 	}
 
-    Datasource& Datasource::operator=(const Datasource& datasource){
+    Datasource& Datasource::operator=(const Datasource& datasource) {
 
         m_dbName = datasource.m_dbName;
-        m_type = datasource.m_type;
         m_host = datasource.m_host;
         m_port = datasource.m_port;
         m_username = datasource.m_username;
@@ -76,11 +63,6 @@ namespace SynGlyphX {
     const std::wstring& Datasource::GetDBName() const {
 
         return m_dbName;
-    }
-
-	Datasource::SourceType Datasource::GetType() const {
-
-        return m_type;
     }
 
     const std::wstring& Datasource::GetHost() const {
@@ -108,49 +90,16 @@ namespace SynGlyphX {
         return m_tables;
     }
 
-	void Datasource::SetDBName(const std::wstring& name) {
-
-		m_dbName = name;
-	}
-
     void Datasource::AddTables(const std::vector<std::wstring>& tables) {
 
 		m_tables.insert(m_tables.end(), tables.begin(), tables.end());
 	}
 
-	bool Datasource::IsOriginalDatasourceADatabase() const {
+	Datasource::PropertyTree& Datasource::ExportToPropertyTree(boost::property_tree::wptree& parentPropertyTree, const std::wstring& parentName) {
 
-		//For now return true in all cases since we are only handling databases
-		return true;
-	}
-
-	bool Datasource::IsFile() const {
-
-		if ((m_type == SourceType::SQLITE3) || (m_type == SourceType::CSV) || (m_type == SourceType::KML)) {
-
-			return true;
-		}
-
-		return false;
-	}
-
-	bool Datasource::CanDatasourceBeFound() const {
-
-		if (IsFile()) {
-
-			boost::filesystem::path datasourcePath(m_dbName);
-			return (boost::filesystem::exists(datasourcePath) && boost::filesystem::is_regular_file(datasourcePath));
-		}
-
-		return false;
-	}
-
-	Datasource::PropertyTree& Datasource::ExportToPropertyTree(boost::property_tree::wptree& parentPropertyTree) {
-
-		PropertyTree& propertyTree = parentPropertyTree.add(L"Datasource", L"");
+		PropertyTree& propertyTree = parentPropertyTree.add(parentName, L"");
 
 		propertyTree.put(L"Name", m_dbName);
-		propertyTree.put(L"<xmlattr>.type", s_sourceTypeStrings.left.at(m_type));
 		propertyTree.put(L"Host", m_host);
 
 		if (m_port != 0) {

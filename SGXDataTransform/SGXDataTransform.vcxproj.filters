@@ -64,6 +64,12 @@
     <ClInclude Include="datatransformmapping.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="filedatasource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="datasourcemaps.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="datasource.cpp">
@@ -100,6 +106,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="datatransformmapping.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="filedatasource.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="datasourcemaps.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

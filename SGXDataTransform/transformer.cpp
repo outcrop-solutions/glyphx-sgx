@@ -163,16 +163,12 @@ namespace SynGlyphX {
 
 	bool Transformer::HaveDatasourcesBeenUpdated(const DataTransformMapping& mapping, std::time_t lastUpdateTime) const {
 
-		for (auto datasource : mapping.GetDatasources()) {
+		for (auto datasource : mapping.GetDatasources().GetFileDatasources()) {
 
-			//For now our only datasources are files.  We will need a better way to handle this for non-file datasources
-			if (datasource.second.IsFile()) {
-
-				boost::filesystem::path datasourcePath(datasource.second.GetDBName());
-				if (boost::filesystem::last_write_time(datasourcePath) > lastUpdateTime) {
+			boost::filesystem::path datasourcePath(datasource.second.GetDBName());
+			if (boost::filesystem::last_write_time(datasourcePath) > lastUpdateTime) {
 					
-					return true;
-				}
+				return true;
 			}
 		}
 
