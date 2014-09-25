@@ -28,6 +28,9 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SGXGeospatial", "..\..\Core
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SGXGUI", "..\SGXGUI\SGXGUI.vcxproj", "{6F25F9F4-52F6-4734-8DA7-9EE08491444D}"
+	ProjectSection(ProjectDependencies) = postProject
+		{1917E85B-C54C-4A57-8D29-DAC16021149E} = {1917E85B-C54C-4A57-8D29-DAC16021149E}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MapDownloading", "..\MapDownloading\MapDownloading.vcxproj", "{C1352B61-481F-430E-9B1F-B4FC1001C542}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -38,6 +41,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MapDownloading", "..\MapDow
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ANTzBridge", "..\..\ANTzPlus\ANTzBridge\ANTzBridge.vcxproj", "{5E827F64-EBFA-4D08-9C78-FF91E2BAB5A7}"
 	ProjectSection(ProjectDependencies) = postProject
+		{1917E85B-C54C-4A57-8D29-DAC16021149E} = {1917E85B-C54C-4A57-8D29-DAC16021149E}
 		{7D8A83E2-8F45-4F90-9F84-F1120904E0CE} = {7D8A83E2-8F45-4F90-9F84-F1120904E0CE}
 	EndProjectSection
 EndProject

@@ -139,27 +139,27 @@ void GlyphViewerWindow::LoadDataTransform(const QString& filename) {
 
 		bool wereDatasourcesUpdated = false;
 
-		std::vector<SynGlyphX::DataTransformMapping::DatasourceMap::const_iterator> datasourcesToBeUpdated;
-		for (SynGlyphX::DataTransformMapping::DatasourceMap::const_iterator datasource = mapping.GetDatasources().begin(); datasource != mapping.GetDatasources().end(); ++datasource) {
+		std::vector<SynGlyphX::DatasourceMaps::FileDatasourceMap::const_iterator> fileDatasourcesToBeUpdated;
+		for (SynGlyphX::DatasourceMaps::FileDatasourceMap::const_iterator datasource = mapping.GetDatasources().GetFileDatasources().begin(); datasource != mapping.GetDatasources().GetFileDatasources().end(); ++datasource) {
 
 			if (!datasource->second.CanDatasourceBeFound()) {
 
-				datasourcesToBeUpdated.push_back(datasource);
+				fileDatasourcesToBeUpdated.push_back(datasource);
 			}
 		}
 
 		SynGlyphX::Application::restoreOverrideCursor();
-		for (int i = 0; i < datasourcesToBeUpdated.size(); ++i) {
+		for (int i = 0; i < fileDatasourcesToBeUpdated.size(); ++i) {
 
 			QString acceptButtonText = tr("Next");
-			if (i == datasourcesToBeUpdated.size() - 1) {
+			if (i == fileDatasourcesToBeUpdated.size() - 1) {
 				acceptButtonText = tr("Ok");
 			}
 
-			ChangeDatasourceFileDialog dialog(datasourcesToBeUpdated[i]->second, acceptButtonText, this);
+			ChangeDatasourceFileDialog dialog(fileDatasourcesToBeUpdated[i]->second, acceptButtonText, this);
 			if (dialog.exec() == QDialog::Accepted) {
 
-				mapping.UpdateDatasourceName(datasourcesToBeUpdated[i]->first, dialog.GetNewDatasourceFile().toStdWString());
+				mapping.UpdateDatasourceName(fileDatasourcesToBeUpdated[i]->first, dialog.GetNewDatasourceFile().toStdWString());
 				wereDatasourcesUpdated = true;
 			}
 			else {
