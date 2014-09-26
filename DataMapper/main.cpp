@@ -2,6 +2,7 @@
 #include "application.h"
 #include <QtWidgets/QSplashScreen>
 #include <QtCore/QTimer>
+#include "databaseservices.h"
 
 int main(int argc, char *argv[])
 {
@@ -19,6 +20,8 @@ int main(int argc, char *argv[])
     splash.showMessage("Loading Data Mapper", Qt::AlignHCenter | Qt::AlignBottom);
 
     a.processEvents();
+
+	SynGlyphX::DatabaseServices::RegisterCustomDrivers();
 
     DataMapperWindow w;
     w.resize(1200, 700);
