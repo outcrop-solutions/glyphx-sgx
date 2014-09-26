@@ -15,7 +15,7 @@ public:
 	~DataSourceStatsWidget();
 
 	void RebuildStatsViews();
-	void AddNewStatsViews(const unsigned int numNewDatasources);
+	void AddNewStatsViews();
 	void ClearTabs();
 
 private:
@@ -23,6 +23,7 @@ private:
 	void CreateTableView(const boost::uuids::uuid& id, const QSqlDatabase& db, const QString& tableName);
 	QList<QTableView*> m_statViews;
 	boost::shared_ptr<const SynGlyphX::DataTransformMapping> m_mapping;
+	std::set<boost::uuids::uuid> m_datasourcesShownInTabs;
 };
 
 #endif // DATASOURCESTATSWIDGET_H

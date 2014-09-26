@@ -128,7 +128,7 @@ void DataTransformModel::LoadDataTransformFile(const QString& filename) {
 
 	beginResetModel();
 	m_dataTransform->ReadFromFile(filename.toStdString());
-	SynGlyphX::DatabaseServices::AddDatabaseConnections(m_dataTransform->GetDatasources(), m_dataTransform->GetDatasources().size());
+	SynGlyphX::DatabaseServices::AddDatabaseConnections(m_dataTransform->GetDatasources());
 	endResetModel();
 }
 

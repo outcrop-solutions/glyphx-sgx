@@ -3,6 +3,7 @@
 #include <QtSql/QSqlRecord>
 #include <QtCore/QVariant>
 #include <QtWidgets/QHeaderView>
+#include <boost/uuid/uuid_io.hpp>
 #include "datastatsmodel.h"
 #include "databaseservices.h"
 
@@ -20,26 +21,30 @@ DataSourceStatsWidget::~DataSourceStatsWidget()
 
 void DataSourceStatsWidget::RebuildStatsViews() {
 
+	m_datasourcesShownInTabs.clear();
     ClearTabs();
-	AddNewStatsViews(m_mapping->GetDatasources().size());
+	AddNewStatsViews();
 }
 
-void DataSourceStatsWidget::AddNewStatsViews(const unsigned int numNewDatasources) {
+void DataSourceStatsWidget::AddNewStatsViews() {
 
-    const SynGlyphX::DataTransformMapping::DatasourceMap& datasources = m_mapping->GetDatasources();
-	SynGlyphX::DataTransformMapping::DatasourceMap::const_iterator iT = datasources.begin();
-	std::advance(iT, datasources.size() - numNewDatasources);
-    for (; iT != datasources.end(); ++iT) {
+    const SynGlyphX::DatasourceMaps::FileDatasourceMap& fileDatasources = m_mapping->GetDatasources().GetFileDatasources();
+	SynGlyphX::DatasourceMaps::FileDatasourceMap::const_iterator iT = fileDatasources.begin();
+	//std::advance(iT, datasources.size() - numNewDatasources);
+	for (; iT != fileDatasources.end(); ++iT) {
 
-        QSqlDatabase newDataSourceDB = QSqlDatabase::database(QString::fromStdString(boost::uuids::to_string(iT->first)));
-        //newDataSourceDB.setDatabaseName(QString::fromStdWString(iT->second.GetDBName()));
+		if (m_datasourcesShownInTabs.find(iT->first) != m_datasourcesShownInTabs.end()) {
 
-        if (!newDataSourceDB.open()) {
-            ClearTabs();
-            throw std::exception("Failed to load data sources");
-        }
+			QSqlDatabase newDataSourceDB = QSqlDatabase::database(QString::fromStdString(boost::uuids::to_string(iT->first)));
+			//newDataSourceDB.setDatabaseName(QString::fromStdWString(iT->second.GetDBName()));
 
-        CreateTablesFromDatasource(iT->first, newDataSourceDB, iT->second.GetTables());
+			if (!newDataSourceDB.open()) {
+				ClearTabs();
+				throw std::exception("Failed to load data sources");
+			}
+
+			CreateTablesFromDatasource(iT->first, newDataSourceDB, iT->second.GetTables());
+		}
     }
 }
 
@@ -62,6 +67,8 @@ void DataSourceStatsWidget::CreateTablesFromDatasource(const boost::uuids::uuid&
         }
         CreateTableView(id, db, qtable);
 	}
+
+	m_datasourcesShownInTabs.insert(id);
 }
 
 void DataSourceStatsWidget::CreateTableView(const boost::uuids::uuid& id, const QSqlDatabase& db, const QString& tableName) {

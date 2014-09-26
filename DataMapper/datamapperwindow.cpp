@@ -10,6 +10,7 @@
 #include <QtSql/QSqlError>
 #include <QtSql/QSqlQuery>
 #include <QtSql/QSqlRecord>
+#include <boost/uuid/uuid_io.hpp>
 #include "application.h"
 #include "databaseservices.h"
 #include "downloadoptionsdialog.h"
@@ -277,10 +278,10 @@ void DataMapperWindow::AddDataSources() {
 			continue;
 		}
 			
-		boost::uuids::uuid newDBID = m_dataTransformModel->GetDataTransform()->AddDatasource(datasource.toStdWString(), SynGlyphX::Datasource::SQLITE3);
+		boost::uuids::uuid newDBID = m_dataTransformModel->GetDataTransform()->AddFileDatasource(SynGlyphX::FileDatasource::SQLITE3, datasource.toStdWString());
 		std::vector<std::wstring> tables;
-		QSqlDatabase db = QSqlDatabase::addDatabase(SynGlyphX::DatabaseServices::GetQtDBType(SynGlyphX::Datasource::SQLITE3), QString::fromStdString(boost::uuids::to_string(newDBID)));
-		db.setDatabaseName(datasource);
+		SynGlyphX::DatabaseServices::AddDatabaseConnection(m_dataTransformModel->GetDataTransform()->GetDatasources().GetFileDatasources().at(newDBID), newDBID);
+		QSqlDatabase db = QSqlDatabase::database(QString::fromStdString(boost::uuids::to_string(newDBID)));
 
 		try {
 			if (!db.open()) {
@@ -314,7 +315,7 @@ void DataMapperWindow::AddDataSources() {
 
 	if (numNewDatasources > 0) {
 
-		m_dataSourceStats->AddNewStatsViews(numNewDatasources);
+		m_dataSourceStats->AddNewStatsViews();
 		EnableProjectDependentActions(true);
 		setWindowModified(true);
 	}
