@@ -18,6 +18,8 @@ namespace SynGlyphX {
 		DatabaseServices();
 		~DatabaseServices();
 
+		static void RegisterCustomDrivers();
+
 		static bool IsSQLiteDB(const QString& filename);
 
 		static QString GetFormattedDBName(const QSqlDatabase& db);

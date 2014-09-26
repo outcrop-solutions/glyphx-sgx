@@ -7,6 +7,7 @@
 #include <boost/uuid/uuid_io.hpp>
 #include "datatransformmapping.h"
 #include <QtSql/QSqlQuery>
+#include "sqlcsvdriver.hpp"
 
 namespace SynGlyphX {
 
@@ -17,6 +18,11 @@ namespace SynGlyphX {
 
 	DatabaseServices::~DatabaseServices()
 	{
+	}
+
+	void DatabaseServices::RegisterCustomDrivers() {
+
+		QSqlDatabase::registerSqlDriver("CSV", new QSqlDriverCreator<CSVDriver>);
 	}
 
 	bool DatabaseServices::IsSQLiteDB(const QString& filename) {
