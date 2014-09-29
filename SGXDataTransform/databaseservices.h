@@ -32,6 +32,7 @@ namespace SynGlyphX {
 
 		static void AddDatabaseConnection(const Datasource& datasource, const boost::uuids::uuid& datasourceID);
 		static void AddDatabaseConnections(const DatasourceMaps& datasources);
+		static void ClearDatabaseConnections(const DatasourceMaps& datasources);
 
 		static QVariantList RunSqlQuery(const InputField& inputfield);
 

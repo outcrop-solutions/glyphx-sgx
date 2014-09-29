@@ -21,6 +21,7 @@
 
 #include <QtCore/QFile>
 #include <QtSql/QSqlDriver>
+#include <QtSql/QSqlRecord>
 
 #include <csvresult.hpp>
 
@@ -81,10 +82,15 @@ class SGXQTDBDRIVERS_EXPORT CSVDriver : public QSqlDriver {
 		 */
 		inline QString getCsvFileName() { return csvFilename; }
 
+		QSqlRecord record(const QString& tableName) const;
+
+		QStringList tables(QSql::TableType tableType) const;
+
 	private:
 		QString csvFilename;
 		QFile *f;
 		QStringList *contents;
+		QSqlRecord headerRecord;
 
 		// dummy
 		QString user, password, host, options;

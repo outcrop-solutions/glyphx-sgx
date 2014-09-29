@@ -32,6 +32,7 @@ namespace SynGlyphX {
 		bool RequiresConversionToDB() const;
 
 		virtual bool IsOriginalDatasourceADatabase() const;
+		virtual bool CanDatasourceHaveMultipleTables() const;
 		virtual bool IsFile() const;
 		virtual bool CanDatasourceBeFound() const;
 

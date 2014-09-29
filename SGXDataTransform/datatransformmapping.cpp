@@ -90,6 +90,16 @@ namespace SynGlyphX {
 		m_baseImage = BaseImage(nullptr);
     }
 
+	void DataTransformMapping::RemoveDatasource(const boost::uuids::uuid& id) {
+
+		try {
+			RemoveDatasource(id);
+		}
+		catch (const std::invalid_argument& e) {
+			throw;
+		}
+	}
+
 	boost::uuids::uuid DataTransformMapping::AddFileDatasource(FileDatasource::SourceType type,
 		const std::wstring& name,
         const std::wstring& host,

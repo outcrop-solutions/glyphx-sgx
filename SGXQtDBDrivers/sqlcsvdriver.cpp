@@ -16,6 +16,7 @@
 
 #include <sqlcsvdriver.hpp>
 #include <QtSql/QSqlError>
+#include <QtSql/QSqlField>
 
 bool CSVDriver::hasFeature( DriverFeature feature ) const {
 	switch ( feature ) {
@@ -64,6 +65,14 @@ bool CSVDriver::open(
 
 	// get file from driver and read all lines into memory
 	// what happens to be a stringlist
+
+	QStringList columnNames = QString( f->readLine() ).trimmed().split(",");
+	headerRecord.clear();
+	Q_FOREACH(const QString& columnName, columnNames) {
+
+		headerRecord.append(QSqlField(columnName, QVariant::Type::String));
+	}
+
 	while ( !f->atEnd() ) {
 		// append to stringlist
 		contents->append( QString( f->readLine() ).trimmed() );
@@ -93,3 +102,18 @@ QSqlResult* CSVDriver::createResult() const {
 	return new CSVResult( this );
 }
 
+QSqlRecord CSVDriver::record(const QString& tableName) const {
+
+	return headerRecord;
+}
+
+QStringList CSVDriver::tables(QSql::TableType tableType) const {
+
+	QStringList tables;
+	if (tableType & QSql::TableType::Tables) {
+
+		tables.push_back("");
+	}
+
+	return tables;
+}

@@ -59,10 +59,15 @@ namespace SynGlyphX {
 
 	bool FileDatasource::RequiresConversionToDB() const {
 
-		return (m_type != SourceType::SQLITE3);
+		return false;
 	}
 
 	bool FileDatasource::IsOriginalDatasourceADatabase() const {
+
+		return ((m_type == SourceType::SQLITE3) || (m_type == SourceType::CSV));
+	}
+
+	bool FileDatasource::CanDatasourceHaveMultipleTables() const {
 
 		return (m_type == SourceType::SQLITE3);
 	}

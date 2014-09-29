@@ -72,6 +72,18 @@ namespace SynGlyphX {
 		return datasourcesPropertyTree;
 	}
 
+	void DatasourceMaps::RemoveDatasource(const boost::uuids::uuid& id) {
+
+		FileDatasourceMap::iterator fileIterator = m_fileDatasources.find(id);
+		if (fileIterator != m_fileDatasources.end()) {
+
+			m_fileDatasources.erase(fileIterator);
+			return;
+		}
+		
+		throw std::invalid_argument("Datasource id not found so no datasource was removed.");
+	}
+
 	const DatasourceMaps::FileDatasourceMap& DatasourceMaps::GetFileDatasources() const {
 
 		return m_fileDatasources;

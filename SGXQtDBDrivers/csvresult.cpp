@@ -31,7 +31,7 @@ QVariant CSVResult::data( int index ) {
 	// after split( ";" ) the at returns the value at the column
 	// pointed to by index
 	
-	QStringList fields = contents->at( at() ).split( ";" );
+	QStringList fields = contents->at( at() ).split( "," );
 	
 	if ( index > -1 && index < fields.size() ) {
 		return fields.at( index );

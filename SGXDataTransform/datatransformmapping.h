@@ -31,6 +31,7 @@ namespace SynGlyphX {
 
 		const DatasourceMaps& GetDatasources() const;
 
+		void RemoveDatasource(const boost::uuids::uuid& id);
 		boost::uuids::uuid AddFileDatasource(FileDatasource::SourceType type, 
 			const std::wstring& name,
             const std::wstring& host = L"localhost",

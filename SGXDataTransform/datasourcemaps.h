@@ -28,6 +28,8 @@ namespace SynGlyphX {
 
 		PropertyTree& ExportToPropertyTree(PropertyTree& propertyTreeParent) const;
 
+		void RemoveDatasource(const boost::uuids::uuid& id);
+
 		const FileDatasourceMap& GetFileDatasources() const;
 		boost::uuids::uuid AddFileDatasource(FileDatasource::SourceType type,
 			const std::wstring& name,

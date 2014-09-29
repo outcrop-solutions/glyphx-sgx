@@ -31,6 +31,7 @@ namespace SynGlyphX {
 		void AddTables(const std::vector<std::wstring>& table);
 
 		virtual bool IsOriginalDatasourceADatabase() const = 0;
+		virtual bool CanDatasourceHaveMultipleTables() const = 0;
 		virtual bool IsFile() const = 0;
 		virtual bool CanDatasourceBeFound() const = 0;
 
