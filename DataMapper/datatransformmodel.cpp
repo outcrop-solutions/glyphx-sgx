@@ -127,6 +127,9 @@ void DataTransformModel::AddGlyphFile(const QString& filename) {
 void DataTransformModel::LoadDataTransformFile(const QString& filename) {
 
 	beginResetModel();
+	if (m_dataTransform->GetDatasources().HasDatasources()) {
+		SynGlyphX::DatabaseServices::ClearDatabaseConnections(m_dataTransform->GetDatasources());
+	}
 	m_dataTransform->ReadFromFile(filename.toStdString());
 	SynGlyphX::DatabaseServices::AddDatabaseConnections(m_dataTransform->GetDatasources());
 	endResetModel();
@@ -135,6 +138,7 @@ void DataTransformModel::LoadDataTransformFile(const QString& filename) {
 void DataTransformModel::Clear() {
 
 	beginResetModel();
+	SynGlyphX::DatabaseServices::ClearDatabaseConnections(m_dataTransform->GetDatasources());
 	m_dataTransform->Clear();
 	endResetModel();
 }

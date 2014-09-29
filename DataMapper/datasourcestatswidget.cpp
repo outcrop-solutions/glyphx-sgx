@@ -30,20 +30,18 @@ void DataSourceStatsWidget::AddNewStatsViews() {
 
     const SynGlyphX::DatasourceMaps::FileDatasourceMap& fileDatasources = m_mapping->GetDatasources().GetFileDatasources();
 	SynGlyphX::DatasourceMaps::FileDatasourceMap::const_iterator iT = fileDatasources.begin();
-	//std::advance(iT, datasources.size() - numNewDatasources);
 	for (; iT != fileDatasources.end(); ++iT) {
 
-		if (m_datasourcesShownInTabs.find(iT->first) != m_datasourcesShownInTabs.end()) {
+		try {
+			if (m_datasourcesShownInTabs.find(iT->first) == m_datasourcesShownInTabs.end()) {
 
-			QSqlDatabase newDataSourceDB = QSqlDatabase::database(QString::fromStdString(boost::uuids::to_string(iT->first)));
-			//newDataSourceDB.setDatabaseName(QString::fromStdWString(iT->second.GetDBName()));
-
-			if (!newDataSourceDB.open()) {
-				ClearTabs();
-				throw std::exception("Failed to load data sources");
+				CreateTablesFromDatasource(iT->first, iT->second);
 			}
+		}
+		catch (const std::exception& e) {
 
-			CreateTablesFromDatasource(iT->first, newDataSourceDB, iT->second.GetTables());
+			ClearTabs();
+			throw;
 		}
     }
 }
@@ -54,18 +52,25 @@ void DataSourceStatsWidget::ClearTabs() {
 	m_statViews.clear();
 }
 
-void DataSourceStatsWidget::CreateTablesFromDatasource(const boost::uuids::uuid& id, QSqlDatabase& db, const std::vector<std::wstring>& tables) {
+void DataSourceStatsWidget::CreateTablesFromDatasource(const boost::uuids::uuid& id, const SynGlyphX::Datasource& datasource) {
 
-    const QStringList& dbTables = db.tables();
+	QSqlDatabase datasourceDB = QSqlDatabase::database(QString::fromStdString(boost::uuids::to_string(id)));
 
-	for (const std::wstring& table : tables) {
+	if (!datasourceDB.open()) {
+		
+		throw std::exception("Failed to load data sources");
+	}
 
-        QString qtable = QString::fromStdWString(table);
-        if (!dbTables.contains(qtable)) {
-            ClearTabs();
-            throw std::exception("Table in datatransform does not exist");
-        }
-        CreateTableView(id, db, qtable);
+	if (datasource.GetTables().empty()) {
+
+		CreateTableView(id, datasourceDB, "");
+	}
+	else {
+
+		for (const std::wstring& table : datasource.GetTables()) {
+
+			CreateTableView(id, datasourceDB, QString::fromStdWString(table));
+		}
 	}
 
 	m_datasourcesShownInTabs.insert(id);
@@ -91,5 +96,11 @@ void DataSourceStatsWidget::CreateTableView(const boost::uuids::uuid& id, const 
 	
 	m_statViews.push_back(view);
 	
-	addTab(view, SynGlyphX::DatabaseServices::GetFormattedDBName(db) + ":" + tableName);
+	QString tabName = SynGlyphX::DatabaseServices::GetFormattedDBName(db);
+	if (!tableName.isEmpty()) {
+
+		tabName += ":" + tableName;
+	}
+
+	addTab(view, tabName);
 }
