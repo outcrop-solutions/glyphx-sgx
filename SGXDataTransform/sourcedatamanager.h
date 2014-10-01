@@ -12,11 +12,11 @@
 
 namespace SynGlyphX {
 
-	class SGXDATATRANSFORM_EXPORT DatabaseServices
+	class SGXDATATRANSFORM_EXPORT SourceDataManager
 	{
 	public:
-		DatabaseServices();
-		~DatabaseServices();
+		SourceDataManager();
+		~SourceDataManager();
 
 		static void RegisterCustomDrivers();
 

@@ -82,7 +82,6 @@
   <ItemGroup>
     <ClInclude Include="baseimage.h" />
     <ClInclude Include="baseimageproperties.h" />
-    <ClInclude Include="databaseservices.h" />
     <ClInclude Include="datamapping.h" />
     <ClInclude Include="datasource.h" />
     <ClInclude Include="datasourcemaps.h" />
@@ -94,12 +93,12 @@
     <ClInclude Include="minmaxglyph.h" />
     <ClInclude Include="minmaxglyphtree.h" />
     <ClInclude Include="sgxdatatransform_global.h" />
+    <ClInclude Include="sourcedatamanager.h" />
     <ClInclude Include="transformer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="baseimage.cpp" />
     <ClCompile Include="baseimageproperties.cpp" />
-    <ClCompile Include="databaseservices.cpp" />
     <ClCompile Include="datamapping.cpp" />
     <ClCompile Include="datasource.cpp" />
     <ClCompile Include="datasourcemaps.cpp" />
@@ -110,6 +109,7 @@
     <ClCompile Include="inputfield.cpp" />
     <ClCompile Include="minmaxglyph.cpp" />
     <ClCompile Include="minmaxglyphtree.cpp" />
+    <ClCompile Include="sourcedatamanager.cpp" />
     <ClCompile Include="transformer.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -58,9 +58,6 @@
     <ClInclude Include="transformer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="databaseservices.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="datatransformmapping.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -68,6 +65,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="datasourcemaps.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="sourcedatamanager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -102,9 +102,6 @@
     <ClCompile Include="transformer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="databaseservices.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="datatransformmapping.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -112,6 +109,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="datasourcemaps.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="sourcedatamanager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -6,7 +6,7 @@
 #include <QtSql/QSqlDatabase>
 #include <QtSql/QSqlQuery>
 #include <QtSql/QSqlRecord>
-#include "databaseservices.h"
+#include "sourcedatamanager.h"
 
 namespace SynGlyphX {
 
@@ -229,8 +229,8 @@ namespace SynGlyphX {
 			QVariantList queryResultDataY;
 			const MinMaxGlyphTree::InputFieldMap& inputFields = minMaxTree.second->GetInputFields();
 
-			queryResultDataX = DatabaseServices::RunSqlQuery(inputFields.at(rootGlyph->GetInputBinding(0).GetInputFieldID()));
-			queryResultDataY = DatabaseServices::RunSqlQuery(inputFields.at(rootGlyph->GetInputBinding(1).GetInputFieldID()));
+			queryResultDataX = SourceDataManager::RunSqlQuery(inputFields.at(rootGlyph->GetInputBinding(0).GetInputFieldID()));
+			queryResultDataY = SourceDataManager::RunSqlQuery(inputFields.at(rootGlyph->GetInputBinding(1).GetInputFieldID()));
 
 			size_t numGlyphs = queryResultDataX.length();
 			for (int i = 0; i < numGlyphs; ++i) {

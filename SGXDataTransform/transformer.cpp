@@ -1,6 +1,6 @@
 #include "transformer.h"
 #include "datatransformmapping.h"
-#include "databaseservices.h"
+#include "sourcedatamanager.h"
 #include <QtCore/QVariant>
 #include <stdexcept>
 #include <boost/filesystem.hpp>
@@ -51,7 +51,7 @@ namespace SynGlyphX {
 		const SynGlyphX::MinMaxGlyphTree::InputFieldMap& inputFields = minMaxTree->GetInputFields();
 		for (SynGlyphX::MinMaxGlyphTree::InputFieldMap::const_iterator iterator = inputFields.begin(); iterator != inputFields.end(); ++iterator) {
 
-			queryResultData[iterator->first] = SynGlyphX::DatabaseServices::RunSqlQuery(iterator->second);
+			queryResultData[iterator->first] = SynGlyphX::SourceDataManager::RunSqlQuery(iterator->second);
 		}
 
 		size_t numGlyphs = queryResultData.begin()->second.length();
