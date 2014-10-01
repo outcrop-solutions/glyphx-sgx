@@ -2,7 +2,7 @@
 #include <QtCore/QFile>
 #include <QtCore/QDir>
 #include <boost/filesystem.hpp>
-#include "databaseservices.h"
+#include "sourcedatamanager.h"
 #include "csvreaderwriter.h"
 #include "downloadedmapproperties.h"
 #include "networkdownloader.h"
@@ -46,7 +46,7 @@ void ANTzTransformer::CreateGlyphsFromMapping(SynGlyphX::DataTransformMapping& m
 
 void ANTzTransformer::GenerateCache(SynGlyphX::DataTransformMapping& mapping, const QStringList& csvFilenames, const QString& baseImageFilename) {
 
-	SynGlyphX::DatabaseServices::AddDatabaseConnections(mapping.GetDatasources());
+	SynGlyphX::SourceDataManager::AddDatabaseConnections(mapping.GetDatasources());
 
 	const SynGlyphX::BaseImage& baseImage = mapping.GetBaseImage();
 
