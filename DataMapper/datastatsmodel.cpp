@@ -2,7 +2,7 @@
 #include <QtSql/QSqlRecord>
 #include <QtSql/QSqlField>
 #include <QtCore/QMimeData>
-#include "databaseservices.h"
+#include "sourcedatamanager.h"
 #include "inputfieldmimedata.h"
 #include <boost/uuid/uuid_io.hpp>
 

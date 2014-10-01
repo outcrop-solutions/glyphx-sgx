@@ -2,7 +2,7 @@
 #include "application.h"
 #include <QtWidgets/QSplashScreen>
 #include <QtCore/QTimer>
-#include "databaseservices.h"
+#include "sourcedatamanager.h"
 
 int main(int argc, char *argv[])
 {
@@ -21,7 +21,7 @@ int main(int argc, char *argv[])
 
     a.processEvents();
 
-	SynGlyphX::DatabaseServices::RegisterCustomDrivers();
+	SynGlyphX::SourceDataManager::RegisterCustomDrivers();
 
     DataMapperWindow w;
     w.resize(1200, 700);

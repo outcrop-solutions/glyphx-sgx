@@ -3,7 +3,7 @@
 #include <QtCore/QMimeData>
 #include <QtWidgets/QMenu>
 #include "inputfieldmimedata.h"
-#include "databaseservices.h"
+#include "sourcedatamanager.h"
 #include <QtSql/QSqlRecord>
 #include <QtSql/QSqlQuery>
 
@@ -37,7 +37,7 @@ void BindingLineEdit::SetInputField(const SynGlyphX::InputField& inputfield) {
 	m_inputField = inputfield;
 	if (m_inputField.IsValid()) {
 
-		QString text = SynGlyphX::DatabaseServices::GetFormattedDBName(inputfield.GetDatasourceID()) + ":" + QString::fromStdWString(inputfield.GetTable()) + ":" + QString::fromStdWString(inputfield.GetField());
+		QString text = SynGlyphX::SourceDataManager::GetFormattedDBName(inputfield.GetDatasourceID()) + ":" + QString::fromStdWString(inputfield.GetTable()) + ":" + QString::fromStdWString(inputfield.GetField());
 		setText(text);
 	}
 	else {

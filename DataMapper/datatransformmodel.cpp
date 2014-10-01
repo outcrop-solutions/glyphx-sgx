@@ -1,5 +1,5 @@
 #include "datatransformmodel.h"
-#include "databaseservices.h"
+#include "sourcedatamanager.h"
 
 DataTransformModel::DataTransformModel(QObject *parent)
 	: QAbstractItemModel(parent),
@@ -128,17 +128,17 @@ void DataTransformModel::LoadDataTransformFile(const QString& filename) {
 
 	beginResetModel();
 	if (m_dataTransform->GetDatasources().HasDatasources()) {
-		SynGlyphX::DatabaseServices::ClearDatabaseConnections(m_dataTransform->GetDatasources());
+		SynGlyphX::SourceDataManager::ClearDatabaseConnections(m_dataTransform->GetDatasources());
 	}
 	m_dataTransform->ReadFromFile(filename.toStdString());
-	SynGlyphX::DatabaseServices::AddDatabaseConnections(m_dataTransform->GetDatasources());
+	SynGlyphX::SourceDataManager::AddDatabaseConnections(m_dataTransform->GetDatasources());
 	endResetModel();
 }
 
 void DataTransformModel::Clear() {
 
 	beginResetModel();
-	SynGlyphX::DatabaseServices::ClearDatabaseConnections(m_dataTransform->GetDatasources());
+	SynGlyphX::SourceDataManager::ClearDatabaseConnections(m_dataTransform->GetDatasources());
 	m_dataTransform->Clear();
 	endResetModel();
 }

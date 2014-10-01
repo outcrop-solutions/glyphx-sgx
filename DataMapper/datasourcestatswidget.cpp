@@ -5,7 +5,7 @@
 #include <QtWidgets/QHeaderView>
 #include <boost/uuid/uuid_io.hpp>
 #include "datastatsmodel.h"
-#include "databaseservices.h"
+#include "sourcedatamanager.h"
 
 DataSourceStatsWidget::DataSourceStatsWidget(boost::shared_ptr<const SynGlyphX::DataTransformMapping> mapping, QWidget *parent)
 	: QTabWidget(parent),
@@ -96,7 +96,7 @@ void DataSourceStatsWidget::CreateTableView(const boost::uuids::uuid& id, const 
 	
 	m_statViews.push_back(view);
 	
-	QString tabName = SynGlyphX::DatabaseServices::GetFormattedDBName(db);
+	QString tabName = SynGlyphX::SourceDataManager::GetFormattedDBName(db);
 	if (!tableName.isEmpty()) {
 
 		tabName += ":" + tableName;

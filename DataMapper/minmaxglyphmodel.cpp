@@ -1,6 +1,6 @@
 #include "minmaxglyphmodel.h"
 #include <QtGui/QColor>
-#include "databaseservices.h"
+#include "sourcedatamanager.h"
 #include <QtWidgets/QMessageBox>
 
 MinMaxGlyphModel::MinMaxGlyphModel(DataTransformModel* dataTransformModel, SelectionTranslator* selectionTranslator, QObject *parent)
