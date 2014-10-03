@@ -21,8 +21,6 @@ int main(int argc, char *argv[])
 
     a.processEvents();
 
-	SynGlyphX::SourceDataManager::RegisterCustomDrivers();
-
     DataMapperWindow w;
     w.resize(1200, 700);
 

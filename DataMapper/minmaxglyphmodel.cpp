@@ -155,10 +155,10 @@ bool MinMaxGlyphModel::setData(const QModelIndex& index, const QVariant& value, 
 
 				SynGlyphX::InputField inputfield = value.value<SynGlyphX::InputField>();
 				if (inputfield.IsValid()) {
-					m_dataTransformModel->GetDataTransform()->SetInputField(m_glyphTreeID, m_glyph.constify(), index.row(), inputfield);
+					m_dataTransformModel->SetInputField(m_glyphTreeID, m_glyph.constify(), index.row(), inputfield);
 				}
 				else {
-					m_dataTransformModel->GetDataTransform()->ClearInputBinding(m_glyphTreeID, m_glyph.constify(), index.row());
+					m_dataTransformModel->ClearInputBinding(m_glyphTreeID, m_glyph.constify(), index.row());
 				}
 			}
 			catch (const std::invalid_argument& e) {

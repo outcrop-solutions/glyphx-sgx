@@ -127,23 +127,49 @@ void DataTransformModel::AddGlyphFile(const QString& filename) {
 void DataTransformModel::LoadDataTransformFile(const QString& filename) {
 
 	beginResetModel();
-	if (m_dataTransform->GetDatasources().HasDatasources()) {
-		SynGlyphX::SourceDataManager::ClearDatabaseConnections(m_dataTransform->GetDatasources());
-	}
+	m_sourceDataManager.ClearDatabaseConnections();
 	m_dataTransform->ReadFromFile(filename.toStdString());
-	SynGlyphX::SourceDataManager::AddDatabaseConnections(m_dataTransform->GetDatasources());
+	m_sourceDataManager.AddDatabaseConnections(m_dataTransform->GetDatasources());
 	endResetModel();
 }
 
 void DataTransformModel::Clear() {
 
 	beginResetModel();
-	SynGlyphX::SourceDataManager::ClearDatabaseConnections(m_dataTransform->GetDatasources());
+	m_sourceDataManager.ClearDatabaseConnections();
 	m_dataTransform->Clear();
 	endResetModel();
 }
 
-SynGlyphX::DataTransformMapping::SharedPtr DataTransformModel::GetDataTransform() const {
+void DataTransformModel::SetBaseImage(const SynGlyphX::BaseImage& baseImage) {
+
+	m_dataTransform->SetBaseImage(baseImage);
+}
+
+boost::uuids::uuid DataTransformModel::AddFileDatasource(SynGlyphX::FileDatasource::SourceType type, const std::wstring& name) {
+
+	boost::uuids::uuid id = m_dataTransform->AddFileDatasource(type, name);
+	m_sourceDataManager.AddDatabaseConnection(m_dataTransform->GetDatasources().GetFileDatasources().at(id), id);
+
+	return id;
+}
+
+void DataTransformModel::SetInputField(const boost::uuids::uuid& treeID, SynGlyphX::MinMaxGlyphTree::const_iterator& node, int index, const SynGlyphX::InputField& inputfield) {
+
+	m_dataTransform->SetInputField(treeID, node, index, inputfield);
+}
+
+void DataTransformModel::ClearInputBinding(const boost::uuids::uuid& treeID, SynGlyphX::MinMaxGlyphTree::const_iterator& node, int index) {
+
+	m_dataTransform->ClearInputBinding(treeID, node, index);
+}
+
+void DataTransformModel::EnableTables(const boost::uuids::uuid& id, const SynGlyphX::Datasource::TableSet& tables, bool enable) {
+
+	m_dataTransform->EnableTables(id, tables, enable);
+}
+
+SynGlyphX::DataTransformMapping::ConstSharedPtr DataTransformModel::GetDataTransform() const {
 
 	return m_dataTransform;
 }

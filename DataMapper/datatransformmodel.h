@@ -3,6 +3,7 @@
 
 #include <QtCore/QAbstractItemModel>
 #include "datatransformmapping.h"
+#include "sourcedatamanager.h"
 
 class DataTransformModel : public QAbstractItemModel
 {
@@ -23,10 +24,20 @@ public:
 	void LoadDataTransformFile(const QString& filename);
 	void Clear();
 
-	SynGlyphX::DataTransformMapping::SharedPtr GetDataTransform() const;
+	void SetBaseImage(const SynGlyphX::BaseImage& baseImage);
+
+	boost::uuids::uuid AddFileDatasource(SynGlyphX::FileDatasource::SourceType type, const std::wstring& name);
+
+	void SetInputField(const boost::uuids::uuid& treeID, SynGlyphX::MinMaxGlyphTree::const_iterator& node, int index, const SynGlyphX::InputField& inputfield);
+	void ClearInputBinding(const boost::uuids::uuid& treeID, SynGlyphX::MinMaxGlyphTree::const_iterator& node, int index);
+
+	void EnableTables(const boost::uuids::uuid& id, const SynGlyphX::Datasource::TableSet& tables, bool enable = true);
+
+	SynGlyphX::DataTransformMapping::ConstSharedPtr GetDataTransform() const;
 
 private:
 	SynGlyphX::DataTransformMapping::SharedPtr m_dataTransform;
+	SynGlyphX::SourceDataManager m_sourceDataManager;
 };
 
 #endif // DATATRANSFORMMODEL_H

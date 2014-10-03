@@ -239,7 +239,7 @@ bool DataMapperWindow::SaveDataTransform(const QString& filename) {
 
 	try {
 		m_dataBindingWidget->CommitChanges();
-		m_dataTransformModel->GetDataTransform()->WriteToFile(filename.toStdString(), filename != m_currentFilename);
+		m_dataTransformModel->GetDataTransform()->WriteToFile(filename.toStdString());
 		SetCurrentFile(filename);
 		setWindowModified(false);
 		statusBar()->showMessage("Data transform successfully saved", 3000);
@@ -288,10 +288,10 @@ void DataMapperWindow::AddDataSources() {
 			fileDatasourceType = SynGlyphX::FileDatasource::CSV;
 		}
 			
-		boost::uuids::uuid newDBID = m_dataTransformModel->GetDataTransform()->AddFileDatasource(fileDatasourceType, datasource.toStdWString());
-		std::vector<std::wstring> tables;
+		boost::uuids::uuid newDBID = m_dataTransformModel->AddFileDatasource(fileDatasourceType, datasource.toStdWString());
+		SynGlyphX::Datasource::TableSet tables;
 		const SynGlyphX::Datasource& newDatasource = m_dataTransformModel->GetDataTransform()->GetDatasources().GetFileDatasources().at(newDBID);
-		SynGlyphX::SourceDataManager::AddDatabaseConnection(newDatasource, newDBID);
+		
 		QSqlDatabase db = QSqlDatabase::database(QString::fromStdString(boost::uuids::to_string(newDBID)));
 
 		try {
@@ -307,10 +307,10 @@ void DataMapperWindow::AddDataSources() {
 				if (!qtables.isEmpty()) {
 
 					for (const QString& qtable : qtables) {
-						tables.push_back(qtable.toStdWString());
+						tables.insert(qtable.toStdWString());
 					}
 
-					m_dataTransformModel->GetDataTransform()->AddTables(newDBID, tables);
+					m_dataTransformModel->EnableTables(newDBID, tables, true);
 				}
 				else {
 
@@ -356,22 +356,6 @@ void DataMapperWindow::ExportToANTz() {
 			showStatusBarMessage = false;
 			QMessageBox::critical(this, "Export to ANTz Error", e.what());
 		}
-		/*const SynGlyphX::BaseImage& baseImage = m_dataTransformModel->GetDataTransform()->GetBaseImage();
-
-		if (baseImage.GetType() == SynGlyphX::BaseImage::Type::DownloadedMap) {
-
-			std::vector<GeographicPoint> points;
-			m_dataTransformModel->GetDataTransform()->GetPositionXYForAllGlyphTrees(points);
-			QString baseImageFile = csvDirectory + QDir::separator() + "map00001.jpg";
-			const SynGlyphX::DownloadedMapProperties* const properties = dynamic_cast<const SynGlyphX::DownloadedMapProperties* const>(baseImage.GetProperties());
-			NetworkDownloader& downloader = NetworkDownloader::Instance();
-			GeographicBoundingBox boundingBox = downloader.DownloadMap(points, baseImageFile.toStdString(), properties);
-			m_dataTransformModel->GetDataTransform()->SetPositionXYMinMaxToGeographicForAllGlyphTrees(boundingBox);
-		}
-
-		QString csvFile = csvDirectory + QDir::separator() + "antz0001.csv";
-		QString tagFile = csvDirectory + QDir::separator() + "antztag0001.csv";
-		m_dataTransformModel->GetDataTransform()->TransformToCSV(csvFile.toStdString(), tagFile.toStdString());*/
 
 		SynGlyphX::Application::restoreOverrideCursor();
 		if (showStatusBarMessage) {
@@ -387,7 +371,7 @@ void DataMapperWindow::ChangeBaseImage() {
 	if (dialog.exec() == QDialog::Accepted) {
 
 		const SynGlyphX::BaseImage& baseImage = dialog.GetBaseImage();
-		m_dataTransformModel->GetDataTransform()->SetBaseImage(baseImage);
+		m_dataTransformModel->SetBaseImage(baseImage);
 		EnableProjectDependentActions(true);
 		setWindowModified(true);
 		m_dataBindingWidget->EnablePositionXYMixMaxWidgets(baseImage.GetType() != SynGlyphX::BaseImage::Type::DownloadedMap);
