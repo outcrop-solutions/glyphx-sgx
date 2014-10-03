@@ -5,10 +5,11 @@
 #include <QtCore/QString>
 #include <QtCore/QStringList>
 #include <QtSql/QSqlDatabase>
-#include "datasource.h"
-#include "datatransformmapping.h"
+#include <unordered_set>
+#include "datasourcemaps.h"
 #include <boost/uuid/uuid.hpp>
 #include "inputfield.h"
+#include "uuid.h"
 
 namespace SynGlyphX {
 
@@ -17,8 +18,6 @@ namespace SynGlyphX {
 	public:
 		SourceDataManager();
 		~SourceDataManager();
-
-		static void RegisterCustomDrivers();
 
 		static bool IsSQLiteDB(const QString& filename);
 
@@ -30,14 +29,18 @@ namespace SynGlyphX {
 
 		static QString GetQtDBType(const SynGlyphX::Datasource& datasource);
 
-		static void AddDatabaseConnection(const Datasource& datasource, const boost::uuids::uuid& datasourceID);
-		static void AddDatabaseConnections(const DatasourceMaps& datasources);
-		static void ClearDatabaseConnections(const DatasourceMaps& datasources);
+		QVariantList RunSelectSqlQuery(const InputField& inputfield) const;
+		QVariantList GetMinMaxSqlQuery(const InputField& inputfield) const;
 
-		static QVariantList RunSqlQuery(const InputField& inputfield);
+		void AddDatabaseConnection(const Datasource& datasource, const boost::uuids::uuid& datasourceID);
+		void AddDatabaseConnections(const DatasourceMaps& datasources);
+		void ClearDatabaseConnection(const boost::uuids::uuid& id);
+		void ClearDatabaseConnections();
 
 	private:
+		void ClearDatabaseConnection(const QString& id);
 
+		std::unordered_set<boost::uuids::uuid, SynGlyphX::UUIDHash> m_databaseIDs;
 	};
 
 } //namespace SynGlyphX

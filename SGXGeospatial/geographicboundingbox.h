@@ -15,7 +15,10 @@ public:
     GeographicBoundingBox(const GeographicPoint& swCorner, const GeographicPoint& neCorner);
     GeographicBoundingBox(const GeographicPoint& center, double latRadius, double lonRadius);
 	GeographicBoundingBox(const std::vector<GeographicPoint>& points);
+	GeographicBoundingBox(const GeographicBoundingBox& boundingBox);
     ~GeographicBoundingBox();
+
+	GeographicBoundingBox& operator=(const GeographicBoundingBox& boundingBox);
 
 	const GeographicPoint& GetSWCorner() const;
 	const GeographicPoint& GetNECorner() const;
@@ -27,6 +30,8 @@ public:
 
 	double GetWidth() const;
 	double GetHeight() const;
+
+	bool IsValid() const;
 
 	std::string ToString() const;
 

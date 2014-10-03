@@ -25,6 +25,21 @@ namespace SynGlyphX {
 	{
 	}
 
+	bool DatasourceMaps::operator==(const DatasourceMaps& maps) const {
+
+		if (m_fileDatasources != maps.m_fileDatasources) {
+
+			return false;
+		}
+
+		return true;
+	}
+
+	bool DatasourceMaps::operator!=(const DatasourceMaps& maps) const {
+
+		return !operator==(maps);
+	}
+
 	bool DatasourceMaps::HasDatasources() const {
 
 		return (!m_fileDatasources.empty());
@@ -35,12 +50,12 @@ namespace SynGlyphX {
 		m_fileDatasources.clear();
 	}
 
-	bool DatasourceMaps::AddTables(const boost::uuids::uuid& id, const std::vector<std::wstring>& tables) {
+	bool DatasourceMaps::EnableTables(const boost::uuids::uuid& id, const Datasource::TableSet& tables, bool enable) {
 
 		FileDatasourceMap::iterator fileDatasourceIterator = m_fileDatasources.find(id);
 		if (fileDatasourceIterator != m_fileDatasources.end()) {
 
-			fileDatasourceIterator->second.AddTables(tables);
+			fileDatasourceIterator->second.EnableTables(tables, enable);
 			return true;
 		}
 

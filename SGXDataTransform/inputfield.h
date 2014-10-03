@@ -35,6 +35,8 @@ namespace SynGlyphX {
 		~InputField();
 
 		InputField& operator=(const InputField& inputField);
+		bool operator==(const InputField& inputField) const;
+		bool operator!=(const InputField& inputField) const;
 
 		const boost::uuids::uuid& GetDatasourceID() const;
 		const std::wstring& GetTable() const;

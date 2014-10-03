@@ -6,29 +6,38 @@ namespace SynGlyphX {
 
 	InputBinding::InputBinding() :
 		m_inputFieldID(0),
-		m_min(0.0),
-		m_max(0.0)
+		m_minOverride(0.0),
+		m_maxOverride(0.0),
+		m_overrideInUse(false)
 	{
 	}
 
-	InputBinding::InputBinding(InputField::HashID inputFieldID, double min, double max) :
+	InputBinding::InputBinding(InputField::HashID inputFieldID) :
 		m_inputFieldID(inputFieldID),
-		m_min(min),
-		m_max(max) {
+		m_minOverride(0.0),
+		m_maxOverride(0.0),
+		m_overrideInUse(false) {
 
 	}
 
 	InputBinding::InputBinding(const boost::property_tree::wptree& propertyTree) :
-		m_inputFieldID(propertyTree.get<InputField::HashID>(L"<xmlattr>.id")),
-		m_min(propertyTree.get<double>(L"Min")),
-		m_max(propertyTree.get<double>(L"Max")) {
+		m_inputFieldID(propertyTree.get<InputField::HashID>(L"<xmlattr>.id")) {
 
+		boost::optional<const boost::property_tree::wptree&> overridePropertyTree = propertyTree.get_child_optional(L"Override");
+
+		m_overrideInUse = overridePropertyTree.is_initialized();
+		if (m_overrideInUse) {
+
+			m_minOverride = overridePropertyTree.get().get<double>(L"<xmlattr>.Min");
+			m_maxOverride = overridePropertyTree.get().get<double>(L"<xmlattr>.Max");
+		}
 	}
 
 	InputBinding::InputBinding(const InputBinding& binding) :
 		m_inputFieldID(binding.m_inputFieldID),
-		m_min(binding.m_min),
-		m_max(binding.m_max) {
+		m_minOverride(binding.m_minOverride),
+		m_maxOverride(binding.m_maxOverride),
+		m_overrideInUse(binding.m_overrideInUse) {
 
 	}
 
@@ -39,34 +48,90 @@ namespace SynGlyphX {
 	InputBinding& InputBinding::operator=(const InputBinding& binding) {
 
 		m_inputFieldID = binding.m_inputFieldID;
-		m_min = binding.m_min;
-		m_max = binding.m_max;
+		m_minOverride = binding.m_minOverride;
+		m_maxOverride = binding.m_maxOverride;
+		m_overrideInUse = binding.m_overrideInUse;
 
 		return *this;
 	}
 
-	void InputBinding::SetMinMax(double min, double max) {
+	bool InputBinding::operator==(const InputBinding& binding) const {
 
-		m_min = min;
-		m_max = max;
+		if (m_inputFieldID != binding.m_inputFieldID) {
+
+			return false;
+		}
+
+		if (m_overrideInUse != binding.m_overrideInUse) {
+
+			return false;
+		}
+
+		if (m_overrideInUse) {
+
+			if (m_minOverride != binding.m_minOverride) {
+
+				return false;
+			}
+
+			if (m_maxOverride != binding.m_maxOverride) {
+
+				return false;
+			}
+		}
+
+		return true;
 	}
 
-	double InputBinding::GetMin() const {
+	bool InputBinding::operator!=(const InputBinding& binding) const {
 
-		return m_min;
+		return !operator==(binding);
 	}
 
-	double InputBinding::GetMax() const {
+	void InputBinding::SetMinMaxOverride(double min, double max) {
 
-		return m_max;
+		m_minOverride = min;
+		m_maxOverride = max;
+		m_maxMinOverrideDifference = max - min;
+		m_overrideInUse = true;
+	}
+
+	double InputBinding::GetMinOverride() const {
+
+		return m_minOverride;
+	}
+
+	double InputBinding::GetMaxOverride() const {
+
+		return m_maxOverride;
+	}
+
+	bool InputBinding::IsMinMaxOverrideInUse() const {
+
+		return m_overrideInUse;
+	}
+
+	void InputBinding::ClearMinMaxOverride() {
+
+		m_overrideInUse = false;
+	}
+
+	double InputBinding::GetMaxMinOverrideDifference() const {
+
+		return m_maxMinOverrideDifference;
 	}
 
 	void InputBinding::ExportToPropertyTree(boost::property_tree::wptree& propertyTree) const {
 
 		boost::property_tree::wptree& inputFieldPropertyTree = propertyTree.add(PropertyTreeName, L"");
 		inputFieldPropertyTree.put(L"<xmlattr>.id", m_inputFieldID);
-		inputFieldPropertyTree.put(L"Min", m_min);
-		inputFieldPropertyTree.put(L"Max", m_max);
+
+		if (m_overrideInUse) {
+
+			boost::property_tree::wptree& overridePropertyTree = inputFieldPropertyTree.add(L"Override", L"");
+			overridePropertyTree.put(L"<xmlattr>.Min", m_minOverride);
+			overridePropertyTree.put(L"<xmlattr>.Max", m_maxOverride);
+		}
 	}
 
 	bool InputBinding::IsBoundToInputField() const {
@@ -82,6 +147,7 @@ namespace SynGlyphX {
 	void InputBinding::Clear() {
 
 		m_inputFieldID = 0;
+		ClearMinMaxOverride();
 	}
 
 } //namespace SynGlyphX

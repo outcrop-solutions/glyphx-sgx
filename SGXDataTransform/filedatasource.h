@@ -23,6 +23,8 @@ namespace SynGlyphX {
 		virtual ~FileDatasource();
 
 		FileDatasource& operator=(const FileDatasource& datasource);
+		bool operator==(const FileDatasource& datasource) const;
+		bool operator!=(const FileDatasource& datasource) const;
 
 		SourceType GetType() const;
 

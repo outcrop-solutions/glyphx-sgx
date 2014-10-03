@@ -3,6 +3,7 @@
 
 #include "sgxdatatransform_global.h"
 #include "inputfield.h"
+#include <boost/property_tree/ptree.hpp>
 
 namespace SynGlyphX {
 
@@ -12,16 +13,21 @@ namespace SynGlyphX {
 		static const std::wstring PropertyTreeName;
 
 		InputBinding();
-		InputBinding(InputField::HashID inputFieldID, double min = 0.0, double max = 0.0);
+		InputBinding(InputField::HashID inputFieldID);
 		InputBinding(const boost::property_tree::wptree& propertyTree);
 		InputBinding(const InputBinding& binding);
 		~InputBinding();
 
 		InputBinding& operator=(const InputBinding& binding);
+		bool operator==(const InputBinding& binding) const;
+		bool operator!=(const InputBinding& binding) const;
 
-		double GetMin() const;
-		double GetMax() const;
-		void SetMinMax(double min, double max);
+		double GetMinOverride() const;
+		double GetMaxOverride() const;
+		void SetMinMaxOverride(double min, double max);
+		bool IsMinMaxOverrideInUse() const;
+		void ClearMinMaxOverride();
+		double GetMaxMinOverrideDifference() const;
 
 		void ExportToPropertyTree(boost::property_tree::wptree& propertyTree) const;
 
@@ -34,8 +40,10 @@ namespace SynGlyphX {
 	private:
 		InputField::HashID m_inputFieldID;
 
-		double m_min;
-		double m_max;
+		double m_minOverride;
+		double m_maxOverride;
+		bool m_overrideInUse;
+		double m_maxMinOverrideDifference;
 	};
 
 } //namespace SynGlyphX

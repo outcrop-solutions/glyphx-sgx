@@ -2,6 +2,7 @@
 #include "datatransformmapping.h"
 #include "sourcedatamanager.h"
 #include <QtCore/QVariant>
+#include <QtCore/QFile>
 #include <stdexcept>
 #include <boost/filesystem.hpp>
 
@@ -16,11 +17,18 @@ namespace SynGlyphX {
 	{
 	}
 
-	void Transformer::Transform(DataTransformMapping& mapping) {
+	void Transformer::Transform(const DataTransformMapping& mapping) {
 
 		if (mapping.IsTransformable()) {
 
+			m_sourceDataManager.AddDatabaseConnections(mapping.GetDatasources());
 			CreateGlyphsFromMapping(mapping);
+			m_sourceDataManager.ClearDatabaseConnections();
+
+			if (m_overrideRootXYBoundingBox.IsValid()) {
+
+				m_overrideRootXYBoundingBox = GeographicBoundingBox();
+			}
 		}
 		else {
 
@@ -47,14 +55,26 @@ namespace SynGlyphX {
 
 		SynGlyphX::MinMaxGlyphTree::const_iterator minMaxGlyph = minMaxTree->root().constify();
 
-		std::unordered_map<SynGlyphX::InputField::HashID, QVariantList> queryResultData;
+		InputFieldDataMap queryResultData;
 		const SynGlyphX::MinMaxGlyphTree::InputFieldMap& inputFields = minMaxTree->GetInputFields();
 		for (SynGlyphX::MinMaxGlyphTree::InputFieldMap::const_iterator iterator = inputFields.begin(); iterator != inputFields.end(); ++iterator) {
 
-			queryResultData[iterator->first] = SynGlyphX::SourceDataManager::RunSqlQuery(iterator->second);
+			InputFieldData::SharedPtr fieldData;
+
+			if (iterator->second.IsNumeric()) {
+
+				QVariantList minAndMax = m_sourceDataManager.GetMinMaxSqlQuery(iterator->second);
+				fieldData.reset(new InputFieldData(m_sourceDataManager.RunSelectSqlQuery(iterator->second), minAndMax.value(0).toDouble(), minAndMax.value(1).toDouble()));
+			}
+			else {
+
+				fieldData.reset(new InputFieldData(m_sourceDataManager.RunSelectSqlQuery(iterator->second)));
+			}
+
+			queryResultData[iterator->first] = fieldData;
 		}
 
-		size_t numGlyphs = queryResultData.begin()->second.length();
+		size_t numGlyphs = queryResultData.begin()->second->GetData().length();
 
 		for (unsigned int i = 0; i < numGlyphs; ++i) {
 
@@ -70,7 +90,7 @@ namespace SynGlyphX {
 		return trees;
 	}
 
-	GlyphProperties Transformer::ProcessMinMaxGlyph(const MinMaxGlyphTree::const_iterator& minMaxGlyph, const std::unordered_map<InputField::HashID, QVariantList>& queryResultData, unsigned int index) const {
+	GlyphProperties Transformer::ProcessMinMaxGlyph(const MinMaxGlyphTree::const_iterator& minMaxGlyph, const InputFieldDataMap& queryResultData, unsigned int index) const {
 
 		const MinMaxGlyphTree* minMaxGlyphTree = static_cast<const MinMaxGlyphTree*>(minMaxGlyph.owner());
 
@@ -79,8 +99,22 @@ namespace SynGlyphX {
 
 		Vector3 mappedVector3;
 
-		mappedVector3[0] = LinearInterpolate(minMaxGlyph->GetInputBinding(0), glyph.GetPosition()[0], difference.GetPosition()[0], queryResultData, index);
-		mappedVector3[1] = LinearInterpolate(minMaxGlyph->GetInputBinding(1), glyph.GetPosition()[1], difference.GetPosition()[1], queryResultData, index);
+		if ((minMaxGlyphTree->root() == minMaxGlyph) && (m_overrideRootXYBoundingBox.IsValid())){
+
+			InputBinding xBinding(minMaxGlyph->GetInputBinding(0).GetInputFieldID());
+			xBinding.SetMinMaxOverride(m_overrideRootXYBoundingBox.GetSWCorner().get<0>(), m_overrideRootXYBoundingBox.GetNECorner().get<0>());
+			mappedVector3[0] = LinearInterpolate(xBinding, glyph.GetPosition()[0], difference.GetPosition()[0], queryResultData, index);
+
+			InputBinding yBinding(minMaxGlyph->GetInputBinding(1).GetInputFieldID());
+			yBinding.SetMinMaxOverride(m_overrideRootXYBoundingBox.GetSWCorner().get<1>(), m_overrideRootXYBoundingBox.GetNECorner().get<1>());
+			mappedVector3[1] = LinearInterpolate(yBinding, glyph.GetPosition()[1], difference.GetPosition()[1], queryResultData, index);
+		}
+		else {
+
+			mappedVector3[0] = LinearInterpolate(minMaxGlyph->GetInputBinding(0), glyph.GetPosition()[0], difference.GetPosition()[0], queryResultData, index);
+			mappedVector3[1] = LinearInterpolate(minMaxGlyph->GetInputBinding(1), glyph.GetPosition()[1], difference.GetPosition()[1], queryResultData, index);
+		}
+
 		mappedVector3[2] = LinearInterpolate(minMaxGlyph->GetInputBinding(2), glyph.GetPosition()[2], difference.GetPosition()[2], queryResultData, index);
 		glyph.SetPosition(mappedVector3);
 
@@ -105,17 +139,17 @@ namespace SynGlyphX {
 		InputField::HashID id = minMaxGlyph->GetInputBinding(12).GetInputFieldID();
 		if (id != 0) {
 
-			std::unordered_map<InputField::HashID, QVariantList>::const_iterator dataList = queryResultData.find(id);
+			InputFieldDataMap::const_iterator dataList = queryResultData.find(id);
 			if (dataList != queryResultData.end()) {
 
-				glyph.SetTag(dataList->second[index].toString().toStdWString());
+				glyph.SetTag(dataList->second->GetData()[index].toString().toStdWString());
 			}
 		}
 
 		return glyph;
 	}
 
-	void Transformer::AddChildrenToGlyphTree(GlyphTree::SharedPtr tree, GlyphTree::iterator newNode, MinMaxGlyphTree::ConstSharedPtr minMaxTree, MinMaxGlyphTree::const_iterator node, const std::unordered_map<InputField::HashID, QVariantList>& queryResultData, unsigned int index) const {
+	void Transformer::AddChildrenToGlyphTree(GlyphTree::SharedPtr tree, GlyphTree::iterator newNode, MinMaxGlyphTree::ConstSharedPtr minMaxTree, MinMaxGlyphTree::const_iterator node, const InputFieldDataMap& queryResultData, unsigned int index) const {
 
 		for (int i = 0; i < minMaxTree->children(node); ++i) {
 
@@ -125,40 +159,71 @@ namespace SynGlyphX {
 		}
 	}
 
-	Color Transformer::ColorRGBInterpolate(const InputBinding& binding, const Color& min, const Color& difference, const std::unordered_map<InputField::HashID, QVariantList>& queryResultData, unsigned int index) const {
+	void Transformer::GetDataMinAndDifference(const InputBinding& binding, const InputFieldData& fieldData, double& dataMin, double& dataDifference) const {
+
+		if (binding.IsMinMaxOverrideInUse()) {
+
+			dataMin = binding.GetMinOverride();
+			dataDifference = binding.GetMaxMinOverrideDifference();
+		}
+		else {
+
+			dataMin = fieldData.GetMin();
+			dataDifference = fieldData.GetMaxMinDifference();
+		}
+	}
+
+	Color Transformer::ColorRGBInterpolate(const InputBinding& binding, const Color& min, const Color& difference, const InputFieldDataMap& queryResultData, unsigned int index) const {
 
 		Color output = min;
 
 		InputField::HashID id = binding.GetInputFieldID();
 		if (id != 0) {
 
-			std::unordered_map<InputField::HashID, QVariantList>::const_iterator dataList = queryResultData.find(id);
-			if (dataList != queryResultData.end()) {
+			InputFieldDataMap::const_iterator fieldData = queryResultData.find(id);
+			if (fieldData != queryResultData.end()) {
 
-				output.Set(0, (dataList->second[index].toDouble() - binding.GetMin()) / (binding.GetMax() - binding.GetMin()) * difference[0]);
-				output.Set(1, (dataList->second[index].toDouble() - binding.GetMin()) / (binding.GetMax() - binding.GetMin()) * difference[1]);
-				output.Set(2, (dataList->second[index].toDouble() - binding.GetMin()) / (binding.GetMax() - binding.GetMin()) * difference[2]);
+				/*output.Set(0, (fieldData->second->GetData()[index].toDouble() - binding.GetMin()) / (binding.GetMax() - binding.GetMin()) * difference[0]);
+				output.Set(1, (fieldData->second->GetData()[index].toDouble() - binding.GetMin()) / (binding.GetMax() - binding.GetMin()) * difference[1]);
+				output.Set(2, (fieldData->second->GetData()[index].toDouble() - binding.GetMin()) / (binding.GetMax() - binding.GetMin()) * difference[2]);*/
+
+				double currentData = fieldData->second->GetData()[index].toDouble();
+				double dataMin;
+				double dataMaxMinDiff;
+				GetDataMinAndDifference(binding, *(fieldData->second), dataMin, dataMaxMinDiff);
+
+				output.Set(0, LinearInterpolate(min[0], difference[0], dataMin, dataMaxMinDiff, currentData));
+				output.Set(1, LinearInterpolate(min[1], difference[1], dataMin, dataMaxMinDiff, currentData));
+				output.Set(2, LinearInterpolate(min[2], difference[2], dataMin, dataMaxMinDiff, currentData));
 			}
 		}
 
 		return output;
 	}
 
-	double Transformer::LinearInterpolate(const InputBinding& binding, double min, double difference, const std::unordered_map<InputField::HashID, QVariantList>& queryResultData, unsigned int index) const {
-
-		double output = min;
+	double Transformer::LinearInterpolate(const InputBinding& binding, double min, double difference, const InputFieldDataMap& queryResultData, unsigned int index) const {
 
 		InputField::HashID id = binding.GetInputFieldID();
 		if (id != 0) {
 
-			std::unordered_map<InputField::HashID, QVariantList>::const_iterator dataList = queryResultData.find(id);
-			if (dataList != queryResultData.end()) {
+			InputFieldDataMap::const_iterator fieldData = queryResultData.find(id);
+			if (fieldData != queryResultData.end()) {
 
-				output += (dataList->second[index].toDouble() - binding.GetMin()) / (binding.GetMax() - binding.GetMin()) * difference;
+				double dataMin;
+				double dataMaxMinDiff;
+				GetDataMinAndDifference(binding, *(fieldData->second), dataMin, dataMaxMinDiff);
+
+				//output += ((fieldData->second->GetData()[index].toDouble() - dataMin) / dataMaxMinDiff) * difference;
+				return LinearInterpolate(min, difference, dataMin, dataMaxMinDiff, fieldData->second->GetData()[index].toDouble());
 			}
 		}
+		
+		return min;
+	}
 
-		return output;
+	double Transformer::LinearInterpolate(double min, double difference, double dataMin, double dataDifference, double currentData) const {
+
+		return (min + (((currentData - dataMin) / dataDifference) * difference));
 	}
 
 	bool Transformer::HaveDatasourcesBeenUpdated(const DataTransformMapping& mapping, std::time_t lastUpdateTime) const {
@@ -173,6 +238,26 @@ namespace SynGlyphX {
 		}
 
 		return false;
+	}
+
+	void Transformer::GetPositionXYForAllGlyphTrees(const SynGlyphX::DataTransformMapping& mapping, std::vector<GeographicPoint>& points) const {
+
+		for (auto minMaxTree : mapping.GetGlyphTrees()) {
+
+			MinMaxGlyphTree::iterator& rootGlyph = minMaxTree.second->root();
+
+			QVariantList queryResultDataX;
+			QVariantList queryResultDataY;
+			const MinMaxGlyphTree::InputFieldMap& inputFields = minMaxTree.second->GetInputFields();
+
+			queryResultDataX = m_sourceDataManager.RunSelectSqlQuery(inputFields.at(rootGlyph->GetInputBinding(0).GetInputFieldID()));
+			queryResultDataY = m_sourceDataManager.RunSelectSqlQuery(inputFields.at(rootGlyph->GetInputBinding(1).GetInputFieldID()));
+
+			size_t numGlyphs = queryResultDataX.length();
+			for (int i = 0; i < numGlyphs; ++i) {
+				points.push_back(GeographicPoint(queryResultDataX[i].toDouble(), queryResultDataY[i].toDouble()));
+			}
+		}
 	}
 
 } //namespace SynGlyphX

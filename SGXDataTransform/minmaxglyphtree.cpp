@@ -45,6 +45,55 @@ namespace SynGlyphX {
 	{
 	}
 
+	bool MinMaxGlyphTree::operator==(const MinMaxGlyphTree& tree) const {
+		
+		if (m_inputFields != tree.m_inputFields) {
+
+			return false;
+		}
+
+		if (empty() != tree.empty()) {
+
+			return false;
+		}
+
+		if (empty() && tree.empty()) {
+
+			return true;
+		}
+
+		return AreSubtreesEqual(root(), tree.root(), tree);
+	}
+
+	bool MinMaxGlyphTree::AreSubtreesEqual(const MinMaxGlyphTree::const_iterator& thisTreeNode, const MinMaxGlyphTree::const_iterator& otherTreeNode, const MinMaxGlyphTree& otherTree) const {
+
+		if (thisTreeNode->operator!=(*otherTreeNode)) {
+
+			return false;
+		}
+
+		unsigned int numberOfChildren = children(thisTreeNode);
+		if (otherTree.children(otherTreeNode) != numberOfChildren) {
+
+			return false;
+		}
+
+		for (unsigned int i = 0; i < numberOfChildren; ++i) {
+
+			if (!AreSubtreesEqual(child(thisTreeNode, i), otherTree.child(otherTreeNode, i), otherTree)) {
+
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	bool MinMaxGlyphTree::operator!=(const MinMaxGlyphTree& tree) const {
+
+		return !operator==(tree);
+	}
+
 	MinMaxGlyphTree::PropertyTree& MinMaxGlyphTree::ExportToPropertyTree(boost::property_tree::wptree& propertyTreeParent) const {
 
 		MinMaxGlyphTree::const_iterator iterator = root();
@@ -141,7 +190,7 @@ namespace SynGlyphX {
 		}
 	}
 
-	void MinMaxGlyphTree::SetInputField(MinMaxGlyphTree::const_iterator& node, unsigned int index, const InputField& inputfield, double min, double max) {
+	void MinMaxGlyphTree::SetInputField(MinMaxGlyphTree::const_iterator& node, unsigned int index, const InputField& inputfield) {
 
 		//Check if new input field is from same table as other input fields.  We shouldn't need to be this restrictive in the future, but that
 		//requires more database work than we have time for right now.
@@ -167,7 +216,7 @@ namespace SynGlyphX {
 			++m_inputFieldReferenceCounts[inputFieldID];
 		}
 
-		node.deconstify()->SetInputBinding(index, InputBinding(inputFieldID, min, max));
+		node.deconstify()->SetInputBinding(index, InputBinding(inputFieldID));
 	}
 
 	void MinMaxGlyphTree::ClearInputBinding(MinMaxGlyphTree::const_iterator& node, unsigned int index) {

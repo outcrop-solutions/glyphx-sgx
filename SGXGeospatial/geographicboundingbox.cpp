@@ -3,7 +3,14 @@
 #include <fstream>
 #include <boost/filesystem.hpp>
 
-GeographicBoundingBox::GeographicBoundingBox() {
+GeographicBoundingBox::GeographicBoundingBox() :
+	m_center(0.0, 0.0),
+	m_swCorner(0.0, 0.0),
+	m_neCorner(0.0, 0.0),
+	m_westCenter(0.0, 0.0),
+	m_eastCenter(0.0, 0.0),
+	m_northCenter(0.0, 0.0),
+	m_southCenter(0.0, 0.0) {
 
 }
 
@@ -68,8 +75,32 @@ GeographicBoundingBox::GeographicBoundingBox(const std::vector<GeographicPoint>&
     m_southCenter.set<1>(m_swCorner.get<1>());
 }
 
+GeographicBoundingBox::GeographicBoundingBox(const GeographicBoundingBox& boundingBox) :
+	m_center(boundingBox.m_center),
+	m_swCorner(boundingBox.m_swCorner),
+	m_neCorner(boundingBox.m_neCorner),
+	m_westCenter(boundingBox.m_westCenter),
+	m_eastCenter(boundingBox.m_eastCenter),
+	m_northCenter(boundingBox.m_northCenter),
+	m_southCenter(boundingBox.m_southCenter) {
+
+}
+
 GeographicBoundingBox::~GeographicBoundingBox()
 {
+}
+
+GeographicBoundingBox& GeographicBoundingBox::operator=(const GeographicBoundingBox& boundingBox) {
+
+	m_center = boundingBox.m_center;
+	m_swCorner = boundingBox.m_swCorner;
+	m_neCorner = boundingBox.m_neCorner;
+	m_westCenter = boundingBox.m_westCenter;
+	m_eastCenter = boundingBox.m_eastCenter;
+	m_northCenter = boundingBox.m_northCenter;
+	m_southCenter = boundingBox.m_southCenter;
+
+	return *this;
 }
 
 const GeographicPoint& GeographicBoundingBox::GetSWCorner() const {
@@ -115,6 +146,11 @@ double GeographicBoundingBox::GetWidth() const {
 double GeographicBoundingBox::GetHeight() const {
 
 	return (m_northCenter.get<1>() - m_southCenter.get<1>());
+}
+
+bool GeographicBoundingBox::IsValid() const {
+
+	return ((GetWidth() > 0.0) && (GetHeight() > 0.0));
 }
 
 std::string GeographicBoundingBox::ToString() const {

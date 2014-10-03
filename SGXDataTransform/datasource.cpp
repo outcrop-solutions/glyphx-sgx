@@ -22,14 +22,14 @@ namespace SynGlyphX {
 
 		if (tablePropertyTree.is_initialized()) {
 
-			std::vector<std::wstring> tables;
+			TableSet tables;
 			for (const boost::property_tree::wptree::value_type& tableValue : tablePropertyTree.get()) {
 
 				if (tableValue.first == L"Table") {
-					tables.push_back(tableValue.second.data());
+					tables.insert(tableValue.second.data());
 				}
 			}
-			AddTables(tables);
+			EnableTables(tables, true);
 		}
 	}
 
@@ -60,6 +60,46 @@ namespace SynGlyphX {
         return *this;
     }
 
+	bool Datasource::operator==(const Datasource& datasource) const {
+
+		if (m_dbName != datasource.m_dbName) {
+
+			return false;
+		}
+
+		if (m_host != datasource.m_host) {
+
+			return false;
+		}
+
+		if (m_port != datasource.m_port) {
+
+			return false;
+		}
+
+		if (m_username != datasource.m_username) {
+
+			return false;
+		}
+
+		if (m_password != datasource.m_password) {
+
+			return false;
+		}
+
+		if (m_tables != datasource.m_tables) {
+
+			return false;
+		}
+
+		return true;
+	}
+
+	bool Datasource::operator!=(const Datasource& datasource) const {
+
+		return !operator==(datasource);
+	}
+
     const std::wstring& Datasource::GetDBName() const {
 
         return m_dbName;
@@ -85,14 +125,21 @@ namespace SynGlyphX {
         return m_password;
     }
 
-    const std::vector<std::wstring>& Datasource::GetTables() const {
+	const Datasource::TableSet& Datasource::GetTables() const {
 
         return m_tables;
     }
 
-    void Datasource::AddTables(const std::vector<std::wstring>& tables) {
+	void Datasource::EnableTables(const TableSet& tables, bool enable) {
 
-		m_tables.insert(m_tables.end(), tables.begin(), tables.end());
+		if (enable) {
+			
+			m_tables.insert(tables.begin(), tables.end());
+		}
+		else {
+
+			m_tables.erase(tables.begin(), tables.end());
+		}
 	}
 
 	Datasource::PropertyTree& Datasource::ExportToPropertyTree(boost::property_tree::wptree& parentPropertyTree, const std::wstring& parentName) {

@@ -42,6 +42,26 @@ namespace SynGlyphX {
 		return *this;
 	}
 
+	bool FileDatasource::operator==(const FileDatasource& datasource) const {
+
+		if (Datasource::operator!=(datasource)) {
+
+			return false;
+		}
+
+		if (m_type != datasource.m_type) {
+
+			return false;
+		}
+
+		return true;
+	}
+
+	bool FileDatasource::operator!=(const FileDatasource& datasource) const {
+
+		return !operator==(datasource);
+	}
+
 	FileDatasource::SourceType FileDatasource::GetType() const {
 
 		return m_type;

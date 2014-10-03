@@ -9,7 +9,6 @@
 #include "UUID.h"
 #include "minmaxglyphtree.h"
 #include "baseimage.h"
-#include "geographicboundingbox.h"
 #include "transformer.h"
 
 namespace SynGlyphX {
@@ -26,8 +25,11 @@ namespace SynGlyphX {
 		DataTransformMapping(const GlyphTree& glyphTree);
 		~DataTransformMapping();
 
+		bool operator==(const DataTransformMapping& mapping) const;
+		bool operator!=(const DataTransformMapping& mapping) const;
+
         void ReadFromFile(const std::string& filename);
-        void WriteToFile(const std::string& filename, bool resetID);
+        void WriteToFile(const std::string& filename) const;
 
 		const DatasourceMaps& GetDatasources() const;
 
@@ -39,7 +41,7 @@ namespace SynGlyphX {
             const std::wstring& username = L"",
             const std::wstring& password = L"");
 
-		void AddTables(const boost::uuids::uuid& id, const std::vector<std::wstring>& tables);
+		void EnableTables(const boost::uuids::uuid& id, const Datasource::TableSet& tables, bool enable = true);
 
 		boost::uuids::uuid AddGlyphTree(const MinMaxGlyphTree::SharedPtr glyphTree);
 		const MinMaxGlyphTreeMap& GetGlyphTrees() const;
@@ -54,23 +56,15 @@ namespace SynGlyphX {
 		void SetBaseImage(const BaseImage& baseImage);
 		const BaseImage& GetBaseImage() const;
 
-		void SetPositionXYMinMaxToGeographicForAllGlyphTrees(const GeographicBoundingBox& boundingBox);
-		void GetPositionXYForAllGlyphTrees(std::vector<GeographicPoint>& points) const;
-
 		const boost::uuids::uuid& GetID() const;
-		const unsigned long GetVersion() const;
 
 		void UpdateDatasourceName(const boost::uuids::uuid& id, const std::wstring& name);
 
     private:
-		void GetMinMax(InputBinding& binding, const InputField& inputField) const;
-
 		DatasourceMaps m_datasources;
 		MinMaxGlyphTreeMap m_glyphTrees;
 		BaseImage m_baseImage;
 		boost::uuids::uuid m_id;
-		bool m_updated;
-		unsigned long m_version;
     };
 
 } //namespace SynGlyphX

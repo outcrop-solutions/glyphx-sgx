@@ -25,11 +25,14 @@ namespace SynGlyphX {
 		MinMaxGlyphTree(const GlyphTree& glyphTree);
 		~MinMaxGlyphTree();
 
+		bool operator==(const MinMaxGlyphTree& tree) const;
+		bool operator!=(const MinMaxGlyphTree& tree) const;
+
 		PropertyTree& ExportToPropertyTree(boost::property_tree::wptree& propertyTreeParent) const;
 		void WriteToFile(const std::string& filename) const;
 		void ReadFromFile(const std::string& filename);
 
-		void SetInputField(MinMaxGlyphTree::const_iterator& node, unsigned int index, const InputField& inputfield, double min = 0.0, double max = 0.0);
+		void SetInputField(MinMaxGlyphTree::const_iterator& node, unsigned int index, const InputField& inputfield);
 		void ClearInputBinding(MinMaxGlyphTree::const_iterator& node, unsigned int index);
 
 		const InputFieldMap& GetInputFields() const;
@@ -43,6 +46,7 @@ namespace SynGlyphX {
 		void ProcessPropertyTreeChildren(const MinMaxGlyphTree::iterator& iT, const boost::property_tree::wptree& propertyTree);
 		void AddGlyphSubtree(MinMaxGlyphTree::iterator& parentNode, const GlyphTree& glyphTree, const GlyphTree::const_iterator& iT);
 		void CreateMinGlyphSubtree(const MinMaxGlyphTree::const_iterator& parentNode, GlyphTree::iterator& newParent, GlyphTree::SharedPtr newGlyphTree) const;
+		bool AreSubtreesEqual(const MinMaxGlyphTree::const_iterator& thisTreeNode, const MinMaxGlyphTree::const_iterator& otherTreeNode, const MinMaxGlyphTree& otherTree) const;
 
 		InputFieldMap m_inputFields;
 		std::unordered_map<InputField::HashID, unsigned int> m_inputFieldReferenceCounts;

@@ -55,6 +55,36 @@ namespace SynGlyphX {
 		return *this;
 	}
 
+	bool InputField::operator==(const InputField& inputField) const {
+
+		if (m_datasourceID != inputField.m_datasourceID) {
+
+			return false;
+		}
+
+		if (m_table != inputField.m_table) {
+
+			return false;
+		}
+
+		if (m_field != inputField.m_field) {
+
+			return false;
+		}
+
+		if (m_type != inputField.m_type) {
+
+			return false;
+		}
+
+		return true;
+	}
+
+	bool InputField::operator!=(const InputField& inputField) const {
+
+		return !operator==(inputField);
+	}
+
 	const boost::uuids::uuid& InputField::GetDatasourceID() const {
 
 		return m_datasourceID;

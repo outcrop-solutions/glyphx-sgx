@@ -24,6 +24,8 @@ namespace SynGlyphX {
 		~MinMaxGlyph();
 
 		MinMaxGlyph& operator=(const MinMaxGlyph& glyph);
+		bool operator==(const MinMaxGlyph& glyph) const;
+		bool operator!=(const MinMaxGlyph& glyph) const;
 
 		const GlyphProperties& GetMinGlyph() const;
 		const GlyphMappableProperties& GetDifference() const;

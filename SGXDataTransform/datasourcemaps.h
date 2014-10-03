@@ -20,9 +20,12 @@ namespace SynGlyphX {
 		DatasourceMaps(const PropertyTree& propertyTree);
 		~DatasourceMaps();
 
+		bool operator==(const DatasourceMaps& maps) const;
+		bool operator!=(const DatasourceMaps& maps) const;
+
 		bool HasDatasources() const;
 		void Clear();
-		bool AddTables(const boost::uuids::uuid& id, const std::vector<std::wstring>& tables);
+		bool EnableTables(const boost::uuids::uuid& id, const Datasource::TableSet& tables, bool enable = true);
 
 		void ChangeDatasourceName(const boost::uuids::uuid& id, const std::wstring& name);
 

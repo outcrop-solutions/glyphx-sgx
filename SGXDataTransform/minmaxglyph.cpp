@@ -73,6 +73,34 @@ namespace SynGlyphX {
 		return *this;
 	}
 
+	bool MinMaxGlyph::operator==(const MinMaxGlyph& glyph) const {
+
+		if (m_minGlyph != glyph.m_minGlyph) {
+
+			return false;
+		}
+
+		if (m_difference != glyph.m_difference) {
+
+			return false;
+		}
+
+		for (int i = 0; i < NumInputBindings; ++i) {
+			
+			if (m_inputBindings[i] != glyph.m_inputBindings[i]) {
+
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	bool MinMaxGlyph::operator!=(const MinMaxGlyph& glyph) const {
+
+		return !operator==(glyph);
+	}
+
 	const GlyphProperties& MinMaxGlyph::GetMinGlyph() const {
 
 		return m_minGlyph;
