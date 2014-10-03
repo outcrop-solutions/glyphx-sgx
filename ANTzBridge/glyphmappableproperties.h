@@ -17,6 +17,7 @@ namespace SynGlyphX {
 
 		GlyphMappableProperties& operator=(const GlyphMappableProperties& properties);
 		bool operator==(const GlyphMappableProperties& properties) const;
+		bool operator!=(const GlyphMappableProperties& properties) const;
 		bool operator<(const GlyphMappableProperties& properties) const;
 
         void SetRotation(const Vector3& rotation);

@@ -134,6 +134,11 @@ namespace SynGlyphX {
 		return true;
 	}
 
+	bool GlyphProperties::operator!=(const GlyphProperties& properties) const {
+
+		return !operator==(properties);
+	}
+
     void GlyphProperties::SetGeometry(Shape shape, Surface surface) {
         m_geometryShape = shape;
         m_geometrySurface = surface;

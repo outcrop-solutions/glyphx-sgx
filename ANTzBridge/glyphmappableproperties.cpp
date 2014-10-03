@@ -75,6 +75,11 @@ namespace SynGlyphX {
 		return true;
 	}
 
+	bool GlyphMappableProperties::operator!=(const GlyphMappableProperties& properties) const {
+
+		return !operator==(properties);
+	}
+
 	bool GlyphMappableProperties::operator<(const GlyphMappableProperties& properties) const {
 
 		//Need a less than operator for the tree class.  Since less than doesn't make sense WRT glyphs, just compare the x position since that is currently used as coordinate for child topology positioning

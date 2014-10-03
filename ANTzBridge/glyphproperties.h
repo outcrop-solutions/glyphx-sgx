@@ -57,6 +57,7 @@ namespace SynGlyphX {
 
 		GlyphProperties& operator=(const GlyphProperties& properties);
 		bool operator==(const GlyphProperties& properties) const;
+		bool operator!=(const GlyphProperties& properties) const;
 
         void SetGeometry(Shape shape, Surface surface);
         Shape GetShape() const;

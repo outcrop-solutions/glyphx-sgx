@@ -18,9 +18,9 @@ public:
 	const QString& GetBaseImageFilename() const;
 
 protected:
-	virtual void CreateGlyphsFromMapping(SynGlyphX::DataTransformMapping& mapping);
-	void GenerateCache(SynGlyphX::DataTransformMapping& mapping, const QStringList& csvFilenames, const QString& baseImageFilename);
-	void DownloadBaseImage(SynGlyphX::DataTransformMapping& mapping, const QString& baseImageFilename) const;
+	virtual void CreateGlyphsFromMapping(const SynGlyphX::DataTransformMapping& mapping);
+	void GenerateCache(const SynGlyphX::DataTransformMapping& mapping, const QStringList& csvFilenames, const QString& baseImageFilename);
+	void DownloadBaseImage(const SynGlyphX::DataTransformMapping& mapping, const QString& baseImageFilename);
 
 	QStringList m_csvFilenames;
 	QString m_baseImageFilename;

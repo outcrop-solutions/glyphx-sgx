@@ -29,7 +29,7 @@ const QString& ANTzTransformer::GetBaseImageFilename() const {
 	return m_baseImageFilename;
 }
 
-void ANTzTransformer::CreateGlyphsFromMapping(SynGlyphX::DataTransformMapping& mapping) {
+void ANTzTransformer::CreateGlyphsFromMapping(const SynGlyphX::DataTransformMapping& mapping) {
 
 	m_csvFilenames.clear();
 	m_baseImageFilename = "";
@@ -44,9 +44,7 @@ void ANTzTransformer::CreateGlyphsFromMapping(SynGlyphX::DataTransformMapping& m
 	GenerateCache(mapping, m_csvFilenames, m_baseImageFilename);
 }
 
-void ANTzTransformer::GenerateCache(SynGlyphX::DataTransformMapping& mapping, const QStringList& csvFilenames, const QString& baseImageFilename) {
-
-	SynGlyphX::SourceDataManager::AddDatabaseConnections(mapping.GetDatasources());
+void ANTzTransformer::GenerateCache(const SynGlyphX::DataTransformMapping& mapping, const QStringList& csvFilenames, const QString& baseImageFilename) {
 
 	const SynGlyphX::BaseImage& baseImage = mapping.GetBaseImage();
 
@@ -75,7 +73,7 @@ void ANTzTransformer::GenerateCache(SynGlyphX::DataTransformMapping& mapping, co
 	m_baseImageFilename = baseImageFilename;
 }
 
-void ANTzTransformer::DownloadBaseImage(SynGlyphX::DataTransformMapping& mapping, const QString& baseImageFilename) const {
+void ANTzTransformer::DownloadBaseImage(const SynGlyphX::DataTransformMapping& mapping, const QString& baseImageFilename) {
 
 	if (QFile::exists(baseImageFilename)) {
 
@@ -86,9 +84,8 @@ void ANTzTransformer::DownloadBaseImage(SynGlyphX::DataTransformMapping& mapping
 	}
 
 	std::vector<GeographicPoint> points;
-	mapping.GetPositionXYForAllGlyphTrees(points);
+	GetPositionXYForAllGlyphTrees(mapping, points);
 	const SynGlyphX::DownloadedMapProperties* const properties = dynamic_cast<const SynGlyphX::DownloadedMapProperties* const>(mapping.GetBaseImage().GetProperties());
 	NetworkDownloader& downloader = NetworkDownloader::Instance();
-	GeographicBoundingBox boundingBox = downloader.DownloadMap(points, baseImageFilename.toStdString(), properties);
-	mapping.SetPositionXYMinMaxToGeographicForAllGlyphTrees(boundingBox);
+	m_overrideRootXYBoundingBox = downloader.DownloadMap(points, baseImageFilename.toStdString(), properties);
 }
