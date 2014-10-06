@@ -119,14 +119,14 @@
     <ClCompile Include="GeneratedFiles\Release\moc_richtexteditor.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
-    <ClCompile Include="csvtypedialog.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_csvtypedialog.cpp">
+    <ClCompile Include="GeneratedFiles\Debug\moc_datasourcefieldtypesdialog.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_csvtypedialog.cpp">
+    <ClCompile Include="GeneratedFiles\Release\moc_datasourcefieldtypesdialog.cpp">
       <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="datasourcefieldtypesdialog.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -165,7 +165,7 @@
     <CustomBuild Include="richtexteditor.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
-    <CustomBuild Include="csvtypedialog.h">
+    <CustomBuild Include="datasourcefieldtypesdialog.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>

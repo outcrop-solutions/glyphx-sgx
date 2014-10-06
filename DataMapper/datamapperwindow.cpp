@@ -18,6 +18,9 @@
 #include "networkdownloader.h"
 #include "filesystem.h"
 #include "antztransformer.h"
+#include "datasourcefieldtypesdialog.h"
+#include "csvfilereader.h"
+#include "csvtfilereaderwriter.h"
 
 const QString ANTzTemplateDir = "ANTzTemplate";
 
@@ -254,20 +257,58 @@ bool DataMapperWindow::SaveDataTransform(const QString& filename) {
 
 bool DataMapperWindow::ValidateNewDatasource(const QString& datasource) {
 
-	if (SynGlyphX::SourceDataManager::IsSQLiteDB(datasource)) {
+	if (datasource.right(4).toLower() == ".csv") {
 		return true;
 	}
 
-	if (datasource.right(4).toLower() == ".csv") {
+	if (SynGlyphX::SourceDataManager::IsSQLiteDB(datasource)) {
 		return true;
 	}
 
 	return false;
 }
 
+void DataMapperWindow::ProcessCSVFile(const QString& csvFile) {
+
+	//Check if .csvt file exists
+	QString csvtFile = csvFile + 't';
+	if (!QFile::exists(csvtFile)) {
+
+		SynGlyphX::CSVFileReader csvFileReader(csvFile.toStdString());
+		SynGlyphX::CSVFileReader::CSVValues fieldNames = csvFileReader.GetHeaders();
+
+		if (fieldNames.empty()) {
+
+			throw std::exception("No headers found in CSV file");
+		}
+
+		QStringList fieldNameList;
+		for (std::string fieldName : fieldNames) {
+
+			fieldNameList.push_back(QString::fromStdString(fieldName));
+		}
+
+		SynGlyphX::DatasourceFieldTypesDialog dialog(fieldNameList, "CSV", this);
+		if (dialog.exec() == QDialog::Rejected) {
+
+			throw std::exception("CSV file does not have data types associated with its fields");
+		}
+
+		QStringList dialogTypes = dialog.GetFieldTypes();
+
+		SynGlyphX::CSVFileReader::CSVValues types;
+		for (const QString type : dialogTypes) {
+
+			types.push_back(type.toStdString());
+		}
+
+		SynGlyphX::CSVTFileReaderWriter::WriteCSVTFile(csvtFile.toStdString(), types);
+	}
+}
+
 void DataMapperWindow::AddDataSources() {
 
-	QStringList dataSources = QFileDialog::getOpenFileNames(this, tr("Add Data Source"), "", "SQLite databases (*.*)");
+	QStringList dataSources = QFileDialog::getOpenFileNames(this, tr("Add Data Source"), "", "All datasource files (*.*);;CSV files (*.csv)");
 
 	if (dataSources.isEmpty()) {
 		return;
@@ -282,19 +323,22 @@ void DataMapperWindow::AddDataSources() {
 			continue;
 		}
 
-		SynGlyphX::FileDatasource::SourceType fileDatasourceType = SynGlyphX::FileDatasource::SQLITE3;
-		if (datasource.right(4).toLower() == ".csv") {
-
-			fileDatasourceType = SynGlyphX::FileDatasource::CSV;
-		}
-			
-		boost::uuids::uuid newDBID = m_dataTransformModel->AddFileDatasource(fileDatasourceType, datasource.toStdWString());
-		SynGlyphX::Datasource::TableSet tables;
-		const SynGlyphX::Datasource& newDatasource = m_dataTransformModel->GetDataTransform()->GetDatasources().GetFileDatasources().at(newDBID);
-		
-		QSqlDatabase db = QSqlDatabase::database(QString::fromStdString(boost::uuids::to_string(newDBID)));
-
+		boost::uuids::uuid newDBID;
 		try {
+
+			SynGlyphX::FileDatasource::SourceType fileDatasourceType = SynGlyphX::FileDatasource::SQLITE3;
+			if (datasource.right(4).toLower() == ".csv") {
+
+				fileDatasourceType = SynGlyphX::FileDatasource::CSV;
+				ProcessCSVFile(datasource);
+			}
+
+			newDBID = m_dataTransformModel->AddFileDatasource(fileDatasourceType, datasource.toStdWString());
+			SynGlyphX::Datasource::TableSet tables;
+			const SynGlyphX::Datasource& newDatasource = m_dataTransformModel->GetDataTransform()->GetDatasources().GetFileDatasources().at(newDBID);
+
+			QSqlDatabase db = QSqlDatabase::database(QString::fromStdString(boost::uuids::to_string(newDBID)));
+
 			if (!db.open()) {
 
 				throw std::exception((datasource + tr(" could not be opened")).toStdString().c_str());

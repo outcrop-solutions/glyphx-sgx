@@ -47,6 +47,7 @@ private:
 	void EnableProjectDependentActions(bool enable);
 	bool ValidateNewDatasource(const QString& datasource);
 	bool DoesANTzTemplateExist() const;
+	void ProcessCSVFile(const QString& csvFile);
 
     QMenu* m_fileMenu;
     QMenu* m_projectMenu;
