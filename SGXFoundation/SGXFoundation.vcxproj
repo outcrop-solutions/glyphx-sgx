@@ -95,6 +95,7 @@
   <ItemGroup>
     <ClInclude Include="color.h" />
     <ClInclude Include="csvfilereader.h" />
+    <ClInclude Include="csvtfilereaderwriter.h" />
     <ClInclude Include="filesystem.h" />
     <ClInclude Include="foundationtypes.h" />
     <ClInclude Include="sgxfoundation.h" />
@@ -104,6 +105,7 @@
   <ItemGroup>
     <ClCompile Include="color.cpp" />
     <ClCompile Include="csvfilereader.cpp" />
+    <ClCompile Include="csvtfilereaderwriter.cpp" />
     <ClCompile Include="dllmain.cpp">
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</CompileAsManaged>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">

@@ -1,13 +1,15 @@
 #include "sourcedatamanager.h"
 #include <QtCore/QUuid>
 #include <QtCore/QFile>
+#include <QtCore/QDir>
 #include <QtCore/QFileInfo>
 #include <QtCore/QVariant>
 #include <exception>
 #include <boost/uuid/uuid_io.hpp>
 #include "datatransformmapping.h"
 #include <QtSql/QSqlQuery>
-#include "sqlcsvdriver.hpp"
+#include "csvfilereader.h"
+#include "csvtfilereaderwriter.h"
 
 namespace SynGlyphX {
 
@@ -98,11 +100,34 @@ namespace SynGlyphX {
 		return "";
 	}
 
+	QStringList SourceDataManager::GetSQLiteDataTypesForFormat(const QString& format) {
+
+		QStringList fieldTypes;
+		if (format.toUpper() == "CSV") {
+
+			fieldTypes.push_back("Text");
+			fieldTypes.push_back("Integer");
+			fieldTypes.push_back("Real");
+		}
+		else {
+
+			throw std::invalid_argument("Format " + format.toStdString() + " was not recognized");
+		}
+
+		return fieldTypes;
+	}
+
 	void SourceDataManager::AddDatabaseConnection(const Datasource& datasource, const boost::uuids::uuid& datasourceID) {
 
 		QString datasourceName = QString::fromStdWString(datasource.GetDBName());
+		QString connectionName = QString::fromStdString(boost::uuids::to_string(datasourceID));
 
-		QSqlDatabase newDataSourceDB = QSqlDatabase::addDatabase(GetQtDBType(datasource), QString::fromStdString(boost::uuids::to_string(datasourceID)));
+		if (datasource.IsFile() && !datasource.IsOriginalDatasourceADatabase()) {
+
+			datasourceName = GetIntermediateSQLiteDB(static_cast<const FileDatasource&>(datasource), connectionName);
+		}
+
+		QSqlDatabase newDataSourceDB = QSqlDatabase::addDatabase(GetQtDBType(datasource), connectionName);
 		newDataSourceDB.setDatabaseName(datasourceName);
 	}
 
@@ -164,6 +189,94 @@ namespace SynGlyphX {
 		}
 
 		return results;
+	}
+
+	void SourceDataManager::SetIntermediateDirectory(QString directory) {
+
+		QDir newDirectory(directory);
+		if (!newDirectory.exists()) {
+
+			if (!newDirectory.mkpath(directory)) {
+
+				throw std::invalid_argument("Unable to create " + directory.toStdString());
+			}
+		}
+
+		m_intermediateDirectory = directory;
+	}
+
+	QString SourceDataManager::GetIntermediateSQLiteDB(const FileDatasource& datasource, const QString& connectionName) {
+
+		QString datasourceName = m_intermediateDirectory + QDir::separator() + "int_" + connectionName + ".db";
+
+		QFile intermediateFile(datasourceName);
+		if (!intermediateFile.exists()) {
+
+			try {
+
+				QSqlDatabase intermediateDB = QSqlDatabase::addDatabase("QSQLITE", "Intermediate");
+				intermediateDB.setDatabaseName(datasourceName);
+
+				if (datasource.GetType() == FileDatasource::CSV) {
+
+					std::wstring csvtFilename = datasource.GetDBName() + L't';
+					QFile csvtFile(QString::fromStdWString(csvtFilename));
+					if (!csvtFile.exists()) {
+
+						throw std::exception("CSVT file exists");
+					}
+
+					QFile csvFile(QString::fromStdWString(datasource.GetDBName()));
+					if (!csvFile.exists()) {
+
+						throw std::exception("CSV file exists");
+					}
+
+					CSVTFileReaderWriter csvtFileReader(csvtFile.fileName().toStdString());
+					CSVFileReader csvFileReader(csvFile.fileName().toStdString());
+
+					const CSVFileReader::CSVValues& headers = csvFileReader.GetHeaders();
+					const CSVFileReader::CSVValues& types = csvtFileReader.GetTypes();
+
+					QSqlQuery createTableQuery(intermediateDB);
+					QString sqlCreateTable = "CREATE TABLE csv (\n" + QString::fromStdString(headers[0]) + ' ' + QString::fromStdString(types[0]);
+					for (int i = 1; i < headers.size(); ++i) {
+
+						sqlCreateTable += ",\n" + QString::fromStdString(headers[i]) + ' ' + QString::fromStdString(types[i]);
+					}
+					sqlCreateTable += "\n);";
+
+					createTableQuery.prepare(sqlCreateTable);
+					createTableQuery.exec();
+
+					while (!csvFileReader.IsAtEndOfFile()) {
+
+						CSVFileReader::CSVValues values = csvFileReader.GetValuesFromLine();
+
+						QSqlQuery insertTableQuery(intermediateDB);
+						QString sqlInsert = "INSERT INTO csv\nVALUES (" + QString::fromStdString(values[0]);
+						for (int i = 1; i < values.size(); ++i) {
+
+							sqlInsert += ", " + QString::fromStdString(values[i]);
+						}
+						sqlInsert += ");";
+						createTableQuery.prepare(sqlInsert);
+						createTableQuery.exec();
+					}
+				}
+
+				intermediateDB.commit();
+
+				QSqlDatabase::removeDatabase("Intermediate");
+			}
+			catch (const std::exception& e) {
+
+				QSqlDatabase::removeDatabase("Intermediate");
+				throw;
+			}
+		}
+
+		return datasourceName;
 	}
 
 } //namespace SynGlyphX

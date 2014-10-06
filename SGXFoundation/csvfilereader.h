@@ -1,6 +1,7 @@
 #ifndef SYNGLYPHX_CSVFILEREADER_H
-#define SYNGLYPHX_CSFFILEREADER_H
+#define SYNGLYPHX_CSVFILEREADER_H
 
+#include "sgxfoundation.h"
 #include <string>
 #include <boost/tokenizer.hpp>
 #include <fstream>
@@ -8,7 +9,7 @@
 
 namespace SynGlyphX {
 
-	class CSVFileReader
+	class SGXFOUNDATION_API CSVFileReader
 	{
 	public:
 		typedef boost::tokenizer< boost::escaped_list_separator<char> > Tokenizer;
@@ -22,7 +23,7 @@ namespace SynGlyphX {
 		CSVValues GetValuesFromLine();
 		bool IsAtEndOfFile() const;
 
-	private:
+	protected:
 		boost::escaped_list_separator<char> m_separators;
 		CSVValues m_headers;
 		std::ifstream m_filestream;
