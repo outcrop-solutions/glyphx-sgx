@@ -390,6 +390,7 @@ void DataMapperWindow::ExportToANTz() {
 		bool showStatusBarMessage = true;
 		try {
 
+			SynGlyphX::Filesystem::RemoveContentsOfDirectory(csvDirectory.toStdString());
 			SynGlyphX::Filesystem::CopyDirectory(QDir::toNativeSeparators(SynGlyphX::Application::applicationDirPath() + QDir::separator() + ANTzTemplateDir).toStdString(), csvDirectory.toStdString(), true);
 
 			ANTzTransformer transformer(csvDirectory);
@@ -397,14 +398,13 @@ void DataMapperWindow::ExportToANTz() {
 		}
 		catch (const std::exception& e) {
 
-			showStatusBarMessage = false;
+			SynGlyphX::Application::restoreOverrideCursor();
 			QMessageBox::critical(this, "Export to ANTz Error", e.what());
+			return;
 		}
 
-		SynGlyphX::Application::restoreOverrideCursor();
-		if (showStatusBarMessage) {
-			statusBar()->showMessage("Data transform sucessfully exported to ANTz", 3000);
-		}
+		SynGlyphX::Application::restoreOverrideCursor(); 
+		statusBar()->showMessage("Data transform sucessfully exported to ANTz", 3000);
 	}
 }
 
