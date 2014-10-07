@@ -41,7 +41,12 @@ void ANTzTransformer::CreateGlyphsFromMapping(const SynGlyphX::DataTransformMapp
 		}
 	}
 
-	GenerateCache(mapping, m_csvFilenames, m_baseImageFilename);
+	QStringList csvFiles;
+	csvFiles.push_back(QDir::toNativeSeparators(m_baseOutputDir + QDir::separator() + "usr" + QDir::separator() + "csv" + QDir::separator() + "antz0001.csv"));
+	csvFiles.push_back(QDir::toNativeSeparators(m_baseOutputDir + QDir::separator() + "usr" + QDir::separator() + "csv" + QDir::separator() + "antztag0001.csv"));
+	QString baseImageFilename = QDir::toNativeSeparators(m_baseOutputDir + QDir::separator() + "usr" + QDir::separator() + "images" + QDir::separator() + "map00001.jpg");
+
+	GenerateCache(mapping, csvFiles, baseImageFilename);
 }
 
 void ANTzTransformer::GenerateCache(const SynGlyphX::DataTransformMapping& mapping, const QStringList& csvFilenames, const QString& baseImageFilename) {
@@ -50,6 +55,7 @@ void ANTzTransformer::GenerateCache(const SynGlyphX::DataTransformMapping& mappi
 
 	if (baseImage.GetType() == SynGlyphX::BaseImage::Type::DownloadedMap) {
 
+		QFile::rename(baseImageFilename, QDir::toNativeSeparators(m_baseOutputDir + QDir::separator() + "usr" + QDir::separator() + "images" + QDir::separator() + "world.jpg"));
 		DownloadBaseImage(mapping, baseImageFilename);
 	}
 	

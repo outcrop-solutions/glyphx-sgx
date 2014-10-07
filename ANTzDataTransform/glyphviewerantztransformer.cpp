@@ -33,16 +33,12 @@ void GlyphViewerANTzTransformer::CreateGlyphsFromMapping(SynGlyphX::DataTransfor
 	bool useNonDefaultImage = (mapping.GetBaseImage().GetType() != SynGlyphX::BaseImage::Type::Default);
 
 	QStringList csvFiles;
-	csvFiles.push_back(cacheDir + QDir::separator() + "antz" + ".csv");
-	csvFiles.push_back(cacheDir + QDir::separator() + "antztag" + ".csv");
+	csvFiles.push_back(cacheDir + QDir::separator() + "antz.csv");
+	csvFiles.push_back(cacheDir + QDir::separator() + "antztag.csv");
 	QString baseImageFilename;
 	if (useNonDefaultImage) {
 
-		baseImageFilename = cacheDir + QDir::separator() + "baseimage" + ".jpg";
-	}
-	else {
-
-		baseImageFilename = "";
+		baseImageFilename = cacheDir + QDir::separator() + "baseimage.jpg";
 	}
 
 	if (DoesCacheNeedToBeRegenerated(mapping, csvFiles, baseImageFilename)) {
