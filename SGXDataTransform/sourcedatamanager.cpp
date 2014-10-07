@@ -179,14 +179,15 @@ namespace SynGlyphX {
 
 		QSqlDatabase db = QSqlDatabase::database(QString::fromStdWString(boost::uuids::to_wstring(inputfield.GetDatasourceID())));
 		QSqlQuery query(db);
-		query.prepare(QString("SELECT  MIN(%1), MAX(%1) FROM ").arg("\"" + QString::fromStdWString(inputfield.GetField()) + "\"") + QString::fromStdWString(inputfield.GetTable()));
+		QString queryString = QString("SELECT MIN(%1), MAX(%1) FROM ").arg("\"" + QString::fromStdWString(inputfield.GetField()) + "\"") + QString::fromStdWString(inputfield.GetTable());
+		query.prepare(queryString);
 
 		query.exec();
+		query.first();
 
 		QVariantList results;
-		while (query.next()) {
-			results.push_back(query.value(0));
-		}
+		results.push_back(query.value(0));
+		results.push_back(query.value(1));
 
 		return results;
 	}

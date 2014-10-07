@@ -13,6 +13,15 @@ namespace SynGlyphX {
 	{
 	}
 
+	void Filesystem::RemoveContentsOfDirectory(const std::string& directory) {
+
+		boost::filesystem::path dirPath(directory);
+		for (boost::filesystem::directory_iterator iT(dirPath); iT != boost::filesystem::directory_iterator(); ++iT) {
+
+			boost::filesystem::remove_all(iT->path());
+		}
+	}
+
 	void Filesystem::CopyDirectory(const std::string& sourceDir, const std::string& destinationDir, bool recursive) {
 
 		boost::filesystem::path sourcePath(sourceDir);

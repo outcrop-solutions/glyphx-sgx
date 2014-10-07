@@ -13,6 +13,7 @@ namespace SynGlyphX {
 		Filesystem();
 		~Filesystem();
 
+		static void RemoveContentsOfDirectory(const std::string& directory);
 		static void CopyDirectory(const std::string& sourceDir, const std::string& destinationDir, bool recursive = false);
 
 	private:

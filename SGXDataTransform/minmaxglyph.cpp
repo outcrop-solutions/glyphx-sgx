@@ -179,9 +179,9 @@ namespace SynGlyphX {
 		if ((std::abs(difference[0]) > 0) || (std::abs(difference[1]) > 0) || (std::abs(difference[2]) > 0)) {
 
 			boost::property_tree::wptree& rgbDiffPropertyTree = rgbPropertyTree.add(L"Difference", L"");
-			rgbDiffPropertyTree.put<short>(L"R", min[0]);
-			rgbDiffPropertyTree.put<short>(L"G", min[1]);
-			rgbDiffPropertyTree.put<short>(L"B", min[2]);
+			rgbDiffPropertyTree.put<short>(L"R", difference[0]);
+			rgbDiffPropertyTree.put<short>(L"G", difference[1]);
+			rgbDiffPropertyTree.put<short>(L"B", difference[2]);
 		}
 
 		if (inputBindings[0].IsBoundToInputField()) {
