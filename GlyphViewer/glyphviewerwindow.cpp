@@ -9,7 +9,7 @@
 #include "datatransformmapping.h"
 #include "downloadoptionsdialog.h"
 #include "data/npmapfile.h"
-#include "databaseservices.h"
+#include "sourcedatamanager.h"
 #include "glyphviewerantztransformer.h"
 #include "changedatasourcefiledialog.h"
 
@@ -170,7 +170,7 @@ void GlyphViewerWindow::LoadDataTransform(const QString& filename) {
 
 		if (wereDatasourcesUpdated) {
 
-			mapping.WriteToFile(filename.toStdString(), false);
+			mapping.WriteToFile(filename.toStdString());
 		}
 
 		GlyphViewerANTzTransformer transformer(m_cacheDir);

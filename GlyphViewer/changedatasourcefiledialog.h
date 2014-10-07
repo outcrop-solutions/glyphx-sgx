@@ -3,14 +3,14 @@
 
 #include <QtWidgets/QDialog>
 #include "browselineedit.h"
-#include "datasource.h"
+#include "filedatasource.h"
 
 class ChangeDatasourceFileDialog : public QDialog
 {
 	Q_OBJECT
 
 public:
-	ChangeDatasourceFileDialog(const SynGlyphX::Datasource& oldDatasourceFile, const QString& acceptButtonText, QWidget *parent = 0);
+	ChangeDatasourceFileDialog(const SynGlyphX::FileDatasource& oldDatasourceFile, const QString& acceptButtonText, QWidget *parent = 0);
 	~ChangeDatasourceFileDialog();
 
 	QString GetNewDatasourceFile() const;
@@ -22,6 +22,7 @@ private:
 	bool ValidateNewDatasourceFile() const;
 	SynGlyphX::BrowseLineEdit* m_newDatasourceFileLineEdit;
 	QStringList m_oldDatasourceTables;
+	SynGlyphX::FileDatasource::SourceType m_fileSourceType;
 };
 
 #endif // CHANGEDATASOURCEFILEDIALOG_H
