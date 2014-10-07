@@ -1,11 +1,12 @@
 #ifndef FILEDATASOURCE_H
 #define FILEDATASOURCE_H
 
+#include "sgxdatatransform_global.h"
 #include "datasource.h"
 
 namespace SynGlyphX {
 
-	class FileDatasource : public Datasource
+	class SGXDATATRANSFORM_EXPORT FileDatasource : public Datasource
 	{
 	public:
 		enum SourceType {
