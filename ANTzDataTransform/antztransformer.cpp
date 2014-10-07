@@ -3,7 +3,7 @@
 #include <QtCore/QDir>
 #include <boost/filesystem.hpp>
 #include "sourcedatamanager.h"
-#include "csvreaderwriter.h"
+#include "antzcsvwriter.h"
 #include "downloadedmapproperties.h"
 #include "networkdownloader.h"
 
@@ -66,7 +66,7 @@ void ANTzTransformer::GenerateCache(const SynGlyphX::DataTransformMapping& mappi
 		}
 	}
 
-	SynGlyphX::CSVReaderWriter& writer = SynGlyphX::CSVReaderWriter::GetInstance();
+	SynGlyphX::ANTzCSVWriter& writer = SynGlyphX::ANTzCSVWriter::GetInstance();
 	writer.Write(csvFilenames[0].toStdString(), csvFilenames[1].toStdString(), trees);
 
 	m_csvFilenames = csvFilenames;

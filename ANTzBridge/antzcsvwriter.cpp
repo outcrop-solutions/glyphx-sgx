@@ -1,12 +1,12 @@
-#include "csvreaderwriter.h"
+#include "antzcsvwriter.h"
 #include <fstream>
 #include <locale>
 
 namespace SynGlyphX {
 
-    CSVReaderWriter CSVReaderWriter::s_instance;
+    ANTzCSVWriter ANTzCSVWriter::s_instance;
 
-    CSVReaderWriter::CSVReaderWriter()
+    ANTzCSVWriter::ANTzCSVWriter()
     {
         m_predefinedColors[0] = SynGlyphX::Color({ { 50, 101, 101, 255 } });
 		m_predefinedColors[1] = SynGlyphX::Color({ { 0, 255, 0, 255 } });
@@ -31,11 +31,11 @@ namespace SynGlyphX {
     }
 
 
-    CSVReaderWriter::~CSVReaderWriter()
+    ANTzCSVWriter::~ANTzCSVWriter()
     {
     }
 
-	void CSVReaderWriter::Write(const std::string& filename, const std::string& tagFilename, const GlyphTree::ConstSharedVector& trees, unsigned long startingId) {
+	void ANTzCSVWriter::Write(const std::string& filename, const std::string& tagFilename, const GlyphTree::ConstSharedVector& trees, unsigned long startingId) {
 
         std::ofstream file;
 		std::ofstream tagfile;
@@ -79,7 +79,7 @@ namespace SynGlyphX {
         }
     }
 
-	unsigned long CSVReaderWriter::WriteGlyphTag(std::ofstream& file, const GlyphTree::ConstSharedPtr tree, const GlyphTree::const_iterator& glyph, unsigned long id) {
+	unsigned long ANTzCSVWriter::WriteGlyphTag(std::ofstream& file, const GlyphTree::ConstSharedPtr tree, const GlyphTree::const_iterator& glyph, unsigned long id) {
 
 		unsigned int numberOfChildren = tree->children(glyph);
 
@@ -103,7 +103,7 @@ namespace SynGlyphX {
 		return childId;
 	}
 
-	unsigned long CSVReaderWriter::WriteGlyph(std::ofstream& file, const GlyphTree::ConstSharedPtr tree, const GlyphTree::const_iterator& glyph, unsigned long id, unsigned long parentId, unsigned long branchLevel) {
+	unsigned long ANTzCSVWriter::WriteGlyph(std::ofstream& file, const GlyphTree::ConstSharedPtr tree, const GlyphTree::const_iterator& glyph, unsigned long id, unsigned long parentId, unsigned long branchLevel) {
 
 		unsigned int numberOfChildren = tree->children(glyph);
 
@@ -127,7 +127,7 @@ namespace SynGlyphX {
 		return childId;
     }
 
-	unsigned int CSVReaderWriter::ConvertGeometryToCSVInt(GlyphProperties::Shape shape, GlyphProperties::Surface surface) {
+	unsigned int ANTzCSVWriter::ConvertGeometryToCSVInt(GlyphProperties::Shape shape, GlyphProperties::Surface surface) {
 
 		if (shape == GlyphProperties::Shape::Pin) {
 			return (2 * shape) + 1 - surface;
@@ -137,11 +137,11 @@ namespace SynGlyphX {
 		}
     }
 
-    CSVReaderWriter& CSVReaderWriter::GetInstance() {
+    ANTzCSVWriter& ANTzCSVWriter::GetInstance() {
         return s_instance;
     }
 
-    unsigned short CSVReaderWriter::GetColorIndex(const Color& color) {
+    unsigned short ANTzCSVWriter::GetColorIndex(const Color& color) {
 
         for (unsigned short i = 0; i < MaxPredefinedColors; ++i) {
             if ((color[0] == m_predefinedColors[i][0]) && 

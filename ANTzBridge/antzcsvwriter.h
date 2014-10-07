@@ -13,18 +13,18 @@ namespace SynGlyphX {
 
     const unsigned short MaxPredefinedColors = 20;
 
-	class ANTZBRIDGE_API CSVReaderWriter : public boost::noncopyable
+	class ANTZBRIDGE_API ANTzCSVWriter : public boost::noncopyable
     {
     public:
-        CSVReaderWriter();
-        ~CSVReaderWriter();
+        ANTzCSVWriter();
+        ~ANTzCSVWriter();
 
 		void Write(const std::string& filename, const std::string& tagFilename, const GlyphTree::ConstSharedVector& trees, unsigned long startingId = 32);
 
-        static CSVReaderWriter& GetInstance();
+        static ANTzCSVWriter& GetInstance();
 
     private:
-        static CSVReaderWriter s_instance;
+        static ANTzCSVWriter s_instance;
 
 		unsigned long WriteGlyph(std::ofstream& file, const GlyphTree::ConstSharedPtr tree, const GlyphTree::const_iterator& glyph, unsigned long id, unsigned long parentId, unsigned long branchLevel);
 		unsigned long WriteGlyphTag(std::ofstream& file, const GlyphTree::ConstSharedPtr tree, const GlyphTree::const_iterator& glyph, unsigned long id);

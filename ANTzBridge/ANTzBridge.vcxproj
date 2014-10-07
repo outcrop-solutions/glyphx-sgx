@@ -92,7 +92,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ANTzBridge.h" />
-    <ClInclude Include="csvreaderwriter.h" />
+    <ClInclude Include="antzcsvwriter.h" />
     <ClInclude Include="glyph.h" />
     <ClInclude Include="glyphmappableproperties.h" />
     <ClInclude Include="glyphproperties.h" />
@@ -101,7 +101,7 @@
     <ClInclude Include="typedefs.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="csvreaderwriter.cpp" />
+    <ClCompile Include="antzcsvwriter.cpp" />
     <ClCompile Include="dllmain.cpp">
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</CompileAsManaged>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
