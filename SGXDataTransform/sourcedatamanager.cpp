@@ -4,6 +4,7 @@
 #include <QtCore/QDir>
 #include <QtCore/QFileInfo>
 #include <QtCore/QVariant>
+#include <QtCore/QDateTime>
 #include <exception>
 #include <boost/uuid/uuid_io.hpp>
 #include "datatransformmapping.h"
@@ -201,8 +202,14 @@ namespace SynGlyphX {
 
 		QString datasourceName = m_intermediateDirectory + QDir::separator() + "int_" + connectionName + ".db";
 
-		QFile intermediateFile(datasourceName);
-		if (!intermediateFile.exists()) {
+		QFileInfo originalDataSourceFile(QString::fromStdWString(datasource.GetDBName()));
+		QFileInfo intermediateFile(datasourceName);
+		if ((!intermediateFile.exists()) || (originalDataSourceFile.lastModified() > intermediateFile.lastModified())) {
+
+			if (intermediateFile.exists()) {
+
+				QFile::remove(datasourceName);
+			}
 
 			try {
 
