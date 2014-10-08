@@ -34,6 +34,9 @@ namespace SynGlyphX {
 			m_fieldTypeTable->setCellWidget(i, 1, typeComboBox);
 		}
 
+		m_fieldTypeTable->resizeColumnsToContents();
+		m_fieldTypeTable->resizeRowsToContents();
+
 		layout->addWidget(m_fieldTypeTable);
 
 		QDialogButtonBox* dialogButtonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, this);

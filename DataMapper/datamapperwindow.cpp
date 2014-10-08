@@ -242,7 +242,7 @@ bool DataMapperWindow::SaveDataTransform(const QString& filename) {
 
 	try {
 		m_dataBindingWidget->CommitChanges();
-		m_dataTransformModel->GetDataTransform()->WriteToFile(filename.toStdString());
+		m_dataTransformModel->SaveDataTransformFile(filename);
 		SetCurrentFile(filename);
 		setWindowModified(false);
 		statusBar()->showMessage("Data transform successfully saved", 3000);

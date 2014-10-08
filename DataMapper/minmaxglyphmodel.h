@@ -22,6 +22,8 @@ public:
 	virtual bool setData(const QModelIndex& index, const QVariant& value, int role = Qt::EditRole);
 	virtual QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
 
+	SynGlyphX::DataTransformMapping::ConstSharedPtr GetDataTransformMapping() const;
+
 public slots:
 	void SetMinMaxGlyph(const QModelIndex& index);
 	void Clear();

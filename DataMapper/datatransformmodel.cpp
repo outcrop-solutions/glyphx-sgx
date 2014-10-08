@@ -1,16 +1,29 @@
 #include "datatransformmodel.h"
 #include "sourcedatamanager.h"
+#include <QtCore/QDir>
+#include <boost/uuid/uuid_io.hpp>
+#include "application.h"
 
 DataTransformModel::DataTransformModel(QObject *parent)
 	: QAbstractItemModel(parent),
 	m_dataTransform(new SynGlyphX::DataTransformMapping())
 {
-
+	SetIntermediateDirectoryToCurrentID();
 }
 
 DataTransformModel::~DataTransformModel()
 {
 
+}
+
+void DataTransformModel::SetIntermediateDirectoryToCurrentID() {
+
+	m_sourceDataManager.SetIntermediateDirectory(GetIntermediateDirectoryForID(m_dataTransform->GetID()));
+}
+
+QString DataTransformModel::GetIntermediateDirectoryForID(const boost::uuids::uuid& id) {
+
+	return QDir::toNativeSeparators(QDir::tempPath() + QDir::separator() + SynGlyphX::Application::applicationName() + QDir::separator() + "int_" + QString::fromStdString(boost::uuids::to_string(id)));
 }
 
 int DataTransformModel::columnCount(const QModelIndex& parent) const {
@@ -129,8 +142,14 @@ void DataTransformModel::LoadDataTransformFile(const QString& filename) {
 	beginResetModel();
 	m_sourceDataManager.ClearDatabaseConnections();
 	m_dataTransform->ReadFromFile(filename.toStdString());
+	SetIntermediateDirectoryToCurrentID();
 	m_sourceDataManager.AddDatabaseConnections(m_dataTransform->GetDatasources());
 	endResetModel();
+}
+
+void DataTransformModel::SaveDataTransformFile(const QString& filename) {
+
+	m_dataTransform->WriteToFile(filename.toStdString());
 }
 
 void DataTransformModel::Clear() {
@@ -139,6 +158,7 @@ void DataTransformModel::Clear() {
 	m_sourceDataManager.ClearDatabaseConnections();
 	m_dataTransform->Clear();
 	endResetModel();
+	SetIntermediateDirectoryToCurrentID();
 }
 
 void DataTransformModel::SetBaseImage(const SynGlyphX::BaseImage& baseImage) {

@@ -7,8 +7,9 @@
 #include <QtSql/QSqlRecord>
 #include <QtSql/QSqlQuery>
 
-BindingLineEdit::BindingLineEdit(QWidget *parent, bool onlyAcceptsNumericFields)
+BindingLineEdit::BindingLineEdit(MinMaxGlyphModel* model, QWidget *parent, bool onlyAcceptsNumericFields)
 	: QLineEdit(parent),
+	m_model(model),
 	m_onlyAcceptsNumericFields(onlyAcceptsNumericFields)
 {
 	setReadOnly(true);
@@ -37,7 +38,14 @@ void BindingLineEdit::SetInputField(const SynGlyphX::InputField& inputfield) {
 	m_inputField = inputfield;
 	if (m_inputField.IsValid()) {
 
-		QString text = SynGlyphX::SourceDataManager::GetFormattedDBName(inputfield.GetDatasourceID()) + ":" + QString::fromStdWString(inputfield.GetTable()) + ":" + QString::fromStdWString(inputfield.GetField());
+		const SynGlyphX::Datasource& datasource = m_model->GetDataTransformMapping()->GetDatasources().GetDatasourceByID(inputfield.GetDatasourceID());
+
+		QString text = QString::fromStdWString(datasource.GetFormattedName());
+		if (datasource.CanDatasourceHaveMultipleTables()) {
+		
+			text += ":" + QString::fromStdWString(inputfield.GetTable());
+		}
+		text += ":" + QString::fromStdWString(inputfield.GetField());
 		setText(text);
 	}
 	else {

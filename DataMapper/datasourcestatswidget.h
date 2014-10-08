@@ -20,7 +20,7 @@ public:
 
 private:
     void CreateTablesFromDatasource(const boost::uuids::uuid& id, const SynGlyphX::Datasource& datasource);
-	void CreateTableView(const boost::uuids::uuid& id, const QSqlDatabase& db, const QString& tableName);
+	void CreateTableView(const boost::uuids::uuid& id, const QString& tableName, const QString& tabName);
 	QList<QTableView*> m_statViews;
 	boost::shared_ptr<const SynGlyphX::DataTransformMapping> m_mapping;
 	std::set<boost::uuids::uuid> m_datasourcesShownInTabs;

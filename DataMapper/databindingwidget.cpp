@@ -41,7 +41,7 @@ void DataBindingWidget::CreateTagAndDescriptionWidget() {
 	labelFont.setBold(true);
 	label->setFont(labelFont);
 
-	m_tagLineEdit = new BindingLineEdit(this, false);
+	m_tagLineEdit = new BindingLineEdit(m_model, this, false);
 
 	QDataWidgetMapper* mapper = new QDataWidgetMapper(this);
 	mapper->setModel(m_model);
@@ -139,7 +139,7 @@ void DataBindingWidget::CreateRowOfPropertyWidgets(QGridLayout* layout, QWidget*
 	labelFont.setBold(true);
 	label->setFont(labelFont);
 
-	BindingLineEdit* inputBindingLineEdit = new BindingLineEdit(this, true);
+	BindingLineEdit* inputBindingLineEdit = new BindingLineEdit(m_model, this, true);
 
 	mapper->setModel(m_model);
 

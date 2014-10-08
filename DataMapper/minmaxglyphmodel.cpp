@@ -322,3 +322,8 @@ QVariant MinMaxGlyphModel::headerData(int section, Qt::Orientation orientation, 
 
 	return QVariant();
 }
+
+SynGlyphX::DataTransformMapping::ConstSharedPtr MinMaxGlyphModel::GetDataTransformMapping() const {
+
+	return m_dataTransformModel->GetDataTransform();
+}

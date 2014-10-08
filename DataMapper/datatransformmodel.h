@@ -22,6 +22,7 @@ public:
 
 	void AddGlyphFile(const QString& filename);
 	void LoadDataTransformFile(const QString& filename);
+	void SaveDataTransformFile(const QString& filename);
 	void Clear();
 
 	void SetBaseImage(const SynGlyphX::BaseImage& baseImage);
@@ -36,6 +37,9 @@ public:
 	SynGlyphX::DataTransformMapping::ConstSharedPtr GetDataTransform() const;
 
 private:
+	void SetIntermediateDirectoryToCurrentID();
+	QString GetIntermediateDirectoryForID(const boost::uuids::uuid& id);
+
 	SynGlyphX::DataTransformMapping::SharedPtr m_dataTransform;
 	SynGlyphX::SourceDataManager m_sourceDataManager;
 };

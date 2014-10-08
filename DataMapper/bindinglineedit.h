@@ -3,6 +3,7 @@
 
 #include <QtWidgets/QLineEdit>
 #include "inputbinding.h"
+#include "minmaxglyphmodel.h"
 
 class BindingLineEdit : public QLineEdit
 {
@@ -11,7 +12,7 @@ class BindingLineEdit : public QLineEdit
 	Q_PROPERTY(SynGlyphX::InputField value READ GetInputField WRITE SetInputField NOTIFY ValueChanged USER true)
 
 public:
-	BindingLineEdit(QWidget *parent = 0, bool onlyAcceptsNumericFields = true);
+	BindingLineEdit(MinMaxGlyphModel* model, QWidget *parent = 0, bool onlyAcceptsNumericFields = true);
 	~BindingLineEdit();
 
 	const SynGlyphX::InputField& GetInputField() const;
@@ -31,6 +32,7 @@ protected:
 	virtual void contextMenuEvent(QContextMenuEvent* event);
 
 private:
+	MinMaxGlyphModel* m_model;
 	SynGlyphX::InputField m_inputField;
 	bool m_onlyAcceptsNumericFields;
 	QAction* m_clearAction;

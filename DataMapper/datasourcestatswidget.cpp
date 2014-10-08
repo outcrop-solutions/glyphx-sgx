@@ -61,22 +61,23 @@ void DataSourceStatsWidget::CreateTablesFromDatasource(const boost::uuids::uuid&
 		throw std::exception("Failed to load data sources");
 	}
 
-	if (datasource.GetTables().empty()) {
-
-		CreateTableView(id, datasourceDB, "");
-	}
-	else {
+	const std::wstring& formattedName = datasource.GetFormattedName();
+	if (datasource.CanDatasourceHaveMultipleTables()) {
 
 		for (const std::wstring& table : datasource.GetTables()) {
 
-			CreateTableView(id, datasourceDB, QString::fromStdWString(table));
+			CreateTableView(id, QString::fromStdWString(table), QString::fromStdWString(formattedName + L":" + table));
 		}
+	}
+	else {
+
+		CreateTableView(id, QString::fromStdWString(*datasource.GetTables().begin()), QString::fromStdWString(formattedName));
 	}
 
 	m_datasourcesShownInTabs.insert(id);
 }
 
-void DataSourceStatsWidget::CreateTableView(const boost::uuids::uuid& id, const QSqlDatabase& db, const QString& tableName) {
+void DataSourceStatsWidget::CreateTableView(const boost::uuids::uuid& id, const QString& tableName, const QString& tabName) {
 
 	QTableView* view = new QTableView(this);
 	view->setSelectionMode(QAbstractItemView::SingleSelection);
@@ -95,12 +96,6 @@ void DataSourceStatsWidget::CreateTableView(const boost::uuids::uuid& id, const 
 	view->resizeRowsToContents();
 	
 	m_statViews.push_back(view);
-	
-	QString tabName = SynGlyphX::SourceDataManager::GetFormattedDBName(db);
-	if (!tableName.isEmpty()) {
-
-		tabName += ":" + tableName;
-	}
 
 	addTab(view, tabName);
 }
