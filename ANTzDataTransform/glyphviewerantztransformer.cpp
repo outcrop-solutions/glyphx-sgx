@@ -7,6 +7,7 @@
 GlyphViewerANTzTransformer::GlyphViewerANTzTransformer(const QString& cacheBaseDir) :
 	ANTzTransformer(cacheBaseDir)
 {
+	m_sourceDataManager.SetIntermediateDirectory(QDir::toNativeSeparators(cacheBaseDir + QDir::separator() + "intermediate"));
 }
 
 
@@ -14,7 +15,7 @@ GlyphViewerANTzTransformer::~GlyphViewerANTzTransformer()
 {
 }
 
-void GlyphViewerANTzTransformer::CreateGlyphsFromMapping(SynGlyphX::DataTransformMapping& mapping) {
+void GlyphViewerANTzTransformer::CreateGlyphsFromMapping(const SynGlyphX::DataTransformMapping& mapping) {
 
 	QString cacheSubDir = "cache_" + QString::fromStdWString(boost::uuids::to_wstring(mapping.GetID()));
 
@@ -41,13 +42,17 @@ void GlyphViewerANTzTransformer::CreateGlyphsFromMapping(SynGlyphX::DataTransfor
 		baseImageFilename = cacheDir + QDir::separator() + "baseimage.jpg";
 	}
 
-	if (DoesCacheNeedToBeRegenerated(mapping, csvFiles, baseImageFilename)) {
+	QString cachedMappingFilename = cacheDir + QDir::separator() + "mapping.sdt";
+
+	if (DoesCacheNeedToBeRegenerated(mapping, csvFiles, baseImageFilename, cachedMappingFilename)) {
 
 		GenerateCache(mapping, csvFiles, baseImageFilename);
+		//Write the mapping to the cache
+		mapping.WriteToFile(cachedMappingFilename.toStdString());
 	}
 }
 
-bool GlyphViewerANTzTransformer::DoesCacheNeedToBeRegenerated(const SynGlyphX::DataTransformMapping& mapping, const QStringList& csvFilenames, const QString& baseImageFilename) const {
+bool GlyphViewerANTzTransformer::DoesCacheNeedToBeRegenerated(const SynGlyphX::DataTransformMapping& mapping, const QStringList& csvFilenames, const QString& baseImageFilename, const QString& mappingFilename) const {
 
 	if (csvFilenames.empty()) {
 
@@ -67,6 +72,19 @@ bool GlyphViewerANTzTransformer::DoesCacheNeedToBeRegenerated(const SynGlyphX::D
 		if (!baseImage.exists()) {
 			return true;
 		}
+	}
+
+	QFile cachedMappingFile(mappingFilename);
+	if (!cachedMappingFile.exists()) {
+	
+		return true;
+	}
+	
+	SynGlyphX::DataTransformMapping cachedMapping;
+	cachedMapping.ReadFromFile(mappingFilename.toStdString());
+	if (cachedMapping != mapping) {
+
+		return true;
 	}
 
 	boost::filesystem::path firstCSVFilePath(csvFilenames[0].toStdString());

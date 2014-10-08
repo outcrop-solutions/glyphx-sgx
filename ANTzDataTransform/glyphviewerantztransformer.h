@@ -12,8 +12,8 @@ public:
 	virtual ~GlyphViewerANTzTransformer();
 
 protected:
-	virtual void CreateGlyphsFromMapping(SynGlyphX::DataTransformMapping& mapping);
-	bool DoesCacheNeedToBeRegenerated(const SynGlyphX::DataTransformMapping& mapping, const QStringList& csvFilenames, const QString& baseImageFilename) const;
+	virtual void CreateGlyphsFromMapping(const SynGlyphX::DataTransformMapping& mapping);
+	bool DoesCacheNeedToBeRegenerated(const SynGlyphX::DataTransformMapping& mapping, const QStringList& csvFilenames, const QString& baseImageFilename, const QString& mappingFilename) const;
 };
 
 #endif //GVANTZTRANSFORMER_H
