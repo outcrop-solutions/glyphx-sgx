@@ -23,6 +23,7 @@ namespace SynGlyphX {
 		bool operator==(const DatasourceMaps& maps) const;
 		bool operator!=(const DatasourceMaps& maps) const;
 
+		const Datasource& GetDatasourceByID(const boost::uuids::uuid& id) const;
 		bool HasDatasources() const;
 		void Clear();
 		bool EnableTables(const boost::uuids::uuid& id, const Datasource::TableSet& tables, bool enable = true);

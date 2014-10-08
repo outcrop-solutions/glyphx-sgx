@@ -38,6 +38,7 @@ namespace SynGlyphX {
 		virtual bool CanDatasourceHaveMultipleTables() const;
 		virtual bool IsFile() const;
 		virtual bool CanDatasourceBeFound() const;
+		virtual const std::wstring& GetFormattedName() const;
 
 		virtual PropertyTree& ExportToPropertyTree(boost::property_tree::wptree& parentPropertyTree);
 
@@ -45,6 +46,7 @@ namespace SynGlyphX {
 
 	private:
 		SourceType m_type;
+		std::wstring m_formattedName;
 	};
 
 } //namespace SynGlyphX

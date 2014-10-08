@@ -101,6 +101,7 @@ namespace SynGlyphX {
 		m_datasources.Clear();
 		m_glyphTrees.clear();
 		m_baseImage = BaseImage(nullptr);
+		m_id = UUIDGenerator::GetNewRandomUUID();
     }
 
 	void DataTransformMapping::RemoveDatasource(const boost::uuids::uuid& id) {

@@ -2,6 +2,7 @@
 #include <boost/assign/list_of.hpp>
 #include <boost/bimap/list_of.hpp>
 #include <boost/filesystem.hpp>
+#include <boost/filesystem.hpp>
 
 namespace SynGlyphX {
 
@@ -14,18 +15,28 @@ namespace SynGlyphX {
 		Datasource(filename, host, port, username, password),
 		m_type(type)
 	{
+		//CSV files are a single table so put in a dummy value for tables that can be used to create and reference CSV data by QtSql as needed
+		if (!CanDatasourceHaveMultipleTables()) {
+		
+			m_tables.insert(L"OnlyTable");
+		}
+
+		boost::filesystem::path datasourcePath(filename);
+		m_formattedName = datasourcePath.filename().wstring();
 	}
 
 	FileDatasource::FileDatasource(const PropertyTree& propertyTree) :
 		Datasource(propertyTree),
 		m_type(s_sourceTypeStrings.right.at(propertyTree.get<std::wstring>(L"<xmlattr>.type"))) {
 
-
+		boost::filesystem::path datasourcePath(m_dbName);
+		m_formattedName = datasourcePath.filename().wstring();
 	}
 
 	FileDatasource::FileDatasource(const FileDatasource& datasource) :
 		Datasource(datasource),
-		m_type(datasource.m_type) {
+		m_type(datasource.m_type),
+		m_formattedName(datasource.m_formattedName) {
 
 
 	}
@@ -38,6 +49,7 @@ namespace SynGlyphX {
 
 		Datasource::operator=(datasource);
 		m_type = datasource.m_type;
+		m_formattedName = datasource.m_formattedName;
 
 		return *this;
 	}
@@ -79,7 +91,7 @@ namespace SynGlyphX {
 
 	bool FileDatasource::RequiresConversionToDB() const {
 
-		return false;
+		return (m_type != SourceType::SQLITE3);
 	}
 
 	bool FileDatasource::IsOriginalDatasourceADatabase() const {
@@ -109,6 +121,11 @@ namespace SynGlyphX {
 		propertyTree.put(L"<xmlattr>.type", s_sourceTypeStrings.left.at(m_type));
 
 		return propertyTree;
+	}
+
+	const std::wstring& FileDatasource::GetFormattedName() const {
+
+		return m_formattedName;
 	}
 
 } //namespace SynGlyphX
