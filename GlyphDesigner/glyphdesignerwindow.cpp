@@ -9,7 +9,7 @@
 #include <QtWidgets/QStatusBar>
 #include <QtGui/QCloseEvent>
 #include "singleglyphwidget.h"
-#include "csvreaderwriter.h"
+#include "antzcsvwriter.h"
 #include "application.h"
 #include "modalglyphwidget.h"
 
@@ -60,8 +60,8 @@ void GlyphDesignerWindow::CreateMenus() {
 	QAction* exportDataMapperAction = m_fileMenu->addAction(tr("Export to Data Mapper Template"));
 	QObject::connect(exportDataMapperAction, &QAction::triggered, this, &GlyphDesignerWindow::ExportToDataMapperTemplate);
 
-    QAction* exportAction = m_fileMenu->addAction(tr("Export to CSV"));
-    QObject::connect(exportAction, &QAction::triggered, this, &GlyphDesignerWindow::ExportToCSV);
+    //QAction* exportAction = m_fileMenu->addAction(tr("Export to CSV"));
+    //QObject::connect(exportAction, &QAction::triggered, this, &GlyphDesignerWindow::ExportToCSV);
 
     m_fileMenu->addActions(m_recentFileActions);
     
@@ -238,7 +238,8 @@ void GlyphDesignerWindow::LoadRecentFile(const QString& filename) {
 void GlyphDesignerWindow::OpenTemplate() {
 
     if (AskUserToSave()) {
-        QString openFile = QFileDialog::getOpenFileName(this, tr("Open Template"), "", tr("SynGlyphX Glyph Template Files (*.sgt *.csv)"));
+        //QString openFile = QFileDialog::getOpenFileName(this, tr("Open Template"), "", tr("SynGlyphX Glyph Template Files (*.sgt *.csv)"));
+		QString openFile = QFileDialog::getOpenFileName(this, tr("Open Template"), "", tr("SynGlyphX Glyph Template Files (*.csv)"));
         LoadTemplate(openFile);
     }
 }
@@ -275,7 +276,8 @@ bool GlyphDesignerWindow::SaveTemplate() {
 
 bool GlyphDesignerWindow::SaveAsTemplate() {
 
-    QString saveFile = QFileDialog::getSaveFileName(this, tr("Save Glyph Tree As Template"), "", tr("SynGlyphX Glyph Template Files (*.sgt)"));
+    //QString saveFile = QFileDialog::getSaveFileName(this, tr("Save Glyph Tree As Template"), "", tr("SynGlyphX Glyph Template Files (*.sgt)"));
+	QString saveFile = QFileDialog::getSaveFileName(this, tr("Save Glyph Tree As Template"), "", tr("SynGlyphX Glyph Template Files (*.csv)"));
     return SaveTemplateFile(saveFile);
 }
     

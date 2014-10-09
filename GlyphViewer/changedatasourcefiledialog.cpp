@@ -3,6 +3,8 @@
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QDialogButtonBox>
 #include <QtWidgets/QMessageBox>
+#include <QtCore/QFile>
+#include <QtCore/QDir>
 #include "sourcedatamanager.h"
 
 ChangeDatasourceFileDialog::ChangeDatasourceFileDialog(const SynGlyphX::FileDatasource& oldDatasourceFile, const QString& acceptButtonText, QWidget *parent)
@@ -12,7 +14,7 @@ ChangeDatasourceFileDialog::ChangeDatasourceFileDialog(const SynGlyphX::FileData
 	QFormLayout* layout = new QFormLayout(this);
 
 	QString oldDatasourceName = QString::fromStdWString(oldDatasourceFile.GetDBName());
-	QLabel* oldDatasourceLabel = new QLabel(oldDatasourceName, this);
+	QLabel* oldDatasourceLabel = new QLabel(QDir::toNativeSeparators(oldDatasourceName), this);
 	layout->addRow(tr("Old Datasource:"), oldDatasourceLabel);
 	m_newDatasourceFileLineEdit = new SynGlyphX::BrowseLineEdit(SynGlyphX::BrowseLineEdit::FileDialogType::FileOpen, true, this);
 	m_newDatasourceFileLineEdit->SetInitalBrowseDirectory(oldDatasourceName);
@@ -78,7 +80,13 @@ bool ChangeDatasourceFileDialog::ValidateNewDatasourceFile() const {
 		
 		if (newDatasource.right(4) == ".csv") {
 
-			return true;
+			QFile csvFile(newDatasource);
+			QFile csvtFile(newDatasource + 't');
+
+			if (csvFile.exists() && csvtFile.exists()) {
+
+				return true;
+			}
 		}
 	}
 
