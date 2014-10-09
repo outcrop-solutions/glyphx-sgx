@@ -116,8 +116,12 @@ namespace SynGlyphX {
 			}
 		}
 
-		QSqlDatabase newDataSourceDB = QSqlDatabase::addDatabase(GetQtDBType(datasource), connectionName);
-		newDataSourceDB.setDatabaseName(datasourceName);
+		if (!QSqlDatabase::contains(connectionName)) {
+
+			QSqlDatabase newDataSourceDB = QSqlDatabase::addDatabase(GetQtDBType(datasource), connectionName);
+			newDataSourceDB.setDatabaseName(datasourceName);
+			m_databaseIDs.insert(datasourceID);
+		}
 	}
 
 	void SourceDataManager::AddDatabaseConnections(const DatasourceMaps& datasources) {
@@ -130,23 +134,25 @@ namespace SynGlyphX {
 
 	void SourceDataManager::ClearDatabaseConnection(const boost::uuids::uuid& id) {
 
-		ClearDatabaseConnection(QString::fromStdString(boost::uuids::to_string(id)));
-		m_databaseIDs.erase(m_databaseIDs.find(id));
+		DatabaseIDSet::iterator iT = m_databaseIDs.find(id);
+		if (iT != m_databaseIDs.end()) {
+
+			ClearDatabaseConnection(iT);
+		}
 	}
 
-	void SourceDataManager::ClearDatabaseConnection(const QString& id) {
+	void SourceDataManager::ClearDatabaseConnection(const DatabaseIDSet::const_iterator& id) {
 
-		QSqlDatabase::removeDatabase(id);
+		QSqlDatabase::removeDatabase(QString::fromStdString(boost::uuids::to_string(*id)));
+		m_databaseIDs.erase(id);
 	}
 
 	void SourceDataManager::ClearDatabaseConnections() {
 
-		for (boost::uuids::uuid id : m_databaseIDs) {
+		while (!m_databaseIDs.empty()) {
 
-			ClearDatabaseConnection(QString::fromStdString(boost::uuids::to_string(id)));
+			ClearDatabaseConnection(m_databaseIDs.begin());
 		}
-
-		m_databaseIDs.clear();
 	}
 
 	QVariantList SourceDataManager::RunSelectSqlQuery(const InputField& inputfield) const {

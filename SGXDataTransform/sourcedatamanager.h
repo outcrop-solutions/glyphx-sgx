@@ -39,10 +39,11 @@ namespace SynGlyphX {
 		const QString& GetIntermeidateDirectory() const;
 
 	private:
-		void ClearDatabaseConnection(const QString& id);
+		typedef std::unordered_set<boost::uuids::uuid, SynGlyphX::UUIDHash> DatabaseIDSet;
 		QString GetIntermediateSQLiteDB(const FileDatasource& datasource, const QString& connectionName);
+		void ClearDatabaseConnection(const DatabaseIDSet::const_iterator& id);
 
-		std::unordered_set<boost::uuids::uuid, SynGlyphX::UUIDHash> m_databaseIDs;
+		DatabaseIDSet m_databaseIDs;
 		QString m_intermediateDirectory;
 	};
 
