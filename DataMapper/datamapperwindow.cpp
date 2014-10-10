@@ -387,11 +387,10 @@ void DataMapperWindow::ExportToANTz() {
 
 		SynGlyphX::Application::setOverrideCursor(Qt::WaitCursor);
 
-		bool showStatusBarMessage = true;
 		try {
 
-			SynGlyphX::Filesystem::RemoveContentsOfDirectory(csvDirectory.toStdString());
-			SynGlyphX::Filesystem::CopyDirectory(QDir::toNativeSeparators(SynGlyphX::Application::applicationDirPath() + QDir::separator() + ANTzTemplateDir).toStdString(), csvDirectory.toStdString(), true);
+			//SynGlyphX::Filesystem::RemoveContentsOfDirectory(csvDirectory.toStdString());
+			SynGlyphX::Filesystem::CopyDirectoryOverwrite(QDir::toNativeSeparators(SynGlyphX::Application::applicationDirPath() + QDir::separator() + ANTzTemplateDir).toStdString(), csvDirectory.toStdString(), true);
 
 			ANTzTransformer transformer(csvDirectory);
 			transformer.Transform(*(m_dataTransformModel->GetDataTransform().get()));

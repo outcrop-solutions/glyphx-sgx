@@ -18,7 +18,7 @@ DataTransformModel::~DataTransformModel()
 
 void DataTransformModel::SetIntermediateDirectoryToCurrentID() {
 
-	m_sourceDataManager.SetIntermediateDirectory(GetIntermediateDirectoryForID(m_dataTransform->GetID()));
+	SynGlyphX::SourceDataManager::SetIntermediateDirectory(GetIntermediateDirectoryForID(m_dataTransform->GetID()));
 }
 
 QString DataTransformModel::GetIntermediateDirectoryForID(const boost::uuids::uuid& id) {
