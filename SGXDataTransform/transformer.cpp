@@ -21,6 +21,8 @@ namespace SynGlyphX {
 
 		if (mapping.IsTransformable()) {
 
+			//Before running this code, the static function SourceDataManager::SetIntermediateDirectory must be called with a valid
+			//directory to store intermediate files
 			m_sourceDataManager.AddDatabaseConnections(mapping.GetDatasources());
 			CreateGlyphsFromMapping(mapping);
 			m_sourceDataManager.ClearDatabaseConnections();

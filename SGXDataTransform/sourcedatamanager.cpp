@@ -15,6 +15,8 @@
 
 namespace SynGlyphX {
 
+	QString SourceDataManager::s_intermediateDirectory;
+
 	SourceDataManager::SourceDataManager()
 	{
 	}
@@ -187,7 +189,7 @@ namespace SynGlyphX {
 		return results;
 	}
 
-	void SourceDataManager::SetIntermediateDirectory(QString directory) {
+	void SourceDataManager::SetIntermediateDirectory(const QString& directory) {
 
 		QDir newDirectory(directory);
 		if (!newDirectory.exists()) {
@@ -198,17 +200,17 @@ namespace SynGlyphX {
 			}
 		}
 
-		m_intermediateDirectory = directory;
+		s_intermediateDirectory = directory;
 	}
 
-	const QString& SourceDataManager::GetIntermeidateDirectory() const {
+	const QString& SourceDataManager::GetIntermeidateDirectory()  {
 
-		return m_intermediateDirectory;
+		return s_intermediateDirectory;
 	}
 
 	QString SourceDataManager::GetIntermediateSQLiteDB(const FileDatasource& datasource, const QString& connectionName) {
 
-		QString datasourceName = m_intermediateDirectory + QDir::separator() + "int_" + connectionName + ".db";
+		QString datasourceName = s_intermediateDirectory + QDir::separator() + "int_" + connectionName + ".db";
 
 		QFileInfo originalDataSourceFile(QString::fromStdWString(datasource.GetDBName()));
 		QFileInfo intermediateFile(datasourceName);

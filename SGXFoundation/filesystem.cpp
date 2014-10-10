@@ -22,7 +22,7 @@ namespace SynGlyphX {
 		}
 	}
 
-	void Filesystem::CopyDirectory(const std::string& sourceDir, const std::string& destinationDir, bool recursive) {
+	void Filesystem::CopyDirectoryOverwrite(const std::string& sourceDir, const std::string& destinationDir, bool recursive) {
 
 		boost::filesystem::path sourcePath(sourceDir);
 		if (!boost::filesystem::exists(sourcePath)) {
@@ -43,10 +43,10 @@ namespace SynGlyphX {
 			}
 		}
 
-		CopyDirectory(sourcePath, destinationPath, recursive);
+		CopyDirectoryOverwrite(sourcePath, destinationPath, recursive);
 	}
 
-	void Filesystem::CopyDirectory(const boost::filesystem::path& sourcePath, const boost::filesystem::path& destinationPath, bool recursive) {
+	void Filesystem::CopyDirectoryOverwrite(const boost::filesystem::path& sourcePath, const boost::filesystem::path& destinationPath, bool recursive) {
 
 		if (!boost::filesystem::exists(destinationPath)) {
 
@@ -60,11 +60,11 @@ namespace SynGlyphX {
 
 			if ((boost::filesystem::is_directory(iT->status())) && recursive) {
 
-				CopyDirectory(iT->path(), destinationPath / iT->path().filename(), recursive);
+				CopyDirectoryOverwrite(iT->path(), destinationPath / iT->path().filename(), recursive);
 			}
 			else {
 
-				boost::filesystem::copy_file(iT->path(), destinationPath / iT->path().filename());
+				boost::filesystem::copy_file(iT->path(), destinationPath / iT->path().filename(), boost::filesystem::copy_option::overwrite_if_exists);
 			}
 		}
 	}

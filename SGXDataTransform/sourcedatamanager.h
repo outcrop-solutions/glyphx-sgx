@@ -27,6 +27,9 @@ namespace SynGlyphX {
 		static QString GetQtDBType(const SynGlyphX::Datasource& datasource);
 		static QStringList GetSQLiteDataTypesForFormat(const QString& format);
 
+		static void SetIntermediateDirectory(const QString& directory);
+		static const QString& GetIntermeidateDirectory();
+
 		QVariantList RunSelectSqlQuery(const InputField& inputfield) const;
 		QVariantList GetMinMaxSqlQuery(const InputField& inputfield) const;
 
@@ -35,16 +38,13 @@ namespace SynGlyphX {
 		void ClearDatabaseConnection(const boost::uuids::uuid& id);
 		void ClearDatabaseConnections();
 
-		void SetIntermediateDirectory(QString directory);
-		const QString& GetIntermeidateDirectory() const;
-
 	private:
 		typedef std::unordered_set<boost::uuids::uuid, SynGlyphX::UUIDHash> DatabaseIDSet;
 		QString GetIntermediateSQLiteDB(const FileDatasource& datasource, const QString& connectionName);
 		void ClearDatabaseConnection(const DatabaseIDSet::const_iterator& id);
 
 		DatabaseIDSet m_databaseIDs;
-		QString m_intermediateDirectory;
+		static QString s_intermediateDirectory;
 	};
 
 } //namespace SynGlyphX
