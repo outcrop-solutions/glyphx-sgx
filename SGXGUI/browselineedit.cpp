@@ -11,6 +11,7 @@ BrowseLineEdit::BrowseLineEdit(FileDialogType type, bool convertToNativeSeparato
     m_filters(QString())
 {
     m_lineEdit = new QLineEdit(this);
+	m_lineEdit->setMinimumWidth(350);
     QObject::connect(m_lineEdit, &QLineEdit::editingFinished, this, &BrowseLineEdit::OnEditingFinished);
 
     m_browseButton = new QPushButton("Browse", this);

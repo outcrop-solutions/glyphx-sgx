@@ -12,6 +12,7 @@
 #include "sourcedatamanager.h"
 #include "glyphviewerantztransformer.h"
 #include "changedatasourcefiledialog.h"
+#include "antzimportdialog.h"
 
 GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 	: SynGlyphX::MainWindow(parent)
@@ -52,6 +53,11 @@ void GlyphViewerWindow::CreateMenus() {
 
 	QAction* openProjectAction = CreateMenuAction(m_fileMenu, tr("Open Project"), QKeySequence::Open);
 	QObject::connect(openProjectAction, &QAction::triggered, this, &GlyphViewerWindow::OpenProject);
+
+	m_fileMenu->addSeparator();
+
+	QAction* importFromANTzAction = m_fileMenu->addAction(tr("Import From ANTz"));
+	QObject::connect(importFromANTzAction, &QAction::triggered, this, &GlyphViewerWindow::ImportFilesFromANTz);
 
 	m_fileMenu->addActions(m_recentFileActions);
 
@@ -232,5 +238,14 @@ void GlyphViewerWindow::ChangeStereoMode() {
 
 		m_stereoAction->setChecked(false);
 		QMessageBox::information(this, tr("Stereo not supported"), tr("Stereo is not supported. Check your driver settings to see if stereo is enabled or contact the manufacturer of your GPU for assitance"));
+	}
+}
+
+void GlyphViewerWindow::ImportFilesFromANTz() {
+
+	ANTzImportDialog importDialog(this);
+	if (importDialog.exec() == QDialog::Accepted) {
+
+
 	}
 }

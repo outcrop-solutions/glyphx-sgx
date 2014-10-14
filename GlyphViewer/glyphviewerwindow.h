@@ -22,6 +22,7 @@ private slots:
 	void ChangeMapDownloadSettings();
 	void ShowOpenGLSettings();
 	void ChangeStereoMode();
+	void ImportFilesFromANTz();
 
 private:
 	virtual void LoadRecentFile(const QString& filename);
