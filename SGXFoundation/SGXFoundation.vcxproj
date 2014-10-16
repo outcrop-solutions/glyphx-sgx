@@ -58,6 +58,7 @@
       <SDLCheck>true</SDLCheck>
       <PrecompiledHeaderFile />
       <AdditionalIncludeDirectories>..\..\3rdParty\include\boost_1_55_0</AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -78,6 +79,7 @@
       <SDLCheck>true</SDLCheck>
       <PrecompiledHeaderFile />
       <AdditionalIncludeDirectories>..\..\3rdParty\include\boost_1_55_0</AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -101,6 +103,7 @@
     <ClInclude Include="sgxfoundation.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="uuid.h" />
+    <ClInclude Include="xmlpropertytreefile.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="color.cpp" />
@@ -116,6 +119,7 @@
     </ClCompile>
     <ClCompile Include="filesystem.cpp" />
     <ClCompile Include="uuid.cpp" />
+    <ClCompile Include="xmlpropertytreefile.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

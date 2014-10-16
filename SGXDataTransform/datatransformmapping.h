@@ -2,6 +2,7 @@
 #define SYNGLYPHX_DATATRANSFORMMAPPING_H
 
 #include "sgxdatatransform_global.h"
+#include "xmlpropertytreefile.h"
 #include <string>
 #include "datasourcemaps.h"
 #include <unordered_map>
@@ -13,7 +14,7 @@
 
 namespace SynGlyphX {
 
-    class SGXDATATRANSFORM_EXPORT DataTransformMapping
+	class SGXDATATRANSFORM_EXPORT DataTransformMapping : public XMLPropertyTreeFile
     {
     public:
 		typedef std::unordered_map<boost::uuids::uuid, MinMaxGlyphTree::SharedPtr, SynGlyphX::UUIDHash> MinMaxGlyphTreeMap;
@@ -27,9 +28,6 @@ namespace SynGlyphX {
 
 		bool operator==(const DataTransformMapping& mapping) const;
 		bool operator!=(const DataTransformMapping& mapping) const;
-
-        void ReadFromFile(const std::string& filename);
-        void WriteToFile(const std::string& filename) const;
 
 		const DatasourceMaps& GetDatasources() const;
 
@@ -60,7 +58,10 @@ namespace SynGlyphX {
 
 		void UpdateDatasourceName(const boost::uuids::uuid& id, const std::wstring& name);
 
-    private:
+    protected:
+		virtual void ImportFromPropertyTree(const boost::property_tree::wptree& filePropertyTree);
+		virtual void ExportToPropertyTree(boost::property_tree::wptree& filePropertyTree) const;
+
 		DatasourceMaps m_datasources;
 		MinMaxGlyphTreeMap m_glyphTrees;
 		BaseImage m_baseImage;

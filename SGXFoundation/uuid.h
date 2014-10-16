@@ -1,11 +1,6 @@
 #ifndef SYNGLYPHX_UUIDHASH_H
 #define SYNGLYPHX_UUIDHASH_H
 
-//This is necessary because including boost::uuid causes this warning to be elevated to an error
-#ifdef WIN32
-#pragma warning(disable : 4996)
-#endif
-
 #include "sgxfoundation.h"
 #include <boost/uuid/uuid.hpp>
 //#include <boost/uuid/uuid_io.hpp>

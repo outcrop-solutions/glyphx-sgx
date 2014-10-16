@@ -11,9 +11,11 @@
 namespace SynGlyphX {
 
 	DataTransformMapping::DataTransformMapping() :
-		m_baseImage(nullptr)
+		XMLPropertyTreeFile(),
+		m_baseImage(nullptr),
+		m_id(UUIDGenerator::GetNewRandomUUID())
     {
-		m_id = UUIDGenerator::GetNewRandomUUID();
+		
     }
 
 	DataTransformMapping::~DataTransformMapping()
@@ -45,14 +47,11 @@ namespace SynGlyphX {
 		return !operator==(mapping);
 	}
 
-	void DataTransformMapping::ReadFromFile(const std::string& filename) {
+	void DataTransformMapping::ImportFromPropertyTree(const boost::property_tree::wptree& filePropertyTree) {
 
         Clear();
 
-        boost::property_tree::wptree filePropertyTree;
-		boost::property_tree::read_xml(filename, filePropertyTree);
-
-		boost::property_tree::wptree& dataTransformPropertyTree = filePropertyTree.get_child(L"Transform");
+		const boost::property_tree::wptree& dataTransformPropertyTree = filePropertyTree.get_child(L"Transform");
 
 		m_id = dataTransformPropertyTree.get<boost::uuids::uuid>(L"<xmlattr>.id");
 
@@ -60,7 +59,7 @@ namespace SynGlyphX {
 
 		m_datasources = DatasourceMaps(dataTransformPropertyTree.get_child(L"Datasources"));
 
-		for (boost::property_tree::wptree::value_type& glyphPropertyTree : dataTransformPropertyTree.get_child(L"Glyphs")) {
+		for (const boost::property_tree::wptree::value_type& glyphPropertyTree : dataTransformPropertyTree.get_child(L"Glyphs")) {
 
 			if (glyphPropertyTree.first == L"Glyph") {
 
@@ -70,9 +69,7 @@ namespace SynGlyphX {
 		}
     }
 
-	void DataTransformMapping::WriteToFile(const std::string& filename) const {
-
-		boost::property_tree::wptree filePropertyTree;
+	void DataTransformMapping::ExportToPropertyTree(boost::property_tree::wptree& filePropertyTree) const {
 
 		boost::property_tree::wptree& dataTransformPropertyTreeRoot = filePropertyTree.add(L"Transform", L"");
 		dataTransformPropertyTreeRoot.put(L"<xmlattr>.id", m_id);
@@ -87,8 +84,6 @@ namespace SynGlyphX {
 			boost::property_tree::wptree& glyphPropertyTree = glyphTree.second->ExportToPropertyTree(glyphTreesPropertyTree);
 			glyphPropertyTree.put(L"<xmlattr>.id", glyphTree.first);
 		}
-
-		boost::property_tree::write_xml(filename, filePropertyTree);
     }
 
 	const DatasourceMaps& DataTransformMapping::GetDatasources() const {
