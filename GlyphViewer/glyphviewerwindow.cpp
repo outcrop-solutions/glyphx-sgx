@@ -13,6 +13,7 @@
 #include "glyphviewerantztransformer.h"
 #include "changedatasourcefiledialog.h"
 #include "antzimportdialog.h"
+#include "antzvisualizationfilelisting.h"
 
 GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 	: SynGlyphX::MainWindow(parent)
@@ -51,7 +52,7 @@ void GlyphViewerWindow::CreateMenus() {
 	//Create File Menu
 	m_fileMenu = menuBar()->addMenu(tr("File"));
 
-	QAction* openProjectAction = CreateMenuAction(m_fileMenu, tr("Open Project"), QKeySequence::Open);
+	QAction* openProjectAction = CreateMenuAction(m_fileMenu, tr("Open Visualization"), QKeySequence::Open);
 	QObject::connect(openProjectAction, &QAction::triggered, this, &GlyphViewerWindow::OpenProject);
 
 	m_fileMenu->addSeparator();
@@ -114,32 +115,71 @@ void GlyphViewerWindow::ShowAboutBox() {
 
 void GlyphViewerWindow::OpenProject() {
 
-	QString openFile = QFileDialog::getOpenFileName(this, tr("Open Project"), "", tr("SynGlyphX Data Transform Project Files (*.sdt)"));
+	QString openFile = QFileDialog::getOpenFileName(this, tr("Open Visualization"), "", tr("SynGlyphX Visualization Files (*.sdt *.sav);;SynGlyphX Data Transform Files (*.sdt);;SynGlyphX ANTz Visualization Files (*.sav)"));
 	if (!openFile.isEmpty()) {
-		LoadDataTransform(openFile);
+		LoadVisualization(openFile);
 	}
 }
 
-void GlyphViewerWindow::LoadRecentFile(const QString& filename) {
-
-	LoadDataTransform(filename);
-}
-
-void GlyphViewerWindow::LoadDataTransform(const QString& filename) {
+void GlyphViewerWindow::LoadVisualization(const QString& filename) {
 
 	if (filename == m_currentFilename) {
 		return;
 	}
 
-	if (!m_treeView->selectionModel()->selectedIndexes().empty()) {
+	try {
 
-		m_treeView->selectionModel()->clearSelection();
-		m_antzWidget->updateGL();
+		if (!m_treeView->selectionModel()->selectedIndexes().empty()) {
+
+			m_treeView->selectionModel()->clearSelection();
+			m_antzWidget->updateGL();
+		}
+
+		QString extension = filename.right(4).toLower();
+		if (extension == ".sdt") {
+
+			LoadDataTransform(filename);
+		}
+		else if (extension == ".sav") {
+
+			LoadANTzCompatibilityVisualization(filename);
+		}
+		else {
+
+			throw std::exception("File is not a visualization.");
+		}
 	}
+	catch (const std::exception& e) {
+
+		QMessageBox::critical(this, tr("Failed To Open Visualization"), tr("Failed to open visualization.  Error: ") + e.what(), QMessageBox::Ok);
+		return;
+	}
+
+	SetCurrentFile(filename);
+	statusBar()->showMessage("Visualization successfully opened", 3000);
+}
+
+void GlyphViewerWindow::LoadANTzCompatibilityVisualization(const QString& filename) {
+
+	SynGlyphX::ANTzVisualizationFileListing fileListing;
+	fileListing.ReadFromFile(filename.toStdString());
+	QStringList csvFiles;
+
+
+	LoadFilesIntoModel(csvFiles, QString::fromStdWString(fileListing.GetBaseImageFilename()));
+}
+
+void GlyphViewerWindow::LoadRecentFile(const QString& filename) {
+
+	LoadVisualization(filename);
+}
+
+void GlyphViewerWindow::LoadDataTransform(const QString& filename) {
+
+	SynGlyphX::Application::setOverrideCursor(Qt::WaitCursor);
 
 	try {
 
-		SynGlyphX::Application::setOverrideCursor(Qt::WaitCursor);
 		SynGlyphX::DataTransformMapping mapping;
 		mapping.ReadFromFile(filename.toStdString());
 
@@ -182,29 +222,30 @@ void GlyphViewerWindow::LoadDataTransform(const QString& filename) {
 		GlyphViewerANTzTransformer transformer(m_cacheDir);
 		transformer.Transform(mapping);
 
-		m_glyphForestModel->LoadANTzFiles(transformer.GetCSVFilenames());
-
-		//Base image must come after loading of CSV files
-		const QString& baseImageFilename = transformer.GetBaseImageFilename();
-		if (baseImageFilename.isEmpty()) {
-
-			m_glyphForestModel->UseDefaultBaseImage();
-		}
-		else {
-			
-			m_glyphForestModel->UseLocalBaseImage(baseImageFilename);
-		}
+		LoadFilesIntoModel(transformer.GetCSVFilenames(), transformer.GetBaseImageFilename());
 	}
 	catch (const std::exception& e) {
 
 		SynGlyphX::Application::restoreOverrideCursor();
-		QMessageBox::critical(this, tr("Failed To Open Project"), tr("Failed to open project.  Error: ") + e.what(), QMessageBox::Ok);
-		return;
+		throw;
 	}
 
-	SetCurrentFile(filename);
 	SynGlyphX::Application::restoreOverrideCursor();
-	statusBar()->showMessage("Project successfully opened", 3000);
+}
+
+void GlyphViewerWindow::LoadFilesIntoModel(const QStringList& csvFiles, const QString& baseImageFilename) {
+
+	m_glyphForestModel->LoadANTzFiles(csvFiles);
+
+	//Base image must come after loading of CSV files
+	if (baseImageFilename.isEmpty()) {
+
+		m_glyphForestModel->UseDefaultBaseImage();
+	}
+	else {
+
+		m_glyphForestModel->UseLocalBaseImage(baseImageFilename);
+	}
 }
 
 void GlyphViewerWindow::ChangeMapDownloadSettings() {
@@ -246,6 +287,12 @@ void GlyphViewerWindow::ImportFilesFromANTz() {
 	ANTzImportDialog importDialog(this);
 	if (importDialog.exec() == QDialog::Accepted) {
 
+		SynGlyphX::ANTzVisualizationFileListing antzVisualization(importDialog.GetANTzNodeFilename().toStdWString(),
+			importDialog.GetANTzTagFilename().toStdWString(),
+			importDialog.GetANTzChannelFilename().toStdWString(),
+			importDialog.GetANTzChannelMapFilename().toStdWString(),
+			importDialog.GetANTzTagFilename().toStdWString());
 
+		antzVisualization.WriteToFile(importDialog.GetOutputFilename().toStdString());
 	}
 }

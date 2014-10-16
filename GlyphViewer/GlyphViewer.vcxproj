@@ -80,6 +80,7 @@
   <ItemGroup>
     <ClCompile Include="antzimportdialog.cpp" />
     <ClCompile Include="antzviewerwidget.cpp" />
+    <ClCompile Include="cachemanager.cpp" />
     <ClCompile Include="changedatasourcefiledialog.cpp" />
     <ClCompile Include="GeneratedFiles\qrc_glyphviewer.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -214,6 +215,9 @@
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles\$(PlatformName)\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(PlatformName)\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DWIN64 -DQT_DLL -DQT_NO_DEBUG -DNDEBUG -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_SQL_LIB -DQT_OPENGL_LIB -DQT_WIDGETS_LIB "-I.\GeneratedFiles" "-I." "-I.\..\..\3rdParty\include\Qt_5_2_1" "-I.\GeneratedFiles\$(PlatformName)\$(ConfigurationName)\." "-I.\..\..\ANTzPlus\ANTzBridge" "-I.\..\..\3rdParty\include\boost_1_55_0" "-I.\..\..\Core\SGXFoundation" "-I.\..\..\3rdParty\include\stlplus_3_11" "-I.\..\..\Core\SGXGeospatial" "-I.\..\..\GUI\SGXGUI" "-I.\..\..\GUI\MapDownloading" "-I.\..\..\Core\SGXDataTransform" "-I.\..\..\ANTzPlus\ANTzCore" "-I.\..\..\3rdParty\include\SOIL_20080707" "-I.\..\..\GUI\DataMapper" "-I.\..\..\3rdParty\include\zSpace_3_0_0_318" "-I.\..\..\ANTzPlus\ANTzDataTransform"</Command>
     </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="cachemanager.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

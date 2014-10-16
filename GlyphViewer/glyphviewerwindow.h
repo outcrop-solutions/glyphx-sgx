@@ -26,7 +26,10 @@ private slots:
 
 private:
 	virtual void LoadRecentFile(const QString& filename);
+	void LoadVisualization(const QString& filename);
+	void LoadANTzCompatibilityVisualization(const QString& filename);
 	void LoadDataTransform(const QString& filename);
+	void LoadFilesIntoModel(const QStringList& csvFiles, const QString& baseImageFilename);
 	void CreateMenus();
 	void CreateDockWidgets();
 
