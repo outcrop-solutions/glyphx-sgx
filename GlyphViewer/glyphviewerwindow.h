@@ -7,6 +7,7 @@
 #include "datatransformmapping.h"
 #include "glyphforestmodel.h"
 #include "antzviewerwidget.h"
+#include "cachemanager.h"
 
 class GlyphViewerWindow : public SynGlyphX::MainWindow
 {
@@ -38,7 +39,7 @@ private:
 	QMenu* m_toolsMenu;
 	QAction* m_stereoAction;
 
-	QString m_cacheDir;
+	CacheManager m_cacheManager;
 
 	GlyphForestModel* m_glyphForestModel;
 	ANTzViewerWidget* m_antzWidget;

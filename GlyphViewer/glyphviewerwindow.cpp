@@ -19,8 +19,8 @@ GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 	: SynGlyphX::MainWindow(parent)
 {
 	m_glyphForestModel = new GlyphForestModel(this);
-	QDir::current().mkdir("cache");
-	m_cacheDir = QDir::toNativeSeparators(QDir::currentPath()) + QDir::separator() + "cache";
+	QString cacheDir = QDir::toNativeSeparators(QDir::currentPath()) + QDir::separator() + "cache";
+	m_cacheManager.SetBaseCacheDirectory(cacheDir.toStdWString());
 	CreateMenus();
 	CreateDockWidgets();
 	
