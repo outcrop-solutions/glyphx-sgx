@@ -8,6 +8,7 @@
 #include "glyph.h"
 #include "color.h"
 #include <array>
+#include "csvfilereader.h"
 
 namespace SynGlyphX {
 
@@ -23,6 +24,11 @@ namespace SynGlyphX {
 
         static ANTzCSVWriter& GetInstance();
 
+		const CSVFileReader::CSVValues& GetNodeHeaders() const;
+		const CSVFileReader::CSVValues& GetTagHeaders() const;
+		const CSVFileReader::CSVValues& GetChannelHeaders() const;
+		const CSVFileReader::CSVValues& GetChannelMapHeaders() const;
+
     private:
         static ANTzCSVWriter s_instance;
 
@@ -30,9 +36,15 @@ namespace SynGlyphX {
 		unsigned long WriteGlyphTag(std::ofstream& file, const GlyphTree::ConstSharedPtr tree, const GlyphTree::const_iterator& glyph, unsigned long id);
 		unsigned int ConvertGeometryToCSVInt(GlyphProperties::Shape shape, GlyphProperties::Surface surface);
         unsigned short GetColorIndex(const Color& color);
+		std::string CreateString(const CSVFileReader::CSVValues& values);
 
 		Color m_predefinedColors[MaxPredefinedColors];
 		unsigned long m_numTagsWritten;
+
+		CSVFileReader::CSVValues m_nodeHeaders;
+		CSVFileReader::CSVValues m_tagHeaders;
+		CSVFileReader::CSVValues m_channelHeaders;
+		CSVFileReader::CSVValues m_channelMapHeaders;
     };
 
 } //namespace SynGlyphX

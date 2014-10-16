@@ -17,32 +17,21 @@ GlyphViewerANTzTransformer::~GlyphViewerANTzTransformer()
 
 void GlyphViewerANTzTransformer::CreateGlyphsFromMapping(const SynGlyphX::DataTransformMapping& mapping) {
 
-	QString cacheSubDir = "cache_" + QString::fromStdWString(boost::uuids::to_wstring(mapping.GetID()));
-
-	QDir dir(m_baseOutputDir);
-	if (!dir.exists(cacheSubDir)) {
-		if (!dir.mkdir(cacheSubDir)) {
-			throw std::exception("Cache directory was not created");
-		}
-	}
-
 	m_csvFilenames.clear();
 	m_baseImageFilename = "";
-
-	QString cacheDir = m_baseOutputDir + QDir::separator() + cacheSubDir;
 
 	bool useNonDefaultImage = (mapping.GetBaseImage().GetType() != SynGlyphX::BaseImage::Type::Default);
 
 	QStringList csvFiles;
-	csvFiles.push_back(cacheDir + QDir::separator() + "antz.csv");
-	csvFiles.push_back(cacheDir + QDir::separator() + "antztag.csv");
+	csvFiles.push_back(m_baseOutputDir + QDir::separator() + "antz.csv");
+	csvFiles.push_back(m_baseOutputDir + QDir::separator() + "antztag.csv");
 	QString baseImageFilename;
 	if (useNonDefaultImage) {
 
-		baseImageFilename = cacheDir + QDir::separator() + "baseimage.jpg";
+		baseImageFilename = m_baseOutputDir + QDir::separator() + "baseimage.jpg";
 	}
 
-	QString cachedMappingFilename = cacheDir + QDir::separator() + "mapping.sdt";
+	QString cachedMappingFilename = m_baseOutputDir + QDir::separator() + "mapping.sdt";
 
 	if (DoesCacheNeedToBeRegenerated(mapping, csvFiles, baseImageFilename, cachedMappingFilename)) {
 
