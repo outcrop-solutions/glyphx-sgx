@@ -143,7 +143,8 @@ namespace SynGlyphX {
 			InputFieldDataMap::const_iterator dataList = queryResultData.find(id);
 			if (dataList != queryResultData.end()) {
 
-				glyph.SetTag(dataList->second->GetData()[index].toString().toStdWString());
+				std::wstring tag = minMaxGlyphTree->GetInputFields().find(id)->second.GetField() + L": " + dataList->second->GetData()[index].toString().toStdWString();
+				glyph.SetTag(tag);
 			}
 		}
 
