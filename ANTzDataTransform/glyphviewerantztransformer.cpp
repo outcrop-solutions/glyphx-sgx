@@ -3,6 +3,7 @@
 #include <QtCore/QDir>
 #include <boost/filesystem.hpp>
 #include <boost/uuid/uuid_io.hpp>
+#include "userdefinedbaseimageproperties.h"
 
 GlyphViewerANTzTransformer::GlyphViewerANTzTransformer(const QString& cacheBaseDir) :
 	ANTzTransformer(cacheBaseDir)
@@ -28,8 +29,7 @@ void GlyphViewerANTzTransformer::CreateGlyphsFromMapping(const SynGlyphX::DataTr
 	QString baseImageFilename;
 	if (useNonDefaultImage) {
 
-		baseImageFilename = m_baseOutputDir + QDir::separator() + "baseimage.jpg";
-	}
+		baseImageFilename = cacheDir + QDir::separator() + "baseimage.png";	}
 
 	QString cachedMappingFilename = m_baseOutputDir + QDir::separator() + "mapping.sdt";
 
@@ -57,9 +57,19 @@ bool GlyphViewerANTzTransformer::DoesCacheNeedToBeRegenerated(const SynGlyphX::D
 	}
 
 	if (!baseImageFilename.isEmpty()) {
+		
 		QFile baseImage(baseImageFilename);
 		if (!baseImage.exists()) {
+			
 			return true;
+		}
+		else if (mapping.GetBaseImage().GetType() == SynGlyphX::BaseImage::Type::UserImage) {
+
+			const SynGlyphX::UserDefinedBaseImageProperties* const properties = dynamic_cast<const SynGlyphX::UserDefinedBaseImageProperties* const>(mapping.GetBaseImage().GetProperties());
+			if (HasFileBeenUpdated(properties->GetFilename(), boost::filesystem::last_write_time(baseImageFilename.toStdWString()))) {
+
+				return true;
+	}
 		}
 	}
 
