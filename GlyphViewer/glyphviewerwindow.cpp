@@ -219,7 +219,7 @@ void GlyphViewerWindow::LoadDataTransform(const QString& filename) {
 			mapping.WriteToFile(filename.toStdString());
 		}
 
-		GlyphViewerANTzTransformer transformer(m_cacheDir);
+		GlyphViewerANTzTransformer transformer(QString::fromStdWString(m_cacheManager.GetCacheDirectory(mapping.GetID())));
 		transformer.Transform(mapping);
 
 		LoadFilesIntoModel(transformer.GetCSVFilenames(), transformer.GetBaseImageFilename());

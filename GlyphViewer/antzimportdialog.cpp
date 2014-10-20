@@ -33,7 +33,7 @@ ANTzImportDialog::ANTzImportDialog(QWidget *parent)
 	m_antzChannelMapFileLineEdit->SetFilters(ANTzCSVFileFilter);
 	antzFileLayout->addRow(tr("Channel Map File:"), m_antzChannelMapFileLineEdit);
 
-	QObject::connect(m_antzNodeFileLineEdit, &SynGlyphX::BrowseLineEdit::TextChanged, this, &ANTzImportDialog::OnCSVFileChanged);
+	QObject::connect(m_antzNodeFileLineEdit, &SynGlyphX::BrowseLineEdit::TextChanged, this, &ANTzImportDialog::OnNodeFileChanged);
 
 	antzGroupBox->setLayout(antzFileLayout);
 
