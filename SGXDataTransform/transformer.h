@@ -25,6 +25,7 @@ namespace SynGlyphX {
 	protected:
 		virtual void CreateGlyphsFromMapping(const DataTransformMapping& mapping) = 0;
 		bool HaveDatasourcesBeenUpdated(const DataTransformMapping& mapping, std::time_t lastUpdateTime) const;
+		bool HasFileBeenUpdated(const std::wstring& filename, std::time_t lastUpdateTime) const;
 
 		GlyphTree::ConstSharedVector CreateGlyphTreesFromMinMaxTrees(const DataTransformMapping& mapping) const;
 		GlyphTree::ConstSharedVector CreateGlyphTreesFromMinMaxTree(MinMaxGlyphTree::ConstSharedPtr minMaxTree) const;

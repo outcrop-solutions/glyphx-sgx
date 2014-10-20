@@ -22,7 +22,7 @@ namespace SynGlyphX {
 	}
 
 	DownloadedMapProperties::DownloadedMapProperties(const boost::property_tree::wptree& propertyTree) :
-		BaseImageProperties(),
+		BaseImageProperties(propertyTree),
 		m_source(s_mapSourceStrings.right.at(propertyTree.get<std::wstring>(L"<xmlattr>.mapsource"))),
 		m_type(s_mapTypeStrings.right.at(propertyTree.get<std::wstring>(L"<xmlattr>.maptype"))),
 		m_size({ { propertyTree.get<unsigned int>(L"<xmlattr>.width"), propertyTree.get<unsigned int>(L"<xmlattr>.height") } }) {

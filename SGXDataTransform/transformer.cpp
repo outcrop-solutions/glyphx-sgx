@@ -2,7 +2,6 @@
 #include "datatransformmapping.h"
 #include "sourcedatamanager.h"
 #include <QtCore/QVariant>
-#include <QtCore/QFile>
 #include <stdexcept>
 #include <boost/filesystem.hpp>
 
@@ -144,7 +143,8 @@ namespace SynGlyphX {
 			InputFieldDataMap::const_iterator dataList = queryResultData.find(id);
 			if (dataList != queryResultData.end()) {
 
-				glyph.SetTag(dataList->second->GetData()[index].toString().toStdWString());
+				std::wstring tag = minMaxGlyphTree->GetInputFields().find(id)->second.GetField() + L": " + dataList->second->GetData()[index].toString().toStdWString();
+				glyph.SetTag(tag);
 			}
 		}
 
@@ -185,18 +185,25 @@ namespace SynGlyphX {
 			InputFieldDataMap::const_iterator fieldData = queryResultData.find(id);
 			if (fieldData != queryResultData.end()) {
 
-				/*output.Set(0, (fieldData->second->GetData()[index].toDouble() - binding.GetMin()) / (binding.GetMax() - binding.GetMin()) * difference[0]);
-				output.Set(1, (fieldData->second->GetData()[index].toDouble() - binding.GetMin()) / (binding.GetMax() - binding.GetMin()) * difference[1]);
-				output.Set(2, (fieldData->second->GetData()[index].toDouble() - binding.GetMin()) / (binding.GetMax() - binding.GetMin()) * difference[2]);*/
+				Color max;
+				max.Set(min[0] + difference[0], min[1] + difference[1], min[2] + difference[2]);
+
+				Color minHSV = Color::ConvertRGBtoHSV(min);
+				Color maxHSV = Color::ConvertRGBtoHSV(max);
+				Color diffHSV;
+				diffHSV.Set(maxHSV[0] - minHSV[0], maxHSV[1] - minHSV[1], maxHSV[2] - minHSV[2]);
 
 				double currentData = fieldData->second->GetData()[index].toDouble();
 				double dataMin;
 				double dataMaxMinDiff;
 				GetDataMinAndDifference(binding, *(fieldData->second), dataMin, dataMaxMinDiff);
 
-				output.Set(0, LinearInterpolate(min[0], difference[0], dataMin, dataMaxMinDiff, currentData));
-				output.Set(1, LinearInterpolate(min[1], difference[1], dataMin, dataMaxMinDiff, currentData));
-				output.Set(2, LinearInterpolate(min[2], difference[2], dataMin, dataMaxMinDiff, currentData));
+				Color outputHSV;
+				outputHSV.Set(0, LinearInterpolate(minHSV[0], diffHSV[0], dataMin, dataMaxMinDiff, currentData));
+				outputHSV.Set(1, LinearInterpolate(minHSV[1], diffHSV[1], dataMin, dataMaxMinDiff, currentData));
+				outputHSV.Set(2, LinearInterpolate(minHSV[2], diffHSV[2], dataMin, dataMaxMinDiff, currentData));
+
+				output = Color::ConvertHSVtoRGB(outputHSV);
 			}
 		}
 
@@ -232,14 +239,26 @@ namespace SynGlyphX {
 
 		for (auto datasource : mapping.GetDatasources().GetFileDatasources()) {
 
-			boost::filesystem::path datasourcePath(datasource.second.GetDBName());
-			if (boost::filesystem::last_write_time(datasourcePath) > lastUpdateTime) {
-					
+			if (HasFileBeenUpdated(datasource.second.GetDBName(), lastUpdateTime)) {
+
 				return true;
 			}
 		}
 
 		return false;
+	}
+
+	bool Transformer::HasFileBeenUpdated(const std::wstring& filename, std::time_t lastUpdateTime) const {
+
+		boost::filesystem::path filePath(filename);
+		if (boost::filesystem::last_write_time(filePath) > lastUpdateTime) {
+
+			return true;
+		}
+		else {
+
+			return false;
+		}
 	}
 
 	void Transformer::GetPositionXYForAllGlyphTrees(const SynGlyphX::DataTransformMapping& mapping, std::vector<GeographicPoint>& points) const {
