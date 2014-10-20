@@ -57,8 +57,8 @@ void GlyphDesignerWindow::CreateMenus() {
 
     m_fileMenu->addSeparator();
 
-	QAction* exportDataMapperAction = m_fileMenu->addAction(tr("Export to Data Mapper Template"));
-	QObject::connect(exportDataMapperAction, &QAction::triggered, this, &GlyphDesignerWindow::ExportToDataMapperTemplate);
+	QAction* exportDataMapperAction = m_fileMenu->addAction(tr("Export to CSV"));
+	QObject::connect(exportDataMapperAction, &QAction::triggered, this, &GlyphDesignerWindow::ExportToCSV);
 
     //QAction* exportAction = m_fileMenu->addAction(tr("Export to CSV"));
     //QObject::connect(exportAction, &QAction::triggered, this, &GlyphDesignerWindow::ExportToCSV);
@@ -140,7 +140,7 @@ void GlyphDesignerWindow::CreateDockWidgets() {
     rightDockWidget->setWidget(modalGlyphWidget);
     addDockWidget(Qt::RightDockWidgetArea, rightDockWidget);
     m_viewMenu->addAction(rightDockWidget->toggleViewAction());
-    QObject::connect(m_3dView, &ANTzWidget::ObjectEdited, modalGlyphWidget, &ModalGlyphWidget::SetWidgetFromGlyph);
+    QObject::connect(m_3dView, &ANTzWidget::ObjectEdited, modalGlyphWidget, &ModalGlyphWidget::OnNodeUpdated);
 }
 
 void GlyphDesignerWindow::CreateNewGlyphTree() {
@@ -169,11 +169,11 @@ void GlyphDesignerWindow::CreateNewGlyphTree() {
                 glyphWidgets.push_back(glyphWidget);
                 if (i == 0) {
                     page->setTitle("Glyphs for root level");
-                    glyphWidget->SetWidgetFromGlyph(SynGlyphX::GlyphProperties::GetRoot());
+                    glyphWidget->SetWidgetFromGlyph(SynGlyphX::GlyphProperties::GetRoot(), false);
                 }
                 else {
                     page->setTitle(QString::number(i).prepend("Glyphs for branch level "));
-                    glyphWidget->SetWidgetFromGlyph(SynGlyphX::GlyphProperties::GetTemplate());
+                    glyphWidget->SetWidgetFromGlyph(SynGlyphX::GlyphProperties::GetTemplate(), true);
                 }
                 layout->addWidget(glyphWidget);
                 wizard.addPage(page);
@@ -208,15 +208,6 @@ void GlyphDesignerWindow::ExportToCSV() {
 
     QString saveFile = QFileDialog::getSaveFileName(this, tr("Save Glyph Tree To CSV"), "", tr("CSV Files (*.csv)"));
     if (!saveFile.isEmpty()) {
-        /*SynGlyphX::CSVReaderWriter& writer = SynGlyphX::CSVReaderWriter::GetInstance();
-        try {
-            writer.Write(saveFile.toStdString(), SynGlyphX::Glyph::GetRoot());
-            QMessageBox::information(this, "Save File Succeeded", "CSV file successfully saved");
-        }
-        catch (const std::exception& e) {
-            QString title = "Save File Failed";
-            QMessageBox::warning(this, title, title + ": " + e.what());
-        }*/
 
         if (m_glyphTreeModel->SaveToCSV(saveFile.toStdString(), m_selectionModel->selectedIndexes())) {
             statusBar()->showMessage("File successfully saved", 3000);
@@ -238,9 +229,9 @@ void GlyphDesignerWindow::LoadRecentFile(const QString& filename) {
 void GlyphDesignerWindow::OpenTemplate() {
 
     if (AskUserToSave()) {
-        //QString openFile = QFileDialog::getOpenFileName(this, tr("Open Template"), "", tr("SynGlyphX Glyph Template Files (*.sgt *.csv)"));
-		QString openFile = QFileDialog::getOpenFileName(this, tr("Open Template"), "", tr("SynGlyphX Glyph Template Files (*.csv)"));
-        LoadTemplate(openFile);
+        
+		QString openFile = QFileDialog::getOpenFileName(this, tr("Open Template"), "", tr("SynGlyphX Glyph Template Files (*.sgt *.csv)"));
+		LoadTemplate(openFile);
     }
 }
 
@@ -249,7 +240,7 @@ void GlyphDesignerWindow::LoadTemplate(const QString& filename) {
     if (!filename.isEmpty()) {
 
         SynGlyphX::Application::setOverrideCursor(Qt::WaitCursor);
-        bool fileLoaded = m_glyphTreeModel->LoadFromFile(filename.toStdString());
+        bool fileLoaded = m_glyphTreeModel->LoadFromFile(filename);
         SynGlyphX::Application::restoreOverrideCursor();
 
         if (fileLoaded) {
@@ -276,27 +267,28 @@ bool GlyphDesignerWindow::SaveTemplate() {
 
 bool GlyphDesignerWindow::SaveAsTemplate() {
 
-    //QString saveFile = QFileDialog::getSaveFileName(this, tr("Save Glyph Tree As Template"), "", tr("SynGlyphX Glyph Template Files (*.sgt)"));
-	QString saveFile = QFileDialog::getSaveFileName(this, tr("Save Glyph Tree As Template"), "", tr("SynGlyphX Glyph Template Files (*.csv)"));
+	QString saveFile = QFileDialog::getSaveFileName(this, tr("Export to Data Mapper"), "", tr("SynGlyphX Glyph Template Files (*.sgt)"));
     return SaveTemplateFile(saveFile);
 }
     
 bool GlyphDesignerWindow::SaveTemplateFile(const QString& filename) {
-
+	
     if (!filename.isEmpty()) {
 
-        SynGlyphX::Application::setOverrideCursor(Qt::WaitCursor);
-        bool fileSaved = m_glyphTreeModel->SaveToCSV(filename.toStdString(), m_selectionModel->selectedIndexes());
-        SynGlyphX::Application::restoreOverrideCursor();
+		try {
 
-        if (fileSaved) {
+			SynGlyphX::Application::setOverrideCursor(Qt::WaitCursor);
+			m_glyphTreeModel->SaveToTemplateFile(filename);
+			SynGlyphX::Application::restoreOverrideCursor();
+
             SetCurrentFile(filename);
             statusBar()->showMessage("Template successfully saved", 3000);
             return true;
         }
-        else {
-            QString title = "Saving Template Failed";
-            QMessageBox::warning(this, title, "Failed to save template");
+        catch(const std::exception& e) {
+            
+			SynGlyphX::Application::restoreOverrideCursor();
+			QMessageBox::warning(this, tr("Saving Template Failed"), tr("Failed to save template: ") + e.what());
         }
     }
 
@@ -332,13 +324,4 @@ bool GlyphDesignerWindow::AskUserToSave() {
     }
 
     return true;
-}
-
-void GlyphDesignerWindow::ExportToDataMapperTemplate() {
-
-	QString saveFile = QFileDialog::getSaveFileName(this, tr("Export to Data Mapper"), "", tr("SynGlyphX Glyph Template Files (*.sgt)"));
-	
-	if (!saveFile.isEmpty()) {
-		m_glyphTreeModel->ExportToDataMapper(saveFile.toStdString());
-	}
 }

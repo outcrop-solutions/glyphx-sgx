@@ -31,7 +31,7 @@ void AddChildrenDialog::SetGlyphFromDialog(boost::shared_ptr<SynGlyphX::GlyphPro
 
 void AddChildrenDialog::SetDialogFromGlyph(boost::shared_ptr<const SynGlyphX::GlyphProperties> glyph) {
 
-    m_childrenGlyphWidget->SetWidgetFromGlyph(glyph);
+    m_childrenGlyphWidget->SetWidgetFromGlyph(glyph, true);
     m_childrenGlyphWidget->SetNumberOfChildren(1);
 }
 

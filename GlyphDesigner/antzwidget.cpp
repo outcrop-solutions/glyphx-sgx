@@ -144,8 +144,8 @@ void ANTzWidget::paintGL() {
 		if (m_selectionEdited) {
 			const QModelIndexList& selected = m_selectionModel->selectedIndexes();
 			if (!selected.isEmpty()) {
-				boost::shared_ptr<SynGlyphX::GlyphProperties> glyph(new SynGlyphX::GlyphProperties(static_cast<pNPnode>(selected.back().internalPointer())));
-				emit ObjectEdited(glyph);
+				
+				emit ObjectEdited(selected.back());
 			}
 			m_selectionEdited = false;
 		}
@@ -224,6 +224,17 @@ void ANTzWidget::CenterCameraOnNode(pNPnode node) {
     antzData->map.currentNode = antzData->map.currentCam;
 }
 
+bool ANTzWidget::IsRootNodeSelected() const {
+
+	const QModelIndexList& selectedIndexes = m_selectionModel->selectedIndexes();
+	if (!selectedIndexes.empty()) {
+
+		return (!selectedIndexes.back().parent().isValid());
+	}
+
+	return false;
+}
+
 void ANTzWidget::mousePressEvent(QMouseEvent* event) {
 
     if (event->button() == Qt::LeftButton) {
@@ -266,17 +277,26 @@ void ANTzWidget::mouseMoveEvent(QMouseEvent* event) {
     antzData->io.mouse.y = event->y();
 
     if (event->modifiers() == Qt::ShiftModifier) {
-        antzData->io.mouse.tool = kNPtoolMove + m_editingMode;
-        if (event->buttons() & Qt::RightButton) {
-            antzData->io.mouse.mode = kNPmouseModeDragXZ;
-            antzData->io.mouse.buttonR = true;
-            m_selectionEdited = true;
-        }
-        else if (event->buttons() & Qt::LeftButton) {
-            antzData->io.mouse.mode = kNPmouseModeDragXY;
-            antzData->io.mouse.buttonR = false;
-            m_selectionEdited = true;
-        }
+
+		if ((m_editingMode == EditingMode::Move) && (IsRootNodeSelected())) {
+
+			//lock move mode if root node is selected
+			antzData->io.mouse.tool = kNPtoolNull;
+		}
+		else {
+
+			antzData->io.mouse.tool = kNPtoolMove + m_editingMode;
+			if (event->buttons() & Qt::RightButton) {
+				antzData->io.mouse.mode = kNPmouseModeDragXZ;
+				antzData->io.mouse.buttonR = true;
+				m_selectionEdited = true;
+			}
+			else if (event->buttons() & Qt::LeftButton) {
+				antzData->io.mouse.mode = kNPmouseModeDragXY;
+				antzData->io.mouse.buttonR = false;
+				m_selectionEdited = true;
+			}
+		}
     }
     else {
         antzData->io.mouse.tool = kNPtoolNull;

@@ -62,7 +62,8 @@ void ModalGlyphWidget::SelectionChanged(const QItemSelection& selected, const QI
     }
     else {
         DisconnectWidgetSignals();
-        UpdateWidget(static_cast<pNPnode>(selectedList.back().internalPointer()));
+		const QModelIndex& index = selectedList.back();
+        UpdateWidget(static_cast<pNPnode>(index.internalPointer()));
         ConnectWidgetSignals();
         setEnabled(true);
     }
@@ -71,7 +72,7 @@ void ModalGlyphWidget::SelectionChanged(const QItemSelection& selected, const QI
 void ModalGlyphWidget::UpdateWidget(pNPnode node) {
 
     boost::shared_ptr<SynGlyphX::GlyphProperties> glyph(new SynGlyphX::GlyphProperties(node));
-    SetWidgetFromGlyph(glyph);
+    SetWidgetFromGlyph(glyph, (node->parent != nullptr));
 	SetNumberOfChildren(node->childCount);
 }
 

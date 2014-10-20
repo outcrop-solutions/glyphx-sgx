@@ -13,10 +13,12 @@ public:
     ModalGlyphWidget(GlyphTreeModel* model, QItemSelectionModel* selectionModel, QWidget *parent = 0);
     ~ModalGlyphWidget();
 
+public slots:
+	void OnNodeUpdated(const QModelIndex& index);
+
 private slots:
     void OnWidgetUpdated(GlyphTreeModel::PropertyUpdates updates);
     void SelectionChanged(const QItemSelection& selected, const QItemSelection& deselected);
-    void OnNodeUpdated(const QModelIndex& index);
 
 private:
     void ConnectWidgetSignals();

@@ -25,7 +25,7 @@ public slots:
     void SetEditingMode(EditingMode mode);
 
 signals:
-    void ObjectEdited(boost::shared_ptr<const SynGlyphX::GlyphProperties> glyph);
+    void ObjectEdited(const QModelIndex& index);
 
 protected:
     virtual void initializeGL();
@@ -42,6 +42,7 @@ private slots:
 private:
     void CenterCameraOnNode(pNPnode node);
     void InitIO();
+	bool IsRootNodeSelected() const;
 
     static QGLFormat s_format;
 

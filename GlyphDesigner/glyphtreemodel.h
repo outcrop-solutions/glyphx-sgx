@@ -52,7 +52,8 @@ public:
 
     pNPnode GetRootGlyph() const;
 
-    bool LoadFromFile(const std::string& filename);
+    bool LoadFromFile(const QString& filename);
+	void SaveToTemplateFile(const QString& filename) const;
     bool SaveToCSV(const std::string& filename, const QModelIndexList& selectedItems);
 	void CreateNewTree(SynGlyphX::GlyphTree::ConstSharedPtr newGlyphTree);
     void UpdateNode(const QModelIndex& index, boost::shared_ptr<const SynGlyphX::GlyphProperties> glyph, PropertyUpdates updates = UpdateAll);
@@ -68,8 +69,6 @@ public:
 
     static PropertyUpdates FindUpdates(boost::shared_ptr<const SynGlyphX::GlyphProperties> oldGlyph, boost::shared_ptr<const SynGlyphX::GlyphProperties> newGlyph);
     static bool GreaterBranchLevel(const QModelIndex& left, const QModelIndex& right);
-	
-	void ExportToDataMapper(const std::string& filename) const;
 
 	void CreateDefaultGlyph();
 	void ShowGlyph(bool show);
@@ -88,6 +87,7 @@ private:
     int GetChildIndexFromParent(pNPnode node) const;
 	void UpdateNode(pNPnode glyph, const SynGlyphX::GlyphProperties& glyphTemplate, PropertyUpdates updates = UpdateAll);
 	void CreateNewSubTree(pNPnode parent, SynGlyphX::GlyphTree::ConstSharedPtr newGlyphTree, const SynGlyphX::GlyphTree::const_iterator& location, bool updatePosition = false);
+	bool IsANTzCSVFile(const QString& filename) const;
 
     pNPnode m_rootGlyph;
     pData m_antzData;
