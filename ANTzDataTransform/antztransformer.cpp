@@ -5,6 +5,7 @@
 #include "sourcedatamanager.h"
 #include "antzcsvwriter.h"
 #include "downloadedmapproperties.h"
+#include "userdefinedbaseimageproperties.h"
 #include "networkdownloader.h"
 
 ANTzTransformer::ANTzTransformer(const QString& baseOutputDir) :
@@ -44,7 +45,13 @@ void ANTzTransformer::CreateGlyphsFromMapping(const SynGlyphX::DataTransformMapp
 	QStringList csvFiles;
 	csvFiles.push_back(QDir::toNativeSeparators(m_baseOutputDir + QDir::separator() + "usr" + QDir::separator() + "csv" + QDir::separator() + "antz0001.csv"));
 	csvFiles.push_back(QDir::toNativeSeparators(m_baseOutputDir + QDir::separator() + "usr" + QDir::separator() + "csv" + QDir::separator() + "antztag0001.csv"));
-	QString baseImageFilename = QDir::toNativeSeparators(m_baseOutputDir + QDir::separator() + "usr" + QDir::separator() + "images" + QDir::separator() + "map00001.jpg");
+	QString antzImageDirectory = QDir::toNativeSeparators(m_baseOutputDir + QDir::separator() + "usr" + QDir::separator() + "images" + QDir::separator());
+	QString baseImageFilename = antzImageDirectory + "map00001.jpg";
+
+	if (mapping.GetBaseImage().GetType() != SynGlyphX::BaseImage::Type::Default) {
+
+		QFile::rename(baseImageFilename, antzImageDirectory + "world.jpg");
+	}
 
 	GenerateCache(mapping, csvFiles, baseImageFilename);
 }
@@ -52,11 +59,13 @@ void ANTzTransformer::CreateGlyphsFromMapping(const SynGlyphX::DataTransformMapp
 void ANTzTransformer::GenerateCache(const SynGlyphX::DataTransformMapping& mapping, const QStringList& csvFilenames, const QString& baseImageFilename) {
 
 	const SynGlyphX::BaseImage& baseImage = mapping.GetBaseImage();
-
 	if (baseImage.GetType() == SynGlyphX::BaseImage::Type::DownloadedMap) {
 
-		QFile::rename(baseImageFilename, QDir::toNativeSeparators(m_baseOutputDir + QDir::separator() + "usr" + QDir::separator() + "images" + QDir::separator() + "world.jpg"));
 		DownloadBaseImage(mapping, baseImageFilename);
+	}
+	else if (baseImage.GetType() == SynGlyphX::BaseImage::Type::UserImage) {
+
+		CopyUserImage(mapping, baseImageFilename);
 	}
 	
 	SynGlyphX::GlyphTree::ConstSharedVector trees = CreateGlyphTreesFromMinMaxTrees(mapping);
@@ -94,4 +103,13 @@ void ANTzTransformer::DownloadBaseImage(const SynGlyphX::DataTransformMapping& m
 	const SynGlyphX::DownloadedMapProperties* const properties = dynamic_cast<const SynGlyphX::DownloadedMapProperties* const>(mapping.GetBaseImage().GetProperties());
 	NetworkDownloader& downloader = NetworkDownloader::Instance();
 	m_overrideRootXYBoundingBox = downloader.DownloadMap(points, baseImageFilename.toStdString(), properties);
+}
+
+void ANTzTransformer::CopyUserImage(const SynGlyphX::DataTransformMapping& mapping, const QString& baseImageFilename) {
+
+	const SynGlyphX::UserDefinedBaseImageProperties* const properties = dynamic_cast<const SynGlyphX::UserDefinedBaseImageProperties* const>(mapping.GetBaseImage().GetProperties());
+	if (!QFile::copy(QString::fromStdWString(properties->GetFilename()), baseImageFilename)) {
+
+		throw std::exception("Failed to copy base image");
+	}
 }
