@@ -29,7 +29,8 @@ void GlyphViewerANTzTransformer::CreateGlyphsFromMapping(const SynGlyphX::DataTr
 	QString baseImageFilename;
 	if (useNonDefaultImage) {
 
-		baseImageFilename = cacheDir + QDir::separator() + "baseimage.png";	}
+		baseImageFilename = m_baseOutputDir + QDir::separator() + "baseimage.png";
+	}
 
 	QString cachedMappingFilename = m_baseOutputDir + QDir::separator() + "mapping.sdt";
 
