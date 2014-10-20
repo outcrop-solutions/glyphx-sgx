@@ -1,5 +1,6 @@
 #include "baseimage.h"
 #include "downloadedmapproperties.h"
+#include "userdefinedbaseimageproperties.h"
 #include <boost/assign/list_of.hpp>
 #include <boost/bimap/list_of.hpp>
 
@@ -24,6 +25,10 @@ namespace SynGlyphX {
 		if (m_type == Type::DownloadedMap) {
 
 			m_properties = new DownloadedMapProperties(propertyTree);
+		}
+		else if (m_type == Type::UserImage) {
+
+			m_properties = new UserDefinedBaseImageProperties(propertyTree);
 		}
 		else {
 
@@ -77,6 +82,14 @@ namespace SynGlyphX {
 				
 				m_properties = new DownloadedMapProperties(*downloadedMapProperties);
 				m_type = Type::DownloadedMap;
+				return;
+			}
+
+			const UserDefinedBaseImageProperties* const userDefinedProperties = dynamic_cast<const UserDefinedBaseImageProperties* const>(properties);
+			if (userDefinedProperties != nullptr) {
+
+				m_properties = new UserDefinedBaseImageProperties(*userDefinedProperties);
+				m_type = Type::UserImage;
 				return;
 			}
 		}
