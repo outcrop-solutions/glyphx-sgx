@@ -96,6 +96,7 @@
     <ClInclude Include="sgxdatatransform_global.h" />
     <ClInclude Include="sourcedatamanager.h" />
     <ClInclude Include="transformer.h" />
+    <ClInclude Include="userdefinedbaseimageproperties.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="baseimage.cpp" />
@@ -113,6 +114,7 @@
     <ClCompile Include="minmaxglyphtree.cpp" />
     <ClCompile Include="sourcedatamanager.cpp" />
     <ClCompile Include="transformer.cpp" />
+    <ClCompile Include="userdefinedbaseimageproperties.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -239,14 +239,26 @@ namespace SynGlyphX {
 
 		for (auto datasource : mapping.GetDatasources().GetFileDatasources()) {
 
-			boost::filesystem::path datasourcePath(datasource.second.GetDBName());
-			if (boost::filesystem::last_write_time(datasourcePath) > lastUpdateTime) {
-					
+			if (HasFileBeenUpdated(datasource.second.GetDBName(), lastUpdateTime)) {
+
 				return true;
 			}
 		}
 
 		return false;
+	}
+
+	bool Transformer::HasFileBeenUpdated(const std::wstring& filename, std::time_t lastUpdateTime) const {
+
+		boost::filesystem::path filePath(filename);
+		if (boost::filesystem::last_write_time(filePath) > lastUpdateTime) {
+
+			return true;
+		}
+		else {
+
+			return false;
+		}
 	}
 
 	void Transformer::GetPositionXYForAllGlyphTrees(const SynGlyphX::DataTransformMapping& mapping, std::vector<GeographicPoint>& points) const {

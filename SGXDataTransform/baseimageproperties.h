@@ -10,6 +10,7 @@ namespace SynGlyphX {
 	{
 	public:
 		BaseImageProperties();
+		BaseImageProperties(const boost::property_tree::wptree& propertyTree);
 		BaseImageProperties(const BaseImageProperties& properties);
 		virtual ~BaseImageProperties();
 
