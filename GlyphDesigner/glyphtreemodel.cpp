@@ -228,7 +228,7 @@ bool GlyphTreeModel::SaveToCSV(const std::string& filename, const QModelIndexLis
     return success;
 }
 
-void GlyphTreeModel::CreateNewTree(SynGlyphX::GlyphTree::ConstSharedPtr newGlyphTree) {
+void GlyphTreeModel::CreateNewTree(SynGlyphX::GlyphTree::ConstSharedPtr newGlyphTree, bool usePositionsInGlyphTree) {
 
     //Need to select so that npNodeDelete works properly.  ANTz assumes that the root pin being deleted is selected.  Easier to work around this way
 	if (m_rootGlyph != nullptr) {
@@ -239,7 +239,7 @@ void GlyphTreeModel::CreateNewTree(SynGlyphX::GlyphTree::ConstSharedPtr newGlyph
 	if (m_rootGlyph != nullptr) {
 		npNodeDelete(m_rootGlyph, m_antzData);
 	}
-	CreateNewSubTree(NULL, newGlyphTree, newGlyphTree->root(), false);
+	CreateNewSubTree(NULL, newGlyphTree, newGlyphTree->root(), usePositionsInGlyphTree);
 
 	/*SynGlyphX::GlyphProperties::SharedPtr glyphProperties(&(newGlyphTree->begin().node->data));
 	CreateNodeFromTemplate(NULL, glyphProperties, false);

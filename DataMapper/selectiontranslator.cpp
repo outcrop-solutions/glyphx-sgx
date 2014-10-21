@@ -54,7 +54,7 @@ void SelectionTranslator::OnTreeViewSelectionChanged(const QItemSelection& selec
 
 				SynGlyphX::GlyphTree::SharedPtr glyphTree = m_dataTransformModel->GetDataTransform()->GetGlyphTrees().at(minMaxGlyphTree.first)->GetMinGlyphTree();
 				glyphTree->root()->SetPosition({ { 0.0, 0.0, 0.0 } });
-				m_glyphTreeModel->CreateNewTree(glyphTree);
+				m_glyphTreeModel->CreateNewTree(glyphTree, true);
 				break;
 			}
 

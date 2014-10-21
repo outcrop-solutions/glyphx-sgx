@@ -55,7 +55,7 @@ public:
     bool LoadFromFile(const QString& filename);
 	void SaveToTemplateFile(const QString& filename) const;
     bool SaveToCSV(const std::string& filename, const QModelIndexList& selectedItems);
-	void CreateNewTree(SynGlyphX::GlyphTree::ConstSharedPtr newGlyphTree);
+	void CreateNewTree(SynGlyphX::GlyphTree::ConstSharedPtr newGlyphTree, bool usePositionsInGlyphTree = false);
     void UpdateNode(const QModelIndex& index, boost::shared_ptr<const SynGlyphX::GlyphProperties> glyph, PropertyUpdates updates = UpdateAll);
     void UpdateNodes(const QModelIndexList& indexList, boost::shared_ptr<const SynGlyphX::GlyphProperties> glyph, PropertyUpdates updates = UpdateAll);
 
