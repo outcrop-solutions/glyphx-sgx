@@ -142,9 +142,10 @@ void SharedActionManager::PropertiesActivated() {
     
     const QModelIndexList& selectedItems = m_selectionModel->selectedIndexes();
     
-	pNPnode node = static_cast<pNPnode>(selectedItems.back().internalPointer());
+	const QModelIndex& index = selectedItems.back();
+	pNPnode node = static_cast<pNPnode>(index.internalPointer());
     boost::shared_ptr<SynGlyphX::GlyphProperties> oldGlyph(new SynGlyphX::GlyphProperties(node));
-    m_glyphWidget->SetWidgetFromGlyph(oldGlyph);
+    m_glyphWidget->SetWidgetFromGlyph(oldGlyph, index.parent().isValid());
 	m_glyphWidget->SetNumberOfChildren(node->childCount);
     if (m_propertiesDialog->exec() == QDialog::Accepted) {
         boost::shared_ptr<SynGlyphX::GlyphProperties> newGlyph(new SynGlyphX::GlyphProperties());

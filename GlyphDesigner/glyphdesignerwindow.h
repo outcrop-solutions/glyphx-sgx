@@ -26,7 +26,6 @@ private slots:
     bool SaveAsTemplate();
     void OpenTemplate();
     void EditingModeChanged(QAction* action);
-	void ExportToDataMapperTemplate();
 
 private:
     void CreateMenus();

@@ -135,7 +135,7 @@ void SingleGlyphWidget::CreateWidgets(ChildOptions childOptions) {
     m_ratioGroupBox->setVisible(false);
 }
 
-void SingleGlyphWidget::SetWidgetFromGlyph(boost::shared_ptr<const SynGlyphX::GlyphProperties> glyph) {
+void SingleGlyphWidget::SetWidgetFromGlyph(boost::shared_ptr<const SynGlyphX::GlyphProperties> glyph, bool isNotRootNode) {
 
     m_geometryShapeComboBox->setCurrentIndex(glyph->GetShape());
     m_geometrySurfaceComboBox->setCurrentIndex(glyph->GetSurface());
@@ -144,6 +144,7 @@ void SingleGlyphWidget::SetWidgetFromGlyph(boost::shared_ptr<const SynGlyphX::Gl
 
     m_colorWidget->SetColor(glyph->GetColor());
 
+	m_translateWidget->setEnabled(isNotRootNode);
     m_translateWidget->Set(glyph->GetPosition());
     m_rotateWidget->Set(glyph->GetRotation());
     m_scaleWidget->Set(glyph->GetScale());

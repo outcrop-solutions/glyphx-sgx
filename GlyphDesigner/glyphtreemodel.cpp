@@ -3,6 +3,7 @@
 #include "data/npmapfile.h"
 #include "glyphmimedata.h"
 #include "minmaxglyphtree.h"
+#include <QtCore/QFile>
 
 GlyphTreeModel::GlyphTreeModel(QObject *parent)
     : QAbstractItemModel(parent),
@@ -149,16 +150,31 @@ pNPnode GlyphTreeModel::GetRootGlyph() const {
     return m_rootGlyph;
 }
 
-bool GlyphTreeModel::LoadFromFile(const std::string& filename) {
+bool GlyphTreeModel::LoadFromFile(const QString& filename) {
     
     //Need to select so that npNodeDelete works properly.  ANTz assumes that the root pin being deleted is selected.  Easier to work around this for now
     m_antzData->map.nodeRootIndex = m_rootGlyph->id;
 
     beginResetModel();
     npNodeDelete(m_rootGlyph, m_antzData);
-    bool success = (npFileOpenMap(filename.c_str(), 1, filename.length(), m_antzData) != 0);
+	bool success = false;
+	if (IsANTzCSVFile(filename)) {
+
+		success = (npFileOpenMap(filename.toStdString().c_str(), 1, filename.length(), m_antzData) != 0);
+	} 
+	else {
+
+		SynGlyphX::MinMaxGlyphTree::SharedPtr newGlyphTree(new SynGlyphX::MinMaxGlyphTree());
+		newGlyphTree->ReadFromFile(filename.toStdString());
+		SynGlyphX::GlyphTree::ConstSharedPtr minTree = newGlyphTree->GetMinGlyphTree();
+		CreateNewSubTree(NULL, minTree, minTree->root(), true);
+		success = true;
+	}
     if (success) {
         m_rootGlyph = static_cast<pNPnode>(m_antzData->map.node[m_antzData->map.nodeRootCount - 1]);
+		m_rootGlyph->translate.x = 0;
+		m_rootGlyph->translate.y = 0;
+		m_rootGlyph->translate.z = 0;
     }
     else {
         CreateDefaultGlyph(false);
@@ -171,6 +187,21 @@ bool GlyphTreeModel::LoadFromFile(const std::string& filename) {
     endResetModel();
 
     return success;
+}
+
+void GlyphTreeModel::SaveToTemplateFile(const QString& filename) const {
+
+	SynGlyphX::GlyphTree glyphTree(m_rootGlyph);
+	SynGlyphX::MinMaxGlyphTree minMaxGlyphTree(glyphTree);
+	SynGlyphX::MinMaxGlyphTree::iterator iT = minMaxGlyphTree.root();
+	SynGlyphX::GlyphProperties minGlyph = iT->GetMinGlyph();
+	SynGlyphX::GlyphMappableProperties difference = iT->GetDifference();
+	minGlyph.SetPosition({ { -180.0, -90.0, 0.0 } });
+	difference.SetPosition({ { 360.0, 180.0, 0.0 } });
+	iT->SetMinGlyphProperties(minGlyph);
+	iT->SetDifference(difference);
+
+	minMaxGlyphTree.WriteToFile(filename.toStdString());
 }
 
 bool GlyphTreeModel::SaveToCSV(const std::string& filename, const QModelIndexList& selectedItems) {
@@ -197,7 +228,7 @@ bool GlyphTreeModel::SaveToCSV(const std::string& filename, const QModelIndexLis
     return success;
 }
 
-void GlyphTreeModel::CreateNewTree(SynGlyphX::GlyphTree::ConstSharedPtr newGlyphTree) {
+void GlyphTreeModel::CreateNewTree(SynGlyphX::GlyphTree::ConstSharedPtr newGlyphTree, bool usePositionsInGlyphTree) {
 
     //Need to select so that npNodeDelete works properly.  ANTz assumes that the root pin being deleted is selected.  Easier to work around this way
 	if (m_rootGlyph != nullptr) {
@@ -208,7 +239,7 @@ void GlyphTreeModel::CreateNewTree(SynGlyphX::GlyphTree::ConstSharedPtr newGlyph
 	if (m_rootGlyph != nullptr) {
 		npNodeDelete(m_rootGlyph, m_antzData);
 	}
-	CreateNewSubTree(NULL, newGlyphTree, newGlyphTree->root(), false);
+	CreateNewSubTree(NULL, newGlyphTree, newGlyphTree->root(), usePositionsInGlyphTree);
 
 	/*SynGlyphX::GlyphProperties::SharedPtr glyphProperties(&(newGlyphTree->begin().node->data));
 	CreateNodeFromTemplate(NULL, glyphProperties, false);
@@ -232,11 +263,11 @@ void GlyphTreeModel::CreateNewSubTree(pNPnode parent, SynGlyphX::GlyphTree::Cons
         return;
     }*/
 
-	pNPnode child = CreateNodeFromTemplate(parent, *location, updatePosition);
+	pNPnode childNode = CreateNodeFromTemplate(parent, *location, updatePosition);
 
 	for (int i = 0; i < newGlyphTree->children(location); ++i) {
 
-		CreateNewSubTree(child, newGlyphTree, newGlyphTree->child(location, i), updatePosition);
+		CreateNewSubTree(childNode, newGlyphTree, newGlyphTree->child(location, i), updatePosition);
     }
 
 	m_isDifferentFromSavedFileOrDefaultGlyph = true;
@@ -538,24 +569,32 @@ void GlyphTreeModel::MarkDifferentNotifyModelUpdate() {
 	emit ModelChanged(m_isDifferentFromSavedFileOrDefaultGlyph);
 }
 
-void GlyphTreeModel::ExportToDataMapper(const std::string& filename) const {
-
-	SynGlyphX::GlyphTree glyphTree(m_rootGlyph);
-	SynGlyphX::MinMaxGlyphTree minMaxGlyphTree(glyphTree);
-	SynGlyphX::MinMaxGlyphTree::iterator iT = minMaxGlyphTree.root();
-	SynGlyphX::GlyphProperties minGlyph = iT->GetMinGlyph();
-	SynGlyphX::GlyphMappableProperties difference = iT->GetDifference();
-	minGlyph.SetPosition({ { -180.0, -90.0, 0.0 } });
-	difference.SetPosition({ { 360.0, 180.0, 0.0 } });
-	iT->SetMinGlyphProperties(minGlyph);
-	iT->SetDifference(difference);
-
-	minMaxGlyphTree.WriteToFile(filename);
-}
-
 void GlyphTreeModel::ShowGlyph(bool show) {
 
 	if (m_rootGlyph != nullptr) {
 		m_rootGlyph->hide = !show;
 	}
+}
+
+bool GlyphTreeModel::IsANTzCSVFile(const QString& filename) const {
+
+	if (filename.right(4).toLower() == ".csv") {
+
+		return true;
+	}
+
+	QFile glyphFile(filename);
+	const char* firstField = "id,";
+	if (glyphFile.open(QIODevice::ReadOnly)) {
+
+		uchar* first3bytes = glyphFile.map(0, 3);
+		glyphFile.close();
+
+		if (memcmp(first3bytes, firstField, 3) == 0) {
+
+			return true;
+		}
+	}
+
+	return false;
 }
