@@ -106,18 +106,21 @@ void DataMapperWindow::CreateMenus() {
     QAction* exitAction = CreateMenuAction(m_fileMenu, tr("Exit"), QKeySequence::Quit);
     QObject::connect(exitAction, &QAction::triggered, this, &DataMapperWindow::close);
 
-    //Create Edit Menu
-    m_projectMenu = menuBar()->addMenu(tr("Project"));
+    //Create Glyph Menu
+    m_glyphMenu = menuBar()->addMenu(tr("Glyph"));
 
-	QAction* addGlyphTemplateAction = m_projectMenu->addAction(tr("Add Glyph Templates"));
+	QAction* addGlyphTemplateAction = m_glyphMenu->addAction(tr("Add Glyph Templates"));
 	QObject::connect(addGlyphTemplateAction, &QAction::triggered, this, &DataMapperWindow::AddGlyphTemplate);
+
+	//Create Datasource Menu
+	m_datasourceMenu = menuBar()->addMenu(tr("Datasource"));
     
-    QAction* addDataSourcesAction = m_projectMenu->addAction(tr("Add Data Sources"));
+	QAction* addDataSourcesAction = m_datasourceMenu->addAction(tr("Add Data Sources"));
     QObject::connect(addDataSourcesAction, &QAction::triggered, this, &DataMapperWindow::AddDataSources);
 
-    m_projectMenu->addSeparator();
+	m_datasourceMenu->addSeparator();
 
-    QAction* baseImageAction = m_projectMenu->addAction(tr("Choose Base Image"));
+	QAction* baseImageAction = m_datasourceMenu->addAction(tr("Choose Base Image"));
     QObject::connect(baseImageAction, &QAction::triggered, this, &DataMapperWindow::ChangeBaseImage);
 
     //Create View Menu

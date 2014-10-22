@@ -56,24 +56,6 @@
     <ClCompile Include="GeneratedFiles\Release\moc_singleglyphwidget.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
-    <ClCompile Include="antzwidget.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_antzwidget.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_antzwidget.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="glyphtreemodel.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_glyphtreemodel.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_glyphtreemodel.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
     <ClCompile Include="sharedactionmanager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -113,27 +95,12 @@
     <ClCompile Include="glyphdesignerwindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="glyphmimedata.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_glyphmimedata.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_glyphmimedata.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="glyphtreeview.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="singleglyphwidget.h">
-      <Filter>Header Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="antzwidget.h">
-      <Filter>Header Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="glyphtreemodel.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="sharedactionmanager.h">
@@ -149,9 +116,6 @@
       <Filter>Resource Files</Filter>
     </CustomBuild>
     <CustomBuild Include="glyphdesignerwindow.h">
-      <Filter>Header Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="glyphmimedata.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>

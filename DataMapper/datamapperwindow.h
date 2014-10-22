@@ -50,7 +50,8 @@ private:
 	void ProcessCSVFile(const QString& csvFile);
 
     QMenu* m_fileMenu;
-    QMenu* m_projectMenu;
+    QMenu* m_glyphMenu;
+	QMenu* m_datasourceMenu;
     QMenu* m_viewMenu;
 	//QMenu* m_toolsMenu;
     QTreeView* m_glyphTreeView;

@@ -57,8 +57,10 @@ void GlyphViewerWindow::CreateMenus() {
 
 	m_fileMenu->addSeparator();
 
-	QAction* importFromANTzAction = m_fileMenu->addAction(tr("Import From ANTz"));
-	QObject::connect(importFromANTzAction, &QAction::triggered, this, &GlyphViewerWindow::ImportFilesFromANTz);
+	//Import from ANTz is on hold so until more development is done, the menu option will not be added to the File menu
+
+	//QAction* importFromANTzAction = m_fileMenu->addAction(tr("Import From ANTz"));
+	//QObject::connect(importFromANTzAction, &QAction::triggered, this, &GlyphViewerWindow::ImportFilesFromANTz);
 
 	m_fileMenu->addActions(m_recentFileActions);
 
