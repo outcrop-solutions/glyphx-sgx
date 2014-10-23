@@ -400,7 +400,7 @@ void npInitTools (pNPnode root, void* dataRef)
 }
 
 //------------------------------------------------------------------------------
-void npInitDataHUD (void* dataRef)
+ANTZCORE_API void npInitDataHUD(void* dataRef)
 {
 	pData data = (pData) dataRef;
 	pNPhud hud = (pNPhud) &data->io.gl.hud;

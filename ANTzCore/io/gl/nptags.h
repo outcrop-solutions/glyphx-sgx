@@ -48,7 +48,7 @@ void npImportTagsFromCSV(char* buffer, int size, int wordSize, void* dataRef);
 void npExportTagsToCSV(char* buffer, int* size, int* wordSize, void* dataRef);
 
 //deletes entire tag list
-void npDeleteAllTags(void* dataRef);
+ANTZCORE_API void npDeleteAllTags(void* dataRef);
 
 void npDeleteTag(int recordID, int tableID, void* dataRef);
 void npAddTag(pNPtag tag, void* dataRef);

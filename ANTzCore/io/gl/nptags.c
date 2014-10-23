@@ -68,8 +68,32 @@ void npExportTagsToCSV (char* buffer, int* size, int* wordSize, void* dataRef)
 
 //deletes entire tag list
 //------------------------------------------------------------------------------
-void npDeleteAllTags (void* dataRef)
+ANTZCORE_API void npDeleteAllTags(void* dataRef)
 {
+	int i = 0;
+	pData data = (pData)dataRef;
+	pNPtags tags = &data->io.gl.hud.tags;
+
+	for (i = 0; i < tags->count; ++i) {
+
+		free(tags->list[i]);
+		tags->list[i] = NULL;
+	}
+	tags->count = 0;
+
+	for (i = 0; i < tags->recordCount; ++i) {
+
+		free(tags->recordList[i]);
+		tags->recordList[i] = NULL;
+	}
+	tags->recordCount = 0;
+
+	for (i = 0; i < tags->sortCount; ++i) {
+
+		//free(tags->sort[i]);
+		tags->sort[i] = NULL;
+	}
+	tags->sortCount = 0;
 
 	//perhaps should lock list during this process for thread safety
 	return;

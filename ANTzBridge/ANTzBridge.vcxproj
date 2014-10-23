@@ -95,6 +95,7 @@
   <ItemGroup>
     <ClInclude Include="ANTzBridge.h" />
     <ClInclude Include="antzcsvwriter.h" />
+    <ClInclude Include="antzdata.h" />
     <ClInclude Include="antzvisualizationfilelisting.h" />
     <ClInclude Include="glyph.h" />
     <ClInclude Include="glyphmappableproperties.h" />
@@ -105,6 +106,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="antzcsvwriter.cpp" />
+    <ClCompile Include="antzdata.cpp" />
     <ClCompile Include="antzvisualizationfilelisting.cpp" />
     <ClCompile Include="dllmain.cpp">
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</CompileAsManaged>
