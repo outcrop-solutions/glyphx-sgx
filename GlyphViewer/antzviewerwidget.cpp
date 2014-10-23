@@ -6,10 +6,10 @@
 #include "io/npfile.h"
 #include "io/npch.h"
 #include "npctrl.h"
-#include "io/npgl.h"
 #include "npui.h"
 #include "ctrl/npengine.h"
 #include "npctrl.h"
+#include "io/npgl.h"
 
 //The default QGLFormat works for now except we want alpha enabled.  Also want to try and get a stereo enabled context
 QGLFormat ANTzViewerWidget::s_format(QGL::AlphaChannel | QGL::StereoBuffers);
@@ -21,6 +21,7 @@ ANTzViewerWidget::ANTzViewerWidget(GlyphForestModel* model, QItemSelectionModel*
 	: QGLWidget(s_format, parent),
 	m_model(model),
     m_selectionModel(selectionModel),
+	m_antzData(model->GetANTzData()),
 	m_zSpaceContext(nullptr),
 	m_zSpaceDisplay(nullptr),
 	m_zSpaceBuffer(nullptr),
@@ -35,15 +36,11 @@ ANTzViewerWidget::ANTzViewerWidget(GlyphForestModel* model, QItemSelectionModel*
 	newFont.setPointSize(12);
 	setFont(newFont);
 
-    pData antzData = m_model->GetANTzData();
     InitIO();
-    npInitFile(antzData);
-    npInitCh(antzData);
-    npInitCtrl(antzData);
 
 	//Change fly speeds
-	antzData->ctrl.slow = 0.5f;
-	antzData->ctrl.fast = 0.75f;
+	m_antzData->GetData()->ctrl.slow = 0.5f;
+	m_antzData->GetData()->ctrl.fast = 0.75f;
 
 	if (m_selectionModel != nullptr) {
 		QObject::connect(m_selectionModel, &QItemSelectionModel::selectionChanged, this, &ANTzViewerWidget::UpdateSelection);
@@ -120,7 +117,7 @@ ANTzViewerWidget::ANTzViewerWidget(GlyphForestModel* model, QItemSelectionModel*
 			error = zsAddTrackerEventHandler(m_zSpaceStylus, ZS_TRACKER_EVENT_MOVE, &ZSpaceEventDispatcher, this);
 			CheckZSpaceError(error);
 
-			antzData->io.gl.stereo = true;
+			m_antzData->GetData()->io.gl.stereo = true;
 		}
 		catch (const std::exception& e) {
 			throw;
@@ -133,12 +130,7 @@ ANTzViewerWidget::ANTzViewerWidget(GlyphForestModel* model, QItemSelectionModel*
 ANTzViewerWidget::~ANTzViewerWidget()
 {
 	ClearZSpaceContext();
-
-    void* antzData = m_model->GetANTzData();
-    npCloseGL(antzData);
-    npCloseCtrl(antzData);
-    npCloseFile(antzData);
-    npCloseCh(antzData);
+	npCloseGL(m_antzData->GetData());
 }
 
 void ANTzViewerWidget::ClearZSpaceContext() {
@@ -218,7 +210,7 @@ void ANTzViewerWidget::CheckZSpaceError(ZSError error) {
 
 void ANTzViewerWidget::InitIO()
 {
-    pData data = (pData)m_model->GetANTzData();
+	pData data = m_antzData->GetData();
 
     //zz-CAMERA
     //compare intialization values with working project, debug zz
@@ -282,7 +274,7 @@ void ANTzViewerWidget::InitIO()
 
 void ANTzViewerWidget::initializeGL() {
     
-    npInitGL(m_model->GetANTzData());
+	npInitGL(m_antzData->GetData());
     ResetCamera();
 }
 
@@ -295,7 +287,7 @@ void ANTzViewerWidget::resizeGL(int w, int h) {
 
 void ANTzViewerWidget::paintGL() {
 
-	pData antzData = m_model->GetANTzData();
+	pData antzData = m_antzData->GetData();
 	pNPnode camNode = npGetActiveCam(antzData);
 	NPcameraPtr camData = static_cast<NPcameraPtr>(camNode->data);
 
@@ -450,7 +442,7 @@ void ANTzViewerWidget::DrawZSpaceStylus(const ZSMatrix4& stylusMatrix, ZSFloat s
 
 void ANTzViewerWidget::DrawSelectedNodeAndHUDText() {
 
-	pData antzData = m_model->GetANTzData();
+	pData antzData = m_antzData->GetData();
 
 	bool reenableDepthTest = glIsEnabled(GL_DEPTH_TEST);
 	if (reenableDepthTest) {
@@ -512,7 +504,7 @@ void ANTzViewerWidget::SetZSpaceMatricesForDrawing(ZSEye eye, const ZSMatrix4& o
 
 void ANTzViewerWidget::UpdateSelection(const QItemSelection& selected, const QItemSelection& deselected) {
 
-    pData antzData = m_model->GetANTzData();
+	pData antzData = m_antzData->GetData();
 
     //unselect all nodes that are no longer selected
     const QModelIndexList& deselectedIndicies = deselected.indexes();
@@ -558,7 +550,7 @@ void ANTzViewerWidget::UpdateSelection(const QItemSelection& selected, const QIt
 
 void ANTzViewerWidget::ResetCamera() {
     
-    pData antzData = m_model->GetANTzData();
+	pData antzData = m_antzData->GetData();
 
 	//We only want to center the camera when there are actual root nodes
 	if (antzData->map.nodeRootCount > kNPnodeRootPin) {
@@ -577,7 +569,7 @@ void ANTzViewerWidget::ResetCamera() {
 
 void ANTzViewerWidget::CenterCameraOnNode(pNPnode node) {
 	
-    pData antzData = m_model->GetANTzData();
+	pData antzData = m_antzData->GetData();
 
     npSetCamTargetNode(node, antzData);
 	antzData->io.mouse.targeting = false;
@@ -602,7 +594,7 @@ void ANTzViewerWidget::SelectAtPoint(int x, int y) const {
 
 	//emit NewStatusMessage(tr("Selection Attempt At: %1, %2").arg(x).arg(y), 4000);
 
-	pData antzData = m_model->GetANTzData();
+	pData antzData = m_antzData->GetData();
 	bool isStereo = IsInStereoMode();
 	antzData->io.gl.stereo = false;
 	int pickID = npPickPin(x, antzData->io.gl.height - y, antzData);
@@ -626,7 +618,7 @@ void ANTzViewerWidget::SelectAtPoint(int x, int y) const {
 void ANTzViewerWidget::mouseReleaseEvent(QMouseEvent* event) {
 
     //Reset ANTz mouse values back to the original values
-    pData antzData = m_model->GetANTzData();
+	pData antzData = m_antzData->GetData();
     antzData->io.mouse.mode = kNPmouseModeNull;
     antzData->io.mouse.tool = kNPtoolNull;
     antzData->io.mouse.buttonR = false;
@@ -634,7 +626,7 @@ void ANTzViewerWidget::mouseReleaseEvent(QMouseEvent* event) {
 
 void ANTzViewerWidget::mouseMoveEvent(QMouseEvent* event) {
 
-    pData antzData = m_model->GetANTzData();
+	pData antzData = m_antzData->GetData();
 
     antzData->io.mouse.previous.x = m_lastMousePosition.x();
     antzData->io.mouse.previous.y = m_lastMousePosition.y();
@@ -667,7 +659,7 @@ void ANTzViewerWidget::keyPressEvent(QKeyEvent* event) {
 
 	//if (m_selectionModel->selectedIndexes().empty()) {
 
-		pData antzData = m_model->GetANTzData();
+		pData antzData = m_antzData->GetData();
 		if ((event->key() == 'w') ||
 			(event->key() == 'W') ||
 			(event->key() == 's') ||
@@ -693,7 +685,7 @@ void ANTzViewerWidget::keyReleaseEvent(QKeyEvent* event) {
 
 	//if (m_selectionModel->selectedIndexes().empty()) {
 
-		pData antzData = m_model->GetANTzData();
+		pData antzData = m_antzData->GetData();
 		if ((event->key() == 'w') ||
 			(event->key() == 'W') ||
 			(event->key() == 's') ||
@@ -719,7 +711,7 @@ void ANTzViewerWidget::wheelEvent(QWheelEvent* event) {
 
 	if (!m_selectionModel->selectedIndexes().empty()) {
 
-		pData antzData = m_model->GetANTzData();
+		pData antzData = m_antzData->GetData();
 		antzData->io.mouse.mode = kNPmouseModeCamExamXZ;
 		//antzData->io.mouse.delta.x = event->x() - m_lastMousePosition.x();
 		antzData->io.mouse.delta.y = event->delta() / 10;
@@ -731,7 +723,7 @@ void ANTzViewerWidget::wheelEvent(QWheelEvent* event) {
 
 void ANTzViewerWidget::SetStereo(bool enableStereo) {
 
-	pData antzData = m_model->GetANTzData();
+	pData antzData = m_antzData->GetData();
 	antzData->io.gl.stereo = enableStereo;
 
 	if (IsZSpaceAvailable() && enableStereo) {
@@ -743,7 +735,7 @@ void ANTzViewerWidget::SetStereo(bool enableStereo) {
 
 bool ANTzViewerWidget::IsInStereoMode() const {
 
-	pData antzData = m_model->GetANTzData();
+	pData antzData = m_antzData->GetData();
 	return (antzData->io.gl.stereo);
 }
 
@@ -841,7 +833,7 @@ void ANTzViewerWidget::ZSpaceStylusMoveHandler(ZSHandle targetHandle, const ZSTr
 		return;
 	}
 
-	pData antzData = m_model->GetANTzData();
+	pData antzData = m_antzData->GetData();
 	antzData->io.mouse.delta.x = (eventData->poseMatrix.m03 - m_zSpaceStylusLastPosition.x) * 1000;
 
 	bool isSelectionEmpty = m_selectionModel->selectedIndexes().empty();

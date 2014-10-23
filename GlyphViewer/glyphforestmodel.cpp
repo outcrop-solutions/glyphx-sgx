@@ -5,18 +5,21 @@
 #include <QtCore/QThread>
 #include "SOIL.h"
 #include "io/gl/nptags.h"
+#include "io/npfile.h"
+#include "io/npch.h"
+#include "npctrl.h"
 
 GlyphForestModel::GlyphForestModel(QObject *parent)
-	: QAbstractItemModel(parent)
+	: QAbstractItemModel(parent),
+	m_antzData(new ANTzPlus::ANTzData())
 {
-	m_antzData = static_cast<pData>(npInitData(0, NULL));
 	m_defaultBaseImage = QDir::currentPath() + QDir::separator() + "usr" + QDir::separator() + "images" + QDir::separator() + "map00001.jpg";
 	m_textures[m_defaultBaseImage.toStdWString()] = 1;
 }
 
 GlyphForestModel::~GlyphForestModel()
 {
-
+	
 }
 
 int GlyphForestModel::columnCount(const QModelIndex& parent) const {
@@ -49,7 +52,7 @@ QModelIndex	GlyphForestModel::index(int row, int column, const QModelIndex& pare
 
 	pNPnode parentGlyph;
 	if (!parent.isValid()) {
-		return createIndex(row, column, m_antzData->map.node[row + kNPnodeRootPin]);
+		return createIndex(row, column, m_antzData->GetData()->map.node[row + kNPnodeRootPin]);
 	}
 	else {
 		parentGlyph = static_cast<pNPnode>(parent.internalPointer());
@@ -91,7 +94,7 @@ int	GlyphForestModel::rowCount(const QModelIndex& parent) const {
 	pNPnode glyph;
 	if (!parent.isValid()) {
 		
-		return m_antzData->map.nodeRootCount - kNPnodeRootPin;
+		return m_antzData->GetData()->map.nodeRootCount - kNPnodeRootPin;
 	}
 	else {
 		glyph = static_cast<pNPnode>(parent.internalPointer());
@@ -116,7 +119,7 @@ QVariant GlyphForestModel::headerData(int section, Qt::Orientation orientation, 
 	return "";
 }
 
-pData GlyphForestModel::GetANTzData() const {
+ANTzPlus::ANTzData::SharedPtr GlyphForestModel::GetANTzData() const {
 
 	return m_antzData;
 }
@@ -136,26 +139,31 @@ int GlyphForestModel::GetChildIndexFromParent(pNPnode node) const {
 
 void GlyphForestModel::LoadANTzFiles(const QStringList& filenames) {
 
-	m_antzData->map.nodeRootIndex = kNPnodeRootPin;
+	pData antzData = m_antzData->GetData();
+	antzData->map.nodeRootIndex = kNPnodeRootPin;
 
 	beginResetModel();
-	while (m_antzData->map.nodeRootCount > kNPnodeRootPin) {
+	while (antzData->map.nodeRootCount > kNPnodeRootPin) {
 	
-		npNodeDelete(static_cast<pNPnode>(m_antzData->map.node[kNPnodeRootPin]), m_antzData);
+		npNodeDelete(static_cast<pNPnode>(antzData->map.node[kNPnodeRootPin]), m_antzData->GetData());
 	}
+
+	//This will clear out tags if needed
+	npDeleteAllTags(antzData);
+
 	for (const QString& filename : filenames) {
 
-		npFileOpenCore(filename.toStdString().c_str(), NULL, m_antzData);
+		npFileOpenCore(filename.toStdString().c_str(), NULL, antzData);
 	}
-	npSyncTags(static_cast<void*>(m_antzData));
+	npSyncTags(static_cast<void*>(antzData));
 	endResetModel();
 
-	m_antzData->map.nodeRootIndex = 0;
+	antzData->map.nodeRootIndex = 0;
 }
 
 QModelIndex GlyphForestModel::IndexFromANTzID(int id) const {
 
-	pNPnode node = static_cast<pNPnode>(m_antzData->map.nodeID[id]);
+	pNPnode node = static_cast<pNPnode>(m_antzData->GetData()->map.nodeID[id]);
 
 	if (node->branchLevel == 0) {
 		return createIndex(FindRowForRootNode(node), 0, node);
@@ -168,9 +176,9 @@ QModelIndex GlyphForestModel::IndexFromANTzID(int id) const {
 int GlyphForestModel::FindRowForRootNode(pNPnode node) const {
 
 	int i = kNPnodeRootPin;
-	for (; i < m_antzData->map.nodeRootCount; ++i) {
+	for (; i < m_antzData->GetData()->map.nodeRootCount; ++i) {
 
-		if (m_antzData->map.node[i] == node) {
+		if (m_antzData->GetData()->map.node[i] == node) {
 			break;
 		}
 	}
@@ -180,13 +188,13 @@ int GlyphForestModel::FindRowForRootNode(pNPnode node) const {
 
 void GlyphForestModel::UseDefaultBaseImage() {
 
-	pNPnode grid = static_cast<pNPnode>(m_antzData->map.node[kNPnodeRootGrid]);
+	pNPnode grid = static_cast<pNPnode>(m_antzData->GetData()->map.node[kNPnodeRootGrid]);
 	grid->textureID = m_textures.begin()->second;
 }
 
 void GlyphForestModel::UseLocalBaseImage(const QString& filename) {
 
-	pNPnode grid = static_cast<pNPnode>(m_antzData->map.node[kNPnodeRootGrid]);
+	pNPnode grid = static_cast<pNPnode>(m_antzData->GetData()->map.node[kNPnodeRootGrid]);
 	std::unordered_map<std::wstring, int>::iterator iT = m_textures.find(filename.toStdWString());
 	if (iT == m_textures.end()) {
 
@@ -198,7 +206,7 @@ void GlyphForestModel::UseLocalBaseImage(const QString& filename) {
 
 		m_textures[filename.toStdWString()] = textureID;
 		grid->textureID = textureID;
-		m_antzData->io.gl.textureCount = textureID;
+		m_antzData->GetData()->io.gl.textureCount = textureID;
 	}
 	else {
 

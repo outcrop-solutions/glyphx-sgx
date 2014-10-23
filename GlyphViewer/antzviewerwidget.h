@@ -5,6 +5,7 @@
 #include <QtCore/QItemSelection>
 #include "glyphforestmodel.h"
 #include <zSpace.h>
+#include "antzdata.h"
 
 class ANTzViewerWidget : public QGLWidget
 {
@@ -63,6 +64,8 @@ private:
 
     static QGLFormat s_format;
 	static const float s_stylusLength;
+
+	ANTzPlus::ANTzData::SharedPtr m_antzData;
 
     QItemSelectionModel* m_selectionModel;
 	GlyphForestModel* m_model;

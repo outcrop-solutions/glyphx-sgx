@@ -62,6 +62,11 @@ void GlyphViewerWindow::CreateMenus() {
 	//QAction* importFromANTzAction = m_fileMenu->addAction(tr("Import From ANTz"));
 	//QObject::connect(importFromANTzAction, &QAction::triggered, this, &GlyphViewerWindow::ImportFilesFromANTz);
 
+	//m_fileMenu->addSeparator();
+
+	QAction* closeProjectAction = CreateMenuAction(m_fileMenu, tr("Close Visualization"), QKeySequence::Close);
+	QObject::connect(closeProjectAction, &QAction::triggered, this, &GlyphViewerWindow::CloseVisualization);
+
 	m_fileMenu->addActions(m_recentFileActions);
 
 	m_fileMenu->addSeparator();
@@ -121,6 +126,13 @@ void GlyphViewerWindow::OpenProject() {
 	if (!openFile.isEmpty()) {
 		LoadVisualization(openFile);
 	}
+}
+
+void GlyphViewerWindow::CloseVisualization() {
+
+	QStringList empty;
+	m_glyphForestModel->LoadANTzFiles(empty);
+	m_glyphForestModel->UseDefaultBaseImage();
 }
 
 void GlyphViewerWindow::LoadVisualization(const QString& filename) {

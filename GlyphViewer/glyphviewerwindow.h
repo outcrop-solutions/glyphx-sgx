@@ -20,6 +20,7 @@ public:
 private slots:
 	void ShowAboutBox();
 	void OpenProject();
+	void CloseVisualization();
 	void ChangeMapDownloadSettings();
 	void ShowOpenGLSettings();
 	void ChangeStereoMode();

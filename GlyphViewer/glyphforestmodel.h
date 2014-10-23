@@ -3,7 +3,7 @@
 
 #include <QtCore/QAbstractItemModel>
 #include <unordered_map>
-#include "data/nptypes.h"
+#include "antzdata.h"
 #include "glyph.h"
 
 class GlyphForestModel : public QAbstractItemModel
@@ -23,7 +23,7 @@ public:
 	virtual Qt::ItemFlags flags(const QModelIndex& index) const;
 	virtual QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
 
-	pData GetANTzData() const;
+	ANTzPlus::ANTzData::SharedPtr GetANTzData() const;
 
 	void LoadANTzFiles(const QStringList& filenames);
 
@@ -37,7 +37,7 @@ private:
 	int FindRowForRootNode(pNPnode) const;
 	std::unordered_map<std::wstring, int> m_textures;
 	QString m_defaultBaseImage;
-	pData m_antzData;
+	ANTzPlus::ANTzData::SharedPtr m_antzData;
 };
 
 #endif // GLYPHFORESTMODEL_H
