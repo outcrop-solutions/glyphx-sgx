@@ -31,8 +31,8 @@ GeographicBoundingBox::GeographicBoundingBox(const GeographicPoint& center, doub
     m_neCorner(center.get<0>() + lonRadius, center.get<1>() + latRadius),
     m_westCenter(center.get<0>() - lonRadius, center.get<1>()),
     m_eastCenter(center.get<0>() + lonRadius, center.get<1>()),
-    m_northCenter(center.get<0>(), center.get<1>() - latRadius),
-    m_southCenter(center.get<0>(), center.get<1>() + latRadius) {
+    m_northCenter(center.get<0>(), center.get<1>() + latRadius),
+    m_southCenter(center.get<0>(), center.get<1>() - latRadius) {
     
 
 }
