@@ -210,7 +210,15 @@ bool DataMapperWindow::SaveProject() {
 bool DataMapperWindow::SaveAsProject() {
 
 	QString saveFile = QFileDialog::getSaveFileName(this, tr("Save Project"), "", tr("SynGlyphX Data Transform Project Files (*.sdt)"));
-	return SaveDataTransform(saveFile);
+
+	if (!saveFile.isEmpty()) {
+
+		return SaveDataTransform(saveFile);
+	}
+	else {
+
+		return false;
+	}
 }
 
 void DataMapperWindow::LoadRecentFile(const QString& filename) {
