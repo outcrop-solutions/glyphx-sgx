@@ -57,6 +57,12 @@ void GlyphViewerWindow::CreateMenus() {
 
 	m_fileMenu->addSeparator();
 
+	QAction* refreshVisualizationAction = CreateMenuAction(m_fileMenu, tr("Refresh Visualization"), QKeySequence::Refresh);
+	QObject::connect(refreshVisualizationAction, &QAction::triggered, this, &GlyphViewerWindow::RefreshVisualization);
+	m_loadedVisualizationDependentActions.push_back(refreshVisualizationAction);
+
+	m_fileMenu->addSeparator();
+
 	//Import from ANTz is on hold so until more development is done, the menu option will not be added to the File menu
 
 	//QAction* importFromANTzAction = m_fileMenu->addAction(tr("Import From ANTz"));
@@ -64,8 +70,9 @@ void GlyphViewerWindow::CreateMenus() {
 
 	//m_fileMenu->addSeparator();
 
-	QAction* closeProjectAction = CreateMenuAction(m_fileMenu, tr("Close Visualization"), QKeySequence::Close);
-	QObject::connect(closeProjectAction, &QAction::triggered, this, &GlyphViewerWindow::CloseVisualization);
+	QAction* closeVisualizationAction = CreateMenuAction(m_fileMenu, tr("Close Visualization"), QKeySequence::Close);
+	QObject::connect(closeVisualizationAction, &QAction::triggered, this, &GlyphViewerWindow::CloseVisualization);
+	m_loadedVisualizationDependentActions.push_back(closeVisualizationAction);
 
 	m_fileMenu->addActions(m_recentFileActions);
 
@@ -100,6 +107,8 @@ void GlyphViewerWindow::CreateMenus() {
 
 	QAction* aboutBoxAction = m_helpMenu->addAction(tr("About ") + SynGlyphX::Application::organizationName() + " " + SynGlyphX::Application::applicationName());
 	QObject::connect(aboutBoxAction, &QAction::triggered, this, &GlyphViewerWindow::ShowAboutBox);
+
+	EnableLoadedVisualizationDependentActions(false);
 }
 
 void GlyphViewerWindow::CreateDockWidgets() {
@@ -124,8 +133,24 @@ void GlyphViewerWindow::OpenProject() {
 
 	QString openFile = QFileDialog::getOpenFileName(this, tr("Open Visualization"), "", tr("SynGlyphX Visualization Files (*.sdt *.sav);;SynGlyphX Data Transform Files (*.sdt);;SynGlyphX ANTz Visualization Files (*.sav)"));
 	if (!openFile.isEmpty()) {
-		LoadVisualization(openFile);
+
+		LoadNewVisualization(openFile);
 	}
+}
+
+void GlyphViewerWindow::RefreshVisualization() {
+
+	try {
+
+		LoadVisualization(m_currentFilename);
+	}
+	catch (const std::exception& e) {
+
+		QMessageBox::critical(this, tr("Failed To Refresh Visualization"), tr("Failed to refresh visualization.  Error: ") + e.what(), QMessageBox::Ok);
+		return;
+	}
+
+	statusBar()->showMessage("Visualization successfully refreshed", 3000);
 }
 
 void GlyphViewerWindow::CloseVisualization() {
@@ -133,9 +158,34 @@ void GlyphViewerWindow::CloseVisualization() {
 	QStringList empty;
 	m_glyphForestModel->LoadANTzFiles(empty);
 	m_glyphForestModel->UseDefaultBaseImage();
+	EnableLoadedVisualizationDependentActions(false);
+	ClearCurrentFile();
 }
 
 void GlyphViewerWindow::LoadVisualization(const QString& filename) {
+
+	if (!m_treeView->selectionModel()->selectedIndexes().empty()) {
+
+		m_treeView->selectionModel()->clearSelection();
+		m_antzWidget->updateGL();
+	}
+
+	QString extension = filename.right(4).toLower();
+	if (extension == ".sdt") {
+
+		LoadDataTransform(filename);
+	}
+	else if (extension == ".sav") {
+
+		LoadANTzCompatibilityVisualization(filename);
+	}
+	else {
+
+		throw std::exception("File is not a visualization.");
+	}
+}
+
+void GlyphViewerWindow::LoadNewVisualization(const QString& filename) {
 
 	if (filename == m_currentFilename) {
 		return;
@@ -143,25 +193,7 @@ void GlyphViewerWindow::LoadVisualization(const QString& filename) {
 
 	try {
 
-		if (!m_treeView->selectionModel()->selectedIndexes().empty()) {
-
-			m_treeView->selectionModel()->clearSelection();
-			m_antzWidget->updateGL();
-		}
-
-		QString extension = filename.right(4).toLower();
-		if (extension == ".sdt") {
-
-			LoadDataTransform(filename);
-		}
-		else if (extension == ".sav") {
-
-			LoadANTzCompatibilityVisualization(filename);
-		}
-		else {
-
-			throw std::exception("File is not a visualization.");
-		}
+		LoadVisualization(filename);
 	}
 	catch (const std::exception& e) {
 
@@ -170,6 +202,7 @@ void GlyphViewerWindow::LoadVisualization(const QString& filename) {
 	}
 
 	SetCurrentFile(filename);
+	EnableLoadedVisualizationDependentActions(true);
 	statusBar()->showMessage("Visualization successfully opened", 3000);
 }
 
@@ -185,7 +218,7 @@ void GlyphViewerWindow::LoadANTzCompatibilityVisualization(const QString& filena
 
 void GlyphViewerWindow::LoadRecentFile(const QString& filename) {
 
-	LoadVisualization(filename);
+	LoadNewVisualization(filename);
 }
 
 void GlyphViewerWindow::LoadDataTransform(const QString& filename) {
@@ -308,5 +341,13 @@ void GlyphViewerWindow::ImportFilesFromANTz() {
 			importDialog.GetANTzTagFilename().toStdWString());
 
 		antzVisualization.WriteToFile(importDialog.GetOutputFilename().toStdString());
+	}
+}
+
+void GlyphViewerWindow::EnableLoadedVisualizationDependentActions(bool enable) {
+
+	for (int i = 0; i < m_loadedVisualizationDependentActions.length(); ++i) {
+
+		m_loadedVisualizationDependentActions[i]->setEnabled(enable);
 	}
 }

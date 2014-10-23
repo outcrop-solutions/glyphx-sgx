@@ -20,6 +20,7 @@ public:
 private slots:
 	void ShowAboutBox();
 	void OpenProject();
+	void RefreshVisualization();
 	void CloseVisualization();
 	void ChangeMapDownloadSettings();
 	void ShowOpenGLSettings();
@@ -28,17 +29,20 @@ private slots:
 
 private:
 	virtual void LoadRecentFile(const QString& filename);
+	void LoadNewVisualization(const QString& filename);
 	void LoadVisualization(const QString& filename);
 	void LoadANTzCompatibilityVisualization(const QString& filename);
 	void LoadDataTransform(const QString& filename);
 	void LoadFilesIntoModel(const QStringList& csvFiles, const QString& baseImageFilename);
 	void CreateMenus();
 	void CreateDockWidgets();
+	void EnableLoadedVisualizationDependentActions(bool enable);
 
 	QMenu* m_fileMenu;
 	QMenu* m_viewMenu;
 	QMenu* m_toolsMenu;
 	QAction* m_stereoAction;
+	QList<QAction*> m_loadedVisualizationDependentActions;
 
 	CacheManager m_cacheManager;
 

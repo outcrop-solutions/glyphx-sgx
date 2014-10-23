@@ -30,6 +30,7 @@ namespace SynGlyphX {
 
         void UpdateRecentFileList();
         void UpdateFilenameWindowTitle(const QString& title);
+		void ClearCurrentFile();
         void SetCurrentFile(const QString& filename);
         QAction* CreateMenuAction(QMenu* menu, const QString& title, QKeySequence shortcut = QKeySequence());
         void CreateHelpMenu();

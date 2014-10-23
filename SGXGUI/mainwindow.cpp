@@ -27,7 +27,7 @@ namespace SynGlyphX {
         }
         m_recentFileActions[0]->setSeparator(true);
 
-        UpdateFilenameWindowTitle("Untitled");
+		ClearCurrentFile();
     }
 
     MainWindow::~MainWindow()
@@ -102,10 +102,16 @@ namespace SynGlyphX {
         m_recentFileActions[0]->setVisible(numRecentFiles > 0);
     }
 
-    void MainWindow::UpdateFilenameWindowTitle(const QString& title) {
+	void MainWindow::UpdateFilenameWindowTitle(const QString& title) {
 
         setWindowTitle(title + "[*] - " + SynGlyphX::Application::organizationName() + " " + SynGlyphX::Application::applicationName());
     }
+
+	void MainWindow::ClearCurrentFile() {
+
+		m_currentFilename = "";
+		UpdateFilenameWindowTitle("Untitled");
+	}
 
     void MainWindow::SetCurrentFile(const QString& filename) {
 
