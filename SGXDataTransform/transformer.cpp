@@ -232,7 +232,14 @@ namespace SynGlyphX {
 
 	double Transformer::LinearInterpolate(double min, double difference, double dataMin, double dataDifference, double currentData) const {
 
-		return (min + (((currentData - dataMin) / dataDifference) * difference));
+		if (dataDifference != 0.0) {
+
+			return (min + (((currentData - dataMin) / dataDifference) * difference));
+		}
+		else {
+
+			return min;
+		}
 	}
 
 	bool Transformer::HaveDatasourcesBeenUpdated(const DataTransformMapping& mapping, std::time_t lastUpdateTime) const {
