@@ -237,21 +237,23 @@ bool ANTzWidget::IsRootNodeSelected() const {
 
 void ANTzWidget::mousePressEvent(QMouseEvent* event) {
 
-    if (event->button() == Qt::LeftButton) {
-		pData antzData = m_model->GetANTzData();
-		int pickID = npPickPin(event->x(), antzData->io.gl.height - event->y(), antzData);
+    pData antzData = m_model->GetANTzData();
+	int pickID = npPickPin(event->x(), antzData->io.gl.height - event->y(), antzData);
 
-		if (pickID != 0) {
-			if ((event->modifiers() == Qt::ControlModifier) && m_allowMultiSelection) {
+	if (pickID != 0) {
+
+		if ((event->modifiers() == Qt::ControlModifier) && m_allowMultiSelection) {
+
+			if (event->button() == Qt::LeftButton) {
 
 				m_selectionModel->select(m_model->IndexFromANTzID(pickID), QItemSelectionModel::Toggle);
-            }
-			else {
-				
-				m_selectionModel->select(m_model->IndexFromANTzID(pickID), QItemSelectionModel::ClearAndSelect);
-            }
+			}
         }
-    }
+		else {
+				
+			m_selectionModel->select(m_model->IndexFromANTzID(pickID), QItemSelectionModel::ClearAndSelect);
+        }
+	}
 
     m_lastMousePosition = event->pos();
 }
