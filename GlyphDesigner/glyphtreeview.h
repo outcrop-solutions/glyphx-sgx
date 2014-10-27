@@ -2,29 +2,54 @@
 #define GLYPHTREEVIEW_H
 
 #include <QtWidgets/QTreeView>
+#include <QtWidgets/QAction>
+#include "glyphtreemodel.h"
+#include "sharedactionlist.h"
 
 class GlyphTreeView : public QTreeView
 {
     Q_OBJECT
 
 public:
-    GlyphTreeView(QWidget *parent = 0);
+	GlyphTreeView(GlyphTreeModel* model, QItemSelectionModel* selectionModel, QWidget *parent = 0);
     ~GlyphTreeView();
 
-	const QList<QAction*>& GetGlyphActions() const;
-	const QList<QAction*>& GetEditActions() const;
+	const SynGlyphX::SharedActionList& GetGlyphActions() const;
+	const SynGlyphX::SharedActionList& GetEditActions() const;
+
+public slots:
+	void AddChildren();
 
 protected:
     virtual void selectionChanged(const QItemSelection& selected, const QItemSelection& deselected);
 
 private slots:
-	//void DeleteSelected();
+	void DeleteSelected();
+	void DeleteChildrenFromSelected();
+	void PropertiesActivated();
 
 private:
-	//void CreateContextMenuActions();
+	void CreateContextMenuActions();
+	void CreatePropertiesDialog();
+	void CreateAddChildrenDialog();
+	void EnableActions();
 
-	QList<QAction*> m_glyphActions;
-	QList<QAction*> m_editActions;
+	GlyphTreeModel* m_model;
+
+	SynGlyphX::SharedActionList m_glyphActions;
+	SynGlyphX::SharedActionList m_editActions;
+
+	//Edit menu actions
+	QAction* m_cutAction;
+	QAction* m_copyAction;
+	QAction* m_pasteAction;
+	QAction* m_pasteAsChildAction;
+	QAction* m_deleteAction;
+	QAction* m_deleteChildrenAction;
+	QAction* m_propertiesAction;
+
+	//Glyph menu actions
+	QAction* m_addChildrenAction;
 };
 
 #endif // GLYPHTREEVIEW_H

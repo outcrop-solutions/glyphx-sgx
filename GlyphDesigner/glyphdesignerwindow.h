@@ -5,7 +5,6 @@
 #include "glyphtreeview.h"
 #include "antzwidget.h"
 #include "glyphtreemodel.h"
-#include "sharedactionmanager.h"
 
 class GlyphDesignerWindow : public SynGlyphX::MainWindow
 {
@@ -45,8 +44,6 @@ private:
 
     GlyphTreeModel* m_glyphTreeModel;
     QItemSelectionModel* m_selectionModel;
-
-    SharedActionManager* m_sharedActions;
 };
 
 #endif // GLYPHDESIGNERWINDOW_H

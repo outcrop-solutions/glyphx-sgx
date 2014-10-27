@@ -24,14 +24,13 @@ GlyphDesignerWindow::GlyphDesignerWindow(QWidget *parent)
     m_3dView = new ANTzWidget(m_glyphTreeModel, m_selectionModel, this);
     setCentralWidget(m_3dView);
 
-    m_sharedActions = new SharedActionManager(m_glyphTreeModel, m_selectionModel, this);
+	CreateMenus();
+	CreateDockWidgets();
 
-    CreateMenus();
-    CreateDockWidgets();
+	m_3dView->addActions(m_treeView->actions());
+	m_3dView->setContextMenuPolicy(Qt::ActionsContextMenu);
 
 	QObject::connect(m_glyphTreeModel, &GlyphTreeModel::ModelChanged, this, &GlyphDesignerWindow::setWindowModified);
-
-    //ReadSettings();
 
     statusBar()->showMessage(SynGlyphX::Application::applicationName() + " Started", 3000);
 }
@@ -72,8 +71,6 @@ void GlyphDesignerWindow::CreateMenus() {
 
     //Create Edit Menu
     m_editMenu = menuBar()->addMenu(tr("Edit"));
-    m_editMenu->addActions(m_sharedActions->GetEditActions());
-    m_editMenu->addSeparator();
 
     QMenu* editingModeMenu = m_editMenu->addMenu(tr("Editing Mode"));
 
@@ -98,6 +95,8 @@ void GlyphDesignerWindow::CreateMenus() {
     //QObject::connect(editingActionGroup, SIGNAL(triggered(QAction*)), this, SLOT(EditingModeChanged(QAction*)));
     QObject::connect(editingActionGroup, &QActionGroup::triggered, this, &GlyphDesignerWindow::EditingModeChanged);
 
+	m_editMenu->addSeparator();
+
     //Create View Menu
     m_viewMenu = menuBar()->addMenu(tr("View"));
     CreateFullScreenAction(m_viewMenu);
@@ -111,7 +110,6 @@ void GlyphDesignerWindow::CreateMenus() {
     QObject::connect(newGlyphTreeAction, &QAction::triggered, this, &GlyphDesignerWindow::CreateNewGlyphTree);
 
     m_glyphMenu->addSeparator();
-    m_glyphMenu->addActions(m_sharedActions->GetGlyphActions());
 
     CreateHelpMenu();
 }
@@ -120,15 +118,9 @@ void GlyphDesignerWindow::CreateDockWidgets() {
 
     //Add Tree View to dock widget on left side
     QDockWidget* leftDockWidget = new QDockWidget("Glyph Tree", this);
-    m_treeView = new GlyphTreeView(leftDockWidget);
-    m_treeView->setModel(m_glyphTreeModel);
-    m_treeView->setSelectionModel(m_selectionModel);
-    m_treeView->addActions(m_sharedActions->GetGlyphActions());
-    QAction* separator = new QAction(this);
-    separator->setSeparator(true);
-    m_treeView->addAction(separator);
-    m_treeView->addActions(m_sharedActions->GetEditActions());
-    m_treeView->setContextMenuPolicy(Qt::ActionsContextMenu);
+	m_treeView = new GlyphTreeView(m_glyphTreeModel, m_selectionModel, leftDockWidget);
+	m_editMenu->addActions(m_treeView->GetEditActions());
+	m_glyphMenu->addActions(m_treeView->GetGlyphActions());
     
     leftDockWidget->setWidget(m_treeView);
     addDockWidget(Qt::LeftDockWidgetArea, leftDockWidget);
@@ -136,7 +128,7 @@ void GlyphDesignerWindow::CreateDockWidgets() {
 
     QDockWidget* rightDockWidget = new QDockWidget("Properties", this);
     ModalGlyphWidget* modalGlyphWidget = new ModalGlyphWidget(m_glyphTreeModel, m_selectionModel, rightDockWidget);
-    QObject::connect(modalGlyphWidget, SIGNAL(AddChildrenButtonClicked()), m_sharedActions, SLOT(AddChildren()));
+	QObject::connect(modalGlyphWidget, &ModalGlyphWidget::AddChildrenButtonClicked, m_treeView, &GlyphTreeView::AddChildren);
     rightDockWidget->setWidget(modalGlyphWidget);
     addDockWidget(Qt::RightDockWidgetArea, rightDockWidget);
     m_viewMenu->addAction(rightDockWidget->toggleViewAction());
