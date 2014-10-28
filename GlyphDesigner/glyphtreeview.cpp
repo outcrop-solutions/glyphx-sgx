@@ -95,7 +95,13 @@ void GlyphTreeView::DeleteSelected() {
 	while (glyphTreeSelectionModel->hasSelection()) {
 
 		const QModelIndexList& selectedItems = glyphTreeSelectionModel->selectedIndexes();
-		m_model->removeRow(selectedItems.back().row(), selectedItems.back().parent());
+		const QModelIndex& selectedItem = selectedItems.back();
+
+		//Only delete selected node if it isn't the root node
+		if (selectedItem.parent().isValid()) {
+		
+			m_model->removeRow(selectedItem.row(), selectedItem.parent());
+		}
 	}
 }
 
