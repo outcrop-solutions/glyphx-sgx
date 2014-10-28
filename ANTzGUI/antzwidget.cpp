@@ -215,10 +215,13 @@ void ANTzWidget::CenterCameraOnNode(pNPnode node) {
 	
     pData antzData = m_model->GetANTzData();
 
-    npSetCamTargetNode(node, antzData);
-	antzData->io.mouse.targeting = false;
-    antzData->map.selectedPinNode = node;
-	antzData->map.selectedPinIndex = node->id;
+	if (node != nullptr) {
+
+		npSetCamTargetNode(node, antzData);
+		antzData->io.mouse.targeting = false;
+		antzData->map.selectedPinNode = node;
+		antzData->map.selectedPinIndex = node->id;
+	}
 
     //Always keep current node set to current cam
     antzData->map.currentNode = antzData->map.currentCam;

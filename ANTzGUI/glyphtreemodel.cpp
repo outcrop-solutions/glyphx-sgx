@@ -143,20 +143,32 @@ Qt::DropActions GlyphTreeModel::supportedDropActions() const {
 }
 
 pData GlyphTreeModel::GetANTzData() const {
-    return m_antzData;
+    
+	return m_antzData;
 }
 
 pNPnode GlyphTreeModel::GetRootGlyph() const {
-    return m_rootGlyph;
+    
+	return m_rootGlyph;
+}
+
+void GlyphTreeModel::DeleteGlyphRootNode() {
+
+	if (m_rootGlyph != nullptr) {
+
+		//Need to select so that npNodeDelete works properly.  ANTz assumes that the root pin being deleted is selected.  Easier to work around this for now
+		m_antzData->map.nodeRootIndex = kNPnodeRootPin;
+
+		npNodeDelete(m_rootGlyph, m_antzData);
+		m_rootGlyph = nullptr;
+	}
 }
 
 bool GlyphTreeModel::LoadFromFile(const QString& filename) {
     
-    //Need to select so that npNodeDelete works properly.  ANTz assumes that the root pin being deleted is selected.  Easier to work around this for now
-    m_antzData->map.nodeRootIndex = m_rootGlyph->id;
-
     beginResetModel();
-    npNodeDelete(m_rootGlyph, m_antzData);
+	DeleteGlyphRootNode();
+
 	bool success = false;
 	if (IsANTzCSVFile(filename)) {
 
@@ -230,15 +242,8 @@ bool GlyphTreeModel::SaveToCSV(const std::string& filename, const QModelIndexLis
 
 void GlyphTreeModel::CreateNewTree(SynGlyphX::GlyphTree::ConstSharedPtr newGlyphTree, bool usePositionsInGlyphTree) {
 
-    //Need to select so that npNodeDelete works properly.  ANTz assumes that the root pin being deleted is selected.  Easier to work around this way
-	if (m_rootGlyph != nullptr) {
-		m_antzData->map.nodeRootIndex = m_rootGlyph->id;
-	}
-
     beginResetModel();
-	if (m_rootGlyph != nullptr) {
-		npNodeDelete(m_rootGlyph, m_antzData);
-	}
+	DeleteGlyphRootNode();
 	CreateNewSubTree(NULL, newGlyphTree, newGlyphTree->root(), usePositionsInGlyphTree);
 
 	/*SynGlyphX::GlyphProperties::SharedPtr glyphProperties(&(newGlyphTree->begin().node->data));
@@ -302,11 +307,7 @@ void GlyphTreeModel::CreateDefaultGlyph(bool resetModel) {
 		beginResetModel();
 	}
 
-	if (m_rootGlyph != nullptr) {
-		//Need to select so that npNodeDelete works properly.  ANTz assumes that the root pin being deleted is selected.  Easier to work around this way
-		m_antzData->map.nodeRootIndex = m_rootGlyph->id;
-		npNodeDelete(m_rootGlyph, m_antzData);
-	}
+	DeleteGlyphRootNode();
 
     m_rootGlyph = npNodeNew(kNodePin, NULL, m_antzData);
     npNodeNew(kNodePin, m_rootGlyph, m_antzData);
@@ -431,20 +432,30 @@ bool GlyphTreeModel::insertRows(int row, int count, const QModelIndex & parent) 
 
 bool GlyphTreeModel::removeRows(int row, int count, const QModelIndex& parent) {
 
-    if ((parent.isValid()) && (hasIndex(parent.row(), 0, parent.parent())) && (count > 0)) {
+	if (count > 0) {
 
-        int lastRow = row + count - 1;
-        pNPnode parentNode = static_cast<pNPnode>(parent.internalPointer());
-        if (lastRow < parentNode->childCount) {
-            
-            beginRemoveRows(parent, row, lastRow);
-            for (int i = lastRow; i >= row; --i) {
-                npNodeRemove(true, parentNode->child[i], m_antzData);
-            }
-            endRemoveRows();
-        }
-        return true;
-    }
+		if ((parent.isValid()) && (hasIndex(parent.row(), 0, parent.parent()))) {
+
+			int lastRow = row + count - 1;
+			pNPnode parentNode = static_cast<pNPnode>(parent.internalPointer());
+			if (lastRow < parentNode->childCount) {
+
+				beginRemoveRows(parent, row, lastRow);
+				for (int i = lastRow; i >= row; --i) {
+					npNodeRemove(true, parentNode->child[i], m_antzData);
+				}
+				endRemoveRows();
+			}
+			return true;
+		}
+		else {
+
+			beginRemoveRows(parent, 0, 0);
+			DeleteGlyphRootNode();
+			m_antzData->map.nodeRootIndex = 0;
+			endRemoveRows();
+		}
+	}
 
     return false;
 }

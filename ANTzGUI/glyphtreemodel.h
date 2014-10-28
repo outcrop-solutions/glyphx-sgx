@@ -89,6 +89,7 @@ private:
 	void UpdateNode(pNPnode glyph, const SynGlyphX::GlyphProperties& glyphTemplate, PropertyUpdates updates = UpdateAll);
 	void CreateNewSubTree(pNPnode parent, SynGlyphX::GlyphTree::ConstSharedPtr newGlyphTree, const SynGlyphX::GlyphTree::const_iterator& location, bool updatePosition = false);
 	bool IsANTzCSVFile(const QString& filename) const;
+	void DeleteGlyphRootNode();
 
     pNPnode m_rootGlyph;
     pData m_antzData;
