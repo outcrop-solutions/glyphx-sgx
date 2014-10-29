@@ -34,9 +34,10 @@ DataMapperWindow::DataMapperWindow(QWidget *parent)
 
 	CreateCenterWidget();
 
-	QObject::connect(m_glyphTreeView->selectionModel(), &QItemSelectionModel::selectionChanged, this, [&, this](const QItemSelection& selected, const QItemSelection& deselected){ m_minMaxGlyphModel->SetMinMaxGlyph(selected.indexes()[0]); });
-
 	QObject::connect(m_minMaxGlyphModel, &MinMaxGlyphModel::dataChanged, this, [&, this](const QModelIndex& topLeft, const QModelIndex& bottomRight){ setWindowModified(true); });
+	QObject::connect(m_dataTransformModel, &DataTransformModel::modelReset, this, &DataMapperWindow::OnDataTransformModelModified);
+	QObject::connect(m_dataTransformModel, &DataTransformModel::rowsInserted, this, &DataMapperWindow::OnDataTransformModelModified);
+	QObject::connect(m_dataTransformModel, &DataTransformModel::rowsRemoved, this, &DataMapperWindow::OnDataTransformModelModified);
 
 	statusBar()->showMessage(SynGlyphX::Application::applicationName() + " Started", 3000);
 }
@@ -48,8 +49,11 @@ DataMapperWindow::~DataMapperWindow()
 
 void DataMapperWindow::CreateCenterWidget() {
 
+	m_minMaxGlyphModel = new MinMaxGlyphModel(m_dataTransformModel, this);
 	m_glyphTreeModel = new GlyphTreeModel(this);
-	m_selectionTranslator = new SelectionTranslator(m_dataTransformModel, m_glyphTreeModel, m_glyphTreeView->selectionModel(), this);
+	m_selectionTranslator = new SelectionTranslator(m_dataTransformModel, m_glyphTreeModel, m_minMaxGlyphModel, m_glyphTreesView->selectionModel(), this);
+
+	QObject::connect(m_minMaxGlyphModel, &MinMaxGlyphModel::GlyphPropertiesUpdated, m_selectionTranslator, &SelectionTranslator::UpdateSelectedGlyphProperties);
 
 	QSplitter* centerWidget = new QSplitter(Qt::Vertical, this);
 	
@@ -58,7 +62,6 @@ void DataMapperWindow::CreateCenterWidget() {
 
 	//m_viewMenu->addAction(glyphViewDockWidget->toggleViewAction());
 
-	m_minMaxGlyphModel = new MinMaxGlyphModel(m_dataTransformModel, m_selectionTranslator, this);
 	m_dataBindingWidget = new DataBindingWidget(m_minMaxGlyphModel, centerWidget);
 
 	centerWidget->addWidget(m_dataBindingWidget);
@@ -143,15 +146,14 @@ void DataMapperWindow::CreateMenus() {
 
 void DataMapperWindow::CreateDockWidgets() {
 
-	QDockWidget* leftDockWidget = new QDockWidget(tr("Glyph Tree"), this);
+	QDockWidget* leftDockWidget = new QDockWidget(tr("Glyph Trees"), this);
 
-	m_glyphTreeView = new QTreeView(leftDockWidget);
-	m_glyphTreeView->setModel(m_dataTransformModel);
-	m_glyphTreeView->setSelectionMode(QAbstractItemView::SingleSelection);
-	m_glyphTreeView->setHeaderHidden(true);
+	m_glyphTreesView = new GlyphTreesView(leftDockWidget);
+	m_glyphTreesView->setModel(m_dataTransformModel);
+	m_glyphMenu->addActions(m_glyphTreesView->actions());
 
     //Add Tree View to dock widget on left side
-    leftDockWidget->setWidget(m_glyphTreeView);
+	leftDockWidget->setWidget(m_glyphTreesView);
     addDockWidget(Qt::LeftDockWidgetArea, leftDockWidget);
     m_viewMenu->addAction(leftDockWidget->toggleViewAction());
 
@@ -180,7 +182,6 @@ void DataMapperWindow::CreateNewProject() {
 	m_minMaxGlyphModel->Clear();
 
 	EnableProjectDependentActions(false);
-	centralWidget()->setEnabled(false);
 	m_glyphTreeModel->ShowGlyph(false);
 	UpdateFilenameWindowTitle("Untitled");
 }
@@ -231,12 +232,14 @@ void DataMapperWindow::LoadRecentFile(const QString& filename) {
 void DataMapperWindow::LoadDataTransform(const QString& filename) {
 
 	try {
+
 		m_dataTransformModel->LoadDataTransformFile(filename);
-		m_glyphTreeView->selectionModel()->select(m_dataTransformModel->index(m_dataTransformModel->rowCount() - 1), QItemSelectionModel::ClearAndSelect);
+		m_glyphTreesView->selectionModel()->select(m_dataTransformModel->index(m_dataTransformModel->rowCount() - 1), QItemSelectionModel::ClearAndSelect);
 		m_dataSourceStats->RebuildStatsViews();
 		m_dataBindingWidget->EnablePositionXYMixMaxWidgets(m_dataTransformModel->GetDataTransform()->GetBaseImage().GetType() != SynGlyphX::BaseImage::Type::DownloadedMap);
 	}
 	catch (const std::exception& e) {
+
 		QMessageBox::critical(this, tr("Failed To Open Project"), tr("Failed to open project.  Error: ") + e.what(), QMessageBox::Ok);
 		return;
 	}
@@ -244,7 +247,6 @@ void DataMapperWindow::LoadDataTransform(const QString& filename) {
 	SetCurrentFile(filename);
 
 	EnableProjectDependentActions(true);
-	centralWidget()->setEnabled(true);
 
 	statusBar()->showMessage("Project successfully opened", 3000);
 }
@@ -451,8 +453,7 @@ void DataMapperWindow::AddGlyphTemplate() {
 	}
 
 	EnableProjectDependentActions(true);
-	centralWidget()->setEnabled(true);
-	m_glyphTreeView->selectionModel()->select(m_dataTransformModel->index(m_dataTransformModel->rowCount() - 1), QItemSelectionModel::ClearAndSelect);
+	m_glyphTreesView->selectionModel()->select(m_dataTransformModel->index(m_dataTransformModel->rowCount() - 1), QItemSelectionModel::ClearAndSelect);
 	setWindowModified(true);
 	statusBar()->showMessage("Glyph Template successfully added", 3000);
 }
@@ -517,4 +518,10 @@ bool DataMapperWindow::DoesANTzTemplateExist() const {
 	}
 
 	return true;
+}
+
+void DataMapperWindow::OnDataTransformModelModified() {
+
+	centralWidget()->setEnabled(m_dataTransformModel->rowCount() > 0);
+	m_selectionTranslator->Clear();
 }

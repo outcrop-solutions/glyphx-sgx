@@ -139,8 +139,8 @@ void DataTransformModel::AddGlyphFile(const QString& filename) {
 
 void DataTransformModel::LoadDataTransformFile(const QString& filename) {
 
+	Clear();
 	beginResetModel();
-	m_sourceDataManager.ClearDatabaseConnections();
 	m_dataTransform->ReadFromFile(filename.toStdString());
 	SetIntermediateDirectoryToCurrentID();
 	m_sourceDataManager.AddDatabaseConnections(m_dataTransform->GetDatasources());
@@ -192,4 +192,34 @@ void DataTransformModel::EnableTables(const boost::uuids::uuid& id, const SynGly
 SynGlyphX::DataTransformMapping::ConstSharedPtr DataTransformModel::GetDataTransform() const {
 
 	return m_dataTransform;
+}
+
+bool DataTransformModel::removeRows(int row, int count, const QModelIndex& parent) {
+
+	if ((!parent.isValid()) && (count > 0)) {
+
+		int lastRow = row + count - 1;
+		SynGlyphX::DataTransformMapping::MinMaxGlyphTreeMap::const_iterator begin = m_dataTransform->GetGlyphTrees().begin();
+		std::advance(begin, row);
+		SynGlyphX::DataTransformMapping::MinMaxGlyphTreeMap::const_iterator end = begin;
+		std::advance(end, count);
+		
+		//Store IDs to be removed so that we don't have to worry about removal affecting iterators on the tree map
+		std::vector<boost::uuids::uuid> treeIDs;
+		for (SynGlyphX::DataTransformMapping::MinMaxGlyphTreeMap::const_iterator iT = begin; iT != end; ++iT) {
+
+			treeIDs.push_back(iT->first);
+		}
+
+		beginRemoveRows(parent, row, lastRow);
+		for (const boost::uuids::uuid& id : treeIDs) {
+
+			m_dataTransform->RemoveGlyphTree(id);
+		}
+		endRemoveRows();
+		
+		return true;
+	}
+
+	return false;
 }

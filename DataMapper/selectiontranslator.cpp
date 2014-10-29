@@ -1,11 +1,13 @@
 #include "selectiontranslator.h"
 #include <stack>
 
-SelectionTranslator::SelectionTranslator(DataTransformModel* dataTransformModel, GlyphTreeModel* glyphTreeModel, QItemSelectionModel* treeViewSelectionModel, QObject *parent)
+SelectionTranslator::SelectionTranslator(DataTransformModel* dataTransformModel, GlyphTreeModel* glyphTreeModel, MinMaxGlyphModel* minMaxGlyphModel, QItemSelectionModel* treeViewSelectionModel, QObject *parent)
 	: QObject(parent),
 	m_dataTransformModel(dataTransformModel),
 	m_glyphTreeModel(glyphTreeModel),
-	m_treeViewSelectionModel(treeViewSelectionModel)
+	m_minMaxGlyphModel(minMaxGlyphModel),
+	m_treeViewSelectionModel(treeViewSelectionModel),
+	m_glyphTreeIndex(-1)
 {
 	m_3DViewSelectionModel = new QItemSelectionModel(m_glyphTreeModel, this);
 	Connect3DViewSelectionModel();
@@ -22,6 +24,11 @@ void SelectionTranslator::Connect3DViewSelectionModel() {
 	m_3DViewConnection = QObject::connect(m_3DViewSelectionModel, &QItemSelectionModel::selectionChanged, this, &SelectionTranslator::On3DViewSelectionChanged);
 }
 
+void SelectionTranslator::Clear() {
+
+	m_glyphTreeIndex = -1;
+}
+
 void SelectionTranslator::ConnectTreeViewSelectionModel() {
 
 	m_treeViewConnection = QObject::connect(m_treeViewSelectionModel, &QItemSelectionModel::selectionChanged, this, &SelectionTranslator::OnTreeViewSelectionChanged);
@@ -35,31 +42,34 @@ QItemSelectionModel* SelectionTranslator::Get3DViewSelectionModel() const {
 void SelectionTranslator::OnTreeViewSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected) {
 
 	if (selected.empty() || !selected.indexes()[0].isValid()) {
+
+		m_minMaxGlyphModel->Clear();
+		m_glyphTreeModel->removeRow(0);
+		m_glyphTreeIndex = -1;
 		return;
 	}
 
 	QModelIndex minMaxIndex = selected.indexes()[0];
+	m_minMaxGlyphModel->SetMinMaxGlyph(minMaxIndex);
+
+	QModelIndex rootIndex = minMaxIndex;
+	while (rootIndex.parent().isValid()) {
+
+		rootIndex = rootIndex.parent();
+	}
 
 	SynGlyphX::MinMaxGlyphTree::Node* node = static_cast<SynGlyphX::MinMaxGlyphTree::Node*>(minMaxIndex.internalPointer());
 	SynGlyphX::MinMaxGlyphTree::iterator newGlyph = SynGlyphX::MinMaxGlyphTree::iterator(node);
-	const SynGlyphX::MinMaxGlyphTree* newGlyphTree = static_cast<const SynGlyphX::MinMaxGlyphTree*>(newGlyph.owner());
 
-	if (m_glyphTree != newGlyphTree) {
+	if (m_glyphTreeIndex != rootIndex.row()) {
 
-		m_glyphTreeIndex = 0;
-		m_glyphTree = newGlyphTree;
-		for (auto minMaxGlyphTree : m_dataTransformModel->GetDataTransform()->GetGlyphTrees()) {
+		m_glyphTreeIndex = rootIndex.row();
+		SynGlyphX::DataTransformMapping::MinMaxGlyphTreeMap::const_iterator newGlyphTree = m_dataTransformModel->GetDataTransform()->GetGlyphTrees().begin();
+		std::advance(newGlyphTree, m_glyphTreeIndex);
 
-			if (minMaxGlyphTree.second.get() == m_glyphTree) {
-
-				SynGlyphX::GlyphTree::SharedPtr glyphTree = m_dataTransformModel->GetDataTransform()->GetGlyphTrees().at(minMaxGlyphTree.first)->GetMinGlyphTree();
-				glyphTree->root()->SetPosition({ { 0.0, 0.0, 0.0 } });
-				m_glyphTreeModel->CreateNewTree(glyphTree, true);
-				break;
-			}
-
-			++m_glyphTreeIndex;
-		}
+		SynGlyphX::GlyphTree::SharedPtr minGlyphTree = newGlyphTree->second->GetMinGlyphTree();
+		minGlyphTree->root()->SetPosition({ { 0.0, 0.0, 0.0 } });
+		m_glyphTreeModel->CreateNewTree(minGlyphTree, true);
 	}
 
 	if (m_glyph != newGlyph) {
@@ -92,10 +102,14 @@ void SelectionTranslator::OnTreeViewSelectionChanged(const QItemSelection& selec
 void SelectionTranslator::On3DViewSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected) {
 
 	if (selected.empty() || !selected.indexes()[0].isValid()) {
+
+		m_minMaxGlyphModel->Clear();
+		m_glyphTreeIndex = -1;
 		return;
 	}
 
 	QModelIndex glyphTreeModelIndex = selected.indexes()[0];
+	m_minMaxGlyphModel->SetMinMaxGlyph(glyphTreeModelIndex);
 
 	std::stack<int> childPositions;
 	while (glyphTreeModelIndex.isValid()) {

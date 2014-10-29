@@ -8,17 +8,20 @@
 #include "minmaxglyphtree.h"
 #include "datatransformmodel.h"
 #include "glyphtreemodel.h"
+#include "minmaxglyphmodel.h"
 
 class SelectionTranslator : public QObject
 {
 	Q_OBJECT
 
 public:
-	SelectionTranslator(DataTransformModel* dataTransformModel, GlyphTreeModel* glyphTreeModel, QItemSelectionModel* treeViewSelectionModel, QObject *parent);
+	SelectionTranslator(DataTransformModel* dataTransformModel, GlyphTreeModel* glyphTreeModel, MinMaxGlyphModel* minMaxGlyphModel, QItemSelectionModel* treeViewSelectionModel, QObject *parent);
 	~SelectionTranslator();
 
 	QItemSelectionModel* Get3DViewSelectionModel() const;
+	void Clear();
 
+public slots:
 	void UpdateSelectedGlyphProperties(SynGlyphX::GlyphProperties::ConstSharedPtr glyph);
 
 private slots:
@@ -31,9 +34,12 @@ private:
 
 	SynGlyphX::MinMaxGlyphTree::iterator m_glyph;
 	const SynGlyphX::MinMaxGlyphTree* m_glyphTree;
-	unsigned int m_glyphTreeIndex;
+	int m_glyphTreeIndex;
+
 	DataTransformModel* m_dataTransformModel;
 	GlyphTreeModel* m_glyphTreeModel;
+	MinMaxGlyphModel* m_minMaxGlyphModel;
+
 	QItemSelectionModel* m_3DViewSelectionModel;
 	QItemSelectionModel* m_treeViewSelectionModel;
 	QMetaObject::Connection m_3DViewConnection;

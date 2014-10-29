@@ -4,14 +4,13 @@
 #include <QtCore/QAbstractTableModel>
 #include "minmaxglyphtree.h"
 #include "datatransformmodel.h"
-#include "selectiontranslator.h"
 
 class MinMaxGlyphModel : public QAbstractTableModel
 {
 	Q_OBJECT
 
 public:
-	MinMaxGlyphModel(DataTransformModel* dataTransformModel, SelectionTranslator* selectionTranslator, QObject *parent = nullptr);
+	MinMaxGlyphModel(DataTransformModel* dataTransformModel, QObject *parent = nullptr);
 	~MinMaxGlyphModel();
 
 	//Functions from QAbstractItemModel that need to be implemented
@@ -23,6 +22,9 @@ public:
 	virtual QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
 
 	SynGlyphX::DataTransformMapping::ConstSharedPtr GetDataTransformMapping() const;
+
+signals:
+	void GlyphPropertiesUpdated(SynGlyphX::GlyphProperties::SharedPtr newGlyph);
 
 public slots:
 	void SetMinMaxGlyph(const QModelIndex& index);
@@ -38,7 +40,6 @@ private:
 	QStringList m_propertyHeaders;
 	QStringList m_columnHeaders;
 	DataTransformModel* m_dataTransformModel;
-	SelectionTranslator* m_selectionTranslator;
 };
 
 #endif // MINMAXGLYPHMODEL_H

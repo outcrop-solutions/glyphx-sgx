@@ -3,10 +3,9 @@
 #include "sourcedatamanager.h"
 #include <QtWidgets/QMessageBox>
 
-MinMaxGlyphModel::MinMaxGlyphModel(DataTransformModel* dataTransformModel, SelectionTranslator* selectionTranslator, QObject *parent)
+MinMaxGlyphModel::MinMaxGlyphModel(DataTransformModel* dataTransformModel, QObject *parent)
 	: QAbstractTableModel(parent),
-	m_dataTransformModel(dataTransformModel),
-	m_selectionTranslator(selectionTranslator)
+	m_dataTransformModel(dataTransformModel)
 {
 	m_propertyHeaders << tr("Position X")
 		<< tr("Position Y")
@@ -181,7 +180,7 @@ bool MinMaxGlyphModel::setData(const QModelIndex& index, const QVariant& value, 
 			m_glyph->SetDifference(diffProperties);
 
 			SynGlyphX::GlyphProperties::SharedPtr newGlyph(new SynGlyphX::GlyphProperties(m_glyph->GetMinGlyph()));
-			m_selectionTranslator->UpdateSelectedGlyphProperties(newGlyph);
+			emit GlyphPropertiesUpdated(newGlyph);
 		}
 
 		emit dataChanged(index, index);

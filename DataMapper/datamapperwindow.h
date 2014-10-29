@@ -12,6 +12,7 @@
 #include "antzwidget.h"
 #include "glyphtreemodel.h"
 #include "selectiontranslator.h"
+#include "glyphtreesview.h"
 
 class DataMapperWindow : public SynGlyphX::MainWindow
 {
@@ -36,6 +37,7 @@ private slots:
     void ChangeBaseImage();
 	void AddGlyphTemplate();
 	void ChangeMapDownloadSettings();
+	void OnDataTransformModelModified();
 
 private:
     void CreateMenus();
@@ -54,7 +56,7 @@ private:
 	QMenu* m_datasourceMenu;
     QMenu* m_viewMenu;
 	//QMenu* m_toolsMenu;
-    QTreeView* m_glyphTreeView;
+    GlyphTreesView* m_glyphTreesView;
 	DataSourceStatsWidget* m_dataSourceStats;
 	QList<QAction*> m_projectDependentActions;
 	DataBindingWidget* m_dataBindingWidget;
