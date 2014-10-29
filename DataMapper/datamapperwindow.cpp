@@ -29,7 +29,10 @@ DataMapperWindow::DataMapperWindow(QWidget *parent)
 	m_dataBindingWidget(nullptr)
 {
 	m_dataTransformModel = new DataTransformModel(this);
-    CreateMenus();
+	m_minMaxGlyphModel = new MinMaxGlyphModel(m_dataTransformModel, this);
+	m_glyphTreeModel = new GlyphTreeModel(this);
+	
+	CreateMenus();
     CreateDockWidgets();
 
 	CreateCenterWidget();
@@ -49,8 +52,6 @@ DataMapperWindow::~DataMapperWindow()
 
 void DataMapperWindow::CreateCenterWidget() {
 
-	m_minMaxGlyphModel = new MinMaxGlyphModel(m_dataTransformModel, this);
-	m_glyphTreeModel = new GlyphTreeModel(this);
 	m_selectionTranslator = new SelectionTranslator(m_dataTransformModel, m_glyphTreeModel, m_minMaxGlyphModel, m_glyphTreesView->selectionModel(), this);
 
 	QObject::connect(m_minMaxGlyphModel, &MinMaxGlyphModel::GlyphPropertiesUpdated, m_selectionTranslator, &SelectionTranslator::UpdateSelectedGlyphProperties);
@@ -79,17 +80,17 @@ void DataMapperWindow::CreateMenus() {
     //Create File Menu
     m_fileMenu = menuBar()->addMenu(tr("File"));
 
-    QAction* newProjectAction = CreateMenuAction(m_fileMenu, tr("New Project"), QKeySequence::New);
+    QAction* newProjectAction = CreateMenuAction(m_fileMenu, tr("New Mapping"), QKeySequence::New);
     QObject::connect(newProjectAction, &QAction::triggered, this, &DataMapperWindow::CreateNewProject);
 
-    QAction* openProjectAction = CreateMenuAction(m_fileMenu, tr("Open Project"), QKeySequence::Open);
+    QAction* openProjectAction = CreateMenuAction(m_fileMenu, tr("Open Mapping"), QKeySequence::Open);
     QObject::connect(openProjectAction, &QAction::triggered, this, &DataMapperWindow::OpenProject);
 
-    QAction* saveProjectAction = CreateMenuAction(m_fileMenu, tr("Save Project"), QKeySequence::Save);
+    QAction* saveProjectAction = CreateMenuAction(m_fileMenu, tr("Save Mapping"), QKeySequence::Save);
     QObject::connect(saveProjectAction, &QAction::triggered, this, &DataMapperWindow::SaveProject);
 	m_projectDependentActions.push_back(saveProjectAction);
 
-    QAction* saveAsProjectAction = CreateMenuAction(m_fileMenu, tr("Save As Project"), QKeySequence::SaveAs);
+    QAction* saveAsProjectAction = CreateMenuAction(m_fileMenu, tr("Save As Mapping"), QKeySequence::SaveAs);
     QObject::connect(saveAsProjectAction, &QAction::triggered, this, &DataMapperWindow::SaveAsProject);
 	m_projectDependentActions.push_back(saveAsProjectAction);
 
@@ -114,6 +115,8 @@ void DataMapperWindow::CreateMenus() {
 
 	QAction* addGlyphTemplateAction = m_glyphMenu->addAction(tr("Add Glyph Templates"));
 	QObject::connect(addGlyphTemplateAction, &QAction::triggered, this, &DataMapperWindow::AddGlyphTemplate);
+
+	m_glyphMenu->addSeparator();
 
 	//Create Datasource Menu
 	m_datasourceMenu = menuBar()->addMenu(tr("Datasource"));
@@ -148,7 +151,7 @@ void DataMapperWindow::CreateDockWidgets() {
 
 	QDockWidget* leftDockWidget = new QDockWidget(tr("Glyph Trees"), this);
 
-	m_glyphTreesView = new GlyphTreesView(leftDockWidget);
+	m_glyphTreesView = new GlyphTreesView(m_minMaxGlyphModel, leftDockWidget);
 	m_glyphTreesView->setModel(m_dataTransformModel);
 	m_glyphMenu->addActions(m_glyphTreesView->actions());
 

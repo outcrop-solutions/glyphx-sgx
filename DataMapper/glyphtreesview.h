@@ -4,13 +4,14 @@
 #include <QtWidgets/QTreeView>
 #include <QtWidgets/QAction>
 #include "sharedactionlist.h"
+#include "minmaxglyphmodel.h"
 
 class GlyphTreesView : public QTreeView
 {
 	Q_OBJECT
 
 public:
-	GlyphTreesView(QWidget *parent = 0);
+	GlyphTreesView(MinMaxGlyphModel* minMaxGlyphModel, QWidget *parent = 0);
 	~GlyphTreesView();
 
 	const SynGlyphX::SharedActionList& GetSharedActions();
@@ -26,7 +27,7 @@ private:
 
 	SynGlyphX::SharedActionList m_sharedActions;
 	QAction* m_removeGlyphTreeAction;
-	QAction* m_clearInputBindingsAction;
+	QAction* m_clearSelectedInputBindingsAction;
 };
 
 #endif // GLYPHTREESVIEW_H

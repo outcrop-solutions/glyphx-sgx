@@ -326,3 +326,12 @@ SynGlyphX::DataTransformMapping::ConstSharedPtr MinMaxGlyphModel::GetDataTransfo
 
 	return m_dataTransformModel->GetDataTransform();
 }
+
+void MinMaxGlyphModel::ClearInputBindings() {
+
+	for (int i = 0; i < rowCount(); ++i) {
+
+		m_dataTransformModel->ClearInputBinding(m_glyphTreeID, m_glyph.constify(), i);
+	}
+	emit dataChanged(index(0, columnCount() - 1), index(rowCount() - 1, columnCount() - 1));
+}
