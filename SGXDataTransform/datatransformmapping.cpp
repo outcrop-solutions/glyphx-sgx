@@ -102,7 +102,7 @@ namespace SynGlyphX {
 	void DataTransformMapping::RemoveDatasource(const boost::uuids::uuid& id) {
 
 		try {
-			RemoveDatasource(id);
+			m_datasources.RemoveDatasource(id);
 		}
 		catch (const std::invalid_argument& e) {
 			throw;
@@ -181,6 +181,14 @@ namespace SynGlyphX {
 		catch (const std::invalid_argument& e) {
 
 			throw;
+		}
+	}
+
+	void DataTransformMapping::RemoveGlyphTree(const boost::uuids::uuid& id) {
+
+		if (m_glyphTrees.erase(id) == 0) {
+
+			throw std::invalid_argument("Glyph tree was not in list so it wasn't erased");
 		}
 	}
 

@@ -42,6 +42,7 @@ namespace SynGlyphX {
 		void EnableTables(const boost::uuids::uuid& id, const Datasource::TableSet& tables, bool enable = true);
 
 		boost::uuids::uuid AddGlyphTree(const MinMaxGlyphTree::SharedPtr glyphTree);
+		void RemoveGlyphTree(const boost::uuids::uuid& id);
 		const MinMaxGlyphTreeMap& GetGlyphTrees() const;
 
 		void SetInputField(const boost::uuids::uuid& treeID, MinMaxGlyphTree::const_iterator& node, int index, const InputField& inputfield);
