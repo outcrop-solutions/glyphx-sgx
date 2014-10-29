@@ -63,6 +63,8 @@ void DownloadOptionsDialog::accept() {
 
 #ifdef _DEBUG
     networkDownloader.SetShowPointsInMap(m_addPointsToMap->isChecked());
+#else
+	networkDownloader.SetShowPointsInMap(false);
 #endif
 
     QDialog::accept();

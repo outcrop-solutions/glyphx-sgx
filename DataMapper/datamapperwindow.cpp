@@ -129,16 +129,16 @@ void DataMapperWindow::CreateMenus() {
 	QAction* baseImageAction = m_datasourceMenu->addAction(tr("Choose Base Image"));
     QObject::connect(baseImageAction, &QAction::triggered, this, &DataMapperWindow::ChangeBaseImage);
 
+	QAction* mapDownloadSettingsAction = m_datasourceMenu->addAction(tr("Map Download Settings"));
+	QObject::connect(mapDownloadSettingsAction, &QAction::triggered, this, &DataMapperWindow::ChangeMapDownloadSettings);
+
     //Create View Menu
     m_viewMenu = menuBar()->addMenu(tr("View"));
     CreateFullScreenAction(m_viewMenu);
 
     m_viewMenu->addSeparator();
 
-	/*m_toolsMenu = menuBar()->addMenu(tr("Tools"));
-
-	QAction* mapDownloadSettingsAction = m_toolsMenu->addAction(tr("Map Download Settings"));
-	QObject::connect(mapDownloadSettingsAction, &QAction::triggered, this, &DataMapperWindow::ChangeMapDownloadSettings);*/
+	//m_toolsMenu = menuBar()->addMenu(tr("Tools"));
 
     m_helpMenu = menuBar()->addMenu(tr("Help"));
     QAction* aboutBoxAction = m_helpMenu->addAction("About " + SynGlyphX::Application::organizationName() + " " + SynGlyphX::Application::applicationName());
@@ -398,28 +398,40 @@ void DataMapperWindow::AddDataSources() {
 void DataMapperWindow::ExportToANTz() {
 
 	QString csvDirectory = QDir::toNativeSeparators(QFileDialog::getExistingDirectory(this, tr("Export to ANTz"), ""));
-	if (!csvDirectory.isEmpty()) {
+	if (csvDirectory.isEmpty()) {
 
-		SynGlyphX::Application::setOverrideCursor(Qt::WaitCursor);
+		return;
+	}
 
-		try {
+	QDir dir(csvDirectory);
+	if (dir.entryInfoList(QDir::NoDotAndDotDot | QDir::AllEntries).count() > 0) {
 
-			//SynGlyphX::Filesystem::RemoveContentsOfDirectory(csvDirectory.toStdString());
-			SynGlyphX::Filesystem::CopyDirectoryOverwrite(QDir::toNativeSeparators(SynGlyphX::Application::applicationDirPath() + QDir::separator() + ANTzTemplateDir).toStdString(), csvDirectory.toStdString(), true);
+		if (QMessageBox::question(this, tr("Directory isn't empty"), tr("Selected directory is not empty.  All contents of the directory will be deleted before export.  Do you wish to continue?")) == QMessageBox::No) {
 
-			ANTzTransformer transformer(csvDirectory);
-			transformer.Transform(*(m_dataTransformModel->GetDataTransform().get()));
-		}
-		catch (const std::exception& e) {
-
-			SynGlyphX::Application::restoreOverrideCursor();
-			QMessageBox::critical(this, "Export to ANTz Error", e.what());
 			return;
 		}
-
-		SynGlyphX::Application::restoreOverrideCursor(); 
-		statusBar()->showMessage("Data transform sucessfully exported to ANTz", 3000);
 	}
+
+	SynGlyphX::Application::setOverrideCursor(Qt::WaitCursor);
+
+	try {
+
+		SynGlyphX::Filesystem::RemoveContentsOfDirectory(csvDirectory.toStdString());
+		SynGlyphX::Filesystem::CopyDirectoryOverwrite(QDir::toNativeSeparators(SynGlyphX::Application::applicationDirPath() + QDir::separator() + ANTzTemplateDir).toStdString(), csvDirectory.toStdString(), true);
+
+		ANTzTransformer transformer(csvDirectory);
+		transformer.Transform(*(m_dataTransformModel->GetDataTransform().get()));
+	}
+	catch (const std::exception& e) {
+
+		SynGlyphX::Filesystem::RemoveContentsOfDirectory(csvDirectory.toStdString());
+		SynGlyphX::Application::restoreOverrideCursor();
+		QMessageBox::critical(this, "Export to ANTz Error", e.what());
+		return;
+	}
+
+	SynGlyphX::Application::restoreOverrideCursor(); 
+	statusBar()->showMessage("Data transform sucessfully exported to ANTz", 3000);
 }
 
 void DataMapperWindow::ChangeBaseImage() {
