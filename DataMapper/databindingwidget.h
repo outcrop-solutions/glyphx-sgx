@@ -18,10 +18,9 @@ public:
 	DataBindingWidget(MinMaxGlyphModel* model, QWidget *parent = 0);
 	~DataBindingWidget();
 
-	void EnablePositionXYMixMaxWidgets(bool enable);
-
 public slots:
 	void CommitChanges();
+	void OnBaseObjectChanged();
 
 private slots:
 	void OnModelReset();
@@ -34,6 +33,7 @@ private:
 	void CreateColorPropertyWidgets(QGridLayout* layout, int row);
 	void CreateRowOfPropertyWidgets(QGridLayout* layout, QWidget* minWidget, QWidget* maxWidget, int row);
 	void CreateGridLine(QGridLayout* layout, QFrame::Shape shape, int index, int thickness = 1);
+	void EnablePositionXYMixMaxWidgets(bool enable);
 
 	BindingLineEdit* m_tagLineEdit;
 	SynGlyphX::RichTextEditor* m_descriptionEdit;

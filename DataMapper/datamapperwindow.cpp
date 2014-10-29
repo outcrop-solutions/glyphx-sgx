@@ -239,7 +239,6 @@ void DataMapperWindow::LoadDataTransform(const QString& filename) {
 		m_dataTransformModel->LoadDataTransformFile(filename);
 		m_glyphTreesView->selectionModel()->select(m_dataTransformModel->index(m_dataTransformModel->rowCount() - 1), QItemSelectionModel::ClearAndSelect);
 		m_dataSourceStats->RebuildStatsViews();
-		m_dataBindingWidget->EnablePositionXYMixMaxWidgets(m_dataTransformModel->GetDataTransform()->GetBaseImage().GetType() != SynGlyphX::BaseImage::Type::DownloadedMap);
 	}
 	catch (const std::exception& e) {
 
@@ -433,7 +432,7 @@ void DataMapperWindow::ChangeBaseImage() {
 		m_dataTransformModel->SetBaseImage(baseImage);
 		EnableProjectDependentActions(true);
 		setWindowModified(true);
-		m_dataBindingWidget->EnablePositionXYMixMaxWidgets(baseImage.GetType() != SynGlyphX::BaseImage::Type::DownloadedMap);
+		m_dataBindingWidget->OnBaseObjectChanged();
 	}
 }
 

@@ -5,7 +5,8 @@
 
 MinMaxGlyphModel::MinMaxGlyphModel(DataTransformModel* dataTransformModel, QObject *parent)
 	: QAbstractTableModel(parent),
-	m_dataTransformModel(dataTransformModel)
+	m_dataTransformModel(dataTransformModel),
+	m_glyphTree(nullptr)
 {
 	m_propertyHeaders << tr("Position X")
 		<< tr("Position Y")
@@ -325,6 +326,16 @@ QVariant MinMaxGlyphModel::headerData(int section, Qt::Orientation orientation, 
 SynGlyphX::DataTransformMapping::ConstSharedPtr MinMaxGlyphModel::GetDataTransformMapping() const {
 
 	return m_dataTransformModel->GetDataTransform();
+}
+
+bool MinMaxGlyphModel::IsCurrentGlyphRoot() const {
+
+	if (m_glyphTree == nullptr) {
+
+		return false;
+	}
+
+	return (m_glyphTree->root() == m_glyph.constify());
 }
 
 void MinMaxGlyphModel::ClearInputBindings() {

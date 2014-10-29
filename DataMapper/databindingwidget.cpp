@@ -216,6 +216,8 @@ void DataBindingWidget::OnModelReset() {
 			m_dataWidgetMappers[i]->setCurrentIndex(i);
 		}
 	}
+
+	OnBaseObjectChanged();
 }
 
 void DataBindingWidget::CommitChanges() {
@@ -226,6 +228,11 @@ void DataBindingWidget::CommitChanges() {
 			mapper->submit();
 		}
 	}
+}
+
+void DataBindingWidget::OnBaseObjectChanged() {
+
+	EnablePositionXYMixMaxWidgets(!(m_model->IsCurrentGlyphRoot() && (m_model->GetDataTransformMapping()->GetBaseImage().GetType() == SynGlyphX::BaseImage::Type::DownloadedMap)));
 }
 
 void DataBindingWidget::EnablePositionXYMixMaxWidgets(bool enable) {

@@ -22,6 +22,7 @@ public:
 	virtual QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
 
 	SynGlyphX::DataTransformMapping::ConstSharedPtr GetDataTransformMapping() const;
+	bool IsCurrentGlyphRoot() const;
 
 signals:
 	void GlyphPropertiesUpdated(SynGlyphX::GlyphProperties::SharedPtr newGlyph);
