@@ -150,6 +150,11 @@ unsigned int NetworkDownloader::GetZoomLevel(const GeographicBoundingBox& boundi
 
 QString NetworkDownloader::GenerateMapQuestOpenString(const GeographicPoint& center, unsigned int zoomLevel, const SynGlyphX::DownloadedMapProperties* const properties, const std::vector<GeographicPoint>& points) {
 
+	if (m_mapQuestOpenKey.trimmed().isEmpty()) {
+
+		throw DownloadException("MapQuest Open key is empty.");
+	}
+
 	QString url = "http://open.mapquestapi.com/staticmap/v4/getmap?key=" + m_mapQuestOpenKey;
 	url += "&center=" + QString::number(center.get<1>()) + "," + QString::number(center.get<0>());
 	url += "&zoom=" + QString::number(zoomLevel) + "&size=" + QString::number(properties->GetSize()[0]) + "," + QString::number(properties->GetSize()[1]);
