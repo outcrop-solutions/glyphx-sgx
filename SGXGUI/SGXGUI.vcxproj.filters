@@ -140,6 +140,15 @@
     <ClCompile Include="sharedactionlist.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="notemptyvalidator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_notemptyvalidator.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_notemptyvalidator.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="sgxgui_global.h">
@@ -184,6 +193,9 @@
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="sharedactionlist.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="notemptyvalidator.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>
