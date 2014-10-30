@@ -7,6 +7,7 @@
 #include "sourcedatamanager.h"
 #include "geographicboundingbox.h"
 #include "inputfielddata.h"
+#include "datamappingdefaults.h"
 
 namespace SynGlyphX {
 
@@ -36,9 +37,11 @@ namespace SynGlyphX {
 		Color ColorRGBInterpolate(const InputBinding& binding, const Color& min, const Color& difference, const InputFieldDataMap& queryResultData, unsigned int index) const;
 		void GetPositionXYForAllGlyphTrees(const SynGlyphX::DataTransformMapping& mapping, std::vector<GeographicPoint>& points) const;
 		void GetDataMinAndDifference(const InputBinding& binding, const InputFieldData& fieldData, double& dataMin, double& dataDifference) const;
+		std::wstring GenerateTag(const MinMaxGlyphTree::const_iterator& minMaxGlyph, const InputFieldDataMap& queryResultData, unsigned int index) const;
 
 		SourceDataManager m_sourceDataManager;
 		GeographicBoundingBox m_overrideRootXYBoundingBox;
+		DataMappingDefaults m_defaults;
 	};
 
 } //namespace SynGlyphX

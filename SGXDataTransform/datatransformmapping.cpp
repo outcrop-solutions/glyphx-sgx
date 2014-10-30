@@ -39,6 +39,11 @@ namespace SynGlyphX {
 			return false;
 		}
 
+		if (m_defaults != mapping.m_defaults) {
+
+			return false;
+		}
+
 		return true;
 	}
 
@@ -67,6 +72,12 @@ namespace SynGlyphX {
 				m_glyphTrees.insert(std::pair<boost::uuids::uuid, MinMaxGlyphTree::SharedPtr>(glyphPropertyTree.second.get<boost::uuids::uuid>(L"<xmlattr>.id"), glyphTree));
 			}
 		}
+
+		boost::optional<const boost::property_tree::wptree&> defaultsPropertyTree = dataTransformPropertyTree.get_child_optional(L"Defaults");
+		if (defaultsPropertyTree.is_initialized()) {
+
+			m_defaults = DataMappingDefaults(defaultsPropertyTree.get());
+		}
     }
 
 	void DataTransformMapping::ExportToPropertyTree(boost::property_tree::wptree& filePropertyTree) const {
@@ -84,6 +95,8 @@ namespace SynGlyphX {
 			boost::property_tree::wptree& glyphPropertyTree = glyphTree.second->ExportToPropertyTree(glyphTreesPropertyTree);
 			glyphPropertyTree.put(L"<xmlattr>.id", glyphTree.first);
 		}
+
+		m_defaults.ExportToPropertyTree(dataTransformPropertyTreeRoot);
     }
 
 	const DatasourceMaps& DataTransformMapping::GetDatasources() const {
@@ -190,6 +203,16 @@ namespace SynGlyphX {
 
 			throw std::invalid_argument("Glyph tree was not in list so it wasn't erased");
 		}
+	}
+
+	const DataMappingDefaults& DataTransformMapping::GetDefaults() const {
+
+		return m_defaults;
+	}
+
+	void DataTransformMapping::SetDefaults(const DataMappingDefaults& defaults) {
+
+		m_defaults = defaults;
 	}
 
 } //namespace SynGlyphX

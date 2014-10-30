@@ -22,9 +22,11 @@ namespace SynGlyphX {
 
 			//Before running this code, the static function SourceDataManager::SetIntermediateDirectory must be called with a valid
 			//directory to store intermediate files
+			m_defaults = mapping.GetDefaults();
 			m_sourceDataManager.AddDatabaseConnections(mapping.GetDatasources());
 			CreateGlyphsFromMapping(mapping);
 			m_sourceDataManager.ClearDatabaseConnections();
+			m_defaults.Clear();
 
 			if (m_overrideRootXYBoundingBox.IsValid()) {
 
@@ -137,16 +139,7 @@ namespace SynGlyphX {
 		glyph.SetRatio(0.1);
 		//glyph.SetRatio(LinearInterpolate(minMaxGlyph->GetInputBinding(11), glyph.GetRatio(), difference.GetRatio(), queryResultData, index));
 
-		InputField::HashID id = minMaxGlyph->GetInputBinding(12).GetInputFieldID();
-		if (id != 0) {
-
-			InputFieldDataMap::const_iterator dataList = queryResultData.find(id);
-			if (dataList != queryResultData.end()) {
-
-				std::wstring tag = minMaxGlyphTree->GetInputFields().find(id)->second.GetField() + L": " + dataList->second->GetData()[index].toString().toStdWString();
-				glyph.SetTag(tag);
-			}
-		}
+		glyph.SetTag(GenerateTag(minMaxGlyph, queryResultData, index));
 
 		return glyph;
 	}
@@ -286,6 +279,32 @@ namespace SynGlyphX {
 				points.push_back(GeographicPoint(queryResultDataX[i].toDouble(), queryResultDataY[i].toDouble()));
 			}
 		}
+	}
+
+	std::wstring Transformer::GenerateTag(const MinMaxGlyphTree::const_iterator& minMaxGlyph, const InputFieldDataMap& queryResultData, unsigned int index) const {
+
+		InputField::HashID id = minMaxGlyph->GetInputBinding(12).GetInputFieldID();
+
+		if (id == 0) {
+
+			if (m_defaults.GetTagField() != DataMappingDefaults::TagFieldPropertyDefault::None) {
+
+				id = minMaxGlyph->GetInputBinding(static_cast<unsigned int>(m_defaults.GetTagField())).GetInputFieldID();
+			}
+		}
+
+		if (id != 0) {
+
+			const MinMaxGlyphTree* minMaxGlyphTree = static_cast<const MinMaxGlyphTree*>(minMaxGlyph.owner());
+			InputFieldDataMap::const_iterator dataList = queryResultData.find(id);
+			if (dataList != queryResultData.end()) {
+
+				std::wstring tag = minMaxGlyphTree->GetInputFields().find(id)->second.GetField() + L": " + dataList->second->GetData()[index].toString().toStdWString();
+				return tag;
+			}
+		}
+
+		return m_defaults.GetDefaultTagValue();
 	}
 
 } //namespace SynGlyphX

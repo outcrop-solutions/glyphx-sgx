@@ -76,6 +76,9 @@
     <ClInclude Include="userdefinedbaseimageproperties.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="datamappingdefaults.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="datasource.cpp">
@@ -124,6 +127,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="userdefinedbaseimageproperties.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="datamappingdefaults.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -11,6 +11,7 @@
 #include "minmaxglyphtree.h"
 #include "baseimage.h"
 #include "transformer.h"
+#include "datamappingdefaults.h"
 
 namespace SynGlyphX {
 
@@ -59,10 +60,14 @@ namespace SynGlyphX {
 
 		void UpdateDatasourceName(const boost::uuids::uuid& id, const std::wstring& name);
 
+		const DataMappingDefaults& GetDefaults() const;
+		void SetDefaults(const DataMappingDefaults& defaults);
+
     protected:
 		virtual void ImportFromPropertyTree(const boost::property_tree::wptree& filePropertyTree);
 		virtual void ExportToPropertyTree(boost::property_tree::wptree& filePropertyTree) const;
 
+		DataMappingDefaults m_defaults;
 		DatasourceMaps m_datasources;
 		MinMaxGlyphTreeMap m_glyphTrees;
 		BaseImage m_baseImage;
