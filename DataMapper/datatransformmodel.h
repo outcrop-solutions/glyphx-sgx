@@ -35,6 +35,8 @@ public:
 
 	void EnableTables(const boost::uuids::uuid& id, const SynGlyphX::Datasource::TableSet& tables, bool enable = true);
 
+	void SetDefaults(const SynGlyphX::DataMappingDefaults& defaults);
+
 	SynGlyphX::DataTransformMapping::ConstSharedPtr GetDataTransform() const;
 
 private:

@@ -38,6 +38,8 @@ private slots:
 	void AddGlyphTemplate();
 	void ChangeMapDownloadSettings();
 	void OnDataTransformModelModified();
+	void ChangeGlyphDefaults();
+	void ChangeNewMappingDefaults();
 
 private:
     void CreateMenus();
@@ -55,8 +57,9 @@ private:
     QMenu* m_glyphMenu;
 	QMenu* m_datasourceMenu;
     QMenu* m_viewMenu;
-	//QMenu* m_toolsMenu;
-    GlyphTreesView* m_glyphTreesView;
+	QMenu* m_toolsMenu;
+    
+	GlyphTreesView* m_glyphTreesView;
 	DataSourceStatsWidget* m_dataSourceStats;
 	QList<QAction*> m_projectDependentActions;
 	DataBindingWidget* m_dataBindingWidget;

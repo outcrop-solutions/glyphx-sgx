@@ -21,6 +21,8 @@
 #include "datasourcefieldtypesdialog.h"
 #include "csvfilereader.h"
 #include "csvtfilereaderwriter.h"
+#include "singlewidgetdialog.h"
+#include "glyphdefaultswidget.h"
 
 const QString ANTzTemplateDir = "ANTzTemplate";
 
@@ -113,13 +115,17 @@ void DataMapperWindow::CreateMenus() {
     //Create Glyph Menu
     m_glyphMenu = menuBar()->addMenu(tr("Glyph"));
 
+	QAction* glyphDefaultsAction = m_glyphMenu->addAction(tr("Defaults"));
+	QObject::connect(glyphDefaultsAction, &QAction::triggered, this, &DataMapperWindow::ChangeGlyphDefaults);
+	m_projectDependentActions.push_back(glyphDefaultsAction);
+
 	QAction* addGlyphTemplateAction = m_glyphMenu->addAction(tr("Add Glyph Templates"));
 	QObject::connect(addGlyphTemplateAction, &QAction::triggered, this, &DataMapperWindow::AddGlyphTemplate);
 
 	m_glyphMenu->addSeparator();
 
 	//Create Datasource Menu
-	m_datasourceMenu = menuBar()->addMenu(tr("Datasource"));
+	m_datasourceMenu = menuBar()->addMenu(tr("Data Source"));
     
 	QAction* addDataSourcesAction = m_datasourceMenu->addAction(tr("Add Data Sources"));
     QObject::connect(addDataSourcesAction, &QAction::triggered, this, &DataMapperWindow::AddDataSources);
@@ -129,16 +135,22 @@ void DataMapperWindow::CreateMenus() {
 	QAction* baseImageAction = m_datasourceMenu->addAction(tr("Choose Base Image"));
     QObject::connect(baseImageAction, &QAction::triggered, this, &DataMapperWindow::ChangeBaseImage);
 
-	QAction* mapDownloadSettingsAction = m_datasourceMenu->addAction(tr("Map Download Settings"));
-	QObject::connect(mapDownloadSettingsAction, &QAction::triggered, this, &DataMapperWindow::ChangeMapDownloadSettings);
-
     //Create View Menu
     m_viewMenu = menuBar()->addMenu(tr("View"));
     CreateFullScreenAction(m_viewMenu);
 
     m_viewMenu->addSeparator();
 
-	//m_toolsMenu = menuBar()->addMenu(tr("Tools"));
+	//Create Tools Menu
+	m_toolsMenu = menuBar()->addMenu(tr("Tools"));
+
+	QAction* newMappingDefaultsAction = m_toolsMenu->addAction(tr("New Mapping Defaults"));
+	QObject::connect(newMappingDefaultsAction, &QAction::triggered, this, &DataMapperWindow::ChangeNewMappingDefaults);
+
+	m_toolsMenu->addSeparator();
+
+	QAction* mapDownloadSettingsAction = m_toolsMenu->addAction(tr("Map Download Settings"));
+	QObject::connect(mapDownloadSettingsAction, &QAction::triggered, this, &DataMapperWindow::ChangeMapDownloadSettings);
 
     m_helpMenu = menuBar()->addMenu(tr("Help"));
     QAction* aboutBoxAction = m_helpMenu->addAction("About " + SynGlyphX::Application::organizationName() + " " + SynGlyphX::Application::applicationName());
@@ -538,4 +550,20 @@ void DataMapperWindow::OnDataTransformModelModified() {
 
 	centralWidget()->setEnabled(m_dataTransformModel->rowCount() > 0);
 	m_selectionTranslator->Clear();
+}
+
+void DataMapperWindow::ChangeGlyphDefaults() {
+
+	GlyphDefaultsWidget* glyphDefaultsWidget = new GlyphDefaultsWidget(m_dataTransformModel->GetDataTransform()->GetDefaults(), this);
+	SynGlyphX::SingleWidgetDialog dialog(QDialogButtonBox::StandardButton::Ok | QDialogButtonBox::StandardButton::Cancel, glyphDefaultsWidget, this);
+
+	if (dialog.exec() == QDialog::Accepted) {
+
+		m_dataTransformModel->SetDefaults(glyphDefaultsWidget->GetDefaults());
+	}
+}
+
+void DataMapperWindow::ChangeNewMappingDefaults() {
+
+
 }

@@ -223,3 +223,8 @@ bool DataTransformModel::removeRows(int row, int count, const QModelIndex& paren
 
 	return false;
 }
+
+void DataTransformModel::SetDefaults(const SynGlyphX::DataMappingDefaults& defaults) {
+
+	m_dataTransform->SetDefaults(defaults);
+}

@@ -163,6 +163,15 @@
     <ClCompile Include="GeneratedFiles\Release\moc_glyphtreesview.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="glyphdefaultswidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_glyphdefaultswidget.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_glyphdefaultswidget.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="datamapperwindow.h">
@@ -205,6 +214,9 @@
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="glyphtreesview.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="glyphdefaultswidget.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>
