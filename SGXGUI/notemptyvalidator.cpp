@@ -3,9 +3,9 @@
 namespace SynGlyphX {
 
 	NotEmptyValidator::NotEmptyValidator(bool allowWhitespace, QObject *parent)
-		: QRegExpValidator(parent)
+		: QRegularExpressionValidator(parent)
 	{
-		QRegExp regExp;
+		QRegularExpression regExp;
 		if (allowWhitespace) {
 
 			//makes sure that there has to be at least one character (this can include whitespace)
@@ -17,7 +17,7 @@ namespace SynGlyphX {
 			regExp.setPattern("\\S+");
 		}
 		        
-		setRegExp(regExp);
+		setRegularExpression(regExp);
 	}
 
 	NotEmptyValidator::~NotEmptyValidator()

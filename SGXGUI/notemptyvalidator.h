@@ -2,11 +2,11 @@
 #define NOTEMPTYVALIDATOR_H
 
 #include "sgxgui_global.h"
-#include <QtGui/QRegExpValidator>
+#include <QtGui/QRegularExpressionValidator>
 
 namespace SynGlyphX {
 
-	class SGXGUI_EXPORT NotEmptyValidator : public QRegExpValidator
+	class SGXGUI_EXPORT NotEmptyValidator : public QRegularExpressionValidator
 	{
 		Q_OBJECT
 

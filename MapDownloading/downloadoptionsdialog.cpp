@@ -4,6 +4,7 @@
 #include <QtWidgets/QDialogButtonBox>
 #include <QtWidgets/QMessageBox>
 #include "networkdownloader.h"
+#include "notemptyvalidator.h"
 
 DownloadOptionsDialog::DownloadOptionsDialog(QWidget *parent)
     : QDialog(parent)
@@ -18,7 +19,12 @@ DownloadOptionsDialog::DownloadOptionsDialog(QWidget *parent)
 #endif
 
     m_mapquestKeyLineEdit = new QLineEdit(this);
+	SynGlyphX::NotEmptyValidator* mapQuestValidator = new SynGlyphX::NotEmptyValidator(false, m_mapquestKeyLineEdit);
+	m_mapquestKeyLineEdit->setValidator(mapQuestValidator);
+
     m_googleMapsKeyLineEdit = new QLineEdit(this);
+	SynGlyphX::NotEmptyValidator* googleMapsValidator = new SynGlyphX::NotEmptyValidator(false, m_googleMapsKeyLineEdit);
+	m_googleMapsKeyLineEdit->setValidator(googleMapsValidator);
     m_googleMapsKeyLineEdit->setEnabled(false);
 
     QFormLayout* formLayout = new QFormLayout(this);
