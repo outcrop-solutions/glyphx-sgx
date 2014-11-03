@@ -2,14 +2,19 @@
 
 namespace SynGlyphX {
 
-	MinMaxGlyph::MinMaxGlyph(const GlyphProperties& minGlyph) :
-		m_minGlyph(minGlyph),
-		m_difference(GlyphMappableProperties::GetPropertiesZero())
+	MinMaxGlyph::MinMaxGlyph(const GlyphProperties& maxGlyph) :
+		m_minGlyph(maxGlyph),
+		m_difference(maxGlyph)
 	{
+		//Treat the maxGlyph parameter as the max glyph, but info like the tag needs to be minGlyph so first set m_minGlyph to copy maxGlyph followed by
+		//setting the m_minGlyph numeric properties to the default minimum
+		m_minGlyph.GlyphNumericMappableProperties::operator=(GlyphNumericMappableProperties::GetDefaultMinProperties());
+		m_difference.Subtract(m_minGlyph);
 	}
 
-	MinMaxGlyph::MinMaxGlyph(const boost::property_tree::wptree& propertyTree) :
-		m_difference(GlyphMappableProperties::GetPropertiesZero()) {
+	MinMaxGlyph::MinMaxGlyph(const boost::property_tree::wptree& propertyTree) {
+
+		m_difference.SetToZero();
 
 		Vector3 minVec3;
 		Vector3 differenceVec3;
@@ -106,9 +111,17 @@ namespace SynGlyphX {
 		return m_minGlyph;
 	}
 
-	const GlyphMappableProperties& MinMaxGlyph::GetDifference() const {
+	const GlyphNumericMappableProperties& MinMaxGlyph::GetDifference() const {
 
 		return m_difference;
+	}
+
+	GlyphProperties MinMaxGlyph::GetMaxGlyph() const {
+
+		GlyphProperties maxProperties = m_minGlyph;
+		maxProperties.AddDifference(m_difference);
+
+		return maxProperties;
 	}
 
 	void MinMaxGlyph::SetMinGlyphProperties(const GlyphMappableProperties& properties) {
@@ -116,7 +129,7 @@ namespace SynGlyphX {
 		m_minGlyph.GlyphMappableProperties::operator=(properties);
 	}
 
-	void MinMaxGlyph::SetDifference(const GlyphMappableProperties& difference) {
+	void MinMaxGlyph::SetDifference(const GlyphNumericMappableProperties& difference) {
 
 		m_difference = difference;
 	}

@@ -80,6 +80,26 @@ namespace SynGlyphX {
 		return (!operator==(color));
 	}
 
+	Color& Color::operator+=(const Color& color) {
+
+		m_color[0] += color.m_color[0];
+		m_color[1] += color.m_color[1];
+		m_color[2] += color.m_color[2];
+		m_color[3] += color.m_color[3];
+
+		return *this;
+	}
+
+	Color& Color::operator-=(const Color& color) {
+
+		m_color[0] -= color.m_color[0];
+		m_color[1] -= color.m_color[1];
+		m_color[2] -= color.m_color[2];
+		m_color[3] -= color.m_color[3];
+
+		return *this;
+	}
+
 	std::wstring Color::ToHexString(unsigned int length) const {
 
 		if ((length > 4) || (length == 0)) {

@@ -97,7 +97,7 @@ namespace SynGlyphX {
 
 		const MinMaxGlyphTree* minMaxGlyphTree = static_cast<const MinMaxGlyphTree*>(minMaxGlyph.owner());
 
-		const GlyphMappableProperties& difference = minMaxGlyph->GetDifference();
+		const GlyphNumericMappableProperties& difference = minMaxGlyph->GetDifference();
 		GlyphProperties glyph = minMaxGlyph->GetMinGlyph();
 
 		Vector3 mappedVector3;
@@ -196,10 +196,11 @@ namespace SynGlyphX {
 				outputHSV.Set(1, LinearInterpolate(minHSV[1], diffHSV[1], dataMin, dataMaxMinDiff, currentData));
 				outputHSV.Set(2, LinearInterpolate(minHSV[2], diffHSV[2], dataMin, dataMaxMinDiff, currentData));
 
-				output = Color::ConvertHSVtoRGB(outputHSV);
+				return Color::ConvertHSVtoRGB(outputHSV);
 			}
 		}
-
+		
+		output += difference;
 		return output;
 	}
 
@@ -220,7 +221,7 @@ namespace SynGlyphX {
 			}
 		}
 		
-		return min;
+		return min + difference;
 	}
 
 	double Transformer::LinearInterpolate(double min, double difference, double dataMin, double dataDifference, double currentData) const {

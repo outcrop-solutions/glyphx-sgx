@@ -265,4 +265,23 @@ namespace SynGlyphX {
 		}
 	}
 
+	GlyphTree::SharedPtr MinMaxGlyphTree::GetMaxGlyphTree() const {
+
+		GlyphTree::SharedPtr maxGlyphTree(new GlyphTree());
+		maxGlyphTree->insert(root()->GetMaxGlyph());
+
+		CreateMaxGlyphSubtree(root(), maxGlyphTree->root(), maxGlyphTree);
+
+		return maxGlyphTree;
+	}
+
+	void MinMaxGlyphTree::CreateMaxGlyphSubtree(const MinMaxGlyphTree::const_iterator& parentNode, GlyphTree::iterator& newParent, GlyphTree::SharedPtr newGlyphTree) const {
+
+		for (int i = 0; i < children(parentNode); ++i) {
+
+			const MinMaxGlyphTree::const_iterator& childNode = child(parentNode, i);
+			CreateMaxGlyphSubtree(childNode, newGlyphTree->insert(newParent, childNode->GetMaxGlyph()), newGlyphTree);
+		}
+	}
+
 } //namespace SynGlyphX

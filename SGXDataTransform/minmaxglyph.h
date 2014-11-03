@@ -18,7 +18,7 @@ namespace SynGlyphX {
 		
 		typedef boost::property_tree::wptree PropertyTree;
 
-		MinMaxGlyph(const GlyphProperties& minGlyph);
+		MinMaxGlyph(const GlyphProperties& maxGlyph);
 		MinMaxGlyph(const boost::property_tree::wptree& propertyTree);
 		MinMaxGlyph(const MinMaxGlyph& glyph);
 		~MinMaxGlyph();
@@ -28,10 +28,11 @@ namespace SynGlyphX {
 		bool operator!=(const MinMaxGlyph& glyph) const;
 
 		const GlyphProperties& GetMinGlyph() const;
-		const GlyphMappableProperties& GetDifference() const;
+		const GlyphNumericMappableProperties& GetDifference() const;
+		GlyphProperties GetMaxGlyph() const;
 
 		void SetMinGlyphProperties(const GlyphMappableProperties& glyph);
-		void SetDifference(const GlyphMappableProperties& difference);
+		void SetDifference(const GlyphNumericMappableProperties& difference);
 
 		PropertyTree& ExportToPropertyTree(boost::property_tree::wptree& propertyTree) const;
 
@@ -55,7 +56,7 @@ namespace SynGlyphX {
 		GlyphProperties m_minGlyph;
 		//Rather than store both a min and a max glyph, the min glyph is stored (listed above) in this class plus an object that stores the difference between min and max
 		//(listed below).  If a value in m_difference is 0 then min and max is the same.  Otherwise the max value is the min value plus the difference value.
-		GlyphMappableProperties m_difference;
+		GlyphNumericMappableProperties m_difference;
 
 		InputBinding m_inputBindings[NumInputBindings];
 	};

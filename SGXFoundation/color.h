@@ -24,6 +24,8 @@ namespace SynGlyphX {
 		short operator[](unsigned int index) const;
 		bool operator==(const Color& color) const;
 		bool operator!=(const Color& color) const;
+		Color& operator+=(const Color& color);
+		Color& operator-=(const Color& color);
 
 		std::wstring ToHexString(unsigned int length) const;
 		void FromHexString(const std::wstring& hexString);
