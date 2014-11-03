@@ -78,6 +78,10 @@ namespace SynGlyphX {
 
 			m_defaults = DataMappingDefaults(defaultsPropertyTree.get());
 		}
+		else {
+
+			m_defaults = DataMappingDefaults();
+		}
     }
 
 	void DataTransformMapping::ExportToPropertyTree(boost::property_tree::wptree& filePropertyTree) const {

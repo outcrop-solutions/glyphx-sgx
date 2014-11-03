@@ -49,6 +49,7 @@ namespace SynGlyphX {
 		const std::wstring& GetDefaultTagValue() const;
 
 		static const boost::bimap<TagFieldPropertyDefault, std::wstring> s_tagFieldStrings;
+		static const std::wstring s_propertyTreeName;
 
 	private:
 		TagFieldPropertyDefault m_tagField;

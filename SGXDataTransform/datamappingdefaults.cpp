@@ -18,6 +18,8 @@ namespace SynGlyphX {
 		(DataMappingDefaults::TagFieldPropertyDefault::Color, L"Color")
 		(DataMappingDefaults::TagFieldPropertyDefault::Transparency, L"Transparency");
 
+	const std::wstring DataMappingDefaults::s_propertyTreeName = L"Defaults";
+
 	DataMappingDefaults::DataMappingDefaults() :
 		m_tagField(TagFieldPropertyDefault::None),
 		m_defaultTagValue(L"No Tag")
@@ -78,7 +80,7 @@ namespace SynGlyphX {
 
 	void DataMappingDefaults::ExportToPropertyTree(PropertyTree& parentPropertyTree) const {
 
-		PropertyTree& propertyTree = parentPropertyTree.add(L"Defaults", L"");
+		PropertyTree& propertyTree = parentPropertyTree.add(s_propertyTreeName, L"");
 		propertyTree.put(L"TagFieldDefault", s_tagFieldStrings.left.at(m_tagField));
 		propertyTree.put(L"TagValueDefault", m_defaultTagValue);
 	}
