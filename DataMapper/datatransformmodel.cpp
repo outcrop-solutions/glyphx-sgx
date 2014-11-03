@@ -95,17 +95,33 @@ QModelIndex	DataTransformModel::parent(const QModelIndex& index) const {
 		return QModelIndex();
 	}
 
-	SynGlyphX::MinMaxGlyphTree::const_iterator parent = iterator.owner()->parent(iterator);
+	const SynGlyphX::MinMaxGlyphTree* currentTree = static_cast<const SynGlyphX::MinMaxGlyphTree*>(iterator.owner());
+	SynGlyphX::MinMaxGlyphTree::const_iterator parent = currentTree->parent(iterator);
 
 	int row = 0;
-	SynGlyphX::MinMaxGlyphTree::const_iterator grandparent = iterator.owner()->parent(parent);
-	if (grandparent.valid()) {
 
-		for (int i = 0; i < iterator.owner()->children(grandparent); ++i) {
+	if (parent == currentTree->root()) {
 
-			if (iterator.owner()->child(grandparent, i) == parent) {
-				row = i;
+		for (auto tree : m_dataTransform->GetGlyphTrees()) {
+
+			if (currentTree->root() == tree.second->root().constify()) {
+
 				break;
+			}
+			++row;
+		}
+	}
+	else {
+
+		SynGlyphX::MinMaxGlyphTree::const_iterator grandparent = currentTree->parent(parent);
+		if (grandparent.valid()) {
+
+			for (int i = 0; i < currentTree->children(grandparent); ++i) {
+
+				if (currentTree->child(grandparent, i) == parent) {
+					row = i;
+					break;
+				}
 			}
 		}
 	}
