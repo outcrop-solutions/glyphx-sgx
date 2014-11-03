@@ -1,4 +1,5 @@
 #include "datamapperwindow.h"
+#include <QtCore/QSettings>
 #include <QtWidgets/QFileDialog>
 #include <QtWidgets/QMessageBox>
 #include <QtWidgets/QMenuBar>
@@ -11,6 +12,7 @@
 #include <QtSql/QSqlQuery>
 #include <QtSql/QSqlRecord>
 #include <boost/uuid/uuid_io.hpp>
+#include <boost/property_tree/xml_parser.hpp>
 #include "application.h"
 #include "sourcedatamanager.h"
 #include "downloadoptionsdialog.h"
@@ -43,6 +45,9 @@ DataMapperWindow::DataMapperWindow(QWidget *parent)
 	QObject::connect(m_dataTransformModel, &DataTransformModel::modelReset, this, &DataMapperWindow::OnDataTransformModelModified);
 	QObject::connect(m_dataTransformModel, &DataTransformModel::rowsInserted, this, &DataMapperWindow::OnDataTransformModelModified);
 	QObject::connect(m_dataTransformModel, &DataTransformModel::rowsRemoved, this, &DataMapperWindow::OnDataTransformModelModified);
+
+	ReadNewMappingDefaults();
+	ClearAndInitializeDataMapping();
 
 	statusBar()->showMessage(SynGlyphX::Application::applicationName() + " Started", 3000);
 }
@@ -144,7 +149,7 @@ void DataMapperWindow::CreateMenus() {
 	//Create Tools Menu
 	m_toolsMenu = menuBar()->addMenu(tr("Tools"));
 
-	QAction* newMappingDefaultsAction = m_toolsMenu->addAction(tr("New Mapping Defaults"));
+	QAction* newMappingDefaultsAction = m_toolsMenu->addAction(tr("New Mapping Glyph Defaults"));
 	QObject::connect(newMappingDefaultsAction, &QAction::triggered, this, &DataMapperWindow::ChangeNewMappingDefaults);
 
 	m_toolsMenu->addSeparator();
@@ -192,7 +197,7 @@ void DataMapperWindow::CreateNewProject() {
 		return;
 	}
 
-	m_dataTransformModel->Clear();
+	ClearAndInitializeDataMapping();
 	m_dataSourceStats->ClearTabs();
 	m_minMaxGlyphModel->Clear();
 
@@ -554,16 +559,74 @@ void DataMapperWindow::OnDataTransformModelModified() {
 
 void DataMapperWindow::ChangeGlyphDefaults() {
 
-	GlyphDefaultsWidget* glyphDefaultsWidget = new GlyphDefaultsWidget(m_dataTransformModel->GetDataTransform()->GetDefaults(), this);
+	const SynGlyphX::DataMappingDefaults& oldDefaults = m_dataTransformModel->GetDataTransform()->GetDefaults();
+	GlyphDefaultsWidget* glyphDefaultsWidget = new GlyphDefaultsWidget(oldDefaults, this);
 	SynGlyphX::SingleWidgetDialog dialog(QDialogButtonBox::StandardButton::Ok | QDialogButtonBox::StandardButton::Cancel, glyphDefaultsWidget, this);
+	dialog.setWindowTitle(tr("Glyph Defaults"));
 
 	if (dialog.exec() == QDialog::Accepted) {
 
-		m_dataTransformModel->SetDefaults(glyphDefaultsWidget->GetDefaults());
+		const SynGlyphX::DataMappingDefaults& newDefaults = glyphDefaultsWidget->GetDefaults();
+		if (newDefaults != oldDefaults) {
+
+			setWindowModified(true);
+		}
+		m_dataTransformModel->SetDefaults(newDefaults);
 	}
 }
 
 void DataMapperWindow::ChangeNewMappingDefaults() {
+	
+	GlyphDefaultsWidget* glyphDefaultsWidget = new GlyphDefaultsWidget(m_newMappingDefaults, this);
+	SynGlyphX::SingleWidgetDialog dialog(QDialogButtonBox::StandardButton::Ok | QDialogButtonBox::StandardButton::Cancel, glyphDefaultsWidget, this);
+	dialog.setWindowTitle(tr("New Mapping Glyph Defaults"));
 
+	if (dialog.exec() == QDialog::Accepted) {
 
+		m_newMappingDefaults = glyphDefaultsWidget->GetDefaults();
+		WriteNewMappingDefaults();
+		if (!m_projectDependentActions[0]->isEnabled()) {
+
+			m_dataTransformModel->SetDefaults(m_newMappingDefaults);
+		}
+	}
+}
+
+void DataMapperWindow::ReadNewMappingDefaults() {
+
+	QSettings settings;
+	settings.beginGroup("Defaults");
+	std::wistringstream xmlDefaults(settings.value("glyph", "").toString().toStdWString());
+	settings.endGroup();
+
+	if (!xmlDefaults.str().empty()) {
+
+		boost::property_tree::wptree propertyTree;
+		boost::property_tree::read_xml(xmlDefaults, propertyTree, SynGlyphX::XMLPropertyTreeFile::GetReadFlags());
+		boost::optional<boost::property_tree::wptree&> defaultsPropertyTree = propertyTree.get_child_optional(SynGlyphX::DataMappingDefaults::s_propertyTreeName);
+		if (defaultsPropertyTree.is_initialized()) {
+
+			m_newMappingDefaults = SynGlyphX::DataMappingDefaults(defaultsPropertyTree.get());
+		}
+	}
+}
+
+void DataMapperWindow::WriteNewMappingDefaults() {
+
+	boost::property_tree::wptree propertyTree;
+	m_newMappingDefaults.ExportToPropertyTree(propertyTree);
+
+	std::wostringstream xmlWriteDefaults;
+	boost::property_tree::write_xml(xmlWriteDefaults, propertyTree, SynGlyphX::XMLPropertyTreeFile::GetWriteSettings());
+
+	QSettings settings;
+	settings.beginGroup("Defaults");
+	settings.setValue("glyph", QString::fromStdWString(xmlWriteDefaults.str()));
+	settings.endGroup();
+}
+
+void DataMapperWindow::ClearAndInitializeDataMapping() {
+
+	m_dataTransformModel->Clear();
+	m_dataTransformModel->SetDefaults(m_newMappingDefaults);
 }

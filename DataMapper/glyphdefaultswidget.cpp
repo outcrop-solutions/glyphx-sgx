@@ -29,12 +29,13 @@ void GlyphDefaultsWidget::CreateTagTab(const SynGlyphX::DataMappingDefaults& def
 	QFormLayout* layout = new QFormLayout(tab);
 
 	m_tagFieldDefaultComboBox = new QComboBox(tab);
-	boost::bimap<SynGlyphX::DataMappingDefaults::TagFieldPropertyDefault, std::wstring>::right_const_iterator iT = SynGlyphX::DataMappingDefaults::s_tagFieldStrings.right.begin();
-	for (; iT != SynGlyphX::DataMappingDefaults::s_tagFieldStrings.right.end(); ++iT) {
+	boost::bimap<SynGlyphX::DataMappingDefaults::TagFieldPropertyDefault, std::wstring>::const_iterator iT = SynGlyphX::DataMappingDefaults::s_tagFieldStrings.begin();
+	for (; iT != SynGlyphX::DataMappingDefaults::s_tagFieldStrings.end(); ++iT) {
 
-		m_tagFieldDefaultComboBox->addItem(tr("Same As ") + QString::fromStdWString(iT->first));
+		m_tagFieldDefaultComboBox->addItem(QString::fromStdWString(iT->get_right()));
 	}
-	layout->addRow(tr("Default Input Field"), m_tagFieldDefaultComboBox);
+	m_tagFieldDefaultComboBox->setCurrentText(QString::fromStdWString(SynGlyphX::DataMappingDefaults::s_tagFieldStrings.left.at(defaults.GetTagField())));
+	layout->addRow(tr("Make Default Input Field Same As Input Field Of"), m_tagFieldDefaultComboBox);
 
 	m_tagValueDefaultLineEdit = new QLineEdit(QString::fromStdWString(defaults.GetDefaultTagValue()), tab);
 	SynGlyphX::NotEmptyValidator* validator = new SynGlyphX::NotEmptyValidator(true, m_tagValueDefaultLineEdit);

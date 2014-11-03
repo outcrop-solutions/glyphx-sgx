@@ -52,6 +52,9 @@ private:
 	bool ValidateNewDatasource(const QString& datasource);
 	bool DoesANTzTemplateExist() const;
 	void ProcessCSVFile(const QString& csvFile);
+	void ReadNewMappingDefaults();
+	void WriteNewMappingDefaults();
+	void ClearAndInitializeDataMapping();
 
     QMenu* m_fileMenu;
     QMenu* m_glyphMenu;
@@ -69,6 +72,8 @@ private:
 	ANTzWidget* m_antzWidget;
 	GlyphTreeModel* m_glyphTreeModel;
 	SelectionTranslator* m_selectionTranslator;
+
+	SynGlyphX::DataMappingDefaults m_newMappingDefaults;
 };
 
 #endif // DATAMAPPERWINDOW_H
