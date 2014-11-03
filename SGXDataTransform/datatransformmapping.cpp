@@ -78,10 +78,6 @@ namespace SynGlyphX {
 
 			m_defaults = DataMappingDefaults(defaultsPropertyTree.get());
 		}
-		else {
-
-			m_defaults = DataMappingDefaults();
-		}
     }
 
 	void DataTransformMapping::ExportToPropertyTree(boost::property_tree::wptree& filePropertyTree) const {
@@ -112,6 +108,7 @@ namespace SynGlyphX {
 
 		m_datasources.Clear();
 		m_glyphTrees.clear();
+		m_defaults.Clear();
 		m_baseImage = BaseImage(nullptr);
 		m_id = UUIDGenerator::GetNewRandomUUID();
     }
