@@ -1,57 +1,28 @@
 #ifndef SYNGLYPHX_GLYPHMAPPABLEPROPERTIES
 #define SYNGLYPHX_GLYPHMAPPABLEPROPERTIES
 
-#include "ANTzBridge.h"
-#include "foundationtypes.h"
-#include "color.h"
+#include "glyphnumericmappableproperties.h"
 #include <string>
 
 namespace SynGlyphX {
 
-    class ANTZBRIDGE_API GlyphMappableProperties
+    class ANTZBRIDGE_API GlyphMappableProperties : public GlyphNumericMappableProperties
     {
     public:
         GlyphMappableProperties();
         GlyphMappableProperties(const GlyphMappableProperties& properties);
-        ~GlyphMappableProperties();
+        virtual ~GlyphMappableProperties();
 
 		GlyphMappableProperties& operator=(const GlyphMappableProperties& properties);
 		bool operator==(const GlyphMappableProperties& properties) const;
 		bool operator!=(const GlyphMappableProperties& properties) const;
-		bool operator<(const GlyphMappableProperties& properties) const;
-
-        void SetRotation(const Vector3& rotation);
-        const Vector3& GetRotation() const;
-		void SetPosition(const Vector3& position);
-        const Vector3& GetPosition() const;
-        void SetScale(const Vector3& scale);
-        const Vector3& GetScale() const;
-
-        void SetColor(const Color& color);
-        const Color& GetColor() const;
-
-        void SetRatio(double ratio);
-        double GetRatio() const;
+		//bool operator<(const GlyphMappableProperties& properties) const;
 
 		void SetTag(const std::wstring& tag);
 		const std::wstring& GetTag() const;
 
-		static const GlyphMappableProperties& GetPropertiesZero();
-
     protected:
-		Vector3 m_rotation;
-        Vector3 m_scale;
-        Vector3 m_position;
-
-        double m_ratio;
-
-        Color m_color;
-
 		std::wstring m_tag;
-
-	private:
-		static GlyphMappableProperties CreatePropertiesZero();
-		static GlyphMappableProperties s_zero;
     };
 
 } //namespace SynGlyphX

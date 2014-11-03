@@ -48,6 +48,9 @@
     <ClInclude Include="antzdata.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="glyphnumericmappableproperties.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -72,6 +75,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="antzdata.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="glyphnumericmappableproperties.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

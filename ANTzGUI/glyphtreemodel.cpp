@@ -178,11 +178,13 @@ bool GlyphTreeModel::LoadFromFile(const QString& filename) {
 
 		SynGlyphX::MinMaxGlyphTree::SharedPtr newGlyphTree(new SynGlyphX::MinMaxGlyphTree());
 		newGlyphTree->ReadFromFile(filename.toStdString());
-		SynGlyphX::GlyphTree::ConstSharedPtr minTree = newGlyphTree->GetMinGlyphTree();
-		CreateNewSubTree(NULL, minTree, minTree->root(), true);
+		SynGlyphX::GlyphTree::ConstSharedPtr maxTree = newGlyphTree->GetMaxGlyphTree();
+		CreateNewSubTree(NULL, maxTree, maxTree->root(), true);
 		success = true;
 	}
+
     if (success) {
+
         m_rootGlyph = static_cast<pNPnode>(m_antzData->map.node[m_antzData->map.nodeRootCount - 1]);
 		m_rootGlyph->translate.x = 0;
 		m_rootGlyph->translate.y = 0;
@@ -207,9 +209,9 @@ void GlyphTreeModel::SaveToTemplateFile(const QString& filename) const {
 	SynGlyphX::MinMaxGlyphTree minMaxGlyphTree(glyphTree);
 	SynGlyphX::MinMaxGlyphTree::iterator iT = minMaxGlyphTree.root();
 	SynGlyphX::GlyphProperties minGlyph = iT->GetMinGlyph();
-	SynGlyphX::GlyphMappableProperties difference = iT->GetDifference();
+	SynGlyphX::GlyphNumericMappableProperties difference = iT->GetDifference();
 	minGlyph.SetPosition({ { -180.0, -90.0, 0.0 } });
-	difference.SetPosition({ { 360.0, 180.0, 0.0 } });
+	difference.SetPosition({ { 360.0, 180.0, 50.0 } });
 	iT->SetMinGlyphProperties(minGlyph);
 	iT->SetDifference(difference);
 
