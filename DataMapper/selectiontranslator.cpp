@@ -67,9 +67,9 @@ void SelectionTranslator::OnTreeViewSelectionChanged(const QItemSelection& selec
 		SynGlyphX::DataTransformMapping::MinMaxGlyphTreeMap::const_iterator newGlyphTree = m_dataTransformModel->GetDataTransform()->GetGlyphTrees().begin();
 		std::advance(newGlyphTree, m_glyphTreeIndex);
 
-		SynGlyphX::GlyphTree::SharedPtr minGlyphTree = newGlyphTree->second->GetMinGlyphTree();
-		minGlyphTree->root()->SetPosition({ { 0.0, 0.0, 0.0 } });
-		m_glyphTreeModel->CreateNewTree(minGlyphTree, true);
+		SynGlyphX::GlyphTree::SharedPtr glyphTree = newGlyphTree->second->GetMaxGlyphTree();
+		glyphTree->root()->SetPosition({ { 0.0, 0.0, 0.0 } });
+		m_glyphTreeModel->CreateNewTree(glyphTree, true);
 	}
 
 	if (m_glyph != newGlyph) {

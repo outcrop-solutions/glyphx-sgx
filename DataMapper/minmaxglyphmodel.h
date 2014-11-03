@@ -33,8 +33,8 @@ public slots:
 	void ClearInputBindings();
 
 private:
-	QVariant GetDataByRow(const SynGlyphX::GlyphMappableProperties& minProperties, const SynGlyphX::GlyphMappableProperties& diffProperties, int row) const;
-	bool SetDataByRow(SynGlyphX::GlyphMappableProperties& minProperties, SynGlyphX::GlyphMappableProperties& diffProperties, const QVariant& value, const QModelIndex& index);
+	QVariant GetDataByRow(const SynGlyphX::GlyphNumericMappableProperties& minProperties, const SynGlyphX::GlyphNumericMappableProperties& diffProperties, int row) const;
+	bool SetDataByRow(SynGlyphX::GlyphNumericMappableProperties& minProperties, SynGlyphX::GlyphNumericMappableProperties& diffProperties, const QVariant& value, const QModelIndex& index);
 
 	SynGlyphX::MinMaxGlyphTree::iterator m_glyph;
 	const SynGlyphX::MinMaxGlyphTree* m_glyphTree;
