@@ -109,7 +109,6 @@ void SelectionTranslator::On3DViewSelectionChanged(const QItemSelection& selecte
 	}
 
 	QModelIndex glyphTreeModelIndex = selected.indexes()[0];
-	m_minMaxGlyphModel->SetMinMaxGlyph(glyphTreeModelIndex);
 
 	std::stack<int> childPositions;
 	while (glyphTreeModelIndex.isValid()) {
@@ -128,6 +127,8 @@ void SelectionTranslator::On3DViewSelectionChanged(const QItemSelection& selecte
 		minMaxIndex = m_dataTransformModel->index(childPositions.top(), 0, minMaxIndex);
 		childPositions.pop();
 	}
+
+	m_minMaxGlyphModel->SetMinMaxGlyph(minMaxIndex);
 
 	QObject::disconnect(m_treeViewConnection);
 	m_treeViewSelectionModel->select(minMaxIndex, QItemSelectionModel::ClearAndSelect);
