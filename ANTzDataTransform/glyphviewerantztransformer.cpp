@@ -21,7 +21,7 @@ void GlyphViewerANTzTransformer::CreateGlyphsFromMapping(const SynGlyphX::DataTr
 	m_csvFilenames.clear();
 	m_baseImageFilename = "";
 
-	bool useNonDefaultImage = (mapping.GetBaseImage().GetType() != SynGlyphX::BaseImage::Type::Default);
+	bool useNonDefaultImage = (mapping.GetBaseObjects()[0].GetType() != SynGlyphX::BaseImage::Type::Default);
 
 	QStringList csvFiles;
 	csvFiles.push_back(m_baseOutputDir + QDir::separator() + "antz.csv");
@@ -64,9 +64,9 @@ bool GlyphViewerANTzTransformer::DoesCacheNeedToBeRegenerated(const SynGlyphX::D
 			
 			return true;
 		}
-		else if (mapping.GetBaseImage().GetType() == SynGlyphX::BaseImage::Type::UserImage) {
+		else if (mapping.GetBaseObjects()[0].GetType() == SynGlyphX::BaseImage::Type::UserImage) {
 
-			const SynGlyphX::UserDefinedBaseImageProperties* const properties = dynamic_cast<const SynGlyphX::UserDefinedBaseImageProperties* const>(mapping.GetBaseImage().GetProperties());
+			const SynGlyphX::UserDefinedBaseImageProperties* const properties = dynamic_cast<const SynGlyphX::UserDefinedBaseImageProperties* const>(mapping.GetBaseObjects()[0].GetProperties());
 			if (HasFileBeenUpdated(properties->GetFilename(), boost::filesystem::last_write_time(baseImageFilename.toStdWString()))) {
 
 				return true;

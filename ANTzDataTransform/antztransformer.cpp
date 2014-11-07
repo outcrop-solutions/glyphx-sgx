@@ -48,7 +48,7 @@ void ANTzTransformer::CreateGlyphsFromMapping(const SynGlyphX::DataTransformMapp
 	QString antzImageDirectory = QDir::toNativeSeparators(m_baseOutputDir + QDir::separator() + "usr" + QDir::separator() + "images" + QDir::separator());
 	QString baseImageFilename = antzImageDirectory + "map00001.jpg";
 
-	if (mapping.GetBaseImage().GetType() != SynGlyphX::BaseImage::Type::Default) {
+	if (mapping.GetBaseObjects()[0].GetType() != SynGlyphX::BaseImage::Type::Default) {
 
 		QFile::rename(baseImageFilename, antzImageDirectory + "world.jpg");
 	}
@@ -58,7 +58,7 @@ void ANTzTransformer::CreateGlyphsFromMapping(const SynGlyphX::DataTransformMapp
 
 void ANTzTransformer::GenerateCache(const SynGlyphX::DataTransformMapping& mapping, const QStringList& csvFilenames, const QString& baseImageFilename) {
 
-	const SynGlyphX::BaseImage& baseImage = mapping.GetBaseImage();
+	const SynGlyphX::BaseImage& baseImage = mapping.GetBaseObjects()[0];
 	if (baseImage.GetType() == SynGlyphX::BaseImage::Type::DownloadedMap) {
 
 		DownloadBaseImage(mapping, baseImageFilename);
@@ -100,14 +100,14 @@ void ANTzTransformer::DownloadBaseImage(const SynGlyphX::DataTransformMapping& m
 
 	std::vector<GeographicPoint> points;
 	GetPositionXYForAllGlyphTrees(mapping, points);
-	const SynGlyphX::DownloadedMapProperties* const properties = dynamic_cast<const SynGlyphX::DownloadedMapProperties* const>(mapping.GetBaseImage().GetProperties());
+	const SynGlyphX::DownloadedMapProperties* const properties = dynamic_cast<const SynGlyphX::DownloadedMapProperties* const>(mapping.GetBaseObjects()[0].GetProperties());
 	NetworkDownloader& downloader = NetworkDownloader::Instance();
 	m_overrideRootXYBoundingBox = downloader.DownloadMap(points, baseImageFilename.toStdString(), properties);
 }
 
 void ANTzTransformer::CopyUserImage(const SynGlyphX::DataTransformMapping& mapping, const QString& baseImageFilename) {
 
-	const SynGlyphX::UserDefinedBaseImageProperties* const properties = dynamic_cast<const SynGlyphX::UserDefinedBaseImageProperties* const>(mapping.GetBaseImage().GetProperties());
+	const SynGlyphX::UserDefinedBaseImageProperties* const properties = dynamic_cast<const SynGlyphX::UserDefinedBaseImageProperties* const>(mapping.GetBaseObjects()[0].GetProperties());
 	if (!QFile::copy(QString::fromStdWString(properties->GetFilename()), baseImageFilename)) {
 
 		throw std::exception("Failed to copy base image");
