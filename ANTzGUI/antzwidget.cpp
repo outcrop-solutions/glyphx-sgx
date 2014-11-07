@@ -31,6 +31,8 @@ ANTzWidget::ANTzWidget(GlyphTreeModel* model, QItemSelectionModel* selectionMode
 	}
 
 	QObject::connect(m_model, &GlyphTreeModel::rowsRemoved, this, &ANTzWidget::OnNodeDeleted);
+	QObject::connect(m_model, &GlyphTreeModel::ModelChanged, this, &ANTzWidget::OnModelChanged);
+	OnModelChanged();
 }
 
 ANTzWidget::~ANTzWidget()
@@ -339,4 +341,9 @@ void ANTzWidget::OnNodeDeleted(const QModelIndex& parent, int start, int end) {
 		pData antzData = m_model->GetANTzData();
 		antzData->map.nodeRootIndex = 0;
 	}
+}
+
+void ANTzWidget::OnModelChanged() {
+
+	setEnabled(m_model->rowCount() > 0);
 }

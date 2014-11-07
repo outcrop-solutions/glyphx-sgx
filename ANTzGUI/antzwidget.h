@@ -39,6 +39,7 @@ protected:
 private slots:
     void UpdateSelection(const QItemSelection& selected, const QItemSelection& deselected);
 	void OnNodeDeleted(const QModelIndex& parent, int start, int end);
+	void OnModelChanged();
 
 private:
     void CenterCameraOnNode(pNPnode node);
