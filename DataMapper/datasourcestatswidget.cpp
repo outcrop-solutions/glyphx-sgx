@@ -7,9 +7,9 @@
 #include "datastatsmodel.h"
 #include "sourcedatamanager.h"
 
-DataSourceStatsWidget::DataSourceStatsWidget(boost::shared_ptr<const SynGlyphX::DataTransformMapping> mapping, QWidget *parent)
+DataSourceStatsWidget::DataSourceStatsWidget(DataTransformModel* model, QWidget *parent)
 	: QTabWidget(parent),
-    m_mapping(mapping)
+	m_model(model)
 {
 	
 }
@@ -28,7 +28,7 @@ void DataSourceStatsWidget::RebuildStatsViews() {
 
 void DataSourceStatsWidget::AddNewStatsViews() {
 
-    const SynGlyphX::DatasourceMaps::FileDatasourceMap& fileDatasources = m_mapping->GetDatasources().GetFileDatasources();
+    const SynGlyphX::DatasourceMaps::FileDatasourceMap& fileDatasources = m_model->GetDataMapping()->GetDatasources().GetFileDatasources();
 	SynGlyphX::DatasourceMaps::FileDatasourceMap::const_iterator iT = fileDatasources.begin();
 	for (; iT != fileDatasources.end(); ++iT) {
 

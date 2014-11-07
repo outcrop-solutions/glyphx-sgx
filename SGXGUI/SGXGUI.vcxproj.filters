@@ -149,6 +149,15 @@
     <ClCompile Include="GeneratedFiles\Release\moc_notemptyvalidator.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_roledatafilterproxymodel.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_roledatafilterproxymodel.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="roledatafilterproxymodel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="sgxgui_global.h">
@@ -196,6 +205,9 @@
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="notemptyvalidator.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="roledatafilterproxymodel.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>

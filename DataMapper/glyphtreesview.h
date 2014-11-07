@@ -11,10 +11,12 @@ class GlyphTreesView : public QTreeView
 	Q_OBJECT
 
 public:
-	GlyphTreesView(MinMaxGlyphModel* minMaxGlyphModel, QWidget *parent = 0);
+	GlyphTreesView(QWidget *parent = 0);
 	~GlyphTreesView();
 
 	const SynGlyphX::SharedActionList& GetSharedActions();
+
+	const QAction* const GetClearSelectedInputBindingsAction() const;
 
 protected:
 	virtual void selectionChanged(const QItemSelection& selected, const QItemSelection& deselected);

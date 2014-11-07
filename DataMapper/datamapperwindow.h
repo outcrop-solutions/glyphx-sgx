@@ -2,7 +2,7 @@
 #define DATAMAPPERWINDOW_H
 
 #include "mainwindow.h"
-#include <QtWidgets/QTreeView>
+#include <QtWidgets/QListView>
 #include <boost/shared_ptr.hpp>
 #include "datasourcestatswidget.h"
 #include "databindingwidget.h"
@@ -13,6 +13,7 @@
 #include "glyphtreemodel.h"
 #include "selectiontranslator.h"
 #include "glyphtreesview.h"
+#include "roledatafilterproxymodel.h"
 
 class DataMapperWindow : public SynGlyphX::MainWindow
 {
@@ -37,7 +38,6 @@ private slots:
     void ChangeBaseImage();
 	void AddGlyphTemplate();
 	void ChangeMapDownloadSettings();
-	void OnDataTransformModelModified();
 	void ChangeGlyphDefaults();
 	void ChangeNewMappingDefaults();
 
@@ -62,15 +62,16 @@ private:
     QMenu* m_viewMenu;
 	QMenu* m_toolsMenu;
     
+	QListView* m_baseObjectsView;
 	GlyphTreesView* m_glyphTreesView;
 	DataSourceStatsWidget* m_dataSourceStats;
 	QList<QAction*> m_projectDependentActions;
 	DataBindingWidget* m_dataBindingWidget;
-	//GlyphTemplatesModel* m_glyphTemplatesModel;
 	MinMaxGlyphModel* m_minMaxGlyphModel;
 	DataTransformModel* m_dataTransformModel;
 	ANTzWidget* m_antzWidget;
-	GlyphTreeModel* m_glyphTreeModel;
+	GlyphTreeModel* m_glyphTree3DModel;
+	SynGlyphX::RoleDataFilterProxyModel* m_glyphTreesModel;
 	SelectionTranslator* m_selectionTranslator;
 
 	SynGlyphX::DataMappingDefaults m_newMappingDefaults;

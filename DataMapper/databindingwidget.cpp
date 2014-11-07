@@ -210,6 +210,8 @@ void DataBindingWidget::CreateGridLine(QGridLayout* layout, QFrame::Shape shape,
 
 void DataBindingWidget::OnModelReset() {
 
+	setEnabled(!m_model->IsClear());
+
 	for (int i = 0; i < m_dataWidgetMappers.length(); ++i) {
 
 		if (m_dataWidgetMappers[i] != nullptr) {
@@ -232,7 +234,7 @@ void DataBindingWidget::CommitChanges() {
 
 void DataBindingWidget::OnBaseObjectChanged() {
 
-	EnablePositionXYMixMaxWidgets(!(m_model->IsCurrentGlyphRoot() && (m_model->GetDataTransformMapping()->GetBaseImage().GetType() == SynGlyphX::BaseImage::Type::DownloadedMap)));
+	EnablePositionXYMixMaxWidgets(!(m_model->IsCurrentGlyphRoot() && (m_model->GetDataTransformMapping()->GetBaseObjects()[0].GetType() == SynGlyphX::BaseImage::Type::DownloadedMap)));
 }
 
 void DataBindingWidget::EnablePositionXYMixMaxWidgets(bool enable) {

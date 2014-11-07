@@ -71,28 +71,37 @@ QVariant MinMaxGlyphModel::data(const QModelIndex& index, int role) const {
 
 int	MinMaxGlyphModel::rowCount(const QModelIndex& parent) const {
 
-	return SynGlyphX::MinMaxGlyph::NumInputBindings;
+	if (!parent.isValid()) {
+
+		return SynGlyphX::MinMaxGlyph::NumInputBindings;
+	}
+	else {
+
+		return 0;
+	}
 }
 
 void MinMaxGlyphModel::SetMinMaxGlyph(const QModelIndex& index) {
 
-	if (!index.isValid()) {
+	if (index.isValid()) {
 
-		return;
-	}
+		SynGlyphX::MinMaxGlyphTree::Node* node = static_cast<SynGlyphX::MinMaxGlyphTree::Node*>(index.internalPointer());
+		beginResetModel();
+		m_glyph = SynGlyphX::MinMaxGlyphTree::iterator(node);
+		m_glyphTree = static_cast<const SynGlyphX::MinMaxGlyphTree*>(m_glyph.owner());
+		endResetModel();
 
-	SynGlyphX::MinMaxGlyphTree::Node* node = static_cast<SynGlyphX::MinMaxGlyphTree::Node*>(index.internalPointer());
-	beginResetModel();
-	m_glyph = SynGlyphX::MinMaxGlyphTree::iterator(node);
-	m_glyphTree = static_cast<const SynGlyphX::MinMaxGlyphTree*>(m_glyph.owner());
-	endResetModel();
+		for (auto glyphTree : m_dataTransformModel->GetDataMapping()->GetGlyphTrees()) {
 
-	for (auto glyphTree : m_dataTransformModel->GetDataTransform()->GetGlyphTrees()) {
-
-		if (glyphTree.second.get() == m_glyphTree) {
-			m_glyphTreeID = glyphTree.first;
-			break;
+			if (glyphTree.second.get() == m_glyphTree) {
+				m_glyphTreeID = glyphTree.first;
+				break;
+			}
 		}
+	}
+	else {
+
+		Clear();
 	}
 }
 
@@ -103,6 +112,11 @@ void MinMaxGlyphModel::Clear() {
 	m_glyphTree = nullptr;
 	m_glyphTreeID = boost::uuids::nil_uuid();
 	endResetModel();
+}
+
+bool MinMaxGlyphModel::IsClear() const {
+
+	return (m_glyphTree == nullptr);
 }
 
 QVariant MinMaxGlyphModel::GetDataByRow(const SynGlyphX::GlyphNumericMappableProperties& minProperties, const SynGlyphX::GlyphNumericMappableProperties& diffProperties, int row) const {
@@ -329,7 +343,7 @@ QVariant MinMaxGlyphModel::headerData(int section, Qt::Orientation orientation, 
 
 SynGlyphX::DataTransformMapping::ConstSharedPtr MinMaxGlyphModel::GetDataTransformMapping() const {
 
-	return m_dataTransformModel->GetDataTransform();
+	return m_dataTransformModel->GetDataMapping();
 }
 
 bool MinMaxGlyphModel::IsCurrentGlyphRoot() const {

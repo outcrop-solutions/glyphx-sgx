@@ -1,6 +1,6 @@
 #include "glyphtreesview.h"
 
-GlyphTreesView::GlyphTreesView(MinMaxGlyphModel* minMaxGlyphModel, QWidget *parent)
+GlyphTreesView::GlyphTreesView(QWidget *parent)
 	: QTreeView(parent)
 {
 	setSelectionMode(QAbstractItemView::SingleSelection);
@@ -13,7 +13,6 @@ GlyphTreesView::GlyphTreesView(MinMaxGlyphModel* minMaxGlyphModel, QWidget *pare
 	m_sharedActions.AddSeparator();
 
 	m_clearSelectedInputBindingsAction = m_sharedActions.AddAction(tr("Clear Input Bindings"));
-	QObject::connect(m_clearSelectedInputBindingsAction, &QAction::triggered, minMaxGlyphModel, &MinMaxGlyphModel::ClearInputBindings);
 
 	m_sharedActions.EnableActions(false);
 	addActions(m_sharedActions);
@@ -27,6 +26,11 @@ GlyphTreesView::~GlyphTreesView()
 const SynGlyphX::SharedActionList& GlyphTreesView::GetSharedActions() {
 
 	return m_sharedActions;
+}
+
+const QAction* const GlyphTreesView::GetClearSelectedInputBindingsAction() const {
+
+	return m_clearSelectedInputBindingsAction;
 }
 
 void GlyphTreesView::selectionChanged(const QItemSelection& selected, const QItemSelection& deselected) {

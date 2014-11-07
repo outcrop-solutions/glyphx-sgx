@@ -30,21 +30,22 @@ const QString ANTzTemplateDir = "ANTzTemplate";
 
 DataMapperWindow::DataMapperWindow(QWidget *parent)
     : SynGlyphX::MainWindow(parent),
-	m_dataBindingWidget(nullptr)
+	m_baseObjectsView(nullptr),
+	m_glyphTreesView(nullptr),
+	m_dataSourceStats(nullptr),
+	m_dataBindingWidget(nullptr),
+	m_minMaxGlyphModel(nullptr),
+	m_dataTransformModel(nullptr),
+	m_antzWidget(nullptr),
+	m_glyphTree3DModel(nullptr),
+	m_glyphTreesModel(nullptr)
 {
 	m_dataTransformModel = new DataTransformModel(this);
-	m_minMaxGlyphModel = new MinMaxGlyphModel(m_dataTransformModel, this);
-	m_glyphTreeModel = new GlyphTreeModel(this);
 	
 	CreateMenus();
     CreateDockWidgets();
 
 	CreateCenterWidget();
-
-	QObject::connect(m_minMaxGlyphModel, &MinMaxGlyphModel::dataChanged, this, [&, this](const QModelIndex& topLeft, const QModelIndex& bottomRight){ setWindowModified(true); });
-	QObject::connect(m_dataTransformModel, &DataTransformModel::modelReset, this, &DataMapperWindow::OnDataTransformModelModified);
-	QObject::connect(m_dataTransformModel, &DataTransformModel::rowsInserted, this, &DataMapperWindow::OnDataTransformModelModified);
-	QObject::connect(m_dataTransformModel, &DataTransformModel::rowsRemoved, this, &DataMapperWindow::OnDataTransformModelModified);
 
 	ReadNewMappingDefaults();
 	ClearAndInitializeDataMapping();
@@ -54,18 +55,24 @@ DataMapperWindow::DataMapperWindow(QWidget *parent)
 
 DataMapperWindow::~DataMapperWindow()
 {
-
+	
 }
 
 void DataMapperWindow::CreateCenterWidget() {
 
-	m_selectionTranslator = new SelectionTranslator(m_dataTransformModel, m_glyphTreeModel, m_minMaxGlyphModel, m_glyphTreesView->selectionModel(), this);
+	m_glyphTree3DModel = new GlyphTreeModel(this);
+	m_minMaxGlyphModel = new MinMaxGlyphModel(m_dataTransformModel, this);
+	QObject::connect(m_minMaxGlyphModel, &MinMaxGlyphModel::dataChanged, this, [&, this](const QModelIndex& topLeft, const QModelIndex& bottomRight){ setWindowModified(true); });
+
+	QObject::connect(m_glyphTreesView->GetClearSelectedInputBindingsAction(), &QAction::triggered, m_minMaxGlyphModel, &MinMaxGlyphModel::ClearInputBindings);
+
+	m_selectionTranslator = new SelectionTranslator(m_glyphTreesModel, m_glyphTree3DModel, m_minMaxGlyphModel, m_glyphTreesView->selectionModel(), this);
 
 	QObject::connect(m_minMaxGlyphModel, &MinMaxGlyphModel::GlyphPropertiesUpdated, m_selectionTranslator, &SelectionTranslator::UpdateSelectedGlyphProperties);
 
 	QSplitter* centerWidget = new QSplitter(Qt::Vertical, this);
 	
-	m_antzWidget = new ANTzWidget(m_glyphTreeModel, m_selectionTranslator->Get3DViewSelectionModel(), false, centerWidget);
+	m_antzWidget = new ANTzWidget(m_glyphTree3DModel, m_selectionTranslator->Get3DViewSelectionModel(), false, centerWidget);
 	m_antzWidget->SetEditingMode(ANTzWidget::EditingMode::None);
 
 	//m_viewMenu->addAction(glyphViewDockWidget->toggleViewAction());
@@ -78,7 +85,6 @@ void DataMapperWindow::CreateCenterWidget() {
 	centerWidget->setStretchFactor(1, 2);
 	centerWidget->setStretchFactor(0, 0);
 	
-	centerWidget->setEnabled(false);
 	setCentralWidget(centerWidget);
 }
 
@@ -166,19 +172,38 @@ void DataMapperWindow::CreateMenus() {
 
 void DataMapperWindow::CreateDockWidgets() {
 
-	QDockWidget* leftDockWidget = new QDockWidget(tr("Glyph Trees"), this);
+	QDockWidget* leftDockWidgetGlyphTrees = new QDockWidget(tr("Glyph Trees"), this);
 
-	m_glyphTreesView = new GlyphTreesView(m_minMaxGlyphModel, leftDockWidget);
-	m_glyphTreesView->setModel(m_dataTransformModel);
+	m_glyphTreesView = new GlyphTreesView(leftDockWidgetGlyphTrees);
+	m_glyphTreesModel = new SynGlyphX::RoleDataFilterProxyModel(this);
+	m_glyphTreesModel->SetRole(DataTransformModel::DataTypeRole);
+	m_glyphTreesModel->setSourceModel(m_dataTransformModel);
+	m_glyphTreesModel->SetFilterData(DataTransformModel::DataType::GlyphTrees);
+	m_glyphTreesView->setModel(m_glyphTreesModel);
 	m_glyphMenu->addActions(m_glyphTreesView->actions());
 
     //Add Tree View to dock widget on left side
-	leftDockWidget->setWidget(m_glyphTreesView);
-    addDockWidget(Qt::LeftDockWidgetArea, leftDockWidget);
-    m_viewMenu->addAction(leftDockWidget->toggleViewAction());
+	leftDockWidgetGlyphTrees->setWidget(m_glyphTreesView);
+	addDockWidget(Qt::LeftDockWidgetArea, leftDockWidgetGlyphTrees);
+	m_viewMenu->addAction(leftDockWidgetGlyphTrees->toggleViewAction());
+
+	QDockWidget* leftDockWidgetBaseObjects = new QDockWidget(tr("Grids/Base Images"), this);
+
+	m_baseObjectsView = new QListView(leftDockWidgetBaseObjects);
+	SynGlyphX::RoleDataFilterProxyModel* baseObjectsModel = new SynGlyphX::RoleDataFilterProxyModel(this);
+	baseObjectsModel->setSourceModel(m_dataTransformModel);
+	baseObjectsModel->SetRole(DataTransformModel::DataTypeRole);
+	baseObjectsModel->SetFilterData(DataTransformModel::DataType::BaseObjects);
+	m_baseObjectsView->setModel(baseObjectsModel);
+	m_glyphMenu->addActions(m_baseObjectsView->actions());
+
+	//Add Base Objects View to dock widget on left side
+	leftDockWidgetBaseObjects->setWidget(m_baseObjectsView);
+	addDockWidget(Qt::LeftDockWidgetArea, leftDockWidgetBaseObjects);
+	m_viewMenu->addAction(leftDockWidgetBaseObjects->toggleViewAction());
 
 	QDockWidget* rightDockWidget = new QDockWidget(tr("Data Stats"), this);
-    m_dataSourceStats = new DataSourceStatsWidget(m_dataTransformModel->GetDataTransform(), rightDockWidget);
+	m_dataSourceStats = new DataSourceStatsWidget(m_dataTransformModel, rightDockWidget);
 
 	rightDockWidget->setWidget(m_dataSourceStats);
 	addDockWidget(Qt::RightDockWidgetArea, rightDockWidget);
@@ -202,7 +227,7 @@ void DataMapperWindow::CreateNewProject() {
 	m_minMaxGlyphModel->Clear();
 
 	EnableProjectDependentActions(false);
-	m_glyphTreeModel->ShowGlyph(false);
+	m_glyphTree3DModel->ShowGlyph(false);
 	UpdateFilenameWindowTitle("Untitled");
 }
 
@@ -254,7 +279,7 @@ void DataMapperWindow::LoadDataTransform(const QString& filename) {
 	try {
 
 		m_dataTransformModel->LoadDataTransformFile(filename);
-		m_glyphTreesView->selectionModel()->select(m_dataTransformModel->index(m_dataTransformModel->rowCount() - 1), QItemSelectionModel::ClearAndSelect);
+		m_glyphTreesView->selectionModel()->select(m_glyphTreesModel->index(m_glyphTreesModel->rowCount() - 1, 0), QItemSelectionModel::ClearAndSelect);
 		m_dataSourceStats->RebuildStatsViews();
 	}
 	catch (const std::exception& e) {
@@ -367,7 +392,7 @@ void DataMapperWindow::AddDataSources() {
 
 			newDBID = m_dataTransformModel->AddFileDatasource(fileDatasourceType, datasource.toStdWString());
 			SynGlyphX::Datasource::TableSet tables;
-			const SynGlyphX::Datasource& newDatasource = m_dataTransformModel->GetDataTransform()->GetDatasources().GetFileDatasources().at(newDBID);
+			const SynGlyphX::Datasource& newDatasource = m_dataTransformModel->GetDataMapping()->GetDatasources().GetFileDatasources().at(newDBID);
 
 			QSqlDatabase db = QSqlDatabase::database(QString::fromStdString(boost::uuids::to_string(newDBID)));
 
@@ -437,7 +462,7 @@ void DataMapperWindow::ExportToANTz() {
 		SynGlyphX::Filesystem::CopyDirectoryOverwrite(QDir::toNativeSeparators(SynGlyphX::Application::applicationDirPath() + QDir::separator() + ANTzTemplateDir).toStdString(), csvDirectory.toStdString(), true);
 
 		ANTzTransformer transformer(csvDirectory);
-		transformer.Transform(*(m_dataTransformModel->GetDataTransform().get()));
+		transformer.Transform(*(m_dataTransformModel->GetDataMapping().get()));
 	}
 	catch (const std::exception& e) {
 
@@ -454,7 +479,7 @@ void DataMapperWindow::ExportToANTz() {
 void DataMapperWindow::ChangeBaseImage() {
 
 	BaseImageDialog dialog(this);
-	dialog.SetBaseImage(m_dataTransformModel->GetDataTransform()->GetBaseImage());
+	dialog.SetBaseImage(m_dataTransformModel->GetDataMapping()->GetBaseObjects()[0]);
 	if (dialog.exec() == QDialog::Accepted) {
 
 		const SynGlyphX::BaseImage& baseImage = dialog.GetBaseImage();
@@ -484,7 +509,7 @@ void DataMapperWindow::AddGlyphTemplate() {
 	}
 
 	EnableProjectDependentActions(true);
-	m_glyphTreesView->selectionModel()->select(m_dataTransformModel->index(m_dataTransformModel->rowCount() - 1), QItemSelectionModel::ClearAndSelect);
+	m_glyphTreesView->selectionModel()->select(m_glyphTreesModel->index(m_glyphTreesModel->rowCount() - 1, 0), QItemSelectionModel::ClearAndSelect);
 	setWindowModified(true);
 	statusBar()->showMessage("Glyph Template successfully added", 3000);
 }
@@ -551,15 +576,9 @@ bool DataMapperWindow::DoesANTzTemplateExist() const {
 	return true;
 }
 
-void DataMapperWindow::OnDataTransformModelModified() {
-
-	centralWidget()->setEnabled(m_dataTransformModel->rowCount() > 0);
-	m_selectionTranslator->Clear();
-}
-
 void DataMapperWindow::ChangeGlyphDefaults() {
 
-	const SynGlyphX::DataMappingDefaults& oldDefaults = m_dataTransformModel->GetDataTransform()->GetDefaults();
+	const SynGlyphX::DataMappingDefaults& oldDefaults = m_dataTransformModel->GetDataMapping()->GetDefaults();
 	GlyphDefaultsWidget* glyphDefaultsWidget = new GlyphDefaultsWidget(oldDefaults, this);
 	SynGlyphX::SingleWidgetDialog dialog(QDialogButtonBox::StandardButton::Ok | QDialogButtonBox::StandardButton::Cancel, glyphDefaultsWidget, this);
 	dialog.setWindowTitle(tr("Glyph Defaults"));

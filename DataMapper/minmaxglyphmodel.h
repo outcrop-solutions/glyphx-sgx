@@ -23,6 +23,7 @@ public:
 
 	SynGlyphX::DataTransformMapping::ConstSharedPtr GetDataTransformMapping() const;
 	bool IsCurrentGlyphRoot() const;
+	bool IsClear() const;
 
 signals:
 	void GlyphPropertiesUpdated(SynGlyphX::GlyphProperties::SharedPtr newGlyph);

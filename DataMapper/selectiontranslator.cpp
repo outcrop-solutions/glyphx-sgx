@@ -1,15 +1,16 @@
 #include "selectiontranslator.h"
 #include <stack>
+#include "datatransformmodel.h"
 
-SelectionTranslator::SelectionTranslator(DataTransformModel* dataTransformModel, GlyphTreeModel* glyphTreeModel, MinMaxGlyphModel* minMaxGlyphModel, QItemSelectionModel* treeViewSelectionModel, QObject *parent)
+SelectionTranslator::SelectionTranslator(SynGlyphX::RoleDataFilterProxyModel* glyphTreesModel, GlyphTreeModel* glyphTree3DModel, MinMaxGlyphModel* minMaxGlyphModel, QItemSelectionModel* treeViewSelectionModel, QObject *parent)
 	: QObject(parent),
-	m_dataTransformModel(dataTransformModel),
-	m_glyphTreeModel(glyphTreeModel),
+	m_glyphTreesModel(glyphTreesModel),
+	m_glyphTree3DModel(glyphTree3DModel),
 	m_minMaxGlyphModel(minMaxGlyphModel),
 	m_treeViewSelectionModel(treeViewSelectionModel),
 	m_glyphTreeIndex(-1)
 {
-	m_3DViewSelectionModel = new QItemSelectionModel(m_glyphTreeModel, this);
+	m_3DViewSelectionModel = new QItemSelectionModel(m_glyphTree3DModel, this);
 	Connect3DViewSelectionModel();
 	ConnectTreeViewSelectionModel();
 }
@@ -27,6 +28,8 @@ void SelectionTranslator::Connect3DViewSelectionModel() {
 void SelectionTranslator::Clear() {
 
 	m_glyphTreeIndex = -1;
+	m_minMaxGlyphModel->Clear();
+	m_glyphTree3DModel->removeRow(0);
 }
 
 void SelectionTranslator::ConnectTreeViewSelectionModel() {
@@ -41,11 +44,9 @@ QItemSelectionModel* SelectionTranslator::Get3DViewSelectionModel() const {
 
 void SelectionTranslator::OnTreeViewSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected) {
 
-	if (selected.empty() || !selected.indexes()[0].isValid()) {
+	if (selected.empty() || !selected.indexes()[0].isValid() || (selected.indexes()[0].data(DataTransformModel::DataTypeRole) != DataTransformModel::DataType::GlyphTrees)) {
 
-		m_minMaxGlyphModel->Clear();
-		m_glyphTreeModel->removeRow(0);
-		m_glyphTreeIndex = -1;
+		Clear();
 		return;
 	}
 
@@ -64,12 +65,12 @@ void SelectionTranslator::OnTreeViewSelectionChanged(const QItemSelection& selec
 	if (m_glyphTreeIndex != rootIndex.row()) {
 
 		m_glyphTreeIndex = rootIndex.row();
-		SynGlyphX::DataTransformMapping::MinMaxGlyphTreeMap::const_iterator newGlyphTree = m_dataTransformModel->GetDataTransform()->GetGlyphTrees().begin();
-		std::advance(newGlyphTree, m_glyphTreeIndex);
+		SynGlyphX::MinMaxGlyphTree::const_iterator node = SynGlyphX::MinMaxGlyphTree::const_iterator(static_cast<SynGlyphX::MinMaxGlyphTree::Node*>(rootIndex.internalPointer()));
+		const SynGlyphX::MinMaxGlyphTree* minMaxGlyphTree = static_cast<const SynGlyphX::MinMaxGlyphTree*>(node.owner());
 
-		SynGlyphX::GlyphTree::SharedPtr glyphTree = newGlyphTree->second->GetMaxGlyphTree();
+		SynGlyphX::GlyphTree::SharedPtr glyphTree = minMaxGlyphTree->GetMaxGlyphTree();
 		glyphTree->root()->SetPosition({ { 0.0, 0.0, 0.0 } });
-		m_glyphTreeModel->CreateNewTree(glyphTree, true);
+		m_glyphTree3DModel->CreateNewTree(glyphTree, true);
 	}
 
 	if (m_glyph != newGlyph) {
@@ -85,11 +86,11 @@ void SelectionTranslator::OnTreeViewSelectionChanged(const QItemSelection& selec
 		//The top position will be the row of the glyph since the glyph tree view has multiple glyphs.  We don't need it
 		childPositions.pop();
 
-		QModelIndex glyphTreeModelIndex = m_glyphTreeModel->index(0);
+		QModelIndex glyphTreeModelIndex = m_glyphTree3DModel->index(0);
 
 		while (!childPositions.empty()) {
 			
-			glyphTreeModelIndex = m_glyphTreeModel->index(childPositions.top(), 0, glyphTreeModelIndex);
+			glyphTreeModelIndex = m_glyphTree3DModel->index(childPositions.top(), 0, glyphTreeModelIndex);
 			childPositions.pop();
 		}
 
@@ -120,11 +121,11 @@ void SelectionTranslator::On3DViewSelectionChanged(const QItemSelection& selecte
 	//The top position will be 0 which we don't need
 	childPositions.pop();
 
-	QModelIndex minMaxIndex = m_dataTransformModel->index(m_glyphTreeIndex);
+	QModelIndex minMaxIndex = m_glyphTreesModel->index(m_glyphTreeIndex, 0);
 
 	while (!childPositions.empty()) {
 
-		minMaxIndex = m_dataTransformModel->index(childPositions.top(), 0, minMaxIndex);
+		minMaxIndex = m_glyphTreesModel->index(childPositions.top(), 0, minMaxIndex);
 		childPositions.pop();
 	}
 
@@ -148,5 +149,5 @@ void SelectionTranslator::UpdateSelectedGlyphProperties(SynGlyphX::GlyphProperti
 		//If index is the root glyph don't update its position
 		updates ^= GlyphTreeModel::UpdatePosition;
 	}
-	m_glyphTreeModel->UpdateNode(m_3DViewSelectionModel->selectedIndexes()[0], glyph, updates);
+	m_glyphTree3DModel->UpdateNode(m_3DViewSelectionModel->selectedIndexes()[0], glyph, updates);
 }

@@ -4,14 +4,14 @@
 #include <QtWidgets/QTabWidget>
 #include <QtSql/QSqlDatabase>
 #include <QtWidgets/QTableView>
-#include "datatransformmapping.h"
+#include "datatransformmodel.h"
 
 class DataSourceStatsWidget : public QTabWidget
 {
 	Q_OBJECT
 
 public:
-    DataSourceStatsWidget(boost::shared_ptr<const SynGlyphX::DataTransformMapping> mapping, QWidget *parent = 0);
+	DataSourceStatsWidget(DataTransformModel* model, QWidget *parent = 0);
 	~DataSourceStatsWidget();
 
 	void RebuildStatsViews();
@@ -21,8 +21,9 @@ public:
 private:
     void CreateTablesFromDatasource(const boost::uuids::uuid& id, const SynGlyphX::Datasource& datasource);
 	void CreateTableView(const boost::uuids::uuid& id, const QString& tableName, const QString& tabName);
+
 	QList<QTableView*> m_statViews;
-	boost::shared_ptr<const SynGlyphX::DataTransformMapping> m_mapping;
+	DataTransformModel* m_model;
 	std::set<boost::uuids::uuid> m_datasourcesShownInTabs;
 };
 

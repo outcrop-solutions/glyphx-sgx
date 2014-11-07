@@ -6,7 +6,7 @@
 #include <QtCore/QItemSelectionModel>
 #include <boost/uuid/uuid.hpp>
 #include "minmaxglyphtree.h"
-#include "datatransformmodel.h"
+#include "roledatafilterproxymodel.h"
 #include "glyphtreemodel.h"
 #include "minmaxglyphmodel.h"
 
@@ -15,7 +15,7 @@ class SelectionTranslator : public QObject
 	Q_OBJECT
 
 public:
-	SelectionTranslator(DataTransformModel* dataTransformModel, GlyphTreeModel* glyphTreeModel, MinMaxGlyphModel* minMaxGlyphModel, QItemSelectionModel* treeViewSelectionModel, QObject *parent);
+	SelectionTranslator(SynGlyphX::RoleDataFilterProxyModel* glyphTreesModel, GlyphTreeModel* glyphTree3DModel, MinMaxGlyphModel* minMaxGlyphModel, QItemSelectionModel* treeViewSelectionModel, QObject *parent);
 	~SelectionTranslator();
 
 	QItemSelectionModel* Get3DViewSelectionModel() const;
@@ -36,8 +36,8 @@ private:
 	const SynGlyphX::MinMaxGlyphTree* m_glyphTree;
 	int m_glyphTreeIndex;
 
-	DataTransformModel* m_dataTransformModel;
-	GlyphTreeModel* m_glyphTreeModel;
+	SynGlyphX::RoleDataFilterProxyModel* m_glyphTreesModel;
+	GlyphTreeModel* m_glyphTree3DModel;
 	MinMaxGlyphModel* m_minMaxGlyphModel;
 
 	QItemSelectionModel* m_3DViewSelectionModel;
