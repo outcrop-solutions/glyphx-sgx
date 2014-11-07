@@ -57,6 +57,11 @@ namespace SynGlyphX {
 		return (!m_fileDatasources.empty());
 	}
 
+	unsigned int DatasourceMaps::Count() const {
+
+		return m_fileDatasources.size();
+	}
+
 	void DatasourceMaps::Clear() {
 
 		m_fileDatasources.clear();

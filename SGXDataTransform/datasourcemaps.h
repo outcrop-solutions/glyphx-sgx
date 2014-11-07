@@ -25,6 +25,7 @@ namespace SynGlyphX {
 
 		const Datasource& GetDatasourceByID(const boost::uuids::uuid& id) const;
 		bool HasDatasources() const;
+		unsigned int Count() const;
 		void Clear();
 		bool EnableTables(const boost::uuids::uuid& id, const Datasource::TableSet& tables, bool enable = true);
 

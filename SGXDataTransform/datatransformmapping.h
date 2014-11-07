@@ -15,7 +15,7 @@
 
 namespace SynGlyphX {
 
-	class SGXDATATRANSFORM_EXPORT DataTransformMapping : public XMLPropertyTreeFile
+	class SGXDATATRANSFORM_EXPORT DataTransformMapping : public XMLPropertyTreeFile, boost::noncopyable
     {
     public:
 		typedef std::unordered_map<boost::uuids::uuid, MinMaxGlyphTree::SharedPtr, SynGlyphX::UUIDHash> MinMaxGlyphTreeMap;
@@ -24,7 +24,6 @@ namespace SynGlyphX {
 		typedef boost::shared_ptr<const DataTransformMapping> ConstSharedPtr;
 
 		DataTransformMapping();
-		DataTransformMapping(const GlyphTree& glyphTree);
 		~DataTransformMapping();
 
 		bool operator==(const DataTransformMapping& mapping) const;
@@ -53,8 +52,8 @@ namespace SynGlyphX {
 
 		void Clear();
 
-		void SetBaseImage(const BaseImage& baseImage);
-		const BaseImage& GetBaseImage() const;
+		void SetBaseObject(unsigned int index, const BaseImage& baseObject);
+		const std::vector<BaseImage>& GetBaseObjects() const;
 
 		const boost::uuids::uuid& GetID() const;
 
@@ -70,7 +69,7 @@ namespace SynGlyphX {
 		DataMappingDefaults m_defaults;
 		DatasourceMaps m_datasources;
 		MinMaxGlyphTreeMap m_glyphTrees;
-		BaseImage m_baseImage;
+		std::vector<BaseImage> m_baseObjects;
 		boost::uuids::uuid m_id;
     };
 

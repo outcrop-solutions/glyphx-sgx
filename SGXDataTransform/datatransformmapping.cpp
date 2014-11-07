@@ -12,10 +12,10 @@ namespace SynGlyphX {
 
 	DataTransformMapping::DataTransformMapping() :
 		XMLPropertyTreeFile(),
-		m_baseImage(nullptr),
 		m_id(UUIDGenerator::GetNewRandomUUID())
     {
-		
+		//There will always be at least one base object
+		m_baseObjects.push_back(BaseImage(nullptr));
     }
 
 	DataTransformMapping::~DataTransformMapping()
@@ -60,7 +60,21 @@ namespace SynGlyphX {
 
 		m_id = dataTransformPropertyTree.get<boost::uuids::uuid>(L"<xmlattr>.id");
 
-		m_baseImage = BaseImage(dataTransformPropertyTree.get_child(L"BaseImage"));
+		boost::optional<const boost::property_tree::wptree&> baseObjectsPropertyTree = dataTransformPropertyTree.get_child_optional(L"BaseObjects");
+		if (baseObjectsPropertyTree.is_initialized()) {
+
+			for (const boost::property_tree::wptree::value_type& baseObjectPropertyTree : baseObjectsPropertyTree.get()) {
+
+				if (baseObjectPropertyTree.first == L"BaseObject") {
+
+					m_baseObjects.push_back(BaseImage(baseObjectPropertyTree.second));
+				}
+			}
+		}
+		else {
+
+			m_baseObjects.push_back(BaseImage(dataTransformPropertyTree.get_child(L"BaseImage")));
+		}
 
 		m_datasources = DatasourceMaps(dataTransformPropertyTree.get_child(L"Datasources"));
 
@@ -85,7 +99,11 @@ namespace SynGlyphX {
 		boost::property_tree::wptree& dataTransformPropertyTreeRoot = filePropertyTree.add(L"Transform", L"");
 		dataTransformPropertyTreeRoot.put(L"<xmlattr>.id", m_id);
 
-		m_baseImage.ExportToPropertyTree(dataTransformPropertyTreeRoot);
+		boost::property_tree::wptree& baseObjectsPropertyTree = dataTransformPropertyTreeRoot.add(L"BaseObjects", L"");
+		for (const BaseImage& baseObject : m_baseObjects) {
+
+			baseObject.ExportToPropertyTree(baseObjectsPropertyTree);
+		}
 
 		m_datasources.ExportToPropertyTree(dataTransformPropertyTreeRoot);
 
@@ -109,7 +127,9 @@ namespace SynGlyphX {
 		m_datasources.Clear();
 		m_glyphTrees.clear();
 		m_defaults.Clear();
-		m_baseImage = BaseImage(nullptr);
+		m_baseObjects.clear();
+		//There will always be at least one base object
+		m_baseObjects.push_back(BaseImage(nullptr));
 		m_id = UUIDGenerator::GetNewRandomUUID();
     }
 
@@ -159,14 +179,14 @@ namespace SynGlyphX {
 		return (m_datasources.HasDatasources() && (!m_glyphTrees.empty()));
 	}
 
-	void DataTransformMapping::SetBaseImage(const BaseImage& baseImage) {
+	void DataTransformMapping::SetBaseObject(unsigned int index, const BaseImage& baseObject) {
 
-		m_baseImage = baseImage;
+		m_baseObjects[index] = baseObject;
 	}
 
-	const BaseImage& DataTransformMapping::GetBaseImage() const {
+	const std::vector<BaseImage>& DataTransformMapping::GetBaseObjects() const {
 
-		return m_baseImage;
+		return m_baseObjects;
 	}
 	
 	void DataTransformMapping::SetInputField(const boost::uuids::uuid& treeID, MinMaxGlyphTree::const_iterator& node, int index, const InputField& inputfield) {
