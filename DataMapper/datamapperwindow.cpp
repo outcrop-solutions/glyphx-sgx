@@ -38,7 +38,8 @@ DataMapperWindow::DataMapperWindow(QWidget *parent)
 	m_dataTransformModel(nullptr),
 	m_antzWidget(nullptr),
 	m_glyphTree3DModel(nullptr),
-	m_glyphTreesModel(nullptr)
+	m_glyphTreesModel(nullptr),
+	m_baseObjectsModel(nullptr)
 {
 	m_dataTransformModel = new DataTransformModel(this);
 	
@@ -190,11 +191,11 @@ void DataMapperWindow::CreateDockWidgets() {
 	QDockWidget* leftDockWidgetBaseObjects = new QDockWidget(tr("Grids/Base Images"), this);
 
 	m_baseObjectsView = new QListView(leftDockWidgetBaseObjects);
-	SynGlyphX::RoleDataFilterProxyModel* baseObjectsModel = new SynGlyphX::RoleDataFilterProxyModel(this);
-	baseObjectsModel->setSourceModel(m_dataTransformModel);
-	baseObjectsModel->SetRole(DataTransformModel::DataTypeRole);
-	baseObjectsModel->SetFilterData(DataTransformModel::DataType::BaseObjects);
-	m_baseObjectsView->setModel(baseObjectsModel);
+	m_baseObjectsModel = new SynGlyphX::RoleDataFilterProxyModel(this);
+	m_baseObjectsModel->setSourceModel(m_dataTransformModel);
+	m_baseObjectsModel->SetRole(DataTransformModel::DataTypeRole);
+	m_baseObjectsModel->SetFilterData(DataTransformModel::DataType::BaseObjects);
+	m_baseObjectsView->setModel(m_baseObjectsModel);
 	m_glyphMenu->addActions(m_baseObjectsView->actions());
 
 	//Add Base Objects View to dock widget on left side
@@ -279,8 +280,8 @@ void DataMapperWindow::LoadDataTransform(const QString& filename) {
 	try {
 
 		m_dataTransformModel->LoadDataTransformFile(filename);
-		m_glyphTreesView->selectionModel()->select(m_glyphTreesModel->index(m_glyphTreesModel->rowCount() - 1, 0), QItemSelectionModel::ClearAndSelect);
 		m_dataSourceStats->RebuildStatsViews();
+		SelectLastGlyphTreeRoot();
 	}
 	catch (const std::exception& e) {
 
@@ -509,7 +510,7 @@ void DataMapperWindow::AddGlyphTemplate() {
 	}
 
 	EnableProjectDependentActions(true);
-	m_glyphTreesView->selectionModel()->select(m_glyphTreesModel->index(m_glyphTreesModel->rowCount() - 1, 0), QItemSelectionModel::ClearAndSelect);
+	SelectLastGlyphTreeRoot();
 	setWindowModified(true);
 	statusBar()->showMessage("Glyph Template successfully added", 3000);
 }
@@ -648,4 +649,9 @@ void DataMapperWindow::ClearAndInitializeDataMapping() {
 
 	m_dataTransformModel->Clear();
 	m_dataTransformModel->SetDefaults(m_newMappingDefaults);
+}
+
+void DataMapperWindow::SelectLastGlyphTreeRoot() {
+
+	m_glyphTreesView->selectionModel()->select(m_glyphTreesModel->index(m_dataTransformModel->GetDataMapping()->GetGlyphTrees().size() - 1, 0), QItemSelectionModel::ClearAndSelect);
 }

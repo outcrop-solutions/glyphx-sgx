@@ -55,6 +55,7 @@ private:
 	void ReadNewMappingDefaults();
 	void WriteNewMappingDefaults();
 	void ClearAndInitializeDataMapping();
+	void SelectLastGlyphTreeRoot();
 
     QMenu* m_fileMenu;
     QMenu* m_glyphMenu;
@@ -72,6 +73,7 @@ private:
 	ANTzWidget* m_antzWidget;
 	GlyphTreeModel* m_glyphTree3DModel;
 	SynGlyphX::RoleDataFilterProxyModel* m_glyphTreesModel;
+	SynGlyphX::RoleDataFilterProxyModel* m_baseObjectsModel;
 	SelectionTranslator* m_selectionTranslator;
 
 	SynGlyphX::DataMappingDefaults m_newMappingDefaults;
