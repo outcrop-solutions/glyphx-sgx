@@ -49,6 +49,12 @@
     <CustomBuild Include="glyphmimedata.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
+    <CustomBuild Include="minmaxglyph3dwidget.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="minmaxglyphtreemodel.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GeneratedFiles\Win32\Debug\moc_antzwidget.cpp">
@@ -77,6 +83,24 @@
     </ClCompile>
     <ClCompile Include="glyphmimedata.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="minmaxglyph3dwidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Win32\Debug\moc_minmaxglyph3dwidget.cpp">
+      <Filter>Generated Files\Debug_Win32</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Win32\Release\moc_minmaxglyph3dwidget.cpp">
+      <Filter>Generated Files\Release_Win32</Filter>
+    </ClCompile>
+    <ClCompile Include="minmaxglyphtreemodel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Win32\Debug\moc_minmaxglyphtreemodel.cpp">
+      <Filter>Generated Files\Debug_Win32</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Win32\Release\moc_minmaxglyphtreemodel.cpp">
+      <Filter>Generated Files\Release_Win32</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

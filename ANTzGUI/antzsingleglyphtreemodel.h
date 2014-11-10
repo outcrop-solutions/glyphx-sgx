@@ -2,13 +2,13 @@
 #define GLYPHTREEMODEL_H
 
 #include "antzgui_global.h"
-#include <QtCore/QAbstractItemModel>
+#include <QtCore/QIdentityProxyModel>
 #include <vector>
 #include <boost/shared_ptr.hpp>
 #include "data/nptypes.h"
 #include "glyph.h"
 
-class ANTZGUI_EXPORT GlyphTreeModel : public QAbstractItemModel
+class ANTZGUI_EXPORT ANTzSingleTreeModel : public QIdentityProxyModel
 {
     Q_OBJECT
 
@@ -28,8 +28,8 @@ public:
 
     Q_DECLARE_FLAGS(PropertyUpdates, PropertyUpdate);
 
-    GlyphTreeModel(QObject *parent);
-    ~GlyphTreeModel();
+	ANTzSingleTreeModel(QObject *parent);
+	~ANTzSingleTreeModel();
 
     //Functions from QAbstractItemModel that need to be implemented
     virtual int columnCount(const QModelIndex& parent = QModelIndex()) const;

@@ -5,31 +5,31 @@
 #include "minmaxglyphtree.h"
 #include <QtCore/QFile>
 
-GlyphTreeModel::GlyphTreeModel(QObject *parent)
-    : QAbstractItemModel(parent),
+ANTzSingleTreeModel::ANTzSingleTreeModel(QObject *parent)
+    : QIdentityProxyModel(parent),
     m_clipboardGlyph(),
 	m_rootGlyph(nullptr)
 {
     m_antzData = static_cast<pData>(npInitData(0, NULL));
     //CreateRootPinNode();
 
-	QObject::connect(this, &GlyphTreeModel::NodeUpdated, this, &GlyphTreeModel::MarkDifferentNotifyModelUpdate);
-	QObject::connect(this, &GlyphTreeModel::rowsInserted, this, &GlyphTreeModel::MarkDifferentNotifyModelUpdate);
-	QObject::connect(this, &GlyphTreeModel::rowsMoved, this, &GlyphTreeModel::MarkDifferentNotifyModelUpdate);
-	QObject::connect(this, &GlyphTreeModel::rowsRemoved, this, &GlyphTreeModel::MarkDifferentNotifyModelUpdate);
-	QObject::connect(this, &GlyphTreeModel::modelReset, this, &GlyphTreeModel::NotifyModelUpdate);
+	QObject::connect(this, &ANTzSingleTreeModel::NodeUpdated, this, &ANTzSingleTreeModel::MarkDifferentNotifyModelUpdate);
+	QObject::connect(this, &ANTzSingleTreeModel::rowsInserted, this, &ANTzSingleTreeModel::MarkDifferentNotifyModelUpdate);
+	QObject::connect(this, &ANTzSingleTreeModel::rowsMoved, this, &ANTzSingleTreeModel::MarkDifferentNotifyModelUpdate);
+	QObject::connect(this, &ANTzSingleTreeModel::rowsRemoved, this, &ANTzSingleTreeModel::MarkDifferentNotifyModelUpdate);
+	QObject::connect(this, &ANTzSingleTreeModel::modelReset, this, &ANTzSingleTreeModel::NotifyModelUpdate);
 }
 
-GlyphTreeModel::~GlyphTreeModel()
+ANTzSingleTreeModel::~ANTzSingleTreeModel()
 {
     npCloseData();
 }
 
-int GlyphTreeModel::columnCount(const QModelIndex& parent) const {
+int ANTzSingleTreeModel::columnCount(const QModelIndex& parent) const {
     return 1;
 }
 
-QVariant GlyphTreeModel::data(const QModelIndex& index, int role) const {
+QVariant ANTzSingleTreeModel::data(const QModelIndex& index, int role) const {
 
     if (!index.isValid()) {
         return QVariant();
@@ -50,7 +50,7 @@ QVariant GlyphTreeModel::data(const QModelIndex& index, int role) const {
 	return QString::fromStdWString(displayedData);
 }
 
-QModelIndex	GlyphTreeModel::index(int row, int column, const QModelIndex& parent) const {
+QModelIndex	ANTzSingleTreeModel::index(int row, int column, const QModelIndex& parent) const {
 
     if (!hasIndex(row, column, parent)) {
         return QModelIndex();
@@ -72,7 +72,7 @@ QModelIndex	GlyphTreeModel::index(int row, int column, const QModelIndex& parent
     }
 }
 
-QModelIndex	GlyphTreeModel::parent(const QModelIndex& index) const {
+QModelIndex	ANTzSingleTreeModel::parent(const QModelIndex& index) const {
 
     if (!index.isValid()) {
         return QModelIndex();
@@ -94,7 +94,7 @@ QModelIndex	GlyphTreeModel::parent(const QModelIndex& index) const {
     }
 }
 
-int	GlyphTreeModel::rowCount(const QModelIndex& parent) const {
+int	ANTzSingleTreeModel::rowCount(const QModelIndex& parent) const {
     
     pNPnode glyph;
     if (!parent.isValid()) {
@@ -111,12 +111,12 @@ int	GlyphTreeModel::rowCount(const QModelIndex& parent) const {
     return glyph->childCount;
 }
 /*
-bool GlyphTreeModel::setData(const QModelIndex& index, const QVariant& value, int role) {
+bool ANTzSingleTreeModel::setData(const QModelIndex& index, const QVariant& value, int role) {
 
     return QAbstractItemModel::setData(index, value, role);
 }*/
 
-Qt::ItemFlags GlyphTreeModel::flags(const QModelIndex& index) const {
+Qt::ItemFlags ANTzSingleTreeModel::flags(const QModelIndex& index) const {
     
     if (!index.isValid()) {
         return 0;
@@ -131,28 +131,28 @@ Qt::ItemFlags GlyphTreeModel::flags(const QModelIndex& index) const {
     return flags;
 }
 
-QVariant GlyphTreeModel::headerData(int section, Qt::Orientation orientation, int role) const {
+QVariant ANTzSingleTreeModel::headerData(int section, Qt::Orientation orientation, int role) const {
 
     //We don't need column headers in views so this gets rid of them
     return "";
 }
 
-Qt::DropActions GlyphTreeModel::supportedDropActions() const {
+Qt::DropActions ANTzSingleTreeModel::supportedDropActions() const {
 
     return Qt::MoveAction;
 }
 
-pData GlyphTreeModel::GetANTzData() const {
+pData ANTzSingleTreeModel::GetANTzData() const {
     
 	return m_antzData;
 }
 
-pNPnode GlyphTreeModel::GetRootGlyph() const {
+pNPnode ANTzSingleTreeModel::GetRootGlyph() const {
     
 	return m_rootGlyph;
 }
 
-void GlyphTreeModel::DeleteGlyphRootNode() {
+void ANTzSingleTreeModel::DeleteGlyphRootNode() {
 
 	if (m_rootGlyph != nullptr) {
 
@@ -164,7 +164,7 @@ void GlyphTreeModel::DeleteGlyphRootNode() {
 	}
 }
 
-bool GlyphTreeModel::LoadFromFile(const QString& filename) {
+bool ANTzSingleTreeModel::LoadFromFile(const QString& filename) {
     
     beginResetModel();
 	DeleteGlyphRootNode();
@@ -203,7 +203,7 @@ bool GlyphTreeModel::LoadFromFile(const QString& filename) {
     return success;
 }
 
-void GlyphTreeModel::SaveToTemplateFile(const QString& filename) const {
+void ANTzSingleTreeModel::SaveToTemplateFile(const QString& filename) const {
 
 	SynGlyphX::GlyphTree glyphTree(m_rootGlyph);
 	SynGlyphX::MinMaxGlyphTree minMaxGlyphTree(glyphTree);
@@ -218,7 +218,7 @@ void GlyphTreeModel::SaveToTemplateFile(const QString& filename) const {
 	minMaxGlyphTree.WriteToFile(filename.toStdString());
 }
 
-bool GlyphTreeModel::SaveToCSV(const std::string& filename, const QModelIndexList& selectedItems) {
+bool ANTzSingleTreeModel::SaveToCSV(const std::string& filename, const QModelIndexList& selectedItems) {
 
     //need to unselect node(s) for saving since selection will get saved with the CSV
     for (int i = 0; i < selectedItems.length(); ++i) {
@@ -242,7 +242,7 @@ bool GlyphTreeModel::SaveToCSV(const std::string& filename, const QModelIndexLis
     return success;
 }
 
-void GlyphTreeModel::CreateNewTree(SynGlyphX::GlyphTree::ConstSharedPtr newGlyphTree, bool usePositionsInGlyphTree) {
+void ANTzSingleTreeModel::CreateNewTree(SynGlyphX::GlyphTree::ConstSharedPtr newGlyphTree, bool usePositionsInGlyphTree) {
 
     beginResetModel();
 	DeleteGlyphRootNode();
@@ -264,7 +264,7 @@ void GlyphTreeModel::CreateNewTree(SynGlyphX::GlyphTree::ConstSharedPtr newGlyph
     m_antzData->map.nodeRootIndex = 0;
 }
 
-void GlyphTreeModel::CreateNewSubTree(pNPnode parent, SynGlyphX::GlyphTree::ConstSharedPtr newGlyphTree, const SynGlyphX::GlyphTree::const_iterator& location, bool updatePosition) {
+void ANTzSingleTreeModel::CreateNewSubTree(pNPnode parent, SynGlyphX::GlyphTree::ConstSharedPtr newGlyphTree, const SynGlyphX::GlyphTree::const_iterator& location, bool updatePosition) {
 
     /*if (parent == NULL) {
         return;
@@ -280,7 +280,7 @@ void GlyphTreeModel::CreateNewSubTree(pNPnode parent, SynGlyphX::GlyphTree::Cons
 	m_isDifferentFromSavedFileOrDefaultGlyph = true;
 }
 
-pNPnode GlyphTreeModel::CreateNodeFromTemplate(pNPnode parent, const SynGlyphX::GlyphProperties& glyphTemplate, bool updatePosition) {
+pNPnode ANTzSingleTreeModel::CreateNodeFromTemplate(pNPnode parent, const SynGlyphX::GlyphProperties& glyphTemplate, bool updatePosition) {
 
     pNPnode glyph = npNodeNew(kNodePin, parent, m_antzData);
     if (parent == NULL) {
@@ -298,12 +298,12 @@ pNPnode GlyphTreeModel::CreateNodeFromTemplate(pNPnode parent, const SynGlyphX::
     return glyph;
 }
 
-void GlyphTreeModel::CreateDefaultGlyph() {
+void ANTzSingleTreeModel::CreateDefaultGlyph() {
 
 	CreateDefaultGlyph(true);
 }
 
-void GlyphTreeModel::CreateDefaultGlyph(bool resetModel) {
+void ANTzSingleTreeModel::CreateDefaultGlyph(bool resetModel) {
     
 	if (resetModel) {
 		beginResetModel();
@@ -323,7 +323,7 @@ void GlyphTreeModel::CreateDefaultGlyph(bool resetModel) {
 	m_antzData->map.nodeRootIndex = 0;
 }
 
-void GlyphTreeModel::UpdateNodes(const QModelIndexList& indexList, boost::shared_ptr<const SynGlyphX::GlyphProperties> glyph, PropertyUpdates updates) {
+void ANTzSingleTreeModel::UpdateNodes(const QModelIndexList& indexList, boost::shared_ptr<const SynGlyphX::GlyphProperties> glyph, PropertyUpdates updates) {
 
     for (int i = 0; i < indexList.length(); ++i) {
         
@@ -331,7 +331,7 @@ void GlyphTreeModel::UpdateNodes(const QModelIndexList& indexList, boost::shared
     }
 }
 
-void GlyphTreeModel::UpdateNode(const QModelIndex& index, boost::shared_ptr<const SynGlyphX::GlyphProperties> glyph, PropertyUpdates updates) {
+void ANTzSingleTreeModel::UpdateNode(const QModelIndex& index, boost::shared_ptr<const SynGlyphX::GlyphProperties> glyph, PropertyUpdates updates) {
 
     if (index.isValid()) {
         UpdateNode(static_cast<pNPnode>(index.internalPointer()), *glyph, updates);
@@ -339,7 +339,7 @@ void GlyphTreeModel::UpdateNode(const QModelIndex& index, boost::shared_ptr<cons
     }
 }
 
-void GlyphTreeModel::UpdateNode(pNPnode glyph, const SynGlyphX::GlyphProperties& glyphTemplate, PropertyUpdates updates) {
+void ANTzSingleTreeModel::UpdateNode(pNPnode glyph, const SynGlyphX::GlyphProperties& glyphTemplate, PropertyUpdates updates) {
 
     if (updates.testFlag(UpdateScale)) {
         SynGlyphX::Vector3 scale = glyphTemplate.GetScale();
@@ -389,7 +389,7 @@ void GlyphTreeModel::UpdateNode(pNPnode glyph, const SynGlyphX::GlyphProperties&
     }
 }
 
-QModelIndex GlyphTreeModel::IndexFromANTzID(int id) {
+QModelIndex ANTzSingleTreeModel::IndexFromANTzID(int id) {
 
     pNPnode node = static_cast<pNPnode>(m_antzData->map.nodeID[id]);
 
@@ -401,7 +401,7 @@ QModelIndex GlyphTreeModel::IndexFromANTzID(int id) {
     }
 }
 
-int GlyphTreeModel::GetChildIndexFromParent(pNPnode node) const {
+int ANTzSingleTreeModel::GetChildIndexFromParent(pNPnode node) const {
     
     pNPnode parent = node->parent;
     int i = 0;
@@ -414,7 +414,7 @@ int GlyphTreeModel::GetChildIndexFromParent(pNPnode node) const {
     return i;
 }
 
-void GlyphTreeModel::AppendChild(const QModelIndex& parent, boost::shared_ptr<const SynGlyphX::GlyphProperties> glyph, unsigned int numberOfChildren) {
+void ANTzSingleTreeModel::AppendChild(const QModelIndex& parent, boost::shared_ptr<const SynGlyphX::GlyphProperties> glyph, unsigned int numberOfChildren) {
 
     if (parent.isValid()) {
         pNPnode parentNode = static_cast<pNPnode>(parent.internalPointer());
@@ -427,12 +427,12 @@ void GlyphTreeModel::AppendChild(const QModelIndex& parent, boost::shared_ptr<co
     }
 }
 /*
-bool GlyphTreeModel::insertRows(int row, int count, const QModelIndex & parent) {
+bool ANTzSingleTreeModel::insertRows(int row, int count, const QModelIndex & parent) {
 
     return QAbstractItemModel::insertRows(row, count, parent);
 }*/
 
-bool GlyphTreeModel::removeRows(int row, int count, const QModelIndex& parent) {
+bool ANTzSingleTreeModel::removeRows(int row, int count, const QModelIndex& parent) {
 
 	if (count > 0) {
 
@@ -462,27 +462,27 @@ bool GlyphTreeModel::removeRows(int row, int count, const QModelIndex& parent) {
     return false;
 }
 /*
-bool GlyphTreeModel::moveRows(const QModelIndex& sourceParent, int sourceRow, int count, const QModelIndex& destinationParent, int destinationChild) {
+bool ANTzSingleTreeModel::moveRows(const QModelIndex& sourceParent, int sourceRow, int count, const QModelIndex& destinationParent, int destinationChild) {
 
 	return QAbstractItemModel::moveRows(sourceParent, sourceRow, count, destinationParent, destinationChild);
 }*/
 
-bool GlyphTreeModel::IsClipboardEmpty() const {
+bool ANTzSingleTreeModel::IsClipboardEmpty() const {
 
     return (m_clipboardGlyph.get() == NULL);
 }
 
-SynGlyphX::GlyphProperties::ConstSharedPtr GlyphTreeModel::GetClipboardGlyph() const {
+SynGlyphX::GlyphProperties::ConstSharedPtr ANTzSingleTreeModel::GetClipboardGlyph() const {
 
     return m_clipboardGlyph;
 }
 
-void GlyphTreeModel::CopyToClipboard(const QModelIndex& index, bool removeFromTree) {
+void ANTzSingleTreeModel::CopyToClipboard(const QModelIndex& index, bool removeFromTree) {
 
     //m_clipboardGlyph.reset(new SynGlyphX::Glyph(index.))
 }
 
-GlyphTreeModel::PropertyUpdates GlyphTreeModel::FindUpdates(boost::shared_ptr<const SynGlyphX::GlyphProperties> oldGlyph, boost::shared_ptr<const SynGlyphX::GlyphProperties> newGlyph) {
+ANTzSingleTreeModel::PropertyUpdates ANTzSingleTreeModel::FindUpdates(boost::shared_ptr<const SynGlyphX::GlyphProperties> oldGlyph, boost::shared_ptr<const SynGlyphX::GlyphProperties> newGlyph) {
 
     PropertyUpdates updates = UpdateNone;
 
@@ -517,7 +517,7 @@ GlyphTreeModel::PropertyUpdates GlyphTreeModel::FindUpdates(boost::shared_ptr<co
     return updates;
 }
 
-bool GlyphTreeModel::GreaterBranchLevel(const QModelIndex& left, const QModelIndex& right) {
+bool ANTzSingleTreeModel::GreaterBranchLevel(const QModelIndex& left, const QModelIndex& right) {
 
     pNPnode leftNode = static_cast<pNPnode>(left.internalPointer());
     pNPnode rightNode = static_cast<pNPnode>(right.internalPointer());
@@ -525,71 +525,25 @@ bool GlyphTreeModel::GreaterBranchLevel(const QModelIndex& left, const QModelInd
     return (leftNode->branchLevel > rightNode->branchLevel);
 }
 
-QStringList GlyphTreeModel::mimeTypes() const {
-
-    QStringList types;
-    types.push_back(GlyphMimeData::Format);
-    return types;
-}
-
-QMimeData* GlyphTreeModel::mimeData(const QModelIndexList& indexes) const {
-
-    /*std::vector<boost::shared_ptr<SynGlyphX::Glyph>> glyphs;
-    glyphs.reserve(indexes.length());
-    for (int i = 0; i < indexes.length(); ++i) {
-        boost::shared_ptr<SynGlyphX::Glyph> glyph(new SynGlyphX::Glyph(static_cast<pNPnode>(indexes[i].internalPointer())));
-        glyphs.push_back(glyph);
-    }
-
-    GlyphMimeData* mimeData = new GlyphMimeData(glyphs);*/
-    GlyphMimeData* mimeData = new GlyphMimeData(indexes);
-    return mimeData;
-}
-
-bool GlyphTreeModel::dropMimeData(const QMimeData* data, Qt::DropAction action, int row, int column, const QModelIndex& parent) {
-
-    const GlyphMimeData* glyphData = qobject_cast<const GlyphMimeData*>(data);
-    
-    if ((glyphData != NULL) && (row == -1)) {
-
-		pNPnode newParentNode = static_cast<pNPnode>(parent.internalPointer());
-        const QModelIndexList& indexes = glyphData->GetGlyphs();
-
-		for (int j = 0; j < indexes.length(); ++j) {
-
-			pNPnode node = static_cast<pNPnode>(indexes[j].internalPointer());
-
-			SynGlyphX::GlyphTree::ConstSharedPtr glyph(new SynGlyphX::GlyphTree(node));
-
-			//If new parent is the same as the node's current parent then keep the object's position
-			CreateNewSubTree(newParentNode, glyph, glyph->root(), node->parent == newParentNode);
-		}
-			
-		return true;
-    }
-
-    return false;
-}
-
-void GlyphTreeModel::NotifyModelUpdate() {
+void ANTzSingleTreeModel::NotifyModelUpdate() {
 
 	emit ModelChanged(m_isDifferentFromSavedFileOrDefaultGlyph);
 }
 
-void GlyphTreeModel::MarkDifferentNotifyModelUpdate() {
+void ANTzSingleTreeModel::MarkDifferentNotifyModelUpdate() {
 
 	m_isDifferentFromSavedFileOrDefaultGlyph = true;
 	emit ModelChanged(m_isDifferentFromSavedFileOrDefaultGlyph);
 }
 
-void GlyphTreeModel::ShowGlyph(bool show) {
+void ANTzSingleTreeModel::ShowGlyph(bool show) {
 
 	if (m_rootGlyph != nullptr) {
 		m_rootGlyph->hide = !show;
 	}
 }
 
-bool GlyphTreeModel::IsANTzCSVFile(const QString& filename) const {
+bool ANTzSingleTreeModel::IsANTzCSVFile(const QString& filename) const {
 
 	if (filename.right(4).toLower() == ".csv") {
 
