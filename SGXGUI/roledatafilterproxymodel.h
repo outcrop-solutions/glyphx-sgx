@@ -2,11 +2,11 @@
 #define ROLEDATAFILTERPROXYMODEL_H
 
 #include "sgxgui_global.h"
-#include <QtCore/QIdentityProxyModel>
+#include <QtCore/QSortFilterProxyModel>
 
 namespace SynGlyphX {
 
-	class SGXGUI_EXPORT RoleDataFilterProxyModel : public QIdentityProxyModel
+	class SGXGUI_EXPORT RoleDataFilterProxyModel : public QSortFilterProxyModel
 	{
 		Q_OBJECT
 
@@ -14,14 +14,12 @@ namespace SynGlyphX {
 		RoleDataFilterProxyModel(QObject* parent = nullptr);
 		~RoleDataFilterProxyModel();
 
-		virtual QModelIndex mapFromSource(const QModelIndex & sourceIndex) const;
-		virtual QModelIndex mapToSource(const QModelIndex & proxyIndex) const;
-
-		void SetRole(int role);
 		void SetFilterData(int data);
 
+	protected:
+		virtual bool filterAcceptsRow(int source_row, const QModelIndex& source_parent) const;
+
 	private:
-		int m_role;
 		int m_filterData;
 	};
 

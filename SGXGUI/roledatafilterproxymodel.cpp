@@ -3,11 +3,10 @@
 namespace SynGlyphX {
 
 	RoleDataFilterProxyModel::RoleDataFilterProxyModel(QObject* parent) :
-		QIdentityProxyModel(parent),
-		m_role(-1),
+		QSortFilterProxyModel(parent),
 		m_filterData(-1) {
 
-
+		setDynamicSortFilter(false);
 	}
 
 	RoleDataFilterProxyModel::~RoleDataFilterProxyModel() {
@@ -15,32 +14,25 @@ namespace SynGlyphX {
 
 	}
 
-	QModelIndex RoleDataFilterProxyModel::mapFromSource(const QModelIndex& sourceIndex) const {
+	bool RoleDataFilterProxyModel::filterAcceptsRow(int source_row, const QModelIndex& source_parent) const {
 
-		if ((sourceModel() != nullptr) && (sourceIndex.isValid())) {
+		QAbstractItemModel* model = sourceModel();
 
-			if (sourceIndex.data(m_role) == m_filterData) {
+		if (model != nullptr) {
 
-				return createIndex(sourceIndex.row(), sourceIndex.column(), sourceIndex.internalPointer());
-			}
+			QModelIndex sourceIndex = model->index(source_row, 0, source_parent);
+			return (model->data(sourceIndex, filterRole()).toInt() == m_filterData);
 		}
-		
-		return QModelIndex();
-	}
+		else {
 
-	QModelIndex RoleDataFilterProxyModel::mapToSource(const QModelIndex& proxyIndex) const {
-
-		return QIdentityProxyModel::mapToSource(proxyIndex);
-	}
-
-	void RoleDataFilterProxyModel::SetRole(int role) {
-
-		m_role = role;
+			return false;
+		}
 	}
 
 	void RoleDataFilterProxyModel::SetFilterData(int data) {
 
 		m_filterData = data;
+		invalidateFilter();
 	}
 
 } //namespace SynGlyphX

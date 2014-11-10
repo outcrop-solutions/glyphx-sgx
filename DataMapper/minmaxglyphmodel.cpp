@@ -2,6 +2,7 @@
 #include <QtGui/QColor>
 #include "sourcedatamanager.h"
 #include <QtWidgets/QMessageBox>
+#include <stack>
 
 MinMaxGlyphModel::MinMaxGlyphModel(DataTransformModel* dataTransformModel, QObject *parent)
 	: QAbstractTableModel(parent),
@@ -39,7 +40,7 @@ int MinMaxGlyphModel::columnCount(const QModelIndex& parent) const {
 
 QVariant MinMaxGlyphModel::data(const QModelIndex& index, int role) const {
 
-	if (index.isValid() && m_glyph.valid()) {
+	if ((role == Qt::DisplayRole) && index.isValid() && m_glyph.valid()) {
 
 		if (index.column() == 0) {
 
@@ -85,19 +86,30 @@ void MinMaxGlyphModel::SetMinMaxGlyph(const QModelIndex& index) {
 
 	if (index.isValid()) {
 
-		SynGlyphX::MinMaxGlyphTree::Node* node = static_cast<SynGlyphX::MinMaxGlyphTree::Node*>(index.internalPointer());
-		beginResetModel();
-		m_glyph = SynGlyphX::MinMaxGlyphTree::iterator(node);
-		m_glyphTree = static_cast<const SynGlyphX::MinMaxGlyphTree*>(m_glyph.owner());
-		endResetModel();
+		std::stack<unsigned int> childIndices;
+		QModelIndex parent = index;
+		while (parent.isValid()) {
 
-		for (auto glyphTree : m_dataTransformModel->GetDataMapping()->GetGlyphTrees()) {
-
-			if (glyphTree.second.get() == m_glyphTree) {
-				m_glyphTreeID = glyphTree.first;
-				break;
-			}
+			childIndices.push(parent.row());
+			parent = parent.parent();
 		}
+
+		SynGlyphX::DataTransformMapping::MinMaxGlyphTreeMap::const_iterator glyphTree = m_dataTransformModel->GetDataMapping()->GetGlyphTrees().begin();
+		std::advance(glyphTree, childIndices.top());
+		childIndices.pop();
+
+		beginResetModel();
+		m_glyphTreeID = glyphTree->first;
+		m_glyphTree = glyphTree->second;
+		SynGlyphX::MinMaxGlyphTree::const_iterator iT = m_glyphTree->root();
+
+		while (!childIndices.empty()) {
+
+			iT = m_glyphTree->child(iT, childIndices.top());
+			childIndices.pop();
+		}
+		m_glyph = iT.deconstify();
+		endResetModel();
 	}
 	else {
 

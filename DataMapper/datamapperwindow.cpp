@@ -177,7 +177,7 @@ void DataMapperWindow::CreateDockWidgets() {
 
 	m_glyphTreesView = new GlyphTreesView(leftDockWidgetGlyphTrees);
 	m_glyphTreesModel = new SynGlyphX::RoleDataFilterProxyModel(this);
-	m_glyphTreesModel->SetRole(DataTransformModel::DataTypeRole);
+	m_glyphTreesModel->setFilterRole(DataTransformModel::DataTypeRole);
 	m_glyphTreesModel->setSourceModel(m_dataTransformModel);
 	m_glyphTreesModel->SetFilterData(DataTransformModel::DataType::GlyphTrees);
 	m_glyphTreesView->setModel(m_glyphTreesModel);
@@ -193,7 +193,7 @@ void DataMapperWindow::CreateDockWidgets() {
 	m_baseObjectsView = new QListView(leftDockWidgetBaseObjects);
 	m_baseObjectsModel = new SynGlyphX::RoleDataFilterProxyModel(this);
 	m_baseObjectsModel->setSourceModel(m_dataTransformModel);
-	m_baseObjectsModel->SetRole(DataTransformModel::DataTypeRole);
+	m_baseObjectsModel->setFilterRole(DataTransformModel::DataTypeRole);
 	m_baseObjectsModel->SetFilterData(DataTransformModel::DataType::BaseObjects);
 	m_baseObjectsView->setModel(m_baseObjectsModel);
 	m_glyphMenu->addActions(m_baseObjectsView->actions());

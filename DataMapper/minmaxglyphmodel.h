@@ -38,7 +38,7 @@ private:
 	bool SetDataByRow(SynGlyphX::GlyphNumericMappableProperties& minProperties, SynGlyphX::GlyphNumericMappableProperties& diffProperties, const QVariant& value, const QModelIndex& index);
 
 	SynGlyphX::MinMaxGlyphTree::iterator m_glyph;
-	const SynGlyphX::MinMaxGlyphTree* m_glyphTree;
+	SynGlyphX::MinMaxGlyphTree::ConstSharedPtr m_glyphTree;
 	boost::uuids::uuid m_glyphTreeID;
 	QStringList m_propertyHeaders;
 	QStringList m_columnHeaders;
