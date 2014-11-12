@@ -42,6 +42,8 @@ namespace SynGlyphX {
 		GlyphTree::SharedPtr GetMinGlyphTree() const;
 		GlyphTree::SharedPtr GetMaxGlyphTree() const;
 
+		static SharedPtr CreateDefault();
+
 	private:
 		void ExportToPropertyTree(const MinMaxGlyphTree::const_iterator& parent, boost::property_tree::wptree& propertyTreeParent) const;
 		void ProcessPropertyTreeChildren(const MinMaxGlyphTree::iterator& iT, const boost::property_tree::wptree& propertyTree);

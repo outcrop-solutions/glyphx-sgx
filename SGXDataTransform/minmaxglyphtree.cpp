@@ -284,4 +284,12 @@ namespace SynGlyphX {
 		}
 	}
 
+	MinMaxGlyphTree::SharedPtr MinMaxGlyphTree::CreateDefault() {
+
+		MinMaxGlyphTree::SharedPtr newTree(new MinMaxGlyphTree());
+		MinMaxGlyphTree::iterator root = newTree->insert(MinMaxGlyph(*GlyphProperties::GetRoot().get()));
+		newTree->insert(root, MinMaxGlyph(*GlyphProperties::GetTemplate().get()));
+		return newTree;
+	}
+
 } //namespace SynGlyphX
