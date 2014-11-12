@@ -1,170 +1,70 @@
-#include "glyphtreemodel.h"
+#include "antzsingleglyphtreemodel.h"
 #include "npdata.h"
 #include "data/npmapfile.h"
 #include "glyphmimedata.h"
 #include "minmaxglyphtree.h"
 #include <QtCore/QFile>
 
-ANTzSingleTreeModel::ANTzSingleTreeModel(QObject *parent)
-    : QIdentityProxyModel(parent),
+ANTzSingleGlyphTreeWidget::ANTzSingleGlyphTreeWidget(MinMaxGlyphTreeType glyphTreeType, QWidget *parent)
+    : ANTzWidget(parent),
+	m_glyphTreeType(glyphTreeType),
     m_clipboardGlyph(),
-	m_rootGlyph(nullptr)
+	m_rootGlyph(nullptr),
+	m_model(nullptr),
+	m_selectionModel(nullptr),
+	m_editingMode(Move),
+	m_selectionEdited(false),
+	m_allowMultiSelection(false)
 {
-    m_antzData = static_cast<pData>(npInitData(0, NULL));
-    //CreateRootPinNode();
-
-	QObject::connect(this, &ANTzSingleTreeModel::NodeUpdated, this, &ANTzSingleTreeModel::MarkDifferentNotifyModelUpdate);
-	QObject::connect(this, &ANTzSingleTreeModel::rowsInserted, this, &ANTzSingleTreeModel::MarkDifferentNotifyModelUpdate);
-	QObject::connect(this, &ANTzSingleTreeModel::rowsMoved, this, &ANTzSingleTreeModel::MarkDifferentNotifyModelUpdate);
-	QObject::connect(this, &ANTzSingleTreeModel::rowsRemoved, this, &ANTzSingleTreeModel::MarkDifferentNotifyModelUpdate);
-	QObject::connect(this, &ANTzSingleTreeModel::modelReset, this, &ANTzSingleTreeModel::NotifyModelUpdate);
+    
+    
 }
 
-ANTzSingleTreeModel::~ANTzSingleTreeModel()
+ANTzSingleGlyphTreeWidget::~ANTzSingleGlyphTreeWidget()
 {
     npCloseData();
 }
 
-int ANTzSingleTreeModel::columnCount(const QModelIndex& parent) const {
-    return 1;
+void ANTzSingleGlyphTreeWidget::SetAllowMultiSelection(bool allowMultiSelection) {
+
+	m_allowMultiSelection = allowMultiSelection;
 }
 
-QVariant ANTzSingleTreeModel::data(const QModelIndex& index, int role) const {
+void ANTzSingleGlyphTreeWidget::SetModel(MinMaxGlyphTreeModel* model) {
 
-    if (!index.isValid()) {
-        return QVariant();
-    }
+	m_model = model;
 
-    if (role != Qt::DisplayRole) {
-        return QVariant();
-    }
-	
-    pNPnode glyph = static_cast<pNPnode>(index.internalPointer());
+	if (m_model != nullptr) {
 
-	std::wstring displayedData = SynGlyphX::GlyphProperties::s_shapeNames.left.at(static_cast<SynGlyphX::GlyphProperties::Shape>(glyph->geometry / 2)) + L": ";
-	displayedData += SynGlyphX::GlyphProperties::s_topologyNames.left.at(static_cast<SynGlyphX::GlyphProperties::Topology>(glyph->topo));
-    if (glyph == m_rootGlyph) {
-		displayedData += L" (Root)";
-    }
-    
-	return QString::fromStdWString(displayedData);
-}
+		m_selectionModel = new QItemSelectionModel(m_model, this);
 
-QModelIndex	ANTzSingleTreeModel::index(int row, int column, const QModelIndex& parent) const {
-
-    if (!hasIndex(row, column, parent)) {
-        return QModelIndex();
-    }
-    
-    pNPnode parentGlyph;
-    if (!parent.isValid()) {
-        return createIndex(row, column, m_rootGlyph);
-    }
-    else {
-        parentGlyph = static_cast<pNPnode>(parent.internalPointer());
-    }
-
-    if (row < parentGlyph->childCount) {
-        return createIndex(row, column, parentGlyph->child[row]);
-    }
-    else {
-        return QModelIndex();
-    }
-}
-
-QModelIndex	ANTzSingleTreeModel::parent(const QModelIndex& index) const {
-
-    if (!index.isValid()) {
-        return QModelIndex();
-    }
-    
-    pNPnode glyph = static_cast<pNPnode>(index.internalPointer());
-
-    if (glyph == m_rootGlyph) {
-        return QModelIndex();
-    }
-    else {
-        pNPnode parent = glyph->parent;
-        if (parent == m_rootGlyph) {
-            return createIndex(0, 0, parent);
-        }
-        else {
-            return createIndex(GetChildIndexFromParent(parent), 0, parent);
-        }
-    }
-}
-
-int	ANTzSingleTreeModel::rowCount(const QModelIndex& parent) const {
-    
-    pNPnode glyph;
-    if (!parent.isValid()) {
-		if (m_rootGlyph == nullptr) {
-			return 0;
-		}
-		else {
-			return 1;
-		}
-    }
-    else {
-        glyph = static_cast<pNPnode>(parent.internalPointer());
-    }
-    return glyph->childCount;
-}
-/*
-bool ANTzSingleTreeModel::setData(const QModelIndex& index, const QVariant& value, int role) {
-
-    return QAbstractItemModel::setData(index, value, role);
-}*/
-
-Qt::ItemFlags ANTzSingleTreeModel::flags(const QModelIndex& index) const {
-    
-    if (!index.isValid()) {
-        return 0;
-    }
-
-    Qt::ItemFlags flags = Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsDropEnabled;
-
-    if (index.parent().isValid()) {
-        flags |= Qt::ItemIsDragEnabled;
-    }
-    
-    return flags;
-}
-
-QVariant ANTzSingleTreeModel::headerData(int section, Qt::Orientation orientation, int role) const {
-
-    //We don't need column headers in views so this gets rid of them
-    return "";
-}
-
-Qt::DropActions ANTzSingleTreeModel::supportedDropActions() const {
-
-    return Qt::MoveAction;
-}
-
-pData ANTzSingleTreeModel::GetANTzData() const {
-    
-	return m_antzData;
-}
-
-pNPnode ANTzSingleTreeModel::GetRootGlyph() const {
-    
-	return m_rootGlyph;
-}
-
-void ANTzSingleTreeModel::DeleteGlyphRootNode() {
-
-	if (m_rootGlyph != nullptr) {
-
-		//Need to select so that npNodeDelete works properly.  ANTz assumes that the root pin being deleted is selected.  Easier to work around this for now
-		m_antzData->map.nodeRootIndex = kNPnodeRootPin;
-
-		npNodeDelete(m_rootGlyph, m_antzData);
-		m_rootGlyph = nullptr;
+		QObject::connect(m_model, &MinMaxGlyphTreeModel::GlyphPropertiesUpdated, this, &ANTzSingleGlyphTreeWidget::MarkDifferentNotifyModelUpdate);
+		QObject::connect(m_model, &MinMaxGlyphTreeModel::rowsInserted, this, &ANTzSingleGlyphTreeWidget::MarkDifferentNotifyModelUpdate);
+		QObject::connect(m_model, &MinMaxGlyphTreeModel::rowsMoved, this, &ANTzSingleGlyphTreeWidget::MarkDifferentNotifyModelUpdate);
+		QObject::connect(m_model, &MinMaxGlyphTreeModel::rowsRemoved, this, &ANTzSingleGlyphTreeWidget::MarkDifferentNotifyModelUpdate);
+		QObject::connect(m_model, &MinMaxGlyphTreeModel::modelReset, this, &ANTzSingleGlyphTreeWidget::OnModelReset);
 	}
 }
 
-bool ANTzSingleTreeModel::LoadFromFile(const QString& filename) {
+void ANTzSingleGlyphTreeWidget::BeforeDrawScene() {
+
+
+}
+
+void ANTzSingleGlyphTreeWidget::AfterDrawScene() {
+
+	//since changes from editing don't happen until drawing emit the ObjectEdited signal here
+	if (m_selectionEdited) {
+		const QModelIndexList& selected = m_selectionModel->selectedIndexes();
+		if (!selected.isEmpty()) {
+
+			emit ObjectEdited(selected.back());
+		}
+		m_selectionEdited = false;
+	}
+}
+
+bool ANTzSingleGlyphTreeWidget::LoadFromFile(const QString& filename) {
     
     beginResetModel();
 	DeleteGlyphRootNode();
@@ -203,7 +103,7 @@ bool ANTzSingleTreeModel::LoadFromFile(const QString& filename) {
     return success;
 }
 
-void ANTzSingleTreeModel::SaveToTemplateFile(const QString& filename) const {
+void ANTzSingleGlyphTreeWidget::SaveToTemplateFile(const QString& filename) const {
 
 	SynGlyphX::GlyphTree glyphTree(m_rootGlyph);
 	SynGlyphX::MinMaxGlyphTree minMaxGlyphTree(glyphTree);
@@ -218,7 +118,7 @@ void ANTzSingleTreeModel::SaveToTemplateFile(const QString& filename) const {
 	minMaxGlyphTree.WriteToFile(filename.toStdString());
 }
 
-bool ANTzSingleTreeModel::SaveToCSV(const std::string& filename, const QModelIndexList& selectedItems) {
+bool ANTzSingleGlyphTreeWidget::SaveToCSV(const std::string& filename, const QModelIndexList& selectedItems) {
 
     //need to unselect node(s) for saving since selection will get saved with the CSV
     for (int i = 0; i < selectedItems.length(); ++i) {
@@ -235,161 +135,109 @@ bool ANTzSingleTreeModel::SaveToCSV(const std::string& filename, const QModelInd
     }
 	
 	if (success) {
-		m_isDifferentFromSavedFileOrDefaultGlyph = false;
 		NotifyModelUpdate();
 	}
     
     return success;
 }
 
-void ANTzSingleTreeModel::CreateNewTree(SynGlyphX::GlyphTree::ConstSharedPtr newGlyphTree, bool usePositionsInGlyphTree) {
+void ANTzSingleGlyphTreeWidget::RebuildTree() {
 
-    beginResetModel();
-	DeleteGlyphRootNode();
-	CreateNewSubTree(NULL, newGlyphTree, newGlyphTree->root(), usePositionsInGlyphTree);
+	if (m_model != nullptr) {
 
-	/*SynGlyphX::GlyphProperties::SharedPtr glyphProperties(&(newGlyphTree->begin().node->data));
-	CreateNodeFromTemplate(NULL, glyphProperties, false);
+		DeleteGlyphRootNode();
+		CreateNewSubTree(nullptr, m_model->GetMinMaxGlyphTree()->root());
 
-	SynGlyphX::GlyphTree::sibling_iterator iT = newGlyphTree->begin();
-	for (; iT != newGlyphTree->end(newGlyphTree->begin()); ++iT) {
-
-        CreateNewSubTree(m_rootGlyph, iT, false);
-    }
-	m_isDifferentFromSavedFileOrDefaultGlyph = true;*/
-
-    endResetModel();
-
-    //Undo previous select node at the beginning of this function
-    m_antzData->map.nodeRootIndex = 0;
+		//Undo previous select node at the beginning of this function
+		m_antzData->map.nodeRootIndex = 0;
+	}
 }
 
-void ANTzSingleTreeModel::CreateNewSubTree(pNPnode parent, SynGlyphX::GlyphTree::ConstSharedPtr newGlyphTree, const SynGlyphX::GlyphTree::const_iterator& location, bool updatePosition) {
+void ANTzSingleGlyphTreeWidget::CreateNewSubTree(pNPnode parent, const SynGlyphX::MinMaxGlyphTree::const_iterator& minMaxGlyph) {
 
-    /*if (parent == NULL) {
-        return;
-    }*/
+	pNPnode childNode = CreateNodeFromTemplate(parent, minMaxGlyph);
 
-	pNPnode childNode = CreateNodeFromTemplate(parent, *location, updatePosition);
+	for (int i = 0; i < m_model->GetMinMaxGlyphTree()->children(minMaxGlyph); ++i) {
 
-	for (int i = 0; i < newGlyphTree->children(location); ++i) {
-
-		CreateNewSubTree(childNode, newGlyphTree, newGlyphTree->child(location, i), updatePosition);
+		CreateNewSubTree(childNode, m_model->GetMinMaxGlyphTree()->child(minMaxGlyph, i));
     }
-
-	m_isDifferentFromSavedFileOrDefaultGlyph = true;
 }
 
-pNPnode ANTzSingleTreeModel::CreateNodeFromTemplate(pNPnode parent, const SynGlyphX::GlyphProperties& glyphTemplate, bool updatePosition) {
+pNPnode ANTzSingleGlyphTreeWidget::CreateNodeFromTemplate(pNPnode parent, const SynGlyphX::MinMaxGlyphTree::const_iterator& minMaxGlyph) {
 
     pNPnode glyph = npNodeNew(kNodePin, parent, m_antzData);
-    if (parent == NULL) {
+    if (parent == nullptr) {
+
         m_rootGlyph = glyph;
     }
 
     glyph->selected = 0;
 
-	PropertyUpdates updates = UpdateAll;
-	if (!updatePosition) {
-		updates ^= UpdatePosition;
-	}
-    UpdateNode(glyph, glyphTemplate, updates);
+	UpdateGlyphProperties(glyph, minMaxGlyph);
 
     return glyph;
 }
 
-void ANTzSingleTreeModel::CreateDefaultGlyph() {
-
-	CreateDefaultGlyph(true);
-}
-
-void ANTzSingleTreeModel::CreateDefaultGlyph(bool resetModel) {
-    
-	if (resetModel) {
-		beginResetModel();
-	}
+void ANTzSingleGlyphTreeWidget::OnModelReset() {
 
 	DeleteGlyphRootNode();
-
-    m_rootGlyph = npNodeNew(kNodePin, NULL, m_antzData);
-    npNodeNew(kNodePin, m_rootGlyph, m_antzData);
-	m_isDifferentFromSavedFileOrDefaultGlyph = false;
-
-	if (resetModel) {
-		endResetModel();
-	}
+	RebuildTree();
 
 	//Undo previous select node at the beginning of this function
 	m_antzData->map.nodeRootIndex = 0;
 }
 
-void ANTzSingleTreeModel::UpdateNodes(const QModelIndexList& indexList, boost::shared_ptr<const SynGlyphX::GlyphProperties> glyph, PropertyUpdates updates) {
+void ANTzSingleGlyphTreeWidget::UpdateGlyphProperties(pNPnode glyph, const SynGlyphX::MinMaxGlyphTree::const_iterator& minMaxGlyph) {
 
-    for (int i = 0; i < indexList.length(); ++i) {
-        
-        UpdateNode(indexList[i], glyph, updates);
-    }
+	if (m_glyphTreeType == MinMaxGlyphTreeType::Min) {
+
+		UpdateGlyphProperties(glyph, minMaxGlyph->GetMinGlyph());
+	}
+	else {
+
+		UpdateGlyphProperties(glyph, minMaxGlyph->GetMaxGlyph());
+	}
 }
 
-void ANTzSingleTreeModel::UpdateNode(const QModelIndex& index, boost::shared_ptr<const SynGlyphX::GlyphProperties> glyph, PropertyUpdates updates) {
+void ANTzSingleGlyphTreeWidget::UpdateGlyphProperties(pNPnode glyph, const SynGlyphX::GlyphProperties& glyphTemplate) {
 
-    if (index.isValid()) {
-        UpdateNode(static_cast<pNPnode>(index.internalPointer()), *glyph, updates);
-        emit NodeUpdated(index);
+    SynGlyphX::Vector3 scale = glyphTemplate.GetScale();
+    glyph->scale.x = scale[0];
+    glyph->scale.y = scale[1];
+    glyph->scale.z = scale[2];
+
+    glyph->ratio = glyphTemplate.GetRatio();
+
+	SynGlyphX::Vector3 translate = glyphTemplate.GetPosition();
+    glyph->translate.x = translate[0];
+    glyph->translate.y = translate[1];
+    glyph->translate.z = translate[2];
+
+	SynGlyphX::Vector3 rotation = glyphTemplate.GetRotation();
+    glyph->rotate.x = rotation[0];
+    glyph->rotate.y = rotation[1];
+    glyph->rotate.z = rotation[2];
+
+	glyph->geometry = 2 * glyphTemplate.GetShape();
+
+    //This is necessary because ANTz screwed up the enum for geometries
+	if (glyphTemplate.GetShape() == SynGlyphX::GlyphProperties::Shape::Pin) {
+        glyph->geometry += (1 - glyphTemplate.GetSurface());
     }
+    else {
+        glyph->geometry += glyphTemplate.GetSurface();
+    }
+
+    SynGlyphX::Color color = glyphTemplate.GetColor();
+    glyph->color.r = color[0];
+    glyph->color.g = color[1];
+    glyph->color.b = color[2];
+    glyph->color.a = color[3];
+
+    glyph->topo = glyphTemplate.GetTopology();
 }
 
-void ANTzSingleTreeModel::UpdateNode(pNPnode glyph, const SynGlyphX::GlyphProperties& glyphTemplate, PropertyUpdates updates) {
-
-    if (updates.testFlag(UpdateScale)) {
-        SynGlyphX::Vector3 scale = glyphTemplate.GetScale();
-        glyph->scale.x = scale[0];
-        glyph->scale.y = scale[1];
-        glyph->scale.z = scale[2];
-
-        glyph->ratio = glyphTemplate.GetRatio();
-    }
-
-    if (updates.testFlag(UpdatePosition)) {
-		SynGlyphX::Vector3 translate = glyphTemplate.GetPosition();
-        glyph->translate.x = translate[0];
-        glyph->translate.y = translate[1];
-        glyph->translate.z = translate[2];
-    }
-
-    if (updates.testFlag(UpdateRotation)) {
-		SynGlyphX::Vector3 rotation = glyphTemplate.GetRotation();
-        glyph->rotate.x = rotation[0];
-        glyph->rotate.y = rotation[1];
-        glyph->rotate.z = rotation[2];
-    }
-
-    if ((updates.testFlag(UpdateGeometry)) || (updates.testFlag(UpdateSurface))) {
-		glyph->geometry = 2 * glyphTemplate.GetShape();
-
-        //This is necessary because ANTz screwed up the enum for geometries
-		if (glyphTemplate.GetShape() == SynGlyphX::GlyphProperties::Shape::Pin) {
-            glyph->geometry += (1 - glyphTemplate.GetSurface());
-        }
-        else {
-            glyph->geometry += glyphTemplate.GetSurface();
-        }
-    }
-
-    if (updates.testFlag(UpdateColor)) {
-        SynGlyphX::Color color = glyphTemplate.GetColor();
-        glyph->color.r = color[0];
-        glyph->color.g = color[1];
-        glyph->color.b = color[2];
-        glyph->color.a = color[3];
-    }
-
-    if (updates.testFlag(UpdateTopology)) {
-        glyph->topo = glyphTemplate.GetTopology();
-    }
-}
-
-QModelIndex ANTzSingleTreeModel::IndexFromANTzID(int id) {
+QModelIndex ANTzSingleGlyphTreeModel::IndexFromANTzID(int id) {
 
     pNPnode node = static_cast<pNPnode>(m_antzData->map.nodeID[id]);
 
@@ -401,7 +249,7 @@ QModelIndex ANTzSingleTreeModel::IndexFromANTzID(int id) {
     }
 }
 
-int ANTzSingleTreeModel::GetChildIndexFromParent(pNPnode node) const {
+int ANTzSingleGlyphTreeModel::GetChildIndexFromParent(pNPnode node) const {
     
     pNPnode parent = node->parent;
     int i = 0;
@@ -414,7 +262,7 @@ int ANTzSingleTreeModel::GetChildIndexFromParent(pNPnode node) const {
     return i;
 }
 
-void ANTzSingleTreeModel::AppendChild(const QModelIndex& parent, boost::shared_ptr<const SynGlyphX::GlyphProperties> glyph, unsigned int numberOfChildren) {
+void ANTzSingleGlyphTreeModel::AppendChild(const QModelIndex& parent, boost::shared_ptr<const SynGlyphX::GlyphProperties> glyph, unsigned int numberOfChildren) {
 
     if (parent.isValid()) {
         pNPnode parentNode = static_cast<pNPnode>(parent.internalPointer());
@@ -426,63 +274,8 @@ void ANTzSingleTreeModel::AppendChild(const QModelIndex& parent, boost::shared_p
         emit NodeUpdated(parent);
     }
 }
-/*
-bool ANTzSingleTreeModel::insertRows(int row, int count, const QModelIndex & parent) {
 
-    return QAbstractItemModel::insertRows(row, count, parent);
-}*/
-
-bool ANTzSingleTreeModel::removeRows(int row, int count, const QModelIndex& parent) {
-
-	if (count > 0) {
-
-		if ((parent.isValid()) && (hasIndex(parent.row(), 0, parent.parent()))) {
-
-			int lastRow = row + count - 1;
-			pNPnode parentNode = static_cast<pNPnode>(parent.internalPointer());
-			if (lastRow < parentNode->childCount) {
-
-				beginRemoveRows(parent, row, lastRow);
-				for (int i = lastRow; i >= row; --i) {
-					npNodeRemove(true, parentNode->child[i], m_antzData);
-				}
-				endRemoveRows();
-			}
-			return true;
-		}
-		else {
-
-			beginRemoveRows(parent, 0, 0);
-			DeleteGlyphRootNode();
-			m_antzData->map.nodeRootIndex = 0;
-			endRemoveRows();
-		}
-	}
-
-    return false;
-}
-/*
-bool ANTzSingleTreeModel::moveRows(const QModelIndex& sourceParent, int sourceRow, int count, const QModelIndex& destinationParent, int destinationChild) {
-
-	return QAbstractItemModel::moveRows(sourceParent, sourceRow, count, destinationParent, destinationChild);
-}*/
-
-bool ANTzSingleTreeModel::IsClipboardEmpty() const {
-
-    return (m_clipboardGlyph.get() == NULL);
-}
-
-SynGlyphX::GlyphProperties::ConstSharedPtr ANTzSingleTreeModel::GetClipboardGlyph() const {
-
-    return m_clipboardGlyph;
-}
-
-void ANTzSingleTreeModel::CopyToClipboard(const QModelIndex& index, bool removeFromTree) {
-
-    //m_clipboardGlyph.reset(new SynGlyphX::Glyph(index.))
-}
-
-ANTzSingleTreeModel::PropertyUpdates ANTzSingleTreeModel::FindUpdates(boost::shared_ptr<const SynGlyphX::GlyphProperties> oldGlyph, boost::shared_ptr<const SynGlyphX::GlyphProperties> newGlyph) {
+ANTzSingleGlyphTreeModel::PropertyUpdates ANTzSingleGlyphTreeModel::FindUpdates(boost::shared_ptr<const SynGlyphX::GlyphProperties> oldGlyph, boost::shared_ptr<const SynGlyphX::GlyphProperties> newGlyph) {
 
     PropertyUpdates updates = UpdateNone;
 
@@ -517,7 +310,7 @@ ANTzSingleTreeModel::PropertyUpdates ANTzSingleTreeModel::FindUpdates(boost::sha
     return updates;
 }
 
-bool ANTzSingleTreeModel::GreaterBranchLevel(const QModelIndex& left, const QModelIndex& right) {
+bool ANTzSingleGlyphTreeModel::GreaterBranchLevel(const QModelIndex& left, const QModelIndex& right) {
 
     pNPnode leftNode = static_cast<pNPnode>(left.internalPointer());
     pNPnode rightNode = static_cast<pNPnode>(right.internalPointer());
@@ -525,25 +318,25 @@ bool ANTzSingleTreeModel::GreaterBranchLevel(const QModelIndex& left, const QMod
     return (leftNode->branchLevel > rightNode->branchLevel);
 }
 
-void ANTzSingleTreeModel::NotifyModelUpdate() {
+void ANTzSingleGlyphTreeModel::NotifyModelUpdate() {
 
 	emit ModelChanged(m_isDifferentFromSavedFileOrDefaultGlyph);
 }
 
-void ANTzSingleTreeModel::MarkDifferentNotifyModelUpdate() {
+void ANTzSingleGlyphTreeModel::MarkDifferentNotifyModelUpdate() {
 
 	m_isDifferentFromSavedFileOrDefaultGlyph = true;
 	emit ModelChanged(m_isDifferentFromSavedFileOrDefaultGlyph);
 }
 
-void ANTzSingleTreeModel::ShowGlyph(bool show) {
+void ANTzSingleGlyphTreeModel::ShowGlyph(bool show) {
 
 	if (m_rootGlyph != nullptr) {
 		m_rootGlyph->hide = !show;
 	}
 }
 
-bool ANTzSingleTreeModel::IsANTzCSVFile(const QString& filename) const {
+bool ANTzSingleGlyphTreeModel::IsANTzCSVFile(const QString& filename) const {
 
 	if (filename.right(4).toLower() == ".csv") {
 

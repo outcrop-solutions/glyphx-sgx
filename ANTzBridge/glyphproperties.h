@@ -66,8 +66,8 @@ namespace SynGlyphX {
         void SetTopology(Topology topology);
         Topology GetTopology() const;
 
-        static boost::shared_ptr<GlyphProperties> GetRoot();
-        static boost::shared_ptr<const GlyphProperties> GetTemplate();
+		static ConstSharedPtr GetRoot();
+		static ConstSharedPtr GetTemplate();
 
         void SetTagOffset(double x, double y, double z);
         const Vector3& GetTagOffset() const;
@@ -77,10 +77,10 @@ namespace SynGlyphX {
 		static const TopologyBimap s_topologyNames;
 
     protected:
-        static boost::shared_ptr<GlyphProperties> CreateRootPin();
+        static SharedPtr CreateRootPin();
 
-        static boost::shared_ptr<GlyphProperties> s_root;
-        static boost::shared_ptr<GlyphProperties> s_template;
+        static SharedPtr s_root;
+        static SharedPtr s_template;
 
         Vector3 m_tagOffset;
 

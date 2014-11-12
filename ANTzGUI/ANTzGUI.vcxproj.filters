@@ -43,9 +43,6 @@
     <CustomBuild Include="antzwidget.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
-    <CustomBuild Include="glyphtreemodel.h">
-      <Filter>Header Files</Filter>
-    </CustomBuild>
     <CustomBuild Include="glyphmimedata.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
@@ -53,6 +50,9 @@
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="minmaxglyphtreemodel.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="antzsingleglyphtreemodel.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>
@@ -63,16 +63,7 @@
     <ClCompile Include="GeneratedFiles\Win32\Release\moc_antzwidget.cpp">
       <Filter>Generated Files\Release_Win32</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Win32\Debug\moc_glyphtreemodel.cpp">
-      <Filter>Generated Files\Debug_Win32</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Win32\Release\moc_glyphtreemodel.cpp">
-      <Filter>Generated Files\Release_Win32</Filter>
-    </ClCompile>
     <ClCompile Include="antzwidget.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="glyphtreemodel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Win32\Debug\moc_glyphmimedata.cpp">
@@ -101,6 +92,15 @@
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Win32\Release\moc_minmaxglyphtreemodel.cpp">
       <Filter>Generated Files\Release_Win32</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Win32\Debug\moc_antzsingleglyphtreemodel.cpp">
+      <Filter>Generated Files\Debug_Win32</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Win32\Release\moc_antzsingleglyphtreemodel.cpp">
+      <Filter>Generated Files\Release_Win32</Filter>
+    </ClCompile>
+    <ClCompile Include="antzsingleglyphtreemodel.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -55,6 +55,8 @@ public:
 	bool IsClipboardEmpty() const;
 	SynGlyphX::MinMaxGlyphTree::iterator GetClipboardGlyph() const;
 	void CopyToClipboard(const QModelIndex& index, bool removeFromTree = false);
+
+	void RepaceModelWithDefaultGlyphTree();
 	
 signals:
 	void GlyphPropertiesUpdated(const QModelIndex& index);
@@ -67,6 +69,6 @@ private:
 	SynGlyphX::MinMaxGlyphTree::iterator m_clipboardGlyph;
 };
 
-Q_DECLARE_OPERATORS_FOR_FLAGS(GlyphTreeModel::PropertyUpdates)
+Q_DECLARE_OPERATORS_FOR_FLAGS(MinMaxGlyphTreeModel::PropertyUpdates)
 
 #endif // MINMAXGLYPHTREEMODEL_H

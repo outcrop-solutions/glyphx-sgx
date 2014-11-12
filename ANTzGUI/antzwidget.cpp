@@ -12,19 +12,15 @@
 //The default QGLFormat works for now except we want alpha enabled.  May want to turn on stereo at some point
 QGLFormat ANTzWidget::s_format(QGL::AlphaChannel);
 
-ANTzWidget::ANTzWidget(GlyphTreeModel* model, QItemSelectionModel* selectionModel, bool allowMultiSelection, QWidget *parent)
+ANTzWidget::ANTzWidget(QWidget *parent)
     : QGLWidget(s_format, parent),
-    m_model(model),
-    m_selectionModel(selectionModel),
-    m_editingMode(Move),
-    m_selectionEdited(false),
-	m_allowMultiSelection(allowMultiSelection)
+	m_antzData(nullptr)
 {
-    void* antzData = m_model->GetANTzData();
+	m_antzData = static_cast<pData>(npInitData(0, NULL));
     InitIO();
-    npInitFile(antzData);
-    npInitCh(antzData);
-    npInitCtrl(antzData);
+	npInitFile(m_antzData);
+	npInitCh(m_antzData);
+	npInitCtrl(m_antzData);
 
 	if (m_selectionModel != nullptr) {
 		QObject::connect(m_selectionModel, &QItemSelectionModel::selectionChanged, this, &ANTzWidget::UpdateSelection);
@@ -37,80 +33,77 @@ ANTzWidget::ANTzWidget(GlyphTreeModel* model, QItemSelectionModel* selectionMode
 
 ANTzWidget::~ANTzWidget()
 {
-    void* antzData = m_model->GetANTzData();
-    npCloseGL(antzData);
-    npCloseCtrl(antzData);
-    npCloseFile(antzData);
-    npCloseCh(antzData);
+	npCloseGL(m_antzData);
+	npCloseCtrl(m_antzData);
+	npCloseFile(m_antzData);
+	npCloseCh(m_antzData);
 }
 
 void ANTzWidget::InitIO()
 {
-    pData data = (pData)m_model->GetANTzData();
-
     //zz-CAMERA
     //compare intialization values with working project, debug zz
 
-    data->io.mouse.target.x = 0.0f;
-    data->io.mouse.target.y = 0.0f;
-    data->io.mouse.target.z = 0.0f;
+	m_antzData->io.mouse.target.x = 0.0f;
+	m_antzData->io.mouse.target.y = 0.0f;
+	m_antzData->io.mouse.target.z = 0.0f;
 
-    data->io.mouse.targetDest.x = 0.0f;
-    data->io.mouse.targetDest.y = 0.0f;
-    data->io.mouse.targetDest.z = 0.0f;
+	m_antzData->io.mouse.targetDest.x = 0.0f;
+	m_antzData->io.mouse.targetDest.y = 0.0f;
+	m_antzData->io.mouse.targetDest.z = 0.0f;
 
-    data->io.mouse.targetRadius = 0.0f;
-    data->io.mouse.targetRadiusDest = 0.0f;
+	m_antzData->io.mouse.targetRadius = 0.0f;
+	m_antzData->io.mouse.targetRadiusDest = 0.0f;
 
-    data->io.mouse.targeting = false;
+	m_antzData->io.mouse.targeting = false;
 
-    data->io.mouse.x = 0;						//raw coordinate
-    data->io.mouse.y = 0;
-    data->io.mouse.z = 0;						//typically the scroll wheel
+	m_antzData->io.mouse.x = 0;						//raw coordinate
+	m_antzData->io.mouse.y = 0;
+	m_antzData->io.mouse.z = 0;						//typically the scroll wheel
 
-    data->io.mouse.mode = kNPmouseModeNull;
+	m_antzData->io.mouse.mode = kNPmouseModeNull;
     //data->io.mouse.pickMode = kNPmodeNull;
     //	data->io.mouse.pickMode = kNPmodeCamera;
-    data->io.mouse.pickMode = kNPmodePin;
-    data->io.mouse.tool = kNPtoolNull;
+	m_antzData->io.mouse.pickMode = kNPmodePin;
+	m_antzData->io.mouse.tool = kNPtoolNull;
 
-    data->io.mouse.buttonL = false;					//true when pressed
-    data->io.mouse.buttonC = false;
-    data->io.mouse.buttonR = false;
+	m_antzData->io.mouse.buttonL = false;					//true when pressed
+	m_antzData->io.mouse.buttonC = false;
+	m_antzData->io.mouse.buttonR = false;
 
-    data->io.mouse.window.x = 0;					//screen position in pixels
-    data->io.mouse.window.y = 0;
-    data->io.mouse.window.z = 0;
+	m_antzData->io.mouse.window.x = 0;					//screen position in pixels
+	m_antzData->io.mouse.window.y = 0;
+	m_antzData->io.mouse.window.z = 0;
 
-    data->io.mouse.previous.x = 0;
-    data->io.mouse.previous.y = 0;
-    data->io.mouse.previous.z = 0;
+	m_antzData->io.mouse.previous.x = 0;
+	m_antzData->io.mouse.previous.y = 0;
+	m_antzData->io.mouse.previous.z = 0;
 
-    data->io.mouse.cmDX = 0.0f;
-    data->io.mouse.cmDY = 0.0f;
+	m_antzData->io.mouse.cmDX = 0.0f;
+	m_antzData->io.mouse.cmDY = 0.0f;
 
-    data->io.mouse.delta.x = 0.0f;					//mouse vector
-    data->io.mouse.delta.y = 0.0f;					//clears every mouse event
-    data->io.mouse.delta.z = 0.0f;					//z is typically scroll wheel
+	m_antzData->io.mouse.delta.x = 0.0f;					//mouse vector
+	m_antzData->io.mouse.delta.y = 0.0f;					//clears every mouse event
+	m_antzData->io.mouse.delta.z = 0.0f;					//z is typically scroll wheel
 
-    data->io.mouse.deltaSum.x = 0.0f;				//clears each NPE period
-    data->io.mouse.deltaSum.y = 0.0f;
-    data->io.mouse.deltaSum.z = 0.0f;
+	m_antzData->io.mouse.deltaSum.x = 0.0f;				//clears each NPE period
+	m_antzData->io.mouse.deltaSum.y = 0.0f;
+	m_antzData->io.mouse.deltaSum.z = 0.0f;
 
-    data->io.mouse.pinSelected = false;
+	m_antzData->io.mouse.pinSelected = false;
 
-    data->io.mouse.createEvent = false;
-    data->io.mouse.singleClick = false;
-    data->io.mouse.doubleClick = false;
+	m_antzData->io.mouse.createEvent = false;
+	m_antzData->io.mouse.singleClick = false;
+	m_antzData->io.mouse.doubleClick = false;
 
-    data->io.mouse.linkA = NULL;
+	m_antzData->io.mouse.linkA = NULL;
 
-    data->io.mouse.size = sizeof(NPmouse);
+	m_antzData->io.mouse.size = sizeof(NPmouse);
 }
 
 void ANTzWidget::initializeGL() {
     
-    npInitGL(m_model->GetANTzData());
+	npInitGL(m_antzData);
     ResetCamera();
 }
 
@@ -121,37 +114,25 @@ void ANTzWidget::resizeGL(int w, int h) {
 
 void ANTzWidget::paintGL() {
 
-	//if (m_model->GetRootGlyph() != nullptr) {
-		pData antzData = m_model->GetANTzData();
+	npUpdateCh(m_antzData);
 
-		npUpdateCh(antzData);
+	npUpdateEngine(m_antzData);		//position, physics, interactions...
 
-		npUpdateEngine(antzData);		//position, physics, interactions...
+	//We may need to have a selected pin node during update to position the camera, but we don't want it during drawing
+	m_antzData->map.selectedPinNode = NULL;
+	m_antzData->map.selectedPinIndex = 0;
 
+	// zero out our mouse to prevent drifting objects
+	m_antzData->io.mouse.delta.x = 0.0f;
+	m_antzData->io.mouse.delta.y = 0.0f;
 
+	BeforeDrawScene();
 
-		//We may need to have a selected pin node during update to position the camera, but we don't want it during drawing
-		antzData->map.selectedPinNode = NULL;
-		antzData->map.selectedPinIndex = 0;
+	//antzData->io.mouse.pickMode = kNPmodePin;
+	npGLDrawScene(m_antzData);
+	//antzData->io.mouse.pickMode = kNPmodeNull;
 
-		// zero out our mouse to prevent drifting objects
-		antzData->io.mouse.delta.x = 0.0f;
-		antzData->io.mouse.delta.y = 0.0f;
-
-		//antzData->io.mouse.pickMode = kNPmodePin;
-		npGLDrawScene(antzData);
-		//antzData->io.mouse.pickMode = kNPmodeNull;
-
-		//since changes from editing don't happen until drawing emit the ObjectEdited signal here
-		if (m_selectionEdited) {
-			const QModelIndexList& selected = m_selectionModel->selectedIndexes();
-			if (!selected.isEmpty()) {
-				
-				emit ObjectEdited(selected.back());
-			}
-			m_selectionEdited = false;
-		}
-	//}
+	AfterDrawScene();
 
     int err = glGetError();
     if (err) {
@@ -165,8 +146,6 @@ void ANTzWidget::paintGL() {
 }
 
 void ANTzWidget::UpdateSelection(const QItemSelection& selected, const QItemSelection& deselected) {
-
-    pData antzData = m_model->GetANTzData();
 
     //unselect all nodes that are no longer selected
     const QModelIndexList& deselectedIndicies = deselected.indexes();
@@ -198,7 +177,7 @@ void ANTzWidget::UpdateSelection(const QItemSelection& selected, const QItemSele
         }
     }
 
-    antzData->map.nodeRootIndex = nodeRootIndex;
+	m_antzData->map.nodeRootIndex = nodeRootIndex;
 }
 
 void ANTzWidget::ResetCamera() {
@@ -214,19 +193,17 @@ void ANTzWidget::ResetCamera() {
 }
 
 void ANTzWidget::CenterCameraOnNode(pNPnode node) {
-	
-    pData antzData = m_model->GetANTzData();
 
 	if (node != nullptr) {
 
-		npSetCamTargetNode(node, antzData);
-		antzData->io.mouse.targeting = false;
-		antzData->map.selectedPinNode = node;
-		antzData->map.selectedPinIndex = node->id;
+		npSetCamTargetNode(node, m_antzData);
+		m_antzData->io.mouse.targeting = false;
+		m_antzData->map.selectedPinNode = node;
+		m_antzData->map.selectedPinIndex = node->id;
 	}
 
     //Always keep current node set to current cam
-    antzData->map.currentNode = antzData->map.currentCam;
+	m_antzData->map.currentNode = antzData->map.currentCam;
 }
 
 bool ANTzWidget::IsRootNodeSelected() const {
@@ -242,8 +219,7 @@ bool ANTzWidget::IsRootNodeSelected() const {
 
 void ANTzWidget::mousePressEvent(QMouseEvent* event) {
 
-    pData antzData = m_model->GetANTzData();
-	int pickID = npPickPin(event->x(), antzData->io.gl.height - event->y(), antzData);
+	int pickID = npPickPin(event->x(), m_antzData->io.gl.height - event->y(), antzData);
 
 	if (pickID != 0) {
 
@@ -266,33 +242,30 @@ void ANTzWidget::mousePressEvent(QMouseEvent* event) {
 void ANTzWidget::mouseReleaseEvent(QMouseEvent* event) {
 
     //Reset ANTz mouse values back to the original values
-    pData antzData = m_model->GetANTzData();
-    antzData->io.mouse.mode = kNPmouseModeNull;
-    antzData->io.mouse.tool = kNPtoolNull;
-    antzData->io.mouse.buttonR = false;
+	m_antzData->io.mouse.mode = kNPmouseModeNull;
+	m_antzData->io.mouse.tool = kNPtoolNull;
+	m_antzData->io.mouse.buttonR = false;
 }
 
 void ANTzWidget::mouseMoveEvent(QMouseEvent* event) {
 
-    pData antzData = m_model->GetANTzData();
-
-    antzData->io.mouse.previous.x = m_lastMousePosition.x();
-    antzData->io.mouse.previous.y = m_lastMousePosition.y();
-    antzData->io.mouse.delta.x = event->x() - m_lastMousePosition.x();
-    antzData->io.mouse.delta.y = event->y() - m_lastMousePosition.y();
-    antzData->io.mouse.x = event->x();
-    antzData->io.mouse.y = event->y();
+	m_antzData->io.mouse.previous.x = m_lastMousePosition.x();
+	m_antzData->io.mouse.previous.y = m_lastMousePosition.y();
+	m_antzData->io.mouse.delta.x = event->x() - m_lastMousePosition.x();
+	m_antzData->io.mouse.delta.y = event->y() - m_lastMousePosition.y();
+	m_antzData->io.mouse.x = event->x();
+	m_antzData->io.mouse.y = event->y();
 
     if (event->modifiers() == Qt::ShiftModifier) {
 
 		if ((m_editingMode == EditingMode::Move) && (IsRootNodeSelected())) {
 
 			//lock move mode if root node is selected
-			antzData->io.mouse.tool = kNPtoolNull;
+			m_antzData->io.mouse.tool = kNPtoolNull;
 		}
 		else {
 
-			antzData->io.mouse.tool = kNPtoolMove + m_editingMode;
+			m_antzData->io.mouse.tool = kNPtoolMove + m_editingMode;
 			if (event->buttons() & Qt::RightButton) {
 				antzData->io.mouse.mode = kNPmouseModeDragXZ;
 				antzData->io.mouse.buttonR = true;
@@ -306,7 +279,7 @@ void ANTzWidget::mouseMoveEvent(QMouseEvent* event) {
 		}
     }
     else {
-        antzData->io.mouse.tool = kNPtoolNull;
+		m_antzData->io.mouse.tool = kNPtoolNull;
         if (event->buttons() & Qt::LeftButton) {
             if (event->buttons() & Qt::RightButton) {
                 antzData->io.mouse.mode = kNPmouseModeCamExamXZ;

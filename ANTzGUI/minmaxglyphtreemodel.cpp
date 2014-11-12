@@ -153,6 +153,7 @@ bool MinMaxGlyphTreeModel::removeRows(int row, int count, const QModelIndex& par
 
 				m_minMaxGlyphTree->erase_child(parentIterator, i);
 			}
+
 			endRemoveRows();
 			return true;
 		}
@@ -160,6 +161,7 @@ bool MinMaxGlyphTreeModel::removeRows(int row, int count, const QModelIndex& par
 
 			beginRemoveRows(parent, 0, 0);
 			m_minMaxGlyphTree->erase();
+
 			endRemoveRows();
 		}
 		return true;
@@ -199,6 +201,7 @@ void MinMaxGlyphTreeModel::AppendChild(const QModelIndex& parent, const SynGlyph
 		properties.SetPosition(newPosition);
 		newChildGlyph->SetMinGlyphProperties(properties);
 	}
+	
 	endInsertRows();
 }
 
@@ -351,4 +354,11 @@ SynGlyphX::MinMaxGlyphTree::iterator MinMaxGlyphTreeModel::GetClipboardGlyph() c
 void MinMaxGlyphTreeModel::CopyToClipboard(const QModelIndex& index, bool removeFromTree) {
 
 	//m_clipboardGlyph.reset(new SynGlyphX::Glyph(index.))
+}
+
+void MinMaxGlyphTreeModel::RepaceModelWithDefaultGlyphTree() {
+
+	beginResetModel();
+	m_minMaxGlyphTree = SynGlyphX::MinMaxGlyphTree::CreateDefault();
+	endResetModel();
 }

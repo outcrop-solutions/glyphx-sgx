@@ -160,11 +160,11 @@ namespace SynGlyphX {
         return m_topology;
     }
 
-    boost::shared_ptr<GlyphProperties> GlyphProperties::GetRoot() {
+	GlyphProperties::ConstSharedPtr GlyphProperties::GetRoot() {
         return s_root;
     }
 
-    boost::shared_ptr<GlyphProperties> GlyphProperties::CreateRootPin() {
+	GlyphProperties::SharedPtr GlyphProperties::CreateRootPin() {
         boost::shared_ptr<GlyphProperties> root(new GlyphProperties());
 
         root->SetGeometry(Shape::Pin, Surface::Solid);
@@ -173,7 +173,7 @@ namespace SynGlyphX {
         return root;
     }
 
-    boost::shared_ptr<const GlyphProperties> GlyphProperties::GetTemplate() {
+	GlyphProperties::ConstSharedPtr GlyphProperties::GetTemplate() {
         return s_template;
     }
 
