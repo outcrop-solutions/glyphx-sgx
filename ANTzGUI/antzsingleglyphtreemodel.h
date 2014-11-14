@@ -19,6 +19,7 @@ public:
 		Min,
 		Max
 	};
+
 	enum EditingMode {
 		Move = 0,
 		Rotate,
@@ -36,8 +37,6 @@ public:
 	void SaveToTemplateFile(const QString& filename) const;
     bool SaveToCSV(const std::string& filename, const QModelIndexList& selectedItems);
 
-    QModelIndex IndexFromANTzID(int id);
-
     void AppendChild(const QModelIndex& parent, boost::shared_ptr<const SynGlyphX::GlyphProperties> glyph, unsigned int numberOfChildren = 1);
 
     static PropertyUpdates FindUpdates(boost::shared_ptr<const SynGlyphX::GlyphProperties> oldGlyph, boost::shared_ptr<const SynGlyphX::GlyphProperties> newGlyph);
@@ -49,27 +48,49 @@ public slots:
 	void SetEditingMode(EditingMode mode);
 
 signals:
+	void ObjectEdited(const QModelIndex& index);
     void NodeUpdated(const QModelIndex& index);
     void ModelChanged(bool isDifferentFromSavedFileOrDefaultGlyph);
 
 protected:
 	virtual void BeforeDrawScene();
 	virtual void AfterDrawScene();
+	virtual void mousePressEvent(QMouseEvent* event);
+	virtual void mouseReleaseEvent(QMouseEvent* event);
+	virtual void mouseMoveEvent(QMouseEvent* event);
+
+	bool IsRootNodeSelected() const;
 
 private slots:
+	void UpdateSelection(const QItemSelection& selected, const QItemSelection& deselected);
+	void OnNodeDeleted(const QModelIndex& parent, int start, int end);
+
 	void NotifyModelUpdate();
 	void MarkDifferentNotifyModelUpdate();
 
 	void OnModelReset();
+	void OnModelRowsInserted(const QModelIndex& parent, int first, int last);
+	void OnModelRowsMoved(const QModelIndex& sourceParent, int sourceStart, int sourceEnd, const QModelIndex& destinationParent, int destinationRow);
+	void OnModelRowsRemoved(const QModelIndex& parent, int first, int last);
+
 
 private:
+
+	QModelIndex IndexFromANTzID(int id);
+	pNPnode GetGlyphFromModelIndex(const QModelIndex& index) const;
 	pNPnode GetRootGlyph() const;
-	void RebuildTree();
-	pNPnode CreateNodeFromTemplate(pNPnode parent, const SynGlyphX::MinMaxGlyphTree::const_iterator& minMaxGlyph);
+	
     int GetChildIndexFromParent(pNPnode node) const;
-	void CreateNewSubTree(pNPnode parent, const SynGlyphX::MinMaxGlyphTree::const_iterator& minMaxGlyph);
+	
 	bool IsANTzCSVFile(const QString& filename) const;
+
+	void DeleteChildren(pNPnode parent, unsigned int first, unsigned int count);
 	void DeleteGlyphRootNode();
+
+	void CreateNewSubTree(pNPnode parent, const SynGlyphX::MinMaxGlyphTree::const_iterator& minMaxGlyph);
+	pNPnode CreateNodeFromTemplate(pNPnode parent, const SynGlyphX::MinMaxGlyphTree::const_iterator& minMaxGlyph);
+	void RebuildTree();
+
 	void UpdateGlyphProperties(pNPnode glyph, const SynGlyphX::MinMaxGlyphTree::const_iterator& minMaxGlyph);
 	void UpdateGlyphProperties(pNPnode glyph, const SynGlyphX::GlyphProperties& glyphTemplate);
 

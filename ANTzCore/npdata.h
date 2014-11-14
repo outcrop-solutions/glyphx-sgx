@@ -76,7 +76,7 @@ char* npGetDataTypeDesc (int type);
 
 void npDataPreset (int preset, void* dataRef);
 
-void npDataCameraPreset (int preset, pNPnode node, void* dataRef);
+ANTZCORE_API void npDataCameraPreset(int preset, pNPnode node, void* dataRef);
 
 void npInitDataTags (pNPtags tags, void* dataRef);
 void npInitTextTag (pNPtag tag, void* dataRef);
