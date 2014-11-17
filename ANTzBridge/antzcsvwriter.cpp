@@ -1,16 +1,17 @@
 #include "antzcsvwriter.h"
 #include <fstream>
 #include <locale>
+#include <boost/lexical_cast.hpp>
 
 namespace SynGlyphX {
 
 	ANTzCSVWriter ANTzCSVWriter::s_instance;
 
 	ANTzCSVWriter::ANTzCSVWriter() :
-		m_nodeHeaders({ "id", "type", "data", "selected", "parent_id", "branch_level", "child_id", "child_index", "child_count", "ch_input_id", "ch_output_id", "ch_last_updated", "average", "sample", "aux_a_x", "aux_a_y", "aux_a_z", "aux_b_x", "aux_b_y", "aux_b_z", "color_shift", "rotate_vec_x", "rotate_vec_y", "rotate_vec_z", "rotate_vec_s", "scale_x", "scale_y", "scale_z", "translate_x", "translate_y", "translate_z", "tag_offset_x", "tag_offset_y", "tag_offset_z", "rotate_rate_x", "rotate_rate_y", "rotate_rate_z", "rotate_x", "rotate_y", "rotate_z", "scale_rate_x", "scale_rate_y", "scale_rate_z", "translate_rate_x", "translate_rate_y", "translate_rate_z", "translate_vec_x", "translate_vec_y", "translate_vec_z", "shader", "geometry", "line_width", "point_size", "ratio", "color_index", "color_r", "color_g", "color_b", "color_a", "color_fade", "texture_id", "hide", "freeze", "topo", "facet", "auto_zoom_x", "auto_zoom_y", "auto_zoom_z", "trigger_hi_x", "trigger_hi_y", "trigger_hi_z", "trigger_lo_x", "trigger_lo_y", "trigger_lo_z", "set_hi_x", "set_hi_y", "set_hi_z", "set_lo_x", "set_lo_y", "set_lo_z", "proximity_x", "proximity_y", "proximity_z", "proximity_mode_x", "proximity_mode_y", "proximity_mode_z", "segments_x", "segments_y", "segments_z", "tag_mode", "format_id", "table_id", "record_id", "size" }),
-		m_tagHeaders({ "id", "record_id", "table_id", "title", "description" }),
-		m_channelHeaders({ "cycleCount", "ch1", "ch2", "ch3", "ch4", "ch5", "ch6", "ch7", "ch8", "ch9", "ch10", "ch11", "ch12", "ch13", "ch14", "ch15", "ch16", "ch17", "ch18", "ch19", "ch20", "ch21", "ch22", "ch23", "ch24", "ch25", "ch26", "ch27", "ch28", "ch29", "ch30", "ch31", "ch32", "ch33", "ch34", "ch35", "ch36", "ch37", "ch38", "ch39", "ch40", "ch41", "ch42", "ch43", "ch44", "ch45", "ch46", "ch47", "ch48", "ch49", "ch50", "ch51", "ch52", "ch53", "ch54", "ch55", "ch56", "ch57", "ch58", "ch59", "ch60", "ch61", "ch62", "ch63", "ch64", "ch65", "ch66", "ch67", "ch68", "ch69", "ch70", "ch71", "ch72", "ch73", "ch74", "ch75", "ch76", "ch77", "ch78", "ch79", "ch80", "ch81", "ch82", "ch83", "ch84", "ch85", "ch86", "ch87", "ch88", "ch89", "ch90", "ch91", "ch92", "ch93", "ch94", "ch95", "ch96", "ch97", "ch98", "ch99", "ch100" }),
-		m_channelMapHeaders({ "id", "channel_id", "track_id", "attribute", "track_table_id", "ch_map_table_id", "record_id" })
+		m_nodeHeaders({ L"id", L"type", L"data", L"selected", L"parent_id", L"branch_level", L"child_id", L"child_index", L"child_count", L"ch_input_id", L"ch_output_id", L"ch_last_updated", L"average", L"sample", L"aux_a_x", L"aux_a_y", L"aux_a_z", L"aux_b_x", L"aux_b_y", L"aux_b_z", L"color_shift", L"rotate_vec_x", L"rotate_vec_y", L"rotate_vec_z", L"rotate_vec_s", L"scale_x", L"scale_y", L"scale_z", L"translate_x", L"translate_y", L"translate_z", L"tag_offset_x", L"tag_offset_y", L"tag_offset_z", L"rotate_rate_x", L"rotate_rate_y", L"rotate_rate_z", L"rotate_x", L"rotate_y", L"rotate_z", L"scale_rate_x", L"scale_rate_y", L"scale_rate_z", L"translate_rate_x", L"translate_rate_y", L"translate_rate_z", L"translate_vec_x", L"translate_vec_y", L"translate_vec_z", L"shader", L"geometry", L"line_width", L"point_size", L"ratio", L"color_index", L"color_r", L"color_g", L"color_b", L"color_a", L"color_fade", L"texture_id", L"hide", L"freeze", L"topo", L"facet", L"auto_zoom_x", L"auto_zoom_y", L"auto_zoom_z", L"trigger_hi_x", L"trigger_hi_y", L"trigger_hi_z", L"trigger_lo_x", L"trigger_lo_y", L"trigger_lo_z", L"set_hi_x", L"set_hi_y", L"set_hi_z", L"set_lo_x", L"set_lo_y", L"set_lo_z", L"proximity_x", L"proximity_y", L"proximity_z", L"proximity_mode_x", L"proximity_mode_y", L"proximity_mode_z", L"segments_x", L"segments_y", L"segments_z", L"tag_mode", L"format_id", L"table_id", L"record_id", L"size" }),
+		m_tagHeaders({ L"id", L"record_id", L"table_id", L"title", L"description" }),
+		m_channelHeaders({ L"cycleCount", L"ch1", L"ch2", L"ch3", L"ch4", L"ch5", L"ch6", L"ch7", L"ch8", L"ch9", L"ch10", L"ch11", L"ch12", L"ch13", L"ch14", L"ch15", L"ch16", L"ch17", L"ch18", L"ch19", L"ch20", L"ch21", L"ch22", L"ch23", L"ch24", L"ch25", L"ch26", L"ch27", L"ch28", L"ch29", L"ch30", L"ch31", L"ch32", L"ch33", L"ch34", L"ch35", L"ch36", L"ch37", L"ch38", L"ch39", L"ch40", L"ch41", L"ch42", L"ch43", L"ch44", L"ch45", L"ch46", L"ch47", L"ch48", L"ch49", L"ch50", L"ch51", L"ch52", L"ch53", L"ch54", L"ch55", L"ch56", L"ch57", L"ch58", L"ch59", L"ch60", L"ch61", L"ch62", L"ch63", L"ch64", L"ch65", L"ch66", L"ch67", L"ch68", L"ch69", L"ch70", L"ch71", L"ch72", L"ch73", L"ch74", L"ch75", L"ch76", L"ch77", L"ch78", L"ch79", L"ch80", L"ch81", L"ch82", L"ch83", L"ch84", L"ch85", L"ch86", L"ch87", L"ch88", L"ch89", L"ch90", L"ch91", L"ch92", L"ch93", L"ch94", L"ch95", L"ch96", L"ch97", L"ch98", L"ch99", L"ch100" }),
+		m_channelMapHeaders({ L"id", L"channel_id", L"track_id", L"attribute", L"track_table_id", L"ch_map_table_id", L"record_id" })
 	{
 		m_predefinedColors[0] = SynGlyphX::Color({ { 50, 101, 101, 255 } });
 		m_predefinedColors[1] = SynGlyphX::Color({ { 0, 255, 0, 255 } });
@@ -32,6 +33,12 @@ namespace SynGlyphX {
 		m_predefinedColors[17] = SynGlyphX::Color({ { 197, 82, 0, 255 } });
 		m_predefinedColors[18] = SynGlyphX::Color({ { 0, 0, 0, 255 } });
 		m_predefinedColors[19] = SynGlyphX::Color({ { 255, 255, 255, 255 } });
+
+		m_cameras[0] = { L"1", L"0", L"1", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"1", L"0", L"0", L"0", L"0", L"0", L"0", L"0.000000", L"1.000000", L"0.000000", L"0.000000", L"0.000000", L"1.000000", L"1.000000", L"1.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"1.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0", L"0", L"1.000000", L"0.000000", L"0.100000", L"0", L"50", L"101", L"101", L"255", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"1", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0", L"0", L"0", L"16", L"16", L"0", L"0", L"0", L"0", L"0", L"420" };
+		m_cameras[1] = { L"2", L"1", L"2", L"0", L"0", L"0", L"0", L"2", L"3", L"0", L"0", L"0", L"0", L"1", L"0", L"0", L"0", L"0", L"0", L"0", L"0.000000", L"0.000000", L"-0.143424", L"-0.826509", L"-0.544345", L"1.000000", L"1.000000", L"1.000000", L"1.344855", L"7.749982", L"6.275580", L"0.000000", L"0.000000", L"1.000000", L"0.000000", L"0.000000", L"0.000000", L"57.020073", L"189.844513", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"-0.000000", L"0.000000", L"0.000000", L"0", L"0", L"1.000000", L"0.000000", L"0.100000", L"0", L"50", L"101", L"101", L"255", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"9.376762", L"0.000000", L"0.000000", L"0", L"0", L"0", L"16", L"16", L"0", L"0", L"0", L"0", L"0", L"420" };
+		m_cameras[2] = { L"3", L"1", L"3", L"0", L"2", L"1", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"1", L"0", L"0", L"0", L"0", L"0", L"0", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"-1.000000", L"1.000000", L"1.000000", L"1.000000", L"-0.500000", L"0.000000", L"571.750000", L"0.000000", L"0.000000", L"1.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0", L"0", L"1.000000", L"0.000000", L"0.100000", L"0", L"50", L"101", L"101", L"255", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0", L"0", L"0", L"16", L"16", L"0", L"0", L"0", L"0", L"0", L"420" };
+		m_cameras[3] = { L"4", L"1", L"4", L"0", L"2", L"1", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"1", L"0", L"0", L"0", L"0", L"0", L"0", L"0.000000", L"0.000000", L"0.000000", L"1.000000", L"-0.000000", L"1.000000", L"1.000000", L"1.000000", L"0.000000", L"-90.000000", L"7.000000", L"0.000000", L"0.000000", L"1.000000", L"0.000000", L"0.000000", L"0.000000", L"90.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0", L"0", L"1.000000", L"0.000000", L"0.100000", L"0", L"50", L"101", L"101", L"255", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0", L"0", L"0", L"16", L"16", L"0", L"0", L"0", L"0", L"0", L"420" };
+		m_cameras[4] = { L"5", L"1", L"5", L"0", L"2", L"1", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"1", L"0", L"0", L"0", L"0", L"0", L"0", L"0.000000", L"0.000000", L"-1.000000", L"0.000000", L"-0.000000", L"1.000000", L"1.000000", L"1.000000", L"85.000000", L"0.000000", L"7.000000", L"0.000000", L"0.000000", L"1.000000", L"0.000000", L"0.000000", L"0.000000", L"90.000000", L"270.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0", L"0", L"1.000000", L"0.000000", L"0.100000", L"0", L"50", L"101", L"101", L"255", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0", L"0", L"0", L"16", L"16", L"0", L"0", L"0", L"0", L"0", L"420" };
 	}
 
 
@@ -39,66 +46,105 @@ namespace SynGlyphX {
 	{
 	}
 
-	void ANTzCSVWriter::Write(const std::string& filename, const std::string& tagFilename, const GlyphTree::ConstSharedVector& trees, unsigned long startingId) {
+	void ANTzCSVWriter::Write(const std::string& nodeFilename, const std::string& tagFilename, const GlyphTree::ConstSharedVector& trees, unsigned long startingId) {
 
-		std::ofstream file;
-		std::ofstream tagfile;
+		if (nodeFilename.empty()) {
+
+			throw std::invalid_argument("Node filename is empty.");
+		}
+
 		try {
 
-			unsigned long id = startingId;
+			WriteNodeFile(nodeFilename, trees, startingId);
 
-			file.open(filename);
+			if (!tagFilename.empty()) {
 
-			//Write out header, cameras, and grid lines
-			file << CreateString(m_nodeHeaders) << std::endl;
-			file << "1,0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0.000000,1.000000,0.000000,0.000000,0.000000,1.000000,1.000000,1.000000,0.000000,0.000000,0.000000,0.000000,0.000000,1.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0,0,1.000000,0.000000,0.100000,0,50,101,101,255,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0,0,0,16,16,0,0,0,0,0,420" << std::endl;
-			file << "2,1,2,0,0,0,0,2,3,0,0,0,0,1,0,0,0,0,0,0,0.000000,0.000000,-0.143424,-0.826509,-0.544345,1.000000,1.000000,1.000000,1.344855,7.749982,6.275580,0.000000,0.000000,1.000000,0.000000,0.000000,0.000000,57.020073,189.844513,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,-0.000000,0.000000,0.000000,0,0,1.000000,0.000000,0.100000,0,50,101,101,255,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,9.376762,0.000000,0.000000,0,0,0,16,16,0,0,0,0,0,420" << std::endl;
-			file << "3,1,3,0,2,1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0.000000,0.000000,0.000000,0.000000,-1.000000,1.000000,1.000000,1.000000,-0.500000,0.000000,571.750000,0.000000,0.000000,1.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0,0,1.000000,0.000000,0.100000,0,50,101,101,255,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0,0,0,16,16,0,0,0,0,0,420" << std::endl;
-			file << "4,1,4,0,2,1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0.000000,0.000000,0.000000,1.000000,-0.000000,1.000000,1.000000,1.000000,0.000000,-90.000000,7.000000,0.000000,0.000000,1.000000,0.000000,0.000000,0.000000,90.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0,0,1.000000,0.000000,0.100000,0,50,101,101,255,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0,0,0,16,16,0,0,0,0,0,420" << std::endl;
-			file << "5,1,5,0,2,1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0.000000,0.000000,-1.000000,0.000000,-0.000000,1.000000,1.000000,1.000000,85.000000,0.000000,7.000000,0.000000,0.000000,1.000000,0.000000,0.000000,0.000000,90.000000,270.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0,0,1.000000,0.000000,0.100000,0,50,101,101,255,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0,0,0,16,16,0,0,0,0,0,420" << std::endl;
-			
-			file << "6,6,6,1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0.000000,1.000000,0.000000,0.000000,0.000000,1.000000,1.000000,1.000000,0.000000,0.000000,0.000000,0.000000,0.000000,1.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0,0,1.000000,0.000000,0.100000,0,255,0,0,150,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0,0,0,12,6,0,0,0,0,0,420" << std::endl;
-
-			for (const GlyphTree::ConstSharedPtr& tree : trees) {
-				id = WriteGlyph(file, tree, tree->root(), id, 0, 0);
+				WriteTagFile(tagFilename, trees, startingId);
 			}
-
-			file.close();
-
-			tagfile.open(tagFilename);
-
-			m_numTagsWritten = 0;
-			unsigned long tagID = startingId;
-			tagfile << CreateString(m_tagHeaders) << std::endl;
-			for (const GlyphTree::ConstSharedPtr& tree : trees) {
-				tagID = WriteGlyphTag(tagfile, tree, tree->root(), tagID);
-			}
-
-			tagfile.close();
 		}
 		catch (const std::exception& e) {
 
-			file.close();
-			tagfile.close();
+			throw;
+		}
+ 	}
+
+	unsigned long ANTzCSVWriter::WriteNodeFile(const std::string& filename, const GlyphTree::ConstSharedVector& trees, unsigned long startingId) {
+
+		unsigned int numberOfHeaderAndGridLines = 0;
+		
+		try {
+			CSVFileWriter nodeFile(filename);
+
+			//Write out header, cameras, and grid lines
+			nodeFile.WriteLine(m_nodeHeaders);
+			nodeFile.WriteLine(m_cameras[0]);
+			nodeFile.WriteLine(m_cameras[1]);
+			nodeFile.WriteLine(m_cameras[2]);
+			nodeFile.WriteLine(m_cameras[3]);
+			nodeFile.WriteLine(m_cameras[4]);
+
+			WriteGrids(nodeFile, 6);
+
+			numberOfHeaderAndGridLines = 6;
+
+			unsigned int id = startingId;
+
+			for (const GlyphTree::ConstSharedPtr& tree : trees) {
+
+				id = WriteGlyph(nodeFile, tree, tree->root(), id, 0, 0);
+			}
+		}
+		catch (const std::exception& e) {
+
+			throw;
+		}
+
+		return numberOfHeaderAndGridLines;
+	}
+
+	void ANTzCSVWriter::WriteTagFile(const std::string& filename, const GlyphTree::ConstSharedVector& trees, unsigned long startingId) {
+
+		try {
+
+			CSVFileWriter tagFile(filename);
+
+			unsigned long tagID = startingId;
+			tagFile.WriteLine(m_tagHeaders);
+
+			m_numTagsWritten = 0;
+			
+			for (const GlyphTree::ConstSharedPtr& tree : trees) {
+				tagID = WriteGlyphTag(tagFile, tree, tree->root(), tagID);
+			}
+		}
+		catch (const std::exception& e) {
+
 			throw;
 		}
 	}
 
-	unsigned long ANTzCSVWriter::WriteGlyphTag(std::ofstream& file, const GlyphTree::ConstSharedPtr tree, const GlyphTree::const_iterator& glyph, unsigned long id) {
+	unsigned long ANTzCSVWriter::WriteGlyphTag(CSVFileWriter& file, const GlyphTree::ConstSharedPtr tree, const GlyphTree::const_iterator& glyph, unsigned long id) {
 
 		unsigned int numberOfChildren = tree->children(glyph);
 
-		std::string tag;
+		std::wstring tag;
 		if (glyph->GetTag().empty()) {
 
-			tag = "No Tag";
+			tag = L"\"No Tag\"";
 		}
 		else {
 
-			tag.assign(glyph->GetTag().begin(), glyph->GetTag().end());
+			tag = L"\"" + glyph->GetTag() + L"\"";
 		}
 
-		file << m_numTagsWritten++ << "," << id << ",0,\"" << tag << "\",\" \"" << std::endl;
+		CSVFileHandler::CSVValues values;
+		values.push_back(boost::lexical_cast<std::wstring>(m_numTagsWritten++));
+		values.push_back(boost::lexical_cast<std::wstring>(id));
+		values.push_back(L"0");
+		values.push_back(tag);
+		values.push_back(L" ");
+
+		file.WriteLine(values);
 
 		unsigned long childId = id + 1;
 		for (unsigned int i = 0; i < numberOfChildren; ++i) {
@@ -108,21 +154,47 @@ namespace SynGlyphX {
 		return childId;
 	}
 
-	unsigned long ANTzCSVWriter::WriteGlyph(std::ofstream& file, const GlyphTree::ConstSharedPtr tree, const GlyphTree::const_iterator& glyph, unsigned long id, unsigned long parentId, unsigned long branchLevel) {
+	unsigned long ANTzCSVWriter::WriteGlyph(CSVFileWriter& file, const GlyphTree::ConstSharedPtr tree, const GlyphTree::const_iterator& glyph, unsigned long id, unsigned long parentId, unsigned long branchLevel) {
 
 		unsigned int numberOfChildren = tree->children(glyph);
 
-		file << id << ",5," << id << ",0," << parentId << "," << branchLevel << ",0,0," << numberOfChildren << ",0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,";
-		Vector3 scale = glyph->GetScale();
-		Vector3 translate = glyph->GetPosition();
-		file << scale[0] << "," << scale[1] << "," << scale[2] << "," << translate[0] << "," << translate[1] << "," << translate[2] << ",";
-		Vector3 tagOffset = glyph->GetTagOffset();
-		Vector3 rotate = glyph->GetRotation();
-		file << tagOffset[0] << "," << tagOffset[1] << "," << tagOffset[2] << ",0,0,0," << rotate[0] << "," << rotate[1] << "," << rotate[2] << ",0,0,0,0,0,0,0,0,0,0,";
+		CSVFileHandler::CSVValues values;
+		values.push_back(boost::lexical_cast<std::wstring>(id));
+		values.push_back(L"5");
+		values.push_back(boost::lexical_cast<std::wstring>(id));
+		values.push_back(L"0");
+		values.push_back(boost::lexical_cast<std::wstring>(parentId));
+		values.push_back(boost::lexical_cast<std::wstring>(branchLevel));
+		values.insert(values.end(), { L"0", L"0" });
+		values.push_back(boost::lexical_cast<std::wstring>(numberOfChildren));
+		values.insert(values.end(), { L"0", L"0", L"0", L"0", L"1", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"1", L"0", L"0", L"0" });
+
+		CSVFileHandler::AddVector3ToCSVValues(values, glyph->GetScale());
+		CSVFileHandler::AddVector3ToCSVValues(values, glyph->GetPosition());
+		CSVFileHandler::AddVector3ToCSVValues(values, glyph->GetTagOffset());
+		values.insert(values.end(), { L"0", L"0", L"0" });
+		CSVFileHandler::AddVector3ToCSVValues(values, glyph->GetRotation());
+		values.insert(values.end(), { L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0" });
+
+		values.push_back(boost::lexical_cast<std::wstring>(ConvertGeometryToCSVInt(glyph->GetShape(), glyph->GetSurface())));
+		values.insert(values.end(), { L"1", L"0" });
+		values.push_back(boost::lexical_cast<std::wstring>(glyph->GetRatio()));
+
 		Color color = glyph->GetColor();
-		file << ConvertGeometryToCSVInt(glyph->GetShape(), glyph->GetSurface()) << ",1,0," << glyph->GetRatio() << "," << GetColorIndex(color) << "," << static_cast<int>(color[0]) << ",";
-		file << static_cast<int>(color[1]) << "," << static_cast<int>(color[2]) << "," << static_cast<int>(color[3]) << ",0,0,0,0," << static_cast<int>(glyph->GetTopology()) << ",";
-		file << "0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,16,16,0,0,0,0," << id << ",420" << std::endl;
+		values.push_back(boost::lexical_cast<std::wstring>(GetColorIndex(color)));
+		values.push_back(boost::lexical_cast<std::wstring>(color[0]));
+		values.push_back(boost::lexical_cast<std::wstring>(color[1]));
+		values.push_back(boost::lexical_cast<std::wstring>(color[2]));
+		values.push_back(boost::lexical_cast<std::wstring>(color[3]));
+
+		values.insert(values.end(), { L"0", L"0", L"0", L"0" });
+		values.push_back(boost::lexical_cast<std::wstring>(static_cast<int>(glyph->GetTopology())));
+
+		values.insert(values.end(), { L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"1", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"16", L"16", L"0", L"0", L"0", L"0" });
+		values.push_back(boost::lexical_cast<std::wstring>(id));
+		values.push_back(L"420");
+
+		file.WriteLine(values);
 
 		unsigned long childId = id + 1;
 		for (unsigned int i = 0; i < numberOfChildren; ++i) {
@@ -130,6 +202,14 @@ namespace SynGlyphX {
 		}
 
 		return childId;
+	}
+
+	unsigned long ANTzCSVWriter::WriteGrids(CSVFileWriter& file, unsigned long id) {
+
+		CSVFileHandler::CSVValues grid = { L"6", L"6", L"6", L"1", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"1", L"0", L"0", L"0", L"0", L"0", L"0", L"0.000000", L"1.000000", L"0.000000", L"0.000000", L"0.000000", L"1.000000", L"1.000000", L"1.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"1.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0", L"0", L"1.000000", L"0.000000", L"0.100000", L"0", L"255", L"0", L"0", L"150", L"0", L"1", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0", L"0", L"0", L"12", L"6", L"0", L"0", L"0", L"0", L"0", L"420" };
+		file.WriteLine(grid);
+
+		return 7;
 	}
 
 	unsigned int ANTzCSVWriter::ConvertGeometryToCSVInt(GlyphProperties::Shape shape, GlyphProperties::Surface surface) {
@@ -158,22 +238,6 @@ namespace SynGlyphX {
 
 		//if nothing matches predefined colors return 0
 		return 0;
-	}
-
-	std::string ANTzCSVWriter::CreateString(const CSVFileReader::CSVValues& values) {
-
-		if (values.empty()) {
-
-			throw std::invalid_argument("CSVValues object has 0 values");
-		}
-
-		std::string valuesString = values[0];
-		for (unsigned int i = 1; i < values.size(); ++i) {
-
-			valuesString += "," + values[i];
-		}
-
-		return valuesString;
 	}
 
 	const CSVFileReader::CSVValues& ANTzCSVWriter::GetNodeHeaders() const {

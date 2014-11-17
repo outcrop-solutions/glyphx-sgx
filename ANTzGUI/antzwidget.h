@@ -3,6 +3,7 @@
 
 #include "antzgui_global.h"
 #include <QtOpenGL/QGLWidget>
+#include "data/nptypes.h"
 
 class ANTZGUI_EXPORT ANTzWidget : public QGLWidget
 {

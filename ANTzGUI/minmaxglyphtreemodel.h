@@ -50,18 +50,16 @@ public:
 
 	bool LoadFromFile(const QString& filename);
 	void SaveToTemplateFile(const QString& filename) const;
-	//bool SaveToCSV(const std::string& filename, const QModelIndexList& selectedItems);
+	bool SaveToCSV(const QString& filename, bool writeMaxGlyph = true);
 
 	bool IsClipboardEmpty() const;
 	SynGlyphX::MinMaxGlyphTree::iterator GetClipboardGlyph() const;
 	void CopyToClipboard(const QModelIndex& index, bool removeFromTree = false);
 
 	void RepaceModelWithDefaultGlyphTree();
-	
-signals:
-	void GlyphPropertiesUpdated(const QModelIndex& index);
 
 private:
+	bool IsValidCSVFile(const QString& filename) const;
 	SynGlyphX::MinMaxGlyphTree::iterator GetIteratorFromIndex(const QModelIndex& index) const;
 	bool IsRootGlyph(const SynGlyphX::MinMaxGlyphTree::iterator& glyph) const;
 

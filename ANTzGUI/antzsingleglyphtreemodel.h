@@ -39,8 +39,8 @@ public:
 
     void AppendChild(const QModelIndex& parent, boost::shared_ptr<const SynGlyphX::GlyphProperties> glyph, unsigned int numberOfChildren = 1);
 
-    static PropertyUpdates FindUpdates(boost::shared_ptr<const SynGlyphX::GlyphProperties> oldGlyph, boost::shared_ptr<const SynGlyphX::GlyphProperties> newGlyph);
-    static bool GreaterBranchLevel(const QModelIndex& left, const QModelIndex& right);
+    //static PropertyUpdates FindUpdates(boost::shared_ptr<const SynGlyphX::GlyphProperties> oldGlyph, boost::shared_ptr<const SynGlyphX::GlyphProperties> newGlyph);
+    //static bool GreaterBranchLevel(const QModelIndex& left, const QModelIndex& right);
 
 	void ShowGlyph(bool show);
 
@@ -49,8 +49,6 @@ public slots:
 
 signals:
 	void ObjectEdited(const QModelIndex& index);
-    void NodeUpdated(const QModelIndex& index);
-    void ModelChanged(bool isDifferentFromSavedFileOrDefaultGlyph);
 
 protected:
 	virtual void BeforeDrawScene();
@@ -63,20 +61,15 @@ protected:
 
 private slots:
 	void UpdateSelection(const QItemSelection& selected, const QItemSelection& deselected);
-	void OnNodeDeleted(const QModelIndex& parent, int start, int end);
-
-	void NotifyModelUpdate();
-	void MarkDifferentNotifyModelUpdate();
-
+	void OnModelChanged();
 	void OnModelReset();
 	void OnModelRowsInserted(const QModelIndex& parent, int first, int last);
 	void OnModelRowsMoved(const QModelIndex& sourceParent, int sourceStart, int sourceEnd, const QModelIndex& destinationParent, int destinationRow);
 	void OnModelRowsRemoved(const QModelIndex& parent, int first, int last);
-
+	void UpdateData(const QModelIndex& topLeft, const QModelIndex& bottomRight);
 
 private:
-
-	QModelIndex IndexFromANTzID(int id);
+	QModelIndex IndexFromANTzID(int id) const;
 	pNPnode GetGlyphFromModelIndex(const QModelIndex& index) const;
 	pNPnode GetRootGlyph() const;
 	

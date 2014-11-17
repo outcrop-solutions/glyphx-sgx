@@ -1,6 +1,7 @@
 #include "minmaxglyphtreemodel.h"
 #include "glyphmimedata.h"
 #include <stdexcept>
+#include "antzcsvwriter.h"
 
 MinMaxGlyphTreeModel::MinMaxGlyphTreeModel(QObject *parent)
 	: QAbstractItemModel(parent)
@@ -207,7 +208,7 @@ void MinMaxGlyphTreeModel::AppendChild(const QModelIndex& parent, const SynGlyph
 
 void MinMaxGlyphTreeModel::UpdateGlyph(const QModelIndex& index, const SynGlyphX::MinMaxGlyph& glyph, PropertyUpdates updates) {
 
-	if (index.isValid()) {
+	if (index.isValid() && (updates != PropertyUpdate::UpdateNone)) {
 
 		SynGlyphX::MinMaxGlyphTree::iterator glyphToUpdate = GetIteratorFromIndex(index);
 		SynGlyphX::GlyphProperties minGlyph = glyphToUpdate->GetMinGlyph();
@@ -250,7 +251,7 @@ void MinMaxGlyphTreeModel::UpdateGlyph(const QModelIndex& index, const SynGlyphX
 			minGlyph.SetTopology(glyph.GetMinGlyph().GetTopology());
 		}
 
-		emit GlyphPropertiesUpdated(index);
+		emit dataChanged(index, index);
 	}
 }
 
@@ -328,6 +329,11 @@ bool MinMaxGlyphTreeModel::dropMimeData(const QMimeData* data, Qt::DropAction ac
 
 bool MinMaxGlyphTreeModel::LoadFromFile(const QString& filename) {
 
+	if (filename.right(4) == ".csv") {
+
+		throw std::exception("CSV files are not supported");
+	}
+
 	beginResetModel();
 	m_minMaxGlyphTree->erase();
 	m_minMaxGlyphTree->ReadFromFile(filename.toStdString());
@@ -339,6 +345,24 @@ bool MinMaxGlyphTreeModel::LoadFromFile(const QString& filename) {
 void MinMaxGlyphTreeModel::SaveToTemplateFile(const QString& filename) const {
 
 	m_minMaxGlyphTree->WriteToFile(filename.toStdString());
+}
+
+bool MinMaxGlyphTreeModel::SaveToCSV(const QString& filename, bool writeMaxGlyph) {
+
+	SynGlyphX::GlyphTree::ConstSharedVector trees;
+	if (writeMaxGlyph) {
+
+		trees.push_back(m_minMaxGlyphTree->GetMaxGlyphTree());
+	}
+	else {
+
+		trees.push_back(m_minMaxGlyphTree->GetMinGlyphTree());
+	}
+
+	SynGlyphX::ANTzCSVWriter& csvWriter = SynGlyphX::ANTzCSVWriter::GetInstance();
+	csvWriter.Write(filename.toStdString(), "", trees);
+
+	return true;
 }
 
 bool MinMaxGlyphTreeModel::IsClipboardEmpty() const {
