@@ -249,10 +249,10 @@ namespace SynGlyphX {
 					const CSVFileReader::CSVValues& types = csvtFileReader.GetTypes();
 
 					QSqlQuery createTableQuery(intermediateDB);
-					QString sqlCreateTable = "CREATE TABLE " + QString::fromStdWString(*datasource.GetTables().begin()) + " (\n" + QString::fromStdString(headers[0]) + ' ' + QString::fromStdString(types[0]);
+					QString sqlCreateTable = "CREATE TABLE " + QString::fromStdWString(*datasource.GetTables().begin()) + " (\n" + QString::fromStdWString(headers[0]) + ' ' + QString::fromStdWString(types[0]);
 					for (int i = 1; i < headers.size(); ++i) {
 
-						sqlCreateTable += ",\n\"" + QString::fromStdString(headers[i]) + "\" " + QString::fromStdString(types[i]);
+						sqlCreateTable += ",\n\"" + QString::fromStdWString(headers[i]) + "\" " + QString::fromStdWString(types[i]);
 					}
 					sqlCreateTable += "\n);";
 
@@ -270,7 +270,7 @@ namespace SynGlyphX {
 					typeIsText.reserve(types.size());
 					for (int j = 0; j < types.size(); ++j) {
 
-						typeIsText.push_back(types[j] == "TEXT");
+						typeIsText.push_back(types[j] == L"TEXT");
 					}
 					
 					while (!csvFileReader.IsAtEndOfFile()) {
@@ -291,7 +291,7 @@ namespace SynGlyphX {
 								sqlInsert += "\"";
 							}
 
-							sqlInsert += QString::fromStdString(values[i]);
+							sqlInsert += QString::fromStdWString(values[i]);
 
 							if (typeIsText[i]) {
 

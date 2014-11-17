@@ -96,7 +96,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="color.h" />
+    <ClInclude Include="csvfilehandler.h" />
     <ClInclude Include="csvfilereader.h" />
+    <ClInclude Include="csvfilewriter.h" />
     <ClInclude Include="csvtfilereaderwriter.h" />
     <ClInclude Include="filesystem.h" />
     <ClInclude Include="foundationtypes.h" />
@@ -107,7 +109,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="color.cpp" />
+    <ClCompile Include="csvfilehandler.cpp" />
     <ClCompile Include="csvfilereader.cpp" />
+    <ClCompile Include="csvfilewriter.cpp" />
     <ClCompile Include="csvtfilereaderwriter.cpp" />
     <ClCompile Include="dllmain.cpp">
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</CompileAsManaged>

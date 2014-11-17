@@ -3,8 +3,9 @@
 
 namespace SynGlyphX {
 
-	CSVFileReader::CSVFileReader(const std::string& filename, char separator) :
-		m_separators('\\', separator, '\"')
+	CSVFileReader::CSVFileReader(const std::string& filename, wchar_t separator) :
+		CSVFileHandler(separator),
+		m_separators('\\', m_separator, '\"')
 	{
 		m_filestream.open(filename);
 		if (m_filestream.fail()) {
@@ -14,15 +15,16 @@ namespace SynGlyphX {
 
 		//Headers are on the first line
 		m_headers = GetValuesFromLine();
+		if (m_headers.empty()) {
+
+			throw std::exception("CSV file has no headers");
+		}
 	}
 
 
 	CSVFileReader::~CSVFileReader()
 	{
-		if (m_filestream.is_open()) {
-
-			m_filestream.close();
-		}
+		
 	}
 
 	const CSVFileReader::CSVValues& CSVFileReader::GetHeaders() const {
@@ -37,7 +39,7 @@ namespace SynGlyphX {
 			throw std::exception("CSV file is at its end");
 		}
 
-		std::string buffer, line;
+		std::wstring buffer, line;
 		bool insideQuotes = false;
 
 		//there could be line breaks in the middle of a field so if there is merge the lines
@@ -55,7 +57,7 @@ namespace SynGlyphX {
 
 			if (insideQuotes) {
 			
-				line.append("\n");
+				line.append(L"\n");
 			}
 		} while (insideQuotes);
 
@@ -69,6 +71,14 @@ namespace SynGlyphX {
 	bool CSVFileReader::IsAtEndOfFile() const {
 
 		return (m_filestream.eof());
+	}
+
+	void CSVFileReader::Close() {
+
+		if (m_filestream.is_open()) {
+
+			m_filestream.close();
+		}
 	}
 
 } //namespace SynGlyphX
