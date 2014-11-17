@@ -3,7 +3,7 @@
 
 #include <QtWidgets/QTreeView>
 #include <QtWidgets/QAction>
-#include "glyphtreemodel.h"
+#include "minmaxglyphtreemodel.h"
 #include "sharedactionlist.h"
 
 class GlyphTreeView : public QTreeView
@@ -11,7 +11,7 @@ class GlyphTreeView : public QTreeView
     Q_OBJECT
 
 public:
-	GlyphTreeView(GlyphTreeModel* model, QItemSelectionModel* selectionModel, QWidget *parent = 0);
+	GlyphTreeView(MinMaxGlyphTreeModel* model, QItemSelectionModel* selectionModel, QWidget *parent = 0);
     ~GlyphTreeView();
 
 	const SynGlyphX::SharedActionList& GetGlyphActions() const;
@@ -34,7 +34,7 @@ private:
 	void CreateAddChildrenDialog();
 	void EnableActions();
 
-	GlyphTreeModel* m_model;
+	MinMaxGlyphTreeModel* m_model;
 
 	SynGlyphX::SharedActionList m_glyphActions;
 	SynGlyphX::SharedActionList m_editActions;
