@@ -12,7 +12,7 @@ namespace SynGlyphX {
 	class SGXFOUNDATION_API CSVFileReader : public CSVFileHandler
 	{
 	public:
-		typedef boost::tokenizer< boost::escaped_list_separator<wchar_t> > Tokenizer;
+		typedef boost::tokenizer< boost::escaped_list_separator<wchar_t>, std::wstring::const_iterator, std::wstring > Tokenizer;
 
 		CSVFileReader(const std::string& filename, wchar_t separator = ',');
 		virtual ~CSVFileReader();

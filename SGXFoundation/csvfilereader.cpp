@@ -24,7 +24,7 @@ namespace SynGlyphX {
 
 	CSVFileReader::~CSVFileReader()
 	{
-		
+		Close();
 	}
 
 	const CSVFileReader::CSVValues& CSVFileReader::GetHeaders() const {

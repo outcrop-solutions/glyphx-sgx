@@ -11,7 +11,7 @@ namespace SynGlyphX {
 
 	CSVFileHandler::~CSVFileHandler()
 	{
-		Close();
+		
 	}
 
 	void CSVFileHandler::AddVector3ToCSVValues(CSVValues& values, const Vector3& vec) {

@@ -17,6 +17,7 @@ namespace SynGlyphX {
 
 	CSVFileWriter::~CSVFileWriter()
 	{
+		Close();
 	}
 
 	void CSVFileWriter::Close() {
@@ -44,7 +45,7 @@ namespace SynGlyphX {
 		}
 
 		m_filestream << values[0];
-		for (int i = 1; i < m_numFields; ++i) {
+		for (unsigned int i = 1; i < m_numFields; ++i) {
 			
 			m_filestream << m_separator << values[i];
 		}
