@@ -1,4 +1,4 @@
-#include "antzsingleglyphtreemodel.h"
+#include "antzsingleglyphtreewidget.h"
 #include "npdata.h"
 #include "data/npmapfile.h"
 #include "glyphmimedata.h"
@@ -42,7 +42,7 @@ void ANTzSingleGlyphTreeWidget::SetModel(MinMaxGlyphTreeModel* model) {
 		m_selectionModel = new QItemSelectionModel(m_model, this);
 		QObject::connect(m_selectionModel, &QItemSelectionModel::selectionChanged, this, &ANTzSingleGlyphTreeWidget::UpdateSelection);
 
-		QObject::connect(m_model, &MinMaxGlyphTreeModel::dataChanged, this, &ANTzSingleGlyphTreeWidget::UpdateData);
+		ConnectDataChangedSignal();
 		QObject::connect(m_model, &MinMaxGlyphTreeModel::rowsInserted, this, &ANTzSingleGlyphTreeWidget::OnModelRowsInserted);
 		QObject::connect(m_model, &MinMaxGlyphTreeModel::rowsMoved, this, &ANTzSingleGlyphTreeWidget::OnModelRowsMoved);
 		QObject::connect(m_model, &MinMaxGlyphTreeModel::rowsRemoved, this, &ANTzSingleGlyphTreeWidget::OnModelRowsRemoved);
@@ -62,7 +62,9 @@ void ANTzSingleGlyphTreeWidget::AfterDrawScene() {
 		const QModelIndexList& selected = m_selectionModel->selectedIndexes();
 		if (!selected.isEmpty()) {
 
-			emit ObjectEdited(selected.back());
+			DisconnectDataChangedSignal();
+			SynGlyphX::MinMaxGlyph glyph(;
+			ConnectDataChangedSignal();
 		}
 		m_selectionEdited = false;
 	}
@@ -72,7 +74,7 @@ void ANTzSingleGlyphTreeWidget::RebuildTree() {
 
 	if (m_model != nullptr) {
 
-		DeleteGlyphRootNode();
+		DeleteRootGlyphNode();
 		CreateNewSubTree(nullptr, m_model->GetMinMaxGlyphTree()->root());
 
 		//Undo previous select node at the beginning of this function
@@ -107,11 +109,7 @@ pNPnode ANTzSingleGlyphTreeWidget::CreateNodeFromTemplate(pNPnode parent, const 
 
 void ANTzSingleGlyphTreeWidget::OnModelReset() {
 
-	DeleteGlyphRootNode();
 	RebuildTree();
-
-	//Undo previous select node at the beginning of this function
-	m_antzData->map.nodeRootIndex = 0;
 }
 
 void ANTzSingleGlyphTreeWidget::OnModelRowsInserted(const QModelIndex& parent, int first, int last) {
@@ -143,8 +141,15 @@ void ANTzSingleGlyphTreeWidget::OnModelRowsMoved(const QModelIndex& sourceParent
 
 void ANTzSingleGlyphTreeWidget::OnModelRowsRemoved(const QModelIndex& parent, int first, int last) {
 
-	pNPnode parentGlyph = GetGlyphFromModelIndex(parent);
-	DeleteChildren(parentGlyph, first, last - first + 1);
+	if (parent.isValid()) {
+
+		pNPnode parentGlyph = GetGlyphFromModelIndex(parent);
+		DeleteChildren(parentGlyph, first, last - first + 1);
+	}
+	else {
+
+		DeleteRootGlyphNode();
+	}
 }
 
 void ANTzSingleGlyphTreeWidget::DeleteChildren(pNPnode parent, unsigned int first, unsigned int count) {
@@ -372,14 +377,6 @@ ANTzSingleGlyphTreeModel::PropertyUpdates ANTzSingleGlyphTreeModel::FindUpdates(
     return updates;
 }
 
-bool ANTzSingleGlyphTreeModel::GreaterBranchLevel(const QModelIndex& left, const QModelIndex& right) {
-
-    pNPnode leftNode = static_cast<pNPnode>(left.internalPointer());
-    pNPnode rightNode = static_cast<pNPnode>(right.internalPointer());
-
-    return (leftNode->branchLevel > rightNode->branchLevel);
-}
-
 void ANTzSingleGlyphTreeModel::NotifyModelUpdate() {
 
 	emit ModelChanged(m_isDifferentFromSavedFileOrDefaultGlyph);
@@ -416,27 +413,13 @@ void ANTzSingleGlyphTreeWidget::ShowGlyph(bool show) {
 	}
 }
 
-bool ANTzSingleGlyphTreeWidget::IsANTzCSVFile(const QString& filename) const {
+void ANTzSingleGlyphTreeWidget::DeleteRootGlyphNode() {
 
-	if (filename.right(4).toLower() == ".csv") {
+	if (m_rootGlyph != nullptr) {
 
-		return true;
+		npNodeRemove(true, m_rootGlyph, m_antzData);
+		m_rootGlyph = nullptr;
 	}
-
-	QFile glyphFile(filename);
-	const char* firstField = "id,";
-	if (glyphFile.open(QIODevice::ReadOnly)) {
-
-		uchar* first3bytes = glyphFile.map(0, 3);
-		glyphFile.close();
-
-		if (memcmp(first3bytes, firstField, 3) == 0) {
-
-			return true;
-		}
-	}
-
-	return false;
 }
 
 bool ANTzSingleGlyphTreeWidget::IsRootNodeSelected() const {
@@ -534,4 +517,14 @@ void ANTzSingleGlyphTreeWidget::SetEditingMode(EditingMode mode) {
 void ANTzSingleGlyphTreeWidget::OnModelChanged() {
 
 	setEnabled(m_model->rowCount() > 0);
+}
+
+void ANTzSingleGlyphTreeWidget::ConnectDataChangedSignal() {
+
+	m_dataChangedConnection = QObject::connect(m_model, &MinMaxGlyphTreeModel::dataChanged, this, &ANTzSingleGlyphTreeWidget::UpdateData);
+}
+
+void ANTzSingleGlyphTreeWidget::DisconnectDataChangedSignal() {
+
+	QObject::disconnect(m_dataChangedConnection);
 }

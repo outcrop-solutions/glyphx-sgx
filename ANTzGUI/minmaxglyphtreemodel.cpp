@@ -130,12 +130,6 @@ bool MinMaxGlyphTreeModel::IsRootGlyph(const SynGlyphX::MinMaxGlyphTree::iterato
 	return (glyph == m_minMaxGlyphTree->root());
 }
 
-SynGlyphX::MinMaxGlyphTree::iterator MinMaxGlyphTreeModel::GetIteratorFromIndex(const QModelIndex& index) const {
-
-	SynGlyphX::MinMaxGlyphTree::iterator iterator(static_cast<SynGlyphX::MinMaxGlyphTree::Node*>(index.internalPointer()));
-	return iterator;
-}
-
 Qt::DropActions MinMaxGlyphTreeModel::supportedDropActions() const {
 
 	return Qt::MoveAction;
@@ -385,4 +379,23 @@ void MinMaxGlyphTreeModel::RepaceModelWithDefaultGlyphTree() {
 	beginResetModel();
 	m_minMaxGlyphTree = SynGlyphX::MinMaxGlyphTree::CreateDefault();
 	endResetModel();
+}
+
+bool MinMaxGlyphTreeModel::GreaterBranchLevel(const QModelIndex& left, const QModelIndex& right) {
+
+	const MinMaxGlyphTreeModel* model = dynamic_cast<const MinMaxGlyphTreeModel*>(left.model());
+
+	return (model->GetBranchLevel(left) > model->GetBranchLevel(right));
+}
+
+SynGlyphX::MinMaxGlyphTree::iterator MinMaxGlyphTreeModel::GetIteratorFromIndex(const QModelIndex& index) {
+
+	SynGlyphX::MinMaxGlyphTree::iterator iterator(static_cast<SynGlyphX::MinMaxGlyphTree::Node*>(index.internalPointer()));
+	return iterator;
+}
+
+unsigned int MinMaxGlyphTreeModel::GetBranchLevel(const QModelIndex& index) const {
+
+	SynGlyphX::MinMaxGlyphTree::iterator node = GetIteratorFromIndex(index);
+	return m_minMaxGlyphTree->depth(node);
 }

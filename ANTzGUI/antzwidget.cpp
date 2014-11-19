@@ -18,10 +18,6 @@ ANTzWidget::ANTzWidget(QWidget *parent)
 	npInitFile(m_antzData);
 	npInitCh(m_antzData);
 	npInitCtrl(m_antzData);
-
-	QObject::connect(m_model, &GlyphTreeModel::rowsRemoved, this, &ANTzWidget::OnNodeDeleted);
-	QObject::connect(m_model, &GlyphTreeModel::ModelChanged, this, &ANTzWidget::OnModelChanged);
-	OnModelChanged();
 }
 
 ANTzWidget::~ANTzWidget()

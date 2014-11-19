@@ -52,7 +52,7 @@
     <CustomBuild Include="minmaxglyphtreemodel.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
-    <CustomBuild Include="antzsingleglyphtreemodel.h">
+    <CustomBuild Include="antzsingleglyphtreewidget.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>
@@ -93,13 +93,13 @@
     <ClCompile Include="GeneratedFiles\Win32\Release\moc_minmaxglyphtreemodel.cpp">
       <Filter>Generated Files\Release_Win32</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Win32\Debug\moc_antzsingleglyphtreemodel.cpp">
+    <ClCompile Include="GeneratedFiles\Win32\Debug\moc_antzsingleglyphtreewidget.cpp">
       <Filter>Generated Files\Debug_Win32</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Win32\Release\moc_antzsingleglyphtreemodel.cpp">
+    <ClCompile Include="GeneratedFiles\Win32\Release\moc_antzsingleglyphtreewidget.cpp">
       <Filter>Generated Files\Release_Win32</Filter>
     </ClCompile>
-    <ClCompile Include="antzsingleglyphtreemodel.cpp">
+    <ClCompile Include="antzsingleglyphtreewidget.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

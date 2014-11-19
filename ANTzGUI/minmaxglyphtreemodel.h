@@ -58,10 +58,14 @@ public:
 
 	void RepaceModelWithDefaultGlyphTree();
 
+	static bool GreaterBranchLevel(const QModelIndex& left, const QModelIndex& right);
+
 private:
 	bool IsValidCSVFile(const QString& filename) const;
-	SynGlyphX::MinMaxGlyphTree::iterator GetIteratorFromIndex(const QModelIndex& index) const;
 	bool IsRootGlyph(const SynGlyphX::MinMaxGlyphTree::iterator& glyph) const;
+	unsigned int GetBranchLevel(const QModelIndex& index) const;
+
+	static SynGlyphX::MinMaxGlyphTree::iterator GetIteratorFromIndex(const QModelIndex& index);
 
 	SynGlyphX::MinMaxGlyphTree::SharedPtr m_minMaxGlyphTree;
 	SynGlyphX::MinMaxGlyphTree::iterator m_clipboardGlyph;

@@ -21,10 +21,10 @@ public:
 	};
 
 	enum EditingMode {
-		Move = 0,
+		None = 0,
+		Move,
 		Rotate,
-		Size,
-		None
+		Size
 	};
 
 	ANTzSingleGlyphTreeWidget(MinMaxGlyphTreeType glyphTreeType, QWidget *parent = 0);
@@ -46,9 +46,6 @@ public:
 
 public slots:
 	void SetEditingMode(EditingMode mode);
-
-signals:
-	void ObjectEdited(const QModelIndex& index);
 
 protected:
 	virtual void BeforeDrawScene();
@@ -75,10 +72,8 @@ private:
 	
     int GetChildIndexFromParent(pNPnode node) const;
 	
-	bool IsANTzCSVFile(const QString& filename) const;
-
+	void DeleteRootGlyphNode();
 	void DeleteChildren(pNPnode parent, unsigned int first, unsigned int count);
-	void DeleteGlyphRootNode();
 
 	void CreateNewSubTree(pNPnode parent, const SynGlyphX::MinMaxGlyphTree::const_iterator& minMaxGlyph);
 	pNPnode CreateNodeFromTemplate(pNPnode parent, const SynGlyphX::MinMaxGlyphTree::const_iterator& minMaxGlyph);
@@ -87,6 +82,9 @@ private:
 	void UpdateGlyphProperties(pNPnode glyph, const SynGlyphX::MinMaxGlyphTree::const_iterator& minMaxGlyph);
 	void UpdateGlyphProperties(pNPnode glyph, const SynGlyphX::GlyphProperties& glyphTemplate);
 
+	void ConnectDataChangedSignal();
+	void DisconnectDataChangedSignal();
+
 	pNPnode m_rootGlyph;
 	
 	SynGlyphX::GlyphProperties::SharedPtr m_clipboardGlyph;
@@ -94,6 +92,7 @@ private:
 	MinMaxGlyphTreeType m_glyphTreeType;
 
 	QPoint m_lastMousePosition;
+	QMetaObject::Connection m_dataChangedConnection;
 
 	EditingMode m_editingMode;
 	bool m_selectionEdited;
