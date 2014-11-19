@@ -15,13 +15,17 @@
 
 GlyphDesignerWindow::GlyphDesignerWindow(QWidget *parent)
     : SynGlyphX::MainWindow(parent),
-    m_treeView(NULL)
+    m_treeView(nullptr),
+	m_glyphTreeModel(nullptr),
+	m_3dView(nullptr),
+	m_isFileLoadingOrDefaultGlyphSet(false)
 {
-    m_glyphTreeModel = new GlyphTreeModel(this);
-	m_glyphTreeModel->CreateDefaultGlyph();
+    m_glyphTreeModel = new MinMaxGlyphTreeModel(this);
+	m_glyphTreeModel->RepaceModelWithDefaultGlyphTree();
     m_selectionModel = new QItemSelectionModel(m_glyphTreeModel, this);
 
-    m_3dView = new ANTzWidget(m_glyphTreeModel, m_selectionModel, this);
+	m_3dView = new ANTzSingleGlyphTreeWidget(ANTzSingleGlyphTreeWidget::MinMaxGlyphTreeType::Max, this);
+	m_3dView->SetModel(m_glyphTreeModel);
     setCentralWidget(m_3dView);
 
 	CreateMenus();
@@ -30,7 +34,11 @@ GlyphDesignerWindow::GlyphDesignerWindow(QWidget *parent)
 	m_3dView->addActions(m_treeView->actions());
 	m_3dView->setContextMenuPolicy(Qt::ActionsContextMenu);
 
-	QObject::connect(m_glyphTreeModel, &GlyphTreeModel::ModelChanged, this, &GlyphDesignerWindow::setWindowModified);
+	QObject::connect(m_glyphTreeModel, &MinMaxGlyphTreeModel::modelReset, this, &GlyphDesignerWindow::OnModelChanged);
+	QObject::connect(m_glyphTreeModel, &MinMaxGlyphTreeModel::rowsInserted, this, &GlyphDesignerWindow::OnModelChanged);
+	QObject::connect(m_glyphTreeModel, &MinMaxGlyphTreeModel::rowsRemoved, this, &GlyphDesignerWindow::OnModelChanged);
+	QObject::connect(m_glyphTreeModel, &MinMaxGlyphTreeModel::rowsMoved, this, &GlyphDesignerWindow::OnModelChanged);
+	QObject::connect(m_glyphTreeModel, &MinMaxGlyphTreeModel::dataChanged, this, &GlyphDesignerWindow::OnModelChanged);
 
     statusBar()->showMessage(SynGlyphX::Application::applicationName() + " Started", 3000);
 }
@@ -77,17 +85,17 @@ void GlyphDesignerWindow::CreateMenus() {
     QActionGroup* editingActionGroup = new QActionGroup(editingModeMenu);
     QAction* moveEditModeAction = new QAction(tr("Move"), editingModeMenu);
     moveEditModeAction->setCheckable(true);
-    moveEditModeAction->setData(ANTzWidget::Move);
+	moveEditModeAction->setData(ANTzSingleGlyphTreeWidget::Move);
     editingActionGroup->addAction(moveEditModeAction);
     
     QAction* rotateEditModeAction = new QAction(tr("Rotate"), editingModeMenu);
     rotateEditModeAction->setCheckable(true);
-    rotateEditModeAction->setData(ANTzWidget::Rotate);
+	rotateEditModeAction->setData(ANTzSingleGlyphTreeWidget::Rotate);
     editingActionGroup->addAction(rotateEditModeAction);
 
     QAction* sizeEditModeAction = new QAction(tr("Size"), editingModeMenu);
     sizeEditModeAction->setCheckable(true);
-    sizeEditModeAction->setData(ANTzWidget::Size);
+	sizeEditModeAction->setData(ANTzSingleGlyphTreeWidget::Size);
     editingActionGroup->addAction(sizeEditModeAction);
 
     moveEditModeAction->setChecked(true);
@@ -132,7 +140,6 @@ void GlyphDesignerWindow::CreateDockWidgets() {
     rightDockWidget->setWidget(modalGlyphWidget);
     addDockWidget(Qt::RightDockWidgetArea, rightDockWidget);
     m_viewMenu->addAction(rightDockWidget->toggleViewAction());
-    QObject::connect(m_3dView, &ANTzWidget::ObjectEdited, modalGlyphWidget, &ModalGlyphWidget::OnNodeUpdated);
 }
 
 void GlyphDesignerWindow::CreateNewGlyphTree() {
@@ -175,7 +182,7 @@ void GlyphDesignerWindow::CreateNewGlyphTree() {
 
 				boost::shared_ptr<SynGlyphX::GlyphProperties> rootGlyph(new SynGlyphX::GlyphProperties());
 				glyphWidgets[0]->SetGlyphFromWidget(rootGlyph);
-				SynGlyphX::GlyphTree::SharedPtr newGlyphTree(new SynGlyphX::GlyphTree(*rootGlyph));
+				SynGlyphX::GlyphTree newMaxGlyphTree(*rootGlyph);
 
 				std::vector<SynGlyphX::GlyphProperties::ConstSharedPtr> templates;
 				std::vector<unsigned int> instanceCounts;
@@ -187,9 +194,10 @@ void GlyphDesignerWindow::CreateNewGlyphTree() {
 					instanceCounts.push_back(glyphWidgets[i - 1]->GetNumberOfChildren());
                 }
 
-				newGlyphTree->AllocateChildSubtree(templates, instanceCounts, newGlyphTree->root());
+				newMaxGlyphTree.AllocateChildSubtree(templates, instanceCounts, newMaxGlyphTree.root());
 
-                m_glyphTreeModel->CreateNewTree(newGlyphTree);
+				SynGlyphX::MinMaxGlyphTree::SharedPtr newGlyphTree(new SynGlyphX::MinMaxGlyphTree(newMaxGlyphTree));
+				m_glyphTreeModel->SetMinMaxGlyphTree(newGlyphTree);
                 m_3dView->ResetCamera();
             }
         }
@@ -201,10 +209,12 @@ void GlyphDesignerWindow::ExportToCSV() {
     QString saveFile = QFileDialog::getSaveFileName(this, tr("Save Glyph Tree To CSV"), "", tr("CSV Files (*.csv)"));
     if (!saveFile.isEmpty()) {
 
-        if (m_glyphTreeModel->SaveToCSV(saveFile.toStdString(), m_selectionModel->selectedIndexes())) {
+        if (m_glyphTreeModel->SaveToCSV(saveFile)) {
+
             statusBar()->showMessage("File successfully saved", 3000);
         }
         else {
+
             QString title = "Save File Failed";
             QMessageBox::warning(this, title, "Failed to save file");
         }
@@ -232,15 +242,19 @@ void GlyphDesignerWindow::LoadTemplate(const QString& filename) {
     if (!filename.isEmpty()) {
 
         SynGlyphX::Application::setOverrideCursor(Qt::WaitCursor);
+		m_isFileLoadingOrDefaultGlyphSet = true;
         bool fileLoaded = m_glyphTreeModel->LoadFromFile(filename);
         SynGlyphX::Application::restoreOverrideCursor();
 
         if (fileLoaded) {
+
             SetCurrentFile(filename);
             statusBar()->showMessage("Template successfully opened", 3000);
             m_3dView->ResetCamera();
         }
         else {
+
+			m_isFileLoadingOrDefaultGlyphSet = false;
             QString title = "Loading Template Failed";
             QMessageBox::warning(this, title, "Failed to load template");
         }
@@ -289,7 +303,7 @@ bool GlyphDesignerWindow::SaveTemplateFile(const QString& filename) {
 
 void GlyphDesignerWindow::EditingModeChanged(QAction* action) {
 
-    m_3dView->SetEditingMode(static_cast<ANTzWidget::EditingMode>(action->data().toInt()));
+	m_3dView->SetEditingMode(static_cast<ANTzSingleGlyphTreeWidget::EditingMode>(action->data().toInt()));
 }
 
 void GlyphDesignerWindow::closeEvent(QCloseEvent* event) {
@@ -316,4 +330,17 @@ bool GlyphDesignerWindow::AskUserToSave() {
     }
 
     return true;
+}
+
+void GlyphDesignerWindow::OnModelChanged() {
+
+	if (m_isFileLoadingOrDefaultGlyphSet) {
+
+		setWindowModified(false);
+		m_isFileLoadingOrDefaultGlyphSet = false;
+	}
+	else {
+
+		setWindowModified(true);
+	}
 }

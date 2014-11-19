@@ -3,8 +3,8 @@
 
 #include "mainwindow.h"
 #include "glyphtreeview.h"
-#include "antzwidget.h"
-#include "glyphtreemodel.h"
+#include "antzsingleglyphtreewidget.h"
+#include "minmaxglyphtreemodel.h"
 
 class GlyphDesignerWindow : public SynGlyphX::MainWindow
 {
@@ -25,6 +25,7 @@ private slots:
     bool SaveAsTemplate();
     void OpenTemplate();
     void EditingModeChanged(QAction* action);
+	void OnModelChanged();
 
 private:
     void CreateMenus();
@@ -33,7 +34,7 @@ private:
     bool SaveTemplateFile(const QString& filename);
     bool AskUserToSave();
 
-    ANTzWidget* m_3dView;
+    ANTzSingleGlyphTreeWidget* m_3dView;
 
     GlyphTreeView* m_treeView;
 
@@ -42,8 +43,10 @@ private:
     QMenu* m_viewMenu;
     QMenu* m_glyphMenu;
 
-    GlyphTreeModel* m_glyphTreeModel;
+    MinMaxGlyphTreeModel* m_glyphTreeModel;
     QItemSelectionModel* m_selectionModel;
+
+	bool m_isFileLoadingOrDefaultGlyphSet;
 };
 
 #endif // GLYPHDESIGNERWINDOW_H

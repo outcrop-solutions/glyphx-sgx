@@ -2,12 +2,11 @@
 #include "singlewidgetdialog.h"
 #include "singleglyphwidget.h"
 
-GlyphTreeView::GlyphTreeView(GlyphTreeModel* model, QItemSelectionModel* selectionModel, QWidget *parent)
+GlyphTreeView::GlyphTreeView(MinMaxGlyphTreeModel* model, QWidget *parent)
     : QTreeView(parent),
 	m_model(model)
 {
 	setModel(m_model);
-	setSelectionModel(selectionModel);
 
     setSelectionMode(QAbstractItemView::ExtendedSelection);
     setDragEnabled(true);
@@ -108,7 +107,7 @@ void GlyphTreeView::DeleteSelected() {
 void GlyphTreeView::DeleteChildrenFromSelected() {
 
 	QModelIndexList selectedItems = selectionModel()->selectedIndexes();
-	std::sort(selectedItems.begin(), selectedItems.end(), GlyphTreeModel::GreaterBranchLevel);
+	std::sort(selectedItems.begin(), selectedItems.end(), MinMaxGlyphTreeModel::GreaterBranchLevel);
 	for (int i = 0; i < selectedItems.length(); ++i) {
 
 		m_model->removeRows(0, m_model->rowCount(selectedItems[i]), selectedItems[i]);
@@ -120,12 +119,11 @@ void GlyphTreeView::PropertiesActivated() {
 	const QModelIndexList& selectedItems = selectionModel()->selectedIndexes();
 
 	const QModelIndex& index = selectedItems.back();
-	pNPnode node = static_cast<pNPnode>(index.internalPointer());
 	boost::shared_ptr<SynGlyphX::GlyphProperties> oldGlyph(new SynGlyphX::GlyphProperties(node));
 
 	SingleGlyphWidget* singleGlyphWidget = new SingleGlyphWidget(SingleGlyphWidget::ShowOnBottom, this);
 	singleGlyphWidget->SetWidgetFromGlyph(oldGlyph, index.parent().isValid());
-	singleGlyphWidget->SetNumberOfChildren(node->childCount);
+	singleGlyphWidget->SetNumberOfChildren(m_model->rowCount(index));
 
 	SynGlyphX::SingleWidgetDialog dialog(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, singleGlyphWidget, this);
 	dialog.setWindowTitle(tr("Glyph Properties"));
@@ -133,7 +131,8 @@ void GlyphTreeView::PropertiesActivated() {
 
 		boost::shared_ptr<SynGlyphX::GlyphProperties> newGlyph(new SynGlyphX::GlyphProperties());
 		singleGlyphWidget->SetGlyphFromWidget(newGlyph);
-		m_model->UpdateNodes(selectedItems, newGlyph, GlyphTreeModel::FindUpdates(oldGlyph, newGlyph));
+		//m_model->UpdateNodes(selectedItems, newGlyph, GlyphTreeModel::FindUpdates(oldGlyph, newGlyph));
+		m_model->UpdateGlyphs(selectedItems, newGlyph);
 	}
 }
 
@@ -176,7 +175,7 @@ void GlyphTreeView::EnableActions() {
 
 	if (isObjectSelected) {
 		const QModelIndex& index = selected.last();
-		bool isRootObjectOnlySelected = (index.internalPointer() == m_model->GetRootGlyph()) && !areMultipleObjectsSelected;
+		bool isRootObjectOnlySelected = (!index.parent().isValid()) && !areMultipleObjectsSelected;
 
 		//m_cutAction->setEnabled(!isRootObjectSelected);
 		//m_copyAction->setEnabled(true);

@@ -11,7 +11,7 @@ class GlyphTreeView : public QTreeView
     Q_OBJECT
 
 public:
-	GlyphTreeView(MinMaxGlyphTreeModel* model, QItemSelectionModel* selectionModel, QWidget *parent = 0);
+	GlyphTreeView(MinMaxGlyphTreeModel* model, QWidget *parent = 0);
     ~GlyphTreeView();
 
 	const SynGlyphX::SharedActionList& GetGlyphActions() const;

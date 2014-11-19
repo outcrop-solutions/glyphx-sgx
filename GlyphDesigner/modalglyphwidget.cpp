@@ -1,6 +1,6 @@
 #include "modalglyphwidget.h"
 
-ModalGlyphWidget::ModalGlyphWidget(GlyphTreeModel* model, QItemSelectionModel* selectionModel, QWidget *parent)
+ModalGlyphWidget::ModalGlyphWidget(MinMaxGlyphTreeModel* model, QItemSelectionModel* selectionModel, QWidget *parent)
     : SingleGlyphWidget(SingleGlyphWidget::ShowOnBottom | SingleGlyphWidget::AddChildrenButton, parent),
     m_model(model),
     m_selectionModel(selectionModel)
@@ -21,17 +21,17 @@ ModalGlyphWidget::~ModalGlyphWidget()
 
 void ModalGlyphWidget::ConnectWidgetSignals() {
 
-    m_propertyConnections.push_back(QObject::connect(m_geometryShapeComboBox, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, [this]{ OnWidgetUpdated(GlyphTreeModel::UpdateGeometry); }));
-    m_propertyConnections.push_back(QObject::connect(m_geometrySurfaceComboBox, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, [this]{ OnWidgetUpdated(GlyphTreeModel::UpdateSurface); }));
-    m_propertyConnections.push_back(QObject::connect(m_topologyComboBox, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, [this]{ OnWidgetUpdated(GlyphTreeModel::UpdateTopology); }));
+	m_propertyConnections.push_back(QObject::connect(m_geometryShapeComboBox, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, [this]{ OnWidgetUpdated(MinMaxGlyphTreeModel::UpdateGeometry); }));
+	m_propertyConnections.push_back(QObject::connect(m_geometrySurfaceComboBox, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, [this]{ OnWidgetUpdated(MinMaxGlyphTreeModel::UpdateSurface); }));
+	m_propertyConnections.push_back(QObject::connect(m_topologyComboBox, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, [this]{ OnWidgetUpdated(MinMaxGlyphTreeModel::UpdateTopology); }));
 
-    m_propertyConnections.push_back(QObject::connect(m_ratioSpinBox, static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), this, [this]{ OnWidgetUpdated(GlyphTreeModel::UpdateScale); }));
+	m_propertyConnections.push_back(QObject::connect(m_ratioSpinBox, static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), this, [this]{ OnWidgetUpdated(MinMaxGlyphTreeModel::UpdateScale); }));
 
-    m_propertyConnections.push_back(QObject::connect(m_colorWidget, &SynGlyphX::ColorAlphaWidget::ColorChanged, this, [this]{ OnWidgetUpdated(GlyphTreeModel::UpdateColor); }));
+	m_propertyConnections.push_back(QObject::connect(m_colorWidget, &SynGlyphX::ColorAlphaWidget::ColorChanged, this, [this]{ OnWidgetUpdated(MinMaxGlyphTreeModel::UpdateColor); }));
 
-    m_propertyConnections.push_back(QObject::connect(m_translateWidget, &XYZWidget::ValuesChanged, this, [this]{ OnWidgetUpdated(GlyphTreeModel::UpdatePosition); }));
-    m_propertyConnections.push_back(QObject::connect(m_rotateWidget, &XYZWidget::ValuesChanged, this, [this]{ OnWidgetUpdated(GlyphTreeModel::UpdateRotation); }));
-    m_propertyConnections.push_back(QObject::connect(m_scaleWidget, &XYZWidget::ValuesChanged, this, [this]{ OnWidgetUpdated(GlyphTreeModel::UpdateScale); }));
+	m_propertyConnections.push_back(QObject::connect(m_translateWidget, &XYZWidget::ValuesChanged, this, [this]{ OnWidgetUpdated(MinMaxGlyphTreeModel::UpdatePosition); }));
+	m_propertyConnections.push_back(QObject::connect(m_rotateWidget, &XYZWidget::ValuesChanged, this, [this]{ OnWidgetUpdated(MinMaxGlyphTreeModel::UpdateRotation); }));
+	m_propertyConnections.push_back(QObject::connect(m_scaleWidget, &XYZWidget::ValuesChanged, this, [this]{ OnWidgetUpdated(MinMaxGlyphTreeModel::UpdateScale); }));
 }
 
 void ModalGlyphWidget::DisconnectWidgetSignals() {
@@ -42,7 +42,7 @@ void ModalGlyphWidget::DisconnectWidgetSignals() {
     m_propertyConnections.clear();
 }
 
-void ModalGlyphWidget::OnWidgetUpdated(GlyphTreeModel::PropertyUpdates updates) {
+void ModalGlyphWidget::OnWidgetUpdated(MinMaxGlyphTreeModel::PropertyUpdates updates) {
 
     const QModelIndexList& selected = m_selectionModel->selectedIndexes();
     if (!selected.isEmpty()) {
