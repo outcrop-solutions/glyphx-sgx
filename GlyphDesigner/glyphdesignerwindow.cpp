@@ -22,10 +22,10 @@ GlyphDesignerWindow::GlyphDesignerWindow(QWidget *parent)
 {
     m_glyphTreeModel = new MinMaxGlyphTreeModel(this);
 	m_glyphTreeModel->RepaceModelWithDefaultGlyphTree();
-    m_selectionModel = new QItemSelectionModel(m_glyphTreeModel, this);
+	m_sharedSelectionModel = new QItemSelectionModel(m_glyphTreeModel, this);
 
-	m_3dView = new ANTzSingleGlyphTreeWidget(ANTzSingleGlyphTreeWidget::MinMaxGlyphTreeType::Max, this);
-	m_3dView->SetModel(m_glyphTreeModel);
+	m_3dView = new ANTzSingleGlyphTreeWidget(MinMaxGlyphTreeModel::GlyphType::Max, this);
+	m_3dView->SetModel(m_glyphTreeModel, m_sharedSelectionModel);
     setCentralWidget(m_3dView);
 
 	CreateMenus();
@@ -39,6 +39,8 @@ GlyphDesignerWindow::GlyphDesignerWindow(QWidget *parent)
 	QObject::connect(m_glyphTreeModel, &MinMaxGlyphTreeModel::rowsRemoved, this, &GlyphDesignerWindow::OnModelChanged);
 	QObject::connect(m_glyphTreeModel, &MinMaxGlyphTreeModel::rowsMoved, this, &GlyphDesignerWindow::OnModelChanged);
 	QObject::connect(m_glyphTreeModel, &MinMaxGlyphTreeModel::dataChanged, this, &GlyphDesignerWindow::OnModelChanged);
+	
+	m_sharedSelectionModel->select(m_glyphTreeModel->index(0), QItemSelectionModel::ClearAndSelect);
 
     statusBar()->showMessage(SynGlyphX::Application::applicationName() + " Started", 3000);
 }
@@ -126,7 +128,8 @@ void GlyphDesignerWindow::CreateDockWidgets() {
 
     //Add Tree View to dock widget on left side
     QDockWidget* leftDockWidget = new QDockWidget("Glyph Tree", this);
-	m_treeView = new GlyphTreeView(m_glyphTreeModel, m_selectionModel, leftDockWidget);
+	m_treeView = new GlyphTreeView(m_glyphTreeModel, MinMaxGlyphTreeModel::GlyphType::Max, leftDockWidget);
+	m_treeView->setSelectionModel(m_sharedSelectionModel);
 	m_editMenu->addActions(m_treeView->GetEditActions());
 	m_glyphMenu->addActions(m_treeView->GetGlyphActions());
     
@@ -135,7 +138,8 @@ void GlyphDesignerWindow::CreateDockWidgets() {
     m_viewMenu->addAction(leftDockWidget->toggleViewAction());
 
     QDockWidget* rightDockWidget = new QDockWidget("Properties", this);
-    ModalGlyphWidget* modalGlyphWidget = new ModalGlyphWidget(m_glyphTreeModel, m_selectionModel, rightDockWidget);
+	ModalGlyphWidget* modalGlyphWidget = new ModalGlyphWidget(MinMaxGlyphTreeModel::GlyphType::Max, rightDockWidget);
+	modalGlyphWidget->SetModel(m_glyphTreeModel, m_sharedSelectionModel);
 	QObject::connect(modalGlyphWidget, &ModalGlyphWidget::AddChildrenButtonClicked, m_treeView, &GlyphTreeView::AddChildren);
     rightDockWidget->setWidget(modalGlyphWidget);
     addDockWidget(Qt::RightDockWidgetArea, rightDockWidget);

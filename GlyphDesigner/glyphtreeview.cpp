@@ -2,9 +2,10 @@
 #include "singlewidgetdialog.h"
 #include "singleglyphwidget.h"
 
-GlyphTreeView::GlyphTreeView(MinMaxGlyphTreeModel* model, QWidget *parent)
+GlyphTreeView::GlyphTreeView(MinMaxGlyphTreeModel* model, MinMaxGlyphTreeModel::GlyphType glyphTreeType, QWidget *parent)
     : QTreeView(parent),
-	m_model(model)
+	m_model(model),
+	m_glyphTreeType(glyphTreeType)
 {
 	setModel(m_model);
 
@@ -119,7 +120,15 @@ void GlyphTreeView::PropertiesActivated() {
 	const QModelIndexList& selectedItems = selectionModel()->selectedIndexes();
 
 	const QModelIndex& index = selectedItems.back();
-	boost::shared_ptr<SynGlyphX::GlyphProperties> oldGlyph(new SynGlyphX::GlyphProperties(node));
+	boost::shared_ptr<SynGlyphX::GlyphProperties> oldGlyph;
+	if (m_glyphTreeType == MinMaxGlyphTreeModel::GlyphType::Max) {
+
+		oldGlyph.reset(new SynGlyphX::GlyphProperties(m_model->GetMinMaxGlyph(index)->GetMaxGlyph()));
+	}
+	else {
+
+		oldGlyph.reset(new SynGlyphX::GlyphProperties(m_model->GetMinMaxGlyph(index)->GetMinGlyph()));
+	}
 
 	SingleGlyphWidget* singleGlyphWidget = new SingleGlyphWidget(SingleGlyphWidget::ShowOnBottom, this);
 	singleGlyphWidget->SetWidgetFromGlyph(oldGlyph, index.parent().isValid());
@@ -131,8 +140,7 @@ void GlyphTreeView::PropertiesActivated() {
 
 		boost::shared_ptr<SynGlyphX::GlyphProperties> newGlyph(new SynGlyphX::GlyphProperties());
 		singleGlyphWidget->SetGlyphFromWidget(newGlyph);
-		//m_model->UpdateNodes(selectedItems, newGlyph, GlyphTreeModel::FindUpdates(oldGlyph, newGlyph));
-		m_model->UpdateGlyphs(selectedItems, newGlyph);
+		m_model->UpdateGlyphs(selectedItems, m_glyphTreeType, *newGlyph.get());
 	}
 }
 
@@ -149,9 +157,10 @@ void GlyphTreeView::AddChildren() {
 
 		boost::shared_ptr<SynGlyphX::GlyphProperties> glyph(new SynGlyphX::GlyphProperties());
 		singleGlyphWidget->SetGlyphFromWidget(glyph);
+		SynGlyphX::MinMaxGlyph minMaxGlyph(*glyph.get());
 		for (int i = 0; i < selectedItems.length(); ++i) {
 
-			m_model->AppendChild(selectedItems[i], glyph, singleGlyphWidget->GetNumberOfChildren());
+			m_model->AppendChild(selectedItems[i], minMaxGlyph, singleGlyphWidget->GetNumberOfChildren());
 		}
 	}
 }

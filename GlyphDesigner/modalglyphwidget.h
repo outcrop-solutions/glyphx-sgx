@@ -10,24 +10,28 @@ class ModalGlyphWidget : public SingleGlyphWidget
     Q_OBJECT
 
 public:
-    ModalGlyphWidget(MinMaxGlyphTreeModel* model, QItemSelectionModel* selectionModel, QWidget *parent = 0);
+	ModalGlyphWidget(MinMaxGlyphTreeModel::GlyphType glyphTreeType, QWidget *parent = 0);
     ~ModalGlyphWidget();
 
-public slots:
-	void OnNodeUpdated(const QModelIndex& index);
+	void SetModel(MinMaxGlyphTreeModel* model, QItemSelectionModel* selectionModel);
 
 private slots:
+	void OnGlyphUpdated(const QModelIndex& index);
 	void OnWidgetUpdated(MinMaxGlyphTreeModel::PropertyUpdates updates);
     void SelectionChanged(const QItemSelection& selected, const QItemSelection& deselected);
 
 private:
     void ConnectWidgetSignals();
     void DisconnectWidgetSignals();
-    void UpdateWidget(pNPnode node);
+	void UpdateWidget(const QModelIndex& index);
     
+	MinMaxGlyphTreeModel::GlyphType m_glyphTreeType;
 	MinMaxGlyphTreeModel* m_model;
     QItemSelectionModel* m_selectionModel;
+
     std::vector<QMetaObject::Connection> m_propertyConnections;
+	QMetaObject::Connection m_glyphUpdateConnection;
+	QMetaObject::Connection m_selectionConnection;
 };
 
 #endif // MODALGLYPHWIDGET_H

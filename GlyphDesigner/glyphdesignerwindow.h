@@ -35,7 +35,6 @@ private:
     bool AskUserToSave();
 
     ANTzSingleGlyphTreeWidget* m_3dView;
-
     GlyphTreeView* m_treeView;
 
     QMenu* m_fileMenu;
@@ -44,7 +43,7 @@ private:
     QMenu* m_glyphMenu;
 
     MinMaxGlyphTreeModel* m_glyphTreeModel;
-    QItemSelectionModel* m_selectionModel;
+	QItemSelectionModel* m_sharedSelectionModel;
 
 	bool m_isFileLoadingOrDefaultGlyphSet;
 };

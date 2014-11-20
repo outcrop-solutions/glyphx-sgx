@@ -1,22 +1,36 @@
 #include "modalglyphwidget.h"
 
-ModalGlyphWidget::ModalGlyphWidget(MinMaxGlyphTreeModel* model, QItemSelectionModel* selectionModel, QWidget *parent)
+ModalGlyphWidget::ModalGlyphWidget(MinMaxGlyphTreeModel::GlyphType glyphTreeType, QWidget *parent)
     : SingleGlyphWidget(SingleGlyphWidget::ShowOnBottom | SingleGlyphWidget::AddChildrenButton, parent),
-    m_model(model),
-    m_selectionModel(selectionModel)
+    m_model(nullptr),
+	m_glyphTreeType(glyphTreeType),
+    m_selectionModel(nullptr)
 {
     ConnectWidgetSignals();
-
-    QObject::connect(m_selectionModel, SIGNAL(selectionChanged(const QItemSelection&, const QItemSelection&)), this, SLOT(SelectionChanged(const QItemSelection&, const QItemSelection&)));
-
-    QObject::connect(m_model, SIGNAL(NodeUpdated(const QModelIndex&)), this, SLOT(OnNodeUpdated(const QModelIndex&)));
-
     setEnabled(false);
 }
 
 ModalGlyphWidget::~ModalGlyphWidget()
 {
 
+}
+
+void ModalGlyphWidget::SetModel(MinMaxGlyphTreeModel* model, QItemSelectionModel* selectionModel) {
+
+	QObject::disconnect(m_glyphUpdateConnection);
+	QObject::disconnect(m_selectionConnection);
+
+	m_model = model;
+	if (m_model != nullptr) {
+
+		QObject::connect(m_model, &MinMaxGlyphTreeModel::dataChanged, this, &ModalGlyphWidget::OnGlyphUpdated);
+	}
+
+	m_selectionModel = selectionModel;
+	if (m_selectionModel != nullptr) {
+
+		QObject::connect(m_selectionModel, &QItemSelectionModel::selectionChanged, this, &ModalGlyphWidget::SelectionChanged);
+	}
 }
 
 void ModalGlyphWidget::ConnectWidgetSignals() {
@@ -50,7 +64,7 @@ void ModalGlyphWidget::OnWidgetUpdated(MinMaxGlyphTreeModel::PropertyUpdates upd
         boost::shared_ptr<SynGlyphX::GlyphProperties> glyph(new SynGlyphX::GlyphProperties());
         SetGlyphFromWidget(glyph);
 
-        m_model->UpdateNodes(selected, glyph, updates);
+        m_model->UpdateGlyph(selected.back(), m_glyphTreeType, *glyph.get(), updates);
     }
 }
 
@@ -63,26 +77,34 @@ void ModalGlyphWidget::SelectionChanged(const QItemSelection& selected, const QI
     else {
         DisconnectWidgetSignals();
 		const QModelIndex& index = selectedList.back();
-        UpdateWidget(static_cast<pNPnode>(index.internalPointer()));
+		UpdateWidget(index);
         ConnectWidgetSignals();
         setEnabled(true);
     }
 }
 
-void ModalGlyphWidget::UpdateWidget(pNPnode node) {
+void ModalGlyphWidget::UpdateWidget(const QModelIndex& index) {
 
-    boost::shared_ptr<SynGlyphX::GlyphProperties> glyph(new SynGlyphX::GlyphProperties(node));
-    SetWidgetFromGlyph(glyph, (node->parent != nullptr));
-	SetNumberOfChildren(node->childCount);
+    boost::shared_ptr<SynGlyphX::GlyphProperties> glyph;
+	if (m_glyphTreeType == MinMaxGlyphTreeModel::GlyphType::Max) {
+
+		glyph.reset(new SynGlyphX::GlyphProperties(m_model->GetMinMaxGlyph(index)->GetMaxGlyph()));
+	}
+	else {
+
+		glyph.reset(new SynGlyphX::GlyphProperties(m_model->GetMinMaxGlyph(index)->GetMinGlyph()));
+	}
+    SetWidgetFromGlyph(glyph, index.parent().isValid());
+	SetNumberOfChildren(m_model->rowCount(index));
 }
 
-void ModalGlyphWidget::OnNodeUpdated(const QModelIndex& index) {
+void ModalGlyphWidget::OnGlyphUpdated(const QModelIndex& index) {
 
     const QModelIndexList& selectedList = m_selectionModel->selectedIndexes();
     if (selectedList.back() == index) {
 
         DisconnectWidgetSignals();
-        UpdateWidget(static_cast<pNPnode>(index.internalPointer()));
+        UpdateWidget(index);
         ConnectWidgetSignals();
     }
 }
