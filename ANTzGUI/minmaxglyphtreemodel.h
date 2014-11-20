@@ -1,14 +1,20 @@
 #ifndef MINMAXGLYPHTREEMODEL_H
 #define MINMAXGLYPHTREEMODEL_H
 
+#include "antzgui_global.h"
 #include <QtCore/QAbstractItemModel>
 #include "minmaxglyphtree.h"
 
-class MinMaxGlyphTreeModel : public QAbstractItemModel
+class ANTZGUI_EXPORT MinMaxGlyphTreeModel : public QAbstractItemModel
 {
 	Q_OBJECT
 
 public:
+	enum GlyphType {
+		Min,
+		Max
+	};
+
 	enum PropertyUpdate {
 		UpdateNone = 0x00,
 		UpdateColor = 0x01,
@@ -41,8 +47,14 @@ public:
 	virtual bool removeRows(int row, int count, const QModelIndex& parent = QModelIndex());
 
 	void AppendChild(const QModelIndex& parent, const SynGlyphX::MinMaxGlyph& glyph, unsigned int numberOfChildren = 1);
+
 	void UpdateGlyph(const QModelIndex& index, const SynGlyphX::MinMaxGlyph& glyph, PropertyUpdates updates = UpdateAll);
 	void UpdateGlyphs(const QModelIndexList& indexList, const SynGlyphX::MinMaxGlyph& glyph, PropertyUpdates updates = UpdateAll);
+	
+	void UpdateGlyph(const QModelIndex& index, GlyphType type, const SynGlyphX::GlyphProperties& glyph, PropertyUpdates updates = UpdateAll);
+	void UpdateGlyphs(const QModelIndexList& indexList, GlyphType type, const SynGlyphX::GlyphProperties& glyph, PropertyUpdates updates = UpdateAll);
+
+	SynGlyphX::MinMaxGlyphTree::const_iterator GetMinMaxGlyph(const QModelIndex& index) const;
 
 	virtual QStringList mimeTypes() const;
 	virtual QMimeData* mimeData(const QModelIndexList& indexes) const;
@@ -61,6 +73,9 @@ public:
 	static bool GreaterBranchLevel(const QModelIndex& left, const QModelIndex& right);
 
 private:
+	void UpdateGlyphMin(const QModelIndex& index, const SynGlyphX::GlyphProperties& glyph, PropertyUpdates updates);
+	void UpdateGlyphMax(const QModelIndex& index, const SynGlyphX::GlyphProperties& glyph, PropertyUpdates updates);
+
 	bool IsValidCSVFile(const QString& filename) const;
 	bool IsRootGlyph(const SynGlyphX::MinMaxGlyphTree::iterator& glyph) const;
 	unsigned int GetBranchLevel(const QModelIndex& index) const;

@@ -22,6 +22,10 @@ protected:
     virtual void paintGL();
 
 	void CenterCameraOnNode(pNPnode node);
+	int PickPinAtPoint(const QPoint& point) const;
+
+	void DeleteNode(pNPnode node);
+	void DeleteChildren(pNPnode parent, unsigned int first, unsigned int count);
 
 	virtual void BeforeDrawScene() = 0;
 	virtual void AfterDrawScene() = 0;

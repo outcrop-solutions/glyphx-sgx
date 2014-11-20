@@ -15,11 +15,6 @@ class ANTZGUI_EXPORT ANTzSingleGlyphTreeWidget : public ANTzWidget
     Q_OBJECT
 
 public:
-	enum MinMaxGlyphTreeType {
-		Min,
-		Max
-	};
-
 	enum EditingMode {
 		None = 0,
 		Move,
@@ -27,11 +22,11 @@ public:
 		Size
 	};
 
-	ANTzSingleGlyphTreeWidget(MinMaxGlyphTreeType glyphTreeType, QWidget *parent = 0);
+	ANTzSingleGlyphTreeWidget(MinMaxGlyphTreeModel::GlyphType glyphTreeType, QWidget *parent = 0);
 	~ANTzSingleGlyphTreeWidget();
 
 	void SetAllowMultiSelection(bool allowMultiSelection);
-	void SetModel(MinMaxGlyphTreeModel* model);
+	void SetModel(MinMaxGlyphTreeModel* model, QItemSelectionModel* selectionModel);
 
     bool LoadFromFile(const QString& filename);
 	void SaveToTemplateFile(const QString& filename) const;
@@ -73,7 +68,6 @@ private:
     int GetChildIndexFromParent(pNPnode node) const;
 	
 	void DeleteRootGlyphNode();
-	void DeleteChildren(pNPnode parent, unsigned int first, unsigned int count);
 
 	void CreateNewSubTree(pNPnode parent, const SynGlyphX::MinMaxGlyphTree::const_iterator& minMaxGlyph);
 	pNPnode CreateNodeFromTemplate(pNPnode parent, const SynGlyphX::MinMaxGlyphTree::const_iterator& minMaxGlyph);
@@ -89,10 +83,11 @@ private:
 	
 	SynGlyphX::GlyphProperties::SharedPtr m_clipboardGlyph;
 
-	MinMaxGlyphTreeType m_glyphTreeType;
+	MinMaxGlyphTreeModel::GlyphType m_glyphTreeType;
 
 	QPoint m_lastMousePosition;
 	QMetaObject::Connection m_dataChangedConnection;
+	QMetaObject::Connection m_selectionConnection;
 
 	EditingMode m_editingMode;
 	bool m_selectionEdited;

@@ -58,7 +58,6 @@ QModelIndex	MinMaxGlyphTreeModel::index(int row, int column, const QModelIndex& 
 		return QModelIndex();
 	}
 
-	pNPnode parentGlyph;
 	if (!parent.isValid()) {
 
 		return createIndex(row, column, m_minMaxGlyphTree->root().node());
@@ -87,7 +86,7 @@ QModelIndex	MinMaxGlyphTreeModel::parent(const QModelIndex& index) const {
 				SynGlyphX::MinMaxGlyphTree::iterator grandParentIterator = m_minMaxGlyphTree->parent(iT);
 				for (int i = 0; i < m_minMaxGlyphTree->children(grandParentIterator); ++i) {
 
-					if (m_minMaxGlyphTree->child(grandParentIterator, i) == parentIterator) {
+					if (m_minMaxGlyphTree->child(grandParentIterator, i).equal(parentIterator)) {
 
 						return createIndex(i, 0, parentIterator.node());
 					}
@@ -101,8 +100,15 @@ QModelIndex	MinMaxGlyphTreeModel::parent(const QModelIndex& index) const {
 
 int	MinMaxGlyphTreeModel::rowCount(const QModelIndex& parent) const {
 
-	SynGlyphX::MinMaxGlyphTree::const_iterator iT(static_cast<SynGlyphX::MinMaxGlyphTree::Node*>(parent.internalPointer()));
-	return m_minMaxGlyphTree->children(iT);
+	if (parent.isValid()) {
+
+		SynGlyphX::MinMaxGlyphTree::const_iterator iT(static_cast<SynGlyphX::MinMaxGlyphTree::Node*>(parent.internalPointer()));
+		return m_minMaxGlyphTree->children(iT);
+	}
+	else {
+
+		return 1;
+	}
 }
 
 Qt::ItemFlags MinMaxGlyphTreeModel::flags(const QModelIndex& index) const {
@@ -127,7 +133,7 @@ QVariant MinMaxGlyphTreeModel::headerData(int section, Qt::Orientation orientati
 
 bool MinMaxGlyphTreeModel::IsRootGlyph(const SynGlyphX::MinMaxGlyphTree::iterator& glyph) const {
 
-	return (glyph == m_minMaxGlyphTree->root());
+	return (glyph.equal(m_minMaxGlyphTree->root()));
 }
 
 Qt::DropActions MinMaxGlyphTreeModel::supportedDropActions() const {
@@ -179,7 +185,7 @@ void MinMaxGlyphTreeModel::AppendChild(const QModelIndex& parent, const SynGlyph
 
 	SynGlyphX::MinMaxGlyphTree::iterator parentGlyph = GetIteratorFromIndex(parent);
 	unsigned int startingNumberOfChildren = m_minMaxGlyphTree->children(parentGlyph);
-	SynGlyphX::Vector3 newPosition = { { 0.0, 0.0, 0.0 } };
+	SynGlyphX::Vector3 newPosition = { { 15.0, 0.0, 0.0 } };
 	if (startingNumberOfChildren > 0) {
 
 		newPosition = m_minMaxGlyphTree->child(parentGlyph, startingNumberOfChildren - 1)->GetMinGlyph().GetPosition();
@@ -206,7 +212,7 @@ void MinMaxGlyphTreeModel::UpdateGlyph(const QModelIndex& index, const SynGlyphX
 
 		SynGlyphX::MinMaxGlyphTree::iterator glyphToUpdate = GetIteratorFromIndex(index);
 		SynGlyphX::GlyphProperties minGlyph = glyphToUpdate->GetMinGlyph();
-		SynGlyphX::GlyphNumericMappableProperties difference =  glyphToUpdate->GetDifference();
+		SynGlyphX::GlyphNumericMappableProperties difference = glyphToUpdate->GetDifference();
 
 		if (updates.testFlag(UpdateScale)) {
 
@@ -245,6 +251,9 @@ void MinMaxGlyphTreeModel::UpdateGlyph(const QModelIndex& index, const SynGlyphX
 			minGlyph.SetTopology(glyph.GetMinGlyph().GetTopology());
 		}
 
+		glyphToUpdate->SetMinGlyphProperties(minGlyph);
+		glyphToUpdate->SetDifference(difference);
+
 		emit dataChanged(index, index);
 	}
 }
@@ -254,6 +263,135 @@ void MinMaxGlyphTreeModel::UpdateGlyphs(const QModelIndexList& indexList, const 
 	Q_FOREACH(const QModelIndex& index, indexList) {
 
 		UpdateGlyph(index, glyph, updates);
+	}
+}
+
+void MinMaxGlyphTreeModel::UpdateGlyph(const QModelIndex& index, GlyphType type, const SynGlyphX::GlyphProperties& glyph, PropertyUpdates updates) {
+
+	if (type == GlyphType::Max) {
+
+		UpdateGlyphMax(index, glyph, updates);
+	}
+	else {
+
+		UpdateGlyphMin(index, glyph, updates);
+	}
+}
+
+void MinMaxGlyphTreeModel::UpdateGlyphs(const QModelIndexList& indexList, GlyphType type, const SynGlyphX::GlyphProperties& glyph, PropertyUpdates updates) {
+
+	Q_FOREACH(const QModelIndex& index, indexList) {
+
+		UpdateGlyph(index, type, glyph, updates);
+	}
+}
+
+void MinMaxGlyphTreeModel::UpdateGlyphMin(const QModelIndex& index, const SynGlyphX::GlyphProperties& glyph, PropertyUpdates updates) {
+
+	if (index.isValid() && (updates != PropertyUpdate::UpdateNone)) {
+
+		SynGlyphX::MinMaxGlyphTree::iterator glyphToUpdate = GetIteratorFromIndex(index);
+		SynGlyphX::GlyphProperties minGlyph = glyphToUpdate->GetMinGlyph();
+
+		if (updates.testFlag(UpdateScale)) {
+
+			minGlyph.SetScale(glyph.GetScale());
+			minGlyph.SetRatio(glyph.GetRatio());
+		}
+
+		if (updates.testFlag(UpdatePosition)) {
+
+			minGlyph.SetPosition(glyph.GetPosition());
+		}
+
+		if (updates.testFlag(UpdateRotation)) {
+
+			minGlyph.SetRotation(glyph.GetRotation());
+		}
+
+		if ((updates.testFlag(UpdateGeometry)) || (updates.testFlag(UpdateSurface))) {
+
+			minGlyph.SetGeometry(glyph.GetShape(), glyph.GetSurface());
+		}
+
+		if (updates.testFlag(UpdateColor)) {
+
+			minGlyph.SetColor(glyph.GetColor());
+		}
+
+		if (updates.testFlag(UpdateTopology)) {
+
+			minGlyph.SetTopology(glyph.GetTopology());
+		}
+
+		glyphToUpdate->SetMinGlyphProperties(minGlyph);
+
+		emit dataChanged(index, index);
+	}
+}
+
+void MinMaxGlyphTreeModel::UpdateGlyphMax(const QModelIndex& index, const SynGlyphX::GlyphProperties& glyph, PropertyUpdates updates) {
+
+	if (index.isValid() && (updates != PropertyUpdate::UpdateNone)) {
+
+		SynGlyphX::MinMaxGlyphTree::iterator glyphToUpdate = GetIteratorFromIndex(index);
+		SynGlyphX::GlyphProperties minGlyph = glyphToUpdate->GetMinGlyph();
+		SynGlyphX::GlyphNumericMappableProperties difference = glyphToUpdate->GetDifference();
+
+		SynGlyphX::Vector3 vec3;
+
+		if (updates.testFlag(UpdateScale)) {
+
+			vec3 = glyph.GetScale();
+			vec3[0] -= minGlyph.GetScale()[0];
+			vec3[1] -= minGlyph.GetScale()[1];
+			vec3[2] -= minGlyph.GetScale()[2];
+			difference.SetScale(vec3);
+			difference.SetRatio(glyph.GetRatio() - minGlyph.GetRatio());
+		}
+
+		if (updates.testFlag(UpdatePosition)) {
+
+			vec3 = glyph.GetPosition();
+			vec3[0] -= minGlyph.GetPosition()[0];
+			vec3[1] -= minGlyph.GetPosition()[1];
+			vec3[2] -= minGlyph.GetPosition()[2];
+			difference.SetPosition(vec3);
+		}
+
+		if (updates.testFlag(UpdateRotation)) {
+
+			vec3 = glyph.GetRotation();
+			vec3[0] -= minGlyph.GetRotation()[0];
+			vec3[1] -= minGlyph.GetRotation()[1];
+			vec3[2] -= minGlyph.GetRotation()[2];
+			difference.SetRotation(vec3);
+		}
+
+		if ((updates.testFlag(UpdateGeometry)) || (updates.testFlag(UpdateSurface))) {
+
+			minGlyph.SetGeometry(glyph.GetShape(), glyph.GetSurface());
+		}
+
+		if (updates.testFlag(UpdateColor)) {
+
+			SynGlyphX::Color color = glyph.GetColor();
+			color -= minGlyph.GetColor();
+			difference.SetColor(color);
+		}
+
+		if (updates.testFlag(UpdateTopology)) {
+
+			minGlyph.SetTopology(glyph.GetTopology());
+		}
+
+		if ((updates.testFlag(UpdateGeometry)) || (updates.testFlag(UpdateSurface)) || (updates.testFlag(UpdateTopology))) {
+
+			glyphToUpdate->SetMinGlyphProperties(minGlyph);
+		}
+		glyphToUpdate->SetDifference(difference);
+
+		emit dataChanged(index, index);
 	}
 }
 
@@ -390,12 +528,18 @@ bool MinMaxGlyphTreeModel::GreaterBranchLevel(const QModelIndex& left, const QMo
 
 SynGlyphX::MinMaxGlyphTree::iterator MinMaxGlyphTreeModel::GetIteratorFromIndex(const QModelIndex& index) {
 
-	SynGlyphX::MinMaxGlyphTree::iterator iterator(static_cast<SynGlyphX::MinMaxGlyphTree::Node*>(index.internalPointer()));
-	return iterator;
+	SynGlyphX::MinMaxGlyphTree::iterator iT(static_cast<SynGlyphX::MinMaxGlyphTree::Node*>(index.internalPointer()));
+	return iT;
 }
 
 unsigned int MinMaxGlyphTreeModel::GetBranchLevel(const QModelIndex& index) const {
 
 	SynGlyphX::MinMaxGlyphTree::iterator node = GetIteratorFromIndex(index);
 	return m_minMaxGlyphTree->depth(node);
+}
+
+SynGlyphX::MinMaxGlyphTree::const_iterator MinMaxGlyphTreeModel::GetMinMaxGlyph(const QModelIndex& index) const {
+
+	SynGlyphX::MinMaxGlyphTree::iterator iT = GetIteratorFromIndex(index);
+	return iT.constify();
 }

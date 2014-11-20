@@ -6,9 +6,8 @@
 #include <QtCore/QFile>
 #include <QtGUI/QMouseEvent>
 #include <stack>
-#include "io/npgl.h"
 
-ANTzSingleGlyphTreeWidget::ANTzSingleGlyphTreeWidget(MinMaxGlyphTreeType glyphTreeType, QWidget *parent)
+ANTzSingleGlyphTreeWidget::ANTzSingleGlyphTreeWidget(MinMaxGlyphTreeModel::GlyphType glyphTreeType, QWidget *parent)
     : ANTzWidget(parent),
 	m_glyphTreeType(glyphTreeType),
     m_clipboardGlyph(),
@@ -25,7 +24,7 @@ ANTzSingleGlyphTreeWidget::ANTzSingleGlyphTreeWidget(MinMaxGlyphTreeType glyphTr
 
 ANTzSingleGlyphTreeWidget::~ANTzSingleGlyphTreeWidget()
 {
-    npCloseData();
+	DeleteRootGlyphNode();
 }
 
 void ANTzSingleGlyphTreeWidget::SetAllowMultiSelection(bool allowMultiSelection) {
@@ -33,20 +32,26 @@ void ANTzSingleGlyphTreeWidget::SetAllowMultiSelection(bool allowMultiSelection)
 	m_allowMultiSelection = allowMultiSelection;
 }
 
-void ANTzSingleGlyphTreeWidget::SetModel(MinMaxGlyphTreeModel* model) {
+void ANTzSingleGlyphTreeWidget::SetModel(MinMaxGlyphTreeModel* model, QItemSelectionModel* selectionModel) {
 
 	m_model = model;
 
 	if (m_model != nullptr) {
 
-		m_selectionModel = new QItemSelectionModel(m_model, this);
-		QObject::connect(m_selectionModel, &QItemSelectionModel::selectionChanged, this, &ANTzSingleGlyphTreeWidget::UpdateSelection);
+		QObject::disconnect(m_selectionConnection);
+		m_selectionModel = selectionModel;
+		if (selectionModel != nullptr) {
+
+			m_selectionConnection = QObject::connect(m_selectionModel, &QItemSelectionModel::selectionChanged, this, &ANTzSingleGlyphTreeWidget::UpdateSelection);
+		}
 
 		ConnectDataChangedSignal();
 		QObject::connect(m_model, &MinMaxGlyphTreeModel::rowsInserted, this, &ANTzSingleGlyphTreeWidget::OnModelRowsInserted);
 		QObject::connect(m_model, &MinMaxGlyphTreeModel::rowsMoved, this, &ANTzSingleGlyphTreeWidget::OnModelRowsMoved);
 		QObject::connect(m_model, &MinMaxGlyphTreeModel::rowsRemoved, this, &ANTzSingleGlyphTreeWidget::OnModelRowsRemoved);
 		QObject::connect(m_model, &MinMaxGlyphTreeModel::modelReset, this, &ANTzSingleGlyphTreeWidget::OnModelReset);
+
+		OnModelReset();
 	}
 }
 
@@ -60,10 +65,21 @@ void ANTzSingleGlyphTreeWidget::AfterDrawScene() {
 	//since changes from editing don't happen until drawing emit the ObjectEdited signal here
 	if (m_selectionEdited) {
 		const QModelIndexList& selected = m_selectionModel->selectedIndexes();
-		if (!selected.isEmpty()) {
+		if (!selected.isEmpty() && (m_editingMode != EditingMode::None)) {
 
+			MinMaxGlyphTreeModel::PropertyUpdates propertyUpdate = MinMaxGlyphTreeModel::PropertyUpdate::UpdatePosition;
+			if (m_editingMode == EditingMode::Rotate) {
+
+				propertyUpdate = MinMaxGlyphTreeModel::PropertyUpdate::UpdateRotation;
+			}
+			else if (m_editingMode == EditingMode::Size) {
+
+				propertyUpdate = MinMaxGlyphTreeModel::PropertyUpdate::UpdateScale;
+			}
+
+			SynGlyphX::GlyphProperties glyph(GetGlyphFromModelIndex(selected.back()));
 			DisconnectDataChangedSignal();
-			SynGlyphX::MinMaxGlyph glyph(;
+			m_model->UpdateGlyph(selected.back(), m_glyphTreeType, glyph, propertyUpdate);
 			ConnectDataChangedSignal();
 		}
 		m_selectionEdited = false;
@@ -152,17 +168,6 @@ void ANTzSingleGlyphTreeWidget::OnModelRowsRemoved(const QModelIndex& parent, in
 	}
 }
 
-void ANTzSingleGlyphTreeWidget::DeleteChildren(pNPnode parent, unsigned int first, unsigned int count) {
-
-	if (count > 0) {
-	
-		for (int i = first + count -1; i >= first; ++i) {
-
-			npNodeRemove(true, parent->child[i], m_antzData);
-		}
-	}
-}
-
 pNPnode ANTzSingleGlyphTreeWidget::GetGlyphFromModelIndex(const QModelIndex& index) const {
 
 	if (!index.isValid()) {
@@ -202,7 +207,7 @@ void ANTzSingleGlyphTreeWidget::UpdateData(const QModelIndex& topLeft, const QMo
 
 void ANTzSingleGlyphTreeWidget::UpdateGlyphProperties(pNPnode glyph, const SynGlyphX::MinMaxGlyphTree::const_iterator& minMaxGlyph) {
 
-	if (m_glyphTreeType == MinMaxGlyphTreeType::Min) {
+	if (m_glyphTreeType == MinMaxGlyphTreeModel::GlyphType::Min) {
 
 		UpdateGlyphProperties(glyph, minMaxGlyph->GetMinGlyph());
 	}
@@ -266,7 +271,7 @@ void ANTzSingleGlyphTreeWidget::UpdateSelection(const QItemSelection& selected, 
 	const QModelIndexList& deselectedIndicies = deselected.indexes();
 	for (int i = 0; i < deselectedIndicies.length(); ++i) {
 		if (deselectedIndicies[i].isValid()) {
-			pNPnode node = static_cast<pNPnode>(deselectedIndicies[i].internalPointer());
+			pNPnode node = GetGlyphFromModelIndex(deselectedIndicies[i]);
 			node->selected = false;
 		}
 	}
@@ -275,7 +280,7 @@ void ANTzSingleGlyphTreeWidget::UpdateSelection(const QItemSelection& selected, 
 	const QModelIndexList& selectedIndicies = selected.indexes();
 	for (int i = 0; i < selectedIndicies.length(); ++i) {
 		if (selectedIndicies[i].isValid()) {
-			pNPnode node = static_cast<pNPnode>(selectedIndicies[i].internalPointer());
+			pNPnode node = GetGlyphFromModelIndex(selectedIndicies[i]);
 			node->selected = true;
 		}
 	}
@@ -287,7 +292,7 @@ void ANTzSingleGlyphTreeWidget::UpdateSelection(const QItemSelection& selected, 
 	if (currentSelection.length() > 0)  {
 		const QModelIndex& last = currentSelection.back();
 		if (last.isValid()) {
-			CenterCameraOnNode(static_cast<pNPnode>(last.internalPointer()));
+			CenterCameraOnNode(GetGlyphFromModelIndex(last));
 			nodeRootIndex = m_rootGlyph->id;
 		}
 	}
@@ -417,7 +422,7 @@ void ANTzSingleGlyphTreeWidget::DeleteRootGlyphNode() {
 
 	if (m_rootGlyph != nullptr) {
 
-		npNodeRemove(true, m_rootGlyph, m_antzData);
+		DeleteNode(m_rootGlyph);
 		m_rootGlyph = nullptr;
 	}
 }
@@ -435,7 +440,7 @@ bool ANTzSingleGlyphTreeWidget::IsRootNodeSelected() const {
 
 void ANTzSingleGlyphTreeWidget::mousePressEvent(QMouseEvent* event) {
 
-	int pickID = npPickPin(event->x(), m_antzData->io.gl.height - event->y(), m_antzData);
+	int pickID = PickPinAtPoint(event->pos());
 
 	if (pickID != 0) {
 

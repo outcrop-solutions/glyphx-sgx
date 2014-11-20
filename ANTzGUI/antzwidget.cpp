@@ -2,9 +2,9 @@
 #include "io/npfile.h"
 #include "io/npch.h"
 #include "npctrl.h"
-#include "io/npgl.h"
 #include "npui.h"
 #include "ctrl/npengine.h"
+#include "io/npgl.h"
 
 //The default QGLFormat works for now except we want alpha enabled.  May want to turn on stereo at some point
 QGLFormat ANTzWidget::s_format(QGL::AlphaChannel);
@@ -26,6 +26,8 @@ ANTzWidget::~ANTzWidget()
 	npCloseCtrl(m_antzData);
 	npCloseFile(m_antzData);
 	npCloseCh(m_antzData);
+	npCloseData();
+	m_antzData = nullptr;
 }
 
 void ANTzWidget::InitIO()
@@ -151,4 +153,25 @@ void ANTzWidget::CenterCameraOnNode(pNPnode node) {
 
     //Always keep current node set to current cam
 	m_antzData->map.currentNode = m_antzData->map.currentCam;
+}
+
+int ANTzWidget::PickPinAtPoint(const QPoint& point) const {
+
+	return npPickPin(point.x(), m_antzData->io.gl.height - point.y(), m_antzData);
+}
+
+void ANTzWidget::DeleteNode(pNPnode node) {
+
+	npNodeRemove(true, node, m_antzData);
+}
+
+void ANTzWidget::DeleteChildren(pNPnode parent, unsigned int first, unsigned int count) {
+
+	if (count > 0) {
+
+		for (int i = first + count - 1; i >= first; ++i) {
+
+			npNodeRemove(true, parent->child[i], m_antzData);
+		}
+	}
 }
