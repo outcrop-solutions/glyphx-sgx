@@ -31,7 +31,7 @@ namespace SynGlyphX {
 		const GlyphNumericMappableProperties& GetDifference() const;
 		GlyphProperties GetMaxGlyph() const;
 
-		void SetMinGlyphProperties(const GlyphMappableProperties& glyph);
+		void SetMinGlyphProperties(const GlyphProperties& glyph);
 		void SetDifference(const GlyphNumericMappableProperties& difference);
 
 		PropertyTree& ExportToPropertyTree(boost::property_tree::wptree& propertyTree) const;
