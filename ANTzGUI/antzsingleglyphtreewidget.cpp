@@ -333,83 +333,6 @@ int ANTzSingleGlyphTreeWidget::GetChildIndexFromParent(pNPnode node) const {
     
     return i;
 }
-/*
-void ANTzSingleGlyphTreeModel::AppendChild(const QModelIndex& parent, boost::shared_ptr<const SynGlyphX::GlyphProperties> glyph, unsigned int numberOfChildren) {
-
-    if (parent.isValid()) {
-        pNPnode parentNode = static_cast<pNPnode>(parent.internalPointer());
-        beginInsertRows(parent, parentNode->childCount, parentNode->childCount + numberOfChildren - 1);
-        for (int i = 0; i < numberOfChildren; ++i) {
-            CreateNodeFromTemplate(parentNode, *glyph, false);
-        }
-        endInsertRows();
-        emit NodeUpdated(parent);
-    }
-}
-
-ANTzSingleGlyphTreeModel::PropertyUpdates ANTzSingleGlyphTreeModel::FindUpdates(boost::shared_ptr<const SynGlyphX::GlyphProperties> oldGlyph, boost::shared_ptr<const SynGlyphX::GlyphProperties> newGlyph) {
-
-    PropertyUpdates updates = UpdateNone;
-
-    if (oldGlyph->GetColor() != newGlyph->GetColor()) {
-        updates |= UpdateColor;
-    }
-
-    if (oldGlyph->GetShape() != newGlyph->GetShape()) {
-        updates |= UpdateGeometry;
-    }
-
-    if (oldGlyph->GetTopology() != newGlyph->GetTopology()) {
-        updates |= UpdateTopology;
-    }
-
-    if (oldGlyph->GetSurface() != newGlyph->GetSurface()) {
-        updates |= UpdateSurface;
-    }
-
-    if (oldGlyph->GetPosition() != newGlyph->GetPosition()) {
-        updates |= UpdatePosition;
-    }
-
-	if (oldGlyph->GetRotation() != newGlyph->GetRotation()) {
-        updates |= UpdateRotation;
-    }
-
-    if ((oldGlyph->GetScale() != newGlyph->GetScale()) || (oldGlyph->GetRatio() != newGlyph->GetRatio())) {
-        updates |= UpdateScale;
-    }
-
-    return updates;
-}
-
-void ANTzSingleGlyphTreeModel::NotifyModelUpdate() {
-
-	emit ModelChanged(m_isDifferentFromSavedFileOrDefaultGlyph);
-}
-
-void ANTzSingleGlyphTreeModel::MarkDifferentNotifyModelUpdate() {
-
-	m_isDifferentFromSavedFileOrDefaultGlyph = true;
-	emit ModelChanged(m_isDifferentFromSavedFileOrDefaultGlyph);
-}
-
-void ANTzSingleGlyphTreeWidget::OnNodeDeleted(const QModelIndex& parent, int start, int end) {
-
-	if (!m_selectionModel->hasSelection()) {
-
-		if (parent.isValid()) {
-
-			pNPnode parentNode = static_cast<pNPnode>(parent.internalPointer());
-			CenterCameraOnNode(parentNode);
-		}
-		else {
-			CenterCameraOnNode(m_model->GetRootGlyph());
-		}
-
-		pData antzData = m_model->GetANTzData();
-		antzData->map.nodeRootIndex = 0;
-	}
-}*/
 
 void ANTzSingleGlyphTreeWidget::ShowGlyph(bool show) {
 
@@ -486,7 +409,7 @@ void ANTzSingleGlyphTreeWidget::mouseMoveEvent(QMouseEvent* event) {
 		}
 		else {
 
-			m_antzData->io.mouse.tool = kNPtoolMove + m_editingMode;
+			m_antzData->io.mouse.tool = kNPtoolMove + m_editingMode - 1;
 			if (event->buttons() & Qt::RightButton) {
 				m_antzData->io.mouse.mode = kNPmouseModeDragXZ;
 				m_antzData->io.mouse.buttonR = true;

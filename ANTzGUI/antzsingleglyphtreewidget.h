@@ -28,14 +28,7 @@ public:
 	void SetAllowMultiSelection(bool allowMultiSelection);
 	void SetModel(MinMaxGlyphTreeModel* model, QItemSelectionModel* selectionModel);
 
-    bool LoadFromFile(const QString& filename);
-	void SaveToTemplateFile(const QString& filename) const;
-    bool SaveToCSV(const std::string& filename, const QModelIndexList& selectedItems);
-
     void AppendChild(const QModelIndex& parent, boost::shared_ptr<const SynGlyphX::GlyphProperties> glyph, unsigned int numberOfChildren = 1);
-
-    //static PropertyUpdates FindUpdates(boost::shared_ptr<const SynGlyphX::GlyphProperties> oldGlyph, boost::shared_ptr<const SynGlyphX::GlyphProperties> newGlyph);
-    //static bool GreaterBranchLevel(const QModelIndex& left, const QModelIndex& right);
 
 	void ShowGlyph(bool show);
 
