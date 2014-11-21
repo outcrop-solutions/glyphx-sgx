@@ -169,7 +169,7 @@ void ANTzWidget::DeleteChildren(pNPnode parent, unsigned int first, unsigned int
 
 	if (count > 0) {
 
-		for (int i = first + count - 1; i >= first; ++i) {
+		for (int i = first + count - 1; i >= static_cast<int>(first); --i) {
 
 			npNodeRemove(true, parent->child[i], m_antzData);
 		}

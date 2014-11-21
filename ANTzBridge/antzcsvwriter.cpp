@@ -165,7 +165,8 @@ namespace SynGlyphX {
 		values.push_back(L"0");
 		values.push_back(boost::lexical_cast<std::wstring>(parentId));
 		values.push_back(boost::lexical_cast<std::wstring>(branchLevel));
-		values.insert(values.end(), { L"0", L"0" });
+		values.push_back(L"0");
+		values.push_back(L"0");
 		values.push_back(boost::lexical_cast<std::wstring>(numberOfChildren));
 		values.insert(values.end(), { L"0", L"0", L"0", L"0", L"1", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"1", L"0", L"0", L"0" });
 
@@ -177,7 +178,8 @@ namespace SynGlyphX {
 		values.insert(values.end(), { L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0" });
 
 		values.push_back(boost::lexical_cast<std::wstring>(ConvertGeometryToCSVInt(glyph->GetShape(), glyph->GetSurface())));
-		values.insert(values.end(), { L"1", L"0" });
+		values.push_back(L"1");
+		values.push_back(L"0");
 		values.push_back(boost::lexical_cast<std::wstring>(glyph->GetRatio()));
 
 		Color color = glyph->GetColor();
