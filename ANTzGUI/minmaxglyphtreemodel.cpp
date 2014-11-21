@@ -83,7 +83,7 @@ QModelIndex	MinMaxGlyphTreeModel::parent(const QModelIndex& index) const {
 			}
 			else {
 
-				SynGlyphX::MinMaxGlyphTree::iterator grandParentIterator = m_minMaxGlyphTree->parent(iT);
+				SynGlyphX::MinMaxGlyphTree::iterator grandParentIterator = m_minMaxGlyphTree->parent(parentIterator);
 				for (int i = 0; i < m_minMaxGlyphTree->children(grandParentIterator); ++i) {
 
 					if (m_minMaxGlyphTree->child(grandParentIterator, i).equal(parentIterator)) {
