@@ -33,6 +33,7 @@ private:
     void LoadTemplate(const QString& filename);
     bool SaveTemplateFile(const QString& filename);
     bool AskUserToSave();
+	void SelectRootGlyphInModel();
 
     ANTzSingleGlyphTreeWidget* m_3dView;
     GlyphTreeView* m_treeView;

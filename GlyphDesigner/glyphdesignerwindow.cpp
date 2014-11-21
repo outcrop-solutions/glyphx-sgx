@@ -40,7 +40,7 @@ GlyphDesignerWindow::GlyphDesignerWindow(QWidget *parent)
 	QObject::connect(m_glyphTreeModel, &MinMaxGlyphTreeModel::rowsMoved, this, &GlyphDesignerWindow::OnModelChanged);
 	QObject::connect(m_glyphTreeModel, &MinMaxGlyphTreeModel::dataChanged, this, &GlyphDesignerWindow::OnModelChanged);
 	
-	m_sharedSelectionModel->select(m_glyphTreeModel->index(0), QItemSelectionModel::ClearAndSelect);
+	SelectRootGlyphInModel();
 
     statusBar()->showMessage(SynGlyphX::Application::applicationName() + " Started", 3000);
 }
@@ -202,7 +202,7 @@ void GlyphDesignerWindow::CreateNewGlyphTree() {
 
 				SynGlyphX::MinMaxGlyphTree::SharedPtr newGlyphTree(new SynGlyphX::MinMaxGlyphTree(newMaxGlyphTree));
 				m_glyphTreeModel->SetMinMaxGlyphTree(newGlyphTree);
-                m_3dView->ResetCamera();
+				SelectRootGlyphInModel();
             }
         }
     }
@@ -254,7 +254,7 @@ void GlyphDesignerWindow::LoadTemplate(const QString& filename) {
 
             SetCurrentFile(filename);
             statusBar()->showMessage("Template successfully opened", 3000);
-            m_3dView->ResetCamera();
+			SelectRootGlyphInModel();
         }
         else {
 
@@ -347,4 +347,9 @@ void GlyphDesignerWindow::OnModelChanged() {
 
 		setWindowModified(true);
 	}
+}
+
+void GlyphDesignerWindow::SelectRootGlyphInModel() {
+
+	m_sharedSelectionModel->select(m_glyphTreeModel->index(0), QItemSelectionModel::ClearAndSelect);
 }
