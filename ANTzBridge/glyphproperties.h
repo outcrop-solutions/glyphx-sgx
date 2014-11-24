@@ -5,6 +5,7 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/bimap.hpp>
 #include "glyphmappableproperties.h"
+#include "csvfilehandler.h"
 
 struct NPnode;
 typedef NPnode* pNPnode;
@@ -53,6 +54,7 @@ namespace SynGlyphX {
         GlyphProperties();
         GlyphProperties(pNPnode node);
         GlyphProperties(const GlyphProperties& properties);
+		GlyphProperties(const CSVFileHandler::CSVValues& csvValues);
         ~GlyphProperties();
 
 		GlyphProperties& operator=(const GlyphProperties& properties);

@@ -461,14 +461,20 @@ bool MinMaxGlyphTreeModel::dropMimeData(const QMimeData* data, Qt::DropAction ac
 
 bool MinMaxGlyphTreeModel::LoadFromFile(const QString& filename) {
 
-	if (filename.right(4) == ".csv") {
+	beginResetModel();
 
-		throw std::exception("CSV files are not supported");
+	try {
+
+		m_minMaxGlyphTree->erase();
+		m_minMaxGlyphTree->ReadFromFile(filename.toStdString());
+	}
+	catch (const std::exception& e) {
+
+		m_minMaxGlyphTree->erase();
+		endResetModel();
+		throw;
 	}
 
-	beginResetModel();
-	m_minMaxGlyphTree->erase();
-	m_minMaxGlyphTree->ReadFromFile(filename.toStdString());
 	endResetModel();
 
 	return true;

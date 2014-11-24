@@ -2,6 +2,7 @@
 #include "data/nptypes.h"
 #include <boost/assign/list_of.hpp>
 #include <boost/bimap/list_of.hpp>
+#include <boost/lexical_cast.hpp>
 
 namespace SynGlyphX {
 
@@ -87,6 +88,44 @@ namespace SynGlyphX {
         m_topology(properties.m_topology) {
 
     }
+
+	GlyphProperties::GlyphProperties(const CSVFileHandler::CSVValues& csvValues)
+		: GlyphMappableProperties() {
+
+		m_tagOffset[0] = boost::lexical_cast<double>(csvValues[31]);
+		m_tagOffset[1] = boost::lexical_cast<double>(csvValues[32]);
+		m_tagOffset[2] = boost::lexical_cast<double>(csvValues[33]);
+
+		m_scale[0] = boost::lexical_cast<double>(csvValues[25]);
+		m_scale[1] = boost::lexical_cast<double>(csvValues[26]);
+		m_scale[2] = boost::lexical_cast<double>(csvValues[27]);
+
+		m_position[0] = boost::lexical_cast<double>(csvValues[28]);
+		m_position[1] = boost::lexical_cast<double>(csvValues[29]);
+		m_position[2] = boost::lexical_cast<double>(csvValues[30]);
+
+		m_rotation[0] = boost::lexical_cast<double>(csvValues[37]);
+		m_rotation[1] = boost::lexical_cast<double>(csvValues[38]);
+		m_rotation[2] = boost::lexical_cast<double>(csvValues[39]);
+
+		m_color.Set(0, boost::lexical_cast<double>(csvValues[55]));
+		m_color.Set(1, boost::lexical_cast<double>(csvValues[56]));
+		m_color.Set(2, boost::lexical_cast<double>(csvValues[57]));
+		m_color.Set(3, boost::lexical_cast<double>(csvValues[58]));
+
+		m_ratio = boost::lexical_cast<double>(csvValues[53]);
+
+		int geometry = boost::lexical_cast<int>(csvValues[50]);
+		m_geometryShape = static_cast<Shape>(geometry / 2);
+		m_geometrySurface = static_cast<Surface>(geometry % 2);
+
+		//This is necessary because the enum for geometries in ANTz is screwed up
+		if (m_geometryShape == Shape::Pin) {
+			m_geometrySurface = static_cast<Surface>(1 - m_geometrySurface);
+		}
+
+		m_topology = static_cast<Topology>(boost::lexical_cast<int>(csvValues[63]));
+	}
 
     GlyphProperties::~GlyphProperties()
     {
