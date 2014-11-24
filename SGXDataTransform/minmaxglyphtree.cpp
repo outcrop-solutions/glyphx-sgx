@@ -3,6 +3,8 @@
 #include <exception>
 #include <stack>
 #include <stdexcept>
+#include "csvfilereader.h"
+#include "antzcsvwriter.h"
 
 namespace SynGlyphX {
 
@@ -136,6 +138,23 @@ namespace SynGlyphX {
 
 	void MinMaxGlyphTree::ReadFromFile(const std::string& filename) {
 
+		std::string extension = filename.substr(filename.length() - 4, 4);
+		if (extension == ".sgt") {
+
+			ReadFromSGTFile(filename);
+		}
+		else if (extension == ".csv") {
+
+			ReadFromANTzCSVFile(filename);
+		}
+		else {
+
+			throw std::exception("File type not supported");
+		}
+	}
+
+	void MinMaxGlyphTree::ReadFromSGTFile(const std::string& filename) {
+
 		boost::property_tree::wptree propertyTree;
 		boost::property_tree::read_xml(filename, propertyTree);
 		boost::optional<PropertyTree&> glyphPropertyTree = propertyTree.get_child_optional(L"Glyph");
@@ -159,8 +178,56 @@ namespace SynGlyphX {
 			}
 		}
 		else {
+
 			throw std::exception((filename + " does not have glyph tree").c_str());
 		}
+	}
+
+	void MinMaxGlyphTree::ReadFromANTzCSVFile(const std::string& filename) {
+
+		CSVFileReader csvReader(filename);
+
+		if (csvReader.GetHeaders() != ANTzCSVWriter::GetInstance().GetNodeHeaders()) {
+
+			throw std::invalid_argument("Could not read CSV file into glyph tree: Invalid Headers");
+		}
+
+		CSVFileHandler::CSVValues currentLineValues;
+		while (!csvReader.IsAtEndOfFile()) {
+
+			currentLineValues = csvReader.GetValuesFromLine();
+			if (currentLineValues[1] == L"5") {
+
+				break;
+			}
+		}
+
+		if ((currentLineValues.empty()) || (currentLineValues[1] != L"5")) {
+
+			throw std::invalid_argument("CSV file has no glyph");
+		}
+
+		std::unordered_map<std::wstring, MinMaxGlyphTree::iterator> indexToNodeMap;
+
+		indexToNodeMap[currentLineValues[0]] = insert(MinMaxGlyph(GlyphProperties(currentLineValues)));
+		currentLineValues = csvReader.GetValuesFromLine();
+
+		do {
+			if (currentLineValues[5] == L"0") {
+
+				break;
+			}
+
+			if (currentLineValues[1] != L"5") {
+
+				currentLineValues = csvReader.GetValuesFromLine();
+				continue;
+			}
+
+			indexToNodeMap[currentLineValues[0]] = insert(indexToNodeMap[currentLineValues[4]], MinMaxGlyph(GlyphProperties(currentLineValues)));
+			currentLineValues = csvReader.GetValuesFromLine();
+
+		} while (!csvReader.IsAtEndOfFile());
 	}
 
 	void MinMaxGlyphTree::ProcessPropertyTreeChildren(const MinMaxGlyphTree::iterator& iT, const boost::property_tree::wptree& propertyTree) {

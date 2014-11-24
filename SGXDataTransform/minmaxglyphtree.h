@@ -8,6 +8,7 @@
 #include <boost/shared_ptr.hpp>
 #include "inputfield.h"
 #include <unordered_map>
+#include "csvfilehandler.h"
 
 namespace SynGlyphX {
 
@@ -45,6 +46,8 @@ namespace SynGlyphX {
 		static SharedPtr CreateDefault();
 
 	private:
+		void ReadFromSGTFile(const std::string& filename);
+		void ReadFromANTzCSVFile(const std::string& filename);
 		void ExportToPropertyTree(const MinMaxGlyphTree::const_iterator& parent, boost::property_tree::wptree& propertyTreeParent) const;
 		void ProcessPropertyTreeChildren(const MinMaxGlyphTree::iterator& iT, const boost::property_tree::wptree& propertyTree);
 		void AddGlyphSubtree(MinMaxGlyphTree::iterator& parentNode, const GlyphTree& glyphTree, const GlyphTree::const_iterator& iT);
