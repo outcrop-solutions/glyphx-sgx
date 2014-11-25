@@ -200,7 +200,7 @@ void MinMaxGlyphTreeModel::AppendChild(const QModelIndex& parent, const SynGlyph
 		newPosition[0] -= 15.0;
 		SynGlyphX::GlyphProperties properties = newChildGlyph->GetMinGlyph();
 		properties.SetPosition(newPosition);
-		newChildGlyph->SetMinGlyphProperties(properties);
+		newChildGlyph->SetMinGlyph(properties);
 	}
 	
 	endInsertRows();
@@ -251,7 +251,7 @@ void MinMaxGlyphTreeModel::UpdateGlyph(const QModelIndex& index, const SynGlyphX
 			minGlyph.SetTopology(glyph.GetMinGlyph().GetTopology());
 		}
 
-		glyphToUpdate->SetMinGlyphProperties(minGlyph);
+		glyphToUpdate->SetMinGlyph(minGlyph);
 		glyphToUpdate->SetDifference(difference);
 
 		emit dataChanged(index, index);
@@ -324,7 +324,7 @@ void MinMaxGlyphTreeModel::UpdateGlyphMin(const QModelIndex& index, const SynGly
 			minGlyph.SetTopology(glyph.GetTopology());
 		}
 
-		glyphToUpdate->SetMinGlyphProperties(minGlyph);
+		glyphToUpdate->SetMinGlyph(minGlyph);
 
 		emit dataChanged(index, index);
 	}
@@ -387,7 +387,7 @@ void MinMaxGlyphTreeModel::UpdateGlyphMax(const QModelIndex& index, const SynGly
 
 		if ((updates.testFlag(UpdateGeometry)) || (updates.testFlag(UpdateSurface)) || (updates.testFlag(UpdateTopology))) {
 
-			glyphToUpdate->SetMinGlyphProperties(minGlyph);
+			glyphToUpdate->SetMinGlyph(minGlyph);
 		}
 		glyphToUpdate->SetDifference(difference);
 
@@ -448,7 +448,7 @@ bool MinMaxGlyphTreeModel::dropMimeData(const QMimeData* data, Qt::DropAction ac
 				newPosition[0] -= 15.0;
 				SynGlyphX::GlyphProperties properties = newGlyph->GetMinGlyph();
 				properties.SetPosition(newPosition);
-				newGlyph->SetMinGlyphProperties(properties);
+				newGlyph->SetMinGlyph(properties);
 				endMoveRows();
 			}
 		}
