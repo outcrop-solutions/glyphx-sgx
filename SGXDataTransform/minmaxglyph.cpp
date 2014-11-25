@@ -124,7 +124,7 @@ namespace SynGlyphX {
 		return maxProperties;
 	}
 
-	void MinMaxGlyph::SetMinGlyphProperties(const GlyphProperties& properties) {
+	void MinMaxGlyph::SetMinGlyph(const GlyphProperties& properties) {
 
 		m_minGlyph.GlyphProperties::operator=(properties);
 	}
