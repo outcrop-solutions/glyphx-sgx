@@ -91,7 +91,11 @@ void ANTzSingleGlyphTreeWidget::RebuildTree() {
 	if (m_model != nullptr) {
 
 		DeleteRootGlyphNode();
-		CreateNewSubTree(nullptr, m_model->GetMinMaxGlyphTree()->root());
+		SynGlyphX::MinMaxGlyphTree::ConstSharedPtr minMaxGlyphTree = m_model->GetMinMaxGlyphTree();
+		if (minMaxGlyphTree) {
+
+			CreateNewSubTree(nullptr, minMaxGlyphTree->root());
+		}
 
 		//Undo previous select node at the beginning of this function
 		m_antzData->map.nodeRootIndex = 0;

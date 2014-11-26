@@ -12,13 +12,12 @@ class ANTZGUI_EXPORT MinMaxGlyph3DWidget : public QWidget
 	Q_OBJECT
 
 public:
-	MinMaxGlyph3DWidget(MinMaxGlyphTreeModel* model, QItemSelectionModel* selectionModel, QWidget *parent);
+	MinMaxGlyph3DWidget(QWidget *parent);
 	~MinMaxGlyph3DWidget();
 
-private:
-	MinMaxGlyphTreeModel* m_model;
-	QItemSelectionModel* m_selectionModel;
+	virtual void SetModel(MinMaxGlyphTreeModel* model, QItemSelectionModel* selectionModel);
 
+private:
 	ANTzSingleGlyphTreeWidget* m_maxGlyph3DWidget;
 };
 
