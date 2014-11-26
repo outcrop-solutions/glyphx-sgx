@@ -378,3 +378,12 @@ bool DataTransformModel::IsRowInDataType(DataType type, int row) const {
 
 	return ((row >= min) && (row < max));
 }
+
+void DataTransformModel::UpdateGlyph(const QModelIndex& index, const SynGlyphX::MinMaxGlyph& glyph) {
+
+	if (!m_dataMapping->GetGlyphTrees().empty() && index.isValid()) {
+
+		SynGlyphX::MinMaxGlyphTree::iterator iT(static_cast<SynGlyphX::MinMaxGlyphTree::Node*>(index.internalPointer()));
+		*iT = glyph;
+	}
+}

@@ -100,15 +100,6 @@
     <ClCompile Include="GeneratedFiles\Release\moc_bindinglineedit.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
-    <ClCompile Include="glyphtemplatesmodel.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_glyphtemplatesmodel.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_glyphtemplatesmodel.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
     <ClCompile Include="minmaxglyphmodel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -145,15 +136,6 @@
     <ClCompile Include="GeneratedFiles\Release\moc_baseimagedialog.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
-    <ClCompile Include="selectiontranslator.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_selectiontranslator.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_selectiontranslator.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
     <ClCompile Include="glyphtreesview.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -170,6 +152,15 @@
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Release\moc_glyphdefaultswidget.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="datamapping3dwidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_datamapping3dwidget.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_datamapping3dwidget.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
   </ItemGroup>
@@ -195,9 +186,6 @@
     <CustomBuild Include="bindinglineedit.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
-    <CustomBuild Include="glyphtemplatesmodel.h">
-      <Filter>Header Files</Filter>
-    </CustomBuild>
     <CustomBuild Include="minmaxglyphmodel.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
@@ -210,13 +198,13 @@
     <CustomBuild Include="baseimagedialog.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
-    <CustomBuild Include="selectiontranslator.h">
-      <Filter>Header Files</Filter>
-    </CustomBuild>
     <CustomBuild Include="glyphtreesview.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="glyphdefaultswidget.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="datamapping3dwidget.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>

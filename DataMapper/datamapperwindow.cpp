@@ -36,8 +36,7 @@ DataMapperWindow::DataMapperWindow(QWidget *parent)
 	m_dataBindingWidget(nullptr),
 	m_minMaxGlyphModel(nullptr),
 	m_dataTransformModel(nullptr),
-	m_antzWidget(nullptr),
-	m_glyphTree3DModel(nullptr),
+	m_minMaxGlyph3DWidget(nullptr),
 	m_glyphTreesModel(nullptr),
 	m_baseObjectsModel(nullptr)
 {
@@ -61,27 +60,22 @@ DataMapperWindow::~DataMapperWindow()
 
 void DataMapperWindow::CreateCenterWidget() {
 
-	m_glyphTree3DModel = new GlyphTreeModel(this);
 	m_minMaxGlyphModel = new MinMaxGlyphModel(m_dataTransformModel, this);
 	QObject::connect(m_minMaxGlyphModel, &MinMaxGlyphModel::dataChanged, this, [&, this](const QModelIndex& topLeft, const QModelIndex& bottomRight){ setWindowModified(true); });
-
+	QObject::connect(m_glyphTreesView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &DataMapperWindow::OnGlyphTreesViewSelectionChanged);
 	QObject::connect(m_glyphTreesView->GetClearSelectedInputBindingsAction(), &QAction::triggered, m_minMaxGlyphModel, &MinMaxGlyphModel::ClearInputBindings);
-
-	m_selectionTranslator = new SelectionTranslator(m_glyphTreesModel, m_glyphTree3DModel, m_minMaxGlyphModel, m_glyphTreesView->selectionModel(), this);
-
-	QObject::connect(m_minMaxGlyphModel, &MinMaxGlyphModel::GlyphPropertiesUpdated, m_selectionTranslator, &SelectionTranslator::UpdateSelectedGlyphProperties);
 
 	QSplitter* centerWidget = new QSplitter(Qt::Vertical, this);
 	
-	m_antzWidget = new ANTzWidget(m_glyphTree3DModel, m_selectionTranslator->Get3DViewSelectionModel(), false, centerWidget);
-	m_antzWidget->SetEditingMode(ANTzWidget::EditingMode::None);
+	m_minMaxGlyph3DWidget = new DataMapping3DWidget(m_dataTransformModel, centerWidget);
+	m_minMaxGlyph3DWidget->SetModel(m_glyphTreesModel, m_glyphTreesView->selectionModel());
 
 	//m_viewMenu->addAction(glyphViewDockWidget->toggleViewAction());
 
 	m_dataBindingWidget = new DataBindingWidget(m_minMaxGlyphModel, centerWidget);
 
 	centerWidget->addWidget(m_dataBindingWidget);
-	centerWidget->addWidget(m_antzWidget);
+	centerWidget->addWidget(m_minMaxGlyph3DWidget);
 
 	centerWidget->setStretchFactor(1, 2);
 	centerWidget->setStretchFactor(0, 0);
@@ -228,7 +222,6 @@ void DataMapperWindow::CreateNewProject() {
 	m_minMaxGlyphModel->Clear();
 
 	EnableProjectDependentActions(false);
-	m_glyphTree3DModel->ShowGlyph(false);
 	UpdateFilenameWindowTitle("Untitled");
 }
 
@@ -341,9 +334,9 @@ void DataMapperWindow::ProcessCSVFile(const QString& csvFile) {
 		}
 
 		QStringList fieldNameList;
-		for (std::string fieldName : fieldNames) {
+		for (std::wstring fieldName : fieldNames) {
 
-			fieldNameList.push_back(QString::fromStdString(fieldName));
+			fieldNameList.push_back(QString::fromStdWString(fieldName));
 		}
 
 		SynGlyphX::DatasourceFieldTypesDialog dialog(fieldNameList, "CSV", this);
@@ -357,7 +350,7 @@ void DataMapperWindow::ProcessCSVFile(const QString& csvFile) {
 		SynGlyphX::CSVFileReader::CSVValues types;
 		for (const QString type : dialogTypes) {
 
-			types.push_back(type.toStdString());
+			types.push_back(type.toStdWString());
 		}
 
 		SynGlyphX::CSVTFileReaderWriter::WriteCSVTFile(csvtFile.toStdString(), types);
@@ -654,4 +647,16 @@ void DataMapperWindow::ClearAndInitializeDataMapping() {
 void DataMapperWindow::SelectLastGlyphTreeRoot() {
 
 	m_glyphTreesView->selectionModel()->select(m_glyphTreesModel->index(m_dataTransformModel->GetDataMapping()->GetGlyphTrees().size() - 1, 0), QItemSelectionModel::ClearAndSelect);
+}
+
+void DataMapperWindow::OnGlyphTreesViewSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected) {
+
+	if (selected.empty()) {
+
+		m_minMaxGlyphModel->Clear();
+	}
+	else {
+
+		m_minMaxGlyphModel->SetMinMaxGlyph(selected.indexes()[0]);
+	}
 }

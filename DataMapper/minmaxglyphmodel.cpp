@@ -7,7 +7,8 @@
 MinMaxGlyphModel::MinMaxGlyphModel(DataTransformModel* dataTransformModel, QObject *parent)
 	: QAbstractTableModel(parent),
 	m_dataTransformModel(dataTransformModel),
-	m_glyphTree(nullptr)
+	m_glyphTree(nullptr),
+	m_selectedIndex(QModelIndex())
 {
 	m_propertyHeaders << tr("Position X")
 		<< tr("Position Y")
@@ -35,12 +36,19 @@ MinMaxGlyphModel::~MinMaxGlyphModel()
 
 int MinMaxGlyphModel::columnCount(const QModelIndex& parent) const {
 
-	return 3;
+	if (parent.isValid()) {
+
+		return 0;
+	}
+	else {
+
+		return m_columnHeaders.size();
+	}
 }
 
 QVariant MinMaxGlyphModel::data(const QModelIndex& index, int role) const {
 
-	if ((role == Qt::DisplayRole) && index.isValid() && m_glyph.valid()) {
+	if ((role == Qt::EditRole) && index.isValid() && m_glyph.valid()) {
 
 		if (index.column() == 0) {
 
@@ -99,6 +107,7 @@ void MinMaxGlyphModel::SetMinMaxGlyph(const QModelIndex& index) {
 		childIndices.pop();
 
 		beginResetModel();
+		m_selectedIndex = index;
 		m_glyphTreeID = glyphTree->first;
 		m_glyphTree = glyphTree->second;
 		SynGlyphX::MinMaxGlyphTree::const_iterator iT = m_glyphTree->root();
@@ -108,7 +117,7 @@ void MinMaxGlyphModel::SetMinMaxGlyph(const QModelIndex& index) {
 			iT = m_glyphTree->child(iT, childIndices.top());
 			childIndices.pop();
 		}
-		m_glyph = iT.deconstify();
+		m_glyph = iT;
 		endResetModel();
 	}
 	else {
@@ -120,9 +129,10 @@ void MinMaxGlyphModel::SetMinMaxGlyph(const QModelIndex& index) {
 void MinMaxGlyphModel::Clear() {
 
 	beginResetModel();
-	m_glyph = SynGlyphX::MinMaxGlyphTree::iterator();
+	m_glyph = SynGlyphX::MinMaxGlyphTree::const_iterator();
 	m_glyphTree = nullptr;
 	m_glyphTreeID = boost::uuids::nil_uuid();
+	m_selectedIndex = QModelIndex();
 	endResetModel();
 }
 
@@ -199,19 +209,19 @@ bool MinMaxGlyphModel::setData(const QModelIndex& index, const QVariant& value, 
 		}
 		else {
 
-			SynGlyphX::GlyphMappableProperties minProperties = m_glyph->GetMinGlyph();
-			SynGlyphX::GlyphNumericMappableProperties diffProperties = m_glyph->GetDifference();
+			SynGlyphX::MinMaxGlyph minMaxGlyph(*m_glyph);
+			SynGlyphX::GlyphProperties minProperties = minMaxGlyph.GetMinGlyph();
+			SynGlyphX::GlyphNumericMappableProperties diffProperties = minMaxGlyph.GetDifference();
 
 			if (!SetDataByRow(minProperties, diffProperties, value, index)) {
 				
 				return false;
 			}
 
-			m_glyph->SetMinGlyphProperties(minProperties);
-			m_glyph->SetDifference(diffProperties);
+			minMaxGlyph.SetMinGlyph(minProperties);
+			minMaxGlyph.SetDifference(diffProperties);
 
-			SynGlyphX::GlyphProperties::SharedPtr newGlyph(new SynGlyphX::GlyphProperties(m_glyph->GetMinGlyph()));
-			emit GlyphPropertiesUpdated(newGlyph);
+			m_dataTransformModel->UpdateGlyph(m_selectedIndex, minMaxGlyph);
 		}
 
 		emit dataChanged(index, index);

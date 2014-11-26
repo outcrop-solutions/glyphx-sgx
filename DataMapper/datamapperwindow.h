@@ -6,12 +6,10 @@
 #include <boost/shared_ptr.hpp>
 #include "datasourcestatswidget.h"
 #include "databindingwidget.h"
-#include "glyphtemplatesmodel.h"
 #include "minmaxglyphmodel.h"
 #include "datatransformmodel.h"
 #include "antzwidget.h"
-#include "glyphtreemodel.h"
-#include "selectiontranslator.h"
+#include "datamapping3dwidget.h"
 #include "glyphtreesview.h"
 #include "roledatafilterproxymodel.h"
 
@@ -40,6 +38,7 @@ private slots:
 	void ChangeMapDownloadSettings();
 	void ChangeGlyphDefaults();
 	void ChangeNewMappingDefaults();
+	void OnGlyphTreesViewSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected);
 
 private:
     void CreateMenus();
@@ -63,18 +62,20 @@ private:
     QMenu* m_viewMenu;
 	QMenu* m_toolsMenu;
     
+	SynGlyphX::RoleDataFilterProxyModel* m_glyphTreesModel;
+	SynGlyphX::RoleDataFilterProxyModel* m_baseObjectsModel;
 	QListView* m_baseObjectsView;
 	GlyphTreesView* m_glyphTreesView;
 	DataSourceStatsWidget* m_dataSourceStats;
+
 	QList<QAction*> m_projectDependentActions;
+
 	DataBindingWidget* m_dataBindingWidget;
 	MinMaxGlyphModel* m_minMaxGlyphModel;
+
 	DataTransformModel* m_dataTransformModel;
-	ANTzWidget* m_antzWidget;
-	GlyphTreeModel* m_glyphTree3DModel;
-	SynGlyphX::RoleDataFilterProxyModel* m_glyphTreesModel;
-	SynGlyphX::RoleDataFilterProxyModel* m_baseObjectsModel;
-	SelectionTranslator* m_selectionTranslator;
+	
+	DataMapping3DWidget* m_minMaxGlyph3DWidget;
 
 	SynGlyphX::DataMappingDefaults m_newMappingDefaults;
 };

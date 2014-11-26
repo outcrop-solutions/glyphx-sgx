@@ -51,6 +51,8 @@ public:
 
 	void EnableTables(const boost::uuids::uuid& id, const SynGlyphX::Datasource::TableSet& tables, bool enable = true);
 
+	void UpdateGlyph(const QModelIndex& index, const SynGlyphX::MinMaxGlyph& glyph);
+
 private:
 	void SetIntermediateDirectoryToCurrentID();
 	QString GetIntermediateDirectoryForID(const boost::uuids::uuid& id);

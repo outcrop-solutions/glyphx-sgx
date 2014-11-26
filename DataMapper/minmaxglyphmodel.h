@@ -25,9 +25,6 @@ public:
 	bool IsCurrentGlyphRoot() const;
 	bool IsClear() const;
 
-signals:
-	void GlyphPropertiesUpdated(SynGlyphX::GlyphProperties::SharedPtr newGlyph);
-
 public slots:
 	void SetMinMaxGlyph(const QModelIndex& index);
 	void Clear();
@@ -37,12 +34,14 @@ private:
 	QVariant GetDataByRow(const SynGlyphX::GlyphNumericMappableProperties& minProperties, const SynGlyphX::GlyphNumericMappableProperties& diffProperties, int row) const;
 	bool SetDataByRow(SynGlyphX::GlyphNumericMappableProperties& minProperties, SynGlyphX::GlyphNumericMappableProperties& diffProperties, const QVariant& value, const QModelIndex& index);
 
-	SynGlyphX::MinMaxGlyphTree::iterator m_glyph;
+	SynGlyphX::MinMaxGlyphTree::const_iterator m_glyph;
 	SynGlyphX::MinMaxGlyphTree::ConstSharedPtr m_glyphTree;
 	boost::uuids::uuid m_glyphTreeID;
 	QStringList m_propertyHeaders;
 	QStringList m_columnHeaders;
 	DataTransformModel* m_dataTransformModel;
+
+	QPersistentModelIndex m_selectedIndex;
 };
 
 #endif // MINMAXGLYPHMODEL_H
