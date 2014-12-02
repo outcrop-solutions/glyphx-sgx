@@ -8,9 +8,9 @@ MinMaxGlyph3DWidget::MinMaxGlyph3DWidget(QWidget *parent)
 {
 	m_maxGlyph3DWidget = new ANTzSingleGlyphTreeWidget(MinMaxGlyphTreeModel::GlyphType::Max, this);
 	m_maxGlyph3DWidget->SetEditingMode(ANTzSingleGlyphTreeWidget::EditingMode::None);
-	
 
 	QVBoxLayout* layout = new QVBoxLayout(this);
+	layout->setContentsMargins(0, 0, 0, 0);
 	layout->addWidget(m_maxGlyph3DWidget);
 
 	setLayout(layout);
