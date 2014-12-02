@@ -657,6 +657,6 @@ void DataMapperWindow::OnGlyphTreesViewSelectionChanged(const QItemSelection& se
 	}
 	else {
 
-		m_minMaxGlyphModel->SetMinMaxGlyph(selected.indexes()[0]);
+		m_minMaxGlyphModel->SetMinMaxGlyph(m_glyphTreesModel->mapSelectionToSource(selected).indexes()[0]);
 	}
 }

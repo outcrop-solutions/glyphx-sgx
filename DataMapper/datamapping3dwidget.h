@@ -4,6 +4,7 @@
 #include "minmaxglyph3dwidget.h"
 #include "roledatafilterproxymodel.h"
 #include "datatransformmodel.h"
+#include <stack>
 
 class DataMapping3DWidget : public MinMaxGlyph3DWidget
 {
@@ -18,10 +19,13 @@ public:
 private slots:
 	void OnInternalSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected);
 	void OnExternalSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected);
+	void OnExternalDataChanged(const QModelIndex& topLeft, const QModelIndex& bottomRight, const QVector<int>& roles);
 
 private:
 	void ConnectInternalSelection();
 	void ConnectExternalSelection();
+	std::stack<unsigned int> GetRowIndiciesFromStack(const QModelIndex& index) const;
+	QModelIndex GetModelIndexFromStack(std::stack<unsigned int> rows, const QAbstractItemModel* const model) const;
 
 	DataTransformModel* m_dataTransformModel;
 

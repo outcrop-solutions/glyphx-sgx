@@ -28,6 +28,7 @@ void DataMapping3DWidget::SetModel(SynGlyphX::RoleDataFilterProxyModel* model, Q
 
 	ConnectInternalSelection();
 	ConnectExternalSelection();
+	QObject::connect(m_externalModel, &SynGlyphX::RoleDataFilterProxyModel::dataChanged, this, &DataMapping3DWidget::OnExternalDataChanged);
 }
 
 void DataMapping3DWidget::ConnectInternalSelection() {
@@ -48,28 +49,12 @@ void DataMapping3DWidget::OnInternalSelectionChanged(const QItemSelection& selec
 		return;
 	}
 
-	QModelIndex glyphTreeModelIndex = selected.indexes()[0];
-
-	std::stack<int> childPositions;
-	while (glyphTreeModelIndex.isValid()) {
-
-		childPositions.push(glyphTreeModelIndex.row());
-		glyphTreeModelIndex = glyphTreeModelIndex.parent();
-	}
-
-	//The top position will be 0 which we don't need
+	std::stack<unsigned int> childPositions = GetRowIndiciesFromStack(selected.indexes()[0]);
 	childPositions.pop();
-
-	QModelIndex minMaxIndex = m_externalModel->index(m_glyphTreeIndex, 0);
-
-	while (!childPositions.empty()) {
-
-		minMaxIndex = m_externalModel->index(childPositions.top(), 0, minMaxIndex);
-		childPositions.pop();
-	}
+	childPositions.push(m_glyphTreeIndex);
 
 	QObject::disconnect(m_externalSelectionConnection);
-	m_externalSelectionModel->select(minMaxIndex, QItemSelectionModel::ClearAndSelect);
+	m_externalSelectionModel->select(GetModelIndexFromStack(childPositions, m_externalModel), QItemSelectionModel::ClearAndSelect);
 	ConnectExternalSelection();
 }
 
@@ -82,14 +67,7 @@ void DataMapping3DWidget::OnExternalSelectionChanged(const QItemSelection& selec
 		return;
 	}
 
-	QModelIndex minMaxIndex = selected.indexes()[0];
-
-	std::stack<int> childPositions;
-	while (minMaxIndex.isValid()) {
-
-		childPositions.push(minMaxIndex.row());
-		minMaxIndex = minMaxIndex.parent();
-	}
+	std::stack<unsigned int> childPositions = GetRowIndiciesFromStack(selected.indexes()[0]);
 
 	if (m_glyphTreeIndex != childPositions.top()) {
 
@@ -101,16 +79,64 @@ void DataMapping3DWidget::OnExternalSelectionChanged(const QItemSelection& selec
 
 	//The top position will be the row of the glyph since the glyph tree view has multiple glyphs.  We don't need it anymore
 	childPositions.pop();
-
-	QModelIndex glyphTreeModelIndex = m_internalModel->index(0);
-
-	while (!childPositions.empty()) {
-
-		glyphTreeModelIndex = m_internalModel->index(childPositions.top(), 0, glyphTreeModelIndex);
-		childPositions.pop();
-	}
+	childPositions.push(0);
 
 	QObject::disconnect(m_internalSelectionConnection);
-	m_internalSelectionModel->select(glyphTreeModelIndex, QItemSelectionModel::ClearAndSelect);
+	m_internalSelectionModel->select(GetModelIndexFromStack(childPositions, m_internalModel), QItemSelectionModel::ClearAndSelect);
 	ConnectInternalSelection();
+}
+
+void DataMapping3DWidget::OnExternalDataChanged(const QModelIndex& topLeft, const QModelIndex& bottomRight, const QVector<int>& roles) {
+
+	QModelIndex topLeftSource = m_externalModel->mapToSource(topLeft);
+	QModelIndex bottomRightSource = m_externalModel->mapToSource(bottomRight);
+
+	std::stack<unsigned int> childPositions = GetRowIndiciesFromStack(topLeftSource.parent());
+	if (!childPositions.empty()) {
+
+		childPositions.pop();
+		childPositions.push(0);
+	}
+	QModelIndex parent = GetModelIndexFromStack(childPositions, m_internalModel);
+
+	if (parent.isValid()) {
+
+		for (int i = topLeftSource.column(); i <= bottomRightSource.column(); ++i) {
+
+			for (int j = topLeftSource.row(); j <= bottomRightSource.row(); ++j) {
+
+				m_internalModel->UpdateGlyph(m_internalModel->index(j, i, parent), m_dataTransformModel->GetGlyph(m_dataTransformModel->index(j, i, topLeftSource.parent())));
+			}
+		}
+	}
+	else {
+
+		m_internalModel->UpdateGlyph(m_internalModel->index(0), m_dataTransformModel->GetGlyph(m_dataTransformModel->index(topLeftSource.row(), topLeftSource.column(), topLeftSource.parent())));
+	}
+}
+
+std::stack<unsigned int> DataMapping3DWidget::GetRowIndiciesFromStack(const QModelIndex& index) const {
+
+	QModelIndex currentIndex = index;
+	std::stack<unsigned int> childPositions;
+	while (currentIndex.isValid()) {
+
+		childPositions.push(currentIndex.row());
+		currentIndex = currentIndex.parent();
+	}
+
+	return childPositions;
+}
+
+QModelIndex DataMapping3DWidget::GetModelIndexFromStack(std::stack<unsigned int> rows, const QAbstractItemModel* const model) const {
+
+	QModelIndex index;
+
+	while (!rows.empty()) {
+
+		index = model->index(rows.top(), 0, index);
+		rows.pop();
+	}
+
+	return index;
 }

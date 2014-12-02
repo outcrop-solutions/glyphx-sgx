@@ -379,11 +379,23 @@ bool DataTransformModel::IsRowInDataType(DataType type, int row) const {
 	return ((row >= min) && (row < max));
 }
 
-void DataTransformModel::UpdateGlyph(const QModelIndex& index, const SynGlyphX::MinMaxGlyph& glyph) {
+void DataTransformModel::UpdateGlyph(const QModelIndex& index, const SynGlyphX::MinMaxGlyph& newGlyph) {
 
 	if (!m_dataMapping->GetGlyphTrees().empty() && index.isValid()) {
 
-		SynGlyphX::MinMaxGlyphTree::iterator iT(static_cast<SynGlyphX::MinMaxGlyphTree::Node*>(index.internalPointer()));
-		*iT = glyph;
+		SynGlyphX::MinMaxGlyphTree::iterator glyph(static_cast<SynGlyphX::MinMaxGlyphTree::Node*>(index.internalPointer()));
+		*glyph = newGlyph;
+		emit dataChanged(index, index);
 	}
+}
+
+const SynGlyphX::MinMaxGlyph& DataTransformModel::GetGlyph(const QModelIndex& index) const {
+
+	if (m_dataMapping->GetGlyphTrees().empty() || !index.isValid()) {
+
+		throw std::invalid_argument("Index doesn't exist in DataTransformModel");
+	}
+
+	SynGlyphX::MinMaxGlyphTree::const_iterator glyph(static_cast<SynGlyphX::MinMaxGlyphTree::Node*>(index.internalPointer()));
+	return (*glyph);
 }
