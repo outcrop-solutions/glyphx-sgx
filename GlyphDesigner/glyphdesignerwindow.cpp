@@ -31,7 +31,9 @@ GlyphDesignerWindow::GlyphDesignerWindow(QWidget *parent)
 	CreateMenus();
 	CreateDockWidgets();
 
-	m_3dView->addActions(m_treeView->actions());
+	m_3dView->addActions(m_treeView->GetGlyphActions());
+	m_3dView->addAction(SynGlyphX::SharedActionList::CreateSeparator(this));
+	m_3dView->addActions(m_treeView->GetEditActions());
 	m_3dView->setContextMenuPolicy(Qt::ActionsContextMenu);
 
 	QObject::connect(m_glyphTreeModel, &MinMaxGlyphTreeModel::modelReset, this, &GlyphDesignerWindow::OnModelChanged);

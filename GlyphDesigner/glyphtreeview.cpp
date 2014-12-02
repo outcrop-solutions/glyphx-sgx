@@ -3,7 +3,7 @@
 #include "singleglyphwidget.h"
 
 GlyphTreeView::GlyphTreeView(MinMaxGlyphTreeModel* model, MinMaxGlyphTreeModel::GlyphType glyphTreeType, QWidget *parent)
-    : QTreeView(parent),
+	: SynGlyphX::TreeView(parent),
 	m_model(model),
 	m_glyphTreeType(glyphTreeType)
 {
@@ -15,6 +15,7 @@ GlyphTreeView::GlyphTreeView(MinMaxGlyphTreeModel* model, MinMaxGlyphTreeModel::
     setDropIndicatorShown(true);
     setDragDropMode(QAbstractItemView::InternalMove);
     setDefaultDropAction(Qt::MoveAction);
+	SetScrollOnSelection(true);
 
 	CreateContextMenuActions();
 }
@@ -36,15 +37,7 @@ const SynGlyphX::SharedActionList& GlyphTreeView::GetEditActions() const {
 
 void GlyphTreeView::selectionChanged(const QItemSelection& selected, const QItemSelection& deselected) {
 
-    QTreeView::selectionChanged(selected, deselected);
-    const QModelIndexList& indicies = selected.indexes();
-    if (indicies.length() > 0) {
-        const QModelIndex& index = indicies.back();
-        if (index.isValid()) {
-            scrollTo(index);
-        }
-    }
-
+	SynGlyphX::TreeView::selectionChanged(selected, deselected);
 	EnableActions();
 }
 
@@ -82,6 +75,7 @@ void GlyphTreeView::CreateContextMenuActions() {
 	m_addChildrenAction = m_glyphActions.AddAction(tr("Add Children"));
 	QObject::connect(m_addChildrenAction, &QAction::triggered, this, &GlyphTreeView::AddChildren);
 
+	addAction(SynGlyphX::SharedActionList::CreateSeparator(this));
 	addActions(m_glyphActions);
 	addAction(SynGlyphX::SharedActionList::CreateSeparator(this));
 	addActions(m_editActions);

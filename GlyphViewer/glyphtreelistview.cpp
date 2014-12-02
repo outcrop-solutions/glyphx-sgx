@@ -1,10 +1,12 @@
 #include "glyphtreelistview.h"
 
 GlyphTreeListView::GlyphTreeListView(QWidget *parent)
-	: QTreeView(parent)
+	: SynGlyphX::TreeView(parent)
 {
 	setSelectionMode(QAbstractItemView::SingleSelection);
 	setDragEnabled(false);
+	SetScrollOnSelection(true);
+	setContextMenuPolicy(Qt::ActionsContextMenu);
 }
 
 GlyphTreeListView::~GlyphTreeListView()
@@ -14,12 +16,5 @@ GlyphTreeListView::~GlyphTreeListView()
 
 void GlyphTreeListView::selectionChanged(const QItemSelection& selected, const QItemSelection& deselected) {
 
-	QTreeView::selectionChanged(selected, deselected);
-	const QModelIndexList& indicies = selected.indexes();
-	if (indicies.length() > 0) {
-		const QModelIndex& index = indicies.back();
-		if (index.isValid()) {
-			scrollTo(index);
-		}
-	}
+	SynGlyphX::TreeView::selectionChanged(selected, deselected);
 }

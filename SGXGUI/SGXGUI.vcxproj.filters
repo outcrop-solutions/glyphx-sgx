@@ -158,6 +158,15 @@
     <ClCompile Include="roledatafilterproxymodel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="treeview.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_treeview.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_treeview.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="sgxgui_global.h">
@@ -208,6 +217,9 @@
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="roledatafilterproxymodel.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="treeview.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>

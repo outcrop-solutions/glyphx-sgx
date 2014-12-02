@@ -1,8 +1,9 @@
 #include "glyphtreesview.h"
 
 GlyphTreesView::GlyphTreesView(QWidget *parent)
-	: QTreeView(parent)
+	: SynGlyphX::TreeView(parent)
 {
+	SetScrollOnSelection(true);
 	setSelectionMode(QAbstractItemView::SingleSelection);
 	setHeaderHidden(true);
 	setContextMenuPolicy(Qt::ContextMenuPolicy::ActionsContextMenu);
@@ -15,6 +16,7 @@ GlyphTreesView::GlyphTreesView(QWidget *parent)
 	m_clearSelectedInputBindingsAction = m_sharedActions.AddAction(tr("Clear Input Bindings"));
 
 	m_sharedActions.EnableActions(false);
+	addAction(SynGlyphX::SharedActionList::CreateSeparator(this));
 	addActions(m_sharedActions);
 }
 
@@ -35,15 +37,7 @@ const QAction* const GlyphTreesView::GetClearSelectedInputBindingsAction() const
 
 void GlyphTreesView::selectionChanged(const QItemSelection& selected, const QItemSelection& deselected) {
 
-	QTreeView::selectionChanged(selected, deselected);
-	const QModelIndexList& indicies = selected.indexes();
-	if (indicies.length() > 0) {
-		const QModelIndex& index = indicies.back();
-		if (index.isValid()) {
-			scrollTo(index);
-		}
-	}
-
+	SynGlyphX::TreeView::selectionChanged(selected, deselected);
 	EnableActions();
 }
 

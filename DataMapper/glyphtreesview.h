@@ -1,12 +1,11 @@
 #ifndef GLYPHTREESVIEW_H
 #define GLYPHTREESVIEW_H
 
-#include <QtWidgets/QTreeView>
-#include <QtWidgets/QAction>
+#include "treeview.h"
 #include "sharedactionlist.h"
 #include "minmaxglyphmodel.h"
 
-class GlyphTreesView : public QTreeView
+class GlyphTreesView : public SynGlyphX::TreeView
 {
 	Q_OBJECT
 
