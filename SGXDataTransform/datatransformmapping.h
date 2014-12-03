@@ -63,6 +63,7 @@ namespace SynGlyphX {
 		void SetDefaults(const DataMappingDefaults& defaults);
 
     protected:
+		void Clear(bool addADefaultBaseObjectAfterClear);
 		virtual void ImportFromPropertyTree(const boost::property_tree::wptree& filePropertyTree);
 		virtual void ExportToPropertyTree(boost::property_tree::wptree& filePropertyTree) const;
 

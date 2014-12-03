@@ -54,7 +54,7 @@ namespace SynGlyphX {
 
 	void DataTransformMapping::ImportFromPropertyTree(const boost::property_tree::wptree& filePropertyTree) {
 
-        Clear();
+        Clear(false);
 
 		const boost::property_tree::wptree& dataTransformPropertyTree = filePropertyTree.get_child(L"Transform");
 
@@ -124,13 +124,21 @@ namespace SynGlyphX {
 
 	void DataTransformMapping::Clear() {
 
+		Clear(true);
+	}
+		
+	void DataTransformMapping::Clear(bool addADefaultBaseObjectAfterClear) {
+
 		m_datasources.Clear();
 		m_glyphTrees.clear();
 		m_defaults.Clear();
 		m_baseObjects.clear();
-		//There will always be at least one base object
-		m_baseObjects.push_back(BaseImage(nullptr));
 		m_id = UUIDGenerator::GetNewRandomUUID();
+
+		if (addADefaultBaseObjectAfterClear) {
+
+			m_baseObjects.push_back(BaseImage(nullptr));
+		}
     }
 
 	void DataTransformMapping::RemoveDatasource(const boost::uuids::uuid& id) {
