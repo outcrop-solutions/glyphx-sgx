@@ -3,7 +3,9 @@
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QDialogButtonBox>
 #include <QtWidgets/QLabel>
-#include <QtWidgets/QComboBox>
+#include <QtWidgets/QRadioButton>
+#include <QtWidgets/QHeaderView>
+#include <QtWidgets/QScrollBar>
 #include "sourcedatamanager.h"
 
 namespace SynGlyphX {
@@ -16,6 +18,7 @@ namespace SynGlyphX {
 		QVBoxLayout* layout = new QVBoxLayout(this);
 
 		m_fieldTypeTable = new QTableWidget(fields.length(), 2, this);
+		m_fieldTypeTable->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Preferred);
 		m_fieldTypeTable->setCornerButtonEnabled(false);
 		QStringList labels;
 		labels.push_back(tr("Field:"));
@@ -28,14 +31,37 @@ namespace SynGlyphX {
 
 			m_fieldTypeTable->setCellWidget(i, 0, new QLabel(fields[i]));
 			
-			QComboBox* typeComboBox = new QComboBox(this);
-			typeComboBox->addItems(fieldTypes);
-			typeComboBox->setCurrentIndex(0);
-			m_fieldTypeTable->setCellWidget(i, 1, typeComboBox);
+			QWidget* radioButtonBox = new QWidget(this);
+			QHBoxLayout* radioButtonBoxLayout = new QHBoxLayout(radioButtonBox);
+			QButtonGroup* buttonGroup = new QButtonGroup(this);
+			
+			for (int j = 0; j < fieldTypes.size(); ++j) {
+
+				QRadioButton* radioButton = new QRadioButton(fieldTypes[j], radioButtonBox);
+				buttonGroup->addButton(radioButton);
+				radioButtonBoxLayout->addWidget(radioButton);
+
+				if (j == 0) {
+
+					radioButton->setChecked(true);
+				}
+			}
+
+			m_radioButtonGroups.push_back(buttonGroup);
+			radioButtonBox->setLayout(radioButtonBoxLayout);
+			m_fieldTypeTable->setCellWidget(i, 1, radioButtonBox);
 		}
 
 		m_fieldTypeTable->resizeColumnsToContents();
 		m_fieldTypeTable->resizeRowsToContents();
+
+		int minTableWidth = m_fieldTypeTable->model()->columnCount() + m_fieldTypeTable->verticalHeader()->width() + m_fieldTypeTable->verticalScrollBar()->sizeHint().width();
+		for (int column = 0; column < m_fieldTypeTable->model()->columnCount(); column++) {
+
+			minTableWidth += m_fieldTypeTable->columnWidth(column);
+
+		}
+		m_fieldTypeTable->setMinimumWidth(minTableWidth);
 
 		layout->addWidget(m_fieldTypeTable);
 
@@ -55,10 +81,9 @@ namespace SynGlyphX {
 	QStringList DatasourceFieldTypesDialog::GetFieldTypes() const {
 
 		QStringList types;
-		for (int i = 0; i < m_fieldTypeTable->rowCount(); ++i) {
+		Q_FOREACH(QButtonGroup* buttonGroup, m_radioButtonGroups) {
 
-			QComboBox* comboBox = dynamic_cast<QComboBox*>(m_fieldTypeTable->cellWidget(i, 1));
-			types.push_back(comboBox->currentText());
+			types.push_back(buttonGroup->checkedButton()->text());
 		}
 		
 		return types;

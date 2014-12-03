@@ -3,6 +3,7 @@
 
 #include "sgxgui_global.h"
 #include <QtWidgets/QDialog>
+#include <QtWidgets/QButtonGroup>
 #include <QtWidgets/QTableWidget>
 
 namespace SynGlyphX {
@@ -19,6 +20,7 @@ namespace SynGlyphX {
 
 	private:
 		QTableWidget* m_fieldTypeTable;
+		QList<QButtonGroup*> m_radioButtonGroups;
 	};
 
 } //namespace SynGlyphX
