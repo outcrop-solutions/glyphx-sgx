@@ -187,9 +187,35 @@ namespace SynGlyphX {
 		return (m_datasources.HasDatasources() && (!m_glyphTrees.empty()));
 	}
 
+	void DataTransformMapping::AddBaseObject(const BaseImage& baseObject) {
+
+		m_baseObjects.push_back(baseObject);
+	}
+
+	void DataTransformMapping::RemoveBaseObject(unsigned int index) {
+
+		if (index < m_baseObjects.size()) {
+
+			std::vector<BaseImage>::iterator baseObject = m_baseObjects.begin();
+			std::advance(baseObject, index);
+			m_baseObjects.erase(baseObject);
+		}
+		else {
+
+			throw std::invalid_argument("Index is greater than size of base objects");
+		}
+	}
+
 	void DataTransformMapping::SetBaseObject(unsigned int index, const BaseImage& baseObject) {
 
-		m_baseObjects[index] = baseObject;
+		if (index < m_baseObjects.size()) {
+
+			m_baseObjects[index] = baseObject;
+		}
+		else {
+
+			throw std::invalid_argument("Index is greater than size of base objects");
+		}
 	}
 
 	const std::vector<BaseImage>& DataTransformMapping::GetBaseObjects() const {

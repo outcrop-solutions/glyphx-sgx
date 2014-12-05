@@ -52,6 +52,8 @@ namespace SynGlyphX {
 
 		void Clear();
 
+		void AddBaseObject(const BaseImage& baseObject);
+		void RemoveBaseObject(unsigned int index);
 		void SetBaseObject(unsigned int index, const BaseImage& baseObject);
 		const std::vector<BaseImage>& GetBaseObjects() const;
 
