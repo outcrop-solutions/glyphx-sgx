@@ -25,6 +25,7 @@ public:
     double GetZ() const;
 
     void Set(const SynGlyphX::Vector3& vec);
+	SynGlyphX::Vector3 Get() const;
 
     void SetWrapping(bool wrapping);
     void SetDecimal(int decimals);

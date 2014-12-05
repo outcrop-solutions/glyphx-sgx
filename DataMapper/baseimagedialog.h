@@ -7,13 +7,14 @@
 #include "mapoptionswidget.h"
 #include "baseimage.h"
 #include "browselineedit.h"
+#include "xyzwidget.h"
 
 class BaseImageDialog : public QDialog
 {
 	Q_OBJECT
 
 public:
-	BaseImageDialog(QWidget *parent = 0);
+	BaseImageDialog(bool enablePositionAndOrientation, QWidget *parent = 0);
 	~BaseImageDialog();
 
 	virtual void accept();
@@ -26,6 +27,7 @@ private:
 	QComboBox* m_baseImageComboBox;
 	MapOptionsWidget* m_downloadedMapOptionsWidget;
 	SynGlyphX::BrowseLineEdit* m_userDefinedImageLineEdit;
+	XYZWidget* m_positionWidget;
 };
 
 #endif // BASEIMAGEDIALOG_H

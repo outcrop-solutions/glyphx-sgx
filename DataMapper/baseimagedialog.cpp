@@ -9,7 +9,7 @@
 #include "downloadedmapproperties.h"
 #include "userdefinedbaseimageproperties.h"
 
-BaseImageDialog::BaseImageDialog(QWidget *parent)
+BaseImageDialog::BaseImageDialog(bool enablePositionAndOrientation, QWidget *parent)
 	: QDialog(parent)
 {
 	QVBoxLayout* layout = new QVBoxLayout(this);
@@ -52,6 +52,13 @@ BaseImageDialog::BaseImageDialog(QWidget *parent)
 	layout->addWidget(m_baseImageOptionsStackedWidget);
 
 	QObject::connect(m_baseImageComboBox, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), m_baseImageOptionsStackedWidget, &QStackedWidget::setCurrentIndex);
+
+	m_positionWidget = new XYZWidget(false, this);
+	m_positionWidget->SetRange(-5000.0, 5000.0);
+	m_positionWidget->SetWrapping(false);
+	m_positionWidget->setEnabled(enablePositionAndOrientation);
+	SynGlyphX::GroupBoxSingleWidget* positionGroupBox = new SynGlyphX::GroupBoxSingleWidget(tr("Position"), m_positionWidget, this);
+	layout->addWidget(positionGroupBox);
 
 	layout->addStretch(1);
 
@@ -127,9 +134,12 @@ void BaseImageDialog::SetBaseImage(const SynGlyphX::BaseImage& baseImage) {
 		const SynGlyphX::UserDefinedBaseImageProperties* const properties = dynamic_cast<const SynGlyphX::UserDefinedBaseImageProperties* const>(baseImage.GetProperties());
 		m_userDefinedImageLineEdit->SetText(QString::fromStdWString(properties->GetFilename()));
 	}
+	m_positionWidget->Set(baseImage.GetPosition());
 }
 
 SynGlyphX::BaseImage BaseImageDialog::GetBaseImage() const {
+
+	SynGlyphX::BaseImage newBaseImage(nullptr);
 
 	SynGlyphX::BaseImage::Type baseImageType = SynGlyphX::BaseImage::s_baseImageTypeStrings.right.at(m_baseImageComboBox->currentText().toStdWString());
 	if (baseImageType == SynGlyphX::BaseImage::Type::DownloadedMap) {
@@ -138,13 +148,15 @@ SynGlyphX::BaseImage BaseImageDialog::GetBaseImage() const {
 		imageSize[0] = m_downloadedMapOptionsWidget->GetMapSize().width();
 		imageSize[1] = m_downloadedMapOptionsWidget->GetMapSize().height();
 		SynGlyphX::DownloadedMapProperties properties(m_downloadedMapOptionsWidget->GetMapSource(), m_downloadedMapOptionsWidget->GetMapType(), imageSize);
-		return SynGlyphX::BaseImage(&properties);
+		newBaseImage = SynGlyphX::BaseImage(&properties);
 	}
 	else if (baseImageType == SynGlyphX::BaseImage::Type::UserImage) {
 
 		SynGlyphX::UserDefinedBaseImageProperties properties(m_userDefinedImageLineEdit->GetText().toStdWString());
-		return SynGlyphX::BaseImage(&properties);
+		newBaseImage = SynGlyphX::BaseImage(&properties);
 	}
 
-	return SynGlyphX::BaseImage(nullptr);
+	newBaseImage.SetPosition(m_positionWidget->Get());
+
+	return newBaseImage;
 }

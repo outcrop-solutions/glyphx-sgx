@@ -65,7 +65,7 @@ void BaseObjectListView::ShowBaseObjectProperties() {
 	if (!selected.isEmpty()) {
 
 		unsigned int row = selected.front().row();
-		BaseImageDialog dialog(this);
+		BaseImageDialog dialog(row != 0, this);
 		dialog.setWindowTitle(tr("Base Object Properties"));
 		dialog.SetBaseImage(m_dataTransformModel->GetDataMapping()->GetBaseObjects()[row]);
 		if (dialog.exec() == QDialog::Accepted) {

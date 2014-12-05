@@ -480,7 +480,7 @@ void DataMapperWindow::ExportToANTz() {
 
 void DataMapperWindow::AddBaseObject() {
 
-	BaseImageDialog dialog(this);
+	BaseImageDialog dialog(true, this);
 	dialog.setWindowTitle(tr("Add New Base Object"));
 	if (dialog.exec() == QDialog::Accepted) {
 
