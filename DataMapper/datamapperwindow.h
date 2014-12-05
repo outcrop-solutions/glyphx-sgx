@@ -12,6 +12,7 @@
 #include "datamapping3dwidget.h"
 #include "glyphtreesview.h"
 #include "roledatafilterproxymodel.h"
+#include "baseobjectlistview.h"
 
 class DataMapperWindow : public SynGlyphX::MainWindow
 {
@@ -33,7 +34,7 @@ private slots:
     bool SaveAsProject();
     void AddDataSources();
     void ExportToANTz();
-    void ChangeBaseImage();
+	void AddBaseObject();
 	void AddGlyphTemplate();
 	void ChangeMapDownloadSettings();
 	void ChangeGlyphDefaults();
@@ -58,13 +59,14 @@ private:
 
     QMenu* m_fileMenu;
     QMenu* m_glyphMenu;
+	QMenu* m_baseObjectMenu;
 	QMenu* m_datasourceMenu;
     QMenu* m_viewMenu;
 	QMenu* m_toolsMenu;
     
 	SynGlyphX::RoleDataFilterProxyModel* m_glyphTreesModel;
 	SynGlyphX::RoleDataFilterProxyModel* m_baseObjectsModel;
-	QListView* m_baseObjectsView;
+	BaseObjectListView* m_baseObjectsView;
 	GlyphTreesView* m_glyphTreesView;
 	DataSourceStatsWidget* m_dataSourceStats;
 

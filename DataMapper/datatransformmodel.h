@@ -42,7 +42,11 @@ public:
 	void Clear();
 
 	void AddGlyphFile(const QString& filename);
-	void SetBaseImage(const SynGlyphX::BaseImage& baseImage);
+	void UpdateGlyph(const QModelIndex& index, const SynGlyphX::MinMaxGlyph& newGlyph);
+	const SynGlyphX::MinMaxGlyph& GetGlyph(const QModelIndex& index) const;
+
+	void SetBaseObject(unsigned int position, const SynGlyphX::BaseImage& baseImage);
+	void AddBaseObject(const SynGlyphX::BaseImage& baseImage);
 
 	boost::uuids::uuid AddFileDatasource(SynGlyphX::FileDatasource::SourceType type, const std::wstring& name);
 
@@ -50,9 +54,6 @@ public:
 	void ClearInputBinding(const boost::uuids::uuid& treeID, SynGlyphX::MinMaxGlyphTree::const_iterator& node, int index);
 
 	void EnableTables(const boost::uuids::uuid& id, const SynGlyphX::Datasource::TableSet& tables, bool enable = true);
-
-	void UpdateGlyph(const QModelIndex& index, const SynGlyphX::MinMaxGlyph& newGlyph);
-	const SynGlyphX::MinMaxGlyph& GetGlyph(const QModelIndex& index) const;
 
 private:
 	void SetIntermediateDirectoryToCurrentID();

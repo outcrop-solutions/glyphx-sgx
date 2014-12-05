@@ -41,6 +41,9 @@ DataMapperWindow::DataMapperWindow(QWidget *parent)
 	m_baseObjectsModel(nullptr)
 {
 	m_dataTransformModel = new DataTransformModel(this);
+	QObject::connect(m_dataTransformModel, &DataTransformModel::dataChanged, this, [&, this](const QModelIndex& topLeft, const QModelIndex& bottomRight){ setWindowModified(true); });
+	QObject::connect(m_dataTransformModel, &DataTransformModel::rowsInserted, this, [&, this](const QModelIndex& parent, int first, int last){ setWindowModified(true); });
+	QObject::connect(m_dataTransformModel, &DataTransformModel::rowsRemoved, this, [&, this](const QModelIndex& parent, int first, int last){ setWindowModified(true); });
 	
 	CreateMenus();
     CreateDockWidgets();
@@ -49,6 +52,8 @@ DataMapperWindow::DataMapperWindow(QWidget *parent)
 
 	ReadNewMappingDefaults();
 	ClearAndInitializeDataMapping();
+
+	QObject::connect(m_baseObjectsModel, &SynGlyphX::RoleDataFilterProxyModel::dataChanged, m_dataBindingWidget, &DataBindingWidget::OnBaseObjectChanged);
 
 	statusBar()->showMessage(SynGlyphX::Application::applicationName() + " Started", 3000);
 }
@@ -130,16 +135,20 @@ void DataMapperWindow::CreateMenus() {
 
 	m_glyphMenu->addSeparator();
 
+	m_baseObjectMenu = menuBar()->addMenu(tr("Base Object"));
+
+	QAction* addBaseObjectAction = m_baseObjectMenu->addAction(tr("Add Base Object"));
+	QObject::connect(addBaseObjectAction, &QAction::triggered, this, &DataMapperWindow::AddBaseObject);
+
+	m_baseObjectMenu->addSeparator();
+
 	//Create Datasource Menu
 	m_datasourceMenu = menuBar()->addMenu(tr("Data Source"));
     
 	QAction* addDataSourcesAction = m_datasourceMenu->addAction(tr("Add Data Sources"));
     QObject::connect(addDataSourcesAction, &QAction::triggered, this, &DataMapperWindow::AddDataSources);
 
-	m_datasourceMenu->addSeparator();
-
-	QAction* baseImageAction = m_datasourceMenu->addAction(tr("Choose Base Image"));
-    QObject::connect(baseImageAction, &QAction::triggered, this, &DataMapperWindow::ChangeBaseImage);
+	//m_datasourceMenu->addSeparator();
 
     //Create View Menu
     m_viewMenu = menuBar()->addMenu(tr("View"));
@@ -184,13 +193,13 @@ void DataMapperWindow::CreateDockWidgets() {
 
 	QDockWidget* leftDockWidgetBaseObjects = new QDockWidget(tr("Grids/Base Images"), this);
 
-	m_baseObjectsView = new QListView(leftDockWidgetBaseObjects);
+	m_baseObjectsView = new BaseObjectListView(m_dataTransformModel, leftDockWidgetBaseObjects);
 	m_baseObjectsModel = new SynGlyphX::RoleDataFilterProxyModel(this);
 	m_baseObjectsModel->setSourceModel(m_dataTransformModel);
 	m_baseObjectsModel->setFilterRole(DataTransformModel::DataTypeRole);
 	m_baseObjectsModel->SetFilterData(DataTransformModel::DataType::BaseObjects);
 	m_baseObjectsView->setModel(m_baseObjectsModel);
-	m_glyphMenu->addActions(m_baseObjectsView->actions());
+	m_baseObjectMenu->addActions(m_baseObjectsView->actions());
 
 	//Add Base Objects View to dock widget on left side
 	leftDockWidgetBaseObjects->setWidget(m_baseObjectsView);
@@ -427,7 +436,6 @@ void DataMapperWindow::AddDataSources() {
 
 		m_dataSourceStats->AddNewStatsViews();
 		EnableProjectDependentActions(true);
-		setWindowModified(true);
 	}
 }
 
@@ -470,17 +478,15 @@ void DataMapperWindow::ExportToANTz() {
 	statusBar()->showMessage("Data transform sucessfully exported to ANTz", 3000);
 }
 
-void DataMapperWindow::ChangeBaseImage() {
+void DataMapperWindow::AddBaseObject() {
 
 	BaseImageDialog dialog(this);
-	dialog.SetBaseImage(m_dataTransformModel->GetDataMapping()->GetBaseObjects()[0]);
+	dialog.setWindowTitle(tr("Add New Base Object"));
 	if (dialog.exec() == QDialog::Accepted) {
 
 		const SynGlyphX::BaseImage& baseImage = dialog.GetBaseImage();
-		m_dataTransformModel->SetBaseImage(baseImage);
+		m_dataTransformModel->AddBaseObject(baseImage);
 		EnableProjectDependentActions(true);
-		setWindowModified(true);
-		m_dataBindingWidget->OnBaseObjectChanged();
 	}
 }
 
@@ -504,7 +510,6 @@ void DataMapperWindow::AddGlyphTemplate() {
 
 	EnableProjectDependentActions(true);
 	SelectLastGlyphTreeRoot();
-	setWindowModified(true);
 	statusBar()->showMessage("Glyph Template successfully added", 3000);
 }
 

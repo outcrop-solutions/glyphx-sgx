@@ -61,7 +61,6 @@ BaseImageDialog::BaseImageDialog(QWidget *parent)
 	QObject::connect(dialogButtonBox, &QDialogButtonBox::rejected, this, &BaseImageDialog::reject);
 
 	setLayout(layout);
-	setWindowTitle(tr("Choose Base Image"));
 }
 
 BaseImageDialog::~BaseImageDialog()

@@ -272,32 +272,22 @@ bool DataTransformModel::removeRows(int row, int count, const QModelIndex& paren
 		int lastRow = row + count - 1;
 		beginRemoveRows(parent, row, lastRow);
 
-		if (IsRowInDataType(DataType::GlyphTrees, row)) {
+		for (int i = row; i <= lastRow; ++i) {
 
-			SynGlyphX::DataTransformMapping::MinMaxGlyphTreeMap::const_iterator begin = m_dataMapping->GetGlyphTrees().begin();
-			std::advance(begin, row);
-			SynGlyphX::DataTransformMapping::MinMaxGlyphTreeMap::const_iterator end = begin;
-			std::advance(end, count);
+			if (IsRowInDataType(DataType::GlyphTrees, i)) {
 
-			//Store IDs to be removed so that we don't have to worry about removal affecting iterators on the tree map
-			std::vector<boost::uuids::uuid> treeIDs;
-			for (SynGlyphX::DataTransformMapping::MinMaxGlyphTreeMap::const_iterator iT = begin; iT != end; ++iT) {
-
-				treeIDs.push_back(iT->first);
+				SynGlyphX::DataTransformMapping::MinMaxGlyphTreeMap::const_iterator glyphTree = m_dataMapping->GetGlyphTrees().begin();
+				std::advance(glyphTree, i);
+				m_dataMapping->RemoveGlyphTree(glyphTree->first);
 			}
+			else if (IsRowInDataType(DataType::BaseObjects, i)) {
 
-			for (const boost::uuids::uuid& id : treeIDs) {
-
-				m_dataMapping->RemoveGlyphTree(id);
+				m_dataMapping->RemoveBaseObject(i - m_dataMapping->GetGlyphTrees().size());
 			}
-		}
-		else if (IsRowInDataType(DataType::BaseObjects, row)) {
+			else if (IsRowInDataType(DataType::DataSources, i)) {
 
 
-		}
-		else if (IsRowInDataType(DataType::DataSources, row)) {
-
-
+			}
 		}
 
 		endRemoveRows();
@@ -347,14 +337,24 @@ void DataTransformModel::AddGlyphFile(const QString& filename) {
 	SynGlyphX::MinMaxGlyphTree::SharedPtr glyphTree(new SynGlyphX::MinMaxGlyphTree());
 	glyphTree->ReadFromFile(filename.toStdString());
 	int row = m_dataMapping->GetGlyphTrees().size();
-	beginInsertRows(QModelIndex(), row, row + 1);
+	beginInsertRows(QModelIndex(), row, row);
 	m_dataMapping->AddGlyphTree(glyphTree);
 	endInsertRows();
 }
 
-void DataTransformModel::SetBaseImage(const SynGlyphX::BaseImage& baseImage) {
+void DataTransformModel::SetBaseObject(unsigned int position, const SynGlyphX::BaseImage& baseImage) {
 
-	m_dataMapping->SetBaseObject(0, baseImage);
+	m_dataMapping->SetBaseObject(position, baseImage);
+	QModelIndex modelIndex = index(m_dataMapping->GetGlyphTrees().size() + position);
+	emit dataChanged(modelIndex, modelIndex);
+}
+
+void DataTransformModel::AddBaseObject(const SynGlyphX::BaseImage& baseImage) {
+
+	int row = m_dataMapping->GetGlyphTrees().size() + m_dataMapping->GetBaseObjects().size();
+	beginInsertRows(QModelIndex(), row, row);
+	m_dataMapping->AddBaseObject(baseImage);
+	endInsertRows();
 }
 
 bool DataTransformModel::IsRowInDataType(DataType type, int row) const {
