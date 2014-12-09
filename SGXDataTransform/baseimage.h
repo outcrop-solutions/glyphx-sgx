@@ -12,6 +12,7 @@ namespace SynGlyphX {
 	class SGXDATATRANSFORM_EXPORT BaseImage
 	{
 	public:
+		typedef std::array<double, 2> Size;
 		typedef boost::property_tree::wptree PropertyTree;
 
 		enum Type {
@@ -34,9 +35,11 @@ namespace SynGlyphX {
 		void SetPosition(const Vector3& position);
 		const Vector3& GetPosition() const;
 
-		void SetRotation(double angle, const Vector3& axis);
-		const Vector3& GetRotationAxis() const;
-		double GetRotationAngle() const;
+		void SetRotation(const Vector3& angles);
+		const Vector3& GetRotationAngles() const;
+
+		void SetWorldSize(const Size& worldSize);
+		const Size& GetWorldSize() const;
 
 		void ExportToPropertyTree(PropertyTree& parentPropertyTree) const;
 
@@ -46,10 +49,10 @@ namespace SynGlyphX {
 		void ChangeProperties(const BaseImageProperties* const properties);
 
 		Vector3 m_position;
-		double m_rotationAngle;
-		Vector3 m_rotationAxis;
+		Vector3 m_rotationAngles;
 		Type m_type;
 		BaseImageProperties* m_properties;
+		Size m_worldSize;
 	};
 
 } //namespace SynGlyphX

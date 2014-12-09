@@ -13,17 +13,20 @@ namespace SynGlyphX {
 
 	BaseImage::BaseImage(const BaseImageProperties* const properties) :
 		m_position({ {0.0, 0.0, 0.0} }),
-		m_rotationAxis({ { 0.0, 0.0, 1.0 } }),
-		m_rotationAngle(0.0),
+		m_rotationAngles({ { 0.0, 0.0, 0.0 } }),
 		m_properties(nullptr),
-		m_type(Type::Default)
+		m_type(Type::Default),
+		m_worldSize({ {360.0, 180.0} })
 	{
 		ChangeProperties(properties);
 	}
 
 	BaseImage::BaseImage(const BaseImage::PropertyTree& propertyTree) :
 		m_type(s_baseImageTypeStrings.right.at(propertyTree.get<std::wstring>(L"<xmlattr>.type"))),
-		m_properties(nullptr) {
+		m_properties(nullptr),
+		m_position({ { 0.0, 0.0, 0.0 } }),
+		m_rotationAngles({ { 0.0, 0.0, 0.0 } }),
+		m_worldSize({ { 360.0, 180.0 } }) {
 
 		if (m_type == Type::DownloadedMap) {
 
@@ -49,17 +52,25 @@ namespace SynGlyphX {
 		boost::optional<const boost::property_tree::wptree&> rotationPropertyTree = propertyTree.get_child_optional(L"Rotation");
 		if (positionPropertyTree.is_initialized()) {
 
-			m_rotationAxis[0] = rotationPropertyTree.get().get<double>(L"AxisX");
-			m_rotationAxis[1] = rotationPropertyTree.get().get<double>(L"AxisY");
-			m_rotationAxis[2] = rotationPropertyTree.get().get<double>(L"AxisZ");
-			m_rotationAngle = rotationPropertyTree.get().get<double>(L"Angle");
+			m_rotationAngles[0] = rotationPropertyTree.get().get<double>(L"AngleX");
+			m_rotationAngles[1] = rotationPropertyTree.get().get<double>(L"AngleY");
+			m_rotationAngles[2] = rotationPropertyTree.get().get<double>(L"AngleZ");
+		}
+
+		boost::optional<const boost::property_tree::wptree&> worldSizePropertyTree = propertyTree.get_child_optional(L"WorldSize");
+		if (worldSizePropertyTree.is_initialized()) {
+
+			m_worldSize[0] = worldSizePropertyTree.get().get<double>(L"Width");
+			m_worldSize[1] = worldSizePropertyTree.get().get<double>(L"Height");
 		}
 	}
 
 	BaseImage::BaseImage(const BaseImage& baseImage) :
 		m_position(baseImage.m_position),
 		m_type(baseImage.m_type),
-		m_properties(nullptr) {
+		m_properties(nullptr),
+		m_rotationAngles(baseImage.m_rotationAngles),
+		m_worldSize(baseImage.m_worldSize) {
 
 		ChangeProperties(baseImage.GetProperties());
 	}
@@ -74,8 +85,10 @@ namespace SynGlyphX {
 	BaseImage& BaseImage::operator=(const BaseImage& baseImage) {
 
 		m_position = baseImage.m_position;
+		m_rotationAngles = baseImage.m_rotationAngles;
 		m_type = baseImage.m_type;
 		ChangeProperties(baseImage.GetProperties());
+		m_worldSize = baseImage.m_worldSize;
 
 		return *this;
 	}
@@ -133,10 +146,13 @@ namespace SynGlyphX {
 		propertyTree.put(L"Z", m_position[2]);
 
 		PropertyTree& rotationPropertyTree = parentPropertyTree.add(L"Rotation", L"");
-		rotationPropertyTree.put(L"AxisX", m_rotationAxis[0]);
-		rotationPropertyTree.put(L"AxisY", m_rotationAxis[1]);
-		rotationPropertyTree.put(L"AxisZ", m_rotationAxis[2]);
-		rotationPropertyTree.put(L"Angle", m_rotationAngle);
+		rotationPropertyTree.put(L"AngleX", m_rotationAngles[0]);
+		rotationPropertyTree.put(L"AngleY", m_rotationAngles[1]);
+		rotationPropertyTree.put(L"AngleZ", m_rotationAngles[2]);
+
+		PropertyTree& worldSizePropertyTree = parentPropertyTree.add(L"WorldSize", L"");
+		worldSizePropertyTree.put(L"Width", m_worldSize[0]);
+		worldSizePropertyTree.put(L"Height", m_worldSize[1]);
 	}
 
 	void BaseImage::SetPosition(const Vector3& position) {
@@ -149,20 +165,24 @@ namespace SynGlyphX {
 		return m_position;
 	}
 
-	void BaseImage::SetRotation(double angle, const Vector3& axis) {
+	void BaseImage::SetRotation(const Vector3& angles) {
 
-		m_rotationAngle = angle;
-		m_rotationAxis = axis;
+		m_rotationAngles = angles;
 	}
 
-	const Vector3& BaseImage::GetRotationAxis() const {
+	const Vector3& BaseImage::GetRotationAngles() const {
 
-		return m_rotationAxis;
+		return m_rotationAngles;
 	}
 
-	double BaseImage::GetRotationAngle() const {
+	void BaseImage::SetWorldSize(const Size& worldSize) {
 
-		return m_rotationAngle;
+		m_worldSize = worldSize;
+	}
+
+	const BaseImage::Size& BaseImage::GetWorldSize() const {
+
+		return m_worldSize;
 	}
 
 } //namespace SynGlyphX
