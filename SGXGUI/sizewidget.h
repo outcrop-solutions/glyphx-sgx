@@ -3,7 +3,8 @@
 
 #include "sgxgui_global.h"
 #include <QtWidgets/QWidget>
-#include <QtWidgets/QSpinBox>
+#include <QtWidgets/QAbstractSpinBox>
+#include <QtWidgets/QCheckBox>
 
 namespace SynGlyphX {
 
@@ -12,17 +13,32 @@ namespace SynGlyphX {
         Q_OBJECT
 
     public:
-        SizeWidget(QWidget *parent = 0);
+        SizeWidget(bool showLockRatioCheckBox, QWidget *parent = 0);
         ~SizeWidget();
 
-        void SetSize(const QSize& size);
-        QSize GetSize() const;
+	protected slots:
+		virtual void OnWidthChanged() = 0;
+		virtual void OnHeightChanged() = 0;
 
-        void SetRange(int min, int max);
+	protected:
+		virtual QMetaObject::Connection ConnectLockRatioToWidthSpinBox() = 0;
+		virtual QMetaObject::Connection ConnectLockRatioToHeightSpinBox() = 0;
+		virtual double GetRatio() = 0;
+
+		void AddSpinBoxes(QAbstractSpinBox* widthSpinBox, QAbstractSpinBox* heightSpinBox);
+
+		double m_ratio;
+
+	private slots:
+		void OnLockRatioChanged();
 
     private:
-        QSpinBox* m_widthSpinBox;
-        QSpinBox* m_heightSpinBox;
+		QCheckBox* m_lockRatioCheckBox;
+		QAbstractSpinBox* m_widthSpinBox;
+		QAbstractSpinBox* m_heightSpinBox;
+
+		QMetaObject::Connection m_widthSpinBoxConnection;
+		QMetaObject::Connection m_heightSpinBoxConnection;
     };
 
 } //namespace SynGlyphX

@@ -4,24 +4,24 @@
 
 namespace SynGlyphX {
 
-    SizeWidget::SizeWidget(QWidget *parent)
-        : QWidget(parent)
+	SizeWidget::SizeWidget(bool showLockRatioCheckBox, QWidget *parent)
+        : QWidget(parent),
+		m_lockRatioCheckBox(nullptr),
+		m_widthSpinBox(nullptr),
+		m_heightSpinBox(nullptr),
+		m_ratio(0.0)
     {
         QHBoxLayout* layout = new QHBoxLayout(this);
+		//setContentsMargins(0, 0, 0, 0);
+		//layout->setContentsMargins(0, 0, 0, 0);
+		setLayout(layout);
 
-        QLabel* widthLabel = new QLabel(tr("Width:"), this);
-        m_widthSpinBox = new QSpinBox(this);
-        QLabel* heightLabel = new QLabel(tr("Height:"), this);
-        m_heightSpinBox = new QSpinBox(this);
+		if (showLockRatioCheckBox) {
 
-        layout->addWidget(widthLabel);
-        layout->addWidget(m_widthSpinBox);
-        layout->addWidget(heightLabel);
-        layout->addWidget(m_heightSpinBox);
-
-        setContentsMargins(0, 0, 0, 0);
-        layout->setContentsMargins(0, 0, 0, 0);
-        setLayout(layout);
+			m_lockRatioCheckBox = new QCheckBox(tr("Lock Ratio"), this);
+			layout->addWidget(m_lockRatioCheckBox);
+			QObject::connect(m_lockRatioCheckBox, &QCheckBox::clicked, this, &SizeWidget::OnLockRatioChanged);
+		}
     }
 
     SizeWidget::~SizeWidget()
@@ -29,22 +29,37 @@ namespace SynGlyphX {
 
     }
 
-    void SizeWidget::SetSize(const QSize& size) {
+	void SizeWidget::AddSpinBoxes(QAbstractSpinBox* widthSpinBox, QAbstractSpinBox* heightSpinBox) {
 
-        m_widthSpinBox->setValue(size.width());
-        m_heightSpinBox->setValue(size.height());
-    }
+		m_widthSpinBox = widthSpinBox;
+		m_heightSpinBox = heightSpinBox;
 
-    QSize SizeWidget::GetSize() const {
+		QLayout* currentLayout = layout();
 
-        QSize size(m_widthSpinBox->value(), m_heightSpinBox->value());
-        return size;
-    }
+		QLabel* widthLabel = new QLabel(tr("Width:"), this);
+		QLabel* heightLabel = new QLabel(tr("Height:"), this);
 
-    void SizeWidget::SetRange(int min, int max) {
+		currentLayout->addWidget(widthLabel);
+		currentLayout->addWidget(m_widthSpinBox);
+		currentLayout->addWidget(heightLabel);
+		currentLayout->addWidget(m_heightSpinBox);
 
-        m_widthSpinBox->setRange(min, max);
-        m_heightSpinBox->setRange(min, max);
-    }
+		currentLayout->invalidate();
+	}
+
+	void SizeWidget::OnLockRatioChanged() {
+
+		if (m_lockRatioCheckBox->isChecked()) {
+
+			m_widthSpinBoxConnection = ConnectLockRatioToWidthSpinBox();
+			m_heightSpinBoxConnection = ConnectLockRatioToHeightSpinBox();
+			m_ratio = GetRatio();
+		}
+		else {
+
+			QObject::disconnect(m_widthSpinBoxConnection);
+			QObject::disconnect(m_heightSpinBoxConnection);
+		}
+	}
 
 } //namespace SynGlyphX

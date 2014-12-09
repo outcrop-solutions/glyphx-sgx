@@ -13,7 +13,7 @@ MapOptionsWidget::MapOptionsWidget(QWidget *parent)
     QObject::connect(m_mapquestRadioButton, SIGNAL(clicked()), this, SLOT(OnMapSourceChanged()));
     QObject::connect(m_googleRadioButton, SIGNAL(clicked()), this, SLOT(OnMapSourceChanged()));
 
-    m_imageSizeWidget = new SynGlyphX::SizeWidget(this);
+    m_imageSizeWidget = new SynGlyphX::IntSizeWidget(false, this);
 
     QLabel* mapTypeLabel = new QLabel(tr("Type:"), this);
     m_mapTypeComboBox = new QComboBox(this);

@@ -5,7 +5,7 @@
 #include <QtWidgets/QWidget>
 #include <QtWidgets/QRadioButton>
 #include <QtWidgets/QComboBox>
-#include "sizewidget.h"
+#include "intsizewidget.h"
 #include "networkdownloader.h"
 #include "downloadedmapproperties.h"
 
@@ -34,7 +34,7 @@ protected:
     QRadioButton* m_mapquestRadioButton;
     QRadioButton* m_googleRadioButton;
     QComboBox* m_mapTypeComboBox;
-    SynGlyphX::SizeWidget* m_imageSizeWidget;
+    SynGlyphX::IntSizeWidget* m_imageSizeWidget;
 };
 
 #endif // MAPOPTIONSWIDGET_H
