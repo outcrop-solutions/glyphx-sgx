@@ -11,21 +11,31 @@ class ANTZDATATRANSFORM_EXPORT ANTzTransformer : public SynGlyphX::Transformer
 
 {
 public:
+	//typedef std::unordered_map<QString, unsigned int> BaseImageTextureMap;
+
 	ANTzTransformer(const QString& baseOutputDir);
 	virtual ~ANTzTransformer();
 
 	const QStringList& GetCSVFilenames() const;
-	const QString& GetBaseImageFilename() const;
+	const QStringList& GetBaseImageFilenames() const;
+
+	unsigned int GetTextureID(unsigned int index) const;
 
 protected:
+	const unsigned int NumberOfDefaultBaseImages = 1;
+
+	virtual QString GenerateBaseImageFilename(unsigned int index) const;
 	virtual void CreateGlyphsFromMapping(const SynGlyphX::DataTransformMapping& mapping);
-	void GenerateCache(const SynGlyphX::DataTransformMapping& mapping, const QStringList& csvFilenames, const QString& baseImageFilename);
-	void DownloadBaseImage(const SynGlyphX::DataTransformMapping& mapping, const QString& baseImageFilename);
-	void CopyUserImage(const SynGlyphX::DataTransformMapping& mapping, const QString& baseImageFilename);
+	void GenerateCache(const SynGlyphX::DataTransformMapping& mapping, const QStringList& csvFilenames, const QString& baseImageFilenameDirectory);
+	void DownloadBaseImage(const SynGlyphX::DataTransformMapping& mapping, const SynGlyphX::BaseImage& baseImage, const QString& baseImageFilename);
+	void CopyImage(const QString& sourceFilename, const QString& baseImageFilename);
+	void Clear();
+	QString GetUserImageFilename(const SynGlyphX::BaseImage& baseImage) const;
 
 	QStringList m_csvFilenames;
-	QString m_baseImageFilename;
+	QStringList m_baseImageFilenames;
 	QString m_baseOutputDir;
+	std::vector<unsigned int> m_textureIDs;
 };
 
 #endif //ANTZTRANSFORMER_H

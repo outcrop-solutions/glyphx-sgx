@@ -25,15 +25,14 @@ const QStringList& ANTzTransformer::GetCSVFilenames() const {
 	return m_csvFilenames;
 }
 
-const QString& ANTzTransformer::GetBaseImageFilename() const {
+const QStringList& ANTzTransformer::GetBaseImageFilenames() const {
 
-	return m_baseImageFilename;
+	return m_baseImageFilenames;
 }
 
 void ANTzTransformer::CreateGlyphsFromMapping(const SynGlyphX::DataTransformMapping& mapping) {
 
-	m_csvFilenames.clear();
-	m_baseImageFilename = "";
+	Clear();
 
 	QDir dir(m_baseOutputDir);
 	if (!dir.exists()) {
@@ -46,26 +45,44 @@ void ANTzTransformer::CreateGlyphsFromMapping(const SynGlyphX::DataTransformMapp
 	csvFiles.push_back(QDir::toNativeSeparators(m_baseOutputDir + QDir::separator() + "usr" + QDir::separator() + "csv" + QDir::separator() + "antz0001.csv"));
 	csvFiles.push_back(QDir::toNativeSeparators(m_baseOutputDir + QDir::separator() + "usr" + QDir::separator() + "csv" + QDir::separator() + "antztag0001.csv"));
 	QString antzImageDirectory = QDir::toNativeSeparators(m_baseOutputDir + QDir::separator() + "usr" + QDir::separator() + "images" + QDir::separator());
-	QString baseImageFilename = antzImageDirectory + "map00001.jpg";
 
-	if (mapping.GetBaseObjects()[0].GetType() != SynGlyphX::BaseImage::Type::Default) {
-
-		QFile::rename(baseImageFilename, antzImageDirectory + "world.jpg");
-	}
-
-	GenerateCache(mapping, csvFiles, baseImageFilename);
+	GenerateCache(mapping, csvFiles, antzImageDirectory);
 }
 
-void ANTzTransformer::GenerateCache(const SynGlyphX::DataTransformMapping& mapping, const QStringList& csvFilenames, const QString& baseImageFilename) {
+void ANTzTransformer::GenerateCache(const SynGlyphX::DataTransformMapping& mapping, const QStringList& csvFilenames, const QString& baseImageFilenameDirectory) {
 
-	const SynGlyphX::BaseImage& baseImage = mapping.GetBaseObjects()[0];
-	if (baseImage.GetType() == SynGlyphX::BaseImage::Type::DownloadedMap) {
+	std::unordered_map<std::string, unsigned int> userBaseImages;
+	unsigned int nextTextureID = NumberOfDefaultBaseImages + 1;
 
-		DownloadBaseImage(mapping, baseImageFilename);
-	}
-	else if (baseImage.GetType() == SynGlyphX::BaseImage::Type::UserImage) {
+	const std::vector<SynGlyphX::BaseImage>& baseImages = mapping.GetBaseObjects();
+	for (const SynGlyphX::BaseImage& baseImage: mapping.GetBaseObjects()) {
 
-		CopyUserImage(mapping, baseImageFilename);
+		if (baseImage.GetType() == SynGlyphX::BaseImage::Type::DownloadedMap) {
+
+			m_textureIDs.push_back(nextTextureID);
+			m_baseImageFilenames.push_back(baseImageFilenameDirectory + GenerateBaseImageFilename(nextTextureID++));
+			DownloadBaseImage(mapping, baseImage, m_baseImageFilenames.last());
+		}
+		else if (baseImage.GetType() == SynGlyphX::BaseImage::Type::UserImage) {
+
+			QString sourceImageFilename = GetUserImageFilename(baseImage);
+			std::unordered_map<std::string, unsigned int>::iterator userBaseImage = userBaseImages.find(sourceImageFilename.toStdString());
+			if (userBaseImage == userBaseImages.end()) {
+
+				m_textureIDs.push_back(nextTextureID);
+				userBaseImages[sourceImageFilename.toStdString()] = nextTextureID;
+				m_baseImageFilenames.push_back(baseImageFilenameDirectory + GenerateBaseImageFilename(nextTextureID++));
+				CopyImage(sourceImageFilename, m_baseImageFilenames.last());
+			}
+			else {
+
+				m_textureIDs.push_back(userBaseImage->second);
+			}
+		}
+		else {
+
+			m_textureIDs.push_back(1);
+		}
 	}
 	
 	SynGlyphX::GlyphTree::ConstSharedVector trees = CreateGlyphTreesFromMinMaxTrees(mapping);
@@ -85,10 +102,9 @@ void ANTzTransformer::GenerateCache(const SynGlyphX::DataTransformMapping& mappi
 	writer.Write(csvFilenames[0].toStdString(), csvFilenames[1].toStdString(), trees);
 
 	m_csvFilenames = csvFilenames;
-	m_baseImageFilename = baseImageFilename;
 }
 
-void ANTzTransformer::DownloadBaseImage(const SynGlyphX::DataTransformMapping& mapping, const QString& baseImageFilename) {
+void ANTzTransformer::DownloadBaseImage(const SynGlyphX::DataTransformMapping& mapping, const SynGlyphX::BaseImage& baseImage, const QString& baseImageFilename) {
 
 	if (QFile::exists(baseImageFilename)) {
 
@@ -100,16 +116,46 @@ void ANTzTransformer::DownloadBaseImage(const SynGlyphX::DataTransformMapping& m
 
 	std::vector<GeographicPoint> points;
 	GetPositionXYForAllGlyphTrees(mapping, points);
-	const SynGlyphX::DownloadedMapProperties* const properties = dynamic_cast<const SynGlyphX::DownloadedMapProperties* const>(mapping.GetBaseObjects()[0].GetProperties());
+	const SynGlyphX::DownloadedMapProperties* const properties = dynamic_cast<const SynGlyphX::DownloadedMapProperties* const>(baseImage.GetProperties());
 	NetworkDownloader& downloader = NetworkDownloader::Instance();
 	m_overrideRootXYBoundingBox = downloader.DownloadMap(points, baseImageFilename.toStdString(), properties);
 }
 
-void ANTzTransformer::CopyUserImage(const SynGlyphX::DataTransformMapping& mapping, const QString& baseImageFilename) {
+void ANTzTransformer::CopyImage(const QString& sourceFilename, const QString& baseImageFilename) {
 
-	const SynGlyphX::UserDefinedBaseImageProperties* const properties = dynamic_cast<const SynGlyphX::UserDefinedBaseImageProperties* const>(mapping.GetBaseObjects()[0].GetProperties());
-	if (!QFile::copy(QString::fromStdWString(properties->GetFilename()), baseImageFilename)) {
+	if (!QFile::copy(sourceFilename, baseImageFilename)) {
 
 		throw std::exception("Failed to copy base image");
 	}
+}
+
+QString ANTzTransformer::GetUserImageFilename(const SynGlyphX::BaseImage& baseImage) const {
+
+	const SynGlyphX::UserDefinedBaseImageProperties* const properties = dynamic_cast<const SynGlyphX::UserDefinedBaseImageProperties* const>(baseImage.GetProperties());
+	return QString::fromStdWString(properties->GetFilename());
+}
+
+void ANTzTransformer::Clear() {
+
+	m_csvFilenames.clear();
+	m_baseImageFilenames.clear();
+	m_textureIDs.clear();
+}
+
+QString ANTzTransformer::GenerateBaseImageFilename(unsigned int index) const {
+
+	QString num = QString::number(index);
+	QString prefix = "map";
+	
+	for (int i = 0; i < 5 - num.length(); ++i) {
+
+		prefix += '0';
+	}
+
+	return prefix + num + ".jpg";
+}
+
+unsigned int ANTzTransformer::GetTextureID(unsigned int index) const {
+
+	return m_textureIDs[index];
 }

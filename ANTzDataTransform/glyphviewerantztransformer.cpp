@@ -18,31 +18,26 @@ GlyphViewerANTzTransformer::~GlyphViewerANTzTransformer()
 
 void GlyphViewerANTzTransformer::CreateGlyphsFromMapping(const SynGlyphX::DataTransformMapping& mapping) {
 
-	m_csvFilenames.clear();
-	m_baseImageFilename = "";
+	Clear();
 
-	bool useNonDefaultImage = (mapping.GetBaseObjects()[0].GetType() != SynGlyphX::BaseImage::Type::Default);
+	QString localOutputDir = QDir::toNativeSeparators(m_baseOutputDir + QDir::separator());
 
 	QStringList csvFiles;
-	csvFiles.push_back(m_baseOutputDir + QDir::separator() + "antz.csv");
-	csvFiles.push_back(m_baseOutputDir + QDir::separator() + "antztag.csv");
-	QString baseImageFilename;
-	if (useNonDefaultImage) {
+	csvFiles.push_back(localOutputDir + "antz.csv");
+	csvFiles.push_back(localOutputDir + "antztag.csv");
+	QStringList baseImageFilenames;
 
-		baseImageFilename = m_baseOutputDir + QDir::separator() + "baseimage.png";
-	}
+	QString cachedMappingFilename = localOutputDir + "mapping.sdt";
 
-	QString cachedMappingFilename = m_baseOutputDir + QDir::separator() + "mapping.sdt";
+	if (DoesCacheNeedToBeRegenerated(mapping, csvFiles, cachedMappingFilename)) {
 
-	if (DoesCacheNeedToBeRegenerated(mapping, csvFiles, baseImageFilename, cachedMappingFilename)) {
-
-		GenerateCache(mapping, csvFiles, baseImageFilename);
+		GenerateCache(mapping, csvFiles, localOutputDir);
 		//Write the mapping to the cache
 		mapping.WriteToFile(cachedMappingFilename.toStdString());
 	}
 }
 
-bool GlyphViewerANTzTransformer::DoesCacheNeedToBeRegenerated(const SynGlyphX::DataTransformMapping& mapping, const QStringList& csvFilenames, const QString& baseImageFilename, const QString& mappingFilename) const {
+bool GlyphViewerANTzTransformer::DoesCacheNeedToBeRegenerated(const SynGlyphX::DataTransformMapping& mapping, const QStringList& csvFilenames, const QString& mappingFilename) const {
 
 	if (csvFilenames.empty()) {
 
@@ -56,7 +51,7 @@ bool GlyphViewerANTzTransformer::DoesCacheNeedToBeRegenerated(const SynGlyphX::D
 			return true;
 		}
 	}
-
+	/*
 	if (!baseImageFilename.isEmpty()) {
 		
 		QFile baseImage(baseImageFilename);
@@ -70,9 +65,9 @@ bool GlyphViewerANTzTransformer::DoesCacheNeedToBeRegenerated(const SynGlyphX::D
 			if (HasFileBeenUpdated(properties->GetFilename(), boost::filesystem::last_write_time(baseImageFilename.toStdWString()))) {
 
 				return true;
-	}
+			}
 		}
-	}
+	}*/
 
 	QFile cachedMappingFile(mappingFilename);
 	if (!cachedMappingFile.exists()) {
@@ -89,4 +84,9 @@ bool GlyphViewerANTzTransformer::DoesCacheNeedToBeRegenerated(const SynGlyphX::D
 
 	boost::filesystem::path firstCSVFilePath(csvFilenames[0].toStdString());
 	return HaveDatasourcesBeenUpdated(mapping, boost::filesystem::last_write_time(firstCSVFilePath));
+}
+
+QString GlyphViewerANTzTransformer::GenerateBaseImageFilename(unsigned int index) const {
+
+	return "base_image_" + QString::number(index) + ".png";
 }
