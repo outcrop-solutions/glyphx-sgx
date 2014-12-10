@@ -155,9 +155,8 @@ void GlyphViewerWindow::RefreshVisualization() {
 
 void GlyphViewerWindow::CloseVisualization() {
 
-	QStringList empty;
-	m_glyphForestModel->LoadANTzFiles(empty);
-	m_glyphForestModel->UseDefaultBaseImage();
+	m_glyphForestModel->Clear();
+	m_glyphForestModel->SetParentGridToDefaultBaseImage();
 	EnableLoadedVisualizationDependentActions(false);
 	ClearCurrentFile();
 }
@@ -213,7 +212,7 @@ void GlyphViewerWindow::LoadANTzCompatibilityVisualization(const QString& filena
 	QStringList csvFiles;
 
 
-	LoadFilesIntoModel(csvFiles, QString::fromStdWString(fileListing.GetBaseImageFilename()));
+	//LoadFilesIntoModel(csvFiles, QString::fromStdWString(fileListing.GetBaseImageFilename()));
 }
 
 void GlyphViewerWindow::LoadRecentFile(const QString& filename) {
@@ -269,7 +268,7 @@ void GlyphViewerWindow::LoadDataTransform(const QString& filename) {
 		GlyphViewerANTzTransformer transformer(QString::fromStdWString(m_cacheManager.GetCacheDirectory(mapping.GetID())));
 		transformer.Transform(mapping);
 
-		LoadFilesIntoModel(transformer.GetCSVFilenames(), transformer.GetBaseImageFilename());
+		LoadFilesIntoModel(transformer.GetCSVFilenames(), transformer.GetBaseImageFilenames());
 	}
 	catch (const std::exception& e) {
 
@@ -280,19 +279,20 @@ void GlyphViewerWindow::LoadDataTransform(const QString& filename) {
 	SynGlyphX::Application::restoreOverrideCursor();
 }
 
-void GlyphViewerWindow::LoadFilesIntoModel(const QStringList& csvFiles, const QString& baseImageFilename) {
+void GlyphViewerWindow::LoadFilesIntoModel(const QStringList& csvFiles, const QStringList& baseImageFilenames) {
 
-	m_glyphForestModel->LoadANTzFiles(csvFiles);
+	m_glyphForestModel->Clear();
 
-	//Base image must come after loading of CSV files
-	if (baseImageFilename.isEmpty()) {
+	if (baseImageFilenames.empty()) {
 
-		m_glyphForestModel->UseDefaultBaseImage();
+		m_glyphForestModel->ResetTextures();
 	}
 	else {
 
-		m_glyphForestModel->UseLocalBaseImage(baseImageFilename);
+		m_glyphForestModel->LoadImages(baseImageFilenames);
 	}
+
+	m_glyphForestModel->LoadANTzFiles(csvFiles);
 }
 
 void GlyphViewerWindow::ChangeMapDownloadSettings() {

@@ -33,7 +33,7 @@ private:
 	void LoadVisualization(const QString& filename);
 	void LoadANTzCompatibilityVisualization(const QString& filename);
 	void LoadDataTransform(const QString& filename);
-	void LoadFilesIntoModel(const QStringList& csvFiles, const QString& baseImageFilename);
+	void LoadFilesIntoModel(const QStringList& csvFiles, const QStringList& baseImageFilenames);
 	void CreateMenus();
 	void CreateDockWidgets();
 	void EnableLoadedVisualizationDependentActions(bool enable);

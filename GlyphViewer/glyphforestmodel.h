@@ -25,12 +25,14 @@ public:
 
 	ANTzPlus::ANTzData::SharedPtr GetANTzData() const;
 
+	void Clear();
 	void LoadANTzFiles(const QStringList& filenames);
 
 	QModelIndex IndexFromANTzID(int id) const;
 
-	void UseDefaultBaseImage();
-	void UseLocalBaseImage(const QString& filename);
+	void SetParentGridToDefaultBaseImage();
+	void ResetTextures();
+	void LoadImages(const QStringList& filenames);
 
 private:
 	int GetChildIndexFromParent(pNPnode node) const;

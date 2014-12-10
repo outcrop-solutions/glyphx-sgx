@@ -137,19 +137,39 @@ int GlyphForestModel::GetChildIndexFromParent(pNPnode node) const {
 	return i;
 }
 
+void GlyphForestModel::Clear() {
+
+	pData antzData = m_antzData->GetData();
+	antzData->map.nodeRootIndex = kNPnodeRootPin;
+	pNPnode rootGrid = static_cast<pNPnode>(m_antzData->GetData()->map.node[kNPnodeRootGrid]);
+
+	beginResetModel();
+
+	while (antzData->map.nodeRootCount > kNPnodeRootPin) {
+
+		npNodeDelete(static_cast<pNPnode>(antzData->map.node[antzData->map.nodeRootCount - 1]), m_antzData->GetData());
+		//npNodeDelete(static_cast<pNPnode>(antzData->map.node[kNPnodeRootPin]), m_antzData->GetData());
+	}
+
+	while (rootGrid->childCount > 0) {
+
+		npNodeDelete(rootGrid->child[rootGrid->childCount - 1], m_antzData->GetData());
+	}
+
+	//This will clear out tags if needed
+	npDeleteAllTags(antzData);
+
+	endResetModel();
+}
+
 void GlyphForestModel::LoadANTzFiles(const QStringList& filenames) {
 
 	pData antzData = m_antzData->GetData();
 	antzData->map.nodeRootIndex = kNPnodeRootPin;
 
-	beginResetModel();
-	while (antzData->map.nodeRootCount > kNPnodeRootPin) {
-	
-		npNodeDelete(static_cast<pNPnode>(antzData->map.node[kNPnodeRootPin]), m_antzData->GetData());
-	}
+	Clear();
 
-	//This will clear out tags if needed
-	npDeleteAllTags(antzData);
+	beginResetModel();
 
 	for (const QString& filename : filenames) {
 
@@ -186,31 +206,30 @@ int GlyphForestModel::FindRowForRootNode(pNPnode node) const {
 	return i - kNPnodeRootPin;
 }
 
-void GlyphForestModel::UseDefaultBaseImage() {
+void GlyphForestModel::SetParentGridToDefaultBaseImage() {
 
 	pNPnode grid = static_cast<pNPnode>(m_antzData->GetData()->map.node[kNPnodeRootGrid]);
 	grid->textureID = m_textures.begin()->second;
 }
 
-void GlyphForestModel::UseLocalBaseImage(const QString& filename) {
+void GlyphForestModel::LoadImages(const QStringList& filenames) {
 
-	pNPnode grid = static_cast<pNPnode>(m_antzData->GetData()->map.node[kNPnodeRootGrid]);
-	std::unordered_map<std::wstring, int>::iterator iT = m_textures.find(filename.toStdWString());
-	if (iT == m_textures.end()) {
+	int textureID = 0;
+	for (int i = 0; i < filenames.size(); ++i) {
 
-		int textureID = SOIL_load_OGL_texture(filename.toStdString().c_str(), SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_INVERT_Y);
+		textureID = SOIL_load_OGL_texture(filenames[i].toStdString().c_str(), SOIL_LOAD_AUTO, i + 2, SOIL_FLAG_INVERT_Y);
 		if (textureID == 0) {
 
 			throw std::exception("Failed to load base image");
 		}
 
-		m_textures[filename.toStdWString()] = textureID;
-		grid->textureID = textureID;
-		m_antzData->GetData()->io.gl.textureCount = textureID;
+		//m_textures[filenames[i].toStdWString()] = textureID;
 	}
-	else {
 
-		grid->textureID = iT->second;
-	}
-	
+	m_antzData->GetData()->io.gl.textureCount = textureID;
+}
+
+void GlyphForestModel::ResetTextures() {
+
+	m_antzData->GetData()->io.gl.textureCount = 1;
 }
