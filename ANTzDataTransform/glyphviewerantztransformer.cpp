@@ -1,7 +1,7 @@
 #include "glyphviewerantztransformer.h"
 #include <QtCore/QFile>
 #include <QtCore/QDir>
-#include <boost/filesystem.hpp>
+#include "filesystem.h"
 #include <boost/uuid/uuid_io.hpp>
 #include "userdefinedbaseimageproperties.h"
 
@@ -31,6 +31,7 @@ void GlyphViewerANTzTransformer::CreateGlyphsFromMapping(const SynGlyphX::DataTr
 
 	if (DoesCacheNeedToBeRegenerated(mapping, csvFiles, cachedMappingFilename)) {
 
+		SynGlyphX::Filesystem::RemoveContentsOfDirectory(localOutputDir.toStdString());
 		GenerateCache(mapping, csvFiles, localOutputDir);
 		//Write the mapping to the cache
 		mapping.WriteToFile(cachedMappingFilename.toStdString());
