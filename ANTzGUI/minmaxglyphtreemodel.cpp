@@ -498,7 +498,7 @@ bool MinMaxGlyphTreeModel::SaveToCSV(const QString& filename, bool writeMaxGlyph
 	}
 
 	SynGlyphX::ANTzCSVWriter& csvWriter = SynGlyphX::ANTzCSVWriter::GetInstance();
-	csvWriter.Write(filename.toStdString(), "", trees);
+	csvWriter.Write(filename.toStdString(), "", trees, std::vector<SynGlyphX::ANTzGrid>());
 
 	return true;
 }

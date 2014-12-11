@@ -46,7 +46,7 @@ namespace SynGlyphX {
 	{
 	}
 
-	void ANTzCSVWriter::Write(const std::string& nodeFilename, const std::string& tagFilename, const GlyphTree::ConstSharedVector& trees, unsigned long startingId) {
+	void ANTzCSVWriter::Write(const std::string& nodeFilename, const std::string& tagFilename, const GlyphTree::ConstSharedVector& trees, const std::vector<ANTzGrid>& grids) {
 
 		if (nodeFilename.empty()) {
 
@@ -55,7 +55,7 @@ namespace SynGlyphX {
 
 		try {
 
-			WriteNodeFile(nodeFilename, trees, startingId);
+			unsigned long startingId = WriteNodeFile(nodeFilename, trees, grids);
 
 			if (!tagFilename.empty()) {
 
@@ -68,9 +68,9 @@ namespace SynGlyphX {
 		}
  	}
 
-	unsigned long ANTzCSVWriter::WriteNodeFile(const std::string& filename, const GlyphTree::ConstSharedVector& trees, unsigned long startingId) {
+	unsigned long ANTzCSVWriter::WriteNodeFile(const std::string& filename, const GlyphTree::ConstSharedVector& trees, const std::vector<ANTzGrid>& grids) {
 
-		unsigned int numberOfHeaderAndGridLines = 0;
+		unsigned long firstGlyphId = 0;
 		
 		try {
 			CSVFileWriter nodeFile(filename);
@@ -83,11 +83,9 @@ namespace SynGlyphX {
 			nodeFile.WriteLine(m_cameras[3]);
 			nodeFile.WriteLine(m_cameras[4]);
 
-			WriteGrids(nodeFile, 6);
+			firstGlyphId = WriteGrids(nodeFile, grids, 6);
 
-			numberOfHeaderAndGridLines = 6;
-
-			unsigned int id = startingId;
+			unsigned long id = firstGlyphId;
 
 			for (const GlyphTree::ConstSharedPtr& tree : trees) {
 
@@ -99,7 +97,7 @@ namespace SynGlyphX {
 			throw;
 		}
 
-		return numberOfHeaderAndGridLines;
+		return firstGlyphId;
 	}
 
 	void ANTzCSVWriter::WriteTagFile(const std::string& filename, const GlyphTree::ConstSharedVector& trees, unsigned long startingId) {
@@ -158,10 +156,11 @@ namespace SynGlyphX {
 
 		unsigned int numberOfChildren = tree->children(glyph);
 
+		std::wstring idString = boost::lexical_cast<std::wstring>(id);
 		CSVFileHandler::CSVValues values;
-		values.push_back(boost::lexical_cast<std::wstring>(id));
+		values.push_back(idString);
 		values.push_back(L"5");
-		values.push_back(boost::lexical_cast<std::wstring>(id));
+		values.push_back(idString);
 		values.push_back(L"0");
 		values.push_back(boost::lexical_cast<std::wstring>(parentId));
 		values.push_back(boost::lexical_cast<std::wstring>(branchLevel));
@@ -193,7 +192,7 @@ namespace SynGlyphX {
 		values.push_back(boost::lexical_cast<std::wstring>(static_cast<int>(glyph->GetTopology())));
 
 		values.insert(values.end(), { L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"1", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"16", L"16", L"0", L"0", L"0", L"0" });
-		values.push_back(boost::lexical_cast<std::wstring>(id));
+		values.push_back(idString);
 		values.push_back(L"420");
 
 		file.WriteLine(values);
@@ -206,12 +205,57 @@ namespace SynGlyphX {
 		return childId;
 	}
 
-	unsigned long ANTzCSVWriter::WriteGrids(CSVFileWriter& file, unsigned long id) {
+	unsigned long ANTzCSVWriter::WriteGrids(CSVFileWriter& file, const std::vector<ANTzGrid>& grids, unsigned long firstId) {
 
-		CSVFileHandler::CSVValues grid = { L"6", L"6", L"6", L"1", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"1", L"0", L"0", L"0", L"0", L"0", L"0", L"0.000000", L"1.000000", L"0.000000", L"0.000000", L"0.000000", L"1.000000", L"1.000000", L"1.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"1.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0", L"0", L"1.000000", L"0.000000", L"0.100000", L"0", L"255", L"0", L"0", L"150", L"0", L"1", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0", L"0", L"0", L"12", L"6", L"0", L"0", L"0", L"0", L"0", L"420" };
-		file.WriteLine(grid);
+		for (unsigned int i = 0; i < grids.size(); ++i) {
 
-		return 7;
+			std::wstring id = boost::lexical_cast<std::wstring>(i + firstId);
+			CSVFileHandler::CSVValues grid;
+			grid.push_back(id);
+			grid.push_back(L"6");
+			grid.push_back(id);
+			grid.push_back(L"1");
+
+			if (i == 0) {
+
+				grid.insert(grid.end(), { L"0", L"0", L"0", L"0" });
+				grid.push_back(boost::lexical_cast<std::wstring>(grids.size() - 1));
+			}
+			else {
+
+				grid.push_back(boost::lexical_cast<std::wstring>(firstId));
+				grid.insert(grid.end(), { L"1", L"0", L"0", L"0" });
+			}
+			grid.insert(grid.end(), { L"0", L"0", L"0", L"0", L"1", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"1", L"0", L"0" });
+			CSVFileHandler::AddVector3ToCSVValues(grid, grids[i].GetScale());
+			CSVFileHandler::AddVector3ToCSVValues(grid, grids[i].GetPosition());
+			grid.insert(grid.end(), { L"0", L"0", L"0", L"0", L"0", L"0" });
+			CSVFileHandler::AddVector3ToCSVValues(grid, grids[i].GetRotation());
+			grid.insert(grid.end(), { L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"1", L"0", L"0.1" });
+
+			Color color = grids[i].GetColor();
+			grid.push_back(boost::lexical_cast<std::wstring>(GetColorIndex(color)));
+			grid.push_back(boost::lexical_cast<std::wstring>(color[0]));
+			grid.push_back(boost::lexical_cast<std::wstring>(color[1]));
+			grid.push_back(boost::lexical_cast<std::wstring>(color[2]));
+			grid.push_back(boost::lexical_cast<std::wstring>(color[3]));
+
+			grid.push_back(L"0");
+
+			grid.push_back(boost::lexical_cast<std::wstring>(grids[i].GetTextureID()));
+
+			grid.insert(grid.end(), { L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0" });
+			
+			//segments
+			grid.push_back(L"12");
+			grid.push_back(L"6");
+				
+			grid.insert(grid.end(), { L"0", L"0", L"0", L"0", L"0", L"420" });
+			
+			file.WriteLine(grid);
+		}
+
+		return firstId + grids.size();
 	}
 
 	unsigned int ANTzCSVWriter::ConvertGeometryToCSVInt(GlyphProperties::Shape shape, GlyphProperties::Surface surface) {
