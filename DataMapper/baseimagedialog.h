@@ -18,7 +18,7 @@ class BaseImageDialog : public QDialog
 	Q_OBJECT
 
 public:
-	BaseImageDialog(bool enablePositionAndOrientation, QWidget *parent = 0);
+	BaseImageDialog(bool enablePositionAndOrientation, bool showDownloadMapOptions, QWidget *parent = 0);
 	~BaseImageDialog();
 
 	virtual void accept();

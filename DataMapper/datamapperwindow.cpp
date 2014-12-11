@@ -262,6 +262,7 @@ bool DataMapperWindow::SaveAsProject() {
 
 	if (!saveFile.isEmpty()) {
 
+		m_dataTransformModel->ResetDataMappingID();
 		return SaveDataTransform(saveFile);
 	}
 	else {
@@ -480,7 +481,7 @@ void DataMapperWindow::ExportToANTz() {
 
 void DataMapperWindow::AddBaseObject() {
 
-	BaseImageDialog dialog(true, this);
+	BaseImageDialog dialog(true, false, this);
 	dialog.setWindowTitle(tr("Add New Base Object"));
 	if (dialog.exec() == QDialog::Accepted) {
 

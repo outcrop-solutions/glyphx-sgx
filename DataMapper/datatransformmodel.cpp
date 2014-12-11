@@ -399,3 +399,8 @@ const SynGlyphX::MinMaxGlyph& DataTransformModel::GetGlyph(const QModelIndex& in
 	SynGlyphX::MinMaxGlyphTree::const_iterator glyph(static_cast<SynGlyphX::MinMaxGlyphTree::Node*>(index.internalPointer()));
 	return (*glyph);
 }
+
+void DataTransformModel::ResetDataMappingID() {
+
+	m_dataMapping->ResetID();
+}

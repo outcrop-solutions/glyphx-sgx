@@ -20,8 +20,9 @@ const boost::bimap<int, SynGlyphX::Vector3> BaseImageDialog::s_orientationPreset
 
 const std::vector<QString> BaseImageDialog::s_orientationNames = { "Up", "Down", "Left", "Right", "Front" };
 
-BaseImageDialog::BaseImageDialog(bool enablePositionAndOrientation, QWidget *parent)
-	: QDialog(parent)
+BaseImageDialog::BaseImageDialog(bool enablePositionAndOrientation, bool showDownloadMapOptions, QWidget *parent)
+	: QDialog(parent),
+	m_downloadedMapOptionsWidget(nullptr)
 {
 	QVBoxLayout* layout = new QVBoxLayout(this);
 	
@@ -30,7 +31,10 @@ BaseImageDialog::BaseImageDialog(bool enablePositionAndOrientation, QWidget *par
 	
 	for (auto baseImageType : SynGlyphX::BaseImage::s_baseImageTypeStrings) {
 
-		m_baseImageComboBox->addItem(QString::fromStdWString(baseImageType.get_right()));
+		if ((baseImageType.get_left() != SynGlyphX::BaseImage::DownloadedMap) || (showDownloadMapOptions)) {
+
+			m_baseImageComboBox->addItem(QString::fromStdWString(baseImageType.get_right()));
+		}
 	}
 
 	QHBoxLayout* comboBoxLayout = new QHBoxLayout(this);
@@ -43,10 +47,14 @@ BaseImageDialog::BaseImageDialog(bool enablePositionAndOrientation, QWidget *par
 	m_baseImageOptionsStackedWidget = new QStackedWidget(this);
 	QWidget* defaultImageWidget = new QWidget(m_baseImageOptionsStackedWidget);
 	m_baseImageOptionsStackedWidget->addWidget(defaultImageWidget);
-	m_downloadedMapOptionsWidget = new MapOptionsWidget(this);
-	SynGlyphX::GroupBoxSingleWidget* downloadedMapOptionsGroupBox = new SynGlyphX::GroupBoxSingleWidget(tr("Map Options"), m_downloadedMapOptionsWidget, this);
-	downloadedMapOptionsGroupBox->setContentsMargins(0, 0, 0, 0);
-	m_baseImageOptionsStackedWidget->addWidget(downloadedMapOptionsGroupBox);
+
+	if (showDownloadMapOptions) {
+
+		m_downloadedMapOptionsWidget = new MapOptionsWidget(this);
+		SynGlyphX::GroupBoxSingleWidget* downloadedMapOptionsGroupBox = new SynGlyphX::GroupBoxSingleWidget(tr("Map Options"), m_downloadedMapOptionsWidget, this);
+		downloadedMapOptionsGroupBox->setContentsMargins(0, 0, 0, 0);
+		m_baseImageOptionsStackedWidget->addWidget(downloadedMapOptionsGroupBox);
+	}
 
 	QWidget* userImageWidget = new QWidget(m_baseImageOptionsStackedWidget);
 	m_userDefinedImageLineEdit = new SynGlyphX::BrowseLineEdit(SynGlyphX::BrowseLineEdit::FileOpen, true, userImageWidget);
@@ -72,7 +80,7 @@ BaseImageDialog::BaseImageDialog(bool enablePositionAndOrientation, QWidget *par
 	SynGlyphX::GroupBoxSingleWidget* positionGroupBox = new SynGlyphX::GroupBoxSingleWidget(tr("Position"), m_positionWidget, this);
 	layout->addWidget(positionGroupBox);
 
-	QGroupBox* orientationGroupBox = new QGroupBox(tr("Orientation (towards 0,0,0)"), this);
+	QGroupBox* orientationGroupBox = new QGroupBox(tr("Orientation (direction image is facing)"), this);
 	m_orientationGroup = new QButtonGroup(this);
 	QHBoxLayout* orientationLayout = new QHBoxLayout(this);
 	for (boost::bimap<int, SynGlyphX::Vector3>::const_iterator iT = s_orientationPresets.begin(); iT != s_orientationPresets.end(); ++iT) {

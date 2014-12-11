@@ -147,6 +147,7 @@ void GlyphForestModel::Clear() {
 
 	while (antzData->map.nodeRootCount > kNPnodeRootPin) {
 
+		antzData->map.nodeRootIndex = antzData->map.nodeRootCount - 1;
 		npNodeDelete(static_cast<pNPnode>(antzData->map.node[antzData->map.nodeRootCount - 1]), m_antzData->GetData());
 		//npNodeDelete(static_cast<pNPnode>(antzData->map.node[kNPnodeRootPin]), m_antzData->GetData());
 	}
@@ -158,6 +159,8 @@ void GlyphForestModel::Clear() {
 
 	//This will clear out tags if needed
 	npDeleteAllTags(antzData);
+
+	antzData->map.nodeRootIndex = 0;
 
 	endResetModel();
 }

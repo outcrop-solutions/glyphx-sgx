@@ -55,6 +55,8 @@ public:
 
 	void EnableTables(const boost::uuids::uuid& id, const SynGlyphX::Datasource::TableSet& tables, bool enable = true);
 
+	void ResetDataMappingID();
+
 private:
 	void SetIntermediateDirectoryToCurrentID();
 	QString GetIntermediateDirectoryForID(const boost::uuids::uuid& id);
