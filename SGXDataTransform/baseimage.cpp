@@ -93,6 +93,36 @@ namespace SynGlyphX {
 		return *this;
 	}
 
+	bool BaseImage::operator==(const BaseImage& baseImage) const {
+
+		if (m_type != baseImage.m_type) {
+
+			return false;
+		}
+
+		if (m_position != baseImage.m_position) {
+
+			return false;
+		}
+
+		if (m_rotationAngles != baseImage.m_rotationAngles) {
+
+			return false;
+		}
+
+		if (m_worldSize != baseImage.m_worldSize) {
+
+			return false;
+		}
+
+		return true;
+	}
+
+	bool BaseImage::operator!=(const BaseImage& baseImage) const {
+
+		return !operator==(baseImage);
+	}
+
 	BaseImage::Type BaseImage::GetType() const {
 
 		return m_type;
@@ -136,21 +166,21 @@ namespace SynGlyphX {
 
 	void BaseImage::ExportToPropertyTree(PropertyTree& parentPropertyTree) const {
 
-		PropertyTree& propertyTree = parentPropertyTree.add(L"BaseImage", L"");
+		PropertyTree& propertyTree = parentPropertyTree.add(L"BaseObject", L"");
 		propertyTree.put(L"<xmlattr>.type", s_baseImageTypeStrings.left.at(m_type));
 		m_properties->ExportToPropertyTree(propertyTree);
 
-		PropertyTree& positionPropertyTree = parentPropertyTree.add(L"Position", L"");
-		propertyTree.put(L"X", m_position[0]);
-		propertyTree.put(L"Y", m_position[1]);
-		propertyTree.put(L"Z", m_position[2]);
+		PropertyTree& positionPropertyTree = propertyTree.add(L"Position", L"");
+		positionPropertyTree.put(L"X", m_position[0]);
+		positionPropertyTree.put(L"Y", m_position[1]);
+		positionPropertyTree.put(L"Z", m_position[2]);
 
-		PropertyTree& rotationPropertyTree = parentPropertyTree.add(L"Rotation", L"");
+		PropertyTree& rotationPropertyTree = propertyTree.add(L"Rotation", L"");
 		rotationPropertyTree.put(L"AngleX", m_rotationAngles[0]);
 		rotationPropertyTree.put(L"AngleY", m_rotationAngles[1]);
 		rotationPropertyTree.put(L"AngleZ", m_rotationAngles[2]);
 
-		PropertyTree& worldSizePropertyTree = parentPropertyTree.add(L"WorldSize", L"");
+		PropertyTree& worldSizePropertyTree = propertyTree.add(L"WorldSize", L"");
 		worldSizePropertyTree.put(L"Width", m_worldSize[0]);
 		worldSizePropertyTree.put(L"Height", m_worldSize[1]);
 	}

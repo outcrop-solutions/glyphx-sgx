@@ -39,6 +39,11 @@ namespace SynGlyphX {
 			return false;
 		}
 
+		if (m_baseObjects != mapping.m_baseObjects) {
+
+			return false;
+		}
+
 		if (m_defaults != mapping.m_defaults) {
 
 			return false;
@@ -238,6 +243,11 @@ namespace SynGlyphX {
 	const boost::uuids::uuid& DataTransformMapping::GetID() const {
 
 		return m_id;
+	}
+
+	void DataTransformMapping::ResetID() {
+
+		m_id = UUIDGenerator::GetNewRandomUUID();
 	}
 
 	void DataTransformMapping::UpdateDatasourceName(const boost::uuids::uuid& id, const std::wstring& name) {

@@ -27,6 +27,8 @@ namespace SynGlyphX {
 		~BaseImage();
 
 		BaseImage& operator=(const BaseImage& baseImage);
+		bool operator==(const BaseImage& baseImage) const;
+		bool operator!=(const BaseImage& baseImage) const;
 
 		Type GetType() const;
 

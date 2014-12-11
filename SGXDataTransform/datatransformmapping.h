@@ -58,6 +58,7 @@ namespace SynGlyphX {
 		const std::vector<BaseImage>& GetBaseObjects() const;
 
 		const boost::uuids::uuid& GetID() const;
+		void ResetID();
 
 		void UpdateDatasourceName(const boost::uuids::uuid& id, const std::wstring& name);
 
