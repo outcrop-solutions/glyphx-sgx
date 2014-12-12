@@ -42,8 +42,11 @@ protected:
 
 private slots:
     void UpdateSelection(const QItemSelection& selected, const QItemSelection& deselected);
+	void OnModelReset();
 
 private:
+	unsigned int BindTextureInFile(const QString& imageFilename);
+	void SetGridTexture(pNPnode grid);
     void CenterCameraOnNode(pNPnode node);
     void InitIO();
 	void DrawSelectedNodeAndHUDText();
@@ -66,6 +69,10 @@ private:
 	static const float s_stylusLength;
 
 	QFont m_oglTextFont;
+	bool m_isReseting;
+
+	unsigned int m_worldTextureID;
+	std::vector<unsigned int> m_textureIDs;
 
 	ANTzPlus::ANTzData::SharedPtr m_antzData;
 

@@ -13,8 +13,7 @@ GlyphForestModel::GlyphForestModel(QObject *parent)
 	: QAbstractItemModel(parent),
 	m_antzData(new ANTzPlus::ANTzData())
 {
-	m_defaultBaseImage = QDir::currentPath() + QDir::separator() + "usr" + QDir::separator() + "images" + QDir::separator() + "map00001.jpg";
-	m_textures[m_defaultBaseImage.toStdWString()] = 1;
+	
 }
 
 GlyphForestModel::~GlyphForestModel()
@@ -162,7 +161,8 @@ void GlyphForestModel::Clear(bool resetModel) {
 
 	while (rootGrid->childCount > 0) {
 
-		npNodeDelete(rootGrid->child[rootGrid->childCount - 1], m_antzData->GetData());
+		pNPnode grid = rootGrid->child[rootGrid->childCount - 1];
+		npNodeDelete(grid, m_antzData->GetData());
 	}
 
 	//This will clear out tags if needed
@@ -184,15 +184,7 @@ void GlyphForestModel::LoadANTzVisualization(const QStringList& antzCSVFilenames
 	beginResetModel();
 
 	Clear(false);
-
-	if (baseImageFilenames.empty()) {
-
-		ResetTextures();
-	}
-	else {
-
-		LoadImages(baseImageFilenames);
-	}
+	m_baseImageFilenames = baseImageFilenames;
 
 	for (const QString& filename : antzCSVFilenames) {
 
@@ -235,24 +227,7 @@ void GlyphForestModel::SetParentGridToDefaultBaseImage() {
 	grid->textureID = m_textures.begin()->second;
 }
 
-void GlyphForestModel::LoadImages(const QStringList& filenames) {
+const QStringList& GlyphForestModel::GetBaseImageFilenames() const {
 
-	int textureID = 0;
-	for (int i = 0; i < filenames.size(); ++i) {
-
-		textureID = SOIL_load_OGL_texture(filenames[i].toStdString().c_str(), SOIL_LOAD_AUTO, i + 2, SOIL_FLAG_INVERT_Y);
-		if (textureID == 0) {
-
-			throw std::exception("Failed to load base image");
-		}
-
-		//m_textures[filenames[i].toStdWString()] = textureID;
-	}
-
-	m_antzData->GetData()->io.gl.textureCount = textureID;
-}
-
-void GlyphForestModel::ResetTextures() {
-
-	m_antzData->GetData()->io.gl.textureCount = 1;
+	return m_baseImageFilenames;
 }

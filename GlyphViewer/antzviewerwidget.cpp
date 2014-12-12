@@ -3,6 +3,7 @@
 #include <QtGUI/QMouseEvent>
 #include <QtGUI/QFont>
 #include <QtWidgets/QMessageBox>
+#include <QtCore/QDir>
 #include "io/npfile.h"
 #include "io/npch.h"
 #include "npctrl.h"
@@ -10,6 +11,7 @@
 #include "ctrl/npengine.h"
 #include "npctrl.h"
 #include "io/npgl.h"
+#include "io/gl/nptags.h"
 
 //The default QGLFormat works for now except we want alpha enabled.  Also want to try and get a stereo enabled context
 QGLFormat ANTzViewerWidget::s_format(QGL::AlphaChannel | QGL::StereoBuffers);
@@ -29,7 +31,9 @@ ANTzViewerWidget::ANTzViewerWidget(GlyphForestModel* model, QItemSelectionModel*
 	m_zSpaceFrustum(nullptr),
 	m_zSpaceStylus(nullptr),
 	m_topLevelWindow(nullptr),
-	m_oglTextFont("Arial", 12, QFont::Normal)
+	m_oglTextFont("Arial", 12, QFont::Normal),
+	m_isReseting(false),
+	m_worldTextureID(0)
 {
 	setFocusPolicy(Qt::StrongFocus);
 
@@ -47,7 +51,8 @@ ANTzViewerWidget::ANTzViewerWidget(GlyphForestModel* model, QItemSelectionModel*
 		QObject::connect(m_selectionModel, &QItemSelectionModel::selectionChanged, this, &ANTzViewerWidget::UpdateSelection);
 	}
 
-	QObject::connect(m_model, &GlyphForestModel::modelReset, this, &ANTzViewerWidget::ResetCamera);
+	QObject::connect(m_model, &GlyphForestModel::modelReset, this, &ANTzViewerWidget::OnModelReset);
+	QObject::connect(m_model, &GlyphForestModel::modelAboutToBeReset, this, [this]{ m_isReseting = true; });
 
 	if (IsStereoSupported()) {
 
@@ -130,6 +135,12 @@ ANTzViewerWidget::ANTzViewerWidget(GlyphForestModel* model, QItemSelectionModel*
 
 ANTzViewerWidget::~ANTzViewerWidget()
 {
+	if (m_worldTextureID != 0) {
+
+		deleteTexture(m_worldTextureID);
+		m_worldTextureID = 0;
+	}
+
 	ClearZSpaceContext();
 	npCloseGL(m_antzData->GetData());
 }
@@ -275,7 +286,15 @@ void ANTzViewerWidget::InitIO()
 
 void ANTzViewerWidget::initializeGL() {
     
-	npInitGL(m_antzData->GetData());
+	pData antzData = m_antzData->GetData();
+	npInitGLDraw(antzData);
+	npInitGLPrimitive(antzData);
+	npInitTags(antzData);
+	
+	m_worldTextureID = BindTextureInFile(QDir::toNativeSeparators(QDir::currentPath() + QDir::separator() + "world.png"));
+	pNPnode rootGrid = static_cast<pNPnode>(antzData->map.node[kNPnodeRootGrid]);
+	SetGridTexture(rootGrid);
+	antzData->io.gl.textureCount = 1;
     ResetCamera();
 }
 
@@ -287,6 +306,12 @@ void ANTzViewerWidget::resizeGL(int w, int h) {
 }
 
 void ANTzViewerWidget::paintGL() {
+
+	if (m_isReseting) {
+
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		return;
+	}
 
 	pData antzData = m_antzData->GetData();
 	pNPnode camNode = npGetActiveCam(antzData);
@@ -881,4 +906,53 @@ void ANTzViewerWidget::ZSpaceEventDispatcher(ZSHandle targetHandle, const ZSTrac
 			widget->ZSpaceButtonPressHandler(targetHandle, eventData);
 		}
 	}
+}
+
+void ANTzViewerWidget::OnModelReset() {
+
+	const QStringList& textures = m_model->GetBaseImageFilenames();
+
+	for (unsigned int textureID : m_textureIDs) {
+
+		deleteTexture(textureID);
+	}
+	m_textureIDs.clear();
+	
+	Q_FOREACH(const QString& texture, textures) {
+
+		m_textureIDs.push_back(BindTextureInFile(texture));
+	}
+
+	pData antzData = m_antzData->GetData();
+	antzData->io.gl.textureCount = m_textureIDs.size() + 1;
+
+	pNPnode rootGrid = static_cast<pNPnode>(antzData->map.node[kNPnodeRootGrid]);
+	SetGridTexture(rootGrid);
+	for (int i = 0; i < rootGrid->childCount; ++i) {
+
+		SetGridTexture(rootGrid->child[i]);
+	}
+
+	ResetCamera();
+	
+	m_isReseting = false;
+	update();
+}
+
+void ANTzViewerWidget::SetGridTexture(pNPnode grid) {
+
+	if (grid->textureID == 1) {
+
+		grid->textureID = m_worldTextureID;
+	}
+	else {
+
+		grid->textureID = m_textureIDs[grid->textureID - 2];
+	}
+}
+
+unsigned int ANTzViewerWidget::BindTextureInFile(const QString& imageFilename) {
+
+	QImage image(imageFilename);
+	return bindTexture(image);
 }

@@ -25,6 +25,8 @@ public:
 
 	ANTzPlus::ANTzData::SharedPtr GetANTzData() const;
 
+	const QStringList& GetBaseImageFilenames() const;
+
 	void Clear();
 	void LoadANTzVisualization(const QStringList& antzCSVFilenames, const QStringList& baseImageFilenames);
 
@@ -34,14 +36,13 @@ public:
 
 private:
 	void Clear(bool resetModel);
-	void ResetTextures();
-	void LoadImages(const QStringList& filenames);
 
 	int GetChildIndexFromParent(pNPnode node) const;
 	int FindRowForRootNode(pNPnode) const;
 	std::unordered_map<std::wstring, int> m_textures;
 	QString m_defaultBaseImage;
 	ANTzPlus::ANTzData::SharedPtr m_antzData;
+	QStringList m_baseImageFilenames;
 };
 
 #endif // GLYPHFORESTMODEL_H
