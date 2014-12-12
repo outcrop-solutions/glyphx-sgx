@@ -28,7 +28,8 @@ ANTzViewerWidget::ANTzViewerWidget(GlyphForestModel* model, QItemSelectionModel*
 	m_zSpaceViewport(nullptr),
 	m_zSpaceFrustum(nullptr),
 	m_zSpaceStylus(nullptr),
-	m_topLevelWindow(nullptr)
+	m_topLevelWindow(nullptr),
+	m_oglTextFont("Arial", 12, QFont::Normal)
 {
 	setFocusPolicy(Qt::StrongFocus);
 
@@ -458,7 +459,7 @@ void ANTzViewerWidget::DrawSelectedNodeAndHUDText() {
 		selectedNode = static_cast<pNPnode>(m_selectionModel->selectedIndexes().front().internalPointer());
 		if (strcmp(selectedNode->tag->title, "No Tag") != 0) {
 
-			renderText(selectedNode->world.x, selectedNode->world.y, selectedNode->world.z, selectedNode->tag->title);
+			renderText(selectedNode->world.x, selectedNode->world.y, selectedNode->world.z, selectedNode->tag->title, m_oglTextFont);
 		}
 	}
 
@@ -473,8 +474,8 @@ void ANTzViewerWidget::DrawSelectedNodeAndHUDText() {
 		positionHUD = tr("Camera Position: X: %1, Y: %2, Z: %3").arg(QString::number(antzData->map.currentCam->translate.x), QString::number(antzData->map.currentCam->translate.y), QString::number(antzData->map.currentCam->translate.z));
 	}
 
-	const QFontMetrics& hudFontMetrics = fontMetrics();
-	renderText((width() / 2) - (hudFontMetrics.width(positionHUD) / 2), height() - 16, positionHUD);
+	QFontMetrics hudFontMetrics(m_oglTextFont);
+	renderText((width() / 2) - (hudFontMetrics.width(positionHUD) / 2), height() - 16, positionHUD, m_oglTextFont);
 
 	if (reenableDepthTest) {
 		glEnable(GL_DEPTH_TEST);

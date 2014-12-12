@@ -281,18 +281,7 @@ void GlyphViewerWindow::LoadDataTransform(const QString& filename) {
 
 void GlyphViewerWindow::LoadFilesIntoModel(const QStringList& csvFiles, const QStringList& baseImageFilenames) {
 
-	m_glyphForestModel->Clear();
-
-	if (baseImageFilenames.empty()) {
-
-		m_glyphForestModel->ResetTextures();
-	}
-	else {
-
-		m_glyphForestModel->LoadImages(baseImageFilenames);
-	}
-
-	m_glyphForestModel->LoadANTzFiles(csvFiles);
+	m_glyphForestModel->LoadANTzVisualization(csvFiles, baseImageFilenames);
 }
 
 void GlyphViewerWindow::ChangeMapDownloadSettings() {

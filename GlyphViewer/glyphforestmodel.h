@@ -26,15 +26,17 @@ public:
 	ANTzPlus::ANTzData::SharedPtr GetANTzData() const;
 
 	void Clear();
-	void LoadANTzFiles(const QStringList& filenames);
+	void LoadANTzVisualization(const QStringList& antzCSVFilenames, const QStringList& baseImageFilenames);
 
 	QModelIndex IndexFromANTzID(int id) const;
 
 	void SetParentGridToDefaultBaseImage();
+
+private:
+	void Clear(bool resetModel);
 	void ResetTextures();
 	void LoadImages(const QStringList& filenames);
 
-private:
 	int GetChildIndexFromParent(pNPnode node) const;
 	int FindRowForRootNode(pNPnode) const;
 	std::unordered_map<std::wstring, int> m_textures;

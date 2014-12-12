@@ -65,6 +65,8 @@ private:
     static QGLFormat s_format;
 	static const float s_stylusLength;
 
+	QFont m_oglTextFont;
+
 	ANTzPlus::ANTzData::SharedPtr m_antzData;
 
     QItemSelectionModel* m_selectionModel;

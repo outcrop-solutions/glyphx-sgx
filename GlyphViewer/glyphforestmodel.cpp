@@ -139,11 +139,19 @@ int GlyphForestModel::GetChildIndexFromParent(pNPnode node) const {
 
 void GlyphForestModel::Clear() {
 
+	Clear(true);
+}
+
+void GlyphForestModel::Clear(bool resetModel) {
+
 	pData antzData = m_antzData->GetData();
 	antzData->map.nodeRootIndex = kNPnodeRootPin;
 	pNPnode rootGrid = static_cast<pNPnode>(m_antzData->GetData()->map.node[kNPnodeRootGrid]);
 
-	beginResetModel();
+	if (resetModel) {
+
+		beginResetModel();
+	}
 
 	while (antzData->map.nodeRootCount > kNPnodeRootPin) {
 
@@ -162,19 +170,31 @@ void GlyphForestModel::Clear() {
 
 	antzData->map.nodeRootIndex = 0;
 
-	endResetModel();
+	if (resetModel) {
+
+		endResetModel();
+	}
 }
 
-void GlyphForestModel::LoadANTzFiles(const QStringList& filenames) {
+void GlyphForestModel::LoadANTzVisualization(const QStringList& antzCSVFilenames, const QStringList& baseImageFilenames) {
 
 	pData antzData = m_antzData->GetData();
 	antzData->map.nodeRootIndex = kNPnodeRootPin;
 
-	Clear();
-
 	beginResetModel();
 
-	for (const QString& filename : filenames) {
+	Clear(false);
+
+	if (baseImageFilenames.empty()) {
+
+		ResetTextures();
+	}
+	else {
+
+		LoadImages(baseImageFilenames);
+	}
+
+	for (const QString& filename : antzCSVFilenames) {
 
 		npFileOpenCore(filename.toStdString().c_str(), NULL, antzData);
 	}
