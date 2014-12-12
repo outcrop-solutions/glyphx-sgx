@@ -20,7 +20,7 @@ void GlyphViewerANTzTransformer::CreateGlyphsFromMapping(const SynGlyphX::DataTr
 
 	Clear();
 
-	QString localOutputDir = QDir::toNativeSeparators(m_baseOutputDir + QDir::separator());
+	QString localOutputDir = QDir::toNativeSeparators(m_baseOutputDir + QDir::separator() + "antz" + QDir::separator());
 
 	QStringList csvFiles;
 	csvFiles.push_back(localOutputDir + "antz.csv");
@@ -31,7 +31,17 @@ void GlyphViewerANTzTransformer::CreateGlyphsFromMapping(const SynGlyphX::DataTr
 
 	if (DoesCacheNeedToBeRegenerated(mapping, csvFiles, cachedMappingFilename)) {
 
-		SynGlyphX::Filesystem::RemoveContentsOfDirectory(localOutputDir.toStdString());
+		QDir antzOutputDir(localOutputDir);
+		if (antzOutputDir.exists()) {
+
+			SynGlyphX::Filesystem::RemoveContentsOfDirectory(localOutputDir.toStdString());
+		}
+		else {
+
+			QDir baseOutputDir(m_baseOutputDir);
+			baseOutputDir.mkdir("antz");
+		}
+
 		GenerateCache(mapping, csvFiles, localOutputDir);
 		//Write the mapping to the cache
 		mapping.WriteToFile(cachedMappingFilename.toStdString());
