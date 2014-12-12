@@ -51,7 +51,7 @@ void npProcessLinkQue (void* dataRef);
 void npFlagLink (pNPnode node, void* dataRef);
 
 //------------------------------------------------------------------------------
-void npInitGLDraw(void* dataRef)
+ANTZCORE_API void npInitGLDraw(void* dataRef)
 {
 	pData data = (pData) dataRef;
 

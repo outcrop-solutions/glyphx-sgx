@@ -35,7 +35,7 @@
 
 
 //------------------------------------------------------------------------------
-void npInitTags (void* dataRef)
+ANTZCORE_API void npInitTags(void* dataRef)
 {
 	return;
 }

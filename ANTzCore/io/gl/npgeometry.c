@@ -90,7 +90,7 @@ static void initNPQuadObj()
 
 
 //------------------------------------------------------------------------------
-void npInitGLPrimitive (void* dataRef)
+ANTZCORE_API void npInitGLPrimitive(void* dataRef)
 {
 	pin_dl = CreatePinDL();
 	pin_wire_dl = CreatePinWireDL();

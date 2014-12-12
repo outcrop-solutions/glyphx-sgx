@@ -34,7 +34,11 @@
 #include <gl/GL.h>
 #include <gl/GLU.h>
 
-void npInitGLPrimitive (void* dataRef);
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+ANTZCORE_API void npInitGLPrimitive(void* dataRef);
 void npCloseGLPrimitive (void* dataRef);
 
 void npGLSurface (bool texture, pNPnode node, void* dataRef);
@@ -70,5 +74,9 @@ void npWireIcosahedron();
 void npSolidIcosahedron();
 void npWireTetrahedron();
 void npSolidTetrahedron();
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

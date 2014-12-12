@@ -35,7 +35,7 @@
 extern "C" {
 #endif
 
-void npInitGLDraw (void* dataRef);
+ANTZCORE_API void npInitGLDraw(void* dataRef);
 void npCloseGLDraw (void* dataRef);
 
 ANTZCORE_API void npDrawNodes(void* dataRef);

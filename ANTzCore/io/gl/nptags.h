@@ -33,7 +33,7 @@
 #endif
 
 //------------------------------------------------------------------------------
-void npInitTags(void* dataRef);
+ANTZCORE_API void npInitTags(void* dataRef);
 void npCloseTags(void* dataRef);
 
 void npUpdateTags(void* dataRef);
