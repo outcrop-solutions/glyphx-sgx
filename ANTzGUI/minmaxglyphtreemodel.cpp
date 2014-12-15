@@ -4,7 +4,8 @@
 #include "antzcsvwriter.h"
 
 MinMaxGlyphTreeModel::MinMaxGlyphTreeModel(QObject *parent)
-	: QAbstractItemModel(parent)
+	: QAbstractItemModel(parent),
+	m_minMaxGlyphTree(nullptr)
 {
 
 }
@@ -99,6 +100,11 @@ QModelIndex	MinMaxGlyphTreeModel::parent(const QModelIndex& index) const {
 }
 
 int	MinMaxGlyphTreeModel::rowCount(const QModelIndex& parent) const {
+
+	if (m_minMaxGlyphTree == nullptr) {
+
+		return 0;
+	}
 
 	if (parent.isValid()) {
 

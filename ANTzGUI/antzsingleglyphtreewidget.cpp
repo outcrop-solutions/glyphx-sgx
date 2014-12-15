@@ -349,7 +349,9 @@ void ANTzSingleGlyphTreeWidget::DeleteRootGlyphNode() {
 
 	if (m_rootGlyph != nullptr) {
 
+		m_antzData->map.nodeRootIndex = kNPnodeRootPin;
 		DeleteNode(m_rootGlyph);
+		m_antzData->map.nodeRootIndex = 0;
 		m_rootGlyph = nullptr;
 	}
 }
