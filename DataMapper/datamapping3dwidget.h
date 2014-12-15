@@ -20,6 +20,7 @@ private slots:
 	void OnInternalSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected);
 	void OnExternalSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected);
 	void OnExternalDataChanged(const QModelIndex& topLeft, const QModelIndex& bottomRight, const QVector<int>& roles);
+	void OnExternalModelReset();
 
 private:
 	void ConnectInternalSelection();

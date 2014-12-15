@@ -29,6 +29,7 @@ void DataMapping3DWidget::SetModel(SynGlyphX::RoleDataFilterProxyModel* model, Q
 	ConnectInternalSelection();
 	ConnectExternalSelection();
 	QObject::connect(m_externalModel, &SynGlyphX::RoleDataFilterProxyModel::dataChanged, this, &DataMapping3DWidget::OnExternalDataChanged);
+	QObject::connect(m_externalModel, &SynGlyphX::RoleDataFilterProxyModel::modelReset, this, &DataMapping3DWidget::OnExternalModelReset);
 }
 
 void DataMapping3DWidget::ConnectInternalSelection() {
@@ -139,4 +140,12 @@ QModelIndex DataMapping3DWidget::GetModelIndexFromStack(std::stack<unsigned int>
 	}
 
 	return index;
+}
+
+void DataMapping3DWidget::OnExternalModelReset() {
+
+	if ((m_externalModel->rowCount() == 0) && (m_internalModel->rowCount() > 0)) {
+
+		m_internalModel->removeRow(0);
+	}
 }
