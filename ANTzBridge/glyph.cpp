@@ -37,7 +37,8 @@ namespace SynGlyphX {
 
 			for (unsigned int i = 0; i < instances[depth]; ++i) {
 
-				insert(root(), *templates[depth]);
+				GlyphTree::iterator newGlyph = insert(root(), *templates[depth]);
+				SetPosition(newGlyph, i * -15.0);
 			}
 		}
 		else {
@@ -45,7 +46,8 @@ namespace SynGlyphX {
 			for (unsigned int i = 0; i < instances[depth]; ++i) {
 
 				GlyphTree childTree(templates, instances, depth);
-				insert(root(), childTree);
+				GlyphTree::iterator newGlyph = insert(root(), childTree);
+				SetPosition(newGlyph, i * -15.0);
 			}
 		}
 	}
@@ -60,74 +62,25 @@ namespace SynGlyphX {
 
 			for (unsigned int i = 0; i < instances[0]; ++i) {
 
-				insert(root(), *templates[0]);
+				GlyphTree::iterator newGlyph = insert(root(), *templates[0]);
+				SetPosition(newGlyph, i * -15.0);
 			}
 		}
 		else {
 			for (unsigned int i = 0; i < instances[0]; ++i) {
 
 				GlyphTree childTree(templates, instances, 0);
-				insert(parent, childTree);
+				GlyphTree::iterator newGlyph = insert(parent, childTree);
+				SetPosition(newGlyph, i * -15.0);
 			}
 		}
 	}
 
-    /*Glyph::Glyph()
-        : GlyphProperties() {
-        
-    }
+	void GlyphTree::SetPosition(GlyphTree::iterator& glyph, double xPosition) {
 
-    Glyph::Glyph(pNPnode node) :
-        GlyphProperties(node) {
-
-        if (node->childCount > 0) {
-
-            for (int i = 0; i < node->childCount; ++i) {
-
-                boost::shared_ptr<Glyph> glyph(new SynGlyphX::Glyph(node->child[i]));
-                m_children.push_back(glyph);
-            }
-        }
-    }
-
-    Glyph::Glyph(const std::vector<boost::shared_ptr<GlyphProperties>>& templates, const std::vector<unsigned int>& numberOfChildren) :
-        GlyphProperties(*(templates[0].get())) {
-
-        std::vector<boost::shared_ptr<GlyphProperties>> childTemplates(templates);
-        childTemplates.erase(childTemplates.begin());
-
-        if (!childTemplates.empty()) {
-
-            std::vector<unsigned int> numberOfDesendants(numberOfChildren);
-            numberOfDesendants.erase(numberOfDesendants.begin());
-
-            for (int i = 0; i < numberOfChildren[0]; ++i) {
-
-                boost::shared_ptr<Glyph> glyph(new SynGlyphX::Glyph(childTemplates, numberOfDesendants));
-                m_children.push_back(glyph);
-            }
-        }
-    }
-
-    Glyph::~Glyph()
-    {
-    }
-
-    
-    void Glyph::AddChild(boost::shared_ptr<Glyph> glyph) {
-        m_children.push_back(glyph);
-    }
-
-    boost::shared_ptr<Glyph> Glyph::GetChild(unsigned int index) const {
-        return m_children[index];
-    }
-    
-    void Glyph::ClearChildren() {
-        m_children.clear();
-    }
-
-    unsigned int Glyph::GetNumberOfChildren() const {
-        return m_children.size();
-    }*/
+		Vector3 pos = glyph->GetPosition();
+		pos[0] = xPosition;
+		glyph->SetPosition(pos);
+	}
 
 } //namespace SynGlyphX

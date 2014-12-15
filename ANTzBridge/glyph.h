@@ -25,8 +25,9 @@ namespace SynGlyphX {
 		void AllocateChildSubtree(const std::vector<SynGlyphX::GlyphProperties::ConstSharedPtr>& templates, const std::vector<unsigned int> instances, const GlyphTree::iterator& parent);
 
 	private:
-
 		GlyphTree(const std::vector<SynGlyphX::GlyphProperties::ConstSharedPtr>& templates, const std::vector<unsigned int> instances, unsigned int depth);
+
+		void SetPosition(GlyphTree::iterator& glyph, double xPosition);
 	};
 
     /*class ANTZBRIDGE_API Glyph : public GlyphProperties
