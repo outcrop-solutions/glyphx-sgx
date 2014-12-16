@@ -346,7 +346,7 @@ void ANTzViewerWidget::paintGL() {
 	glPushMatrix();
 
 	ZSFloat stylusLength = s_stylusLength;
-	QColor stylusColor = Qt::red;
+	QColor stylusColor = Qt::green; // Qt::red;
 
 	if (IsInStereoMode()) {
 
@@ -361,13 +361,13 @@ void ANTzViewerWidget::paintGL() {
 			ZSTrackerPose stylusPose;
 			ZSError error = zsGetTargetPose(m_zSpaceStylus, &stylusPose);
 
-			ZSDisplayIntersectionInfo intersection;
+			/*ZSDisplayIntersectionInfo intersection;
 			error = zsIntersectDisplay(m_zSpaceDisplay, &stylusPose, &intersection);
 			if ((intersection.hit) && (rect().contains(mapFromGlobal(QPoint(intersection.x, intersection.y))))) {
 
 				stylusColor = Qt::green;
 				stylusLength = intersection.distance;
-			}
+			}*/
 
 			// Transform the stylus pose from tracker to camera space.
 			error = zsTransformMatrix(m_zSpaceViewport, ZS_COORDINATE_SPACE_TRACKER, ZS_COORDINATE_SPACE_CAMERA, &stylusPose.matrix);
@@ -514,6 +514,10 @@ void ANTzViewerWidget::SetZSpaceMatricesForDrawing(ZSEye eye, const ZSMatrix4& o
 
 	glMatrixMode(GL_MODELVIEW);
 
+	//Probably should be at bottom of this function
+	//glGetFloatv(GL_MODELVIEW_MATRIX, camData->matrix);
+	//npInvertMatrixf(camData->matrix, camData->inverseMatrix);
+
 	glLoadMatrixf(zSpaceEyeViewMatrix.f);
 	glMultMatrixf(originialViewMatrix.f);
 
@@ -618,13 +622,24 @@ void ANTzViewerWidget::mousePressEvent(QMouseEvent* event) {
 
 void ANTzViewerWidget::SelectAtPoint(int x, int y) const {
 
-	//emit NewStatusMessage(tr("Selection Attempt At: %1, %2").arg(x).arg(y), 4000);
+	int pickID = 0;
 
 	pData antzData = m_antzData->GetData();
-	bool isStereo = IsInStereoMode();
-	antzData->io.gl.stereo = false;
-	int pickID = npPickPin(x, antzData->io.gl.height - y, antzData);
-	antzData->io.gl.stereo = isStereo;
+	//bool isStereo = IsInStereoMode();
+	//antzData->io.gl.stereo = false;
+
+	if (IsInStereoMode()) {
+
+		pickID = npPickPinStereo(x, antzData->io.gl.height - y, antzData);
+	}
+	else {
+
+		pickID = npPickPin(x, antzData->io.gl.height - y, antzData);
+	}
+
+	//antzData->io.gl.stereo = isStereo;
+
+	emit NewStatusMessage(tr("Selection Attempt At: %1, %2 | ID = %3").arg(x).arg(y).arg(pickID), 4000);
 
 	if (pickID != 0) {
 
