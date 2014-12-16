@@ -6,6 +6,8 @@
 #include <QtCore/QFile>
 #include <QtGUI/QMouseEvent>
 #include <stack>
+#include <QtCore/QDir>
+#include <QtCore/QFile>
 
 ANTzSingleGlyphTreeWidget::ANTzSingleGlyphTreeWidget(MinMaxGlyphTreeModel::GlyphType glyphTreeType, QWidget *parent)
     : ANTzWidget(parent),
@@ -16,7 +18,8 @@ ANTzSingleGlyphTreeWidget::ANTzSingleGlyphTreeWidget(MinMaxGlyphTreeModel::Glyph
 	m_selectionModel(nullptr),
 	m_editingMode(Move),
 	m_selectionEdited(false),
-	m_allowMultiSelection(false)
+	m_allowMultiSelection(false),
+	m_baseImageTextureID(0)
 {
     
     
@@ -25,6 +28,25 @@ ANTzSingleGlyphTreeWidget::ANTzSingleGlyphTreeWidget(MinMaxGlyphTreeModel::Glyph
 ANTzSingleGlyphTreeWidget::~ANTzSingleGlyphTreeWidget()
 {
 	DeleteRootGlyphNode();
+
+	if (m_baseImageTextureID != 0) {
+
+		deleteTexture(m_baseImageTextureID);
+		m_baseImageTextureID = 0;
+	}
+}
+
+void ANTzSingleGlyphTreeWidget::initializeGL() {
+
+	ANTzWidget::initializeGL();
+
+	QString worldBaseImageFilename = QDir::toNativeSeparators(QDir::currentPath() + QDir::separator() + "world.png");
+	if (QFile::exists(worldBaseImageFilename)) {
+
+		m_baseImageTextureID = BindTextureInFile(worldBaseImageFilename);
+	}
+
+	ResetCamera();
 }
 
 void ANTzSingleGlyphTreeWidget::SetAllowMultiSelection(bool allowMultiSelection) {
@@ -130,6 +152,7 @@ pNPnode ANTzSingleGlyphTreeWidget::CreateNodeFromTemplate(pNPnode parent, const 
 void ANTzSingleGlyphTreeWidget::OnModelReset() {
 
 	RebuildTree();
+	EnableBasedOnModelRowCount();
 }
 
 void ANTzSingleGlyphTreeWidget::OnModelRowsInserted(const QModelIndex& parent, int first, int last) {
@@ -140,6 +163,7 @@ void ANTzSingleGlyphTreeWidget::OnModelRowsInserted(const QModelIndex& parent, i
 
 		CreateNewSubTree(parentGlyph, m_model->GetMinMaxGlyphTree()->child(minMaxGlyphParent, i));
 	}
+	EnableBasedOnModelRowCount();
 }
 
 void ANTzSingleGlyphTreeWidget::OnModelRowsMoved(const QModelIndex& sourceParent, int sourceStart, int sourceEnd, const QModelIndex& destinationParent, int destinationRow) {
@@ -170,6 +194,7 @@ void ANTzSingleGlyphTreeWidget::OnModelRowsRemoved(const QModelIndex& parent, in
 
 		DeleteRootGlyphNode();
 	}
+	EnableBasedOnModelRowCount();
 }
 
 pNPnode ANTzSingleGlyphTreeWidget::GetGlyphFromModelIndex(const QModelIndex& index) const {
@@ -448,7 +473,7 @@ void ANTzSingleGlyphTreeWidget::SetEditingMode(EditingMode mode) {
 	m_editingMode = mode;
 }
 
-void ANTzSingleGlyphTreeWidget::OnModelChanged() {
+void ANTzSingleGlyphTreeWidget::EnableBasedOnModelRowCount() {
 
 	setEnabled(m_model->rowCount() > 0);
 }

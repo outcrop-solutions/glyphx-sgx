@@ -36,6 +36,7 @@ public slots:
 	void SetEditingMode(EditingMode mode);
 
 protected:
+	virtual void initializeGL();
 	virtual void BeforeDrawScene();
 	virtual void AfterDrawScene();
 	virtual void mousePressEvent(QMouseEvent* event);
@@ -46,7 +47,6 @@ protected:
 
 private slots:
 	void UpdateSelection(const QItemSelection& selected, const QItemSelection& deselected);
-	void OnModelChanged();
 	void OnModelReset();
 	void OnModelRowsInserted(const QModelIndex& parent, int first, int last);
 	void OnModelRowsMoved(const QModelIndex& sourceParent, int sourceStart, int sourceEnd, const QModelIndex& destinationParent, int destinationRow);
@@ -54,6 +54,7 @@ private slots:
 	void UpdateData(const QModelIndex& topLeft, const QModelIndex& bottomRight);
 
 private:
+	void EnableBasedOnModelRowCount();
 	QModelIndex IndexFromANTzID(int id) const;
 	pNPnode GetGlyphFromModelIndex(const QModelIndex& index) const;
 	pNPnode GetRootGlyph() const;
@@ -73,6 +74,7 @@ private:
 	void DisconnectDataChangedSignal();
 
 	pNPnode m_rootGlyph;
+	unsigned int m_baseImageTextureID;
 	
 	SynGlyphX::GlyphProperties::SharedPtr m_clipboardGlyph;
 

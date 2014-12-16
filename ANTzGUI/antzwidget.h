@@ -26,6 +26,7 @@ protected:
 
 	void DeleteNode(pNPnode node);
 	void DeleteChildren(pNPnode parent, unsigned int first, unsigned int count);
+	unsigned int BindTextureInFile(const QString& imageFilename);
 
 	virtual void BeforeDrawScene() = 0;
 	virtual void AfterDrawScene() = 0;

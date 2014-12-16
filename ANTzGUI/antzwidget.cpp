@@ -5,6 +5,7 @@
 #include "npui.h"
 #include "ctrl/npengine.h"
 #include "io/npgl.h"
+#include "io/gl/nptags.h"
 
 //The default QGLFormat works for now except we want alpha enabled.  May want to turn on stereo at some point
 QGLFormat ANTzWidget::s_format(QGL::AlphaChannel);
@@ -94,8 +95,9 @@ void ANTzWidget::InitIO()
 
 void ANTzWidget::initializeGL() {
     
-	npInitGL(m_antzData);
-    ResetCamera();
+	npInitGLDraw(m_antzData);
+	npInitGLPrimitive(m_antzData);
+	npInitTags(m_antzData);
 }
 
 void ANTzWidget::resizeGL(int w, int h) {
@@ -174,4 +176,10 @@ void ANTzWidget::DeleteChildren(pNPnode parent, unsigned int first, unsigned int
 			npNodeRemove(true, parent->child[i], m_antzData);
 		}
 	}
+}
+
+unsigned int ANTzWidget::BindTextureInFile(const QString& imageFilename) {
+
+	QImage image(imageFilename);
+	return bindTexture(image);
 }

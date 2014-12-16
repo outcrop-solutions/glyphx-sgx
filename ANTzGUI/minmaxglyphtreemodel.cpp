@@ -167,7 +167,7 @@ bool MinMaxGlyphTreeModel::removeRows(int row, int count, const QModelIndex& par
 		else {
 
 			beginRemoveRows(parent, 0, 0);
-			m_minMaxGlyphTree->erase();
+			m_minMaxGlyphTree = nullptr;
 
 			endRemoveRows();
 		}
