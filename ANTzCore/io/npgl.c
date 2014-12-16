@@ -1049,6 +1049,68 @@ ANTZCORE_API void npPick(int x, int y, void* dataRef)
 }
 
 //------------------------------------------------------------------------------
+#define kNPpickWidth	20
+#define kNPpickHeight	20
+
+int npPickPinStereoSingleEye(int x, int y, void* dataRef) {
+
+	int id = 0, i = 0, j = 0;
+
+	GLubyte r, g, b;	//Unsigned Byte 8-bit Range: 0-255 // changed from u_int8_t, zz debug
+	GLubyte pixels[kNPpickWidth][kNPpickHeight][4];		//4 Bytes  //zs
+
+	pNPnode node = NULL;
+	pData data = (pData)dataRef;
+
+	glReadPixels(x, y, kNPpickWidth, kNPpickHeight, GL_RGBA, GL_UNSIGNED_BYTE, pixels); //zs
+
+	for (i = 0; i < kNPpickWidth; i++)
+	{
+		for (j = 0; j < kNPpickHeight; j++)
+		{
+			r = pixels[i][j][0];
+			g = pixels[i][j][1];
+			b = pixels[i][j][2];			// 2^24 rgb limit, does not use alpha
+
+			id = npRGBtoID(r, g, b);
+
+			if (id)
+			{
+				i = kNPpickWidth;
+				j = kNPpickHeight;
+			}
+		}
+	}
+
+	if (id >= kNPnodeMax)	//mouse selection crashing workaround, debug zz
+		id = 0;
+
+	return id;
+}
+
+ANTZCORE_API int npPickPinStereo(int x, int y, void* dataRef) {
+
+	int id = 0;
+	pData data = (pData)dataRef;
+
+	data->io.gl.pickPass = true;
+	npGLDrawScene(data);
+
+	glReadBuffer(GL_BACK_RIGHT);
+	id = npPickPinStereoSingleEye(x, y, dataRef);
+
+	glReadBuffer(GL_BACK_LEFT);
+	if (id == 0) {
+
+		id = npPickPinStereoSingleEye(x, y, dataRef);
+	}
+
+	data->io.gl.pickPass = false;	//clear the flag to draw normal colors
+
+	return id;
+}
+
+//------------------------------------------------------------------------------
 ANTZCORE_API int npPickPin(int x, int y, void* dataRef) {
 
 	int id = 0;
