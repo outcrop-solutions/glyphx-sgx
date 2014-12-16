@@ -285,6 +285,7 @@ void DataMapperWindow::LoadDataTransform(const QString& filename) {
 		m_dataTransformModel->LoadDataTransformFile(filename);
 		m_dataSourceStats->RebuildStatsViews();
 		SelectLastGlyphTreeRoot();
+		SelectFirstBaseObject();
 	}
 	catch (const std::exception& e) {
 
@@ -648,6 +649,7 @@ void DataMapperWindow::ClearAndInitializeDataMapping() {
 
 	m_dataTransformModel->Clear();
 	m_dataTransformModel->SetDefaults(m_newMappingDefaults);
+	SelectFirstBaseObject();
 }
 
 void DataMapperWindow::SelectLastGlyphTreeRoot() {
@@ -665,4 +667,9 @@ void DataMapperWindow::OnGlyphTreesViewSelectionChanged(const QItemSelection& se
 
 		m_minMaxGlyphModel->SetMinMaxGlyph(m_glyphTreesModel->mapSelectionToSource(selected).indexes()[0]);
 	}
+}
+
+void DataMapperWindow::SelectFirstBaseObject() {
+
+	m_baseObjectsView->selectionModel()->select(m_baseObjectsModel->index(0, 0), QItemSelectionModel::ClearAndSelect);
 }

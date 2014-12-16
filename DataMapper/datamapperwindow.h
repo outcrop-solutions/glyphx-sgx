@@ -56,6 +56,7 @@ private:
 	void WriteNewMappingDefaults();
 	void ClearAndInitializeDataMapping();
 	void SelectLastGlyphTreeRoot();
+	void SelectFirstBaseObject();
 
     QMenu* m_fileMenu;
     QMenu* m_glyphMenu;

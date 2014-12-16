@@ -63,8 +63,7 @@ void DataMapping3DWidget::OnExternalSelectionChanged(const QItemSelection& selec
 
 	if (selected.empty() || !selected.indexes()[0].isValid() || (selected.indexes()[0].data(DataTransformModel::DataTypeRole) != DataTransformModel::DataType::GlyphTrees)) {
 
-		m_glyphTreeIndex = -1;
-		m_internalModel->removeRow(0);
+		Clear();
 		return;
 	}
 
@@ -146,6 +145,12 @@ void DataMapping3DWidget::OnExternalModelReset() {
 
 	if ((m_externalModel->rowCount() == 0) && (m_internalModel->rowCount() > 0)) {
 
-		m_internalModel->removeRow(0);
+		Clear();
 	}
+}
+
+void DataMapping3DWidget::Clear() {
+
+	m_glyphTreeIndex = -1;
+	m_internalModel->removeRow(0);
 }

@@ -23,6 +23,7 @@ private slots:
 	void OnExternalModelReset();
 
 private:
+	void Clear();
 	void ConnectInternalSelection();
 	void ConnectExternalSelection();
 	std::stack<unsigned int> GetRowIndiciesFromStack(const QModelIndex& index) const;
