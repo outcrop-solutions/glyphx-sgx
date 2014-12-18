@@ -82,8 +82,9 @@
   <ItemGroup>
     <ClInclude Include="baseimage.h" />
     <ClInclude Include="baseimageproperties.h" />
-    <ClInclude Include="datamapping.h" />
     <ClInclude Include="datamappingdefaults.h" />
+    <ClInclude Include="datamappingfunction.h" />
+    <ClInclude Include="datamappingfunctionstrategy.h" />
     <ClInclude Include="datasource.h" />
     <ClInclude Include="datasourcemaps.h" />
     <ClInclude Include="datatransformmapping.h" />
@@ -102,8 +103,9 @@
   <ItemGroup>
     <ClCompile Include="baseimage.cpp" />
     <ClCompile Include="baseimageproperties.cpp" />
-    <ClCompile Include="datamapping.cpp" />
     <ClCompile Include="datamappingdefaults.cpp" />
+    <ClCompile Include="datamappingfunction.cpp" />
+    <ClCompile Include="datamappingfunctionstrategy.cpp" />
     <ClCompile Include="datasource.cpp" />
     <ClCompile Include="datasourcemaps.cpp" />
     <ClCompile Include="datatransformmapping.cpp" />

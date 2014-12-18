@@ -1,23 +1,19 @@
-#ifndef SYNGLYPHX_DATAMAPPING_H
-#define SYNGLYPHX_DATAMAPPING_H
+#ifndef SYNGLYPHX_DATAMAPPINGFUNCTION_H
+#define SYNGLYPHX_DATAMAPPINGFUNCTION_H
 
 #include <vector>
 #include "inputfield.h"
 
 namespace SynGlyphX {
 
-	class DataMapping
+	class DataMappingFunction
 	{
 	public:
-		enum Function {
-			LinearInterpolation,
-			ColorInterpolation
-		};
-
-		DataMapping();
-		~DataMapping();
+		DataMappingFunction();
+		~DataMappingFunction();
 
 		void AddInputField(const InputField& inputField);
+		void ClearInputFields();
 
 	private:
 		std::vector<InputField> m_inputFields;
