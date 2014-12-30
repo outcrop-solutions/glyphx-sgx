@@ -1,26 +1,37 @@
 #include "datamappingfunction.h"
+#include <stdexcept>
+#include <string>
+#include <type_traits>
 
 namespace SynGlyphX {
 
-	DataMappingFunction::DataMappingFunction()
+	template<typename OutputType, typename InputType>
+	DataMappingFunction<OutputType, InputType>::DataMappingFunction(std::shared_ptr<const InputCombinationFunction<InputType>> inputCombinationFunction) :
+		m_inputCombinationFunction(nullptr)
 	{
+		if (!strategy) {
+
+			throw std::invalid_argument("Strategy parameter must not be null");
+		}
+
+		m_inputCombinationFunction = inputCombinationFunction;
 	}
 
-
-	DataMappingFunction::~DataMappingFunction()
+	template<typename OutputType, typename InputType>
+	DataMappingFunction<OutputType, InputType>::~DataMappingFunction()
 	{
+
 	}
 
-	void DataMappingFunction::AddInputField(const InputField& inputField) {
+	template<typename OutputType, typename InputType>
+	DataMappingType DataMappingFunction<OutputType, InputType>::MapData(const std::vector<InputType>& input) {
 
-		//This line is here until multiple input fields are supported
-		ClearInputFields();
-		m_inputFields.push_back(inputField);
-	}
+		if (input.empty()) {
 
-	void DataMappingFunction::ClearInputFields() {
+			throw std::invalid_argument("There must be at least one input value to map");
+		}
 
-		m_inputFields.clear();
+		return MapCombinedInput(m_inputCombinationFunction->CombineInput(input));
 	}
 
 } //namespace SynGlyphX

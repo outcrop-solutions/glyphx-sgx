@@ -79,7 +79,13 @@
     <ClInclude Include="datamappingfunction.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="datamappingfunctionstrategy.h">
+    <ClInclude Include="inputcombinationfunction.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="interpolationmappingfunction.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="linearinterpolationmappingfunction.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -135,7 +141,13 @@
     <ClCompile Include="datamappingfunction.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="datamappingfunctionstrategy.cpp">
+    <ClCompile Include="inputcombinationfunction.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="interpolationmappingfunction.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="linearinterpolationmappingfunction.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

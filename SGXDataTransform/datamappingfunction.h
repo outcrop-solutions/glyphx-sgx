@@ -2,21 +2,23 @@
 #define SYNGLYPHX_DATAMAPPINGFUNCTION_H
 
 #include <vector>
-#include "inputfield.h"
+#include "inputcombinationfunction.h"
 
 namespace SynGlyphX {
 
+	template<typename OutputType, typename InputType = OutputType>
 	class DataMappingFunction
 	{
 	public:
-		DataMappingFunction();
+		DataMappingFunction(std::shared_ptr<const InputCombinationFunction<InputType>> inputCombinationFunction = new InputCombinationFunction<InputType>());
 		~DataMappingFunction();
 
-		void AddInputField(const InputField& inputField);
-		void ClearInputFields();
+		OutputType MapInput(const std::vector<InputType>& input);
 
-	private:
-		std::vector<InputField> m_inputFields;
+	protected:
+		virtual OutputType MapCombinedInput(InputType input) = 0;
+
+		std::shared_ptr<const InputCombinationFunction<InputType>> m_inputCombinationFunction;
 	};
 
 } //namespace SynGlyphX
