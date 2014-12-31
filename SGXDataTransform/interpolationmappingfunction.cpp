@@ -4,8 +4,8 @@
 namespace SynGlyphX {
 
 	template<typename OutputType>
-	InterpolationMappingFunction<OutputType>::InterpolationMappingFunction() :
-		DataMappingFunction<OutputType, double>(),
+	InterpolationMappingFunction<OutputType>::InterpolationMappingFunction(std::shared_ptr<const InputCombinationFunction<double>> inputCombinationFunction) :
+		DataMappingFunction<OutputType, double>(inputCombinationFunction ? inputCombinationFunction : std::make_shared<const InputCombinationFunction<double>>()),
 		m_outputMin(OutputType()),
 		m_outputDifference(OutputType()),
 		m_inputMin(0.0),
@@ -33,13 +33,13 @@ namespace SynGlyphX {
 	}
 
 	template<typename OutputType>
-	OutputType InterpolationMappingFunction<OutputType>::MapCombinedInput(double input) {
+	OutputType InterpolationMappingFunction<OutputType>::MapCombinedInput(const double& input) const {
 
 		return Interpolate(input, m_inputMin, m_inputDifference, m_outputMin, m_outputDifference);
 	}
 
 	template<>
-	Color InterpolationMappingFunction<Color>::MapCombinedInput(double input) {
+	Color InterpolationMappingFunction<Color>::MapCombinedInput(const double& input) const {
 
 		Color minHSV = Color::ConvertRGBtoHSV(m_outputMin);
 		Color differenceHSV = Color::ConvertRGBtoHSV(m_outputDifference);
@@ -51,5 +51,8 @@ namespace SynGlyphX {
 
 		return Color::ConvertHSVtoRGB(outputHSV);
 	}
+
+	template class InterpolationMappingFunction < double >;
+	template class InterpolationMappingFunction < Color >;
 
 } //namespace SynGlyphX

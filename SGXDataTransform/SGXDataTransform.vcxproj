@@ -99,6 +99,8 @@
     <ClInclude Include="interpolationmappingfunction.h" />
     <ClInclude Include="sgxdatatransform_global.h" />
     <ClInclude Include="sourcedatamanager.h" />
+    <ClInclude Include="stringconcatmappingfunction.h" />
+    <ClInclude Include="stringinputcombinationfunction.h" />
     <ClInclude Include="transformer.h" />
     <ClInclude Include="userdefinedbaseimageproperties.h" />
   </ItemGroup>
@@ -121,6 +123,8 @@
     <ClCompile Include="minmaxglyphtree.cpp" />
     <ClCompile Include="interpolationmappingfunction.cpp" />
     <ClCompile Include="sourcedatamanager.cpp" />
+    <ClCompile Include="stringconcatmappingfunction.cpp" />
+    <ClCompile Include="stringinputcombinationfunction.cpp" />
     <ClCompile Include="transformer.cpp" />
     <ClCompile Include="userdefinedbaseimageproperties.cpp" />
   </ItemGroup>

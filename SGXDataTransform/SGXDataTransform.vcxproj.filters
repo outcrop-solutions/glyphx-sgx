@@ -88,6 +88,12 @@
     <ClInclude Include="linearinterpolationmappingfunction.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="stringconcatmappingfunction.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="stringinputcombinationfunction.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="datasource.cpp">
@@ -148,6 +154,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="linearinterpolationmappingfunction.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="stringconcatmappingfunction.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="stringinputcombinationfunction.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

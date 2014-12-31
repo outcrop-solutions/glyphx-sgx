@@ -2,8 +2,8 @@
 
 namespace SynGlyphX {
 
-	LinearInterpolationMappingFunction::LinearInterpolationMappingFunction() :
-		InterpolationMappingFunction<double>()
+	LinearInterpolationMappingFunction::LinearInterpolationMappingFunction(std::shared_ptr<const InputCombinationFunction<double>> inputCombinationFunction) :
+		InterpolationMappingFunction<double>(inputCombinationFunction ? inputCombinationFunction : std::make_shared<const InputCombinationFunction<double>>())
 	{
 	}
 

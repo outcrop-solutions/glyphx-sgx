@@ -9,20 +9,20 @@ namespace SynGlyphX {
 	class InterpolationMappingFunction : public DataMappingFunction<OutputType, double>
 	{
 	public:
-		InterpolationMappingFunction();
+		InterpolationMappingFunction(std::shared_ptr<const InputCombinationFunction<double>> inputCombinationFunction = nullptr);
 		virtual ~InterpolationMappingFunction();
 
 		void SetOutputMinAndDifference(OutputType min, OutputType difference);
 		void SetInputMinAndDifference(double min, double difference);
 
 	protected:
-		virtual OutputType MapCombinedInput(double input);
+		virtual OutputType MapCombinedInput(const double& input) const;
 		virtual double Interpolate(double input, double inputMin, double inputDifference, double outputMin, double outputDifference) const = 0;
 
 		OutputType m_outputMin;
 		OutputType m_outputDifference;
 		double m_inputMin;
-		double m_inputDifference
+		double m_inputDifference;
 	};
 
 } //namespace SynGlyphX

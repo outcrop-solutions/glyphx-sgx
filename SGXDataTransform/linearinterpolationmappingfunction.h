@@ -8,7 +8,7 @@ namespace SynGlyphX {
 	class LinearInterpolationMappingFunction : public InterpolationMappingFunction<double>
 	{
 	public:
-		LinearInterpolationMappingFunction();
+		LinearInterpolationMappingFunction(std::shared_ptr<const InputCombinationFunction<double>> inputCombinationFunction = nullptr);
 		virtual ~LinearInterpolationMappingFunction();
 
 	protected:

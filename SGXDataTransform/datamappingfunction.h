@@ -2,6 +2,7 @@
 #define SYNGLYPHX_DATAMAPPINGFUNCTION_H
 
 #include <vector>
+#include <memory>
 #include "inputcombinationfunction.h"
 
 namespace SynGlyphX {
@@ -10,13 +11,13 @@ namespace SynGlyphX {
 	class DataMappingFunction
 	{
 	public:
-		DataMappingFunction(std::shared_ptr<const InputCombinationFunction<InputType>> inputCombinationFunction = new InputCombinationFunction<InputType>());
+		DataMappingFunction(std::shared_ptr<const InputCombinationFunction<InputType>> inputCombinationFunction = nullptr);
 		~DataMappingFunction();
 
-		OutputType MapInput(const std::vector<InputType>& input);
+		OutputType MapInputToOuptut(const std::vector<InputType>& input) const;
 
 	protected:
-		virtual OutputType MapCombinedInput(InputType input) = 0;
+		virtual OutputType MapCombinedInput(const InputType& input) const = 0;
 
 		std::shared_ptr<const InputCombinationFunction<InputType>> m_inputCombinationFunction;
 	};
