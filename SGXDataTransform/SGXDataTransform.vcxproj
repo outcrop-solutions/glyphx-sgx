@@ -97,12 +97,15 @@
     <ClInclude Include="minmaxglyph.h" />
     <ClInclude Include="minmaxglyphtree.h" />
     <ClInclude Include="interpolationmappingfunction.h" />
+    <ClInclude Include="rangevaluemappingfunction.h" />
     <ClInclude Include="sgxdatatransform_global.h" />
+    <ClInclude Include="singlevaluemappingfunction.h" />
     <ClInclude Include="sourcedatamanager.h" />
     <ClInclude Include="stringconcatmappingfunction.h" />
     <ClInclude Include="stringinputcombinationfunction.h" />
     <ClInclude Include="transformer.h" />
     <ClInclude Include="userdefinedbaseimageproperties.h" />
+    <ClInclude Include="valuemappingfunction.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="baseimage.cpp" />
@@ -122,11 +125,14 @@
     <ClCompile Include="minmaxglyph.cpp" />
     <ClCompile Include="minmaxglyphtree.cpp" />
     <ClCompile Include="interpolationmappingfunction.cpp" />
+    <ClCompile Include="rangevaluemappingfunction.cpp" />
+    <ClCompile Include="singlevaluemappingfunction.cpp" />
     <ClCompile Include="sourcedatamanager.cpp" />
     <ClCompile Include="stringconcatmappingfunction.cpp" />
     <ClCompile Include="stringinputcombinationfunction.cpp" />
     <ClCompile Include="transformer.cpp" />
     <ClCompile Include="userdefinedbaseimageproperties.cpp" />
+    <ClCompile Include="valuemappingfunction.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

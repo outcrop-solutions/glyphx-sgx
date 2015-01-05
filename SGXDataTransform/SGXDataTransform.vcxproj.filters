@@ -94,6 +94,15 @@
     <ClInclude Include="stringinputcombinationfunction.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="valuemappingfunction.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="singlevaluemappingfunction.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="rangevaluemappingfunction.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="datasource.cpp">
@@ -160,6 +169,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="stringinputcombinationfunction.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="valuemappingfunction.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="singlevaluemappingfunction.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="rangevaluemappingfunction.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

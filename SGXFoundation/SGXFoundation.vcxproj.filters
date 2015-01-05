@@ -51,6 +51,9 @@
     <ClInclude Include="csvfilewriter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="range.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -78,6 +81,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="csvfilewriter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="range.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
