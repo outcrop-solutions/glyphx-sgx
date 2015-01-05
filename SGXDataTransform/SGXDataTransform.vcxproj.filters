@@ -103,6 +103,9 @@
     <ClInclude Include="rangevaluemappingfunction.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="logarithmicinterpolationmappingfunction.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="datasource.cpp">
@@ -178,6 +181,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="rangevaluemappingfunction.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="logarithmicinterpolationmappingfunction.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

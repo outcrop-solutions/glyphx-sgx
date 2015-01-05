@@ -94,6 +94,7 @@
     <ClInclude Include="inputfield.h" />
     <ClInclude Include="inputfielddata.h" />
     <ClInclude Include="linearinterpolationmappingfunction.h" />
+    <ClInclude Include="logarithmicinterpolationmappingfunction.h" />
     <ClInclude Include="minmaxglyph.h" />
     <ClInclude Include="minmaxglyphtree.h" />
     <ClInclude Include="interpolationmappingfunction.h" />
@@ -122,6 +123,7 @@
     <ClCompile Include="inputfield.cpp" />
     <ClCompile Include="inputfielddata.cpp" />
     <ClCompile Include="linearinterpolationmappingfunction.cpp" />
+    <ClCompile Include="logarithmicinterpolationmappingfunction.cpp" />
     <ClCompile Include="minmaxglyph.cpp" />
     <ClCompile Include="minmaxglyphtree.cpp" />
     <ClCompile Include="interpolationmappingfunction.cpp" />
