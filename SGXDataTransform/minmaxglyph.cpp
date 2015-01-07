@@ -2,13 +2,13 @@
 
 namespace SynGlyphX {
 
-	MinMaxGlyph::MinMaxGlyph(const GlyphProperties& maxGlyph) :
+	MinMaxGlyph::MinMaxGlyph(const SynGlyphXANTz::GlyphProperties& maxGlyph) :
 		m_minGlyph(maxGlyph),
 		m_difference(maxGlyph)
 	{
 		//Treat the maxGlyph parameter as the max glyph, but info like the tag needs to be minGlyph so first set m_minGlyph to copy maxGlyph followed by
 		//setting the m_minGlyph numeric properties to the default minimum
-		m_minGlyph.GlyphNumericMappableProperties::operator=(GlyphNumericMappableProperties::GetDefaultMinProperties());
+		m_minGlyph.SynGlyphXANTz::GlyphNumericMappableProperties::operator=(SynGlyphXANTz::GlyphNumericMappableProperties::GetDefaultMinProperties());
 		m_difference.Subtract(m_minGlyph);
 	}
 
@@ -48,9 +48,9 @@ namespace SynGlyphX {
 
 		GetStringFromPropertyTree(propertyTree.get_child(L"Tag"), m_inputBindings[12]);
 
-		m_minGlyph.SetGeometry(GlyphProperties::s_shapeNames.right.at(propertyTree.get<std::wstring>(L"<xmlattr>.Shape")), 
-							   GlyphProperties::s_surfaceNames.right.at(propertyTree.get<std::wstring>(L"<xmlattr>.Surface")));
-		m_minGlyph.SetTopology(GlyphProperties::s_topologyNames.right.at(propertyTree.get<std::wstring>(L"<xmlattr>.Topology")));
+		m_minGlyph.SetGeometry(SynGlyphXANTz::GlyphProperties::s_shapeNames.right.at(propertyTree.get<std::wstring>(L"<xmlattr>.Shape")), 
+							   SynGlyphXANTz::GlyphProperties::s_surfaceNames.right.at(propertyTree.get<std::wstring>(L"<xmlattr>.Surface")));
+		m_minGlyph.SetTopology(SynGlyphXANTz::GlyphProperties::s_topologyNames.right.at(propertyTree.get<std::wstring>(L"<xmlattr>.Topology")));
 	}
 
 	MinMaxGlyph::MinMaxGlyph(const MinMaxGlyph& glyph) :
@@ -106,30 +106,30 @@ namespace SynGlyphX {
 		return !operator==(glyph);
 	}
 
-	const GlyphProperties& MinMaxGlyph::GetMinGlyph() const {
+	const SynGlyphXANTz::GlyphProperties& MinMaxGlyph::GetMinGlyph() const {
 
 		return m_minGlyph;
 	}
 
-	const GlyphNumericMappableProperties& MinMaxGlyph::GetDifference() const {
+	const SynGlyphXANTz::GlyphNumericMappableProperties& MinMaxGlyph::GetDifference() const {
 
 		return m_difference;
 	}
 
-	GlyphProperties MinMaxGlyph::GetMaxGlyph() const {
+	SynGlyphXANTz::GlyphProperties MinMaxGlyph::GetMaxGlyph() const {
 
-		GlyphProperties maxProperties = m_minGlyph;
+		SynGlyphXANTz::GlyphProperties maxProperties = m_minGlyph;
 		maxProperties.AddDifference(m_difference);
 
 		return maxProperties;
 	}
 
-	void MinMaxGlyph::SetMinGlyph(const GlyphProperties& properties) {
+	void MinMaxGlyph::SetMinGlyph(const SynGlyphXANTz::GlyphProperties& properties) {
 
-		m_minGlyph.GlyphProperties::operator=(properties);
+		m_minGlyph.SynGlyphXANTz::GlyphProperties::operator=(properties);
 	}
 
-	void MinMaxGlyph::SetDifference(const GlyphNumericMappableProperties& difference) {
+	void MinMaxGlyph::SetDifference(const SynGlyphXANTz::GlyphNumericMappableProperties& difference) {
 
 		m_difference = difference;
 	}
@@ -144,15 +144,15 @@ namespace SynGlyphX {
 
 		AddColorToPropertyTree(rootGlyphPropertyTree, m_minGlyph.GetColor(), m_difference.GetColor(), &m_inputBindings[9]);
 
-		if (m_minGlyph.GetShape() == GlyphProperties::Shape::Torus) {
+		if (m_minGlyph.GetShape() == SynGlyphXANTz::GlyphProperties::Shape::Torus) {
 			AddValueToPropertyTree(rootGlyphPropertyTree, L"TorusRatio", m_minGlyph.GetRatio(), m_difference.GetRatio(), m_inputBindings[11]);
 		}
 
 		AddStringToPropertyTree(rootGlyphPropertyTree, L"Tag", m_inputBindings[12]);
 
-		rootGlyphPropertyTree.put<std::wstring>(L"<xmlattr>.Shape", GlyphProperties::s_shapeNames.left.at(m_minGlyph.GetShape()));
-		rootGlyphPropertyTree.put<std::wstring>(L"<xmlattr>.Surface", GlyphProperties::s_surfaceNames.left.at(m_minGlyph.GetSurface()));
-		rootGlyphPropertyTree.put<std::wstring>(L"<xmlattr>.Topology", GlyphProperties::s_topologyNames.left.at(m_minGlyph.GetTopology()));
+		rootGlyphPropertyTree.put<std::wstring>(L"<xmlattr>.Shape", SynGlyphXANTz::GlyphProperties::s_shapeNames.left.at(m_minGlyph.GetShape()));
+		rootGlyphPropertyTree.put<std::wstring>(L"<xmlattr>.Surface", SynGlyphXANTz::GlyphProperties::s_surfaceNames.left.at(m_minGlyph.GetSurface()));
+		rootGlyphPropertyTree.put<std::wstring>(L"<xmlattr>.Topology", SynGlyphXANTz::GlyphProperties::s_topologyNames.left.at(m_minGlyph.GetTopology()));
 
 		return rootGlyphPropertyTree;
 	}

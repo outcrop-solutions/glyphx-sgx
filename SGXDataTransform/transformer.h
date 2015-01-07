@@ -28,10 +28,10 @@ namespace SynGlyphX {
 		bool HaveDatasourcesBeenUpdated(const DataTransformMapping& mapping, std::time_t lastUpdateTime) const;
 		bool HasFileBeenUpdated(const std::wstring& filename, std::time_t lastUpdateTime) const;
 
-		GlyphTree::ConstSharedVector CreateGlyphTreesFromMinMaxTrees(const DataTransformMapping& mapping) const;
-		GlyphTree::ConstSharedVector CreateGlyphTreesFromMinMaxTree(MinMaxGlyphTree::ConstSharedPtr minMaxTree) const;
-		GlyphProperties ProcessMinMaxGlyph(const MinMaxGlyphTree::const_iterator& minMaxGlyph, const InputFieldDataMap& queryResultData, unsigned int index) const;
-		void AddChildrenToGlyphTree(GlyphTree::SharedPtr tree, GlyphTree::iterator newNode, MinMaxGlyphTree::ConstSharedPtr minMaxTree, MinMaxGlyphTree::const_iterator node, const InputFieldDataMap& queryResultData, unsigned int index) const;
+		SynGlyphXANTz::GlyphTree::ConstSharedVector CreateGlyphTreesFromMinMaxTrees(const DataTransformMapping& mapping) const;
+		SynGlyphXANTz::GlyphTree::ConstSharedVector CreateGlyphTreesFromMinMaxTree(MinMaxGlyphTree::ConstSharedPtr minMaxTree) const;
+		SynGlyphXANTz::GlyphProperties ProcessMinMaxGlyph(const MinMaxGlyphTree::const_iterator& minMaxGlyph, const InputFieldDataMap& queryResultData, unsigned int index) const;
+		void AddChildrenToGlyphTree(SynGlyphXANTz::GlyphTree::SharedPtr tree, SynGlyphXANTz::GlyphTree::iterator newNode, MinMaxGlyphTree::ConstSharedPtr minMaxTree, MinMaxGlyphTree::const_iterator node, const InputFieldDataMap& queryResultData, unsigned int index) const;
 		double LinearInterpolate(const InputBinding& binding, double min, double difference, const InputFieldDataMap& queryResultData, unsigned int index) const;
 		double LinearInterpolate(double min, double difference, double dataMin, double dataDifference, double currentData) const;
 		Color ColorRGBInterpolate(const InputBinding& binding, const Color& min, const Color& difference, const InputFieldDataMap& queryResultData, unsigned int index) const;

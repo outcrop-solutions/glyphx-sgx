@@ -39,22 +39,22 @@ namespace SynGlyphX {
 		}
 	}
 
-	GlyphTree::ConstSharedVector Transformer::CreateGlyphTreesFromMinMaxTrees(const DataTransformMapping& mapping) const {
+	SynGlyphXANTz::GlyphTree::ConstSharedVector Transformer::CreateGlyphTreesFromMinMaxTrees(const DataTransformMapping& mapping) const {
 
-		SynGlyphX::GlyphTree::ConstSharedVector allTrees;
+		SynGlyphXANTz::GlyphTree::ConstSharedVector allTrees;
 
 		for (auto minMaxTree : mapping.GetGlyphTrees()) {
 
-			SynGlyphX::GlyphTree::ConstSharedVector newTrees = CreateGlyphTreesFromMinMaxTree(minMaxTree.second);
+			SynGlyphXANTz::GlyphTree::ConstSharedVector newTrees = CreateGlyphTreesFromMinMaxTree(minMaxTree.second);
 			allTrees.insert(allTrees.end(), newTrees.begin(), newTrees.end());
 		}
 
 		return allTrees;
 	}
 
-	GlyphTree::ConstSharedVector Transformer::CreateGlyphTreesFromMinMaxTree(MinMaxGlyphTree::ConstSharedPtr minMaxTree) const {
+	SynGlyphXANTz::GlyphTree::ConstSharedVector Transformer::CreateGlyphTreesFromMinMaxTree(MinMaxGlyphTree::ConstSharedPtr minMaxTree) const {
 
-		SynGlyphX::GlyphTree::ConstSharedVector trees;
+		SynGlyphXANTz::GlyphTree::ConstSharedVector trees;
 
 		SynGlyphX::MinMaxGlyphTree::const_iterator minMaxGlyph = minMaxTree->root().constify();
 
@@ -81,7 +81,7 @@ namespace SynGlyphX {
 
 		for (unsigned int i = 0; i < numGlyphs; ++i) {
 
-			SynGlyphX::GlyphTree::SharedPtr glyphTree(new SynGlyphX::GlyphTree());
+			SynGlyphXANTz::GlyphTree::SharedPtr glyphTree(new SynGlyphXANTz::GlyphTree());
 
 			glyphTree->insert(ProcessMinMaxGlyph(minMaxGlyph, queryResultData, i));
 
@@ -93,12 +93,12 @@ namespace SynGlyphX {
 		return trees;
 	}
 
-	GlyphProperties Transformer::ProcessMinMaxGlyph(const MinMaxGlyphTree::const_iterator& minMaxGlyph, const InputFieldDataMap& queryResultData, unsigned int index) const {
+	SynGlyphXANTz::GlyphProperties Transformer::ProcessMinMaxGlyph(const MinMaxGlyphTree::const_iterator& minMaxGlyph, const InputFieldDataMap& queryResultData, unsigned int index) const {
 
 		const MinMaxGlyphTree* minMaxGlyphTree = static_cast<const MinMaxGlyphTree*>(minMaxGlyph.owner());
 
-		const GlyphNumericMappableProperties& difference = minMaxGlyph->GetDifference();
-		GlyphProperties glyph = minMaxGlyph->GetMinGlyph();
+		const SynGlyphXANTz::GlyphNumericMappableProperties& difference = minMaxGlyph->GetDifference();
+		SynGlyphXANTz::GlyphProperties glyph = minMaxGlyph->GetMinGlyph();
 
 		Vector3 mappedVector3;
 
@@ -144,12 +144,12 @@ namespace SynGlyphX {
 		return glyph;
 	}
 
-	void Transformer::AddChildrenToGlyphTree(GlyphTree::SharedPtr tree, GlyphTree::iterator newNode, MinMaxGlyphTree::ConstSharedPtr minMaxTree, MinMaxGlyphTree::const_iterator node, const InputFieldDataMap& queryResultData, unsigned int index) const {
+	void Transformer::AddChildrenToGlyphTree(SynGlyphXANTz::GlyphTree::SharedPtr tree, SynGlyphXANTz::GlyphTree::iterator newNode, MinMaxGlyphTree::ConstSharedPtr minMaxTree, MinMaxGlyphTree::const_iterator node, const InputFieldDataMap& queryResultData, unsigned int index) const {
 
 		for (int i = 0; i < minMaxTree->children(node); ++i) {
 
 			MinMaxGlyphTree::const_iterator child = minMaxTree->child(node, i);
-			GlyphTree::iterator newChild = tree->insert(newNode, ProcessMinMaxGlyph(child, queryResultData, index));
+			SynGlyphXANTz::GlyphTree::iterator newChild = tree->insert(newNode, ProcessMinMaxGlyph(child, queryResultData, index));
 			AddChildrenToGlyphTree(tree, newChild, minMaxTree, child, queryResultData, index);
 		}
 	}

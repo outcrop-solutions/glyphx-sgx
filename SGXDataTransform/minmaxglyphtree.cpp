@@ -34,7 +34,7 @@ namespace SynGlyphX {
 		}
 	}
 
-	MinMaxGlyphTree::MinMaxGlyphTree(const GlyphTree& glyphTree) :
+	MinMaxGlyphTree::MinMaxGlyphTree(const SynGlyphXANTz::GlyphTree& glyphTree) :
 		stlplus::ntree< MinMaxGlyph >() {
 
 		MinMaxGlyph glyph(*glyphTree.root());
@@ -187,7 +187,7 @@ namespace SynGlyphX {
 
 		CSVFileReader csvReader(filename);
 
-		if (csvReader.GetHeaders() != ANTzCSVWriter::GetInstance().GetNodeHeaders()) {
+		if (csvReader.GetHeaders() != SynGlyphXANTz::ANTzCSVWriter::GetInstance().GetNodeHeaders()) {
 
 			throw std::invalid_argument("Could not read CSV file into glyph tree: Invalid Headers");
 		}
@@ -209,7 +209,7 @@ namespace SynGlyphX {
 
 		std::unordered_map<std::wstring, MinMaxGlyphTree::iterator> indexToNodeMap;
 
-		indexToNodeMap[currentLineValues[0]] = insert(MinMaxGlyph(GlyphProperties(currentLineValues)));
+		indexToNodeMap[currentLineValues[0]] = insert(MinMaxGlyph(SynGlyphXANTz::GlyphProperties(currentLineValues)));
 		currentLineValues = csvReader.GetValuesFromLine();
 
 		do {
@@ -224,7 +224,7 @@ namespace SynGlyphX {
 				continue;
 			}
 
-			indexToNodeMap[currentLineValues[0]] = insert(indexToNodeMap[currentLineValues[4]], MinMaxGlyph(GlyphProperties(currentLineValues)));
+			indexToNodeMap[currentLineValues[0]] = insert(indexToNodeMap[currentLineValues[4]], MinMaxGlyph(SynGlyphXANTz::GlyphProperties(currentLineValues)));
 			currentLineValues = csvReader.GetValuesFromLine();
 
 		} while (!csvReader.IsAtEndOfFile());
@@ -247,11 +247,11 @@ namespace SynGlyphX {
 		}
 	}
 
-	void MinMaxGlyphTree::AddGlyphSubtree(MinMaxGlyphTree::iterator& parentNode, const GlyphTree& glyphTree, const GlyphTree::const_iterator& iT) {
+	void MinMaxGlyphTree::AddGlyphSubtree(MinMaxGlyphTree::iterator& parentNode, const SynGlyphXANTz::GlyphTree& glyphTree, const SynGlyphXANTz::GlyphTree::const_iterator& iT) {
 
 		for (int i = 0; i < glyphTree.children(iT); ++i) {
 
-			const GlyphTree::const_iterator& child = glyphTree.child(iT, i);
+			const SynGlyphXANTz::GlyphTree::const_iterator& child = glyphTree.child(iT, i);
 			MinMaxGlyph glyph(*child);
 			AddGlyphSubtree(insert(parentNode, glyph), glyphTree, child);
 		}
@@ -313,9 +313,9 @@ namespace SynGlyphX {
 		return (root()->IsPositionXYBoundToInputFields());
 	}
 
-	GlyphTree::SharedPtr MinMaxGlyphTree::GetMinGlyphTree() const {
+	SynGlyphXANTz::GlyphTree::SharedPtr MinMaxGlyphTree::GetMinGlyphTree() const {
 
-		GlyphTree::SharedPtr minGlyphTree(new GlyphTree());
+		SynGlyphXANTz::GlyphTree::SharedPtr minGlyphTree(new SynGlyphXANTz::GlyphTree());
 		minGlyphTree->insert(root()->GetMinGlyph());
 
 		CreateMinGlyphSubtree(root(), minGlyphTree->root(), minGlyphTree);
@@ -323,7 +323,7 @@ namespace SynGlyphX {
 		return minGlyphTree;
 	}
 
-	void MinMaxGlyphTree::CreateMinGlyphSubtree(const MinMaxGlyphTree::const_iterator& parentNode, GlyphTree::iterator& newParent, GlyphTree::SharedPtr newGlyphTree) const {
+	void MinMaxGlyphTree::CreateMinGlyphSubtree(const MinMaxGlyphTree::const_iterator& parentNode, SynGlyphXANTz::GlyphTree::iterator& newParent, SynGlyphXANTz::GlyphTree::SharedPtr newGlyphTree) const {
 
 		for (int i = 0; i < children(parentNode); ++i) {
 
@@ -332,9 +332,9 @@ namespace SynGlyphX {
 		}
 	}
 
-	GlyphTree::SharedPtr MinMaxGlyphTree::GetMaxGlyphTree() const {
+	SynGlyphXANTz::GlyphTree::SharedPtr MinMaxGlyphTree::GetMaxGlyphTree() const {
 
-		GlyphTree::SharedPtr maxGlyphTree(new GlyphTree());
+		SynGlyphXANTz::GlyphTree::SharedPtr maxGlyphTree(new SynGlyphXANTz::GlyphTree());
 		maxGlyphTree->insert(root()->GetMaxGlyph());
 
 		CreateMaxGlyphSubtree(root(), maxGlyphTree->root(), maxGlyphTree);
@@ -342,7 +342,7 @@ namespace SynGlyphX {
 		return maxGlyphTree;
 	}
 
-	void MinMaxGlyphTree::CreateMaxGlyphSubtree(const MinMaxGlyphTree::const_iterator& parentNode, GlyphTree::iterator& newParent, GlyphTree::SharedPtr newGlyphTree) const {
+	void MinMaxGlyphTree::CreateMaxGlyphSubtree(const MinMaxGlyphTree::const_iterator& parentNode, SynGlyphXANTz::GlyphTree::iterator& newParent, SynGlyphXANTz::GlyphTree::SharedPtr newGlyphTree) const {
 
 		for (int i = 0; i < children(parentNode); ++i) {
 
@@ -354,8 +354,8 @@ namespace SynGlyphX {
 	MinMaxGlyphTree::SharedPtr MinMaxGlyphTree::CreateDefault() {
 
 		MinMaxGlyphTree::SharedPtr newTree(new MinMaxGlyphTree());
-		MinMaxGlyphTree::iterator root = newTree->insert(MinMaxGlyph(*GlyphProperties::GetRoot().get()));
-		newTree->insert(root, MinMaxGlyph(*GlyphProperties::GetTemplate().get()));
+		MinMaxGlyphTree::iterator root = newTree->insert(MinMaxGlyph(*SynGlyphXANTz::GlyphProperties::GetRoot().get()));
+		newTree->insert(root, MinMaxGlyph(*SynGlyphXANTz::GlyphProperties::GetTemplate().get()));
 		return newTree;
 	}
 

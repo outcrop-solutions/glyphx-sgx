@@ -18,7 +18,7 @@ namespace SynGlyphX {
 		
 		typedef boost::property_tree::wptree PropertyTree;
 
-		MinMaxGlyph(const GlyphProperties& maxGlyph);
+		MinMaxGlyph(const SynGlyphXANTz::GlyphProperties& maxGlyph);
 		MinMaxGlyph(const boost::property_tree::wptree& propertyTree);
 		MinMaxGlyph(const MinMaxGlyph& glyph);
 		~MinMaxGlyph();
@@ -27,12 +27,12 @@ namespace SynGlyphX {
 		bool operator==(const MinMaxGlyph& glyph) const;
 		bool operator!=(const MinMaxGlyph& glyph) const;
 
-		const GlyphProperties& GetMinGlyph() const;
-		const GlyphNumericMappableProperties& GetDifference() const;
-		GlyphProperties GetMaxGlyph() const;
+		const SynGlyphXANTz::GlyphProperties& GetMinGlyph() const;
+		const SynGlyphXANTz::GlyphNumericMappableProperties& GetDifference() const;
+		SynGlyphXANTz::GlyphProperties GetMaxGlyph() const;
 
-		void SetMinGlyph(const GlyphProperties& glyph);
-		void SetDifference(const GlyphNumericMappableProperties& difference);
+		void SetMinGlyph(const SynGlyphXANTz::GlyphProperties& glyph);
+		void SetDifference(const SynGlyphXANTz::GlyphNumericMappableProperties& difference);
 
 		PropertyTree& ExportToPropertyTree(boost::property_tree::wptree& propertyTree) const;
 
@@ -53,10 +53,10 @@ namespace SynGlyphX {
 		void GetColorFromPropertyTree(const boost::property_tree::wptree& propertyTreeParent, Color& min, Color& difference, InputBinding inputBindings[2]) const;
 		void GetStringFromPropertyTree(const boost::property_tree::wptree& propertyTreeParent, InputBinding& inputBinding) const;
 
-		GlyphProperties m_minGlyph;
+		SynGlyphXANTz::GlyphProperties m_minGlyph;
 		//Rather than store both a min and a max glyph, the min glyph is stored (listed above) in this class plus an object that stores the difference between min and max
 		//(listed below).  If a value in m_difference is 0 then min and max is the same.  Otherwise the max value is the min value plus the difference value.
-		GlyphNumericMappableProperties m_difference;
+		SynGlyphXANTz::GlyphNumericMappableProperties m_difference;
 
 		InputBinding m_inputBindings[NumInputBindings];
 	};

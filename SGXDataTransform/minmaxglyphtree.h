@@ -23,7 +23,7 @@ namespace SynGlyphX {
 
 		MinMaxGlyphTree();
 		MinMaxGlyphTree(const boost::property_tree::wptree& propertyTree);
-		MinMaxGlyphTree(const GlyphTree& glyphTree);
+		MinMaxGlyphTree(const SynGlyphXANTz::GlyphTree& glyphTree);
 		~MinMaxGlyphTree();
 
 		bool operator==(const MinMaxGlyphTree& tree) const;
@@ -40,8 +40,8 @@ namespace SynGlyphX {
 
 		bool DoesRootGlyphPositionXYHaveBindings() const;
 
-		GlyphTree::SharedPtr GetMinGlyphTree() const;
-		GlyphTree::SharedPtr GetMaxGlyphTree() const;
+		SynGlyphXANTz::GlyphTree::SharedPtr GetMinGlyphTree() const;
+		SynGlyphXANTz::GlyphTree::SharedPtr GetMaxGlyphTree() const;
 
 		static SharedPtr CreateDefault();
 
@@ -50,9 +50,9 @@ namespace SynGlyphX {
 		void ReadFromANTzCSVFile(const std::string& filename);
 		void ExportToPropertyTree(const MinMaxGlyphTree::const_iterator& parent, boost::property_tree::wptree& propertyTreeParent) const;
 		void ProcessPropertyTreeChildren(const MinMaxGlyphTree::iterator& iT, const boost::property_tree::wptree& propertyTree);
-		void AddGlyphSubtree(MinMaxGlyphTree::iterator& parentNode, const GlyphTree& glyphTree, const GlyphTree::const_iterator& iT);
-		void CreateMinGlyphSubtree(const MinMaxGlyphTree::const_iterator& parentNode, GlyphTree::iterator& newParent, GlyphTree::SharedPtr newGlyphTree) const;
-		void CreateMaxGlyphSubtree(const MinMaxGlyphTree::const_iterator& parentNode, GlyphTree::iterator& newParent, GlyphTree::SharedPtr newGlyphTree) const;
+		void AddGlyphSubtree(MinMaxGlyphTree::iterator& parentNode, const SynGlyphXANTz::GlyphTree& glyphTree, const SynGlyphXANTz::GlyphTree::const_iterator& iT);
+		void CreateMinGlyphSubtree(const MinMaxGlyphTree::const_iterator& parentNode, SynGlyphXANTz::GlyphTree::iterator& newParent, SynGlyphXANTz::GlyphTree::SharedPtr newGlyphTree) const;
+		void CreateMaxGlyphSubtree(const MinMaxGlyphTree::const_iterator& parentNode, SynGlyphXANTz::GlyphTree::iterator& newParent, SynGlyphXANTz::GlyphTree::SharedPtr newGlyphTree) const;
 		bool AreSubtreesEqual(const MinMaxGlyphTree::const_iterator& thisTreeNode, const MinMaxGlyphTree::const_iterator& otherTreeNode, const MinMaxGlyphTree& otherTree) const;
 
 		InputFieldMap m_inputFields;
