@@ -4,7 +4,7 @@
 #include "glyphnumericmappableproperties.h"
 #include <string>
 
-namespace SynGlyphX {
+namespace SynGlyphXANTz {
 
     class ANTZBRIDGE_API GlyphMappableProperties : public GlyphNumericMappableProperties
     {
@@ -25,6 +25,6 @@ namespace SynGlyphX {
 		std::wstring m_tag;
     };
 
-} //namespace SynGlyphX
+} //namespace SynGlyphXANTz
 
 #endif //SYNGLYPHX_GLYPHMAPPABLEPROPERTIES

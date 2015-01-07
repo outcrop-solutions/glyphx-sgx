@@ -8,7 +8,7 @@
 #include "glyphproperties.h"
 #include <containers/ntree.hpp>
 
-namespace SynGlyphX {
+namespace SynGlyphXANTz {
 
 	class ANTZBRIDGE_API GlyphTree : public stlplus::ntree < GlyphProperties >
 	{
@@ -22,10 +22,10 @@ namespace SynGlyphX {
 		GlyphTree(const GlyphProperties& rootProperties);
 		~GlyphTree();
 
-		void AllocateChildSubtree(const std::vector<SynGlyphX::GlyphProperties::ConstSharedPtr>& templates, const std::vector<unsigned int> instances, const GlyphTree::iterator& parent);
+		void AllocateChildSubtree(const std::vector<GlyphProperties::ConstSharedPtr>& templates, const std::vector<unsigned int> instances, const GlyphTree::iterator& parent);
 
 	private:
-		GlyphTree(const std::vector<SynGlyphX::GlyphProperties::ConstSharedPtr>& templates, const std::vector<unsigned int> instances, unsigned int depth);
+		GlyphTree(const std::vector<GlyphProperties::ConstSharedPtr>& templates, const std::vector<unsigned int> instances, unsigned int depth);
 
 		void SetPosition(GlyphTree::iterator& glyph, double xPosition);
 	};
@@ -52,6 +52,6 @@ namespace SynGlyphX {
         std::vector<boost::shared_ptr<Glyph>> m_children;
     };*/
 
-} //namespace SynGlyphX
+} //namespace SynGlyphXANTz
 
 #endif //SYNGLYPHX_GLYPH

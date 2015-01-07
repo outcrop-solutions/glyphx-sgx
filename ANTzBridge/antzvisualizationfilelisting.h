@@ -7,9 +7,9 @@
 #include <boost/property_tree/ptree.hpp>
 #include "uuid.h"
 
-namespace SynGlyphX {
+namespace SynGlyphXANTz {
 
-	class ANTZBRIDGE_API ANTzVisualizationFileListing : public XMLPropertyTreeFile
+	class ANTZBRIDGE_API ANTzVisualizationFileListing : public SynGlyphX::XMLPropertyTreeFile
 	{
 	public:
 		ANTzVisualizationFileListing();
@@ -48,6 +48,6 @@ namespace SynGlyphX {
 		boost::uuids::uuid m_id;
 	};
 
-} //namespace SynGlyphX
+} //namespace SynGlyphXANTz
 
 #endif //ANTZVISUALIZATIONFILELISTING_H

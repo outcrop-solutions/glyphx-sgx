@@ -1,6 +1,6 @@
 #include "glyphmappableproperties.h"
 
-namespace SynGlyphX {
+namespace SynGlyphXANTz {
 
     GlyphMappableProperties::GlyphMappableProperties() :
 		GlyphNumericMappableProperties(),
@@ -56,4 +56,4 @@ namespace SynGlyphX {
 		return m_tag;
 	}
 
-} //namespace SynGlyphX
+} //namespace SynGlyphXANTz

@@ -1,6 +1,6 @@
 #include "glyphnumericmappableproperties.h"
 
-namespace SynGlyphX {
+namespace SynGlyphXANTz {
 
 	GlyphNumericMappableProperties GlyphNumericMappableProperties::s_defaultMinProperties = CreateDefaultMinProperties();
 
@@ -79,42 +79,42 @@ namespace SynGlyphX {
 		return m_position[0] < properties.m_position[0];
 	}
 
-	void GlyphNumericMappableProperties::SetRotation(const Vector3& rotation) {
+	void GlyphNumericMappableProperties::SetRotation(const SynGlyphX::Vector3& rotation) {
 
 		m_rotation = rotation;
 	}
 
-	const Vector3& GlyphNumericMappableProperties::GetRotation() const {
+	const SynGlyphX::Vector3& GlyphNumericMappableProperties::GetRotation() const {
 
 		return m_rotation;
 	}
 
-	void GlyphNumericMappableProperties::SetPosition(const Vector3& position) {
+	void GlyphNumericMappableProperties::SetPosition(const SynGlyphX::Vector3& position) {
 
 		m_position = position;
 	}
 
-	const Vector3& GlyphNumericMappableProperties::GetPosition() const {
+	const SynGlyphX::Vector3& GlyphNumericMappableProperties::GetPosition() const {
 
 		return m_position;
 	}
 
-	void GlyphNumericMappableProperties::SetScale(const Vector3& scale) {
+	void GlyphNumericMappableProperties::SetScale(const SynGlyphX::Vector3& scale) {
 
 		m_scale = scale;
 	}
 
-	const Vector3& GlyphNumericMappableProperties::GetScale() const {
+	const SynGlyphX::Vector3& GlyphNumericMappableProperties::GetScale() const {
 
 		return m_scale;
 	}
 
-	void GlyphNumericMappableProperties::SetColor(const Color& color) {
+	void GlyphNumericMappableProperties::SetColor(const SynGlyphX::Color& color) {
 
 		m_color = color;
 	}
 
-	const Color& GlyphNumericMappableProperties::GetColor() const {
+	const SynGlyphX::Color& GlyphNumericMappableProperties::GetColor() const {
 
 		return m_color;
 	}
@@ -133,7 +133,7 @@ namespace SynGlyphX {
 
 		SetScale({ { 0.0, 0.0, 0.0 } });
 		SetRatio(0.0);
-		SetColor(Color({ { 0, 0, 0, 0 } }));
+		SetColor(SynGlyphX::Color({ { 0, 0, 0, 0 } }));
 		SetPosition({ { 0.0, 0.0, 0.0 } });
 		SetRotation({ { 0.0, 0.0, 0.0 } });
 	}
@@ -187,11 +187,11 @@ namespace SynGlyphX {
 
 		properties.SetScale({ { 0.1, 0.1, 0.1 } });
 		properties.SetRatio(0.01);
-		properties.SetColor(Color({ { 0, 0, 0, 0 } }));
+		properties.SetColor(SynGlyphX::Color({ { 0, 0, 0, 0 } }));
 		properties.SetPosition({ { 0.0, 0.0, 0.0 } });
 		properties.SetRotation({ { -180.0, -180.0, -180.0 } });
 
 		return properties;
 	}
 
-} //namespace SynGlyphX
+} //namespace SynGlyphXANTz

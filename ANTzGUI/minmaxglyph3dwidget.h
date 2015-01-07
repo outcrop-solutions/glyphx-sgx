@@ -7,18 +7,22 @@
 #include "antzsingleglyphtreewidget.h"
 #include "minmaxglyphtreemodel.h"
 
-class ANTZGUI_EXPORT MinMaxGlyph3DWidget : public QWidget
-{
-	Q_OBJECT
+namespace SynGlyphXANTz {
 
-public:
-	MinMaxGlyph3DWidget(QWidget *parent);
-	~MinMaxGlyph3DWidget();
+	class ANTZGUI_EXPORT MinMaxGlyph3DWidget : public QWidget
+	{
+		Q_OBJECT
 
-	virtual void SetModel(MinMaxGlyphTreeModel* model, QItemSelectionModel* selectionModel);
+	public:
+		MinMaxGlyph3DWidget(QWidget *parent);
+		~MinMaxGlyph3DWidget();
 
-private:
-	ANTzSingleGlyphTreeWidget* m_maxGlyph3DWidget;
-};
+		virtual void SetModel(MinMaxGlyphTreeModel* model, QItemSelectionModel* selectionModel);
+
+	private:
+		ANTzSingleGlyphTreeWidget* m_maxGlyph3DWidget;
+	};
+
+} //namespace SynGlyphXANTz
 
 #endif // MINMAXGLYPH3DWIDGET_H

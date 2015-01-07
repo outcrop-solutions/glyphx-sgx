@@ -3,7 +3,7 @@
 #include <locale>
 #include <boost/lexical_cast.hpp>
 
-namespace SynGlyphX {
+namespace SynGlyphXANTz {
 
 	ANTzCSVWriter ANTzCSVWriter::s_instance;
 
@@ -73,7 +73,7 @@ namespace SynGlyphX {
 		unsigned long firstGlyphId = 0;
 		
 		try {
-			CSVFileWriter nodeFile(filename);
+			SynGlyphX::CSVFileWriter nodeFile(filename);
 
 			//Write out header, cameras, and grid lines
 			nodeFile.WriteLine(m_nodeHeaders);
@@ -104,7 +104,7 @@ namespace SynGlyphX {
 
 		try {
 
-			CSVFileWriter tagFile(filename);
+			SynGlyphX::CSVFileWriter tagFile(filename);
 
 			unsigned long tagID = startingId;
 			tagFile.WriteLine(m_tagHeaders);
@@ -121,7 +121,7 @@ namespace SynGlyphX {
 		}
 	}
 
-	unsigned long ANTzCSVWriter::WriteGlyphTag(CSVFileWriter& file, const GlyphTree::ConstSharedPtr tree, const GlyphTree::const_iterator& glyph, unsigned long id) {
+	unsigned long ANTzCSVWriter::WriteGlyphTag(SynGlyphX::CSVFileWriter& file, const GlyphTree::ConstSharedPtr tree, const GlyphTree::const_iterator& glyph, unsigned long id) {
 
 		unsigned int numberOfChildren = tree->children(glyph);
 
@@ -135,7 +135,7 @@ namespace SynGlyphX {
 			tag = L"\"" + glyph->GetTag() + L"\"";
 		}
 
-		CSVFileHandler::CSVValues values;
+		SynGlyphX::CSVFileHandler::CSVValues values;
 		values.push_back(boost::lexical_cast<std::wstring>(m_numTagsWritten++));
 		values.push_back(boost::lexical_cast<std::wstring>(id));
 		values.push_back(L"0");
@@ -152,12 +152,12 @@ namespace SynGlyphX {
 		return childId;
 	}
 
-	unsigned long ANTzCSVWriter::WriteGlyph(CSVFileWriter& file, const GlyphTree::ConstSharedPtr tree, const GlyphTree::const_iterator& glyph, unsigned long id, unsigned long parentId, unsigned long branchLevel) {
+	unsigned long ANTzCSVWriter::WriteGlyph(SynGlyphX::CSVFileWriter& file, const GlyphTree::ConstSharedPtr tree, const GlyphTree::const_iterator& glyph, unsigned long id, unsigned long parentId, unsigned long branchLevel) {
 
 		unsigned int numberOfChildren = tree->children(glyph);
 
 		std::wstring idString = boost::lexical_cast<std::wstring>(id);
-		CSVFileHandler::CSVValues values;
+		SynGlyphX::CSVFileHandler::CSVValues values;
 		values.push_back(idString);
 		values.push_back(L"5");
 		values.push_back(idString);
@@ -169,11 +169,11 @@ namespace SynGlyphX {
 		values.push_back(boost::lexical_cast<std::wstring>(numberOfChildren));
 		values.insert(values.end(), { L"0", L"0", L"0", L"0", L"1", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"1", L"0", L"0", L"0" });
 
-		CSVFileHandler::AddVector3ToCSVValues(values, glyph->GetScale());
-		CSVFileHandler::AddVector3ToCSVValues(values, glyph->GetPosition());
-		CSVFileHandler::AddVector3ToCSVValues(values, glyph->GetTagOffset());
+		SynGlyphX::CSVFileHandler::AddVector3ToCSVValues(values, glyph->GetScale());
+		SynGlyphX::CSVFileHandler::AddVector3ToCSVValues(values, glyph->GetPosition());
+		SynGlyphX::CSVFileHandler::AddVector3ToCSVValues(values, glyph->GetTagOffset());
 		values.insert(values.end(), { L"0", L"0", L"0" });
-		CSVFileHandler::AddVector3ToCSVValues(values, glyph->GetRotation());
+		SynGlyphX::CSVFileHandler::AddVector3ToCSVValues(values, glyph->GetRotation());
 		values.insert(values.end(), { L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0" });
 
 		values.push_back(boost::lexical_cast<std::wstring>(ConvertGeometryToCSVInt(glyph->GetShape(), glyph->GetSurface())));
@@ -181,7 +181,7 @@ namespace SynGlyphX {
 		values.push_back(L"0");
 		values.push_back(boost::lexical_cast<std::wstring>(glyph->GetRatio()));
 
-		Color color = glyph->GetColor();
+		SynGlyphX::Color color = glyph->GetColor();
 		values.push_back(boost::lexical_cast<std::wstring>(GetColorIndex(color)));
 		values.push_back(boost::lexical_cast<std::wstring>(color[0]));
 		values.push_back(boost::lexical_cast<std::wstring>(color[1]));
@@ -205,12 +205,12 @@ namespace SynGlyphX {
 		return childId;
 	}
 
-	unsigned long ANTzCSVWriter::WriteGrids(CSVFileWriter& file, const std::vector<ANTzGrid>& grids, unsigned long firstId) {
+	unsigned long ANTzCSVWriter::WriteGrids(SynGlyphX::CSVFileWriter& file, const std::vector<ANTzGrid>& grids, unsigned long firstId) {
 
 		for (unsigned int i = 0; i < grids.size(); ++i) {
 
 			std::wstring id = boost::lexical_cast<std::wstring>(i + firstId);
-			CSVFileHandler::CSVValues grid;
+			SynGlyphX::CSVFileHandler::CSVValues grid;
 			grid.push_back(id);
 			grid.push_back(L"6");
 			grid.push_back(id);
@@ -227,13 +227,13 @@ namespace SynGlyphX {
 				grid.insert(grid.end(), { L"1", L"0", L"0", L"0" });
 			}
 			grid.insert(grid.end(), { L"0", L"0", L"0", L"0", L"1", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"1", L"0", L"0" });
-			CSVFileHandler::AddVector3ToCSVValues(grid, grids[i].GetScale());
-			CSVFileHandler::AddVector3ToCSVValues(grid, grids[i].GetPosition());
+			SynGlyphX::CSVFileHandler::AddVector3ToCSVValues(grid, grids[i].GetScale());
+			SynGlyphX::CSVFileHandler::AddVector3ToCSVValues(grid, grids[i].GetPosition());
 			grid.insert(grid.end(), { L"0", L"0", L"0", L"0", L"0", L"0" });
-			CSVFileHandler::AddVector3ToCSVValues(grid, grids[i].GetRotation());
+			SynGlyphX::CSVFileHandler::AddVector3ToCSVValues(grid, grids[i].GetRotation());
 			grid.insert(grid.end(), { L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"1", L"0", L"0.1" });
 
-			Color color = grids[i].GetColor();
+			SynGlyphX::Color color = grids[i].GetColor();
 			grid.push_back(boost::lexical_cast<std::wstring>(GetColorIndex(color)));
 			grid.push_back(boost::lexical_cast<std::wstring>(color[0]));
 			grid.push_back(boost::lexical_cast<std::wstring>(color[1]));
@@ -272,7 +272,7 @@ namespace SynGlyphX {
 		return s_instance;
 	}
 
-	unsigned short ANTzCSVWriter::GetColorIndex(const Color& color) {
+	unsigned short ANTzCSVWriter::GetColorIndex(const SynGlyphX::Color& color) {
 
 		for (unsigned short i = 0; i < MaxPredefinedColors; ++i) {
 			if ((color[0] == m_predefinedColors[i][0]) &&
@@ -286,24 +286,24 @@ namespace SynGlyphX {
 		return 0;
 	}
 
-	const CSVFileReader::CSVValues& ANTzCSVWriter::GetNodeHeaders() const {
+	const SynGlyphX::CSVFileReader::CSVValues& ANTzCSVWriter::GetNodeHeaders() const {
 
 		return m_nodeHeaders;
 	}
 
-	const CSVFileReader::CSVValues& ANTzCSVWriter::GetTagHeaders() const {
+	const SynGlyphX::CSVFileReader::CSVValues& ANTzCSVWriter::GetTagHeaders() const {
 
 		return m_tagHeaders;
 	}
 
-	const CSVFileReader::CSVValues& ANTzCSVWriter::GetChannelHeaders() const {
+	const SynGlyphX::CSVFileReader::CSVValues& ANTzCSVWriter::GetChannelHeaders() const {
 
 		return m_channelHeaders;
 	}
 
-	const CSVFileReader::CSVValues& ANTzCSVWriter::GetChannelMapHeaders() const {
+	const SynGlyphX::CSVFileReader::CSVValues& ANTzCSVWriter::GetChannelMapHeaders() const {
 
 		return m_channelMapHeaders;
 	}
 
-} // namespace SynGlyphX
+} // namespace SynGlyphXANTz

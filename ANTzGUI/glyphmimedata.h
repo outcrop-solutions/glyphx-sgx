@@ -6,26 +6,30 @@
 #include "glyph.h"
 #include <QtCore/QModelIndex>
 
-class ANTZGUI_EXPORT GlyphMimeData : public QMimeData
-{
-    Q_OBJECT
+namespace SynGlyphXANTz {
 
-public:
-    static const QString Format;
+	class ANTZGUI_EXPORT GlyphMimeData : public QMimeData
+	{
+		Q_OBJECT
 
-    GlyphMimeData(const QModelIndexList& glyphs);
-    //GlyphMimeData(const std::vector<boost::shared_ptr<SynGlyphX::Glyph>>& glyphs);
-    ~GlyphMimeData();
+	public:
+		static const QString Format;
 
-    virtual QStringList formats() const;
-    virtual bool hasFormat(const QString& mimeType) const;
+		GlyphMimeData(const QModelIndexList& glyphs);
+		//GlyphMimeData(const std::vector<boost::shared_ptr<SynGlyphX::Glyph>>& glyphs);
+		~GlyphMimeData();
 
-    const QModelIndexList& GetGlyphs() const;
-    //const std::vector<boost::shared_ptr<SynGlyphX::Glyph>>& GetGlyphs() const;
+		virtual QStringList formats() const;
+		virtual bool hasFormat(const QString& mimeType) const;
 
-private:
-    QModelIndexList m_glyphs;
-    //std::vector<boost::shared_ptr<SynGlyphX::Glyph>> m_glyphs;
-};
+		const QModelIndexList& GetGlyphs() const;
+		//const std::vector<boost::shared_ptr<SynGlyphX::Glyph>>& GetGlyphs() const;
+
+	private:
+		QModelIndexList m_glyphs;
+		//std::vector<boost::shared_ptr<SynGlyphX::Glyph>> m_glyphs;
+	};
+
+} //namespace SynGlyphXANTz
 
 #endif // GLYPHMIMEDATA_H

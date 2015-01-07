@@ -1,6 +1,6 @@
 #include "antzgrid.h"
 
-namespace SynGlyphX {
+namespace SynGlyphXANTz {
 
 	ANTzGrid::ANTzGrid() :
 		GlyphNumericMappableProperties(),
@@ -37,4 +37,4 @@ namespace SynGlyphX {
 		m_textureID = textureID;
 	}
 
-} //namespace SynGlyphX
+} //namespace SynGlyphXANTz

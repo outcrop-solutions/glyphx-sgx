@@ -10,7 +10,7 @@
 struct NPnode;
 typedef NPnode* pNPnode;
 
-namespace SynGlyphX {
+namespace SynGlyphXANTz {
 
     class ANTZBRIDGE_API GlyphProperties : public GlyphMappableProperties
     {
@@ -54,7 +54,7 @@ namespace SynGlyphX {
         GlyphProperties();
         GlyphProperties(pNPnode node);
         GlyphProperties(const GlyphProperties& properties);
-		GlyphProperties(const CSVFileHandler::CSVValues& csvValues);
+		GlyphProperties(const SynGlyphX::CSVFileHandler::CSVValues& csvValues);
         ~GlyphProperties();
 
 		GlyphProperties& operator=(const GlyphProperties& properties);
@@ -72,7 +72,7 @@ namespace SynGlyphX {
 		static ConstSharedPtr GetTemplate();
 
         void SetTagOffset(double x, double y, double z);
-        const Vector3& GetTagOffset() const;
+        const SynGlyphX::Vector3& GetTagOffset() const;
 
 		static const ShapeBimap s_shapeNames;
 		static const SurfaceBimap s_surfaceNames;
@@ -84,7 +84,7 @@ namespace SynGlyphX {
         static SharedPtr s_root;
         static SharedPtr s_template;
 
-        Vector3 m_tagOffset;
+        SynGlyphX::Vector3 m_tagOffset;
 
         Shape m_geometryShape;
         Surface m_geometrySurface;
@@ -92,6 +92,6 @@ namespace SynGlyphX {
         Topology m_topology;
     };
 
-} //namespace SynGlyphX
+} //namespace SynGlyphXANTz
 
 #endif //SYNGLYPHX_GLYPHPROPERTIES

@@ -1,20 +1,24 @@
-#ifndef GVANTZTRANSFORMER_H
-#define GVANTZTRANSFORMER_H
+#ifndef SYNGLYPHX_ANTZ_GVANTZTRANSFORMER_H
+#define SYNGLYPHX_ANTZ_GVANTZTRANSFORMER_H
 
 #include "antzdatatransform_global.h"
 #include "antztransformer.h"
 
-class ANTZDATATRANSFORM_EXPORT GlyphViewerANTzTransformer : public ANTzTransformer
+namespace SynGlyphXANTz {
 
-{
-public:
-	GlyphViewerANTzTransformer(const QString& cacheBaseDir);
-	virtual ~GlyphViewerANTzTransformer();
+	class ANTZDATATRANSFORM_EXPORT GlyphViewerANTzTransformer : public ANTzTransformer
 
-protected:
-	virtual QString GenerateBaseImageFilename(unsigned int index) const;
-	virtual void CreateGlyphsFromMapping(const SynGlyphX::DataTransformMapping& mapping);
-	bool DoesCacheNeedToBeRegenerated(const SynGlyphX::DataTransformMapping& mapping, const QStringList& csvFilenames, const QString& mappingFilename) const;
-};
+	{
+	public:
+		GlyphViewerANTzTransformer(const QString& cacheBaseDir);
+		virtual ~GlyphViewerANTzTransformer();
 
-#endif //GVANTZTRANSFORMER_H
+	protected:
+		virtual QString GenerateBaseImageFilename(unsigned int index) const;
+		virtual void CreateGlyphsFromMapping(const SynGlyphX::DataTransformMapping& mapping);
+		bool DoesCacheNeedToBeRegenerated(const SynGlyphX::DataTransformMapping& mapping, const QStringList& csvFilenames, const QString& mappingFilename) const;
+	};
+
+} //namespace SynGlyphXANTz
+
+#endif //SYNGLYPHX_ANTZ_GVANTZTRANSFORMER_H

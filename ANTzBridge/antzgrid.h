@@ -4,7 +4,7 @@
 #include "ANTzBridge.h"
 #include "glyphnumericmappableproperties.h"
 
-namespace SynGlyphX {
+namespace SynGlyphXANTz {
 
 	class ANTZBRIDGE_API ANTzGrid : public GlyphNumericMappableProperties
 	{
@@ -22,6 +22,6 @@ namespace SynGlyphX {
 		unsigned int m_textureID;
 	};
 
-} //namespace SynGlyphX
+} //namespace SynGlyphXANTz
 
 #endif //SYNGLYPX_ANTZGRID_H

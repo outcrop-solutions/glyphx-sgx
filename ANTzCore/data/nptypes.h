@@ -2280,7 +2280,7 @@ enum		//zz select re-ordered
 							// Geometry does not effect Topology
 //	kNPtoolSegments,		// L-Click add or R-Click remove segments
 
-	kNPtoolColor,			// L-click next Color index, R-click reverses
+	kNPtoolColor,			// L-click next SynGlyphX::Color index, R-click reverses
 	kNPtoolTexture,			// L-click next Topo type, R-click reverses
 	kNPtoolHide,			// L-click Hide branches, R-click Show branches
 							// '~' key to Show ALL, '4' Hide ALL at branch level > 1

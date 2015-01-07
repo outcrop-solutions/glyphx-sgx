@@ -1,10 +1,10 @@
 #include "antzvisualizationfilelisting.h"
 #include <boost/uuid/uuid_io.hpp>
 
-namespace SynGlyphX {
+namespace SynGlyphXANTz {
 
 	ANTzVisualizationFileListing::ANTzVisualizationFileListing() :
-		XMLPropertyTreeFile(),
+		SynGlyphX::XMLPropertyTreeFile(),
 		m_id(SynGlyphX::UUIDGenerator::GetNewRandomUUID())
 	{
 		
@@ -15,7 +15,7 @@ namespace SynGlyphX {
 		const std::wstring& channelFilename,
 		const std::wstring& channelMapFilename,
 		const std::wstring& baseImageFilename) :
-		XMLPropertyTreeFile(),
+		SynGlyphX::XMLPropertyTreeFile(),
 		m_nodeFilename(nodeFilename),
 		m_tagFilename(tagFilename),
 		m_channelFilename(channelFilename),
@@ -138,4 +138,4 @@ namespace SynGlyphX {
 		return m_id;
 	}
 
-} //namespace SynGlyphX
+} //namespace SynGlyphXANTz

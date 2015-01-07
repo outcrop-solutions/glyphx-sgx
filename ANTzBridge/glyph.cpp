@@ -1,7 +1,7 @@
 #include "glyph.h"
 #include "data/nptypes.h"
 
-namespace SynGlyphX {
+namespace SynGlyphXANTz {
 
 	GlyphTree::GlyphTree()
 		: stlplus::ntree<GlyphProperties>() {
@@ -27,7 +27,7 @@ namespace SynGlyphX {
 		insert(rootProperties);
 	}
 
-	GlyphTree::GlyphTree(const std::vector<SynGlyphX::GlyphProperties::ConstSharedPtr>& templates, const std::vector<unsigned int> instances, unsigned int depth) :
+	GlyphTree::GlyphTree(const std::vector<GlyphProperties::ConstSharedPtr>& templates, const std::vector<unsigned int> instances, unsigned int depth) :
 		stlplus::ntree<GlyphProperties>() {
 
 		insert(*templates[depth]);
@@ -56,7 +56,7 @@ namespace SynGlyphX {
 	{
 	}
 
-	void GlyphTree::AllocateChildSubtree(const std::vector<SynGlyphX::GlyphProperties::ConstSharedPtr>& templates, const std::vector<unsigned int> instances, const GlyphTree::iterator& parent) {
+	void GlyphTree::AllocateChildSubtree(const std::vector<GlyphProperties::ConstSharedPtr>& templates, const std::vector<unsigned int> instances, const GlyphTree::iterator& parent) {
 
 		if (instances.size() == 1) {
 
@@ -78,9 +78,9 @@ namespace SynGlyphX {
 
 	void GlyphTree::SetPosition(GlyphTree::iterator& glyph, double xPosition) {
 
-		Vector3 pos = glyph->GetPosition();
+		SynGlyphX::Vector3 pos = glyph->GetPosition();
 		pos[0] = xPosition;
 		glyph->SetPosition(pos);
 	}
 
-} //namespace SynGlyphX
+} //namespace SynGlyphXANTz

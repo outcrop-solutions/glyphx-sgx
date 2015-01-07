@@ -4,7 +4,7 @@
 #include <boost/bimap/list_of.hpp>
 #include <boost/lexical_cast.hpp>
 
-namespace SynGlyphX {
+namespace SynGlyphXANTz {
 
 	const GlyphProperties::ShapeBimap GlyphProperties::s_shapeNames = boost::assign::list_of < GlyphProperties::ShapeBimap::relation >
 		( Shape::Cube, L"Cube" )
@@ -89,7 +89,7 @@ namespace SynGlyphX {
 
     }
 
-	GlyphProperties::GlyphProperties(const CSVFileHandler::CSVValues& csvValues)
+	GlyphProperties::GlyphProperties(const SynGlyphX::CSVFileHandler::CSVValues& csvValues)
 		: GlyphMappableProperties() {
 
 		m_tagOffset[0] = boost::lexical_cast<double>(csvValues[31]);
@@ -222,8 +222,8 @@ namespace SynGlyphX {
         m_tagOffset[2] = z;
     }
 
-    const Vector3& GlyphProperties::GetTagOffset() const {
+    const SynGlyphX::Vector3& GlyphProperties::GetTagOffset() const {
         return m_tagOffset;
     }
 
-} //namespace SynGlyphX
+} //namespace SynGlyphXANTz

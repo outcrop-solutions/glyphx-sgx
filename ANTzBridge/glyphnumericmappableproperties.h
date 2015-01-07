@@ -5,7 +5,7 @@
 #include "foundationtypes.h"
 #include "color.h"
 
-namespace SynGlyphX {
+namespace SynGlyphXANTz {
 
 	class ANTZBRIDGE_API GlyphNumericMappableProperties
 	{
@@ -19,15 +19,15 @@ namespace SynGlyphX {
 		bool operator!=(const GlyphNumericMappableProperties& properties) const;
 		bool operator<(const GlyphNumericMappableProperties& properties) const;
 
-		void SetRotation(const Vector3& rotation);
-		const Vector3& GetRotation() const;
-		void SetPosition(const Vector3& position);
-		const Vector3& GetPosition() const;
-		void SetScale(const Vector3& scale);
-		const Vector3& GetScale() const;
+		void SetRotation(const SynGlyphX::Vector3& rotation);
+		const SynGlyphX::Vector3& GetRotation() const;
+		void SetPosition(const SynGlyphX::Vector3& position);
+		const SynGlyphX::Vector3& GetPosition() const;
+		void SetScale(const SynGlyphX::Vector3& scale);
+		const SynGlyphX::Vector3& GetScale() const;
 
-		void SetColor(const Color& color);
-		const Color& GetColor() const;
+		void SetColor(const SynGlyphX::Color& color);
+		const SynGlyphX::Color& GetColor() const;
 
 		void SetRatio(double ratio);
 		double GetRatio() const;
@@ -39,19 +39,19 @@ namespace SynGlyphX {
 		static const GlyphNumericMappableProperties& GetDefaultMinProperties();
 
 	protected:
-		Vector3 m_rotation;
-		Vector3 m_scale;
-		Vector3 m_position;
+		SynGlyphX::Vector3 m_rotation;
+		SynGlyphX::Vector3 m_scale;
+		SynGlyphX::Vector3 m_position;
 
 		double m_ratio;
 
-		Color m_color;
+		SynGlyphX::Color m_color;
 
 	private:
 		static GlyphNumericMappableProperties CreateDefaultMinProperties();
 		static GlyphNumericMappableProperties s_defaultMinProperties;
 	};
 
-} //namespace SynGlyphX
+} //namespace SynGlyphXANTz
 
 #endif //SYNGLYPHX_GLYPHNUMERICMAPPABLEPROPERTIES_H
