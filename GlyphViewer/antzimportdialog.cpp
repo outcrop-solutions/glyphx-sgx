@@ -160,7 +160,7 @@ void ANTzImportDialog::OnNodeFileChanged(const QString& newText) {
 
 void ANTzImportDialog::accept() {
 
-	SynGlyphX::ANTzCSVWriter& antzCSVWriter = SynGlyphX::ANTzCSVWriter::GetInstance();
+	SynGlyphXANTz::ANTzCSVWriter& antzCSVWriter = SynGlyphXANTz::ANTzCSVWriter::GetInstance();
 	if (!ValidateANTzCSVFile(m_antzNodeFileLineEdit->GetText(), antzCSVWriter.GetNodeHeaders(), "Node file")) {
 
 		return;

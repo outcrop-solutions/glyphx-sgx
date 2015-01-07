@@ -52,7 +52,7 @@ QVariant MinMaxGlyphModel::data(const QModelIndex& index, int role) const {
 
 		if (index.column() == 0) {
 
-			SynGlyphX::GlyphNumericMappableProperties zeroProperties;
+			SynGlyphXANTz::GlyphNumericMappableProperties zeroProperties;
 			zeroProperties.SetToZero();
 			return GetDataByRow(m_glyph->GetMinGlyph(), zeroProperties, index.row());
 		}
@@ -141,7 +141,7 @@ bool MinMaxGlyphModel::IsClear() const {
 	return (m_glyphTree == nullptr);
 }
 
-QVariant MinMaxGlyphModel::GetDataByRow(const SynGlyphX::GlyphNumericMappableProperties& minProperties, const SynGlyphX::GlyphNumericMappableProperties& diffProperties, int row) const {
+QVariant MinMaxGlyphModel::GetDataByRow(const SynGlyphXANTz::GlyphNumericMappableProperties& minProperties, const SynGlyphXANTz::GlyphNumericMappableProperties& diffProperties, int row) const {
 
 	if (row == 0) {
 		return minProperties.GetPosition()[0] + diffProperties.GetPosition()[0];
@@ -210,8 +210,8 @@ bool MinMaxGlyphModel::setData(const QModelIndex& index, const QVariant& value, 
 		else {
 
 			SynGlyphX::MinMaxGlyph minMaxGlyph(*m_glyph);
-			SynGlyphX::GlyphProperties minProperties = minMaxGlyph.GetMinGlyph();
-			SynGlyphX::GlyphNumericMappableProperties diffProperties = minMaxGlyph.GetDifference();
+			SynGlyphXANTz::GlyphProperties minProperties = minMaxGlyph.GetMinGlyph();
+			SynGlyphXANTz::GlyphNumericMappableProperties diffProperties = minMaxGlyph.GetDifference();
 
 			if (!SetDataByRow(minProperties, diffProperties, value, index)) {
 				
@@ -231,7 +231,7 @@ bool MinMaxGlyphModel::setData(const QModelIndex& index, const QVariant& value, 
 	return false;
 }
 
-bool MinMaxGlyphModel::SetDataByRow(SynGlyphX::GlyphNumericMappableProperties& minProperties, SynGlyphX::GlyphNumericMappableProperties& diffProperties, const QVariant& value, const QModelIndex& index) {
+bool MinMaxGlyphModel::SetDataByRow(SynGlyphXANTz::GlyphNumericMappableProperties& minProperties, SynGlyphXANTz::GlyphNumericMappableProperties& diffProperties, const QVariant& value, const QModelIndex& index) {
 
 	int row = index.row();
 	if ((row == 0) || (row == 1) || (row == 2)) {

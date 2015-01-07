@@ -6,7 +6,7 @@
 #include "datatransformmodel.h"
 #include <stack>
 
-class DataMapping3DWidget : public MinMaxGlyph3DWidget
+class DataMapping3DWidget : public SynGlyphXANTz::MinMaxGlyph3DWidget
 {
 	Q_OBJECT
 
@@ -31,7 +31,7 @@ private:
 
 	DataTransformModel* m_dataTransformModel;
 
-	MinMaxGlyphTreeModel* m_internalModel;
+	SynGlyphXANTz::MinMaxGlyphTreeModel* m_internalModel;
 	QItemSelectionModel* m_internalSelectionModel;
 
 	SynGlyphX::RoleDataFilterProxyModel* m_externalModel;

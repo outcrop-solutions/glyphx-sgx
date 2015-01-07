@@ -52,16 +52,16 @@ void SingleGlyphWidget::CreateWidgets(ChildOptions childOptions) {
 
     m_geometryShapeComboBox = new QComboBox(this);
     for (int i = 0; i < 10; ++i) {
-		m_geometryShapeComboBox->addItem(QString::fromStdWString(SynGlyphX::GlyphProperties::s_shapeNames.left.at(static_cast<SynGlyphX::GlyphProperties::Shape>(i))));
+		m_geometryShapeComboBox->addItem(QString::fromStdWString(SynGlyphXANTz::GlyphProperties::s_shapeNames.left.at(static_cast<SynGlyphXANTz::GlyphProperties::Shape>(i))));
     }
 
     m_geometrySurfaceComboBox = new QComboBox(this);
-	m_geometrySurfaceComboBox->addItem(QString::fromStdWString(SynGlyphX::GlyphProperties::s_surfaceNames.left.at(SynGlyphX::GlyphProperties::Wireframe)));
-	m_geometrySurfaceComboBox->addItem(QString::fromStdWString(SynGlyphX::GlyphProperties::s_surfaceNames.left.at(SynGlyphX::GlyphProperties::Solid)));
+	m_geometrySurfaceComboBox->addItem(QString::fromStdWString(SynGlyphXANTz::GlyphProperties::s_surfaceNames.left.at(SynGlyphXANTz::GlyphProperties::Wireframe)));
+	m_geometrySurfaceComboBox->addItem(QString::fromStdWString(SynGlyphXANTz::GlyphProperties::s_surfaceNames.left.at(SynGlyphXANTz::GlyphProperties::Solid)));
 
     m_topologyComboBox = new QComboBox(this);
     for (int i = 0; i < 8; ++i) {
-		m_topologyComboBox->addItem(QString::fromStdWString(SynGlyphX::GlyphProperties::s_topologyNames.left.at(static_cast<SynGlyphX::GlyphProperties::Topology>(i))));
+		m_topologyComboBox->addItem(QString::fromStdWString(SynGlyphXANTz::GlyphProperties::s_topologyNames.left.at(static_cast<SynGlyphXANTz::GlyphProperties::Topology>(i))));
     }
 
     QHBoxLayout* colorAndRatioLayout = new QHBoxLayout(this);
@@ -135,7 +135,7 @@ void SingleGlyphWidget::CreateWidgets(ChildOptions childOptions) {
     m_ratioGroupBox->setVisible(false);
 }
 
-void SingleGlyphWidget::SetWidgetFromGlyph(boost::shared_ptr<const SynGlyphX::GlyphProperties> glyph, bool isNotRootNode) {
+void SingleGlyphWidget::SetWidgetFromGlyph(boost::shared_ptr<const SynGlyphXANTz::GlyphProperties> glyph, bool isNotRootNode) {
 
     m_geometryShapeComboBox->setCurrentIndex(glyph->GetShape());
     m_geometrySurfaceComboBox->setCurrentIndex(glyph->GetSurface());
@@ -152,11 +152,11 @@ void SingleGlyphWidget::SetWidgetFromGlyph(boost::shared_ptr<const SynGlyphX::Gl
     m_ratioSpinBox->setValue(glyph->GetRatio());
 }
 
-void SingleGlyphWidget::SetGlyphFromWidget(boost::shared_ptr<SynGlyphX::GlyphProperties> glyph) {
+void SingleGlyphWidget::SetGlyphFromWidget(boost::shared_ptr<SynGlyphXANTz::GlyphProperties> glyph) {
 
-	glyph->SetGeometry(static_cast<SynGlyphX::GlyphProperties::Shape>(m_geometryShapeComboBox->currentIndex()), static_cast<SynGlyphX::GlyphProperties::Surface>(m_geometrySurfaceComboBox->currentIndex()));
+	glyph->SetGeometry(static_cast<SynGlyphXANTz::GlyphProperties::Shape>(m_geometryShapeComboBox->currentIndex()), static_cast<SynGlyphXANTz::GlyphProperties::Surface>(m_geometrySurfaceComboBox->currentIndex()));
     //Because null is not in the list of topologies, shift by one
-	glyph->SetTopology(static_cast<SynGlyphX::GlyphProperties::Topology>(m_topologyComboBox->currentIndex()));
+	glyph->SetTopology(static_cast<SynGlyphXANTz::GlyphProperties::Topology>(m_topologyComboBox->currentIndex()));
 
 	glyph->SetColor(SynGlyphX::ColorButton::ConvertQColorToColor(m_colorWidget->GetColor()));
 
@@ -186,7 +186,7 @@ unsigned int SingleGlyphWidget::GetNumberOfChildren() const {
 
 void SingleGlyphWidget::OnShapeComboBoxChanged(int index) {
 
-	SynGlyphX::GlyphProperties::Shape shape = static_cast<SynGlyphX::GlyphProperties::Shape>(index);
+	SynGlyphXANTz::GlyphProperties::Shape shape = static_cast<SynGlyphXANTz::GlyphProperties::Shape>(index);
 
-	m_ratioGroupBox->setVisible(shape == SynGlyphX::GlyphProperties::Torus);
+	m_ratioGroupBox->setVisible(shape == SynGlyphXANTz::GlyphProperties::Torus);
 }

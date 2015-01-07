@@ -465,7 +465,7 @@ void DataMapperWindow::ExportToANTz() {
 		SynGlyphX::Filesystem::RemoveContentsOfDirectory(csvDirectory.toStdString());
 		SynGlyphX::Filesystem::CopyDirectoryOverwrite(QDir::toNativeSeparators(SynGlyphX::Application::applicationDirPath() + QDir::separator() + ANTzTemplateDir).toStdString(), csvDirectory.toStdString(), true);
 
-		ANTzTransformer transformer(csvDirectory);
+		SynGlyphXANTz::ANTzTransformer transformer(csvDirectory);
 		transformer.Transform(*(m_dataTransformModel->GetDataMapping().get()));
 	}
 	catch (const std::exception& e) {

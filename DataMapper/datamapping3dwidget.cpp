@@ -2,7 +2,7 @@
 #include <stack>
 
 DataMapping3DWidget::DataMapping3DWidget(DataTransformModel* model, QWidget *parent)
-	: MinMaxGlyph3DWidget(parent),
+	: SynGlyphXANTz::MinMaxGlyph3DWidget(parent),
 	m_internalModel(nullptr),
 	m_internalSelectionModel(nullptr),
 	m_externalModel(nullptr),
@@ -10,10 +10,10 @@ DataMapping3DWidget::DataMapping3DWidget(DataTransformModel* model, QWidget *par
 	m_glyphTreeIndex(-1),
 	m_dataTransformModel(model)
 {
-	m_internalModel = new MinMaxGlyphTreeModel(this);
+	m_internalModel = new SynGlyphXANTz::MinMaxGlyphTreeModel(this);
 	m_internalSelectionModel = new QItemSelectionModel(m_internalModel, this);
 
-	MinMaxGlyph3DWidget::SetModel(m_internalModel, m_internalSelectionModel);
+	SynGlyphXANTz::MinMaxGlyph3DWidget::SetModel(m_internalModel, m_internalSelectionModel);
 }
 
 DataMapping3DWidget::~DataMapping3DWidget()

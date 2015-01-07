@@ -35,8 +35,8 @@ public:
     void SetNumberOfChildren(unsigned int numChildren);
     unsigned int GetNumberOfChildren() const;
 
-    void SetGlyphFromWidget(boost::shared_ptr<SynGlyphX::GlyphProperties> glyph);
-	void SetWidgetFromGlyph(boost::shared_ptr<const SynGlyphX::GlyphProperties> glyph, bool isNotRootNode);
+	void SetGlyphFromWidget(boost::shared_ptr<SynGlyphXANTz::GlyphProperties> glyph);
+	void SetWidgetFromGlyph(boost::shared_ptr<const SynGlyphXANTz::GlyphProperties> glyph, bool isNotRootNode);
 
 signals:
     void AddChildrenButtonClicked();

@@ -207,7 +207,7 @@ void GlyphViewerWindow::LoadNewVisualization(const QString& filename) {
 
 void GlyphViewerWindow::LoadANTzCompatibilityVisualization(const QString& filename) {
 
-	SynGlyphX::ANTzVisualizationFileListing fileListing;
+	SynGlyphXANTz::ANTzVisualizationFileListing fileListing;
 	fileListing.ReadFromFile(filename.toStdString());
 	QStringList csvFiles;
 
@@ -265,7 +265,7 @@ void GlyphViewerWindow::LoadDataTransform(const QString& filename) {
 			mapping.WriteToFile(filename.toStdString());
 		}
 
-		GlyphViewerANTzTransformer transformer(QString::fromStdWString(m_cacheManager.GetCacheDirectory(mapping.GetID())));
+		SynGlyphXANTz::GlyphViewerANTzTransformer transformer(QString::fromStdWString(m_cacheManager.GetCacheDirectory(mapping.GetID())));
 		transformer.Transform(mapping);
 
 		LoadFilesIntoModel(transformer.GetCSVFilenames(), transformer.GetBaseImageFilenames());
@@ -323,7 +323,7 @@ void GlyphViewerWindow::ImportFilesFromANTz() {
 	ANTzImportDialog importDialog(this);
 	if (importDialog.exec() == QDialog::Accepted) {
 
-		SynGlyphX::ANTzVisualizationFileListing antzVisualization(importDialog.GetANTzNodeFilename().toStdWString(),
+		SynGlyphXANTz::ANTzVisualizationFileListing antzVisualization(importDialog.GetANTzNodeFilename().toStdWString(),
 			importDialog.GetANTzTagFilename().toStdWString(),
 			importDialog.GetANTzChannelFilename().toStdWString(),
 			importDialog.GetANTzChannelMapFilename().toStdWString(),

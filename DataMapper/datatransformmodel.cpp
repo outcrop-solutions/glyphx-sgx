@@ -126,9 +126,9 @@ QVariant DataTransformModel::GetGlyphData(const QModelIndex& index) const {
 	if (!m_dataMapping->GetGlyphTrees().empty()) {
 
 		SynGlyphX::MinMaxGlyphTree::const_iterator iterator(static_cast<SynGlyphX::MinMaxGlyphTree::Node*>(index.internalPointer()));
-		const SynGlyphX::GlyphProperties& minGlyph = iterator->GetMinGlyph();
+		const SynGlyphXANTz::GlyphProperties& minGlyph = iterator->GetMinGlyph();
 
-		std::wstring glyphData = SynGlyphX::GlyphProperties::s_shapeNames.left.at(minGlyph.GetShape()) + L": " + SynGlyphX::GlyphProperties::s_topologyNames.left.at(minGlyph.GetTopology());
+		std::wstring glyphData = SynGlyphXANTz::GlyphProperties::s_shapeNames.left.at(minGlyph.GetShape()) + L": " + SynGlyphXANTz::GlyphProperties::s_topologyNames.left.at(minGlyph.GetTopology());
 		if (iterator == iterator.owner()->root().constify()) {
 			glyphData += L" (Root)";
 		}

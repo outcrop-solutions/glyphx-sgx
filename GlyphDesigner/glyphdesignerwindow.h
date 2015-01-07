@@ -35,7 +35,7 @@ private:
     bool AskUserToSave();
 	void SelectRootGlyphInModel();
 
-    ANTzSingleGlyphTreeWidget* m_3dView;
+	SynGlyphXANTz::ANTzSingleGlyphTreeWidget* m_3dView;
     GlyphTreeView* m_treeView;
 
     QMenu* m_fileMenu;
@@ -43,7 +43,7 @@ private:
     QMenu* m_viewMenu;
     QMenu* m_glyphMenu;
 
-    MinMaxGlyphTreeModel* m_glyphTreeModel;
+	SynGlyphXANTz::MinMaxGlyphTreeModel* m_glyphTreeModel;
 	QItemSelectionModel* m_sharedSelectionModel;
 
 	bool m_isFileLoadingOrDefaultGlyphSet;

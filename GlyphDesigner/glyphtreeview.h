@@ -10,7 +10,7 @@ class GlyphTreeView : public SynGlyphX::TreeView
     Q_OBJECT
 
 public:
-	GlyphTreeView(MinMaxGlyphTreeModel* model, MinMaxGlyphTreeModel::GlyphType glyphTreeType, QWidget *parent = 0);
+	GlyphTreeView(SynGlyphXANTz::MinMaxGlyphTreeModel* model, SynGlyphXANTz::MinMaxGlyphTreeModel::GlyphType glyphTreeType, QWidget *parent = 0);
     ~GlyphTreeView();
 
 	const SynGlyphX::SharedActionList& GetGlyphActions() const;
@@ -33,8 +33,8 @@ private:
 	void CreateAddChildrenDialog();
 	void EnableActions();
 
-	MinMaxGlyphTreeModel* m_model;
-	MinMaxGlyphTreeModel::GlyphType m_glyphTreeType;
+	SynGlyphXANTz::MinMaxGlyphTreeModel* m_model;
+	SynGlyphXANTz::MinMaxGlyphTreeModel::GlyphType m_glyphTreeType;
 
 	SynGlyphX::SharedActionList m_glyphActions;
 	SynGlyphX::SharedActionList m_editActions;
