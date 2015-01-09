@@ -2,8 +2,7 @@
 #define SYNGLYPHX_MINMAXGLYPH_H
 
 #include "sgxdatatransform_global.h"
-#include "glyphproperties.h"
-#include "glyph.h"
+#include "glyphgraph.h"
 #include <vector>
 #include <containers/ntree.hpp>
 #include <boost/property_tree/ptree.hpp>
@@ -11,54 +10,69 @@
 
 namespace SynGlyphX {
 
-	class SGXDATATRANSFORM_EXPORT MinMaxGlyph
-	{
+	class SGXDATATRANSFORM_EXPORT TemplateGlyph {
+
 	public:
-		static const unsigned int NumInputBindings = 13;
-		
-		typedef boost::property_tree::wptree PropertyTree;
+		template<typename PropertyType>
+		class TemplateProperty {
 
-		MinMaxGlyph(const SynGlyphXANTz::GlyphProperties& maxGlyph);
-		MinMaxGlyph(const boost::property_tree::wptree& propertyTree);
-		MinMaxGlyph(const MinMaxGlyph& glyph);
-		~MinMaxGlyph();
+		public:
+			PropertyType value;
+			InputBinding binding;
 
-		MinMaxGlyph& operator=(const MinMaxGlyph& glyph);
+			TemplateProperty();
+			TemplateProperty(const PropertyType& initialValue);
+			TemplateProperty(const boost::property_tree::wptree& propertyTree);
+			TemplateProperty(const TemplateProperty& prop);
+			~TemplateProperty();
+
+			boost::property_tree::wptree& ExportToPropertyTree(boost::property_tree::wptree& propertyTree) const;
+		};
+
+		typedef TemplateProperty<std::pair<double, double>> NumericProperty;
+		typedef TemplateProperty<std::pair<Color, Color>> ColorProperty;
+		typedef TemplateProperty<std::wstring> TextProperty;
+		typedef std::array<NumericProperty, 3> NumericPropertyXYZ;
+
+		NumericPropertyXYZ position;
+		NumericPropertyXYZ rotation;
+		NumericPropertyXYZ scale;
+		ColorProperty color;
+		NumericProperty transparency;
+		TextProperty tag;
+		TextProperty description;
+
+		Glyph::Shape geometryShape;
+		Glyph::Surface geometrySurface;
+		Glyph::VirtualTopology virtualTopolgy;
+
+		TemplateGlyph();
+		TemplateGlyph(const Glyph& glyph);
+		TemplateGlyph(const boost::property_tree::wptree& propertyTree);
+		~TemplateGlyph();
+
+		boost::property_tree::wptree& ExportToPropertyTree(boost::property_tree::wptree& propertyTree) const;
+
+		SynGlyphX::Glyph GetMinGlyph() const;
+		SynGlyphX::Glyph GetDifference() const;
+		SynGlyphX::Glyph GetMaxGlyph() const;
+
+		/*MinMaxGlyph& operator=(const MinMaxGlyph& glyph);
 		bool operator==(const MinMaxGlyph& glyph) const;
 		bool operator!=(const MinMaxGlyph& glyph) const;
-
-		const SynGlyphXANTz::GlyphProperties& GetMinGlyph() const;
-		const SynGlyphXANTz::GlyphNumericMappableProperties& GetDifference() const;
-		SynGlyphXANTz::GlyphProperties GetMaxGlyph() const;
 
 		void SetMinGlyph(const SynGlyphXANTz::GlyphProperties& glyph);
 		void SetDifference(const SynGlyphXANTz::GlyphNumericMappableProperties& difference);
 
-		PropertyTree& ExportToPropertyTree(boost::property_tree::wptree& propertyTree) const;
-
 		const InputBinding& GetInputBinding(unsigned int index) const;
 		void SetInputBinding(unsigned int index, const InputBinding& binding);
-		void ClearInputBinding(unsigned int index);
+		void ClearInputBinding(unsigned int index);*/
 
 		bool IsPositionXYBoundToInputFields() const;
 
 	private:
-		void AddVector3ToPropertyTree(boost::property_tree::wptree& propertyTreeParent, const std::wstring& name, const Vector3& min, const Vector3& difference, const InputBinding inputBindings[3]) const;
-		void AddValueToPropertyTree(boost::property_tree::wptree& propertyTreeParent, const std::wstring& name, double min, double difference, const InputBinding& inputBinding) const;
-		void AddColorToPropertyTree(boost::property_tree::wptree& propertyTreeParent, const Color& min, const Color& difference, const InputBinding inputBindings[2]) const;
-		void AddStringToPropertyTree(boost::property_tree::wptree& propertyTreeParent, const std::wstring& name, const InputBinding& inputfield) const;
-
-		void GetVector3FromPropertyTree(const boost::property_tree::wptree& propertyTreeParent, Vector3& min, Vector3& difference, InputBinding inputBindings[3]) const;
-		void GetValueFromPropertyTree(const boost::property_tree::wptree& propertyTreeParent, double& min, double& difference, InputBinding& inputfield) const;
-		void GetColorFromPropertyTree(const boost::property_tree::wptree& propertyTreeParent, Color& min, Color& difference, InputBinding inputBindings[2]) const;
-		void GetStringFromPropertyTree(const boost::property_tree::wptree& propertyTreeParent, InputBinding& inputBinding) const;
-
-		SynGlyphXANTz::GlyphProperties m_minGlyph;
-		//Rather than store both a min and a max glyph, the min glyph is stored (listed above) in this class plus an object that stores the difference between min and max
-		//(listed below).  If a value in m_difference is 0 then min and max is the same.  Otherwise the max value is the min value plus the difference value.
-		SynGlyphXANTz::GlyphNumericMappableProperties m_difference;
-
-		InputBinding m_inputBindings[NumInputBindings];
+		void GetXYZNumericPropertiesFromPropertyTree(const boost::property_tree::wptree& propertyTree, NumericPropertyXYZ& prop);
+		void AddXYZNumericPropertiesToPropertyTree(boost::property_tree::wptree& propertyTree, const NumericPropertyXYZ& prop) const;
 	};
 
 } //namespace SynGlyphX

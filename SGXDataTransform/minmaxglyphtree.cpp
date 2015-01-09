@@ -8,13 +8,13 @@
 
 namespace SynGlyphX {
 
-	MinMaxGlyphTree::MinMaxGlyphTree() : 
-		stlplus::ntree< MinMaxGlyph >()
+	TemplateGlyphGraph::TemplateGlyphGraph() :
+		boost::undirected_graph<TemplateGlyph>()
 	{
 	}
 
-	MinMaxGlyphTree::MinMaxGlyphTree(const boost::property_tree::wptree& propertyTree) :
-		stlplus::ntree< MinMaxGlyph >() {
+	TemplateGlyphGraph::TemplateGlyphGraph(const boost::property_tree::wptree& propertyTree) :
+		boost::undirected_graph<TemplateGlyph>() {
 
 		MinMaxGlyph glyph(propertyTree);
 		insert(glyph);
@@ -34,8 +34,8 @@ namespace SynGlyphX {
 		}
 	}
 
-	MinMaxGlyphTree::MinMaxGlyphTree(const SynGlyphXANTz::GlyphTree& glyphTree) :
-		stlplus::ntree< MinMaxGlyph >() {
+	TemplateGlyphGraph::TemplateGlyphGraph(const GlyphGraph& graph) :
+		boost::undirected_graph<TemplateGlyph>() {
 
 		MinMaxGlyph glyph(*glyphTree.root());
 		insert(glyph);
@@ -43,13 +43,13 @@ namespace SynGlyphX {
 		AddGlyphSubtree(root(), glyphTree, glyphTree.root());
 	}
 
-	MinMaxGlyphTree::~MinMaxGlyphTree()
+	TemplateGlyphGraph::~TemplateGlyphGraph()
 	{
 	}
-
-	bool MinMaxGlyphTree::operator==(const MinMaxGlyphTree& tree) const {
+	/*
+	bool TemplateGlyphGraph::operator==(const TemplateGlyphGraph& graph) const {
 		
-		if (m_inputFields != tree.m_inputFields) {
+		if (m_inputFields != graph.m_inputFields) {
 
 			return false;
 		}
@@ -94,9 +94,9 @@ namespace SynGlyphX {
 	bool MinMaxGlyphTree::operator!=(const MinMaxGlyphTree& tree) const {
 
 		return !operator==(tree);
-	}
+	}*/
 
-	MinMaxGlyphTree::PropertyTree& MinMaxGlyphTree::ExportToPropertyTree(boost::property_tree::wptree& propertyTreeParent) const {
+	TemplateGlyphGraph::PropertyTree& TemplateGlyphGraph::ExportToPropertyTree(boost::property_tree::wptree& propertyTreeParent) const {
 
 		MinMaxGlyphTree::const_iterator iterator = root();
 		boost::property_tree::wptree& rootPropertyTree = iterator->ExportToPropertyTree(propertyTreeParent);
@@ -115,7 +115,7 @@ namespace SynGlyphX {
 		return rootPropertyTree;
 	}
 
-	void MinMaxGlyphTree::ExportToPropertyTree(const MinMaxGlyphTree::const_iterator& parent, boost::property_tree::wptree& propertyTreeParent) const {
+	void TemplateGlyphGraph::ExportToPropertyTree(const MinMaxGlyphTree::const_iterator& parent, boost::property_tree::wptree& propertyTreeParent) const {
 
 		unsigned int numChildren = children(parent);
 		if (numChildren > 0) {
@@ -128,7 +128,7 @@ namespace SynGlyphX {
 			}
 		}
 	}
-
+	/*
 	void MinMaxGlyphTree::WriteToFile(const std::string& filename) const {
 
 		boost::property_tree::wptree propertyTree;
@@ -228,7 +228,7 @@ namespace SynGlyphX {
 			currentLineValues = csvReader.GetValuesFromLine();
 
 		} while (!csvReader.IsAtEndOfFile());
-	}
+	}*/
 
 	void MinMaxGlyphTree::ProcessPropertyTreeChildren(const MinMaxGlyphTree::iterator& iT, const boost::property_tree::wptree& propertyTree) {
 
