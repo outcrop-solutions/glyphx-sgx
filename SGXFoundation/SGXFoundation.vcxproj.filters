@@ -57,6 +57,9 @@
     <ClInclude Include="glyphgraph.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="glyphtemplate.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">

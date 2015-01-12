@@ -103,6 +103,7 @@
     <ClInclude Include="csvtfilereaderwriter.h" />
     <ClInclude Include="filesystem.h" />
     <ClInclude Include="foundationtypes.h" />
+    <ClInclude Include="glyphtemplate.h" />
     <ClInclude Include="range.h" />
     <ClInclude Include="sgxfoundation.h" />
     <ClInclude Include="targetver.h" />
