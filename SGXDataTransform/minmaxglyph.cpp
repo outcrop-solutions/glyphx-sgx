@@ -3,213 +3,64 @@
 
 namespace SynGlyphX {
 
-	template<typename PropertyType>
-	TemplateGlyph::TemplateProperty<PropertyType>::TemplateProperty() :
-		value(PropertyType()),
-		binding(InputBinding()) {
-
-	}
-
-	template<typename PropertyType>
-	TemplateGlyph::TemplateProperty<PropertyType>::TemplateProperty(const PropertyType& initialValue) :
-		value(initalValue),
-		binding(InputBinding()) {
-
-	}
-
-	template<typename PropertyType>
-	TemplateGlyph::TemplateProperty<PropertyType>::TemplateProperty(const boost::property_tree::wptree& propertyTree) :
-		value(propertyTree.get_optional<PropertyType>(L"Value").get_value_or(PropertyType())),
-		binding(InputBinding()) {
-
-		boost::optional<const boost::property_tree::wptree&> inputFieldTree = propertyTree.get_child_optional(InputBinding::PropertyTreeName);
-		if (inputFieldTree.is_initialized()) {
-			
-			binding = InputBinding(inputFieldTree.get());
-		}
-	}
-
-	template<>
-	TemplateGlyph::TemplateProperty<std::pair<double, double>>::TemplateProperty(const boost::property_tree::wptree& propertyTree)  {
-
-		value.first = propertyTree.get<double>(L"Min");
-		value.second = propertyTree.get_optional<double>(L"Difference").get_value_or(0.0);
-
-		boost::optional<const boost::property_tree::wptree&> inputFieldTree = propertyTree.get_child_optional(InputBinding::PropertyTreeName);
-		if (inputFieldTree.is_initialized()) {
-			
-			binding = InputBinding(inputFieldTree.get());
-		}
-		else {
-
-			binding.Clear();
-		}
-	}
-
-	template<>
-	TemplateGlyph::TemplateProperty<std::pair<Color, Color>>::TemplateProperty(const boost::property_tree::wptree& propertyTree) {
-
-		const boost::property_tree::wptree& colorPropertyTree = propertyTree.get_child(L"Color");
-		const boost::property_tree::wptree& rgbPropertyTree = colorPropertyTree.get_child(L"RGB");
-		const boost::property_tree::wptree& rgbMinPropertyTree = rgbPropertyTree.get_child(L"Min");
-		value.first.Set(0, rgbMinPropertyTree.get<short>(L"R"));
-		value.first.Set(1, rgbMinPropertyTree.get<short>(L"G"));
-		value.first.Set(2, rgbMinPropertyTree.get<short>(L"B"));
-
-		boost::optional<const boost::property_tree::wptree&> rgbDiffPropertyTree = rgbPropertyTree.get_child_optional(L"Difference");
-		if (rgbDiffPropertyTree.is_initialized()) {
-
-			value.second.Set(0, rgbDiffPropertyTree.get().get<short>(L"R"));
-			value.second.Set(1, rgbDiffPropertyTree.get().get<short>(L"G"));
-			value.second.Set(2, rgbDiffPropertyTree.get().get<short>(L"B"));
-		}
-		else {
-			value.second.FromHexString(L"000000");
-		}
-
-		boost::optional<const boost::property_tree::wptree&> inputFieldTree = propertyTree.get_child_optional(InputBinding::PropertyTreeName);
-		if (inputFieldTree.is_initialized()) {
-
-			binding = InputBinding(inputFieldTree.get());
-		}
-		else {
-
-			binding.Clear();
-		}
-	}
-
-	template<typename PropertyType>
-	TemplateGlyph::TemplateProperty<PropertyType>::TemplateProperty(const MinMaxProperty& prop) :
-		value(prop.value),
-		binding(prop.binding) {
-
-	}
-
-	template<typename PropertyType>
-	TemplateGlyph::TemplateProperty<PropertyType>::~TemplateProperty() {
-
-	}
-
-	template <typename PropertyType>
-	boost::property_tree::wptree& TemplateGlyph::TemplateProperty<PropertyType>::ExportToPropertyTree(boost::property_tree::wptree& propertyTree) const {
-
-		//boost::property_tree::wptree& valuePropertyTree = propertyTreeParent.add(name, L"");
-		propertyTree.put<PropertyType>(L"Value", value);
-
-		if (binding.IsBoundToInputField()) {
-			binding.ExportToPropertyTree(propertyTree);
-		}
-	}
-
-	template <>
-	boost::property_tree::wptree& TemplateGlyph::TemplateProperty<std::pair<double, double>>::ExportToPropertyTree(boost::property_tree::wptree& propertyTree) const {
-
-		//boost::property_tree::wptree& valuePropertyTree = propertyTreeParent.add(name, L"");
-		propertyTree.put<double>(L"Min", value.first);
-
-		if (std::abs(value.second) > 0.01) {
-
-			propertyTree.put<double>(L"Difference", value.second);
-		}
-
-		if (binding.IsBoundToInputField()) {
-			binding.ExportToPropertyTree(propertyTree);
-		}
-	}
-
-	template <>
-	boost::property_tree::wptree& TemplateGlyph::TemplateProperty<std::pair<Color, Color>>::ExportToPropertyTree(boost::property_tree::wptree& propertyTree) const {
-
-		//boost::property_tree::wptree& valuePropertyTree = propertyTreeParent.add(name, L"");
-		boost::property_tree::wptree& rgbMinPropertyTree = propertyTree.add(L"Min", L"");
-		rgbMinPropertyTree.put<short>(L"R", value.first[0]);
-		rgbMinPropertyTree.put<short>(L"G", value.first[1]);
-		rgbMinPropertyTree.put<short>(L"B", value.first[2]);
-
-		if ((std::abs(value.second[0]) > 0) || (std::abs(value.second[1]) > 0) || (std::abs(value.second[2]) > 0)) {
-
-			boost::property_tree::wptree& rgbDiffPropertyTree = propertyTree.add(L"Difference", L"");
-			rgbDiffPropertyTree.put<short>(L"R", value.second[0]);
-			rgbDiffPropertyTree.put<short>(L"G", value.second[1]);
-			rgbDiffPropertyTree.put<short>(L"B", value.second[2]);
-		}
-
-		if (binding.IsBoundToInputField()) {
-			binding.ExportToPropertyTree(propertyTree);
-		}
-	}
-
-	TemplateGlyph::TemplateGlyph() : 
-		position(),
-		rotation(),
-		scale(),
-		color(),
-		transparency(),
-		tag(),
-		description(),
-		geometryShape(Glyph::Shape::Torus),
-		geometrySurface(Glyph::Surface::Solid),
-		virtualTopolgy(Glyph::VirtualTopology::Circle) {
+	DataMappingGlyph::DataMappingGlyph() : 
+		GlyphTemplate<NumericMappingProperty, ColorMappingProperty, TextMappingProperty>() {
 
 
 	}
 
-	TemplateGlyph::TemplateGlyph(const Glyph& glyph) :
-		position(),
-		rotation(),
-		scale(),
-		color(std::pair<Color, Color>(Color(), glyph.color)),
-		transparency(std::pair<double, double>(0.0, glyph.color[3])),
-		tag(glyph.tag),
-		description(glyph.description), 
-		geometryShape(glyph.geometryShape),
-		geometrySurface(glyph.geometrySurface),
-		virtualTopolgy(glyph.virtualTopology) {
+	DataMappingGlyph::DataMappingGlyph(const DataMappingGlyph& glyph) :
+		GlyphTemplate<NumericMappingProperty, ColorMappingProperty, TextMappingProperty>(glyph) {
 
-		position[0] = NumericProperty(std::pair<double, double>(0.0, glyph.position[0]));
-		position[1] = NumericProperty(std::pair<double, double>(0.0, glyph.position[1]));
-		position[2] = NumericProperty(std::pair<double, double>(0.0, glyph.position[2]));
-		rotation[0] = NumericProperty(std::pair<double, double>(0.0, glyph.rotation[0]));
-		rotation[1] = NumericProperty(std::pair<double, double>(0.0, glyph.rotation[1]));
-		rotation[2] = NumericProperty(std::pair<double, double>(0.0, glyph.rotation[2]));
-		scale[0] = NumericProperty(std::pair<double, double>(0.0, glyph.scale[0]));
-		scale[1] = NumericProperty(std::pair<double, double>(0.0, glyph.scale[1]));
-		scale[2] = NumericProperty(std::pair<double, double>(0.0, glyph.scale[2]));
+
 	}
 
-	TemplateGlyph::TemplateGlyph(const boost::property_tree::wptree& propertyTree) :
-		position(),
-		rotation(),
-		scale(),
-		color(),
-		transparency(),
-		tag(),
-		description(),
-		geometryShape(GlyphGraph::s_shapeNames.right.at(propertyTree.get<std::wstring>(L"<xmlattr>.Shape"))),
-		geometrySurface(GlyphGraph::s_surfaceNames.right.at(propertyTree.get<std::wstring>(L"<xmlattr>.Surface"))),
-		virtualTopolgy(GlyphGraph::s_virtualTopologyNames.right.at(propertyTree.get<std::wstring>(L"<xmlattr>.Topology"))) {
+	DataMappingGlyph::DataMappingGlyph(const Glyph& glyph) :
+		GlyphTemplate<NumericMappingProperty, ColorMappingProperty, TextMappingProperty>() {
+
+		structure = glyph.structure;
+
+		position[0] = NumericMappingProperty(std::pair<double, double>(0.0, glyph.position[0]));
+		position[1] = NumericMappingProperty(std::pair<double, double>(0.0, glyph.position[1]));
+		position[2] = NumericMappingProperty(std::pair<double, double>(0.0, glyph.position[2]));
+		rotation[0] = NumericMappingProperty(std::pair<double, double>(0.0, glyph.rotation[0]));
+		rotation[1] = NumericMappingProperty(std::pair<double, double>(0.0, glyph.rotation[1]));
+		rotation[2] = NumericMappingProperty(std::pair<double, double>(0.0, glyph.rotation[2]));
+		scale[0] = NumericMappingProperty(std::pair<double, double>(0.0, glyph.scale[0]));
+		scale[1] = NumericMappingProperty(std::pair<double, double>(0.0, glyph.scale[1]));
+		scale[2] = NumericMappingProperty(std::pair<double, double>(0.0, glyph.scale[2]));
+		color = ColorMappingProperty(std::pair<Color, Color>(Color(), glyph.color));
+		transparency = NumericMappingProperty(std::pair<double, double>(0.0, glyph.transparency));
+		tag = TextMappingProperty(glyph.tag);
+		description = TextMappingProperty(glyph.description);
+	}
+
+	DataMappingGlyph::DataMappingGlyph(const boost::property_tree::wptree& propertyTree) :
+		GlyphTemplate<NumericMappingProperty, ColorMappingProperty, TextMappingProperty>() {
+
+		structure = GlyphStructuralProperties(propertyTree);
 
 		GetXYZNumericPropertiesFromPropertyTree(propertyTree.get_child(L"Position"), position);
 		GetXYZNumericPropertiesFromPropertyTree(propertyTree.get_child(L"Rotation"), rotation);
 		GetXYZNumericPropertiesFromPropertyTree(propertyTree.get_child(L"Scale"), scale);
 
 		const boost::property_tree::wptree& colorPropertyTree = propertyTree.get_child(L"Color");
-		color = ColorProperty(colorPropertyTree.get_child(L"RGB"));
-		transparency = NumericProperty(colorPropertyTree.get_child(L"Transparency"));
+		color = ColorMappingProperty(colorPropertyTree.get_child(L"RGB"));
+		transparency = NumericMappingProperty(colorPropertyTree.get_child(L"Transparency"));
 
-		tag = TextProperty(propertyTree.get_child(L"Tag"));
+		tag = TextMappingProperty(propertyTree.get_child(L"Tag"));
 		boost::optional<const boost::property_tree::wptree&> descriptionTree = propertyTree.get_child_optional(L"Description");
 		if (descriptionTree.is_initialized()) {
 
-			description = TextProperty(descriptionTree.get());
+			description = TextMappingProperty(descriptionTree.get());
 		}
 	}
 
-	TemplateGlyph::~TemplateGlyph() {
+	DataMappingGlyph::~DataMappingGlyph() {
 
 	}
 
-	boost::property_tree::wptree& TemplateGlyph::ExportToPropertyTree(boost::property_tree::wptree& propertyTree) const {
+	boost::property_tree::wptree& DataMappingGlyph::ExportToPropertyTree(boost::property_tree::wptree& propertyTree) const {
 
 		boost::property_tree::wptree& rootGlyphPropertyTree = propertyTree.add(L"Glyph", L"");
 
@@ -224,28 +75,26 @@ namespace SynGlyphX {
 		tag.ExportToPropertyTree(rootGlyphPropertyTree.add(L"Tag", L""));
 		description.ExportToPropertyTree(rootGlyphPropertyTree.add(L"Description", L""));
 
-		rootGlyphPropertyTree.put<std::wstring>(L"<xmlattr>.Shape", GlyphGraph::s_shapeNames.left.at(geometryShape));
-		rootGlyphPropertyTree.put<std::wstring>(L"<xmlattr>.Surface", GlyphGraph::s_surfaceNames.left.at(geometrySurface));
-		rootGlyphPropertyTree.put<std::wstring>(L"<xmlattr>.Topology", GlyphGraph::s_virtualTopologyNames.left.at(virtualTopolgy));
+		structure.ExportToPropertyTree(rootGlyphPropertyTree);
 
 		return rootGlyphPropertyTree;
 	}
 
-	void TemplateGlyph::GetXYZNumericPropertiesFromPropertyTree(const boost::property_tree::wptree& propertyTree, NumericPropertyXYZ& prop) {
+	void DataMappingGlyph::GetXYZNumericPropertiesFromPropertyTree(const boost::property_tree::wptree& propertyTree, NumericMappingPropertyXYZ& prop) {
 
-		prop[0] = NumericProperty(propertyTree.get_child(L"X"));
-		prop[1] = NumericProperty(propertyTree.get_child(L"Y"));
-		prop[2] = NumericProperty(propertyTree.get_child(L"Z"));
+		prop[0] = NumericMappingProperty(propertyTree.get_child(L"X"));
+		prop[1] = NumericMappingProperty(propertyTree.get_child(L"Y"));
+		prop[2] = NumericMappingProperty(propertyTree.get_child(L"Z"));
 	}
 
-	void TemplateGlyph::AddXYZNumericPropertiesToPropertyTree(boost::property_tree::wptree& propertyTree, const NumericPropertyXYZ& prop) const {
+	void DataMappingGlyph::AddXYZNumericPropertiesToPropertyTree(boost::property_tree::wptree& propertyTree, const NumericMappingPropertyXYZ& prop) const {
 
 		prop[0].ExportToPropertyTree(propertyTree.add(L"X", L""));
 		prop[1].ExportToPropertyTree(propertyTree.add(L"Y", L""));
 		prop[2].ExportToPropertyTree(propertyTree.add(L"Z", L""));
 	}
 
-	SynGlyphX::Glyph TemplateGlyph::GetMinGlyph() const {
+	SynGlyphX::Glyph DataMappingGlyph::GetMinGlyph() const {
 
 		SynGlyphX::Glyph glyph;
 
@@ -267,14 +116,12 @@ namespace SynGlyphX {
 		glyph.tag = tag.value;
 		glyph.description = description.value;
 
-		glyph.geometryShape = geometryShape;
-		glyph.geometrySurface = geometrySurface;
-		glyph.virtualTopology = virtualTopolgy;
+		glyph.structure = structure;
 
 		return glyph;
 	}
 
-	SynGlyphX::Glyph TemplateGlyph::GetDifference() const {
+	SynGlyphX::Glyph DataMappingGlyph::GetDifference() const {
 
 		SynGlyphX::Glyph glyph;
 
@@ -296,14 +143,12 @@ namespace SynGlyphX {
 		glyph.tag = tag.value;
 		glyph.description = description.value;
 
-		glyph.geometryShape = geometryShape;
-		glyph.geometrySurface = geometrySurface;
-		glyph.virtualTopology = virtualTopolgy;
+		glyph.structure = structure;
 
 		return glyph;
 	}
 
-	SynGlyphX::Glyph TemplateGlyph::GetMaxGlyph() const {
+	SynGlyphX::Glyph DataMappingGlyph::GetMaxGlyph() const {
 
 		SynGlyphX::Glyph glyph;
 
@@ -327,14 +172,12 @@ namespace SynGlyphX {
 		glyph.tag = tag.value;
 		glyph.description = description.value;
 
-		glyph.geometryShape = geometryShape;
-		glyph.geometrySurface = geometrySurface;
-		glyph.virtualTopology = virtualTopolgy;
+		glyph.structure = structure;
 
 		return glyph;
 	}
 
-	bool TemplateGlyph::IsPositionXYBoundToInputFields() const {
+	bool DataMappingGlyph::IsPositionXYBoundToInputFields() const {
 
 		return (position[0].binding.IsBoundToInputField() && position[1].binding.IsBoundToInputField());
 	}

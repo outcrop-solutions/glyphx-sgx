@@ -8,13 +8,13 @@
 
 namespace SynGlyphX {
 
-	TemplateGlyphGraph::TemplateGlyphGraph() :
-		boost::undirected_graph<TemplateGlyph>()
+	DataMappingGlyphGraph::DataMappingGlyphGraph() :
+		boost::undirected_graph<DataMappingGlyph>()
 	{
 	}
 
-	TemplateGlyphGraph::TemplateGlyphGraph(const boost::property_tree::wptree& propertyTree) :
-		boost::undirected_graph<TemplateGlyph>() {
+	DataMappingGlyphGraph::DataMappingGlyphGraph(const boost::property_tree::wptree& propertyTree) :
+		boost::undirected_graph<DataMappingGlyph>() {
 
 		MinMaxGlyph glyph(propertyTree);
 		insert(glyph);
@@ -34,8 +34,8 @@ namespace SynGlyphX {
 		}
 	}
 
-	TemplateGlyphGraph::TemplateGlyphGraph(const GlyphGraph& graph) :
-		boost::undirected_graph<TemplateGlyph>() {
+	DataMappingGlyphGraph::DataMappingGlyphGraph(const GlyphGraph& graph) :
+		boost::undirected_graph<DataMappingGlyph>() {
 
 		MinMaxGlyph glyph(*glyphTree.root());
 		insert(glyph);
@@ -43,11 +43,11 @@ namespace SynGlyphX {
 		AddGlyphSubtree(root(), glyphTree, glyphTree.root());
 	}
 
-	TemplateGlyphGraph::~TemplateGlyphGraph()
+	DataMappingGlyphGraph::~DataMappingGlyphGraph()
 	{
 	}
 	/*
-	bool TemplateGlyphGraph::operator==(const TemplateGlyphGraph& graph) const {
+	bool DataMappingGlyphGraph::operator==(const DataMappingGlyphGraph& graph) const {
 		
 		if (m_inputFields != graph.m_inputFields) {
 
@@ -96,7 +96,7 @@ namespace SynGlyphX {
 		return !operator==(tree);
 	}*/
 
-	TemplateGlyphGraph::PropertyTree& TemplateGlyphGraph::ExportToPropertyTree(boost::property_tree::wptree& propertyTreeParent) const {
+	DataMappingGlyphGraph::PropertyTree& DataMappingGlyphGraph::ExportToPropertyTree(boost::property_tree::wptree& propertyTreeParent) const {
 
 		MinMaxGlyphTree::const_iterator iterator = root();
 		boost::property_tree::wptree& rootPropertyTree = iterator->ExportToPropertyTree(propertyTreeParent);
@@ -115,7 +115,7 @@ namespace SynGlyphX {
 		return rootPropertyTree;
 	}
 
-	void TemplateGlyphGraph::ExportToPropertyTree(const MinMaxGlyphTree::const_iterator& parent, boost::property_tree::wptree& propertyTreeParent) const {
+	void DataMappingGlyphGraph::ExportToPropertyTree(const MinMaxGlyphTree::const_iterator& parent, boost::property_tree::wptree& propertyTreeParent) const {
 
 		unsigned int numChildren = children(parent);
 		if (numChildren > 0) {

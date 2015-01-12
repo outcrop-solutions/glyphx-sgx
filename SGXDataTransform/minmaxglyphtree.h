@@ -16,21 +16,21 @@
 
 namespace SynGlyphX {
 
-	class SGXDATATRANSFORM_EXPORT TemplateGlyphGraph : public boost::undirected_graph<TemplateGlyph> {
+	class SGXDATATRANSFORM_EXPORT DataMappingGlyphGraph : public boost::undirected_graph<DataMappingGlyph> {
 
 	public:
 		typedef std::unordered_map<InputField::HashID, InputField> InputFieldMap;
 		typedef std::unordered_map<InputField::HashID, unsigned int> InputFieldCountMap;
 		typedef boost::property_tree::wptree PropertyTree;
 
-		typedef std::shared_ptr<TemplateGlyphGraph> SharedPtr;
-		typedef std::shared_ptr<const TemplateGlyphGraph> ConstSharedPtr;
+		typedef std::shared_ptr<DataMappingGlyphGraph> SharedPtr;
+		typedef std::shared_ptr<const DataMappingGlyphGraph> ConstSharedPtr;
 		
-		TemplateGlyphGraph();
-		TemplateGlyphGraph(const boost::property_tree::wptree& propertyTree);
-		TemplateGlyphGraph(const GlyphGraph& graph);
-		TemplateGlyphGraph(const TemplateGlyphGraph& graph);
-		virtual ~TemplateGlyphGraph();
+		DataMappingGlyphGraph();
+		DataMappingGlyphGraph(const boost::property_tree::wptree& propertyTree);
+		DataMappingGlyphGraph(const GlyphGraph& graph);
+		DataMappingGlyphGraph(const DataMappingGlyphGraph& graph);
+		virtual ~DataMappingGlyphGraph();
 
 		PropertyTree& ExportToPropertyTree(boost::property_tree::wptree& propertyTreeParent) const;
 		//bool operator==(const TemplateGlyphGraph& graph) const;

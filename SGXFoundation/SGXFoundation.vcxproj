@@ -103,6 +103,7 @@
     <ClInclude Include="csvtfilereaderwriter.h" />
     <ClInclude Include="filesystem.h" />
     <ClInclude Include="foundationtypes.h" />
+    <ClInclude Include="glyphstructuralproperties.h" />
     <ClInclude Include="glyphtemplate.h" />
     <ClInclude Include="range.h" />
     <ClInclude Include="sgxfoundation.h" />
@@ -126,6 +127,7 @@
       </PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="filesystem.cpp" />
+    <ClCompile Include="glyphstructuralproperties.cpp" />
     <ClCompile Include="range.cpp" />
     <ClCompile Include="uuid.cpp" />
     <ClCompile Include="xmlpropertytreefile.cpp" />
