@@ -16,9 +16,7 @@ namespace SynGlyphX {
 	}
 
 	DataMappingGlyph::DataMappingGlyph(const Glyph& glyph) :
-		GlyphTemplate<NumericMappingProperty, ColorMappingProperty, TextMappingProperty>() {
-
-		structure = glyph.structure;
+		GlyphTemplate<NumericMappingProperty, ColorMappingProperty, TextMappingProperty>(glyph.structure) {
 
 		position[0] = NumericMappingProperty(std::pair<double, double>(0.0, glyph.position[0]));
 		position[1] = NumericMappingProperty(std::pair<double, double>(0.0, glyph.position[1]));

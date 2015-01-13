@@ -23,7 +23,7 @@ namespace SynGlyphX {
 
 		GlyphStructuralProperties structure;
 
-		GlyphTemplate() :
+		GlyphTemplate(const GlyphStructuralProperties& properties = GlyphStructuralProperties(Shape::Torus, Surface::Solid, VirtualTopology::Circle)) :
 			position(NumericTypeXYZ()),
 			rotation(NumericTypeXYZ()),
 			scale(NumericTypeXYZ()),
@@ -31,7 +31,7 @@ namespace SynGlyphX {
 			transparency(NumericType()),
 			tag(TextType()),
 			description(TextType()),
-			structure(Shape::Torus, Surface::Solid, VirtualTopology::Circle) {
+			structure(properties) {
 
 		}
 
