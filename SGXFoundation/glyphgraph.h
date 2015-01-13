@@ -31,6 +31,8 @@ namespace SynGlyphX {
 	class SGXFOUNDATION_API GlyphGraph : public boost::undirected_graph < Glyph, GlyphEdge > {
 
 	public:
+		typedef GlyphGraph::vertex_descriptor Vertex;
+
 		typedef std::shared_ptr<GlyphGraph> SharedPtr;
 		typedef std::shared_ptr<const GlyphGraph> SharedPtr;
 
@@ -38,11 +40,16 @@ namespace SynGlyphX {
 		GlyphGraph(const GlyphGraph& graph);
 		~GlyphGraph();
 
+		bool HasSingleRoot() const;
+		const std::vector<Vertex>& GetRootVertices() const;
+
 		static const Glyph s_defaultGlyph;
 		static const Glyph s_defaultRootGlyph;
 
 	private:
 		static Glyph CreateDefaultGlyph(GlyphStructuralProperties::Shape geometryShape, GlyphStructuralProperties::VirtualTopology virtualTopology);
+
+		std::vector<Vertex> m_rootVertices;
 	};
 
 } //namespace SynGlyphX

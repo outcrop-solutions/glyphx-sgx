@@ -109,6 +109,9 @@
     <ClInclude Include="datamappingglyphgraph.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="datamappingglyphgraphexportvisitor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="datasource.cpp">

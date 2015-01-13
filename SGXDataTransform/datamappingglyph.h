@@ -12,7 +12,6 @@ namespace SynGlyphX {
 	class SGXDATATRANSFORM_EXPORT DataMappingGlyph : public GlyphTemplate<NumericMappingProperty, ColorMappingProperty, TextMappingProperty> {
 
 	public:
-
 		DataMappingGlyph();
 		DataMappingGlyph(const DataMappingGlyph& glyph);
 		DataMappingGlyph(const Glyph& glyph);

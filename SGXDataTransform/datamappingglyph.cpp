@@ -34,9 +34,7 @@ namespace SynGlyphX {
 	}
 
 	DataMappingGlyph::DataMappingGlyph(const boost::property_tree::wptree& propertyTree) :
-		GlyphTemplate<NumericMappingProperty, ColorMappingProperty, TextMappingProperty>() {
-
-		structure = GlyphStructuralProperties(propertyTree);
+		GlyphTemplate<NumericMappingProperty, ColorMappingProperty, TextMappingProperty>(GlyphStructuralProperties(propertyTree)) {
 
 		GetXYZNumericPropertiesFromPropertyTree(propertyTree.get_child(L"Position"), position);
 		GetXYZNumericPropertiesFromPropertyTree(propertyTree.get_child(L"Rotation"), rotation);
