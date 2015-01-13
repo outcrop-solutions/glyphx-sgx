@@ -84,6 +84,8 @@
     <ClInclude Include="baseimageproperties.h" />
     <ClInclude Include="datamappingdefaults.h" />
     <ClInclude Include="datamappingfunction.h" />
+    <ClInclude Include="datamappingglyph.h" />
+    <ClInclude Include="datamappingglyphgraph.h" />
     <ClInclude Include="datamappingproperty.h" />
     <ClInclude Include="datasource.h" />
     <ClInclude Include="datasourcemaps.h" />
@@ -96,8 +98,6 @@
     <ClInclude Include="inputfielddata.h" />
     <ClInclude Include="linearinterpolationmappingfunction.h" />
     <ClInclude Include="logarithmicinterpolationmappingfunction.h" />
-    <ClInclude Include="minmaxglyph.h" />
-    <ClInclude Include="minmaxglyphtree.h" />
     <ClInclude Include="interpolationmappingfunction.h" />
     <ClInclude Include="rangevaluemappingfunction.h" />
     <ClInclude Include="sgxdatatransform_global.h" />
@@ -114,6 +114,8 @@
     <ClCompile Include="baseimageproperties.cpp" />
     <ClCompile Include="datamappingdefaults.cpp" />
     <ClCompile Include="datamappingfunction.cpp" />
+    <ClCompile Include="datamappingglyph.cpp" />
+    <ClCompile Include="datamappingglyphgraph.cpp" />
     <ClCompile Include="datamappingproperty.cpp" />
     <ClCompile Include="datasource.cpp" />
     <ClCompile Include="datasourcemaps.cpp" />
@@ -126,8 +128,6 @@
     <ClCompile Include="inputfielddata.cpp" />
     <ClCompile Include="linearinterpolationmappingfunction.cpp" />
     <ClCompile Include="logarithmicinterpolationmappingfunction.cpp" />
-    <ClCompile Include="minmaxglyph.cpp" />
-    <ClCompile Include="minmaxglyphtree.cpp" />
     <ClCompile Include="interpolationmappingfunction.cpp" />
     <ClCompile Include="rangevaluemappingfunction.cpp" />
     <ClCompile Include="singlevaluemappingfunction.cpp" />

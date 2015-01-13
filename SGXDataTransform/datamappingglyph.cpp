@@ -1,4 +1,4 @@
-#include "minmaxglyph.h"
+#include "datamappingglyph.h"
 #include <utility>
 
 namespace SynGlyphX {

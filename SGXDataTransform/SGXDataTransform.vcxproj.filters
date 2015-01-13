@@ -34,12 +34,6 @@
     <ClInclude Include="inputfield.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="minmaxglyph.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="minmaxglyphtree.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="inputbinding.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -109,18 +103,18 @@
     <ClInclude Include="datamappingproperty.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="datamappingglyph.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="datamappingglyphgraph.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="datasource.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="inputfield.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="minmaxglyph.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="minmaxglyphtree.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="inputbinding.cpp">
@@ -190,6 +184,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="datamappingproperty.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="datamappingglyph.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="datamappingglyphgraph.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

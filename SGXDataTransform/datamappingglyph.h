@@ -1,5 +1,5 @@
-#ifndef SYNGLYPHX_MINMAXGLYPH_H
-#define SYNGLYPHX_MINMAXGLYPH_H
+#ifndef SYNGLYPHX_DATAMAPPINGGLYPH_H
+#define SYNGLYPHX_DATAMAPPINGGLYPH_H
 
 #include "sgxdatatransform_global.h"
 #include "glyphgraph.h"
@@ -45,4 +45,4 @@ namespace SynGlyphX {
 
 } //namespace SynGlyphX
 
-#endif //SYNGLYPHX_MINMAXGLYPH_H
+#endif //SYNGLYPHX_DATAMAPPINGGLYPH_H

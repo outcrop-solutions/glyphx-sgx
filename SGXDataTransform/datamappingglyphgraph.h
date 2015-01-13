@@ -1,9 +1,9 @@
-#ifndef SYNGLYPHX_MINMAXGLYPHTREE_H
-#define SYNGLYPHX_MINMAXGLYPHTREE_H
+#ifndef SYNGLYPHX_DATAMAPPINGGLYPHGRAPH_H
+#define SYNGLYPHX_DATAMAPPINGGLYPHGRAPH_H
 
 #include "sgxdatatransform_global.h"
 #include <containers/ntree.hpp>
-#include "minmaxglyph.h"
+#include "datamappingglyph.h"
 #include <boost/property_tree/ptree.hpp>
 #include <boost/shared_ptr.hpp>
 #include <memory>
@@ -67,4 +67,4 @@ namespace SynGlyphX {
 
 } //namespace SynGlyphX
 
-#endif //SYNGLYPHX_MINMAXGLYPHTREE_H
+#endif //SYNGLYPHX_DATAMAPPINGGLYPHGRAPH_H
