@@ -5,29 +5,29 @@
 
 namespace SynGlyphX {
 
-	Color::Color(Space space) :
+	GlyphColor::GlyphColor(Space space) :
 		m_space(space),
-		m_color{ {0, 0, 0, 255 } }
+		m_color{ {0, 0, 0 } }
 	{
 	}
 
-	Color::Color(const ColorArray& color, Space space) :
+	GlyphColor::GlyphColor(const ColorArray& color, Space space) :
 		m_space(space),
 		m_color(color) {
 
 	}
 
-	Color::Color(const Color& color) : 
+	GlyphColor::GlyphColor(const GlyphColor& color) : 
 		m_space(color.m_space),
 		m_color(color.m_color) {
 
 	}
 
-	Color::~Color()
+	GlyphColor::~GlyphColor()
 	{
 	}
 
-	Color& Color::operator=(const Color& color) {
+	GlyphColor& GlyphColor::operator=(const GlyphColor& color) {
 
 		m_color = color.m_color;
 		m_space = color.m_space;
@@ -35,7 +35,7 @@ namespace SynGlyphX {
 		return *this;
 	}
 
-	void Color::Set(unsigned int index, short value) {
+	void GlyphColor::Set(unsigned int index, short value) {
 
 		if ((value < -255) || (value > 255)) {
 
@@ -43,26 +43,28 @@ namespace SynGlyphX {
 		} 
 		else {
 
-			if (index < 4) {
+			if (index < 3) {
+
 				m_color[index] = value;
 			}
 			else {
-				throw std::out_of_range("For color, an index of 4 or greater is invalid");
+
+				throw std::out_of_range("For color, an index of 3 or greater is invalid");
 			}
 		}
 	}
 
-	void Color::Set(short red, short green, short blue, short alpha) {
+	void GlyphColor::Set(short red, short green, short blue) {
 
 		Set(0, red);
 		Set(1, green);
 		Set(2, blue);
-		Set(3, alpha);
 	}
 
-	short Color::operator[](unsigned int index) const {
+	short GlyphColor::operator[](unsigned int index) const {
 
-		if (index < 4) {
+		if (index < 3) {
+
 			return m_color[index];
 		}
 		else {
@@ -70,39 +72,37 @@ namespace SynGlyphX {
 		}
 	}
 
-	bool Color::operator==(const Color& color) const {
+	bool GlyphColor::operator==(const GlyphColor& color) const {
 
 		return ((m_color == color.m_color) && (m_space == color.m_space));
 	}
 
-	bool Color::operator!=(const Color& color) const {
+	bool GlyphColor::operator!=(const GlyphColor& color) const {
 
 		return (!operator==(color));
 	}
 
-	Color& Color::operator+=(const Color& color) {
+	GlyphColor& GlyphColor::operator+=(const GlyphColor& color) {
 
 		m_color[0] += color.m_color[0];
 		m_color[1] += color.m_color[1];
 		m_color[2] += color.m_color[2];
-		m_color[3] += color.m_color[3];
 
 		return *this;
 	}
 
-	Color& Color::operator-=(const Color& color) {
+	GlyphColor& GlyphColor::operator-=(const GlyphColor& color) {
 
 		m_color[0] -= color.m_color[0];
 		m_color[1] -= color.m_color[1];
 		m_color[2] -= color.m_color[2];
-		m_color[3] -= color.m_color[3];
 
 		return *this;
 	}
 
-	std::wstring Color::ToHexString(unsigned int length) const {
+	std::wstring GlyphColor::ToHexString(unsigned int length) const {
 
-		if ((length > 4) || (length == 0)) {
+		if ((length > 3) || (length == 0)) {
 			throw std::invalid_argument("To create hex string length must be between 1 and 4");
 		}
 
@@ -120,7 +120,7 @@ namespace SynGlyphX {
 		return stream.str();
 	}
 
-	void Color::FromHexString(const std::wstring& hexString) {
+	void GlyphColor::FromHexString(const std::wstring& hexString) {
 
 		if ((hexString.length() <= 10) && (hexString.length() % 2 == 0)) {
 
@@ -135,12 +135,12 @@ namespace SynGlyphX {
 		}
 	}
 
-	Color::Space Color::GetSpace() const {
+	GlyphColor::Space GlyphColor::GetSpace() const {
 
 		return m_space;
 	}
 
-	Color Color::ConvertRGBtoHSV(const Color& color) {
+	GlyphColor GlyphColor::ConvertRGBtoHSV(const GlyphColor& color) {
 
 		float red = color[0] / 255.0f;
 		float green = color[1] / 255.0f;
@@ -181,15 +181,15 @@ namespace SynGlyphX {
 			hue /= 6.0f;
 		}
 
-		Color hsvColor(Color::Space::HSV);
+		GlyphColor hsvColor(GlyphColor::Space::HSV);
 
 		//Copy alpha since it isn't a part of RGB->HSV conversion
-		hsvColor.Set(static_cast<short>(hue * 255), static_cast<short>(saturation * 255), static_cast<short>(value * 255), color[3]);
+		hsvColor.Set(static_cast<short>(hue * 255), static_cast<short>(saturation * 255), static_cast<short>(value * 255));
 
 		return hsvColor;
 	}
 
-	Color Color::ConvertHSVtoRGB(const Color& color) {
+	GlyphColor GlyphColor::ConvertHSVtoRGB(const GlyphColor& color) {
 
 		float hue = color[0] / 255.0f;
 		float saturation = color[1] / 255.0f;
@@ -201,17 +201,17 @@ namespace SynGlyphX {
 		float q = value * (1.0f - f * saturation);
 		float t = value * (1.0f - ((1.0f - f) * saturation));
 
-		Color rgbColor;
+		GlyphColor rgbColor;
 
 		switch (i % 6) {
 
 			//Copy alpha since it isn't a part of RGB->HSV conversion
-			case 0: rgbColor.Set(value * 255, t * 255, p * 255, color[3]); break;
-			case 1: rgbColor.Set(q * 255, value * 255, p * 255, color[3]); break;
-			case 2: rgbColor.Set(p * 255, value * 255, t * 255, color[3]); break;
-			case 3: rgbColor.Set(p * 255, q * 255, value * 255, color[3]); break;
-			case 4: rgbColor.Set(t * 255, p * 255, value * 255, color[3]); break;
-			case 5: rgbColor.Set(value * 255, p * 255, q * 255, color[3]); break;
+			case 0: rgbColor.Set(value * 255, t * 255, p * 255); break;
+			case 1: rgbColor.Set(q * 255, value * 255, p * 255); break;
+			case 2: rgbColor.Set(p * 255, value * 255, t * 255); break;
+			case 3: rgbColor.Set(p * 255, q * 255, value * 255); break;
+			case 4: rgbColor.Set(t * 255, p * 255, value * 255); break;
+			case 5: rgbColor.Set(value * 255, p * 255, q * 255); break;
 		}
 
 		return rgbColor;

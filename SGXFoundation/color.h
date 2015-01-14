@@ -6,34 +6,34 @@
 
 namespace SynGlyphX {
 
-	class SGXFOUNDATION_API Color
+	class SGXFOUNDATION_API GlyphColor
 	{
 	public:
 		enum Space {RGB, HSV};
 
-		typedef std::array<short, 4> ColorArray;
+		typedef std::array<short, 3> ColorArray;
 
-		Color(Space space = Space::RGB);
-		Color(const ColorArray& color, Space space = Space::RGB);
-		Color(const Color& color);
-		~Color();
+		GlyphColor(Space space = Space::RGB);
+		GlyphColor(const ColorArray& color, Space space = Space::RGB);
+		GlyphColor(const GlyphColor& color);
+		~GlyphColor();
 
-		Color& operator=(const Color& color);
+		GlyphColor& operator=(const GlyphColor& color);
 		void Set(unsigned int index, short value);
-		void Set(short red, short green, short blue, short alpha = 255);
+		void Set(short red, short green, short blue);
 		short operator[](unsigned int index) const;
-		bool operator==(const Color& color) const;
-		bool operator!=(const Color& color) const;
-		Color& operator+=(const Color& color);
-		Color& operator-=(const Color& color);
+		bool operator==(const GlyphColor& color) const;
+		bool operator!=(const GlyphColor& color) const;
+		GlyphColor& operator+=(const GlyphColor& color);
+		GlyphColor& operator-=(const GlyphColor& color);
 
-		std::wstring ToHexString(unsigned int length) const;
+		std::wstring ToHexString(unsigned int length = 3) const;
 		void FromHexString(const std::wstring& hexString);
 
 		Space GetSpace() const;
 
-		static Color ConvertRGBtoHSV(const Color& color);
-		static Color ConvertHSVtoRGB(const Color& color);
+		static GlyphColor ConvertRGBtoHSV(const GlyphColor& color);
+		static GlyphColor ConvertHSVtoRGB(const GlyphColor& color);
 
 	private:
 		ColorArray m_color;
