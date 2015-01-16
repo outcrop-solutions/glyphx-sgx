@@ -1,4 +1,4 @@
-#include "color.h"
+#include "glyphcolor.h"
 #include <stdexcept>
 #include <string>
 #include <sstream>

@@ -11,6 +11,17 @@ namespace SynGlyphX {
 	class GraphCopyVisitor : public boost::default_dfs_visitor
 	{
 	public:
+		GraphCopyVisitor() :
+			boost::default_dfs_visitor(),
+			m_newGraph(std::make_shared<DestinationGraph>()) {
+
+		}
+
+		virtual ~GraphCopyVisitor() {
+
+
+		}
+
 		template <typename Vertex, typename Graph>
 		virtual void discover_vertex(Vertex u, const Graph& g) const {
 

@@ -1,5 +1,5 @@
-#ifndef SYNGLYPHX_COLOR_H
-#define SYNGLYPHX_COLOR_H
+#ifndef SYNGLYPHX_GLYPHCOLOR_H
+#define SYNGLYPHX_GLYPHCOLOR_H
 
 #include "sgxfoundation.h"
 #include <array>
@@ -42,4 +42,4 @@ namespace SynGlyphX {
 
 } //namespace SynGlyphX
 
-#endif //SYNGLYPHX_COLOR_H
+#endif //SYNGLYPHX_GLYPHCOLOR_H

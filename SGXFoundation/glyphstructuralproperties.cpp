@@ -65,6 +65,31 @@ namespace SynGlyphX {
 		return *this;
 	}
 
+	bool GlyphStructuralProperties::operator==(const GlyphStructuralProperties& properties) const {
+
+		if (m_geometryShape != properties.m_geometryShape) {
+
+			return false;
+		}
+
+		if (m_geometrySurface != properties.m_geometrySurface) {
+
+			return false;
+		}
+
+		if (m_virtualTopology != properties.m_virtualTopology) {
+
+			return false;
+		}
+
+		return true;
+	}
+
+	bool GlyphStructuralProperties::operator!=(const GlyphStructuralProperties& properties) const {
+
+		return !operator==(properties);
+	}
+
 	void GlyphStructuralProperties::SetGeometryShape(Shape shape) {
 
 		m_geometryShape = shape;

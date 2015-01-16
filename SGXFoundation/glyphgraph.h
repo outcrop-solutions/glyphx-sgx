@@ -2,15 +2,17 @@
 #define SYNGLYPHX_BUNDLEDPROPERTYGRAPH_H
 
 #include "sgxfoundation.h"
+#include "glyphstructuralproperties.h"
 #include "glyphtemplate.h"
-#include "color.h"
-#include <boost/graph/undirected_graph.hpp>
+#include "glyphcolor.h"
+//#include <boost/graph/directed_graph.hpp>
+#include <containers/ntree.hpp>
 #include <memory>
 #include <array>
 
 namespace SynGlyphX {
 
-	typedef GlyphTemplate< double, Color, std::wstring > Glyph;
+	typedef GlyphTemplate< double, GlyphColor, std::wstring > Glyph;
 
 	class SGXFOUNDATION_API GlyphEdge {
 
@@ -28,28 +30,21 @@ namespace SynGlyphX {
 		~GlyphEdge();
 	};
 
-	class SGXFOUNDATION_API GlyphGraph : public boost::undirected_graph < Glyph, GlyphEdge > {
+	class SGXFOUNDATION_API GlyphGraph : public stlplus::ntree<Glyph> {
 
 	public:
-		typedef GlyphGraph::vertex_descriptor Vertex;
-
 		typedef std::shared_ptr<GlyphGraph> SharedPtr;
-		typedef std::shared_ptr<const GlyphGraph> SharedPtr;
+		typedef std::shared_ptr<const GlyphGraph> ConstSharedPtr;
 
 		GlyphGraph();
 		GlyphGraph(const GlyphGraph& graph);
 		~GlyphGraph();
-
-		bool HasSingleRoot() const;
-		const std::vector<Vertex>& GetRootVertices() const;
 
 		static const Glyph s_defaultGlyph;
 		static const Glyph s_defaultRootGlyph;
 
 	private:
 		static Glyph CreateDefaultGlyph(GlyphStructuralProperties::Shape geometryShape, GlyphStructuralProperties::VirtualTopology virtualTopology);
-
-		std::vector<Vertex> m_rootVertices;
 	};
 
 } //namespace SynGlyphX

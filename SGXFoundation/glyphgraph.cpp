@@ -20,13 +20,13 @@ namespace SynGlyphX {
 	const Glyph GlyphGraph::s_defaultRootGlyph = GlyphGraph::CreateDefaultGlyph(GlyphStructuralProperties::Shape::Pin, GlyphStructuralProperties::VirtualTopology::LinePin);
 
 	GlyphGraph::GlyphGraph() :
-		boost::undirected_graph < Glyph, GlyphEdge >() {
+		stlplus::ntree<Glyph>() {
 
 
 	}
 
 	GlyphGraph::GlyphGraph(const GlyphGraph& graph) :
-		boost::undirected_graph < Glyph, GlyphEdge >(graph) {
+		stlplus::ntree<Glyph>(graph) {
 
 
 	}
@@ -39,17 +39,29 @@ namespace SynGlyphX {
 	Glyph GlyphGraph::CreateDefaultGlyph(GlyphStructuralProperties::Shape geometryShape, GlyphStructuralProperties::VirtualTopology virtualTopology) {
 
 		Glyph glyph;
+
+		glyph.GetStructure().SetGeometryShape(geometryShape);
+		glyph.GetStructure().SetGeometrySurface(GlyphStructuralProperties::Surface::Solid);
+		glyph.GetStructure().SetVirtualTopology(virtualTopology);
 		
-		glyph.position = { { 0.0, 0.0, 0.0 } };
-		glyph.rotation = { { 0.0, 0.0, 0.0 } };
-		glyph.scale = { { 1.0, 1.0, 1.0 } };
-		glyph.color = Color({ { 50, 101, 101, 255 } });
-		glyph.transparency = 255;
-		glyph.structure.SetGeometryShape(geometryShape);
-		glyph.structure.SetGeometrySurface(GlyphStructuralProperties::Surface::Solid);
-		glyph.structure.SetVirtualTopology(virtualTopology);
-		glyph.tag = L"";
-		glyph.description = L"";
+		glyph.GetPosition()[0] = 0.0;
+		glyph.GetPosition()[1] = 0.0;
+		glyph.GetPosition()[2] = 0.0;
+		glyph.GetRotation()[0] = 0.0;
+		glyph.GetRotation()[1] = 0.0;
+		glyph.GetRotation()[2] = 0.0;
+		glyph.GetScale()[0] = 1.0;
+		glyph.GetScale()[1] = 1.0;
+		glyph.GetScale()[2] = 1.0;
+		glyph.GetColor() = GlyphColor({ { 50, 101, 101 } });
+		glyph.GetTransparency() = 255;
+
+		glyph.GetTag() = L"";
+		glyph.GetDescription() = L"";
+
+		glyph.GetRotationRate()[0] = 0.0;
+		glyph.GetRotationRate()[1] = 0.0;
+		glyph.GetRotationRate()[2] = 0.0;
 
 		return glyph;
 	}
