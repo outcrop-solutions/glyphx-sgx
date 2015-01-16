@@ -6,7 +6,7 @@
 #include <memory>
 
 namespace SynGlyphX {
-
+	/*
 	template <typename DestinationGraph>
 	class GraphCopyVisitor : public boost::default_dfs_visitor
 	{
@@ -53,7 +53,7 @@ namespace SynGlyphX {
 		std::shared_ptr<DestinationGraph> m_newGraph;
 		std::stack<DestinationGraph::vertex_descriptor> m_previousVertices;
 	};
-
+	*/
 } //namespace SynGlyphX
 
 #endif //SYNGLYPHX_GRAPHCOPYVISITOR_H

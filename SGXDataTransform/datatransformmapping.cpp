@@ -87,8 +87,8 @@ namespace SynGlyphX {
 
 			if (glyphPropertyTree.first == L"Glyph") {
 
-				MinMaxGlyphTree::SharedPtr glyphTree(new MinMaxGlyphTree(glyphPropertyTree.second));
-				m_glyphTrees.insert(std::pair<boost::uuids::uuid, MinMaxGlyphTree::SharedPtr>(glyphPropertyTree.second.get<boost::uuids::uuid>(L"<xmlattr>.id"), glyphTree));
+				DataMappingGlyphGraph::SharedPtr glyphGraph = std::make_shared<DataMappingGlyphGraph>(glyphPropertyTree.second);
+				m_glyphTrees.insert(std::pair<boost::uuids::uuid, DataMappingGlyphGraph::SharedPtr>(glyphPropertyTree.second.get<boost::uuids::uuid>(L"<xmlattr>.id"), glyphGraph));
 			}
 		}
 
@@ -173,16 +173,16 @@ namespace SynGlyphX {
 		m_datasources.EnableTables(id, tables, enable);
     }
 
-	boost::uuids::uuid DataTransformMapping::AddGlyphTree(const MinMaxGlyphTree::SharedPtr glyphTree) {
+	boost::uuids::uuid DataTransformMapping::AddGlyphTree(const DataMappingGlyphGraph::SharedPtr glyphTree) {
 
 		boost::uuids::uuid id = UUIDGenerator::GetNewRandomUUID();
 
-		m_glyphTrees.insert(std::pair<boost::uuids::uuid, MinMaxGlyphTree::SharedPtr>(id, glyphTree));
+		m_glyphTrees.insert(std::pair<boost::uuids::uuid, DataMappingGlyphGraph::SharedPtr>(id, glyphTree));
 
 		return id;
 	}
 
-	const DataTransformMapping::MinMaxGlyphTreeMap& DataTransformMapping::GetGlyphTrees() const {
+	const DataTransformMapping::DataMappingGlyphGraphMap& DataTransformMapping::GetGlyphGraphs() const {
 
 		return m_glyphTrees;
 	}
@@ -228,16 +228,16 @@ namespace SynGlyphX {
 		return m_baseObjects;
 	}
 	
-	void DataTransformMapping::SetInputField(const boost::uuids::uuid& treeID, MinMaxGlyphTree::const_iterator& node, int index, const InputField& inputfield) {
+	void DataTransformMapping::SetInputField(const boost::uuids::uuid& treeID, DataMappingGlyphGraph::const_iterator& node, DataMappingGlyph::MappableField field, const InputField& inputfield) {
 
-		MinMaxGlyphTree::SharedPtr glyphTree = m_glyphTrees[treeID];
-		glyphTree->SetInputField(node, index, inputfield);
+		DataMappingGlyphGraph::SharedPtr glyphTree = m_glyphTrees[treeID];
+		glyphTree->SetInputField(node, field, inputfield);
 	}
 
-	void DataTransformMapping::ClearInputBinding(const boost::uuids::uuid& treeID, MinMaxGlyphTree::const_iterator& node, int index) {
+	void DataTransformMapping::ClearInputBinding(const boost::uuids::uuid& treeID, DataMappingGlyphGraph::const_iterator& node, DataMappingGlyph::MappableField field) {
 
-		MinMaxGlyphTree::SharedPtr glyphTree = m_glyphTrees[treeID];
-		glyphTree->ClearInputBinding(node, index);
+		DataMappingGlyphGraph::SharedPtr glyphTree = m_glyphTrees[treeID];
+		glyphTree->ClearInputBinding(node, field);
 	}
 
 	const boost::uuids::uuid& DataTransformMapping::GetID() const {

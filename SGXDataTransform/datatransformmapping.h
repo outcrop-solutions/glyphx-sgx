@@ -43,10 +43,10 @@ namespace SynGlyphX {
 
 		boost::uuids::uuid AddGlyphTree(const DataMappingGlyphGraph::SharedPtr glyphTree);
 		void RemoveGlyphTree(const boost::uuids::uuid& id);
-		const DataMappingGlyphGraphMap& GetGlyphTrees() const;
+		const DataMappingGlyphGraphMap& GetGlyphGraphs() const;
 
-		void SetInputField(const boost::uuids::uuid& treeID, MinMaxGlyphTree::const_iterator& node, int index, const InputField& inputfield);
-		void ClearInputBinding(const boost::uuids::uuid& treeID, MinMaxGlyphTree::const_iterator& node, int index);
+		void SetInputField(const boost::uuids::uuid& treeID, DataMappingGlyphGraph::const_iterator& node, DataMappingGlyph::MappableField field, const InputField& inputfield);
+		void ClearInputBinding(const boost::uuids::uuid& treeID, DataMappingGlyphGraph::const_iterator& node, DataMappingGlyph::MappableField field);
 
 		bool IsTransformable() const;
 

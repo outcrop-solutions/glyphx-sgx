@@ -24,9 +24,9 @@ namespace SynGlyphX {
 		m_rotation[0] = NumericMappingProperty(std::pair<double, double>(0.0, glyph.GetRotation()[0]));
 		m_rotation[1] = NumericMappingProperty(std::pair<double, double>(0.0, glyph.GetRotation()[1]));
 		m_rotation[2] = NumericMappingProperty(std::pair<double, double>(0.0, glyph.GetRotation()[2]));
-		m_scale[0] = NumericMappingProperty(std::pair<double, double>(0.0, glyph.GetScale()[0]));
-		m_scale[1] = NumericMappingProperty(std::pair<double, double>(0.0, glyph.GetScale()[1]));
-		m_scale[2] = NumericMappingProperty(std::pair<double, double>(0.0, glyph.GetScale()[2]));
+		m_scale[0] = NumericMappingProperty(std::pair<double, double>(0.1, glyph.GetScale()[0]));
+		m_scale[1] = NumericMappingProperty(std::pair<double, double>(0.1, glyph.GetScale()[1]));
+		m_scale[2] = NumericMappingProperty(std::pair<double, double>(0.1, glyph.GetScale()[2]));
 
 		m_color = ColorMappingProperty(std::pair<GlyphColor, GlyphColor>(GlyphColor(), glyph.GetColor()));
 		m_transparency = NumericMappingProperty(std::pair<double, double>(0.0, glyph.GetTransparency()));
@@ -226,7 +226,8 @@ namespace SynGlyphX {
 
 		if (field < MappableField::MappableFieldSize) {
 
-			SelectInputBinding(field) = binding;
+			InputBinding& selectedBinding = const_cast<InputBinding&>(GetInputBinding(field));
+			selectedBinding = binding;
 		}
 		else {
 			throw new std::out_of_range("Out of range of number of input fields");
@@ -237,14 +238,15 @@ namespace SynGlyphX {
 
 		if (field < MappableField::MappableFieldSize) {
 			
-			SelectInputBinding(field).Clear();
+			InputBinding& selectedBinding = const_cast<InputBinding&>(GetInputBinding(field));
+			selectedBinding.Clear();
 		}
 		else {
 			throw new std::out_of_range("Out of range of number of input fields");
 		}
 	}
 
-	InputBinding& DataMappingGlyph::SelectInputBinding(MappableField field) {
+	const InputBinding& DataMappingGlyph::GetInputBinding(MappableField field) const {
 
 		if (field == MappableField::PositionX) {
 

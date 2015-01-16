@@ -39,28 +39,28 @@ namespace SynGlyphX {
 		}
 	}
 
-	SynGlyphXANTz::GlyphTree::ConstSharedVector Transformer::CreateGlyphTreesFromMinMaxTrees(const DataTransformMapping& mapping) const {
+	GlyphGraph::ConstSharedVector Transformer::CreateGlyphTreesFromMinMaxTrees(const DataTransformMapping& mapping) const {
 
-		SynGlyphXANTz::GlyphTree::ConstSharedVector allTrees;
+		GlyphGraph::ConstSharedVector allTrees;
 
-		for (auto minMaxTree : mapping.GetGlyphTrees()) {
+		for (auto minMaxTree : mapping.GetGlyphGraphs()) {
 
-			SynGlyphXANTz::GlyphTree::ConstSharedVector newTrees = CreateGlyphTreesFromMinMaxTree(minMaxTree.second);
+			GlyphGraph::ConstSharedVector newTrees = CreateGlyphTreesFromMinMaxTree(minMaxTree.second);
 			allTrees.insert(allTrees.end(), newTrees.begin(), newTrees.end());
 		}
 
 		return allTrees;
 	}
 
-	SynGlyphXANTz::GlyphTree::ConstSharedVector Transformer::CreateGlyphTreesFromMinMaxTree(MinMaxGlyphTree::ConstSharedPtr minMaxTree) const {
+	GlyphGraph::ConstSharedVector Transformer::CreateGlyphTreesFromMinMaxTree(DataMappingGlyphGraph::ConstSharedPtr minMaxTree) const {
 
-		SynGlyphXANTz::GlyphTree::ConstSharedVector trees;
+		GlyphGraph::ConstSharedVector trees;
 
-		SynGlyphX::MinMaxGlyphTree::const_iterator minMaxGlyph = minMaxTree->root().constify();
+		DataMappingGlyphGraph::const_iterator minMaxGlyph = minMaxTree->root().constify();
 
 		InputFieldDataMap queryResultData;
-		const SynGlyphX::MinMaxGlyphTree::InputFieldMap& inputFields = minMaxTree->GetInputFields();
-		for (SynGlyphX::MinMaxGlyphTree::InputFieldMap::const_iterator iterator = inputFields.begin(); iterator != inputFields.end(); ++iterator) {
+		const DataMappingGlyphGraph::InputFieldMap& inputFields = minMaxTree->GetInputFields();
+		for (DataMappingGlyphGraph::InputFieldMap::const_iterator iterator = inputFields.begin(); iterator != inputFields.end(); ++iterator) {
 
 			InputFieldData::SharedPtr fieldData;
 
@@ -81,7 +81,7 @@ namespace SynGlyphX {
 
 		for (unsigned int i = 0; i < numGlyphs; ++i) {
 
-			SynGlyphXANTz::GlyphTree::SharedPtr glyphTree(new SynGlyphXANTz::GlyphTree());
+			GlyphGraph::SharedPtr glyphTree = std::make_shared<GlyphGraph>();
 
 			glyphTree->insert(ProcessMinMaxGlyph(minMaxGlyph, queryResultData, i));
 
@@ -93,63 +93,55 @@ namespace SynGlyphX {
 		return trees;
 	}
 
-	SynGlyphXANTz::GlyphProperties Transformer::ProcessMinMaxGlyph(const MinMaxGlyphTree::const_iterator& minMaxGlyph, const InputFieldDataMap& queryResultData, unsigned int index) const {
+	Glyph Transformer::ProcessMinMaxGlyph(const DataMappingGlyphGraph::const_iterator& minMaxGlyph, const InputFieldDataMap& queryResultData, unsigned int index) const {
 
-		const MinMaxGlyphTree* minMaxGlyphTree = static_cast<const MinMaxGlyphTree*>(minMaxGlyph.owner());
+		const DataMappingGlyphGraph* minMaxGlyphTree = static_cast<const DataMappingGlyphGraph*>(minMaxGlyph.owner());
 
-		const SynGlyphXANTz::GlyphNumericMappableProperties& difference = minMaxGlyph->GetDifference();
-		SynGlyphXANTz::GlyphProperties glyph = minMaxGlyph->GetMinGlyph();
+		Glyph difference = minMaxGlyph->GetDifference();
+		Glyph glyph = minMaxGlyph->GetMinGlyph();
 
 		Vector3 mappedVector3;
 
 		if ((minMaxGlyphTree->root() == minMaxGlyph) && (m_overrideRootXYBoundingBox.IsValid())){
 
-			InputBinding xBinding(minMaxGlyph->GetInputBinding(0).GetInputFieldID());
+			InputBinding xBinding(minMaxGlyph->GetInputBinding(DataMappingGlyph::MappableField::PositionX).GetInputFieldID());
 			xBinding.SetMinMaxOverride(m_overrideRootXYBoundingBox.GetSWCorner().get<0>(), m_overrideRootXYBoundingBox.GetNECorner().get<0>());
-			mappedVector3[0] = LinearInterpolate(xBinding, glyph.GetPosition()[0], difference.GetPosition()[0], queryResultData, index);
+			glyph.GetPosition()[0] = LinearInterpolate(xBinding, glyph.GetPosition()[0], difference.GetPosition()[0], queryResultData, index);
 
-			InputBinding yBinding(minMaxGlyph->GetInputBinding(1).GetInputFieldID());
+			InputBinding yBinding(minMaxGlyph->GetInputBinding(DataMappingGlyph::MappableField::PositionY).GetInputFieldID());
 			yBinding.SetMinMaxOverride(m_overrideRootXYBoundingBox.GetSWCorner().get<1>(), m_overrideRootXYBoundingBox.GetNECorner().get<1>());
-			mappedVector3[1] = LinearInterpolate(yBinding, glyph.GetPosition()[1], difference.GetPosition()[1], queryResultData, index);
+			glyph.GetPosition()[1] = LinearInterpolate(yBinding, glyph.GetPosition()[1], difference.GetPosition()[1], queryResultData, index);
 		}
 		else {
 
-			mappedVector3[0] = LinearInterpolate(minMaxGlyph->GetInputBinding(0), glyph.GetPosition()[0], difference.GetPosition()[0], queryResultData, index);
-			mappedVector3[1] = LinearInterpolate(minMaxGlyph->GetInputBinding(1), glyph.GetPosition()[1], difference.GetPosition()[1], queryResultData, index);
+			glyph.GetPosition()[0] = LinearInterpolate(minMaxGlyph->GetInputBinding(DataMappingGlyph::MappableField::PositionX), glyph.GetPosition()[0], difference.GetPosition()[0], queryResultData, index);
+			glyph.GetPosition()[1] = LinearInterpolate(minMaxGlyph->GetInputBinding(DataMappingGlyph::MappableField::PositionY), glyph.GetPosition()[1], difference.GetPosition()[1], queryResultData, index);
 		}
 
-		mappedVector3[2] = LinearInterpolate(minMaxGlyph->GetInputBinding(2), glyph.GetPosition()[2], difference.GetPosition()[2], queryResultData, index);
-		glyph.SetPosition(mappedVector3);
+		glyph.GetPosition()[2] = LinearInterpolate(minMaxGlyph->GetInputBinding(DataMappingGlyph::MappableField::PositionZ), glyph.GetPosition()[2], difference.GetPosition()[2], queryResultData, index);
 
-		mappedVector3[0] = LinearInterpolate(minMaxGlyph->GetInputBinding(3), glyph.GetRotation()[0], difference.GetRotation()[0], queryResultData, index);
-		mappedVector3[1] = LinearInterpolate(minMaxGlyph->GetInputBinding(4), glyph.GetRotation()[1], difference.GetRotation()[1], queryResultData, index);
-		mappedVector3[2] = LinearInterpolate(minMaxGlyph->GetInputBinding(5), glyph.GetRotation()[2], difference.GetRotation()[2], queryResultData, index);
-		glyph.SetRotation(mappedVector3);
+		glyph.GetRotation()[0] = LinearInterpolate(minMaxGlyph->GetInputBinding(DataMappingGlyph::MappableField::RotationX), glyph.GetRotation()[0], difference.GetRotation()[0], queryResultData, index);
+		glyph.GetRotation()[1] = LinearInterpolate(minMaxGlyph->GetInputBinding(DataMappingGlyph::MappableField::RotationY), glyph.GetRotation()[1], difference.GetRotation()[1], queryResultData, index);
+		glyph.GetRotation()[2] = LinearInterpolate(minMaxGlyph->GetInputBinding(DataMappingGlyph::MappableField::RotationZ), glyph.GetRotation()[2], difference.GetRotation()[2], queryResultData, index);
 
-		mappedVector3[0] = LinearInterpolate(minMaxGlyph->GetInputBinding(6), glyph.GetScale()[0], difference.GetScale()[0], queryResultData, index);
-		mappedVector3[1] = LinearInterpolate(minMaxGlyph->GetInputBinding(7), glyph.GetScale()[1], difference.GetScale()[1], queryResultData, index);
-		mappedVector3[2] = LinearInterpolate(minMaxGlyph->GetInputBinding(8), glyph.GetScale()[2], difference.GetScale()[2], queryResultData, index);
-		glyph.SetScale(mappedVector3);
+		glyph.GetScale()[0] = LinearInterpolate(minMaxGlyph->GetInputBinding(DataMappingGlyph::MappableField::ScaleX), glyph.GetScale()[0], difference.GetScale()[0], queryResultData, index);
+		glyph.GetScale()[1] = LinearInterpolate(minMaxGlyph->GetInputBinding(DataMappingGlyph::MappableField::ScaleY), glyph.GetScale()[1], difference.GetScale()[1], queryResultData, index);
+		glyph.GetScale()[2] = LinearInterpolate(minMaxGlyph->GetInputBinding(DataMappingGlyph::MappableField::ScaleZ), glyph.GetScale()[2], difference.GetScale()[2], queryResultData, index);
 
-		Color color = ColorRGBInterpolate(minMaxGlyph->GetInputBinding(9), glyph.GetColor(), difference.GetColor(), queryResultData, index);
-		color.Set(3, LinearInterpolate(minMaxGlyph->GetInputBinding(10), glyph.GetColor()[3], difference.GetColor()[3], queryResultData, index));
-		glyph.SetColor(color);
+		glyph.GetColor() = ColorRGBInterpolate(minMaxGlyph->GetInputBinding(DataMappingGlyph::MappableField::Color), glyph.GetColor(), difference.GetColor(), queryResultData, index);
+		glyph.GetTransparency() = LinearInterpolate(minMaxGlyph->GetInputBinding(DataMappingGlyph::MappableField::Transparency), glyph.GetColor()[3], difference.GetColor()[3], queryResultData, index);
 
-		//For now since we aren't mapping torus ratio just set it to 0.1
-		glyph.SetRatio(0.1);
-		//glyph.SetRatio(LinearInterpolate(minMaxGlyph->GetInputBinding(11), glyph.GetRatio(), difference.GetRatio(), queryResultData, index));
-
-		glyph.SetTag(GenerateTag(minMaxGlyph, queryResultData, index));
+		glyph.GetTag() = GenerateTag(minMaxGlyph, queryResultData, index);
 
 		return glyph;
 	}
 
-	void Transformer::AddChildrenToGlyphTree(SynGlyphXANTz::GlyphTree::SharedPtr tree, SynGlyphXANTz::GlyphTree::iterator newNode, MinMaxGlyphTree::ConstSharedPtr minMaxTree, MinMaxGlyphTree::const_iterator node, const InputFieldDataMap& queryResultData, unsigned int index) const {
+	void Transformer::AddChildrenToGlyphTree(GlyphGraph::SharedPtr tree, GlyphGraph::iterator newNode, DataMappingGlyphGraph::ConstSharedPtr minMaxTree, DataMappingGlyphGraph::const_iterator node, const InputFieldDataMap& queryResultData, unsigned int index) const {
 
 		for (int i = 0; i < minMaxTree->children(node); ++i) {
 
-			MinMaxGlyphTree::const_iterator child = minMaxTree->child(node, i);
-			SynGlyphXANTz::GlyphTree::iterator newChild = tree->insert(newNode, ProcessMinMaxGlyph(child, queryResultData, index));
+			DataMappingGlyphGraph::const_iterator child = minMaxTree->child(node, i);
+			GlyphGraph::iterator newChild = tree->insert(newNode, ProcessMinMaxGlyph(child, queryResultData, index));
 			AddChildrenToGlyphTree(tree, newChild, minMaxTree, child, queryResultData, index);
 		}
 	}
@@ -168,9 +160,9 @@ namespace SynGlyphX {
 		}
 	}
 
-	Color Transformer::ColorRGBInterpolate(const InputBinding& binding, const Color& min, const Color& difference, const InputFieldDataMap& queryResultData, unsigned int index) const {
+	GlyphColor Transformer::ColorRGBInterpolate(const InputBinding& binding, const GlyphColor& min, const GlyphColor& difference, const InputFieldDataMap& queryResultData, unsigned int index) const {
 
-		Color output = min;
+		GlyphColor output = min;
 
 		InputField::HashID id = binding.GetInputFieldID();
 		if (id != 0) {
@@ -178,12 +170,12 @@ namespace SynGlyphX {
 			InputFieldDataMap::const_iterator fieldData = queryResultData.find(id);
 			if (fieldData != queryResultData.end()) {
 
-				Color max;
+				GlyphColor max;
 				max.Set(min[0] + difference[0], min[1] + difference[1], min[2] + difference[2]);
 
-				Color minHSV = Color::ConvertRGBtoHSV(min);
-				Color maxHSV = Color::ConvertRGBtoHSV(max);
-				Color diffHSV;
+				GlyphColor minHSV = GlyphColor::ConvertRGBtoHSV(min);
+				GlyphColor maxHSV = GlyphColor::ConvertRGBtoHSV(max);
+				GlyphColor diffHSV;
 				diffHSV.Set(maxHSV[0] - minHSV[0], maxHSV[1] - minHSV[1], maxHSV[2] - minHSV[2]);
 
 				double currentData = fieldData->second->GetData()[index].toDouble();
@@ -191,12 +183,12 @@ namespace SynGlyphX {
 				double dataMaxMinDiff;
 				GetDataMinAndDifference(binding, *(fieldData->second), dataMin, dataMaxMinDiff);
 
-				Color outputHSV;
+				GlyphColor outputHSV;
 				outputHSV.Set(0, LinearInterpolate(minHSV[0], diffHSV[0], dataMin, dataMaxMinDiff, currentData));
 				outputHSV.Set(1, LinearInterpolate(minHSV[1], diffHSV[1], dataMin, dataMaxMinDiff, currentData));
 				outputHSV.Set(2, LinearInterpolate(minHSV[2], diffHSV[2], dataMin, dataMaxMinDiff, currentData));
 
-				return Color::ConvertHSVtoRGB(outputHSV);
+				return GlyphColor::ConvertHSVtoRGB(outputHSV);
 			}
 		}
 		
@@ -264,16 +256,16 @@ namespace SynGlyphX {
 
 	void Transformer::GetPositionXYForAllGlyphTrees(const SynGlyphX::DataTransformMapping& mapping, std::vector<GeographicPoint>& points) const {
 
-		for (auto minMaxTree : mapping.GetGlyphTrees()) {
+		for (auto minMaxTree : mapping.GetGlyphGraphs()) {
 
-			MinMaxGlyphTree::iterator& rootGlyph = minMaxTree.second->root();
+			DataMappingGlyphGraph::iterator& rootGlyph = minMaxTree.second->root();
 
 			QVariantList queryResultDataX;
 			QVariantList queryResultDataY;
-			const MinMaxGlyphTree::InputFieldMap& inputFields = minMaxTree.second->GetInputFields();
+			const DataMappingGlyphGraph::InputFieldMap& inputFields = minMaxTree.second->GetInputFields();
 
-			queryResultDataX = m_sourceDataManager.RunSelectSqlQuery(inputFields.at(rootGlyph->GetInputBinding(0).GetInputFieldID()));
-			queryResultDataY = m_sourceDataManager.RunSelectSqlQuery(inputFields.at(rootGlyph->GetInputBinding(1).GetInputFieldID()));
+			queryResultDataX = m_sourceDataManager.RunSelectSqlQuery(inputFields.at(rootGlyph->GetInputBinding(DataMappingGlyph::MappableField::PositionX).GetInputFieldID()));
+			queryResultDataY = m_sourceDataManager.RunSelectSqlQuery(inputFields.at(rootGlyph->GetInputBinding(DataMappingGlyph::MappableField::PositionY).GetInputFieldID()));
 
 			size_t numGlyphs = queryResultDataX.length();
 			for (int i = 0; i < numGlyphs; ++i) {
@@ -282,21 +274,21 @@ namespace SynGlyphX {
 		}
 	}
 
-	std::wstring Transformer::GenerateTag(const MinMaxGlyphTree::const_iterator& minMaxGlyph, const InputFieldDataMap& queryResultData, unsigned int index) const {
+	std::wstring Transformer::GenerateTag(const DataMappingGlyphGraph::const_iterator& minMaxGlyph, const InputFieldDataMap& queryResultData, unsigned int index) const {
 
-		InputField::HashID id = minMaxGlyph->GetInputBinding(12).GetInputFieldID();
+		InputField::HashID id = minMaxGlyph->GetInputBinding(DataMappingGlyph::MappableField::Tag).GetInputFieldID();
 
 		if (id == 0) {
 
-			if (m_defaults.GetTagField() != DataMappingDefaults::TagFieldPropertyDefault::None) {
+			if (m_defaults.IsDefaultTagFieldSet()) {
 
-				id = minMaxGlyph->GetInputBinding(static_cast<unsigned int>(m_defaults.GetTagField())).GetInputFieldID();
+				id = minMaxGlyph->GetInputBinding(m_defaults.GetTagField()).GetInputFieldID();
 			}
 		}
 
 		if (id != 0) {
 
-			const MinMaxGlyphTree* minMaxGlyphTree = static_cast<const MinMaxGlyphTree*>(minMaxGlyph.owner());
+			const DataMappingGlyphGraph* minMaxGlyphTree = static_cast<const DataMappingGlyphGraph*>(minMaxGlyph.owner());
 			InputFieldDataMap::const_iterator dataList = queryResultData.find(id);
 			if (dataList != queryResultData.end()) {
 

@@ -35,13 +35,20 @@ namespace SynGlyphX {
 	public:
 		typedef std::shared_ptr<GlyphGraph> SharedPtr;
 		typedef std::shared_ptr<const GlyphGraph> ConstSharedPtr;
+		typedef std::vector<ConstSharedPtr> ConstSharedVector;
 
 		GlyphGraph();
+		GlyphGraph(const Glyph& rootGlyph);
 		GlyphGraph(const GlyphGraph& graph);
 		~GlyphGraph();
 
+		void AllocateChildSubtree(const std::vector<Glyph>& templates, const std::vector<unsigned int> instances, const GlyphGraph::iterator& parent);
+
 		static const Glyph s_defaultGlyph;
 		static const Glyph s_defaultRootGlyph;
+
+	protected:
+		GlyphGraph(const std::vector<Glyph>& templates, const std::vector<unsigned int> instances, unsigned int depth);
 
 	private:
 		static Glyph CreateDefaultGlyph(GlyphStructuralProperties::Shape geometryShape, GlyphStructuralProperties::VirtualTopology virtualTopology);

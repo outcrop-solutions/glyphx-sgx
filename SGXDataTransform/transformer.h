@@ -2,8 +2,8 @@
 #define SYNGLYPHX_TRANSFORMER_H
 
 #include "sgxdatatransform_global.h"
-#include "glyph.h"
-#include "minmaxglyphtree.h"
+#include "glyphgraph.h"
+#include "datamappingglyphgraph.h"
 #include "sourcedatamanager.h"
 #include "geographicboundingbox.h"
 #include "inputfielddata.h"
@@ -28,16 +28,16 @@ namespace SynGlyphX {
 		bool HaveDatasourcesBeenUpdated(const DataTransformMapping& mapping, std::time_t lastUpdateTime) const;
 		bool HasFileBeenUpdated(const std::wstring& filename, std::time_t lastUpdateTime) const;
 
-		SynGlyphXANTz::GlyphTree::ConstSharedVector CreateGlyphTreesFromMinMaxTrees(const DataTransformMapping& mapping) const;
-		SynGlyphXANTz::GlyphTree::ConstSharedVector CreateGlyphTreesFromMinMaxTree(MinMaxGlyphTree::ConstSharedPtr minMaxTree) const;
-		SynGlyphXANTz::GlyphProperties ProcessMinMaxGlyph(const MinMaxGlyphTree::const_iterator& minMaxGlyph, const InputFieldDataMap& queryResultData, unsigned int index) const;
-		void AddChildrenToGlyphTree(SynGlyphXANTz::GlyphTree::SharedPtr tree, SynGlyphXANTz::GlyphTree::iterator newNode, MinMaxGlyphTree::ConstSharedPtr minMaxTree, MinMaxGlyphTree::const_iterator node, const InputFieldDataMap& queryResultData, unsigned int index) const;
+		GlyphGraph::ConstSharedVector CreateGlyphTreesFromMinMaxTrees(const DataTransformMapping& mapping) const;
+		GlyphGraph::ConstSharedVector CreateGlyphTreesFromMinMaxTree(DataMappingGlyphGraph::ConstSharedPtr minMaxTree) const;
+		Glyph ProcessMinMaxGlyph(const DataMappingGlyphGraph::const_iterator& minMaxGlyph, const InputFieldDataMap& queryResultData, unsigned int index) const;
+		void AddChildrenToGlyphTree(GlyphGraph::SharedPtr tree, GlyphGraph::iterator newNode, DataMappingGlyphGraph::ConstSharedPtr minMaxTree, DataMappingGlyphGraph::const_iterator node, const InputFieldDataMap& queryResultData, unsigned int index) const;
 		double LinearInterpolate(const InputBinding& binding, double min, double difference, const InputFieldDataMap& queryResultData, unsigned int index) const;
 		double LinearInterpolate(double min, double difference, double dataMin, double dataDifference, double currentData) const;
-		Color ColorRGBInterpolate(const InputBinding& binding, const Color& min, const Color& difference, const InputFieldDataMap& queryResultData, unsigned int index) const;
+		GlyphColor ColorRGBInterpolate(const InputBinding& binding, const GlyphColor& min, const GlyphColor& difference, const InputFieldDataMap& queryResultData, unsigned int index) const;
 		void GetPositionXYForAllGlyphTrees(const SynGlyphX::DataTransformMapping& mapping, std::vector<GeographicPoint>& points) const;
 		void GetDataMinAndDifference(const InputBinding& binding, const InputFieldData& fieldData, double& dataMin, double& dataDifference) const;
-		std::wstring GenerateTag(const MinMaxGlyphTree::const_iterator& minMaxGlyph, const InputFieldDataMap& queryResultData, unsigned int index) const;
+		std::wstring GenerateTag(const DataMappingGlyphGraph::const_iterator& minMaxGlyph, const InputFieldDataMap& queryResultData, unsigned int index) const;
 
 		SourceDataManager m_sourceDataManager;
 		GeographicBoundingBox m_overrideRootXYBoundingBox;

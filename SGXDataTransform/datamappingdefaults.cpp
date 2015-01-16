@@ -4,24 +4,28 @@
 
 namespace SynGlyphX {
 
-	const boost::bimap<DataMappingDefaults::TagFieldPropertyDefault, std::wstring> DataMappingDefaults::s_tagFieldStrings = boost::assign::list_of < boost::bimap<DataMappingDefaults::TagFieldPropertyDefault, std::wstring>::relation >
-		(DataMappingDefaults::TagFieldPropertyDefault::None, L"None")
-		(DataMappingDefaults::TagFieldPropertyDefault::PositionX, L"Position X")
-		(DataMappingDefaults::TagFieldPropertyDefault::PositionY, L"Position Y")
-		(DataMappingDefaults::TagFieldPropertyDefault::PositionZ, L"Position Z")
-		(DataMappingDefaults::TagFieldPropertyDefault::RotationX, L"Rotation X")
-		(DataMappingDefaults::TagFieldPropertyDefault::RotationY, L"Rotation Y")
-		(DataMappingDefaults::TagFieldPropertyDefault::RotationZ, L"Rotation Z")
-		(DataMappingDefaults::TagFieldPropertyDefault::ScaleX, L"Scale X")
-		(DataMappingDefaults::TagFieldPropertyDefault::ScaleY, L"Scale Y")
-		(DataMappingDefaults::TagFieldPropertyDefault::ScaleZ, L"Scale Z")
-		(DataMappingDefaults::TagFieldPropertyDefault::Color, L"Color")
-		(DataMappingDefaults::TagFieldPropertyDefault::Transparency, L"Transparency");
+	const boost::bimap<DataMappingGlyph::MappableField, std::wstring> DataMappingDefaults::s_tagFieldStrings = boost::assign::list_of < boost::bimap<DataMappingGlyph::MappableField, std::wstring>::relation >
+		(DataMappingGlyph::MappableField::Tag, L"None")
+		(DataMappingGlyph::MappableField::PositionX, L"Position X")
+		(DataMappingGlyph::MappableField::PositionY, L"Position Y")
+		(DataMappingGlyph::MappableField::PositionZ, L"Position Z")
+		(DataMappingGlyph::MappableField::RotationX, L"Rotation X")
+		(DataMappingGlyph::MappableField::RotationY, L"Rotation Y")
+		(DataMappingGlyph::MappableField::RotationZ, L"Rotation Z")
+		(DataMappingGlyph::MappableField::ScaleX, L"Scale X")
+		(DataMappingGlyph::MappableField::ScaleY, L"Scale Y")
+		(DataMappingGlyph::MappableField::ScaleZ, L"Scale Z")
+		(DataMappingGlyph::MappableField::Color, L"Color")
+		(DataMappingGlyph::MappableField::Transparency, L"Transparency")
+		(DataMappingGlyph::MappableField::Description, L"Description")
+		(DataMappingGlyph::MappableField::RotationRateX, L"Rotation Rate X")
+		(DataMappingGlyph::MappableField::RotationRateY, L"Rotation Rate Y")
+		(DataMappingGlyph::MappableField::RotationRateZ, L"Rotation Rate Z");
 
 	const std::wstring DataMappingDefaults::s_propertyTreeName = L"Defaults";
 
 	DataMappingDefaults::DataMappingDefaults() :
-		m_tagField(TagFieldPropertyDefault::None),
+		m_tagField(DataMappingGlyph::MappableField::Tag),
 		m_defaultTagValue(L"No Tag")
 	{
 	}
@@ -74,7 +78,7 @@ namespace SynGlyphX {
 
 	void DataMappingDefaults::Clear() {
 
-		m_tagField = TagFieldPropertyDefault::None;
+		m_tagField = DataMappingGlyph::MappableField::Tag;
 		m_defaultTagValue = L"No Tag";
 	}
 
@@ -85,14 +89,19 @@ namespace SynGlyphX {
 		propertyTree.put(L"TagValueDefault", m_defaultTagValue);
 	}
 
-	void DataMappingDefaults::SetTagField(TagFieldPropertyDefault tagField) {
+	void DataMappingDefaults::SetTagField(DataMappingGlyph::MappableField tagField) {
 
 		m_tagField = tagField;
 	}
 
-	DataMappingDefaults::TagFieldPropertyDefault DataMappingDefaults::GetTagField() const {
+	DataMappingGlyph::MappableField DataMappingDefaults::GetTagField() const {
 
 		return m_tagField;
+	}
+
+	bool DataMappingDefaults::IsDefaultTagFieldSet() const {
+
+		return (m_tagField != DataMappingGlyph::MappableField::Tag);
 	}
 
 	void DataMappingDefaults::SetDefaultTagValue(const std::wstring& value) {

@@ -89,6 +89,37 @@ namespace SynGlyphX {
 
 	}
 
+	template<typename PropertyType>
+	DataMappingProperty<PropertyType>& DataMappingProperty<PropertyType>::operator=(const DataMappingProperty<PropertyType>& prop) {
+
+		m_value = prop.m_value;
+		m_binding = prop.m_binding;
+
+		return *this;
+	}
+
+	template<typename PropertyType>
+	bool DataMappingProperty<PropertyType>::operator==(const DataMappingProperty<PropertyType>& prop) const {
+
+		if (m_value != prop.m_value) {
+
+			return false;
+		}
+
+		if (m_binding != prop.m_binding) {
+
+			return false;
+		}
+
+		return true;
+	}
+
+	template<typename PropertyType>
+	bool DataMappingProperty<PropertyType>::operator!=(const DataMappingProperty<PropertyType>& prop) const {
+
+		return !operator==(prop);
+	}
+
 	template <typename PropertyType>
 	boost::property_tree::wptree& DataMappingProperty<PropertyType>::ExportToPropertyTree(boost::property_tree::wptree& propertyTree) const {
 

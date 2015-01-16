@@ -11,22 +11,23 @@
 #include "inputfield.h"
 #include <unordered_map>
 #include "csvfilehandler.h"
-#include <boost/graph/directed_graph.hpp>
+//#include <boost/graph/directed_graph.hpp>
+#include <containers/ntree.hpp>
 #include "glyphgraph.h"
 
 namespace SynGlyphX {
 
-	class SGXDATATRANSFORM_EXPORT DataMappingGlyphGraph : public boost::directed_graph<DataMappingGlyph> {
+	class SGXDATATRANSFORM_EXPORT DataMappingGlyphGraph : public stlplus::ntree<DataMappingGlyph> {
 
 	public:
-		typedef DataMappingGlyphGraph::vertex_descriptor Vertex;
-
 		typedef std::unordered_map<InputField::HashID, InputField> InputFieldMap;
 		typedef std::unordered_map<InputField::HashID, unsigned int> InputFieldCountMap;
 		typedef boost::property_tree::wptree PropertyTree;
 
 		typedef std::shared_ptr<DataMappingGlyphGraph> SharedPtr;
 		typedef std::shared_ptr<const DataMappingGlyphGraph> ConstSharedPtr;
+
+		typedef stlplus::ntree_node<DataMappingGlyph> Node;
 		
 		DataMappingGlyphGraph();
 		DataMappingGlyphGraph(const boost::property_tree::wptree& propertyTree);
@@ -36,16 +37,14 @@ namespace SynGlyphX {
 
 		PropertyTree& ExportToPropertyTree(boost::property_tree::wptree& propertyTreeParent) const;
 
-		const Vertex& GetRootVertex() const;
-
-		//bool operator==(const TemplateGlyphGraph& graph) const;
-		//bool operator!=(const TemplateGlyphGraph& graph) const;
+		bool operator==(const DataMappingGlyphGraph& graph) const;
+		bool operator!=(const DataMappingGlyphGraph& graph) const;
 
 		//void WriteToFile(const std::string& filename) const;
 		//void ReadFromFile(const std::string& filename);
 
-		void SetInputField(InputBinding& binding, const InputField& inputfield);
-		void ClearInputBinding(InputBinding& binding);
+		void SetInputField(DataMappingGlyphGraph::const_iterator& node, DataMappingGlyph::MappableField field, const InputField& inputfield);
+		void ClearInputBinding(DataMappingGlyphGraph::const_iterator& node, DataMappingGlyph::MappableField field);
 
 		const InputFieldMap& GetInputFields() const;
 
@@ -61,16 +60,14 @@ namespace SynGlyphX {
 		void IncrementInputBindingCount(const InputBinding& binding);
 		//void ReadFromSGTFile(const std::string& filename);
 		//void ReadFromANTzCSVFile(const std::string& filename);
-		void ExportToPropertyTree(const Vertex& parent, boost::property_tree::wptree& propertyTreeParent) const;
-		void ProcessPropertyTreeChildren(Vertex& parent, const boost::property_tree::wptree& propertyTree);
-		void AddGraphGlyphSubgraph(Vertex& parent, const GlyphGraph::Vertex& glyphGraphParent, const GlyphGraph& graph);
-		void CreateMinOrMaxGlyphSubtree(const Vertex& parent, const GlyphGraph::Vertex& newVertex, GlyphGraph::SharedPtr newGlyphGraph, bool isMax) const;
-		//bool AreSubtreesEqual(const MinMaxGlyphTree::const_iterator& thisTreeNode, const MinMaxGlyphTree::const_iterator& otherTreeNode, const MinMaxGlyphTree& otherTree) const;
+		void ExportToPropertyTree(const DataMappingGlyphGraph::const_iterator& parent, boost::property_tree::wptree& propertyTreeParent) const;
+		void ProcessPropertyTreeChildren(const DataMappingGlyphGraph::iterator& parent, const boost::property_tree::wptree& propertyTree);
+		void AddGraphGlyphSubgraph(DataMappingGlyphGraph::iterator& parent, const GlyphGraph::const_iterator& glyphGraphParent, const GlyphGraph& graph);
+		void CreateMinOrMaxGlyphSubtree(const DataMappingGlyphGraph::const_iterator& parent, GlyphGraph::iterator& newVertex, GlyphGraph::SharedPtr newGlyphGraph, bool isMax) const;
+		bool AreSubtreesEqual(const DataMappingGlyphGraph::const_iterator& thisTreeNode, const DataMappingGlyphGraph::const_iterator& otherTreeNode, const DataMappingGlyphGraph& otherTree) const;
 
 		InputFieldMap m_inputFields;
 		InputFieldCountMap m_inputFieldReferenceCounts;
-
-		Vertex m_rootVertex;
 	};
 
 } //namespace SynGlyphX

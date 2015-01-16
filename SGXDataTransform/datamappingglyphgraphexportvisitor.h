@@ -6,7 +6,7 @@
 #include "datamappingglyphgraph.h"
 
 namespace SynGlyphX {
-
+	/*
 	class DataMappingGlyphGraphMinExportVisitor : public GraphCopyVisitor<GlyphGraph>
 	{
 	public:
@@ -30,6 +30,7 @@ namespace SynGlyphX {
 			return m_newGraph->add_vertex(g[u].GetMaxGlyph());
 		}
 	};
+	*/
 }
 
 #endif //SYNGLYPHX_DATAMAPPINGGLYPHGRAPHEXPORTVISITOR_H

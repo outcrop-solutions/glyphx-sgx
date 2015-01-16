@@ -50,13 +50,13 @@ namespace SynGlyphX {
 
 		void SetInputBinding(MappableField field, const InputBinding& binding);
 		void ClearInputBinding(MappableField field);
+		const InputBinding& GetInputBinding(MappableField field) const;
 
 		bool IsPositionXYBoundToInputFields() const;
 
 	protected:
 		void GetXYZNumericPropertiesFromPropertyTree(const boost::property_tree::wptree& propertyTree, NumericMappingPropertyXYZ& prop);
 		void AddXYZNumericPropertiesToPropertyTree(boost::property_tree::wptree& propertyTree, const NumericMappingPropertyXYZ& prop) const;
-		InputBinding& SelectInputBinding(MappableField field);
 	};
 
 } //namespace SynGlyphX

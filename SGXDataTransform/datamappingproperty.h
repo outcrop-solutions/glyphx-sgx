@@ -21,6 +21,10 @@ namespace SynGlyphX {
 		DataMappingProperty(const DataMappingProperty& prop);
 		~DataMappingProperty();
 
+		DataMappingProperty& operator=(const DataMappingProperty& prop);
+		bool operator==(const DataMappingProperty& prop) const;
+		bool operator!=(const DataMappingProperty& prop) const;
+
 		boost::property_tree::wptree& ExportToPropertyTree(boost::property_tree::wptree& propertyTree) const;
 
 		PropertyType& GetValue();

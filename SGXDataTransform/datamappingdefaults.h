@@ -4,6 +4,7 @@
 #include "sgxdatatransform_global.h"
 #include <boost/bimap.hpp>
 #include <boost/property_tree/ptree.hpp>
+#include "datamappingglyph.h"
 
 namespace SynGlyphX {
 
@@ -11,23 +12,6 @@ namespace SynGlyphX {
 	{
 	public:
 		typedef boost::property_tree::wptree PropertyTree;
-
-		//This enum may be moved once the glyph property system is written
-		enum TagFieldPropertyDefault {
-
-			None = -1,
-			PositionX = 0,
-			PositionY = 1,
-			PositionZ = 2,
-			RotationX = 3,
-			RotationY = 4,
-			RotationZ = 5,
-			ScaleX = 6,
-			ScaleY = 7,
-			ScaleZ = 8,
-			Color = 9,
-			Transparency = 10
-		};
 
 		DataMappingDefaults();
 		DataMappingDefaults(const PropertyTree& propertyTree);
@@ -42,17 +26,18 @@ namespace SynGlyphX {
 
 		void ExportToPropertyTree(PropertyTree& parentPropertyTree) const;
 
-		void SetTagField(TagFieldPropertyDefault tagField);
-		TagFieldPropertyDefault GetTagField() const;
+		void SetTagField(DataMappingGlyph::MappableField tagField);
+		DataMappingGlyph::MappableField GetTagField() const;
+		bool IsDefaultTagFieldSet() const;
 
 		void SetDefaultTagValue(const std::wstring& value);
 		const std::wstring& GetDefaultTagValue() const;
 
-		static const boost::bimap<TagFieldPropertyDefault, std::wstring> s_tagFieldStrings;
+		static const boost::bimap<DataMappingGlyph::MappableField, std::wstring> s_tagFieldStrings;
 		static const std::wstring s_propertyTreeName;
 
 	private:
-		TagFieldPropertyDefault m_tagField;
+		DataMappingGlyph::MappableField m_tagField;
 		std::wstring m_defaultTagValue;
 	};
 
