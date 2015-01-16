@@ -2,7 +2,7 @@
 #include <stdexcept>
 #include <string>
 #include <type_traits>
-#include "color.h"
+#include "glyphcolor.h"
 
 namespace SynGlyphX {
 
@@ -32,6 +32,6 @@ namespace SynGlyphX {
 
 	template class DataMappingFunction < std::wstring >;
 	template class DataMappingFunction < double >;
-	template class DataMappingFunction < Color, double >;
+	template class DataMappingFunction < GlyphColor, double >;
 
 } //namespace SynGlyphX

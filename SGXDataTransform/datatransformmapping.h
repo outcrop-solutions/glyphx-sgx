@@ -8,7 +8,7 @@
 #include <unordered_map>
 #include <boost/property_tree/ptree.hpp>
 #include "UUID.h"
-#include "minmaxglyphtree.h"
+#include "datamappingglyphgraph.h"
 #include "baseimage.h"
 #include "transformer.h"
 #include "datamappingdefaults.h"
@@ -18,7 +18,7 @@ namespace SynGlyphX {
 	class SGXDATATRANSFORM_EXPORT DataTransformMapping : public XMLPropertyTreeFile, boost::noncopyable
     {
     public:
-		typedef std::unordered_map<boost::uuids::uuid, MinMaxGlyphTree::SharedPtr, SynGlyphX::UUIDHash> MinMaxGlyphTreeMap;
+		typedef std::unordered_map<boost::uuids::uuid, DataMappingGlyphGraph::SharedPtr, SynGlyphX::UUIDHash> DataMappingGlyphGraphMap;
 
 		typedef boost::shared_ptr<DataTransformMapping> SharedPtr;
 		typedef boost::shared_ptr<const DataTransformMapping> ConstSharedPtr;
@@ -41,9 +41,9 @@ namespace SynGlyphX {
 
 		void EnableTables(const boost::uuids::uuid& id, const Datasource::TableSet& tables, bool enable = true);
 
-		boost::uuids::uuid AddGlyphTree(const MinMaxGlyphTree::SharedPtr glyphTree);
+		boost::uuids::uuid AddGlyphTree(const DataMappingGlyphGraph::SharedPtr glyphTree);
 		void RemoveGlyphTree(const boost::uuids::uuid& id);
-		const MinMaxGlyphTreeMap& GetGlyphTrees() const;
+		const DataMappingGlyphGraphMap& GetGlyphTrees() const;
 
 		void SetInputField(const boost::uuids::uuid& treeID, MinMaxGlyphTree::const_iterator& node, int index, const InputField& inputfield);
 		void ClearInputBinding(const boost::uuids::uuid& treeID, MinMaxGlyphTree::const_iterator& node, int index);
@@ -72,7 +72,7 @@ namespace SynGlyphX {
 
 		DataMappingDefaults m_defaults;
 		DatasourceMaps m_datasources;
-		MinMaxGlyphTreeMap m_glyphTrees;
+		DataMappingGlyphGraphMap m_glyphTrees;
 		std::vector<BaseImage> m_baseObjects;
 		boost::uuids::uuid m_id;
     };

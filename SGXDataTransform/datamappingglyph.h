@@ -12,6 +12,26 @@ namespace SynGlyphX {
 	class SGXDATATRANSFORM_EXPORT DataMappingGlyph : public GlyphTemplate<NumericMappingProperty, ColorMappingProperty, TextMappingProperty> {
 
 	public:
+		enum MappableField {
+			PositionX = 0,
+			PositionY,
+			PositionZ,
+			RotationX,
+			RotationY,
+			RotationZ,
+			ScaleX,
+			ScaleY,
+			ScaleZ,
+			Color,
+			Transparency,
+			Tag,
+			Description,
+			RotationRateX,
+			RotationRateY,
+			RotationRateZ,
+			MappableFieldSize //This needs to be at the bottom to get the number of enums
+		};
+
 		DataMappingGlyph();
 		DataMappingGlyph(const DataMappingGlyph& glyph);
 		DataMappingGlyph(const Glyph& glyph);
@@ -24,22 +44,19 @@ namespace SynGlyphX {
 		SynGlyphX::Glyph GetDifference() const;
 		SynGlyphX::Glyph GetMaxGlyph() const;
 
-		/*MinMaxGlyph& operator=(const MinMaxGlyph& glyph);
-		bool operator==(const MinMaxGlyph& glyph) const;
-		bool operator!=(const MinMaxGlyph& glyph) const;
+		DataMappingGlyph& operator=(const DataMappingGlyph& glyph);
+		bool operator==(const DataMappingGlyph& glyph) const;
+		bool operator!=(const DataMappingGlyph& glyph) const;
 
-		void SetMinGlyph(const SynGlyphXANTz::GlyphProperties& glyph);
-		void SetDifference(const SynGlyphXANTz::GlyphNumericMappableProperties& difference);
-
-		const InputBinding& GetInputBinding(unsigned int index) const;
-		void SetInputBinding(unsigned int index, const InputBinding& binding);
-		void ClearInputBinding(unsigned int index);*/
+		void SetInputBinding(MappableField field, const InputBinding& binding);
+		void ClearInputBinding(MappableField field);
 
 		bool IsPositionXYBoundToInputFields() const;
 
-	private:
+	protected:
 		void GetXYZNumericPropertiesFromPropertyTree(const boost::property_tree::wptree& propertyTree, NumericMappingPropertyXYZ& prop);
 		void AddXYZNumericPropertiesToPropertyTree(boost::property_tree::wptree& propertyTree, const NumericMappingPropertyXYZ& prop) const;
+		InputBinding& SelectInputBinding(MappableField field);
 	};
 
 } //namespace SynGlyphX

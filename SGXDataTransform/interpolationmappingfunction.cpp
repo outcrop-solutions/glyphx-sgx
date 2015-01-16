@@ -1,5 +1,5 @@
 #include "interpolationmappingfunction.h"
-#include "color.h"
+#include "glyphcolor.h"
 
 namespace SynGlyphX {
 
@@ -39,20 +39,20 @@ namespace SynGlyphX {
 	}
 
 	template<>
-	Color InterpolationMappingFunction<Color>::MapCombinedInput(const double& input) const {
+	GlyphColor InterpolationMappingFunction<GlyphColor>::MapCombinedInput(const double& input) const {
 
-		Color minHSV = Color::ConvertRGBtoHSV(m_outputMin);
-		Color differenceHSV = Color::ConvertRGBtoHSV(m_outputDifference);
+		GlyphColor minHSV = GlyphColor::ConvertRGBtoHSV(m_outputMin);
+		GlyphColor differenceHSV = GlyphColor::ConvertRGBtoHSV(m_outputDifference);
 
-		Color outputHSV;
+		GlyphColor outputHSV;
 		outputHSV.Set(0, static_cast<short>(Interpolate(input, m_inputMin, m_inputDifference, minHSV[0], differenceHSV[0])));
 		outputHSV.Set(1, static_cast<short>(Interpolate(input, m_inputMin, m_inputDifference, minHSV[0], differenceHSV[0])));
 		outputHSV.Set(2, static_cast<short>(Interpolate(input, m_inputMin, m_inputDifference, minHSV[0], differenceHSV[0])));
 
-		return Color::ConvertHSVtoRGB(outputHSV);
+		return GlyphColor::ConvertHSVtoRGB(outputHSV);
 	}
 
 	template class InterpolationMappingFunction < double >;
-	template class InterpolationMappingFunction < Color >;
+	template class InterpolationMappingFunction < GlyphColor >;
 
 } //namespace SynGlyphX

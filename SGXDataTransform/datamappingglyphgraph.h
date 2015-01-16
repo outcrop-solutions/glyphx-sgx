@@ -57,6 +57,8 @@ namespace SynGlyphX {
 		static SharedPtr CreateDefault();
 
 	private:
+		void IncrementInputBindingCountsFromGlyph(const DataMappingGlyph& glyph);
+		void IncrementInputBindingCount(const InputBinding& binding);
 		//void ReadFromSGTFile(const std::string& filename);
 		//void ReadFromANTzCSVFile(const std::string& filename);
 		void ExportToPropertyTree(const Vertex& parent, boost::property_tree::wptree& propertyTreeParent) const;

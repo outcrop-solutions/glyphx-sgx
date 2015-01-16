@@ -4,11 +4,12 @@
 #include "valuemappingfunction.h"
 #include "range.h"
 #include <map>
+#include "glyphcolor.h"
 
 namespace SynGlyphX {
 
 	template <typename OutputType>
-	class RangeValueMappingFunction : public ValueMappingFunction<OutputType, Range>
+	class RangeValueMappingFunction : public ValueMappingFunction<OutputType, double>
 	{
 	public:
 		RangeValueMappingFunction(std::shared_ptr<const InputCombinationFunction<double>> inputCombinationFunction = nullptr);
@@ -24,6 +25,9 @@ namespace SynGlyphX {
 
 		std::map<Range, OutputType> m_mappedValues;
 	};
+
+	typedef RangeValueMappingFunction<double> Range2DoubleMappingFunction;
+	typedef RangeValueMappingFunction<GlyphColor> Range2ColorMappingFunction;
 
 } // namespace SynGlyphX
 

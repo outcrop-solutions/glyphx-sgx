@@ -5,6 +5,7 @@
 #include <stdexcept>
 #include "csvfilereader.h"
 #include "antzcsvwriter.h"
+#include "datamappingglyphgraphexportvisitor.h"
 
 namespace SynGlyphX {
 
@@ -16,9 +17,6 @@ namespace SynGlyphX {
 	DataMappingGlyphGraph::DataMappingGlyphGraph(const boost::property_tree::wptree& propertyTree) :
 		boost::directed_graph<DataMappingGlyph>() {
 
-		m_rootVertex = add_vertex(DataMappingGlyph(propertyTree));
-		ProcessPropertyTreeChildren(m_rootVertex, propertyTree);
-
 		boost::optional<const PropertyTree&> inputFieldsPropertyTree = propertyTree.get_child_optional(L"InputFields");
 		if (inputFieldsPropertyTree.is_initialized()) {
 
@@ -28,9 +26,14 @@ namespace SynGlyphX {
 
 					InputField inputfield(inputfieldProperties.second);
 					m_inputFields[inputfield.GetHashID()] = inputfield;
+					m_inputFieldReferenceCounts[inputfield.GetHashID()] = 0;
 				}
 			}
 		}
+
+		m_rootVertex = add_vertex(DataMappingGlyph(propertyTree));
+		IncrementInputBindingCountsFromGlyph(operator[](m_rootVertex));
+		ProcessPropertyTreeChildren(m_rootVertex, propertyTree);
 	}
 
 	DataMappingGlyphGraph::DataMappingGlyphGraph(const DataMappingGlyphGraph& graph) :
@@ -261,6 +264,7 @@ namespace SynGlyphX {
 				if (glyphTree.first == L"Glyph") {
 
 					Vertex child = add_vertex(DataMappingGlyph(glyphTree.second));
+					IncrementInputBindingCountsFromGlyph(operator[](child));
 					add_edge(parent, child);
 					ProcessPropertyTreeChildren(child, glyphTree.second);
 				}
@@ -300,7 +304,7 @@ namespace SynGlyphX {
 
 		InputField::HashID inputFieldID = inputfield.GetHashID();
 		std::unordered_map<InputField::HashID, unsigned int>::iterator referenceCount = m_inputFieldReferenceCounts.find(inputFieldID);
-		
+
 		if (referenceCount == m_inputFieldReferenceCounts.end()) {
 
 			m_inputFieldReferenceCounts[inputFieldID] = 1;
@@ -343,35 +347,49 @@ namespace SynGlyphX {
 
 	GlyphGraph::SharedPtr DataMappingGlyphGraph::GetMinGlyphTree() const {
 
-		GlyphGraph::SharedPtr minGlyphTree = std::make_shared<GlyphGraph>();
-		CreateMinOrMaxGlyphSubtree(root(), minGlyphTree->root(), minGlyphTree);
-
-		return minGlyphTree;
+		DataMappingGlyphGraphMinExportVisitor vis;
+		boost::depth_first_search(*this, boost::visitor(vis));
+		return vis.GetNewGraph();
 	}
 
 	GlyphGraph::SharedPtr DataMappingGlyphGraph::GetMaxGlyphTree() const {
 
-		GlyphGraph::SharedPtr maxGlyphTree = std::make_shared<GlyphGraph>();
-		CreateMinOrMaxGlyphSubtree(root(), maxGlyphTree->root(), maxGlyphTree);
-
-		return maxGlyphTree;
+		DataMappingGlyphGraphMaxExportVisitor vis;
+		boost::depth_first_search(*this, boost::visitor(vis));
+		return vis.GetNewGraph();
 	}
 
-	void DataMappingGlyphGraph::CreateMinOrMaxGlyphSubtree(const Vertex& parent, const GlyphGraph::Vertex& newVertex, GlyphGraph::SharedPtr newGlyphGraph, bool isMax) const {
+	DataMappingGlyphGraph::SharedPtr DataMappingGlyphGraph::CreateDefault() {
 
-		for (int i = 0; i < children(parentNode); ++i) {
+		DataMappingGlyphGraph::SharedPtr newTree = std::make_shared<DataMappingGlyphGraph>();
+		newTree->add_vertex(DataMappingGlyph(GlyphGraph::s_defaultGlyph));
+		return newTree;
+	}
 
-			const MinMaxGlyphTree::const_iterator& childNode = child(parentNode, i);
-			CreateMaxGlyphSubtree(childNode, newGlyphTree->insert(newParent, childNode->GetMaxGlyph()), newGlyphTree);
+	void DataMappingGlyphGraph::IncrementInputBindingCountsFromGlyph(const DataMappingGlyph& glyph) {
+
+		for (int i = 0; i < GlyphProperty::NumericPropertySize; ++i) {
+
+			IncrementInputBindingCount(glyph.GetProperty(static_cast<GlyphProperty::Numeric>(i)).binding);
+		}
+
+		for (int i = 0; i < GlyphProperty::ColorPropertySize; ++i) {
+
+			IncrementInputBindingCount(glyph.GetProperty(static_cast<GlyphProperty::Color>(i)).binding);
+		}
+
+		for (int i = 0; i < GlyphProperty::TextPropertySize; ++i) {
+
+			IncrementInputBindingCount(glyph.GetProperty(static_cast<GlyphProperty::Text>(i)).binding);
 		}
 	}
 
-	MinMaxGlyphTree::SharedPtr MinMaxGlyphTree::CreateDefault() {
+	void DataMappingGlyphGraph::IncrementInputBindingCount(const InputBinding& binding) {
 
-		MinMaxGlyphTree::SharedPtr newTree(new MinMaxGlyphTree());
-		MinMaxGlyphTree::iterator root = newTree->insert(MinMaxGlyph(*SynGlyphXANTz::GlyphProperties::GetRoot().get()));
-		newTree->insert(root, MinMaxGlyph(*SynGlyphXANTz::GlyphProperties::GetTemplate().get()));
-		return newTree;
+		if (binding.IsBoundToInputField()) {
+
+			++m_inputFieldReferenceCounts[binding.GetInputFieldID()];
+		}
 	}
 
 } //namespace SynGlyphX

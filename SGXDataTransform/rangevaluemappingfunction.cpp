@@ -5,7 +5,7 @@ namespace SynGlyphX {
 
 	template <typename OutputType>
 	RangeValueMappingFunction<OutputType>::RangeValueMappingFunction(std::shared_ptr<const InputCombinationFunction<double>> inputCombinationFunction) :
-		ValueMappingFunction<OutputType, Range>(inputCombinationFunction)
+		ValueMappingFunction<OutputType, double>(inputCombinationFunction)
 	{
 	}
 
