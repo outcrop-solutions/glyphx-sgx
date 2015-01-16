@@ -6,7 +6,8 @@
 #include <vector>
 #include <boost/shared_ptr.hpp>
 #include "data/nptypes.h"
-#include "glyph.h"
+#include "glyphgraph.h"
+#include "datamappingglyphgraph.h"
 #include "minmaxglyphtreemodel.h"
 #include <QtCore/QItemSelectionModel>
 
@@ -30,7 +31,7 @@ namespace SynGlyphXANTz {
 		void SetAllowMultiSelection(bool allowMultiSelection);
 		void SetModel(MinMaxGlyphTreeModel* model, QItemSelectionModel* selectionModel);
 
-		void AppendChild(const QModelIndex& parent, boost::shared_ptr<const GlyphProperties> glyph, unsigned int numberOfChildren = 1);
+		void AppendChild(const QModelIndex& parent, boost::shared_ptr<const SynGlyphX::Glyph> glyph, unsigned int numberOfChildren = 1);
 
 		void ShowGlyph(bool show);
 
@@ -65,12 +66,12 @@ namespace SynGlyphXANTz {
 
 		void DeleteRootGlyphNode();
 
-		void CreateNewSubTree(pNPnode parent, const SynGlyphX::MinMaxGlyphTree::const_iterator& minMaxGlyph);
-		pNPnode CreateNodeFromTemplate(pNPnode parent, const SynGlyphX::MinMaxGlyphTree::const_iterator& minMaxGlyph);
+		void CreateNewSubTree(pNPnode parent, const SynGlyphX::DataMappingGlyphGraph::const_iterator& minMaxGlyph);
+		pNPnode CreateNodeFromTemplate(pNPnode parent, const SynGlyphX::DataMappingGlyphGraph::const_iterator& minMaxGlyph);
 		void RebuildTree();
 
-		void UpdateGlyphProperties(pNPnode glyph, const SynGlyphX::MinMaxGlyphTree::const_iterator& minMaxGlyph);
-		void UpdateGlyphProperties(pNPnode glyph, const GlyphProperties& glyphTemplate);
+		void UpdateGlyphProperties(pNPnode glyph, const SynGlyphX::DataMappingGlyphGraph::const_iterator& minMaxGlyph);
+		void UpdateGlyphProperties(pNPnode glyph, const SynGlyphX::Glyph& glyphTemplate);
 
 		void ConnectDataChangedSignal();
 		void DisconnectDataChangedSignal();
@@ -78,7 +79,7 @@ namespace SynGlyphXANTz {
 		pNPnode m_rootGlyph;
 		unsigned int m_baseImageTextureID;
 
-		GlyphProperties::SharedPtr m_clipboardGlyph;
+		SynGlyphX::Glyph m_clipboardGlyph;
 
 		MinMaxGlyphTreeModel::GlyphType m_glyphTreeType;
 

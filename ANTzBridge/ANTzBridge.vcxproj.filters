@@ -27,16 +27,7 @@
     <ClInclude Include="ANTzBridge.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="glyph.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="typedefs.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="glyphproperties.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="glyphmappableproperties.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="antzcsvwriter.h">
@@ -48,10 +39,10 @@
     <ClInclude Include="antzdata.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="glyphnumericmappableproperties.h">
+    <ClInclude Include="antzgrid.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="antzgrid.h">
+    <ClInclude Include="antzobject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -60,15 +51,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="dllmain.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="glyph.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="glyphproperties.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="glyphmappableproperties.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="antzcsvwriter.cpp">
@@ -80,10 +62,10 @@
     <ClCompile Include="antzdata.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="glyphnumericmappableproperties.cpp">
+    <ClCompile Include="antzgrid.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="antzgrid.cpp">
+    <ClCompile Include="antzobject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -2,7 +2,6 @@
 #include "npdata.h"
 #include "data/npmapfile.h"
 #include "glyphmimedata.h"
-#include "minmaxglyphtree.h"
 #include <QtCore/QFile>
 #include <QtGUI/QMouseEvent>
 #include <stack>
@@ -101,7 +100,7 @@ namespace SynGlyphXANTz {
 					propertyUpdate = MinMaxGlyphTreeModel::PropertyUpdate::UpdateScale;
 				}
 
-				GlyphProperties glyph(GetGlyphFromModelIndex(selected.back()));
+				SynGlyphX::Glyph glyph(GetGlyphFromModelIndex(selected.back()));
 				DisconnectDataChangedSignal();
 				m_model->UpdateGlyph(selected.back(), m_glyphTreeType, glyph, propertyUpdate);
 				ConnectDataChangedSignal();
@@ -115,7 +114,7 @@ namespace SynGlyphXANTz {
 		if (m_model != nullptr) {
 
 			DeleteRootGlyphNode();
-			SynGlyphX::MinMaxGlyphTree::ConstSharedPtr minMaxGlyphTree = m_model->GetMinMaxGlyphTree();
+			SynGlyphX::DataMappingGlyphGraph::ConstSharedPtr minMaxGlyphTree = m_model->GetMinMaxGlyphTree();
 			if (minMaxGlyphTree) {
 
 				CreateNewSubTree(nullptr, minMaxGlyphTree->root());
@@ -126,7 +125,7 @@ namespace SynGlyphXANTz {
 		}
 	}
 
-	void ANTzSingleGlyphTreeWidget::CreateNewSubTree(pNPnode parent, const SynGlyphX::MinMaxGlyphTree::const_iterator& minMaxGlyph) {
+	void ANTzSingleGlyphTreeWidget::CreateNewSubTree(pNPnode parent, const SynGlyphX::DataMappingGlyphGraph::const_iterator& minMaxGlyph) {
 
 		pNPnode childNode = CreateNodeFromTemplate(parent, minMaxGlyph);
 
@@ -136,7 +135,7 @@ namespace SynGlyphXANTz {
 		}
 	}
 
-	pNPnode ANTzSingleGlyphTreeWidget::CreateNodeFromTemplate(pNPnode parent, const SynGlyphX::MinMaxGlyphTree::const_iterator& minMaxGlyph) {
+	pNPnode ANTzSingleGlyphTreeWidget::CreateNodeFromTemplate(pNPnode parent, const SynGlyphX::DataMappingGlyphGraph::const_iterator& minMaxGlyph) {
 
 		pNPnode glyph = npNodeNew(kNodePin, parent, m_antzData);
 		if (parent == nullptr) {
@@ -159,7 +158,7 @@ namespace SynGlyphXANTz {
 
 	void ANTzSingleGlyphTreeWidget::OnModelRowsInserted(const QModelIndex& parent, int first, int last) {
 
-		SynGlyphX::MinMaxGlyphTree::const_iterator minMaxGlyphParent = SynGlyphX::MinMaxGlyphTree::const_iterator(static_cast<SynGlyphX::MinMaxGlyphTree::Node*>(parent.internalPointer()));
+		SynGlyphX::DataMappingGlyphGraph::const_iterator minMaxGlyphParent = SynGlyphX::DataMappingGlyphGraph::const_iterator(static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(parent.internalPointer()));
 		pNPnode parentGlyph = GetGlyphFromModelIndex(parent);
 		for (int i = first; i <= last; ++i) {
 
@@ -230,13 +229,13 @@ namespace SynGlyphXANTz {
 		for (int i = topLeft.row(); i <= bottomRight.row(); ++i) {
 
 			QModelIndex index = m_model->index(i, 0, topLeft.parent());
-			SynGlyphX::MinMaxGlyphTree::const_iterator minMaxGlyph = SynGlyphX::MinMaxGlyphTree::const_iterator(static_cast<SynGlyphX::MinMaxGlyphTree::Node*>(index.internalPointer()));
+			SynGlyphX::DataMappingGlyphGraph::const_iterator minMaxGlyph = SynGlyphX::DataMappingGlyphGraph::const_iterator(static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(index.internalPointer()));
 			pNPnode glyph = GetGlyphFromModelIndex(index);
 			UpdateGlyphProperties(glyph, minMaxGlyph);
 		}
 	}
 
-	void ANTzSingleGlyphTreeWidget::UpdateGlyphProperties(pNPnode glyph, const SynGlyphX::MinMaxGlyphTree::const_iterator& minMaxGlyph) {
+	void ANTzSingleGlyphTreeWidget::UpdateGlyphProperties(pNPnode glyph, const SynGlyphX::DataMappingGlyphGraph::const_iterator& minMaxGlyph) {
 
 		if (m_glyphTreeType == MinMaxGlyphTreeModel::GlyphType::Min) {
 
@@ -248,14 +247,12 @@ namespace SynGlyphXANTz {
 		}
 	}
 
-	void ANTzSingleGlyphTreeWidget::UpdateGlyphProperties(pNPnode glyph, const GlyphProperties& glyphTemplate) {
+	void ANTzSingleGlyphTreeWidget::UpdateGlyphProperties(pNPnode glyph, const SynGlyphX::Glyph& glyphTemplate) {
 
 		SynGlyphX::Vector3 scale = glyphTemplate.GetScale();
 		glyph->scale.x = scale[0];
 		glyph->scale.y = scale[1];
 		glyph->scale.z = scale[2];
-
-		glyph->ratio = glyphTemplate.GetRatio();
 
 		if (m_rootGlyph == glyph) {
 
@@ -287,13 +284,13 @@ namespace SynGlyphXANTz {
 			glyph->geometry += glyphTemplate.GetSurface();
 		}
 
-		SynGlyphX::Color color = glyphTemplate.GetColor();
+		SynGlyphX::GlyphColor color = glyphTemplate.GetColor();
 		glyph->color.r = color[0];
 		glyph->color.g = color[1];
 		glyph->color.b = color[2];
-		glyph->color.a = color[3];
+		glyph->color.a = glyphTemplate.GetTransparency();
 
-		glyph->topo = glyphTemplate.GetTopology();
+		glyph->topo = glyphTemplate.GetStructure().GetVirtualTopology();
 	}
 
 	void ANTzSingleGlyphTreeWidget::UpdateSelection(const QItemSelection& selected, const QItemSelection& deselected) {

@@ -3,7 +3,7 @@
 
 #include "antzgui_global.h"
 #include <QtCore/QAbstractItemModel>
-#include "minmaxglyphtree.h"
+#include "datamappingglyphgraph.h"
 
 namespace SynGlyphXANTz {
 
@@ -35,8 +35,8 @@ namespace SynGlyphXANTz {
 		MinMaxGlyphTreeModel(QObject *parent);
 		~MinMaxGlyphTreeModel();
 
-		void SetMinMaxGlyphTree(SynGlyphX::MinMaxGlyphTree::SharedPtr minMaxGlyphTree);
-		SynGlyphX::MinMaxGlyphTree::ConstSharedPtr GetMinMaxGlyphTree() const;
+		void SetMinMaxGlyphTree(SynGlyphX::DataMappingGlyphGraph::SharedPtr minMaxGlyphTree);
+		SynGlyphX::DataMappingGlyphGraph::ConstSharedPtr GetMinMaxGlyphTree() const;
 
 		virtual int columnCount(const QModelIndex& parent = QModelIndex()) const;
 		virtual QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const;
@@ -48,15 +48,15 @@ namespace SynGlyphXANTz {
 		virtual Qt::DropActions supportedDropActions() const;
 		virtual bool removeRows(int row, int count, const QModelIndex& parent = QModelIndex());
 
-		void AppendChild(const QModelIndex& parent, const SynGlyphX::MinMaxGlyph& glyph, unsigned int numberOfChildren = 1);
+		void AppendChild(const QModelIndex& parent, const SynGlyphX::DataMappingGlyph& glyph, unsigned int numberOfChildren = 1);
 
-		void UpdateGlyph(const QModelIndex& index, const SynGlyphX::MinMaxGlyph& glyph, PropertyUpdates updates = UpdateAll);
-		void UpdateGlyphs(const QModelIndexList& indexList, const SynGlyphX::MinMaxGlyph& glyph, PropertyUpdates updates = UpdateAll);
+		void UpdateGlyph(const QModelIndex& index, const SynGlyphX::DataMappingGlyph& glyph, PropertyUpdates updates = UpdateAll);
+		void UpdateGlyphs(const QModelIndexList& indexList, const SynGlyphX::DataMappingGlyph& glyph, PropertyUpdates updates = UpdateAll);
 
-		void UpdateGlyph(const QModelIndex& index, GlyphType type, const GlyphProperties& glyph, PropertyUpdates updates = UpdateAll);
-		void UpdateGlyphs(const QModelIndexList& indexList, GlyphType type, const GlyphProperties& glyph, PropertyUpdates updates = UpdateAll);
+		void UpdateGlyph(const QModelIndex& index, GlyphType type, const SynGlyphX::Glyph& glyph, PropertyUpdates updates = UpdateAll);
+		void UpdateGlyphs(const QModelIndexList& indexList, GlyphType type, const SynGlyphX::Glyph& glyph, PropertyUpdates updates = UpdateAll);
 
-		SynGlyphX::MinMaxGlyphTree::const_iterator GetMinMaxGlyph(const QModelIndex& index) const;
+		SynGlyphX::DataMappingGlyphGraph::const_iterator GetMinMaxGlyph(const QModelIndex& index) const;
 
 		virtual QStringList mimeTypes() const;
 		virtual QMimeData* mimeData(const QModelIndexList& indexes) const;
@@ -67,7 +67,7 @@ namespace SynGlyphXANTz {
 		bool SaveToCSV(const QString& filename, bool writeMaxGlyph = true);
 
 		bool IsClipboardEmpty() const;
-		SynGlyphX::MinMaxGlyphTree::iterator GetClipboardGlyph() const;
+		SynGlyphX::DataMappingGlyphGraph::iterator GetClipboardGlyph() const;
 		void CopyToClipboard(const QModelIndex& index, bool removeFromTree = false);
 
 		void RepaceModelWithDefaultGlyphTree();
@@ -75,17 +75,17 @@ namespace SynGlyphXANTz {
 		static bool GreaterBranchLevel(const QModelIndex& left, const QModelIndex& right);
 
 	private:
-		void UpdateGlyphMin(const QModelIndex& index, const GlyphProperties& glyph, PropertyUpdates updates);
-		void UpdateGlyphMax(const QModelIndex& index, const GlyphProperties& glyph, PropertyUpdates updates);
+		void UpdateGlyphMin(const QModelIndex& index, const SynGlyphX::Glyph& glyph, PropertyUpdates updates);
+		void UpdateGlyphMax(const QModelIndex& index, const SynGlyphX::Glyph& glyph, PropertyUpdates updates);
 
 		bool IsValidCSVFile(const QString& filename) const;
-		bool IsRootGlyph(const SynGlyphX::MinMaxGlyphTree::iterator& glyph) const;
+		bool IsRootGlyph(const SynGlyphX::DataMappingGlyphGraph::iterator& glyph) const;
 		unsigned int GetBranchLevel(const QModelIndex& index) const;
 
-		static SynGlyphX::MinMaxGlyphTree::iterator GetIteratorFromIndex(const QModelIndex& index);
+		static SynGlyphX::DataMappingGlyphGraph::iterator GetIteratorFromIndex(const QModelIndex& index);
 
-		SynGlyphX::MinMaxGlyphTree::SharedPtr m_minMaxGlyphTree;
-		SynGlyphX::MinMaxGlyphTree::iterator m_clipboardGlyph;
+		SynGlyphX::DataMappingGlyphGraph::SharedPtr m_minMaxGlyphTree;
+		SynGlyphX::DataMappingGlyphGraph::iterator m_clipboardGlyph;
 	};
 
 	Q_DECLARE_OPERATORS_FOR_FLAGS(MinMaxGlyphTreeModel::PropertyUpdates)

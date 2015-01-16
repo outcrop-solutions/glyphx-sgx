@@ -3,14 +3,14 @@
 namespace SynGlyphXANTz {
 
 	ANTzGrid::ANTzGrid() :
-		GlyphNumericMappableProperties(),
+		ANTzObject(),
 		m_textureID(0)
 	{
-		m_color.Set(255, 0, 0, 150);
+		m_color.Set(255, 0, 0);
 	}
 
 	ANTzGrid::ANTzGrid(const ANTzGrid& grid) :
-		GlyphNumericMappableProperties(grid),
+		ANTzObject(grid),
 		m_textureID(grid.m_textureID) {
 	
 	}
@@ -21,7 +21,7 @@ namespace SynGlyphXANTz {
 
 	ANTzGrid& ANTzGrid::operator=(const ANTzGrid& grid) {
 
-		GlyphNumericMappableProperties::operator=(grid);
+		ANTzObject::operator=(grid);
 		m_textureID = grid.m_textureID;
 
 		return *this;

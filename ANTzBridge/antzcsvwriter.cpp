@@ -13,26 +13,26 @@ namespace SynGlyphXANTz {
 		m_channelHeaders({ L"cycleCount", L"ch1", L"ch2", L"ch3", L"ch4", L"ch5", L"ch6", L"ch7", L"ch8", L"ch9", L"ch10", L"ch11", L"ch12", L"ch13", L"ch14", L"ch15", L"ch16", L"ch17", L"ch18", L"ch19", L"ch20", L"ch21", L"ch22", L"ch23", L"ch24", L"ch25", L"ch26", L"ch27", L"ch28", L"ch29", L"ch30", L"ch31", L"ch32", L"ch33", L"ch34", L"ch35", L"ch36", L"ch37", L"ch38", L"ch39", L"ch40", L"ch41", L"ch42", L"ch43", L"ch44", L"ch45", L"ch46", L"ch47", L"ch48", L"ch49", L"ch50", L"ch51", L"ch52", L"ch53", L"ch54", L"ch55", L"ch56", L"ch57", L"ch58", L"ch59", L"ch60", L"ch61", L"ch62", L"ch63", L"ch64", L"ch65", L"ch66", L"ch67", L"ch68", L"ch69", L"ch70", L"ch71", L"ch72", L"ch73", L"ch74", L"ch75", L"ch76", L"ch77", L"ch78", L"ch79", L"ch80", L"ch81", L"ch82", L"ch83", L"ch84", L"ch85", L"ch86", L"ch87", L"ch88", L"ch89", L"ch90", L"ch91", L"ch92", L"ch93", L"ch94", L"ch95", L"ch96", L"ch97", L"ch98", L"ch99", L"ch100" }),
 		m_channelMapHeaders({ L"id", L"channel_id", L"track_id", L"attribute", L"track_table_id", L"ch_map_table_id", L"record_id" })
 	{
-		m_predefinedColors[0] = SynGlyphX::Color({ { 50, 101, 101, 255 } });
-		m_predefinedColors[1] = SynGlyphX::Color({ { 0, 255, 0, 255 } });
-		m_predefinedColors[2] = SynGlyphX::Color({ { 255, 0, 0, 255 } });
-		m_predefinedColors[3] = SynGlyphX::Color({ { 0, 0, 255, 255 } });
-		m_predefinedColors[4] = SynGlyphX::Color({ { 255, 255, 0, 255 } });
-		m_predefinedColors[5] = SynGlyphX::Color({ { 152, 0, 255, 255 } });
-		m_predefinedColors[6] = SynGlyphX::Color({ { 255, 168, 0, 255 } });
-		m_predefinedColors[7] = SynGlyphX::Color({ { 0, 255, 255, 255 } });
-		m_predefinedColors[8] = SynGlyphX::Color({ { 255, 0, 255, 255 } });
-		m_predefinedColors[9] = SynGlyphX::Color({ { 0, 153, 0, 255 } });
-		m_predefinedColors[10] = SynGlyphX::Color({ { 185, 153, 102, 255 } });
-		m_predefinedColors[11] = SynGlyphX::Color({ { 255, 180, 255, 255 } });
-		m_predefinedColors[12] = SynGlyphX::Color({ { 0, 152, 255, 255 } });
-		m_predefinedColors[13] = SynGlyphX::Color({ { 185, 255, 0, 255 } });
-		m_predefinedColors[14] = SynGlyphX::Color({ { 152, 0, 0, 255 } });
-		m_predefinedColors[15] = SynGlyphX::Color({ { 127, 127, 127, 255 } });
-		m_predefinedColors[16] = SynGlyphX::Color({ { 127, 127, 255, 255 } });
-		m_predefinedColors[17] = SynGlyphX::Color({ { 197, 82, 0, 255 } });
-		m_predefinedColors[18] = SynGlyphX::Color({ { 0, 0, 0, 255 } });
-		m_predefinedColors[19] = SynGlyphX::Color({ { 255, 255, 255, 255 } });
+		m_predefinedColors[0] = SynGlyphX::GlyphColor({ { 50, 101, 101 } });
+		m_predefinedColors[1] = SynGlyphX::GlyphColor({ { 0, 255, 0 } });
+		m_predefinedColors[2] = SynGlyphX::GlyphColor({ { 255, 0, 0 } });
+		m_predefinedColors[3] = SynGlyphX::GlyphColor({ { 0, 0, 255 } });
+		m_predefinedColors[4] = SynGlyphX::GlyphColor({ { 255, 255, 0 } });
+		m_predefinedColors[5] = SynGlyphX::GlyphColor({ { 152, 0, 255 } });
+		m_predefinedColors[6] = SynGlyphX::GlyphColor({ { 255, 168, 0 } });
+		m_predefinedColors[7] = SynGlyphX::GlyphColor({ { 0, 255, 255 } });
+		m_predefinedColors[8] = SynGlyphX::GlyphColor({ { 255, 0, 255 } });
+		m_predefinedColors[9] = SynGlyphX::GlyphColor({ { 0, 153, 0 } });
+		m_predefinedColors[10] = SynGlyphX::GlyphColor({ { 185, 153, 102 } });
+		m_predefinedColors[11] = SynGlyphX::GlyphColor({ { 255, 180, 255 } });
+		m_predefinedColors[12] = SynGlyphX::GlyphColor({ { 0, 152, 255 } });
+		m_predefinedColors[13] = SynGlyphX::GlyphColor({ { 185, 255, 0 } });
+		m_predefinedColors[14] = SynGlyphX::GlyphColor({ { 152, 0, 0 } });
+		m_predefinedColors[15] = SynGlyphX::GlyphColor({ { 127, 127, 127 } });
+		m_predefinedColors[16] = SynGlyphX::GlyphColor({ { 127, 127, 255 } });
+		m_predefinedColors[17] = SynGlyphX::GlyphColor({ { 197, 82, 0 } });
+		m_predefinedColors[18] = SynGlyphX::GlyphColor({ { 0, 0, 0 } });
+		m_predefinedColors[19] = SynGlyphX::GlyphColor({ { 255, 255, 255 } });
 
 		m_cameras[0] = { L"1", L"0", L"1", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"1", L"0", L"0", L"0", L"0", L"0", L"0", L"0.000000", L"1.000000", L"0.000000", L"0.000000", L"0.000000", L"1.000000", L"1.000000", L"1.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"1.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0", L"0", L"1.000000", L"0.000000", L"0.100000", L"0", L"50", L"101", L"101", L"255", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"1", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0", L"0", L"0", L"16", L"16", L"0", L"0", L"0", L"0", L"0", L"420" };
 		m_cameras[1] = { L"2", L"1", L"2", L"0", L"0", L"0", L"0", L"2", L"3", L"0", L"0", L"0", L"0", L"1", L"0", L"0", L"0", L"0", L"0", L"0", L"0.000000", L"0.000000", L"-0.143424", L"-0.826509", L"-0.544345", L"1.000000", L"1.000000", L"1.000000", L"1.344855", L"7.749982", L"6.275580", L"0.000000", L"0.000000", L"1.000000", L"0.000000", L"0.000000", L"0.000000", L"57.020073", L"189.844513", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"-0.000000", L"0.000000", L"0.000000", L"0", L"0", L"1.000000", L"0.000000", L"0.100000", L"0", L"50", L"101", L"101", L"255", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"9.376762", L"0.000000", L"0.000000", L"0", L"0", L"0", L"16", L"16", L"0", L"0", L"0", L"0", L"0", L"420" };
@@ -46,7 +46,7 @@ namespace SynGlyphXANTz {
 	{
 	}
 
-	void ANTzCSVWriter::Write(const std::string& nodeFilename, const std::string& tagFilename, const GlyphTree::ConstSharedVector& trees, const std::vector<ANTzGrid>& grids) {
+	void ANTzCSVWriter::Write(const std::string& nodeFilename, const std::string& tagFilename, const SynGlyphX::GlyphGraph::ConstSharedVector& trees, const std::vector<ANTzGrid>& grids) {
 
 		if (nodeFilename.empty()) {
 
@@ -68,7 +68,7 @@ namespace SynGlyphXANTz {
 		}
  	}
 
-	unsigned long ANTzCSVWriter::WriteNodeFile(const std::string& filename, const GlyphTree::ConstSharedVector& trees, const std::vector<ANTzGrid>& grids) {
+	unsigned long ANTzCSVWriter::WriteNodeFile(const std::string& filename, const SynGlyphX::GlyphGraph::ConstSharedVector& trees, const std::vector<ANTzGrid>& grids) {
 
 		unsigned long firstGlyphId = 0;
 		
@@ -87,7 +87,7 @@ namespace SynGlyphXANTz {
 
 			unsigned long id = firstGlyphId;
 
-			for (const GlyphTree::ConstSharedPtr& tree : trees) {
+			for (const SynGlyphX::GlyphGraph::ConstSharedPtr& tree : trees) {
 
 				id = WriteGlyph(nodeFile, tree, tree->root(), id, 0, 0);
 			}
@@ -100,7 +100,7 @@ namespace SynGlyphXANTz {
 		return firstGlyphId;
 	}
 
-	void ANTzCSVWriter::WriteTagFile(const std::string& filename, const GlyphTree::ConstSharedVector& trees, unsigned long startingId) {
+	void ANTzCSVWriter::WriteTagFile(const std::string& filename, const SynGlyphX::GlyphGraph::ConstSharedVector& trees, unsigned long startingId) {
 
 		try {
 
@@ -111,7 +111,8 @@ namespace SynGlyphXANTz {
 
 			m_numTagsWritten = 0;
 			
-			for (const GlyphTree::ConstSharedPtr& tree : trees) {
+			for (const SynGlyphX::GlyphGraph::ConstSharedPtr& tree : trees) {
+
 				tagID = WriteGlyphTag(tagFile, tree, tree->root(), tagID);
 			}
 		}
@@ -121,7 +122,7 @@ namespace SynGlyphXANTz {
 		}
 	}
 
-	unsigned long ANTzCSVWriter::WriteGlyphTag(SynGlyphX::CSVFileWriter& file, const GlyphTree::ConstSharedPtr tree, const GlyphTree::const_iterator& glyph, unsigned long id) {
+	unsigned long ANTzCSVWriter::WriteGlyphTag(SynGlyphX::CSVFileWriter& file, const SynGlyphX::GlyphGraph::ConstSharedPtr tree, const SynGlyphX::GlyphGraph::const_iterator& glyph, unsigned long id) {
 
 		unsigned int numberOfChildren = tree->children(glyph);
 
@@ -152,7 +153,7 @@ namespace SynGlyphXANTz {
 		return childId;
 	}
 
-	unsigned long ANTzCSVWriter::WriteGlyph(SynGlyphX::CSVFileWriter& file, const GlyphTree::ConstSharedPtr tree, const GlyphTree::const_iterator& glyph, unsigned long id, unsigned long parentId, unsigned long branchLevel) {
+	unsigned long ANTzCSVWriter::WriteGlyph(SynGlyphX::CSVFileWriter& file, const SynGlyphX::GlyphGraph::ConstSharedPtr tree, const SynGlyphX::GlyphGraph::const_iterator& glyph, unsigned long id, unsigned long parentId, unsigned long branchLevel) {
 
 		unsigned int numberOfChildren = tree->children(glyph);
 
@@ -171,25 +172,25 @@ namespace SynGlyphXANTz {
 
 		SynGlyphX::CSVFileHandler::AddVector3ToCSVValues(values, glyph->GetScale());
 		SynGlyphX::CSVFileHandler::AddVector3ToCSVValues(values, glyph->GetPosition());
-		SynGlyphX::CSVFileHandler::AddVector3ToCSVValues(values, glyph->GetTagOffset());
-		values.insert(values.end(), { L"0", L"0", L"0" });
+		values.insert(values.end(), { L"0.0", L"1.5", L"0.0", L"0", L"0", L"0" });
 		SynGlyphX::CSVFileHandler::AddVector3ToCSVValues(values, glyph->GetRotation());
 		values.insert(values.end(), { L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0" });
 
-		values.push_back(boost::lexical_cast<std::wstring>(ConvertGeometryToCSVInt(glyph->GetShape(), glyph->GetSurface())));
+		values.push_back(boost::lexical_cast<std::wstring>(ConvertGeometryToCSVInt(glyph->GetStructure().GetGeometryShape(), glyph->GetStructure().GetGeometrySurface())));
 		values.push_back(L"1");
 		values.push_back(L"0");
-		values.push_back(boost::lexical_cast<std::wstring>(glyph->GetRatio()));
+		values.push_back(L"0.1");
 
-		SynGlyphX::Color color = glyph->GetColor();
+		SynGlyphX::GlyphColor color = glyph->GetColor();
 		values.push_back(boost::lexical_cast<std::wstring>(GetColorIndex(color)));
 		values.push_back(boost::lexical_cast<std::wstring>(color[0]));
 		values.push_back(boost::lexical_cast<std::wstring>(color[1]));
 		values.push_back(boost::lexical_cast<std::wstring>(color[2]));
-		values.push_back(boost::lexical_cast<std::wstring>(color[3]));
+
+		values.push_back(boost::lexical_cast<std::wstring>(glyph->GetTransparency()));
 
 		values.insert(values.end(), { L"0", L"0", L"0", L"0" });
-		values.push_back(boost::lexical_cast<std::wstring>(static_cast<int>(glyph->GetTopology())));
+		values.push_back(boost::lexical_cast<std::wstring>(static_cast<int>(glyph->GetStructure().GetVirtualTopology())));
 
 		values.insert(values.end(), { L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"1", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"16", L"16", L"0", L"0", L"0", L"0" });
 		values.push_back(idString);
@@ -233,12 +234,12 @@ namespace SynGlyphXANTz {
 			SynGlyphX::CSVFileHandler::AddVector3ToCSVValues(grid, grids[i].GetRotation());
 			grid.insert(grid.end(), { L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"1", L"0", L"0.1" });
 
-			SynGlyphX::Color color = grids[i].GetColor();
+			SynGlyphX::GlyphColor color = grids[i].GetColor();
 			grid.push_back(boost::lexical_cast<std::wstring>(GetColorIndex(color)));
 			grid.push_back(boost::lexical_cast<std::wstring>(color[0]));
 			grid.push_back(boost::lexical_cast<std::wstring>(color[1]));
 			grid.push_back(boost::lexical_cast<std::wstring>(color[2]));
-			grid.push_back(boost::lexical_cast<std::wstring>(color[3]));
+			grid.push_back(L"150");
 
 			grid.push_back(L"0");
 
@@ -258,9 +259,9 @@ namespace SynGlyphXANTz {
 		return firstId + grids.size();
 	}
 
-	unsigned int ANTzCSVWriter::ConvertGeometryToCSVInt(GlyphProperties::Shape shape, GlyphProperties::Surface surface) {
+	unsigned int ANTzCSVWriter::ConvertGeometryToCSVInt(SynGlyphX::GlyphStructuralProperties::Shape shape, SynGlyphX::GlyphStructuralProperties::Surface surface) {
 
-		if (shape == GlyphProperties::Shape::Pin) {
+		if (shape == SynGlyphX::GlyphStructuralProperties::Shape::Pin) {
 			return (2 * shape) + 1 - surface;
 		}
 		else {
@@ -272,7 +273,7 @@ namespace SynGlyphXANTz {
 		return s_instance;
 	}
 
-	unsigned short ANTzCSVWriter::GetColorIndex(const SynGlyphX::Color& color) {
+	unsigned short ANTzCSVWriter::GetColorIndex(const SynGlyphX::GlyphColor& color) {
 
 		for (unsigned short i = 0; i < MaxPredefinedColors; ++i) {
 			if ((color[0] == m_predefinedColors[i][0]) &&

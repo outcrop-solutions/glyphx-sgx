@@ -2,11 +2,11 @@
 #define SYNGLYPX_ANTZGRID_H
 
 #include "ANTzBridge.h"
-#include "glyphnumericmappableproperties.h"
+#include "antzobject.h"
 
 namespace SynGlyphXANTz {
 
-	class ANTZBRIDGE_API ANTzGrid : public GlyphNumericMappableProperties
+	class ANTZBRIDGE_API ANTzGrid : public ANTzObject
 	{
 	public:
 		ANTzGrid();

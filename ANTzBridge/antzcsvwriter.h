@@ -5,8 +5,8 @@
 #include <boost/noncopyable.hpp>
 #include <boost/shared_ptr.hpp>
 #include <fstream>
-#include "glyph.h"
-#include "color.h"
+#include "glyphgraph.h"
+#include "glyphcolor.h"
 #include <array>
 #include "csvfilereader.h"
 #include "csvfilewriter.h"
@@ -22,7 +22,7 @@ namespace SynGlyphXANTz {
         ANTzCSVWriter();
         ~ANTzCSVWriter();
 
-		void Write(const std::string& nodeFilename, const std::string& tagFilename, const GlyphTree::ConstSharedVector& trees, const std::vector<ANTzGrid>& grids);
+		void Write(const std::string& nodeFilename, const std::string& tagFilename, const SynGlyphX::GlyphGraph::ConstSharedVector& trees, const std::vector<ANTzGrid>& grids);
 
         static ANTzCSVWriter& GetInstance();
 
@@ -34,16 +34,16 @@ namespace SynGlyphXANTz {
     private:
         static ANTzCSVWriter s_instance;
 
-		unsigned long WriteNodeFile(const std::string& filename, const GlyphTree::ConstSharedVector& trees, const std::vector<ANTzGrid>& grids);
-		void WriteTagFile(const std::string& filename, const GlyphTree::ConstSharedVector& trees, unsigned long startingId);
+		unsigned long WriteNodeFile(const std::string& filename, const SynGlyphX::GlyphGraph::ConstSharedVector& trees, const std::vector<ANTzGrid>& grids);
+		void WriteTagFile(const std::string& filename, const SynGlyphX::GlyphGraph::ConstSharedVector& trees, unsigned long startingId);
 
-		unsigned long WriteGlyph(SynGlyphX::CSVFileWriter& file, const GlyphTree::ConstSharedPtr tree, const GlyphTree::const_iterator& glyph, unsigned long id, unsigned long parentId, unsigned long branchLevel);
-		unsigned long WriteGlyphTag(SynGlyphX::CSVFileWriter& file, const GlyphTree::ConstSharedPtr tree, const GlyphTree::const_iterator& glyph, unsigned long id);
+		unsigned long WriteGlyph(SynGlyphX::CSVFileWriter& file, const SynGlyphX::GlyphGraph::ConstSharedPtr tree, const SynGlyphX::GlyphGraph::const_iterator& glyph, unsigned long id, unsigned long parentId, unsigned long branchLevel);
+		unsigned long WriteGlyphTag(SynGlyphX::CSVFileWriter& file, const SynGlyphX::GlyphGraph::ConstSharedPtr tree, const SynGlyphX::GlyphGraph::const_iterator& glyph, unsigned long id);
 		unsigned long WriteGrids(SynGlyphX::CSVFileWriter& file, const std::vector<ANTzGrid>& grids, unsigned long firstId);
-		unsigned int ConvertGeometryToCSVInt(GlyphProperties::Shape shape, GlyphProperties::Surface surface);
-        unsigned short GetColorIndex(const SynGlyphX::Color& color);
+		unsigned int ConvertGeometryToCSVInt(SynGlyphX::GlyphStructuralProperties::Shape shape, SynGlyphX::GlyphStructuralProperties::Surface surface);
+        unsigned short GetColorIndex(const SynGlyphX::GlyphColor& color);
 
-		SynGlyphX::Color m_predefinedColors[MaxPredefinedColors];
+		SynGlyphX::GlyphColor m_predefinedColors[MaxPredefinedColors];
 		unsigned long m_numTagsWritten;
 
 		SynGlyphX::CSVFileReader::CSVValues m_nodeHeaders;
