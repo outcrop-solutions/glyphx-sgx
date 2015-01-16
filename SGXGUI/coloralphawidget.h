@@ -17,7 +17,7 @@ namespace SynGlyphX {
 		ColorAlphaWidget(QWidget *parent = 0);
 		~ColorAlphaWidget();
 
-		void SetColor(const SynGlyphX::Color& color);
+		void SetColor(const SynGlyphX::GlyphColor& color, int alpha);
 		const QColor& GetColor() const;
 
 	public slots:

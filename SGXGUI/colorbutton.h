@@ -6,7 +6,7 @@
 #include <QtWidgets/QMenu>
 #include <QtWidgets/QPushButton>
 #include "foundationtypes.h"
-#include "color.h"
+#include "glyphcolor.h"
 
 namespace SynGlyphX {
 
@@ -19,12 +19,12 @@ namespace SynGlyphX {
 		ColorButton(bool showAlphaInColorDialog = false, QWidget *parent = 0);
 		~ColorButton();
 
-		void SetColor(const SynGlyphX::Color& color);
+		void SetColor(const SynGlyphX::GlyphColor& color);
 		const QColor& GetColor() const;
 
 		virtual QSize minimumSizeHint() const;
 
-		static SynGlyphX::Color ConvertQColorToColor(const QColor& qColor);
+		static SynGlyphX::GlyphColor ConvertQColorToColor(const QColor& qColor);
 
 	public slots:
 		void SetColor(const QColor& color);
