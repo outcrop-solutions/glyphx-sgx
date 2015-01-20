@@ -58,7 +58,7 @@ QVariant DataTransformModel::GetDisplayData(const QModelIndex& index) const {
 
 		if (IsRowInDataType(DataType::BaseObjects, index.row())) {
 
-			int baseObjectIndex = index.row() - m_dataMapping->GetGlyphTrees().size();
+			int baseObjectIndex = index.row() - m_dataMapping->GetGlyphGraphs().size();
 			const SynGlyphX::BaseImage& baseObject = m_dataMapping->GetBaseObjects()[baseObjectIndex];
 			SynGlyphX::BaseImage::Type baseImageType = baseObject.GetType();
 			if (baseImageType == SynGlyphX::BaseImage::UserImage) {
@@ -79,7 +79,7 @@ QVariant DataTransformModel::GetDisplayData(const QModelIndex& index) const {
 		}
 		else if (IsRowInDataType(DataType::DataSources, index.row())) {
 
-			int datasourceIndex = index.row() - m_dataMapping->GetGlyphTrees().size() - m_dataMapping->GetBaseObjects().size();
+			int datasourceIndex = index.row() - m_dataMapping->GetGlyphGraphs().size() - m_dataMapping->GetBaseObjects().size();
 			SynGlyphX::DatasourceMaps::FileDatasourceMap::const_iterator fileDatasource = m_dataMapping->GetDatasources().GetFileDatasources().begin();
 			std::advance(fileDatasource, datasourceIndex);
 			QFileInfo fileDatasourceFileInfo(QString::fromStdWString(fileDatasource->second.GetFilename()));
@@ -123,12 +123,12 @@ QVariant DataTransformModel::GetDataTypeData(const QModelIndex& index) const {
 
 QVariant DataTransformModel::GetGlyphData(const QModelIndex& index) const {
 
-	if (!m_dataMapping->GetGlyphTrees().empty()) {
+	if (!m_dataMapping->GetGlyphGraphs().empty()) {
 
-		SynGlyphX::MinMaxGlyphTree::const_iterator iterator(static_cast<SynGlyphX::MinMaxGlyphTree::Node*>(index.internalPointer()));
-		const SynGlyphXANTz::GlyphProperties& minGlyph = iterator->GetMinGlyph();
+		SynGlyphX::DataMappingGlyphGraph::const_iterator iterator(static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(index.internalPointer()));
 
-		std::wstring glyphData = SynGlyphXANTz::GlyphProperties::s_shapeNames.left.at(minGlyph.GetShape()) + L": " + SynGlyphXANTz::GlyphProperties::s_topologyNames.left.at(minGlyph.GetTopology());
+		std::wstring glyphData = SynGlyphX::GlyphStructuralProperties::s_shapeNames.left.at(iterator->GetStructure().GetGeometryShape()) + L": " + 
+			SynGlyphX::GlyphStructuralProperties::s_virtualTopologyNames.left.at(iterator->GetStructure().GetVirtualTopology());
 		if (iterator == iterator.owner()->root().constify()) {
 			glyphData += L" (Root)";
 		}
@@ -152,7 +152,7 @@ QModelIndex	DataTransformModel::index(int row, int column, const QModelIndex& pa
 
 		if (IsRowInDataType(DataType::GlyphTrees, row)) {
 
-			SynGlyphX::DataTransformMapping::MinMaxGlyphTreeMap::const_iterator iterator = m_dataMapping->GetGlyphTrees().begin();
+			SynGlyphX::DataTransformMapping::DataMappingGlyphGraphMap::const_iterator iterator = m_dataMapping->GetGlyphGraphs().begin();
 			std::advance(iterator, row);
 			return createIndex(row, column, static_cast<void*>(iterator->second->root().node()));
 		}
@@ -163,8 +163,8 @@ QModelIndex	DataTransformModel::index(int row, int column, const QModelIndex& pa
 	}
 	else {
 
-		SynGlyphX::MinMaxGlyphTree::const_iterator parentIterator(static_cast<SynGlyphX::MinMaxGlyphTree::Node*>(parent.internalPointer()));
-		SynGlyphX::MinMaxGlyphTree::const_iterator childIterator = parentIterator.owner()->child(parentIterator, row);
+		SynGlyphX::DataMappingGlyphGraph::const_iterator parentIterator(static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(parent.internalPointer()));
+		SynGlyphX::DataMappingGlyphGraph::const_iterator childIterator = parentIterator.owner()->child(parentIterator, row);
 		if (childIterator.valid()) {
 
 			return createIndex(row, column, static_cast<void*>(childIterator.node()));
@@ -186,17 +186,17 @@ QModelIndex	DataTransformModel::parent(const QModelIndex& index) const {
 		return QModelIndex();
 	}
 
-	SynGlyphX::MinMaxGlyphTree::const_iterator iterator(static_cast<SynGlyphX::MinMaxGlyphTree::Node*>(index.internalPointer()));
+	SynGlyphX::DataMappingGlyphGraph::const_iterator iterator(static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(index.internalPointer()));
 	if (iterator != iterator.owner()->root()) {
 
-		const SynGlyphX::MinMaxGlyphTree* currentTree = static_cast<const SynGlyphX::MinMaxGlyphTree*>(iterator.owner());
-		SynGlyphX::MinMaxGlyphTree::const_iterator parent = currentTree->parent(iterator);
+		const SynGlyphX::DataMappingGlyphGraph* currentTree = static_cast<const SynGlyphX::DataMappingGlyphGraph*>(iterator.owner());
+		SynGlyphX::DataMappingGlyphGraph::const_iterator parent = currentTree->parent(iterator);
 
 		int row = 0;
 
 		if (parent == currentTree->root()) {
 
-			for (auto tree : m_dataMapping->GetGlyphTrees()) {
+			for (auto tree : m_dataMapping->GetGlyphGraphs()) {
 
 				if (currentTree->root() == tree.second->root().constify()) {
 
@@ -207,7 +207,7 @@ QModelIndex	DataTransformModel::parent(const QModelIndex& index) const {
 		}
 		else {
 
-			SynGlyphX::MinMaxGlyphTree::const_iterator grandparent = currentTree->parent(parent);
+			SynGlyphX::DataMappingGlyphGraph::const_iterator grandparent = currentTree->parent(parent);
 			if (grandparent.valid()) {
 
 				for (int i = 0; i < currentTree->children(grandparent); ++i) {
@@ -230,12 +230,12 @@ int	DataTransformModel::rowCount(const QModelIndex& parent) const {
 
 	if (!parent.isValid()) {
 
-		return m_dataMapping->GetGlyphTrees().size() + m_dataMapping->GetBaseObjects().size() + m_dataMapping->GetDatasources().Count();
+		return m_dataMapping->GetGlyphGraphs().size() + m_dataMapping->GetBaseObjects().size() + m_dataMapping->GetDatasources().Count();
 	}
 
 	if (parent.internalPointer() != nullptr) {
 
-		SynGlyphX::MinMaxGlyphTree::const_iterator iterator(static_cast<SynGlyphX::MinMaxGlyphTree::Node*>(parent.internalPointer()));
+		SynGlyphX::DataMappingGlyphGraph::const_iterator iterator(static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(parent.internalPointer()));
 		return iterator.owner()->children(iterator);
 	}
 	
@@ -250,14 +250,14 @@ boost::uuids::uuid DataTransformModel::AddFileDatasource(SynGlyphX::FileDatasour
 	return id;
 }
 
-void DataTransformModel::SetInputField(const boost::uuids::uuid& treeID, SynGlyphX::MinMaxGlyphTree::const_iterator& node, int index, const SynGlyphX::InputField& inputfield) {
+void DataTransformModel::SetInputField(const boost::uuids::uuid& treeID, SynGlyphX::DataMappingGlyphGraph::const_iterator& node, SynGlyphX::DataMappingGlyph::MappableField field, const SynGlyphX::InputField& inputfield) {
 
-	m_dataMapping->SetInputField(treeID, node, index, inputfield);
+	m_dataMapping->SetInputField(treeID, node, field, inputfield);
 }
 
-void DataTransformModel::ClearInputBinding(const boost::uuids::uuid& treeID, SynGlyphX::MinMaxGlyphTree::const_iterator& node, int index) {
+void DataTransformModel::ClearInputBinding(const boost::uuids::uuid& treeID, SynGlyphX::DataMappingGlyphGraph::const_iterator& node, SynGlyphX::DataMappingGlyph::MappableField field) {
 
-	m_dataMapping->ClearInputBinding(treeID, node, index);
+	m_dataMapping->ClearInputBinding(treeID, node, field);
 }
 
 void DataTransformModel::EnableTables(const boost::uuids::uuid& id, const SynGlyphX::Datasource::TableSet& tables, bool enable) {
@@ -276,13 +276,13 @@ bool DataTransformModel::removeRows(int row, int count, const QModelIndex& paren
 
 			if (IsRowInDataType(DataType::GlyphTrees, i)) {
 
-				SynGlyphX::DataTransformMapping::MinMaxGlyphTreeMap::const_iterator glyphTree = m_dataMapping->GetGlyphTrees().begin();
+				SynGlyphX::DataTransformMapping::DataMappingGlyphGraphMap::const_iterator glyphTree = m_dataMapping->GetGlyphGraphs().begin();
 				std::advance(glyphTree, i);
 				m_dataMapping->RemoveGlyphTree(glyphTree->first);
 			}
 			else if (IsRowInDataType(DataType::BaseObjects, i)) {
 
-				m_dataMapping->RemoveBaseObject(i - m_dataMapping->GetGlyphTrees().size());
+				m_dataMapping->RemoveBaseObject(i - m_dataMapping->GetGlyphGraphs().size());
 			}
 			else if (IsRowInDataType(DataType::DataSources, i)) {
 
@@ -334,9 +334,9 @@ void DataTransformModel::Clear() {
 
 void DataTransformModel::AddGlyphFile(const QString& filename) {
 
-	SynGlyphX::MinMaxGlyphTree::SharedPtr glyphTree(new SynGlyphX::MinMaxGlyphTree());
+	SynGlyphX::DataMappingGlyphGraph::SharedPtr glyphTree = std::make_shared<SynGlyphX::DataMappingGlyphGraph>();
 	glyphTree->ReadFromFile(filename.toStdString());
-	int row = m_dataMapping->GetGlyphTrees().size();
+	int row = m_dataMapping->GetGlyphGraphs().size();
 	beginInsertRows(QModelIndex(), row, row);
 	m_dataMapping->AddGlyphTree(glyphTree);
 	endInsertRows();
@@ -345,13 +345,13 @@ void DataTransformModel::AddGlyphFile(const QString& filename) {
 void DataTransformModel::SetBaseObject(unsigned int position, const SynGlyphX::BaseImage& baseImage) {
 
 	m_dataMapping->SetBaseObject(position, baseImage);
-	QModelIndex modelIndex = index(m_dataMapping->GetGlyphTrees().size() + position);
+	QModelIndex modelIndex = index(m_dataMapping->GetGlyphGraphs().size() + position);
 	emit dataChanged(modelIndex, modelIndex);
 }
 
 void DataTransformModel::AddBaseObject(const SynGlyphX::BaseImage& baseImage) {
 
-	int row = m_dataMapping->GetGlyphTrees().size() + m_dataMapping->GetBaseObjects().size();
+	int row = m_dataMapping->GetGlyphGraphs().size() + m_dataMapping->GetBaseObjects().size();
 	beginInsertRows(QModelIndex(), row, row);
 	m_dataMapping->AddBaseObject(baseImage);
 	endInsertRows();
@@ -363,40 +363,40 @@ bool DataTransformModel::IsRowInDataType(DataType type, int row) const {
 	int max = 0;
 	if (type == DataType::BaseObjects) {
 
-		min = m_dataMapping->GetGlyphTrees().size();
+		min = m_dataMapping->GetGlyphGraphs().size();
 		max = min + m_dataMapping->GetBaseObjects().size();
 	}
 	else if (type == DataType::DataSources) {
 
-		min = m_dataMapping->GetGlyphTrees().size() + m_dataMapping->GetBaseObjects().size();
+		min = m_dataMapping->GetGlyphGraphs().size() + m_dataMapping->GetBaseObjects().size();
 		max = min + m_dataMapping->GetDatasources().GetFileDatasources().size();
 	}
 	else if (type == DataType::GlyphTrees) {
 
-		max = m_dataMapping->GetGlyphTrees().size();
+		max = m_dataMapping->GetGlyphGraphs().size();
 	}
 
 	return ((row >= min) && (row < max));
 }
 
-void DataTransformModel::UpdateGlyph(const QModelIndex& index, const SynGlyphX::MinMaxGlyph& newGlyph) {
+void DataTransformModel::UpdateGlyph(const QModelIndex& index, const SynGlyphX::DataMappingGlyph& newGlyph) {
 
-	if (!m_dataMapping->GetGlyphTrees().empty() && index.isValid()) {
+	if (!m_dataMapping->GetGlyphGraphs().empty() && index.isValid()) {
 
-		SynGlyphX::MinMaxGlyphTree::iterator glyph(static_cast<SynGlyphX::MinMaxGlyphTree::Node*>(index.internalPointer()));
+		SynGlyphX::DataMappingGlyphGraph::iterator glyph(static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(index.internalPointer()));
 		*glyph = newGlyph;
 		emit dataChanged(index, index);
 	}
 }
 
-const SynGlyphX::MinMaxGlyph& DataTransformModel::GetGlyph(const QModelIndex& index) const {
+const SynGlyphX::DataMappingGlyph& DataTransformModel::GetGlyph(const QModelIndex& index) const {
 
-	if (m_dataMapping->GetGlyphTrees().empty() || !index.isValid()) {
+	if (m_dataMapping->GetGlyphGraphs().empty() || !index.isValid()) {
 
 		throw std::invalid_argument("Index doesn't exist in DataTransformModel");
 	}
 
-	SynGlyphX::MinMaxGlyphTree::const_iterator glyph(static_cast<SynGlyphX::MinMaxGlyphTree::Node*>(index.internalPointer()));
+	SynGlyphX::DataMappingGlyphGraph::const_iterator glyph(static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(index.internalPointer()));
 	return (*glyph);
 }
 

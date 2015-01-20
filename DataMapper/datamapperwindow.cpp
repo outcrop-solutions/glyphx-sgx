@@ -654,7 +654,7 @@ void DataMapperWindow::ClearAndInitializeDataMapping() {
 
 void DataMapperWindow::SelectLastGlyphTreeRoot() {
 
-	m_glyphTreesView->selectionModel()->select(m_glyphTreesModel->index(m_dataTransformModel->GetDataMapping()->GetGlyphTrees().size() - 1, 0), QItemSelectionModel::ClearAndSelect);
+	m_glyphTreesView->selectionModel()->select(m_glyphTreesModel->index(m_dataTransformModel->GetDataMapping()->GetGlyphGraphs().size() - 1, 0), QItemSelectionModel::ClearAndSelect);
 }
 
 void DataMapperWindow::OnGlyphTreesViewSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected) {

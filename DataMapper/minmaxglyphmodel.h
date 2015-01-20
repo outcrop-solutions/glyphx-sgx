@@ -2,7 +2,7 @@
 #define MINMAXGLYPHMODEL_H
 
 #include <QtCore/QAbstractTableModel>
-#include "minmaxglyphtree.h"
+#include "datamappingglyphgraph.h"
 #include "datatransformmodel.h"
 
 class MinMaxGlyphModel : public QAbstractTableModel
@@ -31,11 +31,14 @@ public slots:
 	void ClearInputBindings();
 
 private:
-	QVariant GetDataByRow(const SynGlyphXANTz::GlyphNumericMappableProperties& minProperties, const SynGlyphXANTz::GlyphNumericMappableProperties& diffProperties, int row) const;
-	bool SetDataByRow(SynGlyphXANTz::GlyphNumericMappableProperties& minProperties, SynGlyphXANTz::GlyphNumericMappableProperties& diffProperties, const QVariant& value, const QModelIndex& index);
+	QVariant GetDataByRow(SynGlyphX::DataMappingGlyph& glyph, const QModelIndex& index) const;
+	bool SetDataByRow(SynGlyphX::DataMappingGlyph& glyph, const QVariant& value, const QModelIndex& index);
+	SynGlyphX::NumericMappingProperty& GetGlyphProperty(SynGlyphX::DataMappingGlyph& glyph, int row) const;
+	bool IsTextField(int row) const;
+	bool IsColorField(int row) const;
 
-	SynGlyphX::MinMaxGlyphTree::const_iterator m_glyph;
-	SynGlyphX::MinMaxGlyphTree::ConstSharedPtr m_glyphTree;
+	SynGlyphX::DataMappingGlyphGraph::const_iterator m_glyph;
+	SynGlyphX::DataMappingGlyphGraph::ConstSharedPtr m_glyphTree;
 	boost::uuids::uuid m_glyphTreeID;
 	QStringList m_propertyHeaders;
 	QStringList m_columnHeaders;

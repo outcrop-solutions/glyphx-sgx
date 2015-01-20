@@ -174,11 +174,11 @@ void GlyphDesignerWindow::CreateNewGlyphTree() {
                 glyphWidgets.push_back(glyphWidget);
                 if (i == 0) {
                     page->setTitle("Glyphs for root level");
-					glyphWidget->SetWidgetFromGlyph(SynGlyphXANTz::GlyphProperties::GetRoot(), false);
+					glyphWidget->SetWidgetFromGlyph(SynGlyphX::Glyph::s_defaultRootGlyph, false);
                 }
                 else {
                     page->setTitle(QString::number(i).prepend("Glyphs for branch level "));
-					glyphWidget->SetWidgetFromGlyph(SynGlyphXANTz::GlyphProperties::GetTemplate(), true);
+					glyphWidget->SetWidgetFromGlyph(SynGlyphX::Glyph::s_defaultGlyph, true);
                 }
                 layout->addWidget(glyphWidget);
                 wizard.addPage(page);
@@ -186,14 +186,15 @@ void GlyphDesignerWindow::CreateNewGlyphTree() {
 
             if (wizard.exec() == QDialog::Accepted) {
 
-				boost::shared_ptr<SynGlyphXANTz::GlyphProperties> rootGlyph(new SynGlyphXANTz::GlyphProperties());
+				SynGlyphX::Glyph rootGlyph;
 				glyphWidgets[0]->SetGlyphFromWidget(rootGlyph);
-				SynGlyphXANTz::GlyphTree newMaxGlyphTree(*rootGlyph);
+				SynGlyphX::GlyphGraph newMaxGlyphTree(rootGlyph);
 
-				std::vector<SynGlyphXANTz::GlyphProperties::ConstSharedPtr> templates;
+				std::vector<SynGlyphX::Glyph> templates;
 				std::vector<unsigned int> instanceCounts;
 				for (int i = 1; i < numberOfBranches; ++i) {
-					boost::shared_ptr<SynGlyphXANTz::GlyphProperties> glyph(new SynGlyphXANTz::GlyphProperties());
+
+					SynGlyphX::Glyph glyph;
 					glyphWidgets[i]->SetGlyphFromWidget(glyph);
 
 					templates.push_back(glyph);
@@ -202,7 +203,7 @@ void GlyphDesignerWindow::CreateNewGlyphTree() {
 
 				newMaxGlyphTree.AllocateChildSubtree(templates, instanceCounts, newMaxGlyphTree.root());
 
-				SynGlyphX::MinMaxGlyphTree::SharedPtr newGlyphTree(new SynGlyphX::MinMaxGlyphTree(newMaxGlyphTree));
+				SynGlyphX::DataMappingGlyphGraph::SharedPtr newGlyphTree = std::make_shared<SynGlyphX::DataMappingGlyphGraph>(newMaxGlyphTree);
 				m_glyphTreeModel->SetMinMaxGlyphTree(newGlyphTree);
 				SelectRootGlyphInModel();
             }

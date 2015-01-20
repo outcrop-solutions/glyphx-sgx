@@ -29,10 +29,13 @@ void GlyphDefaultsWidget::CreateTagTab(const SynGlyphX::DataMappingDefaults& def
 	QFormLayout* layout = new QFormLayout(tab);
 
 	m_tagFieldDefaultComboBox = new QComboBox(tab);
-	boost::bimap<SynGlyphX::DataMappingDefaults::TagFieldPropertyDefault, std::wstring>::const_iterator iT = SynGlyphX::DataMappingDefaults::s_tagFieldStrings.begin();
+	boost::bimap<SynGlyphX::DataMappingGlyph::MappableField, std::wstring>::const_iterator iT = SynGlyphX::DataMappingDefaults::s_tagFieldStrings.begin();
 	for (; iT != SynGlyphX::DataMappingDefaults::s_tagFieldStrings.end(); ++iT) {
 
-		m_tagFieldDefaultComboBox->addItem(QString::fromStdWString(iT->get_right()));
+		if (iT->left != SynGlyphX::DataMappingGlyph::MappableField::Tag) {
+
+			m_tagFieldDefaultComboBox->addItem(QString::fromStdWString(iT->get_right()));
+		}
 	}
 	m_tagFieldDefaultComboBox->setCurrentText(QString::fromStdWString(SynGlyphX::DataMappingDefaults::s_tagFieldStrings.left.at(defaults.GetTagField())));
 	layout->addRow(tr("Make Default Input Field Same As Input Field Of"), m_tagFieldDefaultComboBox);

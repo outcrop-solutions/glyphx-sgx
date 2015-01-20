@@ -72,7 +72,7 @@ void DataMapping3DWidget::OnExternalSelectionChanged(const QItemSelection& selec
 	if (m_glyphTreeIndex != childPositions.top()) {
 
 		m_glyphTreeIndex = childPositions.top();
-		SynGlyphX::DataTransformMapping::MinMaxGlyphTreeMap::const_iterator glyphTree = m_dataTransformModel->GetDataMapping()->GetGlyphTrees().begin();
+		SynGlyphX::DataTransformMapping::DataMappingGlyphGraphMap::const_iterator glyphTree = m_dataTransformModel->GetDataMapping()->GetGlyphGraphs().begin();
 		std::advance(glyphTree, m_glyphTreeIndex);
 		m_internalModel->SetMinMaxGlyphTree(glyphTree->second);
 	}

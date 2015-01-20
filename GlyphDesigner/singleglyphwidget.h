@@ -35,8 +35,8 @@ public:
     void SetNumberOfChildren(unsigned int numChildren);
     unsigned int GetNumberOfChildren() const;
 
-	void SetGlyphFromWidget(boost::shared_ptr<SynGlyphXANTz::GlyphProperties> glyph);
-	void SetWidgetFromGlyph(boost::shared_ptr<const SynGlyphXANTz::GlyphProperties> glyph, bool isNotRootNode);
+	void SetGlyphFromWidget(SynGlyphX::Glyph& glyph);
+	void SetWidgetFromGlyph(const SynGlyphX::Glyph& glyph, bool isNotRootNode);
 
 signals:
     void AddChildrenButtonClicked();
@@ -57,11 +57,11 @@ protected:
     XYZWidget* m_rotateWidget;
     XYZWidget* m_scaleWidget;
 
-    QDoubleSpinBox* m_ratioSpinBox;
-	SynGlyphX::GroupBoxSingleWidget* m_ratioGroupBox;
+    //QDoubleSpinBox* m_ratioSpinBox;
+	//SynGlyphX::GroupBoxSingleWidget* m_ratioGroupBox;
 
 private slots:
-    void OnShapeComboBoxChanged(int index);
+    //void OnShapeComboBoxChanged(int index);
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(SingleGlyphWidget::ChildOptions)

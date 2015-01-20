@@ -39,7 +39,7 @@ void ModalGlyphWidget::ConnectWidgetSignals() {
 	m_propertyConnections.push_back(QObject::connect(m_geometrySurfaceComboBox, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, [this]{ OnWidgetUpdated(SynGlyphXANTz::MinMaxGlyphTreeModel::UpdateSurface); }));
 	m_propertyConnections.push_back(QObject::connect(m_topologyComboBox, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, [this]{ OnWidgetUpdated(SynGlyphXANTz::MinMaxGlyphTreeModel::UpdateTopology); }));
 
-	m_propertyConnections.push_back(QObject::connect(m_ratioSpinBox, static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), this, [this]{ OnWidgetUpdated(SynGlyphXANTz::MinMaxGlyphTreeModel::UpdateScale); }));
+	//m_propertyConnections.push_back(QObject::connect(m_ratioSpinBox, static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), this, [this]{ OnWidgetUpdated(SynGlyphXANTz::MinMaxGlyphTreeModel::UpdateScale); }));
 
 	m_propertyConnections.push_back(QObject::connect(m_colorWidget, &SynGlyphX::ColorAlphaWidget::ColorChanged, this, [this]{ OnWidgetUpdated(SynGlyphXANTz::MinMaxGlyphTreeModel::UpdateColor); }));
 
@@ -61,10 +61,10 @@ void ModalGlyphWidget::OnWidgetUpdated(SynGlyphXANTz::MinMaxGlyphTreeModel::Prop
     const QModelIndexList& selected = m_selectionModel->selectedIndexes();
     if (!selected.isEmpty()) {
 
-		boost::shared_ptr<SynGlyphXANTz::GlyphProperties> glyph(new SynGlyphXANTz::GlyphProperties());
+		SynGlyphX::Glyph glyph;
         SetGlyphFromWidget(glyph);
 
-        m_model->UpdateGlyph(selected.back(), m_glyphTreeType, *glyph.get(), updates);
+        m_model->UpdateGlyph(selected.back(), m_glyphTreeType, glyph, updates);
     }
 }
 
@@ -85,14 +85,14 @@ void ModalGlyphWidget::SelectionChanged(const QItemSelection& selected, const QI
 
 void ModalGlyphWidget::UpdateWidget(const QModelIndex& index) {
 
-	boost::shared_ptr<SynGlyphXANTz::GlyphProperties> glyph;
+	SynGlyphX::Glyph glyph;
 	if (m_glyphTreeType == SynGlyphXANTz::MinMaxGlyphTreeModel::GlyphType::Max) {
 
-		glyph.reset(new SynGlyphXANTz::GlyphProperties(m_model->GetMinMaxGlyph(index)->GetMaxGlyph()));
+		glyph = m_model->GetMinMaxGlyph(index)->GetMaxGlyph();
 	}
 	else {
 
-		glyph.reset(new SynGlyphXANTz::GlyphProperties(m_model->GetMinMaxGlyph(index)->GetMinGlyph()));
+		glyph = m_model->GetMinMaxGlyph(index)->GetMinGlyph();
 	}
     SetWidgetFromGlyph(glyph, index.parent().isValid());
 	SetNumberOfChildren(m_model->rowCount(index));
