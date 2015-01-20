@@ -31,8 +31,6 @@ namespace SynGlyphXANTz {
 		void SetAllowMultiSelection(bool allowMultiSelection);
 		void SetModel(MinMaxGlyphTreeModel* model, QItemSelectionModel* selectionModel);
 
-		void AppendChild(const QModelIndex& parent, boost::shared_ptr<const SynGlyphX::Glyph> glyph, unsigned int numberOfChildren = 1);
-
 		void ShowGlyph(bool show);
 
 		public slots:

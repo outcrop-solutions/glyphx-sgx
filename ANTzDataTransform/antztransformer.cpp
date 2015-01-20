@@ -101,7 +101,7 @@ namespace SynGlyphXANTz {
 			grids.push_back(grid);
 		}
 
-		GlyphTree::ConstSharedVector trees = CreateGlyphTreesFromMinMaxTrees(mapping);
+		SynGlyphX::GlyphGraph::ConstSharedVector trees = CreateGlyphTreesFromMinMaxTrees(mapping);
 
 		Q_FOREACH(QString csvFilename, csvFilenames) {
 

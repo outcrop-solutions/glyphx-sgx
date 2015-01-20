@@ -40,7 +40,6 @@ namespace SynGlyphXANTz {
 		unsigned long WriteGlyph(SynGlyphX::CSVFileWriter& file, const SynGlyphX::GlyphGraph::ConstSharedPtr tree, const SynGlyphX::GlyphGraph::const_iterator& glyph, unsigned long id, unsigned long parentId, unsigned long branchLevel);
 		unsigned long WriteGlyphTag(SynGlyphX::CSVFileWriter& file, const SynGlyphX::GlyphGraph::ConstSharedPtr tree, const SynGlyphX::GlyphGraph::const_iterator& glyph, unsigned long id);
 		unsigned long WriteGrids(SynGlyphX::CSVFileWriter& file, const std::vector<ANTzGrid>& grids, unsigned long firstId);
-		unsigned int ConvertGeometryToCSVInt(SynGlyphX::GlyphStructuralProperties::Shape shape, SynGlyphX::GlyphStructuralProperties::Surface surface);
         unsigned short GetColorIndex(const SynGlyphX::GlyphColor& color);
 
 		SynGlyphX::GlyphColor m_predefinedColors[MaxPredefinedColors];

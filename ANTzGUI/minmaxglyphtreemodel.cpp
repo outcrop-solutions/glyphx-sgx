@@ -2,6 +2,8 @@
 #include "glyphmimedata.h"
 #include <stdexcept>
 #include "antzcsvwriter.h"
+#include "datamappingglyphfile.h"
+#include "glyphnodeconverter.h"
 
 namespace SynGlyphXANTz {
 
@@ -205,6 +207,7 @@ namespace SynGlyphXANTz {
 			SynGlyphX::DataMappingGlyphGraph::iterator newChildGlyph = m_minMaxGlyphTree->append(parentGlyph, glyph);
 
 			//For now, update position to 15.0 less than the last x coordinate.  This follows what ANTz does
+			newPosition[0] -= 15.0;
 			newChildGlyph->GetPosition()[0].GetValue().first = newPosition[0];
 			newChildGlyph->GetPosition()[1].GetValue().first = newPosition[1];
 			newChildGlyph->GetPosition()[2].GetValue().first = newPosition[2];
@@ -297,101 +300,91 @@ namespace SynGlyphXANTz {
 
 			if (updates.testFlag(UpdateScale)) {
 
-				minGlyph.SetScale(glyph.GetScale());
-				minGlyph.SetRatio(glyph.GetRatio());
+				glyphToUpdate->GetScale()[0].GetValue().first = glyph.GetScale()[0];
+				glyphToUpdate->GetScale()[1].GetValue().first = glyph.GetScale()[1];
+				glyphToUpdate->GetScale()[2].GetValue().first = glyph.GetScale()[2];
 			}
 
 			if (updates.testFlag(UpdatePosition)) {
 
-				minGlyph.SetPosition(glyph.GetPosition());
+				glyphToUpdate->GetPosition()[0].GetValue().first = glyph.GetPosition()[0];
+				glyphToUpdate->GetPosition()[1].GetValue().first = glyph.GetPosition()[1];
+				glyphToUpdate->GetPosition()[2].GetValue().first = glyph.GetPosition()[2];
 			}
 
 			if (updates.testFlag(UpdateRotation)) {
 
-				minGlyph.SetRotation(glyph.GetRotation());
+				glyphToUpdate->GetRotation()[0].GetValue().first = glyph.GetRotation()[0];
+				glyphToUpdate->GetRotation()[1].GetValue().first = glyph.GetRotation()[1];
+				glyphToUpdate->GetRotation()[2].GetValue().first = glyph.GetRotation()[2];
 			}
 
 			if ((updates.testFlag(UpdateGeometry)) || (updates.testFlag(UpdateSurface))) {
 
-				minGlyph.SetGeometry(glyph.GetShape(), glyph.GetSurface());
+				glyphToUpdate->GetStructure().SetGeometryShape(glyph.GetStructure().GetGeometryShape());
+				glyphToUpdate->GetStructure().SetGeometrySurface(glyph.GetStructure().GetGeometrySurface());
 			}
 
 			if (updates.testFlag(UpdateColor)) {
 
-				minGlyph.SetColor(glyph.GetColor());
+				glyphToUpdate->GetColor().GetValue().first = glyph.GetColor();
+				glyphToUpdate->GetTransparency().GetValue().first = glyph.GetTransparency();
 			}
 
 			if (updates.testFlag(UpdateTopology)) {
 
-				minGlyph.SetTopology(glyph.GetTopology());
+				glyphToUpdate->GetStructure().SetVirtualTopology(glyph.GetStructure().GetVirtualTopology());
 			}
-
-			glyphToUpdate->SetMinGlyph(minGlyph);
 
 			emit dataChanged(index, index);
 		}
 	}
 
-	void MinMaxGlyphTreeModel::UpdateGlyphMax(const QModelIndex& index, const GlyphProperties& glyph, PropertyUpdates updates) {
+	void MinMaxGlyphTreeModel::UpdateGlyphMax(const QModelIndex& index, const SynGlyphX::Glyph& glyph, PropertyUpdates updates) {
 
 		if (index.isValid() && (updates != PropertyUpdate::UpdateNone)) {
 
-			SynGlyphX::MinMaxGlyphTree::iterator glyphToUpdate = GetIteratorFromIndex(index);
-			GlyphProperties minGlyph = glyphToUpdate->GetMinGlyph();
-			GlyphNumericMappableProperties difference = glyphToUpdate->GetDifference();
-
-			SynGlyphX::Vector3 vec3;
+			SynGlyphX::DataMappingGlyphGraph::iterator glyphToUpdate = GetIteratorFromIndex(index);;
 
 			if (updates.testFlag(UpdateScale)) {
 
-				vec3 = glyph.GetScale();
-				vec3[0] -= minGlyph.GetScale()[0];
-				vec3[1] -= minGlyph.GetScale()[1];
-				vec3[2] -= minGlyph.GetScale()[2];
-				difference.SetScale(vec3);
-				difference.SetRatio(glyph.GetRatio() - minGlyph.GetRatio());
+				glyphToUpdate->GetScale()[0].GetValue().second = glyph.GetScale()[0] - glyphToUpdate->GetScale()[0].GetValue().first;
+				glyphToUpdate->GetScale()[1].GetValue().second = glyph.GetScale()[1] - glyphToUpdate->GetScale()[1].GetValue().first;
+				glyphToUpdate->GetScale()[2].GetValue().second = glyph.GetScale()[2] - glyphToUpdate->GetScale()[2].GetValue().first;
 			}
 
 			if (updates.testFlag(UpdatePosition)) {
 
-				vec3 = glyph.GetPosition();
-				vec3[0] -= minGlyph.GetPosition()[0];
-				vec3[1] -= minGlyph.GetPosition()[1];
-				vec3[2] -= minGlyph.GetPosition()[2];
-				difference.SetPosition(vec3);
+				glyphToUpdate->GetPosition()[0].GetValue().second = glyph.GetScale()[0] - glyphToUpdate->GetPosition()[0].GetValue().first;
+				glyphToUpdate->GetPosition()[1].GetValue().second = glyph.GetScale()[1] - glyphToUpdate->GetPosition()[1].GetValue().first;
+				glyphToUpdate->GetPosition()[2].GetValue().second = glyph.GetScale()[2] - glyphToUpdate->GetPosition()[2].GetValue().first;
 			}
 
 			if (updates.testFlag(UpdateRotation)) {
 
-				vec3 = glyph.GetRotation();
-				vec3[0] -= minGlyph.GetRotation()[0];
-				vec3[1] -= minGlyph.GetRotation()[1];
-				vec3[2] -= minGlyph.GetRotation()[2];
-				difference.SetRotation(vec3);
+				glyphToUpdate->GetRotation()[0].GetValue().second = glyph.GetScale()[0] - glyphToUpdate->GetRotation()[0].GetValue().first;
+				glyphToUpdate->GetRotation()[1].GetValue().second = glyph.GetScale()[1] - glyphToUpdate->GetRotation()[1].GetValue().first;
+				glyphToUpdate->GetRotation()[2].GetValue().second = glyph.GetScale()[2] - glyphToUpdate->GetRotation()[2].GetValue().first;
 			}
 
 			if ((updates.testFlag(UpdateGeometry)) || (updates.testFlag(UpdateSurface))) {
 
-				minGlyph.SetGeometry(glyph.GetShape(), glyph.GetSurface());
+				glyphToUpdate->GetStructure().SetGeometryShape(glyph.GetStructure().GetGeometryShape());
+				glyphToUpdate->GetStructure().SetGeometrySurface(glyph.GetStructure().GetGeometrySurface());
 			}
 
 			if (updates.testFlag(UpdateColor)) {
 
-				SynGlyphX::Color color = glyph.GetColor();
-				color -= minGlyph.GetColor();
-				difference.SetColor(color);
+				glyphToUpdate->GetColor().GetValue().second.Set(0, glyph.GetColor()[0] - glyphToUpdate->GetColor().GetValue().first[0]);
+				glyphToUpdate->GetColor().GetValue().second.Set(0, glyph.GetColor()[1] - glyphToUpdate->GetColor().GetValue().first[1]);
+				glyphToUpdate->GetColor().GetValue().second.Set(0, glyph.GetColor()[2] - glyphToUpdate->GetColor().GetValue().first[2]);
+				glyphToUpdate->GetTransparency().GetValue().second = glyph.GetTransparency() - glyphToUpdate->GetTransparency().GetValue().first;
 			}
 
 			if (updates.testFlag(UpdateTopology)) {
 
-				minGlyph.SetTopology(glyph.GetTopology());
+				glyphToUpdate->GetStructure().SetVirtualTopology(glyph.GetStructure().GetVirtualTopology());
 			}
-
-			if ((updates.testFlag(UpdateGeometry)) || (updates.testFlag(UpdateSurface)) || (updates.testFlag(UpdateTopology))) {
-
-				glyphToUpdate->SetMinGlyph(minGlyph);
-			}
-			glyphToUpdate->SetDifference(difference);
 
 			emit dataChanged(index, index);
 		}
@@ -424,13 +417,13 @@ namespace SynGlyphXANTz {
 
 		if ((glyphData != NULL) && (row == -1)) {
 
-			SynGlyphX::MinMaxGlyphTree::iterator newParentGlyph = GetIteratorFromIndex(parent);
+			SynGlyphX::DataMappingGlyphGraph::iterator newParentGlyph = GetIteratorFromIndex(parent);
 			const QModelIndexList& indexes = glyphData->GetGlyphs();
 
 			for (int j = 0; j < indexes.length(); ++j) {
 
-				SynGlyphX::MinMaxGlyphTree::iterator oldGlyph = GetIteratorFromIndex(indexes[j]);
-				SynGlyphX::MinMaxGlyphTree::iterator oldParentGlyph = m_minMaxGlyphTree->parent(oldGlyph);
+				SynGlyphX::DataMappingGlyphGraph::iterator oldGlyph = GetIteratorFromIndex(indexes[j]);
+				SynGlyphX::DataMappingGlyphGraph::iterator oldParentGlyph = m_minMaxGlyphTree->parent(oldGlyph);
 
 				//Only drop if parents are different
 				if (oldParentGlyph != newParentGlyph) {
@@ -438,19 +431,20 @@ namespace SynGlyphXANTz {
 					unsigned int numberOfChildren = m_minMaxGlyphTree->children(newParentGlyph);
 
 					beginMoveRows(indexes[j].parent(), indexes[j].row(), indexes[j].row(), parent, numberOfChildren);
-					SynGlyphX::Vector3 newPosition = { { 0.0, 0.0, 0.0 } };
+					SynGlyphX::Vector3 newPosition = { { 15.0, 0.0, 0.0 } };
 					if (numberOfChildren > 0) {
 
 						newPosition = m_minMaxGlyphTree->child(newParentGlyph, numberOfChildren - 1)->GetMinGlyph().GetPosition();
 					}
-					stlplus::ntree<SynGlyphX::MinMaxGlyph> oldGlyphSubtree = m_minMaxGlyphTree->cut(oldGlyph);
-					SynGlyphX::MinMaxGlyphTree::iterator newGlyph = m_minMaxGlyphTree->insert(newParentGlyph, oldGlyphSubtree);
+					stlplus::ntree<SynGlyphX::DataMappingGlyph> oldGlyphSubtree = m_minMaxGlyphTree->cut(oldGlyph);
+					SynGlyphX::DataMappingGlyphGraph::iterator newGlyph = m_minMaxGlyphTree->insert(newParentGlyph, oldGlyphSubtree);
 
 					//For now, update position to 15.0 less than the last x coordinate.  This follows what ANTz does
 					newPosition[0] -= 15.0;
-					GlyphProperties properties = newGlyph->GetMinGlyph();
-					properties.SetPosition(newPosition);
-					newGlyph->SetMinGlyph(properties);
+					newGlyph->GetPosition()[0].GetValue().first = newPosition[0];
+					newGlyph->GetPosition()[1].GetValue().first = newPosition[1];
+					newGlyph->GetPosition()[2].GetValue().first = newPosition[2];
+
 					endMoveRows();
 				}
 			}
@@ -467,8 +461,21 @@ namespace SynGlyphXANTz {
 
 		try {
 
-			m_minMaxGlyphTree->erase();
-			m_minMaxGlyphTree->ReadFromFile(filename.toStdString());
+			QString extension = filename.right(4);
+			if (extension == ".sgt") {
+
+				SynGlyphX::DataMappingGlyphFile fileReader;
+				fileReader.ReadFromFile(filename.toStdString());
+				m_minMaxGlyphTree = fileReader.GetDataMappingGlyphGraph();
+			}
+			else if (extension == ".csv") {
+
+				m_minMaxGlyphTree = std::make_shared<SynGlyphX::DataMappingGlyphGraph>(*SynGlyphXANTz::GlyphNodeConverter::CreateGlyphGraphFromCSV(filename.toStdString()).get());
+			}
+			else {
+
+				throw std::exception("File type not supported");
+			}
 		}
 		catch (const std::exception& e) {
 
@@ -484,12 +491,13 @@ namespace SynGlyphXANTz {
 
 	void MinMaxGlyphTreeModel::SaveToTemplateFile(const QString& filename) const {
 
-		m_minMaxGlyphTree->WriteToFile(filename.toStdString());
+		SynGlyphX::DataMappingGlyphFile glyphFile(m_minMaxGlyphTree);
+		glyphFile.WriteToFile(filename.toStdString());
 	}
 
 	bool MinMaxGlyphTreeModel::SaveToCSV(const QString& filename, bool writeMaxGlyph) {
 
-		GlyphTree::ConstSharedVector trees;
+		SynGlyphX::GlyphGraph::ConstSharedVector trees;
 		if (writeMaxGlyph) {
 
 			trees.push_back(m_minMaxGlyphTree->GetMaxGlyphTree());
@@ -510,7 +518,7 @@ namespace SynGlyphXANTz {
 		return (!m_clipboardGlyph.valid());
 	}
 
-	SynGlyphX::MinMaxGlyphTree::iterator MinMaxGlyphTreeModel::GetClipboardGlyph() const {
+	SynGlyphX::DataMappingGlyphGraph::iterator MinMaxGlyphTreeModel::GetClipboardGlyph() const {
 
 		return m_clipboardGlyph;
 	}
@@ -523,7 +531,7 @@ namespace SynGlyphXANTz {
 	void MinMaxGlyphTreeModel::RepaceModelWithDefaultGlyphTree() {
 
 		beginResetModel();
-		m_minMaxGlyphTree = SynGlyphX::MinMaxGlyphTree::CreateDefault();
+		m_minMaxGlyphTree = SynGlyphX::DataMappingGlyphGraph::CreateDefault();
 		endResetModel();
 	}
 
@@ -534,21 +542,21 @@ namespace SynGlyphXANTz {
 		return (model->GetBranchLevel(left) > model->GetBranchLevel(right));
 	}
 
-	SynGlyphX::MinMaxGlyphTree::iterator MinMaxGlyphTreeModel::GetIteratorFromIndex(const QModelIndex& index) {
+	SynGlyphX::DataMappingGlyphGraph::iterator MinMaxGlyphTreeModel::GetIteratorFromIndex(const QModelIndex& index) {
 
-		SynGlyphX::MinMaxGlyphTree::iterator iT(static_cast<SynGlyphX::MinMaxGlyphTree::Node*>(index.internalPointer()));
+		SynGlyphX::DataMappingGlyphGraph::iterator iT(static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(index.internalPointer()));
 		return iT;
 	}
 
 	unsigned int MinMaxGlyphTreeModel::GetBranchLevel(const QModelIndex& index) const {
 
-		SynGlyphX::MinMaxGlyphTree::iterator node = GetIteratorFromIndex(index);
+		SynGlyphX::DataMappingGlyphGraph::iterator node = GetIteratorFromIndex(index);
 		return m_minMaxGlyphTree->depth(node);
 	}
 
-	SynGlyphX::MinMaxGlyphTree::const_iterator MinMaxGlyphTreeModel::GetMinMaxGlyph(const QModelIndex& index) const {
+	SynGlyphX::DataMappingGlyphGraph::const_iterator MinMaxGlyphTreeModel::GetMinMaxGlyph(const QModelIndex& index) const {
 
-		SynGlyphX::MinMaxGlyphTree::iterator iT = GetIteratorFromIndex(index);
+		SynGlyphX::DataMappingGlyphGraph::iterator iT = GetIteratorFromIndex(index);
 		return iT.constify();
 	}
 

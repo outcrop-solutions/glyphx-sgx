@@ -2,6 +2,7 @@
 #include <fstream>
 #include <locale>
 #include <boost/lexical_cast.hpp>
+#include "glyphnodeconverter.h"
 
 namespace SynGlyphXANTz {
 
@@ -172,11 +173,12 @@ namespace SynGlyphXANTz {
 
 		SynGlyphX::CSVFileHandler::AddVector3ToCSVValues(values, glyph->GetScale());
 		SynGlyphX::CSVFileHandler::AddVector3ToCSVValues(values, glyph->GetPosition());
-		values.insert(values.end(), { L"0.0", L"1.5", L"0.0", L"0", L"0", L"0" });
+		SynGlyphX::CSVFileHandler::AddVector3ToCSVValues(values, glyph->GetTagOffset());
+		SynGlyphX::CSVFileHandler::AddVector3ToCSVValues(values, glyph->GetRotationRate());
 		SynGlyphX::CSVFileHandler::AddVector3ToCSVValues(values, glyph->GetRotation());
 		values.insert(values.end(), { L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0" });
 
-		values.push_back(boost::lexical_cast<std::wstring>(ConvertGeometryToCSVInt(glyph->GetStructure().GetGeometryShape(), glyph->GetStructure().GetGeometrySurface())));
+		values.push_back(boost::lexical_cast<std::wstring>(GlyphNodeConverter::ConvertGeometryToNodeValue(glyph->GetStructure().GetGeometryShape(), glyph->GetStructure().GetGeometrySurface())));
 		values.push_back(L"1");
 		values.push_back(L"0");
 		values.push_back(L"0.1");
@@ -257,16 +259,6 @@ namespace SynGlyphXANTz {
 		}
 
 		return firstId + grids.size();
-	}
-
-	unsigned int ANTzCSVWriter::ConvertGeometryToCSVInt(SynGlyphX::GlyphStructuralProperties::Shape shape, SynGlyphX::GlyphStructuralProperties::Surface surface) {
-
-		if (shape == SynGlyphX::GlyphStructuralProperties::Shape::Pin) {
-			return (2 * shape) + 1 - surface;
-		}
-		else {
-			return (2 * shape) + surface;
-		}
 	}
 
 	ANTzCSVWriter& ANTzCSVWriter::GetInstance() {

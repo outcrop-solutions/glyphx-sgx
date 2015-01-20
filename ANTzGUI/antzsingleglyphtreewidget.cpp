@@ -7,6 +7,7 @@
 #include <stack>
 #include <QtCore/QDir>
 #include <QtCore/QFile>
+#include "glyphnodeconverter.h"
 
 namespace SynGlyphXANTz {
 
@@ -100,7 +101,7 @@ namespace SynGlyphXANTz {
 					propertyUpdate = MinMaxGlyphTreeModel::PropertyUpdate::UpdateScale;
 				}
 
-				SynGlyphX::Glyph glyph(GetGlyphFromModelIndex(selected.back()));
+				SynGlyphX::Glyph glyph = GlyphNodeConverter::CreateGlyphFromNode(GetGlyphFromModelIndex(selected.back()));
 				DisconnectDataChangedSignal();
 				m_model->UpdateGlyph(selected.back(), m_glyphTreeType, glyph, propertyUpdate);
 				ConnectDataChangedSignal();
@@ -274,14 +275,14 @@ namespace SynGlyphXANTz {
 		glyph->rotate.y = rotation[1];
 		glyph->rotate.z = rotation[2];
 
-		glyph->geometry = 2 * glyphTemplate.GetShape();
+		glyph->geometry = 2 * glyphTemplate.GetStructure().GetGeometryShape();
 
 		//This is necessary because ANTz screwed up the enum for geometries
-		if (glyphTemplate.GetShape() == GlyphProperties::Shape::Pin) {
-			glyph->geometry += (1 - glyphTemplate.GetSurface());
+		if (glyphTemplate.GetStructure().GetGeometryShape() == SynGlyphX::GlyphStructuralProperties::Shape::Pin) {
+			glyph->geometry += (1 - glyphTemplate.GetStructure().GetGeometrySurface());
 		}
 		else {
-			glyph->geometry += glyphTemplate.GetSurface();
+			glyph->geometry += glyphTemplate.GetStructure().GetGeometrySurface();
 		}
 
 		SynGlyphX::GlyphColor color = glyphTemplate.GetColor();
