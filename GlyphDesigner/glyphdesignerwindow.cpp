@@ -248,24 +248,34 @@ void GlyphDesignerWindow::LoadTemplate(const QString& filename) {
 
     if (!filename.isEmpty()) {
 
-        SynGlyphX::Application::setOverrideCursor(Qt::WaitCursor);
-		m_isFileLoadingOrDefaultGlyphSet = true;
-        bool fileLoaded = m_glyphTreeModel->LoadFromFile(filename);
-        SynGlyphX::Application::restoreOverrideCursor();
+		if (QFile::exists(filename)) {
 
-        if (fileLoaded) {
+			SynGlyphX::Application::setOverrideCursor(Qt::WaitCursor);
+			m_isFileLoadingOrDefaultGlyphSet = true;
+			bool fileLoaded = m_glyphTreeModel->LoadFromFile(filename);
+			SynGlyphX::Application::restoreOverrideCursor();
 
-            SetCurrentFile(filename);
-            statusBar()->showMessage("Template successfully opened", 3000);
-			SelectRootGlyphInModel();
-        }
-        else {
+			if (fileLoaded) {
 
-			m_isFileLoadingOrDefaultGlyphSet = false;
-            QString title = "Loading Template Failed";
-            QMessageBox::warning(this, title, "Failed to load template");
-        }
-    }
+				SetCurrentFile(filename);
+				statusBar()->showMessage("Template successfully opened", 3000);
+				SelectRootGlyphInModel();
+			}
+			else {
+
+				m_isFileLoadingOrDefaultGlyphSet = false;
+				QMessageBox::warning(this, tr("Loading Template Failed"), tr("Failed to load template"));
+			}
+		}
+		else {
+
+			QMessageBox::warning(this, tr("Loading Template Failed"), tr("File does not exist"));
+		}
+	}
+	else {
+
+		QMessageBox::warning(this, tr("Loading Template Failed"), tr("File name is empty"));
+	}
 }
 
 bool GlyphDesignerWindow::SaveTemplate() {
