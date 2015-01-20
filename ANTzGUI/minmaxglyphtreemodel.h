@@ -26,6 +26,7 @@ namespace SynGlyphXANTz {
 			UpdatePosition = 0x10,
 			UpdateRotation = 0x20,
 			UpdateScale = 0x40,
+			UpdateRotationRate = 0x80,
 			//All for when all properties are being updated
 			UpdateAll = 0xFFFF
 		};

@@ -292,6 +292,10 @@ namespace SynGlyphXANTz {
 		glyph->color.a = glyphTemplate.GetTransparency();
 
 		glyph->topo = glyphTemplate.GetStructure().GetVirtualTopology();
+
+		glyph->rotateRate.x = glyphTemplate.GetRotationRate()[0];
+		glyph->rotateRate.y = glyphTemplate.GetRotationRate()[1];
+		glyph->rotateRate.z = glyphTemplate.GetRotationRate()[2];
 	}
 
 	void ANTzSingleGlyphTreeWidget::UpdateSelection(const QItemSelection& selected, const QItemSelection& deselected) {
