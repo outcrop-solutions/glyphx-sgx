@@ -183,8 +183,8 @@ namespace SynGlyphX {
 		glyph.GetScale()[2] = m_scale[2].GetValue().first + m_scale[2].GetValue().second;
 
 		glyph.GetColor().Set(0, m_color.GetValue().first[0] + m_color.GetValue().second[0]);
-		glyph.GetColor().Set(1, m_color.GetValue().first[0] + m_color.GetValue().second[1]);
-		glyph.GetColor().Set(2, m_color.GetValue().first[0] + m_color.GetValue().second[2]);
+		glyph.GetColor().Set(1, m_color.GetValue().first[1] + m_color.GetValue().second[1]);
+		glyph.GetColor().Set(2, m_color.GetValue().first[2] + m_color.GetValue().second[2]);
 		glyph.GetTransparency() = m_transparency.GetValue().first + m_transparency.GetValue().second;
 
 		glyph.GetTag() = m_tag.GetValue();
