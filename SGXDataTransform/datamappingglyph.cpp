@@ -76,7 +76,7 @@ namespace SynGlyphX {
 		AddXYZNumericPropertiesToPropertyTree(rootGlyphPropertyTree.add(L"Rotation", L""), m_rotation);
 		AddXYZNumericPropertiesToPropertyTree(rootGlyphPropertyTree.add(L"Scale", L""), m_scale);
 
-		boost::property_tree::wptree& colorPropertyTree = propertyTree.add(L"Color", L"");
+		boost::property_tree::wptree& colorPropertyTree = rootGlyphPropertyTree.add(L"Color", L"");
 		m_color.ExportToPropertyTree(colorPropertyTree.add(L"RGB", L""));
 		m_transparency.ExportToPropertyTree(colorPropertyTree.add(L"Transparency", L""));
 

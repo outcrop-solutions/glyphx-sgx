@@ -48,14 +48,12 @@ namespace SynGlyphX {
 	template<>
 	DataMappingProperty<std::pair<GlyphColor, GlyphColor>>::DataMappingProperty(const boost::property_tree::wptree& propertyTree) {
 
-		const boost::property_tree::wptree& colorPropertyTree = propertyTree.get_child(L"Color");
-		const boost::property_tree::wptree& rgbPropertyTree = colorPropertyTree.get_child(L"RGB");
-		const boost::property_tree::wptree& rgbMinPropertyTree = rgbPropertyTree.get_child(L"Min");
+		const boost::property_tree::wptree& rgbMinPropertyTree = propertyTree.get_child(L"Min");
 		m_value.first.Set(0, rgbMinPropertyTree.get<short>(L"R"));
 		m_value.first.Set(1, rgbMinPropertyTree.get<short>(L"G"));
 		m_value.first.Set(2, rgbMinPropertyTree.get<short>(L"B"));
 
-		boost::optional<const boost::property_tree::wptree&> rgbDiffPropertyTree = rgbPropertyTree.get_child_optional(L"Difference");
+		boost::optional<const boost::property_tree::wptree&> rgbDiffPropertyTree = propertyTree.get_child_optional(L"Difference");
 		if (rgbDiffPropertyTree.is_initialized()) {
 
 			m_value.second.Set(0, rgbDiffPropertyTree.get().get<short>(L"R"));

@@ -57,8 +57,7 @@ namespace SynGlyphX {
 		const GlyphGraph::Vertex& glyphGraphRoot = graph.GetRootVertices()[0];
 		m_rootVertex = add_vertex(DataMappingGlyph(graph[glyphGraphRoot]));*/
 
-
-
+		insert(DataMappingGlyph(*graph.root()));
 		AddGraphGlyphSubgraph(root(), graph.root(), graph);
 	}
 
@@ -164,107 +163,6 @@ namespace SynGlyphX {
 	const DataMappingGlyphGraph::Vertex& DataMappingGlyphGraph::GetRootVertex() const {
 
 		return m_rootVertex;
-	}
-
-	void MinMaxGlyphTree::WriteToFile(const std::string& filename) const {
-
-		boost::property_tree::wptree propertyTree;
-		ExportToPropertyTree(propertyTree);
-		boost::property_tree::write_xml(filename, propertyTree);
-	}
-
-	void MinMaxGlyphTree::ReadFromFile(const std::string& filename) {
-
-		std::string extension = filename.substr(filename.length() - 4, 4);
-		if (extension == ".sgt") {
-
-			ReadFromSGTFile(filename);
-		}
-		else if (extension == ".csv") {
-
-			ReadFromANTzCSVFile(filename);
-		}
-		else {
-
-			throw std::exception("File type not supported");
-		}
-	}
-
-	void MinMaxGlyphTree::ReadFromSGTFile(const std::string& filename) {
-
-		boost::property_tree::wptree propertyTree;
-		boost::property_tree::read_xml(filename, propertyTree);
-		boost::optional<PropertyTree&> glyphPropertyTree = propertyTree.get_child_optional(L"Glyph");
-		if (glyphPropertyTree.is_initialized()) {
-
-			MinMaxGlyph glyph(glyphPropertyTree.get());
-			insert(glyph);
-			ProcessPropertyTreeChildren(root(), glyphPropertyTree.get());
-
-			boost::optional<PropertyTree&> inputFieldsPropertyTree = glyphPropertyTree.get().get_child_optional(L"InputFields");
-			if (inputFieldsPropertyTree.is_initialized()) {
-
-				for (const PropertyTree::value_type& inputfieldProperties : inputFieldsPropertyTree.get()) {
-
-					if (inputfieldProperties.first == L"InputField") {
-
-						InputField inputfield(inputfieldProperties.second);
-						m_inputFields[inputfield.GetHashID()] = inputfield;
-					}
-				}
-			}
-		}
-		else {
-
-			throw std::exception((filename + " does not have glyph tree").c_str());
-		}
-	}
-
-	void MinMaxGlyphTree::ReadFromANTzCSVFile(const std::string& filename) {
-
-		CSVFileReader csvReader(filename);
-
-		if (csvReader.GetHeaders() != SynGlyphXANTz::ANTzCSVWriter::GetInstance().GetNodeHeaders()) {
-
-			throw std::invalid_argument("Could not read CSV file into glyph tree: Invalid Headers");
-		}
-
-		CSVFileHandler::CSVValues currentLineValues;
-		while (!csvReader.IsAtEndOfFile()) {
-
-			currentLineValues = csvReader.GetValuesFromLine();
-			if (currentLineValues[1] == L"5") {
-
-				break;
-			}
-		}
-
-		if ((currentLineValues.empty()) || (currentLineValues[1] != L"5")) {
-
-			throw std::invalid_argument("CSV file has no glyph");
-		}
-
-		std::unordered_map<std::wstring, MinMaxGlyphTree::iterator> indexToNodeMap;
-
-		indexToNodeMap[currentLineValues[0]] = insert(MinMaxGlyph(SynGlyphXANTz::GlyphProperties(currentLineValues)));
-		currentLineValues = csvReader.GetValuesFromLine();
-
-		do {
-			if (currentLineValues[5] == L"0") {
-
-				break;
-			}
-
-			if (currentLineValues[1] != L"5") {
-
-				currentLineValues = csvReader.GetValuesFromLine();
-				continue;
-			}
-
-			indexToNodeMap[currentLineValues[0]] = insert(indexToNodeMap[currentLineValues[4]], MinMaxGlyph(SynGlyphXANTz::GlyphProperties(currentLineValues)));
-			currentLineValues = csvReader.GetValuesFromLine();
-
-		} while (!csvReader.IsAtEndOfFile());
 	}*/
 
 	void DataMappingGlyphGraph::ProcessPropertyTreeChildren(const DataMappingGlyphGraph::iterator& parent, const boost::property_tree::wptree& propertyTree) {
@@ -424,27 +322,30 @@ namespace SynGlyphX {
 
 	void DataMappingGlyphGraph::IncrementInputBindingCountsFromGlyph(const DataMappingGlyph& glyph) {
 
-		IncrementInputBindingCount(glyph.GetPosition()[0].GetBinding());
-		IncrementInputBindingCount(glyph.GetPosition()[1].GetBinding());
-		IncrementInputBindingCount(glyph.GetPosition()[2].GetBinding());
+		if (!m_inputFields.empty()) {
 
-		IncrementInputBindingCount(glyph.GetRotation()[0].GetBinding());
-		IncrementInputBindingCount(glyph.GetRotation()[1].GetBinding());
-		IncrementInputBindingCount(glyph.GetRotation()[2].GetBinding());
+			IncrementInputBindingCount(glyph.GetPosition()[0].GetBinding());
+			IncrementInputBindingCount(glyph.GetPosition()[1].GetBinding());
+			IncrementInputBindingCount(glyph.GetPosition()[2].GetBinding());
 
-		IncrementInputBindingCount(glyph.GetScale()[0].GetBinding());
-		IncrementInputBindingCount(glyph.GetScale()[1].GetBinding());
-		IncrementInputBindingCount(glyph.GetScale()[2].GetBinding());
+			IncrementInputBindingCount(glyph.GetRotation()[0].GetBinding());
+			IncrementInputBindingCount(glyph.GetRotation()[1].GetBinding());
+			IncrementInputBindingCount(glyph.GetRotation()[2].GetBinding());
 
-		IncrementInputBindingCount(glyph.GetColor().GetBinding());
-		IncrementInputBindingCount(glyph.GetTransparency().GetBinding());
+			IncrementInputBindingCount(glyph.GetScale()[0].GetBinding());
+			IncrementInputBindingCount(glyph.GetScale()[1].GetBinding());
+			IncrementInputBindingCount(glyph.GetScale()[2].GetBinding());
 
-		IncrementInputBindingCount(glyph.GetTag().GetBinding());
-		IncrementInputBindingCount(glyph.GetDescription().GetBinding());
+			IncrementInputBindingCount(glyph.GetColor().GetBinding());
+			IncrementInputBindingCount(glyph.GetTransparency().GetBinding());
 
-		IncrementInputBindingCount(glyph.GetRotationRate()[0].GetBinding());
-		IncrementInputBindingCount(glyph.GetRotationRate()[1].GetBinding());
-		IncrementInputBindingCount(glyph.GetRotationRate()[2].GetBinding());
+			IncrementInputBindingCount(glyph.GetTag().GetBinding());
+			IncrementInputBindingCount(glyph.GetDescription().GetBinding());
+
+			IncrementInputBindingCount(glyph.GetRotationRate()[0].GetBinding());
+			IncrementInputBindingCount(glyph.GetRotationRate()[1].GetBinding());
+			IncrementInputBindingCount(glyph.GetRotationRate()[2].GetBinding());
+		}
 	}
 
 	void DataMappingGlyphGraph::IncrementInputBindingCount(const InputBinding& binding) {
