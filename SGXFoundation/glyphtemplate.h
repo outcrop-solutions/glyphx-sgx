@@ -8,7 +8,7 @@
 namespace SynGlyphX {
 
 	template <typename NumericType, typename ColorType, typename TextType>
-	class SGXFOUNDATION_API GlyphTemplate {
+	class GlyphTemplate {
 
 	public:
 		typedef std::array<NumericType, 3> NumericTypeXYZ;

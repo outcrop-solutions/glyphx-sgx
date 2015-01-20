@@ -112,6 +112,9 @@
     <ClInclude Include="datamappingglyphgraphexportvisitor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="datamappingglyphfile.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="datasource.cpp">
@@ -193,6 +196,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="datamappingglyphgraph.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="datamappingglyphfile.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

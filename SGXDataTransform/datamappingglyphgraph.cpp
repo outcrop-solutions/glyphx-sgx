@@ -32,6 +32,8 @@ namespace SynGlyphX {
 
 		//m_rootVertex = add_vertex(DataMappingGlyph(propertyTree));
 		//IncrementInputBindingCountsFromGlyph(operator[](m_rootVertex));
+		DataMappingGlyph rootGlyph(propertyTree);
+		insert(rootGlyph);
 		IncrementInputBindingCountsFromGlyph(*root());
 		ProcessPropertyTreeChildren(root(), propertyTree);
 	}
@@ -414,8 +416,8 @@ namespace SynGlyphX {
 		DataMappingGlyphGraph::SharedPtr newGraph = std::make_shared<DataMappingGlyphGraph>();
 
 		//newTree->add_vertex(DataMappingGlyph(GlyphGraph::s_defaultGlyph));
-		DataMappingGlyphGraph::iterator root = newGraph->insert(DataMappingGlyph(GlyphGraph::s_defaultRootGlyph));
-		newGraph->insert(root, DataMappingGlyph(GlyphGraph::s_defaultGlyph));
+		DataMappingGlyphGraph::iterator root = newGraph->insert(DataMappingGlyph(Glyph::s_defaultRootGlyph));
+		newGraph->insert(root, DataMappingGlyph(Glyph::s_defaultGlyph));
 
 		return newGraph;
 	}

@@ -27,6 +27,8 @@ namespace SynGlyphX {
 		typedef std::shared_ptr<DataMappingGlyphGraph> SharedPtr;
 		typedef std::shared_ptr<const DataMappingGlyphGraph> ConstSharedPtr;
 
+		typedef std::vector<ConstSharedPtr> ConstSharedVector;
+
 		typedef stlplus::ntree_node<DataMappingGlyph> Node;
 		
 		DataMappingGlyphGraph();

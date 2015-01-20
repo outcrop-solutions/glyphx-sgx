@@ -3,7 +3,7 @@
 
 #include "sgxfoundation.h"
 #include "glyphstructuralproperties.h"
-#include "glyphtemplate.h"
+#include "glyph.h"
 #include "glyphcolor.h"
 //#include <boost/graph/directed_graph.hpp>
 #include <containers/ntree.hpp>
@@ -11,8 +11,6 @@
 #include <array>
 
 namespace SynGlyphX {
-
-	typedef GlyphTemplate< double, GlyphColor, std::wstring > Glyph;
 
 	class SGXFOUNDATION_API GlyphEdge {
 
@@ -44,14 +42,11 @@ namespace SynGlyphX {
 
 		void AllocateChildSubtree(const std::vector<Glyph>& templates, const std::vector<unsigned int> instances, const GlyphGraph::iterator& parent);
 
-		static const Glyph s_defaultGlyph;
-		static const Glyph s_defaultRootGlyph;
-
 	protected:
 		GlyphGraph(const std::vector<Glyph>& templates, const std::vector<unsigned int> instances, unsigned int depth);
 
 	private:
-		static Glyph CreateDefaultGlyph(GlyphStructuralProperties::Shape geometryShape, GlyphStructuralProperties::VirtualTopology virtualTopology);
+		
 	};
 
 } //namespace SynGlyphX

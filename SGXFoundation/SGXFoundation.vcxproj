@@ -95,6 +95,7 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="glyph.h" />
     <ClInclude Include="glyphcolor.h" />
     <ClInclude Include="glyphgraph.h" />
     <ClInclude Include="csvfilehandler.h" />
@@ -113,6 +114,7 @@
     <ClInclude Include="xmlpropertytreefile.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="glyph.cpp" />
     <ClCompile Include="glyphcolor.cpp" />
     <ClCompile Include="glyphgraph.cpp" />
     <ClCompile Include="csvfilehandler.cpp" />

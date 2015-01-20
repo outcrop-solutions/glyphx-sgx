@@ -21,7 +21,7 @@ namespace SynGlyphX {
 		(GlyphStructuralProperties::Surface::Solid, L"Solid");
 
 	const GlyphStructuralProperties::VirtualTopologyBimap GlyphStructuralProperties::s_virtualTopologyNames = boost::assign::list_of < GlyphStructuralProperties::VirtualTopologyBimap::relation >
-		(GlyphStructuralProperties::VirtualTopology::Null, L"Euclidean")
+		//(GlyphStructuralProperties::VirtualTopology::Null, L"Euclidean")
 		(GlyphStructuralProperties::VirtualTopology::CubePlane, L"Cube")
 		(GlyphStructuralProperties::VirtualTopology::SphereNonZeroRadius, L"Sphere")
 		(GlyphStructuralProperties::VirtualTopology::Circle, L"Torus")

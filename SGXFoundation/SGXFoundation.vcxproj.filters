@@ -66,6 +66,9 @@
     <ClInclude Include="glyphcolor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="glyph.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -102,6 +105,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="glyphcolor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="glyph.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

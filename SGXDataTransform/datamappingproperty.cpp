@@ -11,7 +11,7 @@ namespace SynGlyphX {
 
 	template<typename PropertyType>
 	DataMappingProperty<PropertyType>::DataMappingProperty(const PropertyType& initialValue) :
-		m_value(initalValue),
+		m_value(initialValue),
 		m_binding(InputBinding()) {
 
 	}
@@ -79,8 +79,8 @@ namespace SynGlyphX {
 
 	template<typename PropertyType>
 	DataMappingProperty<PropertyType>::DataMappingProperty(const DataMappingProperty& prop) :
-		m_value(prop.value),
-		m_binding(prop.binding) {
+		m_value(prop.m_value),
+		m_binding(prop.m_binding) {
 
 	}
 
@@ -124,12 +124,14 @@ namespace SynGlyphX {
 	boost::property_tree::wptree& DataMappingProperty<PropertyType>::ExportToPropertyTree(boost::property_tree::wptree& propertyTree) const {
 
 		//boost::property_tree::wptree& valuePropertyTree = propertyTreeParent.add(name, L"");
-		propertyTree.put<PropertyType>(L"Value", value);
+		propertyTree.put<PropertyType>(L"Value", m_value);
 
 		if (m_binding.IsBoundToInputField()) {
 
 			m_binding.ExportToPropertyTree(propertyTree);
 		}
+
+		return propertyTree;
 	}
 
 	template <>
@@ -199,5 +201,9 @@ namespace SynGlyphX {
 
 		return m_binding;
 	}
+
+	template class DataMappingProperty<std::pair<double, double>>;
+	template class DataMappingProperty<std::pair<GlyphColor, GlyphColor>>;
+	template class DataMappingProperty < std::wstring >;
 
 } //namespace SynGlyphX
