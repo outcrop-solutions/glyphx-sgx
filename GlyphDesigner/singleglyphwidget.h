@@ -57,6 +57,8 @@ protected:
     XYZWidget* m_rotateWidget;
     XYZWidget* m_scaleWidget;
 
+	XYZWidget* m_rotateRateWidget;
+
     //QDoubleSpinBox* m_ratioSpinBox;
 	//SynGlyphX::GroupBoxSingleWidget* m_ratioGroupBox;
 

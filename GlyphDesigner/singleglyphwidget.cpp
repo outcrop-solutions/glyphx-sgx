@@ -114,6 +114,13 @@ void SingleGlyphWidget::CreateWidgets(ChildOptions childOptions) {
 	m_scaleWidget->SetSpinBoxesLocked(true);
 
 	SynGlyphX::GroupBoxSingleWidget* scaleGroupBox = new SynGlyphX::GroupBoxSingleWidget(tr("Scale"), m_scaleWidget, this);
+
+	m_rotateRateWidget = new XYZWidget(false, this);
+	m_scaleWidget->SetRange(0.000001, 100.0);
+	m_scaleWidget->SetDecimal(3);
+	m_scaleWidget->setContentsMargins(0, 0, 0, 0);
+
+	SynGlyphX::GroupBoxSingleWidget* rotateRateGroupBox = new SynGlyphX::GroupBoxSingleWidget(tr("Animation - Rotation"), m_rotateRateWidget, this);
     
     form->addRow(tr("Shape:"), m_geometryShapeComboBox);
     form->addRow(tr("Surface:"), m_geometrySurfaceComboBox);
@@ -122,6 +129,7 @@ void SingleGlyphWidget::CreateWidgets(ChildOptions childOptions) {
     form->addRow(translateGroupBox);
     form->addRow(rotateGroupBox);
     form->addRow(scaleGroupBox);
+	form->addRow(rotateRateGroupBox);
 
     if ((childOptions & ShowOnBottom) || (childOptions & ShowOnTop)) {
 
@@ -152,6 +160,7 @@ void SingleGlyphWidget::SetWidgetFromGlyph(const SynGlyphX::Glyph& glyph, bool i
     m_translateWidget->Set(glyph.GetPosition());
     m_rotateWidget->Set(glyph.GetRotation());
     m_scaleWidget->Set(glyph.GetScale());
+	m_rotateRateWidget->Set(glyph.GetRotationRate());
 
     //m_ratioSpinBox->setValue(glyph->GetRatio());
 }
@@ -170,6 +179,8 @@ void SingleGlyphWidget::SetGlyphFromWidget(SynGlyphX::Glyph& glyph) {
 	glyph.GetPosition() = { { m_translateWidget->GetX(), m_translateWidget->GetY(), m_translateWidget->GetZ() } };
 	glyph.GetRotation() = { { m_rotateWidget->GetX(), m_rotateWidget->GetY(), m_rotateWidget->GetZ() } };
 	glyph.GetScale() = { { m_scaleWidget->GetX(), m_scaleWidget->GetY(), m_scaleWidget->GetZ() } };
+
+	glyph.GetRotationRate() = { { m_rotateRateWidget->GetX(), m_rotateRateWidget->GetY(), m_rotateRateWidget->GetZ() } };
 
     //glyph->SetRatio(m_ratioSpinBox->value());
 }

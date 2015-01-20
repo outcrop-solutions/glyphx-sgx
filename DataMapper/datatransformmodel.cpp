@@ -6,6 +6,7 @@
 #include "downloadedmapproperties.h"
 #include "userdefinedbaseimageproperties.h"
 #include <boost/filesystem.hpp>
+#include "datamappingglyphfile.h"
 
 DataTransformModel::DataTransformModel(QObject *parent)
 	: QAbstractItemModel(parent),
@@ -334,8 +335,9 @@ void DataTransformModel::Clear() {
 
 void DataTransformModel::AddGlyphFile(const QString& filename) {
 
-	SynGlyphX::DataMappingGlyphGraph::SharedPtr glyphTree = std::make_shared<SynGlyphX::DataMappingGlyphGraph>();
-	glyphTree->ReadFromFile(filename.toStdString());
+	SynGlyphX::DataMappingGlyphFile fileReader;
+	fileReader.ReadFromFile(filename.toStdString());
+	SynGlyphX::DataMappingGlyphGraph::SharedPtr glyphTree = fileReader.GetDataMappingGlyphGraph();
 	int row = m_dataMapping->GetGlyphGraphs().size();
 	beginInsertRows(QModelIndex(), row, row);
 	m_dataMapping->AddGlyphTree(glyphTree);

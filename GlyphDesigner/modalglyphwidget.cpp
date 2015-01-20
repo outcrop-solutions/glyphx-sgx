@@ -46,6 +46,8 @@ void ModalGlyphWidget::ConnectWidgetSignals() {
 	m_propertyConnections.push_back(QObject::connect(m_translateWidget, &XYZWidget::ValuesChanged, this, [this]{ OnWidgetUpdated(SynGlyphXANTz::MinMaxGlyphTreeModel::UpdatePosition); }));
 	m_propertyConnections.push_back(QObject::connect(m_rotateWidget, &XYZWidget::ValuesChanged, this, [this]{ OnWidgetUpdated(SynGlyphXANTz::MinMaxGlyphTreeModel::UpdateRotation); }));
 	m_propertyConnections.push_back(QObject::connect(m_scaleWidget, &XYZWidget::ValuesChanged, this, [this]{ OnWidgetUpdated(SynGlyphXANTz::MinMaxGlyphTreeModel::UpdateScale); }));
+
+	m_propertyConnections.push_back(QObject::connect(m_rotateRateWidget, &XYZWidget::ValuesChanged, this, [this]{ OnWidgetUpdated(SynGlyphXANTz::MinMaxGlyphTreeModel::UpdateRotationRate); }));
 }
 
 void ModalGlyphWidget::DisconnectWidgetSignals() {
