@@ -307,9 +307,9 @@ namespace SynGlyphXANTz {
 
 			if (updates.testFlag(UpdateScale)) {
 
-				glyphToUpdate->GetScale()[0].GetValue().second -= glyph.GetRotationRate()[0] - glyphToUpdate->GetScale()[0].GetValue().first;
-				glyphToUpdate->GetScale()[1].GetValue().second -= glyph.GetRotationRate()[1] - glyphToUpdate->GetScale()[1].GetValue().first;
-				glyphToUpdate->GetScale()[2].GetValue().second -= glyph.GetRotationRate()[2] - glyphToUpdate->GetScale()[2].GetValue().first;
+				glyphToUpdate->GetScale()[0].GetValue().second -= glyph.GetScale()[0] - glyphToUpdate->GetScale()[0].GetValue().first;
+				glyphToUpdate->GetScale()[1].GetValue().second -= glyph.GetScale()[1] - glyphToUpdate->GetScale()[1].GetValue().first;
+				glyphToUpdate->GetScale()[2].GetValue().second -= glyph.GetScale()[2] - glyphToUpdate->GetScale()[2].GetValue().first;
 
 				glyphToUpdate->GetScale()[0].GetValue().first = glyph.GetScale()[0];
 				glyphToUpdate->GetScale()[1].GetValue().first = glyph.GetScale()[1];
@@ -318,9 +318,9 @@ namespace SynGlyphXANTz {
 
 			if (updates.testFlag(UpdatePosition)) {
 
-				glyphToUpdate->GetPosition()[0].GetValue().second -= glyph.GetRotationRate()[0] - glyphToUpdate->GetPosition()[0].GetValue().first;
-				glyphToUpdate->GetPosition()[1].GetValue().second -= glyph.GetRotationRate()[1] - glyphToUpdate->GetPosition()[1].GetValue().first;
-				glyphToUpdate->GetPosition()[2].GetValue().second -= glyph.GetRotationRate()[2] - glyphToUpdate->GetPosition()[2].GetValue().first;
+				glyphToUpdate->GetPosition()[0].GetValue().second -= glyph.GetPosition()[0] - glyphToUpdate->GetPosition()[0].GetValue().first;
+				glyphToUpdate->GetPosition()[1].GetValue().second -= glyph.GetPosition()[1] - glyphToUpdate->GetPosition()[1].GetValue().first;
+				glyphToUpdate->GetPosition()[2].GetValue().second -= glyph.GetPosition()[2] - glyphToUpdate->GetPosition()[2].GetValue().first;
 
 				glyphToUpdate->GetPosition()[0].GetValue().first = glyph.GetPosition()[0];
 				glyphToUpdate->GetPosition()[1].GetValue().first = glyph.GetPosition()[1];
@@ -329,9 +329,9 @@ namespace SynGlyphXANTz {
 
 			if (updates.testFlag(UpdateRotation)) {
 
-				glyphToUpdate->GetRotation()[0].GetValue().second -= glyph.GetRotationRate()[0] - glyphToUpdate->GetRotation()[0].GetValue().first;
-				glyphToUpdate->GetRotation()[1].GetValue().second -= glyph.GetRotationRate()[1] - glyphToUpdate->GetRotation()[1].GetValue().first;
-				glyphToUpdate->GetRotation()[2].GetValue().second -= glyph.GetRotationRate()[2] - glyphToUpdate->GetRotation()[2].GetValue().first;
+				glyphToUpdate->GetRotation()[0].GetValue().second -= glyph.GetRotation()[0] - glyphToUpdate->GetRotation()[0].GetValue().first;
+				glyphToUpdate->GetRotation()[1].GetValue().second -= glyph.GetRotation()[1] - glyphToUpdate->GetRotation()[1].GetValue().first;
+				glyphToUpdate->GetRotation()[2].GetValue().second -= glyph.GetRotation()[2] - glyphToUpdate->GetRotation()[2].GetValue().first;
 
 				glyphToUpdate->GetRotation()[0].GetValue().first = glyph.GetRotation()[0];
 				glyphToUpdate->GetRotation()[1].GetValue().first = glyph.GetRotation()[1];
@@ -346,7 +346,12 @@ namespace SynGlyphXANTz {
 
 			if (updates.testFlag(UpdateColor)) {
 
+				glyphToUpdate->GetColor().GetValue().second.Set(0, glyph.GetColor()[0] - glyphToUpdate->GetColor().GetValue().first[0]);
+				glyphToUpdate->GetColor().GetValue().second.Set(1, glyph.GetColor()[1] - glyphToUpdate->GetColor().GetValue().first[1]);
+				glyphToUpdate->GetColor().GetValue().second.Set(2, glyph.GetColor()[2] - glyphToUpdate->GetColor().GetValue().first[2]);
 				glyphToUpdate->GetColor().GetValue().first = glyph.GetColor();
+
+				glyphToUpdate->GetTransparency().GetValue().second = glyph.GetTransparency() - glyphToUpdate->GetTransparency().GetValue().first;
 				glyphToUpdate->GetTransparency().GetValue().first = glyph.GetTransparency();
 			}
 
@@ -385,16 +390,16 @@ namespace SynGlyphXANTz {
 
 			if (updates.testFlag(UpdatePosition)) {
 
-				glyphToUpdate->GetPosition()[0].GetValue().second = glyph.GetScale()[0] - glyphToUpdate->GetPosition()[0].GetValue().first;
-				glyphToUpdate->GetPosition()[1].GetValue().second = glyph.GetScale()[1] - glyphToUpdate->GetPosition()[1].GetValue().first;
-				glyphToUpdate->GetPosition()[2].GetValue().second = glyph.GetScale()[2] - glyphToUpdate->GetPosition()[2].GetValue().first;
+				glyphToUpdate->GetPosition()[0].GetValue().second = glyph.GetPosition()[0] - glyphToUpdate->GetPosition()[0].GetValue().first;
+				glyphToUpdate->GetPosition()[1].GetValue().second = glyph.GetPosition()[1] - glyphToUpdate->GetPosition()[1].GetValue().first;
+				glyphToUpdate->GetPosition()[2].GetValue().second = glyph.GetPosition()[2] - glyphToUpdate->GetPosition()[2].GetValue().first;
 			}
 
 			if (updates.testFlag(UpdateRotation)) {
 
-				glyphToUpdate->GetRotation()[0].GetValue().second = glyph.GetScale()[0] - glyphToUpdate->GetRotation()[0].GetValue().first;
-				glyphToUpdate->GetRotation()[1].GetValue().second = glyph.GetScale()[1] - glyphToUpdate->GetRotation()[1].GetValue().first;
-				glyphToUpdate->GetRotation()[2].GetValue().second = glyph.GetScale()[2] - glyphToUpdate->GetRotation()[2].GetValue().first;
+				glyphToUpdate->GetRotation()[0].GetValue().second = glyph.GetRotation()[0] - glyphToUpdate->GetRotation()[0].GetValue().first;
+				glyphToUpdate->GetRotation()[1].GetValue().second = glyph.GetRotation()[1] - glyphToUpdate->GetRotation()[1].GetValue().first;
+				glyphToUpdate->GetRotation()[2].GetValue().second = glyph.GetRotation()[2] - glyphToUpdate->GetRotation()[2].GetValue().first;
 			}
 
 			if ((updates.testFlag(UpdateGeometry)) || (updates.testFlag(UpdateSurface))) {
@@ -408,6 +413,7 @@ namespace SynGlyphXANTz {
 				glyphToUpdate->GetColor().GetValue().second.Set(0, glyph.GetColor()[0] - glyphToUpdate->GetColor().GetValue().first[0]);
 				glyphToUpdate->GetColor().GetValue().second.Set(1, glyph.GetColor()[1] - glyphToUpdate->GetColor().GetValue().first[1]);
 				glyphToUpdate->GetColor().GetValue().second.Set(2, glyph.GetColor()[2] - glyphToUpdate->GetColor().GetValue().first[2]);
+
 				glyphToUpdate->GetTransparency().GetValue().second = glyph.GetTransparency() - glyphToUpdate->GetTransparency().GetValue().first;
 			}
 
@@ -418,9 +424,9 @@ namespace SynGlyphXANTz {
 
 			if (updates.testFlag(UpdateRotationRate)) {
 
-				glyphToUpdate->GetRotationRate()[0].GetValue().second = glyph.GetScale()[0] - glyphToUpdate->GetRotationRate()[0].GetValue().first;
-				glyphToUpdate->GetRotationRate()[1].GetValue().second = glyph.GetScale()[1] - glyphToUpdate->GetRotationRate()[1].GetValue().first;
-				glyphToUpdate->GetRotationRate()[2].GetValue().second = glyph.GetScale()[2] - glyphToUpdate->GetRotationRate()[2].GetValue().first;
+				glyphToUpdate->GetRotationRate()[0].GetValue().second = glyph.GetRotationRate()[0] - glyphToUpdate->GetRotationRate()[0].GetValue().first;
+				glyphToUpdate->GetRotationRate()[1].GetValue().second = glyph.GetRotationRate()[1] - glyphToUpdate->GetRotationRate()[1].GetValue().first;
+				glyphToUpdate->GetRotationRate()[2].GetValue().second = glyph.GetRotationRate()[2] - glyphToUpdate->GetRotationRate()[2].GetValue().first;
 			}
 
 			emit dataChanged(index, index);
