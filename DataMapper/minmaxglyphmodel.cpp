@@ -197,7 +197,7 @@ SynGlyphX::NumericMappingProperty& MinMaxGlyphModel::GetGlyphProperty(SynGlyphX:
 QVariant MinMaxGlyphModel::GetDataByRow(SynGlyphX::DataMappingGlyph& glyph, const QModelIndex& index) const {
 
 	int row = index.row();
-	if ((row < m_columnHeaders.size()) && (!IsTextField(row))) {
+	if ((row < m_propertyHeaders.size()) && (!IsTextField(row))) {
 
 		if (IsColorField(row)) {
 
@@ -277,7 +277,7 @@ bool MinMaxGlyphModel::setData(const QModelIndex& index, const QVariant& value, 
 bool MinMaxGlyphModel::SetDataByRow(SynGlyphX::DataMappingGlyph& glyph, const QVariant& value, const QModelIndex& index) {
 
 	int row = index.row();
-	if ((row < m_columnHeaders.size()) && (!IsTextField(row))) {
+	if ((row < m_propertyHeaders.size()) && (!IsTextField(row))) {
 
 		if (IsColorField(row)) {
 
