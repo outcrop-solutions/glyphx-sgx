@@ -313,8 +313,9 @@ namespace SynGlyphX {
 
 		DataMappingGlyphGraph::SharedPtr newGraph = std::make_shared<DataMappingGlyphGraph>();
 
-		//newTree->add_vertex(DataMappingGlyph(GlyphGraph::s_defaultGlyph));
 		DataMappingGlyphGraph::iterator root = newGraph->insert(DataMappingGlyph(Glyph::s_defaultRootGlyph));
+		root->GetPosition()[0].GetValue() = std::pair<double, double>(-180.0, 360.0);
+		root->GetPosition()[1].GetValue() = std::pair<double, double>(-90.0, 180.0);
 		newGraph->insert(root, DataMappingGlyph(Glyph::s_defaultGlyph));
 
 		return newGraph;
