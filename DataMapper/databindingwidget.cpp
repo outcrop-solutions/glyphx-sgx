@@ -73,15 +73,23 @@ void DataBindingWidget::CreateTagAndDescriptionWidget() {
 
 	m_tagLineEdit = new BindingLineEdit(m_model, this, false);
 
-	QDataWidgetMapper* mapper = new QDataWidgetMapper(this);
-	mapper->setModel(m_model);
-	mapper->addMapping(m_tagLineEdit, 2);  //Bind this to section 2 to keep consistent with other input fields
+	QDataWidgetMapper* tagMapper = new QDataWidgetMapper(this);
+	tagMapper->setModel(m_model);
+	tagMapper->addMapping(m_tagLineEdit, 2);  //Bind this to section 2 to keep consistent with other input fields
 
-	QObject::connect(m_tagLineEdit, &BindingLineEdit::ValueChangedByUser, mapper, &QDataWidgetMapper::submit);
+	QObject::connect(m_tagLineEdit, &BindingLineEdit::ValueChangedByUser, tagMapper, &QDataWidgetMapper::submit);
 
-	m_dataWidgetMappers.push_back(mapper);
+	m_dataWidgetMappers.push_back(tagMapper);
 
 	m_descriptionEdit = new SynGlyphX::RichTextEditor(tr("<b>Description:</b>"), this);
+
+	QDataWidgetMapper* descriptionMapper = new QDataWidgetMapper(this);
+	descriptionMapper->setModel(m_model);
+	descriptionMapper->addMapping(m_descriptionEdit, 2);  //Bind this to section 2 to keep consistent with other input fields
+
+	//QObject::connect(m_descriptionEdit, &BindingLineEdit::ValueChangedByUser, mapper, &QDataWidgetMapper::submit);
+
+	m_dataWidgetMappers.push_back(descriptionMapper);
 
 	tagLayout->addWidget(label);
 	tagLayout->addWidget(m_tagLineEdit);
