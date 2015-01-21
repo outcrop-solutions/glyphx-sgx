@@ -9,6 +9,8 @@
 
 namespace SynGlyphX {
 
+	const QString MainWindow::s_copyright = QString::fromStdWString(L"Copyright © 2013-2015 SynGlyphX Holdings Incorporated. All Rights Reserved.\n\nSynGlyphX, Glyph IT, Glyph KIT are either registered trademarks or trademarks of SynGlyphX Holdings Incorporated in the United States and/or other countries.  All other trademarks are the property of their respective owners.");
+
     MainWindow::MainWindow(QWidget *parent)
         : QMainWindow(parent),
 		m_needToReadSettings(true)
@@ -154,14 +156,14 @@ namespace SynGlyphX {
     void MainWindow::CreateHelpMenu() {
 
         m_helpMenu = menuBar()->addMenu(tr("Help"));
-        QAction* aboutBoxAction = m_helpMenu->addAction("About " + SynGlyphX::Application::organizationName() + " " + SynGlyphX::Application::applicationName());
-        QObject::connect(aboutBoxAction, &QAction::triggered, this, &MainWindow::ShowAboutBox);
+        m_aboutBoxAction = m_helpMenu->addAction("About " + SynGlyphX::Application::organizationName() + " " + SynGlyphX::Application::applicationName());
+		QObject::connect(m_aboutBoxAction, &QAction::triggered, this, &MainWindow::ShowAboutBox);
     }
 
     void MainWindow::ShowAboutBox() {
 
         QString appName = SynGlyphX::Application::organizationName() + " " + SynGlyphX::Application::applicationName();
-        QMessageBox::about(this, "About " + appName, appName + " " + SynGlyphX::Application::applicationVersion());
+		QMessageBox::about(this, "About " + appName, appName + " " + SynGlyphX::Application::applicationVersion() + "\n\n" + s_copyright);
     }
 
     void MainWindow::SwitchBetweenFullAndNormalScreen() {

@@ -35,7 +35,6 @@ public:
 	~GlyphViewerWindow();
 
 private slots:
-	void ShowAboutBox();
 	void OpenProject();
 	void RefreshVisualization();
 	void CloseVisualization();

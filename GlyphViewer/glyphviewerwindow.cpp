@@ -98,15 +98,13 @@ void GlyphViewerWindow::CreateMenus() {
 	QAction* mapDownloadSettingsAction = m_toolsMenu->addAction(tr("Map Download Settings"));
 	QObject::connect(mapDownloadSettingsAction, &QAction::triggered, this, &GlyphViewerWindow::ChangeMapDownloadSettings);
 
-	m_helpMenu = menuBar()->addMenu(tr("Help"));
+	CreateHelpMenu();
 
-	QAction* openSettingsAction = m_helpMenu->addAction(tr("OpenGL Settings"));
-	QObject::connect(openSettingsAction, &QAction::triggered, this, &GlyphViewerWindow::ShowOpenGLSettings);
+	QAction* openGLSettingsAction = new QAction(tr("OpenGL Settings"), m_helpMenu);
+	QObject::connect(openGLSettingsAction, &QAction::triggered, this, &GlyphViewerWindow::ShowOpenGLSettings);
 
-	m_helpMenu->addSeparator();
-
-	QAction* aboutBoxAction = m_helpMenu->addAction(tr("About ") + SynGlyphX::Application::organizationName() + " " + SynGlyphX::Application::applicationName());
-	QObject::connect(aboutBoxAction, &QAction::triggered, this, &GlyphViewerWindow::ShowAboutBox);
+	m_helpMenu->insertAction(m_aboutBoxAction, openGLSettingsAction);
+	m_helpMenu->insertSeparator(m_aboutBoxAction);
 
 	EnableLoadedVisualizationDependentActions(false);
 }
@@ -121,12 +119,6 @@ void GlyphViewerWindow::CreateDockWidgets() {
 	leftDockWidget->setWidget(m_treeView);
 	addDockWidget(Qt::LeftDockWidgetArea, leftDockWidget);
 	m_viewMenu->addAction(leftDockWidget->toggleViewAction());
-}
-
-void GlyphViewerWindow::ShowAboutBox() {
-
-	QString appName = SynGlyphX::Application::organizationName() + " " + SynGlyphX::Application::applicationName();
-	QMessageBox::about(this, "About " + appName, appName + " " + SynGlyphX::Application::applicationVersion());
 }
 
 void GlyphViewerWindow::OpenProject() {

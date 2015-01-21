@@ -57,6 +57,7 @@ namespace SynGlyphX {
         QString m_currentFilename;
         QMenu* m_helpMenu;
         QAction* m_fullScreenAction;
+		QAction* m_aboutBoxAction;
 
     private slots:
         void OnRecentFileSelected();
@@ -64,6 +65,8 @@ namespace SynGlyphX {
 
 	private:
 		bool m_needToReadSettings;
+
+		static const QString s_copyright;
     };
 
 } //namespace SynGlyphX
