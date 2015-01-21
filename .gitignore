@@ -227,3 +227,5 @@ qrc_*.cpp
 /GlyphViewer/antzglobals.csv
 /DataMapper/antzosc.csv
 /DataMapper/antzglobals.csv
+/GlyphDesigner/antzosc.csv
+/GlyphDesigner/antzglobals.csv
