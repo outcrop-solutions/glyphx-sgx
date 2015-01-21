@@ -66,7 +66,7 @@ void DataBindingWidget::CreateTagAndDescriptionWidget() {
 
 	QHBoxLayout* tagLayout = new QHBoxLayout;
 
-	QLabel* label = new QLabel(m_model->headerData(12, Qt::Vertical, Qt::DisplayRole).toString() + ":", this);
+	QLabel* label = new QLabel(m_model->headerData(11, Qt::Vertical, Qt::DisplayRole).toString() + ":", this);
 	QFont labelFont = label->font();
 	labelFont.setBold(true);
 	label->setFont(labelFont);
@@ -81,7 +81,7 @@ void DataBindingWidget::CreateTagAndDescriptionWidget() {
 
 	m_dataWidgetMappers.push_back(tagMapper);
 
-	m_descriptionEdit = new SynGlyphX::RichTextEditor(tr("<b>Description:</b>"), this);
+	m_descriptionEdit = new SynGlyphX::RichTextEditor("<b>" + m_model->headerData(12, Qt::Vertical, Qt::DisplayRole).toString() + ":</b>", this);
 
 	QDataWidgetMapper* descriptionMapper = new QDataWidgetMapper(this);
 	descriptionMapper->setModel(m_model);
