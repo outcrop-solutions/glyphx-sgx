@@ -27,9 +27,6 @@
     <ClInclude Include="ANTzBridge.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="typedefs.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="antzcsvwriter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
