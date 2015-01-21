@@ -1,6 +1,6 @@
 #include "modalglyphwidget.h"
 
-ModalGlyphWidget::ModalGlyphWidget(MinMaxGlyphTreeModel::GlyphType glyphTreeType, QWidget *parent)
+ModalGlyphWidget::ModalGlyphWidget(SynGlyphXANTz::MinMaxGlyphTreeModel::GlyphType glyphTreeType, QWidget *parent)
     : SingleGlyphWidget(SingleGlyphWidget::ShowOnBottom | SingleGlyphWidget::AddChildrenButton, parent),
     m_model(nullptr),
 	m_glyphTreeType(glyphTreeType),
@@ -15,7 +15,7 @@ ModalGlyphWidget::~ModalGlyphWidget()
 
 }
 
-void ModalGlyphWidget::SetModel(MinMaxGlyphTreeModel* model, QItemSelectionModel* selectionModel) {
+void ModalGlyphWidget::SetModel(SynGlyphXANTz::MinMaxGlyphTreeModel* model, QItemSelectionModel* selectionModel) {
 
 	QObject::disconnect(m_glyphUpdateConnection);
 	QObject::disconnect(m_selectionConnection);
@@ -23,7 +23,7 @@ void ModalGlyphWidget::SetModel(MinMaxGlyphTreeModel* model, QItemSelectionModel
 	m_model = model;
 	if (m_model != nullptr) {
 
-		QObject::connect(m_model, &MinMaxGlyphTreeModel::dataChanged, this, &ModalGlyphWidget::OnGlyphUpdated);
+		QObject::connect(m_model, &SynGlyphXANTz::MinMaxGlyphTreeModel::dataChanged, this, &ModalGlyphWidget::OnGlyphUpdated);
 	}
 
 	m_selectionModel = selectionModel;
@@ -35,17 +35,19 @@ void ModalGlyphWidget::SetModel(MinMaxGlyphTreeModel* model, QItemSelectionModel
 
 void ModalGlyphWidget::ConnectWidgetSignals() {
 
-	m_propertyConnections.push_back(QObject::connect(m_geometryShapeComboBox, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, [this]{ OnWidgetUpdated(MinMaxGlyphTreeModel::UpdateGeometry); }));
-	m_propertyConnections.push_back(QObject::connect(m_geometrySurfaceComboBox, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, [this]{ OnWidgetUpdated(MinMaxGlyphTreeModel::UpdateSurface); }));
-	m_propertyConnections.push_back(QObject::connect(m_topologyComboBox, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, [this]{ OnWidgetUpdated(MinMaxGlyphTreeModel::UpdateTopology); }));
+	m_propertyConnections.push_back(QObject::connect(m_geometryShapeComboBox, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, [this]{ OnWidgetUpdated(SynGlyphXANTz::MinMaxGlyphTreeModel::UpdateGeometry); }));
+	m_propertyConnections.push_back(QObject::connect(m_geometrySurfaceComboBox, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, [this]{ OnWidgetUpdated(SynGlyphXANTz::MinMaxGlyphTreeModel::UpdateSurface); }));
+	m_propertyConnections.push_back(QObject::connect(m_topologyComboBox, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, [this]{ OnWidgetUpdated(SynGlyphXANTz::MinMaxGlyphTreeModel::UpdateTopology); }));
 
-	m_propertyConnections.push_back(QObject::connect(m_ratioSpinBox, static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), this, [this]{ OnWidgetUpdated(MinMaxGlyphTreeModel::UpdateScale); }));
+	//m_propertyConnections.push_back(QObject::connect(m_ratioSpinBox, static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), this, [this]{ OnWidgetUpdated(SynGlyphXANTz::MinMaxGlyphTreeModel::UpdateScale); }));
 
-	m_propertyConnections.push_back(QObject::connect(m_colorWidget, &SynGlyphX::ColorAlphaWidget::ColorChanged, this, [this]{ OnWidgetUpdated(MinMaxGlyphTreeModel::UpdateColor); }));
+	m_propertyConnections.push_back(QObject::connect(m_colorWidget, &SynGlyphX::ColorAlphaWidget::ColorChanged, this, [this]{ OnWidgetUpdated(SynGlyphXANTz::MinMaxGlyphTreeModel::UpdateColor); }));
 
-	m_propertyConnections.push_back(QObject::connect(m_translateWidget, &XYZWidget::ValuesChanged, this, [this]{ OnWidgetUpdated(MinMaxGlyphTreeModel::UpdatePosition); }));
-	m_propertyConnections.push_back(QObject::connect(m_rotateWidget, &XYZWidget::ValuesChanged, this, [this]{ OnWidgetUpdated(MinMaxGlyphTreeModel::UpdateRotation); }));
-	m_propertyConnections.push_back(QObject::connect(m_scaleWidget, &XYZWidget::ValuesChanged, this, [this]{ OnWidgetUpdated(MinMaxGlyphTreeModel::UpdateScale); }));
+	m_propertyConnections.push_back(QObject::connect(m_translateWidget, &XYZWidget::ValuesChanged, this, [this]{ OnWidgetUpdated(SynGlyphXANTz::MinMaxGlyphTreeModel::UpdatePosition); }));
+	m_propertyConnections.push_back(QObject::connect(m_rotateWidget, &XYZWidget::ValuesChanged, this, [this]{ OnWidgetUpdated(SynGlyphXANTz::MinMaxGlyphTreeModel::UpdateRotation); }));
+	m_propertyConnections.push_back(QObject::connect(m_scaleWidget, &XYZWidget::ValuesChanged, this, [this]{ OnWidgetUpdated(SynGlyphXANTz::MinMaxGlyphTreeModel::UpdateScale); }));
+
+	m_propertyConnections.push_back(QObject::connect(m_rotateRateWidget, &XYZWidget::ValuesChanged, this, [this]{ OnWidgetUpdated(SynGlyphXANTz::MinMaxGlyphTreeModel::UpdateRotationRate); }));
 }
 
 void ModalGlyphWidget::DisconnectWidgetSignals() {
@@ -56,15 +58,15 @@ void ModalGlyphWidget::DisconnectWidgetSignals() {
     m_propertyConnections.clear();
 }
 
-void ModalGlyphWidget::OnWidgetUpdated(MinMaxGlyphTreeModel::PropertyUpdates updates) {
+void ModalGlyphWidget::OnWidgetUpdated(SynGlyphXANTz::MinMaxGlyphTreeModel::PropertyUpdates updates) {
 
     const QModelIndexList& selected = m_selectionModel->selectedIndexes();
     if (!selected.isEmpty()) {
 
-        boost::shared_ptr<SynGlyphX::GlyphProperties> glyph(new SynGlyphX::GlyphProperties());
+		SynGlyphX::Glyph glyph;
         SetGlyphFromWidget(glyph);
 
-        m_model->UpdateGlyph(selected.back(), m_glyphTreeType, *glyph.get(), updates);
+        m_model->UpdateGlyph(selected.back(), m_glyphTreeType, glyph, updates);
     }
 }
 
@@ -85,14 +87,14 @@ void ModalGlyphWidget::SelectionChanged(const QItemSelection& selected, const QI
 
 void ModalGlyphWidget::UpdateWidget(const QModelIndex& index) {
 
-    boost::shared_ptr<SynGlyphX::GlyphProperties> glyph;
-	if (m_glyphTreeType == MinMaxGlyphTreeModel::GlyphType::Max) {
+	SynGlyphX::Glyph glyph;
+	if (m_glyphTreeType == SynGlyphXANTz::MinMaxGlyphTreeModel::GlyphType::Max) {
 
-		glyph.reset(new SynGlyphX::GlyphProperties(m_model->GetMinMaxGlyph(index)->GetMaxGlyph()));
+		glyph = m_model->GetMinMaxGlyph(index)->GetMaxGlyph();
 	}
 	else {
 
-		glyph.reset(new SynGlyphX::GlyphProperties(m_model->GetMinMaxGlyph(index)->GetMinGlyph()));
+		glyph = m_model->GetMinMaxGlyph(index)->GetMinGlyph();
 	}
     SetWidgetFromGlyph(glyph, index.parent().isValid());
 	SetNumberOfChildren(m_model->rowCount(index));

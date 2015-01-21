@@ -2,7 +2,7 @@
 #include "singlewidgetdialog.h"
 #include "singleglyphwidget.h"
 
-GlyphTreeView::GlyphTreeView(MinMaxGlyphTreeModel* model, MinMaxGlyphTreeModel::GlyphType glyphTreeType, QWidget *parent)
+GlyphTreeView::GlyphTreeView(SynGlyphXANTz::MinMaxGlyphTreeModel* model, SynGlyphXANTz::MinMaxGlyphTreeModel::GlyphType glyphTreeType, QWidget *parent)
 	: SynGlyphX::TreeView(parent),
 	m_model(model),
 	m_glyphTreeType(glyphTreeType)
@@ -102,7 +102,7 @@ void GlyphTreeView::DeleteSelected() {
 void GlyphTreeView::DeleteChildrenFromSelected() {
 
 	QModelIndexList selectedItems = selectionModel()->selectedIndexes();
-	std::sort(selectedItems.begin(), selectedItems.end(), MinMaxGlyphTreeModel::GreaterBranchLevel);
+	std::sort(selectedItems.begin(), selectedItems.end(), SynGlyphXANTz::MinMaxGlyphTreeModel::GreaterBranchLevel);
 	for (int i = 0; i < selectedItems.length(); ++i) {
 
 		m_model->removeRows(0, m_model->rowCount(selectedItems[i]), selectedItems[i]);
@@ -114,14 +114,14 @@ void GlyphTreeView::PropertiesActivated() {
 	const QModelIndexList& selectedItems = selectionModel()->selectedIndexes();
 
 	const QModelIndex& index = selectedItems.back();
-	boost::shared_ptr<SynGlyphX::GlyphProperties> oldGlyph;
-	if (m_glyphTreeType == MinMaxGlyphTreeModel::GlyphType::Max) {
+	SynGlyphX::Glyph oldGlyph;
+	if (m_glyphTreeType == SynGlyphXANTz::MinMaxGlyphTreeModel::GlyphType::Max) {
 
-		oldGlyph.reset(new SynGlyphX::GlyphProperties(m_model->GetMinMaxGlyph(index)->GetMaxGlyph()));
+		oldGlyph = m_model->GetMinMaxGlyph(index)->GetMaxGlyph();
 	}
 	else {
 
-		oldGlyph.reset(new SynGlyphX::GlyphProperties(m_model->GetMinMaxGlyph(index)->GetMinGlyph()));
+		oldGlyph = m_model->GetMinMaxGlyph(index)->GetMinGlyph();
 	}
 
 	SingleGlyphWidget* singleGlyphWidget = new SingleGlyphWidget(SingleGlyphWidget::ShowOnBottom, this);
@@ -132,9 +132,9 @@ void GlyphTreeView::PropertiesActivated() {
 	dialog.setWindowTitle(tr("Glyph Properties"));
 	if (dialog.exec() == QDialog::Accepted) {
 
-		boost::shared_ptr<SynGlyphX::GlyphProperties> newGlyph(new SynGlyphX::GlyphProperties());
+		SynGlyphX::Glyph newGlyph;
 		singleGlyphWidget->SetGlyphFromWidget(newGlyph);
-		m_model->UpdateGlyphs(selectedItems, m_glyphTreeType, *newGlyph.get());
+		m_model->UpdateGlyphs(selectedItems, m_glyphTreeType, newGlyph);
 	}
 }
 
@@ -143,15 +143,15 @@ void GlyphTreeView::AddChildren() {
 	const QModelIndexList& selectedItems = selectionModel()->selectedIndexes();
 
 	SingleGlyphWidget* singleGlyphWidget = new SingleGlyphWidget(SingleGlyphWidget::ShowOnTop | SingleGlyphWidget::EnabledSpinBox, this);
-	singleGlyphWidget->SetWidgetFromGlyph(SynGlyphX::GlyphProperties::GetTemplate(), true);
+	singleGlyphWidget->SetWidgetFromGlyph(SynGlyphX::Glyph::s_defaultGlyph, true);
 
 	SynGlyphX::SingleWidgetDialog dialog(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, singleGlyphWidget, this);
 	dialog.setWindowTitle(tr("Add Children"));
 	if (dialog.exec() == QDialog::Accepted) {
 
-		boost::shared_ptr<SynGlyphX::GlyphProperties> glyph(new SynGlyphX::GlyphProperties());
+		SynGlyphX::Glyph glyph;
 		singleGlyphWidget->SetGlyphFromWidget(glyph);
-		SynGlyphX::MinMaxGlyph minMaxGlyph(*glyph.get());
+		SynGlyphX::DataMappingGlyph minMaxGlyph(glyph);
 		for (int i = 0; i < selectedItems.length(); ++i) {
 
 			m_model->AppendChild(selectedItems[i], minMaxGlyph, singleGlyphWidget->GetNumberOfChildren());

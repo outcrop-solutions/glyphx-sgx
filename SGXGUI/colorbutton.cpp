@@ -67,12 +67,11 @@ namespace SynGlyphX {
 		UpdateButtonColor();
 	}
 
-	void ColorButton::SetColor(const SynGlyphX::Color& color) {
+	void ColorButton::SetColor(const SynGlyphX::GlyphColor& color) {
 
 		m_color.setRed(color[0]);
 		m_color.setGreen(color[1]);
 		m_color.setBlue(color[2]);
-		//m_color.setAlpha(color[3]);
 
 		UpdateButtonColor();
 	}
@@ -102,14 +101,13 @@ namespace SynGlyphX {
 		}
 	}
 
-	SynGlyphX::Color ColorButton::ConvertQColorToColor(const QColor& qColor) {
+	SynGlyphX::GlyphColor ColorButton::ConvertQColorToColor(const QColor& qColor) {
 
-		SynGlyphX::Color color;
+		SynGlyphX::GlyphColor color;
 
 		color.Set(0, qColor.red());
 		color.Set(1, qColor.green());
 		color.Set(2, qColor.blue());
-		color.Set(3, qColor.alpha());
 
 		return color;
 	}

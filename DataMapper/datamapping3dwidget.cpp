@@ -2,7 +2,7 @@
 #include <stack>
 
 DataMapping3DWidget::DataMapping3DWidget(DataTransformModel* model, QWidget *parent)
-	: MinMaxGlyph3DWidget(parent),
+	: SynGlyphXANTz::MinMaxGlyph3DWidget(parent),
 	m_internalModel(nullptr),
 	m_internalSelectionModel(nullptr),
 	m_externalModel(nullptr),
@@ -10,10 +10,10 @@ DataMapping3DWidget::DataMapping3DWidget(DataTransformModel* model, QWidget *par
 	m_glyphTreeIndex(-1),
 	m_dataTransformModel(model)
 {
-	m_internalModel = new MinMaxGlyphTreeModel(this);
+	m_internalModel = new SynGlyphXANTz::MinMaxGlyphTreeModel(this);
 	m_internalSelectionModel = new QItemSelectionModel(m_internalModel, this);
 
-	MinMaxGlyph3DWidget::SetModel(m_internalModel, m_internalSelectionModel);
+	SynGlyphXANTz::MinMaxGlyph3DWidget::SetModel(m_internalModel, m_internalSelectionModel);
 }
 
 DataMapping3DWidget::~DataMapping3DWidget()
@@ -72,7 +72,7 @@ void DataMapping3DWidget::OnExternalSelectionChanged(const QItemSelection& selec
 	if (m_glyphTreeIndex != childPositions.top()) {
 
 		m_glyphTreeIndex = childPositions.top();
-		SynGlyphX::DataTransformMapping::MinMaxGlyphTreeMap::const_iterator glyphTree = m_dataTransformModel->GetDataMapping()->GetGlyphTrees().begin();
+		SynGlyphX::DataTransformMapping::DataMappingGlyphGraphMap::const_iterator glyphTree = m_dataTransformModel->GetDataMapping()->GetGlyphGraphs().begin();
 		std::advance(glyphTree, m_glyphTreeIndex);
 		m_internalModel->SetMinMaxGlyphTree(glyphTree->second);
 	}

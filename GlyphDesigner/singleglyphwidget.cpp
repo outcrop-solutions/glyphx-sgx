@@ -51,17 +51,22 @@ void SingleGlyphWidget::CreateWidgets(ChildOptions childOptions) {
     QFormLayout* form = new QFormLayout(this);
 
     m_geometryShapeComboBox = new QComboBox(this);
-    for (int i = 0; i < 10; ++i) {
-		m_geometryShapeComboBox->addItem(QString::fromStdWString(SynGlyphX::GlyphProperties::s_shapeNames.left.at(static_cast<SynGlyphX::GlyphProperties::Shape>(i))));
-    }
+
+	for (auto shape : SynGlyphX::GlyphStructuralProperties::s_shapeNames.left) {
+
+		m_geometryShapeComboBox->addItem(QString::fromStdWString(shape.second));
+	}
 
     m_geometrySurfaceComboBox = new QComboBox(this);
-	m_geometrySurfaceComboBox->addItem(QString::fromStdWString(SynGlyphX::GlyphProperties::s_surfaceNames.left.at(SynGlyphX::GlyphProperties::Wireframe)));
-	m_geometrySurfaceComboBox->addItem(QString::fromStdWString(SynGlyphX::GlyphProperties::s_surfaceNames.left.at(SynGlyphX::GlyphProperties::Solid)));
+	for (auto surface : SynGlyphX::GlyphStructuralProperties::s_surfaceNames.left) {
+
+		m_geometrySurfaceComboBox->addItem(QString::fromStdWString(surface.second));
+	}
 
     m_topologyComboBox = new QComboBox(this);
-    for (int i = 0; i < 8; ++i) {
-		m_topologyComboBox->addItem(QString::fromStdWString(SynGlyphX::GlyphProperties::s_topologyNames.left.at(static_cast<SynGlyphX::GlyphProperties::Topology>(i))));
+    for (auto virtualTopology : SynGlyphX::GlyphStructuralProperties::s_virtualTopologyNames.left) {
+
+		m_topologyComboBox->addItem(QString::fromStdWString(virtualTopology.second));
     }
 
     QHBoxLayout* colorAndRatioLayout = new QHBoxLayout(this);
@@ -75,12 +80,12 @@ void SingleGlyphWidget::CreateWidgets(ChildOptions childOptions) {
 
 	colorAndRatioLayout->addStretch(1);
 
-	m_ratioSpinBox = new QDoubleSpinBox(this);
+	/*m_ratioSpinBox = new QDoubleSpinBox(this);
 	m_ratioSpinBox->setSingleStep(0.05);
 	m_ratioSpinBox->setDecimals(2);
 	m_ratioGroupBox = new SynGlyphX::GroupBoxSingleWidget(tr("Torus Ratio"), m_ratioSpinBox, this); 
 
-    colorAndRatioLayout->addWidget(m_ratioGroupBox);
+    colorAndRatioLayout->addWidget(m_ratioGroupBox);*/
 
 	m_translateWidget = new XYZWidget(false, this);
 	m_translateWidget->SetRange(-10000.0, 10000.0);
@@ -109,6 +114,13 @@ void SingleGlyphWidget::CreateWidgets(ChildOptions childOptions) {
 	m_scaleWidget->SetSpinBoxesLocked(true);
 
 	SynGlyphX::GroupBoxSingleWidget* scaleGroupBox = new SynGlyphX::GroupBoxSingleWidget(tr("Scale"), m_scaleWidget, this);
+
+	m_rotateRateWidget = new XYZWidget(false, this);
+	m_rotateRateWidget->SetRange(-100.0, 100.0);
+	m_rotateRateWidget->SetDecimal(3);
+	m_rotateRateWidget->setContentsMargins(0, 0, 0, 0);
+
+	SynGlyphX::GroupBoxSingleWidget* rotateRateGroupBox = new SynGlyphX::GroupBoxSingleWidget(tr("Animation - Rotation"), m_rotateRateWidget, this);
     
     form->addRow(tr("Shape:"), m_geometryShapeComboBox);
     form->addRow(tr("Surface:"), m_geometrySurfaceComboBox);
@@ -117,6 +129,7 @@ void SingleGlyphWidget::CreateWidgets(ChildOptions childOptions) {
     form->addRow(translateGroupBox);
     form->addRow(rotateGroupBox);
     form->addRow(scaleGroupBox);
+	form->addRow(rotateRateGroupBox);
 
     if ((childOptions & ShowOnBottom) || (childOptions & ShowOnTop)) {
 
@@ -131,40 +144,45 @@ void SingleGlyphWidget::CreateWidgets(ChildOptions childOptions) {
 
     setLayout(form);
 
-    QObject::connect(m_geometryShapeComboBox, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &SingleGlyphWidget::OnShapeComboBoxChanged);
-    m_ratioGroupBox->setVisible(false);
+    //QObject::connect(m_geometryShapeComboBox, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &SingleGlyphWidget::OnShapeComboBoxChanged);
+    //m_ratioGroupBox->setVisible(false);
 }
 
-void SingleGlyphWidget::SetWidgetFromGlyph(boost::shared_ptr<const SynGlyphX::GlyphProperties> glyph, bool isNotRootNode) {
+void SingleGlyphWidget::SetWidgetFromGlyph(const SynGlyphX::Glyph& glyph, bool isNotRootNode) {
 
-    m_geometryShapeComboBox->setCurrentIndex(glyph->GetShape());
-    m_geometrySurfaceComboBox->setCurrentIndex(glyph->GetSurface());
-    //Because null is not in the list of topologies, shift by one
-    m_topologyComboBox->setCurrentIndex(glyph->GetTopology());
+	m_geometryShapeComboBox->setCurrentText(QString::fromStdWString(SynGlyphX::GlyphStructuralProperties::s_shapeNames.left.at(glyph.GetStructure().GetGeometryShape())));
+	m_geometrySurfaceComboBox->setCurrentText(QString::fromStdWString(SynGlyphX::GlyphStructuralProperties::s_surfaceNames.left.at(glyph.GetStructure().GetGeometrySurface())));
+	m_topologyComboBox->setCurrentText(QString::fromStdWString(SynGlyphX::GlyphStructuralProperties::s_virtualTopologyNames.left.at(glyph.GetStructure().GetVirtualTopology())));
 
-    m_colorWidget->SetColor(glyph->GetColor());
+    m_colorWidget->SetColor(glyph.GetColor(), glyph.GetTransparency());
 
 	m_translateWidget->setEnabled(isNotRootNode);
-    m_translateWidget->Set(glyph->GetPosition());
-    m_rotateWidget->Set(glyph->GetRotation());
-    m_scaleWidget->Set(glyph->GetScale());
+    m_translateWidget->Set(glyph.GetPosition());
+    m_rotateWidget->Set(glyph.GetRotation());
+    m_scaleWidget->Set(glyph.GetScale());
+	m_rotateRateWidget->Set(glyph.GetRotationRate());
 
-    m_ratioSpinBox->setValue(glyph->GetRatio());
+    //m_ratioSpinBox->setValue(glyph->GetRatio());
 }
 
-void SingleGlyphWidget::SetGlyphFromWidget(boost::shared_ptr<SynGlyphX::GlyphProperties> glyph) {
+void SingleGlyphWidget::SetGlyphFromWidget(SynGlyphX::Glyph& glyph) {
 
-	glyph->SetGeometry(static_cast<SynGlyphX::GlyphProperties::Shape>(m_geometryShapeComboBox->currentIndex()), static_cast<SynGlyphX::GlyphProperties::Surface>(m_geometrySurfaceComboBox->currentIndex()));
-    //Because null is not in the list of topologies, shift by one
-	glyph->SetTopology(static_cast<SynGlyphX::GlyphProperties::Topology>(m_topologyComboBox->currentIndex()));
+	glyph.GetStructure().SetGeometryShape(SynGlyphX::GlyphStructuralProperties::s_shapeNames.right.at(m_geometryShapeComboBox->currentText().toStdWString())); 
+	glyph.GetStructure().SetGeometrySurface(SynGlyphX::GlyphStructuralProperties::s_surfaceNames.right.at(m_geometrySurfaceComboBox->currentText().toStdWString()));
+    
+	glyph.GetStructure().SetVirtualTopology(SynGlyphX::GlyphStructuralProperties::s_virtualTopologyNames.right.at(m_topologyComboBox->currentText().toStdWString()));
 
-	glyph->SetColor(SynGlyphX::ColorButton::ConvertQColorToColor(m_colorWidget->GetColor()));
+	QColor color = m_colorWidget->GetColor();
+	glyph.GetColor() = SynGlyphX::ColorButton::ConvertQColorToColor(color);
+	glyph.GetTransparency() = color.alpha();
 
-	glyph->SetPosition({ { m_translateWidget->GetX(), m_translateWidget->GetY(), m_translateWidget->GetZ() } });
-	glyph->SetRotation({ { m_rotateWidget->GetX(), m_rotateWidget->GetY(), m_rotateWidget->GetZ() } });
-	glyph->SetScale({ { m_scaleWidget->GetX(), m_scaleWidget->GetY(), m_scaleWidget->GetZ() } });
+	glyph.GetPosition() = { { m_translateWidget->GetX(), m_translateWidget->GetY(), m_translateWidget->GetZ() } };
+	glyph.GetRotation() = { { m_rotateWidget->GetX(), m_rotateWidget->GetY(), m_rotateWidget->GetZ() } };
+	glyph.GetScale() = { { m_scaleWidget->GetX(), m_scaleWidget->GetY(), m_scaleWidget->GetZ() } };
 
-    glyph->SetRatio(m_ratioSpinBox->value());
+	glyph.GetRotationRate() = { { m_rotateRateWidget->GetX(), m_rotateRateWidget->GetY(), m_rotateRateWidget->GetZ() } };
+
+    //glyph->SetRatio(m_ratioSpinBox->value());
 }
 
 void SingleGlyphWidget::SetNumberOfChildren(unsigned int numChildren) {
@@ -183,10 +201,10 @@ unsigned int SingleGlyphWidget::GetNumberOfChildren() const {
         return static_cast<unsigned int>(m_childrenSpinBox->value());
     }
 }
-
+/*
 void SingleGlyphWidget::OnShapeComboBoxChanged(int index) {
 
-	SynGlyphX::GlyphProperties::Shape shape = static_cast<SynGlyphX::GlyphProperties::Shape>(index);
+	SynGlyphXANTz::GlyphProperties::Shape shape = static_cast<SynGlyphXANTz::GlyphProperties::Shape>(index);
 
-	m_ratioGroupBox->setVisible(shape == SynGlyphX::GlyphProperties::Torus);
-}
+	m_ratioGroupBox->setVisible(shape == SynGlyphXANTz::GlyphProperties::Torus);
+}*/

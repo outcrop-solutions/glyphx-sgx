@@ -21,8 +21,11 @@ MinMaxGlyphModel::MinMaxGlyphModel(DataTransformModel* dataTransformModel, QObje
 		<< tr("Scale Z")
 		<< tr("Color")
 		<< tr("Transparency")
-		<< tr("Torus Ratio")
-		<< tr("Tag");
+		<< tr("Tag")
+		<< tr("Description")
+		<< tr("Rotation Rate X")
+		<< tr("Rotation Rate Y")
+		<< tr("Rotation Rate Z");
 
 	m_columnHeaders << tr("Min")
 		<< tr("Max")
@@ -50,19 +53,13 @@ QVariant MinMaxGlyphModel::data(const QModelIndex& index, int role) const {
 
 	if ((role == Qt::EditRole) && index.isValid() && m_glyph.valid()) {
 
-		if (index.column() == 0) {
+		if ((index.column() == 0) || (index.column() == 1)) {
 
-			SynGlyphX::GlyphNumericMappableProperties zeroProperties;
-			zeroProperties.SetToZero();
-			return GetDataByRow(m_glyph->GetMinGlyph(), zeroProperties, index.row());
-		}
-		else if (index.column() == 1) {
-
-			return GetDataByRow(m_glyph->GetMinGlyph(), m_glyph->GetDifference(), index.row());
+			return GetDataByRow(const_cast<SynGlyphX::DataMappingGlyph&>(*m_glyph), index);
 		}
 		else if (index.column() == 2) {
 
-			const SynGlyphX::InputBinding& binding = m_glyph->GetInputBinding(index.row());
+			const SynGlyphX::InputBinding& binding = m_glyph->GetInputBinding(static_cast<SynGlyphX::DataMappingGlyph::MappableField>(index.row()));
 
 			if (binding.IsBoundToInputField()) {
 
@@ -82,7 +79,7 @@ int	MinMaxGlyphModel::rowCount(const QModelIndex& parent) const {
 
 	if (!parent.isValid()) {
 
-		return SynGlyphX::MinMaxGlyph::NumInputBindings;
+		return SynGlyphX::DataMappingGlyph::MappableField::MappableFieldSize;
 	}
 	else {
 
@@ -102,7 +99,7 @@ void MinMaxGlyphModel::SetMinMaxGlyph(const QModelIndex& index) {
 			parent = parent.parent();
 		}
 
-		SynGlyphX::DataTransformMapping::MinMaxGlyphTreeMap::const_iterator glyphTree = m_dataTransformModel->GetDataMapping()->GetGlyphTrees().begin();
+		SynGlyphX::DataTransformMapping::DataMappingGlyphGraphMap::const_iterator glyphTree = m_dataTransformModel->GetDataMapping()->GetGlyphGraphs().begin();
 		std::advance(glyphTree, childIndices.top());
 		childIndices.pop();
 
@@ -110,7 +107,7 @@ void MinMaxGlyphModel::SetMinMaxGlyph(const QModelIndex& index) {
 		m_selectedIndex = index;
 		m_glyphTreeID = glyphTree->first;
 		m_glyphTree = glyphTree->second;
-		SynGlyphX::MinMaxGlyphTree::const_iterator iT = m_glyphTree->root();
+		SynGlyphX::DataMappingGlyphGraph::const_iterator iT = m_glyphTree->root();
 
 		while (!childIndices.empty()) {
 
@@ -129,7 +126,7 @@ void MinMaxGlyphModel::SetMinMaxGlyph(const QModelIndex& index) {
 void MinMaxGlyphModel::Clear() {
 
 	beginResetModel();
-	m_glyph = SynGlyphX::MinMaxGlyphTree::const_iterator();
+	m_glyph = SynGlyphX::DataMappingGlyphGraph::const_iterator();
 	m_glyphTree = nullptr;
 	m_glyphTreeID = boost::uuids::nil_uuid();
 	m_selectedIndex = QModelIndex();
@@ -141,40 +138,91 @@ bool MinMaxGlyphModel::IsClear() const {
 	return (m_glyphTree == nullptr);
 }
 
-QVariant MinMaxGlyphModel::GetDataByRow(const SynGlyphX::GlyphNumericMappableProperties& minProperties, const SynGlyphX::GlyphNumericMappableProperties& diffProperties, int row) const {
+SynGlyphX::NumericMappingProperty& MinMaxGlyphModel::GetGlyphProperty(SynGlyphX::DataMappingGlyph& glyph, int row) const {
 
 	if (row == 0) {
-		return minProperties.GetPosition()[0] + diffProperties.GetPosition()[0];
+
+		return glyph.GetPosition()[0];
 	}
 	else if (row == 1) {
-		return minProperties.GetPosition()[1] + diffProperties.GetPosition()[1];
+
+		return glyph.GetPosition()[1];
 	}
 	else if (row == 2) {
-		return minProperties.GetPosition()[2] + diffProperties.GetPosition()[2];
+
+		return glyph.GetPosition()[2];
 	}
 	else if (row == 3) {
-		return minProperties.GetRotation()[0] + diffProperties.GetRotation()[0];
+
+		return glyph.GetRotation()[0];
 	}
 	else if (row == 4) {
-		return minProperties.GetRotation()[1] + diffProperties.GetRotation()[1];
+
+		return glyph.GetRotation()[1];
 	}
 	else if (row == 5) {
-		return minProperties.GetRotation()[2] + diffProperties.GetRotation()[2];
+
+		return glyph.GetRotation()[2];
 	}
 	else if (row == 6) {
-		return minProperties.GetScale()[0] + diffProperties.GetScale()[0];
+
+		return glyph.GetScale()[0];
 	}
 	else if (row == 7) {
-		return minProperties.GetScale()[1] + diffProperties.GetScale()[1];
+
+		return glyph.GetScale()[1];
 	}
 	else if (row == 8) {
-		return minProperties.GetScale()[2] + diffProperties.GetScale()[2];
+
+		return glyph.GetScale()[2];
 	}
-	else if (row == 9) {
-		return QColor(minProperties.GetColor()[0] + diffProperties.GetColor()[0], minProperties.GetColor()[1] + diffProperties.GetColor()[1], minProperties.GetColor()[2] + diffProperties.GetColor()[2]);
-	} 
 	else if (row == 10) {
-		return minProperties.GetColor()[3] + diffProperties.GetColor()[3];
+
+		return glyph.GetTransparency();
+	}
+	else if (row == 13) {
+
+		return glyph.GetRotationRate()[0];
+	}
+	else if (row == 14) {
+
+		return glyph.GetRotationRate()[1];
+	}
+	else if (row == 15) {
+
+		return glyph.GetRotationRate()[2];
+	}
+}
+
+QVariant MinMaxGlyphModel::GetDataByRow(SynGlyphX::DataMappingGlyph& glyph, const QModelIndex& index) const {
+
+	int row = index.row();
+	if ((row < m_propertyHeaders.size()) && (!IsTextField(row))) {
+
+		if (IsColorField(row)) {
+
+			const std::pair<SynGlyphX::GlyphColor, SynGlyphX::GlyphColor>& colorMinMax = glyph.GetColor().GetValue();
+			if (index.column() == 0) {
+
+				return QColor(colorMinMax.first[0], colorMinMax.first[1], colorMinMax.first[2]);
+			}
+			else {
+
+				return QColor(colorMinMax.first[0] + colorMinMax.second[0], colorMinMax.first[1] + colorMinMax.second[1], colorMinMax.first[2] + colorMinMax.second[2]);
+			}
+		}
+		else {
+
+			SynGlyphX::NumericMappingProperty& prop = GetGlyphProperty(glyph, row);
+			if (index.column() == 0) {
+
+				return prop.GetValue().first;
+			}
+			else {
+
+				return prop.GetValue().first + prop.GetValue().second;
+			}
+		}
 	}
 
 	return QVariant();
@@ -195,10 +243,10 @@ bool MinMaxGlyphModel::setData(const QModelIndex& index, const QVariant& value, 
 
 				SynGlyphX::InputField inputfield = value.value<SynGlyphX::InputField>();
 				if (inputfield.IsValid()) {
-					m_dataTransformModel->SetInputField(m_glyphTreeID, m_glyph.constify(), index.row(), inputfield);
+					m_dataTransformModel->SetInputField(m_glyphTreeID, m_glyph.constify(), static_cast<SynGlyphX::DataMappingGlyph::MappableField>(index.row()), inputfield);
 				}
 				else {
-					m_dataTransformModel->ClearInputBinding(m_glyphTreeID, m_glyph.constify(), index.row());
+					m_dataTransformModel->ClearInputBinding(m_glyphTreeID, m_glyph.constify(), static_cast<SynGlyphX::DataMappingGlyph::MappableField>(index.row()));
 				}
 			}
 			catch (const std::invalid_argument& e) {
@@ -209,17 +257,12 @@ bool MinMaxGlyphModel::setData(const QModelIndex& index, const QVariant& value, 
 		}
 		else {
 
-			SynGlyphX::MinMaxGlyph minMaxGlyph(*m_glyph);
-			SynGlyphX::GlyphProperties minProperties = minMaxGlyph.GetMinGlyph();
-			SynGlyphX::GlyphNumericMappableProperties diffProperties = minMaxGlyph.GetDifference();
+			SynGlyphX::DataMappingGlyph minMaxGlyph(*m_glyph);
 
-			if (!SetDataByRow(minProperties, diffProperties, value, index)) {
+			if (!SetDataByRow(minMaxGlyph, value, index)) {
 				
 				return false;
 			}
-
-			minMaxGlyph.SetMinGlyph(minProperties);
-			minMaxGlyph.SetDifference(diffProperties);
 
 			m_dataTransformModel->UpdateGlyph(m_selectedIndex, minMaxGlyph);
 		}
@@ -231,110 +274,43 @@ bool MinMaxGlyphModel::setData(const QModelIndex& index, const QVariant& value, 
 	return false;
 }
 
-bool MinMaxGlyphModel::SetDataByRow(SynGlyphX::GlyphNumericMappableProperties& minProperties, SynGlyphX::GlyphNumericMappableProperties& diffProperties, const QVariant& value, const QModelIndex& index) {
+bool MinMaxGlyphModel::SetDataByRow(SynGlyphX::DataMappingGlyph& glyph, const QVariant& value, const QModelIndex& index) {
 
 	int row = index.row();
-	if ((row == 0) || (row == 1) || (row == 2)) {
+	if ((row < m_propertyHeaders.size()) && (!IsTextField(row))) {
 
-		double number = value.toDouble();
-		SynGlyphX::Vector3 min = minProperties.GetPosition();
-		SynGlyphX::Vector3 diff = diffProperties.GetPosition();
-		if (index.column() == 0) {
+		if (IsColorField(row)) {
 
-			diff[row] += min[row] - number;
-			min[row] = number;
-		}
-		else {
-			diff[row] = number - min[row];
-		}
+			QColor color = value.value < QColor >();
+			std::pair<SynGlyphX::GlyphColor, SynGlyphX::GlyphColor>& colorMinMax = glyph.GetColor().GetValue();
+			if (index.column() == 0) {
 
-		minProperties.SetPosition(min);
-		diffProperties.SetPosition(diff);
+				colorMinMax.second.Set(0, colorMinMax.second[0] - (color.red() - colorMinMax.first[0]));
+				colorMinMax.second.Set(1, colorMinMax.second[1] - (color.green() - colorMinMax.first[1]));
+				colorMinMax.second.Set(2, colorMinMax.second[2] - (color.blue() - colorMinMax.first[2]));
+				colorMinMax.first.Set(color.red(), color.green(), color.blue());
+			}
+			else {
 
-		return true;
-	}
-	else if ((row == 3) || (row == 4) || (row == 5)) {
-		
-		row -= 3;
-		double number = value.toDouble();
-		SynGlyphX::Vector3 min = minProperties.GetRotation();
-		SynGlyphX::Vector3 diff = diffProperties.GetRotation();
-		if (index.column() == 0) {
-
-			diff[row] += min[row] - number;
-			min[row] = number;
-		}
-		else {
-			diff[row] = number - min[row];
-		}
-
-		minProperties.SetRotation(min);
-		diffProperties.SetRotation(diff);
-
-		return true;
-	}
-	else if ((row == 6) || (row == 7) || (row == 8)) {
-
-		row -= 6;
-		double number = value.toDouble();
-		SynGlyphX::Vector3 min = minProperties.GetScale();
-		SynGlyphX::Vector3 diff = diffProperties.GetScale();
-		if (index.column() == 0) {
-
-			diff[row] += min[row] - number;
-			min[row] = number;
-		}
-		else {
-			diff[row] = number - min[row];
-		}
-
-		minProperties.SetScale(min);
-		diffProperties.SetScale(diff);
-
-		return true;
-	}
-	else if (row == 9) {
-
-		QColor color = value.value<QColor>();
-		SynGlyphX::Color min = minProperties.GetColor();
-		SynGlyphX::Color diff = diffProperties.GetColor();
-		if (index.column() == 0) {
-
-			diff.Set(0, diff[0] + min[0] - color.red());
-			diff.Set(1, diff[1] + min[1] - color.green());
-			diff.Set(2, diff[2] + min[2] - color.blue());
-			min.Set(0, color.red());
-			min.Set(1, color.green());
-			min.Set(2, color.blue());
+				colorMinMax.second.Set(0, color.red() - colorMinMax.first[0]);
+				colorMinMax.second.Set(1, color.green() - colorMinMax.first[1]);
+				colorMinMax.second.Set(2, color.blue() - colorMinMax.first[2]);
+			}
 		}
 		else {
 
-			diff.Set(0, color.red() - min[0]);
-			diff.Set(1, color.green() - min[1]);
-			diff.Set(2, color.blue() - min[2]);
+			double newValue = value.toDouble();
+			SynGlyphX::NumericMappingProperty& prop = GetGlyphProperty(glyph, row);
+			if (index.column() == 0) {
+
+				prop.GetValue().second -= (newValue - prop.GetValue().first);
+				prop.GetValue().first = newValue;
+			}
+			else {
+
+				prop.GetValue().second = (newValue - prop.GetValue().first);
+			}
 		}
-
-		minProperties.SetColor(min);
-		diffProperties.SetColor(diff);
-
-		return true;
-	}
-	else if (row == 10) {
-
-		unsigned int alpha = value.toUInt();
-		SynGlyphX::Color min = minProperties.GetColor();
-		SynGlyphX::Color diff = diffProperties.GetColor();
-		if (index.column() == 0) {
-
-			diff.Set(3, diff[3] + min[3] - alpha);
-			min.Set(3, alpha);
-		}
-		else {
-			diff.Set(3, alpha - min[3]);
-		}
-
-		minProperties.SetColor(min);
-		diffProperties.SetColor(diff);
 
 		return true;
 	}
@@ -382,7 +358,17 @@ void MinMaxGlyphModel::ClearInputBindings() {
 
 	for (int i = 0; i < rowCount(); ++i) {
 
-		m_dataTransformModel->ClearInputBinding(m_glyphTreeID, m_glyph.constify(), i);
+		m_dataTransformModel->ClearInputBinding(m_glyphTreeID, m_glyph.constify(), static_cast<SynGlyphX::DataMappingGlyph::MappableField>(i));
 	}
 	emit dataChanged(index(0, columnCount() - 1), index(rowCount() - 1, columnCount() - 1));
+}
+
+bool MinMaxGlyphModel::IsTextField(int row) const {
+
+	return ((row == 11) || (row == 12));
+}
+
+bool MinMaxGlyphModel::IsColorField(int row) const {
+
+	return (row == 9);
 }

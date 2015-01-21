@@ -20,11 +20,11 @@ GlyphDesignerWindow::GlyphDesignerWindow(QWidget *parent)
 	m_3dView(nullptr),
 	m_isFileLoadingOrDefaultGlyphSet(false)
 {
-    m_glyphTreeModel = new MinMaxGlyphTreeModel(this);
+	m_glyphTreeModel = new SynGlyphXANTz::MinMaxGlyphTreeModel(this);
 	m_glyphTreeModel->RepaceModelWithDefaultGlyphTree();
 	m_sharedSelectionModel = new QItemSelectionModel(m_glyphTreeModel, this);
 
-	m_3dView = new ANTzSingleGlyphTreeWidget(MinMaxGlyphTreeModel::GlyphType::Max, this);
+	m_3dView = new SynGlyphXANTz::ANTzSingleGlyphTreeWidget(SynGlyphXANTz::MinMaxGlyphTreeModel::GlyphType::Max, this);
 	m_3dView->SetModel(m_glyphTreeModel, m_sharedSelectionModel);
     setCentralWidget(m_3dView);
 
@@ -36,11 +36,11 @@ GlyphDesignerWindow::GlyphDesignerWindow(QWidget *parent)
 	m_3dView->addActions(m_treeView->GetEditActions());
 	m_3dView->setContextMenuPolicy(Qt::ActionsContextMenu);
 
-	QObject::connect(m_glyphTreeModel, &MinMaxGlyphTreeModel::modelReset, this, &GlyphDesignerWindow::OnModelChanged);
-	QObject::connect(m_glyphTreeModel, &MinMaxGlyphTreeModel::rowsInserted, this, &GlyphDesignerWindow::OnModelChanged);
-	QObject::connect(m_glyphTreeModel, &MinMaxGlyphTreeModel::rowsRemoved, this, &GlyphDesignerWindow::OnModelChanged);
-	QObject::connect(m_glyphTreeModel, &MinMaxGlyphTreeModel::rowsMoved, this, &GlyphDesignerWindow::OnModelChanged);
-	QObject::connect(m_glyphTreeModel, &MinMaxGlyphTreeModel::dataChanged, this, &GlyphDesignerWindow::OnModelChanged);
+	QObject::connect(m_glyphTreeModel, &SynGlyphXANTz::MinMaxGlyphTreeModel::modelReset, this, &GlyphDesignerWindow::OnModelChanged);
+	QObject::connect(m_glyphTreeModel, &SynGlyphXANTz::MinMaxGlyphTreeModel::rowsInserted, this, &GlyphDesignerWindow::OnModelChanged);
+	QObject::connect(m_glyphTreeModel, &SynGlyphXANTz::MinMaxGlyphTreeModel::rowsRemoved, this, &GlyphDesignerWindow::OnModelChanged);
+	QObject::connect(m_glyphTreeModel, &SynGlyphXANTz::MinMaxGlyphTreeModel::rowsMoved, this, &GlyphDesignerWindow::OnModelChanged);
+	QObject::connect(m_glyphTreeModel, &SynGlyphXANTz::MinMaxGlyphTreeModel::dataChanged, this, &GlyphDesignerWindow::OnModelChanged);
 	
 	SelectRootGlyphInModel();
 
@@ -89,17 +89,17 @@ void GlyphDesignerWindow::CreateMenus() {
     QActionGroup* editingActionGroup = new QActionGroup(editingModeMenu);
     QAction* moveEditModeAction = new QAction(tr("Move"), editingModeMenu);
     moveEditModeAction->setCheckable(true);
-	moveEditModeAction->setData(ANTzSingleGlyphTreeWidget::Move);
+	moveEditModeAction->setData(SynGlyphXANTz::ANTzSingleGlyphTreeWidget::Move);
     editingActionGroup->addAction(moveEditModeAction);
     
     QAction* rotateEditModeAction = new QAction(tr("Rotate"), editingModeMenu);
     rotateEditModeAction->setCheckable(true);
-	rotateEditModeAction->setData(ANTzSingleGlyphTreeWidget::Rotate);
+	rotateEditModeAction->setData(SynGlyphXANTz::ANTzSingleGlyphTreeWidget::Rotate);
     editingActionGroup->addAction(rotateEditModeAction);
 
     QAction* sizeEditModeAction = new QAction(tr("Size"), editingModeMenu);
     sizeEditModeAction->setCheckable(true);
-	sizeEditModeAction->setData(ANTzSingleGlyphTreeWidget::Size);
+	sizeEditModeAction->setData(SynGlyphXANTz::ANTzSingleGlyphTreeWidget::Size);
     editingActionGroup->addAction(sizeEditModeAction);
 
     moveEditModeAction->setChecked(true);
@@ -130,7 +130,7 @@ void GlyphDesignerWindow::CreateDockWidgets() {
 
     //Add Tree View to dock widget on left side
     QDockWidget* leftDockWidget = new QDockWidget("Glyph Tree", this);
-	m_treeView = new GlyphTreeView(m_glyphTreeModel, MinMaxGlyphTreeModel::GlyphType::Max, leftDockWidget);
+	m_treeView = new GlyphTreeView(m_glyphTreeModel, SynGlyphXANTz::MinMaxGlyphTreeModel::GlyphType::Max, leftDockWidget);
 	m_treeView->setSelectionModel(m_sharedSelectionModel);
 	m_editMenu->addActions(m_treeView->GetEditActions());
 	m_glyphMenu->addActions(m_treeView->GetGlyphActions());
@@ -140,7 +140,7 @@ void GlyphDesignerWindow::CreateDockWidgets() {
     m_viewMenu->addAction(leftDockWidget->toggleViewAction());
 
     QDockWidget* rightDockWidget = new QDockWidget("Properties", this);
-	ModalGlyphWidget* modalGlyphWidget = new ModalGlyphWidget(MinMaxGlyphTreeModel::GlyphType::Max, rightDockWidget);
+	ModalGlyphWidget* modalGlyphWidget = new ModalGlyphWidget(SynGlyphXANTz::MinMaxGlyphTreeModel::GlyphType::Max, rightDockWidget);
 	modalGlyphWidget->SetModel(m_glyphTreeModel, m_sharedSelectionModel);
 	QObject::connect(modalGlyphWidget, &ModalGlyphWidget::AddChildrenButtonClicked, m_treeView, &GlyphTreeView::AddChildren);
     rightDockWidget->setWidget(modalGlyphWidget);
@@ -174,11 +174,11 @@ void GlyphDesignerWindow::CreateNewGlyphTree() {
                 glyphWidgets.push_back(glyphWidget);
                 if (i == 0) {
                     page->setTitle("Glyphs for root level");
-                    glyphWidget->SetWidgetFromGlyph(SynGlyphX::GlyphProperties::GetRoot(), false);
+					glyphWidget->SetWidgetFromGlyph(SynGlyphX::Glyph::s_defaultRootGlyph, false);
                 }
                 else {
                     page->setTitle(QString::number(i).prepend("Glyphs for branch level "));
-                    glyphWidget->SetWidgetFromGlyph(SynGlyphX::GlyphProperties::GetTemplate(), true);
+					glyphWidget->SetWidgetFromGlyph(SynGlyphX::Glyph::s_defaultGlyph, true);
                 }
                 layout->addWidget(glyphWidget);
                 wizard.addPage(page);
@@ -186,14 +186,15 @@ void GlyphDesignerWindow::CreateNewGlyphTree() {
 
             if (wizard.exec() == QDialog::Accepted) {
 
-				boost::shared_ptr<SynGlyphX::GlyphProperties> rootGlyph(new SynGlyphX::GlyphProperties());
+				SynGlyphX::Glyph rootGlyph;
 				glyphWidgets[0]->SetGlyphFromWidget(rootGlyph);
-				SynGlyphX::GlyphTree newMaxGlyphTree(*rootGlyph);
+				SynGlyphX::GlyphGraph newMaxGlyphTree(rootGlyph);
 
-				std::vector<SynGlyphX::GlyphProperties::ConstSharedPtr> templates;
+				std::vector<SynGlyphX::Glyph> templates;
 				std::vector<unsigned int> instanceCounts;
 				for (int i = 1; i < numberOfBranches; ++i) {
-					boost::shared_ptr<SynGlyphX::GlyphProperties> glyph(new SynGlyphX::GlyphProperties());
+
+					SynGlyphX::Glyph glyph;
 					glyphWidgets[i]->SetGlyphFromWidget(glyph);
 
 					templates.push_back(glyph);
@@ -202,7 +203,7 @@ void GlyphDesignerWindow::CreateNewGlyphTree() {
 
 				newMaxGlyphTree.AllocateChildSubtree(templates, instanceCounts, newMaxGlyphTree.root());
 
-				SynGlyphX::MinMaxGlyphTree::SharedPtr newGlyphTree(new SynGlyphX::MinMaxGlyphTree(newMaxGlyphTree));
+				SynGlyphX::DataMappingGlyphGraph::SharedPtr newGlyphTree = std::make_shared<SynGlyphX::DataMappingGlyphGraph>(newMaxGlyphTree);
 				m_glyphTreeModel->SetMinMaxGlyphTree(newGlyphTree);
 				SelectRootGlyphInModel();
             }
@@ -247,24 +248,34 @@ void GlyphDesignerWindow::LoadTemplate(const QString& filename) {
 
     if (!filename.isEmpty()) {
 
-        SynGlyphX::Application::setOverrideCursor(Qt::WaitCursor);
-		m_isFileLoadingOrDefaultGlyphSet = true;
-        bool fileLoaded = m_glyphTreeModel->LoadFromFile(filename);
-        SynGlyphX::Application::restoreOverrideCursor();
+		if (QFile::exists(filename)) {
 
-        if (fileLoaded) {
+			SynGlyphX::Application::setOverrideCursor(Qt::WaitCursor);
+			m_isFileLoadingOrDefaultGlyphSet = true;
+			bool fileLoaded = m_glyphTreeModel->LoadFromFile(filename);
+			SynGlyphX::Application::restoreOverrideCursor();
 
-            SetCurrentFile(filename);
-            statusBar()->showMessage("Template successfully opened", 3000);
-			SelectRootGlyphInModel();
-        }
-        else {
+			if (fileLoaded) {
 
-			m_isFileLoadingOrDefaultGlyphSet = false;
-            QString title = "Loading Template Failed";
-            QMessageBox::warning(this, title, "Failed to load template");
-        }
-    }
+				SetCurrentFile(filename);
+				statusBar()->showMessage("Template successfully opened", 3000);
+				SelectRootGlyphInModel();
+			}
+			else {
+
+				m_isFileLoadingOrDefaultGlyphSet = false;
+				QMessageBox::warning(this, tr("Loading Template Failed"), tr("Failed to load template"));
+			}
+		}
+		else {
+
+			QMessageBox::warning(this, tr("Loading Template Failed"), tr("File does not exist"));
+		}
+	}
+	else {
+
+		QMessageBox::warning(this, tr("Loading Template Failed"), tr("File name is empty"));
+	}
 }
 
 bool GlyphDesignerWindow::SaveTemplate() {
@@ -309,7 +320,7 @@ bool GlyphDesignerWindow::SaveTemplateFile(const QString& filename) {
 
 void GlyphDesignerWindow::EditingModeChanged(QAction* action) {
 
-	m_3dView->SetEditingMode(static_cast<ANTzSingleGlyphTreeWidget::EditingMode>(action->data().toInt()));
+	m_3dView->SetEditingMode(static_cast<SynGlyphXANTz::ANTzSingleGlyphTreeWidget::EditingMode>(action->data().toInt()));
 }
 
 void GlyphDesignerWindow::closeEvent(QCloseEvent* event) {

@@ -167,9 +167,7 @@ void DataMapperWindow::CreateMenus() {
 	QAction* mapDownloadSettingsAction = m_toolsMenu->addAction(tr("Map Download Settings"));
 	QObject::connect(mapDownloadSettingsAction, &QAction::triggered, this, &DataMapperWindow::ChangeMapDownloadSettings);
 
-    m_helpMenu = menuBar()->addMenu(tr("Help"));
-    QAction* aboutBoxAction = m_helpMenu->addAction("About " + SynGlyphX::Application::organizationName() + " " + SynGlyphX::Application::applicationName());
-    QObject::connect(aboutBoxAction, SIGNAL(triggered()), this, SLOT(ShowAboutBox()));
+	CreateHelpMenu();
 
 	EnableProjectDependentActions(false);
 }
@@ -212,12 +210,6 @@ void DataMapperWindow::CreateDockWidgets() {
 	rightDockWidget->setWidget(m_dataSourceStats);
 	addDockWidget(Qt::RightDockWidgetArea, rightDockWidget);
 	m_viewMenu->addAction(rightDockWidget->toggleViewAction());
-}
-
-void DataMapperWindow::ShowAboutBox() {
-
-    QString appName = SynGlyphX::Application::organizationName() + " " + SynGlyphX::Application::applicationName();
-    QMessageBox::about(this, "About " + appName, appName + " " + SynGlyphX::Application::applicationVersion());
 }
 
 void DataMapperWindow::CreateNewProject() {
@@ -465,7 +457,7 @@ void DataMapperWindow::ExportToANTz() {
 		SynGlyphX::Filesystem::RemoveContentsOfDirectory(csvDirectory.toStdString());
 		SynGlyphX::Filesystem::CopyDirectoryOverwrite(QDir::toNativeSeparators(SynGlyphX::Application::applicationDirPath() + QDir::separator() + ANTzTemplateDir).toStdString(), csvDirectory.toStdString(), true);
 
-		ANTzTransformer transformer(csvDirectory);
+		SynGlyphXANTz::ANTzTransformer transformer(csvDirectory);
 		transformer.Transform(*(m_dataTransformModel->GetDataMapping().get()));
 	}
 	catch (const std::exception& e) {
@@ -654,7 +646,7 @@ void DataMapperWindow::ClearAndInitializeDataMapping() {
 
 void DataMapperWindow::SelectLastGlyphTreeRoot() {
 
-	m_glyphTreesView->selectionModel()->select(m_glyphTreesModel->index(m_dataTransformModel->GetDataMapping()->GetGlyphTrees().size() - 1, 0), QItemSelectionModel::ClearAndSelect);
+	m_glyphTreesView->selectionModel()->select(m_glyphTreesModel->index(m_dataTransformModel->GetDataMapping()->GetGlyphGraphs().size() - 1, 0), QItemSelectionModel::ClearAndSelect);
 }
 
 void DataMapperWindow::OnGlyphTreesViewSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected) {
