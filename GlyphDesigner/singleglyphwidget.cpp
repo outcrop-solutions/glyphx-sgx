@@ -116,9 +116,9 @@ void SingleGlyphWidget::CreateWidgets(ChildOptions childOptions) {
 	SynGlyphX::GroupBoxSingleWidget* scaleGroupBox = new SynGlyphX::GroupBoxSingleWidget(tr("Scale"), m_scaleWidget, this);
 
 	m_rotateRateWidget = new XYZWidget(false, this);
-	m_scaleWidget->SetRange(0.000001, 100.0);
-	m_scaleWidget->SetDecimal(3);
-	m_scaleWidget->setContentsMargins(0, 0, 0, 0);
+	m_rotateRateWidget->SetRange(-100.0, 100.0);
+	m_rotateRateWidget->SetDecimal(3);
+	m_rotateRateWidget->setContentsMargins(0, 0, 0, 0);
 
 	SynGlyphX::GroupBoxSingleWidget* rotateRateGroupBox = new SynGlyphX::GroupBoxSingleWidget(tr("Animation - Rotation"), m_rotateRateWidget, this);
     
