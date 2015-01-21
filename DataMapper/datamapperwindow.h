@@ -44,7 +44,6 @@ protected:
 	virtual void closeEvent(QCloseEvent* event);
 
 private slots:
-    void ShowAboutBox();
     void CreateNewProject();
     void OpenProject();
     bool SaveProject();

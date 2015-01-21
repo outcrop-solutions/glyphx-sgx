@@ -167,9 +167,7 @@ void DataMapperWindow::CreateMenus() {
 	QAction* mapDownloadSettingsAction = m_toolsMenu->addAction(tr("Map Download Settings"));
 	QObject::connect(mapDownloadSettingsAction, &QAction::triggered, this, &DataMapperWindow::ChangeMapDownloadSettings);
 
-    m_helpMenu = menuBar()->addMenu(tr("Help"));
-    QAction* aboutBoxAction = m_helpMenu->addAction("About " + SynGlyphX::Application::organizationName() + " " + SynGlyphX::Application::applicationName());
-    QObject::connect(aboutBoxAction, SIGNAL(triggered()), this, SLOT(ShowAboutBox()));
+	CreateHelpMenu();
 
 	EnableProjectDependentActions(false);
 }
@@ -212,12 +210,6 @@ void DataMapperWindow::CreateDockWidgets() {
 	rightDockWidget->setWidget(m_dataSourceStats);
 	addDockWidget(Qt::RightDockWidgetArea, rightDockWidget);
 	m_viewMenu->addAction(rightDockWidget->toggleViewAction());
-}
-
-void DataMapperWindow::ShowAboutBox() {
-
-    QString appName = SynGlyphX::Application::organizationName() + " " + SynGlyphX::Application::applicationName();
-    QMessageBox::about(this, "About " + appName, appName + " " + SynGlyphX::Application::applicationVersion());
 }
 
 void DataMapperWindow::CreateNewProject() {
