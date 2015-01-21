@@ -129,9 +129,13 @@ namespace SynGlyphX {
 		glyph.GetScale()[2] = LinearInterpolate(minMaxGlyph->GetInputBinding(DataMappingGlyph::MappableField::ScaleZ), glyph.GetScale()[2], difference.GetScale()[2], queryResultData, index);
 
 		glyph.GetColor() = ColorRGBInterpolate(minMaxGlyph->GetInputBinding(DataMappingGlyph::MappableField::Color), glyph.GetColor(), difference.GetColor(), queryResultData, index);
-		glyph.GetTransparency() = LinearInterpolate(minMaxGlyph->GetInputBinding(DataMappingGlyph::MappableField::Transparency), glyph.GetColor()[3], difference.GetColor()[3], queryResultData, index);
+		glyph.GetTransparency() = LinearInterpolate(minMaxGlyph->GetInputBinding(DataMappingGlyph::MappableField::Transparency), glyph.GetTransparency(), difference.GetTransparency(), queryResultData, index);
 
 		glyph.GetTag() = GenerateTag(minMaxGlyph, queryResultData, index);
+
+		glyph.GetRotationRate()[0] = LinearInterpolate(minMaxGlyph->GetInputBinding(DataMappingGlyph::MappableField::RotationRateX), glyph.GetRotationRate()[0], difference.GetRotationRate()[0], queryResultData, index);
+		glyph.GetRotationRate()[1] = LinearInterpolate(minMaxGlyph->GetInputBinding(DataMappingGlyph::MappableField::RotationRateY), glyph.GetRotationRate()[1], difference.GetRotationRate()[1], queryResultData, index);
+		glyph.GetRotationRate()[2] = LinearInterpolate(minMaxGlyph->GetInputBinding(DataMappingGlyph::MappableField::RotationRateZ), glyph.GetRotationRate()[2], difference.GetRotationRate()[2], queryResultData, index);
 
 		return glyph;
 	}

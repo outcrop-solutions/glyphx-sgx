@@ -49,7 +49,7 @@ namespace SynGlyphX {
 			}
 			else {
 
-				throw std::out_of_range("For color, an index of 3 or greater is invalid");
+				throw std::out_of_range("For color, an index of 4 or greater is invalid");
 			}
 		}
 	}
@@ -103,7 +103,7 @@ namespace SynGlyphX {
 	std::wstring GlyphColor::ToHexString(unsigned int length) const {
 
 		if ((length > 3) || (length == 0)) {
-			throw std::invalid_argument("To create hex string length must be between 1 and 4");
+			throw std::invalid_argument("To create hex string length must be between 1 and 3");
 		}
 
 		std::wostringstream stream;
