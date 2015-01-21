@@ -66,7 +66,7 @@ void ModalGlyphWidget::OnWidgetUpdated(SynGlyphXANTz::MinMaxGlyphTreeModel::Prop
 		SynGlyphX::Glyph glyph;
         SetGlyphFromWidget(glyph);
 
-        m_model->UpdateGlyph(selected.back(), m_glyphTreeType, glyph, updates);
+        m_model->UpdateGlyphs(selected, m_glyphTreeType, glyph, updates);
     }
 }
 
