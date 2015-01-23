@@ -4,52 +4,55 @@
 namespace SynGlyphX {
 
 	template <typename OutputType>
-	RangeValueMappingFunction<OutputType>::RangeValueMappingFunction(std::shared_ptr<const InputCombinationFunction<double>> inputCombinationFunction) :
-		ValueMappingFunction<OutputType, double>(inputCombinationFunction)
+	RangeMappingData<OutputType>::RangeMappingData() :
+		ValueMappingData<OutputType, double>(MappingFunctionData::Function::Range2Value)
 	{
 	}
 
 	template <typename OutputType>
-	RangeValueMappingFunction<OutputType>::~RangeValueMappingFunction()
+	RangeMappingData<OutputType>::~RangeMappingData()
 	{
 	}
 
 	template <typename OutputType>
-	void RangeValueMappingFunction<OutputType>::SetMappedValue(const Range& input, const OutputType& output) {
+	void RangeMappingData<OutputType>::SetMappedValue(const Range& input, const OutputType& output) {
 
 		m_mappedValues[input] = output;
 	}
 
 	template <typename OutputType>
-	void RangeValueMappingFunction<OutputType>::RemoveMappedValue(const Range& input) {
+	void RangeMappingData<OutputType>::RemoveMappedValue(const Range& input) {
 
 		m_mappedValues.erase(input);
 	}
 
 	template <typename OutputType>
-	void RangeValueMappingFunction<OutputType>::ClearMappedValues() {
+	void RangeMappingData<OutputType>::ClearMappedValues() {
 
 		m_mappedValues.clear();
 	}
 
 	template <typename OutputType>
-	const std::map<Range, OutputType>& RangeValueMappingFunction<OutputType>::GetMappedValues() const {
+	const std::map<Range, OutputType>& RangeMappingData<OutputType>::GetMappedValues() const {
 
 		return m_mappedValues;
 	}
 
 	template <typename OutputType>
-	OutputType RangeValueMappingFunction<OutputType>::MapCombinedInput(const double& input) const {
+	OutputType RangeMappingData<OutputType>::GetOutputValueFromInput(const double& input) const {
+		
+		for (std::map<Range, OutputType>::const_iterator iT = m_mappedValues.begin(); iT != m_mappedValues.end(); ++iT) {
 
-		std::map<Range, OutputType>::const_iterator output = std::lower_bound(m_mappedValues.begin(), m_mappedValues.end(), input);
-		if (output == m_mappedValues.end()) {
+			if (iT->first.IsValueInRange(input)) {
 
-			return m_defaultValue;
+				return iT->second;
+			}
 		}
-		else {
 
-			return output->second;
-		}
+		return m_defaultValue;
 	}
+
+	template class RangeMappingData<double>;
+	template class RangeMappingData<GlyphColor>;
 
 } //namespace SynGlyphX

@@ -21,7 +21,7 @@
 #include "interpolationmappingfunction.h"
 
 namespace SynGlyphX {
-
+	/*
 	class LinearInterpolationMappingFunction : public InterpolationMappingFunction<double>
 	{
 	public:
@@ -31,7 +31,7 @@ namespace SynGlyphX {
 	protected:
 		virtual double Interpolate(double input, double inputMin, double inputDifference, double outputMin, double outputDifference) const;
 	};
-
+	*/
 } //namespace SynGlyphX
 
 #endif //SYNGLYPHX_LINEARINTERPOLATIONMAPPINGFUNCTION_H

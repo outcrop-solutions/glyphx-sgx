@@ -26,25 +26,28 @@
 namespace SynGlyphX {
 
 	template <typename OutputType>
-	class RangeValueMappingFunction : public ValueMappingFunction<OutputType, double>
+	class RangeMappingData : public ValueMappingData<OutputType, double>
 	{
 	public:
-		RangeValueMappingFunction(std::shared_ptr<const InputCombinationFunction<double>> inputCombinationFunction = nullptr);
-		virtual ~RangeValueMappingFunction();
+		typedef std::shared_ptr<RangeMappingData<OutputType>> SharedPtr;
+		typedef std::shared_ptr<const RangeMappingData<OutputType>> ConstSharedPtr;
+
+		RangeMappingData();
+		virtual ~RangeMappingData();
 
 		void SetMappedValue(const Range& input, const OutputType& output);
 		void RemoveMappedValue(const Range& input);
 		void ClearMappedValues();
 		const std::map<Range, OutputType>& GetMappedValues() const;
 
-	protected:
-		virtual OutputType MapCombinedInput(const double& input) const;
+		virtual OutputType GetOutputValueFromInput(const double& input) const;
 
+	protected:
 		std::map<Range, OutputType> m_mappedValues;
 	};
 
-	typedef RangeValueMappingFunction<double> Range2DoubleMappingFunction;
-	typedef RangeValueMappingFunction<GlyphColor> Range2ColorMappingFunction;
+	typedef RangeMappingData<double> Range2DoubleMappingData;
+	typedef RangeMappingData<GlyphColor> Range2ColorMappingData;
 
 } // namespace SynGlyphX
 

@@ -15,33 +15,43 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef SYNGLYPHX_INTERPOLATIONMAPPINGFUNCTION_H
-#define SYNGLYPHX_INTERPOLATIONMAPPINGFUNCTION_H
+#ifndef SYNGLYPHX_INTERPOLATIONMAPPINGDATA_H
+#define SYNGLYPHX_INTERPOLATIONMAPPINGDATA_H
 
 #include "datamappingfunction.h"
+#include "glyphcolor.h"
 
 namespace SynGlyphX {
 
-	template<typename OutputType>
-	class InterpolationMappingFunction : public DataMappingFunction<OutputType, double>
+	class InterpolationMappingData : public MappingFunctionData
 	{
 	public:
-		InterpolationMappingFunction(std::shared_ptr<const InputCombinationFunction<double>> inputCombinationFunction = nullptr);
-		virtual ~InterpolationMappingFunction();
+		typedef std::shared_ptr<InterpolationMappingData> SharedPtr;
+		typedef std::shared_ptr<const InterpolationMappingData> ConstSharedPtr;
 
-		void SetOutputMinAndDifference(OutputType min, OutputType difference);
-		void SetInputMinAndDifference(double min, double difference);
+		InterpolationMappingData(bool useLogarithmic = false);
+		InterpolationMappingData(const boost::property_tree::wptree& propertyTree);
+		InterpolationMappingData(const InterpolationMappingData& data);
+		virtual ~InterpolationMappingData();
+
+		virtual Input GetSupportedInput() const;
+
+		double Interpolate(std::pair<double, double> outputMinDiff, double inputMin, double inputMax, double input) const;
+		GlyphColor Interpolate(std::pair<GlyphColor, GlyphColor> outputMinDiff, double inputMin, double inputMax, double input) const;
+
+		//void SetOutputMinAndDifference(OutputType min, OutputType difference);
+		//void SetInputMinAndDifference(double min, double difference);
 
 	protected:
-		virtual OutputType MapCombinedInput(const double& input) const;
-		virtual double Interpolate(double input, double inputMin, double inputDifference, double outputMin, double outputDifference) const = 0;
+		//virtual OutputType MapCombinedInput(const double& input) const;
+		double Interpolate(double outputMin, double outputDifference, double inputMin, double inputDifference, double input) const;
 
-		OutputType m_outputMin;
-		OutputType m_outputDifference;
-		double m_inputMin;
-		double m_inputDifference;
+		//OutputType m_outputMin;
+		//OutputType m_outputDifference;
+		//double m_inputMin;
+		//double m_inputDifference;
 	};
 
 } //namespace SynGlyphX
 
-#endif //SYNGLYPHX_INTERPOLATIONMAPPINGFUNCTION_H
+#endif //SYNGLYPHX_INTERPOLATIONMAPPINGDATA_H

@@ -20,6 +20,7 @@
 
 #include "sgxfoundation.h"
 #include <array>
+#include <boost/property_tree/ptree.hpp>
 
 namespace SynGlyphX {
 
@@ -32,6 +33,7 @@ namespace SynGlyphX {
 
 		GlyphColor(Space space = Space::RGB);
 		GlyphColor(const ColorArray& color, Space space = Space::RGB);
+		GlyphColor(const boost::property_tree::wptree& propertyTree, Space space = Space::RGB);
 		GlyphColor(const GlyphColor& color);
 		~GlyphColor();
 
@@ -43,6 +45,8 @@ namespace SynGlyphX {
 		bool operator!=(const GlyphColor& color) const;
 		GlyphColor& operator+=(const GlyphColor& color);
 		GlyphColor& operator-=(const GlyphColor& color);
+
+		void ExportToPropertyTree(boost::property_tree::wptree& propertyTree) const;
 
 		std::wstring ToHexString(unsigned int length = 3) const;
 		void FromHexString(const std::wstring& hexString);

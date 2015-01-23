@@ -17,6 +17,12 @@ namespace SynGlyphX {
 
 	}
 
+	GlyphColor::GlyphColor(const boost::property_tree::wptree& propertyTree, Space space) :
+		m_space(space),
+		m_color({ { propertyTree.get<short>(L"R"), propertyTree.get<short>(L"G"), propertyTree.get<short>(L"B") } }) {
+
+	}
+
 	GlyphColor::GlyphColor(const GlyphColor& color) : 
 		m_space(color.m_space),
 		m_color(color.m_color) {
@@ -98,6 +104,13 @@ namespace SynGlyphX {
 		m_color[2] -= color.m_color[2];
 
 		return *this;
+	}
+
+	void GlyphColor::ExportToPropertyTree(boost::property_tree::wptree& propertyTree) const {
+
+		propertyTree.put<short>(L"R", m_color[0]);
+		propertyTree.put<short>(L"G", m_color[1]);
+		propertyTree.put<short>(L"B", m_color[2]);
 	}
 
 	std::wstring GlyphColor::ToHexString(unsigned int length) const {

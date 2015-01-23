@@ -15,32 +15,44 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef SYNGLYPHX_SINGLEVALUEMAPPINGFUNCTION_H
-#define SYNGLYPHX_SINGLEVALUEMAPPINGFUNCTION_H
+#ifndef SYNGLYPHX_SINGLEVALUEMAPPINGDATA_H
+#define SYNGLYPHX_SINGLEVALUEMAPPINGDATA_H
 
 #include "valuemappingfunction.h"
 #include <unordered_map>
+#include "glyphcolor.h"
 
 namespace SynGlyphX {
 
-	template <typename OutputType, typename InputType = OutputType>
-	class SingleValueMappingFunction : public ValueMappingFunction<OutputType, InputType>
+	template <typename OutputType, typename InputType>
+	class SingleValueMappingData : public ValueMappingData<OutputType, InputType>
 	{
 	public:
-		SingleValueMappingFunction(std::shared_ptr<const InputCombinationFunction<InputType>> inputCombinationFunction = nullptr);
-		virtual ~SingleValueMappingFunction();
+		typedef std::shared_ptr<SingleValueMappingData<OutputType, InputType>> SharedPtr;
+		typedef std::shared_ptr<const SingleValueMappingData<OutputType, InputType>> ConstSharedPtr;
+
+		SingleValueMappingData();
+		SingleValueMappingData(const boost::property_tree::wptree& propertyTree);
+		SingleValueMappingData(const SingleValueMappingData& data);
+		virtual ~SingleValueMappingData();
 
 		void SetMappedValue(const InputType& input, const OutputType& output);
 		void RemoveMappedValue(const InputType& input);
 		void ClearMappedValues();
 		const std::unordered_map<InputType, OutputType>& GetMappedValues() const;
+		bool IsInputInMappedValues(const InputType& input) const;
+
+		virtual OutputType GetOutputValueFromInput(const InputType& input) const;
 
 	protected:
-		virtual OutputType MapCombinedInput(const InputType& input) const;
-
 		std::unordered_map<InputType, OutputType> m_mappedValues;
 	};
 
+	typedef SingleValueMappingData<double, double> Numeric2NumericMappingData;
+	typedef SingleValueMappingData<double, std::wstring> Text2NumericMappingData;
+	typedef SingleValueMappingData<GlyphColor, double> Numeric2ColorMappingData;
+	typedef SingleValueMappingData<GlyphColor, std::wstring> Text2ColorMappingData;
+
 } // namespace SynGlyphX
 
-#endif //SYNGLYPHX_SINGLEVALUEMAPPINGFUNCTION_H
+#endif //SYNGLYPHX_SINGLEVALUEMAPPINGDATA_H

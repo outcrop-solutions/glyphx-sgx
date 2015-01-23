@@ -24,7 +24,7 @@
 #include "glyphcolor.h"
 #include "inputbinding.h"
 #include <memory>
-#include "linearinterpolationmappingfunction.h"
+#include "datamappingfunction.h"
 
 namespace SynGlyphX {
 
@@ -53,6 +53,7 @@ namespace SynGlyphX {
 	protected:
 		PropertyType m_value;
 		InputBinding m_binding;
+		MappingFunctionData::SharedPtr m_mappingFunctionData;
 	};
 
 	typedef DataMappingProperty<std::pair<double, double>> NumericMappingProperty;

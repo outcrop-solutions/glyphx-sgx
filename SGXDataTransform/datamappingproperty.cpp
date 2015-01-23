@@ -154,18 +154,11 @@ namespace SynGlyphX {
 	template <>
 	boost::property_tree::wptree& DataMappingProperty<std::pair<GlyphColor, GlyphColor>>::ExportToPropertyTree(boost::property_tree::wptree& propertyTree) const {
 
-		//boost::property_tree::wptree& valuePropertyTree = propertyTreeParent.add(name, L"");
-		boost::property_tree::wptree& rgbMinPropertyTree = propertyTree.add(L"Min", L"");
-		rgbMinPropertyTree.put<short>(L"R", m_value.first[0]);
-		rgbMinPropertyTree.put<short>(L"G", m_value.first[1]);
-		rgbMinPropertyTree.put<short>(L"B", m_value.first[2]);
+		m_value.first.ExportToPropertyTree(propertyTree.add(L"Min", L""));
 
 		if ((std::abs(m_value.second[0]) > 0) || (std::abs(m_value.second[1]) > 0) || (std::abs(m_value.second[2]) > 0)) {
 
-			boost::property_tree::wptree& rgbDiffPropertyTree = propertyTree.add(L"Difference", L"");
-			rgbDiffPropertyTree.put<short>(L"R", m_value.second[0]);
-			rgbDiffPropertyTree.put<short>(L"G", m_value.second[1]);
-			rgbDiffPropertyTree.put<short>(L"B", m_value.second[2]);
+			m_value.second.ExportToPropertyTree(propertyTree.add(L"Difference", L""));
 		}
 
 		if (m_binding.IsBoundToInputField()) {

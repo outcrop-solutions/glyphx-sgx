@@ -1,7 +1,7 @@
 #include "stringconcatmappingfunction.h"
 
 namespace SynGlyphX {
-
+	/*
 	StringConcatMappingFunction::StringConcatMappingFunction(std::shared_ptr<const StringInputCombinationFunction> inputCombinationFunction) :
 		DataMappingFunction<std::wstring>(inputCombinationFunction ? inputCombinationFunction : std::make_shared<const StringInputCombinationFunction>())
 	{
@@ -16,5 +16,5 @@ namespace SynGlyphX {
 
 		return input;
 	}
-
+	*/
 } //namespace SynGlyphX

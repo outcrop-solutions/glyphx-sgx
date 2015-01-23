@@ -15,30 +15,57 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef SYNGLYPHX_DATAMAPPINGFUNCTION_H
-#define SYNGLYPHX_DATAMAPPINGFUNCTION_H
+#ifndef SYNGLYPHX_MAPPINGFUNCTIONDATA_H
+#define SYNGLYPHX_MAPPINGFUNCTIONDATA_H
 
 #include <vector>
 #include <memory>
-#include "inputcombinationfunction.h"
+#include <boost/bimap.hpp>
+#include <boost/property_tree/ptree.hpp>
 
 namespace SynGlyphX {
 
-	template<typename OutputType, typename InputType = OutputType>
-	class DataMappingFunction
+	class MappingFunctionData
 	{
 	public:
-		DataMappingFunction(std::shared_ptr<const InputCombinationFunction<InputType>> inputCombinationFunction = nullptr);
-		~DataMappingFunction();
+		enum Function {
 
-		OutputType MapInputToOuptut(const std::vector<InputType>& input) const;
+			LinearInterpolation,
+			LogarithmicInterpolation,
+			Numeric2Value,
+			Text2Value,
+			Range2Value
+		};
+
+		enum Input {
+
+			Numeric = 0x01,
+			Text = 0x02
+		};
+
+		typedef boost::bimap<Function, std::wstring> FunctionBimap;
+
+		typedef std::shared_ptr<MappingFunctionData> SharedPtr;
+		typedef std::shared_ptr<const MappingFunctionData> ConstSharedPtr;
+
+		MappingFunctionData(Function function);
+		MappingFunctionData(const boost::property_tree::wptree& propertyTree);
+		MappingFunctionData(const MappingFunctionData& data);
+		virtual ~MappingFunctionData();
+
+		MappingFunctionData& operator=(const MappingFunctionData& data);
+
+		boost::property_tree::wptree& ExportToPropertyTree(boost::property_tree::wptree& propertyTree);
+
+		Function GetFunction() const;
+		virtual Input GetSupportedInput() const = 0;
+
+		static const FunctionBimap s_functionNames;
 
 	protected:
-		virtual OutputType MapCombinedInput(const InputType& input) const = 0;
-
-		std::shared_ptr<const InputCombinationFunction<InputType>> m_inputCombinationFunction;
+		Function m_function;
 	};
 
 } //namespace SynGlyphX
 
-#endif //SYNGLYPHX_DATAMAPPING_H
+#endif //SYNGLYPHX_MAPPINGFUNCTIONDATA_H

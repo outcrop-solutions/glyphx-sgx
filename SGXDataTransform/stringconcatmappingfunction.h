@@ -22,7 +22,7 @@
 #include "stringinputcombinationfunction.h"
 
 namespace SynGlyphX {
-
+	/*
 	class StringConcatMappingFunction : public DataMappingFunction<std::wstring>
 	{
 	public:
@@ -31,7 +31,7 @@ namespace SynGlyphX {
 
 	protected:
 		virtual std::wstring MapCombinedInput(const std::wstring& input);
-	};
+	};*/
 
 } //namepsace SynGlyphX
 

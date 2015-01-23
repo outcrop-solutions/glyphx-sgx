@@ -1,7 +1,7 @@
 #include "linearinterpolationmappingfunction.h"
 
 namespace SynGlyphX {
-
+	/*
 	LinearInterpolationMappingFunction::LinearInterpolationMappingFunction(std::shared_ptr<const InputCombinationFunction<double>> inputCombinationFunction) :
 		InterpolationMappingFunction<double>(inputCombinationFunction ? inputCombinationFunction : std::make_shared<const InputCombinationFunction<double>>())
 	{
@@ -22,5 +22,5 @@ namespace SynGlyphX {
 			return outputMin;
 		}
 	}
-
+	*/
 } //namespace SynGlyphX

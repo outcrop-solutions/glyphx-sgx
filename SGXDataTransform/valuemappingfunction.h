@@ -15,22 +15,35 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef SYNGLYPHX_VALUEMAPPINGFUNCTION_H
-#define SYNGLYPHX_VALUEMAPPINGFUNCTION_H
+#ifndef SYNGLYPHX_VALUEMAPPINGDATA_H
+#define SYNGLYPHX_VALUEMAPPINGDATA_H
 
 #include "datamappingfunction.h"
 
 namespace SynGlyphX {
 
-	template <typename OutputType, typename InputType = OutputType>
-	class ValueMappingFunction : public DataMappingFunction<OutputType, InputType>
+	template <typename OutputType, typename InputType>
+	class ValueMappingData : public MappingFunctionData
 	{
 	public:
-		ValueMappingFunction(std::shared_ptr<const InputCombinationFunction<InputType>> inputCombinationFunction = nullptr);
-		virtual ~ValueMappingFunction();
+		typedef std::shared_ptr<ValueMappingData<OutputType,InputType>> SharedPtr;
+		typedef std::shared_ptr<const ValueMappingData<OutputType, InputType>> ConstSharedPtr;
+
+		ValueMappingData(Function function);
+		ValueMappingData(const boost::property_tree::wptree& propertyTree);
+		ValueMappingData(const ValueMappingData& data);
+		virtual ~ValueMappingData();
+
+		ValueMappingData& operator=(const ValueMappingData& data);
 
 		void SetDefaultValue(const OutputType& defaultValue);
 		const OutputType& GetDefaultValue() const;
+
+		virtual Input GetSupportedInput() const;
+
+		boost::property_tree::wptree& ExportToPropertyTree(boost::property_tree::wptree& propertyTree);
+
+		virtual OutputType GetOutputValueFromInput(const InputType& input) const = 0;
 
 	protected:
 		OutputType m_defaultValue;
@@ -38,4 +51,4 @@ namespace SynGlyphX {
 
 } // namespace SynGlyphX
 
-#endif //SYNGLYPHX_VALUEMAPPINGFUNCTION_H
+#endif //SYNGLYPHX_VALUEMAPPINGDATA_H
