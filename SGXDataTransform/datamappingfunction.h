@@ -41,7 +41,8 @@ namespace SynGlyphX {
 		enum Input {
 
 			Numeric = 0x01,
-			Text = 0x02
+			Text = 0x02,
+			All = 0x0F
 		};
 
 		typedef boost::bimap<Function, std::wstring> FunctionBimap;
@@ -60,6 +61,7 @@ namespace SynGlyphX {
 
 		Function GetFunction() const;
 		virtual Input GetSupportedInput() const = 0;
+		virtual bool NeedsDataOtherThanMinMax() const;
 
 		static const FunctionBimap s_functionNames;
 

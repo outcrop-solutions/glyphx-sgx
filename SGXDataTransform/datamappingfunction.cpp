@@ -52,6 +52,11 @@ namespace SynGlyphX {
 		return m_function;
 	}
 
+	bool MappingFunctionData::NeedsDataOtherThanMinMax() const {
+
+		return false;
+	}
+
 	/*
 	template<typename OutputType, typename InputType>
 	DataMappingFunction<OutputType, InputType>::DataMappingFunction(std::shared_ptr<const InputCombinationFunction<InputType>> inputCombinationFunction) :

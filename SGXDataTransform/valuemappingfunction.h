@@ -44,6 +44,7 @@ namespace SynGlyphX {
 		const OutputType& GetDefaultValue() const;
 
 		virtual Input GetSupportedInput() const;
+		virtual bool NeedsDataOtherThanMinMax() const;
 
 		virtual boost::property_tree::wptree& ExportToPropertyTree(boost::property_tree::wptree& propertyTree) const;
 
@@ -63,7 +64,7 @@ namespace SynGlyphX {
 	typedef ValueMappingData<GlyphColor, double> Numeric2ColorMappingData;
 	typedef ValueMappingData<GlyphColor, std::wstring> Text2ColorMappingData;
 
-	typedef ValueMappingData<double, double, Range> Range2DoubleMappingData;
+	typedef ValueMappingData<double, double, Range> Range2NumericMappingData;
 	typedef ValueMappingData<GlyphColor, double, Range> Range2ColorMappingData;
 
 } // namespace SynGlyphX

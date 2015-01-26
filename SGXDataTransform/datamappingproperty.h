@@ -50,7 +50,12 @@ namespace SynGlyphX {
 		InputBinding& GetBinding();
 		const InputBinding& GetBinding() const;
 
+		MappingFunctionData::SharedPtr GetMappingFunctionData();
+		void SetMappingFunctionData(MappingFunctionData::SharedPtr mappingFunctionData);
+
 	protected:
+		void ChangeMappingFunction(MappingFunctionData::Function function, const boost::property_tree::wptree& propertyTree);
+
 		PropertyType m_value;
 		InputBinding m_binding;
 		MappingFunctionData::SharedPtr m_mappingFunctionData;

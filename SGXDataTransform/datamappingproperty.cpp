@@ -1,25 +1,30 @@
 #include "datamappingproperty.h"
+#include "interpolationmappingfunction.h"
+#include "valuemappingfunction.h"
 
 namespace SynGlyphX {
 
 	template<typename PropertyType>
 	DataMappingProperty<PropertyType>::DataMappingProperty() :
 		m_value(PropertyType()),
-		m_binding(InputBinding()) {
+		m_binding(InputBinding()),
+		m_mappingFunctionData(std::make_shared<InterpolationMappingData>()) {
 
 	}
 
 	template<typename PropertyType>
 	DataMappingProperty<PropertyType>::DataMappingProperty(const PropertyType& initialValue) :
 		m_value(initialValue),
-		m_binding(InputBinding()) {
+		m_binding(InputBinding()),
+		m_mappingFunctionData(std::make_shared<InterpolationMappingData>()) {
 
 	}
 
 	template<typename PropertyType>
 	DataMappingProperty<PropertyType>::DataMappingProperty(const boost::property_tree::wptree& propertyTree) :
 		m_value(propertyTree.get_optional<PropertyType>(L"Value").get_value_or(PropertyType())),
-		m_binding(InputBinding()) {
+		m_binding(InputBinding()),
+		m_mappingFunctionData(std::make_shared<InterpolationMappingData>()) {
 
 		boost::optional<const boost::property_tree::wptree&> inputFieldTree = propertyTree.get_child_optional(InputBinding::PropertyTreeName);
 		if (inputFieldTree.is_initialized()) {
@@ -42,6 +47,16 @@ namespace SynGlyphX {
 		else {
 
 			m_binding.Clear();
+		}
+
+		boost::optional<const boost::property_tree::wptree&> mappingFunctionTree = propertyTree.get_child_optional(L"Function");
+		if (mappingFunctionTree.is_initialized()) {
+
+			ChangeMappingFunction(MappingFunctionData::s_functionNames.right.at(mappingFunctionTree.get().get<std::wstring>(L"<xmlattr>.type")), mappingFunctionTree.get());
+		}
+		else {
+
+			m_mappingFunctionData = std::make_shared<InterpolationMappingData>();
 		}
 	}
 
@@ -82,12 +97,23 @@ namespace SynGlyphX {
 
 			m_binding.Clear();
 		}
+
+		boost::optional<const boost::property_tree::wptree&> mappingFunctionTree = propertyTree.get_child_optional(L"Function");
+		if (mappingFunctionTree.is_initialized()) {
+
+			ChangeMappingFunction(MappingFunctionData::s_functionNames.right.at(mappingFunctionTree.get().get<std::wstring>(L"<xmlattr>.type")), mappingFunctionTree.get());
+		}
+		else {
+
+			m_mappingFunctionData = std::make_shared<InterpolationMappingData>();
+		}
 	}
 
 	template<typename PropertyType>
 	DataMappingProperty<PropertyType>::DataMappingProperty(const DataMappingProperty& prop) :
 		m_value(prop.m_value),
-		m_binding(prop.m_binding) {
+		m_binding(prop.m_binding),
+		m_mappingFunctionData(prop.m_mappingFunctionData) {
 
 	}
 
@@ -101,6 +127,7 @@ namespace SynGlyphX {
 
 		m_value = prop.m_value;
 		m_binding = prop.m_binding;
+		m_mappingFunctionData = prop.m_mappingFunctionData;
 
 		return *this;
 	}
@@ -138,6 +165,8 @@ namespace SynGlyphX {
 			m_binding.ExportToPropertyTree(propertyTree);
 		}
 
+		m_mappingFunctionData->ExportToPropertyTree(propertyTree);
+
 		return propertyTree;
 	}
 
@@ -156,6 +185,8 @@ namespace SynGlyphX {
 
 			m_binding.ExportToPropertyTree(propertyTree);
 		}
+
+		m_mappingFunctionData->ExportToPropertyTree(propertyTree);
 
 		return propertyTree;
 	}
@@ -176,6 +207,8 @@ namespace SynGlyphX {
 
 			m_binding.ExportToPropertyTree(propertyTree);
 		}
+
+		m_mappingFunctionData->ExportToPropertyTree(propertyTree);
 
 		return propertyTree;
 	}
@@ -202,6 +235,74 @@ namespace SynGlyphX {
 	const InputBinding& DataMappingProperty<PropertyType>::GetBinding() const {
 
 		return m_binding;
+	}
+
+	template<typename PropertyType>
+	MappingFunctionData::SharedPtr DataMappingProperty<PropertyType>::GetMappingFunctionData() {
+
+		return m_mappingFunctionData;
+	}
+
+	template<typename PropertyType>
+	void DataMappingProperty<PropertyType>::SetMappingFunctionData(MappingFunctionData::SharedPtr mappingFunctionData) {
+
+		m_mappingFunctionData = mappingFunctionData;
+	}
+	
+	template<>
+	void DataMappingProperty<std::pair<double, double>>::ChangeMappingFunction(MappingFunctionData::Function function, const boost::property_tree::wptree& propertyTree) {
+
+		if (function == MappingFunctionData::Function::LinearInterpolation) {
+
+			m_mappingFunctionData = std::make_shared<InterpolationMappingData>(propertyTree);
+		}
+		else if (function == MappingFunctionData::Function::LogarithmicInterpolation) {
+
+			m_mappingFunctionData = std::make_shared<InterpolationMappingData>(propertyTree);
+		}
+		else if (function == MappingFunctionData::Function::Numeric2Value) {
+
+			m_mappingFunctionData = std::make_shared<Numeric2NumericMappingData>(propertyTree);
+		}
+		else if (function == MappingFunctionData::Function::Text2Value) {
+
+			m_mappingFunctionData = std::make_shared<Text2NumericMappingData>(propertyTree);
+		}
+		else if (function == MappingFunctionData::Function::Range2Value) {
+
+			m_mappingFunctionData = std::make_shared<Range2NumericMappingData>(propertyTree);
+		}
+	}
+
+	template<>
+	void DataMappingProperty<std::pair<GlyphColor, GlyphColor>>::ChangeMappingFunction(MappingFunctionData::Function function, const boost::property_tree::wptree& propertyTree) {
+
+		if (function == MappingFunctionData::Function::LinearInterpolation) {
+
+			m_mappingFunctionData = std::make_shared<InterpolationMappingData>(propertyTree);
+		}
+		else if (function == MappingFunctionData::Function::LogarithmicInterpolation) {
+
+			m_mappingFunctionData = std::make_shared<InterpolationMappingData>(propertyTree);
+		}
+		else if (function == MappingFunctionData::Function::Numeric2Value) {
+
+			m_mappingFunctionData = std::make_shared<Numeric2ColorMappingData>(propertyTree);
+		}
+		else if (function == MappingFunctionData::Function::Text2Value) {
+
+			m_mappingFunctionData = std::make_shared<Text2ColorMappingData>(propertyTree);
+		}
+		else if (function == MappingFunctionData::Function::Range2Value) {
+
+			m_mappingFunctionData = std::make_shared<Range2ColorMappingData>(propertyTree);
+		}
+	}
+
+	template<typename PropertyType>
+	void DataMappingProperty<PropertyType>::ChangeMappingFunction(MappingFunctionData::Function function, const boost::property_tree::wptree& propertyTree) {
+
+		m_mappingFunctionData = std::make_shared<InterpolationMappingData>();
 	}
 
 	template class DataMappingProperty<std::pair<double, double>>;

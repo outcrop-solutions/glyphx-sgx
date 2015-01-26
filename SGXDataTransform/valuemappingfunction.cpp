@@ -107,6 +107,12 @@ namespace SynGlyphX {
 	}
 
 	template <typename OutputType, typename InputType, typename KeyType>
+	bool ValueMappingData<OutputType, InputType, KeyType>::NeedsDataOtherThanMinMax() const {
+
+		return true;
+	}
+
+	template <typename OutputType, typename InputType, typename KeyType>
 	bool ValueMappingData<OutputType, InputType, KeyType>::DoesInputMatch(const Range& range, const double& input) const {
 
 		return (range.IsValueInRange(input));
@@ -128,5 +134,7 @@ namespace SynGlyphX {
 	template class ValueMappingData < double, std::wstring > ;
 	template class ValueMappingData < GlyphColor, double >;
 	template class ValueMappingData < GlyphColor, std::wstring >;
+	template class ValueMappingData < double, double, Range >;
+	template class ValueMappingData < GlyphColor, double, Range >;
 
 } //namespace SynGlyphX
