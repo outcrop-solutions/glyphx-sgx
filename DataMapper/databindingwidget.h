@@ -47,6 +47,7 @@ private:
 	void CreateTagAndDescriptionWidget();
 	void CreatePropertiesTable();
 	void CreateTableHeader(QGridLayout* gridLayout);
+	void CreateGridLines(QGridLayout* gridLayout);
 	void CreateIntegerPropertyWidgets(QGridLayout* layout, int row, int header);
 	void CreateDoublePropertyWidgets(QGridLayout* layout, int row, int header, bool addToPositionXYList = false);
 	void CreateColorPropertyWidgets(QGridLayout* layout, int row, int header);

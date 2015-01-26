@@ -7,10 +7,10 @@
 #include <QtSql/QSqlRecord>
 #include <QtSql/QSqlQuery>
 
-BindingLineEdit::BindingLineEdit(MinMaxGlyphModel* model, QWidget *parent, bool onlyAcceptsNumericFields)
+BindingLineEdit::BindingLineEdit(MinMaxGlyphModel* model, QWidget *parent, SynGlyphX::MappingFunctionData::Input acceptedInputTypes)
 	: QLineEdit(parent),
 	m_model(model),
-	m_onlyAcceptsNumericFields(onlyAcceptsNumericFields)
+	m_acceptedInputTypes(acceptedInputTypes)
 {
 	setReadOnly(true);
 	setAcceptDrops(true);
@@ -57,6 +57,21 @@ void BindingLineEdit::SetInputField(const SynGlyphX::InputField& inputfield) {
 	//m_useInputFieldMinMaxActon->setEnabled(m_inputField.IsValid());
 }
 
+void BindingLineEdit::SetAcceptedInputTypes(SynGlyphX::MappingFunctionData::Input acceptedInputTypes) {
+
+	m_acceptedInputTypes = acceptedInputTypes;
+
+	//If input type has changed then clear input field if input field no longer matches input type
+	if ((m_acceptedInputTypes == SynGlyphX::MappingFunctionData::Input::Numeric) && (!m_inputField.IsNumeric())) {
+
+		Clear();
+	}
+	else if ((m_acceptedInputTypes == SynGlyphX::MappingFunctionData::Input::Text) && (m_inputField.IsNumeric())) {
+
+		Clear();
+	}
+}
+
 void BindingLineEdit::dragEnterEvent(QDragEnterEvent *event) {
 
 	const InputFieldMimeData* mimeData = qobject_cast<const InputFieldMimeData*>(event->mimeData());
@@ -65,11 +80,13 @@ void BindingLineEdit::dragEnterEvent(QDragEnterEvent *event) {
 		return;
 	}
 
-	if (m_onlyAcceptsNumericFields) {
+	if ((m_acceptedInputTypes == SynGlyphX::MappingFunctionData::Input::Numeric) && (!mimeData->GetInputField().IsNumeric())) {
 		
-		if (!mimeData->GetInputField().IsNumeric()) {
-			return;
-		}
+		return;
+	}
+	else if ((m_acceptedInputTypes == SynGlyphX::MappingFunctionData::Input::Text) && (mimeData->GetInputField().IsNumeric())) {
+
+		return;
 	}
 		
 	event->acceptProposedAction();

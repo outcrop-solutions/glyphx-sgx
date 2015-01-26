@@ -172,6 +172,15 @@
     <ClCompile Include="GeneratedFiles\Release\moc_baseobjectlistview.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="mappingfunctionwidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_mappingfunctionwidget.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_mappingfunctionwidget.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="datamapperwindow.h">
@@ -217,6 +226,9 @@
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="baseobjectlistview.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="mappingfunctionwidget.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>

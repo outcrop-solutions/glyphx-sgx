@@ -30,7 +30,6 @@ MinMaxGlyphModel::MinMaxGlyphModel(DataTransformModel* dataTransformModel, QObje
 	m_columnHeaders << tr("Min")
 		<< tr("Max")
 		<< tr("Function")
-		<< tr("Parameters")
 		<< tr("Input");
 }
 
@@ -55,11 +54,7 @@ QVariant MinMaxGlyphModel::data(const QModelIndex& index, int role) const {
 
 	if ((role == Qt::EditRole) && index.isValid() && m_glyph.valid()) {
 
-		if ((index.column() == 0) || (index.column() == 1)) {
-
-			return GetDataByRow(const_cast<SynGlyphX::DataMappingGlyph&>(*m_glyph), index);
-		}
-		else if (index.column() == 4) {
+		if (index.column() == 3) {
 
 			const SynGlyphX::InputBinding& binding = m_glyph->GetInputBinding(static_cast<SynGlyphX::DataMappingGlyph::MappableField>(index.row()));
 
@@ -71,6 +66,10 @@ QVariant MinMaxGlyphModel::data(const QModelIndex& index, int role) const {
 				variant.setValue(inputfield);
 				return variant;
 			}
+		}
+		else {
+
+			return GetDataByRow(const_cast<SynGlyphX::DataMappingGlyph&>(*m_glyph), index);
 		}
 	}
 
@@ -203,26 +202,39 @@ QVariant MinMaxGlyphModel::GetDataByRow(SynGlyphX::DataMappingGlyph& glyph, cons
 
 		if (IsColorField(row)) {
 
-			const std::pair<SynGlyphX::GlyphColor, SynGlyphX::GlyphColor>& colorMinMax = glyph.GetColor().GetValue();
-			if (index.column() == 0) {
+			SynGlyphX::ColorMappingProperty& colorProperty = glyph.GetColor();
+			
+			if (index.column() == 2) {
 
-				return QColor(colorMinMax.first[0], colorMinMax.first[1], colorMinMax.first[2]);
+				return QString::fromStdWString(SynGlyphX::MappingFunctionData::s_functionNames.left.at(colorProperty.GetMappingFunctionData()->GetFunction()));
 			}
 			else {
+			
+				const std::pair<SynGlyphX::GlyphColor, SynGlyphX::GlyphColor>& colorMinMax = colorProperty.GetValue();
+				if (index.column() == 0) {
 
-				return QColor(colorMinMax.first[0] + colorMinMax.second[0], colorMinMax.first[1] + colorMinMax.second[1], colorMinMax.first[2] + colorMinMax.second[2]);
+					return QColor(colorMinMax.first[0], colorMinMax.first[1], colorMinMax.first[2]);
+				}
+				else {
+
+					return QColor(colorMinMax.first[0] + colorMinMax.second[0], colorMinMax.first[1] + colorMinMax.second[1], colorMinMax.first[2] + colorMinMax.second[2]);
+				}
 			}
 		}
 		else {
 
-			SynGlyphX::NumericMappingProperty& prop = GetGlyphProperty(glyph, row);
-			if (index.column() == 0) {
+			SynGlyphX::NumericMappingProperty& numericProperty = GetGlyphProperty(glyph, row);
+			if (index.column() == 2) {
 
-				return prop.GetValue().first;
+				return QString::fromStdWString(SynGlyphX::MappingFunctionData::s_functionNames.left.at(numericProperty.GetMappingFunctionData()->GetFunction()));
+			}
+			else if(index.column() == 0) {
+
+				return numericProperty.GetValue().first;
 			}
 			else {
 
-				return prop.GetValue().first + prop.GetValue().second;
+				return numericProperty.GetValue().first + numericProperty.GetValue().second;
 			}
 		}
 	}
@@ -239,7 +251,7 @@ bool MinMaxGlyphModel::setData(const QModelIndex& index, const QVariant& value, 
 
 	if (index.isValid() && m_glyph.valid()) {
 
-		if (index.column() == 4) {
+		if (index.column() == 3) {
 
 			try {
 

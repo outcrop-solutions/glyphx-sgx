@@ -21,6 +21,7 @@
 #include <QtWidgets/QLineEdit>
 #include "inputbinding.h"
 #include "minmaxglyphmodel.h"
+#include "datamappingfunction.h"
 
 class BindingLineEdit : public QLineEdit
 {
@@ -29,7 +30,7 @@ class BindingLineEdit : public QLineEdit
 	Q_PROPERTY(SynGlyphX::InputField value READ GetInputField WRITE SetInputField NOTIFY ValueChanged USER true)
 
 public:
-	BindingLineEdit(MinMaxGlyphModel* model, QWidget *parent = 0, bool onlyAcceptsNumericFields = true);
+	BindingLineEdit(MinMaxGlyphModel* model, QWidget *parent = 0, SynGlyphX::MappingFunctionData::Input acceptedInputTypes = SynGlyphX::MappingFunctionData::Input::All);
 	~BindingLineEdit();
 
 	const SynGlyphX::InputField& GetInputField() const;
@@ -38,6 +39,7 @@ public:
 public slots:
 	void SetInputField(const SynGlyphX::InputField& inputfield);
 	void Clear();
+	void SetAcceptedInputTypes(SynGlyphX::MappingFunctionData::Input acceptedInputTypes);
 
 signals:
 	void ValueChanged(const SynGlyphX::InputField&);
@@ -51,7 +53,7 @@ protected:
 private:
 	MinMaxGlyphModel* m_model;
 	SynGlyphX::InputField m_inputField;
-	bool m_onlyAcceptsNumericFields;
+	SynGlyphX::MappingFunctionData::Input m_acceptedInputTypes;
 	QAction* m_clearAction;
 	//QAction* m_useInputFieldMinMaxActon;
 };
