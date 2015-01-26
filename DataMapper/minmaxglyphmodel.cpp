@@ -29,6 +29,8 @@ MinMaxGlyphModel::MinMaxGlyphModel(DataTransformModel* dataTransformModel, QObje
 
 	m_columnHeaders << tr("Min")
 		<< tr("Max")
+		<< tr("Function")
+		<< tr("Parameters")
 		<< tr("Input");
 }
 
@@ -57,7 +59,7 @@ QVariant MinMaxGlyphModel::data(const QModelIndex& index, int role) const {
 
 			return GetDataByRow(const_cast<SynGlyphX::DataMappingGlyph&>(*m_glyph), index);
 		}
-		else if (index.column() == 2) {
+		else if (index.column() == 4) {
 
 			const SynGlyphX::InputBinding& binding = m_glyph->GetInputBinding(static_cast<SynGlyphX::DataMappingGlyph::MappableField>(index.row()));
 
@@ -237,7 +239,7 @@ bool MinMaxGlyphModel::setData(const QModelIndex& index, const QVariant& value, 
 
 	if (index.isValid() && m_glyph.valid()) {
 
-		if (index.column() == 2) {
+		if (index.column() == 4) {
 
 			try {
 

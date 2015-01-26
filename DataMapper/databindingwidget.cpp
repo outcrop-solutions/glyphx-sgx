@@ -2,8 +2,10 @@
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QSpinBox>
 #include <QtWidgets/QDoubleSpinBox>
+#include <QtWidgets/QComboBox>
 #include <QtCore/QModelIndex>
 #include "colorbutton.h"
+#include "datamappingfunction.h"
 
 DataBindingWidget::DataBindingWidget(MinMaxGlyphModel* model, QWidget *parent)
 	: QTabWidget(parent),
@@ -75,7 +77,7 @@ void DataBindingWidget::CreateTagAndDescriptionWidget() {
 
 	QDataWidgetMapper* tagMapper = new QDataWidgetMapper(this);
 	tagMapper->setModel(m_model);
-	tagMapper->addMapping(m_tagLineEdit, 2);  //Bind this to section 2 to keep consistent with other input fields
+	tagMapper->addMapping(m_tagLineEdit, 4);  //Bind this to section 4 to keep consistent with other input fields
 
 	QObject::connect(m_tagLineEdit, &BindingLineEdit::ValueChangedByUser, tagMapper, &QDataWidgetMapper::submit);
 
@@ -85,7 +87,7 @@ void DataBindingWidget::CreateTagAndDescriptionWidget() {
 
 	QDataWidgetMapper* descriptionMapper = new QDataWidgetMapper(this);
 	descriptionMapper->setModel(m_model);
-	descriptionMapper->addMapping(m_descriptionEdit, 2);  //Bind this to section 2 to keep consistent with other input fields
+	descriptionMapper->addMapping(m_descriptionEdit, 4);  //Bind this to section 4 to keep consistent with other input fields
 
 	//QObject::connect(m_descriptionEdit, &BindingLineEdit::ValueChangedByUser, mapper, &QDataWidgetMapper::submit);
 
@@ -113,6 +115,8 @@ void DataBindingWidget::CreatePropertiesTable() {
 	CreateGridLine(gridLayout, QFrame::VLine, 1);
 	CreateGridLine(gridLayout, QFrame::VLine, 3);
 	CreateGridLine(gridLayout, QFrame::VLine, 5);
+	CreateGridLine(gridLayout, QFrame::VLine, 7);
+	CreateGridLine(gridLayout, QFrame::VLine, 9);
 
 	CreateGridLine(gridLayout, QFrame::HLine, 1, 2);
 
@@ -141,10 +145,10 @@ void DataBindingWidget::CreatePropertiesTable() {
 	CreateGridLine(gridLayout, QFrame::HLine, 21);
 	CreateIntegerPropertyWidgets(gridLayout, 22, 10);
 
-	gridLayout->setColumnStretch(0, 1);
-	gridLayout->setColumnStretch(2, 1);
-	gridLayout->setColumnStretch(4, 1);
-	gridLayout->setColumnStretch(6, 2);
+	//gridLayout->setColumnStretch(0, 1);
+	//gridLayout->setColumnStretch(2, 1);
+	//gridLayout->setColumnStretch(4, 1);
+	gridLayout->setColumnStretch(10, 1);
 
 	layout->addLayout(gridLayout);
 	layout->addStretch(1);
@@ -182,21 +186,31 @@ void DataBindingWidget::CreateRowOfPropertyWidgets(QGridLayout* layout, QWidget*
 	labelFont.setBold(true);
 	label->setFont(labelFont);
 
+	QComboBox* functionComboBox = new QComboBox(this);
+	for (SynGlyphX::MappingFunctionData::FunctionBimap::const_iterator iT = SynGlyphX::MappingFunctionData::s_functionNames.begin(); iT != SynGlyphX::MappingFunctionData::s_functionNames.end(); ++iT) {
+
+		functionComboBox->addItem(QString::fromStdWString(SynGlyphX::MappingFunctionData::s_functionNames.left.at(iT->left)));
+	}
+	functionComboBox->setCurrentIndex(0);
+
 	BindingLineEdit* inputBindingLineEdit = new BindingLineEdit(m_model, this, true);
 
 	mapper->setModel(m_model);
 
 	mapper->addMapping(minWidget, 0);
 	mapper->addMapping(maxWidget, 1);
-	mapper->addMapping(inputBindingLineEdit, 2);
+	mapper->addMapping(functionComboBox, 2);
+	mapper->addMapping(inputBindingLineEdit, 4);
 
 	layout->addWidget(label, row, 0, Qt::AlignHCenter);
 	layout->addWidget(minWidget, row, 2, Qt::AlignHCenter);
 	layout->addWidget(maxWidget, row, 4, Qt::AlignHCenter);
-	layout->addWidget(inputBindingLineEdit, row, 6);
+	layout->addWidget(functionComboBox, row, 6, Qt::AlignHCenter);
+	layout->addWidget(inputBindingLineEdit, row, 10);
 
 	//QObject::connect(inputBindingLineEdit, &BindingLineEdit::ValueChangedByUser, this, [=]() {if (mapper->submit()) { mapper->setCurrentIndex(row / 2 - 1); } });
 	QObject::connect(inputBindingLineEdit, &BindingLineEdit::ValueChangedByUser, mapper, &QDataWidgetMapper::submit);
+	QObject::connect(functionComboBox, &QComboBox::currentTextChanged, mapper, &QDataWidgetMapper::submit);
 
 	m_dataWidgetMappers.push_back(mapper);
 }
@@ -209,6 +223,9 @@ void DataBindingWidget::CreateIntegerPropertyWidgets(QGridLayout* layout, int ro
 	maxSpinBox->setRange(0, 255);
 	
 	CreateRowOfPropertyWidgets(layout, minSpinBox, maxSpinBox, row, header);
+
+	QObject::connect(minSpinBox, static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged), m_dataWidgetMappers.last(), &QDataWidgetMapper::submit);
+	QObject::connect(maxSpinBox, static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged), m_dataWidgetMappers.last(), &QDataWidgetMapper::submit);
 }
 
 void DataBindingWidget::CreateDoublePropertyWidgets(QGridLayout* layout, int row, int header, bool addToPositionXYList) {
@@ -219,6 +236,9 @@ void DataBindingWidget::CreateDoublePropertyWidgets(QGridLayout* layout, int row
 	maxSpinBox->setRange(-1000.0, 1000.0);
 	
 	CreateRowOfPropertyWidgets(layout, minSpinBox, maxSpinBox, row, header);
+
+	QObject::connect(minSpinBox, static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), m_dataWidgetMappers.last(), &QDataWidgetMapper::submit);
+	QObject::connect(maxSpinBox, static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), m_dataWidgetMappers.last(), &QDataWidgetMapper::submit);
 
 	if (addToPositionXYList) {
 		m_positionXYMinMaxWidgets.push_back(minSpinBox);
