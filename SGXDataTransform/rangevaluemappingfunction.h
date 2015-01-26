@@ -24,7 +24,7 @@
 #include "glyphcolor.h"
 
 namespace SynGlyphX {
-
+	/*
 	template <typename OutputType>
 	class RangeMappingData : public ValueMappingData<OutputType, double>
 	{
@@ -33,6 +33,8 @@ namespace SynGlyphX {
 		typedef std::shared_ptr<const RangeMappingData<OutputType>> ConstSharedPtr;
 
 		RangeMappingData();
+		RangeMappingData(const boost::property_tree::wptree& propertyTree);
+		RangeMappingData(const RangeMappingData& data);
 		virtual ~RangeMappingData();
 
 		void SetMappedValue(const Range& input, const OutputType& output);
@@ -42,12 +44,14 @@ namespace SynGlyphX {
 
 		virtual OutputType GetOutputValueFromInput(const double& input) const;
 
+		virtual boost::property_tree::wptree& ExportToPropertyTree(boost::property_tree::wptree& propertyTree) const;
+
 	protected:
 		std::map<Range, OutputType> m_mappedValues;
 	};
 
 	typedef RangeMappingData<double> Range2DoubleMappingData;
-	typedef RangeMappingData<GlyphColor> Range2ColorMappingData;
+	typedef RangeMappingData<GlyphColor> Range2ColorMappingData;*/
 
 } // namespace SynGlyphX
 

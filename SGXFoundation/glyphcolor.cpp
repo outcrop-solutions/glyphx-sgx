@@ -17,11 +17,11 @@ namespace SynGlyphX {
 
 	}
 
-	GlyphColor::GlyphColor(const boost::property_tree::wptree& propertyTree, Space space) :
+	/*GlyphColor::GlyphColor(const boost::property_tree::wptree& propertyTree, Space space) :
 		m_space(space),
 		m_color({ { propertyTree.get<short>(L"R"), propertyTree.get<short>(L"G"), propertyTree.get<short>(L"B") } }) {
 
-	}
+	}*/
 
 	GlyphColor::GlyphColor(const GlyphColor& color) : 
 		m_space(color.m_space),
@@ -228,6 +228,43 @@ namespace SynGlyphX {
 		}
 
 		return rgbColor;
+	}
+
+	boost::property_tree::xml_writer_settings<wchar_t> GlyphColorTranslator::s_writeSettings(L'\t', 1);
+
+	GlyphColorTranslator::GlyphColorTranslator() {
+
+
+	}
+
+	boost::optional<GlyphColor> GlyphColorTranslator::get_value(std::wstring const &v) {
+
+		GlyphColor color;
+		boost::property_tree::wptree propertyTree;
+		std::wstringstream stream;
+		stream << v;
+		boost::property_tree::read_xml(stream, propertyTree, boost::property_tree::xml_parser::trim_whitespace);
+
+		if (!propertyTree.empty()) {
+
+			color.Set(0, propertyTree.get<short>(L"R"));
+			color.Set(1, propertyTree.get<short>(L"G"));
+			color.Set(2, propertyTree.get<short>(L"B"));
+
+			return color;
+		}
+
+		return boost::none;
+	}
+
+	boost::optional<std::wstring> GlyphColorTranslator::put_value(GlyphColor const& v) {
+
+		boost::property_tree::wptree propertyTree;
+		v.ExportToPropertyTree(propertyTree);
+
+		std::wostringstream stream;
+		boost::property_tree::write_xml(stream, propertyTree, s_writeSettings);
+		return stream.str();
 	}
 
 } //namespace SynGlyphX

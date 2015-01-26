@@ -19,6 +19,7 @@
 #define SYNGLYPHX_RANGE_H
 
 #include "sgxfoundation.h"
+#include <boost/property_tree/ptree.hpp>
 
 namespace SynGlyphX {
 
@@ -33,7 +34,7 @@ namespace SynGlyphX {
 		bool operator==(const Range& range) const;
 		bool operator!=(const Range& range) const;
 		bool operator<(const Range& range) const;
-		bool operator<(double value) const;
+		//bool operator<(double value) const;
 
 		double GetMin() const;
 		double GetMax() const;
@@ -45,6 +46,31 @@ namespace SynGlyphX {
 		double m_max;
 	};
 
+	//This translator is so that Range can be automatically used by boost::property_tree
+	class SGXFOUNDATION_API RangeTranslator
+	{
+	public:
+		typedef std::wstring internal_type;
+		typedef Range external_type;
+
+		RangeTranslator();
+
+		boost::optional<Range> get_value(std::wstring const &v);
+		boost::optional<std::wstring> put_value(Range const& v);
+
+	};
+
 } //namespace SynGlyphX
 
+namespace boost{
+
+	namespace property_tree{
+
+		template<>
+		struct translator_between<std::wstring, SynGlyphX::Range>
+		{
+			typedef SynGlyphX::RangeTranslator type;
+		};
+	}
+}
 #endif //SYNGLYPHX_RANGE_H

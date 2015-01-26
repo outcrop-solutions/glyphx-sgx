@@ -19,17 +19,20 @@
 #define SYNGLYPHX_VALUEMAPPINGDATA_H
 
 #include "datamappingfunction.h"
+#include <map>
+#include "glyphcolor.h"
+#include "range.h"
 
 namespace SynGlyphX {
 
-	template <typename OutputType, typename InputType>
+	template <typename OutputType, typename InputType, typename KeyType = InputType>
 	class ValueMappingData : public MappingFunctionData
 	{
 	public:
 		typedef std::shared_ptr<ValueMappingData<OutputType,InputType>> SharedPtr;
 		typedef std::shared_ptr<const ValueMappingData<OutputType, InputType>> ConstSharedPtr;
 
-		ValueMappingData(Function function);
+		ValueMappingData();
 		ValueMappingData(const boost::property_tree::wptree& propertyTree);
 		ValueMappingData(const ValueMappingData& data);
 		virtual ~ValueMappingData();
@@ -41,13 +44,26 @@ namespace SynGlyphX {
 
 		virtual Input GetSupportedInput() const;
 
-		boost::property_tree::wptree& ExportToPropertyTree(boost::property_tree::wptree& propertyTree);
+		virtual boost::property_tree::wptree& ExportToPropertyTree(boost::property_tree::wptree& propertyTree) const;
 
-		virtual OutputType GetOutputValueFromInput(const InputType& input) const = 0;
+		OutputType GetOutputValueFromInput(const InputType& input) const;
 
-	protected:
+	private:
+		bool DoesInputMatch(const Range& range, const double& input) const;
+		bool DoesInputMatch(const std::wstring& key, const std::wstring& input) const;
+		bool DoesInputMatch(const double& key, const double& input) const;
+
 		OutputType m_defaultValue;
+		std::map<KeyType, OutputType> m_mappedValues;
 	};
+
+	typedef ValueMappingData<double, double> Numeric2NumericMappingData;
+	typedef ValueMappingData<double, std::wstring> Text2NumericMappingData;
+	typedef ValueMappingData<GlyphColor, double> Numeric2ColorMappingData;
+	typedef ValueMappingData<GlyphColor, std::wstring> Text2ColorMappingData;
+
+	typedef ValueMappingData<double, double, Range> Range2DoubleMappingData;
+	typedef ValueMappingData<GlyphColor, double, Range> Range2ColorMappingData;
 
 } // namespace SynGlyphX
 

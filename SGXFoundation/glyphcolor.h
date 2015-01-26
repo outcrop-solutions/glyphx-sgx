@@ -21,6 +21,7 @@
 #include "sgxfoundation.h"
 #include <array>
 #include <boost/property_tree/ptree.hpp>
+#include <boost/property_tree/xml_parser.hpp>
 
 namespace SynGlyphX {
 
@@ -33,7 +34,7 @@ namespace SynGlyphX {
 
 		GlyphColor(Space space = Space::RGB);
 		GlyphColor(const ColorArray& color, Space space = Space::RGB);
-		GlyphColor(const boost::property_tree::wptree& propertyTree, Space space = Space::RGB);
+		//GlyphColor(const boost::property_tree::wptree& propertyTree, Space space = Space::RGB);
 		GlyphColor(const GlyphColor& color);
 		~GlyphColor();
 
@@ -61,6 +62,35 @@ namespace SynGlyphX {
 		Space m_space;
 	};
 
+	//This translator is so that GlyphColor can be automatically used by boost::property_tree
+	class SGXFOUNDATION_API GlyphColorTranslator
+	{
+	public:
+		typedef std::wstring internal_type;
+		typedef GlyphColor external_type;
+
+		GlyphColorTranslator();
+
+		boost::optional<GlyphColor> get_value(std::wstring const &v);
+		boost::optional<std::wstring> put_value(GlyphColor const& v);
+
+	private:
+		static boost::property_tree::xml_writer_settings<wchar_t> s_writeSettings;
+	};
+
 } //namespace SynGlyphX
+
+namespace boost{
+
+	namespace property_tree{
+
+		template<>
+		struct translator_between<std::wstring, SynGlyphX::GlyphColor>
+		{
+			typedef SynGlyphX::GlyphColorTranslator type;
+		};
+	}
+}
+
 
 #endif //SYNGLYPHX_GLYPHCOLOR_H

@@ -23,7 +23,7 @@
 #include "glyphcolor.h"
 
 namespace SynGlyphX {
-
+	/*
 	template <typename OutputType, typename InputType>
 	class SingleValueMappingData : public ValueMappingData<OutputType, InputType>
 	{
@@ -44,6 +44,8 @@ namespace SynGlyphX {
 
 		virtual OutputType GetOutputValueFromInput(const InputType& input) const;
 
+		virtual boost::property_tree::wptree& ExportToPropertyTree(boost::property_tree::wptree& propertyTree) const;
+
 	protected:
 		std::unordered_map<InputType, OutputType> m_mappedValues;
 	};
@@ -51,7 +53,7 @@ namespace SynGlyphX {
 	typedef SingleValueMappingData<double, double> Numeric2NumericMappingData;
 	typedef SingleValueMappingData<double, std::wstring> Text2NumericMappingData;
 	typedef SingleValueMappingData<GlyphColor, double> Numeric2ColorMappingData;
-	typedef SingleValueMappingData<GlyphColor, std::wstring> Text2ColorMappingData;
+	typedef SingleValueMappingData<GlyphColor, std::wstring> Text2ColorMappingData;*/
 
 } // namespace SynGlyphX
 

@@ -48,12 +48,15 @@ namespace SynGlyphX {
 	template<>
 	DataMappingProperty<std::pair<GlyphColor, GlyphColor>>::DataMappingProperty(const boost::property_tree::wptree& propertyTree) {
 
-		const boost::property_tree::wptree& rgbMinPropertyTree = propertyTree.get_child(L"Min");
+		/*const boost::property_tree::wptree& rgbMinPropertyTree = propertyTree.get_child(L"Min");
 		m_value.first.Set(0, rgbMinPropertyTree.get<short>(L"R"));
 		m_value.first.Set(1, rgbMinPropertyTree.get<short>(L"G"));
-		m_value.first.Set(2, rgbMinPropertyTree.get<short>(L"B"));
+		m_value.first.Set(2, rgbMinPropertyTree.get<short>(L"B"));*/
 
-		boost::optional<const boost::property_tree::wptree&> rgbDiffPropertyTree = propertyTree.get_child_optional(L"Difference");
+		m_value.first = propertyTree.get<GlyphColor>(L"Min");
+		m_value.second = propertyTree.get_optional<GlyphColor>(L"Diff").get_value_or(GlyphColor({ { 0.0, 0.0, 0.0 } }));
+
+		/*boost::optional<const boost::property_tree::wptree&> rgbDiffPropertyTree = propertyTree.get_child_optional(L"Difference");
 		if (rgbDiffPropertyTree.is_initialized()) {
 
 			m_value.second.Set(0, rgbDiffPropertyTree.get().get<short>(L"R"));
@@ -62,7 +65,7 @@ namespace SynGlyphX {
 		}
 		else {
 			m_value.second.FromHexString(L"000000");
-		}
+		}*/
 
 		boost::optional<const boost::property_tree::wptree&> inputFieldTree = propertyTree.get_child_optional(InputBinding::PropertyTreeName);
 		if (inputFieldTree.is_initialized()) {
@@ -154,11 +157,13 @@ namespace SynGlyphX {
 	template <>
 	boost::property_tree::wptree& DataMappingProperty<std::pair<GlyphColor, GlyphColor>>::ExportToPropertyTree(boost::property_tree::wptree& propertyTree) const {
 
-		m_value.first.ExportToPropertyTree(propertyTree.add(L"Min", L""));
+		//m_value.first.ExportToPropertyTree(propertyTree.add(L"Min", L""));
+		propertyTree.put<GlyphColor>(L"Min", m_value.first);
 
 		if ((std::abs(m_value.second[0]) > 0) || (std::abs(m_value.second[1]) > 0) || (std::abs(m_value.second[2]) > 0)) {
 
-			m_value.second.ExportToPropertyTree(propertyTree.add(L"Difference", L""));
+			//m_value.second.ExportToPropertyTree(propertyTree.add(L"Difference", L""));
+			propertyTree.put<GlyphColor>(L"Difference", m_value.second);
 		}
 
 		if (m_binding.IsBoundToInputField()) {

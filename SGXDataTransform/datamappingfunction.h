@@ -55,7 +55,7 @@ namespace SynGlyphX {
 
 		MappingFunctionData& operator=(const MappingFunctionData& data);
 
-		boost::property_tree::wptree& ExportToPropertyTree(boost::property_tree::wptree& propertyTree);
+		virtual boost::property_tree::wptree& ExportToPropertyTree(boost::property_tree::wptree& propertyTree) const;
 
 		Function GetFunction() const;
 		virtual Input GetSupportedInput() const = 0;

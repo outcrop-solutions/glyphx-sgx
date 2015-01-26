@@ -33,7 +33,7 @@ namespace SynGlyphX {
 
 	}
 
-	boost::property_tree::wptree& MappingFunctionData::ExportToPropertyTree(boost::property_tree::wptree& propertyTree) {
+	boost::property_tree::wptree& MappingFunctionData::ExportToPropertyTree(boost::property_tree::wptree& propertyTree) const {
 
 		boost::property_tree::wptree& functionDataPropertyTree = propertyTree.add(L"Function", L"");
 		functionDataPropertyTree.put(L"<xmlattr>.type", s_functionNames.left.at(m_function));
