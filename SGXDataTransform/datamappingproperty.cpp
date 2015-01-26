@@ -48,24 +48,30 @@ namespace SynGlyphX {
 	template<>
 	DataMappingProperty<std::pair<GlyphColor, GlyphColor>>::DataMappingProperty(const boost::property_tree::wptree& propertyTree) {
 
-		/*const boost::property_tree::wptree& rgbMinPropertyTree = propertyTree.get_child(L"Min");
-		m_value.first.Set(0, rgbMinPropertyTree.get<short>(L"R"));
-		m_value.first.Set(1, rgbMinPropertyTree.get<short>(L"G"));
-		m_value.first.Set(2, rgbMinPropertyTree.get<short>(L"B"));*/
+		//For color check if property tree has it in the old way.  If not read in using the new way
+		boost::optional<short> rgbMinRed = propertyTree.get_optional<short>(L"Min.R");
+		if (rgbMinRed.is_initialized()) {
 
-		m_value.first = propertyTree.get<GlyphColor>(L"Min");
-		m_value.second = propertyTree.get_optional<GlyphColor>(L"Diff").get_value_or(GlyphColor({ { 0.0, 0.0, 0.0 } }));
-
-		/*boost::optional<const boost::property_tree::wptree&> rgbDiffPropertyTree = propertyTree.get_child_optional(L"Difference");
-		if (rgbDiffPropertyTree.is_initialized()) {
-
-			m_value.second.Set(0, rgbDiffPropertyTree.get().get<short>(L"R"));
-			m_value.second.Set(1, rgbDiffPropertyTree.get().get<short>(L"G"));
-			m_value.second.Set(2, rgbDiffPropertyTree.get().get<short>(L"B"));
+			m_value.first.Set(0, rgbMinRed.get());
+			m_value.first.Set(1, propertyTree.get<short>(L"Min.G"));
+			m_value.first.Set(2, propertyTree.get<short>(L"Min.B"));
 		}
 		else {
-			m_value.second.FromHexString(L"000000");
-		}*/
+
+			m_value.first = propertyTree.get<GlyphColor>(L"Min");
+		}
+
+		boost::optional<short> rgbDiffRed = propertyTree.get_optional<short>(L"Difference.R");
+		if (rgbDiffRed.is_initialized()) {
+
+			m_value.second.Set(0, rgbDiffRed.get());
+			m_value.second.Set(1, propertyTree.get<short>(L"Difference.G"));
+			m_value.second.Set(2, propertyTree.get<short>(L"Difference.B"));
+		}
+		else {
+			
+			m_value.second = propertyTree.get_optional<GlyphColor>(L"Difference").get_value_or(GlyphColor({ { 0.0, 0.0, 0.0 } }));
+		}
 
 		boost::optional<const boost::property_tree::wptree&> inputFieldTree = propertyTree.get_child_optional(InputBinding::PropertyTreeName);
 		if (inputFieldTree.is_initialized()) {

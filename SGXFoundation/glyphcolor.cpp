@@ -2,6 +2,7 @@
 #include <stdexcept>
 #include <string>
 #include <sstream>
+#include <boost/lexical_cast.hpp>
 
 namespace SynGlyphX {
 
@@ -239,19 +240,24 @@ namespace SynGlyphX {
 
 	boost::optional<GlyphColor> GlyphColorTranslator::get_value(std::wstring const &v) {
 
-		GlyphColor color;
-		boost::property_tree::wptree propertyTree;
-		std::wstringstream stream;
-		stream << v;
-		boost::property_tree::read_xml(stream, propertyTree, boost::property_tree::xml_parser::trim_whitespace);
+		int firstComma = v.find_first_of(L',');
+		int secondComma = v.find_last_of(L',');
 
-		if (!propertyTree.empty()) {
+		try {
 
-			color.Set(0, propertyTree.get<short>(L"R"));
-			color.Set(1, propertyTree.get<short>(L"G"));
-			color.Set(2, propertyTree.get<short>(L"B"));
+			if ((firstComma > 0) && (secondComma > firstComma + 1) && (secondComma < (v.length() - 1))) {
 
-			return color;
+				GlyphColor color;
+				color.Set(0, boost::lexical_cast<short>(v.substr(0, firstComma)));
+				color.Set(1, boost::lexical_cast<short>(v.substr(firstComma + 1, secondComma - firstComma - 1)));
+				color.Set(2, boost::lexical_cast<short>(v.substr(secondComma + 1, v.length() - secondComma - 1)));
+
+				return color;
+			}
+		}
+		catch (...) {
+
+
 		}
 
 		return boost::none;
@@ -259,12 +265,7 @@ namespace SynGlyphX {
 
 	boost::optional<std::wstring> GlyphColorTranslator::put_value(GlyphColor const& v) {
 
-		boost::property_tree::wptree propertyTree;
-		v.ExportToPropertyTree(propertyTree);
-
-		std::wostringstream stream;
-		boost::property_tree::write_xml(stream, propertyTree, s_writeSettings);
-		return stream.str();
+		return (boost::lexical_cast<std::wstring>(v[0]) + L',' + boost::lexical_cast<std::wstring>(v[1]) + L',' + boost::lexical_cast<std::wstring>(v[2]));
 	}
 
 } //namespace SynGlyphX
