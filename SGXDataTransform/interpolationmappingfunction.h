@@ -18,12 +18,13 @@
 #ifndef SYNGLYPHX_INTERPOLATIONMAPPINGDATA_H
 #define SYNGLYPHX_INTERPOLATIONMAPPINGDATA_H
 
+#include "sgxdatatransform_global.h"
 #include "datamappingfunction.h"
 #include "glyphcolor.h"
 
 namespace SynGlyphX {
 
-	class InterpolationMappingData : public MappingFunctionData
+	class SGXDATATRANSFORM_EXPORT InterpolationMappingData : public MappingFunctionData
 	{
 	public:
 		typedef std::shared_ptr<InterpolationMappingData> SharedPtr;

@@ -18,6 +18,7 @@
 #ifndef SYNGLYPHX_MAPPINGFUNCTIONDATA_H
 #define SYNGLYPHX_MAPPINGFUNCTIONDATA_H
 
+#include "sgxdatatransform_global.h"
 #include <vector>
 #include <memory>
 #include <boost/bimap.hpp>
@@ -25,7 +26,7 @@
 
 namespace SynGlyphX {
 
-	class MappingFunctionData
+	class SGXDATATRANSFORM_EXPORT MappingFunctionData
 	{
 	public:
 		enum Function {

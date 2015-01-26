@@ -18,6 +18,7 @@
 #ifndef SYNGLYPHX_VALUEMAPPINGDATA_H
 #define SYNGLYPHX_VALUEMAPPINGDATA_H
 
+#include "sgxdatatransform_global.h"
 #include "datamappingfunction.h"
 #include <map>
 #include "glyphcolor.h"
@@ -26,7 +27,7 @@
 namespace SynGlyphX {
 
 	template <typename OutputType, typename InputType, typename KeyType = InputType>
-	class ValueMappingData : public MappingFunctionData
+	class SGXDATATRANSFORM_EXPORT ValueMappingData : public MappingFunctionData
 	{
 	public:
 		typedef std::shared_ptr<ValueMappingData<OutputType,InputType>> SharedPtr;
