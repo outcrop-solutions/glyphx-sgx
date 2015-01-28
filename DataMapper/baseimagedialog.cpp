@@ -73,7 +73,7 @@ BaseImageDialog::BaseImageDialog(bool enablePositionAndOrientation, bool showDow
 
 	QObject::connect(m_baseImageComboBox, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), m_baseImageOptionsStackedWidget, &QStackedWidget::setCurrentIndex);
 
-	m_positionWidget = new XYZWidget(false, this);
+	m_positionWidget = new SynGlyphX::XYZWidget(false, this);
 	m_positionWidget->SetRange(-5000.0, 5000.0);
 	m_positionWidget->SetWrapping(false);
 	m_positionWidget->setEnabled(enablePositionAndOrientation);

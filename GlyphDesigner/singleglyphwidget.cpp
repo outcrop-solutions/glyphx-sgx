@@ -87,7 +87,7 @@ void SingleGlyphWidget::CreateWidgets(ChildOptions childOptions) {
 
     colorAndRatioLayout->addWidget(m_ratioGroupBox);
 
-	m_translateWidget = new XYZWidget(false, this);
+	m_translateWidget = new SynGlyphX::XYZWidget(false, this);
 	m_translateWidget->SetRange(-10000.0, 10000.0);
 	m_translateWidget->SetDecimal(4);
 	m_translateWidget->setContentsMargins(0, 0, 0, 0);
@@ -98,7 +98,7 @@ void SingleGlyphWidget::CreateWidgets(ChildOptions childOptions) {
     QChar degree = QChar('°');
     QString degreeSuffix = degree;
 
-	m_rotateWidget = new XYZWidget(false, this);
+	m_rotateWidget = new SynGlyphX::XYZWidget(false, this);
 	m_rotateWidget->SetRange(-180.0, 180.0);
 	m_rotateWidget->SetWrapping(true);
 	m_rotateWidget->SetDecimal(5);
@@ -107,7 +107,7 @@ void SingleGlyphWidget::CreateWidgets(ChildOptions childOptions) {
 
 	SynGlyphX::GroupBoxSingleWidget* rotateGroupBox = new SynGlyphX::GroupBoxSingleWidget(tr("Rotation"), m_rotateWidget, this);
 
-	m_scaleWidget = new XYZWidget(true, this);
+	m_scaleWidget = new SynGlyphX::XYZWidget(true, this);
 	m_scaleWidget->SetRange(0.000001, 1000.0);
 	m_scaleWidget->SetDecimal(5);
 	m_scaleWidget->setContentsMargins(0, 0, 0, 0);
@@ -115,7 +115,7 @@ void SingleGlyphWidget::CreateWidgets(ChildOptions childOptions) {
 
 	SynGlyphX::GroupBoxSingleWidget* scaleGroupBox = new SynGlyphX::GroupBoxSingleWidget(tr("Scale"), m_scaleWidget, this);
 
-	m_rotateRateWidget = new XYZWidget(false, this);
+	m_rotateRateWidget = new SynGlyphX::XYZWidget(false, this);
 	m_rotateRateWidget->SetRange(-100.0, 100.0);
 	m_rotateRateWidget->SetDecimal(3);
 	m_rotateRateWidget->setContentsMargins(0, 0, 0, 0);

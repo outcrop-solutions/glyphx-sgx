@@ -1,9 +1,3 @@
-#ifndef XYZWIDGET_H
-#define XYZWIDGET_H
-
-#include "sgxgui_global.h"
-#include <QtWidgets/QWidget>
-#include <QtWidgets/QDoubleSpinBox>
 ///
 /// SynGlyphX Holdings Incorporated ("COMPANY") CONFIDENTIAL
 /// Copyright (c) 2013-2015 SynGlyphX Holdings Incorporated, All Rights Reserved.
@@ -21,57 +15,35 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#include <QtWidgets/QCheckBox>
-#include "foundationtypes.h"
+#ifndef RANGEWIDGET_H
+#define RANGEWIDGET_H
+
+#include "sgxgui_global.h"
+#include <QtWidgets/QDoubleSpinBox>
+#include "range.h"
 
 namespace SynGlyphX {
 
-	class SGXGUI_EXPORT XYZWidget : public QWidget
+	class SGXGUI_EXPORT RangeWidget : public QWidget
 	{
 		Q_OBJECT
 
 	public:
-		XYZWidget(bool includeLockCheckbox = false, QWidget *parent = 0);
-		~XYZWidget();
+		RangeWidget(QWidget *parent);
+		~RangeWidget();
 
-		void SetRange(double min, double max);
+		void SetRange(const Range& range);
+		Range GetRange() const;
 
-		void SetX(double value);
-		double GetX() const;
-		void SetY(double value);
-		double GetY() const;
-		void SetZ(double value);
-		double GetZ() const;
-
-		void Set(const SynGlyphX::Vector3& vec);
-		SynGlyphX::Vector3 Get() const;
-
-		void SetWrapping(bool wrapping);
-		void SetDecimal(int decimals);
-		void SetSuffix(const QString& suffix);
-
-		public slots:
-		void SetSpinBoxesLocked(bool lock);
-
-	signals:
-		void ValuesChanged(double x, double y, double z);
-
-		private slots:
-		void OnXSpinBoxChanged();
-		void OnYSpinBoxChanged();
-		void OnZSpinBoxChanged();
-		void UpdateSpinBoxLock(bool lock);
+	private slots:
+		void OnMinChanged();
+		void OnMaxChanged();
 
 	private:
-		void SetSpinBoxWithoutSignals(QDoubleSpinBox* spinBox, double value);
-
-		QDoubleSpinBox* m_xSpinBox;
-		QDoubleSpinBox* m_ySpinBox;
-		QDoubleSpinBox* m_zSpinBox;
-		QCheckBox* m_lockCheckBox;
-		bool m_spinBoxesLocked;
+		QDoubleSpinBox* m_minSpinBox;
+		QDoubleSpinBox* m_maxSpinBox;
 	};
 
 } //namespace SynGlyphX
 
-#endif // XYZWIDGET_H
+#endif // RANGEWIDGET_H

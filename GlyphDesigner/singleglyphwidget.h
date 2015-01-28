@@ -70,11 +70,11 @@ protected:
 
     SynGlyphX::ColorAlphaWidget* m_colorWidget;
 
-    XYZWidget* m_translateWidget;
-    XYZWidget* m_rotateWidget;
-    XYZWidget* m_scaleWidget;
+	SynGlyphX::XYZWidget* m_translateWidget;
+	SynGlyphX::XYZWidget* m_rotateWidget;
+	SynGlyphX::XYZWidget* m_scaleWidget;
 
-	XYZWidget* m_rotateRateWidget;
+	SynGlyphX::XYZWidget* m_rotateRateWidget;
 
     QDoubleSpinBox* m_ratioSpinBox;
 	SynGlyphX::GroupBoxSingleWidget* m_ratioGroupBox;

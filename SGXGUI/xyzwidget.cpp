@@ -2,174 +2,178 @@
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QLabel>
 
-XYZWidget::XYZWidget(bool includeLockCheckbox, QWidget *parent)
-    : QWidget(parent),
-    m_lockCheckBox(NULL),
-    m_spinBoxesLocked(false)
-{
-    QHBoxLayout* layout = new QHBoxLayout(this);
+namespace SynGlyphX {
 
-    if (includeLockCheckbox) {
-        m_lockCheckBox = new QCheckBox(tr("Lock"), this);
-        layout->addWidget(m_lockCheckBox);
-        QObject::connect(m_lockCheckBox, &QCheckBox::toggled, this, &XYZWidget::UpdateSpinBoxLock);
-    }
+	XYZWidget::XYZWidget(bool includeLockCheckbox, QWidget *parent)
+		: QWidget(parent),
+		m_lockCheckBox(NULL),
+		m_spinBoxesLocked(false)
+	{
+		QHBoxLayout* layout = new QHBoxLayout(this);
 
-    QLabel* labelX = new QLabel(tr("X:"), this);
-    m_xSpinBox = new QDoubleSpinBox(this);
-    m_xSpinBox->setKeyboardTracking(false);
-    
-    QLabel* labelY = new QLabel(tr("Y:"), this);
-    m_ySpinBox = new QDoubleSpinBox(this);
-    m_ySpinBox->setKeyboardTracking(false);
-    
-    QLabel* labelZ = new QLabel(tr("Z:"), this);
-    m_zSpinBox = new QDoubleSpinBox(this);
-    m_zSpinBox->setKeyboardTracking(false);
+		if (includeLockCheckbox) {
+			m_lockCheckBox = new QCheckBox(tr("Lock"), this);
+			layout->addWidget(m_lockCheckBox);
+			QObject::connect(m_lockCheckBox, &QCheckBox::toggled, this, &XYZWidget::UpdateSpinBoxLock);
+		}
 
-    layout->addWidget(labelX);
-    layout->addWidget(m_xSpinBox, 1);
-    
-    layout->addWidget(labelY);
-    layout->addWidget(m_ySpinBox, 1);
-    
-    layout->addWidget(labelZ);
-    layout->addWidget(m_zSpinBox, 1);
+		QLabel* labelX = new QLabel(tr("X:"), this);
+		m_xSpinBox = new QDoubleSpinBox(this);
+		m_xSpinBox->setKeyboardTracking(false);
 
-    setLayout(layout);
+		QLabel* labelY = new QLabel(tr("Y:"), this);
+		m_ySpinBox = new QDoubleSpinBox(this);
+		m_ySpinBox->setKeyboardTracking(false);
 
-    QObject::connect(m_xSpinBox, static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), this, &XYZWidget::OnXSpinBoxChanged);
-    QObject::connect(m_ySpinBox, static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), this, &XYZWidget::OnYSpinBoxChanged);
-    QObject::connect(m_zSpinBox, static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), this, &XYZWidget::OnZSpinBoxChanged);
-}
+		QLabel* labelZ = new QLabel(tr("Z:"), this);
+		m_zSpinBox = new QDoubleSpinBox(this);
+		m_zSpinBox->setKeyboardTracking(false);
 
-XYZWidget::~XYZWidget()
-{
+		layout->addWidget(labelX);
+		layout->addWidget(m_xSpinBox, 1);
 
-}
+		layout->addWidget(labelY);
+		layout->addWidget(m_ySpinBox, 1);
 
-void XYZWidget::SetRange(double min, double max) {
-    m_xSpinBox->setRange(min, max);
-    m_ySpinBox->setRange(min, max);
-    m_zSpinBox->setRange(min, max);
-}
+		layout->addWidget(labelZ);
+		layout->addWidget(m_zSpinBox, 1);
 
-void XYZWidget::SetX(double value){
-    m_xSpinBox->setValue(value);
-}
+		setLayout(layout);
 
-double XYZWidget::GetX() const{
-    return m_xSpinBox->value();
-}
+		QObject::connect(m_xSpinBox, static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), this, &XYZWidget::OnXSpinBoxChanged);
+		QObject::connect(m_ySpinBox, static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), this, &XYZWidget::OnYSpinBoxChanged);
+		QObject::connect(m_zSpinBox, static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), this, &XYZWidget::OnZSpinBoxChanged);
+	}
 
-void XYZWidget::SetY(double value){
-    m_ySpinBox->setValue(value);
-}
+	XYZWidget::~XYZWidget()
+	{
 
-double XYZWidget::GetY() const{
-    return m_ySpinBox->value();
-}
+	}
 
-void XYZWidget::SetZ(double value){
-    m_zSpinBox->setValue(value);
-}
+	void XYZWidget::SetRange(double min, double max) {
+		m_xSpinBox->setRange(min, max);
+		m_ySpinBox->setRange(min, max);
+		m_zSpinBox->setRange(min, max);
+	}
 
-double XYZWidget::GetZ() const{
-    return m_zSpinBox->value();
-}
+	void XYZWidget::SetX(double value){
+		m_xSpinBox->setValue(value);
+	}
 
-void XYZWidget::SetWrapping(bool wrapping) {
-    m_xSpinBox->setWrapping(wrapping);
-    m_ySpinBox->setWrapping(wrapping);
-    m_zSpinBox->setWrapping(wrapping);
-}
+	double XYZWidget::GetX() const{
+		return m_xSpinBox->value();
+	}
 
-void XYZWidget::SetDecimal(int decimals) {
-    m_xSpinBox->setDecimals(decimals);
-    m_ySpinBox->setDecimals(decimals);
-    m_zSpinBox->setDecimals(decimals);
-}
+	void XYZWidget::SetY(double value){
+		m_ySpinBox->setValue(value);
+	}
 
-void XYZWidget::Set(const SynGlyphX::Vector3& vec) {
+	double XYZWidget::GetY() const{
+		return m_ySpinBox->value();
+	}
 
-    m_xSpinBox->setValue(vec[0]);
-    m_ySpinBox->setValue(vec[1]);
-    m_zSpinBox->setValue(vec[2]);
-}
+	void XYZWidget::SetZ(double value){
+		m_zSpinBox->setValue(value);
+	}
 
-SynGlyphX::Vector3 XYZWidget::Get() const {
+	double XYZWidget::GetZ() const{
+		return m_zSpinBox->value();
+	}
 
-	SynGlyphX::Vector3 vec;
-	vec[0] = m_xSpinBox->value();
-	vec[1] = m_ySpinBox->value();
-	vec[2] = m_zSpinBox->value();
+	void XYZWidget::SetWrapping(bool wrapping) {
+		m_xSpinBox->setWrapping(wrapping);
+		m_ySpinBox->setWrapping(wrapping);
+		m_zSpinBox->setWrapping(wrapping);
+	}
 
-	return vec;
-}
+	void XYZWidget::SetDecimal(int decimals) {
+		m_xSpinBox->setDecimals(decimals);
+		m_ySpinBox->setDecimals(decimals);
+		m_zSpinBox->setDecimals(decimals);
+	}
 
-void XYZWidget::SetSuffix(const QString& suffix) {
+	void XYZWidget::Set(const SynGlyphX::Vector3& vec) {
 
-    m_xSpinBox->setSuffix(suffix);
-    m_ySpinBox->setSuffix(suffix);
-    m_zSpinBox->setSuffix(suffix);
-}
+		m_xSpinBox->setValue(vec[0]);
+		m_ySpinBox->setValue(vec[1]);
+		m_zSpinBox->setValue(vec[2]);
+	}
 
-void XYZWidget::OnXSpinBoxChanged() {
-    
-    //If locked keep all spin boxes the same value
-    if (m_spinBoxesLocked) {
-        SetSpinBoxWithoutSignals(m_ySpinBox, m_xSpinBox->value());
-        SetSpinBoxWithoutSignals(m_zSpinBox, m_xSpinBox->value());
-    }
+	SynGlyphX::Vector3 XYZWidget::Get() const {
 
-    emit ValuesChanged(m_xSpinBox->value(), m_ySpinBox->value(), m_zSpinBox->value());
-}
+		SynGlyphX::Vector3 vec;
+		vec[0] = m_xSpinBox->value();
+		vec[1] = m_ySpinBox->value();
+		vec[2] = m_zSpinBox->value();
 
-void XYZWidget::OnYSpinBoxChanged() {
+		return vec;
+	}
 
-    //If locked keep all spin boxes the same value
-    if (m_spinBoxesLocked) {
-        SetSpinBoxWithoutSignals(m_xSpinBox, m_ySpinBox->value());
-        SetSpinBoxWithoutSignals(m_zSpinBox, m_ySpinBox->value());
-    }
-    
-    emit ValuesChanged(m_xSpinBox->value(), m_ySpinBox->value(), m_zSpinBox->value());
-}
+	void XYZWidget::SetSuffix(const QString& suffix) {
 
-void XYZWidget::OnZSpinBoxChanged() {
+		m_xSpinBox->setSuffix(suffix);
+		m_ySpinBox->setSuffix(suffix);
+		m_zSpinBox->setSuffix(suffix);
+	}
 
-    //If locked keep all spin boxes the same value
-    if (m_spinBoxesLocked) {
-        SetSpinBoxWithoutSignals(m_xSpinBox, m_zSpinBox->value());
-        SetSpinBoxWithoutSignals(m_ySpinBox, m_zSpinBox->value());
-    }
-    
-    emit ValuesChanged(m_xSpinBox->value(), m_ySpinBox->value(), m_zSpinBox->value());
-}
+	void XYZWidget::OnXSpinBoxChanged() {
 
-void XYZWidget::SetSpinBoxWithoutSignals(QDoubleSpinBox* spinBox, double value) {
+		//If locked keep all spin boxes the same value
+		if (m_spinBoxesLocked) {
+			SetSpinBoxWithoutSignals(m_ySpinBox, m_xSpinBox->value());
+			SetSpinBoxWithoutSignals(m_zSpinBox, m_xSpinBox->value());
+		}
 
-    spinBox->blockSignals(true);
-    spinBox->setValue(value);
-    spinBox->blockSignals(false);
-}
+		emit ValuesChanged(m_xSpinBox->value(), m_ySpinBox->value(), m_zSpinBox->value());
+	}
 
-void XYZWidget::SetSpinBoxesLocked(bool lock) {
+	void XYZWidget::OnYSpinBoxChanged() {
 
-    if (m_lockCheckBox != NULL) {
-        m_lockCheckBox->setChecked(lock);
-    }
-    else {
-        UpdateSpinBoxLock(lock);
-    }
-}
+		//If locked keep all spin boxes the same value
+		if (m_spinBoxesLocked) {
+			SetSpinBoxWithoutSignals(m_xSpinBox, m_ySpinBox->value());
+			SetSpinBoxWithoutSignals(m_zSpinBox, m_ySpinBox->value());
+		}
 
-void XYZWidget::UpdateSpinBoxLock(bool lock) {
+		emit ValuesChanged(m_xSpinBox->value(), m_ySpinBox->value(), m_zSpinBox->value());
+	}
 
-    m_spinBoxesLocked = lock;
+	void XYZWidget::OnZSpinBoxChanged() {
 
-    if (m_spinBoxesLocked) {
+		//If locked keep all spin boxes the same value
+		if (m_spinBoxesLocked) {
+			SetSpinBoxWithoutSignals(m_xSpinBox, m_zSpinBox->value());
+			SetSpinBoxWithoutSignals(m_ySpinBox, m_zSpinBox->value());
+		}
 
-        OnXSpinBoxChanged();
-    }
-}
+		emit ValuesChanged(m_xSpinBox->value(), m_ySpinBox->value(), m_zSpinBox->value());
+	}
+
+	void XYZWidget::SetSpinBoxWithoutSignals(QDoubleSpinBox* spinBox, double value) {
+
+		spinBox->blockSignals(true);
+		spinBox->setValue(value);
+		spinBox->blockSignals(false);
+	}
+
+	void XYZWidget::SetSpinBoxesLocked(bool lock) {
+
+		if (m_lockCheckBox != NULL) {
+			m_lockCheckBox->setChecked(lock);
+		}
+		else {
+			UpdateSpinBoxLock(lock);
+		}
+	}
+
+	void XYZWidget::UpdateSpinBoxLock(bool lock) {
+
+		m_spinBoxesLocked = lock;
+
+		if (m_spinBoxesLocked) {
+
+			OnXSpinBoxChanged();
+		}
+	}
+
+} //namespace SynGlyphX

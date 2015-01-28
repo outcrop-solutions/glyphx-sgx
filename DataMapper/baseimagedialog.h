@@ -51,7 +51,7 @@ private:
 	QComboBox* m_baseImageComboBox;
 	MapOptionsWidget* m_downloadedMapOptionsWidget;
 	SynGlyphX::BrowseLineEdit* m_userDefinedImageLineEdit;
-	XYZWidget* m_positionWidget;
+	SynGlyphX::XYZWidget* m_positionWidget;
 	QButtonGroup* m_orientationGroup;
 	SynGlyphX::DoubleSizeWidget* m_worldSizeWidget;
 };
