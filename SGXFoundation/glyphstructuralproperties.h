@@ -78,6 +78,9 @@ namespace SynGlyphX {
 		void SetVirtualTopology(VirtualTopology virtualTopology);
 		VirtualTopology GetVirtualTopology() const;
 
+		void SetTorusRatio(double ratio);
+		double GetTorusRatio() const;
+
 		boost::property_tree::wptree& ExportToPropertyTree(boost::property_tree::wptree& propertyTree) const;
 
 		static const ShapeBimap s_shapeNames;
@@ -88,6 +91,7 @@ namespace SynGlyphX {
 		Shape m_geometryShape;
 		Surface m_geometrySurface;
 		VirtualTopology m_virtualTopology;
+		double m_torusRatio;
 	};
 
 } //namespace SynGlyphX

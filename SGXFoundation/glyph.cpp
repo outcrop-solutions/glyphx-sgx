@@ -6,7 +6,7 @@ namespace SynGlyphX {
 	const Glyph Glyph::s_defaultRootGlyph = Glyph::CreateDefaultGlyph(GlyphStructuralProperties::Shape::Pin, GlyphStructuralProperties::VirtualTopology::LinePin);
 
 	Glyph::Glyph() :
-		GlyphTemplate < double, GlyphColor, std::wstring >(s_defaultGlyph),
+		GlyphTemplate < double, GlyphColor, std::wstring >(),
 		m_tagOffset({ {0.0, 1.5, 0.0} })
 	{
 	}
