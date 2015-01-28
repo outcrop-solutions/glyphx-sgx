@@ -44,6 +44,7 @@ namespace SynGlyphXANTz {
 			UpdateRotation = 0x20,
 			UpdateScale = 0x40,
 			UpdateRotationRate = 0x80,
+			UpdateTorusRatio = 0x100,
 			//All for when all properties are being updated
 			UpdateAll = 0xFFFF
 		};

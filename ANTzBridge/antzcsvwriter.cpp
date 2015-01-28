@@ -181,7 +181,7 @@ namespace SynGlyphXANTz {
 		values.push_back(boost::lexical_cast<std::wstring>(GlyphNodeConverter::ConvertGeometryToNodeValue(glyph->GetStructure().GetGeometryShape(), glyph->GetStructure().GetGeometrySurface())));
 		values.push_back(L"1");
 		values.push_back(L"0");
-		values.push_back(L"0.1");
+		values.push_back(boost::lexical_cast<std::wstring>(glyph->GetStructure().GetTorusRatio()));
 
 		SynGlyphX::GlyphColor color = glyph->GetColor();
 		values.push_back(boost::lexical_cast<std::wstring>(GetColorIndex(color)));

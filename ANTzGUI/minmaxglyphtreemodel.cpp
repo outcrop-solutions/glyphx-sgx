@@ -371,6 +371,11 @@ namespace SynGlyphXANTz {
 				glyphToUpdate->GetRotationRate()[2].GetValue().first = glyph.GetRotationRate()[2];
 			}
 
+			if (updates.testFlag(UpdateTorusRatio)) {
+
+				glyphToUpdate->GetStructure().SetTorusRatio(glyph.GetStructure().GetTorusRatio());
+			}
+
 			emit dataChanged(index, index);
 		}
 	}
@@ -427,6 +432,11 @@ namespace SynGlyphXANTz {
 				glyphToUpdate->GetRotationRate()[0].GetValue().second = glyph.GetRotationRate()[0] - glyphToUpdate->GetRotationRate()[0].GetValue().first;
 				glyphToUpdate->GetRotationRate()[1].GetValue().second = glyph.GetRotationRate()[1] - glyphToUpdate->GetRotationRate()[1].GetValue().first;
 				glyphToUpdate->GetRotationRate()[2].GetValue().second = glyph.GetRotationRate()[2] - glyphToUpdate->GetRotationRate()[2].GetValue().first;
+			}
+
+			if (updates.testFlag(UpdateTorusRatio)) {
+
+				glyphToUpdate->GetStructure().SetTorusRatio(glyph.GetStructure().GetTorusRatio());
 			}
 
 			emit dataChanged(index, index);

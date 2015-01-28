@@ -296,6 +296,8 @@ namespace SynGlyphXANTz {
 		glyph->rotateRate.x = glyphTemplate.GetRotationRate()[0];
 		glyph->rotateRate.y = glyphTemplate.GetRotationRate()[1];
 		glyph->rotateRate.z = glyphTemplate.GetRotationRate()[2];
+
+		glyph->ratio = glyphTemplate.GetStructure().GetTorusRatio();
 	}
 
 	void ANTzSingleGlyphTreeWidget::UpdateSelection(const QItemSelection& selected, const QItemSelection& deselected) {
