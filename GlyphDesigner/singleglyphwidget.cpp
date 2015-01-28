@@ -80,12 +80,12 @@ void SingleGlyphWidget::CreateWidgets(ChildOptions childOptions) {
 
 	colorAndRatioLayout->addStretch(1);
 
-	/*m_ratioSpinBox = new QDoubleSpinBox(this);
+	m_ratioSpinBox = new QDoubleSpinBox(this);
 	m_ratioSpinBox->setSingleStep(0.05);
 	m_ratioSpinBox->setDecimals(2);
 	m_ratioGroupBox = new SynGlyphX::GroupBoxSingleWidget(tr("Torus Ratio"), m_ratioSpinBox, this); 
 
-    colorAndRatioLayout->addWidget(m_ratioGroupBox);*/
+    colorAndRatioLayout->addWidget(m_ratioGroupBox);
 
 	m_translateWidget = new XYZWidget(false, this);
 	m_translateWidget->SetRange(-10000.0, 10000.0);
@@ -144,8 +144,8 @@ void SingleGlyphWidget::CreateWidgets(ChildOptions childOptions) {
 
     setLayout(form);
 
-    //QObject::connect(m_geometryShapeComboBox, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &SingleGlyphWidget::OnShapeComboBoxChanged);
-    //m_ratioGroupBox->setVisible(false);
+    QObject::connect(m_geometryShapeComboBox, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &SingleGlyphWidget::OnShapeComboBoxChanged);
+    m_ratioGroupBox->setVisible(false);
 }
 
 void SingleGlyphWidget::SetWidgetFromGlyph(const SynGlyphX::Glyph& glyph, bool isNotRootNode) {
@@ -162,7 +162,7 @@ void SingleGlyphWidget::SetWidgetFromGlyph(const SynGlyphX::Glyph& glyph, bool i
     m_scaleWidget->Set(glyph.GetScale());
 	m_rotateRateWidget->Set(glyph.GetRotationRate());
 
-    //m_ratioSpinBox->setValue(glyph->GetRatio());
+    m_ratioSpinBox->setValue(glyph.GetStructure().GetTorusRatio());
 }
 
 void SingleGlyphWidget::SetGlyphFromWidget(SynGlyphX::Glyph& glyph) {
@@ -182,7 +182,7 @@ void SingleGlyphWidget::SetGlyphFromWidget(SynGlyphX::Glyph& glyph) {
 
 	glyph.GetRotationRate() = { { m_rotateRateWidget->GetX(), m_rotateRateWidget->GetY(), m_rotateRateWidget->GetZ() } };
 
-    //glyph->SetRatio(m_ratioSpinBox->value());
+    glyph.GetStructure().SetTorusRatio(m_ratioSpinBox->value());
 }
 
 void SingleGlyphWidget::SetNumberOfChildren(unsigned int numChildren) {
@@ -201,10 +201,10 @@ unsigned int SingleGlyphWidget::GetNumberOfChildren() const {
         return static_cast<unsigned int>(m_childrenSpinBox->value());
     }
 }
-/*
+
 void SingleGlyphWidget::OnShapeComboBoxChanged(int index) {
 
-	SynGlyphXANTz::GlyphProperties::Shape shape = static_cast<SynGlyphXANTz::GlyphProperties::Shape>(index);
+	SynGlyphX::GlyphStructuralProperties::Shape shape = static_cast<SynGlyphX::GlyphStructuralProperties::Shape>(index);
 
-	m_ratioGroupBox->setVisible(shape == SynGlyphXANTz::GlyphProperties::Torus);
-}*/
+	m_ratioGroupBox->setVisible(shape == SynGlyphX::GlyphStructuralProperties::Torus);
+}

@@ -181,6 +181,15 @@
     <ClCompile Include="GeneratedFiles\Release\moc_mappingfunctionwidget.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="valuemappingdialog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_valuemappingdialog.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_valuemappingdialog.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="datamapperwindow.h">
@@ -229,6 +238,9 @@
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="mappingfunctionwidget.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="valuemappingdialog.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>

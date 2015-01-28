@@ -173,7 +173,7 @@ void DataBindingWidget::CreateTableHeader(QGridLayout* gridLayout) {
 	}
 }
 
-void DataBindingWidget::CreateRowOfPropertyWidgets(QGridLayout* layout, QWidget* minWidget, QWidget* maxWidget, int row, int header) {
+void DataBindingWidget::CreateRowOfPropertyWidgets(QGridLayout* layout, QWidget* minWidget, QWidget* maxWidget, int row, int header, bool addToPositionXYList) {
 
 	QDataWidgetMapper* mapper = new QDataWidgetMapper(this);
 
@@ -205,6 +205,13 @@ void DataBindingWidget::CreateRowOfPropertyWidgets(QGridLayout* layout, QWidget*
 	//QObject::connect(functionComboBox, &QComboBox::currentTextChanged, mapper, &QDataWidgetMapper::submit);
 
 	m_dataWidgetMappers.push_back(mapper);
+
+	if (addToPositionXYList) {
+
+		m_positionXYMinMaxWidgets.push_back(minWidget);
+		m_positionXYMinMaxWidgets.push_back(maxWidget);
+		m_positionXYMinMaxWidgets.push_back(mappingFunctionWidget);
+	}
 }
 
 void DataBindingWidget::CreateIntegerPropertyWidgets(QGridLayout* layout, int row, int header) {
@@ -227,15 +234,10 @@ void DataBindingWidget::CreateDoublePropertyWidgets(QGridLayout* layout, int row
 	QDoubleSpinBox* maxSpinBox = new QDoubleSpinBox(this);
 	maxSpinBox->setRange(-1000.0, 1000.0);
 	
-	CreateRowOfPropertyWidgets(layout, minSpinBox, maxSpinBox, row, header);
+	CreateRowOfPropertyWidgets(layout, minSpinBox, maxSpinBox, row, header, addToPositionXYList);
 
 	QObject::connect(minSpinBox, static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), m_dataWidgetMappers.last(), &QDataWidgetMapper::submit);
 	QObject::connect(maxSpinBox, static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), m_dataWidgetMappers.last(), &QDataWidgetMapper::submit);
-
-	if (addToPositionXYList) {
-		m_positionXYMinMaxWidgets.push_back(minSpinBox);
-		m_positionXYMinMaxWidgets.push_back(maxSpinBox);
-	}
 }
 
 void DataBindingWidget::CreateColorPropertyWidgets(QGridLayout* layout, int row, int header) {

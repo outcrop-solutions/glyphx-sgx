@@ -76,11 +76,11 @@ protected:
 
 	XYZWidget* m_rotateRateWidget;
 
-    //QDoubleSpinBox* m_ratioSpinBox;
-	//SynGlyphX::GroupBoxSingleWidget* m_ratioGroupBox;
+    QDoubleSpinBox* m_ratioSpinBox;
+	SynGlyphX::GroupBoxSingleWidget* m_ratioGroupBox;
 
 private slots:
-    //void OnShapeComboBoxChanged(int index);
+    void OnShapeComboBoxChanged(int index);
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(SingleGlyphWidget::ChildOptions)

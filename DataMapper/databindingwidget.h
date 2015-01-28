@@ -51,7 +51,7 @@ private:
 	void CreateIntegerPropertyWidgets(QGridLayout* layout, int row, int header);
 	void CreateDoublePropertyWidgets(QGridLayout* layout, int row, int header, bool addToPositionXYList = false);
 	void CreateColorPropertyWidgets(QGridLayout* layout, int row, int header);
-	void CreateRowOfPropertyWidgets(QGridLayout* layout, QWidget* minWidget, QWidget* maxWidget, int row, int header);
+	void CreateRowOfPropertyWidgets(QGridLayout* layout, QWidget* minWidget, QWidget* maxWidget, int row, int header, bool addToPositionXYList = false);
 	void CreateGridLine(QGridLayout* layout, QFrame::Shape shape, int index, int thickness = 1);
 	void EnablePositionXYMixMaxWidgets(bool enable);
 

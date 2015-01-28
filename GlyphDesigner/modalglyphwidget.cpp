@@ -39,7 +39,7 @@ void ModalGlyphWidget::ConnectWidgetSignals() {
 	m_propertyConnections.push_back(QObject::connect(m_geometrySurfaceComboBox, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, [this]{ OnWidgetUpdated(SynGlyphXANTz::MinMaxGlyphTreeModel::UpdateSurface); }));
 	m_propertyConnections.push_back(QObject::connect(m_topologyComboBox, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, [this]{ OnWidgetUpdated(SynGlyphXANTz::MinMaxGlyphTreeModel::UpdateTopology); }));
 
-	//m_propertyConnections.push_back(QObject::connect(m_ratioSpinBox, static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), this, [this]{ OnWidgetUpdated(SynGlyphXANTz::MinMaxGlyphTreeModel::UpdateScale); }));
+	m_propertyConnections.push_back(QObject::connect(m_ratioSpinBox, static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), this, [this]{ OnWidgetUpdated(SynGlyphXANTz::MinMaxGlyphTreeModel::UpdateTorusRatio); }));
 
 	m_propertyConnections.push_back(QObject::connect(m_colorWidget, &SynGlyphX::ColorAlphaWidget::ColorChanged, this, [this]{ OnWidgetUpdated(SynGlyphXANTz::MinMaxGlyphTreeModel::UpdateColor); }));
 
