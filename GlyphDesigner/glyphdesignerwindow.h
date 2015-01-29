@@ -35,6 +35,9 @@ protected:
     virtual void LoadRecentFile(const QString& filename);
     virtual void closeEvent(QCloseEvent* event);
 
+	virtual void ReadSettings();
+	virtual void WriteSettings();
+
 private slots:
     void CreateNewGlyphTree();
     void ExportToCSV();
@@ -59,6 +62,8 @@ private:
     QMenu* m_editMenu;
     QMenu* m_viewMenu;
     QMenu* m_glyphMenu;
+
+	QAction* m_showAnimation;
 
 	SynGlyphXANTz::MinMaxGlyphTreeModel* m_glyphTreeModel;
 	QItemSelectionModel* m_sharedSelectionModel;

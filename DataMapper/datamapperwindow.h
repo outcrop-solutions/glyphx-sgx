@@ -43,6 +43,9 @@ protected:
     virtual void LoadRecentFile(const QString& filename);
 	virtual void closeEvent(QCloseEvent* event);
 
+	virtual void ReadSettings();
+	virtual void WriteSettings();
+
 private slots:
     void CreateNewProject();
     void OpenProject();
@@ -80,6 +83,8 @@ private:
 	QMenu* m_datasourceMenu;
     QMenu* m_viewMenu;
 	QMenu* m_toolsMenu;
+
+	QAction* m_showAnimation;
     
 	SynGlyphX::RoleDataFilterProxyModel* m_glyphTreesModel;
 	SynGlyphX::RoleDataFilterProxyModel* m_baseObjectsModel;

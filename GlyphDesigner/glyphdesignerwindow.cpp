@@ -8,6 +8,7 @@
 #include <QtWidgets/QMessageBox>
 #include <QtWidgets/QStatusBar>
 #include <QtGui/QCloseEvent>
+#include <QtCore/QSettings>
 #include "singleglyphwidget.h"
 #include "antzcsvwriter.h"
 #include "application.h"
@@ -111,6 +112,14 @@ void GlyphDesignerWindow::CreateMenus() {
 
     //Create View Menu
     m_viewMenu = menuBar()->addMenu(tr("View"));
+
+	m_showAnimation = m_viewMenu->addAction(tr("Show Animation"));
+	m_showAnimation->setCheckable(true);
+	m_showAnimation->setChecked(true);
+	QObject::connect(m_showAnimation, &QAction::toggled, m_3dView, &SynGlyphXANTz::ANTzSingleGlyphTreeWidget::EnableAnimation);
+
+	m_viewMenu->addSeparator();
+
     CreateFullScreenAction(m_viewMenu);
 
     m_viewMenu->addSeparator();
@@ -365,4 +374,26 @@ void GlyphDesignerWindow::OnModelChanged() {
 void GlyphDesignerWindow::SelectRootGlyphInModel() {
 
 	m_sharedSelectionModel->select(m_glyphTreeModel->index(0), QItemSelectionModel::ClearAndSelect);
+}
+
+void GlyphDesignerWindow::ReadSettings(){
+
+	SynGlyphX::MainWindow::ReadSettings();
+
+	QSettings settings;
+	settings.beginGroup("Display");
+	if (!settings.value("show", true).toBool()) {
+
+		m_showAnimation->toggle();
+	}
+	settings.endGroup();
+}
+
+void GlyphDesignerWindow::WriteSettings() {
+
+	SynGlyphX::MainWindow::WriteSettings();
+	QSettings settings;
+	settings.beginGroup("Display");
+	settings.setValue("show", m_showAnimation->isChecked());
+	settings.endGroup();
 }

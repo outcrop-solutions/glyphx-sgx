@@ -75,6 +75,8 @@ void DataMapperWindow::CreateCenterWidget() {
 	m_minMaxGlyph3DWidget = new DataMapping3DWidget(m_dataTransformModel, centerWidget);
 	m_minMaxGlyph3DWidget->SetModel(m_glyphTreesModel, m_glyphTreesView->selectionModel());
 
+	QObject::connect(m_showAnimation, &QAction::toggled, m_minMaxGlyph3DWidget, &DataMapping3DWidget::EnableAnimation);
+
 	//m_viewMenu->addAction(glyphViewDockWidget->toggleViewAction());
 
 	m_dataBindingWidget = new DataBindingWidget(m_minMaxGlyphModel, centerWidget);
@@ -152,6 +154,13 @@ void DataMapperWindow::CreateMenus() {
 
     //Create View Menu
     m_viewMenu = menuBar()->addMenu(tr("View"));
+
+	m_showAnimation = m_viewMenu->addAction(tr("Show Animation"));
+	m_showAnimation->setCheckable(true);
+	m_showAnimation->setChecked(true);
+
+	m_viewMenu->addSeparator();
+
     CreateFullScreenAction(m_viewMenu);
 
     m_viewMenu->addSeparator();
@@ -664,4 +673,26 @@ void DataMapperWindow::OnGlyphTreesViewSelectionChanged(const QItemSelection& se
 void DataMapperWindow::SelectFirstBaseObject() {
 
 	m_baseObjectsView->selectionModel()->select(m_baseObjectsModel->index(0, 0), QItemSelectionModel::ClearAndSelect);
+}
+
+void DataMapperWindow::ReadSettings(){
+
+	SynGlyphX::MainWindow::ReadSettings();
+
+	QSettings settings;
+	settings.beginGroup("Display");
+	if (!settings.value("show", true).toBool()) {
+
+		m_showAnimation->toggle();
+	}
+	settings.endGroup();
+}
+
+void DataMapperWindow::WriteSettings() {
+
+	SynGlyphX::MainWindow::WriteSettings();
+	QSettings settings;
+	settings.beginGroup("Display");
+	settings.setValue("show", m_showAnimation->isChecked());
+	settings.endGroup();
 }
