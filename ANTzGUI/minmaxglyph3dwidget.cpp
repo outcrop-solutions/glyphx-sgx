@@ -28,4 +28,9 @@ namespace SynGlyphXANTz {
 		m_maxGlyph3DWidget->SetModel(model, selectionModel);
 	}
 
+	void MinMaxGlyph3DWidget::EnableAnimation(bool enable) {
+
+		m_maxGlyph3DWidget->EnableAnimation(enable);
+	}
+
 } //namespace SynGlyphXANTz

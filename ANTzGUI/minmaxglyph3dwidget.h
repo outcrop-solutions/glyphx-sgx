@@ -36,6 +36,9 @@ namespace SynGlyphXANTz {
 
 		virtual void SetModel(MinMaxGlyphTreeModel* model, QItemSelectionModel* selectionModel);
 
+	public slots:
+		void EnableAnimation(bool enable);
+
 	private:
 		ANTzSingleGlyphTreeWidget* m_maxGlyph3DWidget;
 	};

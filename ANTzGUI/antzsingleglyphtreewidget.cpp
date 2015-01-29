@@ -21,7 +21,8 @@ namespace SynGlyphXANTz {
 		m_editingMode(Move),
 		m_selectionEdited(false),
 		m_allowMultiSelection(false),
-		m_baseImageTextureID(0)
+		m_baseImageTextureID(0),
+		m_animationEnabled(true)
 	{
 
 
@@ -293,9 +294,7 @@ namespace SynGlyphXANTz {
 
 		glyph->topo = glyphTemplate.GetStructure().GetVirtualTopology();
 
-		glyph->rotateRate.x = glyphTemplate.GetRotationRate()[0];
-		glyph->rotateRate.y = glyphTemplate.GetRotationRate()[1];
-		glyph->rotateRate.z = glyphTemplate.GetRotationRate()[2];
+		UpdateAnimationValuesFromGlyph(glyph, glyphTemplate);
 
 		glyph->ratio = glyphTemplate.GetStructure().GetTorusRatio();
 	}
@@ -492,6 +491,70 @@ namespace SynGlyphXANTz {
 	void ANTzSingleGlyphTreeWidget::DisconnectDataChangedSignal() {
 
 		QObject::disconnect(m_dataChangedConnection);
+	}
+
+	void ANTzSingleGlyphTreeWidget::EnableAnimation(bool enable) {
+
+		m_animationEnabled = enable;
+
+		SynGlyphX::DataMappingGlyphGraph::ConstSharedPtr minMaxGlyphTree = m_model->GetMinMaxGlyphTree();
+
+		if (minMaxGlyphTree && (m_rootGlyph != nullptr)) {
+
+			if (m_animationEnabled) {
+
+				ResetAnimationValuesInTree(m_rootGlyph, minMaxGlyphTree->root());
+			}
+			else {
+
+				TurnOffAnimationInNodeTree(m_rootGlyph);
+			}
+		}
+	}
+
+	void ANTzSingleGlyphTreeWidget::ResetAnimationValuesInTree(pNPnode node, const SynGlyphX::DataMappingGlyphGraph::const_iterator& minMaxGlyph) {
+
+		if (m_glyphTreeType == MinMaxGlyphTreeModel::GlyphType::Min) {
+
+			UpdateAnimationValuesFromGlyph(node, minMaxGlyph->GetMinGlyph());
+		}
+		else {
+
+			UpdateAnimationValuesFromGlyph(node, minMaxGlyph->GetMaxGlyph());
+		}
+
+		for (int i = 0; i < m_model->GetMinMaxGlyphTree()->children(minMaxGlyph); ++i) {
+
+			ResetAnimationValuesInTree(node->child[i], m_model->GetMinMaxGlyphTree()->child(minMaxGlyph, i));
+		}
+	}
+
+	void ANTzSingleGlyphTreeWidget::UpdateAnimationValuesFromGlyph(pNPnode node, const SynGlyphX::Glyph& glyph) {
+
+		if (m_animationEnabled) {
+
+			node->rotateRate.x = glyph.GetRotationRate()[0];
+			node->rotateRate.y = glyph.GetRotationRate()[1];
+			node->rotateRate.z = glyph.GetRotationRate()[2];
+		}
+		else {
+
+			node->rotateRate.x = 0.0;
+			node->rotateRate.y = 0.0;
+			node->rotateRate.z = 0.0;
+		}
+	}
+
+	void ANTzSingleGlyphTreeWidget::TurnOffAnimationInNodeTree(pNPnode node) {
+
+		node->rotateRate.x = 0.0;
+		node->rotateRate.y = 0.0;
+		node->rotateRate.z = 0.0;
+
+		for (int i = 0; i < node->childCount; ++i) {
+
+			TurnOffAnimationInNodeTree(node->child[i]);
+		}
 	}
 
 } //namespace SynGlyphX

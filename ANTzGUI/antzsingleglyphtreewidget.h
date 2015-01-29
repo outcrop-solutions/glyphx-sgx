@@ -50,8 +50,9 @@ namespace SynGlyphXANTz {
 
 		void ShowGlyph(bool show);
 
-		public slots:
+	public slots:
 		void SetEditingMode(EditingMode mode);
+		void EnableAnimation(bool enable);
 
 	protected:
 		virtual void initializeGL();
@@ -63,7 +64,7 @@ namespace SynGlyphXANTz {
 
 		bool IsRootNodeSelected() const;
 
-		private slots:
+	private slots:
 		void UpdateSelection(const QItemSelection& selected, const QItemSelection& deselected);
 		void OnModelReset();
 		void OnModelRowsInserted(const QModelIndex& parent, int first, int last);
@@ -91,6 +92,10 @@ namespace SynGlyphXANTz {
 		void ConnectDataChangedSignal();
 		void DisconnectDataChangedSignal();
 
+		void ResetAnimationValuesInTree(pNPnode node, const SynGlyphX::DataMappingGlyphGraph::const_iterator& minMaxGlyph);
+		void UpdateAnimationValuesFromGlyph(pNPnode node, const SynGlyphX::Glyph& glyph);
+		void TurnOffAnimationInNodeTree(pNPnode node);
+
 		pNPnode m_rootGlyph;
 		unsigned int m_baseImageTextureID;
 
@@ -108,6 +113,8 @@ namespace SynGlyphXANTz {
 
 		MinMaxGlyphTreeModel* m_model;
 		QItemSelectionModel* m_selectionModel;
+
+		bool m_animationEnabled;
 	};
 
 } //namespace SynGlyphXANTz
