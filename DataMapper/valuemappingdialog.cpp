@@ -7,6 +7,7 @@
 #include <QtWidgets/QDialogButtonBox>
 #include <QtWidgets/QMessageBox>
 #include <QtWidgets/QGroupBox>
+#include <QtWidgets/QHeaderView>
 
 ValueMappingDialog::ValueMappingDialog(InputType input, OutputType output, QWidget *parent)
 	: QDialog(parent),
@@ -22,7 +23,7 @@ ValueMappingDialog::ValueMappingDialog(InputType input, OutputType output, QWidg
 	QVBoxLayout* layout = new QVBoxLayout(this);
 
 	QHBoxLayout* defaultLayout = new QHBoxLayout(this);
-	defaultLayout->addWidget(new QLabel(tr("Default")));
+	defaultLayout->addWidget(new QLabel(tr("Default:")));
 	if (m_output == OutputType::Numeric) {
 
 		m_defaultDoubleWidget = new QDoubleSpinBox(this);
@@ -32,18 +33,28 @@ ValueMappingDialog::ValueMappingDialog(InputType input, OutputType output, QWidg
 	else {
 
 		m_defaultColorWidget = new SynGlyphX::ColorButton(false, this);
-		defaultLayout->addWidget(m_defaultDoubleWidget);
+		defaultLayout->addWidget(m_defaultColorWidget);
 	}
+	defaultLayout->addStretch(1);
 	layout->addLayout(defaultLayout);
 
 	m_table = new QTableWidget(this);
 	m_table->setColumnCount(2);
 
 	QStringList headers;
-	headers << "Key";
+	if (m_input == InputType::Range) {
+
+		headers << "Range";
+	}
+	else {
+
+		headers << "Key";
+	}
 	headers << "Value";
 
 	m_table->setHorizontalHeaderLabels(headers);
+	m_table->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+	m_table->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 	m_table->setSelectionMode(QAbstractItemView::SingleSelection);
 	m_table->setSelectionBehavior(QAbstractItemView::SelectRows);
 	m_table->sortByColumn(0, Qt::SortOrder::AscendingOrder);
@@ -51,7 +62,30 @@ ValueMappingDialog::ValueMappingDialog(InputType input, OutputType output, QWidg
 	QObject::connect(m_table, &QTableWidget::itemSelectionChanged, this, &ValueMappingDialog::OnTableSelectionChanged);
 	layout->addWidget(m_table);
 
-	QGroupBox* inputGroupBox = new QGroupBox(tr("New Key Value Pair"), this);
+	QHBoxLayout* clearRemoveLayout = new QHBoxLayout(this);
+
+	m_removeEntryButton = new QPushButton(tr("Remove"), this);
+	QObject::connect(m_removeEntryButton, &QPushButton::clicked, this, &ValueMappingDialog::OnRemoveKeyValue);
+	clearRemoveLayout->addWidget(m_removeEntryButton);
+
+	QPushButton* clearAllButton = new QPushButton(tr("ClearAll"), this);
+	QObject::connect(clearAllButton, &QPushButton::clicked, this, &ValueMappingDialog::OnClearAllKeyValues);
+	clearRemoveLayout->addWidget(clearAllButton);
+
+	clearRemoveLayout->addStretch(1);
+
+	layout->addLayout(clearRemoveLayout);
+
+	QString groupBoxName;
+	if (m_input == InputType::Range) {
+
+		groupBoxName = tr("New Range Value Pair");
+	}
+	else {
+
+		groupBoxName = tr("New Key Value Pair");
+	}
+	QGroupBox* inputGroupBox = new QGroupBox(groupBoxName, this);
 	QHBoxLayout* inputLayout = new QHBoxLayout(inputGroupBox);
 
 	if (m_input == InputType::Range) {
@@ -84,20 +118,12 @@ ValueMappingDialog::ValueMappingDialog(InputType input, OutputType output, QWidg
 		inputLayout->addWidget(m_outputColorWidget);
 	}
 
+	QPushButton* addEntryButton = new QPushButton(tr("Add"), this);
+	QObject::connect(addEntryButton, &QPushButton::clicked, this, &ValueMappingDialog::OnAddKeyValue);
+	inputLayout->addWidget(addEntryButton);
+
 	inputGroupBox->setLayout(inputLayout);
 	layout->addWidget(inputGroupBox);
-
-	QHBoxLayout* addRemoveLayout = new QHBoxLayout(this);
-
-	QPushButton* addEntryButton = new QPushButton(tr("Add Key Value Pair"), this);
-	QObject::connect(addEntryButton, &QPushButton::clicked, this, &ValueMappingDialog::OnAddKeyValue);
-	addRemoveLayout->addWidget(addEntryButton);
-
-	m_removeEntryButton = new QPushButton(tr("Remove Key Value Pair"), this);
-	QObject::connect(m_removeEntryButton, &QPushButton::clicked, this, &ValueMappingDialog::OnRemoveKeyValue);
-	addRemoveLayout->addWidget(m_removeEntryButton);
-
-	layout->addLayout(addRemoveLayout);
 
 	QDialogButtonBox* dialogButtonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, this);
 	layout->addWidget(dialogButtonBox);
@@ -123,6 +149,10 @@ void ValueMappingDialog::OnAddKeyValue() {
 			QMessageBox::warning(this, tr("Error adding new key value pair"), tr("Key value can not be empty"));
 			return;
 		}
+	}
+	else if (m_input == InputType::Range) {
+
+		if ()
 	}
 
 	AddRow();
@@ -185,6 +215,7 @@ void ValueMappingDialog::AddRow() {
 		inputWidget = new QLineEdit(this);
 	}
 
+	inputWidget->setContentsMargins(0, 0, 0, 0);
 	m_table->setCellWidget(row, 0, inputWidget);
 
 	QWidget* outputWidget = nullptr;
@@ -197,7 +228,13 @@ void ValueMappingDialog::AddRow() {
 		outputWidget = new SynGlyphX::ColorButton(this);
 	}
 
+	outputWidget->setContentsMargins(0, 0, 0, 0);
 	m_table->setCellWidget(row, 1, outputWidget);
+}
+
+void ValueMappingDialog::OnClearAllKeyValues() {
+
+	m_table->clear();
 }
 
 ////////////////////////////////////////////////////////////////////////////////

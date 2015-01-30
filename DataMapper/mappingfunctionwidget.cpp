@@ -66,27 +66,55 @@ void MappingFunctionWidget::OnFunctionComboBoxChanged(int index) {
 
 void MappingFunctionWidget::OnEditPropertiesClicked() {
 
+	SynGlyphX::MappingFunctionData::ConstSharedPtr mappingData = m_model->GetMappingFunction(m_row);
 	SynGlyphX::MappingFunctionData::Function function = static_cast<SynGlyphX::MappingFunctionData::Function>(m_functionComboBox->currentData().toInt());
 	
-	if (function == SynGlyphX::MappingFunctionData::Function::Numeric2Value) {
+	if (mappingData->GetSupportedOutput() == SynGlyphX::MappingFunctionData::Output::Color) {
 
-		Numeric2NumericMappingDialog dialog(this);
-		if (dialog.exec() == QDialog::Accepted) {
+		if (mappingData->GetFunction() == SynGlyphX::MappingFunctionData::Function::Numeric2Value) {
 
+			Numeric2ColorMappingDialog dialog(this);
+			if (dialog.exec() == QDialog::Accepted) {
+
+			}
+		}
+		else if (mappingData->GetFunction() == SynGlyphX::MappingFunctionData::Function::Text2Value) {
+
+			Text2ColorMappingDialog dialog(this);
+			if (dialog.exec() == QDialog::Accepted) {
+
+			}
+		}
+		else if (mappingData->GetFunction() == SynGlyphX::MappingFunctionData::Function::Range2Value) {
+
+			Range2ColorMappingDialog dialog(this);
+			if (dialog.exec() == QDialog::Accepted) {
+
+			}
 		}
 	}
-	else if (function == SynGlyphX::MappingFunctionData::Function::Text2Value) {
+	else {
 
-		Text2NumericMappingDialog dialog(this);
-		if (dialog.exec() == QDialog::Accepted) {
+		if (mappingData->GetFunction() == SynGlyphX::MappingFunctionData::Function::Numeric2Value) {
 
+			Numeric2NumericMappingDialog dialog(this);
+			if (dialog.exec() == QDialog::Accepted) {
+
+			}
 		}
-	}
-	else if (function == SynGlyphX::MappingFunctionData::Function::Range2Value) {
+		else if (mappingData->GetFunction() == SynGlyphX::MappingFunctionData::Function::Text2Value) {
 
-		Range2NumericMappingDialog dialog(this);
-		if (dialog.exec() == QDialog::Accepted) {
+			Text2NumericMappingDialog dialog(this);
+			if (dialog.exec() == QDialog::Accepted) {
 
+			}
+		}
+		else if (mappingData->GetFunction() == SynGlyphX::MappingFunctionData::Function::Range2Value) {
+
+			Range2NumericMappingDialog dialog(this);
+			if (dialog.exec() == QDialog::Accepted) {
+
+			}
 		}
 	}
 }

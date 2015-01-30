@@ -182,7 +182,7 @@ void DataBindingWidget::CreateRowOfPropertyWidgets(QGridLayout* layout, QWidget*
 	labelFont.setBold(true);
 	label->setFont(labelFont);
 
-	MappingFunctionWidget* mappingFunctionWidget = new MappingFunctionWidget(m_model, row, this);
+	MappingFunctionWidget* mappingFunctionWidget = new MappingFunctionWidget(m_model, row / 2 - 1, this);
 
 	BindingLineEdit* inputBindingLineEdit = new BindingLineEdit(m_model, this, SynGlyphX::MappingFunctionData::Input::Numeric);
 
@@ -199,7 +199,6 @@ void DataBindingWidget::CreateRowOfPropertyWidgets(QGridLayout* layout, QWidget*
 	layout->addWidget(mappingFunctionWidget, row, 6, Qt::AlignHCenter);
 	layout->addWidget(inputBindingLineEdit, row, 8);
 
-	//QObject::connect(inputBindingLineEdit, &BindingLineEdit::ValueChangedByUser, this, [=]() {if (mapper->submit()) { mapper->setCurrentIndex(row / 2 - 1); } });
 	QObject::connect(mappingFunctionWidget, &MappingFunctionWidget::FunctionChanged, mapper, &QDataWidgetMapper::submit);
 	QObject::connect(mappingFunctionWidget, &MappingFunctionWidget::SupportedInputChanged, inputBindingLineEdit, &BindingLineEdit::SetAcceptedInputTypes);
 	QObject::connect(inputBindingLineEdit, &BindingLineEdit::ValueChangedByUser, mapper, &QDataWidgetMapper::submit);

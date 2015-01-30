@@ -71,7 +71,7 @@ QVariant MinMaxGlyphModel::data(const QModelIndex& index, int role) const {
 		}
 		else {
 
-			return GetDataByRow(const_cast<SynGlyphX::DataMappingGlyph&>(*m_glyph), index);
+			return GetDataByRow(*m_glyph.deconstify(), index);
 		}
 	}
 
@@ -433,5 +433,47 @@ SynGlyphX::MappingFunctionData::SharedPtr MinMaxGlyphModel::CreateNewMappingFunc
 
 			return std::make_shared<SynGlyphX::Range2NumericMappingData>();
 		}
+	}
+}
+
+SynGlyphX::MappingFunctionData::ConstSharedPtr MinMaxGlyphModel::GetMappingFunction(int row) const {
+
+	if ((row >= m_propertyHeaders.size()) || (row < 0)) {
+
+		throw std::invalid_argument("Can't get mapping function when row is less than zero or greater than number of properties");
+	}
+	if (IsTextField(row)) {
+
+		throw std::invalid_argument("Mapping function doesn't apply to text properties");
+	}
+
+	if (IsColorField(row)) {
+
+		return m_glyph->GetColor().GetMappingFunctionData();
+	}
+	else {
+
+		return GetGlyphProperty(*m_glyph.deconstify(), row).GetMappingFunctionData();
+	}
+}
+
+void MinMaxGlyphModel::SetMappingFunction(int row, SynGlyphX::MappingFunctionData::SharedPtr mappingFunction) {
+
+	if ((row >= m_propertyHeaders.size()) || (row < 0)) {
+
+		throw std::invalid_argument("Can't set mapping function when row is less than zero or greater than number of properties");
+	}
+	if (IsTextField(row)) {
+
+		throw std::invalid_argument("Mapping function doesn't apply to text properties");
+	}
+
+	if (IsColorField(row)) {
+
+		m_glyph.deconstify()->GetColor().SetMappingFunctionData(mappingFunction);
+	}
+	else {
+
+		return GetGlyphProperty(*m_glyph.deconstify(), row).SetMappingFunctionData(mappingFunction);
 	}
 }

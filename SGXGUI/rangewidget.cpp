@@ -9,6 +9,7 @@ namespace SynGlyphX {
 		: QWidget(parent)
 	{
 		QHBoxLayout* layout = new QHBoxLayout(this);
+		layout->setContentsMargins(0, 0, 0, 0);
 
 		QLabel* labelMin = new QLabel(tr("Min:"), this);
 		layout->addWidget(labelMin);
@@ -16,7 +17,7 @@ namespace SynGlyphX {
 		m_minSpinBox = new QDoubleSpinBox(this);
 		m_minSpinBox->setKeyboardTracking(false);
 		m_minSpinBox->setDecimals(3);
-		m_minSpinBox->setMinimum(std::numeric_limits<double>::min());
+		m_minSpinBox->setMinimum(-1000000000.0);
 		layout->addWidget(m_minSpinBox);
 		
 		QLabel* labelMax = new QLabel(tr("Max:"), this);
@@ -25,10 +26,14 @@ namespace SynGlyphX {
 		m_maxSpinBox = new QDoubleSpinBox(this);
 		m_maxSpinBox->setKeyboardTracking(false);
 		m_maxSpinBox->setDecimals(3);
-		m_maxSpinBox->setMaximum(std::numeric_limits<double>::max());
+		m_maxSpinBox->setMaximum(1000000000.0);
 		layout->addWidget(m_maxSpinBox);
 
 		setLayout(layout);
+
+		//Make sure spin boxes have different values
+		m_minSpinBox->setValue(0.0);
+		m_maxSpinBox->setValue(1.0);
 	}
 
 	RangeWidget::~RangeWidget()

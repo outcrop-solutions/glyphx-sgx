@@ -43,6 +43,9 @@ public:
 	bool IsCurrentGlyphRoot() const;
 	bool IsClear() const;
 
+	SynGlyphX::MappingFunctionData::ConstSharedPtr GetMappingFunction(int row) const;
+	void SetMappingFunction(int row, SynGlyphX::MappingFunctionData::SharedPtr mappingFunction);
+
 public slots:
 	void SetMinMaxGlyph(const QModelIndex& index);
 	void Clear();

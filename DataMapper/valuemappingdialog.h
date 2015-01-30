@@ -52,6 +52,7 @@ protected slots:
 	void OnAddKeyValue();
 	void OnRemoveKeyValue();
 	void OnTableSelectionChanged();
+	void OnClearAllKeyValues();
 
 protected:
 	void AddRow();
