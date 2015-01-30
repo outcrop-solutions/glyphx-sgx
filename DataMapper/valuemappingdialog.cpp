@@ -150,10 +150,6 @@ void ValueMappingDialog::OnAddKeyValue() {
 			return;
 		}
 	}
-	else if (m_input == InputType::Range) {
-
-		if ()
-	}
 
 	AddRow();
 
