@@ -5,20 +5,22 @@
 #include <QtWidgets/QComboBox>
 #include <QtWidgets/QPushButton>
 #include "datamappingfunction.h"
+#include "minmaxglyphmodel.h"
 
 class MappingFunctionWidget : public QWidget
 {
 	Q_OBJECT
-	Q_PROPERTY(QString value READ GetFunction WRITE SetFunction USER true)
+	Q_PROPERTY(QString function READ GetFunction WRITE SetFunction USER true)
 
 public:
-	MappingFunctionWidget(QWidget *parent);
+	MappingFunctionWidget(MinMaxGlyphModel* model, int row, QWidget *parent);
 	~MappingFunctionWidget();
 
 	QString GetFunction() const;
 
 signals:
 	void SupportedInputChanged(SynGlyphX::MappingFunctionData::Input supportedInput);
+	void FunctionChanged();
 
 public slots:
 	void SetFunction(const QString& function);
@@ -30,6 +32,8 @@ private slots:
 private:
 	QComboBox* m_functionComboBox;
 	QPushButton* m_editPropertiesButton;
+	MinMaxGlyphModel* m_model;
+	int m_row;
 };
 
 #endif // MAPPINGFUNCTIONWIDGET_H

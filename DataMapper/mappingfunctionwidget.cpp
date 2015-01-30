@@ -1,9 +1,12 @@
 #include "mappingfunctionwidget.h"
 #include "datamappingfunction.h"
 #include <QtWidgets/QHBoxLayout>
+#include "valuemappingdialog.h"
 
-MappingFunctionWidget::MappingFunctionWidget(QWidget *parent)
-	: QWidget(parent)
+MappingFunctionWidget::MappingFunctionWidget(MinMaxGlyphModel* model, int row, QWidget *parent)
+	: QWidget(parent),
+	m_model(model),
+	m_row(row)
 {
 	QHBoxLayout* layout = new QHBoxLayout(this);
 	layout->setContentsMargins(1, 1, 1, 1);
@@ -19,6 +22,7 @@ MappingFunctionWidget::MappingFunctionWidget(QWidget *parent)
 
 	m_editPropertiesButton = new QPushButton(tr("Edit Properties"), this);
 	m_editPropertiesButton->setEnabled(false);
+	QObject::connect(m_editPropertiesButton, &QPushButton::clicked, this, &MappingFunctionWidget::OnEditPropertiesClicked);
 	layout->addWidget(m_editPropertiesButton);
 
 	setLayout(layout);
@@ -36,14 +40,19 @@ QString MappingFunctionWidget::GetFunction() const {
 
 void MappingFunctionWidget::SetFunction(const QString& function) {
 
-	m_functionComboBox->setCurrentText(function);
+	if (m_functionComboBox->currentText() != function) {
+
+		m_functionComboBox->setCurrentText(function);
+	}
 }
 
 void MappingFunctionWidget::OnFunctionComboBoxChanged(int index) {
 
-	SynGlyphX::MappingFunctionData::Function function = static_cast<SynGlyphX::MappingFunctionData::Function>(m_functionComboBox->itemData(index).toInt());
+	SynGlyphX::MappingFunctionData::Function function = static_cast<SynGlyphX::MappingFunctionData::Function>(m_functionComboBox->currentData().toInt());
 	bool isNotInterpolation = ((function != SynGlyphX::MappingFunctionData::LinearInterpolation) || (function != SynGlyphX::MappingFunctionData::LogarithmicInterpolation));
 	m_editPropertiesButton->setEnabled(isNotInterpolation);
+
+	emit FunctionChanged();
 
 	if (function == SynGlyphX::MappingFunctionData::Function::Text2Value) {
 
@@ -57,5 +66,27 @@ void MappingFunctionWidget::OnFunctionComboBoxChanged(int index) {
 
 void MappingFunctionWidget::OnEditPropertiesClicked() {
 
+	SynGlyphX::MappingFunctionData::Function function = static_cast<SynGlyphX::MappingFunctionData::Function>(m_functionComboBox->currentData().toInt());
+	
+	if (function == SynGlyphX::MappingFunctionData::Function::Numeric2Value) {
 
+		Numeric2NumericMappingDialog dialog(this);
+		if (dialog.exec() == QDialog::Accepted) {
+
+		}
+	}
+	else if (function == SynGlyphX::MappingFunctionData::Function::Text2Value) {
+
+		Text2NumericMappingDialog dialog(this);
+		if (dialog.exec() == QDialog::Accepted) {
+
+		}
+	}
+	else if (function == SynGlyphX::MappingFunctionData::Function::Range2Value) {
+
+		Range2NumericMappingDialog dialog(this);
+		if (dialog.exec() == QDialog::Accepted) {
+
+		}
+	}
 }

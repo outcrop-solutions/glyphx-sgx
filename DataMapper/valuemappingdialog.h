@@ -21,8 +21,10 @@
 #include <QtWidgets/QDialog>
 #include <QtWidgets/QDoubleSpinBox>
 #include <QtWidgets/QTableWidget>
-#include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QLineEdit>
+#include <QtWidgets/QPushButton>
 #include "colorbutton.h"
+#include "rangewidget.h"
 #include "valuemappingfunction.h"
 
 class ValueMappingDialog : public QDialog
@@ -30,33 +32,118 @@ class ValueMappingDialog : public QDialog
 	Q_OBJECT
 
 public:
-	/*enum Output {
-		
-		Numeric = 0x0,
-		Color = 0x1
+	enum class InputType {
+		Numeric,
+		Text,
+		Range
 	};
 
-	enum Input {
-
-		Numeric = 0x0,
-		Text = 0x1,
-		Range = 0x2
-	};*/
-
-	ValueMappingDialog(QWidget *parent);
-	~ValueMappingDialog();
+	enum class OutputType {
+		Numeric,
+		Color
+	};
+	ValueMappingDialog(InputType input, OutputType output, QWidget *parent);
+	virtual ~ValueMappingDialog();
 
 	//void SetDialogFromMapping(SynGlyphX::ValueMappingData<OutputType, InputType, KeyType>::ConstSharedPtr mapping);
 	//SynGlyphX::ValueMappingData<OutputType, InputType, KeyType>::SharedPtr GetMappingFromDialog() const;
 
+protected slots:
+	void OnAddKeyValue();
+	void OnRemoveKeyValue();
+	void OnTableSelectionChanged();
+
 protected:
-	void SetupDialog();
-	void SetupDialogLayout(QWidget* defaultWidget, QHBoxLayout* editLayout);
+	void AddRow();
+
+	QTableWidget* m_table;
 
 	QDoubleSpinBox* m_defaultDoubleWidget;
 	SynGlyphX::ColorButton* m_defaultColorWidget;
 
-	QTableWidget* m_table;
+	SynGlyphX::RangeWidget* m_inputRangeWidget;
+	QDoubleSpinBox* m_inputDoubleWidget;
+	QLineEdit* m_inputTextWidget;
+	QDoubleSpinBox* m_outputDoubleWidget;
+	SynGlyphX::ColorButton* m_outputColorWidget;
+
+	QPushButton* m_removeEntryButton;
+
+private:
+	InputType m_input;
+	OutputType m_output;
+};
+
+class Numeric2NumericMappingDialog : public ValueMappingDialog
+{
+	Q_OBJECT
+
+public:
+	Numeric2NumericMappingDialog(QWidget *parent);
+	virtual ~Numeric2NumericMappingDialog();
+
+protected:
+	
+};
+
+class Numeric2ColorMappingDialog : public ValueMappingDialog
+{
+	Q_OBJECT
+
+public:
+	Numeric2ColorMappingDialog(QWidget *parent);
+	virtual ~Numeric2ColorMappingDialog();
+
+protected:
+	
+};
+
+class Text2NumericMappingDialog : public ValueMappingDialog
+{
+	Q_OBJECT
+
+public:
+	Text2NumericMappingDialog(QWidget *parent);
+	virtual ~Text2NumericMappingDialog();
+
+protected:
+	
+};
+
+class Text2ColorMappingDialog : public ValueMappingDialog
+{
+	Q_OBJECT
+
+public:
+	Text2ColorMappingDialog(QWidget *parent);
+	virtual ~Text2ColorMappingDialog();
+
+protected:
+	
+};
+
+class Range2NumericMappingDialog : public ValueMappingDialog
+{
+	Q_OBJECT
+
+public:
+	Range2NumericMappingDialog(QWidget *parent);
+	virtual ~Range2NumericMappingDialog();
+
+protected:
+
+};
+
+class Range2ColorMappingDialog : public ValueMappingDialog
+{
+	Q_OBJECT
+
+public:
+	Range2ColorMappingDialog(QWidget *parent);
+	virtual ~Range2ColorMappingDialog();
+
+protected:
+
 };
 
 #endif // VALUEMAPPINGDIALOG_H

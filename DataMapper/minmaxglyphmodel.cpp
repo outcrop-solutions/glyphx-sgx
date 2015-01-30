@@ -3,6 +3,8 @@
 #include "sourcedatamanager.h"
 #include <QtWidgets/QMessageBox>
 #include <stack>
+#include "interpolationmappingfunction.h"
+#include "valuemappingfunction.h"
 
 MinMaxGlyphModel::MinMaxGlyphModel(DataTransformModel* dataTransformModel, QObject *parent)
 	: QAbstractTableModel(parent),
@@ -297,7 +299,11 @@ bool MinMaxGlyphModel::SetDataByRow(SynGlyphX::DataMappingGlyph& glyph, const QV
 
 			QColor color = value.value < QColor >();
 			std::pair<SynGlyphX::GlyphColor, SynGlyphX::GlyphColor>& colorMinMax = glyph.GetColor().GetValue();
-			if (index.column() == 0) {
+			if (index.column() == 2) {
+
+				glyph.GetColor().SetMappingFunctionData(CreateNewMappingFunction(SynGlyphX::MappingFunctionData::s_functionNames.right.at(value.toString().toStdWString()), true));
+			}
+			else if (index.column() == 0) {
 
 				colorMinMax.second.Set(0, colorMinMax.second[0] - (color.red() - colorMinMax.first[0]));
 				colorMinMax.second.Set(1, colorMinMax.second[1] - (color.green() - colorMinMax.first[1]));
@@ -315,6 +321,10 @@ bool MinMaxGlyphModel::SetDataByRow(SynGlyphX::DataMappingGlyph& glyph, const QV
 
 			double newValue = value.toDouble();
 			SynGlyphX::NumericMappingProperty& prop = GetGlyphProperty(glyph, row);
+			if (index.column() == 2) {
+
+				prop.SetMappingFunctionData(CreateNewMappingFunction(SynGlyphX::MappingFunctionData::s_functionNames.right.at(value.toString().toStdWString()), false));
+			}
 			if (index.column() == 0) {
 
 				prop.GetValue().second -= (newValue - prop.GetValue().first);
@@ -385,4 +395,43 @@ bool MinMaxGlyphModel::IsTextField(int row) const {
 bool MinMaxGlyphModel::IsColorField(int row) const {
 
 	return (row == 9);
+}
+
+SynGlyphX::MappingFunctionData::SharedPtr MinMaxGlyphModel::CreateNewMappingFunction(SynGlyphX::MappingFunctionData::Function function, bool isColor) const {
+
+	if ((function == SynGlyphX::MappingFunctionData::Function::LinearInterpolation) || (function == SynGlyphX::MappingFunctionData::Function::LogarithmicInterpolation)) {
+
+		return std::make_shared<SynGlyphX::InterpolationMappingData>();
+	}
+
+	if (isColor) {
+
+		if (function == SynGlyphX::MappingFunctionData::Function::Numeric2Value) {
+
+			return std::make_shared<SynGlyphX::Numeric2ColorMappingData>();
+		}
+		else if (function == SynGlyphX::MappingFunctionData::Function::Text2Value) {
+
+			return std::make_shared<SynGlyphX::Text2ColorMappingData>();
+		}
+		else if (function == SynGlyphX::MappingFunctionData::Function::Range2Value) {
+
+			return std::make_shared<SynGlyphX::Range2ColorMappingData>();
+		}
+	}
+	else {
+
+		if (function == SynGlyphX::MappingFunctionData::Function::Numeric2Value) {
+
+			return std::make_shared<SynGlyphX::Numeric2NumericMappingData>();
+		}
+		else if (function == SynGlyphX::MappingFunctionData::Function::Text2Value) {
+
+			return std::make_shared<SynGlyphX::Text2NumericMappingData>();
+		}
+		else if (function == SynGlyphX::MappingFunctionData::Function::Range2Value) {
+
+			return std::make_shared<SynGlyphX::Range2NumericMappingData>();
+		}
+	}
 }

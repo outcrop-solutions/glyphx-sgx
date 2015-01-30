@@ -21,6 +21,7 @@
 #include <QtCore/QAbstractTableModel>
 #include "datamappingglyphgraph.h"
 #include "datatransformmodel.h"
+#include "datamappingfunction.h"
 
 class MinMaxGlyphModel : public QAbstractTableModel
 {
@@ -53,6 +54,7 @@ private:
 	SynGlyphX::NumericMappingProperty& GetGlyphProperty(SynGlyphX::DataMappingGlyph& glyph, int row) const;
 	bool IsTextField(int row) const;
 	bool IsColorField(int row) const;
+	SynGlyphX::MappingFunctionData::SharedPtr CreateNewMappingFunction(SynGlyphX::MappingFunctionData::Function function, bool isColor) const;
 
 	SynGlyphX::DataMappingGlyphGraph::const_iterator m_glyph;
 	SynGlyphX::DataMappingGlyphGraph::ConstSharedPtr m_glyphTree;
