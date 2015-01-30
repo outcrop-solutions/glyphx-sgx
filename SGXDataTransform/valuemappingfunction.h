@@ -50,6 +50,8 @@ namespace SynGlyphX {
 
 		OutputType GetOutputValueFromInput(const InputType& input) const;
 
+		virtual Output GetSupportedOutput() const;
+
 	private:
 		bool DoesInputMatch(const Range& range, const double& input) const;
 		bool DoesInputMatch(const std::wstring& key, const std::wstring& input) const;

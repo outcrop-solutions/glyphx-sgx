@@ -57,6 +57,11 @@ namespace SynGlyphX {
 		return false;
 	}
 
+	MappingFunctionData::Output MappingFunctionData::GetSupportedOutput() const {
+
+		return Output::All;
+	}
+
 	/*
 	template<typename OutputType, typename InputType>
 	DataMappingFunction<OutputType, InputType>::DataMappingFunction(std::shared_ptr<const InputCombinationFunction<InputType>> inputCombinationFunction) :

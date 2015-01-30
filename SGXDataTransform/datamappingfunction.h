@@ -38,10 +38,17 @@ namespace SynGlyphX {
 			Range2Value
 		};
 
-		enum Input {
+		enum class Input {
 
 			Numeric = 0x01,
 			Text = 0x02,
+			All = 0x0F
+		};
+
+		enum class Output {
+
+			Numeric = 0x01,
+			Color = 0x02,
 			All = 0x0F
 		};
 
@@ -62,6 +69,8 @@ namespace SynGlyphX {
 		Function GetFunction() const;
 		virtual Input GetSupportedInput() const = 0;
 		virtual bool NeedsDataOtherThanMinMax() const;
+
+		virtual Output GetSupportedOutput() const;
 
 		static const FunctionBimap s_functionNames;
 

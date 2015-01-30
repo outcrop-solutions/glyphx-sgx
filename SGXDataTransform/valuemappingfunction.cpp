@@ -113,6 +113,19 @@ namespace SynGlyphX {
 	}
 
 	template <typename OutputType, typename InputType, typename KeyType>
+	MappingFunctionData::Output ValueMappingData<OutputType, InputType, KeyType>::GetSupportedOutput() const {
+
+		if (std::is_same<GlyphColor, OutputType>::value) {
+
+			return Output::Color;
+		}
+		else {
+
+			return Output::Numeric;
+		}
+	}
+
+	template <typename OutputType, typename InputType, typename KeyType>
 	bool ValueMappingData<OutputType, InputType, KeyType>::DoesInputMatch(const Range& range, const double& input) const {
 
 		return (range.IsValueInRange(input));

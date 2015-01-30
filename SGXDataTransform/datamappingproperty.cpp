@@ -238,7 +238,7 @@ namespace SynGlyphX {
 	}
 
 	template<typename PropertyType>
-	MappingFunctionData::SharedPtr DataMappingProperty<PropertyType>::GetMappingFunctionData() {
+	MappingFunctionData::ConstSharedPtr DataMappingProperty<PropertyType>::GetMappingFunctionData() const {
 
 		return m_mappingFunctionData;
 	}

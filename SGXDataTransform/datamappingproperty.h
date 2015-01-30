@@ -50,7 +50,7 @@ namespace SynGlyphX {
 		InputBinding& GetBinding();
 		const InputBinding& GetBinding() const;
 
-		MappingFunctionData::SharedPtr GetMappingFunctionData();
+		MappingFunctionData::ConstSharedPtr GetMappingFunctionData() const;
 		void SetMappingFunctionData(MappingFunctionData::SharedPtr mappingFunctionData);
 
 	protected:
