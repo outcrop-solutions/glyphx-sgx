@@ -43,6 +43,10 @@ namespace SynGlyphX {
 		void SetDefaultValue(const OutputType& defaultValue);
 		const OutputType& GetDefaultValue() const;
 
+		void AddKeyValueIntoMap(const KeyType& key, const OutputType& output);
+		void ClearKeyValueMap();
+		const std::map<KeyType, OutputType>& GetKeyValueMap() const;
+
 		virtual Input GetSupportedInput() const;
 		virtual bool NeedsDataOtherThanMinMax() const;
 

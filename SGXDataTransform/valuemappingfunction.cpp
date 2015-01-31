@@ -62,6 +62,24 @@ namespace SynGlyphX {
 	}
 
 	template <typename OutputType, typename InputType, typename KeyType>
+	void ValueMappingData<OutputType, InputType, KeyType>::AddKeyValueIntoMap(const KeyType& key, const OutputType& output) {
+
+		m_mappedValues[key] = output;
+	}
+
+	template <typename OutputType, typename InputType, typename KeyType>
+	void ValueMappingData<OutputType, InputType, KeyType>::ClearKeyValueMap() {
+
+		m_mappedValues.clear();
+	}
+
+	template <typename OutputType, typename InputType, typename KeyType>
+	const std::map<KeyType, OutputType>& ValueMappingData<OutputType, InputType, KeyType>::GetKeyValueMap() const {
+
+		return m_mappedValues;
+	}
+
+	template <typename OutputType, typename InputType, typename KeyType>
 	MappingFunctionData::Input ValueMappingData<OutputType, InputType, KeyType>::GetSupportedInput() const {
 
 		if (std::is_arithmetic<InputType>::value) {
