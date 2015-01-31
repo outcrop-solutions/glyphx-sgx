@@ -26,6 +26,7 @@
 #include "colorbutton.h"
 #include "rangewidget.h"
 #include "valuemappingfunction.h"
+#include <set>
 
 class ValueMappingDialog : public QDialog
 {
@@ -70,6 +71,10 @@ protected:
 
 	QPushButton* m_removeEntryButton;
 
+	std::set<double> m_doubleInputValues;
+	std::set<std::wstring> m_textInputValues;
+	std::set<SynGlyphX::Range> m_rangeInputValues;
+
 private:
 	InputType m_input;
 	OutputType m_output;
@@ -83,6 +88,9 @@ public:
 	Numeric2NumericMappingDialog(QWidget *parent);
 	virtual ~Numeric2NumericMappingDialog();
 
+	void SetDialogFromMapping(SynGlyphX::Numeric2NumericMappingData::ConstSharedPtr mapping);
+	SynGlyphX::Numeric2NumericMappingData::SharedPtr GetMappingFromDialog() const;
+
 protected:
 	
 };
@@ -94,6 +102,9 @@ class Numeric2ColorMappingDialog : public ValueMappingDialog
 public:
 	Numeric2ColorMappingDialog(QWidget *parent);
 	virtual ~Numeric2ColorMappingDialog();
+
+	void SetDialogFromMapping(SynGlyphX::Numeric2ColorMappingData::ConstSharedPtr mapping);
+	SynGlyphX::Numeric2ColorMappingData::SharedPtr GetMappingFromDialog() const;
 
 protected:
 	
@@ -107,6 +118,9 @@ public:
 	Text2NumericMappingDialog(QWidget *parent);
 	virtual ~Text2NumericMappingDialog();
 
+	void SetDialogFromMapping(SynGlyphX::Text2NumericMappingData::ConstSharedPtr mapping);
+	SynGlyphX::Text2NumericMappingData::SharedPtr GetMappingFromDialog() const;
+
 protected:
 	
 };
@@ -118,6 +132,9 @@ class Text2ColorMappingDialog : public ValueMappingDialog
 public:
 	Text2ColorMappingDialog(QWidget *parent);
 	virtual ~Text2ColorMappingDialog();
+
+	void SetDialogFromMapping(SynGlyphX::Text2ColorMappingData::ConstSharedPtr mapping);
+	SynGlyphX::Text2ColorMappingData::SharedPtr GetMappingFromDialog() const;
 
 protected:
 	
@@ -131,6 +148,9 @@ public:
 	Range2NumericMappingDialog(QWidget *parent);
 	virtual ~Range2NumericMappingDialog();
 
+	void SetDialogFromMapping(SynGlyphX::Range2NumericMappingData::ConstSharedPtr mapping);
+	SynGlyphX::Range2NumericMappingData::SharedPtr GetMappingFromDialog() const;
+
 protected:
 
 };
@@ -142,6 +162,9 @@ class Range2ColorMappingDialog : public ValueMappingDialog
 public:
 	Range2ColorMappingDialog(QWidget *parent);
 	virtual ~Range2ColorMappingDialog();
+
+	void SetDialogFromMapping(SynGlyphX::Range2ColorMappingData::ConstSharedPtr mapping);
+	SynGlyphX::Range2ColorMappingData::SharedPtr GetMappingFromDialog() const;
 
 protected:
 
