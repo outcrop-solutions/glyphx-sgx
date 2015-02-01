@@ -68,28 +68,35 @@ void MappingFunctionWidget::OnEditPropertiesClicked() {
 
 	SynGlyphX::MappingFunctionData::ConstSharedPtr mappingData = m_model->GetMappingFunction(m_row);
 	SynGlyphX::MappingFunctionData::Function function = static_cast<SynGlyphX::MappingFunctionData::Function>(m_functionComboBox->currentData().toInt());
+	SynGlyphX::MappingFunctionData::SharedPtr newMappingData;
 	
 	if (mappingData->GetSupportedOutput() == SynGlyphX::MappingFunctionData::Output::Color) {
 
 		if (mappingData->GetFunction() == SynGlyphX::MappingFunctionData::Function::Numeric2Value) {
 
 			Numeric2ColorMappingDialog dialog(this);
+			dialog.SetDialogFromMapping(std::dynamic_pointer_cast<const SynGlyphX::Numeric2ColorMappingData>(mappingData));
 			if (dialog.exec() == QDialog::Accepted) {
-
+				
+				newMappingData = dialog.GetMappingFromDialog();
 			}
 		}
 		else if (mappingData->GetFunction() == SynGlyphX::MappingFunctionData::Function::Text2Value) {
 
 			Text2ColorMappingDialog dialog(this);
+			dialog.SetDialogFromMapping(std::dynamic_pointer_cast<const SynGlyphX::Text2ColorMappingData>(mappingData));
 			if (dialog.exec() == QDialog::Accepted) {
-
+				
+				newMappingData = dialog.GetMappingFromDialog();
 			}
 		}
 		else if (mappingData->GetFunction() == SynGlyphX::MappingFunctionData::Function::Range2Value) {
 
 			Range2ColorMappingDialog dialog(this);
+			dialog.SetDialogFromMapping(std::dynamic_pointer_cast<const SynGlyphX::Range2ColorMappingData>(mappingData));
 			if (dialog.exec() == QDialog::Accepted) {
-
+				
+				newMappingData = dialog.GetMappingFromDialog();
 			}
 		}
 	}
@@ -98,23 +105,34 @@ void MappingFunctionWidget::OnEditPropertiesClicked() {
 		if (mappingData->GetFunction() == SynGlyphX::MappingFunctionData::Function::Numeric2Value) {
 
 			Numeric2NumericMappingDialog dialog(this);
+			dialog.SetDialogFromMapping(std::dynamic_pointer_cast<const SynGlyphX::Numeric2NumericMappingData>(mappingData));
 			if (dialog.exec() == QDialog::Accepted) {
-
+				
+				newMappingData = dialog.GetMappingFromDialog();
 			}
 		}
 		else if (mappingData->GetFunction() == SynGlyphX::MappingFunctionData::Function::Text2Value) {
 
 			Text2NumericMappingDialog dialog(this);
+			dialog.SetDialogFromMapping(std::dynamic_pointer_cast<const SynGlyphX::Text2NumericMappingData>(mappingData));
 			if (dialog.exec() == QDialog::Accepted) {
-
+				
+				newMappingData = dialog.GetMappingFromDialog();
 			}
 		}
 		else if (mappingData->GetFunction() == SynGlyphX::MappingFunctionData::Function::Range2Value) {
 
 			Range2NumericMappingDialog dialog(this);
+			dialog.SetDialogFromMapping(std::dynamic_pointer_cast<const SynGlyphX::Range2NumericMappingData>(mappingData));
 			if (dialog.exec() == QDialog::Accepted) {
-
+				
+				newMappingData = dialog.GetMappingFromDialog();
 			}
 		}
+	}
+
+	if (newMappingData) {
+
+		m_model->SetMappingFunction(m_row, newMappingData);
 	}
 }
