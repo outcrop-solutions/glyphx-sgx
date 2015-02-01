@@ -325,7 +325,7 @@ bool MinMaxGlyphModel::SetDataByRow(SynGlyphX::DataMappingGlyph& glyph, const QV
 
 				prop.SetMappingFunctionData(CreateNewMappingFunction(SynGlyphX::MappingFunctionData::s_functionNames.right.at(value.toString().toStdWString()), false));
 			}
-			if (index.column() == 0) {
+			else if (index.column() == 0) {
 
 				prop.GetValue().second -= (newValue - prop.GetValue().first);
 				prop.GetValue().first = newValue;
