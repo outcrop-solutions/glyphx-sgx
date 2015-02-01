@@ -30,8 +30,8 @@ namespace SynGlyphX {
 	class SGXDATATRANSFORM_EXPORT ValueMappingData : public MappingFunctionData
 	{
 	public:
-		typedef std::shared_ptr<ValueMappingData<OutputType,InputType>> SharedPtr;
-		typedef std::shared_ptr<const ValueMappingData<OutputType, InputType>> ConstSharedPtr;
+		typedef std::shared_ptr<ValueMappingData<OutputType,InputType, KeyType>> SharedPtr;
+		typedef std::shared_ptr<const ValueMappingData<OutputType, InputType, KeyType>> ConstSharedPtr;
 
 		ValueMappingData();
 		ValueMappingData(const boost::property_tree::wptree& propertyTree);
