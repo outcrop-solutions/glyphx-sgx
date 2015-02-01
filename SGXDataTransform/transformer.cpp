@@ -4,6 +4,8 @@
 #include <QtCore/QVariant>
 #include <stdexcept>
 #include <boost/filesystem.hpp>
+#include "interpolationmappingfunction.h"
+#include "valuemappingfunction.h"
 
 namespace SynGlyphX {
 
@@ -97,45 +99,45 @@ namespace SynGlyphX {
 
 		const DataMappingGlyphGraph* minMaxGlyphTree = static_cast<const DataMappingGlyphGraph*>(minMaxGlyph.owner());
 
-		Glyph difference = minMaxGlyph->GetDifference();
-		Glyph glyph = minMaxGlyph->GetMinGlyph();
+		Glyph glyph;
+		glyph.GetStructure() = minMaxGlyph->GetStructure();
 
 		Vector3 mappedVector3;
 
-		if ((minMaxGlyphTree->root() == minMaxGlyph) && (m_overrideRootXYBoundingBox.IsValid())){
+		if ((minMaxGlyphTree->root() == minMaxGlyph) && (m_overrideRootXYBoundingBox.IsValid())) {
 
 			InputBinding xBinding(minMaxGlyph->GetInputBinding(DataMappingGlyph::MappableField::PositionX).GetInputFieldID());
 			xBinding.SetMinMaxOverride(m_overrideRootXYBoundingBox.GetSWCorner().get<0>(), m_overrideRootXYBoundingBox.GetNECorner().get<0>());
-			glyph.GetPosition()[0] = LinearInterpolate(xBinding, glyph.GetPosition()[0], difference.GetPosition()[0], queryResultData, index);
+			glyph.GetPosition()[0] = TransformProperty(xBinding, minMaxGlyph->GetPosition()[0], queryResultData, index);
 
 			InputBinding yBinding(minMaxGlyph->GetInputBinding(DataMappingGlyph::MappableField::PositionY).GetInputFieldID());
 			yBinding.SetMinMaxOverride(m_overrideRootXYBoundingBox.GetSWCorner().get<1>(), m_overrideRootXYBoundingBox.GetNECorner().get<1>());
-			glyph.GetPosition()[1] = LinearInterpolate(yBinding, glyph.GetPosition()[1], difference.GetPosition()[1], queryResultData, index);
+			glyph.GetPosition()[1] = TransformProperty(yBinding, minMaxGlyph->GetPosition()[1], queryResultData, index);
 		}
 		else {
 
-			glyph.GetPosition()[0] = LinearInterpolate(minMaxGlyph->GetInputBinding(DataMappingGlyph::MappableField::PositionX), glyph.GetPosition()[0], difference.GetPosition()[0], queryResultData, index);
-			glyph.GetPosition()[1] = LinearInterpolate(minMaxGlyph->GetInputBinding(DataMappingGlyph::MappableField::PositionY), glyph.GetPosition()[1], difference.GetPosition()[1], queryResultData, index);
+			glyph.GetPosition()[0] = TransformProperty(minMaxGlyph->GetInputBinding(DataMappingGlyph::MappableField::PositionX), minMaxGlyph->GetPosition()[0], queryResultData, index);
+			glyph.GetPosition()[1] = TransformProperty(minMaxGlyph->GetInputBinding(DataMappingGlyph::MappableField::PositionY), minMaxGlyph->GetPosition()[1], queryResultData, index);
 		}
 
-		glyph.GetPosition()[2] = LinearInterpolate(minMaxGlyph->GetInputBinding(DataMappingGlyph::MappableField::PositionZ), glyph.GetPosition()[2], difference.GetPosition()[2], queryResultData, index);
+		glyph.GetPosition()[2] = TransformProperty(minMaxGlyph->GetInputBinding(DataMappingGlyph::MappableField::PositionZ), minMaxGlyph->GetPosition()[2], queryResultData, index);
 
-		glyph.GetRotation()[0] = LinearInterpolate(minMaxGlyph->GetInputBinding(DataMappingGlyph::MappableField::RotationX), glyph.GetRotation()[0], difference.GetRotation()[0], queryResultData, index);
-		glyph.GetRotation()[1] = LinearInterpolate(minMaxGlyph->GetInputBinding(DataMappingGlyph::MappableField::RotationY), glyph.GetRotation()[1], difference.GetRotation()[1], queryResultData, index);
-		glyph.GetRotation()[2] = LinearInterpolate(minMaxGlyph->GetInputBinding(DataMappingGlyph::MappableField::RotationZ), glyph.GetRotation()[2], difference.GetRotation()[2], queryResultData, index);
+		glyph.GetRotation()[0] = TransformProperty(minMaxGlyph->GetInputBinding(DataMappingGlyph::MappableField::RotationX), minMaxGlyph->GetRotation()[0], queryResultData, index);
+		glyph.GetRotation()[1] = TransformProperty(minMaxGlyph->GetInputBinding(DataMappingGlyph::MappableField::RotationY), minMaxGlyph->GetRotation()[1], queryResultData, index);
+		glyph.GetRotation()[2] = TransformProperty(minMaxGlyph->GetInputBinding(DataMappingGlyph::MappableField::RotationZ), minMaxGlyph->GetRotation()[2], queryResultData, index);
 
-		glyph.GetScale()[0] = LinearInterpolate(minMaxGlyph->GetInputBinding(DataMappingGlyph::MappableField::ScaleX), glyph.GetScale()[0], difference.GetScale()[0], queryResultData, index);
-		glyph.GetScale()[1] = LinearInterpolate(minMaxGlyph->GetInputBinding(DataMappingGlyph::MappableField::ScaleY), glyph.GetScale()[1], difference.GetScale()[1], queryResultData, index);
-		glyph.GetScale()[2] = LinearInterpolate(minMaxGlyph->GetInputBinding(DataMappingGlyph::MappableField::ScaleZ), glyph.GetScale()[2], difference.GetScale()[2], queryResultData, index);
+		glyph.GetScale()[0] = TransformProperty(minMaxGlyph->GetInputBinding(DataMappingGlyph::MappableField::ScaleX), minMaxGlyph->GetScale()[0], queryResultData, index);
+		glyph.GetScale()[1] = TransformProperty(minMaxGlyph->GetInputBinding(DataMappingGlyph::MappableField::ScaleY), minMaxGlyph->GetScale()[1], queryResultData, index);
+		glyph.GetScale()[2] = TransformProperty(minMaxGlyph->GetInputBinding(DataMappingGlyph::MappableField::ScaleZ), minMaxGlyph->GetScale()[2], queryResultData, index);
 
-		glyph.GetColor() = ColorRGBInterpolate(minMaxGlyph->GetInputBinding(DataMappingGlyph::MappableField::Color), glyph.GetColor(), difference.GetColor(), queryResultData, index);
-		glyph.GetTransparency() = LinearInterpolate(minMaxGlyph->GetInputBinding(DataMappingGlyph::MappableField::Transparency), glyph.GetTransparency(), difference.GetTransparency(), queryResultData, index);
+		glyph.GetColor() = TransformProperty(minMaxGlyph->GetInputBinding(DataMappingGlyph::MappableField::Color), minMaxGlyph->GetColor(), queryResultData, index);
+		glyph.GetTransparency() = TransformProperty(minMaxGlyph->GetInputBinding(DataMappingGlyph::MappableField::Transparency), minMaxGlyph->GetTransparency(), queryResultData, index);
 
 		glyph.GetTag() = GenerateTag(minMaxGlyph, queryResultData, index);
 
-		glyph.GetRotationRate()[0] = LinearInterpolate(minMaxGlyph->GetInputBinding(DataMappingGlyph::MappableField::RotationRateX), glyph.GetRotationRate()[0], difference.GetRotationRate()[0], queryResultData, index);
-		glyph.GetRotationRate()[1] = LinearInterpolate(minMaxGlyph->GetInputBinding(DataMappingGlyph::MappableField::RotationRateY), glyph.GetRotationRate()[1], difference.GetRotationRate()[1], queryResultData, index);
-		glyph.GetRotationRate()[2] = LinearInterpolate(minMaxGlyph->GetInputBinding(DataMappingGlyph::MappableField::RotationRateZ), glyph.GetRotationRate()[2], difference.GetRotationRate()[2], queryResultData, index);
+		glyph.GetRotationRate()[0] = TransformProperty(minMaxGlyph->GetInputBinding(DataMappingGlyph::MappableField::RotationRateX), minMaxGlyph->GetRotationRate()[0], queryResultData, index);
+		glyph.GetRotationRate()[1] = TransformProperty(minMaxGlyph->GetInputBinding(DataMappingGlyph::MappableField::RotationRateY), minMaxGlyph->GetRotationRate()[1], queryResultData, index);
+		glyph.GetRotationRate()[2] = TransformProperty(minMaxGlyph->GetInputBinding(DataMappingGlyph::MappableField::RotationRateZ), minMaxGlyph->GetRotationRate()[2], queryResultData, index);
 
 		return glyph;
 	}
@@ -164,9 +166,7 @@ namespace SynGlyphX {
 		}
 	}
 
-	GlyphColor Transformer::ColorRGBInterpolate(const InputBinding& binding, const GlyphColor& min, const GlyphColor& difference, const InputFieldDataMap& queryResultData, unsigned int index) const {
-
-		GlyphColor output = min;
+	GlyphColor Transformer::TransformProperty(const InputBinding& binding, const ColorMappingProperty& mappingProperty, const InputFieldDataMap& queryResultData, unsigned int index) const {
 
 		InputField::HashID id = binding.GetInputFieldID();
 		if (id != 0) {
@@ -174,33 +174,41 @@ namespace SynGlyphX {
 			InputFieldDataMap::const_iterator fieldData = queryResultData.find(id);
 			if (fieldData != queryResultData.end()) {
 
-				GlyphColor max;
-				max.Set(min[0] + difference[0], min[1] + difference[1], min[2] + difference[2]);
+				MappingFunctionData::Function function = mappingProperty.GetMappingFunctionData()->GetFunction();
+				if ((function == MappingFunctionData::Function::LinearInterpolation) || (function == MappingFunctionData::Function::LogarithmicInterpolation)) {
 
-				GlyphColor minHSV = GlyphColor::ConvertRGBtoHSV(min);
-				GlyphColor maxHSV = GlyphColor::ConvertRGBtoHSV(max);
-				GlyphColor diffHSV;
-				diffHSV.Set(maxHSV[0] - minHSV[0], maxHSV[1] - minHSV[1], maxHSV[2] - minHSV[2]);
+					double dataMin;
+					double dataMaxMinDiff;
+					GetDataMinAndDifference(binding, *(fieldData->second), dataMin, dataMaxMinDiff);
 
-				double currentData = fieldData->second->GetData()[index].toDouble();
-				double dataMin;
-				double dataMaxMinDiff;
-				GetDataMinAndDifference(binding, *(fieldData->second), dataMin, dataMaxMinDiff);
+					InterpolationMappingData::ConstSharedPtr interpolationData = std::dynamic_pointer_cast<const InterpolationMappingData>(mappingProperty.GetMappingFunctionData());
+					return interpolationData->Interpolate(mappingProperty.GetValue(), dataMin, dataMin + dataMaxMinDiff, fieldData->second->GetData()[index].toDouble());
+				}
+				else if (function == MappingFunctionData::Function::Numeric2Value) {
 
-				GlyphColor outputHSV;
-				outputHSV.Set(0, LinearInterpolate(minHSV[0], diffHSV[0], dataMin, dataMaxMinDiff, currentData));
-				outputHSV.Set(1, LinearInterpolate(minHSV[1], diffHSV[1], dataMin, dataMaxMinDiff, currentData));
-				outputHSV.Set(2, LinearInterpolate(minHSV[2], diffHSV[2], dataMin, dataMaxMinDiff, currentData));
+					Numeric2ColorMappingData::ConstSharedPtr valueMappingData = std::dynamic_pointer_cast<const Numeric2ColorMappingData>(mappingProperty.GetMappingFunctionData());
+					return valueMappingData->GetOutputValueFromInput(fieldData->second->GetData()[index].toDouble());
+				}
+				else if (function == MappingFunctionData::Function::Text2Value) {
 
-				return GlyphColor::ConvertHSVtoRGB(outputHSV);
+					Text2ColorMappingData::ConstSharedPtr valueMappingData = std::dynamic_pointer_cast<const Text2ColorMappingData>(mappingProperty.GetMappingFunctionData());
+					return valueMappingData->GetOutputValueFromInput(fieldData->second->GetData()[index].toString().toStdWString());
+				}
+				else if (function == MappingFunctionData::Function::Range2Value) {
+
+					Range2ColorMappingData::ConstSharedPtr valueMappingData = std::dynamic_pointer_cast<const Range2ColorMappingData>(mappingProperty.GetMappingFunctionData());
+					return valueMappingData->GetOutputValueFromInput(fieldData->second->GetData()[index].toDouble());
+				}
 			}
 		}
 		
-		output += difference;
-		return output;
+		//Return the max value as the default if no transform takes place
+		GlyphColor color = mappingProperty.GetValue().first;
+		color += mappingProperty.GetValue().second;
+		return color;
 	}
 
-	double Transformer::LinearInterpolate(const InputBinding& binding, double min, double difference, const InputFieldDataMap& queryResultData, unsigned int index) const {
+	double Transformer::TransformProperty(const InputBinding& binding, const NumericMappingProperty& mappingProperty, const InputFieldDataMap& queryResultData, unsigned int index) const {
 
 		InputField::HashID id = binding.GetInputFieldID();
 		if (id != 0) {
@@ -208,28 +216,36 @@ namespace SynGlyphX {
 			InputFieldDataMap::const_iterator fieldData = queryResultData.find(id);
 			if (fieldData != queryResultData.end()) {
 
-				double dataMin;
-				double dataMaxMinDiff;
-				GetDataMinAndDifference(binding, *(fieldData->second), dataMin, dataMaxMinDiff);
+				MappingFunctionData::Function function = mappingProperty.GetMappingFunctionData()->GetFunction();
+				if ((function == MappingFunctionData::Function::LinearInterpolation) || (function == MappingFunctionData::Function::LogarithmicInterpolation)) {
 
-				//output += ((fieldData->second->GetData()[index].toDouble() - dataMin) / dataMaxMinDiff) * difference;
-				return LinearInterpolate(min, difference, dataMin, dataMaxMinDiff, fieldData->second->GetData()[index].toDouble());
+					double dataMin;
+					double dataMaxMinDiff;
+					GetDataMinAndDifference(binding, *(fieldData->second), dataMin, dataMaxMinDiff);
+
+					InterpolationMappingData::ConstSharedPtr interpolationData = std::dynamic_pointer_cast<const InterpolationMappingData>(mappingProperty.GetMappingFunctionData());
+					return interpolationData->Interpolate(mappingProperty.GetValue(), dataMin, dataMin + dataMaxMinDiff, fieldData->second->GetData()[index].toDouble());
+				}
+				else if (function == MappingFunctionData::Function::Numeric2Value) {
+
+					Numeric2NumericMappingData::ConstSharedPtr valueMappingData = std::dynamic_pointer_cast<const Numeric2NumericMappingData>(mappingProperty.GetMappingFunctionData());
+					return valueMappingData->GetOutputValueFromInput(fieldData->second->GetData()[index].toDouble());
+				}
+				else if (function == MappingFunctionData::Function::Text2Value) {
+
+					Text2NumericMappingData::ConstSharedPtr valueMappingData = std::dynamic_pointer_cast<const Text2NumericMappingData>(mappingProperty.GetMappingFunctionData());
+					return valueMappingData->GetOutputValueFromInput(fieldData->second->GetData()[index].toString().toStdWString());
+				}
+				else if (function == MappingFunctionData::Function::Range2Value) {
+
+					Range2NumericMappingData::ConstSharedPtr valueMappingData = std::dynamic_pointer_cast<const Range2NumericMappingData>(mappingProperty.GetMappingFunctionData());
+					return valueMappingData->GetOutputValueFromInput(fieldData->second->GetData()[index].toDouble());
+				}
 			}
 		}
 		
-		return min + difference;
-	}
-
-	double Transformer::LinearInterpolate(double min, double difference, double dataMin, double dataDifference, double currentData) const {
-
-		if (dataDifference != 0.0) {
-
-			return (min + (((currentData - dataMin) / dataDifference) * difference));
-		}
-		else {
-
-			return min;
-		}
+		//Return the max value as the default if no transform takes place
+		return mappingProperty.GetValue().first + mappingProperty.GetValue().second;
 	}
 
 	bool Transformer::HaveDatasourcesBeenUpdated(const DataTransformMapping& mapping, std::time_t lastUpdateTime) const {
