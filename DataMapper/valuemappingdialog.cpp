@@ -326,7 +326,7 @@ SynGlyphX::Numeric2NumericMappingData::SharedPtr Numeric2NumericMappingDialog::G
 		QDoubleSpinBox* inputTableWidget = dynamic_cast<QDoubleSpinBox*>(m_table->cellWidget(row, 0));
 		QDoubleSpinBox* outputTableWidget = dynamic_cast<QDoubleSpinBox*>(m_table->cellWidget(row, 1));
 		
-		mapping->AddKeyValueIntoMap(m_inputDoubleWidget->value(), m_outputDoubleWidget->value());
+		mapping->AddKeyValueIntoMap(inputTableWidget->value(), outputTableWidget->value());
 	}
 
 	return mapping;
@@ -389,6 +389,40 @@ Text2NumericMappingDialog::~Text2NumericMappingDialog() {
 
 }
 
+void Text2NumericMappingDialog::SetDialogFromMapping(SynGlyphX::Text2NumericMappingData::ConstSharedPtr mapping) {
+
+	m_defaultDoubleWidget->setValue(mapping->GetDefaultValue());
+
+	for (auto keyValuePair : mapping->GetKeyValueMap()) {
+
+		AddRow();
+		int row = m_table->rowCount() - 1;
+
+		QLineEdit* inputTableWidget = dynamic_cast<QLineEdit*>(m_table->cellWidget(row, 0));
+		inputTableWidget->setText(QString::fromStdWString(keyValuePair.first));
+
+		QDoubleSpinBox* outputTableWidget = dynamic_cast<QDoubleSpinBox*>(m_table->cellWidget(row, 1));
+		outputTableWidget->setValue(keyValuePair.second);
+	}
+}
+
+SynGlyphX::Text2NumericMappingData::SharedPtr Text2NumericMappingDialog::GetMappingFromDialog() const {
+
+	SynGlyphX::Text2NumericMappingData::SharedPtr mapping = std::make_shared<SynGlyphX::Text2NumericMappingData>();
+
+	mapping->SetDefaultValue(m_defaultDoubleWidget->value());
+
+	for (int row = 0; row < m_table->rowCount(); ++row) {
+
+		QLineEdit* inputTableWidget = dynamic_cast<QLineEdit*>(m_table->cellWidget(row, 0));
+		QDoubleSpinBox* outputTableWidget = dynamic_cast<QDoubleSpinBox*>(m_table->cellWidget(row, 1));
+
+		mapping->AddKeyValueIntoMap(inputTableWidget->text().toStdWString(), outputTableWidget->value());
+	}
+
+	return mapping;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 
 Text2ColorMappingDialog::Text2ColorMappingDialog(QWidget *parent) :
@@ -399,6 +433,40 @@ Text2ColorMappingDialog::Text2ColorMappingDialog(QWidget *parent) :
 Text2ColorMappingDialog::~Text2ColorMappingDialog() {
 
 
+}
+
+void Text2ColorMappingDialog::SetDialogFromMapping(SynGlyphX::Text2ColorMappingData::ConstSharedPtr mapping) {
+
+	m_defaultColorWidget->SetColor(mapping->GetDefaultValue());
+
+	for (auto keyValuePair : mapping->GetKeyValueMap()) {
+
+		AddRow();
+		int row = m_table->rowCount() - 1;
+
+		QLineEdit* inputTableWidget = dynamic_cast<QLineEdit*>(m_table->cellWidget(row, 0));
+		inputTableWidget->setText(QString::fromStdWString(keyValuePair.first));
+
+		SynGlyphX::ColorButton* outputTableWidget = dynamic_cast<SynGlyphX::ColorButton*>(m_table->cellWidget(row, 1));
+		outputTableWidget->SetColor(keyValuePair.second);
+	}
+}
+
+SynGlyphX::Text2ColorMappingData::SharedPtr Text2ColorMappingDialog::GetMappingFromDialog() const {
+
+	SynGlyphX::Text2ColorMappingData::SharedPtr mapping = std::make_shared<SynGlyphX::Text2ColorMappingData>();
+
+	mapping->SetDefaultValue(SynGlyphX::ColorButton::ConvertQColorToColor(m_defaultColorWidget->GetColor()));
+
+	for (int row = 0; row < m_table->rowCount(); ++row) {
+
+		QLineEdit* inputTableWidget = dynamic_cast<QLineEdit*>(m_table->cellWidget(row, 0));
+		SynGlyphX::ColorButton* outputTableWidget = dynamic_cast<SynGlyphX::ColorButton*>(m_table->cellWidget(row, 1));
+
+		mapping->AddKeyValueIntoMap(inputTableWidget->text().toStdWString(), SynGlyphX::ColorButton::ConvertQColorToColor(outputTableWidget->GetColor()));
+	}
+
+	return mapping;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -413,6 +481,40 @@ Range2NumericMappingDialog::~Range2NumericMappingDialog() {
 
 }
 
+void Range2NumericMappingDialog::SetDialogFromMapping(SynGlyphX::Range2NumericMappingData::ConstSharedPtr mapping) {
+
+	m_defaultDoubleWidget->setValue(mapping->GetDefaultValue());
+
+	for (auto keyValuePair : mapping->GetKeyValueMap()) {
+
+		AddRow();
+		int row = m_table->rowCount() - 1;
+
+		SynGlyphX::RangeWidget* inputTableWidget = dynamic_cast<SynGlyphX::RangeWidget*>(m_table->cellWidget(row, 0));
+		inputTableWidget->SetRange(keyValuePair.first);
+
+		QDoubleSpinBox* outputTableWidget = dynamic_cast<QDoubleSpinBox*>(m_table->cellWidget(row, 1));
+		outputTableWidget->setValue(keyValuePair.second);
+	}
+}
+
+SynGlyphX::Range2NumericMappingData::SharedPtr Range2NumericMappingDialog::GetMappingFromDialog() const {
+
+	SynGlyphX::Range2NumericMappingData::SharedPtr mapping = std::make_shared<SynGlyphX::Range2NumericMappingData>();
+
+	mapping->SetDefaultValue(m_defaultDoubleWidget->value());
+
+	for (int row = 0; row < m_table->rowCount(); ++row) {
+
+		SynGlyphX::RangeWidget* inputTableWidget = dynamic_cast<SynGlyphX::RangeWidget*>(m_table->cellWidget(row, 0));
+		QDoubleSpinBox* outputTableWidget = dynamic_cast<QDoubleSpinBox*>(m_table->cellWidget(row, 1));
+
+		mapping->AddKeyValueIntoMap(inputTableWidget->GetRange(), outputTableWidget->value());
+	}
+
+	return mapping;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 
 Range2ColorMappingDialog::Range2ColorMappingDialog(QWidget *parent) :
@@ -423,4 +525,38 @@ Range2ColorMappingDialog::Range2ColorMappingDialog(QWidget *parent) :
 Range2ColorMappingDialog::~Range2ColorMappingDialog() {
 
 
+}
+
+void Range2ColorMappingDialog::SetDialogFromMapping(SynGlyphX::Range2ColorMappingData::ConstSharedPtr mapping) {
+
+	m_defaultColorWidget->SetColor(mapping->GetDefaultValue());
+
+	for (auto keyValuePair : mapping->GetKeyValueMap()) {
+
+		AddRow();
+		int row = m_table->rowCount() - 1;
+
+		SynGlyphX::RangeWidget* inputTableWidget = dynamic_cast<SynGlyphX::RangeWidget*>(m_table->cellWidget(row, 0));
+		inputTableWidget->SetRange(keyValuePair.first);
+
+		SynGlyphX::ColorButton* outputTableWidget = dynamic_cast<SynGlyphX::ColorButton*>(m_table->cellWidget(row, 1));
+		outputTableWidget->SetColor(keyValuePair.second);
+	}
+}
+
+SynGlyphX::Range2ColorMappingData::SharedPtr Range2ColorMappingDialog::GetMappingFromDialog() const {
+
+	SynGlyphX::Range2ColorMappingData::SharedPtr mapping = std::make_shared<SynGlyphX::Range2ColorMappingData>();
+
+	mapping->SetDefaultValue(SynGlyphX::ColorButton::ConvertQColorToColor(m_defaultColorWidget->GetColor()));
+
+	for (int row = 0; row < m_table->rowCount(); ++row) {
+
+		SynGlyphX::RangeWidget* inputTableWidget = dynamic_cast<SynGlyphX::RangeWidget*>(m_table->cellWidget(row, 0));
+		SynGlyphX::ColorButton* outputTableWidget = dynamic_cast<SynGlyphX::ColorButton*>(m_table->cellWidget(row, 1));
+
+		mapping->AddKeyValueIntoMap(inputTableWidget->GetRange(), SynGlyphX::ColorButton::ConvertQColorToColor(outputTableWidget->GetColor()));
+	}
+
+	return mapping;
 }
