@@ -26,6 +26,7 @@ GlyphDesignerWindow::GlyphDesignerWindow(QWidget *parent)
 	m_sharedSelectionModel = new QItemSelectionModel(m_glyphTreeModel, this);
 
 	m_3dView = new SynGlyphXANTz::ANTzSingleGlyphTreeWidget(SynGlyphXANTz::MinMaxGlyphTreeModel::GlyphType::Max, this);
+	m_3dView->SetAllowMultiSelection(true);
 	m_3dView->SetModel(m_glyphTreeModel, m_sharedSelectionModel);
     setCentralWidget(m_3dView);
 
