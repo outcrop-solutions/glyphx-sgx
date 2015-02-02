@@ -62,7 +62,13 @@ namespace SynGlyphX {
 	}
 
 	template <typename OutputType, typename InputType, typename KeyType>
-	void ValueMappingData<OutputType, InputType, KeyType>::AddKeyValueIntoMap(const KeyType& key, const OutputType& output) {
+	bool ValueMappingData<OutputType, InputType, KeyType>::IsKeyInKeyValueMap(const KeyType& key) {
+
+		return (m_mappedValues.count(key) == 1);
+	}
+
+	template <typename OutputType, typename InputType, typename KeyType>
+	void ValueMappingData<OutputType, InputType, KeyType>::SetValueForKey(const KeyType& key, const OutputType& output) {
 
 		m_mappedValues[key] = output;
 	}
