@@ -57,7 +57,8 @@ namespace SynGlyphX {
 	}
 
 	void XYZWidget::SetX(double value){
-		m_xSpinBox->setValue(value);
+
+		SetSpinBoxWithoutSignals(m_xSpinBox, value);
 	}
 
 	double XYZWidget::GetX() const{
@@ -65,7 +66,8 @@ namespace SynGlyphX {
 	}
 
 	void XYZWidget::SetY(double value){
-		m_ySpinBox->setValue(value);
+
+		SetSpinBoxWithoutSignals(m_ySpinBox, value);
 	}
 
 	double XYZWidget::GetY() const{
@@ -73,7 +75,8 @@ namespace SynGlyphX {
 	}
 
 	void XYZWidget::SetZ(double value){
-		m_zSpinBox->setValue(value);
+		
+		SetSpinBoxWithoutSignals(m_zSpinBox, value);
 	}
 
 	double XYZWidget::GetZ() const{
@@ -94,9 +97,9 @@ namespace SynGlyphX {
 
 	void XYZWidget::Set(const SynGlyphX::Vector3& vec) {
 
-		m_xSpinBox->setValue(vec[0]);
-		m_ySpinBox->setValue(vec[1]);
-		m_zSpinBox->setValue(vec[2]);
+		SetX(vec[0]);
+		SetY(vec[1]);
+		SetZ(vec[2]);
 	}
 
 	SynGlyphX::Vector3 XYZWidget::Get() const {
@@ -159,6 +162,7 @@ namespace SynGlyphX {
 	void XYZWidget::SetSpinBoxesLocked(bool lock) {
 
 		if (m_lockCheckBox != NULL) {
+
 			m_lockCheckBox->setChecked(lock);
 		}
 		else {
@@ -169,11 +173,6 @@ namespace SynGlyphX {
 	void XYZWidget::UpdateSpinBoxLock(bool lock) {
 
 		m_spinBoxesLocked = lock;
-
-		if (m_spinBoxesLocked) {
-
-			OnXSpinBoxChanged();
-		}
 	}
 
 } //namespace SynGlyphX
