@@ -141,38 +141,22 @@ ValueMappingDialog::~ValueMappingDialog()
 
 }
 
+void ValueMappingDialog::accept() {
+
+	try {
+
+		CreateMappingData();
+		QDialog::accept();
+	}
+	catch (const std::exception& e) {
+
+		QMessageBox::critical(this, tr("Failed to edit mapping properties"), tr(e.what()));
+	}
+}
+
 void ValueMappingDialog::OnAddKeyValue() {
 
-	if (m_input == InputType::Numeric) {
-
-		double newKey = m_inputDoubleWidget->value();
-		if (m_doubleInputValues.count(newKey) == 1) {
-
-			QMessageBox::warning(this, tr("Error adding new key value pair"), tr("Key value can not the same as a key already in the list"));
-			return;
-		}
-
-		m_doubleInputValues.insert(newKey);
-	}
-	else if (m_input == InputType::Range) {
-
-		try {
-			SynGlyphX::Range newKey = m_inputRangeWidget->GetRange();
-			if (m_rangeInputValues.count(newKey) == 1) {
-
-				QMessageBox::warning(this, tr("Error adding new range value pair"), tr("Range value can not overlap with a range already in the list"));
-				return;
-			}
-
-			m_rangeInputValues.insert(newKey);
-		}
-		catch (const std::exception& e) {
-
-			QMessageBox::warning(this, tr("Error adding new range value pair"), tr(e.what()));
-			return;
-		}
-	}
-	else {
+	if (m_input == InputType::Text) {
 
 		std::wstring newKey = m_inputTextWidget->text().toStdWString();
 
@@ -182,14 +166,6 @@ void ValueMappingDialog::OnAddKeyValue() {
 			QMessageBox::warning(this, tr("Error adding new key value pair"), tr("Key value can not be empty"));
 			return;
 		}
-
-		if (m_textInputValues.count(newKey) == 1) {
-
-			QMessageBox::warning(this, tr("Error adding new key value pair"), tr("Key value can not the same as a key already in the list"));
-			return;
-		}
-
-		m_textInputValues.insert(newKey);
 	}
 
 	AddRow();
@@ -226,23 +202,6 @@ void ValueMappingDialog::OnAddKeyValue() {
 void ValueMappingDialog::OnRemoveKeyValue() {
 
 	int row = m_table->currentRow();
-
-	if (m_input == InputType::Numeric) {
-
-		QDoubleSpinBox* keyWidget = dynamic_cast<QDoubleSpinBox*>(m_table->cellWidget(row, 0));
-		m_doubleInputValues.erase(keyWidget->value());
-	}
-	else if (m_input == InputType::Range) {
-
-		SynGlyphX::RangeWidget* keyWidget = dynamic_cast<SynGlyphX::RangeWidget*>(m_table->cellWidget(row, 0));
-		m_rangeInputValues.erase(keyWidget->GetRange());
-	}
-	else {
-
-		QLineEdit* keyWidget = dynamic_cast<QLineEdit*>(m_table->cellWidget(row, 0));
-		m_textInputValues.erase(keyWidget->text().toStdWString());
-	}
-
 	m_table->removeRow(row);
 }
 
@@ -293,9 +252,61 @@ void ValueMappingDialog::OnClearAllKeyValues() {
 
 		m_table->removeRow(0);
 	}
-	m_doubleInputValues.clear();
-	m_textInputValues.clear();
-	m_rangeInputValues.clear();
+}
+
+SynGlyphX::Range ValueMappingDialog::GetRangeFromWidget(int row, int column)  {
+
+	SynGlyphX::RangeWidget* widget = dynamic_cast<SynGlyphX::RangeWidget*>(m_table->cellWidget(row, column));
+	if (widget == nullptr) {
+
+		throw std::exception("Could not get widget of given type.");
+	}
+
+	if (!widget->IsValid()) {
+
+		throw std::exception("All ranges of range value pairs must have a minimum that is less than its maximum.");
+	}
+
+	return widget->GetRange();
+}
+
+std::wstring ValueMappingDialog::GetTextFromWidget(int row, int column) {
+
+	QLineEdit* widget = dynamic_cast<QLineEdit*>(m_table->cellWidget(row, column));
+	if (widget == nullptr) {
+
+		throw std::exception("Could not get widget of given type.");
+	}
+
+	QString text = widget->text();
+	if (text.isEmpty()) {
+
+		throw std::exception("All keys of key value pairs must not be empty.");
+	}
+
+	return text.toStdWString();
+}
+
+double ValueMappingDialog::GetDoubleFromWidget(int row, int column) {
+
+	QDoubleSpinBox* widget = dynamic_cast<QDoubleSpinBox*>(m_table->cellWidget(row, column));
+	if (widget == nullptr) {
+
+		throw std::exception("Could not get widget of given type.");
+	}
+
+	return widget->value();
+}
+
+SynGlyphX::GlyphColor ValueMappingDialog::GetColorFromWidget(int row, int column) {
+
+	SynGlyphX::ColorButton* widget = dynamic_cast<SynGlyphX::ColorButton*>(m_table->cellWidget(row, 1));
+	if (widget == nullptr) {
+
+		throw std::exception("Could not get widget of given type.");
+	}
+
+	return SynGlyphX::ColorButton::ConvertQColorToColor(widget->GetColor());
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -328,19 +339,29 @@ void Numeric2NumericMappingDialog::SetDialogFromMapping(SynGlyphX::Numeric2Numer
 
 SynGlyphX::Numeric2NumericMappingData::SharedPtr Numeric2NumericMappingDialog::GetMappingFromDialog() const {
 
+	return m_mappingData;
+}
+
+bool Numeric2NumericMappingDialog::CreateMappingData() {
+
 	SynGlyphX::Numeric2NumericMappingData::SharedPtr mapping = std::make_shared<SynGlyphX::Numeric2NumericMappingData>();
 
 	mapping->SetDefaultValue(m_defaultDoubleWidget->value());
 
 	for (int row = 0; row < m_table->rowCount(); ++row) {
 
-		QDoubleSpinBox* inputTableWidget = dynamic_cast<QDoubleSpinBox*>(m_table->cellWidget(row, 0));
-		QDoubleSpinBox* outputTableWidget = dynamic_cast<QDoubleSpinBox*>(m_table->cellWidget(row, 1));
-		
-		mapping->AddKeyValueIntoMap(inputTableWidget->value(), outputTableWidget->value());
+		double input = GetDoubleFromWidget(row, 0);
+		if (mapping->IsKeyInKeyValueMap(input)) {
+
+			throw std::exception("At least one key is the same as another key.  All keys must be unique.");
+		}
+
+		double output = GetDoubleFromWidget(row, 1);
+		mapping->SetValueForKey(input, output);
 	}
 
-	return mapping;
+	m_mappingData = mapping;
+	return true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -373,19 +394,29 @@ void Numeric2ColorMappingDialog::SetDialogFromMapping(SynGlyphX::Numeric2ColorMa
 
 SynGlyphX::Numeric2ColorMappingData::SharedPtr Numeric2ColorMappingDialog::GetMappingFromDialog() const {
 
+	return m_mappingData;
+}
+
+bool Numeric2ColorMappingDialog::CreateMappingData() {
+
 	SynGlyphX::Numeric2ColorMappingData::SharedPtr mapping = std::make_shared<SynGlyphX::Numeric2ColorMappingData>();
 
 	mapping->SetDefaultValue(SynGlyphX::ColorButton::ConvertQColorToColor(m_defaultColorWidget->GetColor()));
 
 	for (int row = 0; row < m_table->rowCount(); ++row) {
 
-		QDoubleSpinBox* inputTableWidget = dynamic_cast<QDoubleSpinBox*>(m_table->cellWidget(row, 0));
-		SynGlyphX::ColorButton* outputTableWidget = dynamic_cast<SynGlyphX::ColorButton*>(m_table->cellWidget(row, 1));
+		double input = GetDoubleFromWidget(row, 0);
+		if (mapping->IsKeyInKeyValueMap(input)) {
 
-		mapping->AddKeyValueIntoMap(inputTableWidget->value(), SynGlyphX::ColorButton::ConvertQColorToColor(outputTableWidget->GetColor()));
+			throw std::exception("At least one key is the same as another key.  All keys must be unique.");
+		}
+
+		SynGlyphX::GlyphColor output = GetColorFromWidget(row, 1);
+		mapping->SetValueForKey(input, output);
 	}
 
-	return mapping;
+	m_mappingData = mapping;
+	return true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -419,19 +450,29 @@ void Text2NumericMappingDialog::SetDialogFromMapping(SynGlyphX::Text2NumericMapp
 
 SynGlyphX::Text2NumericMappingData::SharedPtr Text2NumericMappingDialog::GetMappingFromDialog() const {
 
+	return m_mappingData;
+}
+
+bool Text2NumericMappingDialog::CreateMappingData() {
+
 	SynGlyphX::Text2NumericMappingData::SharedPtr mapping = std::make_shared<SynGlyphX::Text2NumericMappingData>();
 
 	mapping->SetDefaultValue(m_defaultDoubleWidget->value());
 
 	for (int row = 0; row < m_table->rowCount(); ++row) {
 
-		QLineEdit* inputTableWidget = dynamic_cast<QLineEdit*>(m_table->cellWidget(row, 0));
-		QDoubleSpinBox* outputTableWidget = dynamic_cast<QDoubleSpinBox*>(m_table->cellWidget(row, 1));
+		std::wstring input = GetTextFromWidget(row, 0);
+		if (mapping->IsKeyInKeyValueMap(input)) {
 
-		mapping->AddKeyValueIntoMap(inputTableWidget->text().toStdWString(), outputTableWidget->value());
+			throw std::exception("At least one key is the same as another key.  All keys must be unique.");
+		}
+
+		double output = GetDoubleFromWidget(row, 1);
+		mapping->SetValueForKey(input, output);
 	}
 
-	return mapping;
+	m_mappingData = mapping;
+	return true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -465,53 +506,35 @@ void Text2ColorMappingDialog::SetDialogFromMapping(SynGlyphX::Text2ColorMappingD
 
 SynGlyphX::Text2ColorMappingData::SharedPtr Text2ColorMappingDialog::GetMappingFromDialog() const {
 
+	return m_mappingData;
+}
+
+bool Text2ColorMappingDialog::CreateMappingData() {
+
 	SynGlyphX::Text2ColorMappingData::SharedPtr mapping = std::make_shared<SynGlyphX::Text2ColorMappingData>();
 
 	mapping->SetDefaultValue(SynGlyphX::ColorButton::ConvertQColorToColor(m_defaultColorWidget->GetColor()));
 
 	for (int row = 0; row < m_table->rowCount(); ++row) {
 
-		QLineEdit* inputTableWidget = dynamic_cast<QLineEdit*>(m_table->cellWidget(row, 0));
-		SynGlyphX::ColorButton* outputTableWidget = dynamic_cast<SynGlyphX::ColorButton*>(m_table->cellWidget(row, 1));
+		std::wstring input = GetTextFromWidget(row, 0);
+		if (mapping->IsKeyInKeyValueMap(input)) {
 
-		mapping->AddKeyValueIntoMap(inputTableWidget->text().toStdWString(), SynGlyphX::ColorButton::ConvertQColorToColor(outputTableWidget->GetColor()));
-	}
-
-	return mapping;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-
-RangeMappingDialog::RangeMappingDialog(OutputType output, QWidget *parent) :
-	ValueMappingDialog(InputType::Range, output, parent) {
-
-
-}
-
-RangeMappingDialog::~RangeMappingDialog() {
-
-}
-
-void RangeMappingDialog::accept() {
-
-	for (int row = 0; row < m_table->rowCount(); ++row) {
-
-		SynGlyphX::RangeWidget* inputTableWidget = dynamic_cast<SynGlyphX::RangeWidget*>(m_table->cellWidget(row, 0));
-		if (!inputTableWidget->IsValid()) {
-
-			QMessageBox::warning(this, tr("Error with range value pairs"), tr("All ranges of range value pairs must have a minimum that is less than its maximum."));
-			return;
+			throw std::exception("At least one key is the same as another key.  All keys must be unique.");
 		}
-		
+
+		SynGlyphX::GlyphColor output = GetColorFromWidget(row, 1);
+		mapping->SetValueForKey(input, output);
 	}
 
-	ValueMappingDialog::accept();
+	m_mappingData = mapping;
+	return true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 
 Range2NumericMappingDialog::Range2NumericMappingDialog(QWidget *parent) :
-	RangeMappingDialog(OutputType::Numeric, parent) {
+	ValueMappingDialog(InputType::Range, OutputType::Numeric, parent) {
 
 }
 
@@ -539,25 +562,35 @@ void Range2NumericMappingDialog::SetDialogFromMapping(SynGlyphX::Range2NumericMa
 
 SynGlyphX::Range2NumericMappingData::SharedPtr Range2NumericMappingDialog::GetMappingFromDialog() const {
 
+	return m_mappingData;
+}
+
+bool Range2NumericMappingDialog::CreateMappingData() {
+
 	SynGlyphX::Range2NumericMappingData::SharedPtr mapping = std::make_shared<SynGlyphX::Range2NumericMappingData>();
 
 	mapping->SetDefaultValue(m_defaultDoubleWidget->value());
 
 	for (int row = 0; row < m_table->rowCount(); ++row) {
 
-		SynGlyphX::RangeWidget* inputTableWidget = dynamic_cast<SynGlyphX::RangeWidget*>(m_table->cellWidget(row, 0));
-		QDoubleSpinBox* outputTableWidget = dynamic_cast<QDoubleSpinBox*>(m_table->cellWidget(row, 1));
+		SynGlyphX::Range input = GetRangeFromWidget(row, 0);
+		if (mapping->IsKeyInKeyValueMap(input)) {
 
-		mapping->AddKeyValueIntoMap(inputTableWidget->GetRange(), outputTableWidget->value());
+			throw std::exception("At least one range overlaps another range.  All ranges must be distinct from each other.");
+		}
+
+		double output = GetDoubleFromWidget(row, 1);
+		mapping->SetValueForKey(input, output);
 	}
 
-	return mapping;
+	m_mappingData = mapping;
+	return true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 
 Range2ColorMappingDialog::Range2ColorMappingDialog(QWidget *parent) :
-	RangeMappingDialog(OutputType::Color, parent) {
+	ValueMappingDialog(InputType::Range, OutputType::Color, parent) {
 
 }
 
@@ -585,17 +618,27 @@ void Range2ColorMappingDialog::SetDialogFromMapping(SynGlyphX::Range2ColorMappin
 
 SynGlyphX::Range2ColorMappingData::SharedPtr Range2ColorMappingDialog::GetMappingFromDialog() const {
 
+	return m_mappingData;
+}
+
+bool Range2ColorMappingDialog::CreateMappingData() {
+
 	SynGlyphX::Range2ColorMappingData::SharedPtr mapping = std::make_shared<SynGlyphX::Range2ColorMappingData>();
 
 	mapping->SetDefaultValue(SynGlyphX::ColorButton::ConvertQColorToColor(m_defaultColorWidget->GetColor()));
 
 	for (int row = 0; row < m_table->rowCount(); ++row) {
 
-		SynGlyphX::RangeWidget* inputTableWidget = dynamic_cast<SynGlyphX::RangeWidget*>(m_table->cellWidget(row, 0));
-		SynGlyphX::ColorButton* outputTableWidget = dynamic_cast<SynGlyphX::ColorButton*>(m_table->cellWidget(row, 1));
+		SynGlyphX::Range input = GetRangeFromWidget(row, 0);
+		if (mapping->IsKeyInKeyValueMap(input)) {
 
-		mapping->AddKeyValueIntoMap(inputTableWidget->GetRange(), SynGlyphX::ColorButton::ConvertQColorToColor(outputTableWidget->GetColor()));
+			throw std::exception("At least one range overlaps another range.  All ranges must be distinct from each other.");
+		}
+
+		SynGlyphX::GlyphColor output = GetColorFromWidget(row, 1);
+		mapping->SetValueForKey(input, output);
 	}
 
-	return mapping;
+	m_mappingData = mapping;
+	return true;
 }

@@ -46,8 +46,7 @@ public:
 	ValueMappingDialog(InputType input, OutputType output, QWidget *parent);
 	virtual ~ValueMappingDialog();
 
-	//void SetDialogFromMapping(SynGlyphX::ValueMappingData<OutputType, InputType, KeyType>::ConstSharedPtr mapping);
-	//SynGlyphX::ValueMappingData<OutputType, InputType, KeyType>::SharedPtr GetMappingFromDialog() const;
+	virtual void accept();
 
 protected slots:
 	void OnAddKeyValue();
@@ -56,7 +55,12 @@ protected slots:
 	void OnClearAllKeyValues();
 
 protected:
+	virtual bool CreateMappingData() = 0;
 	void AddRow();
+	SynGlyphX::Range GetRangeFromWidget(int row, int column = 0);
+	std::wstring GetTextFromWidget(int row, int column = 0);
+	double GetDoubleFromWidget(int row, int column = 0);
+	SynGlyphX::GlyphColor GetColorFromWidget(int row, int column = 1);
 
 	QTableWidget* m_table;
 
@@ -70,10 +74,6 @@ protected:
 	SynGlyphX::ColorButton* m_outputColorWidget;
 
 	QPushButton* m_removeEntryButton;
-
-	std::set<double> m_doubleInputValues;
-	std::set<std::wstring> m_textInputValues;
-	std::set<SynGlyphX::Range> m_rangeInputValues;
 
 private:
 	InputType m_input;
@@ -92,7 +92,9 @@ public:
 	SynGlyphX::Numeric2NumericMappingData::SharedPtr GetMappingFromDialog() const;
 
 protected:
-	
+	virtual bool CreateMappingData();
+
+	SynGlyphX::Numeric2NumericMappingData::SharedPtr m_mappingData;
 };
 
 class Numeric2ColorMappingDialog : public ValueMappingDialog
@@ -107,7 +109,9 @@ public:
 	SynGlyphX::Numeric2ColorMappingData::SharedPtr GetMappingFromDialog() const;
 
 protected:
-	
+	virtual bool CreateMappingData();
+
+	SynGlyphX::Numeric2ColorMappingData::SharedPtr m_mappingData;
 };
 
 class Text2NumericMappingDialog : public ValueMappingDialog
@@ -122,7 +126,9 @@ public:
 	SynGlyphX::Text2NumericMappingData::SharedPtr GetMappingFromDialog() const;
 
 protected:
-	
+	virtual bool CreateMappingData();
+
+	SynGlyphX::Text2NumericMappingData::SharedPtr m_mappingData;
 };
 
 class Text2ColorMappingDialog : public ValueMappingDialog
@@ -137,24 +143,12 @@ public:
 	SynGlyphX::Text2ColorMappingData::SharedPtr GetMappingFromDialog() const;
 
 protected:
-	
+	virtual bool CreateMappingData();
+
+	SynGlyphX::Text2ColorMappingData::SharedPtr m_mappingData;
 };
 
-class RangeMappingDialog : public ValueMappingDialog
-{
-	Q_OBJECT
-
-public:
-	RangeMappingDialog(OutputType output, QWidget *parent);
-	virtual ~RangeMappingDialog();
-
-	virtual void accept();
-
-protected:
-
-};
-
-class Range2NumericMappingDialog : public RangeMappingDialog
+class Range2NumericMappingDialog : public ValueMappingDialog
 {
 	Q_OBJECT
 
@@ -166,10 +160,12 @@ public:
 	SynGlyphX::Range2NumericMappingData::SharedPtr GetMappingFromDialog() const;
 
 protected:
+	virtual bool CreateMappingData();
 
+	SynGlyphX::Range2NumericMappingData::SharedPtr m_mappingData;
 };
 
-class Range2ColorMappingDialog : public RangeMappingDialog
+class Range2ColorMappingDialog : public ValueMappingDialog
 {
 	Q_OBJECT
 
@@ -181,7 +177,9 @@ public:
 	SynGlyphX::Range2ColorMappingData::SharedPtr GetMappingFromDialog() const;
 
 protected:
+	virtual bool CreateMappingData();
 
+	SynGlyphX::Range2ColorMappingData::SharedPtr m_mappingData;
 };
 
 #endif // VALUEMAPPINGDIALOG_H
