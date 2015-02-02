@@ -43,13 +43,14 @@ void MappingFunctionWidget::SetFunction(const QString& function) {
 	if (m_functionComboBox->currentText() != function) {
 
 		m_functionComboBox->setCurrentText(function);
+		OnFunctionComboBoxChanged();
 	}
 }
 
-void MappingFunctionWidget::OnFunctionComboBoxChanged(int index) {
+void MappingFunctionWidget::OnFunctionComboBoxChanged() {
 
 	SynGlyphX::MappingFunctionData::Function function = static_cast<SynGlyphX::MappingFunctionData::Function>(m_functionComboBox->currentData().toInt());
-	bool isNotInterpolation = ((function != SynGlyphX::MappingFunctionData::LinearInterpolation) || (function != SynGlyphX::MappingFunctionData::LogarithmicInterpolation));
+	bool isNotInterpolation = ((function != SynGlyphX::MappingFunctionData::LinearInterpolation) && (function != SynGlyphX::MappingFunctionData::LogarithmicInterpolation));
 	m_editPropertiesButton->setEnabled(isNotInterpolation);
 
 	emit FunctionChanged();
