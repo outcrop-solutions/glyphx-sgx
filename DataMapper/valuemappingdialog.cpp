@@ -132,6 +132,7 @@ ValueMappingDialog::ValueMappingDialog(InputType input, OutputType output, QWidg
 
 	setLayout(layout);
 
+	OnTableSelectionChanged();
 	setWindowTitle(tr("Edit Mapping Properties"));
 }
 
@@ -155,14 +156,21 @@ void ValueMappingDialog::OnAddKeyValue() {
 	}
 	else if (m_input == InputType::Range) {
 
-		SynGlyphX::Range newKey = m_inputRangeWidget->GetRange();
-		if (m_rangeInputValues.count(newKey) == 1) {
+		try {
+			SynGlyphX::Range newKey = m_inputRangeWidget->GetRange();
+			if (m_rangeInputValues.count(newKey) == 1) {
 
-			QMessageBox::warning(this, tr("Error adding new range value pair"), tr("Range value can not overlap with a range already in the list"));
+				QMessageBox::warning(this, tr("Error adding new range value pair"), tr("Range value can not overlap with a range already in the list"));
+				return;
+			}
+
+			m_rangeInputValues.insert(newKey);
+		}
+		catch (const std::exception& e) {
+
+			QMessageBox::warning(this, tr("Error adding new range value pair"), tr(e.what()));
 			return;
 		}
-
-		m_rangeInputValues.insert(newKey);
 	}
 	else {
 
@@ -240,7 +248,7 @@ void ValueMappingDialog::OnRemoveKeyValue() {
 
 void ValueMappingDialog::OnTableSelectionChanged() {
 
-	m_removeEntryButton->setEnabled(!m_table->selectedItems().empty());
+	m_removeEntryButton->setEnabled(m_table->currentRow() != -1);
 }
 
 void ValueMappingDialog::AddRow() {
@@ -281,7 +289,10 @@ void ValueMappingDialog::AddRow() {
 
 void ValueMappingDialog::OnClearAllKeyValues() {
 
-	m_table->clear();
+	while (m_table->rowCount() > 0) {
+
+		m_table->removeRow(0);
+	}
 	m_doubleInputValues.clear();
 	m_textInputValues.clear();
 	m_rangeInputValues.clear();
@@ -471,8 +482,36 @@ SynGlyphX::Text2ColorMappingData::SharedPtr Text2ColorMappingDialog::GetMappingF
 
 ////////////////////////////////////////////////////////////////////////////////
 
+RangeMappingDialog::RangeMappingDialog(OutputType output, QWidget *parent) :
+	ValueMappingDialog(InputType::Range, output, parent) {
+
+
+}
+
+RangeMappingDialog::~RangeMappingDialog() {
+
+}
+
+void RangeMappingDialog::accept() {
+
+	for (int row = 0; row < m_table->rowCount(); ++row) {
+
+		SynGlyphX::RangeWidget* inputTableWidget = dynamic_cast<SynGlyphX::RangeWidget*>(m_table->cellWidget(row, 0));
+		if (!inputTableWidget->IsValid()) {
+
+			QMessageBox::warning(this, tr("Error with range value pairs"), tr("All ranges of range value pairs must have a minimum that is less than its maximum."));
+			return;
+		}
+		
+	}
+
+	ValueMappingDialog::accept();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
 Range2NumericMappingDialog::Range2NumericMappingDialog(QWidget *parent) :
-	ValueMappingDialog(InputType::Range, OutputType::Numeric, parent) {
+	RangeMappingDialog(OutputType::Numeric, parent) {
 
 }
 
@@ -518,7 +557,7 @@ SynGlyphX::Range2NumericMappingData::SharedPtr Range2NumericMappingDialog::GetMa
 ////////////////////////////////////////////////////////////////////////////////
 
 Range2ColorMappingDialog::Range2ColorMappingDialog(QWidget *parent) :
-	ValueMappingDialog(InputType::Range, OutputType::Color, parent) {
+	RangeMappingDialog(OutputType::Color, parent) {
 
 }
 

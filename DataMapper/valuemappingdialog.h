@@ -140,7 +140,21 @@ protected:
 	
 };
 
-class Range2NumericMappingDialog : public ValueMappingDialog
+class RangeMappingDialog : public ValueMappingDialog
+{
+	Q_OBJECT
+
+public:
+	RangeMappingDialog(OutputType output, QWidget *parent);
+	virtual ~RangeMappingDialog();
+
+	virtual void accept();
+
+protected:
+
+};
+
+class Range2NumericMappingDialog : public RangeMappingDialog
 {
 	Q_OBJECT
 
@@ -155,7 +169,7 @@ protected:
 
 };
 
-class Range2ColorMappingDialog : public ValueMappingDialog
+class Range2ColorMappingDialog : public RangeMappingDialog
 {
 	Q_OBJECT
 

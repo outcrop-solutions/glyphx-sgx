@@ -35,9 +35,11 @@ namespace SynGlyphX {
 		void SetRange(const Range& range);
 		Range GetRange() const;
 
+		bool IsValid() const;
+
 	private slots:
-		void OnMinChanged(double newMin);
-		void OnMaxChanged(double newMax);
+		//void OnMinChanged(double newMin);
+		//void OnMaxChanged(double newMax);
 
 	private:
 		QDoubleSpinBox* m_minSpinBox;

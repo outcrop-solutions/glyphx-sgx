@@ -301,7 +301,11 @@ bool MinMaxGlyphModel::SetDataByRow(SynGlyphX::DataMappingGlyph& glyph, const QV
 			std::pair<SynGlyphX::GlyphColor, SynGlyphX::GlyphColor>& colorMinMax = glyph.GetColor().GetValue();
 			if (index.column() == 2) {
 
-				glyph.GetColor().SetMappingFunctionData(CreateNewMappingFunction(SynGlyphX::MappingFunctionData::s_functionNames.right.at(value.toString().toStdWString()), true));
+				SynGlyphX::MappingFunctionData::Function function = SynGlyphX::MappingFunctionData::s_functionNames.right.at(value.toString().toStdWString());
+				if (function != glyph.GetColor().GetMappingFunctionData()->GetFunction()) {
+
+					glyph.GetColor().SetMappingFunctionData(CreateNewMappingFunction(function, true));
+				}
 			}
 			else if (index.column() == 0) {
 
@@ -323,7 +327,11 @@ bool MinMaxGlyphModel::SetDataByRow(SynGlyphX::DataMappingGlyph& glyph, const QV
 			SynGlyphX::NumericMappingProperty& prop = GetGlyphProperty(glyph, row);
 			if (index.column() == 2) {
 
-				prop.SetMappingFunctionData(CreateNewMappingFunction(SynGlyphX::MappingFunctionData::s_functionNames.right.at(value.toString().toStdWString()), false));
+				SynGlyphX::MappingFunctionData::Function function = SynGlyphX::MappingFunctionData::s_functionNames.right.at(value.toString().toStdWString());
+				if (function != prop.GetMappingFunctionData()->GetFunction()) {
+
+					prop.SetMappingFunctionData(CreateNewMappingFunction(function, false));
+				}
 			}
 			else if (index.column() == 0) {
 

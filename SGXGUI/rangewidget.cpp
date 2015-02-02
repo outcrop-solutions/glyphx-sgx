@@ -31,8 +31,8 @@ namespace SynGlyphX {
 
 		setLayout(layout);
 
-		QObject::connect(m_minSpinBox, static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), this, &RangeWidget::OnMinChanged);
-		QObject::connect(m_maxSpinBox, static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), this, &RangeWidget::OnMaxChanged);
+		//QObject::connect(m_minSpinBox, static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), this, &RangeWidget::OnMinChanged);
+		//QObject::connect(m_maxSpinBox, static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), this, &RangeWidget::OnMaxChanged);
 
 		//Make sure spin boxes have different values
 		m_minSpinBox->setValue(0.0);
@@ -53,10 +53,21 @@ namespace SynGlyphX {
 
 	Range RangeWidget::GetRange() const {
 
+		if (!IsValid()) {
+
+			throw std::exception("Min value of range must be less than max value of range.");
+		}
+
 		Range range(m_minSpinBox->value(), m_maxSpinBox->value());
 		return range;
 	}
+	
+	bool RangeWidget::IsValid() const {
 
+		return (m_minSpinBox->value() < m_maxSpinBox->value());
+	}
+
+	/*
 	void RangeWidget::OnMinChanged(double newMin) {
 
 		m_maxSpinBox->setMinimum(newMin + 0.1);
@@ -66,5 +77,5 @@ namespace SynGlyphX {
 
 		m_minSpinBox->setMaximum(newMax - 0.1);
 	}
-
+	*/
 } //namespace SynGlyphX
