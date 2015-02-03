@@ -38,6 +38,12 @@ DataMapperWindow::DataMapperWindow(QWidget *parent)
 	m_glyphTreesModel(nullptr),
 	m_baseObjectsModel(nullptr)
 {
+	QSettings settings;
+	settings.beginGroup("ANTzExport");
+	m_antzExportDirectory = settings.value("default", SynGlyphX::Application::applicationDirPath() + QDir::separator() + "ANTzTemplate").toString();
+	m_antzzSpaceExportDirectory = settings.value("zSpace", SynGlyphX::Application::applicationDirPath() + QDir::separator() + "ANTzzSpaceTemplate").toString();
+	settings.endGroup();
+
 	m_dataTransformModel = new DataTransformModel(this);
 	QObject::connect(m_dataTransformModel, &DataTransformModel::dataChanged, this, [&, this](const QModelIndex& topLeft, const QModelIndex& bottomRight){ setWindowModified(true); });
 	QObject::connect(m_dataTransformModel, &DataTransformModel::rowsInserted, this, [&, this](const QModelIndex& parent, int first, int last){ setWindowModified(true); });
@@ -476,6 +482,7 @@ void DataMapperWindow::ExportToANTz(const QString& templateDir) {
 
 		SynGlyphX::Filesystem::RemoveContentsOfDirectory(csvDirectory.toStdString());
 		SynGlyphX::Filesystem::CopyDirectoryOverwrite(QDir::toNativeSeparators(templateDir).toStdString(), csvDirectory.toStdString(), true);
+		QFile::copy(SynGlyphX::Application::applicationDirPath() + QDir::separator() + "world.png", csvDirectory + QDir::separator() + "usr" + QDir::separator() + "images" + QDir::separator() + "map00001.jpg");
 
 		SynGlyphXANTz::ANTzTransformer transformer(csvDirectory);
 		transformer.Transform(*(m_dataTransformModel->GetDataMapping().get()));
@@ -696,11 +703,6 @@ void DataMapperWindow::ReadSettings(){
 
 		m_showAnimation->toggle();
 	}
-	settings.endGroup();
-
-	settings.beginGroup("ANTzExport");
-	m_antzExportDirectory = settings.value("default", SynGlyphX::Application::applicationDirPath() + QDir::separator() + "ANTzTemplate").toString();
-	m_antzzSpaceExportDirectory = settings.value("zSpace", SynGlyphX::Application::applicationDirPath() + QDir::separator() + "ANTzzSpaceTemplate").toString();
 	settings.endGroup();
 }
 
