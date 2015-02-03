@@ -62,6 +62,16 @@ namespace SynGlyphX {
 
 		}
 		m_fieldTypeTable->setMinimumWidth(minTableWidth);
+		int minTableHeight = (m_fieldTypeTable->model()->rowCount() * (1 + m_fieldTypeTable->rowHeight(0))) + m_fieldTypeTable->horizontalHeader()->height();
+		if (minTableHeight < 0.75 * parent->height()) {
+
+			m_fieldTypeTable->setMinimumHeight(minTableHeight);
+		}
+		else {
+
+			m_fieldTypeTable->setMinimumHeight(0.75 * parent->height());
+		}
+		
 
 		layout->addWidget(m_fieldTypeTable);
 
