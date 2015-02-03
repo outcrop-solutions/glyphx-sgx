@@ -52,7 +52,7 @@ private slots:
     bool SaveProject();
     bool SaveAsProject();
     void AddDataSources();
-    void ExportToANTz();
+    void ExportToANTz(const QString& templateDir);
 	void AddBaseObject();
 	void AddGlyphTemplate();
 	void ChangeMapDownloadSettings();
@@ -69,7 +69,7 @@ private:
 	bool AskUserToSave();
 	void EnableProjectDependentActions(bool enable);
 	bool ValidateNewDatasource(const QString& datasource);
-	bool DoesANTzTemplateExist() const;
+	bool DoesANTzTemplateExist(const QString& templateDir) const;
 	void ProcessCSVFile(const QString& csvFile);
 	void ReadNewMappingDefaults();
 	void WriteNewMappingDefaults();
@@ -102,6 +102,9 @@ private:
 	DataMapping3DWidget* m_minMaxGlyph3DWidget;
 
 	SynGlyphX::DataMappingDefaults m_newMappingDefaults;
+
+	QString m_antzExportDirectory;
+	QString m_antzzSpaceExportDirectory;
 };
 
 #endif // DATAMAPPERWINDOW_H

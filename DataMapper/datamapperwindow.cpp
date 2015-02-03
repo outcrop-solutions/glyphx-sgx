@@ -26,8 +26,6 @@
 #include "singlewidgetdialog.h"
 #include "glyphdefaultswidget.h"
 
-const QString ANTzTemplateDir = "ANTzTemplate";
-
 DataMapperWindow::DataMapperWindow(QWidget *parent)
     : SynGlyphX::MainWindow(parent),
 	m_baseObjectsView(nullptr),
@@ -109,13 +107,26 @@ void DataMapperWindow::CreateMenus() {
     QObject::connect(saveAsProjectAction, &QAction::triggered, this, &DataMapperWindow::SaveAsProject);
 	m_projectDependentActions.push_back(saveAsProjectAction);
 
-	if (DoesANTzTemplateExist()) {
+	bool defaultANTzTemplateExists = DoesANTzTemplateExist(m_antzExportDirectory);
+	bool zSpaceANTzTemplateExists = DoesANTzTemplateExist(m_antzzSpaceExportDirectory);
+
+	if (defaultANTzTemplateExists || zSpaceANTzTemplateExists) {
 
 		m_fileMenu->addSeparator();
+	}
+
+	if (defaultANTzTemplateExists) {
 
 		QAction* exportToANTzAction = CreateMenuAction(m_fileMenu, tr("Export to ANTz"));
-		QObject::connect(exportToANTzAction, &QAction::triggered, this, &DataMapperWindow::ExportToANTz);
+		QObject::connect(exportToANTzAction, &QAction::triggered, this, [this]{ ExportToANTz(m_antzExportDirectory); });
 		m_projectDependentActions.push_back(exportToANTzAction);
+	}
+
+	if (zSpaceANTzTemplateExists) {
+
+		QAction* exportTozSpaceANTzAction = CreateMenuAction(m_fileMenu, tr("Export to ANTz (zSpace)"));
+		QObject::connect(exportTozSpaceANTzAction, &QAction::triggered, this, [this]{ ExportToANTz(m_antzzSpaceExportDirectory); });
+		m_projectDependentActions.push_back(exportTozSpaceANTzAction);
 	}
 
 	m_fileMenu->addActions(m_recentFileActions);
@@ -442,7 +453,7 @@ void DataMapperWindow::AddDataSources() {
 	}
 }
 
-void DataMapperWindow::ExportToANTz() {
+void DataMapperWindow::ExportToANTz(const QString& templateDir) {
 
 	QString csvDirectory = QDir::toNativeSeparators(QFileDialog::getExistingDirectory(this, tr("Export to ANTz"), ""));
 	if (csvDirectory.isEmpty()) {
@@ -464,7 +475,7 @@ void DataMapperWindow::ExportToANTz() {
 	try {
 
 		SynGlyphX::Filesystem::RemoveContentsOfDirectory(csvDirectory.toStdString());
-		SynGlyphX::Filesystem::CopyDirectoryOverwrite(QDir::toNativeSeparators(SynGlyphX::Application::applicationDirPath() + QDir::separator() + ANTzTemplateDir).toStdString(), csvDirectory.toStdString(), true);
+		SynGlyphX::Filesystem::CopyDirectoryOverwrite(QDir::toNativeSeparators(templateDir).toStdString(), csvDirectory.toStdString(), true);
 
 		SynGlyphXANTz::ANTzTransformer transformer(csvDirectory);
 		transformer.Transform(*(m_dataTransformModel->GetDataMapping().get()));
@@ -555,9 +566,9 @@ void DataMapperWindow::ChangeMapDownloadSettings() {
 	dialog.exec();
 }
 
-bool DataMapperWindow::DoesANTzTemplateExist() const {
+bool DataMapperWindow::DoesANTzTemplateExist(const QString& templateDir) const {
 
-	boost::filesystem::path antzTemplatePath(QDir::toNativeSeparators(SynGlyphX::Application::applicationDirPath() + QDir::separator() + ANTzTemplateDir).toStdString());
+	boost::filesystem::path antzTemplatePath(QDir::toNativeSeparators(templateDir).toStdString());
 	if (!boost::filesystem::exists(antzTemplatePath) || !boost::filesystem::is_directory(antzTemplatePath)) {
 
 		return false;
@@ -685,6 +696,11 @@ void DataMapperWindow::ReadSettings(){
 
 		m_showAnimation->toggle();
 	}
+	settings.endGroup();
+
+	settings.beginGroup("ANTzExport");
+	m_antzExportDirectory = settings.value("default", SynGlyphX::Application::applicationDirPath() + QDir::separator() + "ANTzTemplate").toString();
+	m_antzzSpaceExportDirectory = settings.value("zSpace", SynGlyphX::Application::applicationDirPath() + QDir::separator() + "ANTzzSpaceTemplate").toString();
 	settings.endGroup();
 }
 
