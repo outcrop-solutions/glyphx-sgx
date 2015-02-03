@@ -18,7 +18,9 @@ ValueMappingDialog::ValueMappingDialog(InputType input, OutputType output, QWidg
 	m_table(nullptr),
 	m_inputRangeWidget(nullptr),
 	m_inputDoubleWidget(nullptr),
-	m_inputTextWidget(nullptr)
+	m_inputTextWidget(nullptr),
+	m_outputSpinBoxMin(-100000.0),
+	m_outputSpinBoxMax(100000.0)
 {
 	QVBoxLayout* layout = new QVBoxLayout(this);
 
@@ -26,8 +28,7 @@ ValueMappingDialog::ValueMappingDialog(InputType input, OutputType output, QWidg
 	defaultLayout->addWidget(new QLabel(tr("Default:")));
 	if (m_output == OutputType::Numeric) {
 
-		m_defaultDoubleWidget = new QDoubleSpinBox(this);
-		m_defaultDoubleWidget->setDecimals(3);
+		m_defaultDoubleWidget = CreateDoubleSpinBox();
 		defaultLayout->addWidget(m_defaultDoubleWidget);
 	}
 	else {
@@ -102,14 +103,13 @@ ValueMappingDialog::ValueMappingDialog(InputType input, OutputType output, QWidg
 	else {
 		
 		inputLayout->addWidget(new QLabel(tr("Key:")));
-		m_inputDoubleWidget = new QDoubleSpinBox(this);
+		m_inputDoubleWidget = CreateDoubleSpinBox();
 		inputLayout->addWidget(m_inputDoubleWidget);
 	}
 	inputLayout->addWidget(new QLabel(tr("Value:")));
 	if (m_output == OutputType::Numeric) {
 
-		m_outputDoubleWidget = new QDoubleSpinBox(this);
-		m_outputDoubleWidget->setDecimals(3);
+		m_outputDoubleWidget = CreateDoubleSpinBox();
 		inputLayout->addWidget(m_outputDoubleWidget);
 	}
 	else {
@@ -139,6 +139,24 @@ ValueMappingDialog::ValueMappingDialog(InputType input, OutputType output, QWidg
 ValueMappingDialog::~ValueMappingDialog()
 {
 
+}
+
+void ValueMappingDialog::SetOutputSpinBoxRange(double min, double max) {
+
+	if (m_output == OutputType::Numeric) {
+
+		m_outputSpinBoxMin = min;
+		m_outputSpinBoxMax = max;
+
+		m_defaultDoubleWidget->setRange(m_outputSpinBoxMin, m_outputSpinBoxMax);
+		m_outputDoubleWidget->setRange(m_outputSpinBoxMin, m_outputSpinBoxMax);
+
+		for (int i = 0; i < m_table->rowCount(); ++i) {
+
+			QDoubleSpinBox* outputTableWidget = dynamic_cast<QDoubleSpinBox*>(m_table->cellWidget(i, 1));
+			outputTableWidget->setRange(m_outputSpinBoxMin, m_outputSpinBoxMax);
+		}
+	}
 }
 
 void ValueMappingDialog::accept() {
@@ -218,7 +236,7 @@ void ValueMappingDialog::AddRow() {
 	QWidget* inputWidget = nullptr;
 	if (m_input == InputType::Numeric) {
 
-		inputWidget = new QDoubleSpinBox(this);
+		inputWidget = CreateDoubleSpinBox();
 	}
 	else if (m_input == InputType::Range) {
 
@@ -235,7 +253,7 @@ void ValueMappingDialog::AddRow() {
 	QWidget* outputWidget = nullptr;
 	if (m_output == OutputType::Numeric) {
 
-		outputWidget = new QDoubleSpinBox(this);
+		outputWidget = CreateDoubleSpinBox(m_outputSpinBoxMin, m_outputSpinBoxMax);
 	}
 	else {
 
@@ -307,6 +325,15 @@ SynGlyphX::GlyphColor ValueMappingDialog::GetColorFromWidget(int row, int column
 	}
 
 	return SynGlyphX::ColorButton::ConvertQColorToColor(widget->GetColor());
+}
+
+QDoubleSpinBox* ValueMappingDialog::CreateDoubleSpinBox(double min, double max) {
+
+	QDoubleSpinBox* spinBox = new QDoubleSpinBox(this);
+	spinBox->setRange(min, max);
+	spinBox->setDecimals(3);
+
+	return spinBox;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

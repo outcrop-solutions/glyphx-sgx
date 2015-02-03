@@ -46,6 +46,8 @@ public:
 	ValueMappingDialog(InputType input, OutputType output, QWidget *parent);
 	virtual ~ValueMappingDialog();
 
+	void SetOutputSpinBoxRange(double min, double max);
+
 	virtual void accept();
 
 protected slots:
@@ -61,6 +63,7 @@ protected:
 	std::wstring GetTextFromWidget(int row, int column = 0);
 	double GetDoubleFromWidget(int row, int column = 0);
 	SynGlyphX::GlyphColor GetColorFromWidget(int row, int column = 1);
+	QDoubleSpinBox* CreateDoubleSpinBox(double min = -100000.0, double max = 100000.0);
 
 	QTableWidget* m_table;
 
@@ -74,6 +77,9 @@ protected:
 	SynGlyphX::ColorButton* m_outputColorWidget;
 
 	QPushButton* m_removeEntryButton;
+
+	double m_outputSpinBoxMin;
+	double m_outputSpinBoxMax;
 
 private:
 	InputType m_input;

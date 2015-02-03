@@ -13,7 +13,7 @@ class MappingFunctionWidget : public QWidget
 	Q_PROPERTY(QString function READ GetFunction WRITE SetFunction USER true)
 
 public:
-	MappingFunctionWidget(MinMaxGlyphModel* model, int row, QWidget *parent);
+	MappingFunctionWidget(MinMaxGlyphModel* model, int row, double min, double max, QWidget *parent);
 	~MappingFunctionWidget();
 
 	QString GetFunction() const;
@@ -34,6 +34,8 @@ private:
 	QPushButton* m_editPropertiesButton;
 	MinMaxGlyphModel* m_model;
 	int m_row;
+	double m_dialogOutputMin;
+	double m_dialogOutputMax;
 };
 
 #endif // MAPPINGFUNCTIONWIDGET_H

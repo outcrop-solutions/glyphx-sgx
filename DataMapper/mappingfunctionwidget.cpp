@@ -3,10 +3,12 @@
 #include <QtWidgets/QHBoxLayout>
 #include "valuemappingdialog.h"
 
-MappingFunctionWidget::MappingFunctionWidget(MinMaxGlyphModel* model, int row, QWidget *parent)
+MappingFunctionWidget::MappingFunctionWidget(MinMaxGlyphModel* model, int row, double min, double max, QWidget *parent)
 	: QWidget(parent),
 	m_model(model),
-	m_row(row)
+	m_row(row),
+	m_dialogOutputMin(min),
+	m_dialogOutputMax(max)
 {
 	QHBoxLayout* layout = new QHBoxLayout(this);
 	layout->setContentsMargins(1, 1, 1, 1);
@@ -106,6 +108,7 @@ void MappingFunctionWidget::OnEditPropertiesClicked() {
 		if (mappingData->GetFunction() == SynGlyphX::MappingFunctionData::Function::Numeric2Value) {
 
 			Numeric2NumericMappingDialog dialog(this);
+			dialog.SetOutputSpinBoxRange(m_dialogOutputMin, m_dialogOutputMax);
 			dialog.SetDialogFromMapping(std::dynamic_pointer_cast<const SynGlyphX::Numeric2NumericMappingData>(mappingData));
 			if (dialog.exec() == QDialog::Accepted) {
 				
@@ -115,6 +118,7 @@ void MappingFunctionWidget::OnEditPropertiesClicked() {
 		else if (mappingData->GetFunction() == SynGlyphX::MappingFunctionData::Function::Text2Value) {
 
 			Text2NumericMappingDialog dialog(this);
+			dialog.SetOutputSpinBoxRange(m_dialogOutputMin, m_dialogOutputMax);
 			dialog.SetDialogFromMapping(std::dynamic_pointer_cast<const SynGlyphX::Text2NumericMappingData>(mappingData));
 			if (dialog.exec() == QDialog::Accepted) {
 				
@@ -124,6 +128,7 @@ void MappingFunctionWidget::OnEditPropertiesClicked() {
 		else if (mappingData->GetFunction() == SynGlyphX::MappingFunctionData::Function::Range2Value) {
 
 			Range2NumericMappingDialog dialog(this);
+			dialog.SetOutputSpinBoxRange(m_dialogOutputMin, m_dialogOutputMax);
 			dialog.SetDialogFromMapping(std::dynamic_pointer_cast<const SynGlyphX::Range2NumericMappingData>(mappingData));
 			if (dialog.exec() == QDialog::Accepted) {
 				
