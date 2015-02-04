@@ -22,7 +22,7 @@
 ///
 
 #include <QtWidgets/QCheckBox>
-#include "foundationtypes.h"
+#include "utilitytypes.h"
 
 namespace SynGlyphX {
 

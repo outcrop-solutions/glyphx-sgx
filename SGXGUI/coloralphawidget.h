@@ -21,7 +21,7 @@
 #include "sgxgui_global.h"
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QSpinBox>
-#include "foundationtypes.h"
+#include "utilitytypes.h"
 #include "colorbutton.h"
 
 namespace SynGlyphX {

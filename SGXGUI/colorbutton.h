@@ -22,7 +22,7 @@
 #include <QtWidgets/QToolButton>
 #include <QtWidgets/QMenu>
 #include <QtWidgets/QPushButton>
-#include "foundationtypes.h"
+#include "utilitytypes.h"
 #include "glyphcolor.h"
 
 namespace SynGlyphX {
