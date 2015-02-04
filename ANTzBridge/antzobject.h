@@ -19,7 +19,7 @@
 #define SYNGLYPHX_GLYPHNUMERICMAPPABLEPROPERTIES_H
 
 #include "ANTzBridge.h"
-#include "foundationtypes.h"
+#include "utilitytypes.h"
 #include "glyphcolor.h"
 
 namespace SynGlyphXANTz {
