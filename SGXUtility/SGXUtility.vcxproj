@@ -94,10 +94,12 @@
     <ClInclude Include="csvfilehandler.h" />
     <ClInclude Include="csvfilereader.h" />
     <ClInclude Include="csvfilewriter.h" />
+    <ClInclude Include="csvtfilereaderwriter.h" />
     <ClInclude Include="filesystem.h" />
     <ClInclude Include="range.h" />
     <ClInclude Include="sgxutility.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="utilitytypes.h" />
     <ClInclude Include="uuid.h" />
     <ClInclude Include="xmlpropertytreefile.h" />
   </ItemGroup>
@@ -105,6 +107,7 @@
     <ClCompile Include="csvfilehandler.cpp" />
     <ClCompile Include="csvfilereader.cpp" />
     <ClCompile Include="csvfilewriter.cpp" />
+    <ClCompile Include="csvtfilereaderwriter.cpp" />
     <ClCompile Include="dllmain.cpp">
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</CompileAsManaged>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">

@@ -20,7 +20,7 @@
 
 #include <vector>
 #include "sgxutility.h"
-#include "foundationtypes.h"
+#include "utilitytypes.h"
 
 namespace SynGlyphX {
 

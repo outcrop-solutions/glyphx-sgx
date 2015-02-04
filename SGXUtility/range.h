@@ -47,7 +47,7 @@ namespace SynGlyphX {
 	};
 
 	//This translator is so that Range can be automatically used by boost::property_tree
-	class SGXFOUNDATION_API RangeTranslator
+	class SGXUTILITY_API RangeTranslator
 	{
 	public:
 		typedef std::wstring internal_type;

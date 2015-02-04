@@ -18,13 +18,13 @@
 #ifndef SYNGLYPHX_CSVTFILEREADERWRITER_H
 #define SYNGLYPHX_CSVTFILEREADERWRITER_H
 
-#include "sgxfoundation.h"
+#include "sgxutility.h"
 #include "csvfilereader.h"
 #include <string>
 
 namespace SynGlyphX {
 
-	class SGXFOUNDATION_API CSVTFileReaderWriter : protected CSVFileReader
+	class SGXUTILITY_API CSVTFileReaderWriter : protected CSVFileReader
 	{
 	public:
 		CSVTFileReaderWriter(const std::string& filename);

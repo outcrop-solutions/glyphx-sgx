@@ -21,7 +21,7 @@
 #include "sgxfoundation.h"
 #include "glyphtemplate.h"
 #include "glyphcolor.h"
-#include "foundationtypes.h"
+#include "utilitytypes.h"
 
 namespace SynGlyphX {
 

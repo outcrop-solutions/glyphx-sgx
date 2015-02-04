@@ -19,7 +19,7 @@
 #define SYNGLYPHX_BASEIMAGE_H
 
 #include "sgxdatatransform_global.h"
-#include "foundationtypes.h"
+#include "utilitytypes.h"
 #include "baseimageproperties.h"
 #include <boost/bimap.hpp>
 #include <boost/property_tree/ptree.hpp>
