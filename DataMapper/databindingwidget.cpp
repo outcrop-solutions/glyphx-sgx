@@ -40,11 +40,11 @@ void DataBindingWidget::CreateAnimationTable() {
 
 	CreateGridLine(gridLayout, QFrame::HLine, 1, 2);
 
-	CreateDoublePropertyWidgets(gridLayout, 2, 13);
+	CreateDoublePropertyWidgets(gridLayout, 2, -1000.0, 1000.0);
 	CreateGridLine(gridLayout, QFrame::HLine, 3);
-	CreateDoublePropertyWidgets(gridLayout, 4, 14);
+	CreateDoublePropertyWidgets(gridLayout, 4, -1000.0, 1000.0);
 	CreateGridLine(gridLayout, QFrame::HLine, 5);
-	CreateDoublePropertyWidgets(gridLayout, 6, 15);
+	CreateDoublePropertyWidgets(gridLayout, 6, -1000.0, 1000.0);
 
 	gridLayout->setColumnStretch(8, 1);
 
@@ -133,11 +133,11 @@ void DataBindingWidget::CreatePropertiesTable() {
 	CreateDoublePropertyWidgets(gridLayout, 12, -360.0, 360.0);
 	CreateGridLine(gridLayout, QFrame::HLine, 13);
 
-	CreateDoublePropertyWidgets(gridLayout, 14, 0.01, 1000.0);
+	CreateDoublePropertyWidgets(gridLayout, 14, 0.0, 1000.0);
 	CreateGridLine(gridLayout, QFrame::HLine, 15);
-	CreateDoublePropertyWidgets(gridLayout, 16, 0.01, 1000.0);
+	CreateDoublePropertyWidgets(gridLayout, 16, 0.0, 1000.0);
 	CreateGridLine(gridLayout, QFrame::HLine, 17);
-	CreateDoublePropertyWidgets(gridLayout, 18, 0.01, 1000.0);
+	CreateDoublePropertyWidgets(gridLayout, 18, 0.0, 1000.0);
 	CreateGridLine(gridLayout, QFrame::HLine, 19);
 
 	CreateColorPropertyWidgets(gridLayout, 20);
