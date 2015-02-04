@@ -18,13 +18,13 @@
 #ifndef XMLPROPERTYTREEFILE_H
 #define XMLPROPERTYTREEFILE_H
 
-#include "sgxfoundation.h"
+#include "sgxutility.h"
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/xml_parser.hpp>
 
 namespace SynGlyphX {
 
-	class SGXFOUNDATION_API XMLPropertyTreeFile
+	class SGXUTILITY_API XMLPropertyTreeFile
 	{
 	public:
 		XMLPropertyTreeFile();
