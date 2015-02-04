@@ -15,37 +15,28 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef SYNGLYPHX_UUIDHASH_H
-#define SYNGLYPHX_UUIDHASH_H
+#ifndef SYNGLYPHX_FILESYSTEM_H
+#define SYNGLYPHX_FILESYSTEM_H
 
-#include "sgxfoundation.h"
-#include <boost/uuid/uuid.hpp>
-//#include <boost/uuid/uuid_io.hpp>
-//#include <string>
-#include <boost/uuid/uuid_generators.hpp>
+#include "sgxutility.h"
+#include <string>
+#include <boost/filesystem.hpp>
 
 namespace SynGlyphX {
 
-	//Hash function for boost uuid so that it can be used in STL classes like unordered_map
-	struct UUIDHash {
-		std::size_t operator()(const boost::uuids::uuid& uuid) const
-		{
-			return boost::uuids::hash_value(uuid);
-		}
-	};
-
-	class SGXFOUNDATION_API UUIDGenerator {
-
+	class SGXUTILITY_API Filesystem
+	{
 	public:
-		UUIDGenerator();
-		~UUIDGenerator();
+		Filesystem();
+		~Filesystem();
 
-		static boost::uuids::uuid GetNewRandomUUID();
+		static void RemoveContentsOfDirectory(const std::string& directory);
+		static void CopyDirectoryOverwrite(const std::string& sourceDir, const std::string& destinationDir, bool recursive = false);
 
 	private:
-		static boost::uuids::random_generator s_randomUUIDGenerator;
+		static void CopyDirectoryOverwrite(const boost::filesystem::path& sourcePath, const boost::filesystem::path& destinationPath, bool recursive);
 	};
 
 } //namespace SynGlyphX
 
-#endif //SYNGLYPHX_UUID_H
+#endif //SYNGLYPHX_FILESYSTEM

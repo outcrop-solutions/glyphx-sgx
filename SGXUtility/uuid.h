@@ -15,29 +15,37 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef SYNGLYPHX_CSVFILEWRITER_H
-#define SYNGLYPHX_CSVFILEWRITER_H
+#ifndef SYNGLYPHX_UUIDHASH_H
+#define SYNGLYPHX_UUIDHASH_H
 
-#include "csvfilehandler.h"
-#include <string>
-#include <fstream>
+#include "sgxutility.h"
+#include <boost/uuid/uuid.hpp>
+//#include <boost/uuid/uuid_io.hpp>
+//#include <string>
+#include <boost/uuid/uuid_generators.hpp>
 
 namespace SynGlyphX {
 
-	class SGXFOUNDATION_API CSVFileWriter : public CSVFileHandler
-	{
-	public:
-		CSVFileWriter(const std::string& filename, char separator = ',');
-		virtual ~CSVFileWriter();
+	//Hash function for boost uuid so that it can be used in STL classes like unordered_map
+	struct UUIDHash {
+		std::size_t operator()(const boost::uuids::uuid& uuid) const
+		{
+			return boost::uuids::hash_value(uuid);
+		}
+	};
 
-		virtual void Close();
-		void WriteLine(const CSVValues& values);
+	class SGXUTILITY_API UUIDGenerator {
+
+	public:
+		UUIDGenerator();
+		~UUIDGenerator();
+
+		static boost::uuids::uuid GetNewRandomUUID();
 
 	private:
-		std::wofstream m_filestream;
-		unsigned int m_numFields;
+		static boost::uuids::random_generator s_randomUUIDGenerator;
 	};
 
 } //namespace SynGlyphX
 
-#endif //SYNGLYPHX_CSVFILEWRITER_H
+#endif //SYNGLYPHX_UUID_H

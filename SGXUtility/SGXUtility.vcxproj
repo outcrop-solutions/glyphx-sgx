@@ -11,9 +11,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{1917E85B-C54C-4A57-8D29-DAC16021149E}</ProjectGuid>
+    <ProjectGuid>{719E7168-0726-41CB-8C97-113F0279FDB8}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>SGXFoundation</RootNamespace>
+    <RootNamespace>SGXUtility</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -54,18 +54,16 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;SGXFOUNDATION_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;SGXUTILITY_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\3rdParty\include\boost_1_55_0</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile />
-      <AdditionalIncludeDirectories>..\..\3rdParty\include\boost_1_55_0;..\..\3rdParty\include\stlplus_3_11</AdditionalIncludeDirectories>
-      <DisableSpecificWarnings>4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>..\..\3rdParty\lib\$(Platform)\$(Configuration)\</AdditionalLibraryDirectories>
       <ImportLibrary>..\..\lib\$(Platform)\$(Configuration)\$(TargetName).lib</ImportLibrary>
-      <AdditionalDependencies>boost_system-vc120-mt-gd-1_55.lib;boost_filesystem-vc120-mt-gd-1_55.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>boost_system-vc120-mt-gd-1_55.lib;boost_filesystem-vc120-mt-gd-1_55.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -75,11 +73,9 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;SGXFOUNDATION_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;SGXUTILITY_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\3rdParty\include\boost_1_55_0</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile />
-      <AdditionalIncludeDirectories>..\..\3rdParty\include\boost_1_55_0;..\..\3rdParty\include\stlplus_3_11</AdditionalIncludeDirectories>
-      <DisableSpecificWarnings>4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -88,26 +84,27 @@
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalLibraryDirectories>..\..\3rdParty\lib\$(Platform)\$(Configuration)\</AdditionalLibraryDirectories>
       <ImportLibrary>..\..\lib\$(Platform)\$(Configuration)\$(TargetName).lib</ImportLibrary>
-      <AdditionalDependencies>boost_system-vc120-mt-1_55.lib;boost_filesystem-vc120-mt-1_55.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>boost_system-vc120-mt-1_55.lib;boost_filesystem-vc120-mt-1_55.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="glyph.h" />
-    <ClInclude Include="glyphcolor.h" />
-    <ClInclude Include="glyphgraph.h" />
-    <ClInclude Include="glyphstructuralproperties.h" />
-    <ClInclude Include="glyphtemplate.h" />
-    <ClInclude Include="graphcopyvisitor.h" />
-    <ClInclude Include="sgxfoundation.h" />
+    <ClInclude Include="csvfilehandler.h" />
+    <ClInclude Include="csvfilereader.h" />
+    <ClInclude Include="csvfilewriter.h" />
+    <ClInclude Include="filesystem.h" />
+    <ClInclude Include="range.h" />
+    <ClInclude Include="sgxutility.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="uuid.h" />
+    <ClInclude Include="xmlpropertytreefile.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="glyph.cpp" />
-    <ClCompile Include="glyphcolor.cpp" />
-    <ClCompile Include="glyphgraph.cpp" />
+    <ClCompile Include="csvfilehandler.cpp" />
+    <ClCompile Include="csvfilereader.cpp" />
+    <ClCompile Include="csvfilewriter.cpp" />
     <ClCompile Include="dllmain.cpp">
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</CompileAsManaged>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -116,7 +113,10 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
       </PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="glyphstructuralproperties.cpp" />
+    <ClCompile Include="filesystem.cpp" />
+    <ClCompile Include="range.cpp" />
+    <ClCompile Include="uuid.cpp" />
+    <ClCompile Include="xmlpropertytreefile.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

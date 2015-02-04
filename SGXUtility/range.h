@@ -15,31 +15,62 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef SYNGLYPHX_CSVFILEHANDLER_H
-#define SYNGLYPHX_CSVFILEHANDLER_H
+#ifndef SYNGLYPHX_RANGE_H
+#define SYNGLYPHX_RANGE_H
 
-#include <vector>
-#include "sgxfoundation.h"
-#include "foundationtypes.h"
+#include "sgxutility.h"
+#include <boost/property_tree/ptree.hpp>
 
 namespace SynGlyphX {
 
-	class SGXFOUNDATION_API CSVFileHandler
+	class SGXUTILITY_API Range
 	{
 	public:
-		typedef std::vector<std::wstring> CSVValues;
+		Range(double min, double max);
+		Range(const Range& range);
+		~Range();
 
-		CSVFileHandler(wchar_t separator = ',');
-		virtual ~CSVFileHandler();
+		Range& operator=(const Range& range);
+		bool operator==(const Range& range) const;
+		bool operator!=(const Range& range) const;
+		bool operator<(const Range& range) const;
+		//bool operator<(double value) const;
 
-		virtual void Close() = 0;
+		double GetMin() const;
+		double GetMax() const;
 
-		static void AddVector3ToCSVValues(CSVValues& values, const Vector3& vec);
+		bool IsValueInRange(double value) const;
 
-	protected:
-		wchar_t m_separator;
+	private:
+		double m_min;
+		double m_max;
+	};
+
+	//This translator is so that Range can be automatically used by boost::property_tree
+	class SGXFOUNDATION_API RangeTranslator
+	{
+	public:
+		typedef std::wstring internal_type;
+		typedef Range external_type;
+
+		RangeTranslator();
+
+		boost::optional<Range> get_value(std::wstring const &v);
+		boost::optional<std::wstring> put_value(Range const& v);
+
 	};
 
 } //namespace SynGlyphX
 
-#endif //SYNGLYPHX_CSVFILEHANDLER_H
+namespace boost{
+
+	namespace property_tree{
+
+		template<>
+		struct translator_between<std::wstring, SynGlyphX::Range>
+		{
+			typedef SynGlyphX::RangeTranslator type;
+		};
+	}
+}
+#endif //SYNGLYPHX_RANGE_H

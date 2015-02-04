@@ -15,28 +15,31 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef SYNGLYPHX_FILESYSTEM
-#define SYNGLYPHX_FILESYSTEM
+#ifndef SYNGLYPHX_CSVFILEHANDLER_H
+#define SYNGLYPHX_CSVFILEHANDLER_H
 
-#include "sgxfoundation.h"
-#include <string>
-#include <boost/filesystem.hpp>
+#include <vector>
+#include "sgxutility.h"
+#include "foundationtypes.h"
 
 namespace SynGlyphX {
 
-	class SGXFOUNDATION_API Filesystem
+	class SGXUTILITY_API CSVFileHandler
 	{
 	public:
-		Filesystem();
-		~Filesystem();
+		typedef std::vector<std::wstring> CSVValues;
 
-		static void RemoveContentsOfDirectory(const std::string& directory);
-		static void CopyDirectoryOverwrite(const std::string& sourceDir, const std::string& destinationDir, bool recursive = false);
+		CSVFileHandler(wchar_t separator = ',');
+		virtual ~CSVFileHandler();
 
-	private:
-		static void CopyDirectoryOverwrite(const boost::filesystem::path& sourcePath, const boost::filesystem::path& destinationPath, bool recursive);
+		virtual void Close() = 0;
+
+		static void AddVector3ToCSVValues(CSVValues& values, const Vector3& vec);
+
+	protected:
+		wchar_t m_separator;
 	};
 
 } //namespace SynGlyphX
 
-#endif //SYNGLYPHX_FILESYSTEM
+#endif //SYNGLYPHX_CSVFILEHANDLER_H

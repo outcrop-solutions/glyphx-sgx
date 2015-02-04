@@ -21,25 +21,28 @@
     <ClInclude Include="targetver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="sgxfoundation.h">
+    <ClInclude Include="csvfilehandler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="glyphgraph.h">
+    <ClInclude Include="csvfilereader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="glyphtemplate.h">
+    <ClInclude Include="csvfilewriter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="glyphstructuralproperties.h">
+    <ClInclude Include="filesystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="graphcopyvisitor.h">
+    <ClInclude Include="range.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="glyphcolor.h">
+    <ClInclude Include="sgxutility.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="glyph.h">
+    <ClInclude Include="uuid.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="xmlpropertytreefile.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -47,16 +50,25 @@
     <ClCompile Include="dllmain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="glyphgraph.cpp">
+    <ClCompile Include="csvfilehandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="glyphstructuralproperties.cpp">
+    <ClCompile Include="csvfilereader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="glyphcolor.cpp">
+    <ClCompile Include="csvfilewriter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="glyph.cpp">
+    <ClCompile Include="filesystem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="range.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="uuid.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="xmlpropertytreefile.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

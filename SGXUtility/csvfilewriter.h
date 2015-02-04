@@ -15,62 +15,29 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef SYNGLYPHX_RANGE_H
-#define SYNGLYPHX_RANGE_H
+#ifndef SYNGLYPHX_CSVFILEWRITER_H
+#define SYNGLYPHX_CSVFILEWRITER_H
 
-#include "sgxfoundation.h"
-#include <boost/property_tree/ptree.hpp>
+#include "csvfilehandler.h"
+#include <string>
+#include <fstream>
 
 namespace SynGlyphX {
 
-	class SGXFOUNDATION_API Range
+	class SGXUTILITY_API CSVFileWriter : public CSVFileHandler
 	{
 	public:
-		Range(double min, double max);
-		Range(const Range& range);
-		~Range();
+		CSVFileWriter(const std::string& filename, char separator = ',');
+		virtual ~CSVFileWriter();
 
-		Range& operator=(const Range& range);
-		bool operator==(const Range& range) const;
-		bool operator!=(const Range& range) const;
-		bool operator<(const Range& range) const;
-		//bool operator<(double value) const;
-
-		double GetMin() const;
-		double GetMax() const;
-
-		bool IsValueInRange(double value) const;
+		virtual void Close();
+		void WriteLine(const CSVValues& values);
 
 	private:
-		double m_min;
-		double m_max;
-	};
-
-	//This translator is so that Range can be automatically used by boost::property_tree
-	class SGXFOUNDATION_API RangeTranslator
-	{
-	public:
-		typedef std::wstring internal_type;
-		typedef Range external_type;
-
-		RangeTranslator();
-
-		boost::optional<Range> get_value(std::wstring const &v);
-		boost::optional<std::wstring> put_value(Range const& v);
-
+		std::wofstream m_filestream;
+		unsigned int m_numFields;
 	};
 
 } //namespace SynGlyphX
 
-namespace boost{
-
-	namespace property_tree{
-
-		template<>
-		struct translator_between<std::wstring, SynGlyphX::Range>
-		{
-			typedef SynGlyphX::RangeTranslator type;
-		};
-	}
-}
-#endif //SYNGLYPHX_RANGE_H
+#endif //SYNGLYPHX_CSVFILEWRITER_H
