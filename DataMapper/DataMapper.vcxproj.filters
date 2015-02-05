@@ -190,6 +190,15 @@
     <ClCompile Include="GeneratedFiles\Release\moc_valuemappingdialog.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_datasourcefieldtypesdialog.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_datasourcefieldtypesdialog.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="datasourcefieldtypesdialog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="datamapperwindow.h">
@@ -241,6 +250,9 @@
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="valuemappingdialog.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="datasourcefieldtypesdialog.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>

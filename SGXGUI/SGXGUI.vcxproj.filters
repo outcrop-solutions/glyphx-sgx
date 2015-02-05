@@ -119,15 +119,6 @@
     <ClCompile Include="GeneratedFiles\Release\moc_richtexteditor.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_datasourcefieldtypesdialog.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_datasourcefieldtypesdialog.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="datasourcefieldtypesdialog.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="singlewidgetdialog.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -194,6 +185,24 @@
     <ClCompile Include="GeneratedFiles\Release\moc_rangewidget.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="radiobuttongroupwidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_radiobuttongroupwidget.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_radiobuttongroupwidget.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="labelline.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_labelline.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_labelline.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="sgxgui_global.h">
@@ -231,9 +240,6 @@
     <CustomBuild Include="richtexteditor.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
-    <CustomBuild Include="datasourcefieldtypesdialog.h">
-      <Filter>Header Files</Filter>
-    </CustomBuild>
     <CustomBuild Include="singlewidgetdialog.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
@@ -256,6 +262,12 @@
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="rangewidget.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="radiobuttongroupwidget.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="labelline.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>

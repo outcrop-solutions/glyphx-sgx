@@ -30,6 +30,7 @@
 #include "xyzwidget.h"
 #include "glyph.h"
 #include "groupboxsinglewidget.h"
+#include "glyphstructurewidget.h"
 
 class SingleGlyphWidget : public QWidget
 {
@@ -44,7 +45,7 @@ public:
         AddChildrenButton = 0x00000008
     };
 
-    Q_DECLARE_FLAGS(ChildOptions, ChildOption)
+	Q_DECLARE_FLAGS(ChildOptions, ChildOption);
 
     SingleGlyphWidget(ChildOptions childOptions = Invisible, QWidget *parent = 0);
     ~SingleGlyphWidget();
@@ -62,10 +63,6 @@ protected:
     void CreateWidgets(ChildOptions childOptions);
     QWidget* CreateChildrenWidget(ChildOptions childOptions);
 
-    QComboBox* m_geometryShapeComboBox;
-    QComboBox* m_geometrySurfaceComboBox;
-    QComboBox* m_topologyComboBox;
-
     QSpinBox* m_childrenSpinBox;
 
     SynGlyphX::ColorAlphaWidget* m_colorWidget;
@@ -76,11 +73,7 @@ protected:
 
 	SynGlyphX::XYZWidget* m_rotateRateWidget;
 
-    QDoubleSpinBox* m_ratioSpinBox;
-	SynGlyphX::GroupBoxSingleWidget* m_ratioGroupBox;
-
-private slots:
-    void OnShapeComboBoxChanged(int index);
+	SynGlyphX::GlyphStructureWidget* m_glyphStructureWidget;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(SingleGlyphWidget::ChildOptions)

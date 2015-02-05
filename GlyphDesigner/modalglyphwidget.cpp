@@ -35,19 +35,15 @@ void ModalGlyphWidget::SetModel(SynGlyphXANTz::MinMaxGlyphTreeModel* model, QIte
 
 void ModalGlyphWidget::ConnectWidgetSignals() {
 
-	m_propertyConnections.push_back(QObject::connect(m_geometryShapeComboBox, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, [this]{ OnWidgetUpdated(SynGlyphXANTz::MinMaxGlyphTreeModel::UpdateGeometry); }));
-	m_propertyConnections.push_back(QObject::connect(m_geometrySurfaceComboBox, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, [this]{ OnWidgetUpdated(SynGlyphXANTz::MinMaxGlyphTreeModel::UpdateSurface); }));
-	m_propertyConnections.push_back(QObject::connect(m_topologyComboBox, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, [this]{ OnWidgetUpdated(SynGlyphXANTz::MinMaxGlyphTreeModel::UpdateTopology); }));
+	m_propertyConnections.push_back(QObject::connect(m_glyphStructureWidget, &SynGlyphX::GlyphStructureWidget::GlyphPropertyUpdated, this, &ModalGlyphWidget::OnWidgetUpdated));
 
-	m_propertyConnections.push_back(QObject::connect(m_ratioSpinBox, static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), this, [this]{ OnWidgetUpdated(SynGlyphXANTz::MinMaxGlyphTreeModel::UpdateTorusRatio); }));
+	m_propertyConnections.push_back(QObject::connect(m_colorWidget, &SynGlyphX::ColorAlphaWidget::ColorChanged, this, [this]{ OnWidgetUpdated(SynGlyphX::UpdateColor); }));
 
-	m_propertyConnections.push_back(QObject::connect(m_colorWidget, &SynGlyphX::ColorAlphaWidget::ColorChanged, this, [this]{ OnWidgetUpdated(SynGlyphXANTz::MinMaxGlyphTreeModel::UpdateColor); }));
+	m_propertyConnections.push_back(QObject::connect(m_translateWidget, &SynGlyphX::XYZWidget::ValuesChanged, this, [this]{ OnWidgetUpdated(SynGlyphX::UpdatePosition); }));
+	m_propertyConnections.push_back(QObject::connect(m_rotateWidget, &SynGlyphX::XYZWidget::ValuesChanged, this, [this]{ OnWidgetUpdated(SynGlyphX::UpdateRotation); }));
+	m_propertyConnections.push_back(QObject::connect(m_scaleWidget, &SynGlyphX::XYZWidget::ValuesChanged, this, [this]{ OnWidgetUpdated(SynGlyphX::UpdateScale); }));
 
-	m_propertyConnections.push_back(QObject::connect(m_translateWidget, &SynGlyphX::XYZWidget::ValuesChanged, this, [this]{ OnWidgetUpdated(SynGlyphXANTz::MinMaxGlyphTreeModel::UpdatePosition); }));
-	m_propertyConnections.push_back(QObject::connect(m_rotateWidget, &SynGlyphX::XYZWidget::ValuesChanged, this, [this]{ OnWidgetUpdated(SynGlyphXANTz::MinMaxGlyphTreeModel::UpdateRotation); }));
-	m_propertyConnections.push_back(QObject::connect(m_scaleWidget, &SynGlyphX::XYZWidget::ValuesChanged, this, [this]{ OnWidgetUpdated(SynGlyphXANTz::MinMaxGlyphTreeModel::UpdateScale); }));
-
-	m_propertyConnections.push_back(QObject::connect(m_rotateRateWidget, &SynGlyphX::XYZWidget::ValuesChanged, this, [this]{ OnWidgetUpdated(SynGlyphXANTz::MinMaxGlyphTreeModel::UpdateRotationRate); }));
+	m_propertyConnections.push_back(QObject::connect(m_rotateRateWidget, &SynGlyphX::XYZWidget::ValuesChanged, this, [this]{ OnWidgetUpdated(SynGlyphX::UpdateRotationRate); }));
 }
 
 void ModalGlyphWidget::DisconnectWidgetSignals() {
@@ -58,7 +54,7 @@ void ModalGlyphWidget::DisconnectWidgetSignals() {
     m_propertyConnections.clear();
 }
 
-void ModalGlyphWidget::OnWidgetUpdated(SynGlyphXANTz::MinMaxGlyphTreeModel::PropertyUpdates updates) {
+void ModalGlyphWidget::OnWidgetUpdated(SynGlyphX::PropertyUpdates updates) {
 
     const QModelIndexList& selected = m_selectionModel->selectedIndexes();
     if (!selected.isEmpty()) {

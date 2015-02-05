@@ -368,7 +368,7 @@ void DataMapperWindow::ProcessCSVFile(const QString& csvFile) {
 			fieldNameList.push_back(QString::fromStdWString(fieldName));
 		}
 
-		SynGlyphX::DatasourceFieldTypesDialog dialog(fieldNameList, "CSV", this);
+		DatasourceFieldTypesDialog dialog(fieldNameList, "CSV", this);
 		if (dialog.exec() == QDialog::Rejected) {
 
 			throw std::exception("CSV file does not have data types associated with its fields");

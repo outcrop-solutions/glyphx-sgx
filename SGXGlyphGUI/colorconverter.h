@@ -15,31 +15,30 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef DATASOURCEFIELDTYPESDIALOG_H
-#define DATASOURCEFIELDTYPESDIALOG_H
+#ifndef SYNGLYPHX_COLORCONVERTER_H
+#define SYNGLYPHX_COLORCONVERTER_H
 
-#include "sgxgui_global.h"
-#include <QtWidgets/QDialog>
-#include <QtWidgets/QButtonGroup>
-#include <QtWidgets/QTableWidget>
+#include "sgxglyphgui_global.h"
+#include <QtGui/QColor>
+#include "glyphcolor.h"
 
 namespace SynGlyphX {
 
-	class SGXGUI_EXPORT DatasourceFieldTypesDialog : public QDialog
+	class SGXGLYPHGUI_EXPORT ColorConverter
 	{
-		Q_OBJECT
 
 	public:
-		DatasourceFieldTypesDialog(QStringList fields, const QString& fileFormat = "CSV", QWidget *parent = 0);
-		~DatasourceFieldTypesDialog();
+		ColorConverter();
+		~ColorConverter();
 
-		QStringList GetFieldTypes() const;
+		static QColor GlyphColor2QColor(const GlyphColor& color);
+		static QColor GlyphColor2QColor(const GlyphColor& color, unsigned int alpha);
+		static SynGlyphX::GlyphColor QColor2GlyphColor(const QColor& qColor);
 
 	private:
-		QTableWidget* m_fieldTypeTable;
-		QList<QButtonGroup*> m_radioButtonGroups;
+
 	};
 
-} //namespace SynGlyphX
+}
 
-#endif // DATASOURCEFIELDTYPESDIALOG_H
+#endif // SYNGLYPHX_COLORCONVERTER_H

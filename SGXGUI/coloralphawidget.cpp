@@ -55,17 +55,6 @@ namespace SynGlyphX {
 		}
 	}
 
-	void ColorAlphaWidget::SetColor(const SynGlyphX::GlyphColor& color, int alpha) {
-
-		m_color.setRed(color[0]);
-		m_color.setGreen(color[1]);
-		m_color.setBlue(color[2]);
-
-		m_alphaSpinBox->setValue(alpha);
-
-		m_button->SetColor(m_color);
-	}
-
 	const QColor& ColorAlphaWidget::GetColor() const {
 		return m_color;
 	}

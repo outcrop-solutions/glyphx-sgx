@@ -23,7 +23,6 @@
 #include <QtWidgets/QMenu>
 #include <QtWidgets/QPushButton>
 #include "utilitytypes.h"
-#include "glyphcolor.h"
 
 namespace SynGlyphX {
 
@@ -34,14 +33,11 @@ namespace SynGlyphX {
 
 	public:
 		ColorButton(bool showAlphaInColorDialog = false, QWidget *parent = 0);
-		~ColorButton();
+		virtual ~ColorButton();
 
-		void SetColor(const SynGlyphX::GlyphColor& color);
 		const QColor& GetColor() const;
 
 		virtual QSize minimumSizeHint() const;
-
-		static SynGlyphX::GlyphColor ConvertQColorToColor(const QColor& qColor);
 
 	public slots:
 		void SetColor(const QColor& color);

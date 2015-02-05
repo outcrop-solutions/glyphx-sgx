@@ -8,6 +8,7 @@
 #include <QtWidgets/QMessageBox>
 #include <QtWidgets/QGroupBox>
 #include <QtWidgets/QHeaderView>
+#include "colorconverter.h"
 
 ValueMappingDialog::ValueMappingDialog(InputType input, OutputType output, QWidget *parent)
 	: QDialog(parent),
@@ -324,7 +325,7 @@ SynGlyphX::GlyphColor ValueMappingDialog::GetColorFromWidget(int row, int column
 		throw std::exception("Could not get widget of given type.");
 	}
 
-	return SynGlyphX::ColorButton::ConvertQColorToColor(widget->GetColor());
+	return SynGlyphX::ColorConverter::QColor2GlyphColor(widget->GetColor());
 }
 
 QDoubleSpinBox* ValueMappingDialog::CreateDoubleSpinBox(double min, double max) {
@@ -404,7 +405,7 @@ Numeric2ColorMappingDialog::~Numeric2ColorMappingDialog() {
 
 void Numeric2ColorMappingDialog::SetDialogFromMapping(SynGlyphX::Numeric2ColorMappingData::ConstSharedPtr mapping) {
 
-	m_defaultColorWidget->SetColor(mapping->GetDefaultValue());
+	m_defaultColorWidget->SetColor(SynGlyphX::ColorConverter::GlyphColor2QColor(mapping->GetDefaultValue()));
 
 	for (auto keyValuePair : mapping->GetKeyValueMap()) {
 
@@ -415,7 +416,7 @@ void Numeric2ColorMappingDialog::SetDialogFromMapping(SynGlyphX::Numeric2ColorMa
 		inputTableWidget->setValue(keyValuePair.first);
 
 		SynGlyphX::ColorButton* outputTableWidget = dynamic_cast<SynGlyphX::ColorButton*>(m_table->cellWidget(row, 1));
-		outputTableWidget->SetColor(keyValuePair.second);
+		outputTableWidget->SetColor(SynGlyphX::ColorConverter::GlyphColor2QColor(keyValuePair.second));
 	}
 }
 
@@ -428,7 +429,7 @@ bool Numeric2ColorMappingDialog::CreateMappingData() {
 
 	SynGlyphX::Numeric2ColorMappingData::SharedPtr mapping = std::make_shared<SynGlyphX::Numeric2ColorMappingData>();
 
-	mapping->SetDefaultValue(SynGlyphX::ColorButton::ConvertQColorToColor(m_defaultColorWidget->GetColor()));
+	mapping->SetDefaultValue(SynGlyphX::ColorConverter::QColor2GlyphColor(m_defaultColorWidget->GetColor()));
 
 	for (int row = 0; row < m_table->rowCount(); ++row) {
 
@@ -516,7 +517,7 @@ Text2ColorMappingDialog::~Text2ColorMappingDialog() {
 
 void Text2ColorMappingDialog::SetDialogFromMapping(SynGlyphX::Text2ColorMappingData::ConstSharedPtr mapping) {
 
-	m_defaultColorWidget->SetColor(mapping->GetDefaultValue());
+	m_defaultColorWidget->SetColor(SynGlyphX::ColorConverter::GlyphColor2QColor(mapping->GetDefaultValue()));
 
 	for (auto keyValuePair : mapping->GetKeyValueMap()) {
 
@@ -527,7 +528,7 @@ void Text2ColorMappingDialog::SetDialogFromMapping(SynGlyphX::Text2ColorMappingD
 		inputTableWidget->setText(QString::fromStdWString(keyValuePair.first));
 
 		SynGlyphX::ColorButton* outputTableWidget = dynamic_cast<SynGlyphX::ColorButton*>(m_table->cellWidget(row, 1));
-		outputTableWidget->SetColor(keyValuePair.second);
+		outputTableWidget->SetColor(SynGlyphX::ColorConverter::GlyphColor2QColor(keyValuePair.second));
 	}
 }
 
@@ -540,7 +541,7 @@ bool Text2ColorMappingDialog::CreateMappingData() {
 
 	SynGlyphX::Text2ColorMappingData::SharedPtr mapping = std::make_shared<SynGlyphX::Text2ColorMappingData>();
 
-	mapping->SetDefaultValue(SynGlyphX::ColorButton::ConvertQColorToColor(m_defaultColorWidget->GetColor()));
+	mapping->SetDefaultValue(SynGlyphX::ColorConverter::QColor2GlyphColor(m_defaultColorWidget->GetColor()));
 
 	for (int row = 0; row < m_table->rowCount(); ++row) {
 
@@ -628,7 +629,7 @@ Range2ColorMappingDialog::~Range2ColorMappingDialog() {
 
 void Range2ColorMappingDialog::SetDialogFromMapping(SynGlyphX::Range2ColorMappingData::ConstSharedPtr mapping) {
 
-	m_defaultColorWidget->SetColor(mapping->GetDefaultValue());
+	m_defaultColorWidget->SetColor(SynGlyphX::ColorConverter::GlyphColor2QColor(mapping->GetDefaultValue()));
 
 	for (auto keyValuePair : mapping->GetKeyValueMap()) {
 
@@ -639,7 +640,7 @@ void Range2ColorMappingDialog::SetDialogFromMapping(SynGlyphX::Range2ColorMappin
 		inputTableWidget->SetRange(keyValuePair.first);
 
 		SynGlyphX::ColorButton* outputTableWidget = dynamic_cast<SynGlyphX::ColorButton*>(m_table->cellWidget(row, 1));
-		outputTableWidget->SetColor(keyValuePair.second);
+		outputTableWidget->SetColor(SynGlyphX::ColorConverter::GlyphColor2QColor(keyValuePair.second));
 	}
 }
 
@@ -652,7 +653,7 @@ bool Range2ColorMappingDialog::CreateMappingData() {
 
 	SynGlyphX::Range2ColorMappingData::SharedPtr mapping = std::make_shared<SynGlyphX::Range2ColorMappingData>();
 
-	mapping->SetDefaultValue(SynGlyphX::ColorButton::ConvertQColorToColor(m_defaultColorWidget->GetColor()));
+	mapping->SetDefaultValue(SynGlyphX::ColorConverter::QColor2GlyphColor(m_defaultColorWidget->GetColor()));
 
 	for (int row = 0; row < m_table->rowCount(); ++row) {
 
