@@ -9,7 +9,7 @@
 #include <QtWidgets/QStatusBar>
 #include <QtGui/QCloseEvent>
 #include <QtCore/QSettings>
-#include "singleglyphwidget.h"
+#include "glyphpropertieswidget.h"
 #include "antzcsvwriter.h"
 #include "application.h"
 #include "modalglyphwidget.h"
@@ -170,17 +170,17 @@ void GlyphDesignerWindow::CreateNewGlyphTree() {
             wizard.setWindowTitle(tr("Create Glyph Tree"));
 
             //Qt will take care of deleting the objects in this vector
-            std::vector<SingleGlyphWidget*> glyphWidgets;
+            std::vector<SynGlyphX::GlyphPropertiesWidget*> glyphWidgets;
 
             for (int i = 0; i < numberOfBranches; ++i) {
                 QWizardPage* page = new QWizardPage(&wizard);
                 QVBoxLayout* layout = new QVBoxLayout(this);
                 page->setLayout(layout);
-                SingleGlyphWidget::ChildOptions childOptions = SingleGlyphWidget::Invisible;
+                SynGlyphX::GlyphPropertiesWidget::ChildOptions childOptions = SynGlyphX::GlyphPropertiesWidget::Invisible;
                 if (i != numberOfBranches - 1) {
-                    childOptions = SingleGlyphWidget::ShowOnBottom | SingleGlyphWidget::EnabledSpinBox;
+                    childOptions = SynGlyphX::GlyphPropertiesWidget::ShowOnBottom | SynGlyphX::GlyphPropertiesWidget::EnabledSpinBox;
                 }
-                SingleGlyphWidget* glyphWidget = new SingleGlyphWidget(childOptions, page);
+                SynGlyphX::GlyphPropertiesWidget* glyphWidget = new SynGlyphX::GlyphPropertiesWidget(childOptions, page);
                 glyphWidgets.push_back(glyphWidget);
                 if (i == 0) {
                     page->setTitle("Glyphs for root level");

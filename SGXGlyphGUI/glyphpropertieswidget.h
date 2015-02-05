@@ -15,9 +15,10 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef SINGLEGLYPHWIDGET_H
-#define SINGLEGLYPHWIDGET_H
+#ifndef SYNGLYPHX_GLYPHPROPERTIES_WIDGET
+#define SYNGLYPHX_GLYPHPROPERTIES_WIDGET
 
+#include "sgxglyphgui_global.h"
 #include <QtWidgets/QWidget>
 #include <QtWidgets/QComboBox>
 #include <QtWidgets/QPushButton>
@@ -32,50 +33,54 @@
 #include "groupboxsinglewidget.h"
 #include "glyphstructurewidget.h"
 
-class SingleGlyphWidget : public QWidget
-{
-    Q_OBJECT
+namespace SynGlyphX {
 
-public:
-    enum ChildOption {
-        Invisible = 0x00000000,
-        ShowOnBottom = 0x00000001,
-        ShowOnTop = 0x00000002,
-        EnabledSpinBox = 0x00000004,
-        AddChildrenButton = 0x00000008
-    };
+	class SGXGLYPHGUI_EXPORT GlyphPropertiesWidget : public QWidget
+	{
+		Q_OBJECT
 
-	Q_DECLARE_FLAGS(ChildOptions, ChildOption);
+	public:
+		enum ChildOption {
+			Invisible = 0x00000000,
+			ShowOnBottom = 0x00000001,
+			ShowOnTop = 0x00000002,
+			EnabledSpinBox = 0x00000004,
+			AddChildrenButton = 0x00000008
+		};
 
-    SingleGlyphWidget(ChildOptions childOptions = Invisible, QWidget *parent = 0);
-    ~SingleGlyphWidget();
+		Q_DECLARE_FLAGS(ChildOptions, ChildOption);
 
-    void SetNumberOfChildren(unsigned int numChildren);
-    unsigned int GetNumberOfChildren() const;
+		GlyphPropertiesWidget(ChildOptions childOptions = Invisible, QWidget *parent = 0);
+		~GlyphPropertiesWidget();
 
-	void SetGlyphFromWidget(SynGlyphX::Glyph& glyph);
-	void SetWidgetFromGlyph(const SynGlyphX::Glyph& glyph, bool isNotRootNode);
+		void SetNumberOfChildren(unsigned int numChildren);
+		unsigned int GetNumberOfChildren() const;
 
-signals:
-    void AddChildrenButtonClicked();
-    
-protected:
-    void CreateWidgets(ChildOptions childOptions);
-    QWidget* CreateChildrenWidget(ChildOptions childOptions);
+		void SetGlyphFromWidget(Glyph& glyph);
+		void SetWidgetFromGlyph(const Glyph& glyph, bool isNotRootNode);
 
-    QSpinBox* m_childrenSpinBox;
+	signals:
+		void AddChildrenButtonClicked();
 
-    SynGlyphX::ColorAlphaWidget* m_colorWidget;
+	protected:
+		void CreateWidgets(ChildOptions childOptions);
+		QWidget* CreateChildrenWidget(ChildOptions childOptions);
 
-	SynGlyphX::XYZWidget* m_translateWidget;
-	SynGlyphX::XYZWidget* m_rotateWidget;
-	SynGlyphX::XYZWidget* m_scaleWidget;
+		QSpinBox* m_childrenSpinBox;
 
-	SynGlyphX::XYZWidget* m_rotateRateWidget;
+		ColorAlphaWidget* m_colorWidget;
 
-	SynGlyphX::GlyphStructureWidget* m_glyphStructureWidget;
-};
+		XYZWidget* m_translateWidget;
+		XYZWidget* m_rotateWidget;
+		XYZWidget* m_scaleWidget;
 
-Q_DECLARE_OPERATORS_FOR_FLAGS(SingleGlyphWidget::ChildOptions)
+		XYZWidget* m_rotateRateWidget;
 
-#endif // SINGLEGLYPHWIDGET_H
+		GlyphStructureWidget* m_glyphStructureWidget;
+	};
+
+	Q_DECLARE_OPERATORS_FOR_FLAGS(GlyphPropertiesWidget::ChildOptions)
+
+} //namespace SynGlyphX
+
+#endif // SYNGLYPHX_GLYPHPROPERTIES_WIDGET

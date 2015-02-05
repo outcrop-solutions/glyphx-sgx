@@ -18,12 +18,12 @@
 #ifndef MODALGLYPHWIDGET_H
 #define MODALGLYPHWIDGET_H
 
-#include "singleglyphwidget.h"
+#include "glyphpropertieswidget.h"
 #include "minmaxglyphtreemodel.h"
 #include <QtCore/QItemSelectionModel>
 #include "propertyupdate.h"
 
-class ModalGlyphWidget : public SingleGlyphWidget
+class ModalGlyphWidget : public SynGlyphX::GlyphPropertiesWidget
 {
     Q_OBJECT
 

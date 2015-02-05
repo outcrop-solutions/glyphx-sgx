@@ -47,15 +47,6 @@
     <ClCompile Include="GeneratedFiles\Release\moc_glyphtreeview.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
-    <ClCompile Include="singleglyphwidget.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_singleglyphwidget.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_singleglyphwidget.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
     <ClCompile Include="modalglyphwidget.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -80,9 +71,6 @@
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="glyphtreeview.h">
-      <Filter>Header Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="singleglyphwidget.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="modalglyphwidget.h">
