@@ -92,14 +92,14 @@ namespace SynGlyphXANTz {
 			const QModelIndexList& selected = m_selectionModel->selectedIndexes();
 			if (!selected.isEmpty() && (m_editingMode != EditingMode::None)) {
 
-				MinMaxGlyphTreeModel::PropertyUpdates propertyUpdate = MinMaxGlyphTreeModel::PropertyUpdate::UpdatePosition;
+				SynGlyphX::PropertyUpdates propertyUpdate = SynGlyphX::PropertyUpdate::UpdatePosition;
 				if (m_editingMode == EditingMode::Rotate) {
 
-					propertyUpdate = MinMaxGlyphTreeModel::PropertyUpdate::UpdateRotation;
+					propertyUpdate = SynGlyphX::PropertyUpdate::UpdateRotation;
 				}
 				else if (m_editingMode == EditingMode::Size) {
 
-					propertyUpdate = MinMaxGlyphTreeModel::PropertyUpdate::UpdateScale;
+					propertyUpdate = SynGlyphX::PropertyUpdate::UpdateScale;
 				}
 
 				SynGlyphX::Glyph glyph = GlyphNodeConverter::CreateGlyphFromNode(GetGlyphFromModelIndex(selected.back()));

@@ -216,51 +216,51 @@ namespace SynGlyphXANTz {
 		endInsertRows();
 	}
 
-	void MinMaxGlyphTreeModel::UpdateGlyph(const QModelIndex& index, const SynGlyphX::DataMappingGlyph& glyph, PropertyUpdates updates) {
+	void MinMaxGlyphTreeModel::UpdateGlyph(const QModelIndex& index, const SynGlyphX::DataMappingGlyph& glyph, SynGlyphX::PropertyUpdates updates) {
 
-		if (index.isValid() && (updates != PropertyUpdate::UpdateNone)) {
+		if (index.isValid() && (updates != SynGlyphX::PropertyUpdate::UpdateNone)) {
 
 			SynGlyphX::DataMappingGlyphGraph::iterator glyphToUpdate = GetIteratorFromIndex(index);
 
-			if (updates.testFlag(UpdateScale)) {
+			if (updates.testFlag(SynGlyphX::UpdateScale)) {
 
 				glyphToUpdate->GetScale()[0].GetValue() = glyph.GetScale()[0].GetValue();
 				glyphToUpdate->GetScale()[1].GetValue() = glyph.GetScale()[1].GetValue();
 				glyphToUpdate->GetScale()[2].GetValue() = glyph.GetScale()[2].GetValue();
 			}
 
-			if (updates.testFlag(UpdatePosition)) {
+			if (updates.testFlag(SynGlyphX::UpdatePosition)) {
 
 				glyphToUpdate->GetPosition()[0].GetValue() = glyph.GetPosition()[0].GetValue();
 				glyphToUpdate->GetPosition()[1].GetValue() = glyph.GetPosition()[1].GetValue();
 				glyphToUpdate->GetPosition()[2].GetValue() = glyph.GetPosition()[2].GetValue();
 			}
 
-			if (updates.testFlag(UpdateRotation)) {
+			if (updates.testFlag(SynGlyphX::UpdateRotation)) {
 
 				glyphToUpdate->GetRotation()[0].GetValue() = glyph.GetRotation()[0].GetValue();
 				glyphToUpdate->GetRotation()[1].GetValue() = glyph.GetRotation()[1].GetValue();
 				glyphToUpdate->GetRotation()[2].GetValue() = glyph.GetRotation()[2].GetValue();
 			}
 
-			if ((updates.testFlag(UpdateGeometry)) || (updates.testFlag(UpdateSurface))) {
+			if ((updates.testFlag(SynGlyphX::UpdateGeometry)) || (updates.testFlag(SynGlyphX::UpdateSurface))) {
 
 				glyphToUpdate->GetStructure().SetGeometryShape(glyph.GetStructure().GetGeometryShape());
 				glyphToUpdate->GetStructure().SetGeometrySurface(glyph.GetStructure().GetGeometrySurface());
 			}
 
-			if (updates.testFlag(UpdateColor)) {
+			if (updates.testFlag(SynGlyphX::UpdateColor)) {
 
 				glyphToUpdate->GetColor().GetValue() = glyph.GetColor().GetValue();
 				glyphToUpdate->GetTransparency().GetValue() = glyph.GetTransparency().GetValue();
 			}
 
-			if (updates.testFlag(UpdateTopology)) {
+			if (updates.testFlag(SynGlyphX::UpdateTopology)) {
 
 				glyphToUpdate->GetStructure().SetVirtualTopology(glyph.GetStructure().GetVirtualTopology());
 			}
 
-			if (updates.testFlag(UpdateRotationRate)) {
+			if (updates.testFlag(SynGlyphX::UpdateRotationRate)) {
 
 				glyphToUpdate->GetRotationRate()[0].GetValue() = glyph.GetRotationRate()[0].GetValue();
 				glyphToUpdate->GetRotationRate()[1].GetValue() = glyph.GetRotationRate()[1].GetValue();
@@ -271,7 +271,7 @@ namespace SynGlyphXANTz {
 		}
 	}
 
-	void MinMaxGlyphTreeModel::UpdateGlyphs(const QModelIndexList& indexList, const SynGlyphX::DataMappingGlyph& glyph, PropertyUpdates updates) {
+	void MinMaxGlyphTreeModel::UpdateGlyphs(const QModelIndexList& indexList, const SynGlyphX::DataMappingGlyph& glyph, SynGlyphX::PropertyUpdates updates) {
 
 		Q_FOREACH(const QModelIndex& index, indexList) {
 
@@ -279,7 +279,7 @@ namespace SynGlyphXANTz {
 		}
 	}
 
-	void MinMaxGlyphTreeModel::UpdateGlyph(const QModelIndex& index, GlyphType type, const SynGlyphX::Glyph& glyph, PropertyUpdates updates) {
+	void MinMaxGlyphTreeModel::UpdateGlyph(const QModelIndex& index, GlyphType type, const SynGlyphX::Glyph& glyph, SynGlyphX::PropertyUpdates updates) {
 
 		if (type == GlyphType::Max) {
 
@@ -291,7 +291,7 @@ namespace SynGlyphXANTz {
 		}
 	}
 
-	void MinMaxGlyphTreeModel::UpdateGlyphs(const QModelIndexList& indexList, GlyphType type, const SynGlyphX::Glyph& glyph, PropertyUpdates updates) {
+	void MinMaxGlyphTreeModel::UpdateGlyphs(const QModelIndexList& indexList, GlyphType type, const SynGlyphX::Glyph& glyph, SynGlyphX::PropertyUpdates updates) {
 
 		Q_FOREACH(const QModelIndex& index, indexList) {
 
@@ -299,13 +299,13 @@ namespace SynGlyphXANTz {
 		}
 	}
 
-	void MinMaxGlyphTreeModel::UpdateGlyphMin(const QModelIndex& index, const SynGlyphX::Glyph& glyph, PropertyUpdates updates) {
+	void MinMaxGlyphTreeModel::UpdateGlyphMin(const QModelIndex& index, const SynGlyphX::Glyph& glyph, SynGlyphX::PropertyUpdates updates) {
 
-		if (index.isValid() && (updates != PropertyUpdate::UpdateNone)) {
+		if (index.isValid() && (updates != SynGlyphX::PropertyUpdate::UpdateNone)) {
 
 			SynGlyphX::DataMappingGlyphGraph::iterator glyphToUpdate = GetIteratorFromIndex(index);
 
-			if (updates.testFlag(UpdateScale)) {
+			if (updates.testFlag(SynGlyphX::UpdateScale)) {
 
 				glyphToUpdate->GetScale()[0].GetValue().second -= glyph.GetScale()[0] - glyphToUpdate->GetScale()[0].GetValue().first;
 				glyphToUpdate->GetScale()[1].GetValue().second -= glyph.GetScale()[1] - glyphToUpdate->GetScale()[1].GetValue().first;
@@ -316,7 +316,7 @@ namespace SynGlyphXANTz {
 				glyphToUpdate->GetScale()[2].GetValue().first = glyph.GetScale()[2];
 			}
 
-			if (updates.testFlag(UpdatePosition)) {
+			if (updates.testFlag(SynGlyphX::UpdatePosition)) {
 
 				glyphToUpdate->GetPosition()[0].GetValue().second -= glyph.GetPosition()[0] - glyphToUpdate->GetPosition()[0].GetValue().first;
 				glyphToUpdate->GetPosition()[1].GetValue().second -= glyph.GetPosition()[1] - glyphToUpdate->GetPosition()[1].GetValue().first;
@@ -327,7 +327,7 @@ namespace SynGlyphXANTz {
 				glyphToUpdate->GetPosition()[2].GetValue().first = glyph.GetPosition()[2];
 			}
 
-			if (updates.testFlag(UpdateRotation)) {
+			if (updates.testFlag(SynGlyphX::UpdateRotation)) {
 
 				glyphToUpdate->GetRotation()[0].GetValue().second -= glyph.GetRotation()[0] - glyphToUpdate->GetRotation()[0].GetValue().first;
 				glyphToUpdate->GetRotation()[1].GetValue().second -= glyph.GetRotation()[1] - glyphToUpdate->GetRotation()[1].GetValue().first;
@@ -338,13 +338,13 @@ namespace SynGlyphXANTz {
 				glyphToUpdate->GetRotation()[2].GetValue().first = glyph.GetRotation()[2];
 			}
 
-			if ((updates.testFlag(UpdateGeometry)) || (updates.testFlag(UpdateSurface))) {
+			if ((updates.testFlag(SynGlyphX::UpdateGeometry)) || (updates.testFlag(SynGlyphX::UpdateSurface))) {
 
 				glyphToUpdate->GetStructure().SetGeometryShape(glyph.GetStructure().GetGeometryShape());
 				glyphToUpdate->GetStructure().SetGeometrySurface(glyph.GetStructure().GetGeometrySurface());
 			}
 
-			if (updates.testFlag(UpdateColor)) {
+			if (updates.testFlag(SynGlyphX::UpdateColor)) {
 
 				glyphToUpdate->GetColor().GetValue().second.Set(0, glyph.GetColor()[0] - glyphToUpdate->GetColor().GetValue().first[0]);
 				glyphToUpdate->GetColor().GetValue().second.Set(1, glyph.GetColor()[1] - glyphToUpdate->GetColor().GetValue().first[1]);
@@ -355,12 +355,12 @@ namespace SynGlyphXANTz {
 				glyphToUpdate->GetTransparency().GetValue().first = glyph.GetTransparency();
 			}
 
-			if (updates.testFlag(UpdateTopology)) {
+			if (updates.testFlag(SynGlyphX::UpdateTopology)) {
 
 				glyphToUpdate->GetStructure().SetVirtualTopology(glyph.GetStructure().GetVirtualTopology());
 			}
 
-			if (updates.testFlag(UpdateRotationRate)) {
+			if (updates.testFlag(SynGlyphX::UpdateRotationRate)) {
 
 				glyphToUpdate->GetRotationRate()[0].GetValue().second -= glyph.GetRotationRate()[0] - glyphToUpdate->GetRotationRate()[0].GetValue().first;
 				glyphToUpdate->GetRotationRate()[1].GetValue().second -= glyph.GetRotationRate()[1] - glyphToUpdate->GetRotationRate()[1].GetValue().first;
@@ -371,7 +371,7 @@ namespace SynGlyphXANTz {
 				glyphToUpdate->GetRotationRate()[2].GetValue().first = glyph.GetRotationRate()[2];
 			}
 
-			if (updates.testFlag(UpdateTorusRatio)) {
+			if (updates.testFlag(SynGlyphX::UpdateTorusRatio)) {
 
 				glyphToUpdate->GetStructure().SetTorusRatio(glyph.GetStructure().GetTorusRatio());
 			}
@@ -380,40 +380,40 @@ namespace SynGlyphXANTz {
 		}
 	}
 
-	void MinMaxGlyphTreeModel::UpdateGlyphMax(const QModelIndex& index, const SynGlyphX::Glyph& glyph, PropertyUpdates updates) {
+	void MinMaxGlyphTreeModel::UpdateGlyphMax(const QModelIndex& index, const SynGlyphX::Glyph& glyph, SynGlyphX::PropertyUpdates updates) {
 
-		if (index.isValid() && (updates != PropertyUpdate::UpdateNone)) {
+		if (index.isValid() && (updates != SynGlyphX::PropertyUpdate::UpdateNone)) {
 
 			SynGlyphX::DataMappingGlyphGraph::iterator glyphToUpdate = GetIteratorFromIndex(index);;
 
-			if (updates.testFlag(UpdateScale)) {
+			if (updates.testFlag(SynGlyphX::UpdateScale)) {
 
 				glyphToUpdate->GetScale()[0].GetValue().second = glyph.GetScale()[0] - glyphToUpdate->GetScale()[0].GetValue().first;
 				glyphToUpdate->GetScale()[1].GetValue().second = glyph.GetScale()[1] - glyphToUpdate->GetScale()[1].GetValue().first;
 				glyphToUpdate->GetScale()[2].GetValue().second = glyph.GetScale()[2] - glyphToUpdate->GetScale()[2].GetValue().first;
 			}
 
-			if (updates.testFlag(UpdatePosition)) {
+			if (updates.testFlag(SynGlyphX::UpdatePosition)) {
 
 				glyphToUpdate->GetPosition()[0].GetValue().second = glyph.GetPosition()[0] - glyphToUpdate->GetPosition()[0].GetValue().first;
 				glyphToUpdate->GetPosition()[1].GetValue().second = glyph.GetPosition()[1] - glyphToUpdate->GetPosition()[1].GetValue().first;
 				glyphToUpdate->GetPosition()[2].GetValue().second = glyph.GetPosition()[2] - glyphToUpdate->GetPosition()[2].GetValue().first;
 			}
 
-			if (updates.testFlag(UpdateRotation)) {
+			if (updates.testFlag(SynGlyphX::UpdateRotation)) {
 
 				glyphToUpdate->GetRotation()[0].GetValue().second = glyph.GetRotation()[0] - glyphToUpdate->GetRotation()[0].GetValue().first;
 				glyphToUpdate->GetRotation()[1].GetValue().second = glyph.GetRotation()[1] - glyphToUpdate->GetRotation()[1].GetValue().first;
 				glyphToUpdate->GetRotation()[2].GetValue().second = glyph.GetRotation()[2] - glyphToUpdate->GetRotation()[2].GetValue().first;
 			}
 
-			if ((updates.testFlag(UpdateGeometry)) || (updates.testFlag(UpdateSurface))) {
+			if ((updates.testFlag(SynGlyphX::UpdateGeometry)) || (updates.testFlag(SynGlyphX::UpdateSurface))) {
 
 				glyphToUpdate->GetStructure().SetGeometryShape(glyph.GetStructure().GetGeometryShape());
 				glyphToUpdate->GetStructure().SetGeometrySurface(glyph.GetStructure().GetGeometrySurface());
 			}
 
-			if (updates.testFlag(UpdateColor)) {
+			if (updates.testFlag(SynGlyphX::UpdateColor)) {
 
 				glyphToUpdate->GetColor().GetValue().second.Set(0, glyph.GetColor()[0] - glyphToUpdate->GetColor().GetValue().first[0]);
 				glyphToUpdate->GetColor().GetValue().second.Set(1, glyph.GetColor()[1] - glyphToUpdate->GetColor().GetValue().first[1]);
@@ -422,19 +422,19 @@ namespace SynGlyphXANTz {
 				glyphToUpdate->GetTransparency().GetValue().second = glyph.GetTransparency() - glyphToUpdate->GetTransparency().GetValue().first;
 			}
 
-			if (updates.testFlag(UpdateTopology)) {
+			if (updates.testFlag(SynGlyphX::UpdateTopology)) {
 
 				glyphToUpdate->GetStructure().SetVirtualTopology(glyph.GetStructure().GetVirtualTopology());
 			}
 
-			if (updates.testFlag(UpdateRotationRate)) {
+			if (updates.testFlag(SynGlyphX::UpdateRotationRate)) {
 
 				glyphToUpdate->GetRotationRate()[0].GetValue().second = glyph.GetRotationRate()[0] - glyphToUpdate->GetRotationRate()[0].GetValue().first;
 				glyphToUpdate->GetRotationRate()[1].GetValue().second = glyph.GetRotationRate()[1] - glyphToUpdate->GetRotationRate()[1].GetValue().first;
 				glyphToUpdate->GetRotationRate()[2].GetValue().second = glyph.GetRotationRate()[2] - glyphToUpdate->GetRotationRate()[2].GetValue().first;
 			}
 
-			if (updates.testFlag(UpdateTorusRatio)) {
+			if (updates.testFlag(SynGlyphX::UpdateTorusRatio)) {
 
 				glyphToUpdate->GetStructure().SetTorusRatio(glyph.GetStructure().GetTorusRatio());
 			}

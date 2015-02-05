@@ -21,6 +21,7 @@
 #include "antzgui_global.h"
 #include <QtCore/QAbstractItemModel>
 #include "datamappingglyphgraph.h"
+#include "propertyupdate.h"
 
 namespace SynGlyphXANTz {
 
@@ -33,23 +34,6 @@ namespace SynGlyphXANTz {
 			Min,
 			Max
 		};
-
-		enum PropertyUpdate {
-			UpdateNone = 0x00,
-			UpdateColor = 0x01,
-			UpdateGeometry = 0x02,
-			UpdateTopology = 0x04,
-			UpdateSurface = 0x08,
-			UpdatePosition = 0x10,
-			UpdateRotation = 0x20,
-			UpdateScale = 0x40,
-			UpdateRotationRate = 0x80,
-			UpdateTorusRatio = 0x100,
-			//All for when all properties are being updated
-			UpdateAll = 0xFFFF
-		};
-
-		Q_DECLARE_FLAGS(PropertyUpdates, PropertyUpdate);
 
 		MinMaxGlyphTreeModel(QObject *parent);
 		~MinMaxGlyphTreeModel();
@@ -69,11 +53,11 @@ namespace SynGlyphXANTz {
 
 		void AppendChild(const QModelIndex& parent, const SynGlyphX::DataMappingGlyph& glyph, unsigned int numberOfChildren = 1);
 
-		void UpdateGlyph(const QModelIndex& index, const SynGlyphX::DataMappingGlyph& glyph, PropertyUpdates updates = UpdateAll);
-		void UpdateGlyphs(const QModelIndexList& indexList, const SynGlyphX::DataMappingGlyph& glyph, PropertyUpdates updates = UpdateAll);
+		void UpdateGlyph(const QModelIndex& index, const SynGlyphX::DataMappingGlyph& glyph, SynGlyphX::PropertyUpdates updates = SynGlyphX::UpdateAll);
+		void UpdateGlyphs(const QModelIndexList& indexList, const SynGlyphX::DataMappingGlyph& glyph, SynGlyphX::PropertyUpdates updates = SynGlyphX::UpdateAll);
 
-		void UpdateGlyph(const QModelIndex& index, GlyphType type, const SynGlyphX::Glyph& glyph, PropertyUpdates updates = UpdateAll);
-		void UpdateGlyphs(const QModelIndexList& indexList, GlyphType type, const SynGlyphX::Glyph& glyph, PropertyUpdates updates = UpdateAll);
+		void UpdateGlyph(const QModelIndex& index, GlyphType type, const SynGlyphX::Glyph& glyph, SynGlyphX::PropertyUpdates updates = SynGlyphX::UpdateAll);
+		void UpdateGlyphs(const QModelIndexList& indexList, GlyphType type, const SynGlyphX::Glyph& glyph, SynGlyphX::PropertyUpdates updates = SynGlyphX::UpdateAll);
 
 		SynGlyphX::DataMappingGlyphGraph::const_iterator GetMinMaxGlyph(const QModelIndex& index) const;
 
@@ -94,8 +78,8 @@ namespace SynGlyphXANTz {
 		static bool GreaterBranchLevel(const QModelIndex& left, const QModelIndex& right);
 
 	private:
-		void UpdateGlyphMin(const QModelIndex& index, const SynGlyphX::Glyph& glyph, PropertyUpdates updates);
-		void UpdateGlyphMax(const QModelIndex& index, const SynGlyphX::Glyph& glyph, PropertyUpdates updates);
+		void UpdateGlyphMin(const QModelIndex& index, const SynGlyphX::Glyph& glyph, SynGlyphX::PropertyUpdates updates);
+		void UpdateGlyphMax(const QModelIndex& index, const SynGlyphX::Glyph& glyph, SynGlyphX::PropertyUpdates updates);
 
 		bool IsValidCSVFile(const QString& filename) const;
 		bool IsRootGlyph(const SynGlyphX::DataMappingGlyphGraph::iterator& glyph) const;
@@ -106,8 +90,6 @@ namespace SynGlyphXANTz {
 		SynGlyphX::DataMappingGlyphGraph::SharedPtr m_minMaxGlyphTree;
 		SynGlyphX::DataMappingGlyphGraph::iterator m_clipboardGlyph;
 	};
-
-	Q_DECLARE_OPERATORS_FOR_FLAGS(MinMaxGlyphTreeModel::PropertyUpdates)
 
 } //namespace SynGlyphXANTz
 
