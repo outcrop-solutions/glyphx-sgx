@@ -280,4 +280,9 @@ namespace SynGlyphX {
 		m_defaults = defaults;
 	}
 
+	void DataTransformMapping::RemoveGlyph(const boost::uuids::uuid& treeId, DataMappingGlyphGraph::const_iterator& parent, int child) {
+
+		m_glyphTrees[treeId]->erase_child(parent.deconstify(), child);
+	}
+
 } //namespace SynGlyphX
