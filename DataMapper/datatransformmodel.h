@@ -80,6 +80,7 @@ private:
 	QString GetIntermediateDirectoryForID(const boost::uuids::uuid& id);
 	QVariant GetGlyphData(const QModelIndex& index) const;
 	bool IsRowInDataType(DataType type, int row) const;
+	boost::uuids::uuid GetTreeId(int row) const;
 
 	SynGlyphX::SourceDataManager m_sourceDataManager;
 	SynGlyphX::DataTransformMapping::SharedPtr m_dataMapping;

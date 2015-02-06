@@ -39,12 +39,14 @@ protected:
 
 private slots:
 	void RemoveGlyph();
+	void RemoveChildren();
 
 private:
 	void EnableActions();
 
 	SynGlyphX::SharedActionList m_sharedActions;
-	QAction* m_removeGlyphTreeAction;
+	QAction* m_removeAction;
+	QAction* m_removeChildrenAction;
 	QAction* m_clearSelectedInputBindingsAction;
 };
 

@@ -268,29 +268,47 @@ void DataTransformModel::EnableTables(const boost::uuids::uuid& id, const SynGly
 
 bool DataTransformModel::removeRows(int row, int count, const QModelIndex& parent) {
 
-	if ((!parent.isValid()) && (count > 0)) {
+	if (count > 0) {
 
 		int lastRow = row + count - 1;
 		beginRemoveRows(parent, row, lastRow);
 
-		for (int i = row; i <= lastRow; ++i) {
+		if (parent.isValid()) {
 
-			if (IsRowInDataType(DataType::GlyphTrees, i)) {
+			SynGlyphX::DataMappingGlyphGraph::const_iterator parentGlyph(static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(parent.internalPointer()));
+			QModelIndex& index = parent.parent();
+			int rootRow = -1;
+			while (index.isValid()) {
 
-				SynGlyphX::DataTransformMapping::DataMappingGlyphGraphMap::const_iterator glyphTree = m_dataMapping->GetGlyphGraphs().begin();
-				std::advance(glyphTree, i);
-				m_dataMapping->RemoveGlyphTree(glyphTree->first);
+				rootRow = index.row();
+				index = index.parent();
 			}
-			else if (IsRowInDataType(DataType::BaseObjects, i)) {
+			
+			boost::uuids::uuid treeId = GetTreeId(rootRow);
+			for (int i = row; i <= lastRow; ++i) {
 
-				m_dataMapping->RemoveBaseObject(i - m_dataMapping->GetGlyphGraphs().size());
+				m_dataMapping->RemoveGlyph(treeId, parentGlyph, i);
 			}
-			else if (IsRowInDataType(DataType::DataSources, i)) {
+			
+		} else {
+
+			
+			for (int i = row; i <= lastRow; ++i) {
+
+				if (IsRowInDataType(DataType::GlyphTrees, i)) {
+
+					m_dataMapping->RemoveGlyphTree(GetTreeId(i));
+				}
+				else if (IsRowInDataType(DataType::BaseObjects, i)) {
+
+					m_dataMapping->RemoveBaseObject(i - m_dataMapping->GetGlyphGraphs().size());
+				}
+				else if (IsRowInDataType(DataType::DataSources, i)) {
 
 
+				}
 			}
 		}
-
 		endRemoveRows();
 		
 		return true;
@@ -415,4 +433,11 @@ const SynGlyphX::DataMappingGlyph& DataTransformModel::GetGlyph(const QModelInde
 void DataTransformModel::ResetDataMappingID() {
 
 	m_dataMapping->ResetID();
+}
+
+boost::uuids::uuid DataTransformModel::GetTreeId(int row) const {
+
+	SynGlyphX::DataTransformMapping::DataMappingGlyphGraphMap::const_iterator glyphTree = m_dataMapping->GetGlyphGraphs().begin();
+	std::advance(glyphTree, row);
+	return glyphTree->first;
 }

@@ -38,6 +38,7 @@ private slots:
 	void OnExternalSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected);
 	void OnExternalDataChanged(const QModelIndex& topLeft, const QModelIndex& bottomRight, const QVector<int>& roles);
 	void OnExternalModelReset();
+	void OnExternalRowsRemoved(const QModelIndex& parent, int first, int last);
 
 private:
 	void Clear();
@@ -45,6 +46,7 @@ private:
 	void ConnectExternalSelection();
 	std::stack<unsigned int> GetRowIndiciesFromStack(const QModelIndex& index) const;
 	QModelIndex GetModelIndexFromStack(std::stack<unsigned int> rows, const QAbstractItemModel* const model) const;
+	QModelIndex GetInternalModelIndex(const QModelIndex& externalIndex) const;
 
 	DataTransformModel* m_dataTransformModel;
 
