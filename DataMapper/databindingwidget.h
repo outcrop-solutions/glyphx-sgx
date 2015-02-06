@@ -26,6 +26,7 @@
 #include "richtexteditor.h"
 #include "datatransformmapping.h"
 #include "minmaxglyphmodel.h"
+#include "glyphstructurewidget.h"
 
 class DataBindingWidget : public QTabWidget
 {
@@ -41,8 +42,10 @@ public slots:
 
 private slots:
 	void OnModelReset();
+	void OnGlyphStructureUpdated();
 
 private:
+	void CreateNonMappablePropertiesTab();
 	void CreateAnimationTable();
 	void CreateTagAndDescriptionWidget();
 	void CreatePropertiesTable();
@@ -60,6 +63,7 @@ private:
 	QList<QDataWidgetMapper*> m_dataWidgetMappers;
 	MinMaxGlyphModel* m_model;
 	QList<QWidget*> m_positionXYMinMaxWidgets;
+	SynGlyphX::GlyphStructureWidget* m_glyphStructureWidget;
 };
 
 #endif // DATABINDINGWIDGET_H

@@ -10,7 +10,7 @@ MinMaxGlyphModel::MinMaxGlyphModel(DataTransformModel* dataTransformModel, QObje
 	: QAbstractTableModel(parent),
 	m_dataTransformModel(dataTransformModel),
 	m_glyphTree(nullptr),
-	m_selectedIndex(QModelIndex())
+	m_selectedDataTransformModelIndex(QModelIndex())
 {
 	m_propertyHeaders << tr("Position X")
 		<< tr("Position Y")
@@ -107,7 +107,7 @@ void MinMaxGlyphModel::SetMinMaxGlyph(const QModelIndex& index) {
 		childIndices.pop();
 
 		beginResetModel();
-		m_selectedIndex = index;
+		m_selectedDataTransformModelIndex = index;
 		m_glyphTreeID = glyphTree->first;
 		m_glyphTree = glyphTree->second;
 		SynGlyphX::DataMappingGlyphGraph::const_iterator iT = m_glyphTree->root();
@@ -132,7 +132,7 @@ void MinMaxGlyphModel::Clear() {
 	m_glyph = SynGlyphX::DataMappingGlyphGraph::const_iterator();
 	m_glyphTree = nullptr;
 	m_glyphTreeID = boost::uuids::nil_uuid();
-	m_selectedIndex = QModelIndex();
+	m_selectedDataTransformModelIndex = QModelIndex();
 	endResetModel();
 }
 
@@ -280,7 +280,7 @@ bool MinMaxGlyphModel::setData(const QModelIndex& index, const QVariant& value, 
 				return false;
 			}
 
-			m_dataTransformModel->UpdateGlyph(m_selectedIndex, minMaxGlyph);
+			m_dataTransformModel->UpdateGlyph(m_selectedDataTransformModelIndex, minMaxGlyph);
 		}
 
 		emit dataChanged(index, index);
@@ -484,4 +484,14 @@ void MinMaxGlyphModel::SetMappingFunction(int row, SynGlyphX::MappingFunctionDat
 
 		return GetGlyphProperty(*m_glyph.deconstify(), row).SetMappingFunctionData(mappingFunction);
 	}
+}
+
+const SynGlyphX::GlyphStructuralProperties& MinMaxGlyphModel::GetGlyphStructure() const {
+
+	return m_dataTransformModel->GetGlyph(m_selectedDataTransformModelIndex).GetStructure();
+}
+
+void MinMaxGlyphModel::SetGlyphStructure(const SynGlyphX::GlyphStructuralProperties structure) {
+
+	m_dataTransformModel->UpdateGlyphStructure(m_selectedDataTransformModelIndex, structure);
 }

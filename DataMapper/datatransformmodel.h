@@ -60,6 +60,7 @@ public:
 
 	void AddGlyphFile(const QString& filename);
 	void UpdateGlyph(const QModelIndex& index, const SynGlyphX::DataMappingGlyph& newGlyph);
+	void UpdateGlyphStructure(const QModelIndex& index, const SynGlyphX::GlyphStructuralProperties& structure);
 	const SynGlyphX::DataMappingGlyph& GetGlyph(const QModelIndex& index) const;
 
 	void SetBaseObject(unsigned int position, const SynGlyphX::BaseImage& baseImage);

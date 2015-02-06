@@ -391,6 +391,16 @@ void DataTransformModel::UpdateGlyph(const QModelIndex& index, const SynGlyphX::
 	}
 }
 
+void DataTransformModel::UpdateGlyphStructure(const QModelIndex& index, const SynGlyphX::GlyphStructuralProperties& structure) {
+
+	if (!m_dataMapping->GetGlyphGraphs().empty() && index.isValid()) {
+
+		SynGlyphX::DataMappingGlyphGraph::iterator glyph(static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(index.internalPointer()));
+		glyph->GetStructure() = structure;
+		emit dataChanged(index, index);
+	}
+}
+
 const SynGlyphX::DataMappingGlyph& DataTransformModel::GetGlyph(const QModelIndex& index) const {
 
 	if (m_dataMapping->GetGlyphGraphs().empty() || !index.isValid()) {

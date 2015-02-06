@@ -46,6 +46,9 @@ public:
 	SynGlyphX::MappingFunctionData::ConstSharedPtr GetMappingFunction(int row) const;
 	void SetMappingFunction(int row, SynGlyphX::MappingFunctionData::SharedPtr mappingFunction);
 
+	const SynGlyphX::GlyphStructuralProperties& GetGlyphStructure() const;
+	void SetGlyphStructure(const SynGlyphX::GlyphStructuralProperties structure);
+
 public slots:
 	void SetMinMaxGlyph(const QModelIndex& index);
 	void Clear();
@@ -66,7 +69,7 @@ private:
 	QStringList m_columnHeaders;
 	DataTransformModel* m_dataTransformModel;
 
-	QPersistentModelIndex m_selectedIndex;
+	QPersistentModelIndex m_selectedDataTransformModelIndex;
 };
 
 #endif // MINMAXGLYPHMODEL_H

@@ -15,6 +15,7 @@ DataBindingWidget::DataBindingWidget(MinMaxGlyphModel* model, QWidget *parent)
 	CreatePropertiesTable();
 	CreateTagAndDescriptionWidget();
 	CreateAnimationTable();
+	CreateNonMappablePropertiesTab();
 
 	setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
 	QObject::connect(model, &MinMaxGlyphModel::modelReset, this, &DataBindingWidget::OnModelReset);
@@ -26,6 +27,22 @@ DataBindingWidget::DataBindingWidget(MinMaxGlyphModel* model, QWidget *parent)
 DataBindingWidget::~DataBindingWidget()
 {
 
+}
+
+void DataBindingWidget::CreateNonMappablePropertiesTab() {
+
+	m_glyphStructureWidget = new SynGlyphX::GlyphStructureWidget(this);
+
+	QWidget* widget = new QWidget(this);
+	QGridLayout* gridLayout = new QGridLayout(this);
+	gridLayout->addWidget(m_glyphStructureWidget, 0, 0);
+	gridLayout->setColumnStretch(1, 1);
+	gridLayout->setRowStretch(1, 1);
+	widget->setLayout(gridLayout);
+
+	addTab(widget, tr("Non-Mappable"));
+
+	QObject::connect(m_glyphStructureWidget, &SynGlyphX::GlyphStructureWidget::GlyphPropertyUpdated, this, &DataBindingWidget::OnGlyphStructureUpdated);
 }
 
 void DataBindingWidget::CreateAnimationTable() {
@@ -273,7 +290,8 @@ void DataBindingWidget::CreateGridLine(QGridLayout* layout, QFrame::Shape shape,
 
 void DataBindingWidget::OnModelReset() {
 
-	setEnabled(!m_model->IsClear());
+	bool doesModelHaveData = !m_model->IsClear();
+	setEnabled(doesModelHaveData);
 
 	for (int i = 0; i < m_dataWidgetMappers.length(); ++i) {
 
@@ -282,7 +300,19 @@ void DataBindingWidget::OnModelReset() {
 		}
 	}
 
+	if (doesModelHaveData) {
+
+		bool areSignalsBlocked = m_glyphStructureWidget->blockSignals(true);
+		m_glyphStructureWidget->SetWidgetFromGlyphStructure(m_model->GetGlyphStructure());
+		m_glyphStructureWidget->blockSignals(areSignalsBlocked);
+	}
+
 	OnBaseObjectChanged();
+}
+
+void DataBindingWidget::OnGlyphStructureUpdated() {
+
+	m_model->SetGlyphStructure(m_glyphStructureWidget->GetGlyphStructure());
 }
 
 void DataBindingWidget::CommitChanges() {
