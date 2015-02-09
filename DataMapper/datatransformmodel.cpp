@@ -276,7 +276,7 @@ bool DataTransformModel::removeRows(int row, int count, const QModelIndex& paren
 		if (parent.isValid()) {
 
 			SynGlyphX::DataMappingGlyphGraph::const_iterator parentGlyph(static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(parent.internalPointer()));
-			QModelIndex& index = parent.parent();
+			QModelIndex index = parent;
 			int rootRow = -1;
 			while (index.isValid()) {
 
@@ -285,7 +285,7 @@ bool DataTransformModel::removeRows(int row, int count, const QModelIndex& paren
 			}
 			
 			boost::uuids::uuid treeId = GetTreeId(rootRow);
-			for (int i = row; i <= lastRow; ++i) {
+			for (int i = lastRow; i >= row; --i) {
 
 				m_dataMapping->RemoveGlyph(treeId, parentGlyph, i);
 			}
@@ -293,7 +293,7 @@ bool DataTransformModel::removeRows(int row, int count, const QModelIndex& paren
 		} else {
 
 			
-			for (int i = row; i <= lastRow; ++i) {
+			for (int i = lastRow; i >= row; --i) {
 
 				if (IsRowInDataType(DataType::GlyphTrees, i)) {
 
