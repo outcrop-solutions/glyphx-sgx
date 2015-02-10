@@ -1,8 +1,6 @@
 #include "glyphdesignerwindow.h"
 #include <QtWidgets/QMenuBar>
 #include <QtWidgets/QDockWidget>
-#include <QtWidgets/QInputDialog>
-#include <QtWidgets/QWizard>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QFileDialog>
 #include <QtWidgets/QMessageBox>
@@ -13,6 +11,7 @@
 #include "antzcsvwriter.h"
 #include "application.h"
 #include "modalglyphwidget.h"
+#include "newglyphtreewizard.h"
 
 GlyphDesignerWindow::GlyphDesignerWindow(QWidget *parent)
     : SynGlyphX::MainWindow(parent),
@@ -162,62 +161,13 @@ void GlyphDesignerWindow::CreateNewGlyphTree() {
     
     if (AskUserToSave()) {
 
-        bool createTree = false;
-        int numberOfBranches = QInputDialog::getInt(this, "Create Glyph Tree", "Number Of Branches In Glyph Tree (Including Root)", 6, 1, 214783647, 1, &createTree);
-        if (createTree) {
-            QWizard wizard(this);
-            wizard.setOptions(QWizard::IndependentPages | QWizard::IgnoreSubTitles | QWizard::NoBackButtonOnStartPage);
-            wizard.setWindowTitle(tr("Create Glyph Tree"));
+		SynGlyphX::DataMappingGlyphGraph::SharedPtr newGlyphTree = SynGlyphX::NewGlyphTreeWizard::RunNewGlyphTreeWizard(this);
+		if (newGlyphTree) {
 
-            //Qt will take care of deleting the objects in this vector
-            std::vector<SynGlyphX::GlyphPropertiesWidget*> glyphWidgets;
+			m_glyphTreeModel->SetMinMaxGlyphTree(newGlyphTree);
+			SelectRootGlyphInModel();
 
-            for (int i = 0; i < numberOfBranches; ++i) {
-                QWizardPage* page = new QWizardPage(&wizard);
-                QVBoxLayout* layout = new QVBoxLayout(this);
-                page->setLayout(layout);
-                SynGlyphX::GlyphPropertiesWidget::ChildOptions childOptions = SynGlyphX::GlyphPropertiesWidget::Invisible;
-                if (i != numberOfBranches - 1) {
-                    childOptions = SynGlyphX::GlyphPropertiesWidget::ShowOnBottom | SynGlyphX::GlyphPropertiesWidget::EnabledSpinBox;
-                }
-                SynGlyphX::GlyphPropertiesWidget* glyphWidget = new SynGlyphX::GlyphPropertiesWidget(childOptions, page);
-                glyphWidgets.push_back(glyphWidget);
-                if (i == 0) {
-                    page->setTitle("Glyphs for root level");
-					glyphWidget->SetWidgetFromGlyph(SynGlyphX::Glyph::s_defaultRootGlyph, false);
-                }
-                else {
-                    page->setTitle(QString::number(i).prepend("Glyphs for branch level "));
-					glyphWidget->SetWidgetFromGlyph(SynGlyphX::Glyph::s_defaultGlyph, true);
-                }
-                layout->addWidget(glyphWidget);
-                wizard.addPage(page);
-            }
-
-            if (wizard.exec() == QDialog::Accepted) {
-
-				SynGlyphX::Glyph rootGlyph;
-				glyphWidgets[0]->SetGlyphFromWidget(rootGlyph);
-				SynGlyphX::GlyphGraph newMaxGlyphTree(rootGlyph);
-
-				std::vector<SynGlyphX::Glyph> templates;
-				std::vector<unsigned int> instanceCounts;
-				for (int i = 1; i < numberOfBranches; ++i) {
-
-					SynGlyphX::Glyph glyph;
-					glyphWidgets[i]->SetGlyphFromWidget(glyph);
-
-					templates.push_back(glyph);
-					instanceCounts.push_back(glyphWidgets[i - 1]->GetNumberOfChildren());
-                }
-
-				newMaxGlyphTree.AllocateChildSubtree(templates, instanceCounts, newMaxGlyphTree.root());
-
-				SynGlyphX::DataMappingGlyphGraph::SharedPtr newGlyphTree = std::make_shared<SynGlyphX::DataMappingGlyphGraph>(newMaxGlyphTree);
-				m_glyphTreeModel->SetMinMaxGlyphTree(newGlyphTree);
-				SelectRootGlyphInModel();
-            }
-        }
+		}
     }
 }
 
