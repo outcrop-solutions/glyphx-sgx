@@ -59,6 +59,7 @@ public:
 	void Clear();
 
 	void AddGlyphFile(const QString& filename);
+	void AddGlyphTree(SynGlyphX::DataMappingGlyphGraph::SharedPtr glyphTree);
 	void UpdateGlyph(const QModelIndex& index, const SynGlyphX::DataMappingGlyph& newGlyph);
 	void UpdateGlyphStructure(const QModelIndex& index, const SynGlyphX::GlyphStructuralProperties& structure);
 	const SynGlyphX::DataMappingGlyph& GetGlyph(const QModelIndex& index) const;

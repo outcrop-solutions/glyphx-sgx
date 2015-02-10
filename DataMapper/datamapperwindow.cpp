@@ -25,6 +25,7 @@
 #include "csvtfilereaderwriter.h"
 #include "singlewidgetdialog.h"
 #include "glyphdefaultswidget.h"
+#include "newglyphtreewizard.h"
 
 DataMapperWindow::DataMapperWindow(QWidget *parent)
     : SynGlyphX::MainWindow(parent),
@@ -148,8 +149,13 @@ void DataMapperWindow::CreateMenus() {
 	QObject::connect(glyphDefaultsAction, &QAction::triggered, this, &DataMapperWindow::ChangeGlyphDefaults);
 	m_projectDependentActions.push_back(glyphDefaultsAction);
 
+	m_glyphMenu->addSeparator();
+
 	QAction* addGlyphTemplateAction = m_glyphMenu->addAction(tr("Add Glyph Templates"));
 	QObject::connect(addGlyphTemplateAction, &QAction::triggered, this, &DataMapperWindow::AddGlyphTemplate);
+
+	QAction* createGlyphTemplateAction = m_glyphMenu->addAction(tr("Create New Glyph Template"));
+	QObject::connect(createGlyphTemplateAction, &QAction::triggered, this, &DataMapperWindow::CreateNewGlyphTree);
 
 	m_glyphMenu->addSeparator();
 
@@ -526,6 +532,18 @@ void DataMapperWindow::AddGlyphTemplate() {
 	EnableProjectDependentActions(true);
 	m_glyphTreesView->SelectLastGlyphTreeRoot();
 	statusBar()->showMessage("Glyph Template successfully added", 3000);
+}
+
+void DataMapperWindow::CreateNewGlyphTree() {
+
+	SynGlyphX::DataMappingGlyphGraph::SharedPtr newGlyphTree = SynGlyphX::NewGlyphTreeWizard::RunNewGlyphTreeWizard(this);
+	if (newGlyphTree) {
+
+		m_dataTransformModel->AddGlyphTree(newGlyphTree);
+		EnableProjectDependentActions(true);
+		m_glyphTreesView->SelectLastGlyphTreeRoot();
+		statusBar()->showMessage("Glyph Template successfully added", 3000);
+	}
 }
 
 bool DataMapperWindow::AskUserToSave() {

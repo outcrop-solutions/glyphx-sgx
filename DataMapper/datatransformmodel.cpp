@@ -350,7 +350,7 @@ void DataTransformModel::AddGlyphFile(const QString& filename) {
 	SynGlyphX::DataMappingGlyphGraph::SharedPtr glyphTree;
 	QString extension = filename.right(4);
 	if (extension == ".csv") {
-		
+
 		glyphTree = std::make_shared<SynGlyphX::DataMappingGlyphGraph>(*SynGlyphXANTz::GlyphNodeConverter::CreateGlyphGraphFromCSV(filename.toStdString()).get());
 	}
 	else if (extension == ".sgt") {
@@ -362,6 +362,16 @@ void DataTransformModel::AddGlyphFile(const QString& filename) {
 	else {
 
 		throw std::invalid_argument("File does not contain a glyph tree");
+	}
+
+	AddGlyphTree(glyphTree);
+}
+
+void DataTransformModel::AddGlyphTree(SynGlyphX::DataMappingGlyphGraph::SharedPtr glyphTree) {
+
+	if (!glyphTree) {
+
+		throw std::invalid_argument("Can't add empty glyph tree to data mapping");
 	}
 
 	int row = m_dataMapping->GetGlyphGraphs().size();

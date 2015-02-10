@@ -55,6 +55,7 @@ private slots:
     void ExportToANTz(const QString& templateDir);
 	void AddBaseObject();
 	void AddGlyphTemplate();
+	void CreateNewGlyphTree();
 	void ChangeMapDownloadSettings();
 	void ChangeGlyphDefaults();
 	void ChangeNewMappingDefaults();
