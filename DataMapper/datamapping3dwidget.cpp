@@ -130,10 +130,20 @@ void DataMapping3DWidget::OnExternalRowsRemoved(const QModelIndex& parent, int f
 void DataMapping3DWidget::OnExternalRowsInserted(const QModelIndex& parent, int first, int last) {
 
 	QModelIndex externalParentSource = m_externalModel->mapToSource(parent);
-	QModelIndex internalParent = GetInternalModelIndex(externalParentSource);
-	for (int i = first; i <= last; ++i) {
+	if (externalParentSource.isValid()) {
 
-		m_internalModel->AppendChild(internalParent, m_dataTransformModel->GetGlyph(m_dataTransformModel->index(i, 0, externalParentSource)));
+		std::stack<unsigned int> childPositions = GetRowIndiciesFromStack(externalParentSource);
+
+		if (m_glyphTreeIndex == childPositions.top()) {
+
+			childPositions.pop();
+			childPositions.push(0);
+			QModelIndex internalParent = GetModelIndexFromStack(childPositions, m_internalModel);
+			for (int i = first; i <= last; ++i) {
+
+				m_internalModel->AppendChild(internalParent, m_dataTransformModel->GetGlyph(m_dataTransformModel->index(i, 0, externalParentSource)));
+			}
+		}
 	}
 }
 
