@@ -276,15 +276,8 @@ bool DataTransformModel::removeRows(int row, int count, const QModelIndex& paren
 		if (parent.isValid()) {
 
 			SynGlyphX::DataMappingGlyphGraph::const_iterator parentGlyph(static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(parent.internalPointer()));
-			QModelIndex index = parent;
-			int rootRow = -1;
-			while (index.isValid()) {
-
-				rootRow = index.row();
-				index = index.parent();
-			}
 			
-			boost::uuids::uuid treeId = GetTreeId(rootRow);
+			boost::uuids::uuid treeId = GetTreeId(parent);
 			for (int i = lastRow; i >= row; --i) {
 
 				m_dataMapping->RemoveGlyph(treeId, parentGlyph, i);
@@ -430,6 +423,25 @@ const SynGlyphX::DataMappingGlyph& DataTransformModel::GetGlyph(const QModelInde
 	return (*glyph);
 }
 
+void DataTransformModel::AddChildGlyph(const QModelIndex& parent, const SynGlyphX::DataMappingGlyph& glyphTemplate, unsigned int numberOfChildren) {
+
+	if (!parent.isValid()) {
+
+		throw std::invalid_argument("Can't append children to invalid parent");
+	}
+	if (numberOfChildren == 0) {
+
+		throw std::invalid_argument("Can't append 0 children");
+	}
+
+	SynGlyphX::DataMappingGlyphGraph::iterator parentGlyph(static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(parent.internalPointer()));
+
+	unsigned int startingNumberOfChildren = rowCount(parent);
+	beginInsertRows(parent, startingNumberOfChildren, startingNumberOfChildren + numberOfChildren - 1);
+	m_dataMapping->AddChildGlyph(GetTreeId(parent), parentGlyph, glyphTemplate, numberOfChildren);
+	endInsertRows();
+}
+
 void DataTransformModel::ResetDataMappingID() {
 
 	m_dataMapping->ResetID();
@@ -440,4 +452,17 @@ boost::uuids::uuid DataTransformModel::GetTreeId(int row) const {
 	SynGlyphX::DataTransformMapping::DataMappingGlyphGraphMap::const_iterator glyphTree = m_dataMapping->GetGlyphGraphs().begin();
 	std::advance(glyphTree, row);
 	return glyphTree->first;
+}
+
+boost::uuids::uuid DataTransformModel::GetTreeId(const QModelIndex& index) const {
+
+	QModelIndex treeRootIndex = index;
+	int rootRow = -1;
+	while (treeRootIndex.isValid()) {
+
+		rootRow = treeRootIndex.row();
+		treeRootIndex = treeRootIndex.parent();
+	}
+
+	return GetTreeId(rootRow);
 }

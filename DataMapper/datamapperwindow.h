@@ -74,7 +74,6 @@ private:
 	void ReadNewMappingDefaults();
 	void WriteNewMappingDefaults();
 	void ClearAndInitializeDataMapping();
-	void SelectLastGlyphTreeRoot();
 	void SelectFirstBaseObject();
 
     QMenu* m_fileMenu;
@@ -86,7 +85,6 @@ private:
 
 	QAction* m_showAnimation;
     
-	SynGlyphX::RoleDataFilterProxyModel* m_glyphTreesModel;
 	SynGlyphX::RoleDataFilterProxyModel* m_baseObjectsModel;
 	BaseObjectListView* m_baseObjectsView;
 	GlyphTreesView* m_glyphTreesView;

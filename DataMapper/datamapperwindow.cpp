@@ -35,7 +35,6 @@ DataMapperWindow::DataMapperWindow(QWidget *parent)
 	m_minMaxGlyphModel(nullptr),
 	m_dataTransformModel(nullptr),
 	m_minMaxGlyph3DWidget(nullptr),
-	m_glyphTreesModel(nullptr),
 	m_baseObjectsModel(nullptr)
 {
 	QSettings settings;
@@ -71,13 +70,13 @@ void DataMapperWindow::CreateCenterWidget() {
 
 	m_minMaxGlyphModel = new MinMaxGlyphModel(m_dataTransformModel, this);
 	QObject::connect(m_minMaxGlyphModel, &MinMaxGlyphModel::dataChanged, this, [&, this](const QModelIndex& topLeft, const QModelIndex& bottomRight){ setWindowModified(true); });
-	QObject::connect(m_glyphTreesView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &DataMapperWindow::OnGlyphTreesViewSelectionChanged);
+	QObject::connect(m_glyphTreesView, &GlyphTreesView::SelectionChangedSourceModel, this, &DataMapperWindow::OnGlyphTreesViewSelectionChanged);
 	QObject::connect(m_glyphTreesView->GetClearSelectedInputBindingsAction(), &QAction::triggered, m_minMaxGlyphModel, &MinMaxGlyphModel::ClearInputBindings);
 
 	QSplitter* centerWidget = new QSplitter(Qt::Vertical, this);
 	
 	m_minMaxGlyph3DWidget = new DataMapping3DWidget(m_dataTransformModel, centerWidget);
-	m_minMaxGlyph3DWidget->SetModel(m_glyphTreesModel, m_glyphTreesView->selectionModel());
+	m_minMaxGlyph3DWidget->SetModel(dynamic_cast<SynGlyphX::RoleDataFilterProxyModel*>(m_glyphTreesView->model()), m_glyphTreesView->selectionModel());
 
 	QObject::connect(m_showAnimation, &QAction::toggled, m_minMaxGlyph3DWidget, &DataMapping3DWidget::EnableAnimation);
 
@@ -202,12 +201,7 @@ void DataMapperWindow::CreateDockWidgets() {
 
 	QDockWidget* leftDockWidgetGlyphTrees = new QDockWidget(tr("Glyph Trees"), this);
 
-	m_glyphTreesView = new GlyphTreesView(leftDockWidgetGlyphTrees);
-	m_glyphTreesModel = new SynGlyphX::RoleDataFilterProxyModel(this);
-	m_glyphTreesModel->setFilterRole(DataTransformModel::DataTypeRole);
-	m_glyphTreesModel->setSourceModel(m_dataTransformModel);
-	m_glyphTreesModel->SetFilterData(DataTransformModel::DataType::GlyphTrees);
-	m_glyphTreesView->setModel(m_glyphTreesModel);
+	m_glyphTreesView = new GlyphTreesView(m_dataTransformModel, leftDockWidgetGlyphTrees);
 	m_glyphMenu->addActions(m_glyphTreesView->actions());
 
     //Add Tree View to dock widget on left side
@@ -302,7 +296,7 @@ void DataMapperWindow::LoadDataTransform(const QString& filename) {
 
 		m_dataTransformModel->LoadDataTransformFile(filename);
 		m_dataSourceStats->RebuildStatsViews();
-		SelectLastGlyphTreeRoot();
+		m_glyphTreesView->SelectLastGlyphTreeRoot();
 		SelectFirstBaseObject();
 	}
 	catch (const std::exception& e) {
@@ -530,7 +524,7 @@ void DataMapperWindow::AddGlyphTemplate() {
 	}
 
 	EnableProjectDependentActions(true);
-	SelectLastGlyphTreeRoot();
+	m_glyphTreesView->SelectLastGlyphTreeRoot();
 	statusBar()->showMessage("Glyph Template successfully added", 3000);
 }
 
@@ -671,11 +665,6 @@ void DataMapperWindow::ClearAndInitializeDataMapping() {
 	SelectFirstBaseObject();
 }
 
-void DataMapperWindow::SelectLastGlyphTreeRoot() {
-
-	m_glyphTreesView->selectionModel()->select(m_glyphTreesModel->index(m_dataTransformModel->GetDataMapping()->GetGlyphGraphs().size() - 1, 0), QItemSelectionModel::ClearAndSelect);
-}
-
 void DataMapperWindow::OnGlyphTreesViewSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected) {
 
 	if (selected.empty()) {
@@ -684,7 +673,7 @@ void DataMapperWindow::OnGlyphTreesViewSelectionChanged(const QItemSelection& se
 	}
 	else {
 
-		m_minMaxGlyphModel->SetMinMaxGlyph(m_glyphTreesModel->mapSelectionToSource(selected).indexes()[0]);
+		m_minMaxGlyphModel->SetMinMaxGlyph(selected.indexes()[0]);
 	}
 }
 

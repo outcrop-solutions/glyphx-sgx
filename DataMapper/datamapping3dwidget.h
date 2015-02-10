@@ -39,6 +39,7 @@ private slots:
 	void OnExternalDataChanged(const QModelIndex& topLeft, const QModelIndex& bottomRight, const QVector<int>& roles);
 	void OnExternalModelReset();
 	void OnExternalRowsRemoved(const QModelIndex& parent, int first, int last);
+	void OnExternalRowsInserted(const QModelIndex& parent, int first, int last);
 
 private:
 	void Clear();

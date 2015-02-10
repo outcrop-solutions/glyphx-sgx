@@ -62,6 +62,7 @@ public:
 	void UpdateGlyph(const QModelIndex& index, const SynGlyphX::DataMappingGlyph& newGlyph);
 	void UpdateGlyphStructure(const QModelIndex& index, const SynGlyphX::GlyphStructuralProperties& structure);
 	const SynGlyphX::DataMappingGlyph& GetGlyph(const QModelIndex& index) const;
+	void AddChildGlyph(const QModelIndex& parent, const SynGlyphX::DataMappingGlyph& glyphTemplate, unsigned int numberOfChildren = 1);
 
 	void SetBaseObject(unsigned int position, const SynGlyphX::BaseImage& baseImage);
 	void AddBaseObject(const SynGlyphX::BaseImage& baseImage);
@@ -81,6 +82,7 @@ private:
 	QVariant GetGlyphData(const QModelIndex& index) const;
 	bool IsRowInDataType(DataType type, int row) const;
 	boost::uuids::uuid GetTreeId(int row) const;
+	boost::uuids::uuid GetTreeId(const QModelIndex& index) const;
 
 	SynGlyphX::SourceDataManager m_sourceDataManager;
 	SynGlyphX::DataTransformMapping::SharedPtr m_dataMapping;

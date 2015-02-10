@@ -31,6 +31,7 @@ void DataMapping3DWidget::SetModel(SynGlyphX::RoleDataFilterProxyModel* model, Q
 	QObject::connect(m_externalModel, &SynGlyphX::RoleDataFilterProxyModel::dataChanged, this, &DataMapping3DWidget::OnExternalDataChanged);
 	QObject::connect(m_externalModel, &SynGlyphX::RoleDataFilterProxyModel::modelReset, this, &DataMapping3DWidget::OnExternalModelReset);
 	QObject::connect(m_externalModel, &SynGlyphX::RoleDataFilterProxyModel::rowsRemoved, this, &DataMapping3DWidget::OnExternalRowsRemoved);
+	QObject::connect(m_externalModel, &SynGlyphX::RoleDataFilterProxyModel::rowsInserted, this, &DataMapping3DWidget::OnExternalRowsInserted);
 }
 
 void DataMapping3DWidget::ConnectInternalSelection() {
@@ -124,6 +125,16 @@ void DataMapping3DWidget::OnExternalRowsRemoved(const QModelIndex& parent, int f
 	QModelIndex internalParent = GetInternalModelIndex(m_externalModel->mapToSource(parent));
 	m_internalModel->removeRows(first, last - first + 1, internalParent);
 	ConnectInternalSelection();
+}
+
+void DataMapping3DWidget::OnExternalRowsInserted(const QModelIndex& parent, int first, int last) {
+
+	QModelIndex externalParentSource = m_externalModel->mapToSource(parent);
+	QModelIndex internalParent = GetInternalModelIndex(externalParentSource);
+	for (int i = first; i <= last; ++i) {
+
+		m_internalModel->AppendChild(internalParent, m_dataTransformModel->GetGlyph(m_dataTransformModel->index(i, 0, externalParentSource)));
+	}
 }
 
 std::stack<unsigned int> DataMapping3DWidget::GetRowIndiciesFromStack(const QModelIndex& index) const {

@@ -20,19 +20,24 @@
 
 #include "treeview.h"
 #include "sharedactionlist.h"
-#include "minmaxglyphmodel.h"
+#include "datatransformmodel.h"
 
 class GlyphTreesView : public SynGlyphX::TreeView
 {
 	Q_OBJECT
 
 public:
-	GlyphTreesView(QWidget *parent = 0);
+	GlyphTreesView(DataTransformModel* sourceModel, QWidget *parent = 0);
 	~GlyphTreesView();
 
 	const SynGlyphX::SharedActionList& GetSharedActions();
 
 	const QAction* const GetClearSelectedInputBindingsAction() const;
+
+	void SelectLastGlyphTreeRoot();
+
+signals:
+	void SelectionChangedSourceModel(const QItemSelection& selected, const QItemSelection& deselected);
 
 protected:
 	virtual void selectionChanged(const QItemSelection& selected, const QItemSelection& deselected);
@@ -40,11 +45,15 @@ protected:
 private slots:
 	void RemoveGlyph();
 	void RemoveChildren();
+	void AddChildren();
 
 private:
 	void EnableActions();
 
+	DataTransformModel* m_sourceModel;
+
 	SynGlyphX::SharedActionList m_sharedActions;
+	QAction* m_addChildrenAction;
 	QAction* m_removeAction;
 	QAction* m_removeChildrenAction;
 	QAction* m_clearSelectedInputBindingsAction;
