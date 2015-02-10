@@ -507,7 +507,7 @@ void DataMapperWindow::AddBaseObject() {
 
 void DataMapperWindow::AddGlyphTemplate() {
 
-	QStringList glyphTemplates = QFileDialog::getOpenFileNames(this, tr("Add Glyph Templates"), "", "SynGlyphX Glyph Template Files (*.sgt)");
+	QStringList glyphTemplates = QFileDialog::getOpenFileNames(this, tr("Add Glyph Templates"), "", "SynGlyphX Glyph Template Files (*.sgt *.csv)");
 
 	if (glyphTemplates.isEmpty()) {
 		return;

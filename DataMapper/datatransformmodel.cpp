@@ -7,6 +7,7 @@
 #include "userdefinedbaseimageproperties.h"
 #include <boost/filesystem.hpp>
 #include "datamappingglyphfile.h"
+#include "glyphnodeconverter.h"
 
 DataTransformModel::DataTransformModel(QObject *parent)
 	: QAbstractItemModel(parent),
@@ -346,9 +347,23 @@ void DataTransformModel::Clear() {
 
 void DataTransformModel::AddGlyphFile(const QString& filename) {
 
-	SynGlyphX::DataMappingGlyphFile fileReader;
-	fileReader.ReadFromFile(filename.toStdString());
-	SynGlyphX::DataMappingGlyphGraph::SharedPtr glyphTree = fileReader.GetDataMappingGlyphGraph();
+	SynGlyphX::DataMappingGlyphGraph::SharedPtr glyphTree;
+	QString extension = filename.right(4);
+	if (extension == ".csv") {
+		
+		glyphTree = std::make_shared<SynGlyphX::DataMappingGlyphGraph>(*SynGlyphXANTz::GlyphNodeConverter::CreateGlyphGraphFromCSV(filename.toStdString()).get());
+	}
+	else if (extension == ".sgt") {
+
+		SynGlyphX::DataMappingGlyphFile fileReader;
+		fileReader.ReadFromFile(filename.toStdString());
+		glyphTree = fileReader.GetDataMappingGlyphGraph();
+	}
+	else {
+
+		throw std::invalid_argument("File does not contain a glyph tree");
+	}
+
 	int row = m_dataMapping->GetGlyphGraphs().size();
 	beginInsertRows(QModelIndex(), row, row);
 	m_dataMapping->AddGlyphTree(glyphTree);
