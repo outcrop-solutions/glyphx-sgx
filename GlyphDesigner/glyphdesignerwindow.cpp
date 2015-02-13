@@ -2,7 +2,6 @@
 #include <QtWidgets/QMenuBar>
 #include <QtWidgets/QDockWidget>
 #include <QtWidgets/QVBoxLayout>
-#include <QtWidgets/QFileDialog>
 #include <QtWidgets/QMessageBox>
 #include <QtWidgets/QStatusBar>
 #include <QtGui/QCloseEvent>
@@ -173,7 +172,7 @@ void GlyphDesignerWindow::CreateNewGlyphTree() {
 
 void GlyphDesignerWindow::ExportToCSV() {
 
-    QString saveFile = QFileDialog::getSaveFileName(this, tr("Save Glyph Tree To CSV"), "", tr("CSV Files (*.csv)"));
+    QString saveFile = GetFileNameSaveDialog("SaveDir", tr("Save Glyph Tree To CSV"), "", tr("CSV Files (*.csv)"));
     if (!saveFile.isEmpty()) {
 
         if (m_glyphTreeModel->SaveToCSV(saveFile)) {
@@ -199,7 +198,7 @@ void GlyphDesignerWindow::OpenTemplate() {
 
     if (AskUserToSave()) {
         
-		QString openFile = QFileDialog::getOpenFileName(this, tr("Open Template"), "", tr("SynGlyphX Glyph Template Files (*.sgt *.csv)"));
+		QString openFile = GetFileNameOpenDialog("GlyphTemplateDir", tr("Open Template"), m_glyphTemplatesDirectory, tr("SynGlyphX Glyph Template Files (*.sgt *.csv)"));
 		LoadTemplate(openFile);
     }
 }
@@ -250,7 +249,7 @@ bool GlyphDesignerWindow::SaveTemplate() {
 
 bool GlyphDesignerWindow::SaveAsTemplate() {
 
-	QString saveFile = QFileDialog::getSaveFileName(this, tr("Export to Data Mapper"), "", tr("SynGlyphX Glyph Template Files (*.sgt)"));
+	QString saveFile = GetFileNameSaveDialog("SaveDir", tr("Export to Data Mapper"), "", tr("SynGlyphX Glyph Template Files (*.sgt)"));
     return SaveTemplateFile(saveFile);
 }
     

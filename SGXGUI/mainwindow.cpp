@@ -6,10 +6,12 @@
 #include <QtWidgets/QMenuBar>
 #include "application.h"
 #include <QtWidgets/QMessageBox>
+#include <QtWidgets/QFileDialog>
 
 namespace SynGlyphX {
 
-	const QString MainWindow::s_copyright = QString::fromStdWString(L"Copyright © 2013-2015 SynGlyphX Holdings Incorporated. All Rights Reserved.\n\nSynGlyphX, Glyph IT, Glyph KIT are either registered trademarks or trademarks of SynGlyphX Holdings Incorporated in the United States and/or other countries.  All other trademarks are the property of their respective owners.");
+	const QString MainWindow::s_copyright = tr("Copyright © 2013-2015 SynGlyphX Holdings Incorporated. All Rights Reserved.\n\nSynGlyphX, Glyph IT, Glyph KIT are either registered trademarks or trademarks of SynGlyphX Holdings Incorporated in the United States and/or other countries.  All other trademarks are the property of their respective owners.");
+	const QString MainWindow::s_fileDialogSettingsGroup = "FileDialogSettings";
 
     MainWindow::MainWindow(QWidget *parent)
         : QMainWindow(parent),
@@ -40,6 +42,11 @@ namespace SynGlyphX {
     void MainWindow::ReadSettings() {
 
         QSettings settings;
+
+		settings.beginGroup("GlyphTemplates");
+		m_glyphTemplatesDirectory = settings.value("dir", SynGlyphX::Application::applicationDirPath() + QDir::separator() + "GlyphTemplates").toString();
+		settings.endGroup();
+
         settings.beginGroup("Window");
         resize(settings.value("size", QSize(900, 720)).toSize());
         restoreGeometry(settings.value("geometry").toByteArray());
@@ -183,5 +190,72 @@ namespace SynGlyphX {
         m_fullScreenAction = CreateMenuAction(menu, tr("Full Screen"), QKeySequence::FullScreen);
         QObject::connect(m_fullScreenAction, &QAction::triggered, this, &MainWindow::SwitchBetweenFullAndNormalScreen);
     }
+
+	QString MainWindow::GetFileNameOpenDialog(const QString& settingKey, const QString& caption, const QString& defaultDir, const QString& filter) {
+
+		QSettings settings;
+		settings.beginGroup(s_fileDialogSettingsGroup);
+		QString initialDir = settings.value(settingKey, defaultDir).toString();
+
+		QString filename = QFileDialog::getOpenFileName(this, caption, initialDir, filter);
+		if (!filename.isEmpty()) {
+
+			QFileInfo fileInfo(filename);
+			settings.setValue(settingKey, fileInfo.absolutePath());
+		}
+
+		settings.endGroup();
+		return filename;
+	}
+
+	QStringList MainWindow::GetFileNamesOpenDialog(const QString& settingKey, const QString& caption, const QString& defaultDir, const QString& filter) {
+
+		QSettings settings;
+		settings.beginGroup(s_fileDialogSettingsGroup);
+		QString initialDir = settings.value(settingKey, defaultDir).toString();
+
+		QStringList filenames = QFileDialog::getOpenFileNames(this, caption, initialDir, filter);
+		if (!filenames.isEmpty()) {
+
+			QFileInfo fileInfo(filenames[0]);
+			settings.setValue(settingKey, fileInfo.absolutePath());
+		}
+
+		settings.endGroup();
+		return filenames;
+	}
+
+	QString MainWindow::GetFileNameSaveDialog(const QString& settingKey, const QString& caption, const QString& defaultDir, const QString& filter) {
+
+		QSettings settings;
+		settings.beginGroup(s_fileDialogSettingsGroup);
+		QString initialDir = settings.value(settingKey, defaultDir).toString();
+
+		QString filename = QFileDialog::getSaveFileName(this, caption, initialDir, filter);
+		if (!filename.isEmpty()) {
+
+			QFileInfo fileInfo(filename);
+			settings.setValue(settingKey, fileInfo.absolutePath());
+		}
+
+		settings.endGroup();
+		return filename;
+	}
+
+	QString MainWindow::GetExistingDirectoryDialog(const QString& settingKey, const QString& caption, const QString& defaultDir) {
+
+		QSettings settings;
+		settings.beginGroup(s_fileDialogSettingsGroup);
+		QString initialDir = settings.value(settingKey, defaultDir).toString();
+
+		QString directory = QFileDialog::getExistingDirectory(this, caption, initialDir);
+		if (!directory.isEmpty()) {
+
+			settings.setValue(settingKey, directory);
+		}
+
+		settings.endGroup();
+		return directory;
+	}
 
 } //namespace SynGlyphX

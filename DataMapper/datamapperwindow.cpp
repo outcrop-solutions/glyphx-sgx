@@ -1,6 +1,6 @@
 #include "datamapperwindow.h"
 #include <QtCore/QSettings>
-#include <QtWidgets/QFileDialog>
+#include <QtCore/QDir>
 #include <QtWidgets/QMessageBox>
 #include <QtWidgets/QMenuBar>
 #include <QtWidgets/QDockWidget>
@@ -258,7 +258,7 @@ void DataMapperWindow::OpenProject() {
 		return;
 	}
 
-	QString openFile = QFileDialog::getOpenFileName(this, tr("Open Project"), "", tr("SynGlyphX Data Transform Project Files (*.sdt)"));
+	QString openFile = GetFileNameOpenDialog("DataTransformDir", tr("Open Project"), "", "SynGlyphX Data Transform Project Files (*.sdt)");
 	if (!openFile.isEmpty()) {
 		LoadDataTransform(openFile);
 	}
@@ -276,7 +276,7 @@ bool DataMapperWindow::SaveProject() {
 
 bool DataMapperWindow::SaveAsProject() {
 
-	QString saveFile = QFileDialog::getSaveFileName(this, tr("Save Project"), "", tr("SynGlyphX Data Transform Project Files (*.sdt)"));
+	QString saveFile = GetFileNameSaveDialog("DataTransformDir", tr("Save Project"), "", "SynGlyphX Data Transform Project Files (*.sdt)");
 
 	if (!saveFile.isEmpty()) {
 
@@ -388,7 +388,7 @@ void DataMapperWindow::ProcessCSVFile(const QString& csvFile) {
 
 void DataMapperWindow::AddDataSources() {
 
-	QStringList dataSources = QFileDialog::getOpenFileNames(this, tr("Add Data Source"), "", "All datasource files (*.*);;CSV files (*.csv)");
+	QStringList dataSources = GetFileNamesOpenDialog("DatasourcesDir", tr("Add Data Source"), "", "All datasource files (*.*);;CSV files (*.csv)");
 
 	if (dataSources.isEmpty()) {
 		return;
@@ -461,7 +461,7 @@ void DataMapperWindow::AddDataSources() {
 
 void DataMapperWindow::ExportToANTz(const QString& templateDir) {
 
-	QString csvDirectory = QDir::toNativeSeparators(QFileDialog::getExistingDirectory(this, tr("Export to ANTz"), ""));
+	QString csvDirectory = QDir::toNativeSeparators(GetExistingDirectoryDialog("ANTzExportDir", tr("Export to ANTz"), ""));
 	if (csvDirectory.isEmpty()) {
 
 		return;
@@ -513,7 +513,7 @@ void DataMapperWindow::AddBaseObject() {
 
 void DataMapperWindow::AddGlyphTemplate() {
 
-	QStringList glyphTemplates = QFileDialog::getOpenFileNames(this, tr("Add Glyph Templates"), "", "SynGlyphX Glyph Template Files (*.sgt *.csv)");
+	QStringList glyphTemplates = GetFileNamesOpenDialog("GlyphTemplatesDir", tr("Add Glyph Templates"), m_glyphTemplatesDirectory, "SynGlyphX Glyph Template Files (*.sgt *.csv)");
 
 	if (glyphTemplates.isEmpty()) {
 		return;

@@ -3,7 +3,7 @@
 #include <QtWidgets/QStatusBar>
 #include <QtWidgets/QMessageBox>
 #include <QtWidgets/QMenuBar>
-#include <QtWidgets/QFileDialog>
+#include <QtCore/QDir>
 #include <QtWidgets/QDockWidget>
 #include "application.h"
 #include "datatransformmapping.h"
@@ -123,7 +123,7 @@ void GlyphViewerWindow::CreateDockWidgets() {
 
 void GlyphViewerWindow::OpenProject() {
 
-	QString openFile = QFileDialog::getOpenFileName(this, tr("Open Visualization"), "", tr("SynGlyphX Visualization Files (*.sdt *.sav);;SynGlyphX Data Transform Files (*.sdt);;SynGlyphX ANTz Visualization Files (*.sav)"));
+	QString openFile = GetFileNameOpenDialog("VisualizationDir", tr("Open Visualization"), "", tr("SynGlyphX Visualization Files (*.sdt *.sav);;SynGlyphX Data Transform Files (*.sdt);;SynGlyphX ANTz Visualization Files (*.sav)"));
 	if (!openFile.isEmpty()) {
 
 		LoadNewVisualization(openFile);

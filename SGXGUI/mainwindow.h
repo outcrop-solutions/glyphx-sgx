@@ -53,11 +53,18 @@ namespace SynGlyphX {
         void CreateHelpMenu();
         void CreateFullScreenAction(QMenu* menu);
 
+		QString GetFileNameOpenDialog(const QString& settingKey = "", const QString& caption = "", const QString& defaultDir = "", const QString& filter = "");
+		QStringList GetFileNamesOpenDialog(const QString& settingKey = "", const QString& caption = "", const QString& defaultDir = "", const QString& filter = "");
+		QString GetFileNameSaveDialog(const QString& settingKey = "", const QString& caption = "", const QString& defaultDir = "", const QString& filter = "");
+		QString GetExistingDirectoryDialog(const QString& settingKey = "", const QString& caption = "", const QString& defaultDir = "");
+
         QList<QAction*> m_recentFileActions;
         QString m_currentFilename;
         QMenu* m_helpMenu;
         QAction* m_fullScreenAction;
 		QAction* m_aboutBoxAction;
+
+		QString m_glyphTemplatesDirectory;
 
     private slots:
         void OnRecentFileSelected();
@@ -67,6 +74,7 @@ namespace SynGlyphX {
 		bool m_needToReadSettings;
 
 		static const QString s_copyright;
+		static const QString s_fileDialogSettingsGroup;
     };
 
 } //namespace SynGlyphX
