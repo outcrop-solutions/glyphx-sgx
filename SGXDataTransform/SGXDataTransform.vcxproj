@@ -104,6 +104,7 @@
     <ClInclude Include="rangevaluemappingfunction.h" />
     <ClInclude Include="sgxdatatransform_global.h" />
     <ClInclude Include="singlevaluemappingfunction.h" />
+    <ClInclude Include="sourcedatacache.h" />
     <ClInclude Include="sourcedatamanager.h" />
     <ClInclude Include="stringconcatmappingfunction.h" />
     <ClInclude Include="stringinputcombinationfunction.h" />
@@ -134,6 +135,7 @@
     <ClCompile Include="interpolationmappingfunction.cpp" />
     <ClCompile Include="rangevaluemappingfunction.cpp" />
     <ClCompile Include="singlevaluemappingfunction.cpp" />
+    <ClCompile Include="sourcedatacache.cpp" />
     <ClCompile Include="sourcedatamanager.cpp" />
     <ClCompile Include="stringconcatmappingfunction.cpp" />
     <ClCompile Include="stringinputcombinationfunction.cpp" />
