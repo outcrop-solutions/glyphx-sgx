@@ -53,6 +53,17 @@ namespace SynGlyphXANTz {
 
 	void ANTzTransformer::GenerateCache(const SynGlyphX::DataTransformMapping& mapping, const QStringList& csvFilenames, const QString& baseImageFilenameDirectory) {
 
+		Q_FOREACH(QString csvFilename, csvFilenames) {
+
+			if (QFile::exists(csvFilename)) {
+
+				if (!QFile::remove(csvFilename)) {
+
+					throw std::exception("Failed to remove old cache");
+				}
+			}
+		}
+
 		std::unordered_map<std::string, unsigned int> userBaseImages;
 		unsigned int nextTextureID = NumberOfDefaultBaseImages + 1;
 
@@ -102,18 +113,7 @@ namespace SynGlyphXANTz {
 		}
 
 		SynGlyphX::GlyphGraph::ConstSharedVector trees = CreateGlyphTreesFromMinMaxTrees(mapping);
-
-		Q_FOREACH(QString csvFilename, csvFilenames) {
-
-			if (QFile::exists(csvFilename)) {
-
-				if (!QFile::remove(csvFilename)) {
-
-					throw std::exception("Failed to remove old cache");
-				}
-			}
-		}
-
+		
 		ANTzCSVWriter& writer = ANTzCSVWriter::GetInstance();
 		writer.Write(csvFilenames[0].toStdString(), csvFilenames[1].toStdString(), trees, grids);
 

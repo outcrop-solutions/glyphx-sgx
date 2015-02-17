@@ -27,11 +27,15 @@ namespace SynGlyphXANTz {
 		QStringList csvFiles;
 		csvFiles.push_back(localOutputDir + "antz.csv");
 		csvFiles.push_back(localOutputDir + "antztag.csv");
+
+		QStringList cacheFiles = csvFiles;
+		cacheFiles.push_back(localOutputDir + "sourcedata.db");
+		
 		QStringList baseImageFilenames;
 
 		QString cachedMappingFilename = localOutputDir + "mapping.sdt";
 
-		if (DoesCacheNeedToBeRegenerated(mapping, csvFiles, cachedMappingFilename)) {
+		if (DoesCacheNeedToBeRegenerated(mapping, cacheFiles, cachedMappingFilename)) {
 
 			QDir antzOutputDir(localOutputDir);
 			if (antzOutputDir.exists()) {
@@ -50,17 +54,17 @@ namespace SynGlyphXANTz {
 		}
 	}
 
-	bool GlyphViewerANTzTransformer::DoesCacheNeedToBeRegenerated(const SynGlyphX::DataTransformMapping& mapping, const QStringList& csvFilenames, const QString& mappingFilename) const {
+	bool GlyphViewerANTzTransformer::DoesCacheNeedToBeRegenerated(const SynGlyphX::DataTransformMapping& mapping, const QStringList& cacheFilenames, const QString& mappingFilename) const {
 
-		if (csvFilenames.empty()) {
+		if (cacheFilenames.empty()) {
 
 			return true;
 		}
 
-		Q_FOREACH(QString csvFilename, csvFilenames) {
+		Q_FOREACH(QString cacheFilename, cacheFilenames) {
 
-			QFile csvFile(csvFilename);
-			if (!csvFile.exists()) {
+			QFile cacheFile(cacheFilename);
+			if (!cacheFile.exists()) {
 				return true;
 			}
 		}
@@ -95,7 +99,7 @@ namespace SynGlyphXANTz {
 			return true;
 		}
 
-		boost::filesystem::path firstCSVFilePath(csvFilenames[0].toStdString());
+		boost::filesystem::path firstCSVFilePath(cacheFilenames[0].toStdString());
 		return HaveDatasourcesBeenUpdated(mapping, boost::filesystem::last_write_time(firstCSVFilePath));
 	}
 

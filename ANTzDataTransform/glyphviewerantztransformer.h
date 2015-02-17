@@ -33,7 +33,7 @@ namespace SynGlyphXANTz {
 	protected:
 		virtual QString GenerateBaseImageFilename(unsigned int index) const;
 		virtual void CreateGlyphsFromMapping(const SynGlyphX::DataTransformMapping& mapping);
-		bool DoesCacheNeedToBeRegenerated(const SynGlyphX::DataTransformMapping& mapping, const QStringList& csvFilenames, const QString& mappingFilename) const;
+		bool DoesCacheNeedToBeRegenerated(const SynGlyphX::DataTransformMapping& mapping, const QStringList& cacheFilenames, const QString& mappingFilename) const;
 	};
 
 } //namespace SynGlyphXANTz
