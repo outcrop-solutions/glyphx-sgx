@@ -231,10 +231,6 @@ void GlyphDesignerWindow::LoadTemplate(const QString& filename) {
 			QMessageBox::warning(this, tr("Loading Template Failed"), tr("File does not exist"));
 		}
 	}
-	else {
-
-		QMessageBox::warning(this, tr("Loading Template Failed"), tr("File name is empty"));
-	}
 }
 
 bool GlyphDesignerWindow::SaveTemplate() {
