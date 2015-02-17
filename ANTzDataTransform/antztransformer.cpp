@@ -44,8 +44,8 @@ namespace SynGlyphXANTz {
 		}
 
 		QStringList csvFiles;
-		csvFiles.push_back(QDir::toNativeSeparators(m_baseOutputDir + QDir::separator() + "usr" + QDir::separator() + "csv" + QDir::separator() + "antz0001.csv"));
-		csvFiles.push_back(QDir::toNativeSeparators(m_baseOutputDir + QDir::separator() + "usr" + QDir::separator() + "csv" + QDir::separator() + "antztag0001.csv"));
+		csvFiles.push_back(QDir::toNativeSeparators(m_baseOutputDir + QDir::separator() + "usr" + QDir::separator() + "csv" + QDir::separator() + "antz0001node.csv"));
+		csvFiles.push_back(QDir::toNativeSeparators(m_baseOutputDir + QDir::separator() + "usr" + QDir::separator() + "csv" + QDir::separator() + "antz0001tag.csv"));
 		QString antzImageDirectory = QDir::toNativeSeparators(m_baseOutputDir + QDir::separator() + "usr" + QDir::separator() + "images" + QDir::separator());
 
 		GenerateCache(mapping, csvFiles, antzImageDirectory);
