@@ -222,6 +222,11 @@ namespace SynGlyphXANTz {
 
 			SynGlyphX::DataMappingGlyphGraph::iterator glyphToUpdate = GetIteratorFromIndex(index);
 
+			if (updates.testFlag(SynGlyphX::UpdateTorusRatio)) {
+
+				glyphToUpdate->GetStructure().SetTorusRatio(glyph.GetStructure().GetTorusRatio());
+			}
+
 			if (updates.testFlag(SynGlyphX::UpdateScale)) {
 
 				glyphToUpdate->GetScale()[0].GetValue() = glyph.GetScale()[0].GetValue();
