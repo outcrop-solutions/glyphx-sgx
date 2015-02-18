@@ -19,7 +19,7 @@
 #include "baseimagedialog.h"
 #include "networkdownloader.h"
 #include "filesystem.h"
-#include "antztransformer.h"
+#include "antzexporttransformer.h"
 #include "datasourcefieldtypesdialog.h"
 #include "csvfilereader.h"
 #include "csvtfilereaderwriter.h"
@@ -480,11 +480,8 @@ void DataMapperWindow::ExportToANTz(const QString& templateDir) {
 
 	try {
 
-		SynGlyphX::Filesystem::RemoveContentsOfDirectory(csvDirectory.toStdString());
-		SynGlyphX::Filesystem::CopyDirectoryOverwrite(QDir::toNativeSeparators(templateDir).toStdString(), csvDirectory.toStdString(), true);
-		QFile::copy(SynGlyphX::Application::applicationDirPath() + QDir::separator() + "world.png", csvDirectory + QDir::separator() + "usr" + QDir::separator() + "images" + QDir::separator() + "map00001.jpg");
-
-		SynGlyphXANTz::ANTzTransformer transformer(csvDirectory);
+		bool useOldANTzFilenames = !QFile::exists(templateDir + QDir::separator() + "usr" + QDir::separator() + "csv" + QDir::separator() + "antzglobals.csv");
+		SynGlyphXANTz::ANTzExportTransformer transformer(csvDirectory, templateDir, SynGlyphX::Application::applicationDirPath() + QDir::separator() + "world.png", useOldANTzFilenames);
 		transformer.Transform(*(m_dataTransformModel->GetDataMapping().get()));
 	}
 	catch (const std::exception& e) {
