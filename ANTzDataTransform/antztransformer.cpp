@@ -32,25 +32,6 @@ namespace SynGlyphXANTz {
 		return m_baseImageFilenames;
 	}
 
-	void ANTzTransformer::CreateGlyphsFromMapping(const SynGlyphX::DataTransformMapping& mapping) {
-
-		Clear();
-
-		QDir dir(m_baseOutputDir);
-		if (!dir.exists()) {
-			if (!dir.mkpath(m_baseOutputDir)) {
-				throw std::exception("Instance directory was not created");
-			}
-		}
-
-		QStringList csvFiles;
-		csvFiles.push_back(QDir::toNativeSeparators(m_baseOutputDir + QDir::separator() + "usr" + QDir::separator() + "csv" + QDir::separator() + "antz0001node.csv"));
-		csvFiles.push_back(QDir::toNativeSeparators(m_baseOutputDir + QDir::separator() + "usr" + QDir::separator() + "csv" + QDir::separator() + "antz0001tag.csv"));
-		QString antzImageDirectory = QDir::toNativeSeparators(m_baseOutputDir + QDir::separator() + "usr" + QDir::separator() + "images" + QDir::separator());
-
-		GenerateCache(mapping, csvFiles, antzImageDirectory);
-	}
-
 	void ANTzTransformer::GenerateCache(const SynGlyphX::DataTransformMapping& mapping, const QStringList& csvFilenames, const QString& baseImageFilenameDirectory) {
 
 		Q_FOREACH(QString csvFilename, csvFilenames) {

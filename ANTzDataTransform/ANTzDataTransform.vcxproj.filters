@@ -31,6 +31,9 @@
     <ClCompile Include="glyphviewerantztransformer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="antzexporttransformer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="antzdatatransform_global.h">
@@ -40,6 +43,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="glyphviewerantztransformer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="antzexporttransformer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

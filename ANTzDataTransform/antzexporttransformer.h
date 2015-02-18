@@ -15,47 +15,28 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef SYNGLYPHX_ANTZ_ANTZTRANSFORMER_H
-#define SYNGLYPHX_ANTZ_ANTZTRANSFORMER_H
+#ifndef SYNGLYPHX_ANTZ_ANTZEXPORTTRANSFORMER_H
+#define SYNGLYPHX_ANTZ_ANTZEXPORTTRANSFORMER_H
 
 #include "antzdatatransform_global.h"
-#include "transformer.h"
-#include "datatransformmapping.h"
-#include <QtCore/QString>
-#include <QtCore/QStringList>
+#include "antztransformer.h"
 
 namespace SynGlyphXANTz {
 
-	class ANTZDATATRANSFORM_EXPORT ANTzTransformer : public SynGlyphX::Transformer
-
+	class ANTZDATATRANSFORM_EXPORT ANTzExportTransformer : public ANTzTransformer
 	{
 	public:
-		//typedef std::unordered_map<QString, unsigned int> BaseImageTextureMap;
-
-		ANTzTransformer(const QString& baseOutputDir);
-		virtual ~ANTzTransformer();
-
-		const QStringList& GetCSVFilenames() const;
-		const QStringList& GetBaseImageFilenames() const;
-
-		unsigned int GetTextureID(unsigned int index) const;
+		ANTzExportTransformer(const QString& baseOutputDir, const QString& antzTemplateDir, const QString& worldImageFilename, bool useOldANTzFilenames = false);
+		virtual ~ANTzExportTransformer();
 
 	protected:
-		const unsigned int NumberOfDefaultBaseImages = 1;
+		virtual void CreateGlyphsFromMapping(const SynGlyphX::DataTransformMapping& mapping);
 
-		virtual QString GenerateBaseImageFilename(unsigned int index) const;
-		void GenerateCache(const SynGlyphX::DataTransformMapping& mapping, const QStringList& csvFilenames, const QString& baseImageFilenameDirectory);
-		void DownloadBaseImage(const SynGlyphX::DataTransformMapping& mapping, const SynGlyphX::BaseImage& baseImage, const QString& baseImageFilename);
-		void CopyImage(const QString& sourceFilename, const QString& baseImageFilename);
-		void Clear();
-		QString GetUserImageFilename(const SynGlyphX::BaseImage& baseImage) const;
-
-		QStringList m_csvFilenames;
-		QStringList m_baseImageFilenames;
-		QString m_baseOutputDir;
-		std::vector<unsigned int> m_textureIDs;
+		bool m_useOldANTzFilenames;
+		QString m_antzTemplateDir;
+		QString m_worldImageFilename;
 	};
 
 } //namespace SynGlyphXANTz
 
-#endif //SYNGLYPHX_ANTZ_ANTZTRANSFORMER_H
+#endif //SYNGLYPHX_ANTZ_ANTZEXPORTTRANSFORMER_H

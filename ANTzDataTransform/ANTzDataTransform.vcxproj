@@ -80,11 +80,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="antzexporttransformer.cpp" />
     <ClCompile Include="antztransformer.cpp" />
     <ClCompile Include="glyphviewerantztransformer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="antzdatatransform_global.h" />
+    <ClInclude Include="antzexporttransformer.h" />
     <ClInclude Include="antztransformer.h" />
     <ClInclude Include="glyphviewerantztransformer.h" />
   </ItemGroup>
