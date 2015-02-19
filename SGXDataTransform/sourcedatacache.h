@@ -19,14 +19,34 @@
 #define SYNGLYPHX_SOURCEDATACACHE_H
 
 #include "sgxdatatransform_global.h"
+#include "sourcedatamanager.h"
+#include <map>
 
 namespace SynGlyphX {
 
 	class SGXDATATRANSFORM_EXPORT SourceDataCache
 	{
 	public:
-		SourceDataCache();
+		typedef std::map<unsigned long, QString> TableMap;
+
+		SourceDataCache(const QString& filename);
+		SourceDataCache(const DatasourceMaps& datasources, const QString& filename);
 		~SourceDataCache();
+
+		TableMap GetTables() const;
+		QStringList GetColumnsForTable(const QString& table) const;
+		//QVariantList GetDataAtIndex(unsigned long index) const;
+
+	private:
+		void CreateTableMap();
+		void AddFileDatasourceToCache(const boost::uuids::uuid& id, const FileDatasource& datasource);
+		void AddTableToCache(QSqlDatabase& db, const QString& table);
+
+		static const QString IndexColumnName;
+
+		QSqlDatabase m_db;
+		QStringList m_tables;
+		TableMap m_tables;
 	};
 
 } //namespace SynGlyphX
