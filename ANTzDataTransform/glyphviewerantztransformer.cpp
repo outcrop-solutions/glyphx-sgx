@@ -11,6 +11,7 @@ namespace SynGlyphXANTz {
 		ANTzTransformer(cacheBaseDir)
 	{
 		SynGlyphX::SourceDataManager::SetIntermediateDirectory(QDir::toNativeSeparators(cacheBaseDir + QDir::separator() + "intermediate"));
+		SetSourceDataCacheLocation(QDir::toNativeSeparators(cacheBaseDir + QDir::separator() + "sourcedata.db"));
 	}
 
 
@@ -29,11 +30,11 @@ namespace SynGlyphXANTz {
 		csvFiles.push_back(localOutputDir + "antztag.csv");
 
 		QStringList cacheFiles = csvFiles;
-		cacheFiles.push_back(localOutputDir + "sourcedata.db");
+		cacheFiles.push_back(m_sourceDataCacheLocation);
 		
 		QStringList baseImageFilenames;
 
-		QString cachedMappingFilename = localOutputDir + "mapping.sdt";
+		QString cachedMappingFilename = m_baseOutputDir + QDir::separator() + "mapping.sdt";
 
 		if (DoesCacheNeedToBeRegenerated(mapping, cacheFiles, cachedMappingFilename)) {
 
