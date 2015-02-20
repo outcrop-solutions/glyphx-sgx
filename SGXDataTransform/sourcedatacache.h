@@ -29,9 +29,13 @@ namespace SynGlyphX {
 	public:
 		typedef std::map<unsigned long, QString> TableMap;
 
+		SourceDataCache();
 		SourceDataCache(const QString& filename);
-		SourceDataCache(const DatasourceMaps& datasources, const QString& filename);
 		~SourceDataCache();
+
+		bool IsValid() const;
+
+		void CreateCache(const DatasourceMaps& datasources, const QString& filename);
 
 		TableMap GetTables() const;
 		QStringList GetColumnsForTable(const QString& table) const;
@@ -40,12 +44,12 @@ namespace SynGlyphX {
 	private:
 		void CreateTableMap();
 		void AddFileDatasourceToCache(const boost::uuids::uuid& id, const FileDatasource& datasource);
-		void AddTableToCache(QSqlDatabase& db, const QString& table);
+		void AddTableToCache(QSqlDatabase& db, const QString& sourceTable, const QString& cacheTable);
 
 		static const QString IndexColumnName;
 
+		QString m_connectionID;
 		QSqlDatabase m_db;
-		QStringList m_tables;
 		TableMap m_tables;
 	};
 

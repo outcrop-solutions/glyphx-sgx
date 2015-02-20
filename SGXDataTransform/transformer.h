@@ -25,6 +25,7 @@
 #include "geographicboundingbox.h"
 #include "inputfielddata.h"
 #include "datamappingdefaults.h"
+#include "sourcedatacache.h"
 
 namespace SynGlyphX {
 
@@ -42,6 +43,8 @@ namespace SynGlyphX {
 
 	protected:
 		virtual void CreateGlyphsFromMapping(const DataTransformMapping& mapping) = 0;
+
+		void SetSourceDataCacheLocation(const QString& sourceDataCacheLocation);
 		bool HaveDatasourcesBeenUpdated(const DataTransformMapping& mapping, std::time_t lastUpdateTime) const;
 		bool HasFileBeenUpdated(const std::wstring& filename, std::time_t lastUpdateTime) const;
 
@@ -59,6 +62,8 @@ namespace SynGlyphX {
 		
 		std::wstring GenerateTag(const DataMappingGlyphGraph::const_iterator& minMaxGlyph, const InputFieldDataMap& queryResultData, unsigned int index) const;
 
+		QString m_sourceDataCacheLocation;
+		SourceDataCache m_sourceDataCache;
 		SourceDataManager m_sourceDataManager;
 		GeographicBoundingBox m_overrideRootXYBoundingBox;
 		DataMappingDefaults m_defaults;

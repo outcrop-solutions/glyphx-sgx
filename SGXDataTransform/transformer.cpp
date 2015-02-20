@@ -2,6 +2,7 @@
 #include "datatransformmapping.h"
 #include "sourcedatamanager.h"
 #include <QtCore/QVariant>
+#include <QtCore/QDir>
 #include <stdexcept>
 #include <boost/filesystem.hpp>
 #include "interpolationmappingfunction.h"
@@ -9,10 +10,10 @@
 
 namespace SynGlyphX {
 
-	Transformer::Transformer()
+	Transformer::Transformer() :
+		m_sourceDataCacheLocation(QDir::tempPath() + QDir::separator() + "sourcedatacache.db")
 	{
 	}
-
 
 	Transformer::~Transformer()
 	{
@@ -39,6 +40,11 @@ namespace SynGlyphX {
 
 			throw std::invalid_argument("DataTransformMapping was not transformable.");
 		}
+	}
+
+	void Transformer::SetSourceDataCacheLocation(const QString& sourceDataCacheLocation) {
+
+		m_sourceDataCacheLocation = sourceDataCacheLocation;
 	}
 
 	GlyphGraph::ConstSharedVector Transformer::CreateGlyphTreesFromMinMaxTrees(const DataTransformMapping& mapping) const {
