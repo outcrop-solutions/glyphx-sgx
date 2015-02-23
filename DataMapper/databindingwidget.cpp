@@ -57,11 +57,11 @@ void DataBindingWidget::CreateAnimationTable() {
 
 	CreateGridLine(gridLayout, QFrame::HLine, 1, 2);
 
-	CreateDoublePropertyWidgets(gridLayout, 2, -1000.0, 1000.0);
+	CreateDoublePropertyWidgets(gridLayout, 2, 13, -1000.0, 1000.0);
 	CreateGridLine(gridLayout, QFrame::HLine, 3);
-	CreateDoublePropertyWidgets(gridLayout, 4, -1000.0, 1000.0);
+	CreateDoublePropertyWidgets(gridLayout, 4, 13, -1000.0, 1000.0);
 	CreateGridLine(gridLayout, QFrame::HLine, 5);
-	CreateDoublePropertyWidgets(gridLayout, 6, -1000.0, 1000.0);
+	CreateDoublePropertyWidgets(gridLayout, 6, 13, -1000.0, 1000.0);
 
 	gridLayout->setColumnStretch(8, 1);
 
@@ -136,30 +136,30 @@ void DataBindingWidget::CreatePropertiesTable() {
 
 	CreateGridLine(gridLayout, QFrame::HLine, 1, 2);
 
-	CreateDoublePropertyWidgets(gridLayout, 2, -1000.0, 1000.0, true);
+	CreateDoublePropertyWidgets(gridLayout, 2, 0, -1000.0, 1000.0, true);
 	CreateGridLine(gridLayout, QFrame::HLine, 3);
-	CreateDoublePropertyWidgets(gridLayout, 4, -1000.0, 1000.0, true);
+	CreateDoublePropertyWidgets(gridLayout, 4, 0, -1000.0, 1000.0, true);
 	CreateGridLine(gridLayout, QFrame::HLine, 5);
-	CreateDoublePropertyWidgets(gridLayout, 6, 0.0, 1000.0);
+	CreateDoublePropertyWidgets(gridLayout, 6, 0, 0.0, 1000.0);
 	CreateGridLine(gridLayout, QFrame::HLine, 7);
 
-	CreateDoublePropertyWidgets(gridLayout, 8, -360.0, 360.0);
+	CreateDoublePropertyWidgets(gridLayout, 8, 0, -360.0, 360.0);
 	CreateGridLine(gridLayout, QFrame::HLine, 9);
-	CreateDoublePropertyWidgets(gridLayout, 10, -360.0, 360.0);
+	CreateDoublePropertyWidgets(gridLayout, 10, 0, -360.0, 360.0);
 	CreateGridLine(gridLayout, QFrame::HLine, 11);
-	CreateDoublePropertyWidgets(gridLayout, 12, -360.0, 360.0);
+	CreateDoublePropertyWidgets(gridLayout, 12, 0, -360.0, 360.0);
 	CreateGridLine(gridLayout, QFrame::HLine, 13);
 
-	CreateDoublePropertyWidgets(gridLayout, 14, 0.0, 1000.0);
+	CreateDoublePropertyWidgets(gridLayout, 14, 0, 0.0, 1000.0);
 	CreateGridLine(gridLayout, QFrame::HLine, 15);
-	CreateDoublePropertyWidgets(gridLayout, 16, 0.0, 1000.0);
+	CreateDoublePropertyWidgets(gridLayout, 16, 0, 0.0, 1000.0);
 	CreateGridLine(gridLayout, QFrame::HLine, 17);
-	CreateDoublePropertyWidgets(gridLayout, 18, 0.0, 1000.0);
+	CreateDoublePropertyWidgets(gridLayout, 18, 0, 0.0, 1000.0);
 	CreateGridLine(gridLayout, QFrame::HLine, 19);
 
-	CreateColorPropertyWidgets(gridLayout, 20);
+	CreateColorPropertyWidgets(gridLayout, 20, 0);
 	CreateGridLine(gridLayout, QFrame::HLine, 21);
-	CreateIntegerPropertyWidgets(gridLayout, 22);
+	CreateIntegerPropertyWidgets(gridLayout, 22, 0);
 
 	gridLayout->setColumnStretch(8, 1);
 
@@ -190,9 +190,9 @@ void DataBindingWidget::CreateTableHeader(QGridLayout* gridLayout) {
 	}
 }
 
-void DataBindingWidget::CreateRowOfPropertyWidgets(QGridLayout* layout, QWidget* minWidget, QWidget* maxWidget, int row, double min, double max, bool addToPositionXYList) {
+void DataBindingWidget::CreateRowOfPropertyWidgets(QGridLayout* layout, QWidget* minWidget, QWidget* maxWidget, int row, int firstModelRow, double min, double max, bool addToPositionXYList) {
 
-	int modelRow = row / 2 - 1;
+	int modelRow = row / 2 - 1 + firstModelRow;
 
 	QDataWidgetMapper* mapper = new QDataWidgetMapper(this);
 	mapper->setSubmitPolicy(QDataWidgetMapper::ManualSubmit);
@@ -233,7 +233,7 @@ void DataBindingWidget::CreateRowOfPropertyWidgets(QGridLayout* layout, QWidget*
 	}
 }
 
-void DataBindingWidget::CreateIntegerPropertyWidgets(QGridLayout* layout, int row, int min, int max) {
+void DataBindingWidget::CreateIntegerPropertyWidgets(QGridLayout* layout, int row, int firstModelRow, int min, int max) {
 
 	QSpinBox* minSpinBox = new QSpinBox(this);
 	minSpinBox->setKeyboardTracking(false);
@@ -242,13 +242,13 @@ void DataBindingWidget::CreateIntegerPropertyWidgets(QGridLayout* layout, int ro
 	maxSpinBox->setKeyboardTracking(false);
 	maxSpinBox->setRange(min, max);
 	
-	CreateRowOfPropertyWidgets(layout, minSpinBox, maxSpinBox, row, min, max);
+	CreateRowOfPropertyWidgets(layout, minSpinBox, maxSpinBox, row, firstModelRow, min, max);
 
 	QObject::connect(minSpinBox, static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged), m_dataWidgetMappers.last(), &QDataWidgetMapper::submit);
 	QObject::connect(maxSpinBox, static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged), m_dataWidgetMappers.last(), &QDataWidgetMapper::submit);
 }
 
-void DataBindingWidget::CreateDoublePropertyWidgets(QGridLayout* layout, int row, double min, double max, bool addToPositionXYList) {
+void DataBindingWidget::CreateDoublePropertyWidgets(QGridLayout* layout, int row, int firstModelRow, double min, double max, bool addToPositionXYList) {
 
 	QDoubleSpinBox* minSpinBox = new QDoubleSpinBox(this);
 	minSpinBox->setKeyboardTracking(false);
@@ -257,18 +257,18 @@ void DataBindingWidget::CreateDoublePropertyWidgets(QGridLayout* layout, int row
 	maxSpinBox->setKeyboardTracking(false);
 	maxSpinBox->setRange(min, max);
 	
-	CreateRowOfPropertyWidgets(layout, minSpinBox, maxSpinBox, row, min, max, addToPositionXYList);
+	CreateRowOfPropertyWidgets(layout, minSpinBox, maxSpinBox, row, firstModelRow, min, max, addToPositionXYList);
 
 	QObject::connect(minSpinBox, static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), m_dataWidgetMappers.last(), &QDataWidgetMapper::submit);
 	QObject::connect(maxSpinBox, static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), m_dataWidgetMappers.last(), &QDataWidgetMapper::submit);
 }
 
-void DataBindingWidget::CreateColorPropertyWidgets(QGridLayout* layout, int row) {
+void DataBindingWidget::CreateColorPropertyWidgets(QGridLayout* layout, int row, int firstModelRow) {
 
 	SynGlyphX::ColorButton* minColorButton = new SynGlyphX::ColorButton(false, this);
 	SynGlyphX::ColorButton* maxColorButton = new SynGlyphX::ColorButton(false, this);
 
-	CreateRowOfPropertyWidgets(layout, minColorButton, maxColorButton, row);
+	CreateRowOfPropertyWidgets(layout, minColorButton, maxColorButton, row, firstModelRow);
 
 	QObject::connect(minColorButton, &SynGlyphX::ColorButton::ColorChanged, m_dataWidgetMappers.last(), &QDataWidgetMapper::submit);
 	QObject::connect(maxColorButton, &SynGlyphX::ColorButton::ColorChanged, m_dataWidgetMappers.last(), &QDataWidgetMapper::submit);

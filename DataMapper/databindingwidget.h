@@ -51,10 +51,10 @@ private:
 	void CreatePropertiesTable();
 	void CreateTableHeader(QGridLayout* gridLayout);
 	void CreateGridLines(QGridLayout* gridLayout);
-	void CreateIntegerPropertyWidgets(QGridLayout* layout, int row, int min = 0, int max = 255);
-	void CreateDoublePropertyWidgets(QGridLayout* layout, int row, double min = -100000.0, double max = 100000.0, bool addToPositionXYList = false);
-	void CreateColorPropertyWidgets(QGridLayout* layout, int row);
-	void CreateRowOfPropertyWidgets(QGridLayout* layout, QWidget* minWidget, QWidget* maxWidget, int row, double min = -100000.0, double max = 100000.0, bool addToPositionXYList = false);
+	void CreateIntegerPropertyWidgets(QGridLayout* layout, int row, int firstModelRow, int min = 0, int max = 255);
+	void CreateDoublePropertyWidgets(QGridLayout* layout, int row, int firstModelRow, double min = -100000.0, double max = 100000.0, bool addToPositionXYList = false);
+	void CreateColorPropertyWidgets(QGridLayout* layout, int row, int firstModelRow);
+	void CreateRowOfPropertyWidgets(QGridLayout* layout, QWidget* minWidget, QWidget* maxWidget, int row, int firstModelRow, double min = -100000.0, double max = 100000.0, bool addToPositionXYList = false);
 	void CreateGridLine(QGridLayout* layout, QFrame::Shape shape, int index, int thickness = 1);
 	void EnablePositionXYMixMaxWidgets(bool enable);
 
