@@ -24,16 +24,16 @@
 
 namespace SynGlyphX {
 
-	class SGXDATATRANSFORM_EXPORT SourceDataCache
+	class SGXDATATRANSFORM_EXPORT SourceDataCache : protected CSVCache
 	{
 	public:
 		typedef std::map<unsigned long, QString> TableMap;
 
 		SourceDataCache();
 		SourceDataCache(const QString& filename);
-		~SourceDataCache();
+		virtual ~SourceDataCache();
 
-		bool IsValid() const;
+		virtual bool IsValid() const;
 
 		void CreateCache(const DatasourceMaps& datasources, const QString& filename);
 
@@ -42,14 +42,15 @@ namespace SynGlyphX {
 		//QVariantList GetDataAtIndex(unsigned long index) const;
 
 	private:
-		void CreateTableMap();
+		virtual void CreateNewTableInCache(const QString& name, const QString& fieldNamesAndTypes);
+		int GetLastIndexOfTable(const QString& tableName);
 		void AddFileDatasourceToCache(const boost::uuids::uuid& id, const FileDatasource& datasource);
-		void AddTableToCache(QSqlDatabase& db, const QString& sourceTable, const QString& cacheTable);
+		void AddDBTablesToCache(const boost::uuids::uuid& id, const Datasource& datasource, const QString& dbType);
+		void AddDBTableToCache(QSqlDatabase& db, const QString& sourceTable, const QString& cacheTable);
+		void AddTableToMap(const QString& tableName);
 
 		static const QString IndexColumnName;
 
-		QString m_connectionID;
-		QSqlDatabase m_db;
 		TableMap m_tables;
 	};
 

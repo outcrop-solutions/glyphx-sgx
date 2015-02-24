@@ -24,11 +24,30 @@
 #include <QtSql/QSqlDatabase>
 #include <unordered_set>
 #include "datasourcemaps.h"
-#include <boost/uuid/uuid.hpp>
+#include "csvfilereader.h"
 #include "inputfield.h"
 #include "uuid.h"
 
 namespace SynGlyphX {
+
+	class SGXDATATRANSFORM_EXPORT CSVCache {
+
+	public:
+		CSVCache();
+		virtual ~CSVCache();
+
+		virtual bool IsValid() const;
+		void Setup(const QString& cacheFilename);
+		void AddCSVFile(const QString& tableName, const QString& csvFilename);
+
+	protected:
+		virtual void CreateNewTableInCache(const QString& name, const QString& fieldNamesAndTypes);
+		void CreateTableFromCSVHeaders(const QString& name, const CSVFileReader::CSVValues& headers, const CSVFileReader::CSVValues& types);
+		void CommitChanges();
+
+		QString m_connectionID;
+		QSqlDatabase m_db;
+	};
 
 	class SGXDATATRANSFORM_EXPORT SourceDataManager
 	{
