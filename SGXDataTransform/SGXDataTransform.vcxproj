@@ -82,6 +82,8 @@
   <ItemGroup>
     <ClInclude Include="baseimage.h" />
     <ClInclude Include="baseimageproperties.h" />
+    <ClInclude Include="csvcache.h" />
+    <ClInclude Include="databaseinfo.h" />
     <ClInclude Include="datamappingdefaults.h" />
     <ClInclude Include="datamappingfunction.h" />
     <ClInclude Include="datamappingglyph.h" />
@@ -115,6 +117,8 @@
   <ItemGroup>
     <ClCompile Include="baseimage.cpp" />
     <ClCompile Include="baseimageproperties.cpp" />
+    <ClCompile Include="csvcache.cpp" />
+    <ClCompile Include="databaseinfo.cpp" />
     <ClCompile Include="datamappingdefaults.cpp" />
     <ClCompile Include="datamappingfunction.cpp" />
     <ClCompile Include="datamappingglyph.cpp" />

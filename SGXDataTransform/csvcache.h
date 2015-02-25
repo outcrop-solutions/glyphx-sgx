@@ -15,46 +15,40 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef SYNGLYPHX_SOURCEDATACACHE_H
-#define SYNGLYPHX_SOURCEDATACACHE_H
+#ifndef SYNGLYPHX_CSVCACHE_H
+#define SYNGLYPHX_CSVCACHE_H
 
 #include "sgxdatatransform_global.h"
-#include "csvcache.h"
-#include "datasourcemaps.h"
-#include <map>
+#include <QtCore/QString>
+#include <QtCore/QStringList>
+#include <QtSql/QSqlDatabase>
+#include "csvfilereader.h"
 
 namespace SynGlyphX {
 
-	class SGXDATATRANSFORM_EXPORT SourceDataCache : protected CSVCache
-	{
-	public:
-		typedef std::map<unsigned long, QString> TableMap;
+	class SGXDATATRANSFORM_EXPORT CSVCache {
 
-		SourceDataCache();
-		SourceDataCache(const QString& filename);
-		virtual ~SourceDataCache();
+	public:
+		CSVCache();
+		CSVCache(const QString& cacheFilename);
+		virtual ~CSVCache();
 
 		virtual bool IsValid() const;
+		void Setup(const QString& cacheFilename);
+		void Close();
+		void UpdateCSVFile(const QString& tableName, const QString& csvFilename);
 
-		void CreateCache(const DatasourceMaps& datasources, const QString& filename);
-
-		TableMap GetTables() const;
-		QStringList GetColumnsForTable(const QString& table) const;
-		//QVariantList GetDataAtIndex(unsigned long index) const;
-
-	private:
+	protected:
 		virtual void CreateNewTableInCache(const QString& name, const QString& fieldNamesAndTypes);
-		int GetLastIndexOfTable(const QString& tableName);
-		void AddFileDatasourceToCache(const boost::uuids::uuid& id, const FileDatasource& datasource);
-		void AddDBTablesToCache(const boost::uuids::uuid& id, const Datasource& datasource, const QString& dbType);
-		void AddDBTableToCache(QSqlDatabase& db, const QString& sourceTable, const QString& cacheTable);
-		void AddTableToMap(const QString& tableName);
+		void CreateTableFromCSVHeaders(const QString& name, const CSVFileReader::CSVValues& headers, const CSVFileReader::CSVValues& types);
+		void CommitChanges();
 
-		static const QString IndexColumnName;
+		QString m_connectionID;
+		QSqlDatabase m_db;
 
-		TableMap m_tables;
+		static const QString s_tableIndexName;
 	};
 
 } //namespace SynGlyphX
 
-#endif //SYNGLYPHX_SOURCEDATACACHE_H
+#endif //SYNGLYPHX_CSVCACHE_H
