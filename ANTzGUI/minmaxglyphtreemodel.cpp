@@ -478,6 +478,8 @@ namespace SynGlyphXANTz {
 			SynGlyphX::DataMappingGlyphGraph::iterator newParentGlyph = GetIteratorFromIndex(parent);
 			const QModelIndexList& indexes = glyphData->GetGlyphs();
 
+			bool glyphsMoved = false;
+
 			for (int j = 0; j < indexes.length(); ++j) {
 
 				SynGlyphX::DataMappingGlyphGraph::iterator oldGlyph = GetIteratorFromIndex(indexes[j]);
@@ -488,13 +490,14 @@ namespace SynGlyphXANTz {
 
 					unsigned int numberOfChildren = m_minMaxGlyphTree->children(newParentGlyph);
 
-					beginMoveRows(indexes[j].parent(), indexes[j].row(), indexes[j].row(), parent, numberOfChildren);
+					//Only do an insert here.  The MoveAction will take care of deleting the old object
+					beginInsertRows(parent, numberOfChildren, numberOfChildren);
 					SynGlyphX::Vector3 newPosition = { { 15.0, 0.0, 0.0 } };
 					if (numberOfChildren > 0) {
 
 						newPosition = m_minMaxGlyphTree->child(newParentGlyph, numberOfChildren - 1)->GetMinGlyph().GetPosition();
 					}
-					stlplus::ntree<SynGlyphX::DataMappingGlyph> oldGlyphSubtree = m_minMaxGlyphTree->cut(oldGlyph);
+					stlplus::ntree<SynGlyphX::DataMappingGlyph> oldGlyphSubtree = m_minMaxGlyphTree->subtree(oldGlyph);
 					SynGlyphX::DataMappingGlyphGraph::iterator newGlyph = m_minMaxGlyphTree->insert(newParentGlyph, oldGlyphSubtree);
 
 					//For now, update position to 15.0 less than the last x coordinate.  This follows what ANTz does
@@ -503,11 +506,12 @@ namespace SynGlyphXANTz {
 					newGlyph->GetPosition()[1].GetValue().first = newPosition[1];
 					newGlyph->GetPosition()[2].GetValue().first = newPosition[2];
 
-					endMoveRows();
+					endInsertRows();
+					glyphsMoved = true;
 				}
 			}
 
-			return true;
+			return glyphsMoved;
 		}
 
 		return false;

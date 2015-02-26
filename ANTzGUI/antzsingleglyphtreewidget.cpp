@@ -330,6 +330,12 @@ namespace SynGlyphXANTz {
 				nodeRootIndex = m_rootGlyph->id;
 			}
 		}
+		
+		if ((nodeRootIndex == 0) && (m_rootGlyph != nullptr)) {
+
+			CenterCameraOnNode(m_rootGlyph);
+			nodeRootIndex = m_rootGlyph->id;
+		}
 
 		m_antzData->map.nodeRootIndex = nodeRootIndex;
 	}
