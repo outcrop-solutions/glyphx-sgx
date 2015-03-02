@@ -36,7 +36,9 @@ namespace SynGlyphX {
 
 		virtual bool IsValid() const;
 
-		void CreateCache(const DatasourceMaps& datasources, const QString& filename);
+		void Setup(const QString& filename);
+		void AddDatasourcesToCache(const DatasourceMaps& datasources);
+		void AddFileDatasourceToCache(const boost::uuids::uuid& id, const FileDatasource& datasource);
 
 		TableMap GetTables() const;
 		QStringList GetColumnsForTable(const QString& table) const;
@@ -45,7 +47,7 @@ namespace SynGlyphX {
 	private:
 		virtual void CreateNewTableInCache(const QString& name, const QString& fieldNamesAndTypes);
 		int GetLastIndexOfTable(const QString& tableName);
-		void AddFileDatasourceToCache(const boost::uuids::uuid& id, const FileDatasource& datasource);
+		
 		void AddDBTablesToCache(const boost::uuids::uuid& id, const Datasource& datasource, const QString& dbType);
 		void AddDBTableToCache(QSqlDatabase& db, const QString& sourceTable, const QString& cacheTable);
 		void AddTableToMap(const QString& tableName);

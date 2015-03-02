@@ -47,7 +47,14 @@ namespace SynGlyphX {
 
 			if (fileDatasource.RequiresConversionToDB()) {
 
-				if (m_csvCache.)
+				if (m_csvCache.IsValid()) {
+
+					m_csvCache.UpdateCSVFile(connectionName, datasourceName);
+				}
+				else {
+
+					throw std::invalid_argument("Could not add CSV file.  CSV cache is not setup.");
+				}
 				return;
 			}
 		}

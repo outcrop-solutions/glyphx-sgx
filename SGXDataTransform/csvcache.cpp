@@ -5,6 +5,7 @@
 #include <QtSql/QSqlError>
 #include "csvtfilereaderwriter.h"
 #include <QtCore/QFileInfo>
+#include <QtCore/QDateTime>
 
 namespace SynGlyphX {
 
@@ -81,10 +82,29 @@ namespace SynGlyphX {
 			throw std::exception("CSV file does not exist");
 		}
 
+		QDateTime csvTimestamp;
+		if (csvFile.lastModified() > csvtFile.lastModified()) {
+
+			csvTimestamp = csvFile.lastModified();
+		}
+		else {
+
+			csvTimestamp = csvtFile.lastModified();
+		}
+
 		bool csvFileIsInCache = m_db.tables().contains(tableName);
 		if (csvFileIsInCache) {
 
+			QDateTime tableLastModified = GetTimestampForTable(tableName);
+			if (csvTimestamp < tableLastModified) {
 
+				//CSV Cache is up to date so do nothing
+				return;
+			}
+			else {
+
+				DeleteTable(tableName);
+			}
 		}
 
 		try {
@@ -95,16 +115,19 @@ namespace SynGlyphX {
 			const CSVFileReader::CSVValues& headers = csvFileReader.GetHeaders();
 			const CSVFileReader::CSVValues& types = csvtFileReader.GetTypes();
 
-			if (csvFileIsInCache) {
-
-				CreateTableFromCSVHeaders(tableName, headers, types);
-			}
+			CreateTableFromCSVHeaders(tableName, headers, types);
 
 			std::vector<bool> typeIsText;
 			typeIsText.reserve(types.size());
 			for (int j = 0; j < types.size(); ++j) {
 
 				typeIsText.push_back(types[j] == L"TEXT");
+			}
+
+			QString headerList = QString::fromStdWString(headers[0]);
+			for (int k = 1; k < headers.size(); ++k) {
+
+				headerList += ", " + QString::fromStdWString(headers[k]);
 			}
 
 			while (!csvFileReader.IsAtEndOfFile()) {
@@ -117,7 +140,7 @@ namespace SynGlyphX {
 				}
 
 				QSqlQuery insertTableQuery(m_db);
-				QString sqlInsert = "INSERT INTO " + tableName + "\nVALUES (";
+				QString sqlInsert = "INSERT INTO " + tableName + " (" + headerList + ") VALUES (";
 				for (int i = 0; i < values.size(); ++i) {
 
 					if (typeIsText[i]) {
@@ -146,6 +169,8 @@ namespace SynGlyphX {
 				}
 				insertTableQuery.finish();
 			}
+
+			UpdateTimestampForTable(tableName, csvTimestamp);
 		}
 		catch (const std::exception& e) {
 
@@ -188,6 +213,51 @@ namespace SynGlyphX {
 
 			throw std::exception("Source data cache db failed to commit source data.");
 		}
+	}
+
+	void CSVCache::DeleteTable(const QString& table) {
+
+		QSqlQuery dropTableQuery(m_db);
+		dropTableQuery.prepare("DROP TABLE " + table);
+		bool querySucceeded = dropTableQuery.exec();
+
+		if (!querySucceeded) {
+
+			throw std::exception((QObject::tr("Delete table in CSV cache failed: ") + m_db.lastError().text()).toStdString().c_str());
+		}
+
+		dropTableQuery.finish();
+	}
+
+	QDateTime CSVCache::GetTimestampForTable(const QString& table) {
+
+		QSqlQuery timestampQuery(m_db);
+		timestampQuery.prepare("SELECT \"Timestamp\" FROM " + s_tableIndexName + " WHERE Name=\"" + table + "\";");
+		bool querySucceeded = timestampQuery.exec();
+
+		if (!querySucceeded) {
+
+			throw std::exception((QObject::tr("Get timestamp in CSV cache failed: ") + m_db.lastError().text()).toStdString().c_str());
+		}
+
+		timestampQuery.first();
+		QDateTime timestamp;
+		timestamp.fromMSecsSinceEpoch(timestampQuery.value(0).toULongLong());
+		return timestamp;
+	}
+
+	void CSVCache::UpdateTimestampForTable(const QString& table, const QDateTime& timestamp) {
+
+		QSqlQuery timestampQuery(m_db);
+		timestampQuery.prepare("INSERT OR RELPACE INTO " + s_tableIndexName + " (Name, Timestamp) VALUES(\"" + table + "\", " + QString::number(timestamp.toMSecsSinceEpoch()) + ");");
+		bool querySucceeded = timestampQuery.exec();
+
+		if (!querySucceeded) {
+
+			throw std::exception((QObject::tr("Update timestamp in CSV cache failed: ") + m_db.lastError().text()).toStdString().c_str());
+		}
+
+		timestampQuery.finish();
 	}
 
 } //namespace SynGlyphX
