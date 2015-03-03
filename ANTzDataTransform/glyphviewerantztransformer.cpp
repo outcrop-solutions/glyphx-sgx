@@ -10,7 +10,6 @@ namespace SynGlyphXANTz {
 	GlyphViewerANTzTransformer::GlyphViewerANTzTransformer(const QString& cacheBaseDir) :
 		ANTzTransformer(cacheBaseDir)
 	{
-		SynGlyphX::SourceDataManager::SetIntermediateDirectory(QDir::toNativeSeparators(cacheBaseDir + QDir::separator() + "intermediate"));
 		SetSourceDataCacheLocation(QDir::toNativeSeparators(cacheBaseDir + QDir::separator() + "sourcedata.db"));
 	}
 
