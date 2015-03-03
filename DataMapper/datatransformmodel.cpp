@@ -23,12 +23,12 @@ DataTransformModel::~DataTransformModel()
 
 void DataTransformModel::SetIntermediateDirectoryToCurrentID() {
 
-	SynGlyphX::SourceDataManager::SetIntermediateDirectory(GetIntermediateDirectoryForID(m_dataMapping->GetID()));
+	m_sourceDataManager.SetCacheLocation(GetCacheLocationForID(m_dataMapping->GetID()));
 }
 
-QString DataTransformModel::GetIntermediateDirectoryForID(const boost::uuids::uuid& id) {
+QString DataTransformModel::GetCacheLocationForID(const boost::uuids::uuid& id) {
 
-	return QDir::toNativeSeparators(QDir::tempPath() + QDir::separator() + SynGlyphX::Application::applicationName() + QDir::separator() + "int_" + QString::fromStdString(boost::uuids::to_string(id)));
+	return QDir::toNativeSeparators(QDir::tempPath() + QDir::separator() + SynGlyphX::Application::applicationName() + QDir::separator() + "cache_" + QString::fromStdString(boost::uuids::to_string(id)) + ".db");
 }
 
 int DataTransformModel::columnCount(const QModelIndex& parent) const {

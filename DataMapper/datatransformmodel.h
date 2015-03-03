@@ -79,7 +79,7 @@ public:
 
 private:
 	void SetIntermediateDirectoryToCurrentID();
-	QString GetIntermediateDirectoryForID(const boost::uuids::uuid& id);
+	QString GetCacheLocationForID(const boost::uuids::uuid& id);
 	QVariant GetGlyphData(const QModelIndex& index) const;
 	bool IsRowInDataType(DataType type, int row) const;
 	boost::uuids::uuid GetTreeId(int row) const;

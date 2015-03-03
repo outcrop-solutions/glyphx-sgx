@@ -6,7 +6,7 @@
 #include <QtWidgets/QRadioButton>
 #include <QtWidgets/QHeaderView>
 #include <QtWidgets/QScrollBar>
-#include "sourcedatamanager.h"
+#include "databaseinfo.h"
 
 DatasourceFieldTypesDialog::DatasourceFieldTypesDialog(QStringList fields, const QString& fileFormat, QWidget *parent)
 	: QDialog(parent)
@@ -23,7 +23,7 @@ DatasourceFieldTypesDialog::DatasourceFieldTypesDialog(QStringList fields, const
 	labels.push_back(tr("Type:"));
 	m_fieldTypeTable->setHorizontalHeaderLabels(labels);
 
-	QStringList fieldTypes = SynGlyphX::SourceDataManager::GetSQLiteDataTypesForFormat(fileFormat);
+	QStringList fieldTypes = SynGlyphX::DatabaseInfo::GetSQLiteDataTypesForFormat(fileFormat);
 
 	for (int i = 0; i < fields.length(); ++i) {
 
