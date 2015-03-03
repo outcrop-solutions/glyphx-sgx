@@ -98,38 +98,6 @@ namespace SynGlyphX {
 		}
 	}
 
-	QVariantList SourceDataManager::RunSelectSqlQuery(const InputField& inputfield) const {
-
-		QVariantList results;
-		QSqlDatabase db = QSqlDatabase::database(QString::fromStdWString(boost::uuids::to_wstring(inputfield.GetDatasourceID())));
-
-		QSqlQuery query(db);
-		query.prepare(QString("SELECT %1 FROM ").arg("\"" + QString::fromStdWString(inputfield.GetField()) + "\"") + QString::fromStdWString(inputfield.GetTable()));
-		query.exec();
-		while (query.next()) {
-			results.push_back(query.value(0));
-		}
-
-		return results;
-	}
-
-	QVariantList SourceDataManager::GetMinMaxSqlQuery(const InputField& inputfield) const {
-
-		QSqlDatabase db = QSqlDatabase::database(QString::fromStdWString(boost::uuids::to_wstring(inputfield.GetDatasourceID())));
-		QSqlQuery query(db);
-		QString queryString = QString("SELECT MIN(%1), MAX(%1) FROM ").arg("\"" + QString::fromStdWString(inputfield.GetField()) + "\"") + QString::fromStdWString(inputfield.GetTable());
-		query.prepare(queryString);
-
-		query.exec();
-		query.first();
-
-		QVariantList results;
-		results.push_back(query.value(0));
-		results.push_back(query.value(1));
-
-		return results;
-	}
-
 	void SourceDataManager::SetCacheLocation(const QString& location) {
 
 		m_csvCache.Setup(location);

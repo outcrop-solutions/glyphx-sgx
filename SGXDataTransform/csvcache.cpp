@@ -6,6 +6,7 @@
 #include "csvtfilereaderwriter.h"
 #include <QtCore/QFileInfo>
 #include <QtCore/QDateTime>
+#include <QtCore/QVariant>
 
 namespace SynGlyphX {
 
@@ -49,7 +50,7 @@ namespace SynGlyphX {
 
 		if (!m_db.tables().contains(s_tableIndexName)) {
 
-			CreateNewTableInCache(s_tableIndexName, "Index INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,\nName TEXT NOT NULL UNIQUE,\nTimestamp INTEGER NOT NULL");
+			CreateNewTableInCache(s_tableIndexName, "TableName TEXT NOT NULL PRIMARY KEY UNIQUE,\nFormattedName TEXT NOT NULL,\nTimestamp INTEGER NOT NULL");
 		}
 	}
 
@@ -170,7 +171,7 @@ namespace SynGlyphX {
 				insertTableQuery.finish();
 			}
 
-			UpdateTimestampForTable(tableName, csvTimestamp);
+			UpdateTimestampForTable(tableName, csvFile.fileName(), csvTimestamp);
 		}
 		catch (const std::exception& e) {
 
@@ -232,7 +233,7 @@ namespace SynGlyphX {
 	QDateTime CSVCache::GetTimestampForTable(const QString& table) {
 
 		QSqlQuery timestampQuery(m_db);
-		timestampQuery.prepare("SELECT \"Timestamp\" FROM " + s_tableIndexName + " WHERE Name=\"" + table + "\";");
+		timestampQuery.prepare("SELECT \"Timestamp\" FROM " + s_tableIndexName + " WHERE TableName=\"" + table + "\";");
 		bool querySucceeded = timestampQuery.exec();
 
 		if (!querySucceeded) {
@@ -246,10 +247,11 @@ namespace SynGlyphX {
 		return timestamp;
 	}
 
-	void CSVCache::UpdateTimestampForTable(const QString& table, const QDateTime& timestamp) {
+	void CSVCache::UpdateTimestampForTable(const QString& table, const QString& formattedName, const QDateTime& timestamp) {
 
 		QSqlQuery timestampQuery(m_db);
-		timestampQuery.prepare("INSERT OR RELPACE INTO " + s_tableIndexName + " (Name, Timestamp) VALUES(\"" + table + "\", " + QString::number(timestamp.toMSecsSinceEpoch()) + ");");
+		timestampQuery.prepare("INSERT OR RELPACE INTO " + s_tableIndexName + " (TableName, FormattedName, Timestamp) VALUES(\"" + 
+			table + "\", \"" + formattedName + "\", " + QString::number(timestamp.toMSecsSinceEpoch()) + ");");
 		bool querySucceeded = timestampQuery.exec();
 
 		if (!querySucceeded) {

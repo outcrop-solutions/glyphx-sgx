@@ -21,7 +21,6 @@
 #include "sgxdatatransform_global.h"
 #include "glyphgraph.h"
 #include "datamappingglyphgraph.h"
-#include "sourcedatamanager.h"
 #include "geographicboundingbox.h"
 #include "inputfielddata.h"
 #include "datamappingdefaults.h"
@@ -62,9 +61,10 @@ namespace SynGlyphX {
 		
 		std::wstring GenerateTag(const DataMappingGlyphGraph::const_iterator& minMaxGlyph, const InputFieldDataMap& queryResultData, unsigned int index) const;
 
+		void RunSelectSqlQuery(const InputField& inputfield, QVariantList& data) const;
+
 		QString m_sourceDataCacheLocation;
 		SourceDataCache m_sourceDataCache;
-		SourceDataManager m_sourceDataManager;
 		GeographicBoundingBox m_overrideRootXYBoundingBox;
 		DataMappingDefaults m_defaults;
 	};

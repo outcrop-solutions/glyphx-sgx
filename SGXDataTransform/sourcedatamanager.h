@@ -24,7 +24,6 @@
 #include <QtSql/QSqlDatabase>
 #include <unordered_set>
 #include "datasourcemaps.h"
-#include "inputfield.h"
 #include "uuid.h"
 #include "csvcache.h"
 
@@ -42,9 +41,6 @@ namespace SynGlyphX {
 		//static const QString& GetIntermeidateDirectory();
 
 		void SetCacheLocation(const QString& location);
-
-		QVariantList RunSelectSqlQuery(const InputField& inputfield) const;
-		QVariantList GetMinMaxSqlQuery(const InputField& inputfield) const;
 
 		void AddDatabaseConnection(const Datasource& datasource, const boost::uuids::uuid& datasourceID);
 		void AddDatabaseConnections(const DatasourceMaps& datasources);

@@ -4,6 +4,7 @@
 #include <QtSql/QSqlField>
 #include <QtSql/QSqlError>
 #include <QtCore/QVariant>
+#include <QtCore/QDateTime>
 #include <boost/uuid/uuid_io.hpp>
 #include "uuid.h"
 #include "databaseinfo.h"
@@ -31,6 +32,11 @@ namespace SynGlyphX {
 	bool SourceDataCache::IsValid() const {
 
 		return CSVCache::IsValid();
+	}
+
+	void SourceDataCache::Close() {
+
+		CSVCache::Close();
 	}
 
 	void SourceDataCache::Setup(const QString& filename) {
@@ -67,7 +73,7 @@ namespace SynGlyphX {
 			}
 			else if (datasource.GetType() == FileDatasource::CSV) {
 
-				QString newTableName = QString::fromStdWString(datasource.GetFormattedName());
+				QString newTableName = QString::fromStdString(boost::uuids::to_string(id));
 				UpdateCSVFile(newTableName, QString::fromStdWString(datasource.GetFilename()));
 				try {
 
@@ -132,7 +138,7 @@ namespace SynGlyphX {
 		}
 	}
 
-	void SourceDataCache::AddDBTableToCache(QSqlDatabase& db, const QString& sourceTable, const QString& cacheTable) {
+	void SourceDataCache::AddDBTableToCache(QSqlDatabase& db, const QString& sourceTable, const QString& formattedSourceName, const QString& cacheTable) {
 
 		QString fieldNamesAndTypes;
 		QString fieldNameList;
@@ -204,6 +210,7 @@ namespace SynGlyphX {
 		}
 		getDataQuery.finish();
 
+		UpdateTimestampForTable(cacheTable, formattedSourceName + ":" + sourceTable, QDateTime::currentDateTime());
 		AddTableToMap(cacheTable);
 	}
 
@@ -232,11 +239,6 @@ namespace SynGlyphX {
 
 		return columnNames;
 	}
-
-	/*QVariantList SourceDataCache::GetDataAtIndex(unsigned long index) const {
-
-
-	}*/
 
 	int SourceDataCache::GetLastIndexOfTable(const QString& tableName) {
 
@@ -267,6 +269,37 @@ namespace SynGlyphX {
 		}
 
 		m_tables[startingIndex + GetLastIndexOfTable(tableName)] = tableName;
+	}
+
+	QSqlQuery SourceDataCache::CreateSelectFieldQueryAscending(const InputField& inputfield) const {
+
+		if (!IsInputfieldInCache(inputfield)) {
+
+			throw std::invalid_argument("Can not create SQL query for input field that isn't in the source data cache");
+		}
+
+		QSqlQuery query(m_db);
+		query.prepare(QString("SELECT %1 FROM ").arg("\"" + QString::fromStdWString(inputfield.GetField()) + "\"") + QString::fromStdWString(inputfield.GetTable()));
+		return query;
+	}
+
+	QSqlQuery SourceDataCache::CreateMinMaxQuery(const InputField& inputfield) const {
+
+		if (!IsInputfieldInCache(inputfield)) {
+
+			throw std::invalid_argument("Can not create SQL query for input field that isn't in the source data cache");
+		}
+
+		QSqlQuery query(m_db);
+		QString queryString = QString("SELECT MIN(%1), MAX(%1) FROM ").arg("\"" + QString::fromStdWString(inputfield.GetField()) + "\"") + QString::fromStdWString(inputfield.GetTable());
+		query.prepare(queryString);
+
+		return query;
+	}
+
+	bool SourceDataCache::IsInputfieldInCache(const InputField& inputfield) const {
+
+		return (m_db.connectionName() == QString::fromStdWString(boost::uuids::to_wstring(inputfield.GetDatasourceID())));
 	}
 
 } //namespace SynGlyphX

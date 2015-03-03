@@ -1,6 +1,5 @@
 #include "transformer.h"
 #include "datatransformmapping.h"
-#include "sourcedatamanager.h"
 #include <QtCore/QVariant>
 #include <QtCore/QDir>
 #include <stdexcept>
@@ -26,9 +25,9 @@ namespace SynGlyphX {
 			//Before running this code, the static function SourceDataManager::SetIntermediateDirectory must be called with a valid
 			//directory to store intermediate files
 			m_defaults = mapping.GetDefaults();
-			m_sourceDataManager.AddDatabaseConnections(mapping.GetDatasources());
+			m_sourceDataCache.AddDatasourcesToCache(mapping.GetDatasources());
 			CreateGlyphsFromMapping(mapping);
-			m_sourceDataManager.ClearDatabaseConnections();
+			m_sourceDataCache.Close();
 			m_defaults.Clear();
 
 			if (m_overrideRootXYBoundingBox.IsValid()) {
@@ -60,6 +59,17 @@ namespace SynGlyphX {
 		return allTrees;
 	}
 
+	void Transformer::RunSelectSqlQuery(const InputField& inputfield, QVariantList& data) const {
+
+		QSqlQuery query = m_sourceDataCache.CreateSelectFieldQueryAscending(inputfield);
+		query.exec();
+		while (query.next()) {
+			
+			data.push_back(query.value(0));
+		}
+		query.finish();
+	}
+
 	GlyphGraph::ConstSharedVector Transformer::CreateGlyphTreesFromMinMaxTree(DataMappingGlyphGraph::ConstSharedPtr minMaxTree) const {
 
 		GlyphGraph::ConstSharedVector trees;
@@ -70,16 +80,23 @@ namespace SynGlyphX {
 		const DataMappingGlyphGraph::InputFieldMap& inputFields = minMaxTree->GetInputFields();
 		for (DataMappingGlyphGraph::InputFieldMap::const_iterator iterator = inputFields.begin(); iterator != inputFields.end(); ++iterator) {
 
+			QVariantList data;
 			InputFieldData::SharedPtr fieldData;
 
 			if (iterator->second.IsNumeric()) {
 
-				QVariantList minAndMax = m_sourceDataManager.GetMinMaxSqlQuery(iterator->second);
-				fieldData.reset(new InputFieldData(m_sourceDataManager.RunSelectSqlQuery(iterator->second), minAndMax.value(0).toDouble(), minAndMax.value(1).toDouble()));
+				QSqlQuery minAndMaxQuery = m_sourceDataCache.CreateMinMaxQuery(iterator->second);
+				minAndMaxQuery.exec();
+				minAndMaxQuery.first();
+				
+				RunSelectSqlQuery(iterator->second, data);
+				fieldData.reset(new InputFieldData(data, minAndMaxQuery.value(0).toDouble(), minAndMaxQuery.value(1).toDouble()));
+				minAndMaxQuery.finish();
 			}
 			else {
 
-				fieldData.reset(new InputFieldData(m_sourceDataManager.RunSelectSqlQuery(iterator->second)));
+				RunSelectSqlQuery(iterator->second, data);
+				fieldData.reset(new InputFieldData(data));
 			}
 
 			queryResultData[iterator->first] = fieldData;

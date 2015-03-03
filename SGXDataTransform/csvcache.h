@@ -35,7 +35,7 @@ namespace SynGlyphX {
 
 		virtual bool IsValid() const;
 		void Setup(const QString& cacheFilename);
-		void Close();
+		virtual void Close();
 		void UpdateCSVFile(const QString& tableName, const QString& csvFilename);
 
 	protected:
@@ -44,7 +44,7 @@ namespace SynGlyphX {
 		void CommitChanges();
 		void DeleteTable(const QString& table);
 		QDateTime GetTimestampForTable(const QString& table);
-		void UpdateTimestampForTable(const QString& table, const QDateTime& timestamp);
+		void UpdateTimestampForTable(const QString& table, const QString& formattedName, const QDateTime& timestamp);
 
 		QString m_connectionID;
 		QSqlDatabase m_db;

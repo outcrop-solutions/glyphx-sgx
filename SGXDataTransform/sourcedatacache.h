@@ -22,6 +22,8 @@
 #include "csvcache.h"
 #include "datasourcemaps.h"
 #include <map>
+#include "inputfield.h"
+#include <QtSql/QSqlQuery>
 
 namespace SynGlyphX {
 
@@ -29,12 +31,18 @@ namespace SynGlyphX {
 	{
 	public:
 		typedef std::map<unsigned long, QString> TableMap;
+		enum class QueryTypes {
+
+			MinMax,
+
+		};
 
 		SourceDataCache();
 		SourceDataCache(const QString& filename);
 		virtual ~SourceDataCache();
 
 		virtual bool IsValid() const;
+		virtual void Close();
 
 		void Setup(const QString& filename);
 		void AddDatasourcesToCache(const DatasourceMaps& datasources);
@@ -42,6 +50,9 @@ namespace SynGlyphX {
 
 		TableMap GetTables() const;
 		QStringList GetColumnsForTable(const QString& table) const;
+
+		QSqlQuery CreateSelectFieldQueryAscending(const InputField& inputfield) const;
+		QSqlQuery CreateMinMaxQuery(const InputField& inputfield) const;
 		//QVariantList GetDataAtIndex(unsigned long index) const;
 
 	private:
@@ -49,8 +60,9 @@ namespace SynGlyphX {
 		int GetLastIndexOfTable(const QString& tableName);
 		
 		void AddDBTablesToCache(const boost::uuids::uuid& id, const Datasource& datasource, const QString& dbType);
-		void AddDBTableToCache(QSqlDatabase& db, const QString& sourceTable, const QString& cacheTable);
+		void AddDBTableToCache(QSqlDatabase& db, const QString& sourceTable, const QString& formattedSourceName, const QString& cacheTable);
 		void AddTableToMap(const QString& tableName);
+		bool IsInputfieldInCache(const InputField& inputfield) const;
 
 		static const QString IndexColumnName;
 
