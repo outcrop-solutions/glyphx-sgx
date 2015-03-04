@@ -18,13 +18,14 @@
 #ifndef SYNGLYPHX_DATABASESEINFO_H
 #define SYNGLYPHX_DATABASESEINFO_H
 
+#include "sgxdatatransform_global.h"
 #include <QtCore/QString>
 #include <QtCore/QStringList>
 #include <QtSql/QSqlDatabase>
 
 namespace SynGlyphX {
 
-	class DatabaseInfo
+	class SGXDATATRANSFORM_EXPORT DatabaseInfo
 	{
 	public:
 		DatabaseInfo();

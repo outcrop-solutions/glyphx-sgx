@@ -307,8 +307,8 @@ namespace SynGlyphX {
 			QVariantList queryResultDataY;
 			const DataMappingGlyphGraph::InputFieldMap& inputFields = minMaxTree.second->GetInputFields();
 
-			queryResultDataX = m_sourceDataManager.RunSelectSqlQuery(inputFields.at(rootGlyph->GetInputBinding(DataMappingGlyph::MappableField::PositionX).GetInputFieldID()));
-			queryResultDataY = m_sourceDataManager.RunSelectSqlQuery(inputFields.at(rootGlyph->GetInputBinding(DataMappingGlyph::MappableField::PositionY).GetInputFieldID()));
+			RunSelectSqlQuery(inputFields.at(rootGlyph->GetInputBinding(DataMappingGlyph::MappableField::PositionX).GetInputFieldID()), queryResultDataX);
+			RunSelectSqlQuery(inputFields.at(rootGlyph->GetInputBinding(DataMappingGlyph::MappableField::PositionY).GetInputFieldID()), queryResultDataY);
 
 			size_t numGlyphs = queryResultDataX.length();
 			for (int i = 0; i < numGlyphs; ++i) {

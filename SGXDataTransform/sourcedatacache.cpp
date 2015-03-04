@@ -119,10 +119,11 @@ namespace SynGlyphX {
 				closeDatasource = true;
 			}
 
+			QString formattedName = QString::fromStdWString(datasource.GetFormattedName());
 			for (const std::wstring& table : datasource.GetTables()) {
 
 				QString qTable = QString::fromStdWString(table);
-				AddDBTableToCache(db, qTable, dbConnectionID + ":" + qTable);
+				AddDBTableToCache(db, qTable, formattedName, dbConnectionID + ":" + qTable);
 			}
 
 			if (closeDatasource) {
