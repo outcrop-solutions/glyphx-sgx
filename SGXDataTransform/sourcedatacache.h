@@ -56,7 +56,7 @@ namespace SynGlyphX {
 		//QVariantList GetDataAtIndex(unsigned long index) const;
 
 	private:
-		virtual void CreateNewTableInCache(const QString& name, const QString& fieldNamesAndTypes);
+		void CreateNewIndexedTableInCache(const QString& name, const QString& fieldNamesAndTypes);
 		int GetLastIndexOfTable(const QString& tableName);
 		
 		void AddDBTablesToCache(const boost::uuids::uuid& id, const Datasource& datasource, const QString& dbType);

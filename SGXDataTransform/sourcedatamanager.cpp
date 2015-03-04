@@ -98,6 +98,12 @@ namespace SynGlyphX {
 		}
 	}
 
+	void SourceDataManager::Clear() {
+
+		ClearDatabaseConnections();
+		m_csvCache.Close();
+	}
+
 	void SourceDataManager::SetCacheLocation(const QString& location) {
 
 		m_csvCache.Setup(location);

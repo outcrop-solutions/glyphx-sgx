@@ -46,6 +46,7 @@ namespace SynGlyphX {
 		void AddDatabaseConnections(const DatasourceMaps& datasources);
 		void ClearDatabaseConnection(const boost::uuids::uuid& id);
 		void ClearDatabaseConnections();
+		void Clear();
 
 	private:
 		typedef std::unordered_set<boost::uuids::uuid, SynGlyphX::UUIDHash> DatabaseIDSet;

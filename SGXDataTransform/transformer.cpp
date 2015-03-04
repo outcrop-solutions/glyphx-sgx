@@ -25,6 +25,7 @@ namespace SynGlyphX {
 			//Before running this code, the static function SourceDataManager::SetIntermediateDirectory must be called with a valid
 			//directory to store intermediate files
 			m_defaults = mapping.GetDefaults();
+			m_sourceDataCache.Setup(m_sourceDataCacheLocation);
 			m_sourceDataCache.AddDatasourcesToCache(mapping.GetDatasources());
 			CreateGlyphsFromMapping(mapping);
 			m_sourceDataCache.Close();

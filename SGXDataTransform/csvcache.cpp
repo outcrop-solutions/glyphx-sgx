@@ -50,7 +50,15 @@ namespace SynGlyphX {
 
 		if (!m_db.tables().contains(s_tableIndexName)) {
 
-			CreateNewTableInCache(s_tableIndexName, "TableName TEXT NOT NULL PRIMARY KEY UNIQUE,\nFormattedName TEXT NOT NULL,\nTimestamp INTEGER NOT NULL");
+			try {
+
+				CreateNewTableInCache(s_tableIndexName, "TableName TEXT NOT NULL PRIMARY KEY UNIQUE,\nFormattedName TEXT NOT NULL,\nTimestamp INTEGER NOT NULL");
+			}
+			catch (const std::exception& e) {
+
+				m_db.rollback();
+				throw;
+			}
 		}
 	}
 
@@ -184,7 +192,7 @@ namespace SynGlyphX {
 
 	void CSVCache::CreateNewTableInCache(const QString& name, const QString& fieldNamesAndTypes) {
 
-		QString createTableQueryString = "CREATE TABLE " + name + " (\n" + fieldNamesAndTypes + "\n);";
+		QString createTableQueryString = "CREATE TABLE \"" + name + "\" (\n" + fieldNamesAndTypes + "\n);";
 
 		QSqlQuery createTableQuery(m_db);
 		createTableQuery.prepare(createTableQueryString);
@@ -212,7 +220,7 @@ namespace SynGlyphX {
 
 		if (!m_db.commit()) {
 
-			throw std::exception("Source data cache db failed to commit source data.");
+			throw std::exception((QObject::tr("Source data cache failed to commit changes: ") + m_db.lastError().text()).toStdString().c_str());
 		}
 	}
 
@@ -250,8 +258,9 @@ namespace SynGlyphX {
 	void CSVCache::UpdateTimestampForTable(const QString& table, const QString& formattedName, const QDateTime& timestamp) {
 
 		QSqlQuery timestampQuery(m_db);
-		timestampQuery.prepare("INSERT OR RELPACE INTO " + s_tableIndexName + " (TableName, FormattedName, Timestamp) VALUES(\"" + 
-			table + "\", \"" + formattedName + "\", " + QString::number(timestamp.toMSecsSinceEpoch()) + ");");
+		QString timeStampQueryString = "INSERT OR REPLACE INTO \"" + s_tableIndexName + "\" (\"TableName\", \"FormattedName\", \"Timestamp\") VALUES(\"" +
+			table + "\", \"" + formattedName + "\", " + QString::number(timestamp.toMSecsSinceEpoch()) + ");";
+		timestampQuery.prepare(timeStampQueryString);
 		bool querySucceeded = timestampQuery.exec();
 
 		if (!querySucceeded) {
