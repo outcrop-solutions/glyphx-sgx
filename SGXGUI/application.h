@@ -34,8 +34,10 @@ namespace SynGlyphX {
         static void Setup(const QString& appName, const QString& appVersion);
         static void SetupIcons(const QIcon& windowIcon);
 
-    private:
+		static const QString& GetAppTempDirectory();
 
+    private:
+		static QString s_tempDirectory;
     };
 
 } //namespace SynGlyphX

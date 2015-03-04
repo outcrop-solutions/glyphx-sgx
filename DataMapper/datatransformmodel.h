@@ -78,7 +78,6 @@ public:
 	void ResetDataMappingID();
 
 private:
-	void SetIntermediateDirectoryToCurrentID();
 	QString GetCacheLocationForID(const boost::uuids::uuid& id);
 	QVariant GetGlyphData(const QModelIndex& index) const;
 	bool IsRowInDataType(DataType type, int row) const;

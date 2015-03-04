@@ -475,6 +475,7 @@ void DataMapperWindow::ExportToANTz(const QString& templateDir) {
 
 			return;
 		}
+		SynGlyphX::Filesystem::RemoveContentsOfDirectory(csvDirectory.toStdString());
 	}
 
 	SynGlyphX::Application::setOverrideCursor(Qt::WaitCursor);

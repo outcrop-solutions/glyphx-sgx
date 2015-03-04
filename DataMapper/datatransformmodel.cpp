@@ -13,7 +13,7 @@ DataTransformModel::DataTransformModel(QObject *parent)
 	: QAbstractItemModel(parent),
 	m_dataMapping(new SynGlyphX::DataTransformMapping())
 {
-	SetIntermediateDirectoryToCurrentID();
+	m_sourceDataManager.SetCacheLocation(GetCacheLocationForID(m_dataMapping->GetID()));
 }
 
 DataTransformModel::~DataTransformModel()
@@ -21,14 +21,9 @@ DataTransformModel::~DataTransformModel()
 
 }
 
-void DataTransformModel::SetIntermediateDirectoryToCurrentID() {
-
-	m_sourceDataManager.SetCacheLocation(GetCacheLocationForID(m_dataMapping->GetID()));
-}
-
 QString DataTransformModel::GetCacheLocationForID(const boost::uuids::uuid& id) {
 
-	return QDir::toNativeSeparators(QDir::tempPath() + QDir::separator() + SynGlyphX::Application::applicationName() + QDir::separator() + "cache_" + QString::fromStdString(boost::uuids::to_string(id)) + ".db");
+	return QDir::toNativeSeparators(SynGlyphX::Application::GetAppTempDirectory() + QDir::separator() + "cache_" + QString::fromStdString(boost::uuids::to_string(id)) + ".db");
 }
 
 int DataTransformModel::columnCount(const QModelIndex& parent) const {
@@ -326,7 +321,7 @@ void DataTransformModel::LoadDataTransformFile(const QString& filename) {
 	Clear();
 	beginResetModel();
 	m_dataMapping->ReadFromFile(filename.toStdString());
-	SetIntermediateDirectoryToCurrentID();
+	m_sourceDataManager.SetCacheLocation(GetCacheLocationForID(m_dataMapping->GetID()));
 	m_sourceDataManager.AddDatabaseConnections(m_dataMapping->GetDatasources());
 	endResetModel();
 }
@@ -339,10 +334,9 @@ void DataTransformModel::SaveDataTransformFile(const QString& filename) {
 void DataTransformModel::Clear() {
 
 	beginResetModel();
-	m_sourceDataManager.ClearDatabaseConnections();
+	m_sourceDataManager.Clear();
 	m_dataMapping->Clear();
 	endResetModel();
-	SetIntermediateDirectoryToCurrentID();
 }
 
 void DataTransformModel::AddGlyphFile(const QString& filename) {
