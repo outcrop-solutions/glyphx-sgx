@@ -10,6 +10,7 @@ namespace SynGlyphXANTz {
 		m_worldImageFilename(worldImageFilename),
 		m_useOldANTzFilenames(useOldANTzFilenames)
 	{
+		SetSourceDataCacheLocation(QDir::toNativeSeparators(baseOutputDir + QDir::separator() + "sourcedata.db"));
 	}
 
 
