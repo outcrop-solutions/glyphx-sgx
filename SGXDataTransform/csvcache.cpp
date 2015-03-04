@@ -56,7 +56,6 @@ namespace SynGlyphX {
 			}
 			catch (const std::exception& e) {
 
-				m_db.rollback();
 				throw;
 			}
 		}
@@ -183,11 +182,8 @@ namespace SynGlyphX {
 		}
 		catch (const std::exception& e) {
 
-			m_db.rollback();
 			throw;
 		}
-
-		CommitChanges();
 	}
 
 	void CSVCache::CreateNewTableInCache(const QString& name, const QString& fieldNamesAndTypes) {
@@ -214,14 +210,6 @@ namespace SynGlyphX {
 			fieldNamesAndTypes += ",\n\"" + QString::fromStdWString(headers[i]) + "\" " + QString::fromStdWString(types[i]);
 		}
 		CreateNewTableInCache(name, fieldNamesAndTypes);
-	}
-
-	void CSVCache::CommitChanges() {
-
-		if (!m_db.commit()) {
-
-			throw std::exception((QObject::tr("Source data cache failed to commit changes: ") + m_db.lastError().text()).toStdString().c_str());
-		}
 	}
 
 	void CSVCache::DeleteTable(const QString& table) {

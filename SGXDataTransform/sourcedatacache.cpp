@@ -70,7 +70,6 @@ namespace SynGlyphX {
 			if (datasource.IsOriginalDatasourceADatabase()) {
 
 				AddDBTablesToCache(id, datasource, "QSQLITE");
-				CommitChanges();
 			}
 			else if (datasource.GetType() == FileDatasource::CSV) {
 
@@ -82,7 +81,6 @@ namespace SynGlyphX {
 				}
 				catch (const std::exception& e) {
 
-					m_db.rollback();
 					throw;
 				}
 			}
@@ -135,7 +133,6 @@ namespace SynGlyphX {
 		}
 		catch (const std::exception& e) {
 
-			m_db.rollback();
 			throw;
 		}
 	}
