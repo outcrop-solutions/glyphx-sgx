@@ -30,6 +30,7 @@ namespace SynGlyphXANTz {
 		virtual ~ANTzExportTransformer();
 
 	protected:
+		virtual void Prepare();
 		virtual void CreateGlyphsFromMapping(const SynGlyphX::DataTransformMapping& mapping);
 
 		bool m_useOldANTzFilenames;

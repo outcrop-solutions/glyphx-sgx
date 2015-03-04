@@ -18,6 +18,11 @@ namespace SynGlyphXANTz {
 	{
 	}
 
+	void GlyphViewerANTzTransformer::Prepare() {
+
+
+	}
+
 	void GlyphViewerANTzTransformer::CreateGlyphsFromMapping(const SynGlyphX::DataTransformMapping& mapping) {
 
 		Clear();

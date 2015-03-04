@@ -18,13 +18,13 @@ namespace SynGlyphXANTz {
 	{
 	}
 
-	void ANTzExportTransformer::CreateGlyphsFromMapping(const SynGlyphX::DataTransformMapping& mapping) {
-
-		Clear();
+	void ANTzExportTransformer::Prepare() {
 
 		QDir dir(m_baseOutputDir);
 		if (!dir.exists()) {
+
 			if (!dir.mkpath(m_baseOutputDir)) {
+
 				throw std::exception("Instance directory was not created");
 			}
 		}
@@ -32,6 +32,11 @@ namespace SynGlyphXANTz {
 
 			SynGlyphX::Filesystem::RemoveContentsOfDirectory(m_baseOutputDir.toStdString());
 		}
+	}
+
+	void ANTzExportTransformer::CreateGlyphsFromMapping(const SynGlyphX::DataTransformMapping& mapping) {
+
+		Clear();
 
 		QString baseUsrImageDir = QDir::toNativeSeparators(m_baseOutputDir + QDir::separator() + "usr" + QDir::separator() + "images" + QDir::separator());
 		QString baseUsrCSVDir = QDir::toNativeSeparators(m_baseOutputDir + QDir::separator() + "usr" + QDir::separator() + "csv" + QDir::separator());
