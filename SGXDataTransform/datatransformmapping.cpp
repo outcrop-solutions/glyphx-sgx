@@ -311,6 +311,28 @@ namespace SynGlyphX {
 		}
 	}
 
+	void DataTransformMapping::AddChildTree(const boost::uuids::uuid& treeId, DataMappingGlyphGraph::iterator& parent, const stlplus::ntree<SynGlyphX::DataMappingGlyph>& glyphGraph) {
+
+		if (!parent.valid()) {
+
+			throw std::invalid_argument("Can't append children to invalid parent");
+		}
+
+		unsigned int startingNumberOfChildren = m_glyphTrees[treeId]->children(parent);
+		SynGlyphX::Vector3 newPosition = { { 15.0, 0.0, 0.0 } };
+		if (startingNumberOfChildren > 0) {
+
+			newPosition = m_glyphTrees[treeId]->child(parent, startingNumberOfChildren - 1)->GetMinGlyph().GetPosition();
+			//For now, update position to 15.0 less than the last x coordinate.  This follows what ANTz does
+			newPosition[0] -= 15.0;
+		}
+
+		SynGlyphX::DataMappingGlyphGraph::iterator newChildGlyph = m_glyphTrees[treeId]->append(parent, glyphGraph);
+		newChildGlyph->GetPosition()[0].GetValue().first = newPosition[0];
+		newChildGlyph->GetPosition()[1].GetValue().first = newPosition[1];
+		newChildGlyph->GetPosition()[2].GetValue().first = newPosition[2];
+	}
+
 	void DataTransformMapping::RemoveGlyph(const boost::uuids::uuid& treeId, DataMappingGlyphGraph::const_iterator& parent, int child) {
 
 		m_glyphTrees[treeId]->erase_child(parent.deconstify(), child);
