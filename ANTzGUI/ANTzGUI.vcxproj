@@ -47,7 +47,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <PreprocessorDefinitions>UNICODE;WIN32;WIN64;QT_DLL;QT_CORE_LIB;QT_GUI_LIB;QT_NETWORK_LIB;QT_OPENGL_LIB;QT_WIDGETS_LIB;QT_XML_LIB;ANTZGUI_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.\GeneratedFiles;.;.\GeneratedFiles\$(PlatformName)\$(ConfigurationName);..\..\3rdParty\include\Qt_5_2_1;..\..\GUI\SGXGUI;..\..\ANTzPlus\ANTzBridge;..\..\3rdParty\include\boost_1_55_0;..\..\Core\SGXFoundation;..\..\3rdParty\include\stlplus_3_11;..\..\ANTzPlus\ANTzCore;..\..\Core\SGXDataTransform;..\..\Core\SGXUtility\;..\..\GUI\SGXGlyphGUI;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\GeneratedFiles;.;.\GeneratedFiles\$(PlatformName)\$(ConfigurationName);..\..\3rdParty\include\Qt_5_2_1;..\..\GUI\SGXGlyphGUI;..\..\GUI\SGXGUI;..\..\ANTzPlus\ANTzBridge;..\..\3rdParty\include\boost_1_55_0;..\..\Core\SGXFoundation;..\..\3rdParty\include\stlplus_3_11;..\..\ANTzPlus\ANTzCore;..\..\Core\SGXDataTransform;..\..\Core\SGXUtility\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Disabled</Optimization>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -65,7 +65,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <PreprocessorDefinitions>UNICODE;WIN32;WIN64;QT_DLL;QT_NO_DEBUG;NDEBUG;QT_CORE_LIB;QT_GUI_LIB;QT_NETWORK_LIB;QT_OPENGL_LIB;QT_WIDGETS_LIB;QT_XML_LIB;ANTZGUI_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.\GeneratedFiles;.;.\GeneratedFiles\$(PlatformName)\$(ConfigurationName);..\..\3rdParty\include\Qt_5_2_1;..\..\GUI\SGXGUI;..\..\ANTzPlus\ANTzBridge;..\..\3rdParty\include\boost_1_55_0;..\..\Core\SGXFoundation;..\..\3rdParty\include\stlplus_3_11;..\..\ANTzPlus\ANTzCore;..\..\Core\SGXDataTransform;..\..\Core\SGXUtility\;..\..\GUI\SGXGlyphGUI;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\GeneratedFiles;.;.\GeneratedFiles\$(PlatformName)\$(ConfigurationName);..\..\3rdParty\include\Qt_5_2_1;..\..\GUI\SGXGlyphGUI;..\..\GUI\SGXGUI;..\..\ANTzPlus\ANTzBridge;..\..\3rdParty\include\boost_1_55_0;..\..\Core\SGXFoundation;..\..\3rdParty\include\stlplus_3_11;..\..\ANTzPlus\ANTzCore;..\..\Core\SGXDataTransform;..\..\Core\SGXUtility\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat />
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
@@ -111,16 +111,6 @@
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles\$(PlatformName)\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(PlatformName)\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DWIN64 -DQT_DLL -DQT_NO_DEBUG -DNDEBUG -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_OPENGL_LIB -DQT_WIDGETS_LIB -DQT_XML_LIB -DANTZGUI_LIB -D_WINDLL  "-I.\GeneratedFiles" "-I." "-I.\GeneratedFiles\$(PlatformName)\$(ConfigurationName)\." "-I.\..\..\3rdParty\include\Qt_5_2_1" "-I.\..\..\GUI\SGXGUI" "-I.\..\..\ANTzPlus\ANTzBridge" "-I.\..\..\3rdParty\include\boost_1_55_0" "-I.\..\..\Core\SGXFoundation" "-I.\..\..\3rdParty\include\stlplus_3_11" "-I.\..\..\ANTzPlus\ANTzCore" "-I.\..\..\Core\SGXDataTransform" "-I.\..\..\Core\SGXUtility" "-I.\..\..\GUI\SGXGlyphGUI"</Command>
     </CustomBuild>
-    <CustomBuild Include="glyphmimedata.h">
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing glyphmimedata.h...</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\GeneratedFiles\$(PlatformName)\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(PlatformName)\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DWIN64 -DQT_DLL -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_OPENGL_LIB -DQT_WIDGETS_LIB -DQT_XML_LIB -DANTZGUI_LIB -D_WINDLL  "-I.\GeneratedFiles" "-I." "-I.\GeneratedFiles\$(PlatformName)\$(ConfigurationName)\." "-I.\..\..\3rdParty\include\Qt_5_2_1" "-I.\..\..\GUI\SGXGUI" "-I.\..\..\ANTzPlus\ANTzBridge" "-I.\..\..\3rdParty\include\boost_1_55_0" "-I.\..\..\Core\SGXFoundation" "-I.\..\..\3rdParty\include\stlplus_3_11" "-I.\..\..\ANTzPlus\ANTzCore" "-I.\..\..\Core\SGXDataTransform" "-I.\..\..\Core\SGXUtility" "-I.\..\..\GUI\SGXGlyphGUI"</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Moc%27ing glyphmimedata.h...</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles\$(PlatformName)\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(PlatformName)\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DWIN64 -DQT_DLL -DQT_NO_DEBUG -DNDEBUG -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_OPENGL_LIB -DQT_WIDGETS_LIB -DQT_XML_LIB -DANTZGUI_LIB -D_WINDLL  "-I.\GeneratedFiles" "-I." "-I.\GeneratedFiles\$(PlatformName)\$(ConfigurationName)\." "-I.\..\..\3rdParty\include\Qt_5_2_1" "-I.\..\..\GUI\SGXGUI" "-I.\..\..\ANTzPlus\ANTzBridge" "-I.\..\..\3rdParty\include\boost_1_55_0" "-I.\..\..\Core\SGXFoundation" "-I.\..\..\3rdParty\include\stlplus_3_11" "-I.\..\..\ANTzPlus\ANTzCore" "-I.\..\..\Core\SGXDataTransform" "-I.\..\..\Core\SGXUtility" "-I.\..\..\GUI\SGXGlyphGUI"</Command>
-    </CustomBuild>
     <CustomBuild Include="antzwidget.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing antzwidget.h...</Message>
@@ -141,9 +131,6 @@
     <ClCompile Include="GeneratedFiles\Win32\Debug\moc_antzwidget.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Win32\Debug\moc_glyphmimedata.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\Win32\Debug\moc_minmaxglyph3dwidget.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
@@ -156,16 +143,12 @@
     <ClCompile Include="GeneratedFiles\Win32\Release\moc_antzwidget.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Win32\Release\moc_glyphmimedata.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\Win32\Release\moc_minmaxglyph3dwidget.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Win32\Release\moc_minmaxglyphtreemodel.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="glyphmimedata.cpp" />
     <ClCompile Include="minmaxglyph3dwidget.cpp" />
     <ClCompile Include="minmaxglyphtreemodel.cpp" />
   </ItemGroup>
