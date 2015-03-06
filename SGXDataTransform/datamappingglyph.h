@@ -51,7 +51,7 @@ namespace SynGlyphX {
 
 		DataMappingGlyph();
 		DataMappingGlyph(const DataMappingGlyph& glyph);
-		DataMappingGlyph(const Glyph& glyph);
+		DataMappingGlyph(const Glyph& glyph, bool isRoot = false);
 		DataMappingGlyph(const boost::property_tree::wptree& propertyTree);
 		~DataMappingGlyph();
 

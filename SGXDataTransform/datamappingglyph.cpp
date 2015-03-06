@@ -15,11 +15,20 @@ namespace SynGlyphX {
 
 	}
 
-	DataMappingGlyph::DataMappingGlyph(const Glyph& glyph) :
+	DataMappingGlyph::DataMappingGlyph(const Glyph& glyph, bool isRoot) :
 		GlyphTemplate<NumericMappingProperty, ColorMappingProperty, TextMappingProperty>(glyph.GetStructure()) {
 
-		m_position[0] = NumericMappingProperty(std::pair<double, double>(0.0, glyph.GetPosition()[0]));
-		m_position[1] = NumericMappingProperty(std::pair<double, double>(0.0, glyph.GetPosition()[1]));
+		double minPosition0 = 0.0;
+		double minPosition1 = 0.0;
+
+		if (isRoot) {
+
+			minPosition0 = -180.0;
+			minPosition1 = -90.0;
+		}
+
+		m_position[0] = NumericMappingProperty(std::pair<double, double>(minPosition0, glyph.GetPosition()[0] - minPosition0));
+		m_position[1] = NumericMappingProperty(std::pair<double, double>(minPosition1, glyph.GetPosition()[1] - minPosition1));
 		m_position[2] = NumericMappingProperty(std::pair<double, double>(0.0, glyph.GetPosition()[2]));
 		m_rotation[0] = NumericMappingProperty(std::pair<double, double>(0.0, glyph.GetRotation()[0]));
 		m_rotation[1] = NumericMappingProperty(std::pair<double, double>(0.0, glyph.GetRotation()[1]));

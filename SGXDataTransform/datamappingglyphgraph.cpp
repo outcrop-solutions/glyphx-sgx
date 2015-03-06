@@ -57,7 +57,7 @@ namespace SynGlyphX {
 		const GlyphGraph::Vertex& glyphGraphRoot = graph.GetRootVertices()[0];
 		m_rootVertex = add_vertex(DataMappingGlyph(graph[glyphGraphRoot]));*/
 
-		insert(DataMappingGlyph(*graph.root()));
+		insert(DataMappingGlyph(*graph.root(), true));
 		AddGraphGlyphSubgraph(root(), graph.root(), graph);
 	}
 
