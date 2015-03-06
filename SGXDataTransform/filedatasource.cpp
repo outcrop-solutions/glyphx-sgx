@@ -18,7 +18,7 @@ namespace SynGlyphX {
 		//CSV files are a single table so put in a dummy value for tables that can be used to create and reference CSV data by QtSql as needed
 		if (!CanDatasourceHaveMultipleTables()) {
 		
-			m_tables.insert(L"OnlyTable");
+			m_tables.insert(L"");
 		}
 
 		boost::filesystem::path datasourcePath(filename);

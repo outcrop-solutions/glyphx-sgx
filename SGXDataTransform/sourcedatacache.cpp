@@ -179,7 +179,7 @@ namespace SynGlyphX {
 		CreateNewIndexedTableInCache(cacheTable, fieldNamesAndTypes);
 
 		QString bindString;
-		for (int j = 0; j < fieldNameCount; ++j) {
+		for (int j = 0; j < fieldNameCount + 1; ++j) {
 
 			bindString += "?, ";
 		}
@@ -195,7 +195,11 @@ namespace SynGlyphX {
 
 		QSqlQuery getDataQuery(db);
 		getDataQuery.prepare("SELECT " + fieldNameList + " FROM " + sourceTable);
-		getDataQuery.exec();
+		if (!getDataQuery.exec()) {
+
+			throw std::exception((QObject::tr("Failed to extract source data: ") + m_db.lastError().text()).toStdString().c_str());
+		}
+
 		while (getDataQuery.next()) {
 
 			insertIntoCacheQuery.bindValue(0, static_cast<qulonglong>(sgxIndex));
@@ -203,8 +207,11 @@ namespace SynGlyphX {
 
 				insertIntoCacheQuery.bindValue(k + 1, getDataQuery.value(k));
 			}
+			
+			if (!insertIntoCacheQuery.exec()) {
 
-			insertIntoCacheQuery.exec();
+				throw std::exception((QObject::tr("Failed to insert data into table: ") + m_db.lastError().text()).toStdString().c_str());
+			}
 			insertIntoCacheQuery.finish();
 			++sgxIndex;
 		}
@@ -299,7 +306,21 @@ namespace SynGlyphX {
 
 	bool SourceDataCache::IsInputfieldInCache(const InputField& inputfield) const {
 
-		return (m_db.connectionName() == QString::fromStdWString(boost::uuids::to_wstring(inputfield.GetDatasourceID())));
+		QString inputFieldTable = QString::fromStdWString(boost::uuids::to_wstring(inputfield.GetDatasourceID()));
+		if (!inputfield.GetTable().empty()) {
+
+			inputFieldTable += ":" + QString::fromStdWString(inputfield.GetTable());
+		}
+
+		for (auto table : m_tables) {
+
+			if (table.second == inputFieldTable) {
+
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 } //namespace SynGlyphX
