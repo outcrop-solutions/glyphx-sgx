@@ -13,6 +13,11 @@ GlyphTreesView::GlyphTreesView(DataTransformModel* sourceModel, QWidget *parent)
 	filterModel->SetFilterData(DataTransformModel::DataType::GlyphTrees);
 	setModel(filterModel);
 
+	setDragEnabled(true);
+	setAcceptDrops(false);
+	setDropIndicatorShown(true);
+	setDragDropMode(QAbstractItemView::InternalMove);
+	setDefaultDropAction(Qt::MoveAction);
 	SetScrollOnSelection(true);
 	setSelectionMode(QAbstractItemView::SingleSelection);
 	setHeaderHidden(true);

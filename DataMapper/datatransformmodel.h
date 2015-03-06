@@ -46,6 +46,8 @@ public:
 	virtual QModelIndex	parent(const QModelIndex& index) const;
 	virtual int	rowCount(const QModelIndex& parent = QModelIndex()) const;
 	virtual bool removeRows(int row, int count, const QModelIndex& parent = QModelIndex());
+	virtual Qt::DropActions supportedDropActions() const;
+	virtual Qt::ItemFlags flags(const QModelIndex& index) const;
 
 	QVariant GetDisplayData(const QModelIndex& index) const;
 	QVariant GetDataTypeData(const QModelIndex& index) const;
@@ -77,10 +79,16 @@ public:
 
 	void ResetDataMappingID();
 
+	virtual QStringList mimeTypes() const;
+	virtual bool canDropMimeData(const QMimeData* data, Qt::DropAction action, int row, int column, const QModelIndex& parent) const;
+	virtual QMimeData* mimeData(const QModelIndexList& indexes) const;
+	virtual bool dropMimeData(const QMimeData* data, Qt::DropAction action, int row, int column, const QModelIndex& parent);
+
 private:
 	QString GetCacheLocationForID(const boost::uuids::uuid& id);
 	QVariant GetGlyphData(const QModelIndex& index) const;
-	bool IsRowInDataType(DataType type, int row) const;
+	bool IsParentlessRowInDataType(DataType type, int row) const;
+	DataType GetDataType(const QModelIndex& index) const;
 	boost::uuids::uuid GetTreeId(int row) const;
 	boost::uuids::uuid GetTreeId(const QModelIndex& index) const;
 
