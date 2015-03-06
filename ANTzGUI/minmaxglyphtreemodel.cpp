@@ -451,7 +451,7 @@ namespace SynGlyphXANTz {
 	QStringList MinMaxGlyphTreeModel::mimeTypes() const {
 
 		QStringList types;
-		types.push_back(GlyphMimeData::Format);
+		types.push_back(SynGlyphX::GlyphMimeData::Format);
 		return types;
 	}
 
@@ -465,13 +465,13 @@ namespace SynGlyphXANTz {
 		}
 
 		GlyphMimeData* mimeData = new GlyphMimeData(glyphs);*/
-		GlyphMimeData* mimeData = new GlyphMimeData(indexes);
+		SynGlyphX::GlyphMimeData* mimeData = new SynGlyphX::GlyphMimeData(indexes);
 		return mimeData;
 	}
 
 	bool MinMaxGlyphTreeModel::dropMimeData(const QMimeData* data, Qt::DropAction action, int row, int column, const QModelIndex& parent) {
 
-		const GlyphMimeData* glyphData = qobject_cast<const GlyphMimeData*>(data);
+		const SynGlyphX::GlyphMimeData* glyphData = qobject_cast<const SynGlyphX::GlyphMimeData*>(data);
 
 		if ((glyphData != NULL) && (row == -1)) {
 
