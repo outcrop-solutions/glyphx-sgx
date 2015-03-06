@@ -8,6 +8,7 @@
 #include <boost/filesystem.hpp>
 #include "datamappingglyphfile.h"
 #include "glyphnodeconverter.h"
+#include "glyphmimedata.h"
 
 DataTransformModel::DataTransformModel(QObject *parent)
 	: QAbstractItemModel(parent),
@@ -58,7 +59,7 @@ QVariant DataTransformModel::GetDisplayData(const QModelIndex& index) const {
 
 	if (!index.parent().isValid()) {
 
-		if (IsRowInDataType(DataType::BaseObjects, index.row())) {
+		if (IsParentlessRowInDataType(DataType::BaseObjects, index.row())) {
 
 			int baseObjectIndex = index.row() - m_dataMapping->GetGlyphGraphs().size();
 			const SynGlyphX::BaseImage& baseObject = m_dataMapping->GetBaseObjects()[baseObjectIndex];
@@ -79,7 +80,7 @@ QVariant DataTransformModel::GetDisplayData(const QModelIndex& index) const {
 				return "Default";
 			}
 		}
-		else if (IsRowInDataType(DataType::DataSources, index.row())) {
+		else if (IsParentlessRowInDataType(DataType::DataSources, index.row())) {
 
 			int datasourceIndex = index.row() - m_dataMapping->GetGlyphGraphs().size() - m_dataMapping->GetBaseObjects().size();
 			SynGlyphX::DatasourceMaps::FileDatasourceMap::const_iterator fileDatasource = m_dataMapping->GetDatasources().GetFileDatasources().begin();
@@ -87,7 +88,7 @@ QVariant DataTransformModel::GetDisplayData(const QModelIndex& index) const {
 			QFileInfo fileDatasourceFileInfo(QString::fromStdWString(fileDatasource->second.GetFilename()));
 			return fileDatasourceFileInfo.fileName();
 		}
-		else if (IsRowInDataType(DataType::GlyphTrees, index.row())) {
+		else if (IsParentlessRowInDataType(DataType::GlyphTrees, index.row())) {
 
 			return GetGlyphData(index);
 		}
@@ -102,17 +103,22 @@ QVariant DataTransformModel::GetDisplayData(const QModelIndex& index) const {
 
 QVariant DataTransformModel::GetDataTypeData(const QModelIndex& index) const {
 
+	return GetDataType(index);
+}
+
+DataTransformModel::DataType DataTransformModel::GetDataType(const QModelIndex& index) const {
+
 	if (!index.parent().isValid()) {
 
-		if (IsRowInDataType(DataType::BaseObjects, index.row())) {
+		if (IsParentlessRowInDataType(DataType::BaseObjects, index.row())) {
 
 			return DataType::BaseObjects;
 		}
-		else if (IsRowInDataType(DataType::DataSources, index.row())) {
+		else if (IsParentlessRowInDataType(DataType::DataSources, index.row())) {
 
 			return DataType::DataSources;
 		}
-		else if (IsRowInDataType(DataType::GlyphTrees, index.row())) {
+		else if (IsParentlessRowInDataType(DataType::GlyphTrees, index.row())) {
 
 			return DataType::GlyphTrees;
 		}
@@ -152,7 +158,7 @@ QModelIndex	DataTransformModel::index(int row, int column, const QModelIndex& pa
 
 	if (!parent.isValid()) {
 
-		if (IsRowInDataType(DataType::GlyphTrees, row)) {
+		if (IsParentlessRowInDataType(DataType::GlyphTrees, row)) {
 
 			SynGlyphX::DataTransformMapping::DataMappingGlyphGraphMap::const_iterator iterator = m_dataMapping->GetGlyphGraphs().begin();
 			std::advance(iterator, row);
@@ -289,15 +295,15 @@ bool DataTransformModel::removeRows(int row, int count, const QModelIndex& paren
 			
 			for (int i = lastRow; i >= row; --i) {
 
-				if (IsRowInDataType(DataType::GlyphTrees, i)) {
+				if (IsParentlessRowInDataType(DataType::GlyphTrees, i)) {
 
 					m_dataMapping->RemoveGlyphTree(GetTreeId(i));
 				}
-				else if (IsRowInDataType(DataType::BaseObjects, i)) {
+				else if (IsParentlessRowInDataType(DataType::BaseObjects, i)) {
 
 					m_dataMapping->RemoveBaseObject(i - m_dataMapping->GetGlyphGraphs().size());
 				}
-				else if (IsRowInDataType(DataType::DataSources, i)) {
+				else if (IsParentlessRowInDataType(DataType::DataSources, i)) {
 
 
 				}
@@ -395,7 +401,7 @@ void DataTransformModel::AddBaseObject(const SynGlyphX::BaseImage& baseImage) {
 	endInsertRows();
 }
 
-bool DataTransformModel::IsRowInDataType(DataType type, int row) const {
+bool DataTransformModel::IsParentlessRowInDataType(DataType type, int row) const {
 
 	int min = 0;
 	int max = 0;
@@ -490,4 +496,110 @@ boost::uuids::uuid DataTransformModel::GetTreeId(const QModelIndex& index) const
 	}
 
 	return GetTreeId(rootRow);
+}
+
+Qt::DropActions DataTransformModel::supportedDropActions() const {
+
+	return Qt::MoveAction;
+}
+
+Qt::ItemFlags DataTransformModel::flags(const QModelIndex& index) const {
+
+	if (!index.isValid()) {
+		return 0;
+	}
+
+	Qt::ItemFlags flags = Qt::ItemIsSelectable | Qt::ItemIsEnabled;
+	
+	if (GetDataType(index) == DataType::GlyphTrees) {
+
+		flags |= Qt::ItemIsDropEnabled;
+
+		if (index.parent().isValid()) {
+			
+			flags |= Qt::ItemIsDragEnabled;
+		}
+	}
+
+	return flags;
+}
+
+QStringList DataTransformModel::mimeTypes() const {
+
+	QStringList types;
+	types.push_back(SynGlyphX::GlyphMimeData::Format);
+	return types;
+}
+
+bool DataTransformModel::canDropMimeData(const QMimeData* data, Qt::DropAction action, int row, int column, const QModelIndex& parent) const {
+
+	const SynGlyphX::GlyphMimeData* glyphData = qobject_cast<const SynGlyphX::GlyphMimeData*>(data);
+
+	if ((glyphData == NULL) || (GetDataType(index(row, column, parent)) != DataType::GlyphTrees)) {
+
+		return false;
+	}
+
+	SynGlyphX::DataMappingGlyphGraph::iterator parentGlyph(static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(parent.internalPointer()));
+	const QModelIndexList& indexes = glyphData->GetGlyphs();
+	for (int j = 0; j < indexes.length(); ++j) {
+
+		SynGlyphX::DataMappingGlyphGraph::iterator mimeDataGlyph(static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(indexes[j].internalPointer()));
+		if (mimeDataGlyph.owner() != parentGlyph.owner()) {
+
+			return false;
+		}
+	}
+
+	return true;
+}
+
+QMimeData* DataTransformModel::mimeData(const QModelIndexList& indexes) const {
+
+	SynGlyphX::GlyphMimeData* mimeData = new SynGlyphX::GlyphMimeData(indexes);
+	return mimeData;
+}
+
+bool DataTransformModel::dropMimeData(const QMimeData* data, Qt::DropAction action, int row, int column, const QModelIndex& parent) {
+
+	//canDropMimeData isn't being called when it should as per this bug:
+	//https://bugreports.qt.io/browse/QTBUG-30534
+	//Thus it is being called here until we upgrade to Qt 5.4.1
+	if (!canDropMimeData(data, action, row, column, parent)) {
+
+		return false;
+	}
+
+	const SynGlyphX::GlyphMimeData* glyphData = qobject_cast<const SynGlyphX::GlyphMimeData*>(data);
+
+	if ((glyphData != NULL) && (row == -1)) {
+
+		SynGlyphX::DataMappingGlyphGraph::const_iterator newParentGlyph(static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(parent.internalPointer()));
+		const QModelIndexList& indexes = glyphData->GetGlyphs();
+
+		bool glyphsMoved = false;
+
+		for (int j = 0; j < indexes.length(); ++j) {
+
+			SynGlyphX::DataMappingGlyphGraph::const_iterator oldGlyph(static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(indexes[j].internalPointer()));
+			SynGlyphX::DataMappingGlyphGraph::const_iterator oldParentGlyph = oldGlyph.owner()->parent(oldGlyph);
+
+			//Only drop if parents are different
+			if (oldParentGlyph != newParentGlyph) {
+				
+				unsigned int numberOfChildren = newParentGlyph.owner()->children(newParentGlyph);
+
+				//Only do an insert here.  The MoveAction will take care of deleting the old object
+				beginInsertRows(parent, numberOfChildren, numberOfChildren);
+				stlplus::ntree<SynGlyphX::DataMappingGlyph> oldGlyphSubtree = const_cast<stlplus::ntree<SynGlyphX::DataMappingGlyph>*>(oldGlyph.owner())->subtree(oldGlyph.deconstify());
+				m_dataMapping->AddChildTree(GetTreeId(parent), newParentGlyph.deconstify(), oldGlyphSubtree);
+				endInsertRows();
+				glyphsMoved = true;
+			}
+		}
+
+		return glyphsMoved;
+	}
+
+	return false;
 }

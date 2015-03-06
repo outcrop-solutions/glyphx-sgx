@@ -53,6 +53,8 @@ namespace SynGlyphX {
 
 		SynGlyphX::Glyph rootGlyph;
 		m_glyphWidgets[0]->SetGlyphFromWidget(rootGlyph);
+		rootGlyph.GetPosition()[0] = 180.0;
+		rootGlyph.GetPosition()[1] = 90.0;
 		SynGlyphX::GlyphGraph newMaxGlyphTree(rootGlyph);
 
 		std::vector<SynGlyphX::Glyph> templates;
