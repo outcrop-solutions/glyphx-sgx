@@ -64,6 +64,9 @@ namespace SynGlyphX {
 		void AddTableToMap(const QString& tableName);
 		bool IsInputfieldInCache(const InputField& inputfield) const;
 
+		QString CreateTablename(const InputField& inputfield) const;
+		QString CreateTablename(const QString& datasourceID, const QString& originalTablename) const;
+
 		static const QString IndexColumnName;
 
 		TableMap m_tables;

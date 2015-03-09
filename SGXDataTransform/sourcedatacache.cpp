@@ -122,7 +122,7 @@ namespace SynGlyphX {
 			for (const std::wstring& table : datasource.GetTables()) {
 
 				QString qTable = QString::fromStdWString(table);
-				AddDBTableToCache(db, qTable, formattedName, dbConnectionID + ":" + qTable);
+				AddDBTableToCache(db, qTable, formattedName, CreateTablename(dbConnectionID, qTable));
 			}
 
 			if (closeDatasource) {
@@ -141,8 +141,10 @@ namespace SynGlyphX {
 
 		QString fieldNamesAndTypes;
 		QString fieldNameList;
-		unsigned int fieldNameCount = 0;
+		//unsigned int fieldNameCount = 0;
 		QSqlRecord sourceTableFieldNames = db.record(sourceTable);
+		std::vector<bool> isTextField;
+		isTextField.reserve(sourceTableFieldNames.count());
 		for (int i = 0; i < sourceTableFieldNames.count(); ++i) {
 
 			QString typeString;
@@ -169,23 +171,29 @@ namespace SynGlyphX {
 				continue;
 			}
 
+			isTextField.push_back(typeString == "TEXT");
 			fieldNameList += "\"" + field.name() + "\", ";
 			fieldNamesAndTypes += "\"" + field.name() + "\" " + typeString + ",\n";
-			++fieldNameCount;
+			//++fieldNameCount;
 		}
 		fieldNameList.chop(2);
 		fieldNamesAndTypes.chop(2);
 
+		if (isTextField.empty()) {
+
+			return;
+		}
+
 		CreateNewIndexedTableInCache(cacheTable, fieldNamesAndTypes);
 
-		QString bindString;
+		/*QString bindString;
 		for (int j = 0; j < fieldNameCount + 1; ++j) {
 
 			bindString += "?, ";
 		}
-		bindString.chop(2);
+		bindString.chop(2);*/
 		QSqlQuery insertIntoCacheQuery(m_db);
-		insertIntoCacheQuery.prepare("INSERT INTO " + cacheTable + " (" + IndexColumnName + ", " + fieldNameList + ") VALUES (" + bindString + ");");
+		QString insertIntoCacheQueryString = "INSERT INTO \"" + cacheTable + "\" (\"" + IndexColumnName + "\", " + fieldNameList + ") VALUES (%1);";
 
 		unsigned long sgxIndex = 0;
 		if (!m_tables.empty()) {
@@ -202,11 +210,21 @@ namespace SynGlyphX {
 
 		while (getDataQuery.next()) {
 
-			insertIntoCacheQuery.bindValue(0, static_cast<qulonglong>(sgxIndex));
-			for (int k = 0; k < fieldNameCount; ++k) {
+			QString dataToAdd = QString::number(sgxIndex);
+			//insertIntoCacheQuery.bindValue(0, static_cast<qulonglong>(sgxIndex));
+			for (int k = 0; k < isTextField.size(); ++k) {
 
-				insertIntoCacheQuery.bindValue(k + 1, getDataQuery.value(k));
+				if (isTextField[k]) {
+
+					dataToAdd += ", \"" + getDataQuery.value(k).toString() + "\"";
+				}
+				else {
+
+					dataToAdd += ", " + getDataQuery.value(k).toString();
+				}
+				//insertIntoCacheQuery.bindValue(k + 1, getDataQuery.value(k));
 			}
+			insertIntoCacheQuery.prepare(insertIntoCacheQueryString.arg(dataToAdd));
 			
 			if (!insertIntoCacheQuery.exec()) {
 
@@ -269,7 +287,7 @@ namespace SynGlyphX {
 
 	void SourceDataCache::AddTableToMap(const QString& tableName) {
 
-		int startingIndex = -1;
+		unsigned int startingIndex = 0;
 		if (!m_tables.empty()) {
 
 			startingIndex = m_tables.rbegin()->first;
@@ -286,8 +304,18 @@ namespace SynGlyphX {
 		}
 
 		QSqlQuery query(m_db);
-		query.prepare("SELECT \"" + QString::fromStdWString(inputfield.GetField()) + "\" FROM \"" + QString::fromStdWString(inputfield.GetTable()) + "\" ORDER BY \"" + IndexColumnName + "\" ASC");
+		query.prepare("SELECT \"" + QString::fromStdWString(inputfield.GetField()) + "\" FROM \"" + CreateTablename(inputfield) + "\" ORDER BY \"" + IndexColumnName + "\" ASC");
 		return query;
+	}
+
+	QString SourceDataCache::CreateTablename(const InputField& inputfield) const {
+
+		return CreateTablename(QString::fromStdString(boost::uuids::to_string(inputfield.GetDatasourceID())), QString::fromStdWString(inputfield.GetTable()));
+	}
+		
+	QString SourceDataCache::CreateTablename(const QString& datasourceID, const QString& originalTablename) const {
+
+		return datasourceID + ":" + originalTablename;
 	}
 
 	QSqlQuery SourceDataCache::CreateMinMaxQuery(const InputField& inputfield) const {
@@ -298,7 +326,7 @@ namespace SynGlyphX {
 		}
 
 		QSqlQuery query(m_db);
-		QString queryString = QString("SELECT MIN(%1), MAX(%1) FROM ").arg("\"" + QString::fromStdWString(inputfield.GetField()) + "\"") + QString::fromStdWString(inputfield.GetTable());
+		QString queryString = QString("SELECT MIN(%1), MAX(%1) FROM ").arg("\"" + QString::fromStdWString(inputfield.GetField()) + "\"") + "\"" + CreateTablename(inputfield) + "\"";
 		query.prepare(queryString);
 
 		return query;
