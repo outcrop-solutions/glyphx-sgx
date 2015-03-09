@@ -535,7 +535,7 @@ bool DataTransformModel::canDropMimeData(const QMimeData* data, Qt::DropAction a
 
 	const SynGlyphX::GlyphMimeData* glyphData = qobject_cast<const SynGlyphX::GlyphMimeData*>(data);
 
-	if ((glyphData == NULL) || (GetDataType(index(row, column, parent)) != DataType::GlyphTrees)) {
+	if ((glyphData == NULL) || (GetDataType(parent) != DataType::GlyphTrees)) {
 
 		return false;
 	}
