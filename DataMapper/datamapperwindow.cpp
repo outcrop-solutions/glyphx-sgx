@@ -494,7 +494,7 @@ void DataMapperWindow::ExportToANTz(const QString& templateDir) {
 	}
 
 	SynGlyphX::Application::restoreOverrideCursor(); 
-	statusBar()->showMessage("Data transform sucessfully exported to ANTz", 3000);
+	statusBar()->showMessage("Data transform sucessfully exported to ANTz", 6000);
 }
 
 void DataMapperWindow::AddBaseObject() {
