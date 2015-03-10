@@ -124,14 +124,14 @@ void DataMapperWindow::CreateMenus() {
 
 	if (defaultANTzTemplateExists) {
 
-		QAction* exportToANTzAction = CreateMenuAction(m_fileMenu, tr("Export to ANTz"));
+		QAction* exportToANTzAction = CreateMenuAction(m_fileMenu, tr("Create Portable Visualization"));
 		QObject::connect(exportToANTzAction, &QAction::triggered, this, [this]{ ExportToANTz(m_antzExportDirectory); });
 		m_projectDependentActions.push_back(exportToANTzAction);
 	}
 
 	if (zSpaceANTzTemplateExists) {
 
-		QAction* exportTozSpaceANTzAction = CreateMenuAction(m_fileMenu, tr("Export to ANTz (zSpace)"));
+		QAction* exportTozSpaceANTzAction = CreateMenuAction(m_fileMenu, tr("Create Portable Visualization (zSpace)"));
 		QObject::connect(exportTozSpaceANTzAction, &QAction::triggered, this, [this]{ ExportToANTz(m_antzzSpaceExportDirectory); });
 		m_projectDependentActions.push_back(exportTozSpaceANTzAction);
 	}
