@@ -3,7 +3,7 @@
 GlyphTreeListView::GlyphTreeListView(QWidget *parent)
 	: SynGlyphX::TreeView(parent)
 {
-	setSelectionMode(QAbstractItemView::SingleSelection);
+	setSelectionMode(QAbstractItemView::ExtendedSelection);
 	setDragEnabled(false);
 	SetScrollOnSelection(true);
 	setContextMenuPolicy(Qt::ActionsContextMenu);

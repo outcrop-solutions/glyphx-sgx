@@ -63,6 +63,7 @@ private:
 	CacheManager m_cacheManager;
 
 	GlyphForestModel* m_glyphForestModel;
+	QItemSelectionModel* m_glyphForestSelectionModel;
 	ANTzViewerWidget* m_antzWidget;
 	GlyphTreeListView* m_treeView;
 };

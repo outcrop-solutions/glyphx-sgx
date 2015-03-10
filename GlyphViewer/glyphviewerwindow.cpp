@@ -19,13 +19,14 @@ GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 	: SynGlyphX::MainWindow(parent)
 {
 	m_glyphForestModel = new GlyphForestModel(this);
+	m_glyphForestSelectionModel = new QItemSelectionModel(m_glyphForestModel, this);
 	QString cacheDir = QDir::toNativeSeparators(QDir::currentPath()) + QDir::separator() + "cache";
 	m_cacheManager.SetBaseCacheDirectory(cacheDir.toStdWString());
 	CreateMenus();
 	CreateDockWidgets();
 	
 	try {
-		m_antzWidget = new ANTzViewerWidget(m_glyphForestModel, m_treeView->selectionModel(), this);
+		m_antzWidget = new ANTzViewerWidget(m_glyphForestModel, m_glyphForestSelectionModel, this);
 	}
 	catch (const std::exception& e) {
 
@@ -115,6 +116,7 @@ void GlyphViewerWindow::CreateDockWidgets() {
 	QDockWidget* leftDockWidget = new QDockWidget(tr("Glyph List"), this);
 	m_treeView = new GlyphTreeListView(leftDockWidget);
 	m_treeView->setModel(m_glyphForestModel);
+	m_treeView->setSelectionModel(m_glyphForestSelectionModel);
 
 	leftDockWidget->setWidget(m_treeView);
 	addDockWidget(Qt::LeftDockWidgetArea, leftDockWidget);
