@@ -215,7 +215,7 @@ namespace SynGlyphX {
 	void CSVCache::DeleteTable(const QString& table) {
 
 		QSqlQuery dropTableQuery(m_db);
-		dropTableQuery.prepare("DROP TABLE " + table);
+		dropTableQuery.prepare("DROP TABLE \"" + table + "\"");
 		bool querySucceeded = dropTableQuery.exec();
 
 		if (!querySucceeded) {
@@ -229,7 +229,7 @@ namespace SynGlyphX {
 	QDateTime CSVCache::GetTimestampForTable(const QString& table) {
 
 		QSqlQuery timestampQuery(m_db);
-		timestampQuery.prepare("SELECT \"Timestamp\" FROM " + s_tableIndexName + " WHERE TableName=\"" + table + "\";");
+		timestampQuery.prepare("SELECT \"Timestamp\" FROM \"" + s_tableIndexName + "\" WHERE TableName=\"" + table + "\";");
 		bool querySucceeded = timestampQuery.exec();
 
 		if (!querySucceeded) {
@@ -238,9 +238,9 @@ namespace SynGlyphX {
 		}
 
 		timestampQuery.first();
-		QDateTime timestamp;
-		timestamp.fromMSecsSinceEpoch(timestampQuery.value(0).toULongLong());
-		return timestamp;
+		qint64 timestamp = timestampQuery.value(0).toULongLong();
+		timestampQuery.finish();
+		return QDateTime::fromMSecsSinceEpoch(timestamp);
 	}
 
 	void CSVCache::UpdateTimestampForTable(const QString& table, const QString& formattedName, const QDateTime& timestamp) {

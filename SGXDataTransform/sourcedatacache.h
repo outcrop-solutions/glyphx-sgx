@@ -31,11 +31,6 @@ namespace SynGlyphX {
 	{
 	public:
 		typedef std::map<unsigned long, QString> TableMap;
-		enum class QueryTypes {
-
-			MinMax,
-
-		};
 
 		SourceDataCache();
 		SourceDataCache(const QString& filename);
@@ -62,7 +57,11 @@ namespace SynGlyphX {
 		void AddDBTablesToCache(const boost::uuids::uuid& id, const Datasource& datasource, const QString& dbType);
 		void AddDBTableToCache(QSqlDatabase& db, const QString& sourceTable, const QString& formattedSourceName, const QString& cacheTable);
 		void AddTableToMap(const QString& tableName);
+		void RebuildTableMap();
 		bool IsInputfieldInCache(const InputField& inputfield) const;
+
+		virtual void DeleteTable(const QString& table);
+		void DeleteTables(const QStringList& tables);
 
 		QString CreateTablename(const InputField& inputfield) const;
 		QString CreateTablename(const QString& datasourceID, const QString& originalTablename) const;
