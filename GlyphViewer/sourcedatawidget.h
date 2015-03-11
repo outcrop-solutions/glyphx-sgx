@@ -25,6 +25,7 @@ private slots:
 
 private:
 	void UpdateTables(const QItemSelection& selected);
+	unsigned int GetRootRow(const QModelIndex& index) const;
 
 	GlyphForestModel* m_model;
 	SynGlyphX::SourceDataCache::SharedPtr m_sourceDataCache;

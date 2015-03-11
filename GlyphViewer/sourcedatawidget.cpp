@@ -1,5 +1,6 @@
 #include "sourcedatawidget.h"
 #include <QtGui/QCloseEvent>
+#include <set>
 
 SourceDataWidget::SourceDataWidget(SynGlyphX::SourceDataCache::SharedPtr sourceDataCache, GlyphForestModel* model, QItemSelectionModel* selectionModel, QWidget *parent)
 	: QTabWidget(parent),
@@ -33,5 +34,24 @@ void SourceDataWidget::OnSelectionChanged(const QItemSelection& selected, const 
 
 void SourceDataWidget::UpdateTables(const QItemSelection& selected) {
 
+	clear();
+	if (!selected.empty()) {
 
+		std::set<unsigned int> selectedDataRows;
+		Q_FOREACH(const QModelIndex& index, selected.indexes()) {
+
+			selectedDataRows.insert(GetRootRow(index));
+		}
+	}
+}
+
+unsigned int SourceDataWidget::GetRootRow(const QModelIndex& index) const {
+
+	QModelIndex ancestor = index.parent();
+	while (ancestor.parent().isValid()) {
+
+		ancestor = ancestor.parent();
+	}
+
+	return ancestor.row();
 }

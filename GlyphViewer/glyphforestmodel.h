@@ -55,7 +55,7 @@ private:
 	void Clear(bool resetModel);
 
 	int GetChildIndexFromParent(pNPnode node) const;
-	int FindRowForRootNode(pNPnode) const;
+	int FindRowForRootNode(pNPnode node) const;
 	std::unordered_map<std::wstring, int> m_textures;
 	QString m_defaultBaseImage;
 	ANTzPlus::ANTzData::SharedPtr m_antzData;
