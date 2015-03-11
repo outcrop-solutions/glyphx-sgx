@@ -18,6 +18,7 @@
 GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 	: SynGlyphX::MainWindow(parent)
 {
+	m_sourceDataCache = std::make_shared<SynGlyphX::SourceDataCache>();
 	m_glyphForestModel = new GlyphForestModel(this);
 	m_glyphForestSelectionModel = new QItemSelectionModel(m_glyphForestModel, this);
 	QString cacheDir = QDir::toNativeSeparators(QDir::currentPath()) + QDir::separator() + "cache";
@@ -121,6 +122,12 @@ void GlyphViewerWindow::CreateDockWidgets() {
 	leftDockWidget->setWidget(m_treeView);
 	addDockWidget(Qt::LeftDockWidgetArea, leftDockWidget);
 	m_viewMenu->addAction(leftDockWidget->toggleViewAction());
+
+	QDockWidget* rightDockWidget = new QDockWidget(tr("Source Data Selector"), this);
+	m_sourceDataSelectionWidget = new SourceDataSelectionWidget(m_sourceDataCache, m_glyphForestModel, m_glyphForestSelectionModel, rightDockWidget);
+	rightDockWidget->setWidget(m_sourceDataSelectionWidget);
+	addDockWidget(Qt::RightDockWidgetArea, rightDockWidget);
+	m_viewMenu->addAction(rightDockWidget->toggleViewAction());
 }
 
 void GlyphViewerWindow::OpenProject() {
@@ -262,6 +269,7 @@ void GlyphViewerWindow::LoadDataTransform(const QString& filename) {
 		SynGlyphXANTz::GlyphViewerANTzTransformer transformer(QString::fromStdWString(m_cacheManager.GetCacheDirectory(mapping.GetID())));
 		transformer.Transform(mapping);
 
+		m_sourceDataCache->Setup(transformer.GetSourceDataCacheLocation());
 		LoadFilesIntoModel(transformer.GetCSVFilenames(), transformer.GetBaseImageFilenames());
 	}
 	catch (const std::exception& e) {

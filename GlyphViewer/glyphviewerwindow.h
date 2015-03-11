@@ -25,6 +25,8 @@
 #include "glyphforestmodel.h"
 #include "antzviewerwidget.h"
 #include "cachemanager.h"
+#include "sourcedatacache.h"
+#include "sourcedataselectionwidget.h"
 
 class GlyphViewerWindow : public SynGlyphX::MainWindow
 {
@@ -66,6 +68,8 @@ private:
 	QItemSelectionModel* m_glyphForestSelectionModel;
 	ANTzViewerWidget* m_antzWidget;
 	GlyphTreeListView* m_treeView;
+	SynGlyphX::SourceDataCache::SharedPtr m_sourceDataCache;
+	SourceDataSelectionWidget* m_sourceDataSelectionWidget;
 };
 
 #endif // GLYPHVIEWERWINDOW_H
