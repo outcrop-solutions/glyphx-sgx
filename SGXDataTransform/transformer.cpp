@@ -343,4 +343,9 @@ namespace SynGlyphX {
 		return m_defaults.GetDefaultTagValue();
 	}
 
+	const QString& Transformer::GetSourceDataCacheLocation() const {
+
+		return m_sourceDataCacheLocation;
+	}
+
 } //namespace SynGlyphX

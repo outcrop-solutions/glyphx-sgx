@@ -24,12 +24,16 @@
 #include <map>
 #include "inputfield.h"
 #include <QtSql/QSqlQuery>
+#include <memory>
 
 namespace SynGlyphX {
 
 	class SGXDATATRANSFORM_EXPORT SourceDataCache : protected CSVCache
 	{
 	public:
+		typedef std::shared_ptr<SourceDataCache> SharedPtr;
+		typedef std::shared_ptr<const SourceDataCache> ConstSharedPtr;
+
 		typedef std::map<unsigned long, QString> TableMap;
 
 		SourceDataCache();

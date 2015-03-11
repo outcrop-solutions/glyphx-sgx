@@ -40,6 +40,8 @@ namespace SynGlyphX {
 
 		void Transform(const DataTransformMapping& mapping);
 
+		const QString& GetSourceDataCacheLocation() const;
+
 	protected:
 		virtual void Prepare() = 0;
 		virtual void CreateGlyphsFromMapping(const DataTransformMapping& mapping) = 0;
