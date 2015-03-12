@@ -34,6 +34,8 @@ namespace SynGlyphX {
         static void Setup(const QString& appName, const QString& appVersion);
         static void SetupIcons(const QIcon& windowIcon);
 
+		static QString GetApplicationVersionMajorNumber();
+
     private:
 
     };

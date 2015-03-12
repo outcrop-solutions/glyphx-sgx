@@ -68,6 +68,7 @@ namespace SynGlyphX {
 
     private slots:
         void OnRecentFileSelected();
+		void ShowLicensingDialog();
         void ShowAboutBox();
 
 	private:

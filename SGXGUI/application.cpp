@@ -30,4 +30,10 @@ namespace SynGlyphX {
         setWindowIcon(windowIcon);
     }
 
+	QString Application::GetApplicationVersionMajorNumber() {
+
+		QString version = applicationVersion();
+		return version.left(version.indexOf('.'));
+	}
+
 } //namespace SynGlyphX
