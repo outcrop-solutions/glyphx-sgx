@@ -11,6 +11,8 @@ namespace SynGlyphX {
 	LicensingDialog::LicensingDialog(QWidget *parent)
 		: QDialog(parent)
 	{
+		setWindowTitle(tr("Licensing"));
+
 		QVBoxLayout* layout = new QVBoxLayout(this);
 		QLabel* licenseLabel = new QLabel(this);
 
