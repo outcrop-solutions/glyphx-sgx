@@ -34,7 +34,8 @@ namespace SynGlyphX {
 		typedef std::shared_ptr<SourceDataCache> SharedPtr;
 		typedef std::shared_ptr<const SourceDataCache> ConstSharedPtr;
 
-		typedef std::map<unsigned long, QString> TableMap;
+		typedef std::map<unsigned long, QString> TableIndexMap;
+		typedef std::map<QString, QString> TableNameMap;
 
 		SourceDataCache();
 		SourceDataCache(const QString& filename);
@@ -47,7 +48,8 @@ namespace SynGlyphX {
 		void AddDatasourcesToCache(const DatasourceMaps& datasources);
 		void AddFileDatasourceToCache(const boost::uuids::uuid& id, const FileDatasource& datasource);
 
-		TableMap GetTables() const;
+		const TableIndexMap& GetTablesIndexMap() const;
+		const TableNameMap& GetFormattedNames() const;
 		QStringList GetColumnsForTable(const QString& table) const;
 
 		QSqlQuery CreateSelectFieldQueryAscending(const InputField& inputfield) const;
@@ -60,7 +62,7 @@ namespace SynGlyphX {
 		
 		void AddDBTablesToCache(const boost::uuids::uuid& id, const Datasource& datasource, const QString& dbType);
 		void AddDBTableToCache(QSqlDatabase& db, const QString& sourceTable, const QString& formattedSourceName, const QString& cacheTable);
-		void AddTableToMap(const QString& tableName);
+		void AddTableToMap(const QString& tableName, const QString& formattedName);
 		void RebuildTableMap();
 		bool IsInputfieldInCache(const InputField& inputfield) const;
 
@@ -69,10 +71,12 @@ namespace SynGlyphX {
 
 		QString CreateTablename(const InputField& inputfield) const;
 		QString CreateTablename(const QString& datasourceID, const QString& originalTablename) const;
+		QString GetFormattedNameFromCache(const QString& table);
 
 		static const QString IndexColumnName;
 
-		TableMap m_tables;
+		TableIndexMap m_tableIndexMap;
+		TableNameMap m_tableNameMap;
 	};
 
 } //namespace SynGlyphX
