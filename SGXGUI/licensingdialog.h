@@ -16,7 +16,7 @@ namespace SynGlyphX {
 		static bool CheckLicense();
 
 	private:
-		
+		static QString LicenseStatusToString(int licenseStatus, int numberOfDaysLeft);
 	};
 
 } //namespace SynGlyphX
