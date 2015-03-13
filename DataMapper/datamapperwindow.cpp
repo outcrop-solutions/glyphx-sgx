@@ -461,7 +461,7 @@ void DataMapperWindow::AddDataSources() {
 
 void DataMapperWindow::ExportToANTz(const QString& templateDir) {
 
-	QString csvDirectory = QDir::toNativeSeparators(GetExistingDirectoryDialog("ANTzExportDir", tr("Export to ANTz"), ""));
+	QString csvDirectory = QDir::toNativeSeparators(GetExistingDirectoryDialog("ANTzExportDir", tr("Select Directory For Portable Visualization"), ""));
 	if (csvDirectory.isEmpty()) {
 
 		return;
