@@ -1,11 +1,17 @@
 #include "licensingdialog.h"
 #include "rlmez.h"
 #include <QtWidgets/QVBoxLayout>
-#include <QtWidgets/QLabel>
+#include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QDialogButtonBox>
 #include "application.h"
 #include <string>
 #include <QtWidgets/QMessageBox>
+#include "groupboxsinglewidget.h"
+#include <QtWidgets/QFileDialog>
+#include <QtCore/QSettings>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QTextEdit>
+#include <QtGui/QTextDocument>
 
 namespace SynGlyphX {
 
@@ -15,22 +21,43 @@ namespace SynGlyphX {
 		setWindowTitle(tr("Licensing"));
 
 		QVBoxLayout* layout = new QVBoxLayout(this);
-		QLabel* licenseLabel = new QLabel(this);
+		m_licenseLabel = new QLabel(this);
+		SynGlyphX::GroupBoxSingleWidget* licenseLabelGroupBox = new SynGlyphX::GroupBoxSingleWidget(tr("Status:"), m_licenseLabel, this);
 
-		int numberOfDaysLeft = 0;
-		char version[8];
-		strcpy(version, SynGlyphX::Application::GetApplicationVersionMajorNumber().toStdString().c_str());
-		int licenseStatus = rlmez_checkout(version, &numberOfDaysLeft);
-		licenseLabel->setText(tr("License Status: ") + LicenseStatusToString(licenseStatus, numberOfDaysLeft));
+		ResetStatusLabel();
 
-		layout->addWidget(licenseLabel);
+		layout->addWidget(licenseLabelGroupBox);
+
+		QTextEdit* licenseAgreementBrowser = new QTextEdit(this);
+		licenseAgreementBrowser->setReadOnly(true);
+		QTextDocument* licenseAgreement = new QTextDocument(licenseAgreementBrowser);
+
+#ifdef WIN32
+		licenseAgreementBrowser->document()->setMetaInformation(QTextDocument::DocumentUrl, QDir::fromNativeSeparators(QDir::currentPath()) + "/license_agreement.html/");
+#else
+		licenseAgreement->setMetaInformation(QTextDocument::DocumentUrl, "file:" + QDir::fromNativeSeparators(QDir::currentPath()) + "/license_agreement.html/");
+#endif
+		//licenseAgreementBrowser->setDocument(licenseAgreement);
+		//QString licenseHTML = licenseAgreement->toHtml();
+		//licenseAgreementBrowser->setHtml(licenseHTML);
+
+		SynGlyphX::GroupBoxSingleWidget* licenseAgreementGroupBox = new SynGlyphX::GroupBoxSingleWidget(tr("License Agreement"), licenseAgreementBrowser, this);
+		layout->addWidget(licenseAgreementGroupBox);
 
 		layout->addStretch(1);
 
+		QHBoxLayout* buttonsLayout = new QHBoxLayout(this);
+
+		QPushButton* installNewLicenseButton = new QPushButton(tr("Install New License File"), this);
+		QObject::connect(installNewLicenseButton, &QPushButton::clicked, this, &LicensingDialog::OnInstallNewLicense);
+		buttonsLayout->addWidget(installNewLicenseButton);
+
 		QDialogButtonBox* dialogButtonBox = new QDialogButtonBox(QDialogButtonBox::StandardButton::Ok, this);
-		layout->addWidget(dialogButtonBox);
 		QObject::connect(dialogButtonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
 		QObject::connect(dialogButtonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
+		buttonsLayout->addWidget(dialogButtonBox);
+
+		layout->addLayout(buttonsLayout);
 
 		setLayout(layout);
 	}
@@ -87,7 +114,7 @@ namespace SynGlyphX {
 
 			return tr("Demo license expired");
 		}
-		else if (licenseStatus == RLM_EH_UNLICENSED) {
+		else if ((licenseStatus == RLM_ACT_BP_NOLIC) || (licenseStatus == RLM_EH_UNLICENSED)) {
 
 			return tr("No license installed");
 		}
@@ -97,5 +124,32 @@ namespace SynGlyphX {
 			rlmez_errstring(licenseStatus, error);
 			return (tr("Error: ") + error);
 		}
+	}
+
+	void LicensingDialog::ResetStatusLabel() {
+
+		int numberOfDaysLeft = 0;
+		char version[8];
+		strcpy(version, SynGlyphX::Application::GetApplicationVersionMajorNumber().toStdString().c_str());
+		int licenseStatus = rlmez_checkout(version, &numberOfDaysLeft);
+		m_licenseLabel->setText(LicenseStatusToString(licenseStatus, numberOfDaysLeft));
+	}
+
+	void LicensingDialog::OnInstallNewLicense() {
+
+		QSettings settings;
+		settings.beginGroup("Licensing");
+		QString initialDir = settings.value("LicenseDir", QDir::currentPath()).toString();
+
+		QString filename = QFileDialog::getOpenFileName(this, tr("Select License File"), initialDir, "License Files (*.lic)");
+		if (!filename.isEmpty()) {
+
+			QFileInfo fileInfo(filename);
+			settings.setValue("LicenseDir", fileInfo.absolutePath());
+			QFile::copy(filename, QDir::currentPath() + QDir::separator() + "license.lic");
+			ResetStatusLabel();
+		}
+
+		settings.endGroup();
 	}
 }

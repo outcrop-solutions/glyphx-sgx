@@ -2,6 +2,7 @@
 #define SYNGLYPHX_LICENSINGDIALOG_H
 
 #include <QtWidgets/QDialog>
+#include <QtWidgets/QLabel>
 
 namespace SynGlyphX {
 
@@ -15,8 +16,14 @@ namespace SynGlyphX {
 
 		static bool CheckLicense();
 
+	private slots:
+		void OnInstallNewLicense();
+
 	private:
 		static QString LicenseStatusToString(int licenseStatus, int numberOfDaysLeft);
+		void ResetStatusLabel();
+
+		QLabel* m_licenseLabel;
 	};
 
 } //namespace SynGlyphX
