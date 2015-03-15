@@ -12,6 +12,8 @@
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QTextEdit>
 #include <QtGui/QTextDocument>
+#include <QtCore/QTextStream>
+#include "filesystem.h"
 
 namespace SynGlyphX {
 
@@ -28,23 +30,17 @@ namespace SynGlyphX {
 
 		layout->addWidget(licenseLabelGroupBox);
 
-		QTextEdit* licenseAgreementBrowser = new QTextEdit(this);
-		licenseAgreementBrowser->setReadOnly(true);
-		QTextDocument* licenseAgreement = new QTextDocument(licenseAgreementBrowser);
+		QTextEdit* eulaBrowser = new QTextEdit(this);
+		eulaBrowser->setReadOnly(true);
+		eulaBrowser->setMinimumSize(700, 300);
 
-#ifdef WIN32
-		licenseAgreementBrowser->document()->setMetaInformation(QTextDocument::DocumentUrl, QDir::fromNativeSeparators(QDir::currentPath()) + "/license_agreement.html/");
-#else
-		licenseAgreement->setMetaInformation(QTextDocument::DocumentUrl, "file:" + QDir::fromNativeSeparators(QDir::currentPath()) + "/license_agreement.html/");
-#endif
-		//licenseAgreementBrowser->setDocument(licenseAgreement);
-		//QString licenseHTML = licenseAgreement->toHtml();
-		//licenseAgreementBrowser->setHtml(licenseHTML);
+		QFile eulaFile(QDir::fromNativeSeparators(QDir::currentPath()) + "/eula.html");
+		eulaFile.open(QFile::ReadOnly | QFile::Text);
+		QTextStream eulaStream(&eulaFile);
+		eulaBrowser->setHtml(eulaStream.readAll());
 
-		SynGlyphX::GroupBoxSingleWidget* licenseAgreementGroupBox = new SynGlyphX::GroupBoxSingleWidget(tr("License Agreement"), licenseAgreementBrowser, this);
-		layout->addWidget(licenseAgreementGroupBox);
-
-		layout->addStretch(1);
+		SynGlyphX::GroupBoxSingleWidget* eulaGroupBox = new SynGlyphX::GroupBoxSingleWidget(tr("EULA (End User License Agreement)"), eulaBrowser, this);
+		layout->addWidget(eulaGroupBox, 1);
 
 		QHBoxLayout* buttonsLayout = new QHBoxLayout(this);
 
@@ -52,7 +48,7 @@ namespace SynGlyphX {
 		QObject::connect(installNewLicenseButton, &QPushButton::clicked, this, &LicensingDialog::OnInstallNewLicense);
 		buttonsLayout->addWidget(installNewLicenseButton);
 
-		QDialogButtonBox* dialogButtonBox = new QDialogButtonBox(QDialogButtonBox::StandardButton::Ok, this);
+		QDialogButtonBox* dialogButtonBox = new QDialogButtonBox(QDialogButtonBox::StandardButton::Close, this);
 		QObject::connect(dialogButtonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
 		QObject::connect(dialogButtonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
 		buttonsLayout->addWidget(dialogButtonBox);
@@ -81,12 +77,19 @@ namespace SynGlyphX {
 		else {
 
 			QMessageBox::information(nullptr, tr("Licensing"), tr("License Status: ") + LicenseStatusToString(licenseStatus, numberOfDaysLeft) + 
-				"\n\n" + tr("A valid license is needed to use SynGlyphX software.  Please go to http://www.synglyphx.com to contact SynGlyphX for a license"));
+				"\n\n" + tr("A valid license is needed to use SynGlyphX software.  Please install your license using the next dialog, or contact SynGlyphX (http://www.synglyphx.com) for a license."));
 
 			LicensingDialog dialog(nullptr);
 			if (dialog.exec() == QDialog::Accepted) {
 
-				return (rlmez_checkout(version, &numberOfDaysLeft) == 0);
+				if (rlmez_checkout(version, &numberOfDaysLeft) == 0) {
+
+					return true;
+				}
+				else {
+
+					QMessageBox::information(nullptr, tr("Licensing"), tr("License is invalid or expired.  Please obtain a valid license."));
+				}
 			}
 		}
 
@@ -99,16 +102,20 @@ namespace SynGlyphX {
 
 			if (numberOfDaysLeft == 0) {
 
-				 return tr("Permanent");
+				return tr("Permanent license");
+			}
+			else if (numberOfDaysLeft == 1) {
+
+				return tr("License expires today");
 			}
 			else {
 
-				return tr("Expiring in %1 days").arg(QString::number(numberOfDaysLeft - 1));
+				return tr("License expiring in %1 days").arg(QString::number(numberOfDaysLeft - 1));
 			}
 		}
 		else if (licenseStatus == RLM_EL_EXPIRED) {
 
-			return tr("Expired");
+			return tr("Expired license");
 		}
 		else if (licenseStatus == RLM_EH_EVAL_EXPIRED) {
 
@@ -122,7 +129,7 @@ namespace SynGlyphX {
 
 			char error[RLM_ERRSTRING_MAX];
 			rlmez_errstring(licenseStatus, error);
-			return (tr("Error: ") + error);
+			return (tr("Error with licensing: ") + error);
 		}
 	}
 
@@ -146,10 +153,19 @@ namespace SynGlyphX {
 
 			QFileInfo fileInfo(filename);
 			settings.setValue("LicenseDir", fileInfo.absolutePath());
-			QFile::copy(filename, QDir::currentPath() + QDir::separator() + "license.lic");
+			Filesystem::CopyFileOverwrite(filename.toStdString(), QDir::toNativeSeparators(QDir::currentPath() + QDir::separator() + "license.lic").toStdString());
 			ResetStatusLabel();
 		}
 
 		settings.endGroup();
+
+		if (parentWidget() == nullptr) {
+
+			accept();
+		}
+		else {
+
+			ResetStatusLabel();
+		}
 	}
 }
