@@ -8,7 +8,7 @@ namespace SynGlyphX {
 
 	GlyphColor::GlyphColor(Space space) :
 		m_space(space),
-		m_color{ { 0, 0, 0 } }
+		m_color({ { 0, 0, 0 } })
 	{
 	}
 
