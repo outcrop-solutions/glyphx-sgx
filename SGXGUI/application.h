@@ -35,9 +35,10 @@ namespace SynGlyphX {
         static void SetupIcons(const QIcon& windowIcon);
 
 		static QString GetApplicationVersionMajorNumber();
+		static const QString& GetCommonDataLocation();
 
     private:
-
+		static QString s_commonDataLocation;
     };
 
 } //namespace SynGlyphX

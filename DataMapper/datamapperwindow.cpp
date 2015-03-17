@@ -59,6 +59,13 @@ DataMapperWindow::DataMapperWindow(QWidget *parent)
 
 	QObject::connect(m_baseObjectsModel, &SynGlyphX::RoleDataFilterProxyModel::dataChanged, m_dataBindingWidget, &DataBindingWidget::OnBaseObjectChanged);
 
+	QStringList commandLineArguments = SynGlyphX::Application::arguments();
+	if (commandLineArguments.size() > 1) {
+
+		QDir dataTransformToLoad(commandLineArguments[1]);
+		LoadDataTransform(QDir::toNativeSeparators(dataTransformToLoad.canonicalPath()));
+	}
+
 	statusBar()->showMessage(SynGlyphX::Application::applicationName() + " Started", 3000);
 }
 
@@ -298,6 +305,17 @@ void DataMapperWindow::LoadRecentFile(const QString& filename) {
 
 void DataMapperWindow::LoadDataTransform(const QString& filename) {
 
+	QFileInfo fileInfo(filename);
+	if (fileInfo.suffix().toLower() != "sdt") {
+
+		QMessageBox::warning(this, tr("Loading Data Transform Failed"), tr("File is not a recognized format"));
+		return;
+	}
+	if (!fileInfo.exists()) {
+
+		QMessageBox::warning(this, tr("Loading Data Transform Failed"), tr("File does not exist"));
+		return;
+	}
 	try {
 
 		m_dataTransformModel->LoadDataTransformFile(filename);

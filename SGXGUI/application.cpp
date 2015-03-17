@@ -1,8 +1,11 @@
 #include "application.h"
 #include <QtCore/QDir>
 #include <QtGui/QIcon>
+#include <QtCore/QStandardPaths>
 
 namespace SynGlyphX {
+
+	QString Application::s_commonDataLocation;
 
     Application::Application(int& argc, char** argv)
         : QApplication(argc, argv)
@@ -22,6 +25,36 @@ namespace SynGlyphX {
 
         setApplicationName(appName);
         setApplicationVersion(appVersion);
+
+		QString baseCommonDataPath;
+
+#ifdef WIN32
+		QStringList paths = QStandardPaths::standardLocations(QStandardPaths::GenericDataLocation);
+		Q_FOREACH(QString path, paths) {
+
+			if (path.contains("ProgramData")) {
+
+				baseCommonDataPath = path;
+				break;
+			}
+		}
+
+		if (baseCommonDataPath.isEmpty()) {
+
+			baseCommonDataPath = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation);
+		}
+		
+#else
+		baseCommonDataPath = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation);
+#endif
+
+		s_commonDataLocation = QDir::toNativeSeparators(baseCommonDataPath + '/' + organizationName());
+
+		QDir commonDataDir(s_commonDataLocation);
+		if (!commonDataDir.exists()) {
+
+			commonDataDir.mkpath(s_commonDataLocation);
+		}
     }
 
     void Application::SetupIcons(const QIcon& windowIcon) {
@@ -34,6 +67,11 @@ namespace SynGlyphX {
 
 		QString version = applicationVersion();
 		return version.left(version.indexOf('.'));
+	}
+
+	const QString& Application::GetCommonDataLocation() {
+
+		return s_commonDataLocation;
 	}
 
 } //namespace SynGlyphX

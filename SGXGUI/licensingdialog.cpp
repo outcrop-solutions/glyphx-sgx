@@ -9,6 +9,7 @@
 #include "groupboxsinglewidget.h"
 #include <QtWidgets/QFileDialog>
 #include <QtCore/QSettings>
+#include <QtCore/QStandardPaths>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QTextEdit>
 #include <QtGui/QTextDocument>
@@ -34,7 +35,7 @@ namespace SynGlyphX {
 		eulaBrowser->setReadOnly(true);
 		eulaBrowser->setMinimumSize(700, 300);
 
-		QFile eulaFile(QDir::fromNativeSeparators(QDir::currentPath()) + "/eula.html");
+		QFile eulaFile(QDir::fromNativeSeparators(SynGlyphX::Application::applicationDirPath() + "/docs/eula.html"));
 		eulaFile.open(QFile::ReadOnly | QFile::Text);
 		QTextStream eulaStream(&eulaFile);
 		eulaBrowser->setHtml(eulaStream.readAll());
@@ -65,6 +66,10 @@ namespace SynGlyphX {
 
 	bool LicensingDialog::CheckLicense() {
 
+		QString previousCurrentDir = QDir::currentPath();
+		QDir::setCurrent(GetLicenseDirectory());
+
+		bool result = false;
 		int numberOfDaysLeft = 0;
 		char version[8];
 		strcpy(version, SynGlyphX::Application::GetApplicationVersionMajorNumber().toStdString().c_str());
@@ -72,7 +77,7 @@ namespace SynGlyphX {
 
 		if (licenseStatus == 0) {
 
-			return true;
+			result = true;
 		}
 		else {
 
@@ -84,7 +89,7 @@ namespace SynGlyphX {
 
 				if (rlmez_checkout(version, &numberOfDaysLeft) == 0) {
 
-					return true;
+					result = true;
 				}
 				else {
 
@@ -93,7 +98,8 @@ namespace SynGlyphX {
 			}
 		}
 
-		return false;
+		QDir::setCurrent(previousCurrentDir);
+		return result;
 	}
 
 	QString LicensingDialog::LicenseStatusToString(int licenseStatus, int numberOfDaysLeft) {
@@ -135,10 +141,16 @@ namespace SynGlyphX {
 
 	void LicensingDialog::ResetStatusLabel() {
 
+		QString previousCurrentDir = QDir::currentPath();
+		QDir::setCurrent(GetLicenseDirectory());
+
 		int numberOfDaysLeft = 0;
 		char version[8];
 		strcpy(version, SynGlyphX::Application::GetApplicationVersionMajorNumber().toStdString().c_str());
 		int licenseStatus = rlmez_checkout(version, &numberOfDaysLeft);
+
+		QDir::setCurrent(previousCurrentDir);
+
 		m_licenseLabel->setText(LicenseStatusToString(licenseStatus, numberOfDaysLeft));
 	}
 
@@ -153,7 +165,15 @@ namespace SynGlyphX {
 
 			QFileInfo fileInfo(filename);
 			settings.setValue("LicenseDir", fileInfo.absolutePath());
-			Filesystem::CopyFileOverwrite(filename.toStdString(), QDir::toNativeSeparators(QDir::currentPath() + QDir::separator() + "license.lic").toStdString());
+			try {
+
+				Filesystem::CopyFileOverwrite(filename.toStdString(), QDir::toNativeSeparators(GetLicenseDirectory() + QDir::separator() + "license.lic").toStdString());
+			}
+			catch (const std::exception& e) {
+
+				QMessageBox::critical(this, tr("Installing License File Failed"), tr("Installing License File Failed: ") + e.what());
+				return;
+			}
 			ResetStatusLabel();
 		}
 
@@ -167,5 +187,10 @@ namespace SynGlyphX {
 
 			ResetStatusLabel();
 		}
+	}
+
+	QString LicensingDialog::GetLicenseDirectory() {
+
+		return SynGlyphX::Application::GetCommonDataLocation();
 	}
 }

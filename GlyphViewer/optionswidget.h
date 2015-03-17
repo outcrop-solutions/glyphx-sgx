@@ -15,36 +15,30 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef SYNGLYPHX_LICENSINGDIALOG_H
-#define SYNGLYPHX_LICENSINGDIALOG_H
+#ifndef OPTIONSWIDGET_H
+#define OPTIONSWIDGET_H
 
-#include "sgxgui_global.h"
-#include <QtWidgets/QDialog>
-#include <QtWidgets/QLabel>
+#include <QtWidgets/QTabWidget>
+#include "glyphvieweroptions.h"
+#include "browselineedit.h"
 
-namespace SynGlyphX {
+class OptionsWidget : public QTabWidget
+{
+	Q_OBJECT
 
-	class SGXGUI_EXPORT LicensingDialog : public QDialog
-	{
-		Q_OBJECT
+public:
+	OptionsWidget(const GlyphViewerOptions& options, bool enableCacheOptions, QWidget *parent);
+	~OptionsWidget();
 
-	public:
-		LicensingDialog(QWidget *parent);
-		~LicensingDialog();
+	GlyphViewerOptions GetOptions() const;
 
-		static bool CheckLicense();
+private slots:
+	void ClearCache();
 
-	private slots:
-		void OnInstallNewLicense();
+private:
+	void CreateCacheTab(const GlyphViewerOptions& options, bool enableCacheOptions);
 
-	private:
-		static QString LicenseStatusToString(int licenseStatus, int numberOfDaysLeft);
-		static QString GetLicenseDirectory();
-		void ResetStatusLabel();
+	SynGlyphX::BrowseLineEdit* m_cacheDirectoryWidget;
+};
 
-		QLabel* m_licenseLabel;
-	};
-
-} //namespace SynGlyphX
-
-#endif // LICENSINGDIALOG_H
+#endif // OPTIONSWIDGET_H

@@ -4,6 +4,8 @@
 #include <QtWidgets/QMessageBox>
 #include <QtWidgets/QMenuBar>
 #include <QtCore/QDir>
+#include <QtCore/QStandardPaths>
+#include <QtCore/QSettings>
 #include <QtWidgets/QDockWidget>
 #include "application.h"
 #include "datatransformmapping.h"
@@ -14,13 +16,16 @@
 #include "changedatasourcefiledialog.h"
 #include "antzimportdialog.h"
 #include "antzvisualizationfilelisting.h"
+#include "singlewidgetdialog.h"
+#include "optionswidget.h"
 
 GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 	: SynGlyphX::MainWindow(parent)
 {
 	m_glyphForestModel = new GlyphForestModel(this);
-	QString cacheDir = QDir::toNativeSeparators(QDir::currentPath()) + QDir::separator() + "cache";
-	m_cacheManager.SetBaseCacheDirectory(cacheDir.toStdWString());
+	
+	ReadOptions();
+	
 	CreateMenus();
 	CreateDockWidgets();
 	
@@ -38,6 +43,13 @@ GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 	QObject::connect(m_antzWidget, &ANTzViewerWidget::NewStatusMessage, statusBar(), &QStatusBar::showMessage);
 
 	m_stereoAction->setChecked(m_antzWidget->IsInStereoMode());
+
+	QStringList commandLineArguments = SynGlyphX::Application::arguments();
+	if (commandLineArguments.size() > 1) {
+
+		QDir visualizationToLoad(commandLineArguments[1]);
+		LoadVisualization(QDir::toNativeSeparators(visualizationToLoad.canonicalPath()));
+	}
 
 	statusBar()->showMessage(SynGlyphX::Application::applicationName() + " Started", 3000);
 }
@@ -94,6 +106,11 @@ void GlyphViewerWindow::CreateMenus() {
 	m_viewMenu->addSeparator();
 
 	m_toolsMenu = menuBar()->addMenu(tr("Tools"));
+
+	QAction* optionsAction = m_toolsMenu->addAction(tr("Options"));
+	QObject::connect(optionsAction, &QAction::triggered, this, static_cast<void (GlyphViewerWindow::*)()>(&GlyphViewerWindow::ChangeOptions));
+
+	m_toolsMenu->addSeparator();
 
 	QAction* mapDownloadSettingsAction = m_toolsMenu->addAction(tr("Map Download Settings"));
 	QObject::connect(mapDownloadSettingsAction, &QAction::triggered, this, &GlyphViewerWindow::ChangeMapDownloadSettings);
@@ -155,24 +172,33 @@ void GlyphViewerWindow::CloseVisualization() {
 
 void GlyphViewerWindow::LoadVisualization(const QString& filename) {
 
+	QFileInfo fileInfo(filename);
+	QString extension = fileInfo.suffix().toLower();
+	if ((extension != "sdt") && (extension != "sav")) {
+
+		QMessageBox::warning(this, tr("Loading Visualization Failed"), tr("File is not a recognized format"));
+		return;
+	}
+
+	if (!fileInfo.exists()) {
+
+		QMessageBox::warning(this, tr("Loading Visualization Failed"), tr("File does not exist"));
+		return;
+	}
+
 	if (!m_treeView->selectionModel()->selectedIndexes().empty()) {
 
 		m_treeView->selectionModel()->clearSelection();
 		m_antzWidget->updateGL();
 	}
 
-	QString extension = filename.right(4).toLower();
-	if (extension == ".sdt") {
+	if (extension == "sdt") {
 
 		LoadDataTransform(filename);
 	}
-	else if (extension == ".sav") {
+	else if (extension == "sav") {
 
 		LoadANTzCompatibilityVisualization(filename);
-	}
-	else {
-
-		throw std::exception("File is not a visualization.");
 	}
 }
 
@@ -331,4 +357,66 @@ void GlyphViewerWindow::EnableLoadedVisualizationDependentActions(bool enable) {
 
 		m_loadedVisualizationDependentActions[i]->setEnabled(enable);
 	}
+}
+
+void GlyphViewerWindow::ChangeOptions() {
+
+	OptionsWidget* optionsWidget = new OptionsWidget(m_options, (m_glyphForestModel->rowCount() == 0), this);
+	SynGlyphX::SingleWidgetDialog dialog(QDialogButtonBox::StandardButton::Ok | QDialogButtonBox::StandardButton::Cancel, optionsWidget, this);
+	dialog.setWindowTitle(tr("Glyph Viewer Options"));
+
+	if (dialog.exec() == QDialog::Accepted) {
+
+		try {
+
+			ChangeOptions(optionsWidget->GetOptions());
+			WriteOptions();
+		}
+		catch (const std::exception& e) {
+
+			QMessageBox::warning(this, tr("Options Error"), tr("Options was not updated: ") + e.what());
+		}
+	}
+}
+
+void GlyphViewerWindow::ChangeOptions(const GlyphViewerOptions& options) {
+
+	if (options != m_options) {
+
+		QString newCacheDirectory(options.GetCacheDirectory());
+		QDir cacheDir(newCacheDirectory);
+		if (!cacheDir.exists()) {
+
+			if (!cacheDir.mkpath(newCacheDirectory)) {
+
+				throw std::invalid_argument("Unable to create " + newCacheDirectory.toStdString());
+			}
+		}
+
+		m_options = options;
+		m_cacheManager.SetBaseCacheDirectory(m_options.GetCacheDirectory().toStdWString());
+	}
+}
+
+void GlyphViewerWindow::ReadOptions() {
+
+	GlyphViewerOptions options;
+
+	QSettings settings;
+	settings.beginGroup("Options");
+
+	QString cacheDirectory = QDir::toNativeSeparators(settings.value("cacheDirectory", SynGlyphX::Application::GetCommonDataLocation() + QDir::separator() + "gv_cache").toString());
+	options.SetCacheDirectory(cacheDirectory);
+	settings.endGroup();
+
+	ChangeOptions(options);
+}
+
+void GlyphViewerWindow::WriteOptions() {
+
+	QSettings settings;
+	settings.beginGroup("Options");
+
+	settings.setValue("cacheDirectory", m_options.GetCacheDirectory());
+	settings.endGroup();
 }

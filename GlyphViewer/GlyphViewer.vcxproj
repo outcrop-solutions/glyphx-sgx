@@ -11,7 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{B12702AD-ABFB-343A-A199-8E24837244A3}</ProjectGuid>
+    <ProjectGuid>{819CAA07-8664-4CC9-B3CE-95FE5B6C2F70}</ProjectGuid>
     <Keyword>Qt4VSv1.0</Keyword>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -106,6 +106,9 @@
     <ClCompile Include="GeneratedFiles\Win32\Debug\moc_glyphviewerwindow.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\Win32\Debug\moc_optionswidget.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="GeneratedFiles\Win32\Release\moc_antzimportdialog.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
@@ -124,10 +127,15 @@
     <ClCompile Include="GeneratedFiles\Win32\Release\moc_glyphviewerwindow.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\Win32\Release\moc_optionswidget.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="glyphforestmodel.cpp" />
     <ClCompile Include="glyphtreelistview.cpp" />
+    <ClCompile Include="glyphvieweroptions.cpp" />
     <ClCompile Include="glyphviewerwindow.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="optionswidget.cpp" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="glyphviewerwindow.h">
@@ -218,6 +226,17 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cachemanager.h" />
+    <ClInclude Include="glyphvieweroptions.h" />
+    <CustomBuild Include="optionswidget.h">
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing optionswidget.h...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\GeneratedFiles\$(PlatformName)\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(PlatformName)\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DWIN64 -DQT_DLL -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_SQL_LIB -DQT_OPENGL_LIB -DQT_WIDGETS_LIB "-I.\GeneratedFiles" "-I." "-I.\..\..\3rdParty\include\Qt_5_2_1" "-I.\GeneratedFiles\$(PlatformName)\$(ConfigurationName)\." "-I.\..\..\ANTzPlus\ANTzBridge" "-I.\..\..\3rdParty\include\boost_1_55_0" "-I.\..\..\Core\SGXFoundation" "-I.\..\..\3rdParty\include\stlplus_3_11" "-I.\..\..\Core\SGXGeospatial" "-I.\..\..\GUI\SGXGUI" "-I.\..\..\GUI\MapDownloading" "-I.\..\..\Core\SGXDataTransform" "-I.\..\..\ANTzPlus\ANTzCore" "-I.\..\..\3rdParty\include\SOIL_20080707" "-I.\..\..\GUI\DataMapper" "-I.\..\..\3rdParty\include\zSpace_3_0_0_318" "-I.\..\..\ANTzPlus\ANTzDataTransform" "-I.\..\..\ANTzPlus\ANTzGUI" "-I.\..\..\Core\SGXUtility"</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Moc%27ing optionswidget.h...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles\$(PlatformName)\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(PlatformName)\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DWIN64 -DQT_DLL -DQT_NO_DEBUG -DNDEBUG -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_SQL_LIB -DQT_OPENGL_LIB -DQT_WIDGETS_LIB "-I.\GeneratedFiles" "-I." "-I.\..\..\3rdParty\include\Qt_5_2_1" "-I.\GeneratedFiles\$(PlatformName)\$(ConfigurationName)\." "-I.\..\..\ANTzPlus\ANTzBridge" "-I.\..\..\3rdParty\include\boost_1_55_0" "-I.\..\..\Core\SGXFoundation" "-I.\..\..\3rdParty\include\stlplus_3_11" "-I.\..\..\Core\SGXGeospatial" "-I.\..\..\GUI\SGXGUI" "-I.\..\..\GUI\MapDownloading" "-I.\..\..\Core\SGXDataTransform" "-I.\..\..\ANTzPlus\ANTzCore" "-I.\..\..\3rdParty\include\SOIL_20080707" "-I.\..\..\GUI\DataMapper" "-I.\..\..\3rdParty\include\zSpace_3_0_0_318" "-I.\..\..\ANTzPlus\ANTzDataTransform" "-I.\..\..\ANTzPlus\ANTzGUI" "-I.\..\..\Core\SGXUtility"</Command>
+    </CustomBuild>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
