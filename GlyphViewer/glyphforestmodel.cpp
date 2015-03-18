@@ -224,7 +224,7 @@ int GlyphForestModel::FindRowForRootNode(pNPnode node) const {
 void GlyphForestModel::SetParentGridToDefaultBaseImage() {
 
 	pNPnode grid = static_cast<pNPnode>(m_antzData->GetData()->map.node[kNPnodeRootGrid]);
-	grid->textureID = m_textures.begin()->second;
+	grid->textureID = 1; // m_textures.begin()->second;
 }
 
 const QStringList& GlyphForestModel::GetBaseImageFilenames() const {

@@ -6,6 +6,8 @@
 #include <QtWidgets/QStatusBar>
 #include <QtGui/QCloseEvent>
 #include <QtCore/QSettings>
+#include <QtCore/QFileInfo>
+#include <QtCore/QDir>
 #include "glyphpropertieswidget.h"
 #include "antzcsvwriter.h"
 #include "application.h"
@@ -43,6 +45,13 @@ GlyphDesignerWindow::GlyphDesignerWindow(QWidget *parent)
 	QObject::connect(m_glyphTreeModel, &SynGlyphXANTz::MinMaxGlyphTreeModel::dataChanged, this, &GlyphDesignerWindow::OnModelChanged);
 	
 	SelectRootGlyphInModel();
+
+	QStringList commandLineArguments = SynGlyphX::Application::arguments();
+	if (commandLineArguments.size() > 1) {
+
+		QDir templateToLoad(commandLineArguments[1]);
+		LoadTemplate(QDir::toNativeSeparators(templateToLoad.canonicalPath()));
+	}
 
     statusBar()->showMessage(SynGlyphX::Application::applicationName() + " Started", 3000);
 }
@@ -207,7 +216,14 @@ void GlyphDesignerWindow::LoadTemplate(const QString& filename) {
 
     if (!filename.isEmpty()) {
 
-		if (QFile::exists(filename)) {
+		QFileInfo fileInfo(filename);
+		QString extension = fileInfo.suffix().toLower();
+		if ((extension != "csv") && (extension != "sgt")) {
+
+			QMessageBox::warning(this, tr("Loading Template Failed"), tr("File is not a recognized format"));
+			return;
+		}
+		if (fileInfo.exists()) {
 
 			SynGlyphX::Application::setOverrideCursor(Qt::WaitCursor);
 			m_isFileLoadingOrDefaultGlyphSet = true;

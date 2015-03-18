@@ -1,11 +1,11 @@
 #include "application.h"
 #include <QtCore/QDir>
 #include <QtGui/QIcon>
+#include <QtCore/QStandardPaths>
 
 namespace SynGlyphX {
 
-	QString Application::s_tempDirectory = QDir::tempPath();
-
+	QString Application::s_commonDataLocation;	QString Application::s_tempDirectory = QDir::tempPath();
     Application::Application(int& argc, char** argv)
         : QApplication(argc, argv)
     {
@@ -24,12 +24,41 @@ namespace SynGlyphX {
 
         setApplicationName(appName);
         setApplicationVersion(appVersion);
-
 		s_tempDirectory = QDir::tempPath() + QDir::separator() + organizationName() + QDir::separator() + applicationName();
 		QDir dir;
 		if (!dir.mkpath(s_tempDirectory)) {
 
 			throw std::exception("Failed to create temp directory");
+		}
+
+		QString baseCommonDataPath;
+
+#ifdef WIN32
+		QStringList paths = QStandardPaths::standardLocations(QStandardPaths::GenericDataLocation);
+		Q_FOREACH(QString path, paths) {
+
+			if (path.contains("ProgramData")) {
+
+				baseCommonDataPath = path;
+				break;
+			}
+		}
+
+		if (baseCommonDataPath.isEmpty()) {
+
+			baseCommonDataPath = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation);
+		}
+		
+#else
+		baseCommonDataPath = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation);
+#endif
+
+		s_commonDataLocation = QDir::toNativeSeparators(baseCommonDataPath + '/' + organizationName());
+
+		QDir commonDataDir(s_commonDataLocation);
+		if (!commonDataDir.exists()) {
+
+			commonDataDir.mkpath(s_commonDataLocation);
 		}
     }
 
@@ -39,9 +68,18 @@ namespace SynGlyphX {
         setWindowIcon(windowIcon);
     }
 
+	QString Application::GetApplicationVersionMajorNumber() {
+
+		QString version = applicationVersion();
+		return version.left(version.indexOf('.'));
+	}
+
+	const QString& Application::GetCommonDataLocation() {
+
+		return s_commonDataLocation;
+	}
 	const QString& Application::GetAppTempDirectory() {
 
 		return s_tempDirectory;
 	}
-
 } //namespace SynGlyphX

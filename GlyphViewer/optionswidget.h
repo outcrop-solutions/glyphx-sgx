@@ -15,32 +15,30 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef APPLICATION_H
-#define APPLICATION_H
+#ifndef OPTIONSWIDGET_H
+#define OPTIONSWIDGET_H
 
-#include "sgxgui_global.h"
-#include <QtWidgets/QApplication>
+#include <QtWidgets/QTabWidget>
+#include "glyphvieweroptions.h"
+#include "browselineedit.h"
 
-namespace SynGlyphX {
+class OptionsWidget : public QTabWidget
+{
+	Q_OBJECT
 
-    class SGXGUI_EXPORT Application : public QApplication
-    {
-        Q_OBJECT
+public:
+	OptionsWidget(const GlyphViewerOptions& options, bool enableCacheOptions, QWidget *parent);
+	~OptionsWidget();
 
-    public:
-        Application(int& argc, char** argv);
-        ~Application();
+	GlyphViewerOptions GetOptions() const;
 
-        static void Setup(const QString& appName, const QString& appVersion);
-        static void SetupIcons(const QIcon& windowIcon);
+private slots:
+	void ClearCache();
 
-		static QString GetApplicationVersionMajorNumber();
-		static const QString& GetCommonDataLocation();
-		static const QString& GetAppTempDirectory();
-    private:
-		static QString s_commonDataLocation;
-		static QString s_tempDirectory;    };
+private:
+	void CreateCacheTab(const GlyphViewerOptions& options, bool enableCacheOptions);
 
-} //namespace SynGlyphX
+	SynGlyphX::BrowseLineEdit* m_cacheDirectoryWidget;
+};
 
-#endif // APPLICATION_H
+#endif // OPTIONSWIDGET_H

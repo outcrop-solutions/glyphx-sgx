@@ -7,6 +7,7 @@
 #include "application.h"
 #include <QtWidgets/QMessageBox>
 #include <QtWidgets/QFileDialog>
+#include "licensingdialog.h"
 
 namespace SynGlyphX {
 
@@ -163,9 +164,21 @@ namespace SynGlyphX {
     void MainWindow::CreateHelpMenu() {
 
         m_helpMenu = menuBar()->addMenu(tr("Help"));
+
+		QAction* licensingAction = m_helpMenu->addAction(tr("Licensing"));
+		QObject::connect(licensingAction, &QAction::triggered, this, &MainWindow::ShowLicensingDialog);
+
+		m_helpMenu->addSeparator();
+
         m_aboutBoxAction = m_helpMenu->addAction("About " + SynGlyphX::Application::organizationName() + " " + SynGlyphX::Application::applicationName());
 		QObject::connect(m_aboutBoxAction, &QAction::triggered, this, &MainWindow::ShowAboutBox);
     }
+
+	void MainWindow::ShowLicensingDialog() {
+
+		SynGlyphX::LicensingDialog dialog(this);
+		dialog.exec();
+	}
 
     void MainWindow::ShowAboutBox() {
 

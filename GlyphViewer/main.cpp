@@ -2,13 +2,19 @@
 #include "application.h"
 #include <QtWidgets/QSplashScreen>
 #include <QtCore/QTimer>
+#include "licensingdialog.h"
 
 int main(int argc, char *argv[])
 {
-	SynGlyphX::Application::Setup("Glyph Viewer", "0.6.11");
+	SynGlyphX::Application::Setup("Glyph Viewer", "0.6.12");
 	SynGlyphX::Application a(argc, argv);
 
 	SynGlyphX::Application::SetupIcons(QIcon(":SGXGUI/Resources/synglyphx_x.ico"));
+
+	if (!SynGlyphX::LicensingDialog::CheckLicense()) {
+
+		return 0;
+	}
 
 	//Setup and show the splash screen
 	QPixmap pixmap(":SGXGUI/Resources/synglyphx_splash.png");

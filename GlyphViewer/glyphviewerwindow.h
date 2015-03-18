@@ -25,9 +25,8 @@
 #include "glyphforestmodel.h"
 #include "antzviewerwidget.h"
 #include "cachemanager.h"
-#include "sourcedatacache.h"
+#include "glyphvieweroptions.h"#include "sourcedatacache.h"
 #include "sourcedataselectionwidget.h"
-
 class GlyphViewerWindow : public SynGlyphX::MainWindow
 {
 	Q_OBJECT
@@ -44,6 +43,7 @@ private slots:
 	void ShowOpenGLSettings();
 	void ChangeStereoMode();
 	void ImportFilesFromANTz();
+	void ChangeOptions();
 
 private:
 	virtual void LoadRecentFile(const QString& filename);
@@ -55,6 +55,9 @@ private:
 	void CreateMenus();
 	void CreateDockWidgets();
 	void EnableLoadedVisualizationDependentActions(bool enable);
+	void ChangeOptions(const GlyphViewerOptions& options);
+	void ReadOptions();
+	void WriteOptions();
 
 	QMenu* m_fileMenu;
 	QMenu* m_viewMenu;
@@ -68,8 +71,7 @@ private:
 	QItemSelectionModel* m_glyphForestSelectionModel;
 	ANTzViewerWidget* m_antzWidget;
 	GlyphTreeListView* m_treeView;
-	SynGlyphX::SourceDataCache::SharedPtr m_sourceDataCache;
-	SourceDataSelectionWidget* m_sourceDataSelectionWidget;
-};
+	GlyphViewerOptions m_options;	SynGlyphX::SourceDataCache::SharedPtr m_sourceDataCache;
+	SourceDataSelectionWidget* m_sourceDataSelectionWidget;};
 
 #endif // GLYPHVIEWERWINDOW_H

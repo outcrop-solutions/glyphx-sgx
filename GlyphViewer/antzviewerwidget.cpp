@@ -12,6 +12,7 @@
 #include "npctrl.h"
 #include "io/npgl.h"
 #include "io/gl/nptags.h"
+#include "application.h"
 
 //The default QGLFormat works for now except we want alpha enabled.  Also want to try and get a stereo enabled context
 QGLFormat ANTzViewerWidget::s_format(QGL::AlphaChannel | QGL::StereoBuffers);
@@ -291,7 +292,7 @@ void ANTzViewerWidget::initializeGL() {
 	npInitGLPrimitive(antzData);
 	npInitTags(antzData);
 	
-	m_worldTextureID = BindTextureInFile(QDir::toNativeSeparators(QDir::currentPath() + QDir::separator() + "world.png"));
+	m_worldTextureID = BindTextureInFile(QDir::toNativeSeparators(SynGlyphX::Application::applicationDirPath() + QDir::separator() + "world.png"));
 	pNPnode rootGrid = static_cast<pNPnode>(antzData->map.node[kNPnodeRootGrid]);
 	SetGridTexture(rootGrid);
 	antzData->io.gl.textureCount = 1;

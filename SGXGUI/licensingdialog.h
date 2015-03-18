@@ -15,32 +15,36 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef APPLICATION_H
-#define APPLICATION_H
+#ifndef SYNGLYPHX_LICENSINGDIALOG_H
+#define SYNGLYPHX_LICENSINGDIALOG_H
 
 #include "sgxgui_global.h"
-#include <QtWidgets/QApplication>
+#include <QtWidgets/QDialog>
+#include <QtWidgets/QLabel>
 
 namespace SynGlyphX {
 
-    class SGXGUI_EXPORT Application : public QApplication
-    {
-        Q_OBJECT
+	class SGXGUI_EXPORT LicensingDialog : public QDialog
+	{
+		Q_OBJECT
 
-    public:
-        Application(int& argc, char** argv);
-        ~Application();
+	public:
+		LicensingDialog(QWidget *parent);
+		~LicensingDialog();
 
-        static void Setup(const QString& appName, const QString& appVersion);
-        static void SetupIcons(const QIcon& windowIcon);
+		static bool CheckLicense();
 
-		static QString GetApplicationVersionMajorNumber();
-		static const QString& GetCommonDataLocation();
-		static const QString& GetAppTempDirectory();
-    private:
-		static QString s_commonDataLocation;
-		static QString s_tempDirectory;    };
+	private slots:
+		void OnInstallNewLicense();
+
+	private:
+		static QString LicenseStatusToString(int licenseStatus, int numberOfDaysLeft);
+		static QString GetLicenseDirectory();
+		void ResetStatusLabel();
+
+		QLabel* m_licenseLabel;
+	};
 
 } //namespace SynGlyphX
 
-#endif // APPLICATION_H
+#endif // LICENSINGDIALOG_H
