@@ -1,0 +1,4 @@
+np_globals_id,direction,a_map_path,a_items,a_element,a_type,b_map_path,b_items,b_element,b_type,title,desc,init_value
+1,0,"np_gl",1,"alpha_mode","i","csv",1,"alpha_mode","i","","","1"
+2,0,"np_gl",1,"color_rgba","ffff","csv",1,"color_rgba","ffff","Background Color","","0.000000,0.000000,0.000000,1.000000"
+3,1,"np_globals",1,"item_count","i","csv",1,"item_count","i","","","3"
