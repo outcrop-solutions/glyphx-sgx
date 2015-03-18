@@ -229,3 +229,5 @@ qrc_*.cpp
 /DataMapper/antzglobals.csv
 /GlyphDesigner/antzosc.csv
 /GlyphDesigner/antzglobals.csv
+/SGXEULAWindowsSetup/Win32
+/SGXSetupMergeModule/Win32

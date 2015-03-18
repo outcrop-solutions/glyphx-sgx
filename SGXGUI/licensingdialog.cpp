@@ -35,12 +35,12 @@ namespace SynGlyphX {
 		eulaBrowser->setReadOnly(true);
 		eulaBrowser->setMinimumSize(700, 300);
 
-		QFile eulaFile(QDir::fromNativeSeparators(SynGlyphX::Application::applicationDirPath() + "/docs/eula.html"));
+		QFile eulaFile(QDir::fromNativeSeparators(SynGlyphX::Application::applicationDirPath() + "/docs/license_agreement.html"));
 		eulaFile.open(QFile::ReadOnly | QFile::Text);
 		QTextStream eulaStream(&eulaFile);
 		eulaBrowser->setHtml(eulaStream.readAll());
 
-		SynGlyphX::GroupBoxSingleWidget* eulaGroupBox = new SynGlyphX::GroupBoxSingleWidget(tr("EULA (End User License Agreement)"), eulaBrowser, this);
+		SynGlyphX::GroupBoxSingleWidget* eulaGroupBox = new SynGlyphX::GroupBoxSingleWidget(tr("License Agreement"), eulaBrowser, this);
 		layout->addWidget(eulaGroupBox, 1);
 
 		QHBoxLayout* buttonsLayout = new QHBoxLayout(this);
