@@ -1,0 +1,10 @@
+#
+e=/cygdrive/c/Users/Alan/Antz2014/antz_msw_2013-11-21/usr/csv
+#
+echo '------------------------------------------------------------------------------'
+./gps2csv.exe -D -G glyph_in.csv -g `wc -l glyph_in.csv` -n `wc -l gps_data.txt` -d gps_data.txt > gps_body.csv
+#
+cat gps_head.csv gps_body.csv > gps_out.csv
+#
+cp gps_out.csv $e
+echo '------------------------------------------------------------------------------'

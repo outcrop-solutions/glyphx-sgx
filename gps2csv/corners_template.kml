@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<boundingbox>
+<<<<<<< HEAD
+	<sw>_SW_lat_,_SW_lon_</sw>
+	<ne>_NE_lat_,_NE_lon_</ne>
+<units>degrees</units>
+</boundingbox>
+=======
+                <sw>_SW_lat_,_SW_lon_</sw>
+                <ne>_NE_lat_,_NE_lon_</ne>
+<units>degrees</units>
+</boundingbox>
+>>>>>>> 8729a7360cd180a8547fba3b6ca0523114c7c1e8
