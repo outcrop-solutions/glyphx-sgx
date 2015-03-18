@@ -4,9 +4,9 @@ namespace SynGlyphXANTz {
 
 
 	ANTzObject::ANTzObject() :
-		m_scale{ { 1.0, 1.0, 1.0 } },
-		m_position{ { 0.0, 0.0, 0.0 } },
-		m_rotation{ { 0.0, 0.0, 0.0 } }
+		m_scale({ { 1.0, 1.0, 1.0 } }),
+		m_position({ { 0.0, 0.0, 0.0 } }),
+		m_rotation({ { 0.0, 0.0, 0.0 } })
 	{
 	}
 

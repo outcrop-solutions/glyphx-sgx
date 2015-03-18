@@ -8,6 +8,7 @@
 #include <QtCore/QDir>
 #include <QtCore/QFile>
 #include "glyphnodeconverter.h"
+#include "application.h"
 
 namespace SynGlyphXANTz {
 
@@ -43,7 +44,7 @@ namespace SynGlyphXANTz {
 
 		ANTzWidget::initializeGL();
 
-		QString worldBaseImageFilename = QDir::toNativeSeparators(QDir::currentPath() + QDir::separator() + "world.png");
+		QString worldBaseImageFilename = QDir::toNativeSeparators(SynGlyphX::Application::applicationDirPath() + QDir::separator() + "world.png");
 		if (QFile::exists(worldBaseImageFilename)) {
 
 			m_baseImageTextureID = BindTextureInFile(worldBaseImageFilename);
