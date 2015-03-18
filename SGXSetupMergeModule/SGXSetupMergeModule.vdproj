@@ -3030,7 +3030,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_25EDCDADCDD54E54ACCED55C743DE2E1"
             {
-            "SourcePath" = "8:..\\..\\bin\\Win32\\Debug\\SGXUtility.dll"
+            "SourcePath" = "8:..\\..\\bin\\Win32\\Release\\SGXUtility.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_0FD992B69CC74D489682A631FA99B364"
@@ -3058,7 +3058,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_2870EFFC8DAC4731A428DE4C0B73DB18"
             {
-            "SourcePath" = "8:..\\..\\bin\\Win32\\Debug\\ANTzDataTransform.dll"
+            "SourcePath" = "8:..\\..\\bin\\Win32\\Release\\ANTzDataTransform.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_0FD992B69CC74D489682A631FA99B364"
@@ -3086,7 +3086,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_2FACC7E00B714516B7BA56FA6F2F6555"
             {
-            "SourcePath" = "8:..\\..\\bin\\Win32\\Debug\\SGXGUI.dll"
+            "SourcePath" = "8:..\\..\\bin\\Win32\\Release\\SGXGUI.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_0FD992B69CC74D489682A631FA99B364"
@@ -3114,7 +3114,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_4A66415C1F6A4465AE0184E0AD215A97"
             {
-            "SourcePath" = "8:..\\..\\bin\\Win32\\Debug\\GlyphDesigner.exe"
+            "SourcePath" = "8:..\\..\\bin\\Win32\\Release\\GlyphDesigner.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_0FD992B69CC74D489682A631FA99B364"
@@ -3142,7 +3142,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_6ADC0B640C3940E0867F28C68B87F598"
             {
-            "SourcePath" = "8:..\\..\\bin\\Win32\\Debug\\ANTzCore.dll"
+            "SourcePath" = "8:..\\..\\bin\\Win32\\Release\\ANTzCore.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_0FD992B69CC74D489682A631FA99B364"
@@ -3170,7 +3170,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_81FF97ED6A5F414A9168C96960FF2219"
             {
-            "SourcePath" = "8:..\\..\\bin\\Win32\\Debug\\MapDownloading.dll"
+            "SourcePath" = "8:..\\..\\bin\\Win32\\Release\\MapDownloading.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_0FD992B69CC74D489682A631FA99B364"
@@ -3198,7 +3198,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_A39E3C1ACADE4FAABD1F046378B079F8"
             {
-            "SourcePath" = "8:..\\..\\bin\\Win32\\Debug\\ANTzBridge.dll"
+            "SourcePath" = "8:..\\..\\bin\\Win32\\Release\\ANTzBridge.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_0FD992B69CC74D489682A631FA99B364"
@@ -3226,7 +3226,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_A7E4EAFA7D2847A2B3676A8F3044EB9E"
             {
-            "SourcePath" = "8:..\\..\\bin\\Win32\\Debug\\ANTzGUI.dll"
+            "SourcePath" = "8:..\\..\\bin\\Win32\\Release\\ANTzGUI.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_0FD992B69CC74D489682A631FA99B364"
@@ -3254,7 +3254,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_A84641ED9ED84AA6B2AFE2149861F43F"
             {
-            "SourcePath" = "8:..\\..\\bin\\Win32\\Debug\\SGXGeospatial.dll"
+            "SourcePath" = "8:..\\..\\bin\\Win32\\Release\\SGXGeospatial.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_0FD992B69CC74D489682A631FA99B364"
@@ -3282,7 +3282,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_C7912A0A11E042A4B9EBCF355893E14B"
             {
-            "SourcePath" = "8:..\\..\\bin\\Win32\\Debug\\GlyphViewer.exe"
+            "SourcePath" = "8:..\\..\\bin\\Win32\\Release\\GlyphViewer.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_0FD992B69CC74D489682A631FA99B364"
@@ -3310,7 +3310,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_CFBBE95372F6428BB47610D4A3F54FF3"
             {
-            "SourcePath" = "8:..\\..\\bin\\Win32\\Debug\\DataMapper.exe"
+            "SourcePath" = "8:..\\..\\bin\\Win32\\Release\\DataMapper.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_0FD992B69CC74D489682A631FA99B364"
@@ -3338,7 +3338,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_D787F3DF2B28465F8FD35E5366024A69"
             {
-            "SourcePath" = "8:..\\..\\bin\\Win32\\Debug\\SGXGlyphGUI.dll"
+            "SourcePath" = "8:..\\..\\bin\\Win32\\Release\\SGXGlyphGUI.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_0FD992B69CC74D489682A631FA99B364"
@@ -3366,7 +3366,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_DC4A7390B55840E3B8E672CE993EBA45"
             {
-            "SourcePath" = "8:..\\..\\bin\\Win32\\Debug\\SGXFoundation.dll"
+            "SourcePath" = "8:..\\..\\bin\\Win32\\Release\\SGXFoundation.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_0FD992B69CC74D489682A631FA99B364"
@@ -3394,7 +3394,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_F78B32326DD54462B3263080F5EAB4C2"
             {
-            "SourcePath" = "8:..\\..\\bin\\Win32\\Debug\\SGXDataTransform.dll"
+            "SourcePath" = "8:..\\..\\bin\\Win32\\Release\\SGXDataTransform.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_0FD992B69CC74D489682A631FA99B364"
@@ -3484,6 +3484,20 @@
             "Icon" = "8:_19A18E0151FF46A3B9D1780F31CFAC2D"
             "Feature" = "8:"
             }
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_496D1073A8D949F6A1882139560338E3"
+            {
+            "Name" = "8:Shortcut to Data Mapper"
+            "Arguments" = "8:"
+            "Description" = "8:Shortcut to Data Mapper"
+            "ShowCmd" = "3:1"
+            "IconIndex" = "3:0"
+            "Transitive" = "11:FALSE"
+            "Target" = "8:_CFBBE95372F6428BB47610D4A3F54FF3"
+            "Folder" = "8:_AE5DEF05DB95429488E96B6C98F9888E"
+            "WorkingFolder" = "8:_0FD992B69CC74D489682A631FA99B364"
+            "Icon" = "8:_19A18E0151FF46A3B9D1780F31CFAC2D"
+            "Feature" = "8:"
+            }
             "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_5700AAE5191D43E39ACB9CD3E06D7DB3"
             {
             "Name" = "8:Glyph Viewer"
@@ -3498,43 +3512,29 @@
             "Icon" = "8:_19A18E0151FF46A3B9D1780F31CFAC2D"
             "Feature" = "8:"
             }
-            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_6EE07647A728466D965855D3E42FFE25"
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_A6B467D1BCF344CFA76F0DD34A92368E"
             {
-            "Name" = "8:Glyph Viewer"
+            "Name" = "8:Shortcut to Glyph Designer"
             "Arguments" = "8:"
-            "Description" = "8:"
-            "ShowCmd" = "3:1"
-            "IconIndex" = "3:0"
-            "Transitive" = "11:FALSE"
-            "Target" = "8:_C7912A0A11E042A4B9EBCF355893E14B"
-            "Folder" = "8:_AE5DEF05DB95429488E96B6C98F9888E"
-            "WorkingFolder" = "8:_0FD992B69CC74D489682A631FA99B364"
-            "Icon" = "8:_19A18E0151FF46A3B9D1780F31CFAC2D"
-            "Feature" = "8:"
-            }
-            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_B799AA74085B414CBB8A3C6EDF1001B8"
-            {
-            "Name" = "8:Data Mapper"
-            "Arguments" = "8:"
-            "Description" = "8:"
-            "ShowCmd" = "3:1"
-            "IconIndex" = "3:0"
-            "Transitive" = "11:FALSE"
-            "Target" = "8:_CFBBE95372F6428BB47610D4A3F54FF3"
-            "Folder" = "8:_AE5DEF05DB95429488E96B6C98F9888E"
-            "WorkingFolder" = "8:_0FD992B69CC74D489682A631FA99B364"
-            "Icon" = "8:_19A18E0151FF46A3B9D1780F31CFAC2D"
-            "Feature" = "8:"
-            }
-            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_BA4BF45FBC35496F97E0B376BC08D62F"
-            {
-            "Name" = "8:Glyph Designer"
-            "Arguments" = "8:"
-            "Description" = "8:"
+            "Description" = "8:Shortcut to Glyph Designer"
             "ShowCmd" = "3:1"
             "IconIndex" = "3:0"
             "Transitive" = "11:FALSE"
             "Target" = "8:_4A66415C1F6A4465AE0184E0AD215A97"
+            "Folder" = "8:_AE5DEF05DB95429488E96B6C98F9888E"
+            "WorkingFolder" = "8:_0FD992B69CC74D489682A631FA99B364"
+            "Icon" = "8:_19A18E0151FF46A3B9D1780F31CFAC2D"
+            "Feature" = "8:"
+            }
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_E3D4FD5D4C554D69AF17891893E0E388"
+            {
+            "Name" = "8:Shortcut to Glyph Viewer"
+            "Arguments" = "8:"
+            "Description" = "8:Shortcut to Glyph Viewer"
+            "ShowCmd" = "3:1"
+            "IconIndex" = "3:0"
+            "Transitive" = "11:FALSE"
+            "Target" = "8:_C7912A0A11E042A4B9EBCF355893E14B"
             "Folder" = "8:_AE5DEF05DB95429488E96B6C98F9888E"
             "WorkingFolder" = "8:_0FD992B69CC74D489682A631FA99B364"
             "Icon" = "8:_19A18E0151FF46A3B9D1780F31CFAC2D"

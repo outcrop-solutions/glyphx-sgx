@@ -113,7 +113,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ANTzGUI", "..\..\ANTzPlus\A
 EndProject
 Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "SGXSetupMergeModule", "..\SGXSetupMergeModule\SGXSetupMergeModule.vdproj", "{8F542EC5-A302-4C68-A9A3-3DF5DDB7E44C}"
 EndProject
-Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "SGXEULAWindowsSetup", "SGXEULAWindowsSetup.vdproj", "{EF3ADBA0-3C0F-49F0-9A45-8957E1D95B04}"
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "SGXDemoWindowsSetup", "SGXDemoWindowsSetup.vdproj", "{5C0B268E-0715-463B-A7BF-F1795A673214}"
+	ProjectSection(ProjectDependencies) = postProject
+		{8F542EC5-A302-4C68-A9A3-3DF5DDB7E44C} = {8F542EC5-A302-4C68-A9A3-3DF5DDB7E44C}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -181,9 +184,10 @@ Global
 		{8F542EC5-A302-4C68-A9A3-3DF5DDB7E44C}.Debug|Win32.Build.0 = Debug
 		{8F542EC5-A302-4C68-A9A3-3DF5DDB7E44C}.Release|Win32.ActiveCfg = Release
 		{8F542EC5-A302-4C68-A9A3-3DF5DDB7E44C}.Release|Win32.Build.0 = Release
-		{EF3ADBA0-3C0F-49F0-9A45-8957E1D95B04}.Debug|Win32.ActiveCfg = Debug
-		{EF3ADBA0-3C0F-49F0-9A45-8957E1D95B04}.Release|Win32.ActiveCfg = Release
-		{EF3ADBA0-3C0F-49F0-9A45-8957E1D95B04}.Release|Win32.Build.0 = Release
+		{5C0B268E-0715-463B-A7BF-F1795A673214}.Debug|Win32.ActiveCfg = Debug
+		{5C0B268E-0715-463B-A7BF-F1795A673214}.Debug|Win32.Build.0 = Debug
+		{5C0B268E-0715-463B-A7BF-F1795A673214}.Release|Win32.ActiveCfg = Release
+		{5C0B268E-0715-463B-A7BF-F1795A673214}.Release|Win32.Build.0 = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
