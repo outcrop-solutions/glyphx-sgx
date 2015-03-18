@@ -32,6 +32,7 @@ namespace SynGlyphX {
 
 		static void RemoveContentsOfDirectory(const std::string& directory);
 		static void CopyDirectoryOverwrite(const std::string& sourceDir, const std::string& destinationDir, bool recursive = false);
+		static void CopyFileOverwrite(const std::string& sourceFile, const std::string& destinationFile);
 
 	private:
 		static void CopyDirectoryOverwrite(const boost::filesystem::path& sourcePath, const boost::filesystem::path& destinationPath, bool recursive);

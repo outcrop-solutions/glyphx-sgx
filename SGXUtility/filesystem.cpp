@@ -69,4 +69,28 @@ namespace SynGlyphX {
 		}
 	}
 
+	void Filesystem::CopyFileOverwrite(const std::string& sourceFile, const std::string& destinationFile) {
+
+		boost::filesystem::path sourcePath(sourceFile);
+		if (!boost::filesystem::exists(sourcePath)) {
+
+			throw std::invalid_argument("CopyFileOverwrite: Source does not exist");
+		}
+		if (!boost::filesystem::is_regular_file(sourcePath)) {
+
+			throw std::invalid_argument("CopyFileOverwrite: Source is not a file");
+		}
+
+		boost::filesystem::path destinationPath(destinationFile);
+		if (boost::filesystem::exists(destinationPath)) {
+
+			if (!boost::filesystem::is_regular_file(destinationPath)) {
+
+				throw std::invalid_argument("CopyFileOverwrite: Destination exists but it is not a file");
+			}
+		}
+
+		boost::filesystem::copy_file(sourcePath, destinationPath, boost::filesystem::copy_option::overwrite_if_exists);
+	}
+
 } //namespace SynGlyphX
