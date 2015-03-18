@@ -15,12 +15,6 @@
     {
         "Entry"
         {
-        "MsmKey" = "8:_01903A37C0814046909499F2920416AD"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_04398C226C8143C6A99A85E656CDA4C1"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -39,19 +33,13 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_0A4D72777B4946D2925464AD0AD7DCD2"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_0BAE74CD2B714CC19163683B36EFAF50"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_0D022DEA8552487599F43DD2B4AFF3E2"
+        "MsmKey" = "8:_112F5D98201E4F7398911EC38F6472E5"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -87,19 +75,7 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_16307BAD27B54620BDE4BAF03FFF4433"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_1874BD20058D49D298D2A2D763B637C4"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_19A18E0151FF46A3B9D1780F31CFAC2D"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -153,6 +129,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_2D29FC3E19C447FCB5F9030451AF2A65"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_2FACC7E00B714516B7BA56FA6F2F6555"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -160,6 +142,12 @@
         "Entry"
         {
         "MsmKey" = "8:_3149269C0F9D4209B46F35D83B2023CB"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_347DBC76B9CF48E48243DD8A335CBD68"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -183,12 +171,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_432B91C148844E73BD40CA9336EF44C1"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_43478C494BEB45FBB93B938614B7080B"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -207,12 +189,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_4A4682AC054741B8993597C503AF36AB"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_4A66415C1F6A4465AE0184E0AD215A97"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -220,12 +196,6 @@
         "Entry"
         {
         "MsmKey" = "8:_4D2B656B62BB465EAABE5D1982B7A1B7"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_4DD79FF63A3F4632B7C4502A069ECAA6"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -261,13 +231,19 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_63B4540CE48C4F88AB5BE2BBEDE56AAA"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_65517AF956564152A6E0E7793FEEE5E7"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_67EB1BEA38F84D5EB32F00AF11EAC96D"
+        "MsmKey" = "8:_68438344AA5B43B9BA0D1B59485FEB60"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -291,6 +267,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_6A9014BCA39B4BD888DF5586C91446E1"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_6ADC0B640C3940E0867F28C68B87F598"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -303,19 +285,7 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_7CBF57EA879D40F787F3B9025F376F6A"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_7DC15E24D2A24E3E8B6212837435BD33"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_7DC9F3F635544358B6AFB493A18D3F3E"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -345,19 +315,7 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_88038082EBD041CE80FA9E74164D8104"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_8A8A87D2513A4CD1BDB9AE67277C70FB"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_8C67FBEE01294B23BA1E1335FB2F92D9"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -387,13 +345,13 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_99C2C10D036D4BE79AA90F97BE1CF8D9"
+        "MsmKey" = "8:_9E19CE38143B426A9EB5DEFA9AEB7C56"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_9E19CE38143B426A9EB5DEFA9AEB7C56"
+        "MsmKey" = "8:_9EAA0A5C5E9F45B196E278796B6E6B28"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -489,13 +447,37 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_B90EBD5AFA554BE682F3CE3FFCF16F65"
+        "MsmKey" = "8:_B74BDA7352884697B58A21121315A849"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_B93DE68548CC4DDB980D333B05A0C99E"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_C0E7FA6F94FF4E0FA0C0291ACB6FAE76"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_C18FD5D8586D43009E560C651151D0A7"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_C5A5565D16524E158C281AF32DE75AC3"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_C629EF51D0B340EABAD486D009EAC264"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -520,6 +502,12 @@
         "Entry"
         {
         "MsmKey" = "8:_CCB986C8153E47868CB30216C6D09571"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_CDA9B2DA8B504FCCB7E479AE1AA19CC1"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -567,6 +555,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_DBB0E86457D94B7EB50494C29605C983"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_DC4A7390B55840E3B8E672CE993EBA45"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -585,12 +579,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_E0839E332F1649AE864796F343789C32"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_E69815283EB14CEDA10471F1A0051E65"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -598,6 +586,12 @@
         "Entry"
         {
         "MsmKey" = "8:_E8B1C859FAA743CD8CF0D060A81BD33B"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_EA47C9E6D8E94823B911A984A5349735"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -621,25 +615,31 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_EFE155A2549C4A89AF3D1EBB7C956103"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_F4275CBF8B0B4B40882CE815C9F10F91"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_F5F6D3636F114587B2AAEFC041EE62EC"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_F78B32326DD54462B3263080F5EAB4C2"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_F92944BCE7504EEE8B8F5B11A8ED3CF5"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_FAA64575586341E1BB230B90C90AE0DA"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_FC232D5651D14471B8BDBA70F5969873"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_FC47E523E3354146B20B9286A18BF9EF"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -736,26 +736,6 @@
         }
         "File"
         {
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_01903A37C0814046909499F2920416AD"
-            {
-            "SourcePath" = "8:..\\..\\Misc\\GlyphTemplates\\Solar System.sgt"
-            "TargetName" = "8:Solar System.sgt"
-            "Tag" = "8:"
-            "Folder" = "8:_B4E0754028D04DDF8AEE8716965EFFAF"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_04398C226C8143C6A99A85E656CDA4C1"
             {
             "SourcePath" = "8:..\\..\\3rdParty\\bin\\Win32\\Release\\Qt5Sql.dll"
@@ -816,26 +796,6 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_0A4D72777B4946D2925464AD0AD7DCD2"
-            {
-            "SourcePath" = "8:..\\..\\Misc\\GlyphTemplates\\Tree.sgt"
-            "TargetName" = "8:Tree.sgt"
-            "Tag" = "8:"
-            "Folder" = "8:_B4E0754028D04DDF8AEE8716965EFFAF"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_0BAE74CD2B714CC19163683B36EFAF50"
             {
             "SourcePath" = "8:..\\..\\ANTzPlus\\ANTzTemplate\\libmysql.dll"
@@ -856,10 +816,10 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_0D022DEA8552487599F43DD2B4AFF3E2"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_112F5D98201E4F7398911EC38F6472E5"
             {
-            "SourcePath" = "8:..\\..\\Misc\\GlyphTemplates\\Eyeball.sgt"
-            "TargetName" = "8:Eyeball.sgt"
+            "SourcePath" = "8:..\\..\\Misc\\InstallerFiles\\GlyphTemplates\\Tree.sgt"
+            "TargetName" = "8:Tree.sgt"
             "Tag" = "8:"
             "Folder" = "8:_B4E0754028D04DDF8AEE8716965EFFAF"
             "Condition" = "8:"
@@ -976,26 +936,6 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_16307BAD27B54620BDE4BAF03FFF4433"
-            {
-            "SourcePath" = "8:..\\..\\Misc\\SampleData\\Quickstart_Sample_Data_Olympics_V2.csv"
-            "TargetName" = "8:Quickstart_Sample_Data_Olympics_V2.csv"
-            "Tag" = "8:"
-            "Folder" = "8:_EF6F4723ED554728838CCDB807CD0296"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_1874BD20058D49D298D2A2D763B637C4"
             {
             "SourcePath" = "8:..\\..\\3rdParty\\bin\\Win32\\Release\\Qt5Gui.dll"
@@ -1013,26 +953,6 @@
             "PackageAs" = "3:1"
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_19A18E0151FF46A3B9D1780F31CFAC2D"
-            {
-            "SourcePath" = "8:..\\..\\Misc\\Images\\synglyphx_x.ico"
-            "TargetName" = "8:synglyphx_x.ico"
-            "Tag" = "8:"
-            "Folder" = "8:_0FD992B69CC74D489682A631FA99B364"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:TRUE"
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
@@ -1156,12 +1076,52 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_2D29FC3E19C447FCB5F9030451AF2A65"
+            {
+            "SourcePath" = "8:..\\..\\Misc\\InstallerFiles\\GlyphTemplates\\Torus and 4 Spheres.sgt"
+            "TargetName" = "8:Torus and 4 Spheres.sgt"
+            "Tag" = "8:"
+            "Folder" = "8:_B4E0754028D04DDF8AEE8716965EFFAF"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_3149269C0F9D4209B46F35D83B2023CB"
             {
             "SourcePath" = "8:..\\..\\3rdParty\\bin\\Win32\\Release\\qt_plugins\\sensorgestures\\qtsensorgestures_shakeplugin.dll"
             "TargetName" = "8:qtsensorgestures_shakeplugin.dll"
             "Tag" = "8:"
             "Folder" = "8:_670AEC90455749E79FD3F4761B96DADE"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_347DBC76B9CF48E48243DD8A335CBD68"
+            {
+            "SourcePath" = "8:..\\..\\Misc\\InstallerFiles\\GlyphTemplates\\Solar System.sgt"
+            "TargetName" = "8:Solar System.sgt"
+            "Tag" = "8:"
+            "Folder" = "8:_B4E0754028D04DDF8AEE8716965EFFAF"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -1236,26 +1196,6 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_432B91C148844E73BD40CA9336EF44C1"
-            {
-            "SourcePath" = "8:..\\..\\Misc\\GlyphTemplates\\Lollypop.sgt"
-            "TargetName" = "8:Lollypop.sgt"
-            "Tag" = "8:"
-            "Folder" = "8:_B4E0754028D04DDF8AEE8716965EFFAF"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_43478C494BEB45FBB93B938614B7080B"
             {
             "SourcePath" = "8:..\\..\\3rdParty\\bin\\Win32\\Release\\qt_plugins\\imageformats\\qjpeg.dll"
@@ -1316,52 +1256,12 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_4A4682AC054741B8993597C503AF36AB"
-            {
-            "SourcePath" = "8:..\\..\\Misc\\GlyphTemplates\\Boat.sgt"
-            "TargetName" = "8:Boat.sgt"
-            "Tag" = "8:"
-            "Folder" = "8:_B4E0754028D04DDF8AEE8716965EFFAF"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_4D2B656B62BB465EAABE5D1982B7A1B7"
             {
             "SourcePath" = "8:..\\..\\ANTzPlus\\ANTzzSpaceTemplate\\ZSCommon.dll"
             "TargetName" = "8:ZSCommon.dll"
             "Tag" = "8:"
             "Folder" = "8:_89702FDDAF7146B08C00DB9BA96A0007"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_4DD79FF63A3F4632B7C4502A069ECAA6"
-            {
-            "SourcePath" = "8:..\\..\\Misc\\GlyphTemplates\\Ball.sgt"
-            "TargetName" = "8:Ball.sgt"
-            "Tag" = "8:"
-            "Folder" = "8:_B4E0754028D04DDF8AEE8716965EFFAF"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -1476,6 +1376,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_63B4540CE48C4F88AB5BE2BBEDE56AAA"
+            {
+            "SourcePath" = "8:..\\..\\Misc\\InstallerFiles\\Images\\world.png"
+            "TargetName" = "8:world.png"
+            "Tag" = "8:"
+            "Folder" = "8:_0FD992B69CC74D489682A631FA99B364"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_65517AF956564152A6E0E7793FEEE5E7"
             {
             "SourcePath" = "8:..\\..\\3rdParty\\bin\\Win32\\Release\\qt_plugins\\sensorgestures\\qtsensorgestures_counterplugin.dll"
@@ -1496,10 +1416,10 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_67EB1BEA38F84D5EB32F00AF11EAC96D"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_68438344AA5B43B9BA0D1B59485FEB60"
             {
-            "SourcePath" = "8:..\\..\\Misc\\GlyphTemplates\\Plane.sgt"
-            "TargetName" = "8:Plane.sgt"
+            "SourcePath" = "8:..\\..\\Misc\\InstallerFiles\\GlyphTemplates\\Sacred Circles 4.sgt"
+            "TargetName" = "8:Sacred Circles 4.sgt"
             "Tag" = "8:"
             "Folder" = "8:_B4E0754028D04DDF8AEE8716965EFFAF"
             "Condition" = "8:"
@@ -1576,6 +1496,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_6A9014BCA39B4BD888DF5586C91446E1"
+            {
+            "SourcePath" = "8:..\\..\\Misc\\InstallerFiles\\GlyphTemplates\\Lollypop.sgt"
+            "TargetName" = "8:Lollypop.sgt"
+            "Tag" = "8:"
+            "Folder" = "8:_B4E0754028D04DDF8AEE8716965EFFAF"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_6C823CA604F44D698948EA48F03EB176"
             {
             "SourcePath" = "8:..\\..\\3rdParty\\bin\\Win32\\Release\\qt_plugins\\imageformats\\qtga.dll"
@@ -1596,52 +1536,12 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_7CBF57EA879D40F787F3B9025F376F6A"
-            {
-            "SourcePath" = "8:..\\..\\Misc\\GlyphTemplates\\Cufflink.sgt"
-            "TargetName" = "8:Cufflink.sgt"
-            "Tag" = "8:"
-            "Folder" = "8:_B4E0754028D04DDF8AEE8716965EFFAF"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_7DC15E24D2A24E3E8B6212837435BD33"
             {
             "SourcePath" = "8:..\\..\\3rdParty\\bin\\Win32\\Release\\qt_plugins\\platforms\\qminimal.dll"
             "TargetName" = "8:qminimal.dll"
             "Tag" = "8:"
             "Folder" = "8:_0564933CE52B4499872F711B0DCBB7FB"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_7DC9F3F635544358B6AFB493A18D3F3E"
-            {
-            "SourcePath" = "8:..\\..\\Misc\\GlyphTemplates\\Sacred Circles 4.sgt"
-            "TargetName" = "8:Sacred Circles 4.sgt"
-            "Tag" = "8:"
-            "Folder" = "8:_B4E0754028D04DDF8AEE8716965EFFAF"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -1716,52 +1616,12 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_88038082EBD041CE80FA9E74164D8104"
-            {
-            "SourcePath" = "8:..\\..\\Misc\\GlyphTemplates\\Torus and 4 Spheres.sgt"
-            "TargetName" = "8:Torus and 4 Spheres.sgt"
-            "Tag" = "8:"
-            "Folder" = "8:_B4E0754028D04DDF8AEE8716965EFFAF"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_8A8A87D2513A4CD1BDB9AE67277C70FB"
             {
             "SourcePath" = "8:..\\..\\ANTzPlus\\ANTzTemplate\\glut32.dll"
             "TargetName" = "8:glut32.dll"
             "Tag" = "8:"
             "Folder" = "8:_3E59963508D34F76B5732E64BBFB296A"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_8C67FBEE01294B23BA1E1335FB2F92D9"
-            {
-            "SourcePath" = "8:..\\..\\Misc\\GlyphTemplates\\Sacred Circles 3.sgt"
-            "TargetName" = "8:Sacred Circles 3.sgt"
-            "Tag" = "8:"
-            "Folder" = "8:_B4E0754028D04DDF8AEE8716965EFFAF"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -1856,12 +1716,12 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_99C2C10D036D4BE79AA90F97BE1CF8D9"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_9E19CE38143B426A9EB5DEFA9AEB7C56"
             {
-            "SourcePath" = "8:..\\..\\Misc\\GlyphTemplates\\Tree With Spheres.sgt"
-            "TargetName" = "8:Tree With Spheres.sgt"
+            "SourcePath" = "8:..\\..\\3rdParty\\bin\\Win32\\Release\\qt_plugins\\designer\\customwidgetplugin.dll"
+            "TargetName" = "8:customwidgetplugin.dll"
             "Tag" = "8:"
-            "Folder" = "8:_B4E0754028D04DDF8AEE8716965EFFAF"
+            "Folder" = "8:_065F99698A48493EB9B07DDBAEA6048B"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -1876,12 +1736,12 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_9E19CE38143B426A9EB5DEFA9AEB7C56"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_9EAA0A5C5E9F45B196E278796B6E6B28"
             {
-            "SourcePath" = "8:..\\..\\3rdParty\\bin\\Win32\\Release\\qt_plugins\\designer\\customwidgetplugin.dll"
-            "TargetName" = "8:customwidgetplugin.dll"
+            "SourcePath" = "8:..\\..\\Misc\\InstallerFiles\\GlyphTemplates\\Cufflink.sgt"
+            "TargetName" = "8:Cufflink.sgt"
             "Tag" = "8:"
-            "Folder" = "8:_065F99698A48493EB9B07DDBAEA6048B"
+            "Folder" = "8:_B4E0754028D04DDF8AEE8716965EFFAF"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -2136,12 +1996,32 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_B90EBD5AFA554BE682F3CE3FFCF16F65"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_B74BDA7352884697B58A21121315A849"
             {
-            "SourcePath" = "8:..\\..\\Misc\\Images\\world.png"
-            "TargetName" = "8:world.png"
+            "SourcePath" = "8:..\\..\\Misc\\InstallerFiles\\GlyphTemplates\\Complex Tree.sgt"
+            "TargetName" = "8:Complex Tree.sgt"
             "Tag" = "8:"
-            "Folder" = "8:_0FD992B69CC74D489682A631FA99B364"
+            "Folder" = "8:_B4E0754028D04DDF8AEE8716965EFFAF"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_B93DE68548CC4DDB980D333B05A0C99E"
+            {
+            "SourcePath" = "8:..\\..\\Misc\\InstallerFiles\\GlyphTemplates\\Sacred Circles 3.sgt"
+            "TargetName" = "8:Sacred Circles 3.sgt"
+            "Tag" = "8:"
+            "Folder" = "8:_B4E0754028D04DDF8AEE8716965EFFAF"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -2162,6 +2042,66 @@
             "TargetName" = "8:qtmedia_audioengine.dll"
             "Tag" = "8:"
             "Folder" = "8:_F97D8B6D1D1C4AED9A94A5EF8AAF8A80"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_C18FD5D8586D43009E560C651151D0A7"
+            {
+            "SourcePath" = "8:..\\..\\Misc\\InstallerFiles\\SampleData\\Quickstart_Sample_Data_Olympics.csv"
+            "TargetName" = "8:Quickstart_Sample_Data_Olympics.csv"
+            "Tag" = "8:"
+            "Folder" = "8:_EF6F4723ED554728838CCDB807CD0296"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_C5A5565D16524E158C281AF32DE75AC3"
+            {
+            "SourcePath" = "8:..\\..\\Misc\\InstallerFiles\\SampleData\\Quickstart_Template.png"
+            "TargetName" = "8:Quickstart_Template.png"
+            "Tag" = "8:"
+            "Folder" = "8:_EF6F4723ED554728838CCDB807CD0296"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_C629EF51D0B340EABAD486D009EAC264"
+            {
+            "SourcePath" = "8:..\\..\\Misc\\InstallerFiles\\GlyphTemplates\\Tree With Spheres.sgt"
+            "TargetName" = "8:Tree With Spheres.sgt"
+            "Tag" = "8:"
+            "Folder" = "8:_B4E0754028D04DDF8AEE8716965EFFAF"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -2222,6 +2162,26 @@
             "TargetName" = "8:qtaccessiblewidgets.dll"
             "Tag" = "8:"
             "Folder" = "8:_79E5051EDB1A4D7997DDB3534FE2FB16"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_CDA9B2DA8B504FCCB7E479AE1AA19CC1"
+            {
+            "SourcePath" = "8:..\\..\\Misc\\InstallerFiles\\GlyphTemplates\\Eyeball.sgt"
+            "TargetName" = "8:Eyeball.sgt"
+            "Tag" = "8:"
+            "Folder" = "8:_B4E0754028D04DDF8AEE8716965EFFAF"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -2336,6 +2296,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_DBB0E86457D94B7EB50494C29605C983"
+            {
+            "SourcePath" = "8:..\\..\\Misc\\InstallerFiles\\Docs\\The SynGlyphX Quick Start Guide.docx"
+            "TargetName" = "8:The SynGlyphX Quick Start Guide.docx"
+            "Tag" = "8:"
+            "Folder" = "8:_0C9AA4F94A97428090886732B9B3D2C2"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_DCF7E77F75BB42B18A0A3E1C8AC3A5A7"
             {
             "SourcePath" = "8:..\\..\\3rdParty\\bin\\Win32\\Release\\qt_plugins\\qmltooling\\qmldbg_tcp.dll"
@@ -2376,26 +2356,6 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_E0839E332F1649AE864796F343789C32"
-            {
-            "SourcePath" = "8:..\\..\\Misc\\SampleData\\Quickstart_Template.png"
-            "TargetName" = "8:Quickstart_Template.png"
-            "Tag" = "8:"
-            "Folder" = "8:_EF6F4723ED554728838CCDB807CD0296"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_E69815283EB14CEDA10471F1A0051E65"
             {
             "SourcePath" = "8:..\\..\\3rdParty\\bin\\Win32\\Release\\qt_plugins\\mediaservice\\wmfengine.dll"
@@ -2422,6 +2382,26 @@
             "TargetName" = "8:qmldbg_tcp_qtdeclarative.dll"
             "Tag" = "8:"
             "Folder" = "8:_8F595665124E4795A9C8EE28A84DE9E0"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_EA47C9E6D8E94823B911A984A5349735"
+            {
+            "SourcePath" = "8:..\\..\\Misc\\InstallerFiles\\GlyphTemplates\\Plane.sgt"
+            "TargetName" = "8:Plane.sgt"
+            "Tag" = "8:"
+            "Folder" = "8:_B4E0754028D04DDF8AEE8716965EFFAF"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -2496,9 +2476,49 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_EFE155A2549C4A89AF3D1EBB7C956103"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_F92944BCE7504EEE8B8F5B11A8ED3CF5"
             {
-            "SourcePath" = "8:..\\..\\Misc\\GlyphTemplates\\Sacred Circles 1.sgt"
+            "SourcePath" = "8:..\\..\\Misc\\InstallerFiles\\GlyphTemplates\\Boat.sgt"
+            "TargetName" = "8:Boat.sgt"
+            "Tag" = "8:"
+            "Folder" = "8:_B4E0754028D04DDF8AEE8716965EFFAF"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_FAA64575586341E1BB230B90C90AE0DA"
+            {
+            "SourcePath" = "8:..\\..\\Misc\\InstallerFiles\\Images\\synglyphx_x.ico"
+            "TargetName" = "8:synglyphx_x.ico"
+            "Tag" = "8:"
+            "Folder" = "8:_0FD992B69CC74D489682A631FA99B364"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:TRUE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_FC232D5651D14471B8BDBA70F5969873"
+            {
+            "SourcePath" = "8:..\\..\\Misc\\InstallerFiles\\GlyphTemplates\\Sacred Circles 1.sgt"
             "TargetName" = "8:Sacred Circles 1.sgt"
             "Tag" = "8:"
             "Folder" = "8:_B4E0754028D04DDF8AEE8716965EFFAF"
@@ -2516,32 +2536,12 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_F4275CBF8B0B4B40882CE815C9F10F91"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_FC47E523E3354146B20B9286A18BF9EF"
             {
-            "SourcePath" = "8:..\\..\\Misc\\GlyphTemplates\\Complex Tree.sgt"
-            "TargetName" = "8:Complex Tree.sgt"
+            "SourcePath" = "8:..\\..\\Misc\\InstallerFiles\\GlyphTemplates\\Ball.sgt"
+            "TargetName" = "8:Ball.sgt"
             "Tag" = "8:"
             "Folder" = "8:_B4E0754028D04DDF8AEE8716965EFFAF"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_F5F6D3636F114587B2AAEFC041EE62EC"
-            {
-            "SourcePath" = "8:..\\..\\Misc\\Docs\\The SynGlyphX Quick Start Guide.docx"
-            "TargetName" = "8:The SynGlyphX Quick Start Guide.docx"
-            "Tag" = "8:"
-            "Folder" = "8:_0C9AA4F94A97428090886732B9B3D2C2"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -2605,7 +2605,7 @@
             "Description" = "8:SynGlyphX Glyph Template"
             "Extensions" = "8:sgt"
             "MIME" = "8:"
-            "Icon" = "8:_19A18E0151FF46A3B9D1780F31CFAC2D"
+            "Icon" = "8:_FAA64575586341E1BB230B90C90AE0DA"
             "IconIndex" = "3:0"
                 "Command"
                 {
@@ -2628,7 +2628,7 @@
             "Description" = "8:SynGlyphX Data Transform"
             "Extensions" = "8:sdt"
             "MIME" = "8:"
-            "Icon" = "8:_19A18E0151FF46A3B9D1780F31CFAC2D"
+            "Icon" = "8:_FAA64575586341E1BB230B90C90AE0DA"
             "IconIndex" = "3:0"
                 "Command"
                 {
@@ -3467,7 +3467,7 @@
             "Target" = "8:_4A66415C1F6A4465AE0184E0AD215A97"
             "Folder" = "8:_3E7962AF2FAE404889124360555F5ACB"
             "WorkingFolder" = "8:_0FD992B69CC74D489682A631FA99B364"
-            "Icon" = "8:_19A18E0151FF46A3B9D1780F31CFAC2D"
+            "Icon" = "8:_FAA64575586341E1BB230B90C90AE0DA"
             "Feature" = "8:"
             }
             "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_14F7BE2FF809416EA470D24CD77ABD52"
@@ -3481,12 +3481,12 @@
             "Target" = "8:_CFBBE95372F6428BB47610D4A3F54FF3"
             "Folder" = "8:_3E7962AF2FAE404889124360555F5ACB"
             "WorkingFolder" = "8:_0FD992B69CC74D489682A631FA99B364"
-            "Icon" = "8:_19A18E0151FF46A3B9D1780F31CFAC2D"
+            "Icon" = "8:_FAA64575586341E1BB230B90C90AE0DA"
             "Feature" = "8:"
             }
             "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_496D1073A8D949F6A1882139560338E3"
             {
-            "Name" = "8:Shortcut to Data Mapper"
+            "Name" = "8:Data Mapper - Shortcut"
             "Arguments" = "8:"
             "Description" = "8:Shortcut to Data Mapper"
             "ShowCmd" = "3:1"
@@ -3495,7 +3495,7 @@
             "Target" = "8:_CFBBE95372F6428BB47610D4A3F54FF3"
             "Folder" = "8:_AE5DEF05DB95429488E96B6C98F9888E"
             "WorkingFolder" = "8:_0FD992B69CC74D489682A631FA99B364"
-            "Icon" = "8:_19A18E0151FF46A3B9D1780F31CFAC2D"
+            "Icon" = "8:_FAA64575586341E1BB230B90C90AE0DA"
             "Feature" = "8:"
             }
             "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_5700AAE5191D43E39ACB9CD3E06D7DB3"
@@ -3509,12 +3509,26 @@
             "Target" = "8:_C7912A0A11E042A4B9EBCF355893E14B"
             "Folder" = "8:_3E7962AF2FAE404889124360555F5ACB"
             "WorkingFolder" = "8:_0FD992B69CC74D489682A631FA99B364"
-            "Icon" = "8:_19A18E0151FF46A3B9D1780F31CFAC2D"
+            "Icon" = "8:_FAA64575586341E1BB230B90C90AE0DA"
+            "Feature" = "8:"
+            }
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_710365211B774020B49DD2D6D0B1EDB9"
+            {
+            "Name" = "8:SynGlyphX Quick Start Guide"
+            "Arguments" = "8:"
+            "Description" = "8:"
+            "ShowCmd" = "3:1"
+            "IconIndex" = "3:0"
+            "Transitive" = "11:FALSE"
+            "Target" = "8:_DBB0E86457D94B7EB50494C29605C983"
+            "Folder" = "8:_3E7962AF2FAE404889124360555F5ACB"
+            "WorkingFolder" = "8:_0C9AA4F94A97428090886732B9B3D2C2"
+            "Icon" = "8:_FAA64575586341E1BB230B90C90AE0DA"
             "Feature" = "8:"
             }
             "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_A6B467D1BCF344CFA76F0DD34A92368E"
             {
-            "Name" = "8:Shortcut to Glyph Designer"
+            "Name" = "8:Glyph Designer - Shortcut"
             "Arguments" = "8:"
             "Description" = "8:Shortcut to Glyph Designer"
             "ShowCmd" = "3:1"
@@ -3523,12 +3537,12 @@
             "Target" = "8:_4A66415C1F6A4465AE0184E0AD215A97"
             "Folder" = "8:_AE5DEF05DB95429488E96B6C98F9888E"
             "WorkingFolder" = "8:_0FD992B69CC74D489682A631FA99B364"
-            "Icon" = "8:_19A18E0151FF46A3B9D1780F31CFAC2D"
+            "Icon" = "8:_FAA64575586341E1BB230B90C90AE0DA"
             "Feature" = "8:"
             }
             "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_E3D4FD5D4C554D69AF17891893E0E388"
             {
-            "Name" = "8:Shortcut to Glyph Viewer"
+            "Name" = "8:Glyph Viewer - Shortcut"
             "Arguments" = "8:"
             "Description" = "8:Shortcut to Glyph Viewer"
             "ShowCmd" = "3:1"
@@ -3537,7 +3551,7 @@
             "Target" = "8:_C7912A0A11E042A4B9EBCF355893E14B"
             "Folder" = "8:_AE5DEF05DB95429488E96B6C98F9888E"
             "WorkingFolder" = "8:_0FD992B69CC74D489682A631FA99B364"
-            "Icon" = "8:_19A18E0151FF46A3B9D1780F31CFAC2D"
+            "Icon" = "8:_FAA64575586341E1BB230B90C90AE0DA"
             "Feature" = "8:"
             }
             "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_ED373569BF9E4442B5E2C0BF38818F28"
@@ -3551,21 +3565,7 @@
             "Target" = "8:_EF6F4723ED554728838CCDB807CD0296"
             "Folder" = "8:_3E7962AF2FAE404889124360555F5ACB"
             "WorkingFolder" = "8:_0FD992B69CC74D489682A631FA99B364"
-            "Icon" = "8:_19A18E0151FF46A3B9D1780F31CFAC2D"
-            "Feature" = "8:"
-            }
-            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_F71921531BA848D1857304C70CB49107"
-            {
-            "Name" = "8:SynGlyphX Quick Start Guide"
-            "Arguments" = "8:"
-            "Description" = "8:"
-            "ShowCmd" = "3:1"
-            "IconIndex" = "3:0"
-            "Transitive" = "11:FALSE"
-            "Target" = "8:_F5F6D3636F114587B2AAEFC041EE62EC"
-            "Folder" = "8:_3E7962AF2FAE404889124360555F5ACB"
-            "WorkingFolder" = "8:_0C9AA4F94A97428090886732B9B3D2C2"
-            "Icon" = "8:_19A18E0151FF46A3B9D1780F31CFAC2D"
+            "Icon" = "8:_FAA64575586341E1BB230B90C90AE0DA"
             "Feature" = "8:"
             }
         }
