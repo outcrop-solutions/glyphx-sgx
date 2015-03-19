@@ -326,7 +326,7 @@ namespace SynGlyphX {
 		unsigned int startingIndex = 0;
 		if (!m_tableIndexMap.empty()) {
 
-			startingIndex = m_tableIndexMap.rbegin()->first;
+			startingIndex = m_tableIndexMap.rbegin()->first + 1;
 		}
 
 		m_tableIndexMap[startingIndex + GetLastIndexOfTable(tableName)] = tableName;
@@ -421,6 +421,51 @@ namespace SynGlyphX {
 
 			throw std::exception((QObject::tr("Failure to get formatted name from cache: ") + m_db.lastError().text()).toStdString().c_str());
 		}
+	}
+
+	SourceDataCache::TableQueryMap SourceDataCache::CreateQueriesForIndicies(const std::set<unsigned int>& indexSet) const {
+
+		std::set<unsigned int>::const_iterator iT = indexSet.begin();
+		unsigned int sizeOfPreviousTables = 0;
+
+		TableQueryMap queryMap;
+		for (auto table : m_tableIndexMap) {
+
+			std::set<unsigned int> indexSetForTable;
+			while ((iT != indexSet.end()) && (*iT <= table.first)) {
+
+				indexSetForTable.insert(*iT - sizeOfPreviousTables);
+				++iT;
+			}
+
+			if (!indexSetForTable.empty()) {
+
+				queryMap[table.second] = CreateQueryForIndicies(table.second, indexSetForTable);
+			}
+
+			sizeOfPreviousTables += table.first + 1;
+		}
+
+		return queryMap;
+	}
+
+	QSqlQuery SourceDataCache::CreateQueryForIndicies(const QString& tableName, const std::set<unsigned int>& indexSet) const {
+
+		QStringList columnNames = GetColumnsForTable(tableName);
+		QString columnNameString = "\"" + columnNames.join("\", \"") + "\"";
+
+		std::set<unsigned int>::const_iterator iT = indexSet.begin();
+		QString whereString = "WHERE \"" + IndexColumnName + "\"=" + QString::number(*iT);
+		while (iT != indexSet.end()) {
+
+			whereString += " OR \"" + IndexColumnName + "\"=" + QString::number(*iT);
+			++iT;
+		}
+
+		QSqlQuery query(m_db);
+		query.prepare("SELECT " + columnNameString + " FROM \"" + tableName + "\" " + whereString);
+
+		return query;
 	}
 
 } //namespace SynGlyphX

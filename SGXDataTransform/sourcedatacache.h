@@ -22,6 +22,7 @@
 #include "csvcache.h"
 #include "datasourcemaps.h"
 #include <map>
+#include <set>
 #include "inputfield.h"
 #include <QtSql/QSqlQuery>
 #include <memory>
@@ -36,6 +37,8 @@ namespace SynGlyphX {
 
 		typedef std::map<unsigned long, QString> TableIndexMap;
 		typedef std::map<QString, QString> TableNameMap;
+
+		typedef std::map<QString, QSqlQuery> TableQueryMap;
 
 		SourceDataCache();
 		SourceDataCache(const QString& filename);
@@ -54,7 +57,8 @@ namespace SynGlyphX {
 
 		QSqlQuery CreateSelectFieldQueryAscending(const InputField& inputfield) const;
 		QSqlQuery CreateMinMaxQuery(const InputField& inputfield) const;
-		//QVariantList GetDataAtIndex(unsigned long index) const;
+		
+		TableQueryMap CreateQueriesForIndicies(const std::set<unsigned int>& indexSet) const;
 
 	private:
 		void CreateNewIndexedTableInCache(const QString& name, const QString& fieldNamesAndTypes);
@@ -72,6 +76,8 @@ namespace SynGlyphX {
 		QString CreateTablename(const InputField& inputfield) const;
 		QString CreateTablename(const QString& datasourceID, const QString& originalTablename) const;
 		QString GetFormattedNameFromCache(const QString& table);
+
+		QSqlQuery CreateQueryForIndicies(const QString& tableName, const std::set<unsigned int>& indexSet) const;
 
 		static const QString IndexColumnName;
 
