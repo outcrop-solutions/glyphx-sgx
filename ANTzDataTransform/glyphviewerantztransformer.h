@@ -35,6 +35,7 @@ namespace SynGlyphXANTz {
 		virtual QString GenerateBaseImageFilename(unsigned int index) const;
 		virtual void CreateGlyphsFromMapping(const SynGlyphX::DataTransformMapping& mapping);
 		bool DoesCacheNeedToBeRegenerated(const SynGlyphX::DataTransformMapping& mapping, const QStringList& cacheFilenames, const QString& mappingFilename) const;
+		bool IsCacheAnOldVersion() const;
 	};
 
 } //namespace SynGlyphXANTz

@@ -20,7 +20,19 @@ namespace SynGlyphXANTz {
 
 	void GlyphViewerANTzTransformer::Prepare() {
 
+		QDir dir(m_baseOutputDir);
+		if (!dir.exists()) {
 
+			if (!dir.mkpath(m_baseOutputDir)) {
+
+				throw std::exception("Instance directory was not created");
+			}
+		}
+		
+		if (IsCacheAnOldVersion()) {
+
+			SynGlyphX::Filesystem::RemoveContentsOfDirectory(m_baseOutputDir.toStdString());
+		}
 	}
 
 	void GlyphViewerANTzTransformer::CreateGlyphsFromMapping(const SynGlyphX::DataTransformMapping& mapping) {
@@ -111,6 +123,22 @@ namespace SynGlyphXANTz {
 	QString GlyphViewerANTzTransformer::GenerateBaseImageFilename(unsigned int index) const {
 
 		return "base_image_" + QString::number(index) + ".png";
+	}
+
+	bool GlyphViewerANTzTransformer::IsCacheAnOldVersion() const {
+
+		QDir dir(m_baseOutputDir);
+
+		//If the cache directory is not empty and it does not have a source data cache, then it's an old version
+		//of the cache so delete the contents of the directory so that there is no problem with an old version of
+		//the cache
+		QFileInfo fileInfo(m_sourceDataCacheLocation);
+		if ((!fileInfo.exists()) && (dir.entryInfoList(QDir::NoDotAndDotDot | QDir::AllEntries).count() > 0)) {
+
+			return true;
+		}
+
+		return false;
 	}
 
 } //namespace SynGlyphXANTz
