@@ -1,6 +1,8 @@
 #include "sourcedatawidget.h"
 #include <QtGui/QCloseEvent>
 #include <set>
+#include <QtWidgets/QTableView>
+#include <QtSql/QSqlQueryModel>
 
 SourceDataWidget::SourceDataWidget(SynGlyphX::SourceDataCache::SharedPtr sourceDataCache, GlyphForestModel* model, QItemSelectionModel* selectionModel, QWidget *parent)
 	: QTabWidget(parent),
@@ -41,6 +43,19 @@ void SourceDataWidget::UpdateTables(const QItemSelection& selected) {
 		Q_FOREACH(const QModelIndex& index, selected.indexes()) {
 
 			selectedDataRows.insert(GetRootRow(index));
+		}
+
+		SynGlyphX::SourceDataCache::TableQueryMap queries = m_sourceDataCache->CreateQueriesForIndicies(selectedDataRows);
+		const SynGlyphX::SourceDataCache::TableNameMap& formattedNames = m_sourceDataCache->GetFormattedNames();
+
+		for (auto table : queries) {
+
+			QTableView* tableView = new QTableView(this);
+			QSqlQueryModel* queryModel = new QSqlQueryModel(this);
+			queryModel->setQuery(table.second);
+
+			tableView->setModel(queryModel);
+			addTab(tableView, formattedNames.at(table.first));
 		}
 	}
 }
