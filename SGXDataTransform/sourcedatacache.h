@@ -26,6 +26,7 @@
 #include "inputfield.h"
 #include <QtSql/QSqlQuery>
 #include <memory>
+#include <QtSql/QSqlTableModel>
 
 namespace SynGlyphX {
 
@@ -38,7 +39,8 @@ namespace SynGlyphX {
 		typedef std::map<unsigned long, QString> TableIndexMap;
 		typedef std::map<QString, QString> TableNameMap;
 
-		typedef std::map<QString, QSqlQuery> TableQueryMap;
+		typedef std::set<unsigned long> IndexSet;
+		typedef std::map<QString, IndexSet> IndexSetMap;
 
 		SourceDataCache();
 		SourceDataCache(const QString& filename);
@@ -58,7 +60,8 @@ namespace SynGlyphX {
 		QSqlQuery CreateSelectFieldQueryAscending(const InputField& inputfield) const;
 		QSqlQuery CreateMinMaxQuery(const InputField& inputfield) const;
 		
-		TableQueryMap CreateQueriesForIndicies(const std::set<unsigned int>& indexSet) const;
+		IndexSetMap SplitIndexSet(const IndexSet& indexSet) const;
+		QSqlQuery CreateSelectQueryForIndexSet(const QString& tableName, const QStringList& columns, const IndexSet& indexSet) const;
 
 	private:
 		void CreateNewIndexedTableInCache(const QString& name, const QString& fieldNamesAndTypes);
@@ -76,8 +79,6 @@ namespace SynGlyphX {
 		QString CreateTablename(const InputField& inputfield) const;
 		QString CreateTablename(const QString& datasourceID, const QString& originalTablename) const;
 		QString GetFormattedNameFromCache(const QString& table);
-
-		QSqlQuery CreateQueryForIndicies(const QString& tableName, const std::set<unsigned int>& indexSet) const;
 
 		static const QString IndexColumnName;
 

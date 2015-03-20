@@ -423,15 +423,15 @@ namespace SynGlyphX {
 		}
 	}
 
-	SourceDataCache::TableQueryMap SourceDataCache::CreateQueriesForIndicies(const std::set<unsigned int>& indexSet) const {
+	SourceDataCache::IndexSetMap SourceDataCache::SplitIndexSet(const IndexSet& indexSet) const {
 
-		std::set<unsigned int>::const_iterator iT = indexSet.begin();
+		IndexSet::const_iterator iT = indexSet.begin();
 		unsigned int sizeOfPreviousTables = 0;
 
-		TableQueryMap queryMap;
+		IndexSetMap indexSets;
 		for (auto table : m_tableIndexMap) {
 
-			std::set<unsigned int> indexSetForTable;
+			std::set<unsigned long> indexSetForTable;
 			while ((iT != indexSet.end()) && (*iT <= table.first)) {
 
 				indexSetForTable.insert(*iT - sizeOfPreviousTables);
@@ -440,30 +440,33 @@ namespace SynGlyphX {
 
 			if (!indexSetForTable.empty()) {
 
-				queryMap[table.second] = CreateQueryForIndicies(table.second, indexSetForTable);
+				indexSets[table.second] = indexSetForTable;
 			}
 
 			sizeOfPreviousTables += table.first + 1;
 		}
 
-		return queryMap;
+		return indexSets;
 	}
 
-	QSqlQuery SourceDataCache::CreateQueryForIndicies(const QString& tableName, const std::set<unsigned int>& indexSet) const {
+	QSqlQuery SourceDataCache::CreateSelectQueryForIndexSet(const QString& tableName, const QStringList& columns, const IndexSet& indexSet) const {
 
-		QStringList columnNames = GetColumnsForTable(tableName);
-		QString columnNameString = "\"" + columnNames.join("\", \"") + "\"";
+		QString columnNameString = "\"" + columns.join("\", \"") + "\"";
 
-		std::set<unsigned int>::const_iterator iT = indexSet.begin();
-		QString whereString = "WHERE \"" + IndexColumnName + "\"=" + QString::number(*iT);
+		IndexSet::const_iterator iT = indexSet.begin();
+		QString whereString = "WHERE \"" + IndexColumnName + "\" IN (" + QString::number(*iT);
+		++iT;
 		while (iT != indexSet.end()) {
 
-			whereString += " OR \"" + IndexColumnName + "\"=" + QString::number(*iT);
+			whereString += ", " + QString::number(*iT);
 			++iT;
 		}
+		whereString += ")";
+
+		QString queryString = "SELECT " + columnNameString + " FROM \"" + tableName + "\" " + whereString;
 
 		QSqlQuery query(m_db);
-		query.prepare("SELECT " + columnNameString + " FROM \"" + tableName + "\" " + whereString);
+		query.prepare(queryString);
 
 		return query;
 	}
