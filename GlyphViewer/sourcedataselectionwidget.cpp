@@ -2,7 +2,8 @@
 #include <QtWidgets/QVBoxLayout>
 
 SourceDataSelectionWidget::SourceDataSelectionWidget(SynGlyphX::SourceDataCache::SharedPtr sourceDataCache, GlyphForestModel* model, QItemSelectionModel* selectionModel, QWidget *parent)
-	: QWidget(parent)
+	: QWidget(parent),
+	m_selectionModel(selectionModel)
 {
 	QVBoxLayout* layout = new QVBoxLayout(this);
 	layout->addStretch(1);
@@ -14,7 +15,10 @@ SourceDataSelectionWidget::SourceDataSelectionWidget(SynGlyphX::SourceDataCache:
 
 	setLayout(layout);
 
-	m_sourceDataWindow.reset(new SourceDataWidget(sourceDataCache, model, selectionModel));
+	m_sourceWidgetButton->setEnabled(!m_selectionModel->selection().empty());
+	QObject::connect(m_selectionModel, &QItemSelectionModel::selectionChanged, this, &SourceDataSelectionWidget::OnSelectionChanged);
+
+	m_sourceDataWindow.reset(new SourceDataWidget(sourceDataCache, model, m_selectionModel));
 	QObject::connect(m_sourceWidgetButton, &QPushButton::toggled, m_sourceDataWindow.data(), &SourceDataWidget::setVisible);
 	m_sourceDataWindow->setVisible(false);
 
@@ -33,5 +37,5 @@ void SourceDataSelectionWidget::OnSourceWidgetWindowHidden() {
 
 void SourceDataSelectionWidget::OnSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected) {
 
-	m_sourceWidgetButton->setEnabled(!selected.empty());
+	m_sourceWidgetButton->setEnabled(!m_selectionModel->selection().empty());
 }

@@ -2,16 +2,19 @@
 #include <QtGui/QCloseEvent>
 #include <set>
 #include <QtWidgets/QTableView>
+#include <QtWidgets/QHeaderView>
 #include <QtSql/QSqlQueryModel>
+#include <QtSql/QSqlError>
 
 SourceDataWidget::SourceDataWidget(SynGlyphX::SourceDataCache::SharedPtr sourceDataCache, GlyphForestModel* model, QItemSelectionModel* selectionModel, QWidget *parent)
 	: QTabWidget(parent),
 	m_model(model),
+	m_selectionModel(selectionModel),
 	m_sourceDataCache(sourceDataCache)
 {
 	setWindowTitle(tr("Source Data Of Selected Glyphs"));
-	QObject::connect(selectionModel, &QItemSelectionModel::selectionChanged, this, &SourceDataWidget::OnSelectionChanged);
-	UpdateTables(selectionModel->selection());
+	QObject::connect(m_selectionModel, &QItemSelectionModel::selectionChanged, this, &SourceDataWidget::OnSelectionChanged);
+	UpdateTables();
 }
 
 SourceDataWidget::~SourceDataWidget()
@@ -31,38 +34,51 @@ void SourceDataWidget::closeEvent(QCloseEvent* event) {
 
 void SourceDataWidget::OnSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected) {
 
-	UpdateTables(selected);
+	UpdateTables();
 }
 
-void SourceDataWidget::UpdateTables(const QItemSelection& selected) {
+void SourceDataWidget::UpdateTables() {
 
 	clear();
-	if (!selected.empty()) {
+	if (!m_selectionModel->selection().empty()) {
 
-		std::set<unsigned int> selectedDataRows;
-		Q_FOREACH(const QModelIndex& index, selected.indexes()) {
+		SynGlyphX::SourceDataCache::IndexSet selectedDataRows;
+		Q_FOREACH(const QModelIndex& index, m_selectionModel->selection().indexes()) {
 
 			selectedDataRows.insert(GetRootRow(index));
 		}
 
-		SynGlyphX::SourceDataCache::TableQueryMap queries = m_sourceDataCache->CreateQueriesForIndicies(selectedDataRows);
+		SynGlyphX::SourceDataCache::IndexSetMap indexSets = m_sourceDataCache->SplitIndexSet(selectedDataRows);
 		const SynGlyphX::SourceDataCache::TableNameMap& formattedNames = m_sourceDataCache->GetFormattedNames();
 
-		for (auto table : queries) {
+		for (auto indexSet : indexSets) {
 
 			QTableView* tableView = new QTableView(this);
 			QSqlQueryModel* queryModel = new QSqlQueryModel(this);
-			queryModel->setQuery(table.second);
+			
+			QStringList columns = m_sourceDataCache->GetColumnsForTable(indexSet.first);
+			QSqlQuery query = m_sourceDataCache->CreateSelectQueryForIndexSet(indexSet.first, columns, indexSet.second);
+			query.exec();
+			queryModel->setQuery(query);
+			if (queryModel->lastError().isValid()) {
+
+				throw std::exception("Failed to set SQL query for source data widget.");
+			}
+
+			tableView->verticalHeader()->setVisible(false);
 
 			tableView->setModel(queryModel);
-			addTab(tableView, formattedNames.at(table.first));
+			tableView->resizeColumnsToContents();
+			tableView->resizeRowsToContents();
+			
+			addTab(tableView, formattedNames.at(indexSet.first));
 		}
 	}
 }
 
-unsigned int SourceDataWidget::GetRootRow(const QModelIndex& index) const {
+unsigned long SourceDataWidget::GetRootRow(const QModelIndex& index) const {
 
-	QModelIndex ancestor = index.parent();
+	QModelIndex ancestor = index;
 	while (ancestor.parent().isValid()) {
 
 		ancestor = ancestor.parent();

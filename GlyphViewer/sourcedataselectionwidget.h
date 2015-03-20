@@ -19,6 +19,7 @@ private slots:
 	void OnSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected);
 
 private:
+	QItemSelectionModel* m_selectionModel;
 	QPushButton* m_sourceWidgetButton;
 	QScopedPointer<SourceDataWidget> m_sourceDataWindow;
 };

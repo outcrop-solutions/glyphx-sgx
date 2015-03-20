@@ -24,10 +24,11 @@ private slots:
 	void OnSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected);
 
 private:
-	void UpdateTables(const QItemSelection& selected);
-	unsigned int GetRootRow(const QModelIndex& index) const;
+	void UpdateTables();
+	unsigned long GetRootRow(const QModelIndex& index) const;
 
 	GlyphForestModel* m_model;
+	QItemSelectionModel* m_selectionModel;
 	SynGlyphX::SourceDataCache::SharedPtr m_sourceDataCache;
 };
 
