@@ -615,13 +615,21 @@ void ANTzViewerWidget::mousePressEvent(QMouseEvent* event) {
 
     if (event->button() == Qt::LeftButton) {
 		
-		SelectAtPoint(event->x(), event->y());
+		Qt::KeyboardModifiers keys = event->modifiers();
+		if (keys & Qt::ShiftModifier) {
+
+
+		}
+		else {
+
+			SelectAtPoint(event->x(), event->y(), keys & Qt::ControlModifier);
+		}
     }
 
     m_lastMousePosition = event->pos();
 }
 
-void ANTzViewerWidget::SelectAtPoint(int x, int y) const {
+void ANTzViewerWidget::SelectAtPoint(int x, int y, bool multiSelect) const {
 
 	int pickID = 0;
 
@@ -639,21 +647,24 @@ void ANTzViewerWidget::SelectAtPoint(int x, int y) const {
 	}
 
 	//antzData->io.gl.stereo = isStereo;
-
+#ifdef DEBUG
 	emit NewStatusMessage(tr("Selection Attempt At: %1, %2 | ID = %3").arg(x).arg(y).arg(pickID), 4000);
+#endif
 
 	if (pickID != 0) {
 
 		pNPnode node = static_cast<pNPnode>(antzData->map.nodeID[pickID]);
-		QItemSelectionModel::SelectionFlags flags = QItemSelectionModel::Select;
-		if (node->selected) {
-			flags = QItemSelectionModel::Clear;
-		}
-		else {
-			m_selectionModel->clearSelection();
+		QItemSelectionModel::SelectionFlags flags = QItemSelectionModel::ClearAndSelect;
+		if (multiSelect) {
+
+			flags = QItemSelectionModel::Toggle;
 		}
 
 		m_selectionModel->select(m_model->IndexFromANTzID(pickID), flags);
+	}
+	else {
+
+		m_selectionModel->clearSelection();
 	}
 }
 
@@ -858,7 +869,7 @@ void ANTzViewerWidget::ZSpaceButtonReleaseHandler(ZSHandle targetHandle, const Z
 		if (intersectionInfo.hit) {
 
 			QPoint localPoint = mapFromGlobal(QPoint(intersectionInfo.x, intersectionInfo.y));
-			SelectAtPoint(localPoint.x(), localPoint.y());
+			SelectAtPoint(localPoint.x(), localPoint.y(), false);
 		}
 	}
 }

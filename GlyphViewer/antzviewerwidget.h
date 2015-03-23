@@ -39,7 +39,9 @@ public:
 	bool eventFilter(QObject *object, QEvent *event);
 
 signals:
+#ifdef DEBUG
 	void NewStatusMessage(const QString& message, int timeout = 0) const;
+#endif
 
 public slots:
     void ResetCamera();
@@ -67,7 +69,7 @@ private:
     void CenterCameraOnNode(pNPnode node);
     void InitIO();
 	void DrawSelectedNodeAndHUDText();
-	void SelectAtPoint(int x, int y) const;
+	void SelectAtPoint(int x, int y, bool multiSelect) const;
 
 	void CheckZSpaceError(ZSError error);
 	void SetZSpacePosition();
