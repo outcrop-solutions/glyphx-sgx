@@ -24,6 +24,8 @@ private slots:
 	void OnSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected);
 
 private:
+	void ReadSettings();
+	void WriteSettings();
 	void UpdateTables();
 	unsigned long GetRootRow(const QModelIndex& index) const;
 

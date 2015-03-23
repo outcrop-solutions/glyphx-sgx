@@ -5,6 +5,7 @@
 #include <QtWidgets/QHeaderView>
 #include <QtSql/QSqlQueryModel>
 #include <QtSql/QSqlError>
+#include <QtCore/QSettings>
 
 SourceDataWidget::SourceDataWidget(SynGlyphX::SourceDataCache::SharedPtr sourceDataCache, GlyphForestModel* model, QItemSelectionModel* selectionModel, QWidget *parent)
 	: QTabWidget(parent),
@@ -15,17 +16,19 @@ SourceDataWidget::SourceDataWidget(SynGlyphX::SourceDataCache::SharedPtr sourceD
 	setWindowTitle(tr("Source Data Of Selected Glyphs"));
 	QObject::connect(m_selectionModel, &QItemSelectionModel::selectionChanged, this, &SourceDataWidget::OnSelectionChanged);
 	UpdateTables();
+	ReadSettings();
 }
 
 SourceDataWidget::~SourceDataWidget()
 {
-
+	WriteSettings();
 }
 
 void SourceDataWidget::closeEvent(QCloseEvent* event) {
 
 	if (parentWidget() == nullptr) {
 
+		WriteSettings();
 		setVisible(false);
 		event->ignore();
 		emit WindowHidden();
@@ -85,4 +88,23 @@ unsigned long SourceDataWidget::GetRootRow(const QModelIndex& index) const {
 	}
 
 	return ancestor.row();
+}
+
+void SourceDataWidget::ReadSettings() {
+
+	QSettings settings;
+
+	settings.beginGroup("SourceDataWidget");
+	resize(settings.value("size", QSize(700, 400)).toSize());
+	restoreGeometry(settings.value("geometry").toByteArray());
+	settings.endGroup();
+}
+
+void SourceDataWidget::WriteSettings() {
+
+	QSettings settings;
+	settings.beginGroup("SourceDataWidget");
+	settings.setValue("size", size());
+	settings.setValue("geometry", saveGeometry());
+	settings.endGroup();
 }
