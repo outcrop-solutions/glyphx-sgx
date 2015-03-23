@@ -34,7 +34,8 @@ ANTzViewerWidget::ANTzViewerWidget(GlyphForestModel* model, QItemSelectionModel*
 	m_topLevelWindow(nullptr),
 	m_oglTextFont("Arial", 12, QFont::Normal),
 	m_isReseting(false),
-	m_worldTextureID(0)
+	m_worldTextureID(0),
+	m_regionSelectionRect(QRect())
 {
 	setFocusPolicy(Qt::StrongFocus);
 
@@ -392,7 +393,7 @@ void ANTzViewerWidget::paintGL() {
 
 		DrawZSpaceStylus(zSpaceStylusWorldMatrix, stylusLength, stylusColor);
 
-		DrawSelectedNodeAndHUDText();
+		DrawHUD();
 
 		glMatrixMode(GL_PROJECTION);
 		glPopMatrix();
@@ -424,7 +425,7 @@ void ANTzViewerWidget::paintGL() {
 
 	DrawZSpaceStylus(zSpaceStylusWorldMatrix, stylusLength, stylusColor);
 
-	DrawSelectedNodeAndHUDText();
+	DrawHUD();
 
 	glMatrixMode(GL_PROJECTION);
 	glPopMatrix();
@@ -467,13 +468,53 @@ void ANTzViewerWidget::DrawZSpaceStylus(const ZSMatrix4& stylusMatrix, ZSFloat s
 	}
 }
 
-void ANTzViewerWidget::DrawSelectedNodeAndHUDText() {
+void ANTzViewerWidget::DrawHUD() {
 
 	pData antzData = m_antzData->GetData();
 
 	bool reenableDepthTest = glIsEnabled(GL_DEPTH_TEST);
 	if (reenableDepthTest) {
 		glDisable(GL_DEPTH_TEST);
+	}
+
+	//Draw region selection rectangle
+	if ((m_regionSelectionRect.width() > 0) && (m_regionSelectionRect.height() > 0)) {
+
+		glMatrixMode(GL_PROJECTION);
+		glPushMatrix();
+		glLoadIdentity();
+		gluOrtho2D(0, antzData->io.gl.width, 0, antzData->io.gl.height);
+		
+		glMatrixMode(GL_MODELVIEW);
+		glLoadIdentity();
+
+		glColor4ub(64, 32, 0, 100);
+
+		int glRegionLeft = m_regionSelectionRect.x();
+		int glRegionRight = m_regionSelectionRect.x() + m_regionSelectionRect.width();
+		int glRegionTop = antzData->io.gl.height - m_regionSelectionRect.y();
+		int glRegionBottom = glRegionTop - m_regionSelectionRect.height();
+
+		glBegin(GL_QUADS);
+		glVertex2i(glRegionLeft, glRegionTop);
+		glVertex2f(glRegionLeft, glRegionBottom);
+		glVertex2f(glRegionRight, glRegionBottom);
+		glVertex2f(glRegionRight, glRegionTop);
+		glEnd();
+
+		glColor4ub(255, 255, 0, 100);
+
+		glBegin(GL_LINE_LOOP);
+		glVertex2i(glRegionLeft, glRegionTop);
+		glVertex2f(glRegionLeft, glRegionBottom);
+		glVertex2f(glRegionRight, glRegionBottom);
+		glVertex2f(glRegionRight, glRegionTop);
+		glEnd();
+
+		glMatrixMode(GL_PROJECTION);
+		glPopMatrix();
+		glMatrixMode(GL_MODELVIEW);
+		glPopMatrix();
 	}
 
 	//Draw tags
@@ -559,7 +600,7 @@ void ANTzViewerWidget::UpdateSelection(const QItemSelection& selected, const QIt
     const QModelIndexList& currentSelection = m_selectionModel->selectedIndexes();
     
     int nodeRootIndex = 0;
-    if (currentSelection.length() > 0)  {
+    if (currentSelection.length() == 1)  {
         const QModelIndex& last = currentSelection.back();
         if (last.isValid()) {
 
@@ -618,7 +659,7 @@ void ANTzViewerWidget::mousePressEvent(QMouseEvent* event) {
 		Qt::KeyboardModifiers keys = event->modifiers();
 		if (keys & Qt::ShiftModifier) {
 
-
+			m_selectionModel->clearSelection();
 		}
 		else {
 
@@ -675,37 +716,64 @@ void ANTzViewerWidget::mouseReleaseEvent(QMouseEvent* event) {
     antzData->io.mouse.mode = kNPmouseModeNull;
     antzData->io.mouse.tool = kNPtoolNull;
     antzData->io.mouse.buttonR = false;
+
+	if (!m_regionSelectionRect.isNull()) {
+		
+		QRect glRect(m_regionSelectionRect.x(), height() - m_regionSelectionRect.y() - m_regionSelectionRect.height(), m_regionSelectionRect.width(), m_regionSelectionRect.height());
+		QModelIndexList indexesInRegion = m_model->FindIndexesInRegion(glRect);
+		Q_FOREACH(const QModelIndex& index, indexesInRegion) {
+
+			m_selectionModel->select(index, QItemSelectionModel::Select);
+		}
+		m_regionSelectionRect = QRect();
+	}
 }
 
 void ANTzViewerWidget::mouseMoveEvent(QMouseEvent* event) {
 
 	pData antzData = m_antzData->GetData();
-
-    antzData->io.mouse.previous.x = m_lastMousePosition.x();
-    antzData->io.mouse.previous.y = m_lastMousePosition.y();
-    antzData->io.mouse.delta.x = event->x() - m_lastMousePosition.x();
-    antzData->io.mouse.delta.y = event->y() - m_lastMousePosition.y();
-    antzData->io.mouse.x = event->x();
-    antzData->io.mouse.y = event->y();
 	antzData->io.mouse.tool = kNPtoolNull;
+	antzData->io.mouse.mode = kNPmouseModeNull;
 
-    if (m_selectionModel->selectedIndexes().empty()) {
-        
-		antzData->io.mouse.mode = kNPmouseModeCamLook;
-    }
-    else {
-        
-		if (event->buttons() & Qt::LeftButton) {
-			if (event->buttons() & Qt::RightButton) {
-				antzData->io.mouse.mode = kNPmouseModeCamExamXZ;
+	if (event->modifiers() & Qt::ShiftModifier) {
+
+		int x = (m_lastMousePosition.x() < event->x()) ? m_lastMousePosition.x() : event->x();
+		int y = (m_lastMousePosition.y() < event->y()) ? m_lastMousePosition.y() : event->y();
+		m_regionSelectionRect.setRect(x, y, std::abs(m_lastMousePosition.x() - event->x()), std::abs(m_lastMousePosition.y() - event->y()));
+	}
+	else {
+
+		if (m_regionSelectionRect.isNull()) {
+
+			antzData->io.mouse.previous.x = m_lastMousePosition.x();
+			antzData->io.mouse.previous.y = m_lastMousePosition.y();
+			antzData->io.mouse.delta.x = event->x() - m_lastMousePosition.x();
+			antzData->io.mouse.delta.y = event->y() - m_lastMousePosition.y();
+			antzData->io.mouse.x = event->x();
+			antzData->io.mouse.y = event->y();
+
+			if (m_selectionModel->selectedIndexes().empty()) {
+
+				antzData->io.mouse.mode = kNPmouseModeCamLook;
 			}
 			else {
-				antzData->io.mouse.mode = kNPmouseModeCamExamXY;
+
+				if (event->buttons() & Qt::LeftButton) {
+					if (event->buttons() & Qt::RightButton) {
+						antzData->io.mouse.mode = kNPmouseModeCamExamXZ;
+					}
+					else {
+						antzData->io.mouse.mode = kNPmouseModeCamExamXY;
+					}
+				}
 			}
 		}
-    }
+		else {
 
-    m_lastMousePosition = event->pos();
+			m_regionSelectionRect = QRect();
+		}
+		m_lastMousePosition = event->pos();
+	}
 }
 
 void ANTzViewerWidget::keyPressEvent(QKeyEvent* event) {

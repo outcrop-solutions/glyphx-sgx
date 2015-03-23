@@ -68,7 +68,7 @@ private:
 	void SetGridTexture(pNPnode grid);
     void CenterCameraOnNode(pNPnode node);
     void InitIO();
-	void DrawSelectedNodeAndHUDText();
+	void DrawHUD();
 	void SelectAtPoint(int x, int y, bool multiSelect) const;
 
 	void CheckZSpaceError(ZSError error);
@@ -98,6 +98,7 @@ private:
     QItemSelectionModel* m_selectionModel;
 	GlyphForestModel* m_model;
     QPoint m_lastMousePosition;
+	QRect m_regionSelectionRect;
 	QWidget* m_topLevelWindow;
 
 	ZSContext m_zSpaceContext;

@@ -51,8 +51,11 @@ public:
 
 	void SetParentGridToDefaultBaseImage();
 
+	QModelIndexList FindIndexesInRegion(const QRect& region) const;
+
 private:
 	void Clear(bool resetModel);
+	void FindNodesInRegion(const QRect& region, pNPnode node, int row, QModelIndexList& indexList) const;
 
 	int GetChildIndexFromParent(pNPnode node) const;
 	int FindRowForRootNode(pNPnode node) const;

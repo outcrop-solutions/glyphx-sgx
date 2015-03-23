@@ -2,6 +2,7 @@
 #include "npdata.h"
 #include "data/npmapfile.h"
 #include <QtCore/QDir>
+#include <QtCore/QRect>
 #include <QtCore/QThread>
 #include "SOIL.h"
 #include "io/gl/nptags.h"
@@ -230,4 +231,29 @@ void GlyphForestModel::SetParentGridToDefaultBaseImage() {
 const QStringList& GlyphForestModel::GetBaseImageFilenames() const {
 
 	return m_baseImageFilenames;
+}
+
+QModelIndexList GlyphForestModel::FindIndexesInRegion(const QRect& region) const {
+
+	QModelIndexList indexesInRegion;
+
+	for (int i = kNPnodeRootPin; i < m_antzData->GetData()->map.nodeRootCount; ++i) {
+
+		FindNodesInRegion(region, static_cast<pNPnode>(m_antzData->GetData()->map.node[i]), i - kNPnodeRootPin, indexesInRegion);
+	}
+
+	return indexesInRegion;
+}
+
+void GlyphForestModel::FindNodesInRegion(const QRect& region, pNPnode node, int row, QModelIndexList& indexList) const {
+
+	if ((node->screen.z >= 0.0f) && (node->screen.z <= 1.0f) && (region.contains(node->screen.x, node->screen.y, false))) {
+
+		indexList.push_back(createIndex(row, 0, node));
+	}
+
+	for (int i = 0; i < node->childCount; ++i) {
+
+		FindNodesInRegion(region, node->child[i], i, indexList);
+	}
 }
