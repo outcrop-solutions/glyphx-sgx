@@ -39,6 +39,7 @@ namespace SynGlyphX {
 		void UpdateCSVFile(const QString& tableName, const QString& csvFilename);
 
 	protected:
+		void SetPragmaValue(const QString& pragmaString);
 		void CreateNewTableInCache(const QString& name, const QString& fieldNamesAndTypes);
 		void CreateTableFromCSVHeaders(const QString& name, const CSVFileReader::CSVValues& headers, const CSVFileReader::CSVValues& types);
 		virtual void DeleteTable(const QString& table);

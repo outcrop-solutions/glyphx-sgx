@@ -48,6 +48,13 @@ namespace SynGlyphX {
 			throw std::exception("CSV cache db failed to open.");
 		}
 
+		SetPragmaValue("page_size = 4096");
+		SetPragmaValue("cache_size = 16384");
+		SetPragmaValue("temp_store = MEMORY");
+		SetPragmaValue("journal_mode = OFF");
+		SetPragmaValue("locking_mode = EXCLUSIVE");
+		SetPragmaValue("synchronous = NORMAL");
+
 		if (!m_db.tables().contains(s_tableIndexName)) {
 
 			try {
@@ -59,6 +66,17 @@ namespace SynGlyphX {
 				throw;
 			}
 		}
+	}
+
+	void CSVCache::SetPragmaValue(const QString& pragmaString) {
+
+		QSqlQuery pragmaQuery(m_db);
+		pragmaQuery.prepare("PRAGMA " + pragmaString);
+		if (!pragmaQuery.exec()) {
+
+			throw std::exception(("Pragma Error: " + m_db.lastError().text()).toStdString().c_str());
+		}
+		pragmaQuery.finish();
 	}
 
 	void CSVCache::Close() {
