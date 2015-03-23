@@ -177,6 +177,7 @@ void GlyphViewerWindow::CloseVisualization() {
 
 	m_glyphForestModel->Clear();
 	m_glyphForestModel->SetParentGridToDefaultBaseImage();
+	m_sourceDataCache->Close();
 	EnableLoadedVisualizationDependentActions(false);
 	ClearCurrentFile();
 }
