@@ -59,7 +59,7 @@ void SourceDataWidget::UpdateTables() {
 			QTableView* tableView = new QTableView(this);
 			QSqlQueryModel* queryModel = new QSqlQueryModel(this);
 			
-			QStringList columns = m_sourceDataCache->GetColumnsForTable(indexSet.first);
+			SynGlyphX::SourceDataCache::TableColumnSet columns = m_sourceDataCache->GetColumnsForTable(indexSet.first);
 			QSqlQuery query = m_sourceDataCache->CreateSelectQueryForIndexSet(indexSet.first, columns, indexSet.second);
 			query.exec();
 			queryModel->setQuery(query);
