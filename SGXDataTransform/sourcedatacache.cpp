@@ -280,20 +280,20 @@ namespace SynGlyphX {
 		return m_tableIndexMap;
 	}
 
-	QStringList SourceDataCache::GetColumnsForTable(const QString& table) const {
+	SourceDataCache::TableColumnSet SourceDataCache::GetColumnsForTable(const QString& table) const {
 
-		QStringList columnNames;
+		TableColumnSet columnNames;
 		QSqlRecord columns = m_db.record(table);
 		for (int i = 0; i < columns.count(); ++i) {
 
 			QString fieldName = columns.fieldName(i);
 			if (fieldName != IndexColumnName) {
 
-				columnNames.push_back(fieldName);
+				columnNames.insert(fieldName);
 			}
 		}
 
-		if (columnNames.isEmpty()) {
+		if (columnNames.empty()) {
 
 			throw std::invalid_argument("Source Data Cache was asked for column names for a table that does not exist");
 		}
@@ -449,9 +449,16 @@ namespace SynGlyphX {
 		return indexSets;
 	}
 
-	QSqlQuery SourceDataCache::CreateSelectQueryForIndexSet(const QString& tableName, const QStringList& columns, const IndexSet& indexSet) const {
+	QSqlQuery SourceDataCache::CreateSelectQueryForIndexSet(const QString& tableName, const TableColumnSet& columns, const IndexSet& indexSet) const {
 
-		QString columnNameString = "\"" + columns.join("\", \"") + "\"";
+		TableColumnSet::const_iterator column = columns.begin();
+		QString columnNameString = "\"" + *column;
+		++column;
+		for (; column != columns.end(); ++column) {
+
+			columnNameString += "\", \"" + *column;
+		}
+		columnNameString += "\"";
 
 		IndexSet::const_iterator iT = indexSet.begin();
 		QString whereString = "WHERE \"" + IndexColumnName + "\" IN (" + QString::number(*iT);
