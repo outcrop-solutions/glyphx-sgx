@@ -59,10 +59,10 @@ void SourceDataWidget::UpdateTables() {
 			QTableView* tableView = new QTableView(this);
 			QSqlQueryModel* queryModel = new QSqlQueryModel(this);
 			
-			SynGlyphX::SourceDataCache::TableColumnSet columns = m_sourceDataCache->GetColumnsForTable(indexSet.first);
-			QSqlQuery query = m_sourceDataCache->CreateSelectQueryForIndexSet(indexSet.first, columns, indexSet.second);
-			query.exec();
-			queryModel->setQuery(query);
+			SynGlyphX::TableColumns columns = m_sourceDataCache->GetColumnsForTable(indexSet.first);
+			SynGlyphX::SharedSQLQuery query = m_sourceDataCache->CreateSelectQueryForIndexSet(indexSet.first, columns, indexSet.second);
+			query->exec();
+			queryModel->setQuery(*query.data());
 			if (queryModel->lastError().isValid()) {
 
 				throw std::exception("Failed to set SQL query for source data widget.");

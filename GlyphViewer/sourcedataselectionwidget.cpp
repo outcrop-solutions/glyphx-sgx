@@ -69,10 +69,11 @@ void SourceDataSelectionWidget::OnModelReset() {
 			m_tableComboBox->addItem(formattedName.second);
 			
 			QScrollArea* scrollArea = new QScrollArea(this);
+			scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 			QWidget* widget = new QWidget(scrollArea);
 			QVBoxLayout* layout = new QVBoxLayout(widget);
 
-			SynGlyphX::SourceDataCache::TableColumnSet columns = m_sourceDataCache->GetColumnsForTable(formattedName.first);
+			SynGlyphX::TableColumns columns = m_sourceDataCache->GetColumnsForTable(formattedName.first);
 			for(const QString& column : columns) {
 
 				SynGlyphX::ElasticListWidget* elasticListWidget = new SynGlyphX::ElasticListWidget(widget);
