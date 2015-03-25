@@ -23,6 +23,7 @@
 #include "datasourcemaps.h"
 #include <map>
 #include <set>
+#include "databaseinfo.h"
 #include "inputfield.h"
 #include <QtSql/QSqlQuery>
 #include <memory>
@@ -42,8 +43,6 @@ namespace SynGlyphX {
 		typedef std::set<unsigned long> IndexSet;
 		typedef std::map<QString, IndexSet> IndexSetMap;
 
-		typedef std::set<QString> TableColumnSet;
-
 		SourceDataCache();
 		SourceDataCache(const QString& filename);
 		virtual ~SourceDataCache();
@@ -57,13 +56,13 @@ namespace SynGlyphX {
 
 		const TableIndexMap& GetTablesIndexMap() const;
 		const TableNameMap& GetFormattedNames() const;
-		TableColumnSet GetColumnsForTable(const QString& table) const;
+		TableColumns GetColumnsForTable(const QString& table) const;
 
-		QSqlQuery CreateSelectFieldQueryAscending(const InputField& inputfield) const;
-		QSqlQuery CreateMinMaxQuery(const InputField& inputfield) const;
+		SharedSQLQuery CreateSelectFieldQueryAscending(const InputField& inputfield) const;
+		SharedSQLQuery CreateMinMaxQuery(const InputField& inputfield) const;
 		
 		IndexSetMap SplitIndexSet(const IndexSet& indexSet) const;
-		QSqlQuery CreateSelectQueryForIndexSet(const QString& tableName, const TableColumnSet& columns, const IndexSet& indexSet) const;
+		SharedSQLQuery CreateSelectQueryForIndexSet(const QString& tableName, const TableColumns& columns, const IndexSet& indexSet) const;
 
 	private:
 		void CreateNewIndexedTableInCache(const QString& name, const QString& fieldNamesAndTypes);

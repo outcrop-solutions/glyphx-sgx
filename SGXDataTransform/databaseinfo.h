@@ -22,8 +22,17 @@
 #include <QtCore/QString>
 #include <QtCore/QStringList>
 #include <QtSql/QSqlDatabase>
+#include <QtSql/QSqlQuery>
+#include <QtCore/QSharedPointer>
+#include <boost/multi_index_container.hpp>
+#include <boost/multi_index/random_access_index.hpp>
+#include <boost/multi_index/ordered_index.hpp>
+#include <boost/multi_index/identity.hpp>
 
 namespace SynGlyphX {
+
+	typedef boost::multi_index_container<QString, boost::multi_index::indexed_by<boost::multi_index::random_access<>, boost::multi_index::ordered_unique<boost::multi_index::identity<QString>>>> TableColumns;
+	typedef QSharedPointer<QSqlQuery> SharedSQLQuery;
 
 	class SGXDATATRANSFORM_EXPORT DatabaseInfo
 	{

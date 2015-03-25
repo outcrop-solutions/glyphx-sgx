@@ -280,16 +280,17 @@ namespace SynGlyphX {
 		return m_tableIndexMap;
 	}
 
-	SourceDataCache::TableColumnSet SourceDataCache::GetColumnsForTable(const QString& table) const {
+	TableColumns SourceDataCache::GetColumnsForTable(const QString& table) const {
 
-		TableColumnSet columnNames;
+		TableColumns columnNames;
 		QSqlRecord columns = m_db.record(table);
+		columnNames.reserve(columns.count());
 		for (int i = 0; i < columns.count(); ++i) {
 
 			QString fieldName = columns.fieldName(i);
 			if (fieldName != IndexColumnName) {
 
-				columnNames.insert(fieldName);
+				columnNames.insert(columnNames.end(), fieldName);
 			}
 		}
 
@@ -333,15 +334,15 @@ namespace SynGlyphX {
 		m_tableNameMap[tableName] = formattedName;
 	}
 
-	QSqlQuery SourceDataCache::CreateSelectFieldQueryAscending(const InputField& inputfield) const {
+	SharedSQLQuery SourceDataCache::CreateSelectFieldQueryAscending(const InputField& inputfield) const {
 
 		if (!IsInputfieldInCache(inputfield)) {
 
 			throw std::invalid_argument("Can not create SQL query for input field that isn't in the source data cache");
 		}
 
-		QSqlQuery query(m_db);
-		query.prepare("SELECT \"" + QString::fromStdWString(inputfield.GetField()) + "\" FROM \"" + CreateTablename(inputfield) + "\" ORDER BY \"" + IndexColumnName + "\" ASC");
+		SharedSQLQuery query(new QSqlQuery(m_db));
+		query->prepare("SELECT \"" + QString::fromStdWString(inputfield.GetField()) + "\" FROM \"" + CreateTablename(inputfield) + "\" ORDER BY \"" + IndexColumnName + "\" ASC");
 		return query;
 	}
 
@@ -355,16 +356,16 @@ namespace SynGlyphX {
 		return datasourceID + ":" + originalTablename;
 	}
 
-	QSqlQuery SourceDataCache::CreateMinMaxQuery(const InputField& inputfield) const {
+	SharedSQLQuery SourceDataCache::CreateMinMaxQuery(const InputField& inputfield) const {
 
 		if (!IsInputfieldInCache(inputfield)) {
 
 			throw std::invalid_argument("Can not create SQL query for input field that isn't in the source data cache");
 		}
 
-		QSqlQuery query(m_db);
+		SharedSQLQuery query(new QSqlQuery(m_db));
 		QString queryString = QString("SELECT MIN(%1), MAX(%1) FROM ").arg("\"" + QString::fromStdWString(inputfield.GetField()) + "\"") + "\"" + CreateTablename(inputfield) + "\"";
-		query.prepare(queryString);
+		query->prepare(queryString);
 
 		return query;
 	}
@@ -449,9 +450,9 @@ namespace SynGlyphX {
 		return indexSets;
 	}
 
-	QSqlQuery SourceDataCache::CreateSelectQueryForIndexSet(const QString& tableName, const TableColumnSet& columns, const IndexSet& indexSet) const {
+	SharedSQLQuery SourceDataCache::CreateSelectQueryForIndexSet(const QString& tableName, const TableColumns& columns, const IndexSet& indexSet) const {
 
-		TableColumnSet::const_iterator column = columns.begin();
+		TableColumns::const_iterator column = columns.begin();
 		QString columnNameString = "\"" + *column;
 		++column;
 		for (; column != columns.end(); ++column) {
@@ -472,8 +473,8 @@ namespace SynGlyphX {
 
 		QString queryString = "SELECT " + columnNameString + " FROM \"" + tableName + "\" " + whereString;
 
-		QSqlQuery query(m_db);
-		query.prepare(queryString);
+		SharedSQLQuery query(new QSqlQuery(m_db));
+		query->prepare(queryString);
 
 		return query;
 	}

@@ -61,13 +61,13 @@ namespace SynGlyphX {
 
 	void Transformer::RunSelectSqlQuery(const InputField& inputfield, QVariantList& data) const {
 
-		QSqlQuery query = m_sourceDataCache.CreateSelectFieldQueryAscending(inputfield);
-		query.exec();
-		while (query.next()) {
+		SharedSQLQuery query = m_sourceDataCache.CreateSelectFieldQueryAscending(inputfield);
+		query->exec();
+		while (query->next()) {
 			
-			data.push_back(query.value(0));
+			data.push_back(query->value(0));
 		}
-		query.finish();
+		query->finish();
 	}
 
 	GlyphGraph::ConstSharedVector Transformer::CreateGlyphTreesFromMinMaxTree(DataMappingGlyphGraph::ConstSharedPtr minMaxTree) const {
@@ -85,13 +85,13 @@ namespace SynGlyphX {
 
 			if (iterator->second.IsNumeric()) {
 
-				QSqlQuery minAndMaxQuery = m_sourceDataCache.CreateMinMaxQuery(iterator->second);
-				minAndMaxQuery.exec();
-				minAndMaxQuery.first();
+				SharedSQLQuery minAndMaxQuery = m_sourceDataCache.CreateMinMaxQuery(iterator->second);
+				minAndMaxQuery->exec();
+				minAndMaxQuery->first();
 				
 				RunSelectSqlQuery(iterator->second, data);
-				fieldData.reset(new InputFieldData(data, minAndMaxQuery.value(0).toDouble(), minAndMaxQuery.value(1).toDouble()));
-				minAndMaxQuery.finish();
+				fieldData.reset(new InputFieldData(data, minAndMaxQuery->value(0).toDouble(), minAndMaxQuery->value(1).toDouble()));
+				minAndMaxQuery->finish();
 			}
 			else {
 
