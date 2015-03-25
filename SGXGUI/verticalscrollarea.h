@@ -15,39 +15,29 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef SOURCEDATAWIDGET_H
-#define SOURCEDATAWIDGET_H
+#ifndef SYNGLYPHX_VERTICALSCROLLAREA_H
+#define SYNGLYPHX_VERTICALSCROLLAREA_H
 
-#include <QtWidgets/QTabWidget>
-#include "sourcedatacache.h"
-#include <QtCore/QItemSelectionModel>
+#include "sgxgui_global.h"
+#include <QtWidgets/QScrollArea>
 
-class SourceDataWidget : public QTabWidget
-{
-	Q_OBJECT
+namespace SynGlyphX {
 
-public:
-	SourceDataWidget(SynGlyphX::SourceDataCache::SharedPtr sourceDataCache, QItemSelectionModel* selectionModel, QWidget *parent = nullptr);
-	~SourceDataWidget();
+	class SGXGUI_EXPORT VerticalScrollArea : public QScrollArea
+	{
+		Q_OBJECT
 
-signals:
-	void WindowHidden();
+	public:
+		VerticalScrollArea(QWidget *parent);
+		~VerticalScrollArea();
 
-protected:
-	virtual void closeEvent(QCloseEvent* event);
+	protected:
+		virtual bool eventFilter(QObject *o, QEvent *e);
 
-private slots:
-	void OnSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected);
+	private:
 
-private:
-	void ReadSettings();
-	void WriteSettings();
-	void UpdateTables();
-	unsigned long GetRootRow(const QModelIndex& index) const;
+	};
 
-	//GlyphForestModel* m_model;
-	QItemSelectionModel* m_selectionModel;
-	SynGlyphX::SourceDataCache::SharedPtr m_sourceDataCache;
-};
+} //namespace SynGlyphX
 
-#endif // SOURCEDATAWIDGET_H
+#endif //SYNGLYPHX_VERTICALSCROLLAREA_H

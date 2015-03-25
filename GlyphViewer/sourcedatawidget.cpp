@@ -7,15 +7,14 @@
 #include <QtSql/QSqlError>
 #include <QtCore/QSettings>
 
-SourceDataWidget::SourceDataWidget(SynGlyphX::SourceDataCache::SharedPtr sourceDataCache, GlyphForestModel* model, QItemSelectionModel* selectionModel, QWidget *parent)
+SourceDataWidget::SourceDataWidget(SynGlyphX::SourceDataCache::SharedPtr sourceDataCache, QItemSelectionModel* selectionModel, QWidget *parent)
 	: QTabWidget(parent),
-	m_model(model),
+	//m_model(model),
 	m_selectionModel(selectionModel),
 	m_sourceDataCache(sourceDataCache)
 {
 	setWindowTitle(tr("Source Data Of Selected Glyphs"));
 	QObject::connect(m_selectionModel, &QItemSelectionModel::selectionChanged, this, &SourceDataWidget::OnSelectionChanged);
-	UpdateTables();
 	ReadSettings();
 }
 

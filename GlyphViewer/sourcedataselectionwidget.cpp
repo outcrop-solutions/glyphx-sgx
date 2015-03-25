@@ -2,7 +2,7 @@
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QAbstractItemView>
-#include <QtWidgets/QScrollArea>
+#include "verticalscrollarea.h"
 #include "groupboxsinglewidget.h"
 #include "elasticlistwidget.h"
 
@@ -36,7 +36,7 @@ SourceDataSelectionWidget::SourceDataSelectionWidget(SynGlyphX::SourceDataCache:
 	m_sourceWidgetButton->setEnabled(!m_selectionModel->selection().empty());
 	QObject::connect(m_selectionModel, &QItemSelectionModel::selectionChanged, this, &SourceDataSelectionWidget::OnSelectionChanged);
 
-	m_sourceDataWindow.reset(new SourceDataWidget(m_sourceDataCache, model, m_selectionModel));
+	m_sourceDataWindow.reset(new SourceDataWidget(m_sourceDataCache, m_selectionModel));
 	QObject::connect(m_sourceWidgetButton, &QPushButton::toggled, m_sourceDataWindow.data(), &SourceDataWidget::setVisible);
 	m_sourceDataWindow->setVisible(false);
 
@@ -68,8 +68,7 @@ void SourceDataSelectionWidget::OnModelReset() {
 
 			m_tableComboBox->addItem(formattedName.second);
 			
-			QScrollArea* scrollArea = new QScrollArea(this);
-			scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+			SynGlyphX::VerticalScrollArea* scrollArea = new SynGlyphX::VerticalScrollArea(this);
 			QWidget* widget = new QWidget(scrollArea);
 			QVBoxLayout* layout = new QVBoxLayout(widget);
 
