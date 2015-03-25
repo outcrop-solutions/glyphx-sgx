@@ -63,6 +63,8 @@ namespace SynGlyphX {
 		
 		IndexSetMap SplitIndexSet(const IndexSet& indexSet) const;
 		SharedSQLQuery CreateSelectQueryForIndexSet(const QString& tableName, const TableColumns& columns, const IndexSet& indexSet) const;
+		SharedSQLQuery CreateDistinctValueQuery(const QString& tableName, const QString& columnName, const IndexSet& indexSet = IndexSet()) const;
+		unsigned long GetValueCount(const QString& tableName, const QString& columnName, const QString& value, const IndexSet& indexSet = IndexSet()) const;
 
 	private:
 		void CreateNewIndexedTableInCache(const QString& name, const QString& fieldNamesAndTypes);
@@ -80,6 +82,8 @@ namespace SynGlyphX {
 		QString CreateTablename(const InputField& inputfield) const;
 		QString CreateTablename(const QString& datasourceID, const QString& originalTablename) const;
 		QString GetFormattedNameFromCache(const QString& table);
+
+		QString CreateWhereString(const IndexSet& indexSet) const;
 
 		static const QString IndexColumnName;
 

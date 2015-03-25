@@ -461,6 +461,54 @@ namespace SynGlyphX {
 		}
 		columnNameString += "\"";
 
+		QString queryString = "SELECT " + columnNameString + " FROM \"" + tableName + "\" " + CreateWhereString(indexSet);
+
+		SharedSQLQuery query(new QSqlQuery(m_db));
+		query->prepare(queryString);
+
+		return query;
+	}
+
+	SharedSQLQuery SourceDataCache::CreateDistinctValueQuery(const QString& tableName, const QString& columnName, const IndexSet& indexSet) const {
+
+		QString queryString = "SELECT DISTINCT \"" + columnName + "\" FROM \"" + tableName + "\" ";
+
+		if (!indexSet.empty()) {
+
+			queryString += CreateWhereString(indexSet);
+		}
+
+		SharedSQLQuery query(new QSqlQuery(m_db));
+		query->prepare(queryString);
+
+		return query;
+	}
+
+	unsigned long SourceDataCache::GetValueCount(const QString& tableName, const QString& columnName, const QString& value, const IndexSet& indexSet) const {
+
+		QString queryString = "SELECT COUNT(*) FROM \"" + tableName + "\" ";
+
+		if (!indexSet.empty()) {
+
+			queryString += CreateWhereString(indexSet) + " AND ";
+		}
+		else {
+
+			queryString += " WHERE ";
+		}
+
+		queryString += "\"" + columnName + "\"=\"" + value + "\"";
+
+		QSqlQuery query(m_db);
+		query.prepare(queryString);
+		query.exec();
+		query.first();
+
+		return query.value(0).toULongLong();
+	}
+
+	QString SourceDataCache::CreateWhereString(const IndexSet& indexSet) const {
+
 		IndexSet::const_iterator iT = indexSet.begin();
 		QString whereString = "WHERE \"" + IndexColumnName + "\" IN (" + QString::number(*iT);
 		++iT;
@@ -471,12 +519,7 @@ namespace SynGlyphX {
 		}
 		whereString += ")";
 
-		QString queryString = "SELECT " + columnNameString + " FROM \"" + tableName + "\" " + whereString;
-
-		SharedSQLQuery query(new QSqlQuery(m_db));
-		query->prepare(queryString);
-
-		return query;
+		return whereString;
 	}
 
 } //namespace SynGlyphX
