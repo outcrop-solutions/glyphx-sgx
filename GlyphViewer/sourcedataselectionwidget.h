@@ -25,6 +25,7 @@
 #include "sourcedatawidget.h"
 #include "singlewidgetdialog.h"
 #include "glyphforestmodel.h"
+#include <unordered_map>
 
 class SourceDataSelectionWidget : public QWidget
 {
@@ -38,8 +39,11 @@ private slots:
 	void OnSourceWidgetWindowHidden();
 	void OnSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected);
 	void OnModelReset();
+	void OnComboBoxChanged(int current);
 
 private:
+	typedef std::unordered_map<std::string, QWidget*> NameWidgetMap;
+
 	unsigned long GetRootRow(const QModelIndex& index) const;
 	void UpdateElasticLists(const SynGlyphX::SourceDataCache::IndexSetMap& dataIndexes);
 
@@ -50,6 +54,8 @@ private:
 	QStackedLayout* m_elasticListsLayout;
 
 	SynGlyphX::SourceDataCache::SharedPtr m_sourceDataCache;
+
+	NameWidgetMap m_elasticListWidgetsForEachTable;
 };
 
 #endif // SOURCEDATASELECTIONWIDGET_H

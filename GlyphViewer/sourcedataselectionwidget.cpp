@@ -24,7 +24,7 @@ SourceDataSelectionWidget::SourceDataSelectionWidget(SynGlyphX::SourceDataCache:
 
 	m_elasticListsLayout = new QStackedLayout(layout);
 	layout->addLayout(m_elasticListsLayout, 1);
-	QObject::connect(m_tableComboBox, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), m_elasticListsLayout, &QStackedLayout::setCurrentIndex);
+	QObject::connect(m_tableComboBox, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &SourceDataSelectionWidget::OnComboBoxChanged);
 
 	m_sourceWidgetButton = new QPushButton(tr("Show Selected Source Data"), this);
 	m_sourceWidgetButton->setCheckable(true);
@@ -85,7 +85,7 @@ void SourceDataSelectionWidget::OnModelReset() {
 		const SynGlyphX::SourceDataCache::TableNameMap& tableNameMap = m_sourceDataCache->GetFormattedNames();
 		for (auto formattedName : tableNameMap) {
 
-			m_tableComboBox->addItem(formattedName.second);
+			m_tableComboBox->addItem(formattedName.second, formattedName.first);
 			
 			SynGlyphX::VerticalScrollArea* scrollArea = new SynGlyphX::VerticalScrollArea(this);
 			QWidget* widget = new QWidget(scrollArea);
@@ -104,6 +104,7 @@ void SourceDataSelectionWidget::OnModelReset() {
 			scrollArea->setWidget(widget);
 
 			m_elasticListsLayout->addWidget(scrollArea);
+			m_elasticListWidgetsForEachTable[formattedName.first.toStdString()] = scrollArea;
 		}
 		m_tableComboBox->view()->setMinimumWidth(m_tableComboBox->view()->sizeHintForColumn(0));
 		m_tableComboBox->setEnabled(true);
@@ -114,6 +115,7 @@ void SourceDataSelectionWidget::OnModelReset() {
 		m_tableComboBox->blockSignals(true);
 		m_tableComboBox->clear();
 		m_tableComboBox->setEnabled(false);
+		m_elasticListWidgetsForEachTable.clear();
 		while (!m_elasticListsLayout->isEmpty()) {
 
 			m_elasticListsLayout->removeWidget(m_elasticListsLayout->widget(0));
@@ -132,7 +134,15 @@ unsigned long SourceDataSelectionWidget::GetRootRow(const QModelIndex& index) co
 	return ancestor.row();
 }
 
+void SourceDataSelectionWidget::OnComboBoxChanged(int current) {
+
+	m_elasticListsLayout->setCurrentWidget(m_elasticListWidgetsForEachTable[m_tableComboBox->currentData().toString().toStdString()]);
+}
+
 void SourceDataSelectionWidget::UpdateElasticLists(const SynGlyphX::SourceDataCache::IndexSetMap& dataIndexes) {
 
+	for (auto table : m_sourceDataCache->GetTablesIndexMap()) {
 
+		//SynGlyphX::SourceDataCache::IndexSetMap::const_iterator dataIndexesForTable = dataIndexes.find(table.second);
+	}
 }
