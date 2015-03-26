@@ -27,8 +27,10 @@ class SourceDataWidget : public QTabWidget
 	Q_OBJECT
 
 public:
-	SourceDataWidget(SynGlyphX::SourceDataCache::SharedPtr sourceDataCache, QItemSelectionModel* selectionModel, QWidget *parent = nullptr);
+	SourceDataWidget(SynGlyphX::SourceDataCache::SharedPtr sourceDataCache, QWidget *parent = nullptr);
 	~SourceDataWidget();
+
+	void UpdateTables(const SynGlyphX::SourceDataCache::IndexSetMap& dataIndexes);
 
 signals:
 	void WindowHidden();
@@ -36,17 +38,12 @@ signals:
 protected:
 	virtual void closeEvent(QCloseEvent* event);
 
-private slots:
-	void OnSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected);
-
 private:
 	void ReadSettings();
 	void WriteSettings();
-	void UpdateTables();
-	unsigned long GetRootRow(const QModelIndex& index) const;
 
 	//GlyphForestModel* m_model;
-	QItemSelectionModel* m_selectionModel;
+	//QItemSelectionModel* m_selectionModel;
 	SynGlyphX::SourceDataCache::SharedPtr m_sourceDataCache;
 };
 

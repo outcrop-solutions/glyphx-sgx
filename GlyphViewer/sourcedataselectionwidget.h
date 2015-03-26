@@ -40,6 +40,9 @@ private slots:
 	void OnModelReset();
 
 private:
+	unsigned long GetRootRow(const QModelIndex& index) const;
+	void UpdateElasticLists(const SynGlyphX::SourceDataCache::IndexSetMap& dataIndexes);
+
 	QItemSelectionModel* m_selectionModel;
 	QPushButton* m_sourceWidgetButton;
 	QScopedPointer<SourceDataWidget> m_sourceDataWindow;

@@ -36,7 +36,7 @@ SourceDataSelectionWidget::SourceDataSelectionWidget(SynGlyphX::SourceDataCache:
 	m_sourceWidgetButton->setEnabled(!m_selectionModel->selection().empty());
 	QObject::connect(m_selectionModel, &QItemSelectionModel::selectionChanged, this, &SourceDataSelectionWidget::OnSelectionChanged);
 
-	m_sourceDataWindow.reset(new SourceDataWidget(m_sourceDataCache, m_selectionModel));
+	m_sourceDataWindow.reset(new SourceDataWidget(m_sourceDataCache));
 	QObject::connect(m_sourceWidgetButton, &QPushButton::toggled, m_sourceDataWindow.data(), &SourceDataWidget::setVisible);
 	m_sourceDataWindow->setVisible(false);
 
@@ -56,7 +56,26 @@ void SourceDataSelectionWidget::OnSourceWidgetWindowHidden() {
 
 void SourceDataSelectionWidget::OnSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected) {
 
-	m_sourceWidgetButton->setEnabled(!m_selectionModel->selection().empty());
+	bool isSelectionNotEmpty = !m_selectionModel->selection().empty();
+	m_sourceWidgetButton->setEnabled(isSelectionNotEmpty);
+	if (isSelectionNotEmpty) {
+
+		SynGlyphX::SourceDataCache::IndexSet selectedDataRows;
+		Q_FOREACH(const QModelIndex& index, m_selectionModel->selection().indexes()) {
+
+			selectedDataRows.insert(GetRootRow(index));
+		}
+
+		SynGlyphX::SourceDataCache::IndexSetMap indexSets = m_sourceDataCache->SplitIndexSet(selectedDataRows);
+
+		m_sourceDataWindow->UpdateTables(indexSets);
+		UpdateElasticLists(indexSets);
+	}
+	else {
+
+		m_sourceDataWindow->setVisible(false);
+		OnSourceWidgetWindowHidden();
+	}
 }
 
 void SourceDataSelectionWidget::OnModelReset() {
@@ -100,4 +119,20 @@ void SourceDataSelectionWidget::OnModelReset() {
 			m_elasticListsLayout->removeWidget(m_elasticListsLayout->widget(0));
 		}
 	}
+}
+
+unsigned long SourceDataSelectionWidget::GetRootRow(const QModelIndex& index) const {
+
+	QModelIndex ancestor = index;
+	while (ancestor.parent().isValid()) {
+
+		ancestor = ancestor.parent();
+	}
+
+	return ancestor.row();
+}
+
+void SourceDataSelectionWidget::UpdateElasticLists(const SynGlyphX::SourceDataCache::IndexSetMap& dataIndexes) {
+
+
 }
