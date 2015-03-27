@@ -109,7 +109,8 @@
     </ClCompile>
     <ClCompile Include="glyphvieweroptions.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>    <ClCompile Include="sourcedatawidget.cpp">
+    </ClCompile>
+    <ClCompile Include="sourcedatawidget.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Win32\Debug\moc_sourcedatawidget.cpp">
@@ -126,7 +127,17 @@
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Win32\Release\moc_sourcedataselectionwidget.cpp">
       <Filter>Generated Files\Release_Win32</Filter>
-    </ClCompile>  </ItemGroup>
+    </ClCompile>
+    <ClCompile Include="elasticlistswidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Win32\Debug\moc_elasticlistswidget.cpp">
+      <Filter>Generated Files\Debug_Win32</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Win32\Release\moc_elasticlistswidget.cpp">
+      <Filter>Generated Files\Release_Win32</Filter>
+    </ClCompile>
+  </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="glyphviewer.qrc">
       <Filter>Resource Files</Filter>
@@ -151,12 +162,17 @@
     </CustomBuild>
     <CustomBuild Include="optionswidget.h">
       <Filter>Header Files</Filter>
-    </CustomBuild>    <CustomBuild Include="sourcedatawidget.h">
+    </CustomBuild>
+    <CustomBuild Include="sourcedatawidget.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="sourcedataselectionwidget.h">
       <Filter>Header Files</Filter>
-    </CustomBuild>  </ItemGroup>
+    </CustomBuild>
+    <CustomBuild Include="elasticlistswidget.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+  </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="GlyphViewer.rc">
       <Filter>Resource Files</Filter>

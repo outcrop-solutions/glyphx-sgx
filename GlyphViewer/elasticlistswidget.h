@@ -15,49 +15,31 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef SOURCEDATASELECTIONWIDGET_H
-#define SOURCEDATASELECTIONWIDGET_H
+#ifndef ELASTICLISTSWIDGET_H
+#define ELASTICLISTSWIDGET_H
 
 #include <QtWidgets/QWidget>
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QComboBox>
-#include <QtWidgets/QStackedLayout>
-#include "sourcedatawidget.h"
-#include "singlewidgetdialog.h"
-#include "glyphforestmodel.h"
+#include <QtWidgets/QVBoxLayout>
 #include <unordered_map>
-#include "elasticlistswidget.h"
+#include "elasticlistwidget.h"
+#include "sourcedatacache.h"
 
-class SourceDataSelectionWidget : public QWidget
+class ElasticListsWidget : public QWidget
 {
 	Q_OBJECT
 
 public:
-	SourceDataSelectionWidget(SynGlyphX::SourceDataCache::SharedPtr sourceDataCache, GlyphForestModel* model, QItemSelectionModel* selectionModel, QWidget *parent);
-	~SourceDataSelectionWidget();
+	ElasticListsWidget(SynGlyphX::SourceDataCache::SharedPtr sourceDataCache, const QString& table, QWidget *parent);
+	~ElasticListsWidget();
 
-private slots:
-	void OnSourceWidgetWindowHidden();
-	void OnSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected);
-	void OnModelReset();
-	void OnComboBoxChanged(int current);
+	void PopulateElasticLists(const SynGlyphX::SourceDataCache::IndexSet& indexSet = SynGlyphX::SourceDataCache::IndexSet());
 
 private:
-	typedef std::unordered_map<std::string, ElasticListsWidget*> NameWidgetMap;
-
-	unsigned long GetRootRow(const QModelIndex& index) const;
-	void UpdateElasticLists(const SynGlyphX::SourceDataCache::IndexSetMap& dataIndexes);
-	void RemoveElasticLists();
-
-	QItemSelectionModel* m_selectionModel;
-	QPushButton* m_sourceWidgetButton;
-	QScopedPointer<SourceDataWidget> m_sourceDataWindow;
-	QComboBox* m_tableComboBox;
-	QStackedLayout* m_elasticListsLayout;
+	typedef std::unordered_map<std::string, SynGlyphX::ElasticListWidget*> ColumnToWidgetMap;
 
 	SynGlyphX::SourceDataCache::SharedPtr m_sourceDataCache;
-
-	NameWidgetMap m_elasticListWidgetsForEachTable;
+	QString m_table;
+	ColumnToWidgetMap m_elasticListMap;
 };
 
-#endif // SOURCEDATASELECTIONWIDGET_H
+#endif // ELASTICLISTSWIDGET_H
