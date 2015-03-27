@@ -32,7 +32,7 @@ namespace SynGlyphX {
 	public:
 		typedef QList<std::pair<QString, QString>> Data;
 
-		static const unsigned int MaximumNumberOfRowsShown;
+		static const int MaximumNumberOfRowsShown;
 
 		ElasticListWidget(QWidget *parent);
 		~ElasticListWidget();
@@ -41,7 +41,7 @@ namespace SynGlyphX {
 		void SetData(const Data& data);
 
 	private:
-		void Resize(unsigned int numberOfRows);
+		void ResizeTable();
 		
 		QLabel* m_title;
 		QTableWidget* m_list;

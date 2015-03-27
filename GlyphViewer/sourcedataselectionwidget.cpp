@@ -2,7 +2,6 @@
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QAbstractItemView>
-#include "verticalscrollarea.h"
 #include "groupboxsinglewidget.h"
 #include "elasticlistwidget.h"
 
@@ -21,11 +20,10 @@ SourceDataSelectionWidget::SourceDataSelectionWidget(SynGlyphX::SourceDataCache:
 
 	SynGlyphX::GroupBoxSingleWidget* tableComboGroupBox = new SynGlyphX::GroupBoxSingleWidget(tr("Source Data Table:"), m_tableComboBox, this);
 	layout->addWidget(tableComboGroupBox);
-
-	SynGlyphX::VerticalScrollArea* scrollArea = new SynGlyphX::VerticalScrollArea(this);
-
-	m_elasticListsLayout = new QStackedLayout(layout);
-	layout->addLayout(m_elasticListsLayout, 1);
+	
+	m_elasticListsStackLayout = new QStackedLayout(this);
+	ClearElasticLists();
+	layout->addLayout(m_elasticListsStackLayout, 1);
 	QObject::connect(m_tableComboBox, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &SourceDataSelectionWidget::OnComboBoxChanged);
 
 	m_sourceWidgetButton = new QPushButton(tr("Show Selected Source Data"), this);
@@ -58,26 +56,7 @@ void SourceDataSelectionWidget::OnSourceWidgetWindowHidden() {
 
 void SourceDataSelectionWidget::OnSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected) {
 
-	bool isSelectionNotEmpty = !m_selectionModel->selection().empty();
-	m_sourceWidgetButton->setEnabled(isSelectionNotEmpty);
-	if (isSelectionNotEmpty) {
-
-		SynGlyphX::SourceDataCache::IndexSet selectedDataRows;
-		Q_FOREACH(const QModelIndex& index, m_selectionModel->selection().indexes()) {
-
-			selectedDataRows.insert(GetRootRow(index));
-		}
-
-		SynGlyphX::SourceDataCache::IndexSetMap indexSets = m_sourceDataCache->SplitIndexSet(selectedDataRows);
-
-		m_sourceDataWindow->UpdateTables(indexSets);
-		UpdateElasticLists(indexSets);
-	}
-	else {
-
-		m_sourceDataWindow->setVisible(false);
-		OnSourceWidgetWindowHidden();
-	}
+	UpdateElasticListsAndSourceDataWidget(m_selectionModel->selection().indexes());
 }
 
 void SourceDataSelectionWidget::OnModelReset() {
@@ -88,28 +67,23 @@ void SourceDataSelectionWidget::OnModelReset() {
 		for (auto formattedName : tableNameMap) {
 
 			m_tableComboBox->addItem(formattedName.second, formattedName.first);
-			
-			SynGlyphX::VerticalScrollArea* scrollArea = new SynGlyphX::VerticalScrollArea(this);
-			ElasticListsWidget* elasticListsWidget = new ElasticListsWidget(m_sourceDataCache, formattedName.first, scrollArea);
-
-			scrollArea->setWidget(elasticListsWidget);
-			m_elasticListsLayout->addWidget(scrollArea);
+			ElasticListsWidget* elasticListsWidget = new ElasticListsWidget(m_sourceDataCache, formattedName.first, this);
+			m_elasticListsStackLayout->addWidget(elasticListsWidget);
 			m_elasticListWidgetsForEachTable[formattedName.first.toStdString()] = elasticListsWidget;
 		}
+		
 		m_tableComboBox->view()->setMinimumWidth(m_tableComboBox->view()->sizeHintForColumn(0));
 		m_tableComboBox->setEnabled(true);
 		m_tableComboBox->blockSignals(false);
+
+		UpdateElasticListsAndSourceDataWidget(m_selectionModel->selection().indexes());
 	}
 	else {
 
 		m_tableComboBox->blockSignals(true);
 		m_tableComboBox->clear();
 		m_tableComboBox->setEnabled(false);
-		m_elasticListWidgetsForEachTable.clear();
-		while (!m_elasticListsLayout->isEmpty()) {
-
-			m_elasticListsLayout->removeWidget(m_elasticListsLayout->widget(0));
-		}
+		ClearElasticLists();
 	}
 }
 
@@ -126,18 +100,57 @@ unsigned long SourceDataSelectionWidget::GetRootRow(const QModelIndex& index) co
 
 void SourceDataSelectionWidget::OnComboBoxChanged(int current) {
 
-	m_elasticListsLayout->setCurrentWidget(m_elasticListWidgetsForEachTable[m_tableComboBox->currentData().toString().toStdString()]->parentWidget());
+	m_elasticListsStackLayout->setCurrentWidget(m_elasticListWidgetsForEachTable[m_tableComboBox->currentData().toString().toStdString()]);
+}
+
+void SourceDataSelectionWidget::UpdateElasticListsAndSourceDataWidget(const QModelIndexList& selectedIndexes) {
+
+	bool isSelectionNotEmpty = !selectedIndexes.empty();
+	m_sourceWidgetButton->setEnabled(isSelectionNotEmpty);
+	if (isSelectionNotEmpty) {
+
+		SynGlyphX::SourceDataCache::IndexSet selectedDataRows;
+		Q_FOREACH(const QModelIndex& index, m_selectionModel->selection().indexes()) {
+
+			selectedDataRows.insert(GetRootRow(index));
+		}
+
+		SynGlyphX::SourceDataCache::IndexSetMap indexSets = m_sourceDataCache->SplitIndexSet(selectedDataRows);
+
+		m_sourceDataWindow->UpdateTables(indexSets);
+		UpdateElasticLists(indexSets);
+	}
+	else {
+
+		UpdateElasticLists();
+		m_sourceDataWindow->setVisible(false);
+		OnSourceWidgetWindowHidden();
+	}
 }
 
 void SourceDataSelectionWidget::UpdateElasticLists(const SynGlyphX::SourceDataCache::IndexSetMap& dataIndexes) {
 
-	for (auto table : m_sourceDataCache->GetTablesIndexMap()) {
+	for (auto table : m_sourceDataCache->GetFormattedNames()) {
 
-		SynGlyphX::SourceDataCache::IndexSetMap::const_iterator dataIndexesForTable = dataIndexes.find(table.second);
+		ElasticListsWidget* elasticListsWidget = m_elasticListWidgetsForEachTable[table.first.toStdString()];
+		SynGlyphX::SourceDataCache::IndexSetMap::const_iterator dataIndexesForTable = dataIndexes.find(table.first);
+		if (dataIndexesForTable == dataIndexes.end()) {
+
+			elasticListsWidget->PopulateElasticLists();
+		}
+		else {
+
+			elasticListsWidget->PopulateElasticLists(dataIndexesForTable->second);
+		}
 	}
 }
 
-void SourceDataSelectionWidget::RemoveElasticLists() {
+void SourceDataSelectionWidget::ClearElasticLists() {
 
+	for (auto widget : m_elasticListWidgetsForEachTable) {
 
+		m_elasticListsStackLayout->removeWidget(widget.second);
+		delete widget.second;
+	}
+	m_elasticListWidgetsForEachTable.clear();
 }

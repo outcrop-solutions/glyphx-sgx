@@ -46,18 +46,19 @@ private:
 	typedef std::unordered_map<std::string, ElasticListsWidget*> NameWidgetMap;
 
 	unsigned long GetRootRow(const QModelIndex& index) const;
-	void UpdateElasticLists(const SynGlyphX::SourceDataCache::IndexSetMap& dataIndexes);
-	void RemoveElasticLists();
+	void UpdateElasticListsAndSourceDataWidget(const QModelIndexList& selectedIndexes);
+	void UpdateElasticLists(const SynGlyphX::SourceDataCache::IndexSetMap& dataIndexes = SynGlyphX::SourceDataCache::IndexSetMap());
+	void ClearElasticLists();
 
 	QItemSelectionModel* m_selectionModel;
 	QPushButton* m_sourceWidgetButton;
 	QScopedPointer<SourceDataWidget> m_sourceDataWindow;
 	QComboBox* m_tableComboBox;
-	QStackedLayout* m_elasticListsLayout;
+
+	QStackedLayout* m_elasticListsStackLayout;
+	NameWidgetMap m_elasticListWidgetsForEachTable;
 
 	SynGlyphX::SourceDataCache::SharedPtr m_sourceDataCache;
-
-	NameWidgetMap m_elasticListWidgetsForEachTable;
 };
 
 #endif // SOURCEDATASELECTIONWIDGET_H

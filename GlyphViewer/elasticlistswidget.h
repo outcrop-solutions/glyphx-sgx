@@ -18,13 +18,13 @@
 #ifndef ELASTICLISTSWIDGET_H
 #define ELASTICLISTSWIDGET_H
 
-#include <QtWidgets/QWidget>
+#include "verticalscrollarea.h"
 #include <QtWidgets/QVBoxLayout>
 #include <unordered_map>
 #include "elasticlistwidget.h"
 #include "sourcedatacache.h"
 
-class ElasticListsWidget : public QWidget
+class ElasticListsWidget : public SynGlyphX::VerticalScrollArea
 {
 	Q_OBJECT
 
@@ -35,11 +35,14 @@ public:
 	void PopulateElasticLists(const SynGlyphX::SourceDataCache::IndexSet& indexSet = SynGlyphX::SourceDataCache::IndexSet());
 
 private:
+	static const unsigned int Spacing;
+
 	typedef std::unordered_map<std::string, SynGlyphX::ElasticListWidget*> ColumnToWidgetMap;
 
 	SynGlyphX::SourceDataCache::SharedPtr m_sourceDataCache;
 	QString m_table;
 	ColumnToWidgetMap m_elasticListMap;
+	QWidget* m_innerWidget;
 };
 
 #endif // ELASTICLISTSWIDGET_H

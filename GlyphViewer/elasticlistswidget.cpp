@@ -1,11 +1,15 @@
 #include "elasticlistswidget.h"
 
+const unsigned int ElasticListsWidget::Spacing = 2;
+
 ElasticListsWidget::ElasticListsWidget(SynGlyphX::SourceDataCache::SharedPtr sourceDataCache, const QString& table, QWidget *parent)
-	: QWidget(parent),
+	: SynGlyphX::VerticalScrollArea(parent),
 	m_sourceDataCache(sourceDataCache),
 	m_table(table)
 {
-	QVBoxLayout* layout = new QVBoxLayout(this);
+	m_innerWidget = new QWidget(this);
+	QVBoxLayout* layout = new QVBoxLayout(m_innerWidget);
+	layout->setSpacing(Spacing);
 
 	SynGlyphX::TableColumns columns = m_sourceDataCache->GetColumnsForTable(table);
 	for (const QString& column : columns) {
@@ -16,7 +20,11 @@ ElasticListsWidget::ElasticListsWidget(SynGlyphX::SourceDataCache::SharedPtr sou
 		m_elasticListMap[column.toStdString()] = elasticListWidget;
 	}
 
-	setLayout(layout);
+	layout->addStretch(1);
+
+	m_innerWidget->setLayout(layout);
+
+	setWidget(m_innerWidget);
 
 	PopulateElasticLists();
 }
@@ -41,4 +49,6 @@ void ElasticListsWidget::PopulateElasticLists(const SynGlyphX::SourceDataCache::
 
 		column.second->SetData(elasticListData);
 	}
+
+	//m_innerWidget->updateGeometry();
 }
