@@ -49,6 +49,4 @@ void ElasticListsWidget::PopulateElasticLists(const SynGlyphX::SourceDataCache::
 
 		column.second->SetData(elasticListData);
 	}
-
-	//m_innerWidget->updateGeometry();
 }

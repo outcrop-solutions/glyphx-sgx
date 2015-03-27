@@ -11,6 +11,7 @@ namespace SynGlyphX {
 		: QFrame(parent)
 	{
 		QVBoxLayout* layout = new QVBoxLayout(this);
+		layout->setSizeConstraint(QLayout::SetMinAndMaxSize);
 
 		m_title = new QLabel(this);
 		layout->addWidget(m_title);
@@ -32,8 +33,10 @@ namespace SynGlyphX {
 
 		setLayout(layout);
 
-		setMinimumSize(16, m_title->sizeHint().height() + layout->spacing() + m_list->verticalHeader()->defaultSectionSize());
-		setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
+		QMargins margins = contentsMargins();
+		setMinimumWidth(16);
+		m_list->setMinimumHeight(m_list->verticalHeader()->defaultSectionSize());
+		m_list->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
 		ResizeTable();
 	}
 
@@ -54,8 +57,8 @@ namespace SynGlyphX {
 
 		for (int i = 0; i < data.size(); ++i) {
 
-			m_list->setItem(i, 0, new QTableWidgetItem(data[i].first));
-			m_list->setItem(i, 1, new QTableWidgetItem(data[i].second));
+			m_list->setItem(i, 0, CreateTableWidgetItem(data[i].first));
+			m_list->setItem(i, 1, CreateTableWidgetItem(data[i].second));
 		}
 
 		m_list->sortByColumn(1, Qt::DescendingOrder);
@@ -65,10 +68,14 @@ namespace SynGlyphX {
 	void ElasticListWidget::ResizeTable() {
 
 		int numberOfVisibleRows = std::max(std::min(MaximumNumberOfRowsShown, m_list->rowCount()), 1);
-		int listHeight = numberOfVisibleRows * m_list->verticalHeader()->defaultSectionSize();
+		m_list->setFixedHeight(numberOfVisibleRows * m_list->verticalHeader()->defaultSectionSize());
+	}
 
-		int newHeight = height() - m_list->viewport()->height() + listHeight;
-		setFixedHeight(newHeight);
+	QTableWidgetItem* ElasticListWidget::CreateTableWidgetItem(const QString& text) const {
+
+		QTableWidgetItem* item = new QTableWidgetItem(text);
+		item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+		return item;
 	}
 
 } //namespace SynGlyphX

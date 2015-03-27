@@ -30,7 +30,8 @@ namespace SynGlyphX {
 		Q_OBJECT
 
 	public:
-		typedef QList<std::pair<QString, QString>> Data;
+		typedef std::pair<QString, QString> DataWithCount;
+		typedef QList<DataWithCount> Data;
 
 		static const int MaximumNumberOfRowsShown;
 
@@ -42,6 +43,9 @@ namespace SynGlyphX {
 
 	private:
 		void ResizeTable();
+		QTableWidgetItem* CreateTableWidgetItem(const QString& text) const;
+
+		DataWithCount m_selectedData;
 		
 		QLabel* m_title;
 		QTableWidget* m_list;
