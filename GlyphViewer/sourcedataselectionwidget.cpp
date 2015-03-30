@@ -7,6 +7,7 @@
 
 SourceDataSelectionWidget::SourceDataSelectionWidget(SynGlyphX::SourceDataCache::SharedPtr sourceDataCache, GlyphForestModel* model, QItemSelectionModel* selectionModel, QWidget *parent)
 	: QWidget(parent),
+	m_model(model),
 	m_selectionModel(selectionModel),
 	m_sourceDataCache(sourceDataCache)
 {
@@ -70,6 +71,7 @@ void SourceDataSelectionWidget::OnModelReset() {
 			ElasticListsWidget* elasticListsWidget = new ElasticListsWidget(m_sourceDataCache, formattedName.first, this);
 			m_elasticListsStackLayout->addWidget(elasticListsWidget);
 			m_elasticListWidgetsForEachTable[formattedName.first.toStdString()] = elasticListsWidget;
+			QObject::connect(elasticListsWidget, &ElasticListsWidget::SelectionChanged, this, &SourceDataSelectionWidget::OnElasticListsSelectionChanged);
 		}
 		
 		m_tableComboBox->view()->setMinimumWidth(m_tableComboBox->view()->sizeHintForColumn(0));
@@ -153,4 +155,24 @@ void SourceDataSelectionWidget::ClearElasticLists() {
 		delete widget.second;
 	}
 	m_elasticListWidgetsForEachTable.clear();
+}
+
+void SourceDataSelectionWidget::OnElasticListsSelectionChanged(const QString& table, const SynGlyphX::SourceDataCache::ColumnValueData& selection) {
+
+	if (selection.empty()) {
+
+		m_selectionModel->clearSelection();
+	}
+	else {
+
+		SynGlyphX::SourceDataCache::IndexSet indexSet = m_sourceDataCache->GetIndexesFromTableWithSelectedValues(table, selection);
+		QItemSelection itemSelection;
+		for (auto row : indexSet) {
+
+			QModelIndex index = m_model->index(row);
+			itemSelection.select(index, index);
+		}
+
+		m_selectionModel->select(itemSelection, QItemSelectionModel::ClearAndSelect);
+	}
 }

@@ -21,7 +21,7 @@ namespace SynGlyphX {
 		m_list->setMinimumWidth(32);
 		m_list->setShowGrid(false);
 		m_list->setSelectionBehavior(QAbstractItemView::SelectRows);
-		m_list->setSelectionMode(QAbstractItemView::SingleSelection);
+		m_list->setSelectionMode(QAbstractItemView::MultiSelection);
 		m_list->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);
 		m_list->horizontalHeader()->setSectionResizeMode(1, QHeaderView::ResizeToContents);
 		m_list->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -29,6 +29,7 @@ namespace SynGlyphX {
 		m_list->verticalHeader()->setSectionResizeMode(QHeaderView::Fixed);
 		m_list->verticalHeader()->setDefaultSectionSize(fontMetrics().height() + 4);
 		m_list->verticalHeader()->hide();
+		QObject::connect(m_list, &QTableWidget::itemSelectionChanged, this, &ElasticListWidget::OnNewUserSelection);
 		layout->addWidget(m_list, 1);
 
 		setLayout(layout);
@@ -50,12 +51,25 @@ namespace SynGlyphX {
 		m_title->setText(title);
 	}
 
+	QString ElasticListWidget::GetTitle() const {
+
+		return m_title->text();
+	}
+
 	void ElasticListWidget::SetData(const Data& data) {
 
+		bool listBlockSignals = m_list->signalsBlocked();
+		m_list->blockSignals(true);
 		m_list->clear();
 		m_list->setRowCount(data.size());
 
+		bool isAllDataInSelection = true;
 		for (int i = 0; i < data.size(); ++i) {
+
+			if (m_selectedData.count(data[i].first) == 0) {
+
+				isAllDataInSelection = false;
+			}
 
 			m_list->setItem(i, 0, CreateTableWidgetItem(data[i].first));
 			m_list->setItem(i, 1, CreateTableWidgetItem(data[i].second));
@@ -63,6 +77,20 @@ namespace SynGlyphX {
 
 		m_list->sortByColumn(1, Qt::DescendingOrder);
 		ResizeTable();
+
+		if (isAllDataInSelection) {
+
+			for (int i = 0; i < data.size(); ++i) {
+
+				m_list->selectRow(i);
+			}
+		}
+		else {
+
+			m_selectedData.clear();
+		}
+
+		m_list->blockSignals(listBlockSignals);
 	}
 	
 	void ElasticListWidget::ResizeTable() {
@@ -76,6 +104,26 @@ namespace SynGlyphX {
 		QTableWidgetItem* item = new QTableWidgetItem(text);
 		item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 		return item;
+	}
+
+	void ElasticListWidget::OnNewUserSelection() {
+
+		m_selectedData.clear();
+		QList<QTableWidgetItem *> selectedItems = m_list->selectedItems();
+		Q_FOREACH(QTableWidgetItem* selectedItem, selectedItems) {
+
+			if (selectedItem->column() == 0) {
+
+				m_selectedData.insert(selectedItem->text());
+			}
+		}
+
+		emit SelectionChanged();
+	}
+
+	const std::set<QString>& ElasticListWidget::GetSelectedData() const {
+
+		return m_selectedData;
 	}
 
 } //namespace SynGlyphX

@@ -41,6 +41,7 @@ private slots:
 	void OnSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected);
 	void OnModelReset();
 	void OnComboBoxChanged(int current);
+	void OnElasticListsSelectionChanged(const QString& table, const SynGlyphX::SourceDataCache::ColumnValueData& selection);
 
 private:
 	typedef std::unordered_map<std::string, ElasticListsWidget*> NameWidgetMap;
@@ -50,6 +51,7 @@ private:
 	void UpdateElasticLists(const SynGlyphX::SourceDataCache::IndexSetMap& dataIndexes = SynGlyphX::SourceDataCache::IndexSetMap());
 	void ClearElasticLists();
 
+	GlyphForestModel* m_model;
 	QItemSelectionModel* m_selectionModel;
 	QPushButton* m_sourceWidgetButton;
 	QScopedPointer<SourceDataWidget> m_sourceDataWindow;

@@ -703,10 +703,10 @@ void ANTzViewerWidget::SelectAtPoint(int x, int y, bool multiSelect) const {
 
 		m_selectionModel->select(m_model->IndexFromANTzID(pickID), flags);
 	}
-	else {
+	/*else {
 
 		m_selectionModel->clearSelection();
-	}
+	}*/
 }
 
 void ANTzViewerWidget::mouseReleaseEvent(QMouseEvent* event) {

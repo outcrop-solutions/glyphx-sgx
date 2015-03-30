@@ -18,6 +18,7 @@ ElasticListsWidget::ElasticListsWidget(SynGlyphX::SourceDataCache::SharedPtr sou
 		elasticListWidget->SetTitle(column);
 		layout->addWidget(elasticListWidget);
 		m_elasticListMap[column.toStdString()] = elasticListWidget;
+		QObject::connect(elasticListWidget, &SynGlyphX::ElasticListWidget::SelectionChanged, this, &ElasticListsWidget::OnElasticWidgetSelectionChanged);
 	}
 
 	layout->addStretch(1);
@@ -49,4 +50,19 @@ void ElasticListsWidget::PopulateElasticLists(const SynGlyphX::SourceDataCache::
 
 		column.second->SetData(elasticListData);
 	}
+}
+
+void ElasticListsWidget::OnElasticWidgetSelectionChanged() {
+
+	SynGlyphX::SourceDataCache::ColumnValueData newSelection;
+	for (auto elasticListWidget : m_elasticListMap) {
+
+		const std::set<QString>& columnSelection = elasticListWidget.second->GetSelectedData();
+		if (!columnSelection.empty()) {
+
+			newSelection[QString::fromStdString(elasticListWidget.first)] = columnSelection;
+		}
+	}
+
+	emit SelectionChanged(m_table, newSelection);
 }

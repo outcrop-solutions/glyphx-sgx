@@ -22,6 +22,7 @@
 #include <QtWidgets/QFrame>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QTableWidget>
+#include <set>
 
 namespace SynGlyphX {
 
@@ -39,13 +40,22 @@ namespace SynGlyphX {
 		~ElasticListWidget();
 
 		void SetTitle(const QString& title);
+		QString GetTitle() const;
 		void SetData(const Data& data);
+
+		const std::set<QString>& GetSelectedData() const;
+
+	signals:
+		void SelectionChanged();
+
+	private slots:
+		void OnNewUserSelection();
 
 	private:
 		void ResizeTable();
 		QTableWidgetItem* CreateTableWidgetItem(const QString& text) const;
 
-		DataWithCount m_selectedData;
+		std::set<QString> m_selectedData;
 		
 		QLabel* m_title;
 		QTableWidget* m_list;

@@ -34,6 +34,12 @@ public:
 
 	void PopulateElasticLists(const SynGlyphX::SourceDataCache::IndexSet& indexSet = SynGlyphX::SourceDataCache::IndexSet());
 
+signals:
+	void SelectionChanged(const QString& table, const SynGlyphX::SourceDataCache::ColumnValueData& selection);
+
+private slots:
+	void OnElasticWidgetSelectionChanged();
+
 private:
 	static const unsigned int Spacing;
 
