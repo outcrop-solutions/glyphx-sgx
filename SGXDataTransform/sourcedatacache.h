@@ -43,6 +43,8 @@ namespace SynGlyphX {
 		typedef std::set<unsigned long> IndexSet;
 		typedef std::map<QString, IndexSet> IndexSetMap;
 
+		typedef std::map<QString, std::set<QString>> ColumnValueData;
+
 		SourceDataCache();
 		SourceDataCache(const QString& filename);
 		virtual ~SourceDataCache();
@@ -65,6 +67,7 @@ namespace SynGlyphX {
 		SharedSQLQuery CreateSelectQueryForIndexSet(const QString& tableName, const TableColumns& columns, const IndexSet& indexSet) const;
 		SharedSQLQuery CreateDistinctValueQuery(const QString& tableName, const QString& columnName, const IndexSet& indexSet = IndexSet()) const;
 		unsigned long GetValueCount(const QString& tableName, const QString& columnName, const QString& value, const IndexSet& indexSet = IndexSet()) const;
+		IndexSet GetIndexesFromTableWithSelectedValues(const QString& tableName, const ColumnValueData& selectedValues) const;
 
 	private:
 		void CreateNewIndexedTableInCache(const QString& name, const QString& fieldNamesAndTypes);
@@ -84,6 +87,7 @@ namespace SynGlyphX {
 		QString GetFormattedNameFromCache(const QString& table);
 
 		QString CreateWhereString(const IndexSet& indexSet) const;
+		QString CreateInString(const QString& columnName, const std::set<QString>& values) const;
 
 		static const QString IndexColumnName;
 

@@ -522,4 +522,63 @@ namespace SynGlyphX {
 		return whereString;
 	}
 
+	QString SourceDataCache::CreateInString(const QString& columnName, const std::set<QString>& values) const {
+
+		std::set<QString>::const_iterator iT = values.begin();
+		QString inString = "\"" + columnName + "\" IN (\"" + *iT + "\"";
+		++iT;
+		while (iT != values.end()) {
+
+			inString += ", \"" + *iT + "\"";
+			++iT;
+		}
+
+		inString += ")";
+
+		return inString;
+	}
+
+	SourceDataCache::IndexSet SourceDataCache::GetIndexesFromTableWithSelectedValues(const QString& tableName, const ColumnValueData& selectedValues) const {
+
+		QString queryString = "SELECT \"" + IndexColumnName + "\" FROM \"" + tableName + "\" WHERE ";
+
+		ColumnValueData::const_iterator iT = selectedValues.begin();
+		queryString += CreateInString(iT->first, iT->second);
+		++iT;
+		while (iT != selectedValues.end()) {
+
+			queryString += " AND " + CreateInString(iT->first, iT->second);
+			++iT;
+		}
+
+		QSqlQuery query(m_db);
+		query.prepare(queryString);
+		query.exec();
+		if (!query.exec()) {
+
+			throw std::exception((QObject::tr("Failed to get selected indexes from cache: ") + m_db.lastError().text()).toStdString().c_str());
+		}
+
+		unsigned long startingValue = 0;
+		for (auto tableIndex : m_tableIndexMap) {
+
+			if (tableIndex.second == tableName) {
+
+				break;
+			}
+			else {
+
+				startingValue = tableIndex.first;
+			}
+		}
+
+		IndexSet indexSet;
+		while (query.next()) {
+
+			indexSet.insert(startingValue + query.value(0).toULongLong());
+		}
+
+		return indexSet;
+	}
+
 } //namespace SynGlyphX
