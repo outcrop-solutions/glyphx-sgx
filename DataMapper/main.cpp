@@ -7,7 +7,7 @@
 
 int main(int argc, char *argv[])
 {
-    SynGlyphX::Application::Setup("Data Mapper", "0.6.13");
+    SynGlyphX::Application::Setup("Data Mapper", "0.7.00");
     SynGlyphX::Application a(argc, argv);
 
     SynGlyphX::Application::SetupIcons(QIcon(":SGXGUI/Resources/synglyphx_x.ico"));

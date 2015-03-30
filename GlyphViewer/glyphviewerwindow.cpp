@@ -26,9 +26,8 @@ GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 	m_glyphForestModel = new GlyphForestModel(this);
 
 	m_glyphForestSelectionModel = new QItemSelectionModel(m_glyphForestModel, this);
-	QString cacheDir = QDir::toNativeSeparators(QDir::currentPath()) + QDir::separator() + "cache";
-	m_cacheManager.SetBaseCacheDirectory(cacheDir.toStdWString());
-	ReadOptions();	CreateMenus();
+	ReadOptions();	
+	CreateMenus();
 	CreateDockWidgets();
 	
 	try {
