@@ -29,6 +29,13 @@ namespace SynGlyphX {
 		Datasource(propertyTree),
 		m_type(s_sourceTypeStrings.right.at(propertyTree.get<std::wstring>(L"<xmlattr>.type"))) {
 
+		//CSV files are a single table so put in a dummy value so that the table count is 1
+		if (!CanDatasourceHaveMultipleTables()) {
+
+			m_tables.clear();
+			m_tables.insert(SingleTableName);
+		}
+
 		boost::filesystem::path datasourcePath(m_dbName);
 		m_formattedName = datasourcePath.filename().wstring();
 	}

@@ -163,9 +163,11 @@ namespace SynGlyphX {
 			propertyTree.put(L"Password", m_password);
 		}
 
-		if (!m_tables.empty()) {
+		if (!m_tables.empty() && CanDatasourceHaveMultipleTables()) {
+
 			boost::property_tree::wptree& tablesPropertyTree = propertyTree.add(L"Tables", L"");
 			for (const std::wstring& table : m_tables) {
+
 				tablesPropertyTree.add(L"Table", table);
 			}
 		}
