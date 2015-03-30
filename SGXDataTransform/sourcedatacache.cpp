@@ -75,7 +75,7 @@ namespace SynGlyphX {
 		
 		try {
 
-			if (datasource.IsOriginalDatasourceADatabase()) {
+			if (!datasource.RequiresConversionToDB()) {
 
 				QString datasourceId = QString::fromStdString(boost::uuids::to_string(id));
 				Datasource::TableSet tablesInCache;
@@ -353,7 +353,14 @@ namespace SynGlyphX {
 		
 	QString SourceDataCache::CreateTablename(const QString& datasourceID, const QString& originalTablename) const {
 
-		return datasourceID + ":" + originalTablename;
+		if ((originalTablename.isEmpty()) || (originalTablename.toStdWString() == SynGlyphX::Datasource::SingleTableName)) {
+
+			return datasourceID;
+		}
+		else {
+
+			return datasourceID + ":" + originalTablename;
+		}
 	}
 
 	SharedSQLQuery SourceDataCache::CreateMinMaxQuery(const InputField& inputfield) const {
@@ -373,7 +380,7 @@ namespace SynGlyphX {
 	bool SourceDataCache::IsInputfieldInCache(const InputField& inputfield) const {
 
 		QString inputFieldTable = QString::fromStdWString(boost::uuids::to_wstring(inputfield.GetDatasourceID()));
-		if (!inputfield.GetTable().empty()) {
+		if ((!inputfield.GetTable().empty()) && (inputfield.GetTable() != SynGlyphX::Datasource::SingleTableName)) {
 
 			inputFieldTable += ":" + QString::fromStdWString(inputfield.GetTable());
 		}

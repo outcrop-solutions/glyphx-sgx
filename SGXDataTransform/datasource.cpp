@@ -2,6 +2,8 @@
 
 namespace SynGlyphX {
 
+	const std::wstring Datasource::SingleTableName = L"SameAsName";
+
 	Datasource::Datasource(const std::wstring& dbName, const std::wstring& host, unsigned int port, const std::wstring& username, const std::wstring& password) :
         m_dbName(dbName),
         m_host(host),

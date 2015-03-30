@@ -23,6 +23,7 @@
 #include <QtCore/QStringList>
 #include <QtSql/QSqlDatabase>
 #include "csvfilereader.h"
+#include "uuid.h"
 
 namespace SynGlyphX {
 
@@ -38,6 +39,8 @@ namespace SynGlyphX {
 		virtual void Close();
 		void UpdateCSVFile(const QString& tableName, const QString& csvFilename);
 
+		const boost::uuids::uuid& GetConnectionID() const;
+
 	protected:
 		void SetPragmaValue(const QString& pragmaString);
 		void CreateNewTableInCache(const QString& name, const QString& fieldNamesAndTypes);
@@ -46,7 +49,7 @@ namespace SynGlyphX {
 		QDateTime GetTimestampForTable(const QString& table);
 		void UpdateTimestampForTable(const QString& table, const QString& formattedName, const QDateTime& timestamp);
 
-		QString m_connectionID;
+		boost::uuids::uuid m_connectionID;
 		QSqlDatabase m_db;
 
 		static const QString s_tableIndexName;

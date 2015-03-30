@@ -32,6 +32,8 @@ namespace SynGlyphX {
 		typedef boost::property_tree::wptree PropertyTree;
 		typedef std::unordered_set<std::wstring> TableSet;
 
+		static const std::wstring SingleTableName;
+
 		Datasource(const std::wstring& dbName, const std::wstring& host = L"localhost", unsigned int port = 0, const std::wstring& username = L"", const std::wstring& password = L"");
 		Datasource(const PropertyTree& propertyTree);
         Datasource(const Datasource& datasource);

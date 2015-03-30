@@ -1,5 +1,4 @@
 #include "csvcache.h"
-#include "uuid.h"
 #include <boost/uuid/uuid_io.hpp>
 #include <QtSql/QSqlQuery>
 #include <QtSql/QSqlError>
@@ -7,6 +6,7 @@
 #include <QtCore/QFileInfo>
 #include <QtCore/QDateTime>
 #include <QtCore/QVariant>
+#include <QtCore/QDir>
 
 namespace SynGlyphX {
 
@@ -31,6 +31,11 @@ namespace SynGlyphX {
 		return m_db.isOpen();
 	}
 
+	const boost::uuids::uuid& CSVCache::GetConnectionID() const {
+
+		return m_connectionID;
+	}
+
 	void CSVCache::Setup(const QString& cacheFilename) {
 
 		if (IsValid()) {
@@ -38,8 +43,8 @@ namespace SynGlyphX {
 			Close();
 		}
 
-		m_connectionID = QString::fromStdWString(boost::uuids::to_wstring(UUIDGenerator::GetNewRandomUUID()));
-		m_db = QSqlDatabase::addDatabase("QSQLITE", m_connectionID);
+		m_connectionID = UUIDGenerator::GetNewRandomUUID();
+		m_db = QSqlDatabase::addDatabase("QSQLITE", QString::fromStdWString(boost::uuids::to_wstring(m_connectionID)));
 		m_db.setDatabaseName(cacheFilename);
 
 		if (!m_db.open()) {
@@ -81,10 +86,11 @@ namespace SynGlyphX {
 
 	void CSVCache::Close() {
 
-		if (!m_connectionID.isEmpty()) {
+		if (!m_connectionID.is_nil()) {
 
 			m_db.close();
-			QSqlDatabase::removeDatabase(m_connectionID);
+			QSqlDatabase::removeDatabase(QString::fromStdWString(boost::uuids::to_wstring(m_connectionID)));
+			m_connectionID = boost::uuids::uuid();
 		}
 	}
 
@@ -135,8 +141,8 @@ namespace SynGlyphX {
 
 		try {
 
-			CSVTFileReaderWriter csvtFileReader(csvtFile.fileName().toStdString());
-			CSVFileReader csvFileReader(csvFile.fileName().toStdString());
+			CSVTFileReaderWriter csvtFileReader(QDir::toNativeSeparators(csvtFile.canonicalFilePath()).toStdString());
+			CSVFileReader csvFileReader(QDir::toNativeSeparators(csvFile.canonicalFilePath()).toStdString());
 
 			const CSVFileReader::CSVValues& headers = csvFileReader.GetHeaders();
 			const CSVFileReader::CSVValues& types = csvtFileReader.GetTypes();
@@ -150,10 +156,10 @@ namespace SynGlyphX {
 				typeIsText.push_back(types[j] == L"TEXT");
 			}
 
-			QString headerList = QString::fromStdWString(headers[0]);
+			QString headerList = "\"" + QString::fromStdWString(headers[0]) + "\"";
 			for (int k = 1; k < headers.size(); ++k) {
 
-				headerList += ", " + QString::fromStdWString(headers[k]);
+				headerList += ", \"" + QString::fromStdWString(headers[k]) + "\"";
 			}
 
 			while (!csvFileReader.IsAtEndOfFile()) {
@@ -166,7 +172,7 @@ namespace SynGlyphX {
 				}
 
 				QSqlQuery insertTableQuery(m_db);
-				QString sqlInsert = "INSERT INTO " + tableName + " (" + headerList + ") VALUES (";
+				QString sqlInsert = "INSERT INTO \"" + tableName + "\" (" + headerList + ") VALUES (";
 				for (int i = 0; i < values.size(); ++i) {
 
 					if (typeIsText[i]) {

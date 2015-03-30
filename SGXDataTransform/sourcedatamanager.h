@@ -37,8 +37,7 @@ namespace SynGlyphX {
 
 		static QString GetQtDBType(const SynGlyphX::Datasource& datasource);
 
-		//static void SetIntermediateDirectory(const QString& directory);
-		//static const QString& GetIntermeidateDirectory();
+		const boost::uuids::uuid& GetCSVCacheConnectionID() const;
 
 		void SetCacheLocation(const QString& location);
 
@@ -51,12 +50,10 @@ namespace SynGlyphX {
 	private:
 		typedef std::unordered_set<boost::uuids::uuid, SynGlyphX::UUIDHash> DatabaseIDSet;
 
-		//QString GetIntermediateSQLiteDB(const FileDatasource& datasource, const QString& connectionName);
 		void ClearDatabaseConnection(const DatabaseIDSet::const_iterator& id);
 
 		CSVCache m_csvCache;
 		DatabaseIDSet m_databaseIDs;
-		//static QString s_intermediateDirectory;
 	};
 
 } //namespace SynGlyphX
