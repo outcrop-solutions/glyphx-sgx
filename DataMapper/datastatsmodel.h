@@ -28,6 +28,7 @@ class DataStatsModel : public QAbstractTableModel
 
 public:
 	DataStatsModel(const boost::uuids::uuid& id, const QString& tableName, QObject *parent = 0);
+	DataStatsModel(const boost::uuids::uuid& id, const boost::uuids::uuid& databaseId, const QString& tableName, QObject *parent = 0);
 	~DataStatsModel();
 
 	virtual int rowCount(const QModelIndex& parent = QModelIndex()) const;
@@ -40,6 +41,8 @@ public:
 	virtual QMimeData* mimeData(const QModelIndexList& indexes) const;
 
 private:
+	void GenerateStats(const boost::uuids::uuid& databaseId, const QString& tableName);
+
 	QList<QStringList> m_stats;
 	QStringList m_fieldNames;
 	QList<QVariant::Type> m_fieldTypes;

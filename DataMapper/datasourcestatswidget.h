@@ -23,6 +23,8 @@
 #include <QtWidgets/QTableView>
 #include "datatransformmodel.h"
 
+class DataStatsModel;
+
 class DataSourceStatsWidget : public QTabWidget
 {
 	Q_OBJECT
@@ -37,7 +39,7 @@ public:
 
 private:
     void CreateTablesFromDatasource(const boost::uuids::uuid& id, const SynGlyphX::Datasource& datasource);
-	void CreateTableView(const boost::uuids::uuid& id, const QString& tableName, const QString& tabName);
+	void CreateTableView(DataStatsModel* model, const QString& tabName);
 
 	QList<QTableView*> m_statViews;
 	DataTransformModel* m_model;

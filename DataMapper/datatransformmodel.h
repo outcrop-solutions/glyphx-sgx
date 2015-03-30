@@ -58,7 +58,7 @@ public:
 
 	void LoadDataTransformFile(const QString& filename);
 	void SaveDataTransformFile(const QString& filename);
-	void Clear();
+	void ClearAndReset();
 
 	void AddGlyphFile(const QString& filename);
 	void AddGlyphTree(SynGlyphX::DataMappingGlyphGraph::SharedPtr glyphTree);
@@ -84,7 +84,10 @@ public:
 	virtual QMimeData* mimeData(const QModelIndexList& indexes) const;
 	virtual bool dropMimeData(const QMimeData* data, Qt::DropAction action, int row, int column, const QModelIndex& parent);
 
+	const boost::uuids::uuid& GetCacheConnectionID() const;
+
 private:
+	void Clear();
 	QString GetCacheLocationForID(const boost::uuids::uuid& id);
 	QVariant GetGlyphData(const QModelIndex& index) const;
 	bool IsParentlessRowInDataType(DataType type, int row) const;

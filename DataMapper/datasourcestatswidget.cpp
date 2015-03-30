@@ -54,30 +54,32 @@ void DataSourceStatsWidget::ClearTabs() {
 
 void DataSourceStatsWidget::CreateTablesFromDatasource(const boost::uuids::uuid& id, const SynGlyphX::Datasource& datasource) {
 
-	QSqlDatabase datasourceDB = QSqlDatabase::database(QString::fromStdString(boost::uuids::to_string(id)));
-
-	if (!datasourceDB.open()) {
-		
-		throw std::exception("Failed to load data sources");
-	}
-
 	const std::wstring& formattedName = datasource.GetFormattedName();
 	if (datasource.CanDatasourceHaveMultipleTables()) {
 
+		QSqlDatabase datasourceDB = QSqlDatabase::database(QString::fromStdString(boost::uuids::to_string(id)));
+
+		if (!datasourceDB.open()) {
+
+			throw std::exception("Failed to load data sources");
+		}
+
 		for (const std::wstring& table : datasource.GetTables()) {
 
-			CreateTableView(id, QString::fromStdWString(table), QString::fromStdWString(formattedName + L":" + table));
+			DataStatsModel* model = new DataStatsModel(id, QString::fromStdWString(table), this);
+			CreateTableView(model, QString::fromStdWString(formattedName + L":" + table));
 		}
 	}
 	else {
 
-		CreateTableView(id, QString::fromStdWString(*datasource.GetTables().begin()), QString::fromStdWString(formattedName));
+		DataStatsModel* model = new DataStatsModel(id, m_model->GetCacheConnectionID(), QString::fromStdWString(SynGlyphX::Datasource::SingleTableName), this);
+		CreateTableView(model, QString::fromStdWString(formattedName));
 	}
 
 	m_datasourcesShownInTabs.insert(id);
 }
 
-void DataSourceStatsWidget::CreateTableView(const boost::uuids::uuid& id, const QString& tableName, const QString& tabName) {
+void DataSourceStatsWidget::CreateTableView(DataStatsModel* model, const QString& tabName) {
 
 	QTableView* view = new QTableView(this);
 	view->setSelectionMode(QAbstractItemView::SingleSelection);
@@ -89,7 +91,6 @@ void DataSourceStatsWidget::CreateTableView(const boost::uuids::uuid& id, const 
 	
 	view->verticalHeader()->hide();
 
-	DataStatsModel* model = new DataStatsModel(id, tableName, this);
 	view->setModel(model);
 
 	view->resizeColumnsToContents();

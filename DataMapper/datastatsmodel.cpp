@@ -11,7 +11,25 @@ DataStatsModel::DataStatsModel(const boost::uuids::uuid& id, const QString& tabl
 	m_id(id),
 	m_tableName(tableName)
 {
-	QSqlDatabase db = QSqlDatabase::database(QString::fromStdWString(boost::uuids::to_wstring(id)));
+	GenerateStats(id, m_tableName);
+}
+
+DataStatsModel::DataStatsModel(const boost::uuids::uuid& id, const boost::uuids::uuid& databaseId, const QString& tableName, QObject *parent)
+	: QAbstractTableModel(parent),
+	m_id(id),
+	m_tableName(tableName) {
+
+	GenerateStats(databaseId, QString::fromStdWString(boost::uuids::to_wstring(id)));
+}
+
+DataStatsModel::~DataStatsModel()
+{
+
+}
+
+void DataStatsModel::GenerateStats(const boost::uuids::uuid& databaseId, const QString& tableName) {
+
+	QSqlDatabase db = QSqlDatabase::database(QString::fromStdWString(boost::uuids::to_wstring(databaseId)));
 	QSqlRecord columnNamesRecord = db.record(tableName);
 
 	QSqlQuery query(db);
@@ -20,7 +38,7 @@ DataStatsModel::DataStatsModel(const boost::uuids::uuid& id, const QString& tabl
 	for (int i = 0; i < columnNamesRecord.count(); ++i) {
 
 		QSqlField field = columnNamesRecord.field(i);
-		query.prepare(QString("SELECT TYPEOF(%1), MIN(%1), MAX(%1), AVG(%1), COUNT(%1) FROM ").arg("\"" + field.name() + "\"") + tableName);
+		query.prepare(QString("SELECT TYPEOF(%1), MIN(%1), MAX(%1), AVG(%1), COUNT(%1) FROM \"").arg("\"" + field.name() + "\"") + tableName + "\"");
 		m_fieldNames.append(field.name());
 		m_fieldTypes.append(field.type());
 		//query.bindValue(":colName", "\"" + columnNamesRecord.fieldName(i) + "\"");
@@ -42,30 +60,6 @@ DataStatsModel::DataStatsModel(const boost::uuids::uuid& id, const QString& tabl
 		fieldStats.append(record.value(4).toString());
 		m_stats.append(fieldStats);
 	}
-	
-	/*
-	query.addBindValue(m_columnNames);
-	query.addBindValue(m_columnNames);
-	query.addBindValue(m_columnNames);
-	query.addBindValue(m_columnNames);
-
-	bool success = query.execBatch();
-
-	while (query.next()) {
-
-		QSqlRecord record = query.record();
-		QStringList columnStats;
-		columnStats.append(record.value(0).typeName());
-		columnStats.append(record.value(1).typeName());
-		columnStats.append(record.value(2).typeName());
-		columnStats.append(record.value(3).typeName());
-		m_stats.append(columnStats);
-	}*/
-}
-
-DataStatsModel::~DataStatsModel()
-{
-
 }
 
 int DataStatsModel::rowCount(const QModelIndex& parent) const {

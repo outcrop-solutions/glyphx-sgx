@@ -14,7 +14,7 @@ DataTransformModel::DataTransformModel(QObject *parent)
 	: QAbstractItemModel(parent),
 	m_dataMapping(new SynGlyphX::DataTransformMapping())
 {
-	m_sourceDataManager.SetCacheLocation(GetCacheLocationForID(m_dataMapping->GetID()));
+	ClearAndReset();
 }
 
 DataTransformModel::~DataTransformModel()
@@ -337,6 +337,12 @@ void DataTransformModel::SaveDataTransformFile(const QString& filename) {
 	m_dataMapping->WriteToFile(filename.toStdString());
 }
 
+void DataTransformModel::ClearAndReset() {
+
+	Clear();
+	m_sourceDataManager.SetCacheLocation(GetCacheLocationForID(m_dataMapping->GetID()));
+}
+
 void DataTransformModel::Clear() {
 
 	beginResetModel();
@@ -596,4 +602,9 @@ bool DataTransformModel::dropMimeData(const QMimeData* data, Qt::DropAction acti
 	}
 
 	return false;
+}
+
+const boost::uuids::uuid& DataTransformModel::GetCacheConnectionID() const {
+
+	return m_sourceDataManager.GetCSVCacheConnectionID();
 }
