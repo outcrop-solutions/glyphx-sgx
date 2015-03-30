@@ -62,6 +62,7 @@ void SourceDataSelectionWidget::OnSelectionChanged(const QItemSelection& selecte
 
 void SourceDataSelectionWidget::OnModelReset() {
 
+	ClearElasticLists();
 	if (m_sourceDataCache->IsValid()) {
 
 		const SynGlyphX::SourceDataCache::TableNameMap& tableNameMap = m_sourceDataCache->GetFormattedNames();
@@ -79,13 +80,6 @@ void SourceDataSelectionWidget::OnModelReset() {
 		m_tableComboBox->blockSignals(false);
 
 		UpdateElasticListsAndSourceDataWidget(m_selectionModel->selection().indexes());
-	}
-	else {
-
-		m_tableComboBox->blockSignals(true);
-		m_tableComboBox->clear();
-		m_tableComboBox->setEnabled(false);
-		ClearElasticLists();
 	}
 }
 
@@ -155,6 +149,10 @@ void SourceDataSelectionWidget::ClearElasticLists() {
 		delete widget.second;
 	}
 	m_elasticListWidgetsForEachTable.clear();
+
+	m_tableComboBox->blockSignals(true);
+	m_tableComboBox->clear();
+	m_tableComboBox->setEnabled(false);
 }
 
 void SourceDataSelectionWidget::OnElasticListsSelectionChanged(const QString& table, const SynGlyphX::SourceDataCache::ColumnValueData& selection) {

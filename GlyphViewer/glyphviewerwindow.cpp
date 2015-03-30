@@ -174,11 +174,13 @@ void GlyphViewerWindow::RefreshVisualization() {
 
 void GlyphViewerWindow::CloseVisualization() {
 
+	SynGlyphX::Application::setOverrideCursor(Qt::WaitCursor);
+	m_sourceDataCache->Close();
 	m_glyphForestModel->Clear();
 	m_glyphForestModel->SetParentGridToDefaultBaseImage();
-	m_sourceDataCache->Close();
 	EnableLoadedVisualizationDependentActions(false);
 	ClearCurrentFile();
+	SynGlyphX::Application::restoreOverrideCursor();
 }
 
 void GlyphViewerWindow::LoadVisualization(const QString& filename) {
