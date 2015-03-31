@@ -47,14 +47,12 @@ namespace SynGlyphXANTz {
 
 		QStringList cacheFiles = csvFiles;
 		cacheFiles.push_back(m_sourceDataCacheLocation);
-		
-		QStringList baseImageFilenames;
 
 		QString cachedMappingFilename = m_baseOutputDir + QDir::separator() + "mapping.sdt";
 
+		QDir antzOutputDir(localOutputDir);
 		if (DoesCacheNeedToBeRegenerated(mapping, cacheFiles, cachedMappingFilename)) {
 
-			QDir antzOutputDir(localOutputDir);
 			if (antzOutputDir.exists()) {
 
 				SynGlyphX::Filesystem::RemoveContentsOfDirectory(localOutputDir.toStdString());
@@ -68,6 +66,17 @@ namespace SynGlyphXANTz {
 			GenerateCache(mapping, csvFiles, localOutputDir);
 			//Write the mapping to the cache
 			mapping.WriteToFile(cachedMappingFilename.toStdString());
+		}
+		else {
+
+			//Even though the cache is up to date, still need to fill out values as if the cache was just created
+			m_csvFilenames = csvFiles;
+			QStringList nameFilter("*.png");
+			m_baseImageFilenames = antzOutputDir.entryList(nameFilter, QDir::NoDotAndDotDot | QDir::Files, QDir::Name);
+			for (int i = 0; i < m_baseImageFilenames.size(); ++i) {
+
+				m_baseImageFilenames[i].prepend(localOutputDir);
+			}
 		}
 	}
 
@@ -85,23 +94,6 @@ namespace SynGlyphXANTz {
 				return true;
 			}
 		}
-		/*
-		if (!baseImageFilename.isEmpty()) {
-
-		QFile baseImage(baseImageFilename);
-		if (!baseImage.exists()) {
-
-		return true;
-		}
-		else if (mapping.GetBaseObjects()[0].GetType() == SynGlyphX::BaseImage::Type::UserImage) {
-
-		const SynGlyphX::UserDefinedBaseImageProperties* const properties = dynamic_cast<const SynGlyphX::UserDefinedBaseImageProperties* const>(mapping.GetBaseObjects()[0].GetProperties());
-		if (HasFileBeenUpdated(properties->GetFilename(), boost::filesystem::last_write_time(baseImageFilename.toStdWString()))) {
-
-		return true;
-		}
-		}
-		}*/
 
 		QFile cachedMappingFile(mappingFilename);
 		if (!cachedMappingFile.exists()) {
