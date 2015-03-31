@@ -34,9 +34,21 @@ namespace SynGlyphX {
 			return false;
 		}
 
-		if (m_glyphTrees != mapping.m_glyphTrees) {
+		if (m_glyphTrees.size() != mapping.m_glyphTrees.size()) {
 
 			return false;
+		}
+
+		DataMappingGlyphGraphMap::const_iterator thisGlyphTree = m_glyphTrees.begin();
+		DataMappingGlyphGraphMap::const_iterator otherGlyphTree = mapping.m_glyphTrees.begin();
+		while (thisGlyphTree != m_glyphTrees.end()) {
+
+			if ((thisGlyphTree->first != otherGlyphTree->first) || (thisGlyphTree->second->operator!=(*otherGlyphTree->second))) {
+
+				return false;
+			}
+			std::advance(thisGlyphTree, 1);
+			std::advance(otherGlyphTree, 1);
 		}
 
 		if (m_baseObjects != mapping.m_baseObjects) {

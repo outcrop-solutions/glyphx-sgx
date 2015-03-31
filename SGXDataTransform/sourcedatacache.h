@@ -69,6 +69,8 @@ namespace SynGlyphX {
 		unsigned long GetValueCount(const QString& tableName, const QString& columnName, const QString& value, const IndexSet& indexSet = IndexSet()) const;
 		IndexSet GetIndexesFromTableWithSelectedValues(const QString& tableName, const ColumnValueData& selectedValues) const;
 
+		bool IsCacheOutOfDate(const DatasourceMaps& datasources) const;
+
 	private:
 		void CreateNewIndexedTableInCache(const QString& name, const QString& fieldNamesAndTypes);
 		int GetLastIndexOfTable(const QString& tableName);
@@ -81,6 +83,7 @@ namespace SynGlyphX {
 
 		virtual void DeleteTable(const QString& table);
 		void DeleteTables(const QStringList& tables);
+		void DeleteTables(const boost::uuids::uuid& id);
 
 		QString CreateTablename(const InputField& inputfield) const;
 		QString CreateTablename(const QString& datasourceID, const QString& originalTablename) const;
@@ -88,6 +91,9 @@ namespace SynGlyphX {
 
 		QString CreateWhereString(const IndexSet& indexSet) const;
 		QString CreateInString(const QString& columnName, const std::set<QString>& values) const;
+
+		bool DoesFileDatasourceNeedUpdate(const boost::uuids::uuid& id, const FileDatasource& datasource) const;
+		bool DoesFileDatabaseNeedUpdate(const boost::uuids::uuid& id, const FileDatasource& datasource) const;
 
 		static const QString IndexColumnName;
 

@@ -37,7 +37,7 @@ namespace SynGlyphX {
 		virtual bool IsValid() const;
 		void Setup(const QString& cacheFilename);
 		virtual void Close();
-		void UpdateCSVFile(const QString& tableName, const QString& csvFilename);
+		void UpdateCSVFile(const QString& tableName, const QString& csvFilename, const QString& formattedName);
 
 		const boost::uuids::uuid& GetConnectionID() const;
 
@@ -46,8 +46,12 @@ namespace SynGlyphX {
 		void CreateNewTableInCache(const QString& name, const QString& fieldNamesAndTypes);
 		void CreateTableFromCSVHeaders(const QString& name, const CSVFileReader::CSVValues& headers, const CSVFileReader::CSVValues& types);
 		virtual void DeleteTable(const QString& table);
-		QDateTime GetTimestampForTable(const QString& table);
+		QDateTime GetTimestampForTable(const QString& table) const;
 		void UpdateTimestampForTable(const QString& table, const QString& formattedName, const QDateTime& timestamp);
+		bool DoesCSVFileNeedUpdate(const QString& tableName, const QString& csvFilename, const QString& csvtFilename) const;
+		QDateTime GetTimestamp(const QString& csvFilename, const QString& csvtFilename) const;
+		QString GetCSVTFilename(const QString& csvFilename) const;
+		bool IsTableInCache(const QString& tableName) const;
 
 		boost::uuids::uuid m_connectionID;
 		QSqlDatabase m_db;

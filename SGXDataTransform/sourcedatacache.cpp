@@ -77,50 +77,28 @@ namespace SynGlyphX {
 
 			if (!datasource.RequiresConversionToDB()) {
 
-				QString datasourceId = QString::fromStdString(boost::uuids::to_string(id));
-				Datasource::TableSet tablesInCache;
-				for (auto cacheTable : m_tableIndexMap) {
+				if (DoesFileDatabaseNeedUpdate(id, datasource)) {
 
-					if (cacheTable.second.startsWith(datasourceId)) {
-
-						tablesInCache.insert(cacheTable.second.mid(cacheTable.second.lastIndexOf(':') + 1).toStdWString());
-					}
+					DeleteTables(id);
+					AddDBTablesToCache(id, datasource, "QSQLITE");
 				}
-				
-				if (!tablesInCache.empty()) {
-
-					QDateTime lastModifiedInCache = GetTimestampForTable(CreateTablename(datasourceId, QString::fromStdWString(*tablesInCache.begin())));
-					QFileInfo datasourceFileInfo(QString::fromStdWString(datasource.GetFilename()));
-					
-					if ((tablesInCache != datasource.GetTables()) || (datasourceFileInfo.lastModified() > lastModifiedInCache)) {
-
-						QStringList tablesToDelete;
-						for (auto tableToDelete : tablesInCache) {
-
-							tablesToDelete.push_back(CreateTablename(datasourceId, QString::fromStdWString(tableToDelete)));
-						}
-						DeleteTables(tablesToDelete);
-					}
-					else {
-
-						//No need to update
-						return;
-					}
-				}
-
-				AddDBTablesToCache(id, datasource, "QSQLITE");
 			}
 			else if (datasource.GetType() == FileDatasource::CSV) {
 
 				QString newTableName = QString::fromStdString(boost::uuids::to_string(id));
-				UpdateCSVFile(newTableName, QString::fromStdWString(datasource.GetFilename()));
-				try {
+				QString csvFilename = QString::fromStdWString(datasource.GetFilename());
+				if (DoesCSVFileNeedUpdate(newTableName, csvFilename, GetCSVTFilename(csvFilename))) {
 
-					AddTableToMap(newTableName, QString::fromStdWString(datasource.GetFormattedName()));
-				}
-				catch (const std::exception& e) {
+					QString formattedName = QString::fromStdWString(datasource.GetFormattedName());
+					UpdateCSVFile(newTableName, csvFilename, formattedName);
+					try {
 
-					throw;
+						AddTableToMap(newTableName, formattedName);
+					}
+					catch (const std::exception& e) {
+
+						throw;
+					}
 				}
 			}
 			else {
@@ -404,11 +382,30 @@ namespace SynGlyphX {
 
 	void SourceDataCache::DeleteTables(const QStringList& tables) {
 
+		if (tables.isEmpty()) {
+
+			return;
+		}
+
 		Q_FOREACH(const QString& table, tables) {
 
 			CSVCache::DeleteTable(table);
 		}
 		RebuildTableMap();
+	}
+
+	void SourceDataCache::DeleteTables(const boost::uuids::uuid& id) {
+
+		QString datasourceId = QString::fromStdString(boost::uuids::to_string(id));
+		QStringList tablesToDelete;
+		for (auto table : m_tableNameMap) {
+
+			if (table.first.startsWith(datasourceId)) {
+
+				tablesToDelete.push_back(table.first);
+			}
+		}
+		DeleteTables(tablesToDelete);
 	}
 
 	const SourceDataCache::TableNameMap& SourceDataCache::GetFormattedNames() const {
@@ -586,6 +583,67 @@ namespace SynGlyphX {
 		}
 
 		return indexSet;
+	}
+
+	bool SourceDataCache::IsCacheOutOfDate(const DatasourceMaps& datasources) const {
+
+		if (!IsValid()) {
+
+			throw std::exception("Source data cache is not setup.");
+		}
+
+		for (auto fileDatasource : datasources.GetFileDatasources()) {
+
+			if (DoesFileDatasourceNeedUpdate(fileDatasource.first, fileDatasource.second)) {
+
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	bool SourceDataCache::DoesFileDatasourceNeedUpdate(const boost::uuids::uuid& id, const FileDatasource& datasource) const {
+
+		if (!datasource.RequiresConversionToDB()) {
+
+			return DoesFileDatabaseNeedUpdate(id, datasource);
+		}
+		else if (datasource.GetType() == FileDatasource::CSV) {
+
+			QString tableName = QString::fromStdString(boost::uuids::to_string(id));
+			QString csvFilename = QString::fromStdWString(datasource.GetFilename());
+			return DoesCSVFileNeedUpdate(tableName, csvFilename, GetCSVTFilename(csvFilename));
+		}
+	}
+
+	bool SourceDataCache::DoesFileDatabaseNeedUpdate(const boost::uuids::uuid& id, const FileDatasource& datasource) const {
+
+		QString datasourceId = QString::fromStdString(boost::uuids::to_string(id));
+		Datasource::TableSet tablesInCache;
+		for (auto cacheTable : m_tableIndexMap) {
+
+			if (cacheTable.second.startsWith(datasourceId)) {
+
+				tablesInCache.insert(cacheTable.second.toStdWString());
+			}
+		}
+
+		if (tablesInCache.empty()) {
+
+			return true;
+		} else {
+
+			QDateTime lastModifiedInCache = GetTimestampForTable(CreateTablename(datasourceId, QString::fromStdWString(*tablesInCache.begin())));
+			QFileInfo datasourceFileInfo(QString::fromStdWString(datasource.GetFilename()));
+
+			if ((tablesInCache != datasource.GetTables()) || (datasourceFileInfo.lastModified() > lastModifiedInCache)) {
+
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 } //namespace SynGlyphX

@@ -52,7 +52,7 @@ namespace SynGlyphX {
 
 				if (m_csvCache.IsValid()) {
 
-					m_csvCache.UpdateCSVFile(connectionName, datasourceName);
+					m_csvCache.UpdateCSVFile(connectionName, datasourceName, QString::fromStdWString(datasource.GetFormattedName()));
 				}
 				else {
 
