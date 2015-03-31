@@ -43,7 +43,7 @@ namespace SynGlyphX {
         virtual void ReadSettings();
         virtual void WriteSettings();
 
-        virtual void LoadRecentFile(const QString& filename) = 0;
+        virtual bool LoadRecentFile(const QString& filename) = 0;
 
         void UpdateRecentFileList();
         void UpdateFilenameWindowTitle(const QString& title);

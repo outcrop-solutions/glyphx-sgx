@@ -297,25 +297,28 @@ bool DataMapperWindow::SaveAsProject() {
 	}
 }
 
-void DataMapperWindow::LoadRecentFile(const QString& filename) {
+bool DataMapperWindow::LoadRecentFile(const QString& filename) {
 
 	if (AskUserToSave()) {
-		LoadDataTransform(filename);
+
+		return LoadDataTransform(filename);
 	}
+
+	return true;
 }
 
-void DataMapperWindow::LoadDataTransform(const QString& filename) {
+bool DataMapperWindow::LoadDataTransform(const QString& filename) {
 
 	QFileInfo fileInfo(filename);
 	if (fileInfo.suffix().toLower() != "sdt") {
 
 		QMessageBox::warning(this, tr("Loading Data Transform Failed"), tr("File is not a recognized format"));
-		return;
+		return false;
 	}
 	if (!fileInfo.exists()) {
 
 		QMessageBox::warning(this, tr("Loading Data Transform Failed"), tr("File does not exist"));
-		return;
+		return false;
 	}
 	try {
 
@@ -327,7 +330,7 @@ void DataMapperWindow::LoadDataTransform(const QString& filename) {
 	catch (const std::exception& e) {
 
 		QMessageBox::critical(this, tr("Failed To Open Project"), tr("Failed to open project.  Error: ") + e.what(), QMessageBox::Ok);
-		return;
+		return false;
 	}
 
 	SetCurrentFile(filename);
@@ -335,6 +338,7 @@ void DataMapperWindow::LoadDataTransform(const QString& filename) {
 	EnableProjectDependentActions(true);
 
 	statusBar()->showMessage("Project successfully opened", 3000);
+	return true;
 }
 
 bool DataMapperWindow::SaveDataTransform(const QString& filename) {

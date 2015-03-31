@@ -46,8 +46,8 @@ private slots:
 	void ChangeOptions();
 
 private:
-	virtual void LoadRecentFile(const QString& filename);
-	void LoadNewVisualization(const QString& filename);
+	virtual bool LoadRecentFile(const QString& filename);
+	bool LoadNewVisualization(const QString& filename);
 	void LoadVisualization(const QString& filename);
 	void LoadANTzCompatibilityVisualization(const QString& filename);
 	void LoadDataTransform(const QString& filename);

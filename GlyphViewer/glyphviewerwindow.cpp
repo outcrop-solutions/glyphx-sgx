@@ -51,7 +51,15 @@ GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 	if (commandLineArguments.size() > 1) {
 
 		QDir visualizationToLoad(commandLineArguments[1]);
-		LoadVisualization(QDir::toNativeSeparators(visualizationToLoad.canonicalPath()));
+
+		try {
+
+			LoadVisualization(QDir::toNativeSeparators(visualizationToLoad.canonicalPath()));
+		}
+		catch (const std::exception& e) {
+
+			QMessageBox::critical(this, tr("Failed To Open Visualization"), tr("Failed to open visualization from command line.  Error: ") + e.what(), QMessageBox::Ok);
+		}
 	}
 
 	statusBar()->showMessage(SynGlyphX::Application::applicationName() + " Started", 3000);
@@ -189,14 +197,12 @@ void GlyphViewerWindow::LoadVisualization(const QString& filename) {
 	QString extension = fileInfo.suffix().toLower();
 	if ((extension != "sdt") && (extension != "sav")) {
 
-		QMessageBox::warning(this, tr("Loading Visualization Failed"), tr("File is not a recognized format"));
-		return;
+		throw std::exception("File is not a recognized format");
 	}
 
 	if (!fileInfo.exists()) {
 
-		QMessageBox::warning(this, tr("Loading Visualization Failed"), tr("File does not exist"));
-		return;
+		throw std::exception("File does not exist");
 	}
 
 	if (!m_treeView->selectionModel()->selectedIndexes().empty()) {
@@ -213,12 +219,13 @@ void GlyphViewerWindow::LoadVisualization(const QString& filename) {
 
 		LoadANTzCompatibilityVisualization(filename);
 	}
-	}
+}
 
-void GlyphViewerWindow::LoadNewVisualization(const QString& filename) {
+bool GlyphViewerWindow::LoadNewVisualization(const QString& filename) {
 
 	if (filename == m_currentFilename) {
-		return;
+		
+		return true;
 	}
 
 	try {
@@ -228,12 +235,13 @@ void GlyphViewerWindow::LoadNewVisualization(const QString& filename) {
 	catch (const std::exception& e) {
 
 		QMessageBox::critical(this, tr("Failed To Open Visualization"), tr("Failed to open visualization.  Error: ") + e.what(), QMessageBox::Ok);
-		return;
+		return false;
 	}
 
 	SetCurrentFile(filename);
 	EnableLoadedVisualizationDependentActions(true);
 	statusBar()->showMessage("Visualization successfully opened", 3000);
+	return true;
 }
 
 void GlyphViewerWindow::LoadANTzCompatibilityVisualization(const QString& filename) {
@@ -246,9 +254,9 @@ void GlyphViewerWindow::LoadANTzCompatibilityVisualization(const QString& filena
 	//LoadFilesIntoModel(csvFiles, QString::fromStdWString(fileListing.GetBaseImageFilename()));
 }
 
-void GlyphViewerWindow::LoadRecentFile(const QString& filename) {
+bool GlyphViewerWindow::LoadRecentFile(const QString& filename) {
 
-	LoadNewVisualization(filename);
+	return LoadNewVisualization(filename);
 }
 
 void GlyphViewerWindow::LoadDataTransform(const QString& filename) {
@@ -271,29 +279,34 @@ void GlyphViewerWindow::LoadDataTransform(const QString& filename) {
 			}
 		}
 
-		SynGlyphX::Application::restoreOverrideCursor();
-		for (int i = 0; i < fileDatasourcesToBeUpdated.size(); ++i) {
+		if (!fileDatasourcesToBeUpdated.empty()) {
 
-			QString acceptButtonText = tr("Next");
-			if (i == fileDatasourcesToBeUpdated.size() - 1) {
-				acceptButtonText = tr("Ok");
+			SynGlyphX::Application::restoreOverrideCursor();
+			for (int i = 0; i < fileDatasourcesToBeUpdated.size(); ++i) {
+
+				QString acceptButtonText = tr("Next");
+				if (i == fileDatasourcesToBeUpdated.size() - 1) {
+					
+					acceptButtonText = tr("Ok");
+				}
+
+				ChangeDatasourceFileDialog dialog(fileDatasourcesToBeUpdated[i]->second, acceptButtonText, this);
+				if (dialog.exec() == QDialog::Accepted) {
+
+					mapping.UpdateDatasourceName(fileDatasourcesToBeUpdated[i]->first, dialog.GetNewDatasourceFile().toStdWString());
+					wereDatasourcesUpdated = true;
+				}
+				else {
+					
+					throw std::exception("One or more datasources weren't found.");
+				}
 			}
+			SynGlyphX::Application::setOverrideCursor(Qt::WaitCursor);
 
-			ChangeDatasourceFileDialog dialog(fileDatasourcesToBeUpdated[i]->second, acceptButtonText, this);
-			if (dialog.exec() == QDialog::Accepted) {
+			if (wereDatasourcesUpdated) {
 
-				mapping.UpdateDatasourceName(fileDatasourcesToBeUpdated[i]->first, dialog.GetNewDatasourceFile().toStdWString());
-				wereDatasourcesUpdated = true;
+				mapping.WriteToFile(filename.toStdString());
 			}
-			else {
-				throw std::exception("One or more datasources weren't found.");
-			}
-		}
-		SynGlyphX::Application::setOverrideCursor(Qt::WaitCursor);
-
-		if (wereDatasourcesUpdated) {
-
-			mapping.WriteToFile(filename.toStdString());
 		}
 
 		SynGlyphXANTz::GlyphViewerANTzTransformer transformer(QString::fromStdWString(m_cacheManager.GetCacheDirectory(mapping.GetID())));

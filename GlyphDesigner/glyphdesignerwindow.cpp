@@ -196,11 +196,14 @@ void GlyphDesignerWindow::ExportToCSV() {
     }
 }
 
-void GlyphDesignerWindow::LoadRecentFile(const QString& filename) {
+bool GlyphDesignerWindow::LoadRecentFile(const QString& filename) {
 
     if (AskUserToSave()) {
-        LoadTemplate(filename);
+        
+		return LoadTemplate(filename);
     }
+
+	return true;
 }
 
 void GlyphDesignerWindow::OpenTemplate() {
@@ -212,41 +215,45 @@ void GlyphDesignerWindow::OpenTemplate() {
     }
 }
 
-void GlyphDesignerWindow::LoadTemplate(const QString& filename) {
+bool GlyphDesignerWindow::LoadTemplate(const QString& filename) {
 
-    if (!filename.isEmpty()) {
+	if (filename.isEmpty()) {
 
-		QFileInfo fileInfo(filename);
-		QString extension = fileInfo.suffix().toLower();
-		if ((extension != "csv") && (extension != "sgt")) {
-
-			QMessageBox::warning(this, tr("Loading Template Failed"), tr("File is not a recognized format"));
-			return;
-		}
-		if (fileInfo.exists()) {
-
-			SynGlyphX::Application::setOverrideCursor(Qt::WaitCursor);
-			m_isFileLoadingOrDefaultGlyphSet = true;
-			bool fileLoaded = m_glyphTreeModel->LoadFromFile(filename);
-			SynGlyphX::Application::restoreOverrideCursor();
-
-			if (fileLoaded) {
-
-				SetCurrentFile(filename);
-				statusBar()->showMessage("Template successfully opened", 3000);
-				SelectRootGlyphInModel();
-			}
-			else {
-
-				m_isFileLoadingOrDefaultGlyphSet = false;
-				QMessageBox::warning(this, tr("Loading Template Failed"), tr("Failed to load template"));
-			}
-		}
-		else {
-
-			QMessageBox::warning(this, tr("Loading Template Failed"), tr("File does not exist"));
-		}
+		return false;
 	}
+
+	QFileInfo fileInfo(filename);
+	QString extension = fileInfo.suffix().toLower();
+	if ((extension != "csv") && (extension != "sgt")) {
+
+		QMessageBox::warning(this, tr("Loading Template Failed"), tr("File is not a recognized format"));
+		return false;
+	}
+
+	if (!fileInfo.exists()) {
+
+		QMessageBox::warning(this, tr("Loading Template Failed"), tr("File does not exist"));
+		return false;
+	}
+
+	SynGlyphX::Application::setOverrideCursor(Qt::WaitCursor);
+	m_isFileLoadingOrDefaultGlyphSet = true;
+	bool fileLoaded = m_glyphTreeModel->LoadFromFile(filename);
+	SynGlyphX::Application::restoreOverrideCursor();
+
+	if (fileLoaded) {
+
+		SetCurrentFile(filename);
+		statusBar()->showMessage("Template successfully opened", 3000);
+		SelectRootGlyphInModel();
+	}
+	else {
+
+		m_isFileLoadingOrDefaultGlyphSet = false;
+		QMessageBox::warning(this, tr("Loading Template Failed"), tr("Failed to load template"));
+	}
+
+	return fileLoaded;
 }
 
 bool GlyphDesignerWindow::SaveTemplate() {

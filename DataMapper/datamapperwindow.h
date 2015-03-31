@@ -40,7 +40,7 @@ public:
     ~DataMapperWindow();
 
 protected:
-    virtual void LoadRecentFile(const QString& filename);
+    virtual bool LoadRecentFile(const QString& filename);
 	virtual void closeEvent(QCloseEvent* event);
 
 	virtual void ReadSettings();
@@ -65,7 +65,7 @@ private:
     void CreateMenus();
     void CreateDockWidgets();
 	void CreateCenterWidget();
-	void LoadDataTransform(const QString& filename);
+	bool LoadDataTransform(const QString& filename);
 	bool SaveDataTransform(const QString& filename);
 	bool AskUserToSave();
 	void EnableProjectDependentActions(bool enable);

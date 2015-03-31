@@ -86,7 +86,26 @@ namespace SynGlyphX {
 
         QAction *action = qobject_cast<QAction *>(sender());
         if (action != NULL) {
-            LoadRecentFile(action->data().toString());
+
+			QString recentFile = action->data().toString();
+			if (!LoadRecentFile(recentFile)) {
+
+				if (QMessageBox::question(this, tr("Recent File Failed To Load"), tr("The selected recent file failed to load.  Do you wish to remove it from the recent file list?")) == QMessageBox::Yes) {
+
+					QSettings settings;
+					settings.beginGroup("RecentFiles");
+					QStringList files = settings.value("recentFileList").toStringList();
+					settings.endGroup();
+
+					files.removeAll(recentFile);
+
+					settings.beginGroup("RecentFiles");
+					settings.setValue("recentFileList", files);
+					settings.endGroup();
+
+					UpdateRecentFileList();
+				}
+			}
         }
     }
 

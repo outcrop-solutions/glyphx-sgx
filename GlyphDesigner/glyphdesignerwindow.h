@@ -32,7 +32,7 @@ public:
     ~GlyphDesignerWindow();
 
 protected:
-    virtual void LoadRecentFile(const QString& filename);
+    virtual bool LoadRecentFile(const QString& filename);
     virtual void closeEvent(QCloseEvent* event);
 
 	virtual void ReadSettings();
@@ -50,7 +50,7 @@ private slots:
 private:
     void CreateMenus();
     void CreateDockWidgets();
-    void LoadTemplate(const QString& filename);
+    bool LoadTemplate(const QString& filename);
     bool SaveTemplateFile(const QString& filename);
     bool AskUserToSave();
 	void SelectRootGlyphInModel();
