@@ -3,6 +3,7 @@
 #include <QtWidgets/QHBoxLayout>
 #include "groupboxsinglewidget.h"
 #include <QtWidgets/QPushButton>
+#include <QtWidgets/QMessageBox>
 #include <QtCore/QDir>
 #include "filesystem.h"
 
@@ -50,6 +51,7 @@ void OptionsWidget::ClearCache() {
 	if (cacheDir.exists()) {
 
 		SynGlyphX::Filesystem::RemoveContentsOfDirectory(QDir::toNativeSeparators(cacheDir.canonicalPath()).toStdString());
+		QMessageBox::information(this, tr("Cache cleared"), tr("Cache is now empty."));
 	}
 }
 

@@ -168,8 +168,14 @@ void GlyphViewerWindow::OpenProject() {
 void GlyphViewerWindow::RefreshVisualization() {
 
 	try {
+		
+		SynGlyphX::DataTransformMapping mapping;
+		mapping.ReadFromFile(m_currentFilename.toStdString());
+		if ((m_mapping != mapping) || (m_sourceDataCache->IsCacheOutOfDate(m_mapping.GetDatasources()))) {
 
-		LoadVisualization(m_currentFilename);
+			ClearAllData();
+			LoadVisualization(m_currentFilename);
+		}
 	}
 	catch (const std::exception& e) {
 
@@ -182,12 +188,18 @@ void GlyphViewerWindow::RefreshVisualization() {
 
 void GlyphViewerWindow::CloseVisualization() {
 
+	ClearAllData();
+	EnableLoadedVisualizationDependentActions(false);
+	ClearCurrentFile();
+}
+
+void GlyphViewerWindow::ClearAllData() {
+
 	SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
 	m_sourceDataCache->Close();
 	m_glyphForestModel->Clear();
 	m_glyphForestModel->SetParentGridToDefaultBaseImage();
-	EnableLoadedVisualizationDependentActions(false);
-	ClearCurrentFile();
+	m_mapping.Clear();
 	SynGlyphX::Application::restoreOverrideCursor();
 }
 
@@ -265,13 +277,12 @@ void GlyphViewerWindow::LoadDataTransform(const QString& filename) {
 
 	try {
 
-		SynGlyphX::DataTransformMapping mapping;
-		mapping.ReadFromFile(filename.toStdString());
+		m_mapping.ReadFromFile(filename.toStdString());
 
 		bool wereDatasourcesUpdated = false;
 
 		std::vector<SynGlyphX::DatasourceMaps::FileDatasourceMap::const_iterator> fileDatasourcesToBeUpdated;
-		for (SynGlyphX::DatasourceMaps::FileDatasourceMap::const_iterator datasource = mapping.GetDatasources().GetFileDatasources().begin(); datasource != mapping.GetDatasources().GetFileDatasources().end(); ++datasource) {
+		for (SynGlyphX::DatasourceMaps::FileDatasourceMap::const_iterator datasource = m_mapping.GetDatasources().GetFileDatasources().begin(); datasource != m_mapping.GetDatasources().GetFileDatasources().end(); ++datasource) {
 
 			if (!datasource->second.CanDatasourceBeFound()) {
 
@@ -293,7 +304,7 @@ void GlyphViewerWindow::LoadDataTransform(const QString& filename) {
 				ChangeDatasourceFileDialog dialog(fileDatasourcesToBeUpdated[i]->second, acceptButtonText, this);
 				if (dialog.exec() == QDialog::Accepted) {
 
-					mapping.UpdateDatasourceName(fileDatasourcesToBeUpdated[i]->first, dialog.GetNewDatasourceFile().toStdWString());
+					m_mapping.UpdateDatasourceName(fileDatasourcesToBeUpdated[i]->first, dialog.GetNewDatasourceFile().toStdWString());
 					wereDatasourcesUpdated = true;
 				}
 				else {
@@ -305,12 +316,12 @@ void GlyphViewerWindow::LoadDataTransform(const QString& filename) {
 
 			if (wereDatasourcesUpdated) {
 
-				mapping.WriteToFile(filename.toStdString());
+				m_mapping.WriteToFile(filename.toStdString());
 			}
 		}
 
-		SynGlyphXANTz::GlyphViewerANTzTransformer transformer(QString::fromStdWString(m_cacheManager.GetCacheDirectory(mapping.GetID())));
-		transformer.Transform(mapping);
+		SynGlyphXANTz::GlyphViewerANTzTransformer transformer(QString::fromStdWString(m_cacheManager.GetCacheDirectory(m_mapping.GetID())));
+		transformer.Transform(m_mapping);
 
 		m_sourceDataCache->Setup(transformer.GetSourceDataCacheLocation());
 		LoadFilesIntoModel(transformer.GetCSVFilenames(), transformer.GetBaseImageFilenames());

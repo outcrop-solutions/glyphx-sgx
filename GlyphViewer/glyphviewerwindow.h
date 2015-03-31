@@ -58,6 +58,7 @@ private:
 	void ChangeOptions(const GlyphViewerOptions& options);
 	void ReadOptions();
 	void WriteOptions();
+	void ClearAllData();
 
 	QMenu* m_fileMenu;
 	QMenu* m_viewMenu;
@@ -65,13 +66,17 @@ private:
 	QAction* m_stereoAction;
 	QList<QAction*> m_loadedVisualizationDependentActions;
 
+	SynGlyphX::DataTransformMapping m_mapping;
 	CacheManager m_cacheManager;
 
 	GlyphForestModel* m_glyphForestModel;
 	QItemSelectionModel* m_glyphForestSelectionModel;
 	ANTzViewerWidget* m_antzWidget;
 	GlyphTreeListView* m_treeView;
-	GlyphViewerOptions m_options;	SynGlyphX::SourceDataCache::SharedPtr m_sourceDataCache;
-	SourceDataSelectionWidget* m_sourceDataSelectionWidget;};
+	GlyphViewerOptions m_options;	
+	SynGlyphX::SourceDataCache::SharedPtr m_sourceDataCache;
+	SourceDataSelectionWidget* m_sourceDataSelectionWidget;
+
+};
 
 #endif // GLYPHVIEWERWINDOW_H
