@@ -96,6 +96,7 @@ void DataBindingWidget::CreateTagAndDescriptionWidget() {
 	m_dataWidgetMappers.push_back(tagMapper);
 
 	m_descriptionEdit = new SynGlyphX::RichTextEditor("<b>" + m_model->headerData(12, Qt::Vertical, Qt::DisplayRole).toString() + ":</b>", this);
+	m_descriptionEdit->setEnabled(false);
 
 	QDataWidgetMapper* descriptionMapper = new QDataWidgetMapper(this);
 	descriptionMapper->setModel(m_model);

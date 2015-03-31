@@ -182,7 +182,7 @@ void GlyphViewerWindow::RefreshVisualization() {
 
 void GlyphViewerWindow::CloseVisualization() {
 
-	SynGlyphX::Application::setOverrideCursor(Qt::WaitCursor);
+	SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
 	m_sourceDataCache->Close();
 	m_glyphForestModel->Clear();
 	m_glyphForestModel->SetParentGridToDefaultBaseImage();
@@ -261,7 +261,7 @@ bool GlyphViewerWindow::LoadRecentFile(const QString& filename) {
 
 void GlyphViewerWindow::LoadDataTransform(const QString& filename) {
 
-	SynGlyphX::Application::setOverrideCursor(Qt::WaitCursor);
+	SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
 
 	try {
 
@@ -301,7 +301,7 @@ void GlyphViewerWindow::LoadDataTransform(const QString& filename) {
 					throw std::exception("One or more datasources weren't found.");
 				}
 			}
-			SynGlyphX::Application::setOverrideCursor(Qt::WaitCursor);
+			SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
 
 			if (wereDatasourcesUpdated) {
 

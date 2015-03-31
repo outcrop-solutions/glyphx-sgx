@@ -78,8 +78,16 @@ namespace SynGlyphX {
 
 		return s_commonDataLocation;
 	}
+
 	const QString& Application::GetAppTempDirectory() {
 
 		return s_tempDirectory;
 	}
+
+	void Application::SetOverrideCursorAndProcessEvents(const QCursor& cursor, QEventLoop::ProcessEventsFlags flags) {
+
+		setOverrideCursor(cursor);
+		processEvents(flags);
+	}
+
 } //namespace SynGlyphX

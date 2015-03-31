@@ -236,7 +236,7 @@ bool GlyphDesignerWindow::LoadTemplate(const QString& filename) {
 		return false;
 	}
 
-	SynGlyphX::Application::setOverrideCursor(Qt::WaitCursor);
+	SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
 	m_isFileLoadingOrDefaultGlyphSet = true;
 	bool fileLoaded = m_glyphTreeModel->LoadFromFile(filename);
 	SynGlyphX::Application::restoreOverrideCursor();
@@ -278,7 +278,7 @@ bool GlyphDesignerWindow::SaveTemplateFile(const QString& filename) {
 
 		try {
 
-			SynGlyphX::Application::setOverrideCursor(Qt::WaitCursor);
+			SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
 			m_glyphTreeModel->SaveToTemplateFile(filename);
 			SynGlyphX::Application::restoreOverrideCursor();
 

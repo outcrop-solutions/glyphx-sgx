@@ -322,6 +322,7 @@ bool DataMapperWindow::LoadDataTransform(const QString& filename) {
 	}
 	try {
 
+		SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
 		m_dataTransformModel->LoadDataTransformFile(filename);
 		m_dataSourceStats->RebuildStatsViews();
 		m_glyphTreesView->SelectLastGlyphTreeRoot();
@@ -329,6 +330,7 @@ bool DataMapperWindow::LoadDataTransform(const QString& filename) {
 	}
 	catch (const std::exception& e) {
 
+		SynGlyphX::Application::restoreOverrideCursor();
 		QMessageBox::critical(this, tr("Failed To Open Project"), tr("Failed to open project.  Error: ") + e.what(), QMessageBox::Ok);
 		return false;
 	}
@@ -336,7 +338,7 @@ bool DataMapperWindow::LoadDataTransform(const QString& filename) {
 	SetCurrentFile(filename);
 
 	EnableProjectDependentActions(true);
-
+	SynGlyphX::Application::restoreOverrideCursor();
 	statusBar()->showMessage("Project successfully opened", 3000);
 	return true;
 }
@@ -344,15 +346,18 @@ bool DataMapperWindow::LoadDataTransform(const QString& filename) {
 bool DataMapperWindow::SaveDataTransform(const QString& filename) {
 
 	try {
+		SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
 		m_dataBindingWidget->CommitChanges();
 		m_dataTransformModel->SaveDataTransformFile(filename);
 		SetCurrentFile(filename);
 		setWindowModified(false);
+		SynGlyphX::Application::restoreOverrideCursor();
 		statusBar()->showMessage("Data transform successfully saved", 3000);
 		return true;
 	}
 	catch (const std::exception& e) {
 
+		SynGlyphX::Application::restoreOverrideCursor();
 		QMessageBox::critical(this, tr("Failed To Save Data Transformation"), e.what(), QMessageBox::Ok);
 		return false;
 	}
@@ -499,7 +504,7 @@ void DataMapperWindow::ExportToANTz(const QString& templateDir) {
 		}
 	}
 
-	SynGlyphX::Application::setOverrideCursor(Qt::WaitCursor);
+	SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
 
 	try {
 
