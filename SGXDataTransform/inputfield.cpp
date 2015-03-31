@@ -2,6 +2,7 @@
 #include <boost/uuid/uuid_io.hpp>
 #include <boost/assign/list_of.hpp>
 #include <boost/bimap/list_of.hpp>
+#include "datasource.h"
 
 namespace SynGlyphX {
 
@@ -23,6 +24,11 @@ namespace SynGlyphX {
 		m_field(field),
 		m_type(type)
 	{
+		//Since some datasources are single table make sure table has a non-empty value
+		if (m_table.empty()) {
+
+			m_table = Datasource::SingleTableName;
+		}
 	}
 
 	InputField::InputField(const boost::property_tree::wptree& propertyTree) :
@@ -31,6 +37,11 @@ namespace SynGlyphX {
 		m_field(propertyTree.get<std::wstring>(L"<xmlattr>.field")),
 		m_type(s_fieldTypeStrings.right.at(propertyTree.get<std::wstring>(L"<xmlattr>.type"))) {
 
+		//Since some datasources are single table make sure table has a non-empty value
+		if (m_table.empty()) {
+
+			m_table = Datasource::SingleTableName;
+		}
 	}
 
 	InputField::InputField(const InputField& inputField) :
