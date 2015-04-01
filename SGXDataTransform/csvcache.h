@@ -42,6 +42,7 @@ namespace SynGlyphX {
 		const boost::uuids::uuid& GetConnectionID() const;
 
 	protected:
+		void BatchInsertIntoTable(const QString& table, const QString& fieldNames, const std::vector<QVariantList>& data);
 		void SetPragmaValue(const QString& pragmaString);
 		virtual void CreateNewCacheTable(const QString& name, const QString& fieldNamesAndTypes);
 		void CreateNewTable(const QString& name, const QString& fieldNamesAndTypes);

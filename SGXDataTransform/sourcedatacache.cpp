@@ -12,7 +12,7 @@
 
 namespace SynGlyphX {
 
-	const QString SourceDataCache::IndexColumnName = "SGXIndex";
+	const QString SourceDataCache::IndexColumnName = "rowid";
 
 	SourceDataCache::SourceDataCache() :
 		CSVCache() {
@@ -158,7 +158,8 @@ namespace SynGlyphX {
 
 		QString fieldNamesAndTypes;
 		QString fieldNameList;
-		//unsigned int fieldNameCount = 0;
+		unsigned int validFieldCount = 0;
+
 		QSqlRecord sourceTableFieldNames = db.record(sourceTable);
 		std::vector<bool> isTextField;
 		isTextField.reserve(sourceTableFieldNames.count());
@@ -191,65 +192,41 @@ namespace SynGlyphX {
 			isTextField.push_back(typeString == "TEXT");
 			fieldNameList += "\"" + field.name() + "\", ";
 			fieldNamesAndTypes += "\"" + field.name() + "\" " + typeString + ",\n";
-			//++fieldNameCount;
+			++validFieldCount;
 		}
 		fieldNameList.chop(2);
 		fieldNamesAndTypes.chop(2);
 
-		if (isTextField.empty()) {
+		if (validFieldCount == 0) {
 
 			return;
 		}
 
 		CreateNewCacheTable(cacheTable, fieldNamesAndTypes);
 
-		/*QString bindString;
-		for (int j = 0; j < fieldNameCount + 1; ++j) {
-
-			bindString += "?, ";
-		}
-		bindString.chop(2);*/
-		QSqlQuery insertIntoCacheQuery(m_db);
-		QString insertIntoCacheQueryString = "INSERT INTO \"" + cacheTable + "\" (\"" + IndexColumnName + "\", " + fieldNameList + ") VALUES (%1);";
-
-		unsigned long sgxIndex = 0;
-
 		QSqlQuery getDataQuery(db);
-		getDataQuery.prepare("SELECT " + fieldNameList + " FROM " + sourceTable);
+		getDataQuery.prepare("SELECT " + fieldNameList + " FROM \"" + sourceTable + "\"");
 		if (!getDataQuery.exec()) {
 
 			throw std::exception((QObject::tr("Failed to extract source data: ") + m_db.lastError().text()).toStdString().c_str());
 		}
 
+		std::vector<QVariantList> dataToInsert;
+		dataToInsert.resize(validFieldCount);
+
 		while (getDataQuery.next()) {
 
-			QString dataToAdd = QString::number(sgxIndex);
-			//insertIntoCacheQuery.bindValue(0, static_cast<qulonglong>(sgxIndex));
-			for (int k = 0; k < isTextField.size(); ++k) {
+			for (int k = 0; k < validFieldCount; ++k) {
 
-				if (isTextField[k]) {
-
-					dataToAdd += ", \"" + getDataQuery.value(k).toString() + "\"";
-				}
-				else {
-
-					dataToAdd += ", " + getDataQuery.value(k).toString();
-				}
-				//insertIntoCacheQuery.bindValue(k + 1, getDataQuery.value(k));
+				dataToInsert[k].push_back(getDataQuery.value(k));
 			}
-			insertIntoCacheQuery.prepare(insertIntoCacheQueryString.arg(dataToAdd));
-			
-			if (!insertIntoCacheQuery.exec()) {
-
-				throw std::exception((QObject::tr("Failed to insert data into table: ") + m_db.lastError().text()).toStdString().c_str());
-			}
-			insertIntoCacheQuery.finish();
-			++sgxIndex;
 		}
 		getDataQuery.finish();
 
+		BatchInsertIntoTable(cacheTable, fieldNameList, dataToInsert);
+
 		QString formattedTableName = CreateTablename(formattedSourceName, sourceTable);
-		UpdateTimestampForTable(cacheTable, formattedTableName, QDateTime::currentDateTime());
+		UpdateTimestampForTable(cacheTable, formattedTableName, QDateTime::currentDateTimeUtc());
 		AddTableToMap(cacheTable, formattedTableName);
 	}
 
@@ -287,7 +264,7 @@ namespace SynGlyphX {
 		if (query.exec()) {
 
 			query.first();
-			return query.value(0).toInt();
+			return query.value(0).toInt() - 1;
 		}
 		else {
 
@@ -297,7 +274,7 @@ namespace SynGlyphX {
 
 	void SourceDataCache::CreateNewCacheTable(const QString& name, const QString& fieldNamesAndTypes) {
 
-		CSVCache::CreateNewCacheTable(name, "\"" + IndexColumnName + "\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,\n" + fieldNamesAndTypes);
+		CSVCache::CreateNewCacheTable(name, fieldNamesAndTypes);
 	}
 
 	void SourceDataCache::AddTableToMap(const QString& tableName, const QString& formattedName) {
@@ -514,11 +491,11 @@ namespace SynGlyphX {
 	QString SourceDataCache::CreateWhereString(const IndexSet& indexSet) const {
 
 		IndexSet::const_iterator iT = indexSet.begin();
-		QString whereString = "WHERE \"" + IndexColumnName + "\" IN (" + QString::number(*iT);
+		QString whereString = "WHERE \"" + IndexColumnName + "\" IN (" + QString::number(*iT + 1);
 		++iT;
 		while (iT != indexSet.end()) {
 
-			whereString += ", " + QString::number(*iT);
+			whereString += ", " + QString::number(*iT + 1);
 			++iT;
 		}
 		whereString += ")";
@@ -579,7 +556,7 @@ namespace SynGlyphX {
 		IndexSet indexSet;
 		while (query.next()) {
 
-			indexSet.insert(startingValue + query.value(0).toULongLong());
+			indexSet.insert(startingValue + query.value(0).toULongLong() - 1);
 		}
 
 		return indexSet;
@@ -625,7 +602,8 @@ namespace SynGlyphX {
 
 			if (cacheTable.second.startsWith(datasourceId)) {
 
-				tablesInCache.insert(cacheTable.second.toStdWString());
+				QString& tableName = cacheTable.second;
+				tablesInCache.insert(tableName.mid(tableName.lastIndexOf(':') + 1).toStdWString());
 			}
 		}
 
@@ -637,7 +615,7 @@ namespace SynGlyphX {
 			QDateTime lastModifiedInCache = GetTimestampForTable(CreateTablename(datasourceId, QString::fromStdWString(*tablesInCache.begin())));
 			QFileInfo datasourceFileInfo(QString::fromStdWString(datasource.GetFilename()));
 
-			if ((tablesInCache != datasource.GetTables()) || (datasourceFileInfo.lastModified() > lastModifiedInCache)) {
+			if ((tablesInCache != datasource.GetTables()) || (datasourceFileInfo.lastModified().toUTC() > lastModifiedInCache)) {
 
 				return true;
 			}

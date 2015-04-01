@@ -142,6 +142,9 @@ namespace SynGlyphX {
 					headerList += ", \"" + QString::fromStdWString(headers[k]) + "\"";
 				}
 
+				std::vector<QVariantList> dataToInsert;
+				dataToInsert.resize(headerList.size());
+
 				while (!csvFileReader.IsAtEndOfFile()) {
 
 					CSVFileReader::CSVValues values = csvFileReader.GetValuesFromLine();
@@ -151,36 +154,13 @@ namespace SynGlyphX {
 						continue;
 					}
 
-					QSqlQuery insertTableQuery(m_db);
-					QString sqlInsert = "INSERT INTO \"" + tableName + "\" (" + headerList + ") VALUES (";
 					for (int i = 0; i < values.size(); ++i) {
 
-						if (typeIsText[i]) {
-
-							sqlInsert += "\"";
-						}
-
-						sqlInsert += QString::fromStdWString(values[i]);
-
-						if (typeIsText[i]) {
-
-							sqlInsert += "\"";
-						}
-
-						if (i < values.size() - 1) {
-
-							sqlInsert += ", ";
-						}
+						dataToInsert[i].push_back(QString::fromStdWString(values[i]));
 					}
-					sqlInsert += ");";
-					insertTableQuery.prepare(sqlInsert);
-					bool querySucceeded = insertTableQuery.exec();
-					if (!querySucceeded) {
-
-						throw std::exception((QObject::tr("Failed to add file to CSV cache:") + m_db.lastError().text()).toStdString().c_str());
-					}
-					insertTableQuery.finish();
 				}
+
+				BatchInsertIntoTable(tableName, headerList, dataToInsert);
 
 				UpdateTimestampForTable(tableName, formattedName, GetTimestamp(csvFilename, csvtFilename));
 			}
@@ -190,7 +170,7 @@ namespace SynGlyphX {
 			}
 		}
 	}
-
+	
 	void CSVCache::CreateNewCacheTable(const QString& name, const QString& fieldNamesAndTypes) {
 
 		CreateNewTable(name, fieldNamesAndTypes);
@@ -312,6 +292,28 @@ namespace SynGlyphX {
 	bool CSVCache::IsTableInCache(const QString& tableName) const {
 
 		return m_db.tables().contains(tableName);
+	}
+
+	void CSVCache::BatchInsertIntoTable(const QString& table, const QString& fieldNames, const std::vector<QVariantList>& data) {
+
+		QStringList valuesBindList;
+		for (int i = 0; i < data.size(); ++i) {
+
+			valuesBindList << "?";
+		}
+
+		QSqlQuery insertIntoCacheQuery(m_db);
+		insertIntoCacheQuery.prepare("INSERT INTO \"" + table + "\" (" + fieldNames + ") VALUES (" + valuesBindList.join(", ") + ");");
+		for (int k = 0; k < data.size(); ++k) {
+
+			insertIntoCacheQuery.addBindValue(data[k]);
+		}
+
+		if (!insertIntoCacheQuery.execBatch()) {
+
+			throw std::exception((QObject::tr("Failed to insert data into table: ") + m_db.lastError().text()).toStdString().c_str());
+		}
+		insertIntoCacheQuery.finish();
 	}
 
 } //namespace SynGlyphX
