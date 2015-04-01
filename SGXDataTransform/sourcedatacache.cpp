@@ -201,7 +201,7 @@ namespace SynGlyphX {
 			return;
 		}
 
-		CreateNewIndexedTableInCache(cacheTable, fieldNamesAndTypes);
+		CreateNewCacheTable(cacheTable, fieldNamesAndTypes);
 
 		/*QString bindString;
 		for (int j = 0; j < fieldNameCount + 1; ++j) {
@@ -295,9 +295,9 @@ namespace SynGlyphX {
 		}
 	}
 
-	void SourceDataCache::CreateNewIndexedTableInCache(const QString& name, const QString& fieldNamesAndTypes) {
+	void SourceDataCache::CreateNewCacheTable(const QString& name, const QString& fieldNamesAndTypes) {
 
-		CreateNewTableInCache(name, "\"" + IndexColumnName + "\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,\n" + fieldNamesAndTypes);
+		CSVCache::CreateNewCacheTable(name, "\"" + IndexColumnName + "\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,\n" + fieldNamesAndTypes);
 	}
 
 	void SourceDataCache::AddTableToMap(const QString& tableName, const QString& formattedName) {

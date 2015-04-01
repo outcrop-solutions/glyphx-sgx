@@ -64,7 +64,7 @@ namespace SynGlyphX {
 
 			try {
 
-				CreateNewTableInCache(s_tableIndexName, "TableName TEXT NOT NULL PRIMARY KEY UNIQUE,\nFormattedName TEXT NOT NULL,\nTimestamp INTEGER NOT NULL");
+				CreateNewTable(s_tableIndexName, "TableName TEXT NOT NULL PRIMARY KEY UNIQUE,\nFormattedName TEXT NOT NULL,\nTimestamp INTEGER NOT NULL");
 			}
 			catch (const std::exception& e) {
 
@@ -191,7 +191,12 @@ namespace SynGlyphX {
 		}
 	}
 
-	void CSVCache::CreateNewTableInCache(const QString& name, const QString& fieldNamesAndTypes) {
+	void CSVCache::CreateNewCacheTable(const QString& name, const QString& fieldNamesAndTypes) {
+
+		CreateNewTable(name, fieldNamesAndTypes);
+	}
+
+	void CSVCache::CreateNewTable(const QString& name, const QString& fieldNamesAndTypes) {
 
 		QString createTableQueryString = "CREATE TABLE \"" + name + "\" (\n" + fieldNamesAndTypes + "\n);";
 
@@ -214,7 +219,7 @@ namespace SynGlyphX {
 
 			fieldNamesAndTypes += ",\n\"" + QString::fromStdWString(headers[i]) + "\" " + QString::fromStdWString(types[i]);
 		}
-		CreateNewTableInCache(name, fieldNamesAndTypes);
+		CreateNewCacheTable(name, fieldNamesAndTypes);
 	}
 
 	void CSVCache::DeleteTable(const QString& table) {

@@ -72,7 +72,7 @@ namespace SynGlyphX {
 		bool IsCacheOutOfDate(const DatasourceMaps& datasources) const;
 
 	private:
-		void CreateNewIndexedTableInCache(const QString& name, const QString& fieldNamesAndTypes);
+		virtual void CreateNewCacheTable(const QString& name, const QString& fieldNamesAndTypes);
 		int GetLastIndexOfTable(const QString& tableName);
 		
 		void AddDBTablesToCache(const boost::uuids::uuid& id, const Datasource& datasource, const QString& dbType);

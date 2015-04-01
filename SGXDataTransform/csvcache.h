@@ -43,7 +43,8 @@ namespace SynGlyphX {
 
 	protected:
 		void SetPragmaValue(const QString& pragmaString);
-		void CreateNewTableInCache(const QString& name, const QString& fieldNamesAndTypes);
+		virtual void CreateNewCacheTable(const QString& name, const QString& fieldNamesAndTypes);
+		void CreateNewTable(const QString& name, const QString& fieldNamesAndTypes);
 		void CreateTableFromCSVHeaders(const QString& name, const CSVFileReader::CSVValues& headers, const CSVFileReader::CSVValues& types);
 		virtual void DeleteTable(const QString& table);
 		QDateTime GetTimestampForTable(const QString& table) const;
