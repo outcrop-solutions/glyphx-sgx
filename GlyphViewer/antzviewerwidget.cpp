@@ -600,7 +600,7 @@ void ANTzViewerWidget::UpdateSelection(const QItemSelection& selected, const QIt
     const QModelIndexList& currentSelection = m_selectionModel->selectedIndexes();
     
     int nodeRootIndex = 0;
-    if (currentSelection.length() == 1)  {
+    if (!currentSelection.isEmpty())  {
         const QModelIndex& last = currentSelection.back();
         if (last.isValid()) {
 

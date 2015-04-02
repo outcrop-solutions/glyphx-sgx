@@ -25,8 +25,10 @@
 #include "glyphforestmodel.h"
 #include "antzviewerwidget.h"
 #include "cachemanager.h"
-#include "glyphvieweroptions.h"#include "sourcedatacache.h"
+#include "glyphvieweroptions.h"
+#include "sourcedatacache.h"
 #include "sourcedataselectionwidget.h"
+
 class GlyphViewerWindow : public SynGlyphX::MainWindow
 {
 	Q_OBJECT
