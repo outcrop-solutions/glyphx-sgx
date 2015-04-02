@@ -21,6 +21,7 @@
 #include <array>
 #include <vector>
 #include <unordered_map>
+#include <set>
 
 namespace SynGlyphX {
 
@@ -28,6 +29,8 @@ namespace SynGlyphX {
 	typedef std::vector<std::string> StringVector;
 
     typedef std::array<double, 3> Vector3;
+
+	typedef std::set<unsigned long> IndexSet;
 
 } //namespace SynGlyphX
 

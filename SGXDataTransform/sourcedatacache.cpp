@@ -519,7 +519,7 @@ namespace SynGlyphX {
 		return inString;
 	}
 
-	SourceDataCache::IndexSet SourceDataCache::GetIndexesFromTableWithSelectedValues(const QString& tableName, const ColumnValueData& selectedValues) const {
+	IndexSet SourceDataCache::GetIndexesFromTableWithSelectedValues(const QString& tableName, const ColumnValueData& selectedValues) const {
 
 		QString queryString = "SELECT \"" + IndexColumnName + "\" FROM \"" + tableName + "\" WHERE ";
 

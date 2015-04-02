@@ -22,7 +22,7 @@
 #include "csvcache.h"
 #include "datasourcemaps.h"
 #include <map>
-#include <set>
+#include "utilitytypes.h"
 #include "databaseinfo.h"
 #include "inputfield.h"
 #include <QtSql/QSqlQuery>
@@ -40,7 +40,6 @@ namespace SynGlyphX {
 		typedef std::map<unsigned long, QString> TableIndexMap;
 		typedef std::map<QString, QString> TableNameMap;
 
-		typedef std::set<unsigned long> IndexSet;
 		typedef std::map<QString, IndexSet> IndexSetMap;
 
 		typedef std::map<QString, std::set<QString>> ColumnValueData;
