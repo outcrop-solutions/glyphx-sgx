@@ -5,8 +5,10 @@
 
 namespace SynGlyphX {
 
-	QString Application::s_commonDataLocation;	QString Application::s_tempDirectory = QDir::tempPath();
-    Application::Application(int& argc, char** argv)
+	QString Application::s_commonDataLocation;	
+	QString Application::s_tempDirectory = QDir::tempPath();
+    
+	Application::Application(int& argc, char** argv)
         : QApplication(argc, argv)
     {
 

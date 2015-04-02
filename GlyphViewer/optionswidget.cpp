@@ -11,6 +11,7 @@ OptionsWidget::OptionsWidget(const GlyphViewerOptions& options, bool enableCache
 	: QTabWidget(parent)
 {
 	CreateCacheTab(options, enableCacheOptions);
+	Create3DTab(options);
 }
 
 OptionsWidget::~OptionsWidget()
@@ -45,6 +46,19 @@ void OptionsWidget::CreateCacheTab(const GlyphViewerOptions& options, bool enabl
 	addTab(tab, tr("Cache"));
 }
 
+void OptionsWidget::Create3DTab(const GlyphViewerOptions& options) {
+
+	QWidget* tab = new QWidget(this);
+	QVBoxLayout* layout = new QVBoxLayout(tab);
+
+	m_hideSelectedGlyphsCheckbox = new QCheckBox(tr("Hide unselected glyph trees when there is an active selection"), this);
+	m_hideSelectedGlyphsCheckbox->setChecked(options.GetHideUnselectedGlyphTrees());
+	layout->addWidget(m_hideSelectedGlyphsCheckbox);
+
+	tab->setLayout(layout);
+	addTab(tab, tr("3D"));
+}
+
 void OptionsWidget::ClearCache() {
 
 	QDir cacheDir(m_cacheDirectoryWidget->GetText());
@@ -59,6 +73,7 @@ GlyphViewerOptions OptionsWidget::GetOptions() const {
 
 	GlyphViewerOptions options;
 	options.SetCacheDirectory(m_cacheDirectoryWidget->GetText());
+	options.SetHideUnselectedGlyphTrees(m_hideSelectedGlyphsCheckbox->isChecked());
 
 	return options;
 }

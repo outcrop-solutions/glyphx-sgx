@@ -46,6 +46,7 @@ signals:
 public slots:
     void ResetCamera();
 	void SetStereo(bool enableStereo);
+	void SetHideUnselectedGlyphTrees(bool hideUnselectedGlyphTrees);
 
 protected:
     virtual void initializeGL();
@@ -84,11 +85,16 @@ private:
 	void ZSpaceStylusMoveHandler(ZSHandle targetHandle, const ZSTrackerEventData* eventData);
 	static void ZSpaceEventDispatcher(ZSHandle targetHandle, const ZSTrackerEventData* eventData, const void* userData);
 
+	void UpdateGlyphTreesShowHideForSelection();
+	void ShowAllGlyphTrees();
+
     static QGLFormat s_format;
 	static const float s_stylusLength;
 
 	QFont m_oglTextFont;
 	bool m_isReseting;
+
+	bool m_hideUnselectedGlyphTrees;
 
 	unsigned int m_worldTextureID;
 	std::vector<unsigned int> m_textureIDs;

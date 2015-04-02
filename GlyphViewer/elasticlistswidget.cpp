@@ -35,7 +35,7 @@ ElasticListsWidget::~ElasticListsWidget()
 
 }
 
-void ElasticListsWidget::PopulateElasticLists(const SynGlyphX::SourceDataCache::IndexSet& indexSet) {
+void ElasticListsWidget::PopulateElasticLists(const SynGlyphX::IndexSet& indexSet) {
 
 	for (auto column : m_elasticListMap) {
 

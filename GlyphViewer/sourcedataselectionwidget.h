@@ -46,7 +46,6 @@ private slots:
 private:
 	typedef std::unordered_map<std::string, ElasticListsWidget*> NameWidgetMap;
 
-	unsigned long GetRootRow(const QModelIndex& index) const;
 	void UpdateElasticListsAndSourceDataWidget(const QModelIndexList& selectedIndexes);
 	void UpdateElasticLists(const SynGlyphX::SourceDataCache::IndexSetMap& dataIndexes = SynGlyphX::SourceDataCache::IndexSetMap());
 	void ClearElasticLists();

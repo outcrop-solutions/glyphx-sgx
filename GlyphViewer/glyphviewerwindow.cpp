@@ -26,7 +26,6 @@ GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 	m_glyphForestModel = new GlyphForestModel(this);
 
 	m_glyphForestSelectionModel = new QItemSelectionModel(m_glyphForestModel, this);
-	ReadOptions();	
 	CreateMenus();
 	CreateDockWidgets();
 	
@@ -38,6 +37,8 @@ GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 		QMessageBox::critical(nullptr, tr("3D view error"), tr("3D view failed to create: ") + e.what());
 		throw;
 	}
+
+	ReadOptions();
 
 	setCentralWidget(m_antzWidget);
 
@@ -421,18 +422,27 @@ void GlyphViewerWindow::ChangeOptions(const GlyphViewerOptions& options) {
 
 	if (options != m_options) {
 
-		QString newCacheDirectory(options.GetCacheDirectory());
-		QDir cacheDir(newCacheDirectory);
-		if (!cacheDir.exists()) {
+		if (m_options.GetCacheDirectory() != options.GetCacheDirectory()) {
 
-			if (!cacheDir.mkpath(newCacheDirectory)) {
+			QString newCacheDirectory(options.GetCacheDirectory());
+			QDir cacheDir(newCacheDirectory);
+			if (!cacheDir.exists()) {
 
-				throw std::invalid_argument("Unable to create " + newCacheDirectory.toStdString());
+				if (!cacheDir.mkpath(newCacheDirectory)) {
+
+					throw std::invalid_argument("Unable to create " + newCacheDirectory.toStdString());
+				}
 			}
+
+			m_cacheManager.SetBaseCacheDirectory(m_options.GetCacheDirectory().toStdWString());
+		}
+
+		if (m_options.GetHideUnselectedGlyphTrees() != options.GetHideUnselectedGlyphTrees()) {
+
+			m_antzWidget->SetHideUnselectedGlyphTrees(options.GetHideUnselectedGlyphTrees());
 		}
 
 		m_options = options;
-		m_cacheManager.SetBaseCacheDirectory(m_options.GetCacheDirectory().toStdWString());
 	}
 }
 
@@ -443,8 +453,9 @@ void GlyphViewerWindow::ReadOptions() {
 	QSettings settings;
 	settings.beginGroup("Options");
 
-	QString cacheDirectory = QDir::toNativeSeparators(settings.value("cacheDirectory", SynGlyphX::Application::GetCommonDataLocation() + QDir::separator() + "gv_cache").toString());
+	QString cacheDirectory = QDir::toNativeSeparators(settings.value("cacheDirectory", GlyphViewerOptions::GetDefaultCacheDirectory()).toString());
 	options.SetCacheDirectory(cacheDirectory);
+	options.SetHideUnselectedGlyphTrees(settings.value("hideUnselectedGlyphs", false).toBool());
 	settings.endGroup();
 
 	ChangeOptions(options);
@@ -456,5 +467,6 @@ void GlyphViewerWindow::WriteOptions() {
 	settings.beginGroup("Options");
 
 	settings.setValue("cacheDirectory", m_options.GetCacheDirectory());
+	settings.setValue("hideUnselectedGlyphs", m_options.GetHideUnselectedGlyphTrees());
 	settings.endGroup();
 }

@@ -13,6 +13,7 @@
 #include "io/npgl.h"
 #include "io/gl/nptags.h"
 #include "application.h"
+#include "sourcedataselectionmodel.h"
 
 //The default QGLFormat works for now except we want alpha enabled.  Also want to try and get a stereo enabled context
 QGLFormat ANTzViewerWidget::s_format(QGL::AlphaChannel | QGL::StereoBuffers);
@@ -35,7 +36,8 @@ ANTzViewerWidget::ANTzViewerWidget(GlyphForestModel* model, QItemSelectionModel*
 	m_oglTextFont("Arial", 12, QFont::Normal),
 	m_isReseting(false),
 	m_worldTextureID(0),
-	m_regionSelectionRect(QRect())
+	m_regionSelectionRect(QRect()),
+	m_hideUnselectedGlyphTrees(false)
 {
 	setFocusPolicy(Qt::StrongFocus);
 
@@ -576,6 +578,8 @@ void ANTzViewerWidget::SetZSpaceMatricesForDrawing(ZSEye eye, const ZSMatrix4& o
 
 void ANTzViewerWidget::UpdateSelection(const QItemSelection& selected, const QItemSelection& deselected) {
 
+	UpdateGlyphTreesShowHideForSelection();
+
 	pData antzData = m_antzData->GetData();
 
     //unselect all nodes that are no longer selected
@@ -618,6 +622,64 @@ void ANTzViewerWidget::UpdateSelection(const QItemSelection& selected, const QIt
 	}
 
     antzData->map.nodeRootIndex = nodeRootIndex;
+}
+
+void ANTzViewerWidget::UpdateGlyphTreesShowHideForSelection() {
+
+	if (m_hideUnselectedGlyphTrees) {
+
+		const QModelIndexList& currentSelection = m_selectionModel->selectedIndexes();
+		if (currentSelection.empty()) {
+
+			ShowAllGlyphTrees();
+		}
+		else {
+
+			pData antzData = m_antzData->GetData();
+			SynGlyphX::IndexSet selectedGlyphTrees = SourceDataSelectionModel::GetRootRows(currentSelection);
+			for (unsigned int i = kNPnodeRootPin; i < antzData->map.nodeRootCount; ++i) {
+
+				pNPnode node = static_cast<pNPnode>(antzData->map.node[i]);
+				node->hide = (selectedGlyphTrees.count(i - kNPnodeRootPin) == 0);
+			}
+		}
+	}
+}
+
+void ANTzViewerWidget::SetHideUnselectedGlyphTrees(bool hideUnselectedGlyphTrees) {
+
+	if (hideUnselectedGlyphTrees != m_hideUnselectedGlyphTrees) {
+
+		m_hideUnselectedGlyphTrees = hideUnselectedGlyphTrees;
+		if (m_selectionModel != nullptr) {
+
+			const QModelIndexList& currentSelection = m_selectionModel->selectedIndexes();
+			if (m_hideUnselectedGlyphTrees) {
+
+				if (!currentSelection.empty()) {
+
+					UpdateGlyphTreesShowHideForSelection();
+				}
+			}
+			else {
+
+				if (!currentSelection.empty()) {
+
+					ShowAllGlyphTrees();
+				}
+			}
+		}
+	}
+}
+
+void ANTzViewerWidget::ShowAllGlyphTrees() {
+
+	pData antzData = m_antzData->GetData();
+	for (unsigned int i = kNPnodeRootPin; i < antzData->map.nodeRootCount; ++i) {
+	
+		pNPnode node = static_cast<pNPnode>(antzData->map.node[i]);
+		node->hide = false;
+	}
 }
 
 void ANTzViewerWidget::ResetCamera() {

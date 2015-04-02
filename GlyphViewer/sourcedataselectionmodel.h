@@ -15,33 +15,22 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef OPTIONSWIDGET_H
-#define OPTIONSWIDGET_H
+#ifndef SOURCEDATASELECTIONMODEL_H
+#define SOURCEDATASELECTIONMODEL_H
 
-#include <QtWidgets/QTabWidget>
-#include <QtWidgets/QCheckBox>
-#include "glyphvieweroptions.h"
-#include "browselineedit.h"
+#include "utilitytypes.h"
+#include <QtCore/QItemSelectionModel>
 
-class OptionsWidget : public QTabWidget
+class SourceDataSelectionModel
 {
-	Q_OBJECT
-
 public:
-	OptionsWidget(const GlyphViewerOptions& options, bool enableCacheOptions, QWidget *parent);
-	~OptionsWidget();
+	SourceDataSelectionModel();
+	virtual ~SourceDataSelectionModel();
 
-	GlyphViewerOptions GetOptions() const;
-
-private slots:
-	void ClearCache();
+	static SynGlyphX::IndexSet GetRootRows(const QModelIndexList& indexList);
 
 private:
-	void CreateCacheTab(const GlyphViewerOptions& options, bool enableCacheOptions);
-	void Create3DTab(const GlyphViewerOptions& options);
-
-	SynGlyphX::BrowseLineEdit* m_cacheDirectoryWidget;
-	QCheckBox* m_hideSelectedGlyphsCheckbox;
+	static unsigned long GetRootRow(const QModelIndex& index);
 };
 
-#endif // OPTIONSWIDGET_H
+#endif //SOURCEDATASELECTIONMODEL_H

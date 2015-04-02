@@ -4,6 +4,7 @@
 #include <QtWidgets/QAbstractItemView>
 #include "groupboxsinglewidget.h"
 #include "elasticlistwidget.h"
+#include "sourcedataselectionmodel.h"
 
 SourceDataSelectionWidget::SourceDataSelectionWidget(SynGlyphX::SourceDataCache::SharedPtr sourceDataCache, GlyphForestModel* model, QItemSelectionModel* selectionModel, QWidget *parent)
 	: QWidget(parent),
@@ -83,17 +84,6 @@ void SourceDataSelectionWidget::OnModelReset() {
 	}
 }
 
-unsigned long SourceDataSelectionWidget::GetRootRow(const QModelIndex& index) const {
-
-	QModelIndex ancestor = index;
-	while (ancestor.parent().isValid()) {
-
-		ancestor = ancestor.parent();
-	}
-
-	return ancestor.row();
-}
-
 void SourceDataSelectionWidget::OnComboBoxChanged(int current) {
 
 	m_elasticListsStackLayout->setCurrentWidget(m_elasticListWidgetsForEachTable[m_tableComboBox->currentData().toString().toStdString()]);
@@ -105,13 +95,7 @@ void SourceDataSelectionWidget::UpdateElasticListsAndSourceDataWidget(const QMod
 	m_sourceWidgetButton->setEnabled(isSelectionNotEmpty);
 	if (isSelectionNotEmpty) {
 
-		SynGlyphX::SourceDataCache::IndexSet selectedDataRows;
-		Q_FOREACH(const QModelIndex& index, m_selectionModel->selection().indexes()) {
-
-			selectedDataRows.insert(GetRootRow(index));
-		}
-
-		SynGlyphX::SourceDataCache::IndexSetMap indexSets = m_sourceDataCache->SplitIndexSet(selectedDataRows);
+		SynGlyphX::SourceDataCache::IndexSetMap indexSets = m_sourceDataCache->SplitIndexSet(SourceDataSelectionModel::GetRootRows(m_selectionModel->selection().indexes()));
 
 		m_sourceDataWindow->UpdateTables(indexSets);
 		UpdateElasticLists(indexSets);
@@ -163,7 +147,7 @@ void SourceDataSelectionWidget::OnElasticListsSelectionChanged(const QString& ta
 	}
 	else {
 
-		SynGlyphX::SourceDataCache::IndexSet indexSet = m_sourceDataCache->GetIndexesFromTableWithSelectedValues(table, selection);
+		SynGlyphX::IndexSet indexSet = m_sourceDataCache->GetIndexesFromTableWithSelectedValues(table, selection);
 		QItemSelection itemSelection;
 		for (auto row : indexSet) {
 

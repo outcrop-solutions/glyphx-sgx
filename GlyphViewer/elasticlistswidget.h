@@ -32,7 +32,7 @@ public:
 	ElasticListsWidget(SynGlyphX::SourceDataCache::SharedPtr sourceDataCache, const QString& table, QWidget *parent);
 	~ElasticListsWidget();
 
-	void PopulateElasticLists(const SynGlyphX::SourceDataCache::IndexSet& indexSet = SynGlyphX::SourceDataCache::IndexSet());
+	void PopulateElasticLists(const SynGlyphX::IndexSet& indexSet = SynGlyphX::IndexSet());
 
 signals:
 	void SelectionChanged(const QString& table, const SynGlyphX::SourceDataCache::ColumnValueData& selection);
