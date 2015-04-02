@@ -688,17 +688,24 @@ void ANTzViewerWidget::ResetCamera() {
 
 	//We only want to center the camera when there are actual root nodes
 	if (antzData->map.nodeRootCount > kNPnodeRootPin) {
-
+		
 		//Need to draw once so that camera centering works properly
 		updateGL();
 
-		CenterCameraOnNode(static_cast<pNPnode>(antzData->map.node[kNPnodeRootPin]));
+		antzData->map.currentCam->proximity.x = 180;
+		CenterCameraOnNode(static_cast<pNPnode>(antzData->map.node[kNPnodeRootGrid]));
 		
 		//Need to draw again so that centering on the node works properly before resetting proximity
 		updateGL();
 
 		antzData->map.currentCam->proximity.x = 0;
-    }
+	}
+	else {
+
+		//If an object is selected make sure that camera doesn't lock into its position
+		antzData->map.nodeRootIndex = 0;
+		antzData->map.currentCam->proximity.x = 0;
+	}
 }
 
 void ANTzViewerWidget::CenterCameraOnNode(pNPnode node) {
@@ -1089,11 +1096,11 @@ void ANTzViewerWidget::OnModelReset() {
 
 		SetGridTexture(rootGrid->child[i]);
 	}
-
-	ResetCamera();
 	
 	m_isReseting = false;
 	update();
+
+	ResetCamera();
 }
 
 void ANTzViewerWidget::SetGridTexture(pNPnode grid) {
