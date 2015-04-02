@@ -327,13 +327,13 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_8A8A87D2513A4CD1BDB9AE67277C70FB"
+        "MsmKey" = "8:_8955D1C5D3AF41EBB4C1564FEE99B1D1"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_8D96A35F97854ED789C23215E343A418"
+        "MsmKey" = "8:_8A8A87D2513A4CD1BDB9AE67277C70FB"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -430,12 +430,6 @@
         "Entry"
         {
         "MsmKey" = "8:_AD0F872C585C457388401CFBCAF21338"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_AE07556D76B4477291401A546D76211E"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -628,6 +622,12 @@
         "Entry"
         {
         "MsmKey" = "8:_EF9A9AAE486542F8869C9E4B6D91D37C"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_F1E6FFCC9AC041EE98AF7371BDC4D2FF"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -1674,10 +1674,10 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_8A8A87D2513A4CD1BDB9AE67277C70FB"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_8955D1C5D3AF41EBB4C1564FEE99B1D1"
             {
-            "SourcePath" = "8:..\\..\\ANTzPlus\\ANTzTemplate\\glut32.dll"
-            "TargetName" = "8:glut32.dll"
+            "SourcePath" = "8:..\\..\\ANTzPlus\\ANTzTemplate\\Glyph_Viewer_(Portable).exe"
+            "TargetName" = "8:Glyph_Viewer_(Portable).exe"
             "Tag" = "8:"
             "Folder" = "8:_3E59963508D34F76B5732E64BBFB296A"
             "Condition" = "8:"
@@ -1694,10 +1694,10 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_8D96A35F97854ED789C23215E343A418"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_8A8A87D2513A4CD1BDB9AE67277C70FB"
             {
-            "SourcePath" = "8:..\\..\\ANTzPlus\\ANTzTemplate\\glyphviewerportable.exe"
-            "TargetName" = "8:glyphviewerportable.exe"
+            "SourcePath" = "8:..\\..\\ANTzPlus\\ANTzTemplate\\glut32.dll"
+            "TargetName" = "8:glut32.dll"
             "Tag" = "8:"
             "Folder" = "8:_3E59963508D34F76B5732E64BBFB296A"
             "Condition" = "8:"
@@ -1958,26 +1958,6 @@
             {
             "SourcePath" = "8:..\\..\\ANTzPlus\\ANTzzSpaceTemplate\\antz_quickstart.txt"
             "TargetName" = "8:antz_quickstart.txt"
-            "Tag" = "8:"
-            "Folder" = "8:_89702FDDAF7146B08C00DB9BA96A0007"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_AE07556D76B4477291401A546D76211E"
-            {
-            "SourcePath" = "8:..\\..\\ANTzPlus\\ANTzzSpaceTemplate\\antz.exe"
-            "TargetName" = "8:antz.exe"
             "Tag" = "8:"
             "Folder" = "8:_89702FDDAF7146B08C00DB9BA96A0007"
             "Condition" = "8:"
@@ -2540,6 +2520,26 @@
             "TargetName" = "8:antzglobals.csv"
             "Tag" = "8:"
             "Folder" = "8:_C7773B72CA7843A5BCDC3259D532AD06"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_F1E6FFCC9AC041EE98AF7371BDC4D2FF"
+            {
+            "SourcePath" = "8:..\\..\\ANTzPlus\\ANTzzSpaceTemplate\\Glyph_Viewer_(Portable).exe"
+            "TargetName" = "8:Glyph_Viewer_(Portable).exe"
+            "Tag" = "8:"
+            "Folder" = "8:_89702FDDAF7146B08C00DB9BA96A0007"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
