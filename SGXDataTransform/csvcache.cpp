@@ -143,7 +143,7 @@ namespace SynGlyphX {
 				}
 
 				std::vector<QVariantList> dataToInsert;
-				dataToInsert.resize(headerList.size());
+				dataToInsert.resize(headers.size());
 
 				while (!csvFileReader.IsAtEndOfFile()) {
 
