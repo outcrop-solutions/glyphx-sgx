@@ -551,7 +551,7 @@ namespace SynGlyphX {
 			}
 			else {
 
-				startingValue = tableIndex.first;
+				startingValue = tableIndex.first + 1;
 			}
 		}
 
