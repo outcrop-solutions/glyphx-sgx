@@ -59,6 +59,7 @@ namespace SynGlyphX {
 			unsigned int port = 0,
 			const std::wstring& username = L"",
 			const std::wstring& password = L"");
+		void AddFileDatasource(const boost::uuids::uuid& id, const FileDatasource& fileDatasource);
 
 	private:
 		FileDatasourceMap m_fileDatasources;

@@ -144,6 +144,11 @@ namespace SynGlyphX {
 		}
 	}
 
+	void Datasource::ClearTables() {
+
+		m_tables.clear();
+	}
+
 	Datasource::PropertyTree& Datasource::ExportToPropertyTree(boost::property_tree::wptree& parentPropertyTree, const std::wstring& parentName) {
 
 		PropertyTree& propertyTree = parentPropertyTree.add(parentName, L"");

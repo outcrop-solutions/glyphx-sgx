@@ -47,6 +47,7 @@ namespace SynGlyphX {
 		bool operator!=(const DataTransformMapping& mapping) const;
 
 		const DatasourceMaps& GetDatasources() const;
+		DatasourceMaps GetDatasourcesInUse() const;
 
 		void RemoveDatasource(const boost::uuids::uuid& id);
 		boost::uuids::uuid AddFileDatasource(FileDatasource::SourceType type, 

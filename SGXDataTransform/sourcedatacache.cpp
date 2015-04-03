@@ -38,6 +38,8 @@ namespace SynGlyphX {
 	void SourceDataCache::Close() {
 
 		CSVCache::Close();
+		m_tableIndexMap.clear();
+		m_tableNameMap.clear();
 	}
 
 	void SourceDataCache::Setup(const QString& filename) {

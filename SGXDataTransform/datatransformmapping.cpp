@@ -139,6 +139,28 @@ namespace SynGlyphX {
 		return m_datasources;
 	}
 
+	DatasourceMaps DataTransformMapping::GetDatasourcesInUse() const {
+
+		DatasourceMaps datasourceMaps;
+
+		std::unordered_map<boost::uuids::uuid, Datasource::TableSet, SynGlyphX::UUIDHash> datasourcesAndTablesInUse;
+		for (auto glyphTree : m_glyphTrees) {
+
+			const InputField& inputField = glyphTree.second->GetInputFields().begin()->second;
+			datasourcesAndTablesInUse[inputField.GetDatasourceID()].insert(inputField.GetTable());
+		}
+
+		for (auto datasourceTables : datasourcesAndTablesInUse) {
+
+			FileDatasource datasource = m_datasources.GetFileDatasources().at(datasourceTables.first);
+			datasource.ClearTables();
+			datasourceMaps.AddFileDatasource(datasourceTables.first, datasource);
+			datasourceMaps.EnableTables(datasourceTables.first, datasourceTables.second);
+		}
+
+		return datasourceMaps;
+	}
+
 	void DataTransformMapping::Clear() {
 
 		Clear(true);

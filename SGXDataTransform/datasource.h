@@ -51,6 +51,7 @@ namespace SynGlyphX {
 		const TableSet& GetTables() const;
 
 		void EnableTables(const TableSet& table, bool enable = true);
+		void ClearTables();
 
 		virtual bool IsOriginalDatasourceADatabase() const = 0;
 		virtual bool CanDatasourceHaveMultipleTables() const = 0;

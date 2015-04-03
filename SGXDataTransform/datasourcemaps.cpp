@@ -137,4 +137,9 @@ namespace SynGlyphX {
 		return id;
 	}
 
+	void DatasourceMaps::AddFileDatasource(const boost::uuids::uuid& id, const FileDatasource& fileDatasource) {
+
+		m_fileDatasources.insert(std::pair<boost::uuids::uuid, FileDatasource>(id, fileDatasource));
+	}
+
 } //namespace SynGlyphX

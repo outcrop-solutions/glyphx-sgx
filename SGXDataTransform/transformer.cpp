@@ -25,7 +25,7 @@ namespace SynGlyphX {
 			Prepare();
 			m_defaults = mapping.GetDefaults();
 			m_sourceDataCache.Setup(m_sourceDataCacheLocation);
-			m_sourceDataCache.AddDatasourcesToCache(mapping.GetDatasources());
+			m_sourceDataCache.AddDatasourcesToCache(mapping.GetDatasourcesInUse());
 			CreateGlyphsFromMapping(mapping);
 			m_sourceDataCache.Close();
 			m_defaults.Clear();
@@ -276,7 +276,8 @@ namespace SynGlyphX {
 
 	bool Transformer::HaveDatasourcesBeenUpdated(const DataTransformMapping& mapping, std::time_t lastUpdateTime) const {
 
-		for (auto datasource : mapping.GetDatasources().GetFileDatasources()) {
+		DatasourceMaps datasourcesInUse = mapping.GetDatasourcesInUse();
+		for (auto datasource : datasourcesInUse.GetFileDatasources()) {
 
 			if (HasFileBeenUpdated(datasource.second.GetDBName(), lastUpdateTime)) {
 
