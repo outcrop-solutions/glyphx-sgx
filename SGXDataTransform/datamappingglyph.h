@@ -70,6 +70,7 @@ namespace SynGlyphX {
 		const InputBinding& GetInputBinding(MappableField field) const;
 
 		bool IsPositionXYBoundToInputFields() const;
+		bool IsAnInputFieldBoundToAPosition() const;
 
 	protected:
 		void GetXYZNumericPropertiesFromPropertyTree(const boost::property_tree::wptree& propertyTree, NumericMappingPropertyXYZ& prop);

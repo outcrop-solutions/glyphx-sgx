@@ -213,6 +213,10 @@ namespace SynGlyphX {
 		return (m_position[0].GetBinding().IsBoundToInputField() && m_position[1].GetBinding().IsBoundToInputField());
 	}
 
+	bool DataMappingGlyph::IsAnInputFieldBoundToAPosition() const {
+
+		return (m_position[0].GetBinding().IsBoundToInputField() || m_position[1].GetBinding().IsBoundToInputField() || m_position[2].GetBinding().IsBoundToInputField());
+	}
 	
 	DataMappingGlyph& DataMappingGlyph::operator=(const DataMappingGlyph& glyph) {
 

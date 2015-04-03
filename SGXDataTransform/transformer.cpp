@@ -52,8 +52,11 @@ namespace SynGlyphX {
 
 		for (auto minMaxTree : mapping.GetGlyphGraphs()) {
 
-			GlyphGraph::ConstSharedVector newTrees = CreateGlyphTreesFromMinMaxTree(minMaxTree.second);
-			allTrees.insert(allTrees.end(), newTrees.begin(), newTrees.end());
+			if (minMaxTree.second->root()->IsAnInputFieldBoundToAPosition()) {
+
+				GlyphGraph::ConstSharedVector newTrees = CreateGlyphTreesFromMinMaxTree(minMaxTree.second);
+				allTrees.insert(allTrees.end(), newTrees.begin(), newTrees.end());
+			}
 		}
 
 		return allTrees;

@@ -201,7 +201,29 @@ namespace SynGlyphX {
 
 	bool DataTransformMapping::IsTransformable() const {
 
-		return (m_datasources.HasDatasources() && (!m_glyphTrees.empty()));
+		return (m_datasources.HasDatasources() && DoesAtLeastOneGlyphGraphHaveBindingsOnPosition());
+	}
+
+	bool DataTransformMapping::DoesAtLeastOneGlyphGraphHaveBindingsOnPosition() const {
+
+		unsigned short glyphsWithPositionBindings = 0;
+		for (auto glyphGraphPair : m_glyphTrees) {
+
+			DataMappingGlyphGraph::SharedPtr glyphGraph = glyphGraphPair.second;
+			if (glyphGraph->GetInputFields().empty()) {
+
+				continue;
+			}
+
+			if (!glyphGraph->root()->IsAnInputFieldBoundToAPosition()) {
+
+				return false;
+			}
+
+			++glyphsWithPositionBindings;
+		}
+
+		return (glyphsWithPositionBindings > 0);
 	}
 
 	void DataTransformMapping::AddBaseObject(const BaseImage& baseObject) {

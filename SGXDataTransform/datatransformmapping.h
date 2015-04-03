@@ -70,6 +70,7 @@ namespace SynGlyphX {
 		void ClearInputBinding(const boost::uuids::uuid& treeID, DataMappingGlyphGraph::const_iterator& node, DataMappingGlyph::MappableField field);
 
 		bool IsTransformable() const;
+		bool DoesAtLeastOneGlyphGraphHaveBindingsOnPosition() const;
 
 		void Clear();
 
