@@ -172,7 +172,7 @@ void GlyphViewerWindow::RefreshVisualization() {
 		
 		SynGlyphX::DataTransformMapping mapping;
 		mapping.ReadFromFile(m_currentFilename.toStdString());
-		if ((m_mapping != mapping) || (m_sourceDataCache->IsCacheOutOfDate(m_mapping.GetDatasources()))) {
+		if ((m_mapping != mapping) || (m_sourceDataCache->IsCacheOutOfDate(m_mapping.GetDatasourcesInUse()))) {
 
 			ClearAllData();
 			LoadVisualization(m_currentFilename);
@@ -297,8 +297,9 @@ void GlyphViewerWindow::LoadDataTransform(const QString& filename) {
 
 		bool wereDatasourcesUpdated = false;
 
+		SynGlyphX::DatasourceMaps datasourcesInUse = m_mapping.GetDatasourcesInUse();
 		std::vector<SynGlyphX::DatasourceMaps::FileDatasourceMap::const_iterator> fileDatasourcesToBeUpdated;
-		for (SynGlyphX::DatasourceMaps::FileDatasourceMap::const_iterator datasource = m_mapping.GetDatasources().GetFileDatasources().begin(); datasource != m_mapping.GetDatasources().GetFileDatasources().end(); ++datasource) {
+		for (SynGlyphX::DatasourceMaps::FileDatasourceMap::const_iterator datasource = datasourcesInUse.GetFileDatasources().begin(); datasource != datasourcesInUse.GetFileDatasources().end(); ++datasource) {
 
 			if (!datasource->second.CanDatasourceBeFound()) {
 
@@ -449,7 +450,7 @@ void GlyphViewerWindow::ChangeOptions(const GlyphViewerOptions& options) {
 				}
 			}
 
-			m_cacheManager.SetBaseCacheDirectory(m_options.GetCacheDirectory().toStdWString());
+			m_cacheManager.SetBaseCacheDirectory(newCacheDirectory.toStdWString());
 		}
 
 		if (m_options.GetHideUnselectedGlyphTrees() != options.GetHideUnselectedGlyphTrees()) {
