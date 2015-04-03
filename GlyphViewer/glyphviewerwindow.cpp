@@ -280,6 +280,21 @@ void GlyphViewerWindow::LoadDataTransform(const QString& filename) {
 
 		m_mapping.ReadFromFile(filename.toStdString());
 
+		if (!m_mapping.GetDatasources().HasDatasources()) {
+
+			throw std::exception("Visualization has no datasources.");
+		}
+
+		if (m_mapping.GetGlyphGraphs().empty()) {
+
+			throw std::exception("Visualization has no glyph templates.");
+		}
+
+		if (!m_mapping.DoesAtLeastOneGlyphGraphHaveBindingsOnPosition()) {
+
+			throw std::exception("Visualization has no glyph templates with bindings on Position X, Position Y, or Position Z.");
+		}
+
 		bool wereDatasourcesUpdated = false;
 
 		std::vector<SynGlyphX::DatasourceMaps::FileDatasourceMap::const_iterator> fileDatasourcesToBeUpdated;

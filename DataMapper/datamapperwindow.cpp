@@ -489,6 +489,24 @@ void DataMapperWindow::AddDataSources() {
 
 void DataMapperWindow::ExportToANTz(const QString& templateDir) {
 
+	if (!m_dataTransformModel->GetDataMapping()->GetDatasources().HasDatasources()) {
+
+		QMessageBox::critical(this, tr("Export to ANTz Error"), tr("Visualization has no datasources."));
+		return;
+	}
+
+	if (m_dataTransformModel->GetDataMapping()->GetGlyphGraphs().empty()) {
+
+		QMessageBox::critical(this, tr("Export to ANTz Error"), tr("Visualization has no glyph templates."));
+		return;
+	}
+
+	if (!m_dataTransformModel->GetDataMapping()->DoesAtLeastOneGlyphGraphHaveBindingsOnPosition()) {
+
+		QMessageBox::critical(this, tr("Export to ANTz Error"), tr("Visualization has no glyph templates with bindings on Position X, Position Y, or Position Z."));
+		return;
+	}
+
 	QString csvDirectory = QDir::toNativeSeparators(GetExistingDirectoryDialog("ANTzExportDir", tr("Select Directory For Portable Visualization"), ""));
 	if (csvDirectory.isEmpty()) {
 
@@ -516,7 +534,7 @@ void DataMapperWindow::ExportToANTz(const QString& templateDir) {
 
 		SynGlyphX::Filesystem::RemoveContentsOfDirectory(csvDirectory.toStdString());
 		SynGlyphX::Application::restoreOverrideCursor();
-		QMessageBox::critical(this, "Export to ANTz Error", e.what());
+		QMessageBox::critical(this, tr("Export to ANTz Error"), e.what());
 		return;
 	}
 
