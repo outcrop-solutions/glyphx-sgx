@@ -22,6 +22,7 @@
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QComboBox>
 #include <QtWidgets/QStackedLayout>
+#include <QtWidgets/QCheckBox>
 #include "sourcedatawidget.h"
 #include "singlewidgetdialog.h"
 #include "glyphforestmodel.h"
@@ -35,6 +36,12 @@ class SourceDataSelectionWidget : public QWidget
 public:
 	SourceDataSelectionWidget(SynGlyphX::SourceDataCache::SharedPtr sourceDataCache, GlyphForestModel* model, QItemSelectionModel* selectionModel, QWidget *parent);
 	~SourceDataSelectionWidget();
+
+	void SetHideUnselectedTreesCheckbox(bool checked);
+	bool GetHideUnselectedTreesCheckbox() const;
+
+signals:
+	void OptionsChanged();
 
 private slots:
 	void OnSourceWidgetWindowHidden();
@@ -55,6 +62,7 @@ private:
 	QPushButton* m_sourceWidgetButton;
 	QScopedPointer<SourceDataWidget> m_sourceDataWindow;
 	QComboBox* m_tableComboBox;
+	QCheckBox* m_hideUnselectedTreesCheckbox;
 
 	QStackedLayout* m_elasticListsStackLayout;
 	NameWidgetMap m_elasticListWidgetsForEachTable;

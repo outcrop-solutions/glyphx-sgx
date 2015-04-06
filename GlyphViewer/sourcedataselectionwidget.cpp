@@ -14,6 +14,11 @@ SourceDataSelectionWidget::SourceDataSelectionWidget(SynGlyphX::SourceDataCache:
 {
 	QVBoxLayout* layout = new QVBoxLayout(this);
 
+	m_hideUnselectedTreesCheckbox = new QCheckBox(tr("Hide unselected glyph trees"), this);
+	QObject::connect(m_hideUnselectedTreesCheckbox, &QCheckBox::clicked, this, &SourceDataSelectionWidget::OptionsChanged);
+	SynGlyphX::GroupBoxSingleWidget* optionsGroupBox = new SynGlyphX::GroupBoxSingleWidget(tr("Options:"), m_hideUnselectedTreesCheckbox, this);
+	layout->addWidget(optionsGroupBox);
+
 	m_tableComboBox = new QComboBox(this);
 	m_tableComboBox->setEnabled(false);
 	m_tableComboBox->setSizeAdjustPolicy(QComboBox::AdjustToContents);
@@ -49,6 +54,19 @@ SourceDataSelectionWidget::SourceDataSelectionWidget(SynGlyphX::SourceDataCache:
 SourceDataSelectionWidget::~SourceDataSelectionWidget()
 {
 
+}
+
+void SourceDataSelectionWidget::SetHideUnselectedTreesCheckbox(bool checked) {
+
+	bool areSignalsBlocked = m_hideUnselectedTreesCheckbox->signalsBlocked();
+	m_hideUnselectedTreesCheckbox->blockSignals(true);
+	m_hideUnselectedTreesCheckbox->setChecked(checked);
+	m_hideUnselectedTreesCheckbox->blockSignals(areSignalsBlocked);
+}
+
+bool SourceDataSelectionWidget::GetHideUnselectedTreesCheckbox() const {
+
+	return m_hideUnselectedTreesCheckbox->isChecked();
 }
 
 void SourceDataSelectionWidget::OnSourceWidgetWindowHidden() {

@@ -181,6 +181,7 @@ void GlyphViewerWindow::CreateDockWidgets() {
 	QDockWidget* rightDockWidget = new QDockWidget(tr("Source Data Selector"), this);
 	m_sourceDataSelectionWidget = new SourceDataSelectionWidget(m_sourceDataCache, m_glyphForestModel, m_glyphForestSelectionModel, rightDockWidget);
 	rightDockWidget->setWidget(m_sourceDataSelectionWidget);
+	QObject::connect(m_sourceDataSelectionWidget, &SourceDataSelectionWidget::OptionsChanged, this, &GlyphViewerWindow::OnSourceDataSelectionWidgetOptionsChanged);
 	addDockWidget(Qt::RightDockWidgetArea, rightDockWidget);
 	m_viewMenu->addAction(rightDockWidget->toggleViewAction());
 }
@@ -493,6 +494,7 @@ void GlyphViewerWindow::ChangeOptions(const GlyphViewerOptions& options) {
 		if (m_options.GetHideUnselectedGlyphTrees() != options.GetHideUnselectedGlyphTrees()) {
 
 			m_antzWidget->SetHideUnselectedGlyphTrees(options.GetHideUnselectedGlyphTrees());
+			m_sourceDataSelectionWidget->SetHideUnselectedTreesCheckbox(options.GetHideUnselectedGlyphTrees());
 		}
 
 		m_options = options;
@@ -522,4 +524,11 @@ void GlyphViewerWindow::WriteOptions() {
 	settings.setValue("cacheDirectory", m_options.GetCacheDirectory());
 	settings.setValue("hideUnselectedGlyphs", m_options.GetHideUnselectedGlyphTrees());
 	settings.endGroup();
+}
+
+void GlyphViewerWindow::OnSourceDataSelectionWidgetOptionsChanged() {
+
+	GlyphViewerOptions options = m_options;
+	options.SetHideUnselectedGlyphTrees(m_sourceDataSelectionWidget->GetHideUnselectedTreesCheckbox());
+	ChangeOptions(options);
 }

@@ -46,6 +46,7 @@ private slots:
 	void ChangeStereoMode();
 	void ImportFilesFromANTz();
 	void ChangeOptions();
+	void OnSourceDataSelectionWidgetOptionsChanged();
 
 private:
 	virtual bool LoadRecentFile(const QString& filename);
