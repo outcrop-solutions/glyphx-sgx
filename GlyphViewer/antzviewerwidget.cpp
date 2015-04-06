@@ -299,7 +299,7 @@ void ANTzViewerWidget::initializeGL() {
 	pNPnode rootGrid = static_cast<pNPnode>(antzData->map.node[kNPnodeRootGrid]);
 	SetGridTexture(rootGrid);
 	antzData->io.gl.textureCount = 1;
-    ResetCamera();
+	SetCameraToDefaultPosition();
 }
 
 void ANTzViewerWidget::resizeGL(int w, int h) {
@@ -682,23 +682,36 @@ void ANTzViewerWidget::ShowAllGlyphTrees() {
 	}
 }
 
+void ANTzViewerWidget::SetCameraToDefaultPosition() {
+
+	pData antzData = m_antzData->GetData();
+
+	antzData->map.currentCam->proximity.x = 0;
+	antzData->map.currentCam->translate.x = 0.0;
+	antzData->map.currentCam->translate.y = -345.0;
+	antzData->map.currentCam->translate.z = 345.0;
+	antzData->map.currentCam->rotate.x = 45.0;
+	antzData->map.currentCam->rotate.y = 0;
+	antzData->map.currentCam->rotate.z = 0;
+
+	pNPnode node = static_cast<pNPnode>(antzData->map.node[kNPnodeRootGrid]);
+	antzData->io.mouse.targeting = false;
+	antzData->map.selectedPinNode = node;
+	antzData->map.selectedPinIndex = node->id;
+
+	//Always keep current node set to current cam
+	antzData->map.currentNode = antzData->map.currentCam;
+}
+
 void ANTzViewerWidget::ResetCamera() {
     
 	pData antzData = m_antzData->GetData();
 
 	//We only want to center the camera when there are actual root nodes
 	if (antzData->map.nodeRootCount > kNPnodeRootPin) {
-		
-		//Need to draw once so that camera centering works properly
-		updateGL();
 
-		antzData->map.currentCam->proximity.x = 180;
-		CenterCameraOnNode(static_cast<pNPnode>(antzData->map.node[kNPnodeRootGrid]));
-		
-		//Need to draw again so that centering on the node works properly before resetting proximity
+		SetCameraToDefaultPosition();
 		updateGL();
-
-		antzData->map.currentCam->proximity.x = 0;
 	}
 	else {
 

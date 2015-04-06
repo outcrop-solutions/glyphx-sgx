@@ -65,6 +65,7 @@ private slots:
 	void OnModelReset();
 
 private:
+	void SetCameraToDefaultPosition();
 	unsigned int BindTextureInFile(const QString& imageFilename);
 	void SetGridTexture(pNPnode grid);
     void CenterCameraOnNode(pNPnode node);

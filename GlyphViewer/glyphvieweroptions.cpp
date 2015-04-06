@@ -29,7 +29,7 @@ const QString& GlyphViewerOptions::GetCacheDirectory() const {
 	return m_cacheDirectory;
 }
 
-const QString& GlyphViewerOptions::GetDefaultCacheDirectory() {
+QString GlyphViewerOptions::GetDefaultCacheDirectory() {
 
 	return QDir::toNativeSeparators(SynGlyphX::Application::GetCommonDataLocation() + QDir::separator() + "gv_cache");
 }

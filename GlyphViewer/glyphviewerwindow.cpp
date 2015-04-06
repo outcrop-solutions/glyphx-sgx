@@ -387,7 +387,7 @@ void GlyphViewerWindow::ChangeStereoMode() {
 	else {
 
 		m_stereoAction->setChecked(false);
-		QMessageBox::information(this, tr("Stereo not supported"), tr("Stereo is not supported. Check your driver settings to see if stereo is enabled or contact the manufacturer of your GPU for assitance"));
+		QMessageBox::information(this, tr("Stereo not supported"), tr("Stereo is not supported. Check your driver settings to see if stereo is enabled and available for your hardware.  Contact the manufacturer of your GPU for assitance."));
 	}
 }
 

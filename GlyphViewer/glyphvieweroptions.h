@@ -16,7 +16,7 @@ public:
 
 	void SetCacheDirectory(const QString& newCacheDirectory);
 	const QString& GetCacheDirectory() const;
-	static const QString& GetDefaultCacheDirectory();
+	static QString GetDefaultCacheDirectory();
 
 	void SetHideUnselectedGlyphTrees(bool hideUnselectedGlyphTrees);
 	bool GetHideUnselectedGlyphTrees() const;
