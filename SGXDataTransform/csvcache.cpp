@@ -194,7 +194,7 @@ namespace SynGlyphX {
 
 	void CSVCache::CreateTableFromCSVHeaders(const QString& name, const CSVFileReader::CSVValues& headers, const CSVFileReader::CSVValues& types) {
 
-		QString fieldNamesAndTypes = QString::fromStdWString(headers[0]) + ' ' + QString::fromStdWString(types[0]);
+		QString fieldNamesAndTypes = "\"" + QString::fromStdWString(headers[0]) + "\" " + QString::fromStdWString(types[0]);
 		for (int i = 1; i < headers.size(); ++i) {
 
 			fieldNamesAndTypes += ",\n\"" + QString::fromStdWString(headers[i]) + "\" " + QString::fromStdWString(types[i]);
