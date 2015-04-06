@@ -188,33 +188,41 @@ void ValueMappingDialog::OnAddKeyValue() {
 	}
 
 	AddRow();
-
 	int row = m_table->rowCount() - 1;
-	if (m_input == InputType::Numeric) {
 
-		QDoubleSpinBox* inputTableWidget = dynamic_cast<QDoubleSpinBox*>(m_table->cellWidget(row, 0));
-		inputTableWidget->setValue(m_inputDoubleWidget->value());
+	try {
+
+		if (m_input == InputType::Numeric) {
+
+			QDoubleSpinBox* inputTableWidget = dynamic_cast<QDoubleSpinBox*>(m_table->cellWidget(row, 0));
+			inputTableWidget->setValue(m_inputDoubleWidget->value());
+		}
+		else if (m_input == InputType::Range) {
+
+			SynGlyphX::RangeWidget* inputTableWidget = dynamic_cast<SynGlyphX::RangeWidget*>(m_table->cellWidget(row, 0));
+			inputTableWidget->SetRange(m_inputRangeWidget->GetRange());
+		}
+		else {
+
+			QLineEdit* inputTableWidget = dynamic_cast<QLineEdit*>(m_table->cellWidget(row, 0));
+			inputTableWidget->setText(m_inputTextWidget->text());
+		}
+
+		if (m_output == OutputType::Numeric) {
+
+			QDoubleSpinBox* outputTableWidget = dynamic_cast<QDoubleSpinBox*>(m_table->cellWidget(row, 1));
+			outputTableWidget->setValue(m_outputDoubleWidget->value());
+		}
+		else {
+
+			SynGlyphX::ColorButton* outputTableWidget = dynamic_cast<SynGlyphX::ColorButton*>(m_table->cellWidget(row, 1));
+			outputTableWidget->SetColor(m_outputColorWidget->GetColor());
+		}
 	}
-	else if (m_input == InputType::Range) {
+	catch (const std::exception& e) {
 
-		SynGlyphX::RangeWidget* inputTableWidget = dynamic_cast<SynGlyphX::RangeWidget*>(m_table->cellWidget(row, 0));
-		inputTableWidget->SetRange(m_inputRangeWidget->GetRange());
-	}
-	else {
-
-		QLineEdit* inputTableWidget = dynamic_cast<QLineEdit*>(m_table->cellWidget(row, 0));
-		inputTableWidget->setText(m_inputTextWidget->text());
-	}
-
-	if (m_output == OutputType::Numeric) {
-
-		QDoubleSpinBox* outputTableWidget = dynamic_cast<QDoubleSpinBox*>(m_table->cellWidget(row, 1));
-		outputTableWidget->setValue(m_outputDoubleWidget->value());
-	}
-	else {
-
-		SynGlyphX::ColorButton* outputTableWidget = dynamic_cast<SynGlyphX::ColorButton*>(m_table->cellWidget(row, 1));
-		outputTableWidget->SetColor(m_outputColorWidget->GetColor());
+		m_table->removeRow(row);
+		QMessageBox::warning(this, tr("Error adding value"), tr("Error adding value: ") + e.what());
 	}
 }
 
