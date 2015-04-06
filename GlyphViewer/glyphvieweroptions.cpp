@@ -3,10 +3,8 @@
 #include "application.h"
 #include <QtCore/QDir>
 
-QString GlyphViewerOptions::s_defaultCacheDirectory = QDir::toNativeSeparators(SynGlyphX::Application::GetCommonDataLocation() + QDir::separator() + "gv_cache");
-
 GlyphViewerOptions::GlyphViewerOptions() :
-	m_cacheDirectory(s_defaultCacheDirectory),
+	m_cacheDirectory(GetDefaultCacheDirectory()),
 	m_hideUnselectedGlyphTrees(false) {
 	
 }
@@ -33,7 +31,7 @@ const QString& GlyphViewerOptions::GetCacheDirectory() const {
 
 const QString& GlyphViewerOptions::GetDefaultCacheDirectory() {
 
-	return s_defaultCacheDirectory;
+	return QDir::toNativeSeparators(SynGlyphX::Application::GetCommonDataLocation() + QDir::separator() + "gv_cache");
 }
 
 void GlyphViewerOptions::SetHideUnselectedGlyphTrees(bool hideUnselectedGlyphTrees) {

@@ -24,7 +24,6 @@ public:
 private:
 	//Cache options
 	QString m_cacheDirectory;
-	static QString s_defaultCacheDirectory;
 
 	//3D options
 	bool m_hideUnselectedGlyphTrees;
