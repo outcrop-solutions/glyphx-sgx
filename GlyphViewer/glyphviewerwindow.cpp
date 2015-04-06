@@ -3,6 +3,7 @@
 #include <QtWidgets/QStatusBar>
 #include <QtWidgets/QMessageBox>
 #include <QtWidgets/QMenuBar>
+#include <QtWidgets/QStackedWidget>
 #include <QtCore/QDir>
 #include <QtCore/QStandardPaths>
 #include <QtCore/QSettings>
@@ -20,7 +21,8 @@
 #include "optionswidget.h"
 
 GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
-	: SynGlyphX::MainWindow(parent)
+	: SynGlyphX::MainWindow(parent),
+	m_antzWidget(nullptr)
 {
 	m_sourceDataCache = std::make_shared<SynGlyphX::SourceDataCache>();
 	m_glyphForestModel = new GlyphForestModel(this);
@@ -28,9 +30,18 @@ GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 	m_glyphForestSelectionModel = new QItemSelectionModel(m_glyphForestModel, this);
 	CreateMenus();
 	CreateDockWidgets();
+
+	QStackedWidget* antzWidgetContainer = new QStackedWidget(this);
+	antzWidgetContainer->setContentsMargins(0, 0, 0, 0);
+	antzWidgetContainer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+	QWidget* dummyWidget = new QWidget(antzWidgetContainer);
+	dummyWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+	antzWidgetContainer->addWidget(dummyWidget);
+	setCentralWidget(antzWidgetContainer);
 	
 	try {
-		m_antzWidget = new ANTzViewerWidget(m_glyphForestModel, m_glyphForestSelectionModel, this);
+		
+		CreateANTzWidget(ANTzViewerWidget::GetStereoFormat());
 	}
 	catch (const std::exception& e) {
 
@@ -38,9 +49,9 @@ GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 		throw;
 	}
 
-	ReadOptions();
+	m_isStereoSupported = m_antzWidget->IsInStereoMode();
 
-	setCentralWidget(m_antzWidget);
+	ReadOptions();
 
 #ifdef DEBUG
 	QObject::connect(m_antzWidget, &ANTzViewerWidget::NewStatusMessage, statusBar(), &QStatusBar::showMessage);
@@ -69,6 +80,23 @@ GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 GlyphViewerWindow::~GlyphViewerWindow()
 {
 
+}
+
+void GlyphViewerWindow::CreateANTzWidget(const QGLFormat& format) {
+	
+	QStackedWidget* antzWidgetContainer = dynamic_cast<QStackedWidget*>(centralWidget());
+	if (m_antzWidget != nullptr) {
+		
+		antzWidgetContainer->removeWidget(m_antzWidget);
+		delete m_antzWidget;
+		m_antzWidget = nullptr;
+	}
+
+	m_antzWidget = new ANTzViewerWidget(format, m_glyphForestModel, m_glyphForestSelectionModel, this);
+	m_antzWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+
+	antzWidgetContainer->addWidget(m_antzWidget);
+	antzWidgetContainer->setCurrentWidget(m_antzWidget);
 }
 
 void GlyphViewerWindow::CreateMenus() {
@@ -369,7 +397,7 @@ void GlyphViewerWindow::ShowOpenGLSettings() {
 	QString settings = tr("OpenGL Version = ") + QString::number(format.majorVersion()) + "." + QString::number(format.minorVersion()) + '\n';
 		
 	settings += tr("Stereo Support") + " = ";
-	if (m_antzWidget->IsStereoSupported()) {
+	if (m_isStereoSupported) {
 		settings += tr("enabled");
 	}
 	else {
@@ -380,9 +408,16 @@ void GlyphViewerWindow::ShowOpenGLSettings() {
 
 void GlyphViewerWindow::ChangeStereoMode() {
 
-	if (m_antzWidget->IsStereoSupported()) {
+	if (m_isStereoSupported) {
 
-		m_antzWidget->SetStereo(!m_antzWidget->IsInStereoMode());
+		if (m_antzWidget->IsInStereoMode()) {
+
+			CreateANTzWidget(ANTzViewerWidget::GetNonStereoFormat());
+		}
+		else {
+
+			CreateANTzWidget(ANTzViewerWidget::GetStereoFormat());
+		}
 	}
 	else {
 
@@ -412,6 +447,8 @@ void GlyphViewerWindow::EnableLoadedVisualizationDependentActions(bool enable) {
 
 		m_loadedVisualizationDependentActions[i]->setEnabled(enable);
 	}
+
+	m_stereoAction->setEnabled(!enable);
 }
 
 void GlyphViewerWindow::ChangeOptions() {

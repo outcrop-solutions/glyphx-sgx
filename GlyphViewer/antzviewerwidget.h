@@ -29,14 +29,17 @@ class ANTzViewerWidget : public QGLWidget
     Q_OBJECT
 
 public:
-	ANTzViewerWidget(GlyphForestModel* model, QItemSelectionModel* selectionModel, QWidget *parent = 0);
+	ANTzViewerWidget(const QGLFormat& format, GlyphForestModel* model, QItemSelectionModel* selectionModel, QWidget *parent = 0);
 	~ANTzViewerWidget();
 
 	bool IsInStereoMode() const;
-	bool IsStereoSupported() const;
+	//bool IsStereoSupported() const;
 	bool IsZSpaceAvailable() const;
 
 	bool eventFilter(QObject *object, QEvent *event);
+
+	static const QGLFormat& GetNonStereoFormat();
+	static const QGLFormat& GetStereoFormat();
 
 signals:
 #ifdef DEBUG
@@ -45,7 +48,7 @@ signals:
 
 public slots:
     void ResetCamera();
-	void SetStereo(bool enableStereo);
+	//void SetStereo(bool enableStereo);
 	void SetHideUnselectedGlyphTrees(bool hideUnselectedGlyphTrees);
 
 protected:
@@ -90,6 +93,7 @@ private:
 	void ShowAllGlyphTrees();
 
     static QGLFormat s_format;
+	static QGLFormat s_stereoFormat;
 	static const float s_stylusLength;
 
 	QFont m_oglTextFont;

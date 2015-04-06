@@ -1,5 +1,5 @@
 #include "antzviewerwidget.h"
-
+#include <QtGUI/QOpenGLContext>
 #include <QtGUI/QMouseEvent>
 #include <QtGUI/QFont>
 #include <QtWidgets/QMessageBox>
@@ -16,13 +16,14 @@
 #include "sourcedataselectionmodel.h"
 
 //The default QGLFormat works for now except we want alpha enabled.  Also want to try and get a stereo enabled context
-QGLFormat ANTzViewerWidget::s_format(QGL::AlphaChannel | QGL::StereoBuffers);
+QGLFormat ANTzViewerWidget::s_format(QGL::AlphaChannel);
+QGLFormat ANTzViewerWidget::s_stereoFormat(QGL::AlphaChannel | QGL::StereoBuffers);
 
 //Length of zSpace stylus line
 const float ANTzViewerWidget::s_stylusLength = 0.1f;  // Meters
 
-ANTzViewerWidget::ANTzViewerWidget(GlyphForestModel* model, QItemSelectionModel* selectionModel, QWidget *parent)
-	: QGLWidget(s_format, parent),
+ANTzViewerWidget::ANTzViewerWidget(const QGLFormat& format, GlyphForestModel* model, QItemSelectionModel* selectionModel, QWidget *parent)
+	: QGLWidget(format, parent),
 	m_model(model),
     m_selectionModel(selectionModel),
 	m_antzData(model->GetANTzData()),
@@ -58,8 +59,9 @@ ANTzViewerWidget::ANTzViewerWidget(GlyphForestModel* model, QItemSelectionModel*
 	QObject::connect(m_model, &GlyphForestModel::modelReset, this, &ANTzViewerWidget::OnModelReset);
 	QObject::connect(m_model, &GlyphForestModel::modelAboutToBeReset, this, [this]{ m_isReseting = true; });
 
-	if (IsStereoSupported()) {
+	if (IsInStereoMode()) {
 
+		m_antzData->GetData()->io.gl.stereo = true;
 		try {
 
 			ZSError error = zsInitialize(&m_zSpaceContext);
@@ -126,8 +128,6 @@ ANTzViewerWidget::ANTzViewerWidget(GlyphForestModel* model, QItemSelectionModel*
 			CheckZSpaceError(error);
 			error = zsAddTrackerEventHandler(m_zSpaceStylus, ZS_TRACKER_EVENT_MOVE, &ZSpaceEventDispatcher, this);
 			CheckZSpaceError(error);
-
-			m_antzData->GetData()->io.gl.stereo = true;
 		}
 		catch (const std::exception& e) {
 			throw;
@@ -923,29 +923,41 @@ void ANTzViewerWidget::wheelEvent(QWheelEvent* event) {
 
 	event->ignore();
 }
-
+/*
 void ANTzViewerWidget::SetStereo(bool enableStereo) {
 
 	pData antzData = m_antzData->GetData();
 	antzData->io.gl.stereo = enableStereo;
 
-	if (IsZSpaceAvailable() && enableStereo) {
+	if (enableStereo) {
 
-		SetZSpacePosition();
-		ResizeZSpaceViewport();
+		setFormat(s_stereoFormat);
+		if (IsZSpaceAvailable()) {
+
+			SetZSpacePosition();
+			ResizeZSpaceViewport();
+		}
 	}
-}
+	else {
 
-bool ANTzViewerWidget::IsInStereoMode() const {
-
-	pData antzData = m_antzData->GetData();
-	return (antzData->io.gl.stereo);
+		setFormat(s_format);
+	}
 }
 
 bool ANTzViewerWidget::IsStereoSupported() const {
 
-	return (context()->format().stereo());
+	return (format().stereo());
+}*/
+
+bool ANTzViewerWidget::IsInStereoMode() const {
+
+	//pData antzData = m_antzData->GetData();
+	//return (antzData->io.gl.stereo);
+
+	return (format().stereo());
 }
+
+
 
 void ANTzViewerWidget::moveEvent(QMoveEvent* event) {
 
@@ -1132,4 +1144,14 @@ unsigned int ANTzViewerWidget::BindTextureInFile(const QString& imageFilename) {
 
 	QImage image(imageFilename);
 	return bindTexture(image);
+}
+
+const QGLFormat& ANTzViewerWidget::GetNonStereoFormat() {
+
+	return s_format;
+}
+
+const QGLFormat& ANTzViewerWidget::GetStereoFormat() {
+
+	return s_stereoFormat;
 }

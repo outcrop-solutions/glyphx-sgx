@@ -61,6 +61,7 @@ private:
 	void ReadOptions();
 	void WriteOptions();
 	void ClearAllData();
+	void CreateANTzWidget(const QGLFormat& format);
 
 	QMenu* m_fileMenu;
 	QMenu* m_viewMenu;
@@ -70,6 +71,7 @@ private:
 
 	SynGlyphX::DataTransformMapping m_mapping;
 	CacheManager m_cacheManager;
+	bool m_isStereoSupported;
 
 	GlyphForestModel* m_glyphForestModel;
 	QItemSelectionModel* m_glyphForestSelectionModel;
@@ -78,7 +80,6 @@ private:
 	GlyphViewerOptions m_options;	
 	SynGlyphX::SourceDataCache::SharedPtr m_sourceDataCache;
 	SourceDataSelectionWidget* m_sourceDataSelectionWidget;
-
 };
 
 #endif // GLYPHVIEWERWINDOW_H
