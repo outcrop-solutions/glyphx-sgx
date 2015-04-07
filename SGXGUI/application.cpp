@@ -7,6 +7,7 @@ namespace SynGlyphX {
 
 	QString Application::s_commonDataLocation;	
 	QString Application::s_tempDirectory = QDir::tempPath();
+	QString Application::s_writeableLocation;
     
 	Application::Application(int& argc, char** argv)
         : QApplication(argc, argv)
@@ -56,6 +57,7 @@ namespace SynGlyphX {
 #endif
 
 		s_commonDataLocation = QDir::toNativeSeparators(baseCommonDataPath + '/' + organizationName());
+		s_writeableLocation = QDir::toNativeSeparators(QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + '/' + organizationName() + '/' + applicationName());
 
 		QDir commonDataDir(s_commonDataLocation);
 		if (!commonDataDir.exists()) {
@@ -84,6 +86,11 @@ namespace SynGlyphX {
 	const QString& Application::GetAppTempDirectory() {
 
 		return s_tempDirectory;
+	}
+
+	const QString& Application::GetWriteableLocation() {
+
+		return s_writeableLocation;
 	}
 
 	void Application::SetOverrideCursorAndProcessEvents(const QCursor& cursor, QEventLoop::ProcessEventsFlags flags) {

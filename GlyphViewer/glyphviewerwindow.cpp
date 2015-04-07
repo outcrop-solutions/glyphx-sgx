@@ -509,6 +509,10 @@ void GlyphViewerWindow::ReadOptions() {
 	settings.beginGroup("Options");
 
 	QString cacheDirectory = QDir::toNativeSeparators(settings.value("cacheDirectory", GlyphViewerOptions::GetDefaultCacheDirectory()).toString());
+	if (cacheDirectory.isEmpty()) {
+
+		cacheDirectory = GlyphViewerOptions::GetDefaultCacheDirectory();
+	}
 	options.SetCacheDirectory(cacheDirectory);
 	options.SetHideUnselectedGlyphTrees(settings.value("hideUnselectedGlyphs", false).toBool());
 	settings.endGroup();
@@ -521,7 +525,14 @@ void GlyphViewerWindow::WriteOptions() {
 	QSettings settings;
 	settings.beginGroup("Options");
 
-	settings.setValue("cacheDirectory", m_options.GetCacheDirectory());
+	if (m_options.GetCacheDirectory() != GlyphViewerOptions::GetDefaultCacheDirectory()) {
+
+		settings.setValue("cacheDirectory", m_options.GetCacheDirectory());
+	}
+	else {
+
+		settings.setValue("cacheDirectory", "");
+	}
 	settings.setValue("hideUnselectedGlyphs", m_options.GetHideUnselectedGlyphTrees());
 	settings.endGroup();
 }

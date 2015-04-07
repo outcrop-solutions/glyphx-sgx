@@ -35,6 +35,7 @@ public:
 
 private slots:
 	void ClearCache();
+	void SetToDefaultCacheDirectory();
 
 private:
 	void CreateCacheTab(const GlyphViewerOptions& options, bool enableCacheOptions);

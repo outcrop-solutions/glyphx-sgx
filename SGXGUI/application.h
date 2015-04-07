@@ -37,12 +37,14 @@ namespace SynGlyphX {
 		static QString GetApplicationVersionMajorNumber();
 		static const QString& GetCommonDataLocation();
 		static const QString& GetAppTempDirectory();
+		static const QString& GetWriteableLocation();
 
 		static void SetOverrideCursorAndProcessEvents(const QCursor& cursor, QEventLoop::ProcessEventsFlags flags = QEventLoop::AllEvents);
 
     private:
 		static QString s_commonDataLocation;
-		static QString s_tempDirectory;    
+		static QString s_tempDirectory;   
+		static QString s_writeableLocation;
 	};
 
 } //namespace SynGlyphX

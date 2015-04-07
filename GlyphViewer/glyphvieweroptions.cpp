@@ -31,7 +31,7 @@ const QString& GlyphViewerOptions::GetCacheDirectory() const {
 
 QString GlyphViewerOptions::GetDefaultCacheDirectory() {
 
-	return QDir::toNativeSeparators(SynGlyphX::Application::GetCommonDataLocation() + QDir::separator() + "gv_cache");
+	return QDir::toNativeSeparators(SynGlyphX::Application::GetWriteableLocation() + QDir::separator() + "cache");
 }
 
 void GlyphViewerOptions::SetHideUnselectedGlyphTrees(bool hideUnselectedGlyphTrees) {

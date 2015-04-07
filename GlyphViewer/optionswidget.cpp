@@ -40,6 +40,12 @@ void OptionsWidget::CreateCacheTab(const GlyphViewerOptions& options, bool enabl
 	buttonLayout->addWidget(clearCacheDirectoryButton);
 
 	buttonLayout->addStretch(1);
+
+	QPushButton* defaultCacheDirectoryButton = new QPushButton(tr("Set To Default"), tab);
+	defaultCacheDirectoryButton->setEnabled(enableCacheOptions);
+	QObject::connect(defaultCacheDirectoryButton, &QPushButton::clicked, this, &OptionsWidget::SetToDefaultCacheDirectory);
+	buttonLayout->addWidget(defaultCacheDirectoryButton);
+
 	layout->addLayout(buttonLayout);
 
 	tab->setLayout(layout);
@@ -67,6 +73,11 @@ void OptionsWidget::ClearCache() {
 		SynGlyphX::Filesystem::RemoveContentsOfDirectory(QDir::toNativeSeparators(cacheDir.canonicalPath()).toStdString());
 		QMessageBox::information(this, tr("Cache cleared"), tr("Cache is now empty."));
 	}
+}
+
+void OptionsWidget::SetToDefaultCacheDirectory() {
+
+	m_cacheDirectoryWidget->SetText(GlyphViewerOptions::GetDefaultCacheDirectory());
 }
 
 GlyphViewerOptions OptionsWidget::GetOptions() const {
