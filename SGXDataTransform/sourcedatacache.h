@@ -66,7 +66,7 @@ namespace SynGlyphX {
 		SharedSQLQuery CreateSelectQueryForIndexSet(const QString& tableName, const TableColumns& columns, const IndexSet& indexSet) const;
 		SharedSQLQuery CreateDistinctValueQuery(const QString& tableName, const QString& columnName, const IndexSet& indexSet = IndexSet()) const;
 		unsigned long GetValueCount(const QString& tableName, const QString& columnName, const QString& value, const IndexSet& indexSet = IndexSet()) const;
-		IndexSet GetIndexesFromTableWithSelectedValues(const QString& tableName, const ColumnValueData& selectedValues) const;
+		IndexSet GetIndexesFromTableWithSelectedValues(const QString& tableName, const ColumnValueData& selectedValues, const IndexSet& previousSelection = IndexSet()) const;
 
 		bool IsCacheOutOfDate(const DatasourceMaps& datasources) const;
 
@@ -89,6 +89,7 @@ namespace SynGlyphX {
 		QString GetFormattedNameFromCache(const QString& table);
 
 		QString CreateWhereString(const IndexSet& indexSet) const;
+		QString CreateInString(const IndexSet& indexSet) const;
 		QString CreateInString(const QString& columnName, const std::set<QString>& values) const;
 
 		bool DoesFileDatasourceNeedUpdate(const boost::uuids::uuid& id, const FileDatasource& datasource) const;

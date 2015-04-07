@@ -492,8 +492,13 @@ namespace SynGlyphX {
 
 	QString SourceDataCache::CreateWhereString(const IndexSet& indexSet) const {
 
+		return "WHERE " + CreateInString(indexSet);
+	}
+
+	QString SourceDataCache::CreateInString(const IndexSet& indexSet) const {
+
 		IndexSet::const_iterator iT = indexSet.begin();
-		QString whereString = "WHERE \"" + IndexColumnName + "\" IN (" + QString::number(*iT + 1);
+		QString whereString = "\"" + IndexColumnName + "\" IN (" + QString::number(*iT + 1);
 		++iT;
 		while (iT != indexSet.end()) {
 
@@ -521,7 +526,7 @@ namespace SynGlyphX {
 		return inString;
 	}
 
-	IndexSet SourceDataCache::GetIndexesFromTableWithSelectedValues(const QString& tableName, const ColumnValueData& selectedValues) const {
+	IndexSet SourceDataCache::GetIndexesFromTableWithSelectedValues(const QString& tableName, const ColumnValueData& selectedValues, const IndexSet& previousSelection) const {
 
 		QString queryString = "SELECT \"" + IndexColumnName + "\" FROM \"" + tableName + "\" WHERE ";
 
@@ -532,6 +537,11 @@ namespace SynGlyphX {
 
 			queryString += " AND " + CreateInString(iT->first, iT->second);
 			++iT;
+		}
+
+		if (!previousSelection.empty()) {
+
+			queryString += " AND " + CreateInString(previousSelection);
 		}
 
 		QSqlQuery query(m_db);
