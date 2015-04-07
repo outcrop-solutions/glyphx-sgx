@@ -165,7 +165,19 @@ void SourceDataSelectionWidget::OnElasticListsSelectionChanged(const QString& ta
 	}
 	else {
 
-		SynGlyphX::IndexSet indexSet = m_sourceDataCache->GetIndexesFromTableWithSelectedValues(table, selection);
+		SynGlyphX::SourceDataCache::IndexSetMap indexSets = m_sourceDataCache->SplitIndexSet(SourceDataSelectionModel::GetRootRows(m_selectionModel->selection().indexes()));
+		SynGlyphX::SourceDataCache::IndexSetMap::const_iterator previousSelection = indexSets.find(table);
+		SynGlyphX::IndexSet indexSet;
+		
+		if (previousSelection != indexSets.end()) {
+
+			indexSet = m_sourceDataCache->GetIndexesFromTableWithSelectedValues(table, selection, previousSelection->second);
+		}
+		else {
+
+			indexSet = m_sourceDataCache->GetIndexesFromTableWithSelectedValues(table, selection);
+		}
+		
 		QItemSelection itemSelection;
 		for (auto row : indexSet) {
 
