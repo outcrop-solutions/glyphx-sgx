@@ -240,7 +240,7 @@
             }
             "{3C67513D-01DD-4637-8A68-80971EB9504F}:_E711DD252EE3431A99BEF26088DA511D"
             {
-            "DefaultLocation" = "8:[ProgramFilesFolder][Manufacturer]"
+            "DefaultLocation" = "8:[ProgramFilesFolder]\\[Manufacturer]\\GlyphBuilder"
             "Name" = "8:#1925"
             "AlwaysCreate" = "11:FALSE"
             "Condition" = "8:"
@@ -276,7 +276,7 @@
         "Product"
         {
         "Name" = "8:Microsoft Visual Studio"
-        "ProductName" = "8:SynGlyphX (Demo)"
+        "ProductName" = "8:Glyph Builder (TM) - Demo"
         "ProductCode" = "8:{4FAA1EE2-AB58-4F27-9E22-965E298CA012}"
         "PackageCode" = "8:{52900F05-A8EF-497D-BBCE-1958CC8675A1}"
         "UpgradeCode" = "8:{90B43CC1-6138-4D95-874C-EA2D43F5C3D6}"
@@ -289,7 +289,7 @@
         "Manufacturer" = "8:SynGlyphX"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:http://www.synglyphx.com"
-        "Title" = "8:SynGlyphX"
+        "Title" = "8:SynGlyphX Glyph Builder (TM) - Demo"
         "Subject" = "8:"
         "ARPCONTACT" = "8:SynGlyphX"
         "Keywords" = "8:"
