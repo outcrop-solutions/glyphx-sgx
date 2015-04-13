@@ -56,10 +56,12 @@ private:
 	void UpdateElasticListsAndSourceDataWidget(const QModelIndexList& selectedIndexes);
 	void UpdateElasticLists(const SynGlyphX::SourceDataCache::IndexSetMap& dataIndexes = SynGlyphX::SourceDataCache::IndexSetMap());
 	void ClearElasticLists();
+	void EnableButtons(bool enable);
 
 	GlyphForestModel* m_model;
 	QItemSelectionModel* m_selectionModel;
 	QPushButton* m_sourceWidgetButton;
+	QPushButton* m_clearButton;
 	QScopedPointer<SourceDataWidget> m_sourceDataWindow;
 	QComboBox* m_tableComboBox;
 	QCheckBox* m_hideUnselectedTreesCheckbox;

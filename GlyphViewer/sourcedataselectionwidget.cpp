@@ -1,5 +1,6 @@
 #include "sourcedataselectionwidget.h"
 #include <QtWidgets/QVBoxLayout>
+#include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QAbstractItemView>
 #include "groupboxsinglewidget.h"
@@ -33,14 +34,22 @@ SourceDataSelectionWidget::SourceDataSelectionWidget(SynGlyphX::SourceDataCache:
 	layout->addLayout(m_elasticListsStackLayout, 1);
 	QObject::connect(m_tableComboBox, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &SourceDataSelectionWidget::OnComboBoxChanged);
 
+	QHBoxLayout* buttonsLayout = new QHBoxLayout(this);
+
+	m_clearButton = new QPushButton(tr("Clear"), this);
+	buttonsLayout->addWidget(m_clearButton);
+	QObject::connect(m_clearButton, &QPushButton::clicked, m_selectionModel, &QItemSelectionModel::clear);
+
 	m_sourceWidgetButton = new QPushButton(tr("Show Selected Source Data"), this);
 	m_sourceWidgetButton->setCheckable(true);
-	m_sourceWidgetButton->setEnabled(false);
-	layout->addWidget(m_sourceWidgetButton);
+	buttonsLayout->addWidget(m_sourceWidgetButton);
+
+	buttonsLayout->addStretch(1);
+	layout->addLayout(buttonsLayout);
 
 	setLayout(layout);
 
-	m_sourceWidgetButton->setEnabled(!m_selectionModel->selection().empty());
+	EnableButtons(!m_selectionModel->selection().empty());
 	QObject::connect(m_selectionModel, &QItemSelectionModel::selectionChanged, this, &SourceDataSelectionWidget::OnSelectionChanged);
 
 	m_sourceDataWindow.reset(new SourceDataWidget(m_sourceDataCache));
@@ -100,6 +109,10 @@ void SourceDataSelectionWidget::OnModelReset() {
 
 		UpdateElasticListsAndSourceDataWidget(m_selectionModel->selection().indexes());
 	}
+	else {
+
+		EnableButtons(false);
+	}
 }
 
 void SourceDataSelectionWidget::OnComboBoxChanged(int current) {
@@ -110,7 +123,7 @@ void SourceDataSelectionWidget::OnComboBoxChanged(int current) {
 void SourceDataSelectionWidget::UpdateElasticListsAndSourceDataWidget(const QModelIndexList& selectedIndexes) {
 
 	bool isSelectionNotEmpty = !selectedIndexes.empty();
-	m_sourceWidgetButton->setEnabled(isSelectionNotEmpty);
+	EnableButtons(isSelectionNotEmpty);
 	if (isSelectionNotEmpty) {
 
 		SynGlyphX::SourceDataCache::IndexSetMap indexSets = m_sourceDataCache->SplitIndexSet(SourceDataSelectionModel::GetRootRows(m_selectionModel->selection().indexes()));
@@ -187,4 +200,10 @@ void SourceDataSelectionWidget::OnElasticListsSelectionChanged(const QString& ta
 
 		m_selectionModel->select(itemSelection, QItemSelectionModel::ClearAndSelect);
 	}
+}
+
+void SourceDataSelectionWidget::EnableButtons(bool enable) {
+
+	m_sourceWidgetButton->setEnabled(enable);
+	m_clearButton->setEnabled(enable);
 }
