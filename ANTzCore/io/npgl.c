@@ -1052,7 +1052,7 @@ ANTZCORE_API void npPick(int x, int y, void* dataRef)
 #define kNPpickWidth	20
 #define kNPpickHeight	20
 
-int npPickPinStereoSingleEye(int x, int y, void* dataRef) {
+ANTZCORE_API int npPickPinStereoSingleEye(int x, int y, void* dataRef) {
 
 	int id = 0, i = 0, j = 0;
 

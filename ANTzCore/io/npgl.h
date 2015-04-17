@@ -56,6 +56,7 @@ ANTZCORE_API void npGLResizeScene(int width, int height);
 ANTZCORE_API void npPick(int x, int y, void* dataRef);
 ANTZCORE_API int npPickPin(int x, int y, void* dataRef);
 
+ANTZCORE_API int npPickPinStereoSingleEye(int x, int y, void* dataRef);
 ANTZCORE_API int npPickPinStereo(int x, int y, void* dataRef);
 
 void npResizeConsole (void* dataRef);
