@@ -44,7 +44,6 @@ void DrawVideo (pNPnode node);
 void DrawGrid (pNPnode node, void* dataRef);
 void npDrawSort(void** sort, int count, void* dataRef);
 void npDrawSortThread(void* dataRef);
-NPfloatXYZ npProjectWorldToScreen (const pNPfloatXYZ offset);
 
 void DrawLink (pNPnode node, void* dataRef);
 void npProcessLinkQue (void* dataRef);
@@ -1618,7 +1617,7 @@ void npDrawNodes (void* dataRef)
 //offset allows tag to be placed relative to node center
 //if Z is less then 0.0f or greater then 1.0f then object is behind camera.
 //------------------------------------------------------------------------------
-NPfloatXYZ npProjectWorldToScreen (const pNPfloatXYZ offset)
+ANTZCORE_API NPfloatXYZ npProjectWorldToScreen(const pNPfloatXYZ offset)
 {	
 	GLdouble screenX, screenY, screenZ;	//Screen Coordinates Output
 

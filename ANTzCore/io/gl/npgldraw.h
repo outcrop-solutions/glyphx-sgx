@@ -49,6 +49,8 @@ float npDistance (NPfloatXYZ vecA, NPfloatXYZ vecB);		//MB-TRANS
 
 ANTZCORE_API void npDrawSelect(void* dataRef);
 
+ANTZCORE_API NPfloatXYZ npProjectWorldToScreen(const pNPfloatXYZ offset);
+
 #ifdef __cplusplus
 }
 #endif

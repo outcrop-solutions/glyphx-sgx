@@ -1093,18 +1093,24 @@ ANTZCORE_API int npPickPinStereo(int x, int y, void* dataRef) {
 	int id = 0;
 	pData data = (pData)dataRef;
 
+	data->io.gl.stereo = false;
 	data->io.gl.pickPass = true;
-	npGLDrawScene(data);
+	glDrawBuffer(GL_BACK_LEFT);
+	glReadBuffer(GL_BACK_LEFT);
 
-	glReadBuffer(GL_BACK_RIGHT);
+	npGLDrawScene(data);
+	
 	id = npPickPinStereoSingleEye(x, y, dataRef);
 
-	glReadBuffer(GL_BACK_LEFT);
 	if (id == 0) {
 
+		glDrawBuffer(GL_BACK_RIGHT);
+		glReadBuffer(GL_BACK_RIGHT);
+		npGLDrawScene(data);
 		id = npPickPinStereoSingleEye(x, y, dataRef);
 	}
 
+	data->io.gl.stereo = true;
 	data->io.gl.pickPass = false;	//clear the flag to draw normal colors
 
 	return id;
