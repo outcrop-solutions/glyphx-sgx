@@ -71,14 +71,14 @@ private:
 		Right
 	};
 
-	void DrawScene(Eye eye, bool drawHUD);
+	void DrawSceneForEye(Eye eye, bool drawHUD);
 	void SetCameraToDefaultPosition();
 	unsigned int BindTextureInFile(const QString& imageFilename);
 	void SetGridTexture(pNPnode grid);
     void CenterCameraOnNode(pNPnode node);
     void InitIO();
 	void DrawHUD();
-	bool SelectAtPoint(int x, int y, bool multiSelect) const;
+	bool SelectAtPoint(int x, int y, bool multiSelect);
 
 	void CheckZSpaceError(ZSError error);
 	void SetZSpacePosition();

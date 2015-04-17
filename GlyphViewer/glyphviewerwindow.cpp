@@ -51,6 +51,7 @@ GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 
 	m_isStereoSupported = m_antzWidget->IsInStereoMode();
 
+	m_cacheManager.SetBaseCacheDirectory(GlyphViewerOptions::GetDefaultCacheDirectory().toStdWString());
 	ReadOptions();
 
 	QObject::connect(m_antzWidget, &ANTzViewerWidget::NewStatusMessage, statusBar(), &QStatusBar::showMessage);

@@ -347,28 +347,10 @@ void ANTzViewerWidget::paintGL() {
 
 	if (IsInStereoMode())  {
 
-		DrawScene(Eye::Right, true);
+		DrawSceneForEye(Eye::Right, true);
 	}
-	else {
-
-		glGetFloatv(GL_MODELVIEW_MATRIX, camData->matrix);
-		npInvertMatrixf(camData->matrix, camData->inverseMatrix);
-	}
-
-	glMatrixMode(GL_MODELVIEW);
-
-	npGLLighting(antzData);
-	npGLShading(antzData);
-	npDrawNodes(antzData);
-
-	DrawZSpaceStylus(m_zSpaceStylusWorldMatrix, stylusLength, stylusColor);
-
-	DrawHUD();
-
-	glMatrixMode(GL_PROJECTION);
-	glPopMatrix();
-	glMatrixMode(GL_MODELVIEW);
-	glPopMatrix();
+	
+	DrawSceneForEye(Eye::Left, true);
 
     int err = glGetError();
     if (err) {
@@ -381,7 +363,7 @@ void ANTzViewerWidget::paintGL() {
     //QGLWidget takes care of swapping buffers
 }
 
-void ANTzViewerWidget::DrawScene(Eye eye, bool drawHUD) {
+void ANTzViewerWidget::DrawSceneForEye(Eye eye, bool drawHUD) {
 
 	pData antzData = m_antzData->GetData();
 	pNPnode camNode = npGetActiveCam(antzData);
@@ -405,18 +387,10 @@ void ANTzViewerWidget::DrawScene(Eye eye, bool drawHUD) {
 	glMatrixMode(GL_PROJECTION);
 	glPushMatrix();
 
-	if (IsZSpaceAvailable()) {
+	if (IsInZSpaceStereo()) {
 
 		ZSTrackerPose stylusPose;
 		ZSError error = zsGetTargetPose(m_zSpaceStylus, &stylusPose);
-
-		/*ZSDisplayIntersectionInfo intersection;
-		error = zsIntersectDisplay(m_zSpaceDisplay, &stylusPose, &intersection);
-		if ((intersection.hit) && (rect().contains(mapFromGlobal(QPoint(intersection.x, intersection.y))))) {
-
-		stylusColor = Qt::green;
-		stylusLength = intersection.distance;
-		}*/
 
 		// Transform the stylus pose from tracker to camera space.
 		error = zsTransformMatrix(m_zSpaceViewport, ZS_COORDINATE_SPACE_TRACKER, ZS_COORDINATE_SPACE_CAMERA, &stylusPose.matrix);
@@ -429,7 +403,12 @@ void ANTzViewerWidget::DrawScene(Eye eye, bool drawHUD) {
 		// application's camera matrix.
 		npMultMatrix(m_zSpaceStylusWorldMatrix.f, originalCameraMatrix.f, stylusPose.matrix.f);
 
-		SetZSpaceMatricesForDrawing(ZS_EYE_RIGHT, m_originialViewMatrix, camData);
+		SetZSpaceMatricesForDrawing(zSpaceEye, m_originialViewMatrix, camData);
+	}
+	else if (!IsInStereoMode()) {
+
+		glGetFloatv(GL_MODELVIEW_MATRIX, camData->matrix);
+		npInvertMatrixf(camData->matrix, camData->inverseMatrix);
 	}
 
 	glMatrixMode(GL_MODELVIEW);
@@ -759,7 +738,7 @@ void ANTzViewerWidget::mousePressEvent(QMouseEvent* event) {
     m_lastMousePosition = event->pos();
 }
 
-bool ANTzViewerWidget::SelectAtPoint(int x, int y, bool multiSelect) const {
+bool ANTzViewerWidget::SelectAtPoint(int x, int y, bool multiSelect) {
 
 	int pickID = 0;
 
@@ -769,7 +748,27 @@ bool ANTzViewerWidget::SelectAtPoint(int x, int y, bool multiSelect) const {
 
 	if (IsInStereoMode()) {
 
-		pickID = npPickPinStereo(x, antzData->io.gl.height - y, antzData);
+		glMatrixMode(GL_MODELVIEW);
+		glLoadIdentity();
+		npSetLookAtFromCamera(antzData);
+
+		antzData->io.gl.stereo = false;
+		antzData->io.gl.pickPass = true;
+		glReadBuffer(GL_BACK_LEFT);
+
+		DrawSceneForEye(Eye::Left, false);
+
+		pickID = npPickPinStereoSingleEye(x, antzData->io.gl.height - y, antzData);
+
+		if (pickID == 0) {
+
+			glReadBuffer(GL_BACK_RIGHT);
+			DrawSceneForEye(Eye::Right, false);
+			pickID = npPickPinStereoSingleEye(x, antzData->io.gl.height - y, antzData);
+		}
+
+		antzData->io.gl.stereo = true;
+		antzData->io.gl.pickPass = false;	//clear the flag to draw normal colors
 	}
 	else {
 
