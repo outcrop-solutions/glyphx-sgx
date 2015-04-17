@@ -128,6 +128,9 @@ ANTzViewerWidget::ANTzViewerWidget(const QGLFormat& format, GlyphForestModel* mo
 			CheckZSpaceError(error);
 			error = zsAddTrackerEventHandler(m_zSpaceStylus, ZS_TRACKER_EVENT_MOVE, &ZSpaceEventDispatcher, this);
 			CheckZSpaceError(error);
+
+			error = zsSetTargetVibrationEnabled(m_zSpaceStylus, true);
+			CheckZSpaceError(error);
 		}
 		catch (const std::exception& e) {
 			throw;
@@ -318,8 +321,6 @@ void ANTzViewerWidget::paintGL() {
 	}
 
 	pData antzData = m_antzData->GetData();
-	pNPnode camNode = npGetActiveCam(antzData);
-	NPcameraPtr camData = static_cast<NPcameraPtr>(camNode->data);
 
 	npUpdateCh(antzData);
 
@@ -337,81 +338,16 @@ void ANTzViewerWidget::paintGL() {
 	glLoadIdentity();
 	npSetLookAtFromCamera(antzData);
 
-	ZSMatrix4 zSpaceStylusWorldMatrix;
 	if (IsInZSpaceStereo()) {
 
 		ZSError error = zsUpdate(m_zSpaceContext);
 		error = zsBeginStereoBufferFrame(m_zSpaceBuffer);
+		glGetFloatv(GL_MODELVIEW_MATRIX, m_originialViewMatrix.f);
 	}
 
-	glPushMatrix();
+	if (IsInStereoMode())  {
 
-	glMatrixMode(GL_PROJECTION);
-	glPushMatrix();
-
-	ZSFloat stylusLength = s_stylusLength;
-	QColor stylusColor = Qt::green; // Qt::red;
-
-	if (IsInStereoMode()) {
-
-		ZSMatrix4 originialViewMatrix;
-
-		glDrawBuffer(GL_BACK_RIGHT);
-
-		if (IsZSpaceAvailable()) {
-
-			glGetFloatv(GL_MODELVIEW_MATRIX, originialViewMatrix.f);
-
-			ZSTrackerPose stylusPose;
-			ZSError error = zsGetTargetPose(m_zSpaceStylus, &stylusPose);
-
-			/*ZSDisplayIntersectionInfo intersection;
-			error = zsIntersectDisplay(m_zSpaceDisplay, &stylusPose, &intersection);
-			if ((intersection.hit) && (rect().contains(mapFromGlobal(QPoint(intersection.x, intersection.y))))) {
-
-				stylusColor = Qt::green;
-				stylusLength = intersection.distance;
-			}*/
-
-			// Transform the stylus pose from tracker to camera space.
-			error = zsTransformMatrix(m_zSpaceViewport, ZS_COORDINATE_SPACE_TRACKER, ZS_COORDINATE_SPACE_CAMERA, &stylusPose.matrix);
-
-			ZSMatrix4 originalCameraMatrix;
-			npInvertMatrixf(originialViewMatrix.f, originalCameraMatrix.f);
-
-			// Transform the stylus pose from camera space to world space.
-			// This is done by multiplying the pose (camera space) by the 
-			// application's camera matrix.
-			npMultMatrix(zSpaceStylusWorldMatrix.f, originalCameraMatrix.f, stylusPose.matrix.f);
-
-			SetZSpaceMatricesForDrawing(ZS_EYE_RIGHT, originialViewMatrix, camData);
-		}
-
-		glMatrixMode(GL_MODELVIEW);
-
-		npGLLighting(antzData);
-		npGLShading(antzData);
-		npDrawNodes(antzData);
-
-		DrawZSpaceStylus(zSpaceStylusWorldMatrix, stylusLength, stylusColor);
-
-		DrawHUD();
-
-		glMatrixMode(GL_PROJECTION);
-		glPopMatrix();
-		glMatrixMode(GL_MODELVIEW);
-		glPopMatrix();
-
-		glPushMatrix();
-
-		glMatrixMode(GL_PROJECTION);
-		glPushMatrix();
-
-		glDrawBuffer(GL_BACK_LEFT);
-		if (IsZSpaceAvailable()) {
-
-			SetZSpaceMatricesForDrawing(ZS_EYE_LEFT, originialViewMatrix, camData);
-		}
+		DrawScene(Eye::Right, true);
 	}
 	else {
 
@@ -425,7 +361,7 @@ void ANTzViewerWidget::paintGL() {
 	npGLShading(antzData);
 	npDrawNodes(antzData);
 
-	DrawZSpaceStylus(zSpaceStylusWorldMatrix, stylusLength, stylusColor);
+	DrawZSpaceStylus(m_zSpaceStylusWorldMatrix, stylusLength, stylusColor);
 
 	DrawHUD();
 
@@ -443,6 +379,77 @@ void ANTzViewerWidget::paintGL() {
     update();
 
     //QGLWidget takes care of swapping buffers
+}
+
+void ANTzViewerWidget::DrawScene(Eye eye, bool drawHUD) {
+
+	pData antzData = m_antzData->GetData();
+	pNPnode camNode = npGetActiveCam(antzData);
+	NPcameraPtr camData = static_cast<NPcameraPtr>(camNode->data);
+
+	ZSEye zSpaceEye;
+	if (eye = Eye::Left) {
+
+		glDrawBuffer(GL_BACK_LEFT);
+		zSpaceEye = ZS_EYE_LEFT;
+	}
+	else {
+
+		glDrawBuffer(GL_BACK_RIGHT);
+		zSpaceEye = ZS_EYE_RIGHT;
+	}
+
+	glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
+
+	glMatrixMode(GL_PROJECTION);
+	glPushMatrix();
+
+	if (IsZSpaceAvailable()) {
+
+		ZSTrackerPose stylusPose;
+		ZSError error = zsGetTargetPose(m_zSpaceStylus, &stylusPose);
+
+		/*ZSDisplayIntersectionInfo intersection;
+		error = zsIntersectDisplay(m_zSpaceDisplay, &stylusPose, &intersection);
+		if ((intersection.hit) && (rect().contains(mapFromGlobal(QPoint(intersection.x, intersection.y))))) {
+
+		stylusColor = Qt::green;
+		stylusLength = intersection.distance;
+		}*/
+
+		// Transform the stylus pose from tracker to camera space.
+		error = zsTransformMatrix(m_zSpaceViewport, ZS_COORDINATE_SPACE_TRACKER, ZS_COORDINATE_SPACE_CAMERA, &stylusPose.matrix);
+
+		ZSMatrix4 originalCameraMatrix;
+		npInvertMatrixf(m_originialViewMatrix.f, originalCameraMatrix.f);
+
+		// Transform the stylus pose from camera space to world space.
+		// This is done by multiplying the pose (camera space) by the 
+		// application's camera matrix.
+		npMultMatrix(m_zSpaceStylusWorldMatrix.f, originalCameraMatrix.f, stylusPose.matrix.f);
+
+		SetZSpaceMatricesForDrawing(ZS_EYE_RIGHT, m_originialViewMatrix, camData);
+	}
+
+	glMatrixMode(GL_MODELVIEW);
+
+	npGLLighting(antzData);
+	npGLShading(antzData);
+	npDrawNodes(antzData);
+
+	if (drawHUD) {
+
+		ZSFloat stylusLength = s_stylusLength;
+		QColor stylusColor = Qt::green; // Qt::red;
+		DrawZSpaceStylus(m_zSpaceStylusWorldMatrix, stylusLength, stylusColor);
+		DrawHUD();
+	}
+
+	glMatrixMode(GL_PROJECTION);
+	glPopMatrix();
+	glMatrixMode(GL_MODELVIEW);
+	glPopMatrix();
 }
 
 void ANTzViewerWidget::DrawZSpaceStylus(const ZSMatrix4& stylusMatrix, ZSFloat stylusLength, QColor color) {
@@ -752,7 +759,7 @@ void ANTzViewerWidget::mousePressEvent(QMouseEvent* event) {
     m_lastMousePosition = event->pos();
 }
 
-void ANTzViewerWidget::SelectAtPoint(int x, int y, bool multiSelect) const {
+bool ANTzViewerWidget::SelectAtPoint(int x, int y, bool multiSelect) const {
 
 	int pickID = 0;
 
@@ -769,11 +776,6 @@ void ANTzViewerWidget::SelectAtPoint(int x, int y, bool multiSelect) const {
 		pickID = npPickPin(x, antzData->io.gl.height - y, antzData);
 	}
 
-	//antzData->io.gl.stereo = isStereo;
-#ifdef DEBUG
-	emit NewStatusMessage(tr("Selection Attempt At: %1, %2 | ID = %3").arg(x).arg(y).arg(pickID), 4000);
-#endif
-
 	if (pickID != 0) {
 
 		pNPnode node = static_cast<pNPnode>(antzData->map.nodeID[pickID]);
@@ -785,10 +787,10 @@ void ANTzViewerWidget::SelectAtPoint(int x, int y, bool multiSelect) const {
 
 		m_selectionModel->select(m_model->IndexFromANTzID(pickID), flags);
 	}
-	/*else {
 
-		m_selectionModel->clearSelection();
-	}*/
+	emit NewStatusMessage(tr("Selection Attempt At: %1, %2").arg(x).arg(y), 4000);
+	
+	return (pickID != 0);
 }
 
 void ANTzViewerWidget::mouseReleaseEvent(QMouseEvent* event) {
@@ -1020,18 +1022,19 @@ void ANTzViewerWidget::ZSpaceButtonPressHandler(ZSHandle targetHandle, const ZST
 void ANTzViewerWidget::ZSpaceButtonReleaseHandler(ZSHandle targetHandle, const ZSTrackerEventData* eventData) {
 
 	if (eventData->buttonId == 0) {
-		//ZSMatrix4 eventMatrix;
-		//memcpy(eventMatrix.f, eventData->poseMatrix.f, sizeof(ZSFloat) * 16);
 
 		ZSTrackerPose stylusPose;
-		ZSDisplayIntersectionInfo intersectionInfo;
 		ZSError error = zsGetTargetPose(m_zSpaceStylus, &stylusPose);
-		error = zsIntersectDisplay(m_zSpaceDisplay, &stylusPose, &intersectionInfo);
 
-		if (intersectionInfo.hit) {
+		glPushMatrix();
+		glMultMatrixf(m_zSpaceStylusWorldMatrix.f);
+		glTranslatef(0.0f, 0.0f, -s_stylusLength);
+		NPfloatXYZ offset = { 0.0f, 0.0f, 0.0f };
+		NPfloatXYZ screenPoint = npProjectWorldToScreen(&offset);
+		glPopMatrix();
+		if (!SelectAtPoint(screenPoint.x, screenPoint.y, false)) {
 
-			QPoint localPoint = mapFromGlobal(QPoint(intersectionInfo.x, intersectionInfo.y));
-			SelectAtPoint(localPoint.x(), localPoint.y(), false);
+			zsStartTargetVibration(m_zSpaceStylus, 0.04f, 0.04f, 4);
 		}
 	}
 }

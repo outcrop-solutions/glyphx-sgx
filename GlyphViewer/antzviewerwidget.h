@@ -42,9 +42,7 @@ public:
 	static const QGLFormat& GetStereoFormat();
 
 signals:
-#ifdef DEBUG
 	void NewStatusMessage(const QString& message, int timeout = 0) const;
-#endif
 
 public slots:
     void ResetCamera();
@@ -68,13 +66,19 @@ private slots:
 	void OnModelReset();
 
 private:
+	enum Eye {
+		Left,
+		Right
+	};
+
+	void DrawScene(Eye eye, bool drawHUD);
 	void SetCameraToDefaultPosition();
 	unsigned int BindTextureInFile(const QString& imageFilename);
 	void SetGridTexture(pNPnode grid);
     void CenterCameraOnNode(pNPnode node);
     void InitIO();
 	void DrawHUD();
-	void SelectAtPoint(int x, int y, bool multiSelect) const;
+	bool SelectAtPoint(int x, int y, bool multiSelect) const;
 
 	void CheckZSpaceError(ZSError error);
 	void SetZSpacePosition();
@@ -119,6 +123,8 @@ private:
 	ZSHandle m_zSpaceFrustum;
 	ZSHandle m_zSpaceStylus;
 	ZSMatrix4 m_originialProjectionMatrix;
+	ZSMatrix4 m_zSpaceStylusWorldMatrix;
+	ZSMatrix4 m_originialViewMatrix;
 	ZSVector3 m_zSpaceStylusLastPosition;
 };
 

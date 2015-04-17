@@ -53,9 +53,7 @@ GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 
 	ReadOptions();
 
-#ifdef DEBUG
 	QObject::connect(m_antzWidget, &ANTzViewerWidget::NewStatusMessage, statusBar(), &QStatusBar::showMessage);
-#endif
 
 	m_stereoAction->setChecked(m_antzWidget->IsInStereoMode());
 
