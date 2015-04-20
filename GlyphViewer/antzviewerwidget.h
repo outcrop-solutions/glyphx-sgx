@@ -115,6 +115,7 @@ private:
     QPoint m_lastMousePosition;
 	QRect m_regionSelectionRect;
 	QWidget* m_topLevelWindow;
+	QPoint m_zSpaceStylusScreenPoint;
 
 	ZSContext m_zSpaceContext;
 	ZSHandle m_zSpaceDisplay;
