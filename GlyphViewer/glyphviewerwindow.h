@@ -58,7 +58,7 @@ private:
 	void CreateMenus();
 	void CreateDockWidgets();
 	void EnableLoadedVisualizationDependentActions(bool enable);
-	void ChangeOptions(const GlyphViewerOptions& options);
+	void ChangeOptions(const GlyphViewerOptions& options, bool writeOptions = true);
 	void ReadOptions();
 	void WriteOptions();
 	void ClearAllData();

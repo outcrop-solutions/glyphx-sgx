@@ -51,7 +51,16 @@ GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 
 	m_isStereoSupported = m_antzWidget->IsInStereoMode();
 
-	m_cacheManager.SetBaseCacheDirectory(GlyphViewerOptions::GetDefaultCacheDirectory().toStdWString());
+	try {
+
+		m_cacheManager.SetBaseCacheDirectory(GlyphViewerOptions::GetDefaultCacheDirectory().toStdWString());
+	}
+	catch (const std::exception& e) {
+
+		QMessageBox::critical(nullptr, tr("Cache Directory Error"), tr("Cache Directory Error: ") + e.what());
+		throw;
+	}
+
 	ReadOptions();
 
 	QObject::connect(m_antzWidget, &ANTzViewerWidget::NewStatusMessage, statusBar(), &QStatusBar::showMessage);
@@ -462,7 +471,6 @@ void GlyphViewerWindow::ChangeOptions() {
 		try {
 
 			ChangeOptions(optionsWidget->GetOptions());
-			WriteOptions();
 		}
 		catch (const std::exception& e) {
 
@@ -471,7 +479,7 @@ void GlyphViewerWindow::ChangeOptions() {
 	}
 }
 
-void GlyphViewerWindow::ChangeOptions(const GlyphViewerOptions& options) {
+void GlyphViewerWindow::ChangeOptions(const GlyphViewerOptions& options, bool writeOptions) {
 
 	if (options != m_options) {
 
@@ -497,6 +505,11 @@ void GlyphViewerWindow::ChangeOptions(const GlyphViewerOptions& options) {
 		}
 
 		m_options = options;
+
+		if (writeOptions) {
+
+			WriteOptions();
+		}
 	}
 }
 
@@ -516,7 +529,7 @@ void GlyphViewerWindow::ReadOptions() {
 	options.SetHideUnselectedGlyphTrees(settings.value("hideUnselectedGlyphs", false).toBool());
 	settings.endGroup();
 
-	ChangeOptions(options);
+	ChangeOptions(options, false);
 }
 
 void GlyphViewerWindow::WriteOptions() {
