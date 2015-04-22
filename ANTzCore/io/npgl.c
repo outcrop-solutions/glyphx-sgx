@@ -1062,6 +1062,7 @@ ANTZCORE_API int npPickPinStereoSingleEye(int x, int y, void* dataRef) {
 	pNPnode node = NULL;
 	pData data = (pData)dataRef;
 
+	glFinish();
 	glReadPixels(x, y, kNPpickWidth, kNPpickHeight, GL_RGBA, GL_UNSIGNED_BYTE, pixels); //zs
 
 	for (i = 0; i < kNPpickWidth; i++)

@@ -43,7 +43,7 @@ void npCloseGLPrimitive (void* dataRef);
 
 void npGLSurface (bool texture, pNPnode node, void* dataRef);
 
-void npGLPrimitive (int geometry, float ratio);
+ANTZCORE_API void npGLPrimitive(int geometry, float ratio);
 
 void npGLTexture(pNPnode node, void* dataRef);
 

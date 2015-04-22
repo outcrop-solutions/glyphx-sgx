@@ -110,7 +110,7 @@ void npCloseGLPrimitive (void* dataRef)
 
 //used only to draw outline wireframes
 //------------------------------------------------------------------------------
-void npGLPrimitive (int geometry, float ratio)
+ANTZCORE_API void npGLPrimitive(int geometry, float ratio)
 {
 	glPushMatrix();									//is glPushMatrix necessary, zz debug
 

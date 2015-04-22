@@ -38,7 +38,7 @@ void npCopyMatrix (float dest[], float src[]);
 
 ANTZCORE_API void npMultMatrix(float *matDest, float *matA, float *matB);
 
-void npLocalToWorld (NPfloatXYZ *world, const float *inverseCam, const float *modelView);
+ANTZCORE_API void npLocalToWorld(NPfloatXYZ *world, const float *inverseCam, const float *modelView);
 
 ANTZCORE_API bool npInvertMatrixf (const float m[16], float invOut[16]);
 

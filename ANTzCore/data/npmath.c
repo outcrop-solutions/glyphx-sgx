@@ -73,7 +73,7 @@ dest[3][3] = src1[3][0] * src2[0][3] + src1[3][1] * src2[1][3] + src1[3][2] * sr
 //subset of npMultMatrix which only caculates the translate coord elements
 //------------------------------------------------------------------------------
 //void npLocalToWorld (NPfloatXYZ *world, float *invertCam, float *modelView)
-void npLocalToWorld (NPfloatXYZ *world, const float *inverseCam, const float *modelView)
+ANTZCORE_API void npLocalToWorld(NPfloatXYZ *world, const float *inverseCam, const float *modelView)
 {
 	//x = matrix[12] or [3][0]
 	world->x =  inverseCam[0] * modelView[12] + inverseCam[4] * modelView[13] +
