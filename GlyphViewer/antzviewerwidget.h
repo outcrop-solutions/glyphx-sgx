@@ -115,7 +115,7 @@ private:
     QPoint m_lastMousePosition;
 	QRect m_regionSelectionRect;
 	QWidget* m_topLevelWindow;
-	QPoint m_zSpaceStylusScreenPoint;
+	//QPoint m_zSpaceStylusScreenPoint;
 
 	ZSContext m_zSpaceContext;
 	ZSHandle m_zSpaceDisplay;
@@ -127,6 +127,7 @@ private:
 	ZSMatrix4 m_zSpaceStylusWorldMatrix;
 	ZSMatrix4 m_originialViewMatrix;
 	ZSVector3 m_zSpaceStylusLastPosition;
+	ZSVector3 m_zSpaceStylusIntersectionPosition;
 };
 
 #endif // ANTZWIDGET_H

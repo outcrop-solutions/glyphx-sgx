@@ -41,7 +41,8 @@ QVariant GlyphForestModel::data(const QModelIndex& index, int role) const {
 
 	QString displayedData = glyph->tag->title;
 
-	return displayedData;
+	//return displayedData;
+	return displayedData + QString(" - (%1, %2, %3)").arg(glyph->world.x).arg(glyph->world.y).arg(glyph->world.z);
 }
 
 QModelIndex	GlyphForestModel::index(int row, int column, const QModelIndex& parent) const {

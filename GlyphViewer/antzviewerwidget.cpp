@@ -20,7 +20,7 @@ QGLFormat ANTzViewerWidget::s_format(QGL::AlphaChannel);
 QGLFormat ANTzViewerWidget::s_stereoFormat(QGL::AlphaChannel | QGL::StereoBuffers);
 
 //Length of zSpace stylus line
-const float ANTzViewerWidget::s_stylusLength = 0.1f;  // Meters
+const float ANTzViewerWidget::s_stylusLength = 0.15f;  // Meters
 
 ANTzViewerWidget::ANTzViewerWidget(const QGLFormat& format, GlyphForestModel* model, QItemSelectionModel* selectionModel, QWidget *parent)
 	: QGLWidget(format, parent),
@@ -329,6 +329,12 @@ void ANTzViewerWidget::paintGL() {
 
 	pData antzData = m_antzData->GetData();
 
+	if (antzData->io.gl.pickPass) {
+
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		return;
+	}
+
 	npUpdateCh(antzData);
 
 	npUpdateEngine(antzData);		//position, physics, interactions...
@@ -359,10 +365,10 @@ void ANTzViewerWidget::paintGL() {
 	
 	DrawSceneForEye(Eye::Left, true);
 
-    int err = glGetError();
-    if (err) {
-        printf("err: 2388 - OpenGL error: %d\n", err);
-    }
+    //int err = glGetError();
+    //if (err) {
+   //     printf("err: 2388 - OpenGL error: %d\n", err);
+   // }
 
     //ANTz assumes that redraw constantly happens.  Need to put this in a thread
     update();
@@ -442,15 +448,16 @@ void ANTzViewerWidget::DrawZSpaceStylus(const ZSMatrix4& stylusMatrix, ZSFloat s
 
 	if (IsInZSpaceStereo()) {
 
+		pData antzData = m_antzData->GetData();
+		pNPnode camNode = npGetActiveCam(antzData);
+		NPcameraPtr camData = static_cast<NPcameraPtr>(camNode->data);
+
 		qglColor(color);
 
 		// Multiply the model-view matrix by the stylus world matrix.
 		glMatrixMode(GL_MODELVIEW);
 		glPushMatrix();
 		glMultMatrixf(stylusMatrix.f);
-
-		ZSMatrix4 trackerPosition;
-		ZSError error = zsTransformMatrix(m_zSpaceViewport, ZS_COORDINATE_SPACE_TRACKER, ZS_COORDINATE_SPACE_DISPLAY, &trackerPosition);
 
 		// Draw the line.
 		glBegin(GL_LINES);
@@ -459,10 +466,22 @@ void ANTzViewerWidget::DrawZSpaceStylus(const ZSMatrix4& stylusMatrix, ZSFloat s
 
 		glEnd();
 
-		NPfloatXYZ offset = { 0.0f, 0.0f, 0.0f };
-		NPfloatXYZ screenPoint = npProjectWorldToScreen(&offset);
-		m_zSpaceStylusScreenPoint.setX(screenPoint.x);
-		m_zSpaceStylusScreenPoint.setY(screenPoint.y);
+		glTranslatef(0.0f, 0.0f, -stylusLength);
+		//glScalef(0.0025f, 0.0025f, 0.0025f);
+		//npGLPrimitive(kNPgeoSphere, 0.1f);
+
+		NPfloatXYZ world = { 0.0f, 0.0f, 0.0f };
+		//NPfloatXYZ screenPoint = npProjectWorldToScreen(&offset);
+
+		GLfloat modelView[16];
+		glGetFloatv(GL_MODELVIEW_MATRIX, modelView);
+		npLocalToWorld(&world, camData->inverseMatrix, modelView);
+
+		m_zSpaceStylusIntersectionPosition.x = world.x;
+		m_zSpaceStylusIntersectionPosition.y = world.y;
+		m_zSpaceStylusIntersectionPosition.z = world.z;
+		//m_zSpaceStylusScreenPoint.setX(screenPoint.x);
+		//m_zSpaceStylusScreenPoint.setY(antzData->io.gl.height - screenPoint.y);
 
 		glPopMatrix();
 	}
@@ -757,7 +776,7 @@ bool ANTzViewerWidget::SelectAtPoint(int x, int y, bool multiSelect) {
 		return false;
 	}
 
-	emit NewStatusMessage(tr("Selection Attempt At: %1, %2").arg(x).arg(y), 4000);
+	//emit NewStatusMessage(tr("Selection Attempt At: %1, %2").arg(x).arg(y), 4000);
 
 	int pickID = 0;
 
@@ -768,28 +787,30 @@ bool ANTzViewerWidget::SelectAtPoint(int x, int y, bool multiSelect) {
 
 	//if (IsInStereoMode()) {
 
-		glMatrixMode(GL_MODELVIEW);
-		glLoadIdentity();
-		npSetLookAtFromCamera(antzData);
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	npSetLookAtFromCamera(antzData);
 
-		antzData->io.gl.stereo = false;
-		antzData->io.gl.pickPass = true;
-		glReadBuffer(GL_BACK_LEFT);
+	//antzData->io.gl.stereo = false;
+	antzData->io.gl.pickPass = true;
 
-		DrawSceneForEye(Eye::Left, false);
+	DrawSceneForEye(Eye::Left, false);
 
+	glFinish();
+	glReadBuffer(GL_BACK_LEFT);
+	pickID = npPickPinStereoSingleEye(glX, glY, antzData);
+
+	/*if ((pickID == 0) && IsInStereoMode()) {
+
+		DrawSceneForEye(Eye::Right, false);
+		glFinish();
+		glReadBuffer(GL_BACK_RIGHT);
 		pickID = npPickPinStereoSingleEye(glX, glY, antzData);
+	}*/
 
-		if ((pickID == 0) && IsInStereoMode()) {
-
-			glReadBuffer(GL_BACK_RIGHT);
-			DrawSceneForEye(Eye::Right, false);
-			pickID = npPickPinStereoSingleEye(glX, glY, antzData);
-		}
-
-		//antzData->io.gl.stereo = true;
-		antzData->io.gl.stereo = IsInStereoMode();
-		antzData->io.gl.pickPass = false;	//clear the flag to draw normal colors
+	//antzData->io.gl.stereo = true;
+	//antzData->io.gl.stereo = IsInStereoMode();
+	antzData->io.gl.pickPass = false;	//clear the flag to draw normal colors
 	//}
 	//else {
 
@@ -807,6 +828,8 @@ bool ANTzViewerWidget::SelectAtPoint(int x, int y, bool multiSelect) {
 
 		m_selectionModel->select(m_model->IndexFromANTzID(pickID), flags);
 	}
+
+	//emit NewStatusMessage(tr("Selection At: %1, %2 || Pick ID: %3").arg(x).arg(y).arg(pickID), 4000);
 	
 	return (pickID != 0);
 }
@@ -1041,10 +1064,10 @@ void ANTzViewerWidget::ZSpaceButtonReleaseHandler(ZSHandle targetHandle, const Z
 
 	if (eventData->buttonId == 0) {
 
-		if (!SelectAtPoint(m_zSpaceStylusScreenPoint.x(), m_zSpaceStylusScreenPoint.y(), false)) {
-
-			zsStartTargetVibration(m_zSpaceStylus, 0.04f, 0.04f, 4);
-		}
+		//if (!SelectAtPoint(m_zSpaceStylusScreenPoint.x(), m_zSpaceStylusScreenPoint.y(), false)) {
+		emit NewStatusMessage(tr("World Coord: %1, %2, %3").arg(m_zSpaceStylusIntersectionPosition.x).arg(m_zSpaceStylusIntersectionPosition.y).arg(m_zSpaceStylusIntersectionPosition.z), 4000);
+		zsStartTargetVibration(m_zSpaceStylus, 0.04f, 0.04f, 4);
+		//}
 	}
 }
 
