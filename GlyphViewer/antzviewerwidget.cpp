@@ -19,9 +19,6 @@
 QGLFormat ANTzViewerWidget::s_format(QGL::AlphaChannel);
 QGLFormat ANTzViewerWidget::s_stereoFormat(QGL::AlphaChannel | QGL::StereoBuffers);
 
-//Length of zSpace stylus line
-const float ANTzViewerWidget::s_stylusLength = 0.15f;  // Meters
-
 ANTzViewerWidget::ANTzViewerWidget(const QGLFormat& format, GlyphForestModel* model, QItemSelectionModel* selectionModel, QWidget *parent)
 	: QGLWidget(format, parent),
 	m_model(model),
@@ -38,7 +35,10 @@ ANTzViewerWidget::ANTzViewerWidget(const QGLFormat& format, GlyphForestModel* mo
 	m_isReseting(false),
 	m_worldTextureID(0),
 	m_regionSelectionRect(QRect()),
-	m_hideUnselectedGlyphTrees(false)
+	m_hideUnselectedGlyphTrees(false),
+	m_drawHUD(true),
+	m_stylusLength(0.15f),
+	m_stylusColor(Qt::green)
 {
 	setFocusPolicy(Qt::StrongFocus);
 
@@ -127,6 +127,8 @@ ANTzViewerWidget::ANTzViewerWidget(const QGLFormat& format, GlyphForestModel* mo
 			error = zsAddTrackerEventHandler(m_zSpaceStylus, ZS_TRACKER_EVENT_BUTTON_RELEASE, &ZSpaceEventDispatcher, this);
 			CheckZSpaceError(error);
 			error = zsAddTrackerEventHandler(m_zSpaceStylus, ZS_TRACKER_EVENT_MOVE, &ZSpaceEventDispatcher, this);
+			CheckZSpaceError(error);
+			error = zsAddTrackerEventHandler(m_zSpaceStylus, ZS_TRACKER_EVENT_TAP_SINGLE, &ZSpaceEventDispatcher, this);
 			CheckZSpaceError(error);
 
 			error = zsSetTargetVibrationEnabled(m_zSpaceStylus, true);
@@ -360,7 +362,7 @@ void ANTzViewerWidget::paintGL() {
 
 	if (IsInStereoMode())  {
 
-		DrawSceneForEye(Eye::Right, true);
+		DrawSceneForEye(Eye::Right, false);
 	}
 	
 	DrawSceneForEye(Eye::Left, true);
@@ -376,7 +378,7 @@ void ANTzViewerWidget::paintGL() {
     //QGLWidget takes care of swapping buffers
 }
 
-void ANTzViewerWidget::DrawSceneForEye(Eye eye, bool drawHUD) {
+void ANTzViewerWidget::DrawSceneForEye(Eye eye, bool getStylusWorldPosition) {
 
 	pData antzData = m_antzData->GetData();
 	pNPnode camNode = npGetActiveCam(antzData);
@@ -430,11 +432,10 @@ void ANTzViewerWidget::DrawSceneForEye(Eye eye, bool drawHUD) {
 	npGLShading(antzData);
 	npDrawNodes(antzData);
 
-	if (drawHUD) {
+	DrawZSpaceStylus(m_zSpaceStylusWorldMatrix, getStylusWorldPosition);
 
-		ZSFloat stylusLength = s_stylusLength;
-		QColor stylusColor = Qt::green; // Qt::red;
-		DrawZSpaceStylus(m_zSpaceStylusWorldMatrix, stylusLength, stylusColor);
+	if (m_drawHUD) {
+
 		DrawHUD();
 	}
 
@@ -444,7 +445,7 @@ void ANTzViewerWidget::DrawSceneForEye(Eye eye, bool drawHUD) {
 	glPopMatrix();
 }
 
-void ANTzViewerWidget::DrawZSpaceStylus(const ZSMatrix4& stylusMatrix, ZSFloat stylusLength, QColor color) {
+void ANTzViewerWidget::DrawZSpaceStylus(const ZSMatrix4& stylusMatrix, bool getStylusWorldPosition) {
 
 	if (IsInZSpaceStereo()) {
 
@@ -452,7 +453,7 @@ void ANTzViewerWidget::DrawZSpaceStylus(const ZSMatrix4& stylusMatrix, ZSFloat s
 		pNPnode camNode = npGetActiveCam(antzData);
 		NPcameraPtr camData = static_cast<NPcameraPtr>(camNode->data);
 
-		qglColor(color);
+		qglColor(m_stylusColor);
 
 		// Multiply the model-view matrix by the stylus world matrix.
 		glMatrixMode(GL_MODELVIEW);
@@ -462,26 +463,32 @@ void ANTzViewerWidget::DrawZSpaceStylus(const ZSMatrix4& stylusMatrix, ZSFloat s
 		// Draw the line.
 		glBegin(GL_LINES);
 		glVertex3f(0.0f, 0.0f, 0.0f);
-		glVertex3f(0.0f, 0.0f, -stylusLength);
+		glVertex3f(0.0f, 0.0f, -m_stylusLength);
 
 		glEnd();
 
-		glTranslatef(0.0f, 0.0f, -stylusLength);
-		//glScalef(0.0025f, 0.0025f, 0.0025f);
-		//npGLPrimitive(kNPgeoSphere, 0.1f);
+		if (getStylusWorldPosition) {
 
-		NPfloatXYZ world = { 0.0f, 0.0f, 0.0f };
-		//NPfloatXYZ screenPoint = npProjectWorldToScreen(&offset);
+			NPfloatXYZ world = { 0.0f, 0.0f, 0.0f };
+			GLfloat modelView[16];
+			glGetFloatv(GL_MODELVIEW_MATRIX, modelView);
+			npLocalToWorld(&world, camData->inverseMatrix, modelView);
 
-		GLfloat modelView[16];
-		glGetFloatv(GL_MODELVIEW_MATRIX, modelView);
-		npLocalToWorld(&world, camData->inverseMatrix, modelView);
+			m_stylusWorldLine.first.x = world.x;
+			m_stylusWorldLine.first.y = world.y;
+			m_stylusWorldLine.first.z = world.z;
 
-		m_zSpaceStylusIntersectionPosition.x = world.x;
-		m_zSpaceStylusIntersectionPosition.y = world.y;
-		m_zSpaceStylusIntersectionPosition.z = world.z;
-		//m_zSpaceStylusScreenPoint.setX(screenPoint.x);
-		//m_zSpaceStylusScreenPoint.setY(antzData->io.gl.height - screenPoint.y);
+			glTranslatef(0.0f, 0.0f, -m_stylusLength);
+			//glScalef(0.0025f, 0.0025f, 0.0025f);
+			//npGLPrimitive(kNPgeoSphere, 0.1f);
+			glGetFloatv(GL_MODELVIEW_MATRIX, modelView);
+			npLocalToWorld(&world, camData->inverseMatrix, modelView);
+
+			m_stylusWorldLine.second.x = world.x;
+			m_stylusWorldLine.second.y = world.y;
+			m_stylusWorldLine.second.z = world.z;
+
+		}
 
 		glPopMatrix();
 	}
@@ -1065,7 +1072,8 @@ void ANTzViewerWidget::ZSpaceButtonReleaseHandler(ZSHandle targetHandle, const Z
 	if (eventData->buttonId == 0) {
 
 		//if (!SelectAtPoint(m_zSpaceStylusScreenPoint.x(), m_zSpaceStylusScreenPoint.y(), false)) {
-		emit NewStatusMessage(tr("World Coord: %1, %2, %3").arg(m_zSpaceStylusIntersectionPosition.x).arg(m_zSpaceStylusIntersectionPosition.y).arg(m_zSpaceStylusIntersectionPosition.z), 4000);
+		emit NewStatusMessage(tr("Source: (%1, %2, %3)").arg(m_stylusWorldLine.first.x).arg(m_stylusWorldLine.first.y).arg(m_stylusWorldLine.first.z) +
+			" " + tr("Dest: (%1, %2, %3)").arg(m_stylusWorldLine.second.x).arg(m_stylusWorldLine.second.y).arg(m_stylusWorldLine.second.z), 4000);
 		zsStartTargetVibration(m_zSpaceStylus, 0.04f, 0.04f, 4);
 		//}
 	}
@@ -1112,6 +1120,12 @@ void ANTzViewerWidget::ZSpaceStylusMoveHandler(ZSHandle targetHandle, const ZSTr
 	m_zSpaceStylusLastPosition.z = eventData->poseMatrix.m23;
 }
 
+void ANTzViewerWidget::ZSpaceStylusTapHandler(ZSHandle targetHandle, const ZSTrackerEventData* eventData) {
+
+	emit NewStatusMessage(tr("Source: (%1, %2, %3)").arg(m_stylusWorldLine.first.x).arg(m_stylusWorldLine.first.y).arg(m_stylusWorldLine.first.z) +
+		" " + tr("Dest: (%1, %2, %3)").arg(m_stylusWorldLine.second.x).arg(m_stylusWorldLine.second.y).arg(m_stylusWorldLine.second.z), 4000);
+}
+
 void ANTzViewerWidget::ZSpaceEventDispatcher(ZSHandle targetHandle, const ZSTrackerEventData* eventData, const void* userData) {
 
 	if (userData != nullptr) {
@@ -1128,6 +1142,10 @@ void ANTzViewerWidget::ZSpaceEventDispatcher(ZSHandle targetHandle, const ZSTrac
 		else if (eventData->type == ZS_TRACKER_EVENT_BUTTON_PRESS) {
 
 			widget->ZSpaceButtonPressHandler(targetHandle, eventData);
+		}
+		else if (eventData->type == ZS_TRACKER_EVENT_TAP_SINGLE) {
+
+			widget->ZSpaceStylusTapHandler(targetHandle, eventData);
 		}
 	}
 }

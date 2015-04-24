@@ -23,6 +23,7 @@
 #include "glyphforestmodel.h"
 #include <zSpace.h>
 #include "antzdata.h"
+#include "antzboundingbox.h"
 
 class ANTzViewerWidget : public QGLWidget
 {
@@ -71,7 +72,7 @@ private:
 		Right
 	};
 
-	void DrawSceneForEye(Eye eye, bool drawHUD);
+	void DrawSceneForEye(Eye eye, bool getStylusWorldPosition);
 	void SetCameraToDefaultPosition();
 	unsigned int BindTextureInFile(const QString& imageFilename);
 	void SetGridTexture(pNPnode grid);
@@ -86,11 +87,12 @@ private:
 	bool IsInZSpaceStereo() const;
 	void SetZSpaceMatricesForDrawing(ZSEye eye, const ZSMatrix4& originialViewMatrix, NPcameraPtr camData);
 	void ClearZSpaceContext();
-	void DrawZSpaceStylus(const ZSMatrix4& stylusMatrix, ZSFloat stylusLength, QColor color);
+	void DrawZSpaceStylus(const ZSMatrix4& stylusMatrix, bool getStylusWorldPosition);
 
 	void ZSpaceButtonPressHandler(ZSHandle targetHandle, const ZSTrackerEventData* eventData);
 	void ZSpaceButtonReleaseHandler(ZSHandle targetHandle, const ZSTrackerEventData* eventData);
 	void ZSpaceStylusMoveHandler(ZSHandle targetHandle, const ZSTrackerEventData* eventData);
+	void ZSpaceStylusTapHandler(ZSHandle targetHandle, const ZSTrackerEventData* eventData);
 	static void ZSpaceEventDispatcher(ZSHandle targetHandle, const ZSTrackerEventData* eventData, const void* userData);
 
 	void UpdateGlyphTreesShowHideForSelection();
@@ -98,12 +100,14 @@ private:
 
     static QGLFormat s_format;
 	static QGLFormat s_stereoFormat;
-	static const float s_stylusLength;
 
 	QFont m_oglTextFont;
 	bool m_isReseting;
-
+	bool m_drawHUD;
 	bool m_hideUnselectedGlyphTrees;
+
+	QColor m_stylusColor;
+	float m_stylusLength;
 
 	unsigned int m_worldTextureID;
 	std::vector<unsigned int> m_textureIDs;
@@ -127,7 +131,8 @@ private:
 	ZSMatrix4 m_zSpaceStylusWorldMatrix;
 	ZSMatrix4 m_originialViewMatrix;
 	ZSVector3 m_zSpaceStylusLastPosition;
-	ZSVector3 m_zSpaceStylusIntersectionPosition;
+
+	SynGlyphXANTz::ANTzBoundingBox::Line m_stylusWorldLine;
 };
 
 #endif // ANTZWIDGET_H
