@@ -29,7 +29,7 @@ namespace SynGlyphX {
         boost::filesystem::path intermediateCSV = intermediateDir / "intermediate_temp_output.csv";
 
         if (!boost::filesystem::exists(intermediateDir)) {
-            boost::filesystem::create_directory(intermediateDir);
+			boost::filesystem::create_directories(intermediateDir);
         }
 
         boost::filesystem::path inputPath(inputFilename);

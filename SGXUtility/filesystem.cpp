@@ -50,7 +50,7 @@ namespace SynGlyphX {
 
 		if (!boost::filesystem::exists(destinationPath)) {
 
-			if (!boost::filesystem::create_directory(destinationPath)) {
+			if (!boost::filesystem::create_directories(destinationPath)) {
 
 				throw std::invalid_argument("CopyDirectory: Unable to create destination directory");
 			}
