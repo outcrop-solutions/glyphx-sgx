@@ -24,7 +24,7 @@ void CacheManager::SetBaseCacheDirectory(const std::wstring& newbaseCacheDirecto
 	}
 	else {
 
-		if (!boost::filesystem::create_directory(newbaseCacheDirectoryPath)) {
+		if (!boost::filesystem::create_directories(newbaseCacheDirectoryPath)) {
 
 			throw std::invalid_argument("New base directory for cache could not be created");
 		}
@@ -46,7 +46,7 @@ std::wstring CacheManager::GetCacheDirectory(const boost::uuids::uuid& id) {
 	}
 	else {
 
-		if (!boost::filesystem::create_directory(cacheDirectoryPath)) {
+		if (!boost::filesystem::create_directories(cacheDirectoryPath)) {
 
 			throw std::exception("Cache directory could not be created");
 		}
