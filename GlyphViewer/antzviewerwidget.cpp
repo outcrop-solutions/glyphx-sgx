@@ -1186,35 +1186,47 @@ void ANTzViewerWidget::DrawBoundingBoxes() {
 
 	for (auto boundingBox : m_boundingBoxes) {
 
-		glm::vec4 minPoint = boundingBox.second.GetTransform() * glm::vec4(boundingBox.second.GetMinCorner(), 1.0);
-		glm::vec4 maxPoint = boundingBox.second.GetTransform() * glm::vec4(boundingBox.second.GetMaxCorner(), 1.0);
+		glm::vec3 minPoint = boundingBox.second.GetMinCorner();
+		glm::vec3 maxPoint = boundingBox.second.GetMaxCorner();
+
+		glm::vec4 bll = boundingBox.second.GetTransform() * glm::vec4(minPoint.x, minPoint.y, minPoint.z, 1.0f);
+		glm::vec4 blr = boundingBox.second.GetTransform() * glm::vec4(maxPoint.x, minPoint.y, minPoint.z, 1.0f);
+
+		glm::vec4 bur = boundingBox.second.GetTransform() * glm::vec4(maxPoint.x, maxPoint.y, minPoint.z, 1.0f);
+		glm::vec4 bul = boundingBox.second.GetTransform() * glm::vec4(minPoint.x, maxPoint.y, minPoint.z, 1.0f);
+
+		glm::vec4 tll = boundingBox.second.GetTransform() * glm::vec4(minPoint.x, minPoint.y, maxPoint.z, 1.0f);
+		glm::vec4 tlr = boundingBox.second.GetTransform() * glm::vec4(maxPoint.x, minPoint.y, maxPoint.z, 1.0f);
+
+		glm::vec4 tur = boundingBox.second.GetTransform() * glm::vec4(maxPoint.x, maxPoint.y, maxPoint.z, 1.0f);
+		glm::vec4 tul = boundingBox.second.GetTransform() * glm::vec4(minPoint.x, maxPoint.y, maxPoint.z, 1.0f);
 
 		glBegin(GL_LINE_LOOP);
-		glVertex3f(minPoint.x, minPoint.y, minPoint.z);
-		glVertex3f(maxPoint.x, minPoint.y, minPoint.z);
-		glVertex3f(maxPoint.x, maxPoint.y, minPoint.z);
-		glVertex3f(minPoint.x, maxPoint.y, minPoint.z);
+		glVertex3f(bll.x, bll.y, bll.z);
+		glVertex3f(blr.x, blr.y, blr.z);
+		glVertex3f(bur.x, bur.y, bur.z);
+		glVertex3f(bul.x, bul.y, bul.z);
 		glEnd();
 
 		glBegin(GL_LINE_LOOP);
-		glVertex3f(minPoint.x, minPoint.y, maxPoint.z);
-		glVertex3f(maxPoint.x, minPoint.y, maxPoint.z);
-		glVertex3f(maxPoint.x, maxPoint.y, maxPoint.z);
-		glVertex3f(minPoint.x, maxPoint.y, maxPoint.z);
+		glVertex3f(tll.x, tll.y, tll.z);
+		glVertex3f(tlr.x, tlr.y, tlr.z);
+		glVertex3f(tur.x, tur.y, tur.z);
+		glVertex3f(tul.x, tul.y, tul.z);
 		glEnd();
 
 		glBegin(GL_LINE_LOOP);
-		glVertex3f(minPoint.x, minPoint.y, minPoint.z);
-		glVertex3f(minPoint.x, minPoint.y, maxPoint.z);
-		glVertex3f(minPoint.x, maxPoint.y, maxPoint.z);
-		glVertex3f(minPoint.x, maxPoint.y, minPoint.z);
+		glVertex3f(bll.x, bll.y, bll.z);
+		glVertex3f(tll.x, tll.y, tll.z);
+		glVertex3f(tul.x, tul.y, tul.z);
+		glVertex3f(bul.x, bul.y, bul.z);
 		glEnd();
 
 		glBegin(GL_LINE_LOOP);
-		glVertex3f(maxPoint.x, minPoint.y, minPoint.z);
-		glVertex3f(maxPoint.x, minPoint.y, maxPoint.z);
-		glVertex3f(maxPoint.x, maxPoint.y, maxPoint.z);
-		glVertex3f(maxPoint.x, maxPoint.y, minPoint.z);
+		glVertex3f(blr.x, blr.y, blr.z);
+		glVertex3f(tlr.x, tlr.y, tlr.z);
+		glVertex3f(tur.x, tur.y, tur.z);
+		glVertex3f(bur.x, bur.y, bur.z);
 		glEnd();
 	}
 }
