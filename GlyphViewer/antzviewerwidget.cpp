@@ -14,6 +14,7 @@
 #include "io/gl/nptags.h"
 #include "application.h"
 #include "sourcedataselectionmodel.h"
+#include <stack>
 
 //The default QGLFormat works for now except we want alpha enabled.  Also want to try and get a stereo enabled context
 QGLFormat ANTzViewerWidget::s_format(QGL::AlphaChannel);
@@ -431,6 +432,8 @@ void ANTzViewerWidget::DrawSceneForEye(Eye eye, bool getStylusWorldPosition) {
 	npGLLighting(antzData);
 	npGLShading(antzData);
 	npDrawNodes(antzData);
+
+	DrawBoundingBoxes();
 
 	DrawZSpaceStylus(m_zSpaceStylusWorldMatrix, getStylusWorldPosition);
 
@@ -1150,7 +1153,75 @@ void ANTzViewerWidget::ZSpaceEventDispatcher(ZSHandle targetHandle, const ZSTrac
 	}
 }
 
+void ANTzViewerWidget::CreateBoundingBoxes() {
+
+	m_boundingBoxes.clear();
+
+	pData antzData = m_antzData->GetData();
+	pNPnode rootGrid = static_cast<pNPnode>(antzData->map.node[kNPnodeRootGrid]);
+	for (int i = kNPnodeRootPin; i < antzData->map.nodeRootCount; ++i) {
+
+		pNPnode node = static_cast<pNPnode>(antzData->map.node[i]);
+		m_boundingBoxes[node->id] = SynGlyphXANTz::ANTzBoundingBox::CreateBoundingBox(node, rootGrid->scale.z);
+
+		for (int j = 0; j < node->childCount; ++j) {
+
+			CreateBoundingBoxes(node->child[j], m_boundingBoxes[node->id].GetTransform());
+		}
+	}
+}
+
+void ANTzViewerWidget::CreateBoundingBoxes(pNPnode node, const glm::mat4& parentTransform) {
+
+	m_boundingBoxes[node->id] = SynGlyphXANTz::ANTzBoundingBox::CreateBoundingBox(node, parentTransform);
+	for (int j = 0; j < node->childCount; ++j) {
+
+		CreateBoundingBoxes(node->child[j], m_boundingBoxes[node->id].GetTransform());
+	}
+}
+
+void ANTzViewerWidget::DrawBoundingBoxes() {
+
+	qglColor(Qt::magenta);
+
+	for (auto boundingBox : m_boundingBoxes) {
+
+		glm::vec4 minPoint = boundingBox.second.GetTransform() * glm::vec4(boundingBox.second.GetMinCorner(), 1.0);
+		glm::vec4 maxPoint = boundingBox.second.GetTransform() * glm::vec4(boundingBox.second.GetMaxCorner(), 1.0);
+
+		glBegin(GL_LINE_LOOP);
+		glVertex3f(minPoint.x, minPoint.y, minPoint.z);
+		glVertex3f(maxPoint.x, minPoint.y, minPoint.z);
+		glVertex3f(maxPoint.x, maxPoint.y, minPoint.z);
+		glVertex3f(minPoint.x, maxPoint.y, minPoint.z);
+		glEnd();
+
+		glBegin(GL_LINE_LOOP);
+		glVertex3f(minPoint.x, minPoint.y, maxPoint.z);
+		glVertex3f(maxPoint.x, minPoint.y, maxPoint.z);
+		glVertex3f(maxPoint.x, maxPoint.y, maxPoint.z);
+		glVertex3f(minPoint.x, maxPoint.y, maxPoint.z);
+		glEnd();
+
+		glBegin(GL_LINE_LOOP);
+		glVertex3f(minPoint.x, minPoint.y, minPoint.z);
+		glVertex3f(minPoint.x, minPoint.y, maxPoint.z);
+		glVertex3f(minPoint.x, maxPoint.y, maxPoint.z);
+		glVertex3f(minPoint.x, maxPoint.y, minPoint.z);
+		glEnd();
+
+		glBegin(GL_LINE_LOOP);
+		glVertex3f(maxPoint.x, minPoint.y, minPoint.z);
+		glVertex3f(maxPoint.x, minPoint.y, maxPoint.z);
+		glVertex3f(maxPoint.x, maxPoint.y, maxPoint.z);
+		glVertex3f(maxPoint.x, maxPoint.y, minPoint.z);
+		glEnd();
+	}
+}
+
 void ANTzViewerWidget::OnModelReset() {
+
+	CreateBoundingBoxes();
 
 	const QStringList& textures = m_model->GetBaseImageFilenames();
 

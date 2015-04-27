@@ -98,6 +98,10 @@ private:
 	void UpdateGlyphTreesShowHideForSelection();
 	void ShowAllGlyphTrees();
 
+	void CreateBoundingBoxes();
+	void CreateBoundingBoxes(pNPnode node, const glm::mat4& parentTransform);
+	void DrawBoundingBoxes();
+
     static QGLFormat s_format;
 	static QGLFormat s_stereoFormat;
 
@@ -133,6 +137,7 @@ private:
 	ZSVector3 m_zSpaceStylusLastPosition;
 
 	SynGlyphXANTz::ANTzBoundingBox::Line m_stylusWorldLine;
+	std::map<int, SynGlyphXANTz::ANTzBoundingBox> m_boundingBoxes;
 };
 
 #endif // ANTZWIDGET_H
