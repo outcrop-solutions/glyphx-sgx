@@ -50,9 +50,8 @@ namespace SynGlyphXANTz {
 		static void ApplyTorusTransform(pNPnode node, glm::mat4& transform);
 
 		static ANTzBoundingBox CreatePinBB();
-		static ANTzBoundingBox CreateCubeBB();
+		static ANTzBoundingBox CreateCubeBB(double radius);
 		static ANTzBoundingBox CreateCylinderBB();
-		static ANTzBoundingBox CreateSphereBB();
 
 		static const ANTzBoundingBox s_pin;
 		static const ANTzBoundingBox s_cube;

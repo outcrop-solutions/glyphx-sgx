@@ -8,9 +8,9 @@
 namespace SynGlyphXANTz {
 
 	const ANTzBoundingBox ANTzBoundingBox::s_pin = CreatePinBB();
-	const ANTzBoundingBox ANTzBoundingBox::s_cube = CreateCubeBB();
+	const ANTzBoundingBox ANTzBoundingBox::s_cube = CreateCubeBB(std::sqrt(2.0) / 2.0);
 	const ANTzBoundingBox ANTzBoundingBox::s_cylinder = CreateCylinderBB();
-	const ANTzBoundingBox ANTzBoundingBox::s_sphere = CreateSphereBB();
+	const ANTzBoundingBox ANTzBoundingBox::s_sphere = CreateCubeBB(1.0);
 
 	ANTzBoundingBox::ANTzBoundingBox() :
 		m_minCorner(-1.0),
@@ -178,9 +178,9 @@ namespace SynGlyphXANTz {
 
 		ANTzBoundingBox bb;
 
-		if ((node->geometry == kNPgeoSphereWire) || (node->geometry == kNPgeoSphere)) {
+		if ((node->geometry == kNPgeoCubeWire) || (node->geometry == kNPgeoCube)) {
 
-			bb = s_sphere;
+			bb = s_cube;
 		}
 		else if ((node->geometry == kNPgeoConeWire) || (node->geometry == kNPgeoCone) ||
 			(node->geometry == kNPgeoCylinderWire) || (node->geometry == kNPgeoCylinder)) {
@@ -197,7 +197,7 @@ namespace SynGlyphXANTz {
 		}
 		else {
 
-			bb = s_cube;
+			bb = s_sphere;
 		}
 
 		return bb;
@@ -241,10 +241,9 @@ namespace SynGlyphXANTz {
 		return bb;
 	}
 
-	ANTzBoundingBox ANTzBoundingBox::CreateCubeBB() {
+	ANTzBoundingBox ANTzBoundingBox::CreateCubeBB(double radius) {
 
 		ANTzBoundingBox bb;
-		double radius = std::sqrt(2.0) / 2.0;
 
 		bb.m_minCorner = glm::vec3(-radius, -radius, -radius);
 		bb.m_maxCorner = glm::vec3(radius, radius, radius);
@@ -258,16 +257,6 @@ namespace SynGlyphXANTz {
 
 		bb.m_minCorner = glm::vec3(-1, -1, 0.0);
 		bb.m_maxCorner = glm::vec3(1, 1, 2.0);
-
-		return bb;
-	}
-
-	ANTzBoundingBox ANTzBoundingBox::CreateSphereBB() {
-
-		ANTzBoundingBox bb;
-
-		bb.m_minCorner = glm::vec3(-1.0, -1.0, -1.0);
-		bb.m_maxCorner = glm::vec3(1.0, 1.0, 1.0);
 
 		return bb;
 	}
