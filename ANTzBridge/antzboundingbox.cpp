@@ -46,6 +46,21 @@ namespace SynGlyphXANTz {
 		m_matrixTransform = matrix;
 	}
 
+	const glm::mat4& ANTzBoundingBox::GetTransform() const {
+
+		return m_matrixTransform;
+	}
+
+	const glm::vec3& ANTzBoundingBox::GetMinCorner() const {
+
+		return m_minCorner;
+	}
+
+	const glm::vec3& ANTzBoundingBox::GetMaxCorner() const {
+
+		return m_maxCorner;
+	}
+
 	ANTzBoundingBox::Intersection ANTzBoundingBox::DoesLineIntersect(const Line& line) {
 
 		// Intersection method from Real-Time Rendering and Essential Mathematics for Games
@@ -159,6 +174,53 @@ namespace SynGlyphXANTz {
 		return tMin;
 	}
 
+	ANTzBoundingBox ANTzBoundingBox::GetDefaultBB(pNPnode node) {
+
+		ANTzBoundingBox bb;
+
+		if ((node->geometry == kNPgeoSphereWire) || (node->geometry == kNPgeoSphere)) {
+
+			bb = s_sphere;
+		}
+		else if ((node->geometry == kNPgeoConeWire) || (node->geometry == kNPgeoCone) ||
+			(node->geometry == kNPgeoCylinderWire) || (node->geometry == kNPgeoCylinder)) {
+
+			bb = s_cylinder;
+		}
+		else if ((node->geometry == kNPgeoPinWire) || (node->geometry == kNPgeoPin)) {
+
+			bb = s_pin;
+		}
+		else if ((node->geometry == kNPgeoTorusWire) || (node->geometry == kNPgeoTorus)) {
+
+			bb = CreateTorusBB(node->ratio);
+		}
+		else {
+
+			bb = s_cube;
+		}
+
+		return bb;
+	}
+
+	ANTzBoundingBox ANTzBoundingBox::CreateBoundingBox(pNPnode node, float rootGridZScale) {
+
+		ANTzBoundingBox bb = GetDefaultBB(node);
+
+		bb.SetTransform(CreateTransform(node, rootGridZScale));
+
+		return bb;
+	}
+
+	ANTzBoundingBox ANTzBoundingBox::CreateBoundingBox(pNPnode node, const glm::mat4& previousTransform) {
+
+		ANTzBoundingBox bb = GetDefaultBB(node);
+
+		bb.SetTransform(CreateTransform(node, previousTransform));
+
+		return bb;
+	}
+
 	ANTzBoundingBox ANTzBoundingBox::CreatePinBB() {
 
 		ANTzBoundingBox bb;
@@ -173,8 +235,8 @@ namespace SynGlyphXANTz {
 
 		ANTzBoundingBox bb;
 
-		bb.m_minCorner = glm::vec3(-kNPtorusRadius, -kNPtorusRadius, -kNPtorusRadius * ratio);
-		bb.m_maxCorner = glm::vec3(kNPtorusRadius, kNPtorusRadius, kNPtorusRadius * ratio);
+		bb.m_minCorner = glm::vec3(-kNPtorusRadius - 2 * ratio, -kNPtorusRadius - 2 * ratio, -kNPtorusRadius * ratio);
+		bb.m_maxCorner = glm::vec3(kNPtorusRadius + 2 * ratio, kNPtorusRadius + 2 * ratio, kNPtorusRadius * ratio);
 
 		return bb;
 	}
@@ -417,12 +479,8 @@ namespace SynGlyphXANTz {
 		transform = glm::scale(transform, glm::vec3(kNPtorusRadius, kNPtorusRadius, kNPtorusRadius));
 
 		//position at torus outer radius, inside center of tube
-		transform = glm::rotate(transform, node->translate.x + 90.0f, glm::vec3(0.0f, 0.0f, 1.0f));
-		//		glRotatef (node->translate.x, 0.0f, 0.0f, 1.0f);		//longitude
+		transform = glm::rotate(transform, node->translate.x - 90.0f, glm::vec3(0.0f, 0.0f, 1.0f));
 		transform = glm::translate(transform, glm::vec3(1.0f, 0.0f, 0.0f));	//translate to center of tube
-
-		//?
-		//		glRotatef (90.0f, 1.0f, 0.0f, 0.0f);
 
 		//treat null as torus, later make this depend on the geometry
 		if (node->topo == kNPtopoTorus)

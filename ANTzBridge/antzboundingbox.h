@@ -24,20 +24,23 @@ namespace SynGlyphXANTz {
 		ANTzBoundingBox& operator=(const ANTzBoundingBox& boundingBox);
 
 		void SetTransform(const glm::mat4& matrix);
+		const glm::mat4& GetTransform() const;
+
+		const glm::vec3& GetMinCorner() const;
+		const glm::vec3& GetMaxCorner() const;
 
 		Intersection DoesLineIntersect(const Line& line);
 
+		static ANTzBoundingBox CreateBoundingBox(pNPnode node, float rootGridZScale = 1.0f);
+		static ANTzBoundingBox CreateBoundingBox(pNPnode node, const glm::mat4& previousTransform);
+
+	private:
 		static glm::mat4 CreateTransform(pNPnode node, float rootGridZScale = 1.0f);
 		static glm::mat4 CreateTransform(pNPnode node, const glm::mat4& previousTransform);
 
 		static ANTzBoundingBox CreateTorusBB(double ratio);
+		static ANTzBoundingBox GetDefaultBB(pNPnode node);
 
-		static const ANTzBoundingBox s_pin;
-		static const ANTzBoundingBox s_cube;
-		static const ANTzBoundingBox s_cylinder;
-		static const ANTzBoundingBox s_sphere;
-
-	private:
 		static void AddFinalTransform(pNPnode node, glm::mat4& transform);
 		static void ApplyRotation(pNPnode node, glm::mat4& transform);
 		static void ApplyCubeTransform(pNPnode node, glm::mat4& transform);
@@ -50,6 +53,11 @@ namespace SynGlyphXANTz {
 		static ANTzBoundingBox CreateCubeBB();
 		static ANTzBoundingBox CreateCylinderBB();
 		static ANTzBoundingBox CreateSphereBB();
+
+		static const ANTzBoundingBox s_pin;
+		static const ANTzBoundingBox s_cube;
+		static const ANTzBoundingBox s_cylinder;
+		static const ANTzBoundingBox s_sphere;
 
 		glm::vec3 m_minCorner;
 		glm::vec3 m_maxCorner;
