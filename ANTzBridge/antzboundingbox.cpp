@@ -362,30 +362,30 @@ namespace SynGlyphXANTz {
 		switch (i) // 
 		{
 		case 1:
-			transform = glm::rotate(transform, 90.0f, glm::vec3(0.0f, 1.0f, 0.0f));		//pos x	front
-			transform = glm::rotate(transform, 90.0f, glm::vec3(0.0f, 0.0f, 1.0f));
+			transform = glm::rotate(transform, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));		//pos x	front
+			transform = glm::rotate(transform, glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
 			break;
 		case 2:
-			transform = glm::rotate(transform, 90.0f, glm::vec3(0.0f, 1.0f, 0.0f));		//neg x	back
-			transform = glm::rotate(transform, 180.0f, glm::vec3(1.0f, 0.0f, 0.0f));
-			transform = glm::rotate(transform, 90.0f, glm::vec3(0.0f, 0.0f, 1.0f));
+			transform = glm::rotate(transform, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));		//neg x	back
+			transform = glm::rotate(transform, glm::radians(180.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+			transform = glm::rotate(transform, glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
 			break;
 		case 3:
-			transform = glm::rotate(transform, 90.0f, glm::vec3(0.0f, 1.0f, 0.0f));		//pos y	right
-			transform = glm::rotate(transform, -90.0f, glm::vec3(1.0f, 0.0f, 0.0f));
-			transform = glm::rotate(transform, 90.0f, glm::vec3(0.0f, 0.0f, 1.0f));
+			transform = glm::rotate(transform, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));		//pos y	right
+			transform = glm::rotate(transform, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+			transform = glm::rotate(transform, glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
 			break;
 		case 4:
-			transform = glm::rotate(transform, 90.0f, glm::vec3(0.0f, 1.0f, 0.0f));		//neg y	left
-			transform = glm::rotate(transform, 90.0f, glm::vec3(1.0f, 0.0f, 0.0f));
-			transform = glm::rotate(transform, 90.0f, glm::vec3(0.0f, 0.0f, 1.0f));
+			transform = glm::rotate(transform, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));		//neg y	left
+			transform = glm::rotate(transform, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+			transform = glm::rotate(transform, glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
 			break;
 		case 5: 									//pos z top, no rotation
 			//	glRotatef (-90.0f, 0.0f, 0.0f, 1.0f);
 			break;
 		case 6:
 			//	glRotatef (-90.0f, 0.0f, 0.0f, 1.0f);
-			transform = glm::rotate(transform, 180.0f, glm::vec3(0.0f, 1.0f, 0.0f));	//neg z	bottom
+			transform = glm::rotate(transform, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));	//neg z	bottom
 			break;
 		default: break;
 		}
@@ -408,8 +408,8 @@ namespace SynGlyphXANTz {
 
 		pNPnode parent = node->parent;
 
-		transform = glm::rotate(transform, node->translate.x + 180.0f, glm::vec3(0.0f, 0.0f, 1.0f));	//longitude, +180 so N = 0
-		transform = glm::rotate(transform, node->translate.y - 90.f, glm::vec3(-1.0f, 0.0f, 0.0f));		//latitude
+		transform = glm::rotate(transform, glm::radians(node->translate.x + 180.0f), glm::vec3(0.0f, 0.0f, 1.0f));	//longitude, +180 so N = 0
+		transform = glm::rotate(transform, glm::radians(node->translate.y - 90.f), glm::vec3(-1.0f, 0.0f, 0.0f));		//latitude
 
 		//translate 1 unit to surface for sphere, convert node z local units
 		if (parent->topo == kNPtopoPoint)
@@ -431,8 +431,8 @@ namespace SynGlyphXANTz {
 
 	void ANTzBoundingBox::ApplyCylinderTransform(pNPnode node, glm::mat4& transform) {
 
-		transform = glm::rotate(transform, node->translate.x + 180.0f, glm::vec3(0.0f, 0.0f, 1.0f));	//longitude, +180 so N = 0
-		transform = glm::rotate(transform, 90.0f, glm::vec3(1.0f, 0.0f, 0.0f));	//orient perpendicular to cyl
+		transform = glm::rotate(transform, glm::radians(node->translate.x + 180.0f), glm::vec3(0.0f, 0.0f, 1.0f));	//longitude, +180 so N = 0
+		transform = glm::rotate(transform, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));	//orient perpendicular to cyl
 
 		//latitude plus translate 1 unit to surface adding converted node z local units
 		transform = glm::translate(transform, glm::vec3(0.0, node->translate.y / 90.0f, 1.0f + node->translate.z / (4.0f*kRADtoDEG)));
@@ -479,24 +479,24 @@ namespace SynGlyphXANTz {
 		transform = glm::scale(transform, glm::vec3(kNPtorusRadius, kNPtorusRadius, kNPtorusRadius));
 
 		//position at torus outer radius, inside center of tube
-		transform = glm::rotate(transform, node->translate.x - 90.0f, glm::vec3(0.0f, 0.0f, 1.0f));
+		transform = glm::rotate(transform, glm::radians(node->translate.x + 90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
 		transform = glm::translate(transform, glm::vec3(1.0f, 0.0f, 0.0f));	//translate to center of tube
 
 		//treat null as torus, later make this depend on the geometry
 		if (node->topo == kNPtopoTorus)
 		{
-			transform = glm::rotate(transform, 90.0f, glm::vec3(1.0f, 0.0f, 0.0f));
-			transform = glm::rotate(transform, -90.0f, glm::vec3(0.0f, 0.0f, 1.0f));
-			transform = glm::rotate(transform, node->translate.y, glm::vec3(0.0f, 0.0f, 1.0f));	//latitude
+			transform = glm::rotate(transform, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+			transform = glm::rotate(transform, glm::radians(-90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+			transform = glm::rotate(transform, glm::radians(node->translate.y), glm::vec3(0.0f, 0.0f, 1.0f));	//latitude
 			//translate.z based on scale.x and is converted from deg 57.29...
 			transform = glm::translate(transform, glm::vec3(0.0f, 0.1591f * node->scale.x * node->translate.z / kRADtoDEG, 0.0f));
 		}
 		else
 		{
-			transform = glm::rotate(transform, 90.0f, glm::vec3(0.0f, 1.0f, 0.0f));
-			transform = glm::rotate(transform, node->translate.y, glm::vec3(0.0f, -1.0f, 0.0f));	//latitude
+			transform = glm::rotate(transform, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+			transform = glm::rotate(transform, glm::radians(node->translate.y), glm::vec3(0.0f, -1.0f, 0.0f));	//latitude
 
-			transform = glm::rotate(transform, 90.0f, glm::vec3(0.0f, 0.0f, 1.0f));				//orient North
+			transform = glm::rotate(transform, glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));				//orient North
 			//translate 1 unit to surface then convert node z local units
 			//uses parent->ratio for torus inner radius and 1.5f for scaling factor
 			transform = glm::translate(transform, glm::vec3(0.0f, 0.0f, parent->ratio + (node->translate.z / (k2PI * kRADtoDEG))));
@@ -515,9 +515,9 @@ namespace SynGlyphXANTz {
 
 	void ANTzBoundingBox::ApplyRotation(pNPnode node, glm::mat4& transform) {
 
-		transform = glm::rotate(transform, node->rotate.y, glm::vec3(0.0f, 0.0f, -1.0f));
-		transform = glm::rotate(transform, node->rotate.x, glm::vec3(-1.0f, 0.0f, 0.0f));
-		transform = glm::rotate(transform, node->rotate.z, glm::vec3(0.0f, 0.0f, -1.0f));
+		transform = glm::rotate(transform, glm::radians(node->rotate.y), glm::vec3(0.0f, 0.0f, -1.0f));
+		transform = glm::rotate(transform, glm::radians(node->rotate.x), glm::vec3(-1.0f, 0.0f, 0.0f));
+		transform = glm::rotate(transform, glm::radians(node->rotate.z), glm::vec3(0.0f, 0.0f, -1.0f));
 	}
 
 	void ANTzBoundingBox::AddFinalTransform(pNPnode node, glm::mat4& transform) {
