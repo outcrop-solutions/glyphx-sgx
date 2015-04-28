@@ -34,10 +34,10 @@ namespace SynGlyphXANTz {
 		static ANTzBoundingBox CreateBoundingBox(pNPnode node, float rootGridZScale = 1.0f);
 		static ANTzBoundingBox CreateBoundingBox(pNPnode node, const glm::mat4& previousTransform);
 
-	private:
 		static glm::mat4 CreateTransform(pNPnode node, float rootGridZScale = 1.0f);
 		static glm::mat4 CreateTransform(pNPnode node, const glm::mat4& previousTransform);
 
+	private:
 		static ANTzBoundingBox CreateTorusBB(double ratio);
 		static ANTzBoundingBox GetDefaultBB(pNPnode node);
 
