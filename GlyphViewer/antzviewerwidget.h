@@ -49,6 +49,7 @@ public slots:
     void ResetCamera();
 	//void SetStereo(bool enableStereo);
 	void SetHideUnselectedGlyphTrees(bool hideUnselectedGlyphTrees);
+	void ShowAnimatedRotations(bool show);
 
 protected:
     virtual void initializeGL();
@@ -80,6 +81,8 @@ private:
     void InitIO();
 	void DrawHUD();
 	bool SelectAtPoint(int x, int y, bool multiSelect);
+	void SelectFromStylus();
+	void CheckStylusIntersectionWithNode(pNPnode node, std::map<float, int>& distanceIdMap);
 
 	void CheckZSpaceError(ZSError error);
 	void SetZSpacePosition();
@@ -101,6 +104,9 @@ private:
 	void CreateBoundingBoxes();
 	void CreateBoundingBoxes(pNPnode node, const glm::mat4& parentTransform);
 	void DrawBoundingBoxes();
+
+	void StoreRotationRates();
+	void StoreRotationRates(pNPnode node);
 
     static QGLFormat s_format;
 	static QGLFormat s_stereoFormat;
@@ -138,6 +144,9 @@ private:
 
 	SynGlyphXANTz::ANTzBoundingBox::Line m_stylusWorldLine;
 	std::map<int, SynGlyphXANTz::ANTzBoundingBox> m_boundingBoxes;
+
+	std::map<int, NPfloatXYZ> m_rotationRates;
+	bool m_showAnimation;
 };
 
 #endif // ANTZWIDGET_H

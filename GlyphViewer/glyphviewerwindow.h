@@ -37,6 +37,10 @@ public:
 	GlyphViewerWindow(QWidget *parent = 0);
 	~GlyphViewerWindow();
 
+protected:
+	virtual void ReadSettings();
+	virtual void WriteSettings();
+
 private slots:
 	void OpenProject();
 	void RefreshVisualization();
@@ -59,8 +63,6 @@ private:
 	void CreateDockWidgets();
 	void EnableLoadedVisualizationDependentActions(bool enable);
 	void ChangeOptions(const GlyphViewerOptions& options, bool writeOptions = true);
-	void ReadOptions();
-	void WriteOptions();
 	void ClearAllData();
 	void CreateANTzWidget(const QGLFormat& format);
 
@@ -68,6 +70,7 @@ private:
 	QMenu* m_viewMenu;
 	QMenu* m_toolsMenu;
 	QAction* m_stereoAction;
+	QAction* m_showAnimation;
 	QList<QAction*> m_loadedVisualizationDependentActions;
 
 	SynGlyphX::DataTransformMapping m_mapping;

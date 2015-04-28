@@ -61,7 +61,7 @@ GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 		throw;
 	}
 
-	ReadOptions();
+	//ReadOptions();
 
 	QObject::connect(m_antzWidget, &ANTzViewerWidget::NewStatusMessage, statusBar(), &QStatusBar::showMessage);
 
@@ -105,6 +105,8 @@ void GlyphViewerWindow::CreateANTzWidget(const QGLFormat& format) {
 
 	antzWidgetContainer->addWidget(m_antzWidget);
 	antzWidgetContainer->setCurrentWidget(m_antzWidget);
+
+	QObject::connect(m_showAnimation, &QAction::toggled, m_antzWidget, &ANTzViewerWidget::ShowAnimatedRotations);
 }
 
 void GlyphViewerWindow::CreateMenus() {
@@ -149,6 +151,13 @@ void GlyphViewerWindow::CreateMenus() {
 	QObject::connect(m_stereoAction, &QAction::triggered, this, &GlyphViewerWindow::ChangeStereoMode);
 
 	m_viewMenu->addSeparator();
+
+	m_showAnimation = m_viewMenu->addAction(tr("Show Animation"));
+	m_showAnimation->setCheckable(true);
+	m_showAnimation->setChecked(true);
+
+	m_viewMenu->addSeparator();
+
 	CreateFullScreenAction(m_viewMenu);
 
 	m_viewMenu->addSeparator();
@@ -506,18 +515,28 @@ void GlyphViewerWindow::ChangeOptions(const GlyphViewerOptions& options, bool wr
 
 		m_options = options;
 
-		if (writeOptions) {
-
-			WriteOptions();
-		}
+		//if (writeOptions) {
+		//
+		//	WriteOptions();
+		//}
 	}
 }
 
-void GlyphViewerWindow::ReadOptions() {
+void GlyphViewerWindow::ReadSettings() {
+
+	SynGlyphX::MainWindow::ReadSettings();
 
 	GlyphViewerOptions options;
 
 	QSettings settings;
+
+	settings.beginGroup("Display");
+	if (!settings.value("ShowAnimation", true).toBool()) {
+
+		m_showAnimation->toggle();
+	}
+	settings.endGroup();
+
 	settings.beginGroup("Options");
 
 	QString cacheDirectory = QDir::toNativeSeparators(settings.value("cacheDirectory", GlyphViewerOptions::GetDefaultCacheDirectory()).toString());
@@ -532,9 +551,16 @@ void GlyphViewerWindow::ReadOptions() {
 	ChangeOptions(options, false);
 }
 
-void GlyphViewerWindow::WriteOptions() {
+void GlyphViewerWindow::WriteSettings() {
+
+	SynGlyphX::MainWindow::WriteSettings();
 
 	QSettings settings;
+
+	settings.beginGroup("Display");
+	settings.setValue("ShowAnimation", m_showAnimation->isChecked());
+	settings.endGroup();
+
 	settings.beginGroup("Options");
 
 	if (m_options.GetCacheDirectory() != GlyphViewerOptions::GetDefaultCacheDirectory()) {

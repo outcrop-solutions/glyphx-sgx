@@ -39,7 +39,8 @@ ANTzViewerWidget::ANTzViewerWidget(const QGLFormat& format, GlyphForestModel* mo
 	m_hideUnselectedGlyphTrees(false),
 	m_drawHUD(true),
 	m_stylusLength(0.15f),
-	m_stylusColor(Qt::green)
+	m_stylusColor(Qt::green),
+	m_showAnimation(true)
 {
 	setFocusPolicy(Qt::StrongFocus);
 
@@ -829,7 +830,7 @@ bool ANTzViewerWidget::SelectAtPoint(int x, int y, bool multiSelect) {
 
 	if (pickID != 0) {
 
-		pNPnode node = static_cast<pNPnode>(antzData->map.nodeID[pickID]);
+		//pNPnode node = static_cast<pNPnode>(antzData->map.nodeID[pickID]);
 		QItemSelectionModel::SelectionFlags flags = QItemSelectionModel::ClearAndSelect;
 		if (multiSelect) {
 
@@ -1070,15 +1071,66 @@ void ANTzViewerWidget::ZSpaceButtonPressHandler(ZSHandle targetHandle, const ZST
 	}
 }
 
+void ANTzViewerWidget::SelectFromStylus() {
+
+	Qt::KeyboardModifiers keyboardModifiers = QGuiApplication::keyboardModifiers();
+
+	std::map<float, int> distanceIdMap;
+	pData antzData = m_antzData->GetData();
+	for (int i = kNPnodeRootPin; i < antzData->map.nodeRootCount; ++i) {
+
+		pNPnode node = static_cast<pNPnode>(antzData->map.node[i]);
+		CheckStylusIntersectionWithNode(node, distanceIdMap);
+	}
+
+	if (distanceIdMap.empty()) {
+
+		zsStartTargetVibration(m_zSpaceStylus, 0.04f, 0.04f, 4);
+	}
+	else {
+
+		if ((keyboardModifiers & Qt::ControlModifier) || (keyboardModifiers & Qt::ShiftModifier)) {
+
+			for (auto id : distanceIdMap) {
+
+				m_selectionModel->select(m_model->IndexFromANTzID(id.second), QItemSelectionModel::Select);
+			}
+		}
+		else {
+
+			m_selectionModel->select(m_model->IndexFromANTzID(distanceIdMap.begin()->second), QItemSelectionModel::ClearAndSelect);
+		}
+
+	}
+}
+
+void ANTzViewerWidget::CheckStylusIntersectionWithNode(pNPnode node, std::map<float, int>& distanceIdMap) {
+
+	//Only test on visible objects
+	if ((!node->hide) && (node->screen.z >= 0.0f) && (node->screen.z <= 1.0f)) {
+
+		SynGlyphXANTz::ANTzBoundingBox::Intersection intersection = m_boundingBoxes[node->id].DoesLineIntersect(m_stylusWorldLine);
+		if (intersection.is_initialized()) {
+
+			distanceIdMap[intersection.get()] = node->id;
+		}
+	}
+	for (int j = 0; j < node->childCount; ++j) {
+
+		CheckStylusIntersectionWithNode(node->child[j], distanceIdMap);
+	}
+}
+
 void ANTzViewerWidget::ZSpaceButtonReleaseHandler(ZSHandle targetHandle, const ZSTrackerEventData* eventData) {
 
 	if (eventData->buttonId == 0) {
 
 		//if (!SelectAtPoint(m_zSpaceStylusScreenPoint.x(), m_zSpaceStylusScreenPoint.y(), false)) {
-		emit NewStatusMessage(tr("Source: (%1, %2, %3)").arg(m_stylusWorldLine.first.x).arg(m_stylusWorldLine.first.y).arg(m_stylusWorldLine.first.z) +
-			" " + tr("Dest: (%1, %2, %3)").arg(m_stylusWorldLine.second.x).arg(m_stylusWorldLine.second.y).arg(m_stylusWorldLine.second.z), 4000);
-		zsStartTargetVibration(m_zSpaceStylus, 0.04f, 0.04f, 4);
+		//emit NewStatusMessage(tr("Source: (%1, %2, %3)").arg(m_stylusWorldLine.first.x).arg(m_stylusWorldLine.first.y).arg(m_stylusWorldLine.first.z) +
+		//	" " + tr("Dest: (%1, %2, %3)").arg(m_stylusWorldLine.second.x).arg(m_stylusWorldLine.second.y).arg(m_stylusWorldLine.second.z), 4000);
 		//}
+
+		SelectFromStylus();
 	}
 }
 
@@ -1234,6 +1286,7 @@ void ANTzViewerWidget::DrawBoundingBoxes() {
 void ANTzViewerWidget::OnModelReset() {
 
 	CreateBoundingBoxes();
+	StoreRotationRates();
 
 	const QStringList& textures = m_model->GetBaseImageFilenames();
 
@@ -1290,4 +1343,57 @@ const QGLFormat& ANTzViewerWidget::GetNonStereoFormat() {
 const QGLFormat& ANTzViewerWidget::GetStereoFormat() {
 
 	return s_stereoFormat;
+}
+
+void ANTzViewerWidget::StoreRotationRates() {
+
+	m_rotationRates.clear();
+	pData antzData = m_antzData->GetData();
+	
+	for (int i = kNPnodeRootPin; i < antzData->map.nodeRootCount; ++i) {
+
+		StoreRotationRates(static_cast<pNPnode>(antzData->map.node[i]));
+	}
+}
+
+void ANTzViewerWidget::StoreRotationRates(pNPnode node) {
+
+	if ((node->rotateRate.x != 0.0f) || (node->rotateRate.y != 0.0f) || (node->rotateRate.z != 0.0f)) {
+
+		m_rotationRates[node->id] = node->rotateRate;
+	}
+
+	for (int i = 0; i < node->childCount; ++i) {
+
+		StoreRotationRates(node->child[i]);
+	}
+}
+
+void ANTzViewerWidget::ShowAnimatedRotations(bool show) {
+
+	if (show != m_showAnimation) {
+
+		pData antzData = m_antzData->GetData();
+		m_showAnimation = show;
+		if (m_showAnimation) {
+
+			for (auto idRatePair : m_rotationRates) {
+
+				pNPnode node = static_cast<pNPnode>(antzData->map.nodeID[idRatePair.first]);
+				node->rotateRate.x = idRatePair.second.x;
+				node->rotateRate.y = idRatePair.second.y;
+				node->rotateRate.z = idRatePair.second.z;
+			}
+		}
+		else {
+
+			for (auto idRatePair : m_rotationRates) {
+
+				pNPnode node = static_cast<pNPnode>(antzData->map.nodeID[idRatePair.first]);
+				node->rotateRate.x = 0.0f;
+				node->rotateRate.y = 0.0f;
+				node->rotateRate.z = 0.0f;
+			}
+		}
+	}
 }
