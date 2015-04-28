@@ -38,8 +38,7 @@ ANTzViewerWidget::ANTzViewerWidget(const QGLFormat& format, GlyphForestModel* mo
 	m_regionSelectionRect(QRect()),
 	m_hideUnselectedGlyphTrees(false),
 	m_drawHUD(true),
-	m_stylusLength(0.15f),
-	m_stylusColor(Qt::green),
+	m_zSpaceOptions(),
 	m_showAnimation(true)
 {
 	setFocusPolicy(Qt::StrongFocus);
@@ -458,7 +457,7 @@ void ANTzViewerWidget::DrawZSpaceStylus(const ZSMatrix4& stylusMatrix, bool getS
 		pNPnode camNode = npGetActiveCam(antzData);
 		NPcameraPtr camData = static_cast<NPcameraPtr>(camNode->data);
 
-		qglColor(m_stylusColor);
+		qglColor(m_zSpaceOptions.GetStylusColor());
 
 		// Multiply the model-view matrix by the stylus world matrix.
 		glMatrixMode(GL_MODELVIEW);
@@ -468,7 +467,7 @@ void ANTzViewerWidget::DrawZSpaceStylus(const ZSMatrix4& stylusMatrix, bool getS
 		// Draw the line.
 		glBegin(GL_LINES);
 		glVertex3f(0.0f, 0.0f, 0.0f);
-		glVertex3f(0.0f, 0.0f, -m_stylusLength);
+		glVertex3f(0.0f, 0.0f, -m_zSpaceOptions.GetStylusLength());
 
 		glEnd();
 
@@ -483,7 +482,7 @@ void ANTzViewerWidget::DrawZSpaceStylus(const ZSMatrix4& stylusMatrix, bool getS
 			m_stylusWorldLine.first.y = world.y;
 			m_stylusWorldLine.first.z = world.z;
 
-			glTranslatef(0.0f, 0.0f, -m_stylusLength);
+			glTranslatef(0.0f, 0.0f, -m_zSpaceOptions.GetStylusLength());
 			//glScalef(0.0025f, 0.0025f, 0.0025f);
 			//npGLPrimitive(kNPgeoSphere, 0.1f);
 			glGetFloatv(GL_MODELVIEW_MATRIX, modelView);
@@ -1450,4 +1449,9 @@ void ANTzViewerWidget::UpdateBoundingBoxes(pNPnode node, const glm::mat4& parent
 
 		UpdateBoundingBoxes(node->child[i], m_boundingBoxes[node->id].GetTransform());
 	}
+}
+
+void ANTzViewerWidget::SetZSpaceOptions(const ZSpaceOptions& options) {
+
+	m_zSpaceOptions = options;
 }

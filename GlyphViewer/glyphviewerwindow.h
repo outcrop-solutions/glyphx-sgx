@@ -62,7 +62,7 @@ private:
 	void CreateMenus();
 	void CreateDockWidgets();
 	void EnableLoadedVisualizationDependentActions(bool enable);
-	void ChangeOptions(const GlyphViewerOptions& options, bool writeOptions = true);
+	void ChangeOptions(const GlyphViewerOptions& options); // , bool writeOptions = true);
 	void ClearAllData();
 	void CreateANTzWidget(const QGLFormat& format);
 

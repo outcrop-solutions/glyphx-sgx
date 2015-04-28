@@ -11,7 +11,8 @@ GlyphViewerOptions::GlyphViewerOptions() :
 
 GlyphViewerOptions::GlyphViewerOptions(const GlyphViewerOptions& options) :
 	m_cacheDirectory(options.m_cacheDirectory),
-	m_hideUnselectedGlyphTrees(options.m_hideUnselectedGlyphTrees) {
+	m_hideUnselectedGlyphTrees(options.m_hideUnselectedGlyphTrees),
+	m_zSpaceOptions(options.m_zSpaceOptions) {
 
 }
 
@@ -48,6 +49,7 @@ GlyphViewerOptions& GlyphViewerOptions::operator=(const GlyphViewerOptions& opti
 
 	m_cacheDirectory = options.m_cacheDirectory;
 	m_hideUnselectedGlyphTrees = options.m_hideUnselectedGlyphTrees;
+	m_zSpaceOptions = options.m_zSpaceOptions;
 
 	return *this;
 }
@@ -64,10 +66,25 @@ bool GlyphViewerOptions::operator==(const GlyphViewerOptions& options) const {
 		return false;
 	}
 
+	if (m_zSpaceOptions != options.m_zSpaceOptions) {
+
+		return false;
+	}
+
 	return true;
 }
 
 bool GlyphViewerOptions::operator!=(const GlyphViewerOptions& options) const {
 
 	return !operator==(options);
+}
+
+void GlyphViewerOptions::SetZSpaceOptions(const ZSpaceOptions& options) {
+
+	m_zSpaceOptions = options;
+}
+
+const ZSpaceOptions& GlyphViewerOptions::GetZSpaceOptions() const {
+
+	return m_zSpaceOptions;
 }

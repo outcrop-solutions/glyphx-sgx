@@ -2,6 +2,7 @@
 #define GLYPHVIEWEROPTIONS_H
 
 #include <QtCore/QString>
+#include "zspaceoptions.h"
 
 class GlyphViewerOptions
 {
@@ -21,12 +22,17 @@ public:
 	void SetHideUnselectedGlyphTrees(bool hideUnselectedGlyphTrees);
 	bool GetHideUnselectedGlyphTrees() const;
 
+	void SetZSpaceOptions(const ZSpaceOptions& options);
+	const ZSpaceOptions& GetZSpaceOptions() const;
+
 private:
 	//Cache options
 	QString m_cacheDirectory;
 
 	//3D options
 	bool m_hideUnselectedGlyphTrees;
+
+	ZSpaceOptions m_zSpaceOptions;
 };
 
 #endif //GLYPHVIEWEROPTIONS_H

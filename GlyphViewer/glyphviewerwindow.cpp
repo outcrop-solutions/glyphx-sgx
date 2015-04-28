@@ -488,7 +488,7 @@ void GlyphViewerWindow::ChangeOptions() {
 	}
 }
 
-void GlyphViewerWindow::ChangeOptions(const GlyphViewerOptions& options, bool writeOptions) {
+void GlyphViewerWindow::ChangeOptions(const GlyphViewerOptions& options) { //, bool writeOptions) {
 
 	if (options != m_options) {
 
@@ -511,6 +511,11 @@ void GlyphViewerWindow::ChangeOptions(const GlyphViewerOptions& options, bool wr
 
 			m_antzWidget->SetHideUnselectedGlyphTrees(options.GetHideUnselectedGlyphTrees());
 			m_sourceDataSelectionWidget->SetHideUnselectedTreesCheckbox(options.GetHideUnselectedGlyphTrees());
+		}
+
+		if (m_options.GetZSpaceOptions() != options.GetZSpaceOptions()) {
+
+			m_antzWidget->SetZSpaceOptions(options.GetZSpaceOptions());
 		}
 
 		m_options = options;
@@ -548,7 +553,15 @@ void GlyphViewerWindow::ReadSettings() {
 	options.SetHideUnselectedGlyphTrees(settings.value("hideUnselectedGlyphs", false).toBool());
 	settings.endGroup();
 
-	ChangeOptions(options, false);
+	settings.beginGroup("zSpace");
+	ZSpaceOptions zSpaceOptions;
+	zSpaceOptions.SetStylusColor(settings.value("stylusColor", QColor(Qt::green)).value<QColor>());
+	zSpaceOptions.SetStylusLength(settings.value("stylusLength", 0.15f).toFloat());
+	settings.endGroup();
+
+	m_options.SetZSpaceOptions(zSpaceOptions);
+
+	ChangeOptions(options); // , false);
 }
 
 void GlyphViewerWindow::WriteSettings() {
@@ -572,6 +585,11 @@ void GlyphViewerWindow::WriteSettings() {
 		settings.setValue("cacheDirectory", "");
 	}
 	settings.setValue("hideUnselectedGlyphs", m_options.GetHideUnselectedGlyphTrees());
+	settings.endGroup();
+
+	settings.beginGroup("zSpace");
+	settings.setValue("stylusColor", m_options.GetZSpaceOptions().GetStylusColor());
+	settings.setValue("stylusLength", m_options.GetZSpaceOptions().GetStylusLength());
 	settings.endGroup();
 }
 

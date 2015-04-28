@@ -24,6 +24,7 @@
 #include <zSpace.h>
 #include "antzdata.h"
 #include "antzboundingbox.h"
+#include "zspaceoptions.h"
 
 class ANTzViewerWidget : public QGLWidget
 {
@@ -38,6 +39,8 @@ public:
 	bool IsZSpaceAvailable() const;
 
 	bool eventFilter(QObject *object, QEvent *event);
+
+	void SetZSpaceOptions(const ZSpaceOptions& options);
 
 	static const QGLFormat& GetNonStereoFormat();
 	static const QGLFormat& GetStereoFormat();
@@ -119,8 +122,7 @@ private:
 	bool m_drawHUD;
 	bool m_hideUnselectedGlyphTrees;
 
-	QColor m_stylusColor;
-	float m_stylusLength;
+	ZSpaceOptions m_zSpaceOptions;
 
 	unsigned int m_worldTextureID;
 	std::vector<unsigned int> m_textureIDs;

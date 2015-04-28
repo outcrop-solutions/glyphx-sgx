@@ -15,36 +15,31 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef OPTIONSWIDGET_H
-#define OPTIONSWIDGET_H
+#ifndef ZSPACEOPTIONSWIDGET_H
+#define ZSPACEOPTIONSWIDGET_H
 
-#include <QtWidgets/QTabWidget>
-#include <QtWidgets/QCheckBox>
-#include "glyphvieweroptions.h"
-#include "browselineedit.h"
-#include "zspaceoptionswidget.h"
+#include <QtWidgets/QWidget>
+#include "colorbutton.h"
+#include <QtWidgets/QDoubleSpinBox>
+#include "zspaceoptions.h"
 
-class OptionsWidget : public QTabWidget
+class ZSpaceOptionsWidget : public QWidget
 {
 	Q_OBJECT
 
 public:
-	OptionsWidget(const GlyphViewerOptions& options, bool enableCacheOptions, QWidget *parent);
-	~OptionsWidget();
+	ZSpaceOptionsWidget(QWidget *parent);
+	~ZSpaceOptionsWidget();
 
-	GlyphViewerOptions GetOptions() const;
+	void SetOptions(const ZSpaceOptions& options);
+	ZSpaceOptions GetOptions() const;
 
 private slots:
-	void ClearCache();
-	void SetToDefaultCacheDirectory();
+	void OnSetDefaults();
 
 private:
-	void CreateCacheTab(const GlyphViewerOptions& options, bool enableCacheOptions);
-	void Create3DTab(const GlyphViewerOptions& options);
-
-	SynGlyphX::BrowseLineEdit* m_cacheDirectoryWidget;
-	QCheckBox* m_hideSelectedGlyphsCheckbox;
-	ZSpaceOptionsWidget* m_zSpaceOptionsWidget;
+	SynGlyphX::ColorButton* m_stylusColorButton;
+	QDoubleSpinBox* m_stylusLengthSpinBox;
 };
 
-#endif // OPTIONSWIDGET_H
+#endif // ZSPACEOPTIONSWIDGET_H

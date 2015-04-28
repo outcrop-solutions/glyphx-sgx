@@ -15,36 +15,31 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef OPTIONSWIDGET_H
-#define OPTIONSWIDGET_H
+#ifndef ZSPACEOPTIONS_H
+#define ZSPACEOPTIONS_H
 
-#include <QtWidgets/QTabWidget>
-#include <QtWidgets/QCheckBox>
-#include "glyphvieweroptions.h"
-#include "browselineedit.h"
-#include "zspaceoptionswidget.h"
+#include <QtGui/QColor>
 
-class OptionsWidget : public QTabWidget
+class ZSpaceOptions
 {
-	Q_OBJECT
-
 public:
-	OptionsWidget(const GlyphViewerOptions& options, bool enableCacheOptions, QWidget *parent);
-	~OptionsWidget();
+	ZSpaceOptions();
+	ZSpaceOptions(const ZSpaceOptions& options);
+	~ZSpaceOptions();
 
-	GlyphViewerOptions GetOptions() const;
+	ZSpaceOptions& operator=(const ZSpaceOptions& options);
+	bool operator==(const ZSpaceOptions& options) const;
+	bool operator!=(const ZSpaceOptions& options) const;
 
-private slots:
-	void ClearCache();
-	void SetToDefaultCacheDirectory();
+	void SetStylusLength(float length);
+	float GetStylusLength() const;
+
+	void SetStylusColor(const QColor& color);
+	const QColor& GetStylusColor() const;
 
 private:
-	void CreateCacheTab(const GlyphViewerOptions& options, bool enableCacheOptions);
-	void Create3DTab(const GlyphViewerOptions& options);
-
-	SynGlyphX::BrowseLineEdit* m_cacheDirectoryWidget;
-	QCheckBox* m_hideSelectedGlyphsCheckbox;
-	ZSpaceOptionsWidget* m_zSpaceOptionsWidget;
+	float m_stylusLength;
+	QColor m_stylusColor;
 };
 
-#endif // OPTIONSWIDGET_H
+#endif //ZSPACEOPTIONS_H

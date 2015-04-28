@@ -12,6 +12,10 @@ OptionsWidget::OptionsWidget(const GlyphViewerOptions& options, bool enableCache
 {
 	CreateCacheTab(options, enableCacheOptions);
 	Create3DTab(options);
+
+	m_zSpaceOptionsWidget = new ZSpaceOptionsWidget(this);
+	m_zSpaceOptionsWidget->SetOptions(options.GetZSpaceOptions());
+	addTab(m_zSpaceOptionsWidget, tr("zSpace"));
 }
 
 OptionsWidget::~OptionsWidget()
@@ -85,6 +89,7 @@ GlyphViewerOptions OptionsWidget::GetOptions() const {
 	GlyphViewerOptions options;
 	options.SetCacheDirectory(m_cacheDirectoryWidget->GetText());
 	options.SetHideUnselectedGlyphTrees(m_hideSelectedGlyphsCheckbox->isChecked());
+	options.SetZSpaceOptions(m_zSpaceOptionsWidget->GetOptions());
 
 	return options;
 }
