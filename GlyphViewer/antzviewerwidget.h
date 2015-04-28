@@ -102,11 +102,14 @@ private:
 	void ShowAllGlyphTrees();
 
 	void CreateBoundingBoxes();
-	void CreateBoundingBoxes(pNPnode node, const glm::mat4& parentTransform);
+	void CreateBoundingBoxes(pNPnode node, const glm::mat4& parentTransform, bool isAncestorBoundingBoxBeingUpdated);
+	void UpdateBoundingBoxes();
+	void UpdateBoundingBoxes(pNPnode node, const glm::mat4& parentTransform);
 	void DrawBoundingBoxes();
 
 	void StoreRotationRates();
 	void StoreRotationRates(pNPnode node);
+	bool IsNodeAnimated(pNPnode node);
 
     static QGLFormat s_format;
 	static QGLFormat s_stereoFormat;
@@ -144,6 +147,7 @@ private:
 
 	SynGlyphXANTz::ANTzBoundingBox::Line m_stylusWorldLine;
 	std::map<int, SynGlyphXANTz::ANTzBoundingBox> m_boundingBoxes;
+	std::set<int> m_objectsThatNeedBoundingBoxUpdates;
 
 	std::map<int, NPfloatXYZ> m_rotationRates;
 	bool m_showAnimation;

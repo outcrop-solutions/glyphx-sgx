@@ -342,6 +342,7 @@ void ANTzViewerWidget::paintGL() {
 	npUpdateCh(antzData);
 
 	npUpdateEngine(antzData);		//position, physics, interactions...
+	UpdateBoundingBoxes();
 
 	//We may need to have a selected pin node during update to position the camera, but we don't want it during drawing
 	antzData->map.selectedPinNode = NULL;
@@ -1208,6 +1209,7 @@ void ANTzViewerWidget::ZSpaceEventDispatcher(ZSHandle targetHandle, const ZSTrac
 void ANTzViewerWidget::CreateBoundingBoxes() {
 
 	m_boundingBoxes.clear();
+	m_objectsThatNeedBoundingBoxUpdates.clear();
 
 	pData antzData = m_antzData->GetData();
 	pNPnode rootGrid = static_cast<pNPnode>(antzData->map.node[kNPnodeRootGrid]);
@@ -1215,20 +1217,36 @@ void ANTzViewerWidget::CreateBoundingBoxes() {
 
 		pNPnode node = static_cast<pNPnode>(antzData->map.node[i]);
 		m_boundingBoxes[node->id] = SynGlyphXANTz::ANTzBoundingBox::CreateBoundingBox(node, rootGrid->scale.z);
+		bool doesBoundingBoxNeedUpdating = IsNodeAnimated(node);
+		if (doesBoundingBoxNeedUpdating) {
+
+			m_objectsThatNeedBoundingBoxUpdates.insert(node->id);
+		}
 
 		for (int j = 0; j < node->childCount; ++j) {
 
-			CreateBoundingBoxes(node->child[j], m_boundingBoxes[node->id].GetTransform());
+			CreateBoundingBoxes(node->child[j], m_boundingBoxes[node->id].GetTransform(), doesBoundingBoxNeedUpdating);
 		}
 	}
 }
 
-void ANTzViewerWidget::CreateBoundingBoxes(pNPnode node, const glm::mat4& parentTransform) {
+void ANTzViewerWidget::CreateBoundingBoxes(pNPnode node, const glm::mat4& parentTransform, bool isAncestorBoundingBoxBeingUpdated) {
+
+	bool doesBoundingBoxNeedUpdating = false;
+	
+	if (!isAncestorBoundingBoxBeingUpdated) {
+
+		doesBoundingBoxNeedUpdating = IsNodeAnimated(node);
+		if (doesBoundingBoxNeedUpdating) {
+
+			m_objectsThatNeedBoundingBoxUpdates.insert(node->id);
+		}
+	}
 
 	m_boundingBoxes[node->id] = SynGlyphXANTz::ANTzBoundingBox::CreateBoundingBox(node, parentTransform);
 	for (int j = 0; j < node->childCount; ++j) {
 
-		CreateBoundingBoxes(node->child[j], m_boundingBoxes[node->id].GetTransform());
+		CreateBoundingBoxes(node->child[j], m_boundingBoxes[node->id].GetTransform(), doesBoundingBoxNeedUpdating);
 	}
 }
 
@@ -1358,7 +1376,7 @@ void ANTzViewerWidget::StoreRotationRates() {
 
 void ANTzViewerWidget::StoreRotationRates(pNPnode node) {
 
-	if ((node->rotateRate.x != 0.0f) || (node->rotateRate.y != 0.0f) || (node->rotateRate.z != 0.0f)) {
+	if (IsNodeAnimated(node)) {
 
 		m_rotationRates[node->id] = node->rotateRate;
 	}
@@ -1395,5 +1413,41 @@ void ANTzViewerWidget::ShowAnimatedRotations(bool show) {
 				node->rotateRate.z = 0.0f;
 			}
 		}
+	}
+}
+
+bool ANTzViewerWidget::IsNodeAnimated(pNPnode node) {
+
+	return ((node->rotateRate.x != 0.0f) || (node->rotateRate.y != 0.0f) || (node->rotateRate.z != 0.0f));
+}
+
+void ANTzViewerWidget::UpdateBoundingBoxes() {
+
+	pData antzData = m_antzData->GetData();
+	pNPnode rootGrid = static_cast<pNPnode>(antzData->map.node[kNPnodeRootGrid]);
+	for (int id : m_objectsThatNeedBoundingBoxUpdates) {
+
+		pNPnode node = static_cast<pNPnode>(antzData->map.nodeID[id]);
+		if (node->parent == nullptr) {
+
+			m_boundingBoxes[node->id].SetTransform(SynGlyphXANTz::ANTzBoundingBox::CreateTransform(node, rootGrid->scale.z));
+			for (int i = 0; i < node->childCount; ++i) {
+
+				UpdateBoundingBoxes(node->child[i], m_boundingBoxes[node->id].GetTransform());
+			}
+		}
+		else {
+
+			UpdateBoundingBoxes(node, m_boundingBoxes[node->parent->id].GetTransform());
+		}
+	}
+}
+
+void ANTzViewerWidget::UpdateBoundingBoxes(pNPnode node, const glm::mat4& parentTransform) {
+
+	m_boundingBoxes[node->id].SetTransform(SynGlyphXANTz::ANTzBoundingBox::CreateTransform(node, parentTransform));
+	for (int i = 0; i < node->childCount; ++i) {
+
+		UpdateBoundingBoxes(node->child[i], m_boundingBoxes[node->id].GetTransform());
 	}
 }
