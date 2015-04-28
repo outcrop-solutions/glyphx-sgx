@@ -412,6 +412,9 @@ void ANTzViewerWidget::DrawSceneForEye(Eye eye, bool getStylusWorldPosition) {
 		// Transform the stylus pose from tracker to camera space.
 		error = zsTransformMatrix(m_zSpaceViewport, ZS_COORDINATE_SPACE_TRACKER, ZS_COORDINATE_SPACE_CAMERA, &stylusPose.matrix);
 
+		ZSMatrix4 displayToCameraMatrix;
+		error = zsTransformMatrix(m_zSpaceViewport, ZS_COORDINATE_SPACE_DISPLAY, ZS_COORDINATE_SPACE_CAMERA, &displayToCameraMatrix);
+
 		ZSMatrix4 originalCameraMatrix;
 		npInvertMatrixf(m_originialViewMatrix.f, originalCameraMatrix.f);
 
@@ -419,6 +422,7 @@ void ANTzViewerWidget::DrawSceneForEye(Eye eye, bool getStylusWorldPosition) {
 		// This is done by multiplying the pose (camera space) by the 
 		// application's camera matrix.
 		npMultMatrix(m_zSpaceStylusWorldMatrix.f, originalCameraMatrix.f, stylusPose.matrix.f);
+		npMultMatrix(m_zSpaceDisplayWorldMatrix.f, originalCameraMatrix.f, displayToCameraMatrix.f);
 
 		SetZSpaceMatricesForDrawing(zSpaceEye, m_originialViewMatrix, camData);
 	}
@@ -434,7 +438,8 @@ void ANTzViewerWidget::DrawSceneForEye(Eye eye, bool getStylusWorldPosition) {
 	npGLShading(antzData);
 	npDrawNodes(antzData);
 
-	DrawBoundingBoxes();
+	//Leave this here so that bounding boxes can be shown for debugging
+	//DrawBoundingBoxes();
 
 	DrawZSpaceStylus(m_zSpaceStylusWorldMatrix, getStylusWorldPosition);
 
@@ -482,6 +487,8 @@ void ANTzViewerWidget::DrawZSpaceStylus(const ZSMatrix4& stylusMatrix, bool getS
 			m_stylusWorldLine.first.y = world.y;
 			m_stylusWorldLine.first.z = world.z;
 
+			m_stylusWorldTapLine.first = m_stylusWorldLine.first;
+
 			glTranslatef(0.0f, 0.0f, -m_zSpaceOptions.GetStylusLength());
 			//glScalef(0.0025f, 0.0025f, 0.0025f);
 			//npGLPrimitive(kNPgeoSphere, 0.1f);
@@ -495,6 +502,24 @@ void ANTzViewerWidget::DrawZSpaceStylus(const ZSMatrix4& stylusMatrix, bool getS
 		}
 
 		glPopMatrix();
+
+		if (getStylusWorldPosition) {
+
+			glPushMatrix();
+			glMultMatrixf(m_zSpaceDisplayWorldMatrix.f);
+			glTranslatef(0.0f, 0.0f, -1.0);
+
+			NPfloatXYZ world = { 0.0f, 0.0f, 0.0f };
+			GLfloat modelView[16];
+			glGetFloatv(GL_MODELVIEW_MATRIX, modelView);
+			npLocalToWorld(&world, camData->inverseMatrix, modelView);
+
+			m_stylusWorldTapLine.second.x = m_stylusWorldTapLine.first.x + world.x;
+			m_stylusWorldTapLine.second.y = m_stylusWorldTapLine.first.y + world.y;
+			m_stylusWorldTapLine.second.z = m_stylusWorldTapLine.first.z + world.z;
+
+			glPopMatrix();
+		}
 	}
 }
 
@@ -1071,7 +1096,7 @@ void ANTzViewerWidget::ZSpaceButtonPressHandler(ZSHandle targetHandle, const ZST
 	}
 }
 
-void ANTzViewerWidget::SelectFromStylus() {
+void ANTzViewerWidget::SelectFromStylus(const SynGlyphXANTz::ANTzBoundingBox::Line& line) {
 
 	Qt::KeyboardModifiers keyboardModifiers = QGuiApplication::keyboardModifiers();
 
@@ -1080,7 +1105,7 @@ void ANTzViewerWidget::SelectFromStylus() {
 	for (int i = kNPnodeRootPin; i < antzData->map.nodeRootCount; ++i) {
 
 		pNPnode node = static_cast<pNPnode>(antzData->map.node[i]);
-		CheckStylusIntersectionWithNode(node, distanceIdMap);
+		CheckStylusIntersectionWithNode(node, line, distanceIdMap);
 	}
 
 	if (distanceIdMap.empty()) {
@@ -1104,12 +1129,12 @@ void ANTzViewerWidget::SelectFromStylus() {
 	}
 }
 
-void ANTzViewerWidget::CheckStylusIntersectionWithNode(pNPnode node, std::map<float, int>& distanceIdMap) {
+void ANTzViewerWidget::CheckStylusIntersectionWithNode(pNPnode node, const SynGlyphXANTz::ANTzBoundingBox::Line& line, std::map<float, int>& distanceIdMap) {
 
 	//Only test on visible objects
 	if ((!node->hide) && (node->screen.z >= 0.0f) && (node->screen.z <= 1.0f)) {
 
-		SynGlyphXANTz::ANTzBoundingBox::Intersection intersection = m_boundingBoxes[node->id].DoesLineIntersect(m_stylusWorldLine);
+		SynGlyphXANTz::ANTzBoundingBox::Intersection intersection = m_boundingBoxes[node->id].DoesLineIntersect(line);
 		if (intersection.is_initialized()) {
 
 			distanceIdMap[intersection.get()] = node->id;
@@ -1117,7 +1142,7 @@ void ANTzViewerWidget::CheckStylusIntersectionWithNode(pNPnode node, std::map<fl
 	}
 	for (int j = 0; j < node->childCount; ++j) {
 
-		CheckStylusIntersectionWithNode(node->child[j], distanceIdMap);
+		CheckStylusIntersectionWithNode(node->child[j], line, distanceIdMap);
 	}
 }
 
@@ -1130,7 +1155,7 @@ void ANTzViewerWidget::ZSpaceButtonReleaseHandler(ZSHandle targetHandle, const Z
 		//	" " + tr("Dest: (%1, %2, %3)").arg(m_stylusWorldLine.second.x).arg(m_stylusWorldLine.second.y).arg(m_stylusWorldLine.second.z), 4000);
 		//}
 
-		SelectFromStylus();
+		SelectFromStylus(m_stylusWorldLine);
 	}
 }
 
@@ -1177,8 +1202,10 @@ void ANTzViewerWidget::ZSpaceStylusMoveHandler(ZSHandle targetHandle, const ZSTr
 
 void ANTzViewerWidget::ZSpaceStylusTapHandler(ZSHandle targetHandle, const ZSTrackerEventData* eventData) {
 
-	emit NewStatusMessage(tr("Source: (%1, %2, %3)").arg(m_stylusWorldLine.first.x).arg(m_stylusWorldLine.first.y).arg(m_stylusWorldLine.first.z) +
-		" " + tr("Dest: (%1, %2, %3)").arg(m_stylusWorldLine.second.x).arg(m_stylusWorldLine.second.y).arg(m_stylusWorldLine.second.z), 4000);
+	//emit NewStatusMessage(tr("Source: (%1, %2, %3)").arg(m_stylusWorldLine.first.x).arg(m_stylusWorldLine.first.y).arg(m_stylusWorldLine.first.z) +
+	//	" " + tr("Dest: (%1, %2, %3)").arg(m_stylusWorldLine.second.x).arg(m_stylusWorldLine.second.y).arg(m_stylusWorldLine.second.z), 4000);
+
+	SelectFromStylus(m_stylusWorldTapLine);
 }
 
 void ANTzViewerWidget::ZSpaceEventDispatcher(ZSHandle targetHandle, const ZSTrackerEventData* eventData, const void* userData) {

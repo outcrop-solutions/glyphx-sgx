@@ -46,7 +46,7 @@ public:
 	static const QGLFormat& GetStereoFormat();
 
 signals:
-	void NewStatusMessage(const QString& message, int timeout = 0) const;
+	//void NewStatusMessage(const QString& message, int timeout = 0) const;
 
 public slots:
     void ResetCamera();
@@ -84,8 +84,8 @@ private:
     void InitIO();
 	void DrawHUD();
 	bool SelectAtPoint(int x, int y, bool multiSelect);
-	void SelectFromStylus();
-	void CheckStylusIntersectionWithNode(pNPnode node, std::map<float, int>& distanceIdMap);
+	void SelectFromStylus(const SynGlyphXANTz::ANTzBoundingBox::Line& line);
+	void CheckStylusIntersectionWithNode(pNPnode node, const SynGlyphXANTz::ANTzBoundingBox::Line& line, std::map<float, int>& distanceIdMap);
 
 	void CheckZSpaceError(ZSError error);
 	void SetZSpacePosition();
@@ -144,10 +144,12 @@ private:
 	ZSHandle m_zSpaceStylus;
 	ZSMatrix4 m_originialProjectionMatrix;
 	ZSMatrix4 m_zSpaceStylusWorldMatrix;
+	ZSMatrix4 m_zSpaceDisplayWorldMatrix;
 	ZSMatrix4 m_originialViewMatrix;
 	ZSVector3 m_zSpaceStylusLastPosition;
 
 	SynGlyphXANTz::ANTzBoundingBox::Line m_stylusWorldLine;
+	SynGlyphXANTz::ANTzBoundingBox::Line m_stylusWorldTapLine;
 	std::map<int, SynGlyphXANTz::ANTzBoundingBox> m_boundingBoxes;
 	std::set<int> m_objectsThatNeedBoundingBoxUpdates;
 
