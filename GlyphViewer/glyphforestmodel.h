@@ -1,9 +1,3 @@
-#ifndef GLYPHFORESTMODEL_H
-#define GLYPHFORESTMODEL_H
-
-#include <QtCore/QAbstractItemModel>
-#include <unordered_map>
-#include "antzdata.h"
 ///
 /// SynGlyphX Holdings Incorporated ("COMPANY") CONFIDENTIAL
 /// Copyright (c) 2013-2015 SynGlyphX Holdings Incorporated, All Rights Reserved.
@@ -21,7 +15,14 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
+#ifndef GLYPHFORESTMODEL_H
+#define GLYPHFORESTMODEL_H
+
+#include <QtCore/QAbstractItemModel>
+#include <unordered_map>
+#include "antzdata.h"
 #include "glyph.h"
+#include <QtCore/QItemSelection> 
 
 class GlyphForestModel : public QAbstractItemModel
 {
@@ -51,11 +52,11 @@ public:
 
 	void SetParentGridToDefaultBaseImage();
 
-	QModelIndexList FindIndexesInRegion(const QRect& region) const;
+	void FindIndexesInRegion(const QRect& region, QItemSelection& itemSelection) const;
 
 private:
 	void Clear(bool resetModel);
-	void FindNodesInRegion(const QRect& region, pNPnode node, int row, QModelIndexList& indexList) const;
+	void FindNodesInRegion(const QRect& region, pNPnode node, int row, QItemSelection& itemSelection) const;
 
 	int GetChildIndexFromParent(pNPnode node) const;
 	int FindRowForRootNode(pNPnode node) const;

@@ -42,7 +42,8 @@ QVariant GlyphForestModel::data(const QModelIndex& index, int role) const {
 	QString displayedData = glyph->tag->title;
 
 	//return displayedData;
-	return displayedData + QString(" - (%1, %2, %3)").arg(glyph->world.x).arg(glyph->world.y).arg(glyph->world.z);
+	//return displayedData + QString(" - (%1, %2, %3)").arg(glyph->world.x).arg(glyph->world.y).arg(glyph->world.z);
+	return displayedData + QString(" - %1").arg(glyph->id);
 }
 
 QModelIndex	GlyphForestModel::index(int row, int column, const QModelIndex& parent) const {
@@ -234,27 +235,27 @@ const QStringList& GlyphForestModel::GetBaseImageFilenames() const {
 	return m_baseImageFilenames;
 }
 
-QModelIndexList GlyphForestModel::FindIndexesInRegion(const QRect& region) const {
+void GlyphForestModel::FindIndexesInRegion(const QRect& region, QItemSelection& itemSelection) const {
 
 	QModelIndexList indexesInRegion;
 
 	for (int i = kNPnodeRootPin; i < m_antzData->GetData()->map.nodeRootCount; ++i) {
 
-		FindNodesInRegion(region, static_cast<pNPnode>(m_antzData->GetData()->map.node[i]), i - kNPnodeRootPin, indexesInRegion);
+		FindNodesInRegion(region, static_cast<pNPnode>(m_antzData->GetData()->map.node[i]), i - kNPnodeRootPin, itemSelection);
 	}
-
-	return indexesInRegion;
 }
 
-void GlyphForestModel::FindNodesInRegion(const QRect& region, pNPnode node, int row, QModelIndexList& indexList) const {
+void GlyphForestModel::FindNodesInRegion(const QRect& region, pNPnode node, int row, QItemSelection& itemSelection) const {
 
 	if ((node->screen.z >= 0.0f) && (node->screen.z <= 1.0f) && (region.contains(node->screen.x, node->screen.y, false))) {
 
-		indexList.push_back(createIndex(row, 0, node));
+		QModelIndex index = createIndex(row, 0, node);
+		QItemSelection newItemSelection(index, index);
+		itemSelection.merge(newItemSelection, QItemSelectionModel::Select);
 	}
 
 	for (int i = 0; i < node->childCount; ++i) {
 
-		FindNodesInRegion(region, node->child[i], i, indexList);
+		FindNodesInRegion(region, node->child[i], i, itemSelection);
 	}
 }
