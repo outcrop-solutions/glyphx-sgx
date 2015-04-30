@@ -64,7 +64,7 @@ GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 	//ReadOptions();
 
 	//QObject::connect(m_antzWidget, &ANTzViewerWidget::NewStatusMessage, statusBar(), &QStatusBar::showMessage);
-
+	
 	m_stereoAction->setChecked(m_antzWidget->IsInStereoMode());
 
 	QStringList commandLineArguments = SynGlyphX::Application::arguments();
@@ -264,9 +264,9 @@ void GlyphViewerWindow::LoadVisualization(const QString& filename) {
 		throw std::exception("File does not exist");
 	}
 
-	if (!m_treeView->selectionModel()->selectedIndexes().empty()) {
+	if (!m_glyphForestSelectionModel->selectedIndexes().empty()) {
 
-		m_treeView->selectionModel()->clearSelection();
+		m_glyphForestSelectionModel->clearSelection();
 		m_antzWidget->updateGL();
 	}
 
@@ -559,7 +559,7 @@ void GlyphViewerWindow::ReadSettings() {
 	zSpaceOptions.SetStylusLength(settings.value("stylusLength", 0.15f).toFloat());
 	settings.endGroup();
 
-	m_options.SetZSpaceOptions(zSpaceOptions);
+	options.SetZSpaceOptions(zSpaceOptions);
 
 	ChangeOptions(options); // , false);
 }
