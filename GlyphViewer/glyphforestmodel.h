@@ -54,6 +54,9 @@ public:
 
 	void FindIndexesInRegion(const QRect& region, QItemSelection& itemSelection) const;
 
+	void SetTagNotToBeShownIn3d(const QString& tag);
+	bool IsTagShownIn3d(const QString& tag);
+
 private:
 	void Clear(bool resetModel);
 	void FindNodesInRegion(const QRect& region, pNPnode node, int row, QItemSelection& itemSelection) const;
@@ -64,6 +67,8 @@ private:
 	QString m_defaultBaseImage;
 	ANTzPlus::ANTzData::SharedPtr m_antzData;
 	QStringList m_baseImageFilenames;
+
+	QString m_tagNotToBeShownIn3d;
 };
 
 #endif // GLYPHFORESTMODEL_H

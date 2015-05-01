@@ -64,7 +64,8 @@ GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 	//ReadOptions();
 
 	//QObject::connect(m_antzWidget, &ANTzViewerWidget::NewStatusMessage, statusBar(), &QStatusBar::showMessage);
-	
+	QObject::connect(m_glyphForestSelectionModel, &QItemSelectionModel::selectionChanged, this, [this]{  statusBar()->showMessage(tr("Selection Signal"), 4000); });
+
 	m_stereoAction->setChecked(m_antzWidget->IsInStereoMode());
 
 	QStringList commandLineArguments = SynGlyphX::Application::arguments();
@@ -388,6 +389,7 @@ void GlyphViewerWindow::LoadDataTransform(const QString& filename) {
 
 		m_sourceDataCache->Setup(transformer.GetSourceDataCacheLocation());
 		LoadFilesIntoModel(transformer.GetCSVFilenames(), transformer.GetBaseImageFilenames());
+		m_glyphForestModel->SetTagNotToBeShownIn3d(QString::fromStdWString(m_mapping.GetDefaults().GetDefaultTagValue()));
 	}
 	catch (const std::exception& e) {
 

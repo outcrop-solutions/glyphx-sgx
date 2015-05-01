@@ -12,7 +12,8 @@
 
 GlyphForestModel::GlyphForestModel(QObject *parent)
 	: QAbstractItemModel(parent),
-	m_antzData(new ANTzPlus::ANTzData())
+	m_antzData(new ANTzPlus::ANTzData()),
+	m_tagNotToBeShownIn3d()
 {
 	
 }
@@ -41,9 +42,9 @@ QVariant GlyphForestModel::data(const QModelIndex& index, int role) const {
 
 	QString displayedData = glyph->tag->title;
 
-	//return displayedData;
+	return displayedData;
 	//return displayedData + QString(" - (%1, %2, %3)").arg(glyph->world.x).arg(glyph->world.y).arg(glyph->world.z);
-	return displayedData + QString(" - %1").arg(glyph->id);
+	//return displayedData + QString(" - %1").arg(glyph->id);
 }
 
 QModelIndex	GlyphForestModel::index(int row, int column, const QModelIndex& parent) const {
@@ -258,4 +259,14 @@ void GlyphForestModel::FindNodesInRegion(const QRect& region, pNPnode node, int 
 
 		FindNodesInRegion(region, node->child[i], i, itemSelection);
 	}
+}
+
+void GlyphForestModel::SetTagNotToBeShownIn3d(const QString& tag) {
+
+	m_tagNotToBeShownIn3d = tag;
+}
+
+bool GlyphForestModel::IsTagShownIn3d(const QString& tag) {
+
+	return (tag != m_tagNotToBeShownIn3d);
 }

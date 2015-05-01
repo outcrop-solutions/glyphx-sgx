@@ -25,6 +25,7 @@
 #include "antzdata.h"
 #include "antzboundingbox.h"
 #include "zspaceoptions.h"
+#include "zspaceeventdispatcher.h"
 
 class ANTzViewerWidget : public QGLWidget
 {
@@ -39,7 +40,7 @@ public:
 	bool IsZSpaceAvailable() const;
 
 	bool eventFilter(QObject *object, QEvent *event);
-
+	
 	void SetZSpaceOptions(const ZSpaceOptions& options);
 
 	static const QGLFormat& GetNonStereoFormat();
@@ -70,6 +71,11 @@ private slots:
     void UpdateSelection(const QItemSelection& selected, const QItemSelection& deselected);
 	void OnModelReset();
 
+	void ZSpaceButtonPressHandler(ZSHandle targetHandle, const ZSTrackerEventData* eventData);
+	void ZSpaceButtonReleaseHandler(ZSHandle targetHandle, const ZSTrackerEventData* eventData);
+	void ZSpaceStylusMoveHandler(ZSHandle targetHandle, const ZSTrackerEventData* eventData);
+	void ZSpaceStylusTapHandler(ZSHandle targetHandle, const ZSTrackerEventData* eventData);
+
 private:
 	enum Eye {
 		Left,
@@ -87,6 +93,7 @@ private:
 	void SelectFromStylus(const SynGlyphXANTz::ANTzBoundingBox::Line& line);
 	void CheckStylusIntersectionWithNode(pNPnode node, const SynGlyphXANTz::ANTzBoundingBox::Line& line, std::map<float, int>& distanceIdMap);
 
+	void ConnectZSpaceTrackers();
 	void CheckZSpaceError(ZSError error);
 	void SetZSpacePosition();
 	void ResizeZSpaceViewport();
@@ -94,12 +101,6 @@ private:
 	void SetZSpaceMatricesForDrawing(ZSEye eye, const ZSMatrix4& originialViewMatrix, NPcameraPtr camData);
 	void ClearZSpaceContext();
 	void DrawZSpaceStylus(const ZSMatrix4& stylusMatrix, bool getStylusWorldPosition);
-
-	void ZSpaceButtonPressHandler(ZSHandle targetHandle, const ZSTrackerEventData* eventData);
-	void ZSpaceButtonReleaseHandler(ZSHandle targetHandle, const ZSTrackerEventData* eventData);
-	void ZSpaceStylusMoveHandler(ZSHandle targetHandle, const ZSTrackerEventData* eventData);
-	void ZSpaceStylusTapHandler(ZSHandle targetHandle, const ZSTrackerEventData* eventData);
-	static void ZSpaceEventDispatcher(ZSHandle targetHandle, const ZSTrackerEventData* eventData, const void* userData);
 
 	void UpdateGlyphTreesShowHideForSelection();
 	void ShowAllGlyphTrees();
@@ -147,14 +148,17 @@ private:
 	ZSMatrix4 m_zSpaceDisplayWorldMatrix;
 	ZSMatrix4 m_originialViewMatrix;
 	ZSVector3 m_zSpaceStylusLastPosition;
+	ZSpaceEventDispatcher m_zSpaceEventDispatcher;
 
 	SynGlyphXANTz::ANTzBoundingBox::Line m_stylusWorldLine;
-	SynGlyphXANTz::ANTzBoundingBox::Line m_stylusWorldTapLine;
+	//SynGlyphXANTz::ANTzBoundingBox::Line m_stylusWorldTapLine;
 	std::map<int, SynGlyphXANTz::ANTzBoundingBox> m_boundingBoxes;
 	std::set<int> m_objectsThatNeedBoundingBoxUpdates;
 
 	std::map<int, NPfloatXYZ> m_rotationRates;
 	bool m_showAnimation;
+
+	static int s_stylusSelectedIndex;
 };
 
 #endif // ANTZWIDGET_H

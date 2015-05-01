@@ -15,6 +15,9 @@
 #include "application.h"
 #include "sourcedataselectionmodel.h"
 #include <stack>
+#include <QtTest/QSignalSpy>
+
+int ANTzViewerWidget::s_stylusSelectedIndex = kNPnodeRootPin;
 
 //The default QGLFormat works for now except we want alpha enabled.  Also want to try and get a stereo enabled context
 QGLFormat ANTzViewerWidget::s_format(QGL::AlphaChannel);
@@ -123,17 +126,10 @@ ANTzViewerWidget::ANTzViewerWidget(const QGLFormat& format, GlyphForestModel* mo
 			error = zsSetTrackingEnabled(m_zSpaceContext, true);
 			CheckZSpaceError(error);
 
-			error = zsAddTrackerEventHandler(m_zSpaceStylus, ZS_TRACKER_EVENT_BUTTON_PRESS, &ZSpaceEventDispatcher, this);
-			CheckZSpaceError(error);
-			error = zsAddTrackerEventHandler(m_zSpaceStylus, ZS_TRACKER_EVENT_BUTTON_RELEASE, &ZSpaceEventDispatcher, this);
-			CheckZSpaceError(error);
-			error = zsAddTrackerEventHandler(m_zSpaceStylus, ZS_TRACKER_EVENT_MOVE, &ZSpaceEventDispatcher, this);
-			CheckZSpaceError(error);
-			error = zsAddTrackerEventHandler(m_zSpaceStylus, ZS_TRACKER_EVENT_TAP_SINGLE, &ZSpaceEventDispatcher, this);
-			CheckZSpaceError(error);
-
 			error = zsSetTargetVibrationEnabled(m_zSpaceStylus, true);
 			CheckZSpaceError(error);
+
+			ConnectZSpaceTrackers();
 		}
 		catch (const std::exception& e) {
 
@@ -168,6 +164,25 @@ void ANTzViewerWidget::ClearZSpaceContext() {
 
 		zsShutdown(m_zSpaceContext);
 	}
+}
+
+void ANTzViewerWidget::ConnectZSpaceTrackers() {
+
+	ZSError error = zsAddTrackerEventHandler(m_zSpaceStylus, ZS_TRACKER_EVENT_BUTTON_PRESS, &ZSpaceEventDispatcher::Dispatch, &m_zSpaceEventDispatcher);
+	CheckZSpaceError(error);
+	QObject::connect(&m_zSpaceEventDispatcher, &ZSpaceEventDispatcher::ZSpaceButtonPressed, this, &ANTzViewerWidget::ZSpaceButtonPressHandler, Qt::BlockingQueuedConnection);
+	//QObject::connect(&m_zSpaceEventDispatcher, &ZSpaceEventDispatcher::ZSpaceButtonPressed, this, &ANTzViewerWidget::ZSpaceButtonReleaseHandler, Qt::BlockingQueuedConnection);
+
+	error = zsAddTrackerEventHandler(m_zSpaceStylus, ZS_TRACKER_EVENT_BUTTON_RELEASE, &ZSpaceEventDispatcher::Dispatch, &m_zSpaceEventDispatcher);
+	CheckZSpaceError(error);
+	QObject::connect(&m_zSpaceEventDispatcher, &ZSpaceEventDispatcher::ZSpaceButtonReleased, this, &ANTzViewerWidget::ZSpaceButtonReleaseHandler, Qt::BlockingQueuedConnection);
+
+	error = zsAddTrackerEventHandler(m_zSpaceStylus, ZS_TRACKER_EVENT_MOVE, &ZSpaceEventDispatcher::Dispatch, &m_zSpaceEventDispatcher);
+	CheckZSpaceError(error);
+	QObject::connect(&m_zSpaceEventDispatcher, &ZSpaceEventDispatcher::ZSpaceStylusMoved, this, &ANTzViewerWidget::ZSpaceStylusMoveHandler, Qt::BlockingQueuedConnection);
+
+	//error = zsAddTrackerEventHandler(m_zSpaceStylus, ZS_TRACKER_EVENT_TAP_SINGLE, &ZSpaceEventDispatcher, this);
+	//CheckZSpaceError(error);
 }
 
 void ANTzViewerWidget::CheckZSpaceError(ZSError error) {
@@ -487,7 +502,7 @@ void ANTzViewerWidget::DrawZSpaceStylus(const ZSMatrix4& stylusMatrix, bool getS
 			m_stylusWorldLine.first.y = world.y;
 			m_stylusWorldLine.first.z = world.z;
 
-			m_stylusWorldTapLine.first = m_stylusWorldLine.first;
+			//m_stylusWorldTapLine.first = m_stylusWorldLine.first;
 
 			glTranslatef(0.0f, 0.0f, -m_zSpaceOptions.GetStylusLength());
 			//glScalef(0.0025f, 0.0025f, 0.0025f);
@@ -503,7 +518,7 @@ void ANTzViewerWidget::DrawZSpaceStylus(const ZSMatrix4& stylusMatrix, bool getS
 
 		glPopMatrix();
 
-		if (getStylusWorldPosition) {
+		/*if (getStylusWorldPosition) {
 
 			glPushMatrix();
 			glMultMatrixf(m_zSpaceDisplayWorldMatrix.f);
@@ -519,7 +534,7 @@ void ANTzViewerWidget::DrawZSpaceStylus(const ZSMatrix4& stylusMatrix, bool getS
 			m_stylusWorldTapLine.second.z = m_stylusWorldTapLine.first.z + world.z;
 
 			glPopMatrix();
-		}
+		}*/
 	}
 }
 
@@ -579,7 +594,7 @@ void ANTzViewerWidget::DrawHUD() {
 	if (!m_selectionModel->selectedIndexes().empty()) {
 
 		selectedNode = static_cast<pNPnode>(m_selectionModel->selectedIndexes().front().internalPointer());
-		if (strcmp(selectedNode->tag->title, "No Tag") != 0) {
+		if (m_model->IsTagShownIn3d(selectedNode->tag->title)) {
 
 			renderText(selectedNode->world.x, selectedNode->world.y, selectedNode->world.z, selectedNode->tag->title, m_oglTextFont);
 		}
@@ -881,11 +896,9 @@ void ANTzViewerWidget::mouseReleaseEvent(QMouseEvent* event) {
 	if (!m_regionSelectionRect.isNull()) {
 		
 		QRect glRect(m_regionSelectionRect.x(), height() - m_regionSelectionRect.y() - m_regionSelectionRect.height(), m_regionSelectionRect.width(), m_regionSelectionRect.height());
-		QModelIndexList indexesInRegion = m_model->FindIndexesInRegion(glRect);
-		Q_FOREACH(const QModelIndex& index, indexesInRegion) {
-
-			m_selectionModel->select(index, QItemSelectionModel::Select);
-		}
+		QItemSelection indexesInRegion;
+		m_model->FindIndexesInRegion(glRect, indexesInRegion);
+		m_selectionModel->select(indexesInRegion, QItemSelectionModel::Select);
 		m_regionSelectionRect = QRect();
 	}
 }
@@ -985,6 +998,12 @@ void ANTzViewerWidget::keyReleaseEvent(QKeyEvent* event) {
 			return;
 		}
 	//}
+
+		/*if ((event->key() == 't') || (event->key() == 'T')) {
+
+			SelectFromStylus(SynGlyphXANTz::ANTzBoundingBox::Line());
+			return;
+		}*/
 
 	QGLWidget::keyReleaseEvent(event);
 }
@@ -1086,19 +1105,9 @@ bool ANTzViewerWidget::IsZSpaceAvailable() const {
 	return (m_zSpaceContext != nullptr);
 }
 
-void ANTzViewerWidget::ZSpaceButtonPressHandler(ZSHandle targetHandle, const ZSTrackerEventData* eventData) {
-
-	if (eventData->buttonId == 2) {
-
-		m_zSpaceStylusLastPosition.x = eventData->poseMatrix.m03;
-		m_zSpaceStylusLastPosition.y = eventData->poseMatrix.m13;
-		m_zSpaceStylusLastPosition.z = eventData->poseMatrix.m23;
-	}
-}
-
 void ANTzViewerWidget::SelectFromStylus(const SynGlyphXANTz::ANTzBoundingBox::Line& line) {
 
-	Qt::KeyboardModifiers keyboardModifiers = QGuiApplication::keyboardModifiers();
+	Qt::KeyboardModifiers keyboardModifiers = QGuiApplication::queryKeyboardModifiers();
 
 	std::map<float, int> distanceIdMap;
 	pData antzData = m_antzData->GetData();
@@ -1114,18 +1123,22 @@ void ANTzViewerWidget::SelectFromStylus(const SynGlyphXANTz::ANTzBoundingBox::Li
 	}
 	else {
 
-		if ((keyboardModifiers & Qt::ControlModifier) || (keyboardModifiers & Qt::ShiftModifier)) {
+		if ((keyboardModifiers.testFlag(Qt::ControlModifier)) || (keyboardModifiers.testFlag(Qt::ShiftModifier))) {
 
+			QItemSelection stylusItems;
 			for (auto id : distanceIdMap) {
 
-				m_selectionModel->select(m_model->IndexFromANTzID(id.second), QItemSelectionModel::Select);
+				QModelIndex index = m_model->IndexFromANTzID(id.second);
+				QItemSelection newStylusItem(index, index);
+				stylusItems.merge(newStylusItem, QItemSelectionModel::Select);
 			}
+			m_selectionModel->select(stylusItems, QItemSelectionModel::Select);	
 		}
 		else {
 
-			m_selectionModel->select(m_model->IndexFromANTzID(distanceIdMap.begin()->second), QItemSelectionModel::ClearAndSelect);
+			QModelIndex index = m_model->IndexFromANTzID(distanceIdMap.begin()->second);
+			m_selectionModel->select(index, QItemSelectionModel::ClearAndSelect);		
 		}
-
 	}
 }
 
@@ -1146,14 +1159,19 @@ void ANTzViewerWidget::CheckStylusIntersectionWithNode(pNPnode node, const SynGl
 	}
 }
 
+void ANTzViewerWidget::ZSpaceButtonPressHandler(ZSHandle targetHandle, const ZSTrackerEventData* eventData) {
+
+	if ((eventData->buttonId == 1) || (eventData->buttonId == 2)) {
+
+		m_zSpaceStylusLastPosition.x = eventData->poseMatrix.m03;
+		m_zSpaceStylusLastPosition.y = eventData->poseMatrix.m13;
+		m_zSpaceStylusLastPosition.z = eventData->poseMatrix.m23;
+	}
+}
+
 void ANTzViewerWidget::ZSpaceButtonReleaseHandler(ZSHandle targetHandle, const ZSTrackerEventData* eventData) {
 
 	if (eventData->buttonId == 0) {
-
-		//if (!SelectAtPoint(m_zSpaceStylusScreenPoint.x(), m_zSpaceStylusScreenPoint.y(), false)) {
-		//emit NewStatusMessage(tr("Source: (%1, %2, %3)").arg(m_stylusWorldLine.first.x).arg(m_stylusWorldLine.first.y).arg(m_stylusWorldLine.first.z) +
-		//	" " + tr("Dest: (%1, %2, %3)").arg(m_stylusWorldLine.second.x).arg(m_stylusWorldLine.second.y).arg(m_stylusWorldLine.second.z), 4000);
-		//}
 
 		SelectFromStylus(m_stylusWorldLine);
 	}
@@ -1161,7 +1179,6 @@ void ANTzViewerWidget::ZSpaceButtonReleaseHandler(ZSHandle targetHandle, const Z
 
 void ANTzViewerWidget::ZSpaceStylusMoveHandler(ZSHandle targetHandle, const ZSTrackerEventData* eventData) {
 
-	//QMessageBox::information(this, tr("Stylus Move Handler"), tr("Button ") + QString::number(eventData->buttonId));
 	ZSBool isButton2ButtonPressed = false;
 	ZSBool isButton1ButtonPressed = false;
 	ZSError error = zsIsTargetButtonPressed(targetHandle, 2, &isButton2ButtonPressed);
@@ -1205,31 +1222,7 @@ void ANTzViewerWidget::ZSpaceStylusTapHandler(ZSHandle targetHandle, const ZSTra
 	//emit NewStatusMessage(tr("Source: (%1, %2, %3)").arg(m_stylusWorldLine.first.x).arg(m_stylusWorldLine.first.y).arg(m_stylusWorldLine.first.z) +
 	//	" " + tr("Dest: (%1, %2, %3)").arg(m_stylusWorldLine.second.x).arg(m_stylusWorldLine.second.y).arg(m_stylusWorldLine.second.z), 4000);
 
-	SelectFromStylus(m_stylusWorldTapLine);
-}
-
-void ANTzViewerWidget::ZSpaceEventDispatcher(ZSHandle targetHandle, const ZSTrackerEventData* eventData, const void* userData) {
-
-	if (userData != nullptr) {
-
-		ANTzViewerWidget* widget = const_cast<ANTzViewerWidget*>(static_cast<const ANTzViewerWidget*>(userData));
-		if (eventData->type == ZS_TRACKER_EVENT_BUTTON_RELEASE) {
-			
-			widget->ZSpaceButtonReleaseHandler(targetHandle, eventData);
-		}
-		else if (eventData->type == ZS_TRACKER_EVENT_MOVE) {
-
-			widget->ZSpaceStylusMoveHandler(targetHandle, eventData);
-		}
-		else if (eventData->type == ZS_TRACKER_EVENT_BUTTON_PRESS) {
-
-			widget->ZSpaceButtonPressHandler(targetHandle, eventData);
-		}
-		else if (eventData->type == ZS_TRACKER_EVENT_TAP_SINGLE) {
-
-			widget->ZSpaceStylusTapHandler(targetHandle, eventData);
-		}
-	}
+	//SelectFromStylus(m_stylusWorldTapLine);
 }
 
 void ANTzViewerWidget::CreateBoundingBoxes() {

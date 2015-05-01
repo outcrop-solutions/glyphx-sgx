@@ -152,6 +152,15 @@
     <ClCompile Include="GeneratedFiles\Win32\Release\moc_zspaceoptionswidget.cpp">
       <Filter>Generated Files\Release_Win32</Filter>
     </ClCompile>
+    <ClCompile Include="zspaceeventdispatcher.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Win32\Debug\moc_zspaceeventdispatcher.cpp">
+      <Filter>Generated Files\Debug_Win32</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Win32\Release\moc_zspaceeventdispatcher.cpp">
+      <Filter>Generated Files\Release_Win32</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="glyphviewer.qrc">
@@ -188,6 +197,9 @@
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="zspaceoptionswidget.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="zspaceeventdispatcher.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>
