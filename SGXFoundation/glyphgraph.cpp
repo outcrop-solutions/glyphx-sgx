@@ -66,7 +66,12 @@ namespace SynGlyphX {
 
 	void GlyphGraph::AllocateChildSubtree(const std::vector<Glyph>& templates, const std::vector<unsigned int> instances, const GlyphGraph::iterator& parent) {
 
-		if (instances.size() == 1) {
+		unsigned int numberOfInstances = instances.size();
+		if ((numberOfInstances == 0) || (templates.empty())) {
+
+			return;
+		}
+		else if (numberOfInstances == 1) {
 
 			for (unsigned int i = 0; i < instances[0]; ++i) {
 
