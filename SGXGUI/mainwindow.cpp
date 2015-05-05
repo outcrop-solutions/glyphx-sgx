@@ -49,8 +49,16 @@ namespace SynGlyphX {
 		settings.endGroup();
 
         settings.beginGroup("Window");
-        resize(settings.value("size", QSize(900, 720)).toSize());
-        restoreGeometry(settings.value("geometry").toByteArray());
+        resize(settings.value("size", QSize(1100, 820)).toSize());
+		QByteArray geometry = settings.value("geometry").toByteArray();
+		if (geometry.isEmpty()) {
+
+			move(100, 100);
+		}
+		else {
+
+			restoreGeometry(geometry);
+		}
         restoreState(settings.value("state").toByteArray());
         settings.endGroup();
 

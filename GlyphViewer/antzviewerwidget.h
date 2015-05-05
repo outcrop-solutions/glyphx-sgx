@@ -157,8 +157,6 @@ private:
 
 	std::map<int, NPfloatXYZ> m_rotationRates;
 	bool m_showAnimation;
-
-	static int s_stylusSelectedIndex;
 };
 
 #endif // ANTZWIDGET_H

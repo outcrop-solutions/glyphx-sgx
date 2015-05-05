@@ -28,6 +28,7 @@
 #include "glyphvieweroptions.h"
 #include "sourcedatacache.h"
 #include "sourcedataselectionwidget.h"
+#include "pseudotimefilterwidget.h"
 
 class GlyphViewerWindow : public SynGlyphX::MainWindow
 {
@@ -84,6 +85,7 @@ private:
 	GlyphViewerOptions m_options;	
 	SynGlyphX::SourceDataCache::SharedPtr m_sourceDataCache;
 	SourceDataSelectionWidget* m_sourceDataSelectionWidget;
+	PseudoTimeFilterWidget* m_pseudoTimeFilterWidget;
 };
 
 #endif // GLYPHVIEWERWINDOW_H

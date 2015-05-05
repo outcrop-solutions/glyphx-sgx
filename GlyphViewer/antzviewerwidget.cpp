@@ -15,9 +15,6 @@
 #include "application.h"
 #include "sourcedataselectionmodel.h"
 #include <stack>
-#include <QtTest/QSignalSpy>
-
-int ANTzViewerWidget::s_stylusSelectedIndex = kNPnodeRootPin;
 
 //The default QGLFormat works for now except we want alpha enabled.  Also want to try and get a stereo enabled context
 QGLFormat ANTzViewerWidget::s_format(QGL::AlphaChannel);

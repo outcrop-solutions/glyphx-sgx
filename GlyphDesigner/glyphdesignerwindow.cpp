@@ -145,6 +145,11 @@ void GlyphDesignerWindow::CreateMenus() {
 
 void GlyphDesignerWindow::CreateDockWidgets() {
 
+	setCorner(Qt::TopLeftCorner, Qt::LeftDockWidgetArea);
+	setCorner(Qt::BottomLeftCorner, Qt::LeftDockWidgetArea);
+	setCorner(Qt::TopRightCorner, Qt::RightDockWidgetArea);
+	setCorner(Qt::BottomRightCorner, Qt::RightDockWidgetArea);
+
     //Add Tree View to dock widget on left side
     QDockWidget* leftDockWidget = new QDockWidget("Glyph Tree", this);
 	m_treeView = new GlyphTreeView(m_glyphTreeModel, SynGlyphXANTz::MinMaxGlyphTreeModel::GlyphType::Max, leftDockWidget);

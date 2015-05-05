@@ -50,8 +50,14 @@ DataMapperWindow::DataMapperWindow(QWidget *parent)
 	QObject::connect(m_dataTransformModel, &DataTransformModel::rowsInserted, this, [&, this](const QModelIndex& parent, int first, int last){ setWindowModified(true); });
 	QObject::connect(m_dataTransformModel, &DataTransformModel::rowsRemoved, this, [&, this](const QModelIndex& parent, int first, int last){ setWindowModified(true); });
 	
+	m_minMaxGlyphModel = new MinMaxGlyphModel(m_dataTransformModel, this);
+	QObject::connect(m_minMaxGlyphModel, &MinMaxGlyphModel::dataChanged, this, [&, this](const QModelIndex& topLeft, const QModelIndex& bottomRight){ setWindowModified(true); });
+
 	CreateMenus();
     CreateDockWidgets();
+
+	QObject::connect(m_glyphTreesView, &GlyphTreesView::SelectionChangedSourceModel, this, &DataMapperWindow::OnGlyphTreesViewSelectionChanged);
+	QObject::connect(m_glyphTreesView->GetClearSelectedInputBindingsAction(), &QAction::triggered, m_minMaxGlyphModel, &MinMaxGlyphModel::ClearInputBindings);
 
 	CreateCenterWidget();
 
@@ -76,30 +82,13 @@ DataMapperWindow::~DataMapperWindow()
 }
 
 void DataMapperWindow::CreateCenterWidget() {
-
-	m_minMaxGlyphModel = new MinMaxGlyphModel(m_dataTransformModel, this);
-	QObject::connect(m_minMaxGlyphModel, &MinMaxGlyphModel::dataChanged, this, [&, this](const QModelIndex& topLeft, const QModelIndex& bottomRight){ setWindowModified(true); });
-	QObject::connect(m_glyphTreesView, &GlyphTreesView::SelectionChangedSourceModel, this, &DataMapperWindow::OnGlyphTreesViewSelectionChanged);
-	QObject::connect(m_glyphTreesView->GetClearSelectedInputBindingsAction(), &QAction::triggered, m_minMaxGlyphModel, &MinMaxGlyphModel::ClearInputBindings);
-
-	QSplitter* centerWidget = new QSplitter(Qt::Vertical, this);
 	
-	m_minMaxGlyph3DWidget = new DataMapping3DWidget(m_dataTransformModel, centerWidget);
+	m_minMaxGlyph3DWidget = new DataMapping3DWidget(m_dataTransformModel, this);
 	m_minMaxGlyph3DWidget->SetModel(dynamic_cast<SynGlyphX::RoleDataFilterProxyModel*>(m_glyphTreesView->model()), m_glyphTreesView->selectionModel());
 
 	QObject::connect(m_showAnimation, &QAction::toggled, m_minMaxGlyph3DWidget, &DataMapping3DWidget::EnableAnimation);
-
-	//m_viewMenu->addAction(glyphViewDockWidget->toggleViewAction());
-
-	m_dataBindingWidget = new DataBindingWidget(m_minMaxGlyphModel, centerWidget);
-
-	centerWidget->addWidget(m_dataBindingWidget);
-	centerWidget->addWidget(m_minMaxGlyph3DWidget);
-
-	centerWidget->setStretchFactor(1, 2);
-	centerWidget->setStretchFactor(0, 0);
 	
-	setCentralWidget(centerWidget);
+	setCentralWidget(m_minMaxGlyph3DWidget);
 }
 
 void DataMapperWindow::CreateMenus() {
@@ -213,6 +202,11 @@ void DataMapperWindow::CreateMenus() {
 
 void DataMapperWindow::CreateDockWidgets() {
 
+	setCorner(Qt::TopLeftCorner, Qt::LeftDockWidgetArea);
+	setCorner(Qt::BottomLeftCorner, Qt::LeftDockWidgetArea);
+	setCorner(Qt::TopRightCorner, Qt::RightDockWidgetArea);
+	setCorner(Qt::BottomRightCorner, Qt::RightDockWidgetArea);
+
 	QDockWidget* leftDockWidgetGlyphTrees = new QDockWidget(tr("Glyph Trees"), this);
 
 	m_glyphTreesView = new GlyphTreesView(m_dataTransformModel, leftDockWidgetGlyphTrees);
@@ -244,6 +238,12 @@ void DataMapperWindow::CreateDockWidgets() {
 	rightDockWidget->setWidget(m_dataSourceStats);
 	addDockWidget(Qt::RightDockWidgetArea, rightDockWidget);
 	m_viewMenu->addAction(rightDockWidget->toggleViewAction());
+
+	QDockWidget* topDockWidget = new QDockWidget(tr("Data Bindings"), this);
+	m_dataBindingWidget = new DataBindingWidget(m_minMaxGlyphModel, topDockWidget);
+	topDockWidget->setWidget(m_dataBindingWidget);
+	addDockWidget(Qt::TopDockWidgetArea, topDockWidget);
+	m_viewMenu->addAction(topDockWidget->toggleViewAction());
 }
 
 void DataMapperWindow::CreateNewProject() {

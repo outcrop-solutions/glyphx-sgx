@@ -161,6 +161,15 @@
     <ClCompile Include="GeneratedFiles\Win32\Release\moc_zspaceeventdispatcher.cpp">
       <Filter>Generated Files\Release_Win32</Filter>
     </ClCompile>
+    <ClCompile Include="pseudotimefilterwidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Win32\Debug\moc_pseudotimefilterwidget.cpp">
+      <Filter>Generated Files\Debug_Win32</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Win32\Release\moc_pseudotimefilterwidget.cpp">
+      <Filter>Generated Files\Release_Win32</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="glyphviewer.qrc">
@@ -200,6 +209,9 @@
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="zspaceeventdispatcher.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="pseudotimefilterwidget.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>

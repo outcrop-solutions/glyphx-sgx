@@ -186,7 +186,11 @@ void GlyphViewerWindow::CreateMenus() {
 
 void GlyphViewerWindow::CreateDockWidgets() {
 
-	//Add Tree View to dock widget on left side
+	setCorner(Qt::TopLeftCorner, Qt::LeftDockWidgetArea);
+	setCorner(Qt::BottomLeftCorner, Qt::LeftDockWidgetArea);
+	setCorner(Qt::TopRightCorner, Qt::RightDockWidgetArea);
+	setCorner(Qt::BottomRightCorner, Qt::RightDockWidgetArea);
+
 	QDockWidget* leftDockWidget = new QDockWidget(tr("Glyph List"), this);
 	m_treeView = new GlyphTreeListView(leftDockWidget);
 	m_treeView->setModel(m_glyphForestModel);
@@ -202,6 +206,11 @@ void GlyphViewerWindow::CreateDockWidgets() {
 	QObject::connect(m_sourceDataSelectionWidget, &SourceDataSelectionWidget::OptionsChanged, this, &GlyphViewerWindow::OnSourceDataSelectionWidgetOptionsChanged);
 	addDockWidget(Qt::RightDockWidgetArea, rightDockWidget);
 	m_viewMenu->addAction(rightDockWidget->toggleViewAction());
+
+	QDockWidget* bottomDockWidget = new QDockWidget(tr("Psuedo-Time Filter"), this);
+	m_pseudoTimeFilterWidget = new PseudoTimeFilterWidget(bottomDockWidget);
+	addDockWidget(Qt::BottomDockWidgetArea, bottomDockWidget);
+	m_viewMenu->addAction(bottomDockWidget->toggleViewAction());
 }
 
 void GlyphViewerWindow::OpenProject() {
