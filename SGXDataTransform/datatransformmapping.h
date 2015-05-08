@@ -21,6 +21,7 @@
 #include "sgxdatatransform_global.h"
 #include "xmlpropertytreefile.h"
 #include <string>
+#include <memory>
 #include "datasourcemaps.h"
 #include <unordered_map>
 #include <boost/property_tree/ptree.hpp>
@@ -37,8 +38,8 @@ namespace SynGlyphX {
     public:
 		typedef std::unordered_map<boost::uuids::uuid, DataMappingGlyphGraph::SharedPtr, SynGlyphX::UUIDHash> DataMappingGlyphGraphMap;
 
-		typedef boost::shared_ptr<DataTransformMapping> SharedPtr;
-		typedef boost::shared_ptr<const DataTransformMapping> ConstSharedPtr;
+		typedef std::shared_ptr<DataTransformMapping> SharedPtr;
+		typedef std::shared_ptr<const DataTransformMapping> ConstSharedPtr;
 
 		DataTransformMapping();
 		~DataTransformMapping();

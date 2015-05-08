@@ -259,6 +259,18 @@ namespace SynGlyphX {
 		return columnNames;
 	}
 
+	TableColumns SourceDataCache::GetColumnsForTable(const boost::uuids::uuid& datasourceID, const QString& originalTablename) const {
+
+		QString tableName = CreateTablename(QString::fromStdString(boost::uuids::to_string(datasourceID)), originalTablename);
+		return GetColumnsForTable(tableName);
+	}
+
+	bool SourceDataCache::IsTableInCache(const boost::uuids::uuid& datasourceID, const QString& originalTablename) const {
+
+		QString tableName = CreateTablename(QString::fromStdString(boost::uuids::to_string(datasourceID)), originalTablename);
+		return (m_tableNameMap.count(tableName) != 0);
+	}
+
 	int SourceDataCache::GetLastIndexOfTable(const QString& tableName) {
 
 		QSqlQuery query(m_db);

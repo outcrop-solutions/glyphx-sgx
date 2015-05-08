@@ -58,6 +58,9 @@ namespace SynGlyphX {
 		const TableIndexMap& GetTablesIndexMap() const;
 		const TableNameMap& GetFormattedNames() const;
 		TableColumns GetColumnsForTable(const QString& table) const;
+		TableColumns GetColumnsForTable(const boost::uuids::uuid& datasourceID, const QString& originalTablename) const;
+
+		bool IsTableInCache(const boost::uuids::uuid& datasourceID, const QString& originalTablename) const;
 
 		SharedSQLQuery CreateSelectFieldQueryAscending(const InputField& inputfield) const;
 		SharedSQLQuery CreateMinMaxQuery(const InputField& inputfield) const;
