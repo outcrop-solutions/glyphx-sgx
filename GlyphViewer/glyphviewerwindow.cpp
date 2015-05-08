@@ -24,6 +24,7 @@ GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 	: SynGlyphX::MainWindow(parent),
 	m_antzWidget(nullptr)
 {
+	m_mapping = std::make_shared<SynGlyphX::DataTransformMapping>();
 	m_sourceDataCache = std::make_shared<SynGlyphX::SourceDataCache>();
 	m_glyphForestModel = new GlyphForestModel(this);
 
@@ -208,7 +209,8 @@ void GlyphViewerWindow::CreateDockWidgets() {
 	m_viewMenu->addAction(rightDockWidget->toggleViewAction());
 
 	QDockWidget* bottomDockWidget = new QDockWidget(tr("Psuedo-Time Filter"), this);
-	m_pseudoTimeFilterWidget = new PseudoTimeFilterWidget(bottomDockWidget);
+	m_pseudoTimeFilterWidget = new PseudoTimeFilterWidget(m_mapping, m_sourceDataCache, bottomDockWidget);
+	bottomDockWidget->setWidget(m_pseudoTimeFilterWidget);
 	addDockWidget(Qt::BottomDockWidgetArea, bottomDockWidget);
 	m_viewMenu->addAction(bottomDockWidget->toggleViewAction());
 }
@@ -228,7 +230,7 @@ void GlyphViewerWindow::RefreshVisualization() {
 		
 		SynGlyphX::DataTransformMapping mapping;
 		mapping.ReadFromFile(m_currentFilename.toStdString());
-		if ((m_mapping != mapping) || (m_sourceDataCache->IsCacheOutOfDate(m_mapping.GetDatasourcesInUse()))) {
+		if ((m_mapping->operator!=(mapping)) || (m_sourceDataCache->IsCacheOutOfDate(m_mapping->GetDatasourcesInUse()))) {
 
 			ClearAllData();
 			LoadVisualization(m_currentFilename);
@@ -245,6 +247,7 @@ void GlyphViewerWindow::RefreshVisualization() {
 
 void GlyphViewerWindow::CloseVisualization() {
 
+	m_pseudoTimeFilterWidget->Disable();
 	ClearAllData();
 	EnableLoadedVisualizationDependentActions(false);
 	ClearCurrentFile();
@@ -256,7 +259,7 @@ void GlyphViewerWindow::ClearAllData() {
 	m_sourceDataCache->Close();
 	m_glyphForestModel->Clear();
 	m_glyphForestModel->SetParentGridToDefaultBaseImage();
-	m_mapping.Clear();
+	m_mapping->Clear();
 	SynGlyphX::Application::restoreOverrideCursor();
 }
 
@@ -309,6 +312,7 @@ bool GlyphViewerWindow::LoadNewVisualization(const QString& filename) {
 
 	SetCurrentFile(filename);
 	EnableLoadedVisualizationDependentActions(true);
+	m_pseudoTimeFilterWidget->ResetForNewVisualization();
 	statusBar()->showMessage("Visualization successfully opened", 3000);
 	return true;
 }
@@ -334,26 +338,26 @@ void GlyphViewerWindow::LoadDataTransform(const QString& filename) {
 
 	try {
 
-		m_mapping.ReadFromFile(filename.toStdString());
+		m_mapping->ReadFromFile(filename.toStdString());
 
-		if (!m_mapping.GetDatasources().HasDatasources()) {
+		if (!m_mapping->GetDatasources().HasDatasources()) {
 
 			throw std::exception("Visualization has no datasources.");
 		}
 
-		if (m_mapping.GetGlyphGraphs().empty()) {
+		if (m_mapping->GetGlyphGraphs().empty()) {
 
 			throw std::exception("Visualization has no glyph templates.");
 		}
 
-		if (!m_mapping.DoesAtLeastOneGlyphGraphHaveBindingsOnPosition()) {
+		if (!m_mapping->DoesAtLeastOneGlyphGraphHaveBindingsOnPosition()) {
 
 			throw std::exception("Visualization has no glyph templates with bindings on Position X, Position Y, or Position Z.");
 		}
 
 		bool wereDatasourcesUpdated = false;
 
-		SynGlyphX::DatasourceMaps datasourcesInUse = m_mapping.GetDatasourcesInUse();
+		SynGlyphX::DatasourceMaps datasourcesInUse = m_mapping->GetDatasourcesInUse();
 		std::vector<SynGlyphX::DatasourceMaps::FileDatasourceMap::const_iterator> fileDatasourcesToBeUpdated;
 		for (SynGlyphX::DatasourceMaps::FileDatasourceMap::const_iterator datasource = datasourcesInUse.GetFileDatasources().begin(); datasource != datasourcesInUse.GetFileDatasources().end(); ++datasource) {
 
@@ -377,7 +381,7 @@ void GlyphViewerWindow::LoadDataTransform(const QString& filename) {
 				ChangeDatasourceFileDialog dialog(fileDatasourcesToBeUpdated[i]->second, acceptButtonText, this);
 				if (dialog.exec() == QDialog::Accepted) {
 
-					m_mapping.UpdateDatasourceName(fileDatasourcesToBeUpdated[i]->first, dialog.GetNewDatasourceFile().toStdWString());
+					m_mapping->UpdateDatasourceName(fileDatasourcesToBeUpdated[i]->first, dialog.GetNewDatasourceFile().toStdWString());
 					wereDatasourcesUpdated = true;
 				}
 				else {
@@ -389,16 +393,16 @@ void GlyphViewerWindow::LoadDataTransform(const QString& filename) {
 
 			if (wereDatasourcesUpdated) {
 
-				m_mapping.WriteToFile(filename.toStdString());
+				m_mapping->WriteToFile(filename.toStdString());
 			}
 		}
 
-		SynGlyphXANTz::GlyphViewerANTzTransformer transformer(QString::fromStdWString(m_cacheManager.GetCacheDirectory(m_mapping.GetID())));
-		transformer.Transform(m_mapping);
+		SynGlyphXANTz::GlyphViewerANTzTransformer transformer(QString::fromStdWString(m_cacheManager.GetCacheDirectory(m_mapping->GetID())));
+		transformer.Transform(*m_mapping);
 
 		m_sourceDataCache->Setup(transformer.GetSourceDataCacheLocation());
 		LoadFilesIntoModel(transformer.GetCSVFilenames(), transformer.GetBaseImageFilenames());
-		m_glyphForestModel->SetTagNotToBeShownIn3d(QString::fromStdWString(m_mapping.GetDefaults().GetDefaultTagValue()));
+		m_glyphForestModel->SetTagNotToBeShownIn3d(QString::fromStdWString(m_mapping->GetDefaults().GetDefaultTagValue()));
 	}
 	catch (const std::exception& e) {
 

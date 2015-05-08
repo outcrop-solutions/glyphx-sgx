@@ -33,6 +33,9 @@
       <Extensions>cpp;moc</Extensions>
       <SourceControlFiles>False</SourceControlFiles>
     </Filter>
+    <Filter Include="Resource Files\Video">
+      <UniqueIdentifier>{8f55759a-a5ad-4f6a-bb46-c84f514725ea}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="application.cpp">
@@ -313,6 +316,24 @@
     </Image>
     <Image Include="Resources\synglyphx_x.ico">
       <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Video\end.png">
+      <Filter>Resource Files\Video</Filter>
+    </Image>
+    <Image Include="Resources\Video\pause.png">
+      <Filter>Resource Files\Video</Filter>
+    </Image>
+    <Image Include="Resources\Video\play.png">
+      <Filter>Resource Files\Video</Filter>
+    </Image>
+    <Image Include="Resources\Video\repeat.png">
+      <Filter>Resource Files\Video</Filter>
+    </Image>
+    <Image Include="Resources\Video\start.png">
+      <Filter>Resource Files\Video</Filter>
+    </Image>
+    <Image Include="Resources\Video\stop.png">
+      <Filter>Resource Files\Video</Filter>
     </Image>
   </ItemGroup>
   <ItemGroup>

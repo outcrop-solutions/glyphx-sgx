@@ -74,7 +74,7 @@ private:
 	QAction* m_showAnimation;
 	QList<QAction*> m_loadedVisualizationDependentActions;
 
-	SynGlyphX::DataTransformMapping m_mapping;
+	SynGlyphX::DataTransformMapping::SharedPtr m_mapping;
 	CacheManager m_cacheManager;
 	bool m_isStereoSupported;
 

@@ -483,6 +483,12 @@
   <ItemGroup>
     <Image Include="Resources\synglyphx_splash.png" />
     <Image Include="Resources\synglyphx_x.ico" />
+    <Image Include="Resources\Video\end.png" />
+    <Image Include="Resources\Video\pause.png" />
+    <Image Include="Resources\Video\play.png" />
+    <Image Include="Resources\Video\repeat.png" />
+    <Image Include="Resources\Video\start.png" />
+    <Image Include="Resources\Video\stop.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\qt.conf" />

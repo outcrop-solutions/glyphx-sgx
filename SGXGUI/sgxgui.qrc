@@ -2,6 +2,12 @@
     <qresource prefix="SGXGUI">
       <file>Resources/synglyphx_splash.png</file>
       <file>Resources/synglyphx_x.ico</file>
+      <file>Resources/Video/pause.png</file>
+      <file>Resources/Video/play.png</file>
+      <file>Resources/Video/stop.png</file>
+      <file>Resources/Video/repeat.png</file>
+      <file>Resources/Video/start.png</file>
+      <file>Resources/Video/end.png</file>
     </qresource>
     <qresource prefix="/qt/etc">
       <file alias="qt.conf">Resources/qt.conf</file>
