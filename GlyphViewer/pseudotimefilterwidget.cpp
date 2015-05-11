@@ -4,6 +4,7 @@
 #include <QtWidgets/QGridLayout>
 #include <QtCore/QSettings>
 #include <QtWidgets/QTreeView>
+#include "singlewidgetdialog.h"
 
 unsigned int PseudoTimeFilterWidget::s_buttonSize = 24;
 
@@ -31,6 +32,16 @@ PseudoTimeFilterWidget::PseudoTimeFilterWidget(SynGlyphX::DataTransformMapping::
 
 	QHBoxLayout* buttonsLayoutLeft = new QHBoxLayout(this);
 	buttonsLayoutLeft->setContentsMargins(0, 0, 0, 0);
+
+	m_fieldSelectorButton = new QPushButton(tr("Select Field"), this);
+	QObject::connect(m_fieldSelectorButton, &QPushButton::clicked, this, &PseudoTimeFilterWidget::OnFilterSelectionButtonClicked);
+	m_columnsModel = new SourceDataInfoModel(dataTransformMapping, sourceDataCache, this);
+	m_columnsModel->SetSelectable(false, false, true);
+
+	buttonsLayoutLeft->addWidget(m_fieldSelectorButton);
+
+	m_fieldLabel = new QLabel(this);
+	buttonsLayoutLeft->addWidget(m_fieldLabel);
 
 	buttonsLayoutLeft->addStretch(1);
 
@@ -85,13 +96,7 @@ PseudoTimeFilterWidget::PseudoTimeFilterWidget(SynGlyphX::DataTransformMapping::
 
 	buttonsLayoutRight->addStretch(1);
 
-	m_fieldComboBox = new QComboBox(this);
-	m_columnsModel = new SourceDataInfoModel(dataTransformMapping, sourceDataCache, this);
-	m_columnsModel->SetSelectable(false, false, true);
-	QTreeView* fieldTreeView = new QTreeView(m_fieldComboBox);
-	m_fieldComboBox->setModel(m_columnsModel);
-	m_fieldComboBox->setView(fieldTreeView);
-	buttonsLayoutRight->addWidget(m_fieldComboBox, 2);
+	
 
 	buttonsLayout->addLayout(buttonsLayoutRight, 1);
 
@@ -116,6 +121,9 @@ void PseudoTimeFilterWidget::ResetForNewVisualization() {
 	EnableButtons(true);
 	m_slider->setMaximum(20);
 	m_columnsModel->Reset();
+
+	m_selectedField = m_columnsModel->index(0, 0, m_columnsModel->index(0, 0, m_columnsModel->index(0, 0)));
+	UpdateSelectedFieldLabel();
 	ChangeFilterState(FilterState::Inactive);
 }
 
@@ -149,7 +157,7 @@ void PseudoTimeFilterWidget::EnableButtons(bool enable) {
 	m_goToStartButton->setEnabled(enable);
 	m_playPauseButton->setEnabled(enable);
 	m_goToEndButton->setEnabled(enable);
-	m_fieldComboBox->setEnabled(enable);
+	m_fieldSelectorButton->setEnabled(enable);
 }
 
 void PseudoTimeFilterWidget::OnPlayPause() {
@@ -237,12 +245,12 @@ void PseudoTimeFilterWidget::ChangeFilterState(FilterState newFilterState) {
 		}
 		else {
 
-			//Start Filter
+			
 		}
 	}
 
 	m_stopButton->setEnabled(newFilterState != FilterState::Inactive);
-	m_fieldComboBox->setEnabled((newFilterState == FilterState::Inactive) && (m_columnsModel->rowCount() > 0));
+	m_fieldSelectorButton->setEnabled((newFilterState == FilterState::Inactive) && (m_columnsModel->rowCount() > 0));
 
 	m_filterState = newFilterState;
 }
@@ -262,4 +270,34 @@ void PseudoTimeFilterWidget::IncrementTime() {
 
 		m_slider->setValue(m_slider->value() + 1);
 	}
+}
+
+void PseudoTimeFilterWidget::OnFilterSelectionButtonClicked() {
+
+	QTreeView* fieldSelectorWidget = new QTreeView(this);
+	fieldSelectorWidget->setHeaderHidden(true);
+	fieldSelectorWidget->setSelectionMode(QAbstractItemView::SingleSelection);
+	fieldSelectorWidget->setModel(m_columnsModel);
+	fieldSelectorWidget->selectionModel()->select(m_selectedField, QItemSelectionModel::ClearAndSelect);
+	fieldSelectorWidget->scrollTo(m_selectedField);
+	SynGlyphX::SingleWidgetDialog dialog(QDialogButtonBox::StandardButton::Ok | QDialogButtonBox::StandardButton::Cancel, fieldSelectorWidget, this);
+	dialog.setWindowTitle(tr("Select Field For Time Filter"));
+	
+	if (dialog.exec() == QDialog::Accepted) {
+
+		if (!fieldSelectorWidget->selectionModel()->selectedIndexes().isEmpty()) {
+
+			m_selectedField = fieldSelectorWidget->selectionModel()->selectedIndexes().front();
+		}
+		else {
+
+			m_selectedField = m_columnsModel->index(0, 0, m_columnsModel->index(0, 0, m_columnsModel->index(0, 0)));
+		}
+		UpdateSelectedFieldLabel();
+	}
+}
+
+void PseudoTimeFilterWidget::UpdateSelectedFieldLabel() {
+
+	m_fieldLabel->setText(tr("Selected Field: ") + m_columnsModel->data(m_selectedField).toString());
 }

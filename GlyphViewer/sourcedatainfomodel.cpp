@@ -79,7 +79,6 @@ void SourceDataInfoModel::Reset() {
 
 	clear();
 	const SynGlyphX::DatasourceMaps& datasourceMaps = m_dataTransformMapping->GetDatasources();
-	insertRows(0, datasourceMaps.Count());
 	for (auto fileDatasource : datasourceMaps.GetFileDatasources()) {
 
 		AddDatasource(fileDatasource.first, fileDatasource.second);
@@ -125,7 +124,7 @@ void SourceDataInfoModel::AddTable(const boost::uuids::uuid& id, const QString& 
 
 				QStandardItem* newColumnItem = new QStandardItem(column);
 				newColumnItem->setFlags(m_columnFlags | Qt::ItemNeverHasChildren);
-				newTableItem->appendRow(newTableItem);
+				newTableItem->appendRow(newColumnItem);
 			}
 		}
 	}

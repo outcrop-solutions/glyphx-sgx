@@ -6,7 +6,7 @@
 #include <QtWidgets/QLineEdit>
 #include <QtWidgets/QPushButton>
 #include <QtCore/QTimer>
-#include <QtWidgets/QComboBox>
+#include <QtWidgets/QLabel>
 #include "sourcedatainfomodel.h"
 
 class PseudoTimeFilterWidget : public QWidget
@@ -29,6 +29,7 @@ private slots:
 	void OnGoToEnd();
 	void OnSliderValueChanged(int index);
 	void IncrementTime();
+	void OnFilterSelectionButtonClicked();
 
 private:
 	enum FilterState {
@@ -42,6 +43,7 @@ private:
 	void EnableButtons(bool enable);
 	void ChangeFilterState(FilterState newFilterState);
 	void UpdateTimeFilter();
+	void UpdateSelectedFieldLabel();
 
 	QSlider* m_slider;
 	QLineEdit* m_currentPositionLabel;
@@ -53,8 +55,10 @@ private:
 	QPushButton* m_playPauseButton;
 	QPushButton* m_goToEndButton;
 
-	QComboBox* m_fieldComboBox;
+	QPushButton* m_fieldSelectorButton;
 	SourceDataInfoModel* m_columnsModel;
+	QPersistentModelIndex m_selectedField;
+	QLabel* m_fieldLabel;
 
 	QTimer m_playTimer;
 
