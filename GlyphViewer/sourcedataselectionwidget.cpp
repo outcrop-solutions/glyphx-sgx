@@ -15,10 +15,19 @@ SourceDataSelectionWidget::SourceDataSelectionWidget(SynGlyphX::SourceDataCache:
 {
 	QVBoxLayout* layout = new QVBoxLayout(this);
 
-	m_hideUnselectedTreesCheckbox = new QCheckBox(tr("Hide unselected glyph trees"), this);
+	QHBoxLayout* topLayout = new QHBoxLayout;
+
+	m_hideUnselectedTreesCheckbox = new QCheckBox(tr("Filter View"), this);
 	QObject::connect(m_hideUnselectedTreesCheckbox, &QCheckBox::clicked, this, &SourceDataSelectionWidget::OptionsChanged);
-	SynGlyphX::GroupBoxSingleWidget* optionsGroupBox = new SynGlyphX::GroupBoxSingleWidget(tr("Options:"), m_hideUnselectedTreesCheckbox, this);
-	layout->addWidget(optionsGroupBox);
+	topLayout->addWidget(m_hideUnselectedTreesCheckbox);
+
+	m_clearButton = new QPushButton(tr("Clear"), this);
+	topLayout->addWidget(m_clearButton);
+	QObject::connect(m_clearButton, &QPushButton::clicked, m_selectionModel, &QItemSelectionModel::clear);
+
+	topLayout->addStretch(1);
+	
+	layout->addLayout(topLayout);
 
 	m_tableComboBox = new QComboBox(this);
 	m_tableComboBox->setEnabled(false);
@@ -35,10 +44,6 @@ SourceDataSelectionWidget::SourceDataSelectionWidget(SynGlyphX::SourceDataCache:
 	QObject::connect(m_tableComboBox, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &SourceDataSelectionWidget::OnComboBoxChanged);
 
 	QHBoxLayout* buttonsLayout = new QHBoxLayout(this);
-
-	m_clearButton = new QPushButton(tr("Clear"), this);
-	buttonsLayout->addWidget(m_clearButton);
-	QObject::connect(m_clearButton, &QPushButton::clicked, m_selectionModel, &QItemSelectionModel::clear);
 
 	m_sourceWidgetButton = new QPushButton(tr("Show Selected Source Data"), this);
 	m_sourceWidgetButton->setCheckable(true);

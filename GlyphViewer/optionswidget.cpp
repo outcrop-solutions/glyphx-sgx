@@ -61,7 +61,7 @@ void OptionsWidget::Create3DTab(const GlyphViewerOptions& options) {
 	QWidget* tab = new QWidget(this);
 	QVBoxLayout* layout = new QVBoxLayout(tab);
 
-	m_hideSelectedGlyphsCheckbox = new QCheckBox(tr("Hide unselected glyph trees when there is an active selection"), this);
+	m_hideSelectedGlyphsCheckbox = new QCheckBox(tr("Filter View (Hide unselected glyph trees when there is an active selection)"), this);
 	m_hideSelectedGlyphsCheckbox->setChecked(options.GetHideUnselectedGlyphTrees());
 	layout->addWidget(m_hideSelectedGlyphsCheckbox);
 
