@@ -296,10 +296,10 @@ namespace SynGlyphX {
 		unsigned int startingIndex = 0;
 		if (!m_tableIndexMap.empty()) {
 
-			startingIndex = m_tableIndexMap.rbegin()->first + 1;
+			startingIndex = m_tableIndexMap.rbegin()->left + 1;
 		}
 
-		m_tableIndexMap[startingIndex + GetLastIndexOfTable(tableName)] = tableName;
+		m_tableIndexMap.insert({ startingIndex + GetLastIndexOfTable(tableName), tableName });
 		m_tableNameMap[tableName] = formattedName;
 	}
 
@@ -315,12 +315,12 @@ namespace SynGlyphX {
 		return query;
 	}
 
-	QString SourceDataCache::CreateTablename(const InputField& inputfield) const {
+	QString SourceDataCache::CreateTablename(const InputField& inputfield) {
 
 		return CreateTablename(QString::fromStdString(boost::uuids::to_string(inputfield.GetDatasourceID())), QString::fromStdWString(inputfield.GetTable()));
 	}
 		
-	QString SourceDataCache::CreateTablename(const QString& datasourceID, const QString& originalTablename) const {
+	QString SourceDataCache::CreateTablename(const QString& datasourceID, const QString& originalTablename) {
 
 		if ((originalTablename.isEmpty()) || (originalTablename.toStdWString() == SynGlyphX::Datasource::SingleTableName)) {
 
@@ -354,15 +354,7 @@ namespace SynGlyphX {
 			inputFieldTable += ":" + QString::fromStdWString(inputfield.GetTable());
 		}
 
-		for (auto table : m_tableIndexMap) {
-
-			if (table.second == inputFieldTable) {
-
-				return true;
-			}
-		}
-
-		return false;
+		return (m_tableIndexMap.right.count(inputFieldTable) > 0);
 	}
 
 	void SourceDataCache::DeleteTable(const QString& table) {
@@ -428,7 +420,7 @@ namespace SynGlyphX {
 		for (auto table : m_tableIndexMap) {
 
 			std::set<unsigned long> indexSetForTable;
-			while ((iT != indexSet.end()) && (*iT <= table.first)) {
+			while ((iT != indexSet.end()) && (*iT <= table.left)) {
 
 				indexSetForTable.insert(*iT - sizeOfPreviousTables);
 				++iT;
@@ -436,10 +428,10 @@ namespace SynGlyphX {
 
 			if (!indexSetForTable.empty()) {
 
-				indexSets[table.second] = indexSetForTable;
+				indexSets[table.right] = indexSetForTable;
 			}
 
-			sizeOfPreviousTables += table.first + 1;
+			sizeOfPreviousTables += table.left + 1;
 		}
 
 		return indexSets;
@@ -538,6 +530,20 @@ namespace SynGlyphX {
 		return inString;
 	}
 
+	unsigned long SourceDataCache::GetStartingValueForTable(const QString& tableName) const {
+
+		auto tableIndex = m_tableIndexMap.right.find(tableName);
+		if (tableIndex == m_tableIndexMap.right.begin()) {
+
+			return 0;
+		}
+		else {
+
+			tableIndex--;
+			return tableIndex->get_left() + 1;
+		}
+	}
+
 	IndexSet SourceDataCache::GetIndexesFromTableWithSelectedValues(const QString& tableName, const ColumnValueData& selectedValues, const IndexSet& previousSelection) const {
 
 		QString queryString = "SELECT \"" + IndexColumnName + "\" FROM \"" + tableName + "\" WHERE ";
@@ -564,18 +570,7 @@ namespace SynGlyphX {
 			throw std::exception((QObject::tr("Failed to get selected indexes from cache: ") + m_db.lastError().text()).toStdString().c_str());
 		}
 
-		unsigned long startingValue = 0;
-		for (auto tableIndex : m_tableIndexMap) {
-
-			if (tableIndex.second == tableName) {
-
-				break;
-			}
-			else {
-
-				startingValue = tableIndex.first + 1;
-			}
-		}
+		unsigned long startingValue = GetStartingValueForTable(tableName);
 
 		IndexSet indexSet;
 		while (query.next()) {
@@ -584,6 +579,38 @@ namespace SynGlyphX {
 		}
 
 		return indexSet;
+	}
+
+	SourceDataCache::DistinctValueIndexMap SourceDataCache::GetIndexesOrderedByDistinctValue(const QString& tableName, const QString& columnName) const {
+
+		DistinctValueIndexMap distinctValueIndexMap;
+
+		QString queryString = "SELECT \"" + columnName + "\", \"" + IndexColumnName + "\" FROM \"" + tableName + "\" ORDER BY \"" + columnName + "\" ASC";
+		QSqlQuery query(m_db);
+		query.prepare(queryString);
+		query.exec();
+		if (!query.exec()) {
+
+			throw std::exception((QObject::tr("Failed to get ordered indexes: ") + m_db.lastError().text()).toStdString().c_str());
+		}
+
+		unsigned long startingValue = GetStartingValueForTable(tableName);
+
+		QString previousDistinctValue(QString::null);
+		while (query.next()) {
+
+			QString currentDistinctValue = query.value(0).toString();
+			if (currentDistinctValue != previousDistinctValue) {
+
+				previousDistinctValue = currentDistinctValue;
+				distinctValueIndexMap.push_back({ currentDistinctValue, IndexSet() });
+			}
+
+			distinctValueIndexMap.rbegin()->second.insert(startingValue + query.value(1).toULongLong() - 1);
+		}
+		query.finish();
+
+		return distinctValueIndexMap;
 	}
 
 	bool SourceDataCache::IsCacheOutOfDate(const DatasourceMaps& datasources) const {
@@ -624,9 +651,9 @@ namespace SynGlyphX {
 		Datasource::TableSet tablesInCache;
 		for (auto cacheTable : m_tableIndexMap) {
 
-			if (cacheTable.second.startsWith(datasourceId)) {
+			if (cacheTable.right.startsWith(datasourceId)) {
 
-				QString& tableName = cacheTable.second;
+				const QString& tableName = cacheTable.right;
 				tablesInCache.insert(tableName.mid(tableName.lastIndexOf(':') + 1).toStdWString());
 			}
 		}

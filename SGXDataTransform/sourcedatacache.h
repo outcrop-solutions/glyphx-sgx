@@ -28,6 +28,7 @@
 #include <QtSql/QSqlQuery>
 #include <memory>
 #include <QtSql/QSqlTableModel>
+#include <boost/bimap.hpp>
 
 namespace SynGlyphX {
 
@@ -37,10 +38,11 @@ namespace SynGlyphX {
 		typedef std::shared_ptr<SourceDataCache> SharedPtr;
 		typedef std::shared_ptr<const SourceDataCache> ConstSharedPtr;
 
-		typedef std::map<unsigned long, QString> TableIndexMap;
+		typedef boost::bimap<unsigned long, QString> TableIndexMap;
 		typedef std::map<QString, QString> TableNameMap;
 
 		typedef std::map<QString, IndexSet> IndexSetMap;
+		typedef std::vector<std::pair<QString, IndexSet>> DistinctValueIndexMap;
 
 		typedef std::map<QString, std::set<QString>> ColumnValueData;
 
@@ -73,6 +75,13 @@ namespace SynGlyphX {
 
 		bool IsCacheOutOfDate(const DatasourceMaps& datasources) const;
 
+		DistinctValueIndexMap GetIndexesOrderedByDistinctValue(const QString& tableName, const QString& columnName) const;
+
+		unsigned long GetStartingValueForTable(const QString& tableName) const;
+
+		static QString CreateTablename(const InputField& inputfield);
+		static QString CreateTablename(const QString& datasourceID, const QString& originalTablename);
+
 	private:
 		virtual void CreateNewCacheTable(const QString& name, const QString& fieldNamesAndTypes);
 		int GetLastIndexOfTable(const QString& tableName);
@@ -87,8 +96,6 @@ namespace SynGlyphX {
 		void DeleteTables(const QStringList& tables);
 		void DeleteTables(const boost::uuids::uuid& id);
 
-		QString CreateTablename(const InputField& inputfield) const;
-		QString CreateTablename(const QString& datasourceID, const QString& originalTablename) const;
 		QString GetFormattedNameFromCache(const QString& table);
 
 		QString CreateWhereString(const IndexSet& indexSet) const;
