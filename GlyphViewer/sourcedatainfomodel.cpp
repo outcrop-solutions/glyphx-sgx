@@ -1,4 +1,7 @@
 #include "sourcedatainfomodel.h"
+#include <boost/uuid/uuid_io.hpp>
+
+const int SourceDataInfoModel::IDRole = Qt::UserRole;
 
 SourceDataInfoModel::SourceDataInfoModel(SynGlyphX::DataTransformMapping::SharedPtr dataTransformMapping, SynGlyphX::SourceDataCache::SharedPtr sourceDataCache, QObject *parent)
 	: QStandardItemModel(parent),
@@ -92,6 +95,7 @@ void SourceDataInfoModel::Reset() {
 void SourceDataInfoModel::AddDatasource(const boost::uuids::uuid& id, const SynGlyphX::Datasource& datasource) {
 
 	QStandardItem* newDatasourceItem = new QStandardItem(QString::fromStdWString(datasource.GetFormattedName()));
+	newDatasourceItem->setData(QString::fromStdString(boost::uuids::to_string(id)), IDRole);
 	newDatasourceItem->setFlags(m_datasourceFlags);
 	appendRow(newDatasourceItem);
 	for (auto table : datasource.GetTables()) {

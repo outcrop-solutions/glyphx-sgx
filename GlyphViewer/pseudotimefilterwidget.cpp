@@ -5,12 +5,16 @@
 #include <QtCore/QSettings>
 #include <QtWidgets/QTreeView>
 #include "singlewidgetdialog.h"
+#include <boost/uuid/uuid_io.hpp>
 
 unsigned int PseudoTimeFilterWidget::s_buttonSize = 24;
 
-PseudoTimeFilterWidget::PseudoTimeFilterWidget(SynGlyphX::DataTransformMapping::SharedPtr dataTransformMapping, SynGlyphX::SourceDataCache::SharedPtr sourceDataCache, QWidget *parent)
+PseudoTimeFilterWidget::PseudoTimeFilterWidget(SynGlyphX::DataTransformMapping::SharedPtr dataTransformMapping, SynGlyphX::SourceDataCache::SharedPtr sourceDataCache, GlyphForestModel* model, QItemSelectionModel* selectionModel, QWidget *parent)
 	: QWidget(parent),
-	m_filterState(FilterState::Inactive)
+	m_filterState(FilterState::Inactive),
+	m_sourceDataCache(sourceDataCache),
+	m_glyphForestModel(model),
+	m_glyphForestSelectionModel(selectionModel)
 {
 	m_playTimer.setSingleShot(false);
 
@@ -122,8 +126,7 @@ void PseudoTimeFilterWidget::ResetForNewVisualization() {
 	m_slider->setMaximum(20);
 	m_columnsModel->Reset();
 
-	m_selectedField = m_columnsModel->index(0, 0, m_columnsModel->index(0, 0, m_columnsModel->index(0, 0)));
-	UpdateSelectedFieldLabel();
+	UpdateSelectedField(m_columnsModel->index(0, 0, m_columnsModel->index(0, 0, m_columnsModel->index(0, 0))));
 	ChangeFilterState(FilterState::Inactive);
 }
 
@@ -201,26 +204,40 @@ void PseudoTimeFilterWidget::OnSliderValueChanged(int index) {
 
 		ChangeFilterState(FilterState::ActivePaused);
 	}
+	
 	UpdateTimeFilter();
 }
 
 void PseudoTimeFilterWidget::UpdateTimeFilter() {
 
-	if ((m_slider->value() == m_slider->maximum()) && (!m_repeatButton->isChecked())) {
+	int sliderValue = m_slider->value();
+	if ((sliderValue == m_slider->maximum()) && (!m_repeatButton->isChecked())) {
 
 		m_playTimer.stop();
 	}
 
-	m_currentPositionLabel->setText(QString::number(m_slider->value()));
+	if (m_filterState == FilterState::Inactive) {
+
+		m_currentPositionLabel->clear();
+		m_glyphForestSelectionModel->clear();
+	}
+	else {
+
+		m_currentPositionLabel->setText(m_itemSelectionForEachDistinctValue.at(sliderValue).first);
+		m_glyphForestSelectionModel->select(m_itemSelectionForEachDistinctValue.at(sliderValue).second, QItemSelectionModel::ClearAndSelect);
+	}
 }
 
 void PseudoTimeFilterWidget::ChangeFilterState(FilterState newFilterState) {
+
+	FilterState oldFilterState = m_filterState;
+	m_filterState = newFilterState;
 
 	if (newFilterState == FilterState::ActiveRunning) {
 
 		m_playPauseButton->setToolTip(tr("Pause"));
 		m_playPauseButton->setIcon(QIcon(":SGXGUI/Resources/Video/pause.png"));
-		if (m_filterState == FilterState::ActivePaused) {
+		if (oldFilterState == FilterState::ActivePaused) {
 
 			IncrementTime();
 		}
@@ -251,8 +268,6 @@ void PseudoTimeFilterWidget::ChangeFilterState(FilterState newFilterState) {
 
 	m_stopButton->setEnabled(newFilterState != FilterState::Inactive);
 	m_fieldSelectorButton->setEnabled((newFilterState == FilterState::Inactive) && (m_columnsModel->rowCount() > 0));
-
-	m_filterState = newFilterState;
 }
 
 void PseudoTimeFilterWidget::SetPlayTimerInterval(unsigned int milliseconds) {
@@ -287,17 +302,53 @@ void PseudoTimeFilterWidget::OnFilterSelectionButtonClicked() {
 
 		if (!fieldSelectorWidget->selectionModel()->selectedIndexes().isEmpty()) {
 
-			m_selectedField = fieldSelectorWidget->selectionModel()->selectedIndexes().front();
+			UpdateSelectedField(fieldSelectorWidget->selectionModel()->selectedIndexes().front());
 		}
 		else {
 
-			m_selectedField = m_columnsModel->index(0, 0, m_columnsModel->index(0, 0, m_columnsModel->index(0, 0)));
+			UpdateSelectedField(m_columnsModel->index(0, 0, m_columnsModel->index(0, 0, m_columnsModel->index(0, 0))));
 		}
-		UpdateSelectedFieldLabel();
 	}
 }
 
-void PseudoTimeFilterWidget::UpdateSelectedFieldLabel() {
+void PseudoTimeFilterWidget::UpdateSelectedField(const QModelIndex& newSelectedField) {
 
-	m_fieldLabel->setText(tr("Selected Field: ") + m_columnsModel->data(m_selectedField).toString());
+	m_selectedField = newSelectedField;
+
+	QString columnName = m_columnsModel->data(newSelectedField).toString();
+	QModelIndex tableIndex = newSelectedField.parent();
+	QString tableName = m_columnsModel->data(tableIndex).toString();
+	QModelIndex dataSourceIndex = tableIndex.parent();
+	QString dataSourceName = m_columnsModel->data(dataSourceIndex).toString();
+	QString dataSourceIdString = m_columnsModel->data(dataSourceIndex, SourceDataInfoModel::IDRole).toString();
+
+	QString sourceCacheTableName = SynGlyphX::SourceDataCache::CreateTablename(dataSourceIdString, tableName);
+	auto table = m_sourceDataCache->GetTablesIndexMap().right.find(sourceCacheTableName);
+	unsigned long tableEndingIndex = table->get_left();
+	if (table == m_sourceDataCache->GetTablesIndexMap().right.begin()) {
+
+		m_selectedTableStartingIndex = 0;
+	}
+	else {
+
+		table--;
+		m_selectedTableStartingIndex = table->get_left() + 1;
+	}
+
+	m_itemSelectionForEachDistinctValue.clear();
+	SynGlyphX::SourceDataCache::DistinctValueIndexMap distinctValueIndexMap = m_sourceDataCache->GetIndexesOrderedByDistinctValue(sourceCacheTableName, columnName);
+	for (auto indexes : distinctValueIndexMap) {
+
+		QItemSelection itemSelection;
+		for (auto index : indexes.second) {
+
+			const QModelIndex& modelIndex = m_glyphForestModel->index(index);
+			itemSelection.select(modelIndex, modelIndex);
+		}
+		m_itemSelectionForEachDistinctValue.push_back({ indexes.first, itemSelection });
+	}
+
+	m_slider->setMaximum(m_itemSelectionForEachDistinctValue.size() - 1);
+
+	m_fieldLabel->setText(tr("Selected Field: ") + dataSourceName + ":" + tableName + " " + columnName);
 }

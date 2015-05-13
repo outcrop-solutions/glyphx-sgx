@@ -65,7 +65,7 @@ GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 	//ReadOptions();
 
 	//QObject::connect(m_antzWidget, &ANTzViewerWidget::NewStatusMessage, statusBar(), &QStatusBar::showMessage);
-	QObject::connect(m_glyphForestSelectionModel, &QItemSelectionModel::selectionChanged, this, [this]{  statusBar()->showMessage(tr("Selection Signal"), 4000); });
+	//QObject::connect(m_glyphForestSelectionModel, &QItemSelectionModel::selectionChanged, this, [this]{  statusBar()->showMessage(tr("Selection Signal"), 4000); });
 
 	m_stereoAction->setChecked(m_antzWidget->IsInStereoMode());
 
@@ -208,8 +208,8 @@ void GlyphViewerWindow::CreateDockWidgets() {
 	addDockWidget(Qt::RightDockWidgetArea, rightDockWidget);
 	m_viewMenu->addAction(rightDockWidget->toggleViewAction());
 
-	QDockWidget* bottomDockWidget = new QDockWidget(tr("Psuedo-Time Filter"), this);
-	m_pseudoTimeFilterWidget = new PseudoTimeFilterWidget(m_mapping, m_sourceDataCache, bottomDockWidget);
+	QDockWidget* bottomDockWidget = new QDockWidget(tr("Time Animated Filter"), this);
+	m_pseudoTimeFilterWidget = new PseudoTimeFilterWidget(m_mapping, m_sourceDataCache, m_glyphForestModel, m_glyphForestSelectionModel, bottomDockWidget);
 	bottomDockWidget->setWidget(m_pseudoTimeFilterWidget);
 	addDockWidget(Qt::BottomDockWidgetArea, bottomDockWidget);
 	m_viewMenu->addAction(bottomDockWidget->toggleViewAction());
