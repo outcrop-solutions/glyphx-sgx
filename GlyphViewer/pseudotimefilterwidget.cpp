@@ -100,7 +100,8 @@ PseudoTimeFilterWidget::PseudoTimeFilterWidget(SynGlyphX::DataTransformMapping::
 
 	buttonsLayoutRight->addStretch(1);
 
-	
+	m_filterViewCheckbox = new QCheckBox(tr("Filter View"), this);
+	buttonsLayoutRight->addWidget(m_filterViewCheckbox);
 
 	buttonsLayout->addLayout(buttonsLayoutRight, 1);
 
@@ -134,6 +135,11 @@ void PseudoTimeFilterWidget::Disable() {
 
 	EnableButtons(false);
 	ChangeFilterState(FilterState::Inactive);
+}
+
+void PseudoTimeFilterWidget::SetupLinkedWidgets(LinkedWidgetsManager& linkedWidgetsManager) {
+
+	linkedWidgetsManager.AddFilterViewCheckbox(m_filterViewCheckbox);
 }
 
 void PseudoTimeFilterWidget::ReadSettings() {

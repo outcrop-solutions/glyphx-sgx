@@ -18,7 +18,6 @@ SourceDataSelectionWidget::SourceDataSelectionWidget(SynGlyphX::SourceDataCache:
 	QHBoxLayout* topLayout = new QHBoxLayout;
 
 	m_hideUnselectedTreesCheckbox = new QCheckBox(tr("Filter View"), this);
-	QObject::connect(m_hideUnselectedTreesCheckbox, &QCheckBox::clicked, this, &SourceDataSelectionWidget::OptionsChanged);
 	topLayout->addWidget(m_hideUnselectedTreesCheckbox);
 
 	m_clearButton = new QPushButton(tr("Clear"), this);
@@ -70,17 +69,9 @@ SourceDataSelectionWidget::~SourceDataSelectionWidget()
 
 }
 
-void SourceDataSelectionWidget::SetHideUnselectedTreesCheckbox(bool checked) {
+void SourceDataSelectionWidget::SetupLinkedWidgets(LinkedWidgetsManager& linkedWidgets) {
 
-	bool areSignalsBlocked = m_hideUnselectedTreesCheckbox->signalsBlocked();
-	m_hideUnselectedTreesCheckbox->blockSignals(true);
-	m_hideUnselectedTreesCheckbox->setChecked(checked);
-	m_hideUnselectedTreesCheckbox->blockSignals(areSignalsBlocked);
-}
-
-bool SourceDataSelectionWidget::GetHideUnselectedTreesCheckbox() const {
-
-	return m_hideUnselectedTreesCheckbox->isChecked();
+	linkedWidgets.AddFilterViewCheckbox(m_hideUnselectedTreesCheckbox);
 }
 
 void SourceDataSelectionWidget::OnSourceWidgetWindowHidden() {

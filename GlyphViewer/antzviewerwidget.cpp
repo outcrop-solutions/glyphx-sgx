@@ -1472,3 +1472,13 @@ void ANTzViewerWidget::SetZSpaceOptions(const ZSpaceOptions& options) {
 
 	m_zSpaceOptions = options;
 }
+
+const ZSpaceOptions& ANTzViewerWidget::GetZSpaceOptions() const {
+
+	return m_zSpaceOptions;
+}
+
+bool ANTzViewerWidget::GetHideUnselectedGlyphTrees() const {
+
+	return m_hideUnselectedGlyphTrees;
+}

@@ -62,10 +62,9 @@ GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 		throw;
 	}
 
-	//ReadOptions();
-
-	//QObject::connect(m_antzWidget, &ANTzViewerWidget::NewStatusMessage, statusBar(), &QStatusBar::showMessage);
-	//QObject::connect(m_glyphForestSelectionModel, &QItemSelectionModel::selectionChanged, this, [this]{  statusBar()->showMessage(tr("Selection Signal"), 4000); });
+	m_linkedWidgetsManager = new LinkedWidgetsManager(m_antzWidget, this);
+	m_sourceDataSelectionWidget->SetupLinkedWidgets(*m_linkedWidgetsManager);
+	m_pseudoTimeFilterWidget->SetupLinkedWidgets(*m_linkedWidgetsManager);
 
 	m_stereoAction->setChecked(m_antzWidget->IsInStereoMode());
 
@@ -204,7 +203,6 @@ void GlyphViewerWindow::CreateDockWidgets() {
 	QDockWidget* rightDockWidget = new QDockWidget(tr("Source Data Selector"), this);
 	m_sourceDataSelectionWidget = new SourceDataSelectionWidget(m_sourceDataCache, m_glyphForestModel, m_glyphForestSelectionModel, rightDockWidget);
 	rightDockWidget->setWidget(m_sourceDataSelectionWidget);
-	QObject::connect(m_sourceDataSelectionWidget, &SourceDataSelectionWidget::OptionsChanged, this, &GlyphViewerWindow::OnSourceDataSelectionWidgetOptionsChanged);
 	addDockWidget(Qt::RightDockWidgetArea, rightDockWidget);
 	m_viewMenu->addAction(rightDockWidget->toggleViewAction());
 
@@ -486,7 +484,8 @@ void GlyphViewerWindow::EnableLoadedVisualizationDependentActions(bool enable) {
 
 void GlyphViewerWindow::ChangeOptions() {
 
-	OptionsWidget* optionsWidget = new OptionsWidget(m_options, (m_glyphForestModel->rowCount() == 0), this);
+	GlyphViewerOptions oldOptions = CollectOptions();
+	OptionsWidget* optionsWidget = new OptionsWidget(oldOptions, (m_glyphForestModel->rowCount() == 0), this);
 	SynGlyphX::SingleWidgetDialog dialog(QDialogButtonBox::StandardButton::Ok | QDialogButtonBox::StandardButton::Cancel, optionsWidget, this);
 	dialog.setWindowTitle(tr("Glyph Viewer Options"));
 
@@ -494,7 +493,7 @@ void GlyphViewerWindow::ChangeOptions() {
 
 		try {
 
-			ChangeOptions(optionsWidget->GetOptions());
+			ChangeOptions(oldOptions, optionsWidget->GetOptions());
 		}
 		catch (const std::exception& e) {
 
@@ -503,13 +502,13 @@ void GlyphViewerWindow::ChangeOptions() {
 	}
 }
 
-void GlyphViewerWindow::ChangeOptions(const GlyphViewerOptions& options) { //, bool writeOptions) {
+void GlyphViewerWindow::ChangeOptions(const GlyphViewerOptions& oldOptions, const GlyphViewerOptions& newOptions) {
 
-	if (options != m_options) {
+	if (oldOptions != newOptions) {
 
-		if (m_options.GetCacheDirectory() != options.GetCacheDirectory()) {
+		if (oldOptions.GetCacheDirectory() != newOptions.GetCacheDirectory()) {
 
-			QString newCacheDirectory(options.GetCacheDirectory());
+			QString newCacheDirectory(newOptions.GetCacheDirectory());
 			QDir cacheDir(newCacheDirectory);
 			if (!cacheDir.exists()) {
 
@@ -522,23 +521,15 @@ void GlyphViewerWindow::ChangeOptions(const GlyphViewerOptions& options) { //, b
 			m_cacheManager.SetBaseCacheDirectory(newCacheDirectory.toStdWString());
 		}
 
-		if (m_options.GetHideUnselectedGlyphTrees() != options.GetHideUnselectedGlyphTrees()) {
+		if (oldOptions.GetHideUnselectedGlyphTrees() != newOptions.GetHideUnselectedGlyphTrees()) {
 
-			m_antzWidget->SetHideUnselectedGlyphTrees(options.GetHideUnselectedGlyphTrees());
-			m_sourceDataSelectionWidget->SetHideUnselectedTreesCheckbox(options.GetHideUnselectedGlyphTrees());
+			m_linkedWidgetsManager->SetFilterView(newOptions.GetHideUnselectedGlyphTrees());
 		}
 
-		if (m_options.GetZSpaceOptions() != options.GetZSpaceOptions()) {
+		if (oldOptions.GetZSpaceOptions() != newOptions.GetZSpaceOptions()) {
 
-			m_antzWidget->SetZSpaceOptions(options.GetZSpaceOptions());
+			m_antzWidget->SetZSpaceOptions(newOptions.GetZSpaceOptions());
 		}
-
-		m_options = options;
-
-		//if (writeOptions) {
-		//
-		//	WriteOptions();
-		//}
 	}
 }
 
@@ -576,7 +567,7 @@ void GlyphViewerWindow::ReadSettings() {
 
 	options.SetZSpaceOptions(zSpaceOptions);
 
-	ChangeOptions(options); // , false);
+	ChangeOptions(CollectOptions(), options);
 }
 
 void GlyphViewerWindow::WriteSettings() {
@@ -589,28 +580,34 @@ void GlyphViewerWindow::WriteSettings() {
 	settings.setValue("ShowAnimation", m_showAnimation->isChecked());
 	settings.endGroup();
 
+	GlyphViewerOptions options = CollectOptions();
+
 	settings.beginGroup("Options");
 
-	if (m_options.GetCacheDirectory() != GlyphViewerOptions::GetDefaultCacheDirectory()) {
+	if (options.GetCacheDirectory() != GlyphViewerOptions::GetDefaultCacheDirectory()) {
 
-		settings.setValue("cacheDirectory", m_options.GetCacheDirectory());
+		settings.setValue("cacheDirectory", options.GetCacheDirectory());
 	}
 	else {
 
 		settings.setValue("cacheDirectory", "");
 	}
-	settings.setValue("hideUnselectedGlyphs", m_options.GetHideUnselectedGlyphTrees());
+	settings.setValue("hideUnselectedGlyphs", options.GetHideUnselectedGlyphTrees());
 	settings.endGroup();
 
 	settings.beginGroup("zSpace");
-	settings.setValue("stylusColor", m_options.GetZSpaceOptions().GetStylusColor());
-	settings.setValue("stylusLength", m_options.GetZSpaceOptions().GetStylusLength());
+	settings.setValue("stylusColor", options.GetZSpaceOptions().GetStylusColor());
+	settings.setValue("stylusLength", options.GetZSpaceOptions().GetStylusLength());
 	settings.endGroup();
 }
 
-void GlyphViewerWindow::OnSourceDataSelectionWidgetOptionsChanged() {
+GlyphViewerOptions GlyphViewerWindow::CollectOptions() {
 
-	GlyphViewerOptions options = m_options;
-	options.SetHideUnselectedGlyphTrees(m_sourceDataSelectionWidget->GetHideUnselectedTreesCheckbox());
-	ChangeOptions(options);
+	GlyphViewerOptions options;
+
+	options.SetCacheDirectory(QString::fromStdWString(m_cacheManager.GetBaseCacheDirectory()));
+	options.SetHideUnselectedGlyphTrees(m_linkedWidgetsManager->GetFilterView());
+	options.SetZSpaceOptions(m_antzWidget->GetZSpaceOptions());
+
+	return options;
 }

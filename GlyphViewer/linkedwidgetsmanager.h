@@ -15,25 +15,32 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef CACHEMANAGER_H
-#define CACHEMANAGER_H
+#ifndef LINKEDWIDGETSMANAGER_H
+#define LINKEDWIDGETSMANAGER_H
 
-#include <string>
-#include <boost/filesystem.hpp>
-#include "uuid.h"
+#include <QtCore/QObject>
+#include <QtWidgets/QCheckBox>
+#include "antzviewerwidget.h"
 
-class CacheManager
+class LinkedWidgetsManager : public QObject
 {
-public:
-	CacheManager();
-	~CacheManager();
+	Q_OBJECT
 
-	void SetBaseCacheDirectory(const std::wstring& newbaseCacheDirectory);
-	std::wstring GetBaseCacheDirectory() const;
-	std::wstring GetCacheDirectory(const boost::uuids::uuid& id);
+public:
+	LinkedWidgetsManager(ANTzViewerWidget* antzWidget, QObject *parent = nullptr);
+	~LinkedWidgetsManager();
+
+	bool GetFilterView() const;
+	void AddFilterViewCheckbox(QCheckBox *checkbox);
+
+public slots:
+	void SetFilterView(bool set);
 
 private:
-	boost::filesystem::path m_baseCacheDirectoryPath;
+	void SetFilterViewOnCheckbox(QCheckBox* checkbox, bool set);
+
+	QList<QCheckBox*> m_filterViewCheckboxes;
+	ANTzViewerWidget* m_antzWidget;
 };
 
-#endif // CACHEMANAGER_H
+#endif // LINKEDWIDGETSMANAGER_H

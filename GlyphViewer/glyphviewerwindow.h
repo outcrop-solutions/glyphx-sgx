@@ -29,6 +29,7 @@
 #include "sourcedatacache.h"
 #include "sourcedataselectionwidget.h"
 #include "pseudotimefilterwidget.h"
+#include "linkedwidgetsmanager.h"
 
 class GlyphViewerWindow : public SynGlyphX::MainWindow
 {
@@ -51,7 +52,6 @@ private slots:
 	void ChangeStereoMode();
 	void ImportFilesFromANTz();
 	void ChangeOptions();
-	void OnSourceDataSelectionWidgetOptionsChanged();
 
 private:
 	virtual bool LoadRecentFile(const QString& filename);
@@ -63,9 +63,10 @@ private:
 	void CreateMenus();
 	void CreateDockWidgets();
 	void EnableLoadedVisualizationDependentActions(bool enable);
-	void ChangeOptions(const GlyphViewerOptions& options); // , bool writeOptions = true);
+	void ChangeOptions(const GlyphViewerOptions& oldOptions, const GlyphViewerOptions& newOptions);
 	void ClearAllData();
 	void CreateANTzWidget(const QGLFormat& format);
+	GlyphViewerOptions CollectOptions();
 
 	QMenu* m_fileMenu;
 	QMenu* m_viewMenu;
@@ -78,11 +79,12 @@ private:
 	CacheManager m_cacheManager;
 	bool m_isStereoSupported;
 
+	LinkedWidgetsManager* m_linkedWidgetsManager;
+
 	GlyphForestModel* m_glyphForestModel;
 	QItemSelectionModel* m_glyphForestSelectionModel;
 	ANTzViewerWidget* m_antzWidget;
 	GlyphTreeListView* m_treeView;
-	GlyphViewerOptions m_options;	
 	SynGlyphX::SourceDataCache::SharedPtr m_sourceDataCache;
 	SourceDataSelectionWidget* m_sourceDataSelectionWidget;
 	PseudoTimeFilterWidget* m_pseudoTimeFilterWidget;

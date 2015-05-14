@@ -42,6 +42,9 @@ public:
 	bool eventFilter(QObject *object, QEvent *event);
 	
 	void SetZSpaceOptions(const ZSpaceOptions& options);
+	const ZSpaceOptions& GetZSpaceOptions() const;
+
+	bool GetHideUnselectedGlyphTrees() const;
 
 	static const QGLFormat& GetNonStereoFormat();
 	static const QGLFormat& GetStereoFormat();

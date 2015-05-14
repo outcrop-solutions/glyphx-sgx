@@ -28,6 +28,7 @@
 #include "glyphforestmodel.h"
 #include <unordered_map>
 #include "elasticlistswidget.h"
+#include "linkedwidgetsmanager.h"
 
 class SourceDataSelectionWidget : public QWidget
 {
@@ -37,11 +38,7 @@ public:
 	SourceDataSelectionWidget(SynGlyphX::SourceDataCache::SharedPtr sourceDataCache, GlyphForestModel* model, QItemSelectionModel* selectionModel, QWidget *parent);
 	~SourceDataSelectionWidget();
 
-	void SetHideUnselectedTreesCheckbox(bool checked);
-	bool GetHideUnselectedTreesCheckbox() const;
-
-signals:
-	void OptionsChanged();
+	void SetupLinkedWidgets(LinkedWidgetsManager& linkedWidgets);
 
 private slots:
 	void OnSourceWidgetWindowHidden();

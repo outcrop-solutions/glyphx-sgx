@@ -10,6 +10,8 @@
 #include <unordered_map>
 #include "sourcedatainfomodel.h"
 #include "glyphforestmodel.h"
+#include <QtWidgets/QCheckBox>
+#include "linkedwidgetsmanager.h"
 
 class PseudoTimeFilterWidget : public QWidget
 {
@@ -19,12 +21,14 @@ public:
 	PseudoTimeFilterWidget(SynGlyphX::DataTransformMapping::SharedPtr dataTransformMapping, SynGlyphX::SourceDataCache::SharedPtr sourceDataCache, GlyphForestModel* model, QItemSelectionModel* selectionModel, QWidget *parent);
 	~PseudoTimeFilterWidget();
 
+	void SetupLinkedWidgets(LinkedWidgetsManager& linkedWidgetsManager);
+
 	void ResetForNewVisualization();
 	void Disable();
 
 	void SetPlayTimerInterval(unsigned int milliseconds);
 
-	private slots:
+private slots:
 	void OnPlayPause();
 	void OnStop();
 	void OnGoToStart();
@@ -70,6 +74,8 @@ private:
 	std::vector < std::pair < QString, QItemSelection >> m_itemSelectionForEachDistinctValue;
 	GlyphForestModel* m_glyphForestModel;
 	QItemSelectionModel* m_glyphForestSelectionModel;
+
+	QCheckBox* m_filterViewCheckbox;
 
 	static unsigned int s_buttonSize;
 };
