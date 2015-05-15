@@ -21,9 +21,7 @@
 #include <QtWidgets/QDialog>
 #include <QtWidgets/QStackedWidget>
 #include <QtWidgets/QComboBox>
-#include <QtWidgets/QRadioButton>
-#include <QtWidgets/QButtonGroup>
-#include <boost/bimap.hpp>
+#include <QtCore/QSignalMapper>
 #include "mapoptionswidget.h"
 #include "baseimage.h"
 #include "browselineedit.h"
@@ -43,16 +41,23 @@ public:
 	void SetBaseImage(const SynGlyphX::BaseImage& baseImage);
 	SynGlyphX::BaseImage GetBaseImage() const;
 
+private slots:
+	void PresetButtonClicked(int id);
+
 private:
-	static const boost::bimap<int, SynGlyphX::Vector3> s_orientationPresets;
-	static const std::vector<QString> s_orientationNames;
+	typedef std::pair<SynGlyphX::Vector3, SynGlyphX::Vector3> PositionOrientation;
+	typedef std::vector<PositionOrientation> PresetMap;
+
+	static const PresetMap s_presets;
+	static const std::vector<std::string> s_presetNames;
 
 	QStackedWidget* m_baseImageOptionsStackedWidget;
 	QComboBox* m_baseImageComboBox;
 	MapOptionsWidget* m_downloadedMapOptionsWidget;
 	SynGlyphX::BrowseLineEdit* m_userDefinedImageLineEdit;
 	SynGlyphX::XYZWidget* m_positionWidget;
-	QButtonGroup* m_orientationGroup;
+	SynGlyphX::XYZWidget* m_orientationWidget;
+	QSignalMapper* m_presetButtonSignalMapper;
 	SynGlyphX::DoubleSizeWidget* m_worldSizeWidget;
 };
 

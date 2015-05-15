@@ -39,7 +39,7 @@ namespace SynGlyphX {
 
 			surfaceNames.push_back(QString::fromStdWString(surface.second));
 		}
-		m_surfaceRadioButtonGroup = new SynGlyphX::RadioButtonGroupWidget(surfaceNames, SynGlyphX::RadioButtonGroupWidget::Horizontal, this);
+		m_surfaceRadioButtonGroup = new SynGlyphX::RadioButtonGroupWidget(surfaceNames, Qt::Horizontal, this);
 		QGroupBox* surfaceGroupBox = new SynGlyphX::GroupBoxSingleWidget(tr("Surface"), m_surfaceRadioButtonGroup, this);
 
 		surfaceAndRatioLayout->addWidget(surfaceGroupBox);

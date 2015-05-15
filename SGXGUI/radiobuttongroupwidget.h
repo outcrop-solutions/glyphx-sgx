@@ -29,14 +29,10 @@ namespace SynGlyphX {
 		Q_OBJECT
 
 	public:
-		enum Alignment {
-			Horizontal,
-			Vertical
-		};
-
-		RadioButtonGroupWidget(const QStringList& buttonNames, Alignment alignment, QWidget *parent);
+		RadioButtonGroupWidget(const QStringList& buttonNames, Qt::Orientation alignment, QWidget *parent);
 		~RadioButtonGroupWidget();
 
+		void UncheckAllButtons();
 		void SetCheckedButton(int id);
 		int GetCheckedButton() const;
 		QString GetCheckedButtonLabel() const;

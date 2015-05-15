@@ -11,14 +11,14 @@
 #include "downloadedmapproperties.h"
 #include "userdefinedbaseimageproperties.h"
 
-const boost::bimap<int, SynGlyphX::Vector3> BaseImageDialog::s_orientationPresets = boost::assign::list_of < boost::bimap<int, SynGlyphX::Vector3>::relation >
-	(0, SynGlyphX::Vector3({ { 0.0, 0.0, 0.0 } }))
-	(1, SynGlyphX::Vector3({ { 180.0, 0.0, 0.0 } }))
-	(2, SynGlyphX::Vector3({ { 90.0, 270.0, 180.0 } }))
-	(3, SynGlyphX::Vector3({ { 90.0, 90.0, 180.0 } }))
-	(4, SynGlyphX::Vector3({ { 90.0, 180.0, 180.0 } }));
+const BaseImageDialog::PresetMap BaseImageDialog::s_presets = 
+	{ PositionOrientation(SynGlyphX::Vector3({ { 0.0, 0.0, 0.0 } }), SynGlyphX::Vector3({ { 0.0, 0.0, 0.0 } })),
+	PositionOrientation(SynGlyphX::Vector3({ { 0.0, 0.0, 180.0 } }), SynGlyphX::Vector3({ { 180.0, 0.0, 0.0 } })),
+	PositionOrientation(SynGlyphX::Vector3({ { -180.0, 0.0, 90.0 } }), SynGlyphX::Vector3({ { 90.0, 90.0, 180.0 } })),
+	PositionOrientation(SynGlyphX::Vector3({ { 180.0, 0.0, 90.0 } }), SynGlyphX::Vector3({ { 90.0, 270.0, 180.0 } })),
+	PositionOrientation(SynGlyphX::Vector3({ { 0.0, 90.0, 90.0 } }), SynGlyphX::Vector3({ { 90.0, 180.0, 180.0 } })) };
 
-const std::vector<QString> BaseImageDialog::s_orientationNames = { "Up", "Down", "Left", "Right", "Front" };
+const std::vector<std::string> BaseImageDialog::s_presetNames = { "Up", "Down", "Left", "Right", "Front" };
 
 BaseImageDialog::BaseImageDialog(bool enablePositionAndOrientation, bool showDownloadMapOptions, QWidget *parent)
 	: QDialog(parent),
@@ -80,25 +80,40 @@ BaseImageDialog::BaseImageDialog(bool enablePositionAndOrientation, bool showDow
 	SynGlyphX::GroupBoxSingleWidget* positionGroupBox = new SynGlyphX::GroupBoxSingleWidget(tr("Position"), m_positionWidget, this);
 	layout->addWidget(positionGroupBox);
 
-	QGroupBox* orientationGroupBox = new QGroupBox(tr("Orientation (direction image is facing)"), this);
-	m_orientationGroup = new QButtonGroup(this);
-	QHBoxLayout* orientationLayout = new QHBoxLayout(this);
-	for (boost::bimap<int, SynGlyphX::Vector3>::const_iterator iT = s_orientationPresets.begin(); iT != s_orientationPresets.end(); ++iT) {
-
-		QRadioButton* radioButton = new QRadioButton(s_orientationNames.at(iT->left), orientationGroupBox);
-		orientationLayout->addWidget(radioButton);
-		m_orientationGroup->addButton(radioButton, iT->left);
-	}
-	m_orientationGroup->button(0)->setChecked(true);
-	orientationGroupBox->setLayout(orientationLayout);
-	orientationGroupBox->setEnabled(enablePositionAndOrientation);
+	m_orientationWidget = new SynGlyphX::XYZWidget(false, this);
+	m_orientationWidget->SetRange(0.0, 360.0);
+	m_orientationWidget->SetWrapping(false);
+	m_orientationWidget->setEnabled(false);
+	SynGlyphX::GroupBoxSingleWidget* orientationGroupBox = new SynGlyphX::GroupBoxSingleWidget(tr("Orientation"), m_orientationWidget, this);
 	layout->addWidget(orientationGroupBox);
+
+	m_presetButtonSignalMapper = new QSignalMapper(this);
+
+	QGroupBox* presetGroupBox = new QGroupBox(tr("Position/Orientation Presets"), this);
+	QHBoxLayout* presetGroupBoxLayout = new QHBoxLayout(this);
+	for (int i = 0; i < s_presetNames.size(); ++i) {
+
+		QPushButton* presetButton = new QPushButton(tr(s_presetNames[i].c_str()), presetGroupBox);
+		presetGroupBoxLayout->addWidget(presetButton);
+		QObject::connect(presetButton, &QPushButton::clicked, m_presetButtonSignalMapper, static_cast<void (QSignalMapper::*)()>(&QSignalMapper::map));
+		m_presetButtonSignalMapper->setMapping(presetButton, i);
+	}
+	QObject::connect(m_presetButtonSignalMapper, static_cast<void (QSignalMapper::*)(int)>(&QSignalMapper::mapped), this, &BaseImageDialog::PresetButtonClicked);
+	presetGroupBox->setLayout(presetGroupBoxLayout);
+	presetGroupBox->setEnabled(enablePositionAndOrientation);
+	layout->addWidget(presetGroupBox);
+
+	QHBoxLayout* worldSizeLayout = new QHBoxLayout(this);
 
 	m_worldSizeWidget = new SynGlyphX::DoubleSizeWidget(true, this);
 	m_worldSizeWidget->SetRange(0.1, 10000.0);
 	m_worldSizeWidget->SetSize(QSizeF(360.0, 180.0));
 	SynGlyphX::GroupBoxSingleWidget* worldSizeGroupBox = new SynGlyphX::GroupBoxSingleWidget(tr("World Space Size"), m_worldSizeWidget, this);
-	layout->addWidget(worldSizeGroupBox);
+	worldSizeLayout->addWidget(worldSizeGroupBox);
+
+	worldSizeLayout->addStretch(1);
+
+	layout->addLayout(worldSizeLayout);
 
 	layout->addStretch(1);
 
@@ -175,8 +190,7 @@ void BaseImageDialog::SetBaseImage(const SynGlyphX::BaseImage& baseImage) {
 		m_userDefinedImageLineEdit->SetText(QString::fromStdWString(properties->GetFilename()));
 	}
 	m_positionWidget->Set(baseImage.GetPosition());
-
-	m_orientationGroup->button(s_orientationPresets.right.at(baseImage.GetRotationAngles()))->setChecked(true);
+	m_orientationWidget->Set(baseImage.GetRotationAngles());
 
 	SynGlyphX::BaseImage::Size worldSize = baseImage.GetWorldSize();
 	m_worldSizeWidget->SetSize(QSizeF(worldSize[0], worldSize[1]));
@@ -202,7 +216,7 @@ SynGlyphX::BaseImage BaseImageDialog::GetBaseImage() const {
 	}
 
 	newBaseImage.SetPosition(m_positionWidget->Get());
-	newBaseImage.SetRotation(s_orientationPresets.left.at(m_orientationGroup->id(m_orientationGroup->checkedButton())));
+	newBaseImage.SetRotation(m_orientationWidget->Get());
 	QSizeF worldSizeF = m_worldSizeWidget->GetSize();
 	SynGlyphX::BaseImage::Size worldSize;
 	worldSize[0] = worldSizeF.width();
@@ -210,4 +224,11 @@ SynGlyphX::BaseImage BaseImageDialog::GetBaseImage() const {
 	newBaseImage.SetWorldSize(worldSize);
 
 	return newBaseImage;
+}
+
+void BaseImageDialog::PresetButtonClicked(int id) {
+
+	const PositionOrientation& preset = s_presets[id];
+	m_positionWidget->Set(preset.first);
+	m_orientationWidget->Set(preset.second);
 }

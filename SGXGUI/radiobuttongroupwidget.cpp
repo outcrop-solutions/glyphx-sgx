@@ -5,7 +5,7 @@
 
 namespace SynGlyphX {
 
-	RadioButtonGroupWidget::RadioButtonGroupWidget(const QStringList& buttonNames, Alignment alignment, QWidget *parent)
+	RadioButtonGroupWidget::RadioButtonGroupWidget(const QStringList& buttonNames, Qt::Orientation alignment, QWidget *parent)
 		: QWidget(parent)
 	{
 		if (buttonNames.empty()) {
@@ -14,7 +14,7 @@ namespace SynGlyphX {
 		}
 
 		QBoxLayout* layout;
-		if (alignment == Horizontal) {
+		if (alignment == Qt::Horizontal) {
 
 			layout = new QHBoxLayout(this);
 		}
@@ -40,6 +40,14 @@ namespace SynGlyphX {
 	RadioButtonGroupWidget::~RadioButtonGroupWidget()
 	{
 
+	}
+
+	void RadioButtonGroupWidget::UncheckAllButtons() {
+
+		Q_FOREACH(QAbstractButton* radioButton, m_buttonGroup->buttons()) {
+
+			radioButton->setChecked(false);
+		}
 	}
 
 	void RadioButtonGroupWidget::SetCheckedButton(int id) {
