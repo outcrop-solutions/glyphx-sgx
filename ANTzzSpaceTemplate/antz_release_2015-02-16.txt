@@ -1,12 +1,173 @@
-- Release Notes -                                        http://openantz.com
+﻿- Release Notes -                                        http://openantz.com
 
-         also see 'Tickets - Bugs' and 'Wiki' on sf.net/p/openantz
-     
+         latest code, issues and Wiki on https://github.com/openantz/
+----------------------------------------------------------------------------
+ANTz v0.198.0 - 2015-02-16
+
+Enhanced:
+#147  Mysql lde - cleanup and fixes DB login using globals CSV file  
+#139  MySQL support for Links
+#131  MySQL Manual Refresh
+#130  ANTz Globals CSV
+#82   MySQL support for tag table
+
+Fixed:
+#149  MySQL login is blank when generating a new default globals CSV file
+#145  Mysql lde - bug fixes and new support for tag table  
+#142  MySQL login not stored in antzglobals.csv file
+#141  MySQL tag_tbl has duplicate tag entries
+#140  MySQL fails to load updates after saving an update
+#138  MySQL functionality has changed
+#137  Latest OSX can't connect to MySQL
+#136  OSX version crashes on loading and saving
+#133  Latest version won't load CSV files (ver 9_13_2014)
+#132  Tags flooding console and slow loading... in version 6_29_2014
+#121  U key does not launch url from globals file
+#120  CSV Tags are printed to console during load, causes huge slowdown
+#119  CSV tag file passed in as system console argument causes a load loop
+#109  MySQL breaks if you change the default login in antzglobals.csv
+#108  Forward slash stops working
+
+Bugs Reported:
+#148  Debug build crashes on startup
+#146  Xcode will not build using 10.6 base SDK
+#144  CSV files that exceed kNPnodeChildLimit crash during load
+#143  MySQL tag edited or created by user are not saved to the database
+#134  Save selected region does not save tags
+
+----------------------------------------------------------------------------
+antz_msw_2014-09-13
+
+1) MySQL stability and bug fixes, especially for remote servers.
+
+----------------------------------------------------------------------------
+antz_msw_2014-08-13
+
+1) Enhanced MySQL user interaction and exception handling.
+ a) New DB console commands: LOAD, AUTO, SYNC, QUERY, INFO, etc...
+ b) Better error handling reports to user and fixes a number of issues.
+
+----------------------------------------------------------------------------
+antz_msw_2014-08-01
+
+1) Press '/' (question '?' key) to access new Database Tools:
+ a) SAVE 'example_name' to create a new DB.
+ b) USE command to switch which DB to update from or to.
+ c) DROP command to delete a database forever.
+ d) SELECT command to select nodes using MySQL 'WHERE' syntax.
+ e) SET command to set node attributes using MySQL syntax.
+ f) As before, can enter a menu item # to load a DB.
+2) Press SHIFT+'/' to Save a time-stamped DB, as before.
+3) Press ALT+'/' to Load Update from the DB.
+4) Press SHIFT+ALT+'/' to Save an Update to the DB from the Scene.
+5) New remote MySQL host support, edit antzglobals.csv to set host.
+6) Fixed issue#109 - MySQL breaks if you change login in antzglobals.csv
+
+*Note the MySQL host server may restrict certain tools such as SAVE new DB.
+
+----------------------------------------------------------------------------
+antz_msw_2014-06-29
+
+1) Press '1' key to see a proto-dev-strategy for the app.
+2) 'L' key now launches file tags named with 'c:' or 'http...' for browser
+ a) ie: 'c:antz.exe' or 'c:/data/ex/readme.doc' or 'http://openantz.com'
+ b) Try preset '2', press 'L' with a node that has http... or antz.exe tag.
+	
+3) Fixed bug 107 - CSV Text Tags only partially load (Tag Sync).
+4) Fixed bug 115 - Camera view of Rod Topo when rod is rotated.
+5) Fixed bug 116 - Text Tag record_id NOT set when clicking another node.
+6) Fixed bug 117 - CSV Tag file has blank 'id: 0-37' tags for cam, grid...
+7) Fixed bug 118 - Tags assigned to the wrong nodes, related to bug 107.
+
+----------------------------------------------------------------------------
+antz_msw_2014-06-01
+
+1) New Text Tag custom URL support and editing enhancements, 'U' key:
+  b) URL must have an http(s) prefix, can be a plain URL or in HTML format.
+    ex1: HTML format URL tag title: <a href="http://example.com">Example</a>
+    ex2: Plain text URL tag title: http://example.com
+  c) Edit pre-existing text with arrow keys and backspace.
+  d) Max tag title length changed to 511 (previously 63.)
+
+2) Arrow keys traverse the scene graph. SHIFT+arrow jumps towards extents.
+  a) Arrows traverse the Tree-Node-Terminology doc.
+  b) Left & Right arrows select node sibling. Up & Down for branch level.
+  c) Rotate is now Alt+W A S D Q E. Same keys for move, but with ALT held.
+  
+3) Press '3' key to view ANTzXtree.
+  a) Navigate the file tree using either the Arrow keys or Mouse.
+  b) Image files are loaded and assigned to the file node as its texture.
+  c) ALT+L now opens the system file dialog box, (planning to deprecate.)
+
+4) Screenshot - press 'F4' to save a time-stamped BMP to 'usr/images/'.
+5) Thumbnail now Saved with dataset using (native GPU) DDS file format.
+
+6) OSC functionality restored (and enhanced.) Fixed bug# 106
+  a) Supports 2 separate Touch OSC devices using 'Simple' template.
+  b) Some very crude support for 'Mind Your OSCs' with Emotiv Epoc EEG.
+  c) Ports are hardcoded at the moment RX=8000 or 8001 (and 7400 for Epoc.)
+
+7) Project layout changes in preperation for a C-API with plugin support:
+  a) Various files added/removed and some folder names changed.
+  b) Added 'usr/plugin' folder, the location implies plugins are optional.
+
+----------------------------------------------------------------------------
+antz_msw_2014-05-02
+
+1) MySQL optimized for speed and stability, 600k record max.
+2) New 'Text Tag' menu tool allows user to edit record_id labels.
+3) Save Tags when saving the scene state to CSV. 100k tag max.
+4) New Globals CSV file sets user layout, URL's, logins, alpha mode, etc.
+5) Added Move, Scale, and Rotate to tool menu. Closes Ticket# 101.
+
+6) Fixed bug# 67 - CSV writes huge 1.2GB file and then crashes.
+7) Fixed bug# 77 - Crashes when loading if more then 32 branches per parent.
+8) Fixed bug# 81 - MySQL Chops off nodes when saving... nearest 128th.
+9) Fixed bug# 83 - MySQL Torus ratio or scale issue with database nodes.
+10) Fixed bug# 88 - MySQL stops working after 2-3 Load or Save operations.
+11) Fixed bug# 92 - MySQL interface not working.
+12) Fixed bug# 105 - Tool button in Menu displays id: 19 after loading a CSV.
+
+----------------------------------------------------------------------------
+antz_msw_2013-11-21
+
+1) Improved left menu-bar tool behavior.
+2) Fixed bug# 98 - Tools effect selection set instead of clicked object.
+3) Fixed bug# 99 - Clicking menu-bar tools loses current selection.
+
+----------------------------------------------------------------------------
+antz_msw_2013-11-21
+
+1) Improved left menu-bar tool behavior.
+2) Fixed bug# 98 - Tools effect selection set instead of clicked object.
+3) Fixed bug# 99 - Clicking menu-bar tools loses current selection.
+
+----------------------------------------------------------------------------
+antz_msw_2013-11-11
+
+1) Select Region tool added, (press SHIFT while dragging to add nodes.)
+
+----------------------------------------------------------------------------
+antz_msw_2013-10-07
+
+1) freeglut.dll was debug, broke many systems, is now release version.
+
+----------------------------------------------------------------------------
+antz_msw_2013-10-02
+
+1) antz.exe application missing from last release 2013-10-01 ver.
+
+----------------------------------------------------------------------------
+antz_msw_2013-10-01
+
+1) Bug# 96 Fixed - Camera targeting is now time corrected for faster lock.
+2) Fixed camera target for root pin and rod to center at object top.
+
 ----------------------------------------------------------------------------
 antz_msw_2013-08-20
 
 1) Updated to freeglut 2.8.1 official release, previously using a beta ver.
-2) Fixed Bug 94 - Can't debug ANTz with VS 2008, error with freeglut.dll
+2) Bug# 94 Fixed - Can't debug ANTz with VS 2008, error with freeglut.dll
 
 ----------------------------------------------------------------------------
 antz_msw_2013-05-28
