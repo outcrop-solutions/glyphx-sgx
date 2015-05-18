@@ -7,7 +7,7 @@
 
 int main(int argc, char *argv[])
 {
-    SynGlyphX::Application::Setup("Glyph Builder - Glyph Designer", "0.7.05");
+    SynGlyphX::Application::Setup("Glyph Builder - Glyph Designer", "0.7.06");
     SynGlyphX::Application a(argc, argv);
 
     SynGlyphX::Application::SetupIcons(QIcon(":SGXGUI/Resources/synglyphx_x.ico"));

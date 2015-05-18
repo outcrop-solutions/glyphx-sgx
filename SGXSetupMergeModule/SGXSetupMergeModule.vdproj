@@ -15,6 +15,18 @@
     {
         "Entry"
         {
+        "MsmKey" = "8:_01601841C219425A96BC415841E82E5F"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_018E8492F95D40DC99CE22D633994C86"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_04398C226C8143C6A99A85E656CDA4C1"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -69,12 +81,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_14F7EF3CA775467FB8186D0A359E8F65"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_1874BD20058D49D298D2A2D763B637C4"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -94,12 +100,6 @@
         "Entry"
         {
         "MsmKey" = "8:_20261BBA1E664A25B0CD219C5D7AD4F7"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_2228C702045A4730814B109BF94E90EB"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -165,6 +165,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_3970CEE1FDF44598A02180133BB09796"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_3E26521663AC421A84A7710BDB3BFBA7"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -196,12 +202,6 @@
         "Entry"
         {
         "MsmKey" = "8:_4A66415C1F6A4465AE0184E0AD215A97"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_4D2B656B62BB465EAABE5D1982B7A1B7"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -297,6 +297,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_70D1A377A1C9439C978035F25391E221"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_7DC15E24D2A24E3E8B6212837435BD33"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -309,19 +315,13 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_815A4380581945809368C02D86F339CA"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_81FF97ED6A5F414A9168C96960FF2219"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_838B94F951224F58B658C6F0447CFD80"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_852D6AA336C14CC79D0293DEC9FC703D"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -352,6 +352,18 @@
         "Entry"
         {
         "MsmKey" = "8:_98F6A935EECC45CF980D11A03114C70F"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_9B8D877C703241CDB9E9BA1F07010E1B"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_9E07D3F157DD4285BD53DEC3D7EC71A9"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -393,12 +405,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_A74299C8D121454CBBE03ADDE0CEFED9"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_A7E4EAFA7D2847A2B3676A8F3044EB9E"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -411,12 +417,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_A97251D655464E40A68630613D24D776"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_AA0DD3FF9B9748E9A6849DD1F420A2D3"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -424,18 +424,6 @@
         "Entry"
         {
         "MsmKey" = "8:_AC81C80D39A3456E8DF77E264C36FB81"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_AD0F872C585C457388401CFBCAF21338"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_AEEC7DBB0C0C4202A5DB98A50F915275"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -501,6 +489,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_CA53633371514851AF5A1BBD3BFD933F"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_CBEF6E1F94B944B188E9DC0988EF0864"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -514,12 +508,6 @@
         "Entry"
         {
         "MsmKey" = "8:_CDA9B2DA8B504FCCB7E479AE1AA19CC1"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_CE1144406268419491D16075D5DE5E73"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -574,12 +562,6 @@
         "Entry"
         {
         "MsmKey" = "8:_DCF7E77F75BB42B18A0A3E1C8AC3A5A7"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_DFE5992AFB424339AD968F1373068896"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -658,12 +640,6 @@
         "Entry"
         {
         "MsmKey" = "8:_FC47E523E3354146B20B9286A18BF9EF"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_FC7193E807EF46F58851CDC75BF140AB"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -754,6 +730,46 @@
         }
         "File"
         {
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_01601841C219425A96BC415841E82E5F"
+            {
+            "SourcePath" = "8:..\\..\\ANTzPlus\\ANTzzSpaceTemplate\\usr\\csv\\antzglobals.csv"
+            "TargetName" = "8:antzglobals.csv"
+            "Tag" = "8:"
+            "Folder" = "8:_91E3593158E947D7BD2C0C4286CA7149"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_018E8492F95D40DC99CE22D633994C86"
+            {
+            "SourcePath" = "8:..\\..\\ANTzPlus\\ANTzzSpaceTemplate\\README.md"
+            "TargetName" = "8:README.md"
+            "Tag" = "8:"
+            "Folder" = "8:_89702FDDAF7146B08C00DB9BA96A0007"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_04398C226C8143C6A99A85E656CDA4C1"
             {
             "SourcePath" = "8:..\\..\\3rdParty\\bin\\Win32\\Release\\Qt5Sql.dll"
@@ -934,26 +950,6 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_14F7EF3CA775467FB8186D0A359E8F65"
-            {
-            "SourcePath" = "8:..\\..\\ANTzPlus\\ANTzzSpaceTemplate\\ZSInternal.dll"
-            "TargetName" = "8:ZSInternal.dll"
-            "Tag" = "8:"
-            "Folder" = "8:_89702FDDAF7146B08C00DB9BA96A0007"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_1874BD20058D49D298D2A2D763B637C4"
             {
             "SourcePath" = "8:..\\..\\3rdParty\\bin\\Win32\\Release\\Qt5Gui.dll"
@@ -1020,26 +1016,6 @@
             "TargetName" = "8:qoffscreen.dll"
             "Tag" = "8:"
             "Folder" = "8:_0564933CE52B4499872F711B0DCBB7FB"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_2228C702045A4730814B109BF94E90EB"
-            {
-            "SourcePath" = "8:..\\..\\ANTzPlus\\ANTzzSpaceTemplate\\antz_readme_2013-08-20.txt"
-            "TargetName" = "8:antz_readme_2013-08-20.txt"
-            "Tag" = "8:"
-            "Folder" = "8:_89702FDDAF7146B08C00DB9BA96A0007"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -1194,6 +1170,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_3970CEE1FDF44598A02180133BB09796"
+            {
+            "SourcePath" = "8:..\\..\\ANTzPlus\\ANTzzSpaceTemplate\\cheatsheet_2015-02-16.txt"
+            "TargetName" = "8:cheatsheet_2015-02-16.txt"
+            "Tag" = "8:"
+            "Folder" = "8:_89702FDDAF7146B08C00DB9BA96A0007"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_3E26521663AC421A84A7710BDB3BFBA7"
             {
             "SourcePath" = "8:..\\..\\3rdParty\\tools\\vc120redist\\msvcr120.dll"
@@ -1280,26 +1276,6 @@
             "TargetName" = "8:cheatsheet_2015-02-16.txt"
             "Tag" = "8:"
             "Folder" = "8:_3E59963508D34F76B5732E64BBFB296A"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_4D2B656B62BB465EAABE5D1982B7A1B7"
-            {
-            "SourcePath" = "8:..\\..\\ANTzPlus\\ANTzzSpaceTemplate\\ZSCommon.dll"
-            "TargetName" = "8:ZSCommon.dll"
-            "Tag" = "8:"
-            "Folder" = "8:_89702FDDAF7146B08C00DB9BA96A0007"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -1594,6 +1570,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_70D1A377A1C9439C978035F25391E221"
+            {
+            "SourcePath" = "8:..\\..\\ANTzPlus\\ANTzzSpaceTemplate\\antz_release_2015-02-16.txt"
+            "TargetName" = "8:antz_release_2015-02-16.txt"
+            "Tag" = "8:"
+            "Folder" = "8:_89702FDDAF7146B08C00DB9BA96A0007"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_7DC15E24D2A24E3E8B6212837435BD33"
             {
             "SourcePath" = "8:..\\..\\3rdParty\\bin\\Win32\\Release\\qt_plugins\\platforms\\qminimal.dll"
@@ -1634,32 +1630,12 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_838B94F951224F58B658C6F0447CFD80"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_815A4380581945809368C02D86F339CA"
             {
-            "SourcePath" = "8:..\\..\\ANTzPlus\\ANTzzSpaceTemplate\\ZSStereo.dll"
-            "TargetName" = "8:ZSStereo.dll"
+            "SourcePath" = "8:..\\..\\3rdParty\\tools\\vc120redist\\vccorlib120.dll"
+            "TargetName" = "8:vccorlib120.dll"
             "Tag" = "8:"
             "Folder" = "8:_89702FDDAF7146B08C00DB9BA96A0007"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_852D6AA336C14CC79D0293DEC9FC703D"
-            {
-            "SourcePath" = "8:..\\..\\ANTzPlus\\ANTzzSpaceTemplate\\usr\\csv\\antzglobals0001.csv"
-            "TargetName" = "8:antzglobals0001.csv"
-            "Tag" = "8:"
-            "Folder" = "8:_91E3593158E947D7BD2C0C4286CA7149"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -1774,6 +1750,46 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_9B8D877C703241CDB9E9BA1F07010E1B"
+            {
+            "SourcePath" = "8:..\\..\\3rdParty\\tools\\vc120redist\\msvcp120.dll"
+            "TargetName" = "8:msvcp120.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_89702FDDAF7146B08C00DB9BA96A0007"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_9E07D3F157DD4285BD53DEC3D7EC71A9"
+            {
+            "SourcePath" = "8:..\\..\\3rdParty\\tools\\vc120redist\\msvcr120.dll"
+            "TargetName" = "8:msvcr120.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_89702FDDAF7146B08C00DB9BA96A0007"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_9E19CE38143B426A9EB5DEFA9AEB7C56"
             {
             "SourcePath" = "8:..\\..\\3rdParty\\bin\\Win32\\Release\\qt_plugins\\designer\\customwidgetplugin.dll"
@@ -1874,46 +1890,6 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_A74299C8D121454CBBE03ADDE0CEFED9"
-            {
-            "SourcePath" = "8:..\\..\\ANTzPlus\\ANTzzSpaceTemplate\\antz_cheatsheet_2013_05_27.txt"
-            "TargetName" = "8:antz_cheatsheet_2013_05_27.txt"
-            "Tag" = "8:"
-            "Folder" = "8:_89702FDDAF7146B08C00DB9BA96A0007"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_A97251D655464E40A68630613D24D776"
-            {
-            "SourcePath" = "8:..\\..\\ANTzPlus\\ANTzzSpaceTemplate\\ZSTracker.dll"
-            "TargetName" = "8:ZSTracker.dll"
-            "Tag" = "8:"
-            "Folder" = "8:_89702FDDAF7146B08C00DB9BA96A0007"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_AA0DD3FF9B9748E9A6849DD1F420A2D3"
             {
             "SourcePath" = "8:..\\..\\3rdParty\\bin\\Win32\\Release\\Qt5OpenGL.dll"
@@ -1940,46 +1916,6 @@
             "TargetName" = "8:qgif.dll"
             "Tag" = "8:"
             "Folder" = "8:_7E19FBC6548E446FA427B3EC570C927A"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_AD0F872C585C457388401CFBCAF21338"
-            {
-            "SourcePath" = "8:..\\..\\ANTzPlus\\ANTzzSpaceTemplate\\antz_quickstart.txt"
-            "TargetName" = "8:antz_quickstart.txt"
-            "Tag" = "8:"
-            "Folder" = "8:_89702FDDAF7146B08C00DB9BA96A0007"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_AEEC7DBB0C0C4202A5DB98A50F915275"
-            {
-            "SourcePath" = "8:..\\..\\ANTzPlus\\ANTzzSpaceTemplate\\usr\\csv\\antzosc0001.csv"
-            "TargetName" = "8:antzosc0001.csv"
-            "Tag" = "8:"
-            "Folder" = "8:_91E3593158E947D7BD2C0C4286CA7149"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -2174,6 +2110,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_CA53633371514851AF5A1BBD3BFD933F"
+            {
+            "SourcePath" = "8:..\\..\\ANTzPlus\\ANTzzSpaceTemplate\\LICENSE.txt"
+            "TargetName" = "8:LICENSE.txt"
+            "Tag" = "8:"
+            "Folder" = "8:_89702FDDAF7146B08C00DB9BA96A0007"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_CBEF6E1F94B944B188E9DC0988EF0864"
             {
             "SourcePath" = "8:..\\..\\3rdParty\\bin\\Win32\\Release\\qt_plugins\\imageformats\\qmng.dll"
@@ -2220,26 +2176,6 @@
             "TargetName" = "8:Eyeball.sgt"
             "Tag" = "8:"
             "Folder" = "8:_B4E0754028D04DDF8AEE8716965EFFAF"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_CE1144406268419491D16075D5DE5E73"
-            {
-            "SourcePath" = "8:..\\..\\ANTzPlus\\ANTzzSpaceTemplate\\ZSSP_LeftRightDetectGl.dll"
-            "TargetName" = "8:ZSSP_LeftRightDetectGl.dll"
-            "Tag" = "8:"
-            "Folder" = "8:_89702FDDAF7146B08C00DB9BA96A0007"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -2360,26 +2296,6 @@
             "TargetName" = "8:qmldbg_tcp.dll"
             "Tag" = "8:"
             "Folder" = "8:_DFC1CF24EAF5437BBC0ADD753BEF052C"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_DFE5992AFB424339AD968F1373068896"
-            {
-            "SourcePath" = "8:..\\..\\ANTzPlus\\ANTzzSpaceTemplate\\antzosc.csv"
-            "TargetName" = "8:antzosc.csv"
-            "Tag" = "8:"
-            "Folder" = "8:_89702FDDAF7146B08C00DB9BA96A0007"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -2620,26 +2536,6 @@
             "TargetName" = "8:Ball.sgt"
             "Tag" = "8:"
             "Folder" = "8:_B4E0754028D04DDF8AEE8716965EFFAF"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_FC7193E807EF46F58851CDC75BF140AB"
-            {
-            "SourcePath" = "8:..\\..\\ANTzPlus\\ANTzzSpaceTemplate\\antzglobals.csv"
-            "TargetName" = "8:antzglobals.csv"
-            "Tag" = "8:"
-            "Folder" = "8:_89702FDDAF7146B08C00DB9BA96A0007"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -3091,7 +2987,7 @@
         "Module"
         {
         "ModuleSignature" = "8:MergeModule.E7BC5B0DA8E84115B456FD393FF63EDE"
-        "Version" = "8:0.7.5.0"
+        "Version" = "8:0.7.6.0"
         "Title" = "8:SGXSetupMergeModule"
         "Subject" = "8:"
         "Author" = "8:SynGlyphX"

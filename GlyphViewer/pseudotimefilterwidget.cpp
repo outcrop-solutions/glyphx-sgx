@@ -265,10 +265,7 @@ void PseudoTimeFilterWidget::ChangeFilterState(FilterState newFilterState) {
 			m_slider->setValue(0);
 			m_slider->blockSignals(false);
 			m_currentPositionLabel->clear();
-		}
-		else {
-
-			
+			m_glyphForestSelectionModel->clearSelection();
 		}
 	}
 
