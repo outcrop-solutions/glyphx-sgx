@@ -30,6 +30,7 @@
 #include "sourcedataselectionwidget.h"
 #include "pseudotimefilterwidget.h"
 #include "linkedwidgetsmanager.h"
+#include "itemfocusselectionmodel.h"
 
 class GlyphViewerWindow : public SynGlyphX::MainWindow
 {
@@ -82,7 +83,7 @@ private:
 	LinkedWidgetsManager* m_linkedWidgetsManager;
 
 	GlyphForestModel* m_glyphForestModel;
-	QItemSelectionModel* m_glyphForestSelectionModel;
+	SynGlyphX::ItemFocusSelectionModel* m_glyphForestSelectionModel;
 	ANTzViewerWidget* m_antzWidget;
 	GlyphTreeListView* m_treeView;
 	SynGlyphX::SourceDataCache::SharedPtr m_sourceDataCache;

@@ -20,7 +20,7 @@
 QGLFormat ANTzViewerWidget::s_format(QGL::AlphaChannel);
 QGLFormat ANTzViewerWidget::s_stereoFormat(QGL::AlphaChannel | QGL::StereoBuffers);
 
-ANTzViewerWidget::ANTzViewerWidget(const QGLFormat& format, GlyphForestModel* model, QItemSelectionModel* selectionModel, QWidget *parent)
+ANTzViewerWidget::ANTzViewerWidget(const QGLFormat& format, GlyphForestModel* model, SynGlyphX::ItemFocusSelectionModel* selectionModel, QWidget *parent)
 	: QGLWidget(format, parent),
 	m_model(model),
     m_selectionModel(selectionModel),
@@ -54,7 +54,8 @@ ANTzViewerWidget::ANTzViewerWidget(const QGLFormat& format, GlyphForestModel* mo
 	m_antzData->GetData()->ctrl.fast = 0.75f;
 
 	if (m_selectionModel != nullptr) {
-		QObject::connect(m_selectionModel, &QItemSelectionModel::selectionChanged, this, &ANTzViewerWidget::UpdateSelection);
+		QObject::connect(m_selectionModel, &SynGlyphX::ItemFocusSelectionModel::selectionChanged, this, &ANTzViewerWidget::OnSelectionUpdated);
+		QObject::connect(m_selectionModel, &SynGlyphX::ItemFocusSelectionModel::FocusChanged, this, &ANTzViewerWidget::OnFocusChanged);
 	}
 
 	QObject::connect(m_model, &GlyphForestModel::modelReset, this, &ANTzViewerWidget::OnModelReset);
@@ -641,52 +642,54 @@ void ANTzViewerWidget::SetZSpaceMatricesForDrawing(ZSEye eye, const ZSMatrix4& o
 	npInvertMatrixf(camData->matrix, camData->inverseMatrix);
 }
 
-void ANTzViewerWidget::UpdateSelection(const QItemSelection& selected, const QItemSelection& deselected) {
+void ANTzViewerWidget::OnSelectionUpdated(const QItemSelection& selected, const QItemSelection& deselected) {
 
 	UpdateGlyphTreesShowHideForSelection();
 
 	pData antzData = m_antzData->GetData();
 
-    //unselect all nodes that are no longer selected
-    const QModelIndexList& deselectedIndicies = deselected.indexes();
-    for (int i = 0; i < deselectedIndicies.length(); ++i) {
-        if (deselectedIndicies[i].isValid()) {
-            pNPnode node = static_cast<pNPnode>(deselectedIndicies[i].internalPointer());
-            node->selected = false;
-        }
-    }
+	//unselect all nodes that are no longer selected
+	const QModelIndexList& deselectedIndicies = deselected.indexes();
+	for (int i = 0; i < deselectedIndicies.length(); ++i) {
+		if (deselectedIndicies[i].isValid()) {
+			pNPnode node = static_cast<pNPnode>(deselectedIndicies[i].internalPointer());
+			node->selected = false;
+		}
+	}
 
-    //select all newly selected nodes
-    const QModelIndexList& selectedIndicies = selected.indexes();
-    for (int i = 0; i < selectedIndicies.length(); ++i) {
-        if (selectedIndicies[i].isValid()) {
-            pNPnode node = static_cast<pNPnode>(selectedIndicies[i].internalPointer());
-            node->selected = true;
-        }
-    }
+	//select all newly selected nodes
+	const QModelIndexList& selectedIndicies = selected.indexes();
+	for (int i = 0; i < selectedIndicies.length(); ++i) {
+		if (selectedIndicies[i].isValid()) {
+			pNPnode node = static_cast<pNPnode>(selectedIndicies[i].internalPointer());
+			node->selected = true;
+		}
+	}
+}
 
-    //Set the cam target if there is only one object selected
-    const QModelIndexList& currentSelection = m_selectionModel->selectedIndexes();
-    
-    int nodeRootIndex = 0;
-    if (!currentSelection.isEmpty())  {
-        const QModelIndex& last = currentSelection.back();
-        if (last.isValid()) {
+void ANTzViewerWidget::OnFocusChanged(const QModelIndexList& indexes) {
+
+	pData antzData = m_antzData->GetData();
+
+	int nodeRootIndex = 0;
+	if (!indexes.isEmpty())  {
+		const QModelIndex& last = indexes.back();
+		if (last.isValid()) {
 
 			pNPnode node = static_cast<pNPnode>(last.internalPointer());
-            CenterCameraOnNode(node);
+			CenterCameraOnNode(node);
 			while (node->branchLevel != 0) {
 				node = node->parent;
 			}
 			nodeRootIndex = node->id;
-        }
+		}
 	}
 	else {
 		//Clear the proximity value so that camera isn't locked to the node even when not selected
 		antzData->map.currentCam->proximity.x = 0;
 	}
 
-    antzData->map.nodeRootIndex = nodeRootIndex;
+	antzData->map.nodeRootIndex = nodeRootIndex;
 }
 
 void ANTzViewerWidget::UpdateGlyphTreesShowHideForSelection() {
@@ -807,6 +810,7 @@ void ANTzViewerWidget::mousePressEvent(QMouseEvent* event) {
 		if (keys & Qt::ShiftModifier) {
 
 			m_selectionModel->clearSelection();
+			m_selectionModel->ClearFocus();
 		}
 		else {
 
@@ -869,12 +873,16 @@ bool ANTzViewerWidget::SelectAtPoint(int x, int y, bool multiSelect) {
 
 		//pNPnode node = static_cast<pNPnode>(antzData->map.nodeID[pickID]);
 		QItemSelectionModel::SelectionFlags flags = QItemSelectionModel::ClearAndSelect;
+		SynGlyphX::ItemFocusSelectionModel::FocusFlags focusFlags = SynGlyphX::ItemFocusSelectionModel::FocusFlag::ClearAndFocus;
 		if (multiSelect) {
 
 			flags = QItemSelectionModel::Toggle;
+			focusFlags = SynGlyphX::ItemFocusSelectionModel::FocusFlag::Toggle;
 		}
 
-		m_selectionModel->select(m_model->IndexFromANTzID(pickID), flags);
+		QModelIndex modelIndex = m_model->IndexFromANTzID(pickID);
+		m_selectionModel->select(modelIndex, flags);
+		m_selectionModel->SetFocus(modelIndex, focusFlags);
 	}
 
 	//emit NewStatusMessage(tr("Selection At: %1, %2 || Pick ID: %3").arg(x).arg(y).arg(pickID), 4000);
@@ -923,7 +931,7 @@ void ANTzViewerWidget::mouseMoveEvent(QMouseEvent* event) {
 			antzData->io.mouse.x = event->x();
 			antzData->io.mouse.y = event->y();
 
-			if (m_selectionModel->selectedIndexes().empty()) {
+			if (m_selectionModel->GetFocusList().empty()) {
 
 				antzData->io.mouse.mode = kNPmouseModeCamLook;
 			}
@@ -1007,7 +1015,7 @@ void ANTzViewerWidget::keyReleaseEvent(QKeyEvent* event) {
 
 void ANTzViewerWidget::wheelEvent(QWheelEvent* event) {
 
-	if (!m_selectionModel->selectedIndexes().empty()) {
+	if (!m_selectionModel->GetFocusList().empty()) {
 
 		pData antzData = m_antzData->GetData();
 		antzData->io.mouse.mode = kNPmouseModeCamExamXZ;

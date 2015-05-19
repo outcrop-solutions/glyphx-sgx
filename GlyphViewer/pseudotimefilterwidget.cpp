@@ -9,7 +9,7 @@
 
 unsigned int PseudoTimeFilterWidget::s_buttonSize = 24;
 
-PseudoTimeFilterWidget::PseudoTimeFilterWidget(SynGlyphX::DataTransformMapping::SharedPtr dataTransformMapping, SynGlyphX::SourceDataCache::SharedPtr sourceDataCache, GlyphForestModel* model, QItemSelectionModel* selectionModel, QWidget *parent)
+PseudoTimeFilterWidget::PseudoTimeFilterWidget(SynGlyphX::DataTransformMapping::SharedPtr dataTransformMapping, SynGlyphX::SourceDataCache::SharedPtr sourceDataCache, GlyphForestModel* model, SynGlyphX::ItemFocusSelectionModel* selectionModel, QWidget *parent)
 	: QWidget(parent),
 	m_filterState(FilterState::Inactive),
 	m_sourceDataCache(sourceDataCache),
@@ -100,6 +100,9 @@ PseudoTimeFilterWidget::PseudoTimeFilterWidget(SynGlyphX::DataTransformMapping::
 
 	buttonsLayoutRight->addStretch(1);
 
+	m_moveCameraOnUpdateCheckbox = new QCheckBox(tr("Move Camera"), this);
+	buttonsLayoutRight->addWidget(m_moveCameraOnUpdateCheckbox);
+
 	m_filterViewCheckbox = new QCheckBox(tr("Filter View"), this);
 	buttonsLayoutRight->addWidget(m_filterViewCheckbox);
 
@@ -147,6 +150,7 @@ void PseudoTimeFilterWidget::ReadSettings() {
 	QSettings settings;
 	settings.beginGroup("PseudoTimeFilter");
 	m_repeatButton->setChecked(settings.value("repeat", false).toBool());
+	m_moveCameraOnUpdateCheckbox->setChecked(settings.value("moveCamera", false).toBool());
 	settings.endGroup();
 }
 
@@ -155,6 +159,7 @@ void PseudoTimeFilterWidget::WriteSettings() {
 	QSettings settings;
 	settings.beginGroup("PseudoTimeFilter");
 	settings.setValue("repeat", m_repeatButton->isChecked());
+	settings.setValue("moveCamera", m_moveCameraOnUpdateCheckbox->isChecked());
 	settings.endGroup();
 }
 
@@ -231,6 +236,14 @@ void PseudoTimeFilterWidget::UpdateTimeFilter() {
 
 		m_currentPositionLabel->setText(m_itemSelectionForEachDistinctValue.at(sliderValue).first);
 		m_glyphForestSelectionModel->select(m_itemSelectionForEachDistinctValue.at(sliderValue).second, QItemSelectionModel::ClearAndSelect);
+		if (m_moveCameraOnUpdateCheckbox->isChecked()) {
+
+			m_glyphForestSelectionModel->SetFocus(m_itemSelectionForEachDistinctValue.at(sliderValue).second.indexes(), SynGlyphX::ItemFocusSelectionModel::FocusFlag::ClearAndFocus);
+		}
+		else {
+
+			m_glyphForestSelectionModel->ClearFocus();
+		}
 	}
 }
 
@@ -266,6 +279,7 @@ void PseudoTimeFilterWidget::ChangeFilterState(FilterState newFilterState) {
 			m_slider->blockSignals(false);
 			m_currentPositionLabel->clear();
 			m_glyphForestSelectionModel->clearSelection();
+			m_glyphForestSelectionModel->ClearFocus();
 		}
 	}
 

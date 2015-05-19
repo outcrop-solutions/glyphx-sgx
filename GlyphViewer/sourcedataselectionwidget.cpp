@@ -7,7 +7,7 @@
 #include "elasticlistwidget.h"
 #include "sourcedataselectionmodel.h"
 
-SourceDataSelectionWidget::SourceDataSelectionWidget(SynGlyphX::SourceDataCache::SharedPtr sourceDataCache, GlyphForestModel* model, QItemSelectionModel* selectionModel, QWidget *parent)
+SourceDataSelectionWidget::SourceDataSelectionWidget(SynGlyphX::SourceDataCache::SharedPtr sourceDataCache, GlyphForestModel* model, SynGlyphX::ItemFocusSelectionModel* selectionModel, QWidget *parent)
 	: QWidget(parent),
 	m_model(model),
 	m_selectionModel(selectionModel),
@@ -22,7 +22,7 @@ SourceDataSelectionWidget::SourceDataSelectionWidget(SynGlyphX::SourceDataCache:
 
 	m_clearButton = new QPushButton(tr("Clear"), this);
 	topLayout->addWidget(m_clearButton);
-	QObject::connect(m_clearButton, &QPushButton::clicked, m_selectionModel, &QItemSelectionModel::clear);
+	QObject::connect(m_clearButton, &QPushButton::clicked, this, &SourceDataSelectionWidget::Clear);
 
 	topLayout->addStretch(1);
 	
@@ -195,6 +195,7 @@ void SourceDataSelectionWidget::OnElasticListsSelectionChanged(const QString& ta
 		}
 
 		m_selectionModel->select(itemSelection, QItemSelectionModel::ClearAndSelect);
+		m_selectionModel->SetFocus(itemSelection.indexes(), SynGlyphX::ItemFocusSelectionModel::FocusFlag::ClearAndFocus);
 	}
 }
 
@@ -202,4 +203,10 @@ void SourceDataSelectionWidget::EnableButtons(bool enable) {
 
 	m_sourceWidgetButton->setEnabled(enable);
 	m_clearButton->setEnabled(enable);
+}
+
+void SourceDataSelectionWidget::Clear() {
+
+	m_selectionModel->clearSelection();
+	m_selectionModel->ClearFocus();
 }

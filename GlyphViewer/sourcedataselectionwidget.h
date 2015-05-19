@@ -29,13 +29,14 @@
 #include <unordered_map>
 #include "elasticlistswidget.h"
 #include "linkedwidgetsmanager.h"
+#include "itemfocusselectionmodel.h"
 
 class SourceDataSelectionWidget : public QWidget
 {
 	Q_OBJECT
 
 public:
-	SourceDataSelectionWidget(SynGlyphX::SourceDataCache::SharedPtr sourceDataCache, GlyphForestModel* model, QItemSelectionModel* selectionModel, QWidget *parent);
+	SourceDataSelectionWidget(SynGlyphX::SourceDataCache::SharedPtr sourceDataCache, GlyphForestModel* model, SynGlyphX::ItemFocusSelectionModel* selectionModel, QWidget *parent);
 	~SourceDataSelectionWidget();
 
 	void SetupLinkedWidgets(LinkedWidgetsManager& linkedWidgets);
@@ -46,6 +47,7 @@ private slots:
 	void OnModelReset();
 	void OnComboBoxChanged(int current);
 	void OnElasticListsSelectionChanged(const QString& table, const SynGlyphX::SourceDataCache::ColumnValueData& selection);
+	void Clear();
 
 private:
 	typedef std::unordered_map<std::string, ElasticListsWidget*> NameWidgetMap;
@@ -56,7 +58,7 @@ private:
 	void EnableButtons(bool enable);
 
 	GlyphForestModel* m_model;
-	QItemSelectionModel* m_selectionModel;
+	SynGlyphX::ItemFocusSelectionModel* m_selectionModel;
 	QPushButton* m_sourceWidgetButton;
 	QPushButton* m_clearButton;
 	QScopedPointer<SourceDataWidget> m_sourceDataWindow;

@@ -28,7 +28,7 @@ GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 	m_sourceDataCache = std::make_shared<SynGlyphX::SourceDataCache>();
 	m_glyphForestModel = new GlyphForestModel(this);
 
-	m_glyphForestSelectionModel = new QItemSelectionModel(m_glyphForestModel, this);
+	m_glyphForestSelectionModel = new SynGlyphX::ItemFocusSelectionModel(m_glyphForestModel, this);
 	CreateMenus();
 	CreateDockWidgets();
 
@@ -194,7 +194,7 @@ void GlyphViewerWindow::CreateDockWidgets() {
 	QDockWidget* leftDockWidget = new QDockWidget(tr("Glyph List"), this);
 	m_treeView = new GlyphTreeListView(leftDockWidget);
 	m_treeView->setModel(m_glyphForestModel);
-	m_treeView->setSelectionModel(m_glyphForestSelectionModel);
+	m_treeView->SetItemFocusSelectionModel(m_glyphForestSelectionModel);
 
 	leftDockWidget->setWidget(m_treeView);
 	addDockWidget(Qt::LeftDockWidgetArea, leftDockWidget);

@@ -15,28 +15,48 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef GLYPHTREELISTVIEW_H
-#define GLYPHTREELISTVIEW_H
+#ifndef ITEMFOCUSSELECTIONMODEL_H
+#define ITEMFOCUSSELECTIONMODEL_H
 
-#include "treeview.h"
-#include "itemfocusselectionmodel.h"
+#include "sgxglyphgui_global.h"
+#include <QtCore/QItemSelectionModel>
+#include <vector>
 
-class GlyphTreeListView : public SynGlyphX::TreeView
-{
-	Q_OBJECT
+namespace SynGlyphX {
 
-public:
-	GlyphTreeListView(QWidget *parent = 0);
-	~GlyphTreeListView();
+	class SGXGLYPHGUI_EXPORT ItemFocusSelectionModel : public QItemSelectionModel
+	{
+		Q_OBJECT
 
-	void SetItemFocusSelectionModel(SynGlyphX::ItemFocusSelectionModel* itemFocusSelectionModel);
+	public:
+		enum FocusFlag {
+			NoUpdate = 0x0,
+			Clear = 0x1,
+			Focus = 0x2,
+			Unfocus = 0x4,
+			Toggle = 0x8,
+			ClearAndFocus = Clear | Focus
+		};
+		Q_DECLARE_FLAGS(FocusFlags, FocusFlag)
 
-protected:
-	virtual QItemSelectionModel::SelectionFlags selectionCommand(const QModelIndex& index, const QEvent* event = 0) const;
+		ItemFocusSelectionModel(QAbstractItemModel* model, QObject *parent = nullptr);
+		~ItemFocusSelectionModel();
 
-private:
-	SynGlyphX::ItemFocusSelectionModel* m_itemFocusSelectionModel;
-	
-};
+		void ClearFocus();
+		void SetFocus(const QModelIndex& index, FocusFlags command);
+		void SetFocus(const QModelIndexList& indexes, FocusFlags command);
 
-#endif // GLYPHTREELISTVIEW_H
+		const QModelIndexList& GetFocusList() const;
+
+	signals:
+		void FocusChanged(const QModelIndexList& focusList);
+
+	private:
+		QModelIndexList m_focusList;
+	};
+
+	Q_DECLARE_OPERATORS_FOR_FLAGS(ItemFocusSelectionModel::FocusFlags)
+
+} //namespace SynGlyphX
+
+#endif // ITEMFOCUSSELECTIONMODEL_H

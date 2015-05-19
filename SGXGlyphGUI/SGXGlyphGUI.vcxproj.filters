@@ -82,6 +82,15 @@
     <ClCompile Include="glyphmimedata.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="itemfocusselectionmodel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Win32\Debug\moc_itemfocusselectionmodel.cpp">
+      <Filter>Generated Files\Debug_Win32</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Win32\Release\moc_itemfocusselectionmodel.cpp">
+      <Filter>Generated Files\Release_Win32</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="glyphstructurewidget.h">
@@ -97,6 +106,9 @@
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="glyphmimedata.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="itemfocusselectionmodel.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>

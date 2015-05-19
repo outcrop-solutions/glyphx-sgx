@@ -19,7 +19,7 @@
 #define ANTZWIDGET_H
 
 #include <QtOpenGL/QGLWidget>
-#include <QtCore/QItemSelection>
+#include "itemfocusselectionmodel.h"
 #include "glyphforestmodel.h"
 #include <zSpace.h>
 #include "antzdata.h"
@@ -32,7 +32,7 @@ class ANTzViewerWidget : public QGLWidget
     Q_OBJECT
 
 public:
-	ANTzViewerWidget(const QGLFormat& format, GlyphForestModel* model, QItemSelectionModel* selectionModel, QWidget *parent = 0);
+	ANTzViewerWidget(const QGLFormat& format, GlyphForestModel* model, SynGlyphX::ItemFocusSelectionModel* selectionModel, QWidget *parent = 0);
 	~ANTzViewerWidget();
 
 	bool IsInStereoMode() const;
@@ -71,7 +71,8 @@ protected:
 	virtual void wheelEvent(QWheelEvent* event);
 
 private slots:
-    void UpdateSelection(const QItemSelection& selected, const QItemSelection& deselected);
+    void OnSelectionUpdated(const QItemSelection& selected, const QItemSelection& deselected);
+	void OnFocusChanged(const QModelIndexList& indexes);
 	void OnModelReset();
 
 	void ZSpaceButtonPressHandler(ZSHandle targetHandle, const ZSTrackerEventData* eventData);
@@ -133,7 +134,7 @@ private:
 
 	ANTzPlus::ANTzData::SharedPtr m_antzData;
 
-    QItemSelectionModel* m_selectionModel;
+	SynGlyphX::ItemFocusSelectionModel* m_selectionModel;
 	GlyphForestModel* m_model;
     QPoint m_lastMousePosition;
 	QRect m_regionSelectionRect;
