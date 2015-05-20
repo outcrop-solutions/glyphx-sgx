@@ -97,10 +97,18 @@ void SourceDataInfoModel::AddDatasource(const boost::uuids::uuid& id, const SynG
 	QStandardItem* newDatasourceItem = new QStandardItem(QString::fromStdWString(datasource.GetFormattedName()));
 	newDatasourceItem->setData(QString::fromStdString(boost::uuids::to_string(id)), IDRole);
 	newDatasourceItem->setFlags(m_datasourceFlags);
-	appendRow(newDatasourceItem);
 	for (auto table : datasource.GetTables()) {
 
 		AddTable(id, QString::fromStdWString(table), newDatasourceItem);
+	}
+
+	if (newDatasourceItem->rowCount() > 0) {
+
+		appendRow(newDatasourceItem);
+	}
+	else {
+
+		delete newDatasourceItem;
 	}
 }
 
