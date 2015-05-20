@@ -168,11 +168,14 @@ void GlyphForestModel::Clear(bool resetModel) {
 		pNPnode grid = rootGrid->child[rootGrid->childCount - 1];
 		npNodeDelete(grid, m_antzData->GetData());
 	}
+	rootGrid->textureID = 1;
 
 	//This will clear out tags if needed
 	npDeleteAllTags(antzData);
 
 	antzData->map.nodeRootIndex = 0;
+
+	m_baseImageFilenames.clear();
 
 	if (resetModel) {
 
