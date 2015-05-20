@@ -74,8 +74,15 @@ void OptionsWidget::ClearCache() {
 	QDir cacheDir(m_cacheDirectoryWidget->GetText());
 	if (cacheDir.exists()) {
 
-		SynGlyphX::Filesystem::RemoveContentsOfDirectory(QDir::toNativeSeparators(cacheDir.canonicalPath()).toStdString());
-		QMessageBox::information(this, tr("Cache cleared"), tr("Cache is now empty."));
+		try {
+
+			SynGlyphX::Filesystem::RemoveContentsOfDirectory(QDir::toNativeSeparators(cacheDir.canonicalPath()).toStdString());
+			QMessageBox::information(this, tr("Cache cleared"), tr("Cache is now empty."));
+		}
+		catch (const std::exception& e) {
+
+			QMessageBox::critical(this, tr("Cache clear error"), tr("Failed to clear cache: ") + e.what());
+		}
 	}
 }
 
