@@ -5,14 +5,16 @@
 
 GlyphViewerOptions::GlyphViewerOptions() :
 	m_cacheDirectory(GetDefaultCacheDirectory()),
-	m_hideUnselectedGlyphTrees(false) {
+	m_hideUnselectedGlyphTrees(false),
+	m_showMessageWhenImagesDidNotDownload(true) {
 	
 }
 
 GlyphViewerOptions::GlyphViewerOptions(const GlyphViewerOptions& options) :
 	m_cacheDirectory(options.m_cacheDirectory),
 	m_hideUnselectedGlyphTrees(options.m_hideUnselectedGlyphTrees),
-	m_zSpaceOptions(options.m_zSpaceOptions) {
+	m_zSpaceOptions(options.m_zSpaceOptions),
+	m_showMessageWhenImagesDidNotDownload(options.m_showMessageWhenImagesDidNotDownload) {
 
 }
 
@@ -50,6 +52,7 @@ GlyphViewerOptions& GlyphViewerOptions::operator=(const GlyphViewerOptions& opti
 	m_cacheDirectory = options.m_cacheDirectory;
 	m_hideUnselectedGlyphTrees = options.m_hideUnselectedGlyphTrees;
 	m_zSpaceOptions = options.m_zSpaceOptions;
+	m_showMessageWhenImagesDidNotDownload = options.m_showMessageWhenImagesDidNotDownload;
 
 	return *this;
 }
@@ -71,6 +74,11 @@ bool GlyphViewerOptions::operator==(const GlyphViewerOptions& options) const {
 		return false;
 	}
 
+	if (m_showMessageWhenImagesDidNotDownload != options.m_showMessageWhenImagesDidNotDownload) {
+
+		return false;
+	}
+
 	return true;
 }
 
@@ -87,4 +95,14 @@ void GlyphViewerOptions::SetZSpaceOptions(const ZSpaceOptions& options) {
 const ZSpaceOptions& GlyphViewerOptions::GetZSpaceOptions() const {
 
 	return m_zSpaceOptions;
+}
+
+void GlyphViewerOptions::SetShowMessageWhenImagesDidNotDownload(bool showMessageWhenImagesDidNotDownload) {
+
+	m_showMessageWhenImagesDidNotDownload = showMessageWhenImagesDidNotDownload;
+}
+
+bool GlyphViewerOptions::GetShowMessageWhenImagesDidNotDownload() const {
+
+	return m_showMessageWhenImagesDidNotDownload;
 }

@@ -22,7 +22,8 @@
 
 GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 	: SynGlyphX::MainWindow(parent),
-	m_antzWidget(nullptr)
+	m_antzWidget(nullptr),
+	m_showErrorFromTransform(true)
 {
 	m_mapping = std::make_shared<SynGlyphX::DataTransformMapping>();
 	m_sourceDataCache = std::make_shared<SynGlyphX::SourceDataCache>();
@@ -401,14 +402,19 @@ void GlyphViewerWindow::LoadDataTransform(const QString& filename) {
 		m_sourceDataCache->Setup(transformer.GetSourceDataCacheLocation());
 		LoadFilesIntoModel(transformer.GetCSVFilenames(), transformer.GetBaseImageFilenames());
 		m_glyphForestModel->SetTagNotToBeShownIn3d(QString::fromStdWString(m_mapping->GetDefaults().GetDefaultTagValue()));
+
+		SynGlyphX::Application::restoreOverrideCursor();
+		const QString& transformerError = transformer.GetError();
+		if ((!transformerError.isNull()) && m_showErrorFromTransform) {
+
+			QMessageBox::information(this, "Transformation Error", transformerError, QMessageBox::Ok);
+		}
 	}
 	catch (const std::exception& e) {
 
 		SynGlyphX::Application::restoreOverrideCursor();
 		throw;
 	}
-
-	SynGlyphX::Application::restoreOverrideCursor();
 }
 
 void GlyphViewerWindow::LoadFilesIntoModel(const QStringList& csvFiles, const QStringList& baseImageFilenames) {
@@ -530,6 +536,11 @@ void GlyphViewerWindow::ChangeOptions(const GlyphViewerOptions& oldOptions, cons
 
 			m_antzWidget->SetZSpaceOptions(newOptions.GetZSpaceOptions());
 		}
+
+		if (oldOptions.GetShowMessageWhenImagesDidNotDownload() != newOptions.GetShowMessageWhenImagesDidNotDownload()) {
+
+			m_showErrorFromTransform = newOptions.GetShowMessageWhenImagesDidNotDownload();
+		}
 	}
 }
 
@@ -557,6 +568,7 @@ void GlyphViewerWindow::ReadSettings() {
 	}
 	options.SetCacheDirectory(cacheDirectory);
 	options.SetHideUnselectedGlyphTrees(settings.value("hideUnselectedGlyphs", false).toBool());
+	options.SetShowMessageWhenImagesDidNotDownload(settings.value("showFailedToDownloadImageMessage", true).toBool());
 	settings.endGroup();
 
 	settings.beginGroup("zSpace");
@@ -593,6 +605,7 @@ void GlyphViewerWindow::WriteSettings() {
 		settings.setValue("cacheDirectory", "");
 	}
 	settings.setValue("hideUnselectedGlyphs", options.GetHideUnselectedGlyphTrees());
+	settings.setValue("showFailedToDownloadImageMessage", options.GetShowMessageWhenImagesDidNotDownload());
 	settings.endGroup();
 
 	settings.beginGroup("zSpace");
@@ -608,6 +621,7 @@ GlyphViewerOptions GlyphViewerWindow::CollectOptions() {
 	options.SetCacheDirectory(QString::fromStdWString(m_cacheManager.GetBaseCacheDirectory()));
 	options.SetHideUnselectedGlyphTrees(m_linkedWidgetsManager->GetFilterView());
 	options.SetZSpaceOptions(m_antzWidget->GetZSpaceOptions());
+	options.SetShowMessageWhenImagesDidNotDownload(m_showErrorFromTransform);
 
 	return options;
 }

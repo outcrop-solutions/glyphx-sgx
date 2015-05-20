@@ -16,6 +16,8 @@ OptionsWidget::OptionsWidget(const GlyphViewerOptions& options, bool enableCache
 	m_zSpaceOptionsWidget = new ZSpaceOptionsWidget(this);
 	m_zSpaceOptionsWidget->SetOptions(options.GetZSpaceOptions());
 	addTab(m_zSpaceOptionsWidget, tr("zSpace"));
+
+	CreateUITab(options);
 }
 
 OptionsWidget::~OptionsWidget()
@@ -69,6 +71,19 @@ void OptionsWidget::Create3DTab(const GlyphViewerOptions& options) {
 	addTab(tab, tr("3D"));
 }
 
+void OptionsWidget::CreateUITab(const GlyphViewerOptions& options) {
+
+	QWidget* tab = new QWidget(this);
+	QVBoxLayout* layout = new QVBoxLayout(tab);
+
+	m_showDownloadedImageErrorMessages = new QCheckBox(tr("Show an error message when an image failed to download"), this);
+	m_showDownloadedImageErrorMessages->setChecked(options.GetShowMessageWhenImagesDidNotDownload());
+	layout->addWidget(m_showDownloadedImageErrorMessages);
+
+	tab->setLayout(layout);
+	addTab(tab, tr("UI"));
+}
+
 void OptionsWidget::ClearCache() {
 
 	QDir cacheDir(m_cacheDirectoryWidget->GetText());
@@ -97,6 +112,7 @@ GlyphViewerOptions OptionsWidget::GetOptions() const {
 	options.SetCacheDirectory(m_cacheDirectoryWidget->GetText());
 	options.SetHideUnselectedGlyphTrees(m_hideSelectedGlyphsCheckbox->isChecked());
 	options.SetZSpaceOptions(m_zSpaceOptionsWidget->GetOptions());
+	options.SetShowMessageWhenImagesDidNotDownload(m_showDownloadedImageErrorMessages->isChecked());
 
 	return options;
 }

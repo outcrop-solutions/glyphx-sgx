@@ -79,6 +79,7 @@ private:
 	SynGlyphX::DataTransformMapping::SharedPtr m_mapping;
 	CacheManager m_cacheManager;
 	bool m_isStereoSupported;
+	bool m_showErrorFromTransform;
 
 	LinkedWidgetsManager* m_linkedWidgetsManager;
 

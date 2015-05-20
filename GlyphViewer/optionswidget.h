@@ -41,10 +41,12 @@ private slots:
 private:
 	void CreateCacheTab(const GlyphViewerOptions& options, bool enableCacheOptions);
 	void Create3DTab(const GlyphViewerOptions& options);
+	void CreateUITab(const GlyphViewerOptions& options);
 
 	SynGlyphX::BrowseLineEdit* m_cacheDirectoryWidget;
 	QCheckBox* m_hideSelectedGlyphsCheckbox;
 	ZSpaceOptionsWidget* m_zSpaceOptionsWidget;
+	QCheckBox* m_showDownloadedImageErrorMessages;
 };
 
 #endif // OPTIONSWIDGET_H

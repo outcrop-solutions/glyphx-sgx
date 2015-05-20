@@ -25,6 +25,9 @@ public:
 	void SetZSpaceOptions(const ZSpaceOptions& options);
 	const ZSpaceOptions& GetZSpaceOptions() const;
 
+	void SetShowMessageWhenImagesDidNotDownload(bool showMessageWhenImagesDidNotDownload);
+	bool GetShowMessageWhenImagesDidNotDownload() const;
+
 private:
 	//Cache options
 	QString m_cacheDirectory;
@@ -33,6 +36,9 @@ private:
 	bool m_hideUnselectedGlyphTrees;
 
 	ZSpaceOptions m_zSpaceOptions;
+
+	//UI options
+	bool m_showMessageWhenImagesDidNotDownload;
 };
 
 #endif //GLYPHVIEWEROPTIONS_H
