@@ -25,6 +25,7 @@
 #include "inputfielddata.h"
 #include "datamappingdefaults.h"
 #include "sourcedatacache.h"
+#include "baseimage.h"
 
 namespace SynGlyphX {
 
@@ -41,6 +42,8 @@ namespace SynGlyphX {
 		void Transform(const DataTransformMapping& mapping);
 
 		const QString& GetSourceDataCacheLocation() const;
+
+		const QString& GetError() const;
 
 	protected:
 		virtual void Prepare() = 0;
@@ -66,10 +69,16 @@ namespace SynGlyphX {
 
 		void RunSelectSqlQuery(const InputField& inputfield, QVariantList& data) const;
 
+		bool DownloadBaseImage(const SynGlyphX::DataTransformMapping& mapping, const SynGlyphX::BaseImage& baseImage, const QString& baseImageFilename);
+		void CopyImage(const QString& sourceFilename, const QString& baseImageFilename);
+		QString GetUserImageFilename(const SynGlyphX::BaseImage& baseImage) const;
+
 		QString m_sourceDataCacheLocation;
 		SourceDataCache m_sourceDataCache;
 		GeographicBoundingBox m_overrideRootXYBoundingBox;
 		DataMappingDefaults m_defaults;
+
+		QString m_error;
 	};
 
 } //namespace SynGlyphX

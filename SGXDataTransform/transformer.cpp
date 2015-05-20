@@ -6,6 +6,10 @@
 #include <boost/filesystem.hpp>
 #include "interpolationmappingfunction.h"
 #include "valuemappingfunction.h"
+#include "downloadedmapproperties.h"
+#include "userdefinedbaseimageproperties.h"
+#include "networkdownloader.h"
+#include "downloadexception.h"
 
 namespace SynGlyphX {
 
@@ -20,6 +24,7 @@ namespace SynGlyphX {
 
 	void Transformer::Transform(const DataTransformMapping& mapping) {
 
+		m_error = QString::null;
 		if (mapping.IsTransformable()) {
 
 			Prepare();
@@ -350,6 +355,52 @@ namespace SynGlyphX {
 	const QString& Transformer::GetSourceDataCacheLocation() const {
 
 		return m_sourceDataCacheLocation;
+	}
+
+	bool Transformer::DownloadBaseImage(const SynGlyphX::DataTransformMapping& mapping, const SynGlyphX::BaseImage& baseImage, const QString& baseImageFilename) {
+
+		if (QFile::exists(baseImageFilename)) {
+
+			if (!QFile::remove(baseImageFilename)) {
+
+				throw std::exception("Failed to remove old base image");
+			}
+		}
+
+		std::vector<GeographicPoint> points;
+		GetPositionXYForAllGlyphTrees(mapping, points);
+		const DownloadedMapProperties* const properties = dynamic_cast<const DownloadedMapProperties* const>(baseImage.GetProperties());
+		NetworkDownloader& downloader = NetworkDownloader::Instance();
+		try {
+
+			m_overrideRootXYBoundingBox = downloader.DownloadMap(points, baseImageFilename.toStdString(), properties);
+			return true;
+		}
+		catch (const DownloadException& e) {
+
+			m_error = QObject::tr("Base image failed to download so the world map was used instead.\n\nError: ") + e.what();
+			m_overrideRootXYBoundingBox = GeographicBoundingBox(GeographicPoint(0.0, 0.0), 90.0, 180.0);
+			return false;
+		}
+	}
+
+	void Transformer::CopyImage(const QString& sourceFilename, const QString& baseImageFilename) {
+
+		if (!QFile::copy(sourceFilename, baseImageFilename)) {
+
+			throw std::exception("Failed to copy base image");
+		}
+	}
+
+	QString Transformer::GetUserImageFilename(const SynGlyphX::BaseImage& baseImage) const {
+
+		const SynGlyphX::UserDefinedBaseImageProperties* const properties = dynamic_cast<const SynGlyphX::UserDefinedBaseImageProperties* const>(baseImage.GetProperties());
+		return QString::fromStdWString(properties->GetFilename());
+	}
+
+	const QString& Transformer::GetError() const {
+
+		return m_error;
 	}
 
 } //namespace SynGlyphX
