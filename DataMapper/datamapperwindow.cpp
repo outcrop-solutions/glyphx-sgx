@@ -529,6 +529,13 @@ void DataMapperWindow::ExportToANTz(const QString& templateDir) {
 		//bool useOldANTzFilenames = !QFile::exists(templateDir + QDir::separator() + "usr" + QDir::separator() + "csv" + QDir::separator() + "antzglobals.csv");
 		SynGlyphXANTz::ANTzExportTransformer transformer(csvDirectory, templateDir, SynGlyphX::Application::applicationDirPath() + QDir::separator() + "world.png", false);
 		transformer.Transform(*(m_dataTransformModel->GetDataMapping().get()));
+
+		SynGlyphX::Application::restoreOverrideCursor();
+		const QString& transformerError = transformer.GetError();
+		if (!transformerError.isNull()) {
+
+			QMessageBox::information(this, "Transformation Error", transformerError, QMessageBox::Ok);
+		}
 	}
 	catch (const std::exception& e) {
 
@@ -538,7 +545,6 @@ void DataMapperWindow::ExportToANTz(const QString& templateDir) {
 		return;
 	}
 
-	SynGlyphX::Application::restoreOverrideCursor(); 
 	statusBar()->showMessage("Data transform sucessfully exported to ANTz", 6000);
 }
 
