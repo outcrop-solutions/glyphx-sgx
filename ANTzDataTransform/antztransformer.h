@@ -45,10 +45,7 @@ namespace SynGlyphXANTz {
 
 		virtual QString GenerateBaseImageFilename(unsigned int index) const;
 		void GenerateCache(const SynGlyphX::DataTransformMapping& mapping, const QStringList& csvFilenames, const QString& baseImageFilenameDirectory);
-		void DownloadBaseImage(const SynGlyphX::DataTransformMapping& mapping, const SynGlyphX::BaseImage& baseImage, const QString& baseImageFilename);
-		void CopyImage(const QString& sourceFilename, const QString& baseImageFilename);
 		void Clear();
-		QString GetUserImageFilename(const SynGlyphX::BaseImage& baseImage) const;
 
 		QStringList m_csvFilenames;
 		QStringList m_baseImageFilenames;

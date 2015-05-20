@@ -4,9 +4,6 @@
 #include <boost/filesystem.hpp>
 #include "sourcedatamanager.h"
 #include "antzcsvwriter.h"
-#include "downloadedmapproperties.h"
-#include "userdefinedbaseimageproperties.h"
-#include "networkdownloader.h"
 
 namespace SynGlyphXANTz {
 
@@ -54,9 +51,18 @@ namespace SynGlyphXANTz {
 
 			if (baseImage.GetType() == SynGlyphX::BaseImage::Type::DownloadedMap) {
 
-				m_textureIDs.push_back(nextTextureID);
-				m_baseImageFilenames.push_back(baseImageFilenameDirectory + GenerateBaseImageFilename(nextTextureID++));
-				DownloadBaseImage(mapping, baseImage, m_baseImageFilenames.last());
+				QString downloadedImageFilename = baseImageFilenameDirectory + GenerateBaseImageFilename(nextTextureID);
+				if (DownloadBaseImage(mapping, baseImage, downloadedImageFilename)) {
+
+					m_baseImageFilenames.push_back(downloadedImageFilename);
+					m_textureIDs.push_back(nextTextureID);
+					++nextTextureID;
+				}
+				else {
+
+					//Use World Image
+					m_textureIDs.push_back(1);
+				}
 			}
 			else if (baseImage.GetType() == SynGlyphX::BaseImage::Type::UserImage) {
 
@@ -99,37 +105,6 @@ namespace SynGlyphXANTz {
 		writer.Write(csvFilenames[0].toStdString(), csvFilenames[1].toStdString(), trees, grids);
 
 		m_csvFilenames = csvFilenames;
-	}
-
-	void ANTzTransformer::DownloadBaseImage(const SynGlyphX::DataTransformMapping& mapping, const SynGlyphX::BaseImage& baseImage, const QString& baseImageFilename) {
-
-		if (QFile::exists(baseImageFilename)) {
-
-			if (!QFile::remove(baseImageFilename)) {
-
-				throw std::exception("Failed to remove old base image");
-			}
-		}
-
-		std::vector<GeographicPoint> points;
-		GetPositionXYForAllGlyphTrees(mapping, points);
-		const SynGlyphX::DownloadedMapProperties* const properties = dynamic_cast<const SynGlyphX::DownloadedMapProperties* const>(baseImage.GetProperties());
-		NetworkDownloader& downloader = NetworkDownloader::Instance();
-		m_overrideRootXYBoundingBox = downloader.DownloadMap(points, baseImageFilename.toStdString(), properties);
-	}
-
-	void ANTzTransformer::CopyImage(const QString& sourceFilename, const QString& baseImageFilename) {
-
-		if (!QFile::copy(sourceFilename, baseImageFilename)) {
-
-			throw std::exception("Failed to copy base image");
-		}
-	}
-
-	QString ANTzTransformer::GetUserImageFilename(const SynGlyphX::BaseImage& baseImage) const {
-
-		const SynGlyphX::UserDefinedBaseImageProperties* const properties = dynamic_cast<const SynGlyphX::UserDefinedBaseImageProperties* const>(baseImage.GetProperties());
-		return QString::fromStdWString(properties->GetFilename());
 	}
 
 	void ANTzTransformer::Clear() {
