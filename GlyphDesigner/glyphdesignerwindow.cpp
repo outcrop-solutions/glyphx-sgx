@@ -248,6 +248,7 @@ bool GlyphDesignerWindow::LoadTemplate(const QString& filename) {
 
 	if (fileLoaded) {
 
+		m_glyphTreeModel->ResetRootMinMaxPositionXY();
 		SetCurrentFile(filename);
 		statusBar()->showMessage("Template successfully opened", 3000);
 		SelectRootGlyphInModel();
