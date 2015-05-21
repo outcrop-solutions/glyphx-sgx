@@ -2,11 +2,13 @@
 <Glyph Shape="Cylinder" Surface="Solid" Topology="Rod">
 	<Position>
 		<X>
-			<Min>0</Min>
+			<Min>-180</Min>
+			<Difference>360</Difference>
 			<Function type="Linear Interpolation"/>
 		</X>
 		<Y>
-			<Min>0</Min>
+			<Min>-90</Min>
+			<Difference>180</Difference>
 			<Function type="Linear Interpolation"/>
 		</Y>
 		<Z>

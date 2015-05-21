@@ -4,73 +4,82 @@
 		<X>
 			<Min>-180</Min>
 			<Difference>360</Difference>
+			<Function type="Linear Interpolation"/>
 		</X>
 		<Y>
 			<Min>-90</Min>
 			<Difference>180</Difference>
+			<Function type="Linear Interpolation"/>
 		</Y>
 		<Z>
 			<Min>0</Min>
+			<Function type="Linear Interpolation"/>
 		</Z>
 	</Position>
 	<Rotation>
 		<X>
 			<Min>0</Min>
+			<Function type="Linear Interpolation"/>
 		</X>
 		<Y>
 			<Min>0</Min>
+			<Function type="Linear Interpolation"/>
 		</Y>
 		<Z>
 			<Min>0</Min>
+			<Function type="Linear Interpolation"/>
 		</Z>
 	</Rotation>
 	<Scale>
 		<X>
 			<Min>0.1</Min>
 			<Difference>1.9</Difference>
+			<Function type="Linear Interpolation"/>
 		</X>
 		<Y>
 			<Min>0.1</Min>
 			<Difference>1.9</Difference>
+			<Function type="Linear Interpolation"/>
 		</Y>
 		<Z>
 			<Min>0.1</Min>
 			<Difference>1.9</Difference>
+			<Function type="Linear Interpolation"/>
 		</Z>
 	</Scale>
 	<Color>
 		<RGB>
-			<Min>
-				<R>0</R>
-				<G>0</G>
-				<B>0</B>
-			</Min>
-			<Difference>
-				<R>50</R>
-				<G>101</G>
-				<B>101</B>
-			</Difference>
+			<Min>0,0,0</Min>
+			<Difference>50,101,101</Difference>
+			<Function type="Linear Interpolation"/>
 		</RGB>
 		<Transparency>
 			<Min>0</Min>
 			<Difference>255</Difference>
+			<Function type="Linear Interpolation"/>
 		</Transparency>
 	</Color>
 	<Tag>
 		<Value/>
+		<Function type="Linear Interpolation"/>
 	</Tag>
 	<Description>
 		<Value/>
+		<Function type="Linear Interpolation"/>
 	</Description>
 	<RotationRate>
 		<X>
 			<Min>0</Min>
+			<Function type="Linear Interpolation"/>
 		</X>
 		<Y>
 			<Min>0</Min>
+			<Function type="Linear Interpolation"/>
 		</Y>
 		<Z>
 			<Min>0</Min>
+			<Function type="Linear Interpolation"/>
 		</Z>
 	</RotationRate>
+	<Ratio>0.1</Ratio>
 </Glyph>
