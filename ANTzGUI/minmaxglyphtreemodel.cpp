@@ -622,4 +622,9 @@ namespace SynGlyphXANTz {
 		return iT.constify();
 	}
 
+	void MinMaxGlyphTreeModel::ResetRootMinMaxPositionXY() {
+
+		m_minMaxGlyphTree->ResetRootMinMaxPositionXY();
+	}
+
 } //namespace SynGlyphXANTz

@@ -74,6 +74,7 @@ namespace SynGlyphXANTz {
 		void CopyToClipboard(const QModelIndex& index, bool removeFromTree = false);
 
 		void RepaceModelWithDefaultGlyphTree();
+		void ResetRootMinMaxPositionXY();
 
 		static bool GreaterBranchLevel(const QModelIndex& left, const QModelIndex& right);
 
