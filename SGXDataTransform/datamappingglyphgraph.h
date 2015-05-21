@@ -69,6 +69,8 @@ namespace SynGlyphX {
 
 		bool DoesRootGlyphPositionXYHaveBindings() const;
 
+		void ResetRootMinMaxPositionXY();
+
 		GlyphGraph::SharedPtr GetMinGlyphTree() const;
 		GlyphGraph::SharedPtr GetMaxGlyphTree() const;
 

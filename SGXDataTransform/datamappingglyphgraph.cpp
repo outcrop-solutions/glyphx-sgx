@@ -357,4 +357,10 @@ namespace SynGlyphX {
 		}
 	}
 
+	void DataMappingGlyphGraph::ResetRootMinMaxPositionXY() {
+
+		root()->GetPosition()[0].GetValue() = std::pair<double, double>(-180.0, 360.0);
+		root()->GetPosition()[1].GetValue() = std::pair<double, double>(-90.0, 180.0);
+	}
+
 } //namespace SynGlyphX
