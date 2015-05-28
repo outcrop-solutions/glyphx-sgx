@@ -590,10 +590,9 @@ namespace SynGlyphXANTz {
 		//Draw tags
 		qglColor(Qt::white);
 
-		pNPnode selectedNode = nullptr;
-		if (!m_selectionModel->selectedIndexes().empty()) {
+		Q_FOREACH(const QModelIndex& modelIndex, m_selectionModel->selectedIndexes()) {
 
-			selectedNode = static_cast<pNPnode>(m_selectionModel->selectedIndexes().front().internalPointer());
+			pNPnode selectedNode = static_cast<pNPnode>(modelIndex.internalPointer());
 			if (m_model->IsTagShownIn3d(selectedNode->tag->title)) {
 
 				renderText(selectedNode->world.x, selectedNode->world.y, selectedNode->world.z, selectedNode->tag->title, m_oglTextFont);
@@ -602,9 +601,11 @@ namespace SynGlyphXANTz {
 
 		//Draw HUD
 		QString positionHUD;
-		if (selectedNode != nullptr) {
+		
+		if (!m_selectionModel->GetFocusList().empty()) {
 
-			positionHUD = tr("Glyph Position: X: %1, Y: %2, Z: %3").arg(QString::number(selectedNode->world.x), QString::number(selectedNode->world.y), QString::number(selectedNode->world.z));
+			pNPnode lastFocusNode = static_cast<pNPnode>(m_selectionModel->GetFocusList().back().internalPointer());
+			positionHUD = tr("Glyph Position: X: %1, Y: %2, Z: %3").arg(QString::number(lastFocusNode->world.x), QString::number(lastFocusNode->world.y), QString::number(lastFocusNode->world.z));
 		}
 		else {
 
