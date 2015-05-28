@@ -39,7 +39,7 @@ extern "C" {
 
 //MB//
 //--- Data -----
-int selectedID;
+//int selectedID;
 //MB-end//
 
 //--- Functions ----------------------------------------------------------------
