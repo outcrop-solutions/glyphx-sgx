@@ -15,32 +15,26 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef USERDEFINEDBASEIMAGEPROPERTIES_H
-#define USERDEFINEDBASEIMAGEPROPERTIES_H
+#ifndef SYNGLYPHX_BASEIMAGEPROPERTIES_H
+#define SYNGLYPHX_BASEIMAGEPROPERTIES_H
 
-#include "sgxdatatransform_global.h"
-#include "baseimageproperties.h"
-#include <string>
+#include "SGXImage.h"
+#include <boost/property_tree/ptree.hpp>
 
 namespace SynGlyphX {
 
-	class SGXDATATRANSFORM_EXPORT UserDefinedBaseImageProperties : public BaseImageProperties
+	class SGXIMAGE_API BaseImageProperties
 	{
 	public:
-		UserDefinedBaseImageProperties(const std::wstring& filename);
-		UserDefinedBaseImageProperties(const boost::property_tree::wptree& propertyTree);
-		UserDefinedBaseImageProperties(const UserDefinedBaseImageProperties& properties);
-		virtual ~UserDefinedBaseImageProperties();
-
-		const std::wstring& GetFilename() const;
+		BaseImageProperties();
+		BaseImageProperties(const boost::property_tree::wptree& propertyTree);
+		BaseImageProperties(const BaseImageProperties& properties);
+		virtual ~BaseImageProperties();
 
 		virtual bool IsGeographic() const;
 		virtual void ExportToPropertyTree(boost::property_tree::wptree& propertyTree) const;
-
-	private:
-		std::wstring m_filename;
 	};
 
 } //namespace SynGlyphX
 
-#endif //USERDEFINEDBASEIMAGEPROPERTIES_H
+#endif //SYNGLYPHX_BASEIMAGEPROPERTIES_H

@@ -18,15 +18,15 @@
 #ifndef SYNGLYPHX_DOWNLOADEDMAPPROPERTIES_H
 #define SYNGLYPHX_DOWNLOADEDMAPPROPERTIES_H
 
+#include "SGXImage.h"
 #include "baseimageproperties.h"
 #include <array>
-#include "sgxdatatransform_global.h"
 #include <boost/property_tree/ptree.hpp>
 #include <boost/bimap.hpp>
 
 namespace SynGlyphX {
 
-	class SGXDATATRANSFORM_EXPORT DownloadedMapProperties : public BaseImageProperties
+	class SGXIMAGE_API DownloadedMapProperties : public BaseImageProperties
 	{
 	public:
 		typedef std::array<unsigned int, 2> Size;

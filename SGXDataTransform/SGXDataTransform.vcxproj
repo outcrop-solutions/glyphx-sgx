@@ -47,7 +47,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <PreprocessorDefinitions>UNICODE;WIN32;WIN64;QT_DLL;QT_CORE_LIB;QT_NETWORK_LIB;QT_SQL_LIB;QT_XML_LIB;QT_XMLPATTERNS_LIB;SGXDATATRANSFORM_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.\GeneratedFiles;.;..\..\3rdParty\include\Qt_5_2_1;.\GeneratedFiles\$(PlatformName)\$(ConfigurationName);..\..\3rdParty\include\boost_1_55_0;..\..\Core\SGXFoundation;..\..\3rdParty\include\stlplus_3_11;..\..\Core\SGXGeospatial;..\..\Core\SGXQtDBDrivers;..\..\Core\SGXUtility\;..\..\GUI\MapDownloading;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\GeneratedFiles;.;..\..\3rdParty\include\Qt_5_2_1;.\GeneratedFiles\$(PlatformName)\$(ConfigurationName);..\..\3rdParty\include\boost_1_55_0;..\..\Core\SGXFoundation;..\..\3rdParty\include\stlplus_3_11;..\..\Core\SGXGeospatial;..\..\Core\SGXQtDBDrivers;..\..\Core\SGXUtility\;..\..\GUI\MapDownloading;..\..\Core\SGXImage;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Disabled</Optimization>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -58,14 +58,14 @@
       <OutputFile>$(OutDir)\$(ProjectName).dll</OutputFile>
       <AdditionalLibraryDirectories>..\..\lib\$(Platform)\$(Configuration)\;..\..\3rdParty\lib\$(Platform)\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>MapDownloading.lib;SGXFoundation.lib;SGXGeospatial.lib;SGXUtility.lib;boost_system-vc120-mt-gd-1_55.lib;boost_filesystem-vc120-mt-gd-1_55.lib;qtmaind.lib;Qt5Cored.lib;Qt5Networkd.lib;Qt5Sqld.lib;Qt5Xmld.lib;Qt5XmlPatternsd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>MapDownloading.lib;SGXImage.lib;SGXFoundation.lib;SGXGeospatial.lib;SGXUtility.lib;boost_system-vc120-mt-gd-1_55.lib;boost_filesystem-vc120-mt-gd-1_55.lib;qtmaind.lib;Qt5Cored.lib;Qt5Networkd.lib;Qt5Sqld.lib;Qt5Xmld.lib;Qt5XmlPatternsd.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ImportLibrary>..\..\lib\$(Platform)\$(Configuration)\$(TargetName).lib</ImportLibrary>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <PreprocessorDefinitions>UNICODE;WIN32;WIN64;QT_DLL;QT_NO_DEBUG;NDEBUG;QT_CORE_LIB;QT_NETWORK_LIB;QT_SQL_LIB;QT_XML_LIB;QT_XMLPATTERNS_LIB;SGXDATATRANSFORM_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.\GeneratedFiles;.;..\..\3rdParty\include\Qt_5_2_1;.\GeneratedFiles\$(PlatformName)\$(ConfigurationName);..\..\3rdParty\include\boost_1_55_0;..\..\Core\SGXFoundation;..\..\3rdParty\include\stlplus_3_11;..\..\Core\SGXGeospatial;..\..\Core\SGXQtDBDrivers;..\..\Core\SGXUtility\;..\..\GUI\MapDownloading;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\GeneratedFiles;.;..\..\3rdParty\include\Qt_5_2_1;.\GeneratedFiles\$(PlatformName)\$(ConfigurationName);..\..\3rdParty\include\boost_1_55_0;..\..\Core\SGXFoundation;..\..\3rdParty\include\stlplus_3_11;..\..\Core\SGXGeospatial;..\..\Core\SGXQtDBDrivers;..\..\Core\SGXUtility\;..\..\GUI\MapDownloading;..\..\Core\SGXImage;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat />
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
@@ -75,13 +75,11 @@
       <OutputFile>$(OutDir)\$(ProjectName).dll</OutputFile>
       <AdditionalLibraryDirectories>..\..\lib\$(Platform)\$(Configuration)\;..\..\3rdParty\lib\$(Platform)\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>false</GenerateDebugInformation>
-      <AdditionalDependencies>MapDownloading.lib;SGXFoundation.lib;SGXGeospatial.lib;SGXUtility.lib;boost_system-vc120-mt-1_55.lib;boost_filesystem-vc120-mt-1_55.lib;qtmain.lib;Qt5Core.lib;Qt5Network.lib;Qt5Sql.lib;Qt5Xml.lib;Qt5XmlPatterns.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>MapDownloading.lib;SGXImage.lib;SGXFoundation.lib;SGXGeospatial.lib;SGXUtility.lib;boost_system-vc120-mt-1_55.lib;boost_filesystem-vc120-mt-1_55.lib;qtmain.lib;Qt5Core.lib;Qt5Network.lib;Qt5Sql.lib;Qt5Xml.lib;Qt5XmlPatterns.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ImportLibrary>..\..\lib\$(Platform)\$(Configuration)\$(TargetName).lib</ImportLibrary>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="baseimage.h" />
-    <ClInclude Include="baseimageproperties.h" />
     <ClInclude Include="csvcache.h" />
     <ClInclude Include="databaseinfo.h" />
     <ClInclude Include="datamappingdefaults.h" />
@@ -94,7 +92,6 @@
     <ClInclude Include="datasource.h" />
     <ClInclude Include="datasourcemaps.h" />
     <ClInclude Include="datatransformmapping.h" />
-    <ClInclude Include="downloadedmapproperties.h" />
     <ClInclude Include="filedatasource.h" />
     <ClInclude Include="inputbinding.h" />
     <ClInclude Include="inputcombinationfunction.h" />
@@ -111,12 +108,9 @@
     <ClInclude Include="stringconcatmappingfunction.h" />
     <ClInclude Include="stringinputcombinationfunction.h" />
     <ClInclude Include="transformer.h" />
-    <ClInclude Include="userdefinedbaseimageproperties.h" />
     <ClInclude Include="valuemappingfunction.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="baseimage.cpp" />
-    <ClCompile Include="baseimageproperties.cpp" />
     <ClCompile Include="csvcache.cpp" />
     <ClCompile Include="databaseinfo.cpp" />
     <ClCompile Include="datamappingdefaults.cpp" />
@@ -128,7 +122,6 @@
     <ClCompile Include="datasource.cpp" />
     <ClCompile Include="datasourcemaps.cpp" />
     <ClCompile Include="datatransformmapping.cpp" />
-    <ClCompile Include="downloadedmapproperties.cpp" />
     <ClCompile Include="filedatasource.cpp" />
     <ClCompile Include="inputbinding.cpp" />
     <ClCompile Include="inputcombinationfunction.cpp" />
@@ -144,7 +137,6 @@
     <ClCompile Include="stringconcatmappingfunction.cpp" />
     <ClCompile Include="stringinputcombinationfunction.cpp" />
     <ClCompile Include="transformer.cpp" />
-    <ClCompile Include="userdefinedbaseimageproperties.cpp" />
     <ClCompile Include="valuemappingfunction.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -18,7 +18,7 @@
 #ifndef SYNGLYPHX_BASEIMAGE_H
 #define SYNGLYPHX_BASEIMAGE_H
 
-#include "sgxdatatransform_global.h"
+#include "SGXImage.h"
 #include "utilitytypes.h"
 #include "baseimageproperties.h"
 #include <boost/bimap.hpp>
@@ -26,7 +26,7 @@
 
 namespace SynGlyphX {
 
-	class SGXDATATRANSFORM_EXPORT BaseImage
+	class SGXIMAGE_API BaseImage
 	{
 	public:
 		typedef std::array<double, 2> Size;
