@@ -1,6 +1,6 @@
 #include "linkedwidgetsmanager.h"
 
-LinkedWidgetsManager::LinkedWidgetsManager(ANTzViewerWidget* antzWidget, QObject *parent)
+LinkedWidgetsManager::LinkedWidgetsManager(SynGlyphXANTz::ANTzForestWidget* antzWidget, QObject *parent)
 	: QObject(parent),
 	m_antzWidget(antzWidget)
 {

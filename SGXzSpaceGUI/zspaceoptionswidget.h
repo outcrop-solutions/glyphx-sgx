@@ -15,22 +15,36 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef SOURCEDATASELECTIONMODEL_H
-#define SOURCEDATASELECTIONMODEL_H
+#ifndef ZSPACEOPTIONSWIDGET_H
+#define ZSPACEOPTIONSWIDGET_H
 
-#include "utilitytypes.h"
-#include <QtCore/QItemSelectionModel>
+#include "sgxzspacegui_global.h"
+#include <QtWidgets/QWidget>
+#include "colorbutton.h"
+#include <QtWidgets/QDoubleSpinBox>
+#include "zspaceoptions.h"
 
-class SourceDataSelectionModel
-{
-public:
-	SourceDataSelectionModel();
-	virtual ~SourceDataSelectionModel();
+namespace SynGlyphX {
 
-	static SynGlyphX::IndexSet GetRootRows(const QModelIndexList& indexList);
+	class SGXZSPACEGUI_EXPORT ZSpaceOptionsWidget : public QWidget
+	{
+		Q_OBJECT
 
-private:
-	static unsigned long GetRootRow(const QModelIndex& index);
-};
+	public:
+		ZSpaceOptionsWidget(QWidget *parent);
+		~ZSpaceOptionsWidget();
 
-#endif //SOURCEDATASELECTIONMODEL_H
+		void SetOptions(const ZSpaceOptions& options);
+		ZSpaceOptions GetOptions() const;
+
+		private slots:
+		void OnSetDefaults();
+
+	private:
+		ColorButton* m_stylusColorButton;
+		QDoubleSpinBox* m_stylusLengthSpinBox;
+	};
+
+} //namespace SynGlyphX
+
+#endif // ZSPACEOPTIONSWIDGET_H

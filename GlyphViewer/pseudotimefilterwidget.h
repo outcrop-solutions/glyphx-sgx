@@ -18,7 +18,7 @@ class PseudoTimeFilterWidget : public QWidget
 	Q_OBJECT
 
 public:
-	PseudoTimeFilterWidget(SynGlyphX::DataTransformMapping::SharedPtr dataTransformMapping, SynGlyphX::SourceDataCache::SharedPtr sourceDataCache, GlyphForestModel* model, SynGlyphX::ItemFocusSelectionModel* selectionModel, QWidget *parent);
+	PseudoTimeFilterWidget(SynGlyphX::DataTransformMapping::SharedPtr dataTransformMapping, SynGlyphX::SourceDataCache::SharedPtr sourceDataCache, SynGlyphXANTz::GlyphForestModel* model, SynGlyphX::ItemFocusSelectionModel* selectionModel, QWidget *parent);
 	~PseudoTimeFilterWidget();
 
 	void SetupLinkedWidgets(LinkedWidgetsManager& linkedWidgetsManager);
@@ -72,7 +72,7 @@ private:
 	FilterState m_filterState;
 	SynGlyphX::SourceDataCache::SharedPtr m_sourceDataCache;
 	std::vector < std::pair < QString, QItemSelection >> m_itemSelectionForEachDistinctValue;
-	GlyphForestModel* m_glyphForestModel;
+	SynGlyphXANTz::GlyphForestModel* m_glyphForestModel;
 	SynGlyphX::ItemFocusSelectionModel* m_glyphForestSelectionModel;
 
 	QCheckBox* m_filterViewCheckbox;

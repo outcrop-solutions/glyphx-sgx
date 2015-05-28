@@ -36,7 +36,7 @@ class SourceDataSelectionWidget : public QWidget
 	Q_OBJECT
 
 public:
-	SourceDataSelectionWidget(SynGlyphX::SourceDataCache::SharedPtr sourceDataCache, GlyphForestModel* model, SynGlyphX::ItemFocusSelectionModel* selectionModel, QWidget *parent);
+	SourceDataSelectionWidget(SynGlyphX::SourceDataCache::SharedPtr sourceDataCache, SynGlyphXANTz::GlyphForestModel* model, SynGlyphX::ItemFocusSelectionModel* selectionModel, QWidget *parent);
 	~SourceDataSelectionWidget();
 
 	void SetupLinkedWidgets(LinkedWidgetsManager& linkedWidgets);
@@ -57,7 +57,7 @@ private:
 	void ClearElasticLists();
 	void EnableButtons(bool enable);
 
-	GlyphForestModel* m_model;
+	SynGlyphXANTz::GlyphForestModel* m_model;
 	SynGlyphX::ItemFocusSelectionModel* m_selectionModel;
 	QPushButton* m_sourceWidgetButton;
 	QPushButton* m_clearButton;

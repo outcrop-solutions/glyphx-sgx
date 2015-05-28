@@ -15,31 +15,41 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef ZSPACEOPTIONSWIDGET_H
-#define ZSPACEOPTIONSWIDGET_H
+#ifndef ZSPACEEVENTDISPATCHER_H
+#define ZSPACEEVENTDISPATCHER_H
 
-#include <QtWidgets/QWidget>
-#include "colorbutton.h"
-#include <QtWidgets/QDoubleSpinBox>
-#include "zspaceoptions.h"
+#include "sgxzspacegui_global.h"
+#include <zSpace.h>
+#include <QtCore/QObject>
 
-class ZSpaceOptionsWidget : public QWidget
-{
-	Q_OBJECT
+//This class exists because zSpace events are generated from a different thread than the GUI.  This makes sure that the
+//signals emitted cross thread boundaries successfully and wait until the slots connecte to the signals are finished
 
-public:
-	ZSpaceOptionsWidget(QWidget *parent);
-	~ZSpaceOptionsWidget();
+namespace SynGlyphX {
 
-	void SetOptions(const ZSpaceOptions& options);
-	ZSpaceOptions GetOptions() const;
+	class SGXZSPACEGUI_EXPORT ZSpaceEventDispatcher : public QObject
+	{
+		Q_OBJECT
 
-private slots:
-	void OnSetDefaults();
+	public:
+		ZSpaceEventDispatcher(QObject* parent = nullptr);
+		~ZSpaceEventDispatcher();
 
-private:
-	SynGlyphX::ColorButton* m_stylusColorButton;
-	QDoubleSpinBox* m_stylusLengthSpinBox;
-};
+		static void Dispatch(ZSHandle targetHandle, const ZSTrackerEventData* eventData, const void* userData);
 
-#endif // ZSPACEOPTIONSWIDGET_H
+	signals:
+		void ZSpaceButtonPressed(ZSHandle targetHandle, const ZSTrackerEventData* eventData) const;
+		void ZSpaceButtonReleased(ZSHandle targetHandle, const ZSTrackerEventData* eventData) const;
+		void ZSpaceStylusMoved(ZSHandle targetHandle, const ZSTrackerEventData* eventData) const;
+		void ZSpaceStylusTappedOnce(ZSHandle targetHandle, const ZSTrackerEventData* eventData) const;
+
+	private:
+		void EmitZSpaceButtonPressed(ZSHandle targetHandle, const ZSTrackerEventData* eventData) const;
+		void EmitZSpaceButtonReleased(ZSHandle targetHandle, const ZSTrackerEventData* eventData) const;
+		void EmitZSpaceStylusMoved(ZSHandle targetHandle, const ZSTrackerEventData* eventData) const;
+		void EmitZSpaceStylusTappedOnce(ZSHandle targetHandle, const ZSTrackerEventData* eventData) const;
+	};
+
+} //namespace SynGlyphX
+
+#endif //ZSPACEEVENTDISPATCHER_H

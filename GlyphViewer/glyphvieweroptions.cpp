@@ -87,12 +87,12 @@ bool GlyphViewerOptions::operator!=(const GlyphViewerOptions& options) const {
 	return !operator==(options);
 }
 
-void GlyphViewerOptions::SetZSpaceOptions(const ZSpaceOptions& options) {
+void GlyphViewerOptions::SetZSpaceOptions(const SynGlyphX::ZSpaceOptions& options) {
 
 	m_zSpaceOptions = options;
 }
 
-const ZSpaceOptions& GlyphViewerOptions::GetZSpaceOptions() const {
+const SynGlyphX::ZSpaceOptions& GlyphViewerOptions::GetZSpaceOptions() const {
 
 	return m_zSpaceOptions;
 }

@@ -45,7 +45,7 @@ private:
 
 	SynGlyphX::BrowseLineEdit* m_cacheDirectoryWidget;
 	QCheckBox* m_hideSelectedGlyphsCheckbox;
-	ZSpaceOptionsWidget* m_zSpaceOptionsWidget;
+	SynGlyphX::ZSpaceOptionsWidget* m_zSpaceOptionsWidget;
 	QCheckBox* m_showDownloadedImageErrorMessages;
 };
 

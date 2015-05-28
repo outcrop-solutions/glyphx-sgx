@@ -13,7 +13,7 @@ OptionsWidget::OptionsWidget(const GlyphViewerOptions& options, bool enableCache
 	CreateCacheTab(options, enableCacheOptions);
 	Create3DTab(options);
 
-	m_zSpaceOptionsWidget = new ZSpaceOptionsWidget(this);
+	m_zSpaceOptionsWidget = new SynGlyphX::ZSpaceOptionsWidget(this);
 	m_zSpaceOptionsWidget->SetOptions(options.GetZSpaceOptions());
 	addTab(m_zSpaceOptionsWidget, tr("zSpace"));
 

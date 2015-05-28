@@ -23,7 +23,7 @@
 #include "mainwindow.h"
 #include "datatransformmapping.h"
 #include "glyphforestmodel.h"
-#include "antzviewerwidget.h"
+#include "antzforestwidget.h"
 #include "cachemanager.h"
 #include "glyphvieweroptions.h"
 #include "sourcedatacache.h"
@@ -83,9 +83,9 @@ private:
 
 	LinkedWidgetsManager* m_linkedWidgetsManager;
 
-	GlyphForestModel* m_glyphForestModel;
+	SynGlyphXANTz::GlyphForestModel* m_glyphForestModel;
 	SynGlyphX::ItemFocusSelectionModel* m_glyphForestSelectionModel;
-	ANTzViewerWidget* m_antzWidget;
+	SynGlyphXANTz::ANTzForestWidget* m_antzWidget;
 	GlyphTreeListView* m_treeView;
 	SynGlyphX::SourceDataCache::SharedPtr m_sourceDataCache;
 	SourceDataSelectionWidget* m_sourceDataSelectionWidget;

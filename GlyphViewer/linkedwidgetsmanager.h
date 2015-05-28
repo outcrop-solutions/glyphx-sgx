@@ -20,14 +20,14 @@
 
 #include <QtCore/QObject>
 #include <QtWidgets/QCheckBox>
-#include "antzviewerwidget.h"
+#include "antzforestwidget.h"
 
 class LinkedWidgetsManager : public QObject
 {
 	Q_OBJECT
 
 public:
-	LinkedWidgetsManager(ANTzViewerWidget* antzWidget, QObject *parent = nullptr);
+	LinkedWidgetsManager(SynGlyphXANTz::ANTzForestWidget* antzWidget, QObject *parent = nullptr);
 	~LinkedWidgetsManager();
 
 	bool GetFilterView() const;
@@ -40,7 +40,7 @@ private:
 	void SetFilterViewOnCheckbox(QCheckBox* checkbox, bool set);
 
 	QList<QCheckBox*> m_filterViewCheckboxes;
-	ANTzViewerWidget* m_antzWidget;
+	SynGlyphXANTz::ANTzForestWidget* m_antzWidget;
 };
 
 #endif // LINKEDWIDGETSMANAGER_H

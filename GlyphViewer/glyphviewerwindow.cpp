@@ -27,7 +27,7 @@ GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 {
 	m_mapping = std::make_shared<SynGlyphX::DataTransformMapping>();
 	m_sourceDataCache = std::make_shared<SynGlyphX::SourceDataCache>();
-	m_glyphForestModel = new GlyphForestModel(this);
+	m_glyphForestModel = new SynGlyphXANTz::GlyphForestModel(this);
 
 	m_glyphForestSelectionModel = new SynGlyphX::ItemFocusSelectionModel(m_glyphForestModel, this);
 	CreateMenus();
@@ -43,7 +43,7 @@ GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 	
 	try {
 		
-		CreateANTzWidget(ANTzViewerWidget::GetStereoFormat());
+		CreateANTzWidget(SynGlyphXANTz::ANTzForestWidget::GetStereoFormat());
 	}
 	catch (const std::exception& e) {
 
@@ -102,13 +102,13 @@ void GlyphViewerWindow::CreateANTzWidget(const QGLFormat& format) {
 		m_antzWidget = nullptr;
 	}
 
-	m_antzWidget = new ANTzViewerWidget(format, m_glyphForestModel, m_glyphForestSelectionModel, this);
+	m_antzWidget = new SynGlyphXANTz::ANTzForestWidget(format, m_glyphForestModel, m_glyphForestSelectionModel, this);
 	m_antzWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
 	antzWidgetContainer->addWidget(m_antzWidget);
 	antzWidgetContainer->setCurrentWidget(m_antzWidget);
 
-	QObject::connect(m_showAnimation, &QAction::toggled, m_antzWidget, &ANTzViewerWidget::ShowAnimatedRotations);
+	QObject::connect(m_showAnimation, &QAction::toggled, m_antzWidget, &SynGlyphXANTz::ANTzForestWidget::ShowAnimatedRotations);
 }
 
 void GlyphViewerWindow::CreateMenus() {
@@ -449,11 +449,11 @@ void GlyphViewerWindow::ChangeStereoMode() {
 
 		if (m_antzWidget->IsInStereoMode()) {
 
-			CreateANTzWidget(ANTzViewerWidget::GetNonStereoFormat());
+			CreateANTzWidget(SynGlyphXANTz::ANTzForestWidget::GetNonStereoFormat());
 		}
 		else {
 
-			CreateANTzWidget(ANTzViewerWidget::GetStereoFormat());
+			CreateANTzWidget(SynGlyphXANTz::ANTzForestWidget::GetStereoFormat());
 		}
 	}
 	else {
@@ -572,7 +572,7 @@ void GlyphViewerWindow::ReadSettings() {
 	settings.endGroup();
 
 	settings.beginGroup("zSpace");
-	ZSpaceOptions zSpaceOptions;
+	SynGlyphX::ZSpaceOptions zSpaceOptions;
 	zSpaceOptions.SetStylusColor(settings.value("stylusColor", QColor(Qt::green)).value<QColor>());
 	zSpaceOptions.SetStylusLength(settings.value("stylusLength", 0.15f).toFloat());
 	settings.endGroup();

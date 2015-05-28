@@ -5,9 +5,8 @@
 #include <QtWidgets/QAbstractItemView>
 #include "groupboxsinglewidget.h"
 #include "elasticlistwidget.h"
-#include "sourcedataselectionmodel.h"
 
-SourceDataSelectionWidget::SourceDataSelectionWidget(SynGlyphX::SourceDataCache::SharedPtr sourceDataCache, GlyphForestModel* model, SynGlyphX::ItemFocusSelectionModel* selectionModel, QWidget *parent)
+SourceDataSelectionWidget::SourceDataSelectionWidget(SynGlyphX::SourceDataCache::SharedPtr sourceDataCache, SynGlyphXANTz::GlyphForestModel* model, SynGlyphX::ItemFocusSelectionModel* selectionModel, QWidget *parent)
 	: QWidget(parent),
 	m_model(model),
 	m_selectionModel(selectionModel),
@@ -61,7 +60,7 @@ SourceDataSelectionWidget::SourceDataSelectionWidget(SynGlyphX::SourceDataCache:
 	m_sourceDataWindow->setVisible(false);
 
 	QObject::connect(m_sourceDataWindow.data(), &SourceDataWidget::WindowHidden, this, &SourceDataSelectionWidget::OnSourceWidgetWindowHidden);
-	QObject::connect(model, &GlyphForestModel::modelReset, this, &SourceDataSelectionWidget::OnModelReset);
+	QObject::connect(model, &SynGlyphXANTz::GlyphForestModel::modelReset, this, &SourceDataSelectionWidget::OnModelReset);
 }
 
 SourceDataSelectionWidget::~SourceDataSelectionWidget()
@@ -122,7 +121,7 @@ void SourceDataSelectionWidget::UpdateElasticListsAndSourceDataWidget(const QMod
 	EnableButtons(isSelectionNotEmpty);
 	if (isSelectionNotEmpty) {
 
-		SynGlyphX::SourceDataCache::IndexSetMap indexSets = m_sourceDataCache->SplitIndexSet(SourceDataSelectionModel::GetRootRows(m_selectionModel->selection().indexes()));
+		SynGlyphX::SourceDataCache::IndexSetMap indexSets = m_sourceDataCache->SplitIndexSet(SynGlyphX::ItemFocusSelectionModel::GetRootRows(m_selectionModel->selection().indexes()));
 
 		m_sourceDataWindow->UpdateTables(indexSets);
 		UpdateElasticLists(indexSets);
@@ -174,7 +173,7 @@ void SourceDataSelectionWidget::OnElasticListsSelectionChanged(const QString& ta
 	}
 	else {
 
-		SynGlyphX::SourceDataCache::IndexSetMap indexSets = m_sourceDataCache->SplitIndexSet(SourceDataSelectionModel::GetRootRows(m_selectionModel->selection().indexes()));
+		SynGlyphX::SourceDataCache::IndexSetMap indexSets = m_sourceDataCache->SplitIndexSet(SynGlyphX::ItemFocusSelectionModel::GetRootRows(m_selectionModel->selection().indexes()));
 		SynGlyphX::SourceDataCache::IndexSetMap::const_iterator previousSelection = indexSets.find(table);
 		SynGlyphX::IndexSet indexSet;
 		

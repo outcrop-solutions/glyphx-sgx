@@ -22,8 +22,8 @@ public:
 	void SetHideUnselectedGlyphTrees(bool hideUnselectedGlyphTrees);
 	bool GetHideUnselectedGlyphTrees() const;
 
-	void SetZSpaceOptions(const ZSpaceOptions& options);
-	const ZSpaceOptions& GetZSpaceOptions() const;
+	void SetZSpaceOptions(const SynGlyphX::ZSpaceOptions& options);
+	const SynGlyphX::ZSpaceOptions& GetZSpaceOptions() const;
 
 	void SetShowMessageWhenImagesDidNotDownload(bool showMessageWhenImagesDidNotDownload);
 	bool GetShowMessageWhenImagesDidNotDownload() const;
@@ -35,7 +35,7 @@ private:
 	//3D options
 	bool m_hideUnselectedGlyphTrees;
 
-	ZSpaceOptions m_zSpaceOptions;
+	SynGlyphX::ZSpaceOptions m_zSpaceOptions;
 
 	//UI options
 	bool m_showMessageWhenImagesDidNotDownload;
