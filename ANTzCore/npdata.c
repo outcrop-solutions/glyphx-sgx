@@ -438,7 +438,7 @@ void npInitDataGL(void* dataRef)
 
 	strcpy (gl->name, "ANTz");		//window title //zzf
 
-	gl->fullscreen = true;
+	gl->fullscreen = false;
 	gl->stereo = false;
 
 	gl->width = 0;

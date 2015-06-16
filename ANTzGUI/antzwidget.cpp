@@ -16,6 +16,8 @@ namespace SynGlyphXANTz {
 		: QGLWidget(s_format, parent),
 		m_antzData(nullptr)
 	{
+		setAutoBufferSwap(false);
+
 		m_antzData = static_cast<pData>(npInitData(0, NULL));
 		InitIO();
 		npInitFile(m_antzData);
@@ -134,10 +136,17 @@ namespace SynGlyphXANTz {
 			printf("err: 2388 - OpenGL error: %d\n", err);
 		}
 
+		if (doubleBuffer()) {
+
+			swapBuffers();
+		}
+		else {
+
+			glFinish();
+		}
+
 		//ANTz assumes that redraw constantly happens.  Need to put this in a thread
 		update();
-
-		//QGLWidget takes care of swapping buffers
 	}
 
 	void ANTzWidget::ResetCamera() {

@@ -43,6 +43,7 @@ namespace SynGlyphXANTz {
 		m_zSpaceOptions(),
 		m_showAnimation(true)
 	{
+		setAutoBufferSwap(false);
 		setFocusPolicy(Qt::StrongFocus);
 
 		QFont newFont = font();
@@ -65,7 +66,7 @@ namespace SynGlyphXANTz {
 
 		if (IsInStereoMode()) {
 
-			m_antzData->GetData()->io.gl.stereo = true;
+			//m_antzData->GetData()->io.gl.stereo = true;
 			try {
 
 				ZSError error = zsInitialize(&m_zSpaceContext);
@@ -377,22 +378,31 @@ namespace SynGlyphXANTz {
 			glGetFloatv(GL_MODELVIEW_MATRIX, m_originialViewMatrix.f);
 		}
 
+		//DrawSceneForEye(Eye::Left, true);
+		DrawSceneForEye(Eye::Right, true);
 		if (IsInStereoMode())  {
 
-			DrawSceneForEye(Eye::Right, false);
+			glDrawBuffer(GL_BACK_LEFT);
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			//DrawSceneForEye(Eye::Right, false);
 		}
-	
-		DrawSceneForEye(Eye::Left, true);
 
 		//int err = glGetError();
 		//if (err) {
 	   //     printf("err: 2388 - OpenGL error: %d\n", err);
 	   // }
 
+		if (doubleBuffer()) {
+
+			swapBuffers();
+		}
+		else {
+
+			glFinish();
+		}
+
 		//ANTz assumes that redraw constantly happens.  Need to put this in a thread
 		update();
-
-		//QGLWidget takes care of swapping buffers
 	}
 
 	void ANTzForestWidget::DrawSceneForEye(Eye eye, bool getStylusWorldPosition) {
