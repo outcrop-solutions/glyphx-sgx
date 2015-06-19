@@ -60,6 +60,7 @@ private slots:
 	void ChangeGlyphDefaults();
 	void ChangeNewMappingDefaults();
 	void OnGlyphTreesViewSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected);
+	void ChangeSceneProperties();
 
 private:
     void CreateMenus();
@@ -101,6 +102,7 @@ private:
 	DataMapping3DWidget* m_minMaxGlyph3DWidget;
 
 	SynGlyphX::DataMappingDefaults m_newMappingDefaults;
+	SynGlyphX::SceneProperties m_newMappingSceneProperties;
 
 	QString m_antzExportDirectory;
 	QString m_antzzSpaceExportDirectory;

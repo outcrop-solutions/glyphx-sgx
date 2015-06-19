@@ -11,12 +11,6 @@ namespace SynGlyphX {
 	{
 
 	}
-
-	QColor ColorConverter::GlyphColor2QColor(const GlyphColor& color) {
-
-		QColor qColor(color[0], color[1], color[2]);
-		return qColor;
-	}
 	
 	QColor ColorConverter::GlyphColor2QColor(const GlyphColor& color, unsigned int alpha) {
 

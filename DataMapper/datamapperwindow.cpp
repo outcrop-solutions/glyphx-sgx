@@ -24,9 +24,9 @@
 #include "csvfilereader.h"
 #include "csvtfilereaderwriter.h"
 #include "singlewidgetdialog.h"
-#include "glyphdefaultswidget.h"
 #include "newglyphtreewizard.h"
 #include "databaseinfo.h"
+#include "newmappingdefaultswidget.h"
 
 DataMapperWindow::DataMapperWindow(QWidget *parent)
     : SynGlyphX::MainWindow(parent),
@@ -158,6 +158,11 @@ void DataMapperWindow::CreateMenus() {
 
 	m_baseObjectMenu = menuBar()->addMenu(tr("Base Object"));
 
+	QAction* scenePropertiesAction = m_baseObjectMenu->addAction(tr("Scene Properties"));
+	QObject::connect(scenePropertiesAction, &QAction::triggered, this, &DataMapperWindow::ChangeSceneProperties);
+
+	m_baseObjectMenu->addSeparator();
+
 	QAction* addBaseObjectAction = m_baseObjectMenu->addAction(tr("Add Base Object"));
 	QObject::connect(addBaseObjectAction, &QAction::triggered, this, &DataMapperWindow::AddBaseObject);
 
@@ -187,7 +192,7 @@ void DataMapperWindow::CreateMenus() {
 	//Create Tools Menu
 	m_toolsMenu = menuBar()->addMenu(tr("Tools"));
 
-	QAction* newMappingDefaultsAction = m_toolsMenu->addAction(tr("New Mapping Glyph Defaults"));
+	QAction* newMappingDefaultsAction = m_toolsMenu->addAction(tr("New Mapping Defaults"));
 	QObject::connect(newMappingDefaultsAction, &QAction::triggered, this, &DataMapperWindow::ChangeNewMappingDefaults);
 
 	m_toolsMenu->addSeparator();
@@ -660,7 +665,8 @@ bool DataMapperWindow::DoesANTzTemplateExist(const QString& templateDir) const {
 void DataMapperWindow::ChangeGlyphDefaults() {
 
 	const SynGlyphX::DataMappingDefaults& oldDefaults = m_dataTransformModel->GetDataMapping()->GetDefaults();
-	GlyphDefaultsWidget* glyphDefaultsWidget = new GlyphDefaultsWidget(oldDefaults, this);
+	SynGlyphX::GlyphDefaultsWidget* glyphDefaultsWidget = new SynGlyphX::GlyphDefaultsWidget(this);
+	glyphDefaultsWidget->SetDefaults(oldDefaults);
 	SynGlyphX::SingleWidgetDialog dialog(QDialogButtonBox::StandardButton::Ok | QDialogButtonBox::StandardButton::Cancel, glyphDefaultsWidget, this);
 	dialog.setWindowTitle(tr("Glyph Defaults"));
 
@@ -677,17 +683,20 @@ void DataMapperWindow::ChangeGlyphDefaults() {
 
 void DataMapperWindow::ChangeNewMappingDefaults() {
 	
-	GlyphDefaultsWidget* glyphDefaultsWidget = new GlyphDefaultsWidget(m_newMappingDefaults, this);
-	SynGlyphX::SingleWidgetDialog dialog(QDialogButtonBox::StandardButton::Ok | QDialogButtonBox::StandardButton::Cancel, glyphDefaultsWidget, this);
-	dialog.setWindowTitle(tr("New Mapping Glyph Defaults"));
+	NewMappingDefaultsWidget* newMappingDefaultsWidget = new NewMappingDefaultsWidget(this);
+	newMappingDefaultsWidget->SetDefaults(m_newMappingDefaults, m_newMappingSceneProperties);
+	SynGlyphX::SingleWidgetDialog dialog(QDialogButtonBox::StandardButton::Ok | QDialogButtonBox::StandardButton::Cancel, newMappingDefaultsWidget, this);
+	dialog.setWindowTitle(tr("New Mapping Defaults"));
 
 	if (dialog.exec() == QDialog::Accepted) {
 
-		m_newMappingDefaults = glyphDefaultsWidget->GetDefaults();
+		m_newMappingDefaults = newMappingDefaultsWidget->GetDataMappingDefaults();
+		m_newMappingSceneProperties = newMappingDefaultsWidget->GetScenePropertiesDefaults();
 		WriteNewMappingDefaults();
 		if (!m_projectDependentActions[0]->isEnabled()) {
 
 			m_dataTransformModel->SetDefaults(m_newMappingDefaults);
+			m_dataTransformModel->SetSceneProperties(m_newMappingSceneProperties);
 		}
 	}
 }
@@ -696,32 +705,52 @@ void DataMapperWindow::ReadNewMappingDefaults() {
 
 	QSettings settings;
 	settings.beginGroup("Defaults");
-	std::wistringstream xmlDefaults(settings.value("glyph", "").toString().toStdWString());
-	settings.endGroup();
 
-	if (!xmlDefaults.str().empty()) {
+	std::wistringstream xmlGlyphDefaults(settings.value("glyph", "").toString().toStdWString());
+	if (!xmlGlyphDefaults.str().empty()) {
 
 		boost::property_tree::wptree propertyTree;
-		boost::property_tree::read_xml(xmlDefaults, propertyTree, SynGlyphX::XMLPropertyTreeFile::GetReadFlags());
+		boost::property_tree::read_xml(xmlGlyphDefaults, propertyTree, SynGlyphX::XMLPropertyTreeFile::GetReadFlags());
 		boost::optional<boost::property_tree::wptree&> defaultsPropertyTree = propertyTree.get_child_optional(SynGlyphX::DataMappingDefaults::s_propertyTreeName);
 		if (defaultsPropertyTree.is_initialized()) {
 
 			m_newMappingDefaults = SynGlyphX::DataMappingDefaults(defaultsPropertyTree.get());
 		}
 	}
+
+	std::wistringstream xmlScenePropertiesDefaults(settings.value("SceneProperties", "").toString().toStdWString());
+	if (!xmlScenePropertiesDefaults.str().empty()) {
+
+		boost::property_tree::wptree propertyTree;
+		boost::property_tree::read_xml(xmlScenePropertiesDefaults, propertyTree, SynGlyphX::XMLPropertyTreeFile::GetReadFlags());
+		boost::optional<boost::property_tree::wptree&> scenePropertiesTree = propertyTree.get_child_optional(SynGlyphX::SceneProperties::s_propertyTreeName);
+		if (scenePropertiesTree.is_initialized()) {
+
+			m_newMappingSceneProperties = SynGlyphX::SceneProperties(scenePropertiesTree.get());
+		}
+	}
+
+	settings.endGroup();
 }
 
 void DataMapperWindow::WriteNewMappingDefaults() {
 
-	boost::property_tree::wptree propertyTree;
-	m_newMappingDefaults.ExportToPropertyTree(propertyTree);
+	boost::property_tree::wptree glyphDefaultsPropertyTree;
+	m_newMappingDefaults.ExportToPropertyTree(glyphDefaultsPropertyTree);
 
-	std::wostringstream xmlWriteDefaults;
-	boost::property_tree::write_xml(xmlWriteDefaults, propertyTree, SynGlyphX::XMLPropertyTreeFile::GetWriteSettings());
+	std::wostringstream xmlWriteGlyphDefaults;
+	boost::property_tree::write_xml(xmlWriteGlyphDefaults, glyphDefaultsPropertyTree, SynGlyphX::XMLPropertyTreeFile::GetWriteSettings());
+
+	boost::property_tree::wptree scenePropertiesPropertyTree;
+	m_newMappingSceneProperties.ExportToPropertyTree(scenePropertiesPropertyTree);
+
+	std::wostringstream xmlWriteSceneProperties;
+	boost::property_tree::write_xml(xmlWriteSceneProperties, scenePropertiesPropertyTree, SynGlyphX::XMLPropertyTreeFile::GetWriteSettings());
 
 	QSettings settings;
 	settings.beginGroup("Defaults");
-	settings.setValue("glyph", QString::fromStdWString(xmlWriteDefaults.str()));
+	settings.setValue("glyph", QString::fromStdWString(xmlWriteGlyphDefaults.str()));
+	settings.setValue("SceneProperties", QString::fromStdWString(xmlWriteSceneProperties.str()));
 	settings.endGroup();
 }
 
@@ -729,6 +758,7 @@ void DataMapperWindow::ClearAndInitializeDataMapping() {
 
 	m_dataTransformModel->ClearAndReset();
 	m_dataTransformModel->SetDefaults(m_newMappingDefaults);
+	m_dataTransformModel->SetSceneProperties(m_newMappingSceneProperties);
 	SelectFirstBaseObject();
 }
 
@@ -769,4 +799,23 @@ void DataMapperWindow::WriteSettings() {
 	settings.beginGroup("Display");
 	settings.setValue("show", m_showAnimation->isChecked());
 	settings.endGroup();
+}
+
+void DataMapperWindow::ChangeSceneProperties() {
+
+	const SynGlyphX::SceneProperties& oldSceneProperties = m_dataTransformModel->GetDataMapping()->GetSceneProperties();
+	SynGlyphX::ScenePropertiesWidget* scenePropertiesWidget = new SynGlyphX::ScenePropertiesWidget(this);
+	scenePropertiesWidget->SetWidgetFromProperties(oldSceneProperties);
+	SynGlyphX::SingleWidgetDialog dialog(QDialogButtonBox::StandardButton::Ok | QDialogButtonBox::StandardButton::Cancel, scenePropertiesWidget, this);
+	dialog.setWindowTitle(tr("Scene Propeties"));
+
+	if (dialog.exec() == QDialog::Accepted) {
+
+		const SynGlyphX::SceneProperties& newSceneProperties = scenePropertiesWidget->GetPropertiesFromWidget();
+		if (newSceneProperties != oldSceneProperties) {
+
+			setWindowModified(true);
+		}
+		m_dataTransformModel->SetSceneProperties(newSceneProperties);
+	}
 }

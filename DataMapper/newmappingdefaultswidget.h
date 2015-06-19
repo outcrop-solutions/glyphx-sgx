@@ -15,29 +15,27 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef GLYPHDEFAULTSWIDGET_H
-#define GLYPHDEFAULTSWIDGET_H
+#ifndef NEWMAPPINGDEFAULTSWIDGET_H
+#define NEWMAPPINGDEFAULTSWIDGET_H
 
-#include <QtWidgets/QTabWidget>
-#include <QtWidgets/QComboBox>
-#include <QtWidgets/QLineEdit>
-#include "datamappingdefaults.h"
+#include "glyphdefaultswidget.h"
+#include "scenepropertieswidget.h"
 
-class GlyphDefaultsWidget : public QTabWidget
+class NewMappingDefaultsWidget : public QWidget
 {
 	Q_OBJECT
 
 public:
-	GlyphDefaultsWidget(const SynGlyphX::DataMappingDefaults& defaults, QWidget *parent);
-	~GlyphDefaultsWidget();
+	NewMappingDefaultsWidget(QWidget *parent);
+	~NewMappingDefaultsWidget();
 
-	SynGlyphX::DataMappingDefaults GetDefaults() const;
+	void SetDefaults(const SynGlyphX::DataMappingDefaults& dataMappingDefaults, const SynGlyphX::SceneProperties& scenePropertiesDefaults);
+	SynGlyphX::DataMappingDefaults GetDataMappingDefaults() const;
+	SynGlyphX::SceneProperties GetScenePropertiesDefaults() const;
 
 private:
-	void CreateTagTab(const SynGlyphX::DataMappingDefaults& defaults);
-
-	QComboBox* m_tagFieldDefaultComboBox;
-	QLineEdit* m_tagValueDefaultLineEdit;
+	SynGlyphX::GlyphDefaultsWidget* m_glyphDefaultsWidget;
+	SynGlyphX::ScenePropertiesWidget* m_scenePropertiesWidget;
 };
 
-#endif // GLYPHDEFAULTSWIDGET_H
+#endif //NEWMAPPINGDEFAULTSWIDGET_H

@@ -55,6 +55,7 @@ public:
 	SynGlyphX::DataTransformMapping::ConstSharedPtr GetDataMapping() const;
 
 	void SetDefaults(const SynGlyphX::DataMappingDefaults& defaults);
+	void SetSceneProperties(const SynGlyphX::SceneProperties& sceneProperties);
 
 	void LoadDataTransformFile(const QString& filename);
 	void SaveDataTransformFile(const QString& filename);

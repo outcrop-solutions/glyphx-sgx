@@ -317,6 +317,11 @@ void DataTransformModel::SetDefaults(const SynGlyphX::DataMappingDefaults& defau
 	m_dataMapping->SetDefaults(defaults);
 }
 
+void DataTransformModel::SetSceneProperties(const SynGlyphX::SceneProperties& sceneProperties) {
+
+	m_dataMapping->SetSceneProperties(sceneProperties);
+}
+
 SynGlyphX::DataTransformMapping::ConstSharedPtr DataTransformModel::GetDataMapping() const {
 
 	return m_dataMapping;

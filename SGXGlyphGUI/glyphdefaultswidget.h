@@ -15,29 +15,35 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef SYNGLYPHX_COLORCONVERTER_H
-#define SYNGLYPHX_COLORCONVERTER_H
+#ifndef SYNGLYPHX_GLYPHDEFAULTSWIDGET_H
+#define SYNGLYPHX_GLYPHDEFAULTSWIDGET_H
 
 #include "sgxglyphgui_global.h"
-#include <QtGui/QColor>
-#include "glyphcolor.h"
+#include <QtWidgets/QTabWidget>
+#include <QtWidgets/QComboBox>
+#include <QtWidgets/QLineEdit>
+#include "datamappingdefaults.h"
 
 namespace SynGlyphX {
 
-	class SGXGLYPHGUI_EXPORT ColorConverter
+	class SGXGLYPHGUI_EXPORT GlyphDefaultsWidget : public QTabWidget
 	{
+		Q_OBJECT
 
 	public:
-		ColorConverter();
-		~ColorConverter();
+		GlyphDefaultsWidget(QWidget *parent);
+		~GlyphDefaultsWidget();
 
-		static QColor GlyphColor2QColor(const GlyphColor& color, unsigned int alpha = 255);
-		static SynGlyphX::GlyphColor QColor2GlyphColor(const QColor& qColor);
+		void SetDefaults(const SynGlyphX::DataMappingDefaults& defaults);
+		SynGlyphX::DataMappingDefaults GetDefaults() const;
 
 	private:
+		void CreateTagTab();
 
+		QComboBox* m_tagFieldDefaultComboBox;
+		QLineEdit* m_tagValueDefaultLineEdit;
 	};
 
-}
+} //namespace SynGlyphX
 
-#endif // SYNGLYPHX_COLORCONVERTER_H
+#endif // SYNGLYPHX_GLYPHDEFAULTSWIDGET_H

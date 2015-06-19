@@ -15,29 +15,31 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef SYNGLYPHX_COLORCONVERTER_H
-#define SYNGLYPHX_COLORCONVERTER_H
+#ifndef SCENEPROPERTIESWIDGET_H
+#define SCENEPROPERTIESWIDGET_H
 
 #include "sgxglyphgui_global.h"
-#include <QtGui/QColor>
-#include "glyphcolor.h"
+#include <QtWidgets/QWidget>
+#include "colorbutton.h"
+#include "sceneproperties.h"
 
 namespace SynGlyphX {
 
-	class SGXGLYPHGUI_EXPORT ColorConverter
+	class SGXGLYPHGUI_EXPORT ScenePropertiesWidget : public QWidget
 	{
+		Q_OBJECT
 
 	public:
-		ColorConverter();
-		~ColorConverter();
+		ScenePropertiesWidget(QWidget *parent);
+		~ScenePropertiesWidget();
 
-		static QColor GlyphColor2QColor(const GlyphColor& color, unsigned int alpha = 255);
-		static SynGlyphX::GlyphColor QColor2GlyphColor(const QColor& qColor);
+		void SetWidgetFromProperties(const SceneProperties& properties);
+		SceneProperties GetPropertiesFromWidget() const;
 
 	private:
-
+		ColorButton* m_backgroundColorButton;
 	};
 
-}
+} //namespace SynGlyphX
 
-#endif // SYNGLYPHX_COLORCONVERTER_H
+#endif // SCENEPROPERTIESWIDGET_H

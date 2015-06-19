@@ -250,6 +250,7 @@ void GlyphViewerWindow::CloseVisualization() {
 	ClearAllData();
 	EnableLoadedVisualizationDependentActions(false);
 	ClearCurrentFile();
+	m_antzWidget->SetBackgroundColor(SynGlyphX::GlyphColor::s_black);
 }
 
 void GlyphViewerWindow::ClearAllData() {
@@ -402,6 +403,7 @@ void GlyphViewerWindow::LoadDataTransform(const QString& filename) {
 		m_sourceDataCache->Setup(transformer.GetSourceDataCacheLocation());
 		LoadFilesIntoModel(transformer.GetCSVFilenames(), transformer.GetBaseImageFilenames());
 		m_glyphForestModel->SetTagNotToBeShownIn3d(QString::fromStdWString(m_mapping->GetDefaults().GetDefaultTagValue()));
+		m_antzWidget->SetBackgroundColor(m_mapping->GetSceneProperties().GetBackgroundColor());
 
 		SynGlyphX::Application::restoreOverrideCursor();
 		const QString& transformerError = transformer.GetError();
