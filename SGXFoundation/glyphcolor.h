@@ -57,6 +57,9 @@ namespace SynGlyphX {
 		static GlyphColor ConvertRGBtoHSV(const GlyphColor& color);
 		static GlyphColor ConvertHSVtoRGB(const GlyphColor& color);
 
+		static const GlyphColor s_black;
+		static const GlyphColor s_white;
+
 	private:
 		ColorArray m_color;
 		Space m_space;

@@ -6,6 +6,9 @@
 
 namespace SynGlyphX {
 
+	const GlyphColor GlyphColor::s_black({ { 0, 0, 0 } });
+	const GlyphColor GlyphColor::s_white({ { 255, 255, 255 } });
+
 	GlyphColor::GlyphColor(Space space) :
 		m_space(space),
 		m_color({ { 0, 0, 0 } })

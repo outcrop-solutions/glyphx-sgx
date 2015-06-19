@@ -112,6 +112,9 @@
     <ClInclude Include="csvcache.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="sceneproperties.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="datasource.cpp">
@@ -193,6 +196,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="csvcache.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="sceneproperties.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

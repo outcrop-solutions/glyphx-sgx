@@ -30,6 +30,7 @@
 #include "baseimage.h"
 #include "transformer.h"
 #include "datamappingdefaults.h"
+#include "sceneproperties.h"
 
 namespace SynGlyphX {
 
@@ -89,11 +90,15 @@ namespace SynGlyphX {
 		const DataMappingDefaults& GetDefaults() const;
 		void SetDefaults(const DataMappingDefaults& defaults);
 
+		const SceneProperties& GetSceneProperties() const;
+		void SetSceneProperties(const SceneProperties& sceneProperties);
+
     protected:
 		void Clear(bool addADefaultBaseObjectAfterClear);
 		virtual void ImportFromPropertyTree(const boost::property_tree::wptree& filePropertyTree);
 		virtual void ExportToPropertyTree(boost::property_tree::wptree& filePropertyTree) const;
 
+		SceneProperties m_sceneProperties;
 		DataMappingDefaults m_defaults;
 		DatasourceMaps m_datasources;
 		DataMappingGlyphGraphMap m_glyphTrees;

@@ -61,6 +61,11 @@ namespace SynGlyphX {
 			return false;
 		}
 
+		if (m_sceneProperties != mapping.m_sceneProperties) {
+
+			return false;
+		}
+
 		return true;
 	}
 
@@ -109,6 +114,20 @@ namespace SynGlyphX {
 
 			m_defaults = DataMappingDefaults(defaultsPropertyTree.get());
 		}
+		else {
+
+			m_defaults = DataMappingDefaults();
+		}
+
+		boost::optional<const boost::property_tree::wptree&> scenePropertyTree = dataTransformPropertyTree.get_child_optional(SceneProperties::s_propertyTreeName);
+		if (scenePropertyTree.is_initialized()) {
+
+			m_sceneProperties = SceneProperties(scenePropertyTree.get());
+		}
+		else {
+
+			m_sceneProperties = SceneProperties();
+		}
     }
 
 	void DataTransformMapping::ExportToPropertyTree(boost::property_tree::wptree& filePropertyTree) const {
@@ -132,6 +151,7 @@ namespace SynGlyphX {
 		}
 
 		m_defaults.ExportToPropertyTree(dataTransformPropertyTreeRoot);
+		m_sceneProperties.ExportToPropertyTree(dataTransformPropertyTreeRoot);
     }
 
 	const DatasourceMaps& DataTransformMapping::GetDatasources() const {
@@ -392,6 +412,16 @@ namespace SynGlyphX {
 	void DataTransformMapping::RemoveGlyph(const boost::uuids::uuid& treeId, DataMappingGlyphGraph::const_iterator& parent, int child) {
 
 		m_glyphTrees[treeId]->erase_child(parent.deconstify(), child);
+	}
+
+	const SceneProperties& DataTransformMapping::GetSceneProperties() const {
+
+		return m_sceneProperties;
+	}
+
+	void DataTransformMapping::SetSceneProperties(const SceneProperties& sceneProperties) {
+
+		m_sceneProperties = sceneProperties;
 	}
 
 } //namespace SynGlyphX

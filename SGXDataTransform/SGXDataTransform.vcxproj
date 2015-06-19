@@ -101,6 +101,7 @@
     <ClInclude Include="logarithmicinterpolationmappingfunction.h" />
     <ClInclude Include="interpolationmappingfunction.h" />
     <ClInclude Include="rangevaluemappingfunction.h" />
+    <ClInclude Include="sceneproperties.h" />
     <ClInclude Include="sgxdatatransform_global.h" />
     <ClInclude Include="singlevaluemappingfunction.h" />
     <ClInclude Include="sourcedatacache.h" />
@@ -131,6 +132,7 @@
     <ClCompile Include="logarithmicinterpolationmappingfunction.cpp" />
     <ClCompile Include="interpolationmappingfunction.cpp" />
     <ClCompile Include="rangevaluemappingfunction.cpp" />
+    <ClCompile Include="sceneproperties.cpp" />
     <ClCompile Include="singlevaluemappingfunction.cpp" />
     <ClCompile Include="sourcedatacache.cpp" />
     <ClCompile Include="sourcedatamanager.cpp" />
