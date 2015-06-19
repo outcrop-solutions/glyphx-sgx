@@ -1504,4 +1504,12 @@ namespace SynGlyphXANTz {
 		return m_hideUnselectedGlyphTrees;
 	}
 
+	void ANTzForestWidget::SetBackgroundColor(const SynGlyphX::GlyphColor& color) {
+
+		pData antzData = m_antzData->GetData();
+		antzData->io.clear.r = color[0] / 255.0f;
+		antzData->io.clear.g = color[1] / 255.0f;
+		antzData->io.clear.b = color[2] / 255.0f;
+	}
+
 } //namespace SynGlyphXANTz

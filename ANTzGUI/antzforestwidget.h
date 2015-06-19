@@ -49,6 +49,8 @@ namespace SynGlyphXANTz {
 
 		bool GetHideUnselectedGlyphTrees() const;
 
+		void SetBackgroundColor(const SynGlyphX::GlyphColor& color);
+
 		static const QGLFormat& GetNonStereoFormat();
 		static const QGLFormat& GetStereoFormat();
 
