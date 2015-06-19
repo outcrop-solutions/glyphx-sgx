@@ -33,6 +33,19 @@ namespace SynGlyphX {
 		action = m_menu->addAction(CreateColorIcon(Qt::gray, QSize(16, 16)), tr("Gray"));
 		QObject::connect(action, &QAction::triggered, this, [this]{ SetColorFromMenu(Qt::gray); });
 
+		action = m_menu->addAction(CreateColorIcon(QColor(128, 0, 128), QSize(16, 16)), tr("Purple"));
+		QObject::connect(action, &QAction::triggered, this, [this]{ SetColorFromMenu(QColor(128, 0, 128)); });
+		action = m_menu->addAction(CreateColorIcon(QColor(255, 127, 0), QSize(16, 16)), tr("Orange"));
+		QObject::connect(action, &QAction::triggered, this, [this]{ SetColorFromMenu(QColor(255, 127, 0)); });
+		action = m_menu->addAction(CreateColorIcon(QColor(155, 75, 0), QSize(16, 16)), tr("Brown"));
+		QObject::connect(action, &QAction::triggered, this, [this]{ SetColorFromMenu(QColor(155, 75, 0)); });
+		action = m_menu->addAction(CreateColorIcon(QColor(255, 203, 219), QSize(16, 16)), tr("Pink"));
+		QObject::connect(action, &QAction::triggered, this, [this]{ SetColorFromMenu(QColor(255, 145, 175)); });
+		action = m_menu->addAction(CreateColorIcon(QColor(255, 215, 0), QSize(16, 16)), tr("Gold"));
+		QObject::connect(action, &QAction::triggered, this, [this]{ SetColorFromMenu(QColor(255, 215, 0)); });
+		action = m_menu->addAction(CreateColorIcon(QColor(192, 192, 192), QSize(16, 16)), tr("Silver"));
+		QObject::connect(action, &QAction::triggered, this, [this]{ SetColorFromMenu(QColor(192, 192, 192)); });
+
 		m_menu->addSeparator();
 		QAction* customColorAction = m_menu->addAction(tr("Custom Color"));
 
