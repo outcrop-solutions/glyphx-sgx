@@ -69,6 +69,57 @@ namespace SynGlyphXANTz {
 		}
  	}
 
+	void ANTzCSVWriter::WriteGlobals(const std::string& filename, const SynGlyphX::GlyphColor& backgroundColor) {
+
+		if (filename.empty()) {
+
+			throw std::invalid_argument("Globals filename is empty.");
+		}
+
+		try {
+
+			std::wofstream globalsFile;
+			globalsFile.open(filename.c_str());
+
+			if (!globalsFile.is_open()) {
+
+				throw std::exception("Globals file failed to open");
+			}
+
+			globalsFile.setf(std::ios::fixed, std::ios::floatfield);
+			globalsFile.precision(6);
+
+			globalsFile << L"np_globals_id,map_path,item_id,element,type,permisions,name,desc,value" << std::endl;
+			globalsFile << L"1,\"np_gl\",1,\"alpha_mode\",\"i\",0,\"\",\"\",\"1\"" << std::endl;
+			globalsFile << L"2,\"np_gl\",1,\"background_rgba\",\"ffff\",0,\"\",\"\",\"" << backgroundColor[0] / 255.0 << "," << backgroundColor[1] / 255.0 << "," << backgroundColor[2] / 255.0 << ",1.000000\"" << std::endl;
+			globalsFile << L"3,\"np_gl\",1,\"fullscreen\",\"i\",0,\"\",\"\",\"1\"" << std::endl;
+			globalsFile << L"4,\"np_gl\",1,\"window_size_xy\",\"ii\",0,\"\",\"\",\"800, 510\"" << std::endl;
+			globalsFile << L"5,\"np_gl\",1,\"position_xy\",\"ii\",0,\"\",\"\",\"40, 40\"" << std::endl;
+			globalsFile << L"6,\"np_gl\",1,\"hud_level\",\"i\",0,\"\",\"\",\"2\"" << std::endl;
+			globalsFile << L"7,\"np_gl\",1,\"subsample\",\"i\",0,\"\",\"\",\"1\"" << std::endl;
+			globalsFile << L"8,\"np_mouse\",1,\"tool\",\"i\",0,\"\",\"\",\"4\"" << std::endl;
+			globalsFile << L"9,\"np_mouse\",1,\"cam_mode\",\"i\",0,\"\",\"\",\"0\"" << std::endl;
+			globalsFile << L"10,\"np_mouse\",1,\"pick_mode\",\"i\",0,\"\",\"\",\"3\"" << std::endl;
+			globalsFile << L"11,\"np_db\",1,\"host_ip\",\"s\",0,\"\",\"\",\"127.0.0.1\"" << std::endl;
+			globalsFile << L"12,\"np_db\",1,\"user\",\"s\",0,\"\",\"\",\"root\"" << std::endl;
+			globalsFile << L"13,\"np_db\",1,\"password\",\"s\",0,\"\",\"\",\"admin\"" << std::endl;
+			globalsFile << L"14,\"np_db\",1,\"db_type\",\"s\",0,\"\",\"\",\"mysql\"" << std::endl;
+			globalsFile << L"15,\"np_osc\",1,\"tx_ip\",\"s\",0,\"\",\"\",\"127.0.0.1\"" << std::endl;
+			globalsFile << L"16,\"np_osc\",1,\"rx_ip\",\"s\", 0,\"\",\"\",\"127.0.0.1\"" << std::endl;
+			globalsFile << L"17,\"np_osc\",1,\"tx_port\",\"i\",0,\"\",\"\",\"8000\"" << std::endl;
+			globalsFile << L"18,\"np_osc\",1,\"rx_port\",\"i\",0,\"\",\"\",\"9000\"" << std::endl;
+			globalsFile << L"19,\"np_browser\",1,\"url\",\"s\",0,\"\",\"\",\"http://openantz.com/docs/id.html?id=\"" << std::endl;
+			globalsFile << L"20 \"np_globals\",1,\"item_count\",\"i\",1,\"\",\"\",\"20\"" << std::endl;
+
+			globalsFile.close();
+
+		}
+		catch (const std::exception& e) {
+
+			throw;
+		}
+	}
+
 	unsigned long ANTzCSVWriter::WriteNodeFile(const std::string& filename, const SynGlyphX::GlyphGraph::ConstSharedVector& trees, const std::vector<ANTzGrid>& grids) {
 
 		unsigned long firstGlyphId = 0;

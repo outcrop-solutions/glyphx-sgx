@@ -40,6 +40,7 @@ namespace SynGlyphXANTz {
         ~ANTzCSVWriter();
 
 		void Write(const std::string& nodeFilename, const std::string& tagFilename, const SynGlyphX::GlyphGraph::ConstSharedVector& trees, const std::vector<ANTzGrid>& grids);
+		void WriteGlobals(const std::string& filename, const SynGlyphX::GlyphColor& backgroundColor);
 
         static ANTzCSVWriter& GetInstance();
 

@@ -1,6 +1,7 @@
 #include "antzexporttransformer.h"
 #include <QtCore/QDir>
 #include "filesystem.h"
+#include "antzcsvwriter.h"
 
 namespace SynGlyphXANTz {
 
@@ -57,6 +58,8 @@ namespace SynGlyphXANTz {
 		}
 
 		GenerateCache(mapping, csvFiles, baseUsrImageDir);
+
+		SynGlyphXANTz::ANTzCSVWriter::GetInstance().WriteGlobals((baseUsrCSVDir + "antzglobals.csv").toStdString(), mapping.GetSceneProperties().GetBackgroundColor());
 	}
 
 } //namespace SynGlyphXANTz
