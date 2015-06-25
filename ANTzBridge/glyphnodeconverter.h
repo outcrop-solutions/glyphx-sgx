@@ -32,8 +32,8 @@ namespace SynGlyphXANTz {
 		~GlyphNodeConverter();
 
 		static SynGlyphX::Glyph CreateGlyphFromNode(pNPnode node);
-		static unsigned int ConvertGeometryToNodeValue(SynGlyphX::GlyphStructuralProperties::Shape shape, SynGlyphX::GlyphStructuralProperties::Surface surface);
-		static void GetShapeAndSurfaceFromNodeValue(unsigned int geometry, SynGlyphX::GlyphStructuralProperties::Shape& shape, SynGlyphX::GlyphStructuralProperties::Surface& surface);
+		static unsigned int ConvertGeometryToNodeValue(SynGlyphX::GlyphGeometryInfo::Shape shape, SynGlyphX::GlyphGeometryInfo::Surface surface);
+		static void GetShapeAndSurfaceFromNodeValue(unsigned int geometry, SynGlyphX::GlyphGeometryInfo::Shape& shape, SynGlyphX::GlyphGeometryInfo::Surface& surface);
 		static SynGlyphX::GlyphGraph::SharedPtr CreateGlyphGraphFromCSV(const std::string& filename);
 
 	private:

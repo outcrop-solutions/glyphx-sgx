@@ -243,7 +243,7 @@ namespace SynGlyphXANTz {
 		values.push_back(boost::lexical_cast<std::wstring>(glyph->GetTransparency()));
 
 		values.insert(values.end(), { L"0", L"0", L"0", L"0" });
-		values.push_back(boost::lexical_cast<std::wstring>(static_cast<int>(glyph->GetStructure().GetVirtualTopology())));
+		values.push_back(boost::lexical_cast<std::wstring>(static_cast<int>(glyph->GetVirtualTopology().GetType())));
 
 		values.insert(values.end(), { L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"1", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"16", L"16", L"0", L"0", L"0", L"0" });
 		values.push_back(idString);

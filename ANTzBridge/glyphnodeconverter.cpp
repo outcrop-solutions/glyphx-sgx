@@ -46,22 +46,22 @@ namespace SynGlyphXANTz {
 		glyph.GetRotationRate()[1] = node->rotateRate.y;
 		glyph.GetRotationRate()[2] = node->rotateRate.z;
 
-		SynGlyphX::GlyphStructuralProperties::Shape shape;
-		SynGlyphX::GlyphStructuralProperties::Surface surface;
+		SynGlyphX::GlyphGeometryInfo::Shape shape;
+		SynGlyphX::GlyphGeometryInfo::Surface surface;
 		GetShapeAndSurfaceFromNodeValue(node->geometry, shape, surface);
 
 		glyph.GetStructure().SetGeometryShape(shape);
 		glyph.GetStructure().SetGeometrySurface(surface);
 
-		glyph.GetStructure().SetVirtualTopology(static_cast<SynGlyphX::GlyphStructuralProperties::VirtualTopology>(node->topo));
+		glyph.GetVirtualTopology().SetType(static_cast<SynGlyphX::VirtualTopologyInfo::Type>(node->topo));
 
 		return glyph;
 	}
 
-	unsigned int GlyphNodeConverter::ConvertGeometryToNodeValue(SynGlyphX::GlyphStructuralProperties::Shape shape, SynGlyphX::GlyphStructuralProperties::Surface surface) {
+	unsigned int GlyphNodeConverter::ConvertGeometryToNodeValue(SynGlyphX::GlyphGeometryInfo::Shape shape, SynGlyphX::GlyphGeometryInfo::Surface surface) {
 
 		//This is necessary because the enum for geometries in ANTz is screwed up
-		if (shape == SynGlyphX::GlyphStructuralProperties::Shape::Pin) {
+		if (shape == SynGlyphX::GlyphGeometryInfo::Shape::Pin) {
 
 			return (2 * shape) + 1 - surface;
 		}
@@ -71,18 +71,18 @@ namespace SynGlyphXANTz {
 		}
 	}
 
-	void GlyphNodeConverter::GetShapeAndSurfaceFromNodeValue(unsigned int geometry, SynGlyphX::GlyphStructuralProperties::Shape& shape, SynGlyphX::GlyphStructuralProperties::Surface& surface) {
+	void GlyphNodeConverter::GetShapeAndSurfaceFromNodeValue(unsigned int geometry, SynGlyphX::GlyphGeometryInfo::Shape& shape, SynGlyphX::GlyphGeometryInfo::Surface& surface) {
 
-		shape = static_cast<SynGlyphX::GlyphStructuralProperties::Shape>(geometry / 2);
+		shape = static_cast<SynGlyphX::GlyphGeometryInfo::Shape>(geometry / 2);
 
 		//This is necessary because the enum for geometries in ANTz is screwed up
-		if (shape == SynGlyphX::GlyphStructuralProperties::Shape::Pin) {
+		if (shape == SynGlyphX::GlyphGeometryInfo::Shape::Pin) {
 
-			surface = static_cast<SynGlyphX::GlyphStructuralProperties::Surface>(1 - (geometry % 2));
+			surface = static_cast<SynGlyphX::GlyphGeometryInfo::Surface>(1 - (geometry % 2));
 		}
 		else {
 
-			surface = static_cast<SynGlyphX::GlyphStructuralProperties::Surface>(geometry % 2);
+			surface = static_cast<SynGlyphX::GlyphGeometryInfo::Surface>(geometry % 2);
 		}
 	}
 
@@ -162,14 +162,14 @@ namespace SynGlyphXANTz {
 		glyph.GetColor().Set(2, boost::lexical_cast<double>(csvValues[57]));
 		glyph.GetTransparency() = boost::lexical_cast<double>(csvValues[58]);
 
-		SynGlyphX::GlyphStructuralProperties::Shape shape;
-		SynGlyphX::GlyphStructuralProperties::Surface surface;
+		SynGlyphX::GlyphGeometryInfo::Shape shape;
+		SynGlyphX::GlyphGeometryInfo::Surface surface;
 		GetShapeAndSurfaceFromNodeValue(boost::lexical_cast<unsigned int>(csvValues[50]), shape, surface);
 
 		glyph.GetStructure().SetGeometryShape(shape);
 		glyph.GetStructure().SetGeometrySurface(surface);
 
-		glyph.GetStructure().SetVirtualTopology(static_cast<SynGlyphX::GlyphStructuralProperties::VirtualTopology>(boost::lexical_cast<unsigned int>(csvValues[63])));
+		glyph.GetVirtualTopology().SetType(static_cast<SynGlyphX::VirtualTopologyInfo::Type>(boost::lexical_cast<unsigned int>(csvValues[63])));
 
 		glyph.GetRotationRate()[0] = boost::lexical_cast<double>(csvValues[34]);
 		glyph.GetRotationRate()[1] = boost::lexical_cast<double>(csvValues[35]);
