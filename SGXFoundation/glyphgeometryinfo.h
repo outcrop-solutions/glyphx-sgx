@@ -1,3 +1,10 @@
+#pragma once
+class GlyphGeometryInfo
+{
+public:
+	
+};
+
 ///
 /// SynGlyphX Holdings Incorporated ("COMPANY") CONFIDENTIAL
 /// Copyright (c) 2013-2015 SynGlyphX Holdings Incorporated, All Rights Reserved.
@@ -15,70 +22,60 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef SYNGLYPHX_GLYPHCOLOR_H
-#define SYNGLYPHX_GLYPHCOLOR_H
+#ifndef SYNGLYPHX_GLYPHGEOMETRYINFO_H
+#define SYNGLYPHX_GLYPHGEOMETRYINFO_H
 
 #include "sgxfoundation.h"
-#include <array>
+#include <boost/bimap.hpp>
 #include <boost/property_tree/ptree.hpp>
-#include <boost/property_tree/xml_parser.hpp>
 
 namespace SynGlyphX {
 
-	class SGXFOUNDATION_API GlyphColor
+	class SGXFOUNDATION_API GlyphGeometryInfo
 	{
 	public:
-		enum Space {RGB, HSV};
+		enum Shape {
+			Cube = 0,				//length 2, currently is something else, what? //zz debug
+			Sphere,			//radius 1
+			Cone,				//radius 1, height 2
+			Torus,			//ratio 0.1, radius 1.5 should we change to 1.0 ?
+			Dodecahedron,		//size ?
+			Octahedron,		//size ?
+			Tetrahedron,		//should have edge length of 2, actual size ?
+			Icosahedron,		//should have edge length of 2, actual size ?
+			Pin,				//height 5.5, 5 from tip to center of sphere
+			Cylinder			//radius 1, height 2
+		};
 
-		typedef std::array<short, 3> ColorArray;
+		enum Surface {
+			Wireframe = 0,
+			Solid
+		};
 
-		GlyphColor(Space space = Space::RGB);
-		GlyphColor(const ColorArray& color, Space space = Space::RGB);
-		//GlyphColor(const boost::property_tree::wptree& propertyTree, Space space = Space::RGB);
-		GlyphColor(const GlyphColor& color);
-		~GlyphColor();
+		typedef boost::bimap<Shape, std::wstring> ShapeBimap;
+		typedef boost::bimap<Surface, std::wstring> SurfaceBimap;
 
-		GlyphColor& operator=(const GlyphColor& color);
-		void Set(unsigned int index, short value);
-		void Set(short red, short green, short blue);
-		short operator[](unsigned int index) const;
-		bool operator==(const GlyphColor& color) const;
-		bool operator!=(const GlyphColor& color) const;
-		GlyphColor& operator+=(const GlyphColor& color);
-		GlyphColor& operator-=(const GlyphColor& color);
+		GlyphGeometryInfo();
+		~GlyphGeometryInfo();
 
-		void ExportToPropertyTree(boost::property_tree::wptree& propertyTree) const;
-
-		std::wstring ToHexString(unsigned int length = 3) const;
-		void FromHexString(const std::wstring& hexString);
-
-		Space GetSpace() const;
-
-		static GlyphColor ConvertRGBtoHSV(const GlyphColor& color);
-		static GlyphColor ConvertHSVtoRGB(const GlyphColor& color);
-
-		static const GlyphColor s_black;
-		static const GlyphColor s_white;
-
-	private:
-		ColorArray m_color;
-		Space m_space;
+		static const ShapeBimap s_shapeNames;
+		static const SurfaceBimap s_surfaceNames;
 	};
 
-	//This translator is so that GlyphColor can be automatically used by boost::property_tree
-	class SGXFOUNDATION_API GlyphColorTranslator
+	//This translator is so that GlyphGeometryInfo::Shape can be automatically used by boost::property_tree
+	class SGXFOUNDATION_API GeometryShapeTranslator
 	{
 	public:
 		typedef std::wstring internal_type;
-		typedef GlyphColor external_type;
+		typedef GlyphGeometryInfo::Shape external_type;
 
-		GlyphColorTranslator();
+		GeometryShapeTranslator();
 
-		boost::optional<GlyphColor> get_value(std::wstring const &v);
-		boost::optional<std::wstring> put_value(GlyphColor const& v);
+		boost::optional<GlyphGeometryInfo::Shape> get_value(std::wstring const &v);
+		boost::optional<std::wstring> put_value(GlyphGeometryInfo::Shape const& v);
 
 	private:
-		static boost::property_tree::xml_writer_settings<wchar_t> s_writeSettings;
+		
 	};
 
 } //namespace SynGlyphX
@@ -88,12 +85,11 @@ namespace boost {
 	namespace property_tree {
 
 		template<>
-		struct translator_between<std::wstring, SynGlyphX::GlyphColor>
+		struct translator_between<std::wstring, SynGlyphX::GlyphGeometryInfo::Shape>
 		{
-			typedef SynGlyphX::GlyphColorTranslator type;
+			typedef SynGlyphX::GeometryShapeTranslator type;
 		};
 	}
 } //namespace boost
 
-
-#endif //SYNGLYPHX_GLYPHCOLOR_H
+#endif //SYNGLYPHX_GLYPHGEOMETRYINFO_H

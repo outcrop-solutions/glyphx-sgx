@@ -2,17 +2,17 @@
 
 namespace SynGlyphX {
 
-	const Glyph Glyph::s_defaultGlyph = Glyph::CreateDefaultGlyph(GlyphStructuralProperties::Shape::Torus, GlyphStructuralProperties::VirtualTopology::Circle);
-	const Glyph Glyph::s_defaultRootGlyph = Glyph::CreateDefaultGlyph(GlyphStructuralProperties::Shape::Pin, GlyphStructuralProperties::VirtualTopology::LinePin);
+	const Glyph Glyph::s_defaultGlyph = Glyph::CreateDefaultGlyph(GlyphGeometryInfo::Shape::Torus, VirtualTopologyInfo::Type::Circle);
+	const Glyph Glyph::s_defaultRootGlyph = Glyph::CreateDefaultGlyph(GlyphGeometryInfo::Shape::Pin, VirtualTopologyInfo::Type::LinePin);
 
 	Glyph::Glyph() :
-		GlyphTemplate < double, GlyphColor, std::wstring >(),
+		GlyphTemplate < double, GlyphColor, std::wstring, GlyphGeometry, VirtualTopology >(),
 		m_tagOffset({ {0.0, 1.5, 0.0} })
 	{
 	}
 
 	Glyph::Glyph(const Glyph& glyph) :
-		GlyphTemplate < double, GlyphColor, std::wstring >(glyph),
+		GlyphTemplate < double, GlyphColor, std::wstring, GlyphGeometry, VirtualTopology >(glyph),
 		m_tagOffset(glyph.m_tagOffset) {
 
 
@@ -61,13 +61,14 @@ namespace SynGlyphX {
 		return (!operator==(glyph));
 	}
 
-	Glyph Glyph::CreateDefaultGlyph(GlyphStructuralProperties::Shape geometryShape, GlyphStructuralProperties::VirtualTopology virtualTopology) {
+	Glyph Glyph::CreateDefaultGlyph(GlyphGeometryInfo::Shape geometryShape, VirtualTopologyInfo::Type virtualTopologyType) {
 
 		Glyph glyph;
 
 		glyph.GetStructure().SetGeometryShape(geometryShape);
-		glyph.GetStructure().SetGeometrySurface(GlyphStructuralProperties::Surface::Solid);
-		glyph.GetStructure().SetVirtualTopology(virtualTopology);
+		glyph.GetStructure().SetGeometrySurface(GlyphGeometryInfo::Surface::Solid);
+
+		glyph.GetVirtualTopology().SetType(virtualTopologyType);
 
 		glyph.GetPosition()[0] = 0.0;
 		glyph.GetPosition()[1] = 0.0;

@@ -15,47 +15,65 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef SYNGLYPHX_GLYPHSTRUCTURALPROPERTIES_H
-#define SYNGLYPHX_GLYPHSTRUCTURALPROPERTIES_H
+#ifndef SYNGLYPHX_VIRTUALTOPOLOGYINFO_H
+#define SYNGLYPHX_VIRTUALTOPOLOGYINFO_H
 
 #include "sgxfoundation.h"
-//#include <boost/property_tree/ptree.hpp>
-#include "glyphgeometryinfo.h"
+#include <boost/bimap.hpp>
+#include <boost/property_tree/ptree.hpp>
 
 namespace SynGlyphX {
 
-	template <typename GeometryShapeType>
-	class SGXFOUNDATION_API GlyphStructuralProperties
+	class SGXFOUNDATION_API VirtualTopologyInfo
 	{
 	public:
-		GlyphStructuralProperties(const GeometryShapeType& shape = GeometryShapeType(), GlyphGeometryInfo::Surface surface = GlyphGeometryInfo::Surface::Solid);
-		//GlyphStructuralProperties(const boost::property_tree::wptree& propertyTree);
-		GlyphStructuralProperties(const GlyphStructuralProperties& properties);
-		~GlyphStructuralProperties();
+		enum Type {
+			Null = 0,		// linear 3D euclidean space
+			CubePlane,			//six facet coord system for each side of cube
+			SphereNonZeroRadius,			//spherical coords compatible with KML
+			Circle,			//default branchLevel = 1 attached to pin
+			CylinderSide,
+			LinePin,				//default root pin shaped as icecream cone
+			LineRod,
+			SphereZeroRadius			//zero origin offset with spherical coords
+		};
 
-		GlyphStructuralProperties& operator=(const GlyphStructuralProperties& properties);
-		bool operator==(const GlyphStructuralProperties& properties) const;
-		bool operator!=(const GlyphStructuralProperties& properties) const;
+		typedef boost::bimap<Type, std::wstring> TypeStringBimap;
 
-		void SetGeometryShape(const GeometryShapeType& shape);
-		const GeometryShapeType& GetGeometryShape() const;
+		VirtualTopologyInfo();
+		~VirtualTopologyInfo();
 
-		void SetGeometrySurface(GlyphGeometryInfo::Surface surface);
-		GlyphGeometryInfo::Surface GetGeometrySurface() const;
-
-		void SetTorusRatio(double ratio);
-		double GetTorusRatio() const;
-
-		//boost::property_tree::wptree& ExportToPropertyTree(boost::property_tree::wptree& propertyTree) const;
-
-	protected:
-		GeometryShapeType m_geometryShape;
-		GlyphGeometryInfo::Surface m_geometrySurface;
-		double m_torusRatio;
+		static const TypeStringBimap s_virtualTopologyNames;
 	};
 
-	typedef GlyphStructuralProperties<GlyphGeometryInfo::Shape> GlyphGeometry;
+	//This translator is so that VirtualTopologyInfo::Type can be automatically used by boost::property_tree
+	class SGXFOUNDATION_API VirtualTopologyTranslator
+	{
+	public:
+		typedef std::wstring internal_type;
+		typedef VirtualTopologyInfo::Type external_type;
+
+		VirtualTopologyTranslator();
+
+		boost::optional<VirtualTopologyInfo::Type> get_value(std::wstring const &v);
+		boost::optional<std::wstring> put_value(VirtualTopologyInfo::Type const& v);
+
+	private:
+
+	};
 
 } //namespace SynGlyphX
 
-#endif //SYNGLYPHX_GLYPHSTRUCTURALPROPERTIES_H
+namespace boost {
+
+	namespace property_tree {
+
+		template<>
+		struct translator_between < std::wstring, SynGlyphX::VirtualTopologyInfo::Type >
+		{
+			typedef SynGlyphX::VirtualTopologyTranslator type;
+		};
+	}
+}  //namespace boost
+
+#endif //SYNGLYPHX_VIRTUALTOPOLOGYINFO_H

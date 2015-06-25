@@ -97,16 +97,20 @@
   <ItemGroup>
     <ClInclude Include="glyph.h" />
     <ClInclude Include="glyphcolor.h" />
+    <ClInclude Include="glyphgeometryinfo.h" />
     <ClInclude Include="glyphgraph.h" />
     <ClInclude Include="glyphstructuralproperties.h" />
     <ClInclude Include="glyphtemplate.h" />
     <ClInclude Include="graphcopyvisitor.h" />
     <ClInclude Include="sgxfoundation.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="virtualtopology.h" />
+    <ClInclude Include="virtualtopologyinfo.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="glyph.cpp" />
     <ClCompile Include="glyphcolor.cpp" />
+    <ClCompile Include="glyphgeometryinfo.cpp" />
     <ClCompile Include="glyphgraph.cpp" />
     <ClCompile Include="dllmain.cpp">
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</CompileAsManaged>
@@ -117,6 +121,8 @@
       </PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="glyphstructuralproperties.cpp" />
+    <ClCompile Include="virtualtopology.cpp" />
+    <ClCompile Include="virtualtopologyinfo.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

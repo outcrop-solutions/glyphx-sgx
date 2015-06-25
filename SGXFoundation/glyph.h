@@ -22,10 +22,11 @@
 #include "glyphtemplate.h"
 #include "glyphcolor.h"
 #include "utilitytypes.h"
+#include "virtualtopology.h"
 
 namespace SynGlyphX {
 
-	class SGXFOUNDATION_API Glyph : public GlyphTemplate < double, GlyphColor, std::wstring >
+	class SGXFOUNDATION_API Glyph : public GlyphTemplate < double, GlyphColor, std::wstring, GlyphGeometry, VirtualTopology>
 	{
 	public:
 		Glyph();
@@ -43,7 +44,7 @@ namespace SynGlyphX {
 		static const Glyph s_defaultRootGlyph;
 
 	protected:
-		static Glyph CreateDefaultGlyph(GlyphStructuralProperties::Shape geometryShape, GlyphStructuralProperties::VirtualTopology virtualTopology);
+		static Glyph CreateDefaultGlyph(GlyphGeometryInfo::Shape geometryShape, VirtualTopologyInfo::Type virtualTopologyType);
 
 		Vector3 m_tagOffset;
 	};

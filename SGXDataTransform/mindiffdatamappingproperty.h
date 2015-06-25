@@ -15,47 +15,41 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef SYNGLYPHX_GLYPHSTRUCTURALPROPERTIES_H
-#define SYNGLYPHX_GLYPHSTRUCTURALPROPERTIES_H
+#ifndef SYNGLYPHX_MINDIFFDATAMAPPINGPROPERTY_H
+#define SYNGLYPHX_MINDIFFDATAMAPPINGPROPERTY_H
 
-#include "sgxfoundation.h"
-//#include <boost/property_tree/ptree.hpp>
-#include "glyphgeometryinfo.h"
+#include "sgxdatatransform_global.h"
+#include <array>
+#include <boost/property_tree/ptree.hpp>
+#include "glyphcolor.h"
+#include "datamappingproperty.h"
 
 namespace SynGlyphX {
 
-	template <typename GeometryShapeType>
-	class SGXFOUNDATION_API GlyphStructuralProperties
+	template <typename DataType>
+	class MinDiffDataMappingProperty : public DataMappingProperty < std::pair<DataType, DataType> >
 	{
 	public:
-		GlyphStructuralProperties(const GeometryShapeType& shape = GeometryShapeType(), GlyphGeometryInfo::Surface surface = GlyphGeometryInfo::Surface::Solid);
-		//GlyphStructuralProperties(const boost::property_tree::wptree& propertyTree);
-		GlyphStructuralProperties(const GlyphStructuralProperties& properties);
-		~GlyphStructuralProperties();
+		MinDiffDataMappingProperty();
+		MinDiffDataMappingProperty(const std::pair<DataType, DataType>& initialValue);
+		MinDiffDataMappingProperty(const boost::property_tree::wptree& propertyTree);
+		MinDiffDataMappingProperty(const MinDiffDataMappingProperty& prop);
+		~MinDiffDataMappingProperty();
 
-		GlyphStructuralProperties& operator=(const GlyphStructuralProperties& properties);
-		bool operator==(const GlyphStructuralProperties& properties) const;
-		bool operator!=(const GlyphStructuralProperties& properties) const;
-
-		void SetGeometryShape(const GeometryShapeType& shape);
-		const GeometryShapeType& GetGeometryShape() const;
-
-		void SetGeometrySurface(GlyphGeometryInfo::Surface surface);
-		GlyphGeometryInfo::Surface GetGeometrySurface() const;
-
-		void SetTorusRatio(double ratio);
-		double GetTorusRatio() const;
-
-		//boost::property_tree::wptree& ExportToPropertyTree(boost::property_tree::wptree& propertyTree) const;
+		MinDiffDataMappingProperty& operator=(const MinDiffDataMappingProperty& prop);
+		bool operator==(const MinDiffDataMappingProperty& prop) const;
+		bool operator!=(const MinDiffDataMappingProperty& prop) const;
 
 	protected:
-		GeometryShapeType m_geometryShape;
-		GlyphGeometryInfo::Surface m_geometrySurface;
-		double m_torusRatio;
+		virtual void ExportValueToPropertyTree(boost::property_tree::wptree& propertyTree) const;
+		virtual void ImportValueToPropertyTree(const boost::property_tree::wptree& propertyTree);
 	};
 
-	typedef GlyphStructuralProperties<GlyphGeometryInfo::Shape> GlyphGeometry;
+	typedef MinDiffDataMappingProperty<double> NumericMappingProperty;
+	typedef MinDiffDataMappingProperty<GlyphColor> ColorMappingProperty;
+
+	typedef std::array<NumericMappingProperty, 3> NumericMappingPropertyXYZ;
 
 } //namespace SynGlyphX
 
-#endif //SYNGLYPHX_GLYPHSTRUCTURALPROPERTIES_H
+#endif //SYNGLYPHX_MINDIFFDATAMAPPINGPROPERTY_H

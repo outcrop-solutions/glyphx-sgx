@@ -22,11 +22,15 @@
 #include "glyphgraph.h"
 #include <vector>
 #include <boost/property_tree/ptree.hpp>
-#include "datamappingproperty.h"
+#include "mindiffdatamappingproperty.h"
+#include "enumdatamappingproperty.h"
 
 namespace SynGlyphX {
 
-	class SGXDATATRANSFORM_EXPORT DataMappingGlyph : public GlyphTemplate<NumericMappingProperty, ColorMappingProperty, TextMappingProperty> {
+	typedef GlyphStructuralProperties<GeometryShapeMappingProperty> DataMappingGeometry;
+	typedef VirtualTopologyTemplate<VirtualTopologyMappingProperty> DataMappingVirtualTopology;
+
+	class SGXDATATRANSFORM_EXPORT DataMappingGlyph : public GlyphTemplate<NumericMappingProperty, ColorMappingProperty, TextMappingProperty, DataMappingGeometry, DataMappingVirtualTopology> {
 
 	public:
 		enum MappableField {

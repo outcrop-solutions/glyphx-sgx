@@ -31,6 +31,11 @@ namespace SynGlyphX {
 		return MappingFunctionData::Input::Numeric;
 	}
 
+	MappingFunctionData::Output InterpolationMappingData::GetSupportedOutput() const {
+
+		return MappingFunctionData::Output::NumericAndColor;
+	}
+
 	double InterpolationMappingData::Interpolate(std::pair<double, double> outputMinDiff, double inputMin, double inputMax, double input) const {
 
 		double inputDiff = inputMax - inputMin;

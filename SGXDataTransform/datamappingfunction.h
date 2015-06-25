@@ -30,7 +30,7 @@ namespace SynGlyphX {
 	{
 	public:
 		enum Function {
-
+			None,
 			LinearInterpolation,
 			LogarithmicInterpolation,
 			Numeric2Value,
@@ -42,14 +42,16 @@ namespace SynGlyphX {
 
 			Numeric = 0x01,
 			Text = 0x02,
-			All = 0x0F
+			All = 0xFF
 		};
 
 		enum class Output {
 
 			Numeric = 0x01,
 			Color = 0x02,
-			All = 0x0F
+			NumericAndColor = 0x03,
+			Enum = 0x04,
+			All = 0xFF
 		};
 
 		typedef boost::bimap<Function, std::wstring> FunctionBimap;
@@ -57,7 +59,7 @@ namespace SynGlyphX {
 		typedef std::shared_ptr<MappingFunctionData> SharedPtr;
 		typedef std::shared_ptr<const MappingFunctionData> ConstSharedPtr;
 
-		MappingFunctionData(Function function);
+		MappingFunctionData(Function function = Function::Identity);
 		MappingFunctionData(const boost::property_tree::wptree& propertyTree);
 		MappingFunctionData(const MappingFunctionData& data);
 		virtual ~MappingFunctionData();
@@ -67,7 +69,7 @@ namespace SynGlyphX {
 		virtual boost::property_tree::wptree& ExportToPropertyTree(boost::property_tree::wptree& propertyTree) const;
 
 		Function GetFunction() const;
-		virtual Input GetSupportedInput() const = 0;
+		virtual Input GetSupportedInput() const;
 		virtual bool NeedsDataOtherThanMinMax() const;
 
 		virtual Output GetSupportedOutput() const;

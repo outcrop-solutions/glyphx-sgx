@@ -115,6 +115,12 @@
     <ClInclude Include="sceneproperties.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="mindiffdatamappingproperty.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="enumdatamappingproperty.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="datasource.cpp">
@@ -199,6 +205,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="sceneproperties.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="mindiffdatamappingproperty.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="enumdatamappingproperty.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

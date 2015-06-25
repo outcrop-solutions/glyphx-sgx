@@ -8,6 +8,7 @@
 namespace SynGlyphX {
 
 	const MappingFunctionData::FunctionBimap MappingFunctionData::s_functionNames = boost::assign::list_of < MappingFunctionData::FunctionBimap::relation >
+		(MappingFunctionData::Function::None, L"None")
 		(MappingFunctionData::Function::LinearInterpolation, L"Linear Interpolation")
 		(MappingFunctionData::Function::LogarithmicInterpolation, L"Logarithmic Interpolation")
 		(MappingFunctionData::Function::Numeric2Value, L"Numeric Field To Value")
@@ -55,6 +56,11 @@ namespace SynGlyphX {
 	bool MappingFunctionData::NeedsDataOtherThanMinMax() const {
 
 		return false;
+	}
+
+	MappingFunctionData::Input MappingFunctionData::GetSupportedInput() const {
+
+		return Input::All;
 	}
 
 	MappingFunctionData::Output MappingFunctionData::GetSupportedOutput() const {

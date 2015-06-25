@@ -23,6 +23,8 @@
 #include <map>
 #include "glyphcolor.h"
 #include "range.h"
+#include "glyphgeometryinfo.h"
+#include "virtualtopologyinfo.h"
 
 namespace SynGlyphX {
 
@@ -71,8 +73,17 @@ namespace SynGlyphX {
 	typedef ValueMappingData<GlyphColor, double> Numeric2ColorMappingData;
 	typedef ValueMappingData<GlyphColor, std::wstring> Text2ColorMappingData;
 
+	typedef ValueMappingData<GlyphGeometryInfo::Shape, double> Numeric2ShapeMappingData;
+	typedef ValueMappingData<GlyphGeometryInfo::Shape, std::wstring> Text2ShapeMappingData;
+
+	typedef ValueMappingData<VirtualTopologyInfo::Type, double> Numeric2VirtualTopologyMappingData;
+	typedef ValueMappingData<VirtualTopologyInfo::Type, std::wstring> Text2VirtualTopologyMappingData;
+
 	typedef ValueMappingData<double, double, Range> Range2NumericMappingData;
 	typedef ValueMappingData<GlyphColor, double, Range> Range2ColorMappingData;
+
+	typedef ValueMappingData<GlyphGeometryInfo::Shape, double, Range> Range2ShapeMappingData;
+	typedef ValueMappingData<VirtualTopologyInfo::Type, double, Range> Range2VirtualTopologyMappingData;
 
 } // namespace SynGlyphX
 

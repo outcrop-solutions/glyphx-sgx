@@ -143,9 +143,13 @@ namespace SynGlyphX {
 
 			return Output::Color;
 		}
-		else {
+		else if (std::is_same<double, OutputType>::value) {
 
 			return Output::Numeric;
+		}
+		else {
+
+			return Output::Enum;
 		}
 	}
 
@@ -173,5 +177,14 @@ namespace SynGlyphX {
 	template class ValueMappingData < GlyphColor, std::wstring >;
 	template class ValueMappingData < double, double, Range >;
 	template class ValueMappingData < GlyphColor, double, Range >;
+
+	template class ValueMappingData<GlyphGeometryInfo::Shape, double>;
+	template class ValueMappingData<GlyphGeometryInfo::Shape, std::wstring>;
+
+	template class ValueMappingData<VirtualTopologyInfo::Type, double>;
+	template class ValueMappingData<VirtualTopologyInfo::Type, std::wstring>;
+
+	template class ValueMappingData<GlyphGeometryInfo::Shape, double, Range>;
+	template class ValueMappingData<VirtualTopologyInfo::Type, double, Range>;
 
 } //namespace SynGlyphX

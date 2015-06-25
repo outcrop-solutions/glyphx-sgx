@@ -4,19 +4,19 @@
 namespace SynGlyphX {
 
 	DataMappingGlyph::DataMappingGlyph() : 
-		GlyphTemplate<NumericMappingProperty, ColorMappingProperty, TextMappingProperty>() {
+		GlyphTemplate<NumericMappingProperty, ColorMappingProperty, TextMappingProperty, DataMappingGeometry, DataMappingVirtualTopology>() {
 
 
 	}
 
 	DataMappingGlyph::DataMappingGlyph(const DataMappingGlyph& glyph) :
-		GlyphTemplate<NumericMappingProperty, ColorMappingProperty, TextMappingProperty>(glyph) {
+		GlyphTemplate<NumericMappingProperty, ColorMappingProperty, TextMappingProperty, DataMappingGeometry, DataMappingVirtualTopology>(glyph) {
 
 
 	}
 
 	DataMappingGlyph::DataMappingGlyph(const Glyph& glyph, bool isRoot) :
-		GlyphTemplate<NumericMappingProperty, ColorMappingProperty, TextMappingProperty>(glyph.GetStructure()) {
+		GlyphTemplate<NumericMappingProperty, ColorMappingProperty, TextMappingProperty, DataMappingGeometry, DataMappingVirtualTopology>() {
 
 		double minPosition0 = 0.0;
 		double minPosition1 = 0.0;
@@ -46,10 +46,13 @@ namespace SynGlyphX {
 		m_rotationRate[0] = NumericMappingProperty(std::pair<double, double>(0.0, glyph.GetRotationRate()[0]));
 		m_rotationRate[1] = NumericMappingProperty(std::pair<double, double>(0.0, glyph.GetRotationRate()[1]));
 		m_rotationRate[2] = NumericMappingProperty(std::pair<double, double>(0.0, glyph.GetRotationRate()[2]));
+
+		m_structure = DataMappingGeometry(GeometryShapeMappingProperty(glyph.GetStructure().GetGeometryShape()), glyph.GetStructure().GetGeometrySurface());
+		m_virtualTopology = DataMappingVirtualTopology(VirtualTopologyMappingProperty(glyph.GetVirtualTopology().GetType()));
 	}
 
 	DataMappingGlyph::DataMappingGlyph(const boost::property_tree::wptree& propertyTree) :
-		GlyphTemplate<NumericMappingProperty, ColorMappingProperty, TextMappingProperty>(GlyphStructuralProperties(propertyTree)) {
+		GlyphTemplate<NumericMappingProperty, ColorMappingProperty, TextMappingProperty, DataMappingGeometry, DataMappingVirtualTopology>(GlyphStructuralProperties(propertyTree)) {
 
 		GetXYZNumericPropertiesFromPropertyTree(propertyTree.get_child(L"Position"), m_position);
 		GetXYZNumericPropertiesFromPropertyTree(propertyTree.get_child(L"Rotation"), m_rotation);

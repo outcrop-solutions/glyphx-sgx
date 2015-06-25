@@ -36,6 +36,7 @@ namespace SynGlyphX {
 		virtual ~InterpolationMappingData();
 
 		virtual Input GetSupportedInput() const;
+		virtual Output GetSupportedOutput() const;
 
 		double Interpolate(std::pair<double, double> outputMinDiff, double inputMin, double inputMax, double input) const;
 		GlyphColor Interpolate(std::pair<GlyphColor, GlyphColor> outputMinDiff, double inputMin, double inputMax, double input) const;

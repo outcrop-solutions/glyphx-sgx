@@ -92,6 +92,7 @@
     <ClInclude Include="datasource.h" />
     <ClInclude Include="datasourcemaps.h" />
     <ClInclude Include="datatransformmapping.h" />
+    <ClInclude Include="enumdatamappingproperty.h" />
     <ClInclude Include="filedatasource.h" />
     <ClInclude Include="inputbinding.h" />
     <ClInclude Include="inputcombinationfunction.h" />
@@ -100,6 +101,7 @@
     <ClInclude Include="linearinterpolationmappingfunction.h" />
     <ClInclude Include="logarithmicinterpolationmappingfunction.h" />
     <ClInclude Include="interpolationmappingfunction.h" />
+    <ClInclude Include="mindiffdatamappingproperty.h" />
     <ClInclude Include="rangevaluemappingfunction.h" />
     <ClInclude Include="sceneproperties.h" />
     <ClInclude Include="sgxdatatransform_global.h" />
@@ -123,6 +125,7 @@
     <ClCompile Include="datasource.cpp" />
     <ClCompile Include="datasourcemaps.cpp" />
     <ClCompile Include="datatransformmapping.cpp" />
+    <ClCompile Include="enumdatamappingproperty.cpp" />
     <ClCompile Include="filedatasource.cpp" />
     <ClCompile Include="inputbinding.cpp" />
     <ClCompile Include="inputcombinationfunction.cpp" />
@@ -131,6 +134,7 @@
     <ClCompile Include="linearinterpolationmappingfunction.cpp" />
     <ClCompile Include="logarithmicinterpolationmappingfunction.cpp" />
     <ClCompile Include="interpolationmappingfunction.cpp" />
+    <ClCompile Include="mindiffdatamappingproperty.cpp" />
     <ClCompile Include="rangevaluemappingfunction.cpp" />
     <ClCompile Include="sceneproperties.cpp" />
     <ClCompile Include="singlevaluemappingfunction.cpp" />

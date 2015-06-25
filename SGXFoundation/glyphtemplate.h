@@ -24,13 +24,13 @@
 
 namespace SynGlyphX {
 
-	template <typename NumericType, typename ColorType, typename TextType>
+	template <typename NumericType, typename ColorType, typename TextType, typename StructureType, typename VirtualTopologyType>
 	class GlyphTemplate {
 
 	public:
 		typedef std::array<NumericType, 3> NumericTypeXYZ;
 
-		GlyphTemplate(const GlyphStructuralProperties& properties = GlyphStructuralProperties(GlyphStructuralProperties::Shape::Torus, GlyphStructuralProperties::Surface::Solid, GlyphStructuralProperties::VirtualTopology::Circle)) :
+		GlyphTemplate(const StructureType& structure = StructureType(), const VirtualTopologyType& virtualTopology = VirtualTopologyType()) :
 			m_position(NumericTypeXYZ()),
 			m_rotation(NumericTypeXYZ()),
 			m_scale(NumericTypeXYZ()),
@@ -39,7 +39,8 @@ namespace SynGlyphX {
 			m_tag(TextType()),
 			m_description(TextType()),
 			m_rotationRate(NumericTypeXYZ()),
-			m_structure(properties) {
+			m_structure(structure),
+			m_virtualTopology(virtualTopology) {
 
 		}
 
@@ -52,7 +53,8 @@ namespace SynGlyphX {
 			m_tag(glyph.m_tag),
 			m_description(glyph.m_description),
 			m_rotationRate(glyph.m_rotationRate),
-			m_structure(glyph.m_structure) {
+			m_structure(glyph.m_structure),
+			m_virtualTopology(glyph.m_virtualTopology) {
 
 		}
 
@@ -60,14 +62,24 @@ namespace SynGlyphX {
 
 		}
 
-		GlyphStructuralProperties& GetStructure() {
+		StructureType& GetStructure() {
 
 			return m_structure;
 		}
 
-		const GlyphStructuralProperties& GetStructure() const {
+		const StructureType& GetStructure() const {
 
 			return m_structure;
+		}
+
+		VirtualTopologyType& GetVirtualTopology() {
+
+			return m_virtualTopology;
+		}
+
+		const VirtualTopologyType& GetVirtualTopology() const {
+
+			return m_virtualTopology;
 		}
 
 		NumericTypeXYZ& GetPosition() {
@@ -161,6 +173,7 @@ namespace SynGlyphX {
 			m_description = glyph.m_description;
 			m_rotationRate = glyph.m_rotationRate;
 			m_structure = glyph.m_structure;
+			m_virtualTopology = glyph.m_virtualTopology;
 
 			return *this;
 		}
@@ -212,6 +225,11 @@ namespace SynGlyphX {
 				return false;
 			}
 
+			if (m_virtualTopology != glyph.m_virtualTopology) {
+
+				return false;
+			}
+
 			return true;
 		}
 
@@ -235,8 +253,9 @@ namespace SynGlyphX {
 		//Animation Properties
 		NumericTypeXYZ m_rotationRate;
 
-		//Glyph Structure
-		GlyphStructuralProperties m_structure;
+		//Glyph Structure & Virtual Topology
+		StructureType m_structure;
+		VirtualTopologyType m_virtualTopology;
 	};
 
 } //namespace SynGlyphX

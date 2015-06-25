@@ -15,47 +15,35 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef SYNGLYPHX_GLYPHSTRUCTURALPROPERTIES_H
-#define SYNGLYPHX_GLYPHSTRUCTURALPROPERTIES_H
+#ifndef SYNGLYPHX_VIRTUALTOPOLOGY_H
+#define SYNGLYPHX_VIRTUALTOPOLOGY_H
 
 #include "sgxfoundation.h"
-//#include <boost/property_tree/ptree.hpp>
-#include "glyphgeometryinfo.h"
+#include "virtualtopologyinfo.h"
 
 namespace SynGlyphX {
 
-	template <typename GeometryShapeType>
-	class SGXFOUNDATION_API GlyphStructuralProperties
-	{
+	template<typename DataType>
+	class SGXFOUNDATION_API VirtualTopologyTemplate {
+
 	public:
-		GlyphStructuralProperties(const GeometryShapeType& shape = GeometryShapeType(), GlyphGeometryInfo::Surface surface = GlyphGeometryInfo::Surface::Solid);
-		//GlyphStructuralProperties(const boost::property_tree::wptree& propertyTree);
-		GlyphStructuralProperties(const GlyphStructuralProperties& properties);
-		~GlyphStructuralProperties();
+		VirtualTopologyTemplate(const DataType& data = DataType());
+		VirtualTopologyTemplate(const VirtualTopologyTemplate& virtualTopology);
+		~VirtualTopologyTemplate();
 
-		GlyphStructuralProperties& operator=(const GlyphStructuralProperties& properties);
-		bool operator==(const GlyphStructuralProperties& properties) const;
-		bool operator!=(const GlyphStructuralProperties& properties) const;
+		VirtualTopologyTemplate& operator=(const VirtualTopologyTemplate& virtualTopology);
+		bool operator==(const VirtualTopologyTemplate& virtualTopology) const;
+		bool operator!=(const VirtualTopologyTemplate& virtualTopology) const;
 
-		void SetGeometryShape(const GeometryShapeType& shape);
-		const GeometryShapeType& GetGeometryShape() const;
-
-		void SetGeometrySurface(GlyphGeometryInfo::Surface surface);
-		GlyphGeometryInfo::Surface GetGeometrySurface() const;
-
-		void SetTorusRatio(double ratio);
-		double GetTorusRatio() const;
-
-		//boost::property_tree::wptree& ExportToPropertyTree(boost::property_tree::wptree& propertyTree) const;
+		const DataType& GetType() const;
+		void SetType(const DataType& data);
 
 	protected:
-		GeometryShapeType m_geometryShape;
-		GlyphGeometryInfo::Surface m_geometrySurface;
-		double m_torusRatio;
+		DataType m_data;
 	};
 
-	typedef GlyphStructuralProperties<GlyphGeometryInfo::Shape> GlyphGeometry;
+	typedef VirtualTopologyTemplate<VirtualTopologyInfo::Type> VirtualTopology;
 
 } //namespace SynGlyphX
 
-#endif //SYNGLYPHX_GLYPHSTRUCTURALPROPERTIES_H
+#endif //SYNGLYPHX_VIRTUALTOPOLOGY_H

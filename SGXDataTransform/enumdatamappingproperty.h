@@ -15,47 +15,37 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef SYNGLYPHX_GLYPHSTRUCTURALPROPERTIES_H
-#define SYNGLYPHX_GLYPHSTRUCTURALPROPERTIES_H
+#ifndef SYNGLYPHX_ENUMDATAMAPPINGPROPERTY_H
+#define SYNGLYPHX_ENUMDATAMAPPINGPROPERTY_H
 
-#include "sgxfoundation.h"
-//#include <boost/property_tree/ptree.hpp>
+#include "sgxdatatransform_global.h"
+#include "datamappingproperty.h"
 #include "glyphgeometryinfo.h"
+#include "virtualtopologyinfo.h"
 
 namespace SynGlyphX {
 
-	template <typename GeometryShapeType>
-	class SGXFOUNDATION_API GlyphStructuralProperties
+	template<typename EnumType>
+	class EnumDataMappingProperty : public DataMappingProperty < EnumType >
 	{
 	public:
-		GlyphStructuralProperties(const GeometryShapeType& shape = GeometryShapeType(), GlyphGeometryInfo::Surface surface = GlyphGeometryInfo::Surface::Solid);
-		//GlyphStructuralProperties(const boost::property_tree::wptree& propertyTree);
-		GlyphStructuralProperties(const GlyphStructuralProperties& properties);
-		~GlyphStructuralProperties();
+		EnumDataMappingProperty();
+		EnumDataMappingProperty(const EnumType& initialValue);
+		EnumDataMappingProperty(const boost::property_tree::wptree& propertyTree);
+		EnumDataMappingProperty(const EnumDataMappingProperty& prop);
+		~EnumDataMappingProperty();
 
-		GlyphStructuralProperties& operator=(const GlyphStructuralProperties& properties);
-		bool operator==(const GlyphStructuralProperties& properties) const;
-		bool operator!=(const GlyphStructuralProperties& properties) const;
-
-		void SetGeometryShape(const GeometryShapeType& shape);
-		const GeometryShapeType& GetGeometryShape() const;
-
-		void SetGeometrySurface(GlyphGeometryInfo::Surface surface);
-		GlyphGeometryInfo::Surface GetGeometrySurface() const;
-
-		void SetTorusRatio(double ratio);
-		double GetTorusRatio() const;
-
-		//boost::property_tree::wptree& ExportToPropertyTree(boost::property_tree::wptree& propertyTree) const;
+		EnumDataMappingProperty& operator=(const EnumDataMappingProperty& prop);
+		bool operator==(const EnumDataMappingProperty& prop) const;
+		bool operator!=(const EnumDataMappingProperty& prop) const;
 
 	protected:
-		GeometryShapeType m_geometryShape;
-		GlyphGeometryInfo::Surface m_geometrySurface;
-		double m_torusRatio;
+		virtual bool IsMappingFunctionDataCompatible(MappingFunctionData::SharedPtr mappingFunctionData) const;
 	};
 
-	typedef GlyphStructuralProperties<GlyphGeometryInfo::Shape> GlyphGeometry;
+	typedef EnumDataMappingProperty<GlyphGeometryInfo::Shape> GeometryShapeMappingProperty;
+	typedef EnumDataMappingProperty<VirtualTopologyInfo::Type> VirtualTopologyMappingProperty;
 
 } //namespace SynGlyphX
 
-#endif //SYNGLYPHX_GLYPHSTRUCTURALPROPERTIES_H
+#endif //SYNGLYPHX_ENUMDATAMAPPINGPROPERTY_H

@@ -8,7 +8,7 @@ namespace SynGlyphX {
 	DataMappingProperty<PropertyType>::DataMappingProperty() :
 		m_value(PropertyType()),
 		m_binding(InputBinding()),
-		m_mappingFunctionData(std::make_shared<InterpolationMappingData>()) {
+		m_mappingFunctionData(std::make_shared<MappingFunctionData>()) {
 
 	}
 
@@ -16,97 +16,22 @@ namespace SynGlyphX {
 	DataMappingProperty<PropertyType>::DataMappingProperty(const PropertyType& initialValue) :
 		m_value(initialValue),
 		m_binding(InputBinding()),
-		m_mappingFunctionData(std::make_shared<InterpolationMappingData>()) {
+		m_mappingFunctionData(std::make_shared<MappingFunctionData>()) {
 
 	}
 
 	template<typename PropertyType>
 	DataMappingProperty<PropertyType>::DataMappingProperty(const boost::property_tree::wptree& propertyTree) :
-		m_value(propertyTree.get_optional<PropertyType>(L"Value").get_value_or(PropertyType())),
 		m_binding(InputBinding()),
-		m_mappingFunctionData(std::make_shared<InterpolationMappingData>()) {
+		m_mappingFunctionData(std::make_shared<MappingFunctionData>()) {
 
 		boost::optional<const boost::property_tree::wptree&> inputFieldTree = propertyTree.get_child_optional(InputBinding::PropertyTreeName);
 		if (inputFieldTree.is_initialized()) {
 
 			m_binding = InputBinding(inputFieldTree.get());
 		}
-	}
 
-	template<>
-	DataMappingProperty<std::pair<double, double>>::DataMappingProperty(const boost::property_tree::wptree& propertyTree)  {
-
-		m_value.first = propertyTree.get<double>(L"Min");
-		m_value.second = propertyTree.get_optional<double>(L"Difference").get_value_or(0.0);
-
-		boost::optional<const boost::property_tree::wptree&> inputFieldTree = propertyTree.get_child_optional(InputBinding::PropertyTreeName);
-		if (inputFieldTree.is_initialized()) {
-
-			m_binding = InputBinding(inputFieldTree.get());
-		}
-		else {
-
-			m_binding.Clear();
-		}
-
-		boost::optional<const boost::property_tree::wptree&> mappingFunctionTree = propertyTree.get_child_optional(L"Function");
-		if (mappingFunctionTree.is_initialized()) {
-
-			ChangeMappingFunction(MappingFunctionData::s_functionNames.right.at(mappingFunctionTree.get().get<std::wstring>(L"<xmlattr>.type")), mappingFunctionTree.get());
-		}
-		else {
-
-			m_mappingFunctionData = std::make_shared<InterpolationMappingData>();
-		}
-	}
-
-	template<>
-	DataMappingProperty<std::pair<GlyphColor, GlyphColor>>::DataMappingProperty(const boost::property_tree::wptree& propertyTree) {
-
-		//For color check if property tree has it in the old way.  If not read in using the new way
-		boost::optional<short> rgbMinRed = propertyTree.get_optional<short>(L"Min.R");
-		if (rgbMinRed.is_initialized()) {
-
-			m_value.first.Set(0, rgbMinRed.get());
-			m_value.first.Set(1, propertyTree.get<short>(L"Min.G"));
-			m_value.first.Set(2, propertyTree.get<short>(L"Min.B"));
-		}
-		else {
-
-			m_value.first = propertyTree.get<GlyphColor>(L"Min");
-		}
-
-		boost::optional<short> rgbDiffRed = propertyTree.get_optional<short>(L"Difference.R");
-		if (rgbDiffRed.is_initialized()) {
-
-			m_value.second.Set(0, rgbDiffRed.get());
-			m_value.second.Set(1, propertyTree.get<short>(L"Difference.G"));
-			m_value.second.Set(2, propertyTree.get<short>(L"Difference.B"));
-		}
-		else {
-			
-			m_value.second = propertyTree.get_optional<GlyphColor>(L"Difference").get_value_or(GlyphColor({ { 0, 0, 0 } }));
-		}
-
-		boost::optional<const boost::property_tree::wptree&> inputFieldTree = propertyTree.get_child_optional(InputBinding::PropertyTreeName);
-		if (inputFieldTree.is_initialized()) {
-
-			m_binding = InputBinding(inputFieldTree.get());
-		}
-		else {
-
-			m_binding.Clear();
-		}
-
-		boost::optional<const boost::property_tree::wptree&> mappingFunctionTree = propertyTree.get_child_optional(L"Function");
-		if (mappingFunctionTree.is_initialized()) {
-
-			ChangeMappingFunction(MappingFunctionData::s_functionNames.right.at(mappingFunctionTree.get().get<std::wstring>(L"<xmlattr>.type")), mappingFunctionTree.get());
-		}
-		else {
-
-			m_mappingFunctionData = std::make_shared<InterpolationMappingData>();
-		}
+		ImportValueToPropertyTree(propertyTree);
 	}
 
 	template<typename PropertyType>
@@ -145,6 +70,12 @@ namespace SynGlyphX {
 			return false;
 		}
 
+		//Need to check here if mapping function data is the same
+		/*if (m_mappingFunctionData-> != prop.m_binding) {
+
+			return false;
+		}*/
+
 		return true;
 	}
 
@@ -157,51 +88,7 @@ namespace SynGlyphX {
 	template <typename PropertyType>
 	boost::property_tree::wptree& DataMappingProperty<PropertyType>::ExportToPropertyTree(boost::property_tree::wptree& propertyTree) const {
 
-		//boost::property_tree::wptree& valuePropertyTree = propertyTreeParent.add(name, L"");
-		propertyTree.put<PropertyType>(L"Value", m_value);
-
-		if (m_binding.IsBoundToInputField()) {
-
-			m_binding.ExportToPropertyTree(propertyTree);
-		}
-
-		m_mappingFunctionData->ExportToPropertyTree(propertyTree);
-
-		return propertyTree;
-	}
-
-	template <>
-	boost::property_tree::wptree& DataMappingProperty<std::pair<double, double>>::ExportToPropertyTree(boost::property_tree::wptree& propertyTree) const {
-
-		//boost::property_tree::wptree& valuePropertyTree = propertyTreeParent.add(name, L"");
-		propertyTree.put<double>(L"Min", m_value.first);
-
-		if (std::abs(m_value.second) > 0.01) {
-
-			propertyTree.put<double>(L"Difference", m_value.second);
-		}
-
-		if (m_binding.IsBoundToInputField()) {
-
-			m_binding.ExportToPropertyTree(propertyTree);
-		}
-
-		m_mappingFunctionData->ExportToPropertyTree(propertyTree);
-
-		return propertyTree;
-	}
-
-	template <>
-	boost::property_tree::wptree& DataMappingProperty<std::pair<GlyphColor, GlyphColor>>::ExportToPropertyTree(boost::property_tree::wptree& propertyTree) const {
-
-		//m_value.first.ExportToPropertyTree(propertyTree.add(L"Min", L""));
-		propertyTree.put<GlyphColor>(L"Min", m_value.first);
-
-		if ((std::abs(m_value.second[0]) > 0) || (std::abs(m_value.second[1]) > 0) || (std::abs(m_value.second[2]) > 0)) {
-
-			//m_value.second.ExportToPropertyTree(propertyTree.add(L"Difference", L""));
-			propertyTree.put<GlyphColor>(L"Difference", m_value.second);
-		}
+		ExportValueToPropertyTree(propertyTree);
 
 		if (m_binding.IsBoundToInputField()) {
 
@@ -246,7 +133,14 @@ namespace SynGlyphX {
 	template<typename PropertyType>
 	void DataMappingProperty<PropertyType>::SetMappingFunctionData(MappingFunctionData::SharedPtr mappingFunctionData) {
 
-		m_mappingFunctionData = mappingFunctionData;
+		if (IsMappingFunctionDataCompatible(mappingFunctionData)) {
+
+			m_mappingFunctionData = mappingFunctionData;
+		}
+		else {
+
+			throw std::invalid_argument("Mapping function data is not compatible with DataMappingProperty");
+		}
 	}
 	
 	template<>
@@ -305,8 +199,27 @@ namespace SynGlyphX {
 		m_mappingFunctionData = std::make_shared<InterpolationMappingData>();
 	}
 
-	template class DataMappingProperty<std::pair<double, double>>;
-	template class DataMappingProperty<std::pair<GlyphColor, GlyphColor>>;
+	template<typename PropertyType>
+	bool DataMappingProperty<PropertyType>::IsMappingFunctionDataCompatible(MappingFunctionData::SharedPtr mappingFunctionData) const {
+
+		return true;
+	}
+
+	template<typename PropertyType>
+	void DataMappingProperty<PropertyType>::ExportValueToPropertyTree(boost::property_tree::wptree& propertyTree) const {
+
+		//boost::property_tree::wptree& valuePropertyTree = propertyTreeParent.add(name, L"");
+		propertyTree.put<PropertyType>(L"Value", m_value);
+	}
+
+	template<typename PropertyType>
+	void DataMappingProperty<PropertyType>::ImportValueToPropertyTree(const boost::property_tree::wptree& propertyTree) {
+
+		m_value = propertyTree.get_optional<PropertyType>(L"Value").get_value_or(PropertyType());
+	}
+
 	template class DataMappingProperty < std::wstring >;
+	template class DataMappingProperty<GlyphGeometryInfo::Shape>;
+	template class DataMappingProperty<VirtualTopologyInfo::Type>;
 
 } //namespace SynGlyphX

@@ -1,15 +1,3 @@
-#ifndef SYNGLYPHX_DATAMAPPINGGLYPHGRAPH_H
-#define SYNGLYPHX_DATAMAPPINGGLYPHGRAPH_H
-
-#include "sgxdatatransform_global.h"
-#include <containers/ntree.hpp>
-#include "datamappingglyph.h"
-#include <boost/property_tree/ptree.hpp>
-#include <boost/shared_ptr.hpp>
-#include <memory>
-#include "inputbinding.h"
-#include "inputfield.h"
-#include <unordered_map>
 ///
 /// SynGlyphX Holdings Incorporated ("COMPANY") CONFIDENTIAL
 /// Copyright (c) 2013-2015 SynGlyphX Holdings Incorporated, All Rights Reserved.
@@ -27,6 +15,18 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
+#ifndef SYNGLYPHX_DATAMAPPINGGLYPHGRAPH_H
+#define SYNGLYPHX_DATAMAPPINGGLYPHGRAPH_H
+
+#include "sgxdatatransform_global.h"
+#include <containers/ntree.hpp>
+#include "datamappingglyph.h"
+#include <boost/property_tree/ptree.hpp>
+#include <boost/shared_ptr.hpp>
+#include <memory>
+#include "inputbinding.h"
+#include "inputfield.h"
+#include <unordered_map>
 #include "csvfilehandler.h"
 //#include <boost/graph/directed_graph.hpp>
 #include <containers/ntree.hpp>
