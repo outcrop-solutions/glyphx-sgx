@@ -53,4 +53,28 @@ namespace SynGlyphX {
 		return GlyphGeometryInfo::s_shapeNames.left.at(v);
 	}
 
+	GeometrySurfaceTranslator::GeometrySurfaceTranslator() {
+
+
+	}
+
+	boost::optional<GlyphGeometryInfo::Surface> GeometrySurfaceTranslator::get_value(std::wstring const &v) {
+
+		GlyphGeometryInfo::SurfaceBimap::right_map::const_iterator iT = GlyphGeometryInfo::s_surfaceNames.right.find(v);
+
+		if (iT == GlyphGeometryInfo::s_surfaceNames.right.end()) {
+
+			return boost::none;
+		}
+		else {
+
+			return iT->second;
+		}
+	}
+
+	boost::optional<std::wstring> GeometrySurfaceTranslator::put_value(GlyphGeometryInfo::Surface const& v) {
+
+		return GlyphGeometryInfo::s_surfaceNames.left.at(v);
+	}
+
 } //namespace SynGlyphX

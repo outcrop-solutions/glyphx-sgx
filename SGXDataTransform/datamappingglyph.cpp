@@ -4,19 +4,19 @@
 namespace SynGlyphX {
 
 	DataMappingGlyph::DataMappingGlyph() : 
-		GlyphTemplate<NumericMappingProperty, ColorMappingProperty, TextMappingProperty, DataMappingGeometry, DataMappingVirtualTopology>() {
+		GlyphTemplate<NumericMappingProperty, ColorMappingProperty, TextMappingProperty, DataMappingGlyphGeometry, DataMappingVirtualTopology>() {
 
 
 	}
 
 	DataMappingGlyph::DataMappingGlyph(const DataMappingGlyph& glyph) :
-		GlyphTemplate<NumericMappingProperty, ColorMappingProperty, TextMappingProperty, DataMappingGeometry, DataMappingVirtualTopology>(glyph) {
+		GlyphTemplate<NumericMappingProperty, ColorMappingProperty, TextMappingProperty, DataMappingGlyphGeometry, DataMappingVirtualTopology>(glyph) {
 
 
 	}
 
 	DataMappingGlyph::DataMappingGlyph(const Glyph& glyph, bool isRoot) :
-		GlyphTemplate<NumericMappingProperty, ColorMappingProperty, TextMappingProperty, DataMappingGeometry, DataMappingVirtualTopology>() {
+		GlyphTemplate<NumericMappingProperty, ColorMappingProperty, TextMappingProperty, DataMappingGlyphGeometry, DataMappingVirtualTopology>() {
 
 		double minPosition0 = 0.0;
 		double minPosition1 = 0.0;
@@ -47,12 +47,13 @@ namespace SynGlyphX {
 		m_rotationRate[1] = NumericMappingProperty(std::pair<double, double>(0.0, glyph.GetRotationRate()[1]));
 		m_rotationRate[2] = NumericMappingProperty(std::pair<double, double>(0.0, glyph.GetRotationRate()[2]));
 
-		m_structure = DataMappingGeometry(GeometryShapeMappingProperty(glyph.GetStructure().GetGeometryShape()), glyph.GetStructure().GetGeometrySurface());
+		m_structure = DataMappingGlyphGeometry(glyph.GetStructure());
+
 		m_virtualTopology = DataMappingVirtualTopology(VirtualTopologyMappingProperty(glyph.GetVirtualTopology().GetType()));
 	}
 
 	DataMappingGlyph::DataMappingGlyph(const boost::property_tree::wptree& propertyTree) :
-		GlyphTemplate<NumericMappingProperty, ColorMappingProperty, TextMappingProperty, DataMappingGeometry, DataMappingVirtualTopology>(GlyphStructuralProperties(propertyTree)) {
+		GlyphTemplate<NumericMappingProperty, ColorMappingProperty, TextMappingProperty, DataMappingGlyphGeometry, DataMappingVirtualTopology>() {
 
 		GetXYZNumericPropertiesFromPropertyTree(propertyTree.get_child(L"Position"), m_position);
 		GetXYZNumericPropertiesFromPropertyTree(propertyTree.get_child(L"Rotation"), m_rotation);
@@ -73,6 +74,12 @@ namespace SynGlyphX {
 		if (descriptionTree.is_initialized()) {
 
 			GetXYZNumericPropertiesFromPropertyTree(rotationRateTree.get(), m_rotationRate);
+		}
+
+		boost::optional<const boost::property_tree::wptree&> geometryTree = propertyTree.get_child_optional(L"Geometry");
+		if (geometryTree.is_initialized()) {
+
+			m_structure = DataMappingGlyphGeometry(geometryTree.get());
 		}
 	}
 
@@ -142,7 +149,8 @@ namespace SynGlyphX {
 		glyph.GetRotationRate()[1] = m_rotationRate[1].GetValue().first;
 		glyph.GetRotationRate()[2] = m_rotationRate[2].GetValue().first;
 
-		glyph.GetStructure() = m_structure;
+		glyph.GetStructure() = m_structure.ExportGlyphGeometry();
+		glyph.GetVirtualTopology() = m_virtualTopology.ExportVirtualTopology();
 
 		return glyph;
 	}
@@ -173,7 +181,8 @@ namespace SynGlyphX {
 		glyph.GetRotationRate()[1] = m_rotationRate[1].GetValue().second;
 		glyph.GetRotationRate()[2] = m_rotationRate[2].GetValue().second;
 
-		glyph.GetStructure() = m_structure;
+		glyph.GetStructure() = m_structure.ExportGlyphGeometry();
+		glyph.GetVirtualTopology() = m_virtualTopology.ExportVirtualTopology();
 
 		return glyph;
 	}
@@ -206,7 +215,8 @@ namespace SynGlyphX {
 		glyph.GetRotationRate()[1] = m_rotationRate[1].GetValue().first + m_rotationRate[1].GetValue().second;
 		glyph.GetRotationRate()[2] = m_rotationRate[2].GetValue().first + m_rotationRate[2].GetValue().second;
 
-		glyph.GetStructure() = m_structure;
+		glyph.GetStructure() = m_structure.ExportGlyphGeometry();
+		glyph.GetVirtualTopology() = m_virtualTopology.ExportVirtualTopology();
 
 		return glyph;
 	}
@@ -223,14 +233,14 @@ namespace SynGlyphX {
 	
 	DataMappingGlyph& DataMappingGlyph::operator=(const DataMappingGlyph& glyph) {
 
-		GlyphTemplate<NumericMappingProperty, ColorMappingProperty, TextMappingProperty>::operator=(glyph);
+		GlyphTemplate::operator=(glyph);
 
 		return *this;
 	}
 
 	bool DataMappingGlyph::operator==(const DataMappingGlyph& glyph) const {
 
-		return GlyphTemplate<NumericMappingProperty, ColorMappingProperty, TextMappingProperty>::operator==(glyph);
+		return GlyphTemplate::operator==(glyph);
 	}
 
 	bool DataMappingGlyph::operator!=(const DataMappingGlyph& glyph) const {

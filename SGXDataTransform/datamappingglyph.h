@@ -23,14 +23,13 @@
 #include <vector>
 #include <boost/property_tree/ptree.hpp>
 #include "mindiffdatamappingproperty.h"
-#include "enumdatamappingproperty.h"
+#include "datamappingglyphgeometry.h"
 
 namespace SynGlyphX {
 
-	typedef GlyphStructuralProperties<GeometryShapeMappingProperty> DataMappingGeometry;
 	typedef VirtualTopologyTemplate<VirtualTopologyMappingProperty> DataMappingVirtualTopology;
 
-	class SGXDATATRANSFORM_EXPORT DataMappingGlyph : public GlyphTemplate<NumericMappingProperty, ColorMappingProperty, TextMappingProperty, DataMappingGeometry, DataMappingVirtualTopology> {
+	class SGXDATATRANSFORM_EXPORT DataMappingGlyph : public GlyphTemplate<NumericMappingProperty, ColorMappingProperty, TextMappingProperty, DataMappingGlyphGeometry, DataMappingVirtualTopology> {
 
 	public:
 		enum MappableField {

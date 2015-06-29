@@ -15,71 +15,32 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef SYNGLYPHX_MAPPINGFUNCTIONDATA_H
-#define SYNGLYPHX_MAPPINGFUNCTIONDATA_H
+#ifndef SYNGLYPHX_DATAMAPPINGGLYPHGEOMETRY_H
+#define SYNGLYPHX_DATAMAPPINGGLYPHGEOMETRY_H
 
-#include "sgxdatatransform_global.h"
-#include <vector>
-#include <memory>
-#include <boost/bimap.hpp>
+#include "glyphstructuralproperties.h"
+#include "enumdatamappingproperty.h"
 #include <boost/property_tree/ptree.hpp>
 
 namespace SynGlyphX {
 
-	class SGXDATATRANSFORM_EXPORT MappingFunctionData
+	class DataMappingGlyphGeometry : public GlyphStructuralProperties < GeometryShapeMappingProperty >
 	{
 	public:
-		enum Function {
-			None,
-			LinearInterpolation,
-			LogarithmicInterpolation,
-			Numeric2Value,
-			Text2Value,
-			Range2Value
-		};
+		DataMappingGlyphGeometry();
+		DataMappingGlyphGeometry(const DataMappingGlyphGeometry& glyphGeometry);
+		DataMappingGlyphGeometry(const GlyphGeometry& glyphGeometry);
+		DataMappingGlyphGeometry(const boost::property_tree::wptree& propertyTree);
+		~DataMappingGlyphGeometry();
 
-		enum class Input {
+		DataMappingGlyphGeometry& operator=(const DataMappingGlyphGeometry& glyphGeometry);
+		bool operator==(const DataMappingGlyphGeometry& glyphGeometry) const;
+		bool operator!=(const DataMappingGlyphGeometry& glyphGeometry) const;
 
-			Numeric = 0x01,
-			Text = 0x02,
-			All = 0xFF
-		};
-
-		enum class Output {
-
-			Numeric = 0x01,
-			Color = 0x02,
-			NumericAndColor = 0x03,
-			Enum = 0x04,
-			All = 0xFF
-		};
-
-		typedef boost::bimap<Function, std::wstring> FunctionBimap;
-
-		typedef std::shared_ptr<MappingFunctionData> SharedPtr;
-		typedef std::shared_ptr<const MappingFunctionData> ConstSharedPtr;
-
-		MappingFunctionData(Function function = Function::None);
-		MappingFunctionData(const boost::property_tree::wptree& propertyTree);
-		MappingFunctionData(const MappingFunctionData& data);
-		virtual ~MappingFunctionData();
-
-		MappingFunctionData& operator=(const MappingFunctionData& data);
-
-		virtual boost::property_tree::wptree& ExportToPropertyTree(boost::property_tree::wptree& propertyTree) const;
-
-		Function GetFunction() const;
-		virtual Input GetSupportedInput() const;
-		virtual bool NeedsDataOtherThanMinMax() const;
-
-		virtual Output GetSupportedOutput() const;
-
-		static const FunctionBimap s_functionNames;
-
-	protected:
-		Function m_function;
+		boost::property_tree::wptree& ExportToPropertyTree(boost::property_tree::wptree& propertyTree) const;
+		GlyphGeometry ExportGlyphGeometry() const;
 	};
 
 } //namespace SynGlyphX
 
-#endif //SYNGLYPHX_MAPPINGFUNCTIONDATA_H
+#endif //SYNGLYPHX_DATAMAPPINGGLYPHGEOMETRY_H

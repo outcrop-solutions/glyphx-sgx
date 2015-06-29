@@ -78,6 +78,22 @@ namespace SynGlyphX {
 		
 	};
 
+	//This translator is so that GlyphGeometryInfo::Shape can be automatically used by boost::property_tree
+	class SGXFOUNDATION_API GeometrySurfaceTranslator
+	{
+	public:
+		typedef std::wstring internal_type;
+		typedef GlyphGeometryInfo::Surface external_type;
+
+		GeometrySurfaceTranslator();
+
+		boost::optional<GlyphGeometryInfo::Surface> get_value(std::wstring const &v);
+		boost::optional<std::wstring> put_value(GlyphGeometryInfo::Surface const& v);
+
+	private:
+
+	};
+
 } //namespace SynGlyphX
 
 namespace boost {
@@ -88,6 +104,12 @@ namespace boost {
 		struct translator_between<std::wstring, SynGlyphX::GlyphGeometryInfo::Shape>
 		{
 			typedef SynGlyphX::GeometryShapeTranslator type;
+		};
+
+		template<>
+		struct translator_between<std::wstring, SynGlyphX::GlyphGeometryInfo::Surface>
+		{
+			typedef SynGlyphX::GeometrySurfaceTranslator type;
 		};
 	}
 } //namespace boost

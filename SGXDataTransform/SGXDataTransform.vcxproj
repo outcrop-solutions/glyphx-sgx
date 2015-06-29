@@ -86,6 +86,7 @@
     <ClInclude Include="datamappingfunction.h" />
     <ClInclude Include="datamappingglyph.h" />
     <ClInclude Include="datamappingglyphfile.h" />
+    <ClInclude Include="datamappingglyphgeometry.h" />
     <ClInclude Include="datamappingglyphgraph.h" />
     <ClInclude Include="datamappingglyphgraphexportvisitor.h" />
     <ClInclude Include="datamappingproperty.h" />
@@ -120,6 +121,7 @@
     <ClCompile Include="datamappingfunction.cpp" />
     <ClCompile Include="datamappingglyph.cpp" />
     <ClCompile Include="datamappingglyphfile.cpp" />
+    <ClCompile Include="datamappingglyphgeometry.cpp" />
     <ClCompile Include="datamappingglyphgraph.cpp" />
     <ClCompile Include="datamappingproperty.cpp" />
     <ClCompile Include="datasource.cpp" />

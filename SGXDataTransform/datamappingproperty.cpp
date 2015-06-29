@@ -196,13 +196,25 @@ namespace SynGlyphX {
 	template<typename PropertyType>
 	void DataMappingProperty<PropertyType>::ChangeMappingFunction(MappingFunctionData::Function function, const boost::property_tree::wptree& propertyTree) {
 
-		m_mappingFunctionData = std::make_shared<InterpolationMappingData>();
+		m_mappingFunctionData = std::make_shared<MappingFunctionData>();
 	}
 
 	template<typename PropertyType>
 	bool DataMappingProperty<PropertyType>::IsMappingFunctionDataCompatible(MappingFunctionData::SharedPtr mappingFunctionData) const {
 
 		return true;
+	}
+
+	template<>
+	void DataMappingProperty<std::pair<double, double>>::ExportValueToPropertyTree(boost::property_tree::wptree& propertyTree) const {
+
+		
+	}
+
+	template<>
+	void DataMappingProperty<std::pair<GlyphColor, GlyphColor>>::ExportValueToPropertyTree(boost::property_tree::wptree& propertyTree) const {
+
+
 	}
 
 	template<typename PropertyType>
@@ -212,6 +224,18 @@ namespace SynGlyphX {
 		propertyTree.put<PropertyType>(L"Value", m_value);
 	}
 
+	template<>
+	void DataMappingProperty<std::pair<double, double>>::ImportValueToPropertyTree(const boost::property_tree::wptree& propertyTree) {
+
+
+	}
+
+	template<>
+	void DataMappingProperty<std::pair<GlyphColor, GlyphColor>>::ImportValueToPropertyTree(const boost::property_tree::wptree& propertyTree) {
+
+
+	}
+
 	template<typename PropertyType>
 	void DataMappingProperty<PropertyType>::ImportValueToPropertyTree(const boost::property_tree::wptree& propertyTree) {
 
@@ -219,7 +243,5 @@ namespace SynGlyphX {
 	}
 
 	template class DataMappingProperty < std::wstring >;
-	template class DataMappingProperty<GlyphGeometryInfo::Shape>;
-	template class DataMappingProperty<VirtualTopologyInfo::Type>;
 
 } //namespace SynGlyphX

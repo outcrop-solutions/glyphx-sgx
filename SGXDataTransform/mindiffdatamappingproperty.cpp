@@ -9,7 +9,7 @@ namespace SynGlyphX {
 
 	template <typename DataType>
 	MinDiffDataMappingProperty<DataType>::MinDiffDataMappingProperty(const std::pair<DataType, DataType>& initialValue) :
-		DataMappingProperty < std::pair<DataType, DataType> >(initalValue) {
+		DataMappingProperty < std::pair<DataType, DataType> >(initialValue) {
 
 
 	}
@@ -36,13 +36,15 @@ namespace SynGlyphX {
 	template <typename DataType>
 	MinDiffDataMappingProperty<DataType>& MinDiffDataMappingProperty<DataType>::operator=(const MinDiffDataMappingProperty& prop) {
 
-		return return DataMappingProperty::operator=(prop);
+		DataMappingProperty<std::pair<DataType, DataType>>::operator=(prop);
+
+		return *this;
 	}
 
 	template <typename DataType>
 	bool MinDiffDataMappingProperty<DataType>::operator==(const MinDiffDataMappingProperty& prop) const {
 
-		return DataMappingProperty::operator==(prop);
+		return DataMappingProperty<std::pair<DataType, DataType>>::operator==(prop);
 	}
 
 	template <typename DataType>
@@ -55,11 +57,11 @@ namespace SynGlyphX {
 	void MinDiffDataMappingProperty<DataType>::ExportValueToPropertyTree(boost::property_tree::wptree& propertyTree) const {
 
 		//boost::property_tree::wptree& valuePropertyTree = propertyTreeParent.add(name, L"");
-		propertyTree.put<double>(L"Min", m_value.first);
+		propertyTree.put<DataType>(L"Min", m_value.first);
 
 		if (std::abs(m_value.second) > 0.01) {
 
-			propertyTree.put<double>(L"Difference", m_value.second);
+			propertyTree.put<DataType>(L"Difference", m_value.second);
 		}
 	}
 
@@ -79,8 +81,8 @@ namespace SynGlyphX {
 	template <typename DataType>
 	void MinDiffDataMappingProperty<DataType>::ImportValueToPropertyTree(const boost::property_tree::wptree& propertyTree) {
 
-		m_value.first = propertyTree.get<double>(L"Min");
-		m_value.second = propertyTree.get_optional<double>(L"Difference").get_value_or(DataType());
+		m_value.first = propertyTree.get<DataType>(L"Min");
+		m_value.second = propertyTree.get_optional<DataType>(L"Difference").get_value_or(DataType());
 	}
 
 	template <>

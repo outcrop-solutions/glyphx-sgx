@@ -59,4 +59,7 @@ namespace SynGlyphX {
 		return ((function != MappingFunctionData::Function::LinearInterpolation) && (function != MappingFunctionData::Function::LogarithmicInterpolation));
 	}
 
+	template class EnumDataMappingProperty<GlyphGeometryInfo::Shape>;
+	template class EnumDataMappingProperty<VirtualTopologyInfo::Type>;
+
 } //namespace SynGlyphX
