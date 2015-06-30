@@ -18,13 +18,14 @@
 #ifndef SYNGLYPHX_DATAMAPPINGVIRTUALTOPOLOGY_H
 #define SYNGLYPHX_DATAMAPPINGVIRTUALTOPOLOGY_H
 
+#include "sgxdatatransform_global.h"
 #include "virtualtopology.h"
 #include "enumdatamappingproperty.h"
 #include <boost/property_tree/ptree.hpp>
 
 namespace SynGlyphX {
 
-	class DataMappingVirtualTopology : public VirtualTopologyTemplate < VirtualTopologyMappingProperty >
+	class SGXDATATRANSFORM_EXPORT DataMappingVirtualTopology : public VirtualTopologyTemplate < VirtualTopologyMappingProperty >
 	{
 	public:
 		DataMappingVirtualTopology();

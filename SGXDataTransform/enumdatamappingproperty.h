@@ -26,7 +26,7 @@
 namespace SynGlyphX {
 
 	template<typename EnumType>
-	class EnumDataMappingProperty : public DataMappingProperty < EnumType >
+	class SGXDATATRANSFORM_EXPORT EnumDataMappingProperty : public DataMappingProperty < EnumType >
 	{
 	public:
 		EnumDataMappingProperty();

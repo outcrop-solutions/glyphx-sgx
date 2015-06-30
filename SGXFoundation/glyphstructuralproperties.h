@@ -29,7 +29,6 @@ namespace SynGlyphX {
 	{
 	public:
 		GlyphStructuralProperties(const GeometryShapeType& shape = GeometryShapeType(), GlyphGeometryInfo::Surface surface = GlyphGeometryInfo::Surface::Solid);
-		//GlyphStructuralProperties(const boost::property_tree::wptree& propertyTree);
 		GlyphStructuralProperties(const GlyphStructuralProperties& properties);
 		~GlyphStructuralProperties();
 
@@ -45,8 +44,6 @@ namespace SynGlyphX {
 
 		void SetTorusRatio(double ratio);
 		double GetTorusRatio() const;
-
-		//boost::property_tree::wptree& ExportToPropertyTree(boost::property_tree::wptree& propertyTree) const;
 
 	protected:
 		GeometryShapeType m_geometryShape;

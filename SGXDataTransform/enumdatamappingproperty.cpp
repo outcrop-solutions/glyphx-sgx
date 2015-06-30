@@ -37,13 +37,15 @@ namespace SynGlyphX {
 	template<typename EnumType>
 	EnumDataMappingProperty<EnumType>& EnumDataMappingProperty<EnumType>::operator=(const EnumDataMappingProperty& prop) {
 
-		return EnumDataMappingProperty<EnumType>::operator=(prop);
+		DataMappingProperty<EnumType>::operator=(prop);
+
+		return *this;
 	}
 
 	template<typename EnumType>
 	bool EnumDataMappingProperty<EnumType>::operator==(const EnumDataMappingProperty& prop) const {
 
-		return EnumDataMappingProperty<EnumType>::operator==(prop);
+		return DataMappingProperty<EnumType>::operator==(prop);
 	}
 
 	template<typename EnumType>

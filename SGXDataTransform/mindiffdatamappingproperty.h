@@ -27,7 +27,7 @@
 namespace SynGlyphX {
 
 	template <typename DataType>
-	class MinDiffDataMappingProperty : public DataMappingProperty < std::pair<DataType, DataType> >
+	class SGXDATATRANSFORM_EXPORT MinDiffDataMappingProperty : public DataMappingProperty < std::pair<DataType, DataType> >
 	{
 	public:
 		MinDiffDataMappingProperty();

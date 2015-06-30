@@ -131,7 +131,16 @@ namespace SynGlyphX {
 		const DataMappingGlyphGraph* minMaxGlyphTree = static_cast<const DataMappingGlyphGraph*>(minMaxGlyph.owner());
 
 		Glyph glyph;
-		glyph.GetStructure() = minMaxGlyph->GetStructure();
+
+		//Copy all non mappable fields first
+		glyph.GetStructure() = minMaxGlyph->GetStructure().ExportGlyphGeometry();
+		const GeometryShapeMappingProperty& shapeMappingProperty = minMaxGlyph->GetStructure().GetGeometryShape();
+		glyph.GetStructure().SetGeometryShape(TransformProperty(shapeMappingProperty.GetBinding(), shapeMappingProperty, queryResultData, index));
+
+		//Copy all non mappable fields first
+		glyph.GetVirtualTopology() = minMaxGlyph->GetVirtualTopology().ExportVirtualTopology();
+		const VirtualTopologyMappingProperty& topologyTypeMappingProperty = minMaxGlyph->GetVirtualTopology().GetType();
+		glyph.GetVirtualTopology().SetType(TransformProperty(topologyTypeMappingProperty.GetBinding(), topologyTypeMappingProperty, queryResultData, index));
 
 		Vector3 mappedVector3;
 
@@ -277,6 +286,68 @@ namespace SynGlyphX {
 		
 		//Return the max value as the default if no transform takes place
 		return mappingProperty.GetValue().first + mappingProperty.GetValue().second;
+	}
+
+	GlyphGeometryInfo::Shape Transformer::TransformProperty(const InputBinding& binding, const GeometryShapeMappingProperty& mappingProperty, const InputFieldDataMap& queryResultData, unsigned int index) const {
+
+		InputField::HashID id = binding.GetInputFieldID();
+		if (id != 0) {
+
+			InputFieldDataMap::const_iterator fieldData = queryResultData.find(id);
+			if (fieldData != queryResultData.end()) {
+
+				MappingFunctionData::Function function = mappingProperty.GetMappingFunctionData()->GetFunction();
+				if (function == MappingFunctionData::Function::Numeric2Value) {
+
+					Numeric2ShapeMappingData::ConstSharedPtr valueMappingData = std::dynamic_pointer_cast<const Numeric2ShapeMappingData>(mappingProperty.GetMappingFunctionData());
+					return valueMappingData->GetOutputValueFromInput(fieldData->second->GetData()[index].toDouble());
+				}
+				else if (function == MappingFunctionData::Function::Text2Value) {
+
+					Text2ShapeMappingData::ConstSharedPtr valueMappingData = std::dynamic_pointer_cast<const Text2ShapeMappingData>(mappingProperty.GetMappingFunctionData());
+					return valueMappingData->GetOutputValueFromInput(fieldData->second->GetData()[index].toString().toStdWString());
+				}
+				else if (function == MappingFunctionData::Function::Range2Value) {
+
+					Range2ShapeMappingData::ConstSharedPtr valueMappingData = std::dynamic_pointer_cast<const Range2ShapeMappingData>(mappingProperty.GetMappingFunctionData());
+					return valueMappingData->GetOutputValueFromInput(fieldData->second->GetData()[index].toDouble());
+				}
+			}
+		}
+
+		//Return the max value as the default if no transform takes place
+		return mappingProperty.GetValue();
+	}
+
+	VirtualTopologyInfo::Type Transformer::TransformProperty(const InputBinding& binding, const VirtualTopologyMappingProperty& mappingProperty, const InputFieldDataMap& queryResultData, unsigned int index) const {
+
+		InputField::HashID id = binding.GetInputFieldID();
+		if (id != 0) {
+
+			InputFieldDataMap::const_iterator fieldData = queryResultData.find(id);
+			if (fieldData != queryResultData.end()) {
+
+				MappingFunctionData::Function function = mappingProperty.GetMappingFunctionData()->GetFunction();
+				if (function == MappingFunctionData::Function::Numeric2Value) {
+
+					Numeric2VirtualTopologyMappingData::ConstSharedPtr valueMappingData = std::dynamic_pointer_cast<const Numeric2VirtualTopologyMappingData>(mappingProperty.GetMappingFunctionData());
+					return valueMappingData->GetOutputValueFromInput(fieldData->second->GetData()[index].toDouble());
+				}
+				else if (function == MappingFunctionData::Function::Text2Value) {
+
+					Text2VirtualTopologyMappingData::ConstSharedPtr valueMappingData = std::dynamic_pointer_cast<const Text2VirtualTopologyMappingData>(mappingProperty.GetMappingFunctionData());
+					return valueMappingData->GetOutputValueFromInput(fieldData->second->GetData()[index].toString().toStdWString());
+				}
+				else if (function == MappingFunctionData::Function::Range2Value) {
+
+					Range2VirtualTopologyMappingData::ConstSharedPtr valueMappingData = std::dynamic_pointer_cast<const Range2VirtualTopologyMappingData>(mappingProperty.GetMappingFunctionData());
+					return valueMappingData->GetOutputValueFromInput(fieldData->second->GetData()[index].toDouble());
+				}
+			}
+		}
+
+		//Return the max value as the default if no transform takes place
+		return mappingProperty.GetValue();
 	}
 
 	bool Transformer::HaveDatasourcesBeenUpdated(const DataTransformMapping& mapping, std::time_t lastUpdateTime) const {

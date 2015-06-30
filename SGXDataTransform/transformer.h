@@ -26,6 +26,7 @@
 #include "datamappingdefaults.h"
 #include "sourcedatacache.h"
 #include "baseimage.h"
+#include "enumdatamappingproperty.h"
 
 namespace SynGlyphX {
 
@@ -60,6 +61,8 @@ namespace SynGlyphX {
 		
 		double TransformProperty(const InputBinding& binding, const NumericMappingProperty& mappingProperty, const InputFieldDataMap& queryResultData, unsigned int index) const;
 		GlyphColor TransformProperty(const InputBinding& binding, const ColorMappingProperty& mappingProperty, const InputFieldDataMap& queryResultData, unsigned int index) const;
+		GlyphGeometryInfo::Shape TransformProperty(const InputBinding& binding, const GeometryShapeMappingProperty& mappingProperty, const InputFieldDataMap& queryResultData, unsigned int index) const;
+		VirtualTopologyInfo::Type TransformProperty(const InputBinding& binding, const VirtualTopologyMappingProperty& mappingProperty, const InputFieldDataMap& queryResultData, unsigned int index) const;
 
 		void GetPositionXYForAllGlyphTrees(const SynGlyphX::DataTransformMapping& mapping, std::vector<GeographicPoint>& points) const;
 		
