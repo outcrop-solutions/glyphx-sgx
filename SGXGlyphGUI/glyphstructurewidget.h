@@ -25,6 +25,7 @@
 #include "radiobuttongroupwidget.h"
 #include "groupboxsinglewidget.h"
 #include "glyphstructuralproperties.h"
+#include "virtualtopology.h"
 #include "propertyupdate.h"
 
 namespace SynGlyphX {
@@ -37,8 +38,9 @@ namespace SynGlyphX {
 		GlyphStructureWidget(QWidget *parent);
 		~GlyphStructureWidget();
 
-		GlyphStructuralProperties GetGlyphStructure() const;
-		void SetWidgetFromGlyphStructure(const GlyphStructuralProperties& structure);
+		GlyphGeometry GetGlyphGeometry() const;
+		VirtualTopology GetVirtualTopology() const;
+		void SetWidgetFromGlyphGeometryAndTopology(const GlyphGeometry& structure, const VirtualTopology& virtualTopology);
 
 	signals:
 		void GlyphPropertyUpdated(PropertyUpdate update);

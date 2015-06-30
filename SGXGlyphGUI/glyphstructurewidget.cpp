@@ -13,13 +13,13 @@ namespace SynGlyphX {
 
 		m_geometryShapeComboBox = new QComboBox(this);
 
-		for (auto shape : SynGlyphX::GlyphStructuralProperties::s_shapeNames.left) {
+		for (auto shape : SynGlyphX::GlyphGeometryInfo::s_shapeNames.left) {
 
 			m_geometryShapeComboBox->addItem(QString::fromStdWString(shape.second));
 		}
 
 		m_topologyComboBox = new QComboBox(this);
-		for (auto virtualTopology : SynGlyphX::GlyphStructuralProperties::s_virtualTopologyNames.left) {
+		for (auto virtualTopology : SynGlyphX::VirtualTopologyInfo::s_virtualTopologyNames.left) {
 
 			m_topologyComboBox->addItem(QString::fromStdWString(virtualTopology.second));
 		}
@@ -35,7 +35,7 @@ namespace SynGlyphX {
 		shapeAndTopologyLayout->setContentsMargins(0, 0, 0, 0);
 
 		QStringList surfaceNames;
-		for (auto surface : SynGlyphX::GlyphStructuralProperties::s_surfaceNames.left) {
+		for (auto surface : SynGlyphX::GlyphGeometryInfo::s_surfaceNames.left) {
 
 			surfaceNames.push_back(QString::fromStdWString(surface.second));
 		}
@@ -72,29 +72,37 @@ namespace SynGlyphX {
 
 	}
 
-	GlyphStructuralProperties GlyphStructureWidget::GetGlyphStructure() const {
+	GlyphGeometry GlyphStructureWidget::GetGlyphGeometry() const {
 
-		GlyphStructuralProperties structure;
-		structure.SetGeometryShape(SynGlyphX::GlyphStructuralProperties::s_shapeNames.right.at(m_geometryShapeComboBox->currentText().toStdWString()));
-		structure.SetGeometrySurface(SynGlyphX::GlyphStructuralProperties::s_surfaceNames.right.at(m_surfaceRadioButtonGroup->GetCheckedButtonLabel().toStdWString()));
-		structure.SetVirtualTopology(SynGlyphX::GlyphStructuralProperties::s_virtualTopologyNames.right.at(m_topologyComboBox->currentText().toStdWString()));
+		GlyphGeometry structure;
+		structure.SetGeometryShape(SynGlyphX::GlyphGeometryInfo::s_shapeNames.right.at(m_geometryShapeComboBox->currentText().toStdWString()));
+		structure.SetGeometrySurface(SynGlyphX::GlyphGeometryInfo::s_surfaceNames.right.at(m_surfaceRadioButtonGroup->GetCheckedButtonLabel().toStdWString()));
 		structure.SetTorusRatio(m_ratioSpinBox->value());
 
 		return structure;
 	}
 
-	void GlyphStructureWidget::SetWidgetFromGlyphStructure(const GlyphStructuralProperties& structure) {
+	VirtualTopology GlyphStructureWidget::GetVirtualTopology() const {
 
-		m_geometryShapeComboBox->setCurrentText(QString::fromStdWString(SynGlyphX::GlyphStructuralProperties::s_shapeNames.left.at(structure.GetGeometryShape())));
+		VirtualTopology virtualTopology;
+		virtualTopology.SetType(SynGlyphX::VirtualTopologyInfo::s_virtualTopologyNames.right.at(m_topologyComboBox->currentText().toStdWString()));
+
+		return virtualTopology;
+	}
+
+	void GlyphStructureWidget::SetWidgetFromGlyphGeometryAndTopology(const GlyphGeometry& structure, const VirtualTopology& virtualTopology) {
+
+		m_geometryShapeComboBox->setCurrentText(QString::fromStdWString(SynGlyphX::GlyphGeometryInfo::s_shapeNames.left.at(structure.GetGeometryShape())));
 		m_surfaceRadioButtonGroup->SetCheckedButton(structure.GetGeometrySurface());
-		m_topologyComboBox->setCurrentText(QString::fromStdWString(SynGlyphX::GlyphStructuralProperties::s_virtualTopologyNames.left.at(structure.GetVirtualTopology())));
 		m_ratioSpinBox->setValue(structure.GetTorusRatio());
+
+		m_topologyComboBox->setCurrentText(QString::fromStdWString(SynGlyphX::VirtualTopologyInfo::s_virtualTopologyNames.left.at(virtualTopology.GetType())));
 	}
 
 	void GlyphStructureWidget::OnShapeComboBoxChanged(int index) {
 
-		SynGlyphX::GlyphStructuralProperties::Shape shape = static_cast<SynGlyphX::GlyphStructuralProperties::Shape>(index);
-		m_ratioGroupBox->setVisible(shape == SynGlyphX::GlyphStructuralProperties::Torus);
+		SynGlyphX::GlyphGeometryInfo::Shape shape = static_cast<SynGlyphX::GlyphGeometryInfo::Shape>(index);
+		m_ratioGroupBox->setVisible(shape == SynGlyphX::GlyphGeometryInfo::Torus);
 	}
 
 } //namespace SynGlyphX

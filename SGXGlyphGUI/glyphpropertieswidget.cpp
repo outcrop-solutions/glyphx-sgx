@@ -136,7 +136,7 @@ namespace SynGlyphX {
 
 	void GlyphPropertiesWidget::SetWidgetFromGlyph(const Glyph& glyph, bool isNotRootNode) {
 
-		m_glyphStructureWidget->SetWidgetFromGlyphStructure(glyph.GetStructure());
+		m_glyphStructureWidget->SetWidgetFromGlyphGeometryAndTopology(glyph.GetStructure(), glyph.GetVirtualTopology());
 
 		m_colorWidget->SetColor(ColorConverter::GlyphColor2QColor(glyph.GetColor(), glyph.GetTransparency()));
 
@@ -149,7 +149,8 @@ namespace SynGlyphX {
 
 	void GlyphPropertiesWidget::SetGlyphFromWidget(Glyph& glyph) {
 
-		glyph.GetStructure() = m_glyphStructureWidget->GetGlyphStructure();
+		glyph.GetStructure() = m_glyphStructureWidget->GetGlyphGeometry();
+		glyph.GetVirtualTopology() = m_glyphStructureWidget->GetVirtualTopology();
 
 		QColor color = m_colorWidget->GetColor();
 		glyph.GetColor() = ColorConverter::QColor2GlyphColor(color);

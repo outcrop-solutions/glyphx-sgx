@@ -130,8 +130,8 @@ QVariant DataTransformModel::GetGlyphData(const QModelIndex& index) const {
 
 		SynGlyphX::DataMappingGlyphGraph::const_iterator iterator(static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(index.internalPointer()));
 
-		std::wstring glyphData = SynGlyphX::GlyphStructuralProperties::s_shapeNames.left.at(iterator->GetStructure().GetGeometryShape()) + L": " + 
-			SynGlyphX::GlyphStructuralProperties::s_virtualTopologyNames.left.at(iterator->GetStructure().GetVirtualTopology());
+		std::wstring glyphData = SynGlyphX::GlyphGeometryInfo::s_shapeNames.left.at(iterator->GetStructure().GetGeometryShape().GetValue()) + L": " + 
+			SynGlyphX::VirtualTopologyInfo::s_virtualTopologyNames.left.at(iterator->GetVirtualTopology().GetType().GetValue());
 		if (iterator == iterator.owner()->root().constify()) {
 			glyphData += L" (Root)";
 		}
@@ -438,12 +438,22 @@ void DataTransformModel::UpdateGlyph(const QModelIndex& index, const SynGlyphX::
 	}
 }
 
-void DataTransformModel::UpdateGlyphStructure(const QModelIndex& index, const SynGlyphX::GlyphStructuralProperties& structure) {
+void DataTransformModel::UpdateGlyphGeometry(const QModelIndex& index, const SynGlyphX::DataMappingGlyphGeometry& structure) {
 
 	if (!m_dataMapping->GetGlyphGraphs().empty() && index.isValid()) {
 
 		SynGlyphX::DataMappingGlyphGraph::iterator glyph(static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(index.internalPointer()));
 		glyph->GetStructure() = structure;
+		emit dataChanged(index, index);
+	}
+}
+
+void DataTransformModel::UpdateVirtualTopology(const QModelIndex& index, const SynGlyphX::DataMappingVirtualTopology& virtualTopology) {
+
+	if (!m_dataMapping->GetGlyphGraphs().empty() && index.isValid()) {
+
+		SynGlyphX::DataMappingGlyphGraph::iterator glyph(static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(index.internalPointer()));
+		glyph->GetVirtualTopology() = virtualTopology;
 		emit dataChanged(index, index);
 	}
 }

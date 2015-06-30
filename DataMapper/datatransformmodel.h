@@ -64,7 +64,8 @@ public:
 	void AddGlyphFile(const QString& filename);
 	void AddGlyphTree(SynGlyphX::DataMappingGlyphGraph::SharedPtr glyphTree);
 	void UpdateGlyph(const QModelIndex& index, const SynGlyphX::DataMappingGlyph& newGlyph);
-	void UpdateGlyphStructure(const QModelIndex& index, const SynGlyphX::GlyphStructuralProperties& structure);
+	void UpdateGlyphGeometry(const QModelIndex& index, const SynGlyphX::DataMappingGlyphGeometry& structure);
+	void UpdateVirtualTopology(const QModelIndex& index, const SynGlyphX::DataMappingVirtualTopology& virtualTopology);
 	const SynGlyphX::DataMappingGlyph& GetGlyph(const QModelIndex& index) const;
 	void AddChildGlyph(const QModelIndex& parent, const SynGlyphX::DataMappingGlyph& glyphTemplate, unsigned int numberOfChildren = 1);
 

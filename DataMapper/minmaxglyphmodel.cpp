@@ -486,12 +486,18 @@ void MinMaxGlyphModel::SetMappingFunction(int row, SynGlyphX::MappingFunctionDat
 	}
 }
 
-const SynGlyphX::GlyphStructuralProperties& MinMaxGlyphModel::GetGlyphStructure() const {
+const SynGlyphX::GlyphGeometry& MinMaxGlyphModel::GetGlyphGeometry() const {
 
-	return m_dataTransformModel->GetGlyph(m_selectedDataTransformModelIndex).GetStructure();
+	return m_dataTransformModel->GetGlyph(m_selectedDataTransformModelIndex).GetStructure().ExportGlyphGeometry();
 }
 
-void MinMaxGlyphModel::SetGlyphStructure(const SynGlyphX::GlyphStructuralProperties structure) {
+const SynGlyphX::VirtualTopology& MinMaxGlyphModel::GetVirtualTopology() const {
 
-	m_dataTransformModel->UpdateGlyphStructure(m_selectedDataTransformModelIndex, structure);
+	return m_dataTransformModel->GetGlyph(m_selectedDataTransformModelIndex).GetVirtualTopology().ExportVirtualTopology();
+}
+
+void MinMaxGlyphModel::SetGlyphGeometryAndVirtualTopology(const SynGlyphX::GlyphGeometry& structure, const SynGlyphX::VirtualTopology& virtualTopology) {
+
+	m_dataTransformModel->UpdateGlyphGeometry(m_selectedDataTransformModelIndex, structure);
+	m_dataTransformModel->UpdateVirtualTopology(m_selectedDataTransformModelIndex, virtualTopology);
 }

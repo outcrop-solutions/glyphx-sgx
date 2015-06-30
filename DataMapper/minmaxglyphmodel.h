@@ -46,8 +46,9 @@ public:
 	SynGlyphX::MappingFunctionData::ConstSharedPtr GetMappingFunction(int row) const;
 	void SetMappingFunction(int row, SynGlyphX::MappingFunctionData::SharedPtr mappingFunction);
 
-	const SynGlyphX::GlyphStructuralProperties& GetGlyphStructure() const;
-	void SetGlyphStructure(const SynGlyphX::GlyphStructuralProperties structure);
+	const SynGlyphX::GlyphGeometry& GetGlyphGeometry() const;
+	const SynGlyphX::VirtualTopology& GetVirtualTopology() const;
+	void SetGlyphGeometryAndVirtualTopology(const SynGlyphX::GlyphGeometry& structure, const SynGlyphX::VirtualTopology& virtualTopology);
 
 public slots:
 	void SetMinMaxGlyph(const QModelIndex& index);
