@@ -48,8 +48,8 @@ namespace SynGlyphXANTz {
 
 		SynGlyphX::DataMappingGlyphGraph::iterator glyph = GetIteratorFromIndex(index);
 
-		std::wstring displayedData = SynGlyphX::GlyphStructuralProperties::s_shapeNames.left.at(glyph->GetStructure().GetGeometryShape()) + L": ";
-		displayedData += SynGlyphX::GlyphStructuralProperties::s_virtualTopologyNames.left.at(glyph->GetStructure().GetVirtualTopology());
+		std::wstring displayedData = SynGlyphX::GlyphGeometryInfo::s_shapeNames.left.at(glyph->GetStructure().GetGeometryShape().GetValue()) + L": ";
+		displayedData += SynGlyphX::VirtualTopologyInfo::s_virtualTopologyNames.left.at(glyph->GetVirtualTopology().GetType().GetValue());
 		if (IsRootGlyph(glyph)) {
 			displayedData += L" (Root)";
 		}
@@ -262,7 +262,7 @@ namespace SynGlyphXANTz {
 
 			if (updates.testFlag(SynGlyphX::UpdateTopology)) {
 
-				glyphToUpdate->GetStructure().SetVirtualTopology(glyph.GetStructure().GetVirtualTopology());
+				glyphToUpdate->GetVirtualTopology().SetType(glyph.GetVirtualTopology().GetType());
 			}
 
 			if (updates.testFlag(SynGlyphX::UpdateRotationRate)) {
@@ -362,7 +362,7 @@ namespace SynGlyphXANTz {
 
 			if (updates.testFlag(SynGlyphX::UpdateTopology)) {
 
-				glyphToUpdate->GetStructure().SetVirtualTopology(glyph.GetStructure().GetVirtualTopology());
+				glyphToUpdate->GetVirtualTopology().SetType(glyph.GetVirtualTopology().GetType());
 			}
 
 			if (updates.testFlag(SynGlyphX::UpdateRotationRate)) {
@@ -429,7 +429,7 @@ namespace SynGlyphXANTz {
 
 			if (updates.testFlag(SynGlyphX::UpdateTopology)) {
 
-				glyphToUpdate->GetStructure().SetVirtualTopology(glyph.GetStructure().GetVirtualTopology());
+				glyphToUpdate->GetVirtualTopology().SetType(glyph.GetVirtualTopology().GetType());
 			}
 
 			if (updates.testFlag(SynGlyphX::UpdateRotationRate)) {

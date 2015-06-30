@@ -280,7 +280,7 @@ namespace SynGlyphXANTz {
 		glyph->geometry = 2 * glyphTemplate.GetStructure().GetGeometryShape();
 
 		//This is necessary because ANTz screwed up the enum for geometries
-		if (glyphTemplate.GetStructure().GetGeometryShape() == SynGlyphX::GlyphStructuralProperties::Shape::Pin) {
+		if (glyphTemplate.GetStructure().GetGeometryShape() == SynGlyphX::GlyphGeometryInfo::Shape::Pin) {
 			glyph->geometry += (1 - glyphTemplate.GetStructure().GetGeometrySurface());
 		}
 		else {
@@ -293,7 +293,7 @@ namespace SynGlyphXANTz {
 		glyph->color.b = color[2];
 		glyph->color.a = glyphTemplate.GetTransparency();
 
-		glyph->topo = glyphTemplate.GetStructure().GetVirtualTopology();
+		glyph->topo = glyphTemplate.GetVirtualTopology().GetType();
 
 		UpdateAnimationValuesFromGlyph(glyph, glyphTemplate);
 
