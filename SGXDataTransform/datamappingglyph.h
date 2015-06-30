@@ -24,10 +24,9 @@
 #include <boost/property_tree/ptree.hpp>
 #include "mindiffdatamappingproperty.h"
 #include "datamappingglyphgeometry.h"
+#include "datamappingvirtualtopology.h"
 
 namespace SynGlyphX {
-
-	typedef VirtualTopologyTemplate<VirtualTopologyMappingProperty> DataMappingVirtualTopology;
 
 	class SGXDATATRANSFORM_EXPORT DataMappingGlyph : public GlyphTemplate<NumericMappingProperty, ColorMappingProperty, TextMappingProperty, DataMappingGlyphGeometry, DataMappingVirtualTopology> {
 

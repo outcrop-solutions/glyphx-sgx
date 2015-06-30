@@ -49,7 +49,7 @@ namespace SynGlyphX {
 
 		m_structure = DataMappingGlyphGeometry(glyph.GetStructure());
 
-		m_virtualTopology = DataMappingVirtualTopology(VirtualTopologyMappingProperty(glyph.GetVirtualTopology().GetType()));
+		m_virtualTopology = DataMappingVirtualTopology(glyph.GetVirtualTopology());
 	}
 
 	DataMappingGlyph::DataMappingGlyph(const boost::property_tree::wptree& propertyTree) :
@@ -80,6 +80,20 @@ namespace SynGlyphX {
 		if (geometryTree.is_initialized()) {
 
 			m_structure = DataMappingGlyphGeometry(geometryTree.get());
+		}
+		else {
+
+			m_structure = DataMappingGlyphGeometry(propertyTree, true);
+		}
+
+		boost::optional<const boost::property_tree::wptree&> virtualTopologyTree = propertyTree.get_child_optional(L"VirtualTopology");
+		if (virtualTopologyTree.is_initialized()) {
+
+			m_virtualTopology = DataMappingVirtualTopology(virtualTopologyTree.get());
+		}
+		else {
+
+			m_virtualTopology = DataMappingVirtualTopology(propertyTree, true);
 		}
 	}
 

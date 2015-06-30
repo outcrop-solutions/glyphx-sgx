@@ -19,11 +19,20 @@ namespace SynGlyphX {
 		SetTorusRatio(glyphGeometry.GetTorusRatio());
 	}
 
-	DataMappingGlyphGeometry::DataMappingGlyphGeometry(const boost::property_tree::wptree& propertyTree) :
+	DataMappingGlyphGeometry::DataMappingGlyphGeometry(const boost::property_tree::wptree& propertyTree, bool useOldPropertyTree) :
 		GlyphStructuralProperties < GeometryShapeMappingProperty >() {
 
-		m_geometryShape = GeometryShapeMappingProperty(propertyTree.get_child(L"Shape"));
-		m_geometrySurface = propertyTree.get<GlyphGeometryInfo::Surface>(L"Surface");
+		if (useOldPropertyTree) {
+
+			m_geometryShape = GeometryShapeMappingProperty(propertyTree.get<GlyphGeometryInfo::Shape>(L"<xmlattr>.Shape"));
+			m_geometrySurface = propertyTree.get<GlyphGeometryInfo::Surface>(L"<xmlattr>.Surface");
+		}
+		else {
+
+			m_geometryShape = GeometryShapeMappingProperty(propertyTree.get_child(L"Shape"));
+			m_geometrySurface = propertyTree.get<GlyphGeometryInfo::Surface>(L"Surface");
+		}
+			
 		m_torusRatio = propertyTree.get_optional<double>(L"Ratio").get_value_or(0.1);
 	}
 

@@ -15,32 +15,32 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef SYNGLYPHX_DATAMAPPINGGLYPHGEOMETRY_H
-#define SYNGLYPHX_DATAMAPPINGGLYPHGEOMETRY_H
+#ifndef SYNGLYPHX_DATAMAPPINGVIRTUALTOPOLOGY_H
+#define SYNGLYPHX_DATAMAPPINGVIRTUALTOPOLOGY_H
 
-#include "glyphstructuralproperties.h"
+#include "virtualtopology.h"
 #include "enumdatamappingproperty.h"
 #include <boost/property_tree/ptree.hpp>
 
 namespace SynGlyphX {
 
-	class DataMappingGlyphGeometry : public GlyphStructuralProperties < GeometryShapeMappingProperty >
+	class DataMappingVirtualTopology : public VirtualTopologyTemplate < VirtualTopologyMappingProperty >
 	{
 	public:
-		DataMappingGlyphGeometry();
-		DataMappingGlyphGeometry(const DataMappingGlyphGeometry& glyphGeometry);
-		DataMappingGlyphGeometry(const GlyphGeometry& glyphGeometry);
-		DataMappingGlyphGeometry(const boost::property_tree::wptree& propertyTree, bool useOldPropertyTree = false);
-		~DataMappingGlyphGeometry();
+		DataMappingVirtualTopology();
+		DataMappingVirtualTopology(const DataMappingVirtualTopology& virtualTopology);
+		DataMappingVirtualTopology(const VirtualTopology& virtualTopology);
+		DataMappingVirtualTopology(const boost::property_tree::wptree& propertyTree, bool useOldPropertyTree = false);
+		~DataMappingVirtualTopology();
 
-		DataMappingGlyphGeometry& operator=(const DataMappingGlyphGeometry& glyphGeometry);
-		bool operator==(const DataMappingGlyphGeometry& glyphGeometry) const;
-		bool operator!=(const DataMappingGlyphGeometry& glyphGeometry) const;
+		DataMappingVirtualTopology& operator=(const DataMappingVirtualTopology& virtualTopology);
+		bool operator==(const DataMappingVirtualTopology& virtualTopology) const;
+		bool operator!=(const DataMappingVirtualTopology& virtualTopology) const;
 
 		boost::property_tree::wptree& ExportToPropertyTree(boost::property_tree::wptree& propertyTree) const;
-		GlyphGeometry ExportGlyphGeometry() const;
+		VirtualTopology ExportVirtualTopology() const;
 	};
 
 } //namespace SynGlyphX
 
-#endif //SYNGLYPHX_DATAMAPPINGGLYPHGEOMETRY_H
+#endif //SYNGLYPHX_DATAMAPPINGVIRTUALTOPOLOGY_H
