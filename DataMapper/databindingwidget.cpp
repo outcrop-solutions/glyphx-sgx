@@ -304,7 +304,7 @@ void DataBindingWidget::OnModelReset() {
 	if (doesModelHaveData) {
 
 		bool areSignalsBlocked = m_glyphStructureWidget->blockSignals(true);
-		m_glyphStructureWidget->SetWidgetFromGlyphGeometryAndTopology(m_model->GetGlyphGeometry(), m_model->GetVirtualTopology());
+		m_glyphStructureWidget->SetWidgetFromGlyphGeometryAndTopology(m_model->GetGlyphGeometry().ExportGlyphGeometry(), m_model->GetVirtualTopology().ExportVirtualTopology());
 		m_glyphStructureWidget->blockSignals(areSignalsBlocked);
 	}
 

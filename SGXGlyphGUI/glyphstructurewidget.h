@@ -24,7 +24,7 @@
 #include <QtWidgets/QDoubleSpinBox>
 #include "radiobuttongroupwidget.h"
 #include "groupboxsinglewidget.h"
-#include "glyphstructuralproperties.h"
+#include "glyphgeometry.h"
 #include "virtualtopology.h"
 #include "propertyupdate.h"
 

@@ -52,8 +52,8 @@ void MappingFunctionWidget::SetFunction(const QString& function) {
 void MappingFunctionWidget::OnFunctionComboBoxChanged() {
 
 	SynGlyphX::MappingFunctionData::Function function = static_cast<SynGlyphX::MappingFunctionData::Function>(m_functionComboBox->currentData().toInt());
-	bool isNotInterpolation = ((function != SynGlyphX::MappingFunctionData::LinearInterpolation) && (function != SynGlyphX::MappingFunctionData::LogarithmicInterpolation));
-	m_editPropertiesButton->setEnabled(isNotInterpolation);
+	bool hasProperties = ((function != SynGlyphX::MappingFunctionData::LinearInterpolation) && (function != SynGlyphX::MappingFunctionData::LogarithmicInterpolation) && (function != SynGlyphX::MappingFunctionData::None));
+	m_editPropertiesButton->setEnabled(hasProperties);
 
 	emit FunctionChanged();
 

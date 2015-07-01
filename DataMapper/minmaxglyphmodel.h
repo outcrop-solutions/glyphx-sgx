@@ -46,8 +46,8 @@ public:
 	SynGlyphX::MappingFunctionData::ConstSharedPtr GetMappingFunction(int row) const;
 	void SetMappingFunction(int row, SynGlyphX::MappingFunctionData::SharedPtr mappingFunction);
 
-	const SynGlyphX::GlyphGeometry& GetGlyphGeometry() const;
-	const SynGlyphX::VirtualTopology& GetVirtualTopology() const;
+	const SynGlyphX::DataMappingGlyphGeometry& GetGlyphGeometry() const;
+	const SynGlyphX::DataMappingVirtualTopology& GetVirtualTopology() const;
 	void SetGlyphGeometryAndVirtualTopology(const SynGlyphX::GlyphGeometry& structure, const SynGlyphX::VirtualTopology& virtualTopology);
 
 public slots:
