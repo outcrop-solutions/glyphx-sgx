@@ -19,13 +19,13 @@
 #define SYNGLYPHX_DATAMAPPINGGLYPHGEOMETRY_H
 
 #include "sgxdatatransform_global.h"
-#include "glyphstructuralproperties.h"
-#include "enumdatamappingproperty.h"
+#include "glyphgeometry.h"
+#include "datamappingproperty.h"
 #include <boost/property_tree/ptree.hpp>
 
 namespace SynGlyphX {
 
-	class SGXDATATRANSFORM_EXPORT DataMappingGlyphGeometry : public GlyphStructuralProperties < GeometryShapeMappingProperty >
+	class SGXDATATRANSFORM_EXPORT DataMappingGlyphGeometry : public GlyphGeometryTemplate < GeometryShapeMappingProperty >
 	{
 	public:
 		DataMappingGlyphGeometry();

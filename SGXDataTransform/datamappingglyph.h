@@ -22,7 +22,7 @@
 #include "glyphgraph.h"
 #include <vector>
 #include <boost/property_tree/ptree.hpp>
-#include "mindiffdatamappingproperty.h"
+#include "datamappingproperty.h"
 #include "datamappingglyphgeometry.h"
 #include "datamappingvirtualtopology.h"
 

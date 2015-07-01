@@ -3,24 +3,24 @@
 namespace SynGlyphX {
 
 	DataMappingGlyphGeometry::DataMappingGlyphGeometry() :
-		GlyphStructuralProperties < GeometryShapeMappingProperty >() {
+		GlyphGeometryTemplate < GeometryShapeMappingProperty >() {
 	
 	}
 
 	DataMappingGlyphGeometry::DataMappingGlyphGeometry(const DataMappingGlyphGeometry& glyphGeometry) :
-		GlyphStructuralProperties < GeometryShapeMappingProperty >(glyphGeometry) {
+		GlyphGeometryTemplate < GeometryShapeMappingProperty >(glyphGeometry) {
 
 
 	}
 
 	DataMappingGlyphGeometry::DataMappingGlyphGeometry(const GlyphGeometry& glyphGeometry) :
-		GlyphStructuralProperties < GeometryShapeMappingProperty >(GeometryShapeMappingProperty(glyphGeometry.GetGeometryShape()), glyphGeometry.GetGeometrySurface()) {
+		GlyphGeometryTemplate < GeometryShapeMappingProperty >(GeometryShapeMappingProperty(glyphGeometry.GetGeometryShape()), glyphGeometry.GetGeometrySurface()) {
 
 		SetTorusRatio(glyphGeometry.GetTorusRatio());
 	}
 
 	DataMappingGlyphGeometry::DataMappingGlyphGeometry(const boost::property_tree::wptree& propertyTree, bool useOldPropertyTree) :
-		GlyphStructuralProperties < GeometryShapeMappingProperty >() {
+		GlyphGeometryTemplate < GeometryShapeMappingProperty >() {
 
 		if (useOldPropertyTree) {
 
@@ -42,14 +42,14 @@ namespace SynGlyphX {
 
 	DataMappingGlyphGeometry& DataMappingGlyphGeometry::operator=(const DataMappingGlyphGeometry& glyphGeometry) {
 
-		GlyphStructuralProperties<GeometryShapeMappingProperty>::operator=(glyphGeometry);
+		GlyphGeometryTemplate<GeometryShapeMappingProperty>::operator=(glyphGeometry);
 
 		return *this;
 	}
 
 	bool DataMappingGlyphGeometry::operator==(const DataMappingGlyphGeometry& glyphGeometry) const {
 
-		return GlyphStructuralProperties<GeometryShapeMappingProperty>::operator==(glyphGeometry);
+		return GlyphGeometryTemplate<GeometryShapeMappingProperty>::operator==(glyphGeometry);
 	}
 
 	bool DataMappingGlyphGeometry::operator!=(const DataMappingGlyphGeometry& glyphGeometry) const {

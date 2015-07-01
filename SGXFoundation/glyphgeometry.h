@@ -15,35 +15,99 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef SYNGLYPHX_GLYPHSTRUCTURALPROPERTIES_H
-#define SYNGLYPHX_GLYPHSTRUCTURALPROPERTIES_H
+#ifndef SYNGLYPHX_GLYPHGEOMETRY_H
+#define SYNGLYPHX_GLYPHGEOMETRY_H
 
 #include "sgxfoundation.h"
-//#include <boost/property_tree/ptree.hpp>
 #include "glyphgeometryinfo.h"
 
 namespace SynGlyphX {
 
 	template <typename GeometryShapeType>
-	class SGXFOUNDATION_API GlyphStructuralProperties
+	class GlyphGeometryTemplate
 	{
 	public:
-		GlyphStructuralProperties(const GeometryShapeType& shape = GeometryShapeType(), GlyphGeometryInfo::Surface surface = GlyphGeometryInfo::Surface::Solid);
-		GlyphStructuralProperties(const GlyphStructuralProperties& properties);
-		~GlyphStructuralProperties();
+		GlyphGeometryTemplate(const GeometryShapeType& shape = GeometryShapeType(), GlyphGeometryInfo::Surface surface = GlyphGeometryInfo::Surface::Solid) :
+			m_geometryShape(shape),
+			m_geometrySurface(surface),
+			m_torusRatio(0.1) {
+		
+		}
 
-		GlyphStructuralProperties& operator=(const GlyphStructuralProperties& properties);
-		bool operator==(const GlyphStructuralProperties& properties) const;
-		bool operator!=(const GlyphStructuralProperties& properties) const;
+		GlyphGeometryTemplate(const GlyphGeometryTemplate& properties) :
+			m_geometryShape(properties.m_geometryShape),
+			m_geometrySurface(properties.m_geometrySurface),
+			m_torusRatio(properties.m_torusRatio) {
 
-		void SetGeometryShape(const GeometryShapeType& shape);
-		const GeometryShapeType& GetGeometryShape() const;
+		}
 
-		void SetGeometrySurface(GlyphGeometryInfo::Surface surface);
-		GlyphGeometryInfo::Surface GetGeometrySurface() const;
+		~GlyphGeometryTemplate() {
 
-		void SetTorusRatio(double ratio);
-		double GetTorusRatio() const;
+		}
+
+		GlyphGeometryTemplate& operator=(const GlyphGeometryTemplate& properties) {
+
+			m_geometryShape = properties.m_geometryShape;
+			m_geometrySurface = properties.m_geometrySurface;
+			m_torusRatio = properties.m_torusRatio;
+
+			return *this;
+		}
+
+		bool operator==(const GlyphGeometryTemplate& properties) const {
+
+			if (m_geometryShape != properties.m_geometryShape) {
+
+				return false;
+			}
+
+			if (m_geometrySurface != properties.m_geometrySurface) {
+
+				return false;
+			}
+
+			if (m_torusRatio != properties.m_torusRatio) {
+
+				return false;
+			}
+
+			return true;
+		}
+
+		bool operator!=(const GlyphGeometryTemplate& properties) const {
+
+			return !operator==(properties);
+		}
+
+		void SetGeometryShape(const GeometryShapeType& shape) {
+
+			m_geometryShape = shape;
+		}
+
+		const GeometryShapeType& GetGeometryShape() const {
+
+			return m_geometryShape;
+		}
+
+		void SetGeometrySurface(GlyphGeometryInfo::Surface surface) {
+
+			m_geometrySurface = surface;
+		}
+
+		GlyphGeometryInfo::Surface GetGeometrySurface() const {
+
+			return m_geometrySurface;
+		}
+
+		void SetTorusRatio(double ratio) {
+
+			m_torusRatio = ratio;
+		}
+
+		double GetTorusRatio() const {
+
+			return m_torusRatio;
+		}
 
 	protected:
 		GeometryShapeType m_geometryShape;
@@ -51,8 +115,8 @@ namespace SynGlyphX {
 		double m_torusRatio;
 	};
 
-	typedef GlyphStructuralProperties<GlyphGeometryInfo::Shape> GlyphGeometry;
+	typedef GlyphGeometryTemplate<GlyphGeometryInfo::Shape> GlyphGeometry;
 
 } //namespace SynGlyphX
 
-#endif //SYNGLYPHX_GLYPHSTRUCTURALPROPERTIES_H
+#endif //SYNGLYPHX_GLYPHGEOMETRY_H

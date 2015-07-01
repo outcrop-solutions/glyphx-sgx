@@ -30,9 +30,6 @@
     <ClInclude Include="glyphtemplate.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="glyphstructuralproperties.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="graphcopyvisitor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -51,15 +48,15 @@
     <ClInclude Include="glyphgeometryinfo.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="glyphgeometry.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="glyphgraph.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="glyphstructuralproperties.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="glyphcolor.cpp">
@@ -69,9 +66,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="virtualtopologyinfo.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="virtualtopology.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="glyphgeometryinfo.cpp">

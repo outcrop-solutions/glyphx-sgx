@@ -97,9 +97,9 @@
   <ItemGroup>
     <ClInclude Include="glyph.h" />
     <ClInclude Include="glyphcolor.h" />
+    <ClInclude Include="glyphgeometry.h" />
     <ClInclude Include="glyphgeometryinfo.h" />
     <ClInclude Include="glyphgraph.h" />
-    <ClInclude Include="glyphstructuralproperties.h" />
     <ClInclude Include="glyphtemplate.h" />
     <ClInclude Include="graphcopyvisitor.h" />
     <ClInclude Include="sgxfoundation.h" />
@@ -120,8 +120,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
       </PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="glyphstructuralproperties.cpp" />
-    <ClCompile Include="virtualtopology.cpp" />
     <ClCompile Include="virtualtopologyinfo.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

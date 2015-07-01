@@ -20,7 +20,7 @@
 
 #include "sgxfoundation.h"
 #include <array>
-#include "glyphstructuralproperties.h"
+#include "glyphgeometry.h"
 
 namespace SynGlyphX {
 

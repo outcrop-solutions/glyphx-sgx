@@ -19,7 +19,7 @@
 #define SYNGLYPHX_BUNDLEDPROPERTYGRAPH_H
 
 #include "sgxfoundation.h"
-#include "glyphstructuralproperties.h"
+#include "glyphgeometry.h"
 #include "glyph.h"
 #include "glyphcolor.h"
 //#include <boost/graph/directed_graph.hpp>

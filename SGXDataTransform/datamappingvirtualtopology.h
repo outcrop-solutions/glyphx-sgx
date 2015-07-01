@@ -20,7 +20,7 @@
 
 #include "sgxdatatransform_global.h"
 #include "virtualtopology.h"
-#include "enumdatamappingproperty.h"
+#include "datamappingproperty.h"
 #include <boost/property_tree/ptree.hpp>
 
 namespace SynGlyphX {

@@ -26,7 +26,7 @@
 #include "datamappingdefaults.h"
 #include "sourcedatacache.h"
 #include "baseimage.h"
-#include "enumdatamappingproperty.h"
+#include "datamappingproperty.h"
 
 namespace SynGlyphX {
 

@@ -24,19 +24,50 @@
 namespace SynGlyphX {
 
 	template<typename DataType>
-	class SGXFOUNDATION_API VirtualTopologyTemplate {
+	class VirtualTopologyTemplate {
 
 	public:
-		VirtualTopologyTemplate(const DataType& data = DataType());
-		VirtualTopologyTemplate(const VirtualTopologyTemplate& virtualTopology);
-		~VirtualTopologyTemplate();
+		VirtualTopologyTemplate(const DataType& data = DataType()) :
+			m_data(data) {
 
-		VirtualTopologyTemplate& operator=(const VirtualTopologyTemplate& virtualTopology);
-		bool operator==(const VirtualTopologyTemplate& virtualTopology) const;
-		bool operator!=(const VirtualTopologyTemplate& virtualTopology) const;
+		}
 
-		const DataType& GetType() const;
-		void SetType(const DataType& data);
+		VirtualTopologyTemplate(const VirtualTopologyTemplate& virtualTopology) :
+			m_data(virtualTopology.m_data) {
+
+		}
+
+		~VirtualTopologyTemplate() {
+
+
+		}
+
+		VirtualTopologyTemplate& operator=(const VirtualTopologyTemplate& virtualTopology) {
+
+			m_data = virtualTopology.m_data;
+
+			return *this;
+		}
+
+		bool operator==(const VirtualTopologyTemplate& virtualTopology) const {
+
+			return (m_data == virtualTopology.m_data);
+		}
+
+		bool operator!=(const VirtualTopologyTemplate& virtualTopology) const {
+
+			return !operator==(virtualTopology);
+		}
+
+		const DataType& GetType() const {
+
+			return m_data;
+		}
+
+		void SetType(const DataType& data) {
+
+			m_data = data;
+		}
 
 	protected:
 		DataType m_data;

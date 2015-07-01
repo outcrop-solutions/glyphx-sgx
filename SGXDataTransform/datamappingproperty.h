@@ -44,7 +44,7 @@ namespace SynGlyphX {
 		bool operator==(const DataMappingProperty& prop) const;
 		bool operator!=(const DataMappingProperty& prop) const;
 
-		virtual boost::property_tree::wptree& ExportToPropertyTree(boost::property_tree::wptree& propertyTree) const;
+		boost::property_tree::wptree& ExportToPropertyTree(boost::property_tree::wptree& propertyTree) const;
 
 		PropertyType& GetValue();
 		const PropertyType& GetValue() const;
@@ -56,9 +56,9 @@ namespace SynGlyphX {
 		void SetMappingFunctionData(MappingFunctionData::SharedPtr mappingFunctionData);
 
 	protected:
-		virtual bool IsMappingFunctionDataCompatible(MappingFunctionData::SharedPtr mappingFunctionData) const;
-		virtual void ExportValueToPropertyTree(boost::property_tree::wptree& propertyTree) const;
-		virtual void ImportValueToPropertyTree(const boost::property_tree::wptree& propertyTree);
+		bool IsMappingFunctionDataCompatible(MappingFunctionData::SharedPtr mappingFunctionData) const;
+		void ExportValueToPropertyTree(boost::property_tree::wptree& propertyTree) const;
+		void ImportValueToPropertyTree(const boost::property_tree::wptree& propertyTree);
 
 		void ChangeMappingFunction(MappingFunctionData::Function function, const boost::property_tree::wptree& propertyTree);
 
@@ -68,6 +68,14 @@ namespace SynGlyphX {
 	};
 
 	typedef DataMappingProperty<std::wstring> TextMappingProperty;
+
+	typedef DataMappingProperty<std::pair<double, double>> NumericMappingProperty;
+	typedef DataMappingProperty<std::pair<GlyphColor, GlyphColor>> ColorMappingProperty;
+
+	typedef std::array<NumericMappingProperty, 3> NumericMappingPropertyXYZ;
+
+	typedef DataMappingProperty<GlyphGeometryInfo::Shape> GeometryShapeMappingProperty;
+	typedef DataMappingProperty<VirtualTopologyInfo::Type> VirtualTopologyMappingProperty;
 
 } //namespace SynGlyphX
 
