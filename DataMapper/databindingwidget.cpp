@@ -53,15 +53,15 @@ void DataBindingWidget::CreateAnimationTable() {
 	QGridLayout* gridLayout = new QGridLayout(this);
 
 	CreateTableHeader(gridLayout);
-	CreateGridLines(gridLayout);
+	CreateVerticalGridLines(gridLayout, 4);
 
-	CreateGridLine(gridLayout, QFrame::HLine, 1, 2);
+	CreateGridLine(gridLayout, QFrame::HLine, -1, 2);
 
-	CreateDoublePropertyWidgets(gridLayout, 2, 13, -1000.0, 1000.0);
-	CreateGridLine(gridLayout, QFrame::HLine, 3);
-	CreateDoublePropertyWidgets(gridLayout, 4, 13, -1000.0, 1000.0);
-	CreateGridLine(gridLayout, QFrame::HLine, 5);
-	CreateDoublePropertyWidgets(gridLayout, 6, 13, -1000.0, 1000.0);
+	CreateDoublePropertyWidgets(gridLayout, 13, -1000.0, 1000.0);
+	CreateGridLine(gridLayout, QFrame::HLine);
+	CreateDoublePropertyWidgets(gridLayout, 14, -1000.0, 1000.0);
+	CreateGridLine(gridLayout, QFrame::HLine);
+	CreateDoublePropertyWidgets(gridLayout, 15, -1000.0, 1000.0);
 
 	gridLayout->setColumnStretch(8, 1);
 
@@ -116,12 +116,17 @@ void DataBindingWidget::CreateTagAndDescriptionWidget() {
 	addTab(widget, tr("Tag && Description"));
 }
 
-void DataBindingWidget::CreateGridLines(QGridLayout* gridLayout) {
+void DataBindingWidget::CreateVerticalGridLines(QGridLayout* gridLayout, unsigned int count) {
 
-	CreateGridLine(gridLayout, QFrame::VLine, 1);
-	CreateGridLine(gridLayout, QFrame::VLine, 3);
-	CreateGridLine(gridLayout, QFrame::VLine, 5);
-	CreateGridLine(gridLayout, QFrame::VLine, 7);
+	if (count < 1) {
+
+		throw std::invalid_argument("Can only create one or more vertical grid lines");
+	}
+
+	for (int i = 1; i < (count * 2); i += 2) {
+
+		CreateGridLine(gridLayout, QFrame::VLine, i);
+	}
 }
 
 void DataBindingWidget::CreatePropertiesTable() {
@@ -133,34 +138,34 @@ void DataBindingWidget::CreatePropertiesTable() {
 	gridLayout->setVerticalSpacing(0);
 
 	CreateTableHeader(gridLayout);
-	CreateGridLines(gridLayout);
+	CreateVerticalGridLines(gridLayout, 4);
 
-	CreateGridLine(gridLayout, QFrame::HLine, 1, 2);
+	CreateGridLine(gridLayout, QFrame::HLine, -1, 2);
 
-	CreateDoublePropertyWidgets(gridLayout, 2, 0, -1000.0, 1000.0, true);
-	CreateGridLine(gridLayout, QFrame::HLine, 3);
-	CreateDoublePropertyWidgets(gridLayout, 4, 0, -1000.0, 1000.0, true);
-	CreateGridLine(gridLayout, QFrame::HLine, 5);
-	CreateDoublePropertyWidgets(gridLayout, 6, 0, 0.0, 1000.0);
-	CreateGridLine(gridLayout, QFrame::HLine, 7);
+	CreateDoublePropertyWidgets(gridLayout, 0, -1000.0, 1000.0, true);
+	CreateGridLine(gridLayout, QFrame::HLine);
+	CreateDoublePropertyWidgets(gridLayout, 1, -1000.0, 1000.0, true);
+	CreateGridLine(gridLayout, QFrame::HLine);
+	CreateDoublePropertyWidgets(gridLayout, 2, 0.0, 1000.0);
+	CreateGridLine(gridLayout, QFrame::HLine);
 
-	CreateDoublePropertyWidgets(gridLayout, 8, 0, -360.0, 360.0);
-	CreateGridLine(gridLayout, QFrame::HLine, 9);
-	CreateDoublePropertyWidgets(gridLayout, 10, 0, -360.0, 360.0);
-	CreateGridLine(gridLayout, QFrame::HLine, 11);
-	CreateDoublePropertyWidgets(gridLayout, 12, 0, -360.0, 360.0);
-	CreateGridLine(gridLayout, QFrame::HLine, 13);
+	CreateDoublePropertyWidgets(gridLayout, 3, -360.0, 360.0);
+	CreateGridLine(gridLayout, QFrame::HLine);
+	CreateDoublePropertyWidgets(gridLayout, 4, -360.0, 360.0);
+	CreateGridLine(gridLayout, QFrame::HLine);
+	CreateDoublePropertyWidgets(gridLayout, 5, -360.0, 360.0);
+	CreateGridLine(gridLayout, QFrame::HLine);
 
-	CreateDoublePropertyWidgets(gridLayout, 14, 0, 0.0, 1000.0);
-	CreateGridLine(gridLayout, QFrame::HLine, 15);
-	CreateDoublePropertyWidgets(gridLayout, 16, 0, 0.0, 1000.0);
-	CreateGridLine(gridLayout, QFrame::HLine, 17);
-	CreateDoublePropertyWidgets(gridLayout, 18, 0, 0.0, 1000.0);
-	CreateGridLine(gridLayout, QFrame::HLine, 19);
+	CreateDoublePropertyWidgets(gridLayout, 6, 0.0, 1000.0);
+	CreateGridLine(gridLayout, QFrame::HLine);
+	CreateDoublePropertyWidgets(gridLayout, 7, 0.0, 1000.0);
+	CreateGridLine(gridLayout, QFrame::HLine);
+	CreateDoublePropertyWidgets(gridLayout, 8, 0.0, 1000.0);
+	CreateGridLine(gridLayout, QFrame::HLine);
 
-	CreateColorPropertyWidgets(gridLayout, 20, 0);
-	CreateGridLine(gridLayout, QFrame::HLine, 21);
-	CreateIntegerPropertyWidgets(gridLayout, 22, 0);
+	CreateColorPropertyWidgets(gridLayout, 9);
+	CreateGridLine(gridLayout, QFrame::HLine);
+	CreateIntegerPropertyWidgets(gridLayout, 10);
 
 	gridLayout->setColumnStretch(8, 1);
 
@@ -191,9 +196,7 @@ void DataBindingWidget::CreateTableHeader(QGridLayout* gridLayout) {
 	}
 }
 
-void DataBindingWidget::CreateRowOfPropertyWidgets(QGridLayout* layout, QWidget* minWidget, QWidget* maxWidget, int row, int firstModelRow, double min, double max, bool addToPositionXYList) {
-
-	int modelRow = row / 2 - 1 + firstModelRow;
+void DataBindingWidget::CreateRowOfPropertyWidgets(QGridLayout* layout, QWidget* minWidget, QWidget* maxWidget, MappingFunctionWidget* mappingFunctionWidget, int modelRow, bool addToPositionXYList) {
 
 	QDataWidgetMapper* mapper = new QDataWidgetMapper(this);
 	mapper->setSubmitPolicy(QDataWidgetMapper::ManualSubmit);
@@ -202,8 +205,6 @@ void DataBindingWidget::CreateRowOfPropertyWidgets(QGridLayout* layout, QWidget*
 	QFont labelFont = label->font();
 	labelFont.setBold(true);
 	label->setFont(labelFont);
-
-	MappingFunctionWidget* mappingFunctionWidget = new MappingFunctionWidget(m_model, modelRow, min, max, this);
 
 	BindingLineEdit* inputBindingLineEdit = new BindingLineEdit(m_model, this, SynGlyphX::MappingFunctionData::Input::Numeric);
 
@@ -214,11 +215,12 @@ void DataBindingWidget::CreateRowOfPropertyWidgets(QGridLayout* layout, QWidget*
 	mapper->addMapping(mappingFunctionWidget, 2);
 	mapper->addMapping(inputBindingLineEdit, 3);
 
-	layout->addWidget(label, row, 0, Qt::AlignHCenter);
-	layout->addWidget(minWidget, row, 2, Qt::AlignHCenter);
-	layout->addWidget(maxWidget, row, 4, Qt::AlignHCenter);
-	layout->addWidget(mappingFunctionWidget, row, 6, Qt::AlignHCenter);
-	layout->addWidget(inputBindingLineEdit, row, 8);
+	int newRow = layout->rowCount();
+	layout->addWidget(label, newRow, 0, Qt::AlignHCenter);
+	layout->addWidget(minWidget, newRow, 2, Qt::AlignHCenter);
+	layout->addWidget(maxWidget, newRow, 4, Qt::AlignHCenter);
+	layout->addWidget(mappingFunctionWidget, newRow, 6, Qt::AlignHCenter);
+	layout->addWidget(inputBindingLineEdit, newRow, 8);
 
 	QObject::connect(mappingFunctionWidget, &MappingFunctionWidget::FunctionChanged, mapper, &QDataWidgetMapper::submit);
 	QObject::connect(mappingFunctionWidget, &MappingFunctionWidget::SupportedInputChanged, inputBindingLineEdit, &BindingLineEdit::SetAcceptedInputTypes);
@@ -234,7 +236,7 @@ void DataBindingWidget::CreateRowOfPropertyWidgets(QGridLayout* layout, QWidget*
 	}
 }
 
-void DataBindingWidget::CreateIntegerPropertyWidgets(QGridLayout* layout, int row, int firstModelRow, int min, int max) {
+void DataBindingWidget::CreateIntegerPropertyWidgets(QGridLayout* layout, int modelRow, int min, int max) {
 
 	QSpinBox* minSpinBox = new QSpinBox(this);
 	minSpinBox->setKeyboardTracking(false);
@@ -243,13 +245,15 @@ void DataBindingWidget::CreateIntegerPropertyWidgets(QGridLayout* layout, int ro
 	maxSpinBox->setKeyboardTracking(false);
 	maxSpinBox->setRange(min, max);
 	
-	CreateRowOfPropertyWidgets(layout, minSpinBox, maxSpinBox, row, firstModelRow, min, max);
+	MappingFunctionWidget* mappingFunctionWidget = new MappingFunctionWidget(MappingFunctionWidget::KeyType::Numeric, m_model, modelRow, this);
+	mappingFunctionWidget->SetDialogOutputMinMax(min, max);
+	CreateRowOfPropertyWidgets(layout, minSpinBox, maxSpinBox, mappingFunctionWidget, modelRow);
 
 	QObject::connect(minSpinBox, static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged), m_dataWidgetMappers.last(), &QDataWidgetMapper::submit);
 	QObject::connect(maxSpinBox, static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged), m_dataWidgetMappers.last(), &QDataWidgetMapper::submit);
 }
 
-void DataBindingWidget::CreateDoublePropertyWidgets(QGridLayout* layout, int row, int firstModelRow, double min, double max, bool addToPositionXYList) {
+void DataBindingWidget::CreateDoublePropertyWidgets(QGridLayout* layout, int modelRow, double min, double max, bool addToPositionXYList) {
 
 	QDoubleSpinBox* minSpinBox = new QDoubleSpinBox(this);
 	minSpinBox->setKeyboardTracking(false);
@@ -258,18 +262,21 @@ void DataBindingWidget::CreateDoublePropertyWidgets(QGridLayout* layout, int row
 	maxSpinBox->setKeyboardTracking(false);
 	maxSpinBox->setRange(min, max);
 	
-	CreateRowOfPropertyWidgets(layout, minSpinBox, maxSpinBox, row, firstModelRow, min, max, addToPositionXYList);
+	MappingFunctionWidget* mappingFunctionWidget = new MappingFunctionWidget(MappingFunctionWidget::KeyType::Numeric, m_model, modelRow, this);
+	mappingFunctionWidget->SetDialogOutputMinMax(min, max);
+	CreateRowOfPropertyWidgets(layout, minSpinBox, maxSpinBox, mappingFunctionWidget, modelRow, addToPositionXYList);
 
 	QObject::connect(minSpinBox, static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), m_dataWidgetMappers.last(), &QDataWidgetMapper::submit);
 	QObject::connect(maxSpinBox, static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), m_dataWidgetMappers.last(), &QDataWidgetMapper::submit);
 }
 
-void DataBindingWidget::CreateColorPropertyWidgets(QGridLayout* layout, int row, int firstModelRow) {
+void DataBindingWidget::CreateColorPropertyWidgets(QGridLayout* layout, int modelRow) {
 
 	SynGlyphX::ColorButton* minColorButton = new SynGlyphX::ColorButton(false, this);
 	SynGlyphX::ColorButton* maxColorButton = new SynGlyphX::ColorButton(false, this);
 
-	CreateRowOfPropertyWidgets(layout, minColorButton, maxColorButton, row, firstModelRow);
+	MappingFunctionWidget* mappingFunctionWidget = new MappingFunctionWidget(MappingFunctionWidget::KeyType::Color, m_model, modelRow, this);
+	CreateRowOfPropertyWidgets(layout, minColorButton, maxColorButton, mappingFunctionWidget, modelRow);
 
 	QObject::connect(minColorButton, &SynGlyphX::ColorButton::ColorChanged, m_dataWidgetMappers.last(), &QDataWidgetMapper::submit);
 	QObject::connect(maxColorButton, &SynGlyphX::ColorButton::ColorChanged, m_dataWidgetMappers.last(), &QDataWidgetMapper::submit);
@@ -282,9 +289,19 @@ void DataBindingWidget::CreateGridLine(QGridLayout* layout, QFrame::Shape shape,
 	line->setLineWidth(thickness);
 
 	if (shape == QFrame::VLine) {
+
+		if (index == -1) {
+
+			index = layout->columnCount();
+		}
 		layout->addWidget(line, 0, index, -1, 1);
 	}
 	else {
+
+		if (index == -1) {
+
+			index = layout->rowCount();
+		}
 		layout->addWidget(line, index, 0, 1, -1);
 	}
 }

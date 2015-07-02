@@ -27,6 +27,7 @@
 #include "datatransformmapping.h"
 #include "minmaxglyphmodel.h"
 #include "glyphstructurewidget.h"
+#include "mappingfunctionwidget.h"
 
 class DataBindingWidget : public QTabWidget
 {
@@ -50,12 +51,12 @@ private:
 	void CreateTagAndDescriptionWidget();
 	void CreatePropertiesTable();
 	void CreateTableHeader(QGridLayout* gridLayout);
-	void CreateGridLines(QGridLayout* gridLayout);
-	void CreateIntegerPropertyWidgets(QGridLayout* layout, int row, int firstModelRow, int min = 0, int max = 255);
-	void CreateDoublePropertyWidgets(QGridLayout* layout, int row, int firstModelRow, double min = -100000.0, double max = 100000.0, bool addToPositionXYList = false);
-	void CreateColorPropertyWidgets(QGridLayout* layout, int row, int firstModelRow);
-	void CreateRowOfPropertyWidgets(QGridLayout* layout, QWidget* minWidget, QWidget* maxWidget, int row, int firstModelRow, double min = -100000.0, double max = 100000.0, bool addToPositionXYList = false);
-	void CreateGridLine(QGridLayout* layout, QFrame::Shape shape, int index, int thickness = 1);
+	void CreateVerticalGridLines(QGridLayout* gridLayout, unsigned int count);
+	void CreateIntegerPropertyWidgets(QGridLayout* layout, int modelRow, int min = 0, int max = 255);
+	void CreateDoublePropertyWidgets(QGridLayout* layout, int modelRow, double min = -100000.0, double max = 100000.0, bool addToPositionXYList = false);
+	void CreateColorPropertyWidgets(QGridLayout* layout, int modelRow);
+	void CreateRowOfPropertyWidgets(QGridLayout* layout, QWidget* minWidget, QWidget* maxWidget, MappingFunctionWidget* mappingFunctionWidget, int modelRow, bool addToPositionXYList = false);
+	void CreateGridLine(QGridLayout* layout, QFrame::Shape shape, int index = -1, int thickness = 1);
 	void EnablePositionXYMixMaxWidgets(bool enable);
 
 	BindingLineEdit* m_tagLineEdit;

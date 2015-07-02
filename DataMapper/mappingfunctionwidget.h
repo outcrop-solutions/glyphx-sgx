@@ -13,10 +13,19 @@ class MappingFunctionWidget : public QWidget
 	Q_PROPERTY(QString function READ GetFunction WRITE SetFunction USER true)
 
 public:
-	MappingFunctionWidget(MinMaxGlyphModel* model, int row, double min, double max, QWidget *parent);
+	enum KeyType {
+		Numeric,
+		Color,
+		GeometryShape,
+		VirtualTopology
+	};
+
+	MappingFunctionWidget(KeyType keyType, MinMaxGlyphModel* model, int row, QWidget *parent);
 	~MappingFunctionWidget();
 
 	QString GetFunction() const;
+
+	void SetDialogOutputMinMax(double min, double max);
 
 signals:
 	void SupportedInputChanged(SynGlyphX::MappingFunctionData::Input supportedInput);
@@ -30,12 +39,19 @@ private slots:
 	void OnEditPropertiesClicked();
 
 private:
+	static QStringList CreateNumericColorFunctionList();
+	static QStringList CreateEnumerationFunctionList();
+
 	QComboBox* m_functionComboBox;
 	QPushButton* m_editPropertiesButton;
 	MinMaxGlyphModel* m_model;
 	int m_row;
 	double m_dialogOutputMin;
 	double m_dialogOutputMax;
+	KeyType m_keyType;
+
+	static const QStringList s_numericColorFunctions;
+	static const QStringList s_enumerationFunctions;
 };
 
 #endif // MAPPINGFUNCTIONWIDGET_H

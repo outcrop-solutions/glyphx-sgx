@@ -3,20 +3,28 @@
 #include <QtWidgets/QHBoxLayout>
 #include "valuemappingdialog.h"
 
-MappingFunctionWidget::MappingFunctionWidget(MinMaxGlyphModel* model, int row, double min, double max, QWidget *parent)
+const QStringList MappingFunctionWidget::s_numericColorFunctions = MappingFunctionWidget::CreateNumericColorFunctionList();
+const QStringList MappingFunctionWidget::s_enumerationFunctions = MappingFunctionWidget::CreateEnumerationFunctionList();
+
+MappingFunctionWidget::MappingFunctionWidget(KeyType keyType, MinMaxGlyphModel* model, int row, QWidget *parent)
 	: QWidget(parent),
+	m_keyType(keyType),
 	m_model(model),
 	m_row(row),
-	m_dialogOutputMin(min),
-	m_dialogOutputMax(max)
+	m_dialogOutputMin(-100000.0),
+	m_dialogOutputMax(100000.0)
 {
 	QHBoxLayout* layout = new QHBoxLayout(this);
 	layout->setContentsMargins(1, 1, 1, 1);
 
 	m_functionComboBox = new QComboBox(this);
-	for (SynGlyphX::MappingFunctionData::FunctionBimap::const_iterator iT = SynGlyphX::MappingFunctionData::s_functionNames.begin(); iT != SynGlyphX::MappingFunctionData::s_functionNames.end(); ++iT) {
+	if ((m_keyType == KeyType::Numeric) || (m_keyType == KeyType::Color)) {
 
-		m_functionComboBox->addItem(QString::fromStdWString(SynGlyphX::MappingFunctionData::s_functionNames.left.at(iT->left)), iT->left);
+		m_functionComboBox->addItems(s_numericColorFunctions);
+	}
+	else {
+
+		m_functionComboBox->addItems(s_enumerationFunctions);
 	}
 	m_functionComboBox->setCurrentIndex(0);
 	QObject::connect(m_functionComboBox, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &MappingFunctionWidget::OnFunctionComboBoxChanged);
@@ -40,6 +48,12 @@ QString MappingFunctionWidget::GetFunction() const {
 	return m_functionComboBox->currentText();
 }
 
+void MappingFunctionWidget::SetDialogOutputMinMax(double min, double max) {
+
+	m_dialogOutputMin = min;
+	m_dialogOutputMax = max;
+}
+
 void MappingFunctionWidget::SetFunction(const QString& function) {
 
 	if (m_functionComboBox->currentText() != function) {
@@ -51,7 +65,7 @@ void MappingFunctionWidget::SetFunction(const QString& function) {
 
 void MappingFunctionWidget::OnFunctionComboBoxChanged() {
 
-	SynGlyphX::MappingFunctionData::Function function = static_cast<SynGlyphX::MappingFunctionData::Function>(m_functionComboBox->currentData().toInt());
+	SynGlyphX::MappingFunctionData::Function function = SynGlyphX::MappingFunctionData::s_functionNames.right.at(m_functionComboBox->currentText().toStdWString());
 	bool hasProperties = ((function != SynGlyphX::MappingFunctionData::LinearInterpolation) && (function != SynGlyphX::MappingFunctionData::LogarithmicInterpolation) && (function != SynGlyphX::MappingFunctionData::None));
 	m_editPropertiesButton->setEnabled(hasProperties);
 
@@ -73,7 +87,7 @@ void MappingFunctionWidget::OnEditPropertiesClicked() {
 	SynGlyphX::MappingFunctionData::Function function = static_cast<SynGlyphX::MappingFunctionData::Function>(m_functionComboBox->currentData().toInt());
 	SynGlyphX::MappingFunctionData::SharedPtr newMappingData;
 	
-	if (mappingData->GetSupportedOutput() == SynGlyphX::MappingFunctionData::Output::Color) {
+	if (m_keyType == KeyType::Color) {
 
 		if (mappingData->GetFunction() == SynGlyphX::MappingFunctionData::Function::Numeric2Value) {
 
@@ -103,7 +117,7 @@ void MappingFunctionWidget::OnEditPropertiesClicked() {
 			}
 		}
 	}
-	else {
+	else if (m_keyType == KeyType::Numeric) {
 
 		if (mappingData->GetFunction() == SynGlyphX::MappingFunctionData::Function::Numeric2Value) {
 
@@ -141,4 +155,31 @@ void MappingFunctionWidget::OnEditPropertiesClicked() {
 
 		m_model->SetMappingFunction(m_row, newMappingData);
 	}
+}
+
+QStringList MappingFunctionWidget::CreateNumericColorFunctionList() {
+
+	QStringList functions;
+
+	for (SynGlyphX::MappingFunctionData::FunctionBimap::const_iterator iT = SynGlyphX::MappingFunctionData::s_functionNames.begin(); iT != SynGlyphX::MappingFunctionData::s_functionNames.end(); ++iT) {
+
+		functions.append(QString::fromStdWString(SynGlyphX::MappingFunctionData::s_functionNames.left.at(iT->left)));
+	}
+
+	return functions;
+}
+
+QStringList MappingFunctionWidget::CreateEnumerationFunctionList() {
+
+	QStringList functions;
+
+	for (SynGlyphX::MappingFunctionData::FunctionBimap::const_iterator iT = SynGlyphX::MappingFunctionData::s_functionNames.begin(); iT != SynGlyphX::MappingFunctionData::s_functionNames.end(); ++iT) {
+
+		if ((iT->left != SynGlyphX::MappingFunctionData::Function::LinearInterpolation) && (iT->left != SynGlyphX::MappingFunctionData::Function::LogarithmicInterpolation)) {
+
+			functions.append(QString::fromStdWString(SynGlyphX::MappingFunctionData::s_functionNames.left.at(iT->left)));
+		}
+	}
+
+	return functions;
 }
