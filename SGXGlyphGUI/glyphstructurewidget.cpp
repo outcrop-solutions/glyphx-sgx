@@ -34,22 +34,10 @@ namespace SynGlyphX {
 		QHBoxLayout* surfaceAndRatioLayout = new QHBoxLayout(this);
 		shapeAndTopologyLayout->setContentsMargins(0, 0, 0, 0);
 
-		QStringList surfaceNames;
-		for (auto surface : SynGlyphX::GlyphGeometryInfo::s_surfaceNames.left) {
+		m_nonmappableGeometryWidget = new NonMappableGeometryWidget(this);
+		m_nonmappableGeometryWidget->setContentsMargins(0, 0, 0, 0);
 
-			surfaceNames.push_back(QString::fromStdWString(surface.second));
-		}
-		m_surfaceRadioButtonGroup = new SynGlyphX::RadioButtonGroupWidget(surfaceNames, Qt::Horizontal, this);
-		QGroupBox* surfaceGroupBox = new SynGlyphX::GroupBoxSingleWidget(tr("Surface"), m_surfaceRadioButtonGroup, this);
-
-		surfaceAndRatioLayout->addWidget(surfaceGroupBox);
-
-		m_ratioSpinBox = new QDoubleSpinBox(this);
-		m_ratioSpinBox->setSingleStep(0.05);
-		m_ratioSpinBox->setDecimals(2);
-		m_ratioGroupBox = new SynGlyphX::GroupBoxSingleWidget(tr("Torus Ratio"), m_ratioSpinBox, this);
-
-		surfaceAndRatioLayout->addWidget(m_ratioGroupBox);
+		surfaceAndRatioLayout->addWidget(m_nonmappableGeometryWidget);
 		surfaceAndRatioLayout->addStretch(1);
 
 		layout->addLayout(shapeAndTopologyLayout);
@@ -58,13 +46,13 @@ namespace SynGlyphX {
 		setLayout(layout);
 
 		QObject::connect(m_geometryShapeComboBox, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, [this]{ emit GlyphPropertyUpdated(UpdateGeometry); });
-		QObject::connect(m_surfaceRadioButtonGroup, &SynGlyphX::RadioButtonGroupWidget::ButtonClicked, this, [this]{ emit GlyphPropertyUpdated(UpdateSurface); });
+		QObject::connect(m_nonmappableGeometryWidget, &NonMappableGeometryWidget::SurfaceChanged, this, [this]{ emit GlyphPropertyUpdated(UpdateSurface); });
 		QObject::connect(m_topologyComboBox, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, [this]{ emit GlyphPropertyUpdated(UpdateTopology); });
-		QObject::connect(m_ratioSpinBox, static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), this, [this]{ emit GlyphPropertyUpdated(UpdateTorusRatio); });
+		QObject::connect(m_nonmappableGeometryWidget, &NonMappableGeometryWidget::TorusRatioChanged, this, [this]{ emit GlyphPropertyUpdated(UpdateTorusRatio); });
 
 
 		QObject::connect(m_geometryShapeComboBox, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &GlyphStructureWidget::OnShapeComboBoxChanged);
-		m_ratioGroupBox->setVisible(false);
+		m_nonmappableGeometryWidget->ShowTorusRatioWidget(false);
 	}
 
 	GlyphStructureWidget::~GlyphStructureWidget()
@@ -76,8 +64,8 @@ namespace SynGlyphX {
 
 		GlyphGeometry structure;
 		structure.SetGeometryShape(SynGlyphX::GlyphGeometryInfo::s_shapeNames.right.at(m_geometryShapeComboBox->currentText().toStdWString()));
-		structure.SetGeometrySurface(SynGlyphX::GlyphGeometryInfo::s_surfaceNames.right.at(m_surfaceRadioButtonGroup->GetCheckedButtonLabel().toStdWString()));
-		structure.SetTorusRatio(m_ratioSpinBox->value());
+		structure.SetGeometrySurface(m_nonmappableGeometryWidget->GetSurface());
+		structure.SetTorusRatio(m_nonmappableGeometryWidget->GetTorusRatio());
 
 		return structure;
 	}
@@ -93,8 +81,7 @@ namespace SynGlyphX {
 	void GlyphStructureWidget::SetWidgetFromGlyphGeometryAndTopology(const GlyphGeometry& structure, const VirtualTopology& virtualTopology) {
 
 		m_geometryShapeComboBox->setCurrentText(QString::fromStdWString(SynGlyphX::GlyphGeometryInfo::s_shapeNames.left.at(structure.GetGeometryShape())));
-		m_surfaceRadioButtonGroup->SetCheckedButton(structure.GetGeometrySurface());
-		m_ratioSpinBox->setValue(structure.GetTorusRatio());
+		m_nonmappableGeometryWidget->SetWidget(structure.GetGeometrySurface(), structure.GetTorusRatio());
 
 		m_topologyComboBox->setCurrentText(QString::fromStdWString(SynGlyphX::VirtualTopologyInfo::s_virtualTopologyNames.left.at(virtualTopology.GetType())));
 	}
@@ -102,7 +89,7 @@ namespace SynGlyphX {
 	void GlyphStructureWidget::OnShapeComboBoxChanged(int index) {
 
 		SynGlyphX::GlyphGeometryInfo::Shape shape = static_cast<SynGlyphX::GlyphGeometryInfo::Shape>(index);
-		m_ratioGroupBox->setVisible(shape == SynGlyphX::GlyphGeometryInfo::Torus);
+		m_nonmappableGeometryWidget->ShowTorusRatioWidget(shape == SynGlyphX::GlyphGeometryInfo::Torus);
 	}
 
 } //namespace SynGlyphX

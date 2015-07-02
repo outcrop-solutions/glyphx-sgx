@@ -15,44 +15,42 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef SYNGLYPHX_GLYPHSTRUCTUREWIDGET_H
-#define SYNGLYPHX_GLYPHSTRUCTUREWIDGET_H
+#ifndef NONMAPPABLEGEOMETRYWIDGET_H
+#define NONMAPPABLEGEOMETRYWIDGET_H
 
 #include "sgxglyphgui_global.h"
 #include <QtWidgets/QWidget>
-#include <QtWidgets/QComboBox>
-#include "nonmappablegeometrywidget.h"
-#include "glyphgeometry.h"
-#include "virtualtopology.h"
-#include "propertyupdate.h"
+#include "radiobuttongroupwidget.h"
+#include <QtWidgets/QDoubleSpinBox>
+#include "groupboxsinglewidget.h"
+#include "glyphgeometryinfo.h"
 
 namespace SynGlyphX {
 
-	class SGXGLYPHGUI_EXPORT GlyphStructureWidget : public QWidget
+	class SGXGLYPHGUI_EXPORT NonMappableGeometryWidget : public QWidget
 	{
 		Q_OBJECT
 
 	public:
-		GlyphStructureWidget(QWidget *parent);
-		~GlyphStructureWidget();
+		NonMappableGeometryWidget(QWidget *parent);
+		~NonMappableGeometryWidget();
 
-		GlyphGeometry GetGlyphGeometry() const;
-		VirtualTopology GetVirtualTopology() const;
-		void SetWidgetFromGlyphGeometryAndTopology(const GlyphGeometry& structure, const VirtualTopology& virtualTopology);
+		void SetWidget(GlyphGeometryInfo::Surface surface, double torusRatio = 0.1);
+		GlyphGeometryInfo::Surface GetSurface() const;
+		double GetTorusRatio() const;
+
+		void ShowTorusRatioWidget(bool show);
 
 	signals:
-		void GlyphPropertyUpdated(PropertyUpdate update);
-
-	private slots:
-		void OnShapeComboBoxChanged(int index);
+		void SurfaceChanged();
+		void TorusRatioChanged();
 
 	private:
-		QComboBox* m_geometryShapeComboBox;
-		NonMappableGeometryWidget* m_nonmappableGeometryWidget;
-		QComboBox* m_topologyComboBox;
-		
+		RadioButtonGroupWidget* m_surfaceRadioButtonGroup;
+		QDoubleSpinBox* m_ratioSpinBox;
+		GroupBoxSingleWidget* m_ratioGroupBox;
 	};
 
 } //namespace SynGlyphX
 
-#endif // SYNGLYPHX_GLYPHSTRUCTUREWIDGET_H
+#endif // NONMAPPABLEGEOMETRYWIDGET_H

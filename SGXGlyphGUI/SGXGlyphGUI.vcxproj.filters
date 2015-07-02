@@ -109,6 +109,15 @@
     <ClCompile Include="glyphdefaultswidget.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="nonmappablegeometrywidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Win32\Debug\moc_nonmappablegeometrywidget.cpp">
+      <Filter>Generated Files\Debug_Win32</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Win32\Release\moc_nonmappablegeometrywidget.cpp">
+      <Filter>Generated Files\Release_Win32</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="glyphstructurewidget.h">
@@ -133,6 +142,9 @@
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="glyphdefaultswidget.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="nonmappablegeometrywidget.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>
