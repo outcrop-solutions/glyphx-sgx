@@ -15,49 +15,34 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef ANTZWIDGET_H
-#define ANTZWIDGET_H
+#ifndef MINMAXGLYPH3DWIDGET_H
+#define MINMAXGLYPH3DWIDGET_H
 
-#include "antzgui_global.h"
-#include <QtOpenGL/QGLWidget>
-#include "data/nptypes.h"
+#include "antzsingleglyphgui_global.h"
+#include <QtWidgets/QWidget>
+#include <QtCore/QItemSelectionModel>
+#include "antzsingleglyphtreewidget.h"
+#include "minmaxglyphtreemodel.h"
 
 namespace SynGlyphXANTz {
 
-	class ANTZGUI_EXPORT ANTzWidget : public QGLWidget
+	class ANTZSINGLEGLYPHGUI_EXPORT MinMaxGlyph3DWidget : public QWidget
 	{
 		Q_OBJECT
 
 	public:
-		ANTzWidget(QWidget *parent = 0);
-		~ANTzWidget();
+		MinMaxGlyph3DWidget(QWidget *parent);
+		~MinMaxGlyph3DWidget();
 
-		public slots:
-		void ResetCamera();
+		virtual void SetModel(MinMaxGlyphTreeModel* model, QItemSelectionModel* selectionModel);
 
-	protected:
-		virtual void initializeGL();
-		virtual void resizeGL(int w, int h);
-		virtual void paintGL();
-
-		void CenterCameraOnNode(pNPnode node);
-		int PickPinAtPoint(const QPoint& point) const;
-
-		void DeleteNode(pNPnode node);
-		void DeleteChildren(pNPnode parent, unsigned int first, unsigned int count);
-		unsigned int BindTextureInFile(const QString& imageFilename);
-
-		virtual void BeforeDrawScene() = 0;
-		virtual void AfterDrawScene() = 0;
-
-		pData m_antzData;
+	public slots:
+		void EnableAnimation(bool enable);
 
 	private:
-		void InitIO();
-
-		static QGLFormat s_format;
+		ANTzSingleGlyphTreeWidget* m_maxGlyph3DWidget;
 	};
 
 } //namespace SynGlyphXANTz
 
-#endif // ANTZWIDGET_H
+#endif // MINMAXGLYPH3DWIDGET_H

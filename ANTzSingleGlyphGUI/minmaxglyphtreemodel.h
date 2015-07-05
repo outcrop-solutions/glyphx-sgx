@@ -18,14 +18,14 @@
 #ifndef MINMAXGLYPHTREEMODEL_H
 #define MINMAXGLYPHTREEMODEL_H
 
-#include "antzgui_global.h"
+#include "antzsingleglyphgui_global.h"
 #include <QtCore/QAbstractItemModel>
 #include "datamappingglyphgraph.h"
 #include "propertyupdate.h"
 
 namespace SynGlyphXANTz {
 
-	class ANTZGUI_EXPORT MinMaxGlyphTreeModel : public QAbstractItemModel
+	class ANTZSINGLEGLYPHGUI_EXPORT MinMaxGlyphTreeModel : public QAbstractItemModel
 	{
 		Q_OBJECT
 

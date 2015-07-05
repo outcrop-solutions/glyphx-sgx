@@ -18,7 +18,7 @@
 #ifndef ANTZSINGLEGLYPHTREEWIDGET_H
 #define ANTZSINGLEGLYPHTREEWIDGET_H
 
-#include "antzgui_global.h"
+#include "antzsingleglyphgui_global.h"
 #include "antzwidget.h"
 #include <vector>
 #include <boost/shared_ptr.hpp>
@@ -30,7 +30,7 @@
 
 namespace SynGlyphXANTz {
 
-	class ANTZGUI_EXPORT ANTzSingleGlyphTreeWidget : public ANTzWidget
+	class ANTZSINGLEGLYPHGUI_EXPORT ANTzSingleGlyphTreeWidget : public ANTzWidget
 	{
 		Q_OBJECT
 
