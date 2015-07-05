@@ -15,44 +15,46 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef SYNGLYPHX_GLYPHSTRUCTUREWIDGET_H
-#define SYNGLYPHX_GLYPHSTRUCTUREWIDGET_H
+#ifndef SYNGLYPHX_GLYPHENUMCOMBOBOX_H
+#define SYNGLYPHX_GLYPHENUMCOMBOBOX_H
 
 #include "sgxglyphgui_global.h"
-#include <QtWidgets/QWidget>
-#include "glyphenumcombobox.h"
-#include "nonmappablegeometrywidget.h"
-#include "glyphgeometry.h"
-#include "virtualtopology.h"
-#include "propertyupdate.h"
+#include <QtWidgets/QComboBox>
+#include "glyphgeometryinfo.h"
+#include "virtualtopologyinfo.h"
 
 namespace SynGlyphX {
 
-	class SGXGLYPHGUI_EXPORT GlyphStructureWidget : public QWidget
+	class SGXGLYPHGUI_EXPORT GlyphShapeComboBox : public QComboBox
 	{
 		Q_OBJECT
 
 	public:
-		GlyphStructureWidget(QWidget *parent);
-		~GlyphStructureWidget();
+		GlyphShapeComboBox(QWidget *parent);
+		~GlyphShapeComboBox();
 
-		GlyphGeometry GetGlyphGeometry() const;
-		VirtualTopology GetVirtualTopology() const;
-		void SetWidgetFromGlyphGeometryAndTopology(const GlyphGeometry& structure, const VirtualTopology& virtualTopology);
-
-	signals:
-		void GlyphPropertyUpdated(PropertyUpdate update);
-
-	private slots:
-		void OnShapeComboBoxChanged(int index);
+		GlyphGeometryInfo::Shape GetCurentValue() const;
+		void SetCurrentValue(GlyphGeometryInfo::Shape value);
 
 	private:
-		GlyphShapeComboBox* m_geometryShapeComboBox;
-		NonMappableGeometryWidget* m_nonmappableGeometryWidget;
-		VirtualTopologyComboBox* m_topologyComboBox;
 		
+	};
+
+	class SGXGLYPHGUI_EXPORT VirtualTopologyComboBox : public QComboBox
+	{
+		Q_OBJECT
+
+	public:
+		VirtualTopologyComboBox(QWidget *parent);
+		~VirtualTopologyComboBox();
+
+		VirtualTopologyInfo::Type GetCurentValue() const;
+		void SetCurrentValue(VirtualTopologyInfo::Type value);
+
+	private:
+
 	};
 
 } //namespace SynGlyphX
 
-#endif // SYNGLYPHX_GLYPHSTRUCTUREWIDGET_H
+#endif // SYNGLYPHX_GLYPHENUMCOMBOBOX_H

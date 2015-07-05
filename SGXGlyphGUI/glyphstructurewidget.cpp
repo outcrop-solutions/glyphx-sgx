@@ -11,18 +11,9 @@ namespace SynGlyphX {
 		QVBoxLayout* layout = new QVBoxLayout(this);
 		layout->setContentsMargins(0, 0, 0, 0);
 
-		m_geometryShapeComboBox = new QComboBox(this);
+		m_geometryShapeComboBox = new GlyphShapeComboBox(this);
 
-		for (auto shape : SynGlyphX::GlyphGeometryInfo::s_shapeNames.left) {
-
-			m_geometryShapeComboBox->addItem(QString::fromStdWString(shape.second));
-		}
-
-		m_topologyComboBox = new QComboBox(this);
-		for (auto virtualTopology : SynGlyphX::VirtualTopologyInfo::s_virtualTopologyNames.left) {
-
-			m_topologyComboBox->addItem(QString::fromStdWString(virtualTopology.second));
-		}
+		m_topologyComboBox = new VirtualTopologyComboBox(this);
 
 		QHBoxLayout* shapeAndTopologyLayout = new QHBoxLayout(this);
 		shapeAndTopologyLayout->setContentsMargins(0, 0, 0, 0);
@@ -63,7 +54,7 @@ namespace SynGlyphX {
 	GlyphGeometry GlyphStructureWidget::GetGlyphGeometry() const {
 
 		GlyphGeometry structure;
-		structure.SetGeometryShape(SynGlyphX::GlyphGeometryInfo::s_shapeNames.right.at(m_geometryShapeComboBox->currentText().toStdWString()));
+		structure.SetGeometryShape(m_geometryShapeComboBox->GetCurentValue());
 		structure.SetGeometrySurface(m_nonmappableGeometryWidget->GetSurface());
 		structure.SetTorusRatio(m_nonmappableGeometryWidget->GetTorusRatio());
 
@@ -73,17 +64,17 @@ namespace SynGlyphX {
 	VirtualTopology GlyphStructureWidget::GetVirtualTopology() const {
 
 		VirtualTopology virtualTopology;
-		virtualTopology.SetType(SynGlyphX::VirtualTopologyInfo::s_virtualTopologyNames.right.at(m_topologyComboBox->currentText().toStdWString()));
+		virtualTopology.SetType(m_topologyComboBox->GetCurentValue());
 
 		return virtualTopology;
 	}
 
 	void GlyphStructureWidget::SetWidgetFromGlyphGeometryAndTopology(const GlyphGeometry& structure, const VirtualTopology& virtualTopology) {
 
-		m_geometryShapeComboBox->setCurrentText(QString::fromStdWString(SynGlyphX::GlyphGeometryInfo::s_shapeNames.left.at(structure.GetGeometryShape())));
+		m_geometryShapeComboBox->SetCurrentValue(structure.GetGeometryShape());
 		m_nonmappableGeometryWidget->SetWidget(structure.GetGeometrySurface(), structure.GetTorusRatio());
 
-		m_topologyComboBox->setCurrentText(QString::fromStdWString(SynGlyphX::VirtualTopologyInfo::s_virtualTopologyNames.left.at(virtualTopology.GetType())));
+		m_topologyComboBox->SetCurrentValue(virtualTopology.GetType());
 	}
 
 	void GlyphStructureWidget::OnShapeComboBoxChanged(int index) {
