@@ -461,6 +461,12 @@ void DataTransformModel::SetInputField(const boost::uuids::uuid& treeID, SynGlyp
 	m_dataMapping->SetInputField(treeID, node, field, inputfield);
 }
 
+void DataTransformModel::SetInputField(const boost::uuids::uuid& treeID, const QModelIndex& index, SynGlyphX::DataMappingGlyph::MappableField field, const SynGlyphX::InputField& inputfield) {
+
+	SynGlyphX::DataMappingGlyphGraph::const_iterator iterator(static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(index.internalPointer()));
+	SetInputField(treeID, iterator, field, inputfield);
+}
+
 void DataTransformModel::ClearInputBinding(const boost::uuids::uuid& treeID, SynGlyphX::DataMappingGlyphGraph::const_iterator& node, SynGlyphX::DataMappingGlyph::MappableField field) {
 
 	m_dataMapping->ClearInputBinding(treeID, node, field);

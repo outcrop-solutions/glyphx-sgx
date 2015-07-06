@@ -15,49 +15,29 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef SIZEWIDGET_H
-#define SIZEWIDGET_H
+#ifndef SYNGLYPHX_HORIZONTALFORMWIDGET_H
+#define SYNGLYPHX_HORIZONTALFORMWIDGET_H
 
 #include "sgxgui_global.h"
-#include "horizontalformwidget.h"
-#include <QtWidgets/QAbstractSpinBox>
-#include <QtWidgets/QCheckBox>
+#include <QtWidgets/QWidget>
 
 namespace SynGlyphX {
 
-    class SGXGUI_EXPORT SizeWidget : public HorizontalFormWidget
-    {
-        Q_OBJECT
+	class SGXGUI_EXPORT HorizontalFormWidget : public QWidget
+	{
+		Q_OBJECT
 
-    public:
-        SizeWidget(bool showLockRatioCheckBox, QWidget *parent = 0);
-        ~SizeWidget();
-
-	protected slots:
-		virtual void OnWidthChanged() = 0;
-		virtual void OnHeightChanged() = 0;
+	public:
+		HorizontalFormWidget(QWidget *parent);
+		~HorizontalFormWidget();
 
 	protected:
-		virtual QMetaObject::Connection ConnectLockRatioToWidthSpinBox() = 0;
-		virtual QMetaObject::Connection ConnectLockRatioToHeightSpinBox() = 0;
-		virtual double GetRatio() = 0;
+		void AddWidget(const QString& labelText, QWidget* widget);
 
-		void AddSpinBoxes(QAbstractSpinBox* widthSpinBox, QAbstractSpinBox* heightSpinBox);
+	private:
 
-		double m_ratio;
-
-	private slots:
-		void OnLockRatioChanged();
-
-    private:
-		QCheckBox* m_lockRatioCheckBox;
-		QAbstractSpinBox* m_widthSpinBox;
-		QAbstractSpinBox* m_heightSpinBox;
-
-		QMetaObject::Connection m_widthSpinBoxConnection;
-		QMetaObject::Connection m_heightSpinBoxConnection;
-    };
+	};
 
 } //namespace SynGlyphX
 
-#endif // SIZEWIDGET_H
+#endif // SYNGLYPHX_HORIZONTALFORMWIDGET_H

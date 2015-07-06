@@ -325,45 +325,106 @@ Qt::ItemFlags MinMaxGlyphModel::flags(const QModelIndex & index) const {
 
 bool MinMaxGlyphModel::setData(const QModelIndex& index, const QVariant& value, int role) {
 
-	if (index.isValid()) { // && m_glyph.valid()) {
+	if ((index.isValid()) && (role == Qt::EditRole)) { // && m_glyph.valid()) {
 
-		if (index.column() == 3) {
+		if (index.column() == 2) {
 
-			try {
+			SynGlyphX::DataMappingGlyph::MappableField mappableField;
+			if (index.row() >= DataTransformModel::VirtualTopology) {
 
-				SynGlyphX::InputField inputfield = value.value<SynGlyphX::InputField>();
-				/*if (inputfield.IsValid()) {
-					m_dataTransformModel->SetInputField(m_glyphTreeID, m_glyph.constify(), static_cast<SynGlyphX::DataMappingGlyph::MappableField>(index.row()), inputfield);
-				}
-				else {
-					m_dataTransformModel->ClearInputBinding(m_glyphTreeID, m_glyph.constify(), static_cast<SynGlyphX::DataMappingGlyph::MappableField>(index.row()));
-				}*/
+				mappableField = static_cast<SynGlyphX::DataMappingGlyph::MappableField>(index.row() - 2);
 			}
-			catch (const std::invalid_argument& e) {
+			else {
 
-				QMessageBox::warning(nullptr, "Data does not match", e.what());
-				return false;
+				mappableField = static_cast<SynGlyphX::DataMappingGlyph::MappableField>(index.row());
 			}
+			m_dataTransformModel->SetInputField(m_glyphTreeID, m_selectedDataTransformModelIndex, mappableField, value.value<SynGlyphX::InputField>());
 		}
 		else {
 
-			SynGlyphX::DataMappingGlyph minMaxGlyph(*m_glyph);
+			int sourceDataRole = index.row() + DataTransformModel::PropertyRole::PositionX;
+			QVariant newProp;
+			QVariant prop = m_dataTransformModel->data(m_selectedDataTransformModelIndex, sourceDataRole);
+			PropertyType propertyType = GetFieldType(index.row());
+			if (propertyType == PropertyType::Color) {
 
-			if (!SetDataByRow(minMaxGlyph, value, index)) {
-				
-				return false;
+				SynGlyphX::ColorMappingProperty colorProp = prop.value<SynGlyphX::ColorMappingProperty>();
+				if (index.column() == 1) {
+
+					SynGlyphX::MappingFunctionData::Function function = SynGlyphX::MappingFunctionData::s_functionNames.right.at(value.toString().toStdWString());
+					if (function != colorProp.GetMappingFunctionData()->GetFunction()) {
+
+						colorProp.SetMappingFunctionData(CreateNewMappingFunction(function, true));
+					}
+				}
+				else {
+
+					colorProp.GetValue() = value.value<std::pair<
+				}
+			}
+			/*else if (propertyType == PropertyType::Text) { //Currently Text fields do not have a value nor choice in mapping functions
+
+				SynGlyphX::TextMappingProperty textProp = prop.value<SynGlyphX::TextMappingProperty>();
+				if (index.column() == 1) {
+
+					return QString::fromStdWString(SynGlyphX::MappingFunctionData::s_functionNames.left.at(textProp.GetMappingFunctionData()->GetFunction()));
+				}
+				else {
+
+					return QString::fromStdWString(textProp.GetValue());
+				}
+			}*/
+			else if (propertyType == PropertyType::GeometryShape) {
+
+				SynGlyphX::GeometryShapeMappingProperty shapeProp = prop.value<SynGlyphX::GeometryShapeMappingProperty>();
+				if (index.column() == 1) {
+
+					return QString::fromStdWString(SynGlyphX::MappingFunctionData::s_functionNames.left.at(shapeProp.GetMappingFunctionData()->GetFunction()));
+				}
+				else {
+
+					return QVariant::fromValue(shapeProp.GetValue());
+				}
+			}
+			else if (propertyType == PropertyType::VirtualTopology) {
+
+				SynGlyphX::VirtualTopologyMappingProperty topologyProp = prop.value<SynGlyphX::VirtualTopologyMappingProperty>();
+				if (index.column() == 1) {
+
+					return QString::fromStdWString(SynGlyphX::MappingFunctionData::s_functionNames.left.at(topologyProp.GetMappingFunctionData()->GetFunction()));
+				}
+				else {
+
+					return QVariant::fromValue(topologyProp.GetValue());
+				}
+			}
+			else {
+
+				SynGlyphX::NumericMappingProperty numericProp = prop.value<SynGlyphX::NumericMappingProperty>();
+				if (index.column() == 1) {
+
+					return QString::fromStdWString(SynGlyphX::MappingFunctionData::s_functionNames.left.at(numericProp.GetMappingFunctionData()->GetFunction()));
+				}
+				else {
+
+					return QVariant::fromValue(numericProp.GetValue());
+				}
 			}
 
-			m_dataTransformModel->UpdateGlyph(m_selectedDataTransformModelIndex, minMaxGlyph);
-		}
+			if (newProp.isValid()) {
 
-		emit dataChanged(index, index);
-		return true;
+				if (m_dataTransformModel->setData(m_selectedDataTransformModelIndex, newProp, sourceDataRole)) {
+
+					emit dataChanged(index, index);
+					return true;
+				}
+			}
+		}
 	}
 
 	return false;
 }
-
+/*
 bool MinMaxGlyphModel::SetDataByRow(SynGlyphX::DataMappingGlyph& glyph, const QVariant& value, const QModelIndex& index) {
 
 	int row = index.row();
@@ -423,7 +484,7 @@ bool MinMaxGlyphModel::SetDataByRow(SynGlyphX::DataMappingGlyph& glyph, const QV
 
 	return false;
 }
-/*
+
 QVariant MinMaxGlyphModel::headerData(int section, Qt::Orientation orientation, int role) const {
 
 	if (role == Qt::DisplayRole) {
