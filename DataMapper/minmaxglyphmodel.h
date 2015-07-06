@@ -28,6 +28,14 @@ class MinMaxGlyphModel : public QAbstractTableModel
 	Q_OBJECT
 
 public:
+	enum PropertyType {
+		Numeric,
+		Color,
+		Text,
+		GeometryShape,
+		VirtualTopology
+	};
+
 	MinMaxGlyphModel(DataTransformModel* dataTransformModel, QObject *parent = nullptr);
 	~MinMaxGlyphModel();
 
@@ -37,7 +45,7 @@ public:
 	virtual int	rowCount(const QModelIndex& parent = QModelIndex()) const;
 	virtual Qt::ItemFlags flags(const QModelIndex & index) const;
 	virtual bool setData(const QModelIndex& index, const QVariant& value, int role = Qt::EditRole);
-	virtual QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
+	//virtual QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
 
 	SynGlyphX::DataTransformMapping::ConstSharedPtr GetDataTransformMapping() const;
 	bool IsCurrentGlyphRoot() const;
@@ -46,9 +54,9 @@ public:
 	SynGlyphX::MappingFunctionData::ConstSharedPtr GetMappingFunction(int row) const;
 	void SetMappingFunction(int row, SynGlyphX::MappingFunctionData::SharedPtr mappingFunction);
 
-	const SynGlyphX::DataMappingGlyphGeometry& GetGlyphGeometry() const;
-	const SynGlyphX::DataMappingVirtualTopology& GetVirtualTopology() const;
-	void SetGlyphGeometryAndVirtualTopology(const SynGlyphX::GlyphGeometry& structure, const SynGlyphX::VirtualTopology& virtualTopology);
+	//const SynGlyphX::DataMappingGlyphGeometry& GetGlyphGeometry() const;
+	//const SynGlyphX::DataMappingVirtualTopology& GetVirtualTopology() const;
+	//void SetGlyphGeometryAndVirtualTopology(const SynGlyphX::GlyphGeometry& structure, const SynGlyphX::VirtualTopology& virtualTopology);
 
 public slots:
 	void SetMinMaxGlyph(const QModelIndex& index);
@@ -59,12 +67,12 @@ private:
 	QVariant GetDataByRow(SynGlyphX::DataMappingGlyph& glyph, const QModelIndex& index) const;
 	bool SetDataByRow(SynGlyphX::DataMappingGlyph& glyph, const QVariant& value, const QModelIndex& index);
 	SynGlyphX::NumericMappingProperty& GetGlyphProperty(SynGlyphX::DataMappingGlyph& glyph, int row) const;
-	bool IsTextField(int row) const;
-	bool IsColorField(int row) const;
+	PropertyType GetFieldType(int row) const;
 	SynGlyphX::MappingFunctionData::SharedPtr CreateNewMappingFunction(SynGlyphX::MappingFunctionData::Function function, bool isColor) const;
+	const SynGlyphX::InputField& GetInputField(SynGlyphX::InputField::HashID fieldID) const;
 
-	SynGlyphX::DataMappingGlyphGraph::const_iterator m_glyph;
-	SynGlyphX::DataMappingGlyphGraph::ConstSharedPtr m_glyphTree;
+	//SynGlyphX::DataMappingGlyphGraph::const_iterator m_glyph;
+	//SynGlyphX::DataMappingGlyphGraph::ConstSharedPtr m_glyphTree;
 	boost::uuids::uuid m_glyphTreeID;
 	QStringList m_propertyHeaders;
 	QStringList m_columnHeaders;

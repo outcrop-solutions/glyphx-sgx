@@ -36,6 +36,30 @@ public:
 		DataSources = 2
 	};
 
+	enum PropertyRole {
+
+		PositionX = DataTypeRole + 1,
+		PositionY = PositionX + 1,
+		PositionZ = PositionY + 1,
+		RotationX = PositionZ + 1,
+		RotationY = RotationX + 1,
+		RotationZ = RotationY + 1,
+		ScaleX = RotationZ + 1,
+		ScaleY = ScaleX + 1,
+		ScaleZ = ScaleY + 1,
+		Color = ScaleZ + 1,
+		Transparency = Color + 1,
+		Tag = Transparency + 1,
+		Description = Tag + 1,
+		RotationRateX = Description + 1,
+		RotationRateY = RotationRateX + 1,
+		RotationRateZ = RotationRateY + 1,
+		GeometryShape = RotationRateZ + 1,
+		GeometrySurface = GeometryShape + 1,
+		GeometryTorusRatio = GeometrySurface + 1,
+		VirtualTopology = GeometryTorusRatio + 1
+	};
+
 	DataTransformModel(QObject *parent);
 	~DataTransformModel();
 
@@ -48,9 +72,11 @@ public:
 	virtual bool removeRows(int row, int count, const QModelIndex& parent = QModelIndex());
 	virtual Qt::DropActions supportedDropActions() const;
 	virtual Qt::ItemFlags flags(const QModelIndex& index) const;
+	virtual bool setData(const QModelIndex& index, const QVariant& value, int role = Qt::EditRole);
 
 	QVariant GetDisplayData(const QModelIndex& index) const;
 	QVariant GetDataTypeData(const QModelIndex& index) const;
+	QVariant GetPropertyData(const QModelIndex& index, int role) const;
 
 	SynGlyphX::DataTransformMapping::ConstSharedPtr GetDataMapping() const;
 
@@ -100,5 +126,13 @@ private:
 	SynGlyphX::SourceDataManager m_sourceDataManager;
 	SynGlyphX::DataTransformMapping::SharedPtr m_dataMapping;
 };
+
+Q_DECLARE_METATYPE(SynGlyphX::NumericMappingProperty)
+Q_DECLARE_METATYPE(SynGlyphX::ColorMappingProperty)
+Q_DECLARE_METATYPE(SynGlyphX::TextMappingProperty)
+Q_DECLARE_METATYPE(SynGlyphX::GeometryShapeMappingProperty)
+Q_DECLARE_METATYPE(SynGlyphX::GlyphGeometryInfo::Shape)
+Q_DECLARE_METATYPE(SynGlyphX::GlyphGeometryInfo::Surface)
+Q_DECLARE_METATYPE(SynGlyphX::VirtualTopologyMappingProperty)
 
 #endif // DATATRANSFORMMODEL_H

@@ -32,6 +32,105 @@ int DataTransformModel::columnCount(const QModelIndex& parent) const {
 	return 1;
 }
 
+bool DataTransformModel::setData(const QModelIndex& index, const QVariant& value, int role) {
+
+	if ((role >= PropertyRole::PositionX) && (role <= PropertyRole::VirtualTopology) && (GetDataType(index) == DataType::GlyphTrees)) {
+
+		if (!m_dataMapping->GetGlyphGraphs().empty()) {
+
+			SynGlyphX::DataMappingGlyphGraph::iterator iterator(static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(index.internalPointer()));
+
+			if (role == PropertyRole::PositionX) {
+
+				iterator->GetPosition()[0] = value.value<SynGlyphX::NumericMappingProperty>();
+			}
+			else if (role == PropertyRole::PositionY) {
+
+				iterator->GetPosition()[1] = value.value<SynGlyphX::NumericMappingProperty>();
+			}
+			else if (role == PropertyRole::PositionZ) {
+
+				iterator->GetPosition()[2] = value.value<SynGlyphX::NumericMappingProperty>();
+			}
+			else if (role == PropertyRole::RotationX) {
+
+				iterator->GetRotation()[0] = value.value<SynGlyphX::NumericMappingProperty>();
+			}
+			else if (role == PropertyRole::RotationY) {
+
+				iterator->GetRotation()[1] = value.value<SynGlyphX::NumericMappingProperty>();
+			}
+			else if (role == PropertyRole::RotationZ) {
+
+				iterator->GetRotation()[2] = value.value<SynGlyphX::NumericMappingProperty>();
+			}
+			else if (role == PropertyRole::ScaleX) {
+
+				iterator->GetScale()[0] = value.value<SynGlyphX::NumericMappingProperty>();
+			}
+			else if (role == PropertyRole::ScaleY) {
+
+				iterator->GetScale()[1] = value.value<SynGlyphX::NumericMappingProperty>();
+			}
+			else if (role == PropertyRole::ScaleZ) {
+
+				iterator->GetScale()[2] = value.value<SynGlyphX::NumericMappingProperty>();
+			}
+			else if (role == PropertyRole::Color) {
+
+				iterator->GetColor() = value.value<SynGlyphX::ColorMappingProperty>();
+			}
+			else if (role == PropertyRole::Transparency) {
+
+				iterator->GetTransparency() = value.value<SynGlyphX::NumericMappingProperty>();
+			}
+			else if (role == PropertyRole::Tag) {
+
+				iterator->GetTag() = value.value<SynGlyphX::TextMappingProperty>();
+			}
+			else if (role == PropertyRole::Description) {
+
+				iterator->GetDescription() = value.value<SynGlyphX::TextMappingProperty>();
+			}
+			else if (role == PropertyRole::RotationRateX) {
+
+				iterator->GetRotationRate()[0] = value.value<SynGlyphX::NumericMappingProperty>();
+			}
+			else if (role == PropertyRole::RotationRateY) {
+
+				iterator->GetRotationRate()[1] = value.value<SynGlyphX::NumericMappingProperty>();
+			}
+			else if (role == PropertyRole::RotationRateZ) {
+
+				iterator->GetRotationRate()[2] = value.value<SynGlyphX::NumericMappingProperty>();
+			}
+			else if (role == PropertyRole::GeometryShape) {
+
+				iterator->GetStructure().SetGeometryShape(value.value<SynGlyphX::GeometryShapeMappingProperty>());
+			}
+			else if (role == PropertyRole::GeometrySurface) {
+
+				iterator->GetStructure().SetGeometrySurface(static_cast<SynGlyphX::GlyphGeometryInfo::Surface>(value.toInt()));
+			}
+			else if (role == PropertyRole::GeometryTorusRatio) {
+
+				iterator->GetStructure().SetTorusRatio(value.toDouble());
+			}
+			else if (role == PropertyRole::VirtualTopology) {
+
+				iterator->GetVirtualTopology().SetType(value.value<SynGlyphX::VirtualTopologyMappingProperty>());
+			}
+
+			emit dataChanged(index, index);
+
+			return true;
+		}
+
+	}
+
+	return false;
+}
+
 QVariant DataTransformModel::data(const QModelIndex& index, int role) const {
 
 	if (!index.isValid()) {
@@ -45,6 +144,110 @@ QVariant DataTransformModel::data(const QModelIndex& index, int role) const {
 	else if (role == DataTypeRole) {
 
 		return GetDataTypeData(index);
+	}
+	else if ((role >= PropertyRole::PositionX) && (role <= PropertyRole::VirtualTopology)) {
+
+		return GetPropertyData(index, role);
+	}
+
+	return QVariant();
+}
+
+QVariant DataTransformModel::GetPropertyData(const QModelIndex& index, int role) const {
+
+	if ((role >= PropertyRole::PositionX) && (role <= PropertyRole::VirtualTopology) && (GetDataType(index) == DataType::GlyphTrees)) {
+
+		if (!m_dataMapping->GetGlyphGraphs().empty()) {
+
+			SynGlyphX::DataMappingGlyphGraph::const_iterator iterator(static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(index.internalPointer()));
+
+			QVariant var;
+			if (role == PropertyRole::PositionX) {
+
+				var.setValue(iterator->GetPosition()[0]);
+			}
+			else if (role == PropertyRole::PositionY) {
+
+				var.setValue(iterator->GetPosition()[1]);
+			}
+			else if (role == PropertyRole::PositionZ) {
+
+				var.setValue(iterator->GetPosition()[2]);
+			}
+			else if (role == PropertyRole::RotationX) {
+
+				var.setValue(iterator->GetRotation()[0]);
+			}
+			else if (role == PropertyRole::RotationY) {
+
+				var.setValue(iterator->GetRotation()[1]);
+			}
+			else if (role == PropertyRole::RotationZ) {
+
+				var.setValue(iterator->GetRotation()[2]);
+			}
+			else if (role == PropertyRole::ScaleX) {
+
+				var.setValue(iterator->GetScale()[0]);
+			}
+			else if (role == PropertyRole::ScaleY) {
+
+				var.setValue(iterator->GetScale()[1]);
+			}
+			else if (role == PropertyRole::ScaleZ) {
+
+				var.setValue(iterator->GetScale()[2]);
+			}
+			else if (role == PropertyRole::Color) {
+
+				var.setValue(iterator->GetColor());
+			}
+			else if (role == PropertyRole::Transparency) {
+
+				var.setValue(iterator->GetTransparency());
+			}
+			else if (role == PropertyRole::Tag) {
+
+				var.setValue(iterator->GetTag());
+			}
+			else if (role == PropertyRole::Description) {
+
+				var.setValue(iterator->GetDescription());
+			}
+			else if (role == PropertyRole::RotationRateX) {
+
+				var.setValue(iterator->GetRotationRate()[0]);
+			}
+			else if (role == PropertyRole::RotationRateY) {
+
+				var.setValue(iterator->GetRotationRate()[1]);
+			}
+			else if (role == PropertyRole::RotationRateZ) {
+
+				var.setValue(iterator->GetRotationRate()[2]);
+			}
+			else if (role == PropertyRole::GeometryShape) {
+
+				var.setValue(iterator->GetStructure().GetGeometryShape());
+			}
+			else if (role == PropertyRole::GeometrySurface) {
+
+				var.setValue(iterator->GetStructure().GetGeometrySurface());
+			}
+			else if (role == PropertyRole::GeometryTorusRatio) {
+
+				var.setValue(iterator->GetStructure().GetTorusRatio());
+			}
+			else if (role == PropertyRole::VirtualTopology) {
+
+				var.setValue(iterator->GetVirtualTopology().GetType());
+			}
+
+			if (var.isValid()) {
+
+				return var;
+			}
+		}
 	}
 
 	return QVariant();
