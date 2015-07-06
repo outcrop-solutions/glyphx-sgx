@@ -214,7 +214,7 @@ bool MinMaxGlyphModel::IsClear() const {
 
 	return (!m_selectedDataTransformModelIndex.isValid());
 }
-
+/*
 SynGlyphX::NumericMappingProperty& MinMaxGlyphModel::GetGlyphProperty(SynGlyphX::DataMappingGlyph& glyph, int row) const {
 
 	if (row == 0) {
@@ -317,7 +317,7 @@ QVariant MinMaxGlyphModel::GetDataByRow(SynGlyphX::DataMappingGlyph& glyph, cons
 
 	return QVariant();
 }
-
+*/
 Qt::ItemFlags MinMaxGlyphModel::flags(const QModelIndex & index) const {
 
 	return QAbstractTableModel::flags(index) | Qt::ItemIsEditable;
