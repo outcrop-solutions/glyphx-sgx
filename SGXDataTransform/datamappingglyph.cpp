@@ -119,6 +119,7 @@ namespace SynGlyphX {
 		AddXYZNumericPropertiesToPropertyTree(rootGlyphPropertyTree.add(L"RotationRate", L""), m_rotationRate);
 
 		m_structure.ExportToPropertyTree(rootGlyphPropertyTree);
+		m_virtualTopology.ExportToPropertyTree(rootGlyphPropertyTree);
 
 		return rootGlyphPropertyTree;
 	}
@@ -351,6 +352,14 @@ namespace SynGlyphX {
 		else if (field == MappableField::RotationRateZ) {
 
 			return m_rotationRate[2].GetBinding();
+		}
+		else if (field == MappableField::GeometryShape) {
+
+			return m_structure.GetGeometryShape().GetBinding();
+		}
+		else if (field == MappableField::VirtualTopology) {
+
+			return m_virtualTopology.GetType().GetBinding();
 		}
 	}
 
