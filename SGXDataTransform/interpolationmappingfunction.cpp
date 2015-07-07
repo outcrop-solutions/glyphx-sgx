@@ -36,21 +36,18 @@ namespace SynGlyphX {
 		return MappingFunctionData::Output::NumericAndColor;
 	}
 
-	double InterpolationMappingData::Interpolate(std::pair<double, double> outputMinDiff, double inputMin, double inputMax, double input) const {
+	double InterpolationMappingData::Interpolate(const DoubleMinDiff& outputMinDiff, double inputMin, double inputMax, double input) const {
 
 		double inputDiff = inputMax - inputMin;
-		return Interpolate(outputMinDiff.first, outputMinDiff.second, inputMin, inputDiff, input);
+		return Interpolate(outputMinDiff.GetMin(), outputMinDiff.GetDiff(), inputMin, inputDiff, input);
 	}
 
-	GlyphColor InterpolationMappingData::Interpolate(std::pair<GlyphColor, GlyphColor> outputMinDiff, double inputMin, double inputMax, double input) const {
+	GlyphColor InterpolationMappingData::Interpolate(const ColorMinDiff& outputMinDiff, double inputMin, double inputMax, double input) const {
 
 		double inputDiff = inputMax - inputMin;
 
-		GlyphColor max;
-		max.Set(outputMinDiff.first[0] + outputMinDiff.second[0], outputMinDiff.first[1] + outputMinDiff.second[1], outputMinDiff.first[2] + outputMinDiff.second[2]);
-
-		GlyphColor minHSV = GlyphColor::ConvertRGBtoHSV(outputMinDiff.first);
-		GlyphColor maxHSV = GlyphColor::ConvertRGBtoHSV(max);
+		GlyphColor minHSV = GlyphColor::ConvertRGBtoHSV(outputMinDiff.GetMin());
+		GlyphColor maxHSV = GlyphColor::ConvertRGBtoHSV(outputMinDiff.GetMax());
 		GlyphColor diffHSV(GlyphColor::HSV);
 		diffHSV.Set(maxHSV[0] - minHSV[0], maxHSV[1] - minHSV[1], maxHSV[2] - minHSV[2]);
 

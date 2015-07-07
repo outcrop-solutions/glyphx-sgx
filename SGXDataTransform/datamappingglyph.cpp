@@ -27,25 +27,25 @@ namespace SynGlyphX {
 			minPosition1 = -90.0;
 		}
 
-		m_position[0] = NumericMappingProperty(std::pair<double, double>(minPosition0, glyph.GetPosition()[0] - minPosition0));
-		m_position[1] = NumericMappingProperty(std::pair<double, double>(minPosition1, glyph.GetPosition()[1] - minPosition1));
-		m_position[2] = NumericMappingProperty(std::pair<double, double>(0.0, glyph.GetPosition()[2]));
-		m_rotation[0] = NumericMappingProperty(std::pair<double, double>(0.0, glyph.GetRotation()[0]));
-		m_rotation[1] = NumericMappingProperty(std::pair<double, double>(0.0, glyph.GetRotation()[1]));
-		m_rotation[2] = NumericMappingProperty(std::pair<double, double>(0.0, glyph.GetRotation()[2]));
-		m_scale[0] = NumericMappingProperty(std::pair<double, double>(0.1, glyph.GetScale()[0] - 0.1));
-		m_scale[1] = NumericMappingProperty(std::pair<double, double>(0.1, glyph.GetScale()[1] - 0.1));
-		m_scale[2] = NumericMappingProperty(std::pair<double, double>(0.1, glyph.GetScale()[2] - 0.1));
+		m_position[0] = NumericMappingProperty(DoubleMinDiff(minPosition0, glyph.GetPosition()[0] - minPosition0));
+		m_position[1] = NumericMappingProperty(DoubleMinDiff(minPosition1, glyph.GetPosition()[1] - minPosition1));
+		m_position[2] = NumericMappingProperty(DoubleMinDiff(0.0, glyph.GetPosition()[2]));
+		m_rotation[0] = NumericMappingProperty(DoubleMinDiff(0.0, glyph.GetRotation()[0]));
+		m_rotation[1] = NumericMappingProperty(DoubleMinDiff(0.0, glyph.GetRotation()[1]));
+		m_rotation[2] = NumericMappingProperty(DoubleMinDiff(0.0, glyph.GetRotation()[2]));
+		m_scale[0] = NumericMappingProperty(DoubleMinDiff(0.1, glyph.GetScale()[0] - 0.1));
+		m_scale[1] = NumericMappingProperty(DoubleMinDiff(0.1, glyph.GetScale()[1] - 0.1));
+		m_scale[2] = NumericMappingProperty(DoubleMinDiff(0.1, glyph.GetScale()[2] - 0.1));
 
-		m_color = ColorMappingProperty(std::pair<GlyphColor, GlyphColor>(GlyphColor(), glyph.GetColor()));
-		m_transparency = NumericMappingProperty(std::pair<double, double>(0.0, glyph.GetTransparency()));
+		m_color = ColorMappingProperty(ColorMinDiff(GlyphColor(), glyph.GetColor()));
+		m_transparency = NumericMappingProperty(DoubleMinDiff(0.0, glyph.GetTransparency()));
 
 		m_tag = TextMappingProperty(glyph.GetTag());
 		m_description = TextMappingProperty(glyph.GetDescription());
 
-		m_rotationRate[0] = NumericMappingProperty(std::pair<double, double>(0.0, glyph.GetRotationRate()[0]));
-		m_rotationRate[1] = NumericMappingProperty(std::pair<double, double>(0.0, glyph.GetRotationRate()[1]));
-		m_rotationRate[2] = NumericMappingProperty(std::pair<double, double>(0.0, glyph.GetRotationRate()[2]));
+		m_rotationRate[0] = NumericMappingProperty(DoubleMinDiff(0.0, glyph.GetRotationRate()[0]));
+		m_rotationRate[1] = NumericMappingProperty(DoubleMinDiff(0.0, glyph.GetRotationRate()[1]));
+		m_rotationRate[2] = NumericMappingProperty(DoubleMinDiff(0.0, glyph.GetRotationRate()[2]));
 
 		m_structure = DataMappingGlyphGeometry(glyph.GetStructure());
 

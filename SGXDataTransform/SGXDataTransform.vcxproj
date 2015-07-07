@@ -102,6 +102,7 @@
     <ClInclude Include="linearinterpolationmappingfunction.h" />
     <ClInclude Include="logarithmicinterpolationmappingfunction.h" />
     <ClInclude Include="interpolationmappingfunction.h" />
+    <ClInclude Include="mindiff.h" />
     <ClInclude Include="rangevaluemappingfunction.h" />
     <ClInclude Include="sceneproperties.h" />
     <ClInclude Include="sgxdatatransform_global.h" />
@@ -135,6 +136,7 @@
     <ClCompile Include="linearinterpolationmappingfunction.cpp" />
     <ClCompile Include="logarithmicinterpolationmappingfunction.cpp" />
     <ClCompile Include="interpolationmappingfunction.cpp" />
+    <ClCompile Include="mindiff.cpp" />
     <ClCompile Include="rangevaluemappingfunction.cpp" />
     <ClCompile Include="sceneproperties.cpp" />
     <ClCompile Include="singlevaluemappingfunction.cpp" />

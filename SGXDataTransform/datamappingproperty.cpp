@@ -150,7 +150,7 @@ namespace SynGlyphX {
 	}
 	
 	template<>
-	void DataMappingProperty<std::pair<double, double>>::ChangeMappingFunction(MappingFunctionData::Function function, const boost::property_tree::wptree& propertyTree) {
+	void DataMappingProperty<DoubleMinDiff>::ChangeMappingFunction(MappingFunctionData::Function function, const boost::property_tree::wptree& propertyTree) {
 
 		if (function == MappingFunctionData::Function::LinearInterpolation) {
 
@@ -175,7 +175,7 @@ namespace SynGlyphX {
 	}
 
 	template<>
-	void DataMappingProperty<std::pair<GlyphColor, GlyphColor>>::ChangeMappingFunction(MappingFunctionData::Function function, const boost::property_tree::wptree& propertyTree) {
+	void DataMappingProperty<ColorMinDiff>::ChangeMappingFunction(MappingFunctionData::Function function, const boost::property_tree::wptree& propertyTree) {
 
 		if (function == MappingFunctionData::Function::LinearInterpolation) {
 
@@ -258,27 +258,27 @@ namespace SynGlyphX {
 	}
 
 	template<>
-	void DataMappingProperty<std::pair<double, double>>::ExportValueToPropertyTree(boost::property_tree::wptree& propertyTree) const {
+	void DataMappingProperty<DoubleMinDiff>::ExportValueToPropertyTree(boost::property_tree::wptree& propertyTree) const {
 
 		//boost::property_tree::wptree& valuePropertyTree = propertyTreeParent.add(name, L"");
-		propertyTree.put<double>(L"Min", m_value.first);
+		propertyTree.put<double>(L"Min", m_value.GetMin());
 
-		if (std::abs(m_value.second) > 0.01) {
+		if (std::abs(m_value.GetDiff()) > 0.01) {
 
-			propertyTree.put<double>(L"Difference", m_value.second);
+			propertyTree.put<double>(L"Difference", m_value.GetDiff());
 		}
 	}
 
 	template<>
-	void DataMappingProperty<std::pair<GlyphColor, GlyphColor>>::ExportValueToPropertyTree(boost::property_tree::wptree& propertyTree) const {
+	void DataMappingProperty<ColorMinDiff>::ExportValueToPropertyTree(boost::property_tree::wptree& propertyTree) const {
 
 		//m_value.first.ExportToPropertyTree(propertyTree.add(L"Min", L""));
-		propertyTree.put<GlyphColor>(L"Min", m_value.first);
+		propertyTree.put<GlyphColor>(L"Min", m_value.GetMin());
 
-		if ((std::abs(m_value.second[0]) > 0) || (std::abs(m_value.second[1]) > 0) || (std::abs(m_value.second[2]) > 0)) {
+		if ((std::abs(m_value.GetDiff()[0]) > 0) || (std::abs(m_value.GetDiff()[1]) > 0) || (std::abs(m_value.GetDiff()[2]) > 0)) {
 
 			//m_value.second.ExportToPropertyTree(propertyTree.add(L"Difference", L""));
-			propertyTree.put<GlyphColor>(L"Difference", m_value.second);
+			propertyTree.put<GlyphColor>(L"Difference", m_value.GetDiff());
 		}
 	}
 
@@ -290,39 +290,41 @@ namespace SynGlyphX {
 	}
 
 	template<>
-	void DataMappingProperty<std::pair<double, double>>::ImportValueToPropertyTree(const boost::property_tree::wptree& propertyTree) {
+	void DataMappingProperty<DoubleMinDiff>::ImportValueToPropertyTree(const boost::property_tree::wptree& propertyTree) {
 
-		m_value.first = propertyTree.get<double>(L"Min");
-		m_value.second = propertyTree.get_optional<double>(L"Difference").get_value_or(0.0);
+		m_value.SetMinDiff(propertyTree.get<double>(L"Min"), propertyTree.get_optional<double>(L"Difference").get_value_or(0.0));
 	}
 
 	template<>
-	void DataMappingProperty<std::pair<GlyphColor, GlyphColor>>::ImportValueToPropertyTree(const boost::property_tree::wptree& propertyTree) {
+	void DataMappingProperty<ColorMinDiff>::ImportValueToPropertyTree(const boost::property_tree::wptree& propertyTree) {
 
+		GlyphColor min, diff;
 		//For color check if property tree has it in the old way.  If not read in using the new way
 		boost::optional<short> rgbMinRed = propertyTree.get_optional<short>(L"Min.R");
 		if (rgbMinRed.is_initialized()) {
 
-			m_value.first.Set(0, rgbMinRed.get());
-			m_value.first.Set(1, propertyTree.get<short>(L"Min.G"));
-			m_value.first.Set(2, propertyTree.get<short>(L"Min.B"));
+			min.Set(0, rgbMinRed.get());
+			min.Set(1, propertyTree.get<short>(L"Min.G"));
+			min.Set(2, propertyTree.get<short>(L"Min.B"));
 		}
 		else {
 
-			m_value.first = propertyTree.get<GlyphColor>(L"Min");
+			min = propertyTree.get<GlyphColor>(L"Min");
 		}
 
 		boost::optional<short> rgbDiffRed = propertyTree.get_optional<short>(L"Difference.R");
 		if (rgbDiffRed.is_initialized()) {
 
-			m_value.second.Set(0, rgbDiffRed.get());
-			m_value.second.Set(1, propertyTree.get<short>(L"Difference.G"));
-			m_value.second.Set(2, propertyTree.get<short>(L"Difference.B"));
+			diff.Set(0, rgbDiffRed.get());
+			diff.Set(1, propertyTree.get<short>(L"Difference.G"));
+			diff.Set(2, propertyTree.get<short>(L"Difference.B"));
 		}
 		else {
 
-			m_value.second = propertyTree.get_optional<GlyphColor>(L"Difference").get_value_or(GlyphColor({ { 0, 0, 0 } }));
+			diff = propertyTree.get_optional<GlyphColor>(L"Difference").get_value_or(GlyphColor({ { 0, 0, 0 } }));
 		}
+
+		m_value.SetMinDiff(min, diff);
 	}
 
 	template<typename PropertyType>

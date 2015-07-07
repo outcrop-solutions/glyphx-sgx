@@ -21,7 +21,7 @@
 #include "sgxdatatransform_global.h"
 #include <array>
 #include <boost/property_tree/ptree.hpp>
-#include "glyphcolor.h"
+#include "mindiff.h"
 #include "inputbinding.h"
 #include <memory>
 #include "datamappingfunction.h"
@@ -69,8 +69,8 @@ namespace SynGlyphX {
 
 	typedef DataMappingProperty<std::wstring> TextMappingProperty;
 
-	typedef DataMappingProperty<std::pair<double, double>> NumericMappingProperty;
-	typedef DataMappingProperty<std::pair<GlyphColor, GlyphColor>> ColorMappingProperty;
+	typedef DataMappingProperty<DoubleMinDiff> NumericMappingProperty;
+	typedef DataMappingProperty<ColorMinDiff> ColorMappingProperty;
 
 	typedef std::array<NumericMappingProperty, 3> NumericMappingPropertyXYZ;
 

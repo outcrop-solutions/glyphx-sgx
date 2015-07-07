@@ -15,45 +15,42 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef SYNGLYPHX_INTERPOLATIONMAPPINGDATA_H
-#define SYNGLYPHX_INTERPOLATIONMAPPINGDATA_H
+#ifndef SYNGLYPHX_MINDIFF_H
+#define SYNGLYPHX_MINDIFF_H
 
 #include "sgxdatatransform_global.h"
-#include "datamappingfunction.h"
-#include "mindiff.h"
+#include "glyphcolor.h"
 
 namespace SynGlyphX {
 
-	class SGXDATATRANSFORM_EXPORT InterpolationMappingData : public MappingFunctionData
+	template<typename DataType>
+	class SGXDATATRANSFORM_EXPORT MinDiff
 	{
 	public:
-		typedef std::shared_ptr<InterpolationMappingData> SharedPtr;
-		typedef std::shared_ptr<const InterpolationMappingData> ConstSharedPtr;
+		MinDiff();
+		MinDiff(DataType min, DataType diff);
+		MinDiff(const MinDiff& minDiff);
+		~MinDiff();
 
-		InterpolationMappingData(bool useLogarithmic = false);
-		InterpolationMappingData(const boost::property_tree::wptree& propertyTree);
-		InterpolationMappingData(const InterpolationMappingData& data);
-		virtual ~InterpolationMappingData();
+		MinDiff& operator=(const MinDiff& minDiff);
+		bool operator==(const MinDiff& minDiff) const;
+		bool operator!=(const MinDiff& minDiff) const;
 
-		virtual Input GetSupportedInput() const;
-		virtual Output GetSupportedOutput() const;
+		void SetMinDiff(DataType min, DataType diff);
+		void SetMinMax(DataType min, DataType max);
 
-		double Interpolate(const DoubleMinDiff& outputMinDiff, double inputMin, double inputMax, double input) const;
-		GlyphColor Interpolate(const ColorMinDiff& outputMinDiff, double inputMin, double inputMax, double input) const;
+		DataType GetMin() const;
+		DataType GetDiff() const;
+		DataType GetMax() const;
 
-		//void SetOutputMinAndDifference(OutputType min, OutputType difference);
-		//void SetInputMinAndDifference(double min, double difference);
-
-	protected:
-		//virtual OutputType MapCombinedInput(const double& input) const;
-		double Interpolate(double outputMin, double outputDifference, double inputMin, double inputDifference, double input) const;
-
-		//OutputType m_outputMin;
-		//OutputType m_outputDifference;
-		//double m_inputMin;
-		//double m_inputDifference;
+	private:
+		DataType m_min;
+		DataType m_diff;
 	};
+
+	typedef MinDiff<double> DoubleMinDiff;
+	typedef MinDiff<GlyphColor> ColorMinDiff;
 
 } //namespace SynGlyphX
 
-#endif //SYNGLYPHX_INTERPOLATIONMAPPINGDATA_H
+#endif //SYNGLYPHX_MINDIFF_H
