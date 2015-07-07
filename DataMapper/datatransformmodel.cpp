@@ -472,6 +472,12 @@ void DataTransformModel::ClearInputBinding(const boost::uuids::uuid& treeID, Syn
 	m_dataMapping->ClearInputBinding(treeID, node, field);
 }
 
+void DataTransformModel::ClearInputBinding(const boost::uuids::uuid& treeID, const QModelIndex& index, SynGlyphX::DataMappingGlyph::MappableField field) {
+
+	SynGlyphX::DataMappingGlyphGraph::const_iterator iterator(static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(index.internalPointer()));
+	ClearInputBinding(treeID, iterator, field);
+}
+
 void DataTransformModel::EnableTables(const boost::uuids::uuid& id, const SynGlyphX::Datasource::TableSet& tables, bool enable) {
 
 	m_dataMapping->EnableTables(id, tables, enable);

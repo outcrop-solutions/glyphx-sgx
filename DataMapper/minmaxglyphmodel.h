@@ -51,8 +51,8 @@ public:
 	bool IsCurrentGlyphRoot() const;
 	bool IsClear() const;
 
-	SynGlyphX::MappingFunctionData::ConstSharedPtr GetMappingFunction(int row) const;
-	void SetMappingFunction(int row, SynGlyphX::MappingFunctionData::SharedPtr mappingFunction);
+	//SynGlyphX::MappingFunctionData::ConstSharedPtr GetMappingFunction(int row) const;
+	//void SetMappingFunction(int row, SynGlyphX::MappingFunctionData::SharedPtr mappingFunction);
 
 	//const SynGlyphX::DataMappingGlyphGeometry& GetGlyphGeometry() const;
 	//const SynGlyphX::DataMappingVirtualTopology& GetVirtualTopology() const;
@@ -68,7 +68,7 @@ private:
 	//bool SetDataByRow(SynGlyphX::DataMappingGlyph& glyph, const QVariant& value, const QModelIndex& index);
 	//SynGlyphX::NumericMappingProperty& GetGlyphProperty(SynGlyphX::DataMappingGlyph& glyph, int row) const;
 	PropertyType GetFieldType(int row) const;
-	SynGlyphX::MappingFunctionData::SharedPtr CreateNewMappingFunction(SynGlyphX::MappingFunctionData::Function function, bool isColor) const;
+	SynGlyphX::MappingFunctionData::SharedPtr CreateNewMappingFunction(SynGlyphX::MappingFunctionData::Function function, PropertyType type) const;
 	const SynGlyphX::InputField& GetInputField(SynGlyphX::InputField::HashID fieldID) const;
 
 	//SynGlyphX::DataMappingGlyphGraph::const_iterator m_glyph;

@@ -103,6 +103,7 @@ public:
 	void SetInputField(const boost::uuids::uuid& treeID, SynGlyphX::DataMappingGlyphGraph::const_iterator& node, SynGlyphX::DataMappingGlyph::MappableField field, const SynGlyphX::InputField& inputfield);
 	void SetInputField(const boost::uuids::uuid& treeID, const QModelIndex& index, SynGlyphX::DataMappingGlyph::MappableField field, const SynGlyphX::InputField& inputfield);
 	void ClearInputBinding(const boost::uuids::uuid& treeID, SynGlyphX::DataMappingGlyphGraph::const_iterator& node, SynGlyphX::DataMappingGlyph::MappableField field);
+	void ClearInputBinding(const boost::uuids::uuid& treeID, const QModelIndex& index, SynGlyphX::DataMappingGlyph::MappableField field);
 
 	void EnableTables(const boost::uuids::uuid& id, const SynGlyphX::Datasource::TableSet& tables, bool enable = true);
 
@@ -128,6 +129,8 @@ private:
 	SynGlyphX::DataTransformMapping::SharedPtr m_dataMapping;
 };
 
+Q_DECLARE_METATYPE(SynGlyphX::DoubleMinDiff)
+Q_DECLARE_METATYPE(SynGlyphX::ColorMinDiff)
 Q_DECLARE_METATYPE(SynGlyphX::NumericMappingProperty)
 Q_DECLARE_METATYPE(SynGlyphX::ColorMappingProperty)
 Q_DECLARE_METATYPE(SynGlyphX::TextMappingProperty)

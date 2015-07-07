@@ -127,6 +127,21 @@
     <ClCompile Include="GeneratedFiles\Win32\Release\moc_glyphenumcombobox.cpp">
       <Filter>Generated Files\Release_Win32</Filter>
     </ClCompile>
+    <ClCompile Include="doubleminmaxwidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Win32\Debug\moc_doubleminmaxwidget.cpp">
+      <Filter>Generated Files\Debug_Win32</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Win32\Release\moc_doubleminmaxwidget.cpp">
+      <Filter>Generated Files\Release_Win32</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Win32\Debug\moc_colorminmaxwidget.cpp">
+      <Filter>Generated Files\Debug_Win32</Filter>
+    </ClCompile>
+    <ClCompile Include="colorminmaxwidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="glyphstructurewidget.h">
@@ -157,6 +172,12 @@
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="glyphenumcombobox.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="doubleminmaxwidget.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="colorminmaxwidget.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>

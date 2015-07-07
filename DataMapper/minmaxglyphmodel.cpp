@@ -354,12 +354,12 @@ bool MinMaxGlyphModel::setData(const QModelIndex& index, const QVariant& value, 
 					SynGlyphX::MappingFunctionData::Function function = SynGlyphX::MappingFunctionData::s_functionNames.right.at(value.toString().toStdWString());
 					if (function != colorProp.GetMappingFunctionData()->GetFunction()) {
 
-						colorProp.SetMappingFunctionData(CreateNewMappingFunction(function, true));
+						colorProp.SetMappingFunctionData(CreateNewMappingFunction(function, PropertyType::Color));
 					}
 				}
 				else {
 
-					colorProp.GetValue() = value.value<std::pair<
+					colorProp.GetValue() = value.value<SynGlyphX::ColorMinDiff>();
 				}
 			}
 			/*else if (propertyType == PropertyType::Text) { //Currently Text fields do not have a value nor choice in mapping functions
@@ -379,11 +379,15 @@ bool MinMaxGlyphModel::setData(const QModelIndex& index, const QVariant& value, 
 				SynGlyphX::GeometryShapeMappingProperty shapeProp = prop.value<SynGlyphX::GeometryShapeMappingProperty>();
 				if (index.column() == 1) {
 
-					return QString::fromStdWString(SynGlyphX::MappingFunctionData::s_functionNames.left.at(shapeProp.GetMappingFunctionData()->GetFunction()));
+					SynGlyphX::MappingFunctionData::Function function = SynGlyphX::MappingFunctionData::s_functionNames.right.at(value.toString().toStdWString());
+					if (function != shapeProp.GetMappingFunctionData()->GetFunction()) {
+
+						shapeProp.SetMappingFunctionData(CreateNewMappingFunction(function, PropertyType::GeometryShape));
+					}
 				}
 				else {
 
-					return QVariant::fromValue(shapeProp.GetValue());
+					shapeProp.GetValue() = value.value<SynGlyphX::GlyphGeometryInfo::Shape>();
 				}
 			}
 			else if (propertyType == PropertyType::VirtualTopology) {
@@ -391,11 +395,15 @@ bool MinMaxGlyphModel::setData(const QModelIndex& index, const QVariant& value, 
 				SynGlyphX::VirtualTopologyMappingProperty topologyProp = prop.value<SynGlyphX::VirtualTopologyMappingProperty>();
 				if (index.column() == 1) {
 
-					return QString::fromStdWString(SynGlyphX::MappingFunctionData::s_functionNames.left.at(topologyProp.GetMappingFunctionData()->GetFunction()));
+					SynGlyphX::MappingFunctionData::Function function = SynGlyphX::MappingFunctionData::s_functionNames.right.at(value.toString().toStdWString());
+					if (function != topologyProp.GetMappingFunctionData()->GetFunction()) {
+
+						topologyProp.SetMappingFunctionData(CreateNewMappingFunction(function, PropertyType::VirtualTopology));
+					}
 				}
 				else {
 
-					return QVariant::fromValue(topologyProp.GetValue());
+					topologyProp.GetValue() = value.value<SynGlyphX::VirtualTopologyInfo::Type>();
 				}
 			}
 			else {
@@ -403,11 +411,15 @@ bool MinMaxGlyphModel::setData(const QModelIndex& index, const QVariant& value, 
 				SynGlyphX::NumericMappingProperty numericProp = prop.value<SynGlyphX::NumericMappingProperty>();
 				if (index.column() == 1) {
 
-					return QString::fromStdWString(SynGlyphX::MappingFunctionData::s_functionNames.left.at(numericProp.GetMappingFunctionData()->GetFunction()));
+					SynGlyphX::MappingFunctionData::Function function = SynGlyphX::MappingFunctionData::s_functionNames.right.at(value.toString().toStdWString());
+					if (function != numericProp.GetMappingFunctionData()->GetFunction()) {
+
+						numericProp.SetMappingFunctionData(CreateNewMappingFunction(function, PropertyType::Numeric));
+					}
 				}
 				else {
 
-					return QVariant::fromValue(numericProp.GetValue());
+					numericProp.GetValue() = value.value<SynGlyphX::DoubleMinDiff>();
 				}
 			}
 
@@ -527,7 +539,7 @@ void MinMaxGlyphModel::ClearInputBindings() {
 
 	for (int i = 0; i < rowCount(); ++i) {
 
-		m_dataTransformModel->ClearInputBinding(m_glyphTreeID, m_glyph.constify(), static_cast<SynGlyphX::DataMappingGlyph::MappableField>(i));
+		m_dataTransformModel->ClearInputBinding(m_glyphTreeID, m_selectedDataTransformModelIndex, static_cast<SynGlyphX::DataMappingGlyph::MappableField>(i));
 	}
 	emit dataChanged(index(0, columnCount() - 1), index(rowCount() - 1, columnCount() - 1));
 }
@@ -556,14 +568,14 @@ MinMaxGlyphModel::PropertyType MinMaxGlyphModel::GetFieldType(int row) const {
 	}
 }
 
-SynGlyphX::MappingFunctionData::SharedPtr MinMaxGlyphModel::CreateNewMappingFunction(SynGlyphX::MappingFunctionData::Function function, bool isColor) const {
+SynGlyphX::MappingFunctionData::SharedPtr MinMaxGlyphModel::CreateNewMappingFunction(SynGlyphX::MappingFunctionData::Function function, PropertyType type) const {
 
 	if ((function == SynGlyphX::MappingFunctionData::Function::LinearInterpolation) || (function == SynGlyphX::MappingFunctionData::Function::LogarithmicInterpolation)) {
 
 		return std::make_shared<SynGlyphX::InterpolationMappingData>(function == SynGlyphX::MappingFunctionData::Function::LogarithmicInterpolation);
 	}
 
-	if (isColor) {
+	if (type == PropertyType::Color) {
 
 		if (function == SynGlyphX::MappingFunctionData::Function::Numeric2Value) {
 
@@ -577,8 +589,12 @@ SynGlyphX::MappingFunctionData::SharedPtr MinMaxGlyphModel::CreateNewMappingFunc
 
 			return std::make_shared<SynGlyphX::Range2ColorMappingData>();
 		}
+		else if ((function == SynGlyphX::MappingFunctionData::Function::LinearInterpolation) || (function == SynGlyphX::MappingFunctionData::Function::LogarithmicInterpolation)) {
+
+			return std::make_shared<SynGlyphX::InterpolationMappingData>(function == SynGlyphX::MappingFunctionData::Function::LogarithmicInterpolation);
+		}
 	}
-	else {
+	else if (type == PropertyType::Numeric) {
 
 		if (function == SynGlyphX::MappingFunctionData::Function::Numeric2Value) {
 
@@ -592,9 +608,47 @@ SynGlyphX::MappingFunctionData::SharedPtr MinMaxGlyphModel::CreateNewMappingFunc
 
 			return std::make_shared<SynGlyphX::Range2NumericMappingData>();
 		}
+		else if ((function == SynGlyphX::MappingFunctionData::Function::LinearInterpolation) || (function == SynGlyphX::MappingFunctionData::Function::LogarithmicInterpolation)) {
+
+			return std::make_shared<SynGlyphX::InterpolationMappingData>(function == SynGlyphX::MappingFunctionData::Function::LogarithmicInterpolation);
+		}
+	}
+	else if (type == PropertyType::GeometryShape) {
+
+		if (function == SynGlyphX::MappingFunctionData::Function::Numeric2Value) {
+
+			return std::make_shared<SynGlyphX::Numeric2ShapeMappingData>();
+		}
+		else if (function == SynGlyphX::MappingFunctionData::Function::Text2Value) {
+
+			return std::make_shared<SynGlyphX::Text2ShapeMappingData>();
+		}
+		else if (function == SynGlyphX::MappingFunctionData::Function::Range2Value) {
+
+			return std::make_shared<SynGlyphX::Range2ShapeMappingData>();
+		}
+	}
+	else if (type == PropertyType::VirtualTopology) {
+
+		if (function == SynGlyphX::MappingFunctionData::Function::Numeric2Value) {
+
+			return std::make_shared<SynGlyphX::Numeric2VirtualTopologyMappingData>();
+		}
+		else if (function == SynGlyphX::MappingFunctionData::Function::Text2Value) {
+
+			return std::make_shared<SynGlyphX::Text2VirtualTopologyMappingData>();
+		}
+		else if (function == SynGlyphX::MappingFunctionData::Function::Range2Value) {
+
+			return std::make_shared<SynGlyphX::Range2VirtualTopologyMappingData>();
+		}
+	}
+	else {
+
+		return std::make_shared<SynGlyphX::MappingFunctionData>();
 	}
 }
-
+/*
 SynGlyphX::MappingFunctionData::ConstSharedPtr MinMaxGlyphModel::GetMappingFunction(int row) const {
 
 	if ((row >= m_propertyHeaders.size()) || (row < 0)) {
@@ -636,7 +690,7 @@ void MinMaxGlyphModel::SetMappingFunction(int row, SynGlyphX::MappingFunctionDat
 		return GetGlyphProperty(*m_glyph.deconstify(), row).SetMappingFunctionData(mappingFunction);
 	}
 }
-/*
+
 const SynGlyphX::DataMappingGlyphGeometry& MinMaxGlyphModel::GetGlyphGeometry() const {
 
 	return m_dataTransformModel->GetGlyph(m_selectedDataTransformModelIndex).GetStructure();
