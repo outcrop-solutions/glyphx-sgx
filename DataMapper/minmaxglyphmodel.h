@@ -32,8 +32,9 @@ public:
 		Numeric,
 		Color,
 		Text,
+		VirtualTopology,
 		GeometryShape,
-		VirtualTopology
+		NonMappable
 	};
 
 	MinMaxGlyphModel(DataTransformModel* dataTransformModel, QObject *parent = nullptr);
@@ -51,8 +52,8 @@ public:
 	bool IsCurrentGlyphRoot() const;
 	bool IsClear() const;
 
-	//SynGlyphX::MappingFunctionData::ConstSharedPtr GetMappingFunction(int row) const;
-	//void SetMappingFunction(int row, SynGlyphX::MappingFunctionData::SharedPtr mappingFunction);
+	SynGlyphX::MappingFunctionData::ConstSharedPtr GetMappingFunction(int row) const;
+	void SetMappingFunction(int row, SynGlyphX::MappingFunctionData::SharedPtr mappingFunction);
 
 	//const SynGlyphX::DataMappingGlyphGeometry& GetGlyphGeometry() const;
 	//const SynGlyphX::DataMappingVirtualTopology& GetVirtualTopology() const;

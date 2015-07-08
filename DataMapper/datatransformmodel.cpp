@@ -34,7 +34,7 @@ int DataTransformModel::columnCount(const QModelIndex& parent) const {
 
 bool DataTransformModel::setData(const QModelIndex& index, const QVariant& value, int role) {
 
-	if ((role >= PropertyRole::PositionX) && (role <= PropertyRole::VirtualTopology) && (GetDataType(index) == DataType::GlyphTrees)) {
+	if ((role >= PropertyRole::PositionX) && (role <= PropertyRole::GeometryTorusRatio) && (GetDataType(index) == DataType::GlyphTrees)) {
 
 		if (!m_dataMapping->GetGlyphGraphs().empty()) {
 
@@ -145,7 +145,7 @@ QVariant DataTransformModel::data(const QModelIndex& index, int role) const {
 
 		return GetDataTypeData(index);
 	}
-	else if ((role >= PropertyRole::PositionX) && (role <= PropertyRole::VirtualTopology)) {
+	else if ((role >= PropertyRole::PositionX) && (role <= PropertyRole::GeometryTorusRatio)) {
 
 		return GetPropertyData(index, role);
 	}

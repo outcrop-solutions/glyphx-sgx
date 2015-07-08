@@ -15,45 +15,45 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef SYNGLYPHX_DOUBLEMINMAXWIDGET_H
-#define SYNGLYPHX_DOUBLEMINMAXWIDGET_H
+#ifndef SYNGLYPHX_INTMINMAXWIDGET_H
+#define SYNGLYPHX_INTMINMAXWIDGET_H
 
 #include "sgxglyphgui_global.h"
 #include "horizontalformwidget.h"
 #include "mindiff.h"
-#include <QtWidgets/QDoubleSpinBox>
+#include <QtWidgets/QSpinBox>
 
 namespace SynGlyphX {
 
-	class SGXGLYPHGUI_EXPORT DoubleMinMaxWidget : public HorizontalFormWidget
+	class SGXGLYPHGUI_EXPORT IntMinMaxWidget : public HorizontalFormWidget
 	{
 		Q_OBJECT
 
-		Q_PROPERTY(DoubleMinDiff value READ GetValue WRITE SetValue USER true)
+		Q_PROPERTY(IntMinDiff value READ GetValue WRITE SetValue USER true)
 
 	public:
-		DoubleMinMaxWidget(QWidget *parent);
-		~DoubleMinMaxWidget();
+		IntMinMaxWidget(QWidget *parent);
+		~IntMinMaxWidget();
 
-		DoubleMinDiff GetValue() const;
+		IntMinDiff GetValue() const;
 
 		void SetKeyboardTracking(bool enable);
-		void SetRange(double min, double max);
+		void SetRange(int min, int max);
 
 	signals:
-		void ValueChanged(const DoubleMinDiff&);
+		void ValueChanged(const IntMinDiff&);
 
 	public slots:
-		void SetValue(const DoubleMinDiff& value);
+		void SetValue(const IntMinDiff& value);
 
 	private slots:
 		void OnUserUpdated();
 
 	private:
-		QDoubleSpinBox* m_minSpinBox;
-		QDoubleSpinBox* m_maxSpinBox;
+		QSpinBox* m_minSpinBox;
+		QSpinBox* m_maxSpinBox;
 	};
 
 } //namespace SynGlyphX
 
-#endif // SYNGLYPHX_DOUBLEMINMAXWIDGET_H
+#endif // SYNGLYPHX_INTMINMAXWIDGET_H

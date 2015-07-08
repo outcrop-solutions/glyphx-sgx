@@ -4,9 +4,12 @@
 #include <QtWidgets/QDoubleSpinBox>
 #include <QtWidgets/QComboBox>
 #include <QtCore/QModelIndex>
-#include "colorbutton.h"
+#include "colorminmaxwidget.h"
+#include "doubleminmaxwidget.h"
+#include "intminmaxwidget.h"
 #include "datamappingfunction.h"
 #include "mappingfunctionwidget.h"
+#include "glyphenumcombobox.h"
 
 DataBindingWidget::DataBindingWidget(MinMaxGlyphModel* model, QWidget *parent)
 	: QTabWidget(parent),
@@ -15,7 +18,7 @@ DataBindingWidget::DataBindingWidget(MinMaxGlyphModel* model, QWidget *parent)
 	CreatePropertiesTable();
 	CreateTagAndDescriptionWidget();
 	CreateAnimationTable();
-	CreateNonMappablePropertiesTab();
+	CreateGeometryTopologyTab();
 
 	setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
 	QObject::connect(model, &MinMaxGlyphModel::modelReset, this, &DataBindingWidget::OnModelReset);
@@ -29,20 +32,36 @@ DataBindingWidget::~DataBindingWidget()
 
 }
 
-void DataBindingWidget::CreateNonMappablePropertiesTab() {
+void DataBindingWidget::CreateGeometryTopologyTab() {
 
-	m_glyphStructureWidget = new SynGlyphX::GlyphStructureWidget(this);
+	m_nonMappableGeometryWidget = new SynGlyphX::NonMappableGeometryWidget(this);
 
 	QWidget* widget = new QWidget(this);
+	QVBoxLayout* widgetLayout = new QVBoxLayout(widget);
+	widgetLayout->setContentsMargins(0, 0, 0, 0);
 	QGridLayout* gridLayout = new QGridLayout(this);
-	gridLayout->addWidget(m_glyphStructureWidget, 0, 0);
-	gridLayout->setColumnStretch(1, 1);
-	gridLayout->setRowStretch(1, 1);
+	gridLayout->setVerticalSpacing(0);
+
+	CreateTableHeader(gridLayout);
+	CreateVerticalGridLines(gridLayout, 3);
+	CreateGridLine(gridLayout, QFrame::HLine, -1, 2);
+
+	CreateVirtualTopologyTypePropertyWidgets(gridLayout, 16);
+	CreateGridLine(gridLayout, QFrame::HLine);
+	CreateGeometryShapePropertyWidgets(gridLayout, 17);
+
+	widgetLayout->addLayout(gridLayout);
+
+	widgetLayout->addWidget(m_nonMappableGeometryWidget);
+	widgetLayout->addStretch(1);
+	//gridLayout->setColumnStretch(1, 1);
+	//gridLayout->setRowStretch(1, 1);
 	widget->setLayout(gridLayout);
 
-	addTab(widget, tr("Non-Mappable"));
+	addTab(widget, tr("Geometry && Topology"));
 
-	QObject::connect(m_glyphStructureWidget, &SynGlyphX::GlyphStructureWidget::GlyphPropertyUpdated, this, &DataBindingWidget::OnGlyphStructureUpdated);
+	QObject::connect(m_nonMappableGeometryWidget, &SynGlyphX::NonMappableGeometryWidget::SurfaceChanged, this, &DataBindingWidget::OnSurfaceUpdated);
+	QObject::connect(m_nonMappableGeometryWidget, &SynGlyphX::NonMappableGeometryWidget::TorusRatioChanged, this, &DataBindingWidget::OnTorusRatioUpdated);
 }
 
 void DataBindingWidget::CreateAnimationTable() {
@@ -51,9 +70,10 @@ void DataBindingWidget::CreateAnimationTable() {
 
 	QVBoxLayout* layout = new QVBoxLayout(this);
 	QGridLayout* gridLayout = new QGridLayout(this);
+	gridLayout->setVerticalSpacing(0);
 
 	CreateTableHeader(gridLayout);
-	CreateVerticalGridLines(gridLayout, 4);
+	CreateVerticalGridLines(gridLayout, 3);
 
 	CreateGridLine(gridLayout, QFrame::HLine, -1, 2);
 
@@ -138,7 +158,7 @@ void DataBindingWidget::CreatePropertiesTable() {
 	gridLayout->setVerticalSpacing(0);
 
 	CreateTableHeader(gridLayout);
-	CreateVerticalGridLines(gridLayout, 4);
+	CreateVerticalGridLines(gridLayout, 3);
 
 	CreateGridLine(gridLayout, QFrame::HLine, -1, 2);
 
@@ -196,7 +216,7 @@ void DataBindingWidget::CreateTableHeader(QGridLayout* gridLayout) {
 	}
 }
 
-void DataBindingWidget::CreateRowOfPropertyWidgets(QGridLayout* layout, QWidget* minWidget, QWidget* maxWidget, MappingFunctionWidget* mappingFunctionWidget, int modelRow, bool addToPositionXYList) {
+void DataBindingWidget::CreateRowOfPropertyWidgets(QGridLayout* layout, QWidget* valueWidget, MappingFunctionWidget* mappingFunctionWidget, int modelRow, bool addToPositionXYList) {
 
 	QDataWidgetMapper* mapper = new QDataWidgetMapper(this);
 	mapper->setSubmitPolicy(QDataWidgetMapper::ManualSubmit);
@@ -210,17 +230,15 @@ void DataBindingWidget::CreateRowOfPropertyWidgets(QGridLayout* layout, QWidget*
 
 	mapper->setModel(m_model);
 
-	mapper->addMapping(minWidget, 0);
-	mapper->addMapping(maxWidget, 1);
-	mapper->addMapping(mappingFunctionWidget, 2);
-	mapper->addMapping(inputBindingLineEdit, 3);
+	mapper->addMapping(valueWidget, 0);
+	mapper->addMapping(mappingFunctionWidget, 1);
+	mapper->addMapping(inputBindingLineEdit, 2);
 
 	int newRow = layout->rowCount();
 	layout->addWidget(label, newRow, 0, Qt::AlignHCenter);
-	layout->addWidget(minWidget, newRow, 2, Qt::AlignHCenter);
-	layout->addWidget(maxWidget, newRow, 4, Qt::AlignHCenter);
-	layout->addWidget(mappingFunctionWidget, newRow, 6, Qt::AlignHCenter);
-	layout->addWidget(inputBindingLineEdit, newRow, 8);
+	layout->addWidget(valueWidget, newRow, 2, Qt::AlignHCenter);
+	layout->addWidget(mappingFunctionWidget, newRow, 4, Qt::AlignHCenter);
+	layout->addWidget(inputBindingLineEdit, newRow, 6);
 
 	QObject::connect(mappingFunctionWidget, &MappingFunctionWidget::FunctionChanged, mapper, &QDataWidgetMapper::submit);
 	QObject::connect(mappingFunctionWidget, &MappingFunctionWidget::SupportedInputChanged, inputBindingLineEdit, &BindingLineEdit::SetAcceptedInputTypes);
@@ -230,56 +248,67 @@ void DataBindingWidget::CreateRowOfPropertyWidgets(QGridLayout* layout, QWidget*
 
 	if (addToPositionXYList) {
 
-		m_positionXYMinMaxWidgets.push_back(minWidget);
-		m_positionXYMinMaxWidgets.push_back(maxWidget);
+		m_positionXYMinMaxWidgets.push_back(valueWidget);
 		m_positionXYMinMaxWidgets.push_back(mappingFunctionWidget);
 	}
 }
 
 void DataBindingWidget::CreateIntegerPropertyWidgets(QGridLayout* layout, int modelRow, int min, int max) {
 
-	QSpinBox* minSpinBox = new QSpinBox(this);
-	minSpinBox->setKeyboardTracking(false);
-	minSpinBox->setRange(min, max);
-	QSpinBox* maxSpinBox = new QSpinBox(this);
-	maxSpinBox->setKeyboardTracking(false);
-	maxSpinBox->setRange(min, max);
+	SynGlyphX::IntMinMaxWidget* minMaxWidget = new SynGlyphX::IntMinMaxWidget(this);
+	minMaxWidget->setContentsMargins(0, 0, 0, 0);
+	minMaxWidget->SetKeyboardTracking(false);
+	minMaxWidget->SetRange(min, max);
 	
 	MappingFunctionWidget* mappingFunctionWidget = new MappingFunctionWidget(MappingFunctionWidget::KeyType::Numeric, m_model, modelRow, this);
 	mappingFunctionWidget->SetDialogOutputMinMax(min, max);
-	CreateRowOfPropertyWidgets(layout, minSpinBox, maxSpinBox, mappingFunctionWidget, modelRow);
+	CreateRowOfPropertyWidgets(layout, minMaxWidget, mappingFunctionWidget, modelRow);
 
-	QObject::connect(minSpinBox, static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged), m_dataWidgetMappers.last(), &QDataWidgetMapper::submit);
-	QObject::connect(maxSpinBox, static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged), m_dataWidgetMappers.last(), &QDataWidgetMapper::submit);
+	QObject::connect(minMaxWidget, &SynGlyphX::IntMinMaxWidget::ValueChanged, m_dataWidgetMappers.last(), &QDataWidgetMapper::submit);
 }
 
 void DataBindingWidget::CreateDoublePropertyWidgets(QGridLayout* layout, int modelRow, double min, double max, bool addToPositionXYList) {
 
-	QDoubleSpinBox* minSpinBox = new QDoubleSpinBox(this);
-	minSpinBox->setKeyboardTracking(false);
-	minSpinBox->setRange(min, max);
-	QDoubleSpinBox* maxSpinBox = new QDoubleSpinBox(this);
-	maxSpinBox->setKeyboardTracking(false);
-	maxSpinBox->setRange(min, max);
+	SynGlyphX::DoubleMinMaxWidget* minMaxWidget = new SynGlyphX::DoubleMinMaxWidget(this);
+	minMaxWidget->setContentsMargins(0, 0, 0, 0);
+	minMaxWidget->SetKeyboardTracking(false);
+	minMaxWidget->SetRange(min, max);
 	
 	MappingFunctionWidget* mappingFunctionWidget = new MappingFunctionWidget(MappingFunctionWidget::KeyType::Numeric, m_model, modelRow, this);
 	mappingFunctionWidget->SetDialogOutputMinMax(min, max);
-	CreateRowOfPropertyWidgets(layout, minSpinBox, maxSpinBox, mappingFunctionWidget, modelRow, addToPositionXYList);
+	CreateRowOfPropertyWidgets(layout, minMaxWidget, mappingFunctionWidget, modelRow, addToPositionXYList);
 
-	QObject::connect(minSpinBox, static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), m_dataWidgetMappers.last(), &QDataWidgetMapper::submit);
-	QObject::connect(maxSpinBox, static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), m_dataWidgetMappers.last(), &QDataWidgetMapper::submit);
+	QObject::connect(minMaxWidget, &SynGlyphX::DoubleMinMaxWidget::ValueChanged, m_dataWidgetMappers.last(), &QDataWidgetMapper::submit);
 }
 
 void DataBindingWidget::CreateColorPropertyWidgets(QGridLayout* layout, int modelRow) {
 
-	SynGlyphX::ColorButton* minColorButton = new SynGlyphX::ColorButton(false, this);
-	SynGlyphX::ColorButton* maxColorButton = new SynGlyphX::ColorButton(false, this);
+	SynGlyphX::ColorMinMaxWidget* minMaxWidget = new SynGlyphX::ColorMinMaxWidget(false, this);
 
 	MappingFunctionWidget* mappingFunctionWidget = new MappingFunctionWidget(MappingFunctionWidget::KeyType::Color, m_model, modelRow, this);
-	CreateRowOfPropertyWidgets(layout, minColorButton, maxColorButton, mappingFunctionWidget, modelRow);
+	CreateRowOfPropertyWidgets(layout, minMaxWidget, mappingFunctionWidget, modelRow);
 
-	QObject::connect(minColorButton, &SynGlyphX::ColorButton::ColorChanged, m_dataWidgetMappers.last(), &QDataWidgetMapper::submit);
-	QObject::connect(maxColorButton, &SynGlyphX::ColorButton::ColorChanged, m_dataWidgetMappers.last(), &QDataWidgetMapper::submit);
+	QObject::connect(minMaxWidget, &SynGlyphX::ColorMinMaxWidget::ValueChanged, m_dataWidgetMappers.last(), &QDataWidgetMapper::submit);
+}
+
+void DataBindingWidget::CreateGeometryShapePropertyWidgets(QGridLayout* layout, int modelRow) {
+
+	SynGlyphX::GlyphShapeComboBox* comboBox = new SynGlyphX::GlyphShapeComboBox(this);
+
+	MappingFunctionWidget* mappingFunctionWidget = new MappingFunctionWidget(MappingFunctionWidget::KeyType::GeometryShape, m_model, modelRow, this);
+	CreateRowOfPropertyWidgets(layout, comboBox, mappingFunctionWidget, modelRow);
+
+	QObject::connect(comboBox, &SynGlyphX::GlyphShapeComboBox::currentTextChanged, m_dataWidgetMappers.last(), &QDataWidgetMapper::submit);
+}
+
+void DataBindingWidget::CreateVirtualTopologyTypePropertyWidgets(QGridLayout* layout, int modelRow) {
+
+	SynGlyphX::VirtualTopologyComboBox* comboBox = new SynGlyphX::VirtualTopologyComboBox(this);
+
+	MappingFunctionWidget* mappingFunctionWidget = new MappingFunctionWidget(MappingFunctionWidget::KeyType::VirtualTopology, m_model, modelRow, this);
+	CreateRowOfPropertyWidgets(layout, comboBox, mappingFunctionWidget, modelRow);
+
+	QObject::connect(comboBox, &SynGlyphX::VirtualTopologyComboBox::currentTextChanged, m_dataWidgetMappers.last(), &QDataWidgetMapper::submit);
 }
 
 void DataBindingWidget::CreateGridLine(QGridLayout* layout, QFrame::Shape shape, int index, int thickness) {
@@ -320,17 +349,22 @@ void DataBindingWidget::OnModelReset() {
 
 	if (doesModelHaveData) {
 
-		bool areSignalsBlocked = m_glyphStructureWidget->blockSignals(true);
-		m_glyphStructureWidget->SetWidgetFromGlyphGeometryAndTopology(m_model->GetGlyphGeometry().ExportGlyphGeometry(), m_model->GetVirtualTopology().ExportVirtualTopology());
-		m_glyphStructureWidget->blockSignals(areSignalsBlocked);
+		bool areSignalsBlocked = m_nonMappableGeometryWidget->blockSignals(true);
+		m_nonMappableGeometryWidget->SetWidget(static_cast<SynGlyphX::GlyphGeometryInfo::Surface>(m_model->data(m_model->index(18, 0)).toInt()), m_model->data(m_model->index(19, 0)).toDouble());
+		m_nonMappableGeometryWidget->blockSignals(areSignalsBlocked);
 	}
 
 	OnBaseObjectChanged();
 }
 
-void DataBindingWidget::OnGlyphStructureUpdated() {
+void DataBindingWidget::OnSurfaceUpdated() {
 
-	m_model->SetGlyphGeometryAndVirtualTopology(m_glyphStructureWidget->GetGlyphGeometry(), m_glyphStructureWidget->GetVirtualTopology());
+	m_model->setData(m_model->index(18, 0), m_nonMappableGeometryWidget->GetSurface());
+}
+
+void DataBindingWidget::OnTorusRatioUpdated() {
+
+	m_model->setData(m_model->index(19, 0), m_nonMappableGeometryWidget->GetTorusRatio());
 }
 
 void DataBindingWidget::CommitChanges() {

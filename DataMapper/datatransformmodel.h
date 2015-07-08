@@ -54,10 +54,10 @@ public:
 		RotationRateX = Description + 1,
 		RotationRateY = RotationRateX + 1,
 		RotationRateZ = RotationRateY + 1,
-		GeometryShape = RotationRateZ + 1,
+		VirtualTopology = RotationRateZ + 1,
+		GeometryShape = VirtualTopology + 1,
 		GeometrySurface = GeometryShape + 1,
-		GeometryTorusRatio = GeometrySurface + 1,
-		VirtualTopology = GeometryTorusRatio + 1
+		GeometryTorusRatio = GeometrySurface + 1
 	};
 
 	DataTransformModel(QObject *parent);
@@ -129,6 +129,7 @@ private:
 	SynGlyphX::DataTransformMapping::SharedPtr m_dataMapping;
 };
 
+Q_DECLARE_METATYPE(SynGlyphX::IntMinDiff)
 Q_DECLARE_METATYPE(SynGlyphX::DoubleMinDiff)
 Q_DECLARE_METATYPE(SynGlyphX::ColorMinDiff)
 Q_DECLARE_METATYPE(SynGlyphX::NumericMappingProperty)
@@ -138,5 +139,6 @@ Q_DECLARE_METATYPE(SynGlyphX::GeometryShapeMappingProperty)
 Q_DECLARE_METATYPE(SynGlyphX::GlyphGeometryInfo::Shape)
 Q_DECLARE_METATYPE(SynGlyphX::GlyphGeometryInfo::Surface)
 Q_DECLARE_METATYPE(SynGlyphX::VirtualTopologyMappingProperty)
+Q_DECLARE_METATYPE(SynGlyphX::VirtualTopologyInfo::Type)
 
 #endif // DATATRANSFORMMODEL_H

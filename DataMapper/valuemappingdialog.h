@@ -27,6 +27,7 @@
 #include "rangewidget.h"
 #include "valuemappingfunction.h"
 #include <set>
+#include "glyphenumcombobox.h"
 
 class ValueMappingDialog : public QDialog
 {
@@ -41,7 +42,9 @@ public:
 
 	enum class OutputType {
 		Numeric,
-		Color
+		Color,
+		GeometryShape,
+		VirtualTopology
 	};
 	ValueMappingDialog(InputType input, OutputType output, QWidget *parent);
 	virtual ~ValueMappingDialog();
@@ -69,12 +72,16 @@ protected:
 
 	QDoubleSpinBox* m_defaultDoubleWidget;
 	SynGlyphX::ColorButton* m_defaultColorWidget;
+	SynGlyphX::GlyphShapeComboBox* m_defaultShapeWidget;
+	SynGlyphX::VirtualTopologyComboBox* m_defaultVirtualTopologyWidget;
 
 	SynGlyphX::RangeWidget* m_inputRangeWidget;
 	QDoubleSpinBox* m_inputDoubleWidget;
 	QLineEdit* m_inputTextWidget;
 	QDoubleSpinBox* m_outputDoubleWidget;
 	SynGlyphX::ColorButton* m_outputColorWidget;
+	SynGlyphX::GlyphShapeComboBox* m_outputShapeWidget;
+	SynGlyphX::VirtualTopologyComboBox* m_outputVirtualTopologyWidget;
 
 	QPushButton* m_removeEntryButton;
 
@@ -186,6 +193,110 @@ protected:
 	virtual bool CreateMappingData();
 
 	SynGlyphX::Range2ColorMappingData::SharedPtr m_mappingData;
+};
+
+//---------------------------------------------------------------------
+
+class Numeric2ShapeMappingDialog : public ValueMappingDialog
+{
+	Q_OBJECT
+
+public:
+	Numeric2ShapeMappingDialog(QWidget *parent);
+	virtual ~Numeric2ShapeMappingDialog();
+
+	void SetDialogFromMapping(SynGlyphX::Numeric2ShapeMappingData::ConstSharedPtr mapping);
+	SynGlyphX::Numeric2ShapeMappingData::SharedPtr GetMappingFromDialog() const;
+
+protected:
+	virtual bool CreateMappingData();
+
+	SynGlyphX::Numeric2ShapeMappingData::SharedPtr m_mappingData;
+};
+
+class Numeric2VirtualTopologyMappingDialog : public ValueMappingDialog
+{
+	Q_OBJECT
+
+public:
+	Numeric2VirtualTopologyMappingDialog(QWidget *parent);
+	virtual ~Numeric2VirtualTopologyMappingDialog();
+
+	void SetDialogFromMapping(SynGlyphX::Numeric2VirtualTopologyMappingData::ConstSharedPtr mapping);
+	SynGlyphX::Numeric2VirtualTopologyMappingData::SharedPtr GetMappingFromDialog() const;
+
+protected:
+	virtual bool CreateMappingData();
+
+	SynGlyphX::Numeric2VirtualTopologyMappingData::SharedPtr m_mappingData;
+};
+
+class Text2ShapeMappingDialog : public ValueMappingDialog
+{
+	Q_OBJECT
+
+public:
+	Text2ShapeMappingDialog(QWidget *parent);
+	virtual ~Text2ShapeMappingDialog();
+
+	void SetDialogFromMapping(SynGlyphX::Text2ShapeMappingData::ConstSharedPtr mapping);
+	SynGlyphX::Text2ShapeMappingData::SharedPtr GetMappingFromDialog() const;
+
+protected:
+	virtual bool CreateMappingData();
+
+	SynGlyphX::Text2ShapeMappingData::SharedPtr m_mappingData;
+};
+
+class Text2VirtualTopologyMappingDialog : public ValueMappingDialog
+{
+	Q_OBJECT
+
+public:
+	Text2VirtualTopologyMappingDialog(QWidget *parent);
+	virtual ~Text2VirtualTopologyMappingDialog();
+
+	void SetDialogFromMapping(SynGlyphX::Text2VirtualTopologyMappingData::ConstSharedPtr mapping);
+	SynGlyphX::Text2VirtualTopologyMappingData::SharedPtr GetMappingFromDialog() const;
+
+protected:
+	virtual bool CreateMappingData();
+
+	SynGlyphX::Text2VirtualTopologyMappingData::SharedPtr m_mappingData;
+};
+
+class Range2ShapeMappingDialog : public ValueMappingDialog
+{
+	Q_OBJECT
+
+public:
+	Range2ShapeMappingDialog(QWidget *parent);
+	virtual ~Range2ShapeMappingDialog();
+
+	void SetDialogFromMapping(SynGlyphX::Range2ShapeMappingData::ConstSharedPtr mapping);
+	SynGlyphX::Range2ShapeMappingData::SharedPtr GetMappingFromDialog() const;
+
+protected:
+	virtual bool CreateMappingData();
+
+	SynGlyphX::Range2ShapeMappingData::SharedPtr m_mappingData;
+};
+
+class Range2VirtualTopologyMappingDialog : public ValueMappingDialog
+{
+	Q_OBJECT
+
+public:
+	Range2VirtualTopologyMappingDialog(QWidget *parent);
+	virtual ~Range2VirtualTopologyMappingDialog();
+
+	void SetDialogFromMapping(SynGlyphX::Range2VirtualTopologyMappingData::ConstSharedPtr mapping);
+	SynGlyphX::Range2VirtualTopologyMappingData::SharedPtr GetMappingFromDialog() const;
+
+protected:
+	virtual bool CreateMappingData();
+
+	SynGlyphX::Range2VirtualTopologyMappingData::SharedPtr m_mappingData;
 };
 
 #endif // VALUEMAPPINGDIALOG_H
