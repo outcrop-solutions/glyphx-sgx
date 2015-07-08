@@ -29,7 +29,7 @@ namespace SynGlyphX {
 	}
 
 	template<typename DataType>
-	MinDiff& MinDiff<DataType>::operator=(const MinDiff& minDiff) {
+	MinDiff<DataType>& MinDiff<DataType>::operator=(const MinDiff& minDiff) {
 
 		m_min = minDiff.m_min;
 		m_diff = minDiff.m_diff;
@@ -64,6 +64,18 @@ namespace SynGlyphX {
 	}
 
 	template<typename DataType>
+	void MinDiff<DataType>::SetMinWithCurrentMax(DataType min) {
+
+		SetMinMax(min, m_min + m_diff);
+	}
+
+	template<typename DataType>
+	void MinDiff<DataType>::SetMaxWithCurrentMin(DataType max) {
+
+		m_diff = max - m_min;
+	}
+
+	template<typename DataType>
 	DataType MinDiff<DataType>::GetMin() const {
 
 		return m_min;
@@ -81,6 +93,7 @@ namespace SynGlyphX {
 		return m_min + m_diff;
 	}
 
+	template class MinDiff < int >;
 	template class MinDiff < double >;
 	template class MinDiff < GlyphColor >;
 

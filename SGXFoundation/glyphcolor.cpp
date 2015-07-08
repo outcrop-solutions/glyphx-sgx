@@ -110,6 +110,16 @@ namespace SynGlyphX {
 		return *this;
 	}
 
+	const GlyphColor GlyphColor::operator+(const GlyphColor& color) const {
+
+		return GlyphColor(*this) += color;
+	}
+
+	const GlyphColor GlyphColor::operator-(const GlyphColor& color) const {
+
+		return GlyphColor(*this) -= color;
+	}
+
 	void GlyphColor::ExportToPropertyTree(boost::property_tree::wptree& propertyTree) const {
 
 		propertyTree.put<short>(L"R", m_color[0]);

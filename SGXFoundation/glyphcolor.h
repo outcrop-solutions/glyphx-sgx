@@ -46,6 +46,8 @@ namespace SynGlyphX {
 		bool operator!=(const GlyphColor& color) const;
 		GlyphColor& operator+=(const GlyphColor& color);
 		GlyphColor& operator-=(const GlyphColor& color);
+		const GlyphColor operator+(const GlyphColor& color) const;
+		const GlyphColor operator-(const GlyphColor& color) const;
 
 		void ExportToPropertyTree(boost::property_tree::wptree& propertyTree) const;
 

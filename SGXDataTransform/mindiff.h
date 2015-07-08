@@ -38,6 +38,8 @@ namespace SynGlyphX {
 
 		void SetMinDiff(DataType min, DataType diff);
 		void SetMinMax(DataType min, DataType max);
+		void SetMinWithCurrentMax(DataType min);
+		void SetMaxWithCurrentMin(DataType max);
 
 		DataType GetMin() const;
 		DataType GetDiff() const;
@@ -48,6 +50,7 @@ namespace SynGlyphX {
 		DataType m_diff;
 	};
 
+	typedef MinDiff<int> IntMinDiff;
 	typedef MinDiff<double> DoubleMinDiff;
 	typedef MinDiff<GlyphColor> ColorMinDiff;
 

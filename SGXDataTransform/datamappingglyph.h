@@ -48,8 +48,8 @@ namespace SynGlyphX {
 			RotationRateX,
 			RotationRateY,
 			RotationRateZ,
-			GeometryShape,
 			VirtualTopology,
+			GeometryShape,
 			MappableFieldSize //This needs to be at the bottom to get the number of enums
 		};
 

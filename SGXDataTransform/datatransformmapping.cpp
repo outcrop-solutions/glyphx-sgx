@@ -381,9 +381,9 @@ namespace SynGlyphX {
 
 			//For now, update position to 15.0 less than the last x coordinate.  This follows what ANTz does
 			newPosition[0] -= 15.0;
-			newChildGlyph->GetPosition()[0].GetValue().first = newPosition[0];
-			newChildGlyph->GetPosition()[1].GetValue().first = newPosition[1];
-			newChildGlyph->GetPosition()[2].GetValue().first = newPosition[2];
+			newChildGlyph->GetPosition()[0].GetValue().SetMinDiff(newPosition[0], 0.0);
+			newChildGlyph->GetPosition()[1].GetValue().SetMinDiff(newPosition[1], 0.0);
+			newChildGlyph->GetPosition()[2].GetValue().SetMinDiff(newPosition[2], 0.0);
 		}
 	}
 
@@ -404,9 +404,9 @@ namespace SynGlyphX {
 		}
 
 		SynGlyphX::DataMappingGlyphGraph::iterator newChildGlyph = m_glyphTrees[treeId]->append(parent, glyphGraph);
-		newChildGlyph->GetPosition()[0].GetValue().first = newPosition[0];
-		newChildGlyph->GetPosition()[1].GetValue().first = newPosition[1];
-		newChildGlyph->GetPosition()[2].GetValue().first = newPosition[2];
+		newChildGlyph->GetPosition()[0].GetValue().SetMinDiff(newPosition[0], 0.0);
+		newChildGlyph->GetPosition()[1].GetValue().SetMinDiff(newPosition[1], 0.0);
+		newChildGlyph->GetPosition()[2].GetValue().SetMinDiff(newPosition[2], 0.0);
 	}
 
 	void DataTransformMapping::RemoveGlyph(const boost::uuids::uuid& treeId, DataMappingGlyphGraph::const_iterator& parent, int child) {

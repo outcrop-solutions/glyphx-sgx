@@ -243,9 +243,7 @@ namespace SynGlyphX {
 		}
 		
 		//Return the max value as the default if no transform takes place
-		GlyphColor color = mappingProperty.GetValue().first;
-		color += mappingProperty.GetValue().second;
-		return color;
+		return mappingProperty.GetValue().GetMax();
 	}
 
 	double Transformer::TransformProperty(const InputBinding& binding, const NumericMappingProperty& mappingProperty, const InputFieldDataMap& queryResultData, unsigned int index) const {
@@ -285,7 +283,7 @@ namespace SynGlyphX {
 		}
 		
 		//Return the max value as the default if no transform takes place
-		return mappingProperty.GetValue().first + mappingProperty.GetValue().second;
+		return mappingProperty.GetValue().GetMax();
 	}
 
 	GlyphGeometryInfo::Shape Transformer::TransformProperty(const InputBinding& binding, const GeometryShapeMappingProperty& mappingProperty, const InputFieldDataMap& queryResultData, unsigned int index) const {

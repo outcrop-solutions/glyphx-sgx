@@ -334,8 +334,8 @@ namespace SynGlyphX {
 	}
 
 	template class DataMappingProperty < std::wstring >;
-	template class DataMappingProperty<std::pair<double,double>>;
-	template class DataMappingProperty<std::pair<GlyphColor, GlyphColor>>;
+	template class DataMappingProperty<DoubleMinDiff>;
+	template class DataMappingProperty<ColorMinDiff>;
 	template class DataMappingProperty <GlyphGeometryInfo::Shape>;
 	template class DataMappingProperty <VirtualTopologyInfo::Type>;
 
