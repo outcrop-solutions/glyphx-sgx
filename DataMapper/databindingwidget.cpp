@@ -34,12 +34,10 @@ DataBindingWidget::~DataBindingWidget()
 
 void DataBindingWidget::CreateGeometryTopologyTab() {
 
-	m_nonMappableGeometryWidget = new SynGlyphX::NonMappableGeometryWidget(this);
-
 	QWidget* widget = new QWidget(this);
 	QVBoxLayout* widgetLayout = new QVBoxLayout(widget);
-	widgetLayout->setContentsMargins(0, 0, 0, 0);
-	QGridLayout* gridLayout = new QGridLayout(this);
+	//widgetLayout->setContentsMargins(0, 0, 0, 0);
+	QGridLayout* gridLayout = new QGridLayout(widget);
 	gridLayout->setVerticalSpacing(0);
 
 	CreateTableHeader(gridLayout);
@@ -50,13 +48,19 @@ void DataBindingWidget::CreateGeometryTopologyTab() {
 	CreateGridLine(gridLayout, QFrame::HLine);
 	CreateGeometryShapePropertyWidgets(gridLayout, 17);
 
+	gridLayout->setColumnStretch(6, 1);
+
 	widgetLayout->addLayout(gridLayout);
 
-	widgetLayout->addWidget(m_nonMappableGeometryWidget);
+	QHBoxLayout* nonMappableLayout = new QHBoxLayout(widget);
+
+	m_nonMappableGeometryWidget = new SynGlyphX::NonMappableGeometryWidget(widget);
+	nonMappableLayout->addWidget(m_nonMappableGeometryWidget);
+	nonMappableLayout->addStretch(1);
+
+	widgetLayout->addLayout(nonMappableLayout);
 	widgetLayout->addStretch(1);
-	//gridLayout->setColumnStretch(1, 1);
-	//gridLayout->setRowStretch(1, 1);
-	widget->setLayout(gridLayout);
+	widget->setLayout(widgetLayout);
 
 	addTab(widget, tr("Geometry && Topology"));
 
@@ -83,7 +87,7 @@ void DataBindingWidget::CreateAnimationTable() {
 	CreateGridLine(gridLayout, QFrame::HLine);
 	CreateDoublePropertyWidgets(gridLayout, 15, -1000.0, 1000.0);
 
-	gridLayout->setColumnStretch(8, 1);
+	gridLayout->setColumnStretch(6, 1);
 
 	layout->addLayout(gridLayout);
 	layout->addStretch(1);
@@ -187,7 +191,7 @@ void DataBindingWidget::CreatePropertiesTable() {
 	CreateGridLine(gridLayout, QFrame::HLine);
 	CreateIntegerPropertyWidgets(gridLayout, 10);
 
-	gridLayout->setColumnStretch(8, 1);
+	gridLayout->setColumnStretch(6, 1);
 
 	layout->addLayout(gridLayout);
 	layout->addStretch(1);
@@ -256,7 +260,7 @@ void DataBindingWidget::CreateRowOfPropertyWidgets(QGridLayout* layout, QWidget*
 void DataBindingWidget::CreateIntegerPropertyWidgets(QGridLayout* layout, int modelRow, int min, int max) {
 
 	SynGlyphX::IntMinMaxWidget* minMaxWidget = new SynGlyphX::IntMinMaxWidget(this);
-	minMaxWidget->setContentsMargins(0, 0, 0, 0);
+	minMaxWidget->layout()->setContentsMargins(0, 0, 0, 0);
 	minMaxWidget->SetKeyboardTracking(false);
 	minMaxWidget->SetRange(min, max);
 	
@@ -270,7 +274,7 @@ void DataBindingWidget::CreateIntegerPropertyWidgets(QGridLayout* layout, int mo
 void DataBindingWidget::CreateDoublePropertyWidgets(QGridLayout* layout, int modelRow, double min, double max, bool addToPositionXYList) {
 
 	SynGlyphX::DoubleMinMaxWidget* minMaxWidget = new SynGlyphX::DoubleMinMaxWidget(this);
-	minMaxWidget->setContentsMargins(0, 0, 0, 0);
+	minMaxWidget->layout()->setContentsMargins(0, 0, 0, 0);
 	minMaxWidget->SetKeyboardTracking(false);
 	minMaxWidget->SetRange(min, max);
 	
@@ -284,6 +288,7 @@ void DataBindingWidget::CreateDoublePropertyWidgets(QGridLayout* layout, int mod
 void DataBindingWidget::CreateColorPropertyWidgets(QGridLayout* layout, int modelRow) {
 
 	SynGlyphX::ColorMinMaxWidget* minMaxWidget = new SynGlyphX::ColorMinMaxWidget(false, this);
+	minMaxWidget->layout()->setContentsMargins(0, 0, 0, 0);
 
 	MappingFunctionWidget* mappingFunctionWidget = new MappingFunctionWidget(MappingFunctionWidget::KeyType::Color, m_model, modelRow, this);
 	CreateRowOfPropertyWidgets(layout, minMaxWidget, mappingFunctionWidget, modelRow);
@@ -340,21 +345,21 @@ void DataBindingWidget::OnModelReset() {
 	bool doesModelHaveData = !m_model->IsClear();
 	setEnabled(doesModelHaveData);
 
-	for (int i = 0; i < m_dataWidgetMappers.length(); ++i) {
-
-		if (m_dataWidgetMappers[i] != nullptr) {
-			m_dataWidgetMappers[i]->setCurrentIndex(i);
-		}
-	}
-
 	if (doesModelHaveData) {
 
-		bool areSignalsBlocked = m_nonMappableGeometryWidget->blockSignals(true);
-		m_nonMappableGeometryWidget->SetWidget(static_cast<SynGlyphX::GlyphGeometryInfo::Surface>(m_model->data(m_model->index(18, 0)).toInt()), m_model->data(m_model->index(19, 0)).toDouble());
-		m_nonMappableGeometryWidget->blockSignals(areSignalsBlocked);
-	}
+		for (int i = 0; i < m_dataWidgetMappers.length(); ++i) {
 
-	OnBaseObjectChanged();
+			if (m_dataWidgetMappers[i] != nullptr) {
+				m_dataWidgetMappers[i]->setCurrentIndex(i);
+			}
+		}
+
+		bool areSignalsBlocked = m_nonMappableGeometryWidget->blockSignals(true);
+		m_nonMappableGeometryWidget->SetWidget(static_cast<SynGlyphX::GlyphGeometryInfo::Surface>(m_model->data(m_model->index(18, 0), Qt::EditRole).toInt()), m_model->data(m_model->index(19, 0), Qt::EditRole).toDouble());
+		m_nonMappableGeometryWidget->blockSignals(areSignalsBlocked);
+
+		OnBaseObjectChanged();
+	}
 }
 
 void DataBindingWidget::OnSurfaceUpdated() {

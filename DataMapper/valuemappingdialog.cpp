@@ -233,12 +233,12 @@ void ValueMappingDialog::OnAddKeyValue() {
 		if (m_output == OutputType::GeometryShape) {
 
 			SynGlyphX::GlyphShapeComboBox* outputTableWidget = dynamic_cast<SynGlyphX::GlyphShapeComboBox*>(m_table->cellWidget(row, 1));
-			outputTableWidget->SetCurrentValue(m_outputShapeWidget->GetCurentValue());
+			outputTableWidget->SetCurrentValue(m_outputShapeWidget->GetCurrentValue());
 		}
 		else if (m_output == OutputType::VirtualTopology) {
 
 			SynGlyphX::VirtualTopologyComboBox* outputTableWidget = dynamic_cast<SynGlyphX::VirtualTopologyComboBox*>(m_table->cellWidget(row, 1));
-			outputTableWidget->SetCurrentValue(m_outputVirtualTopologyWidget->GetCurentValue());
+			outputTableWidget->SetCurrentValue(m_outputVirtualTopologyWidget->GetCurrentValue());
 		}
 		else if (m_output == OutputType::Numeric) {
 
@@ -367,13 +367,35 @@ double ValueMappingDialog::GetDoubleFromWidget(int row, int column) {
 
 SynGlyphX::GlyphColor ValueMappingDialog::GetColorFromWidget(int row, int column) {
 
-	SynGlyphX::ColorButton* widget = dynamic_cast<SynGlyphX::ColorButton*>(m_table->cellWidget(row, 1));
+	SynGlyphX::ColorButton* widget = dynamic_cast<SynGlyphX::ColorButton*>(m_table->cellWidget(row, column));
 	if (widget == nullptr) {
 
 		throw std::exception("Could not get widget of given type.");
 	}
 
 	return SynGlyphX::ColorConverter::QColor2GlyphColor(widget->GetColor());
+}
+
+SynGlyphX::GlyphGeometryInfo::Shape ValueMappingDialog::GetShapeFromWidget(int row, int column) {
+
+	SynGlyphX::GlyphShapeComboBox* widget = dynamic_cast<SynGlyphX::GlyphShapeComboBox*>(m_table->cellWidget(row, column));
+	if (widget == nullptr) {
+
+		throw std::exception("Could not get widget of given type.");
+	}
+
+	return widget->GetCurrentValue();
+}
+
+SynGlyphX::VirtualTopologyInfo::Type ValueMappingDialog::GetVirtualTopologyFromWidget(int row, int column) {
+
+	SynGlyphX::VirtualTopologyComboBox* widget = dynamic_cast<SynGlyphX::VirtualTopologyComboBox*>(m_table->cellWidget(row, column));
+	if (widget == nullptr) {
+
+		throw std::exception("Could not get widget of given type.");
+	}
+
+	return widget->GetCurrentValue();
 }
 
 QDoubleSpinBox* ValueMappingDialog::CreateDoubleSpinBox(double min, double max) {
@@ -756,7 +778,7 @@ bool Numeric2ShapeMappingDialog::CreateMappingData() {
 
 	SynGlyphX::Numeric2ShapeMappingData::SharedPtr mapping = std::make_shared<SynGlyphX::Numeric2ShapeMappingData>();
 
-	mapping->SetDefaultValue(m_defaultShapeWidget->GetCurentValue());
+	mapping->SetDefaultValue(m_defaultShapeWidget->GetCurrentValue());
 
 	for (int row = 0; row < m_table->rowCount(); ++row) {
 
@@ -766,7 +788,7 @@ bool Numeric2ShapeMappingDialog::CreateMappingData() {
 			throw std::exception("At least one key is the same as another key.  All keys must be unique.");
 		}
 
-		double output = GetDoubleFromWidget(row, 1);
+		SynGlyphX::GlyphGeometryInfo::Shape output = GetShapeFromWidget(row, 1);
 		mapping->SetValueForKey(input, output);
 	}
 
@@ -787,7 +809,7 @@ Numeric2VirtualTopologyMappingDialog::~Numeric2VirtualTopologyMappingDialog() {
 
 void Numeric2VirtualTopologyMappingDialog::SetDialogFromMapping(SynGlyphX::Numeric2VirtualTopologyMappingData::ConstSharedPtr mapping) {
 
-	m_defaultColorWidget->SetColor(SynGlyphX::ColorConverter::GlyphColor2QColor(mapping->GetDefaultValue()));
+	m_defaultVirtualTopologyWidget->SetCurrentValue(mapping->GetDefaultValue());
 
 	for (auto keyValuePair : mapping->GetKeyValueMap()) {
 
@@ -797,8 +819,8 @@ void Numeric2VirtualTopologyMappingDialog::SetDialogFromMapping(SynGlyphX::Numer
 		QDoubleSpinBox* inputTableWidget = dynamic_cast<QDoubleSpinBox*>(m_table->cellWidget(row, 0));
 		inputTableWidget->setValue(keyValuePair.first);
 
-		SynGlyphX::ColorButton* outputTableWidget = dynamic_cast<SynGlyphX::ColorButton*>(m_table->cellWidget(row, 1));
-		outputTableWidget->SetColor(SynGlyphX::ColorConverter::GlyphColor2QColor(keyValuePair.second));
+		SynGlyphX::VirtualTopologyComboBox* outputTableWidget = dynamic_cast<SynGlyphX::VirtualTopologyComboBox*>(m_table->cellWidget(row, 1));
+		outputTableWidget->SetCurrentValue(keyValuePair.second);
 	}
 }
 
@@ -811,7 +833,7 @@ bool Numeric2VirtualTopologyMappingDialog::CreateMappingData() {
 
 	SynGlyphX::Numeric2VirtualTopologyMappingData::SharedPtr mapping = std::make_shared<SynGlyphX::Numeric2VirtualTopologyMappingData>();
 
-	mapping->SetDefaultValue(SynGlyphX::ColorConverter::QColor2GlyphColor(m_defaultColorWidget->GetColor()));
+	mapping->SetDefaultValue(m_defaultVirtualTopologyWidget->GetCurrentValue());
 
 	for (int row = 0; row < m_table->rowCount(); ++row) {
 
@@ -821,7 +843,7 @@ bool Numeric2VirtualTopologyMappingDialog::CreateMappingData() {
 			throw std::exception("At least one key is the same as another key.  All keys must be unique.");
 		}
 
-		SynGlyphX::GlyphColor output = GetColorFromWidget(row, 1);
+		SynGlyphX::VirtualTopologyInfo::Type output = GetVirtualTopologyFromWidget(row, 1);
 		mapping->SetValueForKey(input, output);
 	}
 
@@ -843,7 +865,7 @@ Text2ShapeMappingDialog::~Text2ShapeMappingDialog() {
 
 void Text2ShapeMappingDialog::SetDialogFromMapping(SynGlyphX::Text2ShapeMappingData::ConstSharedPtr mapping) {
 
-	m_defaultDoubleWidget->setValue(mapping->GetDefaultValue());
+	m_defaultShapeWidget->SetCurrentValue(mapping->GetDefaultValue());
 
 	for (auto keyValuePair : mapping->GetKeyValueMap()) {
 
@@ -853,8 +875,8 @@ void Text2ShapeMappingDialog::SetDialogFromMapping(SynGlyphX::Text2ShapeMappingD
 		QLineEdit* inputTableWidget = dynamic_cast<QLineEdit*>(m_table->cellWidget(row, 0));
 		inputTableWidget->setText(QString::fromStdWString(keyValuePair.first));
 
-		QDoubleSpinBox* outputTableWidget = dynamic_cast<QDoubleSpinBox*>(m_table->cellWidget(row, 1));
-		outputTableWidget->setValue(keyValuePair.second);
+		SynGlyphX::GlyphShapeComboBox* outputTableWidget = dynamic_cast<SynGlyphX::GlyphShapeComboBox*>(m_table->cellWidget(row, 1));
+		outputTableWidget->SetCurrentValue(keyValuePair.second);
 	}
 }
 
@@ -867,7 +889,7 @@ bool Text2ShapeMappingDialog::CreateMappingData() {
 
 	SynGlyphX::Text2ShapeMappingData::SharedPtr mapping = std::make_shared<SynGlyphX::Text2ShapeMappingData>();
 
-	mapping->SetDefaultValue(m_defaultDoubleWidget->value());
+	mapping->SetDefaultValue(m_defaultShapeWidget->GetCurrentValue());
 
 	for (int row = 0; row < m_table->rowCount(); ++row) {
 
@@ -877,7 +899,7 @@ bool Text2ShapeMappingDialog::CreateMappingData() {
 			throw std::exception("At least one key is the same as another key.  All keys must be unique.");
 		}
 
-		double output = GetDoubleFromWidget(row, 1);
+		SynGlyphX::GlyphGeometryInfo::Shape output = GetShapeFromWidget(row, 1);
 		mapping->SetValueForKey(input, output);
 	}
 
@@ -899,7 +921,7 @@ Text2VirtualTopologyMappingDialog::~Text2VirtualTopologyMappingDialog() {
 
 void Text2VirtualTopologyMappingDialog::SetDialogFromMapping(SynGlyphX::Text2VirtualTopologyMappingData::ConstSharedPtr mapping) {
 
-	m_defaultColorWidget->SetColor(SynGlyphX::ColorConverter::GlyphColor2QColor(mapping->GetDefaultValue()));
+	m_defaultVirtualTopologyWidget->SetCurrentValue(mapping->GetDefaultValue());
 
 	for (auto keyValuePair : mapping->GetKeyValueMap()) {
 
@@ -909,8 +931,8 @@ void Text2VirtualTopologyMappingDialog::SetDialogFromMapping(SynGlyphX::Text2Vir
 		QLineEdit* inputTableWidget = dynamic_cast<QLineEdit*>(m_table->cellWidget(row, 0));
 		inputTableWidget->setText(QString::fromStdWString(keyValuePair.first));
 
-		SynGlyphX::ColorButton* outputTableWidget = dynamic_cast<SynGlyphX::ColorButton*>(m_table->cellWidget(row, 1));
-		outputTableWidget->SetColor(SynGlyphX::ColorConverter::GlyphColor2QColor(keyValuePair.second));
+		SynGlyphX::VirtualTopologyComboBox* outputTableWidget = dynamic_cast<SynGlyphX::VirtualTopologyComboBox*>(m_table->cellWidget(row, 1));
+		outputTableWidget->SetCurrentValue(keyValuePair.second);
 	}
 }
 
@@ -923,7 +945,7 @@ bool Text2VirtualTopologyMappingDialog::CreateMappingData() {
 
 	SynGlyphX::Text2VirtualTopologyMappingData::SharedPtr mapping = std::make_shared<SynGlyphX::Text2VirtualTopologyMappingData>();
 
-	mapping->SetDefaultValue(SynGlyphX::ColorConverter::QColor2GlyphColor(m_defaultColorWidget->GetColor()));
+	mapping->SetDefaultValue(m_defaultVirtualTopologyWidget->GetCurrentValue());
 
 	for (int row = 0; row < m_table->rowCount(); ++row) {
 
@@ -933,7 +955,7 @@ bool Text2VirtualTopologyMappingDialog::CreateMappingData() {
 			throw std::exception("At least one key is the same as another key.  All keys must be unique.");
 		}
 
-		SynGlyphX::GlyphColor output = GetColorFromWidget(row, 1);
+		SynGlyphX::VirtualTopologyInfo::Type output = GetVirtualTopologyFromWidget(row, 1);
 		mapping->SetValueForKey(input, output);
 	}
 
@@ -955,7 +977,7 @@ Range2ShapeMappingDialog::~Range2ShapeMappingDialog() {
 
 void Range2ShapeMappingDialog::SetDialogFromMapping(SynGlyphX::Range2ShapeMappingData::ConstSharedPtr mapping) {
 
-	m_defaultDoubleWidget->setValue(mapping->GetDefaultValue());
+	m_defaultShapeWidget->SetCurrentValue(mapping->GetDefaultValue());
 
 	for (auto keyValuePair : mapping->GetKeyValueMap()) {
 
@@ -965,8 +987,8 @@ void Range2ShapeMappingDialog::SetDialogFromMapping(SynGlyphX::Range2ShapeMappin
 		SynGlyphX::RangeWidget* inputTableWidget = dynamic_cast<SynGlyphX::RangeWidget*>(m_table->cellWidget(row, 0));
 		inputTableWidget->SetRange(keyValuePair.first);
 
-		QDoubleSpinBox* outputTableWidget = dynamic_cast<QDoubleSpinBox*>(m_table->cellWidget(row, 1));
-		outputTableWidget->setValue(keyValuePair.second);
+		SynGlyphX::GlyphShapeComboBox* outputTableWidget = dynamic_cast<SynGlyphX::GlyphShapeComboBox*>(m_table->cellWidget(row, 1));
+		outputTableWidget->SetCurrentValue(keyValuePair.second);
 	}
 }
 
@@ -979,17 +1001,17 @@ bool Range2ShapeMappingDialog::CreateMappingData() {
 
 	SynGlyphX::Range2ShapeMappingData::SharedPtr mapping = std::make_shared<SynGlyphX::Range2ShapeMappingData>();
 
-	mapping->SetDefaultValue(m_defaultDoubleWidget->value());
+	mapping->SetDefaultValue(m_defaultShapeWidget->GetCurrentValue());
 
 	for (int row = 0; row < m_table->rowCount(); ++row) {
 
 		SynGlyphX::Range input = GetRangeFromWidget(row, 0);
 		if (mapping->IsKeyInKeyValueMap(input)) {
 
-			throw std::exception("At least one range overlaps another range.  All ranges must be distinct from each other.");
+			throw std::exception("At least one key is the same as another key.  All keys must be unique.");
 		}
 
-		double output = GetDoubleFromWidget(row, 1);
+		SynGlyphX::GlyphGeometryInfo::Shape output = GetShapeFromWidget(row, 1);
 		mapping->SetValueForKey(input, output);
 	}
 
@@ -1011,7 +1033,7 @@ Range2VirtualTopologyMappingDialog::~Range2VirtualTopologyMappingDialog() {
 
 void Range2VirtualTopologyMappingDialog::SetDialogFromMapping(SynGlyphX::Range2VirtualTopologyMappingData::ConstSharedPtr mapping) {
 
-	m_defaultColorWidget->SetColor(SynGlyphX::ColorConverter::GlyphColor2QColor(mapping->GetDefaultValue()));
+	m_defaultVirtualTopologyWidget->SetCurrentValue(mapping->GetDefaultValue());
 
 	for (auto keyValuePair : mapping->GetKeyValueMap()) {
 
@@ -1021,8 +1043,8 @@ void Range2VirtualTopologyMappingDialog::SetDialogFromMapping(SynGlyphX::Range2V
 		SynGlyphX::RangeWidget* inputTableWidget = dynamic_cast<SynGlyphX::RangeWidget*>(m_table->cellWidget(row, 0));
 		inputTableWidget->SetRange(keyValuePair.first);
 
-		SynGlyphX::ColorButton* outputTableWidget = dynamic_cast<SynGlyphX::ColorButton*>(m_table->cellWidget(row, 1));
-		outputTableWidget->SetColor(SynGlyphX::ColorConverter::GlyphColor2QColor(keyValuePair.second));
+		SynGlyphX::VirtualTopologyComboBox* outputTableWidget = dynamic_cast<SynGlyphX::VirtualTopologyComboBox*>(m_table->cellWidget(row, 1));
+		outputTableWidget->SetCurrentValue(keyValuePair.second);
 	}
 }
 
@@ -1035,17 +1057,17 @@ bool Range2VirtualTopologyMappingDialog::CreateMappingData() {
 
 	SynGlyphX::Range2VirtualTopologyMappingData::SharedPtr mapping = std::make_shared<SynGlyphX::Range2VirtualTopologyMappingData>();
 
-	mapping->SetDefaultValue(SynGlyphX::ColorConverter::QColor2GlyphColor(m_defaultColorWidget->GetColor()));
+	mapping->SetDefaultValue(m_defaultVirtualTopologyWidget->GetCurrentValue());
 
 	for (int row = 0; row < m_table->rowCount(); ++row) {
 
 		SynGlyphX::Range input = GetRangeFromWidget(row, 0);
 		if (mapping->IsKeyInKeyValueMap(input)) {
 
-			throw std::exception("At least one range overlaps another range.  All ranges must be distinct from each other.");
+			throw std::exception("At least one key is the same as another key.  All keys must be unique.");
 		}
 
-		SynGlyphX::GlyphColor output = GetColorFromWidget(row, 1);
+		SynGlyphX::VirtualTopologyInfo::Type output = GetVirtualTopologyFromWidget(row, 1);
 		mapping->SetValueForKey(input, output);
 	}
 

@@ -155,7 +155,7 @@ QVariant DataTransformModel::data(const QModelIndex& index, int role) const {
 
 QVariant DataTransformModel::GetPropertyData(const QModelIndex& index, int role) const {
 
-	if ((role >= PropertyRole::PositionX) && (role <= PropertyRole::VirtualTopology) && (GetDataType(index) == DataType::GlyphTrees)) {
+	if ((role >= PropertyRole::PositionX) && (role <= PropertyRole::GeometryTorusRatio) && (GetDataType(index) == DataType::GlyphTrees)) {
 
 		if (!m_dataMapping->GetGlyphGraphs().empty()) {
 

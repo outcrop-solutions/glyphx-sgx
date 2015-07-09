@@ -23,6 +23,8 @@
 #include "mindiff.h"
 #include "colorbutton.h"
 
+Q_DECLARE_METATYPE(SynGlyphX::ColorMinDiff)
+
 namespace SynGlyphX {
 
 	class SGXGLYPHGUI_EXPORT ColorMinMaxWidget : public HorizontalFormWidget

@@ -66,6 +66,8 @@ protected:
 	std::wstring GetTextFromWidget(int row, int column = 0);
 	double GetDoubleFromWidget(int row, int column = 0);
 	SynGlyphX::GlyphColor GetColorFromWidget(int row, int column = 1);
+	SynGlyphX::GlyphGeometryInfo::Shape GetShapeFromWidget(int row, int column = 1);
+	SynGlyphX::VirtualTopologyInfo::Type GetVirtualTopologyFromWidget(int row, int column = 1);
 	QDoubleSpinBox* CreateDoubleSpinBox(double min = -100000.0, double max = 100000.0);
 
 	QTableWidget* m_table;

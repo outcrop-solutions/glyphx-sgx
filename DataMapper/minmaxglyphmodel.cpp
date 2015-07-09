@@ -5,6 +5,9 @@
 #include <stack>
 #include "interpolationmappingfunction.h"
 #include "valuemappingfunction.h"
+#include "colorminmaxwidget.h"
+#include "doubleminmaxwidget.h"
+#include "intminmaxwidget.h"
 
 MinMaxGlyphModel::MinMaxGlyphModel(DataTransformModel* dataTransformModel, QObject *parent)
 	: QAbstractTableModel(parent),
@@ -13,30 +16,30 @@ MinMaxGlyphModel::MinMaxGlyphModel(DataTransformModel* dataTransformModel, QObje
 	m_glyphTreeID(boost::uuids::nil_uuid()),
 	m_selectedDataTransformModelIndex(QModelIndex())
 {
-	setHeaderData(0, Qt::Vertical, tr("Position X"));
-	setHeaderData(1, Qt::Vertical, tr("Position Y"));
-	setHeaderData(2, Qt::Vertical, tr("Position Z"));
-	setHeaderData(3, Qt::Vertical, tr("Rotation X"));
-	setHeaderData(4, Qt::Vertical, tr("Rotation Y"));
-	setHeaderData(5, Qt::Vertical, tr("Rotation Z"));
-	setHeaderData(6, Qt::Vertical, tr("Scale X"));
-	setHeaderData(7, Qt::Vertical, tr("Scale Y"));
-	setHeaderData(8, Qt::Vertical, tr("Scale Z"));
-	setHeaderData(9, Qt::Vertical, tr("Color"));
-	setHeaderData(10, Qt::Vertical, tr("Transparency"));
-	setHeaderData(11, Qt::Vertical, tr("Tag"));
-	setHeaderData(12, Qt::Vertical, tr("Description"));
-	setHeaderData(13, Qt::Vertical, tr("Rotation Rate X"));
-	setHeaderData(14, Qt::Vertical, tr("Rotation Rate Y"));
-	setHeaderData(15, Qt::Vertical, tr("Rotation Rate Z"));
-	setHeaderData(16, Qt::Vertical, tr("Virtual Topology Type"));
-	setHeaderData(17, Qt::Vertical, tr("Geometry Shape"));
-	setHeaderData(18, Qt::Vertical, tr("Geometry Surface"));
-	setHeaderData(19, Qt::Vertical, tr("Torus Ratio"));
+	m_propertyHeaders.push_back(tr("Position X"));
+	m_propertyHeaders.push_back(tr("Position Y"));
+	m_propertyHeaders.push_back(tr("Position Z"));
+	m_propertyHeaders.push_back(tr("Rotation X"));
+	m_propertyHeaders.push_back(tr("Rotation Y"));
+	m_propertyHeaders.push_back(tr("Rotation Z"));
+	m_propertyHeaders.push_back(tr("Scale X"));
+	m_propertyHeaders.push_back(tr("Scale Y"));
+	m_propertyHeaders.push_back(tr("Scale Z"));
+	m_propertyHeaders.push_back(tr("Color"));
+	m_propertyHeaders.push_back(tr("Transparency"));
+	m_propertyHeaders.push_back(tr("Tag"));
+	m_propertyHeaders.push_back(tr("Description"));
+	m_propertyHeaders.push_back(tr("Rotation Rate X"));
+	m_propertyHeaders.push_back(tr("Rotation Rate Y"));
+	m_propertyHeaders.push_back(tr("Rotation Rate Z"));
+	m_propertyHeaders.push_back(tr("Virtual Topology Type"));
+	m_propertyHeaders.push_back(tr("Geometry Shape"));
+	m_propertyHeaders.push_back(tr("Geometry Surface"));
+	m_propertyHeaders.push_back(tr("Torus Ratio"));
 	
-	setHeaderData(0, Qt::Horizontal, tr("Value"));
-	setHeaderData(1, Qt::Horizontal, tr("Function"));
-	setHeaderData(2, Qt::Horizontal, tr("Input"));
+	m_columnHeaders.push_back(tr("Value"));
+	m_columnHeaders.push_back(tr("Function"));
+	m_columnHeaders.push_back(tr("Input"));
 }
 
 MinMaxGlyphModel::~MinMaxGlyphModel()
@@ -56,9 +59,16 @@ int MinMaxGlyphModel::columnCount(const QModelIndex& parent) const {
 	}
 }
 
-const SynGlyphX::InputField& MinMaxGlyphModel::GetInputField(SynGlyphX::InputField::HashID fieldID) const {
+const SynGlyphX::InputField MinMaxGlyphModel::GetInputField(SynGlyphX::InputField::HashID fieldID) const {
 
-	return m_dataTransformModel->GetDataMapping()->GetGlyphGraphs().at(m_glyphTreeID)->GetInputFields().at(fieldID);
+	if (fieldID == 0) {
+
+		return SynGlyphX::InputField();
+	}
+	else {
+
+		return m_dataTransformModel->GetDataMapping()->GetGlyphGraphs().at(m_glyphTreeID)->GetInputFields().at(fieldID);
+	}
 }
 
 QVariant MinMaxGlyphModel::data(const QModelIndex& index, int role) const {
@@ -112,7 +122,7 @@ QVariant MinMaxGlyphModel::data(const QModelIndex& index, int role) const {
 			}
 			else {
 
-				return QVariant::fromValue(shapeProp.GetValue());
+				return QString::fromStdWString(SynGlyphX::GlyphGeometryInfo::s_shapeNames.left.at(shapeProp.GetValue()));
 			}
 		}
 		else if (propertyType == PropertyType::VirtualTopology) {
@@ -128,10 +138,10 @@ QVariant MinMaxGlyphModel::data(const QModelIndex& index, int role) const {
 			}
 			else {
 
-				return QVariant::fromValue(topologyProp.GetValue());
+				return QString::fromStdWString(SynGlyphX::VirtualTopologyInfo::s_virtualTopologyNames.left.at(topologyProp.GetValue()));
 			}
 		}
-		else {
+		else if (propertyType == PropertyType::Numeric) {
 
 			SynGlyphX::NumericMappingProperty numericProp = prop.value<SynGlyphX::NumericMappingProperty>();
 			if (index.column() == 1) {
@@ -146,6 +156,10 @@ QVariant MinMaxGlyphModel::data(const QModelIndex& index, int role) const {
 
 				return QVariant::fromValue(numericProp.GetValue());
 			}
+		}
+		else {
+
+			return prop;
 		}
 	}
 
@@ -336,82 +350,112 @@ bool MinMaxGlyphModel::setData(const QModelIndex& index, const QVariant& value, 
 
 			int sourceDataRole = index.row() + DataTransformModel::PropertyRole::PositionX;
 			QVariant newProp;
-			QVariant prop = m_dataTransformModel->data(m_selectedDataTransformModelIndex, sourceDataRole);
-			PropertyType propertyType = GetFieldType(index.row());
-			if (propertyType == PropertyType::Color) {
 
-				SynGlyphX::ColorMappingProperty colorProp = prop.value<SynGlyphX::ColorMappingProperty>();
-				if (index.column() == 1) {
+			if (sourceDataRole >= DataTransformModel::PropertyRole::GeometrySurface) {
 
-					SynGlyphX::MappingFunctionData::Function function = SynGlyphX::MappingFunctionData::s_functionNames.right.at(value.toString().toStdWString());
-					if (function != colorProp.GetMappingFunctionData()->GetFunction()) {
-
-						colorProp.SetMappingFunctionData(CreateNewMappingFunction(function, PropertyType::Color));
-					}
-				}
-				else {
-
-					colorProp.GetValue() = value.value<SynGlyphX::ColorMinDiff>();
-				}
-			}
-			/*else if (propertyType == PropertyType::Text) { //Currently Text fields do not have a value nor choice in mapping functions
-
-				SynGlyphX::TextMappingProperty textProp = prop.value<SynGlyphX::TextMappingProperty>();
-				if (index.column() == 1) {
-
-					return QString::fromStdWString(SynGlyphX::MappingFunctionData::s_functionNames.left.at(textProp.GetMappingFunctionData()->GetFunction()));
-				}
-				else {
-
-					return QString::fromStdWString(textProp.GetValue());
-				}
-			}*/
-			else if (propertyType == PropertyType::GeometryShape) {
-
-				SynGlyphX::GeometryShapeMappingProperty shapeProp = prop.value<SynGlyphX::GeometryShapeMappingProperty>();
-				if (index.column() == 1) {
-
-					SynGlyphX::MappingFunctionData::Function function = SynGlyphX::MappingFunctionData::s_functionNames.right.at(value.toString().toStdWString());
-					if (function != shapeProp.GetMappingFunctionData()->GetFunction()) {
-
-						shapeProp.SetMappingFunctionData(CreateNewMappingFunction(function, PropertyType::GeometryShape));
-					}
-				}
-				else {
-
-					shapeProp.GetValue() = value.value<SynGlyphX::GlyphGeometryInfo::Shape>();
-				}
-			}
-			else if (propertyType == PropertyType::VirtualTopology) {
-
-				SynGlyphX::VirtualTopologyMappingProperty topologyProp = prop.value<SynGlyphX::VirtualTopologyMappingProperty>();
-				if (index.column() == 1) {
-
-					SynGlyphX::MappingFunctionData::Function function = SynGlyphX::MappingFunctionData::s_functionNames.right.at(value.toString().toStdWString());
-					if (function != topologyProp.GetMappingFunctionData()->GetFunction()) {
-
-						topologyProp.SetMappingFunctionData(CreateNewMappingFunction(function, PropertyType::VirtualTopology));
-					}
-				}
-				else {
-
-					topologyProp.GetValue() = value.value<SynGlyphX::VirtualTopologyInfo::Type>();
-				}
+				newProp = value;
 			}
 			else {
 
-				SynGlyphX::NumericMappingProperty numericProp = prop.value<SynGlyphX::NumericMappingProperty>();
-				if (index.column() == 1) {
+				QVariant prop = m_dataTransformModel->data(m_selectedDataTransformModelIndex, sourceDataRole);
+				PropertyType propertyType = GetFieldType(index.row());
+				if (propertyType == PropertyType::Color) {
 
-					SynGlyphX::MappingFunctionData::Function function = SynGlyphX::MappingFunctionData::s_functionNames.right.at(value.toString().toStdWString());
-					if (function != numericProp.GetMappingFunctionData()->GetFunction()) {
+					SynGlyphX::ColorMappingProperty colorProp = prop.value<SynGlyphX::ColorMappingProperty>();
+					if (index.column() == 1) {
 
-						numericProp.SetMappingFunctionData(CreateNewMappingFunction(function, PropertyType::Numeric));
+						SynGlyphX::MappingFunctionData::Function function = SynGlyphX::MappingFunctionData::s_functionNames.right.at(value.toString().toStdWString());
+						if (function != colorProp.GetMappingFunctionData()->GetFunction()) {
+
+							colorProp.SetMappingFunctionData(CreateNewMappingFunction(function, PropertyType::Color));
+						}
 					}
-				}
-				else {
+					else {
 
-					numericProp.GetValue() = value.value<SynGlyphX::DoubleMinDiff>();
+						colorProp.GetValue() = value.value<SynGlyphX::ColorMinDiff>();
+					}
+
+					newProp.setValue(colorProp);
+				}
+				/*else if (propertyType == PropertyType::Text) { //Currently Text fields do not have a value nor choice in mapping functions
+
+					SynGlyphX::TextMappingProperty textProp = prop.value<SynGlyphX::TextMappingProperty>();
+					if (index.column() == 1) {
+
+					return QString::fromStdWString(SynGlyphX::MappingFunctionData::s_functionNames.left.at(textProp.GetMappingFunctionData()->GetFunction()));
+					}
+					else {
+
+					return QString::fromStdWString(textProp.GetValue());
+					}
+					}*/
+				else if (propertyType == PropertyType::GeometryShape) {
+
+					SynGlyphX::GeometryShapeMappingProperty shapeProp = prop.value<SynGlyphX::GeometryShapeMappingProperty>();
+					if (index.column() == 1) {
+
+						SynGlyphX::MappingFunctionData::Function function = SynGlyphX::MappingFunctionData::s_functionNames.right.at(value.toString().toStdWString());
+						if (function != shapeProp.GetMappingFunctionData()->GetFunction()) {
+
+							shapeProp.SetMappingFunctionData(CreateNewMappingFunction(function, PropertyType::GeometryShape));
+						}
+					}
+					else {
+
+						if (value.type() == QVariant::Type::String) {
+
+							shapeProp.GetValue() = SynGlyphX::GlyphGeometryInfo::s_shapeNames.right.at(value.toString().toStdWString());
+						}
+						else {
+
+							shapeProp.GetValue() = value.value<SynGlyphX::GlyphGeometryInfo::Shape>();
+						}
+					}
+
+					newProp.setValue(shapeProp);
+				}
+				else if (propertyType == PropertyType::VirtualTopology) {
+
+					SynGlyphX::VirtualTopologyMappingProperty topologyProp = prop.value<SynGlyphX::VirtualTopologyMappingProperty>();
+					if (index.column() == 1) {
+
+						SynGlyphX::MappingFunctionData::Function function = SynGlyphX::MappingFunctionData::s_functionNames.right.at(value.toString().toStdWString());
+						if (function != topologyProp.GetMappingFunctionData()->GetFunction()) {
+
+							topologyProp.SetMappingFunctionData(CreateNewMappingFunction(function, PropertyType::VirtualTopology));
+						}
+					}
+					else {
+
+						if (value.type() == QVariant::Type::String) {
+
+							topologyProp.GetValue() = SynGlyphX::VirtualTopologyInfo::s_virtualTopologyNames.right.at(value.toString().toStdWString());
+						}
+						else {
+
+							topologyProp.GetValue() = value.value<SynGlyphX::VirtualTopologyInfo::Type>();
+						}
+					}
+
+					newProp.setValue(topologyProp);
+				}
+				else if (propertyType == PropertyType::Numeric) {
+
+					SynGlyphX::NumericMappingProperty numericProp = prop.value<SynGlyphX::NumericMappingProperty>();
+					if (index.column() == 1) {
+
+						SynGlyphX::MappingFunctionData::Function function = SynGlyphX::MappingFunctionData::s_functionNames.right.at(value.toString().toStdWString());
+						if (function != numericProp.GetMappingFunctionData()->GetFunction()) {
+
+							numericProp.SetMappingFunctionData(CreateNewMappingFunction(function, PropertyType::Numeric));
+						}
+					}
+					else {
+
+						numericProp.GetValue() = value.value<SynGlyphX::DoubleMinDiff>();
+					}
+
+					newProp.setValue(numericProp);
 				}
 			}
 
@@ -487,7 +531,7 @@ bool MinMaxGlyphModel::SetDataByRow(SynGlyphX::DataMappingGlyph& glyph, const QV
 	}
 
 	return false;
-}
+}*/
 
 QVariant MinMaxGlyphModel::headerData(int section, Qt::Orientation orientation, int role) const {
 
@@ -508,7 +552,7 @@ QVariant MinMaxGlyphModel::headerData(int section, Qt::Orientation orientation, 
 	}
 
 	return QVariant();
-}*/
+}
 
 SynGlyphX::DataTransformMapping::ConstSharedPtr MinMaxGlyphModel::GetDataTransformMapping() const {
 
@@ -639,10 +683,9 @@ SynGlyphX::MappingFunctionData::SharedPtr MinMaxGlyphModel::CreateNewMappingFunc
 			return std::make_shared<SynGlyphX::Range2VirtualTopologyMappingData>();
 		}
 	}
-	else {
-
-		return std::make_shared<SynGlyphX::MappingFunctionData>();
-	}
+	
+	//If nothing else return a none mapping function
+	return std::make_shared<SynGlyphX::MappingFunctionData>();
 }
 
 SynGlyphX::MappingFunctionData::ConstSharedPtr MinMaxGlyphModel::GetMappingFunction(int row) const {

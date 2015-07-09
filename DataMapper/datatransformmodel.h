@@ -129,9 +129,6 @@ private:
 	SynGlyphX::DataTransformMapping::SharedPtr m_dataMapping;
 };
 
-Q_DECLARE_METATYPE(SynGlyphX::IntMinDiff)
-Q_DECLARE_METATYPE(SynGlyphX::DoubleMinDiff)
-Q_DECLARE_METATYPE(SynGlyphX::ColorMinDiff)
 Q_DECLARE_METATYPE(SynGlyphX::NumericMappingProperty)
 Q_DECLARE_METATYPE(SynGlyphX::ColorMappingProperty)
 Q_DECLARE_METATYPE(SynGlyphX::TextMappingProperty)

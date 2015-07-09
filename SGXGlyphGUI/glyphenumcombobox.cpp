@@ -16,7 +16,7 @@ namespace SynGlyphX {
 
 	}
 
-	GlyphGeometryInfo::Shape GlyphShapeComboBox::GetCurentValue() const {
+	GlyphGeometryInfo::Shape GlyphShapeComboBox::GetCurrentValue() const {
 
 		return SynGlyphX::GlyphGeometryInfo::s_shapeNames.right.at(currentText().toStdWString());
 	}
@@ -42,7 +42,7 @@ namespace SynGlyphX {
 
 	}
 
-	VirtualTopologyInfo::Type VirtualTopologyComboBox::GetCurentValue() const {
+	VirtualTopologyInfo::Type VirtualTopologyComboBox::GetCurrentValue() const {
 
 		return SynGlyphX::VirtualTopologyInfo::s_virtualTopologyNames.right.at(currentText().toStdWString());
 	}

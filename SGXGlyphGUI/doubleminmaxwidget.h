@@ -23,6 +23,8 @@
 #include "mindiff.h"
 #include <QtWidgets/QDoubleSpinBox>
 
+Q_DECLARE_METATYPE(SynGlyphX::DoubleMinDiff)
+
 namespace SynGlyphX {
 
 	class SGXGLYPHGUI_EXPORT DoubleMinMaxWidget : public HorizontalFormWidget

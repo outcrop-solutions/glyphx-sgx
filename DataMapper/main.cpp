@@ -4,6 +4,9 @@
 #include <QtCore/QTimer>
 #include "sourcedatamanager.h"
 #include "licensingdialog.h"
+#include "doubleminmaxwidget.h"
+#include "intminmaxwidget.h"
+#include "colorminmaxwidget.h"
 
 int main(int argc, char *argv[])
 {
@@ -16,6 +19,10 @@ int main(int argc, char *argv[])
 
 		return 0;
 	}
+
+	qRegisterMetaType<SynGlyphX::ColorMinDiff>("ColorMinDiff");
+	qRegisterMetaType<SynGlyphX::IntMinDiff>("IntMinDiff");
+	qRegisterMetaType<SynGlyphX::DoubleMinDiff>("DoubleMinDiff");
 
     //Setup and show the splash screen
     QPixmap pixmap(":SGXGUI/Resources/synglyphx_splash.png");

@@ -54,7 +54,7 @@ namespace SynGlyphX {
 	GlyphGeometry GlyphStructureWidget::GetGlyphGeometry() const {
 
 		GlyphGeometry structure;
-		structure.SetGeometryShape(m_geometryShapeComboBox->GetCurentValue());
+		structure.SetGeometryShape(m_geometryShapeComboBox->GetCurrentValue());
 		structure.SetGeometrySurface(m_nonmappableGeometryWidget->GetSurface());
 		structure.SetTorusRatio(m_nonmappableGeometryWidget->GetTorusRatio());
 
@@ -64,7 +64,7 @@ namespace SynGlyphX {
 	VirtualTopology GlyphStructureWidget::GetVirtualTopology() const {
 
 		VirtualTopology virtualTopology;
-		virtualTopology.SetType(m_topologyComboBox->GetCurentValue());
+		virtualTopology.SetType(m_topologyComboBox->GetCurrentValue());
 
 		return virtualTopology;
 	}

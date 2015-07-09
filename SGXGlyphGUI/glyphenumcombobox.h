@@ -33,7 +33,7 @@ namespace SynGlyphX {
 		GlyphShapeComboBox(QWidget *parent);
 		~GlyphShapeComboBox();
 
-		GlyphGeometryInfo::Shape GetCurentValue() const;
+		GlyphGeometryInfo::Shape GetCurrentValue() const;
 		void SetCurrentValue(GlyphGeometryInfo::Shape value);
 
 	private:
@@ -48,7 +48,7 @@ namespace SynGlyphX {
 		VirtualTopologyComboBox(QWidget *parent);
 		~VirtualTopologyComboBox();
 
-		VirtualTopologyInfo::Type GetCurentValue() const;
+		VirtualTopologyInfo::Type GetCurrentValue() const;
 		void SetCurrentValue(VirtualTopologyInfo::Type value);
 
 	private:

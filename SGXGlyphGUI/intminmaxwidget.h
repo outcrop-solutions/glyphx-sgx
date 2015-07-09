@@ -23,6 +23,8 @@
 #include "mindiff.h"
 #include <QtWidgets/QSpinBox>
 
+Q_DECLARE_METATYPE(SynGlyphX::IntMinDiff)
+
 namespace SynGlyphX {
 
 	class SGXGLYPHGUI_EXPORT IntMinMaxWidget : public HorizontalFormWidget
