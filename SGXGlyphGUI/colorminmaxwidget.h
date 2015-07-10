@@ -31,7 +31,7 @@ namespace SynGlyphX {
 	{
 		Q_OBJECT
 
-		Q_PROPERTY(ColorMinDiff value READ GetValue WRITE SetValue USER true)
+		Q_PROPERTY(ColorMinDiff minDiff READ GetValue WRITE SetValue USER true)
 
 	public:
 		ColorMinMaxWidget(bool showAlphaInDialog, QWidget *parent);
@@ -39,14 +39,14 @@ namespace SynGlyphX {
 
 		ColorMinDiff GetValue() const;
 
-		signals:
-			void ValueChanged(const ColorMinDiff&);
+	signals:
+		void ValueChanged(ColorMinDiff value);
 
-		public slots:
-			void SetValue(const ColorMinDiff& value);
+	public slots:
+		void SetValue(const ColorMinDiff& value);
 
-		private slots:
-			void OnUserUpdated();
+	private slots:
+		void OnUserUpdated();
 
 	private:
 		ColorButton* m_minColorButton;

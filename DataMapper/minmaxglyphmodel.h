@@ -64,6 +64,9 @@ public slots:
 	void Clear();
 	void ClearInputBindings();
 
+private slots:
+	void OnSourceModelDataUpdated(const QModelIndex& topLeft, const QModelIndex& bottomRight, const QVector<int>& roles);
+
 private:
 	//QVariant GetDataByRow(SynGlyphX::DataMappingGlyph& glyph, const QModelIndex& index) const;
 	//bool SetDataByRow(SynGlyphX::DataMappingGlyph& glyph, const QVariant& value, const QModelIndex& index);
@@ -80,6 +83,7 @@ private:
 	DataTransformModel* m_dataTransformModel;
 
 	QPersistentModelIndex m_selectedDataTransformModelIndex;
+	QMetaObject::Connection m_dataChangedConnection;
 };
 
 #endif // MINMAXGLYPHMODEL_H

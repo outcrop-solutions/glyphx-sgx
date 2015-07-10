@@ -121,7 +121,15 @@ bool DataTransformModel::setData(const QModelIndex& index, const QVariant& value
 				iterator->GetVirtualTopology().SetType(value.value<SynGlyphX::VirtualTopologyMappingProperty>());
 			}
 
-			emit dataChanged(index, index);
+			QVector<int> roles;
+			roles.push_back(role);
+
+			if ((role == PropertyRole::GeometryShape) || (role == PropertyRole::VirtualTopology)) {
+
+				roles.push_back(Qt::DisplayRole);
+			}
+
+			emit dataChanged(index, index, roles);
 
 			return true;
 		}
@@ -455,27 +463,31 @@ boost::uuids::uuid DataTransformModel::AddFileDatasource(SynGlyphX::FileDatasour
 
 	return id;
 }
-
+/*
 void DataTransformModel::SetInputField(const boost::uuids::uuid& treeID, SynGlyphX::DataMappingGlyphGraph::const_iterator& node, SynGlyphX::DataMappingGlyph::MappableField field, const SynGlyphX::InputField& inputfield) {
 
 	m_dataMapping->SetInputField(treeID, node, field, inputfield);
-}
+}*/
 
 void DataTransformModel::SetInputField(const boost::uuids::uuid& treeID, const QModelIndex& index, SynGlyphX::DataMappingGlyph::MappableField field, const SynGlyphX::InputField& inputfield) {
 
-	SynGlyphX::DataMappingGlyphGraph::const_iterator iterator(static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(index.internalPointer()));
-	SetInputField(treeID, iterator, field, inputfield);
+	SynGlyphX::DataMappingGlyphGraph::const_iterator node(static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(index.internalPointer()));
+	//SetInputField(treeID, node, field, inputfield);
+	m_dataMapping->SetInputField(treeID, node, field, inputfield);
+	emit dataChanged(index, index);
 }
-
+/*
 void DataTransformModel::ClearInputBinding(const boost::uuids::uuid& treeID, SynGlyphX::DataMappingGlyphGraph::const_iterator& node, SynGlyphX::DataMappingGlyph::MappableField field) {
 
 	m_dataMapping->ClearInputBinding(treeID, node, field);
-}
+}*/
 
 void DataTransformModel::ClearInputBinding(const boost::uuids::uuid& treeID, const QModelIndex& index, SynGlyphX::DataMappingGlyph::MappableField field) {
 
-	SynGlyphX::DataMappingGlyphGraph::const_iterator iterator(static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(index.internalPointer()));
-	ClearInputBinding(treeID, iterator, field);
+	SynGlyphX::DataMappingGlyphGraph::const_iterator node(static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(index.internalPointer()));
+	//ClearInputBinding(treeID, node, field);
+	m_dataMapping->ClearInputBinding(treeID, node, field);
+	emit dataChanged(index, index);
 }
 
 void DataTransformModel::EnableTables(const boost::uuids::uuid& id, const SynGlyphX::Datasource::TableSet& tables, bool enable) {

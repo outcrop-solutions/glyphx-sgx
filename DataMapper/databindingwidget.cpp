@@ -189,7 +189,8 @@ void DataBindingWidget::CreatePropertiesTable() {
 
 	CreateColorPropertyWidgets(gridLayout, 9);
 	CreateGridLine(gridLayout, QFrame::HLine);
-	CreateIntegerPropertyWidgets(gridLayout, 10);
+	CreateDoublePropertyWidgets(gridLayout, 10, 0.0, 255.0);
+	//CreateIntegerPropertyWidgets(gridLayout, 10);
 
 	gridLayout->setColumnStretch(6, 1);
 

@@ -194,6 +194,8 @@ void MinMaxGlyphModel::SetMinMaxGlyph(const QModelIndex& index) {
 		std::advance(glyphTree, childIndices.top());
 		childIndices.pop();
 
+		QObject::disconnect(m_dataChangedConnection);
+
 		beginResetModel();
 		m_selectedDataTransformModelIndex = index;
 		m_glyphTreeID = glyphTree->first;
@@ -207,6 +209,8 @@ void MinMaxGlyphModel::SetMinMaxGlyph(const QModelIndex& index) {
 		}
 		m_glyph = iT;*/
 		endResetModel();
+
+		m_dataChangedConnection = QObject::connect(m_dataTransformModel, &DataTransformModel::dataChanged, this, &MinMaxGlyphModel::OnSourceModelDataUpdated);
 	}
 	else {
 
@@ -215,6 +219,8 @@ void MinMaxGlyphModel::SetMinMaxGlyph(const QModelIndex& index) {
 }
 
 void MinMaxGlyphModel::Clear() {
+
+	QObject::disconnect(m_dataChangedConnection);
 
 	beginResetModel();
 	//m_glyph = SynGlyphX::DataMappingGlyphGraph::const_iterator();
@@ -463,7 +469,7 @@ bool MinMaxGlyphModel::setData(const QModelIndex& index, const QVariant& value, 
 
 				if (m_dataTransformModel->setData(m_selectedDataTransformModelIndex, newProp, sourceDataRole)) {
 
-					emit dataChanged(index, index);
+					//emit dataChanged(index, index);
 					return true;
 				}
 			}
@@ -761,6 +767,30 @@ void MinMaxGlyphModel::SetMappingFunction(int row, SynGlyphX::MappingFunctionDat
 		m_dataTransformModel->setData(m_selectedDataTransformModelIndex, newProp, sourceDataRole);
 	}
 }
+
+void MinMaxGlyphModel::OnSourceModelDataUpdated(const QModelIndex& topLeft, const QModelIndex& bottomRight, const QVector<int>& roles) {
+
+	if ((m_selectedDataTransformModelIndex == topLeft) && (m_selectedDataTransformModelIndex == bottomRight)) {
+
+		if (roles.empty()) {
+
+			beginResetModel();
+			endResetModel();
+		}
+		else {
+
+			Q_FOREACH(int role, roles) {
+
+				if (role >= DataTransformModel::PropertyRole::PositionX) {
+
+					int row = role - DataTransformModel::PropertyRole::PositionX;
+					emit dataChanged(index(row, 0), index(row, columnCount() - 1));
+				}
+			}
+		}
+	}
+}
+
 /*
 const SynGlyphX::DataMappingGlyphGeometry& MinMaxGlyphModel::GetGlyphGeometry() const {
 

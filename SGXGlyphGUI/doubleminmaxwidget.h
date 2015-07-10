@@ -31,7 +31,7 @@ namespace SynGlyphX {
 	{
 		Q_OBJECT
 
-		Q_PROPERTY(DoubleMinDiff value READ GetValue WRITE SetValue USER true)
+		Q_PROPERTY(DoubleMinDiff minDiff READ GetValue WRITE SetValue USER true)
 
 	public:
 		DoubleMinMaxWidget(QWidget *parent);
@@ -43,7 +43,7 @@ namespace SynGlyphX {
 		void SetRange(double min, double max);
 
 	signals:
-		void ValueChanged(const DoubleMinDiff&);
+		void ValueChanged(DoubleMinDiff value);
 
 	public slots:
 		void SetValue(const DoubleMinDiff& value);
