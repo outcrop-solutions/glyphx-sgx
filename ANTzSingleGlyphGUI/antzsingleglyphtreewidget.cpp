@@ -48,6 +48,8 @@ namespace SynGlyphXANTz {
 		if (QFile::exists(worldBaseImageFilename)) {
 
 			m_baseImageTextureID = BindTextureInFile(worldBaseImageFilename);
+			pNPnode rootGrid = static_cast<pNPnode>(m_antzData->map.node[kNPnodeRootGrid]);
+			rootGrid->textureID = m_baseImageTextureID;
 		}
 
 		ResetCamera();

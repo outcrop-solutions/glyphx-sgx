@@ -32,7 +32,7 @@ namespace SynGlyphXANTz {
 		ANTzWidget(QWidget *parent = 0);
 		~ANTzWidget();
 
-		public slots:
+	public slots:
 		void ResetCamera();
 
 	protected:
@@ -47,10 +47,15 @@ namespace SynGlyphXANTz {
 		void DeleteChildren(pNPnode parent, unsigned int first, unsigned int count);
 		unsigned int BindTextureInFile(const QString& imageFilename);
 
+		void DrawLogo();
+
 		virtual void BeforeDrawScene() = 0;
 		virtual void AfterDrawScene() = 0;
 
 		pData m_antzData;
+
+		QSize m_logoSize;
+		unsigned int m_logoTextureID;
 
 	private:
 		void InitIO();

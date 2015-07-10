@@ -6,6 +6,8 @@
 #include "ctrl/npengine.h"
 #include "io/npgl.h"
 #include "io/gl/nptags.h"
+#include <QtCore/QDir>
+#include "application.h"
 
 namespace SynGlyphXANTz {
 
@@ -14,6 +16,7 @@ namespace SynGlyphXANTz {
 
 	ANTzWidget::ANTzWidget(QWidget *parent)
 		: QGLWidget(s_format, parent),
+		m_logoTextureID(0),
 		m_antzData(nullptr)
 	{
 		setAutoBufferSwap(false);
@@ -27,6 +30,12 @@ namespace SynGlyphXANTz {
 
 	ANTzWidget::~ANTzWidget()
 	{
+		if (m_logoTextureID != 0) {
+
+			deleteTexture(m_logoTextureID);
+			m_logoTextureID = 0;
+		}
+
 		npCloseGL(m_antzData);
 		npCloseCtrl(m_antzData);
 		npCloseFile(m_antzData);
@@ -102,6 +111,14 @@ namespace SynGlyphXANTz {
 		npInitGLDraw(m_antzData);
 		npInitGLPrimitive(m_antzData);
 		npInitTags(m_antzData);
+
+		QString logoImageFilename = QDir::toNativeSeparators(SynGlyphX::Application::applicationDirPath() + QDir::separator() + "logo.png");
+		if (QFile::exists(logoImageFilename)) {
+
+			QImage image(logoImageFilename);
+			m_logoSize = image.size();
+			m_logoTextureID = bindTexture(image);
+		}
 	}
 
 	void ANTzWidget::resizeGL(int w, int h) {
@@ -128,6 +145,8 @@ namespace SynGlyphXANTz {
 		//antzData->io.mouse.pickMode = kNPmodePin;
 		npGLDrawScene(m_antzData);
 		//antzData->io.mouse.pickMode = kNPmodeNull;
+
+		DrawLogo();
 
 		AfterDrawScene();
 
@@ -193,6 +212,68 @@ namespace SynGlyphXANTz {
 
 		QImage image(imageFilename);
 		return bindTexture(image);
+	}
+
+	void ANTzWidget::DrawLogo() {
+
+		bool isLightingEnabled = glIsEnabled(GL_LIGHTING);
+		bool isBlendEnabled = glIsEnabled(GL_BLEND);
+		bool isDepthTestEnabled = glIsEnabled(GL_DEPTH_TEST);
+
+		glDisable(GL_LIGHTING);
+		glDisable(GL_BLEND);
+		glDisable(GL_DEPTH_TEST);
+
+		glMatrixMode(GL_PROJECTION);
+		glPushMatrix();
+		glLoadIdentity();
+
+		gluOrtho2D(0, width(), 0.0, height());
+
+		QPoint lowerLeft(width() - m_logoSize.width() - 10, height() - m_logoSize.height() - 10);
+		QPoint upperRight(width() - 10, height() - 10);
+
+		glMatrixMode(GL_MODELVIEW);
+		glPushMatrix();
+		glLoadIdentity();
+
+		glColor3f(1.0f, 1.0f, 1.0f);
+		glEnable(GL_TEXTURE_2D);
+		glBindTexture(GL_TEXTURE_2D, m_logoTextureID);
+		glBegin(GL_QUADS);
+		glTexCoord2f(0, 0);
+		glVertex2i(lowerLeft.x(), lowerLeft.y());
+		glTexCoord2f(1, 0);
+		glVertex2i(upperRight.x(), lowerLeft.y());
+
+		glTexCoord2f(1, 1);
+		glVertex2i(upperRight.x(), upperRight.y());
+		glTexCoord2f(0, 1);
+		glVertex2i(lowerLeft.x(), upperRight.y());
+		glEnd();
+
+		glDisable(GL_TEXTURE_2D);
+
+		glMatrixMode(GL_PROJECTION);
+		glPopMatrix();
+
+		glMatrixMode(GL_MODELVIEW);
+		glPopMatrix();
+
+		if (isLightingEnabled) {
+
+			glEnable(GL_DEPTH_TEST);
+		}
+
+		if (isBlendEnabled) {
+
+			glEnable(GL_BLEND);
+		}
+
+		if (isDepthTestEnabled) {
+
+			glEnable(GL_LIGHTING);
+		}
 	}
 
 } //namespace SynGlyphXANTz
