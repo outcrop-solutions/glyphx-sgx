@@ -50,6 +50,9 @@ namespace SynGlyphXANTz {
 
 		void ShowGlyph(bool show);
 
+		void SetBaseImage(const QString& baseImageFilename);
+		const QString& GetBaseImageFilename() const;
+
 	public slots:
 		void SetEditingMode(EditingMode mode);
 		void EnableAnimation(bool enable);
@@ -115,6 +118,8 @@ namespace SynGlyphXANTz {
 		QItemSelectionModel* m_selectionModel;
 
 		bool m_animationEnabled;
+
+		QString m_baseImageFilename;
 	};
 
 } //namespace SynGlyphXANTz

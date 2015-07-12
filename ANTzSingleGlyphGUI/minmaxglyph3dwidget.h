@@ -36,6 +36,9 @@ namespace SynGlyphXANTz {
 
 		virtual void SetModel(MinMaxGlyphTreeModel* model, QItemSelectionModel* selectionModel);
 
+		void SetBaseImage(const QString& baseImageFilename);
+		const QString& GetBaseImageFilename() const;
+
 	public slots:
 		void EnableAnimation(bool enable);
 

@@ -9,6 +9,7 @@
 #include <QtCore/QFile>
 #include "glyphnodeconverter.h"
 #include "application.h"
+#include "defaultbaseimagescombobox.h"
 
 namespace SynGlyphXANTz {
 
@@ -44,13 +45,7 @@ namespace SynGlyphXANTz {
 
 		ANTzWidget::initializeGL();
 
-		QString worldBaseImageFilename = QDir::toNativeSeparators(SynGlyphX::Application::applicationDirPath() + QDir::separator() + "world.png");
-		if (QFile::exists(worldBaseImageFilename)) {
-
-			m_baseImageTextureID = BindTextureInFile(worldBaseImageFilename);
-			pNPnode rootGrid = static_cast<pNPnode>(m_antzData->map.node[kNPnodeRootGrid]);
-			rootGrid->textureID = m_baseImageTextureID;
-		}
+		SetBaseImage(SynGlyphX::DefaultBaseImagesComboBox::GetWorldDefaultBaseImageLocation());
 
 		ResetCamera();
 	}
@@ -564,6 +559,29 @@ namespace SynGlyphXANTz {
 
 			TurnOffAnimationInNodeTree(node->child[i]);
 		}
+	}
+
+	void ANTzSingleGlyphTreeWidget::SetBaseImage(const QString& baseImageFilename) {
+
+		if ((baseImageFilename != m_baseImageFilename) && QFile::exists(baseImageFilename)) {
+
+			unsigned int newTextureID = BindTextureInFile(baseImageFilename);
+			pNPnode rootGrid = static_cast<pNPnode>(m_antzData->map.node[kNPnodeRootGrid]);
+			rootGrid->textureID = newTextureID;
+
+			if (m_baseImageTextureID != 0) {
+
+				deleteTexture(m_baseImageTextureID);
+			}
+
+			m_baseImageTextureID = newTextureID;
+			m_baseImageFilename = baseImageFilename;
+		}
+	}
+
+	const QString& ANTzSingleGlyphTreeWidget::GetBaseImageFilename() const {
+
+		return m_baseImageFilename;
 	}
 
 } //namespace SynGlyphX
