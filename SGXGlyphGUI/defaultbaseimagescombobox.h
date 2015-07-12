@@ -15,62 +15,34 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef GLYPHDESIGNERWINDOW_H
-#define GLYPHDESIGNERWINDOW_H
+#ifndef SYNGLYPHX_DEFAULTBASEIMAGESCOMBOBOX_H
+#define SYNGLYPHX_DEFAULTBASEIMAGESCOMBOBOX_H
 
-#include "mainwindow.h"
-#include "glyphtreeview.h"
-#include "antzsingleglyphtreewidget.h"
-#include "minmaxglyphtreemodel.h"
+#include "sgxglyphgui_global.h"
+#include <QtWidgets/QComboBox>
 
-class GlyphDesignerWindow : public SynGlyphX::MainWindow
-{
-    Q_OBJECT
+namespace SynGlyphX {
 
-public:
-    GlyphDesignerWindow(QWidget *parent = 0);
-    ~GlyphDesignerWindow();
+	class SGXGLYPHGUI_EXPORT DefaultBaseImagesComboBox : public QComboBox
+	{
+		Q_OBJECT
 
-protected:
-    virtual bool LoadRecentFile(const QString& filename);
-    virtual void closeEvent(QCloseEvent* event);
+	public:
+		DefaultBaseImagesComboBox(QWidget *parent);
+		~DefaultBaseImagesComboBox();
 
-	virtual void ReadSettings();
-	virtual void WriteSettings();
+		void SetDefaultBaseImage(const QString& filename);
+		QString GetDefaultBaseImage() const;
 
-private slots:
-    void CreateNewGlyphTree();
-    void ExportToCSV();
-    bool SaveTemplate();
-    bool SaveAsTemplate();
-    void OpenTemplate();
-    void EditingModeChanged(QAction* action);
-	void OnModelChanged();
-	void ChangeGlobalOptions();
+		static const QString& GetWorldDefaultBaseImageLocation();
 
-private:
-    void CreateMenus();
-    void CreateDockWidgets();
-    bool LoadTemplate(const QString& filename);
-    bool SaveTemplateFile(const QString& filename);
-    bool AskUserToSave();
-	void SelectRootGlyphInModel();
+	private:
+		static void BuildFilenameMap();
 
-	SynGlyphXANTz::ANTzSingleGlyphTreeWidget* m_3dView;
-    GlyphTreeView* m_treeView;
+		static std::map<QString, QString> s_filenameToNameMap;
+		static QString s_worldDefaultBaseImageLocation;
+	};
 
-    QMenu* m_fileMenu;
-    QMenu* m_editMenu;
-    QMenu* m_viewMenu;
-    QMenu* m_glyphMenu;
-	QMenu* m_toolsMenu;
+} //namespace SynGlyphX
 
-	QAction* m_showAnimation;
-
-	SynGlyphXANTz::MinMaxGlyphTreeModel* m_glyphTreeModel;
-	QItemSelectionModel* m_sharedSelectionModel;
-
-	bool m_isFileLoadingOrDefaultGlyphSet;
-};
-
-#endif // GLYPHDESIGNERWINDOW_H
+#endif // SYNGLYPHX_DEFAULTBASEIMAGESCOMBOBOX_H

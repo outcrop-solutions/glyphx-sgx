@@ -13,6 +13,8 @@
 #include "application.h"
 #include "modalglyphwidget.h"
 #include "newglyphtreewizard.h"
+#include "singleglyphviewoptionswidget.h"
+#include "singlewidgetdialog.h"
 
 GlyphDesignerWindow::GlyphDesignerWindow(QWidget *parent)
     : SynGlyphX::MainWindow(parent),
@@ -139,6 +141,11 @@ void GlyphDesignerWindow::CreateMenus() {
     QObject::connect(newGlyphTreeAction, &QAction::triggered, this, &GlyphDesignerWindow::CreateNewGlyphTree);
 
     m_glyphMenu->addSeparator();
+
+	m_toolsMenu = menuBar()->addMenu(tr("Tools"));
+
+	QAction* optionsAction = m_toolsMenu->addAction(tr("Options"));
+	QObject::connect(optionsAction, &QAction::triggered, this, &GlyphDesignerWindow::ChangeGlobalOptions);
 
     CreateHelpMenu();
 }
@@ -361,6 +368,7 @@ void GlyphDesignerWindow::ReadSettings(){
 
 		m_showAnimation->toggle();
 	}
+	m_3dView->SetBaseImage(settings.value("baseImage", SynGlyphX::DefaultBaseImagesComboBox::GetWorldDefaultBaseImageLocation()).toString());
 	settings.endGroup();
 }
 
@@ -370,5 +378,19 @@ void GlyphDesignerWindow::WriteSettings() {
 	QSettings settings;
 	settings.beginGroup("Display");
 	settings.setValue("show", m_showAnimation->isChecked());
+	settings.setValue("baseImage", m_3dView->GetBaseImageFilename());
 	settings.endGroup();
+}
+
+void GlyphDesignerWindow::ChangeGlobalOptions() {
+
+	SynGlyphX::SingleGlyphViewOptionsWidget* optionsWidget = new SynGlyphX::SingleGlyphViewOptionsWidget(this);
+	optionsWidget->SetDefaultBaseImage(m_3dView->GetBaseImageFilename());
+
+	SynGlyphX::SingleWidgetDialog dialog(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, optionsWidget, this);
+	dialog.setWindowTitle(tr("Options"));
+	if (dialog.exec() == QDialog::Accepted) {
+
+		m_3dView->SetBaseImage(optionsWidget->GetDefaultBaseImage());
+	}
 }

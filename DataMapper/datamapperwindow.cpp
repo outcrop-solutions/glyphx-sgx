@@ -27,6 +27,7 @@
 #include "newglyphtreewizard.h"
 #include "databaseinfo.h"
 #include "newmappingdefaultswidget.h"
+#include "singleglyphviewoptionswidget.h"
 
 DataMapperWindow::DataMapperWindow(QWidget *parent)
     : SynGlyphX::MainWindow(parent),
@@ -191,6 +192,9 @@ void DataMapperWindow::CreateMenus() {
 
 	//Create Tools Menu
 	m_toolsMenu = menuBar()->addMenu(tr("Tools"));
+
+	QAction* optionsAction = m_toolsMenu->addAction(tr("Options"));
+	QObject::connect(optionsAction, &QAction::triggered, this, &DataMapperWindow::ChangeOptions);
 
 	QAction* newMappingDefaultsAction = m_toolsMenu->addAction(tr("New Mapping Defaults"));
 	QObject::connect(newMappingDefaultsAction, &QAction::triggered, this, &DataMapperWindow::ChangeNewMappingDefaults);
@@ -789,6 +793,7 @@ void DataMapperWindow::ReadSettings(){
 
 		m_showAnimation->toggle();
 	}
+	m_minMaxGlyph3DWidget->SetBaseImage(settings.value("baseImage", SynGlyphX::DefaultBaseImagesComboBox::GetWorldDefaultBaseImageLocation()).toString());
 	settings.endGroup();
 }
 
@@ -798,6 +803,7 @@ void DataMapperWindow::WriteSettings() {
 	QSettings settings;
 	settings.beginGroup("Display");
 	settings.setValue("show", m_showAnimation->isChecked());
+	settings.setValue("baseImage", m_minMaxGlyph3DWidget->GetBaseImageFilename());
 	settings.endGroup();
 }
 
@@ -817,5 +823,18 @@ void DataMapperWindow::ChangeSceneProperties() {
 			setWindowModified(true);
 		}
 		m_dataTransformModel->SetSceneProperties(newSceneProperties);
+	}
+}
+
+void DataMapperWindow::ChangeOptions() {
+
+	SynGlyphX::SingleGlyphViewOptionsWidget* optionsWidget = new SynGlyphX::SingleGlyphViewOptionsWidget(this);
+	optionsWidget->SetDefaultBaseImage(m_minMaxGlyph3DWidget->GetBaseImageFilename());
+
+	SynGlyphX::SingleWidgetDialog dialog(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, optionsWidget, this);
+	dialog.setWindowTitle(tr("Options"));
+	if (dialog.exec() == QDialog::Accepted) {
+
+		m_minMaxGlyph3DWidget->SetBaseImage(optionsWidget->GetDefaultBaseImage());
 	}
 }

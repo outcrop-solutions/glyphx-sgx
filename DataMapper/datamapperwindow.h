@@ -61,6 +61,7 @@ private slots:
 	void ChangeNewMappingDefaults();
 	void OnGlyphTreesViewSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected);
 	void ChangeSceneProperties();
+	void ChangeOptions();
 
 private:
     void CreateMenus();

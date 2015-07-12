@@ -154,6 +154,24 @@
     <ClCompile Include="GeneratedFiles\Win32\Release\moc_intminmaxwidget.cpp">
       <Filter>Generated Files\Release_Win32</Filter>
     </ClCompile>
+    <ClCompile Include="defaultbaseimagescombobox.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Win32\Debug\moc_defaultbaseimagescombobox.cpp">
+      <Filter>Generated Files\Debug_Win32</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Win32\Release\moc_defaultbaseimagescombobox.cpp">
+      <Filter>Generated Files\Release_Win32</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Win32\Debug\moc_singleglyphviewoptionswidget.cpp">
+      <Filter>Generated Files\Debug_Win32</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Win32\Release\moc_singleglyphviewoptionswidget.cpp">
+      <Filter>Generated Files\Release_Win32</Filter>
+    </ClCompile>
+    <ClCompile Include="singleglyphviewoptionswidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="glyphstructurewidget.h">
@@ -193,6 +211,12 @@
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="intminmaxwidget.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="defaultbaseimagescombobox.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="singleglyphviewoptionswidget.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>
