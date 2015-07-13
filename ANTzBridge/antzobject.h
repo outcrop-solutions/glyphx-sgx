@@ -37,18 +37,25 @@ namespace SynGlyphXANTz {
 
 		void SetRotation(const SynGlyphX::Vector3& rotation);
 		const SynGlyphX::Vector3& GetRotation() const;
+
 		void SetPosition(const SynGlyphX::Vector3& position);
 		const SynGlyphX::Vector3& GetPosition() const;
+
 		void SetScale(const SynGlyphX::Vector3& scale);
 		const SynGlyphX::Vector3& GetScale() const;
+
 		void SetColor(const SynGlyphX::GlyphColor& color);
 		const SynGlyphX::GlyphColor& GetColor() const;
+
+		void SetVisible(bool visible);
+		bool GetVisible() const;
 
 	protected:
 		SynGlyphX::Vector3 m_rotation;
 		SynGlyphX::Vector3 m_scale;
 		SynGlyphX::Vector3 m_position;
 		SynGlyphX::GlyphColor m_color;
+		bool m_visible;
 	};
 
 } //namespace SynGlyphXANTz

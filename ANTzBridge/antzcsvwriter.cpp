@@ -292,13 +292,22 @@ namespace SynGlyphXANTz {
 			grid.push_back(boost::lexical_cast<std::wstring>(color[0]));
 			grid.push_back(boost::lexical_cast<std::wstring>(color[1]));
 			grid.push_back(boost::lexical_cast<std::wstring>(color[2]));
-			grid.push_back(L"150");
+			grid.push_back(L"255");
 
 			grid.push_back(L"0");
 
 			grid.push_back(boost::lexical_cast<std::wstring>(grids[i].GetTextureID()));
 
-			grid.insert(grid.end(), { L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0" });
+			if (grids[i].GetVisible()) {
+
+				grid.push_back(L"0");
+			}
+			else {
+
+				grid.push_back(L"1");
+			}
+
+			grid.insert(grid.end(), { L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0" });
 			
 			//segments
 			grid.push_back(L"12");

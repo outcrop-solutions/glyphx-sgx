@@ -6,14 +6,16 @@ namespace SynGlyphXANTz {
 	ANTzObject::ANTzObject() :
 		m_scale({ { 1.0, 1.0, 1.0 } }),
 		m_position({ { 0.0, 0.0, 0.0 } }),
-		m_rotation({ { 0.0, 0.0, 0.0 } })
+		m_rotation({ { 0.0, 0.0, 0.0 } }),
+		m_visible(true)
 	{
 	}
 
 	ANTzObject::ANTzObject(const ANTzObject& properties) :
 		m_scale(properties.m_scale),
 		m_position(properties.m_position),
-		m_rotation(properties.m_rotation) {
+		m_rotation(properties.m_rotation),
+		m_visible(properties.m_visible) {
 
 
 	}
@@ -27,6 +29,7 @@ namespace SynGlyphXANTz {
 		m_scale = properties.m_scale;
 		m_position = properties.m_position;
 		m_rotation = properties.m_rotation;
+		m_visible = properties.m_visible;
 
 		return *this;
 	}
@@ -44,6 +47,11 @@ namespace SynGlyphXANTz {
 		}
 
 		if (m_rotation != properties.m_rotation) {
+
+			return false;
+		}
+
+		if (m_visible != properties.m_visible) {
 
 			return false;
 		}
@@ -100,6 +108,16 @@ namespace SynGlyphXANTz {
 	const SynGlyphX::GlyphColor& ANTzObject::GetColor() const {
 
 		return m_color;
+	}
+
+	void ANTzObject::SetVisible(bool visible) {
+
+		m_visible = visible;
+	}
+
+	bool ANTzObject::GetVisible() const {
+
+		return m_visible;
 	}
 
 } //namespace SynGlyphXANTz
