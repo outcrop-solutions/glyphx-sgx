@@ -27,6 +27,7 @@
 #include "browselineedit.h"
 #include "xyzwidget.h"
 #include "doublesizewidget.h"
+#include "defaultbaseimagescombobox.h"
 
 class BaseImageDialog : public QDialog
 {
@@ -59,6 +60,7 @@ private:
 	SynGlyphX::XYZWidget* m_orientationWidget;
 	QSignalMapper* m_presetButtonSignalMapper;
 	SynGlyphX::DoubleSizeWidget* m_worldSizeWidget;
+	SynGlyphX::DefaultBaseImagesComboBox* m_defaultImagesComboBox;
 };
 
 #endif // BASEIMAGEDIALOG_H

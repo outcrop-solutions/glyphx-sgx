@@ -1,5 +1,6 @@
 #include "baseimagedialog.h"
 #include <QtWidgets/QVBoxLayout>
+#include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QDialogButtonBox>
 #include <QtWidgets/QMessageBox>
@@ -46,6 +47,14 @@ BaseImageDialog::BaseImageDialog(bool enablePositionAndOrientation, bool showDow
 
 	m_baseImageOptionsStackedWidget = new QStackedWidget(this);
 	QWidget* defaultImageWidget = new QWidget(m_baseImageOptionsStackedWidget);
+
+	m_defaultImagesComboBox = new SynGlyphX::DefaultBaseImagesComboBox(defaultImageWidget);
+	QHBoxLayout* defaultImageLayout = new QHBoxLayout(defaultImageWidget);
+	defaultImageLayout->addStretch(1);
+	defaultImageLayout->addWidget(new QLabel(tr("Default Image:"), defaultImageWidget));
+	defaultImageLayout->addWidget(m_defaultImagesComboBox);
+	defaultImageLayout->addStretch(1);
+	defaultImageWidget->setLayout(defaultImageLayout);
 	m_baseImageOptionsStackedWidget->addWidget(defaultImageWidget);
 
 	if (showDownloadMapOptions) {
@@ -56,18 +65,15 @@ BaseImageDialog::BaseImageDialog(bool enablePositionAndOrientation, bool showDow
 		m_baseImageOptionsStackedWidget->addWidget(downloadedMapOptionsGroupBox);
 	}
 
-	QWidget* userImageWidget = new QWidget(m_baseImageOptionsStackedWidget);
-	m_userDefinedImageLineEdit = new SynGlyphX::BrowseLineEdit(SynGlyphX::BrowseLineEdit::FileOpen, true, userImageWidget);
+	m_userDefinedImageLineEdit = new SynGlyphX::BrowseLineEdit(SynGlyphX::BrowseLineEdit::FileOpen, true, m_baseImageOptionsStackedWidget);
+	m_userDefinedImageLineEdit->setContentsMargins(4, 4, 4, 4);
 
 	//For now only allowing PNG files 
 	m_userDefinedImageLineEdit->SetFilters("PNG files (*.png)");
 
-	QVBoxLayout* userDefinedImageLayout = new QVBoxLayout(userImageWidget);
-	userDefinedImageLayout->addStretch(1);
-	userDefinedImageLayout->addWidget(m_userDefinedImageLineEdit);
-	userDefinedImageLayout->addStretch(1);
-	userImageWidget->setLayout(userDefinedImageLayout);
-	m_baseImageOptionsStackedWidget->addWidget(userImageWidget);
+	SynGlyphX::GroupBoxSingleWidget* userDefinedGroupBox = new SynGlyphX::GroupBoxSingleWidget(tr("Image File"), m_userDefinedImageLineEdit, m_baseImageOptionsStackedWidget);
+
+	m_baseImageOptionsStackedWidget->addWidget(userDefinedGroupBox);
 
 	layout->addWidget(m_baseImageOptionsStackedWidget);
 
@@ -189,6 +195,11 @@ void BaseImageDialog::SetBaseImage(const SynGlyphX::BaseImage& baseImage) {
 		const SynGlyphX::UserDefinedBaseImageProperties* const properties = dynamic_cast<const SynGlyphX::UserDefinedBaseImageProperties* const>(baseImage.GetProperties());
 		m_userDefinedImageLineEdit->SetText(QString::fromStdWString(properties->GetFilename()));
 	}
+	else {
+
+		const SynGlyphX::DefaultBaseImageProperties* const properties = dynamic_cast<const SynGlyphX::DefaultBaseImageProperties* const>(baseImage.GetProperties());
+		m_defaultImagesComboBox->SetDefaultBaseImage(properties->GetDefaultBaseImageType());
+	}
 	m_positionWidget->Set(baseImage.GetPosition());
 	m_orientationWidget->Set(baseImage.GetRotationAngles());
 
@@ -212,6 +223,11 @@ SynGlyphX::BaseImage BaseImageDialog::GetBaseImage() const {
 	else if (baseImageType == SynGlyphX::BaseImage::Type::UserImage) {
 
 		SynGlyphX::UserDefinedBaseImageProperties properties(m_userDefinedImageLineEdit->GetText().toStdWString());
+		newBaseImage = SynGlyphX::BaseImage(&properties);
+	}
+	else {
+
+		SynGlyphX::DefaultBaseImageProperties properties(m_defaultImagesComboBox->GetDefaultBaseImage());
 		newBaseImage = SynGlyphX::BaseImage(&properties);
 	}
 
