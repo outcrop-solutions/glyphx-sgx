@@ -23,6 +23,7 @@
 #include <QtCore/QItemSelectionModel>
 #include "antzsingleglyphtreewidget.h"
 #include "minmaxglyphtreemodel.h"
+#include "defaultbaseimageproperties.h"
 
 namespace SynGlyphXANTz {
 
@@ -36,8 +37,8 @@ namespace SynGlyphXANTz {
 
 		virtual void SetModel(MinMaxGlyphTreeModel* model, QItemSelectionModel* selectionModel);
 
-		void SetBaseImage(const QString& baseImageFilename);
-		const QString& GetBaseImageFilename() const;
+		void SetBaseImage(SynGlyphX::DefaultBaseImageProperties::Type baseImage);
+		SynGlyphX::DefaultBaseImageProperties::Type GetBaseImage() const;
 
 	public slots:
 		void EnableAnimation(bool enable);

@@ -12,9 +12,10 @@
 #include "npctrl.h"
 #include "io/npgl.h"
 #include "io/gl/nptags.h"
-#include "application.h"
+#include "glyphbuilderapplication.h"
 #include "itemfocusselectionmodel.h"
 #include <stack>
+#include "defaultbaseimagescombobox.h"
 
 namespace SynGlyphXANTz {
 
@@ -324,7 +325,7 @@ namespace SynGlyphXANTz {
 		npInitGLPrimitive(antzData);
 		npInitTags(antzData);
 	
-		m_worldTextureID = BindTextureInFile(QDir::toNativeSeparators(SynGlyphX::Application::applicationDirPath() + QDir::separator() + "world.png"));
+		m_worldTextureID = BindTextureInFile(SynGlyphX::GlyphBuilderApplication::GetDefaultBaseImagesLocation() + QString::fromStdWString(SynGlyphX::DefaultBaseImageProperties::GetBasefilename()));
 		pNPnode rootGrid = static_cast<pNPnode>(antzData->map.node[kNPnodeRootGrid]);
 		SetGridTexture(rootGrid);
 		antzData->io.gl.textureCount = 1;

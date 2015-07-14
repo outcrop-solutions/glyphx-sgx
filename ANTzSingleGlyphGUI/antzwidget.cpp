@@ -7,7 +7,7 @@
 #include "io/npgl.h"
 #include "io/gl/nptags.h"
 #include <QtCore/QDir>
-#include "application.h"
+#include "glyphbuilderapplication.h"
 
 namespace SynGlyphXANTz {
 
@@ -112,7 +112,7 @@ namespace SynGlyphXANTz {
 		npInitGLPrimitive(m_antzData);
 		npInitTags(m_antzData);
 
-		QString logoImageFilename = QDir::toNativeSeparators(SynGlyphX::Application::applicationDirPath() + QDir::separator() + "logo.png");
+		QString logoImageFilename = QDir::toNativeSeparators(SynGlyphX::GlyphBuilderApplication::applicationDirPath() + QDir::separator() + "logo.png");
 		if (QFile::exists(logoImageFilename)) {
 
 			QImage image(logoImageFilename);

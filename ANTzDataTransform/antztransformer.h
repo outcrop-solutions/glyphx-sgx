@@ -23,6 +23,7 @@
 #include "datatransformmapping.h"
 #include <QtCore/QString>
 #include <QtCore/QStringList>
+#include "antzgrid.h"
 
 namespace SynGlyphXANTz {
 
@@ -43,6 +44,7 @@ namespace SynGlyphXANTz {
 	protected:
 		const unsigned int NumberOfDefaultBaseImages = 1;
 
+		virtual void GenerateGrids(std::vector<ANTzGrid>& grids, const SynGlyphX::DataTransformMapping& mapping, const QString& baseImageFilenameDirectory);
 		virtual QString GenerateBaseImageFilename(unsigned int index) const;
 		void GenerateCache(const SynGlyphX::DataTransformMapping& mapping, const QStringList& csvFilenames, const QString& baseImageFilenameDirectory);
 		void Clear();

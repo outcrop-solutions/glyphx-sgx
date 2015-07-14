@@ -33,14 +33,14 @@ namespace SynGlyphXANTz {
 		m_maxGlyph3DWidget->EnableAnimation(enable);
 	}
 
-	void MinMaxGlyph3DWidget::SetBaseImage(const QString& baseImageFilename) {
+	void MinMaxGlyph3DWidget::SetBaseImage(SynGlyphX::DefaultBaseImageProperties::Type baseImage) {
 
-		m_maxGlyph3DWidget->SetBaseImage(baseImageFilename);
+		m_maxGlyph3DWidget->SetBaseImage(baseImage);
 	}
 
-	const QString& MinMaxGlyph3DWidget::GetBaseImageFilename() const {
+	SynGlyphX::DefaultBaseImageProperties::Type MinMaxGlyph3DWidget::GetBaseImage() const {
 
-		return m_maxGlyph3DWidget->GetBaseImageFilename();
+		return m_maxGlyph3DWidget->GetBaseImage();
 	}
 
 } //namespace SynGlyphXANTz

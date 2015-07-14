@@ -27,6 +27,7 @@
 #include "datamappingglyphgraph.h"
 #include "minmaxglyphtreemodel.h"
 #include <QtCore/QItemSelectionModel>
+#include "defaultbaseimageproperties.h"
 
 namespace SynGlyphXANTz {
 
@@ -50,8 +51,8 @@ namespace SynGlyphXANTz {
 
 		void ShowGlyph(bool show);
 
-		void SetBaseImage(const QString& baseImageFilename);
-		const QString& GetBaseImageFilename() const;
+		void SetBaseImage(SynGlyphX::DefaultBaseImageProperties::Type baseImage);
+		SynGlyphX::DefaultBaseImageProperties::Type GetBaseImage() const;
 
 	public slots:
 		void SetEditingMode(EditingMode mode);
@@ -119,7 +120,7 @@ namespace SynGlyphXANTz {
 
 		bool m_animationEnabled;
 
-		QString m_baseImageFilename;
+		SynGlyphX::DefaultBaseImageProperties::Type m_baseImage;
 	};
 
 } //namespace SynGlyphXANTz

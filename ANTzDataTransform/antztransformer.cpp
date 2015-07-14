@@ -42,11 +42,21 @@ namespace SynGlyphXANTz {
 			}
 		}
 
+		std::vector<ANTzGrid> grids;
+		GenerateGrids(grids, mapping, baseImageFilenameDirectory);
+
+		SynGlyphX::GlyphGraph::ConstSharedVector trees = CreateGlyphTreesFromMinMaxTrees(mapping);
+		
+		ANTzCSVWriter& writer = ANTzCSVWriter::GetInstance();
+		writer.Write(csvFilenames[0].toStdString(), csvFilenames[1].toStdString(), trees, grids);
+
+		m_csvFilenames = csvFilenames;
+	}
+
+	void ANTzTransformer::GenerateGrids(std::vector<ANTzGrid>& grids, const SynGlyphX::DataTransformMapping& mapping, const QString& baseImageFilenameDirectory) {
+
 		std::unordered_map<std::string, unsigned int> userBaseImages;
 		unsigned int nextTextureID = NumberOfDefaultBaseImages + 1;
-
-		std::vector<ANTzGrid> grids;
-		const std::vector<SynGlyphX::BaseImage>& baseImages = mapping.GetBaseObjects();
 		for (const SynGlyphX::BaseImage& baseImage : mapping.GetBaseObjects()) {
 
 			if (baseImage.GetType() == SynGlyphX::BaseImage::Type::DownloadedMap) {
@@ -98,13 +108,6 @@ namespace SynGlyphXANTz {
 
 			grids.push_back(grid);
 		}
-
-		SynGlyphX::GlyphGraph::ConstSharedVector trees = CreateGlyphTreesFromMinMaxTrees(mapping);
-		
-		ANTzCSVWriter& writer = ANTzCSVWriter::GetInstance();
-		writer.Write(csvFilenames[0].toStdString(), csvFilenames[1].toStdString(), trees, grids);
-
-		m_csvFilenames = csvFilenames;
 	}
 
 	void ANTzTransformer::Clear() {

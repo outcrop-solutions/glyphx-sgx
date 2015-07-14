@@ -8,8 +8,8 @@
 #include <QtCore/QDir>
 #include <QtCore/QFile>
 #include "glyphnodeconverter.h"
-#include "application.h"
-#include "defaultbaseimagescombobox.h"
+#include "glyphbuilderapplication.h"
+#include "defaultbaseimageproperties.h"
 
 namespace SynGlyphXANTz {
 
@@ -45,7 +45,7 @@ namespace SynGlyphXANTz {
 
 		ANTzWidget::initializeGL();
 
-		SetBaseImage(SynGlyphX::DefaultBaseImagesComboBox::GetWorldDefaultBaseImageLocation());
+		SetBaseImage(SynGlyphX::DefaultBaseImageProperties::Type::World);
 
 		ResetCamera();
 	}
@@ -561,11 +561,11 @@ namespace SynGlyphXANTz {
 		}
 	}
 
-	void ANTzSingleGlyphTreeWidget::SetBaseImage(const QString& baseImageFilename) {
+	void ANTzSingleGlyphTreeWidget::SetBaseImage(SynGlyphX::DefaultBaseImageProperties::Type baseImage) {
 
-		if ((baseImageFilename != m_baseImageFilename) && QFile::exists(baseImageFilename)) {
+		if ((baseImage != m_baseImage) || (m_baseImageTextureID == 0)) {
 
-			unsigned int newTextureID = BindTextureInFile(baseImageFilename);
+			unsigned int newTextureID = BindTextureInFile(SynGlyphX::GlyphBuilderApplication::GetDefaultBaseImagesLocation() + QString::fromStdWString(SynGlyphX::DefaultBaseImageProperties::GetBasefilename(baseImage)));
 			pNPnode rootGrid = static_cast<pNPnode>(m_antzData->map.node[kNPnodeRootGrid]);
 			rootGrid->textureID = newTextureID;
 
@@ -575,13 +575,13 @@ namespace SynGlyphXANTz {
 			}
 
 			m_baseImageTextureID = newTextureID;
-			m_baseImageFilename = baseImageFilename;
+			m_baseImage = baseImage;
 		}
 	}
 
-	const QString& ANTzSingleGlyphTreeWidget::GetBaseImageFilename() const {
+	SynGlyphX::DefaultBaseImageProperties::Type ANTzSingleGlyphTreeWidget::GetBaseImage() const {
 
-		return m_baseImageFilename;
+		return m_baseImage;
 	}
 
 } //namespace SynGlyphX
