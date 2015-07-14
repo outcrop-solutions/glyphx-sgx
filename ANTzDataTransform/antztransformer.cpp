@@ -4,6 +4,7 @@
 #include <boost/filesystem.hpp>
 #include "sourcedatamanager.h"
 #include "antzcsvwriter.h"
+#include "defaultbaseimageproperties.h"
 
 namespace SynGlyphXANTz {
 
@@ -92,7 +93,27 @@ namespace SynGlyphXANTz {
 			}
 			else {
 
-				m_textureIDs.push_back(1);
+				const SynGlyphX::DefaultBaseImageProperties* const properties = dynamic_cast<const SynGlyphX::DefaultBaseImageProperties* const>(baseImage.GetProperties());
+				if (properties->GetDefaultBaseImageType() == SynGlyphX::DefaultBaseImageProperties::World) {
+
+					m_textureIDs.push_back(1);
+				}
+				else {
+
+					QString imageFilename = s_defaultImagesDirectory + QString::fromStdWString(SynGlyphX::DefaultBaseImageProperties::GetBasefilename(properties->GetDefaultBaseImageType()));
+					std::unordered_map<std::string, unsigned int>::iterator image = userBaseImages.find(imageFilename.toStdString());
+					if (image == userBaseImages.end()) {
+
+						m_textureIDs.push_back(nextTextureID);
+						userBaseImages[imageFilename.toStdString()] = nextTextureID;
+						m_baseImageFilenames.push_back(baseImageFilenameDirectory + GenerateBaseImageFilename(nextTextureID++));
+						CopyImage(imageFilename, m_baseImageFilenames.last());
+					}
+					else {
+
+						m_textureIDs.push_back(image->second);
+					}
+				}
 			}
 
 			ANTzGrid grid;

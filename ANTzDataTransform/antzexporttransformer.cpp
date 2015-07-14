@@ -2,8 +2,11 @@
 #include <QtCore/QDir>
 #include "filesystem.h"
 #include "antzcsvwriter.h"
+#include <algorithm>
 
 namespace SynGlyphXANTz {
+
+	QString ANTzExportTransformer::s_logoFilename;
 
 	ANTzExportTransformer::ANTzExportTransformer(const QString& baseOutputDir, const QString& antzTemplateDir, const QString& worldImageFilename, bool useOldANTzFilenames) :
 		ANTzTransformer(baseOutputDir),
@@ -17,6 +20,11 @@ namespace SynGlyphXANTz {
 
 	ANTzExportTransformer::~ANTzExportTransformer()
 	{
+	}
+
+	void ANTzExportTransformer::SetLogoFilename(const QString& logoFilename) {
+
+		s_logoFilename = logoFilename;
 	}
 
 	void ANTzExportTransformer::Prepare() {
@@ -60,6 +68,24 @@ namespace SynGlyphXANTz {
 		GenerateCache(mapping, csvFiles, baseUsrImageDir);
 
 		SynGlyphXANTz::ANTzCSVWriter::GetInstance().WriteGlobals((baseUsrCSVDir + "antzglobals.csv").toStdString(), mapping.GetSceneProperties().GetBackgroundColor());
+	}
+
+	void ANTzExportTransformer::GenerateGrids(std::vector<ANTzGrid>& grids, const SynGlyphX::DataTransformMapping& mapping, const QString& baseImageFilenameDirectory) {
+
+		ANTzTransformer::GenerateGrids(grids, mapping, baseImageFilenameDirectory);
+
+		unsigned int logoTextureID = (*std::max_element(m_textureIDs.begin(), m_textureIDs.end())) + 1;
+
+		CopyImage(s_logoFilename, baseImageFilenameDirectory + GenerateBaseImageFilename(logoTextureID));
+
+		ANTzGrid grid;
+		grid.SetPosition({ { 163.7, 86.3, 0.5 } });
+		grid.SetRotation({ { 0.0, 0.0, 0.0 } });
+		grid.SetScale({ { 0.09, 0.04, 1.0 } });
+		grid.SetTextureID(logoTextureID);
+		grid.SetVisible(false);
+
+		grids.push_back(grid);
 	}
 
 } //namespace SynGlyphXANTz

@@ -29,13 +29,18 @@ namespace SynGlyphXANTz {
 		ANTzExportTransformer(const QString& baseOutputDir, const QString& antzTemplateDir, const QString& worldImageFilename, bool useOldANTzFilenames = false);
 		virtual ~ANTzExportTransformer();
 
+		static void SetLogoFilename(const QString& logoFilename);
+
 	protected:
 		virtual void Prepare();
 		virtual void CreateGlyphsFromMapping(const SynGlyphX::DataTransformMapping& mapping);
+		virtual void GenerateGrids(std::vector<ANTzGrid>& grids, const SynGlyphX::DataTransformMapping& mapping, const QString& baseImageFilenameDirectory);
 
 		bool m_useOldANTzFilenames;
 		QString m_antzTemplateDir;
 		QString m_worldImageFilename;
+
+		static QString s_logoFilename;
 	};
 
 } //namespace SynGlyphXANTz
