@@ -1,6 +1,7 @@
 #include "baseimage.h"
 #include "downloadedmapproperties.h"
 #include "userdefinedbaseimageproperties.h"
+#include "defaultbaseimageproperties.h"
 #include <boost/assign/list_of.hpp>
 #include <boost/bimap/list_of.hpp>
 
@@ -38,7 +39,7 @@ namespace SynGlyphX {
 		}
 		else {
 
-			m_properties = new BaseImageProperties();
+			m_properties = new DefaultBaseImageProperties(propertyTree);
 		}
 
 		boost::optional<const boost::property_tree::wptree&> positionPropertyTree = propertyTree.get_child_optional(L"Position");
@@ -145,7 +146,7 @@ namespace SynGlyphX {
 
 			const DownloadedMapProperties* const downloadedMapProperties = dynamic_cast<const DownloadedMapProperties* const>(properties);
 			if (downloadedMapProperties != nullptr) {
-				
+
 				m_properties = new DownloadedMapProperties(*downloadedMapProperties);
 				m_type = Type::DownloadedMap;
 				return;
@@ -158,9 +159,17 @@ namespace SynGlyphX {
 				m_type = Type::UserImage;
 				return;
 			}
+
+			const DefaultBaseImageProperties * const defaultProperties = dynamic_cast<const DefaultBaseImageProperties* const>(properties);
+			if (defaultProperties != nullptr) {
+
+				m_properties = new DefaultBaseImageProperties(*defaultProperties);
+				m_type = Type::Default;
+				return;
+			}
 		}
 
-		m_properties = new BaseImageProperties(*properties);
+		m_properties = new DefaultBaseImageProperties();
 		m_type = Type::Default;
 	}
 

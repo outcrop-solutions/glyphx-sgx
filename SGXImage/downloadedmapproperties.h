@@ -47,12 +47,11 @@ namespace SynGlyphX {
 		DownloadedMapProperties(const DownloadedMapProperties& properties);
 		virtual ~DownloadedMapProperties();
 
-		//virtual bool IsGeographic() const;
-
 		MapSource GetSource() const;
 		MapType GetType() const;
 		Size GetSize() const;
 
+		virtual bool IsGeographic() const;
 		virtual void ExportToPropertyTree(boost::property_tree::wptree& propertyTree) const;
 
 		static const boost::bimap<MapSource, std::wstring> s_mapSourceStrings;

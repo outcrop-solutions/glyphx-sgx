@@ -93,6 +93,7 @@
   <ItemGroup>
     <ClInclude Include="baseimage.h" />
     <ClInclude Include="baseimageproperties.h" />
+    <ClInclude Include="defaultbaseimageproperties.h" />
     <ClInclude Include="downloadedmapproperties.h" />
     <ClInclude Include="SGXImage.h" />
     <ClInclude Include="targetver.h" />
@@ -101,6 +102,7 @@
   <ItemGroup>
     <ClCompile Include="baseimage.cpp" />
     <ClCompile Include="baseimageproperties.cpp" />
+    <ClCompile Include="defaultbaseimageproperties.cpp" />
     <ClCompile Include="dllmain.cpp">
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</CompileAsManaged>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">

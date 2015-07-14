@@ -15,26 +15,47 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef SYNGLYPHX_BASEIMAGEPROPERTIES_H
-#define SYNGLYPHX_BASEIMAGEPROPERTIES_H
+#ifndef SYNGLYPHX_DEFAULTBASEIMAGEPROPERTIES_H
+#define SYNGLYPHX_DEFAULTBASEIMAGEPROPERTIES_H
 
 #include "SGXImage.h"
 #include <boost/property_tree/ptree.hpp>
+#include <boost/bimap.hpp>
+#include "baseimageproperties.h"
 
 namespace SynGlyphX {
 
-	class SGXIMAGE_API BaseImageProperties
+	class SGXIMAGE_API DefaultBaseImageProperties : public BaseImageProperties
 	{
 	public:
-		BaseImageProperties();
-		BaseImageProperties(const boost::property_tree::wptree& propertyTree);
-		BaseImageProperties(const BaseImageProperties& properties);
-		virtual ~BaseImageProperties();
+		enum Type {
+
+			World = 0,
+			WorldGrayscale,
+			Black,
+			Gray,
+			White,
+			Clear
+		};
+
+		DefaultBaseImageProperties(Type defaultBaseImage = Type::World);
+		DefaultBaseImageProperties(const boost::property_tree::wptree& propertyTree);
+		DefaultBaseImageProperties(const DefaultBaseImageProperties& properties);
+		virtual ~DefaultBaseImageProperties();
 
 		virtual bool IsGeographic() const;
-		virtual void ExportToPropertyTree(boost::property_tree::wptree& propertyTree) const = 0;
+		virtual void ExportToPropertyTree(boost::property_tree::wptree& propertyTree) const;
+
+		Type GetDefaultBaseImageType() const;
+
+		static std::wstring GetBasefilename(Type defaultBaseImage = Type::World);
+
+		static const boost::bimap<Type, std::wstring> s_typeStrings;
+
+	private:
+		Type m_defaultBaseImage;
 	};
 
 } //namespace SynGlyphX
 
-#endif //SYNGLYPHX_BASEIMAGEPROPERTIES_H
+#endif //SYNGLYPHX_DEFAULTBASEIMAGEPROPERTIES_H

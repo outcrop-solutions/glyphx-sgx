@@ -38,7 +38,6 @@ namespace SynGlyphX {
 
 	void UserDefinedBaseImageProperties::ExportToPropertyTree(boost::property_tree::wptree& propertyTree) const {
 
-		BaseImageProperties::ExportToPropertyTree(propertyTree);
 		propertyTree.put(L"<xmlattr>.filename", m_filename);
 	}
 

@@ -41,10 +41,10 @@ namespace SynGlyphX {
 	{
 	}
 
-	/*bool DownloadedMapProperties::IsGeographic() const {
+	bool DownloadedMapProperties::IsGeographic() const {
 
 		return true;
-	}*/
+	}
 
 	DownloadedMapProperties::MapSource DownloadedMapProperties::GetSource() const {
 
@@ -63,7 +63,6 @@ namespace SynGlyphX {
 
 	void DownloadedMapProperties::ExportToPropertyTree(boost::property_tree::wptree& propertyTree) const {
 
-		BaseImageProperties::ExportToPropertyTree(propertyTree);
 		propertyTree.put(L"<xmlattr>.mapsource", s_mapSourceStrings.left.at(m_source));
 		propertyTree.put(L"<xmlattr>.maptype", s_mapTypeStrings.left.at(m_type));
 		propertyTree.put(L"<xmlattr>.width", m_size[0]);
