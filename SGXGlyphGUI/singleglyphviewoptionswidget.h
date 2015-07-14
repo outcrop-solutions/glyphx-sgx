@@ -32,8 +32,8 @@ namespace SynGlyphX {
 		SingleGlyphViewOptionsWidget(QWidget *parent);
 		~SingleGlyphViewOptionsWidget();
 
-		void SetDefaultBaseImage(const QString& filename);
-		QString GetDefaultBaseImage() const;
+		void SetDefaultBaseImage(DefaultBaseImageProperties::Type defaultBaseImage);
+		DefaultBaseImageProperties::Type GetDefaultBaseImage() const;
 
 	private:
 		DefaultBaseImagesComboBox* m_defaultBaseImagesComboBox;

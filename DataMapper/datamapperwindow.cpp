@@ -793,7 +793,7 @@ void DataMapperWindow::ReadSettings(){
 
 		m_showAnimation->toggle();
 	}
-	m_minMaxGlyph3DWidget->SetBaseImage(settings.value("baseImage", SynGlyphX::DefaultBaseImagesComboBox::GetWorldDefaultBaseImageLocation()).toString());
+	m_minMaxGlyph3DWidget->SetBaseImage(SynGlyphX::DefaultBaseImageProperties::s_typeStrings.right.at(settings.value("baseImage", "World").toString().toStdWString()));
 	settings.endGroup();
 }
 
@@ -803,7 +803,7 @@ void DataMapperWindow::WriteSettings() {
 	QSettings settings;
 	settings.beginGroup("Display");
 	settings.setValue("show", m_showAnimation->isChecked());
-	settings.setValue("baseImage", m_minMaxGlyph3DWidget->GetBaseImageFilename());
+	settings.setValue("baseImage", QString::fromStdWString(SynGlyphX::DefaultBaseImageProperties::s_typeStrings.left.at(m_minMaxGlyph3DWidget->GetBaseImage())));
 	settings.endGroup();
 }
 
@@ -829,7 +829,7 @@ void DataMapperWindow::ChangeSceneProperties() {
 void DataMapperWindow::ChangeOptions() {
 
 	SynGlyphX::SingleGlyphViewOptionsWidget* optionsWidget = new SynGlyphX::SingleGlyphViewOptionsWidget(this);
-	optionsWidget->SetDefaultBaseImage(m_minMaxGlyph3DWidget->GetBaseImageFilename());
+	optionsWidget->SetDefaultBaseImage(m_minMaxGlyph3DWidget->GetBaseImage());
 
 	SynGlyphX::SingleWidgetDialog dialog(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, optionsWidget, this);
 	dialog.setWindowTitle(tr("Options"));

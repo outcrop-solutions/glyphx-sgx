@@ -1,25 +1,23 @@
 #include "defaultbaseimagescombobox.h"
 #include "application.h"
-#include <QtCore/QDir>
 
 namespace SynGlyphX {
 
-	std::map<QString, QString> DefaultBaseImagesComboBox::s_filenameToNameMap;
-	QString DefaultBaseImagesComboBox::s_worldDefaultBaseImageLocation;
+	std::map<DefaultBaseImageProperties::Type, QString> DefaultBaseImagesComboBox::s_typeToNameMap;
 
 	DefaultBaseImagesComboBox::DefaultBaseImagesComboBox(QWidget *parent)
 		: QComboBox(parent)
 	{
-		BuildFilenameMap();
+		Setup();
 
 		setInsertPolicy(QComboBox::InsertPolicy::InsertAlphabetically);
 
-		for (auto defaultBaseMap : s_filenameToNameMap) {
+		for (auto defaultBaseMap : s_typeToNameMap) {
 
 			addItem(defaultBaseMap.second, defaultBaseMap.first);
 		}
 
-		SetDefaultBaseImage(s_worldDefaultBaseImageLocation);
+		SetDefaultBaseImage(DefaultBaseImageProperties::Type::World);
 	}
 
 	DefaultBaseImagesComboBox::~DefaultBaseImagesComboBox()
@@ -27,42 +25,34 @@ namespace SynGlyphX {
 
 	}
 
-	void DefaultBaseImagesComboBox::SetDefaultBaseImage(const QString& filename) {
+	void DefaultBaseImagesComboBox::SetDefaultBaseImage(DefaultBaseImageProperties::Type defaultBaseImage) {
 
-		std::map<QString, QString>::iterator iT = s_filenameToNameMap.find(filename);
-		if (iT != s_filenameToNameMap.end()) {
+		std::map<DefaultBaseImageProperties::Type, QString>::iterator iT = s_typeToNameMap.find(defaultBaseImage);
+		if (iT != s_typeToNameMap.end()) {
 
 			setCurrentText(iT->second);
 		}
 	}
 
-	QString DefaultBaseImagesComboBox::GetDefaultBaseImage() const {
+	DefaultBaseImageProperties::Type DefaultBaseImagesComboBox::GetDefaultBaseImage() const {
 
-		return currentData().toString();
+		return static_cast<DefaultBaseImageProperties::Type>(currentData().toInt());
 	}
 
-	const QString& DefaultBaseImagesComboBox::GetWorldDefaultBaseImageLocation() {
+	void DefaultBaseImagesComboBox::Setup() {
 
-		BuildFilenameMap();
-		return s_worldDefaultBaseImageLocation;
-	}
+		if (s_typeToNameMap.empty()) {
 
-	void DefaultBaseImagesComboBox::BuildFilenameMap() {
+			for (auto defaultBaseImageType : DefaultBaseImageProperties::s_typeStrings) {
 
-		if (s_filenameToNameMap.empty()) {
+				if (defaultBaseImageType.left == DefaultBaseImageProperties::Type::WorldGrayscale) {
 
-			QString defaultBaseImagesLocation = QDir::toNativeSeparators(SynGlyphX::Application::applicationDirPath() + QDir::separator() + "DefaultBaseImages" + QDir::separator());
-			QDir defaultBaseImagesDir(defaultBaseImagesLocation);
-			QFileInfoList defaultBaseImages = defaultBaseImagesDir.entryInfoList(QStringList("*.png"));
+					s_typeToNameMap.insert(std::pair<DefaultBaseImageProperties::Type, QString>(defaultBaseImageType.left, "World (Grayscale)"));
+				} 
+				else {
 
-			Q_FOREACH(const QFileInfo& defaultBaseImage, defaultBaseImages) {
-
-				QString filename = defaultBaseImage.completeBaseName();
-				if (filename == "World") {
-
-					s_worldDefaultBaseImageLocation = defaultBaseImage.canonicalFilePath();
+					s_typeToNameMap.insert(std::pair<DefaultBaseImageProperties::Type, QString>(defaultBaseImageType.left, QString::fromStdWString(defaultBaseImageType.right)));
 				}
-				s_filenameToNameMap.insert(std::pair<QString, QString>(defaultBaseImage.canonicalFilePath(), filename.replace('_', ' ')));
 			}
 
 		}

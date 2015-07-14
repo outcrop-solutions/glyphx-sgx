@@ -19,12 +19,12 @@ namespace SynGlyphX {
 
 	}
 
-	void SingleGlyphViewOptionsWidget::SetDefaultBaseImage(const QString& filename) {
+	void SingleGlyphViewOptionsWidget::SetDefaultBaseImage(DefaultBaseImageProperties::Type defaultBaseImage) {
 
-		m_defaultBaseImagesComboBox->SetDefaultBaseImage(filename);
+		m_defaultBaseImagesComboBox->SetDefaultBaseImage(defaultBaseImage);
 	}
 
-	QString SingleGlyphViewOptionsWidget::GetDefaultBaseImage() const {
+	DefaultBaseImageProperties::Type SingleGlyphViewOptionsWidget::GetDefaultBaseImage() const {
 
 		return m_defaultBaseImagesComboBox->GetDefaultBaseImage();
 	}

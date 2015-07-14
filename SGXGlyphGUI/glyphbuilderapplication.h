@@ -15,38 +15,30 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef APPLICATION_H
-#define APPLICATION_H
+#ifndef SYNGLYPHX_GLYPHBUILDERAPPLICATION_H
+#define SYNGLYPHX_GLYPHBUILDERAPPLICATION_H
 
-#include "sgxgui_global.h"
-#include <QtWidgets/QApplication>
+#include "sgxglyphgui_global.h"
+#include "application.h"
 
 namespace SynGlyphX {
 
-    class SGXGUI_EXPORT Application : public QApplication
-    {
-        Q_OBJECT
+	class SGXGLYPHGUI_EXPORT GlyphBuilderApplication : public Application
+	{
+		Q_OBJECT
 
-    public:
-        Application(int& argc, char** argv);
-        ~Application();
+	public:
+		GlyphBuilderApplication(int& argc, char** argv);
+		~GlyphBuilderApplication();
 
-        static void Setup(const QString& appName, const QString& appVersion);
-        static void SetupIcons(const QIcon& windowIcon);
+		//static void Setup(const QString& appName, const QString& appVersion);
 
-		static QString GetApplicationVersionMajorNumber();
-		static const QString& GetCommonDataLocation();
-		static const QString& GetAppTempDirectory();
-		static const QString& GetWriteableLocation();
+		static const QString& GetDefaultBaseImagesLocation();
 
-		static void SetOverrideCursorAndProcessEvents(const QCursor& cursor, QEventLoop::ProcessEventsFlags flags = QEventLoop::AllEvents);
-
-    protected:
-		static QString s_commonDataLocation;
-		static QString s_tempDirectory;   
-		static QString s_writeableLocation;
+	protected:
+		static QString s_defaultBaseImagesLocation;
 	};
 
 } //namespace SynGlyphX
 
-#endif // APPLICATION_H
+#endif // SYNGLYPHX_GLYPHBUILDERAPPLICATION_H

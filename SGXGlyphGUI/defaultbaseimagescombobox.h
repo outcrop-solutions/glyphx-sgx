@@ -19,6 +19,7 @@
 #define SYNGLYPHX_DEFAULTBASEIMAGESCOMBOBOX_H
 
 #include "sgxglyphgui_global.h"
+#include "defaultbaseimageproperties.h"
 #include <QtWidgets/QComboBox>
 
 namespace SynGlyphX {
@@ -31,16 +32,14 @@ namespace SynGlyphX {
 		DefaultBaseImagesComboBox(QWidget *parent);
 		~DefaultBaseImagesComboBox();
 
-		void SetDefaultBaseImage(const QString& filename);
-		QString GetDefaultBaseImage() const;
-
-		static const QString& GetWorldDefaultBaseImageLocation();
+		void SetDefaultBaseImage(DefaultBaseImageProperties::Type defaultBaseImage);
+		DefaultBaseImageProperties::Type GetDefaultBaseImage() const;
 
 	private:
-		static void BuildFilenameMap();
+		static void Setup();
 
-		static std::map<QString, QString> s_filenameToNameMap;
-		static QString s_worldDefaultBaseImageLocation;
+		static std::map<DefaultBaseImageProperties::Type, QString> s_typeToNameMap;
+		static QString s_defaultBaseImageDirectory;
 	};
 
 } //namespace SynGlyphX

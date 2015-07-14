@@ -368,7 +368,7 @@ void GlyphDesignerWindow::ReadSettings(){
 
 		m_showAnimation->toggle();
 	}
-	m_3dView->SetBaseImage(settings.value("baseImage", SynGlyphX::DefaultBaseImagesComboBox::GetWorldDefaultBaseImageLocation()).toString());
+	m_3dView->SetBaseImage(SynGlyphX::DefaultBaseImageProperties::s_typeStrings.right.at(settings.value("baseImage", "World").toString().toStdWString()));
 	settings.endGroup();
 }
 
@@ -378,14 +378,14 @@ void GlyphDesignerWindow::WriteSettings() {
 	QSettings settings;
 	settings.beginGroup("Display");
 	settings.setValue("show", m_showAnimation->isChecked());
-	settings.setValue("baseImage", m_3dView->GetBaseImageFilename());
+	settings.setValue("baseImage", QString::fromStdWString(SynGlyphX::DefaultBaseImageProperties::s_typeStrings.left.at(m_3dView->GetBaseImage())));
 	settings.endGroup();
 }
 
 void GlyphDesignerWindow::ChangeGlobalOptions() {
 
 	SynGlyphX::SingleGlyphViewOptionsWidget* optionsWidget = new SynGlyphX::SingleGlyphViewOptionsWidget(this);
-	optionsWidget->SetDefaultBaseImage(m_3dView->GetBaseImageFilename());
+	optionsWidget->SetDefaultBaseImage(m_3dView->GetBaseImage());
 
 	SynGlyphX::SingleWidgetDialog dialog(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, optionsWidget, this);
 	dialog.setWindowTitle(tr("Options"));

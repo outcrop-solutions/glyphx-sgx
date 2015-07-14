@@ -1,15 +1,15 @@
 #include "glyphviewerwindow.h"
-#include "application.h"
+#include "glyphbuilderapplication.h"
 #include <QtWidgets/QSplashScreen>
 #include <QtCore/QTimer>
 #include "licensingdialog.h"
 
 int main(int argc, char *argv[])
 {
-	SynGlyphX::Application::Setup("Glyph Builder - Glyph Viewer", "0.7.08");
-	SynGlyphX::Application a(argc, argv);
+	SynGlyphX::GlyphBuilderApplication::Setup("Glyph Builder - Glyph Viewer", "0.7.08");
+	SynGlyphX::GlyphBuilderApplication a(argc, argv);
 
-	SynGlyphX::Application::SetupIcons(QIcon(":SGXGUI/Resources/synglyphx_x.ico"));
+	SynGlyphX::GlyphBuilderApplication::SetupIcons(QIcon(":SGXGUI/Resources/synglyphx_x.ico"));
 
 	if (!SynGlyphX::LicensingDialog::CheckLicense()) {
 
