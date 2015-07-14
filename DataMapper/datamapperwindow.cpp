@@ -13,7 +13,7 @@
 #include <QtSql/QSqlRecord>
 #include <boost/uuid/uuid_io.hpp>
 #include <boost/property_tree/xml_parser.hpp>
-#include "application.h"
+#include "glyphbuilderapplication.h"
 #include "sourcedatamanager.h"
 #include "downloadoptionsdialog.h"
 #include "baseimagedialog.h"
@@ -64,6 +64,10 @@ DataMapperWindow::DataMapperWindow(QWidget *parent)
 
 	ReadNewMappingDefaults();
 	ClearAndInitializeDataMapping();
+
+	//Setup data transform
+	SynGlyphXANTz::ANTzExportTransformer::SetLogoFilename(SynGlyphX::GlyphBuilderApplication::applicationDirPath() + QDir::separator() + "logo_export.png");
+	SynGlyphX::Transformer::SetDefaultImagesDirectory(SynGlyphX::GlyphBuilderApplication::GetDefaultBaseImagesLocation());
 
 	QObject::connect(m_baseObjectsModel, &SynGlyphX::RoleDataFilterProxyModel::dataChanged, m_dataBindingWidget, &DataBindingWidget::OnBaseObjectChanged);
 

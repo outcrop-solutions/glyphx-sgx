@@ -8,7 +8,7 @@
 #include <QtCore/QStandardPaths>
 #include <QtCore/QSettings>
 #include <QtWidgets/QDockWidget>
-#include "application.h"
+#include "glyphbuilderapplication.h"
 #include "datatransformmapping.h"
 #include "downloadoptionsdialog.h"
 #include "data/npmapfile.h"
@@ -68,6 +68,8 @@ GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 	m_pseudoTimeFilterWidget->SetupLinkedWidgets(*m_linkedWidgetsManager);
 
 	m_stereoAction->setChecked(m_antzWidget->IsInStereoMode());
+
+	SynGlyphX::Transformer::SetDefaultImagesDirectory(SynGlyphX::GlyphBuilderApplication::GetDefaultBaseImagesLocation());
 
 	QStringList commandLineArguments = SynGlyphX::Application::arguments();
 	if (commandLineArguments.size() > 1) {
