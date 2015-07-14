@@ -46,6 +46,8 @@ namespace SynGlyphX {
 
 		const QString& GetError() const;
 
+		static void SetDefaultImagesDirectory(const QString& defaultImagesDirectory);
+
 	protected:
 		virtual void Prepare() = 0;
 		virtual void CreateGlyphsFromMapping(const DataTransformMapping& mapping) = 0;
@@ -82,6 +84,8 @@ namespace SynGlyphX {
 		DataMappingDefaults m_defaults;
 
 		QString m_error;
+
+		static QString s_defaultImagesDirectory;
 	};
 
 } //namespace SynGlyphX

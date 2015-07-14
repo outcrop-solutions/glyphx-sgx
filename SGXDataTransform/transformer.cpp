@@ -13,6 +13,8 @@
 
 namespace SynGlyphX {
 
+	QString Transformer::s_defaultImagesDirectory;
+
 	Transformer::Transformer() :
 		m_sourceDataCacheLocation(QDir::tempPath() + QDir::separator() + "sourcedatacache.db")
 	{
@@ -470,6 +472,11 @@ namespace SynGlyphX {
 	const QString& Transformer::GetError() const {
 
 		return m_error;
+	}
+
+	void Transformer::SetDefaultImagesDirectory(const QString& defaultImagesDirectory) {
+
+		s_defaultImagesDirectory = defaultImagesDirectory;
 	}
 
 } //namespace SynGlyphX
