@@ -20,7 +20,7 @@ namespace SynGlyphX {
 
 	DefaultBaseImageProperties::DefaultBaseImageProperties(const boost::property_tree::wptree& propertyTree) :
 		BaseImageProperties(propertyTree),
-		m_defaultBaseImage(s_typeStrings.right.at(propertyTree.get_optional<std::wstring>(L"<xmlattr>.type").get_value_or(L"World"))) {
+		m_defaultBaseImage(s_typeStrings.right.at(propertyTree.get_optional<std::wstring>(L"<xmlattr>.default").get_value_or(L"World"))) {
 
 
 	}
