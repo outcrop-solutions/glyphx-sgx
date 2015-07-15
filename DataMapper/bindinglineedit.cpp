@@ -117,6 +117,9 @@ void BindingLineEdit::contextMenuEvent(QContextMenuEvent* event) {
 
 void BindingLineEdit::Clear() {
 
-	m_inputField = SynGlyphX::InputField();
-	emit ValueChangedByUser(m_inputField);
+	if (m_inputField.IsValid()) {
+
+		m_inputField = SynGlyphX::InputField();
+		emit ValueChangedByUser(m_inputField);
+	}
 }

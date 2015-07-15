@@ -27,7 +27,7 @@ class BindingLineEdit : public QLineEdit
 {
 	Q_OBJECT
 
-	Q_PROPERTY(SynGlyphX::InputField value READ GetInputField WRITE SetInputField NOTIFY ValueChanged USER true)
+	Q_PROPERTY(SynGlyphX::InputField value READ GetInputField WRITE SetInputField USER true)
 
 public:
 	BindingLineEdit(MinMaxGlyphModel* model, QWidget *parent = 0, SynGlyphX::MappingFunctionData::Input acceptedInputTypes = SynGlyphX::MappingFunctionData::Input::All);

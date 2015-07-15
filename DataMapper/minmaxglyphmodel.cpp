@@ -37,7 +37,7 @@ MinMaxGlyphModel::MinMaxGlyphModel(DataTransformModel* dataTransformModel, QObje
 	m_propertyHeaders.push_back(tr("Geometry Surface"));
 	m_propertyHeaders.push_back(tr("Torus Ratio"));
 	
-	m_columnHeaders.push_back(tr("Value"));
+	m_columnHeaders.push_back(tr("Default(s)"));
 	m_columnHeaders.push_back(tr("Function"));
 	m_columnHeaders.push_back(tr("Input"));
 }
@@ -350,7 +350,15 @@ bool MinMaxGlyphModel::setData(const QModelIndex& index, const QVariant& value, 
 		if (index.column() == 2) {
 
 			SynGlyphX::DataMappingGlyph::MappableField mappableField = static_cast<SynGlyphX::DataMappingGlyph::MappableField>(index.row());
-			m_dataTransformModel->SetInputField(m_glyphTreeID, m_selectedDataTransformModelIndex, mappableField, value.value<SynGlyphX::InputField>());
+			SynGlyphX::InputField inputField = value.value<SynGlyphX::InputField>();
+			if (inputField.IsValid()) {
+
+				m_dataTransformModel->SetInputField(m_glyphTreeID, m_selectedDataTransformModelIndex, mappableField, inputField);
+			}
+			else {
+
+				m_dataTransformModel->ClearInputBinding(m_glyphTreeID, m_selectedDataTransformModelIndex, mappableField);
+			}
 		}
 		else {
 
