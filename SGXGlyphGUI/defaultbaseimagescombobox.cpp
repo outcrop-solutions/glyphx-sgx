@@ -3,13 +3,11 @@
 
 namespace SynGlyphX {
 
-	std::map<DefaultBaseImageProperties::Type, QString> DefaultBaseImagesComboBox::s_typeToNameMap;
+	const std::map<DefaultBaseImageProperties::Type, QString> DefaultBaseImagesComboBox::s_typeToNameMap = DefaultBaseImagesComboBox::SetupTypeToNameMap();
 
 	DefaultBaseImagesComboBox::DefaultBaseImagesComboBox(QWidget *parent)
 		: QComboBox(parent)
 	{
-		Setup();
-
 		setInsertPolicy(QComboBox::InsertPolicy::InsertAlphabetically);
 
 		for (auto defaultBaseMap : s_typeToNameMap) {
@@ -27,7 +25,7 @@ namespace SynGlyphX {
 
 	void DefaultBaseImagesComboBox::SetDefaultBaseImage(DefaultBaseImageProperties::Type defaultBaseImage) {
 
-		std::map<DefaultBaseImageProperties::Type, QString>::iterator iT = s_typeToNameMap.find(defaultBaseImage);
+		std::map<DefaultBaseImageProperties::Type, QString>::const_iterator iT = s_typeToNameMap.find(defaultBaseImage);
 		if (iT != s_typeToNameMap.end()) {
 
 			setCurrentText(iT->second);
@@ -39,23 +37,22 @@ namespace SynGlyphX {
 		return static_cast<DefaultBaseImageProperties::Type>(currentData().toInt());
 	}
 
-	void DefaultBaseImagesComboBox::Setup() {
+	std::map<DefaultBaseImageProperties::Type, QString> DefaultBaseImagesComboBox::SetupTypeToNameMap() {
 
-		if (s_typeToNameMap.empty()) {
+		std::map<DefaultBaseImageProperties::Type, QString> typeToNameMap;
+		for (auto defaultBaseImageType : DefaultBaseImageProperties::s_typeStrings) {
 
-			for (auto defaultBaseImageType : DefaultBaseImageProperties::s_typeStrings) {
+			if (defaultBaseImageType.left == DefaultBaseImageProperties::Type::WorldGrayscale) {
 
-				if (defaultBaseImageType.left == DefaultBaseImageProperties::Type::WorldGrayscale) {
+				typeToNameMap.insert(std::pair<DefaultBaseImageProperties::Type, QString>(defaultBaseImageType.left, "World (Grayscale)"));
+			} 
+			else {
 
-					s_typeToNameMap.insert(std::pair<DefaultBaseImageProperties::Type, QString>(defaultBaseImageType.left, "World (Grayscale)"));
-				} 
-				else {
-
-					s_typeToNameMap.insert(std::pair<DefaultBaseImageProperties::Type, QString>(defaultBaseImageType.left, QString::fromStdWString(defaultBaseImageType.right)));
-				}
+				typeToNameMap.insert(std::pair<DefaultBaseImageProperties::Type, QString>(defaultBaseImageType.left, QString::fromStdWString(defaultBaseImageType.right)));
 			}
-
 		}
+
+		return typeToNameMap;
 	}
 
 } //namespace SynGlyphX

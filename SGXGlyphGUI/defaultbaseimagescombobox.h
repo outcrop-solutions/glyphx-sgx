@@ -35,10 +35,11 @@ namespace SynGlyphX {
 		void SetDefaultBaseImage(DefaultBaseImageProperties::Type defaultBaseImage);
 		DefaultBaseImageProperties::Type GetDefaultBaseImage() const;
 
-	private:
-		static void Setup();
+		static const std::map<DefaultBaseImageProperties::Type, QString> s_typeToNameMap;
 
-		static std::map<DefaultBaseImageProperties::Type, QString> s_typeToNameMap;
+	private:
+		static std::map<DefaultBaseImageProperties::Type, QString> SetupTypeToNameMap();
+
 		static QString s_defaultBaseImageDirectory;
 	};
 

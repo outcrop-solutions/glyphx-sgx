@@ -9,6 +9,8 @@
 #include "datamappingglyphfile.h"
 #include "glyphnodeconverter.h"
 #include "glyphmimedata.h"
+#include "defaultbaseimageproperties.h"
+#include "defaultbaseimagescombobox.h"
 
 DataTransformModel::DataTransformModel(QObject *parent)
 	: QAbstractItemModel(parent),
@@ -283,7 +285,8 @@ QVariant DataTransformModel::GetDisplayData(const QModelIndex& index) const {
 			}
 			else {
 
-				return "Default";
+				const SynGlyphX::DefaultBaseImageProperties* const properties = static_cast<const SynGlyphX::DefaultBaseImageProperties* const>(baseObject.GetProperties());
+				return "Default: " + SynGlyphX::DefaultBaseImagesComboBox::s_typeToNameMap.at(properties->GetDefaultBaseImageType());
 			}
 		}
 		else if (IsParentlessRowInDataType(DataType::DataSources, index.row())) {
