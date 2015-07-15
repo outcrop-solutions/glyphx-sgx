@@ -11,7 +11,7 @@
 #include "mappingfunctionwidget.h"
 #include "glyphenumcombobox.h"
 
-DataBindingWidget::DataBindingWidget(MinMaxGlyphModel* model, QWidget *parent)
+DataBindingWidget::DataBindingWidget(SingleGlyphRolesTableModel* model, QWidget *parent)
 	: QTabWidget(parent),
 	m_model(model)
 {
@@ -21,10 +21,10 @@ DataBindingWidget::DataBindingWidget(MinMaxGlyphModel* model, QWidget *parent)
 	CreateGeometryTopologyTab();
 
 	setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
-	QObject::connect(model, &MinMaxGlyphModel::modelReset, this, &DataBindingWidget::OnModelReset);
+	QObject::connect(model, &SingleGlyphRolesTableModel::modelReset, this, &DataBindingWidget::OnModelReset);
 	OnModelReset();
 
-	//QObject::connect(model, &MinMaxGlyphModel::modelAboutToBeReset, this, &DataBindingWidget::CommitChanges);
+	//QObject::connect(model, &SingleGlyphRolesTableModel::modelAboutToBeReset, this, &DataBindingWidget::CommitChanges);
 }
 
 DataBindingWidget::~DataBindingWidget()

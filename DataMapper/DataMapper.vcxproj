@@ -130,10 +130,10 @@
     <ClCompile Include="GeneratedFiles\Debug\moc_mappingfunctionwidget.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_minmaxglyphmodel.cpp">
+    <ClCompile Include="GeneratedFiles\Debug\moc_newmappingdefaultswidget.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_newmappingdefaultswidget.cpp">
+    <ClCompile Include="GeneratedFiles\Debug\moc_singleglyphrolestablemodel.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Debug\moc_valuemappingdialog.cpp">
@@ -187,10 +187,10 @@
     <ClCompile Include="GeneratedFiles\Release\moc_mappingfunctionwidget.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_minmaxglyphmodel.cpp">
+    <ClCompile Include="GeneratedFiles\Release\moc_newmappingdefaultswidget.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_newmappingdefaultswidget.cpp">
+    <ClCompile Include="GeneratedFiles\Release\moc_singleglyphrolestablemodel.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Release\moc_valuemappingdialog.cpp">
@@ -201,8 +201,8 @@
     <ClCompile Include="inputfieldmimedata.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="mappingfunctionwidget.cpp" />
-    <ClCompile Include="minmaxglyphmodel.cpp" />
     <ClCompile Include="newmappingdefaultswidget.cpp" />
+    <ClCompile Include="singleglyphrolestablemodel.cpp" />
     <ClCompile Include="valuemappingdialog.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -286,16 +286,6 @@
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DWIN64 -DQT_DLL  "-I.\GeneratedFiles" "-I." "-I.\..\..\3rdParty\include\Qt_5_2_1" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I.\..\..\Core\SGXFoundation" "-I.\..\..\GUI\SGXGUI" "-I.\..\..\Core\SGXDataTransform" "-I.\..\..\3rdParty\include\boost_1_55_0" "-I.\..\..\ANTzPlus\ANTzBridge" "-I.\..\..\3rdParty\include\stlplus_3_11" "-I.\..\..\Core\SGXGeospatial" "-I.\..\..\GUI\MapDownloading" "-I.\..\..\ANTzPlus\ANTzSingleGlyphGUI" "-I.\..\..\ANTzPlus\ANTzCore" "-I.\..\..\ANTzPlus\ANTzDataTransform" "-I.\..\..\Core\SGXUtility" "-I.\..\..\GUI\SGXGlyphGUI" "-I.\..\..\Core\SGXImage"</Command>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Moc%27ing datatransformmodel.h...</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DWIN64 -DQT_DLL -DQT_NO_DEBUG -DNDEBUG  "-I.\GeneratedFiles" "-I." "-I.\..\..\3rdParty\include\Qt_5_2_1" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I.\..\..\Core\SGXFoundation" "-I.\..\..\GUI\SGXGUI" "-I.\..\..\Core\SGXDataTransform" "-I.\..\..\3rdParty\include\boost_1_55_0" "-I.\..\..\ANTzPlus\ANTzBridge" "-I.\..\..\3rdParty\include\stlplus_3_11" "-I.\..\..\Core\SGXGeospatial" "-I.\..\..\GUI\MapDownloading" "-I.\..\..\ANTzPlus\ANTzSingleGlyphGUI" "-I.\..\..\ANTzPlus\ANTzCore" "-I.\..\..\ANTzPlus\ANTzDataTransform" "-I.\..\..\Core\SGXUtility" "-I.\..\..\GUI\SGXGlyphGUI" "-I.\..\..\Core\SGXImage"</Command>
-    </CustomBuild>
-    <CustomBuild Include="minmaxglyphmodel.h">
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing minmaxglyphmodel.h...</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DWIN64 -DQT_DLL  "-I.\GeneratedFiles" "-I." "-I.\..\..\3rdParty\include\Qt_5_2_1" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I.\..\..\Core\SGXFoundation" "-I.\..\..\GUI\SGXGUI" "-I.\..\..\Core\SGXDataTransform" "-I.\..\..\3rdParty\include\boost_1_55_0" "-I.\..\..\ANTzPlus\ANTzBridge" "-I.\..\..\3rdParty\include\stlplus_3_11" "-I.\..\..\Core\SGXGeospatial" "-I.\..\..\GUI\MapDownloading" "-I.\..\..\ANTzPlus\ANTzSingleGlyphGUI" "-I.\..\..\ANTzPlus\ANTzCore" "-I.\..\..\ANTzPlus\ANTzDataTransform" "-I.\..\..\Core\SGXUtility" "-I.\..\..\GUI\SGXGlyphGUI" "-I.\..\..\Core\SGXImage"</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Moc%27ing minmaxglyphmodel.h...</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DWIN64 -DQT_DLL -DQT_NO_DEBUG -DNDEBUG  "-I.\GeneratedFiles" "-I." "-I.\..\..\3rdParty\include\Qt_5_2_1" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I.\..\..\Core\SGXFoundation" "-I.\..\..\GUI\SGXGUI" "-I.\..\..\Core\SGXDataTransform" "-I.\..\..\3rdParty\include\boost_1_55_0" "-I.\..\..\ANTzPlus\ANTzBridge" "-I.\..\..\3rdParty\include\stlplus_3_11" "-I.\..\..\Core\SGXGeospatial" "-I.\..\..\GUI\MapDownloading" "-I.\..\..\ANTzPlus\ANTzSingleGlyphGUI" "-I.\..\..\ANTzPlus\ANTzCore" "-I.\..\..\ANTzPlus\ANTzDataTransform" "-I.\..\..\Core\SGXUtility" "-I.\..\..\GUI\SGXGlyphGUI" "-I.\..\..\Core\SGXImage"</Command>
     </CustomBuild>
@@ -412,6 +402,18 @@
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Moc%27ing newmappingdefaultswidget.h...</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DWIN64 -DQT_DLL -DQT_NO_DEBUG -DNDEBUG  "-I.\GeneratedFiles" "-I." "-I.\..\..\3rdParty\include\Qt_5_2_1" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I.\..\..\Core\SGXFoundation" "-I.\..\..\GUI\SGXGUI" "-I.\..\..\Core\SGXDataTransform" "-I.\..\..\3rdParty\include\boost_1_55_0" "-I.\..\..\ANTzPlus\ANTzBridge" "-I.\..\..\3rdParty\include\stlplus_3_11" "-I.\..\..\Core\SGXGeospatial" "-I.\..\..\GUI\MapDownloading" "-I.\..\..\ANTzPlus\ANTzSingleGlyphGUI" "-I.\..\..\ANTzPlus\ANTzCore" "-I.\..\..\ANTzPlus\ANTzDataTransform" "-I.\..\..\Core\SGXUtility" "-I.\..\..\GUI\SGXGlyphGUI" "-I.\..\..\Core\SGXImage"</Command>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="singleglyphrolestablemodel.h">
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing singleglyphrolestablemodel.h...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DWIN64 -DQT_DLL "-I.\GeneratedFiles" "-I." "-I.\..\..\3rdParty\include\Qt_5_2_1" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I.\..\..\Core\SGXFoundation" "-I.\..\..\GUI\SGXGUI" "-I.\..\..\Core\SGXDataTransform" "-I.\..\..\3rdParty\include\boost_1_55_0" "-I.\..\..\ANTzPlus\ANTzBridge" "-I.\..\..\3rdParty\include\stlplus_3_11" "-I.\..\..\Core\SGXGeospatial" "-I.\..\..\GUI\MapDownloading" "-I.\..\..\ANTzPlus\ANTzSingleGlyphGUI" "-I.\..\..\ANTzPlus\ANTzCore" "-I.\..\..\ANTzPlus\ANTzDataTransform" "-I.\..\..\Core\SGXUtility" "-I.\..\..\GUI\SGXGlyphGUI" "-I.\..\..\Core\SGXImage"</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Moc%27ing singleglyphrolestablemodel.h...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DWIN64 -DQT_DLL -DQT_NO_DEBUG -DNDEBUG "-I.\GeneratedFiles" "-I." "-I.\..\..\3rdParty\include\Qt_5_2_1" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I.\..\..\Core\SGXFoundation" "-I.\..\..\GUI\SGXGUI" "-I.\..\..\Core\SGXDataTransform" "-I.\..\..\3rdParty\include\boost_1_55_0" "-I.\..\..\ANTzPlus\ANTzBridge" "-I.\..\..\3rdParty\include\stlplus_3_11" "-I.\..\..\Core\SGXGeospatial" "-I.\..\..\GUI\MapDownloading" "-I.\..\..\ANTzPlus\ANTzSingleGlyphGUI" "-I.\..\..\ANTzPlus\ANTzCore" "-I.\..\..\ANTzPlus\ANTzDataTransform" "-I.\..\..\Core\SGXUtility" "-I.\..\..\GUI\SGXGlyphGUI" "-I.\..\..\Core\SGXImage"</Command>
     </CustomBuild>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

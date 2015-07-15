@@ -1,4 +1,4 @@
-#include "minmaxglyphmodel.h"
+#include "singleglyphrolestablemodel.h"
 #include <QtGui/QColor>
 #include "sourcedatamanager.h"
 #include <QtWidgets/QMessageBox>
@@ -9,7 +9,7 @@
 #include "doubleminmaxwidget.h"
 #include "intminmaxwidget.h"
 
-MinMaxGlyphModel::MinMaxGlyphModel(DataTransformModel* dataTransformModel, QObject *parent)
+SingleGlyphRolesTableModel::SingleGlyphRolesTableModel(DataTransformModel* dataTransformModel, QObject *parent)
 	: QAbstractTableModel(parent),
 	m_dataTransformModel(dataTransformModel),
 	//m_glyphTree(nullptr),
@@ -42,12 +42,12 @@ MinMaxGlyphModel::MinMaxGlyphModel(DataTransformModel* dataTransformModel, QObje
 	m_columnHeaders.push_back(tr("Input"));
 }
 
-MinMaxGlyphModel::~MinMaxGlyphModel()
+SingleGlyphRolesTableModel::~SingleGlyphRolesTableModel()
 {
 
 }
 
-int MinMaxGlyphModel::columnCount(const QModelIndex& parent) const {
+int SingleGlyphRolesTableModel::columnCount(const QModelIndex& parent) const {
 
 	if (parent.isValid()) {
 
@@ -59,7 +59,7 @@ int MinMaxGlyphModel::columnCount(const QModelIndex& parent) const {
 	}
 }
 
-const SynGlyphX::InputField MinMaxGlyphModel::GetInputField(SynGlyphX::InputField::HashID fieldID) const {
+const SynGlyphX::InputField SingleGlyphRolesTableModel::GetInputField(SynGlyphX::InputField::HashID fieldID) const {
 
 	if (fieldID == 0) {
 
@@ -71,7 +71,7 @@ const SynGlyphX::InputField MinMaxGlyphModel::GetInputField(SynGlyphX::InputFiel
 	}
 }
 
-QVariant MinMaxGlyphModel::data(const QModelIndex& index, int role) const {
+QVariant SingleGlyphRolesTableModel::data(const QModelIndex& index, int role) const {
 
 	if ((role == Qt::EditRole) && index.isValid()) { // && m_glyph.valid()) {
 
@@ -166,7 +166,7 @@ QVariant MinMaxGlyphModel::data(const QModelIndex& index, int role) const {
 	return QVariant();
 }
 
-int	MinMaxGlyphModel::rowCount(const QModelIndex& parent) const {
+int	SingleGlyphRolesTableModel::rowCount(const QModelIndex& parent) const {
 
 	if (!parent.isValid()) {
 
@@ -178,7 +178,7 @@ int	MinMaxGlyphModel::rowCount(const QModelIndex& parent) const {
 	}
 }
 
-void MinMaxGlyphModel::SetMinMaxGlyph(const QModelIndex& index) {
+void SingleGlyphRolesTableModel::SetMinMaxGlyph(const QModelIndex& index) {
 
 	if (index.isValid()) {
 
@@ -210,7 +210,7 @@ void MinMaxGlyphModel::SetMinMaxGlyph(const QModelIndex& index) {
 		m_glyph = iT;*/
 		endResetModel();
 
-		m_dataChangedConnection = QObject::connect(m_dataTransformModel, &DataTransformModel::dataChanged, this, &MinMaxGlyphModel::OnSourceModelDataUpdated);
+		m_dataChangedConnection = QObject::connect(m_dataTransformModel, &DataTransformModel::dataChanged, this, &SingleGlyphRolesTableModel::OnSourceModelDataUpdated);
 	}
 	else {
 
@@ -218,7 +218,7 @@ void MinMaxGlyphModel::SetMinMaxGlyph(const QModelIndex& index) {
 	}
 }
 
-void MinMaxGlyphModel::Clear() {
+void SingleGlyphRolesTableModel::Clear() {
 
 	QObject::disconnect(m_dataChangedConnection);
 
@@ -230,12 +230,12 @@ void MinMaxGlyphModel::Clear() {
 	endResetModel();
 }
 
-bool MinMaxGlyphModel::IsClear() const {
+bool SingleGlyphRolesTableModel::IsClear() const {
 
 	return (!m_selectedDataTransformModelIndex.isValid());
 }
 /*
-SynGlyphX::NumericMappingProperty& MinMaxGlyphModel::GetGlyphProperty(SynGlyphX::DataMappingGlyph& glyph, int row) const {
+SynGlyphX::NumericMappingProperty& SingleGlyphRolesTableModel::GetGlyphProperty(SynGlyphX::DataMappingGlyph& glyph, int row) const {
 
 	if (row == 0) {
 
@@ -291,7 +291,7 @@ SynGlyphX::NumericMappingProperty& MinMaxGlyphModel::GetGlyphProperty(SynGlyphX:
 	}
 }
 
-QVariant MinMaxGlyphModel::GetDataByRow(SynGlyphX::DataMappingGlyph& glyph, const QModelIndex& index) const {
+QVariant SingleGlyphRolesTableModel::GetDataByRow(SynGlyphX::DataMappingGlyph& glyph, const QModelIndex& index) const {
 
 	int row = index.row();
 	if ((row < m_propertyHeaders.size()) && (!IsTextField(row))) {
@@ -338,12 +338,12 @@ QVariant MinMaxGlyphModel::GetDataByRow(SynGlyphX::DataMappingGlyph& glyph, cons
 	return QVariant();
 }
 */
-Qt::ItemFlags MinMaxGlyphModel::flags(const QModelIndex & index) const {
+Qt::ItemFlags SingleGlyphRolesTableModel::flags(const QModelIndex & index) const {
 
 	return QAbstractTableModel::flags(index) | Qt::ItemIsEditable;
 }
 
-bool MinMaxGlyphModel::setData(const QModelIndex& index, const QVariant& value, int role) {
+bool SingleGlyphRolesTableModel::setData(const QModelIndex& index, const QVariant& value, int role) {
 
 	if ((index.isValid()) && (role == Qt::EditRole)) { // && m_glyph.valid()) {
 
@@ -487,7 +487,7 @@ bool MinMaxGlyphModel::setData(const QModelIndex& index, const QVariant& value, 
 	return false;
 }
 /*
-bool MinMaxGlyphModel::SetDataByRow(SynGlyphX::DataMappingGlyph& glyph, const QVariant& value, const QModelIndex& index) {
+bool SingleGlyphRolesTableModel::SetDataByRow(SynGlyphX::DataMappingGlyph& glyph, const QVariant& value, const QModelIndex& index) {
 
 	int row = index.row();
 	if ((row < m_propertyHeaders.size()) && (!IsTextField(row))) {
@@ -547,7 +547,7 @@ bool MinMaxGlyphModel::SetDataByRow(SynGlyphX::DataMappingGlyph& glyph, const QV
 	return false;
 }*/
 
-QVariant MinMaxGlyphModel::headerData(int section, Qt::Orientation orientation, int role) const {
+QVariant SingleGlyphRolesTableModel::headerData(int section, Qt::Orientation orientation, int role) const {
 
 	if (role == Qt::DisplayRole) {
 
@@ -568,12 +568,12 @@ QVariant MinMaxGlyphModel::headerData(int section, Qt::Orientation orientation, 
 	return QVariant();
 }
 
-SynGlyphX::DataTransformMapping::ConstSharedPtr MinMaxGlyphModel::GetDataTransformMapping() const {
+SynGlyphX::DataTransformMapping::ConstSharedPtr SingleGlyphRolesTableModel::GetDataTransformMapping() const {
 
 	return m_dataTransformModel->GetDataMapping();
 }
 
-bool MinMaxGlyphModel::IsCurrentGlyphRoot() const {
+bool SingleGlyphRolesTableModel::IsCurrentGlyphRoot() const {
 
 	/*if (m_glyphTree == nullptr) {
 
@@ -585,7 +585,7 @@ bool MinMaxGlyphModel::IsCurrentGlyphRoot() const {
 	return (!m_selectedDataTransformModelIndex.parent().isValid());
 }
 
-void MinMaxGlyphModel::ClearInputBindings() {
+void SingleGlyphRolesTableModel::ClearInputBindings() {
 
 	for (int i = 0; i < rowCount(); ++i) {
 
@@ -594,7 +594,7 @@ void MinMaxGlyphModel::ClearInputBindings() {
 	emit dataChanged(index(0, columnCount() - 1), index(rowCount() - 1, columnCount() - 1));
 }
 
-MinMaxGlyphModel::PropertyType MinMaxGlyphModel::GetFieldType(int row) const {
+SingleGlyphRolesTableModel::PropertyType SingleGlyphRolesTableModel::GetFieldType(int row) const {
 
 	if ((row == 11) || (row == 12)) {
 
@@ -622,7 +622,7 @@ MinMaxGlyphModel::PropertyType MinMaxGlyphModel::GetFieldType(int row) const {
 	}
 }
 
-SynGlyphX::MappingFunctionData::SharedPtr MinMaxGlyphModel::CreateNewMappingFunction(SynGlyphX::MappingFunctionData::Function function, PropertyType type) const {
+SynGlyphX::MappingFunctionData::SharedPtr SingleGlyphRolesTableModel::CreateNewMappingFunction(SynGlyphX::MappingFunctionData::Function function, PropertyType type) const {
 
 	if ((function == SynGlyphX::MappingFunctionData::Function::LinearInterpolation) || (function == SynGlyphX::MappingFunctionData::Function::LogarithmicInterpolation)) {
 
@@ -702,7 +702,7 @@ SynGlyphX::MappingFunctionData::SharedPtr MinMaxGlyphModel::CreateNewMappingFunc
 	return std::make_shared<SynGlyphX::MappingFunctionData>();
 }
 
-SynGlyphX::MappingFunctionData::ConstSharedPtr MinMaxGlyphModel::GetMappingFunction(int row) const {
+SynGlyphX::MappingFunctionData::ConstSharedPtr SingleGlyphRolesTableModel::GetMappingFunction(int row) const {
 
 	QVariant prop = m_dataTransformModel->data(m_selectedDataTransformModelIndex, row + DataTransformModel::PropertyRole::PositionX);
 	PropertyType propertyType = GetFieldType(row);
@@ -733,7 +733,7 @@ SynGlyphX::MappingFunctionData::ConstSharedPtr MinMaxGlyphModel::GetMappingFunct
 	}
 }
 
-void MinMaxGlyphModel::SetMappingFunction(int row, SynGlyphX::MappingFunctionData::SharedPtr mappingFunction) {
+void SingleGlyphRolesTableModel::SetMappingFunction(int row, SynGlyphX::MappingFunctionData::SharedPtr mappingFunction) {
 
 	int sourceDataRole = row + DataTransformModel::PropertyRole::PositionX;
 	QVariant prop = m_dataTransformModel->data(m_selectedDataTransformModelIndex, sourceDataRole);
@@ -776,7 +776,7 @@ void MinMaxGlyphModel::SetMappingFunction(int row, SynGlyphX::MappingFunctionDat
 	}
 }
 
-void MinMaxGlyphModel::OnSourceModelDataUpdated(const QModelIndex& topLeft, const QModelIndex& bottomRight, const QVector<int>& roles) {
+void SingleGlyphRolesTableModel::OnSourceModelDataUpdated(const QModelIndex& topLeft, const QModelIndex& bottomRight, const QVector<int>& roles) {
 
 	if ((m_selectedDataTransformModelIndex == topLeft) && (m_selectedDataTransformModelIndex == bottomRight)) {
 
@@ -800,17 +800,17 @@ void MinMaxGlyphModel::OnSourceModelDataUpdated(const QModelIndex& topLeft, cons
 }
 
 /*
-const SynGlyphX::DataMappingGlyphGeometry& MinMaxGlyphModel::GetGlyphGeometry() const {
+const SynGlyphX::DataMappingGlyphGeometry& SingleGlyphRolesTableModel::GetGlyphGeometry() const {
 
 	return m_dataTransformModel->GetGlyph(m_selectedDataTransformModelIndex).GetStructure();
 }
 
-const SynGlyphX::DataMappingVirtualTopology& MinMaxGlyphModel::GetVirtualTopology() const {
+const SynGlyphX::DataMappingVirtualTopology& SingleGlyphRolesTableModel::GetVirtualTopology() const {
 
 	return m_dataTransformModel->GetGlyph(m_selectedDataTransformModelIndex).GetVirtualTopology();
 }
 
-void MinMaxGlyphModel::SetGlyphGeometryAndVirtualTopology(const SynGlyphX::GlyphGeometry& structure, const SynGlyphX::VirtualTopology& virtualTopology) {
+void SingleGlyphRolesTableModel::SetGlyphGeometryAndVirtualTopology(const SynGlyphX::GlyphGeometry& structure, const SynGlyphX::VirtualTopology& virtualTopology) {
 
 	m_dataTransformModel->UpdateGlyphGeometry(m_selectedDataTransformModelIndex, structure);
 	m_dataTransformModel->UpdateVirtualTopology(m_selectedDataTransformModelIndex, virtualTopology);

@@ -35,7 +35,7 @@ DataMapperWindow::DataMapperWindow(QWidget *parent)
 	m_glyphTreesView(nullptr),
 	m_dataSourceStats(nullptr),
 	m_dataBindingWidget(nullptr),
-	m_minMaxGlyphModel(nullptr),
+	m_SingleGlyphRolesTableModel(nullptr),
 	m_dataTransformModel(nullptr),
 	m_minMaxGlyph3DWidget(nullptr),
 	m_baseObjectsModel(nullptr)
@@ -51,14 +51,14 @@ DataMapperWindow::DataMapperWindow(QWidget *parent)
 	QObject::connect(m_dataTransformModel, &DataTransformModel::rowsInserted, this, [&, this](const QModelIndex& parent, int first, int last){ setWindowModified(true); });
 	QObject::connect(m_dataTransformModel, &DataTransformModel::rowsRemoved, this, [&, this](const QModelIndex& parent, int first, int last){ setWindowModified(true); });
 	
-	m_minMaxGlyphModel = new MinMaxGlyphModel(m_dataTransformModel, this);
-	QObject::connect(m_minMaxGlyphModel, &MinMaxGlyphModel::dataChanged, this, [&, this](const QModelIndex& topLeft, const QModelIndex& bottomRight){ setWindowModified(true); });
+	m_SingleGlyphRolesTableModel = new SingleGlyphRolesTableModel(m_dataTransformModel, this);
+	QObject::connect(m_SingleGlyphRolesTableModel, &SingleGlyphRolesTableModel::dataChanged, this, [&, this](const QModelIndex& topLeft, const QModelIndex& bottomRight){ setWindowModified(true); });
 
 	CreateMenus();
     CreateDockWidgets();
 
 	QObject::connect(m_glyphTreesView, &GlyphTreesView::SelectionChangedSourceModel, this, &DataMapperWindow::OnGlyphTreesViewSelectionChanged);
-	QObject::connect(m_glyphTreesView->GetClearSelectedInputBindingsAction(), &QAction::triggered, m_minMaxGlyphModel, &MinMaxGlyphModel::ClearInputBindings);
+	QObject::connect(m_glyphTreesView->GetClearSelectedInputBindingsAction(), &QAction::triggered, m_SingleGlyphRolesTableModel, &SingleGlyphRolesTableModel::ClearInputBindings);
 
 	CreateCenterWidget();
 
@@ -253,7 +253,7 @@ void DataMapperWindow::CreateDockWidgets() {
 	m_viewMenu->addAction(rightDockWidget->toggleViewAction());
 
 	QDockWidget* topDockWidget = new QDockWidget(tr("Data Bindings"), this);
-	m_dataBindingWidget = new DataBindingWidget(m_minMaxGlyphModel, topDockWidget);
+	m_dataBindingWidget = new DataBindingWidget(m_SingleGlyphRolesTableModel, topDockWidget);
 	topDockWidget->setWidget(m_dataBindingWidget);
 	addDockWidget(Qt::TopDockWidgetArea, topDockWidget);
 	m_viewMenu->addAction(topDockWidget->toggleViewAction());
@@ -267,7 +267,7 @@ void DataMapperWindow::CreateNewProject() {
 
 	ClearAndInitializeDataMapping();
 	m_dataSourceStats->ClearTabs();
-	m_minMaxGlyphModel->Clear();
+	m_SingleGlyphRolesTableModel->Clear();
 
 	EnableProjectDependentActions(false);
 	UpdateFilenameWindowTitle("Untitled");
@@ -774,11 +774,11 @@ void DataMapperWindow::OnGlyphTreesViewSelectionChanged(const QItemSelection& se
 
 	if (selected.empty()) {
 
-		m_minMaxGlyphModel->Clear();
+		m_SingleGlyphRolesTableModel->Clear();
 	}
 	else {
 
-		m_minMaxGlyphModel->SetMinMaxGlyph(selected.indexes()[0]);
+		m_SingleGlyphRolesTableModel->SetMinMaxGlyph(selected.indexes()[0]);
 	}
 }
 

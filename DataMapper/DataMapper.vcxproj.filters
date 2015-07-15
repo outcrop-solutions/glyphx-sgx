@@ -100,15 +100,6 @@
     <ClCompile Include="GeneratedFiles\Release\moc_bindinglineedit.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
-    <ClCompile Include="minmaxglyphmodel.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_minmaxglyphmodel.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_minmaxglyphmodel.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
     <ClCompile Include="datatransformmodel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -199,6 +190,15 @@
     <ClCompile Include="newmappingdefaultswidget.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_singleglyphrolestablemodel.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_singleglyphrolestablemodel.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="singleglyphrolestablemodel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="datamapperwindow.h">
@@ -220,9 +220,6 @@
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="bindinglineedit.h">
-      <Filter>Header Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="minmaxglyphmodel.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="datatransformmodel.h">
@@ -253,6 +250,9 @@
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="newmappingdefaultswidget.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="singleglyphrolestablemodel.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>

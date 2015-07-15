@@ -25,7 +25,7 @@
 #include "bindinglineedit.h"
 #include "richtexteditor.h"
 #include "datatransformmapping.h"
-#include "minmaxglyphmodel.h"
+#include "singleglyphrolestablemodel.h"
 #include "nonmappablegeometrywidget.h"
 #include "mappingfunctionwidget.h"
 
@@ -34,7 +34,7 @@ class DataBindingWidget : public QTabWidget
 	Q_OBJECT
 
 public:
-	DataBindingWidget(MinMaxGlyphModel* model, QWidget *parent = 0);
+	DataBindingWidget(SingleGlyphRolesTableModel* model, QWidget *parent = 0);
 	~DataBindingWidget();
 
 public slots:
@@ -65,7 +65,7 @@ private:
 	BindingLineEdit* m_tagLineEdit;
 	SynGlyphX::RichTextEditor* m_descriptionEdit;
 	QList<QDataWidgetMapper*> m_dataWidgetMappers;
-	MinMaxGlyphModel* m_model;
+	SingleGlyphRolesTableModel* m_model;
 	QList<QWidget*> m_positionXYMinMaxWidgets;
 	SynGlyphX::NonMappableGeometryWidget* m_nonMappableGeometryWidget;
 };

@@ -7,7 +7,7 @@
 #include <QtSql/QSqlRecord>
 #include <QtSql/QSqlQuery>
 
-BindingLineEdit::BindingLineEdit(MinMaxGlyphModel* model, QWidget *parent, SynGlyphX::MappingFunctionData::Input acceptedInputTypes)
+BindingLineEdit::BindingLineEdit(SingleGlyphRolesTableModel* model, QWidget *parent, SynGlyphX::MappingFunctionData::Input acceptedInputTypes)
 	: QLineEdit(parent),
 	m_model(model),
 	m_acceptedInputTypes(acceptedInputTypes)

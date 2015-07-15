@@ -23,7 +23,7 @@
 #include <boost/shared_ptr.hpp>
 #include "datasourcestatswidget.h"
 #include "databindingwidget.h"
-#include "minmaxglyphmodel.h"
+#include "singleglyphrolestablemodel.h"
 #include "datatransformmodel.h"
 #include "antzwidget.h"
 #include "datamapping3dwidget.h"
@@ -96,7 +96,7 @@ private:
 	QList<QAction*> m_projectDependentActions;
 
 	DataBindingWidget* m_dataBindingWidget;
-	MinMaxGlyphModel* m_minMaxGlyphModel;
+	SingleGlyphRolesTableModel* m_SingleGlyphRolesTableModel;
 
 	DataTransformModel* m_dataTransformModel;
 	

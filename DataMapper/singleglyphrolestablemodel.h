@@ -15,15 +15,15 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef MINMAXGLYPHMODEL_H
-#define MINMAXGLYPHMODEL_H
+#ifndef SingleGlyphRolesTableModel_H
+#define SingleGlyphRolesTableModel_H
 
 #include <QtCore/QAbstractTableModel>
 #include "datamappingglyphgraph.h"
 #include "datatransformmodel.h"
 #include "datamappingfunction.h"
 
-class MinMaxGlyphModel : public QAbstractTableModel
+class SingleGlyphRolesTableModel : public QAbstractTableModel
 {
 	Q_OBJECT
 
@@ -37,8 +37,8 @@ public:
 		NonMappable
 	};
 
-	MinMaxGlyphModel(DataTransformModel* dataTransformModel, QObject *parent = nullptr);
-	~MinMaxGlyphModel();
+	SingleGlyphRolesTableModel(DataTransformModel* dataTransformModel, QObject *parent = nullptr);
+	~SingleGlyphRolesTableModel();
 
 	//Functions from QAbstractItemModel that need to be implemented
 	virtual int columnCount(const QModelIndex& parent = QModelIndex()) const;
@@ -86,4 +86,4 @@ private:
 	QMetaObject::Connection m_dataChangedConnection;
 };
 
-#endif // MINMAXGLYPHMODEL_H
+#endif // SingleGlyphRolesTableModel_H
