@@ -20,8 +20,8 @@
 
 #include "mapdownloading_global.h"
 #include <QtWidgets/QWidget>
-#include <QtWidgets/QRadioButton>
 #include <QtWidgets/QComboBox>
+#include <QtWidgets/QCheckBox>
 #include "intsizewidget.h"
 #include "networkdownloader.h"
 #include "downloadedmapproperties.h"
@@ -34,24 +34,21 @@ public:
     MapOptionsWidget(QWidget *parent = 0);
     ~MapOptionsWidget();
 
-	void Set(SynGlyphX::DownloadedMapProperties::MapSource source, SynGlyphX::DownloadedMapProperties::MapType type, const QSize& size);
+	void SetWidget(SynGlyphX::DownloadedMapProperties::ConstSharedPtr properties);
+	SynGlyphX::DownloadedMapProperties::SharedPtr GetProperties() const;
 
-    SynGlyphX::DownloadedMapProperties::MapSource GetMapSource() const;
-    QSize GetMapSize() const;
-	SynGlyphX::DownloadedMapProperties::MapType GetMapType() const;
-
-private slots:
+protected slots:
     void OnMapSourceChanged();
 
 protected:
-	void SetRadioButtonsFromMapSource(SynGlyphX::DownloadedMapProperties::MapSource source);
     //void ReadSettings();
     //void WriteSettings();
 
-    QRadioButton* m_mapquestRadioButton;
-    QRadioButton* m_googleRadioButton;
+	QComboBox* m_mapServiceComboBox;
     QComboBox* m_mapTypeComboBox;
     SynGlyphX::IntSizeWidget* m_imageSizeWidget;
+	QCheckBox* m_invertCheckbox;
+	QCheckBox* m_grayscaleCheckbox;
 };
 
 #endif // MAPOPTIONSWIDGET_H

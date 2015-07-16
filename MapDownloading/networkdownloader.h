@@ -39,7 +39,7 @@ public:
 
 	static NetworkDownloader& Instance();
 	
-	GeographicBoundingBox DownloadMap(const std::vector<GeographicPoint>& points, const std::string& filename, const SynGlyphX::DownloadedMapProperties* const properties);
+	GeographicBoundingBox DownloadMap(const std::vector<GeographicPoint>& points, const std::string& filename, SynGlyphX::DownloadedMapProperties::ConstSharedPtr properties);
 
 	void SetShowPointsInMap(bool show);
 	bool GetShowPointsInMap();
@@ -52,7 +52,7 @@ public:
 
 private:
 	unsigned int GetZoomLevel(const GeographicBoundingBox& boundingBox, const SynGlyphX::DownloadedMapProperties::Size& imageSize);
-	QString GenerateMapQuestOpenString(const GeographicPoint& center, unsigned int zoomLevel, const SynGlyphX::DownloadedMapProperties* const properties, const std::vector<GeographicPoint>& points);
+	QString GenerateMapQuestOpenString(const GeographicPoint& center, unsigned int zoomLevel, SynGlyphX::DownloadedMapProperties::ConstSharedPtr properties, const std::vector<GeographicPoint>& points);
     void ReadSettings();
     void WriteSettings();
 

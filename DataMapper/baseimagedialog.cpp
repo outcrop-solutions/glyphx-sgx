@@ -187,17 +187,17 @@ void BaseImageDialog::SetBaseImage(const SynGlyphX::BaseImage& baseImage) {
 	m_baseImageComboBox->setCurrentText(QString::fromStdWString(SynGlyphX::BaseImage::s_baseImageTypeStrings.left.at(baseImageType)));
 	if (baseImageType == SynGlyphX::BaseImage::Type::DownloadedMap) {
 
-		const SynGlyphX::DownloadedMapProperties* const properties = dynamic_cast<const SynGlyphX::DownloadedMapProperties* const>(baseImage.GetProperties());
-		m_downloadedMapOptionsWidget->Set(properties->GetSource(), properties->GetType(), QSize(properties->GetSize()[0], properties->GetSize()[1]));
+		auto properties = std::dynamic_pointer_cast<const SynGlyphX::DownloadedMapProperties>(baseImage.GetProperties());
+		m_downloadedMapOptionsWidget->SetWidget(properties);
 	}
 	else if (baseImageType == SynGlyphX::BaseImage::Type::UserImage) {
 
-		const SynGlyphX::UserDefinedBaseImageProperties* const properties = dynamic_cast<const SynGlyphX::UserDefinedBaseImageProperties* const>(baseImage.GetProperties());
+		auto properties = std::dynamic_pointer_cast<const SynGlyphX::UserDefinedBaseImageProperties>(baseImage.GetProperties());
 		m_userDefinedImageLineEdit->SetText(QString::fromStdWString(properties->GetFilename()));
 	}
 	else {
 
-		const SynGlyphX::DefaultBaseImageProperties* const properties = dynamic_cast<const SynGlyphX::DefaultBaseImageProperties* const>(baseImage.GetProperties());
+		auto properties = std::dynamic_pointer_cast<const SynGlyphX::DefaultBaseImageProperties>(baseImage.GetProperties());
 		m_defaultImagesComboBox->SetDefaultBaseImage(properties->GetDefaultBaseImageType());
 	}
 	m_positionWidget->Set(baseImage.GetPosition());
@@ -214,21 +214,17 @@ SynGlyphX::BaseImage BaseImageDialog::GetBaseImage() const {
 	SynGlyphX::BaseImage::Type baseImageType = SynGlyphX::BaseImage::s_baseImageTypeStrings.right.at(m_baseImageComboBox->currentText().toStdWString());
 	if (baseImageType == SynGlyphX::BaseImage::Type::DownloadedMap) {
 
-		SynGlyphX::DownloadedMapProperties::Size imageSize;
-		imageSize[0] = m_downloadedMapOptionsWidget->GetMapSize().width();
-		imageSize[1] = m_downloadedMapOptionsWidget->GetMapSize().height();
-		SynGlyphX::DownloadedMapProperties properties(m_downloadedMapOptionsWidget->GetMapSource(), m_downloadedMapOptionsWidget->GetMapType(), imageSize);
-		newBaseImage = SynGlyphX::BaseImage(&properties);
+		newBaseImage.SetProperties(m_downloadedMapOptionsWidget->GetProperties());
 	}
 	else if (baseImageType == SynGlyphX::BaseImage::Type::UserImage) {
 
-		SynGlyphX::UserDefinedBaseImageProperties properties(m_userDefinedImageLineEdit->GetText().toStdWString());
-		newBaseImage = SynGlyphX::BaseImage(&properties);
+		auto properties = std::make_shared<SynGlyphX::UserDefinedBaseImageProperties>(m_userDefinedImageLineEdit->GetText().toStdWString());
+		newBaseImage.SetProperties(properties);
 	}
 	else {
 
-		SynGlyphX::DefaultBaseImageProperties properties(m_defaultImagesComboBox->GetDefaultBaseImage());
-		newBaseImage = SynGlyphX::BaseImage(&properties);
+		auto properties = std::make_shared<SynGlyphX::DefaultBaseImageProperties>(m_defaultImagesComboBox->GetDefaultBaseImage());
+		newBaseImage.SetProperties(properties);
 	}
 
 	newBaseImage.SetPosition(m_positionWidget->Get());

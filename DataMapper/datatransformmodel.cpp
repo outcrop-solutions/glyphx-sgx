@@ -274,18 +274,18 @@ QVariant DataTransformModel::GetDisplayData(const QModelIndex& index) const {
 			SynGlyphX::BaseImage::Type baseImageType = baseObject.GetType();
 			if (baseImageType == SynGlyphX::BaseImage::UserImage) {
 
-				const SynGlyphX::UserDefinedBaseImageProperties* const properties = static_cast<const SynGlyphX::UserDefinedBaseImageProperties* const>(baseObject.GetProperties());
+				auto properties = std::dynamic_pointer_cast<const SynGlyphX::UserDefinedBaseImageProperties>(baseObject.GetProperties());
 				QFileInfo baseObjectFileInfo(QString::fromStdWString(properties->GetFilename()));
 				return baseObjectFileInfo.fileName();
 			}
 			else if (baseImageType == SynGlyphX::BaseImage::DownloadedMap) {
 
-				const SynGlyphX::DownloadedMapProperties* const properties = static_cast<const SynGlyphX::DownloadedMapProperties* const>(baseObject.GetProperties());
+				auto properties = std::dynamic_pointer_cast<const SynGlyphX::DownloadedMapProperties>(baseObject.GetProperties());
 				return QString::fromStdWString(L"Downloaded Map: " + SynGlyphX::DownloadedMapProperties::s_mapSourceStrings.left.at(properties->GetSource()) + L", " + SynGlyphX::DownloadedMapProperties::s_mapTypeStrings.left.at(properties->GetType()));
 			}
 			else {
 
-				const SynGlyphX::DefaultBaseImageProperties* const properties = static_cast<const SynGlyphX::DefaultBaseImageProperties* const>(baseObject.GetProperties());
+				auto properties = std::dynamic_pointer_cast<const SynGlyphX::DefaultBaseImageProperties>(baseObject.GetProperties());
 				return "Default: " + SynGlyphX::DefaultBaseImagesComboBox::s_typeToNameMap.at(properties->GetDefaultBaseImageType());
 			}
 		}

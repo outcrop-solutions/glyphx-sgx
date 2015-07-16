@@ -74,7 +74,7 @@ bool NetworkDownloader::GetShowPointsInMap() {
 	return m_showPointsInMap;
 }
 
-GeographicBoundingBox NetworkDownloader::DownloadMap(const std::vector<GeographicPoint>& points, const std::string& filename, const SynGlyphX::DownloadedMapProperties* const properties) {
+GeographicBoundingBox NetworkDownloader::DownloadMap(const std::vector<GeographicPoint>& points, const std::string& filename, SynGlyphX::DownloadedMapProperties::ConstSharedPtr properties) {
 	
 	GeographicBoundingBox pointsBoundingBox(points);
 	unsigned int zoomLevel = GetZoomLevel(pointsBoundingBox, properties->GetSize());
@@ -121,6 +121,25 @@ GeographicBoundingBox NetworkDownloader::DownloadMap(const std::vector<Geographi
 		throw DownloadException("Failed to get data into image");
 	}
 
+	if (properties->GetGrayscale()) {
+
+		for (unsigned int y = 0; y < image.height(); ++y) {
+
+			uchar* scanLine = image.scanLine(y);
+			for (unsigned int x = 0; x < image.width(); ++x) {
+
+				QRgb* rgb = reinterpret_cast<QRgb*>(scanLine + x*image.depth());
+				unsigned int gray = qGray(*rgb);
+				*rgb = qRgb(gray, gray, gray);
+			}
+		}
+	}
+
+	if (properties->GetInvert()) {
+
+		image.invertPixels(QImage::InvertMode::InvertRgb);
+	}
+
 	if (!image.save(QString::fromStdString(filename), ImageFormat)) {
 		throw DownloadException("Failed to save image");
 	}
@@ -150,7 +169,7 @@ unsigned int NetworkDownloader::GetZoomLevel(const GeographicBoundingBox& boundi
 	return std::min(static_cast<unsigned int>(std::min(hZoomLevel, vZoomLevel)), MaxZoomLevel);
 }
 
-QString NetworkDownloader::GenerateMapQuestOpenString(const GeographicPoint& center, unsigned int zoomLevel, const SynGlyphX::DownloadedMapProperties* const properties, const std::vector<GeographicPoint>& points) {
+QString NetworkDownloader::GenerateMapQuestOpenString(const GeographicPoint& center, unsigned int zoomLevel, SynGlyphX::DownloadedMapProperties::ConstSharedPtr properties, const std::vector<GeographicPoint>& points) {
 
 	if (m_mapQuestOpenKey.trimmed().isEmpty()) {
 

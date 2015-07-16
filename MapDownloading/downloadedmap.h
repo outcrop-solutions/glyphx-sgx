@@ -30,7 +30,7 @@ class MAPDOWNLOADING_EXPORT DownloadedMap : public QObject
     Q_OBJECT
 
 public:
-    DownloadedMap(const std::vector<GeographicPoint>& points, const std::string& filename, const SynGlyphX::DownloadedMapProperties* const properties, QObject *parent = NULL);
+	DownloadedMap(const std::vector<GeographicPoint>& points, const std::string& filename, SynGlyphX::DownloadedMapProperties::ConstSharedPtr properties, QObject *parent = NULL);
     ~DownloadedMap();
 
     const GeographicBoundingBox& GetImageBoundingBox();

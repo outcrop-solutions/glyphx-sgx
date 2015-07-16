@@ -1,19 +1,34 @@
 #include "mapoptionswidget.h"
 #include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QLabel>
 #include <QtCore/QSettings>
 
 MapOptionsWidget::MapOptionsWidget(QWidget *parent)
     : QWidget(parent)
 {
-    QHBoxLayout* mapOptionsLayout = new QHBoxLayout(this);
+	QVBoxLayout* mapOptionsLayout = new QVBoxLayout(this);
 
-    m_mapquestRadioButton = new QRadioButton("MapQuest Open (OpenStreetMap)", this);
-    m_googleRadioButton = new QRadioButton("Google Maps", this);
-    QObject::connect(m_mapquestRadioButton, SIGNAL(clicked()), this, SLOT(OnMapSourceChanged()));
-    QObject::connect(m_googleRadioButton, SIGNAL(clicked()), this, SLOT(OnMapSourceChanged()));
+	QHBoxLayout* serviceSizeLayout = new QHBoxLayout(this);
+
+	m_mapServiceComboBox = new QComboBox(this);
+	m_mapServiceComboBox->addItem("MapQuest Open (OpenStreetMap)");
+	m_mapServiceComboBox->addItem("Google Maps");
+
+	m_mapServiceComboBox->setCurrentIndex(0);
+	OnMapSourceChanged();
+
+	QObject::connect(m_mapServiceComboBox, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &MapOptionsWidget::OnMapSourceChanged);
 
     m_imageSizeWidget = new SynGlyphX::IntSizeWidget(false, this);
+
+	serviceSizeLayout->addWidget(new QLabel(tr("Service:")));
+	serviceSizeLayout->addWidget(m_mapServiceComboBox);
+	serviceSizeLayout->addWidget(m_imageSizeWidget);
+
+	mapOptionsLayout->addLayout(serviceSizeLayout);
+
+	QHBoxLayout* optionsLayout = new QHBoxLayout(this);
 
     QLabel* mapTypeLabel = new QLabel(tr("Type:"), this);
     m_mapTypeComboBox = new QComboBox(this);
@@ -21,12 +36,18 @@ MapOptionsWidget::MapOptionsWidget(QWidget *parent)
 	m_mapTypeComboBox->addItem(tr("Satellite"), SynGlyphX::DownloadedMapProperties::Satellite);
 	m_mapTypeComboBox->addItem(tr("Hybrid"), SynGlyphX::DownloadedMapProperties::Hybrid);
 
-    mapOptionsLayout->addWidget(m_mapquestRadioButton);
-    mapOptionsLayout->addWidget(m_googleRadioButton);
-    mapOptionsLayout->addStretch(1);
-    mapOptionsLayout->addWidget(m_imageSizeWidget);
-    mapOptionsLayout->addWidget(mapTypeLabel);
-    mapOptionsLayout->addWidget(m_mapTypeComboBox);
+	optionsLayout->addWidget(mapTypeLabel);
+	optionsLayout->addWidget(m_mapTypeComboBox);
+
+	m_invertCheckbox = new QCheckBox(tr("Invert Colors"), this);
+	optionsLayout->addWidget(m_invertCheckbox);
+
+	m_grayscaleCheckbox = new QCheckBox(tr("Black & White"), this);
+	optionsLayout->addWidget(m_grayscaleCheckbox);
+
+	optionsLayout->addStretch(1);
+
+	mapOptionsLayout->addLayout(optionsLayout);
 
     setLayout(mapOptionsLayout);
 
@@ -36,9 +57,8 @@ MapOptionsWidget::MapOptionsWidget(QWidget *parent)
     m_imageSizeWidget->setEnabled(false);
 
     //Google Maps Download is not implemented yet so keep the option disabled
-    m_googleRadioButton->setEnabled(false);
+	m_mapServiceComboBox->setEnabled(false);
 
-	SetRadioButtonsFromMapSource(SynGlyphX::DownloadedMapProperties::MapSource::MapQuestOpen);
 	m_mapTypeComboBox->setCurrentIndex(2);
 	m_imageSizeWidget->SetSize(QSize(2048, 1024));
 }
@@ -48,11 +68,13 @@ MapOptionsWidget::~MapOptionsWidget()
    // WriteSettings();
 }
 
-void MapOptionsWidget::Set(SynGlyphX::DownloadedMapProperties::MapSource source, SynGlyphX::DownloadedMapProperties::MapType type, const QSize& size) {
+void MapOptionsWidget::SetWidget(SynGlyphX::DownloadedMapProperties::ConstSharedPtr properties) {
 
-	SetRadioButtonsFromMapSource(source);
-	m_mapTypeComboBox->setCurrentIndex(static_cast<int>(type));
-	m_imageSizeWidget->SetSize(size);
+	m_mapServiceComboBox->setCurrentIndex(static_cast<int>(properties->GetSource()));
+	m_mapTypeComboBox->setCurrentIndex(static_cast<int>(properties->GetType()));
+	m_imageSizeWidget->SetSize(QSize(properties->GetSize()[0], properties->GetSize()[1]));
+	m_invertCheckbox->setChecked(properties->GetInvert());
+	m_grayscaleCheckbox->setChecked(properties->GetGrayscale());
 }
 
 /*
@@ -76,43 +98,27 @@ void MapOptionsWidget::WriteSettings() {
     settings.endGroup();
 }*/
 
-SynGlyphX::DownloadedMapProperties::MapSource MapOptionsWidget::GetMapSource() const {
+SynGlyphX::DownloadedMapProperties::SharedPtr MapOptionsWidget::GetProperties() const {
 
-    if (m_googleRadioButton->isChecked()) {
-		return SynGlyphX::DownloadedMapProperties::GoogleMaps;
-    }
-    else {
-		return SynGlyphX::DownloadedMapProperties::MapQuestOpen;
-    }
-}
+	SynGlyphX::DownloadedMapProperties::SharedPtr downloadedMapProperties = std::make_shared<SynGlyphX::DownloadedMapProperties>();
 
-void MapOptionsWidget::SetRadioButtonsFromMapSource(SynGlyphX::DownloadedMapProperties::MapSource source) {
+	downloadedMapProperties->SetSource(static_cast<SynGlyphX::DownloadedMapProperties::MapSource>(m_mapServiceComboBox->currentIndex()));
+	downloadedMapProperties->SetType(static_cast<SynGlyphX::DownloadedMapProperties::MapType>(m_mapTypeComboBox->currentIndex()));
+	downloadedMapProperties->SetSize({ { m_imageSizeWidget->GetSize().width(), m_imageSizeWidget->GetSize().height() } });
+	downloadedMapProperties->SetInvert(m_invertCheckbox->isChecked());
+	downloadedMapProperties->SetGrayscale(m_grayscaleCheckbox->isChecked());
 
-	if (source == SynGlyphX::DownloadedMapProperties::GoogleMaps) {
-        m_googleRadioButton->setChecked(true);
-    }
-    else {
-        m_mapquestRadioButton->setChecked(true);
-    }
-    OnMapSourceChanged();
+	return downloadedMapProperties;
 }
 
 void MapOptionsWidget::OnMapSourceChanged() {
 
-    if (m_googleRadioButton->isChecked()) {
+	if (m_mapServiceComboBox->currentIndex() == 1) {
+
         m_imageSizeWidget->SetRange(1, 2048);
     }
     else {
+
         m_imageSizeWidget->SetRange(1, 3840);
     }
-}
-
-QSize MapOptionsWidget::GetMapSize() const {
-
-    return m_imageSizeWidget->GetSize();
-}
-
-SynGlyphX::DownloadedMapProperties::MapType MapOptionsWidget::GetMapType() const {
-
-	return static_cast<SynGlyphX::DownloadedMapProperties::MapType>(m_mapTypeComboBox->currentData().toInt());
 }
