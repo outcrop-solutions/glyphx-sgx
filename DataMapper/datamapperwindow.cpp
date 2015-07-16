@@ -540,7 +540,7 @@ void DataMapperWindow::ExportToANTz(const QString& templateDir) {
 	try {
 
 		//bool useOldANTzFilenames = !QFile::exists(templateDir + QDir::separator() + "usr" + QDir::separator() + "csv" + QDir::separator() + "antzglobals.csv");
-		SynGlyphXANTz::ANTzExportTransformer transformer(csvDirectory, templateDir, SynGlyphX::Application::applicationDirPath() + QDir::separator() + "world.png", false);
+		SynGlyphXANTz::ANTzExportTransformer transformer(csvDirectory, templateDir, false);
 		transformer.Transform(*(m_dataTransformModel->GetDataMapping().get()));
 
 		SynGlyphX::Application::restoreOverrideCursor();
