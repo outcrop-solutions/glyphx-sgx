@@ -26,7 +26,7 @@ namespace SynGlyphXANTz {
 	class ANTZDATATRANSFORM_EXPORT ANTzExportTransformer : public ANTzTransformer
 	{
 	public:
-		ANTzExportTransformer(const QString& baseOutputDir, const QString& antzTemplateDir, const QString& worldImageFilename, bool useOldANTzFilenames = false);
+		ANTzExportTransformer(const QString& baseOutputDir, const QString& antzTemplateDir, bool useOldANTzFilenames = false);
 		virtual ~ANTzExportTransformer();
 
 		static void SetLogoFilename(const QString& logoFilename);
@@ -38,7 +38,6 @@ namespace SynGlyphXANTz {
 
 		bool m_useOldANTzFilenames;
 		QString m_antzTemplateDir;
-		QString m_worldImageFilename;
 
 		static QString s_logoFilename;
 	};

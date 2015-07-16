@@ -3,15 +3,15 @@
 #include "filesystem.h"
 #include "antzcsvwriter.h"
 #include <algorithm>
+#include "defaultbaseimageproperties.h"
 
 namespace SynGlyphXANTz {
 
 	QString ANTzExportTransformer::s_logoFilename;
 
-	ANTzExportTransformer::ANTzExportTransformer(const QString& baseOutputDir, const QString& antzTemplateDir, const QString& worldImageFilename, bool useOldANTzFilenames) :
+	ANTzExportTransformer::ANTzExportTransformer(const QString& baseOutputDir, const QString& antzTemplateDir, bool useOldANTzFilenames) :
 		ANTzTransformer(baseOutputDir),
 		m_antzTemplateDir(antzTemplateDir),
-		m_worldImageFilename(worldImageFilename),
 		m_useOldANTzFilenames(useOldANTzFilenames)
 	{
 		SetSourceDataCacheLocation(QDir::toNativeSeparators(baseOutputDir + QDir::separator() + "sourcedata.db"));
@@ -51,7 +51,7 @@ namespace SynGlyphXANTz {
 		QString baseUsrCSVDir = QDir::toNativeSeparators(m_baseOutputDir + QDir::separator() + "usr" + QDir::separator() + "csv" + QDir::separator());
 
 		SynGlyphX::Filesystem::CopyDirectoryOverwrite(QDir::toNativeSeparators(m_antzTemplateDir).toStdString(), m_baseOutputDir.toStdString(), true);
-		QFile::copy(m_worldImageFilename, baseUsrImageDir + "map00001.jpg");
+		QFile::copy(s_defaultImagesDirectory + QString::fromStdWString(SynGlyphX::DefaultBaseImageProperties::GetBasefilename()), baseUsrImageDir + "map00001.jpg");
 
 		QStringList csvFiles;
 		if (m_useOldANTzFilenames) {
