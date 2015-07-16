@@ -254,20 +254,20 @@ namespace SynGlyphXANTz {
 		glyph->scale.y = scale[1];
 		glyph->scale.z = scale[2];
 
+		SynGlyphX::Vector3 translate = glyphTemplate.GetPosition();
 		if (m_rootGlyph == glyph) {
 
 			//Since we're only showing either a single min glyph or a max glyph, we want the root glyph position to be a the center of the 3D world
 			glyph->translate.x = 0.0;
 			glyph->translate.y = 0.0;
-			glyph->translate.z = 0.0;
 		}
 		else {
 
-			SynGlyphX::Vector3 translate = glyphTemplate.GetPosition();
 			glyph->translate.x = translate[0];
 			glyph->translate.y = translate[1];
-			glyph->translate.z = translate[2];
 		}
+
+		glyph->translate.z = translate[2];
 
 		SynGlyphX::Vector3 rotation = glyphTemplate.GetRotation();
 		glyph->rotate.x = rotation[0];
