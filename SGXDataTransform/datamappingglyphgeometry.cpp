@@ -64,7 +64,7 @@ namespace SynGlyphX {
 		boost::property_tree::wptree& shapePropertyTree = geometryPropertyTree.add(L"Shape", L"");
 		m_geometryShape.ExportToPropertyTree(shapePropertyTree);
 
-		propertyTree.put<GlyphGeometryInfo::Surface>(L"Surface", m_geometrySurface);
+		geometryPropertyTree.put<GlyphGeometryInfo::Surface>(L"Surface", m_geometrySurface);
 		geometryPropertyTree.put<double>(L"Ratio", m_torusRatio);
 
 		return geometryPropertyTree;
