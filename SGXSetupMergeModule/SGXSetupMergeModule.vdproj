@@ -99,6 +99,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_20C22148DB9645058D56FB12348297A9"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_25EDCDADCDD54E54ACCED55C743DE2E1"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -183,6 +189,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_480072832B1D4D90B0D8184AF1D89EC8"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_48401AEDFF4A4D4FBC190814F30BFA07"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -225,6 +237,18 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_5D81D1A642D142F5B90F2F523187E990"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_61FE92BB059A41ED856D528429E5175D"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_62765B7300D041B4982CAAAEBB9E0C99"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -232,12 +256,6 @@
         "Entry"
         {
         "MsmKey" = "8:_637A98B3A4714D23A14CE1742451DE1D"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_63B4540CE48C4F88AB5BE2BBEDE56AAA"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -303,6 +321,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_7424710D811A474490973123681F145E"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_7DC15E24D2A24E3E8B6212837435BD33"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -327,6 +351,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_8219B79DCEED454AA56ED4C9F1B3868E"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_8955D1C5D3AF41EBB4C1564FEE99B1D1"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -340,6 +370,12 @@
         "Entry"
         {
         "MsmKey" = "8:_8F6E7572C742462086418FC334FBE039"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_9517B072812D45DC972098645B0A29D5"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -394,6 +430,12 @@
         "Entry"
         {
         "MsmKey" = "8:_A05ABD226E254322BD3927C640B97495"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_A2C3BBA398A1496E9B9550CE453328EA"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -1010,6 +1052,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_20C22148DB9645058D56FB12348297A9"
+            {
+            "SourcePath" = "8:..\\..\\Misc\\InstallerFiles\\DefaultBaseImages\\World.png"
+            "TargetName" = "8:World.png"
+            "Tag" = "8:"
+            "Folder" = "8:_1CD158B43CEE41CBADE0A1F0DDB6AB7D"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_2985B4DC58404AB994FB59E6D772DB57"
             {
             "SourcePath" = "8:..\\..\\ANTzPlus\\ANTzTemplate\\LICENSE.txt"
@@ -1230,6 +1292,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_480072832B1D4D90B0D8184AF1D89EC8"
+            {
+            "SourcePath" = "8:..\\..\\Misc\\InstallerFiles\\Images\\logo.png"
+            "TargetName" = "8:logo.png"
+            "Tag" = "8:"
+            "Folder" = "8:_0FD992B69CC74D489682A631FA99B364"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_48401AEDFF4A4D4FBC190814F30BFA07"
             {
             "SourcePath" = "8:..\\..\\3rdParty\\bin\\Win32\\Release\\qt_plugins\\sensors\\qtsensors_dummy.dll"
@@ -1350,6 +1432,46 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_5D81D1A642D142F5B90F2F523187E990"
+            {
+            "SourcePath" = "8:..\\..\\Misc\\InstallerFiles\\Images\\logo_export.png"
+            "TargetName" = "8:logo_export.png"
+            "Tag" = "8:"
+            "Folder" = "8:_0FD992B69CC74D489682A631FA99B364"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_61FE92BB059A41ED856D528429E5175D"
+            {
+            "SourcePath" = "8:..\\..\\Misc\\InstallerFiles\\DefaultBaseImages\\White.png"
+            "TargetName" = "8:White.png"
+            "Tag" = "8:"
+            "Folder" = "8:_1CD158B43CEE41CBADE0A1F0DDB6AB7D"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_62765B7300D041B4982CAAAEBB9E0C99"
             {
             "SourcePath" = "8:..\\..\\3rdParty\\bin\\Win32\\Release\\qt_plugins\\qmltooling\\qmldbg_qtquick2.dll"
@@ -1376,26 +1498,6 @@
             "TargetName" = "8:qmldbg_inspector.dll"
             "Tag" = "8:"
             "Folder" = "8:_8F595665124E4795A9C8EE28A84DE9E0"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_63B4540CE48C4F88AB5BE2BBEDE56AAA"
-            {
-            "SourcePath" = "8:..\\..\\Misc\\InstallerFiles\\Images\\world.png"
-            "TargetName" = "8:world.png"
-            "Tag" = "8:"
-            "Folder" = "8:_0FD992B69CC74D489682A631FA99B364"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -1570,6 +1672,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_7424710D811A474490973123681F145E"
+            {
+            "SourcePath" = "8:..\\..\\Misc\\InstallerFiles\\DefaultBaseImages\\Gray.png"
+            "TargetName" = "8:Gray.png"
+            "Tag" = "8:"
+            "Folder" = "8:_1CD158B43CEE41CBADE0A1F0DDB6AB7D"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_7DC15E24D2A24E3E8B6212837435BD33"
             {
             "SourcePath" = "8:..\\..\\3rdParty\\bin\\Win32\\Release\\qt_plugins\\platforms\\qminimal.dll"
@@ -1630,6 +1752,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_8219B79DCEED454AA56ED4C9F1B3868E"
+            {
+            "SourcePath" = "8:..\\..\\Misc\\InstallerFiles\\DefaultBaseImages\\Black.png"
+            "TargetName" = "8:Black.png"
+            "Tag" = "8:"
+            "Folder" = "8:_1CD158B43CEE41CBADE0A1F0DDB6AB7D"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_8955D1C5D3AF41EBB4C1564FEE99B1D1"
             {
             "SourcePath" = "8:..\\..\\ANTzPlus\\ANTzTemplate\\Glyph_Viewer_(Portable).exe"
@@ -1676,6 +1818,26 @@
             "TargetName" = "8:qsvgicon.dll"
             "Tag" = "8:"
             "Folder" = "8:_154B75DCC3554D6FABD361C30D7B16AE"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_9517B072812D45DC972098645B0A29D5"
+            {
+            "SourcePath" = "8:..\\..\\Misc\\InstallerFiles\\DefaultBaseImages\\WorldGrayscale.png"
+            "TargetName" = "8:WorldGrayscale.png"
+            "Tag" = "8:"
+            "Folder" = "8:_1CD158B43CEE41CBADE0A1F0DDB6AB7D"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -1856,6 +2018,26 @@
             "TargetName" = "8:msvcp120.dll"
             "Tag" = "8:"
             "Folder" = "8:_0FD992B69CC74D489682A631FA99B364"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_A2C3BBA398A1496E9B9550CE453328EA"
+            {
+            "SourcePath" = "8:..\\..\\Misc\\InstallerFiles\\DefaultBaseImages\\Clear.png"
+            "TargetName" = "8:Clear.png"
+            "Tag" = "8:"
+            "Folder" = "8:_1CD158B43CEE41CBADE0A1F0DDB6AB7D"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -2601,6 +2783,17 @@
                     "Condition" = "8:"
                     "Transitive" = "11:FALSE"
                     "Property" = "8:_B8AE220546884E8092F26E42C8E77198"
+                        "Folders"
+                        {
+                        }
+                    }
+                    "{9EF0B969-E518-4E46-987F-47570745A589}:_1CD158B43CEE41CBADE0A1F0DDB6AB7D"
+                    {
+                    "Name" = "8:DefaultBaseImages"
+                    "AlwaysCreate" = "11:TRUE"
+                    "Condition" = "8:"
+                    "Transitive" = "11:FALSE"
+                    "Property" = "8:_DC81FA28BB9743668742BEF38EFBC4A1"
                         "Folders"
                         {
                         }
