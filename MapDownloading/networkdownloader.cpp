@@ -123,12 +123,13 @@ GeographicBoundingBox NetworkDownloader::DownloadMap(const std::vector<Geographi
 
 	if (properties->GetGrayscale()) {
 
+		int depthInBytes = image.depth() / 8;
 		for (unsigned int y = 0; y < image.height(); ++y) {
 
 			uchar* scanLine = image.scanLine(y);
 			for (unsigned int x = 0; x < image.width(); ++x) {
 
-				QRgb* rgb = reinterpret_cast<QRgb*>(scanLine + x*image.depth());
+				QRgb* rgb = reinterpret_cast<QRgb*>(scanLine + x*depthInBytes);
 				unsigned int gray = qGray(*rgb);
 				*rgb = qRgb(gray, gray, gray);
 			}

@@ -15,9 +15,6 @@ MapOptionsWidget::MapOptionsWidget(QWidget *parent)
 	m_mapServiceComboBox->addItem("MapQuest Open (OpenStreetMap)");
 	m_mapServiceComboBox->addItem("Google Maps");
 
-	m_mapServiceComboBox->setCurrentIndex(0);
-	OnMapSourceChanged();
-
 	QObject::connect(m_mapServiceComboBox, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &MapOptionsWidget::OnMapSourceChanged);
 
     m_imageSizeWidget = new SynGlyphX::IntSizeWidget(false, this);
@@ -42,7 +39,7 @@ MapOptionsWidget::MapOptionsWidget(QWidget *parent)
 	m_invertCheckbox = new QCheckBox(tr("Invert Colors"), this);
 	optionsLayout->addWidget(m_invertCheckbox);
 
-	m_grayscaleCheckbox = new QCheckBox(tr("Black & White"), this);
+	m_grayscaleCheckbox = new QCheckBox(tr("Grayscale"), this);
 	optionsLayout->addWidget(m_grayscaleCheckbox);
 
 	optionsLayout->addStretch(1);
@@ -50,6 +47,9 @@ MapOptionsWidget::MapOptionsWidget(QWidget *parent)
 	mapOptionsLayout->addLayout(optionsLayout);
 
     setLayout(mapOptionsLayout);
+
+	m_mapServiceComboBox->setCurrentIndex(0);
+	OnMapSourceChanged();
 
     //ReadSettings();
 
