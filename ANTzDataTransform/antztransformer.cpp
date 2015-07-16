@@ -93,7 +93,7 @@ namespace SynGlyphXANTz {
 			}
 			else {
 
-				const SynGlyphX::DefaultBaseImageProperties* const properties = dynamic_cast<const SynGlyphX::DefaultBaseImageProperties* const>(baseImage.GetProperties());
+				auto properties = std::dynamic_pointer_cast<const SynGlyphX::DefaultBaseImageProperties>(baseImage.GetProperties());
 				if (properties->GetDefaultBaseImageType() == SynGlyphX::DefaultBaseImageProperties::World) {
 
 					m_textureIDs.push_back(1);
