@@ -23,6 +23,7 @@
 #include "baseimageproperties.h"
 #include <boost/bimap.hpp>
 #include <boost/property_tree/ptree.hpp>
+#include <memory>
 
 namespace SynGlyphX {
 
@@ -38,7 +39,7 @@ namespace SynGlyphX {
 			UserImage
 		};
 
-		BaseImage(const BaseImageProperties* const properties);
+		BaseImage(BaseImageProperties::ConstSharedPtr properties = nullptr);
 		BaseImage(const PropertyTree& propertyTree);
 		BaseImage(const BaseImage& baseImage);
 		~BaseImage();
@@ -49,7 +50,8 @@ namespace SynGlyphX {
 
 		Type GetType() const;
 
-		const BaseImageProperties* const GetProperties() const;
+		BaseImageProperties::ConstSharedPtr GetProperties() const;
+		void SetProperties(BaseImageProperties::ConstSharedPtr properties);
 
 		void SetPosition(const Vector3& position);
 		const Vector3& GetPosition() const;
@@ -65,12 +67,10 @@ namespace SynGlyphX {
 		static const boost::bimap<Type, std::wstring> s_baseImageTypeStrings;
 
 	private:
-		void ChangeProperties(const BaseImageProperties* const properties);
-
 		Vector3 m_position;
 		Vector3 m_rotationAngles;
 		Type m_type;
-		BaseImageProperties* m_properties;
+		std::shared_ptr<BaseImageProperties> m_properties;
 		Size m_worldSize;
 	};
 

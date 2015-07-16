@@ -38,6 +38,9 @@ namespace SynGlyphX {
 			Clear
 		};
 
+		typedef std::shared_ptr<DefaultBaseImageProperties> SharedPtr;
+		typedef std::shared_ptr<const DefaultBaseImageProperties> ConstSharedPtr;
+
 		DefaultBaseImageProperties(Type defaultBaseImage = Type::World);
 		DefaultBaseImageProperties(const boost::property_tree::wptree& propertyTree);
 		DefaultBaseImageProperties(const DefaultBaseImageProperties& properties);
@@ -47,6 +50,7 @@ namespace SynGlyphX {
 		virtual void ExportToPropertyTree(boost::property_tree::wptree& propertyTree) const;
 
 		Type GetDefaultBaseImageType() const;
+		void SetDefaultBaseImageType(Type type);
 
 		static std::wstring GetBasefilename(Type defaultBaseImage = Type::World);
 

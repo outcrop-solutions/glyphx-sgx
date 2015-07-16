@@ -20,12 +20,16 @@
 
 #include "SGXImage.h"
 #include <boost/property_tree/ptree.hpp>
+#include <memory>
 
 namespace SynGlyphX {
 
 	class SGXIMAGE_API BaseImageProperties
 	{
 	public:
+		typedef std::shared_ptr<BaseImageProperties> SharedPtr;
+		typedef std::shared_ptr<const BaseImageProperties> ConstSharedPtr;
+
 		BaseImageProperties();
 		BaseImageProperties(const boost::property_tree::wptree& propertyTree);
 		BaseImageProperties(const BaseImageProperties& properties);

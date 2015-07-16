@@ -51,6 +51,11 @@ namespace SynGlyphX {
 		return m_defaultBaseImage;
 	}
 
+	void DefaultBaseImageProperties::SetDefaultBaseImageType(Type type) {
+
+		m_defaultBaseImage = type;
+	}
+
 	std::wstring DefaultBaseImageProperties::GetBasefilename(Type defaultBaseImage) {
 
 		return (s_typeStrings.left.at(defaultBaseImage) + L".png");

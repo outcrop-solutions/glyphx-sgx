@@ -31,6 +31,11 @@ namespace SynGlyphX {
 		return m_filename;
 	}
 
+	void UserDefinedBaseImageProperties::SetFilename(const std::wstring& filename) {
+
+		m_filename = filename;
+	}
+
 	bool UserDefinedBaseImageProperties::IsGeographic() const {
 
 		return false;

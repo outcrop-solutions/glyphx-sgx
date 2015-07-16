@@ -27,12 +27,16 @@ namespace SynGlyphX {
 	class SGXIMAGE_API UserDefinedBaseImageProperties : public BaseImageProperties
 	{
 	public:
+		typedef std::shared_ptr<UserDefinedBaseImageProperties> SharedPtr;
+		typedef std::shared_ptr<const UserDefinedBaseImageProperties> ConstSharedPtr;
+
 		UserDefinedBaseImageProperties(const std::wstring& filename);
 		UserDefinedBaseImageProperties(const boost::property_tree::wptree& propertyTree);
 		UserDefinedBaseImageProperties(const UserDefinedBaseImageProperties& properties);
 		virtual ~UserDefinedBaseImageProperties();
 
 		const std::wstring& GetFilename() const;
+		void SetFilename(const std::wstring& filename);
 
 		virtual bool IsGeographic() const;
 		virtual void ExportToPropertyTree(boost::property_tree::wptree& propertyTree) const;

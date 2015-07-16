@@ -42,14 +42,28 @@ namespace SynGlyphX {
 			Hybrid
 		};
 
-		DownloadedMapProperties(MapSource source, MapType type, Size size = { { 2048, 1024 } });
+		typedef std::shared_ptr<DownloadedMapProperties> SharedPtr;
+		typedef std::shared_ptr<const DownloadedMapProperties> ConstSharedPtr;
+
+		DownloadedMapProperties(MapSource source = MapSource::MapQuestOpen, MapType type = MapType::Hybrid, bool invert = false, bool grayscale = false, Size size = { { 2048, 1024 } });
 		DownloadedMapProperties(const boost::property_tree::wptree& propertyTree);
 		DownloadedMapProperties(const DownloadedMapProperties& properties);
 		virtual ~DownloadedMapProperties();
 
 		MapSource GetSource() const;
+		void SetSource(MapSource source);
+
 		MapType GetType() const;
+		void SetType(MapType type);
+
 		Size GetSize() const;
+		void SetSize(const Size& size);
+
+		bool GetInvert() const;
+		void SetInvert(bool invert);
+
+		bool GetGrayscale() const;
+		void SetGrayscale(bool grayscale);
 
 		virtual bool IsGeographic() const;
 		virtual void ExportToPropertyTree(boost::property_tree::wptree& propertyTree) const;
@@ -61,6 +75,8 @@ namespace SynGlyphX {
 		MapSource m_source;
 		MapType m_type;
 		Size m_size;
+		bool m_invert;
+		bool m_grayscale;
 	};
 
 } //namespace SynGlyphX

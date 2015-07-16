@@ -12,14 +12,14 @@ namespace SynGlyphX {
 		(BaseImage::Type::DownloadedMap, L"Downloaded Map")
 		(BaseImage::Type::UserImage, L"Local Image");
 
-	BaseImage::BaseImage(const BaseImageProperties* const properties) :
+	BaseImage::BaseImage(BaseImageProperties::ConstSharedPtr properties) :
 		m_position({ {0.0, 0.0, 0.0} }),
 		m_rotationAngles({ { 0.0, 0.0, 0.0 } }),
 		m_properties(nullptr),
 		m_type(Type::Default),
 		m_worldSize({ {360.0, 180.0} })
 	{
-		ChangeProperties(properties);
+		SetProperties(properties);
 	}
 
 	BaseImage::BaseImage(const BaseImage::PropertyTree& propertyTree) :
@@ -31,15 +31,15 @@ namespace SynGlyphX {
 
 		if (m_type == Type::DownloadedMap) {
 
-			m_properties = new DownloadedMapProperties(propertyTree);
+			m_properties = std::make_unique<DownloadedMapProperties>(propertyTree);
 		}
 		else if (m_type == Type::UserImage) {
 
-			m_properties = new UserDefinedBaseImageProperties(propertyTree);
+			m_properties = std::make_unique<UserDefinedBaseImageProperties>(propertyTree);
 		}
 		else {
 
-			m_properties = new DefaultBaseImageProperties(propertyTree);
+			m_properties = std::make_unique<DefaultBaseImageProperties>(propertyTree);
 		}
 
 		boost::optional<const boost::property_tree::wptree&> positionPropertyTree = propertyTree.get_child_optional(L"Position");
@@ -73,14 +73,12 @@ namespace SynGlyphX {
 		m_rotationAngles(baseImage.m_rotationAngles),
 		m_worldSize(baseImage.m_worldSize) {
 
-		ChangeProperties(baseImage.GetProperties());
+		SetProperties(baseImage.GetProperties());
 	}
 
 	BaseImage::~BaseImage()
 	{
-		if (m_properties != nullptr) {
-			delete m_properties;
-		}
+		
 	}
 
 	BaseImage& BaseImage::operator=(const BaseImage& baseImage) {
@@ -88,7 +86,7 @@ namespace SynGlyphX {
 		m_position = baseImage.m_position;
 		m_rotationAngles = baseImage.m_rotationAngles;
 		m_type = baseImage.m_type;
-		ChangeProperties(baseImage.GetProperties());
+		SetProperties(baseImage.GetProperties());
 		m_worldSize = baseImage.m_worldSize;
 
 		return *this;
@@ -129,48 +127,44 @@ namespace SynGlyphX {
 		return m_type;
 	}
 
-	const BaseImageProperties* const BaseImage::GetProperties() const {
+	BaseImageProperties::ConstSharedPtr BaseImage::GetProperties() const {
 
 		return m_properties;
 	}
 
-	void BaseImage::ChangeProperties(const BaseImageProperties* const properties) {
-
-		if (m_properties != nullptr) {
-
-			delete m_properties;
-			m_properties = nullptr;
-		}
+	void BaseImage::SetProperties(BaseImageProperties::ConstSharedPtr properties) {
 
 		if (properties != nullptr) {
-
-			const DownloadedMapProperties* const downloadedMapProperties = dynamic_cast<const DownloadedMapProperties* const>(properties);
+			
+			auto downloadedMapProperties = std::dynamic_pointer_cast<const DownloadedMapProperties>(properties);
 			if (downloadedMapProperties != nullptr) {
 
-				m_properties = new DownloadedMapProperties(*downloadedMapProperties);
+				m_properties = std::make_shared<DownloadedMapProperties>(*downloadedMapProperties.get());
 				m_type = Type::DownloadedMap;
 				return;
 			}
 
-			const UserDefinedBaseImageProperties* const userDefinedProperties = dynamic_cast<const UserDefinedBaseImageProperties* const>(properties);
+			auto userDefinedProperties = std::dynamic_pointer_cast<const UserDefinedBaseImageProperties>(properties);
 			if (userDefinedProperties != nullptr) {
 
-				m_properties = new UserDefinedBaseImageProperties(*userDefinedProperties);
+				m_properties = std::make_shared<UserDefinedBaseImageProperties>(*userDefinedProperties.get());
 				m_type = Type::UserImage;
 				return;
 			}
 
-			const DefaultBaseImageProperties * const defaultProperties = dynamic_cast<const DefaultBaseImageProperties* const>(properties);
+			auto defaultProperties = std::dynamic_pointer_cast<const DefaultBaseImageProperties>(properties);
 			if (defaultProperties != nullptr) {
 
-				m_properties = new DefaultBaseImageProperties(*defaultProperties);
+				m_properties = std::make_shared<DefaultBaseImageProperties>(*defaultProperties.get());
 				m_type = Type::Default;
 				return;
 			}
 		}
+		else {
 
-		m_properties = new DefaultBaseImageProperties();
-		m_type = Type::Default;
+			m_properties = std::make_shared<DefaultBaseImageProperties>();
+			m_type = Type::Default;
+		}
 	}
 
 	void BaseImage::ExportToPropertyTree(PropertyTree& parentPropertyTree) const {

@@ -440,11 +440,11 @@ namespace SynGlyphX {
 
 		std::vector<GeographicPoint> points;
 		GetPositionXYForAllGlyphTrees(mapping, points);
-		const DownloadedMapProperties* const properties = dynamic_cast<const DownloadedMapProperties* const>(baseImage.GetProperties());
+		
 		NetworkDownloader& downloader = NetworkDownloader::Instance();
 		try {
 
-			m_overrideRootXYBoundingBox = downloader.DownloadMap(points, baseImageFilename.toStdString(), properties);
+			m_overrideRootXYBoundingBox = downloader.DownloadMap(points, baseImageFilename.toStdString(), std::dynamic_pointer_cast<const DownloadedMapProperties>(baseImage.GetProperties()));
 			return true;
 		}
 		catch (const DownloadException& e) {
@@ -465,7 +465,7 @@ namespace SynGlyphX {
 
 	QString Transformer::GetUserImageFilename(const SynGlyphX::BaseImage& baseImage) const {
 
-		const SynGlyphX::UserDefinedBaseImageProperties* const properties = dynamic_cast<const SynGlyphX::UserDefinedBaseImageProperties* const>(baseImage.GetProperties());
+		auto properties = std::dynamic_pointer_cast<const SynGlyphX::UserDefinedBaseImageProperties>(baseImage.GetProperties());
 		return QString::fromStdWString(properties->GetFilename());
 	}
 
