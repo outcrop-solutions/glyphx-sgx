@@ -6,7 +6,7 @@ namespace SynGlyphX {
 
 	XYZWidget::XYZWidget(bool includeLockCheckbox, QWidget *parent)
 		: QWidget(parent),
-		m_lockCheckBox(NULL),
+		m_lockCheckBox(nullptr),
 		m_spinBoxesLocked(false)
 	{
 		QHBoxLayout* layout = new QHBoxLayout(this);
@@ -173,6 +173,18 @@ namespace SynGlyphX {
 	void XYZWidget::UpdateSpinBoxLock(bool lock) {
 
 		m_spinBoxesLocked = lock;
+	}
+
+	void XYZWidget::SetEnabled(bool enableX, bool enableY, bool enableZ, bool enableLock) {
+
+		m_xSpinBox->setEnabled(enableX);
+		m_ySpinBox->setEnabled(enableY);
+		m_zSpinBox->setEnabled(enableZ);
+
+		if (m_lockCheckBox != nullptr) {
+
+			m_lockCheckBox->setEnabled(enableLock);
+		}
 	}
 
 } //namespace SynGlyphX

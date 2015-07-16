@@ -50,7 +50,9 @@ namespace SynGlyphX {
 		void SetDecimal(int decimals);
 		void SetSuffix(const QString& suffix);
 
-		public slots:
+		void SetEnabled(bool enableX, bool enableY, bool enableZ, bool enableLock);
+
+	public slots:
 		void SetSpinBoxesLocked(bool lock);
 
 	signals:

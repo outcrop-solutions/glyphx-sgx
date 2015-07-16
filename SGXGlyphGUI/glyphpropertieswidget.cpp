@@ -140,7 +140,7 @@ namespace SynGlyphX {
 
 		m_colorWidget->SetColor(ColorConverter::GlyphColor2QColor(glyph.GetColor(), glyph.GetTransparency()));
 
-		m_translateWidget->setEnabled(isNotRootNode);
+		m_translateWidget->SetEnabled(isNotRootNode, isNotRootNode, true, isNotRootNode);
 		m_translateWidget->Set(glyph.GetPosition());
 		m_rotateWidget->Set(glyph.GetRotation());
 		m_scaleWidget->Set(glyph.GetScale());
