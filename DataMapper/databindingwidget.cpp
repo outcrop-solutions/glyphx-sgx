@@ -346,14 +346,14 @@ void DataBindingWidget::OnModelReset() {
 	bool doesModelHaveData = !m_model->IsClear();
 	setEnabled(doesModelHaveData);
 
-	if (doesModelHaveData) {
+	for (int i = 0; i < m_dataWidgetMappers.length(); ++i) {
 
-		for (int i = 0; i < m_dataWidgetMappers.length(); ++i) {
-
-			if (m_dataWidgetMappers[i] != nullptr) {
-				m_dataWidgetMappers[i]->setCurrentIndex(i);
-			}
+		if (m_dataWidgetMappers[i] != nullptr) {
+			m_dataWidgetMappers[i]->setCurrentIndex(i);
 		}
+	}
+
+	if (doesModelHaveData) {
 
 		bool areSignalsBlocked = m_nonMappableGeometryWidget->blockSignals(true);
 		m_nonMappableGeometryWidget->SetWidget(static_cast<SynGlyphX::GlyphGeometryInfo::Surface>(m_model->data(m_model->index(18, 0), Qt::EditRole).toInt()), m_model->data(m_model->index(19, 0), Qt::EditRole).toDouble());

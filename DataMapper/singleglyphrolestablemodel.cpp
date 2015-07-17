@@ -727,15 +727,21 @@ SynGlyphX::MappingFunctionData::SharedPtr SingleGlyphRolesTableModel::CreateNewM
 
 		if (function == SynGlyphX::MappingFunctionData::Function::Numeric2Value) {
 
-			return std::make_shared<SynGlyphX::Numeric2VirtualTopologyMappingData>();
+			SynGlyphX::Numeric2VirtualTopologyMappingData::SharedPtr mappingData = std::make_shared<SynGlyphX::Numeric2VirtualTopologyMappingData>();
+			mappingData->SetDefaultValue(SynGlyphX::VirtualTopologyInfo::Type::Circle);
+			return mappingData;
 		}
 		else if (function == SynGlyphX::MappingFunctionData::Function::Text2Value) {
 
-			return std::make_shared<SynGlyphX::Text2VirtualTopologyMappingData>();
+			SynGlyphX::Text2VirtualTopologyMappingData::SharedPtr mappingData = std::make_shared<SynGlyphX::Text2VirtualTopologyMappingData>();
+			mappingData->SetDefaultValue(SynGlyphX::VirtualTopologyInfo::Type::Circle);
+			return mappingData;
 		}
 		else if (function == SynGlyphX::MappingFunctionData::Function::Range2Value) {
 
-			return std::make_shared<SynGlyphX::Range2VirtualTopologyMappingData>();
+			SynGlyphX::Range2VirtualTopologyMappingData::SharedPtr mappingData = std::make_shared<SynGlyphX::Range2VirtualTopologyMappingData>();
+			mappingData->SetDefaultValue(SynGlyphX::VirtualTopologyInfo::Type::Circle);
+			return mappingData;
 		}
 	}
 	
