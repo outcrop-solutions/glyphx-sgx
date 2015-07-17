@@ -42,6 +42,7 @@ namespace SynGlyphXANTz {
 		m_hideUnselectedGlyphTrees(false),
 		m_drawHUD(true),
 		m_zSpaceOptions(),
+		m_logoTextureID(0),
 		m_showAnimation(true)
 	{
 		setAutoBufferSwap(false);
@@ -154,6 +155,12 @@ namespace SynGlyphXANTz {
 
 			deleteTexture(m_worldTextureID);
 			m_worldTextureID = 0;
+		}
+
+		if (m_logoTextureID != 0) {
+
+			deleteTexture(m_logoTextureID);
+			m_logoTextureID = 0;
 		}
 
 		ClearZSpaceContext();
@@ -324,6 +331,14 @@ namespace SynGlyphXANTz {
 		npInitGLDraw(antzData);
 		npInitGLPrimitive(antzData);
 		npInitTags(antzData);
+
+		QString logoImageFilename = QDir::toNativeSeparators(SynGlyphX::GlyphBuilderApplication::applicationDirPath() + QDir::separator() + "logo.png");
+		if (QFile::exists(logoImageFilename)) {
+
+			QImage image(logoImageFilename);
+			m_logoSize = image.size();
+			m_logoTextureID = bindTexture(image);
+		}
 	
 		m_worldTextureID = BindTextureInFile(SynGlyphX::GlyphBuilderApplication::GetDefaultBaseImagesLocation() + QString::fromStdWString(SynGlyphX::DefaultBaseImageProperties::GetBasefilename()));
 		pNPnode rootGrid = static_cast<pNPnode>(antzData->map.node[kNPnodeRootGrid]);
@@ -379,13 +394,10 @@ namespace SynGlyphXANTz {
 			glGetFloatv(GL_MODELVIEW_MATRIX, m_originialViewMatrix.f);
 		}
 
-		//DrawSceneForEye(Eye::Left, true);
-		DrawSceneForEye(Eye::Right, true);
+		DrawSceneForEye(Eye::Left, true);
 		if (IsInStereoMode())  {
 
-			glDrawBuffer(GL_BACK_LEFT);
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-			//DrawSceneForEye(Eye::Right, false);
+			DrawSceneForEye(Eye::Right, false);
 		}
 
 		//int err = glGetError();
@@ -473,6 +485,8 @@ namespace SynGlyphXANTz {
 
 			DrawHUD();
 		}
+
+		DrawLogo();
 
 		glMatrixMode(GL_PROJECTION);
 		glPopMatrix();
@@ -1511,6 +1525,68 @@ namespace SynGlyphXANTz {
 		antzData->io.clear.r = color[0] / 255.0f;
 		antzData->io.clear.g = color[1] / 255.0f;
 		antzData->io.clear.b = color[2] / 255.0f;
+	}
+
+	void ANTzForestWidget::DrawLogo() {
+
+		bool isLightingEnabled = glIsEnabled(GL_LIGHTING);
+		bool isBlendEnabled = glIsEnabled(GL_BLEND);
+		bool isDepthTestEnabled = glIsEnabled(GL_DEPTH_TEST);
+
+		glDisable(GL_LIGHTING);
+		glDisable(GL_BLEND);
+		glDisable(GL_DEPTH_TEST);
+
+		glMatrixMode(GL_PROJECTION);
+		glPushMatrix();
+		glLoadIdentity();
+
+		gluOrtho2D(0, width(), 0.0, height());
+
+		QPoint lowerLeft(width() - m_logoSize.width() - 10, height() - m_logoSize.height() - 10);
+		QPoint upperRight(width() - 10, height() - 10);
+
+		glMatrixMode(GL_MODELVIEW);
+		glPushMatrix();
+		glLoadIdentity();
+
+		glColor3f(1.0f, 1.0f, 1.0f);
+		glEnable(GL_TEXTURE_2D);
+		glBindTexture(GL_TEXTURE_2D, m_logoTextureID);
+		glBegin(GL_QUADS);
+		glTexCoord2f(0, 0);
+		glVertex2i(lowerLeft.x(), lowerLeft.y());
+		glTexCoord2f(1, 0);
+		glVertex2i(upperRight.x(), lowerLeft.y());
+
+		glTexCoord2f(1, 1);
+		glVertex2i(upperRight.x(), upperRight.y());
+		glTexCoord2f(0, 1);
+		glVertex2i(lowerLeft.x(), upperRight.y());
+		glEnd();
+
+		glDisable(GL_TEXTURE_2D);
+
+		glMatrixMode(GL_PROJECTION);
+		glPopMatrix();
+
+		glMatrixMode(GL_MODELVIEW);
+		glPopMatrix();
+
+		if (isLightingEnabled) {
+
+			glEnable(GL_DEPTH_TEST);
+		}
+
+		if (isBlendEnabled) {
+
+			glEnable(GL_BLEND);
+		}
+
+		if (isDepthTestEnabled) {
+
+			glEnable(GL_LIGHTING);
+		}
 	}
 
 } //namespace SynGlyphXANTz

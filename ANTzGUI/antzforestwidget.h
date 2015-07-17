@@ -124,6 +124,8 @@ namespace SynGlyphXANTz {
 		void StoreRotationRates(pNPnode node);
 		bool IsNodeAnimated(pNPnode node);
 
+		void DrawLogo();
+
 		static QGLFormat s_format;
 		static QGLFormat s_stereoFormat;
 
@@ -166,6 +168,9 @@ namespace SynGlyphXANTz {
 
 		std::map<int, NPfloatXYZ> m_rotationRates;
 		bool m_showAnimation;
+
+		unsigned int m_logoTextureID;
+		QSize m_logoSize;
 	};
 
 } //namespace SynGlyphXANTz
