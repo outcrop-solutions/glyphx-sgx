@@ -43,7 +43,7 @@ namespace SynGlyphX {
 	 
 	void DefaultBaseImageProperties::ExportToPropertyTree(boost::property_tree::wptree& propertyTree) const {
 
-		propertyTree.put(L"<xmlattr>.type", s_typeStrings.left.at(m_defaultBaseImage));
+		propertyTree.put(L"<xmlattr>.default", s_typeStrings.left.at(m_defaultBaseImage));
 	}
 
 	DefaultBaseImageProperties::Type DefaultBaseImageProperties::GetDefaultBaseImageType() const {
