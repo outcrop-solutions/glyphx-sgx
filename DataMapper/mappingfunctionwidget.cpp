@@ -154,8 +154,8 @@ void MappingFunctionWidget::OnEditPropertiesClicked() {
 
 		if (mappingData->GetFunction() == SynGlyphX::MappingFunctionData::Function::Numeric2Value) {
 
-			Numeric2NumericMappingDialog dialog(this);
-			dialog.SetDialogFromMapping(std::dynamic_pointer_cast<const SynGlyphX::Numeric2NumericMappingData>(mappingData));
+			Numeric2ShapeMappingDialog dialog(this);
+			dialog.SetDialogFromMapping(std::dynamic_pointer_cast<const SynGlyphX::Numeric2ShapeMappingData>(mappingData));
 			if (dialog.exec() == QDialog::Accepted) {
 
 				newMappingData = dialog.GetMappingFromDialog();
@@ -163,8 +163,8 @@ void MappingFunctionWidget::OnEditPropertiesClicked() {
 		}
 		else if (mappingData->GetFunction() == SynGlyphX::MappingFunctionData::Function::Text2Value) {
 
-			Text2NumericMappingDialog dialog(this);
-			dialog.SetDialogFromMapping(std::dynamic_pointer_cast<const SynGlyphX::Text2NumericMappingData>(mappingData));
+			Text2ShapeMappingDialog dialog(this);
+			dialog.SetDialogFromMapping(std::dynamic_pointer_cast<const SynGlyphX::Text2ShapeMappingData>(mappingData));
 			if (dialog.exec() == QDialog::Accepted) {
 
 				newMappingData = dialog.GetMappingFromDialog();
@@ -172,8 +172,8 @@ void MappingFunctionWidget::OnEditPropertiesClicked() {
 		}
 		else if (mappingData->GetFunction() == SynGlyphX::MappingFunctionData::Function::Range2Value) {
 
-			Range2NumericMappingDialog dialog(this);
-			dialog.SetDialogFromMapping(std::dynamic_pointer_cast<const SynGlyphX::Range2NumericMappingData>(mappingData));
+			Range2ShapeMappingDialog dialog(this);
+			dialog.SetDialogFromMapping(std::dynamic_pointer_cast<const SynGlyphX::Range2ShapeMappingData>(mappingData));
 			if (dialog.exec() == QDialog::Accepted) {
 
 				newMappingData = dialog.GetMappingFromDialog();
@@ -184,8 +184,8 @@ void MappingFunctionWidget::OnEditPropertiesClicked() {
 
 		if (mappingData->GetFunction() == SynGlyphX::MappingFunctionData::Function::Numeric2Value) {
 
-			Numeric2NumericMappingDialog dialog(this);
-			dialog.SetDialogFromMapping(std::dynamic_pointer_cast<const SynGlyphX::Numeric2NumericMappingData>(mappingData));
+			Numeric2VirtualTopologyMappingDialog dialog(this);
+			dialog.SetDialogFromMapping(std::dynamic_pointer_cast<const SynGlyphX::Numeric2VirtualTopologyMappingData>(mappingData));
 			if (dialog.exec() == QDialog::Accepted) {
 
 				newMappingData = dialog.GetMappingFromDialog();
@@ -193,8 +193,8 @@ void MappingFunctionWidget::OnEditPropertiesClicked() {
 		}
 		else if (mappingData->GetFunction() == SynGlyphX::MappingFunctionData::Function::Text2Value) {
 
-			Text2NumericMappingDialog dialog(this);
-			dialog.SetDialogFromMapping(std::dynamic_pointer_cast<const SynGlyphX::Text2NumericMappingData>(mappingData));
+			Text2VirtualTopologyMappingDialog dialog(this);
+			dialog.SetDialogFromMapping(std::dynamic_pointer_cast<const SynGlyphX::Text2VirtualTopologyMappingData>(mappingData));
 			if (dialog.exec() == QDialog::Accepted) {
 
 				newMappingData = dialog.GetMappingFromDialog();
@@ -202,8 +202,8 @@ void MappingFunctionWidget::OnEditPropertiesClicked() {
 		}
 		else if (mappingData->GetFunction() == SynGlyphX::MappingFunctionData::Function::Range2Value) {
 
-			Range2NumericMappingDialog dialog(this);
-			dialog.SetDialogFromMapping(std::dynamic_pointer_cast<const SynGlyphX::Range2NumericMappingData>(mappingData));
+			Range2VirtualTopologyMappingDialog dialog(this);
+			dialog.SetDialogFromMapping(std::dynamic_pointer_cast<const SynGlyphX::Range2VirtualTopologyMappingData>(mappingData));
 			if (dialog.exec() == QDialog::Accepted) {
 
 				newMappingData = dialog.GetMappingFromDialog();
