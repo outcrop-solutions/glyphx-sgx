@@ -42,8 +42,8 @@ public slots:
 	void SetAcceptedInputTypes(SynGlyphX::MappingFunctionData::Input acceptedInputTypes);
 
 signals:
-	void ValueChanged(const SynGlyphX::InputField&);
-	void ValueChangedByUser(const SynGlyphX::InputField&);
+	void ValueChanged(SynGlyphX::InputField);
+	void ValueChangedByUser(SynGlyphX::InputField);
 
 protected:
 	virtual void dragEnterEvent(QDragEnterEvent* event);

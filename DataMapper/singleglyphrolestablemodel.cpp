@@ -371,6 +371,7 @@ bool SingleGlyphRolesTableModel::setData(const QModelIndex& index, const QVarian
 			}
 			else {
 
+				bool updateNewProp = false;
 				QVariant prop = m_dataTransformModel->data(m_selectedDataTransformModelIndex, sourceDataRole);
 				PropertyType propertyType = GetFieldType(index.row());
 				if (propertyType == PropertyType::Color) {
@@ -382,14 +383,23 @@ bool SingleGlyphRolesTableModel::setData(const QModelIndex& index, const QVarian
 						if (function != colorProp.GetMappingFunctionData()->GetFunction()) {
 
 							colorProp.SetMappingFunctionData(CreateNewMappingFunction(function, PropertyType::Color));
+							updateNewProp = true;
 						}
 					}
 					else {
 
-						colorProp.GetValue() = value.value<SynGlyphX::ColorMinDiff>();
+						SynGlyphX::ColorMinDiff newColorMinDiff = value.value<SynGlyphX::ColorMinDiff>();
+						if (colorProp.GetValue() != newColorMinDiff) {
+
+							colorProp.GetValue() = newColorMinDiff;
+							updateNewProp = true;
+						}
 					}
 
-					newProp.setValue(colorProp);
+					if (updateNewProp) {
+
+						newProp.setValue(colorProp);
+					}
 				}
 				/*else if (propertyType == PropertyType::Text) { //Currently Text fields do not have a value nor choice in mapping functions
 
@@ -412,21 +422,32 @@ bool SingleGlyphRolesTableModel::setData(const QModelIndex& index, const QVarian
 						if (function != shapeProp.GetMappingFunctionData()->GetFunction()) {
 
 							shapeProp.SetMappingFunctionData(CreateNewMappingFunction(function, PropertyType::GeometryShape));
+							updateNewProp = true;
 						}
 					}
 					else {
 
+						SynGlyphX::GlyphGeometryInfo::Shape newShape;
 						if (value.type() == QVariant::Type::String) {
 
-							shapeProp.GetValue() = SynGlyphX::GlyphGeometryInfo::s_shapeNames.right.at(value.toString().toStdWString());
+							newShape = SynGlyphX::GlyphGeometryInfo::s_shapeNames.right.at(value.toString().toStdWString());
 						}
 						else {
 
-							shapeProp.GetValue() = value.value<SynGlyphX::GlyphGeometryInfo::Shape>();
+							newShape = value.value<SynGlyphX::GlyphGeometryInfo::Shape>();
+						}
+
+						if (shapeProp.GetValue() != newShape) {
+
+							shapeProp.GetValue() = newShape;
+							updateNewProp = true;
 						}
 					}
 
-					newProp.setValue(shapeProp);
+					if (updateNewProp) {
+
+						newProp.setValue(shapeProp);
+					}
 				}
 				else if (propertyType == PropertyType::VirtualTopology) {
 
@@ -437,21 +458,32 @@ bool SingleGlyphRolesTableModel::setData(const QModelIndex& index, const QVarian
 						if (function != topologyProp.GetMappingFunctionData()->GetFunction()) {
 
 							topologyProp.SetMappingFunctionData(CreateNewMappingFunction(function, PropertyType::VirtualTopology));
+							updateNewProp = true;
 						}
 					}
 					else {
 
+						SynGlyphX::VirtualTopologyInfo::Type newVirtualTopology;
 						if (value.type() == QVariant::Type::String) {
 
-							topologyProp.GetValue() = SynGlyphX::VirtualTopologyInfo::s_virtualTopologyNames.right.at(value.toString().toStdWString());
+							newVirtualTopology = SynGlyphX::VirtualTopologyInfo::s_virtualTopologyNames.right.at(value.toString().toStdWString());
 						}
 						else {
 
-							topologyProp.GetValue() = value.value<SynGlyphX::VirtualTopologyInfo::Type>();
+							newVirtualTopology = value.value<SynGlyphX::VirtualTopologyInfo::Type>();
+						}
+
+						if (topologyProp.GetValue() != newVirtualTopology) {
+
+							topologyProp.GetValue() = newVirtualTopology;
+							updateNewProp = true;
 						}
 					}
 
-					newProp.setValue(topologyProp);
+					if (updateNewProp) {
+
+						newProp.setValue(topologyProp);
+					}
 				}
 				else if (propertyType == PropertyType::Numeric) {
 
@@ -462,14 +494,23 @@ bool SingleGlyphRolesTableModel::setData(const QModelIndex& index, const QVarian
 						if (function != numericProp.GetMappingFunctionData()->GetFunction()) {
 
 							numericProp.SetMappingFunctionData(CreateNewMappingFunction(function, PropertyType::Numeric));
+							updateNewProp = true;
 						}
 					}
 					else {
 
-						numericProp.GetValue() = value.value<SynGlyphX::DoubleMinDiff>();
+						SynGlyphX::DoubleMinDiff newNumericMinDiff = value.value<SynGlyphX::DoubleMinDiff>();
+						if (numericProp.GetValue() != newNumericMinDiff) {
+
+							numericProp.GetValue() = newNumericMinDiff;
+							updateNewProp = true;
+						}
 					}
 
-					newProp.setValue(numericProp);
+					if (updateNewProp) {
+
+						newProp.setValue(numericProp);
+					}
 				}
 			}
 

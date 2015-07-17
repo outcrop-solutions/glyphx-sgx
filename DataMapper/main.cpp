@@ -23,6 +23,7 @@ int main(int argc, char *argv[])
 	qRegisterMetaType<SynGlyphX::ColorMinDiff>("ColorMinDiff");
 	qRegisterMetaType<SynGlyphX::IntMinDiff>("IntMinDiff");
 	qRegisterMetaType<SynGlyphX::DoubleMinDiff>("DoubleMinDiff");
+	qRegisterMetaType<SynGlyphX::InputField>("InputField");
 
     //Setup and show the splash screen
     QPixmap pixmap(":SGXGUI/Resources/synglyphx_splash.png");
