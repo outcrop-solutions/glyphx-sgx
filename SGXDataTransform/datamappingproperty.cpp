@@ -12,6 +12,14 @@ namespace SynGlyphX {
 
 	}
 
+	template<>
+	DataMappingProperty<VirtualTopologyInfo::Type>::DataMappingProperty() :
+		m_value(VirtualTopologyInfo::Type::Circle),
+		m_binding(InputBinding()),
+		m_mappingFunctionData(std::make_shared<MappingFunctionData>()) {
+
+	}
+
 	template<typename PropertyType>
 	DataMappingProperty<PropertyType>::DataMappingProperty(const PropertyType& initialValue) :
 		m_value(initialValue),
