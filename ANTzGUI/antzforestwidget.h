@@ -57,8 +57,8 @@ namespace SynGlyphXANTz {
 	signals:
 		//void NewStatusMessage(const QString& message, int timeout = 0) const;
 
-		public slots :
-			void ResetCamera();
+	public slots :
+		void ResetCamera();
 		//void SetStereo(bool enableStereo);
 		void SetHideUnselectedGlyphTrees(bool hideUnselectedGlyphTrees);
 		void ShowAnimatedRotations(bool show);
@@ -75,7 +75,7 @@ namespace SynGlyphXANTz {
 		virtual void moveEvent(QMoveEvent* event);
 		virtual void wheelEvent(QWheelEvent* event);
 
-		private slots:
+	private slots:
 		void OnSelectionUpdated(const QItemSelection& selected, const QItemSelection& deselected);
 		void OnFocusChanged(const QModelIndexList& indexes);
 		void OnModelReset();

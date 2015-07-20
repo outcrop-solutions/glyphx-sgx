@@ -253,11 +253,15 @@ namespace SynGlyphXANTz {
 
 	void GlyphForestModel::FindNodesInRegion(const QRect& region, pNPnode node, int row, QItemSelection& itemSelection) const {
 
+		if (node->hide) {
+
+			return;
+		}
+
 		if ((node->screen.z >= 0.0f) && (node->screen.z <= 1.0f) && (region.contains(node->screen.x, node->screen.y, false))) {
 
-			QModelIndex index = createIndex(row, 0, node);
-			QItemSelection newItemSelection(index, index);
-			itemSelection.merge(newItemSelection, QItemSelectionModel::Select);
+			QModelIndex indexInRegion = createIndex(row, 0, node);
+			itemSelection.select(indexInRegion, indexInRegion);
 		}
 
 		for (int i = 0; i < node->childCount; ++i) {
