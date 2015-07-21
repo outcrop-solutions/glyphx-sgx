@@ -73,7 +73,12 @@ namespace SynGlyphX {
 
 			if (command.testFlag(FocusFlag::Toggle)) {
 
-				QModelIndex oldLastIndex = m_focusList.back();
+				QModelIndex oldLastIndex;
+				if (!m_focusList.isEmpty()) {
+
+					oldLastIndex = m_focusList.back();
+				}
+
 				Q_FOREACH(const QModelIndex& index, indexes) {
 
 					int pos = m_focusList.indexOf(index);
@@ -86,7 +91,14 @@ namespace SynGlyphX {
 						m_focusList.removeAt(pos);
 					}
 				}
-				if (oldLastIndex != m_focusList.back()) {
+				
+				QModelIndex newLastIndex;
+				if (!m_focusList.isEmpty()) {
+
+					newLastIndex = m_focusList.back();
+				}
+
+				if (oldLastIndex != newLastIndex) {
 
 					focusChanged = true;
 				}
