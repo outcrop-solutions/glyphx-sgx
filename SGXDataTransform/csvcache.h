@@ -35,7 +35,7 @@ namespace SynGlyphX {
 		virtual ~CSVCache();
 
 		virtual bool IsValid() const;
-		void Setup(const QString& cacheFilename);
+		virtual void Setup(const QString& cacheFilename);
 		virtual void Close();
 		void UpdateCSVFile(const QString& tableName, const QString& csvFilename, const QString& formattedName);
 

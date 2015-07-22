@@ -7,6 +7,7 @@
 #include <QtCore/QDateTime>
 #include <QtCore/QVariant>
 #include <QtCore/QDir>
+#include <QtSql/QSqlDriver>
 
 namespace SynGlyphX {
 
@@ -58,7 +59,7 @@ namespace SynGlyphX {
 		SetPragmaValue("temp_store = MEMORY");
 		SetPragmaValue("journal_mode = OFF");
 		SetPragmaValue("locking_mode = EXCLUSIVE");
-		SetPragmaValue("synchronous = NORMAL");
+		SetPragmaValue("synchronous = OFF");
 
 		if (!m_db.tables().contains(s_tableIndexName)) {
 
@@ -309,11 +310,14 @@ namespace SynGlyphX {
 			insertIntoCacheQuery.addBindValue(data[k]);
 		}
 
+		m_db.transaction();
+
 		if (!insertIntoCacheQuery.execBatch()) {
 
 			throw std::exception((QObject::tr("Failed to insert data into table: ") + m_db.lastError().text()).toStdString().c_str());
 		}
 		insertIntoCacheQuery.finish();
-	}
 
+		m_db.commit();
+	}
 } //namespace SynGlyphX

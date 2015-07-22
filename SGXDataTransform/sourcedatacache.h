@@ -53,7 +53,7 @@ namespace SynGlyphX {
 		virtual bool IsValid() const;
 		virtual void Close();
 
-		void Setup(const QString& filename);
+		virtual void Setup(const QString& filename);
 		void AddDatasourcesToCache(const DatasourceMaps& datasources);
 		void AddFileDatasourceToCache(const boost::uuids::uuid& id, const FileDatasource& datasource);
 
@@ -70,6 +70,7 @@ namespace SynGlyphX {
 		IndexSetMap SplitIndexSet(const IndexSet& indexSet) const;
 		SharedSQLQuery CreateSelectQueryForIndexSet(const QString& tableName, const TableColumns& columns, const IndexSet& indexSet) const;
 		SharedSQLQuery CreateDistinctValueQuery(const QString& tableName, const QString& columnName, const IndexSet& indexSet = IndexSet()) const;
+		SharedSQLQuery CreateDistinctValueAndCountQuery(const QString& tableName, const QString& columnName, const IndexSet& indexSet = IndexSet()) const;
 		unsigned long GetValueCount(const QString& tableName, const QString& columnName, const QString& value, const IndexSet& indexSet = IndexSet()) const;
 		IndexSet GetIndexesFromTableWithSelectedValues(const QString& tableName, const ColumnValueData& selectedValues, const IndexSet& previousSelection = IndexSet()) const;
 
