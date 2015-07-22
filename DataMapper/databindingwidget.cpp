@@ -113,7 +113,7 @@ void DataBindingWidget::CreateTagAndDescriptionWidget() {
 
 	QDataWidgetMapper* tagMapper = new QDataWidgetMapper(this);
 	tagMapper->setModel(m_model);
-	tagMapper->addMapping(m_tagLineEdit, 3);  //Bind this to section 4 to keep consistent with other input fields
+	tagMapper->addMapping(m_tagLineEdit, 2);  //Bind this to section 2 to keep consistent with other input fields
 
 	QObject::connect(m_tagLineEdit, &BindingLineEdit::ValueChangedByUser, tagMapper, &QDataWidgetMapper::submit);
 
@@ -124,7 +124,7 @@ void DataBindingWidget::CreateTagAndDescriptionWidget() {
 
 	QDataWidgetMapper* descriptionMapper = new QDataWidgetMapper(this);
 	descriptionMapper->setModel(m_model);
-	descriptionMapper->addMapping(m_descriptionEdit, 3);  //Bind this to section 4 to keep consistent with other input fields
+	descriptionMapper->addMapping(m_descriptionEdit, 2);  //Bind this to section 2 to keep consistent with other input fields
 
 	//QObject::connect(m_descriptionEdit, &BindingLineEdit::ValueChangedByUser, mapper, &QDataWidgetMapper::submit);
 
