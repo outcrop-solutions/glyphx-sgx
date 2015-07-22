@@ -27,7 +27,7 @@ ElasticListsWidget::ElasticListsWidget(SynGlyphX::SourceDataCache::SharedPtr sou
 
 	setWidget(m_innerWidget);
 
-	PopulateElasticLists();
+	//PopulateElasticLists();
 }
 
 ElasticListsWidget::~ElasticListsWidget()
@@ -46,7 +46,6 @@ void ElasticListsWidget::PopulateElasticLists(const SynGlyphX::IndexSet& indexSe
 
 			QString columnValue = distinctValuesQuery->value(0).toString();
 			QString countForColumnValue = distinctValuesQuery->value(1).toString();
-			//elasticListData.push_back(std::pair<QString, QString>(columnValue, QString::number(m_sourceDataCache->GetValueCount(m_table, QString::fromStdString(column.first), columnValue, indexSet))));
 			elasticListData.push_back(std::pair<QString, QString>(columnValue, countForColumnValue));
 		}
 
