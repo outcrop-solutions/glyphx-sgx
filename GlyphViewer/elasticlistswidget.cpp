@@ -40,12 +40,14 @@ void ElasticListsWidget::PopulateElasticLists(const SynGlyphX::IndexSet& indexSe
 	for (auto column : m_elasticListMap) {
 
 		SynGlyphX::ElasticListWidget::Data elasticListData;
-		SynGlyphX::SharedSQLQuery distinctValuesQuery = m_sourceDataCache->CreateDistinctValueQuery(m_table, QString::fromStdString(column.first), indexSet);
+		SynGlyphX::SharedSQLQuery distinctValuesQuery = m_sourceDataCache->CreateDistinctValueAndCountQuery(m_table, QString::fromStdString(column.first), indexSet);
 		distinctValuesQuery->exec();
 		while (distinctValuesQuery->next()) {
 
 			QString columnValue = distinctValuesQuery->value(0).toString();
-			elasticListData.push_back(std::pair<QString, QString>(columnValue, QString::number(m_sourceDataCache->GetValueCount(m_table, QString::fromStdString(column.first), columnValue, indexSet))));
+			QString countForColumnValue = distinctValuesQuery->value(1).toString();
+			//elasticListData.push_back(std::pair<QString, QString>(columnValue, QString::number(m_sourceDataCache->GetValueCount(m_table, QString::fromStdString(column.first), columnValue, indexSet))));
+			elasticListData.push_back(std::pair<QString, QString>(columnValue, countForColumnValue));
 		}
 
 		column.second->SetData(elasticListData);
