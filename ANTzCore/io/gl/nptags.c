@@ -148,7 +148,8 @@ void npSetNodeTag (pNPnode node, void* dataRef)
 	//this procedure is fast when nodes processed in order of record_id
 	//and tags are pre-sorted by record_id and rouped by table_id
 	//method is very slow for missing tags... loops entire list looking	//zz debug
-	for (i = tagsIndex; i < tags->recordCount; i++)
+	for (i = 0; i < tags->recordCount; i++)
+//	for (i = tagsIndex; i < tags->recordCount; i++)
 	//	for (i=count; i < data->io.gl.hud.tags.recordCount; i++)
 	{
 		recordTag = tags->recordList[i];
