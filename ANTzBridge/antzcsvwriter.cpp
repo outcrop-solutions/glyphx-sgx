@@ -193,7 +193,7 @@ namespace SynGlyphXANTz {
 		values.push_back(boost::lexical_cast<std::wstring>(id));
 		values.push_back(L"0");
 		values.push_back(tag);
-		values.push_back(L" ");
+		values.push_back(L"\" \"");
 
 		file.WriteLine(values);
 
