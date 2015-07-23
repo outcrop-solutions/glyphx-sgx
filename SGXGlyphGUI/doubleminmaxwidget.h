@@ -41,6 +41,8 @@ namespace SynGlyphX {
 
 		void SetKeyboardTracking(bool enable);
 		void SetRange(double min, double max);
+		void SetStep(double step);
+		void SetDecimals(unsigned int decimals);
 
 	signals:
 		void ValueChanged(DoubleMinDiff value);

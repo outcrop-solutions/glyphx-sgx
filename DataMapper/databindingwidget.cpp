@@ -278,6 +278,8 @@ void DataBindingWidget::CreateDoublePropertyWidgets(QGridLayout* layout, int mod
 	minMaxWidget->layout()->setContentsMargins(0, 0, 0, 0);
 	minMaxWidget->SetKeyboardTracking(false);
 	minMaxWidget->SetRange(min, max);
+	minMaxWidget->SetDecimals(4);
+	minMaxWidget->SetStep(0.1);
 	
 	MappingFunctionWidget* mappingFunctionWidget = new MappingFunctionWidget(MappingFunctionWidget::KeyType::Numeric, m_model, modelRow, this);
 	mappingFunctionWidget->SetDialogOutputMinMax(min, max);

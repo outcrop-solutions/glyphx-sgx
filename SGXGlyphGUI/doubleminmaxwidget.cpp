@@ -50,6 +50,18 @@ namespace SynGlyphX {
 		m_maxSpinBox->setRange(min, max);
 	}
 
+	void DoubleMinMaxWidget::SetStep(double step) {
+
+		m_minSpinBox->setSingleStep(step);
+		m_maxSpinBox->setSingleStep(step);
+	}
+
+	void DoubleMinMaxWidget::SetDecimals(unsigned int decimals) {
+
+		m_minSpinBox->setDecimals(decimals);
+		m_maxSpinBox->setDecimals(decimals);
+	}
+
 	void DoubleMinMaxWidget::OnUserUpdated() {
 
 		emit ValueChanged(GetValue());
