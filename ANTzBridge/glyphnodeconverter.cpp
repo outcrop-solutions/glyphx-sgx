@@ -92,7 +92,7 @@ namespace SynGlyphXANTz {
 
 		SynGlyphX::CSVFileReader csvReader(filename);
 
-		if (csvReader.GetHeaders() != ANTzCSVWriter::GetInstance().GetNodeHeaders()) {
+		if (!AreHeadersCorrect(csvReader.GetHeaders())) {
 
 			throw std::invalid_argument("Could not read CSV file into glyph tree: Invalid Headers");
 		}
@@ -100,7 +100,7 @@ namespace SynGlyphXANTz {
 		SynGlyphX::CSVFileHandler::CSVValues currentLineValues;
 		while (!csvReader.IsAtEndOfFile()) {
 
-			currentLineValues = csvReader.GetValuesFromLine();
+			currentLineValues = csvReader.GetValuesFromLine(true);
 			if (currentLineValues[1] == L"5") {
 
 				break;
@@ -115,7 +115,7 @@ namespace SynGlyphXANTz {
 		std::unordered_map<std::wstring, SynGlyphX::GlyphGraph::iterator> indexToNodeMap;
 
 		indexToNodeMap[currentLineValues[0]] = glyphGraph->insert(CreateGlyphFromCSVValues(currentLineValues));
-		currentLineValues = csvReader.GetValuesFromLine();
+		currentLineValues = csvReader.GetValuesFromLine(true);
 
 		do {
 			if (currentLineValues[5] == L"0") {
@@ -125,12 +125,12 @@ namespace SynGlyphXANTz {
 
 			if (currentLineValues[1] != L"5") {
 
-				currentLineValues = csvReader.GetValuesFromLine();
+				currentLineValues = csvReader.GetValuesFromLine(true);
 				continue;
 			}
 
 			indexToNodeMap[currentLineValues[0]] = glyphGraph->insert(indexToNodeMap[currentLineValues[4]], CreateGlyphFromCSVValues(currentLineValues));
-			currentLineValues = csvReader.GetValuesFromLine();
+			currentLineValues = csvReader.GetValuesFromLine(true);
 
 		} while (!csvReader.IsAtEndOfFile());
 
@@ -176,6 +176,28 @@ namespace SynGlyphXANTz {
 		glyph.GetRotationRate()[2] = boost::lexical_cast<double>(csvValues[36]);
 
 		return glyph;
+	}
+
+	bool GlyphNodeConverter::AreHeadersCorrect(const SynGlyphX::CSVFileHandler::CSVValues& headersFromFile) {
+
+		const SynGlyphX::CSVFileHandler::CSVValues& standardHeaders = ANTzCSVWriter::GetInstance().GetNodeHeaders();
+		if (standardHeaders.size() != headersFromFile.size()) {
+
+			return false;
+		}
+
+		for (int i = 0; i < headersFromFile.size(); ++i) {
+
+			if (standardHeaders[i] != headersFromFile[i]) {
+
+				if ((i != 13) || (headersFromFile[i] != L"interval")){
+
+					return false;
+				}
+			}
+		}
+
+		return true;
 	}
 
 } //namespace SynGlyphXANTz

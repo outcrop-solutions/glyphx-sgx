@@ -38,6 +38,7 @@ namespace SynGlyphXANTz {
 
 	private:
 		static SynGlyphX::Glyph CreateGlyphFromCSVValues(const SynGlyphX::CSVFileHandler::CSVValues& csvValues);
+		static bool AreHeadersCorrect(const SynGlyphX::CSVFileHandler::CSVValues& headersFromFile);
 	};
 
 } //namespace SynGlyphXANTz

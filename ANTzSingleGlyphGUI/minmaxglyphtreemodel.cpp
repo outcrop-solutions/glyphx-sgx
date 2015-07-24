@@ -498,7 +498,7 @@ namespace SynGlyphXANTz {
 
 	bool MinMaxGlyphTreeModel::LoadFromFile(const QString& filename) {
 
-		beginResetModel();
+		SynGlyphX::DataMappingGlyphGraph::SharedPtr newGraph;
 
 		try {
 
@@ -507,11 +507,11 @@ namespace SynGlyphXANTz {
 
 				SynGlyphX::DataMappingGlyphFile fileReader;
 				fileReader.ReadFromFile(filename.toStdString());
-				m_minMaxGlyphTree = fileReader.GetDataMappingGlyphGraph();
+				newGraph = fileReader.GetDataMappingGlyphGraph();
 			}
 			else if (extension == ".csv") {
 
-				m_minMaxGlyphTree = std::make_shared<SynGlyphX::DataMappingGlyphGraph>(*SynGlyphXANTz::GlyphNodeConverter::CreateGlyphGraphFromCSV(filename.toStdString()).get());
+				newGraph = std::make_shared<SynGlyphX::DataMappingGlyphGraph>(*SynGlyphXANTz::GlyphNodeConverter::CreateGlyphGraphFromCSV(filename.toStdString()).get());
 			}
 			else {
 
@@ -520,11 +520,11 @@ namespace SynGlyphXANTz {
 		}
 		catch (const std::exception& e) {
 
-			m_minMaxGlyphTree->erase();
-			endResetModel();
 			throw;
 		}
 
+		beginResetModel();
+		m_minMaxGlyphTree = newGraph;
 		endResetModel();
 
 		return true;
