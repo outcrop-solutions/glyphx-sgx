@@ -250,23 +250,26 @@ bool GlyphDesignerWindow::LoadTemplate(const QString& filename) {
 
 	SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
 	m_isFileLoadingOrDefaultGlyphSet = true;
-	bool fileLoaded = m_glyphTreeModel->LoadFromFile(filename);
-	SynGlyphX::Application::restoreOverrideCursor();
+	
+	try {
 
-	if (fileLoaded) {
+		m_glyphTreeModel->LoadFromFile(filename);
+		SynGlyphX::Application::restoreOverrideCursor();
 
 		m_glyphTreeModel->ResetRootMinMaxPositionXY();
 		SetCurrentFile(filename);
 		statusBar()->showMessage("Template successfully opened", 3000);
 		SelectRootGlyphInModel();
 	}
-	else {
+	catch (const std::exception& e) {
 
+		SynGlyphX::Application::restoreOverrideCursor();
 		m_isFileLoadingOrDefaultGlyphSet = false;
-		QMessageBox::warning(this, tr("Loading Template Failed"), tr("Failed to load template"));
+		QMessageBox::warning(this, tr("Loading Template Failed"), tr("Failed to load template: ") + e.what());
+		return false;
 	}
 
-	return fileLoaded;
+	return true;
 }
 
 bool GlyphDesignerWindow::SaveTemplate() {
