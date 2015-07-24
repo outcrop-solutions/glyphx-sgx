@@ -1,5 +1,6 @@
 #include "csvfilereader.h"
 #include <exception>
+#include <boost/algorithm/string/trim.hpp>
 
 namespace SynGlyphX {
 
@@ -32,7 +33,7 @@ namespace SynGlyphX {
 		return m_headers;
 	}
 
-	CSVFileReader::CSVValues CSVFileReader::GetValuesFromLine() {
+	CSVFileReader::CSVValues CSVFileReader::GetValuesFromLine(bool trim) {
 
 		if (m_filestream.eof()) {
 
@@ -64,6 +65,14 @@ namespace SynGlyphX {
 		CSVValues values;
 		Tokenizer csvTokenizer(line, m_separators);
 		values.assign(csvTokenizer.begin(), csvTokenizer.end());
+
+		if (trim) {
+
+			for (std::wstring& value : values) {
+
+				boost::algorithm::trim(value);
+			}
+		}
 
 		return values;
 	}

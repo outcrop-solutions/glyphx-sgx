@@ -36,7 +36,7 @@ namespace SynGlyphX {
 
 		const CSVValues& GetHeaders() const;
 
-		CSVValues GetValuesFromLine();
+		CSVValues GetValuesFromLine(bool trim = false);
 		bool IsAtEndOfFile() const;
 
 		virtual void Close();
