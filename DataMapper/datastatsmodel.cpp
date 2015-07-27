@@ -38,7 +38,7 @@ void DataStatsModel::GenerateStats(const boost::uuids::uuid& databaseId, const Q
 	for (int i = 0; i < columnNamesRecord.count(); ++i) {
 
 		QSqlField field = columnNamesRecord.field(i);
-		query.prepare(QString("SELECT TYPEOF(%1), MIN(%1), MAX(%1), AVG(%1), COUNT(%1) FROM \"").arg("\"" + field.name() + "\"") + tableName + "\"");
+		query.prepare(QString("SELECT TYPEOF(%1), MIN(%1), MAX(%1), AVG(%1), COUNT(%1), COUNT(DISTINCT %1) FROM \"").arg("\"" + field.name() + "\"") + tableName + "\"");
 		m_fieldNames.append(field.name());
 		m_fieldTypes.append(field.type());
 		//query.bindValue(":colName", "\"" + columnNamesRecord.fieldName(i) + "\"");
@@ -58,6 +58,7 @@ void DataStatsModel::GenerateStats(const boost::uuids::uuid& databaseId, const Q
 			fieldStats.append(record.value(3).toString());
 		}
 		fieldStats.append(record.value(4).toString());
+		fieldStats.append(record.value(5).toString());
 		m_stats.append(fieldStats);
 	}
 }
@@ -69,7 +70,7 @@ int DataStatsModel::rowCount(const QModelIndex& parent) const {
 
 int DataStatsModel::columnCount(const QModelIndex& parent) const {
 
-	return 6;
+	return 7;
 }
 
 QVariant DataStatsModel::data(const QModelIndex& index, int role) const {
@@ -107,7 +108,10 @@ QVariant DataStatsModel::headerData(int section, Qt::Orientation orientation, in
 				return "Average";
 			}
 			else if (section == 5) {
-				return "Count";
+				return "Count (Non-Null)";
+			}
+			else if (section == 6) {
+				return "Count (Distinct)";
 			}
 		}
 	}
