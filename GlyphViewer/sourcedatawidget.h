@@ -21,8 +21,9 @@
 #include <QtWidgets/QTabWidget>
 #include "sourcedatacache.h"
 #include <QtCore/QItemSelectionModel>
+#include <QtWidgets/QStatusBar>
 
-class SourceDataWidget : public QTabWidget
+class SourceDataWidget : public QWidget
 {
 	Q_OBJECT
 
@@ -38,12 +39,18 @@ signals:
 protected:
 	virtual void closeEvent(QCloseEvent* event);
 
+private slots:
+	void SaveCurrentTabToFile();
+
 private:
 	void ReadSettings();
 	void WriteSettings();
 
-	//GlyphForestModel* m_model;
-	//QItemSelectionModel* m_selectionModel;
+	void WriteToFile(QSqlQueryModel* queryModel, const QString& filename);
+
+	QTabWidget* m_sourceDataTabs;
+	QStatusBar* m_statusBar;
+	std::vector<QSqlQueryModel*> m_sqlQueryModels;
 	SynGlyphX::SourceDataCache::SharedPtr m_sourceDataCache;
 };
 
