@@ -40,7 +40,7 @@ bool DataTransformModel::setData(const QModelIndex& index, const QVariant& value
 
 		if (!m_dataMapping->GetGlyphGraphs().empty()) {
 
-			SynGlyphX::DataMappingGlyphGraph::iterator iterator(static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(index.internalPointer()));
+			SynGlyphX::DataMappingGlyphGraph::GlyphIterator iterator(static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(index.internalPointer()));
 
 			if (role == PropertyRole::PositionX) {
 
@@ -169,7 +169,7 @@ QVariant DataTransformModel::GetPropertyData(const QModelIndex& index, int role)
 
 		if (!m_dataMapping->GetGlyphGraphs().empty()) {
 
-			SynGlyphX::DataMappingGlyphGraph::const_iterator iterator(static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(index.internalPointer()));
+			SynGlyphX::DataMappingGlyphGraph::ConstGlyphIterator iterator(static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(index.internalPointer()));
 
 			QVariant var;
 			if (role == PropertyRole::PositionX) {
@@ -342,7 +342,7 @@ QVariant DataTransformModel::GetGlyphData(const QModelIndex& index) const {
 
 	if (!m_dataMapping->GetGlyphGraphs().empty()) {
 
-		SynGlyphX::DataMappingGlyphGraph::const_iterator iterator(static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(index.internalPointer()));
+		SynGlyphX::DataMappingGlyphGraph::ConstGlyphIterator iterator(static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(index.internalPointer()));
 
 		std::wstring glyphData = SynGlyphX::GlyphGeometryInfo::s_shapeNames.left.at(iterator->GetStructure().GetGeometryShape().GetValue()) + L": " + 
 			SynGlyphX::VirtualTopologyInfo::s_virtualTopologyNames.left.at(iterator->GetVirtualTopology().GetType().GetValue());
@@ -371,7 +371,7 @@ QModelIndex	DataTransformModel::index(int row, int column, const QModelIndex& pa
 
 			SynGlyphX::DataTransformMapping::DataMappingGlyphGraphMap::const_iterator iterator = m_dataMapping->GetGlyphGraphs().begin();
 			std::advance(iterator, row);
-			return createIndex(row, column, static_cast<void*>(iterator->second->root().node()));
+			return createIndex(row, column, static_cast<void*>(iterator->second->GetRoot().node()));
 		}
 		else {
 
@@ -380,8 +380,8 @@ QModelIndex	DataTransformModel::index(int row, int column, const QModelIndex& pa
 	}
 	else {
 
-		SynGlyphX::DataMappingGlyphGraph::const_iterator parentIterator(static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(parent.internalPointer()));
-		SynGlyphX::DataMappingGlyphGraph::const_iterator childIterator = parentIterator.owner()->child(parentIterator, row);
+		SynGlyphX::DataMappingGlyphGraph::ConstGlyphIterator parentIterator(static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(parent.internalPointer()));
+		SynGlyphX::DataMappingGlyphGraph::ConstGlyphIterator childIterator = parentIterator.owner()->child(parentIterator, row);
 		if (childIterator.valid()) {
 
 			return createIndex(row, column, static_cast<void*>(childIterator.node()));
@@ -403,19 +403,19 @@ QModelIndex	DataTransformModel::parent(const QModelIndex& index) const {
 		return QModelIndex();
 	}
 
-	SynGlyphX::DataMappingGlyphGraph::const_iterator iterator(static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(index.internalPointer()));
+	SynGlyphX::DataMappingGlyphGraph::ConstGlyphIterator iterator(static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(index.internalPointer()));
 	if (iterator != iterator.owner()->root()) {
 
 		const SynGlyphX::DataMappingGlyphGraph* currentTree = static_cast<const SynGlyphX::DataMappingGlyphGraph*>(iterator.owner());
-		SynGlyphX::DataMappingGlyphGraph::const_iterator parent = currentTree->parent(iterator);
+		SynGlyphX::DataMappingGlyphGraph::ConstGlyphIterator parent = currentTree->GetParent(iterator);
 
 		int row = 0;
 
-		if (parent == currentTree->root()) {
+		if (parent == currentTree->GetRoot()) {
 
 			for (auto tree : m_dataMapping->GetGlyphGraphs()) {
 
-				if (currentTree->root() == tree.second->root().constify()) {
+				if (currentTree->GetRoot() == tree.second->GetRoot().constify()) {
 
 					break;
 				}
@@ -424,12 +424,12 @@ QModelIndex	DataTransformModel::parent(const QModelIndex& index) const {
 		}
 		else {
 
-			SynGlyphX::DataMappingGlyphGraph::const_iterator grandparent = currentTree->parent(parent);
+			SynGlyphX::DataMappingGlyphGraph::ConstGlyphIterator grandparent = currentTree->GetParent(parent);
 			if (grandparent.valid()) {
 
-				for (int i = 0; i < currentTree->children(grandparent); ++i) {
+				for (int i = 0; i < currentTree->ChildCount(grandparent); ++i) {
 
-					if (currentTree->child(grandparent, i) == parent) {
+					if (currentTree->GetChild(grandparent, i) == parent) {
 						row = i;
 						break;
 					}
@@ -452,7 +452,7 @@ int	DataTransformModel::rowCount(const QModelIndex& parent) const {
 
 	if (parent.internalPointer() != nullptr) {
 
-		SynGlyphX::DataMappingGlyphGraph::const_iterator iterator(static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(parent.internalPointer()));
+		SynGlyphX::DataMappingGlyphGraph::ConstGlyphIterator iterator(static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(parent.internalPointer()));
 		return iterator.owner()->children(iterator);
 	}
 	
@@ -474,7 +474,7 @@ void DataTransformModel::SetInputField(const boost::uuids::uuid& treeID, SynGlyp
 
 void DataTransformModel::SetInputField(const boost::uuids::uuid& treeID, const QModelIndex& index, SynGlyphX::DataMappingGlyph::MappableField field, const SynGlyphX::InputField& inputfield) {
 
-	SynGlyphX::DataMappingGlyphGraph::const_iterator node(static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(index.internalPointer()));
+	SynGlyphX::DataMappingGlyphGraph::ConstGlyphIterator node(static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(index.internalPointer()));
 	//SetInputField(treeID, node, field, inputfield);
 	m_dataMapping->SetInputField(treeID, node, field, inputfield);
 	emit dataChanged(index, index);
@@ -487,7 +487,7 @@ void DataTransformModel::ClearInputBinding(const boost::uuids::uuid& treeID, Syn
 
 void DataTransformModel::ClearInputBinding(const boost::uuids::uuid& treeID, const QModelIndex& index, SynGlyphX::DataMappingGlyph::MappableField field) {
 
-	SynGlyphX::DataMappingGlyphGraph::const_iterator node(static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(index.internalPointer()));
+	SynGlyphX::DataMappingGlyphGraph::ConstGlyphIterator node(static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(index.internalPointer()));
 	//ClearInputBinding(treeID, node, field);
 	m_dataMapping->ClearInputBinding(treeID, node, field);
 	emit dataChanged(index, index);
@@ -507,7 +507,7 @@ bool DataTransformModel::removeRows(int row, int count, const QModelIndex& paren
 
 		if (parent.isValid()) {
 
-			SynGlyphX::DataMappingGlyphGraph::const_iterator parentGlyph(static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(parent.internalPointer()));
+			SynGlyphX::DataMappingGlyphGraph::ConstGlyphIterator parentGlyph(static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(parent.internalPointer()));
 			
 			boost::uuids::uuid treeId = GetTreeId(parent);
 			for (int i = lastRow; i >= row; --i) {
@@ -662,7 +662,7 @@ void DataTransformModel::UpdateGlyph(const QModelIndex& index, const SynGlyphX::
 
 	if (!m_dataMapping->GetGlyphGraphs().empty() && index.isValid()) {
 
-		SynGlyphX::DataMappingGlyphGraph::iterator glyph(static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(index.internalPointer()));
+		SynGlyphX::DataMappingGlyphGraph::GlyphIterator glyph(static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(index.internalPointer()));
 		*glyph = newGlyph;
 		emit dataChanged(index, index);
 	}
@@ -672,7 +672,7 @@ void DataTransformModel::UpdateGlyphGeometry(const QModelIndex& index, const Syn
 
 	if (!m_dataMapping->GetGlyphGraphs().empty() && index.isValid()) {
 
-		SynGlyphX::DataMappingGlyphGraph::iterator glyph(static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(index.internalPointer()));
+		SynGlyphX::DataMappingGlyphGraph::GlyphIterator glyph(static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(index.internalPointer()));
 		glyph->GetStructure() = structure;
 		emit dataChanged(index, index);
 	}
@@ -682,7 +682,7 @@ void DataTransformModel::UpdateVirtualTopology(const QModelIndex& index, const S
 
 	if (!m_dataMapping->GetGlyphGraphs().empty() && index.isValid()) {
 
-		SynGlyphX::DataMappingGlyphGraph::iterator glyph(static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(index.internalPointer()));
+		SynGlyphX::DataMappingGlyphGraph::GlyphIterator glyph(static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(index.internalPointer()));
 		glyph->GetVirtualTopology() = virtualTopology;
 		emit dataChanged(index, index);
 	}
@@ -695,7 +695,7 @@ const SynGlyphX::DataMappingGlyph& DataTransformModel::GetGlyph(const QModelInde
 		throw std::invalid_argument("Index doesn't exist in DataTransformModel");
 	}
 
-	SynGlyphX::DataMappingGlyphGraph::const_iterator glyph(static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(index.internalPointer()));
+	SynGlyphX::DataMappingGlyphGraph::ConstGlyphIterator glyph(static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(index.internalPointer()));
 	return (*glyph);
 }
 
@@ -710,7 +710,7 @@ void DataTransformModel::AddChildGlyph(const QModelIndex& parent, const SynGlyph
 		throw std::invalid_argument("Can't append 0 children");
 	}
 
-	SynGlyphX::DataMappingGlyphGraph::iterator parentGlyph(static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(parent.internalPointer()));
+	SynGlyphX::DataMappingGlyphGraph::GlyphIterator parentGlyph(static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(parent.internalPointer()));
 
 	unsigned int startingNumberOfChildren = rowCount(parent);
 	beginInsertRows(parent, startingNumberOfChildren, startingNumberOfChildren + numberOfChildren - 1);
@@ -785,11 +785,11 @@ bool DataTransformModel::canDropMimeData(const QMimeData* data, Qt::DropAction a
 		return false;
 	}
 
-	SynGlyphX::DataMappingGlyphGraph::iterator parentGlyph(static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(parent.internalPointer()));
+	SynGlyphX::DataMappingGlyphGraph::GlyphIterator parentGlyph(static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(parent.internalPointer()));
 	const QModelIndexList& indexes = glyphData->GetGlyphs();
 	for (int j = 0; j < indexes.length(); ++j) {
 
-		SynGlyphX::DataMappingGlyphGraph::iterator mimeDataGlyph(static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(indexes[j].internalPointer()));
+		SynGlyphX::DataMappingGlyphGraph::GlyphIterator mimeDataGlyph(static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(indexes[j].internalPointer()));
 		if (mimeDataGlyph.owner() != parentGlyph.owner()) {
 
 			return false;
@@ -819,15 +819,15 @@ bool DataTransformModel::dropMimeData(const QMimeData* data, Qt::DropAction acti
 
 	if ((glyphData != NULL) && (row == -1)) {
 
-		SynGlyphX::DataMappingGlyphGraph::const_iterator newParentGlyph(static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(parent.internalPointer()));
+		SynGlyphX::DataMappingGlyphGraph::ConstGlyphIterator newParentGlyph(static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(parent.internalPointer()));
 		const QModelIndexList& indexes = glyphData->GetGlyphs();
 
 		bool glyphsMoved = false;
 
 		for (int j = 0; j < indexes.length(); ++j) {
 
-			SynGlyphX::DataMappingGlyphGraph::const_iterator oldGlyph(static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(indexes[j].internalPointer()));
-			SynGlyphX::DataMappingGlyphGraph::const_iterator oldParentGlyph = oldGlyph.owner()->parent(oldGlyph);
+			SynGlyphX::DataMappingGlyphGraph::ConstGlyphIterator oldGlyph(static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(indexes[j].internalPointer()));
+			SynGlyphX::DataMappingGlyphGraph::ConstGlyphIterator oldParentGlyph = oldGlyph.owner()->parent(oldGlyph);
 
 			//Only drop if parents are different
 			if (oldParentGlyph != newParentGlyph) {

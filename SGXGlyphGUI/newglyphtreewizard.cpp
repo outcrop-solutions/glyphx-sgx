@@ -68,7 +68,7 @@ namespace SynGlyphX {
 			instanceCounts.push_back(m_glyphWidgets[i - 1]->GetNumberOfChildren());
 		}
 
-		newMaxGlyphTree.AllocateChildSubtree(templates, instanceCounts, newMaxGlyphTree.root());
+		newMaxGlyphTree.AllocateChildSubtree(templates, instanceCounts, newMaxGlyphTree.GetRoot());
 
 		m_dataMappingGlyphGraph = std::make_shared<SynGlyphX::DataMappingGlyphGraph>(newMaxGlyphTree);
 		QWizard::accept();
