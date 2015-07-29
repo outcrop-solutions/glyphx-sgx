@@ -112,9 +112,9 @@ namespace SynGlyphXANTz {
 			throw std::invalid_argument("CSV file has no glyph");
 		}
 
-		std::unordered_map<std::wstring, SynGlyphX::GlyphGraph::iterator> indexToNodeMap;
+		std::unordered_map<std::wstring, SynGlyphX::GlyphGraph::GlyphIterator> indexToNodeMap;
 
-		indexToNodeMap[currentLineValues[0]] = glyphGraph->insert(CreateGlyphFromCSVValues(currentLineValues));
+		indexToNodeMap[currentLineValues[0]] = glyphGraph->SetRootGlyph(CreateGlyphFromCSVValues(currentLineValues));
 		currentLineValues = csvReader.GetValuesFromLine(true);
 
 		do {
@@ -129,7 +129,7 @@ namespace SynGlyphXANTz {
 				continue;
 			}
 
-			indexToNodeMap[currentLineValues[0]] = glyphGraph->insert(indexToNodeMap[currentLineValues[4]], CreateGlyphFromCSVValues(currentLineValues));
+			indexToNodeMap[currentLineValues[0]] = glyphGraph->AddChildGlyph(indexToNodeMap[currentLineValues[4]], CreateGlyphFromCSVValues(currentLineValues));
 			currentLineValues = csvReader.GetValuesFromLine(true);
 
 		} while (!csvReader.IsAtEndOfFile());

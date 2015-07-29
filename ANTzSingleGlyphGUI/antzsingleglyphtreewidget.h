@@ -86,17 +86,17 @@ namespace SynGlyphXANTz {
 
 		void DeleteRootGlyphNode();
 
-		void CreateNewSubTree(pNPnode parent, const SynGlyphX::DataMappingGlyphGraph::const_iterator& minMaxGlyph);
-		pNPnode CreateNodeFromTemplate(pNPnode parent, const SynGlyphX::DataMappingGlyphGraph::const_iterator& minMaxGlyph);
+		void CreateNewSubTree(pNPnode parent, const SynGlyphX::DataMappingGlyphGraph::ConstGlyphIterator& minMaxGlyph);
+		pNPnode CreateNodeFromTemplate(pNPnode parent, const SynGlyphX::DataMappingGlyphGraph::ConstGlyphIterator& minMaxGlyph);
 		void RebuildTree();
 
-		void UpdateGlyphProperties(pNPnode glyph, const SynGlyphX::DataMappingGlyphGraph::const_iterator& minMaxGlyph);
+		void UpdateGlyphProperties(pNPnode glyph, const SynGlyphX::DataMappingGlyphGraph::ConstGlyphIterator& minMaxGlyph);
 		void UpdateGlyphProperties(pNPnode glyph, const SynGlyphX::Glyph& glyphTemplate);
 
 		void ConnectDataChangedSignal();
 		void DisconnectDataChangedSignal();
 
-		void ResetAnimationValuesInTree(pNPnode node, const SynGlyphX::DataMappingGlyphGraph::const_iterator& minMaxGlyph);
+		void ResetAnimationValuesInTree(pNPnode node, const SynGlyphX::DataMappingGlyphGraph::ConstGlyphIterator& minMaxGlyph);
 		void UpdateAnimationValuesFromGlyph(pNPnode node, const SynGlyphX::Glyph& glyph);
 		void TurnOffAnimationInNodeTree(pNPnode node);
 

@@ -46,7 +46,7 @@ namespace SynGlyphXANTz {
 			return QVariant();
 		}
 
-		SynGlyphX::DataMappingGlyphGraph::iterator glyph = GetIteratorFromIndex(index);
+		SynGlyphX::DataMappingGlyphGraph::GlyphIterator glyph = GetIteratorFromIndex(index);
 
 		std::wstring displayedData = SynGlyphX::GlyphGeometryInfo::s_shapeNames.left.at(glyph->GetStructure().GetGeometryShape().GetValue()) + L": ";
 		displayedData += SynGlyphX::VirtualTopologyInfo::s_virtualTopologyNames.left.at(glyph->GetVirtualTopology().GetType().GetValue());
@@ -65,12 +65,12 @@ namespace SynGlyphXANTz {
 
 		if (!parent.isValid()) {
 
-			return createIndex(row, column, m_minMaxGlyphTree->root().node());
+			return createIndex(row, column, m_minMaxGlyphTree->GetRoot().node());
 		}
 		else {
 
-			SynGlyphX::DataMappingGlyphGraph::iterator iT = GetIteratorFromIndex(parent);
-			return createIndex(row, column, m_minMaxGlyphTree->child(iT, row).node());
+			SynGlyphX::DataMappingGlyphGraph::GlyphIterator iT = GetIteratorFromIndex(parent);
+			return createIndex(row, column, m_minMaxGlyphTree->GetChild(iT, row).node());
 		}
 	}
 
@@ -78,20 +78,20 @@ namespace SynGlyphXANTz {
 
 		if (index.isValid()) {
 
-			SynGlyphX::DataMappingGlyphGraph::iterator iT = GetIteratorFromIndex(index);
+			SynGlyphX::DataMappingGlyphGraph::GlyphIterator iT = GetIteratorFromIndex(index);
 			if (!IsRootGlyph(iT)) {
 
-				SynGlyphX::DataMappingGlyphGraph::iterator parentIterator = m_minMaxGlyphTree->parent(iT);
+				SynGlyphX::DataMappingGlyphGraph::GlyphIterator parentIterator = m_minMaxGlyphTree->GetParent(iT);
 				if (IsRootGlyph(parentIterator)) {
 
 					return createIndex(0, 0, parentIterator.node());
 				}
 				else {
 
-					SynGlyphX::DataMappingGlyphGraph::iterator grandParentIterator = m_minMaxGlyphTree->parent(parentIterator);
-					for (int i = 0; i < m_minMaxGlyphTree->children(grandParentIterator); ++i) {
+					SynGlyphX::DataMappingGlyphGraph::GlyphIterator grandParentIterator = m_minMaxGlyphTree->GetParent(parentIterator);
+					for (int i = 0; i < m_minMaxGlyphTree->ChildCount(grandParentIterator.constify()); ++i) {
 
-						if (m_minMaxGlyphTree->child(grandParentIterator, i).equal(parentIterator)) {
+						if (m_minMaxGlyphTree->GetChild(grandParentIterator, i).equal(parentIterator)) {
 
 							return createIndex(i, 0, parentIterator.node());
 						}
@@ -112,8 +112,8 @@ namespace SynGlyphXANTz {
 
 		if (parent.isValid()) {
 
-			SynGlyphX::DataMappingGlyphGraph::const_iterator iT(static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(parent.internalPointer()));
-			return m_minMaxGlyphTree->children(iT);
+			SynGlyphX::DataMappingGlyphGraph::ConstGlyphIterator iT(static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(parent.internalPointer()));
+			return m_minMaxGlyphTree->ChildCount(iT);
 		}
 		else {
 
@@ -141,9 +141,9 @@ namespace SynGlyphXANTz {
 		return "";
 	}
 
-	bool MinMaxGlyphTreeModel::IsRootGlyph(const SynGlyphX::DataMappingGlyphGraph::iterator& glyph) const {
+	bool MinMaxGlyphTreeModel::IsRootGlyph(const SynGlyphX::DataMappingGlyphGraph::GlyphIterator& glyph) const {
 
-		return (glyph.equal(m_minMaxGlyphTree->root()));
+		return (glyph.equal(m_minMaxGlyphTree->GetRoot()));
 	}
 
 	Qt::DropActions MinMaxGlyphTreeModel::supportedDropActions() const {
@@ -158,11 +158,11 @@ namespace SynGlyphXANTz {
 			if (parent.isValid()) {
 
 				int lastRow = row + count - 1;
-				SynGlyphX::DataMappingGlyphGraph::iterator parentIterator = GetIteratorFromIndex(parent);
+				SynGlyphX::DataMappingGlyphGraph::GlyphIterator parentIterator = GetIteratorFromIndex(parent);
 				beginRemoveRows(parent, row, lastRow);
 				for (int i = lastRow; i >= row; --i) {
 
-					m_minMaxGlyphTree->erase_child(parentIterator, i);
+					m_minMaxGlyphTree->RemoveChild(parentIterator, i);
 				}
 
 				endRemoveRows();
@@ -193,18 +193,18 @@ namespace SynGlyphXANTz {
 			throw std::invalid_argument("Can't append 0 children");
 		}
 
-		SynGlyphX::DataMappingGlyphGraph::iterator parentGlyph = GetIteratorFromIndex(parent);
-		unsigned int startingNumberOfChildren = m_minMaxGlyphTree->children(parentGlyph);
+		SynGlyphX::DataMappingGlyphGraph::GlyphIterator parentGlyph = GetIteratorFromIndex(parent);
+		unsigned int startingNumberOfChildren = m_minMaxGlyphTree->ChildCount(parentGlyph.constify());
 		SynGlyphX::Vector3 newPosition = { { 15.0, 0.0, 0.0 } };
 		if (startingNumberOfChildren > 0) {
 
-			newPosition = m_minMaxGlyphTree->child(parentGlyph, startingNumberOfChildren - 1)->GetMinGlyph().GetPosition();
+			newPosition = m_minMaxGlyphTree->GetChild(parentGlyph, startingNumberOfChildren - 1)->GetMinGlyph().GetPosition();
 		}
 
 		beginInsertRows(parent, startingNumberOfChildren, startingNumberOfChildren + numberOfChildren - 1);
 		for (int i = 0; i < numberOfChildren; ++i) {
 
-			SynGlyphX::DataMappingGlyphGraph::iterator newChildGlyph = m_minMaxGlyphTree->append(parentGlyph, glyph);
+			SynGlyphX::DataMappingGlyphGraph::GlyphIterator newChildGlyph = m_minMaxGlyphTree->AddChildGlyph(parentGlyph, glyph);
 
 			//For now, update position to 15.0 less than the last x coordinate.  This follows what ANTz does
 			newPosition[0] -= 15.0;
@@ -220,7 +220,7 @@ namespace SynGlyphXANTz {
 
 		if (index.isValid() && (updates != SynGlyphX::PropertyUpdate::UpdateNone)) {
 
-			SynGlyphX::DataMappingGlyphGraph::iterator glyphToUpdate = GetIteratorFromIndex(index);
+			SynGlyphX::DataMappingGlyphGraph::GlyphIterator glyphToUpdate = GetIteratorFromIndex(index);
 
 			if (updates.testFlag(SynGlyphX::UpdateTorusRatio)) {
 
@@ -308,7 +308,7 @@ namespace SynGlyphXANTz {
 
 		if (index.isValid() && (updates != SynGlyphX::PropertyUpdate::UpdateNone)) {
 
-			SynGlyphX::DataMappingGlyphGraph::iterator glyphToUpdate = GetIteratorFromIndex(index);
+			SynGlyphX::DataMappingGlyphGraph::GlyphIterator glyphToUpdate = GetIteratorFromIndex(index);
 
 			if (updates.testFlag(SynGlyphX::UpdateScale)) {
 
@@ -369,7 +369,7 @@ namespace SynGlyphXANTz {
 
 		if (index.isValid() && (updates != SynGlyphX::PropertyUpdate::UpdateNone)) {
 
-			SynGlyphX::DataMappingGlyphGraph::iterator glyphToUpdate = GetIteratorFromIndex(index);;
+			SynGlyphX::DataMappingGlyphGraph::GlyphIterator glyphToUpdate = GetIteratorFromIndex(index);;
 
 			if (updates.testFlag(SynGlyphX::UpdateScale)) {
 
@@ -453,30 +453,30 @@ namespace SynGlyphXANTz {
 
 		if ((glyphData != NULL) && (row == -1)) {
 
-			SynGlyphX::DataMappingGlyphGraph::iterator newParentGlyph = GetIteratorFromIndex(parent);
+			SynGlyphX::DataMappingGlyphGraph::GlyphIterator newParentGlyph = GetIteratorFromIndex(parent);
 			const QModelIndexList& indexes = glyphData->GetGlyphs();
 
 			bool glyphsMoved = false;
 
 			for (int j = 0; j < indexes.length(); ++j) {
 
-				SynGlyphX::DataMappingGlyphGraph::iterator oldGlyph = GetIteratorFromIndex(indexes[j]);
-				SynGlyphX::DataMappingGlyphGraph::iterator oldParentGlyph = m_minMaxGlyphTree->parent(oldGlyph);
+				SynGlyphX::DataMappingGlyphGraph::GlyphIterator oldGlyph = GetIteratorFromIndex(indexes[j]);
+				SynGlyphX::DataMappingGlyphGraph::GlyphIterator oldParentGlyph = m_minMaxGlyphTree->GetParent(oldGlyph);
 
 				//Only drop if parents are different
 				if (oldParentGlyph != newParentGlyph) {
 
-					unsigned int numberOfChildren = m_minMaxGlyphTree->children(newParentGlyph);
+					unsigned int numberOfChildren = m_minMaxGlyphTree->ChildCount(newParentGlyph.constify());
 
 					//Only do an insert here.  The MoveAction will take care of deleting the old object
 					beginInsertRows(parent, numberOfChildren, numberOfChildren);
 					SynGlyphX::Vector3 newPosition = { { 15.0, 0.0, 0.0 } };
 					if (numberOfChildren > 0) {
 
-						newPosition = m_minMaxGlyphTree->child(newParentGlyph, numberOfChildren - 1)->GetMinGlyph().GetPosition();
+						newPosition = m_minMaxGlyphTree->GetChild(newParentGlyph, numberOfChildren - 1)->GetMinGlyph().GetPosition();
 					}
-					stlplus::ntree<SynGlyphX::DataMappingGlyph> oldGlyphSubtree = m_minMaxGlyphTree->subtree(oldGlyph);
-					SynGlyphX::DataMappingGlyphGraph::iterator newGlyph = m_minMaxGlyphTree->insert(newParentGlyph, oldGlyphSubtree);
+					stlplus::ntree<SynGlyphX::DataMappingGlyph> oldGlyphSubtree = m_minMaxGlyphTree->GetSubgraph(oldGlyph);
+					SynGlyphX::DataMappingGlyphGraph::GlyphIterator newGlyph = m_minMaxGlyphTree->AddChildGlyphGraph(newParentGlyph, oldGlyphSubtree);
 
 					//For now, update position to 15.0 less than the last x coordinate.  This follows what ANTz does
 					newPosition[0] -= 15.0;
@@ -559,7 +559,7 @@ namespace SynGlyphXANTz {
 		return (!m_clipboardGlyph.valid());
 	}
 
-	SynGlyphX::DataMappingGlyphGraph::iterator MinMaxGlyphTreeModel::GetClipboardGlyph() const {
+	SynGlyphX::DataMappingGlyphGraph::GlyphIterator MinMaxGlyphTreeModel::GetClipboardGlyph() const {
 
 		return m_clipboardGlyph;
 	}
@@ -583,21 +583,21 @@ namespace SynGlyphXANTz {
 		return (model->GetBranchLevel(left) > model->GetBranchLevel(right));
 	}
 
-	SynGlyphX::DataMappingGlyphGraph::iterator MinMaxGlyphTreeModel::GetIteratorFromIndex(const QModelIndex& index) {
+	SynGlyphX::DataMappingGlyphGraph::GlyphIterator MinMaxGlyphTreeModel::GetIteratorFromIndex(const QModelIndex& index) {
 
-		SynGlyphX::DataMappingGlyphGraph::iterator iT(static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(index.internalPointer()));
+		SynGlyphX::DataMappingGlyphGraph::GlyphIterator iT(static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(index.internalPointer()));
 		return iT;
 	}
 
 	unsigned int MinMaxGlyphTreeModel::GetBranchLevel(const QModelIndex& index) const {
 
-		SynGlyphX::DataMappingGlyphGraph::iterator node = GetIteratorFromIndex(index);
-		return m_minMaxGlyphTree->depth(node);
+		SynGlyphX::DataMappingGlyphGraph::GlyphIterator node = GetIteratorFromIndex(index);
+		return m_minMaxGlyphTree->GetDepth(node.constify());
 	}
 
-	SynGlyphX::DataMappingGlyphGraph::const_iterator MinMaxGlyphTreeModel::GetMinMaxGlyph(const QModelIndex& index) const {
+	SynGlyphX::DataMappingGlyphGraph::ConstGlyphIterator MinMaxGlyphTreeModel::GetMinMaxGlyph(const QModelIndex& index) const {
 
-		SynGlyphX::DataMappingGlyphGraph::iterator iT = GetIteratorFromIndex(index);
+		SynGlyphX::DataMappingGlyphGraph::GlyphIterator iT = GetIteratorFromIndex(index);
 		return iT.constify();
 	}
 

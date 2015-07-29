@@ -117,7 +117,7 @@ namespace SynGlyphXANTz {
 			SynGlyphX::DataMappingGlyphGraph::ConstSharedPtr minMaxGlyphTree = m_model->GetMinMaxGlyphTree();
 			if (minMaxGlyphTree) {
 
-				CreateNewSubTree(nullptr, minMaxGlyphTree->root());
+				CreateNewSubTree(nullptr, minMaxGlyphTree->GetRoot());
 			}
 
 			//Undo previous select node at the beginning of this function
@@ -125,17 +125,17 @@ namespace SynGlyphXANTz {
 		}
 	}
 
-	void ANTzSingleGlyphTreeWidget::CreateNewSubTree(pNPnode parent, const SynGlyphX::DataMappingGlyphGraph::const_iterator& minMaxGlyph) {
+	void ANTzSingleGlyphTreeWidget::CreateNewSubTree(pNPnode parent, const SynGlyphX::DataMappingGlyphGraph::ConstGlyphIterator& minMaxGlyph) {
 
 		pNPnode childNode = CreateNodeFromTemplate(parent, minMaxGlyph);
 
-		for (int i = 0; i < m_model->GetMinMaxGlyphTree()->children(minMaxGlyph); ++i) {
+		for (int i = 0; i < m_model->GetMinMaxGlyphTree()->ChildCount(minMaxGlyph); ++i) {
 
-			CreateNewSubTree(childNode, m_model->GetMinMaxGlyphTree()->child(minMaxGlyph, i));
+			CreateNewSubTree(childNode, m_model->GetMinMaxGlyphTree()->GetChild(minMaxGlyph, i));
 		}
 	}
 
-	pNPnode ANTzSingleGlyphTreeWidget::CreateNodeFromTemplate(pNPnode parent, const SynGlyphX::DataMappingGlyphGraph::const_iterator& minMaxGlyph) {
+	pNPnode ANTzSingleGlyphTreeWidget::CreateNodeFromTemplate(pNPnode parent, const SynGlyphX::DataMappingGlyphGraph::ConstGlyphIterator& minMaxGlyph) {
 
 		pNPnode glyph = npNodeNew(kNodePin, parent, m_antzData);
 		if (parent == nullptr) {
@@ -158,11 +158,11 @@ namespace SynGlyphXANTz {
 
 	void ANTzSingleGlyphTreeWidget::OnModelRowsInserted(const QModelIndex& parent, int first, int last) {
 
-		SynGlyphX::DataMappingGlyphGraph::const_iterator minMaxGlyphParent = SynGlyphX::DataMappingGlyphGraph::const_iterator(static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(parent.internalPointer()));
+		SynGlyphX::DataMappingGlyphGraph::ConstGlyphIterator minMaxGlyphParent = SynGlyphX::DataMappingGlyphGraph::ConstGlyphIterator(static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(parent.internalPointer()));
 		pNPnode parentGlyph = GetGlyphFromModelIndex(parent);
 		for (int i = first; i <= last; ++i) {
 
-			CreateNewSubTree(parentGlyph, m_model->GetMinMaxGlyphTree()->child(minMaxGlyphParent, i));
+			CreateNewSubTree(parentGlyph, m_model->GetMinMaxGlyphTree()->GetChild(minMaxGlyphParent, i));
 		}
 		EnableBasedOnModelRowCount();
 	}
@@ -229,13 +229,13 @@ namespace SynGlyphXANTz {
 		for (int i = topLeft.row(); i <= bottomRight.row(); ++i) {
 
 			QModelIndex index = m_model->index(i, 0, topLeft.parent());
-			SynGlyphX::DataMappingGlyphGraph::const_iterator minMaxGlyph = SynGlyphX::DataMappingGlyphGraph::const_iterator(static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(index.internalPointer()));
+			SynGlyphX::DataMappingGlyphGraph::ConstGlyphIterator minMaxGlyph = SynGlyphX::DataMappingGlyphGraph::ConstGlyphIterator(static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(index.internalPointer()));
 			pNPnode glyph = GetGlyphFromModelIndex(index);
 			UpdateGlyphProperties(glyph, minMaxGlyph);
 		}
 	}
 
-	void ANTzSingleGlyphTreeWidget::UpdateGlyphProperties(pNPnode glyph, const SynGlyphX::DataMappingGlyphGraph::const_iterator& minMaxGlyph) {
+	void ANTzSingleGlyphTreeWidget::UpdateGlyphProperties(pNPnode glyph, const SynGlyphX::DataMappingGlyphGraph::ConstGlyphIterator& minMaxGlyph) {
 
 		if (m_glyphTreeType == MinMaxGlyphTreeModel::GlyphType::Min) {
 
@@ -507,7 +507,7 @@ namespace SynGlyphXANTz {
 
 			if (m_animationEnabled) {
 
-				ResetAnimationValuesInTree(m_rootGlyph, minMaxGlyphTree->root());
+				ResetAnimationValuesInTree(m_rootGlyph, minMaxGlyphTree->GetRoot());
 			}
 			else {
 
@@ -516,7 +516,7 @@ namespace SynGlyphXANTz {
 		}
 	}
 
-	void ANTzSingleGlyphTreeWidget::ResetAnimationValuesInTree(pNPnode node, const SynGlyphX::DataMappingGlyphGraph::const_iterator& minMaxGlyph) {
+	void ANTzSingleGlyphTreeWidget::ResetAnimationValuesInTree(pNPnode node, const SynGlyphX::DataMappingGlyphGraph::ConstGlyphIterator& minMaxGlyph) {
 
 		if (m_glyphTreeType == MinMaxGlyphTreeModel::GlyphType::Min) {
 
@@ -527,9 +527,9 @@ namespace SynGlyphXANTz {
 			UpdateAnimationValuesFromGlyph(node, minMaxGlyph->GetMaxGlyph());
 		}
 
-		for (int i = 0; i < m_model->GetMinMaxGlyphTree()->children(minMaxGlyph); ++i) {
+		for (int i = 0; i < m_model->GetMinMaxGlyphTree()->ChildCount(minMaxGlyph); ++i) {
 
-			ResetAnimationValuesInTree(node->child[i], m_model->GetMinMaxGlyphTree()->child(minMaxGlyph, i));
+			ResetAnimationValuesInTree(node->child[i], m_model->GetMinMaxGlyphTree()->GetChild(minMaxGlyph, i));
 		}
 	}
 

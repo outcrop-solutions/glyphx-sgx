@@ -59,7 +59,7 @@ namespace SynGlyphXANTz {
 		void UpdateGlyph(const QModelIndex& index, GlyphType type, const SynGlyphX::Glyph& glyph, SynGlyphX::PropertyUpdates updates = SynGlyphX::UpdateAll);
 		void UpdateGlyphs(const QModelIndexList& indexList, GlyphType type, const SynGlyphX::Glyph& glyph, SynGlyphX::PropertyUpdates updates = SynGlyphX::UpdateAll);
 
-		SynGlyphX::DataMappingGlyphGraph::const_iterator GetMinMaxGlyph(const QModelIndex& index) const;
+		SynGlyphX::DataMappingGlyphGraph::ConstGlyphIterator GetMinMaxGlyph(const QModelIndex& index) const;
 
 		virtual QStringList mimeTypes() const;
 		virtual QMimeData* mimeData(const QModelIndexList& indexes) const;
@@ -70,7 +70,7 @@ namespace SynGlyphXANTz {
 		bool SaveToCSV(const QString& filename, bool writeMaxGlyph = true);
 
 		bool IsClipboardEmpty() const;
-		SynGlyphX::DataMappingGlyphGraph::iterator GetClipboardGlyph() const;
+		SynGlyphX::DataMappingGlyphGraph::GlyphIterator GetClipboardGlyph() const;
 		void CopyToClipboard(const QModelIndex& index, bool removeFromTree = false);
 
 		void RepaceModelWithDefaultGlyphTree();
@@ -83,13 +83,13 @@ namespace SynGlyphXANTz {
 		void UpdateGlyphMax(const QModelIndex& index, const SynGlyphX::Glyph& glyph, SynGlyphX::PropertyUpdates updates);
 
 		bool IsValidCSVFile(const QString& filename) const;
-		bool IsRootGlyph(const SynGlyphX::DataMappingGlyphGraph::iterator& glyph) const;
+		bool IsRootGlyph(const SynGlyphX::DataMappingGlyphGraph::GlyphIterator& glyph) const;
 		unsigned int GetBranchLevel(const QModelIndex& index) const;
 
-		static SynGlyphX::DataMappingGlyphGraph::iterator GetIteratorFromIndex(const QModelIndex& index);
+		static SynGlyphX::DataMappingGlyphGraph::GlyphIterator GetIteratorFromIndex(const QModelIndex& index);
 
 		SynGlyphX::DataMappingGlyphGraph::SharedPtr m_minMaxGlyphTree;
-		SynGlyphX::DataMappingGlyphGraph::iterator m_clipboardGlyph;
+		SynGlyphX::DataMappingGlyphGraph::GlyphIterator m_clipboardGlyph;
 	};
 
 } //namespace SynGlyphXANTz

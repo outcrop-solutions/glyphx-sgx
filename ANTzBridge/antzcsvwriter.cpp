@@ -141,7 +141,7 @@ namespace SynGlyphXANTz {
 
 			for (const SynGlyphX::GlyphGraph::ConstSharedPtr& tree : trees) {
 
-				id = WriteGlyph(nodeFile, tree, tree->root(), id, 0, 0);
+				id = WriteGlyph(nodeFile, tree, tree->GetRoot(), id, 0, 0);
 			}
 		}
 		catch (const std::exception& e) {
@@ -165,7 +165,7 @@ namespace SynGlyphXANTz {
 			
 			for (const SynGlyphX::GlyphGraph::ConstSharedPtr& tree : trees) {
 
-				tagID = WriteGlyphTag(tagFile, tree, tree->root(), tagID);
+				tagID = WriteGlyphTag(tagFile, tree, tree->GetRoot(), tagID);
 			}
 		}
 		catch (const std::exception& e) {
@@ -174,9 +174,9 @@ namespace SynGlyphXANTz {
 		}
 	}
 
-	unsigned long ANTzCSVWriter::WriteGlyphTag(SynGlyphX::CSVFileWriter& file, const SynGlyphX::GlyphGraph::ConstSharedPtr tree, const SynGlyphX::GlyphGraph::const_iterator& glyph, unsigned long id) {
+	unsigned long ANTzCSVWriter::WriteGlyphTag(SynGlyphX::CSVFileWriter& file, const SynGlyphX::GlyphGraph::ConstSharedPtr tree, const SynGlyphX::GlyphGraph::ConstGlyphIterator& glyph, unsigned long id) {
 
-		unsigned int numberOfChildren = tree->children(glyph);
+		unsigned int numberOfChildren = tree->ChildCount(glyph);
 
 		std::wstring tag;
 		if (glyph->GetTag().empty()) {
@@ -199,15 +199,15 @@ namespace SynGlyphXANTz {
 
 		unsigned long childId = id + 1;
 		for (unsigned int i = 0; i < numberOfChildren; ++i) {
-			childId = WriteGlyphTag(file, tree, tree->child(glyph, i), childId);
+			childId = WriteGlyphTag(file, tree, tree->GetChild(glyph, i), childId);
 		}
 
 		return childId;
 	}
 
-	unsigned long ANTzCSVWriter::WriteGlyph(SynGlyphX::CSVFileWriter& file, const SynGlyphX::GlyphGraph::ConstSharedPtr tree, const SynGlyphX::GlyphGraph::const_iterator& glyph, unsigned long id, unsigned long parentId, unsigned long branchLevel) {
+	unsigned long ANTzCSVWriter::WriteGlyph(SynGlyphX::CSVFileWriter& file, const SynGlyphX::GlyphGraph::ConstSharedPtr tree, const SynGlyphX::GlyphGraph::ConstGlyphIterator& glyph, unsigned long id, unsigned long parentId, unsigned long branchLevel) {
 
-		unsigned int numberOfChildren = tree->children(glyph);
+		unsigned int numberOfChildren = tree->ChildCount(glyph);
 
 		std::wstring idString = boost::lexical_cast<std::wstring>(id);
 		SynGlyphX::CSVFileHandler::CSVValues values;
@@ -253,7 +253,7 @@ namespace SynGlyphXANTz {
 
 		unsigned long childId = id + 1;
 		for (unsigned int i = 0; i < numberOfChildren; ++i) {
-			childId = WriteGlyph(file, tree, tree->child(glyph, i), childId, id, branchLevel + 1);
+			childId = WriteGlyph(file, tree, tree->GetChild(glyph, i), childId, id, branchLevel + 1);
 		}
 
 		return childId;
