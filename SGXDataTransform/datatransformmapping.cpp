@@ -257,7 +257,7 @@ namespace SynGlyphX {
 				continue;
 			}
 
-			if (!glyphGraph->root()->IsAnInputFieldBoundToAPosition()) {
+			if (!glyphGraph->GetRoot()->IsAnInputFieldBoundToAPosition()) {
 
 				return false;
 			}
@@ -304,13 +304,13 @@ namespace SynGlyphX {
 		return m_baseObjects;
 	}
 	
-	void DataTransformMapping::SetInputField(const boost::uuids::uuid& treeID, DataMappingGlyphGraph::const_iterator& node, DataMappingGlyph::MappableField field, const InputField& inputfield) {
+	void DataTransformMapping::SetInputField(const boost::uuids::uuid& treeID, DataMappingGlyphGraph::ConstGlyphIterator& node, DataMappingGlyph::MappableField field, const InputField& inputfield) {
 
 		DataMappingGlyphGraph::SharedPtr glyphTree = m_glyphTrees[treeID];
 		glyphTree->SetInputField(node, field, inputfield);
 	}
 
-	void DataTransformMapping::ClearInputBinding(const boost::uuids::uuid& treeID, DataMappingGlyphGraph::const_iterator& node, DataMappingGlyph::MappableField field) {
+	void DataTransformMapping::ClearInputBinding(const boost::uuids::uuid& treeID, DataMappingGlyphGraph::ConstGlyphIterator& node, DataMappingGlyph::MappableField field) {
 
 		DataMappingGlyphGraph::SharedPtr glyphTree = m_glyphTrees[treeID];
 		glyphTree->ClearInputBinding(node, field);
@@ -356,7 +356,7 @@ namespace SynGlyphX {
 		m_defaults = defaults;
 	}
 
-	void DataTransformMapping::AddChildGlyph(const boost::uuids::uuid& treeId, DataMappingGlyphGraph::iterator& parent, const DataMappingGlyph& glyphTemplate, unsigned int numberOfChildren) {
+	void DataTransformMapping::AddChildGlyph(const boost::uuids::uuid& treeId, DataMappingGlyphGraph::GlyphIterator& parent, const DataMappingGlyph& glyphTemplate, unsigned int numberOfChildren) {
 
 		if (!parent.valid()) {
 
@@ -368,16 +368,16 @@ namespace SynGlyphX {
 			throw std::invalid_argument("Can't append 0 children");
 		}
 
-		unsigned int startingNumberOfChildren = m_glyphTrees[treeId]->children(parent);
+		unsigned int startingNumberOfChildren = m_glyphTrees[treeId]->ChildCount(parent.constify());
 		SynGlyphX::Vector3 newPosition = { { 15.0, 0.0, 0.0 } };
 		if (startingNumberOfChildren > 0) {
 
-			newPosition = m_glyphTrees[treeId]->child(parent, startingNumberOfChildren - 1)->GetMinGlyph().GetPosition();
+			newPosition = m_glyphTrees[treeId]->GetChild(parent, startingNumberOfChildren - 1)->GetMinGlyph().GetPosition();
 		}
 
 		for (int i = 0; i < numberOfChildren; ++i) {
 
-			SynGlyphX::DataMappingGlyphGraph::iterator newChildGlyph = m_glyphTrees[treeId]->append(parent, glyphTemplate);
+			SynGlyphX::DataMappingGlyphGraph::GlyphIterator newChildGlyph = m_glyphTrees[treeId]->AddChildGlyph(parent, glyphTemplate);
 
 			//For now, update position to 15.0 less than the last x coordinate.  This follows what ANTz does
 			newPosition[0] -= 15.0;
@@ -387,31 +387,31 @@ namespace SynGlyphX {
 		}
 	}
 
-	void DataTransformMapping::AddChildTree(const boost::uuids::uuid& treeId, DataMappingGlyphGraph::iterator& parent, const stlplus::ntree<SynGlyphX::DataMappingGlyph>& glyphGraph) {
+	void DataTransformMapping::AddChildTree(const boost::uuids::uuid& treeId, DataMappingGlyphGraph::GlyphIterator& parent, const stlplus::ntree<SynGlyphX::DataMappingGlyph>& glyphGraph) {
 
 		if (!parent.valid()) {
 
 			throw std::invalid_argument("Can't append children to invalid parent");
 		}
 
-		unsigned int startingNumberOfChildren = m_glyphTrees[treeId]->children(parent);
+		unsigned int startingNumberOfChildren = m_glyphTrees[treeId]->ChildCount(parent.constify());
 		SynGlyphX::Vector3 newPosition = { { 15.0, 0.0, 0.0 } };
 		if (startingNumberOfChildren > 0) {
 
-			newPosition = m_glyphTrees[treeId]->child(parent, startingNumberOfChildren - 1)->GetMinGlyph().GetPosition();
+			newPosition = m_glyphTrees[treeId]->GetChild(parent, startingNumberOfChildren - 1)->GetMinGlyph().GetPosition();
 			//For now, update position to 15.0 less than the last x coordinate.  This follows what ANTz does
 			newPosition[0] -= 15.0;
 		}
 
-		SynGlyphX::DataMappingGlyphGraph::iterator newChildGlyph = m_glyphTrees[treeId]->append(parent, glyphGraph);
+		SynGlyphX::DataMappingGlyphGraph::GlyphIterator newChildGlyph = m_glyphTrees[treeId]->AddChildGlyphGraph(parent, glyphGraph);
 		newChildGlyph->GetPosition()[0].GetValue().SetMinDiff(newPosition[0], 0.0);
 		newChildGlyph->GetPosition()[1].GetValue().SetMinDiff(newPosition[1], 0.0);
 		newChildGlyph->GetPosition()[2].GetValue().SetMinDiff(newPosition[2], 0.0);
 	}
 
-	void DataTransformMapping::RemoveGlyph(const boost::uuids::uuid& treeId, DataMappingGlyphGraph::const_iterator& parent, int child) {
+	void DataTransformMapping::RemoveGlyph(const boost::uuids::uuid& treeId, DataMappingGlyphGraph::ConstGlyphIterator& parent, int child) {
 
-		m_glyphTrees[treeId]->erase_child(parent.deconstify(), child);
+		m_glyphTrees[treeId]->RemoveChild(parent.deconstify(), child);
 	}
 
 	const SceneProperties& DataTransformMapping::GetSceneProperties() const {

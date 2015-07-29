@@ -2,34 +2,19 @@
 
 namespace SynGlyphX {
 
-	GlyphEdge::GlyphEdge() : 
-		m_type(Type::Topological) {
-
-	}
-
-	GlyphEdge::GlyphEdge(const GlyphEdge& edge) :
-		m_type(edge.m_type) {
-
-	}
-
-	GlyphEdge::~GlyphEdge() {
-
-	}
-
 	GlyphGraph::GlyphGraph() :
-		stlplus::ntree<Glyph>() {
+		GlyphGraphTemplate<Glyph>() {
 
 
 	}
 
 	GlyphGraph::GlyphGraph(const Glyph& rootGlyph) :
-		stlplus::ntree<Glyph>() {
+		GlyphGraphTemplate<Glyph>(rootGlyph) {
 
-		insert(rootGlyph);
 	}
 
 	GlyphGraph::GlyphGraph(const std::vector<Glyph>& templates, const std::vector<unsigned int> instances, unsigned int depth) :
-		stlplus::ntree<Glyph>() {
+		GlyphGraphTemplate<Glyph>() {
 
 		insert(templates[depth]);
 		++depth;
@@ -38,7 +23,7 @@ namespace SynGlyphX {
 
 			for (unsigned int i = 0; i < instances[depth]; ++i) {
 
-				GlyphGraph::iterator newGlyph = insert(root(), templates[depth]);
+				GlyphGraph::GlyphIterator newGlyph = insert(root(), templates[depth]);
 				newGlyph->GetPosition()[0] = i * -15.0;
 			}
 		}
@@ -47,14 +32,14 @@ namespace SynGlyphX {
 			for (unsigned int i = 0; i < instances[depth]; ++i) {
 
 				GlyphGraph subGraph(templates, instances, depth);
-				GlyphGraph::iterator newGlyph = insert(root(), subGraph);
+				GlyphGraph::GlyphIterator newGlyph = insert(root(), subGraph);
 				newGlyph->GetPosition()[0] = i * -15.0;
 			}
 		}
 	}
 
 	GlyphGraph::GlyphGraph(const GlyphGraph& graph) :
-		stlplus::ntree<Glyph>(graph) {
+		GlyphGraphTemplate<Glyph>(graph) {
 
 
 	}
@@ -64,7 +49,7 @@ namespace SynGlyphX {
 
 	}
 
-	void GlyphGraph::AllocateChildSubtree(const std::vector<Glyph>& templates, const std::vector<unsigned int> instances, const GlyphGraph::iterator& parent) {
+	void GlyphGraph::AllocateChildSubtree(const std::vector<Glyph>& templates, const std::vector<unsigned int> instances, const GlyphGraph::GlyphIterator& parent) {
 
 		unsigned int numberOfInstances = instances.size();
 		if ((numberOfInstances == 0) || (templates.empty())) {
@@ -75,7 +60,7 @@ namespace SynGlyphX {
 
 			for (unsigned int i = 0; i < instances[0]; ++i) {
 
-				GlyphGraph::iterator newGlyph = insert(root(), templates[0]);
+				GlyphGraph::GlyphIterator newGlyph = insert(root(), templates[0]);
 				newGlyph->GetPosition()[0] = i * -15.0;
 			}
 		}
@@ -83,7 +68,7 @@ namespace SynGlyphX {
 			for (unsigned int i = 0; i < instances[0]; ++i) {
 
 				GlyphGraph subGraph(templates, instances, 0);
-				GlyphGraph::iterator newGlyph = insert(parent, subGraph);
+				GlyphGraph::GlyphIterator newGlyph = insert(parent, subGraph);
 				newGlyph->GetPosition()[0] = i * -15.0;
 			}
 		}

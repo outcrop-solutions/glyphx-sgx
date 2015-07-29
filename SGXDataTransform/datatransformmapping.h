@@ -65,12 +65,12 @@ namespace SynGlyphX {
 		void RemoveGlyphTree(const boost::uuids::uuid& id);
 		const DataMappingGlyphGraphMap& GetGlyphGraphs() const;
 
-		void AddChildGlyph(const boost::uuids::uuid& treeId, DataMappingGlyphGraph::iterator& parent, const DataMappingGlyph& glyphTemplate, unsigned int numberOfChildren = 1);
-		void AddChildTree(const boost::uuids::uuid& treeId, DataMappingGlyphGraph::iterator& parent, const stlplus::ntree<SynGlyphX::DataMappingGlyph>& glyphGraph);
-		void RemoveGlyph(const boost::uuids::uuid& treeId, DataMappingGlyphGraph::const_iterator& parent, int child);
+		void AddChildGlyph(const boost::uuids::uuid& treeId, DataMappingGlyphGraph::GlyphIterator& parent, const DataMappingGlyph& glyphTemplate, unsigned int numberOfChildren = 1);
+		void AddChildTree(const boost::uuids::uuid& treeId, DataMappingGlyphGraph::GlyphIterator& parent, const stlplus::ntree<SynGlyphX::DataMappingGlyph>& glyphGraph);
+		void RemoveGlyph(const boost::uuids::uuid& treeId, DataMappingGlyphGraph::ConstGlyphIterator& parent, int child);
 
-		void SetInputField(const boost::uuids::uuid& treeID, DataMappingGlyphGraph::const_iterator& node, DataMappingGlyph::MappableField field, const InputField& inputfield);
-		void ClearInputBinding(const boost::uuids::uuid& treeID, DataMappingGlyphGraph::const_iterator& node, DataMappingGlyph::MappableField field);
+		void SetInputField(const boost::uuids::uuid& treeID, DataMappingGlyphGraph::ConstGlyphIterator& node, DataMappingGlyph::MappableField field, const InputField& inputfield);
+		void ClearInputBinding(const boost::uuids::uuid& treeID, DataMappingGlyphGraph::ConstGlyphIterator& node, DataMappingGlyph::MappableField field);
 
 		bool IsTransformable() const;
 		bool DoesAtLeastOneGlyphGraphHaveBindingsOnPosition() const;

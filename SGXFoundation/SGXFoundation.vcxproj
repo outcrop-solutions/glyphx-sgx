@@ -100,6 +100,7 @@
     <ClInclude Include="glyphgeometry.h" />
     <ClInclude Include="glyphgeometryinfo.h" />
     <ClInclude Include="glyphgraph.h" />
+    <ClInclude Include="glyphgraphtemplate.h" />
     <ClInclude Include="glyphtemplate.h" />
     <ClInclude Include="graphcopyvisitor.h" />
     <ClInclude Include="sgxfoundation.h" />

@@ -58,8 +58,8 @@ namespace SynGlyphX {
 
 		GlyphGraph::ConstSharedVector CreateGlyphTreesFromMinMaxTrees(const DataTransformMapping& mapping) const;
 		GlyphGraph::ConstSharedVector CreateGlyphTreesFromMinMaxTree(DataMappingGlyphGraph::ConstSharedPtr minMaxTree) const;
-		Glyph ProcessMinMaxGlyph(const DataMappingGlyphGraph::const_iterator& minMaxGlyph, const InputFieldDataMap& queryResultData, unsigned int index) const;
-		void AddChildrenToGlyphTree(GlyphGraph::SharedPtr tree, GlyphGraph::iterator newNode, DataMappingGlyphGraph::ConstSharedPtr minMaxTree, DataMappingGlyphGraph::const_iterator node, const InputFieldDataMap& queryResultData, unsigned int index) const;
+		Glyph ProcessMinMaxGlyph(const DataMappingGlyphGraph::ConstGlyphIterator& minMaxGlyph, const InputFieldDataMap& queryResultData, unsigned int index) const;
+		void AddChildrenToGlyphTree(GlyphGraph::SharedPtr tree, GlyphGraph::GlyphIterator newNode, DataMappingGlyphGraph::ConstSharedPtr minMaxTree, DataMappingGlyphGraph::ConstGlyphIterator node, const InputFieldDataMap& queryResultData, unsigned int index) const;
 		
 		double TransformProperty(const InputBinding& binding, const NumericMappingProperty& mappingProperty, const InputFieldDataMap& queryResultData, unsigned int index) const;
 		GlyphColor TransformProperty(const InputBinding& binding, const ColorMappingProperty& mappingProperty, const InputFieldDataMap& queryResultData, unsigned int index) const;
@@ -70,7 +70,7 @@ namespace SynGlyphX {
 		
 		void GetDataMinAndDifference(const InputBinding& binding, const InputFieldData& fieldData, double& dataMin, double& dataDifference) const;
 		
-		std::wstring GenerateTag(const DataMappingGlyphGraph::const_iterator& minMaxGlyph, const InputFieldDataMap& queryResultData, unsigned int index) const;
+		std::wstring GenerateTag(const DataMappingGlyphGraph::ConstGlyphIterator& minMaxGlyph, const InputFieldDataMap& queryResultData, unsigned int index) const;
 
 		void RunSelectSqlQuery(const InputField& inputfield, QVariantList& data) const;
 

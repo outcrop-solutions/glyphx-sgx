@@ -22,30 +22,13 @@
 #include "glyphgeometry.h"
 #include "glyph.h"
 #include "glyphcolor.h"
-//#include <boost/graph/directed_graph.hpp>
-#include <containers/ntree.hpp>
+#include "glyphgraphtemplate.h"
 #include <memory>
 #include <array>
 
 namespace SynGlyphX {
 
-	class SGXFOUNDATION_API GlyphEdge {
-
-	public:
-		enum Type {
-
-			Topological,
-			Link
-		};
-
-		Type m_type;
-
-		GlyphEdge();
-		GlyphEdge(const GlyphEdge& edge);
-		~GlyphEdge();
-	};
-
-	class SGXFOUNDATION_API GlyphGraph : public stlplus::ntree<Glyph> {
+	class SGXFOUNDATION_API GlyphGraph : public GlyphGraphTemplate<Glyph> {
 
 	public:
 		typedef std::shared_ptr<GlyphGraph> SharedPtr;
@@ -57,7 +40,7 @@ namespace SynGlyphX {
 		GlyphGraph(const GlyphGraph& graph);
 		~GlyphGraph();
 
-		void AllocateChildSubtree(const std::vector<Glyph>& templates, const std::vector<unsigned int> instances, const GlyphGraph::iterator& parent);
+		void AllocateChildSubtree(const std::vector<Glyph>& templates, const std::vector<unsigned int> instances, const GlyphGraph::GlyphIterator& parent);
 
 	protected:
 		GlyphGraph(const std::vector<Glyph>& templates, const std::vector<unsigned int> instances, unsigned int depth);

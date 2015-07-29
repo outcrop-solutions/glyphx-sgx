@@ -59,7 +59,7 @@ namespace SynGlyphX {
 
 		for (auto minMaxTree : mapping.GetGlyphGraphs()) {
 
-			if (minMaxTree.second->root()->IsAnInputFieldBoundToAPosition()) {
+			if (minMaxTree.second->GetRoot()->IsAnInputFieldBoundToAPosition()) {
 
 				GlyphGraph::ConstSharedVector newTrees = CreateGlyphTreesFromMinMaxTree(minMaxTree.second);
 				allTrees.insert(allTrees.end(), newTrees.begin(), newTrees.end());
@@ -84,7 +84,7 @@ namespace SynGlyphX {
 
 		GlyphGraph::ConstSharedVector trees;
 
-		DataMappingGlyphGraph::const_iterator minMaxGlyph = minMaxTree->root().constify();
+		DataMappingGlyphGraph::ConstGlyphIterator minMaxGlyph = minMaxTree->GetRoot().constify();
 
 		InputFieldDataMap queryResultData;
 		const DataMappingGlyphGraph::InputFieldMap& inputFields = minMaxTree->GetInputFields();
@@ -118,9 +118,9 @@ namespace SynGlyphX {
 
 			GlyphGraph::SharedPtr glyphTree = std::make_shared<GlyphGraph>();
 
-			glyphTree->insert(ProcessMinMaxGlyph(minMaxGlyph, queryResultData, i));
+			glyphTree->SetRootGlyph(ProcessMinMaxGlyph(minMaxGlyph, queryResultData, i));
 
-			AddChildrenToGlyphTree(glyphTree, glyphTree->root(), minMaxTree, minMaxGlyph, queryResultData, i);
+			AddChildrenToGlyphTree(glyphTree, glyphTree->GetRoot(), minMaxTree, minMaxGlyph, queryResultData, i);
 
 			trees.push_back(glyphTree);
 		}
@@ -128,7 +128,7 @@ namespace SynGlyphX {
 		return trees;
 	}
 
-	Glyph Transformer::ProcessMinMaxGlyph(const DataMappingGlyphGraph::const_iterator& minMaxGlyph, const InputFieldDataMap& queryResultData, unsigned int index) const {
+	Glyph Transformer::ProcessMinMaxGlyph(const DataMappingGlyphGraph::ConstGlyphIterator& minMaxGlyph, const InputFieldDataMap& queryResultData, unsigned int index) const {
 
 		const DataMappingGlyphGraph* minMaxGlyphTree = static_cast<const DataMappingGlyphGraph*>(minMaxGlyph.owner());
 
@@ -146,7 +146,7 @@ namespace SynGlyphX {
 
 		Vector3 mappedVector3;
 
-		if ((minMaxGlyphTree->root() == minMaxGlyph) && (m_overrideRootXYBoundingBox.IsValid())) {
+		if ((minMaxGlyphTree->GetRoot() == minMaxGlyph) && (m_overrideRootXYBoundingBox.IsValid())) {
 
 			InputBinding xBinding(minMaxGlyph->GetInputBinding(DataMappingGlyph::MappableField::PositionX).GetInputFieldID());
 			xBinding.SetMinMaxOverride(m_overrideRootXYBoundingBox.GetSWCorner().get<0>(), m_overrideRootXYBoundingBox.GetNECorner().get<0>());
@@ -184,12 +184,12 @@ namespace SynGlyphX {
 		return glyph;
 	}
 
-	void Transformer::AddChildrenToGlyphTree(GlyphGraph::SharedPtr tree, GlyphGraph::iterator newNode, DataMappingGlyphGraph::ConstSharedPtr minMaxTree, DataMappingGlyphGraph::const_iterator node, const InputFieldDataMap& queryResultData, unsigned int index) const {
+	void Transformer::AddChildrenToGlyphTree(GlyphGraph::SharedPtr tree, GlyphGraph::GlyphIterator newNode, DataMappingGlyphGraph::ConstSharedPtr minMaxTree, DataMappingGlyphGraph::ConstGlyphIterator node, const InputFieldDataMap& queryResultData, unsigned int index) const {
 
-		for (int i = 0; i < minMaxTree->children(node); ++i) {
+		for (int i = 0; i < minMaxTree->ChildCount(node); ++i) {
 
-			DataMappingGlyphGraph::const_iterator child = minMaxTree->child(node, i);
-			GlyphGraph::iterator newChild = tree->insert(newNode, ProcessMinMaxGlyph(child, queryResultData, index));
+			DataMappingGlyphGraph::ConstGlyphIterator child = minMaxTree->GetChild(node, i);
+			GlyphGraph::GlyphIterator newChild = tree->AddChildGlyph(newNode, ProcessMinMaxGlyph(child, queryResultData, index));
 			AddChildrenToGlyphTree(tree, newChild, minMaxTree, child, queryResultData, index);
 		}
 	}
@@ -381,7 +381,7 @@ namespace SynGlyphX {
 
 		for (auto minMaxTree : mapping.GetGlyphGraphs()) {
 
-			DataMappingGlyphGraph::iterator& rootGlyph = minMaxTree.second->root();
+			DataMappingGlyphGraph::GlyphIterator& rootGlyph = minMaxTree.second->GetRoot();
 
 			QVariantList queryResultDataX;
 			QVariantList queryResultDataY;
@@ -397,7 +397,7 @@ namespace SynGlyphX {
 		}
 	}
 
-	std::wstring Transformer::GenerateTag(const DataMappingGlyphGraph::const_iterator& minMaxGlyph, const InputFieldDataMap& queryResultData, unsigned int index) const {
+	std::wstring Transformer::GenerateTag(const DataMappingGlyphGraph::ConstGlyphIterator& minMaxGlyph, const InputFieldDataMap& queryResultData, unsigned int index) const {
 
 		InputField::HashID id = minMaxGlyph->GetInputBinding(DataMappingGlyph::MappableField::Tag).GetInputFieldID();
 

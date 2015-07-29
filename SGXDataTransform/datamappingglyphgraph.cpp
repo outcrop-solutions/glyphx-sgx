@@ -9,12 +9,12 @@
 namespace SynGlyphX {
 
 	DataMappingGlyphGraph::DataMappingGlyphGraph() :
-		stlplus::ntree<DataMappingGlyph>()
+		GlyphGraphTemplate<DataMappingGlyph>()
 	{
 	}
 
 	DataMappingGlyphGraph::DataMappingGlyphGraph(const boost::property_tree::wptree& propertyTree) :
-		stlplus::ntree<DataMappingGlyph>() {
+		GlyphGraphTemplate<DataMappingGlyph>() {
 
 		boost::optional<const PropertyTree&> inputFieldsPropertyTree = propertyTree.get_child_optional(L"InputFields");
 		if (inputFieldsPropertyTree.is_initialized()) {
@@ -33,13 +33,13 @@ namespace SynGlyphX {
 		//m_rootVertex = add_vertex(DataMappingGlyph(propertyTree));
 		//IncrementInputBindingCountsFromGlyph(operator[](m_rootVertex));
 		DataMappingGlyph rootGlyph(propertyTree);
-		insert(rootGlyph);
+		SetRootGlyph(rootGlyph, propertyTree.get_optional<Label>(L"<xmlattr>.label").get_value_or(0));
 		IncrementInputBindingCountsFromGlyph(*root());
 		ProcessPropertyTreeChildren(root(), propertyTree);
 	}
 
 	DataMappingGlyphGraph::DataMappingGlyphGraph(const DataMappingGlyphGraph& graph) :
-		stlplus::ntree<DataMappingGlyph>(graph),
+		GlyphGraphTemplate<DataMappingGlyph>(graph),
 		m_inputFields(graph.m_inputFields),
 		m_inputFieldReferenceCounts(graph.m_inputFieldReferenceCounts) {
 
@@ -47,7 +47,7 @@ namespace SynGlyphX {
 	}
 
 	DataMappingGlyphGraph::DataMappingGlyphGraph(const GlyphGraph& graph) :
-		stlplus::ntree<DataMappingGlyph>() {
+		GlyphGraphTemplate<DataMappingGlyph>() {
 
 		/*if (!graph.HasSingleRoot()) {
 
@@ -57,8 +57,8 @@ namespace SynGlyphX {
 		const GlyphGraph::Vertex& glyphGraphRoot = graph.GetRootVertices()[0];
 		m_rootVertex = add_vertex(DataMappingGlyph(graph[glyphGraphRoot]));*/
 
-		insert(DataMappingGlyph(*graph.root(), true));
-		AddGraphGlyphSubgraph(root(), graph.root(), graph);
+		insert(DataMappingGlyph(*graph.GetRoot(), true));
+		AddGraphGlyphSubgraph(root(), graph.GetRoot(), graph);
 	}
 
 	DataMappingGlyphGraph::~DataMappingGlyphGraph()
@@ -85,7 +85,7 @@ namespace SynGlyphX {
 		return AreSubtreesEqual(root(), graph.root(), graph);
 	}
 
-	bool DataMappingGlyphGraph::AreSubtreesEqual(const DataMappingGlyphGraph::const_iterator& thisTreeNode, const DataMappingGlyphGraph::const_iterator& otherTreeNode, const DataMappingGlyphGraph& otherTree) const {
+	bool DataMappingGlyphGraph::AreSubtreesEqual(const DataMappingGlyphGraph::ConstGlyphIterator& thisTreeNode, const DataMappingGlyphGraph::ConstGlyphIterator& otherTreeNode, const DataMappingGlyphGraph& otherTree) const {
 
 		if (thisTreeNode->operator!=(*otherTreeNode)) {
 
@@ -117,6 +117,7 @@ namespace SynGlyphX {
 	DataMappingGlyphGraph::PropertyTree& DataMappingGlyphGraph::ExportToPropertyTree(boost::property_tree::wptree& propertyTreeParent) const {
 
 		boost::property_tree::wptree& rootPropertyTree = root()->ExportToPropertyTree(propertyTreeParent);
+		rootPropertyTree.put<Label>(L"<xmlattr>.label", m_labels.right.at(root().deconstify()));
 		ExportToPropertyTree(root(), rootPropertyTree);
 
 		if (!m_inputFields.empty()) {
@@ -132,7 +133,7 @@ namespace SynGlyphX {
 		return rootPropertyTree;
 	}
 
-	void DataMappingGlyphGraph::ExportToPropertyTree(const DataMappingGlyphGraph::const_iterator& parent, boost::property_tree::wptree& propertyTreeParent) const {
+	void DataMappingGlyphGraph::ExportToPropertyTree(const DataMappingGlyphGraph::ConstGlyphIterator& parent, boost::property_tree::wptree& propertyTreeParent) const {
 
 
 		/*std::pair<out_edge_iterator, out_edge_iterator> children = boost::out_edges(parent, *this);
@@ -153,8 +154,10 @@ namespace SynGlyphX {
 			boost::property_tree::wptree& childrenPropertyTree = propertyTreeParent.add(L"Children", L"");
 			for (int i = 0; i < numChildren; ++i) {
 
-				DataMappingGlyphGraph::const_iterator iterator = child(parent, i);
-				ExportToPropertyTree(iterator, iterator->ExportToPropertyTree(childrenPropertyTree));
+				DataMappingGlyphGraph::ConstGlyphIterator iterator = child(parent, i);
+				boost::property_tree::wptree& newPropertyTree = iterator->ExportToPropertyTree(childrenPropertyTree);
+				newPropertyTree.put<Label>(L"<xmlattr>.label", m_labels.right.at(iterator.deconstify()));
+				ExportToPropertyTree(iterator, newPropertyTree);
 			}
 		}
 	}
@@ -165,7 +168,7 @@ namespace SynGlyphX {
 		return m_rootVertex;
 	}*/
 
-	void DataMappingGlyphGraph::ProcessPropertyTreeChildren(const DataMappingGlyphGraph::iterator& parent, const boost::property_tree::wptree& propertyTree) {
+	void DataMappingGlyphGraph::ProcessPropertyTreeChildren(const DataMappingGlyphGraph::GlyphIterator& parent, const boost::property_tree::wptree& propertyTree) {
 
 		boost::optional<const PropertyTree&> glyphTrees = propertyTree.get_child_optional(L"Children");
 
@@ -182,13 +185,13 @@ namespace SynGlyphX {
 
 					DataMappingGlyph glyph(glyphTree.second);
 					IncrementInputBindingCountsFromGlyph(glyph);
-					ProcessPropertyTreeChildren(insert(parent, glyph), glyphTree.second);
+					ProcessPropertyTreeChildren(AddChildGlyph(parent, glyph, glyphTree.second.get_optional<Label>(L"<xmlattr>.label").get_value_or(GetNextLabel())), glyphTree.second);
 				}
 			}
 		}
 	}
 
-	void DataMappingGlyphGraph::AddGraphGlyphSubgraph(DataMappingGlyphGraph::iterator& parent, const GlyphGraph::const_iterator& glyphGraphParent, const GlyphGraph& graph) {
+	void DataMappingGlyphGraph::AddGraphGlyphSubgraph(DataMappingGlyphGraph::GlyphIterator& parent, const GlyphGraph::ConstGlyphIterator& glyphGraphParent, const GlyphGraph& graph) {
 
 		/*std::pair<GlyphGraph::out_edge_iterator, GlyphGraph::out_edge_iterator> children = boost::out_edges(glyphGraphParent, graph);
 		for (GlyphGraph::out_edge_iterator iT = children.first; iT != children.second; ++iT) {
@@ -199,15 +202,15 @@ namespace SynGlyphX {
 			AddGraphGlyphSubgraph(child, glyphGraphChild, graph);
 		}*/
 
-		for (int i = 0; i < graph.children(glyphGraphParent); ++i) {
+		for (int i = 0; i < graph.ChildCount(glyphGraphParent); ++i) {
 
-			const GlyphGraph::const_iterator& child = graph.child(glyphGraphParent, i);
+			const GlyphGraph::ConstGlyphIterator& child = graph.GetChild(glyphGraphParent, i);
 			DataMappingGlyph glyph(*child);
 			AddGraphGlyphSubgraph(insert(parent, glyph), child, graph);
 		}
 	}
 
-	void DataMappingGlyphGraph::SetInputField(DataMappingGlyphGraph::const_iterator& node, DataMappingGlyph::MappableField field, const InputField& inputfield) {
+	void DataMappingGlyphGraph::SetInputField(DataMappingGlyphGraph::ConstGlyphIterator& node, DataMappingGlyph::MappableField field, const InputField& inputfield) {
 
 		//Check if new input field is from same table as other input fields.  We shouldn't need to be this restrictive in the future, but that
 		//requires more database work than we have time for right now.
@@ -236,7 +239,7 @@ namespace SynGlyphX {
 		node.deconstify()->SetInputBinding(field, InputBinding(inputFieldID));
 	}
 
-	void DataMappingGlyphGraph::ClearInputBinding(DataMappingGlyphGraph::const_iterator& node, DataMappingGlyph::MappableField field) {
+	void DataMappingGlyphGraph::ClearInputBinding(DataMappingGlyphGraph::ConstGlyphIterator& node, DataMappingGlyph::MappableField field) {
 
 		const InputBinding& binding = node->GetInputBinding(field);
 		InputField::HashID inputFieldID = binding.GetInputFieldID();
@@ -271,9 +274,9 @@ namespace SynGlyphX {
 		//return vis.GetNewGraph();
 
 		GlyphGraph::SharedPtr minGlyphTree = std::make_shared<GlyphGraph>();
-		minGlyphTree->insert(root()->GetMinGlyph());
+		minGlyphTree->SetRootGlyph(root()->GetMinGlyph());
 
-		CreateMinOrMaxGlyphSubtree(root(), minGlyphTree->root(), minGlyphTree, false);
+		CreateMinOrMaxGlyphSubtree(root(), minGlyphTree->GetRoot(), minGlyphTree, false);
 
 		return minGlyphTree;
 	}
@@ -285,26 +288,26 @@ namespace SynGlyphX {
 		//return vis.GetNewGraph();
 
 		GlyphGraph::SharedPtr maxGlyphTree = std::make_shared<GlyphGraph>();
-		maxGlyphTree->insert(root()->GetMaxGlyph());
+		maxGlyphTree->SetRootGlyph(root()->GetMaxGlyph());
 
-		CreateMinOrMaxGlyphSubtree(root(), maxGlyphTree->root(), maxGlyphTree, true);
+		CreateMinOrMaxGlyphSubtree(root(), maxGlyphTree->GetRoot(), maxGlyphTree, true);
 
 		return maxGlyphTree;
 	}
 
-	void DataMappingGlyphGraph::CreateMinOrMaxGlyphSubtree(const DataMappingGlyphGraph::const_iterator& parent, GlyphGraph::iterator& newVertex, GlyphGraph::SharedPtr newGlyphGraph, bool isMax) const {
+	void DataMappingGlyphGraph::CreateMinOrMaxGlyphSubtree(const DataMappingGlyphGraph::ConstGlyphIterator& parent, GlyphGraph::GlyphIterator& newVertex, GlyphGraph::SharedPtr newGlyphGraph, bool isMax) const {
 
 		for (int i = 0; i < children(parent); ++i) {
 
-			const DataMappingGlyphGraph::const_iterator& childNode = child(parent, i);
+			const DataMappingGlyphGraph::ConstGlyphIterator& childNode = child(parent, i);
 
 			if (isMax) {
 
-				CreateMinOrMaxGlyphSubtree(childNode, newGlyphGraph->insert(newVertex, childNode->GetMaxGlyph()), newGlyphGraph, true);
+				CreateMinOrMaxGlyphSubtree(childNode, newGlyphGraph->AddChildGlyph(newVertex, childNode->GetMaxGlyph()), newGlyphGraph, true);
 			}
 			else {
 
-				CreateMinOrMaxGlyphSubtree(childNode, newGlyphGraph->insert(newVertex, childNode->GetMinGlyph()), newGlyphGraph, false);
+				CreateMinOrMaxGlyphSubtree(childNode, newGlyphGraph->AddChildGlyph(newVertex, childNode->GetMinGlyph()), newGlyphGraph, false);
 			}
 		}
 	}
@@ -313,7 +316,7 @@ namespace SynGlyphX {
 
 		DataMappingGlyphGraph::SharedPtr newGraph = std::make_shared<DataMappingGlyphGraph>();
 
-		DataMappingGlyphGraph::iterator root = newGraph->insert(DataMappingGlyph(Glyph::s_defaultRootGlyph));
+		DataMappingGlyphGraph::GlyphIterator root = newGraph->insert(DataMappingGlyph(Glyph::s_defaultRootGlyph));
 		root->GetPosition()[0].GetValue() = DoubleMinDiff(-180.0, 360.0);
 		root->GetPosition()[1].GetValue() = DoubleMinDiff(-90.0, 180.0);
 		newGraph->insert(root, DataMappingGlyph(Glyph::s_defaultGlyph));
