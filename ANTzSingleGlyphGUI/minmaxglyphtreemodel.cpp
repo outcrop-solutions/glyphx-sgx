@@ -4,6 +4,7 @@
 #include "antzcsvwriter.h"
 #include "datamappingglyphfile.h"
 #include "glyphnodeconverter.h"
+#include <boost/lexical_cast.hpp>
 
 namespace SynGlyphXANTz {
 
@@ -53,6 +54,10 @@ namespace SynGlyphXANTz {
 		if (IsRootGlyph(glyph)) {
 			displayedData += L" (Root)";
 		}
+
+#ifdef _DEBUG
+		displayedData += L" ; Label: " + boost::lexical_cast<std::wstring>(m_minMaxGlyphTree->GetLabel(glyph));
+#endif
 
 		return QString::fromStdWString(displayedData);
 	}
