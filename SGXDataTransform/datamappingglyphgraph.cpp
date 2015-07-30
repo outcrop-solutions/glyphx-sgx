@@ -36,6 +36,20 @@ namespace SynGlyphX {
 		SetRootGlyph(rootGlyph, propertyTree.get_optional<Label>(L"<xmlattr>.label").get_value_or(0));
 		IncrementInputBindingCountsFromGlyph(*root());
 		ProcessPropertyTreeChildren(root(), propertyTree);
+
+		boost::optional<const PropertyTree&> linksPropertyTree = propertyTree.get_child_optional(L"Links");
+		if (linksPropertyTree.is_initialized()) {
+
+			for (const PropertyTree::value_type& linkProperties : linksPropertyTree.get()) {
+
+				if (linkProperties.first == L"Glyph") {
+
+					DataMappingGlyph linkGlyph(linkProperties.second);
+					std::pair<Label, Label> linkLabels(linkProperties.second.get<Label>(L"<xmlattr>.source"), linkProperties.second.get<Label>(L"<xmlattr>.destination"));
+					m_linkGlyphs[linkLabels] = linkGlyph;
+				}
+			}
+		}
 	}
 
 	DataMappingGlyphGraph::DataMappingGlyphGraph(const DataMappingGlyphGraph& graph) :
@@ -57,7 +71,7 @@ namespace SynGlyphX {
 		const GlyphGraph::Vertex& glyphGraphRoot = graph.GetRootVertices()[0];
 		m_rootVertex = add_vertex(DataMappingGlyph(graph[glyphGraphRoot]));*/
 
-		insert(DataMappingGlyph(*graph.GetRoot(), true));
+		SetRootGlyph(DataMappingGlyph(*graph.GetRoot(), true));
 		AddGraphGlyphSubgraph(root(), graph.GetRoot(), graph);
 	}
 
@@ -119,6 +133,18 @@ namespace SynGlyphX {
 		boost::property_tree::wptree& rootPropertyTree = root()->ExportToPropertyTree(propertyTreeParent);
 		rootPropertyTree.put<Label>(L"<xmlattr>.label", m_labels.right.at(root().deconstify()));
 		ExportToPropertyTree(root(), rootPropertyTree);
+
+		if (!m_linkGlyphs.empty()) {
+
+			boost::property_tree::wptree& linksPropertyTree = rootPropertyTree.add(L"Links", L"");
+
+			for (auto link : m_linkGlyphs) {
+
+				boost::property_tree::wptree& linkPropertyTree = link.second.ExportToPropertyTree(linksPropertyTree);
+				linkPropertyTree.put<Label>(L"<xmlattr>.source", link.first.first);
+				linkPropertyTree.put<Label>(L"<xmlattr>.destination", link.first.second);
+			}
+		}
 
 		if (!m_inputFields.empty()) {
 
@@ -206,7 +232,7 @@ namespace SynGlyphX {
 
 			const GlyphGraph::ConstGlyphIterator& child = graph.GetChild(glyphGraphParent, i);
 			DataMappingGlyph glyph(*child);
-			AddGraphGlyphSubgraph(insert(parent, glyph), child, graph);
+			AddGraphGlyphSubgraph(AddChildGlyph(parent, glyph), child, graph);
 		}
 	}
 
@@ -316,10 +342,10 @@ namespace SynGlyphX {
 
 		DataMappingGlyphGraph::SharedPtr newGraph = std::make_shared<DataMappingGlyphGraph>();
 
-		DataMappingGlyphGraph::GlyphIterator root = newGraph->insert(DataMappingGlyph(Glyph::s_defaultRootGlyph));
+		DataMappingGlyphGraph::GlyphIterator root = newGraph->SetRootGlyph(DataMappingGlyph(Glyph::s_defaultRootGlyph));
 		root->GetPosition()[0].GetValue() = DoubleMinDiff(-180.0, 360.0);
 		root->GetPosition()[1].GetValue() = DoubleMinDiff(-90.0, 180.0);
-		newGraph->insert(root, DataMappingGlyph(Glyph::s_defaultGlyph));
+		newGraph->AddChildGlyph(root, DataMappingGlyph(Glyph::s_defaultGlyph));
 
 		return newGraph;
 	}

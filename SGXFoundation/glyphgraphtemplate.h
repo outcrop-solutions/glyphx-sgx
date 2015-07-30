@@ -164,6 +164,11 @@ namespace SynGlyphX {
 			}
 		}
 
+		Label GetLabel(const GlyphIterator& vertex) {
+
+			return m_labels.right.at(vertex);
+		}
+
 	protected:
 		void AddLabels(const GlyphIterator& vertex) {
 
