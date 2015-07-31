@@ -179,13 +179,13 @@ namespace SynGlyphXANTz {
 		unsigned int numberOfChildren = tree->ChildCount(glyph);
 
 		std::wstring tag;
-		if (glyph->GetTag().empty()) {
+		if (glyph->second.GetTag().empty()) {
 
 			tag = L"\"No Tag\"";
 		}
 		else {
 
-			tag = L"\"" + glyph->GetTag() + L"\"";
+			tag = L"\"" + glyph->second.GetTag() + L"\"";
 		}
 
 		SynGlyphX::CSVFileHandler::CSVValues values;
@@ -222,28 +222,28 @@ namespace SynGlyphXANTz {
 		values.push_back(boost::lexical_cast<std::wstring>(numberOfChildren));
 		values.insert(values.end(), { L"0", L"0", L"0", L"0", L"1", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"1", L"0", L"0", L"0" });
 
-		SynGlyphX::CSVFileHandler::AddVector3ToCSVValues(values, glyph->GetScale());
-		SynGlyphX::CSVFileHandler::AddVector3ToCSVValues(values, glyph->GetPosition());
-		SynGlyphX::CSVFileHandler::AddVector3ToCSVValues(values, glyph->GetTagOffset());
-		SynGlyphX::CSVFileHandler::AddVector3ToCSVValues(values, glyph->GetRotationRate());
-		SynGlyphX::CSVFileHandler::AddVector3ToCSVValues(values, glyph->GetRotation());
+		SynGlyphX::CSVFileHandler::AddVector3ToCSVValues(values, glyph->second.GetScale());
+		SynGlyphX::CSVFileHandler::AddVector3ToCSVValues(values, glyph->second.GetPosition());
+		SynGlyphX::CSVFileHandler::AddVector3ToCSVValues(values, glyph->second.GetTagOffset());
+		SynGlyphX::CSVFileHandler::AddVector3ToCSVValues(values, glyph->second.GetRotationRate());
+		SynGlyphX::CSVFileHandler::AddVector3ToCSVValues(values, glyph->second.GetRotation());
 		values.insert(values.end(), { L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0" });
 
-		values.push_back(boost::lexical_cast<std::wstring>(GlyphNodeConverter::ConvertGeometryToNodeValue(glyph->GetStructure().GetGeometryShape(), glyph->GetStructure().GetGeometrySurface())));
+		values.push_back(boost::lexical_cast<std::wstring>(GlyphNodeConverter::ConvertGeometryToNodeValue(glyph->second.GetStructure().GetGeometryShape(), glyph->second.GetStructure().GetGeometrySurface())));
 		values.push_back(L"1");
 		values.push_back(L"0");
-		values.push_back(boost::lexical_cast<std::wstring>(glyph->GetStructure().GetTorusRatio()));
+		values.push_back(boost::lexical_cast<std::wstring>(glyph->second.GetStructure().GetTorusRatio()));
 
-		SynGlyphX::GlyphColor color = glyph->GetColor();
+		SynGlyphX::GlyphColor color = glyph->second.GetColor();
 		values.push_back(boost::lexical_cast<std::wstring>(GetColorIndex(color)));
 		values.push_back(boost::lexical_cast<std::wstring>(color[0]));
 		values.push_back(boost::lexical_cast<std::wstring>(color[1]));
 		values.push_back(boost::lexical_cast<std::wstring>(color[2]));
 
-		values.push_back(boost::lexical_cast<std::wstring>(glyph->GetTransparency()));
+		values.push_back(boost::lexical_cast<std::wstring>(glyph->second.GetTransparency()));
 
 		values.insert(values.end(), { L"0", L"0", L"0", L"0" });
-		values.push_back(boost::lexical_cast<std::wstring>(static_cast<int>(glyph->GetVirtualTopology().GetType())));
+		values.push_back(boost::lexical_cast<std::wstring>(static_cast<int>(glyph->second.GetVirtualTopology().GetType())));
 
 		values.insert(values.end(), { L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"1", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"16", L"16", L"0", L"0", L"0", L"0" });
 		values.push_back(idString);

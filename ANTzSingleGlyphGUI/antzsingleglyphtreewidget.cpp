@@ -139,7 +139,7 @@ namespace SynGlyphXANTz {
 	void ANTzSingleGlyphTreeWidget::CreateNewSubTree(pNPnode parent, const SynGlyphX::DataMappingGlyphGraph::ConstGlyphIterator& minMaxGlyph) {
 
 		pNPnode childNode = CreateNodeFromTemplate(parent, minMaxGlyph);
-		m_labelToANTzNodeMap.insert(boost::bimap<SynGlyphX::DataMappingGlyphGraph::Label, int>::value_type(m_model->GetMinMaxGlyphTree()->GetLabel(minMaxGlyph.deconstify()), childNode->id));
+		m_labelToANTzNodeMap.insert(boost::bimap<SynGlyphX::DataMappingGlyphGraph::Label, int>::value_type(minMaxGlyph->first, childNode->id));
 
 		for (int i = 0; i < m_model->GetMinMaxGlyphTree()->ChildCount(minMaxGlyph); ++i) {
 
@@ -157,7 +157,7 @@ namespace SynGlyphXANTz {
 
 		glyph->selected = 0;
 
-		UpdateGlyphProperties(glyph, *minMaxGlyph);
+		UpdateGlyphProperties(glyph, minMaxGlyph->second);
 
 		return glyph;
 	}
@@ -212,8 +212,18 @@ namespace SynGlyphXANTz {
 
 	void ANTzSingleGlyphTreeWidget::DeleteNode(pNPnode node) {
 
-		m_labelToANTzNodeMap.right.erase(node->id);
+		RemoveNodeFromIDMap(node);
 		ANTzWidget::DeleteNode(node);
+	}
+
+	void ANTzSingleGlyphTreeWidget::RemoveNodeFromIDMap(pNPnode node) {
+
+		for (unsigned int i = 0; i < node->childCount; ++i) {
+
+			RemoveNodeFromIDMap(node->child[i]);
+		}
+
+		m_labelToANTzNodeMap.right.erase(node->id);
 	}
 
 	pNPnode ANTzSingleGlyphTreeWidget::GetGlyphFromModelIndex(const QModelIndex& index) const {
@@ -249,7 +259,7 @@ namespace SynGlyphXANTz {
 			QModelIndex index = m_model->index(i, 0, topLeft.parent());
 			SynGlyphX::DataMappingGlyphGraph::ConstGlyphIterator minMaxGlyph = SynGlyphX::DataMappingGlyphGraph::ConstGlyphIterator(static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(index.internalPointer()));
 			pNPnode glyph = GetGlyphFromModelIndex(index);
-			UpdateGlyphProperties(glyph, *minMaxGlyph);
+			UpdateGlyphProperties(glyph, minMaxGlyph->second);
 		}
 	}
 
@@ -539,11 +549,11 @@ namespace SynGlyphXANTz {
 
 		if (m_glyphTreeType == MinMaxGlyphTreeModel::GlyphType::Min) {
 
-			UpdateAnimationValuesFromGlyph(node, minMaxGlyph->GetMinGlyph());
+			UpdateAnimationValuesFromGlyph(node, minMaxGlyph->second.GetMinGlyph());
 		}
 		else {
 
-			UpdateAnimationValuesFromGlyph(node, minMaxGlyph->GetMaxGlyph());
+			UpdateAnimationValuesFromGlyph(node, minMaxGlyph->second.GetMaxGlyph());
 		}
 
 		for (int i = 0; i < m_model->GetMinMaxGlyphTree()->ChildCount(minMaxGlyph); ++i) {

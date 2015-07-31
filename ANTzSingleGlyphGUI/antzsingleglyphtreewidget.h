@@ -102,6 +102,8 @@ namespace SynGlyphXANTz {
 		void UpdateAnimationValuesFromGlyph(pNPnode node, const SynGlyphX::Glyph& glyph);
 		void TurnOffAnimationInNodeTree(pNPnode node);
 
+		void RemoveNodeFromIDMap(pNPnode node);
+
 		pNPnode m_rootGlyph;
 		unsigned int m_baseImageTextureID;
 

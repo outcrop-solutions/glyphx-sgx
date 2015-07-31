@@ -129,8 +129,8 @@ namespace SynGlyphXANTz {
 			}
 			else if (currentLineValues[1] == L"7") {
 
-				SynGlyphX::GlyphGraph::Label source = glyphGraph->GetLabel(indexToNodeMap[currentLineValues[4]]);
-				SynGlyphX::GlyphGraph::Label destination = glyphGraph->GetLabel(indexToNodeMap[currentLineValues[6]]);
+				SynGlyphX::GlyphGraph::Label source = indexToNodeMap[currentLineValues[4]]->first;
+				SynGlyphX::GlyphGraph::Label destination = indexToNodeMap[currentLineValues[6]]->first;
 				glyphGraph->AddLink(source, destination, CreateGlyphFromCSVValues(currentLineValues));
 			}
 
