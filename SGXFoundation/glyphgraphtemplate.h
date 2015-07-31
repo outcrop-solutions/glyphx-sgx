@@ -43,6 +43,8 @@ namespace SynGlyphX {
 		typedef iterator GlyphIterator;
 		typedef const_iterator ConstGlyphIterator;
 
+		typedef std::map<std::pair<Label, Label>, LinkType> LinkMap;
+
 		GlyphGraphTemplate() :
 			stlplus::ntree<GlyphType>() {
 
@@ -58,7 +60,8 @@ namespace SynGlyphX {
 		GlyphGraphTemplate(const GlyphGraphTemplate& graph) :
 			stlplus::ntree<GlyphType>(graph) {
 
-			AddLabels(root());
+			AddLabel(insert(*graph.GetRoot()), 0);
+			CopyChildren(GetRoot(), graph.GetRoot(), graph);
 		}
 
 		~GlyphGraphTemplate() {
@@ -164,12 +167,27 @@ namespace SynGlyphX {
 			}
 		}
 
-		Label GetLabel(const GlyphIterator& vertex) {
+		Label GetLabel(const GlyphIterator& vertex) const {
 
 			return m_labels.right.at(vertex);
 		}
 
+		const LinkMap& GetLinks() const {
+
+			return m_linkGlyphs;
+		}
+
 	protected:
+		void CopyChildren(const GlyphIterator& vertex, const ConstGlyphIterator& parent, const GlyphGraphTemplate& graph) {
+
+			for (unsigned int i = 0; i < ChildCount(parent); ++i) {
+
+				const ConstGlyphIterator childFromOtherGraph = graph.GetChild(parent, i);
+				GlyphIterator child = AddChildGlyph(vertex, *childFromOtherGraph, graph.GetLabel(childFromOtherGraph.deconstify()));
+				CopyChildren(child, childFromOtherGraph, graph);
+			}
+		}
+
 		void AddLabels(const GlyphIterator& vertex) {
 
 			AddLabel(vertex, GetNextLabel());
@@ -229,7 +247,7 @@ namespace SynGlyphX {
 		//boost::labeled_graph < boost::directed_graph<GlyphType, Edge>, Label > m_graph;
 		boost::bimap<boost::bimaps::set_of<Label>, GlyphIterator> m_labels;
 
-		std::map<std::pair<Label, Label>, LinkType> m_linkGlyphs;
+		LinkMap m_linkGlyphs;
 	};
 }
 

@@ -73,6 +73,11 @@ namespace SynGlyphX {
 
 		SetRootGlyph(DataMappingGlyph(*graph.GetRoot(), true));
 		AddGraphGlyphSubgraph(root(), graph.GetRoot(), graph);
+
+		for (auto& link : graph.GetLinks()) {
+
+			AddLink(link.first.first, link.first.second, link.second);
+		}
 	}
 
 	DataMappingGlyphGraph::~DataMappingGlyphGraph()
@@ -232,7 +237,7 @@ namespace SynGlyphX {
 
 			const GlyphGraph::ConstGlyphIterator& child = graph.GetChild(glyphGraphParent, i);
 			DataMappingGlyph glyph(*child);
-			AddGraphGlyphSubgraph(AddChildGlyph(parent, glyph), child, graph);
+			AddGraphGlyphSubgraph(AddChildGlyph(parent, glyph, graph.GetLabel(child.deconstify())), child, graph);
 		}
 	}
 
