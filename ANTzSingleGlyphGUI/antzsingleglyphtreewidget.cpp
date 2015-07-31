@@ -120,6 +120,17 @@ namespace SynGlyphXANTz {
 				CreateNewSubTree(nullptr, minMaxGlyphTree->GetRoot());
 			}
 
+			for (auto& link : minMaxGlyphTree->GetLinks()) {
+
+				pNPnode sourceNode = static_cast<pNPnode>(m_antzData->map.nodeID[m_labelToANTzNodeMap.left.at(link.first.first)]);
+				pNPnode destinationNode = static_cast<pNPnode>(m_antzData->map.nodeID[m_labelToANTzNodeMap.left.at(link.first.second)]);
+				pNPnode linkNode = npNodeNewLink(sourceNode, destinationNode, m_antzData);
+
+				linkNode->selected = 0;
+
+				UpdateGlyphProperties(linkNode, link.second);
+			}
+
 			//Undo previous select node at the beginning of this function
 			m_antzData->map.nodeRootIndex = 0;
 		}
@@ -128,6 +139,7 @@ namespace SynGlyphXANTz {
 	void ANTzSingleGlyphTreeWidget::CreateNewSubTree(pNPnode parent, const SynGlyphX::DataMappingGlyphGraph::ConstGlyphIterator& minMaxGlyph) {
 
 		pNPnode childNode = CreateNodeFromTemplate(parent, minMaxGlyph);
+		m_labelToANTzNodeMap.insert(boost::bimap<SynGlyphX::DataMappingGlyphGraph::Label, int>::value_type(m_model->GetMinMaxGlyphTree()->GetLabel(minMaxGlyph.deconstify()), childNode->id));
 
 		for (int i = 0; i < m_model->GetMinMaxGlyphTree()->ChildCount(minMaxGlyph); ++i) {
 
@@ -145,7 +157,7 @@ namespace SynGlyphXANTz {
 
 		glyph->selected = 0;
 
-		UpdateGlyphProperties(glyph, minMaxGlyph);
+		UpdateGlyphProperties(glyph, *minMaxGlyph);
 
 		return glyph;
 	}
@@ -198,6 +210,12 @@ namespace SynGlyphXANTz {
 		EnableBasedOnModelRowCount();
 	}
 
+	void ANTzSingleGlyphTreeWidget::DeleteNode(pNPnode node) {
+
+		m_labelToANTzNodeMap.right.erase(node->id);
+		ANTzWidget::DeleteNode(node);
+	}
+
 	pNPnode ANTzSingleGlyphTreeWidget::GetGlyphFromModelIndex(const QModelIndex& index) const {
 
 		if (!index.isValid()) {
@@ -231,19 +249,19 @@ namespace SynGlyphXANTz {
 			QModelIndex index = m_model->index(i, 0, topLeft.parent());
 			SynGlyphX::DataMappingGlyphGraph::ConstGlyphIterator minMaxGlyph = SynGlyphX::DataMappingGlyphGraph::ConstGlyphIterator(static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(index.internalPointer()));
 			pNPnode glyph = GetGlyphFromModelIndex(index);
-			UpdateGlyphProperties(glyph, minMaxGlyph);
+			UpdateGlyphProperties(glyph, *minMaxGlyph);
 		}
 	}
 
-	void ANTzSingleGlyphTreeWidget::UpdateGlyphProperties(pNPnode glyph, const SynGlyphX::DataMappingGlyphGraph::ConstGlyphIterator& minMaxGlyph) {
+	void ANTzSingleGlyphTreeWidget::UpdateGlyphProperties(pNPnode glyph, const SynGlyphX::DataMappingGlyph& minMaxGlyph) {
 
 		if (m_glyphTreeType == MinMaxGlyphTreeModel::GlyphType::Min) {
 
-			UpdateGlyphProperties(glyph, minMaxGlyph->GetMinGlyph());
+			UpdateGlyphProperties(glyph, minMaxGlyph.GetMinGlyph());
 		}
 		else {
 
-			UpdateGlyphProperties(glyph, minMaxGlyph->GetMaxGlyph());
+			UpdateGlyphProperties(glyph, minMaxGlyph.GetMaxGlyph());
 		}
 	}
 
@@ -387,6 +405,7 @@ namespace SynGlyphXANTz {
 			DeleteNode(m_rootGlyph);
 			m_antzData->map.nodeRootIndex = 0;
 			m_rootGlyph = nullptr;
+			m_labelToANTzNodeMap.clear();
 		}
 	}
 

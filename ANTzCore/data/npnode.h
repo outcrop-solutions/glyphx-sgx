@@ -43,7 +43,7 @@ void npInitNodeCamera (pNPnode node);
 int	npNewNodeID();
 
 ANTZCORE_API pNPnode npNodeNew(int nodeType, pNPnode nodeParent, void* dataRef);
-pNPnode npNodeNewLink (pNPnode linkA, pNPnode linkB, void* dataRef);
+ANTZCORE_API pNPnode npNodeNewLink(pNPnode linkA, pNPnode linkB, void* dataRef);
 ANTZCORE_API bool npNodeAttach(pNPnode node, pNPnode parent, void* dataRef);
 ANTZCORE_API void npNodeDelete(pNPnode node, void* dataRef);
 ANTZCORE_API void npNodeRemove(bool freeNode, pNPnode node, void* dataRef);

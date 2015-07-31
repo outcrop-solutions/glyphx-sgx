@@ -123,13 +123,17 @@ namespace SynGlyphXANTz {
 				break;
 			}
 
-			if (currentLineValues[1] != L"5") {
+			if (currentLineValues[1] == L"5") {
 
-				currentLineValues = csvReader.GetValuesFromLine(true);
-				continue;
+				indexToNodeMap[currentLineValues[0]] = glyphGraph->AddChildGlyph(indexToNodeMap[currentLineValues[4]], CreateGlyphFromCSVValues(currentLineValues));
+			}
+			else if (currentLineValues[1] == L"7") {
+
+				SynGlyphX::GlyphGraph::Label source = glyphGraph->GetLabel(indexToNodeMap[currentLineValues[4]]);
+				SynGlyphX::GlyphGraph::Label destination = glyphGraph->GetLabel(indexToNodeMap[currentLineValues[6]]);
+				glyphGraph->AddLink(source, destination, CreateGlyphFromCSVValues(currentLineValues));
 			}
 
-			indexToNodeMap[currentLineValues[0]] = glyphGraph->AddChildGlyph(indexToNodeMap[currentLineValues[4]], CreateGlyphFromCSVValues(currentLineValues));
 			currentLineValues = csvReader.GetValuesFromLine(true);
 
 		} while (!csvReader.IsAtEndOfFile());
@@ -168,8 +172,17 @@ namespace SynGlyphXANTz {
 
 		glyph.GetStructure().SetGeometryShape(shape);
 		glyph.GetStructure().SetGeometrySurface(surface);
+		glyph.GetStructure().SetTorusRatio(boost::lexical_cast<double>(csvValues[53]));
 
-		glyph.GetVirtualTopology().SetType(static_cast<SynGlyphX::VirtualTopologyInfo::Type>(boost::lexical_cast<unsigned int>(csvValues[63])));
+		SynGlyphX::VirtualTopologyInfo::Type virtualTopologyType = static_cast<SynGlyphX::VirtualTopologyInfo::Type>(boost::lexical_cast<unsigned int>(csvValues[63]));
+		if (virtualTopologyType == SynGlyphX::VirtualTopologyInfo::Type::Null) {
+
+			glyph.GetVirtualTopology().SetType(SynGlyphX::VirtualTopologyInfo::Type::Circle);
+		}
+		else {
+
+			glyph.GetVirtualTopology().SetType(virtualTopologyType);
+		}
 
 		glyph.GetRotationRate()[0] = boost::lexical_cast<double>(csvValues[34]);
 		glyph.GetRotationRate()[1] = boost::lexical_cast<double>(csvValues[35]);

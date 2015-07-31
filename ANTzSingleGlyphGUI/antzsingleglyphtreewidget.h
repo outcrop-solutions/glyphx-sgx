@@ -68,6 +68,8 @@ namespace SynGlyphXANTz {
 
 		bool IsRootNodeSelected() const;
 
+		virtual void DeleteNode(pNPnode node);
+
 	private slots:
 		void UpdateSelection(const QItemSelection& selected, const QItemSelection& deselected);
 		void OnModelReset();
@@ -90,7 +92,7 @@ namespace SynGlyphXANTz {
 		pNPnode CreateNodeFromTemplate(pNPnode parent, const SynGlyphX::DataMappingGlyphGraph::ConstGlyphIterator& minMaxGlyph);
 		void RebuildTree();
 
-		void UpdateGlyphProperties(pNPnode glyph, const SynGlyphX::DataMappingGlyphGraph::ConstGlyphIterator& minMaxGlyph);
+		void UpdateGlyphProperties(pNPnode glyph, const SynGlyphX::DataMappingGlyph& minMaxGlyph);
 		void UpdateGlyphProperties(pNPnode glyph, const SynGlyphX::Glyph& glyphTemplate);
 
 		void ConnectDataChangedSignal();
@@ -121,6 +123,8 @@ namespace SynGlyphXANTz {
 		bool m_animationEnabled;
 
 		SynGlyphX::DefaultBaseImageProperties::Type m_baseImage;
+
+		boost::bimap<SynGlyphX::DataMappingGlyphGraph::Label, int> m_labelToANTzNodeMap;
 	};
 
 } //namespace SynGlyphXANTz

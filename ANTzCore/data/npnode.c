@@ -339,7 +339,7 @@ ANTZCORE_API bool npNodeAttach(pNPnode node, pNPnode parent, void* dataRef)
 }
 
 //------------------------------------------------------------------------------
-pNPnode npNodeNewLink (pNPnode linkA, pNPnode linkB, void* dataRef)
+ANTZCORE_API pNPnode npNodeNewLink(pNPnode linkA, pNPnode linkB, void* dataRef)
 {
 	pData data = (pData) dataRef;
 	pNPnode parent = NULL;
