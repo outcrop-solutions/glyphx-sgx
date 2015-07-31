@@ -44,83 +44,83 @@ bool DataTransformModel::setData(const QModelIndex& index, const QVariant& value
 
 			if (role == PropertyRole::PositionX) {
 
-				iterator->GetPosition()[0] = value.value<SynGlyphX::NumericMappingProperty>();
+				iterator->second.GetPosition()[0] = value.value<SynGlyphX::NumericMappingProperty>();
 			}
 			else if (role == PropertyRole::PositionY) {
 
-				iterator->GetPosition()[1] = value.value<SynGlyphX::NumericMappingProperty>();
+				iterator->second.GetPosition()[1] = value.value<SynGlyphX::NumericMappingProperty>();
 			}
 			else if (role == PropertyRole::PositionZ) {
 
-				iterator->GetPosition()[2] = value.value<SynGlyphX::NumericMappingProperty>();
+				iterator->second.GetPosition()[2] = value.value<SynGlyphX::NumericMappingProperty>();
 			}
 			else if (role == PropertyRole::RotationX) {
 
-				iterator->GetRotation()[0] = value.value<SynGlyphX::NumericMappingProperty>();
+				iterator->second.GetRotation()[0] = value.value<SynGlyphX::NumericMappingProperty>();
 			}
 			else if (role == PropertyRole::RotationY) {
 
-				iterator->GetRotation()[1] = value.value<SynGlyphX::NumericMappingProperty>();
+				iterator->second.GetRotation()[1] = value.value<SynGlyphX::NumericMappingProperty>();
 			}
 			else if (role == PropertyRole::RotationZ) {
 
-				iterator->GetRotation()[2] = value.value<SynGlyphX::NumericMappingProperty>();
+				iterator->second.GetRotation()[2] = value.value<SynGlyphX::NumericMappingProperty>();
 			}
 			else if (role == PropertyRole::ScaleX) {
 
-				iterator->GetScale()[0] = value.value<SynGlyphX::NumericMappingProperty>();
+				iterator->second.GetScale()[0] = value.value<SynGlyphX::NumericMappingProperty>();
 			}
 			else if (role == PropertyRole::ScaleY) {
 
-				iterator->GetScale()[1] = value.value<SynGlyphX::NumericMappingProperty>();
+				iterator->second.GetScale()[1] = value.value<SynGlyphX::NumericMappingProperty>();
 			}
 			else if (role == PropertyRole::ScaleZ) {
 
-				iterator->GetScale()[2] = value.value<SynGlyphX::NumericMappingProperty>();
+				iterator->second.GetScale()[2] = value.value<SynGlyphX::NumericMappingProperty>();
 			}
 			else if (role == PropertyRole::Color) {
 
-				iterator->GetColor() = value.value<SynGlyphX::ColorMappingProperty>();
+				iterator->second.GetColor() = value.value<SynGlyphX::ColorMappingProperty>();
 			}
 			else if (role == PropertyRole::Transparency) {
 
-				iterator->GetTransparency() = value.value<SynGlyphX::NumericMappingProperty>();
+				iterator->second.GetTransparency() = value.value<SynGlyphX::NumericMappingProperty>();
 			}
 			else if (role == PropertyRole::Tag) {
 
-				iterator->GetTag() = value.value<SynGlyphX::TextMappingProperty>();
+				iterator->second.GetTag() = value.value<SynGlyphX::TextMappingProperty>();
 			}
 			else if (role == PropertyRole::Description) {
 
-				iterator->GetDescription() = value.value<SynGlyphX::TextMappingProperty>();
+				iterator->second.GetDescription() = value.value<SynGlyphX::TextMappingProperty>();
 			}
 			else if (role == PropertyRole::RotationRateX) {
 
-				iterator->GetRotationRate()[0] = value.value<SynGlyphX::NumericMappingProperty>();
+				iterator->second.GetRotationRate()[0] = value.value<SynGlyphX::NumericMappingProperty>();
 			}
 			else if (role == PropertyRole::RotationRateY) {
 
-				iterator->GetRotationRate()[1] = value.value<SynGlyphX::NumericMappingProperty>();
+				iterator->second.GetRotationRate()[1] = value.value<SynGlyphX::NumericMappingProperty>();
 			}
 			else if (role == PropertyRole::RotationRateZ) {
 
-				iterator->GetRotationRate()[2] = value.value<SynGlyphX::NumericMappingProperty>();
+				iterator->second.GetRotationRate()[2] = value.value<SynGlyphX::NumericMappingProperty>();
 			}
 			else if (role == PropertyRole::GeometryShape) {
 
-				iterator->GetStructure().SetGeometryShape(value.value<SynGlyphX::GeometryShapeMappingProperty>());
+				iterator->second.GetStructure().SetGeometryShape(value.value<SynGlyphX::GeometryShapeMappingProperty>());
 			}
 			else if (role == PropertyRole::GeometrySurface) {
 
-				iterator->GetStructure().SetGeometrySurface(static_cast<SynGlyphX::GlyphGeometryInfo::Surface>(value.toInt()));
+				iterator->second.GetStructure().SetGeometrySurface(static_cast<SynGlyphX::GlyphGeometryInfo::Surface>(value.toInt()));
 			}
 			else if (role == PropertyRole::GeometryTorusRatio) {
 
-				iterator->GetStructure().SetTorusRatio(value.toDouble());
+				iterator->second.GetStructure().SetTorusRatio(value.toDouble());
 			}
 			else if (role == PropertyRole::VirtualTopology) {
 
-				iterator->GetVirtualTopology().SetType(value.value<SynGlyphX::VirtualTopologyMappingProperty>());
+				iterator->second.GetVirtualTopology().SetType(value.value<SynGlyphX::VirtualTopologyMappingProperty>());
 			}
 
 			QVector<int> roles;
@@ -174,83 +174,83 @@ QVariant DataTransformModel::GetPropertyData(const QModelIndex& index, int role)
 			QVariant var;
 			if (role == PropertyRole::PositionX) {
 
-				var.setValue(iterator->GetPosition()[0]);
+				var.setValue(iterator->second.GetPosition()[0]);
 			}
 			else if (role == PropertyRole::PositionY) {
 
-				var.setValue(iterator->GetPosition()[1]);
+				var.setValue(iterator->second.GetPosition()[1]);
 			}
 			else if (role == PropertyRole::PositionZ) {
 
-				var.setValue(iterator->GetPosition()[2]);
+				var.setValue(iterator->second.GetPosition()[2]);
 			}
 			else if (role == PropertyRole::RotationX) {
 
-				var.setValue(iterator->GetRotation()[0]);
+				var.setValue(iterator->second.GetRotation()[0]);
 			}
 			else if (role == PropertyRole::RotationY) {
 
-				var.setValue(iterator->GetRotation()[1]);
+				var.setValue(iterator->second.GetRotation()[1]);
 			}
 			else if (role == PropertyRole::RotationZ) {
 
-				var.setValue(iterator->GetRotation()[2]);
+				var.setValue(iterator->second.GetRotation()[2]);
 			}
 			else if (role == PropertyRole::ScaleX) {
 
-				var.setValue(iterator->GetScale()[0]);
+				var.setValue(iterator->second.GetScale()[0]);
 			}
 			else if (role == PropertyRole::ScaleY) {
 
-				var.setValue(iterator->GetScale()[1]);
+				var.setValue(iterator->second.GetScale()[1]);
 			}
 			else if (role == PropertyRole::ScaleZ) {
 
-				var.setValue(iterator->GetScale()[2]);
+				var.setValue(iterator->second.GetScale()[2]);
 			}
 			else if (role == PropertyRole::Color) {
 
-				var.setValue(iterator->GetColor());
+				var.setValue(iterator->second.GetColor());
 			}
 			else if (role == PropertyRole::Transparency) {
 
-				var.setValue(iterator->GetTransparency());
+				var.setValue(iterator->second.GetTransparency());
 			}
 			else if (role == PropertyRole::Tag) {
 
-				var.setValue(iterator->GetTag());
+				var.setValue(iterator->second.GetTag());
 			}
 			else if (role == PropertyRole::Description) {
 
-				var.setValue(iterator->GetDescription());
+				var.setValue(iterator->second.GetDescription());
 			}
 			else if (role == PropertyRole::RotationRateX) {
 
-				var.setValue(iterator->GetRotationRate()[0]);
+				var.setValue(iterator->second.GetRotationRate()[0]);
 			}
 			else if (role == PropertyRole::RotationRateY) {
 
-				var.setValue(iterator->GetRotationRate()[1]);
+				var.setValue(iterator->second.GetRotationRate()[1]);
 			}
 			else if (role == PropertyRole::RotationRateZ) {
 
-				var.setValue(iterator->GetRotationRate()[2]);
+				var.setValue(iterator->second.GetRotationRate()[2]);
 			}
 			else if (role == PropertyRole::GeometryShape) {
 
-				var.setValue(iterator->GetStructure().GetGeometryShape());
+				var.setValue(iterator->second.GetStructure().GetGeometryShape());
 			}
 			else if (role == PropertyRole::GeometrySurface) {
 
-				var.setValue(iterator->GetStructure().GetGeometrySurface());
+				var.setValue(iterator->second.GetStructure().GetGeometrySurface());
 			}
 			else if (role == PropertyRole::GeometryTorusRatio) {
 
-				var.setValue(iterator->GetStructure().GetTorusRatio());
+				var.setValue(iterator->second.GetStructure().GetTorusRatio());
 			}
 			else if (role == PropertyRole::VirtualTopology) {
 
-				var.setValue(iterator->GetVirtualTopology().GetType());
+				var.setValue(iterator->second.GetVirtualTopology().GetType());
 			}
 
 			if (var.isValid()) {
@@ -344,8 +344,8 @@ QVariant DataTransformModel::GetGlyphData(const QModelIndex& index) const {
 
 		SynGlyphX::DataMappingGlyphGraph::ConstGlyphIterator iterator(static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(index.internalPointer()));
 
-		std::wstring glyphData = SynGlyphX::GlyphGeometryInfo::s_shapeNames.left.at(iterator->GetStructure().GetGeometryShape().GetValue()) + L": " + 
-			SynGlyphX::VirtualTopologyInfo::s_virtualTopologyNames.left.at(iterator->GetVirtualTopology().GetType().GetValue());
+		std::wstring glyphData = SynGlyphX::GlyphGeometryInfo::s_shapeNames.left.at(iterator->second.GetStructure().GetGeometryShape().GetValue()) + L": " + 
+			SynGlyphX::VirtualTopologyInfo::s_virtualTopologyNames.left.at(iterator->second.GetVirtualTopology().GetType().GetValue());
 		if (iterator == iterator.owner()->root().constify()) {
 			glyphData += L" (Root)";
 		}
@@ -663,7 +663,7 @@ void DataTransformModel::UpdateGlyph(const QModelIndex& index, const SynGlyphX::
 	if (!m_dataMapping->GetGlyphGraphs().empty() && index.isValid()) {
 
 		SynGlyphX::DataMappingGlyphGraph::GlyphIterator glyph(static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(index.internalPointer()));
-		*glyph = newGlyph;
+		glyph->second = newGlyph;
 		emit dataChanged(index, index);
 	}
 }
@@ -673,7 +673,7 @@ void DataTransformModel::UpdateGlyphGeometry(const QModelIndex& index, const Syn
 	if (!m_dataMapping->GetGlyphGraphs().empty() && index.isValid()) {
 
 		SynGlyphX::DataMappingGlyphGraph::GlyphIterator glyph(static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(index.internalPointer()));
-		glyph->GetStructure() = structure;
+		glyph->second.GetStructure() = structure;
 		emit dataChanged(index, index);
 	}
 }
@@ -683,7 +683,7 @@ void DataTransformModel::UpdateVirtualTopology(const QModelIndex& index, const S
 	if (!m_dataMapping->GetGlyphGraphs().empty() && index.isValid()) {
 
 		SynGlyphX::DataMappingGlyphGraph::GlyphIterator glyph(static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(index.internalPointer()));
-		glyph->GetVirtualTopology() = virtualTopology;
+		glyph->second.GetVirtualTopology() = virtualTopology;
 		emit dataChanged(index, index);
 	}
 }
@@ -696,7 +696,7 @@ const SynGlyphX::DataMappingGlyph& DataTransformModel::GetGlyph(const QModelInde
 	}
 
 	SynGlyphX::DataMappingGlyphGraph::ConstGlyphIterator glyph(static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(index.internalPointer()));
-	return (*glyph);
+	return glyph->second;
 }
 
 void DataTransformModel::AddChildGlyph(const QModelIndex& parent, const SynGlyphX::DataMappingGlyph& glyphTemplate, unsigned int numberOfChildren) {
@@ -836,7 +836,7 @@ bool DataTransformModel::dropMimeData(const QMimeData* data, Qt::DropAction acti
 
 				//Only do an insert here.  The MoveAction will take care of deleting the old object
 				beginInsertRows(parent, numberOfChildren, numberOfChildren);
-				stlplus::ntree<SynGlyphX::DataMappingGlyph> oldGlyphSubtree = const_cast<stlplus::ntree<SynGlyphX::DataMappingGlyph>*>(oldGlyph.owner())->subtree(oldGlyph.deconstify());
+				SynGlyphX::DataMappingGlyphGraph::LinklessGraph oldGlyphSubtree = const_cast<SynGlyphX::DataMappingGlyphGraph::LinklessGraph*>(oldGlyph.owner())->subtree(oldGlyph.deconstify());
 				m_dataMapping->AddChildTree(GetTreeId(parent), newParentGlyph.deconstify(), oldGlyphSubtree);
 				endInsertRows();
 				glyphsMoved = true;

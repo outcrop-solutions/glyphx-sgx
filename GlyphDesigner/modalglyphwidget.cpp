@@ -86,11 +86,11 @@ void ModalGlyphWidget::UpdateWidget(const QModelIndex& index) {
 	SynGlyphX::Glyph glyph;
 	if (m_glyphTreeType == SynGlyphXANTz::MinMaxGlyphTreeModel::GlyphType::Max) {
 
-		glyph = m_model->GetMinMaxGlyph(index)->GetMaxGlyph();
+		glyph = m_model->GetMinMaxGlyph(index)->second.GetMaxGlyph();
 	}
 	else {
 
-		glyph = m_model->GetMinMaxGlyph(index)->GetMinGlyph();
+		glyph = m_model->GetMinMaxGlyph(index)->second.GetMinGlyph();
 	}
     SetWidgetFromGlyph(glyph, index.parent().isValid());
 	SetNumberOfChildren(m_model->rowCount(index));

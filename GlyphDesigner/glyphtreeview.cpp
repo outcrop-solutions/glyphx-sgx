@@ -117,11 +117,11 @@ void GlyphTreeView::PropertiesActivated() {
 	SynGlyphX::Glyph oldGlyph;
 	if (m_glyphTreeType == SynGlyphXANTz::MinMaxGlyphTreeModel::GlyphType::Max) {
 
-		oldGlyph = m_model->GetMinMaxGlyph(index)->GetMaxGlyph();
+		oldGlyph = m_model->GetMinMaxGlyph(index)->second.GetMaxGlyph();
 	}
 	else {
 
-		oldGlyph = m_model->GetMinMaxGlyph(index)->GetMinGlyph();
+		oldGlyph = m_model->GetMinMaxGlyph(index)->second.GetMinGlyph();
 	}
 
 	SynGlyphX::GlyphPropertiesWidget* singleGlyphWidget = new SynGlyphX::GlyphPropertiesWidget(SynGlyphX::GlyphPropertiesWidget::ShowOnBottom, this);
