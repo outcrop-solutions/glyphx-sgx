@@ -445,8 +445,9 @@ ANTZCORE_API void npNodeRemove(bool freeNode, pNPnode node, void* dataRef)
 		npPostMsg (msg, kNPmsgCtrl, dataRef);	
 
 		//extra care required, this is complex routine to call recursively		//zzhp
-		count = node->childCount;		//childCount changes during deletion
-		for (i=0; i < count; i++)
+		//count = node->childCount;		//childCount changes during deletion
+		//for (i=0; i < count; i++)
+		while (node->childCount > 0)
 		{
 			child = node->child[0];											//zz-s
 			sprintf(msg, "Delete Child id: %d   parent id: %d", child->id, node->id);
