@@ -16,15 +16,15 @@ namespace SynGlyphX {
 	GlyphGraph::GlyphGraph(const std::vector<Glyph>& templates, const std::vector<unsigned int> instances, unsigned int depth) :
 		GlyphGraphTemplate<Glyph>() {
 
-		insert(templates[depth]);
+		SetRootGlyph(templates[depth]);
 		++depth;
 
 		if (depth == instances.size() - 1) {
 
 			for (unsigned int i = 0; i < instances[depth]; ++i) {
 
-				GlyphGraph::GlyphIterator newGlyph = insert(root(), templates[depth]);
-				newGlyph->GetPosition()[0] = i * -15.0;
+				GlyphGraph::GlyphIterator newGlyph = AddChildGlyph(GetRoot(), templates[depth]);
+				newGlyph->second.GetPosition()[0] = i * -15.0;
 			}
 		}
 		else {
@@ -32,8 +32,8 @@ namespace SynGlyphX {
 			for (unsigned int i = 0; i < instances[depth]; ++i) {
 
 				GlyphGraph subGraph(templates, instances, depth);
-				GlyphGraph::GlyphIterator newGlyph = insert(root(), subGraph);
-				newGlyph->GetPosition()[0] = i * -15.0;
+				GlyphGraph::GlyphIterator newGlyph = AddChildGlyphGraph(GetRoot(), subGraph);
+				newGlyph->second.GetPosition()[0] = i * -15.0;
 			}
 		}
 	}
@@ -60,16 +60,16 @@ namespace SynGlyphX {
 
 			for (unsigned int i = 0; i < instances[0]; ++i) {
 
-				GlyphGraph::GlyphIterator newGlyph = insert(root(), templates[0]);
-				newGlyph->GetPosition()[0] = i * -15.0;
+				GlyphGraph::GlyphIterator newGlyph = AddChildGlyph(GetRoot(), templates[0]);
+				newGlyph->second.GetPosition()[0] = i * -15.0;
 			}
 		}
 		else {
 			for (unsigned int i = 0; i < instances[0]; ++i) {
 
 				GlyphGraph subGraph(templates, instances, 0);
-				GlyphGraph::GlyphIterator newGlyph = insert(parent, subGraph);
-				newGlyph->GetPosition()[0] = i * -15.0;
+				GlyphGraph::GlyphIterator newGlyph = AddChildGlyphGraph(parent, subGraph);
+				newGlyph->second.GetPosition()[0] = i * -15.0;
 			}
 		}
 	}

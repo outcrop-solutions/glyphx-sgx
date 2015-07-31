@@ -29,7 +29,7 @@
 namespace SynGlyphX {
 
 	template <typename GlyphType, typename LinkType = GlyphType>
-	class GlyphGraphTemplate : protected stlplus::ntree<GlyphType> {
+	class GlyphGraphTemplate : protected stlplus::ntree<std::pair<unsigned long, GlyphType>> {
 
 	public:
 		/*enum Edge {
@@ -45,23 +45,30 @@ namespace SynGlyphX {
 
 		typedef std::map<std::pair<Label, Label>, LinkType> LinkMap;
 
+		typedef stlplus::ntree<std::pair<Label, GlyphType>> LinklessGraph;
+
 		GlyphGraphTemplate() :
-			stlplus::ntree<GlyphType>() {
+			stlplus::ntree<std::pair<unsigned long, GlyphType>>(),
+			m_nextLabel(0) {
 
 			
 		}
 
 		GlyphGraphTemplate(const GlyphType& rootGlyph) :
-			stlplus::ntree<GlyphType>()  {
+			stlplus::ntree<std::pair<unsigned long, GlyphType>>(),
+			m_nextLabel(0) {
 
-			AddLabel(insert(rootGlyph), 0);
+			insert(std::pair<Label, GlyphType>(GetNextLabel(), rootGlyph));
 		}
 
 		GlyphGraphTemplate(const GlyphGraphTemplate& graph) :
-			stlplus::ntree<GlyphType>(graph) {
+			stlplus::ntree<std::pair<unsigned long, GlyphType>>(graph),
+			m_nextLabel(0) {
 
-			AddLabel(insert(*graph.GetRoot()), 0);
+			insert(std::pair<Label, GlyphType>(GetNextLabel(), graph.GetRoot()->second));
 			CopyChildren(GetRoot(), graph.GetRoot(), graph);
+
+			m_linkGlyphs = graph.m_linkGlyphs;
 		}
 
 		~GlyphGraphTemplate() {
@@ -99,7 +106,7 @@ namespace SynGlyphX {
 			return child(vertex, pos);
 		}
 
-		stlplus::ntree<GlyphType> GetSubgraph(const GlyphIterator& vertex) {
+		LinklessGraph GetSubgraph(const GlyphIterator& vertex) {
 
 			return subtree(vertex);
 		}
@@ -114,17 +121,9 @@ namespace SynGlyphX {
 			return depth(vertex);
 		}
 
-		GlyphIterator SetRootGlyph(const GlyphType& glyph, Label label = 0) {
+		GlyphIterator SetRootGlyph(const GlyphType& glyph) {
 
-			if (!empty()) {
-
-				throw std::invalid_argument("Can't set root glyph on non empty glyph graph");
-			}
-
-			GlyphIterator newIterator = insert(glyph);
-			AddLabel(newIterator, label);
-
-			return newIterator;
+			return SetRootGlyph(glyph, GetNextLabel());
 		}
 
 		GlyphIterator AddChildGlyph(const GlyphIterator& vertex, const GlyphType& glyph) {
@@ -132,19 +131,38 @@ namespace SynGlyphX {
 			return AddChildGlyph(vertex, glyph, GetNextLabel());
 		}
 
-		GlyphIterator AddChildGlyphGraph(const GlyphIterator& vertex, const stlplus::ntree<GlyphType>& graph) {
+		GlyphIterator AddChildGlyphGraph(const GlyphIterator& vertex, const LinklessGraph& graph) {
 
-			GlyphIterator newIterator = insert(vertex, graph);
-			AddLabels(newIterator);
+			ConstGlyphIterator otherRoot = graph.root();
+			GlyphIterator newIterator = AddChildGlyph(vertex, otherRoot->second);
+			CopyChildren(vertex, otherRoot, graph);
+
+			return newIterator;
+		}
+
+		GlyphIterator AddChildGlyphGraph(const GlyphIterator& vertex, const GlyphGraphTemplate& graph) {
+
+			ConstGlyphIterator otherRoot = graph.root();
+			GlyphIterator newIterator = AddChildGlyph(vertex, otherRoot->second);
+			CopyChildren(vertex, otherRoot, graph);
 
 			return newIterator;
 		}
 
 		void RemoveChild(const GlyphIterator& vertex, unsigned int pos) {
 
-			GlyphIterator childToErase = GetChild(vertex, pos);
-			RemoveFromLabelsAndLinks(childToErase);
-			erase(childToErase);
+			Remove(GetChild(vertex, pos));
+		}
+
+		void Remove(const GlyphIterator& vertex) {
+
+			for (unsigned int i = 0; i < children(vertex); ++i) {
+
+				Remove(GetChild(vertex, i));
+			}
+
+			RemoveRelatedLinks(vertex);
+			erase(vertex);
 		}
 
 		void AddLink(Label beginning, Label end, const LinkType& glyph) {
@@ -167,10 +185,10 @@ namespace SynGlyphX {
 			}
 		}
 
-		Label GetLabel(const GlyphIterator& vertex) const {
+		/*Label GetLabel(const GlyphIterator& vertex) const {
 
-			return m_labels.right.at(vertex);
-		}
+			return vertex->first;
+		}*/
 
 		const LinkMap& GetLinks() const {
 
@@ -178,17 +196,42 @@ namespace SynGlyphX {
 		}
 
 	protected:
-		void CopyChildren(const GlyphIterator& vertex, const ConstGlyphIterator& parent, const GlyphGraphTemplate& graph) {
+		GlyphIterator SetRootGlyph(const GlyphType& glyph, Label label) {
 
-			for (unsigned int i = 0; i < ChildCount(parent); ++i) {
+			if (!empty()) {
 
-				const ConstGlyphIterator childFromOtherGraph = graph.GetChild(parent, i);
-				GlyphIterator child = AddChildGlyph(vertex, *childFromOtherGraph, graph.GetLabel(childFromOtherGraph.deconstify()));
+				throw std::invalid_argument("Can't set root glyph on non empty glyph graph");
+			}
+
+			GlyphIterator newIterator = insert(std::pair<Label, GlyphType>(label, glyph));
+
+			return newIterator;
+		}
+
+		void CopyChildren(const GlyphIterator& vertex, const ConstGlyphIterator& parent, const LinklessGraph& graph) {
+
+			for (unsigned int i = 0; i < graph.children(parent); ++i) {
+
+				const ConstGlyphIterator childFromOtherGraph = graph.child(parent, i);
+				GlyphIterator child = AddChildGlyph(vertex, childFromOtherGraph->second);
 				CopyChildren(child, childFromOtherGraph, graph);
 			}
 		}
 
-		void AddLabels(const GlyphIterator& vertex) {
+		void CopyChildren(const GlyphIterator& vertex, const ConstGlyphIterator& parent, const GlyphGraphTemplate& graph) {
+
+			for (unsigned int i = 0; i < graph.ChildCount(parent); ++i) {
+
+				const ConstGlyphIterator childFromOtherGraph = graph.GetChild(parent, i);
+
+				Label label = childFromOtherGraph->first;
+				
+				GlyphIterator child = AddChildGlyph(vertex, childFromOtherGraph->second, label);
+				CopyChildren(child, childFromOtherGraph, graph);
+			}
+		}
+
+		/*void AddLabels(const GlyphIterator& vertex) {
 
 			AddLabel(vertex, GetNextLabel());
 
@@ -201,11 +244,11 @@ namespace SynGlyphX {
 		void AddLabel(const GlyphIterator& vertex, Label label) {
 
 			m_labels.insert(boost::bimap<boost::bimaps::set_of<Label>, GlyphIterator>::value_type(label, vertex));
-		}
+		}*/
 
-		void RemoveFromLabelsAndLinks(const GlyphIterator& vertex) {
+		void RemoveRelatedLinks(const GlyphIterator& vertex) {
 
-			Label labelToRemove = m_labels.right.at(vertex);
+			Label labelToRemove = vertex->first;
 
 			std::vector<std::pair<Label, Label>> linksToRemove;
 			for (auto iT = m_linkGlyphs.begin(); iT != m_linkGlyphs.end(); ++iT) {
@@ -221,33 +264,33 @@ namespace SynGlyphX {
 				m_linkGlyphs.erase(linkToRemove);
 			}
 
-			m_labels.left.erase(labelToRemove);
+			//m_labels.left.erase(labelToRemove);
 		}
 
 		Label GetNextLabel() {
 
-			if (m_labels.left.empty()) {
-
-				return 0;
-			}
-			else {
-
-				return (m_labels.rbegin()->left + 1);
-			}
+			Label nextLabel = m_nextLabel;
+			++m_nextLabel;
+			return nextLabel;
 		}
 
 		GlyphIterator AddChildGlyph(const GlyphIterator& vertex, const GlyphType& glyph, Label label) {
 
-			GlyphIterator newIterator = insert(vertex, glyph);
-			AddLabel(newIterator, label);
+			if (label + 1 > m_nextLabel) {
+
+				m_nextLabel = label + 1;
+			}
+
+			GlyphIterator newIterator = insert(vertex, std::pair<Label, GlyphType>(label, glyph));
 
 			return newIterator;
 		}
 
 		//boost::labeled_graph < boost::directed_graph<GlyphType, Edge>, Label > m_graph;
-		boost::bimap<boost::bimaps::set_of<Label>, GlyphIterator> m_labels;
 
 		LinkMap m_linkGlyphs;
+
+		Label m_nextLabel;
 	};
 }
 

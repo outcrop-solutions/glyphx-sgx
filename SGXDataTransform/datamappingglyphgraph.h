@@ -46,7 +46,7 @@ namespace SynGlyphX {
 
 		typedef std::vector<ConstSharedPtr> ConstSharedVector;
 
-		typedef stlplus::ntree_node<DataMappingGlyph> Node;
+		typedef stlplus::ntree_node<std::pair<Label, DataMappingGlyph>> Node;
 		
 		DataMappingGlyphGraph();
 		DataMappingGlyphGraph(const boost::property_tree::wptree& propertyTree);
