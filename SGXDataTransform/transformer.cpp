@@ -53,7 +53,7 @@ namespace SynGlyphX {
 		m_sourceDataCacheLocation = sourceDataCacheLocation;
 	}
 
-	GlyphGraph::ConstSharedVector Transformer::CreateGlyphTreesFromMinMaxTrees(const DataTransformMapping& mapping) const {
+	GlyphGraph::ConstSharedVector Transformer::CreateGlyphTreesFromMinMaxTrees(const DataTransformMapping& mapping) {
 
 		GlyphGraph::ConstSharedVector allTrees;
 
@@ -61,6 +61,7 @@ namespace SynGlyphX {
 
 			if (minMaxTree.second->GetRoot()->second.IsAnInputFieldBoundToAPosition()) {
 
+				m_label2LabelMap.clear();
 				GlyphGraph::ConstSharedVector newTrees = CreateGlyphTreesFromMinMaxTree(minMaxTree.second);
 				allTrees.insert(allTrees.end(), newTrees.begin(), newTrees.end());
 			}
@@ -80,7 +81,7 @@ namespace SynGlyphX {
 		query->finish();
 	}
 
-	GlyphGraph::ConstSharedVector Transformer::CreateGlyphTreesFromMinMaxTree(DataMappingGlyphGraph::ConstSharedPtr minMaxTree) const {
+	GlyphGraph::ConstSharedVector Transformer::CreateGlyphTreesFromMinMaxTree(DataMappingGlyphGraph::ConstSharedPtr minMaxTree) {
 
 		GlyphGraph::ConstSharedVector trees;
 
@@ -118,9 +119,15 @@ namespace SynGlyphX {
 
 			GlyphGraph::SharedPtr glyphTree = std::make_shared<GlyphGraph>();
 
-			glyphTree->SetRootGlyph(ProcessMinMaxGlyph(minMaxGlyph, minMaxTree, queryResultData, i));
+			GlyphGraph::GlyphIterator newRoot = glyphTree->SetRootGlyph(ProcessMinMaxGlyph(minMaxGlyph, minMaxTree, queryResultData, i));
+			m_label2LabelMap[minMaxGlyph->first] = newRoot->first;
 
 			AddChildrenToGlyphTree(glyphTree, glyphTree->GetRoot(), minMaxTree, minMaxGlyph, queryResultData, i);
+
+			for (auto& link : minMaxTree->GetLinks()) {
+
+				glyphTree->AddLink(m_label2LabelMap[link.first.first], m_label2LabelMap[link.first.second], link.second.GetMaxGlyph());
+			}
 
 			trees.push_back(glyphTree);
 		}
@@ -182,12 +189,13 @@ namespace SynGlyphX {
 		return glyph;
 	}
 
-	void Transformer::AddChildrenToGlyphTree(GlyphGraph::SharedPtr tree, GlyphGraph::GlyphIterator newNode, DataMappingGlyphGraph::ConstSharedPtr minMaxTree, DataMappingGlyphGraph::ConstGlyphIterator node, const InputFieldDataMap& queryResultData, unsigned int index) const {
+	void Transformer::AddChildrenToGlyphTree(GlyphGraph::SharedPtr tree, GlyphGraph::GlyphIterator newNode, DataMappingGlyphGraph::ConstSharedPtr minMaxTree, DataMappingGlyphGraph::ConstGlyphIterator node, const InputFieldDataMap& queryResultData, unsigned int index) {
 
 		for (int i = 0; i < minMaxTree->ChildCount(node); ++i) {
 
 			DataMappingGlyphGraph::ConstGlyphIterator child = minMaxTree->GetChild(node, i);
 			GlyphGraph::GlyphIterator newChild = tree->AddChildGlyph(newNode, ProcessMinMaxGlyph(child, minMaxTree, queryResultData, index));
+			m_label2LabelMap[child->first] = newChild->first;
 			AddChildrenToGlyphTree(tree, newChild, minMaxTree, child, queryResultData, index);
 		}
 	}

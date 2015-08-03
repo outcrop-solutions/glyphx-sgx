@@ -56,10 +56,10 @@ namespace SynGlyphX {
 		bool HaveDatasourcesBeenUpdated(const DataTransformMapping& mapping, std::time_t lastUpdateTime) const;
 		bool HasFileBeenUpdated(const std::wstring& filename, std::time_t lastUpdateTime) const;
 
-		GlyphGraph::ConstSharedVector CreateGlyphTreesFromMinMaxTrees(const DataTransformMapping& mapping) const;
-		GlyphGraph::ConstSharedVector CreateGlyphTreesFromMinMaxTree(DataMappingGlyphGraph::ConstSharedPtr minMaxTree) const;
+		GlyphGraph::ConstSharedVector CreateGlyphTreesFromMinMaxTrees(const DataTransformMapping& mapping);
+		GlyphGraph::ConstSharedVector CreateGlyphTreesFromMinMaxTree(DataMappingGlyphGraph::ConstSharedPtr minMaxTree);
 		Glyph ProcessMinMaxGlyph(const DataMappingGlyphGraph::ConstGlyphIterator& minMaxGlyph, DataMappingGlyphGraph::ConstSharedPtr minMaxTree, const InputFieldDataMap& queryResultData, unsigned int index) const;
-		void AddChildrenToGlyphTree(GlyphGraph::SharedPtr tree, GlyphGraph::GlyphIterator newNode, DataMappingGlyphGraph::ConstSharedPtr minMaxTree, DataMappingGlyphGraph::ConstGlyphIterator node, const InputFieldDataMap& queryResultData, unsigned int index) const;
+		void AddChildrenToGlyphTree(GlyphGraph::SharedPtr tree, GlyphGraph::GlyphIterator newNode, DataMappingGlyphGraph::ConstSharedPtr minMaxTree, DataMappingGlyphGraph::ConstGlyphIterator node, const InputFieldDataMap& queryResultData, unsigned int index);
 		
 		double TransformProperty(const InputBinding& binding, const NumericMappingProperty& mappingProperty, const InputFieldDataMap& queryResultData, unsigned int index) const;
 		GlyphColor TransformProperty(const InputBinding& binding, const ColorMappingProperty& mappingProperty, const InputFieldDataMap& queryResultData, unsigned int index) const;
@@ -84,6 +84,8 @@ namespace SynGlyphX {
 		DataMappingDefaults m_defaults;
 
 		QString m_error;
+
+		std::unordered_map<SynGlyphX::DataMappingGlyphGraph::Label, SynGlyphX::GlyphGraph::Label> m_label2LabelMap;
 
 		static QString s_defaultImagesDirectory;
 	};
