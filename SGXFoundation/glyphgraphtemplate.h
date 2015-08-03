@@ -156,7 +156,7 @@ namespace SynGlyphX {
 
 		void Remove(const GlyphIterator& vertex) {
 
-			for (unsigned int i = 0; i < children(vertex); ++i) {
+			for (int i = children(vertex) - 1; i >= 0; --i) {
 
 				Remove(GetChild(vertex, i));
 			}
