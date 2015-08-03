@@ -118,17 +118,17 @@ namespace SynGlyphXANTz {
 			if (minMaxGlyphTree) {
 
 				CreateNewSubTree(nullptr, minMaxGlyphTree->GetRoot());
-			}
 
-			for (auto& link : minMaxGlyphTree->GetLinks()) {
+				for (auto& link : minMaxGlyphTree->GetLinks()) {
 
-				pNPnode sourceNode = static_cast<pNPnode>(m_antzData->map.nodeID[m_labelToANTzNodeMap.left.at(link.first.first)]);
-				pNPnode destinationNode = static_cast<pNPnode>(m_antzData->map.nodeID[m_labelToANTzNodeMap.left.at(link.first.second)]);
-				pNPnode linkNode = npNodeNewLink(sourceNode, destinationNode, m_antzData);
+					pNPnode sourceNode = static_cast<pNPnode>(m_antzData->map.nodeID[m_labelToANTzNodeMap.left.at(link.first.first)]);
+					pNPnode destinationNode = static_cast<pNPnode>(m_antzData->map.nodeID[m_labelToANTzNodeMap.left.at(link.first.second)]);
+					pNPnode linkNode = npNodeNewLink(sourceNode, destinationNode, m_antzData);
 
-				linkNode->selected = 0;
+					linkNode->selected = 0;
 
-				UpdateGlyphProperties(linkNode, link.second);
+					UpdateGlyphProperties(linkNode, link.second);
+				}
 			}
 
 			//Undo previous select node at the beginning of this function
