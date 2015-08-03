@@ -84,7 +84,7 @@ namespace SynGlyphXANTz {
 		pNPnode GetGlyphFromModelIndex(const QModelIndex& index) const;
 		pNPnode GetRootGlyph() const;
 
-		int GetChildIndexFromParent(pNPnode node) const;
+		int GetChildIndexFromParentNoLinks(pNPnode node) const;
 
 		void DeleteRootGlyphNode();
 

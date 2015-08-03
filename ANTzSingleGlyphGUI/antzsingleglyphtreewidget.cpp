@@ -233,23 +233,9 @@ namespace SynGlyphXANTz {
 			return nullptr;
 		}
 
-		std::stack<unsigned int> childIDs;
-		QModelIndex parent = index;
-		while (parent.isValid()) {
+		SynGlyphX::DataMappingGlyphGraph::Label label = m_model->GetLabel(index);
 
-			childIDs.push(parent.row());
-			parent = parent.parent();
-		}
-		childIDs.pop();
-
-		pNPnode glyph = m_rootGlyph;
-		while (!childIDs.empty()) {
-
-			glyph = glyph->child[childIDs.top()];
-			childIDs.pop();
-		}
-
-		return glyph;
+		return static_cast<pNPnode>(m_antzData->map.nodeID[m_labelToANTzNodeMap.left.at(label)]);
 	}
 
 	void ANTzSingleGlyphTreeWidget::UpdateData(const QModelIndex& topLeft, const QModelIndex& bottomRight) {
@@ -373,7 +359,7 @@ namespace SynGlyphXANTz {
 		std::stack<unsigned int> childIndexes;
 		while (node != m_rootGlyph) {
 
-			childIndexes.push(GetChildIndexFromParent(node));
+			childIndexes.push(GetChildIndexFromParentNoLinks(node));
 			node = node->parent;
 		}
 
@@ -387,17 +373,32 @@ namespace SynGlyphXANTz {
 		return indexForID;
 	}
 
-	int ANTzSingleGlyphTreeWidget::GetChildIndexFromParent(pNPnode node) const {
+	int ANTzSingleGlyphTreeWidget::GetChildIndexFromParentNoLinks(pNPnode node) const {
 
+		if (node->type != kNodePin) {
+
+			throw std::invalid_argument("GetChildIndexFromParentNoLinks can only work on ANTz nodes of type pin");
+		}
+
+		int linkCount = 0;
 		pNPnode parent = node->parent;
+
 		int i = 0;
 		for (; i < parent->childCount; ++i) {
-			if (parent->child[i] == node) {
+			
+			pNPnode currentChild = parent->child[i];
+			if (currentChild->type != kNodePin) {
+
+				++linkCount;
+				continue;
+			}
+			if (currentChild == node) {
+			
 				break;
 			}
 		}
 
-		return i;
+		return i - linkCount;
 	}
 
 	void ANTzSingleGlyphTreeWidget::ShowGlyph(bool show) {

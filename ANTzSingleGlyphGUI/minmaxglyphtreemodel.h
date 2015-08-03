@@ -30,6 +30,8 @@ namespace SynGlyphXANTz {
 		Q_OBJECT
 
 	public:
+		const int LabelRole = Qt::UserRole;
+
 		enum GlyphType {
 			Min,
 			Max
@@ -76,9 +78,15 @@ namespace SynGlyphXANTz {
 		void RepaceModelWithDefaultGlyphTree();
 		void ResetRootMinMaxPositionXY();
 
+		SynGlyphX::DataMappingGlyphGraph::Label GetLabel(const QModelIndex& index) const;
+
+		QModelIndex GetIndexFromLabel(SynGlyphX::DataMappingGlyphGraph::Label label) const;
+
 		static bool GreaterBranchLevel(const QModelIndex& left, const QModelIndex& right);
 
 	private:
+		QVariant GetDisplayData(const QModelIndex& index) const;
+
 		void UpdateGlyphMin(const QModelIndex& index, const SynGlyphX::Glyph& glyph, SynGlyphX::PropertyUpdates updates);
 		void UpdateGlyphMax(const QModelIndex& index, const SynGlyphX::Glyph& glyph, SynGlyphX::PropertyUpdates updates);
 
@@ -90,6 +98,8 @@ namespace SynGlyphXANTz {
 
 		SynGlyphX::DataMappingGlyphGraph::SharedPtr m_minMaxGlyphTree;
 		SynGlyphX::DataMappingGlyphGraph::GlyphIterator m_clipboardGlyph;
+
+		std::unordered_map<SynGlyphX::DataMappingGlyphGraph::Label, QPersistentModelIndex> m_labelToIndexMap;
 	};
 
 } //namespace SynGlyphXANTz

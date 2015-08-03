@@ -39,13 +39,22 @@ namespace SynGlyphXANTz {
 
 	QVariant MinMaxGlyphTreeModel::data(const QModelIndex& index, int role) const {
 
-		if (!index.isValid()) {
-			return QVariant();
+		if (index.isValid()) {
+			
+			if (role == Qt::DisplayRole) {
+
+				return GetDisplayData(index);
+			}
+			else if (role == LabelRole) {
+
+				return QVariant::fromValue<SynGlyphX::DataMappingGlyphGraph::Label>(GetLabel(index));
+			}
 		}
 
-		if (role != Qt::DisplayRole) {
-			return QVariant();
-		}
+		return QVariant();
+	}
+
+	QVariant MinMaxGlyphTreeModel::GetDisplayData(const QModelIndex& index) const {
 
 		SynGlyphX::DataMappingGlyphGraph::GlyphIterator glyph = GetIteratorFromIndex(index);
 
@@ -60,6 +69,12 @@ namespace SynGlyphXANTz {
 #endif
 
 		return QString::fromStdWString(displayedData);
+	}
+
+	SynGlyphX::DataMappingGlyphGraph::Label MinMaxGlyphTreeModel::GetLabel(const QModelIndex& index) const {
+
+		SynGlyphX::DataMappingGlyphGraph::GlyphIterator glyph = GetIteratorFromIndex(index);
+		return glyph->first;
 	}
 
 	QModelIndex	MinMaxGlyphTreeModel::index(int row, int column, const QModelIndex& parent) const {
@@ -609,6 +624,11 @@ namespace SynGlyphXANTz {
 	void MinMaxGlyphTreeModel::ResetRootMinMaxPositionXY() {
 
 		m_minMaxGlyphTree->ResetRootMinMaxPositionXY();
+	}
+
+	QModelIndex MinMaxGlyphTreeModel::GetIndexFromLabel(SynGlyphX::DataMappingGlyphGraph::Label label) const {
+
+		return m_labelToIndexMap.at(label);
 	}
 
 } //namespace SynGlyphXANTz
