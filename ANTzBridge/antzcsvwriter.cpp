@@ -230,7 +230,7 @@ namespace SynGlyphXANTz {
 	unsigned long ANTzCSVWriter::WriteGlyph(SynGlyphX::CSVFileWriter& file, const SynGlyphX::GlyphGraph::ConstSharedPtr tree, const SynGlyphX::GlyphGraph::ConstGlyphIterator& glyph, unsigned long id, unsigned long parentId, unsigned long childId, unsigned long branchLevel, bool isLink) {
 
 		m_labelToANTzIDMap[glyph->first] = id;
-		m_labelToANTzBranchLevelMap[glyph->first] = tree->GetDepth(glyph);
+		m_labelToANTzBranchLevelMap[glyph->first] = tree->GetDepth(glyph) - 1;
 
 		return WriteGlyph(file, glyph->second, tree->ChildCount(glyph), id, parentId, childId, branchLevel, isLink);
 	}
