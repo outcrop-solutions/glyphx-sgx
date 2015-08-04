@@ -56,18 +56,64 @@ namespace SynGlyphXANTz {
 
 		try {
 
-			unsigned long startingId = WriteNodeFile(nodeFilename, trees, grids);
-
+			SynGlyphX::CSVFileWriter nodeFile(nodeFilename);
+			SynGlyphX::CSVFileWriter tagFile; 
+			
 			if (!tagFilename.empty()) {
 
-				WriteTagFile(tagFilename, trees, startingId);
+				tagFile.Open(tagFilename);
 			}
+
+			m_numTagsWritten = 0;
+			unsigned long startingId = WriteHeaders(nodeFile, tagFile, grids);
+
+			for (const SynGlyphX::GlyphGraph::ConstSharedPtr& tree : trees) {
+
+				m_labelToANTzIDMap.clear();
+				m_labelToANTzBranchLevelMap.clear();
+
+				unsigned long id = WriteGlyphAndChildren(nodeFile, tree, tree->GetRoot(), startingId, 0, 0, false);
+
+				for (auto& link : tree->GetLinks()) {
+
+					unsigned int branchLevel = std::max(m_labelToANTzBranchLevelMap[link.first.first], m_labelToANTzBranchLevelMap[link.first.second]) + 1;
+					id = WriteGlyph(nodeFile, link.second, 0, id, m_labelToANTzIDMap[link.first.first], m_labelToANTzIDMap[link.first.second], branchLevel, true);
+				}
+
+				if (tagFile.IsOpen()) {
+
+					WriteGlyphTag(tagFile, tree, tree->GetRoot());
+				}
+
+				startingId = id;
+			}
+
+			nodeFile.Close();
+			tagFile.Close();
 		}
 		catch (const std::exception& e) {
 
 			throw;
 		}
  	}
+
+	unsigned long ANTzCSVWriter::WriteHeaders(SynGlyphX::CSVFileWriter& nodeFile, SynGlyphX::CSVFileWriter& tagFile, const std::vector<ANTzGrid>& grids) {
+
+		if (tagFile.IsOpen()) {
+
+			tagFile.WriteLine(m_tagHeaders);
+		}
+
+		//Write out header, cameras, and grid lines
+		nodeFile.WriteLine(m_nodeHeaders);
+		nodeFile.WriteLine(m_cameras[0]);
+		nodeFile.WriteLine(m_cameras[1]);
+		nodeFile.WriteLine(m_cameras[2]);
+		nodeFile.WriteLine(m_cameras[3]);
+		nodeFile.WriteLine(m_cameras[4]);
+
+		return WriteGrids(nodeFile, grids, 6);
+	}
 
 	void ANTzCSVWriter::WriteGlobals(const std::string& filename, const SynGlyphX::GlyphColor& backgroundColor) {
 
@@ -120,71 +166,7 @@ namespace SynGlyphXANTz {
 		}
 	}
 
-	unsigned long ANTzCSVWriter::WriteNodeFile(const std::string& filename, const SynGlyphX::GlyphGraph::ConstSharedVector& trees, const std::vector<ANTzGrid>& grids) {
-
-		unsigned long firstGlyphId = 0;
-		
-		try {
-
-			SynGlyphX::CSVFileWriter nodeFile(filename);
-
-			//Write out header, cameras, and grid lines
-			nodeFile.WriteLine(m_nodeHeaders);
-			nodeFile.WriteLine(m_cameras[0]);
-			nodeFile.WriteLine(m_cameras[1]);
-			nodeFile.WriteLine(m_cameras[2]);
-			nodeFile.WriteLine(m_cameras[3]);
-			nodeFile.WriteLine(m_cameras[4]);
-
-			firstGlyphId = WriteGrids(nodeFile, grids, 6);
-
-			unsigned long id = firstGlyphId;
-
-			for (const SynGlyphX::GlyphGraph::ConstSharedPtr& tree : trees) {
-
-				m_labelToANTzIDMap.clear();
-				m_labelToANTzBranchLevelMap.clear();
-
-				id = WriteGlyphAndChildren(nodeFile, tree, tree->GetRoot(), id, 0, 0, false);
-
-				for (auto& link : tree->GetLinks()) {
-
-					unsigned int branchLevel = std::max(m_labelToANTzBranchLevelMap[link.first.first], m_labelToANTzBranchLevelMap[link.first.second]) + 1;
-					id = WriteGlyph(nodeFile, link.second, 0, id, m_labelToANTzIDMap[link.first.first], m_labelToANTzIDMap[link.first.second], branchLevel, true);
-				}
-			}
-		}
-		catch (const std::exception& e) {
-
-			throw;
-		}
-
-		return firstGlyphId;
-	}
-
-	void ANTzCSVWriter::WriteTagFile(const std::string& filename, const SynGlyphX::GlyphGraph::ConstSharedVector& trees, unsigned long startingId) {
-
-		try {
-
-			SynGlyphX::CSVFileWriter tagFile(filename);
-
-			unsigned long tagID = startingId;
-			tagFile.WriteLine(m_tagHeaders);
-
-			m_numTagsWritten = 0;
-			
-			for (const SynGlyphX::GlyphGraph::ConstSharedPtr& tree : trees) {
-
-				tagID = WriteGlyphTag(tagFile, tree, tree->GetRoot(), tagID);
-			}
-		}
-		catch (const std::exception& e) {
-
-			throw;
-		}
-	}
-
-	unsigned long ANTzCSVWriter::WriteGlyphTag(SynGlyphX::CSVFileWriter& file, const SynGlyphX::GlyphGraph::ConstSharedPtr tree, const SynGlyphX::GlyphGraph::ConstGlyphIterator& glyph, unsigned long id) {
+	void ANTzCSVWriter::WriteGlyphTag(SynGlyphX::CSVFileWriter& file, const SynGlyphX::GlyphGraph::ConstSharedPtr tree, const SynGlyphX::GlyphGraph::ConstGlyphIterator& glyph) {
 
 		unsigned int numberOfChildren = tree->ChildCount(glyph);
 
@@ -200,19 +182,17 @@ namespace SynGlyphXANTz {
 
 		SynGlyphX::CSVFileHandler::CSVValues values;
 		values.push_back(boost::lexical_cast<std::wstring>(m_numTagsWritten++));
-		values.push_back(boost::lexical_cast<std::wstring>(id));
+		values.push_back(boost::lexical_cast<std::wstring>(m_labelToANTzIDMap[glyph->first]));
 		values.push_back(L"0");
 		values.push_back(tag);
 		values.push_back(L"\" \"");
 
 		file.WriteLine(values);
 
-		unsigned long childId = id + 1;
 		for (unsigned int i = 0; i < numberOfChildren; ++i) {
-			childId = WriteGlyphTag(file, tree, tree->GetChild(glyph, i), childId);
-		}
 
-		return childId;
+			WriteGlyphTag(file, tree, tree->GetChild(glyph, i));
+		}
 	}
 
 	unsigned long ANTzCSVWriter::WriteGlyphAndChildren(SynGlyphX::CSVFileWriter& file, const SynGlyphX::GlyphGraph::ConstSharedPtr tree, const SynGlyphX::GlyphGraph::ConstGlyphIterator& glyph, unsigned long id, unsigned long parentId, unsigned long branchLevel, bool isLink) {

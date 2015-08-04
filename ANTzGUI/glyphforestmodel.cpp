@@ -57,16 +57,23 @@ namespace SynGlyphXANTz {
 
 		pNPnode parentGlyph;
 		if (!parent.isValid()) {
+
 			return createIndex(row, column, m_antzData->GetData()->map.node[row + kNPnodeRootPin]);
 		}
 		else {
+
 			parentGlyph = static_cast<pNPnode>(parent.internalPointer());
 		}
 
-		if (row < parentGlyph->childCount) {
-			return createIndex(row, column, parentGlyph->child[row]);
+		std::set<unsigned int> nonLinkChildIndexes = GetChildIndexesThatAreNotLinks(parentGlyph);
+		if (row < nonLinkChildIndexes.size()) {
+
+			std::set<unsigned int>::const_iterator iT = nonLinkChildIndexes.begin();
+			std::advance(iT, row);
+			return createIndex(row, column, parentGlyph->child[*iT]);
 		}
 		else {
+
 			return QModelIndex();
 		}
 	}
@@ -94,6 +101,21 @@ namespace SynGlyphXANTz {
 		}
 	}
 
+	std::set<unsigned int> GlyphForestModel::GetChildIndexesThatAreNotLinks(pNPnode node) const {
+
+		std::set<unsigned int> linkChildIndexes;
+
+		for (int i = 0; i < node->childCount; ++i) {
+
+			if (node->child[i]->type == 5) {
+
+				linkChildIndexes.insert(i);
+			}
+		}
+
+		return linkChildIndexes;
+	}
+
 	int	GlyphForestModel::rowCount(const QModelIndex& parent) const {
 
 		pNPnode glyph;
@@ -101,10 +123,12 @@ namespace SynGlyphXANTz {
 
 			return m_antzData->GetData()->map.nodeRootCount - kNPnodeRootPin;
 		}
-		else {
-			glyph = static_cast<pNPnode>(parent.internalPointer());
-		}
-		return glyph->childCount;
+		
+		glyph = static_cast<pNPnode>(parent.internalPointer());
+		
+		std::set<unsigned int> nonLinkChildIndexes = GetChildIndexesThatAreNotLinks(glyph);
+
+		return nonLinkChildIndexes.size();
 	}
 
 	Qt::ItemFlags GlyphForestModel::flags(const QModelIndex& index) const {
@@ -133,13 +157,21 @@ namespace SynGlyphXANTz {
 
 		pNPnode parent = node->parent;
 		int i = 0;
+		int linkCount = 0;
 		for (; i < parent->childCount; ++i) {
+			
+			if (parent->child[i]->type != 5) {
+
+				++linkCount;
+			}
+
 			if (parent->child[i] == node) {
+				
 				break;
 			}
 		}
 
-		return i;
+		return i - linkCount;
 	}
 
 	void GlyphForestModel::Clear() {

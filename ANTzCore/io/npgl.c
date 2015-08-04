@@ -1086,6 +1086,19 @@ ANTZCORE_API int npPickPinStereoSingleEye(int x, int y, void* dataRef) {
 	if (id >= kNPnodeMax)	//mouse selection crashing workaround, debug zz
 		id = 0;
 
+	if (id != 0)
+	{
+		node = data->map.nodeID[id];	//get node by id
+
+		if (node != NULL)
+		{
+			if (node->type != kNodePin)
+			{
+				id = 0;
+			}
+		}
+	}
+
 	return id;
 }
 

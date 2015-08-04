@@ -63,6 +63,7 @@ namespace SynGlyphXANTz {
 	private:
 		void Clear(bool resetModel);
 		void FindNodesInRegion(const QRect& region, pNPnode node, int row, QItemSelection& itemSelection) const;
+		std::set<unsigned int> GetChildIndexesThatAreNotLinks(pNPnode node) const;
 
 		int GetChildIndexFromParent(pNPnode node) const;
 		int FindRowForRootNode(pNPnode node) const;
