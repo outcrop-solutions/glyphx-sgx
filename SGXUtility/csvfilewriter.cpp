@@ -3,15 +3,18 @@
 
 namespace SynGlyphX {
 
+	CSVFileWriter::CSVFileWriter(char separator) :
+		CSVFileHandler(separator),
+		m_numFields(0)
+	{
+		
+	}
+
 	CSVFileWriter::CSVFileWriter(const std::string& filename, char separator) :
 		CSVFileHandler(separator),
 		m_numFields(0)
 	{
-		m_filestream.open(filename, std::ofstream::out | std::ofstream::trunc);
-		if (m_filestream.fail()) {
-
-			throw std::exception("CSV file failed to open");
-		}
+		Open(filename);
 	}
 
 
@@ -20,15 +23,34 @@ namespace SynGlyphX {
 		Close();
 	}
 
+	void CSVFileWriter::Open(const std::string& filename) {
+
+		m_filestream.open(filename, std::ofstream::out | std::ofstream::trunc);
+		if (m_filestream.fail()) {
+
+			throw std::exception("CSV file failed to open");
+		}
+	}
+
 	void CSVFileWriter::Close() {
 
-		if (m_filestream.is_open()) {
+		if (IsOpen()) {
 
 			m_filestream.close();
 		}
 	}
 
+	bool CSVFileWriter::IsOpen() const {
+
+		return m_filestream.is_open();
+	}
+
 	void CSVFileWriter::WriteLine(const CSVValues& values) {
+
+		if (!IsOpen()) {
+
+			throw std::exception("CSVFileWriter can't write line since file isn't open");
+		}
 
 		if (values.empty()) {
 
