@@ -55,7 +55,9 @@ namespace SynGlyphXANTz {
 		unsigned long WriteNodeFile(const std::string& filename, const SynGlyphX::GlyphGraph::ConstSharedVector& trees, const std::vector<ANTzGrid>& grids);
 		void WriteTagFile(const std::string& filename, const SynGlyphX::GlyphGraph::ConstSharedVector& trees, unsigned long startingId);
 
-		unsigned long WriteGlyph(SynGlyphX::CSVFileWriter& file, const SynGlyphX::GlyphGraph::ConstSharedPtr tree, const SynGlyphX::GlyphGraph::ConstGlyphIterator& glyph, unsigned long id, unsigned long parentId, unsigned long branchLevel);
+		unsigned long WriteGlyphAndChildren(SynGlyphX::CSVFileWriter& file, const SynGlyphX::GlyphGraph::ConstSharedPtr tree, const SynGlyphX::GlyphGraph::ConstGlyphIterator& glyph, unsigned long id, unsigned long parentId, unsigned long branchLevel, bool isLink);
+		unsigned long WriteGlyph(SynGlyphX::CSVFileWriter& file, const SynGlyphX::GlyphGraph::ConstSharedPtr tree, const SynGlyphX::GlyphGraph::ConstGlyphIterator& glyph, unsigned long id, unsigned long parentId, unsigned long childId, unsigned long branchLevel, bool isLink);
+		unsigned long WriteGlyph(SynGlyphX::CSVFileWriter& file, const SynGlyphX::Glyph& glyph, unsigned long numberOfChildren, unsigned long id, unsigned long parentId, unsigned long childId, unsigned long branchLevel, bool isLink);
 		unsigned long WriteGlyphTag(SynGlyphX::CSVFileWriter& file, const SynGlyphX::GlyphGraph::ConstSharedPtr tree, const SynGlyphX::GlyphGraph::ConstGlyphIterator& glyph, unsigned long id);
 		unsigned long WriteGrids(SynGlyphX::CSVFileWriter& file, const std::vector<ANTzGrid>& grids, unsigned long firstId);
         unsigned short GetColorIndex(const SynGlyphX::GlyphColor& color);
@@ -69,6 +71,9 @@ namespace SynGlyphXANTz {
 		SynGlyphX::CSVFileReader::CSVValues m_channelMapHeaders;
 
 		SynGlyphX::CSVFileReader::CSVValues m_cameras[5];
+
+		std::unordered_map<SynGlyphX::GlyphGraph::Label, unsigned long> m_labelToANTzIDMap;
+		std::unordered_map<SynGlyphX::GlyphGraph::Label, unsigned int> m_labelToANTzBranchLevelMap;
     };
 
 } //namespace SynGlyphXANTz

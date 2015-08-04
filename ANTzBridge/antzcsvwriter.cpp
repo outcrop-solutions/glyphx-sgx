@@ -125,6 +125,7 @@ namespace SynGlyphXANTz {
 		unsigned long firstGlyphId = 0;
 		
 		try {
+
 			SynGlyphX::CSVFileWriter nodeFile(filename);
 
 			//Write out header, cameras, and grid lines
@@ -141,7 +142,16 @@ namespace SynGlyphXANTz {
 
 			for (const SynGlyphX::GlyphGraph::ConstSharedPtr& tree : trees) {
 
-				id = WriteGlyph(nodeFile, tree, tree->GetRoot(), id, 0, 0);
+				m_labelToANTzIDMap.clear();
+				m_labelToANTzBranchLevelMap.clear();
+
+				id = WriteGlyphAndChildren(nodeFile, tree, tree->GetRoot(), id, 0, 0, false);
+
+				for (auto& link : tree->GetLinks()) {
+
+					unsigned int branchLevel = std::max(m_labelToANTzBranchLevelMap[link.first.first], m_labelToANTzBranchLevelMap[link.first.second]) + 1;
+					id = WriteGlyph(nodeFile, link.second, 0, id, m_labelToANTzIDMap[link.first.first], m_labelToANTzIDMap[link.first.second], branchLevel, true);
+				}
 			}
 		}
 		catch (const std::exception& e) {
@@ -205,45 +215,72 @@ namespace SynGlyphXANTz {
 		return childId;
 	}
 
-	unsigned long ANTzCSVWriter::WriteGlyph(SynGlyphX::CSVFileWriter& file, const SynGlyphX::GlyphGraph::ConstSharedPtr tree, const SynGlyphX::GlyphGraph::ConstGlyphIterator& glyph, unsigned long id, unsigned long parentId, unsigned long branchLevel) {
+	unsigned long ANTzCSVWriter::WriteGlyphAndChildren(SynGlyphX::CSVFileWriter& file, const SynGlyphX::GlyphGraph::ConstSharedPtr tree, const SynGlyphX::GlyphGraph::ConstGlyphIterator& glyph, unsigned long id, unsigned long parentId, unsigned long branchLevel, bool isLink) {
 
-		unsigned int numberOfChildren = tree->ChildCount(glyph);
+		unsigned long childId = WriteGlyph(file, tree, glyph, id, parentId, 0, branchLevel, isLink);
+		
+		for (unsigned int i = 0; i < tree->ChildCount(glyph); ++i) {
+
+			childId = WriteGlyphAndChildren(file, tree, tree->GetChild(glyph, i), childId, id, branchLevel + 1, isLink);
+		}
+
+		return childId;
+	}
+
+	unsigned long ANTzCSVWriter::WriteGlyph(SynGlyphX::CSVFileWriter& file, const SynGlyphX::GlyphGraph::ConstSharedPtr tree, const SynGlyphX::GlyphGraph::ConstGlyphIterator& glyph, unsigned long id, unsigned long parentId, unsigned long childId, unsigned long branchLevel, bool isLink) {
+
+		m_labelToANTzIDMap[glyph->first] = id;
+		m_labelToANTzBranchLevelMap[glyph->first] = tree->GetDepth(glyph);
+
+		return WriteGlyph(file, glyph->second, tree->ChildCount(glyph), id, parentId, childId, branchLevel, isLink);
+	}
+
+	unsigned long ANTzCSVWriter::WriteGlyph(SynGlyphX::CSVFileWriter& file, const SynGlyphX::Glyph& glyph, unsigned long numberOfChildren, unsigned long id, unsigned long parentId, unsigned long childId, unsigned long branchLevel, bool isLink) {
 
 		std::wstring idString = boost::lexical_cast<std::wstring>(id);
 		SynGlyphX::CSVFileHandler::CSVValues values;
 		values.push_back(idString);
-		values.push_back(L"5");
+
+		if (isLink) {
+
+			values.push_back(L"7");
+		}
+		else {
+
+			values.push_back(L"5");
+		}
+		
 		values.push_back(idString);
 		values.push_back(L"0");
 		values.push_back(boost::lexical_cast<std::wstring>(parentId));
 		values.push_back(boost::lexical_cast<std::wstring>(branchLevel));
-		values.push_back(L"0");
+		values.push_back(boost::lexical_cast<std::wstring>(childId));
 		values.push_back(L"0");
 		values.push_back(boost::lexical_cast<std::wstring>(numberOfChildren));
 		values.insert(values.end(), { L"0", L"0", L"0", L"0", L"1", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"1", L"0", L"0", L"0" });
 
-		SynGlyphX::CSVFileHandler::AddVector3ToCSVValues(values, glyph->second.GetScale());
-		SynGlyphX::CSVFileHandler::AddVector3ToCSVValues(values, glyph->second.GetPosition());
-		SynGlyphX::CSVFileHandler::AddVector3ToCSVValues(values, glyph->second.GetTagOffset());
-		SynGlyphX::CSVFileHandler::AddVector3ToCSVValues(values, glyph->second.GetRotationRate());
-		SynGlyphX::CSVFileHandler::AddVector3ToCSVValues(values, glyph->second.GetRotation());
+		SynGlyphX::CSVFileHandler::AddVector3ToCSVValues(values, glyph.GetScale());
+		SynGlyphX::CSVFileHandler::AddVector3ToCSVValues(values, glyph.GetPosition());
+		SynGlyphX::CSVFileHandler::AddVector3ToCSVValues(values, glyph.GetTagOffset());
+		SynGlyphX::CSVFileHandler::AddVector3ToCSVValues(values, glyph.GetRotationRate());
+		SynGlyphX::CSVFileHandler::AddVector3ToCSVValues(values, glyph.GetRotation());
 		values.insert(values.end(), { L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0" });
 
-		values.push_back(boost::lexical_cast<std::wstring>(GlyphNodeConverter::ConvertGeometryToNodeValue(glyph->second.GetStructure().GetGeometryShape(), glyph->second.GetStructure().GetGeometrySurface())));
+		values.push_back(boost::lexical_cast<std::wstring>(GlyphNodeConverter::ConvertGeometryToNodeValue(glyph.GetStructure().GetGeometryShape(), glyph.GetStructure().GetGeometrySurface())));
 		values.push_back(L"1");
 		values.push_back(L"0");
-		values.push_back(boost::lexical_cast<std::wstring>(glyph->second.GetStructure().GetTorusRatio()));
+		values.push_back(boost::lexical_cast<std::wstring>(glyph.GetStructure().GetTorusRatio()));
 
-		SynGlyphX::GlyphColor color = glyph->second.GetColor();
+		SynGlyphX::GlyphColor color = glyph.GetColor();
 		values.push_back(boost::lexical_cast<std::wstring>(GetColorIndex(color)));
 		values.push_back(boost::lexical_cast<std::wstring>(color[0]));
 		values.push_back(boost::lexical_cast<std::wstring>(color[1]));
 		values.push_back(boost::lexical_cast<std::wstring>(color[2]));
 
-		values.push_back(boost::lexical_cast<std::wstring>(glyph->second.GetTransparency()));
+		values.push_back(boost::lexical_cast<std::wstring>(glyph.GetTransparency()));
 
 		values.insert(values.end(), { L"0", L"0", L"0", L"0" });
-		values.push_back(boost::lexical_cast<std::wstring>(static_cast<int>(glyph->second.GetVirtualTopology().GetType())));
+		values.push_back(boost::lexical_cast<std::wstring>(static_cast<int>(glyph.GetVirtualTopology().GetType())));
 
 		values.insert(values.end(), { L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"1", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"16", L"16", L"0", L"0", L"0", L"0" });
 		values.push_back(idString);
@@ -251,12 +288,7 @@ namespace SynGlyphXANTz {
 
 		file.WriteLine(values);
 
-		unsigned long childId = id + 1;
-		for (unsigned int i = 0; i < numberOfChildren; ++i) {
-			childId = WriteGlyph(file, tree, tree->GetChild(glyph, i), childId, id, branchLevel + 1);
-		}
-
-		return childId;
+		return id + 1;
 	}
 
 	unsigned long ANTzCSVWriter::WriteGrids(SynGlyphX::CSVFileWriter& file, const std::vector<ANTzGrid>& grids, unsigned long firstId) {
