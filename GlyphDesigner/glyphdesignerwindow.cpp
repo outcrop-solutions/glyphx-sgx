@@ -186,7 +186,7 @@ void GlyphDesignerWindow::CreateNewGlyphTree() {
 
 			m_glyphTreeModel->SetMinMaxGlyphTree(newGlyphTree);
 			SelectRootGlyphInModel();
-
+			ClearCurrentFile();
 		}
     }
 }
