@@ -33,7 +33,7 @@ namespace SynGlyphX {
 		//m_rootVertex = add_vertex(DataMappingGlyph(propertyTree));
 		//IncrementInputBindingCountsFromGlyph(operator[](m_rootVertex));
 		DataMappingGlyph rootGlyph(propertyTree);
-		SetRootGlyph(rootGlyph, propertyTree.get_optional<Label>(L"<xmlattr>.label").get_value_or(0));
+		SetRootGlyph(rootGlyph, propertyTree.get_optional<Label>(L"<xmlattr>.label").get_value_or(GetNextLabel()));
 		IncrementInputBindingCountsFromGlyph(GetRoot()->second);
 		ProcessPropertyTreeChildren(GetRoot(), propertyTree);
 
