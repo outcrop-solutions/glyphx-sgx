@@ -6,8 +6,7 @@ namespace SynGlyphX {
 
 	template <typename OutputType, typename InputType, typename KeyType>
 	ValueMappingData<OutputType, InputType, KeyType>::ValueMappingData() :
-		MappingFunctionData(std::is_same<std::wstring, InputType>::value ? MappingFunctionData::Function::Text2Value : 
-			(std::is_same<Range, KeyType>::value ? MappingFunctionData::Function::Range2Value : MappingFunctionData::Function::Numeric2Value)),
+		MappingFunctionData(GetFunctionForThisType()),
 		m_defaultValue(OutputType())
 	{
 	}
@@ -88,21 +87,14 @@ namespace SynGlyphX {
 	template <typename OutputType, typename InputType, typename KeyType>
 	MappingFunctionData::Input ValueMappingData<OutputType, InputType, KeyType>::GetSupportedInput() const {
 
-		if (std::is_arithmetic<InputType>::value) {
-
-			return MappingFunctionData::Input::Numeric;
-		}
-		else {
-
-			return MappingFunctionData::Input::Text;
-		}
+		return GetSupportedInputForThisType();
 	}
 
 	template <typename OutputType, typename InputType, typename KeyType>
 	boost::property_tree::wptree& ValueMappingData<OutputType, InputType, KeyType>::ExportToPropertyTree(boost::property_tree::wptree& propertyTree) const {
 
 		boost::property_tree::wptree& functionDataPropertyTree = this->MappingFunctionData::ExportToPropertyTree(propertyTree);
-		functionDataPropertyTree.put(L"Default", m_defaultValue);
+		functionDataPropertyTree.put<OutputType>(L"Default", m_defaultValue);
 
 		boost::property_tree::wptree& keyValuePairsPropertyTree = functionDataPropertyTree.add(L"KeyValuePairs", L"");
 
@@ -139,18 +131,7 @@ namespace SynGlyphX {
 	template <typename OutputType, typename InputType, typename KeyType>
 	MappingFunctionData::Output ValueMappingData<OutputType, InputType, KeyType>::GetSupportedOutput() const {
 
-		if (std::is_same<GlyphColor, OutputType>::value) {
-
-			return Output::Color;
-		}
-		else if (std::is_same<double, OutputType>::value) {
-
-			return Output::Numeric;
-		}
-		else {
-
-			return Output::Enum;
-		}
+		return GetSupportedOutputForThisType();
 	}
 
 	template <typename OutputType, typename InputType, typename KeyType>
@@ -169,6 +150,47 @@ namespace SynGlyphX {
 	bool ValueMappingData<OutputType, InputType, KeyType>::DoesInputMatch(const double& key, const double& input) const {
 
 		return (std::abs(input - key) < 0.001);
+	}
+
+	template <typename OutputType, typename InputType, typename KeyType>
+	MappingFunctionData::Function ValueMappingData<OutputType, InputType, KeyType>::GetFunctionForThisType() {
+
+		return std::is_same<std::wstring, InputType>::value ? MappingFunctionData::Function::Text2Value :
+			(std::is_same<Range, KeyType>::value ? MappingFunctionData::Function::Range2Value : MappingFunctionData::Function::Numeric2Value);
+	}
+
+	template <typename OutputType, typename InputType, typename KeyType>
+	MappingFunctionData::Input ValueMappingData<OutputType, InputType, KeyType>::GetSupportedInputForThisType() {
+
+		if (std::is_arithmetic<InputType>::value) {
+
+			return MappingFunctionData::Input::Numeric;
+		}
+		else {
+
+			return MappingFunctionData::Input::Text;
+		}
+	}
+
+	template <typename OutputType, typename InputType, typename KeyType>
+	MappingFunctionData::Output ValueMappingData<OutputType, InputType, KeyType>::GetSupportedOutputForThisType() {
+
+		if (std::is_same<GlyphColor, OutputType>::value) {
+
+			return Output::Color;
+		}
+		else if (std::is_same<GlyphGeometryInfo::Shape, OutputType>::value) {
+
+			return Output::Shape;
+		}
+		else if (std::is_same<VirtualTopologyInfo::Type, OutputType>::value) {
+
+			return Output::Topology;
+		}
+		else {
+
+			return Output::Numeric;
+		}
 	}
 
 	template class ValueMappingData < double, double > ;

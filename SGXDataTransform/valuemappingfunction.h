@@ -59,6 +59,10 @@ namespace SynGlyphX {
 
 		virtual Output GetSupportedOutput() const;
 
+		static Function GetFunctionForThisType();
+		static Input GetSupportedInputForThisType();
+		static Output GetSupportedOutputForThisType();
+
 	private:
 		bool DoesInputMatch(const Range& range, const double& input) const;
 		bool DoesInputMatch(const std::wstring& key, const std::wstring& input) const;

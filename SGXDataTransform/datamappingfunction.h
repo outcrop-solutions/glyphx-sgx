@@ -50,11 +50,14 @@ namespace SynGlyphX {
 			Numeric = 0x01,
 			Color = 0x02,
 			NumericAndColor = 0x03,
-			Enum = 0x04,
+			Shape = 0x04,
+			Topology = 0x05,
 			All = 0xFF
 		};
 
 		typedef boost::bimap<Function, std::wstring> FunctionBimap;
+		typedef boost::bimap<Input, std::wstring> InputBimap;
+		typedef boost::bimap<Output, std::wstring> OutputBimap;
 
 		typedef std::shared_ptr<MappingFunctionData> SharedPtr;
 		typedef std::shared_ptr<const MappingFunctionData> ConstSharedPtr;
@@ -75,11 +78,85 @@ namespace SynGlyphX {
 		virtual Output GetSupportedOutput() const;
 
 		static const FunctionBimap s_functionNames;
+		static const InputBimap s_inputNames;
+		static const OutputBimap s_outputNames;
 
 	protected:
 		Function m_function;
 	};
 
+	//This translator is so that MappingFunctionData::Function can be automatically used by boost::property_tree
+	class SGXDATATRANSFORM_EXPORT MappingFunctionTranslator
+	{
+	public:
+		typedef std::wstring internal_type;
+		typedef MappingFunctionData::Function external_type;
+
+		MappingFunctionTranslator();
+
+		boost::optional<MappingFunctionData::Function> get_value(std::wstring const &v);
+		boost::optional<std::wstring> put_value(MappingFunctionData::Function const& v);
+
+	private:
+
+	};
+
+	//This translator is so that MappingFunctionData::Input can be automatically used by boost::property_tree
+	class SGXDATATRANSFORM_EXPORT MappingInputTranslator
+	{
+	public:
+		typedef std::wstring internal_type;
+		typedef MappingFunctionData::Input external_type;
+
+		MappingInputTranslator();
+
+		boost::optional<MappingFunctionData::Input> get_value(std::wstring const &v);
+		boost::optional<std::wstring> put_value(MappingFunctionData::Input const& v);
+
+	private:
+
+	};
+
+	//This translator is so that MappingFunctionData::Output can be automatically used by boost::property_tree
+	class SGXDATATRANSFORM_EXPORT MappingOutputTranslator
+	{
+	public:
+		typedef std::wstring internal_type;
+		typedef MappingFunctionData::Output external_type;
+
+		MappingOutputTranslator();
+
+		boost::optional<MappingFunctionData::Output> get_value(std::wstring const &v);
+		boost::optional<std::wstring> put_value(MappingFunctionData::Output const& v);
+
+	private:
+
+	};
+
 } //namespace SynGlyphX
+
+namespace boost {
+
+	namespace property_tree {
+
+		template<>
+		struct translator_between < std::wstring, SynGlyphX::MappingFunctionData::Function >
+		{
+			typedef SynGlyphX::MappingFunctionTranslator type;
+		};
+
+		template<>
+		struct translator_between < std::wstring, SynGlyphX::MappingFunctionData::Input >
+		{
+			typedef SynGlyphX::MappingInputTranslator type;
+		};
+
+		template<>
+		struct translator_between < std::wstring, SynGlyphX::MappingFunctionData::Output >
+		{
+			typedef SynGlyphX::MappingOutputTranslator type;
+		};
+	}
+}  //namespace boost
 
 #endif //SYNGLYPHX_MAPPINGFUNCTIONDATA_H

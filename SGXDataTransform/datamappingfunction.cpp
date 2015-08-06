@@ -21,7 +21,7 @@ namespace SynGlyphX {
 	}
 
 	MappingFunctionData::MappingFunctionData(const boost::property_tree::wptree& propertyTree) : 
-		m_function(s_functionNames.right.at(propertyTree.get<std::wstring>(L"<xmlattr>.type"))) {
+		m_function(propertyTree.get<Function>(L"<xmlattr>.type")) {
 
 	}
 
@@ -37,7 +37,7 @@ namespace SynGlyphX {
 	boost::property_tree::wptree& MappingFunctionData::ExportToPropertyTree(boost::property_tree::wptree& propertyTree) const {
 
 		boost::property_tree::wptree& functionDataPropertyTree = propertyTree.add(L"Function", L"");
-		functionDataPropertyTree.put(L"<xmlattr>.type", s_functionNames.left.at(m_function));
+		functionDataPropertyTree.put<Function>(L"<xmlattr>.type", m_function);
 		return functionDataPropertyTree;
 	}
 
@@ -68,35 +68,115 @@ namespace SynGlyphX {
 		return Output::All;
 	}
 
-	/*
-	template<typename OutputType, typename InputType>
-	DataMappingFunction<OutputType, InputType>::DataMappingFunction(std::shared_ptr<const InputCombinationFunction<InputType>> inputCombinationFunction) :
-		m_inputCombinationFunction(inputCombinationFunction ? inputCombinationFunction : std::make_shared<const InputCombinationFunction<InputType>>())
-	{
-		
-	}
-
-	template<typename OutputType, typename InputType>
-	DataMappingFunction<OutputType, InputType>::~DataMappingFunction()
-	{
+	MappingFunctionTranslator::MappingFunctionTranslator() {
 
 	}
 
-	template<typename OutputType, typename InputType>
-	OutputType DataMappingFunction<OutputType, InputType>::MapInputToOuptut(const std::vector<InputType>& input) const {
+	boost::optional<MappingFunctionData::Function> MappingFunctionTranslator::get_value(std::wstring const &v) {
 
-		if (input.empty()) {
+		MappingFunctionData::FunctionBimap::right_map::const_iterator iT = MappingFunctionData::s_functionNames.right.find(v);
 
-			throw std::invalid_argument("There must be at least one input value to map");
+		if (iT == MappingFunctionData::s_functionNames.right.end()) {
+
+			return boost::none;
 		}
+		else {
 
-		return MapCombinedInput(m_inputCombinationFunction->CombineInput(input));
+			return iT->second;
+		}
 	}
 
-	template class DataMappingFunction < std::wstring >;
-	template class DataMappingFunction < double >;
-	template class DataMappingFunction < GlyphColor, double >;
+	boost::optional<std::wstring> MappingFunctionTranslator::put_value(MappingFunctionData::Function const& v) {
 
-	*/
+		return MappingFunctionData::s_functionNames.left.at(v);
+	}
+
+	MappingInputTranslator::MappingInputTranslator() {
+
+	}
+
+	boost::optional<MappingFunctionData::Input> MappingInputTranslator::get_value(std::wstring const &v) {
+
+		if (v == L"Numeric") {
+
+			return MappingFunctionData::Input::Numeric;
+		}
+		else if (v == L"Text") {
+
+			return MappingFunctionData::Input::Text;
+		}
+		else {
+
+			return boost::none;
+		}
+	}
+
+	boost::optional<std::wstring> MappingInputTranslator::put_value(MappingFunctionData::Input const& v) {
+
+		if (v == MappingFunctionData::Input::Numeric) {
+
+			return L"Numeric";
+		}
+		else if (v == MappingFunctionData::Input::Text) {
+
+			return L"Text";
+		}
+		else {
+
+			return boost::none;
+		}
+	}
+
+	MappingOutputTranslator::MappingOutputTranslator() {
+
+	}
+
+	boost::optional<MappingFunctionData::Output> MappingOutputTranslator::get_value(std::wstring const &v) {
+
+		if (v == L"Numeric") {
+
+			return MappingFunctionData::Output::Numeric;
+		}
+		else if (v == L"Color") {
+
+			return MappingFunctionData::Output::Color;
+		}
+		else if (v == L"Shape") {
+
+			return MappingFunctionData::Output::Shape;
+		}
+		else if (v == L"VirtualTopology") {
+
+			return MappingFunctionData::Output::Topology;
+		}
+		else {
+
+			return boost::none;
+		}
+	}
+
+	boost::optional<std::wstring> MappingOutputTranslator::put_value(MappingFunctionData::Output const& v) {
+
+		if (v == MappingFunctionData::Output::Numeric) {
+
+			return L"Numeric";
+		}
+		else if (v == MappingFunctionData::Output::Color) {
+
+			return L"Color";
+		}
+		else if (v == MappingFunctionData::Output::Shape) {
+
+			return L"Shape";
+		}
+		else if (v == MappingFunctionData::Output::Topology) {
+
+			return L"VirtualTopology";
+		}
+		else {
+
+			return boost::none;
+		}
+	}
 
 } //namespace SynGlyphX

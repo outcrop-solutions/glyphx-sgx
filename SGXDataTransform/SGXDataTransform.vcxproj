@@ -99,19 +99,16 @@
     <ClInclude Include="inputcombinationfunction.h" />
     <ClInclude Include="inputfield.h" />
     <ClInclude Include="inputfielddata.h" />
-    <ClInclude Include="linearinterpolationmappingfunction.h" />
-    <ClInclude Include="logarithmicinterpolationmappingfunction.h" />
     <ClInclude Include="interpolationmappingfunction.h" />
     <ClInclude Include="mindiff.h" />
-    <ClInclude Include="rangevaluemappingfunction.h" />
     <ClInclude Include="sceneproperties.h" />
     <ClInclude Include="sgxdatatransform_global.h" />
-    <ClInclude Include="singlevaluemappingfunction.h" />
     <ClInclude Include="sourcedatacache.h" />
     <ClInclude Include="sourcedatamanager.h" />
     <ClInclude Include="stringconcatmappingfunction.h" />
     <ClInclude Include="stringinputcombinationfunction.h" />
     <ClInclude Include="transformer.h" />
+    <ClInclude Include="valuemappingfile.h" />
     <ClInclude Include="valuemappingfunction.h" />
   </ItemGroup>
   <ItemGroup>
@@ -133,18 +130,15 @@
     <ClCompile Include="inputcombinationfunction.cpp" />
     <ClCompile Include="inputfield.cpp" />
     <ClCompile Include="inputfielddata.cpp" />
-    <ClCompile Include="linearinterpolationmappingfunction.cpp" />
-    <ClCompile Include="logarithmicinterpolationmappingfunction.cpp" />
     <ClCompile Include="interpolationmappingfunction.cpp" />
     <ClCompile Include="mindiff.cpp" />
-    <ClCompile Include="rangevaluemappingfunction.cpp" />
     <ClCompile Include="sceneproperties.cpp" />
-    <ClCompile Include="singlevaluemappingfunction.cpp" />
     <ClCompile Include="sourcedatacache.cpp" />
     <ClCompile Include="sourcedatamanager.cpp" />
     <ClCompile Include="stringconcatmappingfunction.cpp" />
     <ClCompile Include="stringinputcombinationfunction.cpp" />
     <ClCompile Include="transformer.cpp" />
+    <ClCompile Include="valuemappingfile.cpp" />
     <ClCompile Include="valuemappingfunction.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
