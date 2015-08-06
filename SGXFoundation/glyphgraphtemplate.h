@@ -135,7 +135,7 @@ namespace SynGlyphX {
 
 			ConstGlyphIterator otherRoot = graph.root();
 			GlyphIterator newIterator = AddChildGlyph(vertex, otherRoot->second);
-			CopyChildren(vertex, otherRoot, graph);
+			CopyChildren(newIterator, otherRoot, graph);
 
 			return newIterator;
 		}
@@ -144,7 +144,7 @@ namespace SynGlyphX {
 
 			ConstGlyphIterator otherRoot = graph.root();
 			GlyphIterator newIterator = AddChildGlyph(vertex, otherRoot->second);
-			CopyChildren(vertex, otherRoot, graph);
+			CopyChildren(newIterator, otherRoot, graph);
 
 			return newIterator;
 		}
