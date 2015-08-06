@@ -270,7 +270,7 @@ void DataMapperWindow::CreateNewProject() {
 	m_SingleGlyphRolesTableModel->Clear();
 
 	EnableProjectDependentActions(false);
-	UpdateFilenameWindowTitle("Untitled");
+	ClearCurrentFile();
 }
 
 void DataMapperWindow::OpenProject() {
