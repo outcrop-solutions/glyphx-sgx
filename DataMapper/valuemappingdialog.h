@@ -46,6 +46,7 @@ public:
 		GeometryShape,
 		VirtualTopology
 	};
+
 	ValueMappingDialog(InputType input, OutputType output, QWidget *parent);
 	virtual ~ValueMappingDialog();
 
@@ -58,9 +59,15 @@ protected slots:
 	void OnRemoveKeyValue();
 	void OnTableSelectionChanged();
 	void OnClearAllKeyValues();
+	void OnLoadFromFile();
+	void OnSaveToFile();
 
 protected:
 	virtual bool CreateMappingData() = 0;
+	virtual void LoadFile(const std::string& filename) = 0;
+	virtual void SaveFile(const std::string& filename) = 0;
+
+	void OnNumberOfRowsInTableChanged();
 	void AddRow();
 	SynGlyphX::Range GetRangeFromWidget(int row, int column = 0);
 	std::wstring GetTextFromWidget(int row, int column = 0);
@@ -86,6 +93,7 @@ protected:
 	SynGlyphX::VirtualTopologyComboBox* m_outputVirtualTopologyWidget;
 
 	QPushButton* m_removeEntryButton;
+	QPushButton* m_saveToFileButton;
 
 	double m_outputSpinBoxMin;
 	double m_outputSpinBoxMax;
@@ -108,6 +116,8 @@ public:
 
 protected:
 	virtual bool CreateMappingData();
+	virtual void LoadFile(const std::string& filename);
+	virtual void SaveFile(const std::string& filename);
 
 	SynGlyphX::Numeric2NumericMappingData::SharedPtr m_mappingData;
 };
@@ -125,6 +135,8 @@ public:
 
 protected:
 	virtual bool CreateMappingData();
+	virtual void LoadFile(const std::string& filename);
+	virtual void SaveFile(const std::string& filename);
 
 	SynGlyphX::Numeric2ColorMappingData::SharedPtr m_mappingData;
 };
@@ -142,6 +154,8 @@ public:
 
 protected:
 	virtual bool CreateMappingData();
+	virtual void LoadFile(const std::string& filename);
+	virtual void SaveFile(const std::string& filename);
 
 	SynGlyphX::Text2NumericMappingData::SharedPtr m_mappingData;
 };
@@ -159,6 +173,8 @@ public:
 
 protected:
 	virtual bool CreateMappingData();
+	virtual void LoadFile(const std::string& filename);
+	virtual void SaveFile(const std::string& filename);
 
 	SynGlyphX::Text2ColorMappingData::SharedPtr m_mappingData;
 };
@@ -176,6 +192,8 @@ public:
 
 protected:
 	virtual bool CreateMappingData();
+	virtual void LoadFile(const std::string& filename);
+	virtual void SaveFile(const std::string& filename);
 
 	SynGlyphX::Range2NumericMappingData::SharedPtr m_mappingData;
 };
@@ -193,6 +211,8 @@ public:
 
 protected:
 	virtual bool CreateMappingData();
+	virtual void LoadFile(const std::string& filename);
+	virtual void SaveFile(const std::string& filename);
 
 	SynGlyphX::Range2ColorMappingData::SharedPtr m_mappingData;
 };
@@ -212,6 +232,8 @@ public:
 
 protected:
 	virtual bool CreateMappingData();
+	virtual void LoadFile(const std::string& filename);
+	virtual void SaveFile(const std::string& filename);
 
 	SynGlyphX::Numeric2ShapeMappingData::SharedPtr m_mappingData;
 };
@@ -229,6 +251,8 @@ public:
 
 protected:
 	virtual bool CreateMappingData();
+	virtual void LoadFile(const std::string& filename);
+	virtual void SaveFile(const std::string& filename);
 
 	SynGlyphX::Numeric2VirtualTopologyMappingData::SharedPtr m_mappingData;
 };
@@ -246,6 +270,8 @@ public:
 
 protected:
 	virtual bool CreateMappingData();
+	virtual void LoadFile(const std::string& filename);
+	virtual void SaveFile(const std::string& filename);
 
 	SynGlyphX::Text2ShapeMappingData::SharedPtr m_mappingData;
 };
@@ -263,6 +289,8 @@ public:
 
 protected:
 	virtual bool CreateMappingData();
+	virtual void LoadFile(const std::string& filename);
+	virtual void SaveFile(const std::string& filename);
 
 	SynGlyphX::Text2VirtualTopologyMappingData::SharedPtr m_mappingData;
 };
@@ -280,6 +308,8 @@ public:
 
 protected:
 	virtual bool CreateMappingData();
+	virtual void LoadFile(const std::string& filename);
+	virtual void SaveFile(const std::string& filename);
 
 	SynGlyphX::Range2ShapeMappingData::SharedPtr m_mappingData;
 };
@@ -297,6 +327,8 @@ public:
 
 protected:
 	virtual bool CreateMappingData();
+	virtual void LoadFile(const std::string& filename);
+	virtual void SaveFile(const std::string& filename);
 
 	SynGlyphX::Range2VirtualTopologyMappingData::SharedPtr m_mappingData;
 };

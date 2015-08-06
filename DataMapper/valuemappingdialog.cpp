@@ -8,7 +8,11 @@
 #include <QtWidgets/QMessageBox>
 #include <QtWidgets/QGroupBox>
 #include <QtWidgets/QHeaderView>
+#include <QtWidgets/QFileDialog>
+#include <QtCore/QSettings>
+#include <QtWidgets/QMessageBox>
 #include "colorconverter.h"
+#include "valuemappingfile.h"
 
 ValueMappingDialog::ValueMappingDialog(InputType input, OutputType output, QWidget *parent)
 	: QDialog(parent),
@@ -75,19 +79,27 @@ ValueMappingDialog::ValueMappingDialog(InputType input, OutputType output, QWidg
 	QObject::connect(m_table, &QTableWidget::itemSelectionChanged, this, &ValueMappingDialog::OnTableSelectionChanged);
 	layout->addWidget(m_table);
 
-	QHBoxLayout* clearRemoveLayout = new QHBoxLayout(this);
+	QHBoxLayout* clearRemoveLoadSaveLayout = new QHBoxLayout(this);
 
 	m_removeEntryButton = new QPushButton(tr("Remove"), this);
 	QObject::connect(m_removeEntryButton, &QPushButton::clicked, this, &ValueMappingDialog::OnRemoveKeyValue);
-	clearRemoveLayout->addWidget(m_removeEntryButton);
+	clearRemoveLoadSaveLayout->addWidget(m_removeEntryButton);
 
 	QPushButton* clearAllButton = new QPushButton(tr("ClearAll"), this);
 	QObject::connect(clearAllButton, &QPushButton::clicked, this, &ValueMappingDialog::OnClearAllKeyValues);
-	clearRemoveLayout->addWidget(clearAllButton);
+	clearRemoveLoadSaveLayout->addWidget(clearAllButton);
 
-	clearRemoveLayout->addStretch(1);
+	clearRemoveLoadSaveLayout->addStretch(1);
 
-	layout->addLayout(clearRemoveLayout);
+	QPushButton* loadFileButton = new QPushButton(tr("Load"), this);
+	QObject::connect(loadFileButton, &QPushButton::clicked, this, &ValueMappingDialog::OnLoadFromFile);
+	clearRemoveLoadSaveLayout->addWidget(loadFileButton);
+
+	m_saveToFileButton = new QPushButton(tr("Save"), this);
+	QObject::connect(m_saveToFileButton, &QPushButton::clicked, this, &ValueMappingDialog::OnSaveToFile);
+	clearRemoveLoadSaveLayout->addWidget(m_saveToFileButton);
+
+	layout->addLayout(clearRemoveLoadSaveLayout);
 
 	QString groupBoxName;
 	if (m_input == InputType::Range) {
@@ -155,6 +167,7 @@ ValueMappingDialog::ValueMappingDialog(InputType input, OutputType output, QWidg
 
 	setLayout(layout);
 
+	OnNumberOfRowsInTableChanged();
 	OnTableSelectionChanged();
 	setWindowTitle(tr("Edit Mapping Properties"));
 }
@@ -162,6 +175,11 @@ ValueMappingDialog::ValueMappingDialog(InputType input, OutputType output, QWidg
 ValueMappingDialog::~ValueMappingDialog()
 {
 
+}
+
+void ValueMappingDialog::OnNumberOfRowsInTableChanged() {
+
+	m_saveToFileButton->setEnabled(m_table->rowCount() > 0);
 }
 
 void ValueMappingDialog::SetOutputSpinBoxRange(double min, double max) {
@@ -250,6 +268,8 @@ void ValueMappingDialog::OnAddKeyValue() {
 			SynGlyphX::ColorButton* outputTableWidget = dynamic_cast<SynGlyphX::ColorButton*>(m_table->cellWidget(row, 1));
 			outputTableWidget->SetColor(m_outputColorWidget->GetColor());
 		}
+
+		OnNumberOfRowsInTableChanged();
 	}
 	catch (const std::exception& e) {
 
@@ -262,6 +282,7 @@ void ValueMappingDialog::OnRemoveKeyValue() {
 
 	int row = m_table->currentRow();
 	m_table->removeRow(row);
+	OnNumberOfRowsInTableChanged();
 }
 
 void ValueMappingDialog::OnTableSelectionChanged() {
@@ -407,6 +428,59 @@ QDoubleSpinBox* ValueMappingDialog::CreateDoubleSpinBox(double min, double max) 
 	return spinBox;
 }
 
+void ValueMappingDialog::OnLoadFromFile() {
+
+	QSettings settings;
+	settings.beginGroup("ValueMapping");
+	QString filename = QFileDialog::getOpenFileName(this, tr("Load Value Mappings"), settings.value("LastDir", QDir::currentPath()).toString(), "SynGlyphX Value Mapping Files (*.svm)");
+	if (!filename.isEmpty()) {
+
+		bool loadFile = true;
+		if (m_table->rowCount() > 0) {
+
+			loadFile = (QMessageBox::question(this, tr("Value Mapping Data Currently Exists"), tr("A value mapping is currently in this dialog.  Loading this file will overwrite it.  Do you wish to continue?"), QMessageBox::Yes, QMessageBox::No) == QMessageBox::Yes);
+		}
+
+		if (loadFile) {
+
+			try {
+
+				LoadFile(filename.toStdString());
+				QFileInfo fileInfo(filename);
+				settings.setValue("LastDir", fileInfo.absolutePath());
+			}
+			catch (const std::exception& e) {
+
+				QMessageBox::warning(this, tr("Load Value Mapping File Error"), tr("Load Value Mapping File Error: ") + e.what());
+			}
+		}
+	}
+
+	settings.endGroup();
+}
+
+void ValueMappingDialog::OnSaveToFile() {
+
+	QSettings settings;
+	settings.beginGroup("ValueMapping");
+	QString filename = QFileDialog::getSaveFileName(this, tr("Save Value Mappings"), settings.value("LastDir", QDir::currentPath()).toString(), "SynGlyphX Value Mapping Files (*.svm)");
+	if (!filename.isEmpty()) {
+
+		try {
+
+			SaveFile(filename.toStdString());
+			QFileInfo fileInfo(filename);
+			settings.setValue("LastDir", fileInfo.absolutePath());
+		}
+		catch (const std::exception& e) {
+
+			QMessageBox::warning(this, tr("Save Value Mapping File Error"), tr("Save Value Mapping File Error: ") + e.what());
+		}
+	}
+
+	settings.endGroup();
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 
 Numeric2NumericMappingDialog::Numeric2NumericMappingDialog(QWidget *parent) :
@@ -433,6 +507,8 @@ void Numeric2NumericMappingDialog::SetDialogFromMapping(SynGlyphX::Numeric2Numer
 		QDoubleSpinBox* outputTableWidget = dynamic_cast<QDoubleSpinBox*>(m_table->cellWidget(row, 1));
 		outputTableWidget->setValue(keyValuePair.second);
 	}
+
+	OnNumberOfRowsInTableChanged();
 }
 
 SynGlyphX::Numeric2NumericMappingData::SharedPtr Numeric2NumericMappingDialog::GetMappingFromDialog() const {
@@ -462,6 +538,20 @@ bool Numeric2NumericMappingDialog::CreateMappingData() {
 	return true;
 }
 
+void Numeric2NumericMappingDialog::LoadFile(const std::string& filename) {
+
+	SynGlyphX::Numeric2NumericMappingFile mappingFile;
+	mappingFile.ReadFromFile(filename);
+	SetDialogFromMapping(mappingFile.GetValueMapping());
+}
+
+void Numeric2NumericMappingDialog::SaveFile(const std::string& filename) {
+
+	CreateMappingData();
+	SynGlyphX::Numeric2NumericMappingFile mappingFile(GetMappingFromDialog());
+	mappingFile.WriteToFile(filename);
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 
 Numeric2ColorMappingDialog::Numeric2ColorMappingDialog(QWidget *parent) :
@@ -488,6 +578,8 @@ void Numeric2ColorMappingDialog::SetDialogFromMapping(SynGlyphX::Numeric2ColorMa
 		SynGlyphX::ColorButton* outputTableWidget = dynamic_cast<SynGlyphX::ColorButton*>(m_table->cellWidget(row, 1));
 		outputTableWidget->SetColor(SynGlyphX::ColorConverter::GlyphColor2QColor(keyValuePair.second));
 	}
+
+	OnNumberOfRowsInTableChanged();
 }
 
 SynGlyphX::Numeric2ColorMappingData::SharedPtr Numeric2ColorMappingDialog::GetMappingFromDialog() const {
@@ -517,6 +609,20 @@ bool Numeric2ColorMappingDialog::CreateMappingData() {
 	return true;
 }
 
+void Numeric2ColorMappingDialog::LoadFile(const std::string& filename) {
+
+	SynGlyphX::Numeric2ColorMappingFile mappingFile;
+	mappingFile.ReadFromFile(filename);
+	SetDialogFromMapping(mappingFile.GetValueMapping());
+}
+
+void Numeric2ColorMappingDialog::SaveFile(const std::string& filename) {
+
+	CreateMappingData();
+	SynGlyphX::Numeric2ColorMappingFile mappingFile(GetMappingFromDialog());
+	mappingFile.WriteToFile(filename);
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 
 Text2NumericMappingDialog::Text2NumericMappingDialog(QWidget *parent) :
@@ -544,6 +650,8 @@ void Text2NumericMappingDialog::SetDialogFromMapping(SynGlyphX::Text2NumericMapp
 		QDoubleSpinBox* outputTableWidget = dynamic_cast<QDoubleSpinBox*>(m_table->cellWidget(row, 1));
 		outputTableWidget->setValue(keyValuePair.second);
 	}
+
+	OnNumberOfRowsInTableChanged();
 }
 
 SynGlyphX::Text2NumericMappingData::SharedPtr Text2NumericMappingDialog::GetMappingFromDialog() const {
@@ -573,6 +681,20 @@ bool Text2NumericMappingDialog::CreateMappingData() {
 	return true;
 }
 
+void Text2NumericMappingDialog::LoadFile(const std::string& filename) {
+
+	SynGlyphX::Text2NumericMappingFile mappingFile;
+	mappingFile.ReadFromFile(filename);
+	SetDialogFromMapping(mappingFile.GetValueMapping());
+}
+
+void Text2NumericMappingDialog::SaveFile(const std::string& filename) {
+
+	CreateMappingData();
+	SynGlyphX::Text2NumericMappingFile mappingFile(GetMappingFromDialog());
+	mappingFile.WriteToFile(filename);
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 
 Text2ColorMappingDialog::Text2ColorMappingDialog(QWidget *parent) :
@@ -600,6 +722,8 @@ void Text2ColorMappingDialog::SetDialogFromMapping(SynGlyphX::Text2ColorMappingD
 		SynGlyphX::ColorButton* outputTableWidget = dynamic_cast<SynGlyphX::ColorButton*>(m_table->cellWidget(row, 1));
 		outputTableWidget->SetColor(SynGlyphX::ColorConverter::GlyphColor2QColor(keyValuePair.second));
 	}
+
+	OnNumberOfRowsInTableChanged();
 }
 
 SynGlyphX::Text2ColorMappingData::SharedPtr Text2ColorMappingDialog::GetMappingFromDialog() const {
@@ -629,6 +753,20 @@ bool Text2ColorMappingDialog::CreateMappingData() {
 	return true;
 }
 
+void Text2ColorMappingDialog::LoadFile(const std::string& filename) {
+
+	SynGlyphX::Text2ColorMappingFile mappingFile;
+	mappingFile.ReadFromFile(filename);
+	SetDialogFromMapping(mappingFile.GetValueMapping());
+}
+
+void Text2ColorMappingDialog::SaveFile(const std::string& filename) {
+
+	CreateMappingData();
+	SynGlyphX::Text2ColorMappingFile mappingFile(GetMappingFromDialog());
+	mappingFile.WriteToFile(filename);
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 
 Range2NumericMappingDialog::Range2NumericMappingDialog(QWidget *parent) :
@@ -656,6 +794,8 @@ void Range2NumericMappingDialog::SetDialogFromMapping(SynGlyphX::Range2NumericMa
 		QDoubleSpinBox* outputTableWidget = dynamic_cast<QDoubleSpinBox*>(m_table->cellWidget(row, 1));
 		outputTableWidget->setValue(keyValuePair.second);
 	}
+
+	OnNumberOfRowsInTableChanged();
 }
 
 SynGlyphX::Range2NumericMappingData::SharedPtr Range2NumericMappingDialog::GetMappingFromDialog() const {
@@ -685,6 +825,20 @@ bool Range2NumericMappingDialog::CreateMappingData() {
 	return true;
 }
 
+void Range2NumericMappingDialog::LoadFile(const std::string& filename) {
+
+	SynGlyphX::Range2NumericMappingFile mappingFile;
+	mappingFile.ReadFromFile(filename);
+	SetDialogFromMapping(mappingFile.GetValueMapping());
+}
+
+void Range2NumericMappingDialog::SaveFile(const std::string& filename) {
+
+	CreateMappingData();
+	SynGlyphX::Range2NumericMappingFile mappingFile(GetMappingFromDialog());
+	mappingFile.WriteToFile(filename);
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 
 Range2ColorMappingDialog::Range2ColorMappingDialog(QWidget *parent) :
@@ -712,6 +866,8 @@ void Range2ColorMappingDialog::SetDialogFromMapping(SynGlyphX::Range2ColorMappin
 		SynGlyphX::ColorButton* outputTableWidget = dynamic_cast<SynGlyphX::ColorButton*>(m_table->cellWidget(row, 1));
 		outputTableWidget->SetColor(SynGlyphX::ColorConverter::GlyphColor2QColor(keyValuePair.second));
 	}
+
+	OnNumberOfRowsInTableChanged();
 }
 
 SynGlyphX::Range2ColorMappingData::SharedPtr Range2ColorMappingDialog::GetMappingFromDialog() const {
@@ -741,6 +897,20 @@ bool Range2ColorMappingDialog::CreateMappingData() {
 	return true;
 }
 
+void Range2ColorMappingDialog::LoadFile(const std::string& filename) {
+
+	SynGlyphX::Range2ColorMappingFile mappingFile;
+	mappingFile.ReadFromFile(filename);
+	SetDialogFromMapping(mappingFile.GetValueMapping());
+}
+
+void Range2ColorMappingDialog::SaveFile(const std::string& filename) {
+
+	CreateMappingData();
+	SynGlyphX::Range2ColorMappingFile mappingFile(GetMappingFromDialog());
+	mappingFile.WriteToFile(filename);
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 
 Numeric2ShapeMappingDialog::Numeric2ShapeMappingDialog(QWidget *parent) :
@@ -767,6 +937,8 @@ void Numeric2ShapeMappingDialog::SetDialogFromMapping(SynGlyphX::Numeric2ShapeMa
 		SynGlyphX::GlyphShapeComboBox* outputTableWidget = dynamic_cast<SynGlyphX::GlyphShapeComboBox*>(m_table->cellWidget(row, 1));
 		outputTableWidget->SetCurrentValue(keyValuePair.second);
 	}
+
+	OnNumberOfRowsInTableChanged();
 }
 
 SynGlyphX::Numeric2ShapeMappingData::SharedPtr Numeric2ShapeMappingDialog::GetMappingFromDialog() const {
@@ -796,6 +968,20 @@ bool Numeric2ShapeMappingDialog::CreateMappingData() {
 	return true;
 }
 
+void Numeric2ShapeMappingDialog::LoadFile(const std::string& filename) {
+
+	SynGlyphX::Numeric2ShapeMappingFile mappingFile;
+	mappingFile.ReadFromFile(filename);
+	SetDialogFromMapping(mappingFile.GetValueMapping());
+}
+
+void Numeric2ShapeMappingDialog::SaveFile(const std::string& filename) {
+
+	CreateMappingData();
+	SynGlyphX::Numeric2ShapeMappingFile mappingFile(GetMappingFromDialog());
+	mappingFile.WriteToFile(filename);
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 
 Numeric2VirtualTopologyMappingDialog::Numeric2VirtualTopologyMappingDialog(QWidget *parent) :
@@ -822,6 +1008,8 @@ void Numeric2VirtualTopologyMappingDialog::SetDialogFromMapping(SynGlyphX::Numer
 		SynGlyphX::VirtualTopologyComboBox* outputTableWidget = dynamic_cast<SynGlyphX::VirtualTopologyComboBox*>(m_table->cellWidget(row, 1));
 		outputTableWidget->SetCurrentValue(keyValuePair.second);
 	}
+
+	OnNumberOfRowsInTableChanged();
 }
 
 SynGlyphX::Numeric2VirtualTopologyMappingData::SharedPtr Numeric2VirtualTopologyMappingDialog::GetMappingFromDialog() const {
@@ -851,6 +1039,20 @@ bool Numeric2VirtualTopologyMappingDialog::CreateMappingData() {
 	return true;
 }
 
+void Numeric2VirtualTopologyMappingDialog::LoadFile(const std::string& filename) {
+
+	SynGlyphX::Numeric2VirtualTopologyMappingFile mappingFile;
+	mappingFile.ReadFromFile(filename);
+	SetDialogFromMapping(mappingFile.GetValueMapping());
+}
+
+void Numeric2VirtualTopologyMappingDialog::SaveFile(const std::string& filename) {
+
+	CreateMappingData();
+	SynGlyphX::Numeric2VirtualTopologyMappingFile mappingFile(GetMappingFromDialog());
+	mappingFile.WriteToFile(filename);
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 
 Text2ShapeMappingDialog::Text2ShapeMappingDialog(QWidget *parent) :
@@ -878,6 +1080,8 @@ void Text2ShapeMappingDialog::SetDialogFromMapping(SynGlyphX::Text2ShapeMappingD
 		SynGlyphX::GlyphShapeComboBox* outputTableWidget = dynamic_cast<SynGlyphX::GlyphShapeComboBox*>(m_table->cellWidget(row, 1));
 		outputTableWidget->SetCurrentValue(keyValuePair.second);
 	}
+
+	OnNumberOfRowsInTableChanged();
 }
 
 SynGlyphX::Text2ShapeMappingData::SharedPtr Text2ShapeMappingDialog::GetMappingFromDialog() const {
@@ -907,6 +1111,20 @@ bool Text2ShapeMappingDialog::CreateMappingData() {
 	return true;
 }
 
+void Text2ShapeMappingDialog::LoadFile(const std::string& filename) {
+
+	SynGlyphX::Text2ShapeMappingFile mappingFile;
+	mappingFile.ReadFromFile(filename);
+	SetDialogFromMapping(mappingFile.GetValueMapping());
+}
+
+void Text2ShapeMappingDialog::SaveFile(const std::string& filename) {
+
+	CreateMappingData();
+	SynGlyphX::Text2ShapeMappingFile mappingFile(GetMappingFromDialog());
+	mappingFile.WriteToFile(filename);
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 
 Text2VirtualTopologyMappingDialog::Text2VirtualTopologyMappingDialog(QWidget *parent) :
@@ -934,6 +1152,8 @@ void Text2VirtualTopologyMappingDialog::SetDialogFromMapping(SynGlyphX::Text2Vir
 		SynGlyphX::VirtualTopologyComboBox* outputTableWidget = dynamic_cast<SynGlyphX::VirtualTopologyComboBox*>(m_table->cellWidget(row, 1));
 		outputTableWidget->SetCurrentValue(keyValuePair.second);
 	}
+
+	OnNumberOfRowsInTableChanged();
 }
 
 SynGlyphX::Text2VirtualTopologyMappingData::SharedPtr Text2VirtualTopologyMappingDialog::GetMappingFromDialog() const {
@@ -963,6 +1183,20 @@ bool Text2VirtualTopologyMappingDialog::CreateMappingData() {
 	return true;
 }
 
+void Text2VirtualTopologyMappingDialog::LoadFile(const std::string& filename) {
+
+	SynGlyphX::Text2VirtualTopologyMappingFile mappingFile;
+	mappingFile.ReadFromFile(filename);
+	SetDialogFromMapping(mappingFile.GetValueMapping());
+}
+
+void Text2VirtualTopologyMappingDialog::SaveFile(const std::string& filename) {
+
+	CreateMappingData();
+	SynGlyphX::Text2VirtualTopologyMappingFile mappingFile(GetMappingFromDialog());
+	mappingFile.WriteToFile(filename);
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 
 Range2ShapeMappingDialog::Range2ShapeMappingDialog(QWidget *parent) :
@@ -990,6 +1224,8 @@ void Range2ShapeMappingDialog::SetDialogFromMapping(SynGlyphX::Range2ShapeMappin
 		SynGlyphX::GlyphShapeComboBox* outputTableWidget = dynamic_cast<SynGlyphX::GlyphShapeComboBox*>(m_table->cellWidget(row, 1));
 		outputTableWidget->SetCurrentValue(keyValuePair.second);
 	}
+
+	OnNumberOfRowsInTableChanged();
 }
 
 SynGlyphX::Range2ShapeMappingData::SharedPtr Range2ShapeMappingDialog::GetMappingFromDialog() const {
@@ -1019,6 +1255,20 @@ bool Range2ShapeMappingDialog::CreateMappingData() {
 	return true;
 }
 
+void Range2ShapeMappingDialog::LoadFile(const std::string& filename) {
+
+	SynGlyphX::Range2ShapeMappingFile mappingFile;
+	mappingFile.ReadFromFile(filename);
+	SetDialogFromMapping(mappingFile.GetValueMapping());
+}
+
+void Range2ShapeMappingDialog::SaveFile(const std::string& filename) {
+
+	CreateMappingData();
+	SynGlyphX::Range2ShapeMappingFile mappingFile(GetMappingFromDialog());
+	mappingFile.WriteToFile(filename);
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 
 Range2VirtualTopologyMappingDialog::Range2VirtualTopologyMappingDialog(QWidget *parent) :
@@ -1046,6 +1296,8 @@ void Range2VirtualTopologyMappingDialog::SetDialogFromMapping(SynGlyphX::Range2V
 		SynGlyphX::VirtualTopologyComboBox* outputTableWidget = dynamic_cast<SynGlyphX::VirtualTopologyComboBox*>(m_table->cellWidget(row, 1));
 		outputTableWidget->SetCurrentValue(keyValuePair.second);
 	}
+
+	OnNumberOfRowsInTableChanged();
 }
 
 SynGlyphX::Range2VirtualTopologyMappingData::SharedPtr Range2VirtualTopologyMappingDialog::GetMappingFromDialog() const {
@@ -1073,4 +1325,18 @@ bool Range2VirtualTopologyMappingDialog::CreateMappingData() {
 
 	m_mappingData = mapping;
 	return true;
+}
+
+void Range2VirtualTopologyMappingDialog::LoadFile(const std::string& filename) {
+
+	SynGlyphX::Range2VirtualTopologyMappingFile mappingFile;
+	mappingFile.ReadFromFile(filename);
+	SetDialogFromMapping(mappingFile.GetValueMapping());
+}
+
+void Range2VirtualTopologyMappingDialog::SaveFile(const std::string& filename) {
+
+	CreateMappingData();
+	SynGlyphX::Range2VirtualTopologyMappingFile mappingFile(GetMappingFromDialog());
+	mappingFile.WriteToFile(filename);
 }
