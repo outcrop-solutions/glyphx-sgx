@@ -50,7 +50,7 @@ private:
 	void CreateGeometryTopologyTab();
 	void CreateAnimationTable();
 	void CreateTagAndDescriptionWidget();
-	void CreatePropertiesTable();
+	void CreateBasePropertiesTable();
 	void CreateTableHeader(QGridLayout* gridLayout);
 	void CreateVerticalGridLines(QGridLayout* gridLayout, unsigned int count);
 	void CreateIntegerPropertyWidgets(QGridLayout* layout, int modelRow, int min = 0, int max = 255);

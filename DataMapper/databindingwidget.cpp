@@ -15,7 +15,7 @@ DataBindingWidget::DataBindingWidget(SingleGlyphRolesTableModel* model, QWidget 
 	: QTabWidget(parent),
 	m_model(model)
 {
-	CreatePropertiesTable();
+	CreateBasePropertiesTable();
 	CreateTagAndDescriptionWidget();
 	CreateAnimationTable();
 	CreateGeometryTopologyTab();
@@ -153,7 +153,7 @@ void DataBindingWidget::CreateVerticalGridLines(QGridLayout* gridLayout, unsigne
 	}
 }
 
-void DataBindingWidget::CreatePropertiesTable() {
+void DataBindingWidget::CreateBasePropertiesTable() {
 
 	QWidget* widget = new QWidget(this);
 
