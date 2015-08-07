@@ -79,9 +79,9 @@ namespace SynGlyphXANTz {
 		CopyImage(s_logoFilename, baseImageFilenameDirectory + GenerateBaseImageFilename(logoTextureID));
 
 		ANTzGrid grid;
-		grid.SetPosition({ { 163.7, 86.3, 0.5 } });
+		grid.SetPosition({ { 167.77, 87.23, 0.5 } });
 		grid.SetRotation({ { 0.0, 0.0, 0.0 } });
-		grid.SetScale({ { 0.09, 0.04, 1.0 } });
+		grid.SetScale({ { 0.068, 0.03, 1.0 } });
 		grid.SetTextureID(logoTextureID);
 		grid.SetVisible(false);
 
