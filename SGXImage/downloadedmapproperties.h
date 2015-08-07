@@ -50,6 +50,9 @@ namespace SynGlyphX {
 		DownloadedMapProperties(const DownloadedMapProperties& properties);
 		virtual ~DownloadedMapProperties();
 
+		bool operator==(const DownloadedMapProperties& properties) const;
+		bool operator!=(const DownloadedMapProperties& properties) const;
+
 		MapSource GetSource() const;
 		void SetSource(MapSource source);
 

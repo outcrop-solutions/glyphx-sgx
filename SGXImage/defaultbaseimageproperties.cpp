@@ -36,6 +36,16 @@ namespace SynGlyphX {
 	{
 	}
 
+	bool DefaultBaseImageProperties::operator==(const DefaultBaseImageProperties& properties) const {
+
+		return m_defaultBaseImage == properties.m_defaultBaseImage;
+	}
+
+	bool DefaultBaseImageProperties::operator!=(const DefaultBaseImageProperties& properties) const {
+
+		return !operator==(properties);
+	}
+
 	bool DefaultBaseImageProperties::IsGeographic() const {
 
 		return ((m_defaultBaseImage == Type::World) || (m_defaultBaseImage == Type::WorldGrayscale));

@@ -114,7 +114,21 @@ namespace SynGlyphX {
 			return false;
 		}
 
-		return true;
+		if (m_type == BaseImage::Type::DownloadedMap) {
+
+			auto downloadedMapProperties = std::dynamic_pointer_cast<const DownloadedMapProperties>(m_properties);
+			return downloadedMapProperties->operator==(*std::dynamic_pointer_cast<const DownloadedMapProperties>(baseImage.m_properties).get());
+		}
+		else if (m_type == BaseImage::Type::UserImage) {
+
+			auto userImageProperties = std::dynamic_pointer_cast<const UserDefinedBaseImageProperties>(m_properties);
+			return userImageProperties->operator==(*std::dynamic_pointer_cast<const UserDefinedBaseImageProperties>(baseImage.m_properties).get());
+		}
+		else {
+
+			auto defaultProperties = std::dynamic_pointer_cast<const DefaultBaseImageProperties>(m_properties);
+			return defaultProperties->operator==(*std::dynamic_pointer_cast<const DefaultBaseImageProperties>(baseImage.m_properties).get());
+		}
 	}
 
 	bool BaseImage::operator!=(const BaseImage& baseImage) const {

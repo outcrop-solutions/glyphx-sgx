@@ -26,6 +26,16 @@ namespace SynGlyphX {
 	{
 	}
 
+	bool UserDefinedBaseImageProperties::operator==(const UserDefinedBaseImageProperties& properties) const {
+
+		return m_filename == properties.m_filename;
+	}
+
+	bool UserDefinedBaseImageProperties::operator!=(const UserDefinedBaseImageProperties& properties) const {
+
+		return !operator==(properties);
+	}
+
 	const std::wstring& UserDefinedBaseImageProperties::GetFilename() const {
 
 		return m_filename;

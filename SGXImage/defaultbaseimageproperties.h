@@ -46,6 +46,9 @@ namespace SynGlyphX {
 		DefaultBaseImageProperties(const DefaultBaseImageProperties& properties);
 		virtual ~DefaultBaseImageProperties();
 
+		bool operator==(const DefaultBaseImageProperties& properties) const;
+		bool operator!=(const DefaultBaseImageProperties& properties) const;
+
 		virtual bool IsGeographic() const;
 		virtual void ExportToPropertyTree(boost::property_tree::wptree& propertyTree) const;
 

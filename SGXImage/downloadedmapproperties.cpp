@@ -47,6 +47,41 @@ namespace SynGlyphX {
 	{
 	}
 
+	bool DownloadedMapProperties::operator==(const DownloadedMapProperties& properties) const {
+
+		if (m_source != properties.m_source) {
+
+			return false;
+		}
+			
+		if (m_type != properties.m_type) {
+
+			return false;
+		}
+
+		if (m_size != properties.m_size) {
+
+			return false;
+		}
+
+		if (m_invert != properties.m_invert) {
+
+			return false;
+		}
+			
+		if (m_grayscale != properties.m_grayscale) {
+
+			return false;
+		}
+
+		return true;
+	}
+
+	bool DownloadedMapProperties::operator!=(const DownloadedMapProperties& properties) const {
+
+		return !operator==(properties);
+	}
+
 	bool DownloadedMapProperties::IsGeographic() const {
 
 		return true;

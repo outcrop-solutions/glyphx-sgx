@@ -35,6 +35,9 @@ namespace SynGlyphX {
 		UserDefinedBaseImageProperties(const UserDefinedBaseImageProperties& properties);
 		virtual ~UserDefinedBaseImageProperties();
 
+		bool operator==(const UserDefinedBaseImageProperties& properties) const;
+		bool operator!=(const UserDefinedBaseImageProperties& properties) const;
+
 		const std::wstring& GetFilename() const;
 		void SetFilename(const std::wstring& filename);
 
