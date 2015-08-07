@@ -62,6 +62,8 @@ namespace SynGlyphX {
 
 		void ChangeMappingFunction(MappingFunctionData::Function function, const boost::property_tree::wptree& propertyTree);
 
+		MappingFunctionData::SharedPtr CreateDefaultMappingData();
+
 		PropertyType m_value;
 		InputBinding m_binding;
 		MappingFunctionData::SharedPtr m_mappingFunctionData;

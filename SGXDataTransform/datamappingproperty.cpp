@@ -8,7 +8,7 @@ namespace SynGlyphX {
 	DataMappingProperty<PropertyType>::DataMappingProperty() :
 		m_value(PropertyType()),
 		m_binding(InputBinding()),
-		m_mappingFunctionData(std::make_shared<MappingFunctionData>()) {
+		m_mappingFunctionData(CreateDefaultMappingData()) {
 
 	}
 
@@ -16,7 +16,7 @@ namespace SynGlyphX {
 	DataMappingProperty<VirtualTopologyInfo::Type>::DataMappingProperty() :
 		m_value(VirtualTopologyInfo::Type::Circle),
 		m_binding(InputBinding()),
-		m_mappingFunctionData(std::make_shared<MappingFunctionData>()) {
+		m_mappingFunctionData(CreateDefaultMappingData()) {
 
 	}
 
@@ -24,14 +24,14 @@ namespace SynGlyphX {
 	DataMappingProperty<PropertyType>::DataMappingProperty(const PropertyType& initialValue) :
 		m_value(initialValue),
 		m_binding(InputBinding()),
-		m_mappingFunctionData(std::make_shared<MappingFunctionData>()) {
+		m_mappingFunctionData(CreateDefaultMappingData()) {
 
 	}
 
 	template<typename PropertyType>
 	DataMappingProperty<PropertyType>::DataMappingProperty(const boost::property_tree::wptree& propertyTree) :
 		m_binding(InputBinding()),
-		m_mappingFunctionData(std::make_shared<MappingFunctionData>()) {
+		m_mappingFunctionData(CreateDefaultMappingData()) {
 
 		boost::optional<const boost::property_tree::wptree&> inputFieldTree = propertyTree.get_child_optional(InputBinding::PropertyTreeName);
 		if (inputFieldTree.is_initialized()) {
@@ -339,6 +339,22 @@ namespace SynGlyphX {
 	void DataMappingProperty<PropertyType>::ImportValueToPropertyTree(const boost::property_tree::wptree& propertyTree) {
 
 		m_value = propertyTree.get_optional<PropertyType>(L"Value").get_value_or(PropertyType());
+	}
+
+	template<typename PropertyType>
+	MappingFunctionData::SharedPtr DataMappingProperty<PropertyType>::CreateDefaultMappingData() {
+
+		MappingFunctionData::SharedPtr mappingFunctionData = nullptr;
+		if ((std::is_same<ColorMinDiff, PropertyType>::value) || (std::is_same<DoubleMinDiff, PropertyType>::value)) {
+
+			mappingFunctionData = std::make_shared<InterpolationMappingData>();
+		}
+		else {
+
+			mappingFunctionData = std::make_shared<MappingFunctionData>();
+		}
+
+		return mappingFunctionData;
 	}
 
 	template class DataMappingProperty < std::wstring >;
