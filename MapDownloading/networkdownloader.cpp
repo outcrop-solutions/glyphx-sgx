@@ -163,7 +163,7 @@ unsigned int NetworkDownloader::GetZoomLevel(const GeographicBoundingBox& boundi
 
 	double cosineAtCenter = std::cos(boundingBox.GetCenter().get<1>() * DegToRad);
 
-	double hZoomLevel = std::log((MetersPerPixelAtZoom0 * cosineAtCenter) / (hDistanceInMeters / imageSize[0])) / std::log(2.0 / cosineAtCenter);
+	double hZoomLevel = std::log((MetersPerPixelAtZoom0 * cosineAtCenter) / (hDistanceInMeters / imageSize[0])) / std::log(2.0); // / cosineAtCenter);
 	double vZoomLevel = std::log((MetersPerPixelAtZoom0 * cosineAtCenter) / (vDistanceInMeters / imageSize[1])) / std::log(2.0);
 
 	//Zoom level can never go above 18 on MapQuest Open
