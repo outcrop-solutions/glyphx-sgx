@@ -223,8 +223,6 @@ void SingleGlyphRolesTableModel::Clear() {
 	QObject::disconnect(m_dataChangedConnection);
 
 	beginResetModel();
-	//m_glyph = SynGlyphX::DataMappingGlyphGraph::const_iterator();
-	//m_glyphTree = nullptr;
 	m_glyphTreeID = boost::uuids::nil_uuid();
 	m_selectedDataTransformModelIndex = QModelIndex();
 	endResetModel();
@@ -234,110 +232,27 @@ bool SingleGlyphRolesTableModel::IsClear() const {
 
 	return (!m_selectedDataTransformModelIndex.isValid());
 }
-/*
-SynGlyphX::NumericMappingProperty& SingleGlyphRolesTableModel::GetGlyphProperty(SynGlyphX::DataMappingGlyph& glyph, int row) const {
 
-	if (row == 0) {
+bool SingleGlyphRolesTableModel::IsInputFieldCompatible(const SynGlyphX::InputField& inputField) const {
 
-		return glyph.GetPosition()[0];
-	}
-	else if (row == 1) {
+	if (!IsClear()) {
 
-		return glyph.GetPosition()[1];
-	}
-	else if (row == 2) {
+		const SynGlyphX::DataMappingGlyphGraph::InputFieldMap& inputFields = m_dataTransformModel->GetDataMapping()->GetGlyphGraphs().at(m_glyphTreeID)->GetInputFields();
+		if (inputFields.empty()) {
 
-		return glyph.GetPosition()[2];
-	}
-	else if (row == 3) {
-
-		return glyph.GetRotation()[0];
-	}
-	else if (row == 4) {
-
-		return glyph.GetRotation()[1];
-	}
-	else if (row == 5) {
-
-		return glyph.GetRotation()[2];
-	}
-	else if (row == 6) {
-
-		return glyph.GetScale()[0];
-	}
-	else if (row == 7) {
-
-		return glyph.GetScale()[1];
-	}
-	else if (row == 8) {
-
-		return glyph.GetScale()[2];
-	}
-	else if (row == 10) {
-
-		return glyph.GetTransparency();
-	}
-	else if (row == 13) {
-
-		return glyph.GetRotationRate()[0];
-	}
-	else if (row == 14) {
-
-		return glyph.GetRotationRate()[1];
-	}
-	else if (row == 15) {
-
-		return glyph.GetRotationRate()[2];
-	}
-}
-
-QVariant SingleGlyphRolesTableModel::GetDataByRow(SynGlyphX::DataMappingGlyph& glyph, const QModelIndex& index) const {
-
-	int row = index.row();
-	if ((row < m_propertyHeaders.size()) && (!IsTextField(row))) {
-
-		if (IsColorField(row)) {
-
-			SynGlyphX::ColorMappingProperty& colorProperty = glyph.GetColor();
-			
-			if (index.column() == 2) {
-
-				return QString::fromStdWString(SynGlyphX::MappingFunctionData::s_functionNames.left.at(colorProperty.GetMappingFunctionData()->GetFunction()));
-			}
-			else {
-			
-				const std::pair<SynGlyphX::GlyphColor, SynGlyphX::GlyphColor>& colorMinMax = colorProperty.GetValue();
-				if (index.column() == 0) {
-
-					return QColor(colorMinMax.first[0], colorMinMax.first[1], colorMinMax.first[2]);
-				}
-				else {
-
-					return QColor(colorMinMax.first[0] + colorMinMax.second[0], colorMinMax.first[1] + colorMinMax.second[1], colorMinMax.first[2] + colorMinMax.second[2]);
-				}
-			}
+			return true;
 		}
-		else {
 
-			SynGlyphX::NumericMappingProperty& numericProperty = GetGlyphProperty(glyph, row);
-			if (index.column() == 2) {
+		const SynGlyphX::InputField& firstInputField = inputFields.begin()->second;
+		if ((firstInputField.GetTable() == inputField.GetTable()) && (firstInputField.GetDatasourceID() == inputField.GetDatasourceID())) {
 
-				return QString::fromStdWString(SynGlyphX::MappingFunctionData::s_functionNames.left.at(numericProperty.GetMappingFunctionData()->GetFunction()));
-			}
-			else if(index.column() == 0) {
-
-				return numericProperty.GetValue().first;
-			}
-			else {
-
-				return numericProperty.GetValue().first + numericProperty.GetValue().second;
-			}
+			return true;
 		}
 	}
 
-	return QVariant();
+	return false;
 }
-*/
+
 Qt::ItemFlags SingleGlyphRolesTableModel::flags(const QModelIndex & index) const {
 
 	return QAbstractTableModel::flags(index) | Qt::ItemIsEditable;
@@ -527,66 +442,6 @@ bool SingleGlyphRolesTableModel::setData(const QModelIndex& index, const QVarian
 
 	return false;
 }
-/*
-bool SingleGlyphRolesTableModel::SetDataByRow(SynGlyphX::DataMappingGlyph& glyph, const QVariant& value, const QModelIndex& index) {
-
-	int row = index.row();
-	if ((row < m_propertyHeaders.size()) && (!IsTextField(row))) {
-
-		if (IsColorField(row)) {
-
-			QColor color = value.value < QColor >();
-			std::pair<SynGlyphX::GlyphColor, SynGlyphX::GlyphColor>& colorMinMax = glyph.GetColor().GetValue();
-			if (index.column() == 2) {
-
-				SynGlyphX::MappingFunctionData::Function function = SynGlyphX::MappingFunctionData::s_functionNames.right.at(value.toString().toStdWString());
-				if (function != glyph.GetColor().GetMappingFunctionData()->GetFunction()) {
-
-					glyph.GetColor().SetMappingFunctionData(CreateNewMappingFunction(function, true));
-				}
-			}
-			else if (index.column() == 0) {
-
-				colorMinMax.second.Set(0, colorMinMax.second[0] - (color.red() - colorMinMax.first[0]));
-				colorMinMax.second.Set(1, colorMinMax.second[1] - (color.green() - colorMinMax.first[1]));
-				colorMinMax.second.Set(2, colorMinMax.second[2] - (color.blue() - colorMinMax.first[2]));
-				colorMinMax.first.Set(color.red(), color.green(), color.blue());
-			}
-			else {
-
-				colorMinMax.second.Set(0, color.red() - colorMinMax.first[0]);
-				colorMinMax.second.Set(1, color.green() - colorMinMax.first[1]);
-				colorMinMax.second.Set(2, color.blue() - colorMinMax.first[2]);
-			}
-		}
-		else {
-
-			double newValue = value.toDouble();
-			SynGlyphX::NumericMappingProperty& prop = GetGlyphProperty(glyph, row);
-			if (index.column() == 2) {
-
-				SynGlyphX::MappingFunctionData::Function function = SynGlyphX::MappingFunctionData::s_functionNames.right.at(value.toString().toStdWString());
-				if (function != prop.GetMappingFunctionData()->GetFunction()) {
-
-					prop.SetMappingFunctionData(CreateNewMappingFunction(function, false));
-				}
-			}
-			else if (index.column() == 0) {
-
-				prop.GetValue().second -= (newValue - prop.GetValue().first);
-				prop.GetValue().first = newValue;
-			}
-			else {
-
-				prop.GetValue().second = (newValue - prop.GetValue().first);
-			}
-		}
-
-		return true;
-	}
-
-	return false;
-}*/
 
 QVariant SingleGlyphRolesTableModel::headerData(int section, Qt::Orientation orientation, int role) const {
 
@@ -845,20 +700,3 @@ void SingleGlyphRolesTableModel::OnSourceModelDataUpdated(const QModelIndex& top
 		}
 	}
 }
-
-/*
-const SynGlyphX::DataMappingGlyphGeometry& SingleGlyphRolesTableModel::GetGlyphGeometry() const {
-
-	return m_dataTransformModel->GetGlyph(m_selectedDataTransformModelIndex).GetStructure();
-}
-
-const SynGlyphX::DataMappingVirtualTopology& SingleGlyphRolesTableModel::GetVirtualTopology() const {
-
-	return m_dataTransformModel->GetGlyph(m_selectedDataTransformModelIndex).GetVirtualTopology();
-}
-
-void SingleGlyphRolesTableModel::SetGlyphGeometryAndVirtualTopology(const SynGlyphX::GlyphGeometry& structure, const SynGlyphX::VirtualTopology& virtualTopology) {
-
-	m_dataTransformModel->UpdateGlyphGeometry(m_selectedDataTransformModelIndex, structure);
-	m_dataTransformModel->UpdateVirtualTopology(m_selectedDataTransformModelIndex, virtualTopology);
-}*/

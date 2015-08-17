@@ -55,9 +55,7 @@ public:
 	SynGlyphX::MappingFunctionData::ConstSharedPtr GetMappingFunction(int row) const;
 	void SetMappingFunction(int row, SynGlyphX::MappingFunctionData::SharedPtr mappingFunction);
 
-	//const SynGlyphX::DataMappingGlyphGeometry& GetGlyphGeometry() const;
-	//const SynGlyphX::DataMappingVirtualTopology& GetVirtualTopology() const;
-	//void SetGlyphGeometryAndVirtualTopology(const SynGlyphX::GlyphGeometry& structure, const SynGlyphX::VirtualTopology& virtualTopology);
+	bool IsInputFieldCompatible(const SynGlyphX::InputField& inputField) const;
 
 public slots:
 	void SetMinMaxGlyph(const QModelIndex& index);
@@ -68,15 +66,10 @@ private slots:
 	void OnSourceModelDataUpdated(const QModelIndex& topLeft, const QModelIndex& bottomRight, const QVector<int>& roles);
 
 private:
-	//QVariant GetDataByRow(SynGlyphX::DataMappingGlyph& glyph, const QModelIndex& index) const;
-	//bool SetDataByRow(SynGlyphX::DataMappingGlyph& glyph, const QVariant& value, const QModelIndex& index);
-	//SynGlyphX::NumericMappingProperty& GetGlyphProperty(SynGlyphX::DataMappingGlyph& glyph, int row) const;
 	PropertyType GetFieldType(int row) const;
 	SynGlyphX::MappingFunctionData::SharedPtr CreateNewMappingFunction(SynGlyphX::MappingFunctionData::Function function, PropertyType type) const;
 	const SynGlyphX::InputField GetInputField(SynGlyphX::InputField::HashID fieldID) const;
 
-	//SynGlyphX::DataMappingGlyphGraph::const_iterator m_glyph;
-	//SynGlyphX::DataMappingGlyphGraph::ConstSharedPtr m_glyphTree;
 	boost::uuids::uuid m_glyphTreeID;
 	QStringList m_propertyHeaders;
 	QStringList m_columnHeaders;

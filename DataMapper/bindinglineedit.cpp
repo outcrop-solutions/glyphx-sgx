@@ -88,6 +88,11 @@ void BindingLineEdit::dragEnterEvent(QDragEnterEvent *event) {
 
 		return;
 	}
+
+	if (!m_model->IsInputFieldCompatible(mimeData->GetInputField())) {
+
+		return;
+	}
 		
 	event->acceptProposedAction();
 }
