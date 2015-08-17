@@ -63,6 +63,8 @@ namespace SynGlyphXANTz {
 		void SetHideUnselectedGlyphTrees(bool hideUnselectedGlyphTrees);
 		void ShowAnimatedRotations(bool show);
 
+		void SetShowTagsOfSelectedObjects(bool showTagsOfSelectedObjects);
+
 	protected:
 		virtual void initializeGL();
 		virtual void resizeGL(int w, int h);
@@ -171,6 +173,8 @@ namespace SynGlyphXANTz {
 
 		unsigned int m_logoTextureID;
 		QSize m_logoSize;
+
+		bool m_showTagsOfSelectedObjects;
 	};
 
 } //namespace SynGlyphXANTz

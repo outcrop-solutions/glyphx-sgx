@@ -43,7 +43,8 @@ namespace SynGlyphXANTz {
 		m_drawHUD(true),
 		m_zSpaceOptions(),
 		m_logoTextureID(0),
-		m_showAnimation(true)
+		m_showAnimation(true),
+		m_showTagsOfSelectedObjects(false)
 	{
 		setAutoBufferSwap(false);
 		setFocusPolicy(Qt::StrongFocus);
@@ -615,12 +616,15 @@ namespace SynGlyphXANTz {
 		//Draw tags
 		qglColor(Qt::white);
 
-		Q_FOREACH(const QModelIndex& modelIndex, m_selectionModel->selectedIndexes()) {
+		if (m_showTagsOfSelectedObjects) {
 
-			pNPnode selectedNode = static_cast<pNPnode>(modelIndex.internalPointer());
-			if (m_model->IsTagShownIn3d(selectedNode->tag->title)) {
+			Q_FOREACH(const QModelIndex& modelIndex, m_selectionModel->selectedIndexes()) {
 
-				renderText(selectedNode->world.x, selectedNode->world.y, selectedNode->world.z, selectedNode->tag->title, m_oglTextFont);
+				pNPnode selectedNode = static_cast<pNPnode>(modelIndex.internalPointer());
+				if (m_model->IsTagShownIn3d(selectedNode->tag->title)) {
+
+					renderText(selectedNode->world.x, selectedNode->world.y, selectedNode->world.z, selectedNode->tag->title, m_oglTextFont);
+				}
 			}
 		}
 
@@ -1588,6 +1592,11 @@ namespace SynGlyphXANTz {
 
 			glEnable(GL_LIGHTING);
 		}
+	}
+
+	void ANTzForestWidget::SetShowTagsOfSelectedObjects(bool showTagsOfSelectedObjects) {
+
+		m_showTagsOfSelectedObjects = showTagsOfSelectedObjects;
 	}
 
 } //namespace SynGlyphXANTz
