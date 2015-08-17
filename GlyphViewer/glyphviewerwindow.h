@@ -74,6 +74,7 @@ private:
 	QMenu* m_toolsMenu;
 	QAction* m_stereoAction;
 	QAction* m_showAnimation;
+	QAction* m_showTagsAction;
 	QList<QAction*> m_loadedVisualizationDependentActions;
 
 	SynGlyphX::DataTransformMapping::SharedPtr m_mapping;

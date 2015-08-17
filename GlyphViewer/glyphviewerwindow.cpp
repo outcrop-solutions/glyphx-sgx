@@ -111,6 +111,7 @@ void GlyphViewerWindow::CreateANTzWidget(const QGLFormat& format) {
 	antzWidgetContainer->setCurrentWidget(m_antzWidget);
 
 	QObject::connect(m_showAnimation, &QAction::toggled, m_antzWidget, &SynGlyphXANTz::ANTzForestWidget::ShowAnimatedRotations);
+	QObject::connect(m_showTagsAction, &QAction::toggled, m_antzWidget, &SynGlyphXANTz::ANTzForestWidget::SetShowTagsOfSelectedObjects);
 }
 
 void GlyphViewerWindow::CreateMenus() {
@@ -163,6 +164,13 @@ void GlyphViewerWindow::CreateMenus() {
 	m_viewMenu->addSeparator();
 
 	CreateFullScreenAction(m_viewMenu);
+
+	m_viewMenu->addSeparator();
+
+	m_showTagsAction = m_viewMenu->addAction(tr("Show Tags"));
+	m_showTagsAction->setCheckable(true);
+	m_showTagsAction->setChecked(false);
+	m_loadedVisualizationDependentActions.push_back(m_showTagsAction);
 
 	m_viewMenu->addSeparator();
 
@@ -490,6 +498,8 @@ void GlyphViewerWindow::EnableLoadedVisualizationDependentActions(bool enable) {
 	}
 
 	m_stereoAction->setEnabled(!enable);
+
+	m_showTagsAction->setChecked(false);
 }
 
 void GlyphViewerWindow::ChangeOptions() {
