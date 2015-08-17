@@ -167,7 +167,7 @@ void GlyphViewerWindow::CreateMenus() {
 
 	m_viewMenu->addSeparator();
 
-	m_showTagsAction = m_viewMenu->addAction(tr("Show Tags"));
+	m_showTagsAction = CreateMenuAction(m_viewMenu, tr("Show Tags"), Qt::Key_I);
 	m_showTagsAction->setCheckable(true);
 	m_showTagsAction->setChecked(false);
 	m_loadedVisualizationDependentActions.push_back(m_showTagsAction);
