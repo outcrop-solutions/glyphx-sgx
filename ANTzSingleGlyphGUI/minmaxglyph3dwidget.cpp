@@ -42,5 +42,15 @@ namespace SynGlyphXANTz {
 
 		return m_maxGlyph3DWidget->GetBaseImage();
 	}
+	
+	void MinMaxGlyph3DWidget::SetLockZPositionToZero(bool lock) {
+
+		m_maxGlyph3DWidget->SetLockZPositionToZero(lock);
+	}
+
+	bool MinMaxGlyph3DWidget::GetLockZPositionToZero() const {
+
+		return m_maxGlyph3DWidget->GetLockZPositionToZero();
+	}
 
 } //namespace SynGlyphXANTz

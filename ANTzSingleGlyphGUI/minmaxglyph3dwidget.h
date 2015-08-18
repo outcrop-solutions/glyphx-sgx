@@ -40,6 +40,9 @@ namespace SynGlyphXANTz {
 		void SetBaseImage(SynGlyphX::DefaultBaseImageProperties::Type baseImage);
 		SynGlyphX::DefaultBaseImageProperties::Type GetBaseImage() const;
 
+		void SetLockZPositionToZero(bool lock);
+		bool GetLockZPositionToZero() const;
+
 	public slots:
 		void EnableAnimation(bool enable);
 

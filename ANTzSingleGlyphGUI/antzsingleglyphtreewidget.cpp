@@ -24,7 +24,8 @@ namespace SynGlyphXANTz {
 		m_selectionEdited(false),
 		m_allowMultiSelection(false),
 		m_baseImageTextureID(0),
-		m_animationEnabled(true)
+		m_animationEnabled(true),
+		m_lockZPositionToZero(true)
 	{
 
 
@@ -281,7 +282,14 @@ namespace SynGlyphXANTz {
 			glyph->translate.y = translate[1];
 		}
 
-		glyph->translate.z = translate[2];
+		if ((m_rootGlyph == glyph) && m_lockZPositionToZero) {
+
+			glyph->translate.z = 0.0;
+		}
+		else {
+
+			glyph->translate.z = translate[2];
+		}
 
 		SynGlyphX::Vector3 rotation = glyphTemplate.GetRotation();
 		glyph->rotate.x = rotation[0];
@@ -612,6 +620,33 @@ namespace SynGlyphXANTz {
 	SynGlyphX::DefaultBaseImageProperties::Type ANTzSingleGlyphTreeWidget::GetBaseImage() const {
 
 		return m_baseImage;
+	}
+
+	void ANTzSingleGlyphTreeWidget::SetLockZPositionToZero(bool lock) {
+
+		if (m_lockZPositionToZero != lock) {
+
+			m_lockZPositionToZero = lock;
+			UpdateGlyphProperties(m_rootGlyph, m_model->GetMinMaxGlyphTree()->GetRoot()->second);
+			
+			//Need to draw here because ANTz can't update properly
+			repaint();
+
+			const QModelIndexList& currentSelection = m_selectionModel->selectedIndexes();
+			if (!currentSelection.isEmpty())  {
+				
+				const QModelIndex& last = currentSelection.back();
+				if (last.isValid()) {
+					
+					CenterCameraOnNode(GetGlyphFromModelIndex(last));
+				}
+			}
+		}
+	}
+
+	bool ANTzSingleGlyphTreeWidget::GetLockZPositionToZero() const {
+
+		return m_lockZPositionToZero;
 	}
 
 } //namespace SynGlyphX
