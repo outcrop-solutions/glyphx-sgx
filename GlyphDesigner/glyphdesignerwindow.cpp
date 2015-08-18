@@ -389,11 +389,13 @@ void GlyphDesignerWindow::ChangeGlobalOptions() {
 
 	SynGlyphX::SingleGlyphViewOptionsWidget* optionsWidget = new SynGlyphX::SingleGlyphViewOptionsWidget(this);
 	optionsWidget->SetDefaultBaseImage(m_3dView->GetBaseImage());
+	optionsWidget->SetZToAlwaysZeroIn3D(m_3dView->GetLockZPositionToZero());
 
 	SynGlyphX::SingleWidgetDialog dialog(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, optionsWidget, this);
 	dialog.setWindowTitle(tr("Options"));
 	if (dialog.exec() == QDialog::Accepted) {
 
 		m_3dView->SetBaseImage(optionsWidget->GetDefaultBaseImage());
+		m_3dView->SetLockZPositionToZero(optionsWidget->IsZAlwaysZeroIn3D());
 	}
 }

@@ -834,11 +834,13 @@ void DataMapperWindow::ChangeOptions() {
 
 	SynGlyphX::SingleGlyphViewOptionsWidget* optionsWidget = new SynGlyphX::SingleGlyphViewOptionsWidget(this);
 	optionsWidget->SetDefaultBaseImage(m_minMaxGlyph3DWidget->GetBaseImage());
+	optionsWidget->SetZToAlwaysZeroIn3D(m_minMaxGlyph3DWidget->GetLockZPositionToZero());
 
 	SynGlyphX::SingleWidgetDialog dialog(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, optionsWidget, this);
 	dialog.setWindowTitle(tr("Options"));
 	if (dialog.exec() == QDialog::Accepted) {
 
 		m_minMaxGlyph3DWidget->SetBaseImage(optionsWidget->GetDefaultBaseImage());
+		m_minMaxGlyph3DWidget->SetLockZPositionToZero(optionsWidget->IsZAlwaysZeroIn3D());
 	}
 }

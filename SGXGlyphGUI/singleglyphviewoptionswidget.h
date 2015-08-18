@@ -20,6 +20,7 @@
 
 #include "sgxglyphgui_global.h"
 #include <QtWidgets/QWidget>
+#include <QtWidgets/QCheckBox>
 #include "defaultbaseimagescombobox.h"
 
 namespace SynGlyphX {
@@ -35,8 +36,12 @@ namespace SynGlyphX {
 		void SetDefaultBaseImage(DefaultBaseImageProperties::Type defaultBaseImage);
 		DefaultBaseImageProperties::Type GetDefaultBaseImage() const;
 
+		void SetZToAlwaysZeroIn3D(bool setToZero);
+		bool IsZAlwaysZeroIn3D() const;
+
 	private:
 		DefaultBaseImagesComboBox* m_defaultBaseImagesComboBox;
+		QCheckBox* m_zIsAlwaysZeroIn3DCheckBox;
 	};
 
 } //namespace SynGlyphX
