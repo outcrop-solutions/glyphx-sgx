@@ -5,7 +5,7 @@ namespace SynGlyphX {
 	const std::wstring SceneProperties::s_propertyTreeName(L"SceneProperties");
 
 	SceneProperties::SceneProperties() :
-		m_backgroundColor({ { 0.0, 0.0, 0.0 } })
+		m_backgroundColor(GlyphColor::s_black)
 	{
 	}
 

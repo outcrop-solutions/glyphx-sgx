@@ -244,8 +244,6 @@ namespace SynGlyphX {
 		return rgbColor;
 	}
 
-	boost::property_tree::xml_writer_settings<wchar_t> GlyphColorTranslator::s_writeSettings(L'\t', 1);
-
 	GlyphColorTranslator::GlyphColorTranslator() {
 
 

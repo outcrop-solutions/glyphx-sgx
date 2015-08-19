@@ -80,7 +80,7 @@ namespace SynGlyphX {
 		boost::optional<std::wstring> put_value(GlyphColor const& v);
 
 	private:
-		static boost::property_tree::xml_writer_settings<wchar_t> s_writeSettings;
+		
 	};
 
 } //namespace SynGlyphX
