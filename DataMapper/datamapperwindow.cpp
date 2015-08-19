@@ -28,6 +28,7 @@
 #include "databaseinfo.h"
 #include "newmappingdefaultswidget.h"
 #include "singleglyphviewoptionswidget.h"
+#include "changedatasourcefiledialog.h"
 
 DataMapperWindow::DataMapperWindow(QWidget *parent)
     : SynGlyphX::MainWindow(parent),
@@ -320,6 +321,55 @@ bool DataMapperWindow::LoadRecentFile(const QString& filename) {
 	return true;
 }
 
+void DataMapperWindow::UpdateMissingFileDatasources(const QString& filename) {
+
+	SynGlyphX::DataTransformMapping mapping;
+	mapping.ReadFromFile(filename.toStdString());
+
+	SynGlyphX::DatasourceMaps datasourcesInUse = mapping.GetDatasources();
+	std::vector<SynGlyphX::DatasourceMaps::FileDatasourceMap::const_iterator> fileDatasourcesToBeUpdated;
+	for (SynGlyphX::DatasourceMaps::FileDatasourceMap::const_iterator datasource = datasourcesInUse.GetFileDatasources().begin(); datasource != datasourcesInUse.GetFileDatasources().end(); ++datasource) {
+
+		if (!datasource->second.CanDatasourceBeFound()) {
+
+			fileDatasourcesToBeUpdated.push_back(datasource);
+		}
+	}
+
+	bool wasDataTransformUpdated = false;
+
+	if (!fileDatasourcesToBeUpdated.empty()) {
+
+		SynGlyphX::Application::restoreOverrideCursor();
+		for (int i = 0; i < fileDatasourcesToBeUpdated.size(); ++i) {
+
+			QString acceptButtonText = tr("Next");
+			if (i == fileDatasourcesToBeUpdated.size() - 1) {
+
+				acceptButtonText = tr("Ok");
+			}
+
+			SynGlyphX::ChangeDatasourceFileDialog dialog(fileDatasourcesToBeUpdated[i]->second, acceptButtonText, this);
+			if (dialog.exec() == QDialog::Accepted) {
+
+				mapping.UpdateDatasourceName(fileDatasourcesToBeUpdated[i]->first, dialog.GetNewFilename().toStdWString());
+				wasDataTransformUpdated = true;
+			}
+			else {
+
+				throw std::exception("One or more datasources weren't found.");
+			}
+		}
+
+		SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
+	}
+
+	if (wasDataTransformUpdated) {
+
+		mapping.WriteToFile(filename.toStdString());
+	}
+}
+
 bool DataMapperWindow::LoadDataTransform(const QString& filename) {
 
 	QFileInfo fileInfo(filename);
@@ -336,6 +386,9 @@ bool DataMapperWindow::LoadDataTransform(const QString& filename) {
 	try {
 
 		SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
+
+		UpdateMissingFileDatasources(filename);
+
 		m_dataTransformModel->LoadDataTransformFile(filename);
 		m_dataSourceStats->RebuildStatsViews();
 		m_glyphTreesView->SelectLastGlyphTreeRoot();
