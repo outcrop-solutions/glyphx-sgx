@@ -20,6 +20,7 @@
 #include "singlewidgetdialog.h"
 #include "optionswidget.h"
 #include "userdefinedbaseimageproperties.h"
+#include "changeimagefiledialog.h"
 
 GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 	: SynGlyphX::MainWindow(parent),
@@ -377,11 +378,12 @@ void GlyphViewerWindow::LoadDataTransform(const QString& filename) {
 				fileDatasourcesToBeUpdated.push_back(datasource);
 			}
 		}
-		/*
+		
 		std::vector<unsigned int> localBaseImageIndexes;
-		for (unsigned int i = 0; m_mapping->GetBaseObjects().size(); ++i) {
+		for (unsigned int i = 0; i < m_mapping->GetBaseObjects().size(); ++i) {
 
-			if (std::dynamic_pointer_cast<const SynGlyphX::UserDefinedBaseImageProperties>(m_mapping->GetBaseObjects()[i].GetProperties()) != nullptr) {
+			SynGlyphX::UserDefinedBaseImageProperties::ConstSharedPtr properties = std::dynamic_pointer_cast<const SynGlyphX::UserDefinedBaseImageProperties>(m_mapping->GetBaseObjects()[i].GetProperties());
+			if ((properties != nullptr) && (!QFile::exists(QString::fromStdWString(properties->GetFilename())))) {
 
 				localBaseImageIndexes.push_back(i);
 			}
@@ -392,9 +394,31 @@ void GlyphViewerWindow::LoadDataTransform(const QString& filename) {
 			SynGlyphX::Application::restoreOverrideCursor();
 			for (unsigned int index : localBaseImageIndexes) {
 
+				QString acceptButtonText = tr("Next");
+				if (index == *localBaseImageIndexes.rbegin()) {
 
+					acceptButtonText = tr("Ok");
+				}
+
+				SynGlyphX::BaseImage baseImage = m_mapping->GetBaseObjects()[index];
+				SynGlyphX::UserDefinedBaseImageProperties::ConstSharedPtr properties = std::dynamic_pointer_cast<const SynGlyphX::UserDefinedBaseImageProperties>(baseImage.GetProperties());
+				
+				SynGlyphX::ChangeImageFileDialog dialog(QString::fromStdWString(properties->GetFilename()), acceptButtonText, this);
+				if (dialog.exec() == QDialog::Accepted) {
+
+					SynGlyphX::UserDefinedBaseImageProperties::SharedPtr newProperties = std::make_shared<SynGlyphX::UserDefinedBaseImageProperties>(dialog.GetNewFilename().toStdWString());
+					baseImage.SetProperties(newProperties);
+					m_mapping->SetBaseObject(index, baseImage);
+					wasDataTransformUpdated = true;
+				}
+				else {
+
+					throw std::exception("One or more base images weren't found.");
+				}
 			}
-		}*/
+
+			SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
+		}
 
 		if (!fileDatasourcesToBeUpdated.empty()) {
 
