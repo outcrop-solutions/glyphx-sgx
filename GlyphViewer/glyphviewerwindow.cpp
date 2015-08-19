@@ -19,6 +19,7 @@
 #include "antzvisualizationfilelisting.h"
 #include "singlewidgetdialog.h"
 #include "optionswidget.h"
+#include "userdefinedbaseimageproperties.h"
 
 GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 	: SynGlyphX::MainWindow(parent),
@@ -365,7 +366,7 @@ void GlyphViewerWindow::LoadDataTransform(const QString& filename) {
 			throw std::exception("Visualization has no glyph templates with bindings on Position X, Position Y, or Position Z.");
 		}
 
-		bool wereDatasourcesUpdated = false;
+		bool wasDataTransformUpdated = false;
 
 		SynGlyphX::DatasourceMaps datasourcesInUse = m_mapping->GetDatasourcesInUse();
 		std::vector<SynGlyphX::DatasourceMaps::FileDatasourceMap::const_iterator> fileDatasourcesToBeUpdated;
@@ -376,6 +377,24 @@ void GlyphViewerWindow::LoadDataTransform(const QString& filename) {
 				fileDatasourcesToBeUpdated.push_back(datasource);
 			}
 		}
+		/*
+		std::vector<unsigned int> localBaseImageIndexes;
+		for (unsigned int i = 0; m_mapping->GetBaseObjects().size(); ++i) {
+
+			if (std::dynamic_pointer_cast<const SynGlyphX::UserDefinedBaseImageProperties>(m_mapping->GetBaseObjects()[i].GetProperties()) != nullptr) {
+
+				localBaseImageIndexes.push_back(i);
+			}
+		}
+
+		if (!localBaseImageIndexes.empty()) {
+
+			SynGlyphX::Application::restoreOverrideCursor();
+			for (unsigned int index : localBaseImageIndexes) {
+
+
+			}
+		}*/
 
 		if (!fileDatasourcesToBeUpdated.empty()) {
 
@@ -388,23 +407,24 @@ void GlyphViewerWindow::LoadDataTransform(const QString& filename) {
 					acceptButtonText = tr("Ok");
 				}
 
-				ChangeDatasourceFileDialog dialog(fileDatasourcesToBeUpdated[i]->second, acceptButtonText, this);
+				SynGlyphX::ChangeDatasourceFileDialog dialog(fileDatasourcesToBeUpdated[i]->second, acceptButtonText, this);
 				if (dialog.exec() == QDialog::Accepted) {
 
-					m_mapping->UpdateDatasourceName(fileDatasourcesToBeUpdated[i]->first, dialog.GetNewDatasourceFile().toStdWString());
-					wereDatasourcesUpdated = true;
+					m_mapping->UpdateDatasourceName(fileDatasourcesToBeUpdated[i]->first, dialog.GetNewFilename().toStdWString());
+					wasDataTransformUpdated = true;
 				}
 				else {
 					
 					throw std::exception("One or more datasources weren't found.");
 				}
 			}
+
 			SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
+		}
 
-			if (wereDatasourcesUpdated) {
+		if (wasDataTransformUpdated) {
 
-				m_mapping->WriteToFile(filename.toStdString());
-			}
+			m_mapping->WriteToFile(filename.toStdString());
 		}
 
 		SynGlyphXANTz::GlyphViewerANTzTransformer transformer(QString::fromStdWString(m_cacheManager.GetCacheDirectory(m_mapping->GetID())));
