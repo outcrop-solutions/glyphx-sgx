@@ -25,7 +25,8 @@ namespace SynGlyphXANTz {
 		m_allowMultiSelection(false),
 		m_baseImageTextureID(0),
 		m_animationEnabled(true),
-		m_lockZPositionToZero(true)
+		m_lockZPositionToZero(true),
+		m_updateCameraAfterDraw(false)
 	{
 
 
@@ -107,6 +108,22 @@ namespace SynGlyphXANTz {
 				ConnectDataChangedSignal();
 			}
 			m_selectionEdited = false;
+		}
+
+		if (m_updateCameraAfterDraw) {
+
+			m_updateCameraAfterDraw = false;
+
+			//Need to update camera here because ANTz can't update properly
+			const QModelIndexList& currentSelection = m_selectionModel->selectedIndexes();
+			if (!currentSelection.isEmpty())  {
+
+				const QModelIndex& last = currentSelection.back();
+				if (last.isValid()) {
+
+					CenterCameraOnNode(GetGlyphFromModelIndex(last));
+				}
+			}
 		}
 	}
 
@@ -246,6 +263,7 @@ namespace SynGlyphXANTz {
 			QModelIndex index = m_model->index(i, 0, topLeft.parent());
 			SynGlyphX::DataMappingGlyphGraph::ConstGlyphIterator minMaxGlyph = SynGlyphX::DataMappingGlyphGraph::ConstGlyphIterator(static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(index.internalPointer()));
 			pNPnode glyph = GetGlyphFromModelIndex(index);
+
 			UpdateGlyphProperties(glyph, minMaxGlyph->second);
 		}
 	}
@@ -270,6 +288,12 @@ namespace SynGlyphXANTz {
 		glyph->scale.z = scale[2];
 
 		SynGlyphX::Vector3 translate = glyphTemplate.GetPosition();
+
+		if ((translate[0] != glyph->translate.x) || (translate[1] != glyph->translate.y) || (translate[2] != glyph->translate.z)) {
+
+			RecenterCameraAfterPaint();
+		}
+
 		if (m_rootGlyph == glyph) {
 
 			//Since we're only showing either a single min glyph or a max glyph, we want the root glyph position to be a the center of the 3D world
@@ -480,19 +504,29 @@ namespace SynGlyphXANTz {
 
 		if ((event->modifiers() == Qt::ShiftModifier) && (event->buttons() != Qt::NoButton)) {
 
-			m_antzData->io.mouse.tool = kNPtoolMove + m_editingMode - 1;
+			if ((m_editingMode == EditingMode::Move) && IsRootNodeSelected() && m_lockZPositionToZero) {
 
-			if ((event->buttons() & Qt::RightButton) || IsRootNodeSelected()) {
-
-				m_antzData->io.mouse.mode = kNPmouseModeDragXZ;
-				m_antzData->io.mouse.buttonR = true;
-				m_selectionEdited = true;
+				//lock move mode if root node is selected
+				m_antzData->io.mouse.tool = kNPtoolNull;
 			}
-			else if (event->buttons() & Qt::LeftButton) {
+			else {
 
-				m_antzData->io.mouse.mode = kNPmouseModeDragXY;
-				m_antzData->io.mouse.buttonR = false;
-				m_selectionEdited = true;
+				m_antzData->io.mouse.tool = kNPtoolMove + m_editingMode - 1;
+
+				if ((event->buttons() & Qt::RightButton) || IsRootNodeSelected()) {
+
+					m_antzData->io.mouse.mode = kNPmouseModeDragXZ;
+					m_antzData->io.mouse.buttonR = true;
+					m_selectionEdited = true;
+				}
+				else if (event->buttons() & Qt::LeftButton) {
+
+					m_antzData->io.mouse.mode = kNPmouseModeDragXY;
+					m_antzData->io.mouse.buttonR = false;
+					m_selectionEdited = true;
+				}
+
+				RecenterCameraAfterPaint();
 			}
 		}
 		else {
@@ -627,25 +661,18 @@ namespace SynGlyphXANTz {
 
 			m_lockZPositionToZero = lock;
 			UpdateGlyphProperties(m_rootGlyph, m_model->GetMinMaxGlyphTree()->GetRoot()->second);
-			
-			//Need to draw here because ANTz can't update properly
-			repaint();
-
-			const QModelIndexList& currentSelection = m_selectionModel->selectedIndexes();
-			if (!currentSelection.isEmpty())  {
-				
-				const QModelIndex& last = currentSelection.back();
-				if (last.isValid()) {
-					
-					CenterCameraOnNode(GetGlyphFromModelIndex(last));
-				}
-			}
+			RecenterCameraAfterPaint();
 		}
 	}
 
 	bool ANTzSingleGlyphTreeWidget::GetLockZPositionToZero() const {
 
 		return m_lockZPositionToZero;
+	}
+
+	void ANTzSingleGlyphTreeWidget::RecenterCameraAfterPaint() {
+
+		m_updateCameraAfterDraw = true;
 	}
 
 } //namespace SynGlyphX

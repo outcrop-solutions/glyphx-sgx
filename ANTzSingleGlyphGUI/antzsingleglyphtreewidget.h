@@ -60,6 +60,7 @@ namespace SynGlyphXANTz {
 	public slots:
 		void SetEditingMode(EditingMode mode);
 		void EnableAnimation(bool enable);
+		void RecenterCameraAfterPaint();
 
 	protected:
 		virtual void initializeGL();
@@ -131,6 +132,8 @@ namespace SynGlyphXANTz {
 		SynGlyphX::DefaultBaseImageProperties::Type m_baseImage;
 
 		boost::bimap<SynGlyphX::DataMappingGlyphGraph::Label, int> m_labelToANTzNodeMap;
+
+		bool m_updateCameraAfterDraw;
 	};
 
 } //namespace SynGlyphXANTz
