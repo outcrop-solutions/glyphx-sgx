@@ -478,35 +478,34 @@ namespace SynGlyphXANTz {
 		m_antzData->io.mouse.x = event->x();
 		m_antzData->io.mouse.y = event->y();
 
-		if (event->modifiers() == Qt::ShiftModifier) {
+		if ((event->modifiers() == Qt::ShiftModifier) && (event->buttons() != Qt::NoButton)) {
 
-			if ((m_editingMode == EditingMode::Move) && (IsRootNodeSelected())) {
+			m_antzData->io.mouse.tool = kNPtoolMove + m_editingMode - 1;
 
-				//lock move mode if root node is selected
-				m_antzData->io.mouse.tool = kNPtoolNull;
+			if ((event->buttons() & Qt::RightButton) || IsRootNodeSelected()) {
+
+				m_antzData->io.mouse.mode = kNPmouseModeDragXZ;
+				m_antzData->io.mouse.buttonR = true;
+				m_selectionEdited = true;
 			}
-			else {
+			else if (event->buttons() & Qt::LeftButton) {
 
-				m_antzData->io.mouse.tool = kNPtoolMove + m_editingMode - 1;
-				if (event->buttons() & Qt::RightButton) {
-					m_antzData->io.mouse.mode = kNPmouseModeDragXZ;
-					m_antzData->io.mouse.buttonR = true;
-					m_selectionEdited = true;
-				}
-				else if (event->buttons() & Qt::LeftButton) {
-					m_antzData->io.mouse.mode = kNPmouseModeDragXY;
-					m_antzData->io.mouse.buttonR = false;
-					m_selectionEdited = true;
-				}
+				m_antzData->io.mouse.mode = kNPmouseModeDragXY;
+				m_antzData->io.mouse.buttonR = false;
+				m_selectionEdited = true;
 			}
 		}
 		else {
+
 			m_antzData->io.mouse.tool = kNPtoolNull;
 			if (event->buttons() & Qt::LeftButton) {
+
 				if (event->buttons() & Qt::RightButton) {
+
 					m_antzData->io.mouse.mode = kNPmouseModeCamExamXZ;
 				}
 				else {
+
 					m_antzData->io.mouse.mode = kNPmouseModeCamExamXY;
 				}
 			}
