@@ -21,6 +21,8 @@
 #include <QtCore/QMimeData>
 #include "inputfield.h"
 
+Q_DECLARE_METATYPE(SynGlyphX::InputField)
+
 class InputFieldMimeData : public QMimeData
 {
 	Q_OBJECT
