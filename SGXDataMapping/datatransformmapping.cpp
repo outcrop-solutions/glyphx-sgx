@@ -2,11 +2,6 @@
 #include <boost/property_tree/xml_parser.hpp>
 #include <algorithm>
 #include <boost/uuid/uuid_io.hpp>
-#include <QtCore/QVariant>
-#include <QtSql/QSqlDatabase>
-#include <QtSql/QSqlQuery>
-#include <QtSql/QSqlRecord>
-#include "sourcedatamanager.h"
 
 namespace SynGlyphX {
 

@@ -18,7 +18,7 @@
 #ifndef SYNGLYPHX_DATAMAPPINGGLYPHGRAPH_H
 #define SYNGLYPHX_DATAMAPPINGGLYPHGRAPH_H
 
-#include "sgxdatatransform_global.h"
+#include "sgxdatamapping.h"
 #include <containers/ntree.hpp>
 #include "datamappingglyph.h"
 #include <boost/property_tree/ptree.hpp>
@@ -34,7 +34,7 @@
 
 namespace SynGlyphX {
 
-	class SGXDATATRANSFORM_EXPORT DataMappingGlyphGraph : public GlyphGraphTemplate<DataMappingGlyph> {
+	class SGXDATAMAPPING_API DataMappingGlyphGraph : public GlyphGraphTemplate<DataMappingGlyph> {
 
 	public:
 		typedef std::unordered_map<InputField::HashID, InputField> InputFieldMap;

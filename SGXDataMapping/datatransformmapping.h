@@ -18,7 +18,7 @@
 #ifndef SYNGLYPHX_DATATRANSFORMMAPPING_H
 #define SYNGLYPHX_DATATRANSFORMMAPPING_H
 
-#include "sgxdatatransform_global.h"
+#include "sgxdatamapping.h"
 #include "xmlpropertytreefile.h"
 #include <string>
 #include <memory>
@@ -28,13 +28,12 @@
 #include "UUID.h"
 #include "datamappingglyphgraph.h"
 #include "baseimage.h"
-#include "transformer.h"
 #include "datamappingdefaults.h"
 #include "sceneproperties.h"
 
 namespace SynGlyphX {
 
-	class SGXDATATRANSFORM_EXPORT DataTransformMapping : public XMLPropertyTreeFile, boost::noncopyable
+	class SGXDATAMAPPING_API DataTransformMapping : public XMLPropertyTreeFile, boost::noncopyable
     {
     public:
 		typedef std::unordered_map<boost::uuids::uuid, DataMappingGlyphGraph::SharedPtr, SynGlyphX::UUIDHash> DataMappingGlyphGraphMap;

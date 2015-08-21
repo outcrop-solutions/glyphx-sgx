@@ -18,7 +18,7 @@
 #ifndef SYNGLYPHX_DATAMAPPINGGLYPH_H
 #define SYNGLYPHX_DATAMAPPINGGLYPH_H
 
-#include "sgxdatatransform_global.h"
+#include "sgxdatamapping.h"
 #include "glyphgraph.h"
 #include <vector>
 #include <boost/property_tree/ptree.hpp>
@@ -28,7 +28,7 @@
 
 namespace SynGlyphX {
 
-	class SGXDATATRANSFORM_EXPORT DataMappingGlyph : public GlyphTemplate<NumericMappingProperty, ColorMappingProperty, TextMappingProperty, DataMappingGlyphGeometry, DataMappingVirtualTopology> {
+	class SGXDATAMAPPING_API DataMappingGlyph : public GlyphTemplate<NumericMappingProperty, ColorMappingProperty, TextMappingProperty, DataMappingGlyphGeometry, DataMappingVirtualTopology> {
 
 	public:
 		enum MappableField {

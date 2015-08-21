@@ -15,49 +15,33 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef SYNGLYPHX_DATAMAPPINGDEFAULTS_H
-#define SYNGLYPHX_DATAMAPPINGDEFAULTS_H
+#ifndef SYNGLYPHX_DATAMAPPINGVIRTUALTOPOLOGY_H
+#define SYNGLYPHX_DATAMAPPINGVIRTUALTOPOLOGY_H
 
-#include "sgxdatatransform_global.h"
-#include <boost/bimap.hpp>
+#include "sgxdatamapping.h"
+#include "virtualtopology.h"
+#include "datamappingproperty.h"
 #include <boost/property_tree/ptree.hpp>
-#include "datamappingglyph.h"
 
 namespace SynGlyphX {
 
-	class SGXDATATRANSFORM_EXPORT DataMappingDefaults
+	class SGXDATAMAPPING_API DataMappingVirtualTopology : public VirtualTopologyTemplate < VirtualTopologyMappingProperty >
 	{
 	public:
-		typedef boost::property_tree::wptree PropertyTree;
+		DataMappingVirtualTopology();
+		DataMappingVirtualTopology(const DataMappingVirtualTopology& virtualTopology);
+		DataMappingVirtualTopology(const VirtualTopology& virtualTopology);
+		DataMappingVirtualTopology(const boost::property_tree::wptree& propertyTree, bool useOldPropertyTree = false);
+		~DataMappingVirtualTopology();
 
-		DataMappingDefaults();
-		DataMappingDefaults(const PropertyTree& propertyTree);
-		DataMappingDefaults(const DataMappingDefaults& defaults);
-		~DataMappingDefaults();
+		DataMappingVirtualTopology& operator=(const DataMappingVirtualTopology& virtualTopology);
+		bool operator==(const DataMappingVirtualTopology& virtualTopology) const;
+		bool operator!=(const DataMappingVirtualTopology& virtualTopology) const;
 
-		DataMappingDefaults& operator=(const DataMappingDefaults& defaults);
-		bool operator==(const DataMappingDefaults& defaults) const;
-		bool operator!=(const DataMappingDefaults& defaults) const;
-
-		void Clear();
-
-		void ExportToPropertyTree(PropertyTree& parentPropertyTree) const;
-
-		void SetTagField(DataMappingGlyph::MappableField tagField);
-		DataMappingGlyph::MappableField GetTagField() const;
-		bool IsDefaultTagFieldSet() const;
-
-		void SetDefaultTagValue(const std::wstring& value);
-		const std::wstring& GetDefaultTagValue() const;
-
-		static const boost::bimap<DataMappingGlyph::MappableField, std::wstring> s_tagFieldStrings;
-		static const std::wstring s_propertyTreeName;
-
-	private:
-		DataMappingGlyph::MappableField m_tagField;
-		std::wstring m_defaultTagValue;
+		boost::property_tree::wptree& ExportToPropertyTree(boost::property_tree::wptree& propertyTree) const;
+		VirtualTopology ExportVirtualTopology() const;
 	};
 
 } //namespace SynGlyphX
 
-#endif //SYNGLYPHX_DATAMAPPINGDEFAULTS_H
+#endif //SYNGLYPHX_DATAMAPPINGVIRTUALTOPOLOGY_H

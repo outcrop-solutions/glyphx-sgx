@@ -15,70 +15,45 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef SYNGLYPHX_INPUTFIELD_H
-#define SYNGLYPHX_INPUTFIELD_H
+#ifndef SYNGLYPHX_MINDIFF_H
+#define SYNGLYPHX_MINDIFF_H
 
-#include "sgxdatatransform_global.h"
-#include <string>
-#include <boost/uuid/uuid.hpp>
-#include <boost/property_tree/ptree.hpp>
-#include <QtCore/QMetaType>
-#include <boost/bimap.hpp>
-#include <boost/shared_ptr.hpp>
-#include <boost/functional/hash.hpp>
+#include "sgxdatamapping.h"
+#include "glyphcolor.h"
 
 namespace SynGlyphX {
 
-	class SGXDATATRANSFORM_EXPORT InputField
+	template<typename DataType>
+	class SGXDATAMAPPING_API MinDiff
 	{
-
 	public:
-		enum Type {
-			Null = 0,
-			Integer,
-			Real,
-			Text,
-			Date
-		};
+		MinDiff();
+		MinDiff(DataType min, DataType diff);
+		MinDiff(const MinDiff& minDiff);
+		~MinDiff();
 
-		typedef boost::shared_ptr<InputField> SharedPtr;
-		typedef boost::shared_ptr<const InputField> ConstSharedPtr;
-		typedef size_t HashID;
+		MinDiff& operator=(const MinDiff& minDiff);
+		bool operator==(const MinDiff& minDiff) const;
+		bool operator!=(const MinDiff& minDiff) const;
 
-		InputField();
-		InputField(const boost::uuids::uuid& datasourceID, const std::wstring& table, const std::wstring field, Type type);
-		InputField(const boost::property_tree::wptree& propertyTree);
-		InputField(const InputField& inputField);
-		~InputField();
+		void SetMinDiff(DataType min, DataType diff);
+		void SetMinMax(DataType min, DataType max);
+		void SetMinWithCurrentMax(DataType min);
+		void SetMaxWithCurrentMin(DataType max);
 
-		InputField& operator=(const InputField& inputField);
-		bool operator==(const InputField& inputField) const;
-		bool operator!=(const InputField& inputField) const;
-
-		const boost::uuids::uuid& GetDatasourceID() const;
-		const std::wstring& GetTable() const;
-		const std::wstring& GetField() const;
-
-		bool IsValid() const;
-
-		void ExportToPropertyTree(boost::property_tree::wptree& propertyTree) const;
-
-		bool IsNumeric() const;
-
-		static const boost::bimap<Type, std::wstring> s_fieldTypeStrings;
-
-		HashID GetHashID() const;
+		DataType GetMin() const;
+		DataType GetDiff() const;
+		DataType GetMax() const;
 
 	private:
-		boost::uuids::uuid m_datasourceID;
-		std::wstring m_table;
-		std::wstring m_field;
-		Type m_type;
+		DataType m_min;
+		DataType m_diff;
 	};
+
+	typedef MinDiff<int> IntMinDiff;
+	typedef MinDiff<double> DoubleMinDiff;
+	typedef MinDiff<GlyphColor> ColorMinDiff;
 
 } //namespace SynGlyphX
 
-Q_DECLARE_METATYPE(SynGlyphX::InputField)
-
-#endif SYNGLYPHX_INPUTFIELD_H
-
+#endif //SYNGLYPHX_MINDIFF_H

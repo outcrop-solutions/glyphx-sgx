@@ -18,7 +18,7 @@
 #ifndef SYNGLYPHX_DATASOURCE
 #define SYNGLYPHX_DATASOURCE
 
-#include "sgxdatatransform_global.h"
+#include "sgxdatamapping.h"
 #include <boost/property_tree/ptree.hpp>
 #include <string>
 #include <unordered_set>
@@ -26,7 +26,7 @@
 
 namespace SynGlyphX {
 
-	class SGXDATATRANSFORM_EXPORT Datasource
+	class SGXDATAMAPPING_API Datasource
 	{
 	public:
 		typedef boost::property_tree::wptree PropertyTree;

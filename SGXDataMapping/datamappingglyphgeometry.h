@@ -15,30 +15,33 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef SYNGLYPHX_DATAMAPPINGGLYPHFILE_H
-#define SYNGLYPHX_DATAMAPPINGGLYPHFILE_H
+#ifndef SYNGLYPHX_DATAMAPPINGGLYPHGEOMETRY_H
+#define SYNGLYPHX_DATAMAPPINGGLYPHGEOMETRY_H
 
-#include "sgxdatatransform_global.h"
-#include "xmlpropertytreefile.h"
-#include "datamappingglyphgraph.h"
+#include "sgxdatamapping.h"
+#include "glyphgeometry.h"
+#include "datamappingproperty.h"
+#include <boost/property_tree/ptree.hpp>
 
 namespace SynGlyphX {
 
-	class SGXDATATRANSFORM_EXPORT DataMappingGlyphFile : public XMLPropertyTreeFile
+	class SGXDATAMAPPING_API DataMappingGlyphGeometry : public GlyphGeometryTemplate < GeometryShapeMappingProperty >
 	{
 	public:
-		DataMappingGlyphFile(SynGlyphX::DataMappingGlyphGraph::SharedPtr graph = nullptr);
-		virtual ~DataMappingGlyphFile();
+		DataMappingGlyphGeometry();
+		DataMappingGlyphGeometry(const DataMappingGlyphGeometry& glyphGeometry);
+		DataMappingGlyphGeometry(const GlyphGeometry& glyphGeometry);
+		DataMappingGlyphGeometry(const boost::property_tree::wptree& propertyTree, bool useOldPropertyTree = false);
+		~DataMappingGlyphGeometry();
 
-		SynGlyphX::DataMappingGlyphGraph::SharedPtr GetDataMappingGlyphGraph() const;
+		DataMappingGlyphGeometry& operator=(const DataMappingGlyphGeometry& glyphGeometry);
+		bool operator==(const DataMappingGlyphGeometry& glyphGeometry) const;
+		bool operator!=(const DataMappingGlyphGeometry& glyphGeometry) const;
 
-	protected:
-		virtual void ImportFromPropertyTree(const boost::property_tree::wptree& filePropertyTree);
-		virtual void ExportToPropertyTree(boost::property_tree::wptree& filePropertyTree) const;
-
-		SynGlyphX::DataMappingGlyphGraph::SharedPtr m_glyphGraph;
+		boost::property_tree::wptree& ExportToPropertyTree(boost::property_tree::wptree& propertyTree) const;
+		GlyphGeometry ExportGlyphGeometry() const;
 	};
 
 } //namespace SynGlyphX
 
-#endif //SYNGLYPHX_DATAMAPPINGGLYPHFILE_H
+#endif //SYNGLYPHX_DATAMAPPINGGLYPHGEOMETRY_H

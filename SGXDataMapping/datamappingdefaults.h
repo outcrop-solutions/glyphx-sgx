@@ -15,45 +15,49 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef SYNGLYPHX_INTERPOLATIONMAPPINGDATA_H
-#define SYNGLYPHX_INTERPOLATIONMAPPINGDATA_H
+#ifndef SYNGLYPHX_DATAMAPPINGDEFAULTS_H
+#define SYNGLYPHX_DATAMAPPINGDEFAULTS_H
 
-#include "sgxdatatransform_global.h"
-#include "datamappingfunction.h"
-#include "mindiff.h"
+#include "sgxdatamapping.h"
+#include <boost/bimap.hpp>
+#include <boost/property_tree/ptree.hpp>
+#include "datamappingglyph.h"
 
 namespace SynGlyphX {
 
-	class SGXDATATRANSFORM_EXPORT InterpolationMappingData : public MappingFunctionData
+	class SGXDATAMAPPING_API DataMappingDefaults
 	{
 	public:
-		typedef std::shared_ptr<InterpolationMappingData> SharedPtr;
-		typedef std::shared_ptr<const InterpolationMappingData> ConstSharedPtr;
+		typedef boost::property_tree::wptree PropertyTree;
 
-		InterpolationMappingData(bool useLogarithmic = false);
-		InterpolationMappingData(const boost::property_tree::wptree& propertyTree);
-		InterpolationMappingData(const InterpolationMappingData& data);
-		virtual ~InterpolationMappingData();
+		DataMappingDefaults();
+		DataMappingDefaults(const PropertyTree& propertyTree);
+		DataMappingDefaults(const DataMappingDefaults& defaults);
+		~DataMappingDefaults();
 
-		virtual Input GetSupportedInput() const;
-		virtual Output GetSupportedOutput() const;
+		DataMappingDefaults& operator=(const DataMappingDefaults& defaults);
+		bool operator==(const DataMappingDefaults& defaults) const;
+		bool operator!=(const DataMappingDefaults& defaults) const;
 
-		double Interpolate(const DoubleMinDiff& outputMinDiff, double inputMin, double inputMax, double input) const;
-		GlyphColor Interpolate(const ColorMinDiff& outputMinDiff, double inputMin, double inputMax, double input) const;
+		void Clear();
 
-		//void SetOutputMinAndDifference(OutputType min, OutputType difference);
-		//void SetInputMinAndDifference(double min, double difference);
+		void ExportToPropertyTree(PropertyTree& parentPropertyTree) const;
 
-	protected:
-		//virtual OutputType MapCombinedInput(const double& input) const;
-		double Interpolate(double outputMin, double outputDifference, double inputMin, double inputDifference, double input) const;
+		void SetTagField(DataMappingGlyph::MappableField tagField);
+		DataMappingGlyph::MappableField GetTagField() const;
+		bool IsDefaultTagFieldSet() const;
 
-		//OutputType m_outputMin;
-		//OutputType m_outputDifference;
-		//double m_inputMin;
-		//double m_inputDifference;
+		void SetDefaultTagValue(const std::wstring& value);
+		const std::wstring& GetDefaultTagValue() const;
+
+		static const boost::bimap<DataMappingGlyph::MappableField, std::wstring> s_tagFieldStrings;
+		static const std::wstring s_propertyTreeName;
+
+	private:
+		DataMappingGlyph::MappableField m_tagField;
+		std::wstring m_defaultTagValue;
 	};
 
 } //namespace SynGlyphX
 
-#endif //SYNGLYPHX_INTERPOLATIONMAPPINGDATA_H
+#endif //SYNGLYPHX_DATAMAPPINGDEFAULTS_H

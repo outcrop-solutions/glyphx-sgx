@@ -18,7 +18,7 @@
 #ifndef SYNGLYPHX_DATAMAPPINGPROPERTY_H
 #define SYNGLYPHX_DATAMAPPINGPROPERTY_H
 
-#include "sgxdatatransform_global.h"
+#include "sgxdatamapping.h"
 #include <array>
 #include <boost/property_tree/ptree.hpp>
 #include "mindiff.h"
@@ -31,7 +31,7 @@
 namespace SynGlyphX {
 
 	template<typename PropertyType> //, typename MappingOutputType = PropertyType>
-	class SGXDATATRANSFORM_EXPORT DataMappingProperty {
+	class SGXDATAMAPPING_API DataMappingProperty {
 
 	public:
 		DataMappingProperty();

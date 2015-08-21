@@ -15,33 +15,45 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef SYNGLYPHX_DATAMAPPINGVIRTUALTOPOLOGY_H
-#define SYNGLYPHX_DATAMAPPINGVIRTUALTOPOLOGY_H
+#ifndef SYNGLYPHX_INTERPOLATIONMAPPINGDATA_H
+#define SYNGLYPHX_INTERPOLATIONMAPPINGDATA_H
 
-#include "sgxdatatransform_global.h"
-#include "virtualtopology.h"
-#include "datamappingproperty.h"
-#include <boost/property_tree/ptree.hpp>
+#include "sgxdatamapping.h"
+#include "datamappingfunction.h"
+#include "mindiff.h"
 
 namespace SynGlyphX {
 
-	class SGXDATATRANSFORM_EXPORT DataMappingVirtualTopology : public VirtualTopologyTemplate < VirtualTopologyMappingProperty >
+	class SGXDATAMAPPING_API InterpolationMappingData : public MappingFunctionData
 	{
 	public:
-		DataMappingVirtualTopology();
-		DataMappingVirtualTopology(const DataMappingVirtualTopology& virtualTopology);
-		DataMappingVirtualTopology(const VirtualTopology& virtualTopology);
-		DataMappingVirtualTopology(const boost::property_tree::wptree& propertyTree, bool useOldPropertyTree = false);
-		~DataMappingVirtualTopology();
+		typedef std::shared_ptr<InterpolationMappingData> SharedPtr;
+		typedef std::shared_ptr<const InterpolationMappingData> ConstSharedPtr;
 
-		DataMappingVirtualTopology& operator=(const DataMappingVirtualTopology& virtualTopology);
-		bool operator==(const DataMappingVirtualTopology& virtualTopology) const;
-		bool operator!=(const DataMappingVirtualTopology& virtualTopology) const;
+		InterpolationMappingData(bool useLogarithmic = false);
+		InterpolationMappingData(const boost::property_tree::wptree& propertyTree);
+		InterpolationMappingData(const InterpolationMappingData& data);
+		virtual ~InterpolationMappingData();
 
-		boost::property_tree::wptree& ExportToPropertyTree(boost::property_tree::wptree& propertyTree) const;
-		VirtualTopology ExportVirtualTopology() const;
+		virtual Input GetSupportedInput() const;
+		virtual Output GetSupportedOutput() const;
+
+		double Interpolate(const DoubleMinDiff& outputMinDiff, double inputMin, double inputMax, double input) const;
+		GlyphColor Interpolate(const ColorMinDiff& outputMinDiff, double inputMin, double inputMax, double input) const;
+
+		//void SetOutputMinAndDifference(OutputType min, OutputType difference);
+		//void SetInputMinAndDifference(double min, double difference);
+
+	protected:
+		//virtual OutputType MapCombinedInput(const double& input) const;
+		double Interpolate(double outputMin, double outputDifference, double inputMin, double inputDifference, double input) const;
+
+		//OutputType m_outputMin;
+		//OutputType m_outputDifference;
+		//double m_inputMin;
+		//double m_inputDifference;
 	};
 
 } //namespace SynGlyphX
 
-#endif //SYNGLYPHX_DATAMAPPINGVIRTUALTOPOLOGY_H
+#endif //SYNGLYPHX_INTERPOLATIONMAPPINGDATA_H

@@ -18,13 +18,13 @@
 #ifndef SYNGLYPHX_INPUTBINDING_H
 #define SYNGLYPHX_INPUTBINDING_H
 
-#include "sgxdatatransform_global.h"
+#include "sgxdatamapping.h"
 #include "inputfield.h"
 #include <boost/property_tree/ptree.hpp>
 
 namespace SynGlyphX {
 
-	class SGXDATATRANSFORM_EXPORT InputBinding
+	class SGXDATAMAPPING_API InputBinding
 	{
 	public:
 		static const std::wstring PropertyTreeName;
