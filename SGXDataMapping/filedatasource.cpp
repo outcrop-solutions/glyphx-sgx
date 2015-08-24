@@ -2,7 +2,6 @@
 #include <boost/assign/list_of.hpp>
 #include <boost/bimap/list_of.hpp>
 #include <boost/filesystem.hpp>
-#include <boost/filesystem.hpp>
 
 namespace SynGlyphX {
 

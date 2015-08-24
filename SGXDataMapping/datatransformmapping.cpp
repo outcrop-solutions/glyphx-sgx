@@ -2,6 +2,7 @@
 #include <boost/property_tree/xml_parser.hpp>
 #include <algorithm>
 #include <boost/uuid/uuid_io.hpp>
+#include "userdefinedbaseimageproperties.h"
 
 namespace SynGlyphX {
 
@@ -417,6 +418,45 @@ namespace SynGlyphX {
 	void DataTransformMapping::SetSceneProperties(const SceneProperties& sceneProperties) {
 
 		m_sceneProperties = sceneProperties;
+	}
+
+	std::vector<boost::uuids::uuid> DataTransformMapping::GetFileDatasourcesWithInvalidFiles(bool onlyUseDatasourcesInUse) const {
+
+		SynGlyphX::DatasourceMaps datasources;
+		if (onlyUseDatasourcesInUse) {
+		
+			datasources = GetDatasourcesInUse();
+		}
+		else {
+
+
+		}
+		std::vector<boost::uuids::uuid> fileDatasourcesToBeUpdated;
+		for (SynGlyphX::DatasourceMaps::FileDatasourceMap::const_iterator datasource = datasources.GetFileDatasources().begin(); datasource != datasources.GetFileDatasources().end(); ++datasource) {
+
+			if (!datasource->second.CanDatasourceBeFound()) {
+
+				fileDatasourcesToBeUpdated.push_back(datasource->first);
+			}
+		}
+
+		return fileDatasourcesToBeUpdated;
+	}
+
+	std::vector<unsigned int> DataTransformMapping::GetFileBaseObjectsWithInvalidFiles() const {
+
+		std::vector<unsigned int> missingLocalBaseImages;
+
+		for (unsigned int i = 0; i < GetBaseObjects().size(); ++i) {
+
+			UserDefinedBaseImageProperties::ConstSharedPtr properties = std::dynamic_pointer_cast<const SynGlyphX::UserDefinedBaseImageProperties>(GetBaseObjects()[i].GetProperties());
+			if ((properties != nullptr) && (!properties->CanFileBeFound())) {
+
+				missingLocalBaseImages.push_back(i);
+			}
+		}
+
+		return missingLocalBaseImages;
 	}
 
 } //namespace SynGlyphX

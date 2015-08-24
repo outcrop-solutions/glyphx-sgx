@@ -1,4 +1,5 @@
 #include "userdefinedbaseimageproperties.h"
+#include <boost/filesystem.hpp>
 
 namespace SynGlyphX {
 
@@ -54,6 +55,12 @@ namespace SynGlyphX {
 	void UserDefinedBaseImageProperties::ExportToPropertyTree(boost::property_tree::wptree& propertyTree) const {
 
 		propertyTree.put(L"<xmlattr>.filename", m_filename);
+	}
+
+	bool UserDefinedBaseImageProperties::CanFileBeFound() const {
+
+		boost::filesystem::path filePath(m_filename);
+		return (boost::filesystem::exists(filePath) && boost::filesystem::is_regular_file(filePath));
 	}
 
 } //namespace SynGlyphX

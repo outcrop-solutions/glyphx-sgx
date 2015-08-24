@@ -92,6 +92,9 @@ namespace SynGlyphX {
 		const SceneProperties& GetSceneProperties() const;
 		void SetSceneProperties(const SceneProperties& sceneProperties);
 
+		std::vector<boost::uuids::uuid> GetFileDatasourcesWithInvalidFiles(bool onlyUseDatasourcesInUse) const;
+		std::vector<unsigned int> GetFileBaseObjectsWithInvalidFiles() const;
+
     protected:
 		void Clear(bool addADefaultBaseObjectAfterClear);
 		virtual void ImportFromPropertyTree(const boost::property_tree::wptree& filePropertyTree);
