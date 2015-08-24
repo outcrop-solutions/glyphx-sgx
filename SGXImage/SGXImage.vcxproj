@@ -63,7 +63,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ImportLibrary>..\..\lib\$(Platform)\$(Configuration)\$(TargetName).lib</ImportLibrary>
       <AdditionalLibraryDirectories>..\..\lib\$(Platform)\$(Configuration)\;..\..\3rdParty\lib\$(Platform)\$(Configuration)\;..\..\3rdParty\tools\rlm_ez_11_0\$(Platform)\</AdditionalLibraryDirectories>
-      <AdditionalDependencies>SGXUtility.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SGXUtility.lib;boost_system-vc120-mt-gd-1_55.lib;boost_filesystem-vc120-mt-gd-1_55.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -84,7 +84,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <ImportLibrary>..\..\lib\$(Platform)\$(Configuration)\$(TargetName).lib</ImportLibrary>
       <AdditionalLibraryDirectories>..\..\lib\$(Platform)\$(Configuration)\;..\..\3rdParty\lib\$(Platform)\$(Configuration)\;..\..\3rdParty\tools\rlm_ez_11_0\$(Platform)\</AdditionalLibraryDirectories>
-      <AdditionalDependencies>SGXUtility.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SGXUtility.lib;;boost_system-vc120-mt-1_55.lib;boost_filesystem-vc120-mt-1_55.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
