@@ -56,4 +56,30 @@ namespace SynGlyphX {
 		return false;
 	}
 
+	bool ChangeDatasourceFileDialog::UpdateDatasourceFiles(const std::vector<boost::uuids::uuid>& datasources, SynGlyphX::DataTransformMapping::SharedPtr mapping, QWidget* dialogParent) {
+
+		bool wereMissingFilesUpdated = false;
+		for (int i = 0; i < datasources.size(); ++i) {
+
+			QString acceptButtonText = tr("Next");
+			if (i == datasources.size() - 1) {
+
+				acceptButtonText = tr("Ok");
+			}
+
+			SynGlyphX::ChangeDatasourceFileDialog dialog(mapping->GetDatasources().GetFileDatasources().at(datasources[i]), acceptButtonText, dialogParent);
+			if (dialog.exec() == QDialog::Accepted) {
+
+				mapping->UpdateDatasourceName(datasources[i], dialog.GetNewFilename().toStdWString());
+				wereMissingFilesUpdated = true;
+			}
+			else {
+
+				throw std::exception("One or more datasources weren't found.");
+			}
+		}
+
+		return wereMissingFilesUpdated;
+	}
+
 } //namespace SynGlyphX

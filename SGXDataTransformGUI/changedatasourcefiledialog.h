@@ -21,6 +21,7 @@
 #include "sgxdatatransformgui_global.h"
 #include "replacefilenamedialog.h"
 #include "filedatasource.h"
+#include "datatransformmapping.h"
 
 namespace SynGlyphX {
 
@@ -31,6 +32,8 @@ namespace SynGlyphX {
 	public:
 		ChangeDatasourceFileDialog(const SynGlyphX::FileDatasource& oldDatasourceFile, const QString& acceptButtonText, QWidget *parent = 0);
 		~ChangeDatasourceFileDialog();
+
+		static bool UpdateDatasourceFiles(const std::vector<boost::uuids::uuid>& datasources, SynGlyphX::DataTransformMapping::SharedPtr mapping, QWidget* dialogParent = nullptr);
 
 	private:
 		virtual bool IsNewFileValid() const;

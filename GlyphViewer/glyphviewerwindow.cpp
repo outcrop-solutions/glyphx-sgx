@@ -369,25 +369,10 @@ void GlyphViewerWindow::LoadDataTransform(const QString& filename) {
 
 		bool wasDataTransformUpdated = false;
 
-		SynGlyphX::DatasourceMaps datasourcesInUse = m_mapping->GetDatasourcesInUse();
-		std::vector<SynGlyphX::DatasourceMaps::FileDatasourceMap::const_iterator> fileDatasourcesToBeUpdated;
-		for (SynGlyphX::DatasourceMaps::FileDatasourceMap::const_iterator datasource = datasourcesInUse.GetFileDatasources().begin(); datasource != datasourcesInUse.GetFileDatasources().end(); ++datasource) {
-
-			if (!datasource->second.CanDatasourceBeFound()) {
-
-				fileDatasourcesToBeUpdated.push_back(datasource);
-			}
-		}
+		std::vector<boost::uuids::uuid> missingFileDatasources = m_mapping->GetFileDatasourcesWithInvalidFiles(true);
 		
 		std::vector<unsigned int> localBaseImageIndexes;
-		for (unsigned int i = 0; i < m_mapping->GetBaseObjects().size(); ++i) {
-
-			SynGlyphX::UserDefinedBaseImageProperties::ConstSharedPtr properties = std::dynamic_pointer_cast<const SynGlyphX::UserDefinedBaseImageProperties>(m_mapping->GetBaseObjects()[i].GetProperties());
-			if ((properties != nullptr) && (!QFile::exists(QString::fromStdWString(properties->GetFilename())))) {
-
-				localBaseImageIndexes.push_back(i);
-			}
-		}
+		
 
 		if (!localBaseImageIndexes.empty()) {
 
@@ -420,29 +405,10 @@ void GlyphViewerWindow::LoadDataTransform(const QString& filename) {
 			SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
 		}
 
-		if (!fileDatasourcesToBeUpdated.empty()) {
+		if (!missingFileDatasources.empty()) {
 
 			SynGlyphX::Application::restoreOverrideCursor();
-			for (int i = 0; i < fileDatasourcesToBeUpdated.size(); ++i) {
-
-				QString acceptButtonText = tr("Next");
-				if (i == fileDatasourcesToBeUpdated.size() - 1) {
-					
-					acceptButtonText = tr("Ok");
-				}
-
-				SynGlyphX::ChangeDatasourceFileDialog dialog(fileDatasourcesToBeUpdated[i]->second, acceptButtonText, this);
-				if (dialog.exec() == QDialog::Accepted) {
-
-					m_mapping->UpdateDatasourceName(fileDatasourcesToBeUpdated[i]->first, dialog.GetNewFilename().toStdWString());
-					wasDataTransformUpdated = true;
-				}
-				else {
-					
-					throw std::exception("One or more datasources weren't found.");
-				}
-			}
-
+			wasDataTransformUpdated = SynGlyphX::ChangeDatasourceFileDialog::UpdateDatasourceFiles(missingFileDatasources, m_mapping, this);
 			SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
 		}
 
