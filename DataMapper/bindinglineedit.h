@@ -22,6 +22,7 @@
 #include "inputbinding.h"
 #include "singleglyphrolestablemodel.h"
 #include "datamappingfunction.h"
+#include "inputfieldmimedata.h"
 
 class BindingLineEdit : public QLineEdit
 {

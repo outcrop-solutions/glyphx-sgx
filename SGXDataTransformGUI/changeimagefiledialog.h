@@ -15,37 +15,29 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef SYNGLYPHX_FILEREPLACEDIALOG_H
-#define SYNGLYPHX_FILEREPLACEDIALOG_H
+#ifndef SYNGLYPHX_CHANGEIMAGEFILEDIALOG_H
+#define SYNGLYPHX_CHANGEIMAGEFILEDIALOG_H
 
-#include "sgxglyphgui_global.h"
-#include <QtWidgets/QDialog>
-#include "browselineedit.h"
+#include "sgxdatatransformgui_global.h"
+#include "replacefilenamedialog.h"
 
 namespace SynGlyphX {
 
-	class SGXGLYPHGUI_EXPORT ReplaceFilenameDialog : public QDialog
+	class SGXDATATRANSFORMGUI_EXPORT ChangeImageFileDialog : public ReplaceFilenameDialog
 	{
 		Q_OBJECT
 
 	public:
-		ReplaceFilenameDialog(const QString& oldFileName, const QString& acceptButtonText, QWidget *parent = 0);
-		~ReplaceFilenameDialog();
-
-		QString GetNewFilename() const;
-
-	public slots:
-		virtual void accept();
+		ChangeImageFileDialog(const QString& oldFileName, const QString& acceptButtonText, QWidget *parent = 0);
+		~ChangeImageFileDialog();
 
 	protected:
 		virtual bool IsNewFileValid() const;
 
-		SynGlyphX::BrowseLineEdit* m_newDatasourceFileLineEdit;
-
 	private:
-
+		QString m_fileExtension;
 	};
 
 } //namespace SynGlyphX
 
-#endif // SYNGLYPHX_FILEREPLACEDIALOG_H
+#endif // SYNGLYPHX_CHANGEIMAGEFILEDIALOG_H
