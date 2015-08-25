@@ -429,7 +429,7 @@ namespace SynGlyphX {
 		}
 		else {
 
-
+			datasources = m_datasources;
 		}
 		std::vector<boost::uuids::uuid> fileDatasourcesToBeUpdated;
 		for (SynGlyphX::DatasourceMaps::FileDatasourceMap::const_iterator datasource = datasources.GetFileDatasources().begin(); datasource != datasources.GetFileDatasources().end(); ++datasource) {
