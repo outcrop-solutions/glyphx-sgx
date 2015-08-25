@@ -20,6 +20,7 @@
 
 #include "sgxdatatransformgui_global.h"
 #include "replacefilenamedialog.h"
+#include "datatransformmapping.h"
 
 namespace SynGlyphX {
 
@@ -30,6 +31,8 @@ namespace SynGlyphX {
 	public:
 		ChangeImageFileDialog(const QString& oldFileName, const QString& acceptButtonText, QWidget *parent = 0);
 		~ChangeImageFileDialog();
+
+		static bool UpdateImageFiles(const std::vector<unsigned int>& images, DataTransformMapping::SharedPtr mapping, QWidget* dialogParent = nullptr);
 
 	protected:
 		virtual bool IsNewFileValid() const;

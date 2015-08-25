@@ -30,16 +30,16 @@ namespace SynGlyphX {
 		Q_OBJECT
 
 	public:
-		ChangeDatasourceFileDialog(const SynGlyphX::FileDatasource& oldDatasourceFile, const QString& acceptButtonText, QWidget *parent = 0);
+		ChangeDatasourceFileDialog(const FileDatasource& oldDatasourceFile, const QString& acceptButtonText, QWidget *parent = 0);
 		~ChangeDatasourceFileDialog();
 
-		static bool UpdateDatasourceFiles(const std::vector<boost::uuids::uuid>& datasources, SynGlyphX::DataTransformMapping::SharedPtr mapping, QWidget* dialogParent = nullptr);
+		static bool UpdateDatasourceFiles(const std::vector<boost::uuids::uuid>& datasources, DataTransformMapping::SharedPtr mapping, QWidget* dialogParent = nullptr);
 
 	private:
 		virtual bool IsNewFileValid() const;
 		
 		QStringList m_oldDatasourceTables;
-		SynGlyphX::FileDatasource::SourceType m_fileSourceType;
+		FileDatasource::SourceType m_fileSourceType;
 	};
 
 } //namespace SynGlyphX

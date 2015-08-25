@@ -371,37 +371,12 @@ void GlyphViewerWindow::LoadDataTransform(const QString& filename) {
 
 		std::vector<boost::uuids::uuid> missingFileDatasources = m_mapping->GetFileDatasourcesWithInvalidFiles(true);
 		
-		std::vector<unsigned int> localBaseImageIndexes;
+		std::vector<unsigned int> localBaseImageIndexes = m_mapping->GetFileBaseObjectsWithInvalidFiles();
 		
-
 		if (!localBaseImageIndexes.empty()) {
 
 			SynGlyphX::Application::restoreOverrideCursor();
-			for (unsigned int index : localBaseImageIndexes) {
-
-				QString acceptButtonText = tr("Next");
-				if (index == *localBaseImageIndexes.rbegin()) {
-
-					acceptButtonText = tr("Ok");
-				}
-
-				SynGlyphX::BaseImage baseImage = m_mapping->GetBaseObjects()[index];
-				SynGlyphX::UserDefinedBaseImageProperties::ConstSharedPtr properties = std::dynamic_pointer_cast<const SynGlyphX::UserDefinedBaseImageProperties>(baseImage.GetProperties());
-				
-				SynGlyphX::ChangeImageFileDialog dialog(QString::fromStdWString(properties->GetFilename()), acceptButtonText, this);
-				if (dialog.exec() == QDialog::Accepted) {
-
-					SynGlyphX::UserDefinedBaseImageProperties::SharedPtr newProperties = std::make_shared<SynGlyphX::UserDefinedBaseImageProperties>(dialog.GetNewFilename().toStdWString());
-					baseImage.SetProperties(newProperties);
-					m_mapping->SetBaseObject(index, baseImage);
-					wasDataTransformUpdated = true;
-				}
-				else {
-
-					throw std::exception("One or more base images weren't found.");
-				}
-			}
-
+			wasDataTransformUpdated = SynGlyphX::ChangeImageFileDialog::UpdateImageFiles(localBaseImageIndexes, m_mapping, this);
 			SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
 		}
 
