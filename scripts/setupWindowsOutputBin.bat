@@ -22,7 +22,14 @@ FOR /F "tokens=*" %%p IN ('dir /b /a:d ..\bin\*') DO (
 		rem echo %%c 
 		
 		robocopy /z /e ..\..\ANTzPlus\%antztemplate% %basedir%\%%p\%%c\%antztemplate%
+		mkdir %basedir%\%%p\%%c\%antztemplate%\usr\csv
+		mkdir %basedir%\%%p\%%c\%antztemplate%\usr\images
+		mkdir %basedir%\%%p\%%c\%antztemplate%\usr\plugin
+
 		robocopy /z /e ..\..\ANTzPlus\%antzzspacetemplate% %basedir%\%%p\%%c\%antzzspacetemplate%
+		mkdir %basedir%\%%p\%%c\%antzzspacetemplate%\usr\csv
+		mkdir %basedir%\%%p\%%c\%antzzspacetemplate%\usr\images
+		mkdir %basedir%\%%p\%%c\%antzzspacetemplate%\usr\plugin
 		
 		robocopy /z /e ..\..\Misc\InstallerFiles\%defaultbaseimages% %basedir%\%%p\%%c\%defaultbaseimages%
 		
