@@ -217,11 +217,9 @@ namespace SynGlyphXANTz {
 	void ANTzWidget::DrawLogo() {
 
 		bool isLightingEnabled = glIsEnabled(GL_LIGHTING);
-		bool isBlendEnabled = glIsEnabled(GL_BLEND);
 		bool isDepthTestEnabled = glIsEnabled(GL_DEPTH_TEST);
 
 		glDisable(GL_LIGHTING);
-		glDisable(GL_BLEND);
 		glDisable(GL_DEPTH_TEST);
 
 		glMatrixMode(GL_PROJECTION);
@@ -263,11 +261,6 @@ namespace SynGlyphXANTz {
 		if (isLightingEnabled) {
 
 			glEnable(GL_DEPTH_TEST);
-		}
-
-		if (isBlendEnabled) {
-
-			glEnable(GL_BLEND);
 		}
 
 		if (isDepthTestEnabled) {
