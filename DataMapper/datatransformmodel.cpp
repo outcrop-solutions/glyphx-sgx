@@ -772,7 +772,7 @@ Qt::ItemFlags DataTransformModel::flags(const QModelIndex& index) const {
 QStringList DataTransformModel::mimeTypes() const {
 
 	QStringList types;
-	types.push_back(SynGlyphX::GlyphMimeData::Format);
+	types.push_back(SynGlyphX::GlyphMimeData::s_format);
 	return types;
 }
 

@@ -225,7 +225,7 @@ void DataMapperWindow::CreateDockWidgets() {
 	QDockWidget* leftDockWidgetGlyphTrees = new QDockWidget(tr("Glyph Trees"), this);
 
 	m_glyphTreesView = new GlyphTreesView(m_dataTransformModel, leftDockWidgetGlyphTrees);
-	m_glyphMenu->addActions(m_glyphTreesView->actions());
+	m_glyphMenu->addActions(m_glyphTreesView->GetSharedActions());
 
     //Add Tree View to dock widget on left side
 	leftDockWidgetGlyphTrees->setWidget(m_glyphTreesView);
