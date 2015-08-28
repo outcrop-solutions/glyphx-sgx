@@ -54,6 +54,7 @@ namespace SynGlyphXANTz {
 		virtual bool removeRows(int row, int count, const QModelIndex& parent = QModelIndex());
 
 		void AppendChild(const QModelIndex& parent, const SynGlyphX::DataMappingGlyph& glyph, unsigned int numberOfChildren = 1);
+		void AppendChildGraph(const QModelIndex& parent, const SynGlyphX::DataMappingGlyphGraph::LinklessGraph& subgraph);
 
 		void UpdateGlyph(const QModelIndex& index, const SynGlyphX::DataMappingGlyph& glyph, SynGlyphX::PropertyUpdates updates = SynGlyphX::UpdateAll);
 		void UpdateGlyphs(const QModelIndexList& indexList, const SynGlyphX::DataMappingGlyph& glyph, SynGlyphX::PropertyUpdates updates = SynGlyphX::UpdateAll);
@@ -71,9 +72,9 @@ namespace SynGlyphXANTz {
 		void SaveToTemplateFile(const QString& filename) const;
 		bool SaveToCSV(const QString& filename, bool writeMaxGlyph = true);
 
-		bool IsClipboardEmpty() const;
-		SynGlyphX::DataMappingGlyphGraph::GlyphIterator GetClipboardGlyph() const;
-		void CopyToClipboard(const QModelIndex& index, bool removeFromTree = false);
+		bool DoesClipboardHaveGlyph() const;
+		void CopyToClipboard(const QModelIndex& index, bool includeChildren, bool removeFromTree = false);
+		void PasteFromClipboard(const QModelIndex& index, bool pasteAsChild = false);
 
 		void RepaceModelWithDefaultGlyphTree();
 		void ResetRootMinMaxPositionXY();
@@ -97,7 +98,6 @@ namespace SynGlyphXANTz {
 		static SynGlyphX::DataMappingGlyphGraph::GlyphIterator GetIteratorFromIndex(const QModelIndex& index);
 
 		SynGlyphX::DataMappingGlyphGraph::SharedPtr m_minMaxGlyphTree;
-		SynGlyphX::DataMappingGlyphGraph::GlyphIterator m_clipboardGlyph;
 
 		std::unordered_map<SynGlyphX::DataMappingGlyphGraph::Label, QPersistentModelIndex> m_labelToIndexMap;
 	};
