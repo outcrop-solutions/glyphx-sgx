@@ -15,32 +15,36 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef SYNGLYPHX_GLYPHPROPERTYUPDATE_H
-#define SYNGLYPHX_GLYPHPROPERTYUPDATE_H
+#ifndef SYNGLYPHX_LINKLESSGRAPHMIMEDATA_H
+#define SYNGLYPHX_LINKLESSGRAPHMIMEDATA_H
 
 #include "sgxglyphgui_global.h"
+#include <QtCore/QMimeData>
+#include "datamappingglyphgraph.h"
+#include <QtCore/QModelIndex>
 
 namespace SynGlyphX {
 
-	enum PropertyUpdate {
-		UpdateNone = 0x00,
-		UpdateColor = 0x01,
-		UpdateGeometry = 0x02,
-		UpdateTopology = 0x04,
-		UpdateSurface = 0x08,
-		UpdatePosition = 0x10,
-		UpdateRotation = 0x20,
-		UpdateScale = 0x40,
-		UpdateRotationRate = 0x80,
-		UpdateTorusRatio = 0x100,
-		//All for when all properties are being updated
-		UpdateAll = 0xFFFF,
-		UpdateAllExceptPosition = UpdateAll & ~UpdatePosition
-	};
+	class SGXGLYPHGUI_EXPORT LinklessGraphMimeData : public QMimeData
+	{
+		Q_OBJECT
 
-	Q_DECLARE_FLAGS(PropertyUpdates, PropertyUpdate);
-	Q_DECLARE_OPERATORS_FOR_FLAGS(PropertyUpdates)
+	public:
+		static const QString s_format;
+
+		LinklessGraphMimeData(const DataMappingGlyphGraph::LinklessGraph& subgraph);
+		LinklessGraphMimeData(const DataMappingGlyph& glyph);
+		~LinklessGraphMimeData();
+
+		virtual QStringList formats() const;
+		virtual bool hasFormat(const QString& mimeType) const;
+
+		const DataMappingGlyphGraph::LinklessGraph& GetSubGraph() const;
+
+	private:
+		DataMappingGlyphGraph::LinklessGraph m_subgraph;
+	};
 
 } //namespace SynGlyphX
 
-#endif //SYNGLYPHX_GLYPHPROPERTYUPDATE_H
+#endif // SYNGLYPHX_LINKLESSGRAPHMIMEDATA_H

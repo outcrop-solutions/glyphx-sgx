@@ -43,6 +43,9 @@ private slots:
 	void DeleteSelected();
 	void DeleteChildrenFromSelected();
 	void PropertiesActivated();
+	void CopyToClipboard(bool includeChildren, bool removeFromTree);
+	void PasteFromClipboard(bool addAsChild);
+	void OnClipboardDataChanged();
 
 private:
 	void CreateContextMenuActions();
@@ -59,6 +62,7 @@ private:
 	//Edit menu actions
 	QAction* m_cutAction;
 	QAction* m_copyAction;
+	QAction* m_copyWithChildrenAction;
 	QAction* m_pasteAction;
 	QAction* m_pasteAsChildAction;
 	QAction* m_deleteAction;
