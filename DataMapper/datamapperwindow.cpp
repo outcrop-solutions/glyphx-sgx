@@ -593,11 +593,19 @@ void DataMapperWindow::ExportToANTz(const QString& templateDir) {
 	}
 	catch (const std::exception& e) {
 
-		SynGlyphX::Filesystem::RemoveContentsOfDirectory(csvDirectory.toStdString());
-		SynGlyphX::Application::restoreOverrideCursor();
-		QMessageBox::critical(this, tr("Export to ANTz Error"), e.what());
+		try{
+			SynGlyphX::Filesystem::RemoveContentsOfDirectory(csvDirectory.toStdString());
+			SynGlyphX::Application::restoreOverrideCursor();
+			QMessageBox::critical(this, tr("Export to ANTz Error"), e.what());
+		}
+		catch (...)
+		{
+			SynGlyphX::Application::restoreOverrideCursor();
+			QMessageBox::information(this, tr("Directory in use"), tr("Could not create portable visualization because files in this directory are currently in use."), QMessageBox::Ok);
+		}
 		return;
 	}
+
 
 	statusBar()->showMessage("Data transform sucessfully exported to ANTz", 6000);
 }
