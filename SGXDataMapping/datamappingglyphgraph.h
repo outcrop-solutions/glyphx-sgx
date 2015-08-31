@@ -55,6 +55,7 @@ namespace SynGlyphX {
 		virtual ~DataMappingGlyphGraph();
 
 		PropertyTree& ExportToPropertyTree(boost::property_tree::wptree& propertyTreeParent) const;
+		PropertyTree& ExportSubgraphToPropertyTree(const DataMappingGlyphGraph::ConstGlyphIterator& vertex, boost::property_tree::wptree& propertyTreeParent) const;
 
 		bool operator==(const DataMappingGlyphGraph& graph) const;
 		bool operator!=(const DataMappingGlyphGraph& graph) const;
@@ -79,9 +80,7 @@ namespace SynGlyphX {
 	private:
 		void IncrementInputBindingCountsFromGlyph(const DataMappingGlyph& glyph);
 		void IncrementInputBindingCount(const InputBinding& binding);
-		//void ReadFromSGTFile(const std::string& filename);
-		//void ReadFromANTzCSVFile(const std::string& filename);
-		void ExportToPropertyTree(const DataMappingGlyphGraph::ConstGlyphIterator& parent, boost::property_tree::wptree& propertyTreeParent) const;
+		void ExportChildrenToPropertyTree(const DataMappingGlyphGraph::ConstGlyphIterator& parent, boost::property_tree::wptree& propertyTreeParent) const;
 		void ProcessPropertyTreeChildren(const DataMappingGlyphGraph::GlyphIterator& parent, const boost::property_tree::wptree& propertyTree);
 		void AddGraphGlyphSubgraph(DataMappingGlyphGraph::GlyphIterator& parent, const GlyphGraph::ConstGlyphIterator& glyphGraphParent, const GlyphGraph& graph);
 		void CreateMinOrMaxGlyphSubtree(const DataMappingGlyphGraph::ConstGlyphIterator& parent, GlyphGraph::GlyphIterator& newVertex, GlyphGraph::SharedPtr newGlyphGraph, bool isMax) const;

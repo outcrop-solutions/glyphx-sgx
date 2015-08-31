@@ -140,9 +140,7 @@ namespace SynGlyphX {
 
 	DataMappingGlyphGraph::PropertyTree& DataMappingGlyphGraph::ExportToPropertyTree(boost::property_tree::wptree& propertyTreeParent) const {
 
-		boost::property_tree::wptree& rootPropertyTree = GetRoot()->second.ExportToPropertyTree(propertyTreeParent);
-		rootPropertyTree.put<Label>(L"<xmlattr>.label", GetRoot()->first);
-		ExportToPropertyTree(root(), rootPropertyTree);
+		boost::property_tree::wptree& rootPropertyTree = ExportSubgraphToPropertyTree(GetRoot(), propertyTreeParent);
 
 		if (!m_linkGlyphs.empty()) {
 
@@ -169,20 +167,16 @@ namespace SynGlyphX {
 		return rootPropertyTree;
 	}
 
-	void DataMappingGlyphGraph::ExportToPropertyTree(const DataMappingGlyphGraph::ConstGlyphIterator& parent, boost::property_tree::wptree& propertyTreeParent) const {
+	DataMappingGlyphGraph::PropertyTree& DataMappingGlyphGraph::ExportSubgraphToPropertyTree(const DataMappingGlyphGraph::ConstGlyphIterator& vertex, boost::property_tree::wptree& propertyTreeParent) const {
 
+		boost::property_tree::wptree& newPropertyTree = GetRoot()->second.ExportToPropertyTree(propertyTreeParent);
+		newPropertyTree.put<Label>(L"<xmlattr>.label", GetRoot()->first);
+		ExportChildrenToPropertyTree(GetRoot(), newPropertyTree);
 
-		/*std::pair<out_edge_iterator, out_edge_iterator> children = boost::out_edges(parent, *this);
+		return newPropertyTree;
+	}
 
-		if (children.first != children.second) {
-
-			boost::property_tree::wptree& childrenPropertyTree = propertyTreeParent.add(L"Children", L"");
-			for (out_edge_iterator iT = children.first; iT != children.second; ++iT) {
-
-				const Vertex& child = boost::target(*iT, *this);
-				ExportToPropertyTree(child, operator[](child).ExportToPropertyTree(childrenPropertyTree));
-			}
-		}*/
+	void DataMappingGlyphGraph::ExportChildrenToPropertyTree(const DataMappingGlyphGraph::ConstGlyphIterator& parent, boost::property_tree::wptree& propertyTreeParent) const {
 
 		unsigned int numChildren = children(parent);
 		if (numChildren > 0) {
@@ -193,7 +187,7 @@ namespace SynGlyphX {
 				DataMappingGlyphGraph::ConstGlyphIterator iterator = child(parent, i);
 				boost::property_tree::wptree& newPropertyTree = iterator->second.ExportToPropertyTree(childrenPropertyTree);
 				newPropertyTree.put<Label>(L"<xmlattr>.label", iterator->first);
-				ExportToPropertyTree(iterator, newPropertyTree);
+				ExportChildrenToPropertyTree(iterator, newPropertyTree);
 			}
 		}
 	}
