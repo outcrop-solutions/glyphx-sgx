@@ -1,11 +1,9 @@
 #include "glyphtreeview.h"
 #include "singlewidgetdialog.h"
 #include "glyphpropertieswidget.h"
-#include <QtGui/QClipboard>
-#include "glyphbuilderapplication.h"
 
 GlyphTreeView::GlyphTreeView(SynGlyphXANTz::MinMaxGlyphTreeModel* model, SynGlyphXANTz::MinMaxGlyphTreeModel::GlyphType glyphTreeType, QWidget *parent)
-	: SynGlyphX::TreeView(parent),
+	: SynGlyphX::TreeEditView(parent),
 	m_model(model),
 	m_glyphTreeType(glyphTreeType)
 {
@@ -20,8 +18,6 @@ GlyphTreeView::GlyphTreeView(SynGlyphXANTz::MinMaxGlyphTreeModel* model, SynGlyp
 	SetScrollOnSelection(true);
 
 	CreateContextMenuActions();
-
-	QObject::connect(SynGlyphX::GlyphBuilderApplication::clipboard(), &QClipboard::dataChanged, this, &GlyphTreeView::OnClipboardDataChanged);
 }
 
 GlyphTreeView::~GlyphTreeView()
@@ -34,43 +30,9 @@ const SynGlyphX::SharedActionList& GlyphTreeView::GetGlyphActions() const {
 	return m_glyphActions;
 }
 
-const SynGlyphX::SharedActionList& GlyphTreeView::GetEditActions() const {
-
-	return m_editActions;
-}
-
-void GlyphTreeView::selectionChanged(const QItemSelection& selected, const QItemSelection& deselected) {
-
-	SynGlyphX::TreeView::selectionChanged(selected, deselected);
-	EnableActions();
-}
-
 void GlyphTreeView::CreateContextMenuActions() {
 
 	//Edit Actions
-
-	m_cutAction = m_editActions.AddAction(tr("Cut"), QKeySequence::Cut);
-	QObject::connect(m_cutAction, &QAction::triggered, this, [&, this](){ CopyToClipboard(true, true); });
-
-	m_copyAction = m_editActions.AddAction(tr("Copy"), QKeySequence::Copy);
-	QObject::connect(m_copyAction, &QAction::triggered, this, [&, this](){ CopyToClipboard(false, false); });
-
-	m_copyWithChildrenAction = m_editActions.AddAction(tr("Copy With Children"));
-	QObject::connect(m_copyWithChildrenAction, &QAction::triggered, this, [&, this](){ CopyToClipboard(true, false); });
-
-	m_pasteAction = m_editActions.AddAction(tr("Paste"), QKeySequence::Paste);
-	QObject::connect(m_pasteAction, &QAction::triggered, this, [&, this](){ PasteFromClipboard(false); });
-
-	m_pasteAsChildAction = m_editActions.AddAction(tr("Paste As Child"));
-	QObject::connect(m_pasteAsChildAction, &QAction::triggered, this, [&, this](){ PasteFromClipboard(true); });
-
-	m_editActions.AddSeparator();
-
-	m_deleteAction = m_editActions.AddAction(tr("Delete"), QKeySequence::Delete);
-	QObject::connect(m_deleteAction, &QAction::triggered, this, &GlyphTreeView::DeleteSelected);
-
-	m_deleteChildrenAction = m_editActions.AddAction(tr("Delete Children"));
-	QObject::connect(m_deleteChildrenAction, &QAction::triggered, this, &GlyphTreeView::DeleteChildrenFromSelected);
 
 	m_editActions.AddSeparator();
 
@@ -166,15 +128,27 @@ void GlyphTreeView::AddChildren() {
 	}
 }
 
-void GlyphTreeView::EnableActions() {
+void GlyphTreeView::EnableActions(const QItemSelection& selected) {
 
-	const QModelIndexList& selected = selectionModel()->selectedIndexes();
-	bool isObjectSelected = !selected.isEmpty();
+	const QModelIndexList& selectedIndexes = selected.indexes();
+	bool isObjectSelected = !selectedIndexes.isEmpty();
 
 	bool hasChildren = false;
-	for (int j = 0; j < selected.count(); ++j) {
-		if (m_model->hasChildren(selected[j])) {
+	for (int j = 0; j < selectedIndexes.count(); ++j) {
+		
+		if (m_model->hasChildren(selectedIndexes[j])) {
+			
 			hasChildren = true;
+			break;
+		}
+	}
+
+	bool isRootObjectSelected = false;
+	for (int j = 0; j < selectedIndexes.count(); ++j) {
+
+		if (!selectedIndexes[j].parent().isValid()) {
+
+			isRootObjectSelected = true;
 			break;
 		}
 	}
@@ -185,12 +159,10 @@ void GlyphTreeView::EnableActions() {
 
 	if (isObjectSelected) {
 
-		const QModelIndex& index = selected.last();
-		bool isRootObjectSelected = !index.parent().isValid();
 		bool isRootObjectOnlySelected = isRootObjectSelected && !areMultipleObjectsSelected;
-		bool doesClipboardHaveGlyph = m_model->DoesClipboardHaveGlyph();
+		bool doesClipboardHaveGlyph = DoesClipboardHaveGlyph();
 
-		m_cutAction->setEnabled(!isRootObjectSelected);
+		m_cutAction->setEnabled(!isRootObjectSelected && !areMultipleObjectsSelected);
 		m_copyAction->setEnabled(!areMultipleObjectsSelected);
 		m_copyWithChildrenAction->setEnabled(!areMultipleObjectsSelected);
 		m_pasteAction->setEnabled(!areMultipleObjectsSelected && doesClipboardHaveGlyph);
@@ -224,13 +196,4 @@ void GlyphTreeView::PasteFromClipboard(bool addAsChild) {
 		const QModelIndex& index = selected.last();
 		m_model->PasteFromClipboard(index, addAsChild);
 	}
-}
-
-void GlyphTreeView::OnClipboardDataChanged() {
-
-	const QModelIndexList& selected = selectionModel()->selectedIndexes();
-	bool enablePasteActions = (selected.count() == 1) && m_model->DoesClipboardHaveGlyph();
-
-	m_pasteAction->setEnabled(enablePasteActions);
-	m_pasteAsChildAction->setEnabled(enablePasteActions);
 }

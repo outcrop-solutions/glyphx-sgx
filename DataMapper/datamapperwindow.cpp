@@ -146,6 +146,9 @@ void DataMapperWindow::CreateMenus() {
     QAction* exitAction = CreateMenuAction(m_fileMenu, tr("Exit"), QKeySequence::Quit);
     QObject::connect(exitAction, &QAction::triggered, this, &DataMapperWindow::close);
 
+	//Create Edit Menu
+	m_editMenu = menuBar()->addMenu(tr("Edit"));
+
     //Create Glyph Menu
     m_glyphMenu = menuBar()->addMenu(tr("Glyph"));
 
@@ -225,7 +228,8 @@ void DataMapperWindow::CreateDockWidgets() {
 	QDockWidget* leftDockWidgetGlyphTrees = new QDockWidget(tr("Glyph Trees"), this);
 
 	m_glyphTreesView = new GlyphTreesView(m_dataTransformModel, leftDockWidgetGlyphTrees);
-	m_glyphMenu->addActions(m_glyphTreesView->GetSharedActions());
+	m_glyphMenu->addActions(m_glyphTreesView->GetGlyphActions());
+	m_editMenu->addActions(m_glyphTreesView->GetEditActions());
 
     //Add Tree View to dock widget on left side
 	leftDockWidgetGlyphTrees->setWidget(m_glyphTreesView);

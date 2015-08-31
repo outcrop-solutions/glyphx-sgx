@@ -4,7 +4,7 @@
 #include "roledatafilterproxymodel.h"
 
 GlyphTreesView::GlyphTreesView(DataTransformModel* sourceModel, QWidget *parent)
-	: SynGlyphX::TreeView(parent),
+	: SynGlyphX::TreeEditView(parent),
 	m_sourceModel(sourceModel)
 {
 	SynGlyphX::RoleDataFilterProxyModel* filterModel = new SynGlyphX::RoleDataFilterProxyModel(this);
@@ -23,24 +23,19 @@ GlyphTreesView::GlyphTreesView(DataTransformModel* sourceModel, QWidget *parent)
 	setHeaderHidden(true);
 	setContextMenuPolicy(Qt::ContextMenuPolicy::ActionsContextMenu);
 
-	m_addChildrenAction = m_sharedActions.AddAction(tr("Add Children"));
+	m_addChildrenAction = m_glyphActions.AddAction(tr("Add Children"));
 	QObject::connect(m_addChildrenAction, &QAction::triggered, this, &GlyphTreesView::AddChildren);
 
-	m_sharedActions.AddSeparator();
+	m_glyphActions.AddSeparator();
 
-	m_removeAction = m_sharedActions.AddAction(tr("Remove"), QKeySequence::Delete);
-	QObject::connect(m_removeAction, &QAction::triggered, this, &GlyphTreesView::RemoveGlyph);
+	m_clearSelectedInputBindingsAction = m_glyphActions.AddAction(tr("Clear Input Bindings"));
 
-	m_removeChildrenAction = m_sharedActions.AddAction(tr("Remove Children"));
-	QObject::connect(m_removeChildrenAction, &QAction::triggered, this, &GlyphTreesView::RemoveChildren);
+	m_glyphActions.EnableActions(false);
 
-	m_sharedActions.AddSeparator();
-
-	m_clearSelectedInputBindingsAction = m_sharedActions.AddAction(tr("Clear Input Bindings"));
-
-	m_sharedActions.EnableActions(false);
 	addAction(SynGlyphX::SharedActionList::CreateSeparator(this));
-	addActions(m_sharedActions);
+	addActions(m_glyphActions);
+	addAction(SynGlyphX::SharedActionList::CreateSeparator(this));
+	addActions(m_editActions);
 }
 
 GlyphTreesView::~GlyphTreesView()
@@ -48,9 +43,9 @@ GlyphTreesView::~GlyphTreesView()
 
 }
 
-const SynGlyphX::SharedActionList& GlyphTreesView::GetSharedActions() {
+const SynGlyphX::SharedActionList& GlyphTreesView::GetGlyphActions() {
 
-	return m_sharedActions;
+	return m_glyphActions;
 }
 
 const QAction* const GlyphTreesView::GetClearSelectedInputBindingsAction() const {
@@ -60,29 +55,40 @@ const QAction* const GlyphTreesView::GetClearSelectedInputBindingsAction() const
 
 void GlyphTreesView::selectionChanged(const QItemSelection& selected, const QItemSelection& deselected) {
 
-	SynGlyphX::TreeView::selectionChanged(selected, deselected);
-	EnableActions();
+	SynGlyphX::TreeEditView::selectionChanged(selected, deselected);
+	
 	SynGlyphX::RoleDataFilterProxyModel* filterModel = dynamic_cast<SynGlyphX::RoleDataFilterProxyModel*>(model());
 	emit SelectionChangedSourceModel(filterModel->mapSelectionToSource(selected), filterModel->mapSelectionToSource(deselected));
 }
 
-void GlyphTreesView::EnableActions() {
+void GlyphTreesView::EnableActions(const QItemSelection& selection) {
 
-	const QModelIndexList& selected = selectionModel()->selectedIndexes();
-	if (!selected.isEmpty()) {
+	const QModelIndexList& selectedIndexes = selection.indexes();
+	if (!selectedIndexes.isEmpty()) {
+
+		bool areMultipleObjectsSelected = (selectedIndexes.count() > 1);
+		bool doesClipboardHaveGlyph = DoesClipboardHaveGlyph();
+
+		m_cutAction->setEnabled(!areMultipleObjectsSelected);
+		m_copyAction->setEnabled(!areMultipleObjectsSelected);
+		m_copyWithChildrenAction->setEnabled(!areMultipleObjectsSelected);
+		m_pasteAction->setEnabled(!areMultipleObjectsSelected && doesClipboardHaveGlyph);
+		m_pasteAsChildAction->setEnabled(!areMultipleObjectsSelected && doesClipboardHaveGlyph);
+
+		m_deleteAction->setEnabled(true);
+		m_deleteChildrenAction->setEnabled(model()->rowCount(selectedIndexes.front()) > 0);
 
 		m_addChildrenAction->setEnabled(true);
-		m_removeAction->setEnabled(true);
-		m_removeChildrenAction->setEnabled(model()->rowCount(selected.front()) > 0);
 		m_clearSelectedInputBindingsAction->setEnabled(true);
 	}
 	else {
 
-		m_sharedActions.EnableActions(false);
+		m_glyphActions.EnableActions(false);
+		m_editActions.EnableActions(false);
 	}
 }
 
-void GlyphTreesView::RemoveGlyph() {
+void GlyphTreesView::DeleteSelected() {
 
 	const QModelIndexList& selected = selectionModel()->selectedIndexes();
 	if (!selected.isEmpty()) {
@@ -92,7 +98,7 @@ void GlyphTreesView::RemoveGlyph() {
 	}
 }
 
-void GlyphTreesView::RemoveChildren() {
+void GlyphTreesView::DeleteChildrenFromSelected() {
 
 	const QModelIndexList& selected = selectionModel()->selectedIndexes();
 	if (!selected.isEmpty()) {
@@ -128,4 +134,14 @@ void GlyphTreesView::AddChildren() {
 void GlyphTreesView::SelectLastGlyphTreeRoot() {
 
 	selectionModel()->select(model()->index(m_sourceModel->GetDataMapping()->GetGlyphGraphs().size() - 1, 0), QItemSelectionModel::ClearAndSelect);
+}
+
+void GlyphTreesView::CopyToClipboard(bool includeChildren, bool removeFromTree) {
+
+
+}
+
+void GlyphTreesView::PasteFromClipboard(bool addAsChild) {
+
+
 }

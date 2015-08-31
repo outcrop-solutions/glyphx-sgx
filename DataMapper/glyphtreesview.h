@@ -18,11 +18,11 @@
 #ifndef GLYPHTREESVIEW_H
 #define GLYPHTREESVIEW_H
 
-#include "treeview.h"
+#include "treeeditview.h"
 #include "sharedactionlist.h"
 #include "datatransformmodel.h"
 
-class GlyphTreesView : public SynGlyphX::TreeView
+class GlyphTreesView : public SynGlyphX::TreeEditView
 {
 	Q_OBJECT
 
@@ -30,7 +30,7 @@ public:
 	GlyphTreesView(DataTransformModel* sourceModel, QWidget *parent = 0);
 	~GlyphTreesView();
 
-	const SynGlyphX::SharedActionList& GetSharedActions();
+	const SynGlyphX::SharedActionList& GetGlyphActions();
 
 	const QAction* const GetClearSelectedInputBindingsAction() const;
 
@@ -41,21 +41,20 @@ signals:
 
 protected:
 	virtual void selectionChanged(const QItemSelection& selected, const QItemSelection& deselected);
-
+	virtual void EnableActions(const QItemSelection& selection);
+	virtual void DeleteSelected();
+	virtual void DeleteChildrenFromSelected();
+	virtual void CopyToClipboard(bool includeChildren, bool removeFromTree);
+	virtual void PasteFromClipboard(bool addAsChild);
+	
 private slots:
-	void RemoveGlyph();
-	void RemoveChildren();
 	void AddChildren();
 
 private:
-	void EnableActions();
-
 	DataTransformModel* m_sourceModel;
 
-	SynGlyphX::SharedActionList m_sharedActions;
+	SynGlyphX::SharedActionList m_glyphActions;
 	QAction* m_addChildrenAction;
-	QAction* m_removeAction;
-	QAction* m_removeChildrenAction;
 	QAction* m_clearSelectedInputBindingsAction;
 };
 

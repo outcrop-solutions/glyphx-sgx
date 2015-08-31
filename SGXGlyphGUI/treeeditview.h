@@ -20,6 +20,7 @@
 
 #include "sgxglyphgui_global.h"
 #include "treeview.h"
+#include "sharedactionlist.h"
 
 namespace SynGlyphX {
 
@@ -30,6 +31,33 @@ namespace SynGlyphX {
 	public:
 		TreeEditView(QWidget *parent);
 		~TreeEditView();
+
+		const SynGlyphX::SharedActionList& GetEditActions() const;
+
+	protected slots:
+		virtual void DeleteSelected() = 0;
+		virtual void DeleteChildrenFromSelected() = 0;
+		void OnClipboardDataChanged();
+
+	protected:
+		virtual void selectionChanged(const QItemSelection& selected, const QItemSelection& deselected);
+		virtual void CopyToClipboard(bool includeChildren, bool removeFromTree) = 0;
+		virtual void PasteFromClipboard(bool addAsChild) = 0;
+		virtual void EnableActions(const QItemSelection& selected) = 0;
+		bool DoesClipboardHaveGlyph() const;
+
+		void CreateEditActions();
+
+		SynGlyphX::SharedActionList m_editActions;
+
+		//Edit menu actions
+		QAction* m_cutAction;
+		QAction* m_copyAction;
+		QAction* m_copyWithChildrenAction;
+		QAction* m_pasteAction;
+		QAction* m_pasteAsChildAction;
+		QAction* m_deleteAction;
+		QAction* m_deleteChildrenAction;
 
 	private:
 
