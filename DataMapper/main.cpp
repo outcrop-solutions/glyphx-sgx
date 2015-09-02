@@ -8,24 +8,24 @@
 #include "intminmaxwidget.h"
 #include "colorminmaxwidget.h"
 #include "exception_handler.h"
-#include <string>
 #include <boost/filesystem.hpp>
+#include <QtCore/QStandardPaths>
 
 int main(int argc, char *argv[])
 {
     SynGlyphX::GlyphBuilderApplication::Setup("Glyph Builder - Data Mapper", "0.7.12");
 	SynGlyphX::GlyphBuilderApplication a(argc, argv);
 
-	std::string _filePath = "Dumps\\";
-	const char* path = _filePath.c_str();
-	boost::filesystem::path dir(path);
+	const QString dumpPath = QStandardPaths::writableLocation(QStandardPaths::HomeLocation) + "/Minidumps";
+	std::wstring pathAsStr = (const wchar_t*)dumpPath.utf16();
+	boost::filesystem::path dir(pathAsStr);
 	if (boost::filesystem::create_directory(dir))
 	{
-		std::cerr << "Directory Created: " << _filePath << std::endl;
+		std::cerr << "Directory Created: " << std::endl;
 	}
 
 	google_breakpad::ExceptionHandler *pHandler = new google_breakpad::ExceptionHandler(
-		L"Dumps\\",
+		pathAsStr,
 		0,
 		0,
 		0,
