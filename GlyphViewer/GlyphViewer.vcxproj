@@ -47,7 +47,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <PreprocessorDefinitions>UNICODE;WIN32;WIN64;QT_DLL;QT_CORE_LIB;QT_GUI_LIB;QT_NETWORK_LIB;QT_SQL_LIB;QT_OPENGL_LIB;QT_WIDGETS_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.\GeneratedFiles;.;..\..\3rdParty\include\Qt_5_2_1;.\GeneratedFiles\$(PlatformName)\$(ConfigurationName);..\..\ANTzPlus\ANTzBridge;..\..\3rdParty\include\boost_1_55_0;..\..\Core\SGXFoundation;..\..\3rdParty\include\stlplus_3_11;..\..\Core\SGXGeospatial;..\..\GUI\SGXGUI;..\..\GUI\MapDownloading;..\..\Core\SGXDataTransform;..\..\ANTzPlus\ANTzCore;..\..\GUI\SGXGlyphGUI;..\..\3rdParty\include\zSpace_3_0_0_318;..\..\ANTzPlus\ANTzDataTransform;..\..\ANTzPlus\ANTzGUI;..\..\Core\SGXUtility;..\..\3rdParty\include\glm_0_9_6_3;..\..\GUI\SGXzSpaceGUI;..\..\Core\SGXImage;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\GeneratedFiles;.;..\..\3rdParty\include\google_breakpad;..\..\3rdParty\include\Qt_5_2_1;.\GeneratedFiles\$(PlatformName)\$(ConfigurationName);..\..\ANTzPlus\ANTzBridge;..\..\3rdParty\include\boost_1_55_0;..\..\Core\SGXFoundation;..\..\3rdParty\include\stlplus_3_11;..\..\Core\SGXGeospatial;..\..\GUI\SGXGUI;..\..\GUI\MapDownloading;..\..\Core\SGXDataTransform;..\..\ANTzPlus\ANTzCore;..\..\GUI\SGXGlyphGUI;..\..\3rdParty\include\zSpace_3_0_0_318;..\..\ANTzPlus\ANTzDataTransform;..\..\ANTzPlus\ANTzGUI;..\..\Core\SGXUtility;..\..\3rdParty\include\glm_0_9_6_3;..\..\GUI\SGXzSpaceGUI;..\..\Core\SGXImage;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Disabled</Optimization>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -58,13 +58,13 @@
       <OutputFile>$(OutDir)\$(ProjectName).exe</OutputFile>
       <AdditionalLibraryDirectories>..\..\3rdParty\lib\$(Platform)\$(Configuration)\;..\..\lib\$(Platform)\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>SGXImage.lib;SGXzSpaceGUI.lib;ANTzGUI.lib;ANTzDataTransform.lib;zSpaceApi.lib;MapDownloading.lib;SGXDataTransform.lib;SGXFoundation.lib;SGXGeospatial.lib;SGXGUI.lib;SGXGlyphGUI.lib;ANTzBridge.lib;ANTzCore.lib;SGXUtility.lib;qtmaind.lib;boost_system-vc120-mt-gd-1_55.lib;boost_filesystem-vc120-mt-gd-1_55.lib;Qt5Cored.lib;Qt5Guid.lib;Qt5Networkd.lib;Qt5Sqld.lib;Qt5OpenGLd.lib;opengl32.lib;glu32.lib;Qt5Widgetsd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>exception_handler.lib;common.lib;crash_generation_client.lib;crash_generation_server.lib;crash_report_sender.lib;SGXImage.lib;SGXzSpaceGUI.lib;ANTzGUI.lib;ANTzDataTransform.lib;zSpaceApi.lib;MapDownloading.lib;SGXDataTransform.lib;SGXFoundation.lib;SGXGeospatial.lib;SGXGUI.lib;SGXGlyphGUI.lib;ANTzBridge.lib;ANTzCore.lib;SGXUtility.lib;qtmaind.lib;boost_system-vc120-mt-gd-1_55.lib;boost_filesystem-vc120-mt-gd-1_55.lib;Qt5Cored.lib;Qt5Guid.lib;Qt5Networkd.lib;Qt5Sqld.lib;Qt5OpenGLd.lib;opengl32.lib;glu32.lib;Qt5Widgetsd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <PreprocessorDefinitions>UNICODE;WIN32;WIN64;QT_DLL;QT_NO_DEBUG;NDEBUG;QT_CORE_LIB;QT_GUI_LIB;QT_NETWORK_LIB;QT_SQL_LIB;QT_OPENGL_LIB;QT_WIDGETS_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.\GeneratedFiles;.;..\..\3rdParty\include\Qt_5_2_1;.\GeneratedFiles\$(PlatformName)\$(ConfigurationName);..\..\ANTzPlus\ANTzBridge;..\..\3rdParty\include\boost_1_55_0;..\..\Core\SGXFoundation;..\..\3rdParty\include\stlplus_3_11;..\..\Core\SGXGeospatial;..\..\GUI\SGXGUI;..\..\GUI\MapDownloading;..\..\Core\SGXDataTransform;..\..\ANTzPlus\ANTzCore;..\..\GUI\SGXGlyphGUI;..\..\3rdParty\include\zSpace_3_0_0_318;..\..\ANTzPlus\ANTzDataTransform;..\..\ANTzPlus\ANTzGUI;..\..\Core\SGXUtility;..\..\3rdParty\include\glm_0_9_6_3;..\..\GUI\SGXzSpaceGUI;..\..\Core\SGXImage;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\GeneratedFiles;.;..\..\3rdParty\include\google_breakpad;..\..\3rdParty\include\Qt_5_2_1;.\GeneratedFiles\$(PlatformName)\$(ConfigurationName);..\..\ANTzPlus\ANTzBridge;..\..\3rdParty\include\boost_1_55_0;..\..\Core\SGXFoundation;..\..\3rdParty\include\stlplus_3_11;..\..\Core\SGXGeospatial;..\..\GUI\SGXGUI;..\..\GUI\MapDownloading;..\..\Core\SGXDataTransform;..\..\ANTzPlus\ANTzCore;..\..\GUI\SGXGlyphGUI;..\..\3rdParty\include\zSpace_3_0_0_318;..\..\ANTzPlus\ANTzDataTransform;..\..\ANTzPlus\ANTzGUI;..\..\Core\SGXUtility;..\..\3rdParty\include\glm_0_9_6_3;..\..\GUI\SGXzSpaceGUI;..\..\Core\SGXImage;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat />
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
@@ -74,7 +74,7 @@
       <OutputFile>$(OutDir)\$(ProjectName).exe</OutputFile>
       <AdditionalLibraryDirectories>..\..\3rdParty\lib\$(Platform)\$(Configuration)\;..\..\lib\$(Platform)\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>false</GenerateDebugInformation>
-      <AdditionalDependencies>SGXImage.lib;SGXzSpaceGUI.lib;ANTzGUI.lib;ANTzDataTransform.lib;zSpaceApi.lib;MapDownloading.lib;SGXDataTransform.lib;SGXFoundation.lib;SGXGeospatial.lib;SGXGUI.lib;SGXGlyphGUI.lib;ANTzBridge.lib;ANTzCore.lib;SGXUtility.lib;boost_system-vc120-mt-1_55.lib;boost_filesystem-vc120-mt-1_55.lib;qtmain.lib;Qt5Core.lib;Qt5Gui.lib;Qt5Network.lib;Qt5Sql.lib;Qt5OpenGL.lib;opengl32.lib;glu32.lib;Qt5Widgets.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>exception_handler.lib;common.lib;crash_generation_client.lib;crash_generation_server.lib;crash_report_sender.lib;SGXImage.lib;SGXzSpaceGUI.lib;ANTzGUI.lib;ANTzDataTransform.lib;zSpaceApi.lib;MapDownloading.lib;SGXDataTransform.lib;SGXFoundation.lib;SGXGeospatial.lib;SGXGUI.lib;SGXGlyphGUI.lib;ANTzBridge.lib;ANTzCore.lib;SGXUtility.lib;boost_system-vc120-mt-1_55.lib;boost_filesystem-vc120-mt-1_55.lib;qtmain.lib;Qt5Core.lib;Qt5Gui.lib;Qt5Network.lib;Qt5Sql.lib;Qt5OpenGL.lib;opengl32.lib;glu32.lib;Qt5Widgets.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
