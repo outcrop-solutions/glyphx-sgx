@@ -77,4 +77,59 @@ namespace SynGlyphX {
 		return false;
 	}
 
+	void TreeEditView::CopyToClipboard(bool includeChildren, bool removeFromTree) {
+
+		const QModelIndexList& selected = selectionModel()->selectedIndexes();
+		if (!selected.isEmpty()) {
+
+			const QModelIndex& index = selected.last();
+			if (!index.isValid()) {
+
+				return;
+			}
+
+			QClipboard* globalClipboard = SynGlyphX::GlyphBuilderApplication::clipboard();
+			QMimeData* mimeData = new QMimeData();
+
+			if (includeChildren) {
+
+				SynGlyphX::LinklessGraphMimeData::ConvertToMimeData(GetGraphForCopyToClipboard(index), mimeData);
+			}
+			else {
+
+				SynGlyphX::LinklessGraphMimeData::ConvertToMimeData(GetGlyphForCopyToClipboard(index), mimeData);
+			}
+
+			if (removeFromTree) {
+
+				model()->removeRow(index.row(), index.parent());
+			}
+
+			globalClipboard->setMimeData(mimeData);
+		}
+	}
+
+	void TreeEditView::PasteFromClipboard(bool addAsChild) {
+
+		const QModelIndexList& selected = selectionModel()->selectedIndexes();
+		if (!selected.isEmpty()) {
+
+			const QModelIndex& index = selected.last();
+			QClipboard* globalClipboard = SynGlyphX::GlyphBuilderApplication::clipboard();
+			const QMimeData* mimeData = globalClipboard->mimeData();
+			if ((mimeData != nullptr) && (mimeData->hasFormat(SynGlyphX::LinklessGraphMimeData::s_format))) {
+
+				SynGlyphX::DataMappingGlyphGraph::LinklessGraph subgraph = SynGlyphX::LinklessGraphMimeData::ConvertToLinklessGraph(mimeData);
+				if (addAsChild) {
+
+					AddGlyphsAsChildren(index, subgraph);
+				}
+				else {
+
+					OverwriteGlyph(index, subgraph);
+				}
+			}
+		}
+	}
+
 } //namespace SynGlyphX

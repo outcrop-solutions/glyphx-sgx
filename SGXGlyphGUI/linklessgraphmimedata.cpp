@@ -1,21 +1,15 @@
 #include "linklessgraphmimedata.h"
+#include <boost/property_tree/ptree.hpp>
+#include <boost/property_tree/xml_parser.hpp>
+#include <sstream>
 
 namespace SynGlyphX {
 
-	const QString LinklessGraphMimeData::s_format("application/x-sgx-glyph-linklessgraph");
+	const QString LinklessGraphMimeData::s_format("sgx-glyph/datamapping-linklessgraph");
 
-	LinklessGraphMimeData::LinklessGraphMimeData(const DataMappingGlyphGraph::LinklessGraph& subgraph)
-		: QMimeData(),
-		m_subgraph(subgraph)
+	LinklessGraphMimeData::LinklessGraphMimeData()
 	{
 
-	}
-
-	LinklessGraphMimeData::LinklessGraphMimeData(const DataMappingGlyph& glyph)
-		: QMimeData(),
-		m_subgraph() {
-
-		m_subgraph.insert(DataMappingGlyphGraph::VertexType(0, glyph));
 	}
 
 	LinklessGraphMimeData::~LinklessGraphMimeData()
@@ -23,21 +17,45 @@ namespace SynGlyphX {
 
 	}
 
-	QStringList LinklessGraphMimeData::formats() const {
+	void LinklessGraphMimeData::ConvertToMimeData(const DataMappingGlyphGraph::LinklessGraph& graph, QMimeData* mimeData) {
 
-		QStringList types;
-		types.push_back(s_format);
-		return types;
+		DataMappingGlyphGraph dataMappingGraph(graph);
+		ConvertToMimeData(dataMappingGraph, mimeData);
 	}
 
-	bool LinklessGraphMimeData::hasFormat(const QString & mimeType) const {
+	void LinklessGraphMimeData::ConvertToMimeData(const DataMappingGlyph& glyph, QMimeData* mimeData) {
 
-		return (mimeType == s_format);
+		DataMappingGlyphGraph dataMappingGraph;
+		dataMappingGraph.SetRootGlyph(glyph);
+		ConvertToMimeData(dataMappingGraph, mimeData);
 	}
 
-	const DataMappingGlyphGraph::LinklessGraph& LinklessGraphMimeData::GetSubGraph() const {
+	void LinklessGraphMimeData::ConvertToMimeData(const DataMappingGlyphGraph& graph, QMimeData* mimeData) {
 
-		return m_subgraph;
+		boost::property_tree::wptree propertyTree;
+		graph.ExportToPropertyTree(propertyTree);
+		std::wstringstream xmlText;
+		boost::property_tree::write_xml(xmlText, propertyTree);
+
+		QByteArray utf8ByteArray = QString::fromStdWString(xmlText.str()).toUtf8();
+
+		mimeData->setData(s_format, utf8ByteArray);
+	}
+
+	DataMappingGlyphGraph::LinklessGraph LinklessGraphMimeData::ConvertToLinklessGraph(const QMimeData* const mimeData) {
+
+		if (!mimeData->hasFormat(s_format)) {
+
+			throw std::invalid_argument("Invalid mime type for linkless graph");
+		}
+
+		boost::property_tree::wptree propertyTree;
+		std::wstringstream xmlText;
+		xmlText.str(QString::fromUtf8(mimeData->data(s_format)).toStdWString());
+		boost::property_tree::read_xml(xmlText, propertyTree, boost::property_tree::xml_parser::trim_whitespace);
+
+		DataMappingGlyphGraph graph(propertyTree.get_child(L"Glyph"));
+		return graph.GetSubgraph(graph.GetRoot());
 	}
 
 } //namespace SynGlyphX

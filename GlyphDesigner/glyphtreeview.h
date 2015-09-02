@@ -36,8 +36,10 @@ public slots:
 	void AddChildren();
 
 protected:
-	virtual void CopyToClipboard(bool includeChildren, bool removeFromTree);
-	virtual void PasteFromClipboard(bool addAsChild);
+	virtual SynGlyphX::DataMappingGlyphGraph::LinklessGraph GetGraphForCopyToClipboard(const QModelIndex& index);
+	virtual SynGlyphX::DataMappingGlyph GetGlyphForCopyToClipboard(const QModelIndex& index);
+	virtual void OverwriteGlyph(const QModelIndex& index, const SynGlyphX::DataMappingGlyphGraph::LinklessGraph& graph);
+	virtual void AddGlyphsAsChildren(const QModelIndex& index, const SynGlyphX::DataMappingGlyphGraph::LinklessGraph& graph);
 	virtual void EnableActions(const QItemSelection& selected);
 	virtual void DeleteSelected();
 	virtual void DeleteChildrenFromSelected();

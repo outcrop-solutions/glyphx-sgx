@@ -178,22 +178,22 @@ void GlyphTreeView::EnableActions(const QItemSelection& selected) {
 	}
 }
 
-void GlyphTreeView::CopyToClipboard(bool includeChildren, bool removeFromTree) {
+SynGlyphX::DataMappingGlyphGraph::LinklessGraph GlyphTreeView::GetGraphForCopyToClipboard(const QModelIndex& index) {
 
-	const QModelIndexList& selected = selectionModel()->selectedIndexes();
-	if (!selected.isEmpty()) {
-
-		const QModelIndex& index = selected.last();
-		m_model->CopyToClipboard(index, includeChildren, removeFromTree);
-	}
+	return m_model->GetSubgraph(index);
 }
 
-void GlyphTreeView::PasteFromClipboard(bool addAsChild) {
+SynGlyphX::DataMappingGlyph GlyphTreeView::GetGlyphForCopyToClipboard(const QModelIndex& index)  {
 
-	const QModelIndexList& selected = selectionModel()->selectedIndexes();
-	if (!selected.isEmpty()) {
+	return m_model->GetMinMaxGlyph(index)->second;
+}
 
-		const QModelIndex& index = selected.last();
-		m_model->PasteFromClipboard(index, addAsChild);
-	}
+void GlyphTreeView::OverwriteGlyph(const QModelIndex& index, const SynGlyphX::DataMappingGlyphGraph::LinklessGraph& graph) {
+
+	m_model->OverwriteGlyph(index, graph);
+}
+
+void GlyphTreeView::AddGlyphsAsChildren(const QModelIndex& index, const SynGlyphX::DataMappingGlyphGraph::LinklessGraph& graph) {
+
+	m_model->AppendChildGraph(index, graph);
 }

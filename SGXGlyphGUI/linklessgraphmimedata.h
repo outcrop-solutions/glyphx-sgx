@@ -21,28 +21,25 @@
 #include "sgxglyphgui_global.h"
 #include <QtCore/QMimeData>
 #include "datamappingglyphgraph.h"
-#include <QtCore/QModelIndex>
 
 namespace SynGlyphX {
 
-	class SGXGLYPHGUI_EXPORT LinklessGraphMimeData : public QMimeData
+	class SGXGLYPHGUI_EXPORT LinklessGraphMimeData
 	{
-		Q_OBJECT
 
 	public:
 		static const QString s_format;
 
-		LinklessGraphMimeData(const DataMappingGlyphGraph::LinklessGraph& subgraph);
-		LinklessGraphMimeData(const DataMappingGlyph& glyph);
+		LinklessGraphMimeData();
 		~LinklessGraphMimeData();
 
-		virtual QStringList formats() const;
-		virtual bool hasFormat(const QString& mimeType) const;
+		static void ConvertToMimeData(const DataMappingGlyphGraph::LinklessGraph& graph, QMimeData* mimeData);
+		static void ConvertToMimeData(const DataMappingGlyph& glyph, QMimeData* mimeData);
 
-		const DataMappingGlyphGraph::LinklessGraph& GetSubGraph() const;
+		static DataMappingGlyphGraph::LinklessGraph ConvertToLinklessGraph(const QMimeData* const mimeData);
 
 	private:
-		DataMappingGlyphGraph::LinklessGraph m_subgraph;
+		static void ConvertToMimeData(const DataMappingGlyphGraph& graph, QMimeData* mimeData);
 	};
 
 } //namespace SynGlyphX
