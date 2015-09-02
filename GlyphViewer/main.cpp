@@ -3,11 +3,31 @@
 #include <QtWidgets/QSplashScreen>
 #include <QtCore/QTimer>
 #include "licensingdialog.h"
+#include "exception_handler.h"
+#include <QtCore/QStandardPaths>
 
 int main(int argc, char *argv[])
 {
 	SynGlyphX::GlyphBuilderApplication::Setup("Glyph Builder - Glyph Viewer", "0.7.12");
 	SynGlyphX::GlyphBuilderApplication a(argc, argv);
+
+	const QString dumpPath = QStandardPaths::writableLocation(QStandardPaths::HomeLocation) + "/Minidumps";
+	std::wstring pathAsStr = (const wchar_t*)dumpPath.utf16();
+	boost::filesystem::path dir(pathAsStr);
+	if (boost::filesystem::create_directory(dir))
+	{
+		std::cerr << "Directory Created: " << std::endl;
+	}
+
+	google_breakpad::ExceptionHandler *pHandler = new google_breakpad::ExceptionHandler(
+		pathAsStr,
+		0,
+		0,
+		0,
+		google_breakpad::ExceptionHandler::HANDLER_ALL,
+		MiniDumpNormal,
+		L"",
+		0);
 
 	SynGlyphX::GlyphBuilderApplication::SetupIcons(QIcon(":SGXGUI/Resources/synglyphx_x.ico"));
 
