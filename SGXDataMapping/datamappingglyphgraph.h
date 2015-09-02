@@ -52,16 +52,16 @@ namespace SynGlyphX {
 		DataMappingGlyphGraph(const boost::property_tree::wptree& propertyTree);
 		DataMappingGlyphGraph(const GlyphGraph& graph);
 		DataMappingGlyphGraph(const DataMappingGlyphGraph& graph);
+		DataMappingGlyphGraph(const LinklessGraph& graph);
 		virtual ~DataMappingGlyphGraph();
 
 		PropertyTree& ExportToPropertyTree(boost::property_tree::wptree& propertyTreeParent) const;
-		PropertyTree& ExportSubgraphToPropertyTree(const DataMappingGlyphGraph::ConstGlyphIterator& vertex, boost::property_tree::wptree& propertyTreeParent) const;
 
 		bool operator==(const DataMappingGlyphGraph& graph) const;
 		bool operator!=(const DataMappingGlyphGraph& graph) const;
 
-		//void WriteToFile(const std::string& filename) const;
-		//void ReadFromFile(const std::string& filename);
+		virtual LinklessGraph GetSubgraph(const GlyphIterator& vertex);
+		virtual LinklessGraph GetAndRemoveSubgraph(const GlyphIterator& vertex);
 
 		void SetInputField(DataMappingGlyphGraph::ConstGlyphIterator& node, DataMappingGlyph::MappableField field, const InputField& inputfield);
 		void ClearInputBinding(DataMappingGlyphGraph::ConstGlyphIterator& node, DataMappingGlyph::MappableField field);
@@ -78,6 +78,7 @@ namespace SynGlyphX {
 		static SharedPtr CreateDefault();
 
 	private:
+		void ClearAllInputBindings(LinklessGraph& graph, LinklessGraph::iterator& vertex);
 		void IncrementInputBindingCountsFromGlyph(const DataMappingGlyph& glyph);
 		void IncrementInputBindingCount(const InputBinding& binding);
 		void ExportChildrenToPropertyTree(const DataMappingGlyphGraph::ConstGlyphIterator& parent, boost::property_tree::wptree& propertyTreeParent) const;

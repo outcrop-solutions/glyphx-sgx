@@ -80,6 +80,12 @@ namespace SynGlyphX {
 		}
 	}
 
+	DataMappingGlyphGraph::DataMappingGlyphGraph(const LinklessGraph& graph) :
+		GlyphGraphTemplate<DataMappingGlyph>(graph) {
+
+
+	}
+
 	DataMappingGlyphGraph::~DataMappingGlyphGraph()
 	{
 	}
@@ -140,7 +146,9 @@ namespace SynGlyphX {
 
 	DataMappingGlyphGraph::PropertyTree& DataMappingGlyphGraph::ExportToPropertyTree(boost::property_tree::wptree& propertyTreeParent) const {
 
-		boost::property_tree::wptree& rootPropertyTree = ExportSubgraphToPropertyTree(GetRoot(), propertyTreeParent);
+		boost::property_tree::wptree& rootPropertyTree = GetRoot()->second.ExportToPropertyTree(propertyTreeParent);
+		rootPropertyTree.put<Label>(L"<xmlattr>.label", GetRoot()->first);
+		ExportChildrenToPropertyTree(GetRoot(), rootPropertyTree);
 
 		if (!m_linkGlyphs.empty()) {
 
@@ -167,15 +175,6 @@ namespace SynGlyphX {
 		return rootPropertyTree;
 	}
 
-	DataMappingGlyphGraph::PropertyTree& DataMappingGlyphGraph::ExportSubgraphToPropertyTree(const DataMappingGlyphGraph::ConstGlyphIterator& vertex, boost::property_tree::wptree& propertyTreeParent) const {
-
-		boost::property_tree::wptree& newPropertyTree = GetRoot()->second.ExportToPropertyTree(propertyTreeParent);
-		newPropertyTree.put<Label>(L"<xmlattr>.label", GetRoot()->first);
-		ExportChildrenToPropertyTree(GetRoot(), newPropertyTree);
-
-		return newPropertyTree;
-	}
-
 	void DataMappingGlyphGraph::ExportChildrenToPropertyTree(const DataMappingGlyphGraph::ConstGlyphIterator& parent, boost::property_tree::wptree& propertyTreeParent) const {
 
 		unsigned int numChildren = children(parent);
@@ -192,11 +191,28 @@ namespace SynGlyphX {
 		}
 	}
 
-	/*
-	const DataMappingGlyphGraph::Vertex& DataMappingGlyphGraph::GetRootVertex() const {
+	DataMappingGlyphGraph::LinklessGraph DataMappingGlyphGraph::GetSubgraph(const GlyphIterator& vertex) {
 
-		return m_rootVertex;
-	}*/
+		LinklessGraph graph = GlyphGraphTemplate<DataMappingGlyph>::GetSubgraph(vertex);
+		ClearAllInputBindings(graph, graph.root());
+		return graph;
+	}
+
+	DataMappingGlyphGraph::LinklessGraph DataMappingGlyphGraph::GetAndRemoveSubgraph(const GlyphIterator& vertex) {
+
+		LinklessGraph graph = GlyphGraphTemplate<DataMappingGlyph>::GetAndRemoveSubgraph(vertex);
+		ClearAllInputBindings(graph, graph.root());
+		return graph;
+	}
+
+	void DataMappingGlyphGraph::ClearAllInputBindings(LinklessGraph& graph, LinklessGraph::iterator& vertex) {
+
+		vertex->second.ClearAllInputBindings();
+		for (unsigned int i = 0; i < graph.children(vertex); ++i) {
+
+			ClearAllInputBindings(graph, graph.child(vertex, i));
+		}
+	}
 
 	void DataMappingGlyphGraph::ProcessPropertyTreeChildren(const DataMappingGlyphGraph::GlyphIterator& parent, const boost::property_tree::wptree& propertyTree) {
 

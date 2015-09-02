@@ -285,6 +285,15 @@ namespace SynGlyphX {
 		}
 	}
 
+	void DataMappingGlyph::ClearAllInputBindings() {
+
+		for (unsigned int field = 0; field < MappableField::MappableFieldSize; ++field) {
+
+			InputBinding& selectedBinding = const_cast<InputBinding&>(GetInputBinding(static_cast<MappableField>(field)));
+			selectedBinding.Clear();
+		}
+	}
+
 	const InputBinding& DataMappingGlyph::GetInputBinding(MappableField field) const {
 
 		if (field == MappableField::PositionX) {

@@ -71,6 +71,7 @@ namespace SynGlyphX {
 
 		void SetInputBinding(MappableField field, const InputBinding& binding);
 		void ClearInputBinding(MappableField field);
+		void ClearAllInputBindings();
 		const InputBinding& GetInputBinding(MappableField field) const;
 
 		bool IsPositionXYBoundToInputFields() const;

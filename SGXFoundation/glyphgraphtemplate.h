@@ -63,12 +63,17 @@ namespace SynGlyphX {
 
 		GlyphGraphTemplate(const GlyphGraphTemplate& graph) :
 			stlplus::ntree<std::pair<unsigned long, GlyphType>>(graph),
+			m_nextLabel(graph.m_nextLabel),
+			m_linkGlyphs(graph.m_linkGlyphs) {
+
+		}
+
+		GlyphGraphTemplate(const LinklessGraph& graph) :
+			stlplus::ntree<std::pair<unsigned long, GlyphType>>(),
 			m_nextLabel(0) {
 
-			insert(VertexType(GetNextLabel(), graph.GetRoot()->second));
-			CopyChildren(GetRoot(), graph.GetRoot(), graph);
-
-			m_linkGlyphs = graph.m_linkGlyphs;
+			insert(VertexType(GetNextLabel(), graph.root()->second));
+			CopyChildren(GetRoot(), graph.root(), graph);
 		}
 
 		~GlyphGraphTemplate() {
@@ -106,12 +111,12 @@ namespace SynGlyphX {
 			return child(vertex, pos);
 		}
 
-		LinklessGraph GetSubgraph(const GlyphIterator& vertex) {
+		virtual LinklessGraph GetSubgraph(const GlyphIterator& vertex) {
 
 			return subtree(vertex);
 		}
 
-		LinklessGraph GetAndRemoveSubgraph(const GlyphIterator& vertex) {
+		virtual LinklessGraph GetAndRemoveSubgraph(const GlyphIterator& vertex) {
 
 			return cut(vertex);
 		}
