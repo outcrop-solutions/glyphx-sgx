@@ -237,6 +237,12 @@ namespace SynGlyphX {
 		return m_glyphTrees;
 	}
 
+	DataMappingGlyphGraph::LinklessGraph DataTransformMapping::GetSubgraph(const boost::uuids::uuid& treeId, DataMappingGlyphGraph::ConstGlyphIterator& vertex) {
+
+		DataMappingGlyphGraph::SharedPtr glyphTree = m_glyphTrees[treeId];
+		return glyphTree->GetSubgraph(vertex.deconstify());
+	}
+
 	bool DataTransformMapping::IsTransformable() const {
 
 		return (m_datasources.HasDatasources() && DoesAtLeastOneGlyphGraphHaveBindingsOnPosition());
@@ -384,6 +390,16 @@ namespace SynGlyphX {
 	}
 
 	void DataTransformMapping::AddChildTree(const boost::uuids::uuid& treeId, DataMappingGlyphGraph::GlyphIterator& parent, const SynGlyphX::DataMappingGlyphGraph::LinklessGraph& glyphGraph) {
+
+		if (!parent.valid()) {
+
+			throw std::invalid_argument("Can't append children to invalid parent");
+		}
+
+		m_glyphTrees[treeId]->AddChildGlyphGraph(parent, glyphGraph);
+	}
+
+	void DataTransformMapping::AddChildTreeResetPosition(const boost::uuids::uuid& treeId, DataMappingGlyphGraph::GlyphIterator& parent, const SynGlyphX::DataMappingGlyphGraph::LinklessGraph& glyphGraph) {
 
 		if (!parent.valid()) {
 
