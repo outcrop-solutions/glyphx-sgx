@@ -579,82 +579,41 @@ namespace SynGlyphXANTz {
 		return true;
 	}
 
-	bool MinMaxGlyphTreeModel::DoesClipboardHaveGlyph() const {
-
-		QClipboard* globalClipboard = SynGlyphX::GlyphBuilderApplication::clipboard();
-		const QMimeData* mimeData = globalClipboard->mimeData();
-
-		if (mimeData != nullptr) {
-
-			return mimeData->hasFormat(SynGlyphX::LinklessGraphMimeData::s_format);
-		}
-
-		return false;
-	}
-
-	void MinMaxGlyphTreeModel::CopyToClipboard(const QModelIndex& index, bool includeChildren, bool removeFromTree) {
+	SynGlyphX::DataMappingGlyphGraph::LinklessGraph MinMaxGlyphTreeModel::GetSubgraph(const QModelIndex& index) {
 
 		if (!index.isValid()) {
 
-			return;
+			throw std::invalid_argument("Index given to MinMaxGlyphTreeModel::GetSubgraph is invalid");
 		}
-
-		QClipboard* globalClipboard = SynGlyphX::GlyphBuilderApplication::clipboard();
 
 		SynGlyphX::DataMappingGlyphGraph::GlyphIterator vertex = GetIteratorFromIndex(index);
-		SynGlyphX::LinklessGraphMimeData* mimeData = nullptr;
-		
-		if (includeChildren) {
-
-			mimeData = new SynGlyphX::LinklessGraphMimeData(m_minMaxGlyphTree->GetSubgraph(vertex));
-		}
-		else {
-
-			mimeData = new SynGlyphX::LinklessGraphMimeData(vertex->second);
-		}
-
-		if (removeFromTree) {
-
-			removeRow(index.row(), index.parent());
-		}
-
-		globalClipboard->setMimeData(mimeData);
+		return m_minMaxGlyphTree->GetSubgraph(vertex);
 	}
 
-	void MinMaxGlyphTreeModel::PasteFromClipboard(const QModelIndex& index, bool pasteAsChild) {
+	void MinMaxGlyphTreeModel::OverwriteGlyph(const QModelIndex& index, const SynGlyphX::DataMappingGlyphGraph::LinklessGraph& subgraph) {
 
-		QClipboard* globalClipboard = SynGlyphX::GlyphBuilderApplication::clipboard();
-		const QMimeData* mimeData = globalClipboard->mimeData();
-		if (mimeData != nullptr) {
+		if (!index.isValid()) {
 
-			const SynGlyphX::LinklessGraphMimeData* linklessGraphMimeData = dynamic_cast<const SynGlyphX::LinklessGraphMimeData*>(mimeData);
-			if (linklessGraphMimeData != nullptr) {
+			throw std::invalid_argument("Index given to MinMaxGlyphTreeModel::GetSubgraph is invalid");
+		}
 
-				if (pasteAsChild) {
+		SynGlyphX::DataMappingGlyphGraph::LinklessGraph& nonConstGraph = const_cast<SynGlyphX::DataMappingGlyphGraph::LinklessGraph&>(subgraph);
 
-					AppendChildGraph(index, linklessGraphMimeData->GetSubGraph());
-				}
-				else {
+		SynGlyphX::DataMappingGlyphGraph::GlyphIterator pasteGlyph = GetIteratorFromIndex(index);
+		UpdateGlyph(index, nonConstGraph.root()->second, SynGlyphX::PropertyUpdate::UpdateAllExceptPosition);
 
-					SynGlyphX::DataMappingGlyphGraph::GlyphIterator pasteGlyph = GetIteratorFromIndex(index);
-					SynGlyphX::DataMappingGlyphGraph::LinklessGraph& subgraph = const_cast<SynGlyphX::DataMappingGlyphGraph::LinklessGraph&>(linklessGraphMimeData->GetSubGraph());
-					UpdateGlyph(index, subgraph.root()->second, SynGlyphX::PropertyUpdate::UpdateAllExceptPosition);
+		unsigned int numberOfChildrenOfRootInSubgraph = nonConstGraph.children(nonConstGraph.root());
+		if (numberOfChildrenOfRootInSubgraph > 0) {
 
-					unsigned int numberOfChildrenOfRootInSubgraph = subgraph.children(subgraph.root());
-					if (numberOfChildrenOfRootInSubgraph > 0) {
+			unsigned int numberOfChildrenInNewParent = m_minMaxGlyphTree->ChildCount(pasteGlyph.constify());
+			beginInsertRows(index, numberOfChildrenInNewParent, numberOfChildrenInNewParent + numberOfChildrenOfRootInSubgraph - 1);
 
-						unsigned int numberOfChildrenInNewParent = m_minMaxGlyphTree->ChildCount(pasteGlyph.constify());
-						beginInsertRows(index, numberOfChildrenInNewParent, numberOfChildrenInNewParent + numberOfChildrenOfRootInSubgraph - 1);
+			for (int i = 0; i < numberOfChildrenOfRootInSubgraph; ++i) {
 
-						for (int i = 0; i < numberOfChildrenOfRootInSubgraph; ++i) {
-
-							m_minMaxGlyphTree->AddChildGlyphGraph(pasteGlyph, subgraph.subtree(subgraph.child(subgraph.root(), i)));
-						}
-
-						endInsertRows();
-					}
-				}
+				m_minMaxGlyphTree->AddChildGlyphGraph(pasteGlyph, nonConstGraph.subtree(nonConstGraph.child(nonConstGraph.root(), i)));
 			}
+
+			endInsertRows();
 		}
 	}
 

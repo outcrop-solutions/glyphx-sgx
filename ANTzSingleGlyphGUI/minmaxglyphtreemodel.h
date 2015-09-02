@@ -72,9 +72,8 @@ namespace SynGlyphXANTz {
 		void SaveToTemplateFile(const QString& filename) const;
 		bool SaveToCSV(const QString& filename, bool writeMaxGlyph = true);
 
-		bool DoesClipboardHaveGlyph() const;
-		void CopyToClipboard(const QModelIndex& index, bool includeChildren, bool removeFromTree = false);
-		void PasteFromClipboard(const QModelIndex& index, bool pasteAsChild = false);
+		SynGlyphX::DataMappingGlyphGraph::LinklessGraph GetSubgraph(const QModelIndex& index);
+		void OverwriteGlyph(const QModelIndex& index, const SynGlyphX::DataMappingGlyphGraph::LinklessGraph& subgraph);
 
 		void RepaceModelWithDefaultGlyphTree();
 		void ResetRootMinMaxPositionXY();
