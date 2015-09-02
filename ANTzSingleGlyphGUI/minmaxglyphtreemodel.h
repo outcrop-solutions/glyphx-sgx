@@ -55,6 +55,7 @@ namespace SynGlyphXANTz {
 
 		void AppendChild(const QModelIndex& parent, const SynGlyphX::DataMappingGlyph& glyph, unsigned int numberOfChildren = 1);
 		void AppendChildGraph(const QModelIndex& parent, const SynGlyphX::DataMappingGlyphGraph::LinklessGraph& subgraph);
+		void AppendChildGraphResetPosition(const QModelIndex& parent, const SynGlyphX::DataMappingGlyphGraph::LinklessGraph& subgraph);
 
 		void UpdateGlyph(const QModelIndex& index, const SynGlyphX::DataMappingGlyph& glyph, SynGlyphX::PropertyUpdates updates = SynGlyphX::UpdateAll);
 		void UpdateGlyphs(const QModelIndexList& indexList, const SynGlyphX::DataMappingGlyph& glyph, SynGlyphX::PropertyUpdates updates = SynGlyphX::UpdateAll);

@@ -244,6 +244,16 @@ namespace SynGlyphXANTz {
 		SynGlyphX::DataMappingGlyphGraph::GlyphIterator newParentGlyph = GetIteratorFromIndex(parent);
 		unsigned int numberOfChildren = m_minMaxGlyphTree->ChildCount(newParentGlyph.constify());
 
+		beginInsertRows(parent, numberOfChildren, numberOfChildren);
+		m_minMaxGlyphTree->AddChildGlyphGraph(newParentGlyph, subgraph);
+		endInsertRows();
+	}
+
+	void MinMaxGlyphTreeModel::AppendChildGraphResetPosition(const QModelIndex& parent, const SynGlyphX::DataMappingGlyphGraph::LinklessGraph& subgraph) {
+
+		SynGlyphX::DataMappingGlyphGraph::GlyphIterator newParentGlyph = GetIteratorFromIndex(parent);
+		unsigned int numberOfChildren = m_minMaxGlyphTree->ChildCount(newParentGlyph.constify());
+
 		//Only do an insert here.  The MoveAction will take care of deleting the old object
 		beginInsertRows(parent, numberOfChildren, numberOfChildren);
 		SynGlyphX::Vector3 newPosition = { { 15.0, 0.0, 0.0 } };
@@ -507,10 +517,10 @@ namespace SynGlyphXANTz {
 			for (int j = 0; j < indexes.length(); ++j) {
 
 				//Only drop if parents are different
-				if (indexes[j] != parent) {
+				if (indexes[j].parent() != parent) {
 
 					SynGlyphX::DataMappingGlyphGraph::LinklessGraph oldGlyphSubtree = m_minMaxGlyphTree->GetSubgraph(GetIteratorFromIndex(indexes[j]));
-					AppendChildGraph(indexes[j], oldGlyphSubtree);
+					AppendChildGraphResetPosition(parent, oldGlyphSubtree);
 					glyphsMoved = true;
 				}
 			}
