@@ -23,6 +23,14 @@ namespace SynGlyphX {
 		return m_editActions;
 	}
 
+	void TreeEditView::setModel(QAbstractItemModel* model) {
+
+		TreeView::setModel(model);
+
+		QObject::connect(model, &QAbstractItemModel::rowsRemoved, this, &TreeEditView::OnRowsInsertedOrRemoved);
+		QObject::connect(model, &QAbstractItemModel::rowsInserted, this, &TreeEditView::OnRowsInsertedOrRemoved);
+	}
+
 	void TreeEditView::selectionChanged(const QItemSelection& selected, const QItemSelection& deselected) {
 
 		SynGlyphX::TreeView::selectionChanged(selected, deselected);
@@ -130,6 +138,11 @@ namespace SynGlyphX {
 				}
 			}
 		}
+	}
+
+	void TreeEditView::OnRowsInsertedOrRemoved() {
+
+		EnableActions(selectionModel()->selection());
 	}
 
 } //namespace SynGlyphX

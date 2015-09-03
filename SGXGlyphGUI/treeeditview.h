@@ -35,10 +35,13 @@ namespace SynGlyphX {
 
 		const SynGlyphX::SharedActionList& GetEditActions() const;
 
+		virtual void setModel(QAbstractItemModel* model);
+
 	protected slots:
 		virtual void DeleteSelected() = 0;
 		virtual void DeleteChildrenFromSelected() = 0;
 		void OnClipboardDataChanged();
+		void OnRowsInsertedOrRemoved();
 
 	protected:
 		virtual void selectionChanged(const QItemSelection& selected, const QItemSelection& deselected);
