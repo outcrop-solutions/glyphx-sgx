@@ -44,8 +44,8 @@ namespace SynGlyphX {
 		typedef const_iterator ConstGlyphIterator;
 
 		typedef std::map<std::pair<Label, Label>, LinkType> LinkMap;
-
-		typedef stlplus::ntree<std::pair<Label, GlyphType>> LinklessGraph;
+		typedef std::pair<Label, GlyphType> VertexType;
+		typedef stlplus::ntree<VertexType> LinklessGraph;
 
 		GlyphGraphTemplate() :
 			stlplus::ntree<std::pair<unsigned long, GlyphType>>(),
@@ -58,17 +58,22 @@ namespace SynGlyphX {
 			stlplus::ntree<std::pair<unsigned long, GlyphType>>(),
 			m_nextLabel(0) {
 
-			insert(std::pair<Label, GlyphType>(GetNextLabel(), rootGlyph));
+			insert(VertexType(GetNextLabel(), rootGlyph));
 		}
 
 		GlyphGraphTemplate(const GlyphGraphTemplate& graph) :
 			stlplus::ntree<std::pair<unsigned long, GlyphType>>(graph),
+			m_nextLabel(graph.m_nextLabel),
+			m_linkGlyphs(graph.m_linkGlyphs) {
+
+		}
+
+		GlyphGraphTemplate(const LinklessGraph& graph) :
+			stlplus::ntree<std::pair<unsigned long, GlyphType>>(),
 			m_nextLabel(0) {
 
-			insert(std::pair<Label, GlyphType>(GetNextLabel(), graph.GetRoot()->second));
-			CopyChildren(GetRoot(), graph.GetRoot(), graph);
-
-			m_linkGlyphs = graph.m_linkGlyphs;
+			insert(VertexType(GetNextLabel(), graph.root()->second));
+			CopyChildren(GetRoot(), graph.root(), graph);
 		}
 
 		~GlyphGraphTemplate() {
@@ -106,9 +111,14 @@ namespace SynGlyphX {
 			return child(vertex, pos);
 		}
 
-		LinklessGraph GetSubgraph(const GlyphIterator& vertex) {
+		virtual LinklessGraph GetSubgraph(const GlyphIterator& vertex) {
 
 			return subtree(vertex);
+		}
+
+		virtual LinklessGraph GetAndRemoveSubgraph(const GlyphIterator& vertex) {
+
+			return cut(vertex);
 		}
 
 		unsigned int ChildCount(const ConstGlyphIterator& vertex) const {
@@ -203,7 +213,7 @@ namespace SynGlyphX {
 				throw std::invalid_argument("Can't set root glyph on non empty glyph graph");
 			}
 
-			GlyphIterator newIterator = insert(std::pair<Label, GlyphType>(label, glyph));
+			GlyphIterator newIterator = insert(VertexType(label, glyph));
 
 			return newIterator;
 		}
@@ -281,7 +291,7 @@ namespace SynGlyphX {
 				m_nextLabel = label + 1;
 			}
 
-			GlyphIterator newIterator = insert(vertex, std::pair<Label, GlyphType>(label, glyph));
+			GlyphIterator newIterator = insert(vertex, VertexType(label, glyph));
 
 			return newIterator;
 		}

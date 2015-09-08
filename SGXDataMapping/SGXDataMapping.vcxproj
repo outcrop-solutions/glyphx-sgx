@@ -11,9 +11,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{97CCCA63-D9A1-4B89-B473-FC1385E3782E}</ProjectGuid>
+    <ProjectGuid>{72BF141A-129B-474B-B059-EF204CBD31F6}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>SGXImage</RootNamespace>
+    <RootNamespace>SGXDataMapping</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -54,16 +54,17 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;SGXIMAGE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\..\Core\SGXUtility;..\..\3rdParty\include\boost_1_55_0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;SGXDATAMAPPING_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeaderFile />
+      <AdditionalIncludeDirectories>..\..\Core\SGXFoundation;..\..\3rdParty\include\stlplus_3_11;..\..\Core\SGXUtility\;..\..\Core\SGXImage;..\..\3rdParty\include\boost_1_55_0</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>..\..\lib\$(Platform)\$(Configuration)\;..\..\3rdParty\lib\$(Platform)\$(Configuration)\;</AdditionalLibraryDirectories>
+      <OutputFile>$(OutDir)\$(ProjectName).dll</OutputFile>
       <ImportLibrary>..\..\lib\$(Platform)\$(Configuration)\$(TargetName).lib</ImportLibrary>
-      <AdditionalLibraryDirectories>..\..\lib\$(Platform)\$(Configuration)\;..\..\3rdParty\lib\$(Platform)\$(Configuration)\;..\..\3rdParty\tools\rlm_ez_11_0\$(Platform)\</AdditionalLibraryDirectories>
-      <AdditionalDependencies>SGXUtility.lib;boost_system-vc120-mt-gd-1_55.lib;boost_filesystem-vc120-mt-gd-1_55.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SGXImage.lib;SGXFoundation.lib;SGXUtility.lib;boost_system-vc120-mt-gd-1_55.lib;boost_filesystem-vc120-mt-gd-1_55.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -73,36 +74,63 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;SGXIMAGE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\..\Core\SGXUtility;..\..\3rdParty\include\boost_1_55_0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;SGXDATAMAPPING_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeaderFile />
+      <AdditionalIncludeDirectories>..\..\Core\SGXFoundation;..\..\3rdParty\include\stlplus_3_11;..\..\Core\SGXUtility\;..\..\Core\SGXImage;..\..\3rdParty\include\boost_1_55_0</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>..\..\lib\$(Platform)\$(Configuration)\;..\..\3rdParty\lib\$(Platform)\$(Configuration)\;</AdditionalLibraryDirectories>
+      <OutputFile>$(OutDir)\$(ProjectName).dll</OutputFile>
       <ImportLibrary>..\..\lib\$(Platform)\$(Configuration)\$(TargetName).lib</ImportLibrary>
-      <AdditionalLibraryDirectories>..\..\lib\$(Platform)\$(Configuration)\;..\..\3rdParty\lib\$(Platform)\$(Configuration)\;..\..\3rdParty\tools\rlm_ez_11_0\$(Platform)\</AdditionalLibraryDirectories>
-      <AdditionalDependencies>SGXUtility.lib;;boost_system-vc120-mt-1_55.lib;boost_filesystem-vc120-mt-1_55.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SGXImage.lib;SGXFoundation.lib;SGXUtility.lib;boost_system-vc120-mt-1_55.lib;boost_filesystem-vc120-mt-1_55.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="baseimage.h" />
-    <ClInclude Include="baseimageproperties.h" />
-    <ClInclude Include="defaultbaseimageproperties.h" />
-    <ClInclude Include="downloadedmapproperties.h" />
-    <ClInclude Include="SGXImage.h" />
+    <ClInclude Include="datamappingdefaults.h" />
+    <ClInclude Include="datamappingfunction.h" />
+    <ClInclude Include="datamappingglyph.h" />
+    <ClInclude Include="datamappingglyphfile.h" />
+    <ClInclude Include="datamappingglyphgeometry.h" />
+    <ClInclude Include="datamappingglyphgraph.h" />
+    <ClInclude Include="datamappingglyphgraphexportvisitor.h" />
+    <ClInclude Include="datamappingproperty.h" />
+    <ClInclude Include="datamappingvirtualtopology.h" />
+    <ClInclude Include="datasource.h" />
+    <ClInclude Include="datasourcemaps.h" />
+    <ClInclude Include="datatransformmapping.h" />
+    <ClInclude Include="filedatasource.h" />
+    <ClInclude Include="inputbinding.h" />
+    <ClInclude Include="inputcombinationfunction.h" />
+    <ClInclude Include="inputfield.h" />
+    <ClInclude Include="interpolationmappingfunction.h" />
+    <ClInclude Include="mindiff.h" />
+    <ClInclude Include="sceneproperties.h" />
+    <ClInclude Include="sgxdatamapping.h" />
+    <ClInclude Include="stringconcatmappingfunction.h" />
+    <ClInclude Include="stringinputcombinationfunction.h" />
     <ClInclude Include="targetver.h" />
-    <ClInclude Include="userdefinedbaseimageproperties.h" />
+    <ClInclude Include="valuemappingfile.h" />
+    <ClInclude Include="valuemappingfunction.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="baseimage.cpp" />
-    <ClCompile Include="baseimageproperties.cpp" />
-    <ClCompile Include="defaultbaseimageproperties.cpp" />
+    <ClCompile Include="datamappingdefaults.cpp" />
+    <ClCompile Include="datamappingfunction.cpp" />
+    <ClCompile Include="datamappingglyph.cpp" />
+    <ClCompile Include="datamappingglyphfile.cpp" />
+    <ClCompile Include="datamappingglyphgeometry.cpp" />
+    <ClCompile Include="datamappingglyphgraph.cpp" />
+    <ClCompile Include="datamappingproperty.cpp" />
+    <ClCompile Include="datamappingvirtualtopology.cpp" />
+    <ClCompile Include="datasource.cpp" />
+    <ClCompile Include="datasourcemaps.cpp" />
+    <ClCompile Include="datatransformmapping.cpp" />
     <ClCompile Include="dllmain.cpp">
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</CompileAsManaged>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -111,8 +139,17 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
       </PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="downloadedmapproperties.cpp" />
-    <ClCompile Include="userdefinedbaseimageproperties.cpp" />
+    <ClCompile Include="filedatasource.cpp" />
+    <ClCompile Include="inputbinding.cpp" />
+    <ClCompile Include="inputcombinationfunction.cpp" />
+    <ClCompile Include="inputfield.cpp" />
+    <ClCompile Include="interpolationmappingfunction.cpp" />
+    <ClCompile Include="mindiff.cpp" />
+    <ClCompile Include="sceneproperties.cpp" />
+    <ClCompile Include="stringconcatmappingfunction.cpp" />
+    <ClCompile Include="stringinputcombinationfunction.cpp" />
+    <ClCompile Include="valuemappingfile.cpp" />
+    <ClCompile Include="valuemappingfunction.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

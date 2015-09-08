@@ -18,7 +18,7 @@
 #ifndef SYNGLYPHX_DATATRANSFORMMAPPING_H
 #define SYNGLYPHX_DATATRANSFORMMAPPING_H
 
-#include "sgxdatatransform_global.h"
+#include "sgxdatamapping.h"
 #include "xmlpropertytreefile.h"
 #include <string>
 #include <memory>
@@ -28,13 +28,12 @@
 #include "UUID.h"
 #include "datamappingglyphgraph.h"
 #include "baseimage.h"
-#include "transformer.h"
 #include "datamappingdefaults.h"
 #include "sceneproperties.h"
 
 namespace SynGlyphX {
 
-	class SGXDATATRANSFORM_EXPORT DataTransformMapping : public XMLPropertyTreeFile, boost::noncopyable
+	class SGXDATAMAPPING_API DataTransformMapping : public XMLPropertyTreeFile, boost::noncopyable
     {
     public:
 		typedef std::unordered_map<boost::uuids::uuid, DataMappingGlyphGraph::SharedPtr, SynGlyphX::UUIDHash> DataMappingGlyphGraphMap;
@@ -64,9 +63,11 @@ namespace SynGlyphX {
 		boost::uuids::uuid AddGlyphTree(const DataMappingGlyphGraph::SharedPtr glyphTree);
 		void RemoveGlyphTree(const boost::uuids::uuid& id);
 		const DataMappingGlyphGraphMap& GetGlyphGraphs() const;
+		DataMappingGlyphGraph::LinklessGraph GetSubgraph(const boost::uuids::uuid& treeId, DataMappingGlyphGraph::ConstGlyphIterator& vertex);
 
 		void AddChildGlyph(const boost::uuids::uuid& treeId, DataMappingGlyphGraph::GlyphIterator& parent, const DataMappingGlyph& glyphTemplate, unsigned int numberOfChildren = 1);
 		void AddChildTree(const boost::uuids::uuid& treeId, DataMappingGlyphGraph::GlyphIterator& parent, const SynGlyphX::DataMappingGlyphGraph::LinklessGraph& glyphGraph);
+		void AddChildTreeResetPosition(const boost::uuids::uuid& treeId, DataMappingGlyphGraph::GlyphIterator& parent, const SynGlyphX::DataMappingGlyphGraph::LinklessGraph& glyphGraph);
 		void RemoveGlyph(const boost::uuids::uuid& treeId, DataMappingGlyphGraph::ConstGlyphIterator& parent, int child);
 
 		void SetInputField(const boost::uuids::uuid& treeID, DataMappingGlyphGraph::ConstGlyphIterator& node, DataMappingGlyph::MappableField field, const InputField& inputfield);
@@ -92,6 +93,9 @@ namespace SynGlyphX {
 
 		const SceneProperties& GetSceneProperties() const;
 		void SetSceneProperties(const SceneProperties& sceneProperties);
+
+		std::vector<boost::uuids::uuid> GetFileDatasourcesWithInvalidFiles(bool onlyUseDatasourcesInUse) const;
+		std::vector<unsigned int> GetFileBaseObjectsWithInvalidFiles() const;
 
     protected:
 		void Clear(bool addADefaultBaseObjectAfterClear);

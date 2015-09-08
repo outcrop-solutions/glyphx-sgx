@@ -18,7 +18,7 @@
 #ifndef SYNGLYPHX_VALUEMAPPINGFILE_H
 #define SYNGLYPHX_VALUEMAPPINGFILE_H
 
-#include "sgxdatatransform_global.h"
+#include "sgxdatamapping.h"
 #include "xmlpropertytreefile.h"
 #include "valuemappingfunction.h"
 #include <memory>
@@ -26,7 +26,7 @@
 namespace SynGlyphX {
 
 	template<typename ValueMappingType>
-	class SGXDATATRANSFORM_EXPORT ValueMappingFile : public XMLPropertyTreeFile
+	class SGXDATAMAPPING_API ValueMappingFile : public XMLPropertyTreeFile
 	{
 	public:
 		ValueMappingFile(std::shared_ptr<ValueMappingType> valueMapping = nullptr);

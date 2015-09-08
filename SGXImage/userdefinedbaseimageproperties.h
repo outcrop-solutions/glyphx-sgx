@@ -44,6 +44,8 @@ namespace SynGlyphX {
 		virtual bool IsGeographic() const;
 		virtual void ExportToPropertyTree(boost::property_tree::wptree& propertyTree) const;
 
+		bool CanFileBeFound() const;
+
 	private:
 		std::wstring m_filename;
 	};

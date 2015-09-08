@@ -28,25 +28,16 @@
     <ClInclude Include="sgxdatatransform_global.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="datasource.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="inputfield.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="inputbinding.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="transformer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="datatransformmapping.h">
+    <ClInclude Include="csvcache.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="filedatasource.h">
+    <ClInclude Include="databaseinfo.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="datasourcemaps.h">
+    <ClInclude Include="sourcedatacache.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="sourcedatamanager.h">
@@ -55,150 +46,24 @@
     <ClInclude Include="inputfielddata.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="datamappingdefaults.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="datamappingfunction.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="inputcombinationfunction.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="interpolationmappingfunction.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="stringconcatmappingfunction.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="stringinputcombinationfunction.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="valuemappingfunction.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="datamappingproperty.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="datamappingglyph.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="datamappingglyphgraph.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="datamappingglyphgraphexportvisitor.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="datamappingglyphfile.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="sourcedatacache.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="databaseinfo.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="csvcache.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="sceneproperties.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="datamappingglyphgeometry.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="datamappingvirtualtopology.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="mindiff.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="valuemappingfile.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="datasource.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="inputfield.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="inputbinding.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="transformer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="datatransformmapping.cpp">
+    <ClCompile Include="csvcache.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="filedatasource.cpp">
+    <ClCompile Include="databaseinfo.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="datasourcemaps.cpp">
+    <ClCompile Include="sourcedatacache.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="sourcedatamanager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="inputfielddata.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="datamappingdefaults.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="datamappingfunction.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="inputcombinationfunction.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="interpolationmappingfunction.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="stringconcatmappingfunction.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="stringinputcombinationfunction.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="valuemappingfunction.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="datamappingproperty.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="datamappingglyph.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="datamappingglyphgraph.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="datamappingglyphfile.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="sourcedatacache.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="databaseinfo.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="csvcache.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="sceneproperties.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="datamappingglyphgeometry.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="datamappingvirtualtopology.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="mindiff.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="valuemappingfile.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -2,11 +2,7 @@
 #include <boost/property_tree/xml_parser.hpp>
 #include <algorithm>
 #include <boost/uuid/uuid_io.hpp>
-#include <QtCore/QVariant>
-#include <QtSql/QSqlDatabase>
-#include <QtSql/QSqlQuery>
-#include <QtSql/QSqlRecord>
-#include "sourcedatamanager.h"
+#include "userdefinedbaseimageproperties.h"
 
 namespace SynGlyphX {
 
@@ -241,6 +237,12 @@ namespace SynGlyphX {
 		return m_glyphTrees;
 	}
 
+	DataMappingGlyphGraph::LinklessGraph DataTransformMapping::GetSubgraph(const boost::uuids::uuid& treeId, DataMappingGlyphGraph::ConstGlyphIterator& vertex) {
+
+		DataMappingGlyphGraph::SharedPtr glyphTree = m_glyphTrees[treeId];
+		return glyphTree->GetSubgraph(vertex.deconstify());
+	}
+
 	bool DataTransformMapping::IsTransformable() const {
 
 		return (m_datasources.HasDatasources() && DoesAtLeastOneGlyphGraphHaveBindingsOnPosition());
@@ -394,6 +396,16 @@ namespace SynGlyphX {
 			throw std::invalid_argument("Can't append children to invalid parent");
 		}
 
+		m_glyphTrees[treeId]->AddChildGlyphGraph(parent, glyphGraph);
+	}
+
+	void DataTransformMapping::AddChildTreeResetPosition(const boost::uuids::uuid& treeId, DataMappingGlyphGraph::GlyphIterator& parent, const SynGlyphX::DataMappingGlyphGraph::LinklessGraph& glyphGraph) {
+
+		if (!parent.valid()) {
+
+			throw std::invalid_argument("Can't append children to invalid parent");
+		}
+
 		unsigned int startingNumberOfChildren = m_glyphTrees[treeId]->ChildCount(parent.constify());
 		SynGlyphX::Vector3 newPosition = { { 15.0, 0.0, 0.0 } };
 		if (startingNumberOfChildren > 0) {
@@ -422,6 +434,45 @@ namespace SynGlyphX {
 	void DataTransformMapping::SetSceneProperties(const SceneProperties& sceneProperties) {
 
 		m_sceneProperties = sceneProperties;
+	}
+
+	std::vector<boost::uuids::uuid> DataTransformMapping::GetFileDatasourcesWithInvalidFiles(bool onlyUseDatasourcesInUse) const {
+
+		SynGlyphX::DatasourceMaps datasources;
+		if (onlyUseDatasourcesInUse) {
+		
+			datasources = GetDatasourcesInUse();
+		}
+		else {
+
+			datasources = m_datasources;
+		}
+		std::vector<boost::uuids::uuid> fileDatasourcesToBeUpdated;
+		for (SynGlyphX::DatasourceMaps::FileDatasourceMap::const_iterator datasource = datasources.GetFileDatasources().begin(); datasource != datasources.GetFileDatasources().end(); ++datasource) {
+
+			if (!datasource->second.CanDatasourceBeFound()) {
+
+				fileDatasourcesToBeUpdated.push_back(datasource->first);
+			}
+		}
+
+		return fileDatasourcesToBeUpdated;
+	}
+
+	std::vector<unsigned int> DataTransformMapping::GetFileBaseObjectsWithInvalidFiles() const {
+
+		std::vector<unsigned int> missingLocalBaseImages;
+
+		for (unsigned int i = 0; i < GetBaseObjects().size(); ++i) {
+
+			UserDefinedBaseImageProperties::ConstSharedPtr properties = std::dynamic_pointer_cast<const SynGlyphX::UserDefinedBaseImageProperties>(GetBaseObjects()[i].GetProperties());
+			if ((properties != nullptr) && (!properties->CanFileBeFound())) {
+
+				missingLocalBaseImages.push_back(i);
+			}
+		}
+
+		return missingLocalBaseImages;
 	}
 
 } //namespace SynGlyphX

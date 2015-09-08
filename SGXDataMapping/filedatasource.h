@@ -15,56 +15,57 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef DATASOURCEMAPS_H
-#define DATASOURCEMAPS_H
+#ifndef FILEDATASOURCE_H
+#define FILEDATASOURCE_H
 
-#include "sgxdatatransform_global.h"
-#include <string>
-#include <unordered_map>
-#include <boost/property_tree/ptree.hpp>
-#include "UUID.h"
-#include "filedatasource.h"
+#include "sgxdatamapping.h"
+#include "datasource.h"
 
 namespace SynGlyphX {
 
-	class SGXDATATRANSFORM_EXPORT DatasourceMaps
+	class SGXDATAMAPPING_API FileDatasource : public Datasource
 	{
 	public:
+		enum SourceType {
+			SQLITE3,
+			CSV,
+			KML,
+		};
+
+		typedef boost::bimap<SourceType, std::wstring> SourceTypeBimap;
 		typedef boost::property_tree::wptree PropertyTree;
-		typedef std::unordered_map<boost::uuids::uuid, FileDatasource, SynGlyphX::UUIDHash> FileDatasourceMap;
 
-		DatasourceMaps();
-		DatasourceMaps(const PropertyTree& propertyTree);
-		~DatasourceMaps();
+		FileDatasource(SourceType type, const std::wstring& filename, const std::wstring& host = L"localhost", unsigned int port = 0, const std::wstring& username = L"", const std::wstring& password = L"");
+		FileDatasource(const PropertyTree& propertyTree);
+		FileDatasource(const FileDatasource& datasource);
+		virtual ~FileDatasource();
 
-		bool operator==(const DatasourceMaps& maps) const;
-		bool operator!=(const DatasourceMaps& maps) const;
+		FileDatasource& operator=(const FileDatasource& datasource);
+		bool operator==(const FileDatasource& datasource) const;
+		bool operator!=(const FileDatasource& datasource) const;
 
-		const Datasource& GetDatasourceByID(const boost::uuids::uuid& id) const;
-		bool HasDatasources() const;
-		unsigned int Count() const;
-		void Clear();
-		bool EnableTables(const boost::uuids::uuid& id, const Datasource::TableSet& tables, bool enable = true);
+		SourceType GetType() const;
 
-		void ChangeDatasourceName(const boost::uuids::uuid& id, const std::wstring& name);
+		const std::wstring& GetFilename() const;
+		void ChangeFilename(const std::wstring& filename);
 
-		PropertyTree& ExportToPropertyTree(PropertyTree& propertyTreeParent) const;
+		bool RequiresConversionToDB() const;
 
-		void RemoveDatasource(const boost::uuids::uuid& id);
+		virtual bool IsOriginalDatasourceADatabase() const;
+		virtual bool CanDatasourceHaveMultipleTables() const;
+		virtual bool IsFile() const;
+		virtual bool CanDatasourceBeFound() const;
+		virtual const std::wstring& GetFormattedName() const;
 
-		const FileDatasourceMap& GetFileDatasources() const;
-		boost::uuids::uuid AddFileDatasource(FileDatasource::SourceType type,
-			const std::wstring& name,
-			const std::wstring& host = L"localhost",
-			unsigned int port = 0,
-			const std::wstring& username = L"",
-			const std::wstring& password = L"");
-		void AddFileDatasource(const boost::uuids::uuid& id, const FileDatasource& fileDatasource);
+		virtual PropertyTree& ExportToPropertyTree(boost::property_tree::wptree& parentPropertyTree);
+
+		static const SourceTypeBimap s_sourceTypeStrings;
 
 	private:
-		FileDatasourceMap m_fileDatasources;
+		SourceType m_type;
+		std::wstring m_formattedName;
 	};
 
 } //namespace SynGlyphX
 
-#endif //DATASOURCEMAPS_H
+#endif //FILEDATASOURCE_H

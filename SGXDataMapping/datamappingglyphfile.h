@@ -15,38 +15,30 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef SYNGLYPHX_SCENEPROPERTIES_H
-#define SYNGLYPHX_SCENEPROPERTIES_H
+#ifndef SYNGLYPHX_DATAMAPPINGGLYPHFILE_H
+#define SYNGLYPHX_DATAMAPPINGGLYPHFILE_H
 
-#include "sgxdatatransform_global.h"
-#include "glyphcolor.h"
-#include <boost/property_tree/ptree.hpp>
+#include "sgxdatamapping.h"
+#include "xmlpropertytreefile.h"
+#include "datamappingglyphgraph.h"
 
 namespace SynGlyphX {
 
-	class SGXDATATRANSFORM_EXPORT SceneProperties
+	class SGXDATAMAPPING_API DataMappingGlyphFile : public XMLPropertyTreeFile
 	{
 	public:
-		SceneProperties();
-		SceneProperties(const boost::property_tree::wptree& propertyTree);
-		SceneProperties(const SceneProperties& properties);
-		~SceneProperties();
+		DataMappingGlyphFile(SynGlyphX::DataMappingGlyphGraph::SharedPtr graph = nullptr);
+		virtual ~DataMappingGlyphFile();
 
-		SceneProperties& operator=(const SceneProperties& properties);
-		bool operator==(const SceneProperties& properties) const;
-		bool operator!=(const SceneProperties& properties) const;
+		SynGlyphX::DataMappingGlyphGraph::SharedPtr GetDataMappingGlyphGraph() const;
 
-		boost::property_tree::wptree& ExportToPropertyTree(boost::property_tree::wptree& propertyTree) const;
+	protected:
+		virtual void ImportFromPropertyTree(const boost::property_tree::wptree& filePropertyTree);
+		virtual void ExportToPropertyTree(boost::property_tree::wptree& filePropertyTree) const;
 
-		const GlyphColor& GetBackgroundColor() const;
-		void SetBackgroundColor(const GlyphColor& color);
-
-		static const std::wstring s_propertyTreeName;
-
-	private:
-		GlyphColor m_backgroundColor;
+		SynGlyphX::DataMappingGlyphGraph::SharedPtr m_glyphGraph;
 	};
 
 } //namespace SynGlyphX
 
-#endif //SYNGLYPHX_SCENEPROPERTIES_H
+#endif //SYNGLYPHX_DATAMAPPINGGLYPHFILE_H

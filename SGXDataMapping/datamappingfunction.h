@@ -18,7 +18,7 @@
 #ifndef SYNGLYPHX_MAPPINGFUNCTIONDATA_H
 #define SYNGLYPHX_MAPPINGFUNCTIONDATA_H
 
-#include "sgxdatatransform_global.h"
+#include "sgxdatamapping.h"
 #include <vector>
 #include <memory>
 #include <boost/bimap.hpp>
@@ -26,7 +26,7 @@
 
 namespace SynGlyphX {
 
-	class SGXDATATRANSFORM_EXPORT MappingFunctionData
+	class SGXDATAMAPPING_API MappingFunctionData
 	{
 	public:
 		enum Function {
@@ -86,7 +86,7 @@ namespace SynGlyphX {
 	};
 
 	//This translator is so that MappingFunctionData::Function can be automatically used by boost::property_tree
-	class SGXDATATRANSFORM_EXPORT MappingFunctionTranslator
+	class SGXDATAMAPPING_API MappingFunctionTranslator
 	{
 	public:
 		typedef std::wstring internal_type;
@@ -102,7 +102,7 @@ namespace SynGlyphX {
 	};
 
 	//This translator is so that MappingFunctionData::Input can be automatically used by boost::property_tree
-	class SGXDATATRANSFORM_EXPORT MappingInputTranslator
+	class SGXDATAMAPPING_API MappingInputTranslator
 	{
 	public:
 		typedef std::wstring internal_type;
@@ -118,7 +118,7 @@ namespace SynGlyphX {
 	};
 
 	//This translator is so that MappingFunctionData::Output can be automatically used by boost::property_tree
-	class SGXDATATRANSFORM_EXPORT MappingOutputTranslator
+	class SGXDATAMAPPING_API MappingOutputTranslator
 	{
 	public:
 		typedef std::wstring internal_type;

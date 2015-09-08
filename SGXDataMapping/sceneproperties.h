@@ -15,57 +15,38 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef FILEDATASOURCE_H
-#define FILEDATASOURCE_H
+#ifndef SYNGLYPHX_SCENEPROPERTIES_H
+#define SYNGLYPHX_SCENEPROPERTIES_H
 
-#include "sgxdatatransform_global.h"
-#include "datasource.h"
+#include "sgxdatamapping.h"
+#include "glyphcolor.h"
+#include <boost/property_tree/ptree.hpp>
 
 namespace SynGlyphX {
 
-	class SGXDATATRANSFORM_EXPORT FileDatasource : public Datasource
+	class SGXDATAMAPPING_API SceneProperties
 	{
 	public:
-		enum SourceType {
-			SQLITE3,
-			CSV,
-			KML,
-		};
+		SceneProperties();
+		SceneProperties(const boost::property_tree::wptree& propertyTree);
+		SceneProperties(const SceneProperties& properties);
+		~SceneProperties();
 
-		typedef boost::bimap<SourceType, std::wstring> SourceTypeBimap;
-		typedef boost::property_tree::wptree PropertyTree;
+		SceneProperties& operator=(const SceneProperties& properties);
+		bool operator==(const SceneProperties& properties) const;
+		bool operator!=(const SceneProperties& properties) const;
 
-		FileDatasource(SourceType type, const std::wstring& filename, const std::wstring& host = L"localhost", unsigned int port = 0, const std::wstring& username = L"", const std::wstring& password = L"");
-		FileDatasource(const PropertyTree& propertyTree);
-		FileDatasource(const FileDatasource& datasource);
-		virtual ~FileDatasource();
+		boost::property_tree::wptree& ExportToPropertyTree(boost::property_tree::wptree& propertyTree) const;
 
-		FileDatasource& operator=(const FileDatasource& datasource);
-		bool operator==(const FileDatasource& datasource) const;
-		bool operator!=(const FileDatasource& datasource) const;
+		const GlyphColor& GetBackgroundColor() const;
+		void SetBackgroundColor(const GlyphColor& color);
 
-		SourceType GetType() const;
-
-		const std::wstring& GetFilename() const;
-		void ChangeFilename(const std::wstring& filename);
-
-		bool RequiresConversionToDB() const;
-
-		virtual bool IsOriginalDatasourceADatabase() const;
-		virtual bool CanDatasourceHaveMultipleTables() const;
-		virtual bool IsFile() const;
-		virtual bool CanDatasourceBeFound() const;
-		virtual const std::wstring& GetFormattedName() const;
-
-		virtual PropertyTree& ExportToPropertyTree(boost::property_tree::wptree& parentPropertyTree);
-
-		static const SourceTypeBimap s_sourceTypeStrings;
+		static const std::wstring s_propertyTreeName;
 
 	private:
-		SourceType m_type;
-		std::wstring m_formattedName;
+		GlyphColor m_backgroundColor;
 	};
 
 } //namespace SynGlyphX
 
-#endif //FILEDATASOURCE_H
+#endif //SYNGLYPHX_SCENEPROPERTIES_H

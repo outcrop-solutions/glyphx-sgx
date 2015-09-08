@@ -15,33 +15,67 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef SYNGLYPHX_DATAMAPPINGGLYPHGEOMETRY_H
-#define SYNGLYPHX_DATAMAPPINGGLYPHGEOMETRY_H
+#ifndef SYNGLYPHX_INPUTFIELD_H
+#define SYNGLYPHX_INPUTFIELD_H
 
-#include "sgxdatatransform_global.h"
-#include "glyphgeometry.h"
-#include "datamappingproperty.h"
+#include "sgxdatamapping.h"
+#include <string>
+#include <boost/uuid/uuid.hpp>
 #include <boost/property_tree/ptree.hpp>
+#include <boost/bimap.hpp>
+#include <boost/shared_ptr.hpp>
+#include <boost/functional/hash.hpp>
 
 namespace SynGlyphX {
 
-	class SGXDATATRANSFORM_EXPORT DataMappingGlyphGeometry : public GlyphGeometryTemplate < GeometryShapeMappingProperty >
+	class SGXDATAMAPPING_API InputField
 	{
+
 	public:
-		DataMappingGlyphGeometry();
-		DataMappingGlyphGeometry(const DataMappingGlyphGeometry& glyphGeometry);
-		DataMappingGlyphGeometry(const GlyphGeometry& glyphGeometry);
-		DataMappingGlyphGeometry(const boost::property_tree::wptree& propertyTree, bool useOldPropertyTree = false);
-		~DataMappingGlyphGeometry();
+		enum Type {
+			Null = 0,
+			Integer,
+			Real,
+			Text,
+			Date
+		};
 
-		DataMappingGlyphGeometry& operator=(const DataMappingGlyphGeometry& glyphGeometry);
-		bool operator==(const DataMappingGlyphGeometry& glyphGeometry) const;
-		bool operator!=(const DataMappingGlyphGeometry& glyphGeometry) const;
+		typedef boost::shared_ptr<InputField> SharedPtr;
+		typedef boost::shared_ptr<const InputField> ConstSharedPtr;
+		typedef size_t HashID;
 
-		boost::property_tree::wptree& ExportToPropertyTree(boost::property_tree::wptree& propertyTree) const;
-		GlyphGeometry ExportGlyphGeometry() const;
+		InputField();
+		InputField(const boost::uuids::uuid& datasourceID, const std::wstring& table, const std::wstring field, Type type);
+		InputField(const boost::property_tree::wptree& propertyTree);
+		InputField(const InputField& inputField);
+		~InputField();
+
+		InputField& operator=(const InputField& inputField);
+		bool operator==(const InputField& inputField) const;
+		bool operator!=(const InputField& inputField) const;
+
+		const boost::uuids::uuid& GetDatasourceID() const;
+		const std::wstring& GetTable() const;
+		const std::wstring& GetField() const;
+
+		bool IsValid() const;
+
+		void ExportToPropertyTree(boost::property_tree::wptree& propertyTree) const;
+
+		bool IsNumeric() const;
+
+		static const boost::bimap<Type, std::wstring> s_fieldTypeStrings;
+
+		HashID GetHashID() const;
+
+	private:
+		boost::uuids::uuid m_datasourceID;
+		std::wstring m_table;
+		std::wstring m_field;
+		Type m_type;
 	};
 
 } //namespace SynGlyphX
 
-#endif //SYNGLYPHX_DATAMAPPINGGLYPHGEOMETRY_H
+#endif SYNGLYPHX_INPUTFIELD_H
+
