@@ -81,6 +81,7 @@ private:
 	void SelectFirstBaseObject();
 
     QMenu* m_fileMenu;
+	QMenu* m_editMenu;
     QMenu* m_glyphMenu;
 	QMenu* m_baseObjectMenu;
 	QMenu* m_datasourceMenu;

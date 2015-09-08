@@ -8,6 +8,7 @@
 #include "colorminmaxwidget.h"
 #include "doubleminmaxwidget.h"
 #include "intminmaxwidget.h"
+#include "inputfieldmimedata.h"
 
 SingleGlyphRolesTableModel::SingleGlyphRolesTableModel(DataTransformModel* dataTransformModel, QObject *parent)
 	: QAbstractTableModel(parent),

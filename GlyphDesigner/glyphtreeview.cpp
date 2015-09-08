@@ -3,7 +3,7 @@
 #include "glyphpropertieswidget.h"
 
 GlyphTreeView::GlyphTreeView(SynGlyphXANTz::MinMaxGlyphTreeModel* model, SynGlyphXANTz::MinMaxGlyphTreeModel::GlyphType glyphTreeType, QWidget *parent)
-	: SynGlyphX::TreeView(parent),
+	: SynGlyphX::TreeEditView(parent),
 	m_model(model),
 	m_glyphTreeType(glyphTreeType)
 {
@@ -30,40 +30,9 @@ const SynGlyphX::SharedActionList& GlyphTreeView::GetGlyphActions() const {
 	return m_glyphActions;
 }
 
-const SynGlyphX::SharedActionList& GlyphTreeView::GetEditActions() const {
-
-	return m_editActions;
-}
-
-void GlyphTreeView::selectionChanged(const QItemSelection& selected, const QItemSelection& deselected) {
-
-	SynGlyphX::TreeView::selectionChanged(selected, deselected);
-	EnableActions();
-}
-
 void GlyphTreeView::CreateContextMenuActions() {
 
 	//Edit Actions
-
-	//m_cutAction = m_editActions.AddAction(tr("Cut"), QKeySequence::Cut);
-	//QObject::connect(m_cutAction, &QAction::triggered, m_model, &GlyphTreeModel::CutToClipboard);
-
-	//m_copyAction = m_editActions.AddAction(tr("Copy"), QKeySequence::Copy);
-	//QObject::connect(m_copyAction, &QAction::triggered, m_model, &GlyphTreeModel::CopyToClipboard);
-
-	//m_pasteAction = m_editActions.AddAction(tr("Paste"), QKeySequence::Paste);
-	//QObject::connect(m_pasteAction, &QAction::triggered, m_model, &GlyphTreeModel::PasteFromClipboard);
-
-	//m_pasteAsChildAction = m_editActions.AddAction(tr("Paste As Child"));
-	//QObject::connect(m_pasteAction, &QAction::triggered, m_model, &GlyphTreeModel::PasteChildFromClipboard);
-
-	//m_editActions.AddSeparator();
-
-	m_deleteAction = m_editActions.AddAction(tr("Delete"), QKeySequence::Delete);
-	QObject::connect(m_deleteAction, &QAction::triggered, this, &GlyphTreeView::DeleteSelected);
-
-	m_deleteChildrenAction = m_editActions.AddAction(tr("Delete Children"));
-	QObject::connect(m_deleteChildrenAction, &QAction::triggered, this, &GlyphTreeView::DeleteChildrenFromSelected);
 
 	m_editActions.AddSeparator();
 
@@ -159,15 +128,27 @@ void GlyphTreeView::AddChildren() {
 	}
 }
 
-void GlyphTreeView::EnableActions() {
+void GlyphTreeView::EnableActions(const QItemSelection& selected) {
 
-	const QModelIndexList& selected = selectionModel()->selectedIndexes();
-	bool isObjectSelected = !selected.isEmpty();
+	const QModelIndexList& selectedIndexes = selected.indexes();
+	bool isObjectSelected = !selectedIndexes.isEmpty();
 
 	bool hasChildren = false;
-	for (int j = 0; j < selected.count(); ++j) {
-		if (m_model->hasChildren(selected[j])) {
+	for (int j = 0; j < selectedIndexes.count(); ++j) {
+		
+		if (m_model->hasChildren(selectedIndexes[j])) {
+			
 			hasChildren = true;
+			break;
+		}
+	}
+
+	bool isRootObjectSelected = false;
+	for (int j = 0; j < selectedIndexes.count(); ++j) {
+
+		if (!selectedIndexes[j].parent().isValid()) {
+
+			isRootObjectSelected = true;
 			break;
 		}
 	}
@@ -177,13 +158,16 @@ void GlyphTreeView::EnableActions() {
 	bool areMultipleObjectsSelected = (selected.count() > 1);
 
 	if (isObjectSelected) {
-		const QModelIndex& index = selected.last();
-		bool isRootObjectOnlySelected = (!index.parent().isValid()) && !areMultipleObjectsSelected;
 
-		//m_cutAction->setEnabled(!isRootObjectSelected);
-		//m_copyAction->setEnabled(true);
-		//m_pasteAction->setEnabled(!m_model->IsClipboardEmpty());
-		//m_pasteAsChildAction->setEnabled(!m_model->IsClipboardEmpty());
+		bool isRootObjectOnlySelected = isRootObjectSelected && !areMultipleObjectsSelected;
+		bool doesClipboardHaveGlyph = DoesClipboardHaveGlyph();
+
+		m_cutAction->setEnabled(!isRootObjectSelected && !areMultipleObjectsSelected);
+		m_copyAction->setEnabled(!areMultipleObjectsSelected);
+		m_copyWithChildrenAction->setEnabled(!areMultipleObjectsSelected);
+		m_pasteAction->setEnabled(!areMultipleObjectsSelected && doesClipboardHaveGlyph);
+		m_pasteAsChildAction->setEnabled(!areMultipleObjectsSelected && doesClipboardHaveGlyph);
+
 		m_deleteAction->setEnabled(!isRootObjectOnlySelected);
 		m_deleteChildrenAction->setEnabled(hasChildren);
 		m_propertiesAction->setEnabled(true);
@@ -192,4 +176,24 @@ void GlyphTreeView::EnableActions() {
 		
 		m_editActions.EnableActions(false);
 	}
+}
+
+SynGlyphX::DataMappingGlyphGraph::LinklessGraph GlyphTreeView::GetGraphForCopyToClipboard(const QModelIndex& index) {
+
+	return m_model->GetSubgraph(index);
+}
+
+SynGlyphX::DataMappingGlyph GlyphTreeView::GetGlyphForCopyToClipboard(const QModelIndex& index)  {
+
+	return m_model->GetMinMaxGlyph(index)->second;
+}
+
+void GlyphTreeView::OverwriteGlyph(const QModelIndex& index, const SynGlyphX::DataMappingGlyphGraph::LinklessGraph& graph) {
+
+	m_model->OverwriteGlyph(index, graph);
+}
+
+void GlyphTreeView::AddGlyphsAsChildren(const QModelIndex& index, const SynGlyphX::DataMappingGlyphGraph::LinklessGraph& graph) {
+
+	m_model->AppendChildGraph(index, graph);
 }

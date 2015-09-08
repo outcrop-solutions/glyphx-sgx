@@ -141,7 +141,8 @@ void DataMapping3DWidget::OnExternalRowsInserted(const QModelIndex& parent, int 
 			QModelIndex internalParent = GetModelIndexFromStack(childPositions, m_internalModel);
 			for (int i = first; i <= last; ++i) {
 
-				m_internalModel->AppendChild(internalParent, m_dataTransformModel->GetGlyph(m_dataTransformModel->index(i, 0, externalParentSource)));
+				//Need to make sure children of this index also get added
+				m_internalModel->AppendChildGraph(internalParent, m_dataTransformModel->GetSubgraph(m_dataTransformModel->index(i, 0, externalParentSource)));
 			}
 		}
 	}

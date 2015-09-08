@@ -2,7 +2,7 @@
 
 namespace SynGlyphX {
 
-	const QString GlyphMimeData::Format("application/x-sgx-glyph");
+	const QString GlyphMimeData::s_format("application/x-sgx-glyph");
 
 	//GlyphMimeData::GlyphMimeData(const std::vector<boost::shared_ptr<SynGlyphX::Glyph>>& glyphs)
 	GlyphMimeData::GlyphMimeData(const QModelIndexList& glyphs)
@@ -20,13 +20,13 @@ namespace SynGlyphX {
 	QStringList GlyphMimeData::formats() const {
 
 		QStringList types;
-		types.push_back(Format);
+		types.push_back(s_format);
 		return types;
 	}
 
 	bool GlyphMimeData::hasFormat(const QString & mimeType) const {
 
-		return (mimeType == Format);
+		return (mimeType == s_format);
 	}
 
 	//const std::vector<boost::shared_ptr<SynGlyphX::Glyph>>& GlyphMimeData::GetGlyphs() const {

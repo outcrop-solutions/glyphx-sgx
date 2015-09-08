@@ -242,6 +242,15 @@
     <ClCompile Include="GeneratedFiles\Release\moc_horizontalformwidget.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_replacefilenamedialog.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_replacefilenamedialog.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="replacefilenamedialog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="sgxgui_global.h">
@@ -319,6 +328,9 @@
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="horizontalformwidget.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="replacefilenamedialog.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>

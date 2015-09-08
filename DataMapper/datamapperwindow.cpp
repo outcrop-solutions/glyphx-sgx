@@ -29,6 +29,7 @@
 #include "newmappingdefaultswidget.h"
 #include "singleglyphviewoptionswidget.h"
 #include "changedatasourcefiledialog.h"
+#include "changeimagefiledialog.h"
 
 DataMapperWindow::DataMapperWindow(QWidget *parent)
     : SynGlyphX::MainWindow(parent),
@@ -145,6 +146,9 @@ void DataMapperWindow::CreateMenus() {
     QAction* exitAction = CreateMenuAction(m_fileMenu, tr("Exit"), QKeySequence::Quit);
     QObject::connect(exitAction, &QAction::triggered, this, &DataMapperWindow::close);
 
+	//Create Edit Menu
+	m_editMenu = menuBar()->addMenu(tr("Edit"));
+
     //Create Glyph Menu
     m_glyphMenu = menuBar()->addMenu(tr("Glyph"));
 
@@ -224,7 +228,8 @@ void DataMapperWindow::CreateDockWidgets() {
 	QDockWidget* leftDockWidgetGlyphTrees = new QDockWidget(tr("Glyph Trees"), this);
 
 	m_glyphTreesView = new GlyphTreesView(m_dataTransformModel, leftDockWidgetGlyphTrees);
-	m_glyphMenu->addActions(m_glyphTreesView->actions());
+	m_glyphMenu->addActions(m_glyphTreesView->GetGlyphActions());
+	m_editMenu->addActions(m_glyphTreesView->GetEditActions());
 
     //Add Tree View to dock widget on left side
 	leftDockWidgetGlyphTrees->setWidget(m_glyphTreesView);
@@ -323,50 +328,23 @@ bool DataMapperWindow::LoadRecentFile(const QString& filename) {
 
 void DataMapperWindow::UpdateMissingFileDatasources(const QString& filename) {
 
-	SynGlyphX::DataTransformMapping mapping;
-	mapping.ReadFromFile(filename.toStdString());
+	SynGlyphX::DataTransformMapping::SharedPtr mapping = std::make_shared<SynGlyphX::DataTransformMapping>();
+	mapping->ReadFromFile(filename.toStdString());
 
-	SynGlyphX::DatasourceMaps datasourcesInUse = mapping.GetDatasources();
-	std::vector<SynGlyphX::DatasourceMaps::FileDatasourceMap::const_iterator> fileDatasourcesToBeUpdated;
-	for (SynGlyphX::DatasourceMaps::FileDatasourceMap::const_iterator datasource = datasourcesInUse.GetFileDatasources().begin(); datasource != datasourcesInUse.GetFileDatasources().end(); ++datasource) {
-
-		if (!datasource->second.CanDatasourceBeFound()) {
-
-			fileDatasourcesToBeUpdated.push_back(datasource);
-		}
-	}
+	std::vector<boost::uuids::uuid> fileDatasourcesToBeUpdated = mapping->GetFileDatasourcesWithInvalidFiles(false);
 
 	bool wasDataTransformUpdated = false;
 
 	if (!fileDatasourcesToBeUpdated.empty()) {
 
 		SynGlyphX::Application::restoreOverrideCursor();
-		for (int i = 0; i < fileDatasourcesToBeUpdated.size(); ++i) {
-
-			QString acceptButtonText = tr("Next");
-			if (i == fileDatasourcesToBeUpdated.size() - 1) {
-
-				acceptButtonText = tr("Ok");
-			}
-
-			SynGlyphX::ChangeDatasourceFileDialog dialog(fileDatasourcesToBeUpdated[i]->second, acceptButtonText, this);
-			if (dialog.exec() == QDialog::Accepted) {
-
-				mapping.UpdateDatasourceName(fileDatasourcesToBeUpdated[i]->first, dialog.GetNewFilename().toStdWString());
-				wasDataTransformUpdated = true;
-			}
-			else {
-
-				throw std::exception("One or more datasources weren't found.");
-			}
-		}
-
+		wasDataTransformUpdated = SynGlyphX::ChangeDatasourceFileDialog::UpdateDatasourceFiles(fileDatasourcesToBeUpdated, mapping, this);
 		SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
 	}
 
 	if (wasDataTransformUpdated) {
 
-		mapping.WriteToFile(filename.toStdString());
+		mapping->WriteToFile(filename.toStdString());
 	}
 }
 
@@ -555,22 +533,36 @@ void DataMapperWindow::AddDataSources() {
 
 void DataMapperWindow::ExportToANTz(const QString& templateDir) {
 
-	if (!m_dataTransformModel->GetDataMapping()->GetDatasources().HasDatasources()) {
+	SynGlyphX::DataTransformMapping::ConstSharedPtr dataMapping = m_dataTransformModel->GetDataMapping();
+
+	if (!dataMapping->GetDatasources().HasDatasources()) {
 
 		QMessageBox::critical(this, tr("Export to ANTz Error"), tr("Visualization has no datasources."));
 		return;
 	}
 
-	if (m_dataTransformModel->GetDataMapping()->GetGlyphGraphs().empty()) {
+	if (dataMapping->GetGlyphGraphs().empty()) {
 
 		QMessageBox::critical(this, tr("Export to ANTz Error"), tr("Visualization has no glyph templates."));
 		return;
 	}
 
-	if (!m_dataTransformModel->GetDataMapping()->DoesAtLeastOneGlyphGraphHaveBindingsOnPosition()) {
+	if (!dataMapping->DoesAtLeastOneGlyphGraphHaveBindingsOnPosition()) {
 
 		QMessageBox::critical(this, tr("Export to ANTz Error"), tr("Visualization has no glyph templates with bindings on Position X, Position Y, or Position Z."));
 		return;
+	}
+
+	std::vector<unsigned int> missingBaseObjects = dataMapping->GetFileBaseObjectsWithInvalidFiles();
+	if (!missingBaseObjects.empty()) {
+
+		if (SynGlyphX::ChangeImageFileDialog::UpdateImageFiles(missingBaseObjects, std::const_pointer_cast<SynGlyphX::DataTransformMapping>(dataMapping), this)) {
+
+			if (!m_currentFilename.isEmpty()) {
+
+				m_dataTransformModel->SaveDataTransformFile(m_currentFilename);
+			}
+		}
 	}
 
 	QString csvDirectory = QDir::toNativeSeparators(GetExistingDirectoryDialog("ANTzExportDir", tr("Select Directory For Portable Visualization"), ""));

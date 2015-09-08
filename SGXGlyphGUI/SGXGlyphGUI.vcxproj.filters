@@ -181,31 +181,16 @@
     <ClCompile Include="GeneratedFiles\Win32\Release\moc_glyphbuilderapplication.cpp">
       <Filter>Generated Files\Release_Win32</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Win32\Debug\moc_changedatasourcefiledialog.cpp">
-      <Filter>Generated Files\Debug_Win32</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Win32\Release\moc_changedatasourcefiledialog.cpp">
-      <Filter>Generated Files\Release_Win32</Filter>
-    </ClCompile>
-    <ClCompile Include="changedatasourcefiledialog.cpp">
+    <ClCompile Include="linklessgraphmimedata.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Win32\Debug\moc_replacefilenamedialog.cpp">
-      <Filter>Generated Files\Debug_Win32</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Win32\Release\moc_replacefilenamedialog.cpp">
-      <Filter>Generated Files\Release_Win32</Filter>
-    </ClCompile>
-    <ClCompile Include="replacefilenamedialog.cpp">
+    <ClCompile Include="treeeditview.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="changeimagefiledialog.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Win32\Debug\moc_changeimagefiledialog.cpp">
+    <ClCompile Include="GeneratedFiles\Win32\Debug\moc_treeeditview.cpp">
       <Filter>Generated Files\Debug_Win32</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Win32\Release\moc_changeimagefiledialog.cpp">
+    <ClCompile Include="GeneratedFiles\Win32\Release\moc_treeeditview.cpp">
       <Filter>Generated Files\Release_Win32</Filter>
     </ClCompile>
   </ItemGroup>
@@ -258,13 +243,10 @@
     <CustomBuild Include="glyphbuilderapplication.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
-    <CustomBuild Include="changedatasourcefiledialog.h">
+    <CustomBuild Include="linklessgraphmimedata.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
-    <CustomBuild Include="replacefilenamedialog.h">
-      <Filter>Header Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="changeimagefiledialog.h">
+    <CustomBuild Include="treeeditview.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>

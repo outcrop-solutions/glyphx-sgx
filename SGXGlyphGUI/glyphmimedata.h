@@ -1,6 +1,3 @@
-#ifndef SYNGLYPHX_GLYPHMIMEDATA_H
-#define SYNGLYPHX_GLYPHMIMEDATA_H
-
 ///
 /// SynGlyphX Holdings Incorporated ("COMPANY") CONFIDENTIAL
 /// Copyright (c) 2013-2015 SynGlyphX Holdings Incorporated, All Rights Reserved.
@@ -18,6 +15,9 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
+#ifndef SYNGLYPHX_GLYPHMIMEDATA_H
+#define SYNGLYPHX_GLYPHMIMEDATA_H
+
 #include "sgxglyphgui_global.h"
 #include <QtCore/QMimeData>
 #include "glyph.h"
@@ -30,7 +30,7 @@ namespace SynGlyphX {
 		Q_OBJECT
 
 	public:
-		static const QString Format;
+		static const QString s_format;
 
 		GlyphMimeData(const QModelIndexList& glyphs);
 		//GlyphMimeData(const std::vector<boost::shared_ptr<SynGlyphX::Glyph>>& glyphs);

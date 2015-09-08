@@ -15,31 +15,33 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef INPUTFIELDMIMEDATA_H
-#define INPUTFIELDMIMEDATA_H
+#ifndef SYNGLYPHX_CHANGEDATASOURCEFILEDIALOG_H
+#define SYNGLYPHX_CHANGEDATASOURCEFILEDIALOG_H
 
-#include <QtCore/QMimeData>
-#include "inputfield.h"
+#include "sgxdatatransformgui_global.h"
+#include "replacefilenamedialog.h"
+#include "filedatasource.h"
+#include "datatransformmapping.h"
 
-Q_DECLARE_METATYPE(SynGlyphX::InputField)
+namespace SynGlyphX {
 
-class InputFieldMimeData : public QMimeData
-{
-	Q_OBJECT
+	class SGXDATATRANSFORMGUI_EXPORT ChangeDatasourceFileDialog : public ReplaceFilenameDialog
+	{
+		Q_OBJECT
 
-public:
-	static const QString MimeType;
+	public:
+		ChangeDatasourceFileDialog(const FileDatasource& oldDatasourceFile, const QString& acceptButtonText, QWidget *parent = 0);
+		~ChangeDatasourceFileDialog();
 
-	InputFieldMimeData(const SynGlyphX::InputField& inputField);
-	~InputFieldMimeData();
+		static bool UpdateDatasourceFiles(const std::vector<boost::uuids::uuid>& datasources, DataTransformMapping::SharedPtr mapping, QWidget* dialogParent = nullptr);
 
-	const SynGlyphX::InputField& GetInputField() const;
+	private:
+		virtual bool IsNewFileValid() const;
+		
+		QStringList m_oldDatasourceTables;
+		FileDatasource::SourceType m_fileSourceType;
+	};
 
-	virtual QStringList formats() const;
-	virtual bool hasFormat(const QString& mimeType) const;
+} //namespace SynGlyphX
 
-private:
-	SynGlyphX::InputField m_inputfield;
-};
-
-#endif // INPUTFIELDMIMEDATA_H
+#endif // SYNGLYPHX_CHANGEDATASOURCEFILEDIALOG_H

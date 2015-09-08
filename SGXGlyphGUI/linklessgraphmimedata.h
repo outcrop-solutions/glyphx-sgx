@@ -15,31 +15,33 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef INPUTFIELDMIMEDATA_H
-#define INPUTFIELDMIMEDATA_H
+#ifndef SYNGLYPHX_LINKLESSGRAPHMIMEDATA_H
+#define SYNGLYPHX_LINKLESSGRAPHMIMEDATA_H
 
+#include "sgxglyphgui_global.h"
 #include <QtCore/QMimeData>
-#include "inputfield.h"
+#include "datamappingglyphgraph.h"
 
-Q_DECLARE_METATYPE(SynGlyphX::InputField)
+namespace SynGlyphX {
 
-class InputFieldMimeData : public QMimeData
-{
-	Q_OBJECT
+	class SGXGLYPHGUI_EXPORT LinklessGraphMimeData
+	{
 
-public:
-	static const QString MimeType;
+	public:
+		static const QString s_format;
 
-	InputFieldMimeData(const SynGlyphX::InputField& inputField);
-	~InputFieldMimeData();
+		LinklessGraphMimeData();
+		~LinklessGraphMimeData();
 
-	const SynGlyphX::InputField& GetInputField() const;
+		static void ConvertToMimeData(const DataMappingGlyphGraph::LinklessGraph& graph, QMimeData* mimeData);
+		static void ConvertToMimeData(const DataMappingGlyph& glyph, QMimeData* mimeData);
 
-	virtual QStringList formats() const;
-	virtual bool hasFormat(const QString& mimeType) const;
+		static DataMappingGlyphGraph::LinklessGraph ConvertToLinklessGraph(const QMimeData* const mimeData);
 
-private:
-	SynGlyphX::InputField m_inputfield;
-};
+	private:
+		static void ConvertToMimeData(const DataMappingGlyphGraph& graph, QMimeData* mimeData);
+	};
 
-#endif // INPUTFIELDMIMEDATA_H
+} //namespace SynGlyphX
+
+#endif // SYNGLYPHX_LINKLESSGRAPHMIMEDATA_H
