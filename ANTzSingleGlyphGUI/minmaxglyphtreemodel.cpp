@@ -239,7 +239,7 @@ namespace SynGlyphXANTz {
 		endInsertRows();
 	}
 
-	void MinMaxGlyphTreeModel::AppendChildGraph(const QModelIndex& parent, const SynGlyphX::DataMappingGlyphGraph::LinklessGraph& subgraph) {
+	void MinMaxGlyphTreeModel::AppendChildGraph(const QModelIndex& parent, const SynGlyphX::DataMappingGlyphGraph& subgraph) {
 
 		SynGlyphX::DataMappingGlyphGraph::GlyphIterator newParentGlyph = GetIteratorFromIndex(parent);
 		unsigned int numberOfChildren = m_minMaxGlyphTree->ChildCount(newParentGlyph.constify());
@@ -249,7 +249,7 @@ namespace SynGlyphXANTz {
 		endInsertRows();
 	}
 
-	void MinMaxGlyphTreeModel::AppendChildGraphResetPosition(const QModelIndex& parent, const SynGlyphX::DataMappingGlyphGraph::LinklessGraph& subgraph) {
+	void MinMaxGlyphTreeModel::AppendChildGraphResetPosition(const QModelIndex& parent, const SynGlyphX::DataMappingGlyphGraph& subgraph) {
 
 		SynGlyphX::DataMappingGlyphGraph::GlyphIterator newParentGlyph = GetIteratorFromIndex(parent);
 		unsigned int numberOfChildren = m_minMaxGlyphTree->ChildCount(newParentGlyph.constify());
@@ -519,7 +519,7 @@ namespace SynGlyphXANTz {
 				//Only drop if parents are different
 				if (indexes[j].parent() != parent) {
 
-					SynGlyphX::DataMappingGlyphGraph::LinklessGraph oldGlyphSubtree = m_minMaxGlyphTree->GetSubgraph(GetIteratorFromIndex(indexes[j]));
+					SynGlyphX::DataMappingGlyphGraph oldGlyphSubtree = m_minMaxGlyphTree->GetSubgraph(GetIteratorFromIndex(indexes[j]), true);
 					AppendChildGraphResetPosition(parent, oldGlyphSubtree);
 					glyphsMoved = true;
 				}
@@ -589,7 +589,7 @@ namespace SynGlyphXANTz {
 		return true;
 	}
 
-	SynGlyphX::DataMappingGlyphGraph::LinklessGraph MinMaxGlyphTreeModel::GetSubgraph(const QModelIndex& index) {
+	SynGlyphX::DataMappingGlyphGraph MinMaxGlyphTreeModel::GetSubgraph(const QModelIndex& index, bool includeChildren) {
 
 		if (!index.isValid()) {
 
@@ -597,22 +597,22 @@ namespace SynGlyphXANTz {
 		}
 
 		SynGlyphX::DataMappingGlyphGraph::GlyphIterator vertex = GetIteratorFromIndex(index);
-		return m_minMaxGlyphTree->GetSubgraph(vertex);
+		return m_minMaxGlyphTree->GetSubgraph(vertex, includeChildren);
 	}
 
-	void MinMaxGlyphTreeModel::OverwriteGlyph(const QModelIndex& index, const SynGlyphX::DataMappingGlyphGraph::LinklessGraph& subgraph) {
+	void MinMaxGlyphTreeModel::OverwriteGlyph(const QModelIndex& index, const SynGlyphX::DataMappingGlyphGraph& subgraph) {
 
 		if (!index.isValid()) {
 
 			throw std::invalid_argument("Index given to MinMaxGlyphTreeModel::GetSubgraph is invalid");
 		}
 
-		SynGlyphX::DataMappingGlyphGraph::LinklessGraph& nonConstGraph = const_cast<SynGlyphX::DataMappingGlyphGraph::LinklessGraph&>(subgraph);
+		SynGlyphX::DataMappingGlyphGraph& nonConstGraph = const_cast<SynGlyphX::DataMappingGlyphGraph&>(subgraph);
 
 		SynGlyphX::DataMappingGlyphGraph::GlyphIterator pasteGlyph = GetIteratorFromIndex(index);
-		UpdateGlyph(index, nonConstGraph.root()->second, SynGlyphX::PropertyUpdate::UpdateAllExceptPosition);
+		UpdateGlyph(index, nonConstGraph.GetRoot()->second, SynGlyphX::PropertyUpdate::UpdateAllExceptPosition);
 
-		unsigned int numberOfChildrenOfRootInSubgraph = nonConstGraph.children(nonConstGraph.root());
+		unsigned int numberOfChildrenOfRootInSubgraph = nonConstGraph.ChildCount(nonConstGraph.GetRoot().constify());
 		if (numberOfChildrenOfRootInSubgraph > 0) {
 
 			unsigned int numberOfChildrenInNewParent = m_minMaxGlyphTree->ChildCount(pasteGlyph.constify());
@@ -620,7 +620,7 @@ namespace SynGlyphXANTz {
 
 			for (int i = 0; i < numberOfChildrenOfRootInSubgraph; ++i) {
 
-				m_minMaxGlyphTree->AddChildGlyphGraph(pasteGlyph, nonConstGraph.subtree(nonConstGraph.child(nonConstGraph.root(), i)));
+				m_minMaxGlyphTree->AddChildGlyphGraph(pasteGlyph, nonConstGraph.GetSubgraph(nonConstGraph.GetChild(nonConstGraph.GetRoot(), i), true));
 			}
 
 			endInsertRows();

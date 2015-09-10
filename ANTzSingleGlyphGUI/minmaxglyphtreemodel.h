@@ -54,8 +54,8 @@ namespace SynGlyphXANTz {
 		virtual bool removeRows(int row, int count, const QModelIndex& parent = QModelIndex());
 
 		void AppendChild(const QModelIndex& parent, const SynGlyphX::DataMappingGlyph& glyph, unsigned int numberOfChildren = 1);
-		void AppendChildGraph(const QModelIndex& parent, const SynGlyphX::DataMappingGlyphGraph::LinklessGraph& subgraph);
-		void AppendChildGraphResetPosition(const QModelIndex& parent, const SynGlyphX::DataMappingGlyphGraph::LinklessGraph& subgraph);
+		void AppendChildGraph(const QModelIndex& parent, const SynGlyphX::DataMappingGlyphGraph& subgraph);
+		void AppendChildGraphResetPosition(const QModelIndex& parent, const SynGlyphX::DataMappingGlyphGraph& subgraph);
 
 		void UpdateGlyph(const QModelIndex& index, const SynGlyphX::DataMappingGlyph& glyph, SynGlyphX::PropertyUpdates updates = SynGlyphX::UpdateAll);
 		void UpdateGlyphs(const QModelIndexList& indexList, const SynGlyphX::DataMappingGlyph& glyph, SynGlyphX::PropertyUpdates updates = SynGlyphX::UpdateAll);
@@ -73,8 +73,8 @@ namespace SynGlyphXANTz {
 		void SaveToTemplateFile(const QString& filename) const;
 		bool SaveToCSV(const QString& filename, bool writeMaxGlyph = true);
 
-		SynGlyphX::DataMappingGlyphGraph::LinklessGraph GetSubgraph(const QModelIndex& index);
-		void OverwriteGlyph(const QModelIndex& index, const SynGlyphX::DataMappingGlyphGraph::LinklessGraph& subgraph);
+		SynGlyphX::DataMappingGlyphGraph GetSubgraph(const QModelIndex& index, bool includeChildren);
+		void OverwriteGlyph(const QModelIndex& index, const SynGlyphX::DataMappingGlyphGraph& subgraph);
 
 		void RepaceModelWithDefaultGlyphTree();
 		void ResetRootMinMaxPositionXY();
