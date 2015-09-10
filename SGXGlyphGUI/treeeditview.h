@@ -45,11 +45,11 @@ namespace SynGlyphX {
 
 	protected:
 		virtual void selectionChanged(const QItemSelection& selected, const QItemSelection& deselected);
-		virtual DataMappingGlyphGraph::LinklessGraph GetGraphForCopyToClipboard(const QModelIndex& index) = 0;
-		virtual DataMappingGlyph GetGlyphForCopyToClipboard(const QModelIndex& index) = 0;
-		virtual void OverwriteGlyph(const QModelIndex& index, const DataMappingGlyphGraph::LinklessGraph& graph) = 0;
-		virtual void AddGlyphsAsChildren(const QModelIndex& index, const DataMappingGlyphGraph::LinklessGraph& graph) = 0;
+		virtual DataMappingGlyphGraph GetGraphForCopyToClipboard(const QModelIndex& index, bool includeChildren) = 0;
+		virtual void OverwriteGlyph(const QModelIndex& index, const DataMappingGlyphGraph& graph) = 0;
+		virtual void AddGlyphsAsChildren(const QModelIndex& index, const DataMappingGlyphGraph& graph) = 0;
 		virtual void EnableActions(const QItemSelection& selected) = 0;
+		virtual bool DoInputBindingsNeedToBeClearedBeforePaste();
 		bool DoesClipboardHaveGlyph() const;
 		void CopyToClipboard(bool includeChildren, bool removeFromTree);
 		void PasteFromClipboard(bool addAsChild);

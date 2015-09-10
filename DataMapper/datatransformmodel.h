@@ -90,13 +90,13 @@ public:
 	void AddGlyphFile(const QString& filename);
 	void AddGlyphTree(SynGlyphX::DataMappingGlyphGraph::SharedPtr glyphTree);
 	void UpdateGlyph(const QModelIndex& index, const SynGlyphX::DataMappingGlyph& newGlyph);
-	void UpdateGlyph(const QModelIndex& index, const SynGlyphX::DataMappingGlyphGraph::LinklessGraph& subgraph);
+	void UpdateGlyph(const QModelIndex& index, const SynGlyphX::DataMappingGlyphGraph& subgraph);
 	void UpdateGlyphGeometry(const QModelIndex& index, const SynGlyphX::DataMappingGlyphGeometry& structure);
 	void UpdateVirtualTopology(const QModelIndex& index, const SynGlyphX::DataMappingVirtualTopology& virtualTopology);
 	const SynGlyphX::DataMappingGlyph& GetGlyph(const QModelIndex& index) const;
-	SynGlyphX::DataMappingGlyphGraph::LinklessGraph GetSubgraph(const QModelIndex& index);
+	SynGlyphX::DataMappingGlyphGraph GetSubgraph(const QModelIndex& index, bool includeChildren);
 	void AddChildGlyph(const QModelIndex& parent, const SynGlyphX::DataMappingGlyph& glyphTemplate, unsigned int numberOfChildren = 1);
-	void AddChildGlyphGraph(const QModelIndex& parent, const SynGlyphX::DataMappingGlyphGraph::LinklessGraph& graph);
+	void AddChildGlyphGraph(const QModelIndex& parent, const SynGlyphX::DataMappingGlyphGraph& graph);
 
 	void SetBaseObject(unsigned int position, const SynGlyphX::BaseImage& baseImage);
 	void AddBaseObject(const SynGlyphX::BaseImage& baseImage);

@@ -99,14 +99,7 @@ namespace SynGlyphX {
 			QClipboard* globalClipboard = SynGlyphX::GlyphBuilderApplication::clipboard();
 			QMimeData* mimeData = new QMimeData();
 
-			if (includeChildren) {
-
-				SynGlyphX::LinklessGraphMimeData::ConvertToMimeData(GetGraphForCopyToClipboard(index), mimeData);
-			}
-			else {
-
-				SynGlyphX::LinklessGraphMimeData::ConvertToMimeData(GetGlyphForCopyToClipboard(index), mimeData);
-			}
+			SynGlyphX::LinklessGraphMimeData::ConvertToMimeData(GetGraphForCopyToClipboard(index, includeChildren), mimeData);
 
 			if (removeFromTree) {
 
@@ -127,7 +120,13 @@ namespace SynGlyphX {
 			const QMimeData* mimeData = globalClipboard->mimeData();
 			if ((mimeData != nullptr) && (mimeData->hasFormat(SynGlyphX::LinklessGraphMimeData::s_format))) {
 
-				SynGlyphX::DataMappingGlyphGraph::LinklessGraph subgraph = SynGlyphX::LinklessGraphMimeData::ConvertToLinklessGraph(mimeData);
+				SynGlyphX::DataMappingGlyphGraph subgraph = SynGlyphX::LinklessGraphMimeData::ConvertToLinklessGraph(mimeData);
+
+				if (DoInputBindingsNeedToBeClearedBeforePaste()) {
+
+					subgraph.ClearAllInputBindings();
+				}
+
 				if (addAsChild) {
 
 					AddGlyphsAsChildren(index, subgraph);
@@ -143,6 +142,11 @@ namespace SynGlyphX {
 	void TreeEditView::OnRowsInsertedOrRemoved() {
 
 		EnableActions(selectionModel()->selection());
+	}
+
+	bool TreeEditView::DoInputBindingsNeedToBeClearedBeforePaste() {
+
+		return false;
 	}
 
 } //namespace SynGlyphX

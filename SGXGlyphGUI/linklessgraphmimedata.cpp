@@ -17,18 +17,17 @@ namespace SynGlyphX {
 
 	}
 
-	void LinklessGraphMimeData::ConvertToMimeData(const DataMappingGlyphGraph::LinklessGraph& graph, QMimeData* mimeData) {
+	/*void LinklessGraphMimeData::ConvertToMimeData(const DataMappingGlyphGraph& graph, QMimeData* mimeData) {
 
-		DataMappingGlyphGraph dataMappingGraph(graph);
-		ConvertToMimeData(dataMappingGraph, mimeData);
+		ConvertToMimeData(graph, mimeData);
 	}
-
+	
 	void LinklessGraphMimeData::ConvertToMimeData(const DataMappingGlyph& glyph, QMimeData* mimeData) {
 
 		DataMappingGlyphGraph dataMappingGraph;
 		dataMappingGraph.SetRootGlyph(glyph);
 		ConvertToMimeData(dataMappingGraph, mimeData);
-	}
+	}*/
 
 	void LinklessGraphMimeData::ConvertToMimeData(const DataMappingGlyphGraph& graph, QMimeData* mimeData) {
 
@@ -42,7 +41,7 @@ namespace SynGlyphX {
 		mimeData->setData(s_format, utf8ByteArray);
 	}
 
-	DataMappingGlyphGraph::LinklessGraph LinklessGraphMimeData::ConvertToLinklessGraph(const QMimeData* const mimeData) {
+	DataMappingGlyphGraph LinklessGraphMimeData::ConvertToLinklessGraph(const QMimeData* const mimeData) {
 
 		if (!mimeData->hasFormat(s_format)) {
 
@@ -55,7 +54,7 @@ namespace SynGlyphX {
 		boost::property_tree::read_xml(xmlText, propertyTree, boost::property_tree::xml_parser::trim_whitespace);
 
 		DataMappingGlyphGraph graph(propertyTree.get_child(L"Glyph"));
-		return graph.GetSubgraph(graph.GetRoot());
+		return graph;
 	}
 
 } //namespace SynGlyphX

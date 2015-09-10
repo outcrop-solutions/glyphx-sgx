@@ -136,25 +136,19 @@ void GlyphTreesView::SelectLastGlyphTreeRoot() {
 	selectionModel()->select(model()->index(m_sourceModel->GetDataMapping()->GetGlyphGraphs().size() - 1, 0), QItemSelectionModel::ClearAndSelect);
 }
 
-SynGlyphX::DataMappingGlyphGraph::LinklessGraph GlyphTreesView::GetGraphForCopyToClipboard(const QModelIndex& index) {
+SynGlyphX::DataMappingGlyphGraph GlyphTreesView::GetGraphForCopyToClipboard(const QModelIndex& index, bool includeChildren) {
 
 	SynGlyphX::RoleDataFilterProxyModel* filterModel = dynamic_cast<SynGlyphX::RoleDataFilterProxyModel*>(model());
-	return m_sourceModel->GetSubgraph(filterModel->mapToSource(index));
+	return m_sourceModel->GetSubgraph(filterModel->mapToSource(index), includeChildren);
 }
 
-SynGlyphX::DataMappingGlyph GlyphTreesView::GetGlyphForCopyToClipboard(const QModelIndex& index) {
-
-	SynGlyphX::RoleDataFilterProxyModel* filterModel = dynamic_cast<SynGlyphX::RoleDataFilterProxyModel*>(model());
-	return m_sourceModel->GetGlyph(filterModel->mapToSource(index));
-}
-
-void GlyphTreesView::OverwriteGlyph(const QModelIndex& index, const SynGlyphX::DataMappingGlyphGraph::LinklessGraph& graph) {
+void GlyphTreesView::OverwriteGlyph(const QModelIndex& index, const SynGlyphX::DataMappingGlyphGraph& graph) {
 
 	SynGlyphX::RoleDataFilterProxyModel* filterModel = dynamic_cast<SynGlyphX::RoleDataFilterProxyModel*>(model());
 	m_sourceModel->UpdateGlyph(filterModel->mapToSource(index), graph);
 }
 
-void GlyphTreesView::AddGlyphsAsChildren(const QModelIndex& index, const SynGlyphX::DataMappingGlyphGraph::LinklessGraph& graph) {
+void GlyphTreesView::AddGlyphsAsChildren(const QModelIndex& index, const SynGlyphX::DataMappingGlyphGraph& graph) {
 
 	SynGlyphX::RoleDataFilterProxyModel* filterModel = dynamic_cast<SynGlyphX::RoleDataFilterProxyModel*>(model());
 	m_sourceModel->AddChildGlyphGraph(filterModel->mapToSource(index), graph);

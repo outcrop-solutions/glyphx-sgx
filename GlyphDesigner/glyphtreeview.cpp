@@ -178,22 +178,22 @@ void GlyphTreeView::EnableActions(const QItemSelection& selected) {
 	}
 }
 
-SynGlyphX::DataMappingGlyphGraph::LinklessGraph GlyphTreeView::GetGraphForCopyToClipboard(const QModelIndex& index) {
+SynGlyphX::DataMappingGlyphGraph GlyphTreeView::GetGraphForCopyToClipboard(const QModelIndex& index, bool includeChildren) {
 
-	return m_model->GetSubgraph(index);
+	return m_model->GetSubgraph(index, includeChildren);
 }
 
-SynGlyphX::DataMappingGlyph GlyphTreeView::GetGlyphForCopyToClipboard(const QModelIndex& index)  {
-
-	return m_model->GetMinMaxGlyph(index)->second;
-}
-
-void GlyphTreeView::OverwriteGlyph(const QModelIndex& index, const SynGlyphX::DataMappingGlyphGraph::LinklessGraph& graph) {
+void GlyphTreeView::OverwriteGlyph(const QModelIndex& index, const SynGlyphX::DataMappingGlyphGraph& graph) {
 
 	m_model->OverwriteGlyph(index, graph);
 }
 
-void GlyphTreeView::AddGlyphsAsChildren(const QModelIndex& index, const SynGlyphX::DataMappingGlyphGraph::LinklessGraph& graph) {
+void GlyphTreeView::AddGlyphsAsChildren(const QModelIndex& index, const SynGlyphX::DataMappingGlyphGraph& graph) {
 
 	m_model->AppendChildGraph(index, graph);
+}
+
+bool GlyphTreeView::DoInputBindingsNeedToBeClearedBeforePaste() {
+
+	return true;
 }

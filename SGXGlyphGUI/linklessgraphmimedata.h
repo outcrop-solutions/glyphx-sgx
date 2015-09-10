@@ -33,13 +33,13 @@ namespace SynGlyphX {
 		LinklessGraphMimeData();
 		~LinklessGraphMimeData();
 
-		static void ConvertToMimeData(const DataMappingGlyphGraph::LinklessGraph& graph, QMimeData* mimeData);
-		static void ConvertToMimeData(const DataMappingGlyph& glyph, QMimeData* mimeData);
+		static void ConvertToMimeData(const DataMappingGlyphGraph& graph, QMimeData* mimeData);
+		//static void ConvertToMimeData(const DataMappingGlyph& glyph, QMimeData* mimeData);
 
-		static DataMappingGlyphGraph::LinklessGraph ConvertToLinklessGraph(const QMimeData* const mimeData);
+		static DataMappingGlyphGraph ConvertToLinklessGraph(const QMimeData* const mimeData);
 
 	private:
-		static void ConvertToMimeData(const DataMappingGlyphGraph& graph, QMimeData* mimeData);
+		//static void ConvertToMimeData(const DataMappingGlyphGraph& graph, QMimeData* mimeData);
 	};
 
 } //namespace SynGlyphX

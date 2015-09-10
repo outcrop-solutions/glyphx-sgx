@@ -44,10 +44,9 @@ protected:
 	virtual void EnableActions(const QItemSelection& selection);
 	virtual void DeleteSelected();
 	virtual void DeleteChildrenFromSelected();
-	virtual SynGlyphX::DataMappingGlyphGraph::LinklessGraph GetGraphForCopyToClipboard(const QModelIndex& index);
-	virtual SynGlyphX::DataMappingGlyph GetGlyphForCopyToClipboard(const QModelIndex& index);
-	virtual void OverwriteGlyph(const QModelIndex& index, const SynGlyphX::DataMappingGlyphGraph::LinklessGraph& graph);
-	virtual void AddGlyphsAsChildren(const QModelIndex& index, const SynGlyphX::DataMappingGlyphGraph::LinklessGraph& graph);
+	virtual SynGlyphX::DataMappingGlyphGraph GetGraphForCopyToClipboard(const QModelIndex& index, bool includeChildren);
+	virtual void OverwriteGlyph(const QModelIndex& index, const SynGlyphX::DataMappingGlyphGraph& graph);
+	virtual void AddGlyphsAsChildren(const QModelIndex& index, const SynGlyphX::DataMappingGlyphGraph& graph);
 	
 private slots:
 	void AddChildren();

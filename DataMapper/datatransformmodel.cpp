@@ -662,27 +662,27 @@ void DataTransformModel::UpdateGlyph(const QModelIndex& index, const SynGlyphX::
 
 	if (!m_dataMapping->GetGlyphGraphs().empty() && index.isValid()) {
 
-		SynGlyphX::DataMappingGlyphGraph::GlyphIterator glyph(static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(index.internalPointer()));
-		glyph->second = newGlyph;
+		SynGlyphX::DataMappingGlyphGraph::GlyphIterator vertex(static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(index.internalPointer()));
+		m_dataMapping->UpdateGlyph(GetTreeId(index), vertex, newGlyph);
 		emit dataChanged(index, index);
 	}
 }
 
-void DataTransformModel::UpdateGlyph(const QModelIndex& index, const SynGlyphX::DataMappingGlyphGraph::LinklessGraph& subgraph) {
+void DataTransformModel::UpdateGlyph(const QModelIndex& index, const SynGlyphX::DataMappingGlyphGraph& subgraph) {
 
 	if (m_dataMapping->GetGlyphGraphs().empty() || !index.isValid()) {
 
 		throw std::invalid_argument("Index given to MinMaxGlyphTreeModel::GetSubgraph is invalid");
 	}
 
-	SynGlyphX::DataMappingGlyphGraph::LinklessGraph& nonConstGraph = const_cast<SynGlyphX::DataMappingGlyphGraph::LinklessGraph&>(subgraph);
+	SynGlyphX::DataMappingGlyphGraph& nonConstGraph = const_cast<SynGlyphX::DataMappingGlyphGraph&>(subgraph);
 
 	SynGlyphX::DataMappingGlyphGraph::GlyphIterator vertex(static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(index.internalPointer()));
-	SynGlyphX::DataMappingGlyph glyph = nonConstGraph.root()->second;
+	SynGlyphX::DataMappingGlyph glyph = nonConstGraph.GetRoot()->second;
 	glyph.GetPosition() = vertex->second.GetPosition();
 	UpdateGlyph(index, glyph);
 
-	unsigned int numberOfChildrenOfRootInSubgraph = nonConstGraph.children(nonConstGraph.root());
+	unsigned int numberOfChildrenOfRootInSubgraph = subgraph.ChildCount(subgraph.GetRoot());
 	if (numberOfChildrenOfRootInSubgraph > 0) {
 
 		boost::uuids::uuid treeId = GetTreeId(index);
@@ -691,7 +691,7 @@ void DataTransformModel::UpdateGlyph(const QModelIndex& index, const SynGlyphX::
 
 		for (int i = 0; i < numberOfChildrenOfRootInSubgraph; ++i) {
 
-			m_dataMapping->AddChildTree(treeId, vertex, nonConstGraph.subtree(nonConstGraph.child(nonConstGraph.root(), i)));
+			m_dataMapping->AddChildTree(treeId, vertex, nonConstGraph.GetSubgraph(nonConstGraph.GetChild(nonConstGraph.GetRoot(), i), true));
 		}
 
 		endInsertRows();
@@ -729,7 +729,7 @@ const SynGlyphX::DataMappingGlyph& DataTransformModel::GetGlyph(const QModelInde
 	return glyph->second;
 }
 
-SynGlyphX::DataMappingGlyphGraph::LinklessGraph DataTransformModel::GetSubgraph(const QModelIndex& index) {
+SynGlyphX::DataMappingGlyphGraph DataTransformModel::GetSubgraph(const QModelIndex& index, bool includeChildren) {
 
 	if (m_dataMapping->GetGlyphGraphs().empty() || !index.isValid()) {
 
@@ -737,7 +737,7 @@ SynGlyphX::DataMappingGlyphGraph::LinklessGraph DataTransformModel::GetSubgraph(
 	}
 
 	SynGlyphX::DataMappingGlyphGraph::ConstGlyphIterator glyph(static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(index.internalPointer()));
-	return m_dataMapping->GetSubgraph(GetTreeId(index), glyph);
+	return m_dataMapping->GetSubgraph(GetTreeId(index), glyph, includeChildren);
 }
 
 void DataTransformModel::AddChildGlyph(const QModelIndex& parent, const SynGlyphX::DataMappingGlyph& glyphTemplate, unsigned int numberOfChildren) {
@@ -759,7 +759,7 @@ void DataTransformModel::AddChildGlyph(const QModelIndex& parent, const SynGlyph
 	endInsertRows();
 }
 
-void DataTransformModel::AddChildGlyphGraph(const QModelIndex& parent, const SynGlyphX::DataMappingGlyphGraph::LinklessGraph& graph) {
+void DataTransformModel::AddChildGlyphGraph(const QModelIndex& parent, const SynGlyphX::DataMappingGlyphGraph& graph) {
 
 	if (!parent.isValid()) {
 
@@ -892,7 +892,7 @@ bool DataTransformModel::dropMimeData(const QMimeData* data, Qt::DropAction acti
 
 				//Only do an insert here.  The MoveAction will take care of deleting the old object
 				beginInsertRows(parent, numberOfChildren, numberOfChildren);
-				SynGlyphX::DataMappingGlyphGraph::LinklessGraph oldGlyphSubtree = const_cast<SynGlyphX::DataMappingGlyphGraph::LinklessGraph*>(oldGlyph.owner())->subtree(oldGlyph.deconstify());
+				SynGlyphX::DataMappingGlyphGraph oldGlyphSubtree = GetSubgraph(indexes[j], true);
 				m_dataMapping->AddChildTreeResetPosition(GetTreeId(parent), newParentGlyph.deconstify(), oldGlyphSubtree);
 				endInsertRows();
 				glyphsMoved = true;
