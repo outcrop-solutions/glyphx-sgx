@@ -193,6 +193,8 @@ namespace SynGlyphX {
 		if (addADefaultBaseObjectAfterClear) {
 
 			m_baseObjects.push_back(BaseImage(nullptr));
+			//Default to showing grid lines for the first base object
+			m_baseObjects[0].SetShowGridLines(true);
 		}
     }
 

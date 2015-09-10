@@ -21,6 +21,7 @@
 #include "SGXImage.h"
 #include "utilitytypes.h"
 #include "baseimageproperties.h"
+#include "glyphcolor.h"
 #include <boost/bimap.hpp>
 #include <boost/property_tree/ptree.hpp>
 #include <memory>
@@ -62,6 +63,12 @@ namespace SynGlyphX {
 		void SetWorldSize(const Size& worldSize);
 		const Size& GetWorldSize() const;
 
+		void SetShowGridLines(bool show);
+		bool GetShowGridLines() const;
+
+		void SetGridLinesColor(const GlyphColor& color);
+		GlyphColor GetGridLinesColor() const;
+
 		void ExportToPropertyTree(PropertyTree& parentPropertyTree) const;
 
 		static const boost::bimap<Type, std::wstring> s_baseImageTypeStrings;
@@ -72,6 +79,8 @@ namespace SynGlyphX {
 		Type m_type;
 		std::shared_ptr<BaseImageProperties> m_properties;
 		Size m_worldSize;
+		bool m_showGridLines;
+		GlyphColor m_gridLinesColor;
 	};
 
 } //namespace SynGlyphX
