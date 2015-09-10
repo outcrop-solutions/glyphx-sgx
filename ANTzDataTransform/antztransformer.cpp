@@ -127,6 +127,9 @@ namespace SynGlyphXANTz {
 			gridScale[2] = 1.0;
 			grid.SetScale(gridScale);
 
+			grid.SetColor(baseImage.GetGridLinesColor());
+			grid.SetVisible(baseImage.GetShowGridLines());
+
 			grids.push_back(grid);
 		}
 	}
