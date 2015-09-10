@@ -237,10 +237,10 @@ namespace SynGlyphX {
 		return m_glyphTrees;
 	}
 
-	DataMappingGlyphGraph::LinklessGraph DataTransformMapping::GetSubgraph(const boost::uuids::uuid& treeId, DataMappingGlyphGraph::ConstGlyphIterator& vertex) {
+	DataMappingGlyphGraph DataTransformMapping::GetSubgraph(const boost::uuids::uuid& treeId, DataMappingGlyphGraph::ConstGlyphIterator& vertex, bool includeChildren) {
 
 		DataMappingGlyphGraph::SharedPtr glyphTree = m_glyphTrees[treeId];
-		return glyphTree->GetSubgraph(vertex.deconstify());
+		return glyphTree->GetSubgraph(vertex.deconstify(), includeChildren);
 	}
 
 	bool DataTransformMapping::IsTransformable() const {
@@ -389,7 +389,7 @@ namespace SynGlyphX {
 		}
 	}
 
-	void DataTransformMapping::AddChildTree(const boost::uuids::uuid& treeId, DataMappingGlyphGraph::GlyphIterator& parent, const SynGlyphX::DataMappingGlyphGraph::LinklessGraph& glyphGraph) {
+	void DataTransformMapping::AddChildTree(const boost::uuids::uuid& treeId, DataMappingGlyphGraph::GlyphIterator& parent, const SynGlyphX::DataMappingGlyphGraph& glyphGraph) {
 
 		if (!parent.valid()) {
 
@@ -399,7 +399,7 @@ namespace SynGlyphX {
 		m_glyphTrees[treeId]->AddChildGlyphGraph(parent, glyphGraph);
 	}
 
-	void DataTransformMapping::AddChildTreeResetPosition(const boost::uuids::uuid& treeId, DataMappingGlyphGraph::GlyphIterator& parent, const SynGlyphX::DataMappingGlyphGraph::LinklessGraph& glyphGraph) {
+	void DataTransformMapping::AddChildTreeResetPosition(const boost::uuids::uuid& treeId, DataMappingGlyphGraph::GlyphIterator& parent, const SynGlyphX::DataMappingGlyphGraph& glyphGraph) {
 
 		if (!parent.valid()) {
 
@@ -424,6 +424,11 @@ namespace SynGlyphX {
 	void DataTransformMapping::RemoveGlyph(const boost::uuids::uuid& treeId, DataMappingGlyphGraph::ConstGlyphIterator& parent, int child) {
 
 		m_glyphTrees[treeId]->RemoveChild(parent.deconstify(), child);
+	}
+
+	void DataTransformMapping::UpdateGlyph(const boost::uuids::uuid& treeId, DataMappingGlyphGraph::GlyphIterator& vertex, const DataMappingGlyph& glyph) {
+
+		m_glyphTrees[treeId]->UpdateGlyph(vertex, glyph);
 	}
 
 	const SceneProperties& DataTransformMapping::GetSceneProperties() const {

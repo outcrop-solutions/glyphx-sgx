@@ -45,7 +45,7 @@ namespace SynGlyphX {
 
 		typedef std::map<std::pair<Label, Label>, LinkType> LinkMap;
 		typedef std::pair<Label, GlyphType> VertexType;
-		typedef stlplus::ntree<VertexType> LinklessGraph;
+		typedef stlplus::ntree<VertexType> LabeledTree;
 
 		GlyphGraphTemplate() :
 			stlplus::ntree<std::pair<unsigned long, GlyphType>>(),
@@ -68,7 +68,7 @@ namespace SynGlyphX {
 
 		}
 
-		GlyphGraphTemplate(const LinklessGraph& graph) :
+		GlyphGraphTemplate(const LabeledTree& graph) :
 			stlplus::ntree<std::pair<unsigned long, GlyphType>>(),
 			m_nextLabel(0) {
 
@@ -111,14 +111,14 @@ namespace SynGlyphX {
 			return child(vertex, pos);
 		}
 
-		virtual LinklessGraph GetSubgraph(const GlyphIterator& vertex) {
+		GlyphGraphTemplate GetSubgraph(const GlyphIterator& vertex) {
 
-			return subtree(vertex);
+			return GlyphGraphTemplate(subtree(vertex));
 		}
 
-		virtual LinklessGraph GetAndRemoveSubgraph(const GlyphIterator& vertex) {
+		GlyphGraphTemplate GetAndRemoveSubgraph(const GlyphIterator& vertex) {
 
-			return cut(vertex);
+			return GlyphGraphTemplate(cut(vertex));
 		}
 
 		unsigned int ChildCount(const ConstGlyphIterator& vertex) const {
@@ -141,7 +141,7 @@ namespace SynGlyphX {
 			return AddChildGlyph(vertex, glyph, GetNextLabel());
 		}
 
-		GlyphIterator AddChildGlyphGraph(const GlyphIterator& vertex, const LinklessGraph& graph) {
+		GlyphIterator AddChildGlyphGraph(const GlyphIterator& vertex, const LabeledTree& graph) {
 
 			ConstGlyphIterator otherRoot = graph.root();
 			GlyphIterator newIterator = AddChildGlyph(vertex, otherRoot->second);
@@ -150,7 +150,7 @@ namespace SynGlyphX {
 			return newIterator;
 		}
 
-		GlyphIterator AddChildGlyphGraph(const GlyphIterator& vertex, const GlyphGraphTemplate& graph) {
+		virtual GlyphIterator AddChildGlyphGraph(const GlyphIterator& vertex, const GlyphGraphTemplate& graph) {
 
 			ConstGlyphIterator otherRoot = graph.root();
 			GlyphIterator newIterator = AddChildGlyph(vertex, otherRoot->second);
@@ -173,6 +173,11 @@ namespace SynGlyphX {
 
 			RemoveRelatedLinks(vertex);
 			erase(vertex);
+		}
+
+		virtual void UpdateGlyph(const GlyphIterator& vertex, const GlyphType& glyph) {
+
+			vertex->second = glyph;
 		}
 
 		void AddLink(Label beginning, Label end, const LinkType& glyph) {
@@ -218,7 +223,7 @@ namespace SynGlyphX {
 			return newIterator;
 		}
 
-		void CopyChildren(const GlyphIterator& vertex, const ConstGlyphIterator& parent, const LinklessGraph& graph) {
+		void CopyChildren(const GlyphIterator& vertex, const ConstGlyphIterator& parent, const LabeledTree& graph) {
 
 			for (unsigned int i = 0; i < graph.children(parent); ++i) {
 

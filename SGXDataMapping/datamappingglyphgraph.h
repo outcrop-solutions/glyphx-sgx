@@ -52,7 +52,7 @@ namespace SynGlyphX {
 		DataMappingGlyphGraph(const boost::property_tree::wptree& propertyTree);
 		DataMappingGlyphGraph(const GlyphGraph& graph);
 		DataMappingGlyphGraph(const DataMappingGlyphGraph& graph);
-		DataMappingGlyphGraph(const LinklessGraph& graph);
+		DataMappingGlyphGraph(const LabeledTree& graph);
 		virtual ~DataMappingGlyphGraph();
 
 		PropertyTree& ExportToPropertyTree(boost::property_tree::wptree& propertyTreeParent) const;
@@ -60,8 +60,8 @@ namespace SynGlyphX {
 		bool operator==(const DataMappingGlyphGraph& graph) const;
 		bool operator!=(const DataMappingGlyphGraph& graph) const;
 
-		virtual LinklessGraph GetSubgraph(const GlyphIterator& vertex);
-		virtual LinklessGraph GetAndRemoveSubgraph(const GlyphIterator& vertex);
+		DataMappingGlyphGraph GetSubgraph(const GlyphIterator& vertex, bool includeChildren);
+		DataMappingGlyphGraph GetAndRemoveSubgraph(const GlyphIterator& vertex);
 
 		void SetInputField(DataMappingGlyphGraph::ConstGlyphIterator& node, DataMappingGlyph::MappableField field, const InputField& inputfield);
 		void ClearInputBinding(DataMappingGlyphGraph::ConstGlyphIterator& node, DataMappingGlyph::MappableField field);
@@ -75,10 +75,16 @@ namespace SynGlyphX {
 		GlyphGraph::SharedPtr GetMinGlyphTree() const;
 		GlyphGraph::SharedPtr GetMaxGlyphTree() const;
 
+		void ClearAllInputBindings();
+
+		virtual GlyphIterator AddChildGlyphGraph(const GlyphIterator& vertex, const DataMappingGlyphGraph& graph);
+		virtual void UpdateGlyph(const GlyphIterator& vertex, const DataMappingGlyph& glyph);
+
 		static SharedPtr CreateDefault();
 
 	private:
-		void ClearAllInputBindings(LinklessGraph& graph, LinklessGraph::iterator& vertex);
+		void AddAllInputBindingsToSubgraph(DataMappingGlyphGraph& graph, const GlyphIterator& vertex, bool removeFromThisGraph);
+		void ClearAllInputBindings(DataMappingGlyphGraph& graph, const GlyphIterator& vertex);
 		void IncrementInputBindingCountsFromGlyph(const DataMappingGlyph& glyph);
 		void IncrementInputBindingCount(const InputBinding& binding);
 		void ExportChildrenToPropertyTree(const DataMappingGlyphGraph::ConstGlyphIterator& parent, boost::property_tree::wptree& propertyTreeParent) const;

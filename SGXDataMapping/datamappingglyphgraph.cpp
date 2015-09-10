@@ -80,7 +80,7 @@ namespace SynGlyphX {
 		}
 	}
 
-	DataMappingGlyphGraph::DataMappingGlyphGraph(const LinklessGraph& graph) :
+	DataMappingGlyphGraph::DataMappingGlyphGraph(const LabeledTree& graph) :
 		GlyphGraphTemplate<DataMappingGlyph>(graph) {
 
 
@@ -191,21 +191,77 @@ namespace SynGlyphX {
 		}
 	}
 
-	DataMappingGlyphGraph::LinklessGraph DataMappingGlyphGraph::GetSubgraph(const GlyphIterator& vertex) {
+	DataMappingGlyphGraph DataMappingGlyphGraph::GetSubgraph(const GlyphIterator& vertex, bool includeChildren) {
 
-		LinklessGraph graph = GlyphGraphTemplate<DataMappingGlyph>::GetSubgraph(vertex);
-		ClearAllInputBindings(graph, graph.root());
+		DataMappingGlyphGraph graph;
+
+		if (includeChildren) {
+
+			graph = GlyphGraphTemplate<DataMappingGlyph>::GetSubgraph(vertex);
+		}
+		else {
+
+			graph.SetRootGlyph(vertex->second);
+		}
+
+		AddAllInputBindingsToSubgraph(graph, graph.GetRoot(), false);
 		return graph;
 	}
 
-	DataMappingGlyphGraph::LinklessGraph DataMappingGlyphGraph::GetAndRemoveSubgraph(const GlyphIterator& vertex) {
+	DataMappingGlyphGraph DataMappingGlyphGraph::GetAndRemoveSubgraph(const GlyphIterator& vertex) {
 
-		LinklessGraph graph = GlyphGraphTemplate<DataMappingGlyph>::GetAndRemoveSubgraph(vertex);
-		ClearAllInputBindings(graph, graph.root());
+		DataMappingGlyphGraph graph = GlyphGraphTemplate<DataMappingGlyph>::GetAndRemoveSubgraph(vertex);
+		AddAllInputBindingsToSubgraph(graph, graph.GetRoot(), true);
 		return graph;
 	}
 
-	void DataMappingGlyphGraph::ClearAllInputBindings(LinklessGraph& graph, LinklessGraph::iterator& vertex) {
+	void DataMappingGlyphGraph::AddAllInputBindingsToSubgraph(DataMappingGlyphGraph& graph, const GlyphIterator& vertex, bool removeFromThisGraph) {
+
+		for (unsigned int field = 0; field < DataMappingGlyph::MappableField::MappableFieldSize; ++field) {
+
+			InputBinding& selectedBinding = const_cast<InputBinding&>(vertex->second.GetInputBinding(static_cast<DataMappingGlyph::MappableField>(field)));
+			if (selectedBinding.IsBoundToInputField()) {
+
+				InputField::HashID inputFieldID = selectedBinding.GetInputFieldID();
+				std::unordered_map<InputField::HashID, unsigned int>::iterator referenceCount = graph.m_inputFieldReferenceCounts.find(inputFieldID);
+
+				if (referenceCount == graph.m_inputFieldReferenceCounts.end()) {
+
+					graph.m_inputFieldReferenceCounts[inputFieldID] = 1;
+					graph.m_inputFields[inputFieldID] = m_inputFields[inputFieldID];
+				}
+				else {
+
+					++graph.m_inputFieldReferenceCounts[inputFieldID];
+				}
+
+				if (removeFromThisGraph) {
+
+					if (m_inputFieldReferenceCounts[inputFieldID] == 1) {
+
+						m_inputFieldReferenceCounts.erase(m_inputFieldReferenceCounts.find(inputFieldID));
+						m_inputFields.erase(m_inputFields.find(inputFieldID));
+					}
+					else {
+
+						--m_inputFieldReferenceCounts[inputFieldID];
+					}
+				}
+			}
+		}
+
+		for (unsigned int i = 0; i < graph.children(vertex); ++i) {
+
+			AddAllInputBindingsToSubgraph(graph, graph.child(vertex, i), removeFromThisGraph);
+		}
+	}
+
+	void DataMappingGlyphGraph::ClearAllInputBindings() {
+
+		ClearAllInputBindings(*this, GetRoot());
+	}
+
+	void DataMappingGlyphGraph::ClearAllInputBindings(DataMappingGlyphGraph& graph, const GlyphIterator& vertex) {
 
 		vertex->second.ClearAllInputBindings();
 		for (unsigned int i = 0; i < graph.children(vertex); ++i) {
@@ -420,6 +476,61 @@ namespace SynGlyphX {
 
 		GetRoot()->second.GetPosition()[0].GetValue() = DoubleMinDiff(-180.0, 360.0);
 		GetRoot()->second.GetPosition()[1].GetValue() = DoubleMinDiff(-90.0, 180.0);
+	}
+
+	DataMappingGlyphGraph::GlyphIterator DataMappingGlyphGraph::AddChildGlyphGraph(const GlyphIterator& vertex, const DataMappingGlyphGraph& graph) {
+
+		if (!m_inputFields.empty() && !graph.m_inputFields.empty()) {
+			if ((graph.m_inputFields.begin()->second.GetDatasourceID() != m_inputFields.begin()->second.GetDatasourceID()) ||
+				(graph.m_inputFields.begin()->second.GetTable() != m_inputFields.begin()->second.GetTable())) {
+
+				DataMappingGlyphGraph graphWithoutInputBindings = graph;
+				graphWithoutInputBindings.ClearAllInputBindings();
+				return GlyphGraphTemplate<DataMappingGlyph>::AddChildGlyphGraph(vertex, graphWithoutInputBindings);
+			}
+		}
+
+		for (auto inputField : graph.m_inputFields) {
+
+			if (m_inputFields.count(inputField.first) == 0) {
+
+				m_inputFields[inputField.first] = inputField.second;
+			}
+		}
+
+		for (auto inputFieldCount : graph.m_inputFieldReferenceCounts) {
+
+			if (m_inputFieldReferenceCounts.count(inputFieldCount.first) == 0) {
+
+				m_inputFieldReferenceCounts[inputFieldCount.first] = 1;
+			}
+			else {
+
+				m_inputFieldReferenceCounts[inputFieldCount.first] += inputFieldCount.second;
+			}
+
+		}
+
+		return GlyphGraphTemplate<DataMappingGlyph>::AddChildGlyphGraph(vertex, graph);
+	}
+
+	void DataMappingGlyphGraph::UpdateGlyph(const GlyphIterator& vertex, const DataMappingGlyph& glyph) {
+
+		DataMappingGlyph glyphWithoutUnlinkedInputBindings = glyph;
+		for (unsigned int field = 0; field < DataMappingGlyph::MappableField::MappableFieldSize; ++field) {
+
+			const InputBinding& selectedBinding = glyphWithoutUnlinkedInputBindings.GetInputBinding(static_cast<DataMappingGlyph::MappableField>(field));
+			if (selectedBinding.IsBoundToInputField()) {
+
+				InputField::HashID inputFieldID = selectedBinding.GetInputFieldID();
+				if (m_inputFields.count(inputFieldID) == 0) {
+
+					glyphWithoutUnlinkedInputBindings.ClearInputBinding(static_cast<DataMappingGlyph::MappableField>(field));
+				}
+			}
+		}
+
+		GlyphGraphTemplate<DataMappingGlyph>::UpdateGlyph(vertex, glyphWithoutUnlinkedInputBindings);
 	}
 
 } //namespace SynGlyphX
