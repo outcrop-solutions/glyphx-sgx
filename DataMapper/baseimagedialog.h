@@ -21,6 +21,7 @@
 #include <QtWidgets/QDialog>
 #include <QtWidgets/QStackedWidget>
 #include <QtWidgets/QComboBox>
+#include <QtWidgets/QCheckBox>
 #include <QtCore/QSignalMapper>
 #include "mapoptionswidget.h"
 #include "baseimage.h"
@@ -28,6 +29,7 @@
 #include "xyzwidget.h"
 #include "doublesizewidget.h"
 #include "defaultbaseimagescombobox.h"
+#include "colorbutton.h"
 
 class BaseImageDialog : public QDialog
 {
@@ -61,6 +63,8 @@ private:
 	QSignalMapper* m_presetButtonSignalMapper;
 	SynGlyphX::DoubleSizeWidget* m_worldSizeWidget;
 	SynGlyphX::DefaultBaseImagesComboBox* m_defaultImagesComboBox;
+	QCheckBox* m_showGridLinesCheckBox;
+	SynGlyphX::ColorButton* m_gridLinesColorButton;
 };
 
 #endif // BASEIMAGEDIALOG_H
