@@ -74,7 +74,7 @@
       <SubSystem>Windows</SubSystem>
       <OutputFile>$(OutDir)\$(ProjectName).dll</OutputFile>
       <AdditionalLibraryDirectories>..\..\lib\$(Platform)\$(Configuration)\;..\..\3rdParty\lib\$(Platform)\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>MapDownloading.lib;SGXImage.lib;SGXFoundation.lib;SGXGeospatial.lib;SGXUtility.lib;SGXDataMapping.lib;boost_system-vc120-mt-1_55.lib;boost_filesystem-vc120-mt-1_55.lib;qtmain.lib;Qt5Core.lib;Qt5Network.lib;Qt5Sql.lib;Qt5Xml.lib;Qt5XmlPatterns.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ImportLibrary>..\..\lib\$(Platform)\$(Configuration)\$(TargetName).lib</ImportLibrary>
     </Link>
