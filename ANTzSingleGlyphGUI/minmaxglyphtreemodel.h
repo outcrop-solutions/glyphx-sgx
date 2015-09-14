@@ -79,6 +79,8 @@ namespace SynGlyphXANTz {
 		void RepaceModelWithDefaultGlyphTree();
 		void ResetRootMinMaxPositionXY();
 
+		unsigned int GetBranchLevel(const QModelIndex& index) const;
+
 		SynGlyphX::DataMappingGlyphGraph::Label GetLabel(const QModelIndex& index) const;
 
 		QModelIndex GetIndexFromLabel(SynGlyphX::DataMappingGlyphGraph::Label label) const;
@@ -93,7 +95,6 @@ namespace SynGlyphXANTz {
 
 		bool IsValidCSVFile(const QString& filename) const;
 		bool IsRootGlyph(const SynGlyphX::DataMappingGlyphGraph::GlyphIterator& glyph) const;
-		unsigned int GetBranchLevel(const QModelIndex& index) const;
 
 		static SynGlyphX::DataMappingGlyphGraph::GlyphIterator GetIteratorFromIndex(const QModelIndex& index);
 
