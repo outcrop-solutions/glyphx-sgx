@@ -57,7 +57,7 @@ namespace SynGlyphX {
 		m_editActions.AddSeparator();
 
 		m_deleteAction = m_editActions.AddAction(tr("Delete"), QKeySequence::Delete);
-		QObject::connect(m_deleteAction, &QAction::triggered, this, &TreeEditView::DeleteSelected);
+		QObject::connect(m_deleteAction, &QAction::triggered, this, &TreeEditView::DeleteSelectedAndSelectNewIndex);
 
 		m_deleteChildrenAction = m_editActions.AddAction(tr("Delete Children"));
 		QObject::connect(m_deleteChildrenAction, &QAction::triggered, this, &TreeEditView::DeleteChildrenFromSelected);
@@ -103,7 +103,7 @@ namespace SynGlyphX {
 
 			if (removeFromTree) {
 
-				model()->removeRow(index.row(), index.parent());
+				DeleteSelectedAndSelectNewIndex();
 			}
 
 			globalClipboard->setMimeData(mimeData);
@@ -147,6 +147,66 @@ namespace SynGlyphX {
 	bool TreeEditView::DoInputBindingsNeedToBeClearedBeforePaste() {
 
 		return false;
+	}
+
+	void TreeEditView::DeleteSelectedAndSelectNewIndex() {
+
+		QModelIndexList sortedIndexList = GetSelectedIndexListForDeletion();
+		if (!sortedIndexList.isEmpty()) {
+
+			QModelIndex newSelectedIndex = sortedIndexList.last().parent();
+			int rootIndexCount = model()->rowCount();
+			if (!newSelectedIndex.isValid() && rootIndexCount > 1) {
+
+				//This only works to select a new root index when a single item is deleted.  That is fine for now but may need to be fixed in the future.
+				int row = sortedIndexList.last().row();
+				if (row == 0) {
+
+					newSelectedIndex = model()->index(1, 0);
+				}
+				else {
+
+					newSelectedIndex = model()->index(row - 1, 0);
+				}
+			}
+
+			if (newSelectedIndex.isValid()) {
+
+				selectionModel()->select(newSelectedIndex, QItemSelectionModel::ClearAndSelect);
+			}
+			
+			Q_FOREACH(const QModelIndex& index, sortedIndexList) {
+
+				if (CanIndexBeDeleted(index)) {
+
+					model()->removeRow(index.row(), index.parent());
+				}
+			}
+		}
+	}
+
+	void TreeEditView::DeleteChildrenFromSelected() {
+
+		QModelIndexList sortedIndexList = GetSelectedIndexListForDeletion();
+		if (!sortedIndexList.isEmpty()) {
+
+			QAbstractItemModel* treeModel = model();
+			Q_FOREACH(const QModelIndex& index, sortedIndexList) {
+
+				treeModel->removeRows(0, treeModel->rowCount(index), index);
+			}
+		}
+	}
+
+	QModelIndexList TreeEditView::GetSelectedIndexListForDeletion() const {
+
+		//In the default case there is no need to sort the indexes
+		return selectionModel()->selectedIndexes();
+	}
+
+	bool TreeEditView::CanIndexBeDeleted(const QModelIndex& index) const {
+
+		return true;
 	}
 
 } //namespace SynGlyphX

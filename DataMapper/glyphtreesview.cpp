@@ -88,26 +88,6 @@ void GlyphTreesView::EnableActions(const QItemSelection& selection) {
 	}
 }
 
-void GlyphTreesView::DeleteSelected() {
-
-	const QModelIndexList& selected = selectionModel()->selectedIndexes();
-	if (!selected.isEmpty()) {
-
-		const QModelIndex& index = selected.front();
-		model()->removeRow(index.row(), index.parent());
-	}
-}
-
-void GlyphTreesView::DeleteChildrenFromSelected() {
-
-	const QModelIndexList& selected = selectionModel()->selectedIndexes();
-	if (!selected.isEmpty()) {
-		
-		const QModelIndex& parent = selected.front();
-		model()->removeRows(0, model()->rowCount(parent), parent);
-	}
-}
-
 void GlyphTreesView::AddChildren() {
 
 	SynGlyphX::GlyphPropertiesWidget* singleGlyphWidget = new SynGlyphX::GlyphPropertiesWidget(SynGlyphX::GlyphPropertiesWidget::ShowOnTop | SynGlyphX::GlyphPropertiesWidget::EnabledSpinBox, this);

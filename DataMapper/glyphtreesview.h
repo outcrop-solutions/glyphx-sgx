@@ -42,8 +42,6 @@ signals:
 protected:
 	virtual void selectionChanged(const QItemSelection& selected, const QItemSelection& deselected);
 	virtual void EnableActions(const QItemSelection& selection);
-	virtual void DeleteSelected();
-	virtual void DeleteChildrenFromSelected();
 	virtual SynGlyphX::DataMappingGlyphGraph GetGraphForCopyToClipboard(const QModelIndex& index, bool includeChildren);
 	virtual void OverwriteGlyph(const QModelIndex& index, const SynGlyphX::DataMappingGlyphGraph& graph);
 	virtual void AddGlyphsAsChildren(const QModelIndex& index, const SynGlyphX::DataMappingGlyphGraph& graph);

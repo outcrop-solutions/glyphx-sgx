@@ -40,9 +40,10 @@ protected:
 	virtual void OverwriteGlyph(const QModelIndex& index, const SynGlyphX::DataMappingGlyphGraph& graph);
 	virtual void AddGlyphsAsChildren(const QModelIndex& index, const SynGlyphX::DataMappingGlyphGraph& graph);
 	virtual void EnableActions(const QItemSelection& selected);
-	virtual void DeleteSelected();
-	virtual void DeleteChildrenFromSelected();
+	virtual QModelIndexList GetSelectedIndexListForDeletion() const;
 	virtual bool DoInputBindingsNeedToBeClearedBeforePaste();
+	virtual QModelIndex GetNewSelectedIndexAfterDelete() const;
+	virtual bool CanIndexBeDeleted(const QModelIndex& index) const;
 
 private slots:
 	void PropertiesActivated();

@@ -121,6 +121,11 @@ void DataMapping3DWidget::OnExternalDataChanged(const QModelIndex& topLeft, cons
 
 void DataMapping3DWidget::OnExternalRowsRemoved(const QModelIndex& parent, int first, int last) {
 
+	if (!parent.isValid() && (first != m_glyphTreeIndex)) {
+
+		return;
+	}
+
 	QObject::disconnect(m_internalSelectionConnection);
 	QModelIndex internalParent = GetInternalModelIndex(m_externalModel->mapToSource(parent));
 	m_internalModel->removeRows(first, last - first + 1, internalParent);
@@ -184,8 +189,10 @@ void DataMapping3DWidget::OnExternalModelReset() {
 
 void DataMapping3DWidget::Clear() {
 
+	QObject::disconnect(m_internalSelectionConnection);
 	m_glyphTreeIndex = -1;
 	m_internalModel->removeRow(0);
+	ConnectInternalSelection();
 }
 
 QModelIndex DataMapping3DWidget::GetInternalModelIndex(const QModelIndex& externalIndex) const {

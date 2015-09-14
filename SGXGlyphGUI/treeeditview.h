@@ -38,8 +38,8 @@ namespace SynGlyphX {
 		virtual void setModel(QAbstractItemModel* model);
 
 	protected slots:
-		virtual void DeleteSelected() = 0;
-		virtual void DeleteChildrenFromSelected() = 0;
+		void DeleteSelectedAndSelectNewIndex();
+		void DeleteChildrenFromSelected();
 		void OnClipboardDataChanged();
 		void OnRowsInsertedOrRemoved();
 
@@ -49,7 +49,9 @@ namespace SynGlyphX {
 		virtual void OverwriteGlyph(const QModelIndex& index, const DataMappingGlyphGraph& graph) = 0;
 		virtual void AddGlyphsAsChildren(const QModelIndex& index, const DataMappingGlyphGraph& graph) = 0;
 		virtual void EnableActions(const QItemSelection& selected) = 0;
+		virtual QModelIndexList GetSelectedIndexListForDeletion() const;
 		virtual bool DoInputBindingsNeedToBeClearedBeforePaste();
+		virtual bool CanIndexBeDeleted(const QModelIndex& index) const;
 		bool DoesClipboardHaveGlyph() const;
 		void CopyToClipboard(bool includeChildren, bool removeFromTree);
 		void PasteFromClipboard(bool addAsChild);

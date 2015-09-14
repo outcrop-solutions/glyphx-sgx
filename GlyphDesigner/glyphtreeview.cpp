@@ -52,30 +52,11 @@ void GlyphTreeView::CreateContextMenuActions() {
 	setContextMenuPolicy(Qt::ActionsContextMenu);
 }
 
-void GlyphTreeView::DeleteSelected() {
-
-	QItemSelectionModel* glyphTreeSelectionModel = selectionModel();
-	while (glyphTreeSelectionModel->hasSelection()) {
-
-		const QModelIndexList& selectedItems = glyphTreeSelectionModel->selectedIndexes();
-		const QModelIndex& selectedItem = selectedItems.back();
-
-		//Only delete selected node if it isn't the root node
-		if (selectedItem.parent().isValid()) {
-		
-			m_model->removeRow(selectedItem.row(), selectedItem.parent());
-		}
-	}
-}
-
-void GlyphTreeView::DeleteChildrenFromSelected() {
+QModelIndexList GlyphTreeView::GetSelectedIndexListForDeletion() const {
 
 	QModelIndexList selectedItems = selectionModel()->selectedIndexes();
 	std::sort(selectedItems.begin(), selectedItems.end(), SynGlyphXANTz::MinMaxGlyphTreeModel::GreaterBranchLevel);
-	for (int i = 0; i < selectedItems.length(); ++i) {
-
-		m_model->removeRows(0, m_model->rowCount(selectedItems[i]), selectedItems[i]);
-	}
+	return selectedItems;
 }
 
 void GlyphTreeView::PropertiesActivated() {
@@ -196,4 +177,33 @@ void GlyphTreeView::AddGlyphsAsChildren(const QModelIndex& index, const SynGlyph
 bool GlyphTreeView::DoInputBindingsNeedToBeClearedBeforePaste() {
 
 	return true;
+}
+
+QModelIndex GlyphTreeView::GetNewSelectedIndexAfterDelete() const {
+
+	QModelIndexList& selectedItems = selectionModel()->selectedIndexes();
+
+	if (selectedItems.isEmpty()) {
+
+		return QModelIndex();
+	}
+
+	QModelIndex& lowestBranchLevelIndex = selectedItems[0];
+	unsigned int minBranchLevel = m_model->GetBranchLevel(lowestBranchLevelIndex);
+	for (int i = 1; i < selectedItems.length(); ++i) {
+
+		unsigned int branchLevel = m_model->GetBranchLevel(selectedItems[i]);
+		if (branchLevel < minBranchLevel) {
+
+			minBranchLevel = branchLevel;
+			lowestBranchLevelIndex = selectedItems[i];
+		}
+	}
+
+	return lowestBranchLevelIndex.parent();
+}
+
+bool GlyphTreeView::CanIndexBeDeleted(const QModelIndex& index) const {
+
+	return index.parent().isValid();
 }
