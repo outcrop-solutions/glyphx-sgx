@@ -56,7 +56,7 @@ ANTZCORE_API void npInitGLDraw(void* dataRef)
 
 //	InitTorus (dataRef);
 
-	nposBeginThread (npDrawSortThread, data);
+	//nposBeginThread (npDrawSortThread, data);
 
 	data->io.gl.pickPass = false;			//zz global init
 }
