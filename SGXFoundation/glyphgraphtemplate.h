@@ -238,10 +238,8 @@ namespace SynGlyphX {
 			for (unsigned int i = 0; i < graph.ChildCount(parent); ++i) {
 
 				const ConstGlyphIterator childFromOtherGraph = graph.GetChild(parent, i);
-
-				Label label = childFromOtherGraph->first;
 				
-				GlyphIterator child = AddChildGlyph(vertex, childFromOtherGraph->second, label);
+				GlyphIterator child = AddChildGlyph(vertex, childFromOtherGraph->second);
 				CopyChildren(child, childFromOtherGraph, graph);
 			}
 		}
