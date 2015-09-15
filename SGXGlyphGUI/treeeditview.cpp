@@ -61,6 +61,8 @@ namespace SynGlyphX {
 
 		m_deleteChildrenAction = m_editActions.AddAction(tr("Delete Children"));
 		QObject::connect(m_deleteChildrenAction, &QAction::triggered, this, &TreeEditView::DeleteChildrenFromSelected);
+
+		m_editActions.EnableActions(false);
 	}
 
 	void TreeEditView::OnClipboardDataChanged() {

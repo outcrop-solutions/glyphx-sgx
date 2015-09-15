@@ -93,6 +93,11 @@ void DataMapperWindow::CreateCenterWidget() {
 	m_minMaxGlyph3DWidget = new DataMapping3DWidget(m_dataTransformModel, this);
 	m_minMaxGlyph3DWidget->SetModel(dynamic_cast<SynGlyphX::RoleDataFilterProxyModel*>(m_glyphTreesView->model()), m_glyphTreesView->selectionModel());
 
+	m_minMaxGlyph3DWidget->addActions(m_glyphTreesView->GetGlyphActions());
+	m_minMaxGlyph3DWidget->addAction(SynGlyphX::SharedActionList::CreateSeparator(this));
+	m_minMaxGlyph3DWidget->addActions(m_glyphTreesView->GetEditActions());
+	m_minMaxGlyph3DWidget->setContextMenuPolicy(Qt::ActionsContextMenu);
+
 	QObject::connect(m_showAnimation, &QAction::toggled, m_minMaxGlyph3DWidget, &DataMapping3DWidget::EnableAnimation);
 	
 	setCentralWidget(m_minMaxGlyph3DWidget);
