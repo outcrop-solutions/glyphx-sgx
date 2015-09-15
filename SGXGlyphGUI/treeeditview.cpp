@@ -42,17 +42,17 @@ namespace SynGlyphX {
 		m_cutAction = m_editActions.AddAction(tr("Cut"), QKeySequence::Cut);
 		QObject::connect(m_cutAction, &QAction::triggered, this, [&, this](){ CopyToClipboard(true, true); });
 
-		m_copyAction = m_editActions.AddAction(tr("Copy"), QKeySequence::Copy);
-		QObject::connect(m_copyAction, &QAction::triggered, this, [&, this](){ CopyToClipboard(false, false); });
-
-		m_copyWithChildrenAction = m_editActions.AddAction(tr("Copy With Children"));
+		m_copyWithChildrenAction = m_editActions.AddAction(tr("Copy With Children"), QKeySequence::Copy);
 		QObject::connect(m_copyWithChildrenAction, &QAction::triggered, this, [&, this](){ CopyToClipboard(true, false); });
 
-		m_pasteAction = m_editActions.AddAction(tr("Paste"), QKeySequence::Paste);
-		QObject::connect(m_pasteAction, &QAction::triggered, this, [&, this](){ PasteFromClipboard(false); });
+		m_copyAction = m_editActions.AddAction(tr("Copy (Object Only)"));
+		QObject::connect(m_copyAction, &QAction::triggered, this, [&, this](){ CopyToClipboard(false, false); });
 
-		m_pasteAsChildAction = m_editActions.AddAction(tr("Paste As Child"));
+		m_pasteAsChildAction = m_editActions.AddAction(tr("Paste As Child"), QKeySequence::Paste);
 		QObject::connect(m_pasteAsChildAction, &QAction::triggered, this, [&, this](){ PasteFromClipboard(true); });
+
+		m_pasteAction = m_editActions.AddAction(tr("Paste (Overwrite)"));
+		QObject::connect(m_pasteAction, &QAction::triggered, this, [&, this](){ PasteFromClipboard(false); });
 
 		m_editActions.AddSeparator();
 
