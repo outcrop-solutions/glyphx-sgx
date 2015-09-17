@@ -15,8 +15,8 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef DATASOURCEMAPS_H
-#define DATASOURCEMAPS_H
+#ifndef SYNGLYPHX_DATASOURCEMAPS_H
+#define SYNGLYPHX_DATASOURCEMAPS_H
 
 #include "sgxdatamapping.h"
 #include <string>
@@ -44,7 +44,7 @@ namespace SynGlyphX {
 		bool HasDatasources() const;
 		unsigned int Count() const;
 		void Clear();
-		bool EnableTables(const boost::uuids::uuid& id, const Datasource::TableSet& tables, bool enable = true);
+		bool EnableTables(const boost::uuids::uuid& id, const Datasource::TableNames& tables, bool enable = true);
 
 		void ChangeDatasourceName(const boost::uuids::uuid& id, const std::wstring& name);
 

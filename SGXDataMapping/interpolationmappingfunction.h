@@ -25,8 +25,14 @@
 namespace SynGlyphX {
 
 	class SGXDATAMAPPING_API InterpolationMappingData : public MappingFunctionData
-	{
+	{ 
 	public:
+		enum MinMaxType {
+			BoundInputField,
+			UserSpecified,
+			InputFieldGroup
+		};
+
 		typedef std::shared_ptr<InterpolationMappingData> SharedPtr;
 		typedef std::shared_ptr<const InterpolationMappingData> ConstSharedPtr;
 
@@ -41,17 +47,16 @@ namespace SynGlyphX {
 		double Interpolate(const DoubleMinDiff& outputMinDiff, double inputMin, double inputMax, double input) const;
 		GlyphColor Interpolate(const ColorMinDiff& outputMinDiff, double inputMin, double inputMax, double input) const;
 
-		//void SetOutputMinAndDifference(OutputType min, OutputType difference);
-		//void SetInputMinAndDifference(double min, double difference);
+		void SetUserSpecifiedInputMinAndMax(double min, double max);
+		double GetUserSpecifiedInputMin() const;
+		double GetUserSpecifiedInputMax() const;
 
 	protected:
-		//virtual OutputType MapCombinedInput(const double& input) const;
 		double Interpolate(double outputMin, double outputDifference, double inputMin, double inputDifference, double input) const;
 
-		//OutputType m_outputMin;
-		//OutputType m_outputDifference;
-		//double m_inputMin;
-		//double m_inputDifference;
+		double m_userSpecifiedInputMin;
+		double m_userSpecifiedInputMax;
+		MinMaxType m_minMaxType;
 	};
 
 } //namespace SynGlyphX

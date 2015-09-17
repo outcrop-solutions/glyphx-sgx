@@ -67,12 +67,22 @@ namespace SynGlyphX {
 		m_fileDatasources.clear();
 	}
 
-	bool DatasourceMaps::EnableTables(const boost::uuids::uuid& id, const Datasource::TableSet& tables, bool enable) {
+	bool DatasourceMaps::EnableTables(const boost::uuids::uuid& id, const Datasource::TableNames& tables, bool enable) {
 
 		FileDatasourceMap::iterator fileDatasourceIterator = m_fileDatasources.find(id);
 		if (fileDatasourceIterator != m_fileDatasources.end()) {
 
-			fileDatasourceIterator->second.EnableTables(tables, enable);
+			if (enable) {
+
+				fileDatasourceIterator->second.AddTables(tables);
+			}
+			else {
+
+				for (const std::wstring& table : tables) {
+
+					fileDatasourceIterator->second.RemoveTable(table);
+				}
+			}
 			return true;
 		}
 

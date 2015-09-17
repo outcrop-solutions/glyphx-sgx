@@ -15,62 +15,49 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef SYNGLYPHX_INPUTFIELD_H
-#define SYNGLYPHX_INPUTFIELD_H
+#ifndef SYNGLYPHX_DATASOURCETABLE_H
+#define SYNGLYPHX_DATASOURCETABLE_H
 
 #include "sgxdatamapping.h"
-#include "inputtable.h"
+#include <string>
+#include <unordered_set>
+#include <unordered_map>
 #include <boost/property_tree/ptree.hpp>
-#include <boost/bimap.hpp>
-#include <boost/shared_ptr.hpp>
-#include <boost/functional/hash.hpp>
 
 namespace SynGlyphX {
 
-	class SGXDATAMAPPING_API InputField : public InputTable
+	class DatasourceTable
 	{
-
 	public:
-		enum Type {
-			Null = 0,
-			Integer,
-			Real,
-			Text,
-			Date
-		};
+		typedef std::wstring FieldGroupName;
+		typedef std::unordered_set<FieldGroupName> FieldGroup;
+		typedef std::unordered_map<std::wstring, FieldGroup> FieldGroupMap;
 
-		typedef boost::shared_ptr<InputField> SharedPtr;
-		typedef boost::shared_ptr<const InputField> ConstSharedPtr;
-		typedef size_t HashID;
+		DatasourceTable(const std::wstring& name);
+		DatasourceTable(const boost::property_tree::wptree& propertyTree);
+		DatasourceTable(const DatasourceTable& table);
+		~DatasourceTable();
 
-		InputField();
-		InputField(const boost::uuids::uuid& datasourceID, const std::wstring& table, const std::wstring field, Type type);
-		InputField(const boost::property_tree::wptree& propertyTree);
-		InputField(const InputField& inputField);
-		~InputField();
+		DatasourceTable& operator=(const DatasourceTable& table);
+		bool operator==(const DatasourceTable& table) const;
+		bool operator!=(const DatasourceTable& table) const;
 
-		InputField& operator=(const InputField& inputField);
-		bool operator==(const InputField& inputField) const;
-		bool operator!=(const InputField& inputField) const;
+		const std::wstring& GetName() const;
+		//void SetName(const std::wstring& name);
 
-		const std::wstring& GetField() const;
+		const FieldGroupMap& GetFieldGroups() const;
+		const FieldGroup& GetFieldGroup(const FieldGroupName& groupName) const;
+		void UpdateFieldGroup(const FieldGroupName& groupName, const FieldGroup& group);
+		void RemoveFieldGroup(const FieldGroupName& groupName);
 
-		virtual bool IsValid() const;
-
-		void ExportToPropertyTree(boost::property_tree::wptree& propertyTree) const;
-
-		bool IsNumeric() const;
-
-		static const boost::bimap<Type, std::wstring> s_fieldTypeStrings;
-
-		HashID GetHashID() const;
+		boost::property_tree::wptree& ExportToPropertyTree(boost::property_tree::wptree& parentPropertyTree) const;
 
 	private:
-		std::wstring m_field;
-		Type m_type;
+		std::wstring m_name;
+
+		FieldGroupMap m_fieldGroups;
 	};
 
 } //namespace SynGlyphX
 
-#endif SYNGLYPHX_INPUTFIELD_H
-
+#endif //SYNGLYPHX_DATASOURCETABLE_H

@@ -159,7 +159,7 @@ namespace SynGlyphX {
 
 		DatasourceMaps datasourceMaps;
 
-		std::unordered_map<boost::uuids::uuid, Datasource::TableSet, SynGlyphX::UUIDHash> datasourcesAndTablesInUse;
+		std::unordered_map<boost::uuids::uuid, Datasource::TableNames, SynGlyphX::UUIDHash> datasourcesAndTablesInUse;
 		for (auto glyphTree : m_glyphTrees) {
 
 			const InputField& inputField = glyphTree.second->GetInputFields().begin()->second;
@@ -220,7 +220,7 @@ namespace SynGlyphX {
         return id;
     }
 
-	void DataTransformMapping::EnableTables(const boost::uuids::uuid& id, const Datasource::TableSet& tables, bool enable) {
+	void DataTransformMapping::EnableTables(const boost::uuids::uuid& id, const Datasource::TableNames& tables, bool enable) {
 
 		m_datasources.EnableTables(id, tables, enable);
     }

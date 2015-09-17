@@ -17,7 +17,9 @@ namespace SynGlyphX {
 		//CSV files are a single table so put in a dummy value so that the table count is 1
 		if (!CanDatasourceHaveMultipleTables()) {
 		
-			m_tables.insert(SingleTableName);
+			Datasource::TableNames tables;
+			tables.insert(SingleTableName);
+			AddTables(tables);
 		}
 
 		boost::filesystem::path datasourcePath(filename);
@@ -32,7 +34,9 @@ namespace SynGlyphX {
 		if (!CanDatasourceHaveMultipleTables()) {
 
 			m_tables.clear();
-			m_tables.insert(SingleTableName);
+			Datasource::TableNames tables;
+			tables.insert(SingleTableName);
+			AddTables(tables);
 		}
 
 		boost::filesystem::path datasourcePath(m_dbName);

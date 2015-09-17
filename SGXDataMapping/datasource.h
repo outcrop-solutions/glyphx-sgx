@@ -23,6 +23,7 @@
 #include <string>
 #include <unordered_set>
 #include <boost/bimap.hpp>
+#include "datasourcetable.h"
 
 namespace SynGlyphX {
 
@@ -30,7 +31,8 @@ namespace SynGlyphX {
 	{
 	public:
 		typedef boost::property_tree::wptree PropertyTree;
-		typedef std::unordered_set<std::wstring> TableSet;
+		typedef std::unordered_map<std::wstring, DatasourceTable> Tables;
+		typedef std::unordered_set<std::wstring> TableNames;
 
 		static const std::wstring SingleTableName;
 
@@ -48,10 +50,17 @@ namespace SynGlyphX {
         unsigned int GetPort() const;
         const std::wstring& GetUsername() const;
         const std::wstring& GetPassword() const;
-		const TableSet& GetTables() const;
+		const Tables& GetTables() const;
 
-		void EnableTables(const TableSet& table, bool enable = true);
+		void AddTables(const Tables& tables);
+		void AddTables(const TableNames& tableNames);
+		void RemoveTable(const std::wstring& tableName);
 		void ClearTables();
+		TableNames GetTableNames() const;
+
+		const DatasourceTable::FieldGroupMap& GetFieldGroupMap(const std::wstring& tableName) const;
+		void UpdateFieldGroup(const std::wstring& tableName, const DatasourceTable::FieldGroupName& groupName, const DatasourceTable::FieldGroup& fieldGroup);
+		void RemoveFieldGroup(const std::wstring& tableName, const DatasourceTable::FieldGroupName& groupName);
 
 		virtual bool IsOriginalDatasourceADatabase() const = 0;
 		virtual bool CanDatasourceHaveMultipleTables() const = 0;
@@ -67,7 +76,7 @@ namespace SynGlyphX {
         unsigned int m_port;
         std::wstring m_username;
         std::wstring m_password;
-		TableSet m_tables;
+		Tables m_tables;
 	};
 
 } //namespace SynGlyphX

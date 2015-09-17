@@ -15,62 +15,38 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef SYNGLYPHX_INPUTFIELD_H
-#define SYNGLYPHX_INPUTFIELD_H
+#ifndef SYNGLYPHX_INPUTTABLE_H
+#define SYNGLYPHX_INPUTTABLE_H
 
 #include "sgxdatamapping.h"
-#include "inputtable.h"
-#include <boost/property_tree/ptree.hpp>
-#include <boost/bimap.hpp>
-#include <boost/shared_ptr.hpp>
-#include <boost/functional/hash.hpp>
+#include <string>
+#include <boost/uuid/uuid.hpp>
 
 namespace SynGlyphX {
 
-	class SGXDATAMAPPING_API InputField : public InputTable
+	class SGXDATAMAPPING_API InputTable
 	{
-
 	public:
-		enum Type {
-			Null = 0,
-			Integer,
-			Real,
-			Text,
-			Date
-		};
+		InputTable();
+		InputTable(const boost::uuids::uuid& datasourceID, const std::wstring& table);
+		//InputTable(const boost::property_tree::wptree& propertyTree);
+		InputTable(const InputTable& inputTable);
+		virtual ~InputTable();
 
-		typedef boost::shared_ptr<InputField> SharedPtr;
-		typedef boost::shared_ptr<const InputField> ConstSharedPtr;
-		typedef size_t HashID;
+		InputTable& operator=(const InputTable& inputTable);
+		bool operator==(const InputTable& inputTable) const;
+		bool operator!=(const InputTable& inputTable) const;
 
-		InputField();
-		InputField(const boost::uuids::uuid& datasourceID, const std::wstring& table, const std::wstring field, Type type);
-		InputField(const boost::property_tree::wptree& propertyTree);
-		InputField(const InputField& inputField);
-		~InputField();
-
-		InputField& operator=(const InputField& inputField);
-		bool operator==(const InputField& inputField) const;
-		bool operator!=(const InputField& inputField) const;
-
-		const std::wstring& GetField() const;
+		const boost::uuids::uuid& GetDatasourceID() const;
+		const std::wstring& GetTable() const;
 
 		virtual bool IsValid() const;
 
-		void ExportToPropertyTree(boost::property_tree::wptree& propertyTree) const;
-
-		bool IsNumeric() const;
-
-		static const boost::bimap<Type, std::wstring> s_fieldTypeStrings;
-
-		HashID GetHashID() const;
-
-	private:
-		std::wstring m_field;
-		Type m_type;
+	protected:
+		boost::uuids::uuid m_datasourceID;
+		std::wstring m_table;
 	};
 
-} //namespace SynGlyphX
+}
 
-#endif SYNGLYPHX_INPUTFIELD_H
-
+#endif //SYNGLYPHX_INPUTTABLE_H

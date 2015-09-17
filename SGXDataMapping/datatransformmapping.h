@@ -58,7 +58,7 @@ namespace SynGlyphX {
             const std::wstring& username = L"",
             const std::wstring& password = L"");
 
-		void EnableTables(const boost::uuids::uuid& id, const Datasource::TableSet& tables, bool enable = true);
+		void EnableTables(const boost::uuids::uuid& id, const Datasource::TableNames& tables, bool enable = true);
 
 		boost::uuids::uuid AddGlyphTree(const DataMappingGlyphGraph::SharedPtr glyphTree);
 		void RemoveGlyphTree(const boost::uuids::uuid& id);

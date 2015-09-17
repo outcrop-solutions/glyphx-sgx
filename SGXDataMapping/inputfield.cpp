@@ -14,28 +14,25 @@ namespace SynGlyphX {
 		(InputField::Type::Date, L"Date");
 
 	InputField::InputField() :
+		InputTable(),
 		m_type(Null) {
 
 	}
 
 	InputField::InputField(const boost::uuids::uuid& datasourceID, const std::wstring& table, const std::wstring field, Type type) :
-		m_datasourceID(datasourceID),
-		m_table(table),
+		InputTable(datasourceID, table),
 		m_field(field),
 		m_type(type)
 	{
-		//Since some datasources are single table make sure table has a non-empty value
-		if (m_table.empty()) {
-
-			m_table = Datasource::SingleTableName;
-		}
+		
 	}
 
 	InputField::InputField(const boost::property_tree::wptree& propertyTree) :
-		m_datasourceID(propertyTree.get<boost::uuids::uuid>(L"<xmlattr>.id")),
-		m_table(propertyTree.get<std::wstring>(L"<xmlattr>.table")),
 		m_field(propertyTree.get<std::wstring>(L"<xmlattr>.field")),
 		m_type(s_fieldTypeStrings.right.at(propertyTree.get<std::wstring>(L"<xmlattr>.type"))) {
+
+		m_datasourceID = propertyTree.get<boost::uuids::uuid>(L"<xmlattr>.id");
+		m_table = propertyTree.get<std::wstring>(L"<xmlattr>.table");
 
 		//Since some datasources are single table make sure table has a non-empty value
 		if (m_table.empty()) {
@@ -45,8 +42,7 @@ namespace SynGlyphX {
 	}
 
 	InputField::InputField(const InputField& inputField) :
-		m_datasourceID(inputField.m_datasourceID),
-		m_table(inputField.m_table),
+		InputTable(inputField),
 		m_field(inputField.m_field),
 		m_type(inputField.m_type) {
 
@@ -58,8 +54,7 @@ namespace SynGlyphX {
 
 	InputField& InputField::operator=(const InputField& inputField) {
 
-		m_datasourceID = inputField.m_datasourceID;
-		m_table = inputField.m_table;
+		InputTable::operator=(inputField);
 		m_field = inputField.m_field;
 		m_type = inputField.m_type;
 
@@ -68,12 +63,7 @@ namespace SynGlyphX {
 
 	bool InputField::operator==(const InputField& inputField) const {
 
-		if (m_datasourceID != inputField.m_datasourceID) {
-
-			return false;
-		}
-
-		if (m_table != inputField.m_table) {
+		if (InputTable::operator!=(inputField)) {
 
 			return false;
 		}
@@ -96,16 +86,6 @@ namespace SynGlyphX {
 		return !operator==(inputField);
 	}
 
-	const boost::uuids::uuid& InputField::GetDatasourceID() const {
-
-		return m_datasourceID;
-	}
-
-	const std::wstring& InputField::GetTable() const {
-
-		return m_table;
-	}
-
 	const std::wstring& InputField::GetField() const {
 
 		return m_field;
@@ -113,7 +93,7 @@ namespace SynGlyphX {
 
 	bool InputField::IsValid() const {
 
-		return !(m_datasourceID.is_nil() || m_table.empty() || m_field.empty());
+		return (InputTable::IsValid() && !m_field.empty());
 	}
 
 	void InputField::ExportToPropertyTree(boost::property_tree::wptree& propertyTree) const {

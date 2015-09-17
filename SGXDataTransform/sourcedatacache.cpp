@@ -138,9 +138,9 @@ namespace SynGlyphX {
 			}
 
 			QString formattedName = QString::fromStdWString(datasource.GetFormattedName());
-			for (const std::wstring& table : datasource.GetTables()) {
+			for (const auto& table : datasource.GetTables()) {
 
-				QString qTable = QString::fromStdWString(table);
+				QString qTable = QString::fromStdWString(table.first);
 				AddDBTableToCache(db, qTable, formattedName, CreateTablename(dbConnectionID, qTable));
 			}
 
@@ -665,7 +665,7 @@ namespace SynGlyphX {
 	bool SourceDataCache::DoesFileDatabaseNeedUpdate(const boost::uuids::uuid& id, const FileDatasource& datasource) const {
 
 		QString datasourceId = QString::fromStdString(boost::uuids::to_string(id));
-		Datasource::TableSet tablesInCache;
+		Datasource::TableNames tablesInCache;
 		for (auto cacheTable : m_tableIndexMap) {
 
 			if (cacheTable.right.startsWith(datasourceId)) {
@@ -683,7 +683,7 @@ namespace SynGlyphX {
 			QDateTime lastModifiedInCache = GetTimestampForTable(CreateTablename(datasourceId, QString::fromStdWString(*tablesInCache.begin())));
 			QFileInfo datasourceFileInfo(QString::fromStdWString(datasource.GetFilename()));
 
-			if ((tablesInCache != datasource.GetTables()) || (datasourceFileInfo.lastModified().toUTC() > lastModifiedInCache)) {
+			if ((tablesInCache != datasource.GetTableNames()) || (datasourceFileInfo.lastModified().toUTC() > lastModifiedInCache)) {
 
 				return true;
 			}

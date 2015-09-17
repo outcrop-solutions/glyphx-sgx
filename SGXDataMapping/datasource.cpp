@@ -24,14 +24,14 @@ namespace SynGlyphX {
 
 		if (tablePropertyTree.is_initialized()) {
 
-			TableSet tables;
+			Tables tables;
 			for (const boost::property_tree::wptree::value_type& tableValue : tablePropertyTree.get()) {
 
 				if (tableValue.first == L"Table") {
-					tables.insert(tableValue.second.data());
+
+					tables.emplace(tableValue.second.data(), DatasourceTable(tableValue.second));
 				}
 			}
-			EnableTables(tables, true);
 		}
 	}
 
@@ -127,26 +127,81 @@ namespace SynGlyphX {
         return m_password;
     }
 
-	const Datasource::TableSet& Datasource::GetTables() const {
+	const Datasource::Tables& Datasource::GetTables() const {
 
         return m_tables;
     }
 
-	void Datasource::EnableTables(const TableSet& tables, bool enable) {
+	void Datasource::AddTables(const Tables& tables) {
 
-		if (enable) {
-			
-			m_tables.insert(tables.begin(), tables.end());
-		}
-		else {
+		m_tables.insert(tables.begin(), tables.end());
+	}
 
-			m_tables.erase(tables.begin(), tables.end());
+	void Datasource::AddTables(const TableNames& tableNames) {
+
+		for (const std::wstring& tableName : tableNames) {
+
+			if (m_tables.count(tableName) == 0) {
+
+				m_tables.emplace(tableName, DatasourceTable(tableName));
+			}
 		}
+	}
+
+	void Datasource::RemoveTable(const std::wstring& tableName) {
+
+		if (m_tables.count(tableName) == 0) {
+
+			throw std::invalid_argument("Table can not be removed since is not in datasource");
+		}
+
+		m_tables.erase(tableName);
 	}
 
 	void Datasource::ClearTables() {
 
 		m_tables.clear();
+	}
+
+	Datasource::TableNames Datasource::GetTableNames() const {
+
+		TableNames tableNames;
+		for (auto& table : m_tables) {
+
+			tableNames.insert(table.first);
+		}
+
+		return tableNames;
+	}
+
+	const DatasourceTable::FieldGroupMap& Datasource::GetFieldGroupMap(const std::wstring& tableName) const {
+
+		if (m_tables.count(tableName) == 0) {
+
+			throw std::invalid_argument("Field group can not be found since table is not in datasource");
+		}
+
+		return m_tables.at(tableName).GetFieldGroups();
+	}
+
+	void Datasource::UpdateFieldGroup(const std::wstring& tableName, const DatasourceTable::FieldGroupName& groupName, const DatasourceTable::FieldGroup& fieldGroup) {
+
+		if (m_tables.count(tableName) == 0) {
+
+			throw std::invalid_argument("Table is not in datasource");
+		}
+
+		m_tables.at(tableName).UpdateFieldGroup(groupName, fieldGroup);
+	}
+
+	void Datasource::RemoveFieldGroup(const std::wstring& tableName, const DatasourceTable::FieldGroupName& groupName) {
+
+		if (m_tables.count(tableName) == 0) {
+
+			throw std::invalid_argument("Table is not in datasource");
+		}
+
+		m_tables.at(tableName).RemoveFieldGroup(groupName);
 	}
 
 	Datasource::PropertyTree& Datasource::ExportToPropertyTree(boost::property_tree::wptree& parentPropertyTree, const std::wstring& parentName) {
@@ -171,9 +226,9 @@ namespace SynGlyphX {
 		if (!m_tables.empty() && CanDatasourceHaveMultipleTables()) {
 
 			boost::property_tree::wptree& tablesPropertyTree = propertyTree.add(L"Tables", L"");
-			for (const std::wstring& table : m_tables) {
+			for (auto& table : m_tables) {
 
-				tablesPropertyTree.add(L"Table", table);
+				table.second.ExportToPropertyTree(tablesPropertyTree);
 			}
 		}
 

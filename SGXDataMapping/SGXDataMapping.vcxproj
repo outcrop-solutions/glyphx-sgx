@@ -104,11 +104,13 @@
     <ClInclude Include="datamappingvirtualtopology.h" />
     <ClInclude Include="datasource.h" />
     <ClInclude Include="datasourcemaps.h" />
+    <ClInclude Include="datasourcetable.h" />
     <ClInclude Include="datatransformmapping.h" />
     <ClInclude Include="filedatasource.h" />
     <ClInclude Include="inputbinding.h" />
     <ClInclude Include="inputcombinationfunction.h" />
     <ClInclude Include="inputfield.h" />
+    <ClInclude Include="inputtable.h" />
     <ClInclude Include="interpolationmappingfunction.h" />
     <ClInclude Include="mindiff.h" />
     <ClInclude Include="sceneproperties.h" />
@@ -130,6 +132,7 @@
     <ClCompile Include="datamappingvirtualtopology.cpp" />
     <ClCompile Include="datasource.cpp" />
     <ClCompile Include="datasourcemaps.cpp" />
+    <ClCompile Include="datasourcetable.cpp" />
     <ClCompile Include="datatransformmapping.cpp" />
     <ClCompile Include="dllmain.cpp">
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</CompileAsManaged>
@@ -143,6 +146,7 @@
     <ClCompile Include="inputbinding.cpp" />
     <ClCompile Include="inputcombinationfunction.cpp" />
     <ClCompile Include="inputfield.cpp" />
+    <ClCompile Include="inputtable.cpp" />
     <ClCompile Include="interpolationmappingfunction.cpp" />
     <ClCompile Include="mindiff.cpp" />
     <ClCompile Include="sceneproperties.cpp" />
