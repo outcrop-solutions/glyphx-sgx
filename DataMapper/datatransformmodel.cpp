@@ -493,7 +493,7 @@ void DataTransformModel::ClearInputBinding(const boost::uuids::uuid& treeID, con
 	emit dataChanged(index, index);
 }
 
-void DataTransformModel::EnableTables(const boost::uuids::uuid& id, const SynGlyphX::Datasource::TableSet& tables, bool enable) {
+void DataTransformModel::EnableTables(const boost::uuids::uuid& id, const SynGlyphX::Datasource::TableNames& tables, bool enable) {
 
 	m_dataMapping->EnableTables(id, tables, enable);
 }

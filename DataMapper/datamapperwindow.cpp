@@ -491,7 +491,7 @@ void DataMapperWindow::AddDataSources() {
 			}
 
 			newDBID = m_dataTransformModel->AddFileDatasource(fileDatasourceType, datasource.toStdWString());
-			SynGlyphX::Datasource::TableSet tables;
+			SynGlyphX::Datasource::TableNames tables;
 			const SynGlyphX::Datasource& newDatasource = m_dataTransformModel->GetDataMapping()->GetDatasources().GetFileDatasources().at(newDBID);
 
 			if (newDatasource.CanDatasourceHaveMultipleTables()) {

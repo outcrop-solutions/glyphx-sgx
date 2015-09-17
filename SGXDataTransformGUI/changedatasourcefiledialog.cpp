@@ -13,7 +13,7 @@ namespace SynGlyphX {
 
 		if (oldDatasourceFile.CanDatasourceHaveMultipleTables()) {
 
-			for (std::wstring table : oldDatasourceFile.GetTables()) {
+			for (std::wstring table : oldDatasourceFile.GetTableNames()) {
 
 				m_oldDatasourceTables.append(QString::fromStdWString(table));
 			}

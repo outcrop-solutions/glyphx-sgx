@@ -64,10 +64,11 @@ void DataSourceStatsWidget::CreateTablesFromDatasource(const boost::uuids::uuid&
 			throw std::exception("Failed to load data sources");
 		}
 
-		for (const std::wstring& table : datasource.GetTables()) {
+		for (const auto& table : datasource.GetTables()) {
 
-			DataStatsModel* model = new DataStatsModel(id, QString::fromStdWString(table), this);
-			CreateTableView(model, QString::fromStdWString(formattedName + L":" + table));
+			QString tableName = QString::fromStdWString(table.first);
+			DataStatsModel* model = new DataStatsModel(id, tableName, this);
+			CreateTableView(model, QString::fromStdWString(formattedName) + ":" + tableName);
 		}
 	}
 	else {

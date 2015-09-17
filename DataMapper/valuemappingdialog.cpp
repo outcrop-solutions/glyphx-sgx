@@ -169,7 +169,7 @@ ValueMappingDialog::ValueMappingDialog(InputType input, OutputType output, QWidg
 
 	OnNumberOfRowsInTableChanged();
 	OnTableSelectionChanged();
-	setWindowTitle(tr("Edit Mapping Properties"));
+	setWindowTitle(tr("Edit Value Mapping Properties"));
 }
 
 ValueMappingDialog::~ValueMappingDialog()
