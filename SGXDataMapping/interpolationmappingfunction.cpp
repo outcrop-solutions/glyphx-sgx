@@ -4,7 +4,10 @@
 namespace SynGlyphX {
 	
 	InterpolationMappingData::InterpolationMappingData(bool useLogarithmic) :
-		MappingFunctionData(useLogarithmic ? MappingFunctionData::Function::LogarithmicInterpolation : MappingFunctionData::Function::LinearInterpolation) {
+		MappingFunctionData(useLogarithmic ? MappingFunctionData::Function::LogarithmicInterpolation : MappingFunctionData::Function::LinearInterpolation),
+		m_inputMinMaxType(InputMinMaxType::BoundInputField),
+		m_userSpecifiedInputMinMax(),
+		m_inputMinMaxFieldGroup(L"") {
 
 
 	}
@@ -16,7 +19,10 @@ namespace SynGlyphX {
 	}
 
 	InterpolationMappingData::InterpolationMappingData(const InterpolationMappingData& data) :
-		MappingFunctionData(data) {
+		MappingFunctionData(data),
+		m_inputMinMaxType(data.m_inputMinMaxType),
+		m_userSpecifiedInputMinMax(data.m_userSpecifiedInputMinMax),
+		m_inputMinMaxFieldGroup(data.m_inputMinMaxFieldGroup) {
 
 
 	}
@@ -74,6 +80,48 @@ namespace SynGlyphX {
 		}
 		
 		return outputMin;
+	}
+
+	InterpolationMappingData::InputMinMaxType InterpolationMappingData::GetInputMinMaxType() const {
+
+		return m_inputMinMaxType;
+	}
+
+	void InterpolationMappingData::SetInputMinMaxToBoundField() {
+
+		m_inputMinMaxType = InputMinMaxType::BoundInputField;
+	}
+
+	void InterpolationMappingData::SetUserSpecifiedInputMinMax(const DoubleMinDiff& minMax) {
+
+		m_inputMinMaxType = InputMinMaxType::UserSpecified;
+		m_userSpecifiedInputMinMax = minMax;
+	}
+
+	const DoubleMinDiff& InterpolationMappingData::GetUserSpecifiedInputMinMax() const {
+
+		if (m_inputMinMaxType != InputMinMaxType::UserSpecified) {
+
+			throw std::exception("Can't get user specified input min/max value since user specified is not the input min/max type");
+		}
+
+		return m_userSpecifiedInputMinMax;
+	}
+
+	void InterpolationMappingData::SetInputMinMaxFieldGroup(const DatasourceTable::FieldGroupName& minMaxFieldGroup) {
+
+		m_inputMinMaxType = InputMinMaxType::InputFieldGroup;
+		m_inputMinMaxFieldGroup = minMaxFieldGroup;
+	}
+
+	const DatasourceTable::FieldGroupName& InterpolationMappingData::GetInputMinMaxFieldGroup() const {
+
+		if (m_inputMinMaxType != InputMinMaxType::InputFieldGroup) {
+
+			throw std::exception("Can't get field group input min/max value since input field group is not the input min/max type");
+		}
+
+		return m_inputMinMaxFieldGroup;
 	}
 
 } //namespace SynGlyphX

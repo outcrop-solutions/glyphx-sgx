@@ -21,13 +21,14 @@
 #include "sgxdatamapping.h"
 #include "datamappingfunction.h"
 #include "mindiff.h"
+#include "datasourcetable.h"
 
 namespace SynGlyphX {
 
 	class SGXDATAMAPPING_API InterpolationMappingData : public MappingFunctionData
 	{ 
 	public:
-		enum MinMaxType {
+		enum InputMinMaxType {
 			BoundInputField,
 			UserSpecified,
 			InputFieldGroup
@@ -47,16 +48,22 @@ namespace SynGlyphX {
 		double Interpolate(const DoubleMinDiff& outputMinDiff, double inputMin, double inputMax, double input) const;
 		GlyphColor Interpolate(const ColorMinDiff& outputMinDiff, double inputMin, double inputMax, double input) const;
 
-		void SetUserSpecifiedInputMinAndMax(double min, double max);
-		double GetUserSpecifiedInputMin() const;
-		double GetUserSpecifiedInputMax() const;
+		InputMinMaxType GetInputMinMaxType() const;
+
+		void SetInputMinMaxToBoundField();
+
+		void SetUserSpecifiedInputMinMax(const DoubleMinDiff& minMax);
+		const DoubleMinDiff& GetUserSpecifiedInputMinMax() const;
+
+		void SetInputMinMaxFieldGroup(const DatasourceTable::FieldGroupName& minMaxFieldGroup);
+		const DatasourceTable::FieldGroupName& GetInputMinMaxFieldGroup() const;
 
 	protected:
 		double Interpolate(double outputMin, double outputDifference, double inputMin, double inputDifference, double input) const;
 
-		double m_userSpecifiedInputMin;
-		double m_userSpecifiedInputMax;
-		MinMaxType m_minMaxType;
+		InputMinMaxType m_inputMinMaxType;
+		DoubleMinDiff m_userSpecifiedInputMinMax;
+		DatasourceTable::FieldGroupName m_inputMinMaxFieldGroup;
 	};
 
 } //namespace SynGlyphX

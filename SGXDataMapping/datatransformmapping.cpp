@@ -342,6 +342,21 @@ namespace SynGlyphX {
 		}
 	}
 
+	const DatasourceTable::FieldGroupMap& DataTransformMapping::GetFieldGroupMap(const InputTable& inputTable) const {
+
+		return m_datasources.GetFieldGroupMap(inputTable);
+	}
+
+	void DataTransformMapping::UpdateFieldGroup(const InputTable& inputTable, const DatasourceTable::FieldGroupName& groupName, const DatasourceTable::FieldGroup& fieldGroup) {
+
+		m_datasources.UpdateFieldGroup(inputTable, groupName, fieldGroup);
+	}
+
+	void DataTransformMapping::RemoveFieldGroup(const InputTable& inputTable, const DatasourceTable::FieldGroupName& groupName) {
+
+		m_datasources.RemoveFieldGroup(inputTable, groupName);
+	}
+
 	void DataTransformMapping::RemoveGlyphTree(const boost::uuids::uuid& id) {
 
 		if (m_glyphTrees.erase(id) == 0) {

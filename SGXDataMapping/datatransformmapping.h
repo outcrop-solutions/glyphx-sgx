@@ -90,6 +90,10 @@ namespace SynGlyphX {
 
 		void UpdateDatasourceName(const boost::uuids::uuid& id, const std::wstring& name);
 
+		const DatasourceTable::FieldGroupMap& GetFieldGroupMap(const InputTable& inputTable) const;
+		void UpdateFieldGroup(const InputTable& inputTable, const DatasourceTable::FieldGroupName& groupName, const DatasourceTable::FieldGroup& fieldGroup);
+		void RemoveFieldGroup(const InputTable& inputTable, const DatasourceTable::FieldGroupName& groupName);
+
 		const DataMappingDefaults& GetDefaults() const;
 		void SetDefaults(const DataMappingDefaults& defaults);
 
