@@ -119,6 +119,10 @@ public:
 
 	const boost::uuids::uuid& GetCacheConnectionID() const;
 
+	const SynGlyphX::DatasourceTable::FieldGroupMap& GetFieldGroupMap(const SynGlyphX::InputTable& inputTable) const;
+	void UpdateFieldGroup(const SynGlyphX::InputTable& inputTable, const SynGlyphX::DatasourceTable::FieldGroupName& groupName, const SynGlyphX::DatasourceTable::FieldGroup& fieldGroup);
+	void RemoveFieldGroup(const SynGlyphX::InputTable& inputTable, const SynGlyphX::DatasourceTable::FieldGroupName& groupName);
+
 private:
 	void Clear();
 	QString GetCacheLocationForID(const boost::uuids::uuid& id);

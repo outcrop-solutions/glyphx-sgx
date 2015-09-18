@@ -20,20 +20,27 @@
 
 #include <QtWidgets/QDialog>
 #include "interpolationmappingfunction.h"
+#include "doubleminmaxwidget.h"
+#include "radiobuttongroupwidget.h"
+#include "singleglyphrolestablemodel.h"
 
 class InterpolationMappingDialog : public QDialog
 {
 	Q_OBJECT
 
 public:
-	InterpolationMappingDialog(QWidget *parent);
+	InterpolationMappingDialog(SingleGlyphRolesTableModel* model, QWidget *parent);
 	~InterpolationMappingDialog();
 
 	void SetDialogFromMapping(SynGlyphX::InterpolationMappingData::ConstSharedPtr mapping);
 	SynGlyphX::InterpolationMappingData::SharedPtr GetMappingFromDialog() const;
 
 private:
-	
+	SynGlyphX::RadioButtonGroupWidget* m_minMaxTypeWidget;
+	SynGlyphX::DoubleMinMaxWidget* m_userSpecifiedMinMaxWidget;
+
+	SingleGlyphRolesTableModel* m_model;
+	bool m_isInterpretationLogarithmic;
 };
 
 #endif // INTERPOLATIONMAPPINGDIALOG_H

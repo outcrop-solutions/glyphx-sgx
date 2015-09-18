@@ -254,6 +254,22 @@ bool SingleGlyphRolesTableModel::IsInputFieldCompatible(const SynGlyphX::InputFi
 	return false;
 }
 
+bool SingleGlyphRolesTableModel::DoesGlyphHaveAssociatedDatasoruceTable() const {
+
+	const SynGlyphX::DataMappingGlyphGraph::InputFieldMap& inputFields = m_dataTransformModel->GetDataMapping()->GetGlyphGraphs().at(m_glyphTreeID)->GetInputFields();
+	return (!inputFields.empty());
+}
+
+const SynGlyphX::DatasourceTable& SingleGlyphRolesTableModel::GetAssociatedDatasourceTable() const {
+
+	if (!DoesGlyphHaveAssociatedDatasoruceTable()) {
+
+		throw std::exception("Glyph tree associated with index has no datasource table associated with it");
+	}
+
+	const SynGlyphX::InputTable& inputTable = m_dataTransformModel->GetDataMapping()->GetGlyphGraphs().at(m_glyphTreeID)->GetInputFields().begin()->second;
+}
+
 Qt::ItemFlags SingleGlyphRolesTableModel::flags(const QModelIndex & index) const {
 
 	return QAbstractTableModel::flags(index) | Qt::ItemIsEditable;

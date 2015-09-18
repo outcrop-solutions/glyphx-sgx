@@ -57,6 +57,9 @@ public:
 
 	bool IsInputFieldCompatible(const SynGlyphX::InputField& inputField) const;
 
+	bool DoesGlyphHaveAssociatedDatasoruceTable() const;
+	const SynGlyphX::DatasourceTable& GetAssociatedDatasourceTable() const;
+
 public slots:
 	void SetMinMaxGlyph(const QModelIndex& index);
 	void Clear();
