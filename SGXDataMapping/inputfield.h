@@ -20,6 +20,7 @@
 
 #include "sgxdatamapping.h"
 #include "inputtable.h"
+#include <unordered_set>
 #include <boost/property_tree/ptree.hpp>
 #include <boost/bimap.hpp>
 #include <boost/shared_ptr.hpp>
@@ -69,6 +70,17 @@ namespace SynGlyphX {
 		std::wstring m_field;
 		Type m_type;
 	};
+
+	//Hash function for InputTable so that it can be used in STL classes like unordered_map
+	struct InputFieldHash {
+
+		std::size_t operator()(const InputField& inputField) const {
+		
+			return inputField.GetHashID();
+		}
+	};
+
+	typedef std::unordered_set<InputField, InputFieldHash> FieldGroup;
 
 } //namespace SynGlyphX
 

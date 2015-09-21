@@ -108,13 +108,13 @@ namespace SynGlyphX {
 		return m_userSpecifiedInputMinMax;
 	}
 
-	void InterpolationMappingData::SetInputMinMaxFieldGroup(const DatasourceTable::FieldGroupName& minMaxFieldGroup) {
+	void InterpolationMappingData::SetInputMinMaxFieldGroup(const DataTransformMapping::FieldGroupName& minMaxFieldGroup) {
 
 		m_inputMinMaxType = InputMinMaxType::InputFieldGroup;
 		m_inputMinMaxFieldGroup = minMaxFieldGroup;
 	}
 
-	const DatasourceTable::FieldGroupName& InterpolationMappingData::GetInputMinMaxFieldGroup() const {
+	const DataTransformMapping::FieldGroupName& InterpolationMappingData::GetInputMinMaxFieldGroup() const {
 
 		if (m_inputMinMaxType != InputMinMaxType::InputFieldGroup) {
 

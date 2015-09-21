@@ -21,7 +21,7 @@
 #include "sgxdatamapping.h"
 #include "datamappingfunction.h"
 #include "mindiff.h"
-#include "datasourcetable.h"
+#include "datatransformmapping.h"
 
 namespace SynGlyphX {
 
@@ -55,15 +55,15 @@ namespace SynGlyphX {
 		void SetUserSpecifiedInputMinMax(const DoubleMinDiff& minMax);
 		const DoubleMinDiff& GetUserSpecifiedInputMinMax() const;
 
-		void SetInputMinMaxFieldGroup(const DatasourceTable::FieldGroupName& minMaxFieldGroup);
-		const DatasourceTable::FieldGroupName& GetInputMinMaxFieldGroup() const;
+		void SetInputMinMaxFieldGroup(const DataTransformMapping::FieldGroupName& minMaxFieldGroup);
+		const DataTransformMapping::FieldGroupName& GetInputMinMaxFieldGroup() const;
 
 	protected:
 		double Interpolate(double outputMin, double outputDifference, double inputMin, double inputDifference, double input) const;
 
 		InputMinMaxType m_inputMinMaxType;
 		DoubleMinDiff m_userSpecifiedInputMinMax;
-		DatasourceTable::FieldGroupName m_inputMinMaxFieldGroup;
+		DataTransformMapping::FieldGroupName m_inputMinMaxFieldGroup;
 	};
 
 } //namespace SynGlyphX

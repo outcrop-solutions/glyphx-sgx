@@ -29,9 +29,8 @@ namespace SynGlyphX {
 	class DatasourceTable
 	{
 	public:
-		typedef std::wstring FieldGroupName;
-		typedef std::unordered_set<FieldGroupName> FieldGroup;
-		typedef std::unordered_map<std::wstring, FieldGroup> FieldGroupMap;
+		
+		
 
 		DatasourceTable(const std::wstring& name);
 		DatasourceTable(const boost::property_tree::wptree& propertyTree);
@@ -45,17 +44,10 @@ namespace SynGlyphX {
 		const std::wstring& GetName() const;
 		//void SetName(const std::wstring& name);
 
-		const FieldGroupMap& GetFieldGroups() const;
-		const FieldGroup& GetFieldGroup(const FieldGroupName& groupName) const;
-		void UpdateFieldGroup(const FieldGroupName& groupName, const FieldGroup& group);
-		void RemoveFieldGroup(const FieldGroupName& groupName);
-
 		boost::property_tree::wptree& ExportToPropertyTree(boost::property_tree::wptree& parentPropertyTree) const;
 
 	private:
 		std::wstring m_name;
-
-		FieldGroupMap m_fieldGroups;
 	};
 
 } //namespace SynGlyphX

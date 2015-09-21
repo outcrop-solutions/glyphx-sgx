@@ -174,36 +174,6 @@ namespace SynGlyphX {
 		return tableNames;
 	}
 
-	const DatasourceTable::FieldGroupMap& Datasource::GetFieldGroupMap(const std::wstring& tableName) const {
-
-		if (m_tables.count(tableName) == 0) {
-
-			throw std::invalid_argument("Field group can not be found since table is not in datasource");
-		}
-
-		return m_tables.at(tableName).GetFieldGroups();
-	}
-
-	void Datasource::UpdateFieldGroup(const std::wstring& tableName, const DatasourceTable::FieldGroupName& groupName, const DatasourceTable::FieldGroup& fieldGroup) {
-
-		if (m_tables.count(tableName) == 0) {
-
-			throw std::invalid_argument("Table is not in datasource");
-		}
-
-		m_tables.at(tableName).UpdateFieldGroup(groupName, fieldGroup);
-	}
-
-	void Datasource::RemoveFieldGroup(const std::wstring& tableName, const DatasourceTable::FieldGroupName& groupName) {
-
-		if (m_tables.count(tableName) == 0) {
-
-			throw std::invalid_argument("Table is not in datasource");
-		}
-
-		m_tables.at(tableName).RemoveFieldGroup(groupName);
-	}
-
 	Datasource::PropertyTree& Datasource::ExportToPropertyTree(boost::property_tree::wptree& parentPropertyTree, const std::wstring& parentName) {
 
 		PropertyTree& propertyTree = parentPropertyTree.add(parentName, L"");

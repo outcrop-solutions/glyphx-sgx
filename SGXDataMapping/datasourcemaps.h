@@ -62,10 +62,6 @@ namespace SynGlyphX {
 			const std::wstring& password = L"");
 		void AddFileDatasource(const boost::uuids::uuid& id, const FileDatasource& fileDatasource);
 
-		const DatasourceTable::FieldGroupMap& GetFieldGroupMap(const InputTable& inputTable) const;
-		void UpdateFieldGroup(const InputTable& inputTable, const DatasourceTable::FieldGroupName& groupName, const DatasourceTable::FieldGroup& fieldGroup);
-		void RemoveFieldGroup(const InputTable& inputTable, const DatasourceTable::FieldGroupName& groupName);
-
 	private:
 		FileDatasourceMap m_fileDatasources;
 	};

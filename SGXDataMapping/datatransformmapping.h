@@ -38,6 +38,9 @@ namespace SynGlyphX {
     public:
 		typedef std::unordered_map<boost::uuids::uuid, DataMappingGlyphGraph::SharedPtr, SynGlyphX::UUIDHash> DataMappingGlyphGraphMap;
 
+		typedef std::wstring FieldGroupName;
+		typedef std::unordered_map<FieldGroupName, FieldGroup> FieldGroupMap;
+
 		typedef std::shared_ptr<DataTransformMapping> SharedPtr;
 		typedef std::shared_ptr<const DataTransformMapping> ConstSharedPtr;
 
@@ -90,9 +93,9 @@ namespace SynGlyphX {
 
 		void UpdateDatasourceName(const boost::uuids::uuid& id, const std::wstring& name);
 
-		const DatasourceTable::FieldGroupMap& GetFieldGroupMap(const InputTable& inputTable) const;
-		void UpdateFieldGroup(const InputTable& inputTable, const DatasourceTable::FieldGroupName& groupName, const DatasourceTable::FieldGroup& fieldGroup);
-		void RemoveFieldGroup(const InputTable& inputTable, const DatasourceTable::FieldGroupName& groupName);
+		const FieldGroupMap& GetFieldGroupMap() const;
+		void UpdateFieldGroup(const FieldGroupName& groupName, const FieldGroup& fieldGroup);
+		void RemoveFieldGroup(const FieldGroupName& groupName);
 
 		const DataMappingDefaults& GetDefaults() const;
 		void SetDefaults(const DataMappingDefaults& defaults);
@@ -113,7 +116,10 @@ namespace SynGlyphX {
 		DatasourceMaps m_datasources;
 		DataMappingGlyphGraphMap m_glyphTrees;
 		std::vector<BaseImage> m_baseObjects;
+		FieldGroupMap m_fieldGroups;
+
 		boost::uuids::uuid m_id;
+
     };
 
 } //namespace SynGlyphX

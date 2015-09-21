@@ -58,10 +58,6 @@ namespace SynGlyphX {
 		void ClearTables();
 		TableNames GetTableNames() const;
 
-		const DatasourceTable::FieldGroupMap& GetFieldGroupMap(const std::wstring& tableName) const;
-		void UpdateFieldGroup(const std::wstring& tableName, const DatasourceTable::FieldGroupName& groupName, const DatasourceTable::FieldGroup& fieldGroup);
-		void RemoveFieldGroup(const std::wstring& tableName, const DatasourceTable::FieldGroupName& groupName);
-
 		virtual bool IsOriginalDatasourceADatabase() const = 0;
 		virtual bool CanDatasourceHaveMultipleTables() const = 0;
 		virtual bool IsFile() const = 0;

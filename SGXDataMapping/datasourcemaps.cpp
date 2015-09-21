@@ -152,34 +152,4 @@ namespace SynGlyphX {
 		m_fileDatasources.insert(std::pair<boost::uuids::uuid, FileDatasource>(id, fileDatasource));
 	}
 
-	const DatasourceTable::FieldGroupMap& DatasourceMaps::GetFieldGroupMap(const InputTable& inputTable) const {
-
-		const Datasource& datasource = GetDatasourceByID(inputTable.GetDatasourceID());
-		return datasource.GetFieldGroupMap(inputTable.GetTable());
-	}
-
-	void DatasourceMaps::UpdateFieldGroup(const InputTable& inputTable, const DatasourceTable::FieldGroupName& groupName, const DatasourceTable::FieldGroup& fieldGroup) {
-
-		FileDatasourceMap::iterator fileIterator = m_fileDatasources.find(inputTable.GetDatasourceID());
-		if (fileIterator != m_fileDatasources.end()) {
-
-			fileIterator->second.UpdateFieldGroup(inputTable.GetTable(), groupName, fieldGroup);
-			return;
-		}
-
-		throw std::invalid_argument("Datasource id not found so field group could not be added or updated.");
-	}
-
-	void DatasourceMaps::RemoveFieldGroup(const InputTable& inputTable, const DatasourceTable::FieldGroupName& groupName) {
-
-		FileDatasourceMap::iterator fileIterator = m_fileDatasources.find(inputTable.GetDatasourceID());
-		if (fileIterator != m_fileDatasources.end()) {
-
-			fileIterator->second.RemoveFieldGroup(inputTable.GetTable(), groupName);
-			return;
-		}
-
-		throw std::invalid_argument("Datasource id not found so field group could not be added or updated.");
-	}
-
 } //namespace SynGlyphX

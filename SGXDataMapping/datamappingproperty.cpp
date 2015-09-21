@@ -4,17 +4,17 @@
 
 namespace SynGlyphX {
 
-	template<typename PropertyType>
-	DataMappingProperty<PropertyType>::DataMappingProperty() :
-		m_value(PropertyType()),
+	template<>
+	DataMappingProperty<VirtualTopologyInfo::Type>::DataMappingProperty() :
+		m_value(VirtualTopologyInfo::Type::Circle),
 		m_binding(InputBinding()),
 		m_mappingFunctionData(CreateDefaultMappingData()) {
 
 	}
 
-	template<>
-	DataMappingProperty<VirtualTopologyInfo::Type>::DataMappingProperty() :
-		m_value(VirtualTopologyInfo::Type::Circle),
+	template<typename PropertyType>
+	DataMappingProperty<PropertyType>::DataMappingProperty() :
+		m_value(PropertyType()),
 		m_binding(InputBinding()),
 		m_mappingFunctionData(CreateDefaultMappingData()) {
 

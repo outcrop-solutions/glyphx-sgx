@@ -124,6 +124,28 @@ namespace SynGlyphX {
 
 			m_sceneProperties = SceneProperties();
 		}
+
+		boost::optional<const boost::property_tree::wptree&> fieldGroupsPropertyTree = dataTransformPropertyTree.get_child_optional(L"FieldGroups");
+		if (fieldGroupsPropertyTree.is_initialized()) {
+
+			for (const boost::property_tree::wptree::value_type& fieldGroupPropertyTree : fieldGroupsPropertyTree.get()) {
+
+				if (fieldGroupPropertyTree.first == L"FieldGroup") {
+
+					FieldGroup fieldGroup;
+
+					for (const boost::property_tree::wptree::value_type& fieldPropertyTree : fieldGroupPropertyTree.second.get_child(L"InputField")) {
+
+						fieldGroup.insert(InputField(fieldPropertyTree.second));
+					}
+
+					if (!fieldGroup.empty()) {
+
+						m_fieldGroups[fieldGroupPropertyTree.second.get<FieldGroupName>(L"<xmlattr>.name")] = fieldGroup;
+					}
+				}
+			}
+		}
     }
 
 	void DataTransformMapping::ExportToPropertyTree(boost::property_tree::wptree& filePropertyTree) const {
@@ -148,6 +170,17 @@ namespace SynGlyphX {
 
 		m_defaults.ExportToPropertyTree(dataTransformPropertyTreeRoot);
 		m_sceneProperties.ExportToPropertyTree(dataTransformPropertyTreeRoot);
+
+		boost::property_tree::wptree& fieldGroupsPropertyTree = dataTransformPropertyTreeRoot.add(L"FieldGroups", L"");
+		for (const auto& fieldGroup : m_fieldGroups) {
+
+			boost::property_tree::wptree& fieldGroupPropertyTree = fieldGroupsPropertyTree.add(L"FieldGroup", L"");
+			fieldGroupPropertyTree.put(L"<xmlattr>.name", fieldGroup.first);
+			for (const InputField& field : fieldGroup.second) {
+
+				field.ExportToPropertyTree(fieldGroupPropertyTree);
+			}
+		}
     }
 
 	const DatasourceMaps& DataTransformMapping::GetDatasources() const {
@@ -342,19 +375,32 @@ namespace SynGlyphX {
 		}
 	}
 
-	const DatasourceTable::FieldGroupMap& DataTransformMapping::GetFieldGroupMap(const InputTable& inputTable) const {
+	const DataTransformMapping::FieldGroupMap& DataTransformMapping::GetFieldGroupMap() const {
 
-		return m_datasources.GetFieldGroupMap(inputTable);
+		return m_fieldGroups;
 	}
 
-	void DataTransformMapping::UpdateFieldGroup(const InputTable& inputTable, const DatasourceTable::FieldGroupName& groupName, const DatasourceTable::FieldGroup& fieldGroup) {
+	void DataTransformMapping::UpdateFieldGroup(const FieldGroupName& groupName, const FieldGroup& fieldGroup) {
 
-		m_datasources.UpdateFieldGroup(inputTable, groupName, fieldGroup);
+		if (groupName.empty()) {
+
+			throw std::invalid_argument("Can not add or update field group with an empty name");
+		}
+
+		if (fieldGroup.empty()) {
+
+			throw std::invalid_argument("Can not add or update field group with an empty list of fields");
+		}
+
+		m_fieldGroups[groupName] = fieldGroup;
 	}
 
-	void DataTransformMapping::RemoveFieldGroup(const InputTable& inputTable, const DatasourceTable::FieldGroupName& groupName) {
+	void DataTransformMapping::RemoveFieldGroup(const FieldGroupName& groupName) {
 
-		m_datasources.RemoveFieldGroup(inputTable, groupName);
+		if (m_fieldGroups.count(groupName) > 0) {
+
+			m_fieldGroups.erase(groupName);
+		}
 	}
 
 	void DataTransformMapping::RemoveGlyphTree(const boost::uuids::uuid& id) {
