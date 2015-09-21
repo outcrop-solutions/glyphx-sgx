@@ -5,7 +5,7 @@
 #include "groupboxsinglewidget.h"
 #include <QtWidgets/QLabel>
 
-InterpolationMappingDialog::InterpolationMappingDialog(SingleGlyphRolesTableModel* model, QWidget *parent)
+InterpolationMappingDialog::InterpolationMappingDialog(DataTransformModel* model, QWidget *parent)
 	: QDialog(parent),
 	m_model(model),
 	m_isInterpretationLogarithmic(false)

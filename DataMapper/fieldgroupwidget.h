@@ -15,32 +15,21 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef INTERPOLATIONMAPPINGDIALOG_H
-#define INTERPOLATIONMAPPINGDIALOG_H
+#ifndef FIELDGROUPWIDGET_H
+#define FIELDGROUPWIDGET_H
 
-#include <QtWidgets/QDialog>
-#include "interpolationmappingfunction.h"
-#include "doubleminmaxwidget.h"
-#include "radiobuttongroupwidget.h"
-#include "datatransformmodel.h"
+#include <QtWidgets/QWidget>
 
-class InterpolationMappingDialog : public QDialog
+class FieldGroupWidget : public QWidget
 {
 	Q_OBJECT
 
 public:
-	InterpolationMappingDialog(DataTransformModel* model, QWidget *parent);
-	~InterpolationMappingDialog();
-
-	void SetDialogFromMapping(SynGlyphX::InterpolationMappingData::ConstSharedPtr mapping);
-	SynGlyphX::InterpolationMappingData::SharedPtr GetMappingFromDialog() const;
+	FieldGroupWidget(QWidget *parent);
+	~FieldGroupWidget();
 
 private:
-	SynGlyphX::RadioButtonGroupWidget* m_minMaxTypeWidget;
-	SynGlyphX::DoubleMinMaxWidget* m_userSpecifiedMinMaxWidget;
-
-	DataTransformModel* m_model;
-	bool m_isInterpretationLogarithmic;
+	
 };
 
-#endif // INTERPOLATIONMAPPINGDIALOG_H
+#endif // FIELDGROUPWIDGET_H

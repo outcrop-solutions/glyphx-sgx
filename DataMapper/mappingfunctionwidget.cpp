@@ -90,7 +90,7 @@ void MappingFunctionWidget::OnEditPropertiesClicked() {
 	
 	if ((mappingData->GetFunction() == SynGlyphX::MappingFunctionData::Function::LinearInterpolation) || (mappingData->GetFunction() == SynGlyphX::MappingFunctionData::Function::LogarithmicInterpolation)) {
 
-		InterpolationMappingDialog dialog(m_model, this);
+		InterpolationMappingDialog dialog(m_model->GetSourceModel(), this);
 		dialog.SetDialogFromMapping(std::dynamic_pointer_cast<const SynGlyphX::InterpolationMappingData>(mappingData));
 		if (dialog.exec() == QDialog::Accepted) {
 

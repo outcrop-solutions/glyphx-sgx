@@ -717,3 +717,8 @@ void SingleGlyphRolesTableModel::OnSourceModelDataUpdated(const QModelIndex& top
 		}
 	}
 }
+
+DataTransformModel* SingleGlyphRolesTableModel::GetSourceModel() const {
+
+	return m_dataTransformModel;
+}

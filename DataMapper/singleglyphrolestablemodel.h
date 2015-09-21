@@ -60,6 +60,8 @@ public:
 	bool DoesGlyphHaveAssociatedDatasoruceTable() const;
 	const SynGlyphX::DatasourceTable& GetAssociatedDatasourceTable() const;
 
+	DataTransformModel* GetSourceModel() const;
+
 public slots:
 	void SetMinMaxGlyph(const QModelIndex& index);
 	void Clear();

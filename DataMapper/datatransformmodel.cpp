@@ -910,17 +910,17 @@ const boost::uuids::uuid& DataTransformModel::GetCacheConnectionID() const {
 	return m_sourceDataManager.GetCSVCacheConnectionID();
 }
 
-const SynGlyphX::DatasourceTable::FieldGroupMap& DataTransformModel::GetFieldGroupMap(const SynGlyphX::InputTable& inputTable) const {
+const SynGlyphX::DataTransformMapping::FieldGroupMap& DataTransformModel::GetFieldGroupMap() const {
 
-	return m_dataMapping->GetFieldGroupMap(inputTable);
+	return m_dataMapping->GetFieldGroupMap();
 }
 
-void DataTransformModel::UpdateFieldGroup(const SynGlyphX::InputTable& inputTable, const SynGlyphX::DatasourceTable::FieldGroupName& groupName, const SynGlyphX::DatasourceTable::FieldGroup& fieldGroup) {
+void DataTransformModel::UpdateFieldGroup(const SynGlyphX::DataTransformMapping::FieldGroupName& groupName, const SynGlyphX::FieldGroup& fieldGroup) {
 
-	m_dataMapping->UpdateFieldGroup(inputTable, groupName, fieldGroup);
+	m_dataMapping->UpdateFieldGroup(groupName, fieldGroup);
 }
 
-void DataTransformModel::RemoveFieldGroup(const SynGlyphX::InputTable& inputTable, const SynGlyphX::DatasourceTable::FieldGroupName& groupName) {
+void DataTransformModel::RemoveFieldGroup(const SynGlyphX::DataTransformMapping::FieldGroupName& groupName) {
 
-	m_dataMapping->RemoveFieldGroup(inputTable, groupName);
+	m_dataMapping->RemoveFieldGroup(groupName);
 }
