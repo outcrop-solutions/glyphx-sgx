@@ -19,6 +19,7 @@
 #define FIELDGROUPWIDGET_H
 
 #include <QtWidgets/QWidget>
+#include <QtWidgets/QComboBox>
 
 class FieldGroupWidget : public QWidget
 {
@@ -29,7 +30,8 @@ public:
 	~FieldGroupWidget();
 
 private:
-	
+	QComboBox* m_groupsNameComboBox;
+
 };
 
 #endif // FIELDGROUPWIDGET_H

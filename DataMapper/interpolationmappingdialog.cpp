@@ -22,10 +22,12 @@ InterpolationMappingDialog::InterpolationMappingDialog(DataTransformModel* model
 
 	m_userSpecifiedMinMaxWidget = new SynGlyphX::DoubleMinMaxWidget(this);
 
+	m_fieldGroupWidget = new FieldGroupWidget(this);
+
 	QStackedLayout* minMaxParameterWidgetsLayout = new QStackedLayout(this);
 	minMaxParameterWidgetsLayout->addWidget(new QWidget(this));
 	minMaxParameterWidgetsLayout->addWidget(m_userSpecifiedMinMaxWidget);
-	minMaxParameterWidgetsLayout->addWidget(new QLabel(tr("No datasource table is associated with this glyph so a field group can't be selected yet."), this));
+	minMaxParameterWidgetsLayout->addWidget(m_fieldGroupWidget);
 
 	mainLayout->addLayout(minMaxParameterWidgetsLayout);
 	QObject::connect(m_minMaxTypeWidget, &SynGlyphX::RadioButtonGroupWidget::ButtonClicked, minMaxParameterWidgetsLayout, &QStackedLayout::setCurrentIndex);

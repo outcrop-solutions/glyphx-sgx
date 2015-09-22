@@ -15,34 +15,38 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef INTERPOLATIONMAPPINGDIALOG_H
-#define INTERPOLATIONMAPPINGDIALOG_H
+#ifndef SYNGLYPHX_CHECKBOXHEADERVIEW_H
+#define SYNGLYPHX_CHECKBOXHEADERVIEW_H
 
-#include <QtWidgets/QDialog>
-#include "interpolationmappingfunction.h"
-#include "doubleminmaxwidget.h"
-#include "radiobuttongroupwidget.h"
-#include "datatransformmodel.h"
-#include "fieldgroupwidget.h"
+#include <QtWidgets/QHeaderView>
+#include <boost/logic/tribool.hpp>
 
-class InterpolationMappingDialog : public QDialog
-{
-	Q_OBJECT
+namespace SynGlyphX {
 
-public:
-	InterpolationMappingDialog(DataTransformModel* model, QWidget *parent);
-	~InterpolationMappingDialog();
+	class CheckBoxHeaderView : public QHeaderView
+	{
+		Q_OBJECT
 
-	void SetDialogFromMapping(SynGlyphX::InterpolationMappingData::ConstSharedPtr mapping);
-	SynGlyphX::InterpolationMappingData::SharedPtr GetMappingFromDialog() const;
+	public:
+		CheckBoxHeaderView(Qt::Orientation orientation, QWidget *parent);
+		~CheckBoxHeaderView();
 
-private:
-	SynGlyphX::RadioButtonGroupWidget* m_minMaxTypeWidget;
-	SynGlyphX::DoubleMinMaxWidget* m_userSpecifiedMinMaxWidget;
-	FieldGroupWidget* m_fieldGroupWidget;
+	public slots:
+		void SetState(boost::tribool state);
+		boost::tribool GetState() const;
 
-	DataTransformModel* m_model;
-	bool m_isInterpretationLogarithmic;
-};
+	signals:
+		void CheckBoxClicked(bool state);
 
-#endif // INTERPOLATIONMAPPINGDIALOG_H
+	protected:
+		virtual void mousePressEvent(QMouseEvent* event);
+		virtual void paintSection(QPainter* painter, const QRect& rect, int logicalIndex) const;
+		void RedrawCheckBox();
+
+	private:
+		boost::tribool m_checkBoxState;
+	};
+
+} //namespace SynGlyphX
+
+#endif // SYNGLYPHX_CHECKBOXHEADERVIEW_H
