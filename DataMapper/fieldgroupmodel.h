@@ -21,6 +21,7 @@
 #include <QtCore/QAbstractTableModel>
 #include "inputfield.h"
 #include "sourcedatamanager.h"
+#include "datatransformmodel.h"
 #include <vector>
 
 class FieldGroupModel : public QAbstractTableModel
@@ -40,15 +41,17 @@ public:
 	void SetCheckedItems(const SynGlyphX::FieldGroup& fieldGroup);
 	void UncheckAllItems();
 
-	void ResetTable(const SynGlyphX::SourceDataManager::NumericFieldsByTable& numericFields);
+	void ResetTable(DataTransformModel* model);
 	const SynGlyphX::FieldGroup& GetCheckedItems() const;
+
+	bool AreAllFieldsChecked() const;
 
 private:
 	SynGlyphX::InputField GetInputFieldForRow(int row) const;
 	const SynGlyphX::InputTable& GetTableForRow(int row) const;
 
 	SynGlyphX::FieldGroup m_checkedItems;
-	SynGlyphX::SourceDataManager::NumericFieldsByTable m_numericFields;
+	DataTransformModel* m_dataTransformModel;
 	std::vector<unsigned int> m_countOfFieldsPerTable;
 };
 

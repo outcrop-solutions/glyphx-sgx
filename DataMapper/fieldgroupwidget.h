@@ -20,18 +20,34 @@
 
 #include <QtWidgets/QWidget>
 #include <QtWidgets/QComboBox>
+#include "datatransformmodel.h"
+#include "fieldgroupmodel.h"
+#include <QtWidgets/QPushButton>
 
 class FieldGroupWidget : public QWidget
 {
 	Q_OBJECT
 
 public:
-	FieldGroupWidget(QWidget *parent);
+	FieldGroupWidget(DataTransformModel* dataTransformModel, QWidget *parent);
 	~FieldGroupWidget();
+
+private slots:
+	void OnNewGroup();
+	void OnCopyGroup();
+	void OnSaveGroup();
+	void OnRevertGroup();
+	void OnGroupChanged(const QString& newGroupName);
 
 private:
 	QComboBox* m_groupsNameComboBox;
+	FieldGroupModel* m_fieldGroupModel;
+	DataTransformModel* m_dataTransformModel;
+	QPushButton* m_copyButton;
+	QPushButton* m_saveButton;
+	QPushButton* m_revertButton;
 
+	QString m_currentGroupName;
 };
 
 #endif // FIELDGROUPWIDGET_H
