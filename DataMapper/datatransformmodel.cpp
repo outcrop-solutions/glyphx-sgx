@@ -496,6 +496,13 @@ void DataTransformModel::ClearInputBinding(const boost::uuids::uuid& treeID, con
 void DataTransformModel::EnableTables(const boost::uuids::uuid& id, const SynGlyphX::Datasource::TableNames& tables, bool enable) {
 
 	m_dataMapping->EnableTables(id, tables, enable);
+	if (enable) {
+
+		for (auto& table : tables) {
+
+			m_sourceDataManager.AddTable(id, table);
+		}
+	}
 }
 
 bool DataTransformModel::removeRows(int row, int count, const QModelIndex& parent) {
@@ -923,4 +930,9 @@ void DataTransformModel::UpdateFieldGroup(const SynGlyphX::DataTransformMapping:
 void DataTransformModel::RemoveFieldGroup(const SynGlyphX::DataTransformMapping::FieldGroupName& groupName) {
 
 	m_dataMapping->RemoveFieldGroup(groupName);
+}
+
+const SynGlyphX::SourceDataManager& DataTransformModel::GetSourceDataManager() const {
+
+	return m_sourceDataManager;
 }

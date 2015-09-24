@@ -123,6 +123,8 @@ public:
 	void UpdateFieldGroup(const SynGlyphX::DataTransformMapping::FieldGroupName& groupName, const SynGlyphX::FieldGroup& fieldGroup);
 	void RemoveFieldGroup(const SynGlyphX::DataTransformMapping::FieldGroupName& groupName);
 
+	const SynGlyphX::SourceDataManager& GetSourceDataManager() const;
+
 private:
 	void Clear();
 	QString GetCacheLocationForID(const boost::uuids::uuid& id);
