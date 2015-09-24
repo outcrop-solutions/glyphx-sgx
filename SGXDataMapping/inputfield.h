@@ -42,7 +42,6 @@ namespace SynGlyphX {
 
 		typedef boost::shared_ptr<InputField> SharedPtr;
 		typedef boost::shared_ptr<const InputField> ConstSharedPtr;
-		typedef size_t HashID;
 
 		InputField();
 		InputField(const boost::uuids::uuid& datasourceID, const std::wstring& table, const std::wstring field, Type type);
@@ -64,23 +63,14 @@ namespace SynGlyphX {
 
 		static const boost::bimap<Type, std::wstring> s_fieldTypeStrings;
 
-		HashID GetHashID() const;
+		virtual HashID GetHashID() const;
 
 	private:
 		std::wstring m_field;
 		Type m_type;
 	};
 
-	//Hash function for InputTable so that it can be used in STL classes like unordered_map
-	struct InputFieldHash {
-
-		std::size_t operator()(const InputField& inputField) const {
-		
-			return inputField.GetHashID();
-		}
-	};
-
-	typedef std::unordered_set<InputField, InputFieldHash> FieldGroup;
+	typedef std::unordered_set<InputField, InputTableHash> FieldGroup;
 
 } //namespace SynGlyphX
 

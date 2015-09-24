@@ -74,4 +74,17 @@ namespace SynGlyphX {
 		return !(m_datasourceID.is_nil() || m_table.empty());
 	}
 
+	InputTable::HashID InputTable::GetHashID() const {
+
+		std::size_t seed = 0;
+
+		if (IsValid()) {
+
+			boost::hash_combine(seed, m_datasourceID);
+			boost::hash_combine(seed, m_table);
+		}
+
+		return seed;
+	}
+
 } //namespace SynGlyphX

@@ -171,6 +171,22 @@ namespace SynGlyphX {
 			}
 		}
 	}
+
+	QSqlRecord CSVCache::GetColumnNames(const QString& tableName) const {
+
+		if (!IsValid()) {
+
+			throw std::exception("Could not get column names.  CSV cache is not set up.");
+		}
+
+		QSqlRecord columnRecord = m_db.record(tableName);
+		if (columnRecord.isEmpty()) {
+
+			throw std::invalid_argument("Could not get column names since table is not in CSV cache");
+		}
+
+		return columnRecord;
+	}
 	
 	void CSVCache::CreateNewCacheTable(const QString& name, const QString& fieldNamesAndTypes) {
 

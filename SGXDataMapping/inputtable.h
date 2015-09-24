@@ -27,6 +27,8 @@ namespace SynGlyphX {
 	class SGXDATAMAPPING_API InputTable
 	{
 	public:
+		typedef size_t HashID;
+
 		InputTable();
 		InputTable(const boost::uuids::uuid& datasourceID, const std::wstring& table);
 		//InputTable(const boost::property_tree::wptree& propertyTree);
@@ -42,11 +44,21 @@ namespace SynGlyphX {
 
 		virtual bool IsValid() const;
 
+		virtual HashID GetHashID() const;
+
 	protected:
 		boost::uuids::uuid m_datasourceID;
 		std::wstring m_table;
 	};
 
+	//Hash function for InputTable so that it can be used in STL classes like unordered_map
+	struct InputTableHash {
+
+		std::size_t operator()(const InputTable& inputTable) const {
+
+			return inputTable.GetHashID();
+		}
+	};
 }
 
 #endif //SYNGLYPHX_INPUTTABLE_H

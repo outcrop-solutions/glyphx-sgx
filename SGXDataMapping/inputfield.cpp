@@ -113,12 +113,10 @@ namespace SynGlyphX {
 
 	InputField::HashID InputField::GetHashID() const {
 
-		std::size_t seed = 0;
+		std::size_t seed = InputTable::GetHashID();
 
 		if (IsValid()) {
 
-			boost::hash_combine(seed, m_datasourceID);
-			boost::hash_combine(seed, m_table);
 			boost::hash_combine(seed, m_field);
 		}
 

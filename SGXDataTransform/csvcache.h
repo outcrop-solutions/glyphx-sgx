@@ -22,6 +22,7 @@
 #include <QtCore/QString>
 #include <QtCore/QStringList>
 #include <QtSql/QSqlDatabase>
+#include <QtSql/QSqlRecord>
 #include "csvfilereader.h"
 #include "uuid.h"
 
@@ -38,6 +39,7 @@ namespace SynGlyphX {
 		virtual void Setup(const QString& cacheFilename);
 		virtual void Close();
 		void UpdateCSVFile(const QString& tableName, const QString& csvFilename, const QString& formattedName);
+		QSqlRecord GetColumnNames(const QString& tableName) const;
 
 		const boost::uuids::uuid& GetConnectionID() const;
 
@@ -57,6 +59,7 @@ namespace SynGlyphX {
 
 		boost::uuids::uuid m_connectionID;
 		QSqlDatabase m_db;
+
 
 		static const QString s_tableIndexName;
 	};

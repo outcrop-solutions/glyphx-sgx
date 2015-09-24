@@ -26,12 +26,14 @@
 #include "datasourcemaps.h"
 #include "uuid.h"
 #include "csvcache.h"
+#include <unordered_map>
 
 namespace SynGlyphX {
 
 	class SGXDATATRANSFORM_EXPORT SourceDataManager
 	{
 	public:
+		typedef std::unordered_map<InputTable, std::unordered_set<std::wstring>, InputTableHash> NumericFieldsByTable;
 		SourceDataManager();
 		~SourceDataManager();
 
@@ -43,17 +45,22 @@ namespace SynGlyphX {
 
 		void AddDatabaseConnection(const Datasource& datasource, const boost::uuids::uuid& datasourceID);
 		void AddDatabaseConnections(const DatasourceMaps& datasources);
-		void ClearDatabaseConnection(const boost::uuids::uuid& id);
-		void ClearDatabaseConnections();
+		void AddTable(const boost::uuids::uuid& datasource, const std::wstring& table);
 		void Clear();
+
+		const NumericFieldsByTable& GetNumericFieldsByTable() const;
 
 	private:
 		typedef std::unordered_set<boost::uuids::uuid, SynGlyphX::UUIDHash> DatabaseIDSet;
 
 		void ClearDatabaseConnection(const DatabaseIDSet::const_iterator& id);
+		void ClearDatabaseConnection(const boost::uuids::uuid& id);
+		void ClearDatabaseConnections();
+		void AddNumericFieldsToCollection(const boost::uuids::uuid& datasource, const QString& tableName, const QSqlRecord& columnRecord);
 
 		CSVCache m_csvCache;
 		DatabaseIDSet m_databaseIDs;
+		NumericFieldsByTable m_numericFieldsByTable;
 	};
 
 } //namespace SynGlyphX

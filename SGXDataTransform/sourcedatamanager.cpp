@@ -10,6 +10,7 @@
 #include "datatransformmapping.h"
 #include <QtSql/QSqlQuery>
 #include <QtSql/QSqlError>
+#include <QtSql/QSqlField>
 
 namespace SynGlyphX {
 
@@ -53,6 +54,7 @@ namespace SynGlyphX {
 				if (m_csvCache.IsValid()) {
 
 					m_csvCache.UpdateCSVFile(connectionName, datasourceName, QString::fromStdWString(datasource.GetFormattedName()));
+					AddNumericFieldsToCollection(datasourceID, QString::fromStdWString(Datasource::SingleTableName), m_csvCache.GetColumnNames(connectionName));
 				}
 				else {
 
@@ -105,11 +107,42 @@ namespace SynGlyphX {
 
 		ClearDatabaseConnections();
 		m_csvCache.Close();
+		m_numericFieldsByTable.clear();
 	}
 
 	void SourceDataManager::SetCacheLocation(const QString& location) {
 
 		m_csvCache.Setup(location);
+	}
+
+	const SourceDataManager::NumericFieldsByTable& SourceDataManager::GetNumericFieldsByTable() const {
+
+		return m_numericFieldsByTable;
+	}
+
+	void SourceDataManager::AddNumericFieldsToCollection(const boost::uuids::uuid& datasource, const QString& tableName, const QSqlRecord& columnRecord) {
+
+		InputTable table(datasource, tableName.toStdWString());
+
+		std::unordered_set<std::wstring> columns;
+		for (unsigned int i = 0; i < columnRecord.count(); ++i) {
+
+			QSqlField field = columnRecord.field(i);
+			QVariant::Type fieldType = field.type();
+			if ((fieldType == QVariant::Type::Double) || (fieldType == QVariant::Type::Int) || (fieldType == QVariant::Type::UInt) || (fieldType == QVariant::Type::LongLong) || (fieldType == QVariant::Type::ULongLong)) {
+				
+				columns.insert(field.name().toStdWString());
+			}
+		}
+
+		m_numericFieldsByTable[table] = columns;
+	}
+
+	void SourceDataManager::AddTable(const boost::uuids::uuid& datasource, const std::wstring& table) {
+
+		QString tableName = QString::fromStdWString(table);
+		QSqlDatabase db = QSqlDatabase::database(QString::fromStdString(boost::uuids::to_string(datasource)));
+		AddNumericFieldsToCollection(datasource, tableName, db.record(tableName));
 	}
 
 } //namespace SynGlyphX
