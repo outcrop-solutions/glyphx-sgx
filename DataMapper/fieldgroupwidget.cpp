@@ -97,6 +97,7 @@ void FieldGroupWidget::OnGroupChanged(int index) {
 		if (CheckIfGroupNeedsToBeSaved()) {
 
 			m_currentGroupName = m_groupsNameComboBox->currentText();
+			m_fieldGroupModel->SetCheckedItems(m_dataTransformModel->GetDataMapping()->GetFieldGroupMap().at(m_currentGroupName.toStdWString()));
 			EnableButtons(false, false);
 			m_fieldTableView->setEnabled(true);
 		}
