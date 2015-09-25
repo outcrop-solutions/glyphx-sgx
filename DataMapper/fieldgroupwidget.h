@@ -23,6 +23,8 @@
 #include "datatransformmodel.h"
 #include "fieldgroupmodel.h"
 #include <QtWidgets/QPushButton>
+#include <QtWidgets/QTableView>
+#include "checkboxheaderview.h"
 
 class FieldGroupWidget : public QWidget
 {
@@ -32,20 +34,26 @@ public:
 	FieldGroupWidget(DataTransformModel* dataTransformModel, QWidget *parent);
 	~FieldGroupWidget();
 
+	bool CheckIfGroupNeedsToBeSaved();
+
 private slots:
-	void OnNewGroup();
-	void OnCopyGroup();
 	void OnSaveGroup();
+	void OnSaveAsGroup();
 	void OnRevertGroup();
-	void OnGroupChanged(const QString& newGroupName);
+	void OnGroupChanged(int index);
 
 private:
+	void EnableButtons(bool enableSave, bool enableRevert);
+	QString GetNewGroupName();
+
 	QComboBox* m_groupsNameComboBox;
+	QPushButton* m_saveButton;
+	QPushButton* m_saveAsButton;
+	QPushButton* m_revertButton;
+
+	QTableView* m_fieldTableView;
 	FieldGroupModel* m_fieldGroupModel;
 	DataTransformModel* m_dataTransformModel;
-	QPushButton* m_copyButton;
-	QPushButton* m_saveButton;
-	QPushButton* m_revertButton;
 
 	QString m_currentGroupName;
 };

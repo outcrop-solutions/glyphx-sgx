@@ -23,6 +23,7 @@
 #include "sourcedatamanager.h"
 #include "datatransformmodel.h"
 #include <vector>
+#include <boost/logic/tribool.hpp>
 
 class FieldGroupModel : public QAbstractTableModel
 {
@@ -44,7 +45,7 @@ public:
 	void ResetTable(DataTransformModel* model);
 	const SynGlyphX::FieldGroup& GetCheckedItems() const;
 
-	bool AreAllFieldsChecked() const;
+	boost::tribool AreFieldsChecked() const;
 
 private:
 	SynGlyphX::InputField GetInputFieldForRow(int row) const;

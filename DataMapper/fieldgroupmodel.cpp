@@ -207,7 +207,18 @@ const SynGlyphX::InputTable& FieldGroupModel::GetTableForRow(int row) const {
 	return table->first;
 }
 
-bool FieldGroupModel::AreAllFieldsChecked() const {
+boost::tribool FieldGroupModel::AreFieldsChecked() const {
 
-	return (m_checkedItems.size() == m_countOfFieldsPerTable.back());
+	if (m_checkedItems.empty()) {
+
+		return false;
+	}
+	else if(m_checkedItems.size() == m_countOfFieldsPerTable.back()) {
+
+		return true;
+	}
+	else {
+
+		return boost::indeterminate;
+	}
 }
