@@ -33,18 +33,26 @@ namespace SynGlyphX {
 			m_defaults = mapping.GetDefaults();
 			m_sourceDataCache.Setup(m_sourceDataCacheLocation);
 			m_sourceDataCache.AddDatasourcesToCache(mapping.GetDatasourcesInUse());
+			GetMinMaxForFieldGroups(mapping);
 			CreateGlyphsFromMapping(mapping);
-			m_sourceDataCache.Close();
-			m_defaults.Clear();
-
-			if (m_overrideRootXYBoundingBox.IsValid()) {
-
-				m_overrideRootXYBoundingBox = GeographicBoundingBox();
-			}
+			
+			ClearForNextTransformation();
 		}
 		else {
 
 			throw std::invalid_argument("DataTransformMapping was not transformable.");
+		}
+	}
+
+	void Transformer::ClearForNextTransformation() {
+
+		m_fieldGroupsMinAndMax.clear();
+		m_sourceDataCache.Close();
+		m_defaults.Clear();
+
+		if (m_overrideRootXYBoundingBox.IsValid()) {
+
+			m_overrideRootXYBoundingBox = GeographicBoundingBox();
 		}
 	}
 
@@ -200,17 +208,23 @@ namespace SynGlyphX {
 		}
 	}
 
-	void Transformer::GetDataMinAndDifference(const InputBinding& binding, const InputFieldData& fieldData, double& dataMin, double& dataDifference) const {
+	DoubleMinDiff Transformer::GetDataMinAndDifference(const InputBinding& binding, InterpolationMappingData::ConstSharedPtr mappingData, const InputFieldData& fieldData) const {
 
 		if (binding.IsMinMaxOverrideInUse()) {
 
-			dataMin = binding.GetMinOverride();
-			dataDifference = binding.GetMaxMinOverrideDifference();
+			return DoubleMinDiff(binding.GetMinOverride(), binding.GetMaxMinOverrideDifference());
+		}
+		else if (mappingData->GetInputMinMaxType() == InterpolationMappingData::InputMinMaxType::UserSpecified) {
+
+			return DoubleMinDiff(mappingData->GetUserSpecifiedInputMinMax());
+		}
+		else if (mappingData->GetInputMinMaxType() == InterpolationMappingData::InputMinMaxType::InputFieldGroup) {
+
+			return m_fieldGroupsMinAndMax.at(mappingData->GetInputMinMaxFieldGroup());
 		}
 		else {
 
-			dataMin = fieldData.GetMin();
-			dataDifference = fieldData.GetMaxMinDifference();
+			return DoubleMinDiff(fieldData.GetMin(), fieldData.GetMaxMinDifference());
 		}
 	}
 
@@ -222,30 +236,28 @@ namespace SynGlyphX {
 			InputFieldDataMap::const_iterator fieldData = queryResultData.find(id);
 			if (fieldData != queryResultData.end()) {
 
+				const QVariant& input = fieldData->second->GetData()[index];
 				MappingFunctionData::Function function = mappingProperty.GetMappingFunctionData()->GetFunction();
 				if ((function == MappingFunctionData::Function::LinearInterpolation) || (function == MappingFunctionData::Function::LogarithmicInterpolation)) {
 
-					double dataMin;
-					double dataMaxMinDiff;
-					GetDataMinAndDifference(binding, *(fieldData->second), dataMin, dataMaxMinDiff);
-
 					InterpolationMappingData::ConstSharedPtr interpolationData = std::dynamic_pointer_cast<const InterpolationMappingData>(mappingProperty.GetMappingFunctionData());
-					return interpolationData->Interpolate(mappingProperty.GetValue(), dataMin, dataMin + dataMaxMinDiff, fieldData->second->GetData()[index].toDouble());
+					DoubleMinDiff minDiff = GetDataMinAndDifference(binding, interpolationData, *(fieldData->second));
+					return interpolationData->Interpolate(mappingProperty.GetValue(), minDiff.GetMin(), minDiff.GetMax(), ValidateInputForMinAndMax(input.toDouble(), minDiff));
 				}
 				else if (function == MappingFunctionData::Function::Numeric2Value) {
 
 					Numeric2ColorMappingData::ConstSharedPtr valueMappingData = std::dynamic_pointer_cast<const Numeric2ColorMappingData>(mappingProperty.GetMappingFunctionData());
-					return valueMappingData->GetOutputValueFromInput(fieldData->second->GetData()[index].toDouble());
+					return valueMappingData->GetOutputValueFromInput(input.toDouble());
 				}
 				else if (function == MappingFunctionData::Function::Text2Value) {
 
 					Text2ColorMappingData::ConstSharedPtr valueMappingData = std::dynamic_pointer_cast<const Text2ColorMappingData>(mappingProperty.GetMappingFunctionData());
-					return valueMappingData->GetOutputValueFromInput(fieldData->second->GetData()[index].toString().toStdWString());
+					return valueMappingData->GetOutputValueFromInput(input.toString().toStdWString());
 				}
 				else if (function == MappingFunctionData::Function::Range2Value) {
 
 					Range2ColorMappingData::ConstSharedPtr valueMappingData = std::dynamic_pointer_cast<const Range2ColorMappingData>(mappingProperty.GetMappingFunctionData());
-					return valueMappingData->GetOutputValueFromInput(fieldData->second->GetData()[index].toDouble());
+					return valueMappingData->GetOutputValueFromInput(input.toDouble());
 				}
 			}
 		}
@@ -262,30 +274,28 @@ namespace SynGlyphX {
 			InputFieldDataMap::const_iterator fieldData = queryResultData.find(id);
 			if (fieldData != queryResultData.end()) {
 
+				const QVariant& input = fieldData->second->GetData()[index];
 				MappingFunctionData::Function function = mappingProperty.GetMappingFunctionData()->GetFunction();
 				if ((function == MappingFunctionData::Function::LinearInterpolation) || (function == MappingFunctionData::Function::LogarithmicInterpolation)) {
 
-					double dataMin;
-					double dataMaxMinDiff;
-					GetDataMinAndDifference(binding, *(fieldData->second), dataMin, dataMaxMinDiff);
-
 					InterpolationMappingData::ConstSharedPtr interpolationData = std::dynamic_pointer_cast<const InterpolationMappingData>(mappingProperty.GetMappingFunctionData());
-					return interpolationData->Interpolate(mappingProperty.GetValue(), dataMin, dataMin + dataMaxMinDiff, fieldData->second->GetData()[index].toDouble());
+					DoubleMinDiff minDiff = GetDataMinAndDifference(binding, interpolationData, *(fieldData->second));
+					return interpolationData->Interpolate(mappingProperty.GetValue(), minDiff.GetMin(), minDiff.GetMax(), ValidateInputForMinAndMax(input.toDouble(), minDiff));
 				}
 				else if (function == MappingFunctionData::Function::Numeric2Value) {
 
 					Numeric2NumericMappingData::ConstSharedPtr valueMappingData = std::dynamic_pointer_cast<const Numeric2NumericMappingData>(mappingProperty.GetMappingFunctionData());
-					return valueMappingData->GetOutputValueFromInput(fieldData->second->GetData()[index].toDouble());
+					return valueMappingData->GetOutputValueFromInput(input.toDouble());
 				}
 				else if (function == MappingFunctionData::Function::Text2Value) {
 
 					Text2NumericMappingData::ConstSharedPtr valueMappingData = std::dynamic_pointer_cast<const Text2NumericMappingData>(mappingProperty.GetMappingFunctionData());
-					return valueMappingData->GetOutputValueFromInput(fieldData->second->GetData()[index].toString().toStdWString());
+					return valueMappingData->GetOutputValueFromInput(input.toString().toStdWString());
 				}
 				else if (function == MappingFunctionData::Function::Range2Value) {
 
 					Range2NumericMappingData::ConstSharedPtr valueMappingData = std::dynamic_pointer_cast<const Range2NumericMappingData>(mappingProperty.GetMappingFunctionData());
-					return valueMappingData->GetOutputValueFromInput(fieldData->second->GetData()[index].toDouble());
+					return valueMappingData->GetOutputValueFromInput(input.toDouble());
 				}
 			}
 		}
@@ -482,6 +492,38 @@ namespace SynGlyphX {
 	void Transformer::SetDefaultImagesDirectory(const QString& defaultImagesDirectory) {
 
 		s_defaultImagesDirectory = defaultImagesDirectory;
+	}
+
+	void Transformer::GetMinMaxForFieldGroups(const DataTransformMapping& mapping) {
+
+		for (const auto& fieldGroup : mapping.GetFieldGroupMap()) {
+
+			m_fieldGroupsMinAndMax[fieldGroup.first] = GetMinMaxForGroup(fieldGroup.second);
+		}
+	}
+
+	DoubleMinDiff Transformer::GetMinMaxForGroup(const FieldGroup& fieldGroup) const {
+
+		double min = std::numeric_limits<double>::max();
+		double max = std::numeric_limits<double>::min();
+		for (const auto& inputField : fieldGroup) {
+
+			SharedSQLQuery minAndMaxQuery = m_sourceDataCache.CreateMinMaxQuery(inputField);
+			minAndMaxQuery->exec();
+			minAndMaxQuery->first();
+
+			min = std::min(min, minAndMaxQuery->value(0).toDouble());
+			max = std::max(max, minAndMaxQuery->value(1).toDouble());
+
+			minAndMaxQuery->finish();
+		}
+
+		return DoubleMinDiff(min, max - min);
+	}
+
+	double Transformer::ValidateInputForMinAndMax(double input, const DoubleMinDiff& minDiff) const {
+
+		return std::min(std::max(input, minDiff.GetMin()), minDiff.GetMax());
 	}
 
 } //namespace SynGlyphX

@@ -27,10 +27,10 @@
 #include "sourcedatacache.h"
 #include "baseimage.h"
 #include "datamappingproperty.h"
+#include "interpolationmappingfunction.h"
+#include "datatransformmapping.h"
 
 namespace SynGlyphX {
-
-	class DataTransformMapping;
 
 	class SGXDATATRANSFORM_EXPORT Transformer
 	{
@@ -52,6 +52,8 @@ namespace SynGlyphX {
 		virtual void Prepare() = 0;
 		virtual void CreateGlyphsFromMapping(const DataTransformMapping& mapping) = 0;
 
+		void ClearForNextTransformation();
+
 		void SetSourceDataCacheLocation(const QString& sourceDataCacheLocation);
 		bool HaveDatasourcesBeenUpdated(const DataTransformMapping& mapping, std::time_t lastUpdateTime) const;
 		bool HasFileBeenUpdated(const std::wstring& filename, std::time_t lastUpdateTime) const;
@@ -68,7 +70,7 @@ namespace SynGlyphX {
 
 		void GetPositionXYForAllGlyphTrees(const SynGlyphX::DataTransformMapping& mapping, std::vector<GeographicPoint>& points) const;
 		
-		void GetDataMinAndDifference(const InputBinding& binding, const InputFieldData& fieldData, double& dataMin, double& dataDifference) const;
+		DoubleMinDiff GetDataMinAndDifference(const InputBinding& binding, InterpolationMappingData::ConstSharedPtr mappingData, const InputFieldData& fieldData) const;
 		
 		std::wstring GenerateTag(const DataMappingGlyphGraph::ConstGlyphIterator& minMaxGlyph, DataMappingGlyphGraph::ConstSharedPtr minMaxTree, const InputFieldDataMap& queryResultData, unsigned int index) const;
 
@@ -78,6 +80,11 @@ namespace SynGlyphX {
 		void CopyImage(const QString& sourceFilename, const QString& baseImageFilename);
 		QString GetUserImageFilename(const SynGlyphX::BaseImage& baseImage) const;
 
+		void GetMinMaxForFieldGroups(const DataTransformMapping& mapping);
+		DoubleMinDiff GetMinMaxForGroup(const FieldGroup& fieldGroup) const;
+
+		double ValidateInputForMinAndMax(double input, const DoubleMinDiff& minDiff) const;
+
 		QString m_sourceDataCacheLocation;
 		SourceDataCache m_sourceDataCache;
 		GeographicBoundingBox m_overrideRootXYBoundingBox;
@@ -86,6 +93,8 @@ namespace SynGlyphX {
 		QString m_error;
 
 		std::unordered_map<SynGlyphX::DataMappingGlyphGraph::Label, SynGlyphX::GlyphGraph::Label> m_label2LabelMap;
+
+		std::unordered_map<DataTransformMapping::FieldGroupName, DoubleMinDiff> m_fieldGroupsMinAndMax;
 
 		static QString s_defaultImagesDirectory;
 	};

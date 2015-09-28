@@ -13,9 +13,26 @@ namespace SynGlyphX {
 	}
 
 	InterpolationMappingData::InterpolationMappingData(const boost::property_tree::wptree& propertyTree) :
-		MappingFunctionData(propertyTree) {
+		MappingFunctionData(propertyTree),
+		m_inputMinMaxType(InputMinMaxType::BoundInputField),
+		m_userSpecifiedInputMinMax(),
+		m_inputMinMaxFieldGroup(L"") {
 
+		boost::optional<const boost::property_tree::wptree&> minMaxSettingsPropertyTreeOpt = propertyTree.get_child_optional(L"MinMax");
 
+		if (minMaxSettingsPropertyTreeOpt.is_initialized()) {
+
+			const boost::property_tree::wptree& minMaxSettingsPropertyTree = minMaxSettingsPropertyTreeOpt.get();
+			m_inputMinMaxType = minMaxSettingsPropertyTree.get<InputMinMaxType>(L"<xmlattr>.type");
+			if (m_inputMinMaxType == InputMinMaxType::InputFieldGroup) {
+
+				m_inputMinMaxFieldGroup = minMaxSettingsPropertyTree.get<DataTransformMapping::FieldGroupName>(L"Group");
+			}
+			else if (m_inputMinMaxType == InputMinMaxType::UserSpecified) {
+
+				m_userSpecifiedInputMinMax.SetMinDiff(minMaxSettingsPropertyTree.get<double>(L"Min"), minMaxSettingsPropertyTree.get_optional<double>(L"Difference").get_value_or(0.0));
+			}
+		}
 	}
 
 	InterpolationMappingData::InterpolationMappingData(const InterpolationMappingData& data) :
@@ -32,6 +49,16 @@ namespace SynGlyphX {
 
 	}
 
+	InterpolationMappingData& InterpolationMappingData::operator=(const InterpolationMappingData& data) {
+
+		MappingFunctionData::operator=(data);
+		m_inputMinMaxType = data.m_inputMinMaxType;
+		m_userSpecifiedInputMinMax = data.m_userSpecifiedInputMinMax;
+		m_inputMinMaxFieldGroup = data.m_inputMinMaxFieldGroup;
+
+		return *this;
+	}
+
 	MappingFunctionData::Input InterpolationMappingData::GetSupportedInput() const {
 
 		return MappingFunctionData::Input::Numeric;
@@ -40,6 +67,29 @@ namespace SynGlyphX {
 	MappingFunctionData::Output InterpolationMappingData::GetSupportedOutput() const {
 
 		return MappingFunctionData::Output::NumericAndColor;
+	}
+
+	boost::property_tree::wptree& InterpolationMappingData::ExportToPropertyTree(boost::property_tree::wptree& propertyTree) const {
+
+		boost::property_tree::wptree& functionDataPropertyTree = this->MappingFunctionData::ExportToPropertyTree(propertyTree);
+		boost::property_tree::wptree& minMaxSettingsPropertyTree = functionDataPropertyTree.add(L"MinMax", L"");
+
+		minMaxSettingsPropertyTree.put<InputMinMaxType>(L"<xmlattr>.type", m_inputMinMaxType);
+		if (m_inputMinMaxType == InputMinMaxType::InputFieldGroup) {
+
+			minMaxSettingsPropertyTree.put<DataTransformMapping::FieldGroupName>(L"Group", m_inputMinMaxFieldGroup);
+		}
+		else {
+
+			minMaxSettingsPropertyTree.put<double>(L"Min", m_userSpecifiedInputMinMax.GetMin());
+
+			if (std::abs(m_userSpecifiedInputMinMax.GetDiff()) > 0.01) {
+
+				minMaxSettingsPropertyTree.put<double>(L"Difference", m_userSpecifiedInputMinMax.GetDiff());
+			}
+		}
+
+		return functionDataPropertyTree;
 	}
 
 	double InterpolationMappingData::Interpolate(const DoubleMinDiff& outputMinDiff, double inputMin, double inputMax, double input) const {

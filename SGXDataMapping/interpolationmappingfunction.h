@@ -42,8 +42,12 @@ namespace SynGlyphX {
 		InterpolationMappingData(const InterpolationMappingData& data);
 		virtual ~InterpolationMappingData();
 
+		InterpolationMappingData& operator=(const InterpolationMappingData& data);
+
 		virtual Input GetSupportedInput() const;
 		virtual Output GetSupportedOutput() const;
+
+		virtual boost::property_tree::wptree& ExportToPropertyTree(boost::property_tree::wptree& propertyTree) const;
 
 		double Interpolate(const DoubleMinDiff& outputMinDiff, double inputMin, double inputMax, double input) const;
 		GlyphColor Interpolate(const ColorMinDiff& outputMinDiff, double inputMin, double inputMax, double input) const;
