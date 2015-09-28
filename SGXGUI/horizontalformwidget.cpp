@@ -20,11 +20,11 @@ namespace SynGlyphX {
 
 	void HorizontalFormWidget::AddWidget(const QString& labelText, QWidget* widget) {
 
-		QLayout* currentLayout = layout();
+		QHBoxLayout* currentLayout = dynamic_cast<QHBoxLayout*>(layout());
 
 		QLabel* label = new QLabel(labelText, this);
 		currentLayout->addWidget(label);
-		currentLayout->addWidget(widget);
+		currentLayout->addWidget(widget, 1);
 
 		currentLayout->invalidate();
 	}

@@ -36,6 +36,9 @@ public:
 	void SetDialogFromMapping(SynGlyphX::InterpolationMappingData::ConstSharedPtr mapping);
 	SynGlyphX::InterpolationMappingData::SharedPtr GetMappingFromDialog() const;
 
+public slots:
+	virtual void accept();
+
 private:
 	SynGlyphX::RadioButtonGroupWidget* m_minMaxTypeWidget;
 	SynGlyphX::DoubleMinMaxWidget* m_userSpecifiedMinMaxWidget;

@@ -4,6 +4,7 @@
 #include <QtWidgets/QStackedLayout>
 #include "groupboxsinglewidget.h"
 #include <QtWidgets/QLabel>
+#include <QtWidgets/QMessageBox>
 
 InterpolationMappingDialog::InterpolationMappingDialog(DataTransformModel* model, QWidget *parent)
 	: QDialog(parent),
@@ -21,8 +22,9 @@ InterpolationMappingDialog::InterpolationMappingDialog(DataTransformModel* model
 	mainLayout->addWidget(interpolationOptionsGroupBox);
 
 	m_userSpecifiedMinMaxWidget = new SynGlyphX::DoubleMinMaxWidget(this);
+	m_userSpecifiedMinMaxWidget->SetValue(SynGlyphX::DoubleMinDiff(0.0, 100.0));
 
-	m_fieldGroupWidget = new FieldGroupWidget(this);
+	m_fieldGroupWidget = new FieldGroupWidget(m_model, this);
 
 	QStackedLayout* minMaxParameterWidgetsLayout = new QStackedLayout(this);
 	minMaxParameterWidgetsLayout->addWidget(new QWidget(this));
@@ -47,12 +49,34 @@ InterpolationMappingDialog::~InterpolationMappingDialog()
 
 }
 
+void InterpolationMappingDialog::accept() {
+
+	SynGlyphX::InterpolationMappingData::InputMinMaxType inputMinMaxType = static_cast<SynGlyphX::InterpolationMappingData::InputMinMaxType>(m_minMaxTypeWidget->GetCheckedButton());
+	if ((inputMinMaxType == SynGlyphX::InterpolationMappingData::InputMinMaxType::InputFieldGroup) && (m_fieldGroupWidget->GetCurrentGroupName().isEmpty())) {
+
+		QMessageBox::warning(this, tr("No field group selected"), tr("No group of fields has been selected.  Either select a group of fields or change the min & max type to user specified or bound input field."));
+	}
+	else {
+
+		QDialog::accept();
+	}
+}
+
 void InterpolationMappingDialog::SetDialogFromMapping(SynGlyphX::InterpolationMappingData::ConstSharedPtr mapping) {
 
 	m_isInterpretationLogarithmic = (mapping->GetFunction() == SynGlyphX::MappingFunctionData::Function::LogarithmicInterpolation);
 
-	m_minMaxTypeWidget->SetCheckedButton(mapping->GetInputMinMaxType());
-	m_userSpecifiedMinMaxWidget->SetValue(mapping->GetUserSpecifiedInputMinMax());
+	SynGlyphX::InterpolationMappingData::InputMinMaxType minMaxType = mapping->GetInputMinMaxType();
+	m_minMaxTypeWidget->SetCheckedButton(minMaxType);
+
+	if (minMaxType == SynGlyphX::InterpolationMappingData::InputMinMaxType::UserSpecified) {
+
+		m_userSpecifiedMinMaxWidget->SetValue(mapping->GetUserSpecifiedInputMinMax());
+	}
+	else if (minMaxType == SynGlyphX::InterpolationMappingData::InputMinMaxType::InputFieldGroup) {
+
+		m_fieldGroupWidget->SetCurrentGroupName(QString::fromStdWString(mapping->GetInputMinMaxFieldGroup()));
+	}
 }
 
 SynGlyphX::InterpolationMappingData::SharedPtr InterpolationMappingDialog::GetMappingFromDialog() const {
@@ -70,7 +94,7 @@ SynGlyphX::InterpolationMappingData::SharedPtr InterpolationMappingDialog::GetMa
 	}
 	else if (inputMinMaxType == SynGlyphX::InterpolationMappingData::InputMinMaxType::InputFieldGroup) {
 
-		
+		newMappingData->SetInputMinMaxFieldGroup(m_fieldGroupWidget->GetCurrentGroupName().toStdWString());
 	}
 
 	return newMappingData;

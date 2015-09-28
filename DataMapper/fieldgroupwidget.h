@@ -36,11 +36,15 @@ public:
 
 	bool CheckIfGroupNeedsToBeSaved();
 
+	const QString& GetCurrentGroupName() const;
+	void SetCurrentGroupName(const QString& groupName);
+
 private slots:
 	void OnSaveGroup();
 	void OnSaveAsGroup();
 	void OnRevertGroup();
 	void OnGroupChanged(int index);
+	void OnFieldGroupModelDataChanged(const QModelIndex& topLeft, const QModelIndex& bottomRight);
 
 private:
 	void EnableButtons(bool enableSave, bool enableRevert);

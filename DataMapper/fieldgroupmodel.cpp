@@ -78,12 +78,12 @@ QVariant FieldGroupModel::data(const QModelIndex& index, int role) const {
 
 			if (index.column() == 3) {
 
-				return QString::fromStdWString(GetInputFieldForRow(index.row).GetField());
+				return QString::fromStdWString(GetInputFieldForRow(index.row()).GetField());
 			}
 			else {
 				
-				const SynGlyphX::InputTable& datasourceTableInfo = GetTableForRow(index.row);
-				const SynGlyphX::Datasource& datasource = m_dataTransformModel->GetDataMapping()->GetDatasources().GetDatasourceByID(GetTableForRow(index.row).GetDatasourceID());
+				const SynGlyphX::InputTable& datasourceTableInfo = GetTableForRow(index.row());
+				const SynGlyphX::Datasource& datasource = m_dataTransformModel->GetDataMapping()->GetDatasources().GetDatasourceByID(GetTableForRow(index.row()).GetDatasourceID());
 				if (index.column() == 1) {
 
 					if (datasource.CanDatasourceHaveMultipleTables()) {

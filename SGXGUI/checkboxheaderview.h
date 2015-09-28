@@ -18,12 +18,13 @@
 #ifndef SYNGLYPHX_CHECKBOXHEADERVIEW_H
 #define SYNGLYPHX_CHECKBOXHEADERVIEW_H
 
+#include "sgxgui_global.h"
 #include <QtWidgets/QHeaderView>
 #include <boost/logic/tribool.hpp>
 
 namespace SynGlyphX {
 
-	class CheckBoxHeaderView : public QHeaderView
+	class SGXGUI_EXPORT CheckBoxHeaderView : public QHeaderView
 	{
 		Q_OBJECT
 
