@@ -24,12 +24,11 @@ namespace SynGlyphX {
 
 		if (tablePropertyTree.is_initialized()) {
 
-			Tables tables;
 			for (const boost::property_tree::wptree::value_type& tableValue : tablePropertyTree.get()) {
 
 				if (tableValue.first == L"Table") {
 
-					tables.emplace(tableValue.second.data(), DatasourceTable(tableValue.second));
+					m_tables.emplace(tableValue.second.data(), DatasourceTable(tableValue.second));
 				}
 			}
 		}

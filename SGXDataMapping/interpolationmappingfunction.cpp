@@ -1,7 +1,14 @@
 #include "interpolationmappingfunction.h"
 #include "glyphcolor.h"
+#include <boost/assign/list_of.hpp>
+#include <boost/bimap/list_of.hpp>
 
 namespace SynGlyphX {
+
+	const boost::bimap<InterpolationMappingData::InputMinMaxType, std::wstring> InterpolationMappingData::s_minMaxTypeNames = boost::assign::list_of < boost::bimap<InterpolationMappingData::InputMinMaxType, std::wstring>::relation >
+		(InterpolationMappingData::InputMinMaxType::BoundInputField, L"BoundField")
+		(InterpolationMappingData::InputMinMaxType::UserSpecified, L"UserSpecified")
+		(InterpolationMappingData::InputMinMaxType::InputFieldGroup, L"FieldGroup");
 	
 	InterpolationMappingData::InterpolationMappingData(bool useLogarithmic) :
 		MappingFunctionData(useLogarithmic ? MappingFunctionData::Function::LogarithmicInterpolation : MappingFunctionData::Function::LinearInterpolation),
@@ -23,7 +30,7 @@ namespace SynGlyphX {
 		if (minMaxSettingsPropertyTreeOpt.is_initialized()) {
 
 			const boost::property_tree::wptree& minMaxSettingsPropertyTree = minMaxSettingsPropertyTreeOpt.get();
-			m_inputMinMaxType = minMaxSettingsPropertyTree.get<InputMinMaxType>(L"<xmlattr>.type");
+			m_inputMinMaxType = s_minMaxTypeNames.right.at(minMaxSettingsPropertyTree.get<std::wstring>(L"<xmlattr>.type"));
 			if (m_inputMinMaxType == InputMinMaxType::InputFieldGroup) {
 
 				m_inputMinMaxFieldGroup = minMaxSettingsPropertyTree.get<DataTransformMapping::FieldGroupName>(L"Group");
@@ -74,7 +81,7 @@ namespace SynGlyphX {
 		boost::property_tree::wptree& functionDataPropertyTree = this->MappingFunctionData::ExportToPropertyTree(propertyTree);
 		boost::property_tree::wptree& minMaxSettingsPropertyTree = functionDataPropertyTree.add(L"MinMax", L"");
 
-		minMaxSettingsPropertyTree.put<InputMinMaxType>(L"<xmlattr>.type", m_inputMinMaxType);
+		minMaxSettingsPropertyTree.put<std::wstring>(L"<xmlattr>.type", s_minMaxTypeNames.left.at(m_inputMinMaxType));
 		if (m_inputMinMaxType == InputMinMaxType::InputFieldGroup) {
 
 			minMaxSettingsPropertyTree.put<DataTransformMapping::FieldGroupName>(L"Group", m_inputMinMaxFieldGroup);

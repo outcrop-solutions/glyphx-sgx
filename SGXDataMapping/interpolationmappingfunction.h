@@ -22,6 +22,7 @@
 #include "datamappingfunction.h"
 #include "mindiff.h"
 #include "datatransformmapping.h"
+#include <boost/bimap.hpp>
 
 namespace SynGlyphX {
 
@@ -61,6 +62,8 @@ namespace SynGlyphX {
 
 		void SetInputMinMaxFieldGroup(const DataTransformMapping::FieldGroupName& minMaxFieldGroup);
 		const DataTransformMapping::FieldGroupName& GetInputMinMaxFieldGroup() const;
+
+		static const boost::bimap<InputMinMaxType, std::wstring> s_minMaxTypeNames;
 
 	protected:
 		double Interpolate(double outputMin, double outputDifference, double inputMin, double inputDifference, double input) const;
