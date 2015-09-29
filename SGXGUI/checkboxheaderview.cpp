@@ -55,11 +55,11 @@ namespace SynGlyphX {
 			option.rect = QRect(1, 3, 20, 20);
 			option.state = QStyle::State_Enabled | QStyle::State_Active;
 
-			if (m_checkBoxState) {
+			if (m_checkBoxState == AllSomeNone::All) {
 
 				option.state |= QStyle::State_On;
 			}
-			else if (!m_checkBoxState) {
+			else if (m_checkBoxState == AllSomeNone::None) {
 
 				option.state |= QStyle::State_Off;
 			}
@@ -70,7 +70,6 @@ namespace SynGlyphX {
 
 			style()->drawPrimitive(QStyle::PE_IndicatorCheckBox, &option, painter);
 		}
-
 	}
 
 	void CheckBoxHeaderView::RedrawCheckBox() {

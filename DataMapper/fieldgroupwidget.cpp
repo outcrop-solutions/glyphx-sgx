@@ -22,6 +22,19 @@ FieldGroupWidget::FieldGroupWidget(DataTransformModel* dataTransformModel, QWidg
 	
 	QObject::connect(m_groupsNameComboBox, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &FieldGroupWidget::OnGroupChanged);
 	groupNameLayout->addWidget(m_groupsNameComboBox, 1);
+
+	m_saveButton = new QPushButton(tr("Save"), this);
+	m_saveButton->setEnabled(false);
+	QObject::connect(m_saveButton, &QPushButton::clicked, this, &FieldGroupWidget::OnSaveGroup);
+	groupNameLayout->addWidget(m_saveButton);
+	m_saveAsButton = new QPushButton(tr("Save As"), this);
+	QObject::connect(m_saveAsButton, &QPushButton::clicked, this, &FieldGroupWidget::OnSaveAsGroup);
+	groupNameLayout->addWidget(m_saveAsButton);
+	m_revertButton = new QPushButton(tr("Revert"), this);
+	m_revertButton->setEnabled(false);
+	QObject::connect(m_revertButton, &QPushButton::clicked, this, &FieldGroupWidget::OnRevertGroup);
+	groupNameLayout->addWidget(m_revertButton);
+
 	mainLayout->addLayout(groupNameLayout);
 
 	m_fieldTableView = new QTableView(this);
@@ -46,20 +59,6 @@ FieldGroupWidget::FieldGroupWidget(DataTransformModel* dataTransformModel, QWidg
 	QObject::connect(m_fieldGroupModel, &FieldGroupModel::dataChanged, this, &FieldGroupWidget::OnFieldGroupModelDataChanged);
 
 	mainLayout->addWidget(m_fieldTableView);
-
-	QHBoxLayout* saveRevertLayout = new QHBoxLayout(this);
-	m_saveButton = new QPushButton(tr("Save"), this);
-	m_saveButton->setEnabled(false);
-	QObject::connect(m_saveButton, &QPushButton::clicked, this, &FieldGroupWidget::OnSaveGroup);
-	saveRevertLayout->addWidget(m_saveButton);
-	m_saveAsButton = new QPushButton(tr("Save As"), this);
-	QObject::connect(m_saveAsButton, &QPushButton::clicked, this, &FieldGroupWidget::OnSaveAsGroup);
-	saveRevertLayout->addWidget(m_saveAsButton);
-	m_revertButton = new QPushButton(tr("Revert"), this);
-	m_revertButton->setEnabled(false);
-	QObject::connect(m_revertButton, &QPushButton::clicked, this, &FieldGroupWidget::OnRevertGroup);
-	saveRevertLayout->addWidget(m_revertButton);
-	mainLayout->addLayout(saveRevertLayout);
 
 	setLayout(mainLayout);
 }
