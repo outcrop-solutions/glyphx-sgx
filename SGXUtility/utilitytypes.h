@@ -32,6 +32,13 @@ namespace SynGlyphX {
 
 	typedef std::set<unsigned long> IndexSet;
 
+	enum AllSomeNone {
+
+		None = 0,
+		Some,
+		All
+	};
+
 } //namespace SynGlyphX
 
 #endif //SYNGLYPHX_UTILITY_TYPES_H
