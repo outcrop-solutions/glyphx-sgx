@@ -23,7 +23,7 @@
 #include "sourcedatamanager.h"
 #include "datatransformmodel.h"
 #include <vector>
-#include <boost/logic/tribool.hpp>
+#include "utilitytypes.h"
 
 class FieldGroupModel : public QAbstractTableModel
 {
@@ -38,6 +38,7 @@ public:
 	virtual int columnCount(const QModelIndex& parent = QModelIndex()) const;
 	virtual QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const;
 	virtual bool setData(const QModelIndex& index, const QVariant& value, int role = Qt::EditRole);
+	virtual QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
 
 	void SetCheckedItems(const SynGlyphX::FieldGroup& fieldGroup);
 	void UncheckAllItems();
@@ -45,7 +46,7 @@ public:
 	void ResetTable(DataTransformModel* model);
 	const SynGlyphX::FieldGroup& GetCheckedItems() const;
 
-	boost::tribool AreFieldsChecked() const;
+	SynGlyphX::AllSomeNone AreFieldsChecked() const;
 
 private:
 	SynGlyphX::InputField GetInputFieldForRow(int row) const;

@@ -14,7 +14,7 @@ InterpolationMappingDialog::InterpolationMappingDialog(DataTransformModel* model
 	QVBoxLayout* mainLayout = new QVBoxLayout(this);
 
 	QStringList interpolationOptionsList;
-	interpolationOptionsList << tr("Get Min & Max From Bound Input Field") << tr("User Specified Min & Max") << tr("Get Min & Max From Group Of Input Fields");
+	interpolationOptionsList << tr("Get Min && Max From Bound Input Field") << tr("User Specified Min && Max") << tr("Get Min && Max From Group Of Input Fields");
 	m_minMaxTypeWidget = new SynGlyphX::RadioButtonGroupWidget(interpolationOptionsList, Qt::Vertical, this);
 
 	SynGlyphX::GroupBoxSingleWidget* interpolationOptionsGroupBox = new SynGlyphX::GroupBoxSingleWidget(tr("Input Min/Max Type:"), m_minMaxTypeWidget, this);
@@ -22,11 +22,17 @@ InterpolationMappingDialog::InterpolationMappingDialog(DataTransformModel* model
 	mainLayout->addWidget(interpolationOptionsGroupBox);
 
 	m_userSpecifiedMinMaxWidget = new SynGlyphX::DoubleMinMaxWidget(this);
+	
+	//For the range of this widget we want a large range, but nothing so large it makes the widget huge.  Using numeric limits for int (even though the widget uses
+	//double values) is a good compromise
+	m_userSpecifiedMinMaxWidget->SetRange(std::numeric_limits<int>::min(), std::numeric_limits<int>::max());
+	m_userSpecifiedMinMaxWidget->SetDecimals(3);
 	m_userSpecifiedMinMaxWidget->SetValue(SynGlyphX::DoubleMinDiff(0.0, 100.0));
 
 	m_fieldGroupWidget = new FieldGroupWidget(m_model, this);
 
 	QStackedLayout* minMaxParameterWidgetsLayout = new QStackedLayout(this);
+	minMaxParameterWidgetsLayout->setContentsMargins(0, 0, 0, 0);
 	minMaxParameterWidgetsLayout->addWidget(new QWidget(this));
 	minMaxParameterWidgetsLayout->addWidget(m_userSpecifiedMinMaxWidget);
 	minMaxParameterWidgetsLayout->addWidget(m_fieldGroupWidget);

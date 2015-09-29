@@ -45,9 +45,10 @@ private slots:
 	void OnRevertGroup();
 	void OnGroupChanged(int index);
 	void OnFieldGroupModelDataChanged(const QModelIndex& topLeft, const QModelIndex& bottomRight);
+	void OnCheckBoxHeaderViewClicked(SynGlyphX::AllSomeNone state);
 
 private:
-	void EnableButtons(bool enableSave, bool enableRevert);
+	void EnableSaveAndRevertButtons(bool enable);
 	QString GetNewGroupName();
 
 	QComboBox* m_groupsNameComboBox;
@@ -56,6 +57,8 @@ private:
 	QPushButton* m_revertButton;
 
 	QTableView* m_fieldTableView;
+	SynGlyphX::CheckBoxHeaderView* m_fieldTableHeaderView;
+
 	FieldGroupModel* m_fieldGroupModel;
 	DataTransformModel* m_dataTransformModel;
 

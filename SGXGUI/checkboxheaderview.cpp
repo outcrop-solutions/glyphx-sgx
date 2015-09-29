@@ -5,7 +5,7 @@ namespace SynGlyphX {
 
 	CheckBoxHeaderView::CheckBoxHeaderView(Qt::Orientation orientation, QWidget *parent)
 		: QHeaderView(orientation, parent),
-		m_checkBoxState(boost::indeterminate)
+		m_checkBoxState(AllSomeNone::None)
 	{
 
 	}
@@ -15,7 +15,7 @@ namespace SynGlyphX {
 
 	}
 
-	void CheckBoxHeaderView::SetState(boost::tribool state) {
+	void CheckBoxHeaderView::SetState(AllSomeNone state) {
 
 		if (m_checkBoxState != state) {
 
@@ -24,23 +24,23 @@ namespace SynGlyphX {
 		}
 	}
 
-	boost::tribool CheckBoxHeaderView::GetState() const {
+	AllSomeNone CheckBoxHeaderView::GetState() const {
 
 		return m_checkBoxState;
 	}
 
 	void CheckBoxHeaderView::mousePressEvent(QMouseEvent* event) {
 
-		if (m_checkBoxState) {
+		if (m_checkBoxState == AllSomeNone::All) {
 
-			SetState(false);
+			SetState(AllSomeNone::None);
 		}
 		else {
 
-			SetState(true);
+			SetState(AllSomeNone::All);
 		}
 
-		emit CheckBoxClicked(m_checkBoxState == true);
+		emit CheckBoxClicked(m_checkBoxState);
 	}
 
 	void CheckBoxHeaderView::paintSection(QPainter* painter, const QRect& rect, int logicalIndex) const {

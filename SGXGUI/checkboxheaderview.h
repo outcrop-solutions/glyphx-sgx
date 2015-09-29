@@ -20,7 +20,7 @@
 
 #include "sgxgui_global.h"
 #include <QtWidgets/QHeaderView>
-#include <boost/logic/tribool.hpp>
+#include "utilitytypes.h"
 
 namespace SynGlyphX {
 
@@ -33,11 +33,11 @@ namespace SynGlyphX {
 		~CheckBoxHeaderView();
 
 	public slots:
-		void SetState(boost::tribool state);
-		boost::tribool GetState() const;
+		void SetState(AllSomeNone state);
+		AllSomeNone GetState() const;
 
 	signals:
-		void CheckBoxClicked(bool state);
+		void CheckBoxClicked(AllSomeNone state);
 
 	protected:
 		virtual void mousePressEvent(QMouseEvent* event);
@@ -45,7 +45,7 @@ namespace SynGlyphX {
 		void RedrawCheckBox();
 
 	private:
-		boost::tribool m_checkBoxState;
+		AllSomeNone m_checkBoxState;
 	};
 
 } //namespace SynGlyphX

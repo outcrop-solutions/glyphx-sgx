@@ -4,10 +4,7 @@ FieldGroupModel::FieldGroupModel(QObject *parent)
 	: QAbstractTableModel(parent),
 	m_dataTransformModel(nullptr)
 {
-	//There is no header data for section 0 since that is where the select all/select none checkbox is
-	setHeaderData(1, Qt::Horizontal, tr("Datasource"));
-	setHeaderData(2, Qt::Horizontal, tr("Table"));
-	setHeaderData(3, Qt::Horizontal, tr("Field"));
+	
 }
 
 FieldGroupModel::~FieldGroupModel()
@@ -18,21 +15,19 @@ FieldGroupModel::~FieldGroupModel()
 Qt::ItemFlags FieldGroupModel::flags(const QModelIndex& index) const {
 
 	if (index.isValid()) {
-
-		Qt::ItemFlags flags = Qt::ItemIsEnabled || Qt::ItemIsSelectable || Qt::ItemNeverHasChildren;
+		
+		Qt::ItemFlags flags = Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemNeverHasChildren;
 		if (index.column() == 0) {
 
-			return flags || Qt::ItemIsUserCheckable;
-		} 
+			return flags | Qt::ItemIsUserCheckable | Qt::ItemIsEditable;
+		}
 		else {
 
 			return flags;
 		}
 	}
-	else {
-
-		return QAbstractTableModel::flags(index);
-	}
+	
+	return QAbstractTableModel::flags(index);
 }
 
 int FieldGroupModel::rowCount(const QModelIndex& parent) const {
@@ -43,7 +38,8 @@ int FieldGroupModel::rowCount(const QModelIndex& parent) const {
 	}
 	else {
 
-		m_countOfFieldsPerTable.back();
+		return m_countOfFieldsPerTable.back();
+		//return 1;
 	}
 }
 
@@ -63,15 +59,22 @@ QVariant FieldGroupModel::data(const QModelIndex& index, int role) const {
 
 	if (m_dataTransformModel != nullptr) {
 
-		if ((index.column() == 0) && (role == Qt::CheckStateRole)) {
+		if (index.column() == 0) {
+			
+			if (role == Qt::CheckStateRole) {
 
-			if (m_checkedItems.count(GetInputFieldForRow(index.row())) > 0) {
+				if (m_checkedItems.count(GetInputFieldForRow(index.row())) > 0) {
 
-				return Qt::Checked;
+					return Qt::Checked;
+				}
+				else {
+
+					return Qt::Unchecked;
+				}
 			}
-			else {
+			else if (role == Qt::ToolTipRole) {
 
-				return Qt::Unchecked;
+				return tr("Select/Unselect");
 			}
 		}
 		else if (role == Qt::DisplayRole) {
@@ -84,7 +87,7 @@ QVariant FieldGroupModel::data(const QModelIndex& index, int role) const {
 				
 				const SynGlyphX::InputTable& datasourceTableInfo = GetTableForRow(index.row());
 				const SynGlyphX::Datasource& datasource = m_dataTransformModel->GetDataMapping()->GetDatasources().GetDatasourceByID(GetTableForRow(index.row()).GetDatasourceID());
-				if (index.column() == 1) {
+				if (index.column() == 2) {
 
 					if (datasource.CanDatasourceHaveMultipleTables()) {
 
@@ -127,6 +130,34 @@ bool FieldGroupModel::setData(const QModelIndex& index, const QVariant& value, i
 	}
 
 	return false;
+}
+
+QVariant FieldGroupModel::headerData(int section, Qt::Orientation orientation, int role) const {
+
+	if (orientation == Qt::Horizontal) {
+
+		if ((section == 0) && (role == Qt::ToolTipRole)) {
+
+			return tr("Select/Unselect All");
+		}
+		else if (role == Qt::DisplayRole) {
+
+			if (section == 1) {
+
+				return tr("Datasource");
+			}
+			else if (section == 2) {
+
+				return tr("Table");
+			}
+			else if (section == 3) {
+
+				return tr("Field");
+			}
+		}
+	}
+
+	return QVariant();
 }
 
 void FieldGroupModel::SetCheckedItems(const SynGlyphX::FieldGroup& fieldGroup) {
@@ -207,18 +238,18 @@ const SynGlyphX::InputTable& FieldGroupModel::GetTableForRow(int row) const {
 	return table->first;
 }
 
-boost::tribool FieldGroupModel::AreFieldsChecked() const {
+SynGlyphX::AllSomeNone FieldGroupModel::AreFieldsChecked() const {
 
 	if (m_checkedItems.empty()) {
 
-		return false;
+		return SynGlyphX::AllSomeNone::None;
 	}
 	else if(m_checkedItems.size() == m_countOfFieldsPerTable.back()) {
 
-		return true;
+		return SynGlyphX::AllSomeNone::All;
 	}
 	else {
 
-		return boost::indeterminate;
+		return SynGlyphX::AllSomeNone::Some;
 	}
 }

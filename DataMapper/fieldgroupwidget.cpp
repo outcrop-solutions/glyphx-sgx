@@ -24,6 +24,29 @@ FieldGroupWidget::FieldGroupWidget(DataTransformModel* dataTransformModel, QWidg
 	groupNameLayout->addWidget(m_groupsNameComboBox, 1);
 	mainLayout->addLayout(groupNameLayout);
 
+	m_fieldTableView = new QTableView(this);
+	m_fieldTableView->verticalHeader()->hide();
+	m_fieldTableView->setSelectionMode(QAbstractItemView::SelectionMode::NoSelection);
+	//m_fieldTableView->setSelectionBehavior(QAbstractItemView::SelectionBehavior::SelectRows);
+
+	m_fieldTableHeaderView = new SynGlyphX::CheckBoxHeaderView(Qt::Horizontal, this);
+	m_fieldTableView->setHorizontalHeader(m_fieldTableHeaderView);
+	QObject::connect(m_fieldTableHeaderView, &SynGlyphX::CheckBoxHeaderView::CheckBoxClicked, this, &FieldGroupWidget::OnCheckBoxHeaderViewClicked);
+	
+	m_fieldGroupModel = new FieldGroupModel(this);
+	
+	m_fieldTableView->setModel(m_fieldGroupModel);
+	m_fieldGroupModel->ResetTable(m_dataTransformModel);
+	m_fieldTableView->resizeColumnsToContents();
+	
+	if (m_groupsNameComboBox->count() > 0) {
+
+		m_groupsNameComboBox->setCurrentIndex(0);
+	}
+	QObject::connect(m_fieldGroupModel, &FieldGroupModel::dataChanged, this, &FieldGroupWidget::OnFieldGroupModelDataChanged);
+
+	mainLayout->addWidget(m_fieldTableView);
+
 	QHBoxLayout* saveRevertLayout = new QHBoxLayout(this);
 	m_saveButton = new QPushButton(tr("Save"), this);
 	m_saveButton->setEnabled(false);
@@ -37,20 +60,6 @@ FieldGroupWidget::FieldGroupWidget(DataTransformModel* dataTransformModel, QWidg
 	QObject::connect(m_revertButton, &QPushButton::clicked, this, &FieldGroupWidget::OnRevertGroup);
 	saveRevertLayout->addWidget(m_revertButton);
 	mainLayout->addLayout(saveRevertLayout);
-
-	m_fieldTableView = new QTableView(this);
-	m_fieldTableView->setEnabled(m_groupsNameComboBox->count() > 0);
-	SynGlyphX::CheckBoxHeaderView* fieldTableHeaderView = new SynGlyphX::CheckBoxHeaderView(Qt::Horizontal, this);
-	m_fieldTableView->setHorizontalHeader(fieldTableHeaderView);
-	m_fieldGroupModel = new FieldGroupModel(this);
-	m_fieldGroupModel->ResetTable(m_dataTransformModel);
-	if (m_groupsNameComboBox->count() > 0) {
-
-		m_groupsNameComboBox->setCurrentIndex(0);
-	}
-	QObject::connect(m_fieldGroupModel, &FieldGroupModel::dataChanged, this, &FieldGroupWidget::OnFieldGroupModelDataChanged);
-
-	mainLayout->addWidget(m_fieldTableView);
 
 	setLayout(mainLayout);
 }
@@ -79,7 +88,7 @@ void FieldGroupWidget::OnSaveGroup() {
 	else {
 
 		m_dataTransformModel->UpdateFieldGroup(m_currentGroupName.toStdWString(), m_fieldGroupModel->GetCheckedItems());
-		EnableButtons(false, false);
+		EnableSaveAndRevertButtons(false);
 	}
 }
 
@@ -89,23 +98,22 @@ void FieldGroupWidget::OnSaveAsGroup() {
 	if (!newGroupName.isEmpty()) {
 
 		m_dataTransformModel->UpdateFieldGroup(newGroupName.toStdWString(), m_fieldGroupModel->GetCheckedItems());
-		EnableButtons(false, false);
+		EnableSaveAndRevertButtons(false);
 	}
 }
 
 void FieldGroupWidget::OnRevertGroup() {
 
 	m_fieldGroupModel->SetCheckedItems(m_dataTransformModel->GetDataMapping()->GetFieldGroupMap().at(m_currentGroupName.toStdWString()));
-	EnableButtons(false, false);
+	EnableSaveAndRevertButtons(false);
 }
 
 void FieldGroupWidget::OnGroupChanged(int index) {
 
 	if (index == -1) {
 
-		m_fieldTableView->setEnabled(false);
 		m_currentGroupName.clear();
-		EnableButtons(false, false);
+		EnableSaveAndRevertButtons(false);
 	}
 	else if (m_currentGroupName != m_groupsNameComboBox->currentText()) {
 
@@ -113,8 +121,7 @@ void FieldGroupWidget::OnGroupChanged(int index) {
 
 			m_currentGroupName = m_groupsNameComboBox->currentText();
 			m_fieldGroupModel->SetCheckedItems(m_dataTransformModel->GetDataMapping()->GetFieldGroupMap().at(m_currentGroupName.toStdWString()));
-			EnableButtons(false, false);
-			m_fieldTableView->setEnabled(true);
+			EnableSaveAndRevertButtons(false);
 		}
 		else {
 
@@ -123,10 +130,10 @@ void FieldGroupWidget::OnGroupChanged(int index) {
 	}
 }
 
-void FieldGroupWidget::EnableButtons(bool enableSave, bool enableRevert) {
+void FieldGroupWidget::EnableSaveAndRevertButtons(bool enable) {
 
-	m_saveButton->setEnabled(enableSave);
-	m_revertButton->setEnabled(enableRevert);
+	m_saveButton->setEnabled(enable);
+	m_revertButton->setEnabled(enable);
 }
 
 bool FieldGroupWidget::CheckIfGroupNeedsToBeSaved() {
@@ -155,7 +162,7 @@ QString FieldGroupWidget::GetNewGroupName() {
 	do {
 
 		bool okPressed = true;
-		newGroupName = QInputDialog::getText(this, tr("Create New Group Name"), tr("New Group:"), QLineEdit::Normal, newGroupName);
+		newGroupName = QInputDialog::getText(this, tr("Create New Group Name"), tr("New Group:"), QLineEdit::Normal, newGroupName, &okPressed);
 		if (!okPressed) {
 
 			newGroupName.clear();
@@ -180,5 +187,26 @@ QString FieldGroupWidget::GetNewGroupName() {
 
 void FieldGroupWidget::OnFieldGroupModelDataChanged(const QModelIndex& topLeft, const QModelIndex& bottomRight) {
 
-	EnableButtons(true, true);
+	m_fieldTableHeaderView->SetState(m_fieldGroupModel->AreFieldsChecked());
+	EnableSaveAndRevertButtons(m_groupsNameComboBox->count() > 0);
+}
+
+void FieldGroupWidget::OnCheckBoxHeaderViewClicked(SynGlyphX::AllSomeNone state) {
+
+	if (state == SynGlyphX::AllSomeNone::All) {
+
+		SynGlyphX::FieldGroup fieldGroup;
+		for (const auto& table : m_dataTransformModel->GetSourceDataManager().GetNumericFieldsByTable()) {
+
+			for (const auto& field : table.second) {
+
+				fieldGroup.emplace(SynGlyphX::InputField(table.first.GetDatasourceID(), table.first.GetTable(), field, SynGlyphX::InputField::Type::Real));
+			}
+		}
+		m_fieldGroupModel->SetCheckedItems(fieldGroup);
+	}
+	else {
+
+		m_fieldGroupModel->UncheckAllItems();
+	}
 }
