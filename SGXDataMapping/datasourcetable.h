@@ -26,7 +26,7 @@
 
 namespace SynGlyphX {
 
-	class DatasourceTable
+	class SGXDATAMAPPING_API DatasourceTable
 	{
 	public:
 		
