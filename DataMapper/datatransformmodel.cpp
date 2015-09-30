@@ -301,6 +301,13 @@ QVariant DataTransformModel::GetDisplayData(const QModelIndex& index) const {
 
 			return GetGlyphData(index);
 		}
+		else if (IsParentlessRowInDataType(DataType::FieldGroup, index.row())) {
+
+			int fieldGroupIndex = index.row() - (m_dataMapping->GetGlyphGraphs().size() + m_dataMapping->GetBaseObjects().size() + m_dataMapping->GetDatasources().Count());
+			SynGlyphX::DataTransformMapping::FieldGroupMap::const_iterator fieldGroup = m_dataMapping->GetFieldGroupMap().begin();
+			std::advance(fieldGroup, fieldGroupIndex);
+			return QString::fromStdWString(fieldGroup->first);
+		}
 	}
 	else {
 
@@ -326,6 +333,10 @@ DataTransformModel::DataType DataTransformModel::GetDataType(const QModelIndex& 
 		else if (IsParentlessRowInDataType(DataType::DataSources, index.row())) {
 
 			return DataType::DataSources;
+		}
+		else if (IsParentlessRowInDataType(DataType::FieldGroup, index.row())) {
+
+			return DataType::FieldGroup;
 		}
 		else if (IsParentlessRowInDataType(DataType::GlyphTrees, index.row())) {
 
@@ -447,7 +458,7 @@ int	DataTransformModel::rowCount(const QModelIndex& parent) const {
 
 	if (!parent.isValid()) {
 
-		return m_dataMapping->GetGlyphGraphs().size() + m_dataMapping->GetBaseObjects().size() + m_dataMapping->GetDatasources().Count();
+		return m_dataMapping->GetGlyphGraphs().size() + m_dataMapping->GetBaseObjects().size() + m_dataMapping->GetDatasources().Count() + m_dataMapping->GetFieldGroupMap().size();
 	}
 
 	if (parent.internalPointer() != nullptr) {
@@ -655,24 +666,46 @@ void DataTransformModel::AddBaseObject(const SynGlyphX::BaseImage& baseImage) {
 
 bool DataTransformModel::IsParentlessRowInDataType(DataType type, int row) const {
 
-	int min = 0;
+	int min = GetFirstIndexForDataType(type);
 	int max = 0;
 	if (type == DataType::BaseObjects) {
 
-		min = m_dataMapping->GetGlyphGraphs().size();
 		max = min + m_dataMapping->GetBaseObjects().size();
 	}
 	else if (type == DataType::DataSources) {
 
-		min = m_dataMapping->GetGlyphGraphs().size() + m_dataMapping->GetBaseObjects().size();
-		max = min + m_dataMapping->GetDatasources().GetFileDatasources().size();
+		max = min + m_dataMapping->GetDatasources().Count();
+	}
+	else if (type == DataType::FieldGroup) {
+
+		max = min + m_dataMapping->GetFieldGroupMap().size();
 	}
 	else if (type == DataType::GlyphTrees) {
 
-		max = m_dataMapping->GetGlyphGraphs().size();
+		max = min + m_dataMapping->GetGlyphGraphs().size();
 	}
 
 	return ((row >= min) && (row < max));
+}
+
+unsigned int DataTransformModel::GetFirstIndexForDataType(DataType type) const {
+
+	if (type == DataType::BaseObjects) {
+
+		return m_dataMapping->GetGlyphGraphs().size();
+	}
+	else if (type == DataType::DataSources) {
+
+		return m_dataMapping->GetGlyphGraphs().size() + m_dataMapping->GetBaseObjects().size();
+	}
+	else if (type == DataType::FieldGroup) {
+
+		return m_dataMapping->GetGlyphGraphs().size() + m_dataMapping->GetBaseObjects().size() + m_dataMapping->GetDatasources().Count();
+	}
+	else if (type == DataType::GlyphTrees) {
+
+		return 0;
+	}
 }
 
 void DataTransformModel::UpdateGlyph(const QModelIndex& index, const SynGlyphX::DataMappingGlyph& newGlyph) {
@@ -934,12 +967,43 @@ const SynGlyphX::DataTransformMapping::FieldGroupMap& DataTransformModel::GetFie
 
 void DataTransformModel::UpdateFieldGroup(const SynGlyphX::DataTransformMapping::FieldGroupName& groupName, const SynGlyphX::FieldGroup& fieldGroup) {
 
+	const SynGlyphX::DataTransformMapping::FieldGroupMap& fieldGroupMap = m_dataMapping->GetFieldGroupMap();
+	SynGlyphX::DataTransformMapping::FieldGroupMap::const_iterator groupIterator = fieldGroupMap.find(groupName);
+	bool addNew = (groupIterator == fieldGroupMap.end());
+	
+	int firstIndex = GetFirstIndexForDataType(DataType::FieldGroup);
+	int lastIndex = firstIndex + fieldGroupMap.size();
+	if (addNew) {
+
+		lastIndex++;
+		beginInsertRows(QModelIndex(), lastIndex, lastIndex);
+	}
+
 	m_dataMapping->UpdateFieldGroup(groupName, fieldGroup);
+
+	if (addNew) {
+
+		endInsertRows();
+	}
+
+	emit dataChanged(index(firstIndex), index(lastIndex));
 }
 
 void DataTransformModel::RemoveFieldGroup(const SynGlyphX::DataTransformMapping::FieldGroupName& groupName) {
 
+	const SynGlyphX::DataTransformMapping::FieldGroupMap& fieldGroupMap = m_dataMapping->GetFieldGroupMap();
+	SynGlyphX::DataTransformMapping::FieldGroupMap::const_iterator groupIterator = fieldGroupMap.find(groupName);
+
+	if (groupIterator == fieldGroupMap.end()) {
+
+		return;
+	}
+
+	int index = GetFirstIndexForDataType(DataType::FieldGroup) + std::distance(fieldGroupMap.begin(), groupIterator);
+
+	beginRemoveRows(QModelIndex(), index, index);
 	m_dataMapping->RemoveFieldGroup(groupName);
+	endRemoveRows();
 }
 
 const SynGlyphX::SourceDataManager& DataTransformModel::GetSourceDataManager() const {

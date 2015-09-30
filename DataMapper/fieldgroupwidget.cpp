@@ -4,6 +4,7 @@
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QInputDialog>
 #include <QtWidgets/QMessageBox>
+#include <QtWidgets/QScrollBar>
 
 FieldGroupWidget::FieldGroupWidget(DataTransformModel* dataTransformModel, QWidget *parent)
 	: QWidget(parent),
@@ -14,6 +15,7 @@ FieldGroupWidget::FieldGroupWidget(DataTransformModel* dataTransformModel, QWidg
 	QHBoxLayout* groupNameLayout = new QHBoxLayout(this);
 	groupNameLayout->addWidget(new QLabel(tr("Group:")));
 	m_groupsNameComboBox = new QComboBox(this);
+	m_groupsNameComboBox->setMinimumWidth(128);
 	m_groupsNameComboBox->setEditable(false);
 	for (auto& fieldGroup : m_dataTransformModel->GetDataMapping()->GetFieldGroupMap()) {
 
@@ -51,6 +53,14 @@ FieldGroupWidget::FieldGroupWidget(DataTransformModel* dataTransformModel, QWidg
 	m_fieldTableView->setModel(m_fieldGroupModel);
 	m_fieldGroupModel->ResetTable(m_dataTransformModel);
 	m_fieldTableView->resizeColumnsToContents();
+	m_fieldTableView->resizeRowsToContents();
+	int minTableWidth = m_dataTransformModel->columnCount() + m_fieldTableView->verticalHeader()->width() + m_fieldTableView->verticalScrollBar()->sizeHint().width();
+	for (int column = 0; column < m_fieldGroupModel->columnCount(); column++) {
+
+		minTableWidth += m_fieldTableView->columnWidth(column);
+
+	}
+	m_fieldTableView->setMinimumWidth(minTableWidth);
 	
 	if (m_groupsNameComboBox->count() > 0) {
 
@@ -75,7 +85,8 @@ const QString& FieldGroupWidget::GetCurrentGroupName() const {
 
 void FieldGroupWidget::SetCurrentGroupName(const QString& groupName) {
 
-	m_groupsNameComboBox->setCurrentText(groupName);
+	m_currentGroupName = groupName;
+	m_groupsNameComboBox->setCurrentText(m_currentGroupName);
 }
 
 void FieldGroupWidget::OnSaveGroup() {
@@ -98,6 +109,11 @@ void FieldGroupWidget::OnSaveAsGroup() {
 
 		m_dataTransformModel->UpdateFieldGroup(newGroupName.toStdWString(), m_fieldGroupModel->GetCheckedItems());
 		EnableSaveAndRevertButtons(false);
+		m_groupsNameComboBox->addItem(newGroupName);
+
+		m_groupsNameComboBox->blockSignals(true);
+		SetCurrentGroupName(newGroupName);
+		m_groupsNameComboBox->blockSignals(false);
 	}
 }
 

@@ -53,6 +53,7 @@ namespace SynGlyphX {
 	void RadioButtonGroupWidget::SetCheckedButton(int id) {
 
 		m_buttonGroup->button(id)->setChecked(true);
+		emit ButtonClicked(id);
 	}
 
 	int RadioButtonGroupWidget::GetCheckedButton() const {

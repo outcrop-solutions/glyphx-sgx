@@ -26,7 +26,7 @@ InterpolationMappingDialog::InterpolationMappingDialog(DataTransformModel* model
 	//For the range of this widget we want a large range, but nothing so large it makes the widget huge.  Using numeric limits for int (even though the widget uses
 	//double values) is a good compromise
 	m_userSpecifiedMinMaxWidget->SetRange(std::numeric_limits<int>::min(), std::numeric_limits<int>::max());
-	m_userSpecifiedMinMaxWidget->SetDecimals(3);
+	m_userSpecifiedMinMaxWidget->SetDecimals(4);
 	m_userSpecifiedMinMaxWidget->SetValue(SynGlyphX::DoubleMinDiff(0.0, 100.0));
 
 	m_fieldGroupWidget = new FieldGroupWidget(m_model, this);

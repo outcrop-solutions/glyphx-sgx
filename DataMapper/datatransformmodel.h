@@ -33,7 +33,8 @@ public:
 
 		GlyphTrees = 0,
 		BaseObjects = 1,
-		DataSources = 2
+		DataSources = 2,
+		FieldGroup = 3
 	};
 
 	enum PropertyRole {
@@ -130,6 +131,7 @@ private:
 	QString GetCacheLocationForID(const boost::uuids::uuid& id);
 	QVariant GetGlyphData(const QModelIndex& index) const;
 	bool IsParentlessRowInDataType(DataType type, int row) const;
+	unsigned int GetFirstIndexForDataType(DataType type) const;
 	DataType GetDataType(const QModelIndex& index) const;
 	boost::uuids::uuid GetTreeId(int row) const;
 	boost::uuids::uuid GetTreeId(const QModelIndex& index) const;

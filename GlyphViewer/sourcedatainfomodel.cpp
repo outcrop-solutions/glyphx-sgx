@@ -99,7 +99,7 @@ void SourceDataInfoModel::AddDatasource(const boost::uuids::uuid& id, const SynG
 	newDatasourceItem->setFlags(m_datasourceFlags);
 	for (auto table : datasource.GetTables()) {
 
-		AddTable(id, QString::fromStdWString(table), newDatasourceItem);
+		AddTable(id, QString::fromStdWString(table.first), newDatasourceItem);
 	}
 
 	if (newDatasourceItem->rowCount() > 0) {
