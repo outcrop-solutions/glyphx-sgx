@@ -134,9 +134,12 @@ namespace SynGlyphX {
 
 					FieldGroup fieldGroup;
 
-					for (const boost::property_tree::wptree::value_type& fieldPropertyTree : fieldGroupPropertyTree.second.get_child(L"InputField")) {
+					for (const boost::property_tree::wptree::value_type& fieldPropertyTree : fieldGroupPropertyTree.second) {
 
-						fieldGroup.insert(InputField(fieldPropertyTree.second));
+						if (fieldPropertyTree.first == L"InputField") {
+						
+							fieldGroup.insert(InputField(fieldPropertyTree.second));
+						}
 					}
 
 					if (!fieldGroup.empty()) {
