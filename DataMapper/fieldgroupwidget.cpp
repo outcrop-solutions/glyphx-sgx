@@ -21,8 +21,6 @@ FieldGroupWidget::FieldGroupWidget(DataTransformModel* dataTransformModel, QWidg
 
 		m_groupsNameComboBox->addItem(QString::fromStdWString(fieldGroup.first));
 	}
-	
-	QObject::connect(m_groupsNameComboBox, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &FieldGroupWidget::OnGroupChanged);
 	groupNameLayout->addWidget(m_groupsNameComboBox, 1);
 
 	m_saveButton = new QPushButton(tr("Save"), this);
@@ -41,8 +39,8 @@ FieldGroupWidget::FieldGroupWidget(DataTransformModel* dataTransformModel, QWidg
 
 	m_fieldTableView = new QTableView(this);
 	m_fieldTableView->verticalHeader()->hide();
-	m_fieldTableView->setSelectionMode(QAbstractItemView::SelectionMode::NoSelection);
-	//m_fieldTableView->setSelectionBehavior(QAbstractItemView::SelectionBehavior::SelectRows);
+	m_fieldTableView->setSelectionMode(QAbstractItemView::SelectionMode::ContiguousSelection);
+	m_fieldTableView->setSelectionBehavior(QAbstractItemView::SelectionBehavior::SelectRows);
 
 	m_fieldTableHeaderView = new SynGlyphX::CheckBoxHeaderView(Qt::Horizontal, this);
 	m_fieldTableView->setHorizontalHeader(m_fieldTableHeaderView);
@@ -61,12 +59,11 @@ FieldGroupWidget::FieldGroupWidget(DataTransformModel* dataTransformModel, QWidg
 
 	}
 	m_fieldTableView->setMinimumWidth(minTableWidth);
-	
-	if (m_groupsNameComboBox->count() > 0) {
-
-		m_groupsNameComboBox->setCurrentIndex(0);
-	}
 	QObject::connect(m_fieldGroupModel, &FieldGroupModel::dataChanged, this, &FieldGroupWidget::OnFieldGroupModelDataChanged);
+	QObject::connect(m_fieldTableView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &FieldGroupWidget::OnSelectionChanged);
+
+	m_groupsNameComboBox->setCurrentIndex(-1);
+	QObject::connect(m_groupsNameComboBox, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &FieldGroupWidget::OnGroupChanged);
 
 	mainLayout->addWidget(m_fieldTableView);
 
@@ -85,8 +82,7 @@ const QString& FieldGroupWidget::GetCurrentGroupName() const {
 
 void FieldGroupWidget::SetCurrentGroupName(const QString& groupName) {
 
-	m_currentGroupName = groupName;
-	m_groupsNameComboBox->setCurrentText(m_currentGroupName);
+	m_groupsNameComboBox->setCurrentText(groupName);
 }
 
 void FieldGroupWidget::OnSaveGroup() {
@@ -223,5 +219,18 @@ void FieldGroupWidget::OnCheckBoxHeaderViewClicked(SynGlyphX::AllSomeNone state)
 	else {
 
 		m_fieldGroupModel->UncheckAllItems();
+	}
+}
+
+void FieldGroupWidget::OnSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected) {
+
+	std::set<unsigned int> selectedRows;
+	Q_FOREACH(const QModelIndex& index, selected.indexes()) {
+
+		//Since entire rows are being selected, filter out indexes where the column isn't 0 since we only need to set checked when the column is 0.
+		if (index.column() == 0) {
+
+			m_fieldGroupModel->setData(index, Qt::Checked, Qt::CheckStateRole);
+		}
 	}
 }

@@ -31,13 +31,13 @@ namespace SynGlyphX {
 
 	void CheckBoxHeaderView::mousePressEvent(QMouseEvent* event) {
 
-		if (m_checkBoxState == AllSomeNone::All) {
+		if (m_checkBoxState == AllSomeNone::None) {
 
-			SetState(AllSomeNone::None);
+			SetState(AllSomeNone::All);
 		}
 		else {
 
-			SetState(AllSomeNone::All);
+			SetState(AllSomeNone::None);
 		}
 
 		emit CheckBoxClicked(m_checkBoxState);

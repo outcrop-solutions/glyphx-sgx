@@ -46,6 +46,7 @@ private slots:
 	void OnGroupChanged(int index);
 	void OnFieldGroupModelDataChanged(const QModelIndex& topLeft, const QModelIndex& bottomRight);
 	void OnCheckBoxHeaderViewClicked(SynGlyphX::AllSomeNone state);
+	void OnSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected);
 
 private:
 	void EnableSaveAndRevertButtons(bool enable);

@@ -972,7 +972,7 @@ void DataTransformModel::UpdateFieldGroup(const SynGlyphX::DataTransformMapping:
 	bool addNew = (groupIterator == fieldGroupMap.end());
 	
 	int firstIndex = GetFirstIndexForDataType(DataType::FieldGroup);
-	int lastIndex = firstIndex + fieldGroupMap.size();
+	int lastIndex = firstIndex + fieldGroupMap.size() - 1;
 	if (addNew) {
 
 		lastIndex++;
