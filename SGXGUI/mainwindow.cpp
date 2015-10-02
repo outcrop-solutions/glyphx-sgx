@@ -78,6 +78,8 @@ namespace SynGlyphX {
 	void MainWindow::showEvent(QShowEvent* event) {
 
 		if (m_needToReadSettings) {
+
+			SaveOriginalState();
 			ReadSettings();
 			m_needToReadSettings = false;
 		}
@@ -225,10 +227,17 @@ namespace SynGlyphX {
         }
     }
 
-    void MainWindow::CreateFullScreenAction(QMenu* menu) {
+	void MainWindow::CreateViewMenu() {
 
-        m_fullScreenAction = CreateMenuAction(menu, tr("Full Screen"), QKeySequence::FullScreen);
+		m_viewMenu = menuBar()->addMenu(tr("View"));
+
+		QAction* restoreLayoutAction = CreateMenuAction(m_viewMenu, tr("Restore Original Layout"));
+		QObject::connect(restoreLayoutAction, &QAction::triggered, this, &MainWindow::RestoreOriginalLayout);
+
+        m_fullScreenAction = CreateMenuAction(m_viewMenu, tr("Full Screen"), QKeySequence::FullScreen);
         QObject::connect(m_fullScreenAction, &QAction::triggered, this, &MainWindow::SwitchBetweenFullAndNormalScreen);
+
+		m_viewMenu->addSeparator();
     }
 
 	QString MainWindow::GetFileNameOpenDialog(const QString& settingKey, const QString& caption, const QString& defaultDir, const QString& filter) {
@@ -296,6 +305,19 @@ namespace SynGlyphX {
 
 		settings.endGroup();
 		return directory;
+	}
+
+	void MainWindow::SaveOriginalState() {
+
+		m_originalState = saveState();
+	}
+
+	void MainWindow::RestoreOriginalLayout() {
+
+		if (!m_originalState.isEmpty()) {
+
+			restoreState(m_originalState);
+		}
 	}
 
 } //namespace SynGlyphX

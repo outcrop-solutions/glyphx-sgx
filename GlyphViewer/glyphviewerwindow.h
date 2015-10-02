@@ -70,7 +70,6 @@ private:
 	GlyphViewerOptions CollectOptions();
 
 	QMenu* m_fileMenu;
-	QMenu* m_viewMenu;
 	QMenu* m_toolsMenu;
 	QAction* m_stereoAction;
 	QAction* m_showAnimation;

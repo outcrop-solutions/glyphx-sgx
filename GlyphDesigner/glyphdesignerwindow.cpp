@@ -121,16 +121,12 @@ void GlyphDesignerWindow::CreateMenus() {
 	m_editMenu->addSeparator();
 
     //Create View Menu
-    m_viewMenu = menuBar()->addMenu(tr("View"));
+	CreateViewMenu();
 
 	m_showAnimation = m_viewMenu->addAction(tr("Show Animation"));
 	m_showAnimation->setCheckable(true);
 	m_showAnimation->setChecked(true);
 	QObject::connect(m_showAnimation, &QAction::toggled, m_3dView, &SynGlyphXANTz::ANTzSingleGlyphTreeWidget::EnableAnimation);
-
-	m_viewMenu->addSeparator();
-
-    CreateFullScreenAction(m_viewMenu);
 
     m_viewMenu->addSeparator();
 

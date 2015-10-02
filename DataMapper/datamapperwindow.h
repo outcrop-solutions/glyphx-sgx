@@ -86,7 +86,6 @@ private:
     QMenu* m_glyphMenu;
 	QMenu* m_baseObjectMenu;
 	QMenu* m_datasourceMenu;
-    QMenu* m_viewMenu;
 	QMenu* m_toolsMenu;
 
 	QAction* m_showAnimation;

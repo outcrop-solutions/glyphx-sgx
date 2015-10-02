@@ -20,8 +20,12 @@ DataSourcesView::DataSourcesView(DataTransformModel* sourceModel, QWidget *paren
 	setHeaderHidden(true);
 	setContextMenuPolicy(Qt::ContextMenuPolicy::ActionsContextMenu);
 
+	m_sharedActions.AddSeparator();
+
 	QAction* propertiesAction = m_sharedActions.AddAction(tr("Properties"));
 	QObject::connect(propertiesAction, &QAction::triggered, this, &DataSourcesView::OnShowProperties);
+
+	m_sharedActions.EnableActions(false);
 
 	addActions(m_sharedActions);
 }
