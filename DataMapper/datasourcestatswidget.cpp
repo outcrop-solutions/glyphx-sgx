@@ -19,6 +19,11 @@ DataSourceStatsWidget::~DataSourceStatsWidget()
 
 }
 
+QSize DataSourceStatsWidget::sizeHint() const {
+
+	return QSize(256, 256);
+}
+
 void DataSourceStatsWidget::RebuildStatsViews() {
 
 	m_datasourcesShownInTabs.clear();

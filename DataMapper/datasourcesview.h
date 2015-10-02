@@ -15,37 +15,32 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef DATASOURCESTATSWIDGET_H
-#define DATASOURCESTATSWIDGET_H
+#ifndef DATASOURCESVIEW_H
+#define DATASOURCESVIEW_H
 
-#include <QtWidgets/QTabWidget>
-#include <QtSql/QSqlDatabase>
-#include <QtWidgets/QTableView>
+#include "treeview.h"
+#include "sharedactionlist.h"
 #include "datatransformmodel.h"
 
-class DataStatsModel;
-
-class DataSourceStatsWidget : public QTabWidget
+class DataSourcesView : public SynGlyphX::TreeView
 {
 	Q_OBJECT
 
 public:
-	DataSourceStatsWidget(DataTransformModel* model, QWidget *parent = 0);
-	~DataSourceStatsWidget();
+	DataSourcesView(DataTransformModel* sourceModel, QWidget *parent);
+	~DataSourcesView();
 
-	virtual QSize sizeHint() const;
+	const SynGlyphX::SharedActionList& GetSharedActions();
 
-	void RebuildStatsViews();
-	void AddNewStatsViews();
-	void ClearTabs();
+protected:
+	virtual void selectionChanged(const QItemSelection& selected, const QItemSelection& deselected);
+
+private slots:
+	void OnShowProperties();
 
 private:
-    void CreateTablesFromDatasource(const boost::uuids::uuid& id, const SynGlyphX::Datasource& datasource);
-	void CreateTableView(DataStatsModel* model, const QString& tabName);
-
-	QList<QTableView*> m_statViews;
-	DataTransformModel* m_model;
-	std::set<boost::uuids::uuid> m_datasourcesShownInTabs;
+	DataTransformModel* m_sourceModel;
+	SynGlyphX::SharedActionList m_sharedActions;
 };
 
-#endif // DATASOURCESTATSWIDGET_H
+#endif // DATASOURCESVIEW_H

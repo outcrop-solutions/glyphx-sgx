@@ -226,6 +226,15 @@
     <ClCompile Include="GeneratedFiles\Release\moc_fieldgroupmodel.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="datasourcesview.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_datasourcesview.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_datasourcesview.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="datamapperwindow.h">
@@ -289,6 +298,9 @@
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="fieldgroupmodel.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="datasourcesview.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>

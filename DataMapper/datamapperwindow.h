@@ -30,6 +30,7 @@
 #include "glyphtreesview.h"
 #include "roledatafilterproxymodel.h"
 #include "baseobjectlistview.h"
+#include "datasourcesview.h"
 
 class DataMapperWindow : public SynGlyphX::MainWindow
 {
@@ -94,6 +95,7 @@ private:
 	BaseObjectListView* m_baseObjectsView;
 	GlyphTreesView* m_glyphTreesView;
 	DataSourceStatsWidget* m_dataSourceStats;
+	DataSourcesView* m_dataSourcesView;
 
 	QList<QAction*> m_projectDependentActions;
 

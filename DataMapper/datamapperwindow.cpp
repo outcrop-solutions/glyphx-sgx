@@ -40,7 +40,8 @@ DataMapperWindow::DataMapperWindow(QWidget *parent)
 	m_SingleGlyphRolesTableModel(nullptr),
 	m_dataTransformModel(nullptr),
 	m_minMaxGlyph3DWidget(nullptr),
-	m_baseObjectsModel(nullptr)
+	m_baseObjectsModel(nullptr),
+	m_dataSourcesView(nullptr)
 {
 	QSettings settings;
 	settings.beginGroup("ANTzExport");
@@ -256,12 +257,22 @@ void DataMapperWindow::CreateDockWidgets() {
 	addDockWidget(Qt::LeftDockWidgetArea, leftDockWidgetBaseObjects);
 	m_viewMenu->addAction(leftDockWidgetBaseObjects->toggleViewAction());
 
-	QDockWidget* rightDockWidget = new QDockWidget(tr("Data Stats"), this);
-	m_dataSourceStats = new DataSourceStatsWidget(m_dataTransformModel, rightDockWidget);
+	QDockWidget* rightDockWidgetDataStats = new QDockWidget(tr("Data Stats"), this);
+	m_dataSourceStats = new DataSourceStatsWidget(m_dataTransformModel, rightDockWidgetDataStats);
 
-	rightDockWidget->setWidget(m_dataSourceStats);
-	addDockWidget(Qt::RightDockWidgetArea, rightDockWidget);
-	m_viewMenu->addAction(rightDockWidget->toggleViewAction());
+	rightDockWidgetDataStats->setWidget(m_dataSourceStats);
+	m_dataSourceStats->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
+	addDockWidget(Qt::RightDockWidgetArea, rightDockWidgetDataStats);
+	m_viewMenu->addAction(rightDockWidgetDataStats->toggleViewAction());
+
+	QDockWidget* rightDockWidgetDataSources = new QDockWidget(tr("Data Sources"), this);
+	m_dataSourcesView = new DataSourcesView(m_dataTransformModel, rightDockWidgetDataSources);
+	m_datasourceMenu->addActions(m_dataSourcesView->GetSharedActions());
+
+	rightDockWidgetDataSources->setWidget(m_dataSourcesView);
+	m_dataSourcesView->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Preferred);
+	addDockWidget(Qt::RightDockWidgetArea, rightDockWidgetDataSources);
+	m_viewMenu->addAction(rightDockWidgetDataSources->toggleViewAction());
 
 	QDockWidget* topDockWidget = new QDockWidget(tr("Data Bindings"), this);
 	m_dataBindingWidget = new DataBindingWidget(m_SingleGlyphRolesTableModel, topDockWidget);
