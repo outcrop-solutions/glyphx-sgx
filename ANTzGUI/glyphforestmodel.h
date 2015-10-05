@@ -53,7 +53,7 @@ namespace SynGlyphXANTz {
 
 		QModelIndex IndexFromANTzID(int id) const;
 
-		void SetParentGridToDefaultBaseImage();
+		//void SetParentGridToDefaultBaseImage();
 
 		void FindIndexesInRegion(const QRect& region, QItemSelection& itemSelection) const;
 
@@ -67,7 +67,7 @@ namespace SynGlyphXANTz {
 
 		int GetChildIndexFromParent(pNPnode node) const;
 		int FindRowForRootNode(pNPnode node) const;
-		std::unordered_map<std::wstring, int> m_textures;
+		//std::unordered_map<std::wstring, int> m_textures;
 		QString m_defaultBaseImage;
 		ANTzPlus::ANTzData::SharedPtr m_antzData;
 		QStringList m_baseImageFilenames;

@@ -261,12 +261,12 @@ namespace SynGlyphXANTz {
 
 		return i - kNPnodeRootPin;
 	}
-
+	/*
 	void GlyphForestModel::SetParentGridToDefaultBaseImage() {
 
 		pNPnode grid = static_cast<pNPnode>(m_antzData->GetData()->map.node[kNPnodeRootGrid]);
 		grid->textureID = 1; // m_textures.begin()->second;
-	}
+	}*/
 
 	const QStringList& GlyphForestModel::GetBaseImageFilenames() const {
 

@@ -808,7 +808,7 @@ namespace SynGlyphXANTz {
 		pData antzData = m_antzData->GetData();
 
 		//We only want to center the camera when there are actual root nodes
-		if (antzData->map.nodeRootCount > kNPnodeRootPin) {
+		if (antzData->map.nodeRootCount >= kNPnodeRootPin) {
 
 			SetCameraToDefaultPosition();
 			updateGL();
@@ -1397,6 +1397,10 @@ namespace SynGlyphXANTz {
 		if (grid->textureID == 1) {
 
 			grid->textureID = m_worldTextureID;
+			grid->color.r = 0;
+			grid->color.g = 0;
+			grid->color.b = 255;
+			grid->color.a = 255;
 		}
 		else {
 
