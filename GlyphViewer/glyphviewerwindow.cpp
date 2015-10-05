@@ -264,9 +264,9 @@ void GlyphViewerWindow::CloseVisualization() {
 void GlyphViewerWindow::ClearAllData() {
 
 	SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
+	m_glyphForestSelectionModel->ClearAll();
 	m_sourceDataCache->Close();
 	m_glyphForestModel->Clear();
-	m_glyphForestModel->SetParentGridToDefaultBaseImage();
 	m_mapping->Clear();
 	SynGlyphX::Application::restoreOverrideCursor();
 }
@@ -285,9 +285,9 @@ void GlyphViewerWindow::LoadVisualization(const QString& filename) {
 		throw std::exception("File does not exist");
 	}
 
-	if (!m_glyphForestSelectionModel->selectedIndexes().empty()) {
+	if (m_glyphForestModel->rowCount() > 0) {
 
-		m_glyphForestSelectionModel->clearSelection();
+		ClearAllData();
 		m_antzWidget->updateGL();
 	}
 

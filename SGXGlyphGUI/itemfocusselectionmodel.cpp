@@ -13,6 +13,12 @@ namespace SynGlyphX {
 
 	}
 
+	void ItemFocusSelectionModel::ClearAll() {
+
+		ClearFocus();
+		clearSelection();
+	}
+
 	void ItemFocusSelectionModel::ClearFocus() {
 
 		if (!m_focusList.empty()) {
