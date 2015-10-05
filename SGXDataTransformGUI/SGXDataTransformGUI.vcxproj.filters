@@ -46,6 +46,9 @@
     <CustomBuild Include="changeimagefiledialog.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
+    <CustomBuild Include="datasourceinfowidget.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GeneratedFiles\Win32\Debug\moc_changedatasourcefiledialog.cpp">
@@ -65,6 +68,15 @@
     </ClCompile>
     <ClCompile Include="changeimagefiledialog.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="datasourceinfowidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Win32\Debug\moc_datasourceinfowidget.cpp">
+      <Filter>Generated Files\Debug_Win32</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Win32\Release\moc_datasourceinfowidget.cpp">
+      <Filter>Generated Files\Release_Win32</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

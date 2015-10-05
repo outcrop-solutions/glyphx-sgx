@@ -1,8 +1,10 @@
 #include "datasourcesview.h"
 #include "roledatafilterproxymodel.h"
+#include "datasourceinfowidget.h"
+#include "singlewidgetdialog.h"
 
 DataSourcesView::DataSourcesView(DataTransformModel* sourceModel, QWidget *parent)
-	: SynGlyphX::TreeView(parent),
+	: QListView(parent),
 	m_sourceModel(sourceModel)
 {
 	setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Preferred);
@@ -15,9 +17,7 @@ DataSourcesView::DataSourcesView(DataTransformModel* sourceModel, QWidget *paren
 
 	setDragEnabled(false);
 	setAcceptDrops(false);
-	SetScrollOnSelection(true);
 	setSelectionMode(QAbstractItemView::SingleSelection);
-	setHeaderHidden(true);
 	setContextMenuPolicy(Qt::ContextMenuPolicy::ActionsContextMenu);
 
 	m_sharedActions.AddSeparator();
@@ -44,10 +44,20 @@ void DataSourcesView::selectionChanged(const QItemSelection& selected, const QIt
 
 	m_sharedActions.EnableActions(!selected.isEmpty());
 
-	SynGlyphX::TreeView::selectionChanged(selected, deselected);
+	QListView::selectionChanged(selected, deselected);
 }
 
 void DataSourcesView::OnShowProperties() {
 
+	const QModelIndexList& selection = selectionModel()->selectedIndexes();
+	if (!selection.isEmpty()) {
 
+		SynGlyphX::DatasourceMaps::FileDatasourceMap::const_iterator datasource = m_sourceModel->GetDataMapping()->GetDatasources().GetFileDatasources().begin();
+		std::advance(datasource, selection.front().row());
+
+		SynGlyphX::DatasourceInfoWidget* datasourceInfoWidget = new SynGlyphX::DatasourceInfoWidget(datasource->second, this);
+		SynGlyphX::SingleWidgetDialog dialog(QDialogButtonBox::StandardButton::Ok, datasourceInfoWidget, this);
+		dialog.setWindowTitle(tr("Datasource Info"));
+		dialog.exec();
+	}
 }

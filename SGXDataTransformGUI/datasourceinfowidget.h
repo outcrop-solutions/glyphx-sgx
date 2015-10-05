@@ -15,32 +15,27 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef DATASOURCESVIEW_H
-#define DATASOURCESVIEW_H
+#ifndef SYNGLYPHX_DATASOURCEINFOWIDGET_H
+#define SYNGLYPHX_DATASOURCEINFOWIDGET_H
 
-#include <QtWidgets/QListView>
-#include "sharedactionlist.h"
-#include "datatransformmodel.h"
+#include "sgxdatatransformgui_global.h"
+#include <QtWidgets/QWidget>
+#include "filedatasource.h"
 
-class DataSourcesView : public QListView
-{
-	Q_OBJECT
+namespace SynGlyphX {
 
-public:
-	DataSourcesView(DataTransformModel* sourceModel, QWidget *parent);
-	~DataSourcesView();
+	class SGXDATATRANSFORMGUI_EXPORT DatasourceInfoWidget : public QWidget
+	{
+		Q_OBJECT
 
-	const SynGlyphX::SharedActionList& GetSharedActions();
+	public:
+		DatasourceInfoWidget(const Datasource& datasource, QWidget *parent);
+		~DatasourceInfoWidget();
 
-protected:
-	virtual void selectionChanged(const QItemSelection& selected, const QItemSelection& deselected);
+	private:
+		void CreateFileDatasourceWidgets(const FileDatasource& datasource);
+	};
 
-private slots:
-	void OnShowProperties();
+} //namespace SynGlyphX
 
-private:
-	DataTransformModel* m_sourceModel;
-	SynGlyphX::SharedActionList m_sharedActions;
-};
-
-#endif // DATASOURCESVIEW_H
+#endif // SYNGLYPHX_DATASOURCEINFOWIDGET_H
