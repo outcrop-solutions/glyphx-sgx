@@ -49,6 +49,39 @@ namespace SynGlyphX {
 	}
 
 	template <typename OutputType, typename InputType, typename KeyType>
+	bool ValueMappingData<OutputType, InputType, KeyType>::IsSame(const MappingFunctionData& data) const {
+
+		if (!MappingFunctionData::IsSame(data)) {
+
+			return false;
+		}
+
+		if (GetSupportedInput() != data.GetSupportedInput()) {
+
+			return false;
+		}
+
+		if (GetSupportedOutput() != data.GetSupportedOutput()) {
+
+			return false;
+		}
+
+		const ValueMappingData<OutputType, InputType, KeyType>& valueData = dynamic_cast<const ValueMappingData<OutputType, InputType, KeyType>&>(data);
+
+		if (m_defaultValue != valueData.m_defaultValue) {
+
+			return false;
+		}
+
+		if (m_mappedValues != valueData.m_mappedValues) {
+
+			return false;
+		}
+
+		return true;
+	}
+
+	template <typename OutputType, typename InputType, typename KeyType>
 	void ValueMappingData<OutputType, InputType, KeyType>::SetDefaultValue(const OutputType& defaultValue) {
 
 		m_defaultValue = defaultValue;

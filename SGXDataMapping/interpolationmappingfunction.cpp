@@ -66,6 +66,33 @@ namespace SynGlyphX {
 		return *this;
 	}
 
+	bool InterpolationMappingData::IsSame(const MappingFunctionData& data) const {
+
+		if (!MappingFunctionData::IsSame(data)) {
+
+			return false;
+		}
+
+		const InterpolationMappingData& interpolationData = dynamic_cast<const InterpolationMappingData&>(data);
+
+		if (m_inputMinMaxType != interpolationData.m_inputMinMaxType) {
+
+			return false;
+		}
+
+		if (m_userSpecifiedInputMinMax != interpolationData.m_userSpecifiedInputMinMax) {
+
+			return false;
+		}
+
+		if (m_inputMinMaxFieldGroup != interpolationData.m_inputMinMaxFieldGroup) {
+
+			return false;
+		}
+
+		return true;
+	}
+
 	MappingFunctionData::Input InterpolationMappingData::GetSupportedInput() const {
 
 		return MappingFunctionData::Input::Numeric;

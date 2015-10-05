@@ -48,6 +48,11 @@ namespace SynGlyphX {
 		return *this;
 	}
 
+	bool MappingFunctionData::IsSame(const MappingFunctionData& data) const {
+
+		return (m_function == data.m_function);
+	}
+
 	MappingFunctionData::Function MappingFunctionData::GetFunction() const {
 
 		return m_function;

@@ -44,6 +44,7 @@ namespace SynGlyphX {
 		virtual ~InterpolationMappingData();
 
 		InterpolationMappingData& operator=(const InterpolationMappingData& data);
+		virtual bool IsSame(const MappingFunctionData& data) const;
 
 		virtual Input GetSupportedInput() const;
 		virtual Output GetSupportedOutput() const;

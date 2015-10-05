@@ -68,6 +68,7 @@ namespace SynGlyphX {
 		virtual ~MappingFunctionData();
 
 		MappingFunctionData& operator=(const MappingFunctionData& data);
+		virtual bool IsSame(const MappingFunctionData& data) const;
 
 		virtual boost::property_tree::wptree& ExportToPropertyTree(boost::property_tree::wptree& propertyTree) const;
 

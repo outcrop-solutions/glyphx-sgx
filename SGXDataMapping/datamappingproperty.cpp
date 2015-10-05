@@ -84,11 +84,10 @@ namespace SynGlyphX {
 			return false;
 		}
 
-		//Need to check here if mapping function data is the same
-		/*if (m_mappingFunctionData-> != prop.m_binding) {
+		if (!m_mappingFunctionData->IsSame(*(prop.m_mappingFunctionData))) {
 
 			return false;
-		}*/
+		}
 
 		return true;
 	}

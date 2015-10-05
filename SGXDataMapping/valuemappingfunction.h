@@ -41,6 +41,7 @@ namespace SynGlyphX {
 		virtual ~ValueMappingData();
 
 		ValueMappingData& operator=(const ValueMappingData& data);
+		virtual bool IsSame(const MappingFunctionData& data) const;
 
 		void SetDefaultValue(const OutputType& defaultValue);
 		const OutputType& GetDefaultValue() const;
