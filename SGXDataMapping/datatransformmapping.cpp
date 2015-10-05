@@ -220,6 +220,7 @@ namespace SynGlyphX {
 		
 	void DataTransformMapping::Clear(bool addADefaultBaseObjectAfterClear) {
 
+		m_fieldGroups.clear();
 		m_datasources.Clear();
 		m_glyphTrees.clear();
 		m_defaults.Clear();
