@@ -47,14 +47,14 @@ namespace SynGlyphX {
 		void AddDatabaseConnections(const DatasourceMaps& datasources);
 		void AddTable(const boost::uuids::uuid& datasource, const std::wstring& table);
 		void Clear();
+		void ClearDatabaseConnection(const boost::uuids::uuid& id);
 
 		const NumericFieldsByTable& GetNumericFieldsByTable() const;
 
 	private:
-		typedef std::unordered_set<boost::uuids::uuid, SynGlyphX::UUIDHash> DatabaseIDSet;
+		typedef UUIDUnorderedSet DatabaseIDSet;
 
 		void ClearDatabaseConnection(const DatabaseIDSet::const_iterator& id);
-		void ClearDatabaseConnection(const boost::uuids::uuid& id);
 		void ClearDatabaseConnections();
 		void AddNumericFieldsToCollection(const boost::uuids::uuid& datasource, const QString& tableName, const QSqlRecord& columnRecord);
 

@@ -23,6 +23,7 @@
 //#include <boost/uuid/uuid_io.hpp>
 //#include <string>
 #include <boost/uuid/uuid_generators.hpp>
+#include <unordered_set>
 
 namespace SynGlyphX {
 
@@ -45,6 +46,8 @@ namespace SynGlyphX {
 	private:
 		static boost::uuids::random_generator s_randomUUIDGenerator;
 	};
+
+	typedef std::unordered_set<boost::uuids::uuid, SynGlyphX::UUIDHash> UUIDUnorderedSet;
 
 } //namespace SynGlyphX
 

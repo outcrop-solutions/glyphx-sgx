@@ -65,6 +65,8 @@ namespace SynGlyphX {
 
 		void SetInputField(DataMappingGlyphGraph::ConstGlyphIterator& node, DataMappingGlyph::MappableField field, const InputField& inputfield);
 		void ClearInputBinding(DataMappingGlyphGraph::ConstGlyphIterator& node, DataMappingGlyph::MappableField field);
+		void ClearAllInputBindings(DataMappingGlyphGraph::ConstGlyphIterator& node);
+		void ClearAllInputBindings();
 
 		const InputFieldMap& GetInputFields() const;
 
@@ -75,7 +77,7 @@ namespace SynGlyphX {
 		GlyphGraph::SharedPtr GetMinGlyphTree() const;
 		GlyphGraph::SharedPtr GetMaxGlyphTree() const;
 
-		void ClearAllInputBindings();
+		void ClearFieldGroup(const std::wstring& fieldGroupName);
 
 		virtual GlyphIterator AddChildGlyphGraph(const GlyphIterator& vertex, const DataMappingGlyphGraph& graph);
 		virtual void UpdateGlyph(const GlyphIterator& vertex, const DataMappingGlyph& glyph);
@@ -85,6 +87,7 @@ namespace SynGlyphX {
 	private:
 		void AddAllInputBindingsToSubgraph(DataMappingGlyphGraph& graph, const GlyphIterator& vertex, bool removeFromThisGraph);
 		void ClearAllInputBindings(DataMappingGlyphGraph& graph, const GlyphIterator& vertex);
+		void ClearFieldGroup(const std::wstring& fieldGroupName, const GlyphIterator& vertex);
 		void IncrementInputBindingCountsFromGlyph(const DataMappingGlyph& glyph);
 		void IncrementInputBindingCount(const InputBinding& binding);
 		void ExportChildrenToPropertyTree(const DataMappingGlyphGraph::ConstGlyphIterator& parent, boost::property_tree::wptree& propertyTreeParent) const;

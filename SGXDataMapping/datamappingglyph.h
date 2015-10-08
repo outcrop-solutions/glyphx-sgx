@@ -74,12 +74,17 @@ namespace SynGlyphX {
 		void ClearAllInputBindings();
 		const InputBinding& GetInputBinding(MappableField field) const;
 
+		MappingFunctionData::ConstSharedPtr GetMappingFunctionData(MappableField field) const;
+		void ClearFieldGroup(const std::wstring& fieldGroupName);
+
 		bool IsPositionXYBoundToInputFields() const;
 		bool IsAnInputFieldBoundToAPosition() const;
 
 	protected:
 		void GetXYZNumericPropertiesFromPropertyTree(const boost::property_tree::wptree& propertyTree, NumericMappingPropertyXYZ& prop);
 		void AddXYZNumericPropertiesToPropertyTree(boost::property_tree::wptree& propertyTree, const NumericMappingPropertyXYZ& prop) const;
+
+		void SetMappingFunctionData(MappableField field, MappingFunctionData::SharedPtr mappingData);
 	};
 
 } //namespace SynGlyphX

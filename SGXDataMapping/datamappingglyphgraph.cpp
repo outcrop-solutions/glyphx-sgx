@@ -270,6 +270,20 @@ namespace SynGlyphX {
 		}
 	}
 
+	void DataMappingGlyphGraph::ClearFieldGroup(const std::wstring& fieldGroupName) {
+
+		ClearFieldGroup(fieldGroupName, GetRoot());
+	}
+
+	void DataMappingGlyphGraph::ClearFieldGroup(const std::wstring& fieldGroupName, const GlyphIterator& vertex) {
+
+		vertex->second.ClearFieldGroup(fieldGroupName);
+		for (unsigned int i = 0; i < this->children(vertex); ++i) {
+
+			ClearFieldGroup(fieldGroupName, GetChild(vertex, i));
+		}
+	}
+
 	void DataMappingGlyphGraph::ProcessPropertyTreeChildren(const DataMappingGlyphGraph::GlyphIterator& parent, const boost::property_tree::wptree& propertyTree) {
 
 		boost::optional<const PropertyTree&> glyphTrees = propertyTree.get_child_optional(L"Children");
@@ -354,19 +368,31 @@ namespace SynGlyphX {
 	void DataMappingGlyphGraph::ClearInputBinding(DataMappingGlyphGraph::ConstGlyphIterator& node, DataMappingGlyph::MappableField field) {
 
 		const InputBinding& binding = node->second.GetInputBinding(field);
-		InputField::HashID inputFieldID = binding.GetInputFieldID();
 
-		if (m_inputFieldReferenceCounts[inputFieldID] == 1) {
+		if (binding.IsBoundToInputField()) {
 
-			m_inputFieldReferenceCounts.erase(m_inputFieldReferenceCounts.find(inputFieldID));
-			m_inputFields.erase(m_inputFields.find(inputFieldID));
+			InputField::HashID inputFieldID = binding.GetInputFieldID();
+
+			if (m_inputFieldReferenceCounts[inputFieldID] == 1) {
+
+				m_inputFieldReferenceCounts.erase(m_inputFieldReferenceCounts.find(inputFieldID));
+				m_inputFields.erase(m_inputFields.find(inputFieldID));
+			}
+			else {
+
+				--m_inputFieldReferenceCounts[inputFieldID];
+			}
+
+			node.deconstify()->second.ClearInputBinding(field);
 		}
-		else {
+	}
 
-			--m_inputFieldReferenceCounts[inputFieldID];
+	void DataMappingGlyphGraph::ClearAllInputBindings(DataMappingGlyphGraph::ConstGlyphIterator& node) {
+
+		for (int i = 0; i < DataMappingGlyph::MappableField::MappableFieldSize; ++i) {
+
+			ClearInputBinding(node, static_cast<SynGlyphX::DataMappingGlyph::MappableField>(i));
 		}
-
-		node.deconstify()->second.ClearInputBinding(field);
 	}
 
 	const DataMappingGlyphGraph::InputFieldMap& DataMappingGlyphGraph::GetInputFields() const {

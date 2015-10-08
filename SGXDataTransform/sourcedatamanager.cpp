@@ -91,6 +91,19 @@ namespace SynGlyphX {
 
 	void SourceDataManager::ClearDatabaseConnection(const DatabaseIDSet::const_iterator& id) {
 
+		std::vector<InputTable> tablesToRemoveFromNumericFieldList;
+		for (auto& fieldsList : m_numericFieldsByTable) {
+
+			if (fieldsList.first.GetDatasourceID() == *id) {
+
+				tablesToRemoveFromNumericFieldList.push_back(fieldsList.first);
+			}
+		}
+		for (auto& inputTable : tablesToRemoveFromNumericFieldList) {
+
+			m_numericFieldsByTable.erase(inputTable);
+		}
+
 		QSqlDatabase::removeDatabase(QString::fromStdString(boost::uuids::to_string(*id)));
 		m_databaseIDs.erase(id);
 	}
@@ -105,9 +118,9 @@ namespace SynGlyphX {
 
 	void SourceDataManager::Clear() {
 
+		m_numericFieldsByTable.clear();
 		ClearDatabaseConnections();
 		m_csvCache.Close();
-		m_numericFieldsByTable.clear();
 	}
 
 	void SourceDataManager::SetCacheLocation(const QString& location) {
@@ -135,7 +148,10 @@ namespace SynGlyphX {
 			}
 		}
 
-		m_numericFieldsByTable[table] = columns;
+		if (!columns.empty()) {
+
+			m_numericFieldsByTable[table] = columns;
+		}
 	}
 
 	void SourceDataManager::AddTable(const boost::uuids::uuid& datasource, const std::wstring& table) {

@@ -1,5 +1,6 @@
 #include "datamappingglyph.h"
 #include <utility>
+#include "interpolationmappingfunction.h"
 
 namespace SynGlyphX {
 
@@ -294,6 +295,28 @@ namespace SynGlyphX {
 		}
 	}
 
+	void DataMappingGlyph::ClearFieldGroup(const std::wstring& fieldGroupName) {
+
+		for (unsigned int field = 0; field < MappableField::MappableFieldSize; ++field) {
+
+			MappingFunctionData::ConstSharedPtr mappingFunctionData = GetMappingFunctionData(static_cast<MappableField>(field));
+			MappingFunctionData::Function function = mappingFunctionData->GetFunction();
+			if ((function == MappingFunctionData::Function::LinearInterpolation) || (function == MappingFunctionData::Function::LogarithmicInterpolation)) {
+
+				InterpolationMappingData::ConstSharedPtr interpolationData = std::dynamic_pointer_cast<const InterpolationMappingData>(mappingFunctionData);
+				if (interpolationData->GetInputMinMaxType() == InterpolationMappingData::InputMinMaxType::InputFieldGroup) {
+
+					if (interpolationData->GetInputMinMaxFieldGroup() == fieldGroupName) {
+
+						InterpolationMappingData::SharedPtr newInterpolationData = std::make_shared<InterpolationMappingData>(*interpolationData);
+						newInterpolationData->SetInputMinMaxToBoundField();
+						SetMappingFunctionData(static_cast<MappableField>(field), newInterpolationData);
+					}
+				}
+			}
+		}
+	}
+
 	const InputBinding& DataMappingGlyph::GetInputBinding(MappableField field) const {
 
 		if (field == MappableField::PositionX) {
@@ -367,6 +390,162 @@ namespace SynGlyphX {
 		else if (field == MappableField::VirtualTopology) {
 
 			return m_virtualTopology.GetType().GetBinding();
+		}
+	}
+
+	MappingFunctionData::ConstSharedPtr DataMappingGlyph::GetMappingFunctionData(MappableField field) const {
+
+		if (field == MappableField::PositionX) {
+
+			return m_position[0].GetMappingFunctionData();
+		}
+		else if (field == MappableField::PositionY) {
+
+			return m_position[1].GetMappingFunctionData();
+		}
+		else if (field == MappableField::PositionZ) {
+
+			return m_position[2].GetMappingFunctionData();
+		}
+		else if (field == MappableField::RotationX) {
+
+			return m_rotation[0].GetMappingFunctionData();
+		}
+		else if (field == MappableField::RotationY) {
+
+			return m_rotation[1].GetMappingFunctionData();
+		}
+		else if (field == MappableField::RotationZ) {
+
+			return m_rotation[2].GetMappingFunctionData();
+		}
+		else if (field == MappableField::ScaleX) {
+
+			return m_scale[0].GetMappingFunctionData();
+		}
+		else if (field == MappableField::ScaleY) {
+
+			return m_scale[1].GetMappingFunctionData();
+		}
+		else if (field == MappableField::ScaleZ) {
+
+			return m_scale[2].GetMappingFunctionData();
+		}
+		else if (field == MappableField::Color) {
+
+			return m_color.GetMappingFunctionData();
+		}
+		else if (field == MappableField::Transparency) {
+
+			return m_transparency.GetMappingFunctionData();
+		}
+		else if (field == MappableField::Tag) {
+
+			return m_tag.GetMappingFunctionData();
+		}
+		else if (field == MappableField::Description) {
+
+			return m_description.GetMappingFunctionData();
+		}
+		else if (field == MappableField::RotationRateX) {
+
+			return m_rotationRate[0].GetMappingFunctionData();
+		}
+		else if (field == MappableField::RotationRateY) {
+
+			return m_rotationRate[1].GetMappingFunctionData();
+		}
+		else if (field == MappableField::RotationRateZ) {
+
+			return m_rotationRate[2].GetMappingFunctionData();
+		}
+		else if (field == MappableField::GeometryShape) {
+
+			return m_structure.GetGeometryShape().GetMappingFunctionData();
+		}
+		else if (field == MappableField::VirtualTopology) {
+
+			return m_virtualTopology.GetType().GetMappingFunctionData();
+		}
+	}
+
+	void DataMappingGlyph::SetMappingFunctionData(MappableField field, MappingFunctionData::SharedPtr mappingData) {
+
+		if (field == MappableField::PositionX) {
+
+			m_position[0].SetMappingFunctionData(mappingData);
+		}
+		else if (field == MappableField::PositionY) {
+
+			m_position[1].SetMappingFunctionData(mappingData);
+		}
+		else if (field == MappableField::PositionZ) {
+
+			m_position[2].SetMappingFunctionData(mappingData);
+		}
+		else if (field == MappableField::RotationX) {
+
+			m_rotation[0].SetMappingFunctionData(mappingData);
+		}
+		else if (field == MappableField::RotationY) {
+
+			m_rotation[1].SetMappingFunctionData(mappingData);
+		}
+		else if (field == MappableField::RotationZ) {
+
+			m_rotation[2].SetMappingFunctionData(mappingData);
+		}
+		else if (field == MappableField::ScaleX) {
+
+			m_scale[0].SetMappingFunctionData(mappingData);
+		}
+		else if (field == MappableField::ScaleY) {
+
+			m_scale[1].SetMappingFunctionData(mappingData);
+		}
+		else if (field == MappableField::ScaleZ) {
+
+			m_scale[2].SetMappingFunctionData(mappingData);
+		}
+		else if (field == MappableField::Color) {
+
+			m_color.SetMappingFunctionData(mappingData);
+		}
+		else if (field == MappableField::Transparency) {
+
+			m_transparency.SetMappingFunctionData(mappingData);
+		}
+		else if (field == MappableField::Tag) {
+
+			m_tag.SetMappingFunctionData(mappingData);
+		}
+		else if (field == MappableField::Description) {
+
+			m_description.SetMappingFunctionData(mappingData);
+		}
+		else if (field == MappableField::RotationRateX) {
+
+			m_rotationRate[0].SetMappingFunctionData(mappingData);
+		}
+		else if (field == MappableField::RotationRateY) {
+
+			m_rotationRate[1].SetMappingFunctionData(mappingData);
+		}
+		else if (field == MappableField::RotationRateZ) {
+
+			m_rotationRate[2].SetMappingFunctionData(mappingData);
+		}
+		else if (field == MappableField::GeometryShape) {
+
+			auto geometry = m_structure.GetGeometryShape();
+			geometry.SetMappingFunctionData(mappingData);
+			m_structure.SetGeometryShape(geometry);
+		}
+		else if (field == MappableField::VirtualTopology) {
+
+			auto virtualTopologyType = m_virtualTopology.GetType();
+			virtualTopologyType.SetMappingFunctionData(mappingData);
+			m_virtualTopology.SetType(virtualTopologyType);
 		}
 	}
 

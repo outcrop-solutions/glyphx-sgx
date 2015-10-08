@@ -238,9 +238,35 @@ namespace SynGlyphX {
 	void DataTransformMapping::RemoveDatasource(const boost::uuids::uuid& id) {
 
 		try {
+
+			//Clear all input bindings that use the datasource before removing the datasource
+			for (auto& glyphTree : m_glyphTrees) {
+
+				if (glyphTree.second->GetInputFields().begin()->second.GetDatasourceID() == id) {
+
+					glyphTree.second->ClearAllInputBindings();
+				}
+			}
+
+			//Clear all field groups that use the datasource before removing the datasource
+			std::vector<FieldGroupName> fieldGroupsToBeRemoved;
+			for (auto& fieldGroup : m_fieldGroups) {
+
+				if (DoesFieldGroupHaveFieldsFromDatasource(fieldGroup.first, id)) {
+
+					fieldGroupsToBeRemoved.push_back(fieldGroup.first);
+				}
+			}
+
+			for (const FieldGroupName& name : fieldGroupsToBeRemoved) {
+
+				RemoveFieldGroup(name);
+			}
+
 			m_datasources.RemoveDatasource(id);
 		}
 		catch (const std::invalid_argument& e) {
+			
 			throw;
 		}
 	}
@@ -357,6 +383,12 @@ namespace SynGlyphX {
 		glyphTree->ClearInputBinding(node, field);
 	}
 
+	void DataTransformMapping::ClearAllInputBindings(const boost::uuids::uuid& treeID, DataMappingGlyphGraph::ConstGlyphIterator& node) {
+
+		DataMappingGlyphGraph::SharedPtr glyphTree = m_glyphTrees[treeID];
+		glyphTree->ClearAllInputBindings(node);
+	}
+
 	const boost::uuids::uuid& DataTransformMapping::GetID() const {
 
 		return m_id;
@@ -403,8 +435,25 @@ namespace SynGlyphX {
 
 		if (m_fieldGroups.count(groupName) > 0) {
 
+			for (auto& glyphGraph : m_glyphTrees) {
+
+				glyphGraph.second->ClearFieldGroup(groupName);
+			}
 			m_fieldGroups.erase(groupName);
 		}
+	}
+
+	bool DataTransformMapping::DoesFieldGroupHaveFieldsFromDatasource(const FieldGroupName& groupName, const boost::uuids::uuid& datasourceId) const {
+
+		for (const InputField& field : m_fieldGroups.at(groupName)) {
+
+			if (field.GetDatasourceID() == datasourceId) {
+
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	void DataTransformMapping::RemoveGlyphTree(const boost::uuids::uuid& id) {
