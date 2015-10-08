@@ -21,6 +21,10 @@ InterpolationMappingDialog::InterpolationMappingDialog(DataTransformModel* model
 
 	mainLayout->addWidget(interpolationOptionsGroupBox);
 
+	QStackedLayout* minMaxParameterWidgetsLayout = new QStackedLayout(this);
+	minMaxParameterWidgetsLayout->setContentsMargins(0, 0, 0, 0);
+	minMaxParameterWidgetsLayout->addWidget(new QWidget(this));
+
 	m_userSpecifiedMinMaxWidget = new SynGlyphX::DoubleMinMaxWidget(this);
 	
 	//For the range of this widget we want a large range, but nothing so large it makes the widget huge.  Using numeric limits for int (even though the widget uses
@@ -29,13 +33,17 @@ InterpolationMappingDialog::InterpolationMappingDialog(DataTransformModel* model
 	m_userSpecifiedMinMaxWidget->SetDecimals(4);
 	m_userSpecifiedMinMaxWidget->SetValue(SynGlyphX::DoubleMinDiff(0.0, 100.0));
 
-	m_fieldGroupWidget = new FieldGroupWidget(m_model, this);
-
-	QStackedLayout* minMaxParameterWidgetsLayout = new QStackedLayout(this);
-	minMaxParameterWidgetsLayout->setContentsMargins(0, 0, 0, 0);
-	minMaxParameterWidgetsLayout->addWidget(new QWidget(this));
 	minMaxParameterWidgetsLayout->addWidget(m_userSpecifiedMinMaxWidget);
-	minMaxParameterWidgetsLayout->addWidget(m_fieldGroupWidget);
+
+	if (!m_model->GetSourceDataManager().GetNumericFieldsByTable().empty()) {
+
+		m_fieldGroupWidget = new FieldGroupWidget(m_model, this);
+		minMaxParameterWidgetsLayout->addWidget(m_fieldGroupWidget);
+	}
+	else {
+
+		m_minMaxTypeWidget->SetButtonEnabled(2, false);
+	}
 
 	mainLayout->addLayout(minMaxParameterWidgetsLayout);
 	QObject::connect(m_minMaxTypeWidget, &SynGlyphX::RadioButtonGroupWidget::ButtonClicked, minMaxParameterWidgetsLayout, &QStackedLayout::setCurrentIndex);

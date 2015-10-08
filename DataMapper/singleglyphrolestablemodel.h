@@ -71,9 +71,11 @@ private slots:
 	void OnSourceModelDataUpdated(const QModelIndex& topLeft, const QModelIndex& bottomRight, const QVector<int>& roles);
 
 private:
+	void DisconnectAllSignalsFromSourceModel();
 	PropertyType GetFieldType(int row) const;
 	SynGlyphX::MappingFunctionData::SharedPtr CreateNewMappingFunction(SynGlyphX::MappingFunctionData::Function function, PropertyType type) const;
 	const SynGlyphX::InputField GetInputField(SynGlyphX::InputField::HashID fieldID) const;
+	bool IsSelectedIndexWithinIndexes(const QModelIndex& topLeft, const QModelIndex& bottomRight) const;
 
 	boost::uuids::uuid m_glyphTreeID;
 	QStringList m_propertyHeaders;
@@ -81,7 +83,7 @@ private:
 	DataTransformModel* m_dataTransformModel;
 
 	QPersistentModelIndex m_selectedDataTransformModelIndex;
-	QMetaObject::Connection m_dataChangedConnection;
+	std::vector<QMetaObject::Connection> m_sourceModelConnections;
 };
 
 #endif // SingleGlyphRolesTableModel_H

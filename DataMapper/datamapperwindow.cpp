@@ -190,7 +190,7 @@ void DataMapperWindow::CreateMenus() {
 	QAction* addDataSourcesAction = m_datasourceMenu->addAction(tr("Add Data Sources"));
     QObject::connect(addDataSourcesAction, &QAction::triggered, this, &DataMapperWindow::AddDataSources);
 
-	//m_datasourceMenu->addSeparator();
+	m_datasourceMenu->addSeparator();
 
     //Create View Menu
 	CreateViewMenu();
@@ -379,10 +379,13 @@ bool DataMapperWindow::LoadDataTransform(const QString& filename) {
 
 		UpdateMissingFileDatasources(filename);
 
+		QObject::disconnect(m_modelResetConnection);
+
 		m_dataTransformModel->LoadDataTransformFile(filename);
-		m_dataSourceStats->RebuildStatsViews();
 		m_glyphTreesView->SelectLastGlyphTreeRoot();
 		SelectFirstBaseObject();
+
+		m_modelResetConnection = QObject::connect(m_dataTransformModel, &DataTransformModel::modelReset, this, [&, this](){ setWindowModified(true); });
 	}
 	catch (const std::exception& e) {
 
@@ -623,7 +626,7 @@ void DataMapperWindow::ExportToANTz(const QString& templateDir) {
 	}
 
 
-	statusBar()->showMessage("Data transform sucessfully exported to ANTz", 6000);
+	statusBar()->showMessage("Data transform successfully exported to ANTz", 6000);
 }
 
 void DataMapperWindow::AddBaseObject() {

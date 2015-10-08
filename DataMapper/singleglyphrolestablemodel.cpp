@@ -195,23 +195,16 @@ void SingleGlyphRolesTableModel::SetMinMaxGlyph(const QModelIndex& index) {
 		std::advance(glyphTree, childIndices.top());
 		childIndices.pop();
 
-		QObject::disconnect(m_dataChangedConnection);
+		DisconnectAllSignalsFromSourceModel();
 
 		beginResetModel();
 		m_selectedDataTransformModelIndex = index;
 		m_glyphTreeID = glyphTree->first;
-		/*m_glyphTree = glyphTree->second;
-		SynGlyphX::DataMappingGlyphGraph::const_iterator iT = m_glyphTree->root();
-
-		while (!childIndices.empty()) {
-
-			iT = m_glyphTree->child(iT, childIndices.top());
-			childIndices.pop();
-		}
-		m_glyph = iT;*/
 		endResetModel();
 
-		m_dataChangedConnection = QObject::connect(m_dataTransformModel, &DataTransformModel::dataChanged, this, &SingleGlyphRolesTableModel::OnSourceModelDataUpdated);
+		m_sourceModelConnections.push_back(QObject::connect(m_dataTransformModel, &DataTransformModel::dataChanged, this, &SingleGlyphRolesTableModel::OnSourceModelDataUpdated));
+		m_sourceModelConnections.push_back(QObject::connect(m_dataTransformModel, &DataTransformModel::modelAboutToBeReset, this, [&, this](){ beginResetModel(); }));
+		m_sourceModelConnections.push_back(QObject::connect(m_dataTransformModel, &DataTransformModel::modelReset, this, [&, this](){ endResetModel(); }));
 	}
 	else {
 
@@ -219,9 +212,18 @@ void SingleGlyphRolesTableModel::SetMinMaxGlyph(const QModelIndex& index) {
 	}
 }
 
+void SingleGlyphRolesTableModel::DisconnectAllSignalsFromSourceModel() {
+
+	for (auto& connection : m_sourceModelConnections) {
+
+		QObject::disconnect(connection);
+	}
+	m_sourceModelConnections.clear();
+}
+
 void SingleGlyphRolesTableModel::Clear() {
 
-	QObject::disconnect(m_dataChangedConnection);
+	DisconnectAllSignalsFromSourceModel();
 
 	beginResetModel();
 	m_glyphTreeID = boost::uuids::nil_uuid();
@@ -500,10 +502,7 @@ bool SingleGlyphRolesTableModel::IsCurrentGlyphRoot() const {
 
 void SingleGlyphRolesTableModel::ClearInputBindings() {
 
-	for (int i = 0; i < rowCount(); ++i) {
-
-		m_dataTransformModel->ClearInputBinding(m_glyphTreeID, m_selectedDataTransformModelIndex, static_cast<SynGlyphX::DataMappingGlyph::MappableField>(i));
-	}
+	m_dataTransformModel->ClearAllInputBindings(m_glyphTreeID, m_selectedDataTransformModelIndex);
 	emit dataChanged(index(0, columnCount() - 1), index(rowCount() - 1, columnCount() - 1));
 }
 
@@ -697,7 +696,7 @@ void SingleGlyphRolesTableModel::SetMappingFunction(int row, SynGlyphX::MappingF
 
 void SingleGlyphRolesTableModel::OnSourceModelDataUpdated(const QModelIndex& topLeft, const QModelIndex& bottomRight, const QVector<int>& roles) {
 
-	if ((m_selectedDataTransformModelIndex == topLeft) && (m_selectedDataTransformModelIndex == bottomRight)) {
+	if (IsSelectedIndexWithinIndexes(topLeft, bottomRight)) {
 
 		if (roles.empty()) {
 
@@ -716,6 +715,27 @@ void SingleGlyphRolesTableModel::OnSourceModelDataUpdated(const QModelIndex& top
 			}
 		}
 	}
+}
+
+bool SingleGlyphRolesTableModel::IsSelectedIndexWithinIndexes(const QModelIndex& topLeft, const QModelIndex& bottomRight) const {
+
+	if (!m_selectedDataTransformModelIndex.isValid()) {
+
+		return false;
+	}
+
+	QModelIndex index = m_selectedDataTransformModelIndex;
+	while (index.parent() != topLeft.parent()) {
+
+		if (!index.parent().isValid()) {
+
+			return false;
+		}
+
+		index = index.parent();
+	}
+
+	return ((index.row() >= topLeft.row()) && (index.row() <= bottomRight.row()));
 }
 
 DataTransformModel* SingleGlyphRolesTableModel::GetSourceModel() const {

@@ -110,6 +110,8 @@ private:
 
 	QString m_antzExportDirectory;
 	QString m_antzzSpaceExportDirectory;
+
+	QMetaObject::Connection m_modelResetConnection;
 };
 
 #endif // DATAMAPPERWINDOW_H

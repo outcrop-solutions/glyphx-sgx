@@ -27,7 +27,8 @@ class DataTransformModel : public QAbstractItemModel
 	Q_OBJECT
 
 public:
-	static const int DataTypeRole = Qt::UserRole;
+	static const int UUIDRole = Qt::UserRole;
+	static const int DataTypeRole = UUIDRole + 1;
 
 	enum DataType {
 
@@ -108,6 +109,7 @@ public:
 	void SetInputField(const boost::uuids::uuid& treeID, const QModelIndex& index, SynGlyphX::DataMappingGlyph::MappableField field, const SynGlyphX::InputField& inputfield);
 	//void ClearInputBinding(const boost::uuids::uuid& treeID, SynGlyphX::DataMappingGlyphGraph::const_iterator& node, SynGlyphX::DataMappingGlyph::MappableField field);
 	void ClearInputBinding(const boost::uuids::uuid& treeID, const QModelIndex& index, SynGlyphX::DataMappingGlyph::MappableField field);
+	void ClearAllInputBindings(const boost::uuids::uuid& treeID, const QModelIndex& index);
 
 	void EnableTables(const boost::uuids::uuid& id, const SynGlyphX::Datasource::TableNames& tables, bool enable = true);
 
@@ -135,6 +137,9 @@ private:
 	DataType GetDataType(const QModelIndex& index) const;
 	boost::uuids::uuid GetTreeId(int row) const;
 	boost::uuids::uuid GetTreeId(const QModelIndex& index) const;
+	boost::uuids::uuid GetDatasourceId(int row) const;
+	const SynGlyphX::DataTransformMapping::FieldGroupName& GetFieldGroupName(int row) const;
+	void RemoveFieldGroup(const SynGlyphX::DataTransformMapping::FieldGroupName& groupName, bool emitGlyphDataChanged);
 
 	SynGlyphX::SourceDataManager m_sourceDataManager;
 	SynGlyphX::DataTransformMapping::SharedPtr m_dataMapping;

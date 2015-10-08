@@ -7,11 +7,12 @@
 #include "datastatsmodel.h"
 #include "sourcedatamanager.h"
 
-DataSourceStatsWidget::DataSourceStatsWidget(DataTransformModel* model, QWidget *parent)
+DataSourceStatsWidget::DataSourceStatsWidget(DataTransformModel* dataTransformModel, QWidget *parent)
 	: QTabWidget(parent),
-	m_model(model)
+	m_model(dataTransformModel)
 {
-	
+	QObject::connect(m_model, &DataTransformModel::modelReset, this, &DataSourceStatsWidget::RebuildStatsViews);
+	QObject::connect(m_model, &DataTransformModel::rowsAboutToBeRemoved, this, &DataSourceStatsWidget::OnRowsRemovedFromModel);
 }
 
 DataSourceStatsWidget::~DataSourceStatsWidget()
@@ -26,19 +27,19 @@ QSize DataSourceStatsWidget::sizeHint() const {
 
 void DataSourceStatsWidget::RebuildStatsViews() {
 
-	m_datasourcesShownInTabs.clear();
     ClearTabs();
 	AddNewStatsViews();
 }
 
 void DataSourceStatsWidget::AddNewStatsViews() {
 
-    const SynGlyphX::DatasourceMaps::FileDatasourceMap& fileDatasources = m_model->GetDataMapping()->GetDatasources().GetFileDatasources();
+	const SynGlyphX::DatasourceMaps::FileDatasourceMap& fileDatasources = m_model->GetDataMapping()->GetDatasources().GetFileDatasources();
 	SynGlyphX::DatasourceMaps::FileDatasourceMap::const_iterator iT = fileDatasources.begin();
 	for (; iT != fileDatasources.end(); ++iT) {
 
 		try {
-			if (m_datasourcesShownInTabs.find(iT->first) == m_datasourcesShownInTabs.end()) {
+
+			if (findChildren<QTableView*>(QString::fromStdString(boost::uuids::to_string(iT->first))).empty()) {
 
 				CreateTablesFromDatasource(iT->first, iT->second);
 			}
@@ -53,16 +54,23 @@ void DataSourceStatsWidget::AddNewStatsViews() {
 
 void DataSourceStatsWidget::ClearTabs() {
 
+	QList<QTableView*> tabsToBeRemoved = findChildren<QTableView*>("");
+	for (QTableView* view : tabsToBeRemoved) {
+
+		//This will also delete the associated model since it is the parent of the model object
+		view->setParent(nullptr);
+		delete view;
+	}
 	clear();
-	m_statViews.clear();
 }
 
 void DataSourceStatsWidget::CreateTablesFromDatasource(const boost::uuids::uuid& id, const SynGlyphX::Datasource& datasource) {
 
+	QString idString = QString::fromStdString(boost::uuids::to_string(id));
 	const std::wstring& formattedName = datasource.GetFormattedName();
 	if (datasource.CanDatasourceHaveMultipleTables()) {
 
-		QSqlDatabase datasourceDB = QSqlDatabase::database(QString::fromStdString(boost::uuids::to_string(id)));
+		QSqlDatabase datasourceDB = QSqlDatabase::database(idString);
 
 		if (!datasourceDB.open()) {
 
@@ -73,21 +81,20 @@ void DataSourceStatsWidget::CreateTablesFromDatasource(const boost::uuids::uuid&
 
 			QString tableName = QString::fromStdWString(table.first);
 			DataStatsModel* model = new DataStatsModel(id, tableName, this);
-			CreateTableView(model, QString::fromStdWString(formattedName) + ":" + tableName);
+			CreateTableView(model, QString::fromStdWString(formattedName) + ":" + tableName, idString);
 		}
 	}
 	else {
 
 		DataStatsModel* model = new DataStatsModel(id, m_model->GetCacheConnectionID(), QString::fromStdWString(SynGlyphX::Datasource::SingleTableName), this);
-		CreateTableView(model, QString::fromStdWString(formattedName));
+		CreateTableView(model, QString::fromStdWString(formattedName), idString);
 	}
-
-	m_datasourcesShownInTabs.insert(id);
 }
 
-void DataSourceStatsWidget::CreateTableView(DataStatsModel* model, const QString& tabName) {
+void DataSourceStatsWidget::CreateTableView(DataStatsModel* model, const QString& tabName, const QString& id) {
 
 	QTableView* view = new QTableView(this);
+	view->setObjectName(id);
 	view->setSelectionMode(QAbstractItemView::SingleSelection);
 	view->setSelectionBehavior(QAbstractItemView::SelectRows);
 	view->setDragEnabled(true);
@@ -97,12 +104,36 @@ void DataSourceStatsWidget::CreateTableView(DataStatsModel* model, const QString
 	
 	view->verticalHeader()->hide();
 
+	model->setParent(view);
 	view->setModel(model);
 
 	view->resizeColumnsToContents();
 	view->resizeRowsToContents();
-	
-	m_statViews.push_back(view);
 
 	addTab(view, tabName);
+}
+
+void DataSourceStatsWidget::OnRowsRemovedFromModel(const QModelIndex& parent, int start, int end) {
+
+	bool rebuildStatsViews = false;
+	if (!parent.isValid()) {
+
+		for (int i = start; i <= end; ++i) {
+
+			QModelIndex index = m_model->index(i);
+			if (m_model->data(index, DataTransformModel::DataTypeRole).toInt() == DataTransformModel::DataType::DataSources) {
+
+				QString id = m_model->data(index, DataTransformModel::UUIDRole).toString();
+				QList<QTableView*> tabsToBeRemoved = findChildren<QTableView*>(id);
+				for (QTableView* view : tabsToBeRemoved) {
+
+					removeTab(indexOf(view));
+
+					//This will also delete the associated model since it is the parent of the model object
+					view->setParent(nullptr);
+					delete view;
+				}
+			}
+		}
+	}
 }

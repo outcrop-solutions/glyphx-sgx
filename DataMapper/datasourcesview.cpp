@@ -2,6 +2,7 @@
 #include "roledatafilterproxymodel.h"
 #include "datasourceinfowidget.h"
 #include "singlewidgetdialog.h"
+#include <QtWidgets/QMessageBox>
 
 DataSourcesView::DataSourcesView(DataTransformModel* sourceModel, QWidget *parent)
 	: QListView(parent),
@@ -19,6 +20,9 @@ DataSourcesView::DataSourcesView(DataTransformModel* sourceModel, QWidget *paren
 	setAcceptDrops(false);
 	setSelectionMode(QAbstractItemView::SingleSelection);
 	setContextMenuPolicy(Qt::ContextMenuPolicy::ActionsContextMenu);
+
+	QAction* removeAction = m_sharedActions.AddAction(tr("Remove"));
+	QObject::connect(removeAction, &QAction::triggered, this, &DataSourcesView::OnRemoveDatasource);
 
 	m_sharedActions.AddSeparator();
 
@@ -59,5 +63,17 @@ void DataSourcesView::OnShowProperties() {
 		SynGlyphX::SingleWidgetDialog dialog(QDialogButtonBox::StandardButton::Ok, datasourceInfoWidget, this);
 		dialog.setWindowTitle(tr("Datasource Info"));
 		dialog.exec();
+	}
+}
+
+void DataSourcesView::OnRemoveDatasource() {
+
+	const QModelIndexList& selection = selectionModel()->selectedIndexes();
+	if (!selection.isEmpty()) {
+
+		if (QMessageBox::warning(this, tr("Remove Datasource"), tr("Removing this datasource will also remove any bindings in glyphs and field groups that use this datasource.  Do you wish to remove this datasource?"), QMessageBox::Yes, QMessageBox::No) == QMessageBox::Yes) {
+
+			model()->removeRow(selection.front().row());
+		}
 	}
 }

@@ -37,6 +37,7 @@ protected:
 
 private slots:
 	void OnShowProperties();
+	void OnRemoveDatasource();
 
 private:
 	DataTransformModel* m_sourceModel;

@@ -5,6 +5,7 @@
 #include <QtWidgets/QLineEdit>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QHBoxLayout>
+#include <QtCore/QDir>
 
 namespace SynGlyphX {
 
@@ -55,7 +56,7 @@ namespace SynGlyphX {
 		QGroupBox* fileInfoGroupBox = new QGroupBox(tr("File"), this);
 		QVBoxLayout* fileInfoGroupBoxLayout = new QVBoxLayout(fileInfoGroupBox);
 
-		QLineEdit* filenameLineEdit = new QLineEdit(QString::fromStdWString(datasource.GetFilename()), fileInfoGroupBox);
+		QLineEdit* filenameLineEdit = new QLineEdit(QDir::toNativeSeparators(QString::fromStdWString(datasource.GetFilename())), fileInfoGroupBox);
 		filenameLineEdit->setMinimumWidth(384);
 		filenameLineEdit->setReadOnly(true);
 		fileInfoGroupBoxLayout->addWidget(filenameLineEdit);

@@ -6,7 +6,8 @@ namespace SynGlyphX {
 		QSortFilterProxyModel(parent),
 		m_filterData(-1) {
 
-		setDynamicSortFilter(false);
+		setDynamicSortFilter(true);
+		setSortRole(Qt::InitialSortOrderRole);
 	}
 
 	RoleDataFilterProxyModel::~RoleDataFilterProxyModel() {

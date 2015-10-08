@@ -52,10 +52,10 @@ FieldGroupWidget::FieldGroupWidget(DataTransformModel* dataTransformModel, QWidg
 	m_fieldGroupModel->ResetTable(m_dataTransformModel);
 	m_fieldTableView->resizeColumnsToContents();
 	m_fieldTableView->resizeRowsToContents();
-	int minTableWidth = m_dataTransformModel->columnCount() + m_fieldTableView->verticalHeader()->width() + m_fieldTableView->verticalScrollBar()->sizeHint().width();
+	int minTableWidth = m_fieldTableView->verticalHeader()->width() + m_fieldTableView->verticalScrollBar()->sizeHint().width();
 	for (int column = 0; column < m_fieldGroupModel->columnCount(); column++) {
 
-		minTableWidth += m_fieldTableView->columnWidth(column);
+		minTableWidth += m_fieldTableView->columnWidth(column) + 1;
 
 	}
 	m_fieldTableView->setMinimumWidth(minTableWidth);
