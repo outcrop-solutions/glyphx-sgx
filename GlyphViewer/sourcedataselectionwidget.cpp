@@ -125,6 +125,11 @@ void SourceDataSelectionWidget::UpdateElasticListsAndSourceDataWidget(const QMod
 
 		m_sourceDataWindow->UpdateTables(indexSets);
 		UpdateElasticLists(indexSets);
+		int newComboBoxIndex = m_tableComboBox->findData(m_sourceDataCache->GetTableNameForIndex(SynGlyphX::ItemFocusSelectionModel::GetRootRow(m_selectionModel->selection().indexes().back())));
+		if ((newComboBoxIndex != -1) && (newComboBoxIndex != m_tableComboBox->currentIndex())) {
+
+			m_tableComboBox->setCurrentIndex(newComboBoxIndex);
+		}
 	}
 	else {
 

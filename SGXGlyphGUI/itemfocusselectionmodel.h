@@ -51,13 +51,12 @@ namespace SynGlyphX {
 		const QModelIndexList& GetFocusList() const;
 
 		static SynGlyphX::IndexSet GetRootRows(const QModelIndexList& indexList);
+		static unsigned long GetRootRow(const QModelIndex& index);
 
 	signals:
 		void FocusChanged(const QModelIndexList& focusList);
 
 	private:
-		static unsigned long GetRootRow(const QModelIndex& index);
-
 		QModelIndexList m_focusList;
 	};
 
