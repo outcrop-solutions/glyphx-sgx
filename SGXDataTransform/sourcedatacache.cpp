@@ -417,10 +417,10 @@ namespace SynGlyphX {
 		unsigned int sizeOfPreviousTables = 0;
 
 		IndexSetMap indexSets;
-		for (auto table : m_tableIndexMap) {
+		for (auto table : m_tableIndexMap.left) {
 
 			std::set<unsigned long> indexSetForTable;
-			while ((iT != indexSet.end()) && (*iT <= table.left)) {
+			while ((iT != indexSet.end()) && (*iT <= table.first)) {
 
 				indexSetForTable.insert(*iT - sizeOfPreviousTables);
 				++iT;
@@ -428,13 +428,26 @@ namespace SynGlyphX {
 
 			if (!indexSetForTable.empty()) {
 
-				indexSets[table.right] = indexSetForTable;
+				indexSets[table.second] = indexSetForTable;
 			}
 
-			sizeOfPreviousTables += table.left + 1;
+			sizeOfPreviousTables = table.first + 1;
 		}
 
 		return indexSets;
+	}
+
+	QString SourceDataCache::GetTableNameForIndex(const IndexSet::value_type& index) const {
+
+		for (auto table : m_tableIndexMap) {
+
+			if (index <= table.left) {
+
+				return table.right;
+			}
+		}
+
+		throw std::invalid_argument("Index is not in list of tables.");
 	}
 
 	SharedSQLQuery SourceDataCache::CreateSelectQueryForIndexSet(const QString& tableName, const TableColumns& columns, const IndexSet& indexSet) const {
@@ -549,8 +562,9 @@ namespace SynGlyphX {
 
 	unsigned long SourceDataCache::GetStartingValueForTable(const QString& tableName) const {
 
-		auto tableIndex = m_tableIndexMap.right.find(tableName);
-		if (tableIndex == m_tableIndexMap.right.begin()) {
+		unsigned long tableLastRow = m_tableIndexMap.right.at(tableName);
+		auto tableIndex = m_tableIndexMap.left.find(tableLastRow);
+		if (tableIndex == m_tableIndexMap.left.begin()) {
 
 			return 0;
 		}

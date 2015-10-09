@@ -79,6 +79,7 @@ namespace SynGlyphX {
 		DistinctValueIndexMap GetIndexesOrderedByDistinctValue(const QString& tableName, const QString& columnName) const;
 
 		unsigned long GetStartingValueForTable(const QString& tableName) const;
+		QString GetTableNameForIndex(const IndexSet::value_type& index) const;
 
 		static QString CreateTablename(const InputField& inputfield);
 		static QString CreateTablename(const QString& datasourceID, const QString& originalTablename);
