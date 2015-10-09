@@ -501,6 +501,23 @@ namespace SynGlyphX {
 		return query;
 	}
 
+	SharedSQLQuery SourceDataCache::CreateOrderedValueAndRowQuery(const QString& tableName, const QString& columnName, const IndexSet& indexSet) const {
+
+		QString queryString = "SELECT \"" + columnName + "\", \"" + IndexColumnName + "\" FROM \"" + tableName + "\" ";
+
+		if (!indexSet.empty()) {
+
+			queryString += CreateWhereString(indexSet) + " ";
+		}
+
+		queryString += "ORDER BY \"" + columnName + "\" ASC";
+
+		SharedSQLQuery query(new QSqlQuery(m_db));
+		query->prepare(queryString);
+
+		return query;
+	}
+
 	unsigned long SourceDataCache::GetValueCount(const QString& tableName, const QString& columnName, const QString& value, const IndexSet& indexSet) const {
 
 		QString queryString = "SELECT COUNT(*) FROM \"" + tableName + "\" ";
