@@ -15,50 +15,43 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef SYNGLYPHX_ELASTICLISTWIDGET_H
-#define SYNGLYPHX_ELASTICLISTWIDGET_H
+#ifndef SYNGLYPHX_ELASTICLISTMODEL_H
+#define SYNGLYPHX_ELASTICLISTMODEL_H
 
 #include "sgxgui_global.h"
-#include <QtWidgets/QFrame>
-#include <QtWidgets/QLabel>
-#include <QtWidgets/QTableView>
-#include <set>
-#include "elasticlistmodel.h"
+#include <QtCore/QAbstractTableModel>
 
 namespace SynGlyphX {
 
-	class SGXGUI_EXPORT ElasticListWidget : public QFrame
+	class SGXGUI_EXPORT ElasticListModel : public QAbstractTableModel
 	{
 		Q_OBJECT
 
 	public:
-		static const int MaximumNumberOfRowsShown;
+		typedef std::pair<QVariant, unsigned long> DataWithCount;
+		typedef QList<DataWithCount> Data;
 
-		ElasticListWidget(QWidget *parent);
-		~ElasticListWidget();
+		static const int RawDataRole = Qt::UserRole;
 
-		void SetTitle(const QString& title);
-		QString GetTitle() const;
-		void SetData(const ElasticListModel::Data& data);
+		ElasticListModel(QObject *parent);
+		~ElasticListModel();
 
-		const std::set<QString>& GetSelectedRawData() const;
+		void ResetData(const Data& data);
 
-	signals:
-		void SelectionChanged();
+		virtual int rowCount(const QModelIndex& parent = QModelIndex()) const;
+		virtual int columnCount(const QModelIndex& parent = QModelIndex()) const;
+		virtual QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const;
+		virtual QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
 
-	private slots:
-		void OnNewUserSelection();
+		static QString ConvertDoubleToRawString(double value);
+		static QString ConvertQVariantToRawString(const QVariant& value);
 
 	private:
-		void ResizeTable();
-
-		std::set<QString> m_selectedRawData;
-		
-		QLabel* m_title;
-		QTableView* m_dataAndCountView;
-		ElasticListModel* m_model;
+		QStringList m_rawData;
+		QStringList m_formattedData;
+		QList<qulonglong> m_counts;
 	};
 
 } //namespace SynGlyphX
 
-#endif //SYNGLYPHX_ELASTICLISTWIDGET_H
+#endif // SYNGLYPHX_ELASTICLISTMODEL_H

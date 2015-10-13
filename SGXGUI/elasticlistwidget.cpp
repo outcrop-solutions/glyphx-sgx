@@ -2,6 +2,7 @@
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QHeaderView>
 #include <QtGui/QResizeEvent>
+#include <QtCore/QSortFilterProxyModel>
 
 namespace SynGlyphX {
 
@@ -16,28 +17,35 @@ namespace SynGlyphX {
 		m_title = new QLabel(this);
 		layout->addWidget(m_title);
 
-		m_list = new QTableWidget(this);
-		m_list->setColumnCount(2);
-		m_list->setMinimumWidth(32);
-		m_list->setShowGrid(false);
-		m_list->setSelectionBehavior(QAbstractItemView::SelectRows);
-		m_list->setSelectionMode(QAbstractItemView::MultiSelection);
-		m_list->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);
-		m_list->horizontalHeader()->setSectionResizeMode(1, QHeaderView::ResizeToContents);
-		m_list->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-		m_list->horizontalHeader()->hide();
-		m_list->verticalHeader()->setSectionResizeMode(QHeaderView::Fixed);
-		m_list->verticalHeader()->setDefaultSectionSize(fontMetrics().height() + 4);
-		m_list->verticalHeader()->hide();
-		QObject::connect(m_list, &QTableWidget::itemSelectionChanged, this, &ElasticListWidget::OnNewUserSelection);
-		layout->addWidget(m_list, 1);
+		m_model = new ElasticListModel(this);
+
+		QSortFilterProxyModel* sortModel = new QSortFilterProxyModel(this);
+		sortModel->setFilterKeyColumn(-1);
+		sortModel->setSourceModel(m_model);
+
+		m_dataAndCountView = new QTableView(this);
+		m_dataAndCountView->setModel(sortModel);
+		m_dataAndCountView->setSortingEnabled(true);
+		m_dataAndCountView->setMinimumWidth(32);
+		m_dataAndCountView->setShowGrid(false);
+		m_dataAndCountView->setSelectionBehavior(QAbstractItemView::SelectRows);
+		m_dataAndCountView->setSelectionMode(QAbstractItemView::MultiSelection);
+		//m_dataAndCountView->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);
+		//m_dataAndCountView->horizontalHeader()->setSectionResizeMode(1, QHeaderView::ResizeToContents);
+		m_dataAndCountView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+		m_dataAndCountView->horizontalHeader()->hide();
+		m_dataAndCountView->verticalHeader()->setSectionResizeMode(QHeaderView::Fixed);
+		m_dataAndCountView->verticalHeader()->setDefaultSectionSize(fontMetrics().height() + 4);
+		m_dataAndCountView->verticalHeader()->hide();
+		QObject::connect(m_dataAndCountView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &ElasticListWidget::OnNewUserSelection);
+		layout->addWidget(m_dataAndCountView, 1);
 
 		setLayout(layout);
 
 		QMargins margins = contentsMargins();
 		setMinimumWidth(16);
-		m_list->setMinimumHeight(m_list->verticalHeader()->defaultSectionSize());
-		m_list->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
+		m_dataAndCountView->setMinimumHeight(m_dataAndCountView->verticalHeader()->defaultSectionSize());
+		m_dataAndCountView->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
 		ResizeTable();
 	}
 
@@ -56,74 +64,62 @@ namespace SynGlyphX {
 		return m_title->text();
 	}
 
-	void ElasticListWidget::SetData(const Data& data) {
+	void ElasticListWidget::SetData(const ElasticListModel::Data& data) {
 
-		bool listBlockSignals = m_list->signalsBlocked();
-		m_list->blockSignals(true);
-		m_list->clear();
-		m_list->setRowCount(data.size());
+		bool listBlockSignals = signalsBlocked();
+		blockSignals(true);
 
 		bool isAllDataInSelection = true;
 		for (int i = 0; i < data.size(); ++i) {
 
-			if (m_selectedData.count(data[i].first) == 0) {
+			if (m_selectedRawData.count(ElasticListModel::ConvertQVariantToRawString(data[i].first)) == 0) {
 
 				isAllDataInSelection = false;
+				break;
 			}
-
-			m_list->setItem(i, 0, CreateTableWidgetItem(data[i].first));
-			m_list->setItem(i, 1, CreateTableWidgetItem(data[i].second));
 		}
 
-		m_list->sortByColumn(1, Qt::DescendingOrder);
+		m_model->ResetData(data);
+		m_dataAndCountView->sortByColumn(1, Qt::DescendingOrder);
 		ResizeTable();
 
 		if (isAllDataInSelection) {
 
-			for (int i = 0; i < data.size(); ++i) {
-
-				m_list->selectRow(i);
-			}
+			QItemSelection selection;
+			selection.select(m_dataAndCountView->model()->index(0, 0), m_dataAndCountView->model()->index(data.size() - 1, 1));
+			m_dataAndCountView->selectionModel()->select(selection, QItemSelectionModel::Select);
 		}
 		else {
 
-			m_selectedData.clear();
+			m_selectedRawData.clear();
 		}
 
-		m_list->blockSignals(listBlockSignals);
+		blockSignals(listBlockSignals);
 	}
 	
 	void ElasticListWidget::ResizeTable() {
 
-		int numberOfVisibleRows = std::max(std::min(MaximumNumberOfRowsShown, m_list->rowCount()), 1);
-		m_list->setFixedHeight(numberOfVisibleRows * m_list->verticalHeader()->defaultSectionSize());
-	}
-
-	QTableWidgetItem* ElasticListWidget::CreateTableWidgetItem(const QString& text) const {
-
-		QTableWidgetItem* item = new QTableWidgetItem(text);
-		item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
-		return item;
+		int numberOfVisibleRows = std::max(std::min(MaximumNumberOfRowsShown, m_model->rowCount()), 1);
+		m_dataAndCountView->setFixedHeight(numberOfVisibleRows * m_dataAndCountView->verticalHeader()->defaultSectionSize());
+		m_dataAndCountView->resizeColumnToContents(1);
 	}
 
 	void ElasticListWidget::OnNewUserSelection() {
 
-		m_selectedData.clear();
-		QList<QTableWidgetItem *> selectedItems = m_list->selectedItems();
-		Q_FOREACH(QTableWidgetItem* selectedItem, selectedItems) {
+		m_selectedRawData.clear();
+		QSortFilterProxyModel* sortModel = dynamic_cast<QSortFilterProxyModel*>(m_dataAndCountView->model());
+		QItemSelection selection = sortModel->mapSelectionToSource(m_dataAndCountView->selectionModel()->selection());
+		for (QModelIndex& selectedIndex : selection.indexes()) {
 
-			if (selectedItem->column() == 0) {
-
-				m_selectedData.insert(selectedItem->text());
-			}
+			m_selectedRawData.insert(m_model->data(selectedIndex, ElasticListModel::RawDataRole).toString());
 		}
 
 		emit SelectionChanged();
 	}
 
-	const std::set<QString>& ElasticListWidget::GetSelectedData() const {
+	const std::set<QString>& ElasticListWidget::GetSelectedRawData() const {
 
-		return m_selectedData;
+		return m_selectedRawData;
 	}
 
 } //namespace SynGlyphX

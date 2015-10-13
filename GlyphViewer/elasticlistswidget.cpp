@@ -39,14 +39,12 @@ void ElasticListsWidget::PopulateElasticLists(const SynGlyphX::IndexSet& indexSe
 
 	for (auto column : m_elasticListMap) {
 
-		SynGlyphX::ElasticListWidget::Data elasticListData;
+		SynGlyphX::ElasticListModel::Data elasticListData;
 		SynGlyphX::SharedSQLQuery distinctValuesQuery = m_sourceDataCache->CreateDistinctValueAndCountQuery(m_table, QString::fromStdString(column.first), indexSet);
 		distinctValuesQuery->exec();
 		while (distinctValuesQuery->next()) {
 
-			QString columnValue = distinctValuesQuery->value(0).toString();
-			QString countForColumnValue = distinctValuesQuery->value(1).toString();
-			elasticListData.push_back(std::pair<QString, QString>(columnValue, countForColumnValue));
+			elasticListData.push_back(SynGlyphX::ElasticListModel::DataWithCount(distinctValuesQuery->value(0), distinctValuesQuery->value(1).toULongLong()));
 		}
 
 		column.second->SetData(elasticListData);
@@ -58,7 +56,7 @@ void ElasticListsWidget::OnElasticWidgetSelectionChanged() {
 	SynGlyphX::SourceDataCache::ColumnValueData newSelection;
 	for (auto elasticListWidget : m_elasticListMap) {
 
-		const std::set<QString>& columnSelection = elasticListWidget.second->GetSelectedData();
+		const std::set<QString>& columnSelection = elasticListWidget.second->GetSelectedRawData();
 		if (!columnSelection.empty()) {
 
 			newSelection[QString::fromStdString(elasticListWidget.first)] = columnSelection;
