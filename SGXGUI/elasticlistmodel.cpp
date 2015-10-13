@@ -69,6 +69,17 @@ namespace SynGlyphX {
 					return m_formattedData.at(index.row());
 				}
 			}
+			else if (role == Qt::TextAlignmentRole) {
+
+				if (index.column() == 1) {
+
+					return Qt::AlignRight | Qt::AlignVCenter;
+				}
+				else if (index.column() == 0) {
+
+					return Qt::AlignLeft | Qt::AlignVCenter;
+				}
+			}
 			else if (role == RawDataRole) {
 
 				return m_rawData.at(index.row());
@@ -80,7 +91,7 @@ namespace SynGlyphX {
 
 	QVariant ElasticListModel::headerData(int section, Qt::Orientation orientation, int role) const {
 
-		if ((role == Qt::DisplayRole) && (orientation == Qt::Horizontal)) {
+		/*if ((role == Qt::DisplayRole) && (orientation == Qt::Horizontal)) {
 
 			if (section == 0) {
 
@@ -90,7 +101,7 @@ namespace SynGlyphX {
 
 				return tr("Count");
 			}
-		}
+		}*/
 
 		return QVariant();
 	}
