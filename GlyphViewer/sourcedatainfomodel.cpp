@@ -3,7 +3,7 @@
 
 const int SourceDataInfoModel::IDRole = Qt::UserRole;
 
-SourceDataInfoModel::SourceDataInfoModel(SynGlyphX::DataTransformMapping::SharedPtr dataTransformMapping, SynGlyphX::SourceDataCache::SharedPtr sourceDataCache, QObject *parent)
+SourceDataInfoModel::SourceDataInfoModel(SynGlyphX::DataTransformMapping::ConstSharedPtr dataTransformMapping, SynGlyphX::SourceDataCache::SharedPtr sourceDataCache, QObject *parent)
 	: QStandardItemModel(parent),
 	m_dataTransformMapping(dataTransformMapping),
 	m_sourceDataCache(sourceDataCache),
@@ -81,7 +81,7 @@ void SourceDataInfoModel::Reset() {
 	blockSignals(true);
 
 	clear();
-	const SynGlyphX::DatasourceMaps& datasourceMaps = m_dataTransformMapping->GetDatasources();
+	SynGlyphX::DatasourceMaps datasourceMaps = m_dataTransformMapping->GetDatasourcesInUse();
 	for (auto fileDatasource : datasourceMaps.GetFileDatasources()) {
 
 		AddDatasource(fileDatasource.first, fileDatasource.second);

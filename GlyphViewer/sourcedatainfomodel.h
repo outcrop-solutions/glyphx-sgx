@@ -29,7 +29,7 @@ class SourceDataInfoModel : public QStandardItemModel
 public:
 	static const int IDRole;
 
-	SourceDataInfoModel(SynGlyphX::DataTransformMapping::SharedPtr dataTransformMapping, SynGlyphX::SourceDataCache::SharedPtr sourceDataCache, QObject *parent);
+	SourceDataInfoModel(SynGlyphX::DataTransformMapping::ConstSharedPtr dataTransformMapping, SynGlyphX::SourceDataCache::SharedPtr sourceDataCache, QObject *parent);
 	~SourceDataInfoModel();
 
 	void SetShowColumns(bool show);
@@ -42,7 +42,7 @@ private:
 	void AddDatasource(const boost::uuids::uuid& id, const SynGlyphX::Datasource& datasource);
 	void AddTable(const boost::uuids::uuid& id, const QString& table, QStandardItem* newDatasourceItem);
 
-	SynGlyphX::DataTransformMapping::SharedPtr m_dataTransformMapping;
+	SynGlyphX::DataTransformMapping::ConstSharedPtr m_dataTransformMapping;
 	SynGlyphX::SourceDataCache::SharedPtr m_sourceDataCache;
 
 	Qt::ItemFlags m_datasourceFlags;

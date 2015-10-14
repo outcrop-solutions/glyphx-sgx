@@ -27,7 +27,7 @@ GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 	m_antzWidget(nullptr),
 	m_showErrorFromTransform(true)
 {
-	m_mapping = std::make_shared<SynGlyphX::DataTransformMapping>();
+	m_mappingModel = new SynGlyphX::DataMappingModel(this);
 	m_sourceDataCache = std::make_shared<SynGlyphX::SourceDataCache>();
 	m_glyphForestModel = new SynGlyphXANTz::GlyphForestModel(this);
 
@@ -216,7 +216,7 @@ void GlyphViewerWindow::CreateDockWidgets() {
 	m_viewMenu->addAction(rightDockWidget->toggleViewAction());
 
 	QDockWidget* bottomDockWidget = new QDockWidget(tr("Time Animated Filter"), this);
-	m_pseudoTimeFilterWidget = new PseudoTimeFilterWidget(m_mapping, m_sourceDataCache, m_glyphForestModel, m_glyphForestSelectionModel, bottomDockWidget);
+	m_pseudoTimeFilterWidget = new PseudoTimeFilterWidget(m_mappingModel->GetDataMapping(), m_sourceDataCache, m_glyphForestModel, m_glyphForestSelectionModel, bottomDockWidget);
 	bottomDockWidget->setWidget(m_pseudoTimeFilterWidget);
 	addDockWidget(Qt::BottomDockWidgetArea, bottomDockWidget);
 	m_viewMenu->addAction(bottomDockWidget->toggleViewAction());
@@ -237,7 +237,7 @@ void GlyphViewerWindow::RefreshVisualization() {
 		
 		SynGlyphX::DataTransformMapping mapping;
 		mapping.ReadFromFile(m_currentFilename.toStdString());
-		if ((m_mapping->operator!=(mapping)) || (m_sourceDataCache->IsCacheOutOfDate(m_mapping->GetDatasourcesInUse()))) {
+		if ((m_mappingModel->GetDataMapping()->operator!=(mapping)) || (m_sourceDataCache->IsCacheOutOfDate(m_mappingModel->GetDataMapping()->GetDatasourcesInUse()))) {
 
 			ClearAllData();
 			LoadVisualization(m_currentFilename);
@@ -267,7 +267,7 @@ void GlyphViewerWindow::ClearAllData() {
 	m_glyphForestSelectionModel->ClearAll();
 	m_sourceDataCache->Close();
 	m_glyphForestModel->Clear();
-	m_mapping->Clear();
+	m_mappingModel->Clear();
 	SynGlyphX::Application::restoreOverrideCursor();
 }
 
@@ -340,61 +340,79 @@ bool GlyphViewerWindow::LoadRecentFile(const QString& filename) {
 	return LoadNewVisualization(filename);
 }
 
+void GlyphViewerWindow::ValidateDataMappingFile(const QString& filename) {
+
+	SynGlyphX::DataTransformMapping::SharedPtr mapping = std::make_shared<SynGlyphX::DataTransformMapping>();
+	mapping->ReadFromFile(filename.toStdString());
+
+	if (!mapping->GetDatasources().HasDatasources()) {
+
+		throw std::exception("Visualization has no datasources.");
+	}
+
+	if (mapping->GetGlyphGraphs().empty()) {
+
+		throw std::exception("Visualization has no glyph templates.");
+	}
+
+	if (!mapping->DoesAtLeastOneGlyphGraphHaveBindingsOnPosition()) {
+
+		throw std::exception("Visualization has no glyph templates with bindings on Position X, Position Y, or Position Z.");
+	}
+
+	bool wasDataTransformUpdated = false;
+
+	std::vector<boost::uuids::uuid> missingFileDatasources = mapping->GetFileDatasourcesWithInvalidFiles(true);
+
+	std::vector<unsigned int> localBaseImageIndexes = mapping->GetFileBaseObjectsWithInvalidFiles();
+
+	if (!localBaseImageIndexes.empty()) {
+
+		SynGlyphX::Application::restoreOverrideCursor();
+		wasDataTransformUpdated = SynGlyphX::ChangeImageFileDialog::UpdateImageFiles(localBaseImageIndexes, mapping, this);
+		SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
+
+		if (!wasDataTransformUpdated) {
+
+			throw std::exception("Visualization has missing base images that need to be updated to their correct locations before the visualization can be loaded");
+		}
+	}
+
+	if (!missingFileDatasources.empty()) {
+
+		SynGlyphX::Application::restoreOverrideCursor();
+		wasDataTransformUpdated = SynGlyphX::ChangeDatasourceFileDialog::UpdateDatasourceFiles(missingFileDatasources, mapping, this);
+		SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
+
+		if (!wasDataTransformUpdated) {
+
+			throw std::exception("Visualization has missing data sources that need to be updated to their correct locations before the visualization can be loaded");
+		}
+	}
+
+	if (wasDataTransformUpdated) {
+
+		mapping->WriteToFile(filename.toStdString());
+	}
+}
+
 void GlyphViewerWindow::LoadDataTransform(const QString& filename) {
 
 	SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
 
 	try {
 
-		m_mapping->ReadFromFile(filename.toStdString());
+		ValidateDataMappingFile(filename);
 
-		if (!m_mapping->GetDatasources().HasDatasources()) {
+		m_mappingModel->LoadDataTransformFile(filename);
 
-			throw std::exception("Visualization has no datasources.");
-		}
-
-		if (m_mapping->GetGlyphGraphs().empty()) {
-
-			throw std::exception("Visualization has no glyph templates.");
-		}
-
-		if (!m_mapping->DoesAtLeastOneGlyphGraphHaveBindingsOnPosition()) {
-
-			throw std::exception("Visualization has no glyph templates with bindings on Position X, Position Y, or Position Z.");
-		}
-
-		bool wasDataTransformUpdated = false;
-
-		std::vector<boost::uuids::uuid> missingFileDatasources = m_mapping->GetFileDatasourcesWithInvalidFiles(true);
-		
-		std::vector<unsigned int> localBaseImageIndexes = m_mapping->GetFileBaseObjectsWithInvalidFiles();
-		
-		if (!localBaseImageIndexes.empty()) {
-
-			SynGlyphX::Application::restoreOverrideCursor();
-			wasDataTransformUpdated = SynGlyphX::ChangeImageFileDialog::UpdateImageFiles(localBaseImageIndexes, m_mapping, this);
-			SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
-		}
-
-		if (!missingFileDatasources.empty()) {
-
-			SynGlyphX::Application::restoreOverrideCursor();
-			wasDataTransformUpdated = SynGlyphX::ChangeDatasourceFileDialog::UpdateDatasourceFiles(missingFileDatasources, m_mapping, this);
-			SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
-		}
-
-		if (wasDataTransformUpdated) {
-
-			m_mapping->WriteToFile(filename.toStdString());
-		}
-
-		SynGlyphXANTz::GlyphViewerANTzTransformer transformer(QString::fromStdWString(m_cacheManager.GetCacheDirectory(m_mapping->GetID())));
-		transformer.Transform(*m_mapping);
+		SynGlyphXANTz::GlyphViewerANTzTransformer transformer(QString::fromStdWString(m_cacheManager.GetCacheDirectory(m_mappingModel->GetDataMapping()->GetID())));
+		transformer.Transform(*m_mappingModel->GetDataMapping());
 
 		m_sourceDataCache->Setup(transformer.GetSourceDataCacheLocation());
 		LoadFilesIntoModel(transformer.GetCSVFilenames(), transformer.GetBaseImageFilenames());
-		m_glyphForestModel->SetTagNotToBeShownIn3d(QString::fromStdWString(m_mapping->GetDefaults().GetDefaultTagValue()));
-		m_antzWidget->SetBackgroundColor(m_mapping->GetSceneProperties().GetBackgroundColor());
+		m_glyphForestModel->SetTagNotToBeShownIn3d(QString::fromStdWString(m_mappingModel->GetDataMapping()->GetDefaults().GetDefaultTagValue()));
+		m_antzWidget->SetBackgroundColor(m_mappingModel->GetDataMapping()->GetSceneProperties().GetBackgroundColor());
 
 		SynGlyphX::Application::restoreOverrideCursor();
 		const QString& transformerError = transformer.GetError();

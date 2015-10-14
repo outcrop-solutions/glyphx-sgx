@@ -21,7 +21,7 @@
 #include <QtWidgets/QMainWindow>
 #include "glyphtreelistview.h"
 #include "mainwindow.h"
-#include "datatransformmapping.h"
+#include "datamappingmodel.h"
 #include "glyphforestmodel.h"
 #include "antzforestwidget.h"
 #include "cachemanager.h"
@@ -60,6 +60,7 @@ private:
 	void LoadVisualization(const QString& filename);
 	void LoadANTzCompatibilityVisualization(const QString& filename);
 	void LoadDataTransform(const QString& filename);
+	void ValidateDataMappingFile(const QString& filename);
 	void LoadFilesIntoModel(const QStringList& csvFiles, const QStringList& baseImageFilenames);
 	void CreateMenus();
 	void CreateDockWidgets();
@@ -76,7 +77,7 @@ private:
 	QAction* m_showTagsAction;
 	QList<QAction*> m_loadedVisualizationDependentActions;
 
-	SynGlyphX::DataTransformMapping::SharedPtr m_mapping;
+	SynGlyphX::DataMappingModel* m_mappingModel;
 	CacheManager m_cacheManager;
 	bool m_isStereoSupported;
 	bool m_showErrorFromTransform;
