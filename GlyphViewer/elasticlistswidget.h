@@ -15,8 +15,8 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef ELASTICLISTSWIDGET_H
-#define ELASTICLISTSWIDGET_H
+#ifndef SINGLETABLEELASTICLISTSWIDGET_H
+#define SINGLETABLEELASTICLISTSWIDGET_H
 
 #include "verticalscrollarea.h"
 #include <QtWidgets/QVBoxLayout>
@@ -24,13 +24,13 @@
 #include "elasticlistwidget.h"
 #include "sourcedatacache.h"
 
-class ElasticListsWidget : public SynGlyphX::VerticalScrollArea
+class SingleTableElasticListsWidget : public SynGlyphX::VerticalScrollArea
 {
 	Q_OBJECT
 
 public:
-	ElasticListsWidget(SynGlyphX::SourceDataCache::SharedPtr sourceDataCache, const QString& table, QWidget *parent);
-	~ElasticListsWidget();
+	SingleTableElasticListsWidget(SynGlyphX::SourceDataCache::SharedPtr sourceDataCache, const QString& table, QWidget *parent);
+	~SingleTableElasticListsWidget();
 
 	void PopulateElasticLists(const SynGlyphX::IndexSet& indexSet = SynGlyphX::IndexSet());
 
@@ -51,4 +51,4 @@ private:
 	QWidget* m_innerWidget;
 };
 
-#endif // ELASTICLISTSWIDGET_H
+#endif // SINGLETABLEELASTICLISTSWIDGET_H
