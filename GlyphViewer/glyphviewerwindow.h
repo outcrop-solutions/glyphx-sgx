@@ -27,7 +27,7 @@
 #include "cachemanager.h"
 #include "glyphvieweroptions.h"
 #include "sourcedatacache.h"
-#include "sourcedataselectionwidget.h"
+#include "multitableelasticlistswidget.h"
 #include "pseudotimefilterwidget.h"
 #include "linkedwidgetsmanager.h"
 #include "itemfocusselectionmodel.h"
@@ -88,7 +88,7 @@ private:
 	SynGlyphXANTz::ANTzForestWidget* m_antzWidget;
 	GlyphTreeListView* m_treeView;
 	SynGlyphX::SourceDataCache::SharedPtr m_sourceDataCache;
-	SourceDataSelectionWidget* m_sourceDataSelectionWidget;
+	MultiTableElasticListsWidget* m_sourceDataSelectionWidget;
 	PseudoTimeFilterWidget* m_pseudoTimeFilterWidget;
 };
 

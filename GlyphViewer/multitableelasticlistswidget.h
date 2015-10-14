@@ -15,8 +15,8 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef SOURCEDATASELECTIONWIDGET_H
-#define SOURCEDATASELECTIONWIDGET_H
+#ifndef MULTITABLEELASTICLISTSWIDGET_H
+#define MULTITABLEELASTICLISTSWIDGET_H
 
 #include <QtWidgets/QWidget>
 #include <QtWidgets/QPushButton>
@@ -27,17 +27,17 @@
 #include "singlewidgetdialog.h"
 #include "glyphforestmodel.h"
 #include <unordered_map>
-#include "elasticlistswidget.h"
+#include "singletableelasticlistswidget.h"
 #include "linkedwidgetsmanager.h"
 #include "itemfocusselectionmodel.h"
 
-class SourceDataSelectionWidget : public QWidget
+class MultiTableElasticListsWidget : public QWidget
 {
 	Q_OBJECT
 
 public:
-	SourceDataSelectionWidget(SynGlyphX::SourceDataCache::SharedPtr sourceDataCache, SynGlyphXANTz::GlyphForestModel* model, SynGlyphX::ItemFocusSelectionModel* selectionModel, QWidget *parent);
-	~SourceDataSelectionWidget();
+	MultiTableElasticListsWidget(SynGlyphX::SourceDataCache::SharedPtr sourceDataCache, SynGlyphXANTz::GlyphForestModel* model, SynGlyphX::ItemFocusSelectionModel* selectionModel, QWidget *parent);
+	~MultiTableElasticListsWidget();
 
 	void SetupLinkedWidgets(LinkedWidgetsManager& linkedWidgets);
 
@@ -50,7 +50,7 @@ private slots:
 	void Clear();
 
 private:
-	typedef std::unordered_map<std::string, ElasticListsWidget*> NameWidgetMap;
+	typedef std::unordered_map<std::string, SingleTableElasticListsWidget*> NameWidgetMap;
 
 	void UpdateElasticListsAndSourceDataWidget(const QModelIndexList& selectedIndexes);
 	void UpdateElasticLists(const SynGlyphX::SourceDataCache::IndexSetMap& dataIndexes = SynGlyphX::SourceDataCache::IndexSetMap());
@@ -71,4 +71,4 @@ private:
 	SynGlyphX::SourceDataCache::SharedPtr m_sourceDataCache;
 };
 
-#endif // SOURCEDATASELECTIONWIDGET_H
+#endif // MULTITABLEELASTICLISTSWIDGET_H

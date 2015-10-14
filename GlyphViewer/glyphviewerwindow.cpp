@@ -210,7 +210,7 @@ void GlyphViewerWindow::CreateDockWidgets() {
 	m_viewMenu->addAction(leftDockWidget->toggleViewAction());
 
 	QDockWidget* rightDockWidget = new QDockWidget(tr("Source Data Selector"), this);
-	m_sourceDataSelectionWidget = new SourceDataSelectionWidget(m_sourceDataCache, m_glyphForestModel, m_glyphForestSelectionModel, rightDockWidget);
+	m_sourceDataSelectionWidget = new MultiTableElasticListsWidget(m_sourceDataCache, m_glyphForestModel, m_glyphForestSelectionModel, rightDockWidget);
 	rightDockWidget->setWidget(m_sourceDataSelectionWidget);
 	addDockWidget(Qt::RightDockWidgetArea, rightDockWidget);
 	m_viewMenu->addAction(rightDockWidget->toggleViewAction());
