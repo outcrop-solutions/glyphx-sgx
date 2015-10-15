@@ -82,6 +82,8 @@ namespace SynGlyphX {
 		virtual GlyphIterator AddChildGlyphGraph(const GlyphIterator& vertex, const DataMappingGlyphGraph& graph);
 		virtual void UpdateGlyph(const GlyphIterator& vertex, const DataMappingGlyph& glyph);
 
+		bool IsTransformable() const;
+
 		static SharedPtr CreateDefault();
 
 	private:

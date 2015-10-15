@@ -559,4 +559,9 @@ namespace SynGlyphX {
 		GlyphGraphTemplate<DataMappingGlyph>::UpdateGlyph(vertex, glyphWithoutUnlinkedInputBindings);
 	}
 
+	bool DataMappingGlyphGraph::IsTransformable() const {
+
+		return ((GetRoot()->second.IsAnInputFieldBoundToAPosition()) && (!m_inputFields.empty()));
+	}
+
 } //namespace SynGlyphX

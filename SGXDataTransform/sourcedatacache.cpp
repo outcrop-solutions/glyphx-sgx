@@ -315,9 +315,9 @@ namespace SynGlyphX {
 		return query;
 	}
 
-	QString SourceDataCache::CreateTablename(const InputField& inputfield) {
+	QString SourceDataCache::CreateTablename(const InputTable& inputTable) {
 
-		return CreateTablename(QString::fromStdString(boost::uuids::to_string(inputfield.GetDatasourceID())), QString::fromStdWString(inputfield.GetTable()));
+		return CreateTablename(QString::fromStdString(boost::uuids::to_string(inputTable.GetDatasourceID())), QString::fromStdWString(inputTable.GetTable()));
 	}
 		
 	QString SourceDataCache::CreateTablename(const QString& datasourceID, const QString& originalTablename) {
@@ -532,6 +532,23 @@ namespace SynGlyphX {
 		}
 
 		queryString += "\"" + columnName + "\"=\"" + value + "\"";
+
+		QSqlQuery query(m_db);
+		query.prepare(queryString);
+		query.exec();
+		query.first();
+
+		return query.value(0).toULongLong();
+	}
+
+	unsigned long SourceDataCache::GetNumberOfRowsInTable(const InputTable& inputTable) const {
+
+		return GetNumberOfRowsInTable(CreateTablename(inputTable));
+	}
+
+	unsigned long SourceDataCache::GetNumberOfRowsInTable(const QString& table) const {
+
+		QString queryString = "SELECT COUNT(*) FROM \"" + table + "\"";
 
 		QSqlQuery query(m_db);
 		query.prepare(queryString);

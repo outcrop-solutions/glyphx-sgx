@@ -73,6 +73,8 @@ namespace SynGlyphX {
 		SharedSQLQuery CreateDistinctValueAndCountQuery(const QString& tableName, const QString& columnName, const IndexSet& indexSet = IndexSet()) const;
 		SharedSQLQuery CreateOrderedValueAndRowQuery(const QString& tableName, const QString& columnName, const IndexSet& indexSet) const;
 		unsigned long GetValueCount(const QString& tableName, const QString& columnName, const QString& value, const IndexSet& indexSet = IndexSet()) const;
+		unsigned long GetNumberOfRowsInTable(const InputTable& inputTable) const;
+		unsigned long GetNumberOfRowsInTable(const QString& table) const;
 		IndexSet GetIndexesFromTableWithSelectedValues(const QString& tableName, const ColumnValueData& selectedValues, const IndexSet& previousSelection = IndexSet()) const;
 
 		bool IsCacheOutOfDate(const DatasourceMaps& datasources) const;
@@ -82,7 +84,7 @@ namespace SynGlyphX {
 		unsigned long GetStartingValueForTable(const QString& tableName) const;
 		QString GetTableNameForIndex(const IndexSet::value_type& index) const;
 
-		static QString CreateTablename(const InputField& inputfield);
+		static QString CreateTablename(const InputTable& inputTable);
 		static QString CreateTablename(const QString& datasourceID, const QString& originalTablename);
 
 	private:

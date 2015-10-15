@@ -67,7 +67,7 @@ namespace SynGlyphX {
 
 		for (auto minMaxTree : mapping.GetGlyphGraphs()) {
 
-			if (minMaxTree.second->GetRoot()->second.IsAnInputFieldBoundToAPosition()) {
+			if (minMaxTree.second->IsTransformable()) {
 
 				m_label2LabelMap.clear();
 				GlyphGraph::ConstSharedVector newTrees = CreateGlyphTreesFromMinMaxTree(minMaxTree.second);
