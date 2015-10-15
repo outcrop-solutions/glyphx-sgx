@@ -6,7 +6,7 @@
 #include "groupboxsinglewidget.h"
 #include "elasticlistwidget.h"
 
-MultiTableElasticListsWidget::MultiTableElasticListsWidget(SynGlyphX::SourceDataCache::SharedPtr sourceDataCache, SynGlyphXANTz::GlyphForestModel* model, SynGlyphX::ItemFocusSelectionModel* selectionModel, QWidget *parent)
+MultiTableElasticListsWidget::MultiTableElasticListsWidget(SynGlyphX::SourceDataCache::SharedPtr sourceDataCache, SynGlyphXANTz::GlyphForestModel* model, SourceDataSelectionModel* selectionModel, QWidget *parent)
 	: QWidget(parent),
 	m_model(model),
 	m_selectionModel(selectionModel),
@@ -52,8 +52,8 @@ MultiTableElasticListsWidget::MultiTableElasticListsWidget(SynGlyphX::SourceData
 
 	setLayout(layout);
 
-	EnableButtons(!m_selectionModel->selection().empty());
-	QObject::connect(m_selectionModel, &QItemSelectionModel::selectionChanged, this, &MultiTableElasticListsWidget::OnSelectionChanged);
+	EnableButtons(!m_selectionModel->GetSourceDataSelection().empty());
+	QObject::connect(m_selectionModel, &SourceDataSelectionModel::SelectionChanged, this, &MultiTableElasticListsWidget::OnSelectionChanged);
 
 	m_sourceDataWindow.reset(new SourceDataWidget(m_sourceDataCache));
 	QObject::connect(m_sourceWidgetButton, &QPushButton::toggled, m_sourceDataWindow.data(), &SourceDataWidget::setVisible);
@@ -78,9 +78,9 @@ void MultiTableElasticListsWidget::OnSourceWidgetWindowHidden() {
 	m_sourceWidgetButton->setChecked(false);
 }
 
-void MultiTableElasticListsWidget::OnSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected) {
+void MultiTableElasticListsWidget::OnSelectionChanged() {
 
-	UpdateElasticListsAndSourceDataWidget(m_selectionModel->selection().indexes());
+	UpdateElasticListsAndSourceDataWidget();
 }
 
 void MultiTableElasticListsWidget::OnModelReset() {
@@ -102,7 +102,7 @@ void MultiTableElasticListsWidget::OnModelReset() {
 		m_tableComboBox->setEnabled(true);
 		m_tableComboBox->blockSignals(false);
 
-		UpdateElasticListsAndSourceDataWidget(m_selectionModel->selection().indexes());
+		UpdateElasticListsAndSourceDataWidget();
 	}
 	else {
 
@@ -115,21 +115,20 @@ void MultiTableElasticListsWidget::OnComboBoxChanged(int current) {
 	m_elasticListsStackLayout->setCurrentWidget(m_elasticListWidgetsForEachTable[m_tableComboBox->currentData().toString().toStdString()]);
 }
 
-void MultiTableElasticListsWidget::UpdateElasticListsAndSourceDataWidget(const QModelIndexList& selectedIndexes) {
+void MultiTableElasticListsWidget::UpdateElasticListsAndSourceDataWidget() {
 
-	bool isSelectionNotEmpty = !selectedIndexes.empty();
+	const SynGlyphX::SourceDataCache::IndexSetMap& sourceDataSelectionSets = m_selectionModel->GetSourceDataSelection();
+	bool isSelectionNotEmpty = !sourceDataSelectionSets.empty();
 	EnableButtons(isSelectionNotEmpty);
 	if (isSelectionNotEmpty) {
 
-		SynGlyphX::SourceDataCache::IndexSetMap indexSets = m_sourceDataCache->SplitIndexSet(SynGlyphX::ItemFocusSelectionModel::GetRootRows(m_selectionModel->selection().indexes()));
-
-		m_sourceDataWindow->UpdateTables(indexSets);
-		UpdateElasticLists(indexSets);
+		m_sourceDataWindow->UpdateTables(sourceDataSelectionSets);
+		UpdateElasticLists(sourceDataSelectionSets);
 
 		//Only change the table shown if it is not in the selection at all
-		if (indexSets.count(m_tableComboBox->currentData().toString()) == 0) {
+		if (sourceDataSelectionSets.count(m_tableComboBox->currentData().toString()) == 0) {
 
-			int newComboBoxIndex = m_tableComboBox->findData(m_sourceDataCache->GetTableNameForIndex(SynGlyphX::ItemFocusSelectionModel::GetRootRow(m_selectionModel->selection().indexes().back())));
+			int newComboBoxIndex = m_tableComboBox->findData(sourceDataSelectionSets.rbegin()->first);
 			if ((newComboBoxIndex != -1) && (newComboBoxIndex != m_tableComboBox->currentIndex())) {
 
 				m_tableComboBox->setCurrentIndex(newComboBoxIndex);
@@ -179,11 +178,11 @@ void MultiTableElasticListsWidget::OnElasticListsSelectionChanged(const QString&
 
 	if (selection.empty()) {
 
-		m_selectionModel->clearSelection();
+		m_selectionModel->ClearSourceDataSelectionForTable(table);
 	}
 	else {
 
-		SynGlyphX::SourceDataCache::IndexSetMap indexSets = m_sourceDataCache->SplitIndexSet(SynGlyphX::ItemFocusSelectionModel::GetRootRows(m_selectionModel->selection().indexes()));
+		const SynGlyphX::SourceDataCache::IndexSetMap& indexSets = m_selectionModel->GetSourceDataSelection();
 		SynGlyphX::SourceDataCache::IndexSetMap::const_iterator previousSelection = indexSets.find(table);
 		SynGlyphX::IndexSet indexSet;
 		
@@ -196,15 +195,7 @@ void MultiTableElasticListsWidget::OnElasticListsSelectionChanged(const QString&
 			indexSet = m_sourceDataCache->GetIndexesFromTableWithSelectedValues(table, selection);
 		}
 		
-		QItemSelection itemSelection;
-		for (auto row : indexSet) {
-
-			QModelIndex index = m_model->index(row);
-			itemSelection.select(index, index);
-		}
-
-		m_selectionModel->select(itemSelection, QItemSelectionModel::ClearAndSelect);
-		m_selectionModel->SetFocus(itemSelection.indexes(), SynGlyphX::ItemFocusSelectionModel::FocusFlag::ClearAndFocus);
+		m_selectionModel->SetSourceDataSelectionForTable(table, indexSet);
 	}
 }
 
@@ -216,6 +207,5 @@ void MultiTableElasticListsWidget::EnableButtons(bool enable) {
 
 void MultiTableElasticListsWidget::Clear() {
 
-	m_selectionModel->clearSelection();
-	m_selectionModel->ClearFocus();
+	m_selectionModel->ClearSourceDataSelection();
 }

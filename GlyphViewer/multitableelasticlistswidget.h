@@ -29,21 +29,21 @@
 #include <unordered_map>
 #include "singletableelasticlistswidget.h"
 #include "linkedwidgetsmanager.h"
-#include "itemfocusselectionmodel.h"
+#include "sourcedataselectionmodel.h"
 
 class MultiTableElasticListsWidget : public QWidget
 {
 	Q_OBJECT
 
 public:
-	MultiTableElasticListsWidget(SynGlyphX::SourceDataCache::SharedPtr sourceDataCache, SynGlyphXANTz::GlyphForestModel* model, SynGlyphX::ItemFocusSelectionModel* selectionModel, QWidget *parent);
+	MultiTableElasticListsWidget(SynGlyphX::SourceDataCache::SharedPtr sourceDataCache, SynGlyphXANTz::GlyphForestModel* model, SourceDataSelectionModel* selectionModel, QWidget *parent);
 	~MultiTableElasticListsWidget();
 
 	void SetupLinkedWidgets(LinkedWidgetsManager& linkedWidgets);
 
 private slots:
 	void OnSourceWidgetWindowHidden();
-	void OnSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected);
+	void OnSelectionChanged();
 	void OnModelReset();
 	void OnComboBoxChanged(int current);
 	void OnElasticListsSelectionChanged(const QString& table, const SynGlyphX::SourceDataCache::ColumnValueData& selection);
@@ -52,13 +52,13 @@ private slots:
 private:
 	typedef std::unordered_map<std::string, SingleTableElasticListsWidget*> NameWidgetMap;
 
-	void UpdateElasticListsAndSourceDataWidget(const QModelIndexList& selectedIndexes);
+	void UpdateElasticListsAndSourceDataWidget();
 	void UpdateElasticLists(const SynGlyphX::SourceDataCache::IndexSetMap& dataIndexes = SynGlyphX::SourceDataCache::IndexSetMap());
 	void ClearElasticLists();
 	void EnableButtons(bool enable);
 
 	SynGlyphXANTz::GlyphForestModel* m_model;
-	SynGlyphX::ItemFocusSelectionModel* m_selectionModel;
+	SourceDataSelectionModel* m_selectionModel;
 	QPushButton* m_sourceWidgetButton;
 	QPushButton* m_clearButton;
 	QScopedPointer<SourceDataWidget> m_sourceDataWindow;
