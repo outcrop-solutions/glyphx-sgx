@@ -9,12 +9,11 @@
 
 unsigned int PseudoTimeFilterWidget::s_buttonSize = 24;
 
-PseudoTimeFilterWidget::PseudoTimeFilterWidget(SynGlyphX::DataTransformMapping::ConstSharedPtr dataTransformMapping, SynGlyphX::SourceDataCache::SharedPtr sourceDataCache, SynGlyphXANTz::GlyphForestModel* model, SynGlyphX::ItemFocusSelectionModel* selectionModel, QWidget *parent)
+PseudoTimeFilterWidget::PseudoTimeFilterWidget(SynGlyphX::DataTransformMapping::ConstSharedPtr dataTransformMapping, SynGlyphX::SourceDataCache::SharedPtr sourceDataCache, SourceDataSelectionModel* selectionModel, QWidget *parent)
 	: QWidget(parent),
 	m_filterState(FilterState::Inactive),
 	m_sourceDataCache(sourceDataCache),
-	m_glyphForestModel(model),
-	m_glyphForestSelectionModel(selectionModel)
+	m_selectionModel(selectionModel)
 {
 	m_playTimer.setSingleShot(false);
 
@@ -230,20 +229,13 @@ void PseudoTimeFilterWidget::UpdateTimeFilter() {
 	if (m_filterState == FilterState::Inactive) {
 
 		m_currentPositionLabel->clear();
-		m_glyphForestSelectionModel->clear();
+		m_selectionModel->ClearSourceDataSelection();
 	}
 	else {
 
-		m_currentPositionLabel->setText(m_itemSelectionForEachDistinctValue.at(sliderValue).first);
-		m_glyphForestSelectionModel->select(m_itemSelectionForEachDistinctValue.at(sliderValue).second, QItemSelectionModel::ClearAndSelect);
-		if (m_moveCameraOnUpdateCheckbox->isChecked()) {
-
-			m_glyphForestSelectionModel->SetFocus(m_itemSelectionForEachDistinctValue.at(sliderValue).second.indexes(), SynGlyphX::ItemFocusSelectionModel::FocusFlag::ClearAndFocus);
-		}
-		else {
-
-			m_glyphForestSelectionModel->ClearFocus();
-		}
+		const auto& newSelection = m_selectionForEachDistinctValue.at(sliderValue);
+		m_currentPositionLabel->setText(newSelection.first);
+		m_selectionModel->SetSourceDataSelectionForTable(m_sourceCacheTableName, newSelection.second, m_moveCameraOnUpdateCheckbox->isChecked());
 	}
 }
 
@@ -278,8 +270,7 @@ void PseudoTimeFilterWidget::ChangeFilterState(FilterState newFilterState) {
 			m_slider->setValue(0);
 			m_slider->blockSignals(false);
 			m_currentPositionLabel->clear();
-			m_glyphForestSelectionModel->clearSelection();
-			m_glyphForestSelectionModel->ClearFocus();
+			m_selectionModel->ClearSourceDataSelection();
 		}
 	}
 
@@ -339,33 +330,10 @@ void PseudoTimeFilterWidget::UpdateSelectedField(const QModelIndex& newSelectedF
 	QString dataSourceName = m_columnsModel->data(dataSourceIndex).toString();
 	QString dataSourceIdString = m_columnsModel->data(dataSourceIndex, SourceDataInfoModel::IDRole).toString();
 
-	QString sourceCacheTableName = SynGlyphX::SourceDataCache::CreateTablename(dataSourceIdString, tableName);
-	auto table = m_sourceDataCache->GetTablesIndexMap().right.find(sourceCacheTableName);
-	unsigned long tableEndingIndex = table->get_left();
-	if (table == m_sourceDataCache->GetTablesIndexMap().right.begin()) {
+	m_sourceCacheTableName = SynGlyphX::SourceDataCache::CreateTablename(dataSourceIdString, tableName);
+	m_selectionForEachDistinctValue = m_sourceDataCache->GetIndexesOrderedByDistinctValue(m_sourceCacheTableName, columnName);
 
-		m_selectedTableStartingIndex = 0;
-	}
-	else {
-
-		table--;
-		m_selectedTableStartingIndex = table->get_left() + 1;
-	}
-
-	m_itemSelectionForEachDistinctValue.clear();
-	SynGlyphX::SourceDataCache::DistinctValueIndexMap distinctValueIndexMap = m_sourceDataCache->GetIndexesOrderedByDistinctValue(sourceCacheTableName, columnName);
-	for (auto indexes : distinctValueIndexMap) {
-
-		QItemSelection itemSelection;
-		for (auto index : indexes.second) {
-
-			const QModelIndex& modelIndex = m_glyphForestModel->index(index);
-			itemSelection.select(modelIndex, modelIndex);
-		}
-		m_itemSelectionForEachDistinctValue.push_back({ indexes.first, itemSelection });
-	}
-
-	m_slider->setMaximum(m_itemSelectionForEachDistinctValue.size() - 1);
+	m_slider->setMaximum(m_selectionForEachDistinctValue.size() - 1);
 
 	m_fieldLabel->setText(tr("Selected Field: ") + dataSourceName + ":" + tableName + " " + columnName);
 }

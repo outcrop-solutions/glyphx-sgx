@@ -7,6 +7,7 @@ SourceDataSelectionModel::SourceDataSelectionModel(SynGlyphX::DataMappingModel* 
 	m_sceneSelectionModel(sceneSelectionModel)
 {
 	QObject::connect(m_sceneSelectionModel->model(), &QAbstractItemModel::modelReset, this, &SourceDataSelectionModel::OnSceneModelReset);
+	QObject::connect(m_sceneSelectionModel, &QItemSelectionModel::selectionChanged, this, &SourceDataSelectionModel::OnSceneSelectionChanged);
 }
 
 SourceDataSelectionModel::~SourceDataSelectionModel()
@@ -14,59 +15,71 @@ SourceDataSelectionModel::~SourceDataSelectionModel()
 
 }
 
+const SynGlyphX::ItemFocusSelectionModel* SourceDataSelectionModel::GetSceneSelectionModel() const {
+
+	return m_sceneSelectionModel;
+}
+
 void SourceDataSelectionModel::OnSceneModelReset() {
-
-	std::unordered_map<QString, unsigned long> countsForEachTable;
-	for (const auto& glyphGraph : m_dataMappingModel->GetDataMapping()->GetGlyphGraphs()) {
-
-		if (!glyphGraph.second->IsTransformable()) {
-
-			QString tableName = SynGlyphX::SourceDataCache::CreateTablename(glyphGraph.second->GetInputFields().begin()->second);
-			if (countsForEachTable.count(tableName) == 0) {
-
-				countsForEachTable[tableName] = m_sourceDataCache->GetNumberOfRowsInTable(tableName);
-			}
-		}
-	}
 
 	m_glyphTemplateRangeToTableMap.clear();
 	m_tableToGlyphTreeRangesMap.clear();
 
-	unsigned long startingIndex = 0;
-	for (const auto& glyphGraph : m_dataMappingModel->GetDataMapping()->GetGlyphGraphs()) {
+	if (m_sceneSelectionModel->model()->rowCount() > 0) {
 
-		if (!glyphGraph.second->IsTransformable()) {
+		std::unordered_map<QString, unsigned long, SynGlyphX::QStringHash> countsForEachTable;
+		for (const auto& glyphGraph : m_dataMappingModel->GetDataMapping()->GetGlyphGraphs()) {
 
-			QString tableName = SynGlyphX::SourceDataCache::CreateTablename(glyphGraph.second->GetInputFields().begin()->second);
-			SynGlyphX::Range range(startingIndex, startingIndex + countsForEachTable.at(tableName));
-			startingIndex += countsForEachTable.at(tableName);
+			if (glyphGraph.second->IsTransformable()) {
 
-			std::pair<QString, SynGlyphX::Range> newPair(tableName, range);
-			m_tableToGlyphTreeRangesMap.insert(newPair);
+				QString tableName = SynGlyphX::SourceDataCache::CreateTablename(glyphGraph.second->GetInputFields().begin()->second);
+				if (countsForEachTable.count(tableName) == 0) {
 
-			m_glyphTemplateRangeToTableMap[range] = tableName;
+					countsForEachTable[tableName] = m_sourceDataCache->GetNumberOfRowsInTable(tableName);
+				}
+			}
+		}
+
+		unsigned long startingIndex = 0;
+		for (const auto& glyphGraph : m_dataMappingModel->GetDataMapping()->GetGlyphGraphs()) {
+
+			if (glyphGraph.second->IsTransformable()) {
+
+				QString tableName = SynGlyphX::SourceDataCache::CreateTablename(glyphGraph.second->GetInputFields().begin()->second);
+				SynGlyphX::Range range(startingIndex, startingIndex + countsForEachTable.at(tableName));
+				startingIndex += countsForEachTable.at(tableName);
+
+				std::pair<QString, SynGlyphX::Range> newPair(tableName, range);
+				m_tableToGlyphTreeRangesMap.insert(newPair);
+
+				m_glyphTemplateRangeToTableMap[range] = tableName;
+			}
 		}
 	}
 }
+/*
+void SourceDataSelectionModel::SetNewSourceDataSelection(const SourceDataSelectionModel::IndexSetMap& selectedIndexMap) {
 
-void SourceDataSelectionModel::SetNewSourceDataSelection(const SynGlyphX::SourceDataCache::IndexSetMap& selectedIndexMap) {
 
+}*/
 
-}
-
-void SourceDataSelectionModel::SetSourceDataSelectionForTable(const QString& table, const SynGlyphX::IndexSet& newSelectionSet) {
+void SourceDataSelectionModel::SetSourceDataSelectionForTable(const QString& table, const SynGlyphX::IndexSet& newSelectionSet, bool updateFocus) {
 
 	if (m_selectedSourceDataSets.count(table) > 0) {
 
-		ClearSourceDataSelectionForTable(table);
+		ClearSourceDataSelectionForTable(table, updateFocus);
 	}
+
+	m_selectedSourceDataSets[table] = newSelectionSet;
 	
 	QItemSelection itemSelection;
 	AddSceneIndexesFromTableToSelection(itemSelection, table);
 
 	m_sceneSelectionModel->select(itemSelection, QItemSelectionModel::Select);
-	m_sceneSelectionModel->SetFocus(itemSelection.indexes(), SynGlyphX::ItemFocusSelectionModel::FocusFlag::Focus);
-	m_selectedSourceDataSets[table] = newSelectionSet;
+	if (updateFocus) {
+
+		m_sceneSelectionModel->SetFocus(itemSelection.indexes(), SynGlyphX::ItemFocusSelectionModel::FocusFlag::Focus);
+	}
 }
 
 void SourceDataSelectionModel::ClearSourceDataSelection() {
@@ -75,7 +88,7 @@ void SourceDataSelectionModel::ClearSourceDataSelection() {
 	m_selectedSourceDataSets.clear();
 }
 
-void SourceDataSelectionModel::ClearSourceDataSelectionForTable(const QString& table) {
+void SourceDataSelectionModel::ClearSourceDataSelectionForTable(const QString& table, bool updateFocus) {
 
 	if (m_selectedSourceDataSets.count(table) == 0) {
 
@@ -86,17 +99,20 @@ void SourceDataSelectionModel::ClearSourceDataSelectionForTable(const QString& t
 	AddSceneIndexesFromTableToSelection(itemSelection, table);
 
 	m_sceneSelectionModel->select(itemSelection, QItemSelectionModel::Deselect);
-	m_sceneSelectionModel->SetFocus(itemSelection.indexes(), SynGlyphX::ItemFocusSelectionModel::FocusFlag::Unfocus);
+	if (updateFocus) {
+
+		m_sceneSelectionModel->SetFocus(itemSelection.indexes(), SynGlyphX::ItemFocusSelectionModel::FocusFlag::Unfocus);
+	}
 	m_selectedSourceDataSets.erase(table);
 }
 
 void SourceDataSelectionModel::AddSceneIndexesFromTableToSelection(QItemSelection& selection, const QString& table) {
 
 	const QAbstractItemModel* modelForSourceSelection = m_sceneSelectionModel->model();
-	std::pair<std::unordered_multimap<QString, SynGlyphX::Range>::iterator, std::unordered_multimap<QString, SynGlyphX::Range>::iterator> ranges = m_tableToGlyphTreeRangesMap.equal_range(table);
-	for (auto row : m_selectedSourceDataSets[table]) {
+	std::pair<TableToGlyphTemplateRangesMap::iterator, TableToGlyphTemplateRangesMap::iterator> ranges = m_tableToGlyphTreeRangesMap.equal_range(table);
+	for (auto row : m_selectedSourceDataSets.at(table)) {
 
-		for (std::unordered_multimap<QString, SynGlyphX::Range>::iterator range = ranges.first; range != ranges.second; ++range) {
+		for (TableToGlyphTemplateRangesMap::iterator range = ranges.first; range != ranges.second; ++range) {
 
 			QModelIndex index = modelForSourceSelection->index(row + range->second.GetMin(), 0);
 			selection.select(index, index);
@@ -104,7 +120,7 @@ void SourceDataSelectionModel::AddSceneIndexesFromTableToSelection(QItemSelectio
 	}
 }
 
-const SynGlyphX::SourceDataCache::IndexSetMap& SourceDataSelectionModel::GetSourceDataSelection() const {
+const SourceDataSelectionModel::IndexSetMap& SourceDataSelectionModel::GetSourceDataSelection() const {
 
 	return m_selectedSourceDataSets;
 }

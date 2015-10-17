@@ -15,43 +15,23 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef SOURCEDATAWIDGET_H
-#define SOURCEDATAWIDGET_H
+#ifndef SYNGLYPHX_GUIHASH_H
+#define SYNGLYPHX_GUIHASH_H
 
-#include <QtWidgets/QTabWidget>
-#include "sourcedatacache.h"
-#include "sourcedataselectionmodel.h"
-#include <QtWidgets/QStatusBar>
+#include <QtCore/QString>
+#include <QtCore/QHash>
 
-class SourceDataWidget : public QWidget
-{
-	Q_OBJECT
+namespace SynGlyphX {
 
-public:
-	SourceDataWidget(SynGlyphX::SourceDataCache::SharedPtr sourceDataCache, QWidget *parent = nullptr);
-	~SourceDataWidget();
+	//Hash function for boost uuid so that it can be used in STL classes like unordered_map
+	struct QStringHash {
 
-	void UpdateTables(const SourceDataSelectionModel::IndexSetMap& dataIndexes);
+		std::size_t operator()(const QString& str) const {
+		
+			return qHash(str);
+		}
+	};
 
-signals:
-	void WindowHidden();
+} //namespace SynGlyphX
 
-protected:
-	virtual void closeEvent(QCloseEvent* event);
-
-private slots:
-	void SaveCurrentTabToFile();
-
-private:
-	void ReadSettings();
-	void WriteSettings();
-
-	void WriteToFile(QSqlQueryModel* queryModel, const QString& filename);
-
-	QTabWidget* m_sourceDataTabs;
-	QStatusBar* m_statusBar;
-	std::vector<QSqlQueryModel*> m_sqlQueryModels;
-	SynGlyphX::SourceDataCache::SharedPtr m_sourceDataCache;
-};
-
-#endif // SOURCEDATAWIDGET_H
+#endif //SYNGLYPHX_SGXGUI_HASH_H

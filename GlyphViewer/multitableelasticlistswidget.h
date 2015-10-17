@@ -25,7 +25,6 @@
 #include <QtWidgets/QCheckBox>
 #include "sourcedatawidget.h"
 #include "singlewidgetdialog.h"
-#include "glyphforestmodel.h"
 #include <unordered_map>
 #include "singletableelasticlistswidget.h"
 #include "linkedwidgetsmanager.h"
@@ -36,7 +35,7 @@ class MultiTableElasticListsWidget : public QWidget
 	Q_OBJECT
 
 public:
-	MultiTableElasticListsWidget(SynGlyphX::SourceDataCache::SharedPtr sourceDataCache, SynGlyphXANTz::GlyphForestModel* model, SourceDataSelectionModel* selectionModel, QWidget *parent);
+	MultiTableElasticListsWidget(SynGlyphX::SourceDataCache::SharedPtr sourceDataCache, SourceDataSelectionModel* selectionModel, QWidget *parent);
 	~MultiTableElasticListsWidget();
 
 	void SetupLinkedWidgets(LinkedWidgetsManager& linkedWidgets);
@@ -53,11 +52,10 @@ private:
 	typedef std::unordered_map<std::string, SingleTableElasticListsWidget*> NameWidgetMap;
 
 	void UpdateElasticListsAndSourceDataWidget();
-	void UpdateElasticLists(const SynGlyphX::SourceDataCache::IndexSetMap& dataIndexes = SynGlyphX::SourceDataCache::IndexSetMap());
+	void UpdateElasticLists(const SourceDataSelectionModel::IndexSetMap& dataIndexes = SourceDataSelectionModel::IndexSetMap());
 	void ClearElasticLists();
 	void EnableButtons(bool enable);
 
-	SynGlyphXANTz::GlyphForestModel* m_model;
 	SourceDataSelectionModel* m_selectionModel;
 	QPushButton* m_sourceWidgetButton;
 	QPushButton* m_clearButton;

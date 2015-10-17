@@ -6,9 +6,8 @@
 #include "groupboxsinglewidget.h"
 #include "elasticlistwidget.h"
 
-MultiTableElasticListsWidget::MultiTableElasticListsWidget(SynGlyphX::SourceDataCache::SharedPtr sourceDataCache, SynGlyphXANTz::GlyphForestModel* model, SourceDataSelectionModel* selectionModel, QWidget *parent)
+MultiTableElasticListsWidget::MultiTableElasticListsWidget(SynGlyphX::SourceDataCache::SharedPtr sourceDataCache, SourceDataSelectionModel* selectionModel, QWidget *parent)
 	: QWidget(parent),
-	m_model(model),
 	m_selectionModel(selectionModel),
 	m_sourceDataCache(sourceDataCache)
 {
@@ -60,7 +59,7 @@ MultiTableElasticListsWidget::MultiTableElasticListsWidget(SynGlyphX::SourceData
 	m_sourceDataWindow->setVisible(false);
 
 	QObject::connect(m_sourceDataWindow.data(), &SourceDataWidget::WindowHidden, this, &MultiTableElasticListsWidget::OnSourceWidgetWindowHidden);
-	QObject::connect(model, &SynGlyphXANTz::GlyphForestModel::modelReset, this, &MultiTableElasticListsWidget::OnModelReset);
+	QObject::connect(m_selectionModel->GetSceneSelectionModel()->model(), &QAbstractItemModel::modelReset, this, &MultiTableElasticListsWidget::OnModelReset);
 }
 
 MultiTableElasticListsWidget::~MultiTableElasticListsWidget()
@@ -117,7 +116,7 @@ void MultiTableElasticListsWidget::OnComboBoxChanged(int current) {
 
 void MultiTableElasticListsWidget::UpdateElasticListsAndSourceDataWidget() {
 
-	const SynGlyphX::SourceDataCache::IndexSetMap& sourceDataSelectionSets = m_selectionModel->GetSourceDataSelection();
+	const SourceDataSelectionModel::IndexSetMap& sourceDataSelectionSets = m_selectionModel->GetSourceDataSelection();
 	bool isSelectionNotEmpty = !sourceDataSelectionSets.empty();
 	EnableButtons(isSelectionNotEmpty);
 	if (isSelectionNotEmpty) {
@@ -143,12 +142,12 @@ void MultiTableElasticListsWidget::UpdateElasticListsAndSourceDataWidget() {
 	}
 }
 
-void MultiTableElasticListsWidget::UpdateElasticLists(const SynGlyphX::SourceDataCache::IndexSetMap& dataIndexes) {
+void MultiTableElasticListsWidget::UpdateElasticLists(const SourceDataSelectionModel::IndexSetMap& dataIndexes) {
 
 	for (auto table : m_sourceDataCache->GetFormattedNames()) {
 
 		SingleTableElasticListsWidget* SingleTableElasticListsWidget = m_elasticListWidgetsForEachTable[table.first.toStdString()];
-		SynGlyphX::SourceDataCache::IndexSetMap::const_iterator dataIndexesForTable = dataIndexes.find(table.first);
+		SourceDataSelectionModel::IndexSetMap::const_iterator dataIndexesForTable = dataIndexes.find(table.first);
 		if (dataIndexesForTable == dataIndexes.end()) {
 
 			SingleTableElasticListsWidget->PopulateElasticLists();
@@ -182,8 +181,8 @@ void MultiTableElasticListsWidget::OnElasticListsSelectionChanged(const QString&
 	}
 	else {
 
-		const SynGlyphX::SourceDataCache::IndexSetMap& indexSets = m_selectionModel->GetSourceDataSelection();
-		SynGlyphX::SourceDataCache::IndexSetMap::const_iterator previousSelection = indexSets.find(table);
+		const SourceDataSelectionModel::IndexSetMap& indexSets = m_selectionModel->GetSourceDataSelection();
+		SourceDataSelectionModel::IndexSetMap::const_iterator previousSelection = indexSets.find(table);
 		SynGlyphX::IndexSet indexSet;
 		
 		if (previousSelection != indexSets.end()) {

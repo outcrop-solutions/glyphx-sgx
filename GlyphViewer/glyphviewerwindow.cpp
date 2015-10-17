@@ -32,6 +32,8 @@ GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 	m_glyphForestModel = new SynGlyphXANTz::GlyphForestModel(this);
 
 	m_glyphForestSelectionModel = new SynGlyphX::ItemFocusSelectionModel(m_glyphForestModel, this);
+	m_sourceDataSelectionModel = new SourceDataSelectionModel(m_mappingModel, m_sourceDataCache, m_glyphForestSelectionModel, this);
+
 	CreateMenus();
 	CreateDockWidgets();
 
@@ -210,13 +212,13 @@ void GlyphViewerWindow::CreateDockWidgets() {
 	m_viewMenu->addAction(leftDockWidget->toggleViewAction());
 
 	QDockWidget* rightDockWidget = new QDockWidget(tr("Source Data Selector"), this);
-	m_sourceDataSelectionWidget = new MultiTableElasticListsWidget(m_sourceDataCache, m_glyphForestModel, m_glyphForestSelectionModel, rightDockWidget);
+	m_sourceDataSelectionWidget = new MultiTableElasticListsWidget(m_sourceDataCache, m_sourceDataSelectionModel, rightDockWidget);
 	rightDockWidget->setWidget(m_sourceDataSelectionWidget);
 	addDockWidget(Qt::RightDockWidgetArea, rightDockWidget);
 	m_viewMenu->addAction(rightDockWidget->toggleViewAction());
 
 	QDockWidget* bottomDockWidget = new QDockWidget(tr("Time Animated Filter"), this);
-	m_pseudoTimeFilterWidget = new PseudoTimeFilterWidget(m_mappingModel->GetDataMapping(), m_sourceDataCache, m_glyphForestModel, m_glyphForestSelectionModel, bottomDockWidget);
+	m_pseudoTimeFilterWidget = new PseudoTimeFilterWidget(m_mappingModel->GetDataMapping(), m_sourceDataCache, m_sourceDataSelectionModel, bottomDockWidget);
 	bottomDockWidget->setWidget(m_pseudoTimeFilterWidget);
 	addDockWidget(Qt::BottomDockWidgetArea, bottomDockWidget);
 	m_viewMenu->addAction(bottomDockWidget->toggleViewAction());

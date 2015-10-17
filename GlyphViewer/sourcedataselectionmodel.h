@@ -26,20 +26,25 @@
 #include "range.h"
 #include <unordered_map>
 #include <map>
+#include "guihash.h"
 
 class SourceDataSelectionModel : public QObject
 {
 	Q_OBJECT
 
 public:
+	typedef std::map<QString, SynGlyphX::IndexSet> IndexSetMap;
+
 	SourceDataSelectionModel(SynGlyphX::DataMappingModel* dataMappingModel, SynGlyphX::SourceDataCache::SharedPtr sourceDataCache, SynGlyphX::ItemFocusSelectionModel* sceneSelectionModel, QObject *parent);
 	~SourceDataSelectionModel();
 
-	void SetNewSourceDataSelection(const SynGlyphX::SourceDataCache::IndexSetMap& selectedIndexMap);
-	void SetSourceDataSelectionForTable(const QString& table, const SynGlyphX::IndexSet& newSelectionSet);
+	const SynGlyphX::ItemFocusSelectionModel* GetSceneSelectionModel() const;
+
+	//void SetNewSourceDataSelection(const IndexSetMap& selectedIndexMap);
+	void SetSourceDataSelectionForTable(const QString& table, const SynGlyphX::IndexSet& newSelectionSet, bool updateFocus = true);
 	void ClearSourceDataSelection();
-	void ClearSourceDataSelectionForTable(const QString& table);
-	const SynGlyphX::SourceDataCache::IndexSetMap& GetSourceDataSelection() const;
+	void ClearSourceDataSelectionForTable(const QString& table, bool updateFocus = true);
+	const IndexSetMap& GetSourceDataSelection() const;
 
 signals:
 	void SelectionChanged();
@@ -49,16 +54,19 @@ private slots:
 	void OnSceneModelReset();
 
 private:
+	typedef std::map<SynGlyphX::Range, QString> GlyphTemplateRangeToTableMap;
+	typedef std::unordered_multimap<QString, SynGlyphX::Range, SynGlyphX::QStringHash> TableToGlyphTemplateRangesMap;
+
 	void AddSceneIndexesFromTableToSelection(QItemSelection& selection, const QString& table);
 
 	SynGlyphX::DataMappingModel* m_dataMappingModel;
 	SynGlyphX::SourceDataCache::SharedPtr m_sourceDataCache;
 	SynGlyphX::ItemFocusSelectionModel* m_sceneSelectionModel;
 
-	std::unordered_multimap<QString, SynGlyphX::Range> m_tableToGlyphTreeRangesMap;
-	std::map<SynGlyphX::Range, QString> m_glyphTemplateRangeToTableMap;
+	TableToGlyphTemplateRangesMap m_tableToGlyphTreeRangesMap;
+	GlyphTemplateRangeToTableMap m_glyphTemplateRangeToTableMap;
 
-	SynGlyphX::SourceDataCache::IndexSetMap m_selectedSourceDataSets;
+	IndexSetMap m_selectedSourceDataSets;
 };
 
 #endif // SOURCEDATASELECTIONMODEL_H

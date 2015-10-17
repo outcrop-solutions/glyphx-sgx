@@ -90,6 +90,7 @@ private:
 	GlyphTreeListView* m_treeView;
 	SynGlyphX::SourceDataCache::SharedPtr m_sourceDataCache;
 	MultiTableElasticListsWidget* m_sourceDataSelectionWidget;
+	SourceDataSelectionModel* m_sourceDataSelectionModel;
 	PseudoTimeFilterWidget* m_pseudoTimeFilterWidget;
 };
 

@@ -65,7 +65,7 @@ void SourceDataWidget::closeEvent(QCloseEvent* event) {
 	}
 }
 
-void SourceDataWidget::UpdateTables(const SynGlyphX::SourceDataCache::IndexSetMap& dataIndexes) {
+void SourceDataWidget::UpdateTables(const SourceDataSelectionModel::IndexSetMap& dataIndexes) {
 
 	m_sourceDataTabs->clear();
 	m_sqlQueryModels.clear();
