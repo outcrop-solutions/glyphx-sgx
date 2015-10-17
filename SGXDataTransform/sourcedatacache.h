@@ -38,10 +38,8 @@ namespace SynGlyphX {
 		typedef std::shared_ptr<SourceDataCache> SharedPtr;
 		typedef std::shared_ptr<const SourceDataCache> ConstSharedPtr;
 
-		typedef boost::bimap<unsigned long, QString> TableIndexMap;
 		typedef std::map<QString, QString> TableNameMap;
 
-		typedef std::map<QString, IndexSet> IndexSetMap;
 		typedef std::vector<std::pair<QString, IndexSet>> DistinctValueIndexMap;
 
 		typedef std::map<QString, std::set<QString>> ColumnValueData;
@@ -57,7 +55,6 @@ namespace SynGlyphX {
 		void AddDatasourcesToCache(const DatasourceMaps& datasources);
 		void AddFileDatasourceToCache(const boost::uuids::uuid& id, const FileDatasource& datasource);
 
-		const TableIndexMap& GetTablesIndexMap() const;
 		const TableNameMap& GetFormattedNames() const;
 		TableColumns GetColumnsForTable(const QString& table) const;
 		TableColumns GetColumnsForTable(const boost::uuids::uuid& datasourceID, const QString& originalTablename) const;
@@ -67,7 +64,6 @@ namespace SynGlyphX {
 		SharedSQLQuery CreateSelectFieldQueryAscending(const InputField& inputfield) const;
 		SharedSQLQuery CreateMinMaxQuery(const InputField& inputfield) const;
 		
-		IndexSetMap SplitIndexSet(const IndexSet& indexSet) const;
 		SharedSQLQuery CreateSelectQueryForIndexSet(const QString& tableName, const TableColumns& columns, const IndexSet& indexSet) const;
 		SharedSQLQuery CreateDistinctValueQuery(const QString& tableName, const QString& columnName, const IndexSet& indexSet = IndexSet()) const;
 		SharedSQLQuery CreateDistinctValueAndCountQuery(const QString& tableName, const QString& columnName, const IndexSet& indexSet = IndexSet()) const;
@@ -80,9 +76,6 @@ namespace SynGlyphX {
 		bool IsCacheOutOfDate(const DatasourceMaps& datasources) const;
 
 		DistinctValueIndexMap GetIndexesOrderedByDistinctValue(const QString& tableName, const QString& columnName) const;
-
-		unsigned long GetStartingValueForTable(const QString& tableName) const;
-		QString GetTableNameForIndex(const IndexSet::value_type& index) const;
 
 		static QString CreateTablename(const InputTable& inputTable);
 		static QString CreateTablename(const QString& datasourceID, const QString& originalTablename);
@@ -112,7 +105,6 @@ namespace SynGlyphX {
 
 		static const QString IndexColumnName;
 
-		TableIndexMap m_tableIndexMap;
 		TableNameMap m_tableNameMap;
 	};
 
