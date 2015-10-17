@@ -2,6 +2,9 @@
 #include "glyphpropertieswidget.h"
 #include "singlewidgetdialog.h"
 #include "roledatafilterproxymodel.h"
+#include <QtWidgets/QFileDialog>
+#include <QtCore/QSettings>
+#include "datamappingglyphfile.h"
 
 GlyphTreesView::GlyphTreesView(DataTransformModel* sourceModel, QWidget *parent)
 	: SynGlyphX::TreeEditView(parent),
@@ -25,6 +28,9 @@ GlyphTreesView::GlyphTreesView(DataTransformModel* sourceModel, QWidget *parent)
 
 	m_addChildrenAction = m_glyphActions.AddAction(tr("Add Children"));
 	QObject::connect(m_addChildrenAction, &QAction::triggered, this, &GlyphTreesView::AddChildren);
+
+	m_exportGlyphToFileAction = m_glyphActions.AddAction(tr("Export To File"));
+	QObject::connect(m_exportGlyphToFileAction, &QAction::triggered, this, &GlyphTreesView::ExportGlyphToFile);
 
 	m_glyphActions.AddSeparator();
 
@@ -80,6 +86,7 @@ void GlyphTreesView::EnableActions(const QItemSelection& selection) {
 
 		m_addChildrenAction->setEnabled(true);
 		m_clearSelectedInputBindingsAction->setEnabled(true);
+		m_exportGlyphToFileAction->setEnabled(true);
 	}
 	else {
 
@@ -109,6 +116,32 @@ void GlyphTreesView::AddChildren() {
 			m_sourceModel->AddChildGlyph(filterModel->mapToSource(selectedItems.front()), minMaxGlyph, singleGlyphWidget->GetNumberOfChildren());
 		}
 	}
+}
+
+void GlyphTreesView::ExportGlyphToFile() {
+
+	QSettings settings;
+	settings.beginGroup("ExportGlyphFile");
+	QString glyphFilename = QFileDialog::getSaveFileName(this, tr("Export Glyph To File"), settings.value("LastDir", QDir::currentPath()).toString(), "SynGlyphX Glyph Files (*.sgt)");
+	if (!glyphFilename.isEmpty()) {
+
+		const QModelIndexList& selectedItems = selectionModel()->selectedIndexes();
+
+		if (!selectedItems.isEmpty()) {
+
+			SynGlyphX::RoleDataFilterProxyModel* filterModel = dynamic_cast<SynGlyphX::RoleDataFilterProxyModel*>(model());
+
+			SynGlyphX::DataMappingGlyphGraph::SharedPtr glyphGraph = std::make_shared<SynGlyphX::DataMappingGlyphGraph>(m_sourceModel->GetSubgraph(filterModel->mapToSource(selectedItems.front()), true));
+			glyphGraph->ClearAllInputBindings();
+
+			SynGlyphX::DataMappingGlyphFile glyphFile(glyphGraph);
+			glyphFile.WriteToFile(glyphFilename.toStdString());
+
+			settings.setValue("LastDir", glyphFilename);
+		}
+	}
+
+	settings.endGroup();
 }
 
 void GlyphTreesView::SelectLastGlyphTreeRoot() {
