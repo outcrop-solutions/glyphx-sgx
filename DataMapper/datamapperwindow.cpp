@@ -233,6 +233,8 @@ void DataMapperWindow::CreateDockWidgets() {
 	m_glyphMenu->addActions(m_glyphTreesView->GetGlyphActions());
 	m_editMenu->addActions(m_glyphTreesView->GetEditActions());
 
+	QObject::connect(m_glyphTreesView, &GlyphTreesView::UpdateStatusBar, statusBar(), &QStatusBar::showMessage);
+
     //Add Tree View to dock widget on left side
 	leftDockWidgetGlyphTrees->setWidget(m_glyphTreesView);
 	addDockWidget(Qt::LeftDockWidgetArea, leftDockWidgetGlyphTrees);

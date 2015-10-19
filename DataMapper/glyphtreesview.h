@@ -38,6 +38,7 @@ public:
 
 signals:
 	void SelectionChangedSourceModel(const QItemSelection& selected, const QItemSelection& deselected);
+	void UpdateStatusBar(const QString& message, int timeout);
 
 protected:
 	virtual void selectionChanged(const QItemSelection& selected, const QItemSelection& deselected);

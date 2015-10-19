@@ -5,6 +5,7 @@
 #include <QtWidgets/QFileDialog>
 #include <QtCore/QSettings>
 #include "datamappingglyphfile.h"
+#include "antzcsvwriter.h"
 
 GlyphTreesView::GlyphTreesView(DataTransformModel* sourceModel, QWidget *parent)
 	: SynGlyphX::TreeEditView(parent),
@@ -120,25 +121,47 @@ void GlyphTreesView::AddChildren() {
 
 void GlyphTreesView::ExportGlyphToFile() {
 
+	const QModelIndexList& selectedItems = selectionModel()->selectedIndexes();
+	if (selectedItems.isEmpty()) {
+
+		return;
+	}
+
 	QSettings settings;
 	settings.beginGroup("ExportGlyphFile");
-	QString glyphFilename = QFileDialog::getSaveFileName(this, tr("Export Glyph To File"), settings.value("LastDir", QDir::currentPath()).toString(), "SynGlyphX Glyph Files (*.sgt)");
-	if (!glyphFilename.isEmpty()) {
+	QString glyphFilename = QFileDialog::getSaveFileName(this, tr("Export Glyph To File"), settings.value("LastDir", QDir::currentPath()).toString(), "SynGlyphX Glyph Template Files (*.sgt *.csv)");
+	if (!glyphFilename.isEmpty()) {		
 
-		const QModelIndexList& selectedItems = selectionModel()->selectedIndexes();
+		SynGlyphX::RoleDataFilterProxyModel* filterModel = dynamic_cast<SynGlyphX::RoleDataFilterProxyModel*>(model());
 
-		if (!selectedItems.isEmpty()) {
+		SynGlyphX::DataMappingGlyphGraph::SharedPtr glyphGraph = std::make_shared<SynGlyphX::DataMappingGlyphGraph>(m_sourceModel->GetSubgraph(filterModel->mapToSource(selectedItems.front()), true));
+		glyphGraph->ClearAllInputBindings();
 
-			SynGlyphX::RoleDataFilterProxyModel* filterModel = dynamic_cast<SynGlyphX::RoleDataFilterProxyModel*>(model());
-
-			SynGlyphX::DataMappingGlyphGraph::SharedPtr glyphGraph = std::make_shared<SynGlyphX::DataMappingGlyphGraph>(m_sourceModel->GetSubgraph(filterModel->mapToSource(selectedItems.front()), true));
-			glyphGraph->ClearAllInputBindings();
+		if (glyphFilename.endsWith(".sgt")) {
 
 			SynGlyphX::DataMappingGlyphFile glyphFile(glyphGraph);
 			glyphFile.WriteToFile(glyphFilename.toStdString());
-
-			settings.setValue("LastDir", glyphFilename);
 		}
+		else {
+
+			bool writeMaxGlyph = true;
+			SynGlyphX::GlyphGraph::ConstSharedVector trees;
+			if (writeMaxGlyph) {
+
+				trees.push_back(glyphGraph->GetMaxGlyphTree());
+			}
+			else {
+
+				trees.push_back(glyphGraph->GetMinGlyphTree());
+			}
+
+			SynGlyphXANTz::ANTzCSVWriter& csvWriter = SynGlyphXANTz::ANTzCSVWriter::GetInstance();
+			csvWriter.Write(glyphFilename.toStdString(), "", trees, std::vector<SynGlyphXANTz::ANTzGrid>());
+		}
+
+		settings.setValue("LastDir", glyphFilename);
+
+		emit UpdateStatusBar("Glyph successfully saved to a file", 3000);
 	}
 
 	settings.endGroup();
