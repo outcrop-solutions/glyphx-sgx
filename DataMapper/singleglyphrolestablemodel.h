@@ -19,6 +19,7 @@
 #define SingleGlyphRolesTableModel_H
 
 #include <QtCore/QAbstractTableModel>
+#include <QtGui/QFont>
 #include "datamappingglyphgraph.h"
 #include "datatransformmodel.h"
 #include "datamappingfunction.h"
@@ -36,6 +37,11 @@ public:
 		GeometryShape,
 		NonMappable
 	};
+
+	static const unsigned int s_propertyNameColumn = 0;
+	static const unsigned int s_valueColumn = 1;
+	static const unsigned int s_mappingDataColumn = 2;
+	static const unsigned int s_mappedFieldColumn = 3;
 
 	SingleGlyphRolesTableModel(DataTransformModel* dataTransformModel, QObject *parent = nullptr);
 	~SingleGlyphRolesTableModel();
@@ -69,8 +75,12 @@ public slots:
 
 private slots:
 	void OnSourceModelDataUpdated(const QModelIndex& topLeft, const QModelIndex& bottomRight, const QVector<int>& roles);
+	void OnAllDataUpdated();
 
 private:
+	QString GetPropertyHeader(const QModelIndex& index) const;
+	bool IsAllDataAtIndexTheSame(const QModelIndex& index) const;
+	QVariant GetEditData(const QModelIndex& index) const;
 	void DisconnectAllSignalsFromSourceModel();
 	PropertyType GetFieldType(int row) const;
 	SynGlyphX::MappingFunctionData::SharedPtr CreateNewMappingFunction(SynGlyphX::MappingFunctionData::Function function, PropertyType type) const;
@@ -84,6 +94,8 @@ private:
 
 	QPersistentModelIndex m_selectedDataTransformModelIndex;
 	std::vector<QMetaObject::Connection> m_sourceModelConnections;
+
+	QFont m_headerFont;
 };
 
 #endif // SingleGlyphRolesTableModel_H

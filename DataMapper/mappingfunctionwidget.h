@@ -35,6 +35,7 @@ public slots:
 	void SetFunction(const QString& function);
 
 private slots:
+	void OnFunctionComboBoxChangedByUser();
 	void OnFunctionComboBoxChanged();
 	void OnEditPropertiesClicked();
 

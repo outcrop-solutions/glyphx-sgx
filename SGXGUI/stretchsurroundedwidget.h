@@ -15,47 +15,33 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef BINDINGLINEEDIT_H
-#define BINDINGLINEEDIT_H
+#ifndef SYNGLYPHX_STRETCHSURROUNDEDWIDGET_H
+#define SYNGLYPHX_STRETCHSURROUNDEDWIDGET_H
 
-#include <QtWidgets/QLineEdit>
-#include "inputbinding.h"
-#include "singleglyphrolestablemodel.h"
-#include "datamappingfunction.h"
-#include "inputfieldmimedata.h"
+#include "sgxgui_global.h"
+#include <QtWidgets/QWidget>
 
-class BindingLineEdit : public QWidget
-{
-	Q_OBJECT
-	Q_PROPERTY(SynGlyphX::InputField value READ GetInputField WRITE SetInputField USER true)
+namespace SynGlyphX {
 
-public:
-	BindingLineEdit(const SingleGlyphRolesTableModel* model, QWidget *parent = 0, SynGlyphX::MappingFunctionData::Input acceptedInputTypes = SynGlyphX::MappingFunctionData::Input::All);
-	~BindingLineEdit();
+	class SGXGUI_EXPORT StretchSurroundedWidget : public QWidget
+	{
+		Q_OBJECT
 
-	const SynGlyphX::InputField& GetInputField() const;
-	bool OnlyAcceptsNumericField() const;
+	public:
+		enum StretchType {
 
-public slots:
-	void SetInputField(const SynGlyphX::InputField& inputfield);
-	void Clear();
-	void SetAcceptedInputTypes(SynGlyphX::MappingFunctionData::Input acceptedInputTypes);
+			Vertical = 1,
+			Horizontal = 2,
+			All = 3
+		};
 
-signals:
-	void ValueChanged(SynGlyphX::InputField);
-	void ValueChangedByUser(SynGlyphX::InputField);
+		StretchSurroundedWidget(StretchType stretchType, QWidget* innerWidget, QWidget *parent);
+		~StretchSurroundedWidget();
 
-protected:
-	virtual void dragEnterEvent(QDragEnterEvent* event);
-	virtual void dropEvent(QDropEvent* event);
-	virtual void contextMenuEvent(QContextMenuEvent* event);
+	private:
 
-private:
-	const SingleGlyphRolesTableModel* m_model;
-	SynGlyphX::InputField m_inputField;
-	SynGlyphX::MappingFunctionData::Input m_acceptedInputTypes;
-	QAction* m_clearAction;
-	QLineEdit* m_lineEdit;
-};
+	};
 
-#endif // BINDINGLINEEDIT_H
+} //namespace SynGlyphX
+
+#endif // SYNGLYPHX_STRETCHSURROUNDEDWIDGET_H

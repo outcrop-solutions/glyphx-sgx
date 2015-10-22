@@ -15,47 +15,37 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef BINDINGLINEEDIT_H
-#define BINDINGLINEEDIT_H
+#ifndef SYNGLYPHX_ROWSUBSETPROXYMODEL_H
+#define SYNGLYPHX_ROWSUBSETPROXYMODEL_H
 
-#include <QtWidgets/QLineEdit>
-#include "inputbinding.h"
-#include "singleglyphrolestablemodel.h"
-#include "datamappingfunction.h"
-#include "inputfieldmimedata.h"
+#include "sgxgui_global.h"
+#include <QtCore/QSortFilterProxyModel>
+#include <unordered_set>
 
-class BindingLineEdit : public QWidget
-{
-	Q_OBJECT
-	Q_PROPERTY(SynGlyphX::InputField value READ GetInputField WRITE SetInputField USER true)
+namespace SynGlyphX {
 
-public:
-	BindingLineEdit(const SingleGlyphRolesTableModel* model, QWidget *parent = 0, SynGlyphX::MappingFunctionData::Input acceptedInputTypes = SynGlyphX::MappingFunctionData::Input::All);
-	~BindingLineEdit();
+	class SGXGUI_EXPORT TableSubsetProxyModel : public QSortFilterProxyModel
+	{
+		Q_OBJECT
 
-	const SynGlyphX::InputField& GetInputField() const;
-	bool OnlyAcceptsNumericField() const;
+	public:
+		typedef std::unordered_set<unsigned int> Subset;
 
-public slots:
-	void SetInputField(const SynGlyphX::InputField& inputfield);
-	void Clear();
-	void SetAcceptedInputTypes(SynGlyphX::MappingFunctionData::Input acceptedInputTypes);
+		TableSubsetProxyModel(QObject *parent);
+		~TableSubsetProxyModel();
 
-signals:
-	void ValueChanged(SynGlyphX::InputField);
-	void ValueChangedByUser(SynGlyphX::InputField);
+		void SetRowSubset(Subset rowSubset);
+		void SetColumnSubset(Subset columnSubset);
 
-protected:
-	virtual void dragEnterEvent(QDragEnterEvent* event);
-	virtual void dropEvent(QDropEvent* event);
-	virtual void contextMenuEvent(QContextMenuEvent* event);
+	protected:
+		virtual bool filterAcceptsRow(int source_row, const QModelIndex& source_parent) const;
+		virtual bool filterAcceptsColumn(int source_column, const QModelIndex& source_parent) const;
 
-private:
-	const SingleGlyphRolesTableModel* m_model;
-	SynGlyphX::InputField m_inputField;
-	SynGlyphX::MappingFunctionData::Input m_acceptedInputTypes;
-	QAction* m_clearAction;
-	QLineEdit* m_lineEdit;
-};
+	private:
+		Subset m_rowSubset;
+		Subset m_columnSubset;
+	};
 
-#endif // BINDINGLINEEDIT_H
+} //namespace SynGlyphX
+
+#endif // SYNGLYPHX_ROWSUBSETPROXYMODEL_H

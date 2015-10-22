@@ -38,9 +38,12 @@ SingleGlyphRolesTableModel::SingleGlyphRolesTableModel(DataTransformModel* dataT
 	m_propertyHeaders.push_back(tr("Geometry Surface"));
 	m_propertyHeaders.push_back(tr("Torus Ratio"));
 	
+	m_columnHeaders.push_back(tr("Property"));
 	m_columnHeaders.push_back(tr("Default(s)"));
 	m_columnHeaders.push_back(tr("Function"));
 	m_columnHeaders.push_back(tr("Input"));
+
+	m_headerFont.setBold(true);
 }
 
 SingleGlyphRolesTableModel::~SingleGlyphRolesTableModel()
@@ -56,7 +59,7 @@ int SingleGlyphRolesTableModel::columnCount(const QModelIndex& parent) const {
 	}
 	else {
 
-		return 3;
+		return m_columnHeaders.size();
 	}
 }
 
@@ -74,18 +77,54 @@ const SynGlyphX::InputField SingleGlyphRolesTableModel::GetInputField(SynGlyphX:
 
 QVariant SingleGlyphRolesTableModel::data(const QModelIndex& index, int role) const {
 
-	if ((role == Qt::EditRole) && index.isValid()) { // && m_glyph.valid()) {
+	if (index.isValid()) {
+
+		if ((role == Qt::DisplayRole) && (index.column() == s_propertyNameColumn)) {
+
+			return GetPropertyHeader(index);
+		}
+		else if (role == Qt::EditRole) {
+
+			return GetEditData(index);
+		}
+		else if ((role == Qt::FontRole) && (index.column() == s_propertyNameColumn)) {
+
+			return m_headerFont;
+		}
+		else if ((role == Qt::BackgroundRole) && IsAllDataAtIndexTheSame(index)) {
+
+			return QBrush(Qt::cyan);
+		}
+	}
+	
+
+	return QVariant();
+}
+
+QString SingleGlyphRolesTableModel::GetPropertyHeader(const QModelIndex& index) const {
+
+	return m_propertyHeaders[index.row()];
+}
+
+bool SingleGlyphRolesTableModel::IsAllDataAtIndexTheSame(const QModelIndex& index) const {
+
+	return (index.column() != s_propertyNameColumn);
+}
+
+QVariant SingleGlyphRolesTableModel::GetEditData(const QModelIndex& index) const {
+
+	if (index.column() != s_propertyNameColumn) {
 
 		QVariant prop = m_dataTransformModel->data(m_selectedDataTransformModelIndex, index.row() + DataTransformModel::PropertyRole::PositionX);
 		PropertyType propertyType = GetFieldType(index.row());
 		if (propertyType == PropertyType::Color) {
 
 			SynGlyphX::ColorMappingProperty colorProp = prop.value<SynGlyphX::ColorMappingProperty>();
-			if (index.column() == 1) {
+			if (index.column() == s_mappingDataColumn) {
 
 				return QString::fromStdWString(SynGlyphX::MappingFunctionData::s_functionNames.left.at(colorProp.GetMappingFunctionData()->GetFunction()));
 			}
-			else if (index.column() == 2) {
+			else if (index.column() == s_mappedFieldColumn) {
 
 				return QVariant::fromValue(GetInputField(colorProp.GetBinding().GetInputFieldID()));
 			}
@@ -97,11 +136,11 @@ QVariant SingleGlyphRolesTableModel::data(const QModelIndex& index, int role) co
 		else if (propertyType == PropertyType::Text) {
 
 			SynGlyphX::TextMappingProperty textProp = prop.value<SynGlyphX::TextMappingProperty>();
-			if (index.column() == 1) {
+			if (index.column() == s_mappingDataColumn) {
 
 				return QString::fromStdWString(SynGlyphX::MappingFunctionData::s_functionNames.left.at(textProp.GetMappingFunctionData()->GetFunction()));
 			}
-			else if (index.column() == 2) {
+			else if (index.column() == s_mappedFieldColumn) {
 
 				return QVariant::fromValue(GetInputField(textProp.GetBinding().GetInputFieldID()));
 			}
@@ -113,11 +152,11 @@ QVariant SingleGlyphRolesTableModel::data(const QModelIndex& index, int role) co
 		else if (propertyType == PropertyType::GeometryShape) {
 
 			SynGlyphX::GeometryShapeMappingProperty shapeProp = prop.value<SynGlyphX::GeometryShapeMappingProperty>();
-			if (index.column() == 1) {
+			if (index.column() == s_mappingDataColumn) {
 
 				return QString::fromStdWString(SynGlyphX::MappingFunctionData::s_functionNames.left.at(shapeProp.GetMappingFunctionData()->GetFunction()));
 			}
-			else if (index.column() == 2) {
+			else if (index.column() == s_mappedFieldColumn) {
 
 				return QVariant::fromValue(GetInputField(shapeProp.GetBinding().GetInputFieldID()));
 			}
@@ -129,11 +168,11 @@ QVariant SingleGlyphRolesTableModel::data(const QModelIndex& index, int role) co
 		else if (propertyType == PropertyType::VirtualTopology) {
 
 			SynGlyphX::VirtualTopologyMappingProperty topologyProp = prop.value<SynGlyphX::VirtualTopologyMappingProperty>();
-			if (index.column() == 1) {
+			if (index.column() == s_mappingDataColumn) {
 
 				return QString::fromStdWString(SynGlyphX::MappingFunctionData::s_functionNames.left.at(topologyProp.GetMappingFunctionData()->GetFunction()));
 			}
-			else if (index.column() == 2) {
+			else if (index.column() == s_mappedFieldColumn) {
 
 				return QVariant::fromValue(GetInputField(topologyProp.GetBinding().GetInputFieldID()));
 			}
@@ -145,11 +184,11 @@ QVariant SingleGlyphRolesTableModel::data(const QModelIndex& index, int role) co
 		else if (propertyType == PropertyType::Numeric) {
 
 			SynGlyphX::NumericMappingProperty numericProp = prop.value<SynGlyphX::NumericMappingProperty>();
-			if (index.column() == 1) {
+			if (index.column() == s_mappingDataColumn) {
 
 				return QString::fromStdWString(SynGlyphX::MappingFunctionData::s_functionNames.left.at(numericProp.GetMappingFunctionData()->GetFunction()));
 			}
-			else if (index.column() == 2) {
+			else if (index.column() == s_mappedFieldColumn) {
 
 				return QVariant::fromValue(GetInputField(numericProp.GetBinding().GetInputFieldID()));
 			}
@@ -197,14 +236,12 @@ void SingleGlyphRolesTableModel::SetMinMaxGlyph(const QModelIndex& index) {
 
 		DisconnectAllSignalsFromSourceModel();
 
-		beginResetModel();
 		m_selectedDataTransformModelIndex = index;
 		m_glyphTreeID = glyphTree->first;
-		endResetModel();
+		OnAllDataUpdated();
 
 		m_sourceModelConnections.push_back(QObject::connect(m_dataTransformModel, &DataTransformModel::dataChanged, this, &SingleGlyphRolesTableModel::OnSourceModelDataUpdated));
-		m_sourceModelConnections.push_back(QObject::connect(m_dataTransformModel, &DataTransformModel::modelAboutToBeReset, this, [&, this](){ beginResetModel(); }));
-		m_sourceModelConnections.push_back(QObject::connect(m_dataTransformModel, &DataTransformModel::modelReset, this, [&, this](){ endResetModel(); }));
+		m_sourceModelConnections.push_back(QObject::connect(m_dataTransformModel, &DataTransformModel::modelReset, this, [&, this](){ Clear(); }));
 	}
 	else {
 
@@ -225,10 +262,9 @@ void SingleGlyphRolesTableModel::Clear() {
 
 	DisconnectAllSignalsFromSourceModel();
 
-	beginResetModel();
 	m_glyphTreeID = boost::uuids::nil_uuid();
 	m_selectedDataTransformModelIndex = QModelIndex();
-	endResetModel();
+	OnAllDataUpdated();
 }
 
 bool SingleGlyphRolesTableModel::IsClear() const {
@@ -274,14 +310,14 @@ const SynGlyphX::DatasourceTable& SingleGlyphRolesTableModel::GetAssociatedDatas
 
 Qt::ItemFlags SingleGlyphRolesTableModel::flags(const QModelIndex & index) const {
 
-	return QAbstractTableModel::flags(index) | Qt::ItemIsEditable;
+	return QAbstractTableModel::flags(index); // | Qt::ItemIsEditable;
 }
 
 bool SingleGlyphRolesTableModel::setData(const QModelIndex& index, const QVariant& value, int role) {
 
-	if ((index.isValid()) && (role == Qt::EditRole)) { // && m_glyph.valid()) {
+	if (m_selectedDataTransformModelIndex.isValid() && (index.isValid()) && (role == Qt::EditRole) && (index.column() != s_propertyNameColumn)) {
 
-		if (index.column() == 2) {
+		if (index.column() == s_mappedFieldColumn) {
 
 			SynGlyphX::DataMappingGlyph::MappableField mappableField = static_cast<SynGlyphX::DataMappingGlyph::MappableField>(index.row());
 			SynGlyphX::InputField inputField = value.value<SynGlyphX::InputField>();
@@ -311,7 +347,7 @@ bool SingleGlyphRolesTableModel::setData(const QModelIndex& index, const QVarian
 				if (propertyType == PropertyType::Color) {
 
 					SynGlyphX::ColorMappingProperty colorProp = prop.value<SynGlyphX::ColorMappingProperty>();
-					if (index.column() == 1) {
+					if (index.column() == s_mappingDataColumn) {
 
 						SynGlyphX::MappingFunctionData::Function function = SynGlyphX::MappingFunctionData::s_functionNames.right.at(value.toString().toStdWString());
 						if (function != colorProp.GetMappingFunctionData()->GetFunction()) {
@@ -350,7 +386,7 @@ bool SingleGlyphRolesTableModel::setData(const QModelIndex& index, const QVarian
 				else if (propertyType == PropertyType::GeometryShape) {
 
 					SynGlyphX::GeometryShapeMappingProperty shapeProp = prop.value<SynGlyphX::GeometryShapeMappingProperty>();
-					if (index.column() == 1) {
+					if (index.column() == s_mappingDataColumn) {
 
 						SynGlyphX::MappingFunctionData::Function function = SynGlyphX::MappingFunctionData::s_functionNames.right.at(value.toString().toStdWString());
 						if (function != shapeProp.GetMappingFunctionData()->GetFunction()) {
@@ -386,7 +422,7 @@ bool SingleGlyphRolesTableModel::setData(const QModelIndex& index, const QVarian
 				else if (propertyType == PropertyType::VirtualTopology) {
 
 					SynGlyphX::VirtualTopologyMappingProperty topologyProp = prop.value<SynGlyphX::VirtualTopologyMappingProperty>();
-					if (index.column() == 1) {
+					if (index.column() == s_mappingDataColumn) {
 
 						SynGlyphX::MappingFunctionData::Function function = SynGlyphX::MappingFunctionData::s_functionNames.right.at(value.toString().toStdWString());
 						if (function != topologyProp.GetMappingFunctionData()->GetFunction()) {
@@ -422,7 +458,7 @@ bool SingleGlyphRolesTableModel::setData(const QModelIndex& index, const QVarian
 				else if (propertyType == PropertyType::Numeric) {
 
 					SynGlyphX::NumericMappingProperty numericProp = prop.value<SynGlyphX::NumericMappingProperty>();
-					if (index.column() == 1) {
+					if (index.column() == s_mappingDataColumn) {
 
 						SynGlyphX::MappingFunctionData::Function function = SynGlyphX::MappingFunctionData::s_functionNames.right.at(value.toString().toStdWString());
 						if (function != numericProp.GetMappingFunctionData()->GetFunction()) {
@@ -472,12 +508,10 @@ QVariant SingleGlyphRolesTableModel::headerData(int section, Qt::Orientation ori
 				return m_columnHeaders[section];
 			}
 		}
-		else {
-			
-			if (section < rowCount()) {
-				return m_propertyHeaders[section];
-			}
-		}
+	}
+	else if (role == Qt::FontRole) {
+
+		return m_headerFont;
 	}
 
 	return QVariant();
@@ -694,14 +728,18 @@ void SingleGlyphRolesTableModel::SetMappingFunction(int row, SynGlyphX::MappingF
 	}
 }
 
+void SingleGlyphRolesTableModel::OnAllDataUpdated() {
+
+	emit dataChanged(index(0, 0), index(rowCount() - 1, columnCount() - 1));
+}
+
 void SingleGlyphRolesTableModel::OnSourceModelDataUpdated(const QModelIndex& topLeft, const QModelIndex& bottomRight, const QVector<int>& roles) {
 
 	if (IsSelectedIndexWithinIndexes(topLeft, bottomRight)) {
 
 		if (roles.empty()) {
 
-			beginResetModel();
-			endResetModel();
+			OnAllDataUpdated();
 		}
 		else {
 

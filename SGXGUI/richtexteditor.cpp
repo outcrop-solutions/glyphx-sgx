@@ -13,8 +13,11 @@ namespace SynGlyphX {
 
 		QHBoxLayout* headerLayout = new QHBoxLayout(this);
 
-		QLabel* label = new QLabel(title, this);
-		headerLayout->addWidget(label);
+		if (!title.isEmpty()) {
+
+			QLabel* label = new QLabel(title, this);
+			headerLayout->addWidget(label);
+		}
 		headerLayout->addStretch(1);
 		
 		layout->addLayout(headerLayout);

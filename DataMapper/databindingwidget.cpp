@@ -4,12 +4,16 @@
 #include <QtWidgets/QDoubleSpinBox>
 #include <QtWidgets/QComboBox>
 #include <QtCore/QModelIndex>
+#include <QtWidgets/QHeaderView>
+#include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QVBoxLayout>
 #include "colorminmaxwidget.h"
 #include "doubleminmaxwidget.h"
 #include "intminmaxwidget.h"
 #include "datamappingfunction.h"
 #include "mappingfunctionwidget.h"
 #include "glyphenumcombobox.h"
+#include "stretchsurroundedwidget.h"
 
 DataBindingWidget::DataBindingWidget(SingleGlyphRolesTableModel* model, QWidget *parent)
 	: QTabWidget(parent),
@@ -21,10 +25,17 @@ DataBindingWidget::DataBindingWidget(SingleGlyphRolesTableModel* model, QWidget 
 	CreateGeometryTopologyTab();
 
 	setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
-	QObject::connect(model, &SingleGlyphRolesTableModel::modelReset, this, &DataBindingWidget::OnModelReset);
-	OnModelReset();
 
-	//QObject::connect(model, &SingleGlyphRolesTableModel::modelAboutToBeReset, this, &DataBindingWidget::CommitChanges);
+	for (auto mapperAndRow : m_dataWidgetMappersAndRows) {
+
+		if (mapperAndRow.first != nullptr) {
+
+			mapperAndRow.first->setCurrentIndex(mapperAndRow.second);
+		}
+	}
+
+	QObject::connect(model, &SingleGlyphRolesTableModel::dataChanged, this, &DataBindingWidget::OnModelDataChanged);
+	OnModelDataChanged();
 }
 
 DataBindingWidget::~DataBindingWidget()
@@ -36,21 +47,20 @@ void DataBindingWidget::CreateGeometryTopologyTab() {
 
 	QWidget* widget = new QWidget(this);
 	QVBoxLayout* widgetLayout = new QVBoxLayout(widget);
-	//widgetLayout->setContentsMargins(0, 0, 0, 0);
-	QGridLayout* gridLayout = new QGridLayout(widget);
-	gridLayout->setVerticalSpacing(0);
+	widgetLayout->setContentsMargins(0, 0, 0, 0);
 
-	CreateTableHeader(gridLayout);
-	CreateVerticalGridLines(gridLayout, 3);
-	CreateGridLine(gridLayout, QFrame::HLine, -1, 2);
+	QTableView* tableView = CreateSubsetTableView({ 16, 17 });
 
-	CreateVirtualTopologyTypePropertyWidgets(gridLayout, 16);
-	CreateGridLine(gridLayout, QFrame::HLine);
-	CreateGeometryShapePropertyWidgets(gridLayout, 17);
+	CreateVirtualTopologyTypePropertyWidgets(tableView, 16);
+	CreateGeometryShapePropertyWidgets(tableView, 17);
 
-	gridLayout->setColumnStretch(6, 1);
+	QHeaderView* horizontalHeader = tableView->horizontalHeader();
+	horizontalHeader->setSectionResizeMode(0, QHeaderView::ResizeToContents);
+	horizontalHeader->setSectionResizeMode(1, QHeaderView::ResizeToContents);
+	horizontalHeader->setSectionResizeMode(2, QHeaderView::ResizeToContents);
+	horizontalHeader->setSectionResizeMode(3, QHeaderView::Stretch);
 
-	widgetLayout->addLayout(gridLayout);
+	widgetLayout->addWidget(tableView);
 
 	QHBoxLayout* nonMappableLayout = new QHBoxLayout(widget);
 
@@ -70,290 +80,242 @@ void DataBindingWidget::CreateGeometryTopologyTab() {
 
 void DataBindingWidget::CreateAnimationTable() {
 
-	QWidget* widget = new QWidget(this);
+	QTableView* tableView = CreateSubsetTableView({ 13, 14, 15 });
 
-	QVBoxLayout* layout = new QVBoxLayout(this);
-	QGridLayout* gridLayout = new QGridLayout(this);
-	gridLayout->setVerticalSpacing(0);
+	CreateDoublePropertyWidgets(tableView, 13, -1000.0, 1000.0);
+	CreateDoublePropertyWidgets(tableView, 14, -1000.0, 1000.0);
+	CreateDoublePropertyWidgets(tableView, 15, -1000.0, 1000.0);
 
-	CreateTableHeader(gridLayout);
-	CreateVerticalGridLines(gridLayout, 3);
+	QHeaderView* horizontalHeader = tableView->horizontalHeader();
+	horizontalHeader->setSectionResizeMode(0, QHeaderView::ResizeToContents);
+	horizontalHeader->setSectionResizeMode(1, QHeaderView::ResizeToContents);
+	horizontalHeader->setSectionResizeMode(2, QHeaderView::ResizeToContents);
+	horizontalHeader->setSectionResizeMode(3, QHeaderView::Stretch);
 
-	CreateGridLine(gridLayout, QFrame::HLine, -1, 2);
-
-	CreateDoublePropertyWidgets(gridLayout, 13, -1000.0, 1000.0);
-	CreateGridLine(gridLayout, QFrame::HLine);
-	CreateDoublePropertyWidgets(gridLayout, 14, -1000.0, 1000.0);
-	CreateGridLine(gridLayout, QFrame::HLine);
-	CreateDoublePropertyWidgets(gridLayout, 15, -1000.0, 1000.0);
-
-	gridLayout->setColumnStretch(6, 1);
-
-	layout->addLayout(gridLayout);
-	layout->addStretch(1);
-
-	widget->setLayout(layout);
-	addTab(widget, tr("Animation"));
+	addTab(tableView, tr("Animation"));
 }
 
 void DataBindingWidget::CreateTagAndDescriptionWidget() {
 
-	QWidget* widget = new QWidget(this);
-	QVBoxLayout* layout = new QVBoxLayout;
-	layout->setContentsMargins(0, 0, 0, 0);
+	QTableView* tableView = CreateSubsetTableView({ 11, 12 }, { 0, 3 });
+	SynGlyphX::TableSubsetProxyModel* proxyModel = dynamic_cast<SynGlyphX::TableSubsetProxyModel*>(tableView->model());
 
-	QHBoxLayout* tagLayout = new QHBoxLayout;
-
-	QLabel* label = new QLabel(m_model->headerData(11, Qt::Vertical, Qt::DisplayRole).toString() + ":", this);
-	QFont labelFont = label->font();
-	labelFont.setBold(true);
-	label->setFont(labelFont);
-
-	m_tagLineEdit = new BindingLineEdit(m_model, this);
+	m_tagLineEdit = new BindingLineEdit(m_model, tableView);
+	tableView->setIndexWidget(proxyModel->mapFromSource(m_model->index(11, 3)), m_tagLineEdit);
 
 	QDataWidgetMapper* tagMapper = new QDataWidgetMapper(this);
 	tagMapper->setModel(m_model);
-	tagMapper->addMapping(m_tagLineEdit, 2);  //Bind this to section 2 to keep consistent with other input fields
+	tagMapper->addMapping(m_tagLineEdit, 3);  
 
 	QObject::connect(m_tagLineEdit, &BindingLineEdit::ValueChangedByUser, tagMapper, &QDataWidgetMapper::submit);
 
-	m_dataWidgetMappers.push_back(tagMapper);
+	m_dataWidgetMappersAndRows[tagMapper] = 11;
 
-	m_descriptionEdit = new SynGlyphX::RichTextEditor("<b>" + m_model->headerData(12, Qt::Vertical, Qt::DisplayRole).toString() + ":</b>", this);
+	m_descriptionEdit = new SynGlyphX::RichTextEditor("", tableView);
 	m_descriptionEdit->setEnabled(false);
+	tableView->setIndexWidget(proxyModel->mapFromSource(m_model->index(12, 3)), m_descriptionEdit);
 
 	QDataWidgetMapper* descriptionMapper = new QDataWidgetMapper(this);
 	descriptionMapper->setModel(m_model);
-	descriptionMapper->addMapping(m_descriptionEdit, 2);  //Bind this to section 2 to keep consistent with other input fields
+	descriptionMapper->addMapping(m_descriptionEdit, 3);
 
 	//QObject::connect(m_descriptionEdit, &BindingLineEdit::ValueChangedByUser, mapper, &QDataWidgetMapper::submit);
 
-	m_dataWidgetMappers.push_back(descriptionMapper);
+	m_dataWidgetMappersAndRows[descriptionMapper] = 12;
 
-	tagLayout->addWidget(label);
-	tagLayout->addWidget(m_tagLineEdit);
+	QHeaderView* horizontalHeader = tableView->horizontalHeader();
+	horizontalHeader->setSectionResizeMode(0, QHeaderView::ResizeToContents);
+	horizontalHeader->setSectionResizeMode(1, QHeaderView::Stretch);
 
-	layout->addLayout(tagLayout);
-	layout->addWidget(m_descriptionEdit, 1);
-	widget->setLayout(layout);
-
-	addTab(widget, tr("Tag && Description"));
-}
-
-void DataBindingWidget::CreateVerticalGridLines(QGridLayout* gridLayout, unsigned int count) {
-
-	if (count < 1) {
-
-		throw std::invalid_argument("Can only create one or more vertical grid lines");
-	}
-
-	for (int i = 1; i < (count * 2); i += 2) {
-
-		CreateGridLine(gridLayout, QFrame::VLine, i);
-	}
+	addTab(tableView, tr("Tag && Description"));
 }
 
 void DataBindingWidget::CreateBasePropertiesTable() {
 
-	QWidget* widget = new QWidget(this);
+	QTableView* tableView = CreateSubsetTableView({ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 });
 
-	QVBoxLayout* layout = new QVBoxLayout(this);
-	QGridLayout* gridLayout = new QGridLayout(this);
-	gridLayout->setVerticalSpacing(0);
+	//Position
+	CreateDoublePropertyWidgets(tableView, 0, -1000.0, 1000.0, true);
+	CreateDoublePropertyWidgets(tableView, 1, -1000.0, 1000.0, true);
+	CreateDoublePropertyWidgets(tableView, 2, 0.0, 1000.0);
 
-	CreateTableHeader(gridLayout);
-	CreateVerticalGridLines(gridLayout, 3);
+	//Rotation
+	CreateDoublePropertyWidgets(tableView, 3, -360.0, 360.0);
+	CreateDoublePropertyWidgets(tableView, 4, -360.0, 360.0);
+	CreateDoublePropertyWidgets(tableView, 5, -360.0, 360.0);
 
-	CreateGridLine(gridLayout, QFrame::HLine, -1, 2);
+	//Scale
+	CreateDoublePropertyWidgets(tableView, 6, 0.0, 1000.0);
+	CreateDoublePropertyWidgets(tableView, 7, 0.0, 1000.0);
+	CreateDoublePropertyWidgets(tableView, 8, 0.0, 1000.0);
 
-	CreateDoublePropertyWidgets(gridLayout, 0, -1000.0, 1000.0, true);
-	CreateGridLine(gridLayout, QFrame::HLine);
-	CreateDoublePropertyWidgets(gridLayout, 1, -1000.0, 1000.0, true);
-	CreateGridLine(gridLayout, QFrame::HLine);
-	CreateDoublePropertyWidgets(gridLayout, 2, 0.0, 1000.0);
-	CreateGridLine(gridLayout, QFrame::HLine);
-
-	CreateDoublePropertyWidgets(gridLayout, 3, -360.0, 360.0);
-	CreateGridLine(gridLayout, QFrame::HLine);
-	CreateDoublePropertyWidgets(gridLayout, 4, -360.0, 360.0);
-	CreateGridLine(gridLayout, QFrame::HLine);
-	CreateDoublePropertyWidgets(gridLayout, 5, -360.0, 360.0);
-	CreateGridLine(gridLayout, QFrame::HLine);
-
-	CreateDoublePropertyWidgets(gridLayout, 6, 0.0, 1000.0);
-	CreateGridLine(gridLayout, QFrame::HLine);
-	CreateDoublePropertyWidgets(gridLayout, 7, 0.0, 1000.0);
-	CreateGridLine(gridLayout, QFrame::HLine);
-	CreateDoublePropertyWidgets(gridLayout, 8, 0.0, 1000.0);
-	CreateGridLine(gridLayout, QFrame::HLine);
-
-	CreateColorPropertyWidgets(gridLayout, 9);
-	CreateGridLine(gridLayout, QFrame::HLine);
-	CreateDoublePropertyWidgets(gridLayout, 10, 0.0, 255.0);
+	//Color & Transparency
+	CreateColorPropertyWidgets(tableView, 9);
+	CreateDoublePropertyWidgets(tableView, 10, 0.0, 255.0);
 	//CreateIntegerPropertyWidgets(gridLayout, 10);
 
-	gridLayout->setColumnStretch(6, 1);
+	QHeaderView* horizontalHeader = tableView->horizontalHeader();
+	horizontalHeader->setSectionResizeMode(0, QHeaderView::ResizeToContents);
+	horizontalHeader->setSectionResizeMode(1, QHeaderView::ResizeToContents);
+	horizontalHeader->setSectionResizeMode(2, QHeaderView::ResizeToContents);
+	horizontalHeader->setSectionResizeMode(3, QHeaderView::Stretch);
 
-	layout->addLayout(gridLayout);
-	layout->addStretch(1);
-
-	widget->setLayout(layout);
-	addTab(widget, tr("Base Properties"));
+	addTab(tableView, tr("Base Properties"));
 }
 
-void DataBindingWidget::CreateTableHeader(QGridLayout* gridLayout) {
+QTableView* DataBindingWidget::CreateSubsetTableView(const SynGlyphX::TableSubsetProxyModel::Subset& rowSubset, const SynGlyphX::TableSubsetProxyModel::Subset& columnSubset) {
 
-	QList<QLabel*> columnHeaders;
-	columnHeaders.push_back(new QLabel(tr("Property"), this));
+	QTableView* tableView = new QTableView(this);
 
-	for (int j = 0; j < m_model->columnCount(); ++j) {
+	SynGlyphX::TableSubsetProxyModel* proxyModel = new SynGlyphX::TableSubsetProxyModel(this);
+	proxyModel->setSourceModel(m_model);
+	proxyModel->SetRowSubset(rowSubset);
+	proxyModel->SetColumnSubset(columnSubset);
 
-		columnHeaders.push_back(new QLabel(m_model->headerData(j, Qt::Horizontal, Qt::DisplayRole).toString(), this));
-	}
+	QHeaderView* horizontalHeader = tableView->horizontalHeader();
+	horizontalHeader->setSectionsClickable(false);
+	horizontalHeader->setStretchLastSection(true);
 
-	for (int i = 0; i < columnHeaders.length(); ++i) {
+	QHeaderView* verticalHeader = tableView->verticalHeader();
+	verticalHeader->setSectionResizeMode(QHeaderView::ResizeToContents);
+	verticalHeader->hide();
+	
+	tableView->setSortingEnabled(false);
+	tableView->setSelectionMode(QAbstractItemView::NoSelection);
+	tableView->setModel(proxyModel);
 
-		QLabel* label = columnHeaders[i];
-		QFont labelFont = label->font();
-		labelFont.setBold(true);
-		label->setFont(labelFont);
-		gridLayout->addWidget(label, 0, i * 2, Qt::AlignHCenter);
+	return tableView;
+}
+
+void DataBindingWidget::AddRowOfWidgetsToTable(QTableView* tableView, const QList<QWidget*> widgets, int modelRow, bool addToPositionXYList) {
+
+	SynGlyphX::TableSubsetProxyModel* proxyModel = dynamic_cast<SynGlyphX::TableSubsetProxyModel*>(tableView->model());
+
+	tableView->setIndexWidget(proxyModel->mapFromSource(m_model->index(modelRow, 1)), widgets[0]);
+	tableView->setIndexWidget(proxyModel->mapFromSource(m_model->index(modelRow, 2)), widgets[1]);
+	tableView->setIndexWidget(proxyModel->mapFromSource(m_model->index(modelRow, 3)), widgets[2]);
+
+	if (addToPositionXYList) {
+
+		m_positionXYMinMaxWidgets.push_back(widgets[0]);
+		m_positionXYMinMaxWidgets.push_back(widgets[1]);
 	}
 }
 
-void DataBindingWidget::CreateRowOfPropertyWidgets(QGridLayout* layout, QWidget* valueWidget, MappingFunctionWidget* mappingFunctionWidget, int modelRow, bool addToPositionXYList) {
+QDataWidgetMapper* DataBindingWidget::CreateMapper(QWidget* parent, QWidget* valueWidget, MappingFunctionWidget* mappingFunctionWidget, int modelRow) {
 
 	QDataWidgetMapper* mapper = new QDataWidgetMapper(this);
 	mapper->setSubmitPolicy(QDataWidgetMapper::ManualSubmit);
 
-	QLabel* label = new QLabel(m_model->headerData(modelRow, Qt::Vertical, Qt::DisplayRole).toString(), this);
-	QFont labelFont = label->font();
-	labelFont.setBold(true);
-	label->setFont(labelFont);
-
-	BindingLineEdit* inputBindingLineEdit = new BindingLineEdit(m_model, this, SynGlyphX::MappingFunctionData::Input::Numeric);
+	BindingLineEdit* inputBindingLineEdit = new BindingLineEdit(m_model, parent, SynGlyphX::MappingFunctionData::Input::Numeric);
 
 	mapper->setModel(m_model);
 
-	mapper->addMapping(valueWidget, 0);
-	mapper->addMapping(mappingFunctionWidget, 1);
-	mapper->addMapping(inputBindingLineEdit, 2);
-
-	int newRow = layout->rowCount();
-	layout->addWidget(label, newRow, 0, Qt::AlignHCenter);
-	layout->addWidget(valueWidget, newRow, 2, Qt::AlignHCenter);
-	layout->addWidget(mappingFunctionWidget, newRow, 4, Qt::AlignHCenter);
-	layout->addWidget(inputBindingLineEdit, newRow, 6);
+	mapper->addMapping(valueWidget, 1);
+	mapper->addMapping(mappingFunctionWidget, 2);
+	mapper->addMapping(inputBindingLineEdit, 3);
 
 	QObject::connect(mappingFunctionWidget, &MappingFunctionWidget::FunctionChanged, mapper, &QDataWidgetMapper::submit);
 	QObject::connect(mappingFunctionWidget, &MappingFunctionWidget::SupportedInputChanged, inputBindingLineEdit, &BindingLineEdit::SetAcceptedInputTypes);
 	QObject::connect(inputBindingLineEdit, &BindingLineEdit::ValueChangedByUser, mapper, &QDataWidgetMapper::submit);
 
-	m_dataWidgetMappers.push_back(mapper);
+	m_dataWidgetMappersAndRows[mapper] = modelRow;
 
-	if (addToPositionXYList) {
-
-		m_positionXYMinMaxWidgets.push_back(valueWidget);
-		m_positionXYMinMaxWidgets.push_back(mappingFunctionWidget);
-	}
+	return mapper;
 }
 
-void DataBindingWidget::CreateIntegerPropertyWidgets(QGridLayout* layout, int modelRow, int min, int max) {
+void DataBindingWidget::CreateIntegerPropertyWidgets(QTableView* tableView, int modelRow, int min, int max) {
 
-	SynGlyphX::IntMinMaxWidget* minMaxWidget = new SynGlyphX::IntMinMaxWidget(this);
+	SynGlyphX::IntMinMaxWidget* minMaxWidget = new SynGlyphX::IntMinMaxWidget(tableView);
 	minMaxWidget->layout()->setContentsMargins(0, 0, 0, 0);
 	minMaxWidget->SetKeyboardTracking(false);
 	minMaxWidget->SetRange(min, max);
 	
-	MappingFunctionWidget* mappingFunctionWidget = new MappingFunctionWidget(MappingFunctionWidget::KeyType::Numeric, m_model, modelRow, this);
+	MappingFunctionWidget* mappingFunctionWidget = new MappingFunctionWidget(MappingFunctionWidget::KeyType::Numeric, m_model, modelRow, tableView);
 	mappingFunctionWidget->SetDialogOutputMinMax(min, max);
-	CreateRowOfPropertyWidgets(layout, minMaxWidget, mappingFunctionWidget, modelRow);
+	QDataWidgetMapper* mapper = CreateMapper(tableView, minMaxWidget, mappingFunctionWidget, modelRow);
+	QList<QWidget*> widgetList;
+	widgetList.push_back(mapper->mappedWidgetAt(1));
+	widgetList.push_back(mapper->mappedWidgetAt(2));
+	widgetList.push_back(mapper->mappedWidgetAt(3));
+	AddRowOfWidgetsToTable(tableView, widgetList, modelRow);
 
-	QObject::connect(minMaxWidget, &SynGlyphX::IntMinMaxWidget::ValueChanged, m_dataWidgetMappers.last(), &QDataWidgetMapper::submit);
+	QObject::connect(minMaxWidget, &SynGlyphX::IntMinMaxWidget::ValueChanged, mapper, &QDataWidgetMapper::submit);
 }
 
-void DataBindingWidget::CreateDoublePropertyWidgets(QGridLayout* layout, int modelRow, double min, double max, bool addToPositionXYList) {
+void DataBindingWidget::CreateDoublePropertyWidgets(QTableView* tableView, int modelRow, double min, double max, bool addToPositionXYList) {
 
-	SynGlyphX::DoubleMinMaxWidget* minMaxWidget = new SynGlyphX::DoubleMinMaxWidget(this);
+	SynGlyphX::DoubleMinMaxWidget* minMaxWidget = new SynGlyphX::DoubleMinMaxWidget(tableView);
 	minMaxWidget->layout()->setContentsMargins(0, 0, 0, 0);
 	minMaxWidget->SetKeyboardTracking(false);
 	minMaxWidget->SetRange(min, max);
 	minMaxWidget->SetDecimals(4);
 	minMaxWidget->SetStep(0.1);
 	
-	MappingFunctionWidget* mappingFunctionWidget = new MappingFunctionWidget(MappingFunctionWidget::KeyType::Numeric, m_model, modelRow, this);
+	MappingFunctionWidget* mappingFunctionWidget = new MappingFunctionWidget(MappingFunctionWidget::KeyType::Numeric, m_model, modelRow, tableView);
 	mappingFunctionWidget->SetDialogOutputMinMax(min, max);
-	CreateRowOfPropertyWidgets(layout, minMaxWidget, mappingFunctionWidget, modelRow, addToPositionXYList);
+	QDataWidgetMapper* mapper = CreateMapper(tableView, minMaxWidget, mappingFunctionWidget, modelRow);
+	QList<QWidget*> widgetList;
+	widgetList.push_back(mapper->mappedWidgetAt(1));
+	widgetList.push_back(mapper->mappedWidgetAt(2));
+	widgetList.push_back(mapper->mappedWidgetAt(3));
+	AddRowOfWidgetsToTable(tableView, widgetList, modelRow, addToPositionXYList);
 
-	QObject::connect(minMaxWidget, &SynGlyphX::DoubleMinMaxWidget::ValueChanged, m_dataWidgetMappers.last(), &QDataWidgetMapper::submit);
+	QObject::connect(minMaxWidget, &SynGlyphX::DoubleMinMaxWidget::ValueChanged, mapper, &QDataWidgetMapper::submit);
 }
 
-void DataBindingWidget::CreateColorPropertyWidgets(QGridLayout* layout, int modelRow) {
+void DataBindingWidget::CreateColorPropertyWidgets(QTableView* tableView, int modelRow) {
 
-	SynGlyphX::ColorMinMaxWidget* minMaxWidget = new SynGlyphX::ColorMinMaxWidget(false, this);
+	SynGlyphX::ColorMinMaxWidget* minMaxWidget = new SynGlyphX::ColorMinMaxWidget(false, tableView);
 	minMaxWidget->layout()->setContentsMargins(0, 0, 0, 0);
 
 	MappingFunctionWidget* mappingFunctionWidget = new MappingFunctionWidget(MappingFunctionWidget::KeyType::Color, m_model, modelRow, this);
-	CreateRowOfPropertyWidgets(layout, minMaxWidget, mappingFunctionWidget, modelRow);
+	QDataWidgetMapper* mapper = CreateMapper(tableView, minMaxWidget, mappingFunctionWidget, modelRow);
+	QList<QWidget*> widgetList;
+	widgetList.push_back(mapper->mappedWidgetAt(1));
+	widgetList.push_back(mapper->mappedWidgetAt(2));
+	widgetList.push_back(mapper->mappedWidgetAt(3));
+	AddRowOfWidgetsToTable(tableView, widgetList, modelRow);
 
-	QObject::connect(minMaxWidget, &SynGlyphX::ColorMinMaxWidget::ValueChanged, m_dataWidgetMappers.last(), &QDataWidgetMapper::submit);
+	QObject::connect(minMaxWidget, &SynGlyphX::ColorMinMaxWidget::ValueChanged, mapper, &QDataWidgetMapper::submit);
 }
 
-void DataBindingWidget::CreateGeometryShapePropertyWidgets(QGridLayout* layout, int modelRow) {
+void DataBindingWidget::CreateGeometryShapePropertyWidgets(QTableView* tableView, int modelRow) {
 
-	SynGlyphX::GlyphShapeComboBox* comboBox = new SynGlyphX::GlyphShapeComboBox(this);
+	SynGlyphX::GlyphShapeComboBox* comboBox = new SynGlyphX::GlyphShapeComboBox(tableView);
+	SynGlyphX::StretchSurroundedWidget* stretchSurroundedWidget = new SynGlyphX::StretchSurroundedWidget(SynGlyphX::StretchSurroundedWidget::All, comboBox, this);
 
-	MappingFunctionWidget* mappingFunctionWidget = new MappingFunctionWidget(MappingFunctionWidget::KeyType::GeometryShape, m_model, modelRow, this);
-	CreateRowOfPropertyWidgets(layout, comboBox, mappingFunctionWidget, modelRow);
+	MappingFunctionWidget* mappingFunctionWidget = new MappingFunctionWidget(MappingFunctionWidget::KeyType::GeometryShape, m_model, modelRow, tableView);
+	QDataWidgetMapper* mapper = CreateMapper(tableView, comboBox, mappingFunctionWidget, modelRow);
+	QList<QWidget*> widgetList;
+	widgetList.push_back(stretchSurroundedWidget);
+	widgetList.push_back(mapper->mappedWidgetAt(2));
+	widgetList.push_back(mapper->mappedWidgetAt(3));
+	AddRowOfWidgetsToTable(tableView, widgetList, modelRow);
 
-	QObject::connect(comboBox, &SynGlyphX::GlyphShapeComboBox::currentTextChanged, m_dataWidgetMappers.last(), &QDataWidgetMapper::submit);
+	QObject::connect(comboBox, &SynGlyphX::GlyphShapeComboBox::currentTextChanged, mapper, &QDataWidgetMapper::submit);
 }
 
-void DataBindingWidget::CreateVirtualTopologyTypePropertyWidgets(QGridLayout* layout, int modelRow) {
+void DataBindingWidget::CreateVirtualTopologyTypePropertyWidgets(QTableView* tableView, int modelRow) {
 
-	SynGlyphX::VirtualTopologyComboBox* comboBox = new SynGlyphX::VirtualTopologyComboBox(this);
+	SynGlyphX::VirtualTopologyComboBox* comboBox = new SynGlyphX::VirtualTopologyComboBox(tableView);
+	SynGlyphX::StretchSurroundedWidget* stretchSurroundedWidget = new SynGlyphX::StretchSurroundedWidget(SynGlyphX::StretchSurroundedWidget::Vertical, comboBox, this);
 
-	MappingFunctionWidget* mappingFunctionWidget = new MappingFunctionWidget(MappingFunctionWidget::KeyType::VirtualTopology, m_model, modelRow, this);
-	CreateRowOfPropertyWidgets(layout, comboBox, mappingFunctionWidget, modelRow);
+	MappingFunctionWidget* mappingFunctionWidget = new MappingFunctionWidget(MappingFunctionWidget::KeyType::VirtualTopology, m_model, modelRow, tableView);
+	QDataWidgetMapper* mapper = CreateMapper(tableView, comboBox, mappingFunctionWidget, modelRow);
+	QList<QWidget*> widgetList;
+	widgetList.push_back(stretchSurroundedWidget);
+	widgetList.push_back(mapper->mappedWidgetAt(2));
+	widgetList.push_back(mapper->mappedWidgetAt(3));
+	AddRowOfWidgetsToTable(tableView, widgetList, modelRow);
 
-	QObject::connect(comboBox, &SynGlyphX::VirtualTopologyComboBox::currentTextChanged, m_dataWidgetMappers.last(), &QDataWidgetMapper::submit);
+	QObject::connect(comboBox, &SynGlyphX::VirtualTopologyComboBox::currentTextChanged, mapper, &QDataWidgetMapper::submit);
 }
 
-void DataBindingWidget::CreateGridLine(QGridLayout* layout, QFrame::Shape shape, int index, int thickness) {
-
-	QFrame* line = new QFrame(this);
-	line->setFrameStyle(shape | QFrame::Plain);
-	line->setLineWidth(thickness);
-
-	if (shape == QFrame::VLine) {
-
-		if (index == -1) {
-
-			index = layout->columnCount();
-		}
-		layout->addWidget(line, 0, index, -1, 1);
-	}
-	else {
-
-		if (index == -1) {
-
-			index = layout->rowCount();
-		}
-		layout->addWidget(line, index, 0, 1, -1);
-	}
-}
-
-void DataBindingWidget::OnModelReset() {
+void DataBindingWidget::OnModelDataChanged() {
 
 	bool doesModelHaveData = !m_model->IsClear();
 	setEnabled(doesModelHaveData);
-
-	for (int i = 0; i < m_dataWidgetMappers.length(); ++i) {
-
-		if (m_dataWidgetMappers[i] != nullptr) {
-			m_dataWidgetMappers[i]->setCurrentIndex(i);
-		}
-	}
 
 	if (doesModelHaveData) {
 
@@ -377,10 +339,11 @@ void DataBindingWidget::OnTorusRatioUpdated() {
 
 void DataBindingWidget::CommitChanges() {
 
-	for (QDataWidgetMapper* mapper : m_dataWidgetMappers) {
+	for (auto mapperAndRow : m_dataWidgetMappersAndRows) {
 
-		if (mapper != nullptr) {
-			mapper->submit();
+		if (mapperAndRow.first != nullptr) {
+
+			mapperAndRow.first->submit();
 		}
 	}
 }

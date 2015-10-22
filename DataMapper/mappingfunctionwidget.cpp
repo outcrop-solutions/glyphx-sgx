@@ -28,7 +28,7 @@ MappingFunctionWidget::MappingFunctionWidget(KeyType keyType, SingleGlyphRolesTa
 		m_functionComboBox->addItems(s_enumerationFunctions);
 	}
 	m_functionComboBox->setCurrentIndex(0);
-	QObject::connect(m_functionComboBox, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &MappingFunctionWidget::OnFunctionComboBoxChanged);
+	QObject::connect(m_functionComboBox, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &MappingFunctionWidget::OnFunctionComboBoxChangedByUser);
 	layout->addWidget(m_functionComboBox);
 
 	m_editPropertiesButton = new QPushButton(tr("Edit Properties"), this);
@@ -59,9 +59,18 @@ void MappingFunctionWidget::SetFunction(const QString& function) {
 
 	if (m_functionComboBox->currentText() != function) {
 
+		bool blockSignals = m_functionComboBox->signalsBlocked();
+		m_functionComboBox->blockSignals(true);
 		m_functionComboBox->setCurrentText(function);
 		OnFunctionComboBoxChanged();
+		m_functionComboBox->blockSignals(blockSignals);
 	}
+}
+
+void MappingFunctionWidget::OnFunctionComboBoxChangedByUser() {
+
+	OnFunctionComboBoxChanged();
+	emit FunctionChanged();
 }
 
 void MappingFunctionWidget::OnFunctionComboBoxChanged() {
@@ -69,8 +78,6 @@ void MappingFunctionWidget::OnFunctionComboBoxChanged() {
 	SynGlyphX::MappingFunctionData::Function function = SynGlyphX::MappingFunctionData::s_functionNames.right.at(m_functionComboBox->currentText().toStdWString());
 	bool hasProperties = (function != SynGlyphX::MappingFunctionData::None);
 	m_editPropertiesButton->setEnabled(hasProperties);
-
-	emit FunctionChanged();
 
 	if (function == SynGlyphX::MappingFunctionData::Function::Text2Value) {
 

@@ -20,14 +20,16 @@
 
 #include <QtWidgets/QTabWidget>
 #include <QtWidgets/QTextEdit>
-#include <QtWidgets/QGridLayout>
 #include <QtWidgets/QDataWidgetMapper>
+#include <QtWidgets/QTableView>
 #include "bindinglineedit.h"
 #include "richtexteditor.h"
 #include "datatransformmapping.h"
 #include "singleglyphrolestablemodel.h"
 #include "nonmappablegeometrywidget.h"
 #include "mappingfunctionwidget.h"
+#include "tablesubsetproxymodel.h"
+#include <map>
 
 class DataBindingWidget : public QTabWidget
 {
@@ -42,7 +44,7 @@ public slots:
 	void OnBaseObjectChanged();
 
 private slots:
-	void OnModelReset();
+	void OnModelDataChanged();
 	void OnSurfaceUpdated();
 	void OnTorusRatioUpdated();
 
@@ -51,20 +53,19 @@ private:
 	void CreateAnimationTable();
 	void CreateTagAndDescriptionWidget();
 	void CreateBasePropertiesTable();
-	void CreateTableHeader(QGridLayout* gridLayout);
-	void CreateVerticalGridLines(QGridLayout* gridLayout, unsigned int count);
-	void CreateIntegerPropertyWidgets(QGridLayout* layout, int modelRow, int min = 0, int max = 255);
-	void CreateDoublePropertyWidgets(QGridLayout* layout, int modelRow, double min = -100000.0, double max = 100000.0, bool addToPositionXYList = false);
-	void CreateColorPropertyWidgets(QGridLayout* layout, int modelRow);
-	void CreateGeometryShapePropertyWidgets(QGridLayout* layout, int modelRow);
-	void CreateVirtualTopologyTypePropertyWidgets(QGridLayout* layout, int modelRow);
-	void CreateRowOfPropertyWidgets(QGridLayout* layout, QWidget* valueWidget, MappingFunctionWidget* mappingFunctionWidget, int modelRow, bool addToPositionXYList = false);
-	void CreateGridLine(QGridLayout* layout, QFrame::Shape shape, int index = -1, int thickness = 1);
+	QTableView* CreateSubsetTableView(const SynGlyphX::TableSubsetProxyModel::Subset& rowSubset, const SynGlyphX::TableSubsetProxyModel::Subset& columnSubset = SynGlyphX::TableSubsetProxyModel::Subset());
+	void CreateIntegerPropertyWidgets(QTableView* tableView, int modelRow, int min = 0, int max = 255);
+	void CreateDoublePropertyWidgets(QTableView* tableView, int modelRow, double min = -100000.0, double max = 100000.0, bool addToPositionXYList = false);
+	void CreateColorPropertyWidgets(QTableView* tableView, int modelRow);
+	void CreateGeometryShapePropertyWidgets(QTableView* tableView, int modelRow);
+	void CreateVirtualTopologyTypePropertyWidgets(QTableView* tableView, int modelRow);
+	QDataWidgetMapper* CreateMapper(QWidget* parent, QWidget* valueWidget, MappingFunctionWidget* mappingFunctionWidget, int modelRow);
+	void AddRowOfWidgetsToTable(QTableView* tableView, const QList<QWidget*> widgets, int modelRow, bool addToPositionXYList = false);
 	void EnablePositionXYMixMaxWidgets(bool enable);
 
 	BindingLineEdit* m_tagLineEdit;
 	SynGlyphX::RichTextEditor* m_descriptionEdit;
-	QList<QDataWidgetMapper*> m_dataWidgetMappers;
+	std::map<QDataWidgetMapper*, unsigned int> m_dataWidgetMappersAndRows;
 	SingleGlyphRolesTableModel* m_model;
 	QList<QWidget*> m_positionXYMinMaxWidgets;
 	SynGlyphX::NonMappableGeometryWidget* m_nonMappableGeometryWidget;
