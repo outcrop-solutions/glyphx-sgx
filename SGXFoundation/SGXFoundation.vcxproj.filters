@@ -54,6 +54,9 @@
     <ClInclude Include="glyphgraphtemplate.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="nonmappablegeometryproperties.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -72,6 +75,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="glyphgeometryinfo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="nonmappablegeometryproperties.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
