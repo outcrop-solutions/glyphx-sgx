@@ -45,8 +45,7 @@ public slots:
 
 private slots:
 	void OnModelDataChanged();
-	void OnSurfaceUpdated();
-	void OnTorusRatioUpdated();
+	void OnNonMappablePropertiesUpdated();
 
 private:
 	void CreateGeometryTopologyTab();

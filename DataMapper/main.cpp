@@ -41,15 +41,17 @@ int main(int argc, char *argv[])
 
 	SynGlyphX::GlyphBuilderApplication::SetupIcons(QIcon(":SGXGUI/Resources/synglyphx_x.ico"));
 
-	if (!SynGlyphX::LicensingDialog::CheckLicense()) {
-
-		return 0;
-	}
-
+	qRegisterMetaType<SynGlyphX::GlyphGeometryInfo::Surface>("GlyphGeometryInfo::Surface");
+	qRegisterMetaType<SynGlyphX::NonMappableGeometryProperties>("NonMappableGeometryProperties");
 	qRegisterMetaType<SynGlyphX::ColorMinDiff>("ColorMinDiff");
 	qRegisterMetaType<SynGlyphX::IntMinDiff>("IntMinDiff");
 	qRegisterMetaType<SynGlyphX::DoubleMinDiff>("DoubleMinDiff");
 	qRegisterMetaType<SynGlyphX::InputField>("InputField");
+
+	if (!SynGlyphX::LicensingDialog::CheckLicense()) {
+
+		return 0;
+	}
 
     //Setup and show the splash screen
     QPixmap pixmap(":SGXGUI/Resources/synglyphx_splash.png");

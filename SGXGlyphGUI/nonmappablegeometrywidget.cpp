@@ -28,8 +28,8 @@ namespace SynGlyphX {
 		
 		setLayout(mainLayout);
 
-		QObject::connect(m_surfaceRadioButtonGroup, &SynGlyphX::RadioButtonGroupWidget::ButtonClicked, this, &NonMappableGeometryWidget::SurfaceChanged);
-		QObject::connect(m_ratioSpinBox, static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), this, &NonMappableGeometryWidget::TorusRatioChanged);
+		QObject::connect(m_surfaceRadioButtonGroup, &SynGlyphX::RadioButtonGroupWidget::ButtonClicked, this, &NonMappableGeometryWidget::PropertiesChanged);
+		QObject::connect(m_ratioSpinBox, static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), this, &NonMappableGeometryWidget::PropertiesChanged);
 	}
 
 	NonMappableGeometryWidget::~NonMappableGeometryWidget()
@@ -37,20 +37,18 @@ namespace SynGlyphX {
 
 	}
 
-	void NonMappableGeometryWidget::SetWidget(GlyphGeometryInfo::Surface surface, double torusRatio) {
+	void NonMappableGeometryWidget::SetProperties(const NonMappableGeometryProperties& properties) {
 
-		m_surfaceRadioButtonGroup->SetCheckedButton(surface);
-		m_ratioSpinBox->setValue(torusRatio);
+		m_surfaceRadioButtonGroup->SetCheckedButton(properties.GetSurface());
+		m_ratioSpinBox->setValue(properties.GetTorusRatio());
 	}
 
-	GlyphGeometryInfo::Surface NonMappableGeometryWidget::GetSurface() const {
+	NonMappableGeometryProperties NonMappableGeometryWidget::GetProperties() const {
 
-		return SynGlyphX::GlyphGeometryInfo::s_surfaceNames.right.at(m_surfaceRadioButtonGroup->GetCheckedButtonLabel().toStdWString());
-	}
-
-	double NonMappableGeometryWidget::GetTorusRatio() const {
-
-		return m_ratioSpinBox->value();
+		NonMappableGeometryProperties properties;
+		properties.SetSurface(SynGlyphX::GlyphGeometryInfo::s_surfaceNames.right.at(m_surfaceRadioButtonGroup->GetCheckedButtonLabel().toStdWString()));
+		properties.SetTorusRatio(m_ratioSpinBox->value());
+		return properties;
 	}
 
 	void NonMappableGeometryWidget::ShowTorusRatioWidget(bool show) {

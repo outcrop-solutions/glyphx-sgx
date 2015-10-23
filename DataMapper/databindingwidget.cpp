@@ -45,37 +45,35 @@ DataBindingWidget::~DataBindingWidget()
 
 void DataBindingWidget::CreateGeometryTopologyTab() {
 
-	QWidget* widget = new QWidget(this);
-	QVBoxLayout* widgetLayout = new QVBoxLayout(widget);
-	widgetLayout->setContentsMargins(0, 0, 0, 0);
+	
 
-	QTableView* tableView = CreateSubsetTableView({ 16, 17 });
+	QTableView* tableView = CreateSubsetTableView({ 16, 17, 18 });
+	tableView->setSpan(2, 1, 1, 3);
 
 	CreateVirtualTopologyTypePropertyWidgets(tableView, 16);
 	CreateGeometryShapePropertyWidgets(tableView, 17);
 
+	tableView->resizeColumnToContents(1);
+
 	QHeaderView* horizontalHeader = tableView->horizontalHeader();
 	horizontalHeader->setSectionResizeMode(0, QHeaderView::ResizeToContents);
-	horizontalHeader->setSectionResizeMode(1, QHeaderView::ResizeToContents);
+	horizontalHeader->setSectionResizeMode(1, QHeaderView::Fixed);
 	horizontalHeader->setSectionResizeMode(2, QHeaderView::ResizeToContents);
 	horizontalHeader->setSectionResizeMode(3, QHeaderView::Stretch);
 
-	widgetLayout->addWidget(tableView);
-
-	QHBoxLayout* nonMappableLayout = new QHBoxLayout(widget);
-
-	m_nonMappableGeometryWidget = new SynGlyphX::NonMappableGeometryWidget(widget);
-	nonMappableLayout->addWidget(m_nonMappableGeometryWidget);
-	nonMappableLayout->addStretch(1);
-
-	widgetLayout->addLayout(nonMappableLayout);
+	m_nonMappableGeometryWidget = new SynGlyphX::NonMappableGeometryWidget(tableView);
+	QWidget* widget = new QWidget(this);
+	QHBoxLayout* widgetLayout = new QHBoxLayout(widget);
+	widgetLayout->addWidget(m_nonMappableGeometryWidget);
 	widgetLayout->addStretch(1);
 	widget->setLayout(widgetLayout);
 
-	addTab(widget, tr("Geometry && Topology"));
+	SynGlyphX::TableSubsetProxyModel* proxyModel = dynamic_cast<SynGlyphX::TableSubsetProxyModel*>(tableView->model());
+	tableView->setIndexWidget(proxyModel->mapFromSource(m_model->index(18, 1)), widget);
 
-	QObject::connect(m_nonMappableGeometryWidget, &SynGlyphX::NonMappableGeometryWidget::SurfaceChanged, this, &DataBindingWidget::OnSurfaceUpdated);
-	QObject::connect(m_nonMappableGeometryWidget, &SynGlyphX::NonMappableGeometryWidget::TorusRatioChanged, this, &DataBindingWidget::OnTorusRatioUpdated);
+	addTab(tableView, tr("Geometry && Topology"));
+
+	QObject::connect(m_nonMappableGeometryWidget, &SynGlyphX::NonMappableGeometryWidget::PropertiesChanged, this, &DataBindingWidget::OnNonMappablePropertiesUpdated);
 }
 
 void DataBindingWidget::CreateAnimationTable() {
@@ -227,7 +225,6 @@ QDataWidgetMapper* DataBindingWidget::CreateMapper(QWidget* parent, QWidget* val
 void DataBindingWidget::CreateIntegerPropertyWidgets(QTableView* tableView, int modelRow, int min, int max) {
 
 	SynGlyphX::IntMinMaxWidget* minMaxWidget = new SynGlyphX::IntMinMaxWidget(tableView);
-	minMaxWidget->layout()->setContentsMargins(0, 0, 0, 0);
 	minMaxWidget->SetKeyboardTracking(false);
 	minMaxWidget->SetRange(min, max);
 	
@@ -246,7 +243,6 @@ void DataBindingWidget::CreateIntegerPropertyWidgets(QTableView* tableView, int 
 void DataBindingWidget::CreateDoublePropertyWidgets(QTableView* tableView, int modelRow, double min, double max, bool addToPositionXYList) {
 
 	SynGlyphX::DoubleMinMaxWidget* minMaxWidget = new SynGlyphX::DoubleMinMaxWidget(tableView);
-	minMaxWidget->layout()->setContentsMargins(0, 0, 0, 0);
 	minMaxWidget->SetKeyboardTracking(false);
 	minMaxWidget->SetRange(min, max);
 	minMaxWidget->SetDecimals(4);
@@ -267,7 +263,6 @@ void DataBindingWidget::CreateDoublePropertyWidgets(QTableView* tableView, int m
 void DataBindingWidget::CreateColorPropertyWidgets(QTableView* tableView, int modelRow) {
 
 	SynGlyphX::ColorMinMaxWidget* minMaxWidget = new SynGlyphX::ColorMinMaxWidget(false, tableView);
-	minMaxWidget->layout()->setContentsMargins(0, 0, 0, 0);
 
 	MappingFunctionWidget* mappingFunctionWidget = new MappingFunctionWidget(MappingFunctionWidget::KeyType::Color, m_model, modelRow, this);
 	QDataWidgetMapper* mapper = CreateMapper(tableView, minMaxWidget, mappingFunctionWidget, modelRow);
@@ -315,26 +310,24 @@ void DataBindingWidget::CreateVirtualTopologyTypePropertyWidgets(QTableView* tab
 void DataBindingWidget::OnModelDataChanged() {
 
 	bool doesModelHaveData = !m_model->IsClear();
-	setEnabled(doesModelHaveData);
+	for (int i = 0; i < count(); ++i) {
+
+		widget(i)->setEnabled(doesModelHaveData);
+	}
 
 	if (doesModelHaveData) {
 
 		bool areSignalsBlocked = m_nonMappableGeometryWidget->blockSignals(true);
-		m_nonMappableGeometryWidget->SetWidget(static_cast<SynGlyphX::GlyphGeometryInfo::Surface>(m_model->data(m_model->index(18, 0), Qt::EditRole).toInt()), m_model->data(m_model->index(19, 0), Qt::EditRole).toDouble());
+		m_nonMappableGeometryWidget->SetProperties(m_model->data(m_model->index(18, 1), Qt::EditRole).value<SynGlyphX::NonMappableGeometryProperties>());
 		m_nonMappableGeometryWidget->blockSignals(areSignalsBlocked);
 
 		OnBaseObjectChanged();
 	}
 }
 
-void DataBindingWidget::OnSurfaceUpdated() {
+void DataBindingWidget::OnNonMappablePropertiesUpdated() {
 
-	m_model->setData(m_model->index(18, 0), m_nonMappableGeometryWidget->GetSurface());
-}
-
-void DataBindingWidget::OnTorusRatioUpdated() {
-
-	m_model->setData(m_model->index(19, 0), m_nonMappableGeometryWidget->GetTorusRatio());
+	m_model->setData(m_model->index(18, 1), QVariant::fromValue<SynGlyphX::NonMappableGeometryProperties>(m_nonMappableGeometryWidget->GetProperties()));
 }
 
 void DataBindingWidget::CommitChanges() {

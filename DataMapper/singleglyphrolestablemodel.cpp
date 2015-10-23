@@ -9,6 +9,7 @@
 #include "doubleminmaxwidget.h"
 #include "intminmaxwidget.h"
 #include "inputfieldmimedata.h"
+#include "nonmappablegeometrywidget.h"
 
 SingleGlyphRolesTableModel::SingleGlyphRolesTableModel(DataTransformModel* dataTransformModel, QObject *parent)
 	: QAbstractTableModel(parent),
@@ -35,8 +36,9 @@ SingleGlyphRolesTableModel::SingleGlyphRolesTableModel(DataTransformModel* dataT
 	m_propertyHeaders.push_back(tr("Rotation Rate Z"));
 	m_propertyHeaders.push_back(tr("Virtual Topology Type"));
 	m_propertyHeaders.push_back(tr("Geometry Shape"));
-	m_propertyHeaders.push_back(tr("Geometry Surface"));
-	m_propertyHeaders.push_back(tr("Torus Ratio"));
+	m_propertyHeaders.push_back(tr("Non-Mappable"));
+	//m_propertyHeaders.push_back(tr("Geometry Surface"));
+	//m_propertyHeaders.push_back(tr("Torus Ratio"));
 	
 	m_columnHeaders.push_back(tr("Property"));
 	m_columnHeaders.push_back(tr("Default(s)"));
@@ -199,7 +201,11 @@ QVariant SingleGlyphRolesTableModel::GetEditData(const QModelIndex& index) const
 		}
 		else {
 
-			return prop;
+			if (index.column() == s_valueColumn) {
+
+				QVariant torusRatio = m_dataTransformModel->data(m_selectedDataTransformModelIndex, index.row() + DataTransformModel::PropertyRole::PositionX + 1);
+				return QVariant::fromValue<SynGlyphX::NonMappableGeometryProperties>(SynGlyphX::NonMappableGeometryProperties(prop.value<SynGlyphX::GlyphGeometryInfo::Surface>(), torusRatio.toDouble()));
+			}
 		}
 	}
 
@@ -210,7 +216,7 @@ int	SingleGlyphRolesTableModel::rowCount(const QModelIndex& parent) const {
 
 	if (!parent.isValid()) {
 
-		return DataTransformModel::PropertyRole::GeometryTorusRatio - DataTransformModel::DataTypeRole;
+		return m_propertyHeaders.size();
 	}
 	else {
 
@@ -332,18 +338,25 @@ bool SingleGlyphRolesTableModel::setData(const QModelIndex& index, const QVarian
 		}
 		else {
 
+			PropertyType propertyType = GetFieldType(index.row());
 			int sourceDataRole = index.row() + DataTransformModel::PropertyRole::PositionX;
 			QVariant newProp;
 
-			if (sourceDataRole >= DataTransformModel::PropertyRole::GeometrySurface) {
+			if (propertyType == PropertyType::NonMappable) {
 
-				newProp = value;
+				if (index.column() == s_valueColumn) {
+
+					SynGlyphX::NonMappableGeometryProperties nonMappableProperties = value.value<SynGlyphX::NonMappableGeometryProperties>();
+					if (m_dataTransformModel->setData(m_selectedDataTransformModelIndex, QVariant::fromValue<SynGlyphX::GlyphGeometryInfo::Surface>(nonMappableProperties.GetSurface()), sourceDataRole)) {
+
+						return (m_dataTransformModel->setData(m_selectedDataTransformModelIndex, nonMappableProperties.GetTorusRatio(), sourceDataRole + 1));
+					}
+				}
 			}
 			else {
 
 				bool updateNewProp = false;
 				QVariant prop = m_dataTransformModel->data(m_selectedDataTransformModelIndex, sourceDataRole);
-				PropertyType propertyType = GetFieldType(index.row());
 				if (propertyType == PropertyType::Color) {
 
 					SynGlyphX::ColorMappingProperty colorProp = prop.value<SynGlyphX::ColorMappingProperty>();

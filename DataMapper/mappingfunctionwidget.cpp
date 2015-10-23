@@ -16,7 +16,6 @@ MappingFunctionWidget::MappingFunctionWidget(KeyType keyType, SingleGlyphRolesTa
 	m_dialogOutputMax(100000.0)
 {
 	QHBoxLayout* layout = new QHBoxLayout(this);
-	layout->setContentsMargins(1, 1, 1, 1);
 
 	m_functionComboBox = new QComboBox(this);
 	if ((m_keyType == KeyType::Numeric) || (m_keyType == KeyType::Color)) {
