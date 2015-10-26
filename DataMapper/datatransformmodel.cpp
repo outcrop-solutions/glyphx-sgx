@@ -504,11 +504,11 @@ void DataTransformModel::SetInputField(const boost::uuids::uuid& treeID, SynGlyp
 	m_dataMapping->SetInputField(treeID, node, field, inputfield);
 }*/
 
-void DataTransformModel::SetInputField(const boost::uuids::uuid& treeID, const QModelIndex& index, SynGlyphX::DataMappingGlyph::MappableField field, const SynGlyphX::InputField& inputfield) {
+void DataTransformModel::SetInputField(const QModelIndex& index, SynGlyphX::DataMappingGlyph::MappableField field, const SynGlyphX::InputField& inputfield) {
 
 	SynGlyphX::DataMappingGlyphGraph::ConstGlyphIterator node(static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(index.internalPointer()));
 	//SetInputField(treeID, node, field, inputfield);
-	m_dataMapping->SetInputField(treeID, node, field, inputfield);
+	m_dataMapping->SetInputField(GetTreeId(index), node, field, inputfield);
 	emit dataChanged(index, index);
 }
 /*
@@ -517,19 +517,29 @@ void DataTransformModel::ClearInputBinding(const boost::uuids::uuid& treeID, Syn
 	m_dataMapping->ClearInputBinding(treeID, node, field);
 }*/
 
-void DataTransformModel::ClearInputBinding(const boost::uuids::uuid& treeID, const QModelIndex& index, SynGlyphX::DataMappingGlyph::MappableField field) {
+void DataTransformModel::ClearInputBinding(const QModelIndex& index, SynGlyphX::DataMappingGlyph::MappableField field) {
 
 	SynGlyphX::DataMappingGlyphGraph::ConstGlyphIterator node(static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(index.internalPointer()));
 	//ClearInputBinding(treeID, node, field);
-	m_dataMapping->ClearInputBinding(treeID, node, field);
+	m_dataMapping->ClearInputBinding(GetTreeId(index), node, field);
 	emit dataChanged(index, index);
 }
 
-void DataTransformModel::ClearAllInputBindings(const boost::uuids::uuid& treeID, const QModelIndex& index) {
+void DataTransformModel::ClearAllInputBindings(const QModelIndex& index) {
 
 	SynGlyphX::DataMappingGlyphGraph::ConstGlyphIterator node(static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(index.internalPointer()));
-	m_dataMapping->ClearAllInputBindings(treeID, node);
+	m_dataMapping->ClearAllInputBindings(GetTreeId(index), node);
 	emit dataChanged(index, index);
+}
+
+const SynGlyphX::DataMappingGlyphGraph::InputFieldMap& DataTransformModel::GetInputFieldsForTree(const QModelIndex& index) const {
+
+	if (!index.isValid()) {
+
+		throw std::invalid_argument("Can't get input field map from invalid index");
+	}
+
+	return m_dataMapping->GetGlyphGraphs().at(GetTreeId(index))->GetInputFields();
 }
 
 void DataTransformModel::EnableTables(const boost::uuids::uuid& id, const SynGlyphX::Datasource::TableNames& tables, bool enable) {

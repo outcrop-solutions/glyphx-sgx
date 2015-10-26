@@ -45,8 +45,6 @@ DataBindingTablesWidget::~DataBindingTablesWidget()
 
 void DataBindingTablesWidget::CreateGeometryTopologyTab() {
 
-	
-
 	QTableView* tableView = CreateSubsetTableView({ 16, 17, 18 });
 	tableView->setSpan(2, 1, 1, 3);
 

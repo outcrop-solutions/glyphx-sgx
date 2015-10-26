@@ -14,8 +14,6 @@
 GlyphRolesTableModel::GlyphRolesTableModel(DataTransformModel* dataTransformModel, QObject *parent)
 	: QAbstractTableModel(parent),
 	m_dataTransformModel(dataTransformModel),
-	//m_glyphTree(nullptr),
-	m_glyphTreeID(boost::uuids::nil_uuid()),
 	m_selectedDataTransformModelIndex(QModelIndex())
 {
 	m_propertyHeaders.push_back(tr("Position X"));
@@ -67,13 +65,19 @@ int GlyphRolesTableModel::columnCount(const QModelIndex& parent) const {
 
 const SynGlyphX::InputField GlyphRolesTableModel::GetInputField(SynGlyphX::InputField::HashID fieldID) const {
 
-	if (fieldID == 0) {
+	if ((fieldID == 0) || (!m_selectedDataTransformModelIndex.isValid())) {
 
 		return SynGlyphX::InputField();
 	}
+
+	const SynGlyphX::DataMappingGlyphGraph::InputFieldMap& fieldMap = m_dataTransformModel->GetInputFieldsForTree(m_selectedDataTransformModelIndex);
+	if (fieldMap.count(fieldID) > 0) {
+
+		return fieldMap.at(fieldID);
+	}
 	else {
 
-		return m_dataTransformModel->GetDataMapping()->GetGlyphGraphs().at(m_glyphTreeID)->GetInputFields().at(fieldID);
+		throw std::invalid_argument("FieldID is not listed in input field list");
 	}
 }
 
@@ -243,7 +247,6 @@ void GlyphRolesTableModel::SetMinMaxGlyph(const QModelIndex& index) {
 		DisconnectAllSignalsFromSourceModel();
 
 		m_selectedDataTransformModelIndex = index;
-		m_glyphTreeID = glyphTree->first;
 		OnAllDataUpdated();
 
 		m_sourceModelConnections.push_back(QObject::connect(m_dataTransformModel, &DataTransformModel::dataChanged, this, &GlyphRolesTableModel::OnSourceModelDataUpdated));
@@ -268,7 +271,6 @@ void GlyphRolesTableModel::Clear() {
 
 	DisconnectAllSignalsFromSourceModel();
 
-	m_glyphTreeID = boost::uuids::nil_uuid();
 	m_selectedDataTransformModelIndex = QModelIndex();
 	OnAllDataUpdated();
 }
@@ -282,7 +284,7 @@ bool GlyphRolesTableModel::IsInputFieldCompatible(const SynGlyphX::InputField& i
 
 	if (!IsClear()) {
 
-		const SynGlyphX::DataMappingGlyphGraph::InputFieldMap& inputFields = m_dataTransformModel->GetDataMapping()->GetGlyphGraphs().at(m_glyphTreeID)->GetInputFields();
+		const SynGlyphX::DataMappingGlyphGraph::InputFieldMap& inputFields = m_dataTransformModel->GetInputFieldsForTree(m_selectedDataTransformModelIndex);
 		if (inputFields.empty()) {
 
 			return true;
@@ -300,7 +302,7 @@ bool GlyphRolesTableModel::IsInputFieldCompatible(const SynGlyphX::InputField& i
 
 bool GlyphRolesTableModel::DoesGlyphHaveAssociatedDatasoruceTable() const {
 
-	const SynGlyphX::DataMappingGlyphGraph::InputFieldMap& inputFields = m_dataTransformModel->GetDataMapping()->GetGlyphGraphs().at(m_glyphTreeID)->GetInputFields();
+	const SynGlyphX::DataMappingGlyphGraph::InputFieldMap& inputFields = m_dataTransformModel->GetInputFieldsForTree(m_selectedDataTransformModelIndex);
 	return (!inputFields.empty());
 }
 
@@ -311,7 +313,7 @@ const SynGlyphX::DatasourceTable& GlyphRolesTableModel::GetAssociatedDatasourceT
 		throw std::exception("Glyph tree associated with index has no datasource table associated with it");
 	}
 
-	const SynGlyphX::InputTable& inputTable = m_dataTransformModel->GetDataMapping()->GetGlyphGraphs().at(m_glyphTreeID)->GetInputFields().begin()->second;
+	const SynGlyphX::InputTable& inputTable = m_dataTransformModel->GetInputFieldsForTree(m_selectedDataTransformModelIndex).begin()->second;
 }
 
 Qt::ItemFlags GlyphRolesTableModel::flags(const QModelIndex & index) const {
@@ -329,11 +331,11 @@ bool GlyphRolesTableModel::setData(const QModelIndex& index, const QVariant& val
 			SynGlyphX::InputField inputField = value.value<SynGlyphX::InputField>();
 			if (inputField.IsValid()) {
 
-				m_dataTransformModel->SetInputField(m_glyphTreeID, m_selectedDataTransformModelIndex, mappableField, inputField);
+				m_dataTransformModel->SetInputField(m_selectedDataTransformModelIndex, mappableField, inputField);
 			}
 			else {
 
-				m_dataTransformModel->ClearInputBinding(m_glyphTreeID, m_selectedDataTransformModelIndex, mappableField);
+				m_dataTransformModel->ClearInputBinding(m_selectedDataTransformModelIndex, mappableField);
 			}
 		}
 		else {
@@ -549,7 +551,7 @@ bool GlyphRolesTableModel::IsCurrentGlyphRoot() const {
 
 void GlyphRolesTableModel::ClearInputBindings() {
 
-	m_dataTransformModel->ClearAllInputBindings(m_glyphTreeID, m_selectedDataTransformModelIndex);
+	m_dataTransformModel->ClearAllInputBindings(m_selectedDataTransformModelIndex);
 	emit dataChanged(index(0, columnCount() - 1), index(rowCount() - 1, columnCount() - 1));
 }
 

@@ -87,7 +87,6 @@ private:
 	const SynGlyphX::InputField GetInputField(SynGlyphX::InputField::HashID fieldID) const;
 	bool IsSelectedIndexWithinIndexes(const QModelIndex& topLeft, const QModelIndex& bottomRight) const;
 
-	boost::uuids::uuid m_glyphTreeID;
 	QStringList m_propertyHeaders;
 	QStringList m_columnHeaders;
 	DataTransformModel* m_dataTransformModel;
