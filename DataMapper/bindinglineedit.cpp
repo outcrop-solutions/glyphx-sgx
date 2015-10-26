@@ -6,7 +6,7 @@
 #include "sourcedatamanager.h"
 #include <QtWidgets/QHBoxLayout>
 
-BindingLineEdit::BindingLineEdit(const SingleGlyphRolesTableModel* model, QWidget *parent, SynGlyphX::MappingFunctionData::Input acceptedInputTypes)
+BindingLineEdit::BindingLineEdit(const GlyphRolesTableModel* model, QWidget *parent, SynGlyphX::MappingFunctionData::Input acceptedInputTypes)
 	: QWidget(parent),
 	m_model(model),
 	m_acceptedInputTypes(acceptedInputTypes)

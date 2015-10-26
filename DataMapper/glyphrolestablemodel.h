@@ -15,8 +15,8 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef SingleGlyphRolesTableModel_H
-#define SingleGlyphRolesTableModel_H
+#ifndef GLYPHROLESTABLEMODEL_H
+#define GLYPHROLESTABLEMODEL_H
 
 #include <QtCore/QAbstractTableModel>
 #include <QtGui/QFont>
@@ -24,7 +24,7 @@
 #include "datatransformmodel.h"
 #include "datamappingfunction.h"
 
-class SingleGlyphRolesTableModel : public QAbstractTableModel
+class GlyphRolesTableModel : public QAbstractTableModel
 {
 	Q_OBJECT
 
@@ -43,8 +43,8 @@ public:
 	static const unsigned int s_mappingDataColumn = 2;
 	static const unsigned int s_mappedFieldColumn = 3;
 
-	SingleGlyphRolesTableModel(DataTransformModel* dataTransformModel, QObject *parent = nullptr);
-	~SingleGlyphRolesTableModel();
+	GlyphRolesTableModel(DataTransformModel* dataTransformModel, QObject *parent = nullptr);
+	~GlyphRolesTableModel();
 
 	//Functions from QAbstractItemModel that need to be implemented
 	virtual int columnCount(const QModelIndex& parent = QModelIndex()) const;
@@ -98,4 +98,4 @@ private:
 	QFont m_headerFont;
 };
 
-#endif // SingleGlyphRolesTableModel_H
+#endif // GLYPHROLESTABLEMODEL_H

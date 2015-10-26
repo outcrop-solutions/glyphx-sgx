@@ -1,4 +1,4 @@
-#include "databindingwidget.h"
+#include "databindingtableswidget.h"
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QSpinBox>
 #include <QtWidgets/QDoubleSpinBox>
@@ -15,7 +15,7 @@
 #include "glyphenumcombobox.h"
 #include "stretchsurroundedwidget.h"
 
-DataBindingWidget::DataBindingWidget(SingleGlyphRolesTableModel* model, QWidget *parent)
+DataBindingTablesWidget::DataBindingTablesWidget(GlyphRolesTableModel* model, QWidget *parent)
 	: QTabWidget(parent),
 	m_model(model)
 {
@@ -34,16 +34,16 @@ DataBindingWidget::DataBindingWidget(SingleGlyphRolesTableModel* model, QWidget 
 		}
 	}
 
-	QObject::connect(model, &SingleGlyphRolesTableModel::dataChanged, this, &DataBindingWidget::OnModelDataChanged);
+	QObject::connect(model, &GlyphRolesTableModel::dataChanged, this, &DataBindingTablesWidget::OnModelDataChanged);
 	OnModelDataChanged();
 }
 
-DataBindingWidget::~DataBindingWidget()
+DataBindingTablesWidget::~DataBindingTablesWidget()
 {
 
 }
 
-void DataBindingWidget::CreateGeometryTopologyTab() {
+void DataBindingTablesWidget::CreateGeometryTopologyTab() {
 
 	
 
@@ -73,10 +73,10 @@ void DataBindingWidget::CreateGeometryTopologyTab() {
 
 	addTab(tableView, tr("Geometry && Topology"));
 
-	QObject::connect(m_nonMappableGeometryWidget, &SynGlyphX::NonMappableGeometryWidget::PropertiesChanged, this, &DataBindingWidget::OnNonMappablePropertiesUpdated);
+	QObject::connect(m_nonMappableGeometryWidget, &SynGlyphX::NonMappableGeometryWidget::PropertiesChanged, this, &DataBindingTablesWidget::OnNonMappablePropertiesUpdated);
 }
 
-void DataBindingWidget::CreateAnimationTable() {
+void DataBindingTablesWidget::CreateAnimationTable() {
 
 	QTableView* tableView = CreateSubsetTableView({ 13, 14, 15 });
 
@@ -93,7 +93,7 @@ void DataBindingWidget::CreateAnimationTable() {
 	addTab(tableView, tr("Animation"));
 }
 
-void DataBindingWidget::CreateTagAndDescriptionWidget() {
+void DataBindingTablesWidget::CreateTagAndDescriptionWidget() {
 
 	QTableView* tableView = CreateSubsetTableView({ 11, 12 }, { 0, 3 });
 	SynGlyphX::TableSubsetProxyModel* proxyModel = dynamic_cast<SynGlyphX::TableSubsetProxyModel*>(tableView->model());
@@ -128,7 +128,7 @@ void DataBindingWidget::CreateTagAndDescriptionWidget() {
 	addTab(tableView, tr("Tag && Description"));
 }
 
-void DataBindingWidget::CreateBasePropertiesTable() {
+void DataBindingTablesWidget::CreateBasePropertiesTable() {
 
 	QTableView* tableView = CreateSubsetTableView({ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 });
 
@@ -161,7 +161,7 @@ void DataBindingWidget::CreateBasePropertiesTable() {
 	addTab(tableView, tr("Base Properties"));
 }
 
-QTableView* DataBindingWidget::CreateSubsetTableView(const SynGlyphX::TableSubsetProxyModel::Subset& rowSubset, const SynGlyphX::TableSubsetProxyModel::Subset& columnSubset) {
+QTableView* DataBindingTablesWidget::CreateSubsetTableView(const SynGlyphX::TableSubsetProxyModel::Subset& rowSubset, const SynGlyphX::TableSubsetProxyModel::Subset& columnSubset) {
 
 	QTableView* tableView = new QTableView(this);
 
@@ -185,7 +185,7 @@ QTableView* DataBindingWidget::CreateSubsetTableView(const SynGlyphX::TableSubse
 	return tableView;
 }
 
-void DataBindingWidget::AddRowOfWidgetsToTable(QTableView* tableView, const QList<QWidget*> widgets, int modelRow, bool addToPositionXYList) {
+void DataBindingTablesWidget::AddRowOfWidgetsToTable(QTableView* tableView, const QList<QWidget*> widgets, int modelRow, bool addToPositionXYList) {
 
 	SynGlyphX::TableSubsetProxyModel* proxyModel = dynamic_cast<SynGlyphX::TableSubsetProxyModel*>(tableView->model());
 
@@ -200,7 +200,7 @@ void DataBindingWidget::AddRowOfWidgetsToTable(QTableView* tableView, const QLis
 	}
 }
 
-QDataWidgetMapper* DataBindingWidget::CreateMapper(QWidget* parent, QWidget* valueWidget, MappingFunctionWidget* mappingFunctionWidget, int modelRow) {
+QDataWidgetMapper* DataBindingTablesWidget::CreateMapper(QWidget* parent, QWidget* valueWidget, MappingFunctionWidget* mappingFunctionWidget, int modelRow) {
 
 	QDataWidgetMapper* mapper = new QDataWidgetMapper(this);
 	mapper->setSubmitPolicy(QDataWidgetMapper::ManualSubmit);
@@ -222,7 +222,7 @@ QDataWidgetMapper* DataBindingWidget::CreateMapper(QWidget* parent, QWidget* val
 	return mapper;
 }
 
-void DataBindingWidget::CreateIntegerPropertyWidgets(QTableView* tableView, int modelRow, int min, int max) {
+void DataBindingTablesWidget::CreateIntegerPropertyWidgets(QTableView* tableView, int modelRow, int min, int max) {
 
 	SynGlyphX::IntMinMaxWidget* minMaxWidget = new SynGlyphX::IntMinMaxWidget(tableView);
 	minMaxWidget->SetKeyboardTracking(false);
@@ -240,7 +240,7 @@ void DataBindingWidget::CreateIntegerPropertyWidgets(QTableView* tableView, int 
 	QObject::connect(minMaxWidget, &SynGlyphX::IntMinMaxWidget::ValueChanged, mapper, &QDataWidgetMapper::submit);
 }
 
-void DataBindingWidget::CreateDoublePropertyWidgets(QTableView* tableView, int modelRow, double min, double max, bool addToPositionXYList) {
+void DataBindingTablesWidget::CreateDoublePropertyWidgets(QTableView* tableView, int modelRow, double min, double max, bool addToPositionXYList) {
 
 	SynGlyphX::DoubleMinMaxWidget* minMaxWidget = new SynGlyphX::DoubleMinMaxWidget(tableView);
 	minMaxWidget->SetKeyboardTracking(false);
@@ -260,7 +260,7 @@ void DataBindingWidget::CreateDoublePropertyWidgets(QTableView* tableView, int m
 	QObject::connect(minMaxWidget, &SynGlyphX::DoubleMinMaxWidget::ValueChanged, mapper, &QDataWidgetMapper::submit);
 }
 
-void DataBindingWidget::CreateColorPropertyWidgets(QTableView* tableView, int modelRow) {
+void DataBindingTablesWidget::CreateColorPropertyWidgets(QTableView* tableView, int modelRow) {
 
 	SynGlyphX::ColorMinMaxWidget* minMaxWidget = new SynGlyphX::ColorMinMaxWidget(false, tableView);
 
@@ -275,7 +275,7 @@ void DataBindingWidget::CreateColorPropertyWidgets(QTableView* tableView, int mo
 	QObject::connect(minMaxWidget, &SynGlyphX::ColorMinMaxWidget::ValueChanged, mapper, &QDataWidgetMapper::submit);
 }
 
-void DataBindingWidget::CreateGeometryShapePropertyWidgets(QTableView* tableView, int modelRow) {
+void DataBindingTablesWidget::CreateGeometryShapePropertyWidgets(QTableView* tableView, int modelRow) {
 
 	SynGlyphX::GlyphShapeComboBox* comboBox = new SynGlyphX::GlyphShapeComboBox(tableView);
 	SynGlyphX::StretchSurroundedWidget* stretchSurroundedWidget = new SynGlyphX::StretchSurroundedWidget(SynGlyphX::StretchSurroundedWidget::All, comboBox, this);
@@ -291,7 +291,7 @@ void DataBindingWidget::CreateGeometryShapePropertyWidgets(QTableView* tableView
 	QObject::connect(comboBox, &SynGlyphX::GlyphShapeComboBox::currentTextChanged, mapper, &QDataWidgetMapper::submit);
 }
 
-void DataBindingWidget::CreateVirtualTopologyTypePropertyWidgets(QTableView* tableView, int modelRow) {
+void DataBindingTablesWidget::CreateVirtualTopologyTypePropertyWidgets(QTableView* tableView, int modelRow) {
 
 	SynGlyphX::VirtualTopologyComboBox* comboBox = new SynGlyphX::VirtualTopologyComboBox(tableView);
 	SynGlyphX::StretchSurroundedWidget* stretchSurroundedWidget = new SynGlyphX::StretchSurroundedWidget(SynGlyphX::StretchSurroundedWidget::Vertical, comboBox, this);
@@ -307,7 +307,7 @@ void DataBindingWidget::CreateVirtualTopologyTypePropertyWidgets(QTableView* tab
 	QObject::connect(comboBox, &SynGlyphX::VirtualTopologyComboBox::currentTextChanged, mapper, &QDataWidgetMapper::submit);
 }
 
-void DataBindingWidget::OnModelDataChanged() {
+void DataBindingTablesWidget::OnModelDataChanged() {
 
 	bool doesModelHaveData = !m_model->IsClear();
 	for (int i = 0; i < count(); ++i) {
@@ -325,12 +325,12 @@ void DataBindingWidget::OnModelDataChanged() {
 	}
 }
 
-void DataBindingWidget::OnNonMappablePropertiesUpdated() {
+void DataBindingTablesWidget::OnNonMappablePropertiesUpdated() {
 
 	m_model->setData(m_model->index(18, 1), QVariant::fromValue<SynGlyphX::NonMappableGeometryProperties>(m_nonMappableGeometryWidget->GetProperties()));
 }
 
-void DataBindingWidget::CommitChanges() {
+void DataBindingTablesWidget::CommitChanges() {
 
 	for (auto mapperAndRow : m_dataWidgetMappersAndRows) {
 
@@ -341,12 +341,12 @@ void DataBindingWidget::CommitChanges() {
 	}
 }
 
-void DataBindingWidget::OnBaseObjectChanged() {
+void DataBindingTablesWidget::OnBaseObjectChanged() {
 
 	EnablePositionXYMixMaxWidgets(!(m_model->IsCurrentGlyphRoot() && (m_model->GetDataTransformMapping()->GetBaseObjects()[0].GetType() == SynGlyphX::BaseImage::Type::DownloadedMap)));
 }
 
-void DataBindingWidget::EnablePositionXYMixMaxWidgets(bool enable) {
+void DataBindingTablesWidget::EnablePositionXYMixMaxWidgets(bool enable) {
 
 	for (QWidget* widget : m_positionXYMinMaxWidgets) {
 

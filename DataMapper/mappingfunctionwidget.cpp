@@ -7,7 +7,7 @@
 const QStringList MappingFunctionWidget::s_numericColorFunctions = MappingFunctionWidget::CreateNumericColorFunctionList();
 const QStringList MappingFunctionWidget::s_enumerationFunctions = MappingFunctionWidget::CreateEnumerationFunctionList();
 
-MappingFunctionWidget::MappingFunctionWidget(KeyType keyType, SingleGlyphRolesTableModel* model, int row, QWidget *parent)
+MappingFunctionWidget::MappingFunctionWidget(KeyType keyType, GlyphRolesTableModel* model, int row, QWidget *parent)
 	: QWidget(parent),
 	m_keyType(keyType),
 	m_model(model),

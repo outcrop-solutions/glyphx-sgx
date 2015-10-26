@@ -15,8 +15,8 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef DATABINDINGWIDGET_H
-#define DATABINDINGWIDGET_H
+#ifndef DATABINDINGTABLESWIDGET_H
+#define DATABINDINGTABLESWIDGET_H
 
 #include <QtWidgets/QTabWidget>
 #include <QtWidgets/QTextEdit>
@@ -25,19 +25,19 @@
 #include "bindinglineedit.h"
 #include "richtexteditor.h"
 #include "datatransformmapping.h"
-#include "singleglyphrolestablemodel.h"
+#include "glyphrolestablemodel.h"
 #include "nonmappablegeometrywidget.h"
 #include "mappingfunctionwidget.h"
 #include "tablesubsetproxymodel.h"
 #include <map>
 
-class DataBindingWidget : public QTabWidget
+class DataBindingTablesWidget : public QTabWidget
 {
 	Q_OBJECT
 
 public:
-	DataBindingWidget(SingleGlyphRolesTableModel* model, QWidget *parent = 0);
-	~DataBindingWidget();
+	DataBindingTablesWidget(GlyphRolesTableModel* model, QWidget *parent = 0);
+	~DataBindingTablesWidget();
 
 public slots:
 	void CommitChanges();
@@ -65,9 +65,9 @@ private:
 	BindingLineEdit* m_tagLineEdit;
 	SynGlyphX::RichTextEditor* m_descriptionEdit;
 	std::map<QDataWidgetMapper*, unsigned int> m_dataWidgetMappersAndRows;
-	SingleGlyphRolesTableModel* m_model;
+	GlyphRolesTableModel* m_model;
 	QList<QWidget*> m_positionXYMinMaxWidgets;
 	SynGlyphX::NonMappableGeometryWidget* m_nonMappableGeometryWidget;
 };
 
-#endif // DATABINDINGWIDGET_H
+#endif // DATABINDINGTABLESWIDGET_H

@@ -22,8 +22,8 @@
 #include <QtWidgets/QListView>
 #include <boost/shared_ptr.hpp>
 #include "datasourcestatswidget.h"
-#include "databindingwidget.h"
-#include "singleglyphrolestablemodel.h"
+#include "databindingtableswidget.h"
+#include "glyphrolestablemodel.h"
 #include "datatransformmodel.h"
 #include "antzwidget.h"
 #include "datamapping3dwidget.h"
@@ -98,8 +98,8 @@ private:
 
 	QList<QAction*> m_projectDependentActions;
 
-	DataBindingWidget* m_dataBindingWidget;
-	SingleGlyphRolesTableModel* m_SingleGlyphRolesTableModel;
+	DataBindingTablesWidget* m_dataBindingWidget;
+	GlyphRolesTableModel* m_GlyphRolesTableModel;
 
 	DataTransformModel* m_dataTransformModel;
 	

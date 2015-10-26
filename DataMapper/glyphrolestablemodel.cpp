@@ -1,4 +1,4 @@
-#include "singleglyphrolestablemodel.h"
+#include "glyphrolestablemodel.h"
 #include <QtGui/QColor>
 #include "sourcedatamanager.h"
 #include <QtWidgets/QMessageBox>
@@ -11,7 +11,7 @@
 #include "inputfieldmimedata.h"
 #include "nonmappablegeometrywidget.h"
 
-SingleGlyphRolesTableModel::SingleGlyphRolesTableModel(DataTransformModel* dataTransformModel, QObject *parent)
+GlyphRolesTableModel::GlyphRolesTableModel(DataTransformModel* dataTransformModel, QObject *parent)
 	: QAbstractTableModel(parent),
 	m_dataTransformModel(dataTransformModel),
 	//m_glyphTree(nullptr),
@@ -48,12 +48,12 @@ SingleGlyphRolesTableModel::SingleGlyphRolesTableModel(DataTransformModel* dataT
 	m_headerFont.setBold(true);
 }
 
-SingleGlyphRolesTableModel::~SingleGlyphRolesTableModel()
+GlyphRolesTableModel::~GlyphRolesTableModel()
 {
 
 }
 
-int SingleGlyphRolesTableModel::columnCount(const QModelIndex& parent) const {
+int GlyphRolesTableModel::columnCount(const QModelIndex& parent) const {
 
 	if (parent.isValid()) {
 
@@ -65,7 +65,7 @@ int SingleGlyphRolesTableModel::columnCount(const QModelIndex& parent) const {
 	}
 }
 
-const SynGlyphX::InputField SingleGlyphRolesTableModel::GetInputField(SynGlyphX::InputField::HashID fieldID) const {
+const SynGlyphX::InputField GlyphRolesTableModel::GetInputField(SynGlyphX::InputField::HashID fieldID) const {
 
 	if (fieldID == 0) {
 
@@ -77,7 +77,7 @@ const SynGlyphX::InputField SingleGlyphRolesTableModel::GetInputField(SynGlyphX:
 	}
 }
 
-QVariant SingleGlyphRolesTableModel::data(const QModelIndex& index, int role) const {
+QVariant GlyphRolesTableModel::data(const QModelIndex& index, int role) const {
 
 	if (index.isValid()) {
 
@@ -103,17 +103,17 @@ QVariant SingleGlyphRolesTableModel::data(const QModelIndex& index, int role) co
 	return QVariant();
 }
 
-QString SingleGlyphRolesTableModel::GetPropertyHeader(const QModelIndex& index) const {
+QString GlyphRolesTableModel::GetPropertyHeader(const QModelIndex& index) const {
 
 	return m_propertyHeaders[index.row()];
 }
 
-bool SingleGlyphRolesTableModel::IsAllDataAtIndexTheSame(const QModelIndex& index) const {
+bool GlyphRolesTableModel::IsAllDataAtIndexTheSame(const QModelIndex& index) const {
 
 	return (index.column() != s_propertyNameColumn);
 }
 
-QVariant SingleGlyphRolesTableModel::GetEditData(const QModelIndex& index) const {
+QVariant GlyphRolesTableModel::GetEditData(const QModelIndex& index) const {
 
 	if (index.column() != s_propertyNameColumn) {
 
@@ -212,7 +212,7 @@ QVariant SingleGlyphRolesTableModel::GetEditData(const QModelIndex& index) const
 	return QVariant();
 }
 
-int	SingleGlyphRolesTableModel::rowCount(const QModelIndex& parent) const {
+int	GlyphRolesTableModel::rowCount(const QModelIndex& parent) const {
 
 	if (!parent.isValid()) {
 
@@ -224,7 +224,7 @@ int	SingleGlyphRolesTableModel::rowCount(const QModelIndex& parent) const {
 	}
 }
 
-void SingleGlyphRolesTableModel::SetMinMaxGlyph(const QModelIndex& index) {
+void GlyphRolesTableModel::SetMinMaxGlyph(const QModelIndex& index) {
 
 	if (index.isValid()) {
 
@@ -246,7 +246,7 @@ void SingleGlyphRolesTableModel::SetMinMaxGlyph(const QModelIndex& index) {
 		m_glyphTreeID = glyphTree->first;
 		OnAllDataUpdated();
 
-		m_sourceModelConnections.push_back(QObject::connect(m_dataTransformModel, &DataTransformModel::dataChanged, this, &SingleGlyphRolesTableModel::OnSourceModelDataUpdated));
+		m_sourceModelConnections.push_back(QObject::connect(m_dataTransformModel, &DataTransformModel::dataChanged, this, &GlyphRolesTableModel::OnSourceModelDataUpdated));
 		m_sourceModelConnections.push_back(QObject::connect(m_dataTransformModel, &DataTransformModel::modelReset, this, [&, this](){ Clear(); }));
 	}
 	else {
@@ -255,7 +255,7 @@ void SingleGlyphRolesTableModel::SetMinMaxGlyph(const QModelIndex& index) {
 	}
 }
 
-void SingleGlyphRolesTableModel::DisconnectAllSignalsFromSourceModel() {
+void GlyphRolesTableModel::DisconnectAllSignalsFromSourceModel() {
 
 	for (auto& connection : m_sourceModelConnections) {
 
@@ -264,7 +264,7 @@ void SingleGlyphRolesTableModel::DisconnectAllSignalsFromSourceModel() {
 	m_sourceModelConnections.clear();
 }
 
-void SingleGlyphRolesTableModel::Clear() {
+void GlyphRolesTableModel::Clear() {
 
 	DisconnectAllSignalsFromSourceModel();
 
@@ -273,12 +273,12 @@ void SingleGlyphRolesTableModel::Clear() {
 	OnAllDataUpdated();
 }
 
-bool SingleGlyphRolesTableModel::IsClear() const {
+bool GlyphRolesTableModel::IsClear() const {
 
 	return (!m_selectedDataTransformModelIndex.isValid());
 }
 
-bool SingleGlyphRolesTableModel::IsInputFieldCompatible(const SynGlyphX::InputField& inputField) const {
+bool GlyphRolesTableModel::IsInputFieldCompatible(const SynGlyphX::InputField& inputField) const {
 
 	if (!IsClear()) {
 
@@ -298,13 +298,13 @@ bool SingleGlyphRolesTableModel::IsInputFieldCompatible(const SynGlyphX::InputFi
 	return false;
 }
 
-bool SingleGlyphRolesTableModel::DoesGlyphHaveAssociatedDatasoruceTable() const {
+bool GlyphRolesTableModel::DoesGlyphHaveAssociatedDatasoruceTable() const {
 
 	const SynGlyphX::DataMappingGlyphGraph::InputFieldMap& inputFields = m_dataTransformModel->GetDataMapping()->GetGlyphGraphs().at(m_glyphTreeID)->GetInputFields();
 	return (!inputFields.empty());
 }
 
-const SynGlyphX::DatasourceTable& SingleGlyphRolesTableModel::GetAssociatedDatasourceTable() const {
+const SynGlyphX::DatasourceTable& GlyphRolesTableModel::GetAssociatedDatasourceTable() const {
 
 	if (!DoesGlyphHaveAssociatedDatasoruceTable()) {
 
@@ -314,12 +314,12 @@ const SynGlyphX::DatasourceTable& SingleGlyphRolesTableModel::GetAssociatedDatas
 	const SynGlyphX::InputTable& inputTable = m_dataTransformModel->GetDataMapping()->GetGlyphGraphs().at(m_glyphTreeID)->GetInputFields().begin()->second;
 }
 
-Qt::ItemFlags SingleGlyphRolesTableModel::flags(const QModelIndex & index) const {
+Qt::ItemFlags GlyphRolesTableModel::flags(const QModelIndex & index) const {
 
 	return QAbstractTableModel::flags(index); // | Qt::ItemIsEditable;
 }
 
-bool SingleGlyphRolesTableModel::setData(const QModelIndex& index, const QVariant& value, int role) {
+bool GlyphRolesTableModel::setData(const QModelIndex& index, const QVariant& value, int role) {
 
 	if (m_selectedDataTransformModelIndex.isValid() && (index.isValid()) && (role == Qt::EditRole) && (index.column() != s_propertyNameColumn)) {
 
@@ -511,7 +511,7 @@ bool SingleGlyphRolesTableModel::setData(const QModelIndex& index, const QVarian
 	return false;
 }
 
-QVariant SingleGlyphRolesTableModel::headerData(int section, Qt::Orientation orientation, int role) const {
+QVariant GlyphRolesTableModel::headerData(int section, Qt::Orientation orientation, int role) const {
 
 	if (role == Qt::DisplayRole) {
 
@@ -530,12 +530,12 @@ QVariant SingleGlyphRolesTableModel::headerData(int section, Qt::Orientation ori
 	return QVariant();
 }
 
-SynGlyphX::DataTransformMapping::ConstSharedPtr SingleGlyphRolesTableModel::GetDataTransformMapping() const {
+SynGlyphX::DataTransformMapping::ConstSharedPtr GlyphRolesTableModel::GetDataTransformMapping() const {
 
 	return m_dataTransformModel->GetDataMapping();
 }
 
-bool SingleGlyphRolesTableModel::IsCurrentGlyphRoot() const {
+bool GlyphRolesTableModel::IsCurrentGlyphRoot() const {
 
 	/*if (m_glyphTree == nullptr) {
 
@@ -547,13 +547,13 @@ bool SingleGlyphRolesTableModel::IsCurrentGlyphRoot() const {
 	return (!m_selectedDataTransformModelIndex.parent().isValid());
 }
 
-void SingleGlyphRolesTableModel::ClearInputBindings() {
+void GlyphRolesTableModel::ClearInputBindings() {
 
 	m_dataTransformModel->ClearAllInputBindings(m_glyphTreeID, m_selectedDataTransformModelIndex);
 	emit dataChanged(index(0, columnCount() - 1), index(rowCount() - 1, columnCount() - 1));
 }
 
-SingleGlyphRolesTableModel::PropertyType SingleGlyphRolesTableModel::GetFieldType(int row) const {
+GlyphRolesTableModel::PropertyType GlyphRolesTableModel::GetFieldType(int row) const {
 
 	if ((row == 11) || (row == 12)) {
 
@@ -581,7 +581,7 @@ SingleGlyphRolesTableModel::PropertyType SingleGlyphRolesTableModel::GetFieldTyp
 	}
 }
 
-SynGlyphX::MappingFunctionData::SharedPtr SingleGlyphRolesTableModel::CreateNewMappingFunction(SynGlyphX::MappingFunctionData::Function function, PropertyType type) const {
+SynGlyphX::MappingFunctionData::SharedPtr GlyphRolesTableModel::CreateNewMappingFunction(SynGlyphX::MappingFunctionData::Function function, PropertyType type) const {
 
 	if ((function == SynGlyphX::MappingFunctionData::Function::LinearInterpolation) || (function == SynGlyphX::MappingFunctionData::Function::LogarithmicInterpolation)) {
 
@@ -667,7 +667,7 @@ SynGlyphX::MappingFunctionData::SharedPtr SingleGlyphRolesTableModel::CreateNewM
 	return std::make_shared<SynGlyphX::MappingFunctionData>();
 }
 
-SynGlyphX::MappingFunctionData::ConstSharedPtr SingleGlyphRolesTableModel::GetMappingFunction(int row) const {
+SynGlyphX::MappingFunctionData::ConstSharedPtr GlyphRolesTableModel::GetMappingFunction(int row) const {
 
 	QVariant prop = m_dataTransformModel->data(m_selectedDataTransformModelIndex, row + DataTransformModel::PropertyRole::PositionX);
 	PropertyType propertyType = GetFieldType(row);
@@ -698,7 +698,7 @@ SynGlyphX::MappingFunctionData::ConstSharedPtr SingleGlyphRolesTableModel::GetMa
 	}
 }
 
-void SingleGlyphRolesTableModel::SetMappingFunction(int row, SynGlyphX::MappingFunctionData::SharedPtr mappingFunction) {
+void GlyphRolesTableModel::SetMappingFunction(int row, SynGlyphX::MappingFunctionData::SharedPtr mappingFunction) {
 
 	int sourceDataRole = row + DataTransformModel::PropertyRole::PositionX;
 	QVariant prop = m_dataTransformModel->data(m_selectedDataTransformModelIndex, sourceDataRole);
@@ -741,12 +741,12 @@ void SingleGlyphRolesTableModel::SetMappingFunction(int row, SynGlyphX::MappingF
 	}
 }
 
-void SingleGlyphRolesTableModel::OnAllDataUpdated() {
+void GlyphRolesTableModel::OnAllDataUpdated() {
 
 	emit dataChanged(index(0, 0), index(rowCount() - 1, columnCount() - 1));
 }
 
-void SingleGlyphRolesTableModel::OnSourceModelDataUpdated(const QModelIndex& topLeft, const QModelIndex& bottomRight, const QVector<int>& roles) {
+void GlyphRolesTableModel::OnSourceModelDataUpdated(const QModelIndex& topLeft, const QModelIndex& bottomRight, const QVector<int>& roles) {
 
 	if (IsSelectedIndexWithinIndexes(topLeft, bottomRight)) {
 
@@ -768,7 +768,7 @@ void SingleGlyphRolesTableModel::OnSourceModelDataUpdated(const QModelIndex& top
 	}
 }
 
-bool SingleGlyphRolesTableModel::IsSelectedIndexWithinIndexes(const QModelIndex& topLeft, const QModelIndex& bottomRight) const {
+bool GlyphRolesTableModel::IsSelectedIndexWithinIndexes(const QModelIndex& topLeft, const QModelIndex& bottomRight) const {
 
 	if (!m_selectedDataTransformModelIndex.isValid()) {
 
@@ -789,7 +789,7 @@ bool SingleGlyphRolesTableModel::IsSelectedIndexWithinIndexes(const QModelIndex&
 	return ((index.row() >= topLeft.row()) && (index.row() <= bottomRight.row()));
 }
 
-DataTransformModel* SingleGlyphRolesTableModel::GetSourceModel() const {
+DataTransformModel* GlyphRolesTableModel::GetSourceModel() const {
 
 	return m_dataTransformModel;
 }
