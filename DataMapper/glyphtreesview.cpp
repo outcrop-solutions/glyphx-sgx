@@ -23,7 +23,7 @@ GlyphTreesView::GlyphTreesView(DataTransformModel* sourceModel, QWidget *parent)
 	setDragDropMode(QAbstractItemView::InternalMove);
 	setDefaultDropAction(Qt::MoveAction);
 	SetScrollOnSelection(true);
-	setSelectionMode(QAbstractItemView::SingleSelection);
+	setSelectionMode(QAbstractItemView::ExtendedSelection);
 	setHeaderHidden(true);
 	setContextMenuPolicy(Qt::ContextMenuPolicy::ActionsContextMenu);
 
@@ -65,7 +65,7 @@ void GlyphTreesView::selectionChanged(const QItemSelection& selected, const QIte
 	SynGlyphX::TreeEditView::selectionChanged(selected, deselected);
 	
 	SynGlyphX::RoleDataFilterProxyModel* filterModel = dynamic_cast<SynGlyphX::RoleDataFilterProxyModel*>(model());
-	emit SelectionChangedSourceModel(filterModel->mapSelectionToSource(selected), filterModel->mapSelectionToSource(deselected));
+	emit SelectionChangedSourceModel(filterModel->mapSelectionToSource(selectionModel()->selection()).indexes());
 }
 
 void GlyphTreesView::EnableActions(const QItemSelection& selection) {

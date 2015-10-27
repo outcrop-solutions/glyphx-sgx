@@ -37,7 +37,7 @@ public:
 	void SelectLastGlyphTreeRoot();
 
 signals:
-	void SelectionChangedSourceModel(const QItemSelection& selected, const QItemSelection& deselected);
+	void SelectionChangedSourceModel(const QModelIndexList& selectedIndexes);
 	void UpdateStatusBar(const QString& message, int timeout);
 
 protected:

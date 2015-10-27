@@ -20,6 +20,7 @@
 
 #include <QtCore/QAbstractTableModel>
 #include <QtGui/QFont>
+#include <QtCore/QItemSelection>
 #include "datamappingglyphgraph.h"
 #include "datatransformmodel.h"
 #include "datamappingfunction.h"
@@ -55,7 +56,7 @@ public:
 	virtual QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
 
 	SynGlyphX::DataTransformMapping::ConstSharedPtr GetDataTransformMapping() const;
-	bool IsCurrentGlyphRoot() const;
+	bool IsAnyCurrentGlyphRoot() const;
 	bool IsClear() const;
 
 	SynGlyphX::MappingFunctionData::ConstSharedPtr GetMappingFunction(int row) const;
@@ -63,13 +64,13 @@ public:
 
 	bool IsInputFieldCompatible(const SynGlyphX::InputField& inputField) const;
 
-	bool DoesGlyphHaveAssociatedDatasoruceTable() const;
-	const SynGlyphX::DatasourceTable& GetAssociatedDatasourceTable() const;
+	//bool DoesGlyphHaveAssociatedDatasoruceTable() const;
+	//const SynGlyphX::InputTable& GetAssociatedDatasourceTable() const;
 
 	DataTransformModel* GetSourceModel() const;
 
 public slots:
-	void SetMinMaxGlyph(const QModelIndex& index);
+	void SetSelectedGlyphTreeIndexes(const QModelIndexList& indexList);
 	void Clear();
 	void ClearInputBindings();
 
@@ -79,19 +80,22 @@ private slots:
 
 private:
 	QString GetPropertyHeader(const QModelIndex& index) const;
-	bool IsAllDataAtIndexTheSame(const QModelIndex& index) const;
+	bool IsDataAtIndexDifferent(const QModelIndex& index) const;
 	QVariant GetEditData(const QModelIndex& index) const;
 	void DisconnectAllSignalsFromSourceModel();
 	PropertyType GetFieldType(int row) const;
 	SynGlyphX::MappingFunctionData::SharedPtr CreateNewMappingFunction(SynGlyphX::MappingFunctionData::Function function, PropertyType type) const;
 	const SynGlyphX::InputField GetInputField(SynGlyphX::InputField::HashID fieldID) const;
-	bool IsSelectedIndexWithinIndexes(const QModelIndex& topLeft, const QModelIndex& bottomRight) const;
+	bool IsAnySelectedIndexWithinIndexes(const QModelIndex& topLeft, const QModelIndex& bottomRight) const;
+	void DetermineAssociatedInputTable();
 
 	QStringList m_propertyHeaders;
 	QStringList m_columnHeaders;
 	DataTransformModel* m_dataTransformModel;
 
-	QPersistentModelIndex m_selectedDataTransformModelIndex;
+	bool m_isAnySelectedGlyphRoot;
+	boost::optional<SynGlyphX::InputTable> m_associatedInputTable;
+	QList<QPersistentModelIndex> m_selectedDataTransformModelIndexes;
 	std::vector<QMetaObject::Connection> m_sourceModelConnections;
 
 	QFont m_headerFont;

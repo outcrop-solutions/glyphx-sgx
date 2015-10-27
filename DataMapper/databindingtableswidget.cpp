@@ -341,7 +341,7 @@ void DataBindingTablesWidget::CommitChanges() {
 
 void DataBindingTablesWidget::OnBaseObjectChanged() {
 
-	EnablePositionXYMixMaxWidgets(!(m_model->IsCurrentGlyphRoot() && (m_model->GetDataTransformMapping()->GetBaseObjects()[0].GetType() == SynGlyphX::BaseImage::Type::DownloadedMap)));
+	EnablePositionXYMixMaxWidgets(!(m_model->IsAnyCurrentGlyphRoot() && (m_model->GetDataTransformMapping()->GetBaseObjects()[0].GetType() == SynGlyphX::BaseImage::Type::DownloadedMap)));
 }
 
 void DataBindingTablesWidget::EnablePositionXYMixMaxWidgets(bool enable) {

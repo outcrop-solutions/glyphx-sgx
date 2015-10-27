@@ -60,7 +60,6 @@ private slots:
 	void ChangeMapDownloadSettings();
 	void ChangeGlyphDefaults();
 	void ChangeNewMappingDefaults();
-	void OnGlyphTreesViewSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected);
 	void ChangeSceneProperties();
 	void ChangeOptions();
 
@@ -99,7 +98,7 @@ private:
 	QList<QAction*> m_projectDependentActions;
 
 	DataBindingTablesWidget* m_dataBindingWidget;
-	GlyphRolesTableModel* m_GlyphRolesTableModel;
+	GlyphRolesTableModel* m_glyphRolesTableModel;
 
 	DataTransformModel* m_dataTransformModel;
 	
