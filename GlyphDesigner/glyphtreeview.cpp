@@ -16,6 +16,7 @@ GlyphTreeView::GlyphTreeView(SynGlyphXANTz::MinMaxGlyphTreeModel* model, SynGlyp
     setDragDropMode(QAbstractItemView::InternalMove);
     setDefaultDropAction(Qt::MoveAction);
 	SetScrollOnSelection(true);
+	SetPreventMouseFromCausingUnselect(true);
 
 	CreateContextMenuActions();
 }

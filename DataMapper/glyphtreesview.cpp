@@ -23,6 +23,7 @@ GlyphTreesView::GlyphTreesView(DataTransformModel* sourceModel, QWidget *parent)
 	setDragDropMode(QAbstractItemView::InternalMove);
 	setDefaultDropAction(Qt::MoveAction);
 	SetScrollOnSelection(true);
+	SetPreventMouseFromCausingUnselect(true);
 	setSelectionMode(QAbstractItemView::ExtendedSelection);
 	setHeaderHidden(true);
 	setContextMenuPolicy(Qt::ContextMenuPolicy::ActionsContextMenu);

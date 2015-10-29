@@ -10,6 +10,7 @@
 #include "intminmaxwidget.h"
 #include "inputfieldmimedata.h"
 #include "nonmappablegeometrywidget.h"
+#include "glyphenumcombobox.h"
 
 GlyphRolesTableModel::GlyphRolesTableModel(DataTransformModel* dataTransformModel, QObject *parent)
 	: QAbstractTableModel(parent),
@@ -122,7 +123,88 @@ bool GlyphRolesTableModel::IsDataAtIndexDifferent(const QModelIndex& index) cons
 
 	if (m_selectedDataTransformModelIndexes.count() > 1) {
 
-		return true;
+		PropertyType propertyType = GetFieldType(index.row());
+		QVariant prop = m_dataTransformModel->data(m_selectedDataTransformModelIndexes.first(), index.row() + DataTransformModel::PropertyRole::PositionX);
+		if (propertyType == PropertyType::Color) {
+
+			return IsDataAtIndexDifferentFromGivenData<SynGlyphX::ColorMappingProperty>(prop, index);
+		}
+		else if (propertyType == PropertyType::Text) {
+
+			return IsDataAtIndexDifferentFromGivenData<SynGlyphX::TextMappingProperty>(prop, index);
+		}
+		else if (propertyType == PropertyType::GeometryShape) {
+
+			return IsDataAtIndexDifferentFromGivenData<SynGlyphX::GeometryShapeMappingProperty>(prop, index);
+		}
+		else if (propertyType == PropertyType::VirtualTopology) {
+
+			return IsDataAtIndexDifferentFromGivenData<SynGlyphX::VirtualTopologyMappingProperty>(prop, index);
+		}
+		else if (propertyType == PropertyType::Numeric) {
+
+			return IsDataAtIndexDifferentFromGivenData<SynGlyphX::NumericMappingProperty>(prop, index);
+		}
+		else {
+
+			QVariant torusRatio = m_dataTransformModel->data(m_selectedDataTransformModelIndexes.last(), index.row() + DataTransformModel::PropertyRole::PositionX + 1);
+			SynGlyphX::NonMappableGeometryProperties properties(prop.value<SynGlyphX::GlyphGeometryInfo::Surface>(), torusRatio.toDouble());
+			return IsDataAtIndexDifferentFromNonMappableProperties(properties, index);
+		}
+	}
+
+	return false;
+}
+
+template<typename MappingPropertyType>
+bool GlyphRolesTableModel::IsDataAtIndexDifferentFromGivenData(const QVariant& propVariant, const QModelIndex& index) const {
+
+	MappingPropertyType testingProp = propVariant.value<MappingPropertyType>();
+	for (const QPersistentModelIndex& selectedIndex : m_selectedDataTransformModelIndexes) {
+
+		QVariant selectedProp = m_dataTransformModel->data(selectedIndex, index.row() + DataTransformModel::PropertyRole::PositionX);
+		MappingPropertyType selectedTypeProp = selectedProp.value<MappingPropertyType>();
+		if (index.column() == s_mappingDataColumn) {
+
+			if (!selectedTypeProp.GetMappingFunctionData()->IsSame(*testingProp.GetMappingFunctionData())) {
+
+				return true;
+			}
+		}
+		else if (index.column() == s_mappedFieldColumn) {
+
+			if (selectedTypeProp.GetBinding() != testingProp.GetBinding()) {
+
+				return true;
+			}
+		}
+		else {
+
+			if (selectedTypeProp.GetValue() != testingProp.GetValue()) {
+
+				return true;
+			}
+		}
+	}
+
+	return false;
+}
+
+bool GlyphRolesTableModel::IsDataAtIndexDifferentFromNonMappableProperties(const SynGlyphX::NonMappableGeometryProperties& properties, const QModelIndex& index) const {
+
+	if (index.column() == s_valueColumn) {
+
+		for (const QPersistentModelIndex& selectedIndex : m_selectedDataTransformModelIndexes) {
+
+			QVariant surface = m_dataTransformModel->data(selectedIndex, DataTransformModel::PropertyRole::GeometrySurface);
+			QVariant torusRatio = m_dataTransformModel->data(selectedIndex, DataTransformModel::PropertyRole::GeometryTorusRatio);
+			SynGlyphX::NonMappableGeometryProperties selectedProperties(surface.value<SynGlyphX::GlyphGeometryInfo::Surface>(), torusRatio.toDouble());
+
+			if (properties != selectedProperties) {
+
+				return true;
+			}
+		}
 	}
 
 	return false;
@@ -136,83 +218,23 @@ QVariant GlyphRolesTableModel::GetEditData(const QModelIndex& index) const {
 		PropertyType propertyType = GetFieldType(index.row());
 		if (propertyType == PropertyType::Color) {
 
-			SynGlyphX::ColorMappingProperty colorProp = prop.value<SynGlyphX::ColorMappingProperty>();
-			if (index.column() == s_mappingDataColumn) {
-
-				return QString::fromStdWString(SynGlyphX::MappingFunctionData::s_functionNames.left.at(colorProp.GetMappingFunctionData()->GetFunction()));
-			}
-			else if (index.column() == s_mappedFieldColumn) {
-
-				return QVariant::fromValue(GetInputField(colorProp.GetBinding().GetInputFieldID()));
-			}
-			else {
-
-				return QVariant::fromValue(colorProp.GetValue());
-			}
+			return GetEditDataForType<SynGlyphX::ColorMappingProperty>(prop, index);
 		}
 		else if (propertyType == PropertyType::Text) {
 
-			SynGlyphX::TextMappingProperty textProp = prop.value<SynGlyphX::TextMappingProperty>();
-			if (index.column() == s_mappingDataColumn) {
-
-				return QString::fromStdWString(SynGlyphX::MappingFunctionData::s_functionNames.left.at(textProp.GetMappingFunctionData()->GetFunction()));
-			}
-			else if (index.column() == s_mappedFieldColumn) {
-
-				return QVariant::fromValue(GetInputField(textProp.GetBinding().GetInputFieldID()));
-			}
-			else {
-
-				return QString::fromStdWString(textProp.GetValue());
-			}
+			return GetEditDataForTextMappingProperty(prop, index);
 		}
 		else if (propertyType == PropertyType::GeometryShape) {
 
-			SynGlyphX::GeometryShapeMappingProperty shapeProp = prop.value<SynGlyphX::GeometryShapeMappingProperty>();
-			if (index.column() == s_mappingDataColumn) {
-
-				return QString::fromStdWString(SynGlyphX::MappingFunctionData::s_functionNames.left.at(shapeProp.GetMappingFunctionData()->GetFunction()));
-			}
-			else if (index.column() == s_mappedFieldColumn) {
-
-				return QVariant::fromValue(GetInputField(shapeProp.GetBinding().GetInputFieldID()));
-			}
-			else {
-
-				return QString::fromStdWString(SynGlyphX::GlyphGeometryInfo::s_shapeNames.left.at(shapeProp.GetValue()));
-			}
+			return GetEditDataForType<SynGlyphX::GeometryShapeMappingProperty>(prop, index);
 		}
 		else if (propertyType == PropertyType::VirtualTopology) {
 
-			SynGlyphX::VirtualTopologyMappingProperty topologyProp = prop.value<SynGlyphX::VirtualTopologyMappingProperty>();
-			if (index.column() == s_mappingDataColumn) {
-
-				return QString::fromStdWString(SynGlyphX::MappingFunctionData::s_functionNames.left.at(topologyProp.GetMappingFunctionData()->GetFunction()));
-			}
-			else if (index.column() == s_mappedFieldColumn) {
-
-				return QVariant::fromValue(GetInputField(topologyProp.GetBinding().GetInputFieldID()));
-			}
-			else {
-
-				return QString::fromStdWString(SynGlyphX::VirtualTopologyInfo::s_virtualTopologyNames.left.at(topologyProp.GetValue()));
-			}
+			return GetEditDataForType<SynGlyphX::VirtualTopologyMappingProperty>(prop, index);
 		}
 		else if (propertyType == PropertyType::Numeric) {
 
-			SynGlyphX::NumericMappingProperty numericProp = prop.value<SynGlyphX::NumericMappingProperty>();
-			if (index.column() == s_mappingDataColumn) {
-
-				return QString::fromStdWString(SynGlyphX::MappingFunctionData::s_functionNames.left.at(numericProp.GetMappingFunctionData()->GetFunction()));
-			}
-			else if (index.column() == s_mappedFieldColumn) {
-
-				return QVariant::fromValue(GetInputField(numericProp.GetBinding().GetInputFieldID()));
-			}
-			else {
-
-				return QVariant::fromValue(numericProp.GetValue());
-			}
+			return GetEditDataForType<SynGlyphX::NumericMappingProperty>(prop, index);
 		}
 		else {
 
@@ -225,6 +247,41 @@ QVariant GlyphRolesTableModel::GetEditData(const QModelIndex& index) const {
 	}
 
 	return QVariant();
+}
+
+QVariant GlyphRolesTableModel::GetEditDataForTextMappingProperty(const QVariant& propVariant, const QModelIndex& index) const {
+
+	SynGlyphX::TextMappingProperty mappingProperty = propVariant.value<SynGlyphX::TextMappingProperty>();
+	if (index.column() == s_mappingDataColumn) {
+
+		return QString::fromStdWString(SynGlyphX::MappingFunctionData::s_functionNames.left.at(mappingProperty.GetMappingFunctionData()->GetFunction()));
+	}
+	else if (index.column() == s_mappedFieldColumn) {
+
+		return QVariant::fromValue(GetInputField(mappingProperty.GetBinding().GetInputFieldID()));
+	}
+	else {
+
+		return QString::fromStdWString(mappingProperty.GetValue());
+	}
+}
+
+template<typename MappingPropertyType>
+QVariant GlyphRolesTableModel::GetEditDataForType(const QVariant& propVariant, const QModelIndex& index) const {
+
+	MappingPropertyType mappingProperty = propVariant.value<MappingPropertyType>();
+	if (index.column() == s_mappingDataColumn) {
+
+		return QString::fromStdWString(SynGlyphX::MappingFunctionData::s_functionNames.left.at(mappingProperty.GetMappingFunctionData()->GetFunction()));
+	}
+	else if (index.column() == s_mappedFieldColumn) {
+
+		return QVariant::fromValue(GetInputField(mappingProperty.GetBinding().GetInputFieldID()));
+	}
+	else {
+
+		return QVariant::fromValue(mappingProperty.GetValue());
+	}
 }
 
 int	GlyphRolesTableModel::rowCount(const QModelIndex& parent) const {
@@ -360,6 +417,50 @@ Qt::ItemFlags GlyphRolesTableModel::flags(const QModelIndex & index) const {
 	return QAbstractTableModel::flags(index); // | Qt::ItemIsEditable;
 }
 
+template<typename MappingPropertyType>
+bool GlyphRolesTableModel::SetEditDataForType(const QVariant& propVariant, PropertyType propertyType, const QModelIndex& index) const {
+
+	int sourceDataRole = index.row() + DataTransformModel::PropertyRole::PositionX;
+	
+	if (index.column() == s_mappingDataColumn) {
+
+		SynGlyphX::MappingFunctionData::Function function = SynGlyphX::MappingFunctionData::s_functionNames.right.at(propVariant.toString().toStdWString());
+
+		for (const QPersistentModelIndex& selectedIndex : m_selectedDataTransformModelIndexes) {
+
+			QVariant prop = m_dataTransformModel->data(selectedIndex, sourceDataRole);
+			SynGlyphX::DataMappingProperty<MappingPropertyType> mappingProperty = prop.value<SynGlyphX::DataMappingProperty<MappingPropertyType>>();
+			if (function != mappingProperty.GetMappingFunctionData()->GetFunction()) {
+
+				mappingProperty.SetMappingFunctionData(CreateNewMappingFunction(function, propertyType));
+				if (!m_dataTransformModel->setData(selectedIndex, QVariant::fromValue(mappingProperty), sourceDataRole)) {
+
+					return false;
+				}
+			}
+		}
+	}
+	else {
+
+		MappingPropertyType newValue = propVariant.value<MappingPropertyType>();
+		for (const QPersistentModelIndex& selectedIndex : m_selectedDataTransformModelIndexes) {
+
+			QVariant prop = m_dataTransformModel->data(selectedIndex, sourceDataRole);
+			SynGlyphX::DataMappingProperty<MappingPropertyType> mappingProperty = prop.value<SynGlyphX::DataMappingProperty<MappingPropertyType>>();
+			if (newValue != mappingProperty.GetValue()) {
+
+				mappingProperty.GetValue() = newValue;
+				if (!m_dataTransformModel->setData(selectedIndex, QVariant::fromValue(mappingProperty), sourceDataRole)) {
+
+					return false;
+				}
+			}
+		}
+	}
+
+	return true;
+}
+
 bool GlyphRolesTableModel::setData(const QModelIndex& index, const QVariant& value, int role) {
 
 	if ((!m_selectedDataTransformModelIndexes.isEmpty()) && (index.isValid()) && (role == Qt::EditRole) && (index.column() != s_propertyNameColumn)) {
@@ -387,13 +488,27 @@ bool GlyphRolesTableModel::setData(const QModelIndex& index, const QVariant& val
 		else {
 
 			PropertyType propertyType = GetFieldType(index.row());
-			int sourceDataRole = index.row() + DataTransformModel::PropertyRole::PositionX;
-			QVariant newProp;
+			if (propertyType == PropertyType::Color) {
 
-			if (propertyType == PropertyType::NonMappable) {
+				return SetEditDataForType<SynGlyphX::ColorMinDiff>(value, propertyType, index);
+			}
+			else if (propertyType == PropertyType::GeometryShape) {
+
+				return SetEditDataForType<SynGlyphX::GlyphGeometryInfo::Shape>(value, propertyType, index);
+			}
+			else if (propertyType == PropertyType::VirtualTopology) {
+
+				return SetEditDataForType<SynGlyphX::VirtualTopologyInfo::Type>(value, propertyType, index);
+			}
+			else if (propertyType == PropertyType::Numeric) {
+
+				return SetEditDataForType<SynGlyphX::DoubleMinDiff>(value, propertyType, index);
+			}
+			else if (propertyType == PropertyType::NonMappable) {
 
 				if (index.column() == s_valueColumn) {
 
+					int sourceDataRole = index.row() + DataTransformModel::PropertyRole::PositionX;
 					SynGlyphX::NonMappableGeometryProperties nonMappableProperties = value.value<SynGlyphX::NonMappableGeometryProperties>();
 					for (const QPersistentModelIndex& index : m_selectedDataTransformModelIndexes) {
 
@@ -404,162 +519,6 @@ bool GlyphRolesTableModel::setData(const QModelIndex& index, const QVariant& val
 					}
 					return true;
 				}
-			}
-			else {
-
-				bool updateNewProp = false;
-				QVariant prop = m_dataTransformModel->data(m_selectedDataTransformModelIndexes.last(), sourceDataRole);
-				if (propertyType == PropertyType::Color) {
-
-					SynGlyphX::ColorMappingProperty colorProp = prop.value<SynGlyphX::ColorMappingProperty>();
-					if (index.column() == s_mappingDataColumn) {
-
-						SynGlyphX::MappingFunctionData::Function function = SynGlyphX::MappingFunctionData::s_functionNames.right.at(value.toString().toStdWString());
-						if (function != colorProp.GetMappingFunctionData()->GetFunction()) {
-
-							colorProp.SetMappingFunctionData(CreateNewMappingFunction(function, PropertyType::Color));
-							updateNewProp = true;
-						}
-					}
-					else {
-
-						SynGlyphX::ColorMinDiff newColorMinDiff = value.value<SynGlyphX::ColorMinDiff>();
-						if (colorProp.GetValue() != newColorMinDiff) {
-
-							colorProp.GetValue() = newColorMinDiff;
-							updateNewProp = true;
-						}
-					}
-
-					if (updateNewProp) {
-
-						newProp.setValue(colorProp);
-					}
-				}
-				/*else if (propertyType == PropertyType::Text) { //Currently Text fields do not have a value nor choice in mapping functions
-
-					SynGlyphX::TextMappingProperty textProp = prop.value<SynGlyphX::TextMappingProperty>();
-					if (index.column() == 1) {
-
-					return QString::fromStdWString(SynGlyphX::MappingFunctionData::s_functionNames.left.at(textProp.GetMappingFunctionData()->GetFunction()));
-					}
-					else {
-
-					return QString::fromStdWString(textProp.GetValue());
-					}
-					}*/
-				else if (propertyType == PropertyType::GeometryShape) {
-
-					SynGlyphX::GeometryShapeMappingProperty shapeProp = prop.value<SynGlyphX::GeometryShapeMappingProperty>();
-					if (index.column() == s_mappingDataColumn) {
-
-						SynGlyphX::MappingFunctionData::Function function = SynGlyphX::MappingFunctionData::s_functionNames.right.at(value.toString().toStdWString());
-						if (function != shapeProp.GetMappingFunctionData()->GetFunction()) {
-
-							shapeProp.SetMappingFunctionData(CreateNewMappingFunction(function, PropertyType::GeometryShape));
-							updateNewProp = true;
-						}
-					}
-					else {
-
-						SynGlyphX::GlyphGeometryInfo::Shape newShape;
-						if (value.type() == QVariant::Type::String) {
-
-							newShape = SynGlyphX::GlyphGeometryInfo::s_shapeNames.right.at(value.toString().toStdWString());
-						}
-						else {
-
-							newShape = value.value<SynGlyphX::GlyphGeometryInfo::Shape>();
-						}
-
-						if (shapeProp.GetValue() != newShape) {
-
-							shapeProp.GetValue() = newShape;
-							updateNewProp = true;
-						}
-					}
-
-					if (updateNewProp) {
-
-						newProp.setValue(shapeProp);
-					}
-				}
-				else if (propertyType == PropertyType::VirtualTopology) {
-
-					SynGlyphX::VirtualTopologyMappingProperty topologyProp = prop.value<SynGlyphX::VirtualTopologyMappingProperty>();
-					if (index.column() == s_mappingDataColumn) {
-
-						SynGlyphX::MappingFunctionData::Function function = SynGlyphX::MappingFunctionData::s_functionNames.right.at(value.toString().toStdWString());
-						if (function != topologyProp.GetMappingFunctionData()->GetFunction()) {
-
-							topologyProp.SetMappingFunctionData(CreateNewMappingFunction(function, PropertyType::VirtualTopology));
-							updateNewProp = true;
-						}
-					}
-					else {
-
-						SynGlyphX::VirtualTopologyInfo::Type newVirtualTopology;
-						if (value.type() == QVariant::Type::String) {
-
-							newVirtualTopology = SynGlyphX::VirtualTopologyInfo::s_virtualTopologyNames.right.at(value.toString().toStdWString());
-						}
-						else {
-
-							newVirtualTopology = value.value<SynGlyphX::VirtualTopologyInfo::Type>();
-						}
-
-						if (topologyProp.GetValue() != newVirtualTopology) {
-
-							topologyProp.GetValue() = newVirtualTopology;
-							updateNewProp = true;
-						}
-					}
-
-					if (updateNewProp) {
-
-						newProp.setValue(topologyProp);
-					}
-				}
-				else if (propertyType == PropertyType::Numeric) {
-
-					SynGlyphX::NumericMappingProperty numericProp = prop.value<SynGlyphX::NumericMappingProperty>();
-					if (index.column() == s_mappingDataColumn) {
-
-						SynGlyphX::MappingFunctionData::Function function = SynGlyphX::MappingFunctionData::s_functionNames.right.at(value.toString().toStdWString());
-						if (function != numericProp.GetMappingFunctionData()->GetFunction()) {
-
-							numericProp.SetMappingFunctionData(CreateNewMappingFunction(function, PropertyType::Numeric));
-							updateNewProp = true;
-						}
-					}
-					else {
-
-						SynGlyphX::DoubleMinDiff newNumericMinDiff = value.value<SynGlyphX::DoubleMinDiff>();
-						if (numericProp.GetValue() != newNumericMinDiff) {
-
-							numericProp.GetValue() = newNumericMinDiff;
-							updateNewProp = true;
-						}
-					}
-
-					if (updateNewProp) {
-
-						newProp.setValue(numericProp);
-					}
-				}
-			}
-
-			if (newProp.isValid()) {
-
-				for (const QPersistentModelIndex& index : m_selectedDataTransformModelIndexes) {
-
-					if (!m_dataTransformModel->setData(index, newProp, sourceDataRole)) {
-
-						return false;
-					}
-				}
-				//emit dataChanged(index, index);
-				return true;
 			}
 		}
 	}

@@ -93,6 +93,7 @@ void DataMapperWindow::CreateCenterWidget() {
 	
 	m_minMaxGlyph3DWidget = new DataMapping3DWidget(m_dataTransformModel, this);
 	m_minMaxGlyph3DWidget->SetModel(dynamic_cast<SynGlyphX::RoleDataFilterProxyModel*>(m_glyphTreesView->model()), m_glyphTreesView->selectionModel());
+	m_minMaxGlyph3DWidget->SetAllowMultiselect(true);
 
 	m_minMaxGlyph3DWidget->addActions(m_glyphTreesView->GetGlyphActions());
 	m_minMaxGlyph3DWidget->addAction(SynGlyphX::SharedActionList::CreateSeparator(this));

@@ -24,6 +24,7 @@
 #include "datamappingglyphgraph.h"
 #include "datatransformmodel.h"
 #include "datamappingfunction.h"
+#include "nonmappablegeometryproperties.h"
 
 class GlyphRolesTableModel : public QAbstractTableModel
 {
@@ -88,6 +89,18 @@ private:
 	const SynGlyphX::InputField GetInputField(SynGlyphX::InputField::HashID fieldID) const;
 	bool IsAnySelectedIndexWithinIndexes(const QModelIndex& topLeft, const QModelIndex& bottomRight) const;
 	void DetermineAssociatedInputTable();
+
+	bool IsDataAtIndexDifferentFromNonMappableProperties(const SynGlyphX::NonMappableGeometryProperties& properties, const QModelIndex& index) const;
+	template<typename MappingPropertyType>
+	bool IsDataAtIndexDifferentFromGivenData(const QVariant& propVariant, const QModelIndex& index) const;
+
+	template<typename MappingPropertyType>
+	QVariant GetEditDataForType(const QVariant& propVariant, const QModelIndex& index) const;
+
+	template<typename MappingPropertyType>
+	bool SetEditDataForType(const QVariant& propVariant, PropertyType propertyType, const QModelIndex& index) const;
+
+	QVariant GetEditDataForTextMappingProperty(const QVariant& propVariant, const QModelIndex& index) const;
 
 	QStringList m_propertyHeaders;
 	QStringList m_columnHeaders;
