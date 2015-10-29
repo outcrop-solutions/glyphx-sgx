@@ -23,6 +23,11 @@ namespace SynGlyphXANTz {
 
 	}
 
+	void MinMaxGlyph3DWidget::SetAllowMultiselect(bool allowMultiselect) {
+
+		m_maxGlyph3DWidget->SetAllowMultiSelection(allowMultiselect);
+	}
+
 	void MinMaxGlyph3DWidget::SetModel(MinMaxGlyphTreeModel* model, QItemSelectionModel* selectionModel) {
 
 		m_maxGlyph3DWidget->SetModel(model, selectionModel);
