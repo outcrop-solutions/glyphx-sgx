@@ -3,8 +3,10 @@
 namespace SynGlyphX {
 
 	GlyphShapeComboBox::GlyphShapeComboBox(QWidget *parent)
-		: QComboBox(parent)
-	{
+		: QComboBox(parent) {
+	
+		//Set to the shape with the longest text name and add one additional character
+		setMinimumContentsLength(13);
 		for (auto shape : SynGlyphX::GlyphGeometryInfo::s_shapeNames.left) {
 
 			addItem(QString::fromStdWString(shape.second));
