@@ -183,41 +183,44 @@ QTableView* DataBindingTablesWidget::CreateSubsetTableView(const SynGlyphX::Tabl
 	return tableView;
 }
 
-void DataBindingTablesWidget::AddRowOfWidgetsToTable(QTableView* tableView, const QList<QWidget*> widgets, int modelRow, bool addToPositionXYList) {
+QDataWidgetMapper* DataBindingTablesWidget::AddRowOfWidgetsToTable(QTableView* tableView, QWidget* valueWidget, QWidget* valueWidgetToMap, MappingFunctionWidget* mappingFunctionWidget, int modelRow, bool addToPositionXYList) {
+
+	std::array<QDataWidgetMapper*, 3> mappers;
+	for (int i = 0; i < 3; ++i) {
+
+		mappers[i] = new QDataWidgetMapper(this);
+		mappers[i]->setSubmitPolicy(QDataWidgetMapper::ManualSubmit);
+		mappers[i]->setModel(m_model);
+	}
+
+	BindingLineEdit* inputBindingLineEdit = new BindingLineEdit(m_model, tableView, SynGlyphX::MappingFunctionData::Input::Numeric);
+
+	mappers[0]->addMapping(valueWidgetToMap, 1);
+	mappers[1]->addMapping(mappingFunctionWidget, 2);
+	mappers[2]->addMapping(inputBindingLineEdit, 3);
+
+	for (int i = 0; i < 3; ++i) {
+
+		m_dataWidgetMappersAndRows[mappers[i]] = modelRow;
+	}
+
+	QObject::connect(mappingFunctionWidget, &MappingFunctionWidget::FunctionChanged, mappers[1], &QDataWidgetMapper::submit);
+	QObject::connect(mappingFunctionWidget, &MappingFunctionWidget::SupportedInputChanged, inputBindingLineEdit, &BindingLineEdit::SetAcceptedInputTypes);
+	QObject::connect(inputBindingLineEdit, &BindingLineEdit::ValueChangedByUser, mappers[2], &QDataWidgetMapper::submit);
 
 	SynGlyphX::TableSubsetProxyModel* proxyModel = dynamic_cast<SynGlyphX::TableSubsetProxyModel*>(tableView->model());
 
-	tableView->setIndexWidget(proxyModel->mapFromSource(m_model->index(modelRow, 1)), widgets[0]);
-	tableView->setIndexWidget(proxyModel->mapFromSource(m_model->index(modelRow, 2)), widgets[1]);
-	tableView->setIndexWidget(proxyModel->mapFromSource(m_model->index(modelRow, 3)), widgets[2]);
+	tableView->setIndexWidget(proxyModel->mapFromSource(m_model->index(modelRow, 1)), valueWidget);
+	tableView->setIndexWidget(proxyModel->mapFromSource(m_model->index(modelRow, 2)), mappingFunctionWidget);
+	tableView->setIndexWidget(proxyModel->mapFromSource(m_model->index(modelRow, 3)), inputBindingLineEdit);
 
 	if (addToPositionXYList) {
 
-		m_positionXYMinMaxWidgets.push_back(widgets[0]);
-		m_positionXYMinMaxWidgets.push_back(widgets[1]);
+		m_positionXYMinMaxWidgets.push_back(valueWidget);
+		m_positionXYMinMaxWidgets.push_back(mappingFunctionWidget);
 	}
-}
 
-QDataWidgetMapper* DataBindingTablesWidget::CreateMapper(QWidget* parent, QWidget* valueWidget, MappingFunctionWidget* mappingFunctionWidget, int modelRow) {
-
-	QDataWidgetMapper* mapper = new QDataWidgetMapper(this);
-	mapper->setSubmitPolicy(QDataWidgetMapper::ManualSubmit);
-
-	BindingLineEdit* inputBindingLineEdit = new BindingLineEdit(m_model, parent, SynGlyphX::MappingFunctionData::Input::Numeric);
-
-	mapper->setModel(m_model);
-
-	mapper->addMapping(valueWidget, 1);
-	mapper->addMapping(mappingFunctionWidget, 2);
-	mapper->addMapping(inputBindingLineEdit, 3);
-
-	QObject::connect(mappingFunctionWidget, &MappingFunctionWidget::FunctionChanged, mapper, &QDataWidgetMapper::submit);
-	QObject::connect(mappingFunctionWidget, &MappingFunctionWidget::SupportedInputChanged, inputBindingLineEdit, &BindingLineEdit::SetAcceptedInputTypes);
-	QObject::connect(inputBindingLineEdit, &BindingLineEdit::ValueChangedByUser, mapper, &QDataWidgetMapper::submit);
-
-	m_dataWidgetMappersAndRows[mapper] = modelRow;
-
-	return mapper;
+	return mappers[0];
 }
 
 void DataBindingTablesWidget::CreateIntegerPropertyWidgets(QTableView* tableView, int modelRow, int min, int max) {
@@ -228,12 +231,8 @@ void DataBindingTablesWidget::CreateIntegerPropertyWidgets(QTableView* tableView
 	
 	MappingFunctionWidget* mappingFunctionWidget = new MappingFunctionWidget(MappingFunctionWidget::KeyType::Numeric, m_model, modelRow, tableView);
 	mappingFunctionWidget->SetDialogOutputMinMax(min, max);
-	QDataWidgetMapper* mapper = CreateMapper(tableView, minMaxWidget, mappingFunctionWidget, modelRow);
-	QList<QWidget*> widgetList;
-	widgetList.push_back(mapper->mappedWidgetAt(1));
-	widgetList.push_back(mapper->mappedWidgetAt(2));
-	widgetList.push_back(mapper->mappedWidgetAt(3));
-	AddRowOfWidgetsToTable(tableView, widgetList, modelRow);
+
+	QDataWidgetMapper* mapper = AddRowOfWidgetsToTable(tableView, minMaxWidget, minMaxWidget, mappingFunctionWidget, modelRow);
 
 	QObject::connect(minMaxWidget, &SynGlyphX::IntMinMaxWidget::ValueChanged, mapper, &QDataWidgetMapper::submit);
 }
@@ -248,12 +247,8 @@ void DataBindingTablesWidget::CreateDoublePropertyWidgets(QTableView* tableView,
 	
 	MappingFunctionWidget* mappingFunctionWidget = new MappingFunctionWidget(MappingFunctionWidget::KeyType::Numeric, m_model, modelRow, tableView);
 	mappingFunctionWidget->SetDialogOutputMinMax(min, max);
-	QDataWidgetMapper* mapper = CreateMapper(tableView, minMaxWidget, mappingFunctionWidget, modelRow);
-	QList<QWidget*> widgetList;
-	widgetList.push_back(mapper->mappedWidgetAt(1));
-	widgetList.push_back(mapper->mappedWidgetAt(2));
-	widgetList.push_back(mapper->mappedWidgetAt(3));
-	AddRowOfWidgetsToTable(tableView, widgetList, modelRow, addToPositionXYList);
+	
+	QDataWidgetMapper* mapper = AddRowOfWidgetsToTable(tableView, minMaxWidget, minMaxWidget, mappingFunctionWidget, modelRow, addToPositionXYList);
 
 	QObject::connect(minMaxWidget, &SynGlyphX::DoubleMinMaxWidget::ValueChanged, mapper, &QDataWidgetMapper::submit);
 }
@@ -263,12 +258,7 @@ void DataBindingTablesWidget::CreateColorPropertyWidgets(QTableView* tableView, 
 	SynGlyphX::ColorMinMaxWidget* minMaxWidget = new SynGlyphX::ColorMinMaxWidget(false, tableView);
 
 	MappingFunctionWidget* mappingFunctionWidget = new MappingFunctionWidget(MappingFunctionWidget::KeyType::Color, m_model, modelRow, this);
-	QDataWidgetMapper* mapper = CreateMapper(tableView, minMaxWidget, mappingFunctionWidget, modelRow);
-	QList<QWidget*> widgetList;
-	widgetList.push_back(mapper->mappedWidgetAt(1));
-	widgetList.push_back(mapper->mappedWidgetAt(2));
-	widgetList.push_back(mapper->mappedWidgetAt(3));
-	AddRowOfWidgetsToTable(tableView, widgetList, modelRow);
+	QDataWidgetMapper* mapper = AddRowOfWidgetsToTable(tableView, minMaxWidget, minMaxWidget, mappingFunctionWidget, modelRow);
 
 	QObject::connect(minMaxWidget, &SynGlyphX::ColorMinMaxWidget::ValueChanged, mapper, &QDataWidgetMapper::submit);
 }
@@ -279,12 +269,7 @@ void DataBindingTablesWidget::CreateGeometryShapePropertyWidgets(QTableView* tab
 	SynGlyphX::StretchSurroundedWidget* stretchSurroundedWidget = new SynGlyphX::StretchSurroundedWidget(SynGlyphX::StretchSurroundedWidget::All, comboBox, this);
 
 	MappingFunctionWidget* mappingFunctionWidget = new MappingFunctionWidget(MappingFunctionWidget::KeyType::GeometryShape, m_model, modelRow, tableView);
-	QDataWidgetMapper* mapper = CreateMapper(tableView, comboBox, mappingFunctionWidget, modelRow);
-	QList<QWidget*> widgetList;
-	widgetList.push_back(stretchSurroundedWidget);
-	widgetList.push_back(mapper->mappedWidgetAt(2));
-	widgetList.push_back(mapper->mappedWidgetAt(3));
-	AddRowOfWidgetsToTable(tableView, widgetList, modelRow);
+	QDataWidgetMapper* mapper = AddRowOfWidgetsToTable(tableView, stretchSurroundedWidget, comboBox, mappingFunctionWidget, modelRow);
 
 	QObject::connect(comboBox, &SynGlyphX::GlyphShapeComboBox::currentTextChanged, mapper, &QDataWidgetMapper::submit);
 }
@@ -295,12 +280,7 @@ void DataBindingTablesWidget::CreateVirtualTopologyTypePropertyWidgets(QTableVie
 	SynGlyphX::StretchSurroundedWidget* stretchSurroundedWidget = new SynGlyphX::StretchSurroundedWidget(SynGlyphX::StretchSurroundedWidget::Vertical, comboBox, this);
 
 	MappingFunctionWidget* mappingFunctionWidget = new MappingFunctionWidget(MappingFunctionWidget::KeyType::VirtualTopology, m_model, modelRow, tableView);
-	QDataWidgetMapper* mapper = CreateMapper(tableView, comboBox, mappingFunctionWidget, modelRow);
-	QList<QWidget*> widgetList;
-	widgetList.push_back(stretchSurroundedWidget);
-	widgetList.push_back(mapper->mappedWidgetAt(2));
-	widgetList.push_back(mapper->mappedWidgetAt(3));
-	AddRowOfWidgetsToTable(tableView, widgetList, modelRow);
+	QDataWidgetMapper* mapper = AddRowOfWidgetsToTable(tableView, stretchSurroundedWidget, comboBox, mappingFunctionWidget, modelRow);
 
 	QObject::connect(comboBox, &SynGlyphX::VirtualTopologyComboBox::currentTextChanged, mapper, &QDataWidgetMapper::submit);
 }

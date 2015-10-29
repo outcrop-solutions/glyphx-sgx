@@ -58,8 +58,7 @@ private:
 	void CreateColorPropertyWidgets(QTableView* tableView, int modelRow);
 	void CreateGeometryShapePropertyWidgets(QTableView* tableView, int modelRow);
 	void CreateVirtualTopologyTypePropertyWidgets(QTableView* tableView, int modelRow);
-	QDataWidgetMapper* CreateMapper(QWidget* parent, QWidget* valueWidget, MappingFunctionWidget* mappingFunctionWidget, int modelRow);
-	void AddRowOfWidgetsToTable(QTableView* tableView, const QList<QWidget*> widgets, int modelRow, bool addToPositionXYList = false);
+	QDataWidgetMapper* AddRowOfWidgetsToTable(QTableView* tableView, QWidget* valueWidget, QWidget* valueWidgetToMap, MappingFunctionWidget* mappingFunctionWidget, int modelRow, bool addToPositionXYList = false);
 	void EnablePositionXYMixMaxWidgets(bool enable);
 
 	BindingLineEdit* m_tagLineEdit;
