@@ -9,13 +9,8 @@ namespace SynGlyphX {
 		QHBoxLayout* mainLayout = new QHBoxLayout(this);
 		mainLayout->setContentsMargins(0, 0, 0, 0);
 
-		QStringList surfaceNames;
-		for (auto surface : SynGlyphX::GlyphGeometryInfo::s_surfaceNames.left) {
-
-			surfaceNames.push_back(QString::fromStdWString(surface.second));
-		}
-		m_surfaceRadioButtonGroup = new SynGlyphX::RadioButtonGroupWidget(surfaceNames, Qt::Horizontal, this);
-		QGroupBox* surfaceGroupBox = new SynGlyphX::GroupBoxSingleWidget(tr("Surface"), m_surfaceRadioButtonGroup, this);
+		m_surfaceRadioButtonGroup = new SurfaceRadioButtonWidget(Qt::Horizontal, this);
+		QGroupBox* surfaceGroupBox = new GroupBoxSingleWidget(tr("Surface"), m_surfaceRadioButtonGroup, this);
 
 		mainLayout->addWidget(surfaceGroupBox);
 
@@ -28,7 +23,7 @@ namespace SynGlyphX {
 		
 		setLayout(mainLayout);
 
-		QObject::connect(m_surfaceRadioButtonGroup, &SynGlyphX::RadioButtonGroupWidget::ButtonClicked, this, &NonMappableGeometryWidget::PropertiesChanged);
+		QObject::connect(m_surfaceRadioButtonGroup, &SynGlyphX::SurfaceRadioButtonWidget::ButtonClicked, this, &NonMappableGeometryWidget::PropertiesChanged);
 		QObject::connect(m_ratioSpinBox, static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), this, &NonMappableGeometryWidget::PropertiesChanged);
 	}
 
@@ -39,14 +34,14 @@ namespace SynGlyphX {
 
 	void NonMappableGeometryWidget::SetProperties(const NonMappableGeometryProperties& properties) {
 
-		m_surfaceRadioButtonGroup->SetCheckedButton(properties.GetSurface());
+		m_surfaceRadioButtonGroup->SetSurface(properties.GetSurface());
 		m_ratioSpinBox->setValue(properties.GetTorusRatio());
 	}
 
 	NonMappableGeometryProperties NonMappableGeometryWidget::GetProperties() const {
 
 		NonMappableGeometryProperties properties;
-		properties.SetSurface(SynGlyphX::GlyphGeometryInfo::s_surfaceNames.right.at(m_surfaceRadioButtonGroup->GetCheckedButtonLabel().toStdWString()));
+		properties.SetSurface(m_surfaceRadioButtonGroup->GetSurface());
 		properties.SetTorusRatio(m_ratioSpinBox->value());
 		return properties;
 	}

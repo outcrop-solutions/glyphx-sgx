@@ -15,43 +15,35 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef SYNGLYPHX_NONMAPPABLEGEOMETRYWIDGET_H
-#define SYNGLYPHX_NONMAPPABLEGEOMETRYWIDGET_H
+#ifndef SYNGLYPHX_SURFACERADIOBUTTONWIDGET_H
+#define SYNGLYPHX_SURFACERADIOBUTTONWIDGET_H
 
 #include "sgxglyphgui_global.h"
-#include "nonmappablegeometryproperties.h"
-#include <QtWidgets/QWidget>
-#include "surfaceradiobuttonwidget.h"
-#include <QtWidgets/QDoubleSpinBox>
-#include "groupboxsinglewidget.h"
+#include "radiobuttongroupwidget.h"
+#include "glyphgeometryinfo.h"
 
-Q_DECLARE_METATYPE(SynGlyphX::NonMappableGeometryProperties)
+Q_DECLARE_METATYPE(SynGlyphX::GlyphGeometryInfo::Surface)
 
 namespace SynGlyphX {
 
-	class SGXGLYPHGUI_EXPORT NonMappableGeometryWidget : public QWidget
+	class SGXGLYPHGUI_EXPORT SurfaceRadioButtonWidget : public RadioButtonGroupWidget
 	{
 		Q_OBJECT
-		Q_PROPERTY(NonMappableGeometryProperties properties READ GetProperties WRITE SetProperties USER true)
+		Q_PROPERTY(SynGlyphX::GlyphGeometryInfo::Surface surface READ GetSurface WRITE SetSurface USER true)
 
 	public:
-		NonMappableGeometryWidget(QWidget *parent);
-		~NonMappableGeometryWidget();
+		SurfaceRadioButtonWidget(Qt::Orientation alignment, QWidget *parent);
+		~SurfaceRadioButtonWidget();
 
-		void SetProperties(const NonMappableGeometryProperties& properties);
-		NonMappableGeometryProperties GetProperties() const;
-
-		void ShowTorusRatioWidget(bool show);
-
-	signals:
-		void PropertiesChanged();
+		void SetSurface(GlyphGeometryInfo::Surface surface);
+		GlyphGeometryInfo::Surface GetSurface() const;
 
 	private:
-		SurfaceRadioButtonWidget* m_surfaceRadioButtonGroup;
-		QDoubleSpinBox* m_ratioSpinBox;
-		GroupBoxSingleWidget* m_ratioGroupBox;
+		static QStringList GenerateButtonNames();
+
+		static const QStringList s_buttonNames;
 	};
 
 } //namespace SynGlyphX
 
-#endif // NONMAPPABLEGEOMETRYWIDGET_H
+#endif // SYNGLYPHX_SURFACERADIOBUTTONWIDGET_H

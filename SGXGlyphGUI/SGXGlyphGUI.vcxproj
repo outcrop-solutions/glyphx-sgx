@@ -80,6 +80,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <CustomBuild Include="surfaceradiobuttonwidget.h">
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing surfaceradiobuttonwidget.h...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\GeneratedFiles\$(PlatformName)\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(PlatformName)\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DWIN64 -DQT_DLL -DQT_CORE_LIB -DQT_GUI_LIB -DQT_SQL_LIB -DQT_OPENGL_LIB -DQT_WIDGETS_LIB -DQT_XML_LIB -DSGXGLYPHGUI_LIB -D_WINDLL "-I.\GeneratedFiles" "-I." "-I.\GeneratedFiles\$(PlatformName)\$(ConfigurationName)\." "-I.\..\..\3rdParty\include\Qt_5_2_1" "-I.\..\..\3rdParty\include\boost_1_55_0" "-I.\..\..\Core\SGXFoundation" "-I.\..\..\Core\SGXDataMapping" "-I.\..\..\Core\SGXUtility" "-I.\..\..\GUI\SGXGUI" "-I.\..\..\3rdParty\include\stlplus_3_11" "-I.\..\..\Core\SGXImage"</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Moc%27ing surfaceradiobuttonwidget.h...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles\$(PlatformName)\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(PlatformName)\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DWIN64 -DQT_DLL -DQT_NO_DEBUG -DNDEBUG -DQT_CORE_LIB -DQT_GUI_LIB -DQT_SQL_LIB -DQT_OPENGL_LIB -DQT_WIDGETS_LIB -DQT_XML_LIB -DSGXGLYPHGUI_LIB -D_WINDLL "-I.\GeneratedFiles" "-I." "-I.\GeneratedFiles\$(PlatformName)\$(ConfigurationName)\." "-I.\..\..\3rdParty\include\Qt_5_2_1" "-I.\..\..\3rdParty\include\boost_1_55_0" "-I.\..\..\Core\SGXFoundation" "-I.\..\..\Core\SGXDataMapping" "-I.\..\..\Core\SGXUtility" "-I.\..\..\GUI\SGXGUI" "-I.\..\..\3rdParty\include\stlplus_3_11" "-I.\..\..\Core\SGXImage"</Command>
+    </CustomBuild>
     <CustomBuild Include="treeeditview.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing treeeditview.h...</Message>
@@ -320,6 +330,9 @@
     <ClCompile Include="GeneratedFiles\Win32\Debug\moc_singleglyphviewoptionswidget.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\Win32\Debug\moc_surfaceradiobuttonwidget.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="GeneratedFiles\Win32\Debug\moc_treeeditview.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
@@ -369,6 +382,9 @@
     <ClCompile Include="GeneratedFiles\Win32\Release\moc_singleglyphviewoptionswidget.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\Win32\Release\moc_surfaceradiobuttonwidget.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="GeneratedFiles\Win32\Release\moc_treeeditview.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
@@ -385,6 +401,7 @@
     <ClCompile Include="nonmappablegeometrywidget.cpp" />
     <ClCompile Include="scenepropertieswidget.cpp" />
     <ClCompile Include="singleglyphviewoptionswidget.cpp" />
+    <ClCompile Include="surfaceradiobuttonwidget.cpp" />
     <ClCompile Include="treeeditview.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

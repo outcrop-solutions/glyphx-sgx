@@ -11,6 +11,7 @@
 #include "glyphmimedata.h"
 #include "defaultbaseimageproperties.h"
 #include "defaultbaseimagescombobox.h"
+#include "surfaceradiobuttonwidget.h"
 
 DataTransformModel::DataTransformModel(QObject *parent)
 	: QAbstractItemModel(parent),

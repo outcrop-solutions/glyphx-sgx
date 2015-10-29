@@ -193,6 +193,15 @@
     <ClCompile Include="GeneratedFiles\Win32\Release\moc_treeeditview.cpp">
       <Filter>Generated Files\Release_Win32</Filter>
     </ClCompile>
+    <ClCompile Include="surfaceradiobuttonwidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Win32\Debug\moc_surfaceradiobuttonwidget.cpp">
+      <Filter>Generated Files\Debug_Win32</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Win32\Release\moc_surfaceradiobuttonwidget.cpp">
+      <Filter>Generated Files\Release_Win32</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="glyphstructurewidget.h">
@@ -247,6 +256,9 @@
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="treeeditview.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="surfaceradiobuttonwidget.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>

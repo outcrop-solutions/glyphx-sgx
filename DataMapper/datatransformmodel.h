@@ -151,7 +151,6 @@ Q_DECLARE_METATYPE(SynGlyphX::NumericMappingProperty)
 Q_DECLARE_METATYPE(SynGlyphX::ColorMappingProperty)
 Q_DECLARE_METATYPE(SynGlyphX::TextMappingProperty)
 Q_DECLARE_METATYPE(SynGlyphX::GeometryShapeMappingProperty)
-Q_DECLARE_METATYPE(SynGlyphX::GlyphGeometryInfo::Surface)
 Q_DECLARE_METATYPE(SynGlyphX::VirtualTopologyMappingProperty)
 
 #endif // DATATRANSFORMMODEL_H

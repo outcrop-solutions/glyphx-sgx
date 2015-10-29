@@ -22,11 +22,12 @@
 #include <QtWidgets/QTextEdit>
 #include <QtWidgets/QDataWidgetMapper>
 #include <QtWidgets/QTableView>
+#include <QtWidgets/QDoubleSpinBox>
 #include "bindinglineedit.h"
 #include "richtexteditor.h"
 #include "datatransformmapping.h"
 #include "glyphrolestablemodel.h"
-#include "nonmappablegeometrywidget.h"
+#include "surfaceradiobuttonwidget.h"
 #include "mappingfunctionwidget.h"
 #include "tablesubsetproxymodel.h"
 #include <map>
@@ -45,7 +46,7 @@ public slots:
 
 private slots:
 	void OnModelDataChanged();
-	void OnNonMappablePropertiesUpdated();
+	void OnTorusRatioChanged();
 
 private:
 	void CreateGeometryTopologyTab();
@@ -66,7 +67,9 @@ private:
 	std::map<QDataWidgetMapper*, unsigned int> m_dataWidgetMappersAndRows;
 	GlyphRolesTableModel* m_model;
 	QList<QWidget*> m_positionXYMinMaxWidgets;
-	SynGlyphX::NonMappableGeometryWidget* m_nonMappableGeometryWidget;
+	SynGlyphX::SurfaceRadioButtonWidget* m_surfaceRadioButtonWidget;
+	QDoubleSpinBox* m_torusRatioSpinBox;
+	QDataWidgetMapper* m_torusRatioMapper;
 };
 
 #endif // DATABINDINGTABLESWIDGET_H

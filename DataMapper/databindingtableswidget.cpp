@@ -17,7 +17,8 @@
 
 DataBindingTablesWidget::DataBindingTablesWidget(GlyphRolesTableModel* model, QWidget *parent)
 	: QTabWidget(parent),
-	m_model(model)
+	m_model(model),
+	m_torusRatioMapper(nullptr)
 {
 	CreateBasePropertiesTable();
 	CreateTagAndDescriptionWidget();
@@ -45,8 +46,9 @@ DataBindingTablesWidget::~DataBindingTablesWidget()
 
 void DataBindingTablesWidget::CreateGeometryTopologyTab() {
 
-	QTableView* tableView = CreateSubsetTableView({ 16, 17, 18 });
+	QTableView* tableView = CreateSubsetTableView({ 16, 17, 18, 19 });
 	tableView->setSpan(2, 1, 1, 3);
+	tableView->setSpan(3, 1, 1, 3);
 
 	CreateVirtualTopologyTypePropertyWidgets(tableView, 16);
 	CreateGeometryShapePropertyWidgets(tableView, 17);
@@ -59,19 +61,46 @@ void DataBindingTablesWidget::CreateGeometryTopologyTab() {
 	horizontalHeader->setSectionResizeMode(2, QHeaderView::ResizeToContents);
 	horizontalHeader->setSectionResizeMode(3, QHeaderView::Stretch);
 
-	m_nonMappableGeometryWidget = new SynGlyphX::NonMappableGeometryWidget(tableView);
-	QWidget* widget = new QWidget(this);
-	QHBoxLayout* widgetLayout = new QHBoxLayout(widget);
-	widgetLayout->addWidget(m_nonMappableGeometryWidget);
-	widgetLayout->addStretch(1);
-	widget->setLayout(widgetLayout);
+	m_surfaceRadioButtonWidget = new SynGlyphX::SurfaceRadioButtonWidget(Qt::Horizontal, tableView);
+	QWidget* surfaceBoundingWidget = new QWidget(this);
+	QHBoxLayout* surfaceBoundingWidgetLayout = new QHBoxLayout(surfaceBoundingWidget);
+	surfaceBoundingWidgetLayout->addWidget(m_surfaceRadioButtonWidget);
+	surfaceBoundingWidgetLayout->addStretch(1);
+	surfaceBoundingWidget->setLayout(surfaceBoundingWidgetLayout);
+
+	m_torusRatioSpinBox = new QDoubleSpinBox(this);
+	m_torusRatioSpinBox->setSingleStep(0.05);
+	m_torusRatioSpinBox->setDecimals(2);
+	QWidget* torusRatioBoundingWidget = new QWidget(this);
+	QHBoxLayout* torusRatioBoundingWidgetLayout = new QHBoxLayout(torusRatioBoundingWidget);
+	torusRatioBoundingWidgetLayout->addWidget(m_torusRatioSpinBox);
+	torusRatioBoundingWidgetLayout->addStretch(1);
+	torusRatioBoundingWidget->setLayout(torusRatioBoundingWidgetLayout);
 
 	SynGlyphX::TableSubsetProxyModel* proxyModel = dynamic_cast<SynGlyphX::TableSubsetProxyModel*>(tableView->model());
-	tableView->setIndexWidget(proxyModel->mapFromSource(m_model->index(18, 1)), widget);
+	tableView->setIndexWidget(proxyModel->mapFromSource(m_model->index(18, 1)), surfaceBoundingWidget);
+	tableView->setIndexWidget(proxyModel->mapFromSource(m_model->index(19, 1)), torusRatioBoundingWidget);
+
+	std::array<QDataWidgetMapper*, 2> mappers;
+	for (int i = 0; i < 2; ++i) {
+
+		mappers[i] = new QDataWidgetMapper(this);
+		mappers[i]->setSubmitPolicy(QDataWidgetMapper::ManualSubmit);
+		mappers[i]->setModel(m_model);
+	}
+
+	mappers[0]->addMapping(m_surfaceRadioButtonWidget, 1);
+	mappers[1]->addMapping(m_torusRatioSpinBox, 1);
+
+	m_dataWidgetMappersAndRows[mappers[0]] = 18;
+	m_dataWidgetMappersAndRows[mappers[1]] = 19;
+
+	m_torusRatioMapper = mappers[1];
+
+	QObject::connect(m_surfaceRadioButtonWidget, &SynGlyphX::SurfaceRadioButtonWidget::ButtonClicked, mappers[0], &QDataWidgetMapper::submit);
+	QObject::connect(m_torusRatioSpinBox, static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), this, &DataBindingTablesWidget::OnTorusRatioChanged);
 
 	addTab(tableView, tr("Geometry && Topology"));
-
-	QObject::connect(m_nonMappableGeometryWidget, &SynGlyphX::NonMappableGeometryWidget::PropertiesChanged, this, &DataBindingTablesWidget::OnNonMappablePropertiesUpdated);
 }
 
 void DataBindingTablesWidget::CreateAnimationTable() {
@@ -295,17 +324,8 @@ void DataBindingTablesWidget::OnModelDataChanged() {
 
 	if (doesModelHaveData) {
 
-		bool areSignalsBlocked = m_nonMappableGeometryWidget->blockSignals(true);
-		m_nonMappableGeometryWidget->SetProperties(m_model->data(m_model->index(18, 1), Qt::EditRole).value<SynGlyphX::NonMappableGeometryProperties>());
-		m_nonMappableGeometryWidget->blockSignals(areSignalsBlocked);
-
 		OnBaseObjectChanged();
 	}
-}
-
-void DataBindingTablesWidget::OnNonMappablePropertiesUpdated() {
-
-	m_model->setData(m_model->index(18, 1), QVariant::fromValue<SynGlyphX::NonMappableGeometryProperties>(m_nonMappableGeometryWidget->GetProperties()));
 }
 
 void DataBindingTablesWidget::CommitChanges() {
@@ -331,5 +351,13 @@ void DataBindingTablesWidget::EnablePositionXYMixMaxWidgets(bool enable) {
 		if (widget != nullptr) {
 			widget->setEnabled(enable);
 		}
+	}
+}
+
+void DataBindingTablesWidget::OnTorusRatioChanged() {
+
+	if (m_torusRatioSpinBox->hasFocus()) {
+
+		m_torusRatioMapper->submit();
 	}
 }

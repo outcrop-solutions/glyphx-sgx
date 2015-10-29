@@ -90,7 +90,9 @@ private:
 	bool IsAnySelectedIndexWithinIndexes(const QModelIndex& topLeft, const QModelIndex& bottomRight) const;
 	void DetermineAssociatedInputTable();
 
-	bool IsDataAtIndexDifferentFromNonMappableProperties(const SynGlyphX::NonMappableGeometryProperties& properties, const QModelIndex& index) const;
+	template<typename ValueType>
+	bool IsDataAtIndexDifferentFromNonMappableProperties(const QVariant& valueVariant, const QModelIndex& index) const;
+	
 	template<typename MappingPropertyType>
 	bool IsDataAtIndexDifferentFromGivenData(const QVariant& propVariant, const QModelIndex& index) const;
 
@@ -98,7 +100,13 @@ private:
 	QVariant GetEditDataForType(const QVariant& propVariant, const QModelIndex& index) const;
 
 	template<typename MappingPropertyType>
-	bool SetEditDataForType(const QVariant& propVariant, PropertyType propertyType, const QModelIndex& index) const;
+	bool SetMappingFunctionEditData(const QVariant& propVariant, PropertyType propertyType, const QModelIndex& index) const;
+
+	template<typename MappingPropertyType>
+	bool SetSingleValueEditData(const QVariant& propVariant, const QModelIndex& index) const;
+
+	template<typename MappingPropertyType>
+	bool SetMinMaxValueEditData(const QVariant& propVariant, const QModelIndex& index) const;
 
 	QVariant GetEditDataForTextMappingProperty(const QVariant& propVariant, const QModelIndex& index) const;
 
