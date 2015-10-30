@@ -31,7 +31,7 @@ GlyphTreesView::GlyphTreesView(DataTransformModel* sourceModel, QWidget *parent)
 	m_addChildrenAction = m_glyphActions.AddAction(tr("Add Children"));
 	QObject::connect(m_addChildrenAction, &QAction::triggered, this, &GlyphTreesView::AddChildren);
 
-	m_exportGlyphToFileAction = m_glyphActions.AddAction(tr("Export To File"));
+	m_exportGlyphToFileAction = m_glyphActions.AddAction(tr("Export Glyph Template To File"));
 	QObject::connect(m_exportGlyphToFileAction, &QAction::triggered, this, &GlyphTreesView::ExportGlyphToFile);
 
 	m_glyphActions.AddSeparator();
