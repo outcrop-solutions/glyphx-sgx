@@ -50,6 +50,7 @@ private slots:
 private:
 	void CreateTablesFromDatasource(const boost::uuids::uuid& id, const SynGlyphX::Datasource& datasource);
 	void CreateTableView(DataStatsModel* model, const QString& tabName, const QString& id);
+	void RemoveTableViews(const QString& name = QString());
 
 	DataTransformModel* m_model;
 };

@@ -39,7 +39,8 @@ void DataSourceStatsWidget::AddNewStatsViews() {
 
 		try {
 
-			if (findChildren<QTableView*>(QString::fromStdString(boost::uuids::to_string(iT->first))).empty()) {
+			QList<QTableView*> tableViewsAssociatedWithDataSource = findChildren<QTableView*>(QString::fromStdString(boost::uuids::to_string(iT->first)));
+			if (tableViewsAssociatedWithDataSource.empty()) {
 
 				CreateTablesFromDatasource(iT->first, iT->second);
 			}
@@ -54,13 +55,7 @@ void DataSourceStatsWidget::AddNewStatsViews() {
 
 void DataSourceStatsWidget::ClearTabs() {
 
-	QList<QTableView*> tabsToBeRemoved = findChildren<QTableView*>("");
-	for (QTableView* view : tabsToBeRemoved) {
-
-		//This will also delete the associated model since it is the parent of the model object
-		view->setParent(nullptr);
-		delete view;
-	}
+	RemoveTableViews();
 	clear();
 }
 
@@ -124,16 +119,18 @@ void DataSourceStatsWidget::OnRowsRemovedFromModel(const QModelIndex& parent, in
 			if (m_model->data(index, DataTransformModel::DataTypeRole).toInt() == DataTransformModel::DataType::DataSources) {
 
 				QString id = m_model->data(index, DataTransformModel::UUIDRole).toString();
-				QList<QTableView*> tabsToBeRemoved = findChildren<QTableView*>(id);
-				for (QTableView* view : tabsToBeRemoved) {
-
-					removeTab(indexOf(view));
-
-					//This will also delete the associated model since it is the parent of the model object
-					view->setParent(nullptr);
-					delete view;
-				}
+				RemoveTableViews(id);
 			}
 		}
+	}
+}
+
+void DataSourceStatsWidget::RemoveTableViews(const QString& name) {
+
+	//This will also delete the associated model since it is the parent of the model object
+	while (QTableView* view = findChild<QTableView*>(name)) {
+
+		removeTab(indexOf(view));
+		delete view;
 	}
 }
