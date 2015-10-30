@@ -838,6 +838,7 @@ void GlyphRolesTableModel::OnSourceModelDataUpdated(const QModelIndex& topLeft, 
 
 	if (IsAnySelectedIndexWithinIndexes(topLeft, bottomRight)) {
 
+		DetermineAssociatedInputTable();
 		if (roles.empty()) {
 
 			OnAllDataUpdated();
@@ -866,17 +867,28 @@ bool GlyphRolesTableModel::IsAnySelectedIndexWithinIndexes(const QModelIndex& to
 	for (const QPersistentModelIndex& selectedIndex : m_selectedDataTransformModelIndexes) {
 
 		QModelIndex index = selectedIndex;
-		while (index.parent().isValid() && (index.parent() != topLeft.parent())) {
+		if (topLeft.parent().isValid()) {
 
-			index = index.parent();
-		}
+			while (index.parent().isValid() && (index.parent() != topLeft.parent())) {
 
-		if (index.parent().isValid()) {
-
-			if ((index.row() >= topLeft.row()) && (index.row() <= bottomRight.row())) {
-
-				return true;
+				index = index.parent();
 			}
+			if (!index.parent().isValid()) {
+
+				return false;
+			}
+		}
+		else {
+
+			while (index.parent().isValid()) {
+
+				index = index.parent();
+			}
+		}
+		
+		if ((index.row() >= topLeft.row()) && (index.row() <= bottomRight.row())) {
+
+			return true;
 		}
 	}
 	
