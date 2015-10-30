@@ -263,7 +263,7 @@ namespace SynGlyphX {
 
 	void DataMappingGlyphGraph::ClearAllInputBindings(DataMappingGlyphGraph& graph, const GlyphIterator& vertex) {
 
-		vertex->second.ClearAllInputBindings();
+		ClearAllInputBindings(vertex.constify());
 		for (unsigned int i = 0; i < graph.children(vertex); ++i) {
 
 			ClearAllInputBindings(graph, graph.child(vertex, i));
