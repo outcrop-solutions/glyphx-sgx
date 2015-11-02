@@ -30,6 +30,7 @@ GlyphRolesTableModel::GlyphRolesTableModel(DataTransformModel* dataTransformMode
 	m_propertyHeaders.push_back(tr("Transparency"));
 	m_propertyHeaders.push_back(tr("Tag"));
 	m_propertyHeaders.push_back(tr("Description"));
+	m_propertyHeaders.push_back(tr("URL"));
 	m_propertyHeaders.push_back(tr("Rotation Rate X"));
 	m_propertyHeaders.push_back(tr("Rotation Rate Y"));
 	m_propertyHeaders.push_back(tr("Rotation Rate Z"));
@@ -60,6 +61,18 @@ int GlyphRolesTableModel::columnCount(const QModelIndex& parent) const {
 	else {
 
 		return m_columnHeaders.size();
+	}
+}
+
+int	GlyphRolesTableModel::rowCount(const QModelIndex& parent) const {
+
+	if (!parent.isValid()) {
+
+		return m_propertyHeaders.size();
+	}
+	else {
+
+		return 0;
 	}
 }
 
@@ -285,18 +298,6 @@ QVariant GlyphRolesTableModel::GetEditDataForType(const QVariant& propVariant, c
 	else {
 
 		return QVariant::fromValue(mappingProperty.GetValue());
-	}
-}
-
-int	GlyphRolesTableModel::rowCount(const QModelIndex& parent) const {
-
-	if (!parent.isValid()) {
-
-		return m_propertyHeaders.size();
-	}
-	else {
-
-		return 0;
 	}
 }
 
@@ -640,23 +641,23 @@ void GlyphRolesTableModel::ClearInputBindings() {
 
 GlyphRolesTableModel::PropertyType GlyphRolesTableModel::GetFieldType(int row) const {
 
-	if ((row == 11) || (row == 12)) {
+	if ((row == SynGlyphX::DataMappingGlyph::MappableField::Tag) || (row == SynGlyphX::DataMappingGlyph::MappableField::Description) || (row == SynGlyphX::DataMappingGlyph::MappableField::URL)) {
 
 		return PropertyType::Text;
 	}
-	else if (row == 9) {
+	else if (row == SynGlyphX::DataMappingGlyph::MappableField::Color) {
 
 		return PropertyType::Color;
 	}
-	else if (row == 16) {
+	else if (row == SynGlyphX::DataMappingGlyph::MappableField::VirtualTopology) {
 
 		return PropertyType::VirtualTopology;
 	}
-	else if (row == 17) {
+	else if (row == SynGlyphX::DataMappingGlyph::MappableField::GeometryShape) {
 
 		return PropertyType::GeometryShape;
 	}
-	else if (row > 17) {
+	else if (row > SynGlyphX::DataMappingGlyph::MappableField::GeometryShape) {
 
 		return PropertyType::NonMappable;
 	}

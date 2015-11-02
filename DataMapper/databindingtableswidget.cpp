@@ -24,6 +24,7 @@ DataBindingTablesWidget::DataBindingTablesWidget(GlyphRolesTableModel* model, QW
 	CreateTagAndDescriptionWidget();
 	CreateAnimationTable();
 	CreateGeometryTopologyTab();
+	CreateURLTab();
 
 	setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
 
@@ -46,12 +47,15 @@ DataBindingTablesWidget::~DataBindingTablesWidget()
 
 void DataBindingTablesWidget::CreateGeometryTopologyTab() {
 
-	QTableView* tableView = CreateSubsetTableView({ 16, 17, 18, 19 });
+	QTableView* tableView = CreateSubsetTableView({ SynGlyphX::DataMappingGlyph::MappableField::VirtualTopology, 
+													SynGlyphX::DataMappingGlyph::MappableField::GeometryShape, 
+													SynGlyphX::DataMappingGlyph::MappableField::GeometryShape + 1, 
+													SynGlyphX::DataMappingGlyph::MappableField::GeometryShape + 2});
 	tableView->setSpan(2, 1, 1, 3);
 	tableView->setSpan(3, 1, 1, 3);
 
-	CreateVirtualTopologyTypePropertyWidgets(tableView, 16);
-	CreateGeometryShapePropertyWidgets(tableView, 17);
+	CreateVirtualTopologyTypePropertyWidgets(tableView, SynGlyphX::DataMappingGlyph::MappableField::VirtualTopology);
+	CreateGeometryShapePropertyWidgets(tableView, SynGlyphX::DataMappingGlyph::MappableField::GeometryShape);
 
 	tableView->resizeColumnToContents(1);
 
@@ -78,8 +82,8 @@ void DataBindingTablesWidget::CreateGeometryTopologyTab() {
 	torusRatioBoundingWidget->setLayout(torusRatioBoundingWidgetLayout);
 
 	SynGlyphX::TableSubsetProxyModel* proxyModel = dynamic_cast<SynGlyphX::TableSubsetProxyModel*>(tableView->model());
-	tableView->setIndexWidget(proxyModel->mapFromSource(m_model->index(18, 1)), surfaceBoundingWidget);
-	tableView->setIndexWidget(proxyModel->mapFromSource(m_model->index(19, 1)), torusRatioBoundingWidget);
+	tableView->setIndexWidget(proxyModel->mapFromSource(m_model->index(SynGlyphX::DataMappingGlyph::MappableField::GeometryShape + 1, GlyphRolesTableModel::s_valueColumn)), surfaceBoundingWidget);
+	tableView->setIndexWidget(proxyModel->mapFromSource(m_model->index(SynGlyphX::DataMappingGlyph::MappableField::GeometryShape + 2, GlyphRolesTableModel::s_valueColumn)), torusRatioBoundingWidget);
 
 	std::array<QDataWidgetMapper*, 2> mappers;
 	for (int i = 0; i < 2; ++i) {
@@ -89,11 +93,11 @@ void DataBindingTablesWidget::CreateGeometryTopologyTab() {
 		mappers[i]->setModel(m_model);
 	}
 
-	mappers[0]->addMapping(m_surfaceRadioButtonWidget, 1);
-	mappers[1]->addMapping(m_torusRatioSpinBox, 1);
+	mappers[0]->addMapping(m_surfaceRadioButtonWidget, GlyphRolesTableModel::s_valueColumn);
+	mappers[1]->addMapping(m_torusRatioSpinBox, GlyphRolesTableModel::s_valueColumn);
 
-	m_dataWidgetMappersAndRows[mappers[0]] = 18;
-	m_dataWidgetMappersAndRows[mappers[1]] = 19;
+	m_dataWidgetMappersAndRows[mappers[0]] = SynGlyphX::DataMappingGlyph::MappableField::GeometryShape + 1;
+	m_dataWidgetMappersAndRows[mappers[1]] = SynGlyphX::DataMappingGlyph::MappableField::GeometryShape + 2;
 
 	m_torusRatioMapper = mappers[1];
 
@@ -105,11 +109,13 @@ void DataBindingTablesWidget::CreateGeometryTopologyTab() {
 
 void DataBindingTablesWidget::CreateAnimationTable() {
 
-	QTableView* tableView = CreateSubsetTableView({ 13, 14, 15 });
+	QTableView* tableView = CreateSubsetTableView({ SynGlyphX::DataMappingGlyph::MappableField::RotationRateX, 
+													SynGlyphX::DataMappingGlyph::MappableField::RotationRateY, 
+													SynGlyphX::DataMappingGlyph::MappableField::RotationRateZ });
 
-	CreateDoublePropertyWidgets(tableView, 13, -1000.0, 1000.0);
-	CreateDoublePropertyWidgets(tableView, 14, -1000.0, 1000.0);
-	CreateDoublePropertyWidgets(tableView, 15, -1000.0, 1000.0);
+	CreateDoublePropertyWidgets(tableView, SynGlyphX::DataMappingGlyph::MappableField::RotationRateX, -1000.0, 1000.0);
+	CreateDoublePropertyWidgets(tableView, SynGlyphX::DataMappingGlyph::MappableField::RotationRateY, -1000.0, 1000.0);
+	CreateDoublePropertyWidgets(tableView, SynGlyphX::DataMappingGlyph::MappableField::RotationRateZ, -1000.0, 1000.0);
 
 	QHeaderView* horizontalHeader = tableView->horizontalHeader();
 	horizontalHeader->setSectionResizeMode(0, QHeaderView::ResizeToContents);
@@ -120,33 +126,57 @@ void DataBindingTablesWidget::CreateAnimationTable() {
 	addTab(tableView, tr("Animation"));
 }
 
-void DataBindingTablesWidget::CreateTagAndDescriptionWidget() {
+void DataBindingTablesWidget::CreateURLTab() {
 
-	QTableView* tableView = CreateSubsetTableView({ 11, 12 }, { 0, 3 });
+	QTableView* tableView = CreateSubsetTableView({ SynGlyphX::DataMappingGlyph::MappableField::URL }, { GlyphRolesTableModel::s_propertyNameColumn, GlyphRolesTableModel::s_mappedFieldColumn });
 	SynGlyphX::TableSubsetProxyModel* proxyModel = dynamic_cast<SynGlyphX::TableSubsetProxyModel*>(tableView->model());
 
-	m_tagLineEdit = new BindingLineEdit(m_model, tableView);
-	tableView->setIndexWidget(proxyModel->mapFromSource(m_model->index(11, 3)), m_tagLineEdit);
+	BindingLineEdit* urlLineEdit = new BindingLineEdit(m_model, tableView);
+	tableView->setIndexWidget(proxyModel->mapFromSource(m_model->index(SynGlyphX::DataMappingGlyph::MappableField::URL, GlyphRolesTableModel::s_mappedFieldColumn)), urlLineEdit);
+
+	QDataWidgetMapper* urlMapper = new QDataWidgetMapper(this);
+	urlMapper->setModel(m_model);
+	urlMapper->addMapping(urlLineEdit, GlyphRolesTableModel::s_mappedFieldColumn);
+
+	QObject::connect(urlLineEdit, &BindingLineEdit::ValueChangedByUser, urlMapper, &QDataWidgetMapper::submit);
+
+	m_dataWidgetMappersAndRows[urlMapper] = SynGlyphX::DataMappingGlyph::MappableField::URL;
+
+	QHeaderView* horizontalHeader = tableView->horizontalHeader();
+	horizontalHeader->setSectionResizeMode(0, QHeaderView::ResizeToContents);
+	horizontalHeader->setSectionResizeMode(1, QHeaderView::Stretch);
+
+	addTab(tableView, tr("URL"));
+}
+
+void DataBindingTablesWidget::CreateTagAndDescriptionWidget() {
+
+	QTableView* tableView = CreateSubsetTableView({ SynGlyphX::DataMappingGlyph::MappableField::Tag, SynGlyphX::DataMappingGlyph::MappableField::Description },
+												  { GlyphRolesTableModel::s_propertyNameColumn, GlyphRolesTableModel::s_mappedFieldColumn });
+	SynGlyphX::TableSubsetProxyModel* proxyModel = dynamic_cast<SynGlyphX::TableSubsetProxyModel*>(tableView->model());
+
+	BindingLineEdit* tagLineEdit = new BindingLineEdit(m_model, tableView);
+	tableView->setIndexWidget(proxyModel->mapFromSource(m_model->index(SynGlyphX::DataMappingGlyph::MappableField::Tag, GlyphRolesTableModel::s_mappedFieldColumn)), tagLineEdit);
 
 	QDataWidgetMapper* tagMapper = new QDataWidgetMapper(this);
 	tagMapper->setModel(m_model);
-	tagMapper->addMapping(m_tagLineEdit, 3);  
+	tagMapper->addMapping(tagLineEdit, GlyphRolesTableModel::s_mappedFieldColumn);
 
-	QObject::connect(m_tagLineEdit, &BindingLineEdit::ValueChangedByUser, tagMapper, &QDataWidgetMapper::submit);
+	QObject::connect(tagLineEdit, &BindingLineEdit::ValueChangedByUser, tagMapper, &QDataWidgetMapper::submit);
 
-	m_dataWidgetMappersAndRows[tagMapper] = 11;
+	m_dataWidgetMappersAndRows[tagMapper] = SynGlyphX::DataMappingGlyph::MappableField::Tag;
 
-	m_descriptionEdit = new SynGlyphX::RichTextEditor("", tableView);
-	m_descriptionEdit->setEnabled(false);
-	tableView->setIndexWidget(proxyModel->mapFromSource(m_model->index(12, 3)), m_descriptionEdit);
+	SynGlyphX::RichTextEditor* descriptionEdit = new SynGlyphX::RichTextEditor("", tableView);
+	descriptionEdit->setEnabled(false);
+	tableView->setIndexWidget(proxyModel->mapFromSource(m_model->index(SynGlyphX::DataMappingGlyph::MappableField::Description, GlyphRolesTableModel::s_mappedFieldColumn)), descriptionEdit);
 
 	QDataWidgetMapper* descriptionMapper = new QDataWidgetMapper(this);
 	descriptionMapper->setModel(m_model);
-	descriptionMapper->addMapping(m_descriptionEdit, 3);
+	descriptionMapper->addMapping(descriptionEdit, GlyphRolesTableModel::s_mappedFieldColumn);
 
 	//QObject::connect(m_descriptionEdit, &BindingLineEdit::ValueChangedByUser, mapper, &QDataWidgetMapper::submit);
 
-	m_dataWidgetMappersAndRows[descriptionMapper] = 12;
+	m_dataWidgetMappersAndRows[descriptionMapper] = SynGlyphX::DataMappingGlyph::MappableField::Description;
 
 	QHeaderView* horizontalHeader = tableView->horizontalHeader();
 	horizontalHeader->setSectionResizeMode(0, QHeaderView::ResizeToContents);
@@ -157,26 +187,36 @@ void DataBindingTablesWidget::CreateTagAndDescriptionWidget() {
 
 void DataBindingTablesWidget::CreateBasePropertiesTable() {
 
-	QTableView* tableView = CreateSubsetTableView({ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 });
+	QTableView* tableView = CreateSubsetTableView({ SynGlyphX::DataMappingGlyph::MappableField::PositionX, 
+													SynGlyphX::DataMappingGlyph::MappableField::PositionY, 
+													SynGlyphX::DataMappingGlyph::MappableField::PositionZ,
+													SynGlyphX::DataMappingGlyph::MappableField::RotationX,
+													SynGlyphX::DataMappingGlyph::MappableField::RotationY,
+													SynGlyphX::DataMappingGlyph::MappableField::RotationZ,
+													SynGlyphX::DataMappingGlyph::MappableField::ScaleX,
+													SynGlyphX::DataMappingGlyph::MappableField::ScaleY,
+													SynGlyphX::DataMappingGlyph::MappableField::ScaleZ,
+													SynGlyphX::DataMappingGlyph::MappableField::Color,
+													SynGlyphX::DataMappingGlyph::MappableField::Transparency });
 
 	//Position
-	CreateDoublePropertyWidgets(tableView, 0, -1000.0, 1000.0, true);
-	CreateDoublePropertyWidgets(tableView, 1, -1000.0, 1000.0, true);
-	CreateDoublePropertyWidgets(tableView, 2, 0.0, 1000.0);
+	CreateDoublePropertyWidgets(tableView, SynGlyphX::DataMappingGlyph::MappableField::PositionX, -1000.0, 1000.0, true);
+	CreateDoublePropertyWidgets(tableView, SynGlyphX::DataMappingGlyph::MappableField::PositionY, -1000.0, 1000.0, true);
+	CreateDoublePropertyWidgets(tableView, SynGlyphX::DataMappingGlyph::MappableField::PositionZ, 0.0, 1000.0);
 
 	//Rotation
-	CreateDoublePropertyWidgets(tableView, 3, -360.0, 360.0);
-	CreateDoublePropertyWidgets(tableView, 4, -360.0, 360.0);
-	CreateDoublePropertyWidgets(tableView, 5, -360.0, 360.0);
+	CreateDoublePropertyWidgets(tableView, SynGlyphX::DataMappingGlyph::MappableField::RotationX, -360.0, 360.0);
+	CreateDoublePropertyWidgets(tableView, SynGlyphX::DataMappingGlyph::MappableField::RotationY, -360.0, 360.0);
+	CreateDoublePropertyWidgets(tableView, SynGlyphX::DataMappingGlyph::MappableField::RotationZ, -360.0, 360.0);
 
 	//Scale
-	CreateDoublePropertyWidgets(tableView, 6, 0.0, 1000.0);
-	CreateDoublePropertyWidgets(tableView, 7, 0.0, 1000.0);
-	CreateDoublePropertyWidgets(tableView, 8, 0.0, 1000.0);
+	CreateDoublePropertyWidgets(tableView, SynGlyphX::DataMappingGlyph::MappableField::ScaleX, 0.0, 1000.0);
+	CreateDoublePropertyWidgets(tableView, SynGlyphX::DataMappingGlyph::MappableField::ScaleY, 0.0, 1000.0);
+	CreateDoublePropertyWidgets(tableView, SynGlyphX::DataMappingGlyph::MappableField::ScaleZ, 0.0, 1000.0);
 
 	//Color & Transparency
-	CreateColorPropertyWidgets(tableView, 9);
-	CreateDoublePropertyWidgets(tableView, 10, 0.0, 255.0);
+	CreateColorPropertyWidgets(tableView, SynGlyphX::DataMappingGlyph::MappableField::Color);
+	CreateDoublePropertyWidgets(tableView, SynGlyphX::DataMappingGlyph::MappableField::Transparency, 0.0, 255.0);
 	//CreateIntegerPropertyWidgets(gridLayout, 10);
 
 	QHeaderView* horizontalHeader = tableView->horizontalHeader();
@@ -224,9 +264,9 @@ QDataWidgetMapper* DataBindingTablesWidget::AddRowOfWidgetsToTable(QTableView* t
 
 	BindingLineEdit* inputBindingLineEdit = new BindingLineEdit(m_model, tableView, SynGlyphX::MappingFunctionData::Input::Numeric);
 
-	mappers[0]->addMapping(valueWidgetToMap, 1);
-	mappers[1]->addMapping(mappingFunctionWidget, 2);
-	mappers[2]->addMapping(inputBindingLineEdit, 3);
+	mappers[0]->addMapping(valueWidgetToMap, GlyphRolesTableModel::s_valueColumn);
+	mappers[1]->addMapping(mappingFunctionWidget, GlyphRolesTableModel::s_mappingDataColumn);
+	mappers[2]->addMapping(inputBindingLineEdit, GlyphRolesTableModel::s_mappedFieldColumn);
 
 	for (int i = 0; i < 3; ++i) {
 
@@ -239,9 +279,9 @@ QDataWidgetMapper* DataBindingTablesWidget::AddRowOfWidgetsToTable(QTableView* t
 
 	SynGlyphX::TableSubsetProxyModel* proxyModel = dynamic_cast<SynGlyphX::TableSubsetProxyModel*>(tableView->model());
 
-	tableView->setIndexWidget(proxyModel->mapFromSource(m_model->index(modelRow, 1)), valueWidget);
-	tableView->setIndexWidget(proxyModel->mapFromSource(m_model->index(modelRow, 2)), mappingFunctionWidget);
-	tableView->setIndexWidget(proxyModel->mapFromSource(m_model->index(modelRow, 3)), inputBindingLineEdit);
+	tableView->setIndexWidget(proxyModel->mapFromSource(m_model->index(modelRow, GlyphRolesTableModel::s_valueColumn)), valueWidget);
+	tableView->setIndexWidget(proxyModel->mapFromSource(m_model->index(modelRow, GlyphRolesTableModel::s_mappingDataColumn)), mappingFunctionWidget);
+	tableView->setIndexWidget(proxyModel->mapFromSource(m_model->index(modelRow, GlyphRolesTableModel::s_mappedFieldColumn)), inputBindingLineEdit);
 
 	if (addToPositionXYList) {
 

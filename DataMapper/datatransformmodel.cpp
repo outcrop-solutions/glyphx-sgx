@@ -123,6 +123,10 @@ bool DataTransformModel::setData(const QModelIndex& index, const QVariant& value
 
 				iterator->second.GetVirtualTopology().SetType(value.value<SynGlyphX::VirtualTopologyMappingProperty>());
 			}
+			else if (role == PropertyRole::URL) {
+
+				iterator->second.GetDescription() = value.value<SynGlyphX::TextMappingProperty>();
+			}
 
 			QVector<int> roles;
 			roles.push_back(role);
@@ -270,6 +274,10 @@ QVariant DataTransformModel::GetPropertyData(const QModelIndex& index, int role)
 			else if (role == PropertyRole::VirtualTopology) {
 
 				var.setValue(iterator->second.GetVirtualTopology().GetType());
+			}
+			else if (role == PropertyRole::URL) {
+
+				var.setValue(iterator->second.GetURL());
 			}
 
 			if (var.isValid()) {

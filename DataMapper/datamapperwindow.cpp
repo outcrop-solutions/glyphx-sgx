@@ -55,7 +55,6 @@ DataMapperWindow::DataMapperWindow(QWidget *parent)
 	QObject::connect(m_dataTransformModel, &DataTransformModel::rowsRemoved, this, [&, this](const QModelIndex& parent, int first, int last){ setWindowModified(true); });
 	
 	m_glyphRolesTableModel = new GlyphRolesTableModel(m_dataTransformModel, this);
-	//QObject::connect(m_glyphRolesTableModel, &GlyphRolesTableModel::dataChanged, this, [&, this](const QModelIndex& topLeft, const QModelIndex& bottomRight){ setWindowModified(true); });
 
 	CreateMenus();
     CreateDockWidgets();

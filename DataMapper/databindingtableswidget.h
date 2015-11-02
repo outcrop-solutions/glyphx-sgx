@@ -49,6 +49,7 @@ private slots:
 	void OnTorusRatioChanged();
 
 private:
+	void CreateURLTab();
 	void CreateGeometryTopologyTab();
 	void CreateAnimationTable();
 	void CreateTagAndDescriptionWidget();
@@ -62,8 +63,6 @@ private:
 	QDataWidgetMapper* AddRowOfWidgetsToTable(QTableView* tableView, QWidget* valueWidget, QWidget* valueWidgetToMap, MappingFunctionWidget* mappingFunctionWidget, int modelRow, bool addToPositionXYList = false);
 	void EnablePositionXYMixMaxWidgets(bool enable);
 
-	BindingLineEdit* m_tagLineEdit;
-	SynGlyphX::RichTextEditor* m_descriptionEdit;
 	std::map<QDataWidgetMapper*, unsigned int> m_dataWidgetMappersAndRows;
 	GlyphRolesTableModel* m_model;
 	QList<QWidget*> m_positionXYMinMaxWidgets;
