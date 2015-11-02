@@ -11,7 +11,8 @@ namespace SynGlyphX {
 	}
 
 	DataMappingGlyph::DataMappingGlyph(const DataMappingGlyph& glyph) :
-		GlyphTemplate<NumericMappingProperty, ColorMappingProperty, TextMappingProperty, DataMappingGlyphGeometry, DataMappingVirtualTopology>(glyph) {
+		GlyphTemplate<NumericMappingProperty, ColorMappingProperty, TextMappingProperty, DataMappingGlyphGeometry, DataMappingVirtualTopology>(glyph),
+		m_url(glyph.m_url) {
 
 
 	}
@@ -34,9 +35,9 @@ namespace SynGlyphX {
 		m_rotation[0] = NumericMappingProperty(DoubleMinDiff(0.0, glyph.GetRotation()[0]));
 		m_rotation[1] = NumericMappingProperty(DoubleMinDiff(0.0, glyph.GetRotation()[1]));
 		m_rotation[2] = NumericMappingProperty(DoubleMinDiff(0.0, glyph.GetRotation()[2]));
-		m_scale[0] = NumericMappingProperty(DoubleMinDiff(0.1, glyph.GetScale()[0] - 0.1));
-		m_scale[1] = NumericMappingProperty(DoubleMinDiff(0.1, glyph.GetScale()[1] - 0.1));
-		m_scale[2] = NumericMappingProperty(DoubleMinDiff(0.1, glyph.GetScale()[2] - 0.1));
+		m_scale[0] = NumericMappingProperty(DoubleMinDiff(0.0, glyph.GetScale()[0] - 0.0));
+		m_scale[1] = NumericMappingProperty(DoubleMinDiff(0.0, glyph.GetScale()[1] - 0.0));
+		m_scale[2] = NumericMappingProperty(DoubleMinDiff(0.0, glyph.GetScale()[2] - 0.0));
 
 		m_color = ColorMappingProperty(ColorMinDiff(GlyphColor(), glyph.GetColor()));
 		m_transparency = NumericMappingProperty(DoubleMinDiff(0.0, glyph.GetTransparency()));
@@ -96,6 +97,12 @@ namespace SynGlyphX {
 
 			m_virtualTopology = DataMappingVirtualTopology(propertyTree, true);
 		}
+
+		boost::optional<const boost::property_tree::wptree&> urlTree = propertyTree.get_child_optional(L"URL");
+		if (urlTree.is_initialized()) {
+
+			m_url = TextMappingProperty(urlTree.get());
+		}
 	}
 
 	DataMappingGlyph::~DataMappingGlyph() {
@@ -121,6 +128,8 @@ namespace SynGlyphX {
 
 		m_structure.ExportToPropertyTree(rootGlyphPropertyTree);
 		m_virtualTopology.ExportToPropertyTree(rootGlyphPropertyTree);
+
+		m_url.ExportToPropertyTree(rootGlyphPropertyTree.add(L"URL", L""));
 
 		return rootGlyphPropertyTree;
 	}
@@ -248,13 +257,19 @@ namespace SynGlyphX {
 	DataMappingGlyph& DataMappingGlyph::operator=(const DataMappingGlyph& glyph) {
 
 		GlyphTemplate::operator=(glyph);
+		m_url = glyph.m_url;
 
 		return *this;
 	}
 
 	bool DataMappingGlyph::operator==(const DataMappingGlyph& glyph) const {
 
-		return GlyphTemplate::operator==(glyph);
+		if (GlyphTemplate::operator!=(glyph)) {
+
+			return false;
+		}
+
+		return (m_url == glyph.m_url);
 	}
 
 	bool DataMappingGlyph::operator!=(const DataMappingGlyph& glyph) const {
@@ -391,6 +406,10 @@ namespace SynGlyphX {
 
 			return m_virtualTopology.GetType().GetBinding();
 		}
+		else if (field == MappableField::URL) {
+
+			return m_url.GetBinding();
+		}
 	}
 
 	MappingFunctionData::ConstSharedPtr DataMappingGlyph::GetMappingFunctionData(MappableField field) const {
@@ -466,6 +485,10 @@ namespace SynGlyphX {
 		else if (field == MappableField::VirtualTopology) {
 
 			return m_virtualTopology.GetType().GetMappingFunctionData();
+		}
+		else if (field == MappableField::URL) {
+
+			return m_url.GetMappingFunctionData();
 		}
 	}
 
@@ -547,6 +570,20 @@ namespace SynGlyphX {
 			virtualTopologyType.SetMappingFunctionData(mappingData);
 			m_virtualTopology.SetType(virtualTopologyType);
 		}
+		else if (field == MappableField::URL) {
+
+			m_url.SetMappingFunctionData(mappingData);
+		}
+	}
+
+	TextMappingProperty& DataMappingGlyph::GetURL() {
+
+		return m_url;
+	}
+
+	const TextMappingProperty& DataMappingGlyph::GetURL() const {
+
+		return m_url;
 	}
 
 } //namespace SynGlyphX
