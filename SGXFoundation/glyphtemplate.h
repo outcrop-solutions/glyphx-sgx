@@ -40,7 +40,8 @@ namespace SynGlyphX {
 			m_description(TextType()),
 			m_rotationRate(NumericTypeXYZ()),
 			m_structure(structure),
-			m_virtualTopology(virtualTopology) {
+			m_virtualTopology(virtualTopology),
+			m_url(TextType()) {
 
 		}
 
@@ -54,7 +55,8 @@ namespace SynGlyphX {
 			m_description(glyph.m_description),
 			m_rotationRate(glyph.m_rotationRate),
 			m_structure(glyph.m_structure),
-			m_virtualTopology(glyph.m_virtualTopology) {
+			m_virtualTopology(glyph.m_virtualTopology),
+			m_url(glyph.m_url) {
 
 		}
 
@@ -162,6 +164,16 @@ namespace SynGlyphX {
 			return m_rotationRate;
 		}
 
+		TextType& GetURL() {
+
+			return m_url;
+		}
+
+		const TextType& GetURL() const {
+
+			return m_url;
+		}
+
 		GlyphTemplate& operator=(const GlyphTemplate& glyph) {
 
 			m_position = glyph.m_position;
@@ -174,6 +186,7 @@ namespace SynGlyphX {
 			m_rotationRate = glyph.m_rotationRate;
 			m_structure = glyph.m_structure;
 			m_virtualTopology = glyph.m_virtualTopology;
+			m_url = glyph.m_url;
 
 			return *this;
 		}
@@ -229,6 +242,11 @@ namespace SynGlyphX {
 
 				return false;
 			}
+			
+			if (m_url != glyph.m_url) {
+
+				return false;
+			}
 
 			return true;
 		}
@@ -256,6 +274,8 @@ namespace SynGlyphX {
 		//Glyph Structure & Virtual Topology
 		StructureType m_structure;
 		VirtualTopologyType m_virtualTopology;
+
+		TextType m_url;
 	};
 
 } //namespace SynGlyphX

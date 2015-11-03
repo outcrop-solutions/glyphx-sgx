@@ -81,16 +81,11 @@ namespace SynGlyphX {
 		bool IsPositionXYBoundToInputFields() const;
 		bool IsAnInputFieldBoundToAPosition() const;
 
-		TextMappingProperty& GetURL();
-		const TextMappingProperty& GetURL() const;
-
 	protected:
 		void GetXYZNumericPropertiesFromPropertyTree(const boost::property_tree::wptree& propertyTree, NumericMappingPropertyXYZ& prop);
 		void AddXYZNumericPropertiesToPropertyTree(boost::property_tree::wptree& propertyTree, const NumericMappingPropertyXYZ& prop) const;
 
 		void SetMappingFunctionData(MappableField field, MappingFunctionData::SharedPtr mappingData);
-
-		TextMappingProperty m_url;
 	};
 
 } //namespace SynGlyphX

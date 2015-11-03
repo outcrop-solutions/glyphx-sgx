@@ -11,8 +11,7 @@ namespace SynGlyphX {
 	}
 
 	DataMappingGlyph::DataMappingGlyph(const DataMappingGlyph& glyph) :
-		GlyphTemplate<NumericMappingProperty, ColorMappingProperty, TextMappingProperty, DataMappingGlyphGeometry, DataMappingVirtualTopology>(glyph),
-		m_url(glyph.m_url) {
+		GlyphTemplate<NumericMappingProperty, ColorMappingProperty, TextMappingProperty, DataMappingGlyphGeometry, DataMappingVirtualTopology>(glyph) {
 
 
 	}
@@ -52,6 +51,8 @@ namespace SynGlyphX {
 		m_structure = DataMappingGlyphGeometry(glyph.GetStructure());
 
 		m_virtualTopology = DataMappingVirtualTopology(glyph.GetVirtualTopology());
+
+		m_url = TextMappingProperty(glyph.GetURL());
 	}
 
 	DataMappingGlyph::DataMappingGlyph(const boost::property_tree::wptree& propertyTree) :
@@ -177,6 +178,8 @@ namespace SynGlyphX {
 		glyph.GetStructure() = m_structure.ExportGlyphGeometry();
 		glyph.GetVirtualTopology() = m_virtualTopology.ExportVirtualTopology();
 
+		glyph.GetURL() = m_url.GetValue();
+
 		return glyph;
 	}
 
@@ -208,6 +211,8 @@ namespace SynGlyphX {
 
 		glyph.GetStructure() = m_structure.ExportGlyphGeometry();
 		glyph.GetVirtualTopology() = m_virtualTopology.ExportVirtualTopology();
+
+		glyph.GetURL() = m_url.GetValue();
 
 		return glyph;
 	}
@@ -241,6 +246,8 @@ namespace SynGlyphX {
 		glyph.GetStructure() = m_structure.ExportGlyphGeometry();
 		glyph.GetVirtualTopology() = m_virtualTopology.ExportVirtualTopology();
 
+		glyph.GetURL() = m_url.GetValue();
+
 		return glyph;
 	}
 
@@ -257,19 +264,13 @@ namespace SynGlyphX {
 	DataMappingGlyph& DataMappingGlyph::operator=(const DataMappingGlyph& glyph) {
 
 		GlyphTemplate::operator=(glyph);
-		m_url = glyph.m_url;
 
 		return *this;
 	}
 
 	bool DataMappingGlyph::operator==(const DataMappingGlyph& glyph) const {
 
-		if (GlyphTemplate::operator!=(glyph)) {
-
-			return false;
-		}
-
-		return (m_url == glyph.m_url);
+		return GlyphTemplate::operator==(glyph);
 	}
 
 	bool DataMappingGlyph::operator!=(const DataMappingGlyph& glyph) const {
@@ -574,16 +575,6 @@ namespace SynGlyphX {
 
 			m_url.SetMappingFunctionData(mappingData);
 		}
-	}
-
-	TextMappingProperty& DataMappingGlyph::GetURL() {
-
-		return m_url;
-	}
-
-	const TextMappingProperty& DataMappingGlyph::GetURL() const {
-
-		return m_url;
 	}
 
 } //namespace SynGlyphX
