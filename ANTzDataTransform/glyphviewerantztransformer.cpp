@@ -8,7 +8,7 @@
 namespace SynGlyphXANTz {
 
 	GlyphViewerANTzTransformer::GlyphViewerANTzTransformer(const QString& cacheBaseDir) :
-		ANTzTransformer(cacheBaseDir)
+		ANTzTransformer(cacheBaseDir, SynGlyphXANTz::ANTzCSVWriter::OutputPlatform::Windows)
 	{
 		SetSourceDataCacheLocation(QDir::toNativeSeparators(cacheBaseDir + QDir::separator() + "sourcedata.db"));
 	}
@@ -41,12 +41,16 @@ namespace SynGlyphXANTz {
 
 		QString localOutputDir = QDir::toNativeSeparators(m_baseOutputDir + QDir::separator() + "antz" + QDir::separator());
 
-		QStringList csvFiles;
-		csvFiles.push_back(localOutputDir + "antz.csv");
-		csvFiles.push_back(localOutputDir + "antztag.csv");
-
-		QStringList cacheFiles = csvFiles;
+		QStringList cacheFiles;
+		cacheFiles.push_back(localOutputDir + "antz.csv");
+		cacheFiles.push_back(localOutputDir + "antztag.csv");
+		cacheFiles.push_back(localOutputDir + "redirect.bat");
 		cacheFiles.push_back(m_sourceDataCacheLocation);
+
+		SynGlyphXANTz::ANTzCSVWriter::FilenameList outputfiles;
+		outputfiles[SynGlyphXANTz::ANTzCSVWriter::s_nodeFilenameIndex] = cacheFiles[0].toStdString();
+		outputfiles[SynGlyphXANTz::ANTzCSVWriter::s_tagFilenameIndex] = cacheFiles[1].toStdString();
+		outputfiles[SynGlyphXANTz::ANTzCSVWriter::s_redirectFilenameIndex] = cacheFiles[2].toStdString();
 
 		QString cachedMappingFilename = m_baseOutputDir + QDir::separator() + "mapping.sdt";
 
@@ -63,14 +67,14 @@ namespace SynGlyphXANTz {
 				baseOutputDir.mkdir("antz");
 			}
 
-			GenerateCache(mapping, csvFiles, localOutputDir);
+			GenerateCache(mapping, outputfiles, localOutputDir);
 			//Write the mapping to the cache
 			mapping.WriteToFile(cachedMappingFilename.toStdString());
 		}
 		else {
 
 			//Even though the cache is up to date, still need to fill out values as if the cache was just created
-			m_csvFilenames = csvFiles;
+			m_outputFilenames = outputfiles;
 			QStringList nameFilter("*.png");
 			m_baseImageFilenames = antzOutputDir.entryList(nameFilter, QDir::NoDotAndDotDot | QDir::Files, QDir::Name);
 			for (int i = 0; i < m_baseImageFilenames.size(); ++i) {

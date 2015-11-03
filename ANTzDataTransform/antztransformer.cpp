@@ -8,9 +8,10 @@
 
 namespace SynGlyphXANTz {
 
-	ANTzTransformer::ANTzTransformer(const QString& baseOutputDir) :
+	ANTzTransformer::ANTzTransformer(const QString& baseOutputDir, ANTzCSVWriter::OutputPlatform platform) :
 		SynGlyphX::Transformer(),
-		m_baseOutputDir(baseOutputDir)
+		m_baseOutputDir(baseOutputDir),
+		m_platform(platform)
 	{
 
 	}
@@ -20,9 +21,9 @@ namespace SynGlyphXANTz {
 
 	}
 
-	const QStringList& ANTzTransformer::GetCSVFilenames() const {
+	const ANTzCSVWriter::FilenameList& ANTzTransformer::GetOutputFilenames() const {
 
-		return m_csvFilenames;
+		return m_outputFilenames;
 	}
 
 	const QStringList& ANTzTransformer::GetBaseImageFilenames() const {
@@ -30,13 +31,14 @@ namespace SynGlyphXANTz {
 		return m_baseImageFilenames;
 	}
 
-	void ANTzTransformer::GenerateCache(const SynGlyphX::DataTransformMapping& mapping, const QStringList& csvFilenames, const QString& baseImageFilenameDirectory) {
+	void ANTzTransformer::GenerateCache(const SynGlyphX::DataTransformMapping& mapping, const ANTzCSVWriter::FilenameList& outputFiles, const QString& baseImageFilenameDirectory) {
 
-		Q_FOREACH(QString csvFilename, csvFilenames) {
+		for (const std::string& filename : outputFiles) {
 
-			if (QFile::exists(csvFilename)) {
+			QString qFilename = QString::fromStdString(filename);
+			if (QFile::exists(qFilename)) {
 
-				if (!QFile::remove(csvFilename)) {
+				if (!QFile::remove(qFilename)) {
 
 					throw std::exception("Failed to remove old cache");
 				}
@@ -49,9 +51,9 @@ namespace SynGlyphXANTz {
 		SynGlyphX::GlyphGraph::ConstSharedVector trees = CreateGlyphTreesFromMinMaxTrees(mapping);
 		
 		ANTzCSVWriter& writer = ANTzCSVWriter::GetInstance();
-		writer.Write(csvFilenames[0].toStdString(), csvFilenames[1].toStdString(), trees, grids);
+		writer.Write(outputFiles, trees, grids, m_platform);
 
-		m_csvFilenames = csvFilenames;
+		m_outputFilenames = outputFiles;
 	}
 
 	void ANTzTransformer::GenerateGrids(std::vector<ANTzGrid>& grids, const SynGlyphX::DataTransformMapping& mapping, const QString& baseImageFilenameDirectory) {
@@ -136,7 +138,10 @@ namespace SynGlyphXANTz {
 
 	void ANTzTransformer::Clear() {
 
-		m_csvFilenames.clear();
+		for (auto& filename : m_outputFilenames) {
+
+			filename.clear();
+		}
 		m_baseImageFilenames.clear();
 		m_textureIDs.clear();
 	}

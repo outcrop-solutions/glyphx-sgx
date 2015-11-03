@@ -9,8 +9,8 @@ namespace SynGlyphXANTz {
 
 	QString ANTzExportTransformer::s_logoFilename;
 
-	ANTzExportTransformer::ANTzExportTransformer(const QString& baseOutputDir, const QString& antzTemplateDir, bool useOldANTzFilenames) :
-		ANTzTransformer(baseOutputDir),
+	ANTzExportTransformer::ANTzExportTransformer(const QString& baseOutputDir, const QString& antzTemplateDir, ANTzCSVWriter::OutputPlatform platform, bool useOldANTzFilenames) :
+		ANTzTransformer(baseOutputDir, platform),
 		m_antzTemplateDir(antzTemplateDir),
 		m_useOldANTzFilenames(useOldANTzFilenames)
 	{
@@ -53,21 +53,22 @@ namespace SynGlyphXANTz {
 		SynGlyphX::Filesystem::CopyDirectoryOverwrite(QDir::toNativeSeparators(m_antzTemplateDir).toStdString(), m_baseOutputDir.toStdString(), true);
 		QFile::copy(s_defaultImagesDirectory + QString::fromStdWString(SynGlyphX::DefaultBaseImageProperties::GetBasefilename()), baseUsrImageDir + "map00001.jpg");
 
-		QStringList csvFiles;
+		ANTzCSVWriter::FilenameList outputFilenames;
 		if (m_useOldANTzFilenames) {
 
-			csvFiles.push_back(baseUsrCSVDir + "antz0001.csv");
-			csvFiles.push_back(baseUsrCSVDir + "antztag0001.csv");
+			outputFilenames[ANTzCSVWriter::s_nodeFilenameIndex] = (baseUsrCSVDir + "antz0001.csv").toStdString();
+			outputFilenames[ANTzCSVWriter::s_tagFilenameIndex] = (baseUsrCSVDir + "antztag0001.csv").toStdString();
 		}
 		else {
 
-			csvFiles.push_back(baseUsrCSVDir + "antz0001node.csv");
-			csvFiles.push_back(baseUsrCSVDir + "antz0001tag.csv");
+			outputFilenames[ANTzCSVWriter::s_nodeFilenameIndex] = (baseUsrCSVDir + "antz0001node.csv").toStdString();
+			outputFilenames[ANTzCSVWriter::s_tagFilenameIndex] = (baseUsrCSVDir + "antz0001tag.csv").toStdString();
 		}
+		outputFilenames[ANTzCSVWriter::s_redirectFilenameIndex] = (m_baseOutputDir + QDir::separator() + "redirect.bat").toStdString();
 
-		GenerateCache(mapping, csvFiles, baseUsrImageDir);
+		GenerateCache(mapping, outputFilenames, baseUsrImageDir);
 
-		SynGlyphXANTz::ANTzCSVWriter::GetInstance().WriteGlobals((baseUsrCSVDir + "antzglobals.csv").toStdString(), mapping.GetSceneProperties().GetBackgroundColor());
+		SynGlyphXANTz::ANTzCSVWriter::GetInstance().WriteGlobals((baseUsrCSVDir + "antzglobals.csv").toStdString(), mapping.GetSceneProperties().GetBackgroundColor(), m_platform);
 	}
 
 	void ANTzExportTransformer::GenerateGrids(std::vector<ANTzGrid>& grids, const SynGlyphX::DataTransformMapping& mapping, const QString& baseImageFilenameDirectory) {

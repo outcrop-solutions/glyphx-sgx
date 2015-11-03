@@ -36,11 +36,23 @@ namespace SynGlyphXANTz {
 	class ANTZBRIDGE_API ANTzCSVWriter : public boost::noncopyable
     {
     public:
+		enum OutputPlatform {
+			Windows,
+			WindowsZSpace,
+			Mac
+		};
+
+		typedef std::array<std::string, 3> FilenameList;
+		static const unsigned int s_nodeFilenameIndex = 0;
+		static const unsigned int s_tagFilenameIndex = 1;
+		static const unsigned int s_redirectFilenameIndex = 2;
+
         ANTzCSVWriter();
         ~ANTzCSVWriter();
 
-		void Write(const std::string& nodeFilename, const std::string& tagFilename, const SynGlyphX::GlyphGraph::ConstSharedVector& trees, const std::vector<ANTzGrid>& grids);
-		void WriteGlobals(const std::string& filename, const SynGlyphX::GlyphColor& backgroundColor);
+		void SetNOURLLocation(const std::wstring& noURLLocation);
+		void Write(const FilenameList& filenames, SynGlyphX::GlyphGraph::ConstSharedVector& trees, const std::vector<ANTzGrid>& grids, OutputPlatform platform);
+		void WriteGlobals(const std::string& filename, const SynGlyphX::GlyphColor& backgroundColor, OutputPlatform platform);
 
         static ANTzCSVWriter& GetInstance();
 
@@ -60,6 +72,11 @@ namespace SynGlyphXANTz {
 		void WriteGlyphTag(SynGlyphX::CSVFileWriter& file, const SynGlyphX::GlyphGraph::ConstSharedPtr tree, const SynGlyphX::GlyphGraph::ConstGlyphIterator& glyph);
 		unsigned long WriteGrids(SynGlyphX::CSVFileWriter& file, const std::vector<ANTzGrid>& grids, unsigned long firstId);
         unsigned short GetColorIndex(const SynGlyphX::GlyphColor& color);
+		void WriteURLRedirects(std::wofstream& file, const SynGlyphX::GlyphGraph::ConstSharedPtr tree, const SynGlyphX::GlyphGraph::ConstGlyphIterator& glyph, OutputPlatform platform);
+		void WriteURLRedirect(std::wofstream& file, const std::wstring& url, const std::wstring& id, OutputPlatform platform);
+		void WriteRedirectHeader(std::wofstream& file, OutputPlatform platform);
+
+		bool IsPlatformWindows(OutputPlatform platform) const;
 
 		SynGlyphX::GlyphColor m_predefinedColors[MaxPredefinedColors];
 		unsigned long m_numTagsWritten;
@@ -73,6 +90,7 @@ namespace SynGlyphXANTz {
 
 		std::unordered_map<SynGlyphX::GlyphGraph::Label, unsigned long> m_labelToANTzIDMap;
 		std::unordered_map<SynGlyphX::GlyphGraph::Label, unsigned int> m_labelToANTzBranchLevelMap;
+		std::wstring m_noURLLocation;
     };
 
 } //namespace SynGlyphXANTz

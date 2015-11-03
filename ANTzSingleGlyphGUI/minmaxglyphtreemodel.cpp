@@ -584,7 +584,7 @@ namespace SynGlyphXANTz {
 		}
 
 		ANTzCSVWriter& csvWriter = ANTzCSVWriter::GetInstance();
-		csvWriter.Write(filename.toStdString(), "", trees, std::vector<ANTzGrid>());
+		csvWriter.Write({ { filename.toStdString() } }, trees, std::vector<ANTzGrid>(), SynGlyphXANTz::ANTzCSVWriter::OutputPlatform::Windows);
 
 		return true;
 	}

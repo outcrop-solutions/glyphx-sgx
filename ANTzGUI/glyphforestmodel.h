@@ -24,6 +24,7 @@
 #include "antzdata.h"
 #include "glyph.h"
 #include <QtCore/QItemSelection> 
+#include "antzcsvwriter.h"
 
 namespace SynGlyphXANTz {
 
@@ -49,7 +50,7 @@ namespace SynGlyphXANTz {
 		const QStringList& GetBaseImageFilenames() const;
 
 		void Clear();
-		void LoadANTzVisualization(const QStringList& antzCSVFilenames, const QStringList& baseImageFilenames);
+		void LoadANTzVisualization(const SynGlyphXANTz::ANTzCSVWriter::FilenameList& filesToLoad, const QStringList& baseImageFilenames);
 
 		QModelIndex IndexFromANTzID(int id) const;
 
@@ -59,6 +60,8 @@ namespace SynGlyphXANTz {
 
 		void SetTagNotToBeShownIn3d(const QString& tag);
 		bool IsTagShownIn3d(const QString& tag);
+
+		void OpenURLs(const QModelIndexList& indexList);
 
 	private:
 		void Clear(bool resetModel);
@@ -71,6 +74,7 @@ namespace SynGlyphXANTz {
 		QString m_defaultBaseImage;
 		ANTzPlus::ANTzData::SharedPtr m_antzData;
 		QStringList m_baseImageFilenames;
+		QString m_urlRedirectFilename;
 
 		QString m_tagNotToBeShownIn3d;
 	};

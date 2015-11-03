@@ -9,6 +9,7 @@
 #include "io/npfile.h"
 #include "io/npch.h"
 #include "npctrl.h"
+#include <QtCore/QProcess>
 
 namespace SynGlyphXANTz {
 
@@ -210,6 +211,7 @@ namespace SynGlyphXANTz {
 		antzData->map.nodeRootIndex = 0;
 
 		m_baseImageFilenames.clear();
+		m_urlRedirectFilename.clear();
 
 		if (resetModel) {
 
@@ -217,7 +219,7 @@ namespace SynGlyphXANTz {
 		}
 	}
 
-	void GlyphForestModel::LoadANTzVisualization(const QStringList& antzCSVFilenames, const QStringList& baseImageFilenames) {
+	void GlyphForestModel::LoadANTzVisualization(const SynGlyphXANTz::ANTzCSVWriter::FilenameList& filesToLoad, const QStringList& baseImageFilenames) {
 
 		pData antzData = m_antzData->GetData();
 		antzData->map.nodeRootIndex = kNPnodeRootPin;
@@ -227,10 +229,11 @@ namespace SynGlyphXANTz {
 		Clear(false);
 		m_baseImageFilenames = baseImageFilenames;
 
-		for (const QString& filename : antzCSVFilenames) {
+		npFileOpenCore(filesToLoad[SynGlyphXANTz::ANTzCSVWriter::s_nodeFilenameIndex].c_str(), NULL, antzData);
+		npFileOpenCore(filesToLoad[SynGlyphXANTz::ANTzCSVWriter::s_tagFilenameIndex].c_str(), NULL, antzData);
 
-			npFileOpenCore(filename.toStdString().c_str(), NULL, antzData);
-		}
+		m_urlRedirectFilename = QString::fromStdString(filesToLoad[SynGlyphXANTz::ANTzCSVWriter::s_redirectFilenameIndex]);
+		
 		npSyncTags(static_cast<void*>(antzData));
 		endResetModel();
 
@@ -310,6 +313,19 @@ namespace SynGlyphXANTz {
 	bool GlyphForestModel::IsTagShownIn3d(const QString& tag) {
 
 		return (tag != m_tagNotToBeShownIn3d);
+	}
+
+	void GlyphForestModel::OpenURLs(const QModelIndexList& indexList) {
+
+		for (const QModelIndex& index : indexList) {
+
+			pNPnode glyph = static_cast<pNPnode>(index.internalPointer());
+			QProcess process;
+			process.setProgram(m_urlRedirectFilename);
+			process.setArguments(QStringList() << QString::number(glyph->recordID));
+			process.start();
+			process.waitForFinished();
+		}
 	}
 
 } //namespace SynGlyphXANTz
