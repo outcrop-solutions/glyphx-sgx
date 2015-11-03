@@ -31,6 +31,7 @@
 #include "pseudotimefilterwidget.h"
 #include "linkedwidgetsmanager.h"
 #include "itemfocusselectionmodel.h"
+#include "antzcsvwriter.h"
 
 class GlyphViewerWindow : public SynGlyphX::MainWindow
 {
@@ -61,7 +62,7 @@ private:
 	void LoadANTzCompatibilityVisualization(const QString& filename);
 	void LoadDataTransform(const QString& filename);
 	void ValidateDataMappingFile(const QString& filename);
-	void LoadFilesIntoModel(const QStringList& csvFiles, const QStringList& baseImageFilenames);
+	void LoadFilesIntoModel(const SynGlyphXANTz::ANTzCSVWriter::FilenameList& filesToLoad, const QStringList& baseImageFilenames);
 	void CreateMenus();
 	void CreateDockWidgets();
 	void EnableLoadedVisualizationDependentActions(bool enable);
