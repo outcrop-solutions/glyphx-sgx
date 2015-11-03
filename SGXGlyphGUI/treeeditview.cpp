@@ -34,7 +34,6 @@ namespace SynGlyphX {
 	void TreeEditView::selectionChanged(const QItemSelection& selected, const QItemSelection& deselected) {
 
 		SynGlyphX::TreeView::selectionChanged(selected, deselected);
-		EnableActions(selectionModel()->selection());
 	}
 
 	void TreeEditView::CreateEditActions() {

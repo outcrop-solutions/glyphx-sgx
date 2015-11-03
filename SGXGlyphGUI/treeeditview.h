@@ -48,7 +48,6 @@ namespace SynGlyphX {
 		virtual DataMappingGlyphGraph GetGraphForCopyToClipboard(const QModelIndex& index, bool includeChildren) = 0;
 		virtual void OverwriteGlyph(const QModelIndex& index, const DataMappingGlyphGraph& graph) = 0;
 		virtual void AddGlyphsAsChildren(const QModelIndex& index, const DataMappingGlyphGraph& graph) = 0;
-		virtual void EnableActions(const QItemSelection& selected) = 0;
 		virtual QModelIndexList GetSelectedIndexListForDeletion() const;
 		virtual bool DoInputBindingsNeedToBeClearedBeforePaste();
 		virtual bool CanIndexBeDeleted(const QModelIndex& index) const;

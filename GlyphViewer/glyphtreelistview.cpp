@@ -1,6 +1,7 @@
 #include "glyphtreelistview.h"
 #include <QtWidgets/QMessageBox>
 #include "application.h"
+#include "glyphforestmodel.h"
 
 GlyphTreeListView::GlyphTreeListView(QWidget *parent)
 	: SynGlyphX::TreeView(parent),
@@ -10,11 +11,24 @@ GlyphTreeListView::GlyphTreeListView(QWidget *parent)
 	setDragEnabled(false);
 	SetScrollOnSelection(true);
 	setContextMenuPolicy(Qt::ActionsContextMenu);
+
+	QAction* openURLAction = m_actions.AddAction(tr("Open URL"), Qt::Key_U);
+	QObject::connect(openURLAction, &QAction::triggered, this, &GlyphTreeListView::OnOpenURLs);
+
+	m_actions.EnableActions(false);
+
+	addAction(SynGlyphX::SharedActionList::CreateSeparator(this));
+	addActions(m_actions);
 }
 
 GlyphTreeListView::~GlyphTreeListView()
 {
 
+}
+
+const SynGlyphX::SharedActionList& GlyphTreeListView::GetSharedActions() const {
+
+	return m_actions;
 }
 
 void GlyphTreeListView::SetItemFocusSelectionModel(SynGlyphX::ItemFocusSelectionModel* itemFocusSelectionModel) {
@@ -52,4 +66,15 @@ QItemSelectionModel::SelectionFlags GlyphTreeListView::selectionCommand(const QM
 	}
 
 	return selectionFlags;
+}
+
+void GlyphTreeListView::EnableActions(const QItemSelection& selected) {
+
+	m_actions.EnableActions(!selected.empty());
+}
+
+void GlyphTreeListView::OnOpenURLs() {
+
+	SynGlyphXANTz::GlyphForestModel* forestModel = dynamic_cast<SynGlyphXANTz::GlyphForestModel*>(model());
+	forestModel->OpenURLs(selectionModel()->selectedIndexes());
 }

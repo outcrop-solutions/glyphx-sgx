@@ -74,6 +74,7 @@ GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 	m_stereoAction->setChecked(m_antzWidget->IsInStereoMode());
 
 	SynGlyphX::Transformer::SetDefaultImagesDirectory(SynGlyphX::GlyphBuilderApplication::GetDefaultBaseImagesLocation());
+	SynGlyphXANTz::ANTzCSVWriter::GetInstance().SetNOURLLocation(QDir::toNativeSeparators(QDir::cleanPath(SynGlyphX::GlyphBuilderApplication::applicationDirPath()) + QDir::separator() + "nourl.html").toStdWString());
 
 	QStringList commandLineArguments = SynGlyphX::Application::arguments();
 	if (commandLineArguments.size() > 1) {
@@ -110,6 +111,8 @@ void GlyphViewerWindow::CreateANTzWidget(const QGLFormat& format) {
 
 	m_antzWidget = new SynGlyphXANTz::ANTzForestWidget(format, m_glyphForestModel, m_glyphForestSelectionModel, this);
 	m_antzWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+	m_antzWidget->setContextMenuPolicy(Qt::ContextMenuPolicy::ActionsContextMenu);
+	m_antzWidget->addActions(m_treeView->GetSharedActions());
 
 	antzWidgetContainer->addWidget(m_antzWidget);
 	antzWidgetContainer->setCurrentWidget(m_antzWidget);
@@ -412,7 +415,7 @@ void GlyphViewerWindow::LoadDataTransform(const QString& filename) {
 		transformer.Transform(*m_mappingModel->GetDataMapping());
 
 		m_sourceDataCache->Setup(transformer.GetSourceDataCacheLocation());
-		LoadFilesIntoModel(transformer.GetCSVFilenames(), transformer.GetBaseImageFilenames());
+		LoadFilesIntoModel(transformer.GetOutputFilenames(), transformer.GetBaseImageFilenames());
 		m_glyphForestModel->SetTagNotToBeShownIn3d(QString::fromStdWString(m_mappingModel->GetDataMapping()->GetDefaults().GetDefaultTagValue()));
 		m_antzWidget->SetBackgroundColor(m_mappingModel->GetDataMapping()->GetSceneProperties().GetBackgroundColor());
 
@@ -430,9 +433,9 @@ void GlyphViewerWindow::LoadDataTransform(const QString& filename) {
 	}
 }
 
-void GlyphViewerWindow::LoadFilesIntoModel(const QStringList& csvFiles, const QStringList& baseImageFilenames) {
+void GlyphViewerWindow::LoadFilesIntoModel(const SynGlyphXANTz::ANTzCSVWriter::FilenameList& filesToLoad, const QStringList& baseImageFilenames) {
 
-	m_glyphForestModel->LoadANTzVisualization(csvFiles, baseImageFilenames);
+	m_glyphForestModel->LoadANTzVisualization(filesToLoad, baseImageFilenames);
 }
 
 void GlyphViewerWindow::ChangeMapDownloadSettings() {

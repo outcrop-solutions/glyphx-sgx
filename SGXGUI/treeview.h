@@ -38,6 +38,7 @@ namespace SynGlyphX {
 	protected:
 		virtual void selectionChanged(const QItemSelection& selected, const QItemSelection& deselected);
 		virtual void mouseReleaseEvent(QMouseEvent* event);
+		virtual void EnableActions(const QItemSelection& selected) = 0;
 
 	private slots:
 		void OnExpandAll();

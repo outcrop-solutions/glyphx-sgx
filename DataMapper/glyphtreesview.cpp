@@ -157,7 +157,7 @@ void GlyphTreesView::ExportGlyphToFile() {
 			}
 
 			SynGlyphXANTz::ANTzCSVWriter& csvWriter = SynGlyphXANTz::ANTzCSVWriter::GetInstance();
-			csvWriter.Write(glyphFilename.toStdString(), "", trees, std::vector<SynGlyphXANTz::ANTzGrid>());
+			csvWriter.Write({ { glyphFilename.toStdString() } }, trees, std::vector<SynGlyphXANTz::ANTzGrid>(), SynGlyphXANTz::ANTzCSVWriter::OutputPlatform::Windows);
 		}
 
 		settings.setValue("LastDir", glyphFilename);

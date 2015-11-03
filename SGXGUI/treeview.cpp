@@ -51,6 +51,8 @@ namespace SynGlyphX {
 				scrollTo(index);
 			}
 		}
+
+		EnableActions(selectionModel()->selection());
 	}
 
 	void TreeView::OnExpandAll() {

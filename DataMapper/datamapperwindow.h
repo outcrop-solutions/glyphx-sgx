@@ -31,6 +31,7 @@
 #include "roledatafilterproxymodel.h"
 #include "baseobjectlistview.h"
 #include "datasourcesview.h"
+#include "antzcsvwriter.h"
 
 class DataMapperWindow : public SynGlyphX::MainWindow
 {
@@ -53,7 +54,7 @@ private slots:
     bool SaveProject();
     bool SaveAsProject();
     void AddDataSources();
-    void ExportToANTz(const QString& templateDir);
+	void ExportToANTz(SynGlyphXANTz::ANTzCSVWriter::OutputPlatform platform);
 	void AddBaseObject();
 	void AddGlyphTemplate();
 	void CreateNewGlyphTree();
@@ -107,8 +108,7 @@ private:
 	SynGlyphX::DataMappingDefaults m_newMappingDefaults;
 	SynGlyphX::SceneProperties m_newMappingSceneProperties;
 
-	QString m_antzExportDirectory;
-	QString m_antzzSpaceExportDirectory;
+	std::unordered_map<SynGlyphXANTz::ANTzCSVWriter::OutputPlatform, QString> m_antzExportDirectories;
 
 	QMetaObject::Connection m_modelResetConnection;
 };

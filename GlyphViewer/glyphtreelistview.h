@@ -20,6 +20,7 @@
 
 #include "treeview.h"
 #include "itemfocusselectionmodel.h"
+#include "sharedactionlist.h"
 
 class GlyphTreeListView : public SynGlyphX::TreeView
 {
@@ -29,14 +30,20 @@ public:
 	GlyphTreeListView(QWidget *parent = 0);
 	~GlyphTreeListView();
 
+	const SynGlyphX::SharedActionList& GetSharedActions() const;
+
 	void SetItemFocusSelectionModel(SynGlyphX::ItemFocusSelectionModel* itemFocusSelectionModel);
 
 protected:
 	virtual QItemSelectionModel::SelectionFlags selectionCommand(const QModelIndex& index, const QEvent* event = 0) const;
+	virtual void EnableActions(const QItemSelection& selected);
+
+private slots:
+	void OnOpenURLs();
 
 private:
 	SynGlyphX::ItemFocusSelectionModel* m_itemFocusSelectionModel;
-	
+	SynGlyphX::SharedActionList m_actions;
 };
 
 #endif // GLYPHTREELISTVIEW_H

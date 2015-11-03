@@ -45,8 +45,8 @@ DataMapperWindow::DataMapperWindow(QWidget *parent)
 {
 	QSettings settings;
 	settings.beginGroup("ANTzExport");
-	m_antzExportDirectory = settings.value("default", SynGlyphX::Application::applicationDirPath() + QDir::separator() + "ANTzTemplate").toString();
-	m_antzzSpaceExportDirectory = settings.value("zSpace", SynGlyphX::Application::applicationDirPath() + QDir::separator() + "ANTzzSpaceTemplate").toString();
+	m_antzExportDirectories[SynGlyphXANTz::ANTzCSVWriter::OutputPlatform::Windows] = settings.value("default", SynGlyphX::Application::applicationDirPath() + QDir::separator() + "ANTzTemplate").toString();
+	m_antzExportDirectories[SynGlyphXANTz::ANTzCSVWriter::OutputPlatform::WindowsZSpace] = settings.value("zSpace", SynGlyphX::Application::applicationDirPath() + QDir::separator() + "ANTzzSpaceTemplate").toString();
 	settings.endGroup();
 
 	m_dataTransformModel = new DataTransformModel(this);
@@ -123,8 +123,8 @@ void DataMapperWindow::CreateMenus() {
     QObject::connect(saveAsProjectAction, &QAction::triggered, this, &DataMapperWindow::SaveAsProject);
 	m_projectDependentActions.push_back(saveAsProjectAction);
 
-	bool defaultANTzTemplateExists = DoesANTzTemplateExist(m_antzExportDirectory);
-	bool zSpaceANTzTemplateExists = DoesANTzTemplateExist(m_antzzSpaceExportDirectory);
+	bool defaultANTzTemplateExists = DoesANTzTemplateExist(m_antzExportDirectories[SynGlyphXANTz::ANTzCSVWriter::OutputPlatform::Windows]);
+	bool zSpaceANTzTemplateExists = DoesANTzTemplateExist(m_antzExportDirectories[SynGlyphXANTz::ANTzCSVWriter::OutputPlatform::WindowsZSpace]);
 
 	if (defaultANTzTemplateExists || zSpaceANTzTemplateExists) {
 
@@ -134,14 +134,14 @@ void DataMapperWindow::CreateMenus() {
 	if (defaultANTzTemplateExists) {
 
 		QAction* exportToANTzAction = CreateMenuAction(m_fileMenu, tr("Create Portable Visualization"));
-		QObject::connect(exportToANTzAction, &QAction::triggered, this, [this]{ ExportToANTz(m_antzExportDirectory); });
+		QObject::connect(exportToANTzAction, &QAction::triggered, this, [this]{ ExportToANTz(SynGlyphXANTz::ANTzCSVWriter::OutputPlatform::Windows); });
 		m_projectDependentActions.push_back(exportToANTzAction);
 	}
 
 	if (zSpaceANTzTemplateExists) {
 
 		QAction* exportTozSpaceANTzAction = CreateMenuAction(m_fileMenu, tr("Create Portable Visualization (zSpace)"));
-		QObject::connect(exportTozSpaceANTzAction, &QAction::triggered, this, [this]{ ExportToANTz(m_antzzSpaceExportDirectory); });
+		QObject::connect(exportTozSpaceANTzAction, &QAction::triggered, this, [this]{ ExportToANTz(SynGlyphXANTz::ANTzCSVWriter::OutputPlatform::WindowsZSpace); });
 		m_projectDependentActions.push_back(exportTozSpaceANTzAction);
 	}
 
@@ -548,7 +548,7 @@ void DataMapperWindow::AddDataSources() {
 	}
 }
 
-void DataMapperWindow::ExportToANTz(const QString& templateDir) {
+void DataMapperWindow::ExportToANTz(SynGlyphXANTz::ANTzCSVWriter::OutputPlatform platform) {
 
 	SynGlyphX::DataTransformMapping::ConstSharedPtr dataMapping = m_dataTransformModel->GetDataMapping();
 
@@ -602,7 +602,7 @@ void DataMapperWindow::ExportToANTz(const QString& templateDir) {
 	try {
 
 		//bool useOldANTzFilenames = !QFile::exists(templateDir + QDir::separator() + "usr" + QDir::separator() + "csv" + QDir::separator() + "antzglobals.csv");
-		SynGlyphXANTz::ANTzExportTransformer transformer(csvDirectory, templateDir, false);
+		SynGlyphXANTz::ANTzExportTransformer transformer(csvDirectory, m_antzExportDirectories[platform], platform, false);
 		transformer.Transform(*(m_dataTransformModel->GetDataMapping().get()));
 
 		SynGlyphX::Application::restoreOverrideCursor();
