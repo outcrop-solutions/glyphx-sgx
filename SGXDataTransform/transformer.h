@@ -56,6 +56,7 @@ namespace SynGlyphX {
 
 		void SetSourceDataCacheLocation(const QString& sourceDataCacheLocation);
 		bool HaveDatasourcesBeenUpdated(const DataTransformMapping& mapping, std::time_t lastUpdateTime) const;
+		bool HaveUserImageFilesBeenUpdated(const DataTransformMapping& mapping, std::time_t lastUpdateTime) const;
 		bool HasFileBeenUpdated(const std::wstring& filename, std::time_t lastUpdateTime) const;
 
 		GlyphGraph::ConstSharedVector CreateGlyphTreesFromMinMaxTrees(const DataTransformMapping& mapping);

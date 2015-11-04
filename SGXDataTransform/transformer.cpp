@@ -382,6 +382,23 @@ namespace SynGlyphX {
 		return false;
 	}
 
+	bool Transformer::HaveUserImageFilesBeenUpdated(const DataTransformMapping& mapping, std::time_t lastUpdateTime) const {
+
+		for (const auto& baseObject : mapping.GetBaseObjects()) {
+
+			SynGlyphX::UserDefinedBaseImageProperties::ConstSharedPtr properties = std::dynamic_pointer_cast<const SynGlyphX::UserDefinedBaseImageProperties>(baseObject.GetProperties());
+			if (properties) {
+
+				if (HasFileBeenUpdated(properties->GetFilename(), lastUpdateTime)) {
+
+					return true;
+				}
+			}
+		}
+
+		return false;
+	}
+
 	bool Transformer::HasFileBeenUpdated(const std::wstring& filename, std::time_t lastUpdateTime) const {
 
 		boost::filesystem::path filePath(filename);
