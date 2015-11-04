@@ -70,6 +70,7 @@ private:
 	void ClearAllData();
 	void CreateANTzWidget(const QGLFormat& format);
 	GlyphViewerOptions CollectOptions();
+	bool DoesVisualizationNeedToBeRecreated(const SynGlyphX::DataTransformMapping& mapping) const;
 
 	QMenu* m_fileMenu;
 	QMenu* m_toolsMenu;

@@ -8,6 +8,7 @@
 #include <QtCore/QStandardPaths>
 #include <QtCore/QSettings>
 #include <QtWidgets/QDockWidget>
+#include <QtCore/QDateTime>
 #include "glyphbuilderapplication.h"
 #include "datatransformmapping.h"
 #include "downloadoptionsdialog.h"
@@ -236,13 +237,42 @@ void GlyphViewerWindow::OpenProject() {
 	}
 }
 
+bool GlyphViewerWindow::DoesVisualizationNeedToBeRecreated(const SynGlyphX::DataTransformMapping& mapping) const {
+
+	if ((m_mappingModel->GetDataMapping()->operator!=(mapping))) {
+
+		return true;
+	}
+
+	if (m_sourceDataCache->IsCacheOutOfDate(m_mappingModel->GetDataMapping()->GetDatasourcesInUse())) {
+
+		return true;
+	}
+
+	QDir cacheDir(QString::fromStdWString(m_cacheManager.GetCacheDirectory(m_mappingModel->GetDataMapping()->GetID())));
+	QDateTime lastUpdateTimeForCache = cacheDir.entryInfoList(QDir::NoDotAndDotDot | QDir::NoSymLinks | QDir::Files).first().lastModified();
+	for (const auto& baseObject : m_mappingModel->GetDataMapping()->GetBaseObjects()) {
+
+		SynGlyphX::UserDefinedBaseImageProperties::ConstSharedPtr properties = std::dynamic_pointer_cast<const SynGlyphX::UserDefinedBaseImageProperties>(baseObject.GetProperties());
+		if (properties) {
+
+			if (QFileInfo(QString::fromStdWString(properties->GetFilename())).lastModified() > lastUpdateTimeForCache) {
+
+				return true;
+			}
+		}
+	}
+
+	return false;
+}
+
 void GlyphViewerWindow::RefreshVisualization() {
 
 	try {
 		
 		SynGlyphX::DataTransformMapping mapping;
 		mapping.ReadFromFile(m_currentFilename.toStdString());
-		if ((m_mappingModel->GetDataMapping()->operator!=(mapping)) || (m_sourceDataCache->IsCacheOutOfDate(m_mappingModel->GetDataMapping()->GetDatasourcesInUse()))) {
+		if (DoesVisualizationNeedToBeRecreated(mapping)) {
 
 			ClearAllData();
 			LoadVisualization(m_currentFilename);
