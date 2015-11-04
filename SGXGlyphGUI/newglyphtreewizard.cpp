@@ -26,7 +26,7 @@ namespace SynGlyphX {
 				childOptions = SynGlyphX::GlyphPropertiesWidget::ShowOnBottom | SynGlyphX::GlyphPropertiesWidget::EnabledSpinBox;
 			}
 
-			SynGlyphX::GlyphPropertiesWidget* glyphWidget = new SynGlyphX::GlyphPropertiesWidget(childOptions, page);
+			SynGlyphX::GlyphPropertiesWidget* glyphWidget = new SynGlyphX::GlyphPropertiesWidget(true, childOptions, page);
 			m_glyphWidgets.push_back(glyphWidget);
 			if (i == 0) {
 

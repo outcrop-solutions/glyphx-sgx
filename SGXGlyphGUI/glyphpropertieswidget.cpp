@@ -6,11 +6,11 @@
 
 namespace SynGlyphX {
 
-	GlyphPropertiesWidget::GlyphPropertiesWidget(ChildOptions childOptions, QWidget *parent)
+	GlyphPropertiesWidget::GlyphPropertiesWidget(bool addLockToScaleWidget, ChildOptions childOptions, QWidget *parent)
 		: QWidget(parent),
 		m_childrenSpinBox(NULL)
 	{
-		CreateWidgets(childOptions);
+		CreateWidgets(addLockToScaleWidget, childOptions);
 	}
 
 	GlyphPropertiesWidget::~GlyphPropertiesWidget()
@@ -51,7 +51,7 @@ namespace SynGlyphX {
 		return childWidget;
 	}
 
-	void GlyphPropertiesWidget::CreateWidgets(ChildOptions childOptions) {
+	void GlyphPropertiesWidget::CreateWidgets(bool addLockToScaleWidget, ChildOptions childOptions) {
 
 		QVBoxLayout* layout = new QVBoxLayout(this);
 
@@ -88,7 +88,7 @@ namespace SynGlyphX {
 
 		GroupBoxSingleWidget* rotateGroupBox = new GroupBoxSingleWidget(tr("Rotation"), m_rotateWidget, this);
 
-		m_scaleWidget = new XYZWidget(true, this);
+		m_scaleWidget = new XYZWidget(addLockToScaleWidget, this);
 		m_scaleWidget->SetRange(0.000001, 1000.0);
 		m_scaleWidget->SetDecimal(5);
 		m_scaleWidget->setContentsMargins(0, 0, 0, 0);

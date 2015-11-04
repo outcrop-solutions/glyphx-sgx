@@ -75,7 +75,7 @@ void GlyphTreeView::PropertiesActivated() {
 		oldGlyph = m_model->GetMinMaxGlyph(index)->second.GetMinGlyph();
 	}
 
-	SynGlyphX::GlyphPropertiesWidget* singleGlyphWidget = new SynGlyphX::GlyphPropertiesWidget(SynGlyphX::GlyphPropertiesWidget::ShowOnBottom, this);
+	SynGlyphX::GlyphPropertiesWidget* singleGlyphWidget = new SynGlyphX::GlyphPropertiesWidget(true, SynGlyphX::GlyphPropertiesWidget::ShowOnBottom, this);
 	singleGlyphWidget->SetWidgetFromGlyph(oldGlyph, index.parent().isValid());
 	singleGlyphWidget->SetNumberOfChildren(m_model->rowCount(index));
 
@@ -93,7 +93,7 @@ void GlyphTreeView::AddChildren() {
 
 	const QModelIndexList& selectedItems = selectionModel()->selectedIndexes();
 
-	SynGlyphX::GlyphPropertiesWidget* singleGlyphWidget = new SynGlyphX::GlyphPropertiesWidget(SynGlyphX::GlyphPropertiesWidget::ShowOnTop | SynGlyphX::GlyphPropertiesWidget::EnabledSpinBox, this);
+	SynGlyphX::GlyphPropertiesWidget* singleGlyphWidget = new SynGlyphX::GlyphPropertiesWidget(true, SynGlyphX::GlyphPropertiesWidget::ShowOnTop | SynGlyphX::GlyphPropertiesWidget::EnabledSpinBox, this);
 	singleGlyphWidget->SetWidgetFromGlyph(SynGlyphX::Glyph::s_defaultGlyph, true);
 
 	SynGlyphX::SingleWidgetDialog dialog(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, singleGlyphWidget, this);

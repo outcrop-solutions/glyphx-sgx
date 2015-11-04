@@ -50,7 +50,7 @@ namespace SynGlyphX {
 
 		Q_DECLARE_FLAGS(ChildOptions, ChildOption);
 
-		GlyphPropertiesWidget(ChildOptions childOptions = Invisible, QWidget *parent = 0);
+		GlyphPropertiesWidget(bool addLockToScaleWidget, ChildOptions childOptions = Invisible, QWidget *parent = 0);
 		~GlyphPropertiesWidget();
 
 		void SetNumberOfChildren(unsigned int numChildren);
@@ -63,7 +63,7 @@ namespace SynGlyphX {
 		void AddChildrenButtonClicked();
 
 	protected:
-		void CreateWidgets(ChildOptions childOptions);
+		void CreateWidgets(bool addLockToScaleWidget, ChildOptions childOptions);
 		QWidget* CreateChildrenWidget(ChildOptions childOptions);
 
 		QSpinBox* m_childrenSpinBox;
