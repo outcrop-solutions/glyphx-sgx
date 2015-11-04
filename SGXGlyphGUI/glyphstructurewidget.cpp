@@ -71,6 +71,7 @@ namespace SynGlyphX {
 	void GlyphStructureWidget::SetWidgetFromGlyphGeometryAndTopology(const GlyphGeometry& structure, const VirtualTopology& virtualTopology) {
 
 		m_geometryShapeComboBox->SetCurrentValue(structure.GetGeometryShape());
+		m_nonmappableGeometryWidget->ShowTorusRatioWidget(structure.GetGeometryShape() == SynGlyphX::GlyphGeometryInfo::Torus);
 		m_nonmappableGeometryWidget->SetProperties(NonMappableGeometryProperties(structure.GetGeometrySurface(), structure.GetTorusRatio()));
 
 		m_topologyComboBox->SetCurrentValue(virtualTopology.GetType());
