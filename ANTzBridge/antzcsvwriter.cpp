@@ -226,7 +226,7 @@ namespace SynGlyphXANTz {
 
 				globalsFile << L"19,\"np_browser\",1,\"url\",\"s\",0,\"\",\"\",\"http://openantz.com/docs/id.html?id=\"" << std::endl;
 			}
-			globalsFile << L"20 \"np_globals\",1,\"item_count\",\"i\",1,\"\",\"\",\"20\"" << std::endl;
+			globalsFile << L"20,\"np_globals\",1,\"item_count\",\"i\",1,\"\",\"\",\"20\"" << std::endl;
 
 			globalsFile.close();
 

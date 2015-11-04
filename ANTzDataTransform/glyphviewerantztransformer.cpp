@@ -112,8 +112,8 @@ namespace SynGlyphXANTz {
 			return true;
 		}
 
-		boost::filesystem::path firstCSVFilePath(cacheFilenames[0].toStdString());
-		return HaveDatasourcesBeenUpdated(mapping, boost::filesystem::last_write_time(firstCSVFilePath));
+		time_t lastUpdateTime = boost::filesystem::last_write_time(boost::filesystem::path(cacheFilenames[0].toStdString()));
+		return (HaveDatasourcesBeenUpdated(mapping, lastUpdateTime) || HaveUserImageFilesBeenUpdated(mapping, lastUpdateTime));
 	}
 
 	QString GlyphViewerANTzTransformer::GenerateBaseImageFilename(unsigned int index) const {
