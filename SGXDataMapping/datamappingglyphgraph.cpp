@@ -407,30 +407,49 @@ namespace SynGlyphX {
 
 	GlyphGraph::SharedPtr DataMappingGlyphGraph::GetMinGlyphTree() const {
 
-		//DataMappingGlyphGraphMinExportVisitor vis;
-		//boost::depth_first_search(*this, boost::visitor(vis));
-		//return vis.GetNewGraph();
-
-		GlyphGraph::SharedPtr minGlyphTree = std::make_shared<GlyphGraph>();
-		minGlyphTree->SetRootGlyph(GetRoot()->second.GetMinGlyph());
-
-		CreateMinOrMaxGlyphSubtree(GetRoot(), minGlyphTree->GetRoot(), minGlyphTree, false);
-
-		return minGlyphTree;
+		return CreateMinOrMaxGlyphSubtree(false);
 	}
 
 	GlyphGraph::SharedPtr DataMappingGlyphGraph::GetMaxGlyphTree() const {
+
+		return CreateMinOrMaxGlyphSubtree(true);
+	}
+
+	GlyphGraph::SharedPtr DataMappingGlyphGraph::CreateMinOrMaxGlyphSubtree(bool isMax) const {
 
 		//DataMappingGlyphGraphMaxExportVisitor vis;
 		//boost::depth_first_search(*this, boost::visitor(vis));
 		//return vis.GetNewGraph();
 
-		GlyphGraph::SharedPtr maxGlyphTree = std::make_shared<GlyphGraph>();
-		maxGlyphTree->SetRootGlyph(GetRoot()->second.GetMaxGlyph());
+		GlyphGraph::SharedPtr glyphTree = std::make_shared<GlyphGraph>();
 
-		CreateMinOrMaxGlyphSubtree(GetRoot(), maxGlyphTree->GetRoot(), maxGlyphTree, true);
+		if (isMax) {
 
-		return maxGlyphTree;
+			glyphTree->SetRootGlyph(GetRoot()->second.GetMaxGlyph());
+		}
+		else {
+
+			glyphTree->SetRootGlyph(GetRoot()->second.GetMinGlyph());
+		}
+
+		CreateMinOrMaxGlyphSubtree(GetRoot(), glyphTree->GetRoot(), glyphTree, isMax);
+
+		if (isMax) {
+
+			for (const auto& link : m_linkGlyphs) {
+
+				glyphTree->AddLink(link.first.first, link.first.second, link.second.GetMaxGlyph());
+			}
+		}
+		else {
+
+			for (const auto& link : m_linkGlyphs) {
+
+				glyphTree->AddLink(link.first.first, link.first.second, link.second.GetMinGlyph());
+			}
+		}
+
+		return glyphTree;
 	}
 
 	void DataMappingGlyphGraph::CreateMinOrMaxGlyphSubtree(const DataMappingGlyphGraph::ConstGlyphIterator& parent, GlyphGraph::GlyphIterator& newVertex, GlyphGraph::SharedPtr newGlyphGraph, bool isMax) const {
@@ -439,14 +458,20 @@ namespace SynGlyphX {
 
 			const DataMappingGlyphGraph::ConstGlyphIterator& childNode = child(parent, i);
 
+			GlyphGraph::GlyphIterator newChild;
 			if (isMax) {
 
-				CreateMinOrMaxGlyphSubtree(childNode, newGlyphGraph->AddChildGlyph(newVertex, childNode->second.GetMaxGlyph()), newGlyphGraph, true);
+				newChild = newGlyphGraph->AddChildGlyph(newVertex, childNode->second.GetMaxGlyph());
 			}
 			else {
 
-				CreateMinOrMaxGlyphSubtree(childNode, newGlyphGraph->AddChildGlyph(newVertex, childNode->second.GetMinGlyph()), newGlyphGraph, false);
+				newChild = newGlyphGraph->AddChildGlyph(newVertex, childNode->second.GetMinGlyph());
 			}
+
+			//Keep labels the same
+			newChild->first = childNode->first;
+
+			CreateMinOrMaxGlyphSubtree(childNode, newChild, newGlyphGraph, isMax);
 		}
 	}
 
