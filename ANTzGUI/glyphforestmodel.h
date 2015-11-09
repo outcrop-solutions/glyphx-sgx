@@ -63,6 +63,8 @@ namespace SynGlyphXANTz {
 
 		void OpenURLs(const QModelIndexList& indexList);
 
+		SynGlyphX::Glyph GetGlyphAtIndex(const QModelIndex& index) const;
+
 	private:
 		void Clear(bool resetModel);
 		void FindNodesInRegion(const QRect& region, pNPnode node, int row, QItemSelection& itemSelection) const;

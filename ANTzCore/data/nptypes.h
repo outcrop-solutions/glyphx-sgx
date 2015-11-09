@@ -108,7 +108,7 @@
 #define kNPmessageLengthMax		127			//max message length
 
 #define kNPtitleSizeMax			63			// max length of the tag title
-#define kNPdescSizeMax			8			// max length of the tag description	//zzhpa
+#define kNPdescSizeMax			4096		// max length of the tag description	//zzhpa
 #define	kNPtagDrawMax			16383		// max number tags allowed to draw
 #define	kNPrecordTagListMax		kNPnodeMax	// max number of record Tags
 #define kNPlinkQueMax			kNPnodeMax	// max in draw que, not total nodes

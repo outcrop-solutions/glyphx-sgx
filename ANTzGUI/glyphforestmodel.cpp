@@ -10,6 +10,7 @@
 #include "io/npch.h"
 #include "npctrl.h"
 #include <QtCore/QProcess>
+#include "glyphnodeconverter.h"
 
 namespace SynGlyphXANTz {
 
@@ -326,6 +327,11 @@ namespace SynGlyphXANTz {
 			process.start();
 			process.waitForFinished();
 		}
+	}
+
+	SynGlyphX::Glyph GlyphForestModel::GetGlyphAtIndex(const QModelIndex& index) const {
+
+		return GlyphNodeConverter::CreateGlyphFromNode(static_cast<pNPnode>(index.internalPointer()));
 	}
 
 } //namespace SynGlyphXANTz
