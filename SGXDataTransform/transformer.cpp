@@ -189,12 +189,13 @@ namespace SynGlyphX {
 		glyph.GetTransparency() = TransformProperty(minMaxGlyph->second.GetInputBinding(DataMappingGlyph::MappableField::Transparency), minMaxGlyph->second.GetTransparency(), queryResultData, index);
 
 		glyph.GetTag() = GenerateTag(minMaxGlyph, minMaxTree, queryResultData, index);
+		glyph.GetDescription() = GenerateText(minMaxGlyph, DataMappingGlyph::MappableField::Description, queryResultData, index);
 
 		glyph.GetRotationRate()[0] = TransformProperty(minMaxGlyph->second.GetInputBinding(DataMappingGlyph::MappableField::RotationRateX), minMaxGlyph->second.GetRotationRate()[0], queryResultData, index);
 		glyph.GetRotationRate()[1] = TransformProperty(minMaxGlyph->second.GetInputBinding(DataMappingGlyph::MappableField::RotationRateY), minMaxGlyph->second.GetRotationRate()[1], queryResultData, index);
 		glyph.GetRotationRate()[2] = TransformProperty(minMaxGlyph->second.GetInputBinding(DataMappingGlyph::MappableField::RotationRateZ), minMaxGlyph->second.GetRotationRate()[2], queryResultData, index);
 
-		glyph.GetURL() = GenerateURL(minMaxGlyph, queryResultData, index);
+		glyph.GetURL() = GenerateText(minMaxGlyph, DataMappingGlyph::MappableField::URL, queryResultData, index);
 
 		return glyph;
 	}
@@ -457,17 +458,16 @@ namespace SynGlyphX {
 		return m_defaults.GetDefaultTagValue();
 	}
 
-	std::wstring Transformer::GenerateURL(const DataMappingGlyphGraph::ConstGlyphIterator& minMaxGlyph, const InputFieldDataMap& queryResultData, unsigned int index) const {
+	std::wstring Transformer::GenerateText(const DataMappingGlyphGraph::ConstGlyphIterator& minMaxGlyph, DataMappingGlyph::MappableField field, const InputFieldDataMap& queryResultData, unsigned int index) const {
 
-		InputField::HashID id = minMaxGlyph->second.GetInputBinding(DataMappingGlyph::MappableField::URL).GetInputFieldID();
+		InputField::HashID id = minMaxGlyph->second.GetInputBinding(field).GetInputFieldID();
 
 		if (id != 0) {
 
 			InputFieldDataMap::const_iterator dataList = queryResultData.find(id);
 			if (dataList != queryResultData.end()) {
 
-				std::wstring tag = dataList->second->GetData()[index].toString().toStdWString();
-				return tag;
+				return dataList->second->GetData()[index].toString().toStdWString();
 			}
 		}
 

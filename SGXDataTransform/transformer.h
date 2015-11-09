@@ -74,7 +74,7 @@ namespace SynGlyphX {
 		DoubleMinDiff GetDataMinAndDifference(const InputBinding& binding, InterpolationMappingData::ConstSharedPtr mappingData, const InputFieldData& fieldData) const;
 		
 		std::wstring GenerateTag(const DataMappingGlyphGraph::ConstGlyphIterator& minMaxGlyph, DataMappingGlyphGraph::ConstSharedPtr minMaxTree, const InputFieldDataMap& queryResultData, unsigned int index) const;
-		std::wstring GenerateURL(const DataMappingGlyphGraph::ConstGlyphIterator& minMaxGlyph, const InputFieldDataMap& queryResultData, unsigned int index) const;
+		std::wstring GenerateText(const DataMappingGlyphGraph::ConstGlyphIterator& minMaxGlyph, DataMappingGlyph::MappableField field, const InputFieldDataMap& queryResultData, unsigned int index) const;
 
 		void RunSelectSqlQuery(const InputField& inputfield, QVariantList& data) const;
 
