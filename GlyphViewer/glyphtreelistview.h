@@ -40,6 +40,7 @@ protected:
 
 private slots:
 	void OnOpenURLs();
+	void OnPropertiesActivated();
 
 private:
 	SynGlyphX::ItemFocusSelectionModel* m_itemFocusSelectionModel;

@@ -146,6 +146,15 @@
     <ClCompile Include="sourcedataselectionmodel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="glyphpropertieswidgetscontainer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Win32\Debug\moc_glyphpropertieswidgetscontainer.cpp">
+      <Filter>Generated Files\Debug_Win32</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Win32\Release\moc_glyphpropertieswidgetscontainer.cpp">
+      <Filter>Generated Files\Release_Win32</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="glyphviewer.qrc">
@@ -182,6 +191,9 @@
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="sourcedataselectionmodel.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="glyphpropertieswidgetscontainer.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>

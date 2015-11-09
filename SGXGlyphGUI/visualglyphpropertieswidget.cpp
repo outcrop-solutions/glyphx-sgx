@@ -1,4 +1,4 @@
-#include "glyphpropertieswidget.h"
+#include "visualglyphpropertieswidget.h"
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QHBoxLayout>
 #include "labelline.h"
@@ -6,19 +6,28 @@
 
 namespace SynGlyphX {
 
-	GlyphPropertiesWidget::GlyphPropertiesWidget(bool addLockToScaleWidget, ChildOptions childOptions, QWidget *parent)
+	VisualGlyphPropertiesWidget::VisualGlyphPropertiesWidget(bool addLockToScaleWidget, ChildOptions childOptions, QWidget *parent)
 		: QWidget(parent),
 		m_childrenSpinBox(NULL)
 	{
 		CreateWidgets(addLockToScaleWidget, childOptions);
+
+		QPalette newPalette = palette();
+		newPalette.setColor(QPalette::Disabled, QPalette::Window, newPalette.color(QPalette::Active, QPalette::Window));
+		newPalette.setColor(QPalette::Disabled, QPalette::WindowText, newPalette.color(QPalette::Active, QPalette::WindowText));
+		//newPalette.setColor(QPalette::Disabled, QPalette::Base, newPalette.color(QPalette::Active, QPalette::Base));
+		newPalette.setColor(QPalette::Disabled, QPalette::Text, newPalette.color(QPalette::Active, QPalette::Text));
+		//newPalette.setColor(QPalette::Disabled, QPalette::Button, newPalette.color(QPalette::Active, QPalette::Button));
+		//newPalette.setColor(QPalette::Disabled, QPalette::ButtonText, newPalette.color(QPalette::Active, QPalette::ButtonText));
+		setPalette(newPalette);
 	}
 
-	GlyphPropertiesWidget::~GlyphPropertiesWidget()
+	VisualGlyphPropertiesWidget::~VisualGlyphPropertiesWidget()
 	{
 
 	}
 
-	QWidget* GlyphPropertiesWidget::CreateChildrenWidget(ChildOptions childOptions) {
+	QWidget* VisualGlyphPropertiesWidget::CreateChildrenWidget(ChildOptions childOptions) {
 
 		QWidget* childWidget = new QWidget(this);
 		QHBoxLayout* layout = new QHBoxLayout(childWidget);
@@ -51,7 +60,7 @@ namespace SynGlyphX {
 		return childWidget;
 	}
 
-	void GlyphPropertiesWidget::CreateWidgets(bool addLockToScaleWidget, ChildOptions childOptions) {
+	void VisualGlyphPropertiesWidget::CreateWidgets(bool addLockToScaleWidget, ChildOptions childOptions) {
 
 		QVBoxLayout* layout = new QVBoxLayout(this);
 
@@ -134,7 +143,7 @@ namespace SynGlyphX {
 		setLayout(layout);
 	}
 
-	void GlyphPropertiesWidget::SetWidgetFromGlyph(const Glyph& glyph, bool isNotRootNode) {
+	void VisualGlyphPropertiesWidget::SetWidgetFromGlyph(const Glyph& glyph, bool isNotRootNode) {
 
 		m_glyphStructureWidget->SetWidgetFromGlyphGeometryAndTopology(glyph.GetStructure(), glyph.GetVirtualTopology());
 
@@ -147,7 +156,7 @@ namespace SynGlyphX {
 		m_rotateRateWidget->Set(glyph.GetRotationRate());
 	}
 
-	void GlyphPropertiesWidget::SetGlyphFromWidget(Glyph& glyph) {
+	void VisualGlyphPropertiesWidget::SetGlyphFromWidget(Glyph& glyph) {
 
 		glyph.GetStructure() = m_glyphStructureWidget->GetGlyphGeometry();
 		glyph.GetVirtualTopology() = m_glyphStructureWidget->GetVirtualTopology();
@@ -163,14 +172,14 @@ namespace SynGlyphX {
 		glyph.GetRotationRate() = { { m_rotateRateWidget->GetX(), m_rotateRateWidget->GetY(), m_rotateRateWidget->GetZ() } };
 	}
 
-	void GlyphPropertiesWidget::SetNumberOfChildren(unsigned int numChildren) {
+	void VisualGlyphPropertiesWidget::SetNumberOfChildren(unsigned int numChildren) {
 
 		if (m_childrenSpinBox != NULL) {
 			m_childrenSpinBox->setValue(numChildren);
 		}
 	}
 
-	unsigned int GlyphPropertiesWidget::GetNumberOfChildren() const {
+	unsigned int VisualGlyphPropertiesWidget::GetNumberOfChildren() const {
 
 		if (m_childrenSpinBox == NULL) {
 			return 0;

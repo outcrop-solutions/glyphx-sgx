@@ -166,15 +166,14 @@ void DataBindingTablesWidget::CreateTagAndDescriptionWidget() {
 
 	m_dataWidgetMappersAndRows[tagMapper] = SynGlyphX::DataMappingGlyph::MappableField::Tag;
 
-	SynGlyphX::RichTextEditor* descriptionEdit = new SynGlyphX::RichTextEditor("", tableView);
-	descriptionEdit->setEnabled(false);
-	tableView->setIndexWidget(proxyModel->mapFromSource(m_model->index(SynGlyphX::DataMappingGlyph::MappableField::Description, GlyphRolesTableModel::s_mappedFieldColumn)), descriptionEdit);
+	BindingLineEdit* descriptionBindingLineEdit = new BindingLineEdit(m_model, tableView);
+	tableView->setIndexWidget(proxyModel->mapFromSource(m_model->index(SynGlyphX::DataMappingGlyph::MappableField::Description, GlyphRolesTableModel::s_mappedFieldColumn)), descriptionBindingLineEdit);
 
 	QDataWidgetMapper* descriptionMapper = new QDataWidgetMapper(this);
 	descriptionMapper->setModel(m_model);
-	descriptionMapper->addMapping(descriptionEdit, GlyphRolesTableModel::s_mappedFieldColumn);
+	descriptionMapper->addMapping(descriptionBindingLineEdit, GlyphRolesTableModel::s_mappedFieldColumn);
 
-	//QObject::connect(m_descriptionEdit, &BindingLineEdit::ValueChangedByUser, mapper, &QDataWidgetMapper::submit);
+	QObject::connect(descriptionBindingLineEdit, &BindingLineEdit::ValueChangedByUser, descriptionMapper, &QDataWidgetMapper::submit);
 
 	m_dataWidgetMappersAndRows[descriptionMapper] = SynGlyphX::DataMappingGlyph::MappableField::Description;
 

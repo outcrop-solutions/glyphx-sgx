@@ -1,5 +1,5 @@
 #include "glyphtreesview.h"
-#include "glyphpropertieswidget.h"
+#include "visualglyphpropertieswidget.h"
 #include "singlewidgetdialog.h"
 #include "roledatafilterproxymodel.h"
 #include <QtWidgets/QFileDialog>
@@ -99,7 +99,7 @@ void GlyphTreesView::EnableActions(const QItemSelection& selection) {
 
 void GlyphTreesView::AddChildren() {
 
-	SynGlyphX::GlyphPropertiesWidget* singleGlyphWidget = new SynGlyphX::GlyphPropertiesWidget(SynGlyphX::GlyphPropertiesWidget::ShowOnTop | SynGlyphX::GlyphPropertiesWidget::EnabledSpinBox, this);
+	SynGlyphX::VisualGlyphPropertiesWidget* singleGlyphWidget = new SynGlyphX::VisualGlyphPropertiesWidget(true, SynGlyphX::VisualGlyphPropertiesWidget::ShowOnTop | SynGlyphX::VisualGlyphPropertiesWidget::EnabledSpinBox, this);
 	singleGlyphWidget->SetWidgetFromGlyph(SynGlyphX::Glyph::s_defaultGlyph, true);
 
 	SynGlyphX::SingleWidgetDialog dialog(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, singleGlyphWidget, this);

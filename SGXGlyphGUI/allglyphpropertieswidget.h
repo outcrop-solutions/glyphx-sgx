@@ -15,72 +15,33 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef SYNGLYPHX_GLYPHPROPERTIES_WIDGET
-#define SYNGLYPHX_GLYPHPROPERTIES_WIDGET
+#ifndef SYNGLYPHX_ALLGLYPHPROPERTIESWIDGET
+#define SYNGLYPHX_ALLGLYPHPROPERTIESWIDGET
 
 #include "sgxglyphgui_global.h"
-#include <QtWidgets/QWidget>
-#include <QtWidgets/QComboBox>
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QLabel>
-#include <QtWidgets/QSpinBox>
-#include <QtWidgets/QDoubleSpinBox>
-#include <QtWidgets/QGroupBox>
-#include <boost/shared_ptr.hpp>
-#include "coloralphawidget.h"
-#include "xyzwidget.h"
+#include <QtWidgets/QTabWidget>
 #include "glyph.h"
-#include "groupboxsinglewidget.h"
-#include "glyphstructurewidget.h"
+#include "visualglyphpropertieswidget.h"
+#include "textglyphpropertieswidget.h"
 
 namespace SynGlyphX {
 
-	class SGXGLYPHGUI_EXPORT GlyphPropertiesWidget : public QWidget
+	class SGXGLYPHGUI_EXPORT AllGlyphPropertiesWidget : public QTabWidget
 	{
 		Q_OBJECT
 
 	public:
-		enum ChildOption {
-			Invisible = 0x00000000,
-			ShowOnBottom = 0x00000001,
-			ShowOnTop = 0x00000002,
-			EnabledSpinBox = 0x00000004,
-			AddChildrenButton = 0x00000008
-		};
+		AllGlyphPropertiesWidget(bool addLockToScaleWidget, VisualGlyphPropertiesWidget::ChildOptions childOptions = VisualGlyphPropertiesWidget::Invisible, QWidget *parent = nullptr);
+		~AllGlyphPropertiesWidget();
 
-		Q_DECLARE_FLAGS(ChildOptions, ChildOption);
+		void SetReadOnly(bool readOnly);
+		void SetWidgetFromGlyph(const Glyph& glyph, unsigned int numberOfChildren, bool isNotRootNode = true);
 
-		GlyphPropertiesWidget(bool addLockToScaleWidget, ChildOptions childOptions = Invisible, QWidget *parent = 0);
-		~GlyphPropertiesWidget();
-
-		void SetNumberOfChildren(unsigned int numChildren);
-		unsigned int GetNumberOfChildren() const;
-
-		void SetGlyphFromWidget(Glyph& glyph);
-		void SetWidgetFromGlyph(const Glyph& glyph, bool isNotRootNode);
-
-	signals:
-		void AddChildrenButtonClicked();
-
-	protected:
-		void CreateWidgets(bool addLockToScaleWidget, ChildOptions childOptions);
-		QWidget* CreateChildrenWidget(ChildOptions childOptions);
-
-		QSpinBox* m_childrenSpinBox;
-
-		ColorAlphaWidget* m_colorWidget;
-
-		XYZWidget* m_translateWidget;
-		XYZWidget* m_rotateWidget;
-		XYZWidget* m_scaleWidget;
-
-		XYZWidget* m_rotateRateWidget;
-
-		GlyphStructureWidget* m_glyphStructureWidget;
+	private:
+		VisualGlyphPropertiesWidget* m_visualPropertiesWidget;
+		TextGlyphPropertiesWidget* m_textPropertiesWidget;
 	};
-
-	Q_DECLARE_OPERATORS_FOR_FLAGS(GlyphPropertiesWidget::ChildOptions)
 
 } //namespace SynGlyphX
 
-#endif // SYNGLYPHX_GLYPHPROPERTIES_WIDGET
+#endif // SYNGLYPHX_ALLGLYPHPROPERTIESWIDGET

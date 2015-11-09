@@ -32,7 +32,7 @@
 #include "changeimagefiledialog.h"
 
 DataMapperWindow::DataMapperWindow(QWidget *parent)
-    : SynGlyphX::MainWindow(parent),
+    : SynGlyphX::MainWindow(0, parent),
 	m_baseObjectsView(nullptr),
 	m_glyphTreesView(nullptr),
 	m_dataSourceStats(nullptr),

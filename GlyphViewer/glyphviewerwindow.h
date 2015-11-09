@@ -32,6 +32,7 @@
 #include "linkedwidgetsmanager.h"
 #include "itemfocusselectionmodel.h"
 #include "antzcsvwriter.h"
+#include "glyphpropertieswidgetscontainer.h"
 
 class GlyphViewerWindow : public SynGlyphX::MainWindow
 {
@@ -90,6 +91,7 @@ private:
 	SynGlyphX::ItemFocusSelectionModel* m_glyphForestSelectionModel;
 	SynGlyphXANTz::ANTzForestWidget* m_antzWidget;
 	GlyphTreeListView* m_treeView;
+	GlyphPropertiesWidgetsContainer* m_glyphPropertiesWidgetContainer;
 	SynGlyphX::SourceDataCache::SharedPtr m_sourceDataCache;
 	MultiTableElasticListsWidget* m_sourceDataSelectionWidget;
 	SourceDataSelectionModel* m_sourceDataSelectionModel;

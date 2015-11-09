@@ -30,7 +30,7 @@ namespace SynGlyphX {
         Q_OBJECT
 
     public:
-        MainWindow(QWidget *parent = 0);
+		MainWindow(unsigned int stateVersion, QWidget *parent = 0);
         ~MainWindow();
 
     protected slots:
@@ -78,6 +78,7 @@ namespace SynGlyphX {
 
 	private:
 		bool m_needToReadSettings;
+		unsigned int m_stateVersion;
 
 		static const QString s_copyright;
 		static const QString s_fileDialogSettingsGroup;

@@ -15,41 +15,42 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef MODALGLYPHWIDGET_H
-#define MODALGLYPHWIDGET_H
+#ifndef GLYPHPROPERTIESWIDGETSCONTAINER_H
+#define GLYPHPROPERTIESWIDGETSCONTAINER_H
 
-#include "visualglyphpropertieswidget.h"
-#include "minmaxglyphtreemodel.h"
+#include <QtWidgets/QWidget>
+#include <QtWidgets/QDockWidget>
+#include <QtWidgets/QStackedWidget>
+#include "glyphforestmodel.h"
 #include <QtCore/QItemSelectionModel>
-#include "propertyupdate.h"
+#include "visualglyphpropertieswidget.h"
+#include "textglyphpropertieswidget.h"
 
-class ModalGlyphWidget : public SynGlyphX::VisualGlyphPropertiesWidget
+class GlyphPropertiesWidgetsContainer : public QObject
 {
-    Q_OBJECT
+	Q_OBJECT
 
 public:
-	ModalGlyphWidget(SynGlyphXANTz::MinMaxGlyphTreeModel::GlyphType glyphTreeType, QWidget *parent = 0);
-    ~ModalGlyphWidget();
+	GlyphPropertiesWidgetsContainer(SynGlyphXANTz::GlyphForestModel* model, QItemSelectionModel* selectionModel, QWidget *parent);
+	~GlyphPropertiesWidgetsContainer();
 
-	void SetModel(SynGlyphXANTz::MinMaxGlyphTreeModel* model, QItemSelectionModel* selectionModel);
+	QStackedWidget* GetVisualProperitesWidget() const;
+	QStackedWidget* GetTextProperitesWidget() const;
 
 private slots:
-	void OnGlyphUpdated(const QModelIndex& index);
-	void OnWidgetUpdated(SynGlyphX::PropertyUpdates updates);
-    void SelectionChanged(const QItemSelection& selected, const QItemSelection& deselected);
+	void OnSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected);
 
 private:
-    void ConnectWidgetSignals();
-    void DisconnectWidgetSignals();
-	void UpdateWidget(const QModelIndex& index);
-    
-	SynGlyphXANTz::MinMaxGlyphTreeModel::GlyphType m_glyphTreeType;
-	SynGlyphXANTz::MinMaxGlyphTreeModel* m_model;
-    QItemSelectionModel* m_selectionModel;
+	void SelectWidgetsInStackedWidgets(unsigned int index);
 
-    std::vector<QMetaObject::Connection> m_propertyConnections;
-	QMetaObject::Connection m_glyphUpdateConnection;
-	QMetaObject::Connection m_selectionConnection;
+	QStackedWidget* m_visualPropertiesStackedWidget;
+	QStackedWidget* m_textPropertiesStackedWidget;
+
+	SynGlyphX::VisualGlyphPropertiesWidget* m_visualPropertiesWidget;
+	SynGlyphX::TextGlyphPropertiesWidget* m_textPropertiesWidget;
+
+	SynGlyphXANTz::GlyphForestModel* m_model;
+	QItemSelectionModel* m_selectionModel;
 };
 
-#endif // MODALGLYPHWIDGET_H
+#endif // GLYPHPROPERTIESWIDGETSCONTAINER_H

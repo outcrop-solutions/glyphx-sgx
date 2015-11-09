@@ -21,6 +21,8 @@
 #include "sgxdatatransformgui_global.h"
 #include "datatransformmapping.h"
 #include <QtCore/QAbstractItemModel>
+#include "glyphenumcombobox.h"
+#include "surfaceradiobuttonwidget.h"
 
 namespace SynGlyphX {
 
@@ -147,9 +149,6 @@ Q_DECLARE_METATYPE(SynGlyphX::NumericMappingProperty)
 Q_DECLARE_METATYPE(SynGlyphX::ColorMappingProperty)
 Q_DECLARE_METATYPE(SynGlyphX::TextMappingProperty)
 Q_DECLARE_METATYPE(SynGlyphX::GeometryShapeMappingProperty)
-Q_DECLARE_METATYPE(SynGlyphX::GlyphGeometryInfo::Shape)
-Q_DECLARE_METATYPE(SynGlyphX::GlyphGeometryInfo::Surface)
 Q_DECLARE_METATYPE(SynGlyphX::VirtualTopologyMappingProperty)
-Q_DECLARE_METATYPE(SynGlyphX::VirtualTopologyInfo::Type)
 
 #endif // SYNGLYPHX_DATATRANSFORMMODEL_H

@@ -24,7 +24,6 @@
 #include <QtWidgets/QTableView>
 #include <QtWidgets/QDoubleSpinBox>
 #include "bindinglineedit.h"
-#include "richtexteditor.h"
 #include "datatransformmapping.h"
 #include "glyphrolestablemodel.h"
 #include "surfaceradiobuttonwidget.h"

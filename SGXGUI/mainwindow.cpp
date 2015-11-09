@@ -14,8 +14,9 @@ namespace SynGlyphX {
 	const QString MainWindow::s_copyright = QString::fromStdWString(L"Copyright © 2013-2015 SynGlyphX Holdings Incorporated. All Rights Reserved.\n\nSynGlyphX, Glyph IT, Glyph KIT are either registered trademarks or trademarks of SynGlyphX Holdings Incorporated in the United States and/or other countries.  All other trademarks are the property of their respective owners.");
 	const QString MainWindow::s_fileDialogSettingsGroup = "FileDialogSettings";
 
-    MainWindow::MainWindow(QWidget *parent)
+	MainWindow::MainWindow(unsigned int stateVersion, QWidget *parent)
         : QMainWindow(parent),
+		m_stateVersion(stateVersion),
 		m_needToReadSettings(true)
     {
         //Make sure Status Bar gets created for all applications
@@ -59,7 +60,7 @@ namespace SynGlyphX {
 
 			restoreGeometry(geometry);
 		}
-        restoreState(settings.value("state").toByteArray());
+		restoreState(settings.value("state").toByteArray(), m_stateVersion);
         settings.endGroup();
 
         UpdateRecentFileList();
@@ -71,7 +72,7 @@ namespace SynGlyphX {
         settings.beginGroup("Window");
         settings.setValue("size", size());
         settings.setValue("geometry", saveGeometry());
-        settings.setValue("state", saveState());
+		settings.setValue("state", saveState(m_stateVersion));
         settings.endGroup();
     }
 
