@@ -52,6 +52,11 @@ namespace SynGlyphX {
 		throw std::invalid_argument("ID does not exist in datasources for this data transform mapping.");
 	}
 
+	bool DatasourceMaps::HasDatasourceWithID(const boost::uuids::uuid& id) const {
+
+		return (m_fileDatasources.count(id) > 0);
+	}
+
 	bool DatasourceMaps::HasDatasources() const {
 
 		return (!m_fileDatasources.empty());

@@ -491,27 +491,10 @@ namespace SynGlyphX {
 
 		if (!m_inputFields.empty()) {
 
-			IncrementInputBindingCount(glyph.GetPosition()[0].GetBinding());
-			IncrementInputBindingCount(glyph.GetPosition()[1].GetBinding());
-			IncrementInputBindingCount(glyph.GetPosition()[2].GetBinding());
+			for (unsigned int field = 0; field < DataMappingGlyph::MappableField::MappableFieldSize; ++field) {
 
-			IncrementInputBindingCount(glyph.GetRotation()[0].GetBinding());
-			IncrementInputBindingCount(glyph.GetRotation()[1].GetBinding());
-			IncrementInputBindingCount(glyph.GetRotation()[2].GetBinding());
-
-			IncrementInputBindingCount(glyph.GetScale()[0].GetBinding());
-			IncrementInputBindingCount(glyph.GetScale()[1].GetBinding());
-			IncrementInputBindingCount(glyph.GetScale()[2].GetBinding());
-
-			IncrementInputBindingCount(glyph.GetColor().GetBinding());
-			IncrementInputBindingCount(glyph.GetTransparency().GetBinding());
-
-			IncrementInputBindingCount(glyph.GetTag().GetBinding());
-			IncrementInputBindingCount(glyph.GetDescription().GetBinding());
-
-			IncrementInputBindingCount(glyph.GetRotationRate()[0].GetBinding());
-			IncrementInputBindingCount(glyph.GetRotationRate()[1].GetBinding());
-			IncrementInputBindingCount(glyph.GetRotationRate()[2].GetBinding());
+				IncrementInputBindingCount(glyph.GetInputBinding(static_cast<DataMappingGlyph::MappableField>(field)));
+			}
 		}
 	}
 

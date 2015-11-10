@@ -42,6 +42,7 @@ namespace SynGlyphX {
 		bool operator!=(const DatasourceMaps& maps) const;
 
 		const Datasource& GetDatasourceByID(const boost::uuids::uuid& id) const;
+		bool HasDatasourceWithID(const boost::uuids::uuid& id) const;
 		bool HasDatasources() const;
 		unsigned int Count() const;
 		void Clear();

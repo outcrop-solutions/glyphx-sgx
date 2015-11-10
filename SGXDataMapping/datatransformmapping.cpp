@@ -512,7 +512,16 @@ namespace SynGlyphX {
 			throw std::invalid_argument("Can't append children to invalid parent");
 		}
 
-		m_glyphTrees[treeId]->AddChildGlyphGraph(parent, glyphGraph);
+		if ((!glyphGraph.GetInputFields().empty()) && (!m_datasources.HasDatasourceWithID(glyphGraph.GetInputFields().begin()->second.GetDatasourceID()))) {
+
+			SynGlyphX::DataMappingGlyphGraph clearedGlyphGraph = glyphGraph;
+			clearedGlyphGraph.ClearAllInputBindings();
+			m_glyphTrees[treeId]->AddChildGlyphGraph(parent, clearedGlyphGraph);
+		}
+		else {
+
+			m_glyphTrees[treeId]->AddChildGlyphGraph(parent, glyphGraph);
+		}
 	}
 
 	void DataTransformMapping::AddChildTreeResetPosition(const boost::uuids::uuid& treeId, DataMappingGlyphGraph::GlyphIterator& parent, const SynGlyphX::DataMappingGlyphGraph& glyphGraph) {
