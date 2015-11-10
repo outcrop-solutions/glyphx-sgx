@@ -15,6 +15,8 @@
 #include "glyphenumcombobox.h"
 #include "stretchsurroundedwidget.h"
 
+const QMargins DataBindingTablesWidget::s_cellMargins(8, 5, 8, 5);
+
 DataBindingTablesWidget::DataBindingTablesWidget(GlyphRolesTableModel* model, QWidget *parent)
 	: QTabWidget(parent),
 	m_model(model),
@@ -68,6 +70,7 @@ void DataBindingTablesWidget::CreateGeometryTopologyTab() {
 	m_surfaceRadioButtonWidget = new SynGlyphX::SurfaceRadioButtonWidget(Qt::Horizontal, tableView);
 	QWidget* surfaceBoundingWidget = new QWidget(this);
 	QHBoxLayout* surfaceBoundingWidgetLayout = new QHBoxLayout(surfaceBoundingWidget);
+	surfaceBoundingWidgetLayout->setContentsMargins(s_cellMargins);
 	surfaceBoundingWidgetLayout->addWidget(m_surfaceRadioButtonWidget);
 	surfaceBoundingWidgetLayout->addStretch(1);
 	surfaceBoundingWidget->setLayout(surfaceBoundingWidgetLayout);
@@ -77,6 +80,7 @@ void DataBindingTablesWidget::CreateGeometryTopologyTab() {
 	m_torusRatioSpinBox->setDecimals(2);
 	QWidget* torusRatioBoundingWidget = new QWidget(this);
 	QHBoxLayout* torusRatioBoundingWidgetLayout = new QHBoxLayout(torusRatioBoundingWidget);
+	torusRatioBoundingWidgetLayout->setContentsMargins(s_cellMargins);
 	torusRatioBoundingWidgetLayout->addWidget(m_torusRatioSpinBox);
 	torusRatioBoundingWidgetLayout->addStretch(1);
 	torusRatioBoundingWidget->setLayout(torusRatioBoundingWidgetLayout);
@@ -132,6 +136,7 @@ void DataBindingTablesWidget::CreateURLTab() {
 	SynGlyphX::TableSubsetProxyModel* proxyModel = dynamic_cast<SynGlyphX::TableSubsetProxyModel*>(tableView->model());
 
 	BindingLineEdit* urlLineEdit = new BindingLineEdit(m_model, tableView);
+	urlLineEdit->layout()->setContentsMargins(s_cellMargins);
 	tableView->setIndexWidget(proxyModel->mapFromSource(m_model->index(SynGlyphX::DataMappingGlyph::MappableField::URL, GlyphRolesTableModel::s_mappedFieldColumn)), urlLineEdit);
 
 	QDataWidgetMapper* urlMapper = new QDataWidgetMapper(this);
@@ -156,6 +161,7 @@ void DataBindingTablesWidget::CreateTagAndDescriptionWidget() {
 	SynGlyphX::TableSubsetProxyModel* proxyModel = dynamic_cast<SynGlyphX::TableSubsetProxyModel*>(tableView->model());
 
 	BindingLineEdit* tagLineEdit = new BindingLineEdit(m_model, tableView);
+	tagLineEdit->layout()->setContentsMargins(s_cellMargins);
 	tableView->setIndexWidget(proxyModel->mapFromSource(m_model->index(SynGlyphX::DataMappingGlyph::MappableField::Tag, GlyphRolesTableModel::s_mappedFieldColumn)), tagLineEdit);
 
 	QDataWidgetMapper* tagMapper = new QDataWidgetMapper(this);
@@ -167,6 +173,7 @@ void DataBindingTablesWidget::CreateTagAndDescriptionWidget() {
 	m_dataWidgetMappersAndRows[tagMapper] = SynGlyphX::DataMappingGlyph::MappableField::Tag;
 
 	BindingLineEdit* descriptionBindingLineEdit = new BindingLineEdit(m_model, tableView);
+	descriptionBindingLineEdit->layout()->setContentsMargins(s_cellMargins);
 	tableView->setIndexWidget(proxyModel->mapFromSource(m_model->index(SynGlyphX::DataMappingGlyph::MappableField::Description, GlyphRolesTableModel::s_mappedFieldColumn)), descriptionBindingLineEdit);
 
 	QDataWidgetMapper* descriptionMapper = new QDataWidgetMapper(this);
@@ -271,6 +278,10 @@ QDataWidgetMapper* DataBindingTablesWidget::AddRowOfWidgetsToTable(QTableView* t
 
 		m_dataWidgetMappersAndRows[mappers[i]] = modelRow;
 	}
+
+	valueWidget->layout()->setContentsMargins(s_cellMargins);
+	mappingFunctionWidget->layout()->setContentsMargins(s_cellMargins);
+	inputBindingLineEdit->layout()->setContentsMargins(s_cellMargins);
 
 	QObject::connect(mappingFunctionWidget, &MappingFunctionWidget::FunctionChanged, mappers[1], &QDataWidgetMapper::submit);
 	QObject::connect(mappingFunctionWidget, &MappingFunctionWidget::SupportedInputChanged, inputBindingLineEdit, &BindingLineEdit::SetAcceptedInputTypes);

@@ -68,6 +68,8 @@ private:
 	SynGlyphX::SurfaceRadioButtonWidget* m_surfaceRadioButtonWidget;
 	QDoubleSpinBox* m_torusRatioSpinBox;
 	QDataWidgetMapper* m_torusRatioMapper;
+
+	static const QMargins s_cellMargins;
 };
 
 #endif // DATABINDINGTABLESWIDGET_H
