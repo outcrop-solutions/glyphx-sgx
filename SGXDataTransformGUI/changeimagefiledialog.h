@@ -15,30 +15,32 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef SYNGLYPHX_CHANGEDATASOURCEFILEDIALOG_H
-#define SYNGLYPHX_CHANGEDATASOURCEFILEDIALOG_H
+#ifndef SYNGLYPHX_CHANGEIMAGEFILEDIALOG_H
+#define SYNGLYPHX_CHANGEIMAGEFILEDIALOG_H
 
-#include "sgxglyphgui_global.h"
+#include "sgxdatatransformgui_global.h"
 #include "replacefilenamedialog.h"
-#include "filedatasource.h"
+#include "datatransformmapping.h"
 
 namespace SynGlyphX {
 
-	class SGXGLYPHGUI_EXPORT ChangeDatasourceFileDialog : public ReplaceFilenameDialog
+	class SGXDATATRANSFORMGUI_EXPORT ChangeImageFileDialog : public ReplaceFilenameDialog
 	{
 		Q_OBJECT
 
 	public:
-		ChangeDatasourceFileDialog(const SynGlyphX::FileDatasource& oldDatasourceFile, const QString& acceptButtonText, QWidget *parent = 0);
-		~ChangeDatasourceFileDialog();
+		ChangeImageFileDialog(const QString& oldFileName, const QString& acceptButtonText, QWidget *parent = 0);
+		~ChangeImageFileDialog();
+
+		static bool UpdateImageFiles(const std::vector<unsigned int>& images, DataTransformMapping::SharedPtr mapping, QWidget* dialogParent = nullptr);
+
+	protected:
+		virtual bool IsNewFileValid() const;
 
 	private:
-		virtual bool IsNewFileValid() const;
-		
-		QStringList m_oldDatasourceTables;
-		SynGlyphX::FileDatasource::SourceType m_fileSourceType;
+		QString m_fileExtension;
 	};
 
 } //namespace SynGlyphX
 
-#endif // SYNGLYPHX_CHANGEDATASOURCEFILEDIALOG_H
+#endif // SYNGLYPHX_CHANGEIMAGEFILEDIALOG_H

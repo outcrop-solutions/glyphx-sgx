@@ -20,13 +20,13 @@ namespace SynGlyphX {
 			QWizardPage* page = new QWizardPage(this);
 			QVBoxLayout* layout = new QVBoxLayout(this);
 			page->setLayout(layout);
-			SynGlyphX::GlyphPropertiesWidget::ChildOptions childOptions = SynGlyphX::GlyphPropertiesWidget::Invisible;
+			SynGlyphX::VisualGlyphPropertiesWidget::ChildOptions childOptions = SynGlyphX::VisualGlyphPropertiesWidget::Invisible;
 			if (i != numberOfBranches - 1) {
 
-				childOptions = SynGlyphX::GlyphPropertiesWidget::ShowOnBottom | SynGlyphX::GlyphPropertiesWidget::EnabledSpinBox;
+				childOptions = SynGlyphX::VisualGlyphPropertiesWidget::ShowOnBottom | SynGlyphX::VisualGlyphPropertiesWidget::EnabledSpinBox;
 			}
 
-			SynGlyphX::GlyphPropertiesWidget* glyphWidget = new SynGlyphX::GlyphPropertiesWidget(childOptions, page);
+			SynGlyphX::VisualGlyphPropertiesWidget* glyphWidget = new SynGlyphX::VisualGlyphPropertiesWidget(true, childOptions, page);
 			m_glyphWidgets.push_back(glyphWidget);
 			if (i == 0) {
 

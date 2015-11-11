@@ -22,14 +22,16 @@
 #include <QtWidgets/QListView>
 #include <boost/shared_ptr.hpp>
 #include "datasourcestatswidget.h"
-#include "databindingwidget.h"
-#include "singleglyphrolestablemodel.h"
+#include "databindingtableswidget.h"
+#include "glyphrolestablemodel.h"
 #include "datatransformmodel.h"
 #include "antzwidget.h"
 #include "datamapping3dwidget.h"
 #include "glyphtreesview.h"
 #include "roledatafilterproxymodel.h"
 #include "baseobjectlistview.h"
+#include "datasourcesview.h"
+#include "antzcsvwriter.h"
 
 class DataMapperWindow : public SynGlyphX::MainWindow
 {
@@ -52,14 +54,13 @@ private slots:
     bool SaveProject();
     bool SaveAsProject();
     void AddDataSources();
-    void ExportToANTz(const QString& templateDir);
+	void ExportToANTz(SynGlyphXANTz::ANTzCSVWriter::OutputPlatform platform);
 	void AddBaseObject();
 	void AddGlyphTemplate();
 	void CreateNewGlyphTree();
 	void ChangeMapDownloadSettings();
 	void ChangeGlyphDefaults();
 	void ChangeNewMappingDefaults();
-	void OnGlyphTreesViewSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected);
 	void ChangeSceneProperties();
 	void ChangeOptions();
 
@@ -81,10 +82,10 @@ private:
 	void SelectFirstBaseObject();
 
     QMenu* m_fileMenu;
+	QMenu* m_editMenu;
     QMenu* m_glyphMenu;
 	QMenu* m_baseObjectMenu;
 	QMenu* m_datasourceMenu;
-    QMenu* m_viewMenu;
 	QMenu* m_toolsMenu;
 
 	QAction* m_showAnimation;
@@ -93,11 +94,12 @@ private:
 	BaseObjectListView* m_baseObjectsView;
 	GlyphTreesView* m_glyphTreesView;
 	DataSourceStatsWidget* m_dataSourceStats;
+	DataSourcesView* m_dataSourcesView;
 
 	QList<QAction*> m_projectDependentActions;
 
-	DataBindingWidget* m_dataBindingWidget;
-	SingleGlyphRolesTableModel* m_SingleGlyphRolesTableModel;
+	DataBindingTablesWidget* m_dataBindingWidget;
+	GlyphRolesTableModel* m_glyphRolesTableModel;
 
 	DataTransformModel* m_dataTransformModel;
 	
@@ -106,8 +108,9 @@ private:
 	SynGlyphX::DataMappingDefaults m_newMappingDefaults;
 	SynGlyphX::SceneProperties m_newMappingSceneProperties;
 
-	QString m_antzExportDirectory;
-	QString m_antzzSpaceExportDirectory;
+	std::unordered_map<SynGlyphXANTz::ANTzCSVWriter::OutputPlatform, QString> m_antzExportDirectories;
+
+	QMetaObject::Connection m_modelResetConnection;
 };
 
 #endif // DATAMAPPERWINDOW_H

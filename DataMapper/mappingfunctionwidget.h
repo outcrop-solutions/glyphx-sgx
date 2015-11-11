@@ -5,7 +5,7 @@
 #include <QtWidgets/QComboBox>
 #include <QtWidgets/QPushButton>
 #include "datamappingfunction.h"
-#include "singleglyphrolestablemodel.h"
+#include "glyphrolestablemodel.h"
 
 class MappingFunctionWidget : public QWidget
 {
@@ -20,7 +20,7 @@ public:
 		VirtualTopology
 	};
 
-	MappingFunctionWidget(KeyType keyType, SingleGlyphRolesTableModel* model, int row, QWidget *parent);
+	MappingFunctionWidget(KeyType keyType, GlyphRolesTableModel* model, int row, QWidget *parent);
 	~MappingFunctionWidget();
 
 	QString GetFunction() const;
@@ -35,6 +35,7 @@ public slots:
 	void SetFunction(const QString& function);
 
 private slots:
+	void OnFunctionComboBoxChangedByUser();
 	void OnFunctionComboBoxChanged();
 	void OnEditPropertiesClicked();
 
@@ -44,7 +45,7 @@ private:
 
 	QComboBox* m_functionComboBox;
 	QPushButton* m_editPropertiesButton;
-	SingleGlyphRolesTableModel* m_model;
+	GlyphRolesTableModel* m_model;
 	int m_row;
 	double m_dialogOutputMin;
 	double m_dialogOutputMax;

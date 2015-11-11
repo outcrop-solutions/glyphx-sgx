@@ -9,13 +9,8 @@ namespace SynGlyphX {
 		QHBoxLayout* mainLayout = new QHBoxLayout(this);
 		mainLayout->setContentsMargins(0, 0, 0, 0);
 
-		QStringList surfaceNames;
-		for (auto surface : SynGlyphX::GlyphGeometryInfo::s_surfaceNames.left) {
-
-			surfaceNames.push_back(QString::fromStdWString(surface.second));
-		}
-		m_surfaceRadioButtonGroup = new SynGlyphX::RadioButtonGroupWidget(surfaceNames, Qt::Horizontal, this);
-		QGroupBox* surfaceGroupBox = new SynGlyphX::GroupBoxSingleWidget(tr("Surface"), m_surfaceRadioButtonGroup, this);
+		m_surfaceRadioButtonGroup = new SurfaceRadioButtonWidget(Qt::Horizontal, this);
+		QGroupBox* surfaceGroupBox = new GroupBoxSingleWidget(tr("Surface"), m_surfaceRadioButtonGroup, this);
 
 		mainLayout->addWidget(surfaceGroupBox);
 
@@ -28,8 +23,8 @@ namespace SynGlyphX {
 		
 		setLayout(mainLayout);
 
-		QObject::connect(m_surfaceRadioButtonGroup, &SynGlyphX::RadioButtonGroupWidget::ButtonClicked, this, &NonMappableGeometryWidget::SurfaceChanged);
-		QObject::connect(m_ratioSpinBox, static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), this, &NonMappableGeometryWidget::TorusRatioChanged);
+		QObject::connect(m_surfaceRadioButtonGroup, &SynGlyphX::SurfaceRadioButtonWidget::ButtonClicked, this, &NonMappableGeometryWidget::PropertiesChanged);
+		QObject::connect(m_ratioSpinBox, static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), this, &NonMappableGeometryWidget::PropertiesChanged);
 	}
 
 	NonMappableGeometryWidget::~NonMappableGeometryWidget()
@@ -37,20 +32,18 @@ namespace SynGlyphX {
 
 	}
 
-	void NonMappableGeometryWidget::SetWidget(GlyphGeometryInfo::Surface surface, double torusRatio) {
+	void NonMappableGeometryWidget::SetProperties(const NonMappableGeometryProperties& properties) {
 
-		m_surfaceRadioButtonGroup->SetCheckedButton(surface);
-		m_ratioSpinBox->setValue(torusRatio);
+		m_surfaceRadioButtonGroup->SetSurface(properties.GetSurface());
+		m_ratioSpinBox->setValue(properties.GetTorusRatio());
 	}
 
-	GlyphGeometryInfo::Surface NonMappableGeometryWidget::GetSurface() const {
+	NonMappableGeometryProperties NonMappableGeometryWidget::GetProperties() const {
 
-		return SynGlyphX::GlyphGeometryInfo::s_surfaceNames.right.at(m_surfaceRadioButtonGroup->GetCheckedButtonLabel().toStdWString());
-	}
-
-	double NonMappableGeometryWidget::GetTorusRatio() const {
-
-		return m_ratioSpinBox->value();
+		NonMappableGeometryProperties properties;
+		properties.SetSurface(m_surfaceRadioButtonGroup->GetSurface());
+		properties.SetTorusRatio(m_ratioSpinBox->value());
+		return properties;
 	}
 
 	void NonMappableGeometryWidget::ShowTorusRatioWidget(bool show) {

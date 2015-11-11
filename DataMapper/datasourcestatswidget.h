@@ -21,7 +21,10 @@
 #include <QtWidgets/QTabWidget>
 #include <QtSql/QSqlDatabase>
 #include <QtWidgets/QTableView>
+#include <unordered_map>
 #include "datatransformmodel.h"
+#include "roledatafilterproxymodel.h"
+#include "uuid.h"
 
 class DataStatsModel;
 
@@ -30,20 +33,26 @@ class DataSourceStatsWidget : public QTabWidget
 	Q_OBJECT
 
 public:
-	DataSourceStatsWidget(DataTransformModel* model, QWidget *parent = 0);
+	DataSourceStatsWidget(DataTransformModel* dataTransformModel, QWidget *parent = 0);
 	~DataSourceStatsWidget();
 
-	void RebuildStatsViews();
+	virtual QSize sizeHint() const;
+
 	void AddNewStatsViews();
 	void ClearTabs();
 
-private:
-    void CreateTablesFromDatasource(const boost::uuids::uuid& id, const SynGlyphX::Datasource& datasource);
-	void CreateTableView(DataStatsModel* model, const QString& tabName);
+public slots:
+	void RebuildStatsViews();
 
-	QList<QTableView*> m_statViews;
+private slots:
+	void OnRowsRemovedFromModel(const QModelIndex& parent, int start, int end);
+
+private:
+	void CreateTablesFromDatasource(const boost::uuids::uuid& id, const SynGlyphX::Datasource& datasource);
+	void CreateTableView(DataStatsModel* model, const QString& tabName, const QString& id);
+	void RemoveTableViews(const QString& name = QString());
+
 	DataTransformModel* m_model;
-	std::set<boost::uuids::uuid> m_datasourcesShownInTabs;
 };
 
 #endif // DATASOURCESTATSWIDGET_H

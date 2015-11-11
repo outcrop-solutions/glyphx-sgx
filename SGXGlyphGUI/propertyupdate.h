@@ -34,7 +34,8 @@ namespace SynGlyphX {
 		UpdateRotationRate = 0x80,
 		UpdateTorusRatio = 0x100,
 		//All for when all properties are being updated
-		UpdateAll = 0xFFFF
+		UpdateAll = 0xFFFF,
+		UpdateAllExceptPosition = UpdateAll & ~UpdatePosition
 	};
 
 	Q_DECLARE_FLAGS(PropertyUpdates, PropertyUpdate);

@@ -15,59 +15,61 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef DATABINDINGWIDGET_H
-#define DATABINDINGWIDGET_H
+#ifndef DATABINDINGTABLESWIDGET_H
+#define DATABINDINGTABLESWIDGET_H
 
 #include <QtWidgets/QTabWidget>
 #include <QtWidgets/QTextEdit>
-#include <QtWidgets/QGridLayout>
 #include <QtWidgets/QDataWidgetMapper>
+#include <QtWidgets/QTableView>
+#include <QtWidgets/QDoubleSpinBox>
 #include "bindinglineedit.h"
-#include "richtexteditor.h"
 #include "datatransformmapping.h"
-#include "singleglyphrolestablemodel.h"
-#include "nonmappablegeometrywidget.h"
+#include "glyphrolestablemodel.h"
+#include "surfaceradiobuttonwidget.h"
 #include "mappingfunctionwidget.h"
+#include "tablesubsetproxymodel.h"
+#include <map>
 
-class DataBindingWidget : public QTabWidget
+class DataBindingTablesWidget : public QTabWidget
 {
 	Q_OBJECT
 
 public:
-	DataBindingWidget(SingleGlyphRolesTableModel* model, QWidget *parent = 0);
-	~DataBindingWidget();
+	DataBindingTablesWidget(GlyphRolesTableModel* model, QWidget *parent = 0);
+	~DataBindingTablesWidget();
 
 public slots:
 	void CommitChanges();
 	void OnBaseObjectChanged();
 
 private slots:
-	void OnModelReset();
-	void OnSurfaceUpdated();
-	void OnTorusRatioUpdated();
+	void OnModelDataChanged();
+	void OnTorusRatioChanged();
 
 private:
+	void CreateURLTab();
 	void CreateGeometryTopologyTab();
 	void CreateAnimationTable();
 	void CreateTagAndDescriptionWidget();
 	void CreateBasePropertiesTable();
-	void CreateTableHeader(QGridLayout* gridLayout);
-	void CreateVerticalGridLines(QGridLayout* gridLayout, unsigned int count);
-	void CreateIntegerPropertyWidgets(QGridLayout* layout, int modelRow, int min = 0, int max = 255);
-	void CreateDoublePropertyWidgets(QGridLayout* layout, int modelRow, double min = -100000.0, double max = 100000.0, bool addToPositionXYList = false);
-	void CreateColorPropertyWidgets(QGridLayout* layout, int modelRow);
-	void CreateGeometryShapePropertyWidgets(QGridLayout* layout, int modelRow);
-	void CreateVirtualTopologyTypePropertyWidgets(QGridLayout* layout, int modelRow);
-	void CreateRowOfPropertyWidgets(QGridLayout* layout, QWidget* valueWidget, MappingFunctionWidget* mappingFunctionWidget, int modelRow, bool addToPositionXYList = false);
-	void CreateGridLine(QGridLayout* layout, QFrame::Shape shape, int index = -1, int thickness = 1);
+	QTableView* CreateSubsetTableView(const SynGlyphX::TableSubsetProxyModel::Subset& rowSubset, const SynGlyphX::TableSubsetProxyModel::Subset& columnSubset = SynGlyphX::TableSubsetProxyModel::Subset());
+	void CreateIntegerPropertyWidgets(QTableView* tableView, int modelRow, int min = 0, int max = 255);
+	void CreateDoublePropertyWidgets(QTableView* tableView, int modelRow, double min = -100000.0, double max = 100000.0, bool addToPositionXYList = false);
+	void CreateColorPropertyWidgets(QTableView* tableView, int modelRow);
+	void CreateGeometryShapePropertyWidgets(QTableView* tableView, int modelRow);
+	void CreateVirtualTopologyTypePropertyWidgets(QTableView* tableView, int modelRow);
+	QDataWidgetMapper* AddRowOfWidgetsToTable(QTableView* tableView, QWidget* valueWidget, QWidget* valueWidgetToMap, MappingFunctionWidget* mappingFunctionWidget, int modelRow, bool addToPositionXYList = false);
 	void EnablePositionXYMixMaxWidgets(bool enable);
 
-	BindingLineEdit* m_tagLineEdit;
-	SynGlyphX::RichTextEditor* m_descriptionEdit;
-	QList<QDataWidgetMapper*> m_dataWidgetMappers;
-	SingleGlyphRolesTableModel* m_model;
+	std::map<QDataWidgetMapper*, unsigned int> m_dataWidgetMappersAndRows;
+	GlyphRolesTableModel* m_model;
 	QList<QWidget*> m_positionXYMinMaxWidgets;
-	SynGlyphX::NonMappableGeometryWidget* m_nonMappableGeometryWidget;
+	SynGlyphX::SurfaceRadioButtonWidget* m_surfaceRadioButtonWidget;
+	QDoubleSpinBox* m_torusRatioSpinBox;
+	QDataWidgetMapper* m_torusRatioMapper;
+
+	static const QMargins s_cellMargins;
 };
 
-#endif // DATABINDINGWIDGET_H
+#endif // DATABINDINGTABLESWIDGET_H

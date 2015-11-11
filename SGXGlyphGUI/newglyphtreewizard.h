@@ -3,7 +3,7 @@
 
 #include "sgxglyphgui_global.h"
 #include <QtWidgets/QWizard>
-#include "glyphpropertieswidget.h"
+#include "visualglyphpropertieswidget.h"
 #include "datamappingglyphgraph.h"
 
 namespace SynGlyphX {
@@ -23,7 +23,7 @@ namespace SynGlyphX {
 
 	private:
 		//Qt will take care of deleting the objects in this vector
-		std::vector<SynGlyphX::GlyphPropertiesWidget*> m_glyphWidgets;
+		std::vector<SynGlyphX::VisualGlyphPropertiesWidget*> m_glyphWidgets;
 		DataMappingGlyphGraph::SharedPtr m_dataMappingGlyphGraph;
 	};
 

@@ -11,6 +11,7 @@
 #include "glyphmimedata.h"
 #include "defaultbaseimageproperties.h"
 #include "defaultbaseimagescombobox.h"
+#include "surfaceradiobuttonwidget.h"
 
 DataTransformModel::DataTransformModel(QObject *parent)
 	: QAbstractItemModel(parent),
@@ -122,6 +123,10 @@ bool DataTransformModel::setData(const QModelIndex& index, const QVariant& value
 
 				iterator->second.GetVirtualTopology().SetType(value.value<SynGlyphX::VirtualTopologyMappingProperty>());
 			}
+			else if (role == PropertyRole::URL) {
+
+				iterator->second.GetDescription() = value.value<SynGlyphX::TextMappingProperty>();
+			}
 
 			QVector<int> roles;
 			roles.push_back(role);
@@ -150,6 +155,24 @@ QVariant DataTransformModel::data(const QModelIndex& index, int role) const {
 	if (role == Qt::DisplayRole) {
 
 		return GetDisplayData(index);
+	}
+	else if (role == UUIDRole) {
+
+		if (!index.parent().isValid()) {
+
+			if (IsParentlessRowInDataType(DataType::DataSources, index.row())) {
+
+				auto datasource = m_dataMapping->GetDatasources().GetFileDatasources().begin();
+				std::advance(datasource, index.row() - GetFirstIndexForDataType(DataType::DataSources));
+				return QString::fromStdString(boost::uuids::to_string(datasource->first));
+			}
+			else if (IsParentlessRowInDataType(DataType::GlyphTrees, index.row())) {
+
+				auto glyphGraph = m_dataMapping->GetGlyphGraphs().begin();
+				std::advance(glyphGraph, index.row() - GetFirstIndexForDataType(DataType::GlyphTrees));
+				return QString::fromStdString(boost::uuids::to_string(glyphGraph->first));
+			}
+		}
 	}
 	else if (role == DataTypeRole) {
 
@@ -252,6 +275,10 @@ QVariant DataTransformModel::GetPropertyData(const QModelIndex& index, int role)
 
 				var.setValue(iterator->second.GetVirtualTopology().GetType());
 			}
+			else if (role == PropertyRole::URL) {
+
+				var.setValue(iterator->second.GetURL());
+			}
 
 			if (var.isValid()) {
 
@@ -301,6 +328,13 @@ QVariant DataTransformModel::GetDisplayData(const QModelIndex& index) const {
 
 			return GetGlyphData(index);
 		}
+		else if (IsParentlessRowInDataType(DataType::FieldGroup, index.row())) {
+
+			int fieldGroupIndex = index.row() - (m_dataMapping->GetGlyphGraphs().size() + m_dataMapping->GetBaseObjects().size() + m_dataMapping->GetDatasources().Count());
+			SynGlyphX::DataTransformMapping::FieldGroupMap::const_iterator fieldGroup = m_dataMapping->GetFieldGroupMap().begin();
+			std::advance(fieldGroup, fieldGroupIndex);
+			return QString::fromStdWString(fieldGroup->first);
+		}
 	}
 	else {
 
@@ -326,6 +360,10 @@ DataTransformModel::DataType DataTransformModel::GetDataType(const QModelIndex& 
 		else if (IsParentlessRowInDataType(DataType::DataSources, index.row())) {
 
 			return DataType::DataSources;
+		}
+		else if (IsParentlessRowInDataType(DataType::FieldGroup, index.row())) {
+
+			return DataType::FieldGroup;
 		}
 		else if (IsParentlessRowInDataType(DataType::GlyphTrees, index.row())) {
 
@@ -447,7 +485,7 @@ int	DataTransformModel::rowCount(const QModelIndex& parent) const {
 
 	if (!parent.isValid()) {
 
-		return m_dataMapping->GetGlyphGraphs().size() + m_dataMapping->GetBaseObjects().size() + m_dataMapping->GetDatasources().Count();
+		return m_dataMapping->GetGlyphGraphs().size() + m_dataMapping->GetBaseObjects().size() + m_dataMapping->GetDatasources().Count() + m_dataMapping->GetFieldGroupMap().size();
 	}
 
 	if (parent.internalPointer() != nullptr) {
@@ -461,8 +499,11 @@ int	DataTransformModel::rowCount(const QModelIndex& parent) const {
 
 boost::uuids::uuid DataTransformModel::AddFileDatasource(SynGlyphX::FileDatasource::SourceType type, const std::wstring& name) {
 
+	int newRow = GetFirstIndexForDataType(DataType::DataSources) + m_dataMapping->GetDatasources().GetFileDatasources().size();
+	beginInsertRows(QModelIndex(), newRow, newRow);
 	boost::uuids::uuid id = m_dataMapping->AddFileDatasource(type, name);
 	m_sourceDataManager.AddDatabaseConnection(m_dataMapping->GetDatasources().GetFileDatasources().at(id), id);
+	endInsertRows();
 
 	return id;
 }
@@ -472,11 +513,11 @@ void DataTransformModel::SetInputField(const boost::uuids::uuid& treeID, SynGlyp
 	m_dataMapping->SetInputField(treeID, node, field, inputfield);
 }*/
 
-void DataTransformModel::SetInputField(const boost::uuids::uuid& treeID, const QModelIndex& index, SynGlyphX::DataMappingGlyph::MappableField field, const SynGlyphX::InputField& inputfield) {
+void DataTransformModel::SetInputField(const QModelIndex& index, SynGlyphX::DataMappingGlyph::MappableField field, const SynGlyphX::InputField& inputfield) {
 
 	SynGlyphX::DataMappingGlyphGraph::ConstGlyphIterator node(static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(index.internalPointer()));
 	//SetInputField(treeID, node, field, inputfield);
-	m_dataMapping->SetInputField(treeID, node, field, inputfield);
+	m_dataMapping->SetInputField(GetTreeId(index), node, field, inputfield);
 	emit dataChanged(index, index);
 }
 /*
@@ -485,17 +526,41 @@ void DataTransformModel::ClearInputBinding(const boost::uuids::uuid& treeID, Syn
 	m_dataMapping->ClearInputBinding(treeID, node, field);
 }*/
 
-void DataTransformModel::ClearInputBinding(const boost::uuids::uuid& treeID, const QModelIndex& index, SynGlyphX::DataMappingGlyph::MappableField field) {
+void DataTransformModel::ClearInputBinding(const QModelIndex& index, SynGlyphX::DataMappingGlyph::MappableField field) {
 
 	SynGlyphX::DataMappingGlyphGraph::ConstGlyphIterator node(static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(index.internalPointer()));
 	//ClearInputBinding(treeID, node, field);
-	m_dataMapping->ClearInputBinding(treeID, node, field);
+	m_dataMapping->ClearInputBinding(GetTreeId(index), node, field);
 	emit dataChanged(index, index);
 }
 
-void DataTransformModel::EnableTables(const boost::uuids::uuid& id, const SynGlyphX::Datasource::TableSet& tables, bool enable) {
+void DataTransformModel::ClearAllInputBindings(const QModelIndex& index) {
+
+	SynGlyphX::DataMappingGlyphGraph::ConstGlyphIterator node(static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(index.internalPointer()));
+	m_dataMapping->ClearAllInputBindings(GetTreeId(index), node);
+	emit dataChanged(index, index);
+}
+
+const SynGlyphX::DataMappingGlyphGraph::InputFieldMap& DataTransformModel::GetInputFieldsForTree(const QModelIndex& index) const {
+
+	if (!index.isValid()) {
+
+		throw std::invalid_argument("Can't get input field map from invalid index");
+	}
+
+	return m_dataMapping->GetGlyphGraphs().at(GetTreeId(index))->GetInputFields();
+}
+
+void DataTransformModel::EnableTables(const boost::uuids::uuid& id, const SynGlyphX::Datasource::TableNames& tables, bool enable) {
 
 	m_dataMapping->EnableTables(id, tables, enable);
+	if (enable) {
+
+		for (auto& table : tables) {
+
+			m_sourceDataManager.AddTable(id, table);
+		}
+	}
 }
 
 bool DataTransformModel::removeRows(int row, int count, const QModelIndex& parent) {
@@ -503,21 +568,46 @@ bool DataTransformModel::removeRows(int row, int count, const QModelIndex& paren
 	if (count > 0) {
 
 		int lastRow = row + count - 1;
-		beginRemoveRows(parent, row, lastRow);
 
 		if (parent.isValid()) {
 
 			SynGlyphX::DataMappingGlyphGraph::ConstGlyphIterator parentGlyph(static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(parent.internalPointer()));
-			
 			boost::uuids::uuid treeId = GetTreeId(parent);
+
+			beginRemoveRows(parent, row, lastRow);
 			for (int i = lastRow; i >= row; --i) {
 
 				m_dataMapping->RemoveGlyph(treeId, parentGlyph, i);
 			}
+			endRemoveRows();
 			
 		} else {
 
+			bool emitGlyphDataChanged = false;
+			for (int i = lastRow; i >= row; --i) {
+
+				if (IsParentlessRowInDataType(DataType::DataSources, i)) {
+
+					emitGlyphDataChanged = true;
+
+					//Clear all field groups that use the datasource before removing the datasource
+					std::vector<SynGlyphX::DataTransformMapping::FieldGroupName> fieldGroupsToBeRemoved;
+					for (auto& fieldGroup : m_dataMapping->GetFieldGroupMap()) {
+
+						if (m_dataMapping->DoesFieldGroupHaveFieldsFromDatasource(fieldGroup.first, GetDatasourceId(i))) {
+
+							fieldGroupsToBeRemoved.push_back(fieldGroup.first);
+						}
+					}
+
+					for (const SynGlyphX::DataTransformMapping::FieldGroupName& name : fieldGroupsToBeRemoved) {
+
+						RemoveFieldGroup(name, false);
+					}
+				}
+			}
 			
+			beginRemoveRows(parent, row, lastRow);
 			for (int i = lastRow; i >= row; --i) {
 
 				if (IsParentlessRowInDataType(DataType::GlyphTrees, i)) {
@@ -530,11 +620,25 @@ bool DataTransformModel::removeRows(int row, int count, const QModelIndex& paren
 				}
 				else if (IsParentlessRowInDataType(DataType::DataSources, i)) {
 
+					boost::uuids::uuid id = GetDatasourceId(i);
+					m_dataMapping->RemoveDatasource(id);
+					m_sourceDataManager.ClearDatabaseConnection(id);
+				}
+				else if (IsParentlessRowInDataType(DataType::FieldGroup, i)) {
 
+					m_dataMapping->RemoveFieldGroup(GetFieldGroupName(i));
+					emitGlyphDataChanged = true;
 				}
 			}
+			endRemoveRows();
+
+			if (emitGlyphDataChanged) {
+
+				//Since bindings could have been cleared due to datasources being removed, notify that the data of glyphs has been changed
+				unsigned int firstGlyphIndex = GetFirstIndexForDataType(DataType::GlyphTrees);
+				emit dataChanged(index(firstGlyphIndex), index(firstGlyphIndex + m_dataMapping->GetGlyphGraphs().size() - 1));
+			}
 		}
-		endRemoveRows();
 		
 		return true;
 	}
@@ -564,6 +668,16 @@ void DataTransformModel::LoadDataTransformFile(const QString& filename) {
 	m_dataMapping->ReadFromFile(filename.toStdString());
 	m_sourceDataManager.SetCacheLocation(GetCacheLocationForID(m_dataMapping->GetID()));
 	m_sourceDataManager.AddDatabaseConnections(m_dataMapping->GetDatasources());
+	for (const auto& datasource : m_dataMapping->GetDatasources().GetFileDatasources()) {
+
+		for (const auto& table : datasource.second.GetTableNames()) {
+
+			if (table != SynGlyphX::Datasource::SingleTableName) {
+
+				m_sourceDataManager.AddTable(datasource.first, table);
+			}
+		}
+	}
 	endResetModel();
 }
 
@@ -638,33 +752,85 @@ void DataTransformModel::AddBaseObject(const SynGlyphX::BaseImage& baseImage) {
 
 bool DataTransformModel::IsParentlessRowInDataType(DataType type, int row) const {
 
-	int min = 0;
+	int min = GetFirstIndexForDataType(type);
 	int max = 0;
 	if (type == DataType::BaseObjects) {
 
-		min = m_dataMapping->GetGlyphGraphs().size();
 		max = min + m_dataMapping->GetBaseObjects().size();
 	}
 	else if (type == DataType::DataSources) {
 
-		min = m_dataMapping->GetGlyphGraphs().size() + m_dataMapping->GetBaseObjects().size();
-		max = min + m_dataMapping->GetDatasources().GetFileDatasources().size();
+		max = min + m_dataMapping->GetDatasources().Count();
+	}
+	else if (type == DataType::FieldGroup) {
+
+		max = min + m_dataMapping->GetFieldGroupMap().size();
 	}
 	else if (type == DataType::GlyphTrees) {
 
-		max = m_dataMapping->GetGlyphGraphs().size();
+		max = min + m_dataMapping->GetGlyphGraphs().size();
 	}
 
 	return ((row >= min) && (row < max));
+}
+
+unsigned int DataTransformModel::GetFirstIndexForDataType(DataType type) const {
+
+	if (type == DataType::BaseObjects) {
+
+		return m_dataMapping->GetGlyphGraphs().size();
+	}
+	else if (type == DataType::DataSources) {
+
+		return m_dataMapping->GetGlyphGraphs().size() + m_dataMapping->GetBaseObjects().size();
+	}
+	else if (type == DataType::FieldGroup) {
+
+		return m_dataMapping->GetGlyphGraphs().size() + m_dataMapping->GetBaseObjects().size() + m_dataMapping->GetDatasources().Count();
+	}
+	else if (type == DataType::GlyphTrees) {
+
+		return 0;
+	}
 }
 
 void DataTransformModel::UpdateGlyph(const QModelIndex& index, const SynGlyphX::DataMappingGlyph& newGlyph) {
 
 	if (!m_dataMapping->GetGlyphGraphs().empty() && index.isValid()) {
 
-		SynGlyphX::DataMappingGlyphGraph::GlyphIterator glyph(static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(index.internalPointer()));
-		glyph->second = newGlyph;
+		SynGlyphX::DataMappingGlyphGraph::GlyphIterator vertex(static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(index.internalPointer()));
+		m_dataMapping->UpdateGlyph(GetTreeId(index), vertex, newGlyph);
 		emit dataChanged(index, index);
+	}
+}
+
+void DataTransformModel::UpdateGlyph(const QModelIndex& index, const SynGlyphX::DataMappingGlyphGraph& subgraph) {
+
+	if (m_dataMapping->GetGlyphGraphs().empty() || !index.isValid()) {
+
+		throw std::invalid_argument("Index given to MinMaxGlyphTreeModel::GetSubgraph is invalid");
+	}
+
+	SynGlyphX::DataMappingGlyphGraph& nonConstGraph = const_cast<SynGlyphX::DataMappingGlyphGraph&>(subgraph);
+
+	SynGlyphX::DataMappingGlyphGraph::GlyphIterator vertex(static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(index.internalPointer()));
+	SynGlyphX::DataMappingGlyph glyph = nonConstGraph.GetRoot()->second;
+	glyph.GetPosition() = vertex->second.GetPosition();
+	UpdateGlyph(index, glyph);
+
+	unsigned int numberOfChildrenOfRootInSubgraph = subgraph.ChildCount(subgraph.GetRoot());
+	if (numberOfChildrenOfRootInSubgraph > 0) {
+
+		boost::uuids::uuid treeId = GetTreeId(index);
+		unsigned int numberOfChildrenInNewParent = rowCount(index);
+		beginInsertRows(index, numberOfChildrenInNewParent, numberOfChildrenInNewParent + numberOfChildrenOfRootInSubgraph - 1);
+
+		for (int i = 0; i < numberOfChildrenOfRootInSubgraph; ++i) {
+
+			m_dataMapping->AddChildTree(treeId, vertex, nonConstGraph.GetSubgraph(nonConstGraph.GetChild(nonConstGraph.GetRoot(), i), true));
+		}
+
+		endInsertRows();
 	}
 }
 
@@ -699,6 +865,17 @@ const SynGlyphX::DataMappingGlyph& DataTransformModel::GetGlyph(const QModelInde
 	return glyph->second;
 }
 
+SynGlyphX::DataMappingGlyphGraph DataTransformModel::GetSubgraph(const QModelIndex& index, bool includeChildren) {
+
+	if (m_dataMapping->GetGlyphGraphs().empty() || !index.isValid()) {
+
+		throw std::invalid_argument("Index doesn't exist in DataTransformModel");
+	}
+
+	SynGlyphX::DataMappingGlyphGraph::ConstGlyphIterator glyph(static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(index.internalPointer()));
+	return m_dataMapping->GetSubgraph(GetTreeId(index), glyph, includeChildren);
+}
+
 void DataTransformModel::AddChildGlyph(const QModelIndex& parent, const SynGlyphX::DataMappingGlyph& glyphTemplate, unsigned int numberOfChildren) {
 
 	if (!parent.isValid()) {
@@ -715,6 +892,21 @@ void DataTransformModel::AddChildGlyph(const QModelIndex& parent, const SynGlyph
 	unsigned int startingNumberOfChildren = rowCount(parent);
 	beginInsertRows(parent, startingNumberOfChildren, startingNumberOfChildren + numberOfChildren - 1);
 	m_dataMapping->AddChildGlyph(GetTreeId(parent), parentGlyph, glyphTemplate, numberOfChildren);
+	endInsertRows();
+}
+
+void DataTransformModel::AddChildGlyphGraph(const QModelIndex& parent, const SynGlyphX::DataMappingGlyphGraph& graph) {
+
+	if (!parent.isValid()) {
+
+		throw std::invalid_argument("Can't append children to invalid parent");
+	}
+
+	SynGlyphX::DataMappingGlyphGraph::GlyphIterator parentGlyph(static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(parent.internalPointer()));
+
+	unsigned int startingNumberOfChildren = rowCount(parent);
+	beginInsertRows(parent, startingNumberOfChildren, startingNumberOfChildren);
+	m_dataMapping->AddChildTree(GetTreeId(parent), parentGlyph, graph);
 	endInsertRows();
 }
 
@@ -741,6 +933,13 @@ boost::uuids::uuid DataTransformModel::GetTreeId(const QModelIndex& index) const
 	}
 
 	return GetTreeId(rootRow);
+}
+
+boost::uuids::uuid DataTransformModel::GetDatasourceId(int row) const {
+
+	SynGlyphX::DatasourceMaps::FileDatasourceMap::const_iterator datasource = m_dataMapping->GetDatasources().GetFileDatasources().begin();
+	std::advance(datasource, row - GetFirstIndexForDataType(DataType::DataSources));
+	return datasource->first;
 }
 
 Qt::DropActions DataTransformModel::supportedDropActions() const {
@@ -772,7 +971,7 @@ Qt::ItemFlags DataTransformModel::flags(const QModelIndex& index) const {
 QStringList DataTransformModel::mimeTypes() const {
 
 	QStringList types;
-	types.push_back(SynGlyphX::GlyphMimeData::Format);
+	types.push_back(SynGlyphX::GlyphMimeData::s_format);
 	return types;
 }
 
@@ -809,7 +1008,7 @@ bool DataTransformModel::dropMimeData(const QMimeData* data, Qt::DropAction acti
 
 	//canDropMimeData isn't being called when it should as per this bug:
 	//https://bugreports.qt.io/browse/QTBUG-30534
-	//Thus it is being called here until we upgrade to Qt 5.4.1
+	//Thus it is being called here until we upgrade to Qt 5.4.1 or later
 	if (!canDropMimeData(data, action, row, column, parent)) {
 
 		return false;
@@ -836,8 +1035,8 @@ bool DataTransformModel::dropMimeData(const QMimeData* data, Qt::DropAction acti
 
 				//Only do an insert here.  The MoveAction will take care of deleting the old object
 				beginInsertRows(parent, numberOfChildren, numberOfChildren);
-				SynGlyphX::DataMappingGlyphGraph::LinklessGraph oldGlyphSubtree = const_cast<SynGlyphX::DataMappingGlyphGraph::LinklessGraph*>(oldGlyph.owner())->subtree(oldGlyph.deconstify());
-				m_dataMapping->AddChildTree(GetTreeId(parent), newParentGlyph.deconstify(), oldGlyphSubtree);
+				SynGlyphX::DataMappingGlyphGraph oldGlyphSubtree = GetSubgraph(indexes[j], true);
+				m_dataMapping->AddChildTreeResetPosition(GetTreeId(parent), newParentGlyph.deconstify(), oldGlyphSubtree);
 				endInsertRows();
 				glyphsMoved = true;
 			}
@@ -852,4 +1051,74 @@ bool DataTransformModel::dropMimeData(const QMimeData* data, Qt::DropAction acti
 const boost::uuids::uuid& DataTransformModel::GetCacheConnectionID() const {
 
 	return m_sourceDataManager.GetCSVCacheConnectionID();
+}
+
+const SynGlyphX::DataTransformMapping::FieldGroupMap& DataTransformModel::GetFieldGroupMap() const {
+
+	return m_dataMapping->GetFieldGroupMap();
+}
+
+void DataTransformModel::UpdateFieldGroup(const SynGlyphX::DataTransformMapping::FieldGroupName& groupName, const SynGlyphX::FieldGroup& fieldGroup) {
+
+	const SynGlyphX::DataTransformMapping::FieldGroupMap& fieldGroupMap = m_dataMapping->GetFieldGroupMap();
+	SynGlyphX::DataTransformMapping::FieldGroupMap::const_iterator groupIterator = fieldGroupMap.find(groupName);
+	bool addNew = (groupIterator == fieldGroupMap.end());
+	
+	int firstIndex = GetFirstIndexForDataType(DataType::FieldGroup);
+	int lastIndex = firstIndex + fieldGroupMap.size() - 1;
+	if (addNew) {
+
+		lastIndex++;
+		beginInsertRows(QModelIndex(), lastIndex, lastIndex);
+	}
+
+	m_dataMapping->UpdateFieldGroup(groupName, fieldGroup);
+
+	if (addNew) {
+
+		endInsertRows();
+	}
+
+	emit dataChanged(index(firstIndex), index(lastIndex));
+}
+
+void DataTransformModel::RemoveFieldGroup(const SynGlyphX::DataTransformMapping::FieldGroupName& groupName) {
+
+	RemoveFieldGroup(groupName, true);
+}
+
+void DataTransformModel::RemoveFieldGroup(const SynGlyphX::DataTransformMapping::FieldGroupName& groupName, bool emitGlyphDataChanged) {
+
+	const SynGlyphX::DataTransformMapping::FieldGroupMap& fieldGroupMap = m_dataMapping->GetFieldGroupMap();
+	SynGlyphX::DataTransformMapping::FieldGroupMap::const_iterator groupIterator = fieldGroupMap.find(groupName);
+
+	if (groupIterator == fieldGroupMap.end()) {
+
+		return;
+	}
+
+	int row = GetFirstIndexForDataType(DataType::FieldGroup) + std::distance(fieldGroupMap.begin(), groupIterator);
+
+	beginRemoveRows(QModelIndex(), row, row);
+	m_dataMapping->RemoveFieldGroup(groupName);
+	endRemoveRows();
+
+	if (emitGlyphDataChanged) {
+
+		//Since references to the removed field group could have been cleared, notify that the data of glyphs has been changed
+		unsigned int firstGlyphIndex = GetFirstIndexForDataType(DataType::GlyphTrees);
+		emit dataChanged(index(firstGlyphIndex), index(firstGlyphIndex + m_dataMapping->GetGlyphGraphs().size() - 1));
+	}
+}
+
+const SynGlyphX::DataTransformMapping::FieldGroupName& DataTransformModel::GetFieldGroupName(int row) const {
+
+	SynGlyphX::DataTransformMapping::FieldGroupMap::const_iterator fieldGroup = m_dataMapping->GetFieldGroupMap().begin();
+	std::advance(fieldGroup, row - GetFirstIndexForDataType(DataType::FieldGroup));
+	return fieldGroup->first;
+}
+
+const SynGlyphX::SourceDataManager& DataTransformModel::GetSourceDataManager() const {
+
+	return m_sourceDataManager;
 }

@@ -9,16 +9,16 @@
 #include <QtWidgets/QLabel>
 #include <unordered_map>
 #include "sourcedatainfomodel.h"
-#include "glyphforestmodel.h"
 #include <QtWidgets/QCheckBox>
 #include "linkedwidgetsmanager.h"
+#include "sourcedataselectionmodel.h"
 
 class PseudoTimeFilterWidget : public QWidget
 {
 	Q_OBJECT
 
 public:
-	PseudoTimeFilterWidget(SynGlyphX::DataTransformMapping::SharedPtr dataTransformMapping, SynGlyphX::SourceDataCache::SharedPtr sourceDataCache, SynGlyphXANTz::GlyphForestModel* model, SynGlyphX::ItemFocusSelectionModel* selectionModel, QWidget *parent);
+	PseudoTimeFilterWidget(SynGlyphX::DataTransformMapping::ConstSharedPtr dataTransformMapping, SynGlyphX::SourceDataCache::SharedPtr sourceDataCache, SourceDataSelectionModel* selectionModel, QWidget *parent);
 	~PseudoTimeFilterWidget();
 
 	void SetupLinkedWidgets(LinkedWidgetsManager& linkedWidgetsManager);
@@ -71,9 +71,9 @@ private:
 
 	FilterState m_filterState;
 	SynGlyphX::SourceDataCache::SharedPtr m_sourceDataCache;
-	std::vector < std::pair < QString, QItemSelection >> m_itemSelectionForEachDistinctValue;
-	SynGlyphXANTz::GlyphForestModel* m_glyphForestModel;
-	SynGlyphX::ItemFocusSelectionModel* m_glyphForestSelectionModel;
+	SynGlyphX::SourceDataCache::DistinctValueIndexMap m_selectionForEachDistinctValue;
+	QString m_sourceCacheTableName;
+	SourceDataSelectionModel* m_selectionModel;
 
 	QCheckBox* m_filterViewCheckbox;
 	QCheckBox* m_moveCameraOnUpdateCheckbox;

@@ -55,15 +55,6 @@
     <ClCompile Include="colorconverter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Win32\Debug\moc_glyphpropertieswidget.cpp">
-      <Filter>Generated Files\Debug_Win32</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Win32\Release\moc_glyphpropertieswidget.cpp">
-      <Filter>Generated Files\Release_Win32</Filter>
-    </ClCompile>
-    <ClCompile Include="glyphpropertieswidget.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="newglyphtreewizard.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -181,31 +172,52 @@
     <ClCompile Include="GeneratedFiles\Win32\Release\moc_glyphbuilderapplication.cpp">
       <Filter>Generated Files\Release_Win32</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Win32\Debug\moc_changedatasourcefiledialog.cpp">
+    <ClCompile Include="linklessgraphmimedata.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="treeeditview.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Win32\Debug\moc_treeeditview.cpp">
       <Filter>Generated Files\Debug_Win32</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Win32\Release\moc_changedatasourcefiledialog.cpp">
+    <ClCompile Include="GeneratedFiles\Win32\Release\moc_treeeditview.cpp">
       <Filter>Generated Files\Release_Win32</Filter>
     </ClCompile>
-    <ClCompile Include="changedatasourcefiledialog.cpp">
+    <ClCompile Include="surfaceradiobuttonwidget.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Win32\Debug\moc_replacefilenamedialog.cpp">
+    <ClCompile Include="GeneratedFiles\Win32\Debug\moc_surfaceradiobuttonwidget.cpp">
       <Filter>Generated Files\Debug_Win32</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Win32\Release\moc_replacefilenamedialog.cpp">
+    <ClCompile Include="GeneratedFiles\Win32\Release\moc_surfaceradiobuttonwidget.cpp">
       <Filter>Generated Files\Release_Win32</Filter>
     </ClCompile>
-    <ClCompile Include="replacefilenamedialog.cpp">
+    <ClCompile Include="visualglyphpropertieswidget.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="changeimagefiledialog.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Win32\Debug\moc_changeimagefiledialog.cpp">
+    <ClCompile Include="GeneratedFiles\Win32\Debug\moc_visualglyphpropertieswidget.cpp">
       <Filter>Generated Files\Debug_Win32</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Win32\Release\moc_changeimagefiledialog.cpp">
+    <ClCompile Include="GeneratedFiles\Win32\Release\moc_visualglyphpropertieswidget.cpp">
+      <Filter>Generated Files\Release_Win32</Filter>
+    </ClCompile>
+    <ClCompile Include="textglyphpropertieswidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Win32\Debug\moc_textglyphpropertieswidget.cpp">
+      <Filter>Generated Files\Debug_Win32</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Win32\Release\moc_textglyphpropertieswidget.cpp">
+      <Filter>Generated Files\Release_Win32</Filter>
+    </ClCompile>
+    <ClCompile Include="allglyphpropertieswidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Win32\Debug\moc_allglyphpropertieswidget.cpp">
+      <Filter>Generated Files\Debug_Win32</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Win32\Release\moc_allglyphpropertieswidget.cpp">
       <Filter>Generated Files\Release_Win32</Filter>
     </ClCompile>
   </ItemGroup>
@@ -214,9 +226,6 @@
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="colorconverter.h">
-      <Filter>Header Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="glyphpropertieswidget.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="newglyphtreewizard.h">
@@ -258,13 +267,22 @@
     <CustomBuild Include="glyphbuilderapplication.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
-    <CustomBuild Include="changedatasourcefiledialog.h">
+    <CustomBuild Include="linklessgraphmimedata.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
-    <CustomBuild Include="replacefilenamedialog.h">
+    <CustomBuild Include="treeeditview.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
-    <CustomBuild Include="changeimagefiledialog.h">
+    <CustomBuild Include="surfaceradiobuttonwidget.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="visualglyphpropertieswidget.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="textglyphpropertieswidget.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="allglyphpropertieswidget.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>

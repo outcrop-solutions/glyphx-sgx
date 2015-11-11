@@ -15,38 +15,39 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef NONMAPPABLEGEOMETRYWIDGET_H
-#define NONMAPPABLEGEOMETRYWIDGET_H
+#ifndef SYNGLYPHX_NONMAPPABLEGEOMETRYWIDGET_H
+#define SYNGLYPHX_NONMAPPABLEGEOMETRYWIDGET_H
 
 #include "sgxglyphgui_global.h"
+#include "nonmappablegeometryproperties.h"
 #include <QtWidgets/QWidget>
-#include "radiobuttongroupwidget.h"
+#include "surfaceradiobuttonwidget.h"
 #include <QtWidgets/QDoubleSpinBox>
 #include "groupboxsinglewidget.h"
-#include "glyphgeometryinfo.h"
+
+Q_DECLARE_METATYPE(SynGlyphX::NonMappableGeometryProperties)
 
 namespace SynGlyphX {
 
 	class SGXGLYPHGUI_EXPORT NonMappableGeometryWidget : public QWidget
 	{
 		Q_OBJECT
+		Q_PROPERTY(NonMappableGeometryProperties properties READ GetProperties WRITE SetProperties USER true)
 
 	public:
 		NonMappableGeometryWidget(QWidget *parent);
 		~NonMappableGeometryWidget();
 
-		void SetWidget(GlyphGeometryInfo::Surface surface, double torusRatio = 0.1);
-		GlyphGeometryInfo::Surface GetSurface() const;
-		double GetTorusRatio() const;
+		void SetProperties(const NonMappableGeometryProperties& properties);
+		NonMappableGeometryProperties GetProperties() const;
 
 		void ShowTorusRatioWidget(bool show);
 
 	signals:
-		void SurfaceChanged();
-		void TorusRatioChanged();
+		void PropertiesChanged();
 
 	private:
-		RadioButtonGroupWidget* m_surfaceRadioButtonGroup;
+		SurfaceRadioButtonWidget* m_surfaceRadioButtonGroup;
 		QDoubleSpinBox* m_ratioSpinBox;
 		GroupBoxSingleWidget* m_ratioGroupBox;
 	};

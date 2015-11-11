@@ -20,7 +20,7 @@
 
 #include <QtWidgets/QTabWidget>
 #include "sourcedatacache.h"
-#include <QtCore/QItemSelectionModel>
+#include "sourcedataselectionmodel.h"
 #include <QtWidgets/QStatusBar>
 
 class SourceDataWidget : public QWidget
@@ -31,7 +31,7 @@ public:
 	SourceDataWidget(SynGlyphX::SourceDataCache::SharedPtr sourceDataCache, QWidget *parent = nullptr);
 	~SourceDataWidget();
 
-	void UpdateTables(const SynGlyphX::SourceDataCache::IndexSetMap& dataIndexes);
+	void UpdateTables(const SourceDataSelectionModel::IndexSetMap& dataIndexes);
 
 signals:
 	void WindowHidden();

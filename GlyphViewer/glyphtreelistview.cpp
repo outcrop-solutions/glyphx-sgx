@@ -1,6 +1,9 @@
 #include "glyphtreelistview.h"
 #include <QtWidgets/QMessageBox>
 #include "application.h"
+#include "glyphforestmodel.h"
+#include "allglyphpropertieswidget.h"
+#include "singlewidgetdialog.h"
 
 GlyphTreeListView::GlyphTreeListView(QWidget *parent)
 	: SynGlyphX::TreeView(parent),
@@ -10,11 +13,27 @@ GlyphTreeListView::GlyphTreeListView(QWidget *parent)
 	setDragEnabled(false);
 	SetScrollOnSelection(true);
 	setContextMenuPolicy(Qt::ActionsContextMenu);
+
+	QAction* openURLAction = m_actions.AddAction(tr("Open URL"), Qt::Key_U);
+	QObject::connect(openURLAction, &QAction::triggered, this, &GlyphTreeListView::OnOpenURLs);
+
+	QAction* propertiesAction = m_actions.AddAction(tr("Properties"));
+	QObject::connect(propertiesAction, &QAction::triggered, this, &GlyphTreeListView::OnPropertiesActivated);
+
+	m_actions.EnableActions(false);
+
+	addAction(SynGlyphX::SharedActionList::CreateSeparator(this));
+	addActions(m_actions);
 }
 
 GlyphTreeListView::~GlyphTreeListView()
 {
 
+}
+
+const SynGlyphX::SharedActionList& GlyphTreeListView::GetSharedActions() const {
+
+	return m_actions;
 }
 
 void GlyphTreeListView::SetItemFocusSelectionModel(SynGlyphX::ItemFocusSelectionModel* itemFocusSelectionModel) {
@@ -52,4 +71,34 @@ QItemSelectionModel::SelectionFlags GlyphTreeListView::selectionCommand(const QM
 	}
 
 	return selectionFlags;
+}
+
+void GlyphTreeListView::EnableActions(const QItemSelection& selected) {
+
+	m_actions.EnableActions(!selected.empty());
+}
+
+void GlyphTreeListView::OnOpenURLs() {
+
+	SynGlyphXANTz::GlyphForestModel* forestModel = dynamic_cast<SynGlyphXANTz::GlyphForestModel*>(model());
+	forestModel->OpenURLs(selectionModel()->selectedIndexes());
+}
+
+void GlyphTreeListView::OnPropertiesActivated() {
+
+	const QModelIndexList& selectedItems = selectionModel()->selectedIndexes();
+	if (!selectedItems.empty()) {
+
+		const QModelIndex& index = selectedItems.back();
+		SynGlyphXANTz::GlyphForestModel* forestModel = dynamic_cast<SynGlyphXANTz::GlyphForestModel*>(model());
+		SynGlyphX::Glyph glyph = forestModel->GetGlyphAtIndex(index);
+
+		SynGlyphX::AllGlyphPropertiesWidget* glyphPropertiesWidget = new SynGlyphX::AllGlyphPropertiesWidget(false, SynGlyphX::VisualGlyphPropertiesWidget::ShowOnBottom, this);
+		glyphPropertiesWidget->SetWidgetFromGlyph(glyph, forestModel->rowCount(index), true);
+		glyphPropertiesWidget->SetReadOnly(true);
+
+		SynGlyphX::SingleWidgetDialog dialog(QDialogButtonBox::Ok, glyphPropertiesWidget, this);
+		dialog.setWindowTitle(tr("Glyph Properties"));
+		dialog.exec();
+	}
 }

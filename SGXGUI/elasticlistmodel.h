@@ -15,37 +15,43 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef SYNGLYPHX_FILEREPLACEDIALOG_H
-#define SYNGLYPHX_FILEREPLACEDIALOG_H
+#ifndef SYNGLYPHX_ELASTICLISTMODEL_H
+#define SYNGLYPHX_ELASTICLISTMODEL_H
 
-#include "sgxglyphgui_global.h"
-#include <QtWidgets/QDialog>
-#include "browselineedit.h"
+#include "sgxgui_global.h"
+#include <QtCore/QAbstractTableModel>
 
 namespace SynGlyphX {
 
-	class SGXGLYPHGUI_EXPORT ReplaceFilenameDialog : public QDialog
+	class SGXGUI_EXPORT ElasticListModel : public QAbstractTableModel
 	{
 		Q_OBJECT
 
 	public:
-		ReplaceFilenameDialog(const QString& oldFileName, const QString& acceptButtonText, QWidget *parent = 0);
-		~ReplaceFilenameDialog();
+		typedef std::pair<QVariant, unsigned long> DataWithCount;
+		typedef QList<DataWithCount> Data;
 
-		QString GetNewFilename() const;
+		static const int RawDataRole = Qt::UserRole;
 
-	public slots:
-		virtual void accept();
+		ElasticListModel(QObject *parent);
+		~ElasticListModel();
 
-	protected:
-		virtual bool IsNewFileValid() const;
+		void ResetData(const Data& data);
 
-		SynGlyphX::BrowseLineEdit* m_newDatasourceFileLineEdit;
+		virtual int rowCount(const QModelIndex& parent = QModelIndex()) const;
+		virtual int columnCount(const QModelIndex& parent = QModelIndex()) const;
+		virtual QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const;
+		virtual QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
+
+		static QString ConvertDoubleToRawString(double value);
+		static QString ConvertQVariantToRawString(const QVariant& value);
 
 	private:
-
+		QStringList m_rawData;
+		QStringList m_formattedData;
+		QList<qulonglong> m_counts;
 	};
 
 } //namespace SynGlyphX
 
-#endif // SYNGLYPHX_FILEREPLACEDIALOG_H
+#endif // SYNGLYPHX_ELASTICLISTMODEL_H

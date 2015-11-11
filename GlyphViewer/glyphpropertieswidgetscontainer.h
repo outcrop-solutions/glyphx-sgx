@@ -15,60 +15,42 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef SOURCEDATASELECTIONWIDGET_H
-#define SOURCEDATASELECTIONWIDGET_H
+#ifndef GLYPHPROPERTIESWIDGETSCONTAINER_H
+#define GLYPHPROPERTIESWIDGETSCONTAINER_H
 
 #include <QtWidgets/QWidget>
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QComboBox>
-#include <QtWidgets/QStackedLayout>
-#include <QtWidgets/QCheckBox>
-#include "sourcedatawidget.h"
-#include "singlewidgetdialog.h"
+#include <QtWidgets/QDockWidget>
+#include <QtWidgets/QStackedWidget>
 #include "glyphforestmodel.h"
-#include <unordered_map>
-#include "elasticlistswidget.h"
-#include "linkedwidgetsmanager.h"
-#include "itemfocusselectionmodel.h"
+#include <QtCore/QItemSelectionModel>
+#include "visualglyphpropertieswidget.h"
+#include "textglyphpropertieswidget.h"
 
-class SourceDataSelectionWidget : public QWidget
+class GlyphPropertiesWidgetsContainer : public QObject
 {
 	Q_OBJECT
 
 public:
-	SourceDataSelectionWidget(SynGlyphX::SourceDataCache::SharedPtr sourceDataCache, SynGlyphXANTz::GlyphForestModel* model, SynGlyphX::ItemFocusSelectionModel* selectionModel, QWidget *parent);
-	~SourceDataSelectionWidget();
+	GlyphPropertiesWidgetsContainer(SynGlyphXANTz::GlyphForestModel* model, QItemSelectionModel* selectionModel, QWidget *parent);
+	~GlyphPropertiesWidgetsContainer();
 
-	void SetupLinkedWidgets(LinkedWidgetsManager& linkedWidgets);
+	QStackedWidget* GetVisualProperitesWidget() const;
+	QStackedWidget* GetTextProperitesWidget() const;
 
 private slots:
-	void OnSourceWidgetWindowHidden();
 	void OnSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected);
-	void OnModelReset();
-	void OnComboBoxChanged(int current);
-	void OnElasticListsSelectionChanged(const QString& table, const SynGlyphX::SourceDataCache::ColumnValueData& selection);
-	void Clear();
 
 private:
-	typedef std::unordered_map<std::string, ElasticListsWidget*> NameWidgetMap;
+	void SelectWidgetsInStackedWidgets(unsigned int index);
 
-	void UpdateElasticListsAndSourceDataWidget(const QModelIndexList& selectedIndexes);
-	void UpdateElasticLists(const SynGlyphX::SourceDataCache::IndexSetMap& dataIndexes = SynGlyphX::SourceDataCache::IndexSetMap());
-	void ClearElasticLists();
-	void EnableButtons(bool enable);
+	QStackedWidget* m_visualPropertiesStackedWidget;
+	QStackedWidget* m_textPropertiesStackedWidget;
+
+	SynGlyphX::VisualGlyphPropertiesWidget* m_visualPropertiesWidget;
+	SynGlyphX::TextGlyphPropertiesWidget* m_textPropertiesWidget;
 
 	SynGlyphXANTz::GlyphForestModel* m_model;
-	SynGlyphX::ItemFocusSelectionModel* m_selectionModel;
-	QPushButton* m_sourceWidgetButton;
-	QPushButton* m_clearButton;
-	QScopedPointer<SourceDataWidget> m_sourceDataWindow;
-	QComboBox* m_tableComboBox;
-	QCheckBox* m_hideUnselectedTreesCheckbox;
-
-	QStackedLayout* m_elasticListsStackLayout;
-	NameWidgetMap m_elasticListWidgetsForEachTable;
-
-	SynGlyphX::SourceDataCache::SharedPtr m_sourceDataCache;
+	QItemSelectionModel* m_selectionModel;
 };
 
-#endif // SOURCEDATASELECTIONWIDGET_H
+#endif // GLYPHPROPERTIESWIDGETSCONTAINER_H

@@ -23,11 +23,15 @@
 #include "glyphgeometryinfo.h"
 #include "virtualtopologyinfo.h"
 
+Q_DECLARE_METATYPE(SynGlyphX::GlyphGeometryInfo::Shape)
+Q_DECLARE_METATYPE(SynGlyphX::VirtualTopologyInfo::Type)
+
 namespace SynGlyphX {
 
 	class SGXGLYPHGUI_EXPORT GlyphShapeComboBox : public QComboBox
 	{
 		Q_OBJECT
+		Q_PROPERTY(SynGlyphX::GlyphGeometryInfo::Shape value READ GetCurrentValue WRITE SetCurrentValue USER true)
 
 	public:
 		GlyphShapeComboBox(QWidget *parent);
@@ -43,6 +47,7 @@ namespace SynGlyphX {
 	class SGXGLYPHGUI_EXPORT VirtualTopologyComboBox : public QComboBox
 	{
 		Q_OBJECT
+		Q_PROPERTY(SynGlyphX::VirtualTopologyInfo::Type value READ GetCurrentValue WRITE SetCurrentValue USER true)
 
 	public:
 		VirtualTopologyComboBox(QWidget *parent);

@@ -15,15 +15,18 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef SingleGlyphRolesTableModel_H
-#define SingleGlyphRolesTableModel_H
+#ifndef GLYPHROLESTABLEMODEL_H
+#define GLYPHROLESTABLEMODEL_H
 
 #include <QtCore/QAbstractTableModel>
+#include <QtGui/QFont>
+#include <QtCore/QItemSelection>
 #include "datamappingglyphgraph.h"
 #include "datatransformmodel.h"
 #include "datamappingfunction.h"
+#include "nonmappablegeometryproperties.h"
 
-class SingleGlyphRolesTableModel : public QAbstractTableModel
+class GlyphRolesTableModel : public QAbstractTableModel
 {
 	Q_OBJECT
 
@@ -37,8 +40,13 @@ public:
 		NonMappable
 	};
 
-	SingleGlyphRolesTableModel(DataTransformModel* dataTransformModel, QObject *parent = nullptr);
-	~SingleGlyphRolesTableModel();
+	static const unsigned int s_propertyNameColumn = 0;
+	static const unsigned int s_valueColumn = 1;
+	static const unsigned int s_mappingDataColumn = 2;
+	static const unsigned int s_mappedFieldColumn = 3;
+
+	GlyphRolesTableModel(DataTransformModel* dataTransformModel, QObject *parent = nullptr);
+	~GlyphRolesTableModel();
 
 	//Functions from QAbstractItemModel that need to be implemented
 	virtual int columnCount(const QModelIndex& parent = QModelIndex()) const;
@@ -49,7 +57,7 @@ public:
 	virtual QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
 
 	SynGlyphX::DataTransformMapping::ConstSharedPtr GetDataTransformMapping() const;
-	bool IsCurrentGlyphRoot() const;
+	bool IsAnyCurrentGlyphRoot() const;
 	bool IsClear() const;
 
 	SynGlyphX::MappingFunctionData::ConstSharedPtr GetMappingFunction(int row) const;
@@ -57,26 +65,61 @@ public:
 
 	bool IsInputFieldCompatible(const SynGlyphX::InputField& inputField) const;
 
+	//bool DoesGlyphHaveAssociatedDatasoruceTable() const;
+	//const SynGlyphX::InputTable& GetAssociatedDatasourceTable() const;
+
+	DataTransformModel* GetSourceModel() const;
+
 public slots:
-	void SetMinMaxGlyph(const QModelIndex& index);
+	void SetSelectedGlyphTreeIndexes(const QModelIndexList& indexList);
 	void Clear();
 	void ClearInputBindings();
 
 private slots:
 	void OnSourceModelDataUpdated(const QModelIndex& topLeft, const QModelIndex& bottomRight, const QVector<int>& roles);
+	void OnAllDataUpdated();
 
 private:
+	QString GetPropertyHeader(const QModelIndex& index) const;
+	bool IsDataAtIndexDifferent(const QModelIndex& index) const;
+	QVariant GetEditData(const QModelIndex& index) const;
+	void DisconnectAllSignalsFromSourceModel();
 	PropertyType GetFieldType(int row) const;
 	SynGlyphX::MappingFunctionData::SharedPtr CreateNewMappingFunction(SynGlyphX::MappingFunctionData::Function function, PropertyType type) const;
 	const SynGlyphX::InputField GetInputField(SynGlyphX::InputField::HashID fieldID) const;
+	bool IsAnySelectedIndexWithinIndexes(const QModelIndex& topLeft, const QModelIndex& bottomRight) const;
+	void DetermineAssociatedInputTable();
 
-	boost::uuids::uuid m_glyphTreeID;
+	template<typename ValueType>
+	bool IsDataAtIndexDifferentFromNonMappableProperties(const QVariant& valueVariant, const QModelIndex& index) const;
+	
+	template<typename MappingPropertyType>
+	bool IsDataAtIndexDifferentFromGivenData(const QVariant& propVariant, const QModelIndex& index) const;
+
+	template<typename MappingPropertyType>
+	QVariant GetEditDataForType(const QVariant& propVariant, const QModelIndex& index) const;
+
+	template<typename MappingPropertyType>
+	bool SetMappingFunctionEditData(const QVariant& propVariant, PropertyType propertyType, const QModelIndex& index) const;
+
+	template<typename MappingPropertyType>
+	bool SetSingleValueEditData(const QVariant& propVariant, const QModelIndex& index) const;
+
+	template<typename MappingPropertyType>
+	bool SetMinMaxValueEditData(const QVariant& propVariant, const QModelIndex& index) const;
+
+	QVariant GetEditDataForTextMappingProperty(const QVariant& propVariant, const QModelIndex& index) const;
+
 	QStringList m_propertyHeaders;
 	QStringList m_columnHeaders;
 	DataTransformModel* m_dataTransformModel;
 
-	QPersistentModelIndex m_selectedDataTransformModelIndex;
-	QMetaObject::Connection m_dataChangedConnection;
+	bool m_isAnySelectedGlyphRoot;
+	boost::optional<SynGlyphX::InputTable> m_associatedInputTable;
+	QList<QPersistentModelIndex> m_selectedDataTransformModelIndexes;
+	std::vector<QMetaObject::Connection> m_sourceModelConnections;
+
+	QFont m_headerFont;
 };
 
-#endif // SingleGlyphRolesTableModel_H
+#endif // GLYPHROLESTABLEMODEL_H

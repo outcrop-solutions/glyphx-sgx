@@ -21,8 +21,9 @@
 #include "sgxgui_global.h"
 #include <QtWidgets/QFrame>
 #include <QtWidgets/QLabel>
-#include <QtWidgets/QTableWidget>
+#include <QtWidgets/QTableView>
 #include <set>
+#include "elasticlistmodel.h"
 
 namespace SynGlyphX {
 
@@ -31,9 +32,6 @@ namespace SynGlyphX {
 		Q_OBJECT
 
 	public:
-		typedef std::pair<QString, QString> DataWithCount;
-		typedef QList<DataWithCount> Data;
-
 		static const int MaximumNumberOfRowsShown;
 
 		ElasticListWidget(QWidget *parent);
@@ -41,9 +39,9 @@ namespace SynGlyphX {
 
 		void SetTitle(const QString& title);
 		QString GetTitle() const;
-		void SetData(const Data& data);
+		void SetData(const ElasticListModel::Data& data);
 
-		const std::set<QString>& GetSelectedData() const;
+		const std::set<QString>& GetSelectedRawData() const;
 
 	signals:
 		void SelectionChanged();
@@ -53,12 +51,12 @@ namespace SynGlyphX {
 
 	private:
 		void ResizeTable();
-		QTableWidgetItem* CreateTableWidgetItem(const QString& text) const;
 
-		std::set<QString> m_selectedData;
+		std::set<QString> m_selectedRawData;
 		
 		QLabel* m_title;
-		QTableWidget* m_list;
+		QTableView* m_dataAndCountView;
+		ElasticListModel* m_model;
 	};
 
 } //namespace SynGlyphX

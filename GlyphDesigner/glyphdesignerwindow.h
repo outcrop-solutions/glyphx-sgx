@@ -61,7 +61,6 @@ private:
 
     QMenu* m_fileMenu;
     QMenu* m_editMenu;
-    QMenu* m_viewMenu;
     QMenu* m_glyphMenu;
 	QMenu* m_toolsMenu;
 

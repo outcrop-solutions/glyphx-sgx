@@ -65,7 +65,12 @@ namespace SynGlyphX {
 
 		QPixmap pixmap(size);
 		pixmap.fill(color);
-		return QIcon(pixmap);
+		QIcon icon;
+		icon.addPixmap(pixmap, QIcon::Normal);
+		icon.addPixmap(pixmap, QIcon::Disabled);
+		icon.addPixmap(pixmap, QIcon::Active);
+		icon.addPixmap(pixmap, QIcon::Selected);
+		return icon;
 	}
 
 	void ColorButton::SetColorFromMenu(const QColor& color) {

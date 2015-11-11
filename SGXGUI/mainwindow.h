@@ -30,11 +30,12 @@ namespace SynGlyphX {
         Q_OBJECT
 
     public:
-        MainWindow(QWidget *parent = 0);
+		MainWindow(unsigned int stateVersion, QWidget *parent = 0);
         ~MainWindow();
 
     protected slots:
         void SwitchBetweenFullAndNormalScreen();
+		void RestoreOriginalLayout();
 
     protected:
 		virtual void showEvent(QShowEvent* event);
@@ -45,13 +46,14 @@ namespace SynGlyphX {
 
         virtual bool LoadRecentFile(const QString& filename) = 0;
 
+		void SaveOriginalState();
         void UpdateRecentFileList();
         void UpdateFilenameWindowTitle(const QString& title);
 		void ClearCurrentFile();
         void SetCurrentFile(const QString& filename);
         QAction* CreateMenuAction(QMenu* menu, const QString& title, QKeySequence shortcut = QKeySequence());
         void CreateHelpMenu();
-        void CreateFullScreenAction(QMenu* menu);
+        void CreateViewMenu();
 
 		QString GetFileNameOpenDialog(const QString& settingKey = "", const QString& caption = "", const QString& defaultDir = "", const QString& filter = "");
 		QStringList GetFileNamesOpenDialog(const QString& settingKey = "", const QString& caption = "", const QString& defaultDir = "", const QString& filter = "");
@@ -60,11 +62,14 @@ namespace SynGlyphX {
 
         QList<QAction*> m_recentFileActions;
         QString m_currentFilename;
+		QMenu* m_viewMenu;
         QMenu* m_helpMenu;
         QAction* m_fullScreenAction;
 		QAction* m_aboutBoxAction;
 
 		QString m_glyphTemplatesDirectory;
+
+		QByteArray m_originalState;
 
     private slots:
         void OnRecentFileSelected();
@@ -73,6 +78,7 @@ namespace SynGlyphX {
 
 	private:
 		bool m_needToReadSettings;
+		unsigned int m_stateVersion;
 
 		static const QString s_copyright;
 		static const QString s_fileDialogSettingsGroup;

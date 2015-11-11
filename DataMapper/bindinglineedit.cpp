@@ -4,23 +4,28 @@
 #include <QtWidgets/QMenu>
 #include "inputfieldmimedata.h"
 #include "sourcedatamanager.h"
-#include <QtSql/QSqlRecord>
-#include <QtSql/QSqlQuery>
+#include <QtWidgets/QHBoxLayout>
 
-BindingLineEdit::BindingLineEdit(SingleGlyphRolesTableModel* model, QWidget *parent, SynGlyphX::MappingFunctionData::Input acceptedInputTypes)
-	: QLineEdit(parent),
+BindingLineEdit::BindingLineEdit(const GlyphRolesTableModel* model, QWidget *parent, SynGlyphX::MappingFunctionData::Input acceptedInputTypes)
+	: QWidget(parent),
 	m_model(model),
 	m_acceptedInputTypes(acceptedInputTypes)
 {
-	setReadOnly(true);
+	m_lineEdit = new QLineEdit(this);
+	m_lineEdit->setContextMenuPolicy(Qt::NoContextMenu);
+	m_lineEdit->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
+	m_lineEdit->setReadOnly(true);
+
+	QHBoxLayout* mainLayout = new QHBoxLayout(this);
+	mainLayout->addWidget(m_lineEdit);
+
+	setLayout(mainLayout);
+
 	setAcceptDrops(true);
 
 	m_clearAction = new QAction(tr("Clear Input Field"), this);
 	m_clearAction->setEnabled(false);
 	QObject::connect(m_clearAction, &QAction::triggered, this, &BindingLineEdit::Clear);
-
-	//m_useInputFieldMinMaxActon = new QAction(tr("Set Min/Max To Input Field Min/Max"), this);
-	//m_useInputFieldMinMaxActon->setEnabled(false);
 }
 
 BindingLineEdit::~BindingLineEdit()
@@ -46,11 +51,11 @@ void BindingLineEdit::SetInputField(const SynGlyphX::InputField& inputfield) {
 			text += ":" + QString::fromStdWString(inputfield.GetTable());
 		}
 		text += ":" + QString::fromStdWString(inputfield.GetField());
-		setText(text);
+		m_lineEdit->setText(text);
 	}
 	else {
 
-		setText("");
+		m_lineEdit->clear();
 	}
 
 	m_clearAction->setEnabled(m_inputField.IsValid());

@@ -21,16 +21,18 @@
 #include <QtWidgets/QMainWindow>
 #include "glyphtreelistview.h"
 #include "mainwindow.h"
-#include "datatransformmapping.h"
+#include "datamappingmodel.h"
 #include "glyphforestmodel.h"
 #include "antzforestwidget.h"
 #include "cachemanager.h"
 #include "glyphvieweroptions.h"
 #include "sourcedatacache.h"
-#include "sourcedataselectionwidget.h"
+#include "multitableelasticlistswidget.h"
 #include "pseudotimefilterwidget.h"
 #include "linkedwidgetsmanager.h"
 #include "itemfocusselectionmodel.h"
+#include "antzcsvwriter.h"
+#include "glyphpropertieswidgetscontainer.h"
 
 class GlyphViewerWindow : public SynGlyphX::MainWindow
 {
@@ -60,7 +62,8 @@ private:
 	void LoadVisualization(const QString& filename);
 	void LoadANTzCompatibilityVisualization(const QString& filename);
 	void LoadDataTransform(const QString& filename);
-	void LoadFilesIntoModel(const QStringList& csvFiles, const QStringList& baseImageFilenames);
+	void ValidateDataMappingFile(const QString& filename);
+	void LoadFilesIntoModel(const SynGlyphXANTz::ANTzCSVWriter::FilenameList& filesToLoad, const QStringList& baseImageFilenames);
 	void CreateMenus();
 	void CreateDockWidgets();
 	void EnableLoadedVisualizationDependentActions(bool enable);
@@ -68,16 +71,16 @@ private:
 	void ClearAllData();
 	void CreateANTzWidget(const QGLFormat& format);
 	GlyphViewerOptions CollectOptions();
+	bool DoesVisualizationNeedToBeRecreated(const SynGlyphX::DataTransformMapping& mapping) const;
 
 	QMenu* m_fileMenu;
-	QMenu* m_viewMenu;
 	QMenu* m_toolsMenu;
 	QAction* m_stereoAction;
 	QAction* m_showAnimation;
 	QAction* m_showTagsAction;
 	QList<QAction*> m_loadedVisualizationDependentActions;
 
-	SynGlyphX::DataTransformMapping::SharedPtr m_mapping;
+	SynGlyphX::DataMappingModel* m_mappingModel;
 	CacheManager m_cacheManager;
 	bool m_isStereoSupported;
 	bool m_showErrorFromTransform;
@@ -88,8 +91,10 @@ private:
 	SynGlyphX::ItemFocusSelectionModel* m_glyphForestSelectionModel;
 	SynGlyphXANTz::ANTzForestWidget* m_antzWidget;
 	GlyphTreeListView* m_treeView;
+	GlyphPropertiesWidgetsContainer* m_glyphPropertiesWidgetContainer;
 	SynGlyphX::SourceDataCache::SharedPtr m_sourceDataCache;
-	SourceDataSelectionWidget* m_sourceDataSelectionWidget;
+	MultiTableElasticListsWidget* m_sourceDataSelectionWidget;
+	SourceDataSelectionModel* m_sourceDataSelectionModel;
 	PseudoTimeFilterWidget* m_pseudoTimeFilterWidget;
 };
 

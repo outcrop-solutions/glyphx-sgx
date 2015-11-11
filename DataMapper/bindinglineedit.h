@@ -20,17 +20,17 @@
 
 #include <QtWidgets/QLineEdit>
 #include "inputbinding.h"
-#include "singleglyphrolestablemodel.h"
+#include "glyphrolestablemodel.h"
 #include "datamappingfunction.h"
+#include "inputfieldmimedata.h"
 
-class BindingLineEdit : public QLineEdit
+class BindingLineEdit : public QWidget
 {
 	Q_OBJECT
-
 	Q_PROPERTY(SynGlyphX::InputField value READ GetInputField WRITE SetInputField USER true)
 
 public:
-	BindingLineEdit(SingleGlyphRolesTableModel* model, QWidget *parent = 0, SynGlyphX::MappingFunctionData::Input acceptedInputTypes = SynGlyphX::MappingFunctionData::Input::All);
+	BindingLineEdit(const GlyphRolesTableModel* model, QWidget *parent = 0, SynGlyphX::MappingFunctionData::Input acceptedInputTypes = SynGlyphX::MappingFunctionData::Input::All);
 	~BindingLineEdit();
 
 	const SynGlyphX::InputField& GetInputField() const;
@@ -51,11 +51,11 @@ protected:
 	virtual void contextMenuEvent(QContextMenuEvent* event);
 
 private:
-	SingleGlyphRolesTableModel* m_model;
+	const GlyphRolesTableModel* m_model;
 	SynGlyphX::InputField m_inputField;
 	SynGlyphX::MappingFunctionData::Input m_acceptedInputTypes;
 	QAction* m_clearAction;
-	//QAction* m_useInputFieldMinMaxActon;
+	QLineEdit* m_lineEdit;
 };
 
 #endif // BINDINGLINEEDIT_H

@@ -29,22 +29,24 @@
 #include "newmappingdefaultswidget.h"
 #include "singleglyphviewoptionswidget.h"
 #include "changedatasourcefiledialog.h"
+#include "changeimagefiledialog.h"
 
 DataMapperWindow::DataMapperWindow(QWidget *parent)
-    : SynGlyphX::MainWindow(parent),
+    : SynGlyphX::MainWindow(0, parent),
 	m_baseObjectsView(nullptr),
 	m_glyphTreesView(nullptr),
 	m_dataSourceStats(nullptr),
 	m_dataBindingWidget(nullptr),
-	m_SingleGlyphRolesTableModel(nullptr),
+	m_glyphRolesTableModel(nullptr),
 	m_dataTransformModel(nullptr),
 	m_minMaxGlyph3DWidget(nullptr),
-	m_baseObjectsModel(nullptr)
+	m_baseObjectsModel(nullptr),
+	m_dataSourcesView(nullptr)
 {
 	QSettings settings;
 	settings.beginGroup("ANTzExport");
-	m_antzExportDirectory = settings.value("default", SynGlyphX::Application::applicationDirPath() + QDir::separator() + "ANTzTemplate").toString();
-	m_antzzSpaceExportDirectory = settings.value("zSpace", SynGlyphX::Application::applicationDirPath() + QDir::separator() + "ANTzzSpaceTemplate").toString();
+	m_antzExportDirectories[SynGlyphXANTz::ANTzCSVWriter::OutputPlatform::Windows] = settings.value("default", SynGlyphX::Application::applicationDirPath() + QDir::separator() + "ANTzTemplate").toString();
+	m_antzExportDirectories[SynGlyphXANTz::ANTzCSVWriter::OutputPlatform::WindowsZSpace] = settings.value("zSpace", SynGlyphX::Application::applicationDirPath() + QDir::separator() + "ANTzzSpaceTemplate").toString();
 	settings.endGroup();
 
 	m_dataTransformModel = new DataTransformModel(this);
@@ -52,14 +54,13 @@ DataMapperWindow::DataMapperWindow(QWidget *parent)
 	QObject::connect(m_dataTransformModel, &DataTransformModel::rowsInserted, this, [&, this](const QModelIndex& parent, int first, int last){ setWindowModified(true); });
 	QObject::connect(m_dataTransformModel, &DataTransformModel::rowsRemoved, this, [&, this](const QModelIndex& parent, int first, int last){ setWindowModified(true); });
 	
-	m_SingleGlyphRolesTableModel = new SingleGlyphRolesTableModel(m_dataTransformModel, this);
-	QObject::connect(m_SingleGlyphRolesTableModel, &SingleGlyphRolesTableModel::dataChanged, this, [&, this](const QModelIndex& topLeft, const QModelIndex& bottomRight){ setWindowModified(true); });
+	m_glyphRolesTableModel = new GlyphRolesTableModel(m_dataTransformModel, this);
 
 	CreateMenus();
     CreateDockWidgets();
 
-	QObject::connect(m_glyphTreesView, &GlyphTreesView::SelectionChangedSourceModel, this, &DataMapperWindow::OnGlyphTreesViewSelectionChanged);
-	QObject::connect(m_glyphTreesView->GetClearSelectedInputBindingsAction(), &QAction::triggered, m_SingleGlyphRolesTableModel, &SingleGlyphRolesTableModel::ClearInputBindings);
+	QObject::connect(m_glyphTreesView, &GlyphTreesView::SelectionChangedSourceModel, m_glyphRolesTableModel, &GlyphRolesTableModel::SetSelectedGlyphTreeIndexes);
+	QObject::connect(m_glyphTreesView->GetClearSelectedInputBindingsAction(), &QAction::triggered, m_glyphRolesTableModel, &GlyphRolesTableModel::ClearInputBindings);
 
 	CreateCenterWidget();
 
@@ -70,7 +71,7 @@ DataMapperWindow::DataMapperWindow(QWidget *parent)
 	SynGlyphXANTz::ANTzExportTransformer::SetLogoFilename(SynGlyphX::GlyphBuilderApplication::applicationDirPath() + QDir::separator() + "logo_export.png");
 	SynGlyphX::Transformer::SetDefaultImagesDirectory(SynGlyphX::GlyphBuilderApplication::GetDefaultBaseImagesLocation());
 
-	QObject::connect(m_baseObjectsModel, &SynGlyphX::RoleDataFilterProxyModel::dataChanged, m_dataBindingWidget, &DataBindingWidget::OnBaseObjectChanged);
+	QObject::connect(m_baseObjectsModel, &SynGlyphX::RoleDataFilterProxyModel::dataChanged, m_dataBindingWidget, &DataBindingTablesWidget::OnBaseObjectChanged);
 
 	QStringList commandLineArguments = SynGlyphX::Application::arguments();
 	if (commandLineArguments.size() > 1) {
@@ -91,6 +92,12 @@ void DataMapperWindow::CreateCenterWidget() {
 	
 	m_minMaxGlyph3DWidget = new DataMapping3DWidget(m_dataTransformModel, this);
 	m_minMaxGlyph3DWidget->SetModel(dynamic_cast<SynGlyphX::RoleDataFilterProxyModel*>(m_glyphTreesView->model()), m_glyphTreesView->selectionModel());
+	m_minMaxGlyph3DWidget->SetAllowMultiselect(true);
+
+	m_minMaxGlyph3DWidget->addActions(m_glyphTreesView->GetGlyphActions());
+	m_minMaxGlyph3DWidget->addAction(SynGlyphX::SharedActionList::CreateSeparator(this));
+	m_minMaxGlyph3DWidget->addActions(m_glyphTreesView->GetEditActions());
+	m_minMaxGlyph3DWidget->setContextMenuPolicy(Qt::ActionsContextMenu);
 
 	QObject::connect(m_showAnimation, &QAction::toggled, m_minMaxGlyph3DWidget, &DataMapping3DWidget::EnableAnimation);
 	
@@ -116,8 +123,8 @@ void DataMapperWindow::CreateMenus() {
     QObject::connect(saveAsProjectAction, &QAction::triggered, this, &DataMapperWindow::SaveAsProject);
 	m_projectDependentActions.push_back(saveAsProjectAction);
 
-	bool defaultANTzTemplateExists = DoesANTzTemplateExist(m_antzExportDirectory);
-	bool zSpaceANTzTemplateExists = DoesANTzTemplateExist(m_antzzSpaceExportDirectory);
+	bool defaultANTzTemplateExists = DoesANTzTemplateExist(m_antzExportDirectories[SynGlyphXANTz::ANTzCSVWriter::OutputPlatform::Windows]);
+	bool zSpaceANTzTemplateExists = DoesANTzTemplateExist(m_antzExportDirectories[SynGlyphXANTz::ANTzCSVWriter::OutputPlatform::WindowsZSpace]);
 
 	if (defaultANTzTemplateExists || zSpaceANTzTemplateExists) {
 
@@ -127,14 +134,14 @@ void DataMapperWindow::CreateMenus() {
 	if (defaultANTzTemplateExists) {
 
 		QAction* exportToANTzAction = CreateMenuAction(m_fileMenu, tr("Create Portable Visualization"));
-		QObject::connect(exportToANTzAction, &QAction::triggered, this, [this]{ ExportToANTz(m_antzExportDirectory); });
+		QObject::connect(exportToANTzAction, &QAction::triggered, this, [this]{ ExportToANTz(SynGlyphXANTz::ANTzCSVWriter::OutputPlatform::Windows); });
 		m_projectDependentActions.push_back(exportToANTzAction);
 	}
 
 	if (zSpaceANTzTemplateExists) {
 
 		QAction* exportTozSpaceANTzAction = CreateMenuAction(m_fileMenu, tr("Create Portable Visualization (zSpace)"));
-		QObject::connect(exportTozSpaceANTzAction, &QAction::triggered, this, [this]{ ExportToANTz(m_antzzSpaceExportDirectory); });
+		QObject::connect(exportTozSpaceANTzAction, &QAction::triggered, this, [this]{ ExportToANTz(SynGlyphXANTz::ANTzCSVWriter::OutputPlatform::WindowsZSpace); });
 		m_projectDependentActions.push_back(exportTozSpaceANTzAction);
 	}
 
@@ -144,6 +151,9 @@ void DataMapperWindow::CreateMenus() {
 
     QAction* exitAction = CreateMenuAction(m_fileMenu, tr("Exit"), QKeySequence::Quit);
     QObject::connect(exitAction, &QAction::triggered, this, &DataMapperWindow::close);
+
+	//Create Edit Menu
+	m_editMenu = menuBar()->addMenu(tr("Edit"));
 
     //Create Glyph Menu
     m_glyphMenu = menuBar()->addMenu(tr("Glyph"));
@@ -180,18 +190,14 @@ void DataMapperWindow::CreateMenus() {
 	QAction* addDataSourcesAction = m_datasourceMenu->addAction(tr("Add Data Sources"));
     QObject::connect(addDataSourcesAction, &QAction::triggered, this, &DataMapperWindow::AddDataSources);
 
-	//m_datasourceMenu->addSeparator();
+	m_datasourceMenu->addSeparator();
 
     //Create View Menu
-    m_viewMenu = menuBar()->addMenu(tr("View"));
+	CreateViewMenu();
 
 	m_showAnimation = m_viewMenu->addAction(tr("Show Animation"));
 	m_showAnimation->setCheckable(true);
 	m_showAnimation->setChecked(true);
-
-	m_viewMenu->addSeparator();
-
-    CreateFullScreenAction(m_viewMenu);
 
     m_viewMenu->addSeparator();
 
@@ -224,7 +230,10 @@ void DataMapperWindow::CreateDockWidgets() {
 	QDockWidget* leftDockWidgetGlyphTrees = new QDockWidget(tr("Glyph Trees"), this);
 
 	m_glyphTreesView = new GlyphTreesView(m_dataTransformModel, leftDockWidgetGlyphTrees);
-	m_glyphMenu->addActions(m_glyphTreesView->actions());
+	m_glyphMenu->addActions(m_glyphTreesView->GetGlyphActions());
+	m_editMenu->addActions(m_glyphTreesView->GetEditActions());
+
+	QObject::connect(m_glyphTreesView, &GlyphTreesView::UpdateStatusBar, statusBar(), &QStatusBar::showMessage);
 
     //Add Tree View to dock widget on left side
 	leftDockWidgetGlyphTrees->setWidget(m_glyphTreesView);
@@ -246,15 +255,25 @@ void DataMapperWindow::CreateDockWidgets() {
 	addDockWidget(Qt::LeftDockWidgetArea, leftDockWidgetBaseObjects);
 	m_viewMenu->addAction(leftDockWidgetBaseObjects->toggleViewAction());
 
-	QDockWidget* rightDockWidget = new QDockWidget(tr("Data Stats"), this);
-	m_dataSourceStats = new DataSourceStatsWidget(m_dataTransformModel, rightDockWidget);
+	QDockWidget* rightDockWidgetDataStats = new QDockWidget(tr("Data Stats"), this);
+	m_dataSourceStats = new DataSourceStatsWidget(m_dataTransformModel, rightDockWidgetDataStats);
 
-	rightDockWidget->setWidget(m_dataSourceStats);
-	addDockWidget(Qt::RightDockWidgetArea, rightDockWidget);
-	m_viewMenu->addAction(rightDockWidget->toggleViewAction());
+	rightDockWidgetDataStats->setWidget(m_dataSourceStats);
+	m_dataSourceStats->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
+	addDockWidget(Qt::RightDockWidgetArea, rightDockWidgetDataStats);
+	m_viewMenu->addAction(rightDockWidgetDataStats->toggleViewAction());
+
+	QDockWidget* rightDockWidgetDataSources = new QDockWidget(tr("Data Sources"), this);
+	m_dataSourcesView = new DataSourcesView(m_dataTransformModel, rightDockWidgetDataSources);
+	m_datasourceMenu->addActions(m_dataSourcesView->GetSharedActions());
+
+	rightDockWidgetDataSources->setWidget(m_dataSourcesView);
+	m_dataSourcesView->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Preferred);
+	addDockWidget(Qt::RightDockWidgetArea, rightDockWidgetDataSources);
+	m_viewMenu->addAction(rightDockWidgetDataSources->toggleViewAction());
 
 	QDockWidget* topDockWidget = new QDockWidget(tr("Data Bindings"), this);
-	m_dataBindingWidget = new DataBindingWidget(m_SingleGlyphRolesTableModel, topDockWidget);
+	m_dataBindingWidget = new DataBindingTablesWidget(m_glyphRolesTableModel, topDockWidget);
 	topDockWidget->setWidget(m_dataBindingWidget);
 	addDockWidget(Qt::TopDockWidgetArea, topDockWidget);
 	m_viewMenu->addAction(topDockWidget->toggleViewAction());
@@ -268,7 +287,7 @@ void DataMapperWindow::CreateNewProject() {
 
 	ClearAndInitializeDataMapping();
 	m_dataSourceStats->ClearTabs();
-	m_SingleGlyphRolesTableModel->Clear();
+	m_glyphRolesTableModel->Clear();
 
 	EnableProjectDependentActions(false);
 	ClearCurrentFile();
@@ -323,50 +342,23 @@ bool DataMapperWindow::LoadRecentFile(const QString& filename) {
 
 void DataMapperWindow::UpdateMissingFileDatasources(const QString& filename) {
 
-	SynGlyphX::DataTransformMapping mapping;
-	mapping.ReadFromFile(filename.toStdString());
+	SynGlyphX::DataTransformMapping::SharedPtr mapping = std::make_shared<SynGlyphX::DataTransformMapping>();
+	mapping->ReadFromFile(filename.toStdString());
 
-	SynGlyphX::DatasourceMaps datasourcesInUse = mapping.GetDatasources();
-	std::vector<SynGlyphX::DatasourceMaps::FileDatasourceMap::const_iterator> fileDatasourcesToBeUpdated;
-	for (SynGlyphX::DatasourceMaps::FileDatasourceMap::const_iterator datasource = datasourcesInUse.GetFileDatasources().begin(); datasource != datasourcesInUse.GetFileDatasources().end(); ++datasource) {
-
-		if (!datasource->second.CanDatasourceBeFound()) {
-
-			fileDatasourcesToBeUpdated.push_back(datasource);
-		}
-	}
+	std::vector<boost::uuids::uuid> fileDatasourcesToBeUpdated = mapping->GetFileDatasourcesWithInvalidFiles(false);
 
 	bool wasDataTransformUpdated = false;
 
 	if (!fileDatasourcesToBeUpdated.empty()) {
 
 		SynGlyphX::Application::restoreOverrideCursor();
-		for (int i = 0; i < fileDatasourcesToBeUpdated.size(); ++i) {
-
-			QString acceptButtonText = tr("Next");
-			if (i == fileDatasourcesToBeUpdated.size() - 1) {
-
-				acceptButtonText = tr("Ok");
-			}
-
-			SynGlyphX::ChangeDatasourceFileDialog dialog(fileDatasourcesToBeUpdated[i]->second, acceptButtonText, this);
-			if (dialog.exec() == QDialog::Accepted) {
-
-				mapping.UpdateDatasourceName(fileDatasourcesToBeUpdated[i]->first, dialog.GetNewFilename().toStdWString());
-				wasDataTransformUpdated = true;
-			}
-			else {
-
-				throw std::exception("One or more datasources weren't found.");
-			}
-		}
-
+		wasDataTransformUpdated = SynGlyphX::ChangeDatasourceFileDialog::UpdateDatasourceFiles(fileDatasourcesToBeUpdated, mapping, this);
 		SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
 	}
 
 	if (wasDataTransformUpdated) {
 
-		mapping.WriteToFile(filename.toStdString());
+		mapping->WriteToFile(filename.toStdString());
 	}
 }
 
@@ -389,13 +381,17 @@ bool DataMapperWindow::LoadDataTransform(const QString& filename) {
 
 		UpdateMissingFileDatasources(filename);
 
+		QObject::disconnect(m_modelResetConnection);
+
 		m_dataTransformModel->LoadDataTransformFile(filename);
-		m_dataSourceStats->RebuildStatsViews();
 		m_glyphTreesView->SelectLastGlyphTreeRoot();
 		SelectFirstBaseObject();
+
+		m_modelResetConnection = QObject::connect(m_dataTransformModel, &DataTransformModel::modelReset, this, [&, this](){ setWindowModified(true); });
 	}
 	catch (const std::exception& e) {
 
+		m_dataTransformModel->ClearAndReset();
 		SynGlyphX::Application::restoreOverrideCursor();
 		QMessageBox::critical(this, tr("Failed To Open Project"), tr("Failed to open project.  Error: ") + e.what(), QMessageBox::Ok);
 		return false;
@@ -508,7 +504,7 @@ void DataMapperWindow::AddDataSources() {
 			}
 
 			newDBID = m_dataTransformModel->AddFileDatasource(fileDatasourceType, datasource.toStdWString());
-			SynGlyphX::Datasource::TableSet tables;
+			SynGlyphX::Datasource::TableNames tables;
 			const SynGlyphX::Datasource& newDatasource = m_dataTransformModel->GetDataMapping()->GetDatasources().GetFileDatasources().at(newDBID);
 
 			if (newDatasource.CanDatasourceHaveMultipleTables()) {
@@ -553,24 +549,38 @@ void DataMapperWindow::AddDataSources() {
 	}
 }
 
-void DataMapperWindow::ExportToANTz(const QString& templateDir) {
+void DataMapperWindow::ExportToANTz(SynGlyphXANTz::ANTzCSVWriter::OutputPlatform platform) {
 
-	if (!m_dataTransformModel->GetDataMapping()->GetDatasources().HasDatasources()) {
+	SynGlyphX::DataTransformMapping::ConstSharedPtr dataMapping = m_dataTransformModel->GetDataMapping();
+
+	if (!dataMapping->GetDatasources().HasDatasources()) {
 
 		QMessageBox::critical(this, tr("Export to ANTz Error"), tr("Visualization has no datasources."));
 		return;
 	}
 
-	if (m_dataTransformModel->GetDataMapping()->GetGlyphGraphs().empty()) {
+	if (dataMapping->GetGlyphGraphs().empty()) {
 
 		QMessageBox::critical(this, tr("Export to ANTz Error"), tr("Visualization has no glyph templates."));
 		return;
 	}
 
-	if (!m_dataTransformModel->GetDataMapping()->DoesAtLeastOneGlyphGraphHaveBindingsOnPosition()) {
+	if (!dataMapping->DoesAtLeastOneGlyphGraphHaveBindingsOnPosition()) {
 
 		QMessageBox::critical(this, tr("Export to ANTz Error"), tr("Visualization has no glyph templates with bindings on Position X, Position Y, or Position Z."));
 		return;
+	}
+
+	std::vector<unsigned int> missingBaseObjects = dataMapping->GetFileBaseObjectsWithInvalidFiles();
+	if (!missingBaseObjects.empty()) {
+
+		if (SynGlyphX::ChangeImageFileDialog::UpdateImageFiles(missingBaseObjects, std::const_pointer_cast<SynGlyphX::DataTransformMapping>(dataMapping), this)) {
+
+			if (!m_currentFilename.isEmpty()) {
+
+				m_dataTransformModel->SaveDataTransformFile(m_currentFilename);
+			}
+		}
 	}
 
 	QString csvDirectory = QDir::toNativeSeparators(GetExistingDirectoryDialog("ANTzExportDir", tr("Select Directory For Portable Visualization"), ""));
@@ -593,7 +603,7 @@ void DataMapperWindow::ExportToANTz(const QString& templateDir) {
 	try {
 
 		//bool useOldANTzFilenames = !QFile::exists(templateDir + QDir::separator() + "usr" + QDir::separator() + "csv" + QDir::separator() + "antzglobals.csv");
-		SynGlyphXANTz::ANTzExportTransformer transformer(csvDirectory, templateDir, false);
+		SynGlyphXANTz::ANTzExportTransformer transformer(csvDirectory, m_antzExportDirectories[platform], platform, false);
 		transformer.Transform(*(m_dataTransformModel->GetDataMapping().get()));
 
 		SynGlyphX::Application::restoreOverrideCursor();
@@ -619,7 +629,7 @@ void DataMapperWindow::ExportToANTz(const QString& templateDir) {
 	}
 
 
-	statusBar()->showMessage("Data transform sucessfully exported to ANTz", 6000);
+	statusBar()->showMessage("Data transform successfully exported to ANTz", 6000);
 }
 
 void DataMapperWindow::AddBaseObject() {
@@ -829,18 +839,6 @@ void DataMapperWindow::ClearAndInitializeDataMapping() {
 	m_dataTransformModel->SetDefaults(m_newMappingDefaults);
 	m_dataTransformModel->SetSceneProperties(m_newMappingSceneProperties);
 	SelectFirstBaseObject();
-}
-
-void DataMapperWindow::OnGlyphTreesViewSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected) {
-
-	if (selected.empty()) {
-
-		m_SingleGlyphRolesTableModel->Clear();
-	}
-	else {
-
-		m_SingleGlyphRolesTableModel->SetMinMaxGlyph(selected.indexes()[0]);
-	}
 }
 
 void DataMapperWindow::SelectFirstBaseObject() {

@@ -1,10 +1,14 @@
 #include "glyphtreesview.h"
-#include "glyphpropertieswidget.h"
+#include "visualglyphpropertieswidget.h"
 #include "singlewidgetdialog.h"
 #include "roledatafilterproxymodel.h"
+#include <QtWidgets/QFileDialog>
+#include <QtCore/QSettings>
+#include "datamappingglyphfile.h"
+#include "antzcsvwriter.h"
 
 GlyphTreesView::GlyphTreesView(DataTransformModel* sourceModel, QWidget *parent)
-	: SynGlyphX::TreeView(parent),
+	: SynGlyphX::TreeEditView(parent),
 	m_sourceModel(sourceModel)
 {
 	SynGlyphX::RoleDataFilterProxyModel* filterModel = new SynGlyphX::RoleDataFilterProxyModel(this);
@@ -19,28 +23,27 @@ GlyphTreesView::GlyphTreesView(DataTransformModel* sourceModel, QWidget *parent)
 	setDragDropMode(QAbstractItemView::InternalMove);
 	setDefaultDropAction(Qt::MoveAction);
 	SetScrollOnSelection(true);
-	setSelectionMode(QAbstractItemView::SingleSelection);
+	SetPreventMouseFromCausingUnselect(true);
+	setSelectionMode(QAbstractItemView::ExtendedSelection);
 	setHeaderHidden(true);
 	setContextMenuPolicy(Qt::ContextMenuPolicy::ActionsContextMenu);
 
-	m_addChildrenAction = m_sharedActions.AddAction(tr("Add Children"));
+	m_addChildrenAction = m_glyphActions.AddAction(tr("Add Children"));
 	QObject::connect(m_addChildrenAction, &QAction::triggered, this, &GlyphTreesView::AddChildren);
 
-	m_sharedActions.AddSeparator();
+	m_exportGlyphToFileAction = m_glyphActions.AddAction(tr("Export Glyph Template To File"));
+	QObject::connect(m_exportGlyphToFileAction, &QAction::triggered, this, &GlyphTreesView::ExportGlyphToFile);
 
-	m_removeAction = m_sharedActions.AddAction(tr("Remove"), QKeySequence::Delete);
-	QObject::connect(m_removeAction, &QAction::triggered, this, &GlyphTreesView::RemoveGlyph);
+	m_glyphActions.AddSeparator();
 
-	m_removeChildrenAction = m_sharedActions.AddAction(tr("Remove Children"));
-	QObject::connect(m_removeChildrenAction, &QAction::triggered, this, &GlyphTreesView::RemoveChildren);
+	m_clearSelectedInputBindingsAction = m_glyphActions.AddAction(tr("Clear Input Bindings"));
 
-	m_sharedActions.AddSeparator();
+	m_glyphActions.EnableActions(false);
 
-	m_clearSelectedInputBindingsAction = m_sharedActions.AddAction(tr("Clear Input Bindings"));
-
-	m_sharedActions.EnableActions(false);
 	addAction(SynGlyphX::SharedActionList::CreateSeparator(this));
-	addActions(m_sharedActions);
+	addActions(m_glyphActions);
+	addAction(SynGlyphX::SharedActionList::CreateSeparator(this));
+	addActions(m_editActions);
 }
 
 GlyphTreesView::~GlyphTreesView()
@@ -48,9 +51,9 @@ GlyphTreesView::~GlyphTreesView()
 
 }
 
-const SynGlyphX::SharedActionList& GlyphTreesView::GetSharedActions() {
+const SynGlyphX::SharedActionList& GlyphTreesView::GetGlyphActions() {
 
-	return m_sharedActions;
+	return m_glyphActions;
 }
 
 const QAction* const GlyphTreesView::GetClearSelectedInputBindingsAction() const {
@@ -60,51 +63,43 @@ const QAction* const GlyphTreesView::GetClearSelectedInputBindingsAction() const
 
 void GlyphTreesView::selectionChanged(const QItemSelection& selected, const QItemSelection& deselected) {
 
-	SynGlyphX::TreeView::selectionChanged(selected, deselected);
-	EnableActions();
+	SynGlyphX::TreeEditView::selectionChanged(selected, deselected);
+	
 	SynGlyphX::RoleDataFilterProxyModel* filterModel = dynamic_cast<SynGlyphX::RoleDataFilterProxyModel*>(model());
-	emit SelectionChangedSourceModel(filterModel->mapSelectionToSource(selected), filterModel->mapSelectionToSource(deselected));
+	emit SelectionChangedSourceModel(filterModel->mapSelectionToSource(selectionModel()->selection()).indexes());
 }
 
-void GlyphTreesView::EnableActions() {
+void GlyphTreesView::EnableActions(const QItemSelection& selection) {
 
-	const QModelIndexList& selected = selectionModel()->selectedIndexes();
-	if (!selected.isEmpty()) {
+	const QModelIndexList& selectedIndexes = selection.indexes();
+	if (!selectedIndexes.isEmpty()) {
+
+		bool areMultipleObjectsSelected = (selectedIndexes.count() > 1);
+		bool doesClipboardHaveGlyph = DoesClipboardHaveGlyph();
+
+		m_cutAction->setEnabled(!areMultipleObjectsSelected);
+		m_copyAction->setEnabled(!areMultipleObjectsSelected);
+		m_copyWithChildrenAction->setEnabled(!areMultipleObjectsSelected);
+		m_pasteAction->setEnabled(!areMultipleObjectsSelected && doesClipboardHaveGlyph);
+		m_pasteAsChildAction->setEnabled(!areMultipleObjectsSelected && doesClipboardHaveGlyph);
+
+		m_deleteAction->setEnabled(true);
+		m_deleteChildrenAction->setEnabled(model()->rowCount(selectedIndexes.front()) > 0);
 
 		m_addChildrenAction->setEnabled(true);
-		m_removeAction->setEnabled(true);
-		m_removeChildrenAction->setEnabled(model()->rowCount(selected.front()) > 0);
 		m_clearSelectedInputBindingsAction->setEnabled(true);
+		m_exportGlyphToFileAction->setEnabled(true);
 	}
 	else {
 
-		m_sharedActions.EnableActions(false);
-	}
-}
-
-void GlyphTreesView::RemoveGlyph() {
-
-	const QModelIndexList& selected = selectionModel()->selectedIndexes();
-	if (!selected.isEmpty()) {
-
-		const QModelIndex& index = selected.front();
-		model()->removeRow(index.row(), index.parent());
-	}
-}
-
-void GlyphTreesView::RemoveChildren() {
-
-	const QModelIndexList& selected = selectionModel()->selectedIndexes();
-	if (!selected.isEmpty()) {
-		
-		const QModelIndex& parent = selected.front();
-		model()->removeRows(0, model()->rowCount(parent), parent);
+		m_glyphActions.EnableActions(false);
+		m_editActions.EnableActions(false);
 	}
 }
 
 void GlyphTreesView::AddChildren() {
 
-	SynGlyphX::GlyphPropertiesWidget* singleGlyphWidget = new SynGlyphX::GlyphPropertiesWidget(SynGlyphX::GlyphPropertiesWidget::ShowOnTop | SynGlyphX::GlyphPropertiesWidget::EnabledSpinBox, this);
+	SynGlyphX::VisualGlyphPropertiesWidget* singleGlyphWidget = new SynGlyphX::VisualGlyphPropertiesWidget(true, SynGlyphX::VisualGlyphPropertiesWidget::ShowOnTop | SynGlyphX::VisualGlyphPropertiesWidget::EnabledSpinBox, this);
 	singleGlyphWidget->SetWidgetFromGlyph(SynGlyphX::Glyph::s_defaultGlyph, true);
 
 	SynGlyphX::SingleWidgetDialog dialog(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, singleGlyphWidget, this);
@@ -125,7 +120,73 @@ void GlyphTreesView::AddChildren() {
 	}
 }
 
+void GlyphTreesView::ExportGlyphToFile() {
+
+	const QModelIndexList& selectedItems = selectionModel()->selectedIndexes();
+	if (selectedItems.isEmpty()) {
+
+		return;
+	}
+
+	QSettings settings;
+	settings.beginGroup("ExportGlyphFile");
+	QString glyphFilename = QFileDialog::getSaveFileName(this, tr("Export Glyph To File"), settings.value("LastDir", QDir::currentPath()).toString(), "SynGlyphX Glyph Template Files (*.sgt *.csv)");
+	if (!glyphFilename.isEmpty()) {		
+
+		SynGlyphX::RoleDataFilterProxyModel* filterModel = dynamic_cast<SynGlyphX::RoleDataFilterProxyModel*>(model());
+
+		SynGlyphX::DataMappingGlyphGraph::SharedPtr glyphGraph = std::make_shared<SynGlyphX::DataMappingGlyphGraph>(m_sourceModel->GetSubgraph(filterModel->mapToSource(selectedItems.front()), true));
+		glyphGraph->ClearAllInputBindings();
+
+		if (glyphFilename.endsWith(".sgt")) {
+
+			SynGlyphX::DataMappingGlyphFile glyphFile(glyphGraph);
+			glyphFile.WriteToFile(glyphFilename.toStdString());
+		}
+		else {
+
+			bool writeMaxGlyph = true;
+			SynGlyphX::GlyphGraph::ConstSharedVector trees;
+			if (writeMaxGlyph) {
+
+				trees.push_back(glyphGraph->GetMaxGlyphTree());
+			}
+			else {
+
+				trees.push_back(glyphGraph->GetMinGlyphTree());
+			}
+
+			SynGlyphXANTz::ANTzCSVWriter& csvWriter = SynGlyphXANTz::ANTzCSVWriter::GetInstance();
+			csvWriter.Write({ { glyphFilename.toStdString() } }, trees, std::vector<SynGlyphXANTz::ANTzGrid>(), SynGlyphXANTz::ANTzCSVWriter::OutputPlatform::Windows);
+		}
+
+		settings.setValue("LastDir", glyphFilename);
+
+		emit UpdateStatusBar("Glyph successfully saved to a file", 3000);
+	}
+
+	settings.endGroup();
+}
+
 void GlyphTreesView::SelectLastGlyphTreeRoot() {
 
 	selectionModel()->select(model()->index(m_sourceModel->GetDataMapping()->GetGlyphGraphs().size() - 1, 0), QItemSelectionModel::ClearAndSelect);
+}
+
+SynGlyphX::DataMappingGlyphGraph GlyphTreesView::GetGraphForCopyToClipboard(const QModelIndex& index, bool includeChildren) {
+
+	SynGlyphX::RoleDataFilterProxyModel* filterModel = dynamic_cast<SynGlyphX::RoleDataFilterProxyModel*>(model());
+	return m_sourceModel->GetSubgraph(filterModel->mapToSource(index), includeChildren);
+}
+
+void GlyphTreesView::OverwriteGlyph(const QModelIndex& index, const SynGlyphX::DataMappingGlyphGraph& graph) {
+
+	SynGlyphX::RoleDataFilterProxyModel* filterModel = dynamic_cast<SynGlyphX::RoleDataFilterProxyModel*>(model());
+	m_sourceModel->UpdateGlyph(filterModel->mapToSource(index), graph);
+}
+
+void GlyphTreesView::AddGlyphsAsChildren(const QModelIndex& index, const SynGlyphX::DataMappingGlyphGraph& graph) {
+
+	SynGlyphX::RoleDataFilterProxyModel* filterModel = dynamic_cast<SynGlyphX::RoleDataFilterProxyModel*>(model());
+	m_sourceModel->AddChildGlyphGraph(filterModel->mapToSource(index), graph);
 }

@@ -8,7 +8,7 @@
 #include <QtCore/QSettings>
 #include <QtCore/QFileInfo>
 #include <QtCore/QDir>
-#include "glyphpropertieswidget.h"
+#include "visualglyphpropertieswidget.h"
 #include "antzcsvwriter.h"
 #include "application.h"
 #include "modalglyphwidget.h"
@@ -17,7 +17,7 @@
 #include "singlewidgetdialog.h"
 
 GlyphDesignerWindow::GlyphDesignerWindow(QWidget *parent)
-    : SynGlyphX::MainWindow(parent),
+    : SynGlyphX::MainWindow(0, parent),
     m_treeView(nullptr),
 	m_glyphTreeModel(nullptr),
 	m_3dView(nullptr),
@@ -121,16 +121,12 @@ void GlyphDesignerWindow::CreateMenus() {
 	m_editMenu->addSeparator();
 
     //Create View Menu
-    m_viewMenu = menuBar()->addMenu(tr("View"));
+	CreateViewMenu();
 
 	m_showAnimation = m_viewMenu->addAction(tr("Show Animation"));
 	m_showAnimation->setCheckable(true);
 	m_showAnimation->setChecked(true);
 	QObject::connect(m_showAnimation, &QAction::toggled, m_3dView, &SynGlyphXANTz::ANTzSingleGlyphTreeWidget::EnableAnimation);
-
-	m_viewMenu->addSeparator();
-
-    CreateFullScreenAction(m_viewMenu);
 
     m_viewMenu->addSeparator();
 
@@ -196,12 +192,15 @@ void GlyphDesignerWindow::ExportToCSV() {
     QString saveFile = GetFileNameSaveDialog("SaveDir", tr("Save Glyph Tree To CSV"), "", tr("CSV Files (*.csv)"));
     if (!saveFile.isEmpty()) {
 
+		SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
         if (m_glyphTreeModel->SaveToCSV(saveFile)) {
 
+			SynGlyphX::Application::restoreOverrideCursor();
             statusBar()->showMessage("File successfully saved", 3000);
         }
         else {
 
+			SynGlyphX::Application::restoreOverrideCursor();
             QString title = "Save File Failed";
             QMessageBox::warning(this, title, "Failed to save file");
         }

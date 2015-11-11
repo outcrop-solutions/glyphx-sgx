@@ -33,9 +33,12 @@ namespace SynGlyphX {
 		~TreeView();
 
 		void SetScrollOnSelection(bool scrollOnSelection);
+		void SetPreventMouseFromCausingUnselect(bool prevent);
 
 	protected:
 		virtual void selectionChanged(const QItemSelection& selected, const QItemSelection& deselected);
+		virtual void mouseReleaseEvent(QMouseEvent* event);
+		virtual void EnableActions(const QItemSelection& selected) = 0;
 
 	private slots:
 		void OnExpandAll();
@@ -48,6 +51,7 @@ namespace SynGlyphX {
 		QAction* m_expandAllAction;
 		QAction* m_collapseAllAction;
 		bool m_scrollOnSelection;
+		bool m_preventMouseFromCausingUnselect;
 	};
 
 } //namespace SynGlyphX

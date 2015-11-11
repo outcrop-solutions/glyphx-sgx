@@ -10,18 +10,23 @@
 #include "exception_handler.h"
 #include <boost/filesystem.hpp>
 #include <QtCore/QStandardPaths>
+#include <QtWidgets/QMessageBox>
 
 int main(int argc, char *argv[])
 {
-    SynGlyphX::GlyphBuilderApplication::Setup("Glyph Builder - Data Mapper", "0.7.12");
+    SynGlyphX::GlyphBuilderApplication::Setup("Glyph Builder - Data Mapper", "0.7.19");
 	SynGlyphX::GlyphBuilderApplication a(argc, argv);
 
 	const QString dumpPath = QStandardPaths::writableLocation(QStandardPaths::HomeLocation) + "/Minidumps";
-	std::wstring pathAsStr = (const wchar_t*)dumpPath.utf16();
+	std::wstring pathAsStr = dumpPath.toStdWString();
 	boost::filesystem::path dir(pathAsStr);
-	if (boost::filesystem::create_directory(dir))
-	{
-		std::cerr << "Directory Created: " << std::endl;
+	try {
+
+		boost::filesystem::create_directory(dir);
+	}
+	catch (const std::exception& e) {
+
+		QMessageBox::critical(nullptr, SynGlyphX::GlyphBuilderApplication::tr("Minidump Failure"), SynGlyphX::GlyphBuilderApplication::tr("Failed to create directory for crash reporting") + e.what());
 	}
 
 	google_breakpad::ExceptionHandler *pHandler = new google_breakpad::ExceptionHandler(
@@ -36,15 +41,17 @@ int main(int argc, char *argv[])
 
 	SynGlyphX::GlyphBuilderApplication::SetupIcons(QIcon(":SGXGUI/Resources/synglyphx_x.ico"));
 
-	if (!SynGlyphX::LicensingDialog::CheckLicense()) {
-
-		return 0;
-	}
-
+	qRegisterMetaType<SynGlyphX::GlyphGeometryInfo::Surface>("GlyphGeometryInfo::Surface");
+	qRegisterMetaType<SynGlyphX::NonMappableGeometryProperties>("NonMappableGeometryProperties");
 	qRegisterMetaType<SynGlyphX::ColorMinDiff>("ColorMinDiff");
 	qRegisterMetaType<SynGlyphX::IntMinDiff>("IntMinDiff");
 	qRegisterMetaType<SynGlyphX::DoubleMinDiff>("DoubleMinDiff");
 	qRegisterMetaType<SynGlyphX::InputField>("InputField");
+
+	if (!SynGlyphX::LicensingDialog::CheckLicense()) {
+
+		return 0;
+	}
 
     //Setup and show the splash screen
     QPixmap pixmap(":SGXGUI/Resources/synglyphx_splash.png");

@@ -5,18 +5,23 @@
 #include "licensingdialog.h"
 #include "exception_handler.h"
 #include <QtCore/QStandardPaths>
+#include <QtWidgets/QMessageBox>
 
 int main(int argc, char *argv[])
 {
-	SynGlyphX::GlyphBuilderApplication::Setup("Glyph Builder - Glyph Viewer", "0.7.12");
+	SynGlyphX::GlyphBuilderApplication::Setup("Glyph Builder - Glyph Viewer", "0.7.19");
 	SynGlyphX::GlyphBuilderApplication a(argc, argv);
 
 	const QString dumpPath = QStandardPaths::writableLocation(QStandardPaths::HomeLocation) + "/Minidumps";
-	std::wstring pathAsStr = (const wchar_t*)dumpPath.utf16();
+	std::wstring pathAsStr = dumpPath.toStdWString();
 	boost::filesystem::path dir(pathAsStr);
-	if (boost::filesystem::create_directory(dir))
-	{
-		std::cerr << "Directory Created: " << std::endl;
+	try {
+
+		boost::filesystem::create_directory(dir);
+	}
+	catch (const std::exception& e) {
+
+		QMessageBox::critical(nullptr, SynGlyphX::GlyphBuilderApplication::tr("Minidump Failure"), SynGlyphX::GlyphBuilderApplication::tr("Failed to create directory for crash reporting") + e.what());
 	}
 
 	google_breakpad::ExceptionHandler *pHandler = new google_breakpad::ExceptionHandler(

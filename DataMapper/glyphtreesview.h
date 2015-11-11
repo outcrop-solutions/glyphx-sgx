@@ -18,11 +18,11 @@
 #ifndef GLYPHTREESVIEW_H
 #define GLYPHTREESVIEW_H
 
-#include "treeview.h"
+#include "treeeditview.h"
 #include "sharedactionlist.h"
 #include "datatransformmodel.h"
 
-class GlyphTreesView : public SynGlyphX::TreeView
+class GlyphTreesView : public SynGlyphX::TreeEditView
 {
 	Q_OBJECT
 
@@ -30,33 +30,34 @@ public:
 	GlyphTreesView(DataTransformModel* sourceModel, QWidget *parent = 0);
 	~GlyphTreesView();
 
-	const SynGlyphX::SharedActionList& GetSharedActions();
+	const SynGlyphX::SharedActionList& GetGlyphActions();
 
 	const QAction* const GetClearSelectedInputBindingsAction() const;
 
 	void SelectLastGlyphTreeRoot();
 
 signals:
-	void SelectionChangedSourceModel(const QItemSelection& selected, const QItemSelection& deselected);
+	void SelectionChangedSourceModel(const QModelIndexList& selectedIndexes);
+	void UpdateStatusBar(const QString& message, int timeout);
 
 protected:
 	virtual void selectionChanged(const QItemSelection& selected, const QItemSelection& deselected);
-
+	virtual void EnableActions(const QItemSelection& selection);
+	virtual SynGlyphX::DataMappingGlyphGraph GetGraphForCopyToClipboard(const QModelIndex& index, bool includeChildren);
+	virtual void OverwriteGlyph(const QModelIndex& index, const SynGlyphX::DataMappingGlyphGraph& graph);
+	virtual void AddGlyphsAsChildren(const QModelIndex& index, const SynGlyphX::DataMappingGlyphGraph& graph);
+	
 private slots:
-	void RemoveGlyph();
-	void RemoveChildren();
 	void AddChildren();
+	void ExportGlyphToFile();
 
 private:
-	void EnableActions();
-
 	DataTransformModel* m_sourceModel;
 
-	SynGlyphX::SharedActionList m_sharedActions;
+	SynGlyphX::SharedActionList m_glyphActions;
 	QAction* m_addChildrenAction;
-	QAction* m_removeAction;
-	QAction* m_removeChildrenAction;
 	QAction* m_clearSelectedInputBindingsAction;
+	QAction* m_exportGlyphToFileAction;
 };
 
 #endif // GLYPHTREESVIEW_H

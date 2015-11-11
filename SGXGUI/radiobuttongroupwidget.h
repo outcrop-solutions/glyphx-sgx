@@ -37,6 +37,8 @@ namespace SynGlyphX {
 		int GetCheckedButton() const;
 		QString GetCheckedButtonLabel() const;
 
+		void SetButtonEnabled(int id, bool enabled);
+
 	signals:
 		void ButtonClicked(int id);
 

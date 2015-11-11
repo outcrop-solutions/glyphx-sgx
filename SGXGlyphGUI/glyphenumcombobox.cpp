@@ -3,8 +3,10 @@
 namespace SynGlyphX {
 
 	GlyphShapeComboBox::GlyphShapeComboBox(QWidget *parent)
-		: QComboBox(parent)
-	{
+		: QComboBox(parent) {
+	
+		//Set to the shape with the longest text name and add one additional character
+		setMinimumContentsLength(13);
 		for (auto shape : SynGlyphX::GlyphGeometryInfo::s_shapeNames.left) {
 
 			addItem(QString::fromStdWString(shape.second));
@@ -23,7 +25,9 @@ namespace SynGlyphX {
 
 	void GlyphShapeComboBox::SetCurrentValue(GlyphGeometryInfo::Shape value) {
 
+		blockSignals(true);
 		setCurrentText(QString::fromStdWString(SynGlyphX::GlyphGeometryInfo::s_shapeNames.left.at(value)));
+		blockSignals(false);
 	}
 
 	
@@ -49,6 +53,15 @@ namespace SynGlyphX {
 
 	void VirtualTopologyComboBox::SetCurrentValue(VirtualTopologyInfo::Type value) {
 
-		setCurrentText(QString::fromStdWString(SynGlyphX::VirtualTopologyInfo::s_virtualTopologyNames.left.at(value)));
+		blockSignals(true);
+		if (value == SynGlyphX::VirtualTopologyInfo::Type::Null) {
+
+			setCurrentText(QString::fromStdWString(SynGlyphX::VirtualTopologyInfo::s_virtualTopologyNames.left.at(SynGlyphX::VirtualTopologyInfo::Type::Circle)));
+		}
+		else {
+
+			setCurrentText(QString::fromStdWString(SynGlyphX::VirtualTopologyInfo::s_virtualTopologyNames.left.at(value)));
+		}
+		blockSignals(false);
 	}
 }

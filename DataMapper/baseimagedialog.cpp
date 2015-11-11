@@ -11,6 +11,7 @@
 #include "groupboxsinglewidget.h"
 #include "downloadedmapproperties.h"
 #include "userdefinedbaseimageproperties.h"
+#include "colorconverter.h"
 
 const BaseImageDialog::PresetMap BaseImageDialog::s_presets = 
 	{ PositionOrientation(SynGlyphX::Vector3({ { 0.0, 0.0, 0.0 } }), SynGlyphX::Vector3({ { 0.0, 0.0, 0.0 } })),
@@ -117,7 +118,23 @@ BaseImageDialog::BaseImageDialog(bool enablePositionAndOrientation, bool showDow
 	SynGlyphX::GroupBoxSingleWidget* worldSizeGroupBox = new SynGlyphX::GroupBoxSingleWidget(tr("World Space Size"), m_worldSizeWidget, this);
 	worldSizeLayout->addWidget(worldSizeGroupBox);
 
-	worldSizeLayout->addStretch(1);
+	QGroupBox* gridLinesGroupBox = new QGroupBox(tr("Grid Lines"), this);
+	QHBoxLayout* gridLinesBoxLayout = new QHBoxLayout(this);
+
+	m_showGridLinesCheckBox = new QCheckBox(tr("Show"), this);
+	m_showGridLinesCheckBox->setChecked(false);
+	gridLinesBoxLayout->addWidget(m_showGridLinesCheckBox);
+	QLabel* colorLabel = new QLabel(tr("Color:"), this);
+	gridLinesBoxLayout->addWidget(colorLabel);
+	m_gridLinesColorButton = new SynGlyphX::ColorButton(this);
+	m_gridLinesColorButton->setEnabled(false);
+	m_gridLinesColorButton->SetColor(Qt::black);
+	gridLinesBoxLayout->addWidget(m_gridLinesColorButton);
+	QObject::connect(m_showGridLinesCheckBox, &QCheckBox::toggled, m_gridLinesColorButton, &SynGlyphX::ColorButton::setEnabled);
+
+	gridLinesGroupBox->setLayout(gridLinesBoxLayout);
+
+	worldSizeLayout->addWidget(gridLinesGroupBox);
 
 	layout->addLayout(worldSizeLayout);
 
@@ -205,6 +222,9 @@ void BaseImageDialog::SetBaseImage(const SynGlyphX::BaseImage& baseImage) {
 
 	SynGlyphX::BaseImage::Size worldSize = baseImage.GetWorldSize();
 	m_worldSizeWidget->SetSize(QSizeF(worldSize[0], worldSize[1]));
+
+	m_showGridLinesCheckBox->setChecked(baseImage.GetShowGridLines());
+	m_gridLinesColorButton->SetColor(SynGlyphX::ColorConverter::GlyphColor2QColor(baseImage.GetGridLinesColor()));
 }
 
 SynGlyphX::BaseImage BaseImageDialog::GetBaseImage() const {
@@ -234,6 +254,9 @@ SynGlyphX::BaseImage BaseImageDialog::GetBaseImage() const {
 	worldSize[0] = worldSizeF.width();
 	worldSize[1] = worldSizeF.height();
 	newBaseImage.SetWorldSize(worldSize);
+
+	newBaseImage.SetShowGridLines(m_showGridLinesCheckBox->isChecked());
+	newBaseImage.SetGridLinesColor(SynGlyphX::ColorConverter::QColor2GlyphColor(m_gridLinesColorButton->GetColor()));
 
 	return newBaseImage;
 }

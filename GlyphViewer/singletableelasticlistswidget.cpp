@@ -1,8 +1,8 @@
-#include "elasticlistswidget.h"
+#include "singletableelasticlistswidget.h"
 
-const unsigned int ElasticListsWidget::Spacing = 2;
+const unsigned int SingleTableElasticListsWidget::Spacing = 2;
 
-ElasticListsWidget::ElasticListsWidget(SynGlyphX::SourceDataCache::SharedPtr sourceDataCache, const QString& table, QWidget *parent)
+SingleTableElasticListsWidget::SingleTableElasticListsWidget(SynGlyphX::SourceDataCache::SharedPtr sourceDataCache, const QString& table, QWidget *parent)
 	: SynGlyphX::VerticalScrollArea(parent),
 	m_sourceDataCache(sourceDataCache),
 	m_table(table)
@@ -18,7 +18,7 @@ ElasticListsWidget::ElasticListsWidget(SynGlyphX::SourceDataCache::SharedPtr sou
 		elasticListWidget->SetTitle(column);
 		layout->addWidget(elasticListWidget);
 		m_elasticListMap[column.toStdString()] = elasticListWidget;
-		QObject::connect(elasticListWidget, &SynGlyphX::ElasticListWidget::SelectionChanged, this, &ElasticListsWidget::OnElasticWidgetSelectionChanged);
+		QObject::connect(elasticListWidget, &SynGlyphX::ElasticListWidget::SelectionChanged, this, &SingleTableElasticListsWidget::OnElasticWidgetSelectionChanged);
 	}
 
 	layout->addStretch(1);
@@ -30,35 +30,33 @@ ElasticListsWidget::ElasticListsWidget(SynGlyphX::SourceDataCache::SharedPtr sou
 	//PopulateElasticLists();
 }
 
-ElasticListsWidget::~ElasticListsWidget()
+SingleTableElasticListsWidget::~SingleTableElasticListsWidget()
 {
 
 }
 
-void ElasticListsWidget::PopulateElasticLists(const SynGlyphX::IndexSet& indexSet) {
+void SingleTableElasticListsWidget::PopulateElasticLists(const SynGlyphX::IndexSet& indexSet) {
 
 	for (auto column : m_elasticListMap) {
 
-		SynGlyphX::ElasticListWidget::Data elasticListData;
+		SynGlyphX::ElasticListModel::Data elasticListData;
 		SynGlyphX::SharedSQLQuery distinctValuesQuery = m_sourceDataCache->CreateDistinctValueAndCountQuery(m_table, QString::fromStdString(column.first), indexSet);
 		distinctValuesQuery->exec();
 		while (distinctValuesQuery->next()) {
 
-			QString columnValue = distinctValuesQuery->value(0).toString();
-			QString countForColumnValue = distinctValuesQuery->value(1).toString();
-			elasticListData.push_back(std::pair<QString, QString>(columnValue, countForColumnValue));
+			elasticListData.push_back(SynGlyphX::ElasticListModel::DataWithCount(distinctValuesQuery->value(0), distinctValuesQuery->value(1).toULongLong()));
 		}
 
 		column.second->SetData(elasticListData);
 	}
 }
 
-void ElasticListsWidget::OnElasticWidgetSelectionChanged() {
+void SingleTableElasticListsWidget::OnElasticWidgetSelectionChanged() {
 
 	SynGlyphX::SourceDataCache::ColumnValueData newSelection;
 	for (auto elasticListWidget : m_elasticListMap) {
 
-		const std::set<QString>& columnSelection = elasticListWidget.second->GetSelectedData();
+		const std::set<QString>& columnSelection = elasticListWidget.second->GetSelectedRawData();
 		if (!columnSelection.empty()) {
 
 			newSelection[QString::fromStdString(elasticListWidget.first)] = columnSelection;

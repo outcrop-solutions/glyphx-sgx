@@ -18,11 +18,11 @@
 #ifndef GLYPHTREEVIEW_H
 #define GLYPHTREEVIEW_H
 
-#include "treeview.h"
+#include "treeeditview.h"
 #include "minmaxglyphtreemodel.h"
 #include "sharedactionlist.h"
 
-class GlyphTreeView : public SynGlyphX::TreeView
+class GlyphTreeView : public SynGlyphX::TreeEditView
 {
     Q_OBJECT
 
@@ -31,38 +31,33 @@ public:
     ~GlyphTreeView();
 
 	const SynGlyphX::SharedActionList& GetGlyphActions() const;
-	const SynGlyphX::SharedActionList& GetEditActions() const;
 
 public slots:
 	void AddChildren();
 
 protected:
-    virtual void selectionChanged(const QItemSelection& selected, const QItemSelection& deselected);
+	virtual SynGlyphX::DataMappingGlyphGraph GetGraphForCopyToClipboard(const QModelIndex& index, bool includeChildren);
+	virtual void OverwriteGlyph(const QModelIndex& index, const SynGlyphX::DataMappingGlyphGraph& graph);
+	virtual void AddGlyphsAsChildren(const QModelIndex& index, const SynGlyphX::DataMappingGlyphGraph& graph);
+	virtual void EnableActions(const QItemSelection& selected);
+	virtual QModelIndexList GetSelectedIndexListForDeletion() const;
+	virtual bool DoInputBindingsNeedToBeClearedBeforePaste();
+	virtual QModelIndex GetNewSelectedIndexAfterDelete() const;
+	virtual bool CanIndexBeDeleted(const QModelIndex& index) const;
 
 private slots:
-	void DeleteSelected();
-	void DeleteChildrenFromSelected();
 	void PropertiesActivated();
 
 private:
 	void CreateContextMenuActions();
 	void CreatePropertiesDialog();
 	void CreateAddChildrenDialog();
-	void EnableActions();
 
 	SynGlyphXANTz::MinMaxGlyphTreeModel* m_model;
 	SynGlyphXANTz::MinMaxGlyphTreeModel::GlyphType m_glyphTreeType;
 
 	SynGlyphX::SharedActionList m_glyphActions;
-	SynGlyphX::SharedActionList m_editActions;
 
-	//Edit menu actions
-	QAction* m_cutAction;
-	QAction* m_copyAction;
-	QAction* m_pasteAction;
-	QAction* m_pasteAsChildAction;
-	QAction* m_deleteAction;
-	QAction* m_deleteChildrenAction;
 	QAction* m_propertiesAction;
 
 	//Glyph menu actions

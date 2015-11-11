@@ -15,29 +15,33 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef SYNGLYPHX_CHANGEIMAGEFILEDIALOG_H
-#define SYNGLYPHX_CHANGEIMAGEFILEDIALOG_H
+#ifndef SYNGLYPHX_ALLGLYPHPROPERTIESWIDGET
+#define SYNGLYPHX_ALLGLYPHPROPERTIESWIDGET
 
 #include "sgxglyphgui_global.h"
-#include "replacefilenamedialog.h"
+#include <QtWidgets/QTabWidget>
+#include "glyph.h"
+#include "visualglyphpropertieswidget.h"
+#include "textglyphpropertieswidget.h"
 
 namespace SynGlyphX {
 
-	class SGXGLYPHGUI_EXPORT ChangeImageFileDialog : public ReplaceFilenameDialog
+	class SGXGLYPHGUI_EXPORT AllGlyphPropertiesWidget : public QTabWidget
 	{
 		Q_OBJECT
 
 	public:
-		ChangeImageFileDialog(const QString& oldFileName, const QString& acceptButtonText, QWidget *parent = 0);
-		~ChangeImageFileDialog();
+		AllGlyphPropertiesWidget(bool addLockToScaleWidget, VisualGlyphPropertiesWidget::ChildOptions childOptions = VisualGlyphPropertiesWidget::Invisible, QWidget *parent = nullptr);
+		~AllGlyphPropertiesWidget();
 
-	protected:
-		virtual bool IsNewFileValid() const;
+		void SetReadOnly(bool readOnly);
+		void SetWidgetFromGlyph(const Glyph& glyph, unsigned int numberOfChildren, bool isNotRootNode = true);
 
 	private:
-		QString m_fileExtension;
+		VisualGlyphPropertiesWidget* m_visualPropertiesWidget;
+		TextGlyphPropertiesWidget* m_textPropertiesWidget;
 	};
 
 } //namespace SynGlyphX
 
-#endif // SYNGLYPHX_CHANGEIMAGEFILEDIALOG_H
+#endif // SYNGLYPHX_ALLGLYPHPROPERTIESWIDGET

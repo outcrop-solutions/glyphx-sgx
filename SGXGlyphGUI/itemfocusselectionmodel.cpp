@@ -13,6 +13,12 @@ namespace SynGlyphX {
 
 	}
 
+	void ItemFocusSelectionModel::ClearAll() {
+
+		ClearFocus();
+		clearSelection();
+	}
+
 	void ItemFocusSelectionModel::ClearFocus() {
 
 		if (!m_focusList.empty()) {
@@ -65,7 +71,7 @@ namespace SynGlyphX {
 
 					m_focusList.removeOne(index);
 				}
-				if (oldLastIndex != m_focusList.back()) {
+				if ((m_focusList.empty()) || (oldLastIndex != m_focusList.back())) {
 
 					focusChanged = true;
 				}

@@ -1,11 +1,13 @@
 #include "treeview.h"
 #include "sharedactionlist.h"
+#include <QtGui/QMouseEvent>
 
 namespace SynGlyphX {
 
 	TreeView::TreeView(QWidget *parent)
 		: QTreeView(parent),
-		m_scrollOnSelection(false)
+		m_scrollOnSelection(false),
+		m_preventMouseFromCausingUnselect(false)
 	{
 		m_expandAllAction = new QAction(tr("Expand All"), this);
 		m_expandAllAction->setEnabled(false);
@@ -28,6 +30,11 @@ namespace SynGlyphX {
 		m_scrollOnSelection = scrollOnSelection;
 	}
 
+	void TreeView::SetPreventMouseFromCausingUnselect(bool prevent) {
+
+		m_preventMouseFromCausingUnselect = prevent;
+	}
+
 	void TreeView::selectionChanged(const QItemSelection& selected, const QItemSelection& deselected) {
 
 		bool isSelectedNotEmpty = !selected.empty();
@@ -44,6 +51,8 @@ namespace SynGlyphX {
 				scrollTo(index);
 			}
 		}
+
+		EnableActions(selectionModel()->selection());
 	}
 
 	void TreeView::OnExpandAll() {
@@ -78,6 +87,17 @@ namespace SynGlyphX {
 
 			SetExpandedRecursive(itemModel->index(i, 0, index), expand);
 		}
+	}
+
+	void TreeView::mouseReleaseEvent(QMouseEvent* event) {
+
+		//Prevent mouse from causing an unselect
+		if (m_preventMouseFromCausingUnselect && (event->button() == Qt::LeftButton) && (!indexAt(event->pos()).isValid())) {
+
+			return;
+		}
+
+		QTreeView::mouseReleaseEvent(event);
 	}
 
 } //namespace SynGlyphX

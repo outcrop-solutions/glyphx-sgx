@@ -37,10 +37,8 @@ namespace SynGlyphX {
 		setLayout(layout);
 
 		QObject::connect(m_geometryShapeComboBox, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, [this]{ emit GlyphPropertyUpdated(UpdateGeometry); });
-		QObject::connect(m_nonmappableGeometryWidget, &NonMappableGeometryWidget::SurfaceChanged, this, [this]{ emit GlyphPropertyUpdated(UpdateSurface); });
+		QObject::connect(m_nonmappableGeometryWidget, &NonMappableGeometryWidget::PropertiesChanged, this, [this]{ emit GlyphPropertyUpdated(UpdateSurface); emit GlyphPropertyUpdated(UpdateTorusRatio); });
 		QObject::connect(m_topologyComboBox, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, [this]{ emit GlyphPropertyUpdated(UpdateTopology); });
-		QObject::connect(m_nonmappableGeometryWidget, &NonMappableGeometryWidget::TorusRatioChanged, this, [this]{ emit GlyphPropertyUpdated(UpdateTorusRatio); });
-
 
 		QObject::connect(m_geometryShapeComboBox, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &GlyphStructureWidget::OnShapeComboBoxChanged);
 		m_nonmappableGeometryWidget->ShowTorusRatioWidget(false);
@@ -55,8 +53,9 @@ namespace SynGlyphX {
 
 		GlyphGeometry structure;
 		structure.SetGeometryShape(m_geometryShapeComboBox->GetCurrentValue());
-		structure.SetGeometrySurface(m_nonmappableGeometryWidget->GetSurface());
-		structure.SetTorusRatio(m_nonmappableGeometryWidget->GetTorusRatio());
+		NonMappableGeometryProperties properties = m_nonmappableGeometryWidget->GetProperties();
+		structure.SetGeometrySurface(properties.GetSurface());
+		structure.SetTorusRatio(properties.GetTorusRatio());
 
 		return structure;
 	}
@@ -72,7 +71,8 @@ namespace SynGlyphX {
 	void GlyphStructureWidget::SetWidgetFromGlyphGeometryAndTopology(const GlyphGeometry& structure, const VirtualTopology& virtualTopology) {
 
 		m_geometryShapeComboBox->SetCurrentValue(structure.GetGeometryShape());
-		m_nonmappableGeometryWidget->SetWidget(structure.GetGeometrySurface(), structure.GetTorusRatio());
+		m_nonmappableGeometryWidget->ShowTorusRatioWidget(structure.GetGeometryShape() == SynGlyphX::GlyphGeometryInfo::Torus);
+		m_nonmappableGeometryWidget->SetProperties(NonMappableGeometryProperties(structure.GetGeometrySurface(), structure.GetTorusRatio()));
 
 		m_topologyComboBox->SetCurrentValue(virtualTopology.GetType());
 	}

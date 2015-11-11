@@ -48,6 +48,7 @@ private:
 	std::stack<unsigned int> GetRowIndiciesFromStack(const QModelIndex& index) const;
 	QModelIndex GetModelIndexFromStack(std::stack<unsigned int> rows, const QAbstractItemModel* const model) const;
 	QModelIndex GetInternalModelIndex(const QModelIndex& externalIndex) const;
+	QModelIndexList GetValidExternalIndexes(const QModelIndexList& indexList) const;
 
 	DataTransformModel* m_dataTransformModel;
 

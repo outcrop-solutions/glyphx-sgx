@@ -7,10 +7,12 @@ namespace SynGlyphX {
 		: HorizontalFormWidget(parent)
 	{
 		m_minColorButton = new ColorButton(showAlphaInDialog, this);
+		m_minColorButton->setSizePolicy(QSizePolicy::Policy::MinimumExpanding, QSizePolicy::Policy::Fixed);
 		AddWidget(tr("Min:"), m_minColorButton);
 		QObject::connect(m_minColorButton, &ColorButton::ColorChanged, this, &ColorMinMaxWidget::OnUserUpdated);
 
 		m_maxColorButton = new ColorButton(showAlphaInDialog, this);
+		m_maxColorButton->setSizePolicy(QSizePolicy::Policy::MinimumExpanding, QSizePolicy::Policy::Fixed);
 		AddWidget(tr("Max:"), m_maxColorButton);
 		QObject::connect(m_maxColorButton, &ColorButton::ColorChanged, this, &ColorMinMaxWidget::OnUserUpdated);
 	}

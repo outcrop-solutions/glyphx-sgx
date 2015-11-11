@@ -46,45 +46,60 @@ void DataMapping3DWidget::ConnectExternalSelection() {
 
 void DataMapping3DWidget::OnInternalSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected) {
 
-	if (selected.empty() || !selected.indexes()[0].isValid()) {
+	if (m_internalSelectionModel->selection().empty()) {
 
 		m_externalSelectionModel->clear();
 		return;
 	}
 
-	std::stack<unsigned int> childPositions = GetRowIndiciesFromStack(selected.indexes()[0]);
-	childPositions.pop();
-	childPositions.push(m_glyphTreeIndex);
+	QItemSelection newSelection;
+	for (const QModelIndex& index : m_internalSelectionModel->selectedIndexes()) {
+
+		std::stack<unsigned int> childPositions = GetRowIndiciesFromStack(index);
+		childPositions.pop();
+		childPositions.push(m_glyphTreeIndex);
+
+		QModelIndex externalIndex = GetModelIndexFromStack(childPositions, m_externalModel);
+		newSelection.select(externalIndex, externalIndex);
+	}
 
 	QObject::disconnect(m_externalSelectionConnection);
-	m_externalSelectionModel->select(GetModelIndexFromStack(childPositions, m_externalModel), QItemSelectionModel::ClearAndSelect);
+	m_externalSelectionModel->select(newSelection, QItemSelectionModel::ClearAndSelect);
 	ConnectExternalSelection();
 }
 
 void DataMapping3DWidget::OnExternalSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected) {
 
-	if (selected.empty() || !selected.indexes()[0].isValid() || (selected.indexes()[0].data(DataTransformModel::DataTypeRole) != DataTransformModel::DataType::GlyphTrees)) {
+	QModelIndexList selectedIndexes = GetValidExternalIndexes(m_externalSelectionModel->selectedIndexes());
+	if (selectedIndexes.empty()) {
 
 		Clear();
 		return;
 	}
 
-	std::stack<unsigned int> childPositions = GetRowIndiciesFromStack(selected.indexes()[0]);
+	QItemSelection newSelection;
+	for (const QModelIndex& index : selectedIndexes) {
 
-	if (m_glyphTreeIndex != childPositions.top()) {
+		std::stack<unsigned int> childPositions = GetRowIndiciesFromStack(index);
 
-		m_glyphTreeIndex = childPositions.top();
-		SynGlyphX::DataTransformMapping::DataMappingGlyphGraphMap::const_iterator glyphTree = m_dataTransformModel->GetDataMapping()->GetGlyphGraphs().begin();
-		std::advance(glyphTree, m_glyphTreeIndex);
-		m_internalModel->SetMinMaxGlyphTree(std::make_shared<SynGlyphX::DataMappingGlyphGraph>(*glyphTree->second.get()));
+		if (m_glyphTreeIndex != childPositions.top()) {
+
+			m_glyphTreeIndex = childPositions.top();
+			SynGlyphX::DataTransformMapping::DataMappingGlyphGraphMap::const_iterator glyphTree = m_dataTransformModel->GetDataMapping()->GetGlyphGraphs().begin();
+			std::advance(glyphTree, m_glyphTreeIndex);
+			m_internalModel->SetMinMaxGlyphTree(std::make_shared<SynGlyphX::DataMappingGlyphGraph>(*glyphTree->second.get()));
+		}
+
+		//The top position will be the row of the glyph since the glyph tree view has multiple glyphs.  We don't need it anymore
+		childPositions.pop();
+		childPositions.push(0);
+
+		QModelIndex internalIndex = GetModelIndexFromStack(childPositions, m_internalModel);
+		newSelection.select(internalIndex, internalIndex);
 	}
 
-	//The top position will be the row of the glyph since the glyph tree view has multiple glyphs.  We don't need it anymore
-	childPositions.pop();
-	childPositions.push(0);
-
 	QObject::disconnect(m_internalSelectionConnection);
-	m_internalSelectionModel->select(GetModelIndexFromStack(childPositions, m_internalModel), QItemSelectionModel::ClearAndSelect);
+	m_internalSelectionModel->select(newSelection, QItemSelectionModel::ClearAndSelect);
 	ConnectInternalSelection();
 }
 
@@ -121,6 +136,11 @@ void DataMapping3DWidget::OnExternalDataChanged(const QModelIndex& topLeft, cons
 
 void DataMapping3DWidget::OnExternalRowsRemoved(const QModelIndex& parent, int first, int last) {
 
+	if (!parent.isValid() && (first != m_glyphTreeIndex)) {
+
+		return;
+	}
+
 	QObject::disconnect(m_internalSelectionConnection);
 	QModelIndex internalParent = GetInternalModelIndex(m_externalModel->mapToSource(parent));
 	m_internalModel->removeRows(first, last - first + 1, internalParent);
@@ -141,7 +161,8 @@ void DataMapping3DWidget::OnExternalRowsInserted(const QModelIndex& parent, int 
 			QModelIndex internalParent = GetModelIndexFromStack(childPositions, m_internalModel);
 			for (int i = first; i <= last; ++i) {
 
-				m_internalModel->AppendChild(internalParent, m_dataTransformModel->GetGlyph(m_dataTransformModel->index(i, 0, externalParentSource)));
+				//Need to make sure children of this index also get added
+				m_internalModel->AppendChildGraph(internalParent, m_dataTransformModel->GetSubgraph(m_dataTransformModel->index(i, 0, externalParentSource), true));
 			}
 		}
 	}
@@ -183,8 +204,10 @@ void DataMapping3DWidget::OnExternalModelReset() {
 
 void DataMapping3DWidget::Clear() {
 
+	QObject::disconnect(m_internalSelectionConnection);
 	m_glyphTreeIndex = -1;
 	m_internalModel->removeRow(0);
+	ConnectInternalSelection();
 }
 
 QModelIndex DataMapping3DWidget::GetInternalModelIndex(const QModelIndex& externalIndex) const {
@@ -196,4 +219,18 @@ QModelIndex DataMapping3DWidget::GetInternalModelIndex(const QModelIndex& extern
 		childPositions.push(0);
 	}
 	return GetModelIndexFromStack(childPositions, m_internalModel);
+}
+
+QModelIndexList DataMapping3DWidget::GetValidExternalIndexes(const QModelIndexList& indexList) const {
+
+	QModelIndexList validIndexList;
+	for (const QModelIndex& index : indexList) {
+
+		if (index.isValid() && (index.data(DataTransformModel::DataTypeRole) == DataTransformModel::DataType::GlyphTrees)) {
+
+			validIndexList.push_back(index);
+		}
+	}
+
+	return validIndexList;
 }

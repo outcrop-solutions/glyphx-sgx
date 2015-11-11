@@ -27,13 +27,15 @@ class DataTransformModel : public QAbstractItemModel
 	Q_OBJECT
 
 public:
-	static const int DataTypeRole = Qt::UserRole;
+	static const int UUIDRole = Qt::UserRole;
+	static const int DataTypeRole = UUIDRole + 1;
 
 	enum DataType {
 
 		GlyphTrees = 0,
 		BaseObjects = 1,
-		DataSources = 2
+		DataSources = 2,
+		FieldGroup = 3
 	};
 
 	enum PropertyRole {
@@ -51,7 +53,8 @@ public:
 		Transparency = Color + 1,
 		Tag = Transparency + 1,
 		Description = Tag + 1,
-		RotationRateX = Description + 1,
+		URL = Description + 1,
+		RotationRateX = URL + 1,
 		RotationRateY = RotationRateX + 1,
 		RotationRateZ = RotationRateY + 1,
 		VirtualTopology = RotationRateZ + 1,
@@ -90,10 +93,13 @@ public:
 	void AddGlyphFile(const QString& filename);
 	void AddGlyphTree(SynGlyphX::DataMappingGlyphGraph::SharedPtr glyphTree);
 	void UpdateGlyph(const QModelIndex& index, const SynGlyphX::DataMappingGlyph& newGlyph);
+	void UpdateGlyph(const QModelIndex& index, const SynGlyphX::DataMappingGlyphGraph& subgraph);
 	void UpdateGlyphGeometry(const QModelIndex& index, const SynGlyphX::DataMappingGlyphGeometry& structure);
 	void UpdateVirtualTopology(const QModelIndex& index, const SynGlyphX::DataMappingVirtualTopology& virtualTopology);
 	const SynGlyphX::DataMappingGlyph& GetGlyph(const QModelIndex& index) const;
+	SynGlyphX::DataMappingGlyphGraph GetSubgraph(const QModelIndex& index, bool includeChildren);
 	void AddChildGlyph(const QModelIndex& parent, const SynGlyphX::DataMappingGlyph& glyphTemplate, unsigned int numberOfChildren = 1);
+	void AddChildGlyphGraph(const QModelIndex& parent, const SynGlyphX::DataMappingGlyphGraph& graph);
 
 	void SetBaseObject(unsigned int position, const SynGlyphX::BaseImage& baseImage);
 	void AddBaseObject(const SynGlyphX::BaseImage& baseImage);
@@ -101,11 +107,14 @@ public:
 	boost::uuids::uuid AddFileDatasource(SynGlyphX::FileDatasource::SourceType type, const std::wstring& name);
 
 	//void SetInputField(const boost::uuids::uuid& treeID, SynGlyphX::DataMappingGlyphGraph::const_iterator& node, SynGlyphX::DataMappingGlyph::MappableField field, const SynGlyphX::InputField& inputfield);
-	void SetInputField(const boost::uuids::uuid& treeID, const QModelIndex& index, SynGlyphX::DataMappingGlyph::MappableField field, const SynGlyphX::InputField& inputfield);
+	void SetInputField(const QModelIndex& index, SynGlyphX::DataMappingGlyph::MappableField field, const SynGlyphX::InputField& inputfield);
 	//void ClearInputBinding(const boost::uuids::uuid& treeID, SynGlyphX::DataMappingGlyphGraph::const_iterator& node, SynGlyphX::DataMappingGlyph::MappableField field);
-	void ClearInputBinding(const boost::uuids::uuid& treeID, const QModelIndex& index, SynGlyphX::DataMappingGlyph::MappableField field);
+	void ClearInputBinding(const QModelIndex& index, SynGlyphX::DataMappingGlyph::MappableField field);
+	void ClearAllInputBindings(const QModelIndex& index);
 
-	void EnableTables(const boost::uuids::uuid& id, const SynGlyphX::Datasource::TableSet& tables, bool enable = true);
+	const SynGlyphX::DataMappingGlyphGraph::InputFieldMap& GetInputFieldsForTree(const QModelIndex& index) const;
+
+	void EnableTables(const boost::uuids::uuid& id, const SynGlyphX::Datasource::TableNames& tables, bool enable = true);
 
 	void ResetDataMappingID();
 
@@ -116,14 +125,24 @@ public:
 
 	const boost::uuids::uuid& GetCacheConnectionID() const;
 
+	const SynGlyphX::DataTransformMapping::FieldGroupMap& GetFieldGroupMap() const;
+	void UpdateFieldGroup(const SynGlyphX::DataTransformMapping::FieldGroupName& groupName, const SynGlyphX::FieldGroup& fieldGroup);
+	void RemoveFieldGroup(const SynGlyphX::DataTransformMapping::FieldGroupName& groupName);
+
+	const SynGlyphX::SourceDataManager& GetSourceDataManager() const;
+
 private:
 	void Clear();
 	QString GetCacheLocationForID(const boost::uuids::uuid& id);
 	QVariant GetGlyphData(const QModelIndex& index) const;
 	bool IsParentlessRowInDataType(DataType type, int row) const;
+	unsigned int GetFirstIndexForDataType(DataType type) const;
 	DataType GetDataType(const QModelIndex& index) const;
 	boost::uuids::uuid GetTreeId(int row) const;
 	boost::uuids::uuid GetTreeId(const QModelIndex& index) const;
+	boost::uuids::uuid GetDatasourceId(int row) const;
+	const SynGlyphX::DataTransformMapping::FieldGroupName& GetFieldGroupName(int row) const;
+	void RemoveFieldGroup(const SynGlyphX::DataTransformMapping::FieldGroupName& groupName, bool emitGlyphDataChanged);
 
 	SynGlyphX::SourceDataManager m_sourceDataManager;
 	SynGlyphX::DataTransformMapping::SharedPtr m_dataMapping;
@@ -133,9 +152,6 @@ Q_DECLARE_METATYPE(SynGlyphX::NumericMappingProperty)
 Q_DECLARE_METATYPE(SynGlyphX::ColorMappingProperty)
 Q_DECLARE_METATYPE(SynGlyphX::TextMappingProperty)
 Q_DECLARE_METATYPE(SynGlyphX::GeometryShapeMappingProperty)
-Q_DECLARE_METATYPE(SynGlyphX::GlyphGeometryInfo::Shape)
-Q_DECLARE_METATYPE(SynGlyphX::GlyphGeometryInfo::Surface)
 Q_DECLARE_METATYPE(SynGlyphX::VirtualTopologyMappingProperty)
-Q_DECLARE_METATYPE(SynGlyphX::VirtualTopologyInfo::Type)
 
 #endif // DATATRANSFORMMODEL_H

@@ -15,8 +15,8 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef SYNGLYPHX_GLYPHPROPERTIES_WIDGET
-#define SYNGLYPHX_GLYPHPROPERTIES_WIDGET
+#ifndef SYNGLYPHX_VISUALGLYPHPROPERTIESWIDGET
+#define SYNGLYPHX_VISUALGLYPHPROPERTIESWIDGET
 
 #include "sgxglyphgui_global.h"
 #include <QtWidgets/QWidget>
@@ -35,7 +35,7 @@
 
 namespace SynGlyphX {
 
-	class SGXGLYPHGUI_EXPORT GlyphPropertiesWidget : public QWidget
+	class SGXGLYPHGUI_EXPORT VisualGlyphPropertiesWidget : public QWidget
 	{
 		Q_OBJECT
 
@@ -50,8 +50,8 @@ namespace SynGlyphX {
 
 		Q_DECLARE_FLAGS(ChildOptions, ChildOption);
 
-		GlyphPropertiesWidget(ChildOptions childOptions = Invisible, QWidget *parent = 0);
-		~GlyphPropertiesWidget();
+		VisualGlyphPropertiesWidget(bool addLockToScaleWidget, ChildOptions childOptions = Invisible, QWidget *parent = 0);
+		~VisualGlyphPropertiesWidget();
 
 		void SetNumberOfChildren(unsigned int numChildren);
 		unsigned int GetNumberOfChildren() const;
@@ -63,7 +63,7 @@ namespace SynGlyphX {
 		void AddChildrenButtonClicked();
 
 	protected:
-		void CreateWidgets(ChildOptions childOptions);
+		void CreateWidgets(bool addLockToScaleWidget, ChildOptions childOptions);
 		QWidget* CreateChildrenWidget(ChildOptions childOptions);
 
 		QSpinBox* m_childrenSpinBox;
@@ -79,8 +79,8 @@ namespace SynGlyphX {
 		GlyphStructureWidget* m_glyphStructureWidget;
 	};
 
-	Q_DECLARE_OPERATORS_FOR_FLAGS(GlyphPropertiesWidget::ChildOptions)
+	Q_DECLARE_OPERATORS_FOR_FLAGS(VisualGlyphPropertiesWidget::ChildOptions)
 
 } //namespace SynGlyphX
 
-#endif // SYNGLYPHX_GLYPHPROPERTIES_WIDGET
+#endif // SYNGLYPHX_VISUALGLYPHPROPERTIESWIDGET

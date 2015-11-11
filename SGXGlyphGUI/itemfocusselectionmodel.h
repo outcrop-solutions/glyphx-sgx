@@ -43,6 +43,7 @@ namespace SynGlyphX {
 		ItemFocusSelectionModel(QAbstractItemModel* model, QObject *parent = nullptr);
 		~ItemFocusSelectionModel();
 
+		void ClearAll();
 		void ClearFocus();
 		void SetFocus(const QModelIndex& index, FocusFlags command);
 		void SetFocus(const QModelIndexList& indexes, FocusFlags command);
@@ -50,13 +51,12 @@ namespace SynGlyphX {
 		const QModelIndexList& GetFocusList() const;
 
 		static SynGlyphX::IndexSet GetRootRows(const QModelIndexList& indexList);
+		static unsigned long GetRootRow(const QModelIndex& index);
 
 	signals:
 		void FocusChanged(const QModelIndexList& focusList);
 
 	private:
-		static unsigned long GetRootRow(const QModelIndex& index);
-
 		QModelIndexList m_focusList;
 	};
 

@@ -52,7 +52,14 @@ namespace SynGlyphX {
 
 	void RadioButtonGroupWidget::SetCheckedButton(int id) {
 
-		m_buttonGroup->button(id)->setChecked(true);
+		QAbstractButton* button = m_buttonGroup->button(id);
+		if (button == nullptr) {
+
+			throw std::invalid_argument("RadioButtonGroupWidget does not have a button with the given id");
+		}
+
+		button->setChecked(true);
+		emit ButtonClicked(id);
 	}
 
 	int RadioButtonGroupWidget::GetCheckedButton() const {
@@ -63,6 +70,17 @@ namespace SynGlyphX {
 	QString RadioButtonGroupWidget::GetCheckedButtonLabel() const {
 
 		return m_buttonGroup->checkedButton()->text();
+	}
+
+	void RadioButtonGroupWidget::SetButtonEnabled(int id, bool enabled) {
+
+		QAbstractButton* button = m_buttonGroup->button(id);
+		if (button == nullptr) {
+
+			throw std::invalid_argument("RadioButtonGroupWidget does not have a button with the given id");
+		}
+
+		button->setEnabled(enabled);
 	}
 
 } //namespace SynGlyphX
