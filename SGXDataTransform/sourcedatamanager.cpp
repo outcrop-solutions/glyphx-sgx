@@ -137,14 +137,14 @@ namespace SynGlyphX {
 
 		InputTable table(datasource, tableName.toStdWString());
 
-		std::unordered_set<std::wstring> columns;
+		std::vector<std::wstring> columns;
 		for (unsigned int i = 0; i < columnRecord.count(); ++i) {
 
 			QSqlField field = columnRecord.field(i);
 			QVariant::Type fieldType = field.type();
 			if ((fieldType == QVariant::Type::Double) || (fieldType == QVariant::Type::Int) || (fieldType == QVariant::Type::UInt) || (fieldType == QVariant::Type::LongLong) || (fieldType == QVariant::Type::ULongLong)) {
 				
-				columns.insert(field.name().toStdWString());
+				columns.push_back(field.name().toStdWString());
 			}
 		}
 

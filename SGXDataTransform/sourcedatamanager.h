@@ -22,18 +22,18 @@
 #include <QtCore/QString>
 #include <QtCore/QStringList>
 #include <QtSql/QSqlDatabase>
-#include <unordered_set>
 #include "datasourcemaps.h"
 #include "uuid.h"
 #include "csvcache.h"
 #include <unordered_map>
+#include <vector>
 
 namespace SynGlyphX {
 
 	class SGXDATATRANSFORM_EXPORT SourceDataManager
 	{
 	public:
-		typedef std::unordered_map<InputTable, std::unordered_set<std::wstring>, InputTableHash> NumericFieldsByTable;
+		typedef std::unordered_map<InputTable, std::vector<std::wstring>, InputTableHash> NumericFieldsByTable;
 		SourceDataManager();
 		~SourceDataManager();
 
