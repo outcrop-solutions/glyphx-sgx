@@ -439,6 +439,10 @@ void ValueMappingDialog::OnLoadFromFile() {
 		if (m_table->rowCount() > 0) {
 
 			loadFile = (QMessageBox::question(this, tr("Value Mapping Data Currently Exists"), tr("A value mapping is currently in this dialog.  Loading this file will overwrite it.  Do you wish to continue?"), QMessageBox::Yes, QMessageBox::No) == QMessageBox::Yes);
+			if (loadFile) {
+
+				OnClearAllKeyValues();
+			}
 		}
 
 		if (loadFile) {
