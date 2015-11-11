@@ -391,6 +391,7 @@ bool DataMapperWindow::LoadDataTransform(const QString& filename) {
 	}
 	catch (const std::exception& e) {
 
+		m_dataTransformModel->ClearAndReset();
 		SynGlyphX::Application::restoreOverrideCursor();
 		QMessageBox::critical(this, tr("Failed To Open Project"), tr("Failed to open project.  Error: ") + e.what(), QMessageBox::Ok);
 		return false;
