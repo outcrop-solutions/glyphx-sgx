@@ -47,6 +47,7 @@ DataMapperWindow::DataMapperWindow(QWidget *parent)
 	settings.beginGroup("ANTzExport");
 	m_antzExportDirectories[SynGlyphXANTz::ANTzCSVWriter::OutputPlatform::Windows] = settings.value("default", SynGlyphX::Application::applicationDirPath() + QDir::separator() + "ANTzTemplate").toString();
 	m_antzExportDirectories[SynGlyphXANTz::ANTzCSVWriter::OutputPlatform::WindowsZSpace] = settings.value("zSpace", SynGlyphX::Application::applicationDirPath() + QDir::separator() + "ANTzzSpaceTemplate").toString();
+	m_antzExportDirectories[SynGlyphXANTz::ANTzCSVWriter::OutputPlatform::Mac] = settings.value("mac", SynGlyphX::Application::applicationDirPath() + QDir::separator() + "ANTzMacTemplate").toString();
 	settings.endGroup();
 
 	m_dataTransformModel = new DataTransformModel(this);
@@ -104,6 +105,40 @@ void DataMapperWindow::CreateCenterWidget() {
 	setCentralWidget(m_minMaxGlyph3DWidget);
 }
 
+void DataMapperWindow::CreateExportToPortableVisualizationSubmenu() {
+
+	bool windowsANTzTemplateExists = DoesANTzTemplateExist(m_antzExportDirectories[SynGlyphXANTz::ANTzCSVWriter::OutputPlatform::Windows]);
+	bool zSpaceANTzTemplateExists = DoesANTzTemplateExist(m_antzExportDirectories[SynGlyphXANTz::ANTzCSVWriter::OutputPlatform::WindowsZSpace]);
+	bool macANTzTemplateExists = DoesANTzTemplateExist(m_antzExportDirectories[SynGlyphXANTz::ANTzCSVWriter::OutputPlatform::Mac]);
+
+	if (windowsANTzTemplateExists || zSpaceANTzTemplateExists || macANTzTemplateExists) {
+
+		m_fileMenu->addSeparator();
+		QMenu* portableVisualizationMenu = m_fileMenu->addMenu(tr("Create Portable Visualization"));
+
+		if (windowsANTzTemplateExists) {
+
+			QAction* exportToANTzAction = CreateMenuAction(portableVisualizationMenu, tr("Windows"));
+			QObject::connect(exportToANTzAction, &QAction::triggered, this, [this]{ ExportToANTz(SynGlyphXANTz::ANTzCSVWriter::OutputPlatform::Windows); });
+			m_projectDependentActions.push_back(exportToANTzAction);
+		}
+
+		if (zSpaceANTzTemplateExists) {
+
+			QAction* exportTozSpaceANTzAction = CreateMenuAction(portableVisualizationMenu, tr("Windows (zSpace)"));
+			QObject::connect(exportTozSpaceANTzAction, &QAction::triggered, this, [this]{ ExportToANTz(SynGlyphXANTz::ANTzCSVWriter::OutputPlatform::WindowsZSpace); });
+			m_projectDependentActions.push_back(exportTozSpaceANTzAction);
+		}
+
+		if (macANTzTemplateExists) {
+
+			QAction* exportToMacANTzAction = CreateMenuAction(portableVisualizationMenu, tr("Mac"));
+			QObject::connect(exportToMacANTzAction, &QAction::triggered, this, [this]{ ExportToANTz(SynGlyphXANTz::ANTzCSVWriter::OutputPlatform::Mac); });
+			m_projectDependentActions.push_back(exportToMacANTzAction);
+		}
+	}
+}
+
 void DataMapperWindow::CreateMenus() {
 
     //Create File Menu
@@ -123,27 +158,7 @@ void DataMapperWindow::CreateMenus() {
     QObject::connect(saveAsProjectAction, &QAction::triggered, this, &DataMapperWindow::SaveAsProject);
 	m_projectDependentActions.push_back(saveAsProjectAction);
 
-	bool defaultANTzTemplateExists = DoesANTzTemplateExist(m_antzExportDirectories[SynGlyphXANTz::ANTzCSVWriter::OutputPlatform::Windows]);
-	bool zSpaceANTzTemplateExists = DoesANTzTemplateExist(m_antzExportDirectories[SynGlyphXANTz::ANTzCSVWriter::OutputPlatform::WindowsZSpace]);
-
-	if (defaultANTzTemplateExists || zSpaceANTzTemplateExists) {
-
-		m_fileMenu->addSeparator();
-	}
-
-	if (defaultANTzTemplateExists) {
-
-		QAction* exportToANTzAction = CreateMenuAction(m_fileMenu, tr("Create Portable Visualization"));
-		QObject::connect(exportToANTzAction, &QAction::triggered, this, [this]{ ExportToANTz(SynGlyphXANTz::ANTzCSVWriter::OutputPlatform::Windows); });
-		m_projectDependentActions.push_back(exportToANTzAction);
-	}
-
-	if (zSpaceANTzTemplateExists) {
-
-		QAction* exportTozSpaceANTzAction = CreateMenuAction(m_fileMenu, tr("Create Portable Visualization (zSpace)"));
-		QObject::connect(exportTozSpaceANTzAction, &QAction::triggered, this, [this]{ ExportToANTz(SynGlyphXANTz::ANTzCSVWriter::OutputPlatform::WindowsZSpace); });
-		m_projectDependentActions.push_back(exportTozSpaceANTzAction);
-	}
+	CreateExportToPortableVisualizationSubmenu();
 
 	m_fileMenu->addActions(m_recentFileActions);
 
