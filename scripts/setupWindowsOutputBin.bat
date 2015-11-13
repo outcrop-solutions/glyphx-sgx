@@ -5,6 +5,7 @@ rem This script is for copying 3rdParty\bin to the directory where everything is
 SET basedir=..\..\bin
 SET antztemplate=ANTzTemplate
 SET antzzspacetemplate=ANTzzSpaceTemplate
+SET antzmactemplate=ANTzMacTemplate
 SET defaultbaseimages=DefaultBaseImages
 SET glyphtemplates=GlyphTemplates
 SET logo=logo.png
@@ -30,6 +31,11 @@ FOR /F "tokens=*" %%p IN ('dir /b /a:d ..\bin\*') DO (
 		mkdir %basedir%\%%p\%%c\%antzzspacetemplate%\usr\csv
 		mkdir %basedir%\%%p\%%c\%antzzspacetemplate%\usr\images
 		mkdir %basedir%\%%p\%%c\%antzzspacetemplate%\usr\plugin
+		
+		robocopy /z /e ..\..\ANTzPlus\%antzmactemplate% %basedir%\%%p\%%c\%antzmactemplate%
+		mkdir %basedir%\%%p\%%c\%antzmactemplate%\usr\csv
+		mkdir %basedir%\%%p\%%c\%antzmactemplate%\usr\images
+		mkdir %basedir%\%%p\%%c\%antzmactemplate%\usr\plugin
 		
 		robocopy /z /e ..\..\Misc\InstallerFiles\%defaultbaseimages% %basedir%\%%p\%%c\%defaultbaseimages%
 		
