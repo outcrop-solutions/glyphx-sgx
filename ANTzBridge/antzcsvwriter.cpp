@@ -71,7 +71,7 @@ namespace SynGlyphXANTz {
 				tagFile.Open(filenames[s_tagFilenameIndex]);
 			}
 
-			if (!filenames[s_redirectFilenameIndex].empty()) {
+			if ((!filenames[s_redirectFilenameIndex].empty()) && (platform == OutputPlatform::WindowsZSpace)) {
 
 				redirectFile.open(filenames[s_redirectFilenameIndex]);
 				WriteRedirectHeader(redirectFile, platform);
@@ -95,7 +95,7 @@ namespace SynGlyphXANTz {
 
 				if (tagFile.IsOpen()) {
 
-					WriteGlyphTag(tagFile, tree, tree->GetRoot());
+					WriteGlyphTag(tagFile, tree, tree->GetRoot(), (platform != OutputPlatform::WindowsZSpace));
 				}
 
 				if (redirectFile.is_open()) {
@@ -123,7 +123,7 @@ namespace SynGlyphXANTz {
 
 	void ANTzCSVWriter::WriteRedirectHeader(std::wofstream& file, OutputPlatform platform) {
 
-		if (IsPlatformWindows(platform)) {
+		if (platform == OutputPlatform::WindowsZSpace) {
 
 			file << L"@ECHO OFF\n\n";
 		}
@@ -218,7 +218,7 @@ namespace SynGlyphXANTz {
 			globalsFile << L"17,\"np_osc\",1,\"tx_port\",\"i\",0,\"\",\"\",\"8000\"" << std::endl;
 			globalsFile << L"18,\"np_osc\",1,\"rx_port\",\"i\",0,\"\",\"\",\"9000\"" << std::endl;
 			
-			if (IsPlatformWindows(platform)) {
+			if (platform == OutputPlatform::WindowsZSpace) {
 
 				globalsFile << L"19,\"np_browser\",1,\"url\",\"s\",0,\"\",\"\",\"/min redirect.bat \"" << std::endl;
 			}
@@ -237,19 +237,38 @@ namespace SynGlyphXANTz {
 		}
 	}
 
-	void ANTzCSVWriter::WriteGlyphTag(SynGlyphX::CSVFileWriter& file, const SynGlyphX::GlyphGraph::ConstSharedPtr tree, const SynGlyphX::GlyphGraph::ConstGlyphIterator& glyph) {
+	void ANTzCSVWriter::WriteGlyphTag(SynGlyphX::CSVFileWriter& file, const SynGlyphX::GlyphGraph::ConstSharedPtr tree, const SynGlyphX::GlyphGraph::ConstGlyphIterator& glyph, bool outputURL) {
 
 		unsigned int numberOfChildren = tree->ChildCount(glyph);
 
-		std::wstring tag;
+		std::wstring tag = L"\"";
+
+		if (outputURL) {
+
+			std::wstring url = m_noURLLocation;
+			if (!glyph->second.GetURL().empty()) {
+
+				url = glyph->second.GetURL();
+			}
+			
+			tag += L"<a href=\"" + url + L"\">";
+		}
+
 		if (glyph->second.GetTag().empty()) {
 
-			tag = L"\"No Tag\"";
+			tag += L"No Tag";
 		}
 		else {
 
-			tag = L"\"" + glyph->second.GetTag() + L"\"";
+			tag += glyph->second.GetTag();
 		}
+
+		if (outputURL) {
+
+			tag += L"</a>";
+		}
+
+		tag += L"\"";
 
 		SynGlyphX::CSVFileHandler::CSVValues values;
 		values.push_back(boost::lexical_cast<std::wstring>(m_numTagsWritten++));
@@ -262,7 +281,7 @@ namespace SynGlyphXANTz {
 
 		for (unsigned int i = 0; i < numberOfChildren; ++i) {
 
-			WriteGlyphTag(file, tree, tree->GetChild(glyph, i));
+			WriteGlyphTag(file, tree, tree->GetChild(glyph, i), outputURL);
 		}
 	}
 
@@ -363,7 +382,12 @@ namespace SynGlyphXANTz {
 				grid.push_back(boost::lexical_cast<std::wstring>(firstId));
 				grid.insert(grid.end(), { L"1", L"0", L"0", L"0" });
 			}
-			grid.insert(grid.end(), { L"0", L"0", L"0", L"0", L"1", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"1", L"0", L"0" });
+			grid.insert(grid.end(), { L"0", L"0", L"0", L"0", L"1" });
+
+			//grid cell size
+			grid.insert(grid.end(), { L"30", L"30", L"30" });
+
+			grid.insert(grid.end(), { L"0", L"0", L"0", L"0", L"0", L"1", L"0", L"0" });
 			SynGlyphX::CSVFileHandler::AddVector3ToCSVValues(grid, grids[i].GetScale());
 			SynGlyphX::CSVFileHandler::AddVector3ToCSVValues(grid, grids[i].GetPosition());
 			grid.insert(grid.end(), { L"0", L"0", L"0", L"0", L"0", L"0" });
