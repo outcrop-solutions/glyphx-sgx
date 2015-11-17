@@ -37,7 +37,8 @@ namespace SynGlyphX {
 		setLayout(layout);
 
 		QObject::connect(m_geometryShapeComboBox, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, [this]{ emit GlyphPropertyUpdated(UpdateGeometry); });
-		QObject::connect(m_nonmappableGeometryWidget, &NonMappableGeometryWidget::PropertiesChanged, this, [this]{ emit GlyphPropertyUpdated(UpdateSurface); emit GlyphPropertyUpdated(UpdateTorusRatio); });
+		QObject::connect(m_nonmappableGeometryWidget, &NonMappableGeometryWidget::SurfaceChanged, this, [this]{ emit GlyphPropertyUpdated(UpdateSurface); });
+		QObject::connect(m_nonmappableGeometryWidget, &NonMappableGeometryWidget::TorusRatioChanged, this, [this]{ emit GlyphPropertyUpdated(UpdateTorusRatio); });
 		QObject::connect(m_topologyComboBox, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, [this]{ emit GlyphPropertyUpdated(UpdateTopology); });
 
 		QObject::connect(m_geometryShapeComboBox, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &GlyphStructureWidget::OnShapeComboBoxChanged);
