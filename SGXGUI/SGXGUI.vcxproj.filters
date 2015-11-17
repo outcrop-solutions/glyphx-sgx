@@ -287,6 +287,15 @@
     <ClCompile Include="GeneratedFiles\Release\moc_stretchsurroundedwidget.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="gridwidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_gridwidget.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_gridwidget.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="sgxgui_global.h">
@@ -382,6 +391,9 @@
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="stretchsurroundedwidget.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="gridwidget.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>
