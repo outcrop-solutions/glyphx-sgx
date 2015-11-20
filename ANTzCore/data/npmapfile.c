@@ -1204,9 +1204,9 @@ int npCSVstrncpy(char* cstrout, char** csvstr, int size)
 	int curs = 0;
 	char* csvPtr = *csvstr;
 
-//	int size = 0;	//number of characters in the source CSV string cstr excludes '\0' at end
+	//	int size = 0;	//number of characters in the source CSV string cstr excludes '\0' at end
 
-//	if (*csvstr != ',') csvstr++;
+	//	if (*csvstr != ',') csvstr++;
 
 	//deliminators are ',' for fields and '\"' for a string field
 	//within quotes is allowed any ASCII value, including tabs, line returns, etc.
@@ -1215,7 +1215,7 @@ int npCSVstrncpy(char* cstrout, char** csvstr, int size)
 
 	//first chars must be either:  
 	//acceptc format with either	"","abc"  or  ,no_quotes_id,name,title,...
-	
+
 	//first char can be:  'a' or ',' or '\"' and not a newline
 
 	//if no quotes then copy csv string until ',' or endline reached
@@ -1227,32 +1227,66 @@ int npCSVstrncpy(char* cstrout, char** csvstr, int size)
 	}
 
 	//next character should be the beginning double quote of the title field
-	if (csvPtr[curs] != '\"')		//upgrade to allow for a number or no title, debug zz
+	//zz csv string does not require quotes
+	if (0)//csvPtr[curs] != '\"')		//upgrade to allow for a number or no title, debug zz
 	{
 		//if (csvstr[curs++] != ',')
-			//skip any white space
-		printf ("err 4912 - npCSVstrncpy begin quote missing: %.13s\n", csvPtr);
+		//skip any white space
+		printf("err 4912 - npCSVstrncpy begin quote missing: %.13s\n", csvPtr);
 
 		//process string up to the next ',' or line return
 		//we support line returns only in fields that are encapsulated in quotes
 	}
 	else
-	{
-		curs++;	//	csvstr++;
-			
-		//advance past white space
-
+	{		//advance past white space
 		//while (csvstr[curs++] != '\"' && curs < (size - 1){}
 
 		//iterate through char and copy to cstr
 		//if '\"' followed by ',' then exit
 		//if '\"' followed by '\"' then convert to single quote
 
-		while (csvPtr[curs] != '\"' && curs < size)
+		if (csvPtr[curs] == '\"')		//upgrade to allow for a number or no title, debug zz
 		{
-			cstrout[i++] = csvPtr[curs++];
-		}
+			curs += 1;//depth = 1;	//	csvstr++;	
 
+			while (i < size)
+			{
+				if (csvPtr[curs] == '\"' && (csvPtr[curs + 1] == ',' || csvPtr[curs + 1] == '\n'))
+					break;
+
+				if (csvPtr[curs] == '\n')
+				{
+					curs++;
+					cstrout[i++] = '\r';
+					//	printf( "\nTEST newline TEST\n\n" );
+				}
+				else if (csvPtr[curs] == '\r')
+				{
+					curs++;
+					cstrout[i++] = '\r';
+				}
+				else
+					cstrout[i++] = csvPtr[curs++];
+			}
+		}
+		else
+		{
+			while (i < size)
+			{
+				if (csvPtr[curs + 1] == ',')
+					break;
+
+				//		if ( csvPtr[curs] == '\n' )
+				//			cstrout[i++] = '\n';
+				//		else
+				/*		if ( csvPtr[curs] == '\n' )
+				cstrout[i++] = '\n';
+				else if ( csvPtr[curs] == '\r' )
+				cstrout[i++] = '\n';
+				else
+				*/			cstrout[i++] = csvPtr[curs++];
+			}
+		}
 		//terminate the cstr
 		cstrout[i] = '\0';
 
@@ -1267,18 +1301,18 @@ int npCSVstrncpy(char* cstrout, char** csvstr, int size)
 				curs++;
 			if (csvPtr[curs] == ',')
 				curs++;
-			
+
 			*csvstr = &csvPtr[curs];
 		}
 
 	}
-//	cstrout[i] = '\0';
+	//	cstrout[i] = '\0';
 
 	//recordTag->title[count] = '\0';
 
-					//zz debug, does not handle line returns...
-//	if (*csvstr[0] == '"') *csvstr = &csvPtr[curs + 1];
-//	if (*csvstr[0] == ',') *csvstr = &csvPtr[curs + 1];
+	//zz debug, does not handle line returns...
+	//	if (*csvstr[0] == '"') *csvstr = &csvPtr[curs + 1];
+	//	if (*csvstr[0] == ',') *csvstr = &csvPtr[curs + 1];
 
 	return i;
 }

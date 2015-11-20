@@ -64,7 +64,6 @@ namespace SynGlyphXANTz {
 			outputFilenames[ANTzCSVWriter::s_nodeFilenameIndex] = (baseUsrCSVDir + "antz0001node.csv").toStdString();
 			outputFilenames[ANTzCSVWriter::s_tagFilenameIndex] = (baseUsrCSVDir + "antz0001tag.csv").toStdString();
 		}
-		outputFilenames[ANTzCSVWriter::s_redirectFilenameIndex] = (m_baseOutputDir + QDir::separator() + "redirect.bat").toStdString();
 
 		GenerateCache(mapping, outputFilenames, baseUsrImageDir);
 

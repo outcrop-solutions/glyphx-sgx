@@ -61,7 +61,7 @@ namespace SynGlyphXANTz {
 		void SetTagNotToBeShownIn3d(const QString& tag);
 		bool IsTagShownIn3d(const QString& tag);
 
-		void OpenURLs(const QModelIndexList& indexList);
+		bool OpenURLs(const QModelIndexList& indexList);
 
 		SynGlyphX::Glyph GetGlyphAtIndex(const QModelIndex& index) const;
 
@@ -76,7 +76,6 @@ namespace SynGlyphXANTz {
 		QString m_defaultBaseImage;
 		ANTzPlus::ANTzData::SharedPtr m_antzData;
 		QStringList m_baseImageFilenames;
-		QString m_urlRedirectFilename;
 
 		QString m_tagNotToBeShownIn3d;
 	};

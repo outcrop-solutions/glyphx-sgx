@@ -9,7 +9,8 @@
 #include "io/npfile.h"
 #include "io/npch.h"
 #include "npctrl.h"
-#include <QtCore/QProcess>
+#include <QtGui/QDesktopServices>
+#include <QtCore/QUrl>
 #include "glyphnodeconverter.h"
 
 namespace SynGlyphXANTz {
@@ -44,11 +45,7 @@ namespace SynGlyphXANTz {
 
 		pNPnode glyph = static_cast<pNPnode>(index.internalPointer());
 
-		QString displayedData = glyph->tag->title;
-
-		return displayedData;
-		//return displayedData + QString(" - (%1, %2, %3)").arg(glyph->world.x).arg(glyph->world.y).arg(glyph->world.z);
-		//return displayedData + QString(" - %1").arg(glyph->id);
+		return QString::fromStdWString(SynGlyphXANTz::GlyphNodeConverter::GetTag(glyph));
 	}
 
 	QModelIndex	GlyphForestModel::index(int row, int column, const QModelIndex& parent) const {
@@ -212,7 +209,6 @@ namespace SynGlyphXANTz {
 		antzData->map.nodeRootIndex = 0;
 
 		m_baseImageFilenames.clear();
-		m_urlRedirectFilename.clear();
 
 		if (resetModel) {
 
@@ -232,10 +228,9 @@ namespace SynGlyphXANTz {
 
 		npFileOpenCore(filesToLoad[SynGlyphXANTz::ANTzCSVWriter::s_nodeFilenameIndex].c_str(), NULL, antzData);
 		npFileOpenCore(filesToLoad[SynGlyphXANTz::ANTzCSVWriter::s_tagFilenameIndex].c_str(), NULL, antzData);
-
-		m_urlRedirectFilename = QString::fromStdString(filesToLoad[SynGlyphXANTz::ANTzCSVWriter::s_redirectFilenameIndex]);
 		
 		npSyncTags(static_cast<void*>(antzData));
+
 		endResetModel();
 
 		antzData->map.nodeRootIndex = 0;
@@ -316,17 +311,24 @@ namespace SynGlyphXANTz {
 		return (tag != m_tagNotToBeShownIn3d);
 	}
 
-	void GlyphForestModel::OpenURLs(const QModelIndexList& indexList) {
+	bool GlyphForestModel::OpenURLs(const QModelIndexList& indexList) {
 
+		bool wereAnyURLsOpened = false;
 		for (const QModelIndex& index : indexList) {
 
 			pNPnode glyph = static_cast<pNPnode>(index.internalPointer());
-			QProcess process;
-			process.setProgram(m_urlRedirectFilename);
-			process.setArguments(QStringList() << QString::number(glyph->recordID));
-			process.start();
-			process.waitForFinished();
+			QString url = QString::fromStdWString(SynGlyphXANTz::GlyphNodeConverter::GetUrl(glyph));
+			if ((!url.isEmpty()) && (url != "nourl.html")) {
+
+				QUrl parsedUrl = QUrl::fromUserInput(url);
+				if (parsedUrl.isValid()) {
+
+					QDesktopServices::openUrl(parsedUrl);
+					wereAnyURLsOpened = true;
+				}
+			}
 		}
+		return wereAnyURLsOpened;
 	}
 
 	SynGlyphX::Glyph GlyphForestModel::GetGlyphAtIndex(const QModelIndex& index) const {

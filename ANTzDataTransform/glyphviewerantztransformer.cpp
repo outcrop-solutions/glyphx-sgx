@@ -44,13 +44,11 @@ namespace SynGlyphXANTz {
 		QStringList cacheFiles;
 		cacheFiles.push_back(localOutputDir + "antz.csv");
 		cacheFiles.push_back(localOutputDir + "antztag.csv");
-		cacheFiles.push_back(localOutputDir + "redirect.bat");
 		cacheFiles.push_back(m_sourceDataCacheLocation);
 
 		SynGlyphXANTz::ANTzCSVWriter::FilenameList outputfiles;
 		outputfiles[SynGlyphXANTz::ANTzCSVWriter::s_nodeFilenameIndex] = cacheFiles[0].toStdString();
 		outputfiles[SynGlyphXANTz::ANTzCSVWriter::s_tagFilenameIndex] = cacheFiles[1].toStdString();
-		outputfiles[SynGlyphXANTz::ANTzCSVWriter::s_redirectFilenameIndex] = cacheFiles[2].toStdString();
 
 		QString cachedMappingFilename = m_baseOutputDir + QDir::separator() + "mapping.sdt";
 

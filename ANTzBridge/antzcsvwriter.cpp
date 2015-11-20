@@ -242,14 +242,13 @@ namespace SynGlyphXANTz {
 		unsigned int numberOfChildren = tree->ChildCount(glyph);
 
 		std::wstring tag = L"\"";
+		std::wstring url = m_noURLLocation;
+		if (!glyph->second.GetURL().empty()) {
 
-		if (outputURL) {
+			url = glyph->second.GetURL();
+		}
 
-			std::wstring url = m_noURLLocation;
-			if (!glyph->second.GetURL().empty()) {
-
-				url = glyph->second.GetURL();
-			}
+		if (outputURL && (!url.empty())) {
 			
 			tag += L"<a href=\"" + url + L"\">";
 		}
@@ -263,7 +262,7 @@ namespace SynGlyphXANTz {
 			tag += glyph->second.GetTag();
 		}
 
-		if (outputURL) {
+		if (outputURL && (!url.empty())) {
 
 			tag += L"</a>";
 		}
