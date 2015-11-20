@@ -53,13 +53,6 @@ void GlyphTreeView::CreateContextMenuActions() {
 	setContextMenuPolicy(Qt::ActionsContextMenu);
 }
 
-QModelIndexList GlyphTreeView::GetSelectedIndexListForDeletion() const {
-
-	QModelIndexList selectedItems = selectionModel()->selectedIndexes();
-	std::sort(selectedItems.begin(), selectedItems.end(), SynGlyphXANTz::MinMaxGlyphTreeModel::GreaterBranchLevel);
-	return selectedItems;
-}
-
 void GlyphTreeView::PropertiesActivated() {
 
 	const QModelIndexList& selectedItems = selectionModel()->selectedIndexes();

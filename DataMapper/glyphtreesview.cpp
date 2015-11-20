@@ -6,6 +6,7 @@
 #include <QtCore/QSettings>
 #include "datamappingglyphfile.h"
 #include "antzcsvwriter.h"
+#include "minmaxglyphtreemodel.h"
 
 GlyphTreesView::GlyphTreesView(DataTransformModel* sourceModel, QWidget *parent)
 	: SynGlyphX::TreeEditView(parent),
