@@ -598,21 +598,56 @@ void DataMapperWindow::ExportToANTz(SynGlyphXANTz::ANTzCSVWriter::OutputPlatform
 		}
 	}
 
-	QString csvDirectory = QDir::toNativeSeparators(GetExistingDirectoryDialog("ANTzExportDir", tr("Select Directory For Portable Visualization"), ""));
-	if (csvDirectory.isEmpty()) {
+	bool isDirectoryInvalid = false;
 
-		return;
+	QString csvDirectory;
+	QList<QDir> projectFileDirs;
+	projectFileDirs.push_back(QFileInfo(m_currentFilename).canonicalPath());
+	for (const auto& fileDatasource : m_dataTransformModel->GetDataMapping()->GetDatasources().GetFileDatasources()) {
+
+		projectFileDirs.push_back(QFileInfo(QString::fromStdWString(fileDatasource.second.GetFilename())).canonicalPath());
 	}
 
-	QDir dir(csvDirectory);
-	if (dir.entryInfoList(QDir::NoDotAndDotDot | QDir::AllEntries).count() > 0) {
+	do {
 
-		if (QMessageBox::question(this, tr("Directory isn't empty"), tr("Selected directory is not empty.  All contents of the directory will be deleted before export.  Do you wish to continue?")) == QMessageBox::No) {
+		csvDirectory = QDir::toNativeSeparators(GetExistingDirectoryDialog("ANTzExportDir", tr("Select Directory For Portable Visualization"), ""));
+		if (csvDirectory.isEmpty()) {
 
 			return;
 		}
-	}
 
+		QDir dir(csvDirectory);
+		bool isProjectFileInDirectory = false;
+
+		for (const auto& projectFileDir : projectFileDirs) {
+
+			if (projectFileDir == dir) {
+
+				isProjectFileInDirectory = true;
+				break;
+			}
+		}
+
+		if (isProjectFileInDirectory) {
+
+			QMessageBox::warning(this, tr("Invalid Directory"), tr("Selected directory contains one or more files relevant to the project.  It can not be used to create a portable visualization.  Select another directory."));
+			isDirectoryInvalid = true;
+		}
+		else if (dir.entryInfoList(QDir::NoDotAndDotDot | QDir::AllEntries).count() > 0) {
+
+			if (QMessageBox::question(this, tr("Directory isn't empty"), tr("Selected directory is not empty.  All contents of the directory will be deleted before export.  Do you wish to continue?")) == QMessageBox::No) {
+
+				return;
+			}
+			else {
+
+				isDirectoryInvalid = false;
+			}
+		}
+
+	} while (isDirectoryInvalid);
+
+	
 	SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
 
 	try {
