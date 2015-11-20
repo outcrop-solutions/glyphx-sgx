@@ -21,7 +21,7 @@
 #include "sgxglyphgui_global.h"
 #include <QtWidgets/QWidget>
 #include <QtWidgets/QLineEdit>
-#include <QtWidgets/QTextEdit>
+#include <QtWidgets/QTextBrowser>
 #include "glyph.h"
 
 namespace SynGlyphX {
@@ -38,9 +38,13 @@ namespace SynGlyphX {
 
 		void SetReadOnly(bool readOnly);
 
+	private slots:
+		void OpenURL(const QUrl& url);
+
 	private:
 		QLineEdit* m_tagLineEdit;
-		QTextEdit* m_descriptionEdit;
+		QTextBrowser* m_urlLineEdit;
+		QTextBrowser* m_descriptionEdit;
 	};
 
 } //namespace SynGlyphX
