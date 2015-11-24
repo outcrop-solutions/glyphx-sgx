@@ -58,4 +58,14 @@ namespace SynGlyphX {
 		m_doubleWidthSpinBox->setValue(m_doubleHeightSpinBox->value() * m_ratio);
 	}
 
+	QSizeF DoubleSizeWidget::ConvertToQSizeF(const SynGlyphX::DoubleSize& size) {
+
+		return QSizeF(size[0], size[1]);
+	}
+
+	SynGlyphX::DoubleSize DoubleSizeWidget::ConvertFromQSizeF(const QSizeF& size) {
+
+		return SynGlyphX::DoubleSize({ { size.width(), size.height() } });
+	}
+
 } //namespace SynGlyphX

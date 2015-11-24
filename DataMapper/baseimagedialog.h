@@ -63,7 +63,8 @@ private:
 	QSignalMapper* m_presetButtonSignalMapper;
 	SynGlyphX::DoubleSizeWidget* m_worldSizeWidget;
 	SynGlyphX::DefaultBaseImagesComboBox* m_defaultImagesComboBox;
-	QCheckBox* m_showGridLinesCheckBox;
+	
+	SynGlyphX::IntSizeWidget* m_gridLinesCountsWidget;
 	SynGlyphX::ColorButton* m_gridLinesColorButton;
 };
 

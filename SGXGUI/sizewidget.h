@@ -42,7 +42,7 @@ namespace SynGlyphX {
 		virtual QMetaObject::Connection ConnectLockRatioToHeightSpinBox() = 0;
 		virtual double GetRatio() = 0;
 
-		void AddSpinBoxes(QAbstractSpinBox* widthSpinBox, QAbstractSpinBox* heightSpinBox);
+		void AddSpinBoxes(QAbstractSpinBox* widthSpinBox, QAbstractSpinBox* heightSpinBox, const QString& widthLabel = tr("Width:"), const QString& heightLabel = tr("Height:"));
 
 		double m_ratio;
 

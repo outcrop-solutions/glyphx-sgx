@@ -23,13 +23,13 @@ namespace SynGlyphX {
 
     }
 
-	void SizeWidget::AddSpinBoxes(QAbstractSpinBox* widthSpinBox, QAbstractSpinBox* heightSpinBox) {
+	void SizeWidget::AddSpinBoxes(QAbstractSpinBox* widthSpinBox, QAbstractSpinBox* heightSpinBox, const QString& widthLabel, const QString& heightLabel) {
 
 		m_widthSpinBox = widthSpinBox;
 		m_heightSpinBox = heightSpinBox;
 
-		AddWidget(tr("Width:"), m_widthSpinBox);
-		AddWidget(tr("Height:"), m_heightSpinBox);
+		AddWidget(widthLabel, m_widthSpinBox);
+		AddWidget(heightLabel, m_heightSpinBox);
 	}
 
 	void SizeWidget::OnLockRatioChanged() {

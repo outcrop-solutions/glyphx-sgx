@@ -26,7 +26,7 @@ BaseImageDialog::BaseImageDialog(bool enablePositionAndOrientation, bool showDow
 	: QDialog(parent),
 	m_downloadedMapOptionsWidget(nullptr)
 {
-	QVBoxLayout* layout = new QVBoxLayout(this);
+	QVBoxLayout* mainLayout = new QVBoxLayout(this);
 	
 	QLabel* comboBoxLabel = new QLabel(tr("Base Image Type: "), this);
 	m_baseImageComboBox = new QComboBox(this);
@@ -44,7 +44,7 @@ BaseImageDialog::BaseImageDialog(bool enablePositionAndOrientation, bool showDow
 	comboBoxLayout->addWidget(m_baseImageComboBox);
 	comboBoxLayout->addStretch(1);
 
-	layout->addLayout(comboBoxLayout);
+	mainLayout->addLayout(comboBoxLayout);
 
 	m_baseImageOptionsStackedWidget = new QStackedWidget(this);
 	QWidget* defaultImageWidget = new QWidget(m_baseImageOptionsStackedWidget);
@@ -76,7 +76,7 @@ BaseImageDialog::BaseImageDialog(bool enablePositionAndOrientation, bool showDow
 
 	m_baseImageOptionsStackedWidget->addWidget(userDefinedGroupBox);
 
-	layout->addWidget(m_baseImageOptionsStackedWidget);
+	mainLayout->addWidget(m_baseImageOptionsStackedWidget);
 
 	QObject::connect(m_baseImageComboBox, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), m_baseImageOptionsStackedWidget, &QStackedWidget::setCurrentIndex);
 
@@ -85,14 +85,14 @@ BaseImageDialog::BaseImageDialog(bool enablePositionAndOrientation, bool showDow
 	m_positionWidget->SetWrapping(false);
 	m_positionWidget->setEnabled(enablePositionAndOrientation);
 	SynGlyphX::GroupBoxSingleWidget* positionGroupBox = new SynGlyphX::GroupBoxSingleWidget(tr("Position"), m_positionWidget, this);
-	layout->addWidget(positionGroupBox);
+	mainLayout->addWidget(positionGroupBox);
 
 	m_orientationWidget = new SynGlyphX::XYZWidget(false, this);
 	m_orientationWidget->SetRange(0.0, 360.0);
 	m_orientationWidget->SetWrapping(false);
 	m_orientationWidget->setEnabled(false);
 	SynGlyphX::GroupBoxSingleWidget* orientationGroupBox = new SynGlyphX::GroupBoxSingleWidget(tr("Orientation"), m_orientationWidget, this);
-	layout->addWidget(orientationGroupBox);
+	mainLayout->addWidget(orientationGroupBox);
 
 	m_presetButtonSignalMapper = new QSignalMapper(this);
 
@@ -108,44 +108,43 @@ BaseImageDialog::BaseImageDialog(bool enablePositionAndOrientation, bool showDow
 	QObject::connect(m_presetButtonSignalMapper, static_cast<void (QSignalMapper::*)(int)>(&QSignalMapper::mapped), this, &BaseImageDialog::PresetButtonClicked);
 	presetGroupBox->setLayout(presetGroupBoxLayout);
 	presetGroupBox->setEnabled(enablePositionAndOrientation);
-	layout->addWidget(presetGroupBox);
-
-	QHBoxLayout* worldSizeLayout = new QHBoxLayout(this);
+	mainLayout->addWidget(presetGroupBox);
 
 	m_worldSizeWidget = new SynGlyphX::DoubleSizeWidget(true, this);
 	m_worldSizeWidget->SetRange(0.1, 10000.0);
 	m_worldSizeWidget->SetSize(QSizeF(360.0, 180.0));
 	SynGlyphX::GroupBoxSingleWidget* worldSizeGroupBox = new SynGlyphX::GroupBoxSingleWidget(tr("World Space Size"), m_worldSizeWidget, this);
-	worldSizeLayout->addWidget(worldSizeGroupBox);
+	mainLayout->addWidget(worldSizeGroupBox);
 
 	QGroupBox* gridLinesGroupBox = new QGroupBox(tr("Grid Lines"), this);
 	QHBoxLayout* gridLinesBoxLayout = new QHBoxLayout(this);
 
-	m_showGridLinesCheckBox = new QCheckBox(tr("Show"), this);
-	m_showGridLinesCheckBox->setChecked(false);
-	gridLinesBoxLayout->addWidget(m_showGridLinesCheckBox);
+	QPushButton* hideGridLinesButton = new QPushButton(tr("Hide"), this);
+	QObject::connect(hideGridLinesButton, &QPushButton::pressed, this, [&, this](){ m_gridLinesCountsWidget->SetSize(QSize(0, 0)); });
+	gridLinesBoxLayout->addWidget(hideGridLinesButton);
+
+	m_gridLinesCountsWidget = new SynGlyphX::IntSizeWidget(true, tr("Horizontal:"), tr("Vertical:"), this);
+	m_gridLinesCountsWidget->SetRange(0, 255);
+	gridLinesBoxLayout->addWidget(m_gridLinesCountsWidget);
+	
 	QLabel* colorLabel = new QLabel(tr("Color:"), this);
 	gridLinesBoxLayout->addWidget(colorLabel);
 	m_gridLinesColorButton = new SynGlyphX::ColorButton(this);
-	m_gridLinesColorButton->setEnabled(false);
 	m_gridLinesColorButton->SetColor(Qt::black);
 	gridLinesBoxLayout->addWidget(m_gridLinesColorButton);
-	QObject::connect(m_showGridLinesCheckBox, &QCheckBox::toggled, m_gridLinesColorButton, &SynGlyphX::ColorButton::setEnabled);
 
 	gridLinesGroupBox->setLayout(gridLinesBoxLayout);
 
-	worldSizeLayout->addWidget(gridLinesGroupBox);
+	mainLayout->addWidget(gridLinesGroupBox);
 
-	layout->addLayout(worldSizeLayout);
-
-	layout->addStretch(1);
+	mainLayout->addStretch(1);
 
 	QDialogButtonBox* dialogButtonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, this);
-	layout->addWidget(dialogButtonBox);
+	mainLayout->addWidget(dialogButtonBox);
 	QObject::connect(dialogButtonBox, &QDialogButtonBox::accepted, this, &BaseImageDialog::accept);
 	QObject::connect(dialogButtonBox, &QDialogButtonBox::rejected, this, &BaseImageDialog::reject);
 
-	setLayout(layout);
+	setLayout(mainLayout);
 }
 
 BaseImageDialog::~BaseImageDialog()
@@ -220,10 +219,10 @@ void BaseImageDialog::SetBaseImage(const SynGlyphX::BaseImage& baseImage) {
 	m_positionWidget->Set(baseImage.GetPosition());
 	m_orientationWidget->Set(baseImage.GetRotationAngles());
 
-	SynGlyphX::BaseImage::Size worldSize = baseImage.GetWorldSize();
-	m_worldSizeWidget->SetSize(QSizeF(worldSize[0], worldSize[1]));
+	m_worldSizeWidget->SetSize(SynGlyphX::DoubleSizeWidget::ConvertToQSizeF(baseImage.GetWorldSize()));
 
-	m_showGridLinesCheckBox->setChecked(baseImage.GetShowGridLines());
+	SynGlyphX::IntSize gridLinesCounts = baseImage.GetGridLineCounts();
+	m_gridLinesCountsWidget->SetSize(QSize(gridLinesCounts[0], gridLinesCounts[1]));
 	m_gridLinesColorButton->SetColor(SynGlyphX::ColorConverter::GlyphColor2QColor(baseImage.GetGridLinesColor()));
 }
 
@@ -249,13 +248,9 @@ SynGlyphX::BaseImage BaseImageDialog::GetBaseImage() const {
 
 	newBaseImage.SetPosition(m_positionWidget->Get());
 	newBaseImage.SetRotation(m_orientationWidget->Get());
-	QSizeF worldSizeF = m_worldSizeWidget->GetSize();
-	SynGlyphX::BaseImage::Size worldSize;
-	worldSize[0] = worldSizeF.width();
-	worldSize[1] = worldSizeF.height();
-	newBaseImage.SetWorldSize(worldSize);
+	newBaseImage.SetWorldSize(SynGlyphX::DoubleSizeWidget::ConvertFromQSizeF(m_worldSizeWidget->GetSize()));
 
-	newBaseImage.SetShowGridLines(m_showGridLinesCheckBox->isChecked());
+	newBaseImage.SetGridLineCounts(SynGlyphX::IntSizeWidget::ConvertFromQSize(m_gridLinesCountsWidget->GetSize()));
 	newBaseImage.SetGridLinesColor(SynGlyphX::ColorConverter::QColor2GlyphColor(m_gridLinesColorButton->GetColor()));
 
 	return newBaseImage;
