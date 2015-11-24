@@ -71,11 +71,11 @@ namespace SynGlyphXANTz {
 				tagFile.Open(filenames[s_tagFilenameIndex]);
 			}
 
-			if ((!filenames[s_redirectFilenameIndex].empty()) && (platform == OutputPlatform::WindowsZSpace)) {
-
-				redirectFile.open(filenames[s_redirectFilenameIndex]);
-				WriteRedirectHeader(redirectFile, platform);
-			}
+			//if ((!filenames[s_redirectFilenameIndex].empty()) && (platform == OutputPlatform::WindowsZSpace)) {
+			//
+			//	redirectFile.open(filenames[s_redirectFilenameIndex]);
+			//	WriteRedirectHeader(redirectFile, platform);
+			//}
 
 			m_numTagsWritten = 0;
 			unsigned long startingId = WriteHeaders(nodeFile, tagFile, grids);
@@ -384,9 +384,11 @@ namespace SynGlyphXANTz {
 			grid.insert(grid.end(), { L"0", L"0", L"0", L"0", L"1" });
 
 			//grid cell size
-			grid.insert(grid.end(), { L"30", L"30", L"30" });
+			SynGlyphX::DoubleSize cellSize = grids[i].GetCellSize();
+			grid.push_back(boost::lexical_cast<std::wstring>(cellSize[0]));
+			grid.push_back(boost::lexical_cast<std::wstring>(cellSize[1]));
 
-			grid.insert(grid.end(), { L"0", L"0", L"0", L"0", L"0", L"1", L"0", L"0" });
+			grid.insert(grid.end(), { L"30", L"0", L"0", L"0", L"0", L"0", L"1", L"0", L"0" });
 			SynGlyphX::CSVFileHandler::AddVector3ToCSVValues(grid, grids[i].GetScale());
 			SynGlyphX::CSVFileHandler::AddVector3ToCSVValues(grid, grids[i].GetPosition());
 			grid.insert(grid.end(), { L"0", L"0", L"0", L"0", L"0", L"0" });
@@ -416,8 +418,9 @@ namespace SynGlyphXANTz {
 			grid.insert(grid.end(), { L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0" });
 			
 			//segments
-			grid.push_back(L"12");
-			grid.push_back(L"6");
+			const SynGlyphX::IntSize& segments = grids[i].GetSegments();
+			grid.push_back(boost::lexical_cast<std::wstring>(segments[0]));
+			grid.push_back(boost::lexical_cast<std::wstring>(segments[1]));
 				
 			grid.insert(grid.end(), { L"0", L"0", L"0", L"0", L"0", L"420" });
 			

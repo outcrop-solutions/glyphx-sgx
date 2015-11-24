@@ -119,18 +119,15 @@ namespace SynGlyphXANTz {
 			}
 
 			ANTzGrid grid;
+			grid.SetVisible(true);
 			grid.SetPosition(baseImage.GetPosition());
 			grid.SetRotation(baseImage.GetRotationAngles());
 			grid.SetTextureID(m_textureIDs.back());
 
-			SynGlyphX::Vector3 gridScale;
-			gridScale[0] = baseImage.GetWorldSize()[0] / 360.0;
-			gridScale[1] = baseImage.GetWorldSize()[1] / 180.0;
-			gridScale[2] = 1.0;
-			grid.SetScale(gridScale);
+			grid.SetSize(baseImage.GetWorldSize());
 
 			grid.SetColor(baseImage.GetGridLinesColor());
-			grid.SetVisible(baseImage.GetShowGridLines());
+			grid.SetSegments({ { baseImage.GetGridLineCounts()[1] + 1, baseImage.GetGridLineCounts()[0] + 1 } });
 
 			grids.push_back(grid);
 		}

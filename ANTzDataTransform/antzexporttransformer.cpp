@@ -81,7 +81,8 @@ namespace SynGlyphXANTz {
 		ANTzGrid grid;
 		grid.SetPosition({ { 167.77, 87.23, 0.5 } });
 		grid.SetRotation({ { 0.0, 0.0, 0.0 } });
-		grid.SetScale({ { 0.068, 0.03, 1.0 } });
+		grid.SetSegments({ { 1, 1 } });
+		grid.SetSize({ { 24.48, 5.4 } });
 		grid.SetTextureID(logoTextureID);
 		grid.SetVisible(false);
 
