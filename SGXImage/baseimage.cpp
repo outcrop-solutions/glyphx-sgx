@@ -18,7 +18,7 @@ namespace SynGlyphX {
 		m_properties(nullptr),
 		m_type(Type::Default),
 		m_worldSize({ {360.0, 180.0} }),
-		m_showGridLines(false),
+		m_gridLineCounts({ { 0, 0 } }),
 		m_gridLinesColor(GlyphColor::s_black)
 	{
 		SetProperties(properties);
@@ -29,7 +29,9 @@ namespace SynGlyphX {
 		m_properties(nullptr),
 		m_position({ { 0.0, 0.0, 0.0 } }),
 		m_rotationAngles({ { 0.0, 0.0, 0.0 } }),
-		m_worldSize({ { 360.0, 180.0 } }) {
+		m_worldSize({ { 360.0, 180.0 } }),
+		m_gridLineCounts({ { 0, 0 } }),
+		m_gridLinesColor(GlyphColor::s_black) {
 
 		if (m_type == Type::DownloadedMap) {
 
@@ -70,12 +72,21 @@ namespace SynGlyphX {
 		boost::optional<const boost::property_tree::wptree&> gridLinesPropertyTree = propertyTree.get_child_optional(L"GridLines");
 		if (gridLinesPropertyTree.is_initialized()) {
 
-			m_showGridLines = gridLinesPropertyTree.get().get<bool>(L"<xmlattr>.show");
 			m_gridLinesColor = gridLinesPropertyTree.get().get<GlyphColor>(L"Color");
+			boost::optional<bool> showGridLines = gridLinesPropertyTree.get().get_optional<bool>(L"<xmlattr>.show");
+			if (!showGridLines.is_initialized()) {
+
+				m_gridLineCounts[0] = gridLinesPropertyTree.get().get<unsigned int>(L"<xmlattr>.horizontal");
+				m_gridLineCounts[1] = gridLinesPropertyTree.get().get<unsigned int>(L"<xmlattr>.vertical");
+			}
+			else if (showGridLines.get()) {
+
+				m_gridLineCounts = { { 5, 11 } };
+			}
 		}
 		else {
 
-			m_showGridLines = true;
+			m_gridLineCounts = { { 5, 11 } };
 		}
 	}
 
@@ -85,7 +96,7 @@ namespace SynGlyphX {
 		m_properties(nullptr),
 		m_rotationAngles(baseImage.m_rotationAngles),
 		m_worldSize(baseImage.m_worldSize),
-		m_showGridLines(baseImage.m_showGridLines),
+		m_gridLineCounts(baseImage.m_gridLineCounts),
 		m_gridLinesColor(baseImage.m_gridLinesColor) {
 
 		SetProperties(baseImage.GetProperties());
@@ -103,7 +114,7 @@ namespace SynGlyphX {
 		m_type = baseImage.m_type;
 		SetProperties(baseImage.GetProperties());
 		m_worldSize = baseImage.m_worldSize;
-		m_showGridLines = baseImage.m_showGridLines;
+		m_gridLineCounts = baseImage.m_gridLineCounts;
 		m_gridLinesColor = baseImage.m_gridLinesColor;
 
 		return *this;
@@ -131,7 +142,7 @@ namespace SynGlyphX {
 			return false;
 		}
 
-		if (m_showGridLines != baseImage.m_showGridLines) {
+		if (m_gridLineCounts != baseImage.m_gridLineCounts) {
 
 			return false;
 		}
@@ -229,7 +240,8 @@ namespace SynGlyphX {
 		worldSizePropertyTree.put(L"Height", m_worldSize[1]);
 
 		PropertyTree& gridLinesPropertyTree = propertyTree.add(L"GridLines", L"");
-		gridLinesPropertyTree.put(L"<xmlattr>.show", m_showGridLines);
+		gridLinesPropertyTree.put(L"<xmlattr>.horizontal", m_gridLineCounts[0]);
+		gridLinesPropertyTree.put(L"<xmlattr>.vertical", m_gridLineCounts[1]);
 		gridLinesPropertyTree.put(L"Color", m_gridLinesColor);
 	}
 
@@ -253,24 +265,24 @@ namespace SynGlyphX {
 		return m_rotationAngles;
 	}
 
-	void BaseImage::SetWorldSize(const Size& worldSize) {
+	void BaseImage::SetWorldSize(const DoubleSize& worldSize) {
 
 		m_worldSize = worldSize;
 	}
 
-	const BaseImage::Size& BaseImage::GetWorldSize() const {
+	const DoubleSize& BaseImage::GetWorldSize() const {
 
 		return m_worldSize;
 	}
 
-	void BaseImage::SetShowGridLines(bool show) {
+	void BaseImage::SetGridLineCounts(const IntSize& gridLineCounts) {
 
-		m_showGridLines = show;
+		m_gridLineCounts = gridLineCounts;
 	}
 
-	bool BaseImage::GetShowGridLines() const {
+	IntSize BaseImage::GetGridLineCounts() const {
 
-		return m_showGridLines;
+		return m_gridLineCounts;
 	}
 
 	void BaseImage::SetGridLinesColor(const GlyphColor& color) {

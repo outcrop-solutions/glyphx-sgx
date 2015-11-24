@@ -31,7 +31,6 @@ namespace SynGlyphX {
 	class SGXIMAGE_API BaseImage
 	{
 	public:
-		typedef std::array<double, 2> Size;
 		typedef boost::property_tree::wptree PropertyTree;
 
 		enum Type {
@@ -60,11 +59,11 @@ namespace SynGlyphX {
 		void SetRotation(const Vector3& angles);
 		const Vector3& GetRotationAngles() const;
 
-		void SetWorldSize(const Size& worldSize);
-		const Size& GetWorldSize() const;
+		void SetWorldSize(const DoubleSize& worldSize);
+		const DoubleSize& GetWorldSize() const;
 
-		void SetShowGridLines(bool show);
-		bool GetShowGridLines() const;
+		void SetGridLineCounts(const IntSize& gridLineCounts);
+		IntSize GetGridLineCounts() const;
 
 		void SetGridLinesColor(const GlyphColor& color);
 		GlyphColor GetGridLinesColor() const;
@@ -78,8 +77,8 @@ namespace SynGlyphX {
 		Vector3 m_rotationAngles;
 		Type m_type;
 		std::shared_ptr<BaseImageProperties> m_properties;
-		Size m_worldSize;
-		bool m_showGridLines;
+		DoubleSize m_worldSize;
+		IntSize m_gridLineCounts;
 		GlyphColor m_gridLinesColor;
 	};
 

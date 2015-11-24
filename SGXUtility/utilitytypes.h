@@ -25,6 +25,9 @@
 
 namespace SynGlyphX {
 
+	typedef std::array<unsigned int, 2> IntSize;
+	typedef std::array<double, 2> DoubleSize;
+
 	typedef std::vector<std::wstring> WStringVector;
 	typedef std::vector<std::string> StringVector;
 

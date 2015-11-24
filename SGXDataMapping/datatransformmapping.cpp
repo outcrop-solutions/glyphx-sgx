@@ -231,7 +231,7 @@ namespace SynGlyphX {
 
 			m_baseObjects.push_back(BaseImage(nullptr));
 			//Default to showing grid lines for the first base object
-			m_baseObjects[0].SetShowGridLines(true);
+			m_baseObjects[0].SetGridLineCounts({ { 5, 11 } });
 		}
     }
 
