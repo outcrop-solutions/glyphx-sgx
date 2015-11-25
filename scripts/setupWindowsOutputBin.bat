@@ -9,7 +9,6 @@ SET antzmactemplate=ANTzMacTemplate
 SET defaultbaseimages=DefaultBaseImages
 SET glyphtemplates=GlyphTemplates
 SET logo=logo.png
-SET exportlogo=logo_export.png
 
 if not exist %basedir% (mkdir %basedir%)
 
@@ -42,6 +41,5 @@ FOR /F "tokens=*" %%p IN ('dir /b /a:d ..\bin\*') DO (
 		robocopy /z /e ..\..\Misc\InstallerFiles\%glyphtemplates% %basedir%\%%p\%%c\%glyphtemplates%
 		
 		copy /B /Y ..\..\Misc\InstallerFiles\Images\%logo% %basedir%\%%p\%%c\%logo%
-		copy /B /Y ..\..\Misc\InstallerFiles\Images\%exportlogo% %basedir%\%%p\%%c\%exportlogo%
 	)
 )
