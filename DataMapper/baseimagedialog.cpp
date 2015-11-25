@@ -78,7 +78,7 @@ BaseImageDialog::BaseImageDialog(bool enablePositionAndOrientation, bool showDow
 
 	mainLayout->addWidget(m_baseImageOptionsStackedWidget);
 
-	QObject::connect(m_baseImageComboBox, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), m_baseImageOptionsStackedWidget, &QStackedWidget::setCurrentIndex);
+	QObject::connect(m_baseImageComboBox, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &BaseImageDialog::BaseImageTypeChanged);
 
 	m_positionWidget = new SynGlyphX::XYZWidget(false, this);
 	m_positionWidget->SetRange(-5000.0, 5000.0);
@@ -110,10 +110,18 @@ BaseImageDialog::BaseImageDialog(bool enablePositionAndOrientation, bool showDow
 	presetGroupBox->setEnabled(enablePositionAndOrientation);
 	mainLayout->addWidget(presetGroupBox);
 
+	QGroupBox* worldSizeGroupBox = new QGroupBox(tr("World Space Size"), this);
+	QHBoxLayout* worldSizeBoxLayout = new QHBoxLayout(this);
+	m_setWorldSizeRatioToImageButton = new QPushButton(tr("Use Image Ratio"));
+	worldSizeBoxLayout->addWidget(m_setWorldSizeRatioToImageButton);
+	QObject::connect(m_setWorldSizeRatioToImageButton, &QPushButton::pressed, this, &BaseImageDialog::OnUseImageSizeRatioInWorldSize);
+
 	m_worldSizeWidget = new SynGlyphX::DoubleSizeWidget(true, this);
 	m_worldSizeWidget->SetRange(0.1, 10000.0);
 	m_worldSizeWidget->SetSize(QSizeF(360.0, 180.0));
-	SynGlyphX::GroupBoxSingleWidget* worldSizeGroupBox = new SynGlyphX::GroupBoxSingleWidget(tr("World Space Size"), m_worldSizeWidget, this);
+	worldSizeBoxLayout->addWidget(m_worldSizeWidget);
+
+	worldSizeGroupBox->setLayout(worldSizeBoxLayout);
 	mainLayout->addWidget(worldSizeGroupBox);
 
 	QGroupBox* gridLinesGroupBox = new QGroupBox(tr("Grid Lines"), this);
@@ -157,44 +165,41 @@ void BaseImageDialog::accept() {
 	SynGlyphX::BaseImage::Type baseImageType = SynGlyphX::BaseImage::s_baseImageTypeStrings.right.at(m_baseImageComboBox->currentText().toStdWString());
 	if (baseImageType == SynGlyphX::BaseImage::Type::UserImage) {
 
-		QString userImageFile = m_userDefinedImageLineEdit->GetText();
-		if (userImageFile.isEmpty()) {
+		QString userImageFilename = m_userDefinedImageLineEdit->GetText();
+		if (!ValidateUserImageFilename(userImageFilename)) {
 
-			QMessageBox::warning(this, tr("Base Image Error"), tr("File name listed for local image is empty."));
-			return;
-		}
-		if (userImageFile.right(4).toLower() != ".png") {
-
-			QMessageBox::warning(this, tr("Base Image Error"), tr("File name listed for local image is not a png file."));
-			return;
-		}
-		if (!QFile::exists(userImageFile)) {
-
-			QMessageBox::warning(this, tr("Base Image Error"), tr("File name listed for local image does not exist."));
 			return;
 		}
 
-		QImage image(userImageFile);
+		QImage image(userImageFilename);
 		if (image.isNull()) {
 
 			QMessageBox::warning(this, tr("Base Image Error"), tr("File name listed for local image is an invalid image."));
-			return;
-		}
-
-		if (image.isNull()) {
-
-			QMessageBox::warning(this, tr("Base Image Error"), tr("File name listed for local image is an invalid image."));
-			return;
-		}
-
-		//This is here because ANTz can't handle images of sizes other than 2048 x 1024
-		if (image.size() != QSize(2048, 1024)) {
-
-			QMessageBox::warning(this, tr("Base Image Error"), tr("File name listed for local image needs to be a size of 2048 x 1024."));
 			return;
 		}
 	}
 	QDialog::accept();
+}
+
+bool BaseImageDialog::ValidateUserImageFilename(const QString& userImageFilename) {
+
+	if (userImageFilename.isEmpty()) {
+
+		QMessageBox::warning(this, tr("Base Image Error"), tr("File name listed for local image is empty."));
+		return false;
+	}
+	if (userImageFilename.right(4).toLower() != ".png") {
+
+		QMessageBox::warning(this, tr("Base Image Error"), tr("File name listed for local image is not a png file."));
+		return false;
+	}
+	if (!QFile::exists(userImageFilename)) {
+
+		QMessageBox::warning(this, tr("Base Image Error"), tr("File name listed for local image does not exist."));
+		return false;
+	}
+
+	return true;
 }
 
 void BaseImageDialog::SetBaseImage(const SynGlyphX::BaseImage& baseImage) {
@@ -261,4 +266,49 @@ void BaseImageDialog::PresetButtonClicked(int id) {
 	const PositionOrientation& preset = s_presets[id];
 	m_positionWidget->Set(preset.first);
 	m_orientationWidget->Set(preset.second);
+}
+
+void BaseImageDialog::BaseImageTypeChanged(int type) {
+
+	m_baseImageOptionsStackedWidget->setCurrentIndex(type);
+	bool isNotDownloadedMap = (SynGlyphX::BaseImage::s_baseImageTypeStrings.right.at(m_baseImageComboBox->currentText().toStdWString()) != SynGlyphX::BaseImage::DownloadedMap);
+	m_worldSizeWidget->setEnabled(isNotDownloadedMap);
+	m_setWorldSizeRatioToImageButton->setEnabled(isNotDownloadedMap);
+}
+
+void BaseImageDialog::OnUseImageSizeRatioInWorldSize() {
+
+	SynGlyphX::BaseImage::Type baseImageType = SynGlyphX::BaseImage::s_baseImageTypeStrings.right.at(m_baseImageComboBox->currentText().toStdWString());
+	QSizeF worldSize = m_worldSizeWidget->GetSize();
+
+	if (baseImageType == SynGlyphX::BaseImage::Default) {
+
+		worldSize.setHeight(worldSize.width() * 0.5);
+	}
+	else if (baseImageType == SynGlyphX::BaseImage::UserImage) {
+
+		QString userImageFilename = m_userDefinedImageLineEdit->GetText();
+		if (!ValidateUserImageFilename(userImageFilename)) {
+
+			return;
+		}
+
+		QImage image(userImageFilename);
+		if (image.isNull()) {
+
+			QMessageBox::warning(this, tr("Base Image Error"), tr("Can't set world space ratio using an invalid image."));
+			return;
+		}
+
+		if (!image.size().isValid()) {
+
+			QMessageBox::warning(this, tr("Base Image Error"), tr("Can't set world space ratio using an image with an invalid size."));
+			return;
+		}
+
+		float ratio = image.height() / static_cast<float>(image.width());
+		worldSize.setHeight(worldSize.width() * ratio);
+	}
+
+	m_worldSizeWidget->SetSize(worldSize);
 }

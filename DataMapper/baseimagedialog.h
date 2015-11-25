@@ -46,8 +46,12 @@ public:
 
 private slots:
 	void PresetButtonClicked(int id);
+	void BaseImageTypeChanged(int type);
+	void OnUseImageSizeRatioInWorldSize();
 
 private:
+	bool ValidateUserImageFilename(const QString& userImageFilename);
+
 	typedef std::pair<SynGlyphX::Vector3, SynGlyphX::Vector3> PositionOrientation;
 	typedef std::vector<PositionOrientation> PresetMap;
 
@@ -58,12 +62,14 @@ private:
 	QComboBox* m_baseImageComboBox;
 	MapOptionsWidget* m_downloadedMapOptionsWidget;
 	SynGlyphX::BrowseLineEdit* m_userDefinedImageLineEdit;
+	SynGlyphX::DefaultBaseImagesComboBox* m_defaultImagesComboBox;
+	
 	SynGlyphX::XYZWidget* m_positionWidget;
 	SynGlyphX::XYZWidget* m_orientationWidget;
 	QSignalMapper* m_presetButtonSignalMapper;
+	QPushButton* m_setWorldSizeRatioToImageButton;
 	SynGlyphX::DoubleSizeWidget* m_worldSizeWidget;
-	SynGlyphX::DefaultBaseImagesComboBox* m_defaultImagesComboBox;
-	
+
 	SynGlyphX::IntSizeWidget* m_gridLinesCountsWidget;
 	SynGlyphX::ColorButton* m_gridLinesColorButton;
 };
