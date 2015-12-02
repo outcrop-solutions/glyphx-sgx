@@ -344,6 +344,7 @@ namespace SynGlyphXANTz {
 		m_worldTextureID = BindTextureInFile(SynGlyphX::GlyphBuilderApplication::GetDefaultBaseImagesLocation() + QString::fromStdWString(SynGlyphX::DefaultBaseImageProperties::GetBasefilename()));
 		pNPnode rootGrid = static_cast<pNPnode>(antzData->map.node[kNPnodeRootGrid]);
 		SetGridTexture(rootGrid);
+		SetGridLinesColor(rootGrid, Qt::blue);
 		antzData->io.gl.textureCount = 1;
 		SetCameraToDefaultPosition();
 	}
@@ -1365,6 +1366,8 @@ namespace SynGlyphXANTz {
 
 		const QStringList& textures = m_model->GetBaseImageFilenames();
 
+		int size = m_model->rowCount();
+
 		for (unsigned int textureID : m_textureIDs) {
 
 			deleteTexture(textureID);
@@ -1381,6 +1384,10 @@ namespace SynGlyphXANTz {
 
 		pNPnode rootGrid = static_cast<pNPnode>(antzData->map.node[kNPnodeRootGrid]);
 		SetGridTexture(rootGrid);
+		if (m_model->rowCount() == 0) {
+
+			SetGridLinesColor(rootGrid, Qt::blue);
+		}
 		for (int i = 0; i < rootGrid->childCount; ++i) {
 
 			SetGridTexture(rootGrid->child[i]);
@@ -1397,15 +1404,19 @@ namespace SynGlyphXANTz {
 		if (grid->textureID == 1) {
 
 			grid->textureID = m_worldTextureID;
-			grid->color.r = 0;
-			grid->color.g = 0;
-			grid->color.b = 255;
-			grid->color.a = 255;
 		}
 		else {
 
 			grid->textureID = m_textureIDs[grid->textureID - 2];
 		}
+	}
+
+	void ANTzForestWidget::SetGridLinesColor(pNPnode grid, const QColor& color) {
+
+		grid->color.r = color.red();
+		grid->color.g = color.green();
+		grid->color.b = color.blue();
+		grid->color.a = 255;
 	}
 
 	unsigned int ANTzForestWidget::BindTextureInFile(const QString& imageFilename) {
