@@ -969,7 +969,7 @@ void DrawVideo (pNPnode node)
 
 
 //------------------------------------------------------------------------------
-void DrawGrid (pNPnode node, void* dataRef)
+void DrawGrid(pNPnode node, void* dataRef)
 {
 	int			i = 0;
 	int			j = 0;
@@ -981,8 +981,8 @@ void DrawGrid (pNPnode node, void* dataRef)
 	GLfloat		z = 0.0f;
 	NPfloatXYZ	length;
 
-	pData data = (pData) dataRef;
-	NPgridPtr grid = (NPgridPtr) node->data;
+	pData data = (pData)dataRef;
+	NPgridPtr grid = (NPgridPtr)node->data;
 	pNPnode camNode = data->map.currentCam;
 
 	//MB-TEXTURE
@@ -996,35 +996,37 @@ void DrawGrid (pNPnode node, void* dataRef)
 
 	//if pickPass then set the ID color
 	if (data->io.gl.pickPass)
-	{	
-		npIDtoRGB (node->id, &idRed, &idGrn, &idBlu);
+	{
+		npIDtoRGB(node->id, &idRed, &idGrn, &idBlu);
 		printf("r: %d   g: %d   b: %d\n", idRed, idGrn, idBlu);
-		glColor4ub (idRed, idGrn, idBlu, 255);		//set color mapped as id
+		glColor4ub(idRed, idGrn, idBlu, 255);		//set color mapped as id
 	}
 
 	//turn two-sided rendering of polygon faces on
 	if (node->branchLevel > 0)
-		glDisable (GL_CULL_FACE);
+		glDisable(GL_CULL_FACE);
 
-	glDisable (GL_LIGHTING);	//draw 100% ambient white
-	
+	glDisable(GL_LIGHTING);	//draw 100% ambient white
+
 	glPushMatrix();				//restore after calling child nodes
 
 	//used to calculate grid center based on segment count and spacing
-	length.x = grid->spacing.x * node->segments.x;
-	length.y = grid->spacing.y * node->segments.y;
+	//	length.x = grid->spacing.x * node->segments.x;
+	//	length.y = grid->spacing.y * node->segments.y;
+	length.x = node->auxA.x * node->segments.x;
+	length.y = node->auxA.y * node->segments.y;
 
 	//position, rotate and scale node
-	glTranslatef (node->translate.x, node->translate.y, node->translate.z);
+	glTranslatef(node->translate.x, node->translate.y, node->translate.z);
 
-	glRotatef (node->rotate.y, 0.0f, 0.0f, -1.0f);
-	glRotatef (node->rotate.x, -1.0f, 0.0f, 0.0f);
-	glRotatef (node->rotate.z, 0.0f, 0.0f, -1.0f);
-		
-	glScalef (node->scale.x, node->scale.y, node->scale.z);
+	glRotatef(node->rotate.y, 0.0f, 0.0f, -1.0f);
+	glRotatef(node->rotate.x, -1.0f, 0.0f, 0.0f);
+	glRotatef(node->rotate.z, 0.0f, 0.0f, -1.0f);
+
+	glScalef(node->scale.x, node->scale.y, node->scale.z);
 
 	//center based on length
-	glTranslatef (length.x * -0.5f, length.y * -0.5f, 0.0f);
+	glTranslatef(length.x * -0.5f, length.y * -0.5f, 0.0f);
 
 	//draw texture quad
 	if (node->textureID || data->io.gl.pickPass)	//allow for click on background tex's for mouse flying
@@ -1033,47 +1035,53 @@ void DrawGrid (pNPnode node, void* dataRef)
 		if (!data->io.gl.pickPass)
 		{
 			if (node->branchLevel > 0)	//child grids use opacity for textures
-				glColor4ub (255, 255, 255, node->color.a);
+				glColor4ub(255, 255, 255, node->color.a);
 			else
-				glColor4ub (255, 255, 255, 255);	 //root grid is fully opaque
+				glColor4ub(255, 255, 255, 255);	 //root grid is fully opaque
 
-			glEnable ( GL_TEXTURE_2D );
-			glBindTexture ( GL_TEXTURE_2D, node->textureID );
+			glEnable(GL_TEXTURE_2D);
+			glBindTexture(GL_TEXTURE_2D, node->textureID);
 
 			//using GL_MODULATE instead of GL_DECAL to allow alpha with RGBA textures
-			glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
+			glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
-			glTexGeni( GL_S, GL_TEXTURE_GEN_MODE, GL_OBJECT_LINEAR );
-			glTexGeni( GL_T, GL_TEXTURE_GEN_MODE, GL_OBJECT_LINEAR );
+			glTexGeni(GL_S, GL_TEXTURE_GEN_MODE, GL_OBJECT_LINEAR);
+			glTexGeni(GL_T, GL_TEXTURE_GEN_MODE, GL_OBJECT_LINEAR);
 
-			glDisable( GL_TEXTURE_GEN_S );
-			glDisable( GL_TEXTURE_GEN_T );
+			glDisable(GL_TEXTURE_GEN_S);
+			glDisable(GL_TEXTURE_GEN_T);
 
-			glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP );
-			glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP );
-			
+			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+
 			//rather sharp setting, but probably best for mapping
 			//for video use GL_LINEAR_MIPMAP_NEAREST when the angle is close 
 			//to perpendicular less artifacts and a bit more blurry
-	//		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST_MIPMAP_NEAREST);		//zz debug, add mipmapping...
-	//		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR);
+			//zz mipmap
+			if (0)//gl->mipmap		
+			{
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST_MIPMAP_NEAREST);		//zz debug, add mipmapping...
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR);
+			}
+			else
+			{
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);		//zz debug, add mipmapping...
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+			}
 
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);		//zz debug, add mipmapping...
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-
-			glTexGenfv( GL_S, GL_OBJECT_PLANE, sgenparams );
-			glTexGenfv( GL_T, GL_OBJECT_PLANE, tgenparams );
+			glTexGenfv(GL_S, GL_OBJECT_PLANE, sgenparams);
+			glTexGenfv(GL_T, GL_OBJECT_PLANE, tgenparams);
 		}
 
 		//draw the quad
-		glBegin (GL_QUADS);
-			glTexCoord2f(0.0f,0.0f); glVertex3f(0.0f,  0.0f, gridOffset);	 // center quad
-			glTexCoord2f(1.0f,0.0f); glVertex3f(length.x, 0.0f, gridOffset);
-			glTexCoord2f(1.0f,1.0f); glVertex3f(length.x, length.y, gridOffset);
-			glTexCoord2f(0.0f,1.0f); glVertex3f(0.0f,  length.y, gridOffset);
+		glBegin(GL_QUADS);
+		glTexCoord2f(0.0f, 0.0f); glVertex3f(0.0f, 0.0f, gridOffset);	 // center quad
+		glTexCoord2f(1.0f, 0.0f); glVertex3f(length.x, 0.0f, gridOffset);
+		glTexCoord2f(1.0f, 1.0f); glVertex3f(length.x, length.y, gridOffset);
+		glTexCoord2f(0.0f, 1.0f); glVertex3f(0.0f, length.y, gridOffset);
 		glEnd();
-		
-		glDisable ( GL_TEXTURE_2D );
+
+		glDisable(GL_TEXTURE_2D);
 	}
 
 	//draw grid lines unless hidden
@@ -1081,77 +1089,77 @@ void DrawGrid (pNPnode node, void* dataRef)
 	{
 		// if not pickPass then set the node color
 		if (!data->io.gl.pickPass)
-			glColor4ub (node->color.r, node->color.g, node->color.b, node->color.a);
+			glColor4ub(node->color.r, node->color.g, node->color.b, node->color.a);
 
 		//draw grid lines on top of texture map
-//		glDisable (GL_DEPTH_TEST);					//debug
-		glLineWidth (node->lineWidth);
+		//		glDisable (GL_DEPTH_TEST);					//debug
+		glLineWidth(node->lineWidth);
 
 		//draw grid lines
-		glBegin (GL_LINES);
-			for (i=0; i <= node->segments.z; i++)
+		glBegin(GL_LINES);
+		for (i = 0; i <= node->segments.z; i++)
+		{
+			//need to do this before rest of grid lines, otherwise no showup
+			//if currentNode then draw yellow selection box
+			if (node == data->map.currentNode)
 			{
-				//need to do this before rest of grid lines, otherwise no showup
-				//if currentNode then draw yellow selection box
-				if (node == data->map.currentNode)
-				{
-					glColor4ub(255,255,0,192);	//yellow, 75% opacity
+				glColor4ub(255, 255, 0, 192);	//yellow, 75% opacity
 
-					glVertex3f (0.0f, 0.0f, z);			//side one
-					glVertex3f (length.x, 0.0f, z);
+				glVertex3f(0.0f, 0.0f, z);			//side one
+				glVertex3f(length.x, 0.0f, z);
 
-					glVertex3f (length.x, 0.0f, z);		//two
-					glVertex3f (length.x, length.y, z);
+				glVertex3f(length.x, 0.0f, z);		//two
+				glVertex3f(length.x, length.y, z);
 
-					glVertex3f (length.x, length.y, z);	//three
-					glVertex3f (0.0f, length.y, z);
+				glVertex3f(length.x, length.y, z);	//three
+				glVertex3f(0.0f, length.y, z);
 
-					glVertex3f (0.0f, length.y, z);		//four
-					glVertex3f (0.0f, 0.0f, z);
+				glVertex3f(0.0f, length.y, z);		//four
+				glVertex3f(0.0f, 0.0f, z);
 
-					glVertex3f (length.x * 0.5f, 0.0f, z);	 //cross hairs
-					glVertex3f (length.x * 0.5f, length.y, z);
+				glVertex3f(length.x * 0.5f, 0.0f, z);	 //cross hairs
+				glVertex3f(length.x * 0.5f, length.y, z);
 
-					glVertex3f (0.0f, length.y * 0.5f, z);	 //cross hairs
-					glVertex3f (length.x, length.y * 0.5f, z);
+				glVertex3f(0.0f, length.y * 0.5f, z);	 //cross hairs
+				glVertex3f(length.x, length.y * 0.5f, z);
 
-					// restore node color 
-					glColor4ub (node->color.r, node->color.g, node->color.b, node->color.a);
-				}
-		
-				for (j=0; j <= node->segments.x; j++)
-				{
-					glVertex3f (x, 0.0f, z);
-					glVertex3f (x, length.y, z);
-					x += grid->spacing.x;
-				}
-				for (j=0; j <= node->segments.y; j++)
-				{
-					glVertex3f (0.0f, y, z);
-					glVertex3f (length.x, y, z);
-					y += grid->spacing.y;
-				}
-
-				x = 0.0f;						//reset x and y
-				y = 0.0f;
-				z += grid->spacing.z;			//set the z for 3D stacked grids
+				// restore node color 
+				glColor4ub(node->color.r, node->color.g, node->color.b, node->color.a);
 			}
+
+			for (j = 0; j <= node->segments.x; j++)
+			{
+				glVertex3f(x, 0.0f, z);
+				glVertex3f(x, length.y, z);
+				x += node->auxA.x;
+			}
+			for (j = 0; j <= node->segments.y; j++)
+			{
+				glVertex3f(0.0f, y, z);
+				glVertex3f(length.x, y, z);
+				y += node->auxA.y;
+			}
+
+			x = 0.0f;						//reset x and y
+			y = 0.0f;
+			z += node->auxA.z;			//set the z for 3D stacked grids
+		}
 		glEnd();
 
-		glLineWidth (1.0f);
-//		glEnable (GL_DEPTH_TEST);
+		glLineWidth(1.0f);
+		//		glEnable (GL_DEPTH_TEST);
 	}
 
 	//turn two-sided rendering of polygon faces off
 	if (node->branchLevel > 0)
-		glEnable (GL_CULL_FACE);
+		glEnable(GL_CULL_FACE);
 
 	// if not pickPass then restore lighting
 	if (!data->io.gl.pickPass)
-		glEnable (GL_LIGHTING);
+		glEnable(GL_LIGHTING);
 
 	//undo center based on length
-	glTranslatef (length.x * 0.5f, length.y * 0.5f, 0.0f);
+	glTranslatef(length.x * 0.5f, length.y * 0.5f, 0.0f);
 
 	//do not want scaling of root grid to effect children, single case
 	if (node == data->map.node[kNPnodeRootGrid])
@@ -1161,7 +1169,7 @@ void DrawGrid (pNPnode node, void* dataRef)
 	}
 
 	//recursively traverse and draw children
-	for (i=0; i < node->childCount; i++)
+	for (i = 0; i < node->childCount; i++)
 		DrawGrid(node->child[i], data);
 
 	//for all other nodes the transformations are inherited

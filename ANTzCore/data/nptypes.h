@@ -504,8 +504,8 @@ struct NPnode
 	int			average;					//averaging type applied to data
 	int			interval;					//the interval to be averaged
 
-	NPintXYZ	auxA;						//reserved for future use
-	NPintXYZ	auxB;						//reserved for future use
+	NPfloatXYZ	auxA;						//reserved for future use
+	NPfloatXYZ	auxB;						//reserved for future use
 
 	float		colorShift;					//pseudo Hue shift, -180 to 180
 

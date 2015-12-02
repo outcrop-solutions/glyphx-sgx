@@ -497,12 +497,12 @@ void* npReadMapNodeCSV (const char* buffer, int wordSize, int size,
 	node->average			= npstrtoi(&cursor);
 	node->interval			= npstrtoi(&cursor);
 	
-	node->auxA.x			= npstrtoi(&cursor);
-	node->auxA.y			= npstrtoi(&cursor);
-	node->auxA.z			= npstrtoi(&cursor);
-	node->auxB.x			= npstrtoi(&cursor);
-	node->auxB.y			= npstrtoi(&cursor);
-	node->auxB.z			= npstrtoi(&cursor);
+	node->auxA.x			= npstrtof(&cursor);
+	node->auxA.y			= npstrtof(&cursor);
+	node->auxA.z			= npstrtof(&cursor);
+	node->auxB.x			= npstrtof(&cursor);
+	node->auxB.y			= npstrtof(&cursor);
+	node->auxB.z			= npstrtof(&cursor);
 
 	node->colorShift		= npstrtof(&cursor);
 
@@ -646,6 +646,16 @@ void* npReadMapNodeCSV (const char* buffer, int wordSize, int size,
 
 	//for sorting orphan nodes
 	nodeCount = ++data->map.sortCount;
+
+	if (node->type == kNodeGrid)
+	{
+		if (node->auxA.x == 0.0f)
+			node->auxA.x = kNPgridSpacing;
+		if (node->auxA.y == 0.0f)
+			node->auxA.y = kNPgridSpacing;
+		if (node->auxA.z == 0.0f)
+			node->auxA.z = kNPgridSpacing;
+	}
 
 	return node;
 }
