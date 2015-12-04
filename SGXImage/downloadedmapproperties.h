@@ -23,14 +23,13 @@
 #include <array>
 #include <boost/property_tree/ptree.hpp>
 #include <boost/bimap.hpp>
+#include "utilitytypes.h"
 
 namespace SynGlyphX {
 
 	class SGXIMAGE_API DownloadedMapProperties : public BaseImageProperties
 	{
 	public:
-		typedef std::array<unsigned int, 2> Size;
-
 		enum MapSource {
 			MapQuestOpen, //MapQuestOpen gets data from OpenStreetMap
 			GoogleMaps
@@ -45,7 +44,7 @@ namespace SynGlyphX {
 		typedef std::shared_ptr<DownloadedMapProperties> SharedPtr;
 		typedef std::shared_ptr<const DownloadedMapProperties> ConstSharedPtr;
 
-		DownloadedMapProperties(MapSource source = MapSource::MapQuestOpen, MapType type = MapType::Hybrid, bool invert = false, bool grayscale = false, Size size = { { 2048, 1024 } });
+		DownloadedMapProperties(MapSource source = MapSource::MapQuestOpen, MapType type = MapType::Hybrid, bool useBestFit = true, bool invert = false, bool grayscale = false, IntSize size = { { 2048, 1024 } });
 		DownloadedMapProperties(const boost::property_tree::wptree& propertyTree);
 		DownloadedMapProperties(const DownloadedMapProperties& properties);
 		virtual ~DownloadedMapProperties();
@@ -59,14 +58,17 @@ namespace SynGlyphX {
 		MapType GetType() const;
 		void SetType(MapType type);
 
-		Size GetSize() const;
-		void SetSize(const Size& size);
+		IntSize GetSize() const;
+		void SetSize(const IntSize& size);
 
 		bool GetInvert() const;
 		void SetInvert(bool invert);
 
 		bool GetGrayscale() const;
 		void SetGrayscale(bool grayscale);
+
+		bool GetUseBestFit() const;
+		void SetUseBestFit(bool useBestFit);
 
 		virtual bool IsGeographic() const;
 		virtual void ExportToPropertyTree(boost::property_tree::wptree& propertyTree) const;
@@ -77,9 +79,10 @@ namespace SynGlyphX {
 	private:
 		MapSource m_source;
 		MapType m_type;
-		Size m_size;
+		IntSize m_size;
 		bool m_invert;
 		bool m_grayscale;
+		bool m_useBestFit;
 	};
 
 } //namespace SynGlyphX

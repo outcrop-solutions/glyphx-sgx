@@ -13,13 +13,14 @@ namespace SynGlyphX {
 		(DownloadedMapProperties::MapType::Satellite, L"Satellite")
 		(DownloadedMapProperties::MapType::Hybrid, L"Hybrid");
 
-	DownloadedMapProperties::DownloadedMapProperties(MapSource source, MapType type, bool invert, bool grayscale, Size size) :
+	DownloadedMapProperties::DownloadedMapProperties(MapSource source, MapType type, bool useBestFit, bool invert, bool grayscale, IntSize size) :
 		BaseImageProperties(),
 		m_source(source),
 		m_type(type),
 		m_size(size),
 		m_invert(invert),
-		m_grayscale(grayscale)
+		m_grayscale(grayscale),
+		m_useBestFit(useBestFit)
 	{
 	}
 
@@ -29,7 +30,8 @@ namespace SynGlyphX {
 		m_type(s_mapTypeStrings.right.at(propertyTree.get<std::wstring>(L"<xmlattr>.maptype"))),
 		m_size({ { propertyTree.get<unsigned int>(L"<xmlattr>.width"), propertyTree.get<unsigned int>(L"<xmlattr>.height") } }),
 		m_invert(propertyTree.get_optional<bool>(L"<xmlattr>.invert").get_value_or(false)),
-		m_grayscale(propertyTree.get_optional<bool>(L"<xmlattr>.grayscale").get_value_or(false)) {
+		m_grayscale(propertyTree.get_optional<bool>(L"<xmlattr>.grayscale").get_value_or(false)),
+		m_useBestFit(propertyTree.get_optional<bool>(L"<xmlattr>.bestfit").get_value_or(false)) {
 
 	}
 
@@ -39,7 +41,8 @@ namespace SynGlyphX {
 		m_type(properties.m_type),
 		m_size(properties.m_size),
 		m_invert(properties.m_invert), 
-		m_grayscale(properties.m_grayscale) {
+		m_grayscale(properties.m_grayscale),
+		m_useBestFit(properties.m_useBestFit) {
 
 	}
 
@@ -69,6 +72,11 @@ namespace SynGlyphX {
 			return false;
 		}
 			
+		if (m_useBestFit != properties.m_useBestFit) {
+
+			return false;
+		}
+
 		if (m_grayscale != properties.m_grayscale) {
 
 			return false;
@@ -107,12 +115,12 @@ namespace SynGlyphX {
 		m_type = type;
 	}
 
-	DownloadedMapProperties::Size DownloadedMapProperties::GetSize() const {
+	IntSize DownloadedMapProperties::GetSize() const {
 
 		return m_size;
 	}
 
-	void DownloadedMapProperties::SetSize(const Size& size) {
+	void DownloadedMapProperties::SetSize(const IntSize& size) {
 
 		m_size = size;
 	}
@@ -137,6 +145,16 @@ namespace SynGlyphX {
 		m_grayscale = grayscale;
 	}
 
+	bool DownloadedMapProperties::GetUseBestFit() const {
+
+		return m_useBestFit;
+	}
+
+	void DownloadedMapProperties::SetUseBestFit(bool useBestFit) {
+
+		m_useBestFit = useBestFit;
+	}
+
 	void DownloadedMapProperties::ExportToPropertyTree(boost::property_tree::wptree& propertyTree) const {
 
 		propertyTree.put(L"<xmlattr>.mapsource", s_mapSourceStrings.left.at(m_source));
@@ -145,6 +163,7 @@ namespace SynGlyphX {
 		propertyTree.put(L"<xmlattr>.height", m_size[1]);
 		propertyTree.put(L"<xmlattr>.invert", m_invert);
 		propertyTree.put(L"<xmlattr>.grayscale", m_grayscale);
+		propertyTree.put(L"<xmlattr>.bestfit", m_useBestFit);
 	}
 
 } //namespace SynGlyphX
