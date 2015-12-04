@@ -3,6 +3,7 @@
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QDialogButtonBox>
 #include <QtWidgets/QMessageBox>
+#include <QtCore/QFile>
 
 namespace SynGlyphX {
 
@@ -39,19 +40,21 @@ namespace SynGlyphX {
 
 	void ReplaceFilenameDialog::accept() {
 
-		if (IsNewFileValid()) {
+		if (QFile::exists(m_newDatasourceFileLineEdit->GetText())) {
 
-			QDialog::accept();
+			if (IsNewFileValid()) {
+
+				QDialog::accept();
+			}
+			else {
+
+				QMessageBox::warning(this, tr("Change Filename"), tr("New file is not a valid replacement for old file."));
+			}
 		}
 		else {
 
-			QMessageBox::warning(this, tr("Change Filename"), tr("New file is not a valid replacement for old file."));
+			QMessageBox::warning(this, tr("Change Filename"), tr("New file does not exist so it is not a valid replacement for old file."));
 		}
-	}
-
-	bool ReplaceFilenameDialog::IsNewFileValid() const {
-
-		return false;
 	}
 
 } //namespace SynGlyphX

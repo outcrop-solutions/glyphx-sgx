@@ -596,6 +596,11 @@ void DataMapperWindow::ExportToANTz(SynGlyphXANTz::ANTzCSVWriter::OutputPlatform
 				m_dataTransformModel->SaveDataTransformFile(m_currentFilename);
 			}
 		}
+		else {
+
+			QMessageBox::critical(this, tr("Export to ANTz Error"), tr("Portable visualization can't be created when images are still missing."));
+			return;
+		}
 	}
 
 	bool isDirectoryInvalid = false;
