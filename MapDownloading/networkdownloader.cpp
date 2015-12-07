@@ -30,6 +30,11 @@ NetworkDownloader::NetworkDownloader() :
 	m_distanceStrategy(EarthRadiusInMeters)
 {
     ReadSettings();
+
+	for (unsigned int i = 1; i <= MaxZoomLevel; ++i) {
+
+		m_mapQuestMetersPerPixelAtEquator[i] = MetersPerPixelAtZoom0 / std::pow(2.0, static_cast<double>(i));
+	}
 }
 
 NetworkDownloader::~NetworkDownloader()
@@ -63,15 +68,17 @@ NetworkDownloader& NetworkDownloader::Instance() {
 GeographicBoundingBox NetworkDownloader::DownloadMap(const std::vector<GeographicPoint>& points, const std::string& filename, SynGlyphX::DownloadedMapProperties::ConstSharedPtr properties) {
 	
 	GeographicBoundingBox pointsBoundingBox(points);
-	unsigned int zoomLevel = GetZoomLevel(pointsBoundingBox, properties->GetSize());
+	SynGlyphX::IntSize imageSize = properties->GetSize();
+	unsigned int zoomLevel = GetZoomLevel(pointsBoundingBox, properties->GetUseBestFit(), imageSize);
 
 	double cosineAtCenter = std::cos(pointsBoundingBox.GetCenter().get<1>() * DegToRad);
-	double metersPerPixelAtCurrentZoom = (MetersPerPixelAtZoom0 * cosineAtCenter) / std::pow(2.0, static_cast<double>(zoomLevel));
+	double metersPerPixelAtCurrentZoom = m_mapQuestMetersPerPixelAtEquator[zoomLevel] * cosineAtCenter;
 	
 	QString imageUrl;
 
     if (properties->GetSource() == SynGlyphX::DownloadedMapProperties::MapQuestOpen) {
-		imageUrl = GenerateMapQuestOpenString(pointsBoundingBox.GetCenter(), zoomLevel, properties, properties->GetSize());
+
+		imageUrl = GenerateMapQuestOpenString(pointsBoundingBox.GetCenter(), zoomLevel, properties, imageSize);
 	}
 	else {
 		//eventually will implement download from Google Maps and other sources
@@ -136,25 +143,44 @@ GeographicBoundingBox NetworkDownloader::DownloadMap(const std::vector<Geographi
 	}
 
     //double lonRadiusInDegrees = std::abs(((MetersPerPixelAtZoom0 * std::cos(pointsBoundingBox.GetCenter().get<1>() * DegToRad) / std::pow(2.0, zoomLevel)) * (imageSize.width() / 2.0)) / MetersPerDegreeLongitude);
-	double lonRadiusInDegrees = (metersPerPixelAtCurrentZoom  * (properties->GetSize()[0] / 2.0)) / (MetersPerDegreeLongitude  * cosineAtCenter);
+	double lonRadiusInDegrees = (metersPerPixelAtCurrentZoom  * (imageSize[0] / 2.0)) / (MetersPerDegreeLongitude  * cosineAtCenter);
 	//double latRadiusInDegrees = lonRadiusInDegrees * (imageSize.height() / static_cast<double>(imageSize.width()));
-	double latRadiusInDegrees = (metersPerPixelAtCurrentZoom * (properties->GetSize()[1] / 2.0)) / MetersPerDegreeLatitude;
+	double latRadiusInDegrees = (metersPerPixelAtCurrentZoom * (imageSize[1] / 2.0)) / MetersPerDegreeLatitude;
 
 	return GeographicBoundingBox(pointsBoundingBox.GetCenter(), latRadiusInDegrees, lonRadiusInDegrees);
 }
 
-unsigned int NetworkDownloader::GetZoomLevel(const GeographicBoundingBox& boundingBox, const SynGlyphX::IntSize& imageSize) {
+unsigned int NetworkDownloader::GetZoomLevel(const GeographicBoundingBox& boundingBox, bool useBestFit, SynGlyphX::IntSize& imageSize) {
 
 	double hDistanceInMeters = std::abs(boost::geometry::distance(boundingBox.GetWestCenter(), boundingBox.GetEastCenter(), m_distanceStrategy));
     double vDistanceInMeters = std::abs(boost::geometry::distance(boundingBox.GetNorthCenter(), boundingBox.GetSouthCenter(), m_distanceStrategy));
 
 	double cosineAtCenter = std::cos(boundingBox.GetCenter().get<1>() * DegToRad);
 
-	double hZoomLevel = std::log((MetersPerPixelAtZoom0 * cosineAtCenter) / (hDistanceInMeters / imageSize[0])) / std::log(2.0); // / cosineAtCenter);
-	double vZoomLevel = std::log((MetersPerPixelAtZoom0 * cosineAtCenter) / (vDistanceInMeters / imageSize[1])) / std::log(2.0);
+	if (useBestFit) {
 
-	//Zoom level can never go above 18 on MapQuest Open
-	return std::min(static_cast<unsigned int>(std::min(hZoomLevel, vZoomLevel)), MaxZoomLevel);
+		for (unsigned int i = MaxZoomLevel; i > 0; --i) {
+
+			double metersPerPixelAtZoom = m_mapQuestMetersPerPixelAtEquator[i] * cosineAtCenter;
+			SynGlyphX::DoubleSize imageSizeAtZoom;
+			imageSizeAtZoom[0] = hDistanceInMeters / metersPerPixelAtZoom;
+			imageSizeAtZoom[1] = vDistanceInMeters / metersPerPixelAtZoom;
+			if ((imageSizeAtZoom[0] < imageSize[0]) && (imageSizeAtZoom[1] < imageSize[1])) {
+
+				imageSize[0] = std::ceil(imageSizeAtZoom[0]);
+				imageSize[1] = std::ceil(imageSizeAtZoom[1]);
+				return i;
+			}
+		}
+	}
+	else {
+
+		double hZoomLevel = std::log((MetersPerPixelAtZoom0 * cosineAtCenter) / (hDistanceInMeters / imageSize[0])) / std::log(2.0); // / cosineAtCenter);
+		double vZoomLevel = std::log((MetersPerPixelAtZoom0 * cosineAtCenter) / (vDistanceInMeters / imageSize[1])) / std::log(2.0);
+
+		//Zoom level can never go above 18 on MapQuest Open
+		return std::min(static_cast<unsigned int>(std::min(hZoomLevel, vZoomLevel)), MaxZoomLevel);
+	}
 }
 
 QString NetworkDownloader::GenerateMapQuestOpenString(const GeographicPoint& center, unsigned int zoomLevel, SynGlyphX::DownloadedMapProperties::ConstSharedPtr properties, const SynGlyphX::IntSize& imageSize) {

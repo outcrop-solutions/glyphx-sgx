@@ -61,9 +61,8 @@ BaseImageDialog::BaseImageDialog(bool enablePositionAndOrientation, bool showDow
 	if (showDownloadMapOptions) {
 
 		m_downloadedMapOptionsWidget = new MapOptionsWidget(this);
-		SynGlyphX::GroupBoxSingleWidget* downloadedMapOptionsGroupBox = new SynGlyphX::GroupBoxSingleWidget(tr("Map Options"), m_downloadedMapOptionsWidget, this);
-		downloadedMapOptionsGroupBox->setContentsMargins(0, 0, 0, 0);
-		m_baseImageOptionsStackedWidget->addWidget(downloadedMapOptionsGroupBox);
+		m_downloadedMapOptionsWidget->layout()->setContentsMargins(0, 0, 0, 0);
+		m_baseImageOptionsStackedWidget->addWidget(m_downloadedMapOptionsWidget);
 	}
 
 	m_userDefinedImageLineEdit = new SynGlyphX::BrowseLineEdit(SynGlyphX::BrowseLineEdit::FileOpen, true, m_baseImageOptionsStackedWidget);

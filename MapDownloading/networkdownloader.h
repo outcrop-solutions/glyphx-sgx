@@ -48,7 +48,7 @@ public:
     //const QString& GetGoogleMapsKey() const;
 
 private:
-	unsigned int GetZoomLevel(const GeographicBoundingBox& boundingBox, const SynGlyphX::IntSize& imageSize);
+	unsigned int GetZoomLevel(const GeographicBoundingBox& boundingBox, bool useBestFit, SynGlyphX::IntSize& imageSize);
 	QString GenerateMapQuestOpenString(const GeographicPoint& center, unsigned int zoomLevel, SynGlyphX::DownloadedMapProperties::ConstSharedPtr properties, const SynGlyphX::IntSize& imageSize);
     void ReadSettings();
     void WriteSettings();
@@ -59,6 +59,8 @@ private:
 
 	QString m_mapQuestOpenKey;
     //QString m_googlemapsOpenKey;
+
+	std::map<unsigned int, double> m_mapQuestMetersPerPixelAtEquator;
 };
 
 #endif //NETWORKDOWNLOADER_H
