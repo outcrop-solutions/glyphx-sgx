@@ -49,6 +49,12 @@ namespace SynGlyphX {
 		static void SetDefaultImagesDirectory(const QString& defaultImagesDirectory);
 
 	protected:
+		enum OverrideProperty {
+
+			None,
+			PositionX,
+			PositionY
+		};
 		virtual void Prepare() = 0;
 		virtual void CreateGlyphsFromMapping(const DataTransformMapping& mapping) = 0;
 
@@ -64,7 +70,7 @@ namespace SynGlyphX {
 		Glyph ProcessMinMaxGlyph(const DataMappingGlyphGraph::ConstGlyphIterator& minMaxGlyph, DataMappingGlyphGraph::ConstSharedPtr minMaxTree, const InputFieldDataMap& queryResultData, unsigned int index) const;
 		void AddChildrenToGlyphTree(GlyphGraph::SharedPtr tree, GlyphGraph::GlyphIterator newNode, DataMappingGlyphGraph::ConstSharedPtr minMaxTree, DataMappingGlyphGraph::ConstGlyphIterator node, const InputFieldDataMap& queryResultData, unsigned int index);
 		
-		double TransformProperty(const InputBinding& binding, const NumericMappingProperty& mappingProperty, const InputFieldDataMap& queryResultData, unsigned int index) const;
+		double TransformProperty(const InputBinding& binding, const NumericMappingProperty& mappingProperty, const InputFieldDataMap& queryResultData, unsigned int index, OverrideProperty prop = OverrideProperty::None) const;
 		GlyphColor TransformProperty(const InputBinding& binding, const ColorMappingProperty& mappingProperty, const InputFieldDataMap& queryResultData, unsigned int index) const;
 		GlyphGeometryInfo::Shape TransformProperty(const InputBinding& binding, const GeometryShapeMappingProperty& mappingProperty, const InputFieldDataMap& queryResultData, unsigned int index) const;
 		VirtualTopologyInfo::Type TransformProperty(const InputBinding& binding, const VirtualTopologyMappingProperty& mappingProperty, const InputFieldDataMap& queryResultData, unsigned int index) const;
@@ -90,6 +96,8 @@ namespace SynGlyphX {
 		QString m_sourceDataCacheLocation;
 		SourceDataCache m_sourceDataCache;
 		GeographicBoundingBox m_overrideRootXYBoundingBox;
+		DoubleMinDiff m_overrideRootXRange;
+		DoubleMinDiff m_overrideRootYRange;
 		DataMappingDefaults m_defaults;
 
 		QString m_error;

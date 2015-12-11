@@ -163,11 +163,11 @@ namespace SynGlyphX {
 
 			InputBinding xBinding(minMaxGlyph->second.GetInputBinding(DataMappingGlyph::MappableField::PositionX).GetInputFieldID());
 			xBinding.SetMinMaxOverride(m_overrideRootXYBoundingBox.GetSWCorner().get<0>(), m_overrideRootXYBoundingBox.GetNECorner().get<0>());
-			glyph.GetPosition()[0] = TransformProperty(xBinding, minMaxGlyph->second.GetPosition()[0], queryResultData, index);
+			glyph.GetPosition()[0] = TransformProperty(xBinding, minMaxGlyph->second.GetPosition()[0], queryResultData, index, OverrideProperty::PositionX);
 
 			InputBinding yBinding(minMaxGlyph->second.GetInputBinding(DataMappingGlyph::MappableField::PositionY).GetInputFieldID());
 			yBinding.SetMinMaxOverride(m_overrideRootXYBoundingBox.GetSWCorner().get<1>(), m_overrideRootXYBoundingBox.GetNECorner().get<1>());
-			glyph.GetPosition()[1] = TransformProperty(yBinding, minMaxGlyph->second.GetPosition()[1], queryResultData, index);
+			glyph.GetPosition()[1] = TransformProperty(yBinding, minMaxGlyph->second.GetPosition()[1], queryResultData, index, OverrideProperty::PositionY);
 		}
 		else {
 
@@ -269,7 +269,7 @@ namespace SynGlyphX {
 		return mappingProperty.GetValue().GetMax();
 	}
 
-	double Transformer::TransformProperty(const InputBinding& binding, const NumericMappingProperty& mappingProperty, const InputFieldDataMap& queryResultData, unsigned int index) const {
+	double Transformer::TransformProperty(const InputBinding& binding, const NumericMappingProperty& mappingProperty, const InputFieldDataMap& queryResultData, unsigned int index, OverrideProperty prop) const {
 
 		InputField::HashID id = binding.GetInputFieldID();
 		if (id != 0) {
@@ -283,7 +283,15 @@ namespace SynGlyphX {
 
 					InterpolationMappingData::ConstSharedPtr interpolationData = std::dynamic_pointer_cast<const InterpolationMappingData>(mappingProperty.GetMappingFunctionData());
 					DoubleMinDiff minDiff = GetDataMinAndDifference(binding, interpolationData, *(fieldData->second));
-					return interpolationData->Interpolate(mappingProperty.GetValue(), minDiff.GetMin(), minDiff.GetMax(), ValidateInputForMinAndMax(input.toDouble(), minDiff));
+					if (prop == OverrideProperty::None) {
+
+						return interpolationData->Interpolate(mappingProperty.GetValue(), minDiff.GetMin(), minDiff.GetMax(), ValidateInputForMinAndMax(input.toDouble(), minDiff));
+					}
+					if (prop == OverrideProperty::PositionX) {
+
+						return interpolationData->Interpolate(m_overrideRootXRange, minDiff.GetMin(), minDiff.GetMax(), ValidateInputForMinAndMax(input.toDouble(), minDiff));
+					}
+					return interpolationData->Interpolate(m_overrideRootYRange, minDiff.GetMin(), minDiff.GetMax(), ValidateInputForMinAndMax(input.toDouble(), minDiff));
 				}
 				else if (function == MappingFunctionData::Function::Numeric2Value) {
 
@@ -495,13 +503,32 @@ namespace SynGlyphX {
 		NetworkDownloader& downloader = NetworkDownloader::Instance();
 		try {
 
-			m_overrideRootXYBoundingBox = downloader.DownloadMap(points, baseImageFilename.toStdString(), std::dynamic_pointer_cast<const DownloadedMapProperties>(baseImage.GetProperties()));
+			DownloadedMapProperties::ConstSharedPtr downloadedMapProperties = std::dynamic_pointer_cast<const DownloadedMapProperties>(baseImage.GetProperties());
+			NetworkDownloader::BoundingBoxAndSize boundingBoxAndSize = downloader.DownloadMap(points, baseImageFilename.toStdString(), downloadedMapProperties);
+			m_overrideRootXYBoundingBox = boundingBoxAndSize.first;
+			//double aspectRatio = m_overrideRootXYBoundingBox.GetHeight() / m_overrideRootXYBoundingBox.GetWidth();
+			double aspectRatio = boundingBoxAndSize.second[1] / static_cast<double>(boundingBoxAndSize.second[0]);
+			if (aspectRatio < 0.5) {
+
+				m_overrideRootXRange.SetMinMax(-180.0, 180.0);
+				double heightRadius = 180.0 * aspectRatio;
+				m_overrideRootYRange.SetMinMax(-heightRadius, heightRadius);
+			}
+			else {
+
+				m_overrideRootYRange.SetMinMax(-90.0, 90.0);
+				double widthRadius = 90.0 / aspectRatio;
+				m_overrideRootXRange.SetMinMax(-widthRadius, widthRadius);
+			}
+			
 			return true;
 		}
 		catch (const DownloadException& e) {
 
 			m_error = QObject::tr("Base image failed to download so the world map was used instead.\n\nError: ") + e.what();
 			m_overrideRootXYBoundingBox = GeographicBoundingBox(GeographicPoint(0.0, 0.0), 90.0, 180.0);
+			m_overrideRootXRange.SetMinMax(-180.0, 180.0);
+			m_overrideRootYRange.SetMinMax(-90.0, 90.0);
 			return false;
 		}
 	}
