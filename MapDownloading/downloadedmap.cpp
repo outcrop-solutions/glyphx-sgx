@@ -19,7 +19,7 @@ DownloadedMap::DownloadedMap(const std::vector<GeographicPoint>& points, const s
 
 	NetworkDownloader& downloader = NetworkDownloader::Instance();
 	
-	m_imageBoundingBox = downloader.DownloadMap(points, tempImageFilename.toStdString(), properties);
+	m_imageBoundingBox = downloader.DownloadMap(points, tempImageFilename.toStdString(), properties).first;
 
     QString imageFilename = QString::fromStdString(filename);
 

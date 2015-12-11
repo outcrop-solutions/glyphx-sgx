@@ -16,12 +16,13 @@ Longitude: 1 deg = 111.320*cos(latitude) km
 
 */
 
+const double PI = 3.14159;
 const unsigned int MaxZoomLevel = 18;
 const double MetersPerPixelAtZoom0 = 156543.034;
 const double EarthRadiusInMeters = 6372798.2;
 const double MetersPerDegreeLongitude = 111319.892;
 const double MetersPerDegreeLatitude = 110540.0;
-const double DegToRad = 3.14159 / 180.0;
+const double DegToRad = PI / 180.0;
 
 NetworkDownloader NetworkDownloader::s_instance;
 const char* NetworkDownloader::ImageFormat("PNG");
@@ -65,7 +66,7 @@ NetworkDownloader& NetworkDownloader::Instance() {
 	return s_instance;
 }
 
-GeographicBoundingBox NetworkDownloader::DownloadMap(const std::vector<GeographicPoint>& points, const std::string& filename, SynGlyphX::DownloadedMapProperties::ConstSharedPtr properties) {
+NetworkDownloader::BoundingBoxAndSize NetworkDownloader::DownloadMap(const std::vector<GeographicPoint>& points, const std::string& filename, SynGlyphX::DownloadedMapProperties::ConstSharedPtr properties) {
 	
 	GeographicBoundingBox pointsBoundingBox(points);
 	SynGlyphX::IntSize imageSize = properties->GetSize();
@@ -147,15 +148,19 @@ GeographicBoundingBox NetworkDownloader::DownloadMap(const std::vector<Geographi
 	//double latRadiusInDegrees = lonRadiusInDegrees * (imageSize.height() / static_cast<double>(imageSize.width()));
 	double latRadiusInDegrees = (metersPerPixelAtCurrentZoom * (imageSize[1] / 2.0)) / MetersPerDegreeLatitude;
 
-	return GeographicBoundingBox(pointsBoundingBox.GetCenter(), latRadiusInDegrees, lonRadiusInDegrees);
+	return BoundingBoxAndSize(GeographicBoundingBox(pointsBoundingBox.GetCenter(), latRadiusInDegrees, lonRadiusInDegrees), imageSize);
 }
 
 unsigned int NetworkDownloader::GetZoomLevel(const GeographicBoundingBox& boundingBox, bool useBestFit, SynGlyphX::IntSize& imageSize) {
 
-	double hDistanceInMeters = std::abs(boost::geometry::distance(boundingBox.GetWestCenter(), boundingBox.GetEastCenter(), m_distanceStrategy));
-    double vDistanceInMeters = std::abs(boost::geometry::distance(boundingBox.GetNorthCenter(), boundingBox.GetSouthCenter(), m_distanceStrategy));
-
 	double cosineAtCenter = std::cos(boundingBox.GetCenter().get<1>() * DegToRad);
+
+	double hDistanceInMeters = std::abs(boost::geometry::distance(boundingBox.GetWestCenter(), boundingBox.GetEastCenter(), m_distanceStrategy));
+	if (boundingBox.GetWidth() > 180.0) {
+
+		hDistanceInMeters = (EarthRadiusInMeters * cosineAtCenter * 2.0 * PI) - hDistanceInMeters;
+	}
+    double vDistanceInMeters = std::abs(boost::geometry::distance(boundingBox.GetNorthCenter(), boundingBox.GetSouthCenter(), m_distanceStrategy));
 
 	if (useBestFit) {
 

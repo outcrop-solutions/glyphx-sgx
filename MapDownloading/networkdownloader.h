@@ -32,6 +32,8 @@ class MAPDOWNLOADING_EXPORT NetworkDownloader
 {
 
 public:
+	typedef std::pair<GeographicBoundingBox, SynGlyphX::IntSize> BoundingBoxAndSize;
+
 	static const char* ImageFormat;
 
 	NetworkDownloader();
@@ -39,7 +41,7 @@ public:
 
 	static NetworkDownloader& Instance();
 	
-	GeographicBoundingBox DownloadMap(const std::vector<GeographicPoint>& points, const std::string& filename, SynGlyphX::DownloadedMapProperties::ConstSharedPtr properties);
+	BoundingBoxAndSize DownloadMap(const std::vector<GeographicPoint>& points, const std::string& filename, SynGlyphX::DownloadedMapProperties::ConstSharedPtr properties);
 
     void SetMapQuestOpenKey(const QString& key);
     const QString& GetMapQuestOpenKey() const;
