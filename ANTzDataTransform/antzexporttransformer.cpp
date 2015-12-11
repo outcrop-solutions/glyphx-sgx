@@ -79,7 +79,17 @@ namespace SynGlyphXANTz {
 		CopyImage(s_logoFilename, baseImageFilenameDirectory + GenerateBaseImageFilename(logoTextureID));
 
 		ANTzGrid grid;
-		grid.SetPosition({ { 167.77, 87.23, 0.5 } });
+		SynGlyphX::BaseImage::Type imageType = mapping.GetBaseObjects()[0].GetType();
+		if (imageType == SynGlyphX::BaseImage::Type::DownloadedMap) {
+
+			grid.SetPosition({ { m_overrideRootXRange.GetMax() - 12.23, m_overrideRootYRange.GetMax() - 2.77, 0.5 } });
+		}
+		else  {
+
+			SynGlyphX::DoubleSize worldSize = mapping.GetBaseObjects()[0].GetWorldSize();
+			grid.SetPosition({ { worldSize[0] / 2.0 - 12.23, worldSize[1] / 2.0 - 2.77, 0.5 } });
+		}
+		
 		grid.SetRotation({ { 0.0, 0.0, 0.0 } });
 		grid.SetSegments({ { 1, 1 } });
 		grid.SetSize({ { 24.48, 5.4 } });

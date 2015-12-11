@@ -62,6 +62,14 @@ namespace SynGlyphXANTz {
 		unsigned int nextTextureID = NumberOfDefaultBaseImages + 1;
 		for (const SynGlyphX::BaseImage& baseImage : mapping.GetBaseObjects()) {
 
+			ANTzGrid grid;
+			grid.SetVisible(true);
+			grid.SetPosition(baseImage.GetPosition());
+			grid.SetRotation(baseImage.GetRotationAngles());
+
+			grid.SetColor(baseImage.GetGridLinesColor());
+			grid.SetSegments({ { baseImage.GetGridLineCounts()[1] + 1, baseImage.GetGridLineCounts()[0] + 1 } });
+
 			if (baseImage.GetType() == SynGlyphX::BaseImage::Type::DownloadedMap) {
 
 				QString downloadedImageFilename = baseImageFilenameDirectory + GenerateBaseImageFilename(nextTextureID);
@@ -70,11 +78,17 @@ namespace SynGlyphXANTz {
 					m_baseImageFilenames.push_back(downloadedImageFilename);
 					m_textureIDs.push_back(nextTextureID);
 					++nextTextureID;
+
+					SynGlyphX::DoubleSize size;
+					size[0] = m_overrideRootXRange.GetDiff();
+					size[1] = m_overrideRootYRange.GetDiff();
+					grid.SetSize(size);
 				}
 				else {
 
 					//Use World Image
 					m_textureIDs.push_back(1);
+					grid.SetSize(baseImage.GetWorldSize());
 				}
 			}
 			else if (baseImage.GetType() == SynGlyphX::BaseImage::Type::UserImage) {
@@ -92,6 +106,7 @@ namespace SynGlyphXANTz {
 
 					m_textureIDs.push_back(userBaseImage->second);
 				}
+				grid.SetSize(baseImage.GetWorldSize());
 			}
 			else {
 
@@ -116,19 +131,10 @@ namespace SynGlyphXANTz {
 						m_textureIDs.push_back(image->second);
 					}
 				}
+				grid.SetSize(baseImage.GetWorldSize());
 			}
 
-			ANTzGrid grid;
-			grid.SetVisible(true);
-			grid.SetPosition(baseImage.GetPosition());
-			grid.SetRotation(baseImage.GetRotationAngles());
 			grid.SetTextureID(m_textureIDs.back());
-
-			grid.SetSize(baseImage.GetWorldSize());
-
-			grid.SetColor(baseImage.GetGridLinesColor());
-			grid.SetSegments({ { baseImage.GetGridLineCounts()[1] + 1, baseImage.GetGridLineCounts()[0] + 1 } });
-
 			grids.push_back(grid);
 		}
 	}
