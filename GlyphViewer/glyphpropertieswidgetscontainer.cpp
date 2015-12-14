@@ -5,11 +5,11 @@ GlyphPropertiesWidgetsContainer::GlyphPropertiesWidgetsContainer(SynGlyphXANTz::
 	m_model(model),
 	m_selectionModel(selectionModel)
 {
-	m_visualPropertiesStackedWidget = new QStackedWidget(parent);
+	/*m_visualPropertiesStackedWidget = new QStackedWidget(parent);
 	m_visualPropertiesWidget = new SynGlyphX::VisualGlyphPropertiesWidget(false, SynGlyphX::VisualGlyphPropertiesWidget::ShowOnBottom, m_visualPropertiesStackedWidget);
 	m_visualPropertiesWidget->setEnabled(false);
 	m_visualPropertiesStackedWidget->addWidget(new QWidget(m_visualPropertiesStackedWidget));
-	m_visualPropertiesStackedWidget->addWidget(m_visualPropertiesWidget);
+	m_visualPropertiesStackedWidget->addWidget(m_visualPropertiesWidget);*/
 
 	m_textPropertiesStackedWidget = new QStackedWidget(parent);
 	m_textPropertiesWidget = new SynGlyphX::TextGlyphPropertiesWidget(m_textPropertiesStackedWidget);
@@ -45,14 +45,14 @@ void GlyphPropertiesWidgetsContainer::OnSelectionChanged(const QItemSelection& s
 
 		const QModelIndex& index = selectedItems.back();
 		SynGlyphX::Glyph glyph = m_model->GetGlyphAtIndex(index);
-		m_visualPropertiesWidget->SetWidgetFromGlyph(glyph, true);
-		m_visualPropertiesWidget->SetNumberOfChildren(m_model->rowCount(index));
+		//m_visualPropertiesWidget->SetWidgetFromGlyph(glyph, true);
+		//m_visualPropertiesWidget->SetNumberOfChildren(m_model->rowCount(index));
 		m_textPropertiesWidget->SetWidgetFromGlyph(glyph);
 	}
 }
 
 void GlyphPropertiesWidgetsContainer::SelectWidgetsInStackedWidgets(unsigned int index) {
 
-	m_visualPropertiesStackedWidget->setCurrentIndex(index);
+	//m_visualPropertiesStackedWidget->setCurrentIndex(index);
 	m_textPropertiesStackedWidget->setCurrentIndex(index);
 }

@@ -24,7 +24,7 @@
 #include "changeimagefiledialog.h"
 
 GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
-	: SynGlyphX::MainWindow(1, parent),
+	: SynGlyphX::MainWindow(2, parent),
 	m_antzWidget(nullptr),
 	m_showErrorFromTransform(true)
 {
@@ -217,18 +217,17 @@ void GlyphViewerWindow::CreateDockWidgets() {
 
 	m_glyphPropertiesWidgetContainer = new GlyphPropertiesWidgetsContainer(m_glyphForestModel, m_glyphForestSelectionModel, this);
 
-	QDockWidget* visualPropertiesDockWidget = new QDockWidget(tr("Visual Properties"), this);
+	/*QDockWidget* visualPropertiesDockWidget = new QDockWidget(tr("Visual Properties"), this);
 	visualPropertiesDockWidget->setWidget(m_glyphPropertiesWidgetContainer->GetVisualProperitesWidget());
 	addDockWidget(Qt::LeftDockWidgetArea, visualPropertiesDockWidget);
-	m_viewMenu->addAction(visualPropertiesDockWidget->toggleViewAction());
+	m_viewMenu->addAction(visualPropertiesDockWidget->toggleViewAction());*/
 
 	QDockWidget* textPropertiesDockWidget = new QDockWidget(tr("Text Properties"), this);
 	textPropertiesDockWidget->setWidget(m_glyphPropertiesWidgetContainer->GetTextProperitesWidget());
 	addDockWidget(Qt::LeftDockWidgetArea, textPropertiesDockWidget);
 	m_viewMenu->addAction(textPropertiesDockWidget->toggleViewAction());
 
-	tabifyDockWidget(m_glyphListDockWidget, visualPropertiesDockWidget);
-	tabifyDockWidget(visualPropertiesDockWidget, textPropertiesDockWidget);
+	tabifyDockWidget(m_glyphListDockWidget, textPropertiesDockWidget);
 	m_glyphListDockWidget->raise();
 
 	QDockWidget* rightDockWidget = new QDockWidget(tr("Source Data Selector"), this);
