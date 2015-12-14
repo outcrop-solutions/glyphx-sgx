@@ -40,6 +40,7 @@ public:
 
 protected slots:
     void OnMapSourceChanged();
+	void OnSizeOptionChanged();
 
 protected:
     //void ReadSettings();
@@ -51,6 +52,7 @@ protected:
 	QCheckBox* m_invertCheckbox;
 	QCheckBox* m_grayscaleCheckbox;
 	SynGlyphX::RadioButtonGroupWidget* m_bestFitRadioButtonWidget;
+	QSpinBox* m_marginSpinBox;
 };
 
 #endif // MAPOPTIONSWIDGET_H

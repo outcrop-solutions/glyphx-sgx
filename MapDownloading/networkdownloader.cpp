@@ -72,6 +72,22 @@ NetworkDownloader::BoundingBoxAndSize NetworkDownloader::DownloadMap(const std::
 	SynGlyphX::IntSize imageSize = properties->GetSize();
 	unsigned int zoomLevel = GetZoomLevel(pointsBoundingBox, properties->GetUseBestFit(), imageSize);
 
+	if (properties->GetUseBestFit()) {
+
+		imageSize[0] += 2 * properties->GetMargin();
+		imageSize[1] += 2 * properties->GetMargin();
+
+		unsigned int maxSize = SynGlyphX::DownloadedMapProperties::MaxSizeMapQuest;
+
+		if (properties->GetSource() == SynGlyphX::DownloadedMapProperties::GoogleMaps) {
+
+			maxSize = SynGlyphX::DownloadedMapProperties::MaxSizeGoogleMaps;
+		}
+
+		imageSize[0] = std::min(imageSize[0], maxSize);
+		imageSize[1] = std::min(imageSize[1], maxSize);
+	}
+
 	double cosineAtCenter = std::cos(pointsBoundingBox.GetCenter().get<1>() * DegToRad);
 	double metersPerPixelAtCurrentZoom = m_mapQuestMetersPerPixelAtEquator[zoomLevel] * cosineAtCenter;
 	

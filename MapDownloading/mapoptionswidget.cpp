@@ -53,6 +53,15 @@ MapOptionsWidget::MapOptionsWidget(QWidget *parent)
 	bestFitOptions.push_back(tr("Best Fit Closest To Size"));
 	m_bestFitRadioButtonWidget = new SynGlyphX::RadioButtonGroupWidget(bestFitOptions, Qt::Horizontal, this);
 	mapSizeLayout->addWidget(m_bestFitRadioButtonWidget);
+	QObject::connect(m_bestFitRadioButtonWidget, &SynGlyphX::RadioButtonGroupWidget::ButtonClicked, this, &MapOptionsWidget::OnSizeOptionChanged);
+
+	QLabel *marginLabel = new QLabel(tr("Margin:"), this);
+	mapSizeLayout->addWidget(marginLabel);
+
+	m_marginSpinBox = new QSpinBox(this);
+	m_marginSpinBox->setMinimum(0);
+	m_marginSpinBox->setMaximum(999);
+	mapSizeLayout->addWidget(m_marginSpinBox);
 
 	mapSizeLayout->addStretch(1);
 
@@ -88,6 +97,7 @@ void MapOptionsWidget::SetWidget(SynGlyphX::DownloadedMapProperties::ConstShared
 	m_invertCheckbox->setChecked(properties->GetInvert());
 	m_grayscaleCheckbox->setChecked(properties->GetGrayscale());
 	m_bestFitRadioButtonWidget->SetCheckedButton(properties->GetUseBestFit() ? 1 : 0);
+	m_marginSpinBox->setValue(properties->GetMargin());
 }
 
 /*
@@ -121,6 +131,7 @@ SynGlyphX::DownloadedMapProperties::SharedPtr MapOptionsWidget::GetProperties() 
 	downloadedMapProperties->SetInvert(m_invertCheckbox->isChecked());
 	downloadedMapProperties->SetGrayscale(m_grayscaleCheckbox->isChecked());
 	downloadedMapProperties->SetUseBestFit(m_bestFitRadioButtonWidget->GetCheckedButton() == 1);
+	downloadedMapProperties->SetMargin(static_cast<unsigned int>(m_marginSpinBox->value()));
 
 	return downloadedMapProperties;
 }
@@ -129,10 +140,15 @@ void MapOptionsWidget::OnMapSourceChanged() {
 
 	if (m_mapServiceComboBox->currentIndex() == 1) {
 
-        m_imageSizeWidget->SetRange(1, 2048);
+        m_imageSizeWidget->SetRange(1, SynGlyphX::DownloadedMapProperties::MaxSizeGoogleMaps);
     }
     else {
 
-        m_imageSizeWidget->SetRange(1, 3840);
+		m_imageSizeWidget->SetRange(1, SynGlyphX::DownloadedMapProperties::MaxSizeMapQuest);
     }
+}
+
+void MapOptionsWidget::OnSizeOptionChanged() {
+
+	m_marginSpinBox->setEnabled(m_bestFitRadioButtonWidget->GetCheckedButton() == 1);
 }
