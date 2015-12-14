@@ -44,7 +44,10 @@ namespace SynGlyphX {
 		typedef std::shared_ptr<DownloadedMapProperties> SharedPtr;
 		typedef std::shared_ptr<const DownloadedMapProperties> ConstSharedPtr;
 
-		DownloadedMapProperties(MapSource source = MapSource::MapQuestOpen, MapType type = MapType::Hybrid, bool useBestFit = true, bool invert = false, bool grayscale = false, IntSize size = { { 2048, 1024 } });
+		static const unsigned int MaxSizeMapQuest = 3840;
+		static const unsigned int MaxSizeGoogleMaps = 2048;
+
+		DownloadedMapProperties(MapSource source = MapSource::MapQuestOpen, MapType type = MapType::Hybrid, bool useBestFit = true, bool invert = false, bool grayscale = false, IntSize size = { { 2048, 1024 } }, unsigned int margin = 20);
 		DownloadedMapProperties(const boost::property_tree::wptree& propertyTree);
 		DownloadedMapProperties(const DownloadedMapProperties& properties);
 		virtual ~DownloadedMapProperties();
@@ -70,6 +73,9 @@ namespace SynGlyphX {
 		bool GetUseBestFit() const;
 		void SetUseBestFit(bool useBestFit);
 
+		unsigned int GetMargin() const;
+		void SetMargin(unsigned int margin);
+
 		virtual bool IsGeographic() const;
 		virtual void ExportToPropertyTree(boost::property_tree::wptree& propertyTree) const;
 
@@ -83,6 +89,7 @@ namespace SynGlyphX {
 		bool m_invert;
 		bool m_grayscale;
 		bool m_useBestFit;
+		unsigned int m_margin;
 	};
 
 } //namespace SynGlyphX

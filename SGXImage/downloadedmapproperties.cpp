@@ -13,14 +13,15 @@ namespace SynGlyphX {
 		(DownloadedMapProperties::MapType::Satellite, L"Satellite")
 		(DownloadedMapProperties::MapType::Hybrid, L"Hybrid");
 
-	DownloadedMapProperties::DownloadedMapProperties(MapSource source, MapType type, bool useBestFit, bool invert, bool grayscale, IntSize size) :
+	DownloadedMapProperties::DownloadedMapProperties(MapSource source, MapType type, bool useBestFit, bool invert, bool grayscale, IntSize size, unsigned int margin) :
 		BaseImageProperties(),
 		m_source(source),
 		m_type(type),
 		m_size(size),
 		m_invert(invert),
 		m_grayscale(grayscale),
-		m_useBestFit(useBestFit)
+		m_useBestFit(useBestFit),
+		m_margin(margin)
 	{
 	}
 
@@ -31,7 +32,8 @@ namespace SynGlyphX {
 		m_size({ { propertyTree.get<unsigned int>(L"<xmlattr>.width"), propertyTree.get<unsigned int>(L"<xmlattr>.height") } }),
 		m_invert(propertyTree.get_optional<bool>(L"<xmlattr>.invert").get_value_or(false)),
 		m_grayscale(propertyTree.get_optional<bool>(L"<xmlattr>.grayscale").get_value_or(false)),
-		m_useBestFit(propertyTree.get_optional<bool>(L"<xmlattr>.bestfit").get_value_or(false)) {
+		m_useBestFit(propertyTree.get_optional<bool>(L"<xmlattr>.bestfit").get_value_or(false)),
+		m_margin(propertyTree.get_optional<unsigned int>(L"<xmlattr>.margin").get_value_or(20)) {
 
 	}
 
@@ -42,7 +44,8 @@ namespace SynGlyphX {
 		m_size(properties.m_size),
 		m_invert(properties.m_invert), 
 		m_grayscale(properties.m_grayscale),
-		m_useBestFit(properties.m_useBestFit) {
+		m_useBestFit(properties.m_useBestFit),
+		m_margin(properties.m_margin) {
 
 	}
 
@@ -78,6 +81,11 @@ namespace SynGlyphX {
 		}
 
 		if (m_grayscale != properties.m_grayscale) {
+
+			return false;
+		}
+
+		if (m_margin != properties.m_margin) {
 
 			return false;
 		}
@@ -155,6 +163,16 @@ namespace SynGlyphX {
 		m_useBestFit = useBestFit;
 	}
 
+	unsigned int DownloadedMapProperties::GetMargin() const {
+
+		return m_margin;
+	}
+
+	void DownloadedMapProperties::SetMargin(unsigned int margin) {
+
+		m_margin = margin;
+	}
+
 	void DownloadedMapProperties::ExportToPropertyTree(boost::property_tree::wptree& propertyTree) const {
 
 		propertyTree.put(L"<xmlattr>.mapsource", s_mapSourceStrings.left.at(m_source));
@@ -164,6 +182,7 @@ namespace SynGlyphX {
 		propertyTree.put(L"<xmlattr>.invert", m_invert);
 		propertyTree.put(L"<xmlattr>.grayscale", m_grayscale);
 		propertyTree.put(L"<xmlattr>.bestfit", m_useBestFit);
+		propertyTree.put(L"<xmlattr>.margin", m_margin);
 	}
 
 } //namespace SynGlyphX
