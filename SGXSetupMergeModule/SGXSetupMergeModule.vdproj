@@ -117,6 +117,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_201F49AD7D6D4838BBADD2E4A039D8A5"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_20261BBA1E664A25B0CD219C5D7AD4F7"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -189,6 +195,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_382DCC59AFDE4FEF9E1EB60DA5EF9928"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_384E3DB8A1504A7394F1AD3D7539F47E"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -238,12 +250,6 @@
         "Entry"
         {
         "MsmKey" = "8:_48401AEDFF4A4D4FBC190814F30BFA07"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_48A9AC4CEC6642A48AB9A1BACCF62779"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -381,12 +387,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_808CAF07AB3742F0A84F22183E9C1D83"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_815A4380581945809368C02D86F339CA"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -400,12 +400,6 @@
         "Entry"
         {
         "MsmKey" = "8:_8219B79DCEED454AA56ED4C9F1B3868E"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_8955D1C5D3AF41EBB4C1564FEE99B1D1"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -718,6 +712,12 @@
         "Entry"
         {
         "MsmKey" = "8:_EEA8343AACB1405CB65EFF86C1DA87CF"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_F61F8FF3D815421D9B73FF14BDA7F2A9"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -1164,6 +1164,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_201F49AD7D6D4838BBADD2E4A039D8A5"
+            {
+            "SourcePath" = "8:..\\..\\ANTzPlus\\ANTzTemplate\\Glyph_Viewer_(Portable)_win.exe"
+            "TargetName" = "8:Glyph_Viewer_(Portable)_win.exe"
+            "Tag" = "8:"
+            "Folder" = "8:_3E59963508D34F76B5732E64BBFB296A"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_20261BBA1E664A25B0CD219C5D7AD4F7"
             {
             "SourcePath" = "8:..\\..\\3rdParty\\bin\\Win32\\Release\\qt_plugins\\platforms\\qoffscreen.dll"
@@ -1344,6 +1364,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_382DCC59AFDE4FEF9E1EB60DA5EF9928"
+            {
+            "SourcePath" = "8:..\\..\\ANTzPlus\\ANTzTemplate\\cheatsheet_2015-11-17.txt"
+            "TargetName" = "8:cheatsheet_2015-11-17.txt"
+            "Tag" = "8:"
+            "Folder" = "8:_3E59963508D34F76B5732E64BBFB296A"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_384E3DB8A1504A7394F1AD3D7539F47E"
             {
             "SourcePath" = "8:..\\..\\3rdParty\\bin\\Win32\\Release\\qt_plugins\\imageformats\\qico.dll"
@@ -1510,26 +1550,6 @@
             "TargetName" = "8:qtsensors_dummy.dll"
             "Tag" = "8:"
             "Folder" = "8:_0020FD74C310496F9BDCFA62E3B9D50C"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_48A9AC4CEC6642A48AB9A1BACCF62779"
-            {
-            "SourcePath" = "8:..\\..\\ANTzPlus\\ANTzTemplate\\cheatsheet_2015-02-16.txt"
-            "TargetName" = "8:cheatsheet_2015-02-16.txt"
-            "Tag" = "8:"
-            "Folder" = "8:_3E59963508D34F76B5732E64BBFB296A"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -1924,26 +1944,6 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_808CAF07AB3742F0A84F22183E9C1D83"
-            {
-            "SourcePath" = "8:..\\..\\ANTzPlus\\ANTzTemplate\\antz_release_2015-02-16.txt"
-            "TargetName" = "8:antz_release_2015-02-16.txt"
-            "Tag" = "8:"
-            "Folder" = "8:_3E59963508D34F76B5732E64BBFB296A"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_815A4380581945809368C02D86F339CA"
             {
             "SourcePath" = "8:..\\..\\3rdParty\\tools\\vc120redist\\vccorlib120.dll"
@@ -1970,26 +1970,6 @@
             "TargetName" = "8:Black.png"
             "Tag" = "8:"
             "Folder" = "8:_1CD158B43CEE41CBADE0A1F0DDB6AB7D"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_8955D1C5D3AF41EBB4C1564FEE99B1D1"
-            {
-            "SourcePath" = "8:..\\..\\ANTzPlus\\ANTzTemplate\\Glyph_Viewer_(Portable).exe"
-            "TargetName" = "8:Glyph_Viewer_(Portable).exe"
-            "Tag" = "8:"
-            "Folder" = "8:_3E59963508D34F76B5732E64BBFB296A"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -2844,6 +2824,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_F61F8FF3D815421D9B73FF14BDA7F2A9"
+            {
+            "SourcePath" = "8:..\\..\\ANTzPlus\\ANTzTemplate\\antz_release_2015-12-01.txt"
+            "TargetName" = "8:antz_release_2015-12-01.txt"
+            "Tag" = "8:"
+            "Folder" = "8:_3E59963508D34F76B5732E64BBFB296A"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_F92944BCE7504EEE8B8F5B11A8ED3CF5"
             {
             "SourcePath" = "8:..\\..\\Misc\\InstallerFiles\\GlyphTemplates\\Boat.sgt"
@@ -3458,7 +3458,7 @@
         "Module"
         {
         "ModuleSignature" = "8:MergeModule.E7BC5B0DA8E84115B456FD393FF63EDE"
-        "Version" = "8:0.7.20.0"
+        "Version" = "8:0.7.21.0"
         "Title" = "8:SGXSetupMergeModule"
         "Subject" = "8:"
         "Author" = "8:SynGlyphX"
