@@ -81,6 +81,8 @@ private:
 	QAction* m_showTagsAction;
 	QList<QAction*> m_loadedVisualizationDependentActions;
 
+	QDockWidget* m_glyphListDockWidget;
+
 	SynGlyphX::DataMappingModel* m_mappingModel;
 	CacheManager m_cacheManager;
 	bool m_isStereoSupported;

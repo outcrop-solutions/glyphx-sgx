@@ -81,7 +81,11 @@ void GlyphTreeListView::EnableActions(const QItemSelection& selected) {
 void GlyphTreeListView::OnOpenURLs() {
 
 	SynGlyphXANTz::GlyphForestModel* forestModel = dynamic_cast<SynGlyphXANTz::GlyphForestModel*>(model());
-	forestModel->OpenURLs(selectionModel()->selectedIndexes());
+	bool anyURLsOpened = forestModel->OpenURLs(selectionModel()->selectedIndexes());
+	if (!anyURLsOpened) {
+
+		QMessageBox::information(this, tr("No URLs Opened"), tr("No files or URLs were opened since none of the selected objects had a file or URL associated with them."));
+	}
 }
 
 void GlyphTreeListView::OnPropertiesActivated() {

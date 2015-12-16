@@ -49,6 +49,7 @@ DataMapperWindow::DataMapperWindow(QWidget *parent)
 	settings.beginGroup("ANTzExport");
 	m_antzExportDirectories[SynGlyphXANTz::ANTzCSVWriter::OutputPlatform::Windows] = settings.value("default", SynGlyphX::Application::applicationDirPath() + QDir::separator() + "ANTzTemplate").toString();
 	m_antzExportDirectories[SynGlyphXANTz::ANTzCSVWriter::OutputPlatform::WindowsZSpace] = settings.value("zSpace", SynGlyphX::Application::applicationDirPath() + QDir::separator() + "ANTzzSpaceTemplate").toString();
+	m_antzExportDirectories[SynGlyphXANTz::ANTzCSVWriter::OutputPlatform::Mac] = settings.value("mac", SynGlyphX::Application::applicationDirPath() + QDir::separator() + "ANTzMacTemplate").toString();
 	settings.endGroup();
 
 	m_dataTransformModel = new DataTransformModel(this);
@@ -70,7 +71,7 @@ DataMapperWindow::DataMapperWindow(QWidget *parent)
 	ClearAndInitializeDataMapping();
 
 	//Setup data transform
-	SynGlyphXANTz::ANTzExportTransformer::SetLogoFilename(SynGlyphX::GlyphBuilderApplication::applicationDirPath() + QDir::separator() + "logo_export.png");
+	SynGlyphXANTz::ANTzExportTransformer::SetLogoFilename(SynGlyphX::GlyphBuilderApplication::applicationDirPath() + QDir::separator() + "logo.png");
 	SynGlyphX::Transformer::SetDefaultImagesDirectory(SynGlyphX::GlyphBuilderApplication::GetDefaultBaseImagesLocation());
 
 	QObject::connect(m_baseObjectsModel, &SynGlyphX::RoleDataFilterProxyModel::dataChanged, m_dataBindingWidget, &DataBindingTablesWidget::OnBaseObjectChanged);
@@ -106,6 +107,40 @@ void DataMapperWindow::CreateCenterWidget() {
 	setCentralWidget(m_minMaxGlyph3DWidget);
 }
 
+void DataMapperWindow::CreateExportToPortableVisualizationSubmenu() {
+
+	bool windowsANTzTemplateExists = DoesANTzTemplateExist(m_antzExportDirectories[SynGlyphXANTz::ANTzCSVWriter::OutputPlatform::Windows]);
+	bool zSpaceANTzTemplateExists = DoesANTzTemplateExist(m_antzExportDirectories[SynGlyphXANTz::ANTzCSVWriter::OutputPlatform::WindowsZSpace]);
+	bool macANTzTemplateExists = DoesANTzTemplateExist(m_antzExportDirectories[SynGlyphXANTz::ANTzCSVWriter::OutputPlatform::Mac]);
+
+	if (windowsANTzTemplateExists || zSpaceANTzTemplateExists || macANTzTemplateExists) {
+
+		m_fileMenu->addSeparator();
+		QMenu* portableVisualizationMenu = m_fileMenu->addMenu(tr("Create Portable Visualization"));
+
+		if (windowsANTzTemplateExists) {
+
+			QAction* exportToANTzAction = CreateMenuAction(portableVisualizationMenu, tr("Windows"));
+			QObject::connect(exportToANTzAction, &QAction::triggered, this, [this]{ ExportToANTz(SynGlyphXANTz::ANTzCSVWriter::OutputPlatform::Windows); });
+			m_projectDependentActions.push_back(exportToANTzAction);
+		}
+
+		if (zSpaceANTzTemplateExists) {
+
+			QAction* exportTozSpaceANTzAction = CreateMenuAction(portableVisualizationMenu, tr("Windows (zSpace)"));
+			QObject::connect(exportTozSpaceANTzAction, &QAction::triggered, this, [this]{ ExportToANTz(SynGlyphXANTz::ANTzCSVWriter::OutputPlatform::WindowsZSpace); });
+			m_projectDependentActions.push_back(exportTozSpaceANTzAction);
+		}
+
+		if (macANTzTemplateExists) {
+
+			QAction* exportToMacANTzAction = CreateMenuAction(portableVisualizationMenu, tr("Mac"));
+			QObject::connect(exportToMacANTzAction, &QAction::triggered, this, [this]{ ExportToANTz(SynGlyphXANTz::ANTzCSVWriter::OutputPlatform::Mac); });
+			m_projectDependentActions.push_back(exportToMacANTzAction);
+		}
+	}
+}
+
 void DataMapperWindow::CreateMenus() {
 
     //Create File Menu
@@ -125,27 +160,7 @@ void DataMapperWindow::CreateMenus() {
     QObject::connect(saveAsProjectAction, &QAction::triggered, this, &DataMapperWindow::SaveAsProject);
 	m_projectDependentActions.push_back(saveAsProjectAction);
 
-	bool defaultANTzTemplateExists = DoesANTzTemplateExist(m_antzExportDirectories[SynGlyphXANTz::ANTzCSVWriter::OutputPlatform::Windows]);
-	bool zSpaceANTzTemplateExists = DoesANTzTemplateExist(m_antzExportDirectories[SynGlyphXANTz::ANTzCSVWriter::OutputPlatform::WindowsZSpace]);
-
-	if (defaultANTzTemplateExists || zSpaceANTzTemplateExists) {
-
-		m_fileMenu->addSeparator();
-	}
-
-	if (defaultANTzTemplateExists) {
-
-		QAction* exportToANTzAction = CreateMenuAction(m_fileMenu, tr("Create Portable Visualization"));
-		QObject::connect(exportToANTzAction, &QAction::triggered, this, [this]{ ExportToANTz(SynGlyphXANTz::ANTzCSVWriter::OutputPlatform::Windows); });
-		m_projectDependentActions.push_back(exportToANTzAction);
-	}
-
-	if (zSpaceANTzTemplateExists) {
-
-		QAction* exportTozSpaceANTzAction = CreateMenuAction(m_fileMenu, tr("Create Portable Visualization (zSpace)"));
-		QObject::connect(exportTozSpaceANTzAction, &QAction::triggered, this, [this]{ ExportToANTz(SynGlyphXANTz::ANTzCSVWriter::OutputPlatform::WindowsZSpace); });
-		m_projectDependentActions.push_back(exportTozSpaceANTzAction);
-	}
+	CreateExportToPortableVisualizationSubmenu();
 
 	m_fileMenu->addActions(m_recentFileActions);
 
@@ -597,23 +612,63 @@ void DataMapperWindow::ExportToANTz(SynGlyphXANTz::ANTzCSVWriter::OutputPlatform
 				m_dataTransformModel->SaveDataTransformFile(m_currentFilename);
 			}
 		}
-	}
+		else {
 
-	QString csvDirectory = QDir::toNativeSeparators(GetExistingDirectoryDialog("ANTzExportDir", tr("Select Directory For Portable Visualization"), ""));
-	if (csvDirectory.isEmpty()) {
-
-		return;
-	}
-
-	QDir dir(csvDirectory);
-	if (dir.entryInfoList(QDir::NoDotAndDotDot | QDir::AllEntries).count() > 0) {
-
-		if (QMessageBox::question(this, tr("Directory isn't empty"), tr("Selected directory is not empty.  All contents of the directory will be deleted before export.  Do you wish to continue?")) == QMessageBox::No) {
-
+			QMessageBox::critical(this, tr("Export to ANTz Error"), tr("Portable visualization can't be created when images are still missing."));
 			return;
 		}
 	}
 
+	bool isDirectoryInvalid = false;
+
+	QString csvDirectory;
+	QList<QDir> projectFileDirs;
+	projectFileDirs.push_back(QFileInfo(m_currentFilename).canonicalPath());
+	for (const auto& fileDatasource : m_dataTransformModel->GetDataMapping()->GetDatasources().GetFileDatasources()) {
+
+		projectFileDirs.push_back(QFileInfo(QString::fromStdWString(fileDatasource.second.GetFilename())).canonicalPath());
+	}
+
+	do {
+
+		csvDirectory = QDir::toNativeSeparators(GetExistingDirectoryDialog("ANTzExportDir", tr("Select Directory For Portable Visualization"), ""));
+		if (csvDirectory.isEmpty()) {
+
+			return;
+		}
+
+		QDir dir(csvDirectory);
+		bool isProjectFileInDirectory = false;
+
+		for (const auto& projectFileDir : projectFileDirs) {
+
+			if (projectFileDir == dir) {
+
+				isProjectFileInDirectory = true;
+				break;
+			}
+		}
+
+		if (isProjectFileInDirectory) {
+
+			QMessageBox::warning(this, tr("Invalid Directory"), tr("Selected directory contains one or more files relevant to the project.  It can not be used to create a portable visualization.  Select another directory."));
+			isDirectoryInvalid = true;
+		}
+		else if (dir.entryInfoList(QDir::NoDotAndDotDot | QDir::AllEntries).count() > 0) {
+
+			if (QMessageBox::question(this, tr("Directory isn't empty"), tr("Selected directory is not empty.  All contents of the directory will be deleted before export.  Do you wish to continue?")) == QMessageBox::No) {
+
+				return;
+			}
+			else {
+
+				isDirectoryInvalid = false;
+			}
+		}
+
+	} while (isDirectoryInvalid);
+
+	
 	SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
 
 	try {

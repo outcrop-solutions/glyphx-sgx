@@ -152,15 +152,16 @@ namespace SynGlyphX {
 
 	void TreeEditView::DeleteSelectedAndSelectNewIndex() {
 
-		QModelIndexList sortedIndexList = GetSelectedIndexListForDeletion();
-		if (!sortedIndexList.isEmpty()) {
+		DepthSortedModelIndexes sortedIndexList = GetSelectedIndexListForDeletion();
+		if (!sortedIndexList.empty()) {
 
-			QModelIndex newSelectedIndex = sortedIndexList.last().parent();
+			auto lastInList = sortedIndexList.rbegin();
+			QModelIndex newSelectedIndex = lastInList->second.parent();
 			int rootIndexCount = model()->rowCount();
 			if (!newSelectedIndex.isValid() && rootIndexCount > 1) {
 
 				//This only works to select a new root index when a single item is deleted.  That is fine for now but may need to be fixed in the future.
-				int row = sortedIndexList.last().row();
+				int row = lastInList->second.row();
 				if (row == 0) {
 
 					newSelectedIndex = model()->index(1, 0);
@@ -176,11 +177,11 @@ namespace SynGlyphX {
 				selectionModel()->select(newSelectedIndex, QItemSelectionModel::ClearAndSelect);
 			}
 			
-			Q_FOREACH(const QModelIndex& index, sortedIndexList) {
+			for(const auto& index : sortedIndexList) {
 
-				if (CanIndexBeDeleted(index)) {
+				if (CanIndexBeDeleted(index.second)) {
 
-					model()->removeRow(index.row(), index.parent());
+					model()->removeRow(index.second.row(), index.second.parent());
 				}
 			}
 		}
@@ -188,21 +189,34 @@ namespace SynGlyphX {
 
 	void TreeEditView::DeleteChildrenFromSelected() {
 
-		QModelIndexList sortedIndexList = GetSelectedIndexListForDeletion();
-		if (!sortedIndexList.isEmpty()) {
+		DepthSortedModelIndexes sortedIndexList = GetSelectedIndexListForDeletion();
+		if (!sortedIndexList.empty()) {
 
 			QAbstractItemModel* treeModel = model();
-			Q_FOREACH(const QModelIndex& index, sortedIndexList) {
+			for (const auto& index : sortedIndexList) {
 
-				treeModel->removeRows(0, treeModel->rowCount(index), index);
+				treeModel->removeRows(0, treeModel->rowCount(index.second), index.second);
 			}
 		}
 	}
 
-	QModelIndexList TreeEditView::GetSelectedIndexListForDeletion() const {
+	TreeEditView::DepthSortedModelIndexes TreeEditView::GetSelectedIndexListForDeletion() const {
 
-		//In the default case there is no need to sort the indexes
-		return selectionModel()->selectedIndexes();
+		QModelIndexList selectedItems = selectionModel()->selectedIndexes();
+		DepthSortedModelIndexes persistentIndexes;
+		for (QModelIndex& index : selectedItems) {
+
+			unsigned int depth = 0;
+			QModelIndex ancestor = index.parent();
+			while (ancestor.isValid()) {
+
+				ancestor = ancestor.parent();
+				++depth;
+			}
+			persistentIndexes.insert(std::pair<unsigned int, QPersistentModelIndex>(depth, QPersistentModelIndex(index)));
+		}
+
+		return persistentIndexes;
 	}
 
 	bool TreeEditView::CanIndexBeDeleted(const QModelIndex& index) const {

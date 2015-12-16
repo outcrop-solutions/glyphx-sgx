@@ -15,44 +15,27 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef MAPOPTIONSWIDGET_H
-#define MAPOPTIONSWIDGET_H
+#ifndef GLYPHROLESSUBSETTABLEWIDGET_H
+#define GLYPHROLESSUBSETTABLEWIDGET_H
 
-#include "mapdownloading_global.h"
-#include <QtWidgets/QWidget>
-#include <QtWidgets/QComboBox>
-#include <QtWidgets/QCheckBox>
-#include "intsizewidget.h"
-#include "networkdownloader.h"
-#include "downloadedmapproperties.h"
-#include "radiobuttongroupwidget.h"
+#include <QtWidgets/QAbstractScrollArea>
+#include <QtWidgets/QHeaderView>
+#include "glyphrolestablemodel.h"
 
-class MAPDOWNLOADING_EXPORT MapOptionsWidget : public QWidget
+class GlyphRolesSubsetTableWidget : public QAbstractScrollArea
 {
-    Q_OBJECT
+	Q_OBJECT
 
 public:
-    MapOptionsWidget(QWidget *parent = 0);
-    ~MapOptionsWidget();
-
-	void SetWidget(SynGlyphX::DownloadedMapProperties::ConstSharedPtr properties);
-	SynGlyphX::DownloadedMapProperties::SharedPtr GetProperties() const;
-
-protected slots:
-    void OnMapSourceChanged();
-	void OnSizeOptionChanged();
+	GlyphRolesSubsetTableWidget(GlyphRolesTableModel* model, QWidget *parent);
+	~GlyphRolesSubsetTableWidget();
 
 protected:
-    //void ReadSettings();
-    //void WriteSettings();
+	virtual void resizeEvent(QResizeEvent* event);
 
-	QComboBox* m_mapServiceComboBox;
-    QComboBox* m_mapTypeComboBox;
-    SynGlyphX::IntSizeWidget* m_imageSizeWidget;
-	QCheckBox* m_invertCheckbox;
-	QCheckBox* m_grayscaleCheckbox;
-	SynGlyphX::RadioButtonGroupWidget* m_bestFitRadioButtonWidget;
-	QSpinBox* m_marginSpinBox;
+private:
+	GlyphRolesTableModel* m_model;
+	QHeaderView* m_headerView;
 };
 
-#endif // MAPOPTIONSWIDGET_H
+#endif // GLYPHROLESSUBSETTABLEWIDGET_H

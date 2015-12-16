@@ -38,7 +38,6 @@ public:
 
 	SynGlyphX::DownloadedMapProperties::MapSource GetMapSource() const;
 	SynGlyphX::DownloadedMapProperties::MapType GetMapType() const;
-	bool GetShowPointsInMap() const;
 
 private:
 	std::string m_filename;
@@ -47,7 +46,6 @@ private:
 
 	SynGlyphX::DownloadedMapProperties::MapSource m_mapSource;
 	SynGlyphX::DownloadedMapProperties::MapType m_mapType;
-	bool m_showPointsInMap;
 };
 
 #endif // DOWNLOADEDMAP_H

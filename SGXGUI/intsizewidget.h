@@ -20,6 +20,7 @@
 
 #include "sizewidget.h"
 #include <QtWidgets/QSpinBox>
+#include "utilitytypes.h"
 
 namespace SynGlyphX {
 
@@ -29,12 +30,16 @@ namespace SynGlyphX {
 
 	public:
 		IntSizeWidget(bool showLockRatioCheckBox, QWidget *parent);
+		IntSizeWidget(bool showLockRatioCheckBox, const QString& widthLabel, const QString& heightLabel, QWidget *parent);
 		~IntSizeWidget();
 
 		void SetSize(const QSize& size);
 		QSize GetSize() const;
 
 		void SetRange(int min, int max);
+
+		static QSize ConvertToQSize(const SynGlyphX::IntSize& size);
+		static SynGlyphX::IntSize ConvertFromQSize(const QSize& size);
 
 	protected slots:
 		virtual void OnWidthChanged();

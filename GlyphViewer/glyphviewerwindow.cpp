@@ -28,7 +28,7 @@
 #include <string>
 
 GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
-	: SynGlyphX::MainWindow(1, parent),
+	: SynGlyphX::MainWindow(2, parent),
 	m_antzWidget(nullptr),
 	m_showErrorFromTransform(true)
 {
@@ -79,7 +79,7 @@ GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 	m_stereoAction->setChecked(m_antzWidget->IsInStereoMode());
 
 	SynGlyphX::Transformer::SetDefaultImagesDirectory(SynGlyphX::GlyphBuilderApplication::GetDefaultBaseImagesLocation());
-	SynGlyphXANTz::ANTzCSVWriter::GetInstance().SetNOURLLocation(QDir::toNativeSeparators(QDir::cleanPath(SynGlyphX::GlyphBuilderApplication::applicationDirPath()) + QDir::separator() + "nourl.html").toStdWString());
+	SynGlyphXANTz::ANTzCSVWriter::GetInstance().SetNOURLLocation(L"");
 
 	QStringList commandLineArguments = SynGlyphX::Application::arguments();
 	if (commandLineArguments.size() > 1) {
@@ -210,30 +210,29 @@ void GlyphViewerWindow::CreateDockWidgets() {
 	setCorner(Qt::TopRightCorner, Qt::RightDockWidgetArea);
 	setCorner(Qt::BottomRightCorner, Qt::RightDockWidgetArea);
 
-	QDockWidget* glyphListDockWidget = new QDockWidget(tr("Glyph List"), this);
-	m_treeView = new GlyphTreeListView(glyphListDockWidget);
+	m_glyphListDockWidget = new QDockWidget(tr("Glyph List"), this);
+	m_treeView = new GlyphTreeListView(m_glyphListDockWidget);
 	m_treeView->setModel(m_glyphForestModel);
 	m_treeView->SetItemFocusSelectionModel(m_glyphForestSelectionModel);
 
-	glyphListDockWidget->setWidget(m_treeView);
-	addDockWidget(Qt::LeftDockWidgetArea, glyphListDockWidget);
-	m_viewMenu->addAction(glyphListDockWidget->toggleViewAction());
+	m_glyphListDockWidget->setWidget(m_treeView);
+	addDockWidget(Qt::LeftDockWidgetArea, m_glyphListDockWidget);
+	m_viewMenu->addAction(m_glyphListDockWidget->toggleViewAction());
 
 	m_glyphPropertiesWidgetContainer = new GlyphPropertiesWidgetsContainer(m_glyphForestModel, m_glyphForestSelectionModel, this);
 
-	QDockWidget* visualPropertiesDockWidget = new QDockWidget(tr("Visual Properties"), this);
+	/*QDockWidget* visualPropertiesDockWidget = new QDockWidget(tr("Visual Properties"), this);
 	visualPropertiesDockWidget->setWidget(m_glyphPropertiesWidgetContainer->GetVisualProperitesWidget());
 	addDockWidget(Qt::LeftDockWidgetArea, visualPropertiesDockWidget);
-	m_viewMenu->addAction(visualPropertiesDockWidget->toggleViewAction());
+	m_viewMenu->addAction(visualPropertiesDockWidget->toggleViewAction());*/
 
 	QDockWidget* textPropertiesDockWidget = new QDockWidget(tr("Text Properties"), this);
 	textPropertiesDockWidget->setWidget(m_glyphPropertiesWidgetContainer->GetTextProperitesWidget());
 	addDockWidget(Qt::LeftDockWidgetArea, textPropertiesDockWidget);
 	m_viewMenu->addAction(textPropertiesDockWidget->toggleViewAction());
 
-	tabifyDockWidget(glyphListDockWidget, visualPropertiesDockWidget);
-	tabifyDockWidget(visualPropertiesDockWidget, textPropertiesDockWidget);
-	glyphListDockWidget->raise();
+	tabifyDockWidget(m_glyphListDockWidget, textPropertiesDockWidget);
+	m_glyphListDockWidget->raise();
 
 	QDockWidget* rightDockWidget = new QDockWidget(tr("Source Data Selector"), this);
 	m_sourceDataSelectionWidget = new MultiTableElasticListsWidget(m_sourceDataCache, m_sourceDataSelectionModel, rightDockWidget);
@@ -354,6 +353,8 @@ void GlyphViewerWindow::LoadVisualization(const QString& filename) {
 
 		LoadANTzCompatibilityVisualization(filename);
 	}
+
+	m_glyphListDockWidget->raise();
 }
 
 bool GlyphViewerWindow::LoadNewVisualization(const QString& filename) {

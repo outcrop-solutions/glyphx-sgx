@@ -23,8 +23,8 @@ namespace SynGlyphX {
 		
 		setLayout(mainLayout);
 
-		QObject::connect(m_surfaceRadioButtonGroup, &SynGlyphX::SurfaceRadioButtonWidget::ButtonClicked, this, &NonMappableGeometryWidget::PropertiesChanged);
-		QObject::connect(m_ratioSpinBox, static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), this, &NonMappableGeometryWidget::PropertiesChanged);
+		QObject::connect(m_surfaceRadioButtonGroup, &SynGlyphX::SurfaceRadioButtonWidget::ButtonClicked, this, &NonMappableGeometryWidget::SurfaceChanged);
+		QObject::connect(m_ratioSpinBox, static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), this, &NonMappableGeometryWidget::TorusRatioChanged);
 	}
 
 	NonMappableGeometryWidget::~NonMappableGeometryWidget()

@@ -38,7 +38,7 @@ namespace SynGlyphX {
 		virtual void accept();
 
 	protected:
-		virtual bool IsNewFileValid() const;
+		virtual bool IsNewFileValid() const = 0;
 
 		SynGlyphX::BrowseLineEdit* m_newDatasourceFileLineEdit;
 

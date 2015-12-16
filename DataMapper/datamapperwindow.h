@@ -68,6 +68,7 @@ private slots:
 
 private:
     void CreateMenus();
+	void CreateExportToPortableVisualizationSubmenu();
     void CreateDockWidgets();
 	void CreateCenterWidget();
 	void UpdateMissingFileDatasources(const QString& filename);

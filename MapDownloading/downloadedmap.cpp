@@ -19,9 +19,7 @@ DownloadedMap::DownloadedMap(const std::vector<GeographicPoint>& points, const s
 
 	NetworkDownloader& downloader = NetworkDownloader::Instance();
 	
-	m_imageBoundingBox = downloader.DownloadMap(points, tempImageFilename.toStdString(), properties);
-
-	m_showPointsInMap = downloader.GetShowPointsInMap();
+	m_imageBoundingBox = downloader.DownloadMap(points, tempImageFilename.toStdString(), properties).first;
 
     QString imageFilename = QString::fromStdString(filename);
 
@@ -62,9 +60,4 @@ SynGlyphX::DownloadedMapProperties::MapSource DownloadedMap::GetMapSource() cons
 SynGlyphX::DownloadedMapProperties::MapType DownloadedMap::GetMapType() const {
 
 	return m_mapType;
-}
-
-bool DownloadedMap::GetShowPointsInMap() const {
-	
-	return m_showPointsInMap;
 }

@@ -10,6 +10,14 @@ namespace SynGlyphX {
 		AddSpinBoxes(m_intWidthSpinBox, m_intHeightSpinBox);
 	}
 
+	IntSizeWidget::IntSizeWidget(bool showLockRatioCheckBox, const QString& widthLabel, const QString& heightLabel, QWidget *parent)
+		: SizeWidget(showLockRatioCheckBox, parent) {
+
+		m_intWidthSpinBox = new QSpinBox(this);
+		m_intHeightSpinBox = new QSpinBox(this);
+		AddSpinBoxes(m_intWidthSpinBox, m_intHeightSpinBox, widthLabel, heightLabel);
+	}
+
 	IntSizeWidget::~IntSizeWidget()
 	{
 
@@ -56,6 +64,16 @@ namespace SynGlyphX {
 	void IntSizeWidget::OnHeightChanged() {
 
 		m_intWidthSpinBox->setValue(static_cast<int>(m_intHeightSpinBox->value() * m_ratio));
+	}
+
+	QSize IntSizeWidget::ConvertToQSize(const SynGlyphX::IntSize& size) {
+
+		return QSize(size[0], size[1]);
+	}
+
+	SynGlyphX::IntSize IntSizeWidget::ConvertFromQSize(const QSize& size) {
+
+		return SynGlyphX::IntSize({ { size.width(), size.height() } });
 	}
 
 } //namespace SynGlyphX

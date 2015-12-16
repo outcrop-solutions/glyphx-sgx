@@ -57,7 +57,19 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_0CA64B70492C4B0D9B5F467501831BB6"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_112F5D98201E4F7398911EC38F6472E5"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_1154B17775DB4D2088A85D723DE2E238"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -105,6 +117,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_201F49AD7D6D4838BBADD2E4A039D8A5"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_20261BBA1E664A25B0CD219C5D7AD4F7"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -118,6 +136,12 @@
         "Entry"
         {
         "MsmKey" = "8:_25EDCDADCDD54E54ACCED55C743DE2E1"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_27CED914798745429C477BDAEA4D2F8C"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -165,6 +189,18 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_35DCBF1E74C245948C4DB44373249809"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_382DCC59AFDE4FEF9E1EB60DA5EF9928"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_384E3DB8A1504A7394F1AD3D7539F47E"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -201,6 +237,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_474DE6654102449989CE4F71532BB6D9"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_480072832B1D4D90B0D8184AF1D89EC8"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -208,12 +250,6 @@
         "Entry"
         {
         "MsmKey" = "8:_48401AEDFF4A4D4FBC190814F30BFA07"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_48A9AC4CEC6642A48AB9A1BACCF62779"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -244,12 +280,6 @@
         "Entry"
         {
         "MsmKey" = "8:_5C403A70548C402B9A909FBD0AF3F6CB"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_5D81D1A642D142F5B90F2F523187E990"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -357,12 +387,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_808CAF07AB3742F0A84F22183E9C1D83"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_815A4380581945809368C02D86F339CA"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -376,12 +400,6 @@
         "Entry"
         {
         "MsmKey" = "8:_8219B79DCEED454AA56ED4C9F1B3868E"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_8955D1C5D3AF41EBB4C1564FEE99B1D1"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -514,6 +532,12 @@
         "Entry"
         {
         "MsmKey" = "8:_B5D19EF0B3BA407EBCEF0C56D7AAD537"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_B6E06E24181B4FAFAE103CBCE877D959"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -693,6 +717,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_F61F8FF3D815421D9B73FF14BDA7F2A9"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_F78B32326DD54462B3263080F5EAB4C2"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -706,6 +736,12 @@
         "Entry"
         {
         "MsmKey" = "8:_FAA64575586341E1BB230B90C90AE0DA"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_FB8D37CF08AE46658942D82BBF032C14"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -928,12 +964,52 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_0CA64B70492C4B0D9B5F467501831BB6"
+            {
+            "SourcePath" = "8:..\\..\\ANTzPlus\\ANTzMacTemplate\\Glyph_Viewer_(Portable)_mac"
+            "TargetName" = "8:Glyph_Viewer_(Portable)_mac"
+            "Tag" = "8:"
+            "Folder" = "8:_C453C49D780C4D36B12A3D52B6E6868A"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_112F5D98201E4F7398911EC38F6472E5"
             {
             "SourcePath" = "8:..\\..\\Misc\\InstallerFiles\\GlyphTemplates\\Tree.sgt"
             "TargetName" = "8:Tree.sgt"
             "Tag" = "8:"
             "Folder" = "8:_B4E0754028D04DDF8AEE8716965EFFAF"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_1154B17775DB4D2088A85D723DE2E238"
+            {
+            "SourcePath" = "8:..\\..\\ANTzPlus\\ANTzMacTemplate\\README.md"
+            "TargetName" = "8:README.md"
+            "Tag" = "8:"
+            "Folder" = "8:_C453C49D780C4D36B12A3D52B6E6868A"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -1088,6 +1164,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_201F49AD7D6D4838BBADD2E4A039D8A5"
+            {
+            "SourcePath" = "8:..\\..\\ANTzPlus\\ANTzTemplate\\Glyph_Viewer_(Portable)_win.exe"
+            "TargetName" = "8:Glyph_Viewer_(Portable)_win.exe"
+            "Tag" = "8:"
+            "Folder" = "8:_3E59963508D34F76B5732E64BBFB296A"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_20261BBA1E664A25B0CD219C5D7AD4F7"
             {
             "SourcePath" = "8:..\\..\\3rdParty\\bin\\Win32\\Release\\qt_plugins\\platforms\\qoffscreen.dll"
@@ -1114,6 +1210,26 @@
             "TargetName" = "8:World.png"
             "Tag" = "8:"
             "Folder" = "8:_1CD158B43CEE41CBADE0A1F0DDB6AB7D"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_27CED914798745429C477BDAEA4D2F8C"
+            {
+            "SourcePath" = "8:..\\..\\ANTzPlus\\ANTzMacTemplate\\release_2014-06-29.txt"
+            "TargetName" = "8:release_2014-06-29.txt"
+            "Tag" = "8:"
+            "Folder" = "8:_C453C49D780C4D36B12A3D52B6E6868A"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -1214,6 +1330,46 @@
             "TargetName" = "8:Solar System.sgt"
             "Tag" = "8:"
             "Folder" = "8:_B4E0754028D04DDF8AEE8716965EFFAF"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_35DCBF1E74C245948C4DB44373249809"
+            {
+            "SourcePath" = "8:..\\..\\ANTzPlus\\ANTzMacTemplate\\cheatsheet_2014-06-29.txt"
+            "TargetName" = "8:cheatsheet_2014-06-29.txt"
+            "Tag" = "8:"
+            "Folder" = "8:_C453C49D780C4D36B12A3D52B6E6868A"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_382DCC59AFDE4FEF9E1EB60DA5EF9928"
+            {
+            "SourcePath" = "8:..\\..\\ANTzPlus\\ANTzTemplate\\cheatsheet_2015-11-17.txt"
+            "TargetName" = "8:cheatsheet_2015-11-17.txt"
+            "Tag" = "8:"
+            "Folder" = "8:_3E59963508D34F76B5732E64BBFB296A"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -1348,6 +1504,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_474DE6654102449989CE4F71532BB6D9"
+            {
+            "SourcePath" = "8:..\\..\\ANTzPlus\\ANTzMacTemplate\\LICENSE.txt"
+            "TargetName" = "8:LICENSE.txt"
+            "Tag" = "8:"
+            "Folder" = "8:_C453C49D780C4D36B12A3D52B6E6868A"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_480072832B1D4D90B0D8184AF1D89EC8"
             {
             "SourcePath" = "8:..\\..\\Misc\\InstallerFiles\\Images\\logo.png"
@@ -1374,26 +1550,6 @@
             "TargetName" = "8:qtsensors_dummy.dll"
             "Tag" = "8:"
             "Folder" = "8:_0020FD74C310496F9BDCFA62E3B9D50C"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_48A9AC4CEC6642A48AB9A1BACCF62779"
-            {
-            "SourcePath" = "8:..\\..\\ANTzPlus\\ANTzTemplate\\cheatsheet_2015-02-16.txt"
-            "TargetName" = "8:cheatsheet_2015-02-16.txt"
-            "Tag" = "8:"
-            "Folder" = "8:_3E59963508D34F76B5732E64BBFB296A"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -1474,26 +1630,6 @@
             "TargetName" = "8:qtsensorgestures_plugin.dll"
             "Tag" = "8:"
             "Folder" = "8:_670AEC90455749E79FD3F4761B96DADE"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_5D81D1A642D142F5B90F2F523187E990"
-            {
-            "SourcePath" = "8:..\\..\\Misc\\InstallerFiles\\Images\\logo_export.png"
-            "TargetName" = "8:logo_export.png"
-            "Tag" = "8:"
-            "Folder" = "8:_0FD992B69CC74D489682A631FA99B364"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -1808,26 +1944,6 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_808CAF07AB3742F0A84F22183E9C1D83"
-            {
-            "SourcePath" = "8:..\\..\\ANTzPlus\\ANTzTemplate\\antz_release_2015-02-16.txt"
-            "TargetName" = "8:antz_release_2015-02-16.txt"
-            "Tag" = "8:"
-            "Folder" = "8:_3E59963508D34F76B5732E64BBFB296A"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_815A4380581945809368C02D86F339CA"
             {
             "SourcePath" = "8:..\\..\\3rdParty\\tools\\vc120redist\\vccorlib120.dll"
@@ -1854,26 +1970,6 @@
             "TargetName" = "8:Black.png"
             "Tag" = "8:"
             "Folder" = "8:_1CD158B43CEE41CBADE0A1F0DDB6AB7D"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_8955D1C5D3AF41EBB4C1564FEE99B1D1"
-            {
-            "SourcePath" = "8:..\\..\\ANTzPlus\\ANTzTemplate\\Glyph_Viewer_(Portable).exe"
-            "TargetName" = "8:Glyph_Viewer_(Portable).exe"
-            "Tag" = "8:"
-            "Folder" = "8:_3E59963508D34F76B5732E64BBFB296A"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -2234,6 +2330,26 @@
             "TargetName" = "8:freeglut.dll"
             "Tag" = "8:"
             "Folder" = "8:_89702FDDAF7146B08C00DB9BA96A0007"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_B6E06E24181B4FAFAE103CBCE877D959"
+            {
+            "SourcePath" = "8:..\\..\\ANTzPlus\\ANTzMacTemplate\\libmysqlclient.18.64.dylib"
+            "TargetName" = "8:libmysqlclient.18.64.dylib"
+            "Tag" = "8:"
+            "Folder" = "8:_C453C49D780C4D36B12A3D52B6E6868A"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -2708,6 +2824,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_F61F8FF3D815421D9B73FF14BDA7F2A9"
+            {
+            "SourcePath" = "8:..\\..\\ANTzPlus\\ANTzTemplate\\antz_release_2015-12-01.txt"
+            "TargetName" = "8:antz_release_2015-12-01.txt"
+            "Tag" = "8:"
+            "Folder" = "8:_3E59963508D34F76B5732E64BBFB296A"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_F92944BCE7504EEE8B8F5B11A8ED3CF5"
             {
             "SourcePath" = "8:..\\..\\Misc\\InstallerFiles\\GlyphTemplates\\Boat.sgt"
@@ -2745,6 +2881,26 @@
             "PackageAs" = "3:1"
             "Register" = "3:1"
             "Exclude" = "11:TRUE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_FB8D37CF08AE46658942D82BBF032C14"
+            {
+            "SourcePath" = "8:..\\..\\ANTzPlus\\ANTzMacTemplate\\libmysqlclient.18.dylib"
+            "TargetName" = "8:libmysqlclient.18.dylib"
+            "Tag" = "8:"
+            "Folder" = "8:_C453C49D780C4D36B12A3D52B6E6868A"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
@@ -3191,6 +3347,61 @@
                         {
                         }
                     }
+                    "{9EF0B969-E518-4E46-987F-47570745A589}:_C453C49D780C4D36B12A3D52B6E6868A"
+                    {
+                    "Name" = "8:ANTzMacTemplate"
+                    "AlwaysCreate" = "11:FALSE"
+                    "Condition" = "8:"
+                    "Transitive" = "11:FALSE"
+                    "Property" = "8:_620548AEF0944ED18A092C7D9DD100EA"
+                        "Folders"
+                        {
+                            "{9EF0B969-E518-4E46-987F-47570745A589}:_2AB9D118310D4BE0A3F4E76BA45DDF8A"
+                            {
+                            "Name" = "8:usr"
+                            "AlwaysCreate" = "11:TRUE"
+                            "Condition" = "8:"
+                            "Transitive" = "11:FALSE"
+                            "Property" = "8:_4E1092D54FFD4329B00E1B199DDB9B1B"
+                                "Folders"
+                                {
+                                    "{9EF0B969-E518-4E46-987F-47570745A589}:_07B4D0BC67684F46B91F9CF51197BC37"
+                                    {
+                                    "Name" = "8:plugin"
+                                    "AlwaysCreate" = "11:TRUE"
+                                    "Condition" = "8:"
+                                    "Transitive" = "11:FALSE"
+                                    "Property" = "8:_A2DE752FE507423BAEF27B8E558BFB2D"
+                                        "Folders"
+                                        {
+                                        }
+                                    }
+                                    "{9EF0B969-E518-4E46-987F-47570745A589}:_C061BF04CB164782A7DC2B32DD29A653"
+                                    {
+                                    "Name" = "8:images"
+                                    "AlwaysCreate" = "11:TRUE"
+                                    "Condition" = "8:"
+                                    "Transitive" = "11:FALSE"
+                                    "Property" = "8:_35CFA65975F749ED997BB7CCE0868481"
+                                        "Folders"
+                                        {
+                                        }
+                                    }
+                                    "{9EF0B969-E518-4E46-987F-47570745A589}:_C7BB0418292240FF89CC96987FDD0989"
+                                    {
+                                    "Name" = "8:csv"
+                                    "AlwaysCreate" = "11:TRUE"
+                                    "Condition" = "8:"
+                                    "Transitive" = "11:FALSE"
+                                    "Property" = "8:_35C9495C66BC44519DA4457AD5BFB805"
+                                        "Folders"
+                                        {
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
                     "{9EF0B969-E518-4E46-987F-47570745A589}:_EF6F4723ED554728838CCDB807CD0296"
                     {
                     "Name" = "8:SampleData"
@@ -3247,7 +3458,7 @@
         "Module"
         {
         "ModuleSignature" = "8:MergeModule.E7BC5B0DA8E84115B456FD393FF63EDE"
-        "Version" = "8:0.7.19.0"
+        "Version" = "8:0.7.21.0"
         "Title" = "8:SGXSetupMergeModule"
         "Subject" = "8:"
         "Author" = "8:SynGlyphX"

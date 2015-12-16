@@ -20,6 +20,7 @@
 
 #include "sizewidget.h"
 #include <QtWidgets/QDoubleSpinBox>
+#include "utilitytypes.h"
 
 namespace SynGlyphX {
 
@@ -35,6 +36,9 @@ namespace SynGlyphX {
 		QSizeF GetSize() const;
 
 		void SetRange(double min, double max);
+
+		static QSizeF ConvertToQSizeF(const SynGlyphX::DoubleSize& size);
+		static SynGlyphX::DoubleSize ConvertFromQSizeF(const QSizeF& size);
 
 	protected slots:
 		virtual void OnWidthChanged();

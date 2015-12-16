@@ -44,7 +44,8 @@ namespace SynGlyphX {
 		void ShowTorusRatioWidget(bool show);
 
 	signals:
-		void PropertiesChanged();
+		void SurfaceChanged();
+		void TorusRatioChanged();
 
 	private:
 		SurfaceRadioButtonWidget* m_surfaceRadioButtonGroup;

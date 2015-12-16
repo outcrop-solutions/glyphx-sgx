@@ -15,44 +15,32 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef MAPOPTIONSWIDGET_H
-#define MAPOPTIONSWIDGET_H
+#ifndef SYNGLYPHX_GRIDWIDGET_H
+#define SYNGLYPHX_GRIDWIDGET_H
 
-#include "mapdownloading_global.h"
 #include <QtWidgets/QWidget>
-#include <QtWidgets/QComboBox>
-#include <QtWidgets/QCheckBox>
-#include "intsizewidget.h"
-#include "networkdownloader.h"
-#include "downloadedmapproperties.h"
-#include "radiobuttongroupwidget.h"
 
-class MAPDOWNLOADING_EXPORT MapOptionsWidget : public QWidget
-{
-    Q_OBJECT
+namespace SynGlyphX {
 
-public:
-    MapOptionsWidget(QWidget *parent = 0);
-    ~MapOptionsWidget();
+	class GridWidget : public QWidget
+	{
+		Q_OBJECT
 
-	void SetWidget(SynGlyphX::DownloadedMapProperties::ConstSharedPtr properties);
-	SynGlyphX::DownloadedMapProperties::SharedPtr GetProperties() const;
+	public:
+		GridWidget(unsigned int rowCount, unsigned int columnCount, QWidget *parent);
+		~GridWidget();
 
-protected slots:
-    void OnMapSourceChanged();
-	void OnSizeOptionChanged();
+		void SetColumnStretch(int column, int stretch);
+		void AddWidget(QWidget* widget, int row, int column);
+		//void AddWidget(QWidget* widget, int fromRow, int fromColumn, int rowSpan, int columnSpan);
 
-protected:
-    //void ReadSettings();
-    //void WriteSettings();
+	protected:
+		//virtual void paintEvent(QPaintEvent *event);
 
-	QComboBox* m_mapServiceComboBox;
-    QComboBox* m_mapTypeComboBox;
-    SynGlyphX::IntSizeWidget* m_imageSizeWidget;
-	QCheckBox* m_invertCheckbox;
-	QCheckBox* m_grayscaleCheckbox;
-	SynGlyphX::RadioButtonGroupWidget* m_bestFitRadioButtonWidget;
-	QSpinBox* m_marginSpinBox;
-};
+	private:
 
-#endif // MAPOPTIONSWIDGET_H
+	};
+
+} //namespace SynGlyphX
+
+#endif // SYNGLYPHX_GRIDWIDGET_H
