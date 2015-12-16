@@ -1,4 +1,5 @@
 #include "fieldgroupmodel.h"
+#include <QtCore/QDebug>
 
 FieldGroupModel::FieldGroupModel(QObject *parent)
 	: QAbstractTableModel(parent),
@@ -85,13 +86,17 @@ QVariant FieldGroupModel::data(const QModelIndex& index, int role) const {
 			}
 			else {
 				
-				const SynGlyphX::InputTable& datasourceTableInfo = GetTableForRow(index.row());
-				const SynGlyphX::Datasource& datasource = m_dataTransformModel->GetDataMapping()->GetDatasources().GetDatasourceByID(GetTableForRow(index.row()).GetDatasourceID());
+				//const SynGlyphX::InputTable& datasourceTableInfo = GetTableForRow(index.row());
+				//std::advance(table, index.row());
+				std::map<boost::uuids::uuid, std::vector<std::wstring>> tb = m_dataTransformModel->GetDataEngineConn().getNumericFieldsTable();
+				std::map<boost::uuids::uuid, std::vector<std::wstring>>::iterator iT = tb.begin();
+				std::advance(iT, GetTableForRow(index.row()));
+				const SynGlyphX::Datasource& datasource = m_dataTransformModel->GetDataMapping()->GetDatasources().GetDatasourceByID(iT->first);
 				if (index.column() == 2) {
 
 					if (datasource.CanDatasourceHaveMultipleTables()) {
 
-						return QString::fromStdWString(datasourceTableInfo.GetTable());
+						return QString::fromStdWString(m_dataTransformModel->GetDataEngineConn().getTableName(iT->first));
 					}
 					else {
 
@@ -178,12 +183,18 @@ void FieldGroupModel::ResetTable(DataTransformModel* model) {
 	m_dataTransformModel = model;
 	m_checkedItems.clear();
 	m_countOfFieldsPerTable.clear();
-	unsigned int previousTotal = 0;
+	int total = 0;
+	const SynGlyphX::DatasourceMaps::FileDatasourceMap& fileDatasources = model->GetDataMapping()->GetDatasources().GetFileDatasources();
+	SynGlyphX::DatasourceMaps::FileDatasourceMap::const_iterator iT = fileDatasources.begin();
+	for (; iT != fileDatasources.end(); ++iT) {
+		total += model->GetDataEngineConn().getTableNumericFields(iT->first).size();
+		m_countOfFieldsPerTable.push_back(total);
+	}/*
 	for (auto& fields : m_dataTransformModel->GetSourceDataManager().GetNumericFieldsByTable()) {
 
 		previousTotal += fields.second.size();
 		m_countOfFieldsPerTable.push_back(previousTotal);
-	}
+	}*/
 	endResetModel();
 }
 
@@ -212,16 +223,17 @@ SynGlyphX::InputField FieldGroupModel::GetInputFieldForRow(int row) const {
 
 		index = row - m_countOfFieldsPerTable[i - 1];
 	}
-
-	auto table = m_dataTransformModel->GetSourceDataManager().GetNumericFieldsByTable().begin();
-	std::advance(table, i);
-	auto field = table->second.begin();
+	
+	std::map<boost::uuids::uuid, std::vector<std::wstring>> tb = m_dataTransformModel->GetDataEngineConn().getNumericFieldsTable();
+	std::map<boost::uuids::uuid, std::vector<std::wstring>>::iterator iT = tb.begin();
+	std::advance(iT, i);
+	auto field = iT->second.begin();
 	std::advance(field, index);
 
-	return SynGlyphX::InputField(table->first.GetDatasourceID(), table->first.GetTable(), *field, SynGlyphX::InputField::Type::Real);
+	return SynGlyphX::InputField(iT->first, m_dataTransformModel->GetDataEngineConn().getTableName(iT->first), *field, SynGlyphX::InputField::Type::Real);
 }
 
-const SynGlyphX::InputTable& FieldGroupModel::GetTableForRow(int row) const {
+unsigned int FieldGroupModel::GetTableForRow(int row) const {
 
 	unsigned int i = 0;
 	for (; i < m_countOfFieldsPerTable.size(); ++i) {
@@ -232,10 +244,11 @@ const SynGlyphX::InputTable& FieldGroupModel::GetTableForRow(int row) const {
 		}
 	}
 
-	auto table = m_dataTransformModel->GetSourceDataManager().GetNumericFieldsByTable().begin();
-	std::advance(table, i);
+	//auto table = m_dataTransformModel->GetSourceDataManager().GetNumericFieldsByTable().begin();
+	//auto table = m_dataTransformModel->GetDataEngineConn().getNumericFieldsTable().begin();
+	//std::advance(table, i);
 
-	return table->first;
+	return i;
 }
 
 SynGlyphX::AllSomeNone FieldGroupModel::AreFieldsChecked() const {

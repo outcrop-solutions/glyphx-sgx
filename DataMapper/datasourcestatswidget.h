@@ -24,6 +24,7 @@
 #include <unordered_map>
 #include "datatransformmodel.h"
 #include "roledatafilterproxymodel.h"
+#include "dataengineconnection.h"
 #include "uuid.h"
 
 class DataStatsModel;
@@ -38,6 +39,7 @@ public:
 
 	virtual QSize sizeHint() const;
 
+	void SetDataEngineConn(DataEngine::DataEngineConnection *dec);
 	void AddNewStatsViews();
 	void ClearTabs();
 
@@ -48,11 +50,12 @@ private slots:
 	void OnRowsRemovedFromModel(const QModelIndex& parent, int start, int end);
 
 private:
-	void CreateTablesFromDatasource(const boost::uuids::uuid& id, const SynGlyphX::Datasource& datasource);
+	void CreateTablesFromDatasource(const boost::uuids::uuid& id, QString filename, QString file);
 	void CreateTableView(DataStatsModel* model, const QString& tabName, const QString& id);
 	void RemoveTableViews(const QString& name = QString());
 
 	DataTransformModel* m_model;
+	DataEngine::DataEngineConnection *dec;
 };
 
 #endif // DATASOURCESTATSWIDGET_H

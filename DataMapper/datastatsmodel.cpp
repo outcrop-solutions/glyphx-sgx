@@ -5,21 +5,14 @@
 #include "sourcedatamanager.h"
 #include "inputfieldmimedata.h"
 #include <boost/uuid/uuid_io.hpp>
+#include "dataenginestatement.h"
 
-DataStatsModel::DataStatsModel(const boost::uuids::uuid& id, const QString& tableName, QObject *parent)
+DataStatsModel::DataStatsModel(const boost::uuids::uuid& id, QString filename, QString tablename, DataEngine::DataEngineConnection *dec, QObject *parent)
 	: QAbstractTableModel(parent),
 	m_id(id),
-	m_tableName(tableName)
+	m_tableName(tablename)
 {
-	GenerateStats(id, m_tableName);
-}
-
-DataStatsModel::DataStatsModel(const boost::uuids::uuid& id, const boost::uuids::uuid& databaseId, const QString& tableName, QObject *parent)
-	: QAbstractTableModel(parent),
-	m_id(id),
-	m_tableName(tableName) {
-
-	GenerateStats(databaseId, QString::fromStdWString(boost::uuids::to_wstring(id)));
+	GenerateStats(filename, dec);
 }
 
 DataStatsModel::~DataStatsModel()
@@ -27,40 +20,45 @@ DataStatsModel::~DataStatsModel()
 
 }
 
-void DataStatsModel::GenerateStats(const boost::uuids::uuid& databaseId, const QString& tableName) {
+void DataStatsModel::GenerateStats(QString filename, DataEngine::DataEngineConnection *dec) {
 
-	QSqlDatabase db = QSqlDatabase::database(QString::fromStdWString(boost::uuids::to_wstring(databaseId)));
-	QSqlRecord columnNamesRecord = db.record(tableName);
+	DataEngine::DataEngineStatement des;
+	des.prepare(dec->getEnv(), dec->getJcls());
 
-	QSqlQuery query(db);
-	//query.prepare("SELECT min(:colName), max(:colName), AVG(:colName), COUNT(:colName) FROM " + tableName);
+	std::vector<std::string> colNames = dec->getColumnNames();
+	std::vector<std::wstring> numericCols;
+	
+	for (int i = 0; i < colNames.size(); i++) {
 
-	for (int i = 0; i < columnNamesRecord.count(); ++i) {
+		std::string str = des.getColumnName(i);
 
-		QSqlField field = columnNamesRecord.field(i);
-		query.prepare(QString("SELECT TYPEOF(%1), MIN(%1), MAX(%1), AVG(%1), COUNT(%1), COUNT(DISTINCT %1) FROM \"").arg("\"" + field.name() + "\"") + tableName + "\"");
-		m_fieldNames.append(field.name());
-		m_fieldTypes.append(field.type());
-		//query.bindValue(":colName", "\"" + columnNamesRecord.fieldName(i) + "\"");
-		query.exec();
-		query.first();
+		m_fieldNames.append(QString::fromStdString(str));
 
-		QSqlRecord record = query.record();
+		if (des.getType(i) == "real"){
+			m_fieldTypes.append(QVariant::Type::Double);
+			numericCols.push_back(QString(str.c_str()).toStdWString());
+			
+		}
+		else{
+			m_fieldTypes.append(QVariant(QString::fromStdString(des.getType(i))).type());
+		}
+
 		QStringList fieldStats;
-		//columnStats.append(QVariant::typeToName(field.type()));
-		fieldStats.append(record.value(0).toString());
-		fieldStats.append(record.value(1).toString());
-		fieldStats.append(record.value(2).toString());
-		if (field.type() == QVariant::String) {
-			fieldStats.append("N/A");
-		}
-		else {
-			fieldStats.append(record.value(3).toString());
-		}
-		fieldStats.append(record.value(4).toString());
-		fieldStats.append(record.value(5).toString());
+
+		fieldStats.append(QString::fromStdString(des.getType(i)));
+		fieldStats.append(QString::fromStdString(des.getMin(i)));
+		fieldStats.append(QString::fromStdString(des.getMax(i)));
+		fieldStats.append(QString::fromStdString(des.getAverage(i)));
+		fieldStats.append(QString::fromStdString(des.getCount(i)));
+		fieldStats.append(QString::fromStdString(des.getDistinct(i)));
 		m_stats.append(fieldStats);
+
 	}
+	dec->addTableNumericFields(m_id, numericCols);
+}
+
+int DataStatsModel::getNumericFieldCount(){
+	return numericFieldCount;
 }
 
 int DataStatsModel::rowCount(const QModelIndex& parent) const {

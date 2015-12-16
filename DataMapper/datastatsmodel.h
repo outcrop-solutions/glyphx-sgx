@@ -21,6 +21,7 @@
 #include <QtCore/QAbstractTableModel>
 #include <QtSql/QSqlQuery>
 #include <boost/uuid/uuid.hpp>
+#include "dataengineconnection.h"
 
 class DataStatsModel : public QAbstractTableModel
 {
@@ -28,7 +29,8 @@ class DataStatsModel : public QAbstractTableModel
 
 public:
 	DataStatsModel(const boost::uuids::uuid& id, const QString& tableName, QObject *parent = 0);
-	DataStatsModel(const boost::uuids::uuid& id, const boost::uuids::uuid& databaseId, const QString& tableName, QObject *parent = 0);
+	DataStatsModel(const boost::uuids::uuid& id, const boost::uuids::uuid& databaseId, const QString& tableName, QString filename, DataEngine::DataEngineConnection *dec, QObject *parent = 0);
+	DataStatsModel(const boost::uuids::uuid& id, QString filename, QString tablename, DataEngine::DataEngineConnection *dec, QObject *parent = 0);
 	~DataStatsModel();
 
 	virtual int rowCount(const QModelIndex& parent = QModelIndex()) const;
@@ -41,12 +43,15 @@ public:
 	virtual QMimeData* mimeData(const QModelIndexList& indexes) const;
 
 private:
-	void GenerateStats(const boost::uuids::uuid& databaseId, const QString& tableName);
+	void GenerateStats(const boost::uuids::uuid& databaseId, const QString& tableName, QString filename, DataEngine::DataEngineConnection &dec);
+	void GenerateStats(QString filename, DataEngine::DataEngineConnection *dec);
+	int getNumericFieldCount();
 
 	QList<QStringList> m_stats;
 	QStringList m_fieldNames;
 	QList<QVariant::Type> m_fieldTypes;
 	QString m_tableName;
+	int numericFieldCount;
 	boost::uuids::uuid m_id;
 };
 

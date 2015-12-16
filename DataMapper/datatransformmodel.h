@@ -21,6 +21,7 @@
 #include "datatransformmapping.h"
 #include "sourcedatamanager.h"
 #include <QtCore/QAbstractItemModel>
+#include "dataengineconnection.h"
 
 class DataTransformModel : public QAbstractItemModel
 {
@@ -131,6 +132,9 @@ public:
 
 	const SynGlyphX::SourceDataManager& GetSourceDataManager() const;
 
+	void SetDataEngineConn(DataEngine::DataEngineConnection *dec);
+	DataEngine::DataEngineConnection GetDataEngineConn();
+
 private:
 	void Clear();
 	QString GetCacheLocationForID(const boost::uuids::uuid& id);
@@ -146,6 +150,7 @@ private:
 
 	SynGlyphX::SourceDataManager m_sourceDataManager;
 	SynGlyphX::DataTransformMapping::SharedPtr m_dataMapping;
+	DataEngine::DataEngineConnection *dec;
 };
 
 Q_DECLARE_METATYPE(SynGlyphX::NumericMappingProperty)

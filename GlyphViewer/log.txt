@@ -1,0 +1,34 @@
+
+Reading SDT at D:/Demo/SalesJan2009/url_test.sdt
+Parsed SDT into doc.
+Retrieved input fields.
+Retrieved input fields.
+Retrieved input fields.
+Retrieved input fields.
+Retrieved input fields.
+Retrieved input fields.
+Retrieved input fields.
+Retrieved input fields.
+Retrieved input fields.
+Retrieved input fields.
+Retrieved input fields.
+Set input map.
+255f2bd9-9b84-49ed-adfd-bb5b06e69148OnlyTable
+Retrieved data paths.
+Finished creating min/max table...
+Created DataFrames.
+Checking field groups...
+Finished checking field groups.
+Retrieved Bg color.
+BaseObjects:
+Default | World
+Beginning to generate glyphs...
+Executed initial query...
+Returned cursor with size 759...
+1
+8
+Writing all files...
+C:\Users\Bryan\AppData\Local\SynGlyphX\Glyph Builder - Glyph Viewer\cache\cache_35214023-cc10-4b71-abfc-5115e7af4df5\\antz\
+GlyphViewer
+C:\Users\Bryan\Documents\GitHub\GUI\GlyphViewer\nourl.html
+6073 nodes printing...

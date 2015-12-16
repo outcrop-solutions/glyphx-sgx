@@ -32,6 +32,8 @@
 #include "baseobjectlistview.h"
 #include "datasourcesview.h"
 #include "antzcsvwriter.h"
+#include "dataengineconnection.h"
+#include "dataengine.h"
 
 class DataMapperWindow : public SynGlyphX::MainWindow
 {
@@ -111,6 +113,7 @@ private:
 	std::unordered_map<SynGlyphXANTz::ANTzCSVWriter::OutputPlatform, QString> m_antzExportDirectories;
 
 	QMetaObject::Connection m_modelResetConnection;
+	DataEngine::DataEngineConnection dec;
 };
 
 #endif // DATAMAPPERWINDOW_H
