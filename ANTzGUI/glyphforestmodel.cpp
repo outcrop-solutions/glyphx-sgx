@@ -9,6 +9,9 @@
 #include "io/npfile.h"
 #include "io/npch.h"
 #include "npctrl.h"
+#include <QtGui/QDesktopServices>
+#include <QtCore/QUrl>
+#include "glyphnodeconverter.h"
 
 namespace SynGlyphXANTz {
 
@@ -42,11 +45,7 @@ namespace SynGlyphXANTz {
 
 		pNPnode glyph = static_cast<pNPnode>(index.internalPointer());
 
-		QString displayedData = glyph->tag->title;
-
-		return displayedData;
-		//return displayedData + QString(" - (%1, %2, %3)").arg(glyph->world.x).arg(glyph->world.y).arg(glyph->world.z);
-		//return displayedData + QString(" - %1").arg(glyph->id);
+		return QString::fromStdWString(SynGlyphXANTz::GlyphNodeConverter::GetTag(glyph));
 	}
 
 	QModelIndex	GlyphForestModel::index(int row, int column, const QModelIndex& parent) const {
@@ -217,7 +216,7 @@ namespace SynGlyphXANTz {
 		}
 	}
 
-	void GlyphForestModel::LoadANTzVisualization(const QStringList& antzCSVFilenames, const QStringList& baseImageFilenames) {
+	void GlyphForestModel::LoadANTzVisualization(const SynGlyphXANTz::ANTzCSVWriter::FilenameList& filesToLoad, const QStringList& baseImageFilenames) {
 
 		pData antzData = m_antzData->GetData();
 		antzData->map.nodeRootIndex = kNPnodeRootPin;
@@ -227,11 +226,11 @@ namespace SynGlyphXANTz {
 		Clear(false);
 		m_baseImageFilenames = baseImageFilenames;
 
-		for (const QString& filename : antzCSVFilenames) {
-
-			npFileOpenCore(filename.toStdString().c_str(), NULL, antzData);
-		}
+		npFileOpenCore(filesToLoad[SynGlyphXANTz::ANTzCSVWriter::s_nodeFilenameIndex].c_str(), NULL, antzData);
+		npFileOpenCore(filesToLoad[SynGlyphXANTz::ANTzCSVWriter::s_tagFilenameIndex].c_str(), NULL, antzData);
+		
 		npSyncTags(static_cast<void*>(antzData));
+
 		endResetModel();
 
 		antzData->map.nodeRootIndex = 0;
@@ -261,12 +260,12 @@ namespace SynGlyphXANTz {
 
 		return i - kNPnodeRootPin;
 	}
-
+	/*
 	void GlyphForestModel::SetParentGridToDefaultBaseImage() {
 
 		pNPnode grid = static_cast<pNPnode>(m_antzData->GetData()->map.node[kNPnodeRootGrid]);
 		grid->textureID = 1; // m_textures.begin()->second;
-	}
+	}*/
 
 	const QStringList& GlyphForestModel::GetBaseImageFilenames() const {
 
@@ -310,6 +309,31 @@ namespace SynGlyphXANTz {
 	bool GlyphForestModel::IsTagShownIn3d(const QString& tag) {
 
 		return (tag != m_tagNotToBeShownIn3d);
+	}
+
+	bool GlyphForestModel::OpenURLs(const QModelIndexList& indexList) {
+
+		bool wereAnyURLsOpened = false;
+		for (const QModelIndex& index : indexList) {
+
+			pNPnode glyph = static_cast<pNPnode>(index.internalPointer());
+			QString url = QString::fromStdWString(SynGlyphXANTz::GlyphNodeConverter::GetUrl(glyph));
+			if ((!url.isEmpty()) && (url != "nourl.html")) {
+
+				QUrl parsedUrl = QUrl::fromUserInput(url);
+				if (parsedUrl.isValid()) {
+
+					QDesktopServices::openUrl(parsedUrl);
+					wereAnyURLsOpened = true;
+				}
+			}
+		}
+		return wereAnyURLsOpened;
+	}
+
+	SynGlyphX::Glyph GlyphForestModel::GetGlyphAtIndex(const QModelIndex& index) const {
+
+		return GlyphNodeConverter::CreateGlyphFromNode(static_cast<pNPnode>(index.internalPointer()));
 	}
 
 } //namespace SynGlyphXANTz

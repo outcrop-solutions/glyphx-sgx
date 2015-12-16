@@ -39,8 +39,17 @@ namespace SynGlyphXANTz {
 		glyph.GetColor().Set(2, node->color.b);
 		glyph.GetTransparency() = node->color.a;
 
-		glyph.GetTag() = boost::lexical_cast<std::wstring>(node->tag->title);
-		glyph.GetDescription() = boost::lexical_cast<std::wstring>(node->tag->desc);
+		glyph.GetTag() = GetTag(node);
+		glyph.GetURL() = GetUrl(node);
+
+		if (node->tag->descSize == 0) {
+
+			glyph.GetDescription() = L"";
+		}
+		else {
+
+			glyph.GetDescription() = boost::lexical_cast<std::wstring>(node->tag->desc);
+		}
 
 		glyph.GetRotationRate()[0] = node->rotateRate.x;
 		glyph.GetRotationRate()[1] = node->rotateRate.y;
@@ -211,6 +220,45 @@ namespace SynGlyphXANTz {
 		}
 
 		return true;
+	}
+
+	std::wstring GlyphNodeConverter::GetTag(pNPnode node) {
+
+		if (node->tag->titleSize == 0) {
+
+			return L"";
+		}
+
+		std::wstring tag = boost::lexical_cast<std::wstring>(node->tag->title);
+		
+		if (tag.substr(0, 9) == L"<a href=\"") {
+
+			int pos = tag.find_first_of('\"', 9) + 2;
+			return tag.substr(pos, tag.length() - pos - 4);
+		}
+		else {
+
+			return tag;
+		}
+	}
+
+	std::wstring GlyphNodeConverter::GetUrl(pNPnode node) {
+
+		if (node->tag->titleSize == 0) {
+
+			return L"";
+		}
+
+		std::wstring tag = boost::lexical_cast<std::wstring>(node->tag->title);
+
+		if (tag.substr(0, 9) == L"<a href=\"") {
+
+			return tag.substr(9, tag.find_first_of('\"', 9) - 9);
+		}
+		else {
+
+			return L"";
+		}
 	}
 
 } //namespace SynGlyphXANTz

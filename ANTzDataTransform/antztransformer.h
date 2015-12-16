@@ -24,6 +24,7 @@
 #include <QtCore/QString>
 #include <QtCore/QStringList>
 #include "antzgrid.h"
+#include "antzcsvwriter.h"
 
 namespace SynGlyphXANTz {
 
@@ -33,10 +34,10 @@ namespace SynGlyphXANTz {
 	public:
 		//typedef std::unordered_map<QString, unsigned int> BaseImageTextureMap;
 
-		ANTzTransformer(const QString& baseOutputDir);
+		ANTzTransformer(const QString& baseOutputDir, ANTzCSVWriter::OutputPlatform platform);
 		virtual ~ANTzTransformer();
 
-		const QStringList& GetCSVFilenames() const;
+		const ANTzCSVWriter::FilenameList& GetOutputFilenames() const;
 		const QStringList& GetBaseImageFilenames() const;
 
 		unsigned int GetTextureID(unsigned int index) const;
@@ -46,13 +47,14 @@ namespace SynGlyphXANTz {
 
 		virtual void GenerateGrids(std::vector<ANTzGrid>& grids, const SynGlyphX::DataTransformMapping& mapping, const QString& baseImageFilenameDirectory);
 		virtual QString GenerateBaseImageFilename(unsigned int index) const;
-		void GenerateCache(const SynGlyphX::DataTransformMapping& mapping, const QStringList& csvFilenames, const QString& baseImageFilenameDirectory);
+		void GenerateCache(const SynGlyphX::DataTransformMapping& mapping, const ANTzCSVWriter::FilenameList& outputFiles, const QString& baseImageFilenameDirectory);
 		void Clear();
 
-		QStringList m_csvFilenames;
+		ANTzCSVWriter::FilenameList m_outputFilenames;
 		QStringList m_baseImageFilenames;
 		QString m_baseOutputDir;
 		std::vector<unsigned int> m_textureIDs;
+		ANTzCSVWriter::OutputPlatform m_platform;
 	};
 
 } //namespace SynGlyphXANTz

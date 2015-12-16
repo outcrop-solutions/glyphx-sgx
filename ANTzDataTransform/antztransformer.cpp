@@ -8,9 +8,10 @@
 
 namespace SynGlyphXANTz {
 
-	ANTzTransformer::ANTzTransformer(const QString& baseOutputDir) :
+	ANTzTransformer::ANTzTransformer(const QString& baseOutputDir, ANTzCSVWriter::OutputPlatform platform) :
 		SynGlyphX::Transformer(),
-		m_baseOutputDir(baseOutputDir)
+		m_baseOutputDir(baseOutputDir),
+		m_platform(platform)
 	{
 
 	}
@@ -20,9 +21,9 @@ namespace SynGlyphXANTz {
 
 	}
 
-	const QStringList& ANTzTransformer::GetCSVFilenames() const {
+	const ANTzCSVWriter::FilenameList& ANTzTransformer::GetOutputFilenames() const {
 
-		return m_csvFilenames;
+		return m_outputFilenames;
 	}
 
 	const QStringList& ANTzTransformer::GetBaseImageFilenames() const {
@@ -30,13 +31,14 @@ namespace SynGlyphXANTz {
 		return m_baseImageFilenames;
 	}
 
-	void ANTzTransformer::GenerateCache(const SynGlyphX::DataTransformMapping& mapping, const QStringList& csvFilenames, const QString& baseImageFilenameDirectory) {
+	void ANTzTransformer::GenerateCache(const SynGlyphX::DataTransformMapping& mapping, const ANTzCSVWriter::FilenameList& outputFiles, const QString& baseImageFilenameDirectory) {
 
-		Q_FOREACH(QString csvFilename, csvFilenames) {
+		for (const std::string& filename : outputFiles) {
 
-			if (QFile::exists(csvFilename)) {
+			QString qFilename = QString::fromStdString(filename);
+			if (QFile::exists(qFilename)) {
 
-				if (!QFile::remove(csvFilename)) {
+				if (!QFile::remove(qFilename)) {
 
 					throw std::exception("Failed to remove old cache");
 				}
@@ -49,9 +51,9 @@ namespace SynGlyphXANTz {
 		SynGlyphX::GlyphGraph::ConstSharedVector trees = CreateGlyphTreesFromMinMaxTrees(mapping);
 		
 		ANTzCSVWriter& writer = ANTzCSVWriter::GetInstance();
-		writer.Write(csvFilenames[0].toStdString(), csvFilenames[1].toStdString(), trees, grids);
+		writer.Write(outputFiles, trees, grids, m_platform);
 
-		m_csvFilenames = csvFilenames;
+		m_outputFilenames = outputFiles;
 	}
 
 	void ANTzTransformer::GenerateGrids(std::vector<ANTzGrid>& grids, const SynGlyphX::DataTransformMapping& mapping, const QString& baseImageFilenameDirectory) {
@@ -59,6 +61,14 @@ namespace SynGlyphXANTz {
 		std::unordered_map<std::string, unsigned int> userBaseImages;
 		unsigned int nextTextureID = NumberOfDefaultBaseImages + 1;
 		for (const SynGlyphX::BaseImage& baseImage : mapping.GetBaseObjects()) {
+
+			ANTzGrid grid;
+			grid.SetVisible(true);
+			grid.SetPosition(baseImage.GetPosition());
+			grid.SetRotation(baseImage.GetRotationAngles());
+
+			grid.SetColor(baseImage.GetGridLinesColor());
+			grid.SetSegments({ { baseImage.GetGridLineCounts()[1] + 1, baseImage.GetGridLineCounts()[0] + 1 } });
 
 			if (baseImage.GetType() == SynGlyphX::BaseImage::Type::DownloadedMap) {
 
@@ -68,11 +78,17 @@ namespace SynGlyphXANTz {
 					m_baseImageFilenames.push_back(downloadedImageFilename);
 					m_textureIDs.push_back(nextTextureID);
 					++nextTextureID;
+
+					SynGlyphX::DoubleSize size;
+					size[0] = m_overrideRootXRange.GetDiff();
+					size[1] = m_overrideRootYRange.GetDiff();
+					grid.SetSize(size);
 				}
 				else {
 
 					//Use World Image
 					m_textureIDs.push_back(1);
+					grid.SetSize(baseImage.GetWorldSize());
 				}
 			}
 			else if (baseImage.GetType() == SynGlyphX::BaseImage::Type::UserImage) {
@@ -90,6 +106,7 @@ namespace SynGlyphXANTz {
 
 					m_textureIDs.push_back(userBaseImage->second);
 				}
+				grid.SetSize(baseImage.GetWorldSize());
 			}
 			else {
 
@@ -114,26 +131,20 @@ namespace SynGlyphXANTz {
 						m_textureIDs.push_back(image->second);
 					}
 				}
+				grid.SetSize(baseImage.GetWorldSize());
 			}
 
-			ANTzGrid grid;
-			grid.SetPosition(baseImage.GetPosition());
-			grid.SetRotation(baseImage.GetRotationAngles());
 			grid.SetTextureID(m_textureIDs.back());
-
-			SynGlyphX::Vector3 gridScale;
-			gridScale[0] = baseImage.GetWorldSize()[0] / 360.0;
-			gridScale[1] = baseImage.GetWorldSize()[1] / 180.0;
-			gridScale[2] = 1.0;
-			grid.SetScale(gridScale);
-
 			grids.push_back(grid);
 		}
 	}
 
 	void ANTzTransformer::Clear() {
 
-		m_csvFilenames.clear();
+		for (auto& filename : m_outputFilenames) {
+
+			filename.clear();
+		}
 		m_baseImageFilenames.clear();
 		m_textureIDs.clear();
 	}

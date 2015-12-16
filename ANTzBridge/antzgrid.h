@@ -20,6 +20,7 @@
 
 #include "ANTzBridge.h"
 #include "antzobject.h"
+#include "utilitytypes.h"
 
 namespace SynGlyphXANTz {
 
@@ -35,8 +36,19 @@ namespace SynGlyphXANTz {
 		unsigned int GetTextureID() const;
 		void SetTextureID(unsigned int textureID);
 
+		const SynGlyphX::IntSize& GetSegments() const;
+		void SetSegments(const SynGlyphX::IntSize& segments);
+		
+		const SynGlyphX::DoubleSize& GetSize() const;
+		void SetSize(const SynGlyphX::DoubleSize& size);
+
+		SynGlyphX::DoubleSize GetCellSize() const;
+
 	private:
 		unsigned int m_textureID;
+
+		SynGlyphX::IntSize m_segments;
+		SynGlyphX::DoubleSize m_size;
 	};
 
 } //namespace SynGlyphXANTz

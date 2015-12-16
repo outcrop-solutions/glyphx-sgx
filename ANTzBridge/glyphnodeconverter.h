@@ -22,6 +22,7 @@
 #include "glyphgraph.h"
 #include "data/nptypes.h"
 #include "csvfilehandler.h"
+#include <string>
 
 namespace SynGlyphXANTz {
 
@@ -35,6 +36,9 @@ namespace SynGlyphXANTz {
 		static unsigned int ConvertGeometryToNodeValue(SynGlyphX::GlyphGeometryInfo::Shape shape, SynGlyphX::GlyphGeometryInfo::Surface surface);
 		static void GetShapeAndSurfaceFromNodeValue(unsigned int geometry, SynGlyphX::GlyphGeometryInfo::Shape& shape, SynGlyphX::GlyphGeometryInfo::Surface& surface);
 		static SynGlyphX::GlyphGraph::SharedPtr CreateGlyphGraphFromCSV(const std::string& filename);
+
+		static std::wstring GetTag(pNPnode node);
+		static std::wstring GetUrl(pNPnode node);
 
 	private:
 		static SynGlyphX::Glyph CreateGlyphFromCSVValues(const SynGlyphX::CSVFileHandler::CSVValues& csvValues);

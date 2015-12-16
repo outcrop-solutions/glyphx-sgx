@@ -97,6 +97,7 @@ namespace SynGlyphXANTz {
 		void SetCameraToDefaultPosition();
 		unsigned int BindTextureInFile(const QString& imageFilename);
 		void SetGridTexture(pNPnode grid);
+		void SetGridLinesColor(pNPnode grid, const QColor& color);
 		void CenterCameraOnNode(pNPnode node);
 		void InitIO();
 		void DrawHUD();

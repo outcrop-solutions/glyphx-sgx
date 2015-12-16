@@ -107,8 +107,8 @@
 #define kNPmessageQueMax		500			//max messages stored in que
 #define kNPmessageLengthMax		127			//max message length
 
-#define kNPtitleSizeMax			63			// max length of the tag title
-#define kNPdescSizeMax			8			// max length of the tag description	//zzhpa
+#define kNPtitleSizeMax			512			// max length of the tag title
+#define kNPdescSizeMax			4096		// max length of the tag description	//zzhpa
 #define	kNPtagDrawMax			16383		// max number tags allowed to draw
 #define	kNPrecordTagListMax		kNPnodeMax	// max number of record Tags
 #define kNPlinkQueMax			kNPnodeMax	// max in draw que, not total nodes
@@ -504,8 +504,8 @@ struct NPnode
 	int			average;					//averaging type applied to data
 	int			interval;					//the interval to be averaged
 
-	NPintXYZ	auxA;						//reserved for future use
-	NPintXYZ	auxB;						//reserved for future use
+	NPfloatXYZ	auxA;						//reserved for future use
+	NPfloatXYZ	auxB;						//reserved for future use
 
 	float		colorShift;					//pseudo Hue shift, -180 to 180
 

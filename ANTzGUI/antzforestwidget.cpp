@@ -344,6 +344,7 @@ namespace SynGlyphXANTz {
 		m_worldTextureID = BindTextureInFile(SynGlyphX::GlyphBuilderApplication::GetDefaultBaseImagesLocation() + QString::fromStdWString(SynGlyphX::DefaultBaseImageProperties::GetBasefilename()));
 		pNPnode rootGrid = static_cast<pNPnode>(antzData->map.node[kNPnodeRootGrid]);
 		SetGridTexture(rootGrid);
+		SetGridLinesColor(rootGrid, Qt::blue);
 		antzData->io.gl.textureCount = 1;
 		SetCameraToDefaultPosition();
 	}
@@ -808,7 +809,7 @@ namespace SynGlyphXANTz {
 		pData antzData = m_antzData->GetData();
 
 		//We only want to center the camera when there are actual root nodes
-		if (antzData->map.nodeRootCount > kNPnodeRootPin) {
+		if (antzData->map.nodeRootCount >= kNPnodeRootPin) {
 
 			SetCameraToDefaultPosition();
 			updateGL();
@@ -1365,6 +1366,8 @@ namespace SynGlyphXANTz {
 
 		const QStringList& textures = m_model->GetBaseImageFilenames();
 
+		int size = m_model->rowCount();
+
 		for (unsigned int textureID : m_textureIDs) {
 
 			deleteTexture(textureID);
@@ -1381,6 +1384,10 @@ namespace SynGlyphXANTz {
 
 		pNPnode rootGrid = static_cast<pNPnode>(antzData->map.node[kNPnodeRootGrid]);
 		SetGridTexture(rootGrid);
+		if (m_model->rowCount() == 0) {
+
+			SetGridLinesColor(rootGrid, Qt::blue);
+		}
 		for (int i = 0; i < rootGrid->childCount; ++i) {
 
 			SetGridTexture(rootGrid->child[i]);
@@ -1402,6 +1409,14 @@ namespace SynGlyphXANTz {
 
 			grid->textureID = m_textureIDs[grid->textureID - 2];
 		}
+	}
+
+	void ANTzForestWidget::SetGridLinesColor(pNPnode grid, const QColor& color) {
+
+		grid->color.r = color.red();
+		grid->color.g = color.green();
+		grid->color.b = color.blue();
+		grid->color.a = 255;
 	}
 
 	unsigned int ANTzForestWidget::BindTextureInFile(const QString& imageFilename) {
@@ -1535,11 +1550,9 @@ namespace SynGlyphXANTz {
 	void ANTzForestWidget::DrawLogo() {
 
 		bool isLightingEnabled = glIsEnabled(GL_LIGHTING);
-		bool isBlendEnabled = glIsEnabled(GL_BLEND);
 		bool isDepthTestEnabled = glIsEnabled(GL_DEPTH_TEST);
 
 		glDisable(GL_LIGHTING);
-		glDisable(GL_BLEND);
 		glDisable(GL_DEPTH_TEST);
 
 		glMatrixMode(GL_PROJECTION);
@@ -1581,11 +1594,6 @@ namespace SynGlyphXANTz {
 		if (isLightingEnabled) {
 
 			glEnable(GL_DEPTH_TEST);
-		}
-
-		if (isBlendEnabled) {
-
-			glEnable(GL_BLEND);
 		}
 
 		if (isDepthTestEnabled) {

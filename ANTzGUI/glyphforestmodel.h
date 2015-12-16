@@ -24,6 +24,7 @@
 #include "antzdata.h"
 #include "glyph.h"
 #include <QtCore/QItemSelection> 
+#include "antzcsvwriter.h"
 
 namespace SynGlyphXANTz {
 
@@ -49,16 +50,20 @@ namespace SynGlyphXANTz {
 		const QStringList& GetBaseImageFilenames() const;
 
 		void Clear();
-		void LoadANTzVisualization(const QStringList& antzCSVFilenames, const QStringList& baseImageFilenames);
+		void LoadANTzVisualization(const SynGlyphXANTz::ANTzCSVWriter::FilenameList& filesToLoad, const QStringList& baseImageFilenames);
 
 		QModelIndex IndexFromANTzID(int id) const;
 
-		void SetParentGridToDefaultBaseImage();
+		//void SetParentGridToDefaultBaseImage();
 
 		void FindIndexesInRegion(const QRect& region, QItemSelection& itemSelection) const;
 
 		void SetTagNotToBeShownIn3d(const QString& tag);
 		bool IsTagShownIn3d(const QString& tag);
+
+		bool OpenURLs(const QModelIndexList& indexList);
+
+		SynGlyphX::Glyph GetGlyphAtIndex(const QModelIndex& index) const;
 
 	private:
 		void Clear(bool resetModel);
@@ -67,7 +72,7 @@ namespace SynGlyphXANTz {
 
 		int GetChildIndexFromParent(pNPnode node) const;
 		int FindRowForRootNode(pNPnode node) const;
-		std::unordered_map<std::wstring, int> m_textures;
+		//std::unordered_map<std::wstring, int> m_textures;
 		QString m_defaultBaseImage;
 		ANTzPlus::ANTzData::SharedPtr m_antzData;
 		QStringList m_baseImageFilenames;

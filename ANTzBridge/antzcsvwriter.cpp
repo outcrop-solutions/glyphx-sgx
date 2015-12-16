@@ -12,7 +12,8 @@ namespace SynGlyphXANTz {
 		m_nodeHeaders({ L"id", L"type", L"data", L"selected", L"parent_id", L"branch_level", L"child_id", L"child_index", L"child_count", L"ch_input_id", L"ch_output_id", L"ch_last_updated", L"average", L"sample", L"aux_a_x", L"aux_a_y", L"aux_a_z", L"aux_b_x", L"aux_b_y", L"aux_b_z", L"color_shift", L"rotate_vec_x", L"rotate_vec_y", L"rotate_vec_z", L"rotate_vec_s", L"scale_x", L"scale_y", L"scale_z", L"translate_x", L"translate_y", L"translate_z", L"tag_offset_x", L"tag_offset_y", L"tag_offset_z", L"rotate_rate_x", L"rotate_rate_y", L"rotate_rate_z", L"rotate_x", L"rotate_y", L"rotate_z", L"scale_rate_x", L"scale_rate_y", L"scale_rate_z", L"translate_rate_x", L"translate_rate_y", L"translate_rate_z", L"translate_vec_x", L"translate_vec_y", L"translate_vec_z", L"shader", L"geometry", L"line_width", L"point_size", L"ratio", L"color_index", L"color_r", L"color_g", L"color_b", L"color_a", L"color_fade", L"texture_id", L"hide", L"freeze", L"topo", L"facet", L"auto_zoom_x", L"auto_zoom_y", L"auto_zoom_z", L"trigger_hi_x", L"trigger_hi_y", L"trigger_hi_z", L"trigger_lo_x", L"trigger_lo_y", L"trigger_lo_z", L"set_hi_x", L"set_hi_y", L"set_hi_z", L"set_lo_x", L"set_lo_y", L"set_lo_z", L"proximity_x", L"proximity_y", L"proximity_z", L"proximity_mode_x", L"proximity_mode_y", L"proximity_mode_z", L"segments_x", L"segments_y", L"segments_z", L"tag_mode", L"format_id", L"table_id", L"record_id", L"size" }),
 		m_tagHeaders({ L"id", L"record_id", L"table_id", L"title", L"description" }),
 		m_channelHeaders({ L"cycleCount", L"ch1", L"ch2", L"ch3", L"ch4", L"ch5", L"ch6", L"ch7", L"ch8", L"ch9", L"ch10", L"ch11", L"ch12", L"ch13", L"ch14", L"ch15", L"ch16", L"ch17", L"ch18", L"ch19", L"ch20", L"ch21", L"ch22", L"ch23", L"ch24", L"ch25", L"ch26", L"ch27", L"ch28", L"ch29", L"ch30", L"ch31", L"ch32", L"ch33", L"ch34", L"ch35", L"ch36", L"ch37", L"ch38", L"ch39", L"ch40", L"ch41", L"ch42", L"ch43", L"ch44", L"ch45", L"ch46", L"ch47", L"ch48", L"ch49", L"ch50", L"ch51", L"ch52", L"ch53", L"ch54", L"ch55", L"ch56", L"ch57", L"ch58", L"ch59", L"ch60", L"ch61", L"ch62", L"ch63", L"ch64", L"ch65", L"ch66", L"ch67", L"ch68", L"ch69", L"ch70", L"ch71", L"ch72", L"ch73", L"ch74", L"ch75", L"ch76", L"ch77", L"ch78", L"ch79", L"ch80", L"ch81", L"ch82", L"ch83", L"ch84", L"ch85", L"ch86", L"ch87", L"ch88", L"ch89", L"ch90", L"ch91", L"ch92", L"ch93", L"ch94", L"ch95", L"ch96", L"ch97", L"ch98", L"ch99", L"ch100" }),
-		m_channelMapHeaders({ L"id", L"channel_id", L"track_id", L"attribute", L"track_table_id", L"ch_map_table_id", L"record_id" })
+		m_channelMapHeaders({ L"id", L"channel_id", L"track_id", L"attribute", L"track_table_id", L"ch_map_table_id", L"record_id" }),
+		m_noURLLocation(L"nourl.html")
 	{
 		m_predefinedColors[0] = SynGlyphX::GlyphColor({ { 50, 101, 101 } });
 		m_predefinedColors[1] = SynGlyphX::GlyphColor({ { 0, 255, 0 } });
@@ -36,7 +37,7 @@ namespace SynGlyphXANTz {
 		m_predefinedColors[19] = SynGlyphX::GlyphColor({ { 255, 255, 255 } });
 
 		m_cameras[0] = { L"1", L"0", L"1", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"1", L"0", L"0", L"0", L"0", L"0", L"0", L"0.000000", L"1.000000", L"0.000000", L"0.000000", L"0.000000", L"1.000000", L"1.000000", L"1.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"1.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0", L"0", L"1.000000", L"0.000000", L"0.100000", L"0", L"50", L"101", L"101", L"255", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"1", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0", L"0", L"0", L"16", L"16", L"0", L"0", L"0", L"0", L"0", L"420" };
-		m_cameras[1] = { L"2", L"1", L"2", L"0", L"0", L"0", L"0", L"2", L"3", L"0", L"0", L"0", L"0", L"1", L"0", L"0", L"0", L"0", L"0", L"0", L"0.000000", L"0.000000", L"-0.143424", L"-0.826509", L"-0.544345", L"1.000000", L"1.000000", L"1.000000", L"1.344855", L"7.749982", L"6.275580", L"0.000000", L"0.000000", L"1.000000", L"0.000000", L"0.000000", L"0.000000", L"57.020073", L"189.844513", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"-0.000000", L"0.000000", L"0.000000", L"0", L"0", L"1.000000", L"0.000000", L"0.100000", L"0", L"50", L"101", L"101", L"255", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"9.376762", L"0.000000", L"0.000000", L"0", L"0", L"0", L"16", L"16", L"0", L"0", L"0", L"0", L"0", L"420" };
+		m_cameras[1] = { L"2", L"1", L"2", L"0", L"0", L"0", L"0", L"2", L"3", L"0", L"0", L"0", L"0", L"1", L"0", L"0", L"0", L"0", L"0", L"0", L"0.000000", L"0.000000", L"0.000000", L"1.000000", L"0.000000", L"1.000000", L"1.000000", L"1.000000", L"0.000000", L"-350.000000", L"350.000000", L"0.000000", L"0.000000", L"1.000000", L"0.000000", L"0.000000", L"0.000000", L"45.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0", L"0", L"1.000000", L"0.000000", L"0.100000", L"0", L"50", L"101", L"101", L"255", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"488.000000", L"0.000000", L"0.000000", L"0", L"0", L"0", L"16", L"16", L"0", L"0", L"0", L"0", L"0", L"420" };
 		m_cameras[2] = { L"3", L"1", L"3", L"0", L"2", L"1", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"1", L"0", L"0", L"0", L"0", L"0", L"0", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"-1.000000", L"1.000000", L"1.000000", L"1.000000", L"-0.500000", L"0.000000", L"571.750000", L"0.000000", L"0.000000", L"1.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0", L"0", L"1.000000", L"0.000000", L"0.100000", L"0", L"50", L"101", L"101", L"255", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0", L"0", L"0", L"16", L"16", L"0", L"0", L"0", L"0", L"0", L"420" };
 		m_cameras[3] = { L"4", L"1", L"4", L"0", L"2", L"1", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"1", L"0", L"0", L"0", L"0", L"0", L"0", L"0.000000", L"0.000000", L"0.000000", L"1.000000", L"-0.000000", L"1.000000", L"1.000000", L"1.000000", L"0.000000", L"-90.000000", L"7.000000", L"0.000000", L"0.000000", L"1.000000", L"0.000000", L"0.000000", L"0.000000", L"90.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0", L"0", L"1.000000", L"0.000000", L"0.100000", L"0", L"50", L"101", L"101", L"255", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0", L"0", L"0", L"16", L"16", L"0", L"0", L"0", L"0", L"0", L"420" };
 		m_cameras[4] = { L"5", L"1", L"5", L"0", L"2", L"1", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"1", L"0", L"0", L"0", L"0", L"0", L"0", L"0.000000", L"0.000000", L"-1.000000", L"0.000000", L"-0.000000", L"1.000000", L"1.000000", L"1.000000", L"85.000000", L"0.000000", L"7.000000", L"0.000000", L"0.000000", L"1.000000", L"0.000000", L"0.000000", L"0.000000", L"90.000000", L"270.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0", L"0", L"1.000000", L"0.000000", L"0.100000", L"0", L"50", L"101", L"101", L"255", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0", L"0", L"0", L"16", L"16", L"0", L"0", L"0", L"0", L"0", L"420" };
@@ -47,22 +48,34 @@ namespace SynGlyphXANTz {
 	{
 	}
 
-	void ANTzCSVWriter::Write(const std::string& nodeFilename, const std::string& tagFilename, const SynGlyphX::GlyphGraph::ConstSharedVector& trees, const std::vector<ANTzGrid>& grids) {
+	void ANTzCSVWriter::SetNOURLLocation(const std::wstring& noURLLocation) {
 
-		if (nodeFilename.empty()) {
+		m_noURLLocation = noURLLocation;
+	}
+
+	void ANTzCSVWriter::Write(const FilenameList& filenames, SynGlyphX::GlyphGraph::ConstSharedVector& trees, const std::vector<ANTzGrid>& grids, OutputPlatform platform) {
+
+		if (filenames[s_nodeFilenameIndex].empty()) {
 
 			throw std::invalid_argument("Node filename is empty.");
 		}
 
 		try {
 
-			SynGlyphX::CSVFileWriter nodeFile(nodeFilename);
+			SynGlyphX::CSVFileWriter nodeFile(filenames[s_nodeFilenameIndex]);
 			SynGlyphX::CSVFileWriter tagFile; 
+			std::wofstream redirectFile;
 			
-			if (!tagFilename.empty()) {
+			if (!filenames[s_tagFilenameIndex].empty()) {
 
-				tagFile.Open(tagFilename);
+				tagFile.Open(filenames[s_tagFilenameIndex]);
 			}
+
+			//if ((!filenames[s_redirectFilenameIndex].empty()) && (platform == OutputPlatform::WindowsZSpace)) {
+			//
+			//	redirectFile.open(filenames[s_redirectFilenameIndex]);
+			//	WriteRedirectHeader(redirectFile, platform);
+			//}
 
 			m_numTagsWritten = 0;
 			unsigned long startingId = WriteHeaders(nodeFile, tagFile, grids);
@@ -82,20 +95,70 @@ namespace SynGlyphXANTz {
 
 				if (tagFile.IsOpen()) {
 
-					WriteGlyphTag(tagFile, tree, tree->GetRoot());
+					WriteGlyphTag(tagFile, tree, tree->GetRoot(), (platform != OutputPlatform::WindowsZSpace));
+				}
+
+				if (redirectFile.is_open()) {
+
+					WriteURLRedirects(redirectFile, tree, tree->GetRoot(), platform);
 				}
 
 				startingId = id;
 			}
 
+			if (redirectFile.is_open()) {
+
+				redirectFile << L"start \"\" \"" << m_noURLLocation << "\"\nexit\n";
+			}
+
 			nodeFile.Close();
 			tagFile.Close();
+			redirectFile.close();
 		}
 		catch (const std::exception& e) {
 
 			throw;
 		}
  	}
+
+	void ANTzCSVWriter::WriteRedirectHeader(std::wofstream& file, OutputPlatform platform) {
+
+		if (platform == OutputPlatform::WindowsZSpace) {
+
+			file << L"@ECHO OFF\n\n";
+		}
+		else {
+
+
+		}
+	}
+
+	void ANTzCSVWriter::WriteURLRedirects(std::wofstream& file, const SynGlyphX::GlyphGraph::ConstSharedPtr tree, const SynGlyphX::GlyphGraph::ConstGlyphIterator& glyph, OutputPlatform platform) {
+
+		unsigned int numberOfChildren = tree->ChildCount(glyph);
+
+		if (!glyph->second.GetURL().empty()) {
+
+			WriteURLRedirect(file, glyph->second.GetURL(), boost::lexical_cast<std::wstring>(m_labelToANTzIDMap[glyph->first]), platform);
+		}
+
+		for (unsigned int i = 0; i < numberOfChildren; ++i) {
+
+			WriteURLRedirects(file, tree, tree->GetChild(glyph, i), platform);
+		}
+	}
+
+	void ANTzCSVWriter::WriteURLRedirect(std::wofstream& file, const std::wstring& url, const std::wstring& id, OutputPlatform platform) {
+
+		if (IsPlatformWindows(platform)) {
+
+			file << L"if %1==" << id << L" (\n\tstart \"\" \"" << url << L"\"\n\texit\n)\n";
+		}
+		else {
+
+
+		}
+	}
 
 	unsigned long ANTzCSVWriter::WriteHeaders(SynGlyphX::CSVFileWriter& nodeFile, SynGlyphX::CSVFileWriter& tagFile, const std::vector<ANTzGrid>& grids) {
 
@@ -115,7 +178,7 @@ namespace SynGlyphXANTz {
 		return WriteGrids(nodeFile, grids, 6);
 	}
 
-	void ANTzCSVWriter::WriteGlobals(const std::string& filename, const SynGlyphX::GlyphColor& backgroundColor) {
+	void ANTzCSVWriter::WriteGlobals(const std::string& filename, const SynGlyphX::GlyphColor& backgroundColor, OutputPlatform platform) {
 
 		if (filename.empty()) {
 
@@ -154,8 +217,16 @@ namespace SynGlyphXANTz {
 			globalsFile << L"16,\"np_osc\",1,\"rx_ip\",\"s\", 0,\"\",\"\",\"127.0.0.1\"" << std::endl;
 			globalsFile << L"17,\"np_osc\",1,\"tx_port\",\"i\",0,\"\",\"\",\"8000\"" << std::endl;
 			globalsFile << L"18,\"np_osc\",1,\"rx_port\",\"i\",0,\"\",\"\",\"9000\"" << std::endl;
-			globalsFile << L"19,\"np_browser\",1,\"url\",\"s\",0,\"\",\"\",\"http://openantz.com/docs/id.html?id=\"" << std::endl;
-			globalsFile << L"20 \"np_globals\",1,\"item_count\",\"i\",1,\"\",\"\",\"20\"" << std::endl;
+			
+			if (platform == OutputPlatform::WindowsZSpace) {
+
+				globalsFile << L"19,\"np_browser\",1,\"url\",\"s\",0,\"\",\"\",\"/min redirect.bat \"" << std::endl;
+			}
+			else {
+
+				globalsFile << L"19,\"np_browser\",1,\"url\",\"s\",0,\"\",\"\",\"http://openantz.com/docs/id.html?id=\"" << std::endl;
+			}
+			globalsFile << L"20,\"np_globals\",1,\"item_count\",\"i\",1,\"\",\"\",\"20\"" << std::endl;
 
 			globalsFile.close();
 
@@ -166,32 +237,50 @@ namespace SynGlyphXANTz {
 		}
 	}
 
-	void ANTzCSVWriter::WriteGlyphTag(SynGlyphX::CSVFileWriter& file, const SynGlyphX::GlyphGraph::ConstSharedPtr tree, const SynGlyphX::GlyphGraph::ConstGlyphIterator& glyph) {
+	void ANTzCSVWriter::WriteGlyphTag(SynGlyphX::CSVFileWriter& file, const SynGlyphX::GlyphGraph::ConstSharedPtr tree, const SynGlyphX::GlyphGraph::ConstGlyphIterator& glyph, bool outputURL) {
 
 		unsigned int numberOfChildren = tree->ChildCount(glyph);
 
-		std::wstring tag;
+		std::wstring tag = L"\"";
+		std::wstring url = m_noURLLocation;
+		if (!glyph->second.GetURL().empty()) {
+
+			url = glyph->second.GetURL();
+		}
+
+		if (outputURL && (!url.empty())) {
+			
+			tag += L"<a href=\"" + url + L"\">";
+		}
+
 		if (glyph->second.GetTag().empty()) {
 
-			tag = L"\"No Tag\"";
+			tag += L"No Tag";
 		}
 		else {
 
-			tag = L"\"" + glyph->second.GetTag() + L"\"";
+			tag += glyph->second.GetTag();
 		}
+
+		if (outputURL && (!url.empty())) {
+
+			tag += L"</a>";
+		}
+
+		tag += L"\"";
 
 		SynGlyphX::CSVFileHandler::CSVValues values;
 		values.push_back(boost::lexical_cast<std::wstring>(m_numTagsWritten++));
 		values.push_back(boost::lexical_cast<std::wstring>(m_labelToANTzIDMap[glyph->first]));
 		values.push_back(L"0");
 		values.push_back(tag);
-		values.push_back(L"\" \"");
+		values.push_back(L"\"" + glyph->second.GetDescription() + L"\"");
 
 		file.WriteLine(values);
 
 		for (unsigned int i = 0; i < numberOfChildren; ++i) {
 
-			WriteGlyphTag(file, tree, tree->GetChild(glyph, i));
+			WriteGlyphTag(file, tree, tree->GetChild(glyph, i), outputURL);
 		}
 	}
 
@@ -292,7 +381,14 @@ namespace SynGlyphXANTz {
 				grid.push_back(boost::lexical_cast<std::wstring>(firstId));
 				grid.insert(grid.end(), { L"1", L"0", L"0", L"0" });
 			}
-			grid.insert(grid.end(), { L"0", L"0", L"0", L"0", L"1", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"1", L"0", L"0" });
+			grid.insert(grid.end(), { L"0", L"0", L"0", L"0", L"1" });
+
+			//grid cell size
+			SynGlyphX::DoubleSize cellSize = grids[i].GetCellSize();
+			grid.push_back(boost::lexical_cast<std::wstring>(cellSize[0]));
+			grid.push_back(boost::lexical_cast<std::wstring>(cellSize[1]));
+
+			grid.insert(grid.end(), { L"30", L"0", L"0", L"0", L"0", L"0", L"1", L"0", L"0" });
 			SynGlyphX::CSVFileHandler::AddVector3ToCSVValues(grid, grids[i].GetScale());
 			SynGlyphX::CSVFileHandler::AddVector3ToCSVValues(grid, grids[i].GetPosition());
 			grid.insert(grid.end(), { L"0", L"0", L"0", L"0", L"0", L"0" });
@@ -322,8 +418,9 @@ namespace SynGlyphXANTz {
 			grid.insert(grid.end(), { L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0" });
 			
 			//segments
-			grid.push_back(L"12");
-			grid.push_back(L"6");
+			const SynGlyphX::IntSize& segments = grids[i].GetSegments();
+			grid.push_back(boost::lexical_cast<std::wstring>(segments[0]));
+			grid.push_back(boost::lexical_cast<std::wstring>(segments[1]));
 				
 			grid.insert(grid.end(), { L"0", L"0", L"0", L"0", L"0", L"420" });
 			
@@ -369,6 +466,11 @@ namespace SynGlyphXANTz {
 	const SynGlyphX::CSVFileReader::CSVValues& ANTzCSVWriter::GetChannelMapHeaders() const {
 
 		return m_channelMapHeaders;
+	}
+
+	bool ANTzCSVWriter::IsPlatformWindows(OutputPlatform platform) const {
+
+		return ((platform == OutputPlatform::Windows) || (platform == OutputPlatform::WindowsZSpace));
 	}
 
 } // namespace SynGlyphXANTz

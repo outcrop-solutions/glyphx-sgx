@@ -7,7 +7,8 @@ namespace SynGlyphXANTz {
 		m_scale({ { 1.0, 1.0, 1.0 } }),
 		m_position({ { 0.0, 0.0, 0.0 } }),
 		m_rotation({ { 0.0, 0.0, 0.0 } }),
-		m_visible(true)
+		m_visible(true),
+		m_color(SynGlyphX::GlyphColor::s_black)
 	{
 	}
 
@@ -15,7 +16,8 @@ namespace SynGlyphXANTz {
 		m_scale(properties.m_scale),
 		m_position(properties.m_position),
 		m_rotation(properties.m_rotation),
-		m_visible(properties.m_visible) {
+		m_visible(properties.m_visible),
+		m_color(properties.m_color) {
 
 
 	}
@@ -30,6 +32,7 @@ namespace SynGlyphXANTz {
 		m_position = properties.m_position;
 		m_rotation = properties.m_rotation;
 		m_visible = properties.m_visible;
+		m_color = properties.m_color;
 
 		return *this;
 	}
@@ -52,6 +55,11 @@ namespace SynGlyphXANTz {
 		}
 
 		if (m_visible != properties.m_visible) {
+
+			return false;
+		}
+
+		if (m_color != properties.m_color) {
 
 			return false;
 		}

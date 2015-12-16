@@ -971,9 +971,9 @@ void InitNodeGrid (pNPnode node)
 	node->segments.y = kNPgridSegmentsY;
 	node->segments.z = 0;
 
-	gridData->spacing.x		= kNPgridSpacing;
-	gridData->spacing.y		= kNPgridSpacing;
-	gridData->spacing.z		= kNPgridSpacing;
+	node->auxA.x = kNPgridSpacing;
+	node->auxA.y = kNPgridSpacing;
+	node->auxA.z = kNPgridSpacing;
 
 	gridData->overlay		= false;
 

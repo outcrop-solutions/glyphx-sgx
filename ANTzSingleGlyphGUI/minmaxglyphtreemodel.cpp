@@ -5,6 +5,9 @@
 #include "datamappingglyphfile.h"
 #include "glyphnodeconverter.h"
 #include <boost/lexical_cast.hpp>
+#include <QtGui/QClipboard>
+#include "glyphbuilderapplication.h"
+#include "linklessgraphmimedata.h"
 
 namespace SynGlyphXANTz {
 
@@ -236,6 +239,41 @@ namespace SynGlyphXANTz {
 		endInsertRows();
 	}
 
+	void MinMaxGlyphTreeModel::AppendChildGraph(const QModelIndex& parent, const SynGlyphX::DataMappingGlyphGraph& subgraph) {
+
+		SynGlyphX::DataMappingGlyphGraph::GlyphIterator newParentGlyph = GetIteratorFromIndex(parent);
+		unsigned int numberOfChildren = m_minMaxGlyphTree->ChildCount(newParentGlyph.constify());
+
+		beginInsertRows(parent, numberOfChildren, numberOfChildren);
+		m_minMaxGlyphTree->AddChildGlyphGraph(newParentGlyph, subgraph);
+		endInsertRows();
+	}
+
+	void MinMaxGlyphTreeModel::AppendChildGraphResetPosition(const QModelIndex& parent, const SynGlyphX::DataMappingGlyphGraph& subgraph) {
+
+		SynGlyphX::DataMappingGlyphGraph::GlyphIterator newParentGlyph = GetIteratorFromIndex(parent);
+		unsigned int numberOfChildren = m_minMaxGlyphTree->ChildCount(newParentGlyph.constify());
+
+		//Only do an insert here.  The MoveAction will take care of deleting the old object
+		beginInsertRows(parent, numberOfChildren, numberOfChildren);
+		SynGlyphX::Vector3 newPosition = { { 15.0, 0.0, 0.0 } };
+		if (numberOfChildren > 0) {
+
+			newPosition = m_minMaxGlyphTree->GetChild(newParentGlyph, numberOfChildren - 1)->second.GetMinGlyph().GetPosition();
+		}
+
+		SynGlyphX::DataMappingGlyphGraph::GlyphIterator newGlyph = m_minMaxGlyphTree->AddChildGlyphGraph(newParentGlyph, subgraph);
+
+		//For now, update position to 15.0 less than the last x coordinate.  This follows what ANTz does
+		newPosition[0] -= 15.0;
+
+		newGlyph->second.GetPosition()[0].GetValue().SetMinDiff(newPosition[0], 0.0);
+		newGlyph->second.GetPosition()[1].GetValue().SetMinDiff(newPosition[1], 0.0);
+		newGlyph->second.GetPosition()[2].GetValue().SetMinDiff(newPosition[2], 0.0);
+
+		endInsertRows();
+	}
+
 	void MinMaxGlyphTreeModel::UpdateGlyph(const QModelIndex& index, const SynGlyphX::DataMappingGlyph& glyph, SynGlyphX::PropertyUpdates updates) {
 
 		if (index.isValid() && (updates != SynGlyphX::PropertyUpdate::UpdateNone)) {
@@ -449,22 +487,21 @@ namespace SynGlyphXANTz {
 	QStringList MinMaxGlyphTreeModel::mimeTypes() const {
 
 		QStringList types;
-		types.push_back(SynGlyphX::GlyphMimeData::Format);
+		types.push_back(SynGlyphX::GlyphMimeData::s_format);
 		return types;
 	}
 
 	QMimeData* MinMaxGlyphTreeModel::mimeData(const QModelIndexList& indexes) const {
 
-		/*std::vector<boost::shared_ptr<SynGlyphX::Glyph>> glyphs;
-		glyphs.reserve(indexes.length());
-		for (int i = 0; i < indexes.length(); ++i) {
-		boost::shared_ptr<SynGlyphX::Glyph> glyph(new SynGlyphX::Glyph(static_cast<pNPnode>(indexes[i].internalPointer())));
-		glyphs.push_back(glyph);
-		}
+		if (indexes.empty()) {
 
-		GlyphMimeData* mimeData = new GlyphMimeData(glyphs);*/
-		SynGlyphX::GlyphMimeData* mimeData = new SynGlyphX::GlyphMimeData(indexes);
-		return mimeData;
+			return nullptr;
+		}
+		else {
+
+			SynGlyphX::GlyphMimeData* mimeData = new SynGlyphX::GlyphMimeData(indexes);
+			return mimeData;
+		}
 	}
 
 	bool MinMaxGlyphTreeModel::dropMimeData(const QMimeData* data, Qt::DropAction action, int row, int column, const QModelIndex& parent) {
@@ -473,39 +510,17 @@ namespace SynGlyphXANTz {
 
 		if ((glyphData != NULL) && (row == -1)) {
 
-			SynGlyphX::DataMappingGlyphGraph::GlyphIterator newParentGlyph = GetIteratorFromIndex(parent);
 			const QModelIndexList& indexes = glyphData->GetGlyphs();
 
 			bool glyphsMoved = false;
 
 			for (int j = 0; j < indexes.length(); ++j) {
 
-				SynGlyphX::DataMappingGlyphGraph::GlyphIterator oldGlyph = GetIteratorFromIndex(indexes[j]);
-				SynGlyphX::DataMappingGlyphGraph::GlyphIterator oldParentGlyph = m_minMaxGlyphTree->GetParent(oldGlyph);
-
 				//Only drop if parents are different
-				if (oldParentGlyph != newParentGlyph) {
+				if (indexes[j].parent() != parent) {
 
-					unsigned int numberOfChildren = m_minMaxGlyphTree->ChildCount(newParentGlyph.constify());
-
-					//Only do an insert here.  The MoveAction will take care of deleting the old object
-					beginInsertRows(parent, numberOfChildren, numberOfChildren);
-					SynGlyphX::Vector3 newPosition = { { 15.0, 0.0, 0.0 } };
-					if (numberOfChildren > 0) {
-
-						newPosition = m_minMaxGlyphTree->GetChild(newParentGlyph, numberOfChildren - 1)->second.GetMinGlyph().GetPosition();
-					}
-					SynGlyphX::DataMappingGlyphGraph::LinklessGraph oldGlyphSubtree = m_minMaxGlyphTree->GetSubgraph(oldGlyph);
-					SynGlyphX::DataMappingGlyphGraph::GlyphIterator newGlyph = m_minMaxGlyphTree->AddChildGlyphGraph(newParentGlyph, oldGlyphSubtree);
-
-					//For now, update position to 15.0 less than the last x coordinate.  This follows what ANTz does
-					newPosition[0] -= 15.0;
-
-					newGlyph->second.GetPosition()[0].GetValue().SetMinDiff(newPosition[0], 0.0);
-					newGlyph->second.GetPosition()[1].GetValue().SetMinDiff(newPosition[1], 0.0);
-					newGlyph->second.GetPosition()[2].GetValue().SetMinDiff(newPosition[2], 0.0);
-
-					endInsertRows();
+					SynGlyphX::DataMappingGlyphGraph oldGlyphSubtree = m_minMaxGlyphTree->GetSubgraph(GetIteratorFromIndex(indexes[j]), true);
+					AppendChildGraphResetPosition(parent, oldGlyphSubtree);
 					glyphsMoved = true;
 				}
 			}
@@ -569,24 +584,47 @@ namespace SynGlyphXANTz {
 		}
 
 		ANTzCSVWriter& csvWriter = ANTzCSVWriter::GetInstance();
-		csvWriter.Write(filename.toStdString(), "", trees, std::vector<ANTzGrid>());
+		csvWriter.Write({ { filename.toStdString() } }, trees, std::vector<ANTzGrid>(), SynGlyphXANTz::ANTzCSVWriter::OutputPlatform::Windows);
 
 		return true;
 	}
 
-	bool MinMaxGlyphTreeModel::IsClipboardEmpty() const {
+	SynGlyphX::DataMappingGlyphGraph MinMaxGlyphTreeModel::GetSubgraph(const QModelIndex& index, bool includeChildren) {
 
-		return (!m_clipboardGlyph.valid());
+		if (!index.isValid()) {
+
+			throw std::invalid_argument("Index given to MinMaxGlyphTreeModel::GetSubgraph is invalid");
+		}
+
+		SynGlyphX::DataMappingGlyphGraph::GlyphIterator vertex = GetIteratorFromIndex(index);
+		return m_minMaxGlyphTree->GetSubgraph(vertex, includeChildren);
 	}
 
-	SynGlyphX::DataMappingGlyphGraph::GlyphIterator MinMaxGlyphTreeModel::GetClipboardGlyph() const {
+	void MinMaxGlyphTreeModel::OverwriteGlyph(const QModelIndex& index, const SynGlyphX::DataMappingGlyphGraph& subgraph) {
 
-		return m_clipboardGlyph;
-	}
+		if (!index.isValid()) {
 
-	void MinMaxGlyphTreeModel::CopyToClipboard(const QModelIndex& index, bool removeFromTree) {
+			throw std::invalid_argument("Index given to MinMaxGlyphTreeModel::GetSubgraph is invalid");
+		}
 
-		//m_clipboardGlyph.reset(new SynGlyphX::Glyph(index.))
+		SynGlyphX::DataMappingGlyphGraph& nonConstGraph = const_cast<SynGlyphX::DataMappingGlyphGraph&>(subgraph);
+
+		SynGlyphX::DataMappingGlyphGraph::GlyphIterator pasteGlyph = GetIteratorFromIndex(index);
+		UpdateGlyph(index, nonConstGraph.GetRoot()->second, SynGlyphX::PropertyUpdate::UpdateAllExceptPosition);
+
+		unsigned int numberOfChildrenOfRootInSubgraph = nonConstGraph.ChildCount(nonConstGraph.GetRoot().constify());
+		if (numberOfChildrenOfRootInSubgraph > 0) {
+
+			unsigned int numberOfChildrenInNewParent = m_minMaxGlyphTree->ChildCount(pasteGlyph.constify());
+			beginInsertRows(index, numberOfChildrenInNewParent, numberOfChildrenInNewParent + numberOfChildrenOfRootInSubgraph - 1);
+
+			for (int i = 0; i < numberOfChildrenOfRootInSubgraph; ++i) {
+
+				m_minMaxGlyphTree->AddChildGlyphGraph(pasteGlyph, nonConstGraph.GetSubgraph(nonConstGraph.GetChild(nonConstGraph.GetRoot(), i), true));
+			}
+
+			endInsertRows();
+		}
 	}
 
 	void MinMaxGlyphTreeModel::RepaceModelWithDefaultGlyphTree() {

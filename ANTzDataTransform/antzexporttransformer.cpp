@@ -9,8 +9,8 @@ namespace SynGlyphXANTz {
 
 	QString ANTzExportTransformer::s_logoFilename;
 
-	ANTzExportTransformer::ANTzExportTransformer(const QString& baseOutputDir, const QString& antzTemplateDir, bool useOldANTzFilenames) :
-		ANTzTransformer(baseOutputDir),
+	ANTzExportTransformer::ANTzExportTransformer(const QString& baseOutputDir, const QString& antzTemplateDir, ANTzCSVWriter::OutputPlatform platform, bool useOldANTzFilenames) :
+		ANTzTransformer(baseOutputDir, platform),
 		m_antzTemplateDir(antzTemplateDir),
 		m_useOldANTzFilenames(useOldANTzFilenames)
 	{
@@ -53,21 +53,21 @@ namespace SynGlyphXANTz {
 		SynGlyphX::Filesystem::CopyDirectoryOverwrite(QDir::toNativeSeparators(m_antzTemplateDir).toStdString(), m_baseOutputDir.toStdString(), true);
 		QFile::copy(s_defaultImagesDirectory + QString::fromStdWString(SynGlyphX::DefaultBaseImageProperties::GetBasefilename()), baseUsrImageDir + "map00001.jpg");
 
-		QStringList csvFiles;
+		ANTzCSVWriter::FilenameList outputFilenames;
 		if (m_useOldANTzFilenames) {
 
-			csvFiles.push_back(baseUsrCSVDir + "antz0001.csv");
-			csvFiles.push_back(baseUsrCSVDir + "antztag0001.csv");
+			outputFilenames[ANTzCSVWriter::s_nodeFilenameIndex] = (baseUsrCSVDir + "antz0001.csv").toStdString();
+			outputFilenames[ANTzCSVWriter::s_tagFilenameIndex] = (baseUsrCSVDir + "antztag0001.csv").toStdString();
 		}
 		else {
 
-			csvFiles.push_back(baseUsrCSVDir + "antz0001node.csv");
-			csvFiles.push_back(baseUsrCSVDir + "antz0001tag.csv");
+			outputFilenames[ANTzCSVWriter::s_nodeFilenameIndex] = (baseUsrCSVDir + "antz0001node.csv").toStdString();
+			outputFilenames[ANTzCSVWriter::s_tagFilenameIndex] = (baseUsrCSVDir + "antz0001tag.csv").toStdString();
 		}
 
-		GenerateCache(mapping, csvFiles, baseUsrImageDir);
+		GenerateCache(mapping, outputFilenames, baseUsrImageDir);
 
-		SynGlyphXANTz::ANTzCSVWriter::GetInstance().WriteGlobals((baseUsrCSVDir + "antzglobals.csv").toStdString(), mapping.GetSceneProperties().GetBackgroundColor());
+		SynGlyphXANTz::ANTzCSVWriter::GetInstance().WriteGlobals((baseUsrCSVDir + "antzglobals.csv").toStdString(), mapping.GetSceneProperties().GetBackgroundColor(), m_platform);
 	}
 
 	void ANTzExportTransformer::GenerateGrids(std::vector<ANTzGrid>& grids, const SynGlyphX::DataTransformMapping& mapping, const QString& baseImageFilenameDirectory) {
@@ -79,9 +79,20 @@ namespace SynGlyphXANTz {
 		CopyImage(s_logoFilename, baseImageFilenameDirectory + GenerateBaseImageFilename(logoTextureID));
 
 		ANTzGrid grid;
-		grid.SetPosition({ { 167.77, 87.23, 0.5 } });
+		SynGlyphX::BaseImage::Type imageType = mapping.GetBaseObjects()[0].GetType();
+		if (imageType == SynGlyphX::BaseImage::Type::DownloadedMap) {
+
+			grid.SetPosition({ { m_overrideRootXRange.GetMax() - 12.23, m_overrideRootYRange.GetMax() - 2.77, 0.5 } });
+		}
+		else  {
+
+			SynGlyphX::DoubleSize worldSize = mapping.GetBaseObjects()[0].GetWorldSize();
+			grid.SetPosition({ { worldSize[0] / 2.0 - 12.23, worldSize[1] / 2.0 - 2.77, 0.5 } });
+		}
+		
 		grid.SetRotation({ { 0.0, 0.0, 0.0 } });
-		grid.SetScale({ { 0.068, 0.03, 1.0 } });
+		grid.SetSegments({ { 1, 1 } });
+		grid.SetSize({ { 24.48, 5.4 } });
 		grid.SetTextureID(logoTextureID);
 		grid.SetVisible(false);
 
