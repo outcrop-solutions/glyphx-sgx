@@ -678,19 +678,22 @@ void DataMapperWindow::ExportToANTz(SynGlyphXANTz::ANTzCSVWriter::OutputPlatform
 		DataEngine::GlyphEngine ge;
 		std::string baseImageDir = SynGlyphX::GlyphBuilderApplication::GetDefaultBaseImagesLocation().toStdString();
 		std::string baseFilename = (QString::fromStdWString(SynGlyphX::DefaultBaseImageProperties::GetBasefilename()).toStdString());
-		ge.getDownloadedBaseImage(dec.getEnv(), m_dataTransformModel->GetDataMapping().get()->GetBaseObjects());
 		ge.initiate(dec.getEnv(), m_currentFilename.toStdString(), csvDirectory.toStdString() + "\\", m_antzExportDirectories[platform].toStdString() + "\\", baseImageDir, baseFilename, "DataMapper");
+		ge.getDownloadedBaseImage(m_dataTransformModel->GetDataMapping().get()->GetBaseObjects());
+		ge.generateGlyphs();
 
 		//SynGlyphXANTz::ANTzExportTransformer transformer(csvDirectory, m_antzExportDirectories[platform], platform, false);
 		//transformer.Transform(*(m_dataTransformModel->GetDataMapping().get()));
 
 		SynGlyphX::Application::restoreOverrideCursor();
-		/*
-		const QString& transformerError = transformer.GetError();
-		if (!transformerError.isNull()) {
 
-			QMessageBox::information(this, "Transformation Error", transformerError, QMessageBox::Ok);
-		}*/
+		const QString& GlyphEngineError = ge.getError();
+		
+		//const QString& transformerError = transformer.GetError();
+		if (!GlyphEngineError.isNull()) {
+
+			QMessageBox::information(this, "Transformation Error", GlyphEngineError, QMessageBox::Ok);
+		}
 	}
 	catch (const std::exception& e) {
 
