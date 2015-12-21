@@ -33,7 +33,7 @@
 #include "datasourcesview.h"
 #include "antzcsvwriter.h"
 #include "dataengineconnection.h"
-#include "dataengine.h"
+#include "glyphengine.h"
 
 class DataMapperWindow : public SynGlyphX::MainWindow
 {
