@@ -1,6 +1,6 @@
 @ECHO OFF
 
-rem This script is for copying 3rdParty\bin to the directory where everything is built
+rem This script is for copying 3rdParty\bin and other files to the directory where everything is built
 
 SET basedir=..\..\bin
 SET antztemplate=ANTzTemplate
@@ -22,11 +22,13 @@ FOR /F "tokens=*" %%p IN ('dir /b /a:d ..\bin\*') DO (
 		rem echo %%c 
 		
 		robocopy /z /e ..\..\ANTzPlus\%antztemplate% %basedir%\%%p\%%c\%antztemplate%
+		robocopy /z /e ..\tools\vc120redist\ %basedir%\%%p\%%c\%antztemplate% *.dll
 		mkdir %basedir%\%%p\%%c\%antztemplate%\usr\csv
 		mkdir %basedir%\%%p\%%c\%antztemplate%\usr\images
 		mkdir %basedir%\%%p\%%c\%antztemplate%\usr\plugin
 
 		robocopy /z /e ..\..\ANTzPlus\%antzzspacetemplate% %basedir%\%%p\%%c\%antzzspacetemplate%
+		robocopy /z /e ..\tools\vc120redist\ %basedir%\%%p\%%c\%antzzspacetemplate% *.dll
 		mkdir %basedir%\%%p\%%c\%antzzspacetemplate%\usr\csv
 		mkdir %basedir%\%%p\%%c\%antzzspacetemplate%\usr\images
 		mkdir %basedir%\%%p\%%c\%antzzspacetemplate%\usr\plugin
