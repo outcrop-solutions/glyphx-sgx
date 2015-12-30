@@ -19,15 +19,15 @@ namespace DataEngine
 		baseFilename = bfn;
 		application = appName;
 		prepare();
-
+		/*
 		std::ofstream myfile;
 		myfile.open("dmlog.txt");
 		myfile << outDir;
 		myfile << appName;
-
+		*/
 		jcls = jniEnv->FindClass("GlyphEngine");
 		if (jcls == NULL){
-			myfile << "GlyphEngine class not found";
+			//myfile << "GlyphEngine class not found";
 		}
 		if (jcls != NULL) {
 			//qDebug() << "GlyphEngine class found";
@@ -45,10 +45,10 @@ namespace DataEngine
 				}
 			}
 			else{
-				myfile << "Method ID not found";
+				//myfile << "Method ID not found";
 			}
 		}
-		myfile.close();
+		//myfile.close();
 	}
 
 	void GlyphEngine::prepare(){
