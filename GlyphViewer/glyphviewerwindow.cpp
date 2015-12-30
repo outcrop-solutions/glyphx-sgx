@@ -22,6 +22,10 @@
 #include "optionswidget.h"
 #include "userdefinedbaseimageproperties.h"
 #include "changeimagefiledialog.h"
+#include "glyphengine.h"
+#include <boost/uuid/uuid_generators.hpp>
+#include <boost/uuid/uuid_io.hpp>
+#include <string>
 
 GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 	: SynGlyphX::MainWindow(2, parent),
@@ -374,6 +378,7 @@ bool GlyphViewerWindow::LoadNewVisualization(const QString& filename) {
 	EnableLoadedVisualizationDependentActions(true);
 	m_pseudoTimeFilterWidget->ResetForNewVisualization();
 	statusBar()->showMessage("Visualization successfully opened", 3000);
+
 	return true;
 }
 
@@ -450,6 +455,10 @@ void GlyphViewerWindow::ValidateDataMappingFile(const QString& filename) {
 
 void GlyphViewerWindow::LoadDataTransform(const QString& filename) {
 
+	if (!dec.hasJVM()){
+		dec.createJVM();
+	}
+
 	SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
 
 	try {
@@ -457,19 +466,44 @@ void GlyphViewerWindow::LoadDataTransform(const QString& filename) {
 		ValidateDataMappingFile(filename);
 
 		m_mappingModel->LoadDataTransformFile(filename);
+		std::string dcd = GlyphViewerOptions::GetDefaultCacheDirectory().toStdString();
+		std::string cacheDirectoryPath = dcd + ("\\cache_" + boost::uuids::to_string(m_mappingModel->GetDataMapping()->GetID()));
 
-		SynGlyphXANTz::GlyphViewerANTzTransformer transformer(QString::fromStdWString(m_cacheManager.GetCacheDirectory(m_mappingModel->GetDataMapping()->GetID())));
-		transformer.Transform(*m_mappingModel->GetDataMapping());
+		//SynGlyphXANTz::GlyphViewerANTzTransformer transformer(QString::fromStdString(cacheDirectoryPath.string()));
+		//transformer.Transform(*m_mappingModel->GetDataMapping());
+		
+		DataEngine::GlyphEngine ge;
+		std::string dirPath = cacheDirectoryPath + "\\";
+		std::string baseImageDir = SynGlyphX::GlyphBuilderApplication::GetDefaultBaseImagesLocation().toStdString();
+		ge.initiate(dec.getEnv(), filename.toStdString(), dirPath, "", baseImageDir, "", "GlyphViewer");
+		ge.getDownloadedBaseImage(m_mappingModel->GetDataMapping().get()->GetBaseObjects());
+		ge.generateGlyphs();
+		std::vector<std::string> images = ge.getBaseImages();
+		dec.destroyJVM();
+		
+		QStringList cacheFiles;
+		QString localOutputDir = QString::fromStdString(dirPath + "antz\\");
+		cacheFiles.push_back(localOutputDir + "antz.csv");
+		cacheFiles.push_back(localOutputDir + "antztag.csv");
+		cacheFiles.push_back(QString::fromStdString(dirPath + "sourcedata.db"));
 
-		m_sourceDataCache->Setup(transformer.GetSourceDataCacheLocation());
-		LoadFilesIntoModel(transformer.GetOutputFilenames(), transformer.GetBaseImageFilenames());
+		SynGlyphXANTz::ANTzCSVWriter::FilenameList outputfiles;
+		outputfiles[SynGlyphXANTz::ANTzCSVWriter::s_nodeFilenameIndex] = cacheFiles[0].toStdString();
+		outputfiles[SynGlyphXANTz::ANTzCSVWriter::s_tagFilenameIndex] = cacheFiles[1].toStdString();
+
+		QStringList qList;
+		for (int i = 0; i < images.size(); i++){
+			qList << images.at(i).c_str();
+		}
+		//m_sourceDataCache->Setup(transformer.GetSourceDataCacheLocation());
+		m_sourceDataCache->Setup(cacheFiles[2]);
+		LoadFilesIntoModel(outputfiles, qList);
 		m_glyphForestModel->SetTagNotToBeShownIn3d(QString::fromStdWString(m_mappingModel->GetDataMapping()->GetDefaults().GetDefaultTagValue()));
 		m_antzWidget->SetBackgroundColor(m_mappingModel->GetDataMapping()->GetSceneProperties().GetBackgroundColor());
 
 		SynGlyphX::Application::restoreOverrideCursor();
-		const QString& transformerError = transformer.GetError();
-		if ((!transformerError.isNull()) && m_showErrorFromTransform) {
-
+		const QString& transformerError = ge.getError();
+		if ((!transformerError.isNull())) { //&& m_showErrorFromTransform
 			QMessageBox::information(this, "Transformation Error", transformerError, QMessageBox::Ok);
 		}
 	}

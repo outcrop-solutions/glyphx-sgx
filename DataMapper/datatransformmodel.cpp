@@ -35,6 +35,14 @@ int DataTransformModel::columnCount(const QModelIndex& parent) const {
 	return 1;
 }
 
+void DataTransformModel::SetDataEngineConn(DataEngine::DataEngineConnection *dec){
+	this->dec = dec;
+}
+
+DataEngine::DataEngineConnection DataTransformModel::GetDataEngineConn(){
+	return *dec;
+}
+
 bool DataTransformModel::setData(const QModelIndex& index, const QVariant& value, int role) {
 
 	if ((role >= PropertyRole::PositionX) && (role <= PropertyRole::GeometryTorusRatio) && (GetDataType(index) == DataType::GlyphTrees)) {
@@ -502,7 +510,7 @@ boost::uuids::uuid DataTransformModel::AddFileDatasource(SynGlyphX::FileDatasour
 	int newRow = GetFirstIndexForDataType(DataType::DataSources) + m_dataMapping->GetDatasources().GetFileDatasources().size();
 	beginInsertRows(QModelIndex(), newRow, newRow);
 	boost::uuids::uuid id = m_dataMapping->AddFileDatasource(type, name);
-	m_sourceDataManager.AddDatabaseConnection(m_dataMapping->GetDatasources().GetFileDatasources().at(id), id);
+	//m_sourceDataManager.AddDatabaseConnection(m_dataMapping->GetDatasources().GetFileDatasources().at(id), id);
 	endInsertRows();
 
 	return id;

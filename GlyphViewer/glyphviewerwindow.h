@@ -33,6 +33,7 @@
 #include "itemfocusselectionmodel.h"
 #include "antzcsvwriter.h"
 #include "glyphpropertieswidgetscontainer.h"
+#include "dataengineconnection.h"
 
 class GlyphViewerWindow : public SynGlyphX::MainWindow
 {
@@ -98,6 +99,7 @@ private:
 	MultiTableElasticListsWidget* m_sourceDataSelectionWidget;
 	SourceDataSelectionModel* m_sourceDataSelectionModel;
 	PseudoTimeFilterWidget* m_pseudoTimeFilterWidget;
+	DataEngine::DataEngineConnection dec;
 };
 
 #endif // GLYPHVIEWERWINDOW_H

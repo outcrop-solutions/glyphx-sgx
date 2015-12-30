@@ -31,6 +31,10 @@ void DataSourceStatsWidget::RebuildStatsViews() {
 	AddNewStatsViews();
 }
 
+void DataSourceStatsWidget::SetDataEngineConn(DataEngine::DataEngineConnection *dec){
+	this->dec = dec;
+}
+
 void DataSourceStatsWidget::AddNewStatsViews() {
 
 	const SynGlyphX::DatasourceMaps::FileDatasourceMap& fileDatasources = m_model->GetDataMapping()->GetDatasources().GetFileDatasources();
@@ -38,14 +42,39 @@ void DataSourceStatsWidget::AddNewStatsViews() {
 	for (; iT != fileDatasources.end(); ++iT) {
 
 		try {
+			if (findChildren<QTableView*>(QString::fromStdString(boost::uuids::to_string(iT->first))).empty()) {
+				QString datasource = QString::fromStdWString(iT->second.GetFilename());
 
-			QList<QTableView*> tableViewsAssociatedWithDataSource = findChildren<QTableView*>(QString::fromStdString(boost::uuids::to_string(iT->first)));
-			if (tableViewsAssociatedWithDataSource.empty()) {
+				if (iT->second.GetType() == SynGlyphX::FileDatasource::SQLITE3){
 
-				CreateTablesFromDatasource(iT->first, iT->second);
+					dec->loadSQLite(datasource.toUtf8().constData());
+					SynGlyphX::Datasource::TableNames tables;
+					std::vector<std::string> tNames = dec->getTableNames();
+					QStringList qtables;
+					for (int i = 0; i < tNames.size(); i++){
+						qtables.append(QString::fromStdString(tNames[i]));
+					}
+					if (!qtables.isEmpty()) {
+						for (const QString& qtable : qtables) {
+							tables.insert(qtable.toStdWString());
+						}
+						m_model->EnableTables(iT->first, tables, true);
+					}
+					else {
+						throw std::exception((tr("No tables in ") + datasource).toStdString().c_str());
+					}
+
+					for (int i = 0; i < tNames.size(); i++){
+						dec->setTable(i);
+						CreateTablesFromDatasource(iT->first, datasource, QString::fromStdWString(iT->second.GetFormattedName()) + QString::fromStdString(":" + tNames[i]));
+					}
+				}
+				else if (iT->second.GetType() == SynGlyphX::FileDatasource::CSV){
+					dec->loadCSV(datasource.toUtf8().constData());
+					CreateTablesFromDatasource(iT->first, datasource, QString::fromStdWString(iT->second.GetFormattedName()));
+				}
 			}
-		}
-		catch (const std::exception& e) {
+		}catch (const std::exception& e) {
 
 			ClearTabs();
 			throw;
@@ -59,8 +88,8 @@ void DataSourceStatsWidget::ClearTabs() {
 	clear();
 }
 
-void DataSourceStatsWidget::CreateTablesFromDatasource(const boost::uuids::uuid& id, const SynGlyphX::Datasource& datasource) {
-
+void DataSourceStatsWidget::CreateTablesFromDatasource(const boost::uuids::uuid& id, QString filename, QString file) {
+	/*
 	QString idString = QString::fromStdString(boost::uuids::to_string(id));
 	const std::wstring& formattedName = datasource.GetFormattedName();
 	if (datasource.CanDatasourceHaveMultipleTables()) {
@@ -83,7 +112,22 @@ void DataSourceStatsWidget::CreateTablesFromDatasource(const boost::uuids::uuid&
 
 		DataStatsModel* model = new DataStatsModel(id, m_model->GetCacheConnectionID(), QString::fromStdWString(SynGlyphX::Datasource::SingleTableName), this);
 		CreateTableView(model, QString::fromStdWString(formattedName), idString);
+	}*/
+
+	QString idString = QString::fromStdString(boost::uuids::to_string(id));
+	QString tableName;
+	if (file.right(4).toLower() == ".csv"){
+		tableName = "OnlyTable";
 	}
+	else{
+		QStringList qsl = file.split(":");
+		tableName = qsl.at(1);
+	}
+	DataStatsModel* model = new DataStatsModel(id, filename, tableName, this->dec, this);
+	m_model;
+	CreateTableView(model, file, idString);
+	std::wstring temp = file.toStdWString();
+	dec->addTableName(id, tableName.toStdWString());
 }
 
 void DataSourceStatsWidget::CreateTableView(DataStatsModel* model, const QString& tabName, const QString& id) {

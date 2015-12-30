@@ -50,7 +50,7 @@ public:
 
 private:
 	SynGlyphX::InputField GetInputFieldForRow(int row) const;
-	const SynGlyphX::InputTable& GetTableForRow(int row) const;
+	unsigned int GetTableForRow(int row) const;
 
 	SynGlyphX::FieldGroup m_checkedItems;
 	DataTransformModel* m_dataTransformModel;

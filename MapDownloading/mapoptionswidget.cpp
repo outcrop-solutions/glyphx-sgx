@@ -61,6 +61,7 @@ MapOptionsWidget::MapOptionsWidget(QWidget *parent)
 	m_marginSpinBox = new QSpinBox(this);
 	m_marginSpinBox->setMinimum(0);
 	m_marginSpinBox->setMaximum(999);
+	m_marginSpinBox->setValue(50);
 	mapSizeLayout->addWidget(m_marginSpinBox);
 
 	mapSizeLayout->addStretch(1);

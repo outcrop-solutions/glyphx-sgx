@@ -1,6 +1,7 @@
 #include "datamapperwindow.h"
 #include <QtCore/QSettings>
 #include <QtCore/QDir>
+#include <QtCore/QDebug>
 #include <QtWidgets/QMessageBox>
 #include <QtWidgets/QMenuBar>
 #include <QtWidgets/QDockWidget>
@@ -30,6 +31,7 @@
 #include "singleglyphviewoptionswidget.h"
 #include "changedatasourcefiledialog.h"
 #include "changeimagefiledialog.h"
+#include <fstream>
 
 DataMapperWindow::DataMapperWindow(QWidget *parent)
     : SynGlyphX::MainWindow(0, parent),
@@ -379,6 +381,12 @@ void DataMapperWindow::UpdateMissingFileDatasources(const QString& filename) {
 
 bool DataMapperWindow::LoadDataTransform(const QString& filename) {
 
+	if (!dec.hasJVM()){
+		dec.createJVM();
+		m_dataTransformModel->SetDataEngineConn(&dec);
+		m_dataSourceStats->SetDataEngineConn(&dec);
+	}
+
 	QFileInfo fileInfo(filename);
 	if (fileInfo.suffix().toLower() != "sdt") {
 
@@ -452,7 +460,7 @@ bool DataMapperWindow::ValidateNewDatasource(const QString& datasource) {
 
 	return false;
 }
-
+/*
 void DataMapperWindow::ProcessCSVFile(const QString& csvFile) {
 
 	//Check if .csvt file exists
@@ -489,9 +497,15 @@ void DataMapperWindow::ProcessCSVFile(const QString& csvFile) {
 
 		SynGlyphX::CSVTFileReaderWriter::WriteCSVTFile(csvtFile.toStdString(), types);
 	}
-}
+}*/
 
 void DataMapperWindow::AddDataSources() {
+
+	if (!dec.hasJVM()){
+		dec.createJVM();
+		m_dataTransformModel->SetDataEngineConn(&dec);
+		m_dataSourceStats->SetDataEngineConn(&dec);
+	}
 
 	QStringList dataSources = GetFileNamesOpenDialog("DatasourcesDir", tr("Add Data Source"), "", "All datasource files (*.*);;CSV files (*.csv)");
 
@@ -508,17 +522,19 @@ void DataMapperWindow::AddDataSources() {
 			continue;
 		}
 
-		boost::uuids::uuid newDBID;
 		try {
 
 			SynGlyphX::FileDatasource::SourceType fileDatasourceType = SynGlyphX::FileDatasource::SQLITE3;
 			if (datasource.right(4).toLower() == ".csv") {
 
 				fileDatasourceType = SynGlyphX::FileDatasource::CSV;
-				ProcessCSVFile(datasource);
+				//ProcessCSVFile(datasource);
 			}
 
-			newDBID = m_dataTransformModel->AddFileDatasource(fileDatasourceType, datasource.toStdWString());
+			boost::uuids::uuid newDBID = m_dataTransformModel->AddFileDatasource(fileDatasourceType, datasource.toStdWString());
+			//m_dataTransformModel->AddFileDatasource(fileDatasourceType, datasource.toStdWString());
+			qDebug() << boost::lexical_cast<std::string>(newDBID).c_str();
+			/*
 			SynGlyphX::Datasource::TableNames tables;
 			const SynGlyphX::Datasource& newDatasource = m_dataTransformModel->GetDataMapping()->GetDatasources().GetFileDatasources().at(newDBID);
 
@@ -546,12 +562,12 @@ void DataMapperWindow::AddDataSources() {
 					throw std::exception((tr("No tables in ") + datasource).toStdString().c_str());
 				}
 			}
-
+			*/
 			++numNewDatasources;
 		}
 		catch (const std::exception& e) {
 
-			QSqlDatabase::removeDatabase(QString::fromStdString(boost::uuids::to_string(newDBID)));
+			//QSqlDatabase::removeDatabase(QString::fromStdString(boost::uuids::to_string(newDBID)));
 			QMessageBox::critical(this, tr("Failed To Add Data Source"), QString::fromStdString(e.what()), QMessageBox::Ok);
 			continue;
 		}
@@ -658,14 +674,25 @@ void DataMapperWindow::ExportToANTz(SynGlyphXANTz::ANTzCSVWriter::OutputPlatform
 	try {
 
 		//bool useOldANTzFilenames = !QFile::exists(templateDir + QDir::separator() + "usr" + QDir::separator() + "csv" + QDir::separator() + "antzglobals.csv");
-		SynGlyphXANTz::ANTzExportTransformer transformer(csvDirectory, m_antzExportDirectories[platform], platform, false);
-		transformer.Transform(*(m_dataTransformModel->GetDataMapping().get()));
+		SaveProject();
+		DataEngine::GlyphEngine ge;
+		std::string baseImageDir = SynGlyphX::GlyphBuilderApplication::GetDefaultBaseImagesLocation().toStdString();
+		std::string baseFilename = (QString::fromStdWString(SynGlyphX::DefaultBaseImageProperties::GetBasefilename()).toStdString());
+		ge.initiate(dec.getEnv(), m_currentFilename.toStdString(), csvDirectory.toStdString() + "\\", m_antzExportDirectories[platform].toStdString() + "\\", baseImageDir, baseFilename, "DataMapper");
+		ge.getDownloadedBaseImage(m_dataTransformModel->GetDataMapping().get()->GetBaseObjects());
+		ge.generateGlyphs();
+
+		//SynGlyphXANTz::ANTzExportTransformer transformer(csvDirectory, m_antzExportDirectories[platform], platform, false);
+		//transformer.Transform(*(m_dataTransformModel->GetDataMapping().get()));
 
 		SynGlyphX::Application::restoreOverrideCursor();
-		const QString& transformerError = transformer.GetError();
-		if (!transformerError.isNull()) {
 
-			QMessageBox::information(this, "Transformation Error", transformerError, QMessageBox::Ok);
+		const QString& GlyphEngineError = ge.getError();
+		
+		//const QString& transformerError = transformer.GetError();
+		if (!GlyphEngineError.isNull()) {
+
+			QMessageBox::information(this, "Transformation Error", GlyphEngineError, QMessageBox::Ok);
 		}
 	}
 	catch (const std::exception& e) {
@@ -682,7 +709,6 @@ void DataMapperWindow::ExportToANTz(SynGlyphXANTz::ANTzCSVWriter::OutputPlatform
 		}
 		return;
 	}
-
 
 	statusBar()->showMessage("Data transform successfully exported to ANTz", 6000);
 }
