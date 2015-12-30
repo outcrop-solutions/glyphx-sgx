@@ -1,0 +1,20 @@
+
+Reading SDT at C:\Users\Bryan\Desktop\East Coast Only\East_Coast_Only.sdt
+Parsed SDT into doc.
+Set input map.
+7df247d5-b6aa-4380-9f6c-0793d78769d6OnlyTable
+Retrieved data paths.
+Finished creating min/max table...
+Created DataFrames.
+Checking field groups...
+Finished checking field groups.
+Retrieved Bg color.
+BaseObjects:
+Downloaded Map | 
+Returning data stats model...
+-70.2553
+43.6615
+-84.4494
+25.9861
+-70.2553,43.6615,-84.4494,25.9861 | MapQuestOpen,Hybrid | 360,180 | true,true | true,0
+-70.2553,43.6615,-84.4494,25.9861 | MapQuestOpen,Hybrid | 360,180 | true,true | true,0
