@@ -1,19 +1,8 @@
 
-Reading SDT at D:/Demo/SalesJan2009/url_test.sdt
+Reading SDT at C:/Users/Bryan/Desktop/East Coast Only/East_Coast_Only.sdt
 Parsed SDT into doc.
-Retrieved input fields.
-Retrieved input fields.
-Retrieved input fields.
-Retrieved input fields.
-Retrieved input fields.
-Retrieved input fields.
-Retrieved input fields.
-Retrieved input fields.
-Retrieved input fields.
-Retrieved input fields.
-Retrieved input fields.
 Set input map.
-255f2bd9-9b84-49ed-adfd-bb5b06e69148OnlyTable
+7df247d5-b6aa-4380-9f6c-0793d78769d6OnlyTable
 Retrieved data paths.
 Finished creating min/max table...
 Created DataFrames.
@@ -21,14 +10,23 @@ Checking field groups...
 Finished checking field groups.
 Retrieved Bg color.
 BaseObjects:
-Default | World
+Downloaded Map | 
+Returning data stats model...
+-70.2553
+43.6615
+-84.4494
+25.9861
+-70.2553,43.6615,-84.4494,25.9861 | MapQuestOpen,Hybrid | 360,180 | true,true | true,0
+-70.2553,43.6615,-84.4494,25.9861 | MapQuestOpen,Hybrid | 360,180 | true,true | true,0
+Downloaded Map BoundingBox: (-84.4385061046576,43.72456201339057),(-70.2661938953424,25.92303798660943)
+Image Size: 645.0, 980.0
 Beginning to generate glyphs...
 Executed initial query...
-Returned cursor with size 759...
+Returned cursor with size 119...
 1
-8
+128
 Writing all files...
-C:\Users\Bryan\AppData\Local\SynGlyphX\Glyph Builder - Glyph Viewer\cache\cache_35214023-cc10-4b71-abfc-5115e7af4df5\\antz\
+C:\Users\Bryan\AppData\Local\SynGlyphX\Glyph Builder - Glyph Viewer\cache\cache_00501cde-0d46-4db3-b098-f1bb812b9a71\\antz\
 GlyphViewer
 C:\Users\Bryan\Documents\GitHub\GUI\GlyphViewer\nourl.html
-6073 nodes printing...
+15233 nodes printing...

@@ -22,7 +22,7 @@
 #include "optionswidget.h"
 #include "userdefinedbaseimageproperties.h"
 #include "changeimagefiledialog.h"
-#include "dataengine.h"
+#include "glyphengine.h"
 #include <boost/uuid/uuid_generators.hpp>
 #include <boost/uuid/uuid_io.hpp>
 #include <string>
@@ -455,6 +455,10 @@ void GlyphViewerWindow::ValidateDataMappingFile(const QString& filename) {
 
 void GlyphViewerWindow::LoadDataTransform(const QString& filename) {
 
+	if (!dec.hasJVM()){
+		dec.createJVM();
+	}
+
 	SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
 
 	try {
@@ -468,10 +472,12 @@ void GlyphViewerWindow::LoadDataTransform(const QString& filename) {
 		//SynGlyphXANTz::GlyphViewerANTzTransformer transformer(QString::fromStdString(cacheDirectoryPath.string()));
 		//transformer.Transform(*m_mappingModel->GetDataMapping());
 		
-		dec.createJVM();
 		DataEngine::GlyphEngine ge;
 		std::string dirPath = cacheDirectoryPath + "\\";
-		ge.initiate(dec.getEnv(), filename.toStdString(), dirPath, "", "", "", "GlyphViewer");
+		std::string baseImageDir = SynGlyphX::GlyphBuilderApplication::GetDefaultBaseImagesLocation().toStdString();
+		ge.initiate(dec.getEnv(), filename.toStdString(), dirPath, "", baseImageDir, "", "GlyphViewer");
+		ge.getDownloadedBaseImage(m_mappingModel->GetDataMapping().get()->GetBaseObjects());
+		ge.generateGlyphs();
 		std::vector<std::string> images = ge.getBaseImages();
 		dec.destroyJVM();
 		
@@ -479,30 +485,27 @@ void GlyphViewerWindow::LoadDataTransform(const QString& filename) {
 		QString localOutputDir = QString::fromStdString(dirPath + "antz\\");
 		cacheFiles.push_back(localOutputDir + "antz.csv");
 		cacheFiles.push_back(localOutputDir + "antztag.csv");
-		cacheFiles.push_back(localOutputDir + "redirect.bat");
 		cacheFiles.push_back(QString::fromStdString(dirPath + "sourcedata.db"));
 
 		SynGlyphXANTz::ANTzCSVWriter::FilenameList outputfiles;
 		outputfiles[SynGlyphXANTz::ANTzCSVWriter::s_nodeFilenameIndex] = cacheFiles[0].toStdString();
 		outputfiles[SynGlyphXANTz::ANTzCSVWriter::s_tagFilenameIndex] = cacheFiles[1].toStdString();
-		outputfiles[SynGlyphXANTz::ANTzCSVWriter::s_redirectFilenameIndex] = cacheFiles[2].toStdString();
 
 		QStringList qList;
 		for (int i = 0; i < images.size(); i++){
 			qList << images.at(i).c_str();
 		}
 		//m_sourceDataCache->Setup(transformer.GetSourceDataCacheLocation());
-		m_sourceDataCache->Setup(cacheFiles[3]);
+		m_sourceDataCache->Setup(cacheFiles[2]);
 		LoadFilesIntoModel(outputfiles, qList);
 		m_glyphForestModel->SetTagNotToBeShownIn3d(QString::fromStdWString(m_mappingModel->GetDataMapping()->GetDefaults().GetDefaultTagValue()));
 		m_antzWidget->SetBackgroundColor(m_mappingModel->GetDataMapping()->GetSceneProperties().GetBackgroundColor());
 
 		SynGlyphX::Application::restoreOverrideCursor();
-		/*const QString& transformerError = transformer.GetError();
-		if ((!transformerError.isNull()) && m_showErrorFromTransform) {
-
+		const QString& transformerError = ge.getError();
+		if ((!transformerError.isNull())) { //&& m_showErrorFromTransform
 			QMessageBox::information(this, "Transformation Error", transformerError, QMessageBox::Ok);
-		}*/
+		}
 	}
 	catch (const std::exception& e) {
 
