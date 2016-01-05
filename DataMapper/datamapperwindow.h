@@ -71,7 +71,7 @@ private:
 	void CreateExportToPortableVisualizationSubmenu();
     void CreateDockWidgets();
 	void CreateCenterWidget();
-	void UpdateMissingFileDatasources(const QString& filename);
+	void UpdateMissingFiles(const QString& mappingFilename);
 	bool LoadDataTransform(const QString& filename);
 	bool SaveDataTransform(const QString& filename);
 	bool AskUserToSave();

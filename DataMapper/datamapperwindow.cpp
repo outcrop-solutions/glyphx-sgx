@@ -357,14 +357,22 @@ bool DataMapperWindow::LoadRecentFile(const QString& filename) {
 	return true;
 }
 
-void DataMapperWindow::UpdateMissingFileDatasources(const QString& filename) {
+void DataMapperWindow::UpdateMissingFiles(const QString& mappingFilename) {
 
 	SynGlyphX::DataTransformMapping::SharedPtr mapping = std::make_shared<SynGlyphX::DataTransformMapping>();
-	mapping->ReadFromFile(filename.toStdString());
+	mapping->ReadFromFile(mappingFilename.toStdString());
 
 	std::vector<boost::uuids::uuid> fileDatasourcesToBeUpdated = mapping->GetFileDatasourcesWithInvalidFiles(false);
+	std::vector<unsigned int> localBaseImageIndexes = mapping->GetFileBaseObjectsWithInvalidFiles();
 
 	bool wasDataTransformUpdated = false;
+
+	if (!localBaseImageIndexes.empty()) {
+
+		SynGlyphX::Application::restoreOverrideCursor();
+		wasDataTransformUpdated = SynGlyphX::ChangeImageFileDialog::UpdateImageFiles(localBaseImageIndexes, mapping, this);
+		SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
+	}
 
 	if (!fileDatasourcesToBeUpdated.empty()) {
 
@@ -375,7 +383,7 @@ void DataMapperWindow::UpdateMissingFileDatasources(const QString& filename) {
 
 	if (wasDataTransformUpdated) {
 
-		mapping->WriteToFile(filename.toStdString());
+		mapping->WriteToFile(mappingFilename.toStdString());
 	}
 }
 
@@ -402,7 +410,7 @@ bool DataMapperWindow::LoadDataTransform(const QString& filename) {
 
 		SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
 
-		UpdateMissingFileDatasources(filename);
+		UpdateMissingFiles(filename);
 
 		QObject::disconnect(m_modelResetConnection);
 
