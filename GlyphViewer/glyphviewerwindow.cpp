@@ -22,7 +22,6 @@
 #include "optionswidget.h"
 #include "userdefinedbaseimageproperties.h"
 #include "changeimagefiledialog.h"
-#include "glyphengine.h"
 #include <boost/uuid/uuid_generators.hpp>
 #include <boost/uuid/uuid_io.hpp>
 #include <string>
@@ -102,6 +101,10 @@ GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 GlyphViewerWindow::~GlyphViewerWindow()
 {
 
+}
+
+void GlyphViewerWindow::closeJVM(){
+	dec.destroyJVM();
 }
 
 void GlyphViewerWindow::CreateANTzWidget(const QGLFormat& format) {
@@ -313,6 +316,7 @@ void GlyphViewerWindow::CloseVisualization() {
 	EnableLoadedVisualizationDependentActions(false);
 	ClearCurrentFile();
 	m_antzWidget->SetBackgroundColor(SynGlyphX::GlyphColor::s_black);
+
 }
 
 void GlyphViewerWindow::ClearAllData() {
@@ -479,7 +483,6 @@ void GlyphViewerWindow::LoadDataTransform(const QString& filename) {
 		ge.getDownloadedBaseImage(m_mappingModel->GetDataMapping().get()->GetBaseObjects());
 		ge.generateGlyphs();
 		std::vector<std::string> images = ge.getBaseImages();
-		dec.destroyJVM();
 		
 		QStringList cacheFiles;
 		QString localOutputDir = QString::fromStdString(dirPath + "antz\\");

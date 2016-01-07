@@ -91,6 +91,10 @@ DataMapperWindow::~DataMapperWindow()
 	
 }
 
+void DataMapperWindow::closeJVM(){
+	dec.destroyJVM();
+}
+
 void DataMapperWindow::CreateCenterWidget() {
 	
 	m_minMaxGlyph3DWidget = new DataMapping3DWidget(m_dataTransformModel, this);

@@ -74,4 +74,5 @@ int main(int argc, char *argv[])
     //splash.finish(&w);
     
     return a.exec();
+	w.closeJVM();
 }
