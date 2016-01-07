@@ -42,6 +42,7 @@ class DataMapperWindow : public SynGlyphX::MainWindow
 public:
     DataMapperWindow(QWidget *parent = 0);
     ~DataMapperWindow();
+	void closeJVM();
 
 protected:
     virtual bool LoadRecentFile(const QString& filename);
