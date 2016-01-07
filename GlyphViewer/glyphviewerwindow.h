@@ -34,6 +34,7 @@
 #include "antzcsvwriter.h"
 #include "glyphpropertieswidgetscontainer.h"
 #include "dataengineconnection.h"
+#include "glyphengine.h"
 
 class GlyphViewerWindow : public SynGlyphX::MainWindow
 {
@@ -42,6 +43,7 @@ class GlyphViewerWindow : public SynGlyphX::MainWindow
 public:
 	GlyphViewerWindow(QWidget *parent = 0);
 	~GlyphViewerWindow();
+	void closeJVM();
 
 protected:
 	virtual void ReadSettings();

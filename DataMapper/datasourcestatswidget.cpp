@@ -79,7 +79,33 @@ void DataSourceStatsWidget::AddNewStatsViews() {
 			ClearTabs();
 			throw;
 		}
-    }
+	}/*
+	//FOR JDBC TESTING ONLY
+	try{
+
+		if (true)
+		{
+			//SET CONNECTION INFO
+			QString url("mysql://33.33.33.1");
+			QString user("root");
+			QString pass("jarvis");
+			QString type("mysql");
+			QStringList databases = dec->connectToServer(url,user,pass,type); //Returns List of available databases/schemas
+			//SET DESIRED DATABASE
+			QString database("world");
+			QStringList tables = dec->chooseDatabase(database); //Returns List of all available tables in the selected database
+			//SET LIST OF DESIRED TABLES
+			QStringList chosenTables;
+			chosenTables << "City" << "Country" << "CountryLanguage";
+			dec->setChosenTables(chosenTables); //Void, now ready to populate datastats window
+		}
+	}
+	catch (const std::exception& e){
+
+		ClearTabs();
+		throw;
+	}*/
+	//END JDBC TESTING
 }
 
 void DataSourceStatsWidget::ClearTabs() {
