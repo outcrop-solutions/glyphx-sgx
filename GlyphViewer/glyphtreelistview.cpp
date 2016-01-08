@@ -97,8 +97,8 @@ void GlyphTreeListView::OnPropertiesActivated() {
 		SynGlyphXANTz::GlyphForestModel* forestModel = dynamic_cast<SynGlyphXANTz::GlyphForestModel*>(model());
 		SynGlyphX::Glyph glyph = forestModel->GetGlyphAtIndex(index);
 
-		SynGlyphX::AllGlyphPropertiesWidget* glyphPropertiesWidget = new SynGlyphX::AllGlyphPropertiesWidget(false, SynGlyphX::VisualGlyphPropertiesWidget::ShowOnBottom, this);
-		glyphPropertiesWidget->SetWidgetFromGlyph(glyph, forestModel->rowCount(index), true);
+		SynGlyphX::TextGlyphPropertiesWidget* glyphPropertiesWidget = new SynGlyphX::TextGlyphPropertiesWidget(this);
+		glyphPropertiesWidget->SetWidgetFromGlyph(glyph);
 		glyphPropertiesWidget->SetReadOnly(true);
 
 		SynGlyphX::SingleWidgetDialog dialog(QDialogButtonBox::Ok, glyphPropertiesWidget, this);
