@@ -25,6 +25,9 @@ public class GlyphCreator {
 	private int currData;
 	private HashMap<Integer, CoordinateMap> rootCoords = null;
 	private boolean download;
+	private String default_tag_field;
+	private String default_tag_value;
+	private boolean remove_scale_zero;
 
 	public GlyphCreator(ArrayList<SourceDataInfo> csvData, Map<Integer, XMLGlyphTemplate> temps, int mappingCount, ArrayList<Integer> rootIds){
 		this.csvData = csvData;
@@ -44,22 +47,28 @@ public class GlyphCreator {
 		download = dl;
 	}
 
+	public void setDefaults(String tag_field, String tag_value, boolean scale_zero){
+		default_tag_field = tag_field;
+		default_tag_value = tag_value;
+		remove_scale_zero = scale_zero;
+	}
+
 	public void begin(){
 
-		for(int i=0;i < csvData.size();i++){
-			currData = i;
-			rootCoords.put(rootIds.get(i), new CoordinateMap(false, csvData.get(i).getLastID()));
-			Query query = new Query(csvData.get(i).getDataFrame()).all(); 
+		for(int i=0;i < rootIds.size();i++){
+			currData = temps.get(rootIds.get(i)).getDataSource();
+			rootCoords.put(rootIds.get(i), new CoordinateMap(temps.get(rootIds.get(i)).getToMerge(), csvData.get(currData).getLastID()));
+			Query query = new Query(csvData.get(currData).getDataFrame()).all(); 
 			Logger.getInstance().add("Executed initial query...");
-			Cursor cursor = csvData.get(i).getDataFrame().query(query);
+			Cursor cursor = csvData.get(currData).getDataFrame().query(query);
 			Logger.getInstance().add("Returned cursor with size " + String.valueOf(cursor.size()) +"...");
 
-			Logger.getInstance().add(String.valueOf(csvData.get(i).getRootID()));
-			Logger.getInstance().add(String.valueOf(csvData.get(i).getLastID()));
+			Logger.getInstance().add(String.valueOf(csvData.get(currData).getRootID()));
+			Logger.getInstance().add(String.valueOf(csvData.get(currData).getLastID()));
 
 			while(cursor.next()){
 				for (int j = 1; j < mappingCount+1; j++){
-					if(j >= csvData.get(i).getRootID() && j <= csvData.get(i).getLastID()){
+					if(j >= csvData.get(currData).getRootID() && j <= csvData.get(currData).getLastID()){
 						addNode(j, cursor);
 					}
 				}
@@ -126,10 +135,16 @@ public class GlyphCreator {
 		Node node = new Node();
 		setFields(fieldNames, ranges, setValues, node, nodeTemp, input);
 
+		//TAG STUFF
+		node.setDefaultTagValue(default_tag_value);
 		if(input.get("Tag") != null){
 			node.setTag(input.get("Tag")+": "+cursor.get(input.get("Tag")));
 			node.setTagPos(csvData.get(currData).getDataFrame().getHeaderPlace(input.get("Tag")));
+		}else if(input.get("Tag") == null && input.get(default_tag_field) != null){
+			node.setTag(input.get(default_tag_field)+": "+cursor.get(input.get(default_tag_field)));
+			node.setTagPos(csvData.get(currData).getDataFrame().getHeaderPlace(input.get(default_tag_field)));
 		}
+		//END TAG
 		if(input.get("Description") != null){
 			node.setDesc(cursor.get(input.get("Description")));
 		}
@@ -256,7 +271,7 @@ public class GlyphCreator {
 
 	public void printGlyphRepo(String[] colorStr, ArrayList<BaseObject> base_objects){
 		Logger.getInstance().add("Writing all files...");
-		glyphRepo.writeAll(colorStr, base_objects, rootCoords);
+		glyphRepo.writeAll(colorStr, base_objects, rootCoords, remove_scale_zero);
 	}
 
 }

@@ -27,10 +27,10 @@ namespace DataEngine
 		std::ifstream ifile(".\\dataengine.jar");
 		if (ifile){
 			options[0].optionString =
-				"-Djava.class.path=.\\dataengine.jar;.\\sqlite4java.jar;";
+				"-Djava.class.path=.\\dataengine.jar;.\\sqlite4java.jar;.\\database_drivers\\mysql-connector-java-5.1.38-bin.jar";
 		}else{
 			options[0].optionString =
-				"-Djava.class.path=..\\..\\DataEngine\\dataengine.jar;..\\..\\DataEngine\\sqlite4java.jar;";
+				"-Djava.class.path=..\\..\\DataEngine\\dataengine.jar;..\\..\\DataEngine\\sqlite4java.jar;..\\..\\DataEngine\\database_drivers\\mysql-connector-java-5.1.38-bin.jar";
 		}ifile.close();
 		vmArgs.version = JNI_VERSION_1_2;
 		vmArgs.options = options;
@@ -98,51 +98,15 @@ namespace DataEngine
 		}
 	}
 
-	void DataEngineConnection::setTable(int i){
-
-		if (classFound){
-			jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
-				"setTable", "(I)V");
-			if (methodId != NULL) {
-
-				jniEnv->CallStaticVoidMethod(jcls, methodId, i);
-				if (jniEnv->ExceptionCheck()) {
-					jniEnv->ExceptionDescribe();
-					jniEnv->ExceptionClear();
-				}
-			}
-		}
-	}
-
 	std::vector<std::string> DataEngineConnection::getTableNames(){
-
-		//qDebug() << "Retrieving table names...";
 
 		std::vector<std::string> str;
 		if (classFound){
 			DataEngine::DataEngineStatement s1;
 			s1.prepare(jniEnv, jcls);
 			int size = s1.tableCount();
-			//qDebug() << size;
 			for (int i = 0; i < size; i++){
 				str.push_back(s1.getTableName(i));
-			}
-		}
-
-		return str;
-	}
-
-	std::vector<std::string> DataEngineConnection::getColumnNames(){
-
-		std::cout << "Retrieving column names..." << std::endl;
-
-		std::vector<std::string> str;
-		if (classFound){
-			DataEngine::DataEngineStatement s1;
-			s1.prepare(jniEnv, jcls);
-			int size = s1.size();
-			for (int i = 0; i < size; i++){
-				str.push_back(s1.getColumnName(i));
 			}
 		}
 
@@ -181,5 +145,80 @@ namespace DataEngine
 	std::wstring DataEngineConnection::getTableName(boost::uuids::uuid id){
 		return tableNames[id];
 	}
+
+//JDBC ACCESSOR FUNCTIONS
+	QStringList DataEngineConnection::connectToServer(QString db_url, QString user, QString pass, QString db_type){
+
+		jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
+			"connectToServer", "(Ljava/lang/String;java/lang/String;java/lang/String;java/lang/String;)[Ljava/lang/String;");
+		jobjectArray itr;
+		QStringList databases;
+		if (methodId != NULL) {
+
+			itr = (jobjectArray)jniEnv->CallStaticObjectMethod(jcls, methodId, db_url, user, pass, db_type);
+			if (jniEnv->ExceptionCheck()) {
+				jniEnv->ExceptionDescribe();
+				jniEnv->ExceptionClear();
+			}
+
+			int length = jniEnv->GetArrayLength(itr);
+
+			for (int i = 0; i < length; i++){
+				jstring element = (jstring)jniEnv->GetObjectArrayElement(itr, i);
+				const char *str = jniEnv->GetStringUTFChars(element, 0);
+				QString db_name(str);
+				databases << db_name;
+			}
+		}
+		return databases;
+	}
+
+	QStringList DataEngineConnection::chooseDatabase(QString db_name){
+
+		jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
+			"chooseDatabase", "(Ljava/lang/String;)[Ljava/lang/String;");
+		jobjectArray itr;
+		QStringList tables;
+		if (methodId != NULL) {
+
+			itr = (jobjectArray)jniEnv->CallStaticObjectMethod(jcls, methodId, db_name);
+			if (jniEnv->ExceptionCheck()) {
+				jniEnv->ExceptionDescribe();
+				jniEnv->ExceptionClear();
+			}
+
+			int length = jniEnv->GetArrayLength(itr);
+
+			for (int i = 0; i < length; i++){
+				jstring element = (jstring)jniEnv->GetObjectArrayElement(itr, i);
+				const char *str = jniEnv->GetStringUTFChars(element, 0);
+				QString tbl_name(str);
+				tables << tbl_name;
+			}
+		}
+		return tables;
+	}
+
+	void DataEngineConnection::setChosenTables(QStringList chosen){
+
+		jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
+			"connectToServer", "([Ljava/lang/String;)V");
+
+		jobjectArray selected = (jobjectArray)jniEnv->NewObjectArray(chosen.size(), jniEnv->FindClass("java/lang/String"), jniEnv->NewStringUTF(""));
+
+		if (methodId != NULL) {
+
+			for (int i = 0; i < chosen.size(); i++){
+				jniEnv->SetObjectArrayElement(selected, i, jniEnv->NewStringUTF(chosen.at(i).toStdString().c_str()));
+			}
+
+			jniEnv->CallStaticObjectMethod(jcls, methodId, selected);
+			if (jniEnv->ExceptionCheck()) {
+				jniEnv->ExceptionDescribe();
+				jniEnv->ExceptionClear();
+			}
+		}
+	}
+//JDBC END
 
 }

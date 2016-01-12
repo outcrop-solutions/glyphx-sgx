@@ -23,6 +23,8 @@ public class XMLGlyphTemplate{
 	private int childOf;
 	private int branchLevel;
 	private int numChildren;
+	private int datasource;
+	private boolean toMerge;
 
 	public XMLGlyphTemplate(){
 		ranges = new HashMap<String, ArrayList<Double>>();
@@ -30,6 +32,17 @@ public class XMLGlyphTemplate{
 		functionMapping = new HashMap<String,String>();
 		keyValueMap = new HashMap<String,MapFunction>();
 		numChildren = 0;
+		tag = "No Tag";
+		url = "nourl.html";
+		description = "";
+	}
+
+	public void setToMerge(boolean tm){
+		toMerge = tm;
+	}
+
+	public boolean getToMerge(){
+		return toMerge;
 	}
 
 	public HashMap<String, ArrayList<Double>> getRanges(){
@@ -77,6 +90,10 @@ public class XMLGlyphTemplate{
 		mf.addKey(key);
 		mf.addValue(value);
 		keyValueMap.put(field, mf);
+	}
+
+	public void setDataSource(int ds){
+		this.datasource = ds;
 	}
 
 	public void setBranchLevel(int bl){
@@ -165,6 +182,10 @@ public class XMLGlyphTemplate{
 
 	public void mapFunction(String name, String function){
 		functionMapping.put(name, function);
+	}
+
+	public int getDataSource(){
+		return datasource;
 	}
 
 	public ArrayList<Double> getMinMax(String name){

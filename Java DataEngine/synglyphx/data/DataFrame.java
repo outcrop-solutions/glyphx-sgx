@@ -18,6 +18,7 @@ public class DataFrame {
 	private boolean first = false;
 	private HashMap<String, ArrayList<String>> minMaxTable = null;
 	private HashMap<String, Boolean> fieldType = null;
+	private String[] headerString;
 
 	public DataFrame(){
 
@@ -62,11 +63,17 @@ public class DataFrame {
 		for (Map.Entry<String, Integer> entry : this.headers.entrySet()) {
 			ph.put(entry.getValue(), entry.getKey());
 		}
+		headerString = new String[size];
 		for(int i=0;i<size;i++){
 			temp.add(ph.get(i));
+			headerString[i] = ph.get(i);
 		}
 
 		return temp;
+	}
+
+	public String[] getHeaderString(){
+		return headerString;
 	}
 
 	public Cursor query(Query q){

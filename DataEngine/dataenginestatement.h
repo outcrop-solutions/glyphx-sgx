@@ -3,6 +3,10 @@
 
 #include <iostream>
 #include <jni.h>
+#include <QtCore/QMap>
+#include <QtCore/QString>
+#include <QtCore/QStringList>
+#include "filedatasource.h"
 #include "DataEngine_Exports.h"
 
 namespace DataEngine
@@ -10,24 +14,35 @@ namespace DataEngine
 	class DATAENGINE DataEngineStatement {
 
 	private:
+		void constructDataStats(int i);
+		QStringList getStatsForField(int i, QString field);
+		void setSourceType(SynGlyphX::FileDatasource::SourceType type);
 		JNIEnv *jniEnv;
 		jclass jcls;
-		int hello;
+		QStringList fields;
+		QMap<QString, QStringList> dataStats;
+		int current;
+		QString sourceType;
 
 	public:
 		DataEngineStatement(){};
 		void prepare(JNIEnv *jniEnv, jclass jcls);
+		void prepare(JNIEnv *jniEnv, jclass jcls, SynGlyphX::FileDatasource::SourceType type);
 		std::string getTableName(int i);
-		std::string getColumnName(int i);
-		std::string getType(int i);
-		std::string getMin(int i);
-		std::string getMax(int i);
-		std::string getAverage(int i);
-		std::string getCount(int i);
-		std::string getDistinct(int i);
 		std::string checkMethodID(jmethodID methodId, int i);
 		int size();
 		int tableCount();
+		//JDBC FUNCTIONS
+		void getFieldsForTable(int i);
+		bool hasNext();
+		QString getField();
+		QString getType();
+		QString getMin();
+		QString getMax();
+		QString getAverage();
+		QString getCount();
+		QString getDistinct();
+		//END JDBC
 		~DataEngineStatement(){};
 
 	};

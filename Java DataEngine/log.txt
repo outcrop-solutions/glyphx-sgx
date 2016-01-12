@@ -1,5 +1,5 @@
 
-Reading SDT at C:\Users\Bryan\Desktop\East Coast Only\East_Coast_Only.sdt
+Reading SDT at C:\Users\Bryan\Desktop\Crazy_Complicated_Datamap_V3_Anim.sdt
 Parsed SDT into doc.
 Set input map.
 7df247d5-b6aa-4380-9f6c-0793d78769d6OnlyTable
@@ -8,13 +8,19 @@ Finished creating min/max table...
 Created DataFrames.
 Checking field groups...
 Finished checking field groups.
+Retrieved Defaults.
 Retrieved Bg color.
 BaseObjects:
-Downloaded Map | 
-Returning data stats model...
--70.2553
-43.6615
--84.4494
-25.9861
--70.2553,43.6615,-84.4494,25.9861 | MapQuestOpen,Hybrid | 360,180 | true,true | true,0
--70.2553,43.6615,-84.4494,25.9861 | MapQuestOpen,Hybrid | 360,180 | true,true | true,0
+Default | World
+Downloaded Map BoundingBox: (-180.0,90.0),(180.0,-90.0)
+Image Size: 2048.0, 1024.0
+Beginning to generate glyphs...
+Executed initial query...
+Returned cursor with size 333...
+1
+128
+Writing all files...
+C:\Users\Bryan\Desktop\New folder\Viz\usr\csv\
+DataMapper
+C:\Users\Bryan\Desktop\New folder\Viz\usr\csv\\..\..\nourl.html
+42625 nodes printing...

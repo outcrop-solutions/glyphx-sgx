@@ -25,6 +25,7 @@ namespace DataEngine
 		myfile << outDir;
 		myfile << appName;
 		*/
+
 		jcls = jniEnv->FindClass("GlyphEngine");
 		if (jcls == NULL){
 			//myfile << "GlyphEngine class not found";

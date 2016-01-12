@@ -1,6 +1,6 @@
 g++ -I"jdk1.7.0_79\include" -I"jdk1.7.0_79\include\win32" dataengineconnection.cpp jdk1.7.0_79\lib\jawt.lib jdk1.7.0_79\lib\jvm.lib
 
-jar cf dataengine.jar DataEngine.class GlyphEngine.class synglyphx/data/*.class synglyphx/glyph/*.class synglyphx/io/*.class synglyphx/util/*.class
+jar cf dataengine.jar DataEngine.class GlyphEngine.class synglyphx/data/*.class synglyphx/glyph/*.class synglyphx/io/*.class synglyphx/util/*.class synglyphx/jdbc/*.class
 
 C:\Program Files (x86)\Java\jdk1.7.0_79\jre\bin;C:\Program Files (x86)\Java\jdk1.7.0_79\jre\bin\client;C:\Program Files (x86)\Java\jdk1.7.0_79\lib\jvm.lib;C:\Program Files (x86)\Java\jdk1.7.0_79\lib\jawt.lib;
 C:\Program Files (x86)\Java\jdk1.7.0_79\lib;C:\Program Files (x86)\Java\jdk1.7.0_79\jre\bin\client;C:\Program Files (x86)\Java\jdk1.7.0_79;C:\Program Files (x86)\Java\jdk1.7.0_79\bin;C:\Users\Bryan\Documents\GitHub\HashInput\Release;C:\Users\Bryan\Desktop\DataEngine;C:\Program Files (x86)\Java\jdk1.7.0_79\include\*;C:\Program Files (x86)\Java\jdk1.7.0_79\include\win32\*;
