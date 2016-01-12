@@ -22,15 +22,16 @@
 #include <QtSql/QSqlQuery>
 #include <boost/uuid/uuid.hpp>
 #include "dataengineconnection.h"
+#include "filedatasource.h"
 
 class DataStatsModel : public QAbstractTableModel
 {
 	Q_OBJECT
 
 public:
-	DataStatsModel(const boost::uuids::uuid& id, const QString& tableName, QObject *parent = 0);
-	DataStatsModel(const boost::uuids::uuid& id, const boost::uuids::uuid& databaseId, const QString& tableName, QString filename, DataEngine::DataEngineConnection *dec, QObject *parent = 0);
-	DataStatsModel(const boost::uuids::uuid& id, QString filename, QString tablename, DataEngine::DataEngineConnection *dec, QObject *parent = 0);
+	//DataStatsModel(const boost::uuids::uuid& id, const QString& tableName, QObject *parent = 0);
+	//DataStatsModel(const boost::uuids::uuid& id, const boost::uuids::uuid& databaseId, const QString& tableName, QString filename, DataEngine::DataEngineConnection *dec, QObject *parent = 0);
+	DataStatsModel(const boost::uuids::uuid& id, int place, SynGlyphX::FileDatasource::SourceType type, QString tablename, DataEngine::DataEngineConnection *dec, QObject *parent = 0);
 	~DataStatsModel();
 
 	virtual int rowCount(const QModelIndex& parent = QModelIndex()) const;
@@ -43,8 +44,9 @@ public:
 	virtual QMimeData* mimeData(const QModelIndexList& indexes) const;
 
 private:
-	void GenerateStats(const boost::uuids::uuid& databaseId, const QString& tableName, QString filename, DataEngine::DataEngineConnection &dec);
-	void GenerateStats(QString filename, DataEngine::DataEngineConnection *dec);
+	//void GenerateStats(const boost::uuids::uuid& databaseId, const QString& tableName, QString filename, DataEngine::DataEngineConnection &dec);
+	//void GenerateStats(DataEngine::DataEngineConnection *dec);
+	void GenerateStats(int i, SynGlyphX::FileDatasource::SourceType type, DataEngine::DataEngineConnection *dec);
 	int getNumericFieldCount();
 
 	QList<QStringList> m_stats;

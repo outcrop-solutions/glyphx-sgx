@@ -50,7 +50,7 @@ private slots:
 	void OnRowsRemovedFromModel(const QModelIndex& parent, int start, int end);
 
 private:
-	void CreateTablesFromDatasource(const boost::uuids::uuid& id, QString filename, QString file);
+	void CreateTablesFromDatasource(const boost::uuids::uuid& id, int place, QString file, SynGlyphX::FileDatasource::SourceType type);
 	void CreateTableView(DataStatsModel* model, const QString& tabName, const QString& id);
 	void RemoveTableViews(const QString& name = QString());
 
