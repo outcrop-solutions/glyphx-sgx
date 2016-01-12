@@ -65,47 +65,41 @@ void DataSourceStatsWidget::AddNewStatsViews() {
 					}
 
 					for (int i = 0; i < tNames.size(); i++){
-						dec->setTable(i);
-						CreateTablesFromDatasource(iT->first, datasource, QString::fromStdWString(iT->second.GetFormattedName()) + QString::fromStdString(":" + tNames[i]));
+						//dec->setTable(i);
+						CreateTablesFromDatasource(iT->first, i, QString::fromStdWString(iT->second.GetFormattedName()) + QString::fromStdString(":" + tNames[i]), iT->second.GetType());
 					}
 				}
 				else if (iT->second.GetType() == SynGlyphX::FileDatasource::CSV){
 					dec->loadCSV(datasource.toUtf8().constData());
-					CreateTablesFromDatasource(iT->first, datasource, QString::fromStdWString(iT->second.GetFormattedName()));
+					CreateTablesFromDatasource(iT->first, 0, QString::fromStdWString(iT->second.GetFormattedName()), iT->second.GetType());
 				}
+				/*else if (SOME JDBC TYPE){
+					//SET CONNECTION INFO
+					QString url("mysql://33.33.33.1");
+					QString user("root");
+					QString pass("jarvis");
+					QString type("mysql");
+					QStringList databases = dec->connectToServer(url,user,pass,type); //Returns List of available databases/schemas
+					//SET DESIRED DATABASE
+					QString database("world");
+					QStringList tables = dec->chooseDatabase(database); //Returns List of all available tables in the selected database
+					//SET LIST OF DESIRED TABLES
+					QStringList chosenTables;
+					chosenTables << "City" << "Country" << "CountryLanguage";
+					dec->setChosenTables(chosenTables); //Void, now ready to populate datastats window
+
+					for(int i = 0; i < chosenTables.size(); i++){
+						CreateTablesFromDatasource(uuid, i, formattedName, type); //type being a FileDatasource::SourceType
+					}
+				}*/
 			}
 		}catch (const std::exception& e) {
 
 			ClearTabs();
 			throw;
 		}
-	}/*
-	//FOR JDBC TESTING ONLY
-	try{
-
-		if (true)
-		{
-			//SET CONNECTION INFO
-			QString url("mysql://33.33.33.1");
-			QString user("root");
-			QString pass("jarvis");
-			QString type("mysql");
-			QStringList databases = dec->connectToServer(url,user,pass,type); //Returns List of available databases/schemas
-			//SET DESIRED DATABASE
-			QString database("world");
-			QStringList tables = dec->chooseDatabase(database); //Returns List of all available tables in the selected database
-			//SET LIST OF DESIRED TABLES
-			QStringList chosenTables;
-			chosenTables << "City" << "Country" << "CountryLanguage";
-			dec->setChosenTables(chosenTables); //Void, now ready to populate datastats window
-		}
 	}
-	catch (const std::exception& e){
 
-		ClearTabs();
-		throw;
-	}*/
-	//END JDBC TESTING
 }
 
 void DataSourceStatsWidget::ClearTabs() {
@@ -114,31 +108,7 @@ void DataSourceStatsWidget::ClearTabs() {
 	clear();
 }
 
-void DataSourceStatsWidget::CreateTablesFromDatasource(const boost::uuids::uuid& id, QString filename, QString file) {
-	/*
-	QString idString = QString::fromStdString(boost::uuids::to_string(id));
-	const std::wstring& formattedName = datasource.GetFormattedName();
-	if (datasource.CanDatasourceHaveMultipleTables()) {
-
-		QSqlDatabase datasourceDB = QSqlDatabase::database(idString);
-
-		if (!datasourceDB.open()) {
-
-			throw std::exception("Failed to load data sources");
-		}
-
-		for (const auto& table : datasource.GetTables()) {
-
-			QString tableName = QString::fromStdWString(table.first);
-			DataStatsModel* model = new DataStatsModel(id, tableName, this);
-			CreateTableView(model, QString::fromStdWString(formattedName) + ":" + tableName, idString);
-		}
-	}
-	else {
-
-		DataStatsModel* model = new DataStatsModel(id, m_model->GetCacheConnectionID(), QString::fromStdWString(SynGlyphX::Datasource::SingleTableName), this);
-		CreateTableView(model, QString::fromStdWString(formattedName), idString);
-	}*/
+void DataSourceStatsWidget::CreateTablesFromDatasource(const boost::uuids::uuid& id, int place, QString file, SynGlyphX::FileDatasource::SourceType type) {
 
 	QString idString = QString::fromStdString(boost::uuids::to_string(id));
 	QString tableName;
@@ -149,8 +119,7 @@ void DataSourceStatsWidget::CreateTablesFromDatasource(const boost::uuids::uuid&
 		QStringList qsl = file.split(":");
 		tableName = qsl.at(1);
 	}
-	DataStatsModel* model = new DataStatsModel(id, filename, tableName, this->dec, this);
-	m_model;
+	DataStatsModel* model = new DataStatsModel(id, place, type, tableName, this->dec, this);
 	CreateTableView(model, file, idString);
 	std::wstring temp = file.toStdWString();
 	dec->addTableName(id, tableName.toStdWString());
