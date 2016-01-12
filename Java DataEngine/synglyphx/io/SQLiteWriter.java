@@ -86,7 +86,14 @@ public class SQLiteWriter {
 		String query = "CREATE TABLE if NOT EXISTS '"+sdi.getFormattedID()+"' ("; 
 		String insertQuery = "INSERT INTO '"+sdi.getFormattedID()+"' VALUES (";
 		for(int i = 0; i < headers.size(); i++){
-			query += headers.get(i);
+			String temp = headers.get(i);
+			//System.out.println(temp);
+			temp = "'"+temp+"'";/*
+			if(temp.contains("(") || temp.contains(")") || temp.contains(".")){
+				temp = "'"+temp+"'";
+			}*/
+			//System.out.println(temp);
+			query += temp;
 			if(fieldType.get(headers.get(i))){
 				query += " REAL,";
 			}else{
@@ -99,7 +106,8 @@ public class SQLiteWriter {
 		insertQuery = insertQuery.substring(0, insertQuery.length()-1);
 		query += ");";
 		insertQuery += ");";
-
+		
+		//System.out.println(query);
 		SQLiteStatement st0 = db.prepare(query);
 
 		db.exec("BEGIN TRANSACTION;"); 

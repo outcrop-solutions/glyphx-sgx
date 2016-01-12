@@ -71,6 +71,7 @@ public class SourceDataInfo {
 
  	public String getFormattedName(){
  		String[] splitData = path.split(Pattern.quote(File.separator));
+ 		splitData = splitData[splitData.length-1].split("/");
  		if(type.equals("sqlite")){
  			return splitData[splitData.length-1]+":"+tableName;
  		}

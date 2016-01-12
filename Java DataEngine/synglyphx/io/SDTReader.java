@@ -32,6 +32,9 @@ public class SDTReader {
 	private HashMap<String,Integer> dataIds = null;
 	private HashMap<String,FieldGroup> gNames = null;
 	private String[] colorStr = null;
+	private String tagFieldDefault;
+	private String tagValueDefault;
+	private boolean scaleZeroDefault;
 	private Mapper mapping;
 	private CSVReader reader;
 	private SQLiteReader sqlReader;
@@ -52,6 +55,7 @@ public class SDTReader {
 		mapping = new Mapper();
 		mapping.addNodeTemplates(templates, count);
 		mapping.checkRangeXY(download);
+		mapping.setDefaults(tagFieldDefault, tagValueDefault, scaleZeroDefault);
 		mapping.generateGlyphTrees(dataPaths, rootIds, outDir, colorStr, app, base_objects);
 		SQLiteWriter writer = new SQLiteWriter(dataPaths, outDir);
 		writer.writeTableIndex();
@@ -76,7 +80,7 @@ public class SDTReader {
 			setInputMap(doc);
 			getDataPaths(doc);
 			checkFieldGroups(doc);
-			getBgColor(doc);
+			getDefaultsAndPropeties(doc);
 			getBaseObjects(doc);
 
 			NodeList start = doc.getElementsByTagName("Glyphs");
@@ -90,12 +94,8 @@ public class SDTReader {
 				Node root = roots.item(i);
 				if(!root.getNodeName().equals("#text")){
 					XMLGlyphTemplate temp = new XMLGlyphTemplate();
-
 					NodeList categories = root.getChildNodes();
-					if(rootCount == 0){dataPaths.get(rootCount).setRootID(1);}
-					else{
-						dataPaths.get(rootCount).setRootID(count+1);
-					}
+					temp.setToMerge(getMergeStatus(root));
 					addNode(categories, temp, 0);
 					rootCount++;
 				}
@@ -105,6 +105,7 @@ public class SDTReader {
 			ex.printStackTrace();
 			Logger.getInstance().add("Failed to parse SDT file.");
 		}
+		setRootAndLastIDs();
 
 	}
 
@@ -151,6 +152,17 @@ public class SDTReader {
 
 	}
 
+	private boolean getMergeStatus(Node root){
+		Element element = (Element) root;
+		if(element.hasAttribute("merge")){
+			String to_merge = element.getAttribute("merge");
+			if(to_merge.equals("true")){
+				return true;
+			}
+		}
+		return false;
+	}
+
 	private void handleParent(int pID, Node parent){
 
 		XMLGlyphTemplate p = templates.get(pID);
@@ -180,7 +192,6 @@ public class SDTReader {
 			rootIds.add(count);
 			temp.setBranchLevel(0);
 		}
-		dataPaths.get(rootCount).setLastID(count);
 
 		for (int j = 0; j < categories.getLength(); j++) {
 
@@ -291,7 +302,12 @@ public class SDTReader {
 							}
 
 							if(bind){
-								temp.mapInput(category.getNodeName()+value.getNodeName(), directMap.get(getInput(element)));
+								String field_name = category.getNodeName()+value.getNodeName();
+								String code = getInput(element);
+								if(field_name.equals("PositionX")){
+									temp.setDataSource(getDataPathForTemplate(directMap.get(code), code));
+								}
+								temp.mapInput(field_name, directMap.get(code));
 								checkForFunctionMinMax(temp, element);
 							}
 								
@@ -374,7 +390,7 @@ public class SDTReader {
 						dataPaths.add(tb);
 						dataIds.put(tb.getID()+tb.getTable(),holder);
 						holder++;
-						System.out.println(tb.getID()+tb.getTable());
+						//System.out.println(tb.getID()+tb.getTable());
 						Logger.getInstance().add(tb.getID()+tb.getTable());
 					}
 				}
@@ -386,7 +402,24 @@ public class SDTReader {
 
 	}
 
-	void getBgColor(Document doc){
+	void getDefaultsAndPropeties(Document doc){
+
+		NodeList defaults = doc.getElementsByTagName("Defaults");
+		Node def = defaults.item(0);
+		Element def_ele = (Element) def;
+		tagFieldDefault = getValue("TagFieldDefault", def_ele).replace(" ", "");
+		tagValueDefault = getValue("TagValueDefault", def_ele);
+		scaleZeroDefault = false;
+		try{
+			Element scale = (Element) doc.getElementsByTagName("ScaleZeroDefault").item(0);
+			if(scale.getAttribute("remove").equals("true")){
+				scaleZeroDefault = true;
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+
+		Logger.getInstance().add("Retrieved Defaults.");
 
 		NodeList start = doc.getElementsByTagName("SceneProperties");
 		Node node = start.item(0);
@@ -615,6 +648,37 @@ public class SDTReader {
 
 	public ArrayList<SourceDataInfo> getSourceDataInfo(){
 		return dataPaths;
+	}
+
+	public int getDataPathForTemplate(String field, String code){
+
+		ConvertHash convert = new ConvertHash();
+		for(int i = 0; i < dataPaths.size(); i++){
+			SourceDataInfo tb = dataPaths.get(i);
+			if(convert.getHash(tb.getID(),tb.getTable(),field).equals(code)){
+				return i;
+			}
+		}
+		return rootCount;
+	}
+
+	public void setRootAndLastIDs(){
+
+		int currentRoot = 1;
+		SourceDataInfo currentDataSource = null;
+		for(int i = 1; i < count+1; i++){
+			XMLGlyphTemplate temp = templates.get(i);
+			if(temp.getChildOf() == 0){
+				if(i != 1){
+					currentDataSource.setLastID(i-1);
+				}
+				currentDataSource = dataPaths.get(temp.getDataSource());
+				currentDataSource.setRootID(i);
+			}
+			if(i == count){
+				currentDataSource.setLastID(i);
+			}
+		}
 	}
 }
 

@@ -26,6 +26,24 @@ public class DataStats {
  		this.distinct = String.valueOf(distinct);
  	}
 
+ 	public DataStats(String type, String[] ranges, String[] counts){
+
+ 		if(type.equals("Double")){
+ 			this.type = "real";
+ 		}else if(type.equals("String")){
+ 			this.type = "text";
+ 		}else if(type.equals("Date") || type.equals("Timestamp") || type.equals("Time")){
+ 			this.type = "datetime";
+ 		}else{
+ 			this.type = "void";
+ 		}
+ 		this.min = ranges[0];
+ 		this.max = ranges[1];
+ 		this.avg = ranges[2];
+ 		this.count = counts[0];
+ 		this.distinct = counts[1];
+ 	}
+
  	public String getType(){
  		return type;
  	}

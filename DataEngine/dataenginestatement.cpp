@@ -4,72 +4,22 @@
 namespace DataEngine
 {
 	void DataEngineStatement::prepare(JNIEnv *env, jclass jc){
+		jniEnv = env;
+		jcls = jc;
+	}
+
+	void DataEngineStatement::prepare(JNIEnv *env, jclass jc, SynGlyphX::FileDatasource::SourceType type){
 
 		std::cout << "Preparing statement" << std::endl;
 		jniEnv = env;
 		jcls = jc;
+		setSourceType(type);
 	}
 
 	std::string DataEngineStatement::getTableName(int i){
 
 		jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
 			"getTableName", "(I)Ljava/lang/String;");
-
-		return checkMethodID(methodId, i);
-	}
-
-	std::string DataEngineStatement::getColumnName(int i){
-
-		jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
-			"getColumnName", "(I)Ljava/lang/String;");
-
-		return checkMethodID(methodId, i);
-	}
-
-	std::string DataEngineStatement::getType(int i){
-
-		jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
-			"getType", "(I)Ljava/lang/String;");
-
-		return checkMethodID(methodId, i);
-	}
-
-	std::string DataEngineStatement::getMin(int i){
-
-		jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
-			"getMin", "(I)Ljava/lang/String;");
-
-		return checkMethodID(methodId, i);
-	}
-
-	std::string DataEngineStatement::getMax(int i){
-
-		jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
-			"getMax", "(I)Ljava/lang/String;");
-
-		return checkMethodID(methodId, i);
-	}
-
-	std::string DataEngineStatement::getAverage(int i){
-
-		jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
-			"getAverage", "(I)Ljava/lang/String;");
-
-		return checkMethodID(methodId, i);
-	}
-
-	std::string DataEngineStatement::getCount(int i){
-
-		jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
-			"getCount", "(I)Ljava/lang/String;");
-
-		return checkMethodID(methodId, i);
-	}
-
-	std::string DataEngineStatement::getDistinct(int i){
-
-		jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
-			"getDistinct", "(I)Ljava/lang/String;");
 
 		return checkMethodID(methodId, i);
 	}
@@ -123,6 +73,118 @@ namespace DataEngine
 		}
 
 		return itr;
+	}
+
+	void DataEngineStatement::getFieldsForTable(int i){
+
+		jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
+			"getFieldsForTable", "(ILjava/lang/String;)[Ljava/lang/String;");
+		jobjectArray itr;
+		if (methodId != NULL) {
+
+			jstring str = jniEnv->NewStringUTF(sourceType.toStdString().c_str());
+			itr = (jobjectArray)jniEnv->CallStaticObjectMethod(jcls, methodId, i, str);
+			if (jniEnv->ExceptionCheck()) {
+				jniEnv->ExceptionDescribe();
+				jniEnv->ExceptionClear();
+			}
+
+			int length = jniEnv->GetArrayLength(itr);
+
+			for (int j = 0; j < length; j++){
+				jstring element = (jstring)jniEnv->GetObjectArrayElement(itr, j);
+				const char *str = jniEnv->GetStringUTFChars(element, 0);
+				QString field_name(str);
+				fields << field_name;
+			}
+		}
+		constructDataStats(i);
+	}
+
+	void DataEngineStatement::constructDataStats(int i){
+
+		for (int i = 0; i < fields.size(); i++){
+			QStringList fieldStats = getStatsForField(i, fields.at(i));
+			dataStats.insert(fields.at(i), fieldStats);
+		}
+		current = -1;
+	}
+
+	QStringList DataEngineStatement::getStatsForField(int i, QString field){
+
+		jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
+			"getStatsForField", "(ILjava/lang/String;)[Ljava/lang/String;");
+		jobjectArray itr;
+		QStringList stats;
+		if (methodId != NULL) {
+
+			jstring str = jniEnv->NewStringUTF(field.toStdString().c_str());
+			itr = (jobjectArray)jniEnv->CallStaticObjectMethod(jcls, methodId, i, str);
+			if (jniEnv->ExceptionCheck()) {
+				jniEnv->ExceptionDescribe();
+				jniEnv->ExceptionClear();
+			}
+
+			int length = jniEnv->GetArrayLength(itr);
+
+			for (int j = 0; j < length; j++){
+				jstring element = (jstring)jniEnv->GetObjectArrayElement(itr, j);
+				const char *str = jniEnv->GetStringUTFChars(element, 0);
+				QString stat(str);
+				stats << stat;
+			}
+		}
+		return stats;
+	}
+
+	bool DataEngineStatement::hasNext(){
+
+		current++;
+		if (current < fields.size()){
+			return true;
+		}
+		return false;
+	}
+
+	QString DataEngineStatement::getField(){
+		return fields.at(current);
+	}
+
+	QString DataEngineStatement::getType(){
+		return dataStats.value(fields.at(current)).at(0);
+	}
+
+	QString DataEngineStatement::getMin(){
+		return dataStats.value(fields.at(current)).at(1);
+	}
+
+	QString DataEngineStatement::getMax(){
+		return dataStats.value(fields.at(current)).at(2);
+	}
+
+	QString DataEngineStatement::getAverage(){
+		return dataStats.value(fields.at(current)).at(3);
+	}
+
+	QString DataEngineStatement::getCount(){
+		return dataStats.value(fields.at(current)).at(4);
+	}
+
+	QString DataEngineStatement::getDistinct(){
+		return dataStats.value(fields.at(current)).at(5);
+	}
+
+	void DataEngineStatement::setSourceType(SynGlyphX::FileDatasource::SourceType type){
+
+		if (type == SynGlyphX::FileDatasource::CSV){
+			sourceType = "csv";
+		}
+		else if (type == SynGlyphX::FileDatasource::SQLITE3){
+			sourceType = "sqlite";
+		}
+		else{
+			sourceType = "sql";
+		}
 	}
 
 }

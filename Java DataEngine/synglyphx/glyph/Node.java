@@ -39,9 +39,14 @@ public class Node {
 		setChildOf(0);
 		setAlpha(255);
 		this.url = "nourl.html";
+		this.desc = "";
 	}
 
 //SETTERS
+	public void setDefaultTagValue(String tag){
+		this.tag = tag;
+	}
+
 	public void setTagPos(int pos){
 		this.tagPos = pos;
 	}

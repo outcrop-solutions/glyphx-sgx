@@ -49,9 +49,9 @@ public class GlyphTreeRepository {
 		this.app = app;
 	}
 
-	public void writeAll(String[] colorStr, ArrayList<BaseObject> base_objects, HashMap<Integer, CoordinateMap> rootCoords){
+	public void writeAll(String[] colorStr, ArrayList<BaseObject> base_objects, HashMap<Integer, CoordinateMap> rootCoords, boolean scale_zero){
 		BaseImageSpace bis = new BaseImageSpace(this.allNodes, this.nodeCount, base_objects);
-		CSVWriter csvw = new CSVWriter(this.nodeCount,this.allNodes, outDir, colorStr, app, base_objects, rootCoords);
+		CSVWriter csvw = new CSVWriter(this.nodeCount,this.allNodes, outDir, colorStr, app, base_objects, rootCoords, scale_zero);
 	}
 
 }

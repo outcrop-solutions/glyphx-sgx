@@ -4,6 +4,8 @@
 #include <jni.h>
 #include <vector>
 #include <boost/uuid/uuid.hpp>
+#include <QtCore/QString>
+#include <QtCore/QStringList>
 #include <map>
 #include "DataEngine_Exports.h"
 
@@ -33,6 +35,11 @@ namespace DataEngine
 		std::map<boost::uuids::uuid, std::vector<std::wstring>> getNumericFieldsTable();
 		std::vector<std::string> getTableNames();
 		std::vector<std::string> getColumnNames();
+		//JDBC ACCESSOR FUNCTIONS
+		QStringList connectToServer(QString db_url, QString user, QString pass, QString db_type);
+		QStringList chooseDatabase(QString db_name);
+		void setChosenTables(QStringList chosen);
+		//JDBC END
 		void destroyJVM();
 		JNIEnv* getEnv();
 		jclass getJcls();

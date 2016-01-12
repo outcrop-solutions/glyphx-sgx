@@ -34,13 +34,15 @@ public class CSVWriter {
 	private String outDir;
 	private String noURLLocation;
 	private boolean win;
+	private boolean remove_scale_zero;
 
-	public CSVWriter(int nodeCount, Map<Integer,Node> nodes, String outDir, String[] colorStr, String app, ArrayList<BaseObject> base_objects, HashMap<Integer, CoordinateMap> rootCoords){
+	public CSVWriter(int nodeCount, Map<Integer,Node> nodes, String outDir, String[] colorStr, String app, ArrayList<BaseObject> base_objects, HashMap<Integer, CoordinateMap> rootCoords, boolean scale_zero){
 		this.nodeCount = nodeCount;
 		this.allNodes = nodes;
 		this.base_objects = base_objects;
 		this.rootCoords = rootCoords;
-		System.out.println(nodeCount);
+		this.remove_scale_zero = scale_zero;
+		//System.out.println(nodeCount);
 		if(app.equals("DataMapper")){
 			this.outDir = outDir+"\\usr\\csv\\";
 		}else if(app.equals("GlyphViewer")){
@@ -192,22 +194,12 @@ public class CSVWriter {
 	        			}
 	        		}
 	        	}
-	        	//if(temp.getSX() != 0 && temp.getSY() != 0 && temp.getSZ() != 0 && print){
-	        	if(print){
+	        	if(isScaleGTZero(temp) && print){
 			        tag += String.valueOf(i-1) +",";
 			        tag += String.valueOf(i+global_offset) +",";
 			        tag += "0,";
-			        if(temp.getTag() == null){
-			        	tag += "No Tag,";
-			        }else{
-			        	tag += "\"<a href=\""+temp.getURL()+"\">"+temp.getTag()+"</a>\",";
-			        }
-
-			        if(temp.getDesc() == null){
-			        	tag += "";
-			        }else{
-			        	tag += "\""+temp.getDesc() +"\"";
-			        }
+			        tag += "\"<a href=\""+temp.getURL()+"\">"+temp.getTag()+"</a>\",";
+			        tag += "\""+temp.getDesc() +"\"";
 			        tag += "\n";
 
 			        line += String.valueOf(i+global_offset) +",";//id
@@ -281,6 +273,16 @@ public class CSVWriter {
 	    }catch(IOException ioe){
 	    	Logger.getInstance().add("Failed to write antznode and antztag files.");
 	    }
+	}
+
+	private boolean isScaleGTZero(Node temp){
+
+		if(remove_scale_zero){
+			if(temp.getSX() == 0 && temp.getSY() == 0 && temp.getSZ() == 0){
+				return false;
+			}
+		}
+		return true;
 	}
 
 	public void createExcelMap(){

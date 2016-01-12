@@ -71,21 +71,21 @@ public class GlyphEngine {
 
 	public static void main(String [] args){
 
-	 	String sdtPath = "C:\\Users\\Bryan\\Desktop\\East Coast Only\\East_Coast_Only.sdt";
-	 	String outDir = "C:\\Users\\Bryan\\AppData\\Local\\SynGlyphX\\Glyph Builder - Glyph Viewer\\cache\\cache_00501cde-0d46-4db3-b098-f1bb812b9a71";
-	 	String expDir = "GlyphViewer";
-	 	GlyphEngine start = new GlyphEngine();/*
+	 	String sdtPath = "C:\\Users\\Bryan\\Desktop\\Crazy_Complicated_Datamap_V3_Anim.sdt";
+	 	String outDir = "C:\\Users\\Bryan\\Desktop\\New folder\\Viz";
+	 	String expDir = "DataMapper";
+	 	GlyphEngine start = new GlyphEngine();
 	 	double[] nw = new double[2];
-	 	nw[0] = -85.53713495809289; nw[1] = 44.63280303516512;
+	 	nw[0] = -180.0; nw[1] = 90.0;
 	 	double[] se = new double[2];
-	 	se[0] = -69.16756504190711; se[1] = 25.01479696483488;
+	 	se[0] = 180.0; se[1] = -90.0;
 	 	double[] s = new double[2];
-	 	s[0] = 745.0; s[1] = 1080.0;*/
+	 	s[0] = 2048.0; s[1] = 1024.0;
 	 	start.initiate(sdtPath, outDir, expDir);
-	 	double[] nwse = start.getNWandSE();
-	 	start.hasImageBeenUpdated();
-	 	//start.setBoundingBox(nw,se,s);
-	 	//start.beginGlyphGeneration();
+	 	//double[] nwse = start.getNWandSE();
+	 	//start.hasImageBeenUpdated();
+	 	start.setBoundingBox(nw,se,s);
+	 	start.beginGlyphGeneration();
 	} 
 
 }
