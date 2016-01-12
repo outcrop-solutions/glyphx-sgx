@@ -50,12 +50,16 @@ namespace SynGlyphX {
 		void SetDefaultTagValue(const std::wstring& value);
 		const std::wstring& GetDefaultTagValue() const;
 
+		void SetRemoveWhenScaleIsZero(bool removeWhenScaleIsZero);
+		bool GetRemoveWhenScaleIsZero() const;
+
 		static const boost::bimap<DataMappingGlyph::MappableField, std::wstring> s_tagFieldStrings;
 		static const std::wstring s_propertyTreeName;
 
 	private:
 		DataMappingGlyph::MappableField m_tagField;
 		std::wstring m_defaultTagValue;
+		bool m_removeWhenScaleIsZero;
 	};
 
 } //namespace SynGlyphX

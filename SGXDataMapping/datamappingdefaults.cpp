@@ -26,20 +26,27 @@ namespace SynGlyphX {
 
 	DataMappingDefaults::DataMappingDefaults() :
 		m_tagField(DataMappingGlyph::MappableField::Tag),
-		m_defaultTagValue(L"No Tag")
+		m_defaultTagValue(L"No Tag"),
+		m_removeWhenScaleIsZero(true)
 	{
 	}
 
 	DataMappingDefaults::DataMappingDefaults(const PropertyTree& propertyTree) :
 		m_tagField(s_tagFieldStrings.right.at(propertyTree.get<std::wstring>(L"TagFieldDefault"))),
-		m_defaultTagValue(propertyTree.get<std::wstring>(L"TagValueDefault")) {
+		m_defaultTagValue(propertyTree.get<std::wstring>(L"TagValueDefault")),
+		m_removeWhenScaleIsZero(true) {
 
+		boost::optional<const boost::property_tree::wptree&> scaleDefaultPropertyTree = propertyTree.get_child_optional(L"ScaleZeroDefault");
+		if (scaleDefaultPropertyTree.is_initialized()) {
 
+			m_removeWhenScaleIsZero = scaleDefaultPropertyTree.get().get_optional<bool>(L"remove").get_value_or(true);
+		}
 	}
 
 	DataMappingDefaults::DataMappingDefaults(const DataMappingDefaults& defaults) :
 		m_tagField(defaults.m_tagField),
-		m_defaultTagValue(defaults.m_defaultTagValue) {
+		m_defaultTagValue(defaults.m_defaultTagValue),
+		m_removeWhenScaleIsZero(defaults.m_removeWhenScaleIsZero) {
 
 
 	}
@@ -52,6 +59,7 @@ namespace SynGlyphX {
 
 		m_tagField = defaults.m_tagField;
 		m_defaultTagValue = defaults.m_defaultTagValue;
+		m_removeWhenScaleIsZero = defaults.m_removeWhenScaleIsZero;
 
 		return *this;
 	}
@@ -68,6 +76,11 @@ namespace SynGlyphX {
 			return false;
 		}
 
+		if (m_removeWhenScaleIsZero != defaults.m_removeWhenScaleIsZero) {
+
+			return false;
+		}
+
 		return true;
 	}
 
@@ -80,6 +93,7 @@ namespace SynGlyphX {
 
 		m_tagField = DataMappingGlyph::MappableField::Tag;
 		m_defaultTagValue = L"No Tag";
+		m_removeWhenScaleIsZero = true;
 	}
 
 	void DataMappingDefaults::ExportToPropertyTree(PropertyTree& parentPropertyTree) const {
@@ -87,6 +101,9 @@ namespace SynGlyphX {
 		PropertyTree& propertyTree = parentPropertyTree.add(s_propertyTreeName, L"");
 		propertyTree.put(L"TagFieldDefault", s_tagFieldStrings.left.at(m_tagField));
 		propertyTree.put(L"TagValueDefault", m_defaultTagValue);
+
+		PropertyTree& scaleDefaultPropertyTree = propertyTree.add(L"ScaleZeroDefault", L"");
+		scaleDefaultPropertyTree.put(L"remove", m_removeWhenScaleIsZero);
 	}
 
 	void DataMappingDefaults::SetTagField(DataMappingGlyph::MappableField tagField) {
@@ -112,6 +129,16 @@ namespace SynGlyphX {
 	const std::wstring& DataMappingDefaults::GetDefaultTagValue() const {
 
 		return m_defaultTagValue;
+	}
+
+	void DataMappingDefaults::SetRemoveWhenScaleIsZero(bool removeWhenScaleIsZero) {
+
+		m_removeWhenScaleIsZero = removeWhenScaleIsZero;
+	}
+
+	bool DataMappingDefaults::GetRemoveWhenScaleIsZero() const {
+
+		return m_removeWhenScaleIsZero;
 	}
 
 } //namespace SynGlyphX
