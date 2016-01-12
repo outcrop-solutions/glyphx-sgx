@@ -49,8 +49,9 @@ namespace SynGlyphX {
 
 		m_tagLineEdit->setText(QString::fromStdWString(glyph.GetTag()));
 
-		QUrl url = QUrl::fromUserInput(QString::fromStdWString(glyph.GetURL()));
-		if (url.isValid()) {
+		QString urlString = QString::fromStdWString(glyph.GetURL());
+		QUrl url = QUrl::fromUserInput(urlString);
+		if (url.isValid() && (urlString != "nourl.html")) {
 
 			QString urlLink = url.toString(QUrl::None);
 			QString urlDisplay;
