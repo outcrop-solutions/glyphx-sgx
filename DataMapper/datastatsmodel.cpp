@@ -7,12 +7,12 @@
 #include <boost/uuid/uuid_io.hpp>
 #include "dataenginestatement.h"
 
-DataStatsModel::DataStatsModel(const boost::uuids::uuid& id, QString filename, QString tablename, DataEngine::DataEngineConnection *dec, QObject *parent)
+DataStatsModel::DataStatsModel(const boost::uuids::uuid& id, int place, SynGlyphX::FileDatasource::SourceType type, QString tablename, DataEngine::DataEngineConnection *dec, QObject *parent)
 	: QAbstractTableModel(parent),
 	m_id(id),
 	m_tableName(tablename)
 {
-	GenerateStats(filename, dec);
+	GenerateStats(place, type, dec);
 }
 
 DataStatsModel::~DataStatsModel()
@@ -20,42 +20,40 @@ DataStatsModel::~DataStatsModel()
 
 }
 
-void DataStatsModel::GenerateStats(QString filename, DataEngine::DataEngineConnection *dec) {
+//JDBC GENERATE STATS
+void DataStatsModel::GenerateStats(int place, SynGlyphX::FileDatasource::SourceType sourceType, DataEngine::DataEngineConnection *dec) {
 
 	DataEngine::DataEngineStatement des;
-	des.prepare(dec->getEnv(), dec->getJcls());
+	des.prepare(dec->getEnv(), dec->getJcls(), sourceType); //Add datasource type as a third argument
 
-	std::vector<std::string> colNames = dec->getColumnNames();
 	std::vector<std::wstring> numericCols;
-	
-	for (int i = 0; i < colNames.size(); i++) {
+	des.getFieldsForTable(place);
 
-		std::string str = des.getColumnName(i);
+	while (des.hasNext()){
+		QString field = des.getField();
+		QString type = des.getType();
+		m_fieldNames.append(field);
 
-		m_fieldNames.append(QString::fromStdString(str));
-
-		if (des.getType(i) == "real"){
+		if (type == "real"){
 			m_fieldTypes.append(QVariant::Type::Double);
-			numericCols.push_back(QString(str.c_str()).toStdWString());
-			
+			numericCols.push_back(field.toStdWString());
 		}
 		else{
-			m_fieldTypes.append(QVariant(QString::fromStdString(des.getType(i))).type());
+			m_fieldTypes.append(QVariant(type).type());
 		}
 
 		QStringList fieldStats;
-
-		fieldStats.append(QString::fromStdString(des.getType(i)));
-		fieldStats.append(QString::fromStdString(des.getMin(i)));
-		fieldStats.append(QString::fromStdString(des.getMax(i)));
-		fieldStats.append(QString::fromStdString(des.getAverage(i)));
-		fieldStats.append(QString::fromStdString(des.getCount(i)));
-		fieldStats.append(QString::fromStdString(des.getDistinct(i)));
+		fieldStats.append(type);
+		fieldStats.append(des.getMin());
+		fieldStats.append(des.getMax());
+		fieldStats.append(des.getAverage());
+		fieldStats.append(des.getCount());
+		fieldStats.append(des.getDistinct());
 		m_stats.append(fieldStats);
-
 	}
 	dec->addTableNumericFields(m_id, numericCols);
 }
+//END JDBC
 
 int DataStatsModel::getNumericFieldCount(){
 	return numericFieldCount;
