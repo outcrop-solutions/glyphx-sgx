@@ -22,6 +22,7 @@
 #include <QtWidgets/QTabWidget>
 #include <QtWidgets/QComboBox>
 #include <QtWidgets/QLineEdit>
+#include <QtWidgets/QCheckBox>
 #include "datamappingdefaults.h"
 
 namespace SynGlyphX {
@@ -39,9 +40,11 @@ namespace SynGlyphX {
 
 	private:
 		void CreateTagTab();
+		void CreateScaleTab();
 
 		QComboBox* m_tagFieldDefaultComboBox;
 		QLineEdit* m_tagValueDefaultLineEdit;
+		QCheckBox* m_removeScaleZeroCheckbox;
 	};
 
 } //namespace SynGlyphX

@@ -1,5 +1,6 @@
 #include "glyphdefaultswidget.h"
 #include <QtWidgets/QFormLayout>
+#include <QtWidgets/QVBoxLayout>
 #include "notemptyvalidator.h"
 
 namespace SynGlyphX {
@@ -8,6 +9,7 @@ namespace SynGlyphX {
 		: QTabWidget(parent)
 	{
 		CreateTagTab();
+		CreateScaleTab();
 	}
 
 	GlyphDefaultsWidget::~GlyphDefaultsWidget()
@@ -19,6 +21,7 @@ namespace SynGlyphX {
 
 		m_tagFieldDefaultComboBox->setCurrentText(QString::fromStdWString(SynGlyphX::DataMappingDefaults::s_tagFieldStrings.left.at(defaults.GetTagField())));
 		m_tagValueDefaultLineEdit->setText(QString::fromStdWString(defaults.GetDefaultTagValue()));
+		m_removeScaleZeroCheckbox->setChecked(defaults.GetRemoveWhenScaleIsZero());
 	}
 
 	SynGlyphX::DataMappingDefaults GlyphDefaultsWidget::GetDefaults() const {
@@ -27,6 +30,7 @@ namespace SynGlyphX {
 
 		defaults.SetTagField(SynGlyphX::DataMappingDefaults::s_tagFieldStrings.right.at(m_tagFieldDefaultComboBox->currentText().toStdWString()));
 		defaults.SetDefaultTagValue(m_tagValueDefaultLineEdit->text().toStdWString());
+		defaults.SetRemoveWhenScaleIsZero(m_removeScaleZeroCheckbox->isChecked());
 
 		return defaults;
 	}
@@ -54,6 +58,22 @@ namespace SynGlyphX {
 
 		tab->setLayout(layout);
 		addTab(tab, tr("Tag"));
+	}
+
+	void GlyphDefaultsWidget::CreateScaleTab() {
+
+		QWidget* tab = new QWidget(this);
+		QVBoxLayout* tabLayout = new QVBoxLayout(tab);
+
+		tabLayout->addStretch(1);
+
+		m_removeScaleZeroCheckbox = new QCheckBox(tr("Remove objects whose value for Scale X, Scale Y, or Scale z is 0"), tab);
+		tabLayout->addWidget(m_removeScaleZeroCheckbox);
+
+		tabLayout->addStretch(1);
+
+		tab->setLayout(tabLayout);
+		addTab(tab, tr("Scale"));
 	}
 
 } //namespace SynGlyphX
