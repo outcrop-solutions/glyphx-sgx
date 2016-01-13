@@ -30,6 +30,7 @@ class DataTransformModel : public QAbstractItemModel
 public:
 	static const int UUIDRole = Qt::UserRole;
 	static const int DataTypeRole = UUIDRole + 1;
+	static const int OptionsRole = DataTypeRole + 1;
 
 	enum DataType {
 
@@ -41,7 +42,7 @@ public:
 
 	enum PropertyRole {
 
-		PositionX = DataTypeRole + 1,
+		PositionX = OptionsRole + 1,
 		PositionY = PositionX + 1,
 		PositionZ = PositionY + 1,
 		RotationX = PositionZ + 1,

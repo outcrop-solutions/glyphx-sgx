@@ -45,13 +45,19 @@ DataEngine::DataEngineConnection DataTransformModel::GetDataEngineConn(){
 
 bool DataTransformModel::setData(const QModelIndex& index, const QVariant& value, int role) {
 
-	if ((role >= PropertyRole::PositionX) && (role <= PropertyRole::GeometryTorusRatio) && (GetDataType(index) == DataType::GlyphTrees)) {
+	if ((role >= OptionsRole) && (role <= PropertyRole::GeometryTorusRatio) && (GetDataType(index) == DataType::GlyphTrees)) {
 
 		if (!m_dataMapping->GetGlyphGraphs().empty()) {
 
 			SynGlyphX::DataMappingGlyphGraph::GlyphIterator iterator(static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(index.internalPointer()));
 
-			if (role == PropertyRole::PositionX) {
+			if (role == OptionsRole) {
+
+				auto glyphGraph = m_dataMapping->GetGlyphGraphs().begin();
+				std::advance(glyphGraph, index.row() - GetFirstIndexForDataType(DataType::GlyphTrees));
+				glyphGraph->second->SetMergeRoots(value.toBool());
+			} 
+			else if (role == PropertyRole::PositionX) {
 
 				iterator->second.GetPosition()[0] = value.value<SynGlyphX::NumericMappingProperty>();
 			}
@@ -185,6 +191,15 @@ QVariant DataTransformModel::data(const QModelIndex& index, int role) const {
 	else if (role == DataTypeRole) {
 
 		return GetDataTypeData(index);
+	}
+	else if (role == OptionsRole) {
+
+		if (!index.parent().isValid() && IsParentlessRowInDataType(DataType::GlyphTrees, index.row())) {
+
+			auto glyphGraph = m_dataMapping->GetGlyphGraphs().begin();
+			std::advance(glyphGraph, index.row() - GetFirstIndexForDataType(DataType::GlyphTrees));
+			return glyphGraph->second->GetMergeRoots();
+		}
 	}
 	else if ((role >= PropertyRole::PositionX) && (role <= PropertyRole::GeometryTorusRatio)) {
 
