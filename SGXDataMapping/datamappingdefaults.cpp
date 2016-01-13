@@ -39,7 +39,7 @@ namespace SynGlyphX {
 		boost::optional<const boost::property_tree::wptree&> scaleDefaultPropertyTree = propertyTree.get_child_optional(L"ScaleZeroDefault");
 		if (scaleDefaultPropertyTree.is_initialized()) {
 
-			m_removeWhenScaleIsZero = scaleDefaultPropertyTree.get().get_optional<bool>(L"remove").get_value_or(true);
+			m_removeWhenScaleIsZero = scaleDefaultPropertyTree.get().get_optional<bool>(L"<xmlattr>.remove").get_value_or(true);
 		}
 	}
 
@@ -103,7 +103,7 @@ namespace SynGlyphX {
 		propertyTree.put(L"TagValueDefault", m_defaultTagValue);
 
 		PropertyTree& scaleDefaultPropertyTree = propertyTree.add(L"ScaleZeroDefault", L"");
-		scaleDefaultPropertyTree.put(L"remove", m_removeWhenScaleIsZero);
+		scaleDefaultPropertyTree.put(L"<xmlattr>.remove", m_removeWhenScaleIsZero);
 	}
 
 	void DataMappingDefaults::SetTagField(DataMappingGlyph::MappableField tagField) {

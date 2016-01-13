@@ -74,6 +74,9 @@ namespace SynGlyphX {
 
 		void ResetRootMinMaxPositionXY();
 
+		void SetMergeRoots(bool mergeRoots);
+		bool GetMergeRoots() const;
+
 		GlyphGraph::SharedPtr GetMinGlyphTree() const;
 		GlyphGraph::SharedPtr GetMaxGlyphTree() const;
 
@@ -101,6 +104,8 @@ namespace SynGlyphX {
 
 		InputFieldMap m_inputFields;
 		InputFieldCountMap m_inputFieldReferenceCounts;
+
+		bool m_mergeRoots;
 	};
 
 } //namespace SynGlyphX

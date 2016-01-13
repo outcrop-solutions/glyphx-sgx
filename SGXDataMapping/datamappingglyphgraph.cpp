@@ -9,12 +9,14 @@
 namespace SynGlyphX {
 
 	DataMappingGlyphGraph::DataMappingGlyphGraph() :
-		GlyphGraphTemplate<DataMappingGlyph>()
+		GlyphGraphTemplate<DataMappingGlyph>(),
+		m_mergeRoots(true)
 	{
 	}
 
 	DataMappingGlyphGraph::DataMappingGlyphGraph(const boost::property_tree::wptree& propertyTree) :
-		GlyphGraphTemplate<DataMappingGlyph>() {
+		GlyphGraphTemplate<DataMappingGlyph>(),
+		m_mergeRoots(true) {
 
 		boost::optional<const PropertyTree&> inputFieldsPropertyTree = propertyTree.get_child_optional(L"InputFields");
 		if (inputFieldsPropertyTree.is_initialized()) {
@@ -50,18 +52,22 @@ namespace SynGlyphX {
 				}
 			}
 		}
+
+		m_mergeRoots = propertyTree.get_optional<bool>(L"<xmlattr>.merge").get_value_or(true);
 	}
 
 	DataMappingGlyphGraph::DataMappingGlyphGraph(const DataMappingGlyphGraph& graph) :
 		GlyphGraphTemplate<DataMappingGlyph>(graph),
 		m_inputFields(graph.m_inputFields),
-		m_inputFieldReferenceCounts(graph.m_inputFieldReferenceCounts) {
+		m_inputFieldReferenceCounts(graph.m_inputFieldReferenceCounts),
+		m_mergeRoots(graph.m_mergeRoots) {
 
 
 	}
 
 	DataMappingGlyphGraph::DataMappingGlyphGraph(const GlyphGraph& graph) :
-		GlyphGraphTemplate<DataMappingGlyph>() {
+		GlyphGraphTemplate<DataMappingGlyph>(),
+		m_mergeRoots(true) {
 
 		/*if (!graph.HasSingleRoot()) {
 
@@ -81,7 +87,8 @@ namespace SynGlyphX {
 	}
 
 	DataMappingGlyphGraph::DataMappingGlyphGraph(const LabeledTree& graph) :
-		GlyphGraphTemplate<DataMappingGlyph>(graph) {
+		GlyphGraphTemplate<DataMappingGlyph>(graph),
+		m_mergeRoots(true) {
 
 
 	}
@@ -92,6 +99,11 @@ namespace SynGlyphX {
 	
 	bool DataMappingGlyphGraph::operator==(const DataMappingGlyphGraph& graph) const {
 		
+		if (m_mergeRoots != graph.m_mergeRoots) {
+
+			return false;
+		}
+
 		if (m_inputFields != graph.m_inputFields) {
 
 			return false;
@@ -171,6 +183,8 @@ namespace SynGlyphX {
 				inputfield.second.ExportToPropertyTree(inputFieldsPropertyTree);
 			}
 		}
+
+		rootPropertyTree.put<bool>(L"<xmlattr>.merge", m_mergeRoots);
 
 		return rootPropertyTree;
 	}
@@ -570,6 +584,16 @@ namespace SynGlyphX {
 	bool DataMappingGlyphGraph::IsTransformable() const {
 
 		return ((GetRoot()->second.IsAnInputFieldBoundToAPosition()) && (!m_inputFields.empty()));
+	}
+
+	void DataMappingGlyphGraph::SetMergeRoots(bool mergeRoots) {
+
+		m_mergeRoots = mergeRoots;
+	}
+
+	bool DataMappingGlyphGraph::GetMergeRoots() const {
+
+		return m_mergeRoots;
 	}
 
 } //namespace SynGlyphX
