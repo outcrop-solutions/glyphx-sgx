@@ -27,7 +27,7 @@ namespace DataEngine
 		std::ifstream ifile(".\\dataengine.jar");
 		if (ifile){
 			options[0].optionString =
-				"-Djava.class.path=.\\dataengine.jar;.\\database-drivers\\mysql-connector-java-5.1.38-bin.jar;.\\database-drivers\\sqlite-jdbc-3.8.11.2.jar;";
+				"-Djava.class.path=.\\dataengine.jar;.\\ojdbc6.jar;.\\database-drivers\\mysql-connector-java-5.1.38-bin.jar;.\\database-drivers\\sqlite-jdbc-3.8.11.2.jar;";
 		}else{
 			options[0].optionString =
 				"-Djava.class.path=..\\..\\DataEngine\\Java DataEngine\\dataengine.jar;..\\..\\DataEngine\\Java DataEngine\\ojdbc6.jar;..\\..\\DataEngine\\Java DataEngine\\database-drivers\\mysql-connector-java-5.1.38-bin.jar;..\\..\\DataEngine\\Java DataEngine\\database-drivers\\sqlite-jdbc-3.8.11.2.jar;";
