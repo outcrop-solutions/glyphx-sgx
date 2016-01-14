@@ -12,7 +12,8 @@ namespace SynGlyphX {
 	Application::Application(int& argc, char** argv)
         : QApplication(argc, argv)
     {
-
+		//The current working directory should always be where the executable is
+		QDir::setCurrent(applicationDirPath());
     }
 
     Application::~Application()
