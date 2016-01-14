@@ -27,21 +27,6 @@ public class DataEngine {
 		createDataStats(data);
 	}
 
-	public static void loadFromSQLite(final String path){
-		Logger.getInstance().add("Loading SQLite db...");
-		SQLiteReader reader = new SQLiteReader();
-		reader.readTables(path);
-		tableNames = reader.getTableNames();
-		currPath = path;
-	}
-
-	public static void setTable(int i){
-		SQLiteReader reader = new SQLiteReader();
-		reader.createDataFrame(currPath,tableNames.get(i));
-		DataFrame data = reader.getDataFrame();
-		createDataStats(data);
-	}
-
 	public static void createDataStats(DataFrame data){
 		Logger.getInstance().add("Creating data stats model...");
 		dataStats = data.dataStatsModel();
@@ -49,56 +34,6 @@ public class DataEngine {
 		headerString = data.getHeaderString();
 	}
 
-	public static int size(){
-		return headers.size();
-	}
-
-	public static int getTableCount(){
-		try{
-			return tableNames.size();
-		}catch(Exception e){
-			return 1;
-		}
-	}
-
-	public static String getTableName(int i){
-		return tableNames.get(i);
-	}
-/*
-	public static String getColumnName(int i){
-		return headers.get(i);
-	}
-
-	public static String getType(int i){
-		String type = dataStats.get(headers.get(i)).getType();
-		return type;
-	}
-
-	public static String getMin(int i){
-		String min = dataStats.get(headers.get(i)).getMin();
-		return min;
-	}
-
-	public static String getMax(int i){
-		String max = dataStats.get(headers.get(i)).getMax();
-		return max;
-	}
-
-	public static String getAverage(int i){
-		String avg = dataStats.get(headers.get(i)).getAverage();
-		return avg;
-	}
-
-	public static String getCount(int i){
-		String count = dataStats.get(headers.get(i)).getCount();
-		return count;
-	}
-
-	public static String getDistinct(int i){
-		String dist = dataStats.get(headers.get(i)).getDistinct();
-		return dist;
-	}
-*/
 	public static String[] getStatRow(String field){
 		String[] stats = new String[6];
 		stats[0] = dataStats.get(field).getType();
@@ -112,12 +47,12 @@ public class DataEngine {
 
 //JDBC ACCESSOR METHODS
 
-	public static String[] connectToServer(final String dburl, final String username, final String password, final String db){
+	public static String[] connectToServer(String dburl, String username, String password, String db){
 		String[] sqldbs = JDBCLoader.getInstance().connectToServer(dburl, username, password, db);
 		return sqldbs;
 	}
 
-	public static String[] chooseDatabase(final String db_name){
+	public static String[] chooseDatabase(String db_name){
 		String[] tables = JDBCLoader.getInstance().chooseDatabase(db_name);
 		return tables;
 	}
@@ -132,10 +67,8 @@ public class DataEngine {
 
 	public static String[] getFieldsForTable(int table, String type){
 		sourceType = type;
+		System.out.println(sourceType);
 		if(sourceType.equals("csv")){
-			return headerString;
-		}else if(sourceType.equals("sqlite")){
-			setTable(table);
 			return headerString;
 		}else{
 			String[] fields = JDBCLoader.getInstance().getFieldsForTable(table);
@@ -145,7 +78,7 @@ public class DataEngine {
 
 	public static String[] getStatsForField(int table, String field){
 		String[] stats;
-		if(sourceType.equals("csv") || sourceType.equals("sqlite")){
+		if(sourceType.equals("csv")){
 			stats = getStatRow(field);
 		}else{
 			stats = JDBCLoader.getInstance().getStatsForField(table, field);
@@ -159,26 +92,33 @@ public class DataEngine {
 
 		DataEngine d = new DataEngine();
 		
-		String[] db_list = d.connectToServer("mysql://33.33.33.1","root","jarvis","mysql");
+		//String[] db_list = d.connectToServer("mysql://33.33.33.1","root","jarvis","mysql");
+		String[] db_list = d.connectToServer("sqlite:C:\\Users\\Bryan\\Desktop\\test_for_ray_1\\test_exoplanet_url.db","","","sqlite");
+		String[] tables = d.chooseDatabase("");
+		d.setChosenTables(tables);
+		String[] names = d.getFieldsForTable(0, "mysql");
 
-		String[] tables = d.chooseDatabase("world");
-
+		for(int i = 0; i < names.length; i++){
+			String[] stats = d.getStatsForField(0, names[i]);
+			String toPrint = "";
+			toPrint += names[i]+" | ";
+			for(int j = 0; j < stats.length; j++){
+				toPrint += stats[j]+" | ";
+			}
+			System.out.println(toPrint);
+		}
+/*
 		String[] chosen = new String[2];
-		chosen[0] = "City";
-		chosen[1] = "Country";
+		chosen[0] = "FirstPortion";
+		chosen[1] = "SecondPortion";
 
 		d.setChosenTables(chosen);
 
-		String[] fields = getFieldsForTable(0, "mysql");
-		for (int i = 0; i < fields.length; i++){
-			System.out.println(fields[i]);
-		}
-/*
-		d.loadFromSQLite("C:/Users/Bryan/Desktop/test_for_ray/exoplanet_south.db");
-		String[] fields = d.getFieldsForTable(0,"sqlite");
-
-		for(int i = 0; i < fields.length; i++){
-			System.out.println(fields[i]);
+		String[] fields0 = getFieldsForTable(0, "sqlite");
+		String[] fields1 = getFieldsForTable(1, "sqlite");
+		
+		for(int i = 0; i < fields0.length; i++){
+			System.out.println(fields0[i]);
 		}
 
 		String[] stats = getStatsForField(0,"rank");

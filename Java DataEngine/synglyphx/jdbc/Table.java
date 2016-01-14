@@ -9,15 +9,15 @@ import synglyphx.io.Logger;
 public class Table {
 	
 	private String name;
-	private Statement stmt;
+	private Connection conn;
 	private ArrayList<String> columnNames;
 	private HashMap<String,String> columnTypes;
 	private HashMap<String,DataStats> dataStats;
 	private HashMap<String,String> jdbcTypes;
 
-	public Table(String name, Statement stmt){
+	public Table(String name, Connection conn){
 		this.name = name;
-		this.stmt = stmt;
+		this.conn = conn;
 		Logger.getInstance().add("");
 		Logger.getInstance().add(name + " DataStats:");
 		initialize();
@@ -31,7 +31,8 @@ public class Table {
 		try{
 
 			String sql = "SELECT * FROM "+name;
-            ResultSet rs = stmt.executeQuery(sql);
+			PreparedStatement pstmt = conn.prepareStatement(sql);
+            ResultSet rs = pstmt.executeQuery();
             ResultSetMetaData metaData = rs.getMetaData();
 
             int rowCount = metaData.getColumnCount();
@@ -45,7 +46,9 @@ public class Table {
             rs.close();
 
 		}catch(SQLException se){
-         	se.printStackTrace();
+         	try{
+            	se.printStackTrace(Logger.getInstance().addError());
+         	}catch(Exception ex){}
       	}
 	}
 
@@ -58,22 +61,25 @@ public class Table {
 
 			ranges = new String[3];
 			counts = new String[2];
-			String sql = "SELECT MIN("+cn+"),MAX("+cn+"),AVG("+cn+"),COUNT("+cn+"),COUNT(DISTINCT("+cn+")) FROM "+name; 
+			String sql = "SELECT MIN(`"+cn+"`),MAX(`"+cn+"`),AVG(`"+cn+"`),COUNT(`"+cn+"`),COUNT(DISTINCT(`"+cn+"`)) FROM "+name;  
+			Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(sql);
 
             while(rs.next()){
-            	ranges[0] = rs.getString("MIN("+cn+")");
-            	ranges[1] = rs.getString("MAX("+cn+")");
-            	ranges[2] = rs.getString("AVG("+cn+")");
-            	counts[0] = rs.getString("COUNT("+cn+")");
-            	counts[1] = rs.getString("COUNT(DISTINCT("+cn+"))");
+            	ranges[0] = rs.getString(1);
+            	ranges[1] = rs.getString(2);
+            	ranges[2] = rs.getString(3);
+            	counts[0] = rs.getString(4);
+            	counts[1] = rs.getString(5);
             	dataStats.put(cn, new DataStats(columnTypes.get(cn),ranges,counts));
             	DataStats ds = dataStats.get(cn);
             	Logger.getInstance().add(ds.getType()+" | "+ds.getMin()+" | "+ds.getMax()+" | "+ds.getAverage()+" | "+ds.getCount()+" | "+ds.getDistinct());
             }
 
         }catch(SQLException se){
-        	se.printStackTrace();
+        	try{
+            	se.printStackTrace(Logger.getInstance().addError());
+         	}catch(Exception ex){}
         }
 	}
 
@@ -105,10 +111,13 @@ public class Table {
 		jdbcTypes.put("SMALLINT","Double");
 		jdbcTypes.put("MEDIUMINT","Double");
 		jdbcTypes.put("INT","Double");
+		jdbcTypes.put("INTEGER","Double");
 		jdbcTypes.put("BIGINT","Double");
 		jdbcTypes.put("FLOAT","Double");
 		jdbcTypes.put("DOUBLE","Double");
 		jdbcTypes.put("DECIMAL","Double");
+		jdbcTypes.put("REAL","Double");
+		jdbcTypes.put("TEXT","String");
 		jdbcTypes.put("CHAR","String");
 		jdbcTypes.put("VARCHAR","String");
 		jdbcTypes.put("BIT","Void");

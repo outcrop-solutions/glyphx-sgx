@@ -58,20 +58,24 @@ public class GlyphCreator {
 		for(int i=0;i < rootIds.size();i++){
 			currData = temps.get(rootIds.get(i)).getDataSource();
 			rootCoords.put(rootIds.get(i), new CoordinateMap(temps.get(rootIds.get(i)).getToMerge(), csvData.get(currData).getLastID()));
-			Query query = new Query(csvData.get(currData).getDataFrame()).all(); 
-			Logger.getInstance().add("Executed initial query...");
-			Cursor cursor = csvData.get(currData).getDataFrame().query(query);
-			Logger.getInstance().add("Returned cursor with size " + String.valueOf(cursor.size()) +"...");
+			if(csvData.get(currData).getType().equals("csv") || csvData.get(currData).getType().equals("sqlite")){
+				Query query = new Query(csvData.get(currData).getDataFrame()).all(); 
+				Logger.getInstance().add("Executed initial query...");
+				Cursor cursor = csvData.get(currData).getDataFrame().query(query);
+				Logger.getInstance().add("Returned cursor with size " + String.valueOf(cursor.size()) +"...");
 
-			Logger.getInstance().add(String.valueOf(csvData.get(currData).getRootID()));
-			Logger.getInstance().add(String.valueOf(csvData.get(currData).getLastID()));
+				Logger.getInstance().add(String.valueOf(csvData.get(currData).getRootID()));
+				Logger.getInstance().add(String.valueOf(csvData.get(currData).getLastID()));
 
-			while(cursor.next()){
-				for (int j = 1; j < mappingCount+1; j++){
-					if(j >= csvData.get(currData).getRootID() && j <= csvData.get(currData).getLastID()){
-						addNode(j, cursor);
+				while(cursor.next()){
+					for (int j = 1; j < mappingCount+1; j++){
+						if(j >= csvData.get(currData).getRootID() && j <= csvData.get(currData).getLastID()){
+							addNode(j, cursor);
+						}
 					}
 				}
+			}else{
+				createJDBCNode(csvData.get(currData), temps, rootCoords, glyphRepo);
 			}
 			rootCoords.get(rootIds.get(i)).setLastID(glyphRepo.getNodeCount()-1);
 		}

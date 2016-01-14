@@ -2,6 +2,8 @@ package synglyphx.jdbc;
 
 import java.sql.*;
 import java.util.HashMap;
+import java.util.ArrayList;
+import synglyphx.io.Logger;
 
 public class Database {
 	
@@ -23,45 +25,38 @@ public class Database {
 	        DatabaseMetaData md = conn.getMetaData();
 	        ResultSet rs = md.getTables(null, null, "%", null);
 
-	        if(rs.last()){
-            	count = rs.getRow();
-            	rs.beforeFirst(); 
-         	}
-         	table_names = new String[count];
-         	count = 0;
+         	ArrayList<String> temp = new ArrayList<String>();
 	        while (rs.next()) {
 	        	name = rs.getString(3);
-	            table_names[count++] = name;
+	        	if(!name.equals("sqlite_sequence")){
+	            	temp.add(name);
+	            }
 	        }
+	        table_names = new String[temp.size()];
+	        for(int i = 0; i < temp.size(); i++){
+	        	table_names[i] = temp.get(i);
+	        }
+
 	        rs.close();
         }catch(SQLException se){
-         	se.printStackTrace();
+         	try{
+            	se.printStackTrace(Logger.getInstance().addError());
+         	}catch(Exception ex){}
       	}
 
 	}
 
 	public void initializeChosenTables(String[] chosen){
 
-		try{
-
-			for(int i = 0; i < chosen.length; i++){
-	    		tables.put(chosen[i], new Table(chosen[i], conn.createStatement()));
-	    	}
-
-	    }catch(SQLException se){
-        	se.printStackTrace();
-      	}
+		for(int i = 0; i < chosen.length; i++){
+	    	tables.put(chosen[i], new Table(chosen[i], conn));
+	    }
 	}
 
 	public void initializeQueryTables(String query){
-
-		try{
-
-	    	//tables.put(chosen[i], new Table(chosen[i], conn.createStatement()));
-
-	    }catch(SQLException se){
-        	se.printStackTrace();
-      	}
+/*
+	    tables.put(chosen[i], new Table(chosen[i], conn));
+*/
 	}
 
 	public Table getTable(int i){

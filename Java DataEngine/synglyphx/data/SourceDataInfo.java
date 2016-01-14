@@ -10,6 +10,9 @@ public class SourceDataInfo {
  	private int rootId;
  	private int lastId;
  	private String tableName;
+ 	private String host;
+ 	private String username;
+ 	private String password;
  	private String type;
  	private DataFrame data;
 
@@ -40,9 +43,33 @@ public class SourceDataInfo {
  	public void setTable(String name){
  		this.tableName = name;
  	}
+
+ 	public void setHost(String host){
+ 		this.host = host;
+ 	}
+
+ 	public void setUsername(String user){
+ 		this.username = user;
+ 	}
+
+ 	public void setPassword(String pass){
+ 		this.password = pass;
+ 	}
  	
  	public void setType(String type){
  		this.type = type;
+ 	}
+
+ 	public String getHost(){
+ 		return host;
+ 	}
+
+ 	public String getUsername(){
+ 		return username;
+ 	}
+
+ 	public String getPassword(){
+ 		return password;
  	}
 
  	public String getType(){

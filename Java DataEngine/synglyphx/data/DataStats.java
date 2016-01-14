@@ -39,7 +39,11 @@ public class DataStats {
  		}
  		this.min = ranges[0];
  		this.max = ranges[1];
- 		this.avg = ranges[2];
+ 		if(this.type.equals("text")){
+ 			this.avg = "N/A";
+ 		}else{
+ 			this.avg = ranges[2];
+ 		}
  		this.count = counts[0];
  		this.distinct = counts[1];
  	}
