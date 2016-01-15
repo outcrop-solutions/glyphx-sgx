@@ -689,7 +689,7 @@ void DataTransformModel::LoadDataTransformFile(const QString& filename) {
 	Clear();
 	beginResetModel();
 	m_dataMapping->ReadFromFile(filename.toStdString());
-	m_sourceDataManager.SetCacheLocation(GetCacheLocationForID(m_dataMapping->GetID()));
+	/*m_sourceDataManager.SetCacheLocation(GetCacheLocationForID(m_dataMapping->GetID()));
 	m_sourceDataManager.AddDatabaseConnections(m_dataMapping->GetDatasources());
 	for (const auto& datasource : m_dataMapping->GetDatasources().GetFileDatasources()) {
 
@@ -700,7 +700,7 @@ void DataTransformModel::LoadDataTransformFile(const QString& filename) {
 				m_sourceDataManager.AddTable(datasource.first, table);
 			}
 		}
-	}
+	}*/
 	endResetModel();
 }
 
