@@ -45,12 +45,7 @@ DataMapperWindow::DataMapperWindow(QWidget *parent)
 	m_baseObjectsModel(nullptr),
 	m_dataSourcesView(nullptr)
 {
-	QSettings settings;
-	settings.beginGroup("ANTzExport");
-	m_antzExportDirectories[SynGlyphXANTz::ANTzCSVWriter::OutputPlatform::Windows] = settings.value("default", SynGlyphX::Application::applicationDirPath() + QDir::separator() + "ANTzTemplate").toString();
-	m_antzExportDirectories[SynGlyphXANTz::ANTzCSVWriter::OutputPlatform::WindowsZSpace] = settings.value("zSpace", SynGlyphX::Application::applicationDirPath() + QDir::separator() + "ANTzzSpaceTemplate").toString();
-	m_antzExportDirectories[SynGlyphXANTz::ANTzCSVWriter::OutputPlatform::Mac] = settings.value("mac", SynGlyphX::Application::applicationDirPath() + QDir::separator() + "ANTzMacTemplate").toString();
-	settings.endGroup();
+	SynGlyphX::PortableVisualizationExport::SetupSourceDirectories();
 
 	m_dataTransformModel = new DataTransformModel(this);
 	QObject::connect(m_dataTransformModel, &DataTransformModel::dataChanged, this, [&, this](const QModelIndex& topLeft, const QModelIndex& bottomRight){ setWindowModified(true); });
@@ -592,7 +587,7 @@ void DataMapperWindow::AddDataSources() {
 	}
 }
 
-void DataMapperWindow::ExportToANTz(SynGlyphXANTz::ANTzCSVWriter::OutputPlatform platform) {
+void DataMapperWindow::CreatePortableVisualization(SynGlyphX::PortableVisualizationExport::Platform platform) {
 
 	SynGlyphX::DataTransformMapping::ConstSharedPtr dataMapping = m_dataTransformModel->GetDataMapping();
 
@@ -631,54 +626,19 @@ void DataMapperWindow::ExportToANTz(SynGlyphXANTz::ANTzCSVWriter::OutputPlatform
 		}
 	}
 
-	bool isDirectoryInvalid = false;
-
-	QString csvDirectory;
-	QList<QDir> projectFileDirs;
-	projectFileDirs.push_back(QFileInfo(m_currentFilename).canonicalPath());
+	
+	std::set<QDir> projectFileDirs;
+	projectFileDirs.insert(QFileInfo(m_currentFilename).canonicalPath());
 	for (const auto& fileDatasource : m_dataTransformModel->GetDataMapping()->GetDatasources().GetFileDatasources()) {
 
-		projectFileDirs.push_back(QFileInfo(QString::fromStdWString(fileDatasource.second.GetFilename())).canonicalPath());
+		projectFileDirs.insert(QFileInfo(QString::fromStdWString(fileDatasource.second.GetFilename())).canonicalPath());
 	}
 
-	do {
+	QString csvDirectory = QDir::toNativeSeparators(GetExistingEmptyDirectory(projectFileDirs, "ANTzExportDir", tr("Select Directory For Portable Visualization"), "", tr("Selected directory contains one or more files relevant to the project.")));
+	if (csvDirectory.isEmpty()) {
 
-		csvDirectory = QDir::toNativeSeparators(GetExistingDirectoryDialog("ANTzExportDir", tr("Select Directory For Portable Visualization"), ""));
-		if (csvDirectory.isEmpty()) {
-
-			return;
-		}
-
-		QDir dir(csvDirectory);
-		bool isProjectFileInDirectory = false;
-
-		for (const auto& projectFileDir : projectFileDirs) {
-
-			if (projectFileDir == dir) {
-
-				isProjectFileInDirectory = true;
-				break;
-			}
-		}
-
-		if (isProjectFileInDirectory) {
-
-			QMessageBox::warning(this, tr("Invalid Directory"), tr("Selected directory contains one or more files relevant to the project.  It can not be used to create a portable visualization.  Select another directory."));
-			isDirectoryInvalid = true;
-		}
-		else if (dir.entryInfoList(QDir::NoDotAndDotDot | QDir::AllEntries).count() > 0) {
-
-			if (QMessageBox::question(this, tr("Directory isn't empty"), tr("Selected directory is not empty.  All contents of the directory will be deleted before export.  Do you wish to continue?")) == QMessageBox::No) {
-
-				return;
-			}
-			else {
-
-				isDirectoryInvalid = false;
-			}
-		}
-
-	} while (isDirectoryInvalid);
+		return;
+	}
 
 	
 	SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
@@ -690,7 +650,7 @@ void DataMapperWindow::ExportToANTz(SynGlyphXANTz::ANTzCSVWriter::OutputPlatform
 		DataEngine::GlyphEngine ge;
 		std::string baseImageDir = SynGlyphX::GlyphBuilderApplication::GetDefaultBaseImagesLocation().toStdString();
 		std::string baseFilename = (QString::fromStdWString(SynGlyphX::DefaultBaseImageProperties::GetBasefilename()).toStdString());
-		ge.initiate(dec.getEnv(), m_currentFilename.toStdString(), csvDirectory.toStdString() + "\\", m_antzExportDirectories[platform].toStdString() + "\\", baseImageDir, baseFilename, "DataMapper");
+		ge.initiate(dec.getEnv(), m_currentFilename.toStdString(), csvDirectory.toStdString() + "\\", SynGlyphX::PortableVisualizationExport::GetSourceDirectory(platform).toStdString() + "\\", baseImageDir, baseFilename, "DataMapper");
 		ge.getDownloadedBaseImage(m_dataTransformModel->GetDataMapping().get()->GetBaseObjects());
 		ge.generateGlyphs();
 
@@ -712,7 +672,7 @@ void DataMapperWindow::ExportToANTz(SynGlyphXANTz::ANTzCSVWriter::OutputPlatform
 		try{
 			SynGlyphX::Filesystem::RemoveContentsOfDirectory(csvDirectory.toStdString());
 			SynGlyphX::Application::restoreOverrideCursor();
-			QMessageBox::critical(this, tr("Export to ANTz Error"), e.what());
+			QMessageBox::critical(this, tr("Create Portable Visualization Error"), e.what());
 		}
 		catch (...)
 		{

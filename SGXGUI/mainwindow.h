@@ -20,6 +20,7 @@
 
 #include "sgxgui_global.h"
 #include <QtWidgets/QMainWindow>
+#include <set>
 
 namespace SynGlyphX {
 
@@ -59,6 +60,7 @@ namespace SynGlyphX {
 		QStringList GetFileNamesOpenDialog(const QString& settingKey = "", const QString& caption = "", const QString& defaultDir = "", const QString& filter = "");
 		QString GetFileNameSaveDialog(const QString& settingKey = "", const QString& caption = "", const QString& defaultDir = "", const QString& filter = "");
 		QString GetExistingDirectoryDialog(const QString& settingKey = "", const QString& caption = "", const QString& defaultDir = "");
+		QString GetExistingEmptyDirectory(const std::set<QDir> invalidDirectories = std::set<QDir>(), const QString& settingKey = "", const QString& caption = "", const QString& defaultDir = "", const QString& invalidDirError = "");
 
         QList<QAction*> m_recentFileActions;
         QString m_currentFilename;

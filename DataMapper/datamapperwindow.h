@@ -34,6 +34,7 @@
 #include "antzcsvwriter.h"
 #include "dataengineconnection.h"
 #include "glyphengine.h"
+#include "portablevisualizationexport.h"
 
 class DataMapperWindow : public SynGlyphX::MainWindow
 {
@@ -57,7 +58,7 @@ private slots:
     bool SaveProject();
     bool SaveAsProject();
     void AddDataSources();
-	void ExportToANTz(SynGlyphXANTz::ANTzCSVWriter::OutputPlatform platform);
+	void CreatePortableVisualization(SynGlyphX::PortableVisualizationExport::Platform platform);
 	void AddBaseObject();
 	void AddGlyphTemplate();
 	void CreateNewGlyphTree();
@@ -111,8 +112,6 @@ private:
 
 	SynGlyphX::DataMappingDefaults m_newMappingDefaults;
 	SynGlyphX::SceneProperties m_newMappingSceneProperties;
-
-	std::unordered_map<SynGlyphXANTz::ANTzCSVWriter::OutputPlatform, QString> m_antzExportDirectories;
 
 	QMetaObject::Connection m_modelResetConnection;
 	DataEngine::DataEngineConnection dec;

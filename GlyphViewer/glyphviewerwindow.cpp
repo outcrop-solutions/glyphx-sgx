@@ -156,6 +156,13 @@ void GlyphViewerWindow::CreateMenus() {
 	QObject::connect(closeVisualizationAction, &QAction::triggered, this, &GlyphViewerWindow::CloseVisualization);
 	m_loadedVisualizationDependentActions.push_back(closeVisualizationAction);
 
+	m_fileMenu->addSeparator();
+
+	m_createSubsetVisualization = CreateMenuAction(m_fileMenu, tr("Create Subset Visualization"));
+	QObject::connect(closeVisualizationAction, &QAction::triggered, this, &GlyphViewerWindow::CreateSubsetVisualization);
+	m_createSubsetVisualization->setEnabled(false);
+	QObject::connect(m_glyphForestSelectionModel, &SynGlyphX::ItemFocusSelectionModel::selectionChanged, this, &GlyphViewerWindow::OnSelectionChanged);
+
 	m_fileMenu->addActions(m_recentFileActions);
 
 	m_fileMenu->addSeparator();
@@ -726,4 +733,14 @@ GlyphViewerOptions GlyphViewerWindow::CollectOptions() {
 	options.SetShowMessageWhenImagesDidNotDownload(m_showErrorFromTransform);
 
 	return options;
+}
+
+void GlyphViewerWindow::CreateSubsetVisualization() {
+
+
+}
+
+void GlyphViewerWindow::OnSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected) {
+
+	m_createSubsetVisualization->setEnabled(!selected.isEmpty());
 }

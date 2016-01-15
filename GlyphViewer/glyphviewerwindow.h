@@ -58,6 +58,8 @@ private slots:
 	void ChangeStereoMode();
 	void ImportFilesFromANTz();
 	void ChangeOptions();
+	void CreateSubsetVisualization();
+	void OnSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected);
 
 private:
 	virtual bool LoadRecentFile(const QString& filename);
@@ -82,6 +84,8 @@ private:
 	QAction* m_showAnimation;
 	QAction* m_showTagsAction;
 	QList<QAction*> m_loadedVisualizationDependentActions;
+
+	QAction* m_createSubsetVisualization;
 
 	QDockWidget* m_glyphListDockWidget;
 
