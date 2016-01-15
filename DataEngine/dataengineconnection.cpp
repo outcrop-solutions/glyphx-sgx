@@ -15,7 +15,7 @@ namespace DataEngine
 		std::ifstream jre(".\\jre\\bin\\client\\jvm.dll");
 		HMODULE jvmDll;
 		if (jre){
-			jvmDll = LoadLibrary(L"jre\\bin\\client\\jvm.dll");
+			jvmDll = LoadLibrary(L".\\jre\\bin\\client\\jvm.dll");
 		}
 		else{
 			jvmDll = LoadLibrary(L"..\\..\\DataEngine\\jdk1.7.0_79\\jre\\bin\\client\\jvm.dll");

@@ -67,7 +67,9 @@ public class SQLiteWriter {
 
 			for(int i = 0; i < dataframes.size(); i++){
 				SourceDataInfo sdi = dataframes.get(i);
-				writeTable(db,sdi);
+				if(sdi.getType().equals("csv") || sdi.getType().equals("sqlite")){
+					writeTable(db,sdi);
+				}
 			}
 
 			//db.exec("COMMIT TRANSACTION;"); 

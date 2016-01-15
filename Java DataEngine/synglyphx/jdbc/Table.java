@@ -14,6 +14,7 @@ public class Table {
 	private HashMap<String,String> columnTypes;
 	private HashMap<String,DataStats> dataStats;
 	private HashMap<String,String> jdbcTypes;
+	private HashMap<String, ArrayList<String>> min_max_table;
 
 	public Table(String name, Connection conn){
 		this.name = name;
@@ -56,6 +57,7 @@ public class Table {
 
 		String[] ranges;
 		String[] counts;
+		min_max_table = new HashMap<String, ArrayList<String>>();
 
 		try{
 
@@ -73,7 +75,10 @@ public class Table {
             	counts[1] = rs.getString(5);
             	dataStats.put(cn, new DataStats(columnTypes.get(cn),ranges,counts));
             	DataStats ds = dataStats.get(cn);
-            	Logger.getInstance().add(ds.getType()+" | "+ds.getMin()+" | "+ds.getMax()+" | "+ds.getAverage()+" | "+ds.getCount()+" | "+ds.getDistinct());
+            	Logger.getInstance().add(ds.getType()+" | "+ds.getMin()+" | "+ds.getMax()+" | "+ds.getAverage()+" | "+ds.getCount()+" | "+ds.getDistinct()); 
+  				min_max_table.put(cn, new ArrayList<String>());
+  				min_max_table.get(cn).add(ds.getMin());   
+  				min_max_table.get(cn).add(ds.getMax());       	     	
             }
 
         }catch(SQLException se){
@@ -142,5 +147,9 @@ public class Table {
 		for(int i = 0; i < columnNames.size(); i++){
 			createDataStats(columnNames.get(i));
 		}
+	}
+
+	public HashMap<String, ArrayList<String>> getMinMaxTable(){
+		return min_max_table;
 	}
 }
