@@ -1,10 +1,8 @@
-﻿Build started 1/12/2016 11:40:18 AM.
+﻿Build started 1/14/2016 5:14:47 PM.
      1>Project "C:\Users\Bryan\Documents\GitHub\DataEngine\DataEngine\DataEngine.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I..\..\Core\SGXFoundation /I..\..\3rdParty\include\stlplus_3_11 /I..\..\Core\SGXUtility /I..\..\Core\SGXDataMapping /I..\..\Core\SGXDataTransform /I..\..\Core\SGXImage\ /I..\..\GUI\SGXGUI\ /I..\..\Core\SGXGeospatial\ /I..\..\3rdParty\include\boost_1_55_0 /I..\..\DataEngine\jdk1.7.0_79\include\win32 /I..\..\DataEngine\jdk1.7.0_79\include /I..\..\3rdParty\include\Qt_5_2_1 /Zi /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _LIB /D DATAENGINE_EXPORTS /D _WINDLL /D _UNICODE /D UNICODE /Gm- /EHsc /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt dataengineconnection.cpp dataenginestatement.cpp
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I..\..\Core\SGXFoundation /I..\..\3rdParty\include\stlplus_3_11 /I..\..\Core\SGXUtility /I..\..\Core\SGXDataMapping /I..\..\Core\SGXDataTransform /I..\..\Core\SGXImage\ /I..\..\GUI\SGXGUI\ /I..\..\Core\SGXGeospatial\ /I..\..\3rdParty\include\boost_1_55_0 /I..\..\DataEngine\jdk1.7.0_79\include\win32 /I..\..\DataEngine\jdk1.7.0_79\include /I..\..\3rdParty\include\Qt_5_2_1 /Zi /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _LIB /D DATAENGINE_EXPORTS /D _WINDLL /D _UNICODE /D UNICODE /Gm- /EHsc /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt dataengineconnection.cpp
          dataengineconnection.cpp
-         dataenginestatement.cpp
-         Generating Code...
        Link:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"..\..\bin\Win32\Debug\DataEngine.dll" /NOLOGO /LIBPATH:..\..\DataEngine\jdk1.7.0_79\lib\ /LIBPATH:..\..\lib\Win32\Debug\ /LIBPATH:..\..\3rdParty\lib\Win32\Debug\ jvm.lib jawt.lib "boost_filesystem-vc120-mt-gd-1_55.lib" "boost_system-vc120-mt-gd-1_55.lib" SGXImage.lib SGXGUI.lib SGXGeospatial.lib qtmaind.lib Qt5Cored.lib Qt5Guid.lib Qt5Widgetsd.lib Qt5Networkd.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"..\..\bin\Win32\Debug\DataEngine.pdb" /SUBSYSTEM:WINDOWS /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"..\..\lib\Win32\Debug\DataEngine.lib" /MACHINE:X86 /DLL Debug\glyphengine.obj
          Debug\dataengineconnection.obj
@@ -17,4 +15,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:04.25
+Time Elapsed 00:00:02.88

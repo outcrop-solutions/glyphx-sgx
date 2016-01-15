@@ -7,11 +7,11 @@ public class JDBCLoader {
 
    private static JDBCLoader instance = null;
    public static Connection conn = null;
-   public Database database = null;
-   public String connectionString;
-   public String username;
-   public String password;
-   public String dbType;
+   public static Database database = null;
+   public static String connectionString;
+   public static String username;
+   public static String password;
+   public static String dbType;
 
    protected JDBCLoader(){}
 
@@ -22,13 +22,15 @@ public class JDBCLoader {
       return instance;
    }
    
-   public String[] connectToServer(String db_url, String user, String pass, String db) {
+   public static String[] connectToServer(String db_url, String user, String pass, String db) {
 
       connectionString = "jdbc:"+db_url;
       username = user;
       password = pass;
       dbType = db;
+
       String[] sqldbs = new String[1];
+
 
       try{
 
@@ -37,7 +39,8 @@ public class JDBCLoader {
          Logger.getInstance().add("Connecting to Server...");
 
          if(db.equals("sqlite")){
-            conn = DriverManager.getConnection(connectionString);
+            sqldbs[0] = "n/a";
+            return sqldbs;
          }else{
             conn = DriverManager.getConnection(connectionString,username,password);
          }
@@ -63,15 +66,19 @@ public class JDBCLoader {
          rs.close();
          conn.close();
       }catch(SQLException se){
-         se.printStackTrace();
+         try{
+            se.printStackTrace(Logger.getInstance().addError());
+         }catch(Exception ex){}
       }catch(Exception e){
-         e.printStackTrace();
+         try{
+            e.printStackTrace(Logger.getInstance().addError());
+         }catch(Exception ex){}
       }
 
       return sqldbs;
    }
 
-   public String[] chooseDatabase(String db_name){
+   public static String[] chooseDatabase(String db_name){
 
       String[] table_names = new String[1]; 
 
@@ -79,44 +86,54 @@ public class JDBCLoader {
     
          Class.forName(DriverSelect.getDriver(dbType));
 
-         conn = DriverManager.getConnection(connectionString+"/"+db_name,username,password);
+         if(dbType.equals("sqlite")){
+            conn = DriverManager.getConnection(connectionString);
+         }else{
+            conn = DriverManager.getConnection(connectionString+"/"+db_name,username,password);
+         }
 
          database = new Database(conn);
          table_names = database.getTableNames();
 
       }catch(SQLException se){
-         se.printStackTrace();
+         try{
+            se.printStackTrace(Logger.getInstance().addError());
+         }catch(Exception ex){}
       }catch(Exception e){
-         e.printStackTrace();
+         try{
+            e.printStackTrace(Logger.getInstance().addError());
+         }catch(Exception ex){}
       }
 
       return table_names;
    }
 
-   public void setChosenTables(String[] chosen){
+   public static void setChosenTables(String[] chosen){
       database.initializeChosenTables(chosen);
       closeConnection();
    }
 
-   public void setQueryTables(String query){
+   public static void setQueryTables(String query){
       database.initializeQueryTables(query);
       closeConnection();
    }
 
-   public String[] getFieldsForTable(int table){
+   public static String[] getFieldsForTable(int table){
       return database.getTable(table).getColumnNames();
    }
 
-   public String[] getStatsForField(int table, String field){
+   public static String[] getStatsForField(int table, String field){
       return database.getTable(table).getStats(field);
    }
 
-   public void closeConnection(){
+   public static void closeConnection(){
       
       try{
          conn.close();
       }catch(SQLException se){
-         se.printStackTrace();
+         try{
+            se.printStackTrace(Logger.getInstance().addError());
+         }catch(Exception ex){}
       }
       Logger.getInstance().add("");
       Logger.getInstance().add("Closing connection to database...");

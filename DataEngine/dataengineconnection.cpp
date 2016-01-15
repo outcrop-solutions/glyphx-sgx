@@ -15,7 +15,7 @@ namespace DataEngine
 		std::ifstream jre(".\\jre\\bin\\client\\jvm.dll");
 		HMODULE jvmDll;
 		if (jre){
-			jvmDll = LoadLibrary(L"jre\\bin\\client\\jvm.dll");
+			jvmDll = LoadLibrary(L".\\jre\\bin\\client\\jvm.dll");
 		}
 		else{
 			jvmDll = LoadLibrary(L"..\\..\\DataEngine\\jdk1.7.0_79\\jre\\bin\\client\\jvm.dll");
@@ -27,10 +27,18 @@ namespace DataEngine
 		std::ifstream ifile(".\\dataengine.jar");
 		if (ifile){
 			options[0].optionString =
-				"-Djava.class.path=.\\dataengine.jar;.\\sqlite4java.jar;.\\database_drivers\\mysql-connector-java-5.1.38-bin.jar";
+				"-Djava.class.path=.\\dataengine.jar;"
+				".\\ojdbc6.jar;"
+				".\\database-drivers\\sqlite4java.jar;"
+				".\\database-drivers\\mysql-connector-java-5.1.38-bin.jar;"
+				".\\database-drivers\\sqlite-jdbc-3.8.11.2.jar;";
 		}else{
 			options[0].optionString =
-				"-Djava.class.path=..\\..\\DataEngine\\dataengine.jar;..\\..\\DataEngine\\sqlite4java.jar;..\\..\\DataEngine\\database_drivers\\mysql-connector-java-5.1.38-bin.jar";
+				"-Djava.class.path=..\\..\\DataEngine\\Java DataEngine\\dataengine.jar;"
+				"..\\..\\DataEngine\\Java DataEngine\\ojdbc6.jar;"
+				"..\\..\\DataEngine\\Java DataEngine\\database-drivers\\sqlite4java.jar;"
+				"..\\..\\DataEngine\\Java DataEngine\\database-drivers\\mysql-connector-java-5.1.38-bin.jar;"
+				"..\\..\\DataEngine\\Java DataEngine\\database-drivers\\sqlite-jdbc-3.8.11.2.jar;";
 		}ifile.close();
 		vmArgs.version = JNI_VERSION_1_2;
 		vmArgs.options = options;
@@ -150,12 +158,15 @@ namespace DataEngine
 	QStringList DataEngineConnection::connectToServer(QString db_url, QString user, QString pass, QString db_type){
 
 		jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
-			"connectToServer", "(Ljava/lang/String;java/lang/String;java/lang/String;java/lang/String;)[Ljava/lang/String;");
+			"connectToServer", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)[Ljava/lang/String;");
 		jobjectArray itr;
 		QStringList databases;
 		if (methodId != NULL) {
-
-			itr = (jobjectArray)jniEnv->CallStaticObjectMethod(jcls, methodId, db_url, user, pass, db_type);
+			jstring db = jniEnv->NewStringUTF(db_url.toStdString().c_str());
+			jstring usr = jniEnv->NewStringUTF(user.toStdString().c_str());
+			jstring pwd = jniEnv->NewStringUTF(pass.toStdString().c_str());
+			jstring type = jniEnv->NewStringUTF(db_type.toStdString().c_str());
+			itr = (jobjectArray)jniEnv->CallStaticObjectMethod(jcls, methodId, db, usr, pwd, type);
 			if (jniEnv->ExceptionCheck()) {
 				jniEnv->ExceptionDescribe();
 				jniEnv->ExceptionClear();
@@ -180,8 +191,8 @@ namespace DataEngine
 		jobjectArray itr;
 		QStringList tables;
 		if (methodId != NULL) {
-
-			itr = (jobjectArray)jniEnv->CallStaticObjectMethod(jcls, methodId, db_name);
+			jstring name = jniEnv->NewStringUTF(db_name.toStdString().c_str());
+			itr = (jobjectArray)jniEnv->CallStaticObjectMethod(jcls, methodId, name);
 			if (jniEnv->ExceptionCheck()) {
 				jniEnv->ExceptionDescribe();
 				jniEnv->ExceptionClear();
@@ -202,7 +213,7 @@ namespace DataEngine
 	void DataEngineConnection::setChosenTables(QStringList chosen){
 
 		jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
-			"connectToServer", "([Ljava/lang/String;)V");
+			"setChosenTables", "([Ljava/lang/String;)V");
 
 		jobjectArray selected = (jobjectArray)jniEnv->NewObjectArray(chosen.size(), jniEnv->FindClass("java/lang/String"), jniEnv->NewStringUTF(""));
 

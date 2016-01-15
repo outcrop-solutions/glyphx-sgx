@@ -71,7 +71,9 @@ public class GlyphEngine {
 
 	public static void main(String [] args){
 
-	 	String sdtPath = "C:\\Users\\Bryan\\Desktop\\Crazy_Complicated_Datamap_V3_Anim.sdt";
+	 	//String sdtPath = "C:\\Users\\Bryan\\Desktop\\jdbc_test\\jdbc_test.sdt";
+	 	//String outDir = "C:\\Users\\Bryan\\Desktop\\jdbc_test\\Viz";
+	 	String sdtPath = "C:\\Users\\Bryan\\Desktop\\New folder\\Crazy_Complicated_Datamap_V3_Anim.sdt";
 	 	String outDir = "C:\\Users\\Bryan\\Desktop\\New folder\\Viz";
 	 	String expDir = "DataMapper";
 	 	GlyphEngine start = new GlyphEngine();
@@ -82,7 +84,7 @@ public class GlyphEngine {
 	 	double[] s = new double[2];
 	 	s[0] = 2048.0; s[1] = 1024.0;
 	 	start.initiate(sdtPath, outDir, expDir);
-	 	//double[] nwse = start.getNWandSE();
+	 	double[] nwse = start.getNWandSE();
 	 	//start.hasImageBeenUpdated();
 	 	start.setBoundingBox(nw,se,s);
 	 	start.beginGlyphGeneration();

@@ -365,8 +365,6 @@ public class SDTReader {
 				if(e.getAttribute("type").equals("CSV")){
 					SourceDataInfo csv = new SourceDataInfo();
 					csv.setID(e.getAttribute("id"));
-					//String[] fileName = getValue("Name", e).split("/");
-					//csv.setTable(fileName[fileName.length-1]);
 					csv.setTable("OnlyTable");
 					csv.setType("csv");
 					csv.setPath(getValue("Name", e));
@@ -375,9 +373,16 @@ public class SDTReader {
 					holder++;
 					System.out.println(csv.getID()+csv.getTable());
 					Logger.getInstance().add(csv.getID()+csv.getTable());
-				}else if(e.getAttribute("type").equals("SQLITE3")){
+				}else{
 					String id = e.getAttribute("id");
 					String path = getValue("Name", e);
+					String host = getValue("Host", e);
+					String user = "";
+					String pass = "";
+					try{
+						user = getValue("Username", e);
+						pass = getValue("Password", e);
+					}catch(Exception ex){}
 					NodeList tables = e.getElementsByTagName("Table");
 					for(int j=0; j<tables.getLength(); j++){
 						NodeList tableNodes = tables.item(j).getChildNodes();
@@ -385,12 +390,14 @@ public class SDTReader {
 						SourceDataInfo tb = new SourceDataInfo();
 						tb.setID(id);
 						tb.setTable(table.getNodeValue());
-						tb.setType("sqlite");
+						tb.setType(e.getAttribute("type").toLowerCase());
 						tb.setPath(path);
+						tb.setHost(host);
+						tb.setUsername(user);
+						tb.setPassword(pass);
 						dataPaths.add(tb);
 						dataIds.put(tb.getID()+tb.getTable(),holder);
 						holder++;
-						//System.out.println(tb.getID()+tb.getTable());
 						Logger.getInstance().add(tb.getID()+tb.getTable());
 					}
 				}

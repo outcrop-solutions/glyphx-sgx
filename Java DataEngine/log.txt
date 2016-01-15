@@ -1,5 +1,5 @@
 
-Reading SDT at C:\Users\Bryan\Desktop\Crazy_Complicated_Datamap_V3_Anim.sdt
+Reading SDT at C:\Users\Bryan\Desktop\New folder\Crazy_Complicated_Datamap_V3_Anim.sdt
 Parsed SDT into doc.
 Set input map.
 7df247d5-b6aa-4380-9f6c-0793d78769d6OnlyTable
@@ -11,7 +11,12 @@ Finished checking field groups.
 Retrieved Defaults.
 Retrieved Bg color.
 BaseObjects:
-Default | World
+Downloaded Map | 
+Returning data stats model...
+-66.0431
+47.6588
+-122.99
+18.4175
 Downloaded Map BoundingBox: (-180.0,90.0),(180.0,-90.0)
 Image Size: 2048.0, 1024.0
 Beginning to generate glyphs...

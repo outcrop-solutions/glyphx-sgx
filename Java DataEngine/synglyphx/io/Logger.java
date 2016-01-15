@@ -33,4 +33,11 @@ public class Logger {
 	    }
 	}
 
+	public static PrintStream addError() throws Exception{
+
+		PrintStream ps = new PrintStream("log.txt");
+
+		return ps;
+	}
+
 }

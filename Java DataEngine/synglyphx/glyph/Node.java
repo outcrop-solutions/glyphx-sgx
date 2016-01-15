@@ -32,6 +32,7 @@ public class Node {
 	private int childOf;
 	private int lineNum;
 	private int branchLevel;
+	private int template;
 	private Map<Integer, Node> children = null; 
 
 	public Node(){
@@ -40,11 +41,16 @@ public class Node {
 		setAlpha(255);
 		this.url = "nourl.html";
 		this.desc = "";
+		template = 0;
 	}
 
 //SETTERS
 	public void setDefaultTagValue(String tag){
 		this.tag = tag;
+	}
+
+	public void setTemplate(int t){
+		template = t;
 	}
 
 	public void setTagPos(int pos){
@@ -159,6 +165,10 @@ public class Node {
 //END SETTERS
 
 //GETTERS
+	public int getTemplate(){
+		return template;
+	}
+
 	public int getTagPos(){
 		return tagPos;
 	}

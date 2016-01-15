@@ -1,29 +1,27 @@
 package synglyphx.util;
 
 import java.util.Map;
+import java.util.HashMap;
 import java.util.ArrayList;
 import synglyphx.glyph.Node;
+import synglyphx.glyph.CoordinateMap;
 
 public class BaseImageSpace{
 
 	private Map<Integer, Node> nodes;
 	private ArrayList<BaseObject> base_objects;
+	private HashMap<Integer, CoordinateMap> rootCoords;
 	private BoundingBox original = null;
 	private BoundingBox image = null;
 	private double width;
 	private double height;
-/*
-	public BaseImageSpace(){
-		double[] nw = new double[2];
-	 	nw[0] = -139.516; nw[1] = 52.0331;
-	 	double[] se = new double[2];
-	 	se[0] = -49.5167; se[1] = 14.0432;
-		image = new BoundingBox(nw, se);
-	}
-*/
-	public BaseImageSpace(Map<Integer,Node> nodes, int count, ArrayList<BaseObject> base_objects){
+	private int count;
+
+	public BaseImageSpace(Map<Integer,Node> nodes, int count, ArrayList<BaseObject> base_objects, HashMap<Integer, CoordinateMap> rc){
 		this.nodes = nodes;
 		this.base_objects = base_objects;
+		this.rootCoords = rc;
+		this.count = count;
 
 		setBoundingBoxes();
 
@@ -40,6 +38,7 @@ public class BaseImageSpace{
 				}
 			}
 		}
+		setRootCoords();
 	}
 
 	public double[] restructureNodes(double[] point){
@@ -87,18 +86,21 @@ public class BaseImageSpace{
 			}
 		}
 	}
-/*
-	public void testCase(double xx, double yy, double x, double y){
-		double[] xy = new double[2];
-		xy[0] = xx;
-		xy[1] = yy;
-		if(restructureNodes(xy)[0] == x && restructureNodes(xy)[1] == y){
-			System.out.println("("+String.valueOf(xy[0])+","+String.valueOf(xy[1])+") scales to ("+String.valueOf(x)+","+String.valueOf(y)+") : TRUE");
-		}else{
-			System.out.println("("+String.valueOf(xy[0])+","+String.valueOf(xy[1])+") scales to ("+String.valueOf(x)+","+String.valueOf(y)+") : FALSE");
-		}
+
+	public HashMap<Integer, CoordinateMap> getRootCoords(){
+		return rootCoords;
 	}
 
+	private void setRootCoords(){
+
+		for(int i=1;i<count;i++){
+			Node node = nodes.get(i);
+			if(node.getTemplate() != 0){
+				rootCoords.get(node.getTemplate()).addCoordinate(node, i);
+			}
+		}
+	}
+/*
 	public static void main(String[] args){
 
 		BaseImageSpace temp = new BaseImageSpace();

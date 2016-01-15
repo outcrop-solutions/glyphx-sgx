@@ -21,7 +21,7 @@ public class GlyphCreator {
 	private HashMap<String,ArrayList<Integer>> toMerge = null;
 	private int mappingCount;
 	private boolean inner = false;
-	private GeoID geoId = null;
+	private static GeoID geoId = null;
 	private int currData;
 	private HashMap<Integer, CoordinateMap> rootCoords = null;
 	private boolean download;
@@ -58,20 +58,29 @@ public class GlyphCreator {
 		for(int i=0;i < rootIds.size();i++){
 			currData = temps.get(rootIds.get(i)).getDataSource();
 			rootCoords.put(rootIds.get(i), new CoordinateMap(temps.get(rootIds.get(i)).getToMerge(), csvData.get(currData).getLastID()));
-			Query query = new Query(csvData.get(currData).getDataFrame()).all(); 
-			Logger.getInstance().add("Executed initial query...");
-			Cursor cursor = csvData.get(currData).getDataFrame().query(query);
-			Logger.getInstance().add("Returned cursor with size " + String.valueOf(cursor.size()) +"...");
+			if(csvData.get(currData).getType().equals("csv") || csvData.get(currData).getType().equals("sqlite")){
+				Query query = new Query(csvData.get(currData).getDataFrame()).all(); 
+				Logger.getInstance().add("Executed initial query...");
+				Cursor cursor = csvData.get(currData).getDataFrame().query(query);
+				Logger.getInstance().add("Returned cursor with size " + String.valueOf(cursor.size()) +"...");
 
-			Logger.getInstance().add(String.valueOf(csvData.get(currData).getRootID()));
-			Logger.getInstance().add(String.valueOf(csvData.get(currData).getLastID()));
+				Logger.getInstance().add(String.valueOf(csvData.get(currData).getRootID()));
+				Logger.getInstance().add(String.valueOf(csvData.get(currData).getLastID()));
 
-			while(cursor.next()){
-				for (int j = 1; j < mappingCount+1; j++){
-					if(j >= csvData.get(currData).getRootID() && j <= csvData.get(currData).getLastID()){
-						addNode(j, cursor);
+				while(cursor.next()){
+					for (int j = 1; j < mappingCount+1; j++){
+						if(j >= csvData.get(currData).getRootID() && j <= csvData.get(currData).getLastID()){
+							addNode(j, cursor);
+						}
 					}
 				}
+			}else{
+				//JDBCNodeGenerator jdbc = new JDBCNodeGenerator(csvData.get(currData));
+				//jdbc.initialize(temps, rootCoords, glyphRepo, mappingCount);
+				//jdbc.setDefaults(default_tag_field, default_tag_value);
+				//jdbc.checkRangeXY(download);
+				//glyphRepo = jdbc.returnUpdatedGlyphRepo();
+				//rootCoords = jdbc.returnUpdatedRootCoords();
 			}
 			rootCoords.get(rootIds.get(i)).setLastID(glyphRepo.getNodeCount()-1);
 		}
@@ -132,8 +141,7 @@ public class GlyphCreator {
 			}
 		}
 
-		Node node = new Node();
-		setFields(fieldNames, ranges, setValues, node, nodeTemp, input);
+		Node node = setFields(fieldNames, ranges, setValues, new Node(), nodeTemp, input);
 
 		//TAG STUFF
 		node.setDefaultTagValue(default_tag_value);
@@ -154,7 +162,7 @@ public class GlyphCreator {
 
 		if(nodeTemp.getChildOf() == 0){
 			node.setChildOf(0);
-			rootCoords.get(index).addCoordinate(node,glyphRepo.getNodeCount());
+			node.setTemplate(index);
 		}else{
 			int p = glyphRepo.getNodeCount()-(index - nodeTemp.getChildOf());
 			node.setChildOf(p);
@@ -166,7 +174,7 @@ public class GlyphCreator {
 
 	}
 
-	public void setFields(ArrayList<String> fieldNames, HashMap<String, ArrayList<Double>> ranges, HashMap<String, Double> setValues, Node node, XMLGlyphTemplate childTemp, Map<String, String> input){
+	public static Node setFields(ArrayList<String> fieldNames, HashMap<String, ArrayList<Double>> ranges, HashMap<String, Double> setValues, Node node, XMLGlyphTemplate childTemp, Map<String, String> input){
 
 		//SET POSITION
 		if(!fieldNames.contains("PositionX")){
@@ -266,6 +274,8 @@ public class GlyphCreator {
 		node.setRatio(childTemp.getRatio());
 		node.setBranchLevel(childTemp.getBranchLevel());
 		node.setNumChildren(childTemp.getNumChildren());
+
+		return node;
 		
 	}
 

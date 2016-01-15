@@ -103,9 +103,9 @@ namespace DataEngine
 
 	void DataEngineStatement::constructDataStats(int i){
 
-		for (int i = 0; i < fields.size(); i++){
-			QStringList fieldStats = getStatsForField(i, fields.at(i));
-			dataStats.insert(fields.at(i), fieldStats);
+		for (int j = 0; j < fields.size(); j++){
+			QStringList fieldStats = getStatsForField(i, fields.at(j));
+			dataStats.insert(fields.at(j), fieldStats);
 		}
 		current = -1;
 	}
