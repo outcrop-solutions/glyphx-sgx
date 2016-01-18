@@ -47,13 +47,24 @@ void DataSourceStatsWidget::AddNewStatsViews() {
 
 				if (iT->second.GetType() == SynGlyphX::FileDatasource::SQLITE3){
 
-					dec->loadSQLite(datasource.toUtf8().constData());
 					SynGlyphX::Datasource::TableNames tables;
-					std::vector<std::string> tNames = dec->getTableNames();
-					QStringList qtables;
-					for (int i = 0; i < tNames.size(); i++){
-						qtables.append(QString::fromStdString(tNames[i]));
-					}
+
+					QString url("sqlite:" + datasource);
+					QString user("");
+					QString pass("");
+					QString type("sqlite");
+					//QString url("mysql://33.33.33.1");
+					//QString user("root");
+					//QString pass("jarvis");
+					//QString type("mysql");
+					QStringList databases = dec->connectToServer(url, user, pass, type); 
+					QString database("");
+					//QString database("world");
+					QStringList qtables = dec->chooseDatabase(database);
+					QStringList chosenTables;
+					chosenTables = qtables;
+					dec->setChosenTables(chosenTables);
+
 					if (!qtables.isEmpty()) {
 						for (const QString& qtable : qtables) {
 							tables.insert(qtable.toStdWString());
@@ -64,34 +75,14 @@ void DataSourceStatsWidget::AddNewStatsViews() {
 						throw std::exception((tr("No tables in ") + datasource).toStdString().c_str());
 					}
 
-					for (int i = 0; i < tNames.size(); i++){
-						//dec->setTable(i);
-						CreateTablesFromDatasource(iT->first, i, QString::fromStdWString(iT->second.GetFormattedName()) + QString::fromStdString(":" + tNames[i]), iT->second.GetType());
+					for (int i = 0; i < qtables.size(); i++){
+						CreateTablesFromDatasource(iT->first, i, QString::fromStdWString(iT->second.GetFormattedName()) + ":" + qtables[i], iT->second.GetType());
 					}
 				}
 				else if (iT->second.GetType() == SynGlyphX::FileDatasource::CSV){
 					dec->loadCSV(datasource.toUtf8().constData());
 					CreateTablesFromDatasource(iT->first, 0, QString::fromStdWString(iT->second.GetFormattedName()), iT->second.GetType());
 				}
-				/*else if (SOME JDBC TYPE){
-					//SET CONNECTION INFO
-					QString url("mysql://33.33.33.1");
-					QString user("root");
-					QString pass("jarvis");
-					QString type("mysql");
-					QStringList databases = dec->connectToServer(url,user,pass,type); //Returns List of available databases/schemas
-					//SET DESIRED DATABASE
-					QString database("world");
-					QStringList tables = dec->chooseDatabase(database); //Returns List of all available tables in the selected database
-					//SET LIST OF DESIRED TABLES
-					QStringList chosenTables;
-					chosenTables << "City" << "Country" << "CountryLanguage";
-					dec->setChosenTables(chosenTables); //Void, now ready to populate datastats window
-
-					for(int i = 0; i < chosenTables.size(); i++){
-						CreateTablesFromDatasource(uuid, i, formattedName, type); //type being a FileDatasource::SourceType
-					}
-				}*/
 			}
 		}catch (const std::exception& e) {
 
