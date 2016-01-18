@@ -308,7 +308,7 @@ namespace SynGlyphX {
 		return directory;
 	}
 
-	QString MainWindow::GetExistingEmptyDirectory(const std::set<QDir> invalidDirectories, const QString& settingKey, const QString& caption, const QString& defaultDir, const QString& invalidDirError) {
+	QString MainWindow::GetExistingEmptyDirectory(const QSet<QString> invalidDirectories, const QString& settingKey, const QString& caption, const QString& defaultDir, const QString& invalidDirError) {
 		
 		QString directoryName;
 		bool isDirectoryInvalid = false;
@@ -321,12 +321,11 @@ namespace SynGlyphX {
 				break;
 			}
 
-			QDir dir(directoryName);
 			bool doesDirectoryMatchAnInvalidDirectory = false;
 
 			for (const auto& invalidDir : invalidDirectories) {
 
-				if (invalidDir == dir) {
+				if (invalidDir == directoryName) {
 
 					doesDirectoryMatchAnInvalidDirectory = true;
 					break;
@@ -338,7 +337,7 @@ namespace SynGlyphX {
 				QMessageBox::warning(this, tr("Invalid Directory"), invalidDirError + tr("  Directory can not be used.  Select another directory."));
 				isDirectoryInvalid = true;
 			}
-			else if (dir.entryInfoList(QDir::NoDotAndDotDot | QDir::AllEntries).count() > 0) {
+			else if (QDir(directoryName).entryInfoList(QDir::NoDotAndDotDot | QDir::AllEntries).count() > 0) {
 
 				if (QMessageBox::question(this, tr("Directory isn't empty"), tr("Selected directory is not empty.  All contents of the directory will be deleted before export.  Do you wish to continue?")) == QMessageBox::No) {
 

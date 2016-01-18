@@ -108,33 +108,29 @@ void DataMapperWindow::CreateCenterWidget() {
 
 void DataMapperWindow::CreateExportToPortableVisualizationSubmenu() {
 
-	bool windowsANTzTemplateExists = DoesANTzTemplateExist(m_antzExportDirectories[SynGlyphXANTz::ANTzCSVWriter::OutputPlatform::Windows]);
-	bool zSpaceANTzTemplateExists = DoesANTzTemplateExist(m_antzExportDirectories[SynGlyphXANTz::ANTzCSVWriter::OutputPlatform::WindowsZSpace]);
-	bool macANTzTemplateExists = DoesANTzTemplateExist(m_antzExportDirectories[SynGlyphXANTz::ANTzCSVWriter::OutputPlatform::Mac]);
-
-	if (windowsANTzTemplateExists || zSpaceANTzTemplateExists || macANTzTemplateExists) {
+	if (SynGlyphX::PortableVisualizationExport::DoAnyPlatformsHaveSourceDirectories()) {
 
 		m_fileMenu->addSeparator();
 		QMenu* portableVisualizationMenu = m_fileMenu->addMenu(tr("Create Portable Visualization"));
 
-		if (windowsANTzTemplateExists) {
+		if (SynGlyphX::PortableVisualizationExport::DoesPlatformHaveSourceDirectory(SynGlyphX::PortableVisualizationExport::Platform::Windows)) {
 
 			QAction* exportToANTzAction = CreateMenuAction(portableVisualizationMenu, tr("Windows"));
-			QObject::connect(exportToANTzAction, &QAction::triggered, this, [this]{ ExportToANTz(SynGlyphXANTz::ANTzCSVWriter::OutputPlatform::Windows); });
+			QObject::connect(exportToANTzAction, &QAction::triggered, this, [this]{ CreatePortableVisualization(SynGlyphX::PortableVisualizationExport::Platform::Windows); });
 			m_projectDependentActions.push_back(exportToANTzAction);
 		}
 
-		if (zSpaceANTzTemplateExists) {
+		if (SynGlyphX::PortableVisualizationExport::DoesPlatformHaveSourceDirectory(SynGlyphX::PortableVisualizationExport::Platform::WindowsZSpace)) {
 
 			QAction* exportTozSpaceANTzAction = CreateMenuAction(portableVisualizationMenu, tr("Windows (zSpace)"));
-			QObject::connect(exportTozSpaceANTzAction, &QAction::triggered, this, [this]{ ExportToANTz(SynGlyphXANTz::ANTzCSVWriter::OutputPlatform::WindowsZSpace); });
+			QObject::connect(exportTozSpaceANTzAction, &QAction::triggered, this, [this]{ CreatePortableVisualization(SynGlyphX::PortableVisualizationExport::Platform::WindowsZSpace); });
 			m_projectDependentActions.push_back(exportTozSpaceANTzAction);
 		}
 
-		if (macANTzTemplateExists) {
+		if (SynGlyphX::PortableVisualizationExport::DoesPlatformHaveSourceDirectory(SynGlyphX::PortableVisualizationExport::Platform::Mac)) {
 
 			QAction* exportToMacANTzAction = CreateMenuAction(portableVisualizationMenu, tr("Mac"));
-			QObject::connect(exportToMacANTzAction, &QAction::triggered, this, [this]{ ExportToANTz(SynGlyphXANTz::ANTzCSVWriter::OutputPlatform::Mac); });
+			QObject::connect(exportToMacANTzAction, &QAction::triggered, this, [this]{ CreatePortableVisualization(SynGlyphX::PortableVisualizationExport::Platform::Mac); });
 			m_projectDependentActions.push_back(exportToMacANTzAction);
 		}
 	}
@@ -627,11 +623,11 @@ void DataMapperWindow::CreatePortableVisualization(SynGlyphX::PortableVisualizat
 	}
 
 	
-	std::set<QDir> projectFileDirs;
-	projectFileDirs.insert(QFileInfo(m_currentFilename).canonicalPath());
+	QSet<QString> projectFileDirs;
+	projectFileDirs.insert(QDir::toNativeSeparators(m_currentFilename));
 	for (const auto& fileDatasource : m_dataTransformModel->GetDataMapping()->GetDatasources().GetFileDatasources()) {
 
-		projectFileDirs.insert(QFileInfo(QString::fromStdWString(fileDatasource.second.GetFilename())).canonicalPath());
+		projectFileDirs.insert(QDir::toNativeSeparators(QString::fromStdWString(fileDatasource.second.GetFilename())));
 	}
 
 	QString csvDirectory = QDir::toNativeSeparators(GetExistingEmptyDirectory(projectFileDirs, "ANTzExportDir", tr("Select Directory For Portable Visualization"), "", tr("Selected directory contains one or more files relevant to the project.")));
@@ -769,29 +765,6 @@ void DataMapperWindow::ChangeMapDownloadSettings() {
 
 	DownloadOptionsDialog dialog(this);
 	dialog.exec();
-}
-
-bool DataMapperWindow::DoesANTzTemplateExist(const QString& templateDir) const {
-
-	boost::filesystem::path antzTemplatePath(QDir::toNativeSeparators(templateDir).toStdString());
-	if (!boost::filesystem::exists(antzTemplatePath) || !boost::filesystem::is_directory(antzTemplatePath)) {
-
-		return false;
-	}
-
-	boost::filesystem::path csvTemplatePath = antzTemplatePath / "usr" / "csv";
-	if (!boost::filesystem::exists(csvTemplatePath) || !boost::filesystem::is_directory(csvTemplatePath)) {
-
-		return false;
-	}
-
-	boost::filesystem::path imageTemplatePath = antzTemplatePath / "usr" / "images";
-	if (!boost::filesystem::exists(imageTemplatePath) || !boost::filesystem::is_directory(imageTemplatePath)) {
-
-		return false;
-	}
-
-	return true;
 }
 
 void DataMapperWindow::ChangeGlyphDefaults() {

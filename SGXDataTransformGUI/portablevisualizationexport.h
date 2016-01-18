@@ -15,12 +15,14 @@
 #ifndef PORTABLEVISUALIZATIONEXPORT_H
 #define PORTABLEVISUALIZATIONEXPORT_H
 
+#include "sgxdatatransformgui_global.h"
 #include "datatransformmapping.h"
 #include <QtCore/QString>
+#include <unordered_map>
 
 namespace SynGlyphX {
 
-	class PortableVisualizationExport
+	class SGXDATATRANSFORMGUI_EXPORT PortableVisualizationExport
 	{
 	public:
 		enum Platform {
@@ -36,8 +38,13 @@ namespace SynGlyphX {
 
 		static void SetupSourceDirectories();
 		static const QString& GetSourceDirectory(Platform platform);
+		static bool DoesPlatformHaveSourceDirectory(Platform platform);
+		static bool DoAnyPlatformsHaveSourceDirectories();
 
 	private:
+		static void AddSourceDirectoryToPlatformIfItExists(Platform platform, const QString& directoryName);
+		static bool DoesSourceDirectoryExist(const QString directoryName);
+
 		static std::unordered_map<Platform, QString> s_sourceDirectories;
 	};
 

@@ -79,7 +79,6 @@ private:
 	bool AskUserToSave();
 	void EnableProjectDependentActions(bool enable);
 	bool ValidateNewDatasource(const QString& datasource);
-	bool DoesANTzTemplateExist(const QString& templateDir) const;
 	void ProcessCSVFile(const QString& csvFile);
 	void ReadNewMappingDefaults();
 	void WriteNewMappingDefaults();
