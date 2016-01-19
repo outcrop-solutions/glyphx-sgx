@@ -14,6 +14,18 @@ namespace SynGlyphX {
 		m_baseObjects.push_back(BaseImage(nullptr));
     }
 
+	DataTransformMapping::DataTransformMapping(const DataTransformMapping& mapping) :
+		XMLPropertyTreeFile(),
+		m_id(UUIDGenerator::GetNewRandomUUID()),
+		m_datasources(mapping.m_datasources),
+		m_glyphTrees(mapping.m_glyphTrees), 
+		m_baseObjects(mapping.m_baseObjects),
+		m_defaults(mapping.m_defaults),
+		m_sceneProperties(mapping.m_sceneProperties),
+		m_fieldGroups(mapping.m_fieldGroups) {
+
+	}
+
 	DataTransformMapping::~DataTransformMapping()
     {
     }
@@ -58,6 +70,11 @@ namespace SynGlyphX {
 		}
 
 		if (m_sceneProperties != mapping.m_sceneProperties) {
+
+			return false;
+		}
+
+		if (m_fieldGroups != mapping.m_fieldGroups) {
 
 			return false;
 		}
@@ -603,6 +620,42 @@ namespace SynGlyphX {
 		}
 
 		return missingLocalBaseImages;
+	}
+
+	DataTransformMapping::ConstSharedPtr DataTransformMapping::CreateSubsetMappingWithSingleTable(const InputTable& inputTable) const {
+
+		if (!m_datasources.HasDatasourceWithID(inputTable.GetDatasourceID())) {
+
+			throw std::exception("Can't create subset of mapping with a datasource ID that does not exist in the mapping.");
+		}
+
+		SharedPtr subsetMapping(new DataTransformMapping(*this));
+
+		for (auto fieldGroup : m_fieldGroups) {
+
+			if (inputTable != *fieldGroup.second.begin()) {
+
+				subsetMapping->RemoveFieldGroup(fieldGroup.first);
+			}
+		}
+
+		for (auto glyphGraphPair : m_glyphTrees) {
+
+			if (inputTable != glyphGraphPair.second->GetInputFields().begin()->second) {
+
+				subsetMapping->RemoveGlyphTree(glyphGraphPair.first);
+			}
+		}
+
+		for (auto datasource : m_datasources.GetFileDatasources()) {
+
+			if (datasource.first != inputTable.GetDatasourceID()) {
+
+				subsetMapping->RemoveDatasource(datasource.first);
+			}
+		}
+
+		return subsetMapping;
 	}
 
 } //namespace SynGlyphX

@@ -45,6 +45,7 @@ namespace SynGlyphX {
 		typedef std::shared_ptr<const DataTransformMapping> ConstSharedPtr;
 
 		DataTransformMapping();
+		DataTransformMapping(const DataTransformMapping& mapping);
 		~DataTransformMapping();
 
 		bool operator==(const DataTransformMapping& mapping) const;
@@ -107,6 +108,8 @@ namespace SynGlyphX {
 
 		std::vector<boost::uuids::uuid> GetFileDatasourcesWithInvalidFiles(bool onlyUseDatasourcesInUse) const;
 		std::vector<unsigned int> GetFileBaseObjectsWithInvalidFiles() const;
+
+		ConstSharedPtr CreateSubsetMappingWithSingleTable(const InputTable& inputTable) const;
 
     protected:
 		void Clear(bool addADefaultBaseObjectAfterClear);
