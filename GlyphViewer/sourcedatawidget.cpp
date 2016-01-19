@@ -15,11 +15,11 @@
 #include "csvfilewriter.h"
 #include "glyphbuilderapplication.h"
 
-SourceDataWidget::SourceDataWidget(SynGlyphX::SourceDataCache::SharedPtr sourceDataCache, QWidget *parent)
+SourceDataWidget::SourceDataWidget(SourceDataSelectionModel* selectionModel, QWidget *parent)
 	: QWidget(parent),
 	//m_model(model),
-	//m_selectionModel(selectionModel),
-	m_sourceDataCache(sourceDataCache)
+	m_selectionModel(selectionModel)
+	//m_sourceDataCache(sourceDataCache)
 {
 	QVBoxLayout* mainLayout = new QVBoxLayout(this);
 	m_sourceDataTabs = new QTabWidget(this);
@@ -31,6 +31,10 @@ SourceDataWidget::SourceDataWidget(SynGlyphX::SourceDataCache::SharedPtr sourceD
 	QPushButton* saveButton = new QPushButton(tr("Save Current Tab To File"), this);
 	buttonsLayout->addWidget(saveButton);
 	QObject::connect(saveButton, &QPushButton::clicked, this, &SourceDataWidget::SaveCurrentTabToFile);
+
+	QPushButton* createVizButton = new QPushButton(tr("Create Visualization From Current Tab"), this);
+	buttonsLayout->addWidget(createVizButton);
+	QObject::connect(createVizButton, &QPushButton::clicked, this, &SourceDataWidget::CreateSubsetVisualization);
 
 	buttonsLayout->addStretch(1);
 
@@ -47,6 +51,8 @@ SourceDataWidget::SourceDataWidget(SynGlyphX::SourceDataCache::SharedPtr sourceD
 
 	setWindowTitle(tr("Source Data Of Selected Glyphs"));
 	ReadSettings();
+
+	QObject::connect(m_selectionModel, &SourceDataSelectionModel::SelectionChanged, this, &SourceDataWidget::UpdateTables);
 }
 
 SourceDataWidget::~SourceDataWidget()
@@ -65,21 +71,23 @@ void SourceDataWidget::closeEvent(QCloseEvent* event) {
 	}
 }
 
-void SourceDataWidget::UpdateTables(const SourceDataSelectionModel::IndexSetMap& dataIndexes) {
+void SourceDataWidget::UpdateTables() {
 
 	m_sourceDataTabs->clear();
 	m_sqlQueryModels.clear();
+
+	const SourceDataSelectionModel::IndexSetMap& dataIndexes = m_selectionModel->GetSourceDataSelection();
 	if (!dataIndexes.empty()) {
 
-		const SynGlyphX::SourceDataCache::TableNameMap& formattedNames = m_sourceDataCache->GetFormattedNames();
+		const SynGlyphX::SourceDataCache::TableNameMap& formattedNames = m_selectionModel->GetSourceDataCache()->GetFormattedNames();
 
 		for (auto indexSet : dataIndexes) {
 
 			QTableView* tableView = new QTableView(this);
 			QSqlQueryModel* queryModel = new QSqlQueryModel(this);
 			
-			SynGlyphX::TableColumns columns = m_sourceDataCache->GetColumnsForTable(indexSet.first);
-			SynGlyphX::SharedSQLQuery query = m_sourceDataCache->CreateSelectQueryForIndexSet(indexSet.first, columns, indexSet.second);
+			SynGlyphX::TableColumns columns = m_selectionModel->GetSourceDataCache()->GetColumnsForTable(indexSet.first);
+			SynGlyphX::SharedSQLQuery query = m_selectionModel->GetSourceDataCache()->CreateSelectQueryForIndexSet(indexSet.first, columns, indexSet.second);
 			query->exec();
 			queryModel->setQuery(*query.data());
 			if (queryModel->lastError().isValid()) {
@@ -183,4 +191,38 @@ void SourceDataWidget::WriteToFile(QSqlQueryModel* queryModel, const QString& fi
 	}
 
 	csvFile.Close();
+}
+
+void SourceDataWidget::CreateSubsetVisualization() {
+
+	QSettings settings;
+	settings.beginGroup("SourceDataWidget");
+	QString initialDir = settings.value("vizSaveDir", "").toString();
+
+	QString sdtFilename = QFileDialog::getSaveFileName(this, tr("Save Current Tab To New Visualization"), initialDir, "SynGlyphX Visualization Files (*.sdt)");
+	if (!sdtFilename.isEmpty()) {
+
+		try {
+			SynGlyphX::GlyphBuilderApplication::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
+
+			QFileInfo fileInfo(sdtFilename);
+			QString stdCanonicalPath = fileInfo.canonicalPath();
+
+			QString csvFileLocation = stdCanonicalPath + QDir::separator() + "selectedsourcedata.csv";
+			WriteToFile(m_sqlQueryModels[m_sourceDataTabs->currentIndex()], csvFileLocation);
+			SynGlyphX::DataTransformMapping::ConstSharedPtr subsetDataMapping = m_selectionModel->GetDataMappingModel()->GetDataMapping()->CreateSubsetMappingWithSingleTable(boost::uuids::uuid());
+			subsetDataMapping->WriteToFile(sdtFilename.toStdString());
+			
+			settings.setValue("vizSaveDir", stdCanonicalPath);
+			SynGlyphX::GlyphBuilderApplication::restoreOverrideCursor();
+
+			m_statusBar->showMessage(tr("Visualization successfully created"), 3000);
+		}
+		catch (const std::exception& e) {
+
+			QMessageBox::warning(this, tr("Visualization creation failed"), tr("Visualization was not created: ") + e.what());
+		}
+	}
+
+	settings.endGroup();
 }

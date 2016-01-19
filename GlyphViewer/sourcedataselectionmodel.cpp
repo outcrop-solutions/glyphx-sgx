@@ -125,6 +125,16 @@ const SourceDataSelectionModel::IndexSetMap& SourceDataSelectionModel::GetSource
 	return m_selectedSourceDataSets;
 }
 
+SynGlyphX::SourceDataCache::ConstSharedPtr SourceDataSelectionModel::GetSourceDataCache() const {
+
+	return m_sourceDataCache;
+}
+
+const SynGlyphX::DataMappingModel* SourceDataSelectionModel::GetDataMappingModel() const {
+
+	return m_dataMappingModel;
+}
+
 void SourceDataSelectionModel::OnSceneSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected) {
 
 	m_selectedSourceDataSets.clear();

@@ -28,10 +28,8 @@ class SourceDataWidget : public QWidget
 	Q_OBJECT
 
 public:
-	SourceDataWidget(SynGlyphX::SourceDataCache::SharedPtr sourceDataCache, QWidget *parent = nullptr);
+	SourceDataWidget(SourceDataSelectionModel* selectionModel, QWidget *parent = nullptr);
 	~SourceDataWidget();
-
-	void UpdateTables(const SourceDataSelectionModel::IndexSetMap& dataIndexes);
 
 signals:
 	void WindowHidden();
@@ -41,6 +39,8 @@ protected:
 
 private slots:
 	void SaveCurrentTabToFile();
+	void UpdateTables();
+	void CreateSubsetVisualization();
 
 private:
 	void ReadSettings();
@@ -51,7 +51,8 @@ private:
 	QTabWidget* m_sourceDataTabs;
 	QStatusBar* m_statusBar;
 	std::vector<QSqlQueryModel*> m_sqlQueryModels;
-	SynGlyphX::SourceDataCache::SharedPtr m_sourceDataCache;
+	//SynGlyphX::SourceDataCache::SharedPtr m_sourceDataCache;
+	SourceDataSelectionModel* m_selectionModel;
 };
 
 #endif // SOURCEDATAWIDGET_H
