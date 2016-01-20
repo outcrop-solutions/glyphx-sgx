@@ -462,8 +462,16 @@ void GlyphViewerWindow::ValidateDataMappingFile(const QString& filename) {
 
 void GlyphViewerWindow::LoadDataTransform(const QString& filename) {
 
-	if (!dec.hasJVM()){
-		dec.createJVM();
+	try {
+
+		if (!dec.hasJVM()){
+			dec.createJVM();
+		}
+	}
+	catch (const std::exception& e) {
+
+		QMessageBox::critical(this, tr("JVM Error"), tr(e.what()));
+		return;
 	}
 
 	SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);

@@ -384,10 +384,18 @@ void DataMapperWindow::UpdateMissingFiles(const QString& mappingFilename) {
 
 bool DataMapperWindow::LoadDataTransform(const QString& filename) {
 
-	if (!dec.hasJVM()){
-		dec.createJVM();
-		m_dataTransformModel->SetDataEngineConn(&dec);
-		m_dataSourceStats->SetDataEngineConn(&dec);
+	try {
+
+		if (!dec.hasJVM()){
+			dec.createJVM();
+			m_dataTransformModel->SetDataEngineConn(&dec);
+			m_dataSourceStats->SetDataEngineConn(&dec);
+		}
+	}
+	catch (const std::exception& e) {
+
+		QMessageBox::critical(this, tr("JVM Error"), tr(e.what()));
+		return false;
 	}
 
 	QFileInfo fileInfo(filename);
@@ -504,10 +512,18 @@ void DataMapperWindow::ProcessCSVFile(const QString& csvFile) {
 
 void DataMapperWindow::AddDataSources() {
 
-	if (!dec.hasJVM()){
-		dec.createJVM();
-		m_dataTransformModel->SetDataEngineConn(&dec);
-		m_dataSourceStats->SetDataEngineConn(&dec);
+	try {
+
+		if (!dec.hasJVM()){
+			dec.createJVM();
+			m_dataTransformModel->SetDataEngineConn(&dec);
+			m_dataSourceStats->SetDataEngineConn(&dec);
+		}
+	}
+	catch (const std::exception& e) {
+
+		QMessageBox::critical(this, tr("JVM Error"), tr(e.what()));
+		return;
 	}
 
 	QStringList dataSources = GetFileNamesOpenDialog("DatasourcesDir", tr("Add Data Source"), "", "All datasource files (*.*);;CSV files (*.csv)");
