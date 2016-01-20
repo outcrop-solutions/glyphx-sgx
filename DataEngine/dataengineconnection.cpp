@@ -48,9 +48,30 @@ namespace DataEngine
 		// Create the JVM
 		long flag = CreateJVM(&javaVM, (void**)&jniEnv, &vmArgs);
 		//flag = JNI_CreateJavaVM(&javaVM, (void**)&jniEnv, &vmArgs);
-
+		
 		if (flag == JNI_ERR) {
-			//qDebug() << QString("Error creating VM. Exiting...");
+			
+			throw std::exception("JVM Error: Unknown Error");
+		}
+		else if (flag == JNI_EDETACHED) {
+
+			throw std::exception("JVM Error: Thread detached from VM");
+		}
+		else if (flag == JNI_EVERSION) {
+
+			throw std::exception("JVM Error: Version Error");
+		}
+		else if (flag == JNI_ENOMEM) {
+
+			throw std::exception("JVM Error: Not Enough Memory");
+		}
+		else if (flag == JNI_EEXIST) {
+
+			throw std::exception("JVM Error: JVM already created");
+		}
+		else if (flag == JNI_EINVAL) {
+
+			throw std::exception("JVM Error: Invalid Arguments");
 		}
 
 		jcls = jniEnv->FindClass("DataEngine");
