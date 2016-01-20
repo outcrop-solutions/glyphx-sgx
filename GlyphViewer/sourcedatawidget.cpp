@@ -14,6 +14,7 @@
 #include <QtWidgets/QMessageBox>
 #include "csvfilewriter.h"
 #include "glyphbuilderapplication.h"
+#include <boost/uuid/uuid_io.hpp>
 
 SourceDataWidget::SourceDataWidget(SourceDataSelectionModel* selectionModel, QWidget *parent)
 	: QWidget(parent),
@@ -84,6 +85,7 @@ void SourceDataWidget::UpdateTables() {
 		for (auto indexSet : dataIndexes) {
 
 			QTableView* tableView = new QTableView(this);
+			tableView->setObjectName(indexSet.first);
 			QSqlQueryModel* queryModel = new QSqlQueryModel(this);
 			
 			SynGlyphX::TableColumns columns = m_selectionModel->GetSourceDataCache()->GetColumnsForTable(indexSet.first);
@@ -206,11 +208,14 @@ void SourceDataWidget::CreateSubsetVisualization() {
 			SynGlyphX::GlyphBuilderApplication::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
 
 			QFileInfo fileInfo(sdtFilename);
-			QString stdCanonicalPath = fileInfo.canonicalPath();
+			QString stdCanonicalPath = QDir::toNativeSeparators(fileInfo.absolutePath());
 
-			QString csvFileLocation = stdCanonicalPath + QDir::separator() + "selectedsourcedata.csv";
+			QString csvFileLocation = stdCanonicalPath + QDir::separator() + fileInfo.baseName() + "_selectedsourcedata.csv";
 			WriteToFile(m_sqlQueryModels[m_sourceDataTabs->currentIndex()], csvFileLocation);
-			SynGlyphX::DataTransformMapping::ConstSharedPtr subsetDataMapping = m_selectionModel->GetDataMappingModel()->GetDataMapping()->CreateSubsetMappingWithSingleTable(boost::uuids::uuid());
+			QStringList inputTableValues = m_sourceDataTabs->widget(m_sourceDataTabs->currentIndex())->objectName().split(':');
+			boost::uuids::string_generator gen;
+			SynGlyphX::InputTable inputTable(gen(inputTableValues[0].toStdWString()), (inputTableValues.size() > 1) ? inputTableValues[1].toStdWString() : SynGlyphX::FileDatasource::SingleTableName);
+			SynGlyphX::DataTransformMapping::ConstSharedPtr subsetDataMapping = m_selectionModel->GetDataMappingModel()->GetDataMapping()->CreateSubsetMappingWithSingleTable(inputTable, csvFileLocation.toStdWString());
 			subsetDataMapping->WriteToFile(sdtFilename.toStdString());
 			
 			settings.setValue("vizSaveDir", stdCanonicalPath);
