@@ -622,40 +622,67 @@ namespace SynGlyphX {
 		return missingLocalBaseImages;
 	}
 
-	DataTransformMapping::ConstSharedPtr DataTransformMapping::CreateSubsetMappingWithSingleTable(const InputTable& inputTable) const {
+	DataTransformMapping::ConstSharedPtr DataTransformMapping::CreateSubsetMappingWithSingleTable(const InputTable& inputTable, const std::wstring& csvFilename) const {
 
 		if (!m_datasources.HasDatasourceWithID(inputTable.GetDatasourceID())) {
 
 			throw std::exception("Can't create subset of mapping with a datasource ID that does not exist in the mapping.");
 		}
 
-		SharedPtr subsetMapping(new DataTransformMapping(*this));
+		SharedPtr subsetMapping(new DataTransformMapping());
+		subsetMapping->SetSceneProperties(m_sceneProperties);
+		subsetMapping->SetDefaults(m_defaults);
+		boost::uuids::uuid datasourceID = subsetMapping->AddFileDatasource(FileDatasource::SourceType::CSV, csvFilename);
 
-		for (auto fieldGroup : m_fieldGroups) {
+		for (auto fieldGroupPair : m_fieldGroups) {
 
-			if (inputTable != *fieldGroup.second.begin()) {
+			if (inputTable == *fieldGroupPair.second.begin()) {
 
-				subsetMapping->RemoveFieldGroup(fieldGroup.first);
+				FieldGroup fieldGroup;
+				for (auto field : fieldGroupPair.second) {
+
+					fieldGroup.insert(InputField(datasourceID, FileDatasource::SingleTableName, field.GetField(), field.GetType()));
+				}
+
+				subsetMapping->UpdateFieldGroup(fieldGroupPair.first, fieldGroup);
 			}
 		}
 
 		for (auto glyphGraphPair : m_glyphTrees) {
 
-			if (inputTable != glyphGraphPair.second->GetInputFields().begin()->second) {
+			if (inputTable == glyphGraphPair.second->GetInputFields().begin()->second) {
 
-				subsetMapping->RemoveGlyphTree(glyphGraphPair.first);
-			}
-		}
-
-		for (auto datasource : m_datasources.GetFileDatasources()) {
-
-			if (datasource.first != inputTable.GetDatasourceID()) {
-
-				subsetMapping->RemoveDatasource(datasource.first);
+				DataMappingGlyphGraph::SharedPtr glyphGraph(new DataMappingGlyphGraph(*glyphGraphPair.second.get()));
+				glyphGraph->ClearAllInputBindings();
+				CopyInputBindingsForSubsetMapping(glyphGraph, glyphGraph->GetRoot(), glyphGraphPair.second, glyphGraphPair.second->GetRoot().constify(), datasourceID);
+				subsetMapping->AddGlyphTree(glyphGraph);
 			}
 		}
 
 		return subsetMapping;
+	}
+
+	void DataTransformMapping::CopyInputBindingsForSubsetMapping(DataMappingGlyphGraph::SharedPtr newGlyphGraph, 
+																 DataMappingGlyphGraph::GlyphIterator& newNode, 
+																 DataMappingGlyphGraph::ConstSharedPtr oldGlyphGraph, 
+																 DataMappingGlyphGraph::ConstGlyphIterator& oldNode,
+																 const boost::uuids::uuid& datasourceID) const {
+
+		for (unsigned int i = 0; i < DataMappingGlyph::MappableField::MappableFieldSize; ++i) {
+
+			DataMappingGlyph::MappableField mappableField = static_cast<DataMappingGlyph::MappableField>(i);
+			const InputBinding& inputBinding = oldNode->second.GetInputBinding(mappableField);
+			if (inputBinding.IsBoundToInputField()) {
+
+				const InputField& oldInputField = oldGlyphGraph->GetInputFields().at(inputBinding.GetInputFieldID());
+				newGlyphGraph->SetInputField(newNode.constify(), mappableField, InputField(datasourceID, FileDatasource::SingleTableName, oldInputField.GetField(), oldInputField.GetType()));
+			}
+		}
+
+		for (unsigned int j = 0; j < oldGlyphGraph->ChildCount(oldNode); ++j) {
+
+			CopyInputBindingsForSubsetMapping(newGlyphGraph, newGlyphGraph->GetChild(newNode, j), oldGlyphGraph, oldGlyphGraph->GetChild(oldNode, j), datasourceID);
+		}
 	}
 
 } //namespace SynGlyphX

@@ -109,9 +109,14 @@ namespace SynGlyphX {
 		std::vector<boost::uuids::uuid> GetFileDatasourcesWithInvalidFiles(bool onlyUseDatasourcesInUse) const;
 		std::vector<unsigned int> GetFileBaseObjectsWithInvalidFiles() const;
 
-		ConstSharedPtr CreateSubsetMappingWithSingleTable(const InputTable& inputTable) const;
+		ConstSharedPtr CreateSubsetMappingWithSingleTable(const InputTable& inputTable, const std::wstring& csvFilename) const;
 
     protected:
+		void CopyInputBindingsForSubsetMapping(DataMappingGlyphGraph::SharedPtr newGlyphGraph, 
+											   DataMappingGlyphGraph::GlyphIterator& newNode, 
+											   DataMappingGlyphGraph::ConstSharedPtr oldGlyphGraph, 
+											   DataMappingGlyphGraph::ConstGlyphIterator& oldNode,
+											   const boost::uuids::uuid& datasourceID) const;
 		void Clear(bool addADefaultBaseObjectAfterClear);
 		virtual void ImportFromPropertyTree(const boost::property_tree::wptree& filePropertyTree);
 		virtual void ExportToPropertyTree(boost::property_tree::wptree& filePropertyTree) const;

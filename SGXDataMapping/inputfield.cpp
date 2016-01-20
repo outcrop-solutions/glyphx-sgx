@@ -111,6 +111,11 @@ namespace SynGlyphX {
 		return ((m_type == Integer) || (m_type == Real));
 	}
 
+	InputField::Type InputField::GetType() const {
+
+		return m_type;
+	}
+
 	InputField::HashID InputField::GetHashID() const {
 
 		std::size_t seed = InputTable::GetHashID();

@@ -60,6 +60,7 @@ namespace SynGlyphX {
 		void ExportToPropertyTree(boost::property_tree::wptree& propertyTree) const;
 
 		bool IsNumeric() const;
+		Type GetType() const;
 
 		static const boost::bimap<Type, std::wstring> s_fieldTypeStrings;
 
