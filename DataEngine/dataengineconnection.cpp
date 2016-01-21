@@ -10,6 +10,17 @@ namespace DataEngine
 {
 	typedef long(JNICALL *CreateJVMFunc)(JavaVM **pvm, void **penv, void *args);
 
+	DataEngineConnection::DataEngineConnection() :
+		classFound(false) {
+
+
+	}
+
+	DataEngineConnection::~DataEngineConnection() {
+
+
+	}
+
 	void DataEngineConnection::createJVM(){
 
 		std::ifstream jre(".\\jre\\bin\\client\\jvm.dll");
