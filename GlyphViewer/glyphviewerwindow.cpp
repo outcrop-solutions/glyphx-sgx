@@ -80,6 +80,18 @@ GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 	SynGlyphX::Transformer::SetDefaultImagesDirectory(SynGlyphX::GlyphBuilderApplication::GetDefaultBaseImagesLocation());
 	SynGlyphXANTz::ANTzCSVWriter::GetInstance().SetNOURLLocation(L"");
 
+	/*try {
+
+		if (!dec.hasJVM()){
+			dec.createJVM();
+		}
+	}
+	catch (const std::exception& e) {
+
+		QMessageBox::critical(this, tr("JVM Error"), tr(e.what()));
+		return;
+	}*/
+
 	QStringList commandLineArguments = SynGlyphX::Application::arguments();
 	if (commandLineArguments.size() > 1) {
 

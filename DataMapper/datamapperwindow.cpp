@@ -71,6 +71,20 @@ DataMapperWindow::DataMapperWindow(QWidget *parent)
 
 	QObject::connect(m_baseObjectsModel, &SynGlyphX::RoleDataFilterProxyModel::dataChanged, m_dataBindingWidget, &DataBindingTablesWidget::OnBaseObjectChanged);
 
+	/*try {
+
+		if (!dec.hasJVM()){
+			dec.createJVM();
+			m_dataTransformModel->SetDataEngineConn(&dec);
+			m_dataSourceStats->SetDataEngineConn(&dec);
+		}
+	}
+	catch (const std::exception& e) {
+
+		QMessageBox::critical(this, tr("JVM Error"), tr(e.what()));
+		throw;
+	}*/
+
 	QStringList commandLineArguments = SynGlyphX::Application::arguments();
 	if (commandLineArguments.size() > 1) {
 

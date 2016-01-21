@@ -45,12 +45,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_0577AAFB4E0E4D99A74789F847F53501"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_05DD2F303BC848759FC84ED96B0CCE18"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -231,6 +225,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_27CED671891C414485FA1F4A7468D247"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_27CED914798745429C477BDAEA4D2F8C"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -322,6 +322,12 @@
         "Entry"
         {
         "MsmKey" = "8:_367AC7B1E32C4444B7F5AA9EE2197874"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_36CDD908D79A4DD58D057BEFEF6CE955"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -639,6 +645,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_6C4259515F464353ABA78015C401D371"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_6C823CA604F44D698948EA48F03EB176"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -664,6 +676,12 @@
         "Entry"
         {
         "MsmKey" = "8:_700DB2EBD8B843F8BF42938F0AECD817"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_7087570FA1C7453494F011EC097C6592"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -802,12 +820,6 @@
         "Entry"
         {
         "MsmKey" = "8:_8BCBB0B5D2BD486AB808586BDC77CC70"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_8CFB4659BCDE49B4A9FE4110A21C6359"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -975,6 +987,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_AA5B70A3A1AE48F7AE8021580B8FE8D4"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_AC81C80D39A3456E8DF77E264C36FB81"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -1030,6 +1048,12 @@
         "Entry"
         {
         "MsmKey" = "8:_B436FA8E84D84E30A825C1105CF20342"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_B4D64BE40EC5453186EAE6F28B391537"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -1329,6 +1353,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_E91BC316104849F5B855ECDC80BDFFAD"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_EA47C9E6D8E94823B911A984A5349735"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -1366,6 +1396,12 @@
         "Entry"
         {
         "MsmKey" = "8:_F1BB7090311B40A7BE3B3E8815B8C61F"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_F4AEFF8E905347B29977ABF8E91AFD98"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -1594,26 +1630,6 @@
             "TargetName" = "8:jpinscp.dll"
             "Tag" = "8:"
             "Folder" = "8:_36F1FCC38D7848FBA6A0FE803EBD0AFB"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_0577AAFB4E0E4D99A74789F847F53501"
-            {
-            "SourcePath" = "8:..\\..\\DataEngine\\Java DataEngine\\sqlite4java-392\\sqlite4java-win32-x86.dll"
-            "TargetName" = "8:sqlite4java-win32-x86.dll"
-            "Tag" = "8:"
-            "Folder" = "8:_0FD992B69CC74D489682A631FA99B364"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -2208,6 +2224,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_27CED671891C414485FA1F4A7468D247"
+            {
+            "SourcePath" = "8:..\\..\\DataEngine\\Java DataEngine\\ojdbc6.jar"
+            "TargetName" = "8:ojdbc6.jar"
+            "Tag" = "8:"
+            "Folder" = "8:_0FD992B69CC74D489682A631FA99B364"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_27CED914798745429C477BDAEA4D2F8C"
             {
             "SourcePath" = "8:..\\..\\ANTzPlus\\ANTzMacTemplate\\release_2014-06-29.txt"
@@ -2474,6 +2510,26 @@
             "TargetName" = "8:sunec.jar"
             "Tag" = "8:"
             "Folder" = "8:_845E2525FCFB4F489F6A04F6035C2E38"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_36CDD908D79A4DD58D057BEFEF6CE955"
+            {
+            "SourcePath" = "8:..\\..\\DataEngine\\Java DataEngine\\database-drivers\\sqlite-jdbc-3.8.11.2.jar"
+            "TargetName" = "8:sqlite-jdbc-3.8.11.2.jar"
+            "Tag" = "8:"
+            "Folder" = "8:_10B6F7AAC886461BA7F14C41F07434A9"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -3448,6 +3504,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_6C4259515F464353ABA78015C401D371"
+            {
+            "SourcePath" = "8:..\\..\\DataEngine\\Java DataEngine\\database-drivers\\sqlite4java.jar"
+            "TargetName" = "8:sqlite4java.jar"
+            "Tag" = "8:"
+            "Folder" = "8:_10B6F7AAC886461BA7F14C41F07434A9"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_6C823CA604F44D698948EA48F03EB176"
             {
             "SourcePath" = "8:..\\..\\3rdParty\\bin\\Win32\\Release\\qt_plugins\\imageformats\\qtga.dll"
@@ -3534,6 +3610,26 @@
             "TargetName" = "8:t2k.dll"
             "Tag" = "8:"
             "Folder" = "8:_36F1FCC38D7848FBA6A0FE803EBD0AFB"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_7087570FA1C7453494F011EC097C6592"
+            {
+            "SourcePath" = "8:..\\..\\DataEngine\\Java DataEngine\\database-drivers\\sqlite4java-win32-x64.dll"
+            "TargetName" = "8:sqlite4java-win32-x64.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_10B6F7AAC886461BA7F14C41F07434A9"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -3974,26 +4070,6 @@
             "TargetName" = "8:libxslt.dll"
             "Tag" = "8:"
             "Folder" = "8:_36F1FCC38D7848FBA6A0FE803EBD0AFB"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_8CFB4659BCDE49B4A9FE4110A21C6359"
-            {
-            "SourcePath" = "8:..\\..\\DataEngine\\Java DataEngine\\sqlite4java.jar"
-            "TargetName" = "8:sqlite4java.jar"
-            "Tag" = "8:"
-            "Folder" = "8:_0FD992B69CC74D489682A631FA99B364"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -4488,6 +4564,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_AA5B70A3A1AE48F7AE8021580B8FE8D4"
+            {
+            "SourcePath" = "8:..\\..\\DataEngine\\Java DataEngine\\database-drivers\\postgresql-9.4.1207.jre7.jar"
+            "TargetName" = "8:postgresql-9.4.1207.jre7.jar"
+            "Tag" = "8:"
+            "Folder" = "8:_10B6F7AAC886461BA7F14C41F07434A9"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_AC81C80D39A3456E8DF77E264C36FB81"
             {
             "SourcePath" = "8:..\\..\\3rdParty\\bin\\Win32\\Release\\qt_plugins\\imageformats\\qgif.dll"
@@ -4684,6 +4780,26 @@
             "SharedLegacy" = "11:FALSE"
             "PackageAs" = "3:1"
             "Register" = "3:4"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_B4D64BE40EC5453186EAE6F28B391537"
+            {
+            "SourcePath" = "8:..\\..\\DataEngine\\Java DataEngine\\database-drivers\\sqlite4java-win32-x86.dll"
+            "TargetName" = "8:sqlite4java-win32-x86.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_10B6F7AAC886461BA7F14C41F07434A9"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
@@ -5528,6 +5644,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_E91BC316104849F5B855ECDC80BDFFAD"
+            {
+            "SourcePath" = "8:..\\..\\DataEngine\\Java DataEngine\\database-drivers\\vertica_5.1.4_jdk_5.jar"
+            "TargetName" = "8:vertica_5.1.4_jdk_5.jar"
+            "Tag" = "8:"
+            "Folder" = "8:_10B6F7AAC886461BA7F14C41F07434A9"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_EA47C9E6D8E94823B911A984A5349735"
             {
             "SourcePath" = "8:..\\..\\Misc\\InstallerFiles\\GlyphTemplates\\Plane.sgt"
@@ -5654,6 +5790,26 @@
             "TargetName" = "8:npt.dll"
             "Tag" = "8:"
             "Folder" = "8:_36F1FCC38D7848FBA6A0FE803EBD0AFB"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_F4AEFF8E905347B29977ABF8E91AFD98"
+            {
+            "SourcePath" = "8:..\\..\\DataEngine\\Java DataEngine\\database-drivers\\mysql-connector-java-5.1.38-bin.jar"
+            "TargetName" = "8:mysql-connector-java-5.1.38-bin.jar"
+            "Tag" = "8:"
+            "Folder" = "8:_10B6F7AAC886461BA7F14C41F07434A9"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -5979,6 +6135,17 @@
                     "Condition" = "8:"
                     "Transitive" = "11:FALSE"
                     "Property" = "8:_B8AE220546884E8092F26E42C8E77198"
+                        "Folders"
+                        {
+                        }
+                    }
+                    "{9EF0B969-E518-4E46-987F-47570745A589}:_10B6F7AAC886461BA7F14C41F07434A9"
+                    {
+                    "Name" = "8:database-drivers"
+                    "AlwaysCreate" = "11:FALSE"
+                    "Condition" = "8:"
+                    "Transitive" = "11:FALSE"
+                    "Property" = "8:_C52BEE5F60704779B53E277C9B65BF84"
                         "Folders"
                         {
                         }
