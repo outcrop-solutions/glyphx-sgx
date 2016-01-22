@@ -17,12 +17,14 @@ namespace DataEngine
 		JavaVM *javaVM;
 		JNIEnv *jniEnv;
 		jclass jcls;
-		bool classFound = false;
+		bool classFound;
 		std::map<boost::uuids::uuid, std::vector<std::wstring>> tableNumericFields;
 		std::map<boost::uuids::uuid, std::wstring> tableNames;
 
 	public:
-		DataEngineConnection(){};
+		DataEngineConnection();
+		~DataEngineConnection();
+
 		void createJVM();
 		bool hasJVM();
 		void loadCSV(std::string path);
@@ -43,7 +45,6 @@ namespace DataEngine
 		void destroyJVM();
 		JNIEnv* getEnv();
 		jclass getJcls();
-		~DataEngineConnection(){};
 
 	};
 }
