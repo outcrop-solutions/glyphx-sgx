@@ -43,5 +43,18 @@ FOR /F "tokens=*" %%p IN ('dir /b /a:d ..\bin\*') DO (
 		robocopy /z /e ..\..\Misc\InstallerFiles\%glyphtemplates% %basedir%\%%p\%%c\%glyphtemplates%
 		
 		copy /B /Y ..\..\Misc\InstallerFiles\Images\%logo% %basedir%\%%p\%%c\%logo%
+		
+		mkdir %basedir%\%%p\%%c\jre
+		mkdir %basedir%\%%p\%%c\jre\bin
+		mkdir %basedir%\%%p\%%c\jre\lib
+		
+		robocopy /z /e ..\..\DataEngine\jdk1.7.0_79\jre\bin %basedir%\%%p\%%c\jre\bin *.dll
+		robocopy /z /e ..\..\DataEngine\jdk1.7.0_79\jre\lib %basedir%\%%p\%%c\jre\lib *.jar
+		
+		mkdir %basedir%\%%p\%%c\database-drivers
+		robocopy /z /e "..\..\DataEngine\Java DataEngine\database-drivers" %basedir%\%%p\%%c\database-drivers
+		
+		copy /B /Y "..\..\DataEngine\Java DataEngine\ojdbc6.jar" %basedir%\%%p\%%c\ojdbc6.jar
+		copy /B /Y "..\..\DataEngine\Java DataEngine\ConvertHash.dll" %basedir%\%%p\%%c\ConvertHash.dll
 	)
 )
