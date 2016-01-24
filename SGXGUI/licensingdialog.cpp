@@ -66,6 +66,7 @@ namespace SynGlyphX {
 
 	bool LicensingDialog::CheckLicense() {
 
+#ifdef WIN32
 		QString previousCurrentDir = QDir::currentPath();
 		QDir::setCurrent(GetLicenseDirectory());
 
@@ -100,6 +101,9 @@ namespace SynGlyphX {
 
 		QDir::setCurrent(previousCurrentDir);
 		return result;
+#else
+		return true;
+#endif
 	}
 
 	QString LicensingDialog::LicenseStatusToString(int licenseStatus, int numberOfDaysLeft) {
