@@ -58,6 +58,7 @@ private slots:
 	void ChangeStereoMode();
 	void ImportFilesFromANTz();
 	void ChangeOptions();
+	void OnSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected);
 
 private:
 	virtual bool LoadRecentFile(const QString& filename);

@@ -130,6 +130,9 @@
     <ClCompile Include="GeneratedFiles\Debug\moc_fieldgroupwidget.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_glyphoptionswidget.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="GeneratedFiles\Debug\moc_glyphrolessubsettablewidget.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
@@ -202,6 +205,9 @@
     <ClCompile Include="GeneratedFiles\Release\moc_fieldgroupwidget.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_glyphoptionswidget.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="GeneratedFiles\Release\moc_glyphrolessubsettablewidget.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
@@ -229,6 +235,7 @@
     <ClCompile Include="GeneratedFiles\Release\moc_valuemappingdialog.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="glyphoptionswidget.cpp" />
     <ClCompile Include="glyphrolessubsettablewidget.cpp" />
     <ClCompile Include="glyphrolestablemodel.cpp" />
     <ClCompile Include="glyphtagview.cpp" />
@@ -511,6 +518,18 @@
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Moc%27ing glyphrolessubsettablewidget.h...</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DWIN64 -DQT_DLL -DQT_NO_DEBUG -DNDEBUG "-I.\GeneratedFiles" "-I." "-I.\..\..\3rdParty\include\google_breakpad" "-I.\..\..\3rdParty\include\Qt_5_2_1" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I.\..\..\Core\SGXFoundation" "-I.\..\..\GUI\SGXGUI" "-I.\..\..\Core\SGXDataTransform" "-I.\..\..\3rdParty\include\boost_1_55_0" "-I.\..\..\Core\SGXDataMapping" "-I.\..\..\ANTzPlus\ANTzBridge" "-I.\..\..\3rdParty\include\stlplus_3_11" "-I.\..\..\Core\SGXGeospatial" "-I.\..\..\GUI\MapDownloading" "-I.\..\..\ANTzPlus\ANTzSingleGlyphGUI" "-I.\..\..\ANTzPlus\ANTzCore" "-I.\..\..\ANTzPlus\ANTzDataTransform" "-I.\..\..\GUI\SGXDataTransformGUI" "-I.\..\..\Core\SGXUtility" "-I.\..\..\GUI\SGXGlyphGUI" "-I.\..\..\Core\SGXImage"</Command>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="glyphoptionswidget.h">
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing glyphoptionswidget.h...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DWIN64 -DQT_DLL "-I.\..\..\DataEngine\jdk1.7.0_79\include\win32" "-I.\..\..\DataEngine\jdk1.7.0_79\include" "-I.\..\..\DataEngine\DataEngine" "-I.\GeneratedFiles" "-I." "-I.\..\..\3rdParty\include\google_breakpad" "-I.\..\..\3rdParty\include\Qt_5_2_1" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I.\..\..\Core\SGXFoundation" "-I.\..\..\GUI\SGXGUI" "-I.\..\..\Core\SGXDataTransform" "-I.\..\..\3rdParty\include\boost_1_55_0" "-I.\..\..\Core\SGXDataMapping" "-I.\..\..\ANTzPlus\ANTzBridge" "-I.\..\..\3rdParty\include\stlplus_3_11" "-I.\..\..\Core\SGXGeospatial" "-I.\..\..\GUI\MapDownloading" "-I.\..\..\ANTzPlus\ANTzSingleGlyphGUI" "-I.\..\..\ANTzPlus\ANTzCore" "-I.\..\..\ANTzPlus\ANTzDataTransform" "-I.\..\..\GUI\SGXDataTransformGUI" "-I.\..\..\Core\SGXUtility" "-I.\..\..\GUI\SGXGlyphGUI" "-I.\..\..\Core\SGXImage"</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Moc%27ing glyphoptionswidget.h...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DWIN64 -DQT_DLL -DQT_NO_DEBUG -DNDEBUG "-I.\..\..\DataEngine\jdk1.7.0_79\include\win32" "-I.\..\..\DataEngine\jdk1.7.0_79\include" "-I.\..\..\DataEngine\DataEngine" "-I.\GeneratedFiles" "-I." "-I.\..\..\3rdParty\include\google_breakpad" "-I.\..\..\3rdParty\include\Qt_5_2_1" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I.\..\..\Core\SGXFoundation" "-I.\..\..\GUI\SGXGUI" "-I.\..\..\Core\SGXDataTransform" "-I.\..\..\3rdParty\include\boost_1_55_0" "-I.\..\..\Core\SGXDataMapping" "-I.\..\..\ANTzPlus\ANTzBridge" "-I.\..\..\3rdParty\include\stlplus_3_11" "-I.\..\..\Core\SGXGeospatial" "-I.\..\..\GUI\MapDownloading" "-I.\..\..\ANTzPlus\ANTzSingleGlyphGUI" "-I.\..\..\ANTzPlus\ANTzCore" "-I.\..\..\ANTzPlus\ANTzDataTransform" "-I.\..\..\GUI\SGXDataTransformGUI" "-I.\..\..\Core\SGXUtility" "-I.\..\..\GUI\SGXGlyphGUI" "-I.\..\..\Core\SGXImage"</Command>
     </CustomBuild>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

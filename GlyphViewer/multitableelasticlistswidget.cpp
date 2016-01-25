@@ -54,7 +54,7 @@ MultiTableElasticListsWidget::MultiTableElasticListsWidget(SynGlyphX::SourceData
 	EnableButtons(!m_selectionModel->GetSourceDataSelection().empty());
 	QObject::connect(m_selectionModel, &SourceDataSelectionModel::SelectionChanged, this, &MultiTableElasticListsWidget::OnSelectionChanged);
 
-	m_sourceDataWindow.reset(new SourceDataWidget(m_sourceDataCache));
+	m_sourceDataWindow.reset(new SourceDataWidget(m_selectionModel));
 	QObject::connect(m_sourceWidgetButton, &QPushButton::toggled, m_sourceDataWindow.data(), &SourceDataWidget::setVisible);
 	m_sourceDataWindow->setVisible(false);
 
@@ -121,7 +121,7 @@ void MultiTableElasticListsWidget::UpdateElasticListsAndSourceDataWidget() {
 	EnableButtons(isSelectionNotEmpty);
 	if (isSelectionNotEmpty) {
 
-		m_sourceDataWindow->UpdateTables(sourceDataSelectionSets);
+		//m_sourceDataWindow->UpdateTables(sourceDataSelectionSets);
 		UpdateElasticLists(sourceDataSelectionSets);
 
 		//Only change the table shown if it is not in the selection at all

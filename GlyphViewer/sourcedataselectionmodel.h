@@ -46,6 +46,9 @@ public:
 	void ClearSourceDataSelectionForTable(const QString& table, bool updateFocus = true);
 	const IndexSetMap& GetSourceDataSelection() const;
 
+	SynGlyphX::SourceDataCache::ConstSharedPtr GetSourceDataCache() const;
+	const SynGlyphX::DataMappingModel* GetDataMappingModel() const;
+
 signals:
 	void SelectionChanged();
 

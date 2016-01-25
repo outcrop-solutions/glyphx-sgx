@@ -38,6 +38,9 @@
     <ClInclude Include="sgxdatatransformgui_global.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="portablevisualizationexport.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="changedatasourcefiledialog.h">
@@ -88,6 +91,9 @@
       <Filter>Generated Files\Release_Win32</Filter>
     </ClCompile>
     <ClCompile Include="datamappingmodel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="portablevisualizationexport.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

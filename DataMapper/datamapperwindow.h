@@ -34,6 +34,7 @@
 #include "antzcsvwriter.h"
 #include "dataengineconnection.h"
 #include "glyphengine.h"
+#include "portablevisualizationexport.h"
 
 class DataMapperWindow : public SynGlyphX::MainWindow
 {
@@ -57,7 +58,7 @@ private slots:
     bool SaveProject();
     bool SaveAsProject();
     void AddDataSources();
-	void ExportToANTz(SynGlyphXANTz::ANTzCSVWriter::OutputPlatform platform);
+	void CreatePortableVisualization(SynGlyphX::PortableVisualizationExport::Platform platform);
 	void AddBaseObject();
 	void AddGlyphTemplate();
 	void CreateNewGlyphTree();
@@ -72,13 +73,12 @@ private:
 	void CreateExportToPortableVisualizationSubmenu();
     void CreateDockWidgets();
 	void CreateCenterWidget();
-	void UpdateMissingFileDatasources(const QString& filename);
+	void UpdateMissingFiles(const QString& mappingFilename);
 	bool LoadDataTransform(const QString& filename);
 	bool SaveDataTransform(const QString& filename);
 	bool AskUserToSave();
 	void EnableProjectDependentActions(bool enable);
 	bool ValidateNewDatasource(const QString& datasource);
-	bool DoesANTzTemplateExist(const QString& templateDir) const;
 	void ProcessCSVFile(const QString& csvFile);
 	void ReadNewMappingDefaults();
 	void WriteNewMappingDefaults();
@@ -111,8 +111,6 @@ private:
 
 	SynGlyphX::DataMappingDefaults m_newMappingDefaults;
 	SynGlyphX::SceneProperties m_newMappingSceneProperties;
-
-	std::unordered_map<SynGlyphXANTz::ANTzCSVWriter::OutputPlatform, QString> m_antzExportDirectories;
 
 	QMetaObject::Connection m_modelResetConnection;
 	DataEngine::DataEngineConnection dec;

@@ -80,6 +80,18 @@ GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 	SynGlyphX::Transformer::SetDefaultImagesDirectory(SynGlyphX::GlyphBuilderApplication::GetDefaultBaseImagesLocation());
 	SynGlyphXANTz::ANTzCSVWriter::GetInstance().SetNOURLLocation(L"");
 
+	/*try {
+
+		if (!dec.hasJVM()){
+			dec.createJVM();
+		}
+	}
+	catch (const std::exception& e) {
+
+		QMessageBox::critical(this, tr("JVM Error"), tr(e.what()));
+		return;
+	}*/
+
 	QStringList commandLineArguments = SynGlyphX::Application::arguments();
 	if (commandLineArguments.size() > 1) {
 
@@ -155,6 +167,9 @@ void GlyphViewerWindow::CreateMenus() {
 	QAction* closeVisualizationAction = CreateMenuAction(m_fileMenu, tr("Close Visualization"), QKeySequence::Close);
 	QObject::connect(closeVisualizationAction, &QAction::triggered, this, &GlyphViewerWindow::CloseVisualization);
 	m_loadedVisualizationDependentActions.push_back(closeVisualizationAction);
+
+	//m_fileMenu->addSeparator();
+	QObject::connect(m_glyphForestSelectionModel, &SynGlyphX::ItemFocusSelectionModel::selectionChanged, this, &GlyphViewerWindow::OnSelectionChanged);
 
 	m_fileMenu->addActions(m_recentFileActions);
 
@@ -459,8 +474,16 @@ void GlyphViewerWindow::ValidateDataMappingFile(const QString& filename) {
 
 void GlyphViewerWindow::LoadDataTransform(const QString& filename) {
 
-	if (!dec.hasJVM()){
-		dec.createJVM();
+	try {
+
+		if (!dec.hasJVM()){
+			dec.createJVM();
+		}
+	}
+	catch (const std::exception& e) {
+
+		QMessageBox::critical(this, tr("JVM Error"), tr(e.what()));
+		return;
 	}
 
 	SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
@@ -726,4 +749,9 @@ GlyphViewerOptions GlyphViewerWindow::CollectOptions() {
 	options.SetShowMessageWhenImagesDidNotDownload(m_showErrorFromTransform);
 
 	return options;
+}
+
+void GlyphViewerWindow::OnSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected) {
+
+	
 }
