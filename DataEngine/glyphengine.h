@@ -18,7 +18,6 @@ namespace DataEngine
 		jclass jcls;
 		std::string sdtFile;
 		std::string baseOutputDir;
-		std::string antzTemplateDir;
 		std::string baseImageDir;
 		std::string baseFilename;
 		std::string application;
@@ -27,18 +26,16 @@ namespace DataEngine
 	    QString m_error;
 		std::vector<std::string> images;
 		void prepare();
-		void copyFiles();
 		void createCacheDirectory();
 		void copyBaseImages();
-		void copyDirectoryOverwrite(const std::string& sourceDir, const std::string& destinationDir, bool recursive);
-		void copyDirectoryOverwrite(const boost::filesystem::path& sourcePath, const boost::filesystem::path& destinationPath, bool recursive);
 		bool downloadBaseImage(const SynGlyphX::BaseImage& baseImage, QString baseImageFilename);
 		void setGeoBoundingBox(std::vector<double> nw, std::vector<double> se, std::vector<double> size);
 		bool hasImageBeenUpdated();
 		std::vector<double> getNWandSE();
+
 	public:
 		GlyphEngine(){};
-		void initiate(JNIEnv *env, std::string sdtPath, std::string outDir, std::string antzExDir, std::string bid, std::string bfn,std::string appName);
+		void initiate(JNIEnv *env, std::string sdtPath, std::string outDir, std::string bid, std::string bfn,std::string appName);
 		bool getDownloadedBaseImage(std::vector<SynGlyphX::BaseImage> baseImages);
 		std::vector<std::string> getBaseImages();
 		void generateGlyphs();

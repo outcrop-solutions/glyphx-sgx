@@ -9,12 +9,11 @@
 
 namespace DataEngine
 {
-	void GlyphEngine::initiate(JNIEnv *env, std::string sdtPath, std::string outDir, std::string antzExDir, std::string bid, std::string bfn, std::string appName){
+	void GlyphEngine::initiate(JNIEnv *env, std::string sdtPath, std::string outDir, std::string bid, std::string bfn, std::string appName){
 
 		jniEnv = env;
 		sdtFile = sdtPath;
 		baseOutputDir = outDir;
-		antzTemplateDir = antzExDir;
 		baseImageDir = bid;
 		baseFilename = bfn;
 		application = appName;
@@ -54,58 +53,25 @@ namespace DataEngine
 
 	void GlyphEngine::prepare(){
 
-		QString bod(baseOutputDir.c_str());
+		if (application == "GlyphViewer") {
 
-		QDir dir(bod);
-		if (!dir.exists()) {
+			QString bod(baseOutputDir.c_str());
 
-			if (!dir.mkpath(bod)) {
+			QDir dir(bod);
+			if (!dir.exists()) {
 
-				throw std::exception("Instance directory was not created");
-			}
-		}
-		else {
+				if (!dir.mkpath(bod)) {
 
-			if (application == "DataMapper"){
-				boost::filesystem::path dirPath(baseOutputDir);
-				for (boost::filesystem::directory_iterator iT(dirPath); iT != boost::filesystem::directory_iterator(); ++iT) {
-
-					boost::filesystem::remove_all(iT->path());
+					throw std::exception("Instance directory was not created");
 				}
 			}
-		}
 
-		if (application == "DataMapper"){
-			copyFiles();
-		}
-		else if (application == "GlyphViewer"){
 			createCacheDirectory();
 		}
 
 	}
 
-	void GlyphEngine::copyFiles(){
-
-		QString bod(baseOutputDir.c_str());
-
-		QString baseUsrCSVDir = QDir::toNativeSeparators(bod + QDir::separator() + "usr" + QDir::separator() + "csv" + QDir::separator());
-
-		copyDirectoryOverwrite(QDir::toNativeSeparators(antzTemplateDir.c_str()).toStdString(), baseOutputDir, true);
-	
-		std::ifstream ifile("../msvcp120.dll");
-		if(ifile){
-			QFile::copy(QString((antzTemplateDir + "../msvcp120.dll").c_str()), bod + "/msvcp120.dll");
-			QFile::copy(QString((antzTemplateDir + "../msvcr120.dll").c_str()), bod + "/msvcr120.dll");
-			QFile::copy(QString((antzTemplateDir + "../vccorlib120.dll").c_str()), bod + "/vccorlib120.dll");
-		}
-		else{
-			QFile::copy(QString((antzTemplateDir + "../../../../3rdParty/tools/vc120redist/msvcp120.dll").c_str()), bod + "/msvcp120.dll");
-			QFile::copy(QString((antzTemplateDir + "../../../../3rdParty/tools/vc120redist/msvcr120.dll").c_str()), bod + "/msvcr120.dll");
-			QFile::copy(QString((antzTemplateDir + "../../../../3rdParty/tools/vc120redist/vccorlib120.dll").c_str()), bod + "/vccorlib120.dll");
-		}
-	}
-
-	void GlyphEngine::createCacheDirectory(){
+	void GlyphEngine::createCacheDirectory() {
 
 		if (!boost::filesystem::exists(baseOutputDir + "/antz")){
 			if (!boost::filesystem::create_directories(baseOutputDir + "/antz")) {
@@ -116,53 +82,6 @@ namespace DataEngine
 
 		boost::filesystem::copy_file(sdtFile, baseOutputDir+"/mapping.sdt", boost::filesystem::copy_option::overwrite_if_exists);
 
-	}
-
-	void GlyphEngine::copyDirectoryOverwrite(const std::string& sourceDir, const std::string& destinationDir, bool recursive) {
-
-		boost::filesystem::path sourcePath(sourceDir);
-		if (!boost::filesystem::exists(sourcePath)) {
-
-			throw std::invalid_argument("CopyDirectory: Source does not exist");
-		}
-		if (!boost::filesystem::is_directory(sourcePath)) {
-
-			throw std::invalid_argument("CopyDirectory: Source is not a directory");
-		}
-
-		boost::filesystem::path destinationPath(destinationDir);
-		if (boost::filesystem::exists(destinationPath)) {
-
-			if (!boost::filesystem::is_directory(destinationPath)) {
-
-				throw std::invalid_argument("CopyDirectory: Destination is not a directory");
-			}
-		}
-
-		copyDirectoryOverwrite(sourcePath, destinationPath, recursive);
-	}
-
-	void GlyphEngine::copyDirectoryOverwrite(const boost::filesystem::path& sourcePath, const boost::filesystem::path& destinationPath, bool recursive) {
-
-		if (!boost::filesystem::exists(destinationPath)) {
-
-			if (!boost::filesystem::create_directories(destinationPath)) {
-
-				throw std::invalid_argument("CopyDirectory: Unable to create destination directory");
-			}
-		}
-
-		for (boost::filesystem::directory_iterator iT(sourcePath); iT != boost::filesystem::directory_iterator(); ++iT) {
-
-			if ((boost::filesystem::is_directory(iT->status())) && recursive) {
-
-				copyDirectoryOverwrite(iT->path(), destinationPath / iT->path().filename(), recursive);
-			}
-			else {
-
-				boost::filesystem::copy_file(iT->path(), destinationPath / iT->path().filename(), boost::filesystem::copy_option::overwrite_if_exists);
-			}
-		}
 	}
 
 	std::vector<std::string> GlyphEngine::getBaseImages(){
