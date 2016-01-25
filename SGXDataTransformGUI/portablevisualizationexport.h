@@ -17,13 +17,17 @@
 
 #include "sgxdatatransformgui_global.h"
 #include "datatransformmapping.h"
+#include <QtCore/QObject>
 #include <QtCore/QString>
 #include <unordered_map>
+#include <QtWidgets/QMenu>
 
 namespace SynGlyphX {
 
-	class SGXDATATRANSFORMGUI_EXPORT PortableVisualizationExport
+	class SGXDATATRANSFORMGUI_EXPORT PortableVisualizationExport : public QObject
 	{
+		Q_OBJECT
+
 	public:
 		enum Platform {
 			Windows,
@@ -36,16 +40,22 @@ namespace SynGlyphX {
 		PortableVisualizationExport();
 		~PortableVisualizationExport();
 
-		static void SetupSourceDirectories();
-		static const QString& GetSourceDirectory(Platform platform);
-		static bool DoesPlatformHaveSourceDirectory(Platform platform);
-		static bool DoAnyPlatformsHaveSourceDirectories();
+		void CreateSubmenu(QMenu* menu);
+		void CopyContentsOfSourceDirectory(Platform platform, const QString& destinationDir) const;
+		
+		const QString& GetSourceDirectory(Platform platform) const;
+		bool DoesPlatformHaveSourceDirectory(Platform platform) const;
+		bool DoAnyPlatformsHaveSourceDirectories() const;
+
+	signals:
+		void CreatePortableVisualization(Platform platform);
 
 	private:
-		static void AddSourceDirectoryToPlatformIfItExists(Platform platform, const QString& directoryName);
-		static bool DoesSourceDirectoryExist(const QString directoryName);
+		void SetupSourceDirectories();
+		void AddSourceDirectoryToPlatformIfItExists(Platform platform, const QString& directoryName);
+		bool DoesSourceDirectoryExist(const QString directoryName) const;
 
-		static std::unordered_map<Platform, QString> s_sourceDirectories;
+		std::unordered_map<Platform, QString> m_sourceDirectories;
 	};
 
 } //namespace SynGlyphX

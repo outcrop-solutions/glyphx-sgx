@@ -45,8 +45,6 @@ DataMapperWindow::DataMapperWindow(QWidget *parent)
 	m_baseObjectsModel(nullptr),
 	m_dataSourcesView(nullptr)
 {
-	SynGlyphX::PortableVisualizationExport::SetupSourceDirectories();
-
 	m_dataTransformModel = new DataTransformModel(this);
 	QObject::connect(m_dataTransformModel, &DataTransformModel::dataChanged, this, [&, this](const QModelIndex& topLeft, const QModelIndex& bottomRight){ setWindowModified(true); });
 	QObject::connect(m_dataTransformModel, &DataTransformModel::rowsInserted, this, [&, this](const QModelIndex& parent, int first, int last){ setWindowModified(true); });
@@ -122,30 +120,17 @@ void DataMapperWindow::CreateCenterWidget() {
 
 void DataMapperWindow::CreateExportToPortableVisualizationSubmenu() {
 
-	if (SynGlyphX::PortableVisualizationExport::DoAnyPlatformsHaveSourceDirectories()) {
+	if (m_portableVisualizationExport.DoAnyPlatformsHaveSourceDirectories()) {
 
 		m_fileMenu->addSeparator();
 		QMenu* portableVisualizationMenu = m_fileMenu->addMenu(tr("Create Portable Visualization"));
 
-		if (SynGlyphX::PortableVisualizationExport::DoesPlatformHaveSourceDirectory(SynGlyphX::PortableVisualizationExport::Platform::Windows)) {
+		m_portableVisualizationExport.CreateSubmenu(portableVisualizationMenu);
+		QObject::connect(&m_portableVisualizationExport, &SynGlyphX::PortableVisualizationExport::CreatePortableVisualization, this, &DataMapperWindow::CreatePortableVisualization);
 
-			QAction* exportToANTzAction = CreateMenuAction(portableVisualizationMenu, tr("Windows"));
-			QObject::connect(exportToANTzAction, &QAction::triggered, this, [this]{ CreatePortableVisualization(SynGlyphX::PortableVisualizationExport::Platform::Windows); });
-			m_projectDependentActions.push_back(exportToANTzAction);
-		}
+		for (auto action : portableVisualizationMenu->actions()) {
 
-		if (SynGlyphX::PortableVisualizationExport::DoesPlatformHaveSourceDirectory(SynGlyphX::PortableVisualizationExport::Platform::WindowsZSpace)) {
-
-			QAction* exportTozSpaceANTzAction = CreateMenuAction(portableVisualizationMenu, tr("Windows (zSpace)"));
-			QObject::connect(exportTozSpaceANTzAction, &QAction::triggered, this, [this]{ CreatePortableVisualization(SynGlyphX::PortableVisualizationExport::Platform::WindowsZSpace); });
-			m_projectDependentActions.push_back(exportTozSpaceANTzAction);
-		}
-
-		if (SynGlyphX::PortableVisualizationExport::DoesPlatformHaveSourceDirectory(SynGlyphX::PortableVisualizationExport::Platform::Mac)) {
-
-			QAction* exportToMacANTzAction = CreateMenuAction(portableVisualizationMenu, tr("Mac"));
-			QObject::connect(exportToMacANTzAction, &QAction::triggered, this, [this]{ CreatePortableVisualization(SynGlyphX::PortableVisualizationExport::Platform::Mac); });
-			m_projectDependentActions.push_back(exportToMacANTzAction);
+			m_projectDependentActions.push_back(action);
 		}
 	}
 }
@@ -673,10 +658,11 @@ void DataMapperWindow::CreatePortableVisualization(SynGlyphX::PortableVisualizat
 
 		//bool useOldANTzFilenames = !QFile::exists(templateDir + QDir::separator() + "usr" + QDir::separator() + "csv" + QDir::separator() + "antzglobals.csv");
 		SaveProject();
+		m_portableVisualizationExport.CopyContentsOfSourceDirectory(platform, csvDirectory);
 		DataEngine::GlyphEngine ge;
 		std::string baseImageDir = SynGlyphX::GlyphBuilderApplication::GetDefaultBaseImagesLocation().toStdString();
 		std::string baseFilename = (QString::fromStdWString(SynGlyphX::DefaultBaseImageProperties::GetBasefilename()).toStdString());
-		ge.initiate(dec.getEnv(), m_currentFilename.toStdString(), csvDirectory.toStdString() + "\\", SynGlyphX::PortableVisualizationExport::GetSourceDirectory(platform).toStdString() + "\\", baseImageDir, baseFilename, "DataMapper");
+		ge.initiate(dec.getEnv(), m_currentFilename.toStdString(), csvDirectory.toStdString() + "\\", baseImageDir, baseFilename, "DataMapper");
 		ge.getDownloadedBaseImage(m_dataTransformModel->GetDataMapping().get()->GetBaseObjects());
 		ge.generateGlyphs();
 
@@ -695,20 +681,21 @@ void DataMapperWindow::CreatePortableVisualization(SynGlyphX::PortableVisualizat
 	}
 	catch (const std::exception& e) {
 
-		try{
+		try {
+
 			SynGlyphX::Filesystem::RemoveContentsOfDirectory(csvDirectory.toStdString());
 			SynGlyphX::Application::restoreOverrideCursor();
 			QMessageBox::critical(this, tr("Create Portable Visualization Error"), e.what());
 		}
-		catch (...)
-		{
+		catch (...) {
+		
 			SynGlyphX::Application::restoreOverrideCursor();
 			QMessageBox::information(this, tr("Directory in use"), tr("Could not create portable visualization because files in this directory are currently in use."), QMessageBox::Ok);
 		}
 		return;
 	}
 
-	statusBar()->showMessage("Data transform successfully exported to ANTz", 6000);
+	statusBar()->showMessage("Portable visualization successfully created", 6000);
 }
 
 void DataMapperWindow::AddBaseObject() {

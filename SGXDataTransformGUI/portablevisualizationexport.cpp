@@ -2,14 +2,13 @@
 #include <QtCore/QSettings>
 #include <QtCore/QDir>
 #include "glyphbuilderapplication.h"
+#include "filesystem.h"
 
 namespace SynGlyphX {
 
-	std::unordered_map<PortableVisualizationExport::Platform, QString> PortableVisualizationExport::s_sourceDirectories;
-
 	PortableVisualizationExport::PortableVisualizationExport()
 	{
-
+		SetupSourceDirectories();
 	}
 
 	PortableVisualizationExport::~PortableVisualizationExport()
@@ -17,45 +16,68 @@ namespace SynGlyphX {
 
 	}
 
+	void PortableVisualizationExport::CreateSubmenu(QMenu* menu) {
+
+		if (DoesPlatformHaveSourceDirectory(Platform::Windows)) {
+
+			QAction* windowsAction = menu->addAction(tr("Windows"));
+			QObject::connect(windowsAction, &QAction::triggered, this, [this]{ emit CreatePortableVisualization(Platform::Windows); });
+		}
+
+		if (DoesPlatformHaveSourceDirectory(Platform::WindowsZSpace)) {
+
+			QAction* zSpaceAction = menu->addAction(tr("Windows (zSpace)"));
+			QObject::connect(zSpaceAction, &QAction::triggered, this, [this]{ emit CreatePortableVisualization(Platform::WindowsZSpace); });
+		}
+
+		if (DoesPlatformHaveSourceDirectory(Platform::Mac)) {
+
+			QAction* macAction = menu->addAction(tr("Mac"));
+			QObject::connect(macAction, &QAction::triggered, this, [this]{ emit CreatePortableVisualization(Platform::Mac); });
+		}
+	}
+
 	void PortableVisualizationExport::SetupSourceDirectories() {
+
+		QString sourceBaseDir = QDir::toNativeSeparators(QFileInfo(SynGlyphX::Application::applicationDirPath()).canonicalFilePath()) + QDir::separator();
 
 		QSettings settings;
 		settings.beginGroup("ANTzExport");
-		AddSourceDirectoryToPlatformIfItExists(Platform::Windows, settings.value("windows", SynGlyphX::Application::applicationDirPath() + QDir::separator() + "ANTzTemplate").toString());
-		AddSourceDirectoryToPlatformIfItExists(Platform::WindowsZSpace, settings.value("zSpace", SynGlyphX::Application::applicationDirPath() + QDir::separator() + "ANTzzSpaceTemplate").toString());
-		AddSourceDirectoryToPlatformIfItExists(Platform::Mac, settings.value("mac", SynGlyphX::Application::applicationDirPath() + QDir::separator() + "ANTzMacTemplate").toString());
+		AddSourceDirectoryToPlatformIfItExists(Platform::Windows, settings.value("windows", sourceBaseDir + "ANTzTemplate").toString());
+		AddSourceDirectoryToPlatformIfItExists(Platform::WindowsZSpace, settings.value("zSpace", sourceBaseDir + "ANTzzSpaceTemplate").toString());
+		AddSourceDirectoryToPlatformIfItExists(Platform::Mac, settings.value("mac", sourceBaseDir + "ANTzMacTemplate").toString());
 		settings.endGroup();
 	}
 
-	const QString& PortableVisualizationExport::GetSourceDirectory(Platform platform) {
+	const QString& PortableVisualizationExport::GetSourceDirectory(Platform platform) const {
 
-		if (s_sourceDirectories.count(platform) == 0) {
+		if (m_sourceDirectories.count(platform) == 0) {
 
 			throw std::exception("Platform does not exist");
 		}
 
-		return s_sourceDirectories[platform];
+		return m_sourceDirectories.at(platform);
 	}
 
-	bool PortableVisualizationExport::DoesPlatformHaveSourceDirectory(Platform platform) {
+	bool PortableVisualizationExport::DoesPlatformHaveSourceDirectory(Platform platform) const {
 
-		return (s_sourceDirectories.count(platform) == 1);
+		return (m_sourceDirectories.count(platform) == 1);
 	}
 
-	bool PortableVisualizationExport::DoAnyPlatformsHaveSourceDirectories() {
+	bool PortableVisualizationExport::DoAnyPlatformsHaveSourceDirectories() const {
 
-		return (s_sourceDirectories.size() > 0);
+		return (m_sourceDirectories.size() > 0);
 	}
 
 	void PortableVisualizationExport::AddSourceDirectoryToPlatformIfItExists(Platform platform, const QString& directoryName) {
 
 		if (DoesSourceDirectoryExist(directoryName)) {
 
-			s_sourceDirectories[platform] = directoryName;
+			m_sourceDirectories[platform] = directoryName;
 		}
 	}
 
-	bool PortableVisualizationExport::DoesSourceDirectoryExist(const QString directoryName) {
+	bool PortableVisualizationExport::DoesSourceDirectoryExist(const QString directoryName) const {
 
 		QDir baseSourceDir(directoryName);
 		if (!baseSourceDir.exists() || (baseSourceDir.count() == 0)) {
@@ -79,6 +101,29 @@ namespace SynGlyphX {
 		}
 
 		return true;
+	}
+
+	void PortableVisualizationExport::CopyContentsOfSourceDirectory(Platform platform, const QString& destinationDir) const {
+
+		QDir destDir(destinationDir);
+		if (destDir.exists()) {
+
+			Filesystem::RemoveContentsOfDirectory(destinationDir.toStdString());
+		}
+		else {
+
+			destDir.mkpath(destinationDir);
+		}
+
+		Filesystem::CopyDirectoryOverwrite(m_sourceDirectories.at(platform).toStdString(), destinationDir.toStdString(), true);
+		if ((platform == Platform::Windows) || (platform == Platform::WindowsZSpace)) {
+
+			QString appPath = SynGlyphX::Application::applicationDirPath() + QDir::separator();
+
+			QFile::copy(appPath + "msvcp120.dll", destinationDir + "/msvcp120.dll");
+			QFile::copy(appPath + "msvcr120.dll", destinationDir + "/msvcr120.dll");
+			QFile::copy(appPath + "vccorlib120.dll", destinationDir + "/vccorlib120.dll");
+		}
 	}
 
 } //namespace SynGlyphX

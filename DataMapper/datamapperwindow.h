@@ -93,6 +93,8 @@ private:
 	QMenu* m_toolsMenu;
 
 	QAction* m_showAnimation;
+
+	SynGlyphX::PortableVisualizationExport m_portableVisualizationExport;
     
 	SynGlyphX::RoleDataFilterProxyModel* m_baseObjectsModel;
 	BaseObjectListView* m_baseObjectsView;
