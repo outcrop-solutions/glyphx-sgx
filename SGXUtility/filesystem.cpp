@@ -58,11 +58,12 @@ namespace SynGlyphX {
 
 		for (boost::filesystem::directory_iterator iT(sourcePath); iT != boost::filesystem::directory_iterator(); ++iT) {
 
-			if ((boost::filesystem::is_directory(iT->status())) && recursive) {
+			bool isDirectory = boost::filesystem::is_directory(iT->status());
+			if (isDirectory && recursive) {
 
 				CopyDirectoryOverwrite(iT->path(), destinationPath / iT->path().filename(), recursive);
 			}
-			else {
+			else if (!isDirectory) {
 
 				boost::filesystem::copy_file(iT->path(), destinationPath / iT->path().filename(), boost::filesystem::copy_option::overwrite_if_exists);
 			}
