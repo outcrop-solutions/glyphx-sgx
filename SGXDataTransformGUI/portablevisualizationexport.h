@@ -1,7 +1,4 @@
 ///
-/// SynGlyphX Holdings Incorporated ("COMPANY") CONFIDENTIAL
-/// Copyright (c) 2013-2015 SynGlyphX Holdings Incorporated, All Rights Reserved.
-///
 /// NOTICE:  All information contained herein is, and remains the property of COMPANY. The intellectual and technical concepts contained
 /// herein are proprietary to COMPANY and may be covered by U.S. and Foreign Patents, patents in process, and are protected by trade secret or copyright law.
 /// Dissemination of this information or reproduction of this material is strictly forbidden unless prior written permission is obtained
@@ -15,38 +12,42 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef SYNGLYPHX_GLYPHDEFAULTSWIDGET_H
-#define SYNGLYPHX_GLYPHDEFAULTSWIDGET_H
+#ifndef PORTABLEVISUALIZATIONEXPORT_H
+#define PORTABLEVISUALIZATIONEXPORT_H
 
-#include "sgxglyphgui_global.h"
-#include <QtWidgets/QTabWidget>
-#include <QtWidgets/QComboBox>
-#include <QtWidgets/QLineEdit>
-#include <QtWidgets/QCheckBox>
-#include "datamappingdefaults.h"
+#include "sgxdatatransformgui_global.h"
+#include "datatransformmapping.h"
+#include <QtCore/QString>
+#include <unordered_map>
 
 namespace SynGlyphX {
 
-	class SGXGLYPHGUI_EXPORT GlyphDefaultsWidget : public QTabWidget
+	class SGXDATATRANSFORMGUI_EXPORT PortableVisualizationExport
 	{
-		Q_OBJECT
-
 	public:
-		GlyphDefaultsWidget(QWidget *parent);
-		~GlyphDefaultsWidget();
+		enum Platform {
+			Windows,
+			WindowsZSpace,
+			Mac,
+			Linux,
+			Web
+		};
 
-		void SetDefaults(const SynGlyphX::DataMappingDefaults& defaults);
-		SynGlyphX::DataMappingDefaults GetDefaults() const;
+		PortableVisualizationExport();
+		~PortableVisualizationExport();
+
+		static void SetupSourceDirectories();
+		static const QString& GetSourceDirectory(Platform platform);
+		static bool DoesPlatformHaveSourceDirectory(Platform platform);
+		static bool DoAnyPlatformsHaveSourceDirectories();
 
 	private:
-		void CreateTagTab();
-		void CreateScaleTab();
+		static void AddSourceDirectoryToPlatformIfItExists(Platform platform, const QString& directoryName);
+		static bool DoesSourceDirectoryExist(const QString directoryName);
 
-		QComboBox* m_tagFieldDefaultComboBox;
-		QLineEdit* m_tagValueDefaultLineEdit;
-		QCheckBox* m_removeScaleZeroCheckbox;
+		static std::unordered_map<Platform, QString> s_sourceDirectories;
 	};
 
 } //namespace SynGlyphX
 
-#endif // SYNGLYPHX_GLYPHDEFAULTSWIDGET_H
+#endif // PORTABLEVISUALIZATIONEXPORT_H

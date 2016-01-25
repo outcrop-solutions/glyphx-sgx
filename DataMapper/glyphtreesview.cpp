@@ -7,6 +7,7 @@
 #include "datamappingglyphfile.h"
 #include "antzcsvwriter.h"
 #include "minmaxglyphtreemodel.h"
+#include "glyphoptionswidget.h"
 
 GlyphTreesView::GlyphTreesView(DataTransformModel* sourceModel, QWidget *parent)
 	: SynGlyphX::TreeEditView(parent),
@@ -34,6 +35,9 @@ GlyphTreesView::GlyphTreesView(DataTransformModel* sourceModel, QWidget *parent)
 
 	m_exportGlyphToFileAction = m_glyphActions.AddAction(tr("Export Glyph Template To File"));
 	QObject::connect(m_exportGlyphToFileAction, &QAction::triggered, this, &GlyphTreesView::ExportGlyphToFile);
+
+	m_glyphOptionsAction = m_glyphActions.AddAction(tr("Options"));
+	QObject::connect(m_glyphOptionsAction, &QAction::triggered, this, &GlyphTreesView::ChangeOptions);
 
 	m_glyphActions.AddSeparator();
 
@@ -77,6 +81,11 @@ void GlyphTreesView::EnableActions(const QItemSelection& selection) {
 
 		bool areMultipleObjectsSelected = (selectedIndexes.count() > 1);
 		bool doesClipboardHaveGlyph = DoesClipboardHaveGlyph();
+		bool isSingleRootSelected = false;
+		if (!areMultipleObjectsSelected) {
+
+			isSingleRootSelected = !selectedIndexes.back().parent().isValid();
+		}
 
 		m_cutAction->setEnabled(!areMultipleObjectsSelected);
 		m_copyAction->setEnabled(!areMultipleObjectsSelected);
@@ -90,6 +99,8 @@ void GlyphTreesView::EnableActions(const QItemSelection& selection) {
 		m_addChildrenAction->setEnabled(true);
 		m_clearSelectedInputBindingsAction->setEnabled(true);
 		m_exportGlyphToFileAction->setEnabled(true);
+
+		m_glyphOptionsAction->setEnabled(isSingleRootSelected);
 	}
 	else {
 
@@ -190,4 +201,20 @@ void GlyphTreesView::AddGlyphsAsChildren(const QModelIndex& index, const SynGlyp
 
 	SynGlyphX::RoleDataFilterProxyModel* filterModel = dynamic_cast<SynGlyphX::RoleDataFilterProxyModel*>(model());
 	m_sourceModel->AddChildGlyphGraph(filterModel->mapToSource(index), graph);
+}
+
+void GlyphTreesView::ChangeOptions() {
+
+	const QModelIndexList& selectedItems = selectionModel()->selectedIndexes();
+	QModelIndex index = selectedItems.back();
+
+	GlyphOptionsWidget* glyphOptionsWidget = new GlyphOptionsWidget(this);
+	glyphOptionsWidget->SetMergeRoots(model()->data(index, DataTransformModel::OptionsRole).toBool());
+
+	SynGlyphX::SingleWidgetDialog dialog(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, glyphOptionsWidget, this);
+	dialog.setWindowTitle(tr("Glyph Options"));
+	if (dialog.exec() == QDialog::Accepted) {
+
+		model()->setData(index, glyphOptionsWidget->GetMergeRoots(), DataTransformModel::OptionsRole);
+	}
 }

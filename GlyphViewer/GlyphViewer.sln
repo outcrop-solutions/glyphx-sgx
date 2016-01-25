@@ -117,6 +117,9 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SGXDataMapping", "..\..\Cor
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DataEngine", "..\..\DataEngine\DataEngine\DataEngine.vcxproj", "{10B12A6C-E0F4-4CF8-9DE2-1DC881A47DBD}"
+	ProjectSection(ProjectDependencies) = postProject
+		{97CCCA63-D9A1-4B89-B473-FC1385E3782E} = {97CCCA63-D9A1-4B89-B473-FC1385E3782E}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -50,6 +50,7 @@ protected:
 private slots:
 	void AddChildren();
 	void ExportGlyphToFile();
+	void ChangeOptions();
 
 private:
 	DataTransformModel* m_sourceModel;
@@ -58,6 +59,8 @@ private:
 	QAction* m_addChildrenAction;
 	QAction* m_clearSelectedInputBindingsAction;
 	QAction* m_exportGlyphToFileAction;
+
+	QAction* m_glyphOptionsAction;
 };
 
 #endif // GLYPHTREESVIEW_H
