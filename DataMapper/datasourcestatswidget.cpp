@@ -61,6 +61,7 @@ void DataSourceStatsWidget::AddNewStatsViews() {
 					QString database("");
 					//QString database("world");
 					QStringList qtables = dec->chooseDatabase(database);
+					//dec->testFunction();
 					QStringList chosenTables;
 					chosenTables = qtables;
 					dec->setChosenTables(chosenTables);
