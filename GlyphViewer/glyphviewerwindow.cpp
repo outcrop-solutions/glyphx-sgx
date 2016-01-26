@@ -82,7 +82,7 @@ GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 	SynGlyphX::Transformer::SetDefaultImagesDirectory(SynGlyphX::GlyphBuilderApplication::GetDefaultBaseImagesLocation());
 	SynGlyphXANTz::ANTzCSVWriter::GetInstance().SetNOURLLocation(L"");
 
-	/*try {
+	try {
 
 		if (!dec.hasJVM()){
 			dec.createJVM();
@@ -92,7 +92,7 @@ GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 
 		QMessageBox::critical(this, tr("JVM Error"), tr(e.what()));
 		return;
-	}*/
+	}
 
 	QStringList commandLineArguments = SynGlyphX::Application::arguments();
 	if (commandLineArguments.size() > 1) {
@@ -476,7 +476,7 @@ void GlyphViewerWindow::ValidateDataMappingFile(const QString& filename) {
 }
 
 void GlyphViewerWindow::LoadDataTransform(const QString& filename) {
-
+	/*
 	try {
 
 		if (!dec.hasJVM()){
@@ -487,7 +487,7 @@ void GlyphViewerWindow::LoadDataTransform(const QString& filename) {
 
 		QMessageBox::critical(this, tr("JVM Error"), tr(e.what()));
 		return;
-	}
+	}*/
 
 	SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
 
