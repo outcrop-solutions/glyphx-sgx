@@ -75,6 +75,13 @@
     <Lib>
       <AdditionalDependencies>C:\Users\Bryan\Documents\GitHub\DataEngine\jdk1.7.0_79\lib\jawt.lib;C:\Users\Bryan\Documents\GitHub\DataEngine\jdk1.7.0_79\lib\jvm.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
+    <PreBuildEvent>
+      <Command>
+      </Command>
+    </PreBuildEvent>
+    <PostBuildEvent>
+      <Command>copy /Y "$(ProjectDir)..\Java DataEngine\dataengine.jar" "$(ProjectDir)$(OutDir)"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -103,6 +110,13 @@
     <Lib>
       <AdditionalDependencies>C:\Users\Bryan\Documents\GitHub\DataEngine\jdk1.7.0_79\lib\jawt.lib;C:\Users\Bryan\Documents\GitHub\DataEngine\jdk1.7.0_79\lib\jvm.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
+    <PreBuildEvent>
+      <Command>
+      </Command>
+    </PreBuildEvent>
+    <PostBuildEvent>
+      <Command>copy /Y "$(ProjectDir)..\Java DataEngine\dataengine.jar" "$(ProjectDir)$(OutDir)"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
