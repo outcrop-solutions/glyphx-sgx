@@ -14,7 +14,7 @@
 #include "downloadoptionsdialog.h"
 #include "data/npmapfile.h"
 #include "sourcedatamanager.h"
-#include "glyphviewerantztransformer.h"
+//#include "glyphviewerantztransformer.h"
 #include "changedatasourcefiledialog.h"
 #include "antzimportdialog.h"
 #include "antzvisualizationfilelisting.h"
@@ -77,8 +77,8 @@ GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 
 	m_stereoAction->setChecked(m_antzWidget->IsInStereoMode());
 
-	SynGlyphX::Transformer::SetDefaultImagesDirectory(SynGlyphX::GlyphBuilderApplication::GetDefaultBaseImagesLocation());
-	SynGlyphXANTz::ANTzCSVWriter::GetInstance().SetNOURLLocation(L"");
+	//SynGlyphX::Transformer::SetDefaultImagesDirectory(SynGlyphX::GlyphBuilderApplication::GetDefaultBaseImagesLocation());
+	//SynGlyphXANTz::ANTzCSVWriter::GetInstance().SetNOURLLocation(L"");
 
 	/*try {
 

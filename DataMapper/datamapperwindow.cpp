@@ -20,7 +20,7 @@
 #include "baseimagedialog.h"
 #include "networkdownloader.h"
 #include "filesystem.h"
-#include "antzexporttransformer.h"
+//#include "antzexporttransformer.h"
 #include "datasourcefieldtypesdialog.h"
 #include "csvfilereader.h"
 #include "csvtfilereaderwriter.h"
@@ -66,8 +66,8 @@ DataMapperWindow::DataMapperWindow(QWidget *parent)
 	ClearAndInitializeDataMapping();
 
 	//Setup data transform
-	SynGlyphXANTz::ANTzExportTransformer::SetLogoFilename(SynGlyphX::GlyphBuilderApplication::applicationDirPath() + QDir::separator() + "logo.png");
-	SynGlyphX::Transformer::SetDefaultImagesDirectory(SynGlyphX::GlyphBuilderApplication::GetDefaultBaseImagesLocation());
+	//SynGlyphXANTz::ANTzExportTransformer::SetLogoFilename(SynGlyphX::GlyphBuilderApplication::applicationDirPath() + QDir::separator() + "logo.png");
+	//SynGlyphX::Transformer::SetDefaultImagesDirectory(SynGlyphX::GlyphBuilderApplication::GetDefaultBaseImagesLocation());
 
 	QObject::connect(m_baseObjectsModel, &SynGlyphX::RoleDataFilterProxyModel::dataChanged, m_dataBindingWidget, &DataBindingTablesWidget::OnBaseObjectChanged);
 
