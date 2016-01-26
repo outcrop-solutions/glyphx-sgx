@@ -35,6 +35,7 @@
 #include "glyphpropertieswidgetscontainer.h"
 #include "dataengineconnection.h"
 #include "glyphengine.h"
+#include "portablevisualizationexport.h"
 
 class GlyphViewerWindow : public SynGlyphX::MainWindow
 {
@@ -59,6 +60,7 @@ private slots:
 	void ImportFilesFromANTz();
 	void ChangeOptions();
 	void OnSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected);
+	void CreatePortableVisualization(SynGlyphX::PortableVisualizationExport::Platform platform);
 
 private:
 	virtual bool LoadRecentFile(const QString& filename);
@@ -76,6 +78,7 @@ private:
 	void CreateANTzWidget(const QGLFormat& format);
 	GlyphViewerOptions CollectOptions();
 	bool DoesVisualizationNeedToBeRecreated(const SynGlyphX::DataTransformMapping& mapping) const;
+	void CreateExportToPortableVisualizationSubmenu();
 
 	QMenu* m_fileMenu;
 	QMenu* m_toolsMenu;
@@ -103,6 +106,7 @@ private:
 	SourceDataSelectionModel* m_sourceDataSelectionModel;
 	PseudoTimeFilterWidget* m_pseudoTimeFilterWidget;
 	DataEngine::DataEngineConnection dec;
+	SynGlyphX::PortableVisualizationExport m_portableVisualizationExport;
 };
 
 #endif // GLYPHVIEWERWINDOW_H
