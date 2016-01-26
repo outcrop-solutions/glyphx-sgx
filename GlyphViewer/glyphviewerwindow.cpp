@@ -25,6 +25,8 @@
 #include <boost/uuid/uuid_generators.hpp>
 #include <boost/uuid/uuid_io.hpp>
 #include <string>
+#include "filesystem.h"
+#include "defaultbaseimageproperties.h"
 
 GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 	: SynGlyphX::MainWindow(2, parent),
@@ -168,7 +170,8 @@ void GlyphViewerWindow::CreateMenus() {
 	QObject::connect(closeVisualizationAction, &QAction::triggered, this, &GlyphViewerWindow::CloseVisualization);
 	m_loadedVisualizationDependentActions.push_back(closeVisualizationAction);
 
-	//m_fileMenu->addSeparator();
+	CreateExportToPortableVisualizationSubmenu();
+	
 	QObject::connect(m_glyphForestSelectionModel, &SynGlyphX::ItemFocusSelectionModel::selectionChanged, this, &GlyphViewerWindow::OnSelectionChanged);
 
 	m_fileMenu->addActions(m_recentFileActions);
@@ -502,7 +505,7 @@ void GlyphViewerWindow::LoadDataTransform(const QString& filename) {
 		DataEngine::GlyphEngine ge;
 		std::string dirPath = cacheDirectoryPath + "\\";
 		std::string baseImageDir = SynGlyphX::GlyphBuilderApplication::GetDefaultBaseImagesLocation().toStdString();
-		ge.initiate(dec.getEnv(), filename.toStdString(), dirPath, "", baseImageDir, "", "GlyphViewer");
+		ge.initiate(dec.getEnv(), filename.toStdString(), dirPath, baseImageDir, "", "GlyphViewer");
 		ge.getDownloadedBaseImage(m_mappingModel->GetDataMapping().get()->GetBaseObjects());
 		ge.generateGlyphs();
 		std::vector<std::string> images = ge.getBaseImages();
@@ -754,4 +757,79 @@ GlyphViewerOptions GlyphViewerWindow::CollectOptions() {
 void GlyphViewerWindow::OnSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected) {
 
 	
+}
+
+void GlyphViewerWindow::CreateExportToPortableVisualizationSubmenu() {
+
+	if (m_portableVisualizationExport.DoAnyPlatformsHaveSourceDirectories()) {
+
+		m_fileMenu->addSeparator();
+		QMenu* portableVisualizationMenu = m_fileMenu->addMenu(tr("Create Portable Visualization"));
+
+		m_portableVisualizationExport.CreateSubmenu(portableVisualizationMenu);
+		QObject::connect(&m_portableVisualizationExport, &SynGlyphX::PortableVisualizationExport::CreatePortableVisualization, this, &GlyphViewerWindow::CreatePortableVisualization);
+
+		for (auto action : portableVisualizationMenu->actions()) {
+
+			m_loadedVisualizationDependentActions.push_back(action);
+		}
+	}
+}
+
+void GlyphViewerWindow::CreatePortableVisualization(SynGlyphX::PortableVisualizationExport::Platform platform) {
+
+	QSet<QString> projectFileDirs;
+	projectFileDirs.insert(QDir::toNativeSeparators(m_currentFilename));
+	for (const auto& fileDatasource : m_mappingModel->GetDataMapping()->GetDatasources().GetFileDatasources()) {
+
+		projectFileDirs.insert(QDir::toNativeSeparators(QString::fromStdWString(fileDatasource.second.GetFilename())));
+	}
+
+	QString csvDirectory = QDir::toNativeSeparators(GetExistingEmptyDirectory(projectFileDirs, "PortableVisualizationExportDir", tr("Select Directory For Portable Visualization"), "", tr("Selected directory contains one or more files relevant to the project.")));
+	if (csvDirectory.isEmpty()) {
+
+		return;
+	}
+
+
+	SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
+
+	try {
+
+		m_portableVisualizationExport.CopyContentsOfSourceDirectory(platform, csvDirectory);
+		DataEngine::GlyphEngine ge;
+		std::string baseImageDir = SynGlyphX::GlyphBuilderApplication::GetDefaultBaseImagesLocation().toStdString();
+		std::string baseFilename = (QString::fromStdWString(SynGlyphX::DefaultBaseImageProperties::GetBasefilename()).toStdString());
+
+		//App says "DataMapper" because this is equivalent to create portable visualization in DataMapper
+		ge.initiate(dec.getEnv(), m_currentFilename.toStdString(), csvDirectory.toStdString() + "\\", baseImageDir, baseFilename, "DataMapper");
+		ge.getDownloadedBaseImage(m_mappingModel->GetDataMapping().get()->GetBaseObjects());
+		ge.generateGlyphs();
+
+		SynGlyphX::Application::restoreOverrideCursor();
+
+		const QString& GlyphEngineError = ge.getError();
+
+		if (!GlyphEngineError.isNull()) {
+
+			QMessageBox::information(this, "Transformation Error", GlyphEngineError, QMessageBox::Ok);
+		}
+	}
+	catch (const std::exception& e) {
+
+		try {
+
+			SynGlyphX::Filesystem::RemoveContentsOfDirectory(csvDirectory.toStdString());
+			SynGlyphX::Application::restoreOverrideCursor();
+			QMessageBox::critical(this, tr("Create Portable Visualization Error"), e.what());
+		}
+		catch (...) {
+
+			SynGlyphX::Application::restoreOverrideCursor();
+			QMessageBox::information(this, tr("Directory in use"), tr("Could not create portable visualization because files in this directory are currently in use."), QMessageBox::Ok);
+		}
+		return;
+	}
+
+	statusBar()->showMessage("Portable visualization successfully created", 6000);
 }
