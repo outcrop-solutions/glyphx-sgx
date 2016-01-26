@@ -203,11 +203,11 @@
     <ClCompile Include="os\msw\npos.c">
       <Filter>Source Files\os\msw</Filter>
     </ClCompile>
-    <ClCompile Include="npui.c">
-      <Filter>Source Files\io</Filter>
-    </ClCompile>
     <ClCompile Include="io\gl\nptags.c">
       <Filter>Source Files\io\gl</Filter>
+    </ClCompile>
+    <ClCompile Include="npui.c">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
