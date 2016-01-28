@@ -61,6 +61,7 @@
       <AdditionalLibraryDirectories>..\..\DataEngine\jdk1.7.0_79\lib\;..\..\DataEngine\lib\$(Configuration)\;..\..\3rdParty\lib\$(Platform)\$(Configuration)\;..\..\lib\$(Platform)\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>crash_generation_client.lib;crash_generation_server.lib;crash_report_sender.lib;common.lib;exception_handler.lib;SGXDataMapping.lib;SGXDataTransformGUI.lib;ANTzGUI.lib;SGXGeospatial.lib;SGXFoundation.lib;ANTzBridge.lib;ANTzCore.lib;SGXDataTransform.lib;SGXGlyphGUI.lib;SGXGUI.lib;SGXImage.lib;MapDownloading.lib;SGXUtility.lib;SGXzSpaceGUI.lib;qtmaind.lib;boost_system-vc120-mt-gd-1_55.lib;boost_filesystem-vc120-mt-gd-1_55.lib;Qt5Cored.lib;Qt5Guid.lib;Qt5Networkd.lib;Qt5Sqld.lib;Qt5OpenGLd.lib;opengl32.lib;glu32.lib;Qt5Widgetsd.lib;DataEngine.lib;jawt.lib;jvm.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <LargeAddressAware>true</LargeAddressAware>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -78,6 +79,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>crash_generation_client.lib;crash_generation_server.lib;crash_report_sender.lib;common.lib;exception_handler.lib;SGXDataMapping.lib;SGXDataTransformGUI.lib;ANTzGUI.lib;SGXGeospatial.lib;SGXFoundation.lib;ANTzBridge.lib;ANTzCore.lib;SGXDataTransform.lib;SGXGlyphGUI.lib;SGXGUI.lib;SGXImage.lib;MapDownloading.lib;SGXUtility.lib;SGXzSpaceGUI.lib;boost_system-vc120-mt-1_55.lib;boost_filesystem-vc120-mt-1_55.lib;qtmain.lib;Qt5Core.lib;Qt5Gui.lib;Qt5Network.lib;Qt5Sql.lib;Qt5OpenGL.lib;opengl32.lib;glu32.lib;Qt5Widgets.lib;DataEngine.lib;jawt.lib;jvm.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OptimizeReferences>true</OptimizeReferences>
+      <LargeAddressAware>true</LargeAddressAware>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>

@@ -59,6 +59,7 @@
       <AdditionalLibraryDirectories>..\..\DataEngine\jdk1.7.0_79\lib\;..\..\lib\$(Platform)\$(Configuration)\;..\..\3rdParty\lib\$(Platform)\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>crash_generation_client.lib;crash_generation_server.lib;crash_report_sender.lib;common.lib;exception_handler.lib;SGXDataMapping.lib;SGXDataTransformGUI.lib;ANTzSingleGlyphGUI.lib;SGXGeospatial.lib;SGXFoundation.lib;ANTzBridge.lib;ANTzCore.lib;SGXDataTransform.lib;SGXGlyphGUI.lib;SGXGUI.lib;SGXImage.lib;MapDownloading.lib;SGXUtility.lib;boost_system-vc120-mt-gd-1_55.lib;boost_filesystem-vc120-mt-gd-1_55.lib;qtmaind.lib;Qt5Widgetsd.lib;Qt5Sqld.lib;Qt5Cored.lib;Qt5Guid.lib;Qt5OpenGLd.lib;opengl32.lib;glu32.lib;DataEngine.lib;jawt.lib;jvm.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <LargeAddressAware>true</LargeAddressAware>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -75,6 +76,7 @@
       <AdditionalLibraryDirectories>..\..\DataEngine\lib\$(Configuration)\;..\..\DataEngine\jdk1.7.0_79\lib\;..\..\lib\$(Platform)\$(Configuration)\;..\..\3rdParty\lib\$(Platform)\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>crash_generation_client.lib;crash_generation_server.lib;crash_report_sender.lib;common.lib;exception_handler.lib;SGXDataMapping.lib;SGXDataTransformGUI.lib;ANTzSingleGlyphGUI.lib;SGXGeospatial.lib;SGXFoundation.lib;ANTzBridge.lib;ANTzCore.lib;SGXDataTransform.lib;SGXGlyphGUI.lib;SGXGUI.lib;SGXImage.lib;MapDownloading.lib;SGXUtility.lib;boost_system-vc120-mt-1_55.lib;boost_filesystem-vc120-mt-1_55.lib;qtmain.lib;Qt5Widgets.lib;Qt5Sql.lib;Qt5Core.lib;Qt5Gui.lib;Qt5OpenGL.lib;opengl32.lib;glu32.lib;jvm.lib;jawt.lib;DataEngine.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <LargeAddressAware>true</LargeAddressAware>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
