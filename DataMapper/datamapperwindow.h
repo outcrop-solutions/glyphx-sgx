@@ -61,6 +61,7 @@ private slots:
 	void CreatePortableVisualization(SynGlyphX::PortableVisualizationExport::Platform platform);
 	void AddBaseObject();
 	void AddGlyphTemplate();
+	void AddGlyphTemplatesFromLibrary();
 	void CreateNewGlyphTree();
 	void ChangeMapDownloadSettings();
 	void ChangeGlyphDefaults();

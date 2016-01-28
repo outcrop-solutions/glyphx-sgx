@@ -8,6 +8,7 @@
 #include <QtGui/QCloseEvent>
 #include <QtWidgets/QStatusBar>
 #include <QtWidgets/QSplitter>
+#include <QtWidgets/QFileDialog>
 #include <QtSql/QSqlDatabase>
 #include <QtSql/QSqlError>
 #include <QtSql/QSqlQuery>
@@ -177,6 +178,9 @@ void DataMapperWindow::CreateMenus() {
 
 	QAction* addGlyphTemplateAction = m_glyphMenu->addAction(tr("Add Glyph Templates"));
 	QObject::connect(addGlyphTemplateAction, &QAction::triggered, this, &DataMapperWindow::AddGlyphTemplate);
+
+	QAction* addGlyphTemplateFromLibraryAction = m_glyphMenu->addAction(tr("Add Glyph Templates From Library"));
+	QObject::connect(addGlyphTemplateFromLibraryAction, &QAction::triggered, this, &DataMapperWindow::AddGlyphTemplatesFromLibrary);
 
 	QAction* createGlyphTemplateAction = m_glyphMenu->addAction(tr("Create New Glyph Template"));
 	QObject::connect(createGlyphTemplateAction, &QAction::triggered, this, &DataMapperWindow::CreateNewGlyphTree);
@@ -712,7 +716,7 @@ void DataMapperWindow::AddBaseObject() {
 
 void DataMapperWindow::AddGlyphTemplate() {
 
-	QStringList glyphTemplates = GetFileNamesOpenDialog("GlyphTemplatesDir", tr("Add Glyph Templates"), m_glyphTemplatesDirectory, "SynGlyphX Glyph Template Files (*.sgt *.csv)");
+	QStringList glyphTemplates = GetFileNamesOpenDialog("GlyphTemplatesDir", tr("Add Glyph Templates"), "", "SynGlyphX Glyph Template Files (*.sgt *.csv)");
 
 	if (glyphTemplates.isEmpty()) {
 		return;
@@ -730,7 +734,30 @@ void DataMapperWindow::AddGlyphTemplate() {
 
 	EnableProjectDependentActions(true);
 	m_glyphTreesView->SelectLastGlyphTreeRoot();
-	statusBar()->showMessage("Glyph Template successfully added", 3000);
+	statusBar()->showMessage("Glyph Template(s) successfully added", 3000);
+}
+
+void DataMapperWindow::AddGlyphTemplatesFromLibrary() {
+
+	QStringList glyphTemplates = QFileDialog::getOpenFileNames(this, tr("Add Glyph Templates From Library"), m_glyphTemplatesDirectory, "SynGlyphX Glyph Template Files (*.sgt)");
+
+	if (glyphTemplates.isEmpty()) {
+		return;
+	}
+
+	try {
+		for (const QString& filename : glyphTemplates) {
+			m_dataTransformModel->AddGlyphFile(filename);
+		}
+	}
+	catch (const std::exception& e) {
+		QMessageBox::critical(this, tr("Failed To Add Glyph"), e.what(), QMessageBox::Ok);
+		return;
+	}
+
+	EnableProjectDependentActions(true);
+	m_glyphTreesView->SelectLastGlyphTreeRoot();
+	statusBar()->showMessage("Glyph Template(s) successfully added", 3000);
 }
 
 void DataMapperWindow::CreateNewGlyphTree() {
