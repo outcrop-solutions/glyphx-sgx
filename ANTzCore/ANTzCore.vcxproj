@@ -64,6 +64,7 @@
       <AdditionalLibraryDirectories>..\..\3rdParty\lib\$(Platform)\$(Configuration)\</AdditionalLibraryDirectories>
       <AdditionalDependencies>opengl32.lib;glu32.lib;SOIL.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ImportLibrary>..\..\lib\$(Platform)\$(Configuration)\$(TargetName).lib</ImportLibrary>
+      <LargeAddressAware>true</LargeAddressAware>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -85,6 +86,7 @@
       <AdditionalLibraryDirectories>..\..\3rdParty\lib\$(Platform)\$(Configuration)\</AdditionalLibraryDirectories>
       <AdditionalDependencies>opengl32.lib;glu32.lib;SOIL.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ImportLibrary>..\..\lib\$(Platform)\$(Configuration)\$(TargetName).lib</ImportLibrary>
+      <LargeAddressAware>true</LargeAddressAware>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
