@@ -66,6 +66,7 @@
       <AdditionalLibraryDirectories>..\..\lib\$(Platform)\$(Configuration)\;..\..\3rdParty\lib\$(Platform)\$(Configuration)\</AdditionalLibraryDirectories>
       <ImportLibrary>..\..\lib\$(Platform)\$(Configuration)\$(TargetName).lib</ImportLibrary>
       <AdditionalDependencies>SGXUtility.lib;boost_system-vc120-mt-gd-1_55.lib;boost_filesystem-vc120-mt-gd-1_55.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <LargeAddressAware>true</LargeAddressAware>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -89,6 +90,7 @@
       <AdditionalLibraryDirectories>..\..\lib\$(Platform)\$(Configuration)\;..\..\3rdParty\lib\$(Platform)\$(Configuration)\</AdditionalLibraryDirectories>
       <ImportLibrary>..\..\lib\$(Platform)\$(Configuration)\$(TargetName).lib</ImportLibrary>
       <AdditionalDependencies>SGXUtility.lib;boost_system-vc120-mt-1_55.lib;boost_filesystem-vc120-mt-1_55.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <LargeAddressAware>true</LargeAddressAware>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>

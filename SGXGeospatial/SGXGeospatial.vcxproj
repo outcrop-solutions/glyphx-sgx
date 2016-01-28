@@ -64,6 +64,7 @@
       <AdditionalLibraryDirectories>..\..\3rdParty\lib\$(Platform)\$(Configuration)\</AdditionalLibraryDirectories>
       <AdditionalDependencies>boost_system-vc120-mt-gd-1_55.lib;boost_filesystem-vc120-mt-gd-1_55.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ImportLibrary>..\..\lib\$(Platform)\$(Configuration)\$(TargetName).lib</ImportLibrary>
+      <LargeAddressAware>true</LargeAddressAware>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -84,6 +85,7 @@
       <AdditionalLibraryDirectories>..\..\3rdParty\lib\$(Platform)\$(Configuration)\</AdditionalLibraryDirectories>
       <AdditionalDependencies>boost_system-vc120-mt-1_55.lib;boost_filesystem-vc120-mt-1_55.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ImportLibrary>..\..\lib\$(Platform)\$(Configuration)\$(TargetName).lib</ImportLibrary>
+      <LargeAddressAware>true</LargeAddressAware>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>

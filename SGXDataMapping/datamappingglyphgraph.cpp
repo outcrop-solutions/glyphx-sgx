@@ -10,13 +10,13 @@ namespace SynGlyphX {
 
 	DataMappingGlyphGraph::DataMappingGlyphGraph() :
 		GlyphGraphTemplate<DataMappingGlyph>(),
-		m_mergeRoots(true)
+		m_mergeRoots(false)
 	{
 	}
 
 	DataMappingGlyphGraph::DataMappingGlyphGraph(const boost::property_tree::wptree& propertyTree) :
 		GlyphGraphTemplate<DataMappingGlyph>(),
-		m_mergeRoots(true) {
+		m_mergeRoots(false) {
 
 		boost::optional<const PropertyTree&> inputFieldsPropertyTree = propertyTree.get_child_optional(L"InputFields");
 		if (inputFieldsPropertyTree.is_initialized()) {
@@ -53,7 +53,7 @@ namespace SynGlyphX {
 			}
 		}
 
-		m_mergeRoots = propertyTree.get_optional<bool>(L"<xmlattr>.merge").get_value_or(true);
+		m_mergeRoots = propertyTree.get_optional<bool>(L"<xmlattr>.merge").get_value_or(false);
 	}
 
 	DataMappingGlyphGraph::DataMappingGlyphGraph(const DataMappingGlyphGraph& graph) :
@@ -67,7 +67,7 @@ namespace SynGlyphX {
 
 	DataMappingGlyphGraph::DataMappingGlyphGraph(const GlyphGraph& graph) :
 		GlyphGraphTemplate<DataMappingGlyph>(),
-		m_mergeRoots(true) {
+		m_mergeRoots(false) {
 
 		/*if (!graph.HasSingleRoot()) {
 
@@ -88,7 +88,7 @@ namespace SynGlyphX {
 
 	DataMappingGlyphGraph::DataMappingGlyphGraph(const LabeledTree& graph) :
 		GlyphGraphTemplate<DataMappingGlyph>(graph),
-		m_mergeRoots(true) {
+		m_mergeRoots(false) {
 
 
 	}
