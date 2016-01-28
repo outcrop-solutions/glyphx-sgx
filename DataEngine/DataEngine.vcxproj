@@ -71,6 +71,7 @@
       <AdditionalDependencies>jvm.lib;jawt.lib;boost_filesystem-vc120-mt-gd-1_55.lib;boost_system-vc120-mt-gd-1_55.lib;SGXImage.lib;SGXGUI.lib;SGXGeospatial.lib;qtmaind.lib;Qt5Cored.lib;Qt5Guid.lib;Qt5Widgetsd.lib;Qt5Networkd.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>..\..\DataEngine\jdk1.7.0_79\lib\;..\..\lib\$(Platform)\$(Configuration)\;..\..\3rdParty\lib\$(Platform)\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ImportLibrary>..\..\lib\$(Platform)\$(Configuration)\$(TargetName).lib</ImportLibrary>
+      <LargeAddressAware>true</LargeAddressAware>
     </Link>
     <Lib>
       <AdditionalDependencies>C:\Users\Bryan\Documents\GitHub\DataEngine\jdk1.7.0_79\lib\jawt.lib;C:\Users\Bryan\Documents\GitHub\DataEngine\jdk1.7.0_79\lib\jvm.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -106,6 +107,7 @@
       <AdditionalLibraryDirectories>..\..\DataEngine\jdk1.7.0_79\lib\;..\..\lib\$(Platform)\$(Configuration)\;..\..\3rdParty\lib\$(Platform)\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>jvm.lib;jawt.lib;boost_filesystem-vc120-mt-1_55.lib;boost_system-vc120-mt-1_55.lib;SGXImage.lib;SGXGUI.lib;SGXGeospatial.lib;Qt5Core.lib;Qt5Gui.lib;Qt5Widgets.lib;Qt5Network.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ImportLibrary>..\..\lib\$(Platform)\$(Configuration)\$(TargetName).lib</ImportLibrary>
+      <LargeAddressAware>true</LargeAddressAware>
     </Link>
     <Lib>
       <AdditionalDependencies>C:\Users\Bryan\Documents\GitHub\DataEngine\jdk1.7.0_79\lib\jawt.lib;C:\Users\Bryan\Documents\GitHub\DataEngine\jdk1.7.0_79\lib\jvm.lib;%(AdditionalDependencies)</AdditionalDependencies>
