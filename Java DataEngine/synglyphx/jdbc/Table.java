@@ -3,6 +3,7 @@ package synglyphx.jdbc;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import synglyphx.data.DataStats;
 import synglyphx.io.Logger;
 
@@ -14,13 +15,15 @@ public class Table {
 	private HashMap<String,String> columnTypes;
 	private HashMap<String,DataStats> dataStats;
 	private HashMap<String,String> jdbcTypes;
-	private HashMap<String, ArrayList<String>> min_max_table;
+	private ArrayList<String[]> sampleData;
+	private ArrayList<String> foreign_key_list;
+	private HashMap<String,ArrayList<String>> foreign_key_map; 
+	private HashMap<String,ArrayList<String>> min_max_table;
 
 	public Table(String name, Connection conn){
 		this.name = name;
 		this.conn = conn;
-		Logger.getInstance().add("");
-		Logger.getInstance().add(name + " DataStats:");
+		mapForeignKeys();
 		initialize();
 	}
 
@@ -53,11 +56,10 @@ public class Table {
       	}
 	}
 
-	private void createDataStats(String cn){
+	private void columnDataStats(String cn){
 
 		String[] ranges;
 		String[] counts;
-		min_max_table = new HashMap<String, ArrayList<String>>();
 
 		try{
 
@@ -81,6 +83,7 @@ public class Table {
   				min_max_table.get(cn).add(ds.getMax());       	     	
             }
 
+            rs.close();
         }catch(SQLException se){
         	try{
             	se.printStackTrace(Logger.getInstance().addError());
@@ -95,6 +98,10 @@ public class Table {
 			fields[i] = columnNames.get(i);
 		}
 		return fields;
+	}
+
+	public String[] getSampleData(int row){
+		return sampleData.get(row);
 	}
 
 	public String[] getStats(String field){
@@ -141,15 +148,90 @@ public class Table {
 
 		columnNames = new ArrayList<String>();
 		columnTypes = new HashMap<String,String>();
-		dataStats = new HashMap<String,DataStats>();
 		setColumnNames();
+		loadSampleData();
 
+	}
+
+	public void createDataStats(){
+
+		dataStats = new HashMap<String,DataStats>();
+		min_max_table = new HashMap<String, ArrayList<String>>();
 		for(int i = 0; i < columnNames.size(); i++){
-			createDataStats(columnNames.get(i));
+			columnDataStats(columnNames.get(i));
 		}
+
 	}
 
 	public HashMap<String, ArrayList<String>> getMinMaxTable(){
 		return min_max_table;
+	}
+
+	public HashMap<String,DataStats> getDataStats(){
+		return dataStats;
+	}
+
+	public String[] getForeignKeys(){
+		String[] temp = new String[foreign_key_list.size()];
+		for(int i = 0; i < foreign_key_list.size(); i++){
+			temp[i] = foreign_key_list.get(i);
+		}
+		return temp;
+	}
+
+	private void mapForeignKeys(){
+
+		foreign_key_list = new ArrayList<String>();
+		foreign_key_map = new HashMap<String,ArrayList<String>>();
+		try{
+			DatabaseMetaData dm = conn.getMetaData();
+	    	ResultSet rs = dm.getImportedKeys(null, null, name);
+
+	    	while (rs.next()) {
+	    		String colName = rs.getString(8);
+	    		String tblName = rs.getString(3);
+	    		String orgName = rs.getString(4);
+	    		foreign_key_map.put(colName, new ArrayList<String>());
+	    		foreign_key_map.get(colName).add(tblName);
+	    		foreign_key_map.get(colName).add(orgName);
+	    		foreign_key_list.add(colName);
+	    		foreign_key_list.add(tblName);
+	    		foreign_key_list.add(orgName);
+	    	}
+
+	    	rs.close();
+	    }catch(SQLException se){
+	    	try{
+            	se.printStackTrace(Logger.getInstance().addError());
+         	}catch(Exception ex){}
+	    }
+	}
+
+	private void loadSampleData(){
+
+		sampleData = new ArrayList<String[]>();
+		try{
+
+			String sql = "SELECT * FROM "+name+" LIMIT 15";  
+			Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(sql);
+
+            int place = 0;
+            while(rs.next()){
+            	sampleData.add(new String[columnNames.size()]);
+            	for(int i = 0; i < columnNames.size(); i++){
+            		String temp = rs.getString(columnNames.get(i));
+            		if(temp == null){temp = "";}
+            		sampleData.get(place)[i] = temp;
+            	}   	     	
+            	place += 1;
+            }
+
+            rs.close();
+        }catch(SQLException se){
+        	try{
+            	se.printStackTrace(Logger.getInstance().addError());
+         	}catch(Exception ex){}
+        }
 	}
 }

@@ -58,7 +58,7 @@ public class GlyphCreator {
 		for(int i=0;i < rootIds.size();i++){
 			currData = temps.get(rootIds.get(i)).getDataSource();
 			rootCoords.put(rootIds.get(i), new CoordinateMap(temps.get(rootIds.get(i)).getToMerge(), csvData.get(currData).getLastID()));
-			if(csvData.get(currData).getType().equals("csv") || csvData.get(currData).getType().equals("sqlite")){
+			if(csvData.get(currData).getType().equals("csv") || csvData.get(currData).getType().equals("sqlite3")){
 				Query query = new Query(csvData.get(currData).getDataFrame()).all(); 
 				Logger.getInstance().add("Executed initial query...");
 				Cursor cursor = csvData.get(currData).getDataFrame().query(query);

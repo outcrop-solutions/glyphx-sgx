@@ -25,7 +25,7 @@ namespace DataEngine
 	}
 
 	std::string DataEngineStatement::checkMethodID(jmethodID methodId, int i){
-		
+
 		jstring itr = NULL;
 		if (methodId != NULL) {
 			itr = (jstring)jniEnv->CallStaticObjectMethod(jcls, methodId, i);
@@ -81,9 +81,8 @@ namespace DataEngine
 			"getFieldsForTable", "(ILjava/lang/String;)[Ljava/lang/String;");
 		jobjectArray itr;
 		if (methodId != NULL) {
-
-			jstring str = jniEnv->NewStringUTF(sourceType.toStdString().c_str());
-			itr = (jobjectArray)jniEnv->CallStaticObjectMethod(jcls, methodId, i, str);
+			jstring jstr = jniEnv->NewStringUTF(sourceType.toStdString().c_str());
+			itr = (jobjectArray)jniEnv->CallStaticObjectMethod(jcls, methodId, i, jstr);
 			if (jniEnv->ExceptionCheck()) {
 				jniEnv->ExceptionDescribe();
 				jniEnv->ExceptionClear();
@@ -118,8 +117,8 @@ namespace DataEngine
 		QStringList stats;
 		if (methodId != NULL) {
 
-			jstring str = jniEnv->NewStringUTF(field.toStdString().c_str());
-			itr = (jobjectArray)jniEnv->CallStaticObjectMethod(jcls, methodId, i, str);
+			jstring jstr = jniEnv->NewStringUTF(field.toStdString().c_str());
+			itr = (jobjectArray)jniEnv->CallStaticObjectMethod(jcls, methodId, i, jstr);
 			if (jniEnv->ExceptionCheck()) {
 				jniEnv->ExceptionDescribe();
 				jniEnv->ExceptionClear();
@@ -180,10 +179,10 @@ namespace DataEngine
 			sourceType = "csv";
 		}
 		else if (type == SynGlyphX::FileDatasource::SQLITE3){
-			sourceType = "sqlite";
+			sourceType = "sqlite3";
 		}
 		else{
-			sourceType = "sql";
+			sourceType = "mysql";
 		}
 	}
 
