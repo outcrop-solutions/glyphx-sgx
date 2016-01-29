@@ -1,6 +1,20 @@
 
 Connecting to Server...
 
+Edges DataStats:
+real | 0 | 3 | 1.5 | 4 | 4
+real | 0 | 3 | 1.5 | 4 | 4
+real | 0 | 3 | 1.5 | 4 | 4
+
+Nodes DataStats:
+real | 0 | 3 | 1.5 | 4 | 4
+real | 0 | 3 | 1.5 | 4 | 4
+real | 0 | 3 | 1.5 | 4 | 4
+real | 0 | 3 | 1.5 | 4 | 4
+
+Closing connection to database...
+Connecting to Server...
+
 FirstPortion DataStats:
 real | 1 | 36 | 18.0857142857143 | 35 | 35
 text | 16 Cyg B b | ups And d | N/A | 35 | 35

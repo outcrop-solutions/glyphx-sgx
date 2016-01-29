@@ -387,7 +387,7 @@ void DataMapperWindow::UpdateMissingFiles(const QString& mappingFilename) {
 }
 
 bool DataMapperWindow::LoadDataTransform(const QString& filename) {
-
+	/*
 	try {
 
 		if (!dec.hasJVM()){
@@ -400,7 +400,7 @@ bool DataMapperWindow::LoadDataTransform(const QString& filename) {
 
 		QMessageBox::critical(this, tr("JVM Error"), tr(e.what()));
 		return false;
-	}
+	}*/
 
 	QFileInfo fileInfo(filename);
 	if (fileInfo.suffix().toLower() != "sdt") {
@@ -515,7 +515,7 @@ void DataMapperWindow::ProcessCSVFile(const QString& csvFile) {
 }*/
 
 void DataMapperWindow::AddDataSources() {
-
+	/*
 	try {
 
 		if (!dec.hasJVM()){
@@ -528,7 +528,7 @@ void DataMapperWindow::AddDataSources() {
 
 		QMessageBox::critical(this, tr("JVM Error"), tr(e.what()));
 		return;
-	}
+	}*/
 
 	QStringList dataSources = GetFileNamesOpenDialog("DatasourcesDir", tr("Add Data Source"), "", "All datasource files (*.*);;CSV files (*.csv)");
 
