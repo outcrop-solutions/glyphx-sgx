@@ -186,7 +186,7 @@ namespace DataEngine
 		return tableNames[id];
 	}
 
-//JDBC ACCESSOR FUNCTIONS
+	//JDBC ACCESSOR FUNCTIONS
 	QStringList DataEngineConnection::connectToServer(QString db_url, QString user, QString pass, QString db_type){
 
 		jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
@@ -218,10 +218,13 @@ namespace DataEngine
 
 	QStringList DataEngineConnection::chooseDatabase(QString db_name){
 
+		foreignKeysByTable.clear();
+		sampleDataByTable.clear();
+		columnNames.clear();
+		tables.clear();
 		jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
 			"chooseDatabase", "(Ljava/lang/String;)[Ljava/lang/String;");
 		jobjectArray itr;
-		QStringList tables;
 		if (methodId != NULL) {
 			jstring name = jniEnv->NewStringUTF(db_name.toStdString().c_str());
 			itr = (jobjectArray)jniEnv->CallStaticObjectMethod(jcls, methodId, name);
@@ -262,6 +265,125 @@ namespace DataEngine
 			}
 		}
 	}
-//JDBC END
+
+	QStringList DataEngineConnection::getColumnNames(QString tablename){
+
+		if (columnNames.find(tablename) == columnNames.end()) {
+			jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
+				"getFieldsForTable", "(I)[Ljava/lang/String;");
+			jobjectArray itr;
+			QStringList temp;
+			if (methodId != NULL) {
+				itr = (jobjectArray)jniEnv->CallStaticObjectMethod(jcls, methodId, tables.indexOf(tablename));
+				if (jniEnv->ExceptionCheck()) {
+					jniEnv->ExceptionDescribe();
+					jniEnv->ExceptionClear();
+				}
+
+				int length = jniEnv->GetArrayLength(itr);
+
+				for (int i = 0; i < length; i++){
+					jstring element = (jstring)jniEnv->GetObjectArrayElement(itr, i);
+					const char *str = jniEnv->GetStringUTFChars(element, 0);
+					QString colname(str);
+					temp << colname;
+				}
+				columnNames[tablename] = temp;
+			}
+		}
+		return columnNames[tablename];
+	}
+
+	std::vector<DataEngineConnection::ForeignKey> DataEngineConnection::getForeignKeys(QString tablename){
+
+		if (foreignKeysByTable.find(tablename) == foreignKeysByTable.end()) {
+			std::vector<ForeignKey> fkeys;
+			QStringList fkey_string = getForeignKeyString(tablename);
+			for (int i = 0; i < fkey_string.size(); i += 3){
+				fkeys.push_back(ForeignKey(fkey_string.at(i), fkey_string.at(i + 1), fkey_string.at(i + 2)));
+			}
+			foreignKeysByTable[tablename] = fkeys;
+		}
+		return foreignKeysByTable[tablename];
+	}
+
+	std::vector<QStringList> DataEngineConnection::getSampleData(QString tablename){
+
+		if (sampleDataByTable.find(tablename) == sampleDataByTable.end()) {
+			std::vector<QStringList> rows;
+			for (int i = 0; i < 15; i++){
+				rows.push_back(getRowOfSampleData(tables.indexOf(tablename), i));
+			}
+			sampleDataByTable[tablename] = rows;
+		}
+		return sampleDataByTable[tablename];
+	}
+
+	QStringList DataEngineConnection::getForeignKeyString(QString tablename){
+
+		jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
+			"getForeignKeys", "(Ljava/lang/String;)[Ljava/lang/String;");
+		jobjectArray itr;
+		QStringList temp;
+		if (methodId != NULL) {
+			jstring name = jniEnv->NewStringUTF(tablename.toStdString().c_str());
+			itr = (jobjectArray)jniEnv->CallStaticObjectMethod(jcls, methodId, name);
+			if (jniEnv->ExceptionCheck()) {
+				jniEnv->ExceptionDescribe();
+				jniEnv->ExceptionClear();
+			}
+
+			int length = jniEnv->GetArrayLength(itr);
+
+			for (int i = 0; i < length; i++){
+				jstring element = (jstring)jniEnv->GetObjectArrayElement(itr, i);
+				const char *str = jniEnv->GetStringUTFChars(element, 0);
+				QString fkey_str(str);
+				temp << fkey_str;
+			}
+		}
+		return temp;
+	}
+
+	QStringList DataEngineConnection::getRowOfSampleData(int index, int row){
+
+		jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
+			"getSampleData", "(II)[Ljava/lang/String;");
+		jobjectArray itr;
+		QStringList samplerow;
+		if (methodId != NULL) {
+			itr = (jobjectArray)jniEnv->CallStaticObjectMethod(jcls, methodId, index, row);
+			if (jniEnv->ExceptionCheck()) {
+				jniEnv->ExceptionDescribe();
+				jniEnv->ExceptionClear();
+			}
+
+			int length = jniEnv->GetArrayLength(itr);
+
+			for (int i = 0; i < length; i++){
+				jstring element = (jstring)jniEnv->GetObjectArrayElement(itr, i);
+				const char *str = jniEnv->GetStringUTFChars(element, 0);
+				QString col_value(str);
+				samplerow << col_value;
+			}
+		}
+		return samplerow;
+	}
+
+	void DataEngineConnection::closeConnection(){
+
+		jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
+			"closeConnection", "()V");
+
+		if (methodId != NULL) {
+			jniEnv->CallStaticVoidMethod(jcls, methodId);
+			if (jniEnv->ExceptionCheck()) {
+				jniEnv->ExceptionDescribe();
+				jniEnv->ExceptionClear();
+			}
+		}
+	}
+
+	//JDBC END
 
 }

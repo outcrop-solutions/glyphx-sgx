@@ -48,6 +48,7 @@ public class DataEngine {
 //JDBC ACCESSOR METHODS
 
 	public static String[] connectToServer(String dburl, String username, String password, String db){
+		sourceType = db;
 		String[] sqldbs = JDBCLoader.getInstance().connectToServer(dburl, username, password, db);
 		return sqldbs;
 	}
@@ -65,9 +66,8 @@ public class DataEngine {
 		JDBCLoader.getInstance().setQueryTables(query);
 	}
 
-	public static String[] getFieldsForTable(int table, String type){
-		sourceType = type;
-		System.out.println(sourceType);
+	public static String[] getFieldsForTable(int table, String db){
+		sourceType = db;
 		if(sourceType.equals("csv")){
 			return headerString;
 		}else{
@@ -86,45 +86,55 @@ public class DataEngine {
 		return stats;
 	}
 
-//JDBC END
+	public static String[] getForeignKeys(String table){
+		String[] fkeys = JDBCLoader.getInstance().getForeignKeys(table);
+		return fkeys;
+	}
 
+	public static String[] getSampleData(int table, int row){
+		String[] sample;
+		if(sourceType.equals("csv")){
+			sample = new String[1];
+		}else{
+			sample = JDBCLoader.getInstance().getSampleData(table, row);
+		}
+		return sample;
+	}
+
+	public static void closeConnection(){
+		JDBCLoader.getInstance().closeConnection();
+	}
+
+//JDBC END
+/*
 	public static void main(String [] args){
 
 		DataEngine d = new DataEngine();
 		
-		//String[] db_list = d.connectToServer("mysql://33.33.33.1","root","jarvis","mysql");
-		String[] db_list = d.connectToServer("sqlite:C:\\Users\\Bryan\\Desktop\\test_for_ray_1\\test_exoplanet_url.db","","","sqlite");
-		String[] tables = d.chooseDatabase("");
+		String[] db_list = d.connectToServer("mysql://33.33.33.1","root","jarvis","mysql");
+		String[] tables = d.chooseDatabase("world");
+
+		String[] foreign_keys = d.getForeignKeys(tables[1]);//Foreign keys
+		for(int i = 0; i < foreign_keys.length; i+=3){
+			System.out.println(foreign_keys[i]+", "+foreign_keys[i+1]+", "+foreign_keys[i+2]);
+		}
+
+		String[] field_names = d.getFieldsForTable(1);//Field names
+		String names = "";
+		for(int i = 0; i < field_names.length; i++){
+			names += field_names[i]+" | ";
+		}System.out.println(names);
+
+		for(int i = 0; i < 15; i++){
+			String[] row = d.getSampleData(1, i);//Row of sample data
+			String row_str = "";
+			for(int j = 0; j < row.length; j++){
+				row_str += row[j]+" | ";
+			}System.out.println(row_str);
+		}
+
 		d.setChosenTables(tables);
-		String[] names = d.getFieldsForTable(0, "mysql");
-
-		for(int i = 0; i < names.length; i++){
-			String[] stats = d.getStatsForField(0, names[i]);
-			String toPrint = "";
-			toPrint += names[i]+" | ";
-			for(int j = 0; j < stats.length; j++){
-				toPrint += stats[j]+" | ";
-			}
-			System.out.println(toPrint);
-		}
-/*
-		String[] chosen = new String[2];
-		chosen[0] = "FirstPortion";
-		chosen[1] = "SecondPortion";
-
-		d.setChosenTables(chosen);
-
-		String[] fields0 = getFieldsForTable(0, "sqlite");
-		String[] fields1 = getFieldsForTable(1, "sqlite");
-		
-		for(int i = 0; i < fields0.length; i++){
-			System.out.println(fields0[i]);
-		}
-
-		String[] stats = getStatsForField(0,"rank");
-
-		for(int i = 0; i < stats.length; i++){
-			System.out.println(stats[i]);
-		}*/
-	}
+		//d.getStatsForField(table, field);
+		d.closeConnection();
+	}*/
 }
