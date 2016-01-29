@@ -243,6 +243,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_280CAC2412C04C5EBA56B97EE3FA5801"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_28C9751EC7354CA6B9F512FAECD57478"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -448,6 +454,12 @@
         "Entry"
         {
         "MsmKey" = "8:_4A66415C1F6A4465AE0184E0AD215A97"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_4AA4B370E99A4B748DD04B27C7964DBB"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -1143,6 +1155,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_C23C16ACEED749FEA2F6A6CA2FF393ED"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_C5A5565D16524E158C281AF32DE75AC3"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -1275,12 +1293,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_DBB0E86457D94B7EB50494C29605C983"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_DBEAB9112CD249A7A31B6F04D470EB23"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -1306,6 +1318,12 @@
         "Entry"
         {
         "MsmKey" = "8:_DF856CBF9255414BA115F14B0A0B26E9"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_E02D05005247434797FC0C6B65FA29DE"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -2302,6 +2320,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_280CAC2412C04C5EBA56B97EE3FA5801"
+            {
+            "SourcePath" = "8:..\\..\\Misc\\InstallerFiles\\Docs\\SynglyphX_Install_Guide.pdf"
+            "TargetName" = "8:SynglyphX_Install_Guide.pdf"
+            "Tag" = "8:"
+            "Folder" = "8:_0C9AA4F94A97428090886732B9B3D2C2"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_28C9751EC7354CA6B9F512FAECD57478"
             {
             "SourcePath" = "8:..\\..\\DataEngine\\jdk1.7.0_79\\jre\\bin\\server\\jvm.dll"
@@ -2948,6 +2986,26 @@
             "TargetName" = "8:sunec.dll"
             "Tag" = "8:"
             "Folder" = "8:_36F1FCC38D7848FBA6A0FE803EBD0AFB"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_4AA4B370E99A4B748DD04B27C7964DBB"
+            {
+            "SourcePath" = "8:..\\..\\Misc\\InstallerFiles\\Docs\\SynGlyphX_User_Guide.docx"
+            "TargetName" = "8:SynGlyphX_User_Guide.docx"
+            "Tag" = "8:"
+            "Folder" = "8:_0C9AA4F94A97428090886732B9B3D2C2"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -5102,6 +5160,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_C23C16ACEED749FEA2F6A6CA2FF393ED"
+            {
+            "SourcePath" = "8:..\\..\\Misc\\InstallerFiles\\Docs\\SynGlyphX_User_Guide.pdf"
+            "TargetName" = "8:SynGlyphX_User_Guide.pdf"
+            "Tag" = "8:"
+            "Folder" = "8:_0C9AA4F94A97428090886732B9B3D2C2"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_C5A5565D16524E158C281AF32DE75AC3"
             {
             "SourcePath" = "8:..\\..\\Misc\\InstallerFiles\\SampleData\\Quickstart_Template.png"
@@ -5482,26 +5560,6 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_DBB0E86457D94B7EB50494C29605C983"
-            {
-            "SourcePath" = "8:..\\..\\Misc\\InstallerFiles\\Docs\\The SynGlyphX Quick Start Guide.docx"
-            "TargetName" = "8:The SynGlyphX Quick Start Guide.docx"
-            "Tag" = "8:"
-            "Folder" = "8:_0C9AA4F94A97428090886732B9B3D2C2"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_DBEAB9112CD249A7A31B6F04D470EB23"
             {
             "SourcePath" = "8:..\\..\\DataEngine\\jdk1.7.0_79\\jre\\bin\\jsound.dll"
@@ -5568,6 +5626,26 @@
             "TargetName" = "8:libxml2.dll"
             "Tag" = "8:"
             "Folder" = "8:_36F1FCC38D7848FBA6A0FE803EBD0AFB"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_E02D05005247434797FC0C6B65FA29DE"
+            {
+            "SourcePath" = "8:..\\..\\Misc\\InstallerFiles\\Docs\\SynglyphX_Install_Guide.docx"
+            "TargetName" = "8:SynglyphX_Install_Guide.docx"
+            "Tag" = "8:"
+            "Folder" = "8:_0C9AA4F94A97428090886732B9B3D2C2"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -7413,7 +7491,7 @@
             "ShowCmd" = "3:1"
             "IconIndex" = "3:0"
             "Transitive" = "11:FALSE"
-            "Target" = "8:_DBB0E86457D94B7EB50494C29605C983"
+            "Target" = "8:"
             "Folder" = "8:_3E7962AF2FAE404889124360555F5ACB"
             "WorkingFolder" = "8:_0C9AA4F94A97428090886732B9B3D2C2"
             "Icon" = "8:_FAA64575586341E1BB230B90C90AE0DA"
