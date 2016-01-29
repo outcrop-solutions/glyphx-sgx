@@ -33,6 +33,7 @@
 #include "changedatasourcefiledialog.h"
 #include "changeimagefiledialog.h"
 #include <fstream>
+#include <QtWidgets/QFileSystemModel>
 
 DataMapperWindow::DataMapperWindow(QWidget *parent)
     : SynGlyphX::MainWindow(0, parent),
@@ -739,25 +740,43 @@ void DataMapperWindow::AddGlyphTemplate() {
 
 void DataMapperWindow::AddGlyphTemplatesFromLibrary() {
 
-	QStringList glyphTemplates = QFileDialog::getOpenFileNames(this, tr("Add Glyph Templates From Library"), m_glyphTemplatesDirectory, "SynGlyphX Glyph Template Files (*.sgt)");
+	QFileSystemModel* fileSystemModel = new QFileSystemModel(this);
+	fileSystemModel->setNameFilters(QStringList("*.sgt"));
 
-	if (glyphTemplates.isEmpty()) {
-		return;
-	}
+	QListView* fileListView = new QListView(this);
+	fileListView->setModel(fileSystemModel);
+	fileListView->setRootIndex(fileSystemModel->setRootPath(m_glyphTemplatesDirectory));
+	fileListView->setSelectionMode(QAbstractItemView::ExtendedSelection);
 
-	try {
-		for (const QString& filename : glyphTemplates) {
-			m_dataTransformModel->AddGlyphFile(filename);
+	SynGlyphX::SingleWidgetDialog dialog(QDialogButtonBox::StandardButton::Open | QDialogButtonBox::StandardButton::Cancel, fileListView, this);
+	dialog.setWindowTitle(tr("Add Glyph Templates From Library"));
+
+	if (dialog.exec() == QDialog::Accepted) {
+
+		const QModelIndexList& selected = fileListView->selectionModel()->selectedIndexes();
+
+		if (selected.isEmpty()) {
+		
+			return;
 		}
-	}
-	catch (const std::exception& e) {
-		QMessageBox::critical(this, tr("Failed To Add Glyph"), e.what(), QMessageBox::Ok);
-		return;
-	}
 
-	EnableProjectDependentActions(true);
-	m_glyphTreesView->SelectLastGlyphTreeRoot();
-	statusBar()->showMessage("Glyph Template(s) successfully added", 3000);
+		try {
+		
+			for (const QModelIndex& index : selected) {
+		
+				m_dataTransformModel->AddGlyphFile(fileSystemModel->filePath(index));
+			}
+		}
+		catch (const std::exception& e) {
+		
+			QMessageBox::critical(this, tr("Failed To Add Glyph"), e.what(), QMessageBox::Ok);
+			return;
+		}
+
+		EnableProjectDependentActions(true);
+		m_glyphTreesView->SelectLastGlyphTreeRoot();
+		statusBar()->showMessage("Glyph Template(s) successfully added", 3000);
+	}
 }
 
 void DataMapperWindow::CreateNewGlyphTree() {
