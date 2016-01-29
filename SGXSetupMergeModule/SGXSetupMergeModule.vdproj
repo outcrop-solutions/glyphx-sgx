@@ -183,6 +183,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_1E883799FAA14762A4B1C350DC6A28F6"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_201F49AD7D6D4838BBADD2E4A039D8A5"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -843,6 +849,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_918123943A3E4374A95618E4F6B8BCDD"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_92076041A6E14DF3867762B1D6913F93"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -952,6 +964,12 @@
         "Entry"
         {
         "MsmKey" = "8:_A2C3BBA398A1496E9B9550CE453328EA"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_A2D059B3C17E4EED9EB288E0D22624A5"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -1462,6 +1480,12 @@
         "Entry"
         {
         "MsmKey" = "8:_FC47E523E3354146B20B9286A18BF9EF"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_FCC294F63A1F4A8C95CDC400C38B8C9A"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -2084,6 +2108,26 @@
             "TargetName" = "8:boost_filesystem-vc120-mt-1_55.dll"
             "Tag" = "8:"
             "Folder" = "8:_0FD992B69CC74D489682A631FA99B364"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_1E883799FAA14762A4B1C350DC6A28F6"
+            {
+            "SourcePath" = "8:..\\..\\Misc\\InstallerFiles\\GlyphTemplates\\Single Arm for Rotation Offset.sgt"
+            "TargetName" = "8:Single Arm for Rotation Offset.sgt"
+            "Tag" = "8:"
+            "Folder" = "8:_B4E0754028D04DDF8AEE8716965EFFAF"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -4158,6 +4202,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_918123943A3E4374A95618E4F6B8BCDD"
+            {
+            "SourcePath" = "8:..\\..\\Misc\\InstallerFiles\\GlyphTemplates\\1_to_18 Arm Template.sgt"
+            "TargetName" = "8:1_to_18 Arm Template.sgt"
+            "Tag" = "8:"
+            "Folder" = "8:_B4E0754028D04DDF8AEE8716965EFFAF"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_92076041A6E14DF3867762B1D6913F93"
             {
             "SourcePath" = "8:..\\..\\ANTzPlus\\ANTzzSpaceTemplate\\nourl.html"
@@ -4524,6 +4588,26 @@
             "TargetName" = "8:Clear.png"
             "Tag" = "8:"
             "Folder" = "8:_1CD158B43CEE41CBADE0A1F0DDB6AB7D"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_A2D059B3C17E4EED9EB288E0D22624A5"
+            {
+            "SourcePath" = "8:..\\..\\Misc\\InstallerFiles\\GlyphTemplates\\1_to_18 Torus Base Sweep.sgt"
+            "TargetName" = "8:1_to_18 Torus Base Sweep.sgt"
+            "Tag" = "8:"
+            "Folder" = "8:_B4E0754028D04DDF8AEE8716965EFFAF"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -6002,6 +6086,26 @@
             {
             "SourcePath" = "8:..\\..\\Misc\\InstallerFiles\\GlyphTemplates\\Ball.sgt"
             "TargetName" = "8:Ball.sgt"
+            "Tag" = "8:"
+            "Folder" = "8:_B4E0754028D04DDF8AEE8716965EFFAF"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_FCC294F63A1F4A8C95CDC400C38B8C9A"
+            {
+            "SourcePath" = "8:..\\..\\Misc\\InstallerFiles\\GlyphTemplates\\Box.sgt"
+            "TargetName" = "8:Box.sgt"
             "Tag" = "8:"
             "Folder" = "8:_B4E0754028D04DDF8AEE8716965EFFAF"
             "Condition" = "8:"
