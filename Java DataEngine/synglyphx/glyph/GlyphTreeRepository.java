@@ -14,13 +14,14 @@ public class GlyphTreeRepository {
 	//private static GlyphTreeRepository instance = null;
 	private Map<Integer,Node> allNodes = null;
 	private ArrayList<Edge> edges = null;
-	private int nodeCount = 1;
+	private int nodeCount;
 	private String outDir;
 	private String app;
 	
 	public GlyphTreeRepository(){
 		allNodes = new HashMap<Integer,Node>();
 		edges = new ArrayList<Edge>();
+		nodeCount = 1;
 	}
 /*
 	public static GlyphTreeRepository getInstance(){

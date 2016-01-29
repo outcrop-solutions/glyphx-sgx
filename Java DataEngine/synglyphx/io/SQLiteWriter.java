@@ -7,6 +7,7 @@ import com.almworks.sqlite4java.*;
 import java.io.File;
 import synglyphx.data.DataFrame;
 import synglyphx.data.SourceDataInfo;
+import synglyphx.glyph.XMLGlyphTemplate;
 
 /*
 TABLE INDEX
@@ -21,11 +22,17 @@ UUID TABLENAME
 public class SQLiteWriter {
 
 	private ArrayList<SourceDataInfo> dataframes = null;
+	private HashMap<Integer, XMLGlyphTemplate> templates;
+	private ArrayList<Integer> rootIds;
+	private ArrayList<Integer> toPrint;
 	private String outDir;
 
-	public SQLiteWriter(ArrayList<SourceDataInfo> sdi, String outDir){
+	public SQLiteWriter(ArrayList<SourceDataInfo> sdi, String outDir, ArrayList<Integer> rootIds, HashMap<Integer, XMLGlyphTemplate> templates){
 		this.dataframes = sdi;
 		this.outDir = outDir;
+		this.rootIds = rootIds;
+		this.templates = templates;
+		setToPrint();
 		File file = new File(outDir+"\\sourcedata.db");
 		file.delete();
 	}
@@ -43,8 +50,8 @@ public class SQLiteWriter {
 			st0.step(); 
 
 			SQLiteStatement st1 = db.prepare("INSERT INTO 'TableIndex' VALUES (?,?,?);", true);
-			for(int i = 0; i < dataframes.size(); i++){
-				SourceDataInfo sdi = dataframes.get(i);
+			for(int i = 0; i < toPrint.size(); i++){
+				SourceDataInfo sdi = dataframes.get(toPrint.get(i));
 				File file = new File(sdi.getPath());
 				st1.bind(1, sdi.getFormattedID())
 				.bind(2, sdi.getFormattedName())
@@ -65,9 +72,9 @@ public class SQLiteWriter {
 			SQLiteConnection db = new SQLiteConnection(new File(outDir+"\\sourcedata.db"));
 			db.open(true);
 
-			for(int i = 0; i < dataframes.size(); i++){
-				SourceDataInfo sdi = dataframes.get(i);
-				if(sdi.getType().equals("csv") || sdi.getType().equals("sqlite")){
+			for(int i = 0; i < toPrint.size(); i++){
+				SourceDataInfo sdi = dataframes.get(toPrint.get(i));
+				if(sdi.getType().equals("csv") || sdi.getType().equals("sqlite3")){
 					writeTable(db,sdi);
 				}
 			}
@@ -127,6 +134,17 @@ public class SQLiteWriter {
 		}
 
 		db.exec("COMMIT TRANSACTION;"); 
+	}
+
+	private void setToPrint(){
+
+		toPrint = new ArrayList<Integer>();
+		for(int i = 0; i < rootIds.size(); i++){
+			int temp = templates.get(rootIds.get(i)).getDataSource();
+			if(!toPrint.contains(temp)){
+				toPrint.add(temp);
+			}
+		}
 	}
 
 }

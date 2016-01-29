@@ -57,7 +57,7 @@ public class SDTReader {
 		mapping.checkRangeXY(download);
 		mapping.setDefaults(tagFieldDefault, tagValueDefault, scaleZeroDefault);
 		mapping.generateGlyphTrees(dataPaths, rootIds, outDir, colorStr, app, base_objects);
-		SQLiteWriter writer = new SQLiteWriter(dataPaths, outDir);
+		SQLiteWriter writer = new SQLiteWriter(dataPaths, outDir, rootIds, templates);
 		writer.writeTableIndex();
 		writer.writeAllTables();
 	}
@@ -423,7 +423,7 @@ public class SDTReader {
 				scaleZeroDefault = true;
 			}
 		}catch(Exception e){
-			e.printStackTrace();
+			Logger.getInstance().add("ScaleZeroDefault tag is missing...");
 		}
 
 		Logger.getInstance().add("Retrieved Defaults.");
@@ -444,7 +444,7 @@ public class SDTReader {
 				reader = new CSVReader();
 				reader.createDataFrame(dataPaths.get(i).getPath());
 				dataPaths.get(i).setDataFrame(reader.getDataFrame());
-			}else if(dataPaths.get(i).getType().equals("sqlite")){
+			}else if(dataPaths.get(i).getType().equals("sqlite3")){
 				sqlReader = new SQLiteReader();
 				sqlReader.createDataFrame(dataPaths.get(i).getPath(),dataPaths.get(i).getTable());
 				dataPaths.get(i).setDataFrame(sqlReader.getDataFrame());

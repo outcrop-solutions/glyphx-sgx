@@ -143,8 +143,10 @@ namespace DataEngine
 			if (application == "DataMapper"){
 				num = "map0000" + QString::number(i + offset) + ".jpg";
 				if (images.at(i) == "downloadedMap.jpg" && downloadComplete){
-					QFile::copy((baseImageDir).c_str() + file, baseUsrImageDir + num);
-					boost::filesystem::remove(baseImageDir + "downloadedMap.jpg");
+					//QFile::copy((baseImageDir).c_str() + file, baseUsrImageDir + num);
+					//boost::filesystem::remove(baseImageDir + "downloadedMap.jpg");
+					boost::filesystem::rename((baseUsrImageDir + "downloadedMap.jpg").toStdString(), (baseUsrImageDir + num).toStdString());
+
 				}
 				else if (boost::filesystem::exists(boost::filesystem::path(baseImageDir + images.at(i)))){
 					QFile::copy((baseImageDir).c_str() + file, baseUsrImageDir + num);
@@ -203,7 +205,7 @@ namespace DataEngine
 
 				QString downloadedImageFilename;
 				if (application == "DataMapper"){
-					downloadedImageFilename = QString((baseImageDir + "downloadedMap.jpg").c_str());
+					downloadedImageFilename = QString((baseOutputDir + "usr/images/downloadedMap.jpg").c_str());
 				}
 				else if (application == "GlyphViewer"){
 					downloadedImageFilename = QString((baseOutputDir + "antz/base_image_2.png").c_str());

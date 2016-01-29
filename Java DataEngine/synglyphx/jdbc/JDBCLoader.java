@@ -38,7 +38,7 @@ public class JDBCLoader {
 
          Logger.getInstance().add("Connecting to Server...");
 
-         if(db.equals("sqlite")){
+         if(db.equals("sqlite3")){
             sqldbs[0] = "n/a";
             return sqldbs;
          }else{
@@ -86,7 +86,7 @@ public class JDBCLoader {
     
          Class.forName(DriverSelect.getDriver(dbType));
 
-         if(dbType.equals("sqlite")){
+         if(dbType.equals("sqlite3")){
             conn = DriverManager.getConnection(connectionString);
          }else{
             conn = DriverManager.getConnection(connectionString+"/"+db_name,username,password);
@@ -110,12 +110,10 @@ public class JDBCLoader {
 
    public static void setChosenTables(String[] chosen){
       database.initializeChosenTables(chosen);
-      closeConnection();
    }
 
    public static void setQueryTables(String query){
       database.initializeQueryTables(query);
-      closeConnection();
    }
 
    public static String[] getFieldsForTable(int table){
@@ -124,6 +122,14 @@ public class JDBCLoader {
 
    public static String[] getStatsForField(int table, String field){
       return database.getTable(table).getStats(field);
+   }
+
+   public String[] getForeignKeys(String tableName){
+      return database.getForeignKeys(tableName);
+   }
+
+   public String[] getSampleData(int table, int row){
+      return database.getSampleData(table, row);
    }
 
    public static void closeConnection(){
@@ -137,6 +143,7 @@ public class JDBCLoader {
       }
       Logger.getInstance().add("");
       Logger.getInstance().add("Closing connection to database...");
+
    }
 
 }

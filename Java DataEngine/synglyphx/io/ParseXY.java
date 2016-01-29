@@ -1,6 +1,7 @@
 package synglyphx.io;
 
 import java.io.File;
+import java.sql.*;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import org.w3c.dom.Document;
@@ -13,6 +14,8 @@ import java.util.ArrayList;
 import synglyphx.util.ConvertHash;
 import synglyphx.data.DataStats;
 import synglyphx.data.SourceDataInfo;
+import synglyphx.jdbc.Table;
+import synglyphx.jdbc.DriverSelect;
 
 public class ParseXY {
 
@@ -88,29 +91,38 @@ public class ParseXY {
 		y_min_max[0] = 90.0; y_min_max[1] = -90.0;
 		ConvertHash convert = new ConvertHash();
 
+		double[] min_max = new double[4];
+
 		for(int i = 0; i < sdi.size(); i++){
 			SourceDataInfo temp = sdi.get(i);
-			String id = temp.getID();
-			String table = temp.getTable();
-			HashMap<String, DataStats> ds = temp.getDataFrame().dataStatsModel();
-			for(Map.Entry<String,DataStats> entry : ds.entrySet()){
-				String code = convert.getHash(id,table,entry.getKey());
-				if(x_binds.contains(code)){
-					if(Double.parseDouble(entry.getValue().getMin()) < x_min_max[0]){
-						x_min_max[0] = Double.parseDouble(entry.getValue().getMin());
-					}
-					if(Double.parseDouble(entry.getValue().getMax()) > x_min_max[1]){
-						x_min_max[1] = Double.parseDouble(entry.getValue().getMax());
-					}
-				}
-				else if(y_binds.contains(code)){
-					if(Double.parseDouble(entry.getValue().getMin()) < y_min_max[0]){
-						y_min_max[0] = Double.parseDouble(entry.getValue().getMin());
-					}
-					if(Double.parseDouble(entry.getValue().getMax()) > y_min_max[1]){
-						y_min_max[1] = Double.parseDouble(entry.getValue().getMax());
-					}
-				}
+			if(temp.getType().equals("csv") || temp.getType().equals("sqlite3")){
+				HashMap<String, DataStats> ds = temp.getDataFrame().dataStatsModel();
+				min_max = findMinMax(temp, x_min_max, y_min_max, convert, ds);
+				x_min_max[0] = min_max[0]; x_min_max[1] = min_max[1];
+				y_min_max[0] = min_max[2]; y_min_max[1] = min_max[3];
+
+			}else{
+				try{
+			        Class.forName(DriverSelect.getDriver(temp.getType()));
+			        //Logger.getInstance().add("Connecting to Server...");
+			        Connection conn = DriverManager.getConnection("jdbc:"+temp.getHost(),temp.getUsername(),temp.getPassword());
+			        Table table = new Table(temp.getTable(), conn);
+			        HashMap<String, DataStats> tds = table.getDataStats();
+			        min_max = findMinMax(temp, x_min_max, y_min_max, convert, tds);
+			        x_min_max[0] = min_max[0]; x_min_max[1] = min_max[1];
+					y_min_max[0] = min_max[2]; y_min_max[1] = min_max[3];
+
+					conn.close();
+			    }catch(SQLException se){
+			        try{
+			            se.printStackTrace(Logger.getInstance().addError());
+			        }catch(Exception ex){}
+			    }catch(Exception e){
+			        try{
+			            e.printStackTrace(Logger.getInstance().addError());
+			        }catch(Exception ex){}
+	    }
+
 			}
 		}
 
@@ -119,6 +131,37 @@ public class ParseXY {
 		to_return[2] = x_min_max[1]; to_return[3] = y_min_max[0];
 		
 		return to_return;
+	}
+
+	public double[] findMinMax(SourceDataInfo temp, double[] x_min_max, double[] y_min_max, ConvertHash convert, HashMap<String, DataStats> ds){
+
+		String id = temp.getID();
+		String table = temp.getTable();
+
+		for(Map.Entry<String,DataStats> entry : ds.entrySet()){
+			String code = convert.getHash(id,table,entry.getKey());
+			if(x_binds.contains(code)){
+				if(Double.parseDouble(entry.getValue().getMin()) < x_min_max[0]){
+					x_min_max[0] = Double.parseDouble(entry.getValue().getMin());
+				}
+				if(Double.parseDouble(entry.getValue().getMax()) > x_min_max[1]){
+					x_min_max[1] = Double.parseDouble(entry.getValue().getMax());
+				}
+			}
+			else if(y_binds.contains(code)){
+				if(Double.parseDouble(entry.getValue().getMin()) < y_min_max[0]){
+					y_min_max[0] = Double.parseDouble(entry.getValue().getMin());
+				}
+				if(Double.parseDouble(entry.getValue().getMax()) > y_min_max[1]){
+					y_min_max[1] = Double.parseDouble(entry.getValue().getMax());
+				}
+			}
+		}
+
+		double[] temp_mm = new double[4];
+		temp_mm[0] = x_min_max[0]; temp_mm[1] = x_min_max[1];
+		temp_mm[2] = y_min_max[0]; temp_mm[3] = y_min_max[1];
+		return temp_mm;
 	}
 
 	public static void main(String[] args){

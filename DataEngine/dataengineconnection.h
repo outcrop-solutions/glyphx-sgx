@@ -13,13 +13,26 @@ namespace DataEngine
 {
 	class DATAENGINE DataEngineConnection {
 
+	struct ForeignKey {
+		QString key;
+		QString origin;
+		QString value;
+		ForeignKey(QString k, QString o, QString v) : key(k), origin(o), value(v) {}
+	};
+
 	private:
 		JavaVM *javaVM;
 		JNIEnv *jniEnv;
 		jclass jcls;
-		bool classFound;
+		bool classFound = false;
+		QStringList tables;
 		std::map<boost::uuids::uuid, std::vector<std::wstring>> tableNumericFields;
 		std::map<boost::uuids::uuid, std::wstring> tableNames;
+		std::map<QString, QStringList> columnNames;
+		std::map<QString, std::vector<ForeignKey>> foreignKeysByTable;
+		std::map<QString, std::vector<QStringList>> sampleDataByTable;
+		QStringList getForeignKeyString(QString tablename);
+		QStringList getRowOfSampleData(int index, int row);
 
 	public:
 		DataEngineConnection();
@@ -40,7 +53,11 @@ namespace DataEngine
 		//JDBC ACCESSOR FUNCTIONS
 		QStringList connectToServer(QString db_url, QString user, QString pass, QString db_type);
 		QStringList chooseDatabase(QString db_name);
+		QStringList getColumnNames(QString tablename);
+		std::vector<ForeignKey> getForeignKeys(QString tablename);
+		std::vector<QStringList> getSampleData(QString tablename);
 		void setChosenTables(QStringList chosen);
+		void closeConnection();
 		//JDBC END
 		void destroyJVM();
 		JNIEnv* getEnv();
