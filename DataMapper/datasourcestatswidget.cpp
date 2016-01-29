@@ -52,7 +52,7 @@ void DataSourceStatsWidget::AddNewStatsViews() {
 					QString url("sqlite:" + datasource);
 					QString user("");
 					QString pass("");
-					QString type("sqlite");
+					QString type("sqlite3");
 					//QString url("mysql://33.33.33.1");
 					//QString user("root");
 					//QString pass("jarvis");
@@ -79,10 +79,12 @@ void DataSourceStatsWidget::AddNewStatsViews() {
 					for (int i = 0; i < qtables.size(); i++){
 						CreateTablesFromDatasource(iT->first, i, QString::fromStdWString(iT->second.GetFormattedName()) + ":" + qtables[i], iT->second.GetType());
 					}
+					dec->closeConnection();
 				}
 				else if (iT->second.GetType() == SynGlyphX::FileDatasource::CSV){
 					dec->loadCSV(datasource.toUtf8().constData());
 					CreateTablesFromDatasource(iT->first, 0, QString::fromStdWString(iT->second.GetFormattedName()), iT->second.GetType());
+					dec->closeConnection();
 				}
 			}
 		}catch (const std::exception& e) {
