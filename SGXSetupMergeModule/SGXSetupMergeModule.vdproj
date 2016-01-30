@@ -7441,6 +7441,20 @@
             "Icon" = "8:_FAA64575586341E1BB230B90C90AE0DA"
             "Feature" = "8:"
             }
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_0AB7C10FEDC944EEB7B06D9D601CB364"
+            {
+            "Name" = "8:Shortcut to SynGlyphX_User_Guide.docx"
+            "Arguments" = "8:"
+            "Description" = "8:"
+            "ShowCmd" = "3:1"
+            "IconIndex" = "3:0"
+            "Transitive" = "11:FALSE"
+            "Target" = "8:_4AA4B370E99A4B748DD04B27C7964DBB"
+            "Folder" = "8:_3E7962AF2FAE404889124360555F5ACB"
+            "WorkingFolder" = "8:_0C9AA4F94A97428090886732B9B3D2C2"
+            "Icon" = "8:"
+            "Feature" = "8:"
+            }
             "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_14F7BE2FF809416EA470D24CD77ABD52"
             {
             "Name" = "8:Data Mapper"
@@ -7453,6 +7467,20 @@
             "Folder" = "8:_3E7962AF2FAE404889124360555F5ACB"
             "WorkingFolder" = "8:_0FD992B69CC74D489682A631FA99B364"
             "Icon" = "8:_FAA64575586341E1BB230B90C90AE0DA"
+            "Feature" = "8:"
+            }
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_2846EFFE8D864A51BA57E9573450F853"
+            {
+            "Name" = "8:Shortcut to SynglyphX_Install_Guide.docx"
+            "Arguments" = "8:"
+            "Description" = "8:"
+            "ShowCmd" = "3:1"
+            "IconIndex" = "3:0"
+            "Transitive" = "11:FALSE"
+            "Target" = "8:_E02D05005247434797FC0C6B65FA29DE"
+            "Folder" = "8:_3E7962AF2FAE404889124360555F5ACB"
+            "WorkingFolder" = "8:_0C9AA4F94A97428090886732B9B3D2C2"
+            "Icon" = "8:"
             "Feature" = "8:"
             }
             "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_496D1073A8D949F6A1882139560338E3"
@@ -7483,20 +7511,6 @@
             "Icon" = "8:_FAA64575586341E1BB230B90C90AE0DA"
             "Feature" = "8:"
             }
-            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_710365211B774020B49DD2D6D0B1EDB9"
-            {
-            "Name" = "8:SynGlyphX Quick Start Guide"
-            "Arguments" = "8:"
-            "Description" = "8:"
-            "ShowCmd" = "3:1"
-            "IconIndex" = "3:0"
-            "Transitive" = "11:FALSE"
-            "Target" = "8:"
-            "Folder" = "8:_3E7962AF2FAE404889124360555F5ACB"
-            "WorkingFolder" = "8:_0C9AA4F94A97428090886732B9B3D2C2"
-            "Icon" = "8:_FAA64575586341E1BB230B90C90AE0DA"
-            "Feature" = "8:"
-            }
             "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_A6B467D1BCF344CFA76F0DD34A92368E"
             {
             "Name" = "8:Glyph Designer - Shortcut"
@@ -7509,6 +7523,34 @@
             "Folder" = "8:_AE5DEF05DB95429488E96B6C98F9888E"
             "WorkingFolder" = "8:_0FD992B69CC74D489682A631FA99B364"
             "Icon" = "8:_FAA64575586341E1BB230B90C90AE0DA"
+            "Feature" = "8:"
+            }
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_CC375CC7ABD545FEB2C4BED969781FB3"
+            {
+            "Name" = "8:Shortcut to SynGlyphX_User_Guide.pdf"
+            "Arguments" = "8:"
+            "Description" = "8:"
+            "ShowCmd" = "3:1"
+            "IconIndex" = "3:0"
+            "Transitive" = "11:FALSE"
+            "Target" = "8:_C23C16ACEED749FEA2F6A6CA2FF393ED"
+            "Folder" = "8:_3E7962AF2FAE404889124360555F5ACB"
+            "WorkingFolder" = "8:_0C9AA4F94A97428090886732B9B3D2C2"
+            "Icon" = "8:"
+            "Feature" = "8:"
+            }
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_CC4C6AC7643C434585D72703D70D6587"
+            {
+            "Name" = "8:Shortcut to SynglyphX_Install_Guide.pdf"
+            "Arguments" = "8:"
+            "Description" = "8:"
+            "ShowCmd" = "3:1"
+            "IconIndex" = "3:0"
+            "Transitive" = "11:FALSE"
+            "Target" = "8:_280CAC2412C04C5EBA56B97EE3FA5801"
+            "Folder" = "8:_3E7962AF2FAE404889124360555F5ACB"
+            "WorkingFolder" = "8:_0C9AA4F94A97428090886732B9B3D2C2"
+            "Icon" = "8:"
             "Feature" = "8:"
             }
             "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_E3D4FD5D4C554D69AF17891893E0E388"
