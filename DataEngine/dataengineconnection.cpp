@@ -385,5 +385,37 @@ namespace DataEngine
 	}
 
 	//JDBC END
+	/*
+	void DataEngineConnection::testFunction(){
+		std::ofstream myfile;
+		myfile.open("testlog.txt");
+
+		for (int i = 0; i < tables.size(); i++){
+			std::vector<ForeignKey> keys = getForeignKeys(tables.at(i));
+			std::vector<QStringList> sample = getSampleData(tables.at(i));
+
+			myfile << tables.at(i).toStdString() << '\n';
+			myfile << "Foreign Keys:\n";
+			for (int j = 0; j < keys.size(); j++){
+				myfile << "Key: " << keys.at(j).key.toStdString() << ", Origin: " << keys.at(j).origin.toStdString() << ", Value: " << keys.at(j).value.toStdString() << '\n';
+			}
+			myfile << '\n';
+			myfile << "Sample Data:\n";
+			QStringList cols = getColumnNames(tables.at(i));
+			for (int j = 0; j < cols.size(); j++){
+				myfile << cols.at(j).toStdString() << " | ";
+			}
+			myfile << '\n';
+			for (int j = 0; j < sample.size(); j++){
+				QStringList temp = sample.at(j);
+				for (int k = 0; k < temp.size(); k++){
+					myfile << temp.at(k).toStdString() << ", ";
+				}
+				myfile << '\n';
+			}
+			myfile << '\n';
+		}
+		myfile.close();
+	}*/
 
 }
