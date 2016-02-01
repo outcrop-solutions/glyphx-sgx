@@ -1,5 +1,4 @@
 #include "datamappingmodel.h"
-#include "sourcedatamanager.h"
 #include <QtCore/QDir>
 #include <boost/uuid/uuid_io.hpp>
 #include "application.h"

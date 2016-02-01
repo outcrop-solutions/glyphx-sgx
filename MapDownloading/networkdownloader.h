@@ -41,21 +41,28 @@ public:
 
 	static NetworkDownloader& Instance();
 	
-	BoundingBoxAndSize DownloadMap(const std::vector<GeographicPoint>& points, const std::string& filename, SynGlyphX::DownloadedMapProperties::ConstSharedPtr properties);
-
+	GeographicBoundingBox DownloadMap(const std::vector<GeographicPoint>& points, SynGlyphX::DownloadedMapProperties::ConstSharedPtr properties);
+	GeographicBoundingBox DownloadMap(const std::vector<GeographicPoint>& points, const std::string& filename, SynGlyphX::DownloadedMapProperties::ConstSharedPtr properties);
+	/*
+	void SetShowPointsInMap(bool show);
+	bool GetShowPointsInMap();
+	*/
     void SetMapQuestOpenKey(const QString& key);
     const QString& GetMapQuestOpenKey() const;
 
+	std::vector<double> getImageSize();
     //void SetGoogleMapsKey(const QString& key);
     //const QString& GetGoogleMapsKey() const;
 
 private:
-	unsigned int GetZoomLevel(const GeographicBoundingBox& boundingBox, bool useBestFit, SynGlyphX::IntSize& imageSize);
-	QString GenerateMapQuestOpenString(const GeographicPoint& center, unsigned int zoomLevel, SynGlyphX::DownloadedMapProperties::ConstSharedPtr properties, const SynGlyphX::IntSize& imageSize);
+	unsigned int GetZoomLevel(const GeographicBoundingBox& boundingBox, bool useBestFit);
+	QString GenerateMapQuestOpenString(const GeographicPoint& center, unsigned int zoomLevel, SynGlyphX::DownloadedMapProperties::ConstSharedPtr properties);
     void ReadSettings();
     void WriteSettings();
 
 	static NetworkDownloader s_instance;
+
+	SynGlyphX::IntSize imageSize;
 
 	DistanceStrategy m_distanceStrategy;
 

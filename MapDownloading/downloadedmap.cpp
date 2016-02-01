@@ -7,9 +7,8 @@
 #include "networkdownloader.h"
 #include "georeference.h"
 
-DownloadedMap::DownloadedMap(const std::vector<GeographicPoint>& points, const std::string& filename, SynGlyphX::DownloadedMapProperties::ConstSharedPtr properties, QObject *parent)
-    : QObject(parent),
-	m_filename(filename),
+DownloadedMap::DownloadedMap(const std::vector<GeographicPoint>& points, const std::string& filename, SynGlyphX::DownloadedMapProperties::ConstSharedPtr properties)
+    : m_filename(filename),
     m_imageBoundingBox(),
     m_pointsBoundingBox(points),
     m_mapSource(properties->GetSource()),
@@ -19,7 +18,9 @@ DownloadedMap::DownloadedMap(const std::vector<GeographicPoint>& points, const s
 
 	NetworkDownloader& downloader = NetworkDownloader::Instance();
 	
-	m_imageBoundingBox = downloader.DownloadMap(points, tempImageFilename.toStdString(), properties).first;
+	m_imageBoundingBox = downloader.DownloadMap(points, tempImageFilename.toStdString(), properties);
+
+	//m_showPointsInMap = downloader.GetShowPointsInMap();
 
     QString imageFilename = QString::fromStdString(filename);
 
@@ -61,3 +62,8 @@ SynGlyphX::DownloadedMapProperties::MapType DownloadedMap::GetMapType() const {
 
 	return m_mapType;
 }
+/*
+bool DownloadedMap::GetShowPointsInMap() const {
+	
+	return m_showPointsInMap;
+}*/

@@ -25,12 +25,11 @@
 #include "mapdownloading_global.h"
 #include "downloadedmapproperties.h"
 
-class MAPDOWNLOADING_EXPORT DownloadedMap : public QObject
+class MAPDOWNLOADING_EXPORT DownloadedMap
 {
-    Q_OBJECT
 
 public:
-	DownloadedMap(const std::vector<GeographicPoint>& points, const std::string& filename, SynGlyphX::DownloadedMapProperties::ConstSharedPtr properties, QObject *parent = NULL);
+	DownloadedMap(const std::vector<GeographicPoint>& points, const std::string& filename, SynGlyphX::DownloadedMapProperties::ConstSharedPtr properties);
     ~DownloadedMap();
 
     const GeographicBoundingBox& GetImageBoundingBox();
@@ -38,6 +37,7 @@ public:
 
 	SynGlyphX::DownloadedMapProperties::MapSource GetMapSource() const;
 	SynGlyphX::DownloadedMapProperties::MapType GetMapType() const;
+	//bool GetShowPointsInMap() const;
 
 private:
 	std::string m_filename;
@@ -46,6 +46,7 @@ private:
 
 	SynGlyphX::DownloadedMapProperties::MapSource m_mapSource;
 	SynGlyphX::DownloadedMapProperties::MapType m_mapType;
+	//bool m_showPointsInMap;
 };
 
 #endif // DOWNLOADEDMAP_H
