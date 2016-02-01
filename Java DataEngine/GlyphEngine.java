@@ -52,6 +52,8 @@ public class GlyphEngine {
 			String key = "";
 			String check = "";
 			try{
+				File f = new File(outDir+"\\antz\\base_image_2.png");
+				if(!f.exists()){return true;}
 				Scanner s = new Scanner(new BufferedReader(new FileReader(outDir+"\\antz\\DownloadedImageSpecs.txt")));
 				sdtReader.getDownloadedBaseObject().setCornerString(temp);
 				key = sdtReader.getDownloadedBaseObject().getUpdateCheckString();
