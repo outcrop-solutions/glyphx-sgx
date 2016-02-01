@@ -32,6 +32,7 @@ public class CSVWriter {
 	private String line6;
 	private String line7;
 	private String outDir;
+	private String imageDir;
 	private String noURLLocation;
 	private boolean win;
 	private boolean remove_scale_zero;
@@ -45,8 +46,10 @@ public class CSVWriter {
 		//System.out.println(nodeCount);
 		if(app.equals("DataMapper")){
 			this.outDir = outDir+"\\usr\\csv\\";
+			this.imageDir = outDir+"\\usr\\images\\downloadedMap.jpg";
 		}else if(app.equals("GlyphViewer")){
 			this.outDir = outDir+"\\antz\\";
+			this.imageDir = outDir+"\\antz\\base_image_2.png";
 		}
 		Logger.getInstance().add(this.outDir);
 		setAntz();
@@ -398,15 +401,17 @@ public class CSVWriter {
 		String branchLevel = "0";
 		String childCount = String.valueOf(base_objects.size());
 		double[] logo_pos = new double[2];
-		boolean world = false;
+		boolean world = true;
 		int offset = 2;
+		File f = new File(imageDir);
+		if(f.exists()){world = false;}
 
 		for(int i = 0; i < base_objects.size(); i++){
 			String template = "";
 			BaseObject bo = base_objects.get(i);
 			String[] color = bo.getGridColor();
 			String number = String.valueOf(i+offset);
-			if(i == 0 && bo.getName().equals("World")){number = "1";world = true;offset = 1;}
+			if(i == 0 && (bo.getName().equals("World") || world)){number = "1";offset = 1;}
 			template = String.valueOf(i+6)+",6,"+String.valueOf(i+6)+",1,"+parentID+","+branchLevel+",0,0,"+childCount+",0,0,0,0,1,"+bo.getGLCount(0)+","+bo.getGLCount(1)+",0,0,0,0,0,0,1,0,0,1,1,1,";
 			template += bo.getPosition(0)+","+bo.getPosition(1)+","+bo.getPosition(2)+",0,0,0,0,0,0,"+bo.getRotation(0)+","+bo.getRotation(1)+","+bo.getRotation(2)+",0,0,0,0,0,0,0,0,0,0,0,1,0,0.1,18,"+color[0]+","+color[1]+","+color[2]+",255,";
 			template += "0,"+number+","+bo.showGridLines()+",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"+bo.getGLSegX()+","+bo.getGLSegY()+",0,0,0,0,0,420\n";

@@ -62,6 +62,7 @@ namespace DataEngine
 		void destroyJVM();
 		JNIEnv* getEnv();
 		jclass getJcls();
+		//void testFunction();
 
 	};
 }
