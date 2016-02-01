@@ -28,9 +28,6 @@
     <ClInclude Include="sgxdatatransform_global.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="transformer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="csvcache.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -48,9 +45,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="transformer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="csvcache.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

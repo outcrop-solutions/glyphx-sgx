@@ -88,7 +88,6 @@
     <ClInclude Include="sgxdatatransform_global.h" />
     <ClInclude Include="sourcedatacache.h" />
     <ClInclude Include="sourcedatamanager.h" />
-    <ClInclude Include="transformer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="csvcache.cpp" />
@@ -96,7 +95,6 @@
     <ClCompile Include="inputfielddata.cpp" />
     <ClCompile Include="sourcedatacache.cpp" />
     <ClCompile Include="sourcedatamanager.cpp" />
-    <ClCompile Include="transformer.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
