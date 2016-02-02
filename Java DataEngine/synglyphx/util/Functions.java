@@ -2,6 +2,7 @@ package synglyphx.util;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.awt.Color;
 import java.util.ArrayList;
 
 public class Functions {
@@ -11,6 +12,7 @@ public class Functions {
 	}
 
 	public static double linearInterpolation(double x1, double x3, double y1, double y3, double x2){
+		if(x3-x1 == 0){return 0;}
 		return (((x2-x1)*(y3-y1))/(x3-x1))+y1;
 	}
 
@@ -55,4 +57,49 @@ public class Functions {
 
 	}
 
+	public static double[] convertRGBtoHSV(double red, double green, double blue){
+
+		double[] hsv = new double[3];
+		int r = (int)red;
+		int g = (int)green;
+		int b = (int)blue;
+		float[] temp = new float[3];
+		temp = Color.RGBtoHSB(r,g,b,temp);
+		hsv[0] = (double)temp[0];
+		hsv[1] = (double)temp[1];
+		hsv[2] = (double)temp[2];
+
+		return hsv;
+	}
+
+	public static double[] convertHSVtoRGB(double hue, double sat, double val){
+
+		//System.out.println(String.valueOf(hue)+", "+String.valueOf(sat)+", "+String.valueOf(val));
+		double[] rgb = new double[3];
+		float h = (float)hue;
+		float s = (float)sat;
+		float v = (float)val;
+		int temp = Color.HSBtoRGB(h,s,v);
+		Color color = new Color(temp);
+		rgb[0] = (double)color.getRed();
+		rgb[1] = (double)color.getGreen();
+		rgb[2] = (double)color.getBlue();
+		//System.out.println(String.valueOf(rgb[0])+", "+String.valueOf(rgb[1])+", "+String.valueOf(rgb[2]));
+		//System.out.println("");
+		return rgb;
+	}
+
+/*
+	public static void main(String[] args){
+		double[] hsv = Functions.convertRGBtoHSV(0,255,0);
+		System.out.println(hsv[0]);
+		System.out.println(hsv[1]);
+		System.out.println(hsv[2]);
+
+		double[] rgb = Functions.convertHSVtoRGB(hsv[0],hsv[1],hsv[2]);
+		System.out.println(rgb[0]);
+		System.out.println(rgb[1]);
+		System.out.println(rgb[2]);
+	}
+*/
 }

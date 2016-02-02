@@ -14,6 +14,7 @@ public class SourceDataInfo {
  	private String username;
  	private String password;
  	private String type;
+ 	private String query;
  	private DataFrame data;
 
  	public SourceDataInfo(){
@@ -42,6 +43,7 @@ public class SourceDataInfo {
 
  	public void setTable(String name){
  		this.tableName = name;
+ 		this.query = "SELECT * FROM "+name;
  	}
 
  	public void setHost(String host){
@@ -60,6 +62,10 @@ public class SourceDataInfo {
  		this.type = type;
  	}
 
+ 	public void setQuery(String query){
+ 		this.query = query;
+ 	}
+
  	public String getHost(){
  		return host;
  	}
@@ -74,6 +80,10 @@ public class SourceDataInfo {
 
  	public String getType(){
  		return type;
+ 	}
+
+ 	public String getQuery(){
+ 		return query;
  	}
 
  	public String getTable(){

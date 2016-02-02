@@ -10,6 +10,8 @@ import synglyphx.io.Logger;
 public class Table {
 	
 	private String name;
+	private String query;
+	private String limiters;
 	private Connection conn;
 	private ArrayList<String> columnNames;
 	private HashMap<String,String> columnTypes;
@@ -23,6 +25,7 @@ public class Table {
 	public Table(String name, Connection conn){
 		this.name = name;
 		this.conn = conn;
+		this.query = "SELECT * FROM "+name;
 		mapForeignKeys();
 		initialize();
 	}
@@ -34,7 +37,7 @@ public class Table {
 
 		try{
 
-			String sql = "SELECT * FROM "+name;
+			String sql = query;
 			PreparedStatement pstmt = conn.prepareStatement(sql);
             ResultSet rs = pstmt.executeQuery();
             ResultSetMetaData metaData = rs.getMetaData();
@@ -155,12 +158,17 @@ public class Table {
 
 	public void createDataStats(){
 
+		Logger.getInstance().add("creating datastats");
 		dataStats = new HashMap<String,DataStats>();
 		min_max_table = new HashMap<String, ArrayList<String>>();
 		for(int i = 0; i < columnNames.size(); i++){
 			columnDataStats(columnNames.get(i));
 		}
 
+	}
+
+	public String getTableName(){
+		return name;
 	}
 
 	public HashMap<String, ArrayList<String>> getMinMaxTable(){

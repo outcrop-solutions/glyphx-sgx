@@ -73,8 +73,10 @@ public class GlyphEngine {
 
 	public static void main(String [] args){
 
-	 	String sdtPath = "C:\\Users\\Bryan\\Desktop\\jdbc_test\\jdbc_test.sdt";
-	 	String outDir = "C:\\Users\\Bryan\\Desktop\\jdbc_test\\Viz";
+		String sdtPath = "C:\\Users\\Bryan\\Desktop\\Test HSV\\testhsv.sdt";
+	 	String outDir = "C:\\Users\\Bryan\\Desktop\\Test HSV\\Viz";
+	 	//String sdtPath = "C:\\Users\\Bryan\\Desktop\\jdbc_test\\jdbc_test.sdt";
+	 	//String outDir = "C:\\Users\\Bryan\\Desktop\\jdbc_test\\Viz";
 	 	//String sdtPath = "C:\\Users\\Bryan\\Desktop\\test_for_ray\\dataenginetest.sdt";
 	 	//String outDir = "C:\\Users\\Bryan\\Desktop\\test_for_ray\\Viz";
 	 	String expDir = "DataMapper";
