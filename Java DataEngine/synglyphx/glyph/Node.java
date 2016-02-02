@@ -2,6 +2,7 @@ package synglyphx.glyph;
 
 import java.util.Map;
 import java.util.HashMap;
+import synglyphx.util.Functions;
 
 public class Node {
 	private double pos_x;
@@ -113,10 +114,11 @@ public class Node {
 		this.rot_rate_z = z;
 	}
 
-	public void setColor(int r,int g, int b){
-		this.color_r = r;
-		this.color_g = g;
-		this.color_b = b;
+	public void setColor(double h,double s, double v){
+		double[] rgb = Functions.convertHSVtoRGB(h,s,v);
+		this.color_r = (int)rgb[0];
+		this.color_g = (int)rgb[1];
+		this.color_b = (int)rgb[2];
 	}
 
 	public void setAlpha(int a){

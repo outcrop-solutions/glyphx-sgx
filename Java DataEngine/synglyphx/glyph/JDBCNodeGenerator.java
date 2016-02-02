@@ -57,7 +57,7 @@ public class JDBCNodeGenerator {
 	        Connection conn = DriverManager.getConnection(sourceData.getHost(),sourceData.getUsername(),sourceData.getPassword());
 	        table = new Table(sourceData.getTable(), conn);
 
-	        String sql = "SELECT * FROM "+sourceData.getTable();
+	        String sql = sourceData.getQuery();
 			PreparedStatement pstmt = conn.prepareStatement(sql);
 			Logger.getInstance().add("Executing query for table, "+sourceData.getTable()+", data...");
             ResultSet rs = pstmt.executeQuery();

@@ -106,7 +106,7 @@ public class DataEngine {
 	}
 
 //JDBC END
-/*
+
 	public static void main(String [] args){
 
 		DataEngine d = new DataEngine();
@@ -114,27 +114,13 @@ public class DataEngine {
 		String[] db_list = d.connectToServer("mysql://33.33.33.1","root","jarvis","mysql");
 		String[] tables = d.chooseDatabase("world");
 
-		String[] foreign_keys = d.getForeignKeys(tables[1]);//Foreign keys
-		for(int i = 0; i < foreign_keys.length; i+=3){
-			System.out.println(foreign_keys[i]+", "+foreign_keys[i+1]+", "+foreign_keys[i+2]);
+		d.setQueryTables("SELECT City.Population, Country.Code FROM City, Country");
+		String[] fields = d.getFieldsForTable(0, "mysql");
+
+		for(int i = 0; i < fields.length; i++){
+			System.out.println(fields[i]);
 		}
-
-		String[] field_names = d.getFieldsForTable(1);//Field names
-		String names = "";
-		for(int i = 0; i < field_names.length; i++){
-			names += field_names[i]+" | ";
-		}System.out.println(names);
-
-		for(int i = 0; i < 15; i++){
-			String[] row = d.getSampleData(1, i);//Row of sample data
-			String row_str = "";
-			for(int j = 0; j < row.length; j++){
-				row_str += row[j]+" | ";
-			}System.out.println(row_str);
-		}
-
-		d.setChosenTables(tables);
 		//d.getStatsForField(table, field);
 		d.closeConnection();
-	}*/
+	}
 }

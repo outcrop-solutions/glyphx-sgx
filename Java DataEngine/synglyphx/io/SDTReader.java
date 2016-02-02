@@ -387,10 +387,16 @@ public class SDTReader {
 					for(int j=0; j<tables.getLength(); j++){
 						NodeList tableNodes = tables.item(j).getChildNodes();
 						Node table = (Node) tableNodes.item(0);
+						Element te = (Element) table;
 						SourceDataInfo tb = new SourceDataInfo();
 						tb.setID(id);
 						tb.setTable(table.getNodeValue());
 						tb.setType(e.getAttribute("type").toLowerCase());
+						if(te.hasAttribute("query")){
+							if(!te.getAttribute("query").equals("")){
+								tb.setQuery(te.getAttribute("query"));
+							}
+						}
 						tb.setPath(path);
 						tb.setHost(host);
 						tb.setUsername(user);

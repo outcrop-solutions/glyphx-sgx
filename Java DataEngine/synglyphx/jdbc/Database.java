@@ -11,9 +11,12 @@ public class Database {
 	private String[] table_names;
 	private HashMap<String,Table> tables;
 	private HashMap<String,Table> temp_tables;
+	private boolean merged;
 	private String base_table;
+	private MergedTable mergedTable;
 
 	public Database(Connection conn){
+		merged = false;
 		this.conn = conn;
 		tables = new HashMap<String,Table>();
 		temp_tables = new HashMap<String,Table>();
@@ -60,9 +63,14 @@ public class Database {
 	}
 
 	public void initializeQueryTables(String query){
-/*
-	    tables.put(chosen[i], new Table(chosen[i], conn));
-*/
+		merged = true;
+	    mergedTable = new MergedTable(conn, query);
+		String[] required_tables = mergedTable.getRequiredTables();
+		for(int i = 0; i < required_tables.length; i++){
+			temp_tables.get(required_tables[i]).createDataStats();
+			mergedTable.addTableData(required_tables[i], temp_tables.get(required_tables[i]));
+		}
+		mergedTable.setStats();
 	}
 
 	public void setBaseTable(String base_table){
@@ -71,6 +79,10 @@ public class Database {
 
 	public Table getTable(int i){
 		return temp_tables.get(table_names[i]);
+	}
+
+	public MergedTable getMergedTable(){
+		return mergedTable;
 	}
 
 	public String[] getTableNames(){
