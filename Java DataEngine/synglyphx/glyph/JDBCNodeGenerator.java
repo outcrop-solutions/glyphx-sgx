@@ -13,6 +13,8 @@ import synglyphx.data.*;
 import synglyphx.io.Logger;
 import synglyphx.util.BaseObject;
 import synglyphx.jdbc.Table;
+import synglyphx.jdbc.EmptyTable;
+import synglyphx.jdbc.MergedTable;
 import synglyphx.jdbc.DriverSelect;
 
 public class JDBCNodeGenerator {
@@ -25,7 +27,7 @@ public class JDBCNodeGenerator {
 	private String default_tag_value;
 	private boolean download;
 	private int tempCount;
-	private Table table;
+	private EmptyTable table;
 
 	public JDBCNodeGenerator(SourceDataInfo source){
 		sourceData = source;
@@ -55,7 +57,12 @@ public class JDBCNodeGenerator {
 	        Logger.getInstance().add("Connecting to Server...");
 
 	        Connection conn = DriverManager.getConnection(sourceData.getHost(),sourceData.getUsername(),sourceData.getPassword());
-	        table = new Table(sourceData.getTable(), conn);
+
+	        if(sourceData.isMerged()){
+	        	table = new MergedTable(sourceData.getQuery(), conn);
+	        }else{
+	        	table = new Table(sourceData.getTable(), conn);
+	        }
 
 	        String sql = sourceData.getQuery();
 			PreparedStatement pstmt = conn.prepareStatement(sql);

@@ -114,13 +114,13 @@ public class DataEngine {
 		String[] db_list = d.connectToServer("mysql://33.33.33.1","root","jarvis","mysql");
 		String[] tables = d.chooseDatabase("world");
 
-		d.setQueryTables("SELECT City.Population, Country.Code FROM City, Country");
+		d.setQueryTables("SELECT City.Population, Country.Code FROM (City INNER JOIN Country ON (City.CountryCode=Country.Code))");
 		String[] fields = d.getFieldsForTable(0, "mysql");
 
 		for(int i = 0; i < fields.length; i++){
-			System.out.println(fields[i]);
+			String[] stats = d.getStatsForField(0, fields[i]);
+			System.out.println(fields[i]+", "+stats[0]+", "+stats[1]+", "+stats[2]+", "+stats[3]+", "+stats[4]+", "+stats[5]);
 		}
-		//d.getStatsForField(table, field);
 		d.closeConnection();
 	}
 }

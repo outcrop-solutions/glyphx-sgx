@@ -2,6 +2,7 @@ package synglyphx.glyph;
 
 import java.util.HashMap;
 import java.util.ArrayList;
+import synglyphx.util.GeoID;
 import synglyphx.util.Functions;
 import synglyphx.util.MapFunction;
 
@@ -78,19 +79,32 @@ public class XMLGlyphTemplate{
 		
 	}
 
-	public void addKeyValue(String field, String type, String def, String key, String value){
-		MapFunction mf;
-
-		if(keyValueMap.get(field) == null){
-			mf = new MapFunction(type);
-			mf.setDefault(def);
+	public void defaultSetter(String field, String type, String def){
+		GeoID geo = new GeoID();
+		if(field.equals("ColorRGB")){
+			String [] defSplit = def.split(",");
+			setDefault("ColorR", type, defSplit[0]);
+			setDefault("ColorG", type, defSplit[1]);
+			setDefault("ColorB", type, defSplit[2]);
+		}else if(field.equals("GeometryShape")){
+			setDefault(field, type, String.valueOf(geo.getValue(def,this.surface)));
+		}else if(field.equals("VirtualTopologyType")){
+			setDefault(field, type, String.valueOf(geo.getTopoValue(def)));
 		}else{
-			mf = keyValueMap.get(field);
+			setDefault(field, type, def);
 		}
 
-		mf.addKey(key);
-		mf.addValue(value);
+	}
+
+	public void setDefault(String field, String type, String def){
+		MapFunction mf = new MapFunction(type);
+		mf.setDefault(def);
 		keyValueMap.put(field, mf);
+	}
+
+	public void addKeyValue(String field, String key, String value){
+		keyValueMap.get(field).addKey(key);
+		keyValueMap.get(field).addValue(value);
 	}
 
 	public void setDataSource(int ds){

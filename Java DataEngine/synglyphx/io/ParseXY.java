@@ -15,6 +15,8 @@ import synglyphx.util.ConvertHash;
 import synglyphx.data.DataStats;
 import synglyphx.data.SourceDataInfo;
 import synglyphx.jdbc.Table;
+import synglyphx.jdbc.EmptyTable;
+import synglyphx.jdbc.MergedTable;
 import synglyphx.jdbc.DriverSelect;
 
 public class ParseXY {
@@ -106,7 +108,12 @@ public class ParseXY {
 			        Class.forName(DriverSelect.getDriver(temp.getType()));
 			        //Logger.getInstance().add("Connecting to Server...");
 			        Connection conn = DriverManager.getConnection("jdbc:"+temp.getHost(),temp.getUsername(),temp.getPassword());
-			        Table table = new Table(temp.getTable(), conn);
+			        EmptyTable table; 
+			        if(temp.isMerged()){
+	        			table = new MergedTable(temp.getQuery(), conn);
+	        		}else{
+	        			table = new Table(temp.getTable(), conn);
+	        		}
 			        HashMap<String, DataStats> tds = table.getDataStats();
 			        min_max = findMinMax(temp, x_min_max, y_min_max, convert, tds);
 			        x_min_max[0] = min_max[0]; x_min_max[1] = min_max[1];
@@ -121,7 +128,7 @@ public class ParseXY {
 			        try{
 			            e.printStackTrace(Logger.getInstance().addError());
 			        }catch(Exception ex){}
-	    }
+	    		}
 
 			}
 		}

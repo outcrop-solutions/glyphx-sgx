@@ -75,12 +75,13 @@ public class GlyphCreator {
 					}
 				}
 			}else{
-				//JDBCNodeGenerator jdbc = new JDBCNodeGenerator(csvData.get(currData));
-				//jdbc.initialize(temps, rootCoords, glyphRepo, mappingCount);
-				//jdbc.setDefaults(default_tag_field, default_tag_value);
-				//jdbc.checkRangeXY(download);
-				//glyphRepo = jdbc.returnUpdatedGlyphRepo();
-				//rootCoords = jdbc.returnUpdatedRootCoords();
+				JDBCNodeGenerator jdbc = new JDBCNodeGenerator(csvData.get(currData));
+				jdbc.initialize(temps, rootCoords, glyphRepo, mappingCount);
+				jdbc.setDefaults(default_tag_field, default_tag_value);
+				jdbc.checkRangeXY(download);
+				jdbc.generateNodes();
+				glyphRepo = jdbc.returnUpdatedGlyphRepo();
+				rootCoords = jdbc.returnUpdatedRootCoords();
 			}
 			rootCoords.get(rootIds.get(i)).setLastID(glyphRepo.getNodeCount()-1);
 		}
