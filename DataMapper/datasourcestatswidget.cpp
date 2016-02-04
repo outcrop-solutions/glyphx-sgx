@@ -64,10 +64,16 @@ void DataSourceStatsWidget::AddNewStatsViews() {
 					//dec->testFunction();
 					QStringList chosenTables;
 					chosenTables = qtables;
+					//std::vector<DataEngineConnection::ForeignKey> fkeys = dec->getForeignKeys(//table_name);
+					//fkeys.at(0).key;
+					//fkeys.at(0).origin;
+					//fkeys.at(0).value;
 					dec->setChosenTables(chosenTables);
+					//QString query = "SELECT City.Population, Country.Code FROM (City INNER JOIN Country ON (City.CountryCode=Country.Code))";
+					//dec->setQueryTables(query);
 
-					if (!qtables.isEmpty()) {
-						for (const QString& qtable : qtables) {
+					if (!dec->getTables().isEmpty()) {
+						for (const QString& qtable : dec->getTables()) {
 							tables.insert(qtable.toStdWString());
 						}
 						m_model->EnableTables(iT->first, tables, true);
@@ -76,8 +82,8 @@ void DataSourceStatsWidget::AddNewStatsViews() {
 						throw std::exception((tr("No tables in ") + datasource).toStdString().c_str());
 					}
 
-					for (int i = 0; i < qtables.size(); i++){
-						CreateTablesFromDatasource(iT->first, i, QString::fromStdWString(iT->second.GetFormattedName()) + ":" + qtables[i], iT->second.GetType());
+					for (int i = 0; i < dec->getTables().size(); i++){
+						CreateTablesFromDatasource(iT->first, i, QString::fromStdWString(iT->second.GetFormattedName()) + ":" + dec->getTables()[i], iT->second.GetType());
 					}
 					dec->closeConnection();
 				}
