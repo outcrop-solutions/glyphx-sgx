@@ -207,7 +207,7 @@ void FieldGroupWidget::OnCheckBoxHeaderViewClicked(SynGlyphX::AllSomeNone state)
 	if (state == SynGlyphX::AllSomeNone::All) {
 
 		SynGlyphX::FieldGroup fieldGroup;
-		for (const auto& table : m_dataTransformModel->GetSourceDataManager().GetNumericFieldsByTable()) {
+		for (const auto& table : m_dataTransformModel->GetNumericFieldsByTable()) {
 
 			for (const auto& field : table.second) {
 

@@ -19,7 +19,7 @@
 #define DATATRANSFORMMODEL_H
 
 #include "datatransformmapping.h"
-#include "sourcedatamanager.h"
+#include "utilitytypes.h"
 #include <QtCore/QAbstractItemModel>
 #include "dataengineconnection.h"
 
@@ -28,6 +28,8 @@ class DataTransformModel : public QAbstractItemModel
 	Q_OBJECT
 
 public:
+	typedef std::unordered_map<SynGlyphX::InputTable, SynGlyphX::WStringVector, SynGlyphX::InputTableHash> NumericFieldsByTable;
+
 	static const int UUIDRole = Qt::UserRole;
 	static const int DataTypeRole = UUIDRole + 1;
 	static const int OptionsRole = DataTypeRole + 1;
@@ -125,20 +127,17 @@ public:
 	virtual QMimeData* mimeData(const QModelIndexList& indexes) const;
 	virtual bool dropMimeData(const QMimeData* data, Qt::DropAction action, int row, int column, const QModelIndex& parent);
 
-	const boost::uuids::uuid& GetCacheConnectionID() const;
-
 	const SynGlyphX::DataTransformMapping::FieldGroupMap& GetFieldGroupMap() const;
 	void UpdateFieldGroup(const SynGlyphX::DataTransformMapping::FieldGroupName& groupName, const SynGlyphX::FieldGroup& fieldGroup);
 	void RemoveFieldGroup(const SynGlyphX::DataTransformMapping::FieldGroupName& groupName);
 
-	const SynGlyphX::SourceDataManager& GetSourceDataManager() const;
+	const NumericFieldsByTable& GetNumericFieldsByTable() const;
 
+	const DataEngine::DataEngineConnection* GetDataEngineConnection() const;
 	void SetDataEngineConn(DataEngine::DataEngineConnection *dec);
-	DataEngine::DataEngineConnection GetDataEngineConn();
 
 private:
 	void Clear();
-	QString GetCacheLocationForID(const boost::uuids::uuid& id);
 	QVariant GetGlyphData(const QModelIndex& index) const;
 	bool IsParentlessRowInDataType(DataType type, int row) const;
 	unsigned int GetFirstIndexForDataType(DataType type) const;
@@ -148,10 +147,13 @@ private:
 	boost::uuids::uuid GetDatasourceId(int row) const;
 	const SynGlyphX::DataTransformMapping::FieldGroupName& GetFieldGroupName(int row) const;
 	void RemoveFieldGroup(const SynGlyphX::DataTransformMapping::FieldGroupName& groupName, bool emitGlyphDataChanged);
+	void RemoveAllAdditionalData(const boost::uuids::uuid& datasourceId);
 
-	SynGlyphX::SourceDataManager m_sourceDataManager;
 	SynGlyphX::DataTransformMapping::SharedPtr m_dataMapping;
 	DataEngine::DataEngineConnection *dec;
+
+	//Additional data from datasources
+	NumericFieldsByTable m_numericFields;
 };
 
 Q_DECLARE_METATYPE(SynGlyphX::NumericMappingProperty)

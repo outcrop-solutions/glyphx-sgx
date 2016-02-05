@@ -25,22 +25,14 @@ DataTransformModel::~DataTransformModel()
 
 }
 
-QString DataTransformModel::GetCacheLocationForID(const boost::uuids::uuid& id) {
-
-	return QDir::toNativeSeparators(SynGlyphX::Application::GetAppTempDirectory() + QDir::separator() + "cache_" + QString::fromStdString(boost::uuids::to_string(id)) + ".db");
-}
-
 int DataTransformModel::columnCount(const QModelIndex& parent) const {
 
 	return 1;
 }
 
 void DataTransformModel::SetDataEngineConn(DataEngine::DataEngineConnection *dec){
+	
 	this->dec = dec;
-}
-
-DataEngine::DataEngineConnection DataTransformModel::GetDataEngineConn(){
-	return *dec;
 }
 
 bool DataTransformModel::setData(const QModelIndex& index, const QVariant& value, int role) {
@@ -525,7 +517,6 @@ boost::uuids::uuid DataTransformModel::AddFileDatasource(SynGlyphX::FileDatasour
 	int newRow = GetFirstIndexForDataType(DataType::DataSources) + m_dataMapping->GetDatasources().GetFileDatasources().size();
 	beginInsertRows(QModelIndex(), newRow, newRow);
 	boost::uuids::uuid id = m_dataMapping->AddFileDatasource(type, name);
-	//m_sourceDataManager.AddDatabaseConnection(m_dataMapping->GetDatasources().GetFileDatasources().at(id), id);
 	endInsertRows();
 
 	return id;
@@ -579,10 +570,6 @@ void DataTransformModel::EnableTables(const boost::uuids::uuid& id, const SynGly
 	m_dataMapping->EnableTables(id, tables, enable);
 	if (enable) {
 
-		for (auto& table : tables) {
-
-			m_sourceDataManager.AddTable(id, table);
-		}
 	}
 }
 
@@ -644,8 +631,8 @@ bool DataTransformModel::removeRows(int row, int count, const QModelIndex& paren
 				else if (IsParentlessRowInDataType(DataType::DataSources, i)) {
 
 					boost::uuids::uuid id = GetDatasourceId(i);
+					RemoveAllAdditionalData(id);
 					m_dataMapping->RemoveDatasource(id);
-					m_sourceDataManager.ClearDatabaseConnection(id);
 				}
 				else if (IsParentlessRowInDataType(DataType::FieldGroup, i)) {
 
@@ -688,21 +675,7 @@ void DataTransformModel::LoadDataTransformFile(const QString& filename) {
 
 	Clear();
 	beginResetModel();
-	m_dataMapping->ReadFromFile(filename.toStdString());/*
-	m_sourceDataManager.SetCacheLocation(GetCacheLocationForID(m_dataMapping->GetID()));
 	m_dataMapping->ReadFromFile(filename.toStdString());
-	m_sourceDataManager.SetCacheLocation(GetCacheLocationForID(m_dataMapping->GetID()));
-	m_sourceDataManager.AddDatabaseConnections(m_dataMapping->GetDatasources());
-	for (const auto& datasource : m_dataMapping->GetDatasources().GetFileDatasources()) {
-
-		for (const auto& table : datasource.second.GetTableNames()) {
-
-			if (table != SynGlyphX::Datasource::SingleTableName) {
-
-				m_sourceDataManager.AddTable(datasource.first, table);
-			}
-		}
-	}*/
 	endResetModel();
 }
 
@@ -714,13 +687,12 @@ void DataTransformModel::SaveDataTransformFile(const QString& filename) {
 void DataTransformModel::ClearAndReset() {
 
 	Clear();
-	m_sourceDataManager.SetCacheLocation(GetCacheLocationForID(m_dataMapping->GetID()));
 }
 
 void DataTransformModel::Clear() {
 
 	beginResetModel();
-	m_sourceDataManager.Clear();
+	m_numericFields.clear();
 	m_dataMapping->Clear();
 	endResetModel();
 }
@@ -1073,11 +1045,6 @@ bool DataTransformModel::dropMimeData(const QMimeData* data, Qt::DropAction acti
 	return false;
 }
 
-const boost::uuids::uuid& DataTransformModel::GetCacheConnectionID() const {
-
-	return m_sourceDataManager.GetCSVCacheConnectionID();
-}
-
 const SynGlyphX::DataTransformMapping::FieldGroupMap& DataTransformModel::GetFieldGroupMap() const {
 
 	return m_dataMapping->GetFieldGroupMap();
@@ -1143,7 +1110,15 @@ const SynGlyphX::DataTransformMapping::FieldGroupName& DataTransformModel::GetFi
 	return fieldGroup->first;
 }
 
-const SynGlyphX::SourceDataManager& DataTransformModel::GetSourceDataManager() const {
+const DataTransformModel::NumericFieldsByTable& DataTransformModel::GetNumericFieldsByTable() const {
 
-	return m_sourceDataManager;
+	return m_numericFields;
+}
+
+void DataTransformModel::RemoveAllAdditionalData(const boost::uuids::uuid& datasourceId) {
+
+	for (const auto& table : m_dataMapping->GetDatasources().GetDatasourceByID(datasourceId).GetTables()) {
+
+		m_numericFields.erase(SynGlyphX::InputTable(datasourceId, table.first));
+	}
 }
