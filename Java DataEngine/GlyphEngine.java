@@ -73,12 +73,12 @@ public class GlyphEngine {
 
 	public static void main(String [] args){
 
-		String sdtPath = "C:\\Users\\Bryan\\Desktop\\Test HSV\\testhsv.sdt";
-	 	String outDir = "C:\\Users\\Bryan\\Desktop\\Test HSV\\Viz";
-	 	//String sdtPath = "C:\\Users\\Bryan\\Desktop\\jdbc_test\\jdbc_test.sdt";
-	 	//String outDir = "C:\\Users\\Bryan\\Desktop\\jdbc_test\\Viz";
-	 	//String sdtPath = "C:\\Users\\Bryan\\Desktop\\test_for_ray\\dataenginetest.sdt";
-	 	//String outDir = "C:\\Users\\Bryan\\Desktop\\test_for_ray\\Viz";
+		//String sdtPath = "C:\\Users\\Bryan\\Desktop\\Test HSV\\testhsv.sdt";
+	 	//String outDir = "C:\\Users\\Bryan\\Desktop\\Test HSV\\Viz";
+	 	//String sdtPath = "C:\\Users\\Bryan\\Desktop\\jdbc_test\\merged_table_test.sdt";
+	 	//String outDir = "C:\\Users\\Bryan\\Desktop\\jdbc_test\\Viz1";
+	 	String sdtPath = "C:\\Users\\Bryan\\Desktop\\Bug SimData\\GridBug\\Grid DataMap.sdt";
+	 	String outDir = "C:\\Users\\Bryan\\Desktop\\Bug SimData\\GridBug\\BugOutput";
 	 	String expDir = "DataMapper";
 	 	GlyphEngine start = new GlyphEngine();
 	 	double[] nw = new double[2];
@@ -88,7 +88,7 @@ public class GlyphEngine {
 	 	double[] s = new double[2];
 	 	s[0] = 2048.0; s[1] = 1024.0;
 	 	start.initiate(sdtPath, outDir, expDir);
-	 	double[] nwse = start.getNWandSE();
+	 	//double[] nwse = start.getNWandSE();
 	 	//start.hasImageBeenUpdated();
 	 	start.setBoundingBox(nw,se,s);
 	 	start.beginGlyphGeneration();
