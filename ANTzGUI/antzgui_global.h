@@ -20,10 +20,16 @@
 
 #include <QtCore/qglobal.h>
 
-#ifdef ANTZGUI_LIB
+#ifdef WIN32
+
+#ifdef ANTzGUI_LIB
 # define ANTZGUI_EXPORT Q_DECL_EXPORT
 #else
 # define ANTZGUI_EXPORT Q_DECL_IMPORT
+#endif
+
+#else
+#define ANTZBRIDGE_API
 #endif
 
 #endif // ANTZGUI_GLOBAL_H

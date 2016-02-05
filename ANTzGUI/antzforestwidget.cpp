@@ -28,23 +28,25 @@ namespace SynGlyphXANTz {
 		m_model(model),
 		m_selectionModel(selectionModel),
 		m_antzData(model->GetANTzData()),
-		m_zSpaceContext(nullptr),
-		m_zSpaceDisplay(nullptr),
-		m_zSpaceBuffer(nullptr),
-		m_zSpaceViewport(nullptr),
-		m_zSpaceFrustum(nullptr),
-		m_zSpaceStylus(nullptr),
-		m_topLevelWindow(nullptr),
 		m_oglTextFont("Arial", 12, QFont::Normal),
 		m_isReseting(false),
 		m_worldTextureID(0),
 		m_regionSelectionRect(QRect()),
 		m_hideUnselectedGlyphTrees(false),
 		m_drawHUD(true),
-		m_zSpaceOptions(),
 		m_logoTextureID(0),
 		m_showAnimation(true),
-		m_showTagsOfSelectedObjects(false)
+		m_showTagsOfSelectedObjects(false),
+#ifdef USE_ZSPACE
+		m_zSpaceOptions(),
+		m_zSpaceContext(nullptr),
+		m_zSpaceDisplay(nullptr),
+		m_zSpaceBuffer(nullptr),
+		m_zSpaceViewport(nullptr),
+		m_zSpaceFrustum(nullptr),
+		m_zSpaceStylus(nullptr),
+		m_topLevelWindow(nullptr)
+#endif
 	{
 		setAutoBufferSwap(false);
 		setFocusPolicy(Qt::StrongFocus);
@@ -67,6 +69,7 @@ namespace SynGlyphXANTz {
 		QObject::connect(m_model, &GlyphForestModel::modelReset, this, &ANTzForestWidget::OnModelReset);
 		QObject::connect(m_model, &GlyphForestModel::modelAboutToBeReset, this, [this]{ m_isReseting = true; });
 
+#ifdef USE_ZSPACE
 		if (IsInStereoMode()) {
 
 			//m_antzData->GetData()->io.gl.stereo = true;
@@ -146,6 +149,7 @@ namespace SynGlyphXANTz {
 				throw;
 			}
 		}
+#endif
 
 		setFocus();
 	}
@@ -163,11 +167,14 @@ namespace SynGlyphXANTz {
 			deleteTexture(m_logoTextureID);
 			m_logoTextureID = 0;
 		}
-
+#ifdef USE_ZSPACE
 		ClearZSpaceContext();
+#endif
+
 		npCloseGL(m_antzData->GetData());
 	}
 
+#ifdef USE_ZSPACE
 	void ANTzForestWidget::ClearZSpaceContext() {
 
 		if (m_zSpaceContext != nullptr) {
@@ -261,6 +268,7 @@ namespace SynGlyphXANTz {
 			throw std::exception(zSpaceErrorString.toStdString().c_str());
 		}
 	}
+#endif
 
 	void ANTzForestWidget::InitIO()
 	{
@@ -351,7 +359,9 @@ namespace SynGlyphXANTz {
 
 	void ANTzForestWidget::resizeGL(int w, int h) {
 
+#ifdef USE_ZSPACE
 		ResizeZSpaceViewport();
+#endif
 
 		npGLResizeScene(w, h);
 	}
@@ -389,12 +399,14 @@ namespace SynGlyphXANTz {
 		glLoadIdentity();
 		npSetLookAtFromCamera(antzData);
 
+#ifdef USE_ZSPACE
 		if (IsInZSpaceStereo()) {
 
 			ZSError error = zsUpdate(m_zSpaceContext);
 			error = zsBeginStereoBufferFrame(m_zSpaceBuffer);
 			glGetFloatv(GL_MODELVIEW_MATRIX, m_originialViewMatrix.f);
 		}
+#endif
 
 		DrawSceneForEye(Eye::Left, true);
 		if (IsInStereoMode())  {
@@ -426,6 +438,7 @@ namespace SynGlyphXANTz {
 		pNPnode camNode = npGetActiveCam(antzData);
 		NPcameraPtr camData = static_cast<NPcameraPtr>(camNode->data);
 
+#ifdef USE_ZSPACE
 		ZSEye zSpaceEye;
 		if (eye == Eye::Left) {
 
@@ -437,6 +450,7 @@ namespace SynGlyphXANTz {
 			glDrawBuffer(GL_BACK_RIGHT);
 			zSpaceEye = ZS_EYE_RIGHT;
 		}
+#endif
 
 		glMatrixMode(GL_MODELVIEW);
 		glPushMatrix();
@@ -444,6 +458,7 @@ namespace SynGlyphXANTz {
 		glMatrixMode(GL_PROJECTION);
 		glPushMatrix();
 
+#ifdef USE_ZSPACE
 		if (IsInZSpaceStereo()) {
 
 			ZSTrackerPose stylusPose;
@@ -467,10 +482,12 @@ namespace SynGlyphXANTz {
 			SetZSpaceMatricesForDrawing(zSpaceEye, m_originialViewMatrix, camData);
 		}
 		else if (!IsInStereoMode()) {
-
+#endif
 			glGetFloatv(GL_MODELVIEW_MATRIX, camData->matrix);
 			npInvertMatrixf(camData->matrix, camData->inverseMatrix);
+#ifdef USE_ZSPACE
 		}
+#endif
 
 		glMatrixMode(GL_MODELVIEW);
 
@@ -481,7 +498,9 @@ namespace SynGlyphXANTz {
 		//Leave this here so that bounding boxes can be shown for debugging
 		//DrawBoundingBoxes();
 
+#ifdef USE_ZSPACE
 		DrawZSpaceStylus(m_zSpaceStylusWorldMatrix, getStylusWorldPosition);
+#endif
 
 		if (m_drawHUD) {
 
@@ -496,6 +515,7 @@ namespace SynGlyphXANTz {
 		glPopMatrix();
 	}
 
+#ifdef USE_ZSPACE
 	void ANTzForestWidget::DrawZSpaceStylus(const ZSMatrix4& stylusMatrix, bool getStylusWorldPosition) {
 
 		if (IsInZSpaceStereo()) {
@@ -564,6 +584,7 @@ namespace SynGlyphXANTz {
 			}*/
 		}
 	}
+#endif
 
 	void ANTzForestWidget::DrawHUD() {
 
@@ -650,6 +671,7 @@ namespace SynGlyphXANTz {
 		}
 	}
 
+#ifdef USE_ZSPACE
 	void ANTzForestWidget::SetZSpaceMatricesForDrawing(ZSEye eye, const ZSMatrix4& originialViewMatrix, NPcameraPtr camData) {
 
 		ZSMatrix4 zSpaceEyeViewMatrix;
@@ -674,6 +696,7 @@ namespace SynGlyphXANTz {
 		glGetFloatv(GL_MODELVIEW_MATRIX, camData->matrix);
 		npInvertMatrixf(camData->matrix, camData->inverseMatrix);
 	}
+#endif
 
 	void ANTzForestWidget::OnSelectionUpdated(const QItemSelection& selected, const QItemSelection& deselected) {
 
@@ -1098,10 +1121,13 @@ namespace SynGlyphXANTz {
 
 	void ANTzForestWidget::moveEvent(QMoveEvent* event) {
 
+#ifdef USE_ZSPACE
 		SetZSpacePosition();
+#endif
 		QGLWidget::moveEvent(event);
 	}
 
+#ifdef USE_ZSPACE
 	void ANTzForestWidget::SetZSpacePosition() {
 
 		if (IsInZSpaceStereo()) {
@@ -1263,6 +1289,7 @@ namespace SynGlyphXANTz {
 
 		//SelectFromStylus(m_stylusWorldTapLine);
 	}
+#endif
 
 	void ANTzForestWidget::CreateBoundingBoxes() {
 
@@ -1529,6 +1556,7 @@ namespace SynGlyphXANTz {
 		}
 	}
 
+#ifdef USE_ZSPACE
 	void ANTzForestWidget::SetZSpaceOptions(const SynGlyphX::ZSpaceOptions& options) {
 
 		m_zSpaceOptions = options;
@@ -1538,6 +1566,7 @@ namespace SynGlyphXANTz {
 
 		return m_zSpaceOptions;
 	}
+#endif
 
 	bool ANTzForestWidget::GetHideUnselectedGlyphTrees() const {
 

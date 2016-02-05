@@ -22,11 +22,14 @@
 #include <QtOpenGL/QGLWidget>
 #include "itemfocusselectionmodel.h"
 #include "glyphforestmodel.h"
-#include <zSpace.h>
 #include "antzdata.h"
 #include "antzboundingbox.h"
+
+#ifdef USE_ZSPACE
+#include <zSpace.h>
 #include "zspaceoptions.h"
 #include "zspaceeventdispatcher.h"
+#endif
 
 namespace SynGlyphXANTz {
 
@@ -102,9 +105,10 @@ namespace SynGlyphXANTz {
 		void InitIO();
 		void DrawHUD();
 		bool SelectAtPoint(int x, int y, bool multiSelect);
+
+#ifdef USE_ZSPACE
 		void SelectFromStylus(const SynGlyphXANTz::ANTzBoundingBox::Line& line);
 		void CheckStylusIntersectionWithNode(pNPnode node, const SynGlyphXANTz::ANTzBoundingBox::Line& line, std::map<float, int>& distanceIdMap);
-
 		void ConnectZSpaceTrackers();
 		void CheckZSpaceError(ZSError error);
 		void SetZSpacePosition();
@@ -113,6 +117,7 @@ namespace SynGlyphXANTz {
 		void SetZSpaceMatricesForDrawing(ZSEye eye, const ZSMatrix4& originialViewMatrix, NPcameraPtr camData);
 		void ClearZSpaceContext();
 		void DrawZSpaceStylus(const ZSMatrix4& stylusMatrix, bool getStylusWorldPosition);
+#endif
 
 		void UpdateGlyphTreesShowHideForSelection();
 		void ShowAllGlyphTrees();
@@ -151,6 +156,7 @@ namespace SynGlyphXANTz {
 		QWidget* m_topLevelWindow;
 		//QPoint m_zSpaceStylusScreenPoint;
 
+#ifdef USE_ZSPACE
 		ZSContext m_zSpaceContext;
 		ZSHandle m_zSpaceDisplay;
 		ZSHandle m_zSpaceBuffer;
@@ -165,6 +171,8 @@ namespace SynGlyphXANTz {
 		SynGlyphX::ZSpaceEventDispatcher m_zSpaceEventDispatcher;
 
 		SynGlyphXANTz::ANTzBoundingBox::Line m_stylusWorldLine;
+#endif
+
 		//SynGlyphXANTz::ANTzBoundingBox::Line m_stylusWorldTapLine;
 		std::map<int, SynGlyphXANTz::ANTzBoundingBox> m_boundingBoxes;
 		std::set<int> m_objectsThatNeedBoundingBoxUpdates;
