@@ -9,15 +9,15 @@ public class Database {
 	
 	private Connection conn;
 	private String[] table_names;
-	private HashMap<String,Table> tables;
-	private HashMap<String,Table> temp_tables;
+	private HashMap<String,BasicTable> tables;
+	private HashMap<String,BasicTable> temp_tables;
 	private String base_table;
 	private MergedTable mergedTable;
 
 	public Database(Connection conn){
 		this.conn = conn;
-		tables = new HashMap<String,Table>();
-		temp_tables = new HashMap<String,Table>();
+		tables = new HashMap<String,BasicTable>();
+		temp_tables = new HashMap<String,BasicTable>();
 		setTableMetaData();
 	}
 
@@ -40,7 +40,7 @@ public class Database {
 	        for(int i = 0; i < temp.size(); i++){
 	        	table_names[i] = temp.get(i);
 	        	Logger.getInstance().add(temp.get(i));
-	        	temp_tables.put(table_names[i], new Table(temp.get(i), conn));
+	        	temp_tables.put(table_names[i], new BasicTable(temp.get(i), conn));
 	        }
 
 	        rs.close();
@@ -69,7 +69,7 @@ public class Database {
 		this.base_table = base_table;
 	}
 
-	public Table getTable(int i){
+	public BasicTable getTable(int i){
 		return temp_tables.get(table_names[i]);
 	}
 

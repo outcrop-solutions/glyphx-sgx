@@ -13,7 +13,7 @@ import synglyphx.data.*;
 import synglyphx.io.Logger;
 import synglyphx.util.BaseObject;
 import synglyphx.jdbc.Table;
-import synglyphx.jdbc.EmptyTable;
+import synglyphx.jdbc.BasicTable;
 import synglyphx.jdbc.MergedTable;
 import synglyphx.jdbc.DriverSelect;
 
@@ -27,7 +27,7 @@ public class JDBCNodeGenerator {
 	private String default_tag_value;
 	private boolean download;
 	private int tempCount;
-	private EmptyTable table;
+	private Table table;
 
 	public JDBCNodeGenerator(SourceDataInfo source){
 		sourceData = source;
@@ -61,7 +61,7 @@ public class JDBCNodeGenerator {
 	        if(sourceData.isMerged()){
 	        	table = new MergedTable(sourceData.getQuery(), conn);
 	        }else{
-	        	table = new Table(sourceData.getTable(), conn);
+	        	table = new BasicTable(sourceData.getTable(), conn);
 	        }
 
 	        String sql = sourceData.getQuery();
