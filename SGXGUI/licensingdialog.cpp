@@ -15,7 +15,7 @@
 #include <QtCore/QTextStream>
 #include "filesystem.h"
 
-#ifdef WIN32
+#ifdef USE_LICENSING
 #include "rlmez.h"
 #endif
 
@@ -48,7 +48,7 @@ namespace SynGlyphX {
 
 		QHBoxLayout* buttonsLayout = new QHBoxLayout(this);
 
-#ifdef WIN32
+#ifdef USE_LICENSING
 		QPushButton* installNewLicenseButton = new QPushButton(tr("Install New License File"), this);
 		QObject::connect(installNewLicenseButton, &QPushButton::clicked, this, &LicensingDialog::OnInstallNewLicense);
 		buttonsLayout->addWidget(installNewLicenseButton);
@@ -71,7 +71,7 @@ namespace SynGlyphX {
 
 	bool LicensingDialog::CheckLicense() {
 
-#ifdef WIN32
+#ifdef USE_LICENSING
 		QString previousCurrentDir = QDir::currentPath();
 		QDir::setCurrent(GetLicenseDirectory());
 
@@ -113,7 +113,7 @@ namespace SynGlyphX {
 
 	QString LicensingDialog::LicenseStatusToString(int licenseStatus, int numberOfDaysLeft) {
 
-#ifdef WIN32
+#ifdef USE_LICENSING
 		if (licenseStatus == 0) {
 
 			if (numberOfDaysLeft == 0) {
@@ -154,7 +154,7 @@ namespace SynGlyphX {
 
 	void LicensingDialog::ResetStatusLabel() {
 
-#ifdef WIN32
+#ifdef USE_LICENSING
 		QString previousCurrentDir = QDir::currentPath();
 		QDir::setCurrent(GetLicenseDirectory());
 

@@ -20,10 +20,17 @@
 
 #include <QtCore/qglobal.h>
 
-#ifdef SGXGUI_LIB
+#ifdef WIN32
+
+#ifdef SGXGUI_EXPORTS
 # define SGXGUI_EXPORT Q_DECL_EXPORT
 #else
 # define SGXGUI_EXPORT Q_DECL_IMPORT
 #endif
+
+#else
+#define SGXGUI_EXPORT
+#endif
+
 
 #endif // SGXGUI_GLOBAL_H

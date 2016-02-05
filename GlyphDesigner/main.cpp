@@ -4,16 +4,20 @@
 #include <QtCore/QTimer>
 #include "glyphbuilderapplication.h"
 #include "licensingdialog.h"
-#include "exception_handler.h"
 #include <QtCore/QStandardPaths>
 #include <QtWidgets/QMessageBox>
 #include <boost/filesystem.hpp>
+
+#ifdef USE_BREAKPAD
+#include "exception_handler.h"
+#endif
 
 int main(int argc, char *argv[])
 {
     SynGlyphX::GlyphBuilderApplication::Setup("Glyph Builder - Glyph Designer", "0.7.22");
 	SynGlyphX::GlyphBuilderApplication a(argc, argv);
 
+#ifdef USE_BREAKPAD
 	const QString dumpPath = QStandardPaths::writableLocation(QStandardPaths::HomeLocation) + "/Minidumps";
 	std::wstring pathAsStr = dumpPath.toStdWString();
 	boost::filesystem::path dir(pathAsStr);
@@ -35,6 +39,7 @@ int main(int argc, char *argv[])
 		MiniDumpNormal,
 		L"",
 		0);
+#endif
 
 	SynGlyphX::GlyphBuilderApplication::SetupIcons(QIcon(":SGXGUI/Resources/synglyphx_x.ico"));
 
