@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import synglyphx.io.Logger;
 
-public class MergedTable extends EmptyTable{
+public class MergedTable extends Table{
 
 	public MergedTable(String query, Connection conn){
 		super(conn);

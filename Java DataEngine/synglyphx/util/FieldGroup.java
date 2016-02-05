@@ -32,7 +32,6 @@ public class FieldGroup {
 	private void setMinMax(){
 
 		boolean first = true;
-
 		for(int i = 0; i < colNames.size(); i++){
 			Double ln = Double.parseDouble(csv.getDataFrame().getMinMaxTable().get(colNames.get(i)).get(0));
 			Double lx = Double.parseDouble(csv.getDataFrame().getMinMaxTable().get(colNames.get(i)).get(1));

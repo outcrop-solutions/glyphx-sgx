@@ -79,6 +79,12 @@ public class XMLGlyphTemplate{
 		
 	}
 
+	public void updateMinMaxField(String field, Double min, Double max){
+		minMaxFieldMap.put(field, new ArrayList<Double>());
+		minMaxFieldMap.get(field).add(min);
+		minMaxFieldMap.get(field).add(max);
+	}
+
 	public void defaultSetter(String field, String type, String def){
 		GeoID geo = new GeoID();
 		if(field.equals("ColorRGB")){
