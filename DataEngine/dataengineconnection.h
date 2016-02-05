@@ -39,23 +39,23 @@ namespace DataEngine
 		~DataEngineConnection();
 
 		void createJVM();
-		bool hasJVM();
+		bool hasJVM() const;
 		void loadCSV(std::string path);
 		void loadSQLite(std::string path);
-		void setTable(int i);
-		void addTableNumericFields(boost::uuids::uuid id, std::vector<std::wstring> tableNames);
-		void addTableName(boost::uuids::uuid id, std::wstring name);
-		std::wstring getTableName(boost::uuids::uuid id);
-		std::vector<std::wstring> getTableNumericFields(boost::uuids::uuid id);
-		std::map<boost::uuids::uuid, std::vector<std::wstring>> getNumericFieldsTable();
+		//void setTable(int i);
+		//void addTableNumericFields(boost::uuids::uuid id, std::vector<std::wstring> tableNames);
+		//void addTableName(boost::uuids::uuid id, std::wstring name);
+		//const std::wstring& getTableName(boost::uuids::uuid id) const;
+		//const std::vector<std::wstring>& getTableNumericFields(boost::uuids::uuid id) const;
+		//const std::map<boost::uuids::uuid, std::vector<std::wstring>>& getNumericFieldsTable() const;
 		std::vector<std::string> getTableNames();
 		std::vector<std::string> getColumnNames();
 		//JDBC ACCESSOR FUNCTIONS
 		QStringList connectToServer(QString db_url, QString user, QString pass, QString db_type);
 		QStringList chooseDatabase(QString db_name);
 		QStringList getColumnNames(QString tablename);
-		std::vector<ForeignKey> getForeignKeys(QString tablename);
-		std::vector<QStringList> getSampleData(QString tablename);
+		const std::vector<DataEngineConnection::ForeignKey>& getForeignKeys(QString tablename);
+		const std::vector<QStringList>& getSampleData(QString tablename);
 		void setChosenTables(QStringList chosen);
 		void closeConnection();
 		//JDBC END
