@@ -246,9 +246,9 @@ public class GlyphCreator {
 
 		//SET COLOR
 		if(!fieldNames.contains("ColorR")){
-			node.setColor((int)Math.round(ranges.get("ColorR").get(1)),(int)Math.round(ranges.get("ColorG").get(1)),(int)Math.round(ranges.get("ColorB").get(1)));
+			node.setColor(ranges.get("ColorR").get(1),ranges.get("ColorG").get(1),ranges.get("ColorB").get(1));
 		}else{
-			node.setColor((int)Math.round(setValues.get("ColorR")),(int)Math.round(setValues.get("ColorG")),(int)Math.round(setValues.get("ColorB")));
+			node.setColor(setValues.get("ColorR"),setValues.get("ColorG"),setValues.get("ColorB"));
 		}
 
 		//SET ALPHA

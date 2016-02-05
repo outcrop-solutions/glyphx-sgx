@@ -12,6 +12,7 @@ public class JDBCLoader {
    public static String username;
    public static String password;
    public static String dbType;
+   public static boolean merged;
 
    protected JDBCLoader(){}
 
@@ -109,18 +110,26 @@ public class JDBCLoader {
    }
 
    public static void setChosenTables(String[] chosen){
+      merged = false;
       database.initializeChosenTables(chosen);
    }
 
    public static void setQueryTables(String query){
+      merged = true;
       database.initializeQueryTables(query);
    }
 
    public static String[] getFieldsForTable(int table){
+      if(merged){
+         return database.getMergedTable().getColumnNames();
+      }
       return database.getTable(table).getColumnNames();
    }
 
    public static String[] getStatsForField(int table, String field){
+      if(merged){
+         return database.getMergedTable().getStats(field);
+      }
       return database.getTable(table).getStats(field);
    }
 

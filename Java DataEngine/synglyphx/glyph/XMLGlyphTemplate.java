@@ -2,6 +2,7 @@ package synglyphx.glyph;
 
 import java.util.HashMap;
 import java.util.ArrayList;
+import synglyphx.util.Functions;
 import synglyphx.util.MapFunction;
 
 public class XMLGlyphTemplate{
@@ -156,17 +157,19 @@ public class XMLGlyphTemplate{
 		ranges.put("ColorB", new ArrayList<Double>());
 		String[] min_data = min.split(",");
 		String[] diff_data = diff.split(",");
-		double min_r = Double.parseDouble(min_data[0]);
-		double min_g = Double.parseDouble(min_data[1]);
-		double min_b = Double.parseDouble(min_data[2]);
-		ranges.get("ColorR").add(min_r);
-		ranges.get("ColorR").add(min_r+Double.parseDouble(diff_data[0]));
+		double[] min_hsv = Functions.convertRGBtoHSV(Double.parseDouble(min_data[0]),Double.parseDouble(min_data[1]),Double.parseDouble(min_data[2]));
+		double[] diff_hsv = Functions.convertRGBtoHSV(
+			Double.parseDouble(min_data[0])+Double.parseDouble(diff_data[0]),
+			Double.parseDouble(min_data[1])+Double.parseDouble(diff_data[1]),
+			Double.parseDouble(min_data[2])+Double.parseDouble(diff_data[2]));
+		ranges.get("ColorR").add(min_hsv[0]);
+		ranges.get("ColorR").add(diff_hsv[0]);
 		mapFunction("ColorR", funct);
-		ranges.get("ColorG").add(min_g);
-		ranges.get("ColorG").add(min_g+Double.parseDouble(diff_data[1]));
+		ranges.get("ColorG").add(min_hsv[1]);
+		ranges.get("ColorG").add(diff_hsv[1]);
 		mapFunction("ColorG", funct);
-		ranges.get("ColorB").add(min_b);
-		ranges.get("ColorB").add(min_b+Double.parseDouble(diff_data[2]));
+		ranges.get("ColorB").add(min_hsv[2]);
+		ranges.get("ColorB").add(diff_hsv[2]);
 		mapFunction("ColorB", funct);
 	}
 
