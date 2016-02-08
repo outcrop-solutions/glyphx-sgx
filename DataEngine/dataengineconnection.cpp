@@ -153,15 +153,17 @@ namespace DataEngine
 		return str;
 	}*/
 
-	JNIEnv* DataEngineConnection::getEnv(){
+	JNIEnv* DataEngineConnection::getEnv() const {
+		
 		return jniEnv;
 	}
 
-	jclass DataEngineConnection::getJcls(){
+	jclass DataEngineConnection::getJcls() const {
+		
 		return jcls;
 	}
 
-	void DataEngineConnection::destroyJVM(){
+	void DataEngineConnection::destroyJVM() {
 
 		javaVM->DestroyJavaVM();
 	}

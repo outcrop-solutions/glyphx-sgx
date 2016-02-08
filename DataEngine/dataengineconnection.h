@@ -62,8 +62,8 @@ namespace DataEngine
 		void closeConnection();
 		//JDBC END
 		void destroyJVM();
-		JNIEnv* getEnv();
-		jclass getJcls();
+		JNIEnv* getEnv() const;
+		jclass getJcls() const;
 		//void testFunction();
 
 	};
