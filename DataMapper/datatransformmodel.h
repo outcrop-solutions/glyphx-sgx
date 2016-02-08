@@ -30,6 +30,9 @@ class DataTransformModel : public QAbstractItemModel
 public:
 	typedef std::unordered_map<SynGlyphX::InputTable, SynGlyphX::WStringVector, SynGlyphX::InputTableHash> NumericFieldsByTable;
 
+	typedef QList<QStringList> TableStats;
+	typedef std::unordered_map<SynGlyphX::InputTable, TableStats, SynGlyphX::InputTableHash> TableStatsMap;
+
 	static const int UUIDRole = Qt::UserRole;
 	static const int DataTypeRole = UUIDRole + 1;
 	static const int OptionsRole = DataTypeRole + 1;
@@ -136,6 +139,10 @@ public:
 	const DataEngine::DataEngineConnection* GetDataEngineConnection() const;
 	void SetDataEngineConn(DataEngine::DataEngineConnection *dec);
 
+	const TableStatsMap& GetTableStatsMap() const;
+
+	void GenerateStats(const SynGlyphX::InputTable inputTable, int i, SynGlyphX::FileDatasource::SourceType type);
+
 private:
 	void Clear();
 	QVariant GetGlyphData(const QModelIndex& index) const;
@@ -148,12 +155,14 @@ private:
 	const SynGlyphX::DataTransformMapping::FieldGroupName& GetFieldGroupName(int row) const;
 	void RemoveFieldGroup(const SynGlyphX::DataTransformMapping::FieldGroupName& groupName, bool emitGlyphDataChanged);
 	void RemoveAllAdditionalData(const boost::uuids::uuid& datasourceId);
+	void AddDatasourceInfoFromDataEngine(const boost::uuids::uuid& datasourceId, const SynGlyphX::FileDatasource& fileDatasource);
 
 	SynGlyphX::DataTransformMapping::SharedPtr m_dataMapping;
 	DataEngine::DataEngineConnection *dec;
 
 	//Additional data from datasources
 	NumericFieldsByTable m_numericFields;
+	TableStatsMap m_tableStatsMap;
 };
 
 Q_DECLARE_METATYPE(SynGlyphX::NumericMappingProperty)

@@ -12,6 +12,7 @@
 #include "defaultbaseimageproperties.h"
 #include "defaultbaseimagescombobox.h"
 #include "surfaceradiobuttonwidget.h"
+#include "dataenginestatement.h"
 
 DataTransformModel::DataTransformModel(QObject *parent)
 	: QAbstractItemModel(parent),
@@ -517,6 +518,7 @@ boost::uuids::uuid DataTransformModel::AddFileDatasource(SynGlyphX::FileDatasour
 	int newRow = GetFirstIndexForDataType(DataType::DataSources) + m_dataMapping->GetDatasources().GetFileDatasources().size();
 	beginInsertRows(QModelIndex(), newRow, newRow);
 	boost::uuids::uuid id = m_dataMapping->AddFileDatasource(type, name);
+	AddDatasourceInfoFromDataEngine(id, m_dataMapping->GetDatasources().GetFileDatasources().at(id));
 	endInsertRows();
 
 	return id;
@@ -570,6 +572,10 @@ void DataTransformModel::EnableTables(const boost::uuids::uuid& id, const SynGly
 	m_dataMapping->EnableTables(id, tables, enable);
 	if (enable) {
 
+		for (int i = 0; i < tables.size(); ++i) {
+
+			GenerateStats(SynGlyphX::InputTable(id, tables[i]), i, SynGlyphX::FileDatasource::SourceType::SQLITE3);
+		}
 	}
 }
 
@@ -676,6 +682,12 @@ void DataTransformModel::LoadDataTransformFile(const QString& filename) {
 	Clear();
 	beginResetModel();
 	m_dataMapping->ReadFromFile(filename.toStdString());
+	const SynGlyphX::DatasourceMaps::FileDatasourceMap& fileDatasources = m_dataMapping->GetDatasources().GetFileDatasources();
+	SynGlyphX::DatasourceMaps::FileDatasourceMap::const_iterator iT = fileDatasources.begin();
+	for (; iT != fileDatasources.end(); ++iT) {
+
+		AddDatasourceInfoFromDataEngine(iT->first, iT->second);
+	}
 	endResetModel();
 }
 
@@ -692,6 +704,7 @@ void DataTransformModel::ClearAndReset() {
 void DataTransformModel::Clear() {
 
 	beginResetModel();
+	m_tableStatsMap.clear();
 	m_numericFields.clear();
 	m_dataMapping->Clear();
 	endResetModel();
@@ -1119,6 +1132,111 @@ void DataTransformModel::RemoveAllAdditionalData(const boost::uuids::uuid& datas
 
 	for (const auto& table : m_dataMapping->GetDatasources().GetDatasourceByID(datasourceId).GetTables()) {
 
-		m_numericFields.erase(SynGlyphX::InputTable(datasourceId, table.first));
+		SynGlyphX::InputTable inputTable(datasourceId, table.first);
+
+		if (m_numericFields.count(inputTable) != 0) {
+
+			m_numericFields.erase(inputTable);
+		}
+		m_tableStatsMap.erase(inputTable);
 	}
 }
+
+const DataTransformModel::TableStatsMap& DataTransformModel::GetTableStatsMap() const {
+
+	return m_tableStatsMap;
+}
+
+void DataTransformModel::AddDatasourceInfoFromDataEngine(const boost::uuids::uuid& datasourceId, const SynGlyphX::FileDatasource& fileDatasource) {
+
+	QString datasource = QString::fromStdWString(fileDatasource.GetFilename());
+
+	if (fileDatasource.GetType() == SynGlyphX::FileDatasource::SQLITE3) {
+
+		SynGlyphX::Datasource::TableNames tables;
+
+		QString url("sqlite:" + datasource);
+		QString user("");
+		QString pass("");
+		QString type("sqlite3");
+		//QString url("mysql://33.33.33.1");
+		//QString user("root");
+		//QString pass("jarvis");
+		//QString type("mysql");
+		QStringList databases = dec->connectToServer(url, user, pass, type);
+		QString database("");
+		//QString database("world");
+		QStringList qtables = dec->chooseDatabase(database);
+		//dec->testFunction();
+		QStringList chosenTables;
+		chosenTables = qtables;
+		//std::vector<DataEngineConnection::ForeignKey> fkeys = dec->getForeignKeys(//table_name);
+		//fkeys.at(0).key;
+		//fkeys.at(0).origin;
+		//fkeys.at(0).value;
+		dec->setChosenTables(chosenTables);
+		//QString query = "SELECT City.Population, Country.Code FROM (City INNER JOIN Country ON (City.CountryCode=Country.Code))";
+		//dec->setQueryTables(query);
+
+		if (!dec->getTables().isEmpty()) {
+
+			for (const QString& qtable : dec->getTables()) {
+
+				tables.push_back(qtable.toStdWString());
+			}
+			EnableTables(datasourceId, tables, true);
+		}
+		else {
+
+			throw std::exception((tr("No tables in ") + datasource).toStdString().c_str());
+		}
+
+		dec->closeConnection();
+	}
+	else if (fileDatasource.GetType() == SynGlyphX::FileDatasource::CSV) {
+
+		dec->loadCSV(datasource.toUtf8().constData());
+		GenerateStats(SynGlyphX::InputTable(datasourceId, SynGlyphX::FileDatasource::SingleTableName), 0, SynGlyphX::FileDatasource::CSV);
+		dec->closeConnection();
+	}
+}
+
+//JDBC GENERATE STATS
+void DataTransformModel::GenerateStats(const SynGlyphX::InputTable inputTable, int place, SynGlyphX::FileDatasource::SourceType sourceType) {
+
+	TableStats tableStats;
+
+	DataEngine::DataEngineStatement des;
+	des.prepare(dec->getEnv(), dec->getJcls(), sourceType); //Add datasource type as a third argument
+
+	SynGlyphX::WStringVector numericCols;
+	des.getFieldsForTable(place);
+
+	while (des.hasNext()) {
+
+		QString field = des.getField();
+		QString type = des.getType();
+
+		if (type == "real") {
+			
+			numericCols.push_back(field.toStdWString());
+		}
+
+		QStringList fieldStats;
+		fieldStats.append(field);
+		fieldStats.append(type);
+		fieldStats.append(des.getMin());
+		fieldStats.append(des.getMax());
+		fieldStats.append(des.getAverage());
+		fieldStats.append(des.getCount());
+		fieldStats.append(des.getDistinct());
+		tableStats.append(fieldStats);
+	}
+
+	if (!numericCols.empty()) {
+
+		m_numericFields.emplace(inputTable, numericCols);
+	}
+	m_tableStatsMap.emplace(inputTable, tableStats);
+}
+//END JDBC

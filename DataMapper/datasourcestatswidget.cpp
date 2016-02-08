@@ -47,53 +47,20 @@ void DataSourceStatsWidget::AddNewStatsViews() {
 
 				if (iT->second.GetType() == SynGlyphX::FileDatasource::SQLITE3){
 
-					SynGlyphX::Datasource::TableNames tables;
-
-					QString url("sqlite:" + datasource);
-					QString user("");
-					QString pass("");
-					QString type("sqlite3");
-					//QString url("mysql://33.33.33.1");
-					//QString user("root");
-					//QString pass("jarvis");
-					//QString type("mysql");
-					QStringList databases = dec->connectToServer(url, user, pass, type); 
-					QString database("");
-					//QString database("world");
-					QStringList qtables = dec->chooseDatabase(database);
-					//dec->testFunction();
-					QStringList chosenTables;
-					chosenTables = qtables;
-					//std::vector<DataEngineConnection::ForeignKey> fkeys = dec->getForeignKeys(//table_name);
-					//fkeys.at(0).key;
-					//fkeys.at(0).origin;
-					//fkeys.at(0).value;
-					dec->setChosenTables(chosenTables);
-					//QString query = "SELECT City.Population, Country.Code FROM (City INNER JOIN Country ON (City.CountryCode=Country.Code))";
-					//dec->setQueryTables(query);
-
-					if (!dec->getTables().isEmpty()) {
-						for (const QString& qtable : dec->getTables()) {
-							tables.insert(qtable.toStdWString());
-						}
-						m_model->EnableTables(iT->first, tables, true);
-					}
-					else {
-						throw std::exception((tr("No tables in ") + datasource).toStdString().c_str());
-					}
-
 					for (int i = 0; i < dec->getTables().size(); i++){
+
 						CreateTablesFromDatasource(iT->first, i, QString::fromStdWString(iT->second.GetFormattedName()) + ":" + dec->getTables()[i], iT->second.GetType());
 					}
 					dec->closeConnection();
 				}
 				else if (iT->second.GetType() == SynGlyphX::FileDatasource::CSV){
-					dec->loadCSV(datasource.toUtf8().constData());
+					
 					CreateTablesFromDatasource(iT->first, 0, QString::fromStdWString(iT->second.GetFormattedName()), iT->second.GetType());
 					dec->closeConnection();
 				}
 			}
-		}catch (const std::exception& e) {
+		}
+		catch (const std::exception& e) {
 
 			ClearTabs();
 			throw;
@@ -112,17 +79,17 @@ void DataSourceStatsWidget::CreateTablesFromDatasource(const boost::uuids::uuid&
 
 	QString idString = QString::fromStdString(boost::uuids::to_string(id));
 	QString tableName;
-	if (file.right(4).toLower() == ".csv"){
+	if (file.right(4).toLower() == ".csv") {
+
 		tableName = "OnlyTable";
 	}
-	else{
+	else {
+
 		QStringList qsl = file.split(":");
 		tableName = qsl.at(1);
 	}
-	DataStatsModel* model = new DataStatsModel(id, place, type, tableName, this->dec, this);
+	DataStatsModel* model = new DataStatsModel(id, tableName, m_model, this);
 	CreateTableView(model, file, idString);
-	std::wstring temp = file.toStdWString();
-	dec->addTableName(id, tableName.toStdWString());
 }
 
 void DataSourceStatsWidget::CreateTableView(DataStatsModel* model, const QString& tabName, const QString& id) {
