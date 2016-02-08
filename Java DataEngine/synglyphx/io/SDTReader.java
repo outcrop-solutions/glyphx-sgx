@@ -12,14 +12,10 @@ import java.util.HashMap;
 import java.util.ArrayList;
 import synglyphx.glyph.XMLGlyphTemplate;
 import synglyphx.data.SourceDataInfo;
-import synglyphx.util.FieldGroup;
-import synglyphx.util.GeoID;
+import synglyphx.util.*;
 import synglyphx.glyph.Mapper;
-import synglyphx.util.ConvertHash;
 import synglyphx.io.Logger;
-import synglyphx.util.BaseObject;
 import synglyphx.glyph.CoordinateMap;
-import synglyphx.util.BoundingBox;
 
 public class SDTReader {
 
@@ -500,9 +496,10 @@ public class SDTReader {
 						String [] valSplit;
 						if(field.equals("ColorRGB")){
 							valSplit = value.split(",");
-							temp.addKeyValue("ColorR", key, valSplit[0]);
-							temp.addKeyValue("ColorG", key, valSplit[1]);
-							temp.addKeyValue("ColorB", key, valSplit[2]);
+							double[] hsv = Functions.convertRGBtoHSV(Double.parseDouble(valSplit[0]),Double.parseDouble(valSplit[1]),Double.parseDouble(valSplit[2]));
+							temp.addKeyValue("ColorR", key, String.valueOf(hsv[0]));
+							temp.addKeyValue("ColorG", key, String.valueOf(hsv[1]));
+							temp.addKeyValue("ColorB", key, String.valueOf(hsv[2]));
 						}else if(field.equals("GeometryShape")){
 							String sf = temp.getSurface();
 							temp.addKeyValue(field, key, String.valueOf(geo.getValue(value,sf)));
@@ -619,6 +616,7 @@ public class SDTReader {
 				if(type.equals("Downloaded Map")){
 					name = "downloadedMap.jpg";
 					download = true;
+					System.out.println("here");
 					bObject.setMapInfo(element.getAttribute("mapsource"),element.getAttribute("maptype"));
 					bObject.setImageInfo(element.getAttribute("invert"),element.getAttribute("grayscale"),element.getAttribute("bestfit"),element.getAttribute("margin"));
 				}
