@@ -36,6 +36,10 @@ MappingFunctionWidget::MappingFunctionWidget(KeyType keyType, GlyphRolesTableMod
 	layout->addWidget(m_editPropertiesButton);
 
 	setLayout(layout);
+
+	setFocusPolicy(Qt::StrongFocus);
+	setFocusProxy(m_functionComboBox);
+	setTabOrder(m_functionComboBox, m_editPropertiesButton);
 }
 
 MappingFunctionWidget::~MappingFunctionWidget()

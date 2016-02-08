@@ -15,61 +15,34 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef MAPPINGFUNCTIONWIDGET_H
-#define MAPPINGFUNCTIONWIDGET_H
+#ifndef VERTICALTABORDERTABLEVIEW_H
+#define VERTICALTABORDERTABLEVIEW_H
 
-#include <QtWidgets/QWidget>
-#include <QtWidgets/QComboBox>
-#include <QtWidgets/QPushButton>
-#include "datamappingfunction.h"
-#include "glyphrolestablemodel.h"
+#include "sgxgui_global.h"
+#include <QtWidgets/QTableView>
+#include <unordered_map>
 
-class MappingFunctionWidget : public QWidget
-{
-	Q_OBJECT
-	Q_PROPERTY(QString function READ GetFunction WRITE SetFunction USER true)
+namespace SynGlyphX {
 
-public:
-	enum KeyType {
-		Numeric,
-		Color,
-		GeometryShape,
-		VirtualTopology
+	class SGXGUI_EXPORT VerticalTabOrderTableView : public QTableView
+	{
+		Q_OBJECT
+
+	public:
+		VerticalTabOrderTableView(QWidget *parent);
+		~VerticalTabOrderTableView();
+
+		virtual void setIndexWidget(const QModelIndex& index, QWidget* widget);
+
+	protected:
+		bool focusNextPrevChild(bool next);
+		//virtual bool eventFilter(QObject* watched, QEvent* event);
+
+	private:
+		std::unordered_map<QObject*, QPersistentModelIndex> m_widgetToModelIndexMap;
+
 	};
 
-	MappingFunctionWidget(KeyType keyType, GlyphRolesTableModel* model, int row, QWidget *parent);
-	~MappingFunctionWidget();
+} //namespace SynGlyphX
 
-	QString GetFunction() const;
-
-	void SetDialogOutputMinMax(double min, double max);
-
-signals:
-	void SupportedInputChanged(SynGlyphX::MappingFunctionData::Input supportedInput);
-	void FunctionChanged();
-
-public slots:
-	void SetFunction(const QString& function);
-
-private slots:
-	void OnFunctionComboBoxChangedByUser();
-	void OnFunctionComboBoxChanged();
-	void OnEditPropertiesClicked();
-
-private:
-	static QStringList CreateNumericColorFunctionList();
-	static QStringList CreateEnumerationFunctionList();
-
-	QComboBox* m_functionComboBox;
-	QPushButton* m_editPropertiesButton;
-	GlyphRolesTableModel* m_model;
-	int m_row;
-	double m_dialogOutputMin;
-	double m_dialogOutputMax;
-	KeyType m_keyType;
-
-	static const QStringList s_numericColorFunctions;
-	static const QStringList s_enumerationFunctions;
-};
-
-#endif // MAPPINGFUNCTIONWIDGET_H
+#endif // VERTICALTABORDERTABLEVIEW_H

@@ -49,7 +49,7 @@ DataBindingTablesWidget::~DataBindingTablesWidget()
 
 void DataBindingTablesWidget::CreateGeometryTopologyTab() {
 
-	QTableView* tableView = CreateSubsetTableView({ SynGlyphX::DataMappingGlyph::MappableField::VirtualTopology, 
+	SynGlyphX::VerticalTabOrderTableView* tableView = CreateSubsetTableView({ SynGlyphX::DataMappingGlyph::MappableField::VirtualTopology,
 													SynGlyphX::DataMappingGlyph::MappableField::GeometryShape, 
 													SynGlyphX::DataMappingGlyph::MappableField::GeometryShape + 1, 
 													SynGlyphX::DataMappingGlyph::MappableField::GeometryShape + 2});
@@ -113,7 +113,7 @@ void DataBindingTablesWidget::CreateGeometryTopologyTab() {
 
 void DataBindingTablesWidget::CreateAnimationTable() {
 
-	QTableView* tableView = CreateSubsetTableView({ SynGlyphX::DataMappingGlyph::MappableField::RotationRateX, 
+	SynGlyphX::VerticalTabOrderTableView* tableView = CreateSubsetTableView({ SynGlyphX::DataMappingGlyph::MappableField::RotationRateX,
 													SynGlyphX::DataMappingGlyph::MappableField::RotationRateY, 
 													SynGlyphX::DataMappingGlyph::MappableField::RotationRateZ });
 
@@ -132,7 +132,7 @@ void DataBindingTablesWidget::CreateAnimationTable() {
 
 void DataBindingTablesWidget::CreateURLTab() {
 
-	QTableView* tableView = CreateSubsetTableView({ SynGlyphX::DataMappingGlyph::MappableField::URL }, { GlyphRolesTableModel::s_propertyNameColumn, GlyphRolesTableModel::s_mappedFieldColumn });
+	SynGlyphX::VerticalTabOrderTableView* tableView = CreateSubsetTableView({ SynGlyphX::DataMappingGlyph::MappableField::URL }, { GlyphRolesTableModel::s_propertyNameColumn, GlyphRolesTableModel::s_mappedFieldColumn });
 	SynGlyphX::TableSubsetProxyModel* proxyModel = dynamic_cast<SynGlyphX::TableSubsetProxyModel*>(tableView->model());
 
 	BindingLineEdit* urlLineEdit = new BindingLineEdit(m_model, tableView);
@@ -156,7 +156,7 @@ void DataBindingTablesWidget::CreateURLTab() {
 
 void DataBindingTablesWidget::CreateTagAndDescriptionWidget() {
 
-	QTableView* tableView = CreateSubsetTableView({ SynGlyphX::DataMappingGlyph::MappableField::Tag, SynGlyphX::DataMappingGlyph::MappableField::Description },
+	SynGlyphX::VerticalTabOrderTableView* tableView = CreateSubsetTableView({ SynGlyphX::DataMappingGlyph::MappableField::Tag, SynGlyphX::DataMappingGlyph::MappableField::Description },
 												  { GlyphRolesTableModel::s_propertyNameColumn, GlyphRolesTableModel::s_mappedFieldColumn });
 	SynGlyphX::TableSubsetProxyModel* proxyModel = dynamic_cast<SynGlyphX::TableSubsetProxyModel*>(tableView->model());
 
@@ -193,7 +193,7 @@ void DataBindingTablesWidget::CreateTagAndDescriptionWidget() {
 
 void DataBindingTablesWidget::CreateBasePropertiesTable() {
 
-	QTableView* tableView = CreateSubsetTableView({ SynGlyphX::DataMappingGlyph::MappableField::PositionX, 
+	SynGlyphX::VerticalTabOrderTableView* tableView = CreateSubsetTableView({ SynGlyphX::DataMappingGlyph::MappableField::PositionX,
 													SynGlyphX::DataMappingGlyph::MappableField::PositionY, 
 													SynGlyphX::DataMappingGlyph::MappableField::PositionZ,
 													SynGlyphX::DataMappingGlyph::MappableField::RotationX,
@@ -234,9 +234,9 @@ void DataBindingTablesWidget::CreateBasePropertiesTable() {
 	addTab(tableView, tr("Base Properties"));
 }
 
-QTableView* DataBindingTablesWidget::CreateSubsetTableView(const SynGlyphX::TableSubsetProxyModel::Subset& rowSubset, const SynGlyphX::TableSubsetProxyModel::Subset& columnSubset) {
+SynGlyphX::VerticalTabOrderTableView* DataBindingTablesWidget::CreateSubsetTableView(const SynGlyphX::TableSubsetProxyModel::Subset& rowSubset, const SynGlyphX::TableSubsetProxyModel::Subset& columnSubset) {
 
-	QTableView* tableView = new QTableView(this);
+	SynGlyphX::VerticalTabOrderTableView* tableView = new SynGlyphX::VerticalTabOrderTableView(this);
 
 	SynGlyphX::TableSubsetProxyModel* proxyModel = new SynGlyphX::TableSubsetProxyModel(this);
 	proxyModel->setSourceModel(m_model);
@@ -258,7 +258,7 @@ QTableView* DataBindingTablesWidget::CreateSubsetTableView(const SynGlyphX::Tabl
 	return tableView;
 }
 
-QDataWidgetMapper* DataBindingTablesWidget::AddRowOfWidgetsToTable(QTableView* tableView, QWidget* valueWidget, QWidget* valueWidgetToMap, MappingFunctionWidget* mappingFunctionWidget, int modelRow, bool addToPositionXYList) {
+QDataWidgetMapper* DataBindingTablesWidget::AddRowOfWidgetsToTable(SynGlyphX::VerticalTabOrderTableView* tableView, QWidget* valueWidget, QWidget* valueWidgetToMap, MappingFunctionWidget* mappingFunctionWidget, int modelRow, bool addToPositionXYList) {
 
 	std::array<QDataWidgetMapper*, 3> mappers;
 	for (int i = 0; i < 3; ++i) {
@@ -302,7 +302,7 @@ QDataWidgetMapper* DataBindingTablesWidget::AddRowOfWidgetsToTable(QTableView* t
 	return mappers[0];
 }
 
-void DataBindingTablesWidget::CreateIntegerPropertyWidgets(QTableView* tableView, int modelRow, int min, int max) {
+void DataBindingTablesWidget::CreateIntegerPropertyWidgets(SynGlyphX::VerticalTabOrderTableView* tableView, int modelRow, int min, int max) {
 
 	SynGlyphX::IntMinMaxWidget* minMaxWidget = new SynGlyphX::IntMinMaxWidget(tableView);
 	minMaxWidget->SetKeyboardTracking(false);
@@ -316,7 +316,7 @@ void DataBindingTablesWidget::CreateIntegerPropertyWidgets(QTableView* tableView
 	QObject::connect(minMaxWidget, &SynGlyphX::IntMinMaxWidget::ValueChanged, mapper, &QDataWidgetMapper::submit);
 }
 
-void DataBindingTablesWidget::CreateDoublePropertyWidgets(QTableView* tableView, int modelRow, double min, double max, bool addToPositionXYList) {
+void DataBindingTablesWidget::CreateDoublePropertyWidgets(SynGlyphX::VerticalTabOrderTableView* tableView, int modelRow, double min, double max, bool addToPositionXYList) {
 
 	SynGlyphX::DoubleMinMaxWidget* minMaxWidget = new SynGlyphX::DoubleMinMaxWidget(tableView);
 	minMaxWidget->SetKeyboardTracking(false);
@@ -332,7 +332,7 @@ void DataBindingTablesWidget::CreateDoublePropertyWidgets(QTableView* tableView,
 	QObject::connect(minMaxWidget, &SynGlyphX::DoubleMinMaxWidget::ValueChanged, mapper, &QDataWidgetMapper::submit);
 }
 
-void DataBindingTablesWidget::CreateColorPropertyWidgets(QTableView* tableView, int modelRow) {
+void DataBindingTablesWidget::CreateColorPropertyWidgets(SynGlyphX::VerticalTabOrderTableView* tableView, int modelRow) {
 
 	SynGlyphX::ColorMinMaxWidget* minMaxWidget = new SynGlyphX::ColorMinMaxWidget(false, tableView);
 
@@ -342,7 +342,7 @@ void DataBindingTablesWidget::CreateColorPropertyWidgets(QTableView* tableView, 
 	QObject::connect(minMaxWidget, &SynGlyphX::ColorMinMaxWidget::ValueChanged, mapper, &QDataWidgetMapper::submit);
 }
 
-void DataBindingTablesWidget::CreateGeometryShapePropertyWidgets(QTableView* tableView, int modelRow) {
+void DataBindingTablesWidget::CreateGeometryShapePropertyWidgets(SynGlyphX::VerticalTabOrderTableView* tableView, int modelRow) {
 
 	SynGlyphX::GlyphShapeComboBox* comboBox = new SynGlyphX::GlyphShapeComboBox(tableView);
 	SynGlyphX::StretchSurroundedWidget* stretchSurroundedWidget = new SynGlyphX::StretchSurroundedWidget(SynGlyphX::StretchSurroundedWidget::All, comboBox, this);
@@ -353,7 +353,7 @@ void DataBindingTablesWidget::CreateGeometryShapePropertyWidgets(QTableView* tab
 	QObject::connect(comboBox, &SynGlyphX::GlyphShapeComboBox::currentTextChanged, mapper, &QDataWidgetMapper::submit);
 }
 
-void DataBindingTablesWidget::CreateVirtualTopologyTypePropertyWidgets(QTableView* tableView, int modelRow) {
+void DataBindingTablesWidget::CreateVirtualTopologyTypePropertyWidgets(SynGlyphX::VerticalTabOrderTableView* tableView, int modelRow) {
 
 	SynGlyphX::VirtualTopologyComboBox* comboBox = new SynGlyphX::VirtualTopologyComboBox(tableView);
 	SynGlyphX::StretchSurroundedWidget* stretchSurroundedWidget = new SynGlyphX::StretchSurroundedWidget(SynGlyphX::StretchSurroundedWidget::Vertical, comboBox, this);
