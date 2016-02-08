@@ -57,6 +57,8 @@ namespace DataEngine
 		std::vector<ForeignKey> getForeignKeys(QString tablename);
 		std::vector<QStringList> getSampleData(QString tablename);
 		void setChosenTables(QStringList chosen);
+		void setQueryTables(QString query);
+		QStringList getTables();
 		void closeConnection();
 		//JDBC END
 		void destroyJVM();

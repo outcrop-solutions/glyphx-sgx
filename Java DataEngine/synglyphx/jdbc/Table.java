@@ -7,68 +7,36 @@ import java.util.Map;
 import synglyphx.data.DataStats;
 import synglyphx.io.Logger;
 
-public class Table {
+public abstract class Table {
 	
-	private String name;
-	private String query;
-	private String limiters;
-	private Connection conn;
-	private ArrayList<String> columnNames;
-	private HashMap<String,String> columnTypes;
-	private HashMap<String,DataStats> dataStats;
-	private HashMap<String,String> jdbcTypes;
-	private ArrayList<String[]> sampleData;
-	private ArrayList<String> foreign_key_list;
-	private HashMap<String,ArrayList<String>> foreign_key_map; 
-	private HashMap<String,ArrayList<String>> min_max_table;
+	protected String name;
+	protected String query;
+	protected String end_of_query;
+	protected Connection conn;
+	protected ArrayList<String> columnNames;
+	protected HashMap<String,String> columnTypes;
+	protected HashMap<String,DataStats> dataStats;
+	protected HashMap<String,String> jdbcTypes;
+	protected HashMap<String,ArrayList<String>> min_max_table;
 
-	public Table(String name, Connection conn){
-		this.name = name;
+	public Table(Connection conn){
 		this.conn = conn;
-		this.query = "SELECT * FROM "+name;
-		mapForeignKeys();
 		initialize();
-	}
-
-	private void setColumnNames(){
-
-		String column_type;
-		String column_name;
-
-		try{
-
-			String sql = query;
-			PreparedStatement pstmt = conn.prepareStatement(sql);
-            ResultSet rs = pstmt.executeQuery();
-            ResultSetMetaData metaData = rs.getMetaData();
-
-            int rowCount = metaData.getColumnCount();
-
-            for (int i = 0; i < rowCount; i++) {
-            	column_type = metaData.getColumnTypeName(i + 1);
-            	column_name = metaData.getColumnName(i + 1);
-                columnNames.add(column_name);
-                columnTypes.put(column_name, jdbcTypes.get(column_type));
-            }
-            rs.close();
-
-		}catch(SQLException se){
-         	try{
-            	se.printStackTrace(Logger.getInstance().addError());
-         	}catch(Exception ex){}
-      	}
 	}
 
 	private void columnDataStats(String cn){
 
 		String[] ranges;
 		String[] counts;
+		String sql;
 
 		try{
 
 			ranges = new String[3];
 			counts = new String[2];
-			String sql = "SELECT MIN(`"+cn+"`),MAX(`"+cn+"`),AVG(`"+cn+"`),COUNT(`"+cn+"`),COUNT(DISTINCT(`"+cn+"`)) FROM "+name;  
+			sql = "SELECT MIN(`"+cn+"`),MAX(`"+cn+"`),AVG(`"+cn+"`),";
+			sql += "COUNT(`"+cn+"`),COUNT(DISTINCT(`"+cn+"`)) FROM "+end_of_query;
+			Logger.getInstance().add(sql);
 			Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(sql);
 
@@ -78,6 +46,9 @@ public class Table {
             	ranges[2] = rs.getString(3);
             	counts[0] = rs.getString(4);
             	counts[1] = rs.getString(5);
+            	System.out.println(columnTypes.get(cn));
+            	System.out.println(ranges[2]);
+            	System.out.println(counts[1]);
             	dataStats.put(cn, new DataStats(columnTypes.get(cn),ranges,counts));
             	DataStats ds = dataStats.get(cn);
             	Logger.getInstance().add(ds.getType()+" | "+ds.getMin()+" | "+ds.getMax()+" | "+ds.getAverage()+" | "+ds.getCount()+" | "+ds.getDistinct()); 
@@ -101,10 +72,6 @@ public class Table {
 			fields[i] = columnNames.get(i);
 		}
 		return fields;
-	}
-
-	public String[] getSampleData(int row){
-		return sampleData.get(row);
 	}
 
 	public String[] getStats(String field){
@@ -151,8 +118,6 @@ public class Table {
 
 		columnNames = new ArrayList<String>();
 		columnTypes = new HashMap<String,String>();
-		setColumnNames();
-		loadSampleData();
 
 	}
 
@@ -179,67 +144,4 @@ public class Table {
 		return dataStats;
 	}
 
-	public String[] getForeignKeys(){
-		String[] temp = new String[foreign_key_list.size()];
-		for(int i = 0; i < foreign_key_list.size(); i++){
-			temp[i] = foreign_key_list.get(i);
-		}
-		return temp;
-	}
-
-	private void mapForeignKeys(){
-
-		foreign_key_list = new ArrayList<String>();
-		foreign_key_map = new HashMap<String,ArrayList<String>>();
-		try{
-			DatabaseMetaData dm = conn.getMetaData();
-	    	ResultSet rs = dm.getImportedKeys(null, null, name);
-
-	    	while (rs.next()) {
-	    		String colName = rs.getString(8);
-	    		String tblName = rs.getString(3);
-	    		String orgName = rs.getString(4);
-	    		foreign_key_map.put(colName, new ArrayList<String>());
-	    		foreign_key_map.get(colName).add(tblName);
-	    		foreign_key_map.get(colName).add(orgName);
-	    		foreign_key_list.add(colName);
-	    		foreign_key_list.add(tblName);
-	    		foreign_key_list.add(orgName);
-	    	}
-
-	    	rs.close();
-	    }catch(SQLException se){
-	    	try{
-            	se.printStackTrace(Logger.getInstance().addError());
-         	}catch(Exception ex){}
-	    }
-	}
-
-	private void loadSampleData(){
-
-		sampleData = new ArrayList<String[]>();
-		try{
-
-			String sql = "SELECT * FROM "+name+" LIMIT 15";  
-			Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery(sql);
-
-            int place = 0;
-            while(rs.next()){
-            	sampleData.add(new String[columnNames.size()]);
-            	for(int i = 0; i < columnNames.size(); i++){
-            		String temp = rs.getString(columnNames.get(i));
-            		if(temp == null){temp = "";}
-            		sampleData.get(place)[i] = temp;
-            	}   	     	
-            	place += 1;
-            }
-
-            rs.close();
-        }catch(SQLException se){
-        	try{
-            	se.printStackTrace(Logger.getInstance().addError());
-         	}catch(Exception ex){}
-        }
-	}
 }

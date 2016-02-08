@@ -1,8 +1,8 @@
 
-Reading SDT at C:\Users\Bryan\Desktop\Test HSV\testhsv.sdt
+Reading SDT at C:\Users\Bryan\Desktop\TooMany Elements SizeBug\Ohio Voter Registration Draft.sdt
 Parsed SDT into doc.
 Set input map.
-c211e055-9e50-4fcc-879f-1118645548deOnlyTable
+2dfdf2ca-6c93-4e74-a181-3ebc00f21ee9OnlyTable
 Retrieved data paths.
 Finished creating min/max table...
 Created DataFrames.
@@ -11,21 +11,21 @@ Finished checking field groups.
 Retrieved Defaults.
 Retrieved Bg color.
 BaseObjects:
-Default | World
+Downloaded Map | 
 Returning data stats model...
-30.0
-0.0
--30.0
-0.0
-Downloaded Map BoundingBox: (-180.0,90.0),(180.0,-90.0)
+-80.5305683
+41.5117735
+-84.3514711
+39.572392
+Downloaded Map BoundingBox: (-85.25350956479433,41.618268866536965),(-79.62852983520567,39.46589663346303)
 Image Size: 2048.0, 1024.0
 Beginning to generate glyphs...
 Executed initial query...
-Returned cursor with size 7...
+Returned cursor with size 29050...
 1
-2
+5
 Writing all files...
-C:\Users\Bryan\Desktop\Test HSV\Viz\usr\csv\
+C:\Users\Bryan\Desktop\TooMany Elements SizeBug\Ohio Voter SampleOut\usr\csv\
 DataMapper
-C:\Users\Bryan\Desktop\Test HSV\Viz\usr\csv\\..\..\nourl.html
-15 nodes printing...
+C:\Users\Bryan\Desktop\TooMany Elements SizeBug\Ohio Voter SampleOut\usr\csv\\..\..\nourl.html
+145251 nodes printing...

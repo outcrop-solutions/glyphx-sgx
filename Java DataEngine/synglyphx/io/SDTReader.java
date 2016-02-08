@@ -12,14 +12,10 @@ import java.util.HashMap;
 import java.util.ArrayList;
 import synglyphx.glyph.XMLGlyphTemplate;
 import synglyphx.data.SourceDataInfo;
-import synglyphx.util.FieldGroup;
-import synglyphx.util.GeoID;
+import synglyphx.util.*;
 import synglyphx.glyph.Mapper;
-import synglyphx.util.ConvertHash;
 import synglyphx.io.Logger;
-import synglyphx.util.BaseObject;
 import synglyphx.glyph.CoordinateMap;
-import synglyphx.util.BoundingBox;
 
 public class SDTReader {
 
@@ -383,22 +379,33 @@ public class SDTReader {
 						user = getValue("Username", e);
 						pass = getValue("Password", e);
 					}catch(Exception ex){}
-					NodeList tables = e.getElementsByTagName("Table");
+					NodeList tbls = e.getElementsByTagName("Tables");
+					Element tblObjects = (Element) tbls.item(0);
+					NodeList tables = tblObjects.getElementsByTagName("Table");
+					System.out.println(tables.getLength());
 					for(int j=0; j<tables.getLength(); j++){
-						NodeList tableNodes = tables.item(j).getChildNodes();
-						Node table = (Node) tableNodes.item(0);
-						Element te = (Element) table;
+	 					Node table = tables.item(j); 
+	 					Element te = (Element) table;
+						System.out.println(host);
+						System.out.println(user);
+						System.out.println(pass);
+						System.out.println(table.getTextContent());
 						SourceDataInfo tb = new SourceDataInfo();
 						tb.setID(id);
-						tb.setTable(table.getNodeValue());
+						tb.setTable(table.getTextContent());
 						tb.setType(e.getAttribute("type").toLowerCase());
 						if(te.hasAttribute("query")){
 							if(!te.getAttribute("query").equals("")){
 								tb.setQuery(te.getAttribute("query"));
+								tb.setInputFields(this.inputs);
+								if(te.hasAttribute("basetable")){
+									tb.setBaseTableName(te.getAttribute("basetable"));
+									tb.parseForeignKeyData(te.getAttribute("foreignkey"));
+								}
 							}
 						}
 						tb.setPath(path);
-						tb.setHost(host);
+						tb.setHost("jdbc:"+host);
 						tb.setUsername(user);
 						tb.setPassword(pass);
 						dataPaths.add(tb);
@@ -467,6 +474,7 @@ public class SDTReader {
 		Node node = element.getElementsByTagName("Function").item(0);
 		NodeList nodelist = node.getChildNodes();
 		def = getValue("Default", element);
+		temp.defaultSetter(field, type, def);
 		GeoID geo = new GeoID();
 
 		for(int i=0; i<nodelist.getLength();i++){
@@ -485,21 +493,20 @@ public class SDTReader {
 						key = getValue("Key", kv);
 						value = getValue("Value", kv);
 						
-						String [] defSplit;
 						String [] valSplit;
 						if(field.equals("ColorRGB")){
-							defSplit = def.split(",");
 							valSplit = value.split(",");
-							temp.addKeyValue("ColorR", type, defSplit[0], key, valSplit[0]);
-							temp.addKeyValue("ColorG", type, defSplit[1], key, valSplit[1]);
-							temp.addKeyValue("ColorB", type, defSplit[2], key, valSplit[2]);
+							double[] hsv = Functions.convertRGBtoHSV(Double.parseDouble(valSplit[0]),Double.parseDouble(valSplit[1]),Double.parseDouble(valSplit[2]));
+							temp.addKeyValue("ColorR", key, String.valueOf(hsv[0]));
+							temp.addKeyValue("ColorG", key, String.valueOf(hsv[1]));
+							temp.addKeyValue("ColorB", key, String.valueOf(hsv[2]));
 						}else if(field.equals("GeometryShape")){
 							String sf = temp.getSurface();
-							temp.addKeyValue(field,type, String.valueOf(geo.getValue(def,sf)), key, String.valueOf(geo.getValue(value,sf)));
+							temp.addKeyValue(field, key, String.valueOf(geo.getValue(value,sf)));
 					 	}else if(field.equals("VirtualTopologyType")){
-							temp.addKeyValue(field,type, String.valueOf(geo.getTopoValue(def)), key, String.valueOf(geo.getTopoValue(value)));
+							temp.addKeyValue(field, key, String.valueOf(geo.getTopoValue(value)));
 					 	}else{
-							temp.addKeyValue(field, type, def, key, value);
+							temp.addKeyValue(field, key, value);
 						}
 					}
 				}
@@ -609,6 +616,7 @@ public class SDTReader {
 				if(type.equals("Downloaded Map")){
 					name = "downloadedMap.jpg";
 					download = true;
+					System.out.println("here");
 					bObject.setMapInfo(element.getAttribute("mapsource"),element.getAttribute("maptype"));
 					bObject.setImageInfo(element.getAttribute("invert"),element.getAttribute("grayscale"),element.getAttribute("bestfit"),element.getAttribute("margin"));
 				}

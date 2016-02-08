@@ -1,6 +1,7 @@
 package synglyphx.data;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.regex.Pattern;
 
 public class SourceDataInfo {
@@ -16,6 +17,12 @@ public class SourceDataInfo {
  	private String type;
  	private String query;
  	private DataFrame data;
+ 	private String base_table;
+ 	private String lookup_table;
+ 	private String foreign_key;
+ 	private String primary_key;
+ 	private boolean merged_table;
+ 	private ArrayList<String> inputFields;
 
  	public SourceDataInfo(){
 
@@ -42,6 +49,7 @@ public class SourceDataInfo {
  	}
 
  	public void setTable(String name){
+ 		merged_table = false;
  		this.tableName = name;
  		this.query = "SELECT * FROM "+name;
  	}
@@ -64,6 +72,30 @@ public class SourceDataInfo {
 
  	public void setQuery(String query){
  		this.query = query;
+ 	}
+
+ 	public void setInputFields(ArrayList<ArrayList<String>> inputs){
+ 		inputFields = new ArrayList<String>();
+ 		for(int i = 0; i < inputs.size(); i++){
+ 			inputFields.add(inputs.get(i).get(2));
+ 		}
+ 	}
+
+ 	public void setBaseTableName(String tblname){
+ 		this.base_table = tblname;
+ 	}
+
+ 	public void parseForeignKeyData(String fkdata){
+ 		merged_table = true;
+ 		String[] fk_split = fkdata.split(",");
+ 		lookup_table = fk_split[1];
+ 		foreign_key = fk_split[0];
+ 		primary_key = fk_split[2];
+ 		createQuery();
+ 	}
+
+ 	public boolean isMerged(){
+ 		return merged_table;
  	}
 
  	public String getHost(){
@@ -125,5 +157,44 @@ public class SourceDataInfo {
  	public String getID(){
  		return id;
  	}
+
+ 	public ArrayList<String> getInputFields(){
+ 		return inputFields;
+ 	}
+
+ 	public String getBaseTableName(){
+ 		return base_table;
+ 	}
+
+ 	public String getLookupTableName(){
+ 		return lookup_table;
+ 	}
+
+ 	public String getForeignKey(){
+ 		return foreign_key;
+ 	}
+
+ 	public String getPrimaryKey(){
+ 		return primary_key;
+ 	}
+
+ 	private void createQuery(){
+		//SELECT City.Population, Country.Code FROM 
+		//(City INNER JOIN Country ON (City.CountryCode=Country.Code));
+		String q = "SELECT ";
+		for(int i = 0; i < inputFields.size(); i++){
+			q += inputFields.get(i);
+			if(i != inputFields.size()-1){q += ", ";}
+		}
+		q += " FROM (";
+		q += base_table;
+		q += " INNER JOIN ";
+		q += lookup_table;
+		q += " ON (";
+		q += foreign_key+"="+primary_key;
+		q += "))";
+
+		this.query = q;
+	}
 
 }

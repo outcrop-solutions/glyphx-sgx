@@ -75,12 +75,13 @@ public class GlyphCreator {
 					}
 				}
 			}else{
-				//JDBCNodeGenerator jdbc = new JDBCNodeGenerator(csvData.get(currData));
-				//jdbc.initialize(temps, rootCoords, glyphRepo, mappingCount);
-				//jdbc.setDefaults(default_tag_field, default_tag_value);
-				//jdbc.checkRangeXY(download);
-				//glyphRepo = jdbc.returnUpdatedGlyphRepo();
-				//rootCoords = jdbc.returnUpdatedRootCoords();
+				JDBCNodeGenerator jdbc = new JDBCNodeGenerator(csvData.get(currData));
+				jdbc.initialize(temps, rootCoords, glyphRepo, mappingCount);
+				jdbc.setDefaults(default_tag_field, default_tag_value);
+				jdbc.checkRangeXY(download);
+				jdbc.generateNodes();
+				glyphRepo = jdbc.returnUpdatedGlyphRepo();
+				rootCoords = jdbc.returnUpdatedRootCoords();
 			}
 			rootCoords.get(rootIds.get(i)).setLastID(glyphRepo.getNodeCount()-1);
 		}
@@ -124,6 +125,14 @@ public class GlyphCreator {
 					x3 = Double.parseDouble(csvData.get(currData).getDataFrame().getMinMaxTable().get(input.get(fieldNames.get(i))).get(1));
 				}
 				double x2 = Double.parseDouble(cursor.get(input.get(fieldNames.get(i)))); //returns exact value in this row
+				if(x3 < Double.parseDouble(csvData.get(currData).getDataFrame().getMinMaxTable().get(input.get(fieldNames.get(i))).get(1))){
+					x3 = Double.parseDouble(csvData.get(currData).getDataFrame().getMinMaxTable().get(input.get(fieldNames.get(i))).get(1));
+					nodeTemp.updateMinMaxField(input.get(fieldNames.get(i)), x1, x3);
+				}
+				if(x1 > Double.parseDouble(csvData.get(currData).getDataFrame().getMinMaxTable().get(input.get(fieldNames.get(i))).get(0))){
+					x1 = Double.parseDouble(csvData.get(currData).getDataFrame().getMinMaxTable().get(input.get(fieldNames.get(i))).get(0));
+					nodeTemp.updateMinMaxField(input.get(fieldNames.get(i)), x1, x3);
+				}
 				if(functions.get(fieldNames.get(i)).equals("Linear Interpolation")){
 					setValues.put(fieldNames.get(i), Functions.linearInterpolation(x1,x3,y1,y3,x2));
 				}else if(functions.get(fieldNames.get(i)).equals("Logarithmic Interpolation")){
