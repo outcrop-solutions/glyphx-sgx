@@ -270,6 +270,27 @@ namespace DataEngine
 		}
 	}
 
+	void DataEngineConnection::setQueryTables(QString query){
+
+		jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
+			"setQueryTables", "(Ljava/lang/String;)V");
+
+		if (methodId != NULL) {
+			jstring q = jniEnv->NewStringUTF(query.toStdString().c_str());
+			jniEnv->CallStaticObjectMethod(jcls, methodId, q);
+			if (jniEnv->ExceptionCheck()) {
+				jniEnv->ExceptionDescribe();
+				jniEnv->ExceptionClear();
+			}
+			tables.clear();
+			tables << "Merged";
+		}
+	}
+
+	QStringList DataEngineConnection::getTables(){
+		return tables;
+	}
+
 	QStringList DataEngineConnection::getColumnNames(QString tablename){
 
 		if (columnNames.find(tablename) == columnNames.end()) {
