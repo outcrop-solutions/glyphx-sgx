@@ -26,6 +26,9 @@ BindingLineEdit::BindingLineEdit(const GlyphRolesTableModel* model, QWidget *par
 	m_clearAction = new QAction(tr("Clear Input Field"), this);
 	m_clearAction->setEnabled(false);
 	QObject::connect(m_clearAction, &QAction::triggered, this, &BindingLineEdit::Clear);
+
+	setFocusPolicy(Qt::StrongFocus);
+	setFocusProxy(m_lineEdit);
 }
 
 BindingLineEdit::~BindingLineEdit()

@@ -14,7 +14,7 @@
 
 int main(int argc, char *argv[])
 {
-    SynGlyphX::GlyphBuilderApplication::Setup("Glyph Builder - Glyph Designer", "0.7.22");
+    SynGlyphX::GlyphBuilderApplication::Setup("Glyph Builder - Glyph Designer", "0.7.23");
 	SynGlyphX::GlyphBuilderApplication a(argc, argv);
 
 #ifdef USE_BREAKPAD

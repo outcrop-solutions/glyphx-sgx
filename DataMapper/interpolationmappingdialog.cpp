@@ -35,7 +35,7 @@ InterpolationMappingDialog::InterpolationMappingDialog(DataTransformModel* model
 
 	minMaxParameterWidgetsLayout->addWidget(m_userSpecifiedMinMaxWidget);
 
-	if (!m_model->GetSourceDataManager().GetNumericFieldsByTable().empty()) {
+	if (!m_model->GetNumericFieldsByTable().empty()) {
 
 		m_fieldGroupWidget = new FieldGroupWidget(m_model, this);
 		minMaxParameterWidgetsLayout->addWidget(m_fieldGroupWidget);

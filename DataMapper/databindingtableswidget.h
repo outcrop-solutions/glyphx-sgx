@@ -21,7 +21,7 @@
 #include <QtWidgets/QTabWidget>
 #include <QtWidgets/QTextEdit>
 #include <QtWidgets/QDataWidgetMapper>
-#include <QtWidgets/QTableView>
+#include "verticaltabordertableview.h"
 #include <QtWidgets/QDoubleSpinBox>
 #include "bindinglineedit.h"
 #include "datatransformmapping.h"
@@ -53,13 +53,13 @@ private:
 	void CreateAnimationTable();
 	void CreateTagAndDescriptionWidget();
 	void CreateBasePropertiesTable();
-	QTableView* CreateSubsetTableView(const SynGlyphX::TableSubsetProxyModel::Subset& rowSubset, const SynGlyphX::TableSubsetProxyModel::Subset& columnSubset = SynGlyphX::TableSubsetProxyModel::Subset());
-	void CreateIntegerPropertyWidgets(QTableView* tableView, int modelRow, int min = 0, int max = 255);
-	void CreateDoublePropertyWidgets(QTableView* tableView, int modelRow, double min = -100000.0, double max = 100000.0, bool addToPositionXYList = false);
-	void CreateColorPropertyWidgets(QTableView* tableView, int modelRow);
-	void CreateGeometryShapePropertyWidgets(QTableView* tableView, int modelRow);
-	void CreateVirtualTopologyTypePropertyWidgets(QTableView* tableView, int modelRow);
-	QDataWidgetMapper* AddRowOfWidgetsToTable(QTableView* tableView, QWidget* valueWidget, QWidget* valueWidgetToMap, MappingFunctionWidget* mappingFunctionWidget, int modelRow, bool addToPositionXYList = false);
+	SynGlyphX::VerticalTabOrderTableView* CreateSubsetTableView(const SynGlyphX::TableSubsetProxyModel::Subset& rowSubset, const SynGlyphX::TableSubsetProxyModel::Subset& columnSubset = SynGlyphX::TableSubsetProxyModel::Subset());
+	void CreateIntegerPropertyWidgets(SynGlyphX::VerticalTabOrderTableView* tableView, int modelRow, int min = 0, int max = 255);
+	void CreateDoublePropertyWidgets(SynGlyphX::VerticalTabOrderTableView* tableView, int modelRow, double min = -100000.0, double max = 100000.0, bool addToPositionXYList = false);
+	void CreateColorPropertyWidgets(SynGlyphX::VerticalTabOrderTableView* tableView, int modelRow);
+	void CreateGeometryShapePropertyWidgets(SynGlyphX::VerticalTabOrderTableView* tableView, int modelRow);
+	void CreateVirtualTopologyTypePropertyWidgets(SynGlyphX::VerticalTabOrderTableView* tableView, int modelRow);
+	QDataWidgetMapper* AddRowOfWidgetsToTable(SynGlyphX::VerticalTabOrderTableView* tableView, QWidget* valueWidget, QWidget* valueWidgetToMap, MappingFunctionWidget* mappingFunctionWidget, int modelRow, bool addToPositionXYList = false);
 	void EnablePositionXYMixMaxWidgets(bool enable);
 
 	std::map<QDataWidgetMapper*, unsigned int> m_dataWidgetMappersAndRows;

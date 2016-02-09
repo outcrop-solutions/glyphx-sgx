@@ -81,12 +81,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_0BAE74CD2B714CC19163683B36EFAF50"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_0CA64B70492C4B0D9B5F467501831BB6"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -124,6 +118,12 @@
         "Entry"
         {
         "MsmKey" = "8:_11700D13784F41029EB25BBD402E1047"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_130995285833458081F624C3E348FE28"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -189,12 +189,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_201F49AD7D6D4838BBADD2E4A039D8A5"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_20261BBA1E664A25B0CD219C5D7AD4F7"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -202,6 +196,12 @@
         "Entry"
         {
         "MsmKey" = "8:_20C22148DB9645058D56FB12348297A9"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_216D1DAC68AB46E59BD500DC6E6C89DE"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -255,13 +255,13 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_2985B4DC58404AB994FB59E6D772DB57"
+        "MsmKey" = "8:_2A11A48FCC884AD5A3340D07EFFE345C"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_2A11A48FCC884AD5A3340D07EFFE345C"
+        "MsmKey" = "8:_2A19999D16F54451B15D7D18703E3DDC"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -274,12 +274,6 @@
         "Entry"
         {
         "MsmKey" = "8:_2CA80098C90947199FDDDAEA8F26719E"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_2D264F301EAE47F0AB0C3107F54D589E"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -333,13 +327,7 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_36CDD908D79A4DD58D057BEFEF6CE955"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_382DCC59AFDE4FEF9E1EB60DA5EF9928"
+        "MsmKey" = "8:_379E19CA0A5B4E0E9CAA501B22377231"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -370,6 +358,12 @@
         "Entry"
         {
         "MsmKey" = "8:_3970CEE1FDF44598A02180133BB09796"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_3BE1CBDE2EC34AD39C28AAADA65238A8"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -585,6 +579,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_66F00305777F43AAB63A9289072569D3"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_6727E8323D0D449AA8D892D5163E5EB3"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -657,12 +657,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_6C4259515F464353ABA78015C401D371"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_6C823CA604F44D698948EA48F03EB176"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -688,12 +682,6 @@
         "Entry"
         {
         "MsmKey" = "8:_700DB2EBD8B843F8BF42938F0AECD817"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_7087570FA1C7453494F011EC097C6592"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -735,7 +723,7 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_7A5405B9F1D2429FA292FFFC0909E8E6"
+        "MsmKey" = "8:_787C3EFC39474241AD45E4D45C5BDADA"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -760,6 +748,12 @@
         "Entry"
         {
         "MsmKey" = "8:_7DC15E24D2A24E3E8B6212837435BD33"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_80934089A05B45E08761D408C5C175CF"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -825,13 +819,13 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_8A8A87D2513A4CD1BDB9AE67277C70FB"
+        "MsmKey" = "8:_8BCBB0B5D2BD486AB808586BDC77CC70"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_8BCBB0B5D2BD486AB808586BDC77CC70"
+        "MsmKey" = "8:_8BD84380631D48C08A304438D642F718"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -939,12 +933,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_9F13BEF291634C2B9403ADFCFDC732B6"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_A00606462B544CFEB3BA4EB6DBB1C91F"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -1011,12 +999,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_AA5B70A3A1AE48F7AE8021580B8FE8D4"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_AC81C80D39A3456E8DF77E264C36FB81"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -1072,12 +1054,6 @@
         "Entry"
         {
         "MsmKey" = "8:_B436FA8E84D84E30A825C1105CF20342"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_B4D64BE40EC5453186EAE6F28B391537"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -1161,6 +1137,18 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_C4227E06B6584F879B3A93DDAFB629E7"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_C57DA5F51FD845089668017B8413F63C"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_C5A5565D16524E158C281AF32DE75AC3"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -1239,6 +1227,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_CFEB4F809B0F42ACBFB5A186C6A24A62"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_D0638F9FB83F41BBA8C9809C5FABE252"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -1263,6 +1257,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_D561034289D741F79EFDE6E234DCB62C"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_D787F3DF2B28465F8FD35E5366024A69"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -1282,6 +1282,12 @@
         "Entry"
         {
         "MsmKey" = "8:_D9901305430F4DB38850D343058C4798"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_D9AD6FE5285542C1B3CAFD77B044DBE6"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -1335,6 +1341,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_E4D5D89FB558489DB586DA5A8BA956DE"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_E59D2592367B47CA8D5511EDD100710C"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -1383,7 +1395,7 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_E91BC316104849F5B855ECDC80BDFFAD"
+        "MsmKey" = "8:_E8C379BEC06A41F99E95682215F9F85B"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -1431,18 +1443,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_F4AEFF8E905347B29977ABF8E91AFD98"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_F61F8FF3D815421D9B73FF14BDA7F2A9"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_F622856953D54240A1A572C3CE34CB47"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -1462,6 +1462,12 @@
         "Entry"
         {
         "MsmKey" = "8:_F7EF83A57A1D4C32ADC7B74D495E255B"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_F8A705F47353485B93F1646235B894EB"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -1800,26 +1806,6 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_0BAE74CD2B714CC19163683B36EFAF50"
-            {
-            "SourcePath" = "8:..\\..\\ANTzPlus\\ANTzTemplate\\libmysql.dll"
-            "TargetName" = "8:libmysql.dll"
-            "Tag" = "8:"
-            "Folder" = "8:_3E59963508D34F76B5732E64BBFB296A"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_0CA64B70492C4B0D9B5F467501831BB6"
             {
             "SourcePath" = "8:..\\..\\ANTzPlus\\ANTzMacTemplate\\Glyph_Viewer_(Portable)_mac"
@@ -1946,6 +1932,26 @@
             "TargetName" = "8:qtiff.dll"
             "Tag" = "8:"
             "Folder" = "8:_7E19FBC6548E446FA427B3EC570C927A"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_130995285833458081F624C3E348FE28"
+            {
+            "SourcePath" = "8:..\\..\\ANTzPlus\\ANTzTemplate\\nourl.html"
+            "TargetName" = "8:nourl.html"
+            "Tag" = "8:"
+            "Folder" = "8:_3E59963508D34F76B5732E64BBFB296A"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -2160,26 +2166,6 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_201F49AD7D6D4838BBADD2E4A039D8A5"
-            {
-            "SourcePath" = "8:..\\..\\ANTzPlus\\ANTzTemplate\\Glyph_Viewer_(Portable)_win.exe"
-            "TargetName" = "8:Glyph_Viewer_(Portable)_win.exe"
-            "Tag" = "8:"
-            "Folder" = "8:_3E59963508D34F76B5732E64BBFB296A"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_20261BBA1E664A25B0CD219C5D7AD4F7"
             {
             "SourcePath" = "8:..\\..\\3rdParty\\bin\\Win32\\Release\\qt_plugins\\platforms\\qoffscreen.dll"
@@ -2206,6 +2192,26 @@
             "TargetName" = "8:World.png"
             "Tag" = "8:"
             "Folder" = "8:_1CD158B43CEE41CBADE0A1F0DDB6AB7D"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_216D1DAC68AB46E59BD500DC6E6C89DE"
+            {
+            "SourcePath" = "8:..\\..\\ANTzPlus\\ANTzTemplate\\FreeImage.dll"
+            "TargetName" = "8:FreeImage.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_3E59963508D34F76B5732E64BBFB296A"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -2360,12 +2366,12 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_2985B4DC58404AB994FB59E6D772DB57"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_2A11A48FCC884AD5A3340D07EFFE345C"
             {
-            "SourcePath" = "8:..\\..\\ANTzPlus\\ANTzTemplate\\LICENSE.txt"
-            "TargetName" = "8:LICENSE.txt"
+            "SourcePath" = "8:..\\..\\DataEngine\\jdk1.7.0_79\\jre\\bin\\w2k_lsa_auth.dll"
+            "TargetName" = "8:w2k_lsa_auth.dll"
             "Tag" = "8:"
-            "Folder" = "8:_3E59963508D34F76B5732E64BBFB296A"
+            "Folder" = "8:_36F1FCC38D7848FBA6A0FE803EBD0AFB"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -2380,12 +2386,12 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_2A11A48FCC884AD5A3340D07EFFE345C"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_2A19999D16F54451B15D7D18703E3DDC"
             {
-            "SourcePath" = "8:..\\..\\DataEngine\\jdk1.7.0_79\\jre\\bin\\w2k_lsa_auth.dll"
-            "TargetName" = "8:w2k_lsa_auth.dll"
+            "SourcePath" = "8:..\\..\\DataEngine\\Java DataEngine\\database-drivers\\sqlite4java.jar"
+            "TargetName" = "8:sqlite4java.jar"
             "Tag" = "8:"
-            "Folder" = "8:_36F1FCC38D7848FBA6A0FE803EBD0AFB"
+            "Folder" = "8:_10B6F7AAC886461BA7F14C41F07434A9"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -2426,26 +2432,6 @@
             "TargetName" = "8:glib-lite.dll"
             "Tag" = "8:"
             "Folder" = "8:_36F1FCC38D7848FBA6A0FE803EBD0AFB"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_2D264F301EAE47F0AB0C3107F54D589E"
-            {
-            "SourcePath" = "8:..\\..\\ANTzPlus\\ANTzTemplate\\README.md"
-            "TargetName" = "8:README.md"
-            "Tag" = "8:"
-            "Folder" = "8:_3E59963508D34F76B5732E64BBFB296A"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -2600,30 +2586,10 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_36CDD908D79A4DD58D057BEFEF6CE955"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_379E19CA0A5B4E0E9CAA501B22377231"
             {
-            "SourcePath" = "8:..\\..\\DataEngine\\Java DataEngine\\database-drivers\\sqlite-jdbc-3.8.11.2.jar"
-            "TargetName" = "8:sqlite-jdbc-3.8.11.2.jar"
-            "Tag" = "8:"
-            "Folder" = "8:_10B6F7AAC886461BA7F14C41F07434A9"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_382DCC59AFDE4FEF9E1EB60DA5EF9928"
-            {
-            "SourcePath" = "8:..\\..\\ANTzPlus\\ANTzTemplate\\cheatsheet_2015-11-17.txt"
-            "TargetName" = "8:cheatsheet_2015-11-17.txt"
+            "SourcePath" = "8:..\\..\\ANTzPlus\\ANTzTemplate\\antz_release_2015-12-15.txt"
+            "TargetName" = "8:antz_release_2015-12-15.txt"
             "Tag" = "8:"
             "Folder" = "8:_3E59963508D34F76B5732E64BBFB296A"
             "Condition" = "8:"
@@ -2726,6 +2692,26 @@
             "TargetName" = "8:cheatsheet_2015-02-16.txt"
             "Tag" = "8:"
             "Folder" = "8:_89702FDDAF7146B08C00DB9BA96A0007"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_3BE1CBDE2EC34AD39C28AAADA65238A8"
+            {
+            "SourcePath" = "8:..\\..\\ANTzPlus\\ANTzTemplate\\README.md"
+            "TargetName" = "8:README.md"
+            "Tag" = "8:"
+            "Folder" = "8:_3E59963508D34F76B5732E64BBFB296A"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -3420,6 +3406,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_66F00305777F43AAB63A9289072569D3"
+            {
+            "SourcePath" = "8:..\\..\\ANTzPlus\\ANTzTemplate\\libcurl.dll"
+            "TargetName" = "8:libcurl.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_3E59963508D34F76B5732E64BBFB296A"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_68438344AA5B43B9BA0D1B59485FEB60"
             {
             "SourcePath" = "8:..\\..\\Misc\\InstallerFiles\\GlyphTemplates\\Sacred Circles 4.sgt"
@@ -3600,26 +3606,6 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_6C4259515F464353ABA78015C401D371"
-            {
-            "SourcePath" = "8:..\\..\\DataEngine\\Java DataEngine\\database-drivers\\sqlite4java.jar"
-            "TargetName" = "8:sqlite4java.jar"
-            "Tag" = "8:"
-            "Folder" = "8:_10B6F7AAC886461BA7F14C41F07434A9"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_6C823CA604F44D698948EA48F03EB176"
             {
             "SourcePath" = "8:..\\..\\3rdParty\\bin\\Win32\\Release\\qt_plugins\\imageformats\\qtga.dll"
@@ -3706,26 +3692,6 @@
             "TargetName" = "8:t2k.dll"
             "Tag" = "8:"
             "Folder" = "8:_36F1FCC38D7848FBA6A0FE803EBD0AFB"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_7087570FA1C7453494F011EC097C6592"
-            {
-            "SourcePath" = "8:..\\..\\DataEngine\\Java DataEngine\\database-drivers\\sqlite4java-win32-x64.dll"
-            "TargetName" = "8:sqlite4java-win32-x64.dll"
-            "Tag" = "8:"
-            "Folder" = "8:_10B6F7AAC886461BA7F14C41F07434A9"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -3860,12 +3826,12 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_7A5405B9F1D2429FA292FFFC0909E8E6"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_787C3EFC39474241AD45E4D45C5BDADA"
             {
-            "SourcePath" = "8:..\\..\\ANTzPlus\\ANTzTemplate\\nourl.html"
-            "TargetName" = "8:nourl.html"
+            "SourcePath" = "8:..\\..\\DataEngine\\Java DataEngine\\database-drivers\\postgresql-9.4.1207.jre7.jar"
+            "TargetName" = "8:postgresql-9.4.1207.jre7.jar"
             "Tag" = "8:"
-            "Folder" = "8:_3E59963508D34F76B5732E64BBFB296A"
+            "Folder" = "8:_10B6F7AAC886461BA7F14C41F07434A9"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -3946,6 +3912,26 @@
             "TargetName" = "8:qminimal.dll"
             "Tag" = "8:"
             "Folder" = "8:_0564933CE52B4499872F711B0DCBB7FB"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_80934089A05B45E08761D408C5C175CF"
+            {
+            "SourcePath" = "8:..\\..\\DataEngine\\Java DataEngine\\database-drivers\\sqlite4java-win32-x86.dll"
+            "TargetName" = "8:sqlite4java-win32-x86.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_10B6F7AAC886461BA7F14C41F07434A9"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -4140,12 +4126,12 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_8A8A87D2513A4CD1BDB9AE67277C70FB"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_8BCBB0B5D2BD486AB808586BDC77CC70"
             {
-            "SourcePath" = "8:..\\..\\ANTzPlus\\ANTzTemplate\\glut32.dll"
-            "TargetName" = "8:glut32.dll"
+            "SourcePath" = "8:..\\..\\DataEngine\\jdk1.7.0_79\\jre\\bin\\libxslt.dll"
+            "TargetName" = "8:libxslt.dll"
             "Tag" = "8:"
-            "Folder" = "8:_3E59963508D34F76B5732E64BBFB296A"
+            "Folder" = "8:_36F1FCC38D7848FBA6A0FE803EBD0AFB"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -4160,12 +4146,12 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_8BCBB0B5D2BD486AB808586BDC77CC70"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_8BD84380631D48C08A304438D642F718"
             {
-            "SourcePath" = "8:..\\..\\DataEngine\\jdk1.7.0_79\\jre\\bin\\libxslt.dll"
-            "TargetName" = "8:libxslt.dll"
+            "SourcePath" = "8:..\\..\\ANTzPlus\\ANTzTemplate\\LICENSE.txt"
+            "TargetName" = "8:LICENSE.txt"
             "Tag" = "8:"
-            "Folder" = "8:_36F1FCC38D7848FBA6A0FE803EBD0AFB"
+            "Folder" = "8:_3E59963508D34F76B5732E64BBFB296A"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -4520,26 +4506,6 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_9F13BEF291634C2B9403ADFCFDC732B6"
-            {
-            "SourcePath" = "8:..\\..\\ANTzPlus\\ANTzTemplate\\freeglut.dll"
-            "TargetName" = "8:freeglut.dll"
-            "Tag" = "8:"
-            "Folder" = "8:_3E59963508D34F76B5732E64BBFB296A"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_A00606462B544CFEB3BA4EB6DBB1C91F"
             {
             "SourcePath" = "8:..\\..\\ANTzPlus\\ANTzzSpaceTemplate\\libmysql.dll"
@@ -4686,26 +4652,6 @@
             "TargetName" = "8:Qt5OpenGL.dll"
             "Tag" = "8:"
             "Folder" = "8:_0FD992B69CC74D489682A631FA99B364"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_AA5B70A3A1AE48F7AE8021580B8FE8D4"
-            {
-            "SourcePath" = "8:..\\..\\DataEngine\\Java DataEngine\\database-drivers\\postgresql-9.4.1207.jre7.jar"
-            "TargetName" = "8:postgresql-9.4.1207.jre7.jar"
-            "Tag" = "8:"
-            "Folder" = "8:_10B6F7AAC886461BA7F14C41F07434A9"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -4916,26 +4862,6 @@
             "SharedLegacy" = "11:FALSE"
             "PackageAs" = "3:1"
             "Register" = "3:4"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_B4D64BE40EC5453186EAE6F28B391537"
-            {
-            "SourcePath" = "8:..\\..\\DataEngine\\Java DataEngine\\database-drivers\\sqlite4java-win32-x86.dll"
-            "TargetName" = "8:sqlite4java-win32-x86.dll"
-            "Tag" = "8:"
-            "Folder" = "8:_10B6F7AAC886461BA7F14C41F07434A9"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
@@ -5180,6 +5106,46 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_C4227E06B6584F879B3A93DDAFB629E7"
+            {
+            "SourcePath" = "8:..\\..\\ANTzPlus\\ANTzTemplate\\Glyph_Viewer_(Portable)_win.exe"
+            "TargetName" = "8:Glyph_Viewer_(Portable)_win.exe"
+            "Tag" = "8:"
+            "Folder" = "8:_3E59963508D34F76B5732E64BBFB296A"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_C57DA5F51FD845089668017B8413F63C"
+            {
+            "SourcePath" = "8:..\\..\\ANTzPlus\\ANTzTemplate\\cheatsheet_2015-11-17.txt"
+            "TargetName" = "8:cheatsheet_2015-11-17.txt"
+            "Tag" = "8:"
+            "Folder" = "8:_3E59963508D34F76B5732E64BBFB296A"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_C5A5565D16524E158C281AF32DE75AC3"
             {
             "SourcePath" = "8:..\\..\\Misc\\InstallerFiles\\SampleData\\Quickstart_Template.png"
@@ -5400,6 +5366,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_CFEB4F809B0F42ACBFB5A186C6A24A62"
+            {
+            "SourcePath" = "8:..\\..\\DataEngine\\Java DataEngine\\database-drivers\\sqlite-jdbc-3.8.11.2.jar"
+            "TargetName" = "8:sqlite-jdbc-3.8.11.2.jar"
+            "Tag" = "8:"
+            "Folder" = "8:_10B6F7AAC886461BA7F14C41F07434A9"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_D0638F9FB83F41BBA8C9809C5FABE252"
             {
             "SourcePath" = "8:..\\..\\DataEngine\\jdk1.7.0_79\\jre\\lib\\ext\\sunmscapi.jar"
@@ -5480,6 +5466,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_D561034289D741F79EFDE6E234DCB62C"
+            {
+            "SourcePath" = "8:..\\..\\ANTzPlus\\ANTzTemplate\\libmysql.dll"
+            "TargetName" = "8:libmysql.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_3E59963508D34F76B5732E64BBFB296A"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_D7F502524D2945E8B924A63988DAA54F"
             {
             "SourcePath" = "8:..\\..\\DataEngine\\jdk1.7.0_79\\jre\\lib\\security\\javaws.policy"
@@ -5526,6 +5532,26 @@
             "TargetName" = "8:qtaccessiblequick.dll"
             "Tag" = "8:"
             "Folder" = "8:_79E5051EDB1A4D7997DDB3534FE2FB16"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_D9AD6FE5285542C1B3CAFD77B044DBE6"
+            {
+            "SourcePath" = "8:..\\..\\ANTzPlus\\ANTzTemplate\\glut32.dll"
+            "TargetName" = "8:glut32.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_3E59963508D34F76B5732E64BBFB296A"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -5680,6 +5706,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_E4D5D89FB558489DB586DA5A8BA956DE"
+            {
+            "SourcePath" = "8:..\\..\\DataEngine\\Java DataEngine\\database-drivers\\mysql-connector-java-5.1.38-bin.jar"
+            "TargetName" = "8:mysql-connector-java-5.1.38-bin.jar"
+            "Tag" = "8:"
+            "Folder" = "8:_10B6F7AAC886461BA7F14C41F07434A9"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_E59D2592367B47CA8D5511EDD100710C"
             {
             "SourcePath" = "8:..\\..\\DataEngine\\jdk1.7.0_79\\jre\\bin\\awt.dll"
@@ -5800,12 +5846,12 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_E91BC316104849F5B855ECDC80BDFFAD"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_E8C379BEC06A41F99E95682215F9F85B"
             {
-            "SourcePath" = "8:..\\..\\DataEngine\\Java DataEngine\\database-drivers\\vertica_5.1.4_jdk_5.jar"
-            "TargetName" = "8:vertica_5.1.4_jdk_5.jar"
+            "SourcePath" = "8:..\\..\\ANTzPlus\\ANTzTemplate\\freeglut.dll"
+            "TargetName" = "8:freeglut.dll"
             "Tag" = "8:"
-            "Folder" = "8:_10B6F7AAC886461BA7F14C41F07434A9"
+            "Folder" = "8:_3E59963508D34F76B5732E64BBFB296A"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -5960,46 +6006,6 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_F4AEFF8E905347B29977ABF8E91AFD98"
-            {
-            "SourcePath" = "8:..\\..\\DataEngine\\Java DataEngine\\database-drivers\\mysql-connector-java-5.1.38-bin.jar"
-            "TargetName" = "8:mysql-connector-java-5.1.38-bin.jar"
-            "Tag" = "8:"
-            "Folder" = "8:_10B6F7AAC886461BA7F14C41F07434A9"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_F61F8FF3D815421D9B73FF14BDA7F2A9"
-            {
-            "SourcePath" = "8:..\\..\\ANTzPlus\\ANTzTemplate\\antz_release_2015-12-01.txt"
-            "TargetName" = "8:antz_release_2015-12-01.txt"
-            "Tag" = "8:"
-            "Folder" = "8:_3E59963508D34F76B5732E64BBFB296A"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_F622856953D54240A1A572C3CE34CB47"
             {
             "SourcePath" = "8:..\\..\\DataEngine\\jdk1.7.0_79\\jre\\lib\\jce.jar"
@@ -6046,6 +6052,26 @@
             "TargetName" = "8:jfxmedia.dll"
             "Tag" = "8:"
             "Folder" = "8:_36F1FCC38D7848FBA6A0FE803EBD0AFB"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_F8A705F47353485B93F1646235B894EB"
+            {
+            "SourcePath" = "8:..\\..\\DataEngine\\Java DataEngine\\database-drivers\\vertica-jdbc-7.2.1-0.jar"
+            "TargetName" = "8:vertica-jdbc-7.2.1-0.jar"
+            "Tag" = "8:"
+            "Folder" = "8:_10B6F7AAC886461BA7F14C41F07434A9"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -6844,7 +6870,7 @@
         "Module"
         {
         "ModuleSignature" = "8:MergeModule.E7BC5B0DA8E84115B456FD393FF63EDE"
-        "Version" = "8:0.7.22.0"
+        "Version" = "8:0.7.23.0"
         "Title" = "8:SGXSetupMergeModule"
         "Subject" = "8:"
         "Author" = "8:SynGlyphX"

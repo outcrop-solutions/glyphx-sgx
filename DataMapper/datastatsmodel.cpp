@@ -2,17 +2,26 @@
 #include <QtSql/QSqlRecord>
 #include <QtSql/QSqlField>
 #include <QtCore/QMimeData>
-#include "sourcedatamanager.h"
 #include "inputfieldmimedata.h"
 #include <boost/uuid/uuid_io.hpp>
-#include "dataenginestatement.h"
 
-DataStatsModel::DataStatsModel(const boost::uuids::uuid& id, int place, SynGlyphX::FileDatasource::SourceType type, QString tablename, DataEngine::DataEngineConnection *dec, QObject *parent)
+DataStatsModel::DataStatsModel(const boost::uuids::uuid& id, QString tablename, DataTransformModel* model, QObject *parent)
 	: QAbstractTableModel(parent),
-	m_id(id),
-	m_tableName(tablename)
+	m_table(id, tablename.toStdWString()),
+	m_model(model)
 {
-	GenerateStats(place, type, dec);
+	const DataTransformModel::TableStats& tableStats = m_model->GetTableStatsMap().at(m_table);
+	for (const auto& fieldStats : tableStats) {
+
+		if (fieldStats.at(1) == "real") {
+
+			m_fieldTypes.append(QVariant::Type::Double);
+		}
+		else {
+
+			m_fieldTypes.append(QVariant::Type::String);
+		}
+	}
 }
 
 DataStatsModel::~DataStatsModel()
@@ -20,48 +29,9 @@ DataStatsModel::~DataStatsModel()
 
 }
 
-//JDBC GENERATE STATS
-void DataStatsModel::GenerateStats(int place, SynGlyphX::FileDatasource::SourceType sourceType, DataEngine::DataEngineConnection *dec) {
-
-	DataEngine::DataEngineStatement des;
-	des.prepare(dec->getEnv(), dec->getJcls(), sourceType); //Add datasource type as a third argument
-
-	std::vector<std::wstring> numericCols;
-	des.getFieldsForTable(place);
-
-	while (des.hasNext()){
-		QString field = des.getField();
-		QString type = des.getType();
-		m_fieldNames.append(field);
-
-		if (type == "real"){
-			m_fieldTypes.append(QVariant::Type::Double);
-			numericCols.push_back(field.toStdWString());
-		}
-		else{
-			m_fieldTypes.append(QVariant(type).type());
-		}
-
-		QStringList fieldStats;
-		fieldStats.append(type);
-		fieldStats.append(des.getMin());
-		fieldStats.append(des.getMax());
-		fieldStats.append(des.getAverage());
-		fieldStats.append(des.getCount());
-		fieldStats.append(des.getDistinct());
-		m_stats.append(fieldStats);
-	}
-	dec->addTableNumericFields(m_id, numericCols);
-}
-//END JDBC
-
-int DataStatsModel::getNumericFieldCount(){
-	return numericFieldCount;
-}
-
 int DataStatsModel::rowCount(const QModelIndex& parent) const {
 
-	return m_fieldNames.length();
+	return m_model->GetTableStatsMap().at(m_table).size();
 }
 
 int DataStatsModel::columnCount(const QModelIndex& parent) const {
@@ -73,11 +43,7 @@ QVariant DataStatsModel::data(const QModelIndex& index, int role) const {
 
 	if ((role == Qt::DisplayRole) && (index.isValid())) {
 		
-		if (index.column() == 0) {
-			return m_fieldNames[index.row()];
-		} else {
-			return m_stats.at(index.row()).at(index.column()-1);
-		}
+		return m_model->GetTableStatsMap().at(m_table).at(index.row()).at(index.column());
 	}
 
 	return QVariant();
@@ -130,7 +96,7 @@ QMimeData* DataStatsModel::mimeData(const QModelIndexList& indexes) const {
 		return nullptr;
 	}
 	
-	QString fieldName = m_fieldNames[indexes.front().row()];
+	QString fieldName = m_model->GetTableStatsMap().at(m_table).at(indexes.front().row()).at(0);
 
 	SynGlyphX::InputField::Type type = SynGlyphX::InputField::Type::Null;
 	QVariant::Type fieldType = m_fieldTypes[indexes.front().row()];
@@ -147,7 +113,7 @@ QMimeData* DataStatsModel::mimeData(const QModelIndexList& indexes) const {
 		type = SynGlyphX::InputField::Type::Date;
 	}
 	
-	SynGlyphX::InputField inputfield(m_id, m_tableName.toStdWString(), fieldName.toStdWString(), type);
+	SynGlyphX::InputField inputfield(m_table.GetDatasourceID(), m_table.GetTable(), fieldName.toStdWString(), type);
 	InputFieldMimeData* mimeData = new InputFieldMimeData(inputfield);
 	
 	return mimeData;
