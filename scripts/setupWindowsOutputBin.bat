@@ -2,13 +2,15 @@
 
 rem This script is for copying 3rdParty\bin and other files to the directory where everything is built
 
-SET basedir=..\..\bin
+SET basedir=%1
 SET antztemplate=ANTzTemplate
 SET antzzspacetemplate=ANTzzSpaceTemplate
 SET antzmactemplate=ANTzMacTemplate
 SET defaultbaseimages=DefaultBaseImages
 SET glyphtemplates=GlyphTemplates
 SET logo=logo.png
+
+if "%basedir%." == "." SET basedir=..\..\bin
 
 if not exist %basedir% (mkdir %basedir%)
 
