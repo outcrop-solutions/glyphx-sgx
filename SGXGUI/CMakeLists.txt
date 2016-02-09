@@ -1,7 +1,6 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 3.1.3)
 
 INCLUDE_DIRECTORIES(BEFORE  ${Boost_INCLUDE_DIRS}
-							${QT_INCLUDE_DIR}
 							../../Core/SGXUtility)
 
 #Enable licensing if it is available						
@@ -37,11 +36,18 @@ SET(SRC_ALL 	application.cpp
 				stretchsurroundedwidget.cpp
 				tablesubsetproxymodel.cpp
 				treeview.cpp
+				verticaltabordertableview.cpp
 				verticalscrollarea.cpp
 				xyzwidget.cpp)
+				
+SET(RESOURCES_SRC sgxgui.qrc)
 
-ADD_LIBRARY(SGXGUI SHARED ${SRC_ALL})
-TARGET_LINK_LIBRARIES(SGXGUI ${Boost_LIBRARIES} ${QT_LIBRARIES} SGXUtility)
+ADD_LIBRARY(SGXGUI SHARED ${SRC_ALL} ${RESOURCES_SRC})
+TARGET_LINK_LIBRARIES(SGXGUI ${Boost_LIBRARIES} 
+							 SGXUtility
+							 Qt5::Core
+							 Qt5::Gui
+							 Qt5::Widgets)
 
 #Enable licensing if it is available
 IF (${LICENSING_FOUND})

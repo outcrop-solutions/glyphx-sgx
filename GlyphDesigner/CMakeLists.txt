@@ -1,7 +1,6 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 3.1.3)
 
 INCLUDE_DIRECTORIES(BEFORE  ${Boost_INCLUDE_DIRS}
-							${QT_INCLUDE_DIR}
 							${STLPLUS_INCLUDE_DIR}
 							../../ANTzPlus/ANTzCore
 							../../ANTzPlus/ANTzBridge
@@ -25,8 +24,28 @@ SET(SRC_ALL 	glyphdesignerwindow.cpp
 				main.cpp
 				modalglyphwidget.cpp)
 
-ADD_EXECUTABLE(GlyphDesigner ${SRC_ALL})
-TARGET_LINK_LIBRARIES(GlyphDesigner ${Boost_LIBRARIES} ${QT_LIBRARIES} ANTzCore ANTzBridge ANTzSingleGlyphGUI SGXUtility SGXFoundation SGXDataMapping SGXImage SGXGUI SGXDataTransform SGXGlyphGUI)
+				
+#SET(RESOURCES_SRC glyphdesignerwindow.qrc)
+IF (${WIN32})
+#	LIST(APPEND ${RESOURCES_SRC} GlyphDesigner.rc)
+	SET(RESOURCES_SRC GlyphDesigner.rc)
+ENDIF()
+
+ADD_EXECUTABLE(GlyphDesigner ${GUI_TYPE} ${SRC_ALL} ${RESOURCES_SRC})
+TARGET_LINK_LIBRARIES(GlyphDesigner ${Boost_LIBRARIES} 
+									Qt5::Core 
+									Qt5::Gui 
+									Qt5::OpenGL 
+									Qt5::Widgets 
+									ANTzCore 
+									ANTzBridge 
+									ANTzSingleGlyphGUI 
+									SGXUtility 
+									SGXFoundation 
+									SGXDataMapping 
+									SGXImage 
+									SGXGUI 
+									SGXGlyphGUI)
 
 IF (${BREAKPAD_FOUND})
 	TARGET_LINK_LIBRARIES(GlyphDesigner ${BREAKPAD_LIBRARIES})
