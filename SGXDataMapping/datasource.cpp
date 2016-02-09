@@ -167,7 +167,7 @@ namespace SynGlyphX {
 		TableNames tableNames;
 		for (auto& table : m_tables) {
 
-			tableNames.insert(table.first);
+			tableNames.push_back(table.first);
 		}
 
 		return tableNames;

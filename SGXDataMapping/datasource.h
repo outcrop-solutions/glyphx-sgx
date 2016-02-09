@@ -32,7 +32,7 @@ namespace SynGlyphX {
 	public:
 		typedef boost::property_tree::wptree PropertyTree;
 		typedef std::unordered_map<std::wstring, DatasourceTable> Tables;
-		typedef std::unordered_set<std::wstring> TableNames;
+		typedef std::vector<std::wstring> TableNames;
 
 		static const std::wstring SingleTableName;
 

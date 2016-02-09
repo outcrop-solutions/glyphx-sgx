@@ -647,7 +647,7 @@ namespace SynGlyphX {
 			if (cacheTable.first.startsWith(datasourceId)) {
 
 				const QString& tableName = cacheTable.first;
-				tablesInCache.insert(tableName.mid(tableName.lastIndexOf(':') + 1).toStdWString());
+				tablesInCache.push_back(tableName.mid(tableName.lastIndexOf(':') + 1).toStdWString());
 			}
 		}
 

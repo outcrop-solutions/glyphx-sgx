@@ -216,7 +216,7 @@ namespace SynGlyphX {
 		for (auto glyphTree : m_glyphTrees) {
 
 			const InputField& inputField = glyphTree.second->GetInputFields().begin()->second;
-			datasourcesAndTablesInUse[inputField.GetDatasourceID()].insert(inputField.GetTable());
+			datasourcesAndTablesInUse[inputField.GetDatasourceID()].push_back(inputField.GetTable());
 		}
 
 		for (auto datasourceTables : datasourcesAndTablesInUse) {

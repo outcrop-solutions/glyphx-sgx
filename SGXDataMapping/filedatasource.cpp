@@ -18,7 +18,7 @@ namespace SynGlyphX {
 		if (!CanDatasourceHaveMultipleTables()) {
 		
 			Datasource::TableNames tables;
-			tables.insert(SingleTableName);
+			tables.push_back(SingleTableName);
 			AddTables(tables);
 		}
 
@@ -35,7 +35,7 @@ namespace SynGlyphX {
 
 			m_tables.clear();
 			Datasource::TableNames tables;
-			tables.insert(SingleTableName);
+			tables.push_back(SingleTableName);
 			AddTables(tables);
 		}
 
