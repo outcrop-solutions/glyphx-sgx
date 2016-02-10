@@ -22,7 +22,7 @@
 
 #ifdef WIN32
 
-#ifdef ANTzGUI_LIB
+#ifdef ANTzGUI_EXPORTS
 # define ANTZGUI_EXPORT Q_DECL_EXPORT
 #else
 # define ANTZGUI_EXPORT Q_DECL_IMPORT

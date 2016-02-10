@@ -25,6 +25,16 @@ namespace SynGlyphXANTz {
 
 	ANTzForestWidget::ANTzForestWidget(const QGLFormat& format, GlyphForestModel* model, SynGlyphX::ItemFocusSelectionModel* selectionModel, QWidget *parent)
 		: QGLWidget(format, parent),
+#ifdef USE_ZSPACE
+		m_zSpaceOptions(),
+		m_zSpaceContext(nullptr),
+		m_zSpaceDisplay(nullptr),
+		m_zSpaceBuffer(nullptr),
+		m_zSpaceViewport(nullptr),
+		m_zSpaceFrustum(nullptr),
+		m_zSpaceStylus(nullptr),
+		m_topLevelWindow(nullptr),
+#endif
 		m_model(model),
 		m_selectionModel(selectionModel),
 		m_antzData(model->GetANTzData()),
@@ -36,17 +46,7 @@ namespace SynGlyphXANTz {
 		m_drawHUD(true),
 		m_logoTextureID(0),
 		m_showAnimation(true),
-		m_showTagsOfSelectedObjects(false),
-#ifdef USE_ZSPACE
-		m_zSpaceOptions(),
-		m_zSpaceContext(nullptr),
-		m_zSpaceDisplay(nullptr),
-		m_zSpaceBuffer(nullptr),
-		m_zSpaceViewport(nullptr),
-		m_zSpaceFrustum(nullptr),
-		m_zSpaceStylus(nullptr),
-		m_topLevelWindow(nullptr)
-#endif
+		m_showTagsOfSelectedObjects(false)
 	{
 		setAutoBufferSwap(false);
 		setFocusPolicy(Qt::StrongFocus);
@@ -1127,6 +1127,18 @@ namespace SynGlyphXANTz {
 		QGLWidget::moveEvent(event);
 	}
 
+	bool ANTzForestWidget::eventFilter(QObject *object, QEvent *event) {
+
+		if ((object == m_topLevelWindow) && (event->type() == QEvent::Move)) {
+
+#ifdef USE_ZSPACE
+			SetZSpacePosition();
+#endif
+		}
+
+		return false;
+	}
+
 #ifdef USE_ZSPACE
 	void ANTzForestWidget::SetZSpacePosition() {
 
@@ -1148,16 +1160,6 @@ namespace SynGlyphXANTz {
 
 			//ZSError error = zsUpdate(m_zSpaceContext);
 		}
-	}
-
-	bool ANTzForestWidget::eventFilter(QObject *object, QEvent *event) {
-
-		if ((object == m_topLevelWindow) && (event->type() == QEvent::Move)) {
-
-			SetZSpacePosition();
-		}
-
-		return false;
 	}
 
 	bool ANTzForestWidget::IsInZSpaceStereo() const {

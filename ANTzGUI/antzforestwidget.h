@@ -47,8 +47,10 @@ namespace SynGlyphXANTz {
 
 		bool eventFilter(QObject *object, QEvent *event);
 
+#ifdef USE_ZSPACE
 		void SetZSpaceOptions(const SynGlyphX::ZSpaceOptions& options);
 		const SynGlyphX::ZSpaceOptions& GetZSpaceOptions() const;
+#endif
 
 		bool GetHideUnselectedGlyphTrees() const;
 
@@ -85,10 +87,12 @@ namespace SynGlyphXANTz {
 		void OnFocusChanged(const QModelIndexList& indexes);
 		void OnModelReset();
 
+#ifdef USE_ZSPACE
 		void ZSpaceButtonPressHandler(ZSHandle targetHandle, const ZSTrackerEventData* eventData);
 		void ZSpaceButtonReleaseHandler(ZSHandle targetHandle, const ZSTrackerEventData* eventData);
 		void ZSpaceStylusMoveHandler(ZSHandle targetHandle, const ZSTrackerEventData* eventData);
 		void ZSpaceStylusTapHandler(ZSHandle targetHandle, const ZSTrackerEventData* eventData);
+#endif
 
 	private:
 		enum Eye {
@@ -142,7 +146,9 @@ namespace SynGlyphXANTz {
 		bool m_drawHUD;
 		bool m_hideUnselectedGlyphTrees;
 
+#ifdef USE_ZSPACE
 		SynGlyphX::ZSpaceOptions m_zSpaceOptions;
+#endif
 
 		unsigned int m_worldTextureID;
 		std::vector<unsigned int> m_textureIDs;
