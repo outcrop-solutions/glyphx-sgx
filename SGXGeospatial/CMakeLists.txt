@@ -8,3 +8,5 @@ SET(SRC_ALL 	geographicboundingbox.cpp
 
 ADD_LIBRARY(SGXGeospatial SHARED ${SRC_ALL})
 TARGET_LINK_LIBRARIES(SGXGeospatial ${Boost_LIBRARIES})
+
+Set_Windows_Properties(SGXGeospatial)

@@ -33,3 +33,5 @@ SET(SRC_ALL 	datamappingdefaults.cpp
 
 ADD_LIBRARY(SGXDataMapping SHARED ${SRC_ALL})
 TARGET_LINK_LIBRARIES(SGXDataMapping ${Boost_LIBRARIES} SGXImage SGXUtility SGXFoundation)
+
+Set_Windows_Properties(SGXDataMapping)

@@ -20,10 +20,15 @@
 
 #include <QtCore/qglobal.h>
 
-#ifdef SGXDATATRANSFORM_LIB
+#ifdef WIN32
+#ifdef SGXDataTransform_EXPORTS
 # define SGXDATATRANSFORM_EXPORT Q_DECL_EXPORT
 #else
 # define SGXDATATRANSFORM_EXPORT Q_DECL_IMPORT
+#endif
+
+#else
+# define SGXDATATRANSFORM_EXPORT
 #endif
 
 #endif // SGXDATATRANSFORM_GLOBAL_H

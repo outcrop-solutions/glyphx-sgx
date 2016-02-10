@@ -12,3 +12,5 @@ SET(SRC_ALL 	baseimage.cpp
 
 ADD_LIBRARY(SGXImage SHARED ${SRC_ALL})
 TARGET_LINK_LIBRARIES(SGXImage ${Boost_LIBRARIES} SGXUtility SGXFoundation)
+
+Set_Windows_Properties(SGXImage)

@@ -13,3 +13,5 @@ SET(SRC_ALL 	csvfilehandler.cpp
 
 ADD_LIBRARY(SGXUtility SHARED ${SRC_ALL})
 TARGET_LINK_LIBRARIES(SGXUtility ${Boost_LIBRARIES})
+
+Set_Windows_Properties(SGXUtility)

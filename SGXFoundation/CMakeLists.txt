@@ -13,3 +13,5 @@ SET(SRC_ALL 	glyph.cpp
 
 ADD_LIBRARY(SGXFoundation SHARED ${SRC_ALL})
 TARGET_LINK_LIBRARIES(SGXFoundation ${Boost_LIBRARIES} SGXUtility)
+
+Set_Windows_Properties(SGXFoundation)
