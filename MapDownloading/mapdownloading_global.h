@@ -20,10 +20,15 @@
 
 #include <QtCore/qglobal.h>
 
-#ifdef MAPDOWNLOADING_LIB
+#ifdef WIN32
+#ifdef MapDownloading_EXPORTS
 # define MAPDOWNLOADING_EXPORT Q_DECL_EXPORT
 #else
 # define MAPDOWNLOADING_EXPORT Q_DECL_IMPORT
+#endif
+
+#else
+# define MAPDOWNLOADING_EXPORT
 #endif
 
 #endif // MAPDOWNLOADING_GLOBAL_H

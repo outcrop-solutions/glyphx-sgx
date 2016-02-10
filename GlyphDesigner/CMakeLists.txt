@@ -8,7 +8,6 @@ INCLUDE_DIRECTORIES(BEFORE  ${Boost_INCLUDE_DIRS}
 							../../Core/SGXUtility
 							../../Core/SGXFoundation
 							../../Core/SGXDataMapping
-							../../Core/SGXDataTransform
 							../../Core/SGXImage
 							../../GUI/SGXGUI
 							../../GUI/SGXGlyphGUI)
