@@ -100,7 +100,7 @@ namespace DataEngine
 		}
 	}
 
-	bool DataEngineConnection::hasJVM(){
+	bool DataEngineConnection::hasJVM() const {
 		return classFound;
 	}
 
@@ -139,7 +139,7 @@ namespace DataEngine
 			}
 		}
 	}
-
+	/*
 	std::vector<std::string> DataEngineConnection::getTableNames(){
 
 		std::vector<std::string> str;
@@ -153,41 +153,47 @@ namespace DataEngine
 		}
 
 		return str;
-	}
+	}*/
 
-	JNIEnv* DataEngineConnection::getEnv(){
+	JNIEnv* DataEngineConnection::getEnv() const {
+		
 		return jniEnv;
 	}
 
-	jclass DataEngineConnection::getJcls(){
+	jclass DataEngineConnection::getJcls() const {
+		
 		return jcls;
 	}
 
-	void DataEngineConnection::destroyJVM(){
+	void DataEngineConnection::destroyJVM() {
 
 		javaVM->DestroyJavaVM();
 	}
-
+	/*
 	void DataEngineConnection::addTableNumericFields(boost::uuids::uuid id, std::vector<std::wstring> tableNames){
 		tableNumericFields[id] = tableNames;
 	}
 
-	std::vector<std::wstring> DataEngineConnection::getTableNumericFields(boost::uuids::uuid id){
-		return tableNumericFields[id];
+	const std::vector<std::wstring>& DataEngineConnection::getTableNumericFields(boost::uuids::uuid id) const {
+		
+		return tableNumericFields.at(id);
 	}
 
-	std::map<boost::uuids::uuid, std::vector<std::wstring>> DataEngineConnection::getNumericFieldsTable(){
+	const std::map<boost::uuids::uuid, std::vector<std::wstring>>& DataEngineConnection::getNumericFieldsTable() const {
+		
 		return tableNumericFields;
 	}
 
 	void DataEngineConnection::addTableName(boost::uuids::uuid id, std::wstring name){
+		
 		tableNames[id] = name;
 	}
 
-	std::wstring DataEngineConnection::getTableName(boost::uuids::uuid id){
-		return tableNames[id];
+	const std::wstring& DataEngineConnection::getTableName(boost::uuids::uuid id) const {
+		
+		return tableNames.at(id);
 	}
-
+	*/
 	//JDBC ACCESSOR FUNCTIONS
 	QStringList DataEngineConnection::connectToServer(QString db_url, QString user, QString pass, QString db_type){
 
@@ -317,7 +323,7 @@ namespace DataEngine
 		return columnNames[tablename];
 	}
 
-	std::vector<DataEngineConnection::ForeignKey> DataEngineConnection::getForeignKeys(QString tablename){
+	const std::vector<DataEngineConnection::ForeignKey>& DataEngineConnection::getForeignKeys(QString tablename) {
 
 		if (foreignKeysByTable.find(tablename) == foreignKeysByTable.end()) {
 			std::vector<ForeignKey> fkeys;
@@ -330,7 +336,7 @@ namespace DataEngine
 		return foreignKeysByTable[tablename];
 	}
 
-	std::vector<QStringList> DataEngineConnection::getSampleData(QString tablename){
+	const std::vector<QStringList>& DataEngineConnection::getSampleData(QString tablename) {
 
 		if (sampleDataByTable.find(tablename) == sampleDataByTable.end()) {
 			std::vector<QStringList> rows;
