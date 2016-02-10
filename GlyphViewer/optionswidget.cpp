@@ -13,9 +13,11 @@ OptionsWidget::OptionsWidget(const GlyphViewerOptions& options, bool enableCache
 	CreateCacheTab(options, enableCacheOptions);
 	Create3DTab(options);
 
+#ifdef USE_ZSPACE
 	m_zSpaceOptionsWidget = new SynGlyphX::ZSpaceOptionsWidget(this);
 	m_zSpaceOptionsWidget->SetOptions(options.GetZSpaceOptions());
 	addTab(m_zSpaceOptionsWidget, tr("zSpace"));
+#endif
 
 	CreateUITab(options);
 }
@@ -111,7 +113,11 @@ GlyphViewerOptions OptionsWidget::GetOptions() const {
 	GlyphViewerOptions options;
 	options.SetCacheDirectory(m_cacheDirectoryWidget->GetText());
 	options.SetHideUnselectedGlyphTrees(m_hideSelectedGlyphsCheckbox->isChecked());
+
+#ifdef USE_ZSPACE
 	options.SetZSpaceOptions(m_zSpaceOptionsWidget->GetOptions());
+#endif
+
 	options.SetShowMessageWhenImagesDidNotDownload(m_showDownloadedImageErrorMessages->isChecked());
 
 	return options;

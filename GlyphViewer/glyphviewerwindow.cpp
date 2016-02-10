@@ -660,10 +660,12 @@ void GlyphViewerWindow::ChangeOptions(const GlyphViewerOptions& oldOptions, cons
 			m_linkedWidgetsManager->SetFilterView(newOptions.GetHideUnselectedGlyphTrees());
 		}
 
+#ifdef USE_ZSPACE
 		if (oldOptions.GetZSpaceOptions() != newOptions.GetZSpaceOptions()) {
 
 			m_antzWidget->SetZSpaceOptions(newOptions.GetZSpaceOptions());
 		}
+#endif
 
 		if (oldOptions.GetShowMessageWhenImagesDidNotDownload() != newOptions.GetShowMessageWhenImagesDidNotDownload()) {
 
@@ -699,6 +701,7 @@ void GlyphViewerWindow::ReadSettings() {
 	options.SetShowMessageWhenImagesDidNotDownload(settings.value("showFailedToDownloadImageMessage", true).toBool());
 	settings.endGroup();
 
+#ifdef USE_ZSPACE
 	settings.beginGroup("zSpace");
 	SynGlyphX::ZSpaceOptions zSpaceOptions;
 	zSpaceOptions.SetStylusColor(settings.value("stylusColor", QColor(Qt::green)).value<QColor>());
@@ -706,6 +709,7 @@ void GlyphViewerWindow::ReadSettings() {
 	settings.endGroup();
 
 	options.SetZSpaceOptions(zSpaceOptions);
+#endif
 
 	ChangeOptions(CollectOptions(), options);
 }
@@ -736,10 +740,12 @@ void GlyphViewerWindow::WriteSettings() {
 	settings.setValue("showFailedToDownloadImageMessage", options.GetShowMessageWhenImagesDidNotDownload());
 	settings.endGroup();
 
+#ifdef USE_ZSPACE
 	settings.beginGroup("zSpace");
 	settings.setValue("stylusColor", options.GetZSpaceOptions().GetStylusColor());
 	settings.setValue("stylusLength", options.GetZSpaceOptions().GetStylusLength());
 	settings.endGroup();
+#endif
 }
 
 GlyphViewerOptions GlyphViewerWindow::CollectOptions() {
@@ -748,7 +754,11 @@ GlyphViewerOptions GlyphViewerWindow::CollectOptions() {
 
 	options.SetCacheDirectory(QString::fromStdWString(m_cacheManager.GetBaseCacheDirectory()));
 	options.SetHideUnselectedGlyphTrees(m_linkedWidgetsManager->GetFilterView());
+
+#ifdef USE_ZSPACE
 	options.SetZSpaceOptions(m_antzWidget->GetZSpaceOptions());
+#endif
+
 	options.SetShowMessageWhenImagesDidNotDownload(m_showErrorFromTransform);
 
 	return options;

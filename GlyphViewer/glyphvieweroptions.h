@@ -2,7 +2,10 @@
 #define GLYPHVIEWEROPTIONS_H
 
 #include <QtCore/QString>
+
+#ifdef USE_ZSPACE
 #include "zspaceoptions.h"
+#endif
 
 class GlyphViewerOptions
 {
@@ -22,8 +25,10 @@ public:
 	void SetHideUnselectedGlyphTrees(bool hideUnselectedGlyphTrees);
 	bool GetHideUnselectedGlyphTrees() const;
 
+#ifdef USE_ZSPACE
 	void SetZSpaceOptions(const SynGlyphX::ZSpaceOptions& options);
 	const SynGlyphX::ZSpaceOptions& GetZSpaceOptions() const;
+#endif
 
 	void SetShowMessageWhenImagesDidNotDownload(bool showMessageWhenImagesDidNotDownload);
 	bool GetShowMessageWhenImagesDidNotDownload() const;
@@ -35,7 +40,9 @@ private:
 	//3D options
 	bool m_hideUnselectedGlyphTrees;
 
+#ifdef USE_ZSPACE
 	SynGlyphX::ZSpaceOptions m_zSpaceOptions;
+#endif
 
 	//UI options
 	bool m_showMessageWhenImagesDidNotDownload;
