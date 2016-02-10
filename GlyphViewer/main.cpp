@@ -3,7 +3,11 @@
 #include <QtWidgets/QSplashScreen>
 #include <QtCore/QTimer>
 #include "licensingdialog.h"
+
+#ifdef USE_BREAKPAD
 #include "exception_handler.h"
+#endif
+
 #include <QtCore/QStandardPaths>
 #include <QtWidgets/QMessageBox>
 
@@ -12,6 +16,7 @@ int main(int argc, char *argv[])
 	SynGlyphX::GlyphBuilderApplication::Setup("Glyph Builder - Glyph Viewer", "0.7.23");
 	SynGlyphX::GlyphBuilderApplication a(argc, argv);
 
+#ifdef USE_BREAKPAD
 	const QString dumpPath = QStandardPaths::writableLocation(QStandardPaths::HomeLocation) + "/Minidumps";
 	std::wstring pathAsStr = dumpPath.toStdWString();
 	boost::filesystem::path dir(pathAsStr);
@@ -33,6 +38,7 @@ int main(int argc, char *argv[])
 		MiniDumpNormal,
 		L"",
 		0);
+#endif
 
 	SynGlyphX::GlyphBuilderApplication::SetupIcons(QIcon(":SGXGUI/Resources/synglyphx_x.ico"));
 

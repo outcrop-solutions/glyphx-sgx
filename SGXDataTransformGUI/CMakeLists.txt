@@ -3,10 +3,11 @@ CMAKE_MINIMUM_REQUIRED(VERSION 3.1.3)
 INCLUDE_DIRECTORIES(BEFORE  ${Boost_INCLUDE_DIRS}
 							${STLPLUS_INCLUDE_DIR}
 							../../GUI/SGXGUI
-							../../Core/SGXGlyphGUI
+							../../GUI/SGXGlyphGUI
 							../../Core/SGXImage
 							../../Core/SGXUtility
 							../../Core/SGXFoundation
+							../../Core/SGXDataTransform
 							../../Core/SGXDataMapping)
 
 SET(SRC_ALL 	changedatasourcefiledialog.cpp
@@ -27,4 +28,7 @@ TARGET_LINK_LIBRARIES(SGXDataTransformGUI ${Boost_LIBRARIES}
 							  SGXGUI 
 							  SGXGlyphGUI
 							  SGXFoundation
+							  SGXDataTransform
 							  SGXDataMapping)
+							 
+Set_Windows_Properties(SGXDataTransformGUI)

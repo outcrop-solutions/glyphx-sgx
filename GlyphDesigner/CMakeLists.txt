@@ -49,3 +49,5 @@ TARGET_LINK_LIBRARIES(GlyphDesigner ${Boost_LIBRARIES}
 IF (${BREAKPAD_FOUND})
 	TARGET_LINK_LIBRARIES(GlyphDesigner ${BREAKPAD_LIBRARIES})
 ENDIF()
+
+Set_Windows_Properties(GlyphDesigner)

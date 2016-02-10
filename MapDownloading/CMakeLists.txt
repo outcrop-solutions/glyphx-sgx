@@ -22,3 +22,5 @@ TARGET_LINK_LIBRARIES(MapDownloading ${Boost_LIBRARIES}
 							  SGXUtility 
 							  SGXGUI 
 							  SGXGeospatial)
+							  
+Set_Windows_Properties(MapDownloading)

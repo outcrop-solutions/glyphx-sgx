@@ -4,7 +4,7 @@
 #include <QtCore/qglobal.h>
 
 #ifdef WIN32
-#ifdef SGXDataTransforGUI_EXPORTS
+#ifdef SGXDataTransformGUI_EXPORTS
 # define SGXDATATRANSFORMGUI_EXPORT Q_DECL_EXPORT
 #else
 # define SGXDATATRANSFORMGUI_EXPORT Q_DECL_IMPORT

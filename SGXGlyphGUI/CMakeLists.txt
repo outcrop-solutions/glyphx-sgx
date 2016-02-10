@@ -33,3 +33,5 @@ SET(SRC_ALL 	allglyphpropertieswidget.cpp
 
 ADD_LIBRARY(SGXGlyphGUI SHARED ${SRC_ALL})
 TARGET_LINK_LIBRARIES(SGXGlyphGUI ${Boost_LIBRARIES} ${QT_LIBRARIES} SGXUtility SGXFoundation SGXDataMapping SGXImage SGXGUI)
+
+Set_Windows_Properties(SGXGlyphGUI)
