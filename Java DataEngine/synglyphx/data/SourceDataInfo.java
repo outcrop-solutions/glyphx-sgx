@@ -17,12 +17,12 @@ public class SourceDataInfo {
  	private String type;
  	private String query;
  	private DataFrame data;
- 	private String base_table;
- 	private String lookup_table;
- 	private String foreign_key;
- 	private String primary_key;
+ 	//private String base_table;
+ 	//private String lookup_table;
+ 	//private String foreign_key;
+ 	//private String primary_key;
  	private boolean merged_table;
- 	private ArrayList<String> inputFields;
+ 	//private ArrayList<String> inputFields;
 
  	public SourceDataInfo(){
 
@@ -71,9 +71,10 @@ public class SourceDataInfo {
  	}
 
  	public void setQuery(String query){
+ 		merged_table = true;
  		this.query = query;
  	}
-
+/*
  	public void setInputFields(ArrayList<ArrayList<String>> inputs){
  		inputFields = new ArrayList<String>();
  		for(int i = 0; i < inputs.size(); i++){
@@ -93,7 +94,7 @@ public class SourceDataInfo {
  		primary_key = fk_split[2];
  		createQuery();
  	}
-
+*/
  	public boolean isMerged(){
  		return merged_table;
  	}
@@ -157,7 +158,7 @@ public class SourceDataInfo {
  	public String getID(){
  		return id;
  	}
-
+/*
  	public ArrayList<String> getInputFields(){
  		return inputFields;
  	}
@@ -196,5 +197,5 @@ public class SourceDataInfo {
 
 		this.query = q;
 	}
-
+*/
 }

@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.Map;
 import synglyphx.data.DataStats;
 import synglyphx.io.Logger;
+import synglyphx.util.Functions;
+import synglyphx.jdbc.driver.Driver;
 
 public class BasicTable extends Table{
 	
@@ -13,8 +15,8 @@ public class BasicTable extends Table{
 	private ArrayList<String> foreign_key_list;
 	private HashMap<String,ArrayList<String>> foreign_key_map; 
 
-	public BasicTable(String name, Connection conn){
-		super(conn);
+	public BasicTable(String name, Driver driver){
+		super(driver);
 		this.name = name;
 		this.query = "SELECT * FROM "+name;
 		this.end_of_query = name;
@@ -30,8 +32,8 @@ public class BasicTable extends Table{
 
 		try{
 
-			String sql = query;
-			PreparedStatement pstmt = conn.prepareStatement(sql);
+			String sql = query+" LIMIT 1";
+			PreparedStatement pstmt = driver.getConnection().prepareStatement(sql);
             ResultSet rs = pstmt.executeQuery();
             ResultSetMetaData metaData = rs.getMetaData();
 
@@ -40,8 +42,8 @@ public class BasicTable extends Table{
             for (int i = 0; i < rowCount; i++) {
             	column_type = metaData.getColumnTypeName(i + 1);
             	column_name = metaData.getColumnName(i + 1);
-                columnNames.add(column_name);
-                columnTypes.put(column_name, jdbcTypes.get(column_type));
+                columnNames.add(driver.basicField(column_name));
+                columnTypes.put(driver.basicField(column_name), jdbcTypes.get(column_type));
             }
             rs.close();
 
@@ -57,11 +59,7 @@ public class BasicTable extends Table{
 	}
 
 	public String[] getForeignKeys(){
-		String[] temp = new String[foreign_key_list.size()];
-		for(int i = 0; i < foreign_key_list.size(); i++){
-			temp[i] = foreign_key_list.get(i);
-		}
-		return temp;
+		return Functions.arrayListToStringList(foreign_key_list);
 	}
 
 	private void mapForeignKeys(){
@@ -69,7 +67,7 @@ public class BasicTable extends Table{
 		foreign_key_list = new ArrayList<String>();
 		foreign_key_map = new HashMap<String,ArrayList<String>>();
 		try{
-			DatabaseMetaData dm = conn.getMetaData();
+			DatabaseMetaData dm = driver.getConnection().getMetaData();
 	    	ResultSet rs = dm.getImportedKeys(null, null, name);
 
 	    	while (rs.next()) {
@@ -98,7 +96,7 @@ public class BasicTable extends Table{
 		try{
 
 			String sql = "SELECT * FROM "+name+" LIMIT 15";  
-			Statement stmt = conn.createStatement();
+			Statement stmt = driver.getConnection().createStatement();
             ResultSet rs = stmt.executeQuery(sql);
 
             int place = 0;

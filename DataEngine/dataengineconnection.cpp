@@ -42,14 +42,16 @@ namespace DataEngine
 				".\\ojdbc6.jar;"
 				".\\database-drivers\\sqlite4java.jar;"
 				".\\database-drivers\\mysql-connector-java-5.1.38-bin.jar;"
-				".\\database-drivers\\sqlite-jdbc-3.8.11.2.jar;";
+				".\\database-drivers\\sqlite-jdbc-3.8.11.2.jar;"
+			    ".\\database-drivers\\vertica-jdbc-7.2.1-0.jar;";
 		}else{
 			options[0].optionString =
 				"-Djava.class.path=..\\..\\DataEngine\\Java DataEngine\\dataengine.jar;"
 				"..\\..\\DataEngine\\Java DataEngine\\ojdbc6.jar;"
 				"..\\..\\DataEngine\\Java DataEngine\\database-drivers\\sqlite4java.jar;"
 				"..\\..\\DataEngine\\Java DataEngine\\database-drivers\\mysql-connector-java-5.1.38-bin.jar;"
-				"..\\..\\DataEngine\\Java DataEngine\\database-drivers\\sqlite-jdbc-3.8.11.2.jar;";
+				"..\\..\\DataEngine\\Java DataEngine\\database-drivers\\sqlite-jdbc-3.8.11.2.jar;"
+			    "..\\..\\DataEngine\\Java DataEngine\\database-drivers\\vertica-jdbc-7.2.1-0.jar;";
 		}ifile.close();
 		vmArgs.version = JNI_VERSION_1_2;
 		vmArgs.options = options;
@@ -192,7 +194,7 @@ namespace DataEngine
 		jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
 			"connectToServer", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)[Ljava/lang/String;");
 		jobjectArray itr;
-		QStringList databases;
+		QStringList schemas;
 		if (methodId != NULL) {
 			jstring db = jniEnv->NewStringUTF(db_url.toStdString().c_str());
 			jstring usr = jniEnv->NewStringUTF(user.toStdString().c_str());
@@ -210,24 +212,24 @@ namespace DataEngine
 				jstring element = (jstring)jniEnv->GetObjectArrayElement(itr, i);
 				const char *str = jniEnv->GetStringUTFChars(element, 0);
 				QString db_name(str);
-				databases << db_name;
+				schemas << db_name;
 			}
 		}
-		return databases;
+		setTables();
+		return schemas;
 	}
 
-	QStringList DataEngineConnection::chooseDatabase(QString db_name){
+	void DataEngineConnection::setTables(){
 
 		foreignKeysByTable.clear();
 		sampleDataByTable.clear();
 		columnNames.clear();
 		tables.clear();
 		jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
-			"chooseDatabase", "(Ljava/lang/String;)[Ljava/lang/String;");
+			"getTableNames", "()[Ljava/lang/String;");
 		jobjectArray itr;
 		if (methodId != NULL) {
-			jstring name = jniEnv->NewStringUTF(db_name.toStdString().c_str());
-			itr = (jobjectArray)jniEnv->CallStaticObjectMethod(jcls, methodId, name);
+			itr = (jobjectArray)jniEnv->CallStaticObjectMethod(jcls, methodId);
 			if (jniEnv->ExceptionCheck()) {
 				jniEnv->ExceptionDescribe();
 				jniEnv->ExceptionClear();
@@ -242,7 +244,6 @@ namespace DataEngine
 				tables << tbl_name;
 			}
 		}
-		return tables;
 	}
 
 	void DataEngineConnection::setChosenTables(QStringList chosen){
@@ -263,6 +264,7 @@ namespace DataEngine
 				jniEnv->ExceptionDescribe();
 				jniEnv->ExceptionClear();
 			}
+			tables = chosen;
 		}
 	}
 

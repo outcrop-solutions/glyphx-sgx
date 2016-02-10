@@ -6,49 +6,47 @@ import java.util.HashMap;
 import java.util.Map;
 import synglyphx.data.DataStats;
 import synglyphx.io.Logger;
+import synglyphx.util.Functions;
+import synglyphx.jdbc.driver.Driver;
 
 public abstract class Table {
 	
 	protected String name;
 	protected String query;
 	protected String end_of_query;
-	protected Connection conn;
+	protected Driver driver;
 	protected ArrayList<String> columnNames;
 	protected HashMap<String,String> columnTypes;
 	protected HashMap<String,DataStats> dataStats;
 	protected HashMap<String,String> jdbcTypes;
 	protected HashMap<String,ArrayList<String>> min_max_table;
 
-	public Table(Connection conn){
-		this.conn = conn;
+	public Table(Driver driver){
+		this.driver = driver;
 		initialize();
 	}
 
 	private void columnDataStats(String cn){
 
-		String[] ranges;
-		String[] counts;
-		String sql;
-
 		try{
-
-			ranges = new String[3];
-			counts = new String[2];
-			sql = "SELECT MIN(`"+cn+"`),MAX(`"+cn+"`),AVG(`"+cn+"`),";
-			sql += "COUNT(`"+cn+"`),COUNT(DISTINCT(`"+cn+"`)) FROM "+end_of_query;
+			String[] ranges = new String[3];
+			String[] counts = new String[2];
+			String sql = driver.dataStatsQuery(cn, end_of_query, columnTypes.get(cn).equals("Double"));
 			Logger.getInstance().add(sql);
-			Statement stmt = conn.createStatement();
+			Statement stmt = driver.getConnection().createStatement();
             ResultSet rs = stmt.executeQuery(sql);
 
             while(rs.next()){
-            	ranges[0] = rs.getString(1);
-            	ranges[1] = rs.getString(2);
-            	ranges[2] = rs.getString(3);
-            	counts[0] = rs.getString(4);
-            	counts[1] = rs.getString(5);
-            	System.out.println(columnTypes.get(cn));
-            	System.out.println(ranges[2]);
-            	System.out.println(counts[1]);
+            	int i = 1;
+            	ranges[0] = rs.getString(i++);
+            	ranges[1] = rs.getString(i++);
+            	if(columnTypes.get(cn).equals("Double")){
+            		ranges[2] = rs.getString(i++);
+            	}else{
+            		ranges[2] = "N/A";
+            	}
+            	counts[0] = rs.getString(i++);
+            	counts[1] = rs.getString(i++);
             	dataStats.put(cn, new DataStats(columnTypes.get(cn),ranges,counts));
             	DataStats ds = dataStats.get(cn);
             	Logger.getInstance().add(ds.getType()+" | "+ds.getMin()+" | "+ds.getMax()+" | "+ds.getAverage()+" | "+ds.getCount()+" | "+ds.getDistinct()); 
@@ -66,12 +64,7 @@ public abstract class Table {
 	}
 
 	public String[] getColumnNames(){
-
-		String[] fields = new String[columnNames.size()];
-		for(int i = 0; i < columnNames.size(); i++){
-			fields[i] = columnNames.get(i);
-		}
-		return fields;
+		return Functions.arrayListToStringList(columnNames);
 	}
 
 	public String[] getStats(String field){
