@@ -27,3 +27,5 @@ ENDIF()
 
 ADD_LIBRARY(ANTzBridge SHARED ${SRC_ALL})
 TARGET_LINK_LIBRARIES(ANTzBridge ${Boost_LIBRARIES} SGXUtility ANTzCore SGXFoundation)
+
+Set_Windows_Properties(ANTzBridge)
