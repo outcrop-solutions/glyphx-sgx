@@ -5,7 +5,7 @@ INCLUDE_DIRECTORIES(BEFORE  ${Boost_INCLUDE_DIRS}
 
 #Enable licensing if it is available						
 IF (${LICENSING_FOUND})
-	INCLUDE_DIRECTORIES(AFTER ../../3rdParty/include/rlm_ez_11_0)
+	INCLUDE_DIRECTORIES(BEFORE ${LICENSE_INCLUDE_DIR})
 	add_definitions(-DUSE_LICENSING)
 ENDIF()
 
@@ -52,6 +52,12 @@ TARGET_LINK_LIBRARIES(SGXGUI ${Boost_LIBRARIES}
 #Enable licensing if it is available
 IF (${LICENSING_FOUND})
 	TARGET_LINK_LIBRARIES(SGXGUI rlmez rlmid1)
+	IF (${WIN32}) 
+		#Check if /SAFESEH:NO is needed with the newer 12.0 VS 2015 version of RLM-EZ (32 bit only)
+		set_target_properties(SGXGUI PROPERTIES LINK_FLAGS_DEBUG "/NODEFAULTLIB:libcmt.lib /SAFESEH:NO /SUBSYSTEM:WINDOWS")
+		set_target_properties(SGXGUI PROPERTIES LINK_FLAGS_RELEASE "/NODEFAULTLIB:libcmt.lib /SAFESEH:NO /SUBSYSTEM:WINDOWS")
+		TARGET_LINK_LIBRARIES(SGXGUI ws2_32)
+	ENDIF()
 ENDIF()
 
-Set_Windows_Properties(SGXGUI)
+#Set_Windows_Properties(SGXGUI)
