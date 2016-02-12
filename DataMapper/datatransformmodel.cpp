@@ -1,6 +1,7 @@
 #include "datatransformmodel.h"
 #include "sourcedatamanager.h"
 #include <QtCore/QDir>
+#include <QtCore/QDebug>
 #include <boost/uuid/uuid_io.hpp>
 #include "application.h"
 #include "downloadedmapproperties.h"
@@ -1159,15 +1160,22 @@ void DataTransformModel::AddDatasourceInfoFromDataEngine(const boost::uuids::uui
 		QString user("");
 		QString pass("");
 		QString type("sqlite3");
+
 		//QString url("mysql://33.33.33.1");
 		//QString user("root");
 		//QString pass("jarvis");
 		//QString type("mysql");
-		QStringList databases = dec->connectToServer(url, user, pass, type);
-		QString database("");
-		//QString database("world");
-		QStringList qtables = dec->chooseDatabase(database);
-		//dec->testFunction();
+
+		//QString url("vertica://54.67.93.24:5433/verticanow");
+		//QString user("synglyphx_user");
+		//QString pass("Synglyphx_user@9102");
+		//QString type("vertica");
+
+		QStringList schemas = dec->connectToServer(url, user, pass, type);
+		QStringList qtables = dec->getTables();
+
+		//QStringList tbls = dec->getSchemaTableNames(QString("public"));
+
 		QStringList chosenTables;
 		chosenTables = qtables;
 		//std::vector<DataEngineConnection::ForeignKey> fkeys = dec->getForeignKeys(//table_name);
@@ -1176,7 +1184,13 @@ void DataTransformModel::AddDatasourceInfoFromDataEngine(const boost::uuids::uui
 		//fkeys.at(0).value;
 		dec->setChosenTables(chosenTables);
 		//QString query = "SELECT City.Population, Country.Code FROM (City INNER JOIN Country ON (City.CountryCode=Country.Code))";
-		//dec->setQueryTables(query);
+		/*
+		QString query = "SELECT inventory_fact.qty_in_stock, product_dimension.product_price, ";
+		query += "date_dimension.day_of_week, warehouse_dimension.warehouse_name FROM (inventory_fact ";
+		query += "INNER JOIN product_dimension ON (inventory_fact.product_key=product_dimension.product_key) ";
+		query += "INNER JOIN date_dimension ON (inventory_fact.date_key=date_dimension.date_key) ";
+		query += "INNER JOIN warehouse_dimension ON (inventory_fact.warehouse_key=warehouse_dimension.warehouse_key))";
+		dec->setQueryTables(query);*/
 
 		if (!dec->getTables().isEmpty()) {
 
