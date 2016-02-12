@@ -3,21 +3,26 @@ package synglyphx.jdbc;
 import java.sql.*;
 import java.util.HashMap;
 import java.util.ArrayList;
+import synglyphx.util.Functions;
 import synglyphx.io.Logger;
+import synglyphx.jdbc.driver.Driver;
 
 public class Database {
 	
-	private Connection conn;
+	private Driver driver;
 	private String[] table_names;
 	private HashMap<String,BasicTable> tables;
 	private HashMap<String,BasicTable> temp_tables;
 	private String base_table;
 	private MergedTable mergedTable;
+	private ArrayList<String> schemas;
+	private HashMap<String,ArrayList<String>> tables_by_schema;
 
-	public Database(Connection conn){
-		this.conn = conn;
+	public Database(Driver driver){
+		this.driver = driver;
 		tables = new HashMap<String,BasicTable>();
 		temp_tables = new HashMap<String,BasicTable>();
+		schemas = new ArrayList<String>();
 		setTableMetaData();
 	}
 
@@ -26,24 +31,43 @@ public class Database {
 		String name;
 		int count = 0;
 		try{
-	        DatabaseMetaData md = conn.getMetaData();
-	        ResultSet rs = md.getTables(null, null, "%", null);
-
-         	ArrayList<String> temp = new ArrayList<String>();
-	        while (rs.next()) {
-	        	name = rs.getString(3);
-	        	if(!name.equals("sqlite_sequence")){
-	            	temp.add(name);
-	            }
+	        DatabaseMetaData md = driver.getConnection().getMetaData();
+	        ResultSet sch = md.getSchemas();
+	        ArrayList<String> temp = new ArrayList<String>();
+	        tables_by_schema = new HashMap<String,ArrayList<String>>();
+	        while(sch.next()){
+	        	ResultSet priv = md.getTablePrivileges(null,sch.getString(1),null);
+	        	while(priv.next()){
+	        		String schm = priv.getString(2);
+	        		if(!schemas.contains(schm)){
+	        			schemas.add(schm);
+	        			tables_by_schema.put(schm, new ArrayList<String>());
+	        		}
+	        		temp.add(schm+"."+priv.getString(3));
+	        		tables_by_schema.get(schm).add(priv.getString(3));
+	        	}
+	        	priv.close();
 	        }
+	        sch.close();
+			
+			if(schemas.size() == 0){
+		        ResultSet rs = md.getTables(null, null, "%", null);
+		        while (rs.next()) {
+		        	name = rs.getString(3);
+		        	if(!name.equals("sqlite_sequence")){
+		            	temp.add(name);
+		            }
+		        }
+		        rs.close();
+		    }
+	     
 	        table_names = new String[temp.size()];
 	        for(int i = 0; i < temp.size(); i++){
 	        	table_names[i] = temp.get(i);
 	        	Logger.getInstance().add(temp.get(i));
-	        	temp_tables.put(table_names[i], new BasicTable(temp.get(i), conn));
+	        	temp_tables.put(table_names[i], new BasicTable(temp.get(i), driver));
 	        }
 
-	        rs.close();
         }catch(SQLException se){
          	try{
             	se.printStackTrace(Logger.getInstance().addError());
@@ -62,7 +86,7 @@ public class Database {
 
 	public void initializeQueryTables(String query){
 
-	    mergedTable = new MergedTable(query, conn);
+	    mergedTable = new MergedTable(query, driver);
 	}
 
 	public void setBaseTable(String base_table){
@@ -81,12 +105,40 @@ public class Database {
 		return table_names;
 	}
 
+	public String[] getSchemaTableNames(String sch){
+      return Functions.arrayListToStringList(tables_by_schema.get(sch));
+    }
+
 	public String[] getForeignKeys(String tableName){
 	    return temp_tables.get(tableName).getForeignKeys();
 	}
 
 	public String[] getSampleData(int table, int row){
       	return temp_tables.get(table_names[table]).getSampleData(row);
-   }
+    }
 
+    public String[] getSchemas(){
+    	return Functions.arrayListToStringList(schemas);
+    }
+
+    public int sizeOfQuery(String query){
+
+    	int size = 0;
+    	try{
+			String sql = "SELECT count(*) FROM"+query.split("FROM")[1];
+			System.out.println(sql);  
+			Statement stmt = driver.getConnection().createStatement();
+            ResultSet rs = stmt.executeQuery(sql);
+            while(rs.next()){
+            	size = rs.getInt(1);
+            }
+            rs.close();
+        }catch(SQLException se){
+        	try{
+            	se.printStackTrace(Logger.getInstance().addError());
+         	}catch(Exception ex){}
+         	se.printStackTrace();
+        }
+        return size;
+    }
 }

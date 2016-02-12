@@ -33,6 +33,7 @@ namespace DataEngine
 		std::map<QString, std::vector<QStringList>> sampleDataByTable;
 		QStringList getForeignKeyString(QString tablename);
 		QStringList getRowOfSampleData(int index, int row);
+		void setTables();
 
 	public:
 		DataEngineConnection();
@@ -52,13 +53,14 @@ namespace DataEngine
 		std::vector<std::string> getColumnNames();
 		//JDBC ACCESSOR FUNCTIONS
 		QStringList connectToServer(QString db_url, QString user, QString pass, QString db_type);
-		QStringList chooseDatabase(QString db_name);
 		QStringList getColumnNames(QString tablename);
 		const std::vector<DataEngineConnection::ForeignKey>& getForeignKeys(QString tablename);
 		const std::vector<QStringList>& getSampleData(QString tablename);
 		void setChosenTables(QStringList chosen);
 		void setQueryTables(QString query);
+		QStringList getSchemaTableNames(QString schema);
 		QStringList getTables();
+		int sizeOfQuery(QString query);
 		void closeConnection();
 		//JDBC END
 		void destroyJVM();

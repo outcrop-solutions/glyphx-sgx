@@ -1,31 +1,21 @@
 
-Reading SDT at C:\Users\Bryan\Desktop\TooMany Elements SizeBug\Ohio Voter Registration Draft.sdt
-Parsed SDT into doc.
-Set input map.
-2dfdf2ca-6c93-4e74-a181-3ebc00f21ee9OnlyTable
-Retrieved data paths.
-Finished creating min/max table...
-Created DataFrames.
-Checking field groups...
-Finished checking field groups.
-Retrieved Defaults.
-Retrieved Bg color.
-BaseObjects:
-Downloaded Map | 
-Returning data stats model...
--80.5305683
-41.5117735
--84.3514711
-39.572392
-Downloaded Map BoundingBox: (-85.25350956479433,41.618268866536965),(-79.62852983520567,39.46589663346303)
-Image Size: 2048.0, 1024.0
-Beginning to generate glyphs...
-Executed initial query...
-Returned cursor with size 29050...
-1
-5
-Writing all files...
-C:\Users\Bryan\Desktop\TooMany Elements SizeBug\Ohio Voter SampleOut\usr\csv\
-DataMapper
-C:\Users\Bryan\Desktop\TooMany Elements SizeBug\Ohio Voter SampleOut\usr\csv\\..\..\nourl.html
-145251 nodes printing...
+online_sales.call_center_dimension
+online_sales.online_page_dimension
+online_sales.online_sales_fact
+public.BACKUP_SNAPSHOT_STATUS
+public.backup_status
+public.customer_dimension
+public.date_dimension
+public.employee_dimension
+public.four_cols
+public.inventory_fact
+public.product_dimension
+public.promotion_dimension
+public.shipping_dimension
+public.vendor_dimension
+public.warehouse_dimension
+store.store_dimension
+store.store_orders_fact
+store.store_sales_fact
+
+Closing connection to database...

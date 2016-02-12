@@ -411,7 +411,7 @@ public class CSVWriter {
 			BaseObject bo = base_objects.get(i);
 			String[] color = bo.getGridColor();
 			String number = String.valueOf(i+offset);
-			if(i == 0 && (bo.getName().equals("World") || world)){number = "1";offset = 1;}
+			if(i == 0 && (bo.getName().equals("World") || (bo.getName().equals("Downloaded Map") && world))){number = "1";offset = 1;}
 			template = String.valueOf(i+6)+",6,"+String.valueOf(i+6)+",1,"+parentID+","+branchLevel+",0,0,"+childCount+",0,0,0,0,1,"+bo.getGLCount(0)+","+bo.getGLCount(1)+",0,0,0,0,0,0,1,0,0,1,1,1,";
 			template += bo.getPosition(0)+","+bo.getPosition(1)+","+bo.getPosition(2)+",0,0,0,0,0,0,"+bo.getRotation(0)+","+bo.getRotation(1)+","+bo.getRotation(2)+",0,0,0,0,0,0,0,0,0,0,0,1,0,0.1,18,"+color[0]+","+color[1]+","+color[2]+",255,";
 			template += "0,"+number+","+bo.showGridLines()+",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"+bo.getGLSegX()+","+bo.getGLSegY()+",0,0,0,0,0,420\n";

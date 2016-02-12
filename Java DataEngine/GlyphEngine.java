@@ -75,16 +75,16 @@ public class GlyphEngine {
 
 		//String sdtPath = "C:\\Users\\Bryan\\Desktop\\Test HSV\\testhsv.sdt";
 	 	//String outDir = "C:\\Users\\Bryan\\Desktop\\Test HSV\\Viz";
-	 	//String sdtPath = "C:\\Users\\Bryan\\Desktop\\jdbc_test\\merged_table_test.sdt";
-	 	//String outDir = "C:\\Users\\Bryan\\Desktop\\jdbc_test\\Viz1";
-	 	String sdtPath = "C:\\Users\\Bryan\\Desktop\\TooMany Elements SizeBug\\Ohio Voter Registration Draft.sdt";
-	 	String outDir = "C:\\Users\\Bryan\\Desktop\\TooMany Elements SizeBug\\Ohio Voter SampleOut";
+	 	String sdtPath = "C:\\Users\\Bryan\\Desktop\\jdbc_test\\merged_table_test.sdt";
+	 	String outDir = "C:\\Users\\Bryan\\Desktop\\jdbc_test\\Viz1";
+	 	//String sdtPath = "C:\\Users\\Bryan\\Desktop\\TooMany Elements SizeBug\\Ohio Voter Registration Draft.sdt";
+	 	//String outDir = "C:\\Users\\Bryan\\Desktop\\TooMany Elements SizeBug\\Ohio Voter SampleOut";
 	 	String expDir = "DataMapper";
 	 	GlyphEngine start = new GlyphEngine();
 	 	double[] nw = new double[2];
-	 	nw[0] = -85.25350956479433; nw[1] = 41.618268866536965;
+	 	nw[0] = -180.0; nw[1] = 90.0;
 	 	double[] se = new double[2];
-	 	se[0] = -79.62852983520567; se[1] = 39.46589663346303;
+	 	se[0] = 180.0; se[1] = -90.0;
 	 	double[] s = new double[2];
 	 	s[0] = 2048.0; s[1] = 1024.0;
 	 	start.initiate(sdtPath, outDir, expDir);

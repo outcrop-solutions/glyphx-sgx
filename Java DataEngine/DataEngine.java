@@ -49,12 +49,27 @@ public class DataEngine {
 
 	public static String[] connectToServer(String dburl, String username, String password, String db){
 		sourceType = db;
-		String[] sqldbs = JDBCLoader.getInstance().connectToServer(dburl, username, password, db);
-		return sqldbs;
+		String[] schemas = JDBCLoader.getInstance().connectToServer(dburl, username, password, db);
+		return schemas;
 	}
 
-	public static String[] chooseDatabase(String db_name){
-		String[] tables = JDBCLoader.getInstance().chooseDatabase(db_name);
+	public static int sizeOfQuery(String query){
+		int size = JDBCLoader.getInstance().sizeOfQuery(query);
+		return size;
+	}
+
+	public static String[] chooseDatabase(String db){
+		String[] tbls = getTableNames();
+		return tbls;
+	}
+
+	public static String[] getTableNames(){
+		String[] tables = JDBCLoader.getInstance().getTableNames();
+		return tables;
+	}
+
+	public static String[] getSchemaTableNames(String sch){
+		String[] tables = JDBCLoader.getInstance().getSchemaTableNames(sch);
 		return tables;
 	}
 
@@ -111,16 +126,46 @@ public class DataEngine {
 
 		DataEngine d = new DataEngine();
 		
-		String[] db_list = d.connectToServer("mysql://33.33.33.1","root","jarvis","mysql");
-		String[] tables = d.chooseDatabase("world");
+		//String[] sch_list = d.connectToServer("mysql://33.33.33.1/world","root","jarvis","mysql");
+		//String[] sch_list = d.connectToServer("sqlite://C:/Users/Bryan/Documents/GitHub/DataEngine/Java DataEngine/sqlite_test.db","","","sqlite3");
+		String[] sch_list = d.connectToServer("vertica://54.67.93.24:5433/verticanow", "synglyphx_user", "Synglyphx_user@9102", "vertica");
 
-		d.setQueryTables("SELECT City.Population, Country.Code FROM (City INNER JOIN Country ON (City.CountryCode=Country.Code))");
-		String[] fields = d.getFieldsForTable(0, "mysql");
+		System.out.println("Schema List:");
+		for(int i = 0; i < sch_list.length; i++){
+			System.out.println(sch_list[i]);
+		}
+
+		/*
+		String[] tbl_names = d.getTableNames();
+		System.out.println("Table List:");
+		for(int i = 0; i < tbl_names.length; i++){
+			System.out.println(tbl_names[i]);
+		}*/
+		
+		//String query = "SELECT City.Population, Country.Code "; 
+		//query += "FROM (City INNER JOIN Country ON (City.CountryCode=Country.Code))";
+		/*String query = "SELECT inventory_fact.qty_in_stock, product_dimension.product_price, ";
+		query += "date_dimension.day_of_week, warehouse_dimension.warehouse_name FROM (inventory_fact "; 
+		query += "INNER JOIN product_dimension ON (inventory_fact.product_key=product_dimension.product_key) ";
+		query += "INNER JOIN date_dimension ON (inventory_fact.date_key=date_dimension.date_key) ";
+		query += "INNER JOIN warehouse_dimension ON (inventory_fact.warehouse_key=warehouse_dimension.warehouse_key))";*/
+		String query = "SELECT * FROM store.store_sales_fact"; 
+		double t1 = System.currentTimeMillis();
+		System.out.println(d.sizeOfQuery(query));
+		double t2 = System.currentTimeMillis();
+		System.out.println(t2-t1);
+/*
+		d.setQueryTables(query);
+		String[] fields = d.getFieldsForTable(0, "vertica");
 
 		for(int i = 0; i < fields.length; i++){
 			String[] stats = d.getStatsForField(0, fields[i]);
 			System.out.println(fields[i]+", "+stats[0]+", "+stats[1]+", "+stats[2]+", "+stats[3]+", "+stats[4]+", "+stats[5]);
 		}
+*/
 		d.closeConnection();
 	}
 }
+//SELECT inventory_fact.qty_in_stock, product_dimension.product_price, date_dimension.day_of_week, warehouse_dimension.warehouse_name FROM (inventory_fact INNER JOIN product_dimension ON (inventory_fact.product_key=product_dimension.product_key) INNER JOIN date_dimension ON (inventory_fact.date_key=date_dimension.date_key) INNER JOIN warehouse_dimension ON (inventory_fact.warehouse_key=warehouse_dimension.warehouse_key));
+//http://open.mapquestapi.com/geocoding/v1/address?key=Fmjtd%7Cluur2du8nl%2C2l%3Do5-9arx0r&location=4181 Cray Dr, Warrenton, Virginia, 20187
+//SELECT count(*) FROM (inventory_fact INNER JOIN product_dimension ON (inventory_fact.product_key=product_dimension.product_key) INNER JOIN date_dimension ON (inventory_fact.date_key=date_dimension.date_key) INNER JOIN warehouse_dimension ON (inventory_fact.warehouse_key=warehouse_dimension.warehouse_key));

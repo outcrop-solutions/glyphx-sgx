@@ -107,7 +107,7 @@ public class ParseXY {
 				try{
 			        Class.forName(DriverSelect.getDriver(temp.getType()));
 			        //Logger.getInstance().add("Connecting to Server...");
-			        Connection conn = DriverManager.getConnection("jdbc:"+temp.getHost(),temp.getUsername(),temp.getPassword());
+			        Connection conn = DriverManager.getConnection(temp.getHost(),temp.getUsername(),temp.getPassword());
 			        Table table; 
 			        if(temp.isMerged()){
 	        			table = new MergedTable(temp.getQuery(), conn);

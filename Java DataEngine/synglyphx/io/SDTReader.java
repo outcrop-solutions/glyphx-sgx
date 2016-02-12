@@ -234,7 +234,8 @@ public class SDTReader {
 									}
 							}
 							else if(min && !diff && !value.getNodeName().equals("RGB")){
-									temp.addMinMax(category.getNodeName()+value.getNodeName(), Double.parseDouble(getValue("Min", element)), 0.0);
+									double m_e = Double.parseDouble(getValue("Min", element));
+									temp.addMinMax(category.getNodeName()+value.getNodeName(), m_e, m_e);
 									temp.mapFunction(category.getNodeName()+value.getNodeName(), getFunction(element));
 									if(getFunction(element).contains("To Value")){
 										addKeysAndValues(temp, element, getFunction(element), category.getNodeName()+value.getNodeName());
@@ -386,22 +387,22 @@ public class SDTReader {
 					for(int j=0; j<tables.getLength(); j++){
 	 					Node table = tables.item(j); 
 	 					Element te = (Element) table;
-						System.out.println(host);
-						System.out.println(user);
-						System.out.println(pass);
-						System.out.println(table.getTextContent());
+						//System.out.println(host);
+						//System.out.println(user);
+						//System.out.println(pass);
+						//System.out.println(table.getTextContent());
 						SourceDataInfo tb = new SourceDataInfo();
 						tb.setID(id);
 						tb.setTable(table.getTextContent());
 						tb.setType(e.getAttribute("type").toLowerCase());
 						if(te.hasAttribute("query")){
 							if(!te.getAttribute("query").equals("")){
-								tb.setQuery(te.getAttribute("query"));
+								tb.setQuery(te.getAttribute("query"));/*
 								tb.setInputFields(this.inputs);
 								if(te.hasAttribute("basetable")){
 									tb.setBaseTableName(te.getAttribute("basetable"));
 									tb.parseForeignKeyData(te.getAttribute("foreignkey"));
-								}
+								}*/
 							}
 						}
 						tb.setPath(path);

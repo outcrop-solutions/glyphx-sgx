@@ -89,6 +89,17 @@ public class Functions {
 		return rgb;
 	}
 
+	public static String[] arrayListToStringList(ArrayList<String> list){
+		String[] temp = new String[1];
+		if(list.size() > 0){
+			temp = new String[list.size()];
+		}
+    	for(int i = 0; i < list.size(); i++){
+    		temp[i] = list.get(i);
+    	}
+    	return temp;
+	}
+
 /*
 	public static void main(String[] args){
 		double[] hsv = Functions.convertRGBtoHSV(0,255,0);
