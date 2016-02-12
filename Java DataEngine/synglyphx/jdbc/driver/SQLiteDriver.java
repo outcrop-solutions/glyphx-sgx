@@ -16,13 +16,13 @@ public class SQLiteDriver implements Driver {
 
 	public String dataStatsQuery(String cn, String eoq, boolean num){
 
-		String sql = "SELECT MIN("+cn+"),MAX("+cn+"),AVG("+cn+"),";
-		sql += "COUNT("+cn+"),COUNT(DISTINCT("+cn+")) FROM "+eoq;
+		String sql = "SELECT MIN(`"+cn+"`),MAX(`"+cn+"`),AVG(`"+cn+"`),";
+		sql += "COUNT(`"+cn+"`),COUNT(DISTINCT(`"+cn+"`)) FROM "+eoq;
 		return sql;
 	}
 
 	public String basicField(String col_name){
-		return "`"+col_name+"`";
+		return col_name;
 	}
 
 	public String mergedField(String tbl_name, String col_name){

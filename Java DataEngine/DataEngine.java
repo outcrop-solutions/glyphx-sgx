@@ -53,8 +53,23 @@ public class DataEngine {
 		return schemas;
 	}
 
+	public static int sizeOfQuery(String query){
+		int size = JDBCLoader.getInstance().sizeOfQuery(query);
+		return size;
+	}
+
+	public static String[] chooseDatabase(String db){
+		String[] tbls = getTableNames();
+		return tbls;
+	}
+
 	public static String[] getTableNames(){
 		String[] tables = JDBCLoader.getInstance().getTableNames();
+		return tables;
+	}
+
+	public static String[] getSchemaTableNames(String sch){
+		String[] tables = JDBCLoader.getInstance().getSchemaTableNames(sch);
 		return tables;
 	}
 
@@ -120,21 +135,26 @@ public class DataEngine {
 			System.out.println(sch_list[i]);
 		}
 
+		/*
 		String[] tbl_names = d.getTableNames();
 		System.out.println("Table List:");
 		for(int i = 0; i < tbl_names.length; i++){
 			System.out.println(tbl_names[i]);
-		}
+		}*/
 		
 		//String query = "SELECT City.Population, Country.Code "; 
 		//query += "FROM (City INNER JOIN Country ON (City.CountryCode=Country.Code))";
-		String query = "SELECT inventory_fact.qty_in_stock, product_dimension.product_price, ";
+		/*String query = "SELECT inventory_fact.qty_in_stock, product_dimension.product_price, ";
 		query += "date_dimension.day_of_week, warehouse_dimension.warehouse_name FROM (inventory_fact "; 
 		query += "INNER JOIN product_dimension ON (inventory_fact.product_key=product_dimension.product_key) ";
 		query += "INNER JOIN date_dimension ON (inventory_fact.date_key=date_dimension.date_key) ";
-		query += "INNER JOIN warehouse_dimension ON (inventory_fact.warehouse_key=warehouse_dimension.warehouse_key))";
-
-		//d.setQueryTables(query);
+		query += "INNER JOIN warehouse_dimension ON (inventory_fact.warehouse_key=warehouse_dimension.warehouse_key))";*/
+		String query = "SELECT * FROM store.store_sales_fact"; 
+		double t1 = System.currentTimeMillis();
+		System.out.println(d.sizeOfQuery(query));
+		double t2 = System.currentTimeMillis();
+		System.out.println(t2-t1);
+/*
 		d.setQueryTables(query);
 		String[] fields = d.getFieldsForTable(0, "vertica");
 
@@ -142,7 +162,10 @@ public class DataEngine {
 			String[] stats = d.getStatsForField(0, fields[i]);
 			System.out.println(fields[i]+", "+stats[0]+", "+stats[1]+", "+stats[2]+", "+stats[3]+", "+stats[4]+", "+stats[5]);
 		}
+*/
 		d.closeConnection();
 	}
 }
-//SELECT inventory_fact.qty_in_stock, product_dimension.product_price, date_dimension.day_of_week, warehouse_dimension.warehouse_name FROM (inventory_fact INNER JOIN product_dimension ON (inventory_fact.product_key=product_dimension.product_key) INNER JOIN date_dimension ON (inventory_fact.date_key=date_dimension.date_key) INNER JOIN warehouse_dimension ON (inventory_fact.warehouse_key=warehouse_dimension.warehouse_key))
+//SELECT inventory_fact.qty_in_stock, product_dimension.product_price, date_dimension.day_of_week, warehouse_dimension.warehouse_name FROM (inventory_fact INNER JOIN product_dimension ON (inventory_fact.product_key=product_dimension.product_key) INNER JOIN date_dimension ON (inventory_fact.date_key=date_dimension.date_key) INNER JOIN warehouse_dimension ON (inventory_fact.warehouse_key=warehouse_dimension.warehouse_key));
+//http://open.mapquestapi.com/geocoding/v1/address?key=Fmjtd%7Cluur2du8nl%2C2l%3Do5-9arx0r&location=4181 Cray Dr, Warrenton, Virginia, 20187
+//SELECT count(*) FROM (inventory_fact INNER JOIN product_dimension ON (inventory_fact.product_key=product_dimension.product_key) INNER JOIN date_dimension ON (inventory_fact.date_key=date_dimension.date_key) INNER JOIN warehouse_dimension ON (inventory_fact.warehouse_key=warehouse_dimension.warehouse_key));

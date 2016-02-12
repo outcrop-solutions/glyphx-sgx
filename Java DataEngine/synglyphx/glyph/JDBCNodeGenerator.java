@@ -127,8 +127,6 @@ public class JDBCNodeGenerator {
 					x1 = nodeTemp.getMinMaxField(input.get(fieldNames.get(i))).get(0);
 					x3 = nodeTemp.getMinMaxField(input.get(fieldNames.get(i))).get(1);
 				}else{
-					//System.out.println(fieldNames.get(i));
-					//System.out.println(input.get(fieldNames.get(i)));
 					x1 = Double.parseDouble(table.getMinMaxTable().get(input.get(fieldNames.get(i))).get(0));
 					x3 = Double.parseDouble(table.getMinMaxTable().get(input.get(fieldNames.get(i))).get(1));
 				}
@@ -147,6 +145,9 @@ public class JDBCNodeGenerator {
 			}
 			else if(functions.get(fieldNames.get(i)).equals("Range To Value")){
 				setValues.put(fieldNames.get(i), Functions.rangeToValue(rs.getDouble(input.get(fieldNames.get(i)).replace("`","")),nodeTemp.getKeyValueMap().get(fieldNames.get(i))));
+			}
+			else if(functions.get(fieldNames.get(i)).equals("None")){
+				setValues.put(fieldNames.get(i), Double.parseDouble(table.getMinMaxTable().get(input.get(fieldNames.get(i))).get(1)));
 			}
 		}
 

@@ -16,6 +16,7 @@ public class Database {
 	private String base_table;
 	private MergedTable mergedTable;
 	private ArrayList<String> schemas;
+	private HashMap<String,ArrayList<String>> tables_by_schema;
 
 	public Database(Driver driver){
 		this.driver = driver;
@@ -33,13 +34,17 @@ public class Database {
 	        DatabaseMetaData md = driver.getConnection().getMetaData();
 	        ResultSet sch = md.getSchemas();
 	        ArrayList<String> temp = new ArrayList<String>();
+	        tables_by_schema = new HashMap<String,ArrayList<String>>();
 	        while(sch.next()){
 	        	ResultSet priv = md.getTablePrivileges(null,sch.getString(1),null);
 	        	while(priv.next()){
 	        		String schm = priv.getString(2);
-	        		if(!schemas.contains(schm))
+	        		if(!schemas.contains(schm)){
 	        			schemas.add(schm);
+	        			tables_by_schema.put(schm, new ArrayList<String>());
+	        		}
 	        		temp.add(schm+"."+priv.getString(3));
+	        		tables_by_schema.get(schm).add(priv.getString(3));
 	        	}
 	        	priv.close();
 	        }
@@ -100,6 +105,10 @@ public class Database {
 		return table_names;
 	}
 
+	public String[] getSchemaTableNames(String sch){
+      return Functions.arrayListToStringList(tables_by_schema.get(sch));
+    }
+
 	public String[] getForeignKeys(String tableName){
 	    return temp_tables.get(tableName).getForeignKeys();
 	}
@@ -110,5 +119,26 @@ public class Database {
 
     public String[] getSchemas(){
     	return Functions.arrayListToStringList(schemas);
+    }
+
+    public int sizeOfQuery(String query){
+
+    	int size = 0;
+    	try{
+			String sql = "SELECT count(*) FROM"+query.split("FROM")[1];
+			System.out.println(sql);  
+			Statement stmt = driver.getConnection().createStatement();
+            ResultSet rs = stmt.executeQuery(sql);
+            while(rs.next()){
+            	size = rs.getInt(1);
+            }
+            rs.close();
+        }catch(SQLException se){
+        	try{
+            	se.printStackTrace(Logger.getInstance().addError());
+         	}catch(Exception ex){}
+         	se.printStackTrace();
+        }
+        return size;
     }
 }

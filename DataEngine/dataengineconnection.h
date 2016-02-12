@@ -58,7 +58,9 @@ namespace DataEngine
 		const std::vector<QStringList>& getSampleData(QString tablename);
 		void setChosenTables(QStringList chosen);
 		void setQueryTables(QString query);
+		QStringList getSchemaTableNames(QString schema);
 		QStringList getTables();
+		int sizeOfQuery(QString query);
 		void closeConnection();
 		//JDBC END
 		void destroyJVM();

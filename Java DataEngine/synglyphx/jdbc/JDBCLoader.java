@@ -58,6 +58,14 @@ public class JDBCLoader {
       return database.getTableNames();
    }
 
+   public static String[] getSchemaTableNames(String sch){
+      return database.getSchemaTableNames(sch);
+   }
+
+   public static int sizeOfQuery(String query){
+      return database.sizeOfQuery(query);
+   }
+
    public static void setChosenTables(String[] chosen){
       merged = false;
       database.initializeChosenTables(chosen);
@@ -82,11 +90,11 @@ public class JDBCLoader {
       return database.getTable(table).getStats(field);
    }
 
-   public String[] getForeignKeys(String tableName){
+   public static String[] getForeignKeys(String tableName){
       return database.getForeignKeys(tableName);
    }
 
-   public String[] getSampleData(int table, int row){
+   public static String[] getSampleData(int table, int row){
       return database.getSampleData(table, row);
    }
 

@@ -216,6 +216,7 @@ namespace DataEngine
 
 			for (int i = 0; i < length; i++){
 				jstring element = (jstring)jniEnv->GetObjectArrayElement(itr, i);
+				if (length == 1 && element == NULL){break;}
 				const char *str = jniEnv->GetStringUTFChars(element, 0);
 				QString db_name(str);
 				schemas << db_name;
@@ -293,6 +294,33 @@ namespace DataEngine
 
 	QStringList DataEngineConnection::getTables(){
 		return tables;
+	}
+
+	QStringList DataEngineConnection::getSchemaTableNames(QString schema){
+
+		jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
+			"getSchemaTableNames", "(Ljava/lang/String;)[Ljava/lang/String;");
+		jobjectArray itr;
+		QStringList tbls;
+		if (methodId != NULL) {
+			jstring sch = jniEnv->NewStringUTF(schema.toStdString().c_str());
+			itr = (jobjectArray)jniEnv->CallStaticObjectMethod(jcls, methodId, sch);
+			if (jniEnv->ExceptionCheck()) {
+				jniEnv->ExceptionDescribe();
+				jniEnv->ExceptionClear();
+			}
+
+			int length = jniEnv->GetArrayLength(itr);
+
+			for (int i = 0; i < length; i++){
+				jstring element = (jstring)jniEnv->GetObjectArrayElement(itr, i);
+				if (length == 1 && element == NULL){ break; }
+				const char *str = jniEnv->GetStringUTFChars(element, 0);
+				QString tbl_name(str);
+				tbls << tbl_name;
+			}
+		}
+		return tbls;
 	}
 
 	QStringList DataEngineConnection::getColumnNames(QString tablename){
@@ -397,6 +425,23 @@ namespace DataEngine
 			}
 		}
 		return samplerow;
+	}
+
+	int DataEngineConnection::sizeOfQuery(QString query){
+
+		jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
+			"sizeOfQuery", "(Ljava/lang/String;)I");
+
+		jint count;
+		if (methodId != NULL) {
+			jstring name = jniEnv->NewStringUTF(query.toStdString().c_str());
+			count = (jint)jniEnv->CallStaticIntMethod(jcls, methodId, name);
+			if (jniEnv->ExceptionCheck()) {
+				jniEnv->ExceptionDescribe();
+				jniEnv->ExceptionClear();
+			}
+		}
+		return count;
 	}
 
 	void DataEngineConnection::closeConnection(){

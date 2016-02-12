@@ -17,14 +17,5 @@ public.warehouse_dimension
 store.store_dimension
 store.store_orders_fact
 store.store_sales_fact
-creating datastats
-SELECT MIN(inventory_fact.qty_in_stock),MAX(inventory_fact.qty_in_stock),AVG(inventory_fact.qty_in_stock),COUNT(inventory_fact.qty_in_stock),COUNT(DISTINCT(inventory_fact.qty_in_stock)) FROM  (inventory_fact INNER JOIN product_dimension ON (inventory_fact.product_key=product_dimension.product_key) INNER JOIN date_dimension ON (inventory_fact.date_key=date_dimension.date_key) INNER JOIN warehouse_dimension ON (inventory_fact.warehouse_key=warehouse_dimension.warehouse_key))
-real | 1 | 1000 | 500.719450575205 | 900287 | 1000
-SELECT MIN(product_dimension.product_price),MAX(product_dimension.product_price),AVG(product_dimension.product_price),COUNT(product_dimension.product_price),COUNT(DISTINCT(product_dimension.product_price)) FROM  (inventory_fact INNER JOIN product_dimension ON (inventory_fact.product_key=product_dimension.product_key) INNER JOIN date_dimension ON (inventory_fact.date_key=date_dimension.date_key) INNER JOIN warehouse_dimension ON (inventory_fact.warehouse_key=warehouse_dimension.warehouse_key))
-real | 8 | 600 | 303.200397206669 | 900287 | 592
-SELECT MIN(date_dimension.day_of_week),MAX(date_dimension.day_of_week),COUNT(date_dimension.day_of_week),COUNT(DISTINCT(date_dimension.day_of_week)) FROM  (inventory_fact INNER JOIN product_dimension ON (inventory_fact.product_key=product_dimension.product_key) INNER JOIN date_dimension ON (inventory_fact.date_key=date_dimension.date_key) INNER JOIN warehouse_dimension ON (inventory_fact.warehouse_key=warehouse_dimension.warehouse_key))
-text | Friday | Wednesday | N/A | 900287 | 7
-SELECT MIN(warehouse_dimension.warehouse_name),MAX(warehouse_dimension.warehouse_name),COUNT(warehouse_dimension.warehouse_name),COUNT(DISTINCT(warehouse_dimension.warehouse_name)) FROM  (inventory_fact INNER JOIN product_dimension ON (inventory_fact.product_key=product_dimension.product_key) INNER JOIN date_dimension ON (inventory_fact.date_key=date_dimension.date_key) INNER JOIN warehouse_dimension ON (inventory_fact.warehouse_key=warehouse_dimension.warehouse_key))
-text | Warehouse 1 | Warehouse 5 | N/A | 900287 | 5
 
 Closing connection to database...

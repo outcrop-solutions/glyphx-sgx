@@ -148,6 +148,9 @@ public class GlyphCreator {
 			else if(functions.get(fieldNames.get(i)).equals("Range To Value")){
 				setValues.put(fieldNames.get(i), Functions.rangeToValue(Double.parseDouble(cursor.get(input.get(fieldNames.get(i)))),nodeTemp.getKeyValueMap().get(fieldNames.get(i))));
 			}
+			else if(functions.get(fieldNames.get(i)).equals("None")){
+				setValues.put(fieldNames.get(i), Double.parseDouble(csvData.get(currData).getDataFrame().getMinMaxTable().get(input.get(fieldNames.get(i))).get(1)));
+			}
 		}
 
 		Node node = setFields(fieldNames, ranges, setValues, new Node(), nodeTemp, input);
