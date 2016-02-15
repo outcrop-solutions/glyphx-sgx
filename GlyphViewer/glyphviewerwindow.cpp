@@ -353,12 +353,12 @@ void GlyphViewerWindow::LoadVisualization(const QString& filename) {
 	QString extension = fileInfo.suffix().toLower();
 	if ((extension != "sdt") && (extension != "sav")) {
 
-		throw std::exception("File is not a recognized format");
+		throw std::runtime_error("File is not a recognized format");
 	}
 
 	if (!fileInfo.exists()) {
 
-		throw std::exception("File does not exist");
+		throw std::runtime_error("File does not exist");
 	}
 
 	if (m_glyphForestModel->rowCount() > 0) {
@@ -426,17 +426,17 @@ void GlyphViewerWindow::ValidateDataMappingFile(const QString& filename) {
 
 	if (!mapping->GetDatasources().HasDatasources()) {
 
-		throw std::exception("Visualization has no datasources.");
+		throw std::runtime_error("Visualization has no datasources.");
 	}
 
 	if (mapping->GetGlyphGraphs().empty()) {
 
-		throw std::exception("Visualization has no glyph templates.");
+		throw std::runtime_error("Visualization has no glyph templates.");
 	}
 
 	if (!mapping->DoesAtLeastOneGlyphGraphHaveBindingsOnPosition()) {
 
-		throw std::exception("Visualization has no glyph templates with bindings on Position X, Position Y, or Position Z.");
+		throw std::runtime_error("Visualization has no glyph templates with bindings on Position X, Position Y, or Position Z.");
 	}
 
 	bool wasDataTransformUpdated = false;
@@ -453,7 +453,7 @@ void GlyphViewerWindow::ValidateDataMappingFile(const QString& filename) {
 
 		if (!wasDataTransformUpdated) {
 
-			throw std::exception("Visualization has missing base images that need to be updated to their correct locations before the visualization can be loaded");
+			throw std::runtime_error("Visualization has missing base images that need to be updated to their correct locations before the visualization can be loaded");
 		}
 	}
 
@@ -465,7 +465,7 @@ void GlyphViewerWindow::ValidateDataMappingFile(const QString& filename) {
 
 		if (!wasDataTransformUpdated) {
 
-			throw std::exception("Visualization has missing data sources that need to be updated to their correct locations before the visualization can be loaded");
+			throw std::runtime_error("Visualization has missing data sources that need to be updated to their correct locations before the visualization can be loaded");
 		}
 	}
 

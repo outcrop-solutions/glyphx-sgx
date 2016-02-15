@@ -94,7 +94,7 @@ void SourceDataWidget::UpdateTables() {
 			queryModel->setQuery(*query.data());
 			if (queryModel->lastError().isValid()) {
 
-				throw std::exception("Failed to set SQL query for source data widget.");
+				throw std::runtime_error("Failed to set SQL query for source data widget.");
 			}
 
 			tableView->verticalHeader()->setVisible(false);

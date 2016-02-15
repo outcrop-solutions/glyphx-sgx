@@ -75,7 +75,7 @@ namespace SynGlyphX {
 			}
 			else {
 
-				throw std::exception("One or more datasources weren't found.");
+				throw std::runtime_error("One or more datasources weren't found.");
 			}
 		}
 

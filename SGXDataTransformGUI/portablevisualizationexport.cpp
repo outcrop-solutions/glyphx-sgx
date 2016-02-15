@@ -53,7 +53,7 @@ namespace SynGlyphX {
 
 		if (m_sourceDirectories.count(platform) == 0) {
 
-			throw std::exception("Platform does not exist");
+			throw std::runtime_error("Platform does not exist");
 		}
 
 		return m_sourceDirectories.at(platform);
