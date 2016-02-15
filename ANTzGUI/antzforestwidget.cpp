@@ -258,7 +258,7 @@ namespace SynGlyphXANTz {
 				zSpaceErrorString += "Buffer too small";
 			}
 		
-			throw std::exception(zSpaceErrorString.toStdString().c_str());
+			throw std::runtime_error(zSpaceErrorString.toStdString().c_str());
 		}
 	}
 

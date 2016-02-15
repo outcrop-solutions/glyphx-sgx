@@ -192,7 +192,7 @@ namespace SynGlyphXANTz {
 
 			if (!globalsFile.is_open()) {
 
-				throw std::exception("Globals file failed to open");
+				throw std::runtime_error("Globals file failed to open");
 			}
 
 			globalsFile.setf(std::ios::fixed, std::ios::floatfield);
