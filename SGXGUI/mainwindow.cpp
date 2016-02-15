@@ -45,10 +45,6 @@ namespace SynGlyphX {
 
         QSettings settings;
 
-		settings.beginGroup("GlyphTemplates");
-		m_glyphTemplatesDirectory = QFileInfo(settings.value("dir", SynGlyphX::Application::applicationDirPath() + QDir::separator() + "GlyphTemplates").toString()).canonicalFilePath();
-		settings.endGroup();
-
         settings.beginGroup("Window");
         resize(settings.value("size", QSize(1100, 820)).toSize());
 		QByteArray geometry = settings.value("geometry").toByteArray();

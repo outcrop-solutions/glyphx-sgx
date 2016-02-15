@@ -15,62 +15,29 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef GLYPHDESIGNERWINDOW_H
-#define GLYPHDESIGNERWINDOW_H
+#ifndef SYNGLYPHX_GLYPHTEMPLATELIBRARYLISTWIDGET_H
+#define SYNGLYPHX_GLYPHTEMPLATELIBRARYLISTWIDGET_H
 
-#include "mainwindow.h"
-#include "glyphtreeview.h"
-#include "antzsingleglyphtreewidget.h"
-#include "minmaxglyphtreemodel.h"
+#include "sgxglyphgui_global.h"
+#include <QtWidgets/QListView>
+#include <QtWidgets/QFileSystemModel>
 
-class GlyphDesignerWindow : public SynGlyphX::MainWindow
-{
-    Q_OBJECT
+namespace SynGlyphX {
 
-public:
-    GlyphDesignerWindow(QWidget *parent = 0);
-    ~GlyphDesignerWindow();
+	class SGXGLYPHGUI_EXPORT GlyphTemplateLibraryListWidget : public QListView
+	{
+		Q_OBJECT
 
-protected:
-    virtual bool LoadRecentFile(const QString& filename);
-    virtual void closeEvent(QCloseEvent* event);
+	public:
+		GlyphTemplateLibraryListWidget(bool multiselect, QWidget *parent);
+		~GlyphTemplateLibraryListWidget();
 
-	virtual void ReadSettings();
-	virtual void WriteSettings();
+		QStringList GetSelectedTemplates() const;
 
-private slots:
-    void CreateNewGlyphTree();
-    void ExportToCSV();
-    bool SaveTemplate();
-    bool SaveAsTemplate();
-    void OpenTemplate();
-	void OpenTemplateFromLibrary();
-    void EditingModeChanged(QAction* action);
-	void OnModelChanged();
-	void ChangeGlobalOptions();
+	private:
+		QFileSystemModel* m_fileSystemModel;
+	};
 
-private:
-    void CreateMenus();
-    void CreateDockWidgets();
-    bool LoadTemplate(const QString& filename);
-    bool SaveTemplateFile(const QString& filename);
-    bool AskUserToSave();
-	void SelectRootGlyphInModel();
+} //namespace SynGlyphX
 
-	SynGlyphXANTz::ANTzSingleGlyphTreeWidget* m_3dView;
-    GlyphTreeView* m_treeView;
-
-    QMenu* m_fileMenu;
-    QMenu* m_editMenu;
-    QMenu* m_glyphMenu;
-	QMenu* m_toolsMenu;
-
-	QAction* m_showAnimation;
-
-	SynGlyphXANTz::MinMaxGlyphTreeModel* m_glyphTreeModel;
-	QItemSelectionModel* m_sharedSelectionModel;
-
-	bool m_isFileLoadingOrDefaultGlyphSet;
-};
-
-#endif // GLYPHDESIGNERWINDOW_H
+#endif // GLYPHTEMPLATELIBRARYLISTWIDGET_H

@@ -33,7 +33,7 @@
 #include "changedatasourcefiledialog.h"
 #include "changeimagefiledialog.h"
 #include <fstream>
-#include <QtWidgets/QFileSystemModel>
+#include "glyphtemplatelibrarylistwidget.h"
 
 DataMapperWindow::DataMapperWindow(QWidget *parent)
     : SynGlyphX::MainWindow(0, parent),
@@ -110,10 +110,11 @@ void DataMapperWindow::CreateCenterWidget() {
 	m_minMaxGlyph3DWidget->SetModel(dynamic_cast<SynGlyphX::RoleDataFilterProxyModel*>(m_glyphTreesView->model()), m_glyphTreesView->selectionModel());
 	m_minMaxGlyph3DWidget->SetAllowMultiselect(true);
 
-	m_minMaxGlyph3DWidget->addActions(m_glyphTreesView->GetGlyphActions());
-	m_minMaxGlyph3DWidget->addAction(SynGlyphX::SharedActionList::CreateSeparator(this));
-	m_minMaxGlyph3DWidget->addActions(m_glyphTreesView->GetEditActions());
-	m_minMaxGlyph3DWidget->setContextMenuPolicy(Qt::ActionsContextMenu);
+	QList<QAction*> actions;
+	actions.append(m_glyphTreesView->GetGlyphActions());
+	actions.push_back(SynGlyphX::SharedActionList::CreateSeparator(this));
+	actions.append(m_glyphTreesView->GetEditActions());
+	m_minMaxGlyph3DWidget->AddActionsToMinMaxViews(actions);
 
 	QObject::connect(m_showAnimation, &QAction::toggled, m_minMaxGlyph3DWidget, &DataMapping3DWidget::EnableAnimation);
 	
@@ -740,31 +741,25 @@ void DataMapperWindow::AddGlyphTemplate() {
 
 void DataMapperWindow::AddGlyphTemplatesFromLibrary() {
 
-	QFileSystemModel* fileSystemModel = new QFileSystemModel(this);
-	fileSystemModel->setNameFilters(QStringList("*.sgt"));
+	SynGlyphX::GlyphTemplateLibraryListWidget* templateListView = new SynGlyphX::GlyphTemplateLibraryListWidget(true, this);	
 
-	QListView* fileListView = new QListView(this);
-	fileListView->setModel(fileSystemModel);
-	fileListView->setRootIndex(fileSystemModel->setRootPath(m_glyphTemplatesDirectory));
-	fileListView->setSelectionMode(QAbstractItemView::ExtendedSelection);
-
-	SynGlyphX::SingleWidgetDialog dialog(QDialogButtonBox::StandardButton::Open | QDialogButtonBox::StandardButton::Cancel, fileListView, this);
+	SynGlyphX::SingleWidgetDialog dialog(QDialogButtonBox::StandardButton::Open | QDialogButtonBox::StandardButton::Cancel, templateListView, this);
 	dialog.setWindowTitle(tr("Add Glyph Templates From Library"));
 
 	if (dialog.exec() == QDialog::Accepted) {
 
-		const QModelIndexList& selected = fileListView->selectionModel()->selectedIndexes();
+		QStringList templatesToLoad = templateListView->GetSelectedTemplates();
 
-		if (selected.isEmpty()) {
+		if (templatesToLoad.isEmpty()) {
 		
 			return;
 		}
 
 		try {
 		
-			for (const QModelIndex& index : selected) {
+			for (const QString& filename : templatesToLoad) {
 		
-				m_dataTransformModel->AddGlyphFile(fileSystemModel->filePath(index));
+				m_dataTransformModel->AddGlyphFile(filename);
 			}
 		}
 		catch (const std::exception& e) {

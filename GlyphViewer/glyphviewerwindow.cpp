@@ -133,7 +133,6 @@ void GlyphViewerWindow::CreateANTzWidget(const QGLFormat& format) {
 
 	m_antzWidget = new SynGlyphXANTz::ANTzForestWidget(format, m_glyphForestModel, m_glyphForestSelectionModel, this);
 	m_antzWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-	m_antzWidget->setContextMenuPolicy(Qt::ContextMenuPolicy::ActionsContextMenu);
 	m_antzWidget->addActions(m_treeView->GetSharedActions());
 
 	antzWidgetContainer->addWidget(m_antzWidget);

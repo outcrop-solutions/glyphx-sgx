@@ -15,6 +15,7 @@
 #include "newglyphtreewizard.h"
 #include "singleglyphviewoptionswidget.h"
 #include "singlewidgetdialog.h"
+#include "glyphtemplatelibrarylistwidget.h"
 
 GlyphDesignerWindow::GlyphDesignerWindow(QWidget *parent)
     : SynGlyphX::MainWindow(0, parent),
@@ -38,7 +39,6 @@ GlyphDesignerWindow::GlyphDesignerWindow(QWidget *parent)
 	m_3dView->addActions(m_treeView->GetGlyphActions());
 	m_3dView->addAction(SynGlyphX::SharedActionList::CreateSeparator(this));
 	m_3dView->addActions(m_treeView->GetEditActions());
-	m_3dView->setContextMenuPolicy(Qt::ActionsContextMenu);
 
 	QObject::connect(m_glyphTreeModel, &SynGlyphXANTz::MinMaxGlyphTreeModel::modelReset, this, &GlyphDesignerWindow::OnModelChanged);
 	QObject::connect(m_glyphTreeModel, &SynGlyphXANTz::MinMaxGlyphTreeModel::rowsInserted, this, &GlyphDesignerWindow::OnModelChanged);
@@ -70,6 +70,9 @@ void GlyphDesignerWindow::CreateMenus() {
 
     QAction* openAction = CreateMenuAction(m_fileMenu, tr("Open Template"), QKeySequence::Open);
     QObject::connect(openAction, &QAction::triggered, this, &GlyphDesignerWindow::OpenTemplate);
+
+	QAction* openFromLibraryAction = CreateMenuAction(m_fileMenu, tr("Open Template From Library"));
+	QObject::connect(openFromLibraryAction, &QAction::triggered, this, &GlyphDesignerWindow::OpenTemplateFromLibrary);
 
     QAction* saveAction = CreateMenuAction(m_fileMenu, tr("Save Template"), QKeySequence::Save);
     QObject::connect(saveAction, &QAction::triggered, this, &GlyphDesignerWindow::SaveTemplate);
@@ -224,6 +227,29 @@ void GlyphDesignerWindow::OpenTemplate() {
 		QString openFile = GetFileNameOpenDialog("GlyphTemplateDir", tr("Open Template"), m_glyphTemplatesDirectory, tr("SynGlyphX Glyph Template Files (*.sgt *.csv)"));
 		LoadTemplate(openFile);
     }
+}
+
+void GlyphDesignerWindow::OpenTemplateFromLibrary() {
+
+	if (AskUserToSave()) {
+
+		SynGlyphX::GlyphTemplateLibraryListWidget* templateListView = new SynGlyphX::GlyphTemplateLibraryListWidget(false, this);
+
+		SynGlyphX::SingleWidgetDialog dialog(QDialogButtonBox::StandardButton::Open | QDialogButtonBox::StandardButton::Cancel, templateListView, this);
+		dialog.setWindowTitle(tr("Load Glyph Template From Library"));
+
+		if (dialog.exec() == QDialog::Accepted) {
+
+			QStringList templatesToLoad = templateListView->GetSelectedTemplates();
+
+			if (templatesToLoad.isEmpty()) {
+
+				return;
+			}
+
+			LoadTemplate(templatesToLoad[0]);
+		}
+	}
 }
 
 bool GlyphDesignerWindow::LoadTemplate(const QString& filename) {
