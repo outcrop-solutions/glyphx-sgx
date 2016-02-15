@@ -64,27 +64,27 @@ namespace DataEngine
 		
 		if (flag == JNI_ERR) {
 			
-			throw std::exception("JVM Error: Unknown Error");
+			throw std::runtime_error("JVM Error: Unknown Error");
 		}
 		else if (flag == JNI_EDETACHED) {
 
-			throw std::exception("JVM Error: Thread detached from VM");
+			throw std::runtime_error("JVM Error: Thread detached from VM");
 		}
 		else if (flag == JNI_EVERSION) {
 
-			throw std::exception("JVM Error: Version Error");
+			throw std::runtime_error("JVM Error: Version Error");
 		}
 		else if (flag == JNI_ENOMEM) {
 
-			throw std::exception("JVM Error: Not Enough Memory");
+			throw std::runtime_error("JVM Error: Not Enough Memory");
 		}
 		else if (flag == JNI_EEXIST) {
 
-			throw std::exception("JVM Error: JVM already created");
+			throw std::runtime_error("JVM Error: JVM already created");
 		}
 		else if (flag == JNI_EINVAL) {
 
-			throw std::exception("JVM Error: Invalid Arguments");
+			throw std::runtime_error("JVM Error: Invalid Arguments");
 		}
 
 		jcls = jniEnv->FindClass("DataEngine");

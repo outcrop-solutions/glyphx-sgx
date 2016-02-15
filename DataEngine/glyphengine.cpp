@@ -62,7 +62,7 @@ namespace DataEngine
 
 				if (!dir.mkpath(bod)) {
 
-					throw std::exception("Instance directory was not created");
+					throw std::runtime_error("Instance directory was not created");
 				}
 			}
 
@@ -235,7 +235,7 @@ namespace DataEngine
 
 				if (!QFile::remove(baseImageFilename)) {
 
-					throw std::exception("Failed to remove old base image");
+					throw std::runtime_error("Failed to remove old base image");
 				}
 			}
 			try {
