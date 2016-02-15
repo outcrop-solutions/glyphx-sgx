@@ -42,7 +42,7 @@ namespace SynGlyphX {
 		}
 		catch (const std::exception& e) {
 
-			throw std::exception("CSVT file failed to write");
+			throw std::runtime_error("CSVT file failed to write");
 		}
 	}
 

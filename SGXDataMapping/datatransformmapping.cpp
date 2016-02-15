@@ -626,7 +626,7 @@ namespace SynGlyphX {
 
 		if (!m_datasources.HasDatasourceWithID(inputTable.GetDatasourceID())) {
 
-			throw std::exception("Can't create subset of mapping with a datasource ID that does not exist in the mapping.");
+			throw std::runtime_error("Can't create subset of mapping with a datasource ID that does not exist in the mapping.");
 		}
 
 		SharedPtr subsetMapping(new DataTransformMapping());

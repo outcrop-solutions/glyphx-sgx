@@ -177,7 +177,7 @@ void GeographicBoundingBox::WriteToKMLFile(const std::string& filename) const {
     kmlfile.open(filename, std::ios_base::out | std::ios_base::trunc);
 
     if (!kmlfile.is_open()) {
-        throw std::exception("Failed to write bounding box KML file");
+        throw std::runtime_error("Failed to write bounding box KML file");
     }
 
     kmlfile << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" << std::endl;

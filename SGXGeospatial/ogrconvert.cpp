@@ -53,7 +53,7 @@ namespace SynGlyphX {
         //Windows specific but since we will use GDAL as a library soon enough don't worry about it
         if (_wsystem(ogr2ogrCommand.c_str()) == -1) {
             
-            throw std::exception(_strerror("Failed to create intermediate CSV: "));
+            throw std::runtime_error(_strerror("Failed to create intermediate CSV: "));
         }
 
         MergeCSVFiles(intermediateDir, outputFilename);
@@ -68,7 +68,7 @@ namespace SynGlyphX {
         outputCSV.open(outputFilename.c_str());
 
         if (!outputCSV.is_open()) {
-            throw std::exception("Output CSV failed to open");
+            throw std::runtime_error("Output CSV failed to open");
         }
 
         bool headerNeedsToBeWritten = true;
@@ -81,7 +81,7 @@ namespace SynGlyphX {
                 inputCSV.open(iT->path().c_str());
                 if (!outputCSV.is_open()) {
                     std::string error = iT->path().stem().string() + " failed to open";
-                    throw std::exception(error.c_str());
+                    throw std::runtime_error(error.c_str());
                 }
 
                 std::wstring line;
@@ -110,7 +110,7 @@ namespace SynGlyphX {
         outputCSV.close();
 
         if (!csvFilesWereProcessed) {
-            throw std::exception("No intermediate CSVs were created");
+            throw std::runtime_error("No intermediate CSVs were created");
         }
     }
 

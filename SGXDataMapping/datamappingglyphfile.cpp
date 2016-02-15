@@ -27,7 +27,7 @@ namespace SynGlyphX {
 		}
 		else {
 
-			throw std::exception("File does not have glyph tree");
+			throw std::runtime_error("File does not have glyph tree");
 		}
 	}
 
@@ -39,7 +39,7 @@ namespace SynGlyphX {
 		}
 		else {
 
-			throw std::exception("Can't write a null DataMappingGlyphGraph");
+			throw std::runtime_error("Can't write a null DataMappingGlyphGraph");
 		}
 	}
 

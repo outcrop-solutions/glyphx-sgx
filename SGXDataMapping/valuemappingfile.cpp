@@ -27,22 +27,22 @@ namespace SynGlyphX {
 		boost::optional<const boost::property_tree::wptree&> valueMappingPropertyTree = filePropertyTree.get_child_optional(L"Function");
 		if (!valueMappingPropertyTree.is_initialized()) {
 
-			throw std::exception("File does not have value mapping");
+			throw std::runtime_error("File does not have value mapping");
 		}
 
 		if (ValueMappingType::GetFunctionForThisType() != valueMappingPropertyTree.get().get<MappingFunctionData::Function>(L"<xmlattr>.type")) {
 
-			throw std::exception("File does not match current value mapping type");
+			throw std::runtime_error("File does not match current value mapping type");
 		}
 
 		if (ValueMappingType::GetSupportedInputForThisType() != valueMappingPropertyTree.get().get<MappingFunctionData::Input>(L"<xmlattr>.input")) {
 
-			throw std::exception("File does not match current value input type");
+			throw std::runtime_error("File does not match current value input type");
 		}
 
 		if (ValueMappingType::GetSupportedOutputForThisType() != valueMappingPropertyTree.get().get<MappingFunctionData::Output>(L"<xmlattr>.output")) {
 
-			throw std::exception("File does not match current value output type");
+			throw std::runtime_error("File does not match current value output type");
 		}
 
 		m_valueMapping = std::make_shared<ValueMappingType>(valueMappingPropertyTree.get());
@@ -59,7 +59,7 @@ namespace SynGlyphX {
 		}
 		else {
 
-			throw std::exception("Can't save a null value mapping to a file");
+			throw std::runtime_error("Can't save a null value mapping to a file");
 		}
 	}
 

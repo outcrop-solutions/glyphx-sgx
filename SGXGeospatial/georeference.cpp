@@ -43,12 +43,12 @@ namespace SynGlyphX {
 
         if (std::system(gdalCommand.c_str()) == -1) {
 
-            throw std::exception(_strerror("Georeferce command failed:"));
+            throw std::runtime_error(_strerror("Georeferce command failed:"));
         }
 
         if (!boost::filesystem::exists(outputFilename)) {
             
-            throw std::exception("Georefercing failed.");
+            throw std::runtime_error("Georefercing failed.");
         }
 
 #ifdef _DEBUG

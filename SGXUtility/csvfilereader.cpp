@@ -11,14 +11,14 @@ namespace SynGlyphX {
 		m_filestream.open(filename);
 		if (m_filestream.fail()) {
 
-			throw std::exception("CSV file failed to open");
+			throw std::runtime_error("CSV file failed to open");
 		}
 
 		//Headers are on the first line
 		m_headers = GetValuesFromLine();
 		if (m_headers.empty()) {
 
-			throw std::exception("CSV file has no headers");
+			throw std::runtime_error("CSV file has no headers");
 		}
 	}
 
@@ -37,7 +37,7 @@ namespace SynGlyphX {
 
 		if (m_filestream.eof()) {
 
-			throw std::exception("CSV file is at its end");
+			throw std::runtime_error("CSV file is at its end");
 		}
 
 		std::wstring buffer, line;

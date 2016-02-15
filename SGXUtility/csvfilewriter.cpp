@@ -28,7 +28,7 @@ namespace SynGlyphX {
 		m_filestream.open(filename, std::ofstream::out | std::ofstream::trunc);
 		if (m_filestream.fail()) {
 
-			throw std::exception("CSV file failed to open");
+			throw std::runtime_error("CSV file failed to open");
 		}
 	}
 
@@ -49,7 +49,7 @@ namespace SynGlyphX {
 
 		if (!IsOpen()) {
 
-			throw std::exception("CSVFileWriter can't write line since file isn't open");
+			throw std::runtime_error("CSVFileWriter can't write line since file isn't open");
 		}
 
 		if (values.empty()) {

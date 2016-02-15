@@ -51,7 +51,7 @@ namespace SynGlyphX {
 		if (!m_db.open()) {
 
 			Close();
-			throw std::exception("CSV cache db failed to open.");
+			throw std::runtime_error("CSV cache db failed to open.");
 		}
 
 		SetPragmaValue("page_size = 4096");
@@ -80,7 +80,7 @@ namespace SynGlyphX {
 		pragmaQuery.prepare("PRAGMA " + pragmaString);
 		if (!pragmaQuery.exec()) {
 
-			throw std::exception(("Pragma Error: " + m_db.lastError().text()).toStdString().c_str());
+			throw std::runtime_error(("Pragma Error: " + m_db.lastError().text()).toStdString().c_str());
 		}
 		pragmaQuery.finish();
 	}
@@ -99,18 +99,18 @@ namespace SynGlyphX {
 
 		if (!IsValid()) {
 
-			throw std::exception("Could not add CSV file to cache.  CSV cache is not set up.");
+			throw std::runtime_error("Could not add CSV file to cache.  CSV cache is not set up.");
 		}
 
 		QString csvtFilename = GetCSVTFilename(csvFilename);
 		if (!QFileInfo::exists(csvtFilename)) {
 
-			throw std::exception("CSVT file does not exist");
+			throw std::runtime_error("CSVT file does not exist");
 		}
 
 		if (!QFileInfo::exists(csvFilename)) {
 
-			throw std::exception("CSV file does not exist");
+			throw std::runtime_error("CSV file does not exist");
 		}
 
 		if (DoesCSVFileNeedUpdate(tableName, csvFilename, csvtFilename)) {
@@ -176,7 +176,7 @@ namespace SynGlyphX {
 
 		if (!IsValid()) {
 
-			throw std::exception("Could not get column names.  CSV cache is not set up.");
+			throw std::runtime_error("Could not get column names.  CSV cache is not set up.");
 		}
 
 		QSqlRecord columnRecord = m_db.record(tableName);
@@ -203,7 +203,7 @@ namespace SynGlyphX {
 
 		if (!querySucceeded) {
 
-			throw std::exception((QObject::tr("Create table in CSV cache failed: ") + m_db.lastError().text()).toStdString().c_str());
+			throw std::runtime_error((QObject::tr("Create table in CSV cache failed: ") + m_db.lastError().text()).toStdString().c_str());
 		}
 
 		createTableQuery.finish();
@@ -227,7 +227,7 @@ namespace SynGlyphX {
 
 		if (!querySucceeded) {
 
-			throw std::exception((QObject::tr("Delete table in CSV cache failed: ") + m_db.lastError().text()).toStdString().c_str());
+			throw std::runtime_error((QObject::tr("Delete table in CSV cache failed: ") + m_db.lastError().text()).toStdString().c_str());
 		}
 
 		dropTableQuery.finish();
@@ -241,7 +241,7 @@ namespace SynGlyphX {
 
 		if (!querySucceeded) {
 
-			throw std::exception((QObject::tr("Get timestamp in CSV cache failed: ") + m_db.lastError().text()).toStdString().c_str());
+			throw std::runtime_error((QObject::tr("Get timestamp in CSV cache failed: ") + m_db.lastError().text()).toStdString().c_str());
 		}
 
 		timestampQuery.first();
@@ -260,7 +260,7 @@ namespace SynGlyphX {
 
 		if (!querySucceeded) {
 
-			throw std::exception((QObject::tr("Update timestamp in CSV cache failed: ") + m_db.lastError().text()).toStdString().c_str());
+			throw std::runtime_error((QObject::tr("Update timestamp in CSV cache failed: ") + m_db.lastError().text()).toStdString().c_str());
 		}
 
 		timestampQuery.finish();
@@ -330,7 +330,7 @@ namespace SynGlyphX {
 
 		if (!insertIntoCacheQuery.execBatch()) {
 
-			throw std::exception((QObject::tr("Failed to insert data into table: ") + m_db.lastError().text()).toStdString().c_str());
+			throw std::runtime_error((QObject::tr("Failed to insert data into table: ") + m_db.lastError().text()).toStdString().c_str());
 		}
 		insertIntoCacheQuery.finish();
 
