@@ -35,6 +35,8 @@ namespace SynGlyphXANTz {
 		MinMaxGlyph3DWidget(QWidget *parent);
 		~MinMaxGlyph3DWidget();
 
+		void AddActionsToMinMaxViews(const QList<QAction*>& actions);
+
 		void SetAllowMultiselect(bool allowMultiselect);
 		virtual void SetModel(MinMaxGlyphTreeModel* model, QItemSelectionModel* selectionModel);
 

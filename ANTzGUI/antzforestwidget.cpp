@@ -851,6 +851,16 @@ namespace SynGlyphXANTz {
 			}
 		}
 
+		//Make sure that ANTz combo of left & right button does not cause the context menu to appear
+		if (event->buttons() == Qt::RightButton) {
+
+			setContextMenuPolicy(Qt::ActionsContextMenu);
+		}
+		else {
+
+			setContextMenuPolicy(Qt::NoContextMenu);
+		}
+
 		m_lastMousePosition = event->pos();
 	}
 
@@ -967,17 +977,27 @@ namespace SynGlyphXANTz {
 
 				if (m_selectionModel->GetFocusList().empty()) {
 
-					antzData->io.mouse.mode = kNPmouseModeCamLook;
+					if (event->buttons() & Qt::LeftButton) {
+
+						antzData->io.mouse.mode = kNPmouseModeCamLook;
+					}
 				}
 				else {
 
 					if (event->buttons() & Qt::LeftButton) {
+						
 						if (event->buttons() & Qt::RightButton) {
+						
 							antzData->io.mouse.mode = kNPmouseModeCamExamXZ;
 						}
 						else {
+							
 							antzData->io.mouse.mode = kNPmouseModeCamExamXY;
 						}
+					}
+					else if (event->buttons() & Qt::MidButton) {
+
+						antzData->io.mouse.mode = kNPmouseModeCamExamXZ;
 					}
 				}
 			}
@@ -1057,8 +1077,10 @@ namespace SynGlyphXANTz {
 			antzData->io.mouse.delta.y = event->delta() / 10;
 			event->accept();
 		}
+		else {
 
-		event->ignore();
+			event->ignore();
+		}
 	}
 	/*
 	void ANTzForestWidget::SetStereo(bool enableStereo) {

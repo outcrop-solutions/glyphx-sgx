@@ -7,6 +7,7 @@
 #include <stack>
 #include <QtCore/QDir>
 #include <QtCore/QFile>
+#include <QtWidgets/QMenu>
 #include "glyphnodeconverter.h"
 #include "glyphbuilderapplication.h"
 #include "defaultbaseimageproperties.h"
@@ -29,7 +30,7 @@ namespace SynGlyphXANTz {
 		m_updateCameraAfterDraw(false)
 	{
 
-
+		setContextMenuPolicy(Qt::NoContextMenu);
 	}
 
 	ANTzSingleGlyphTreeWidget::~ANTzSingleGlyphTreeWidget()
@@ -482,6 +483,16 @@ namespace SynGlyphXANTz {
 			}
 		}
 
+		//Make sure that ANTz combo of left & right button does not cause the context menu to appear
+		if (event->buttons() == Qt::RightButton) {
+
+			setContextMenuPolicy(Qt::ActionsContextMenu);
+		}
+		else {
+
+			setContextMenuPolicy(Qt::NoContextMenu);
+		}
+
 		m_lastMousePosition = event->pos();
 	}
 
@@ -543,9 +554,21 @@ namespace SynGlyphXANTz {
 					m_antzData->io.mouse.mode = kNPmouseModeCamExamXY;
 				}
 			}
+			else if (event->buttons() & Qt::MidButton) {
+
+				m_antzData->io.mouse.mode = kNPmouseModeCamExamXZ;
+			}
 		}
 
 		m_lastMousePosition = event->pos();
+	}
+
+	void ANTzSingleGlyphTreeWidget::wheelEvent(QWheelEvent* event) {
+
+		m_antzData->io.mouse.mode = kNPmouseModeCamExamXZ;
+		//antzData->io.mouse.delta.x = event->x() - m_lastMousePosition.x();
+		m_antzData->io.mouse.delta.y = event->delta() / 10;
+		event->accept();
 	}
 
 	void ANTzSingleGlyphTreeWidget::SetEditingMode(EditingMode mode) {
