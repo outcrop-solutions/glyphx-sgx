@@ -8,7 +8,7 @@ namespace DataEngine
 		jcls = jc;
 	}
 
-	void DataEngineStatement::prepare(JNIEnv *env, jclass jc, SynGlyphX::FileDatasource::SourceType type){
+	void DataEngineStatement::prepare(JNIEnv *env, jclass jc, SynGlyphX::FileDatasource::FileType type){
 
 		std::cout << "Preparing statement" << std::endl;
 		jniEnv = env;
@@ -173,7 +173,7 @@ namespace DataEngine
 		return dataStats.value(fields.at(current)).at(5);
 	}
 
-	void DataEngineStatement::setSourceType(SynGlyphX::FileDatasource::SourceType type){
+	void DataEngineStatement::setSourceType(SynGlyphX::FileDatasource::FileType type){
 
 		if (type == SynGlyphX::FileDatasource::CSV){
 			sourceType = "csv";

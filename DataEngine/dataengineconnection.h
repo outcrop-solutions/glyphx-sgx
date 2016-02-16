@@ -7,6 +7,7 @@
 #include <QtCore/QString>
 #include <QtCore/QStringList>
 #include <map>
+#include <memory>
 #include "DataEngine_Exports.h"
 
 namespace DataEngine
@@ -36,6 +37,8 @@ namespace DataEngine
 		void setTables();
 
 	public:
+		typedef std::shared_ptr<DataEngineConnection> SharedPtr;
+
 		DataEngineConnection();
 		~DataEngineConnection();
 
