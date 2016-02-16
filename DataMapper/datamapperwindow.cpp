@@ -382,7 +382,7 @@ void DataMapperWindow::UpdateMissingFiles(const QString& mappingFilename) {
 	if (!fileDatasourcesToBeUpdated.empty()) {
 
 		SynGlyphX::Application::restoreOverrideCursor();
-		wasDataTransformUpdated = SynGlyphX::ChangeDatasourceFileDialog::UpdateDatasourceFiles(fileDatasourcesToBeUpdated, mapping, this);
+		wasDataTransformUpdated = SynGlyphX::ChangeDatasourceFileDialog::UpdateDatasourceFiles(fileDatasourcesToBeUpdated, mapping, m_dataEngineConnection, this);
 		SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
 	}
 

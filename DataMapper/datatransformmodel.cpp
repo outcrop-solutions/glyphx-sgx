@@ -1169,7 +1169,17 @@ void DataTransformModel::AddDatasourceInfoFromDataEngine(const boost::uuids::uui
 			QStringList databases = m_dataEngineConnection->connectToServer(url, user, pass, type);
 			QString database("");
 			//QString database("world");
-			QStringList qtables; // = dec->chooseDatabase(database);
+			QStringList qtables;
+			if (databases.empty()) {
+
+				qtables = m_dataEngineConnection->getTables();
+			}
+			else {
+
+				qtables = m_dataEngineConnection->getSchemaTableNames("");
+			}
+			
+			// = dec->chooseDatabase(database);
 			//dec->testFunction();
 			QStringList chosenTables;
 			chosenTables = qtables;

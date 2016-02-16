@@ -44,20 +44,10 @@ void DataSourceStatsWidget::AddNewStatsViews() {
 
 		try {
 			if (findChildren<QTableView*>(QString::fromStdString(boost::uuids::to_string(iT->first))).empty()) {
-				QString datasource = QString::fromStdWString(iT->second->GetFilename());
 
-				if (iT->second.GetFileType() == SynGlyphX::FileDatasource::SQLITE3) {
+				for (const auto& table : iT->second->GetTableNames()) {
 
-					for (int i = 0; i < dec->getTables().size(); i++){
-
-						CreateTablesFromDatasource(iT->first, i, QString::fromStdWString(iT->second->GetFormattedName()) + ":" + dec->getTables()[i], iT->second.GetType());
-					}
-					dec->closeConnection();
-				}
-				else if (iT->second->GetFileType() == SynGlyphX::FileDatasource::CSV) {
-					
-					CreateTablesFromDatasource(iT->first, 0, QString::fromStdWString(iT->second.GetFormattedName()), iT->second.GetType());
-					dec->closeConnection();
+					CreateTablesFromDatasource(iT->first, QString::fromStdWString(iT->second->GetFormattedName()), QString::fromStdWString(table));
 				}
 			}
 		}
@@ -76,21 +66,16 @@ void DataSourceStatsWidget::ClearTabs() {
 	clear();
 }
 
-void DataSourceStatsWidget::CreateTablesFromDatasource(const boost::uuids::uuid& id, int place, QString file, SynGlyphX::FileDatasource::SourceType type) {
+void DataSourceStatsWidget::CreateTablesFromDatasource(const boost::uuids::uuid& id, const QString& formattedDatasourceName, const QString& tableName) {
 
 	QString idString = QString::fromStdString(boost::uuids::to_string(id));
-	QString tableName;
-	if (file.right(4).toLower() == ".csv") {
+	QString tabName = formattedDatasourceName;
+	if (tableName != "OnlyTable") {
 
-		tableName = "OnlyTable";
-	}
-	else {
-
-		QStringList qsl = file.split(":");
-		tableName = qsl.at(1);
+		tabName += ":" + tableName;
 	}
 	DataStatsModel* model = new DataStatsModel(id, tableName, m_model, this);
-	CreateTableView(model, file, idString);
+	CreateTableView(model, tabName, idString);
 }
 
 void DataSourceStatsWidget::CreateTableView(DataStatsModel* model, const QString& tabName, const QString& id) {
