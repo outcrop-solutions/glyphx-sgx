@@ -56,6 +56,7 @@ namespace SynGlyphX {
 
 		const DatasourceMap& GetDatasources() const;
 		DatasourceMap GetDatasourcesInUse() const;
+		UUIDUnorderedSet GetDatasourcesBySourceType(Datasource::SourceType type) const;
 
 		bool HasDatasourceWithId(const boost::uuids::uuid& id) const;
 		void RemoveDatasource(const boost::uuids::uuid& id);

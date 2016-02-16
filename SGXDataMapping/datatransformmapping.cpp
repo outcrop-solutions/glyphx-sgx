@@ -265,6 +265,20 @@ namespace SynGlyphX {
 		return datasourceMap;
 	}
 
+	UUIDUnorderedSet DataTransformMapping::GetDatasourcesBySourceType(Datasource::SourceType type) const {
+
+		UUIDUnorderedSet datasourceIDs;
+		for (auto& datasource : m_datasources) {
+
+			if (datasource.second->GetSourceType() == type) {
+
+				datasourceIDs.insert(datasource.first);
+			}
+		}
+
+		return datasourceIDs;
+	}
+
 	void DataTransformMapping::Clear() {
 
 		Clear(true);
@@ -669,7 +683,7 @@ namespace SynGlyphX {
 		std::vector<boost::uuids::uuid> fileDatasourcesToBeUpdated;
 		for (DatasourceMap::const_iterator datasource = datasources.begin(); datasource != datasources.end(); ++datasource) {
 
-			if (!datasource->second->CanDatasourceBeFound()) {
+			if ((!datasource->second->CanDatasourceBeFound()) && (datasource->second->GetSourceType() == Datasource::SourceType::File)) {
 
 				fileDatasourcesToBeUpdated.push_back(datasource->first);
 			}
