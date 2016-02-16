@@ -15,58 +15,30 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef SYNGLYPHX_DATASOURCEMAPS_H
-#define SYNGLYPHX_DATASOURCEMAPS_H
+#ifndef SYNGLYPHX_STRINGCONVERT_H
+#define SYNGLYPHX_STRINGCONVERT_H
 
-#include "sgxdatamapping.h"
+#include "sgxutility.h"
 #include <string>
-#include <unordered_map>
-#include <boost/property_tree/ptree.hpp>
-#include "UUID.h"
-#include "filedatasource.h"
-#include "inputtable.h"
+#include <locale>
+#include <codecvt>
 
 namespace SynGlyphX {
 
-	class SGXDATAMAPPING_API DatasourceMaps
+	class SGXUTILITY_API StringConvert
 	{
 	public:
-		typedef boost::property_tree::wptree PropertyTree;
-		typedef std::unordered_map<boost::uuids::uuid, FileDatasource, SynGlyphX::UUIDHash> FileDatasourceMap;
+		StringConvert();
+		~StringConvert();
 
-		DatasourceMaps();
-		DatasourceMaps(const PropertyTree& propertyTree);
-		~DatasourceMaps();
-
-		bool operator==(const DatasourceMaps& maps) const;
-		bool operator!=(const DatasourceMaps& maps) const;
-
-		const Datasource& GetDatasourceByID(const boost::uuids::uuid& id) const;
-		bool HasDatasourceWithID(const boost::uuids::uuid& id) const;
-		bool HasDatasources() const;
-		unsigned int Count() const;
-		void Clear();
-		bool EnableTables(const boost::uuids::uuid& id, const Datasource::TableNames& tables, bool enable = true);
-
-		void ChangeDatasourceName(const boost::uuids::uuid& id, const std::wstring& name);
-
-		PropertyTree& ExportToPropertyTree(PropertyTree& propertyTreeParent) const;
-
-		void RemoveDatasource(const boost::uuids::uuid& id);
-
-		const FileDatasourceMap& GetFileDatasources() const;
-		boost::uuids::uuid AddFileDatasource(FileDatasource::SourceType type,
-			const std::wstring& name,
-			const std::wstring& host = L"localhost",
-			unsigned int port = 0,
-			const std::wstring& username = L"",
-			const std::wstring& password = L"");
-		void AddFileDatasource(const boost::uuids::uuid& id, const FileDatasource& fileDatasource);
+		static std::string ToStdString(const std::wstring& str);
+		static std::wstring ToStdWString(const std::string& str);
 
 	private:
-		FileDatasourceMap m_fileDatasources;
+		static std::wstring_convert<std::codecvt_utf8<wchar_t>> s_toStdString;
+		static std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> s_toStdWString;
 	};
 
 } //namespace SynGlyphX
 
-#endif //DATASOURCEMAPS_H
+#endif //SYNGLYPHX_STRINGCONVERT_H

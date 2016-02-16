@@ -22,11 +22,12 @@
 #include <QtCore/QString>
 #include <QtCore/QStringList>
 #include <QtSql/QSqlDatabase>
-#include "datasourcemaps.h"
 #include "uuid.h"
 #include "csvcache.h"
 #include <unordered_map>
 #include <vector>
+#include "inputfield.h"
+#include "datasource.h"
 
 namespace SynGlyphX {
 
@@ -44,7 +45,7 @@ namespace SynGlyphX {
 		void SetCacheLocation(const QString& location);
 
 		void AddDatabaseConnection(const Datasource& datasource, const boost::uuids::uuid& datasourceID);
-		void AddDatabaseConnections(const DatasourceMaps& datasources);
+		//void AddDatabaseConnections(const DatasourceMaps& datasources);
 		void AddTable(const boost::uuids::uuid& datasource, const std::wstring& table);
 		void Clear();
 		void ClearDatabaseConnection(const boost::uuids::uuid& id);

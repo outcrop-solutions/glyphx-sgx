@@ -58,7 +58,7 @@ namespace SynGlyphX {
 		}
 	}
 
-	void SourceDataCache::AddDatasourcesToCache(const DatasourceMaps& datasources) {
+	/*void SourceDataCache::AddDatasourcesToCache(const DatasourceMaps& datasources) {
 
 		if (!IsValid()) {
 
@@ -69,7 +69,7 @@ namespace SynGlyphX {
 
 			AddFileDatasourceToCache(fileDatasource.first, fileDatasource.second);
 		}
-	}
+	}*/
 
 	void SourceDataCache::AddFileDatasourceToCache(const boost::uuids::uuid& id, const FileDatasource& datasource) {
 		
@@ -83,7 +83,7 @@ namespace SynGlyphX {
 					AddDBTablesToCache(id, datasource, "QSQLITE");
 				}
 			}
-			else if (datasource.GetType() == FileDatasource::CSV) {
+			else if (datasource.GetFileType() == FileDatasource::CSV) {
 
 				QString newTableName = QString::fromStdString(boost::uuids::to_string(id));
 				QString csvFilename = QString::fromStdWString(datasource.GetFilename());
@@ -606,18 +606,21 @@ namespace SynGlyphX {
 		return distinctValueIndexMap;
 	}
 
-	bool SourceDataCache::IsCacheOutOfDate(const DatasourceMaps& datasources) const {
+	bool SourceDataCache::IsCacheOutOfDate(const DataTransformMapping::DatasourceMap& datasources) const {
 
 		if (!IsValid()) {
 
 			throw std::runtime_error("Source data cache is not setup.");
 		}
 
-		for (auto fileDatasource : datasources.GetFileDatasources()) {
+		for (auto datasource : datasources) {
 
-			if (DoesFileDatasourceNeedUpdate(fileDatasource.first, fileDatasource.second)) {
+			if (datasource.second->GetSourceType() == Datasource::SourceType::File) {
 
-				return true;
+				if (DoesFileDatasourceNeedUpdate(datasource.first, *std::dynamic_pointer_cast<FileDatasource>(datasource.second))) {
+
+					return true;
+				}
 			}
 		}
 
@@ -630,7 +633,7 @@ namespace SynGlyphX {
 
 			return DoesFileDatabaseNeedUpdate(id, datasource);
 		}
-		else if (datasource.GetType() == FileDatasource::CSV) {
+		else if (datasource.GetFileType() == FileDatasource::CSV) {
 
 			QString tableName = QString::fromStdString(boost::uuids::to_string(id));
 			QString csvFilename = QString::fromStdWString(datasource.GetFilename());

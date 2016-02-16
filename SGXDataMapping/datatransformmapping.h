@@ -22,14 +22,16 @@
 #include "xmlpropertytreefile.h"
 #include <string>
 #include <memory>
-#include "datasourcemaps.h"
 #include <unordered_map>
 #include <boost/property_tree/ptree.hpp>
-#include "UUID.h"
+#include "uuid.h"
 #include "datamappingglyphgraph.h"
 #include "baseimage.h"
 #include "datamappingdefaults.h"
 #include "sceneproperties.h"
+#include "datasource.h"
+#include "filedatasource.h"
+#include "rdbmsdatasource.h"
 
 namespace SynGlyphX {
 
@@ -37,6 +39,7 @@ namespace SynGlyphX {
     {
     public:
 		typedef std::unordered_map<boost::uuids::uuid, DataMappingGlyphGraph::SharedPtr, SynGlyphX::UUIDHash> DataMappingGlyphGraphMap;
+		typedef std::unordered_map<boost::uuids::uuid, Datasource::SharedPtr, SynGlyphX::UUIDHash> DatasourceMap;
 
 		typedef std::wstring FieldGroupName;
 		typedef std::unordered_map<FieldGroupName, FieldGroup> FieldGroupMap;
@@ -51,11 +54,12 @@ namespace SynGlyphX {
 		bool operator==(const DataTransformMapping& mapping) const;
 		bool operator!=(const DataTransformMapping& mapping) const;
 
-		const DatasourceMaps& GetDatasources() const;
-		DatasourceMaps GetDatasourcesInUse() const;
+		const DatasourceMap& GetDatasources() const;
+		DatasourceMap GetDatasourcesInUse() const;
 
+		bool HasDatasourceWithId(const boost::uuids::uuid& id) const;
 		void RemoveDatasource(const boost::uuids::uuid& id);
-		boost::uuids::uuid AddFileDatasource(FileDatasource::SourceType type, 
+		boost::uuids::uuid AddFileDatasource(FileDatasource::FileType type, 
 			const std::wstring& name,
             const std::wstring& host = L"localhost",
             unsigned int port = 0,
@@ -123,7 +127,7 @@ namespace SynGlyphX {
 
 		SceneProperties m_sceneProperties;
 		DataMappingDefaults m_defaults;
-		DatasourceMaps m_datasources;
+		DatasourceMap m_datasources;
 		DataMappingGlyphGraphMap m_glyphTrees;
 		std::vector<BaseImage> m_baseObjects;
 		FieldGroupMap m_fieldGroups;

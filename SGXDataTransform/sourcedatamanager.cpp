@@ -72,13 +72,13 @@ namespace SynGlyphX {
 		}
 	}
 
-	void SourceDataManager::AddDatabaseConnections(const DatasourceMaps& datasources) {
+	/*void SourceDataManager::AddDatabaseConnections(const DatasourceMaps& datasources) {
 
 		for (auto fileDatasource : datasources.GetFileDatasources()) {
 
 			AddDatabaseConnection(fileDatasource.second, fileDatasource.first);
 		}
-	}
+	}*/
 
 	void SourceDataManager::ClearDatabaseConnection(const boost::uuids::uuid& id) {
 

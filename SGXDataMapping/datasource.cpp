@@ -1,6 +1,12 @@
 #include "datasource.h"
+#include <boost/assign/list_of.hpp>
+#include <boost/bimap/list_of.hpp>
 
 namespace SynGlyphX {
+
+	const Datasource::SourceTypeBimap Datasource::s_sourceTypeStrings = boost::assign::list_of < Datasource::SourceTypeBimap::relation >
+		(Datasource::SourceType::File, L"File")
+		(Datasource::SourceType::RDBMS, L"RDBMS");
 
 	const std::wstring Datasource::SingleTableName = L"OnlyTable";
 
@@ -62,6 +68,11 @@ namespace SynGlyphX {
     }
 
 	bool Datasource::operator==(const Datasource& datasource) const {
+
+		if (GetSourceType() != datasource.GetSourceType()) {
+
+			return false;
+		}
 
 		if (m_dbName != datasource.m_dbName) {
 
@@ -173,9 +184,9 @@ namespace SynGlyphX {
 		return tableNames;
 	}
 
-	Datasource::PropertyTree& Datasource::ExportToPropertyTree(boost::property_tree::wptree& parentPropertyTree, const std::wstring& parentName) {
+	Datasource::PropertyTree& Datasource::ExportToPropertyTree(boost::property_tree::wptree& parentPropertyTree) {
 
-		PropertyTree& propertyTree = parentPropertyTree.add(parentName, L"");
+		PropertyTree& propertyTree = parentPropertyTree.add(s_sourceTypeStrings.left.at(GetSourceType()), L"");
 
 		propertyTree.put(L"Name", m_dbName);
 		propertyTree.put(L"Host", m_host);

@@ -20,7 +20,6 @@
 
 #include "sgxdatatransform_global.h"
 #include "csvcache.h"
-#include "datasourcemaps.h"
 #include <map>
 #include "utilitytypes.h"
 #include "databaseinfo.h"
@@ -29,6 +28,8 @@
 #include <memory>
 #include <QtSql/QSqlTableModel>
 #include <boost/bimap.hpp>
+#include "filedatasource.h"
+#include "datatransformmapping.h"
 
 namespace SynGlyphX {
 
@@ -52,7 +53,7 @@ namespace SynGlyphX {
 		virtual void Close();
 
 		virtual void Setup(const QString& filename);
-		void AddDatasourcesToCache(const DatasourceMaps& datasources);
+		//void AddDatasourcesToCache(const DatasourceMaps& datasources);
 		void AddFileDatasourceToCache(const boost::uuids::uuid& id, const FileDatasource& datasource);
 
 		const TableNameMap& GetFormattedNames() const;
@@ -73,7 +74,7 @@ namespace SynGlyphX {
 		unsigned long GetNumberOfRowsInTable(const QString& table) const;
 		IndexSet GetIndexesFromTableWithSelectedValues(const QString& tableName, const ColumnValueData& selectedValues, const IndexSet& previousSelection = IndexSet()) const;
 
-		bool IsCacheOutOfDate(const DatasourceMaps& datasources) const;
+		bool IsCacheOutOfDate(const DataTransformMapping::DatasourceMap& datasources) const;
 
 		DistinctValueIndexMap GetIndexesOrderedByDistinctValue(const QString& tableName, const QString& columnName) const;
 

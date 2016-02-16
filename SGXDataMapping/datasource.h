@@ -30,11 +30,21 @@ namespace SynGlyphX {
 	class SGXDATAMAPPING_API Datasource
 	{
 	public:
+		typedef std::shared_ptr<Datasource> SharedPtr;
+		typedef std::shared_ptr<const Datasource> ConstSharedPtr;
+
 		typedef boost::property_tree::wptree PropertyTree;
 		typedef std::unordered_map<std::wstring, DatasourceTable> Tables;
 		typedef std::vector<std::wstring> TableNames;
 
 		static const std::wstring SingleTableName;
+
+		enum SourceType {
+			File,
+			RDBMS
+		};
+
+		typedef boost::bimap<SourceType, std::wstring> SourceTypeBimap;
 
 		Datasource(const std::wstring& dbName, const std::wstring& host = L"localhost", unsigned int port = 0, const std::wstring& username = L"", const std::wstring& password = L"");
 		Datasource(const PropertyTree& propertyTree);
@@ -44,6 +54,8 @@ namespace SynGlyphX {
         Datasource& operator=(const Datasource& datasource);
 		bool operator==(const Datasource& datasource) const;
 		bool operator!=(const Datasource& datasource) const;
+
+		virtual SourceType GetSourceType() const = 0;
 
         const std::wstring& GetDBName() const;
         const std::wstring& GetHost() const;
@@ -64,7 +76,9 @@ namespace SynGlyphX {
 		virtual bool CanDatasourceBeFound() const = 0;
 		virtual const std::wstring& GetFormattedName() const = 0;
 
-		virtual PropertyTree& ExportToPropertyTree(boost::property_tree::wptree& parentPropertyTree, const std::wstring& parentName);
+		virtual PropertyTree& ExportToPropertyTree(boost::property_tree::wptree& parentPropertyTree);
+
+		static const SourceTypeBimap s_sourceTypeStrings;
 
     protected:
         std::wstring m_dbName;
