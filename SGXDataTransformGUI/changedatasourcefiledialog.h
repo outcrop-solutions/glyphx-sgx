@@ -39,7 +39,7 @@ namespace SynGlyphX {
 		virtual bool IsNewFileValid() const;
 		
 		QStringList m_oldDatasourceTables;
-		FileDatasource::SourceType m_fileSourceType;
+		FileDatasource::FileType m_fileSourceType;
 	};
 
 } //namespace SynGlyphX

@@ -45,8 +45,11 @@ DataMapperWindow::DataMapperWindow(QWidget *parent)
 	m_dataTransformModel(nullptr),
 	m_minMaxGlyph3DWidget(nullptr),
 	m_baseObjectsModel(nullptr),
-	m_dataSourcesView(nullptr)
+	m_dataSourcesView(nullptr),
+	m_dataEngineConnection(nullptr)
 {
+	m_dataEngineConnection = std::make_shared<DataEngine::DataEngineConnection>();
+
 	m_dataTransformModel = new DataTransformModel(this);
 	QObject::connect(m_dataTransformModel, &DataTransformModel::dataChanged, this, [&, this](const QModelIndex& topLeft, const QModelIndex& bottomRight){ setWindowModified(true); });
 	QObject::connect(m_dataTransformModel, &DataTransformModel::rowsInserted, this, [&, this](const QModelIndex& parent, int first, int last){ setWindowModified(true); });
@@ -73,10 +76,11 @@ DataMapperWindow::DataMapperWindow(QWidget *parent)
 
 	try {
 
-		if (!dec.hasJVM()){
-			dec.createJVM();
-			m_dataTransformModel->SetDataEngineConn(&dec);
-			m_dataSourceStats->SetDataEngineConn(&dec);
+		if (!m_dataEngineConnection->hasJVM()){
+
+			m_dataEngineConnection->createJVM();
+			m_dataTransformModel->SetDataEngineConnection(m_dataEngineConnection);
+			m_dataSourceStats->SetDataEngineConnection(m_dataEngineConnection);
 		}
 	}
 	catch (const std::exception& e) {
@@ -101,7 +105,8 @@ DataMapperWindow::~DataMapperWindow()
 }
 
 void DataMapperWindow::closeJVM(){
-	dec.destroyJVM();
+	
+	m_dataEngineConnection->destroyJVM();
 }
 
 void DataMapperWindow::CreateCenterWidget() {
@@ -548,7 +553,7 @@ void DataMapperWindow::AddDataSources() {
 
 		try {
 
-			SynGlyphX::FileDatasource::SourceType fileDatasourceType = SynGlyphX::FileDatasource::SQLITE3;
+			SynGlyphX::FileDatasource::FileType fileDatasourceType = SynGlyphX::FileDatasource::SQLITE3;
 			if (datasource.right(4).toLower() == ".csv") {
 
 				fileDatasourceType = SynGlyphX::FileDatasource::CSV;
@@ -608,7 +613,7 @@ void DataMapperWindow::CreatePortableVisualization(SynGlyphX::PortableVisualizat
 
 	SynGlyphX::DataTransformMapping::ConstSharedPtr dataMapping = m_dataTransformModel->GetDataMapping();
 
-	if (!dataMapping->GetDatasources().HasDatasources()) {
+	if (dataMapping->GetDatasources().empty()) {
 
 		QMessageBox::critical(this, tr("Export to ANTz Error"), tr("Visualization has no datasources."));
 		return;
@@ -646,9 +651,13 @@ void DataMapperWindow::CreatePortableVisualization(SynGlyphX::PortableVisualizat
 	
 	QSet<QString> projectFileDirs;
 	projectFileDirs.insert(QDir::toNativeSeparators(m_currentFilename));
-	for (const auto& fileDatasource : m_dataTransformModel->GetDataMapping()->GetDatasources().GetFileDatasources()) {
+	for (const auto& datasource : m_dataTransformModel->GetDataMapping()->GetDatasources()) {
 
-		projectFileDirs.insert(QDir::toNativeSeparators(QString::fromStdWString(fileDatasource.second.GetFilename())));
+		if (datasource.second->GetSourceType() == SynGlyphX::Datasource::SourceType::File) {
+
+			SynGlyphX::FileDatasource::ConstSharedPtr fileDatasource = std::dynamic_pointer_cast<const SynGlyphX::FileDatasource>(datasource.second);
+			projectFileDirs.insert(QDir::toNativeSeparators(QString::fromStdWString(fileDatasource->GetFilename())));
+		}
 	}
 
 	QString csvDirectory = QDir::toNativeSeparators(GetExistingEmptyDirectory(projectFileDirs, "ANTzExportDir", tr("Select Directory For Portable Visualization"), "", tr("Selected directory contains one or more files relevant to the project.")));
@@ -668,7 +677,7 @@ void DataMapperWindow::CreatePortableVisualization(SynGlyphX::PortableVisualizat
 		DataEngine::GlyphEngine ge;
 		std::string baseImageDir = SynGlyphX::GlyphBuilderApplication::GetDefaultBaseImagesLocation().toStdString();
 		std::string baseFilename = (QString::fromStdWString(SynGlyphX::DefaultBaseImageProperties::GetBasefilename()).toStdString());
-		ge.initiate(dec.getEnv(), m_currentFilename.toStdString(), csvDirectory.toStdString() + "\\", baseImageDir, baseFilename, "DataMapper");
+		ge.initiate(m_dataEngineConnection->getEnv(), m_currentFilename.toStdString(), csvDirectory.toStdString() + "\\", baseImageDir, baseFilename, "DataMapper");
 		ge.getDownloadedBaseImage(m_dataTransformModel->GetDataMapping().get()->GetBaseObjects());
 		ge.generateGlyphs();
 

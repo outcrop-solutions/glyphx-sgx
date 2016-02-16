@@ -56,10 +56,10 @@ void DataSourcesView::OnShowProperties() {
 	const QModelIndexList& selection = selectionModel()->selectedIndexes();
 	if (!selection.isEmpty()) {
 
-		SynGlyphX::DatasourceMaps::FileDatasourceMap::const_iterator datasource = m_sourceModel->GetDataMapping()->GetDatasources().GetFileDatasources().begin();
+		SynGlyphX::DataTransformMapping::DatasourceMap::const_iterator datasource = m_sourceModel->GetDataMapping()->GetDatasources().begin();
 		std::advance(datasource, selection.front().row());
 
-		SynGlyphX::DatasourceInfoWidget* datasourceInfoWidget = new SynGlyphX::DatasourceInfoWidget(datasource->second, this);
+		SynGlyphX::DatasourceInfoWidget* datasourceInfoWidget = new SynGlyphX::DatasourceInfoWidget(*datasource->second, this);
 		SynGlyphX::SingleWidgetDialog dialog(QDialogButtonBox::StandardButton::Ok, datasourceInfoWidget, this);
 		dialog.setWindowTitle(tr("Datasource Info"));
 		dialog.exec();

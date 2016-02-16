@@ -39,7 +39,7 @@ public:
 
 	virtual QSize sizeHint() const;
 
-	void SetDataEngineConn(DataEngine::DataEngineConnection *dec);
+	void SetDataEngineConnection(DataEngine::DataEngineConnection::SharedPtr dataEngineConnection);
 	void AddNewStatsViews();
 	void ClearTabs();
 
@@ -55,7 +55,7 @@ private:
 	void RemoveTableViews(const QString& name = QString());
 
 	DataTransformModel* m_model;
-	DataEngine::DataEngineConnection *dec;
+	DataEngine::DataEngineConnection::SharedPtr m_dataEngineConnection;
 };
 
 #endif // DATASOURCESTATSWIDGET_H

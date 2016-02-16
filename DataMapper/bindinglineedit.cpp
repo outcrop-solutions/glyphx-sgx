@@ -46,10 +46,10 @@ void BindingLineEdit::SetInputField(const SynGlyphX::InputField& inputfield) {
 	m_inputField = inputfield;
 	if (m_inputField.IsValid()) {
 
-		const SynGlyphX::Datasource& datasource = m_model->GetDataTransformMapping()->GetDatasources().GetDatasourceByID(inputfield.GetDatasourceID());
+		SynGlyphX::Datasource::ConstSharedPtr datasource = m_model->GetDataTransformMapping()->GetDatasources().at(inputfield.GetDatasourceID());
 
-		QString text = QString::fromStdWString(datasource.GetFormattedName());
-		if (datasource.CanDatasourceHaveMultipleTables()) {
+		QString text = QString::fromStdWString(datasource->GetFormattedName());
+		if (datasource->CanDatasourceHaveMultipleTables()) {
 		
 			text += ":" + QString::fromStdWString(inputfield.GetTable());
 		}

@@ -116,7 +116,7 @@ private:
 	SynGlyphX::SceneProperties m_newMappingSceneProperties;
 
 	QMetaObject::Connection m_modelResetConnection;
-	DataEngine::DataEngineConnection dec;
+	DataEngine::DataEngineConnection::SharedPtr m_dataEngineConnection;
 };
 
 #endif // DATAMAPPERWINDOW_H

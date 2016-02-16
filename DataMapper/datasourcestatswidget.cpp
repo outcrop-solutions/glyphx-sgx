@@ -31,29 +31,30 @@ void DataSourceStatsWidget::RebuildStatsViews() {
 	AddNewStatsViews();
 }
 
-void DataSourceStatsWidget::SetDataEngineConn(DataEngine::DataEngineConnection *dec){
-	this->dec = dec;
+void DataSourceStatsWidget::SetDataEngineConnection(DataEngine::DataEngineConnection::SharedPtr dataEngineConnection) {
+	
+	m_dataEngineConnection = dataEngineConnection;
 }
 
 void DataSourceStatsWidget::AddNewStatsViews() {
 
-	const SynGlyphX::DatasourceMaps::FileDatasourceMap& fileDatasources = m_model->GetDataMapping()->GetDatasources().GetFileDatasources();
-	SynGlyphX::DatasourceMaps::FileDatasourceMap::const_iterator iT = fileDatasources.begin();
-	for (; iT != fileDatasources.end(); ++iT) {
+	const SynGlyphX::DataTransformMapping::DatasourceMap& datasources = m_model->GetDataMapping()->GetDatasources();
+	SynGlyphX::DataTransformMapping::DatasourceMap::const_iterator iT = datasources.begin();
+	for (; iT != datasources.end(); ++iT) {
 
 		try {
 			if (findChildren<QTableView*>(QString::fromStdString(boost::uuids::to_string(iT->first))).empty()) {
-				QString datasource = QString::fromStdWString(iT->second.GetFilename());
+				QString datasource = QString::fromStdWString(iT->second->GetFilename());
 
-				if (iT->second.GetType() == SynGlyphX::FileDatasource::SQLITE3){
+				if (iT->second.GetFileType() == SynGlyphX::FileDatasource::SQLITE3) {
 
 					for (int i = 0; i < dec->getTables().size(); i++){
 
-						CreateTablesFromDatasource(iT->first, i, QString::fromStdWString(iT->second.GetFormattedName()) + ":" + dec->getTables()[i], iT->second.GetType());
+						CreateTablesFromDatasource(iT->first, i, QString::fromStdWString(iT->second->GetFormattedName()) + ":" + dec->getTables()[i], iT->second.GetType());
 					}
 					dec->closeConnection();
 				}
-				else if (iT->second.GetType() == SynGlyphX::FileDatasource::CSV){
+				else if (iT->second->GetFileType() == SynGlyphX::FileDatasource::CSV) {
 					
 					CreateTablesFromDatasource(iT->first, 0, QString::fromStdWString(iT->second.GetFormattedName()), iT->second.GetType());
 					dec->closeConnection();

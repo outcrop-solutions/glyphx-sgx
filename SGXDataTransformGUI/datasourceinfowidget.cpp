@@ -61,7 +61,7 @@ namespace SynGlyphX {
 		filenameLineEdit->setReadOnly(true);
 		fileInfoGroupBoxLayout->addWidget(filenameLineEdit);
 
-		QLabel* typeLabel = new QLabel(tr("Type") + ": " + QString::fromStdWString(FileDatasource::s_sourceTypeStrings.left.at(datasource.GetType())), fileInfoGroupBox);
+		QLabel* typeLabel = new QLabel(tr("Type") + ": " + QString::fromStdWString(FileDatasource::s_fileTypeStrings.left.at(datasource.GetFileType())), fileInfoGroupBox);
 		fileInfoGroupBoxLayout->addWidget(typeLabel);
 
 		fileInfoGroupBox->setLayout(fileInfoGroupBoxLayout);
