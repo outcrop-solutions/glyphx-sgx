@@ -52,8 +52,8 @@ namespace DataEngine
 		//const std::wstring& getTableName(boost::uuids::uuid id) const;
 		//const std::vector<std::wstring>& getTableNumericFields(boost::uuids::uuid id) const;
 		//const std::map<boost::uuids::uuid, std::vector<std::wstring>>& getNumericFieldsTable() const;
-		std::vector<std::string> getTableNames();
-		std::vector<std::string> getColumnNames();
+		//std::vector<std::string> getTableNames();
+		//std::vector<std::string> getColumnNames();
 		//JDBC ACCESSOR FUNCTIONS
 		QStringList connectToServer(QString db_url, QString user, QString pass, QString db_type);
 		QStringList getColumnNames(QString tablename);
