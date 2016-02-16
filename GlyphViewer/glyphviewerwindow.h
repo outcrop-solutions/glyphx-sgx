@@ -105,7 +105,7 @@ private:
 	MultiTableElasticListsWidget* m_sourceDataSelectionWidget;
 	SourceDataSelectionModel* m_sourceDataSelectionModel;
 	PseudoTimeFilterWidget* m_pseudoTimeFilterWidget;
-	DataEngine::DataEngineConnection dec;
+	DataEngine::DataEngineConnection::SharedPtr m_dataEngineConnection;
 	SynGlyphX::PortableVisualizationExport m_portableVisualizationExport;
 };
 

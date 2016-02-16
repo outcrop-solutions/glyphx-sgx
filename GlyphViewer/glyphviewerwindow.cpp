@@ -31,8 +31,10 @@
 GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 	: SynGlyphX::MainWindow(2, parent),
 	m_antzWidget(nullptr),
-	m_showErrorFromTransform(true)
+	m_showErrorFromTransform(true),
+	m_dataEngineConnection(nullptr)
 {
+	m_dataEngineConnection = std::make_shared<DataEngine::DataEngineConnection>();
 	m_mappingModel = new SynGlyphX::DataMappingModel(this);
 	m_sourceDataCache = std::make_shared<SynGlyphX::SourceDataCache>();
 	m_glyphForestModel = new SynGlyphXANTz::GlyphForestModel(this);
@@ -84,8 +86,9 @@ GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 
 	try {
 
-		if (!dec.hasJVM()){
-			dec.createJVM();
+		if (!m_dataEngineConnection->hasJVM()){
+			
+			m_dataEngineConnection->createJVM();
 		}
 	}
 	catch (const std::exception& e) {
@@ -118,7 +121,8 @@ GlyphViewerWindow::~GlyphViewerWindow()
 }
 
 void GlyphViewerWindow::closeJVM(){
-	dec.destroyJVM();
+	
+	m_dataEngineConnection->destroyJVM();
 }
 
 void GlyphViewerWindow::CreateANTzWidget(const QGLFormat& format) {
@@ -423,7 +427,7 @@ void GlyphViewerWindow::ValidateDataMappingFile(const QString& filename) {
 	SynGlyphX::DataTransformMapping::SharedPtr mapping = std::make_shared<SynGlyphX::DataTransformMapping>();
 	mapping->ReadFromFile(filename.toStdString());
 
-	if (!mapping->GetDatasources().HasDatasources()) {
+	if (mapping->GetDatasources().empty()) {
 
 		throw std::runtime_error("Visualization has no datasources.");
 	}
@@ -459,7 +463,7 @@ void GlyphViewerWindow::ValidateDataMappingFile(const QString& filename) {
 	if (!missingFileDatasources.empty()) {
 
 		SynGlyphX::Application::restoreOverrideCursor();
-		wasDataTransformUpdated = SynGlyphX::ChangeDatasourceFileDialog::UpdateDatasourceFiles(missingFileDatasources, mapping, this);
+		wasDataTransformUpdated = SynGlyphX::ChangeDatasourceFileDialog::UpdateDatasourceFiles(missingFileDatasources, mapping, m_dataEngineConnection, this);
 		SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
 
 		if (!wasDataTransformUpdated) {
@@ -504,7 +508,7 @@ void GlyphViewerWindow::LoadDataTransform(const QString& filename) {
 		DataEngine::GlyphEngine ge;
 		std::string dirPath = cacheDirectoryPath + "\\";
 		std::string baseImageDir = SynGlyphX::GlyphBuilderApplication::GetDefaultBaseImagesLocation().toStdString();
-		ge.initiate(dec.getEnv(), filename.toStdString(), dirPath, baseImageDir, "", "GlyphViewer");
+		ge.initiate(m_dataEngineConnection->getEnv(), filename.toStdString(), dirPath, baseImageDir, "", "GlyphViewer");
 		ge.getDownloadedBaseImage(m_mappingModel->GetDataMapping().get()->GetBaseObjects());
 		ge.generateGlyphs();
 		std::vector<std::string> images = ge.getBaseImages();
@@ -779,9 +783,13 @@ void GlyphViewerWindow::CreatePortableVisualization(SynGlyphX::PortableVisualiza
 
 	QSet<QString> projectFileDirs;
 	projectFileDirs.insert(QDir::toNativeSeparators(m_currentFilename));
-	for (const auto& fileDatasource : m_mappingModel->GetDataMapping()->GetDatasources().GetFileDatasources()) {
+	for (const auto& datasource : m_mappingModel->GetDataMapping()->GetDatasources()) {
 
-		projectFileDirs.insert(QDir::toNativeSeparators(QString::fromStdWString(fileDatasource.second.GetFilename())));
+		if (datasource.second->GetSourceType() == SynGlyphX::Datasource::SourceType::File) {
+
+			SynGlyphX::FileDatasource::ConstSharedPtr fileDatasource = std::dynamic_pointer_cast<const SynGlyphX::FileDatasource>(datasource.second);
+			projectFileDirs.insert(QDir::toNativeSeparators(QString::fromStdWString(fileDatasource->GetFilename())));
+		}
 	}
 
 	QString csvDirectory = QDir::toNativeSeparators(GetExistingEmptyDirectory(projectFileDirs, "PortableVisualizationExportDir", tr("Select Directory For Portable Visualization"), "", tr("Selected directory contains one or more files relevant to the project.")));
@@ -801,7 +809,7 @@ void GlyphViewerWindow::CreatePortableVisualization(SynGlyphX::PortableVisualiza
 		std::string baseFilename = (QString::fromStdWString(SynGlyphX::DefaultBaseImageProperties::GetBasefilename()).toStdString());
 
 		//App says "DataMapper" because this is equivalent to create portable visualization in DataMapper
-		ge.initiate(dec.getEnv(), m_currentFilename.toStdString(), csvDirectory.toStdString() + "\\", baseImageDir, baseFilename, "DataMapper");
+		ge.initiate(m_dataEngineConnection->getEnv(), m_currentFilename.toStdString(), csvDirectory.toStdString() + "\\", baseImageDir, baseFilename, "DataMapper");
 		ge.getDownloadedBaseImage(m_mappingModel->GetDataMapping().get()->GetBaseObjects());
 		ge.generateGlyphs();
 
