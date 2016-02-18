@@ -38,9 +38,13 @@ namespace SynGlyphX {
 			mainLayout->addWidget(tableGroupBox);
 		}
 
-		if (datasource.IsFile()) {
+		if (datasource.GetSourceType() == Datasource::SourceType::File) {
 
 			CreateFileDatasourceWidgets(dynamic_cast<const FileDatasource&>(datasource));
+		}
+		else if (datasource.GetSourceType() == Datasource::SourceType::RDBMS) {
+
+
 		}
 	}
 
