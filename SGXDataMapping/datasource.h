@@ -46,7 +46,7 @@ namespace SynGlyphX {
 
 		typedef boost::bimap<SourceType, std::wstring> SourceTypeBimap;
 
-		Datasource(const std::wstring& dbName, const std::wstring& host = L"localhost", unsigned int port = 0, const std::wstring& username = L"", const std::wstring& password = L"");
+		Datasource(const std::wstring& host = L"localhost", const std::wstring& username = L"", const std::wstring& password = L"");
 		Datasource(const PropertyTree& propertyTree);
         Datasource(const Datasource& datasource);
         virtual ~Datasource();
@@ -57,9 +57,7 @@ namespace SynGlyphX {
 
 		virtual SourceType GetSourceType() const = 0;
 
-        const std::wstring& GetDBName() const;
         const std::wstring& GetHost() const;
-        unsigned int GetPort() const;
         const std::wstring& GetUsername() const;
         const std::wstring& GetPassword() const;
 		const Tables& GetTables() const;
@@ -74,16 +72,15 @@ namespace SynGlyphX {
 		virtual bool CanDatasourceHaveMultipleTables() const = 0;
 		virtual bool IsFile() const = 0;
 		virtual bool CanDatasourceBeFound() const = 0;
-		virtual const std::wstring& GetFormattedName() const = 0;
+		virtual std::wstring GetFormattedName() const = 0;
+		virtual std::wstring GetDBName() const = 0;
 
 		virtual PropertyTree& ExportToPropertyTree(boost::property_tree::wptree& parentPropertyTree);
 
 		static const SourceTypeBimap s_sourceTypeStrings;
 
     protected:
-        std::wstring m_dbName;
         std::wstring m_host;
-        unsigned int m_port;
         std::wstring m_username;
         std::wstring m_password;
 		Tables m_tables;

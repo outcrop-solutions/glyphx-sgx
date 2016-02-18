@@ -36,7 +36,7 @@ namespace SynGlyphX {
 		typedef std::shared_ptr<RDBMSDatasource> SharedPtr;
 		typedef std::shared_ptr<const RDBMSDatasource> ConstSharedPtr;
 
-		RDBMSDatasource(DBType type, const std::wstring& connection, const std::wstring& host = L"localhost", unsigned int port = 0, const std::wstring& username = L"", const std::wstring& password = L"");
+		RDBMSDatasource(DBType type, const std::wstring& connection, const std::wstring& schema, const std::wstring& username = L"", const std::wstring& password = L"");
 		RDBMSDatasource(const PropertyTree& propertyTree);
 		RDBMSDatasource(const RDBMSDatasource& datasource);
 		virtual ~RDBMSDatasource();
@@ -47,12 +47,14 @@ namespace SynGlyphX {
 
 		virtual SourceType GetSourceType() const;
 		DBType GetDBType() const;
+		const std::wstring& GetSchema() const;
 
 		virtual bool IsOriginalDatasourceADatabase() const;
 		virtual bool CanDatasourceHaveMultipleTables() const;
 		virtual bool IsFile() const;
 		virtual bool CanDatasourceBeFound() const;
-		virtual const std::wstring& GetFormattedName() const;
+		virtual std::wstring GetFormattedName() const;
+		virtual std::wstring GetDBName() const;
 
 		virtual PropertyTree& ExportToPropertyTree(boost::property_tree::wptree& parentPropertyTree);
 
@@ -60,6 +62,7 @@ namespace SynGlyphX {
 
 	protected:
 		DBType m_dbType;
+		std::wstring m_schema;
 	};
 
 } //namespace SynGlyphX

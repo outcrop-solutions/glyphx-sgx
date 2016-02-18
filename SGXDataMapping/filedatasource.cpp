@@ -13,9 +13,10 @@ namespace SynGlyphX {
 		(FileDatasource::FileType::XML, L"XML")
 		(FileDatasource::FileType::JSON, L"JSON");
 
-	FileDatasource::FileDatasource(FileType type, const std::wstring& filename, const std::wstring& host, unsigned int port, const std::wstring& username, const std::wstring& password) :
-		Datasource(filename, host, port, username, password),
-		m_fileType(type)
+	FileDatasource::FileDatasource(FileType type, const std::wstring& filename, const std::wstring& host, const std::wstring& username, const std::wstring& password) :
+		Datasource(host, username, password),
+		m_fileType(type),
+		m_filename(filename)
 	{
 		//CSV files are a single table so put in a dummy value so that the table count is 1
 		if (!CanDatasourceHaveMultipleTables()) {
@@ -24,13 +25,11 @@ namespace SynGlyphX {
 			tables.push_back(SingleTableName);
 			AddTables(tables);
 		}
-
-		boost::filesystem::path datasourcePath(filename);
-		m_formattedName = datasourcePath.filename().wstring();
 	}
 
 	FileDatasource::FileDatasource(const PropertyTree& propertyTree) :
 		Datasource(propertyTree),
+		m_filename(propertyTree.get<std::wstring>(L"Name")),
 		m_fileType(s_fileTypeStrings.right.at(propertyTree.get<std::wstring>(L"<xmlattr>.type"))) {
 
 		//CSV files are a single table so put in a dummy value so that the table count is 1
@@ -41,15 +40,12 @@ namespace SynGlyphX {
 			tables.push_back(SingleTableName);
 			AddTables(tables);
 		}
-
-		boost::filesystem::path datasourcePath(m_dbName);
-		m_formattedName = datasourcePath.filename().wstring();
 	}
 
 	FileDatasource::FileDatasource(const FileDatasource& datasource) :
 		Datasource(datasource),
 		m_fileType(datasource.m_fileType),
-		m_formattedName(datasource.m_formattedName) {
+		m_filename(datasource.m_filename) {
 
 
 	}
@@ -62,7 +58,7 @@ namespace SynGlyphX {
 
 		Datasource::operator=(datasource);
 		m_fileType = datasource.m_fileType;
-		m_formattedName = datasource.m_formattedName;
+		m_filename = datasource.m_filename;
 
 		return *this;
 	}
@@ -75,6 +71,11 @@ namespace SynGlyphX {
 		}
 
 		if (m_fileType != datasource.m_fileType) {
+
+			return false;
+		}
+
+		if (m_filename != datasource.m_filename) {
 
 			return false;
 		}
@@ -99,12 +100,12 @@ namespace SynGlyphX {
 
 	const std::wstring& FileDatasource::GetFilename() const {
 
-		return m_dbName;
+		return m_filename;
 	}
 
 	void FileDatasource::ChangeFilename(const std::wstring& filename) {
 
-		m_dbName = filename;
+		m_filename = filename;
 	}
 
 	bool FileDatasource::RequiresConversionToDB() const {
@@ -129,7 +130,7 @@ namespace SynGlyphX {
 
 	bool FileDatasource::CanDatasourceBeFound() const {
 
-		boost::filesystem::path datasourcePath(m_dbName);
+		boost::filesystem::path datasourcePath(m_filename);
 		return (boost::filesystem::exists(datasourcePath) && boost::filesystem::is_regular_file(datasourcePath));
 	}
 
@@ -137,13 +138,15 @@ namespace SynGlyphX {
 
 		PropertyTree& propertyTree = Datasource::ExportToPropertyTree(parentPropertyTree);
 		propertyTree.put(L"<xmlattr>.type", s_fileTypeStrings.left.at(m_fileType));
+		propertyTree.put(L"Name", m_filename);
 
 		return propertyTree;
 	}
 
-	const std::wstring& FileDatasource::GetFormattedName() const {
+	std::wstring FileDatasource::GetFormattedName() const {
 
-		return m_formattedName;
+		boost::filesystem::path datasourcePath(m_filename);
+		return datasourcePath.filename().wstring();
 	}
 
 	FileDatasource::FileType FileDatasource::GetFileTypeForFile(const std::wstring& filename) {
@@ -175,6 +178,11 @@ namespace SynGlyphX {
 		}
 
 		return false;
+	}
+
+	std::wstring FileDatasource::GetDBName() const {
+
+		return m_filename;
 	}
 
 } //namespace SynGlyphX

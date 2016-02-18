@@ -5,18 +5,20 @@
 namespace SynGlyphX {
 
 	const RDBMSDatasource::DBTypeBimap RDBMSDatasource::s_dbTypeStrings = boost::assign::list_of < RDBMSDatasource::DBTypeBimap::relation >
-		(RDBMSDatasource::DBType::MySQL, L"MqSQL")
+		(RDBMSDatasource::DBType::MySQL, L"MySQL")
 		(RDBMSDatasource::DBType::Vertica, L"Verica");
 
-	RDBMSDatasource::RDBMSDatasource(DBType type, const std::wstring& connection, const std::wstring& host, unsigned int port, const std::wstring& username, const std::wstring& password) :
-		Datasource(connection, host, port, username, password),
+	RDBMSDatasource::RDBMSDatasource(DBType type, const std::wstring& connection, const std::wstring& schema, const std::wstring& username, const std::wstring& password) :
+		Datasource(connection, username, password),
+		m_schema(schema),
 		m_dbType(type)
 	{
 	}
 
 	RDBMSDatasource::RDBMSDatasource(const PropertyTree& propertyTree) :
 		Datasource(propertyTree),
-		m_dbType(s_dbTypeStrings.right.at(propertyTree.get<std::wstring>(L"<xmlattr>.type"))) {
+		m_dbType(s_dbTypeStrings.right.at(propertyTree.get<std::wstring>(L"<xmlattr>.type"))),
+		m_schema(propertyTree.get_optional<std::wstring>(L"schema").get_value_or(L"")) {
 
 		
 	}
@@ -36,6 +38,7 @@ namespace SynGlyphX {
 
 		Datasource::operator=(datasource);
 		m_dbType = datasource.m_dbType;
+		m_schema = datasource.m_schema;
 
 		return *this;
 	}
@@ -48,6 +51,11 @@ namespace SynGlyphX {
 		}
 
 		if (m_dbType != datasource.m_dbType) {
+
+			return false;
+		}
+
+		if (m_schema != datasource.m_schema) {
 
 			return false;
 		}
@@ -68,6 +76,11 @@ namespace SynGlyphX {
 	RDBMSDatasource::DBType RDBMSDatasource::GetDBType() const {
 
 		return m_dbType;
+	}
+
+	const std::wstring& RDBMSDatasource::GetSchema() const {
+
+		return m_schema;
 	}
 
 	bool RDBMSDatasource::IsOriginalDatasourceADatabase() const {
@@ -95,13 +108,29 @@ namespace SynGlyphX {
 
 		PropertyTree& propertyTree = Datasource::ExportToPropertyTree(parentPropertyTree);
 		propertyTree.put(L"<xmlattr>.type", s_dbTypeStrings.left.at(m_dbType));
+		if (!m_schema.empty()) {
+
+			propertyTree.put(L"schema", m_schema);
+		}
 
 		return propertyTree;
 	}
 
-	const std::wstring& RDBMSDatasource::GetFormattedName() const {
+	std::wstring RDBMSDatasource::GetFormattedName() const {
 
-		return GetDBName();
+		if (m_schema.empty()) {
+
+			return m_host;
+		}
+		else {
+
+			return m_host + L":" + m_schema;
+		}
+	}
+
+	std::wstring RDBMSDatasource::GetDBName() const {
+
+		return m_host;
 	}
 
 } //namespace SynGlyphX

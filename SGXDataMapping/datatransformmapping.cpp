@@ -345,12 +345,11 @@ namespace SynGlyphX {
 	boost::uuids::uuid DataTransformMapping::AddFileDatasource(FileDatasource::FileType type,
 		const std::wstring& name,
         const std::wstring& host,
-        unsigned int port,
         const std::wstring& username,
         const std::wstring& password) {
 
 		boost::uuids::uuid id = UUIDGenerator::GetNewRandomUUID();
-		m_datasources.insert(std::pair<boost::uuids::uuid, Datasource::SharedPtr>(id, std::make_shared<FileDatasource>(type, name, host, port, username, password)));
+		m_datasources.insert(std::pair<boost::uuids::uuid, Datasource::SharedPtr>(id, std::make_shared<FileDatasource>(type, name, host, username, password)));
 
         return id;
     }

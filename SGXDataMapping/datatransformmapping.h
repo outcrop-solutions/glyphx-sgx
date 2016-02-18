@@ -63,7 +63,6 @@ namespace SynGlyphX {
 		boost::uuids::uuid AddFileDatasource(FileDatasource::FileType type, 
 			const std::wstring& name,
             const std::wstring& host = L"localhost",
-            unsigned int port = 0,
             const std::wstring& username = L"",
             const std::wstring& password = L"");
 

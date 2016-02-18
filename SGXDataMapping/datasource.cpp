@@ -10,19 +10,15 @@ namespace SynGlyphX {
 
 	const std::wstring Datasource::SingleTableName = L"OnlyTable";
 
-	Datasource::Datasource(const std::wstring& dbName, const std::wstring& host, unsigned int port, const std::wstring& username, const std::wstring& password) :
-        m_dbName(dbName),
+	Datasource::Datasource(const std::wstring& host, const std::wstring& username, const std::wstring& password) :
         m_host(host),
-        m_port(port),
         m_username(username),
         m_password(password)
 	{
 	}
 
 	Datasource::Datasource(const PropertyTree& propertyTree) :
-		m_dbName(propertyTree.get<std::wstring>(L"Name")),
 		m_host(propertyTree.get<std::wstring>(L"Host")),
-		m_port(propertyTree.get<unsigned int>(L"Port", 0)),
 		m_username(propertyTree.get<std::wstring>(L"Username", L"")),
 		m_password(propertyTree.get<std::wstring>(L"Password", L"")) {
 
@@ -41,9 +37,7 @@ namespace SynGlyphX {
 	}
 
     Datasource::Datasource(const Datasource& datasource) :
-        m_dbName(datasource.m_dbName),
         m_host(datasource.m_host),
-        m_port(datasource.m_port),
         m_username(datasource.m_username),
         m_password(datasource.m_password),
         m_tables(datasource.m_tables) {
@@ -56,9 +50,7 @@ namespace SynGlyphX {
 
     Datasource& Datasource::operator=(const Datasource& datasource) {
 
-        m_dbName = datasource.m_dbName;
         m_host = datasource.m_host;
-        m_port = datasource.m_port;
         m_username = datasource.m_username;
         m_password = datasource.m_password;
 
@@ -74,17 +66,7 @@ namespace SynGlyphX {
 			return false;
 		}
 
-		if (m_dbName != datasource.m_dbName) {
-
-			return false;
-		}
-
 		if (m_host != datasource.m_host) {
-
-			return false;
-		}
-
-		if (m_port != datasource.m_port) {
 
 			return false;
 		}
@@ -112,19 +94,9 @@ namespace SynGlyphX {
 		return !operator==(datasource);
 	}
 
-    const std::wstring& Datasource::GetDBName() const {
-
-        return m_dbName;
-    }
-
     const std::wstring& Datasource::GetHost() const {
 
         return m_host;
-    }
-
-    unsigned int Datasource::GetPort() const {
-
-        return m_port;
     }
 
     const std::wstring& Datasource::GetUsername() const {
@@ -188,12 +160,7 @@ namespace SynGlyphX {
 
 		PropertyTree& propertyTree = parentPropertyTree.add(s_sourceTypeStrings.left.at(GetSourceType()), L"");
 
-		propertyTree.put(L"Name", m_dbName);
 		propertyTree.put(L"Host", m_host);
-
-		if (m_port != 0) {
-			propertyTree.put(L"Port", m_port);
-		}
 
 		if (!m_username.empty()) {
 			propertyTree.put(L"Username", m_username);
