@@ -1,7 +1,7 @@
 #include "antzforestwidget.h"
-#include <QtGUI/QOpenGLContext>
-#include <QtGUI/QMouseEvent>
-#include <QtGUI/QFont>
+#include <QtGui/QOpenGLContext>
+#include <QtGui/QMouseEvent>
+#include <QtGui/QFont>
 #include <QtWidgets/QMessageBox>
 #include <QtCore/QDir>
 #include "io/npfile.h"

@@ -3,7 +3,7 @@
 #include "data/npmapfile.h"
 #include "glyphmimedata.h"
 #include <QtCore/QFile>
-#include <QtGUI/QMouseEvent>
+#include <QtGui/QMouseEvent>
 #include <stack>
 #include <QtCore/QDir>
 #include <QtCore/QFile>
