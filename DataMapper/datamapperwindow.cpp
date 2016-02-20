@@ -34,6 +34,7 @@
 #include "changeimagefiledialog.h"
 #include <fstream>
 #include "glyphtemplatelibrarylistwidget.h"
+#include "adddatabaseserverdialog.h"
 
 DataMapperWindow::DataMapperWindow(QWidget *parent)
     : SynGlyphX::MainWindow(0, parent),
@@ -209,8 +210,11 @@ void DataMapperWindow::CreateMenus() {
 	//Create Datasource Menu
 	m_datasourceMenu = menuBar()->addMenu(tr("Data Source"));
     
-	QAction* addDataSourcesAction = m_datasourceMenu->addAction(tr("Add Data Sources"));
-    QObject::connect(addDataSourcesAction, &QAction::triggered, this, &DataMapperWindow::AddDataSources);
+	QAction* addFileDatasourcesAction = m_datasourceMenu->addAction(tr("Add File Datasources"));
+	QObject::connect(addFileDatasourcesAction, &QAction::triggered, this, &DataMapperWindow::AddFileDataSources);
+
+	QAction* addDatabaseServerDatasourcesAction = m_datasourceMenu->addAction(tr("Add Database Server Datasources"));
+	QObject::connect(addDatabaseServerDatasourcesAction, &QAction::triggered, this, &DataMapperWindow::AddDatabaseServerDatasources);
 
 	m_datasourceMenu->addSeparator();
 
@@ -520,7 +524,7 @@ void DataMapperWindow::ProcessCSVFile(const QString& csvFile) {
 	}
 }*/
 
-void DataMapperWindow::AddDataSources() {
+void DataMapperWindow::AddFileDataSources() {
 	/*
 	try {
 
@@ -606,6 +610,15 @@ void DataMapperWindow::AddDataSources() {
 
 		m_dataSourceStats->AddNewStatsViews();
 		EnableProjectDependentActions(true);
+	}
+}
+
+void DataMapperWindow::AddDatabaseServerDatasources() {
+
+	AddDatabaseServerDialog dialog(this);
+	if (dialog.exec() == QDialog::Accepted) {
+
+
 	}
 }
 

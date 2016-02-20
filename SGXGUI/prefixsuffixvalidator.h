@@ -15,29 +15,34 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef SYNGLYPHX_DATASOURCEINFOWIDGET_H
-#define SYNGLYPHX_DATASOURCEINFOWIDGET_H
+#ifndef SYNGLYPHX_PREFIXSUFFIXVALIDATOR_H
+#define SYNGLYPHX_PREFIXSUFFIXVALIDATOR_H
 
-#include "sgxdatatransformgui_global.h"
-#include <QtWidgets/QWidget>
-#include "filedatasource.h"
-#include "databaseserverdatasource.h"
+#include <QtGui/QValidator>
 
 namespace SynGlyphX {
 
-	class SGXDATATRANSFORMGUI_EXPORT DatasourceInfoWidget : public QWidget
+	class PrefixSuffixValidator : public QValidator
 	{
 		Q_OBJECT
 
 	public:
-		DatasourceInfoWidget(const Datasource& datasource, QWidget *parent);
-		~DatasourceInfoWidget();
+		PrefixSuffixValidator(QObject *parent);
+		~PrefixSuffixValidator();
+
+		void SetPrefix(const QString& prefix);
+		const QString& GetPrefix() const;
+
+		void SetSuffix(const QString& suffix);
+		const QString& GetSuffix() const;
+
+		virtual State validate(QString& input, int& pos) const;
 
 	private:
-		void CreateFileDatasourceWidgets(const FileDatasource& datasource);
-		void CreateDatabaseServerDatasourceWidgets(const DatabaseServerDatasource& datasource);
+		QString m_prefix;
+		QString m_suffix;
 	};
 
 } //namespace SynGlyphX
 
-#endif // SYNGLYPHX_DATASOURCEINFOWIDGET_H
+#endif // SYNGLYPHX_PREFIXSUFFIXVALIDATOR_H

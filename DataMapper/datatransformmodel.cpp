@@ -1213,7 +1213,7 @@ void DataTransformModel::AddDatasourceInfoFromDataEngine(const boost::uuids::uui
 			m_dataEngineConnection->closeConnection();
 		}
 	}
-	else if (datasource->GetSourceType() == SynGlyphX::Datasource::SourceType::RDBMS) {
+	else if (datasource->GetSourceType() == SynGlyphX::Datasource::SourceType::DatabaseServer) {
 
 
 	}

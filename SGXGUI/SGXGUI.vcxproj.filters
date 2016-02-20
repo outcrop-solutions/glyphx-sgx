@@ -323,6 +323,15 @@
     <ClCompile Include="GeneratedFiles\Release\moc_passwordlineedit.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="prefixsuffixvalidator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_prefixsuffixvalidator.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_prefixsuffixvalidator.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="sgxgui_global.h">
@@ -430,6 +439,9 @@
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="passwordlineedit.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="prefixsuffixvalidator.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>

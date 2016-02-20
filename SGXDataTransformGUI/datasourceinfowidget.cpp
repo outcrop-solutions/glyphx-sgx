@@ -26,6 +26,15 @@ namespace SynGlyphX {
 
 		mainLayout->addLayout(nameLayout);
 
+		if (datasource.GetSourceType() == Datasource::SourceType::File) {
+
+			CreateFileDatasourceWidgets(dynamic_cast<const FileDatasource&>(datasource));
+		}
+		else if (datasource.GetSourceType() == Datasource::SourceType::DatabaseServer) {
+
+			CreateDatabaseServerDatasourceWidgets(dynamic_cast<const DatabaseServerDatasource&>(datasource));
+		}
+
 		if (datasource.CanDatasourceHaveMultipleTables()) {
 
 			QListWidget* tableListWidget = new QListWidget(this);
@@ -36,15 +45,6 @@ namespace SynGlyphX {
 			SynGlyphX::GroupBoxSingleWidget* tableGroupBox = new SynGlyphX::GroupBoxSingleWidget(tr("Tables"), tableListWidget, this);
 
 			mainLayout->addWidget(tableGroupBox);
-		}
-
-		if (datasource.GetSourceType() == Datasource::SourceType::File) {
-
-			CreateFileDatasourceWidgets(dynamic_cast<const FileDatasource&>(datasource));
-		}
-		else if (datasource.GetSourceType() == Datasource::SourceType::RDBMS) {
-
-
 		}
 	}
 
@@ -70,7 +70,12 @@ namespace SynGlyphX {
 
 		fileInfoGroupBox->setLayout(fileInfoGroupBoxLayout);
 
-		mainLayout->insertWidget(1, fileInfoGroupBox);
+		mainLayout->addWidget(fileInfoGroupBox);
+	}
+
+	void DatasourceInfoWidget::CreateDatabaseServerDatasourceWidgets(const DatabaseServerDatasource& datasource) {
+
+		QVBoxLayout* mainLayout = qobject_cast<QVBoxLayout*>(layout());
 	}
 
 } //namespace SynGlyphX

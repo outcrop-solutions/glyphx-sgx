@@ -15,29 +15,32 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef SYNGLYPHX_DATASOURCEINFOWIDGET_H
-#define SYNGLYPHX_DATASOURCEINFOWIDGET_H
+#ifndef ADDDATABASESERVERWIDGET_H
+#define ADDDATABASESERVERWIDGET_H
 
-#include "sgxdatatransformgui_global.h"
-#include <QtWidgets/QWidget>
-#include "filedatasource.h"
+#include <QtWidgets/QDialog>
 #include "databaseserverdatasource.h"
+#include <QtWidgets/QComboBox>
+#include "passwordlineedit.h"
 
-namespace SynGlyphX {
+class AddDatabaseServerDialog : public QDialog
+{
+	Q_OBJECT
 
-	class SGXDATATRANSFORMGUI_EXPORT DatasourceInfoWidget : public QWidget
-	{
-		Q_OBJECT
+public:
+	AddDatabaseServerDialog(QWidget *parent);
+	~AddDatabaseServerDialog();
 
-	public:
-		DatasourceInfoWidget(const Datasource& datasource, QWidget *parent);
-		~DatasourceInfoWidget();
+	void SetValues(const SynGlyphX::DatabaseServerDatasource& datasource);
+	SynGlyphX::DatabaseServerDatasource GetValues() const;
 
-	private:
-		void CreateFileDatasourceWidgets(const FileDatasource& datasource);
-		void CreateDatabaseServerDatasourceWidgets(const DatabaseServerDatasource& datasource);
-	};
+	virtual void accept();
 
-} //namespace SynGlyphX
+private:
+	QComboBox* m_typeComboBox;
+	QLineEdit* m_connectionLineEdit;
+	QLineEdit* m_usernameLineEdit;
+	SynGlyphX::PasswordLineEdit* m_passwordLineEdit;
+};
 
-#endif // SYNGLYPHX_DATASOURCEINFOWIDGET_H
+#endif // ADDDATABASESERVERWIDGET_H
