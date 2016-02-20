@@ -41,7 +41,7 @@ namespace SynGlyphX {
 
 		enum SourceType {
 			File,
-			RDBMS
+			DatabaseServer
 		};
 
 		typedef boost::bimap<SourceType, std::wstring> SourceTypeBimap;

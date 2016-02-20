@@ -96,7 +96,7 @@
     <ClInclude Include="datasourcetable.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="rdbmsdatasource.h">
+    <ClInclude Include="databaseserverdatasource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -173,7 +173,7 @@
     <ClCompile Include="datasourcetable.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="rdbmsdatasource.cpp">
+    <ClCompile Include="databaseserverdatasource.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

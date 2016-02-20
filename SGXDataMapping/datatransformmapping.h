@@ -31,7 +31,7 @@
 #include "sceneproperties.h"
 #include "datasource.h"
 #include "filedatasource.h"
-#include "rdbmsdatasource.h"
+#include "databaseserverdatasource.h"
 
 namespace SynGlyphX {
 

@@ -95,6 +95,7 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="databaseserverdatasource.h" />
     <ClInclude Include="datamappingdefaults.h" />
     <ClInclude Include="datamappingfunction.h" />
     <ClInclude Include="datamappingglyph.h" />
@@ -114,7 +115,6 @@
     <ClInclude Include="inputtable.h" />
     <ClInclude Include="interpolationmappingfunction.h" />
     <ClInclude Include="mindiff.h" />
-    <ClInclude Include="rdbmsdatasource.h" />
     <ClInclude Include="sceneproperties.h" />
     <ClInclude Include="sgxdatamapping.h" />
     <ClInclude Include="stringconcatmappingfunction.h" />
@@ -124,6 +124,7 @@
     <ClInclude Include="valuemappingfunction.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="databaseserverdatasource.cpp" />
     <ClCompile Include="datamappingdefaults.cpp" />
     <ClCompile Include="datamappingfunction.cpp" />
     <ClCompile Include="datamappingglyph.cpp" />
@@ -150,7 +151,6 @@
     <ClCompile Include="inputtable.cpp" />
     <ClCompile Include="interpolationmappingfunction.cpp" />
     <ClCompile Include="mindiff.cpp" />
-    <ClCompile Include="rdbmsdatasource.cpp" />
     <ClCompile Include="sceneproperties.cpp" />
     <ClCompile Include="stringconcatmappingfunction.cpp" />
     <ClCompile Include="stringinputcombinationfunction.cpp" />

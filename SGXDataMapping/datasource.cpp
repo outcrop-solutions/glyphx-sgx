@@ -6,7 +6,7 @@ namespace SynGlyphX {
 
 	const Datasource::SourceTypeBimap Datasource::s_sourceTypeStrings = boost::assign::list_of < Datasource::SourceTypeBimap::relation >
 		(Datasource::SourceType::File, L"File")
-		(Datasource::SourceType::RDBMS, L"RDBMS");
+		(Datasource::SourceType::DatabaseServer, L"Database Server");
 
 	const std::wstring Datasource::SingleTableName = L"OnlyTable";
 

@@ -18,11 +18,12 @@
 #ifndef SYNGLYPHX_RDBMSDATASOURCE_H
 #define SYNGLYPHX_RDBMSDATASOURCE_H
 
+#include "sgxdatamapping.h"
 #include "datasource.h"
 
 namespace SynGlyphX {
 
-	class RDBMSDatasource : public Datasource
+	class SGXDATAMAPPING_API DatabaseServerDatasource : public Datasource
 	{
 	public:
 		enum DBType {
@@ -33,17 +34,17 @@ namespace SynGlyphX {
 		typedef boost::bimap<DBType, std::wstring> DBTypeBimap;
 		typedef boost::property_tree::wptree PropertyTree;
 
-		typedef std::shared_ptr<RDBMSDatasource> SharedPtr;
-		typedef std::shared_ptr<const RDBMSDatasource> ConstSharedPtr;
+		typedef std::shared_ptr<DatabaseServerDatasource> SharedPtr;
+		typedef std::shared_ptr<const DatabaseServerDatasource> ConstSharedPtr;
 
-		RDBMSDatasource(DBType type, const std::wstring& connection, const std::wstring& schema, const std::wstring& username = L"", const std::wstring& password = L"");
-		RDBMSDatasource(const PropertyTree& propertyTree);
-		RDBMSDatasource(const RDBMSDatasource& datasource);
-		virtual ~RDBMSDatasource();
+		DatabaseServerDatasource(DBType type, const std::wstring& connection, const std::wstring& schema, const std::wstring& username = L"", const std::wstring& password = L"");
+		DatabaseServerDatasource(const PropertyTree& propertyTree);
+		DatabaseServerDatasource(const DatabaseServerDatasource& datasource);
+		virtual ~DatabaseServerDatasource();
 
-		RDBMSDatasource& operator=(const RDBMSDatasource& datasource);
-		bool operator==(const RDBMSDatasource& datasource) const;
-		bool operator!=(const RDBMSDatasource& datasource) const;
+		DatabaseServerDatasource& operator=(const DatabaseServerDatasource& datasource);
+		bool operator==(const DatabaseServerDatasource& datasource) const;
+		bool operator!=(const DatabaseServerDatasource& datasource) const;
 
 		virtual SourceType GetSourceType() const;
 		DBType GetDBType() const;

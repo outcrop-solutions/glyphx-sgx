@@ -122,7 +122,7 @@ namespace SynGlyphX {
 
 					newDatasource = std::make_shared<FileDatasource>(datasourcePropertyTree.second);
 				}
-				else if (datasourcePropertyTree.first == Datasource::s_sourceTypeStrings.left.at(Datasource::SourceType::RDBMS)) {
+				else if (datasourcePropertyTree.first == Datasource::s_sourceTypeStrings.left.at(Datasource::SourceType::DatabaseServer)) {
 
 
 				}
@@ -253,9 +253,9 @@ namespace SynGlyphX {
 
 				copiedDatasource = std::make_shared<FileDatasource>(*std::dynamic_pointer_cast<FileDatasource>(origDatasource));
 			}
-			else if (origDatasource->GetSourceType() == Datasource::SourceType::RDBMS) {
+			else if (origDatasource->GetSourceType() == Datasource::SourceType::DatabaseServer) {
 
-				copiedDatasource = std::make_shared<RDBMSDatasource>(*std::dynamic_pointer_cast<RDBMSDatasource>(origDatasource));
+				copiedDatasource = std::make_shared<DatabaseServerDatasource>(*std::dynamic_pointer_cast<DatabaseServerDatasource>(origDatasource));
 			}
 			copiedDatasource->ClearTables();
 			copiedDatasource->AddTables(datasourceTables.second);
