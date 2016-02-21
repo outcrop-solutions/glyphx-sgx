@@ -250,9 +250,8 @@ namespace DataEngine
 			catch (const DownloadException& e) {
 
 				downloadComplete = false;
-				m_error = QObject::tr("Base image failed to download so the world map was used instead.\n\nError: ") + e.what();
 				GeographicBoundingBox m_overrideRootXYBoundingBox = GeographicBoundingBox(GeographicPoint(0.0, 0.0), 90.0, 180.0);
-				return false;
+				throw;
 			}
 		}
 		else{
@@ -328,9 +327,5 @@ namespace DataEngine
 			}
 		}
 		copyBaseImages();
-	}
-
-	QString GlyphEngine::getError(){
-		return m_error;
 	}
 }

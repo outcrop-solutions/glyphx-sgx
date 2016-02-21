@@ -23,7 +23,6 @@ namespace DataEngine
 		std::string application;
 		const unsigned int NumberOfDefaultBaseImages = 1;
 		bool downloadComplete = true;
-	    QString m_error;
 		std::vector<std::string> images;
 		void prepare();
 		void createCacheDirectory();
@@ -39,7 +38,6 @@ namespace DataEngine
 		bool getDownloadedBaseImage(std::vector<SynGlyphX::BaseImage> baseImages);
 		std::vector<std::string> getBaseImages();
 		void generateGlyphs();
-		QString getError();
 		~GlyphEngine(){};
 
 	};
