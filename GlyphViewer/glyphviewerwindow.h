@@ -79,6 +79,7 @@ private:
 	GlyphViewerOptions CollectOptions();
 	bool DoesVisualizationNeedToBeRecreated(const SynGlyphX::DataTransformMapping& mapping) const;
 	void CreateExportToPortableVisualizationSubmenu();
+	void DownloadBaseImages(DataEngine::GlyphEngine& ge);
 
 	QMenu* m_fileMenu;
 	QMenu* m_toolsMenu;

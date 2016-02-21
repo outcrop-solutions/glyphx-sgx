@@ -35,6 +35,7 @@
 #include <fstream>
 #include "glyphtemplatelibrarylistwidget.h"
 #include "adddatabaseserverdialog.h"
+#include "downloadexception.h"
 
 DataMapperWindow::DataMapperWindow(QWidget *parent)
     : SynGlyphX::MainWindow(0, parent),
@@ -691,21 +692,27 @@ void DataMapperWindow::CreatePortableVisualization(SynGlyphX::PortableVisualizat
 		std::string baseImageDir = SynGlyphX::GlyphBuilderApplication::GetDefaultBaseImagesLocation().toStdString();
 		std::string baseFilename = (QString::fromStdWString(SynGlyphX::DefaultBaseImageProperties::GetBasefilename()).toStdString());
 		ge.initiate(m_dataEngineConnection->getEnv(), m_currentFilename.toStdString(), csvDirectory.toStdString() + "\\", baseImageDir, baseFilename, "DataMapper");
-		ge.getDownloadedBaseImage(m_dataTransformModel->GetDataMapping().get()->GetBaseObjects());
+		try {
+
+			ge.getDownloadedBaseImage(m_dataTransformModel->GetDataMapping().get()->GetBaseObjects());
+		}
+		catch (const DownloadException& e) {
+
+			SynGlyphX::Application::restoreOverrideCursor();
+			QMessageBox::information(this, "Download Image Error", tr("Base image failed to download so the world map was used instead.\n\nError: ") + tr(e.what()), QMessageBox::Ok);
+			SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
+		}
+		catch (const std::exception& e) {
+
+			throw;
+		}
+		
 		ge.generateGlyphs();
 
 		//SynGlyphXANTz::ANTzExportTransformer transformer(csvDirectory, m_antzExportDirectories[platform], platform, false);
 		//transformer.Transform(*(m_dataTransformModel->GetDataMapping().get()));
 
 		SynGlyphX::Application::restoreOverrideCursor();
-
-		const QString& GlyphEngineError = ge.getError();
-		
-		//const QString& transformerError = transformer.GetError();
-		if (!GlyphEngineError.isNull()) {
-
-			QMessageBox::information(this, "Transformation Error", GlyphEngineError, QMessageBox::Ok);
-		}
 	}
 	catch (const std::exception& e) {
 
