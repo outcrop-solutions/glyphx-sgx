@@ -114,7 +114,7 @@ public class JDBCNodeGenerator {
 			if(functions.get(fieldNames.get(i)).equals("Linear Interpolation") || functions.get(fieldNames.get(i)).equals("Logarithmic Interpolation")){
 				double y1;
 				double y3;
-				if(download && ((index == 1 && fieldNames.get(i).equals("PositionX"))||(index == 1 && fieldNames.get(i).equals("PositionY")))){
+				if(download && nodeTemp.getChildOf() == 0 && (fieldNames.get(i).equals("PositionX") || fieldNames.get(i).equals("PositionY"))){
 					y1 = Double.parseDouble(table.getMinMaxTable().get(input.get(fieldNames.get(i))).get(0));
 					y3 = Double.parseDouble(table.getMinMaxTable().get(input.get(fieldNames.get(i))).get(1));
 				}else{
@@ -152,7 +152,7 @@ public class JDBCNodeGenerator {
 		}
 
 		Node node = new Node();
-		node = GlyphCreator.setFields(fieldNames, ranges, setValues, node, nodeTemp, input);
+		node = GlyphCreator.setFields(fieldNames, setValues, node, nodeTemp, input);
 
 		//TAG STUFF
 		node.setDefaultTagValue(default_tag_value);

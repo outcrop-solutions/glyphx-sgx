@@ -99,7 +99,6 @@ public class Functions {
     	}
     	return temp;
 	}
-
 /*
 	public static void main(String[] args){
 		double[] hsv = Functions.convertRGBtoHSV(0,255,0);
@@ -107,7 +106,8 @@ public class Functions {
 		System.out.println(hsv[1]);
 		System.out.println(hsv[2]);
 
-		double[] rgb = Functions.convertHSVtoRGB(hsv[0],hsv[1],hsv[2]);
+		//double[] rgb = Functions.convertHSVtoRGB(hsv[0],hsv[1],hsv[2]);
+		double[] rgb = Functions.convertHSVtoRGB(50,101,101);
 		System.out.println(rgb[0]);
 		System.out.println(rgb[1]);
 		System.out.println(rgb[2]);

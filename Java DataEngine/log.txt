@@ -1,21 +1,14 @@
 
-online_sales.call_center_dimension
-online_sales.online_page_dimension
-online_sales.online_sales_fact
-public.BACKUP_SNAPSHOT_STATUS
-public.backup_status
-public.customer_dimension
-public.date_dimension
-public.employee_dimension
-public.four_cols
-public.inventory_fact
-public.product_dimension
-public.promotion_dimension
-public.shipping_dimension
-public.vendor_dimension
-public.warehouse_dimension
-store.store_dimension
-store.store_orders_fact
-store.store_sales_fact
-
-Closing connection to database...
+Reading SDT at C:/Users/Bryan/Desktop/linux_test_sdt/csvtest.sdt
+Parsed SDT into doc.
+Set input map.
+475ddeb4-2197-488b-9110-0d1177e8cac3OnlyTable
+Retrieved data paths.
+Finished creating min/max table...
+Created DataFrames.
+Checking field groups...
+Finished checking field groups.
+Retrieved Defaults.
+Retrieved Bg color.
+BaseObjects:
+Downloaded Map | 

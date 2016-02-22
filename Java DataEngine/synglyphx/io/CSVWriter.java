@@ -44,16 +44,14 @@ public class CSVWriter {
 		this.rootCoords = rootCoords;
 		this.remove_scale_zero = scale_zero;
 		//System.out.println(nodeCount);
+		Logger.getInstance().add(outDir);
 		if(app.equals("DataMapper")){
-			this.outDir = outDir+"\\usr\\csv\\";
-			this.imageDir = outDir+"\\usr\\images\\downloadedMap.jpg";
+			this.outDir = outDir+"/usr/csv/";
+			this.imageDir = outDir+"/usr/images/downloadedMap.jpg";
 		}else if(app.equals("GlyphViewer")){
-			this.outDir = outDir+"\\antz\\";
-			this.imageDir = outDir+"\\antz\\base_image_2.png";
+			this.outDir = outDir+"/antz/";
+			this.imageDir = outDir+"/antz/base_image_2.png";
 		}
-		Logger.getInstance().add(this.outDir);
-		setAntz();
-		newBegin(app);
 
 		String os = System.getProperty("os.name");
         String w = "windows";
@@ -62,6 +60,9 @@ public class CSVWriter {
         }else{
         	this.win = false;
         }
+		Logger.getInstance().add(this.outDir);
+		setAntz();
+		newBegin(app);
 
 		if(app.equals("DataMapper")){
 			antzGlobals(colorStr);
@@ -151,9 +152,10 @@ public class CSVWriter {
 			BufferedWriter bfw = new BufferedWriter(f);
 
 			if(app.equals("DataMapper")){
-				noURLLocation = outDir+"\\..\\..\\nourl.html";
+				noURLLocation = outDir+"/../../nourl.html";
 			}else{
-				noURLLocation = Paths.get(".").toAbsolutePath().normalize().toString()+"\\nourl.html";
+				Logger.getInstance().add(Paths.get(".").toAbsolutePath().normalize().toString());
+				noURLLocation = Paths.get(".").toAbsolutePath().normalize().toString()+"/nourl.html";
 			}
 		    Logger.getInstance().add(noURLLocation);
 
