@@ -43,7 +43,7 @@ public class SDTReader {
 	public SDTReader(String sdtPath, String outDir, String application){
 		Logger.getInstance().add("Reading SDT at "+sdtPath);
 		absorbXML(sdtPath);
-		this.outDir = outDir;
+		this.outDir = outDir.replace("\\", File.separator);
 		this.app = application;
 	}
 
@@ -102,7 +102,7 @@ public class SDTReader {
 			Logger.getInstance().add("Failed to parse SDT file.");
 		}
 		setRootAndLastIDs();
-
+		Logger.getInstance().add("Finished absorbing XML.");
 	}
 
 	private String getValue(String tag, Element element) {
@@ -617,7 +617,6 @@ public class SDTReader {
 				if(type.equals("Downloaded Map")){
 					name = "downloadedMap.jpg";
 					download = true;
-					System.out.println("here");
 					bObject.setMapInfo(element.getAttribute("mapsource"),element.getAttribute("maptype"));
 					bObject.setImageInfo(element.getAttribute("invert"),element.getAttribute("grayscale"),element.getAttribute("bestfit"),element.getAttribute("margin"));
 				}

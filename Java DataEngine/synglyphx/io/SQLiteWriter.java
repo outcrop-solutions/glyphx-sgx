@@ -33,14 +33,14 @@ public class SQLiteWriter {
 		this.rootIds = rootIds;
 		this.templates = templates;
 		setToPrint();
-		File file = new File(outDir+"\\sourcedata.db");
+		File file = new File(outDir+"/sourcedata.db");
 		file.delete();
 	}
 
 	public void writeTableIndex(){
 
 		try{
-			SQLiteConnection db = new SQLiteConnection(new File(outDir+"\\sourcedata.db"));
+			SQLiteConnection db = new SQLiteConnection(new File(outDir+"/sourcedata.db"));
 			db.open(true);
 			String query = "CREATE TABLE if NOT EXISTS 'TableIndex' "; 
 			query += "(TableName varchar(255), FormattedName varchar(255), Timestamp timestamp);";
@@ -69,7 +69,7 @@ public class SQLiteWriter {
 	public void writeAllTables(){
 
 		try{
-			SQLiteConnection db = new SQLiteConnection(new File(outDir+"\\sourcedata.db"));
+			SQLiteConnection db = new SQLiteConnection(new File(outDir+"/sourcedata.db"));
 			db.open(true);
 
 			for(int i = 0; i < toPrint.size(); i++){
