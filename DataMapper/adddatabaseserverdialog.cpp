@@ -5,63 +5,33 @@
 #include <QtWidgets/QDialogButtonBox>
 #include <QtWidgets/QMessageBox>
 
-AddDatabaseServerDialog::AddDatabaseServerDialog(QWidget *parent)
-	: QDialog(parent)
+AddDatabaseServerWizard::AddDatabaseServerWizard(DataEngine::DataEngineConnection::SharedPtr dataEngineConnection, QWidget *parent)
+	: QWizard(parent),
+	m_dataEngineConnection(m_dataEngineConnection)
 {
-	setMinimumWidth(512);
+	//setMinimumWidth(512);
 	setWindowTitle(tr("Add Database Server"));
 
-	QFormLayout* formLayout = new QFormLayout(this);
-
-	QHBoxLayout* comboBoxLayout = new QHBoxLayout(this);
-	m_typeComboBox = new QComboBox(this);
-	QStringList databaseTypes;
-	for (auto dbType : SynGlyphX::DatabaseServerDatasource::s_dbTypeStrings) {
-
-		m_typeComboBox->addItem(QString::fromStdWString(dbType.get_right()), dbType.get_left());
-	}
-	QObject::connect(m_typeComboBox, &QComboBox::currentTextChanged, this, &AddDatabaseServerDialog::OnTypeComboBoxChanged);
-
-	comboBoxLayout->addWidget(m_typeComboBox);
-	comboBoxLayout->addStretch(1);
-	formLayout->addRow(tr("Database Type"), comboBoxLayout);
-
-	m_connectionLineEdit = new QLineEdit(this);
-	m_connectionValidator = new SynGlyphX::PrefixSuffixValidator(this);
-	m_connectionLineEdit->setValidator(m_connectionValidator);
-	formLayout->addRow(tr("Connection"), m_connectionLineEdit);
-	OnTypeComboBoxChanged();
-
-	m_usernameLineEdit = new QLineEdit(this);
-	formLayout->addRow(tr("Username"), m_usernameLineEdit);
-
-	m_passwordLineEdit = new SynGlyphX::PasswordLineEdit(this);
-	m_passwordLineEdit->layout()->setContentsMargins(0, 0, 0, 0);
-	formLayout->addRow(tr("Password"), m_passwordLineEdit);
-
-	QDialogButtonBox* dialogButtonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, this);
-	formLayout->addWidget(dialogButtonBox);
-	QObject::connect(dialogButtonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
-	QObject::connect(dialogButtonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
-
-	setLayout(formLayout);
+	CreateDatabaseInfoPage();
+	CreateSchemaSelectionPage();
+	CreateTableSelectionPage();
 }
 
-AddDatabaseServerDialog::~AddDatabaseServerDialog()
+AddDatabaseServerWizard::~AddDatabaseServerWizard()
 {
 
 }
-
-void AddDatabaseServerDialog::SetValues(const SynGlyphX::DatabaseServerDatasource& datasource) {
+/*
+void AddDatabaseServerWizard::SetValues(const SynGlyphX::DatabaseServerDatasource& datasource) {
 
 	m_typeComboBox->setCurrentText(QString::fromStdWString(SynGlyphX::DatabaseServerDatasource::s_dbTypeStrings.left.at(datasource.GetDBType())));
 	OnTypeComboBoxChanged();
 	SetConnection(QString::fromStdWString(datasource.GetHost()));
 	m_usernameLineEdit->setText(QString::fromStdWString(datasource.GetUsername()));
 	m_passwordLineEdit->SetPassword(QString::fromStdWString(datasource.GetPassword()));
-}
+}*/
 
-SynGlyphX::DatabaseServerDatasource AddDatabaseServerDialog::GetValues() const {
+SynGlyphX::DatabaseServerDatasource AddDatabaseServerWizard::GetValues() const {
 
 	SynGlyphX::DatabaseServerDatasource datasource(static_cast<SynGlyphX::DatabaseServerDatasource::DBType>(m_typeComboBox->currentData().toUInt()),
 												   GetConnection().toStdWString(),
@@ -71,7 +41,72 @@ SynGlyphX::DatabaseServerDatasource AddDatabaseServerDialog::GetValues() const {
 	return datasource;
 }
 
-void AddDatabaseServerDialog::OnTypeComboBoxChanged() {
+void AddDatabaseServerWizard::CreateDatabaseInfoPage() {
+
+	QWizardPage* wizardPage = new QWizardPage(this);
+
+	QFormLayout* formLayout = new QFormLayout(wizardPage);
+
+	QHBoxLayout* comboBoxLayout = new QHBoxLayout(wizardPage);
+	m_typeComboBox = new QComboBox(wizardPage);
+	QStringList databaseTypes;
+	for (auto dbType : SynGlyphX::DatabaseServerDatasource::s_dbTypeStrings) {
+
+		m_typeComboBox->addItem(QString::fromStdWString(dbType.get_right()), dbType.get_left());
+	}
+	QObject::connect(m_typeComboBox, &QComboBox::currentTextChanged, this, &AddDatabaseServerWizard::OnTypeComboBoxChanged);
+
+	comboBoxLayout->addWidget(m_typeComboBox);
+	comboBoxLayout->addStretch(1);
+	formLayout->addRow(tr("Database Type"), comboBoxLayout);
+
+	m_connectionLineEdit = new QLineEdit(wizardPage);
+	m_connectionValidator = new SynGlyphX::PrefixSuffixValidator(wizardPage);
+	m_connectionLineEdit->setValidator(m_connectionValidator);
+	formLayout->addRow(tr("Connection"), m_connectionLineEdit);
+	OnTypeComboBoxChanged();
+
+	m_usernameLineEdit = new QLineEdit(wizardPage);
+	formLayout->addRow(tr("Username"), m_usernameLineEdit);
+
+	m_passwordLineEdit = new SynGlyphX::PasswordLineEdit(wizardPage);
+	m_passwordLineEdit->layout()->setContentsMargins(0, 0, 0, 0);
+	formLayout->addRow(tr("Password"), m_passwordLineEdit);
+
+	wizardPage->setLayout(formLayout);
+
+	wizardPage->setTitle(tr("Database Info"));
+
+	setPage(DatabaseInfoPage, wizardPage);
+}
+
+void AddDatabaseServerWizard::CreateSchemaSelectionPage() {
+
+	QWizardPage* wizardPage = new QWizardPage(this);
+
+	QVBoxLayout* pageLayout = new QVBoxLayout(wizardPage);
+	m_schemaListWidget = new QListWidget(wizardPage);
+	m_schemaListWidget->setSortingEnabled(false);
+	m_schemaListWidget->setSelectionMode(QAbstractItemView::SingleSelection);
+	pageLayout->addWidget(m_schemaListWidget);
+
+	wizardPage->setLayout(pageLayout);
+
+	wizardPage->setTitle(tr("Select Schema"));
+
+	setPage(SchemaSelectionPage, wizardPage);
+}
+
+void AddDatabaseServerWizard::CreateTableSelectionPage() {
+
+	QWizardPage* wizardPage = new QWizardPage(this);
+
+	wizardPage->setTitle(tr("Select Tables"));
+
+	setPage(TableSelectionPage, wizardPage);
+}
+
+void AddDatabaseServerWizard::OnTypeComboBoxChanged() {
 
 	QString prefixSeparator = QString::fromStdWString(SynGlyphX::DatabaseServerDatasource::s_prefixSeparator);
 	SynGlyphX::DatabaseServerDatasource::DBType dbType = static_cast<SynGlyphX::DatabaseServerDatasource::DBType>(m_typeComboBox->currentData().toUInt());
@@ -83,27 +118,102 @@ void AddDatabaseServerDialog::OnTypeComboBoxChanged() {
 	SetConnection(connection);
 }
 
-void AddDatabaseServerDialog::SetConnection(const QString& connection) {
+void AddDatabaseServerWizard::SetConnection(const QString& connection) {
 
 	m_connectionLineEdit->setText(m_connectionValidator->GetPrefix() + connection);
 }
 
-QString AddDatabaseServerDialog::GetConnection() const {
+QString AddDatabaseServerWizard::GetConnection() const {
 
 	return m_connectionLineEdit->text().mid(m_connectionValidator->GetPrefix().size());
 }
 
-void AddDatabaseServerDialog::accept() {
+int AddDatabaseServerWizard::nextId() const {
 
-	if (GetConnection().isEmpty()) {
+	int currentPageId = currentId();
+	if (currentPageId == SchemaSelectionPage) {
 
-		QMessageBox::warning(this, tr("Invalid value"), tr("Connection must not be an empty value"));
-		return;
+		return TableSelectionPage;
+	}
+	else if (currentPageId == DatabaseInfoPage) {
+
+		if (m_schemas.isEmpty()) {
+
+			return TableSelectionPage;
+		}
+		else {
+
+			return SchemaSelectionPage;
+		}
+	}
+
+	return -1;
+}
+
+bool AddDatabaseServerWizard::validateCurrentPage() {
+
+	int currentPageId = currentId();
+	if (currentPageId == DatabaseInfoPage) {
+
+		if (GetConnection().isEmpty()) {
+
+			QMessageBox::warning(this, tr("Invalid value"), tr("Connection must not be an empty value"));
+			return false;
+		}
+		else {
+
+			return ValidateDatabaseInfo();
+		}
+	}
+	else if (currentPageId == SchemaSelectionPage) {
+
+		if (m_schemaListWidget->selectedItems().isEmpty()) {
+
+			QMessageBox::warning(this, tr("Schema Selection Error"), tr("A schema needs to be selected to continue"));
+			return false;
+		}
+		else {
+
+			return true;
+		}
+	}
+	else if (currentPageId == TableSelectionPage) {
+
+		return true;
 	}
 	else {
 
-		
+		return QWizard::validateCurrentPage();
 	}
+}
 
-	QDialog::accept();
+void AddDatabaseServerWizard::initializePage(int id) {
+
+	if (id == SchemaSelectionPage) {
+
+		m_schemaListWidget->clear();
+		m_schemaListWidget->addItems(m_schemas);
+	}
+	else if (id == TableSelectionPage) {
+
+		QString schema = m_schemaListWidget->selectedItems()[0]->text();
+	}
+}
+
+bool AddDatabaseServerWizard::ValidateDatabaseInfo() {
+
+	SynGlyphX::DatabaseServerDatasource::DBType dbType = static_cast<SynGlyphX::DatabaseServerDatasource::DBType>(m_typeComboBox->currentData().toUInt());
+
+	try {
+		m_schemas = m_dataEngineConnection->connectToServer(m_connectionLineEdit->text(),
+															m_usernameLineEdit->text(),
+															m_passwordLineEdit->GetPassword(),
+															QString::fromStdWString(SynGlyphX::DatabaseServerDatasource::s_dbTypePrefixes.left.at(dbType)));
+		return true;
+	}
+	catch (...) {
+
+		QMessageBox::warning(this, tr("Database Connection Failed"), tr("No connection was able to made using the given database information.  Verify that the given database information is correct."));
+		return false;
+	}
 }

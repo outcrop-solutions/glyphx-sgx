@@ -1158,15 +1158,14 @@ void DataTransformModel::AddDatasourceInfoFromDataEngine(const boost::uuids::uui
 
 			SynGlyphX::Datasource::TableNames tables;
 
-			QString url("sqlite:" + datasource);
+			QString url = QString::fromStdWString(L"sqlite:" + fileDatasource->GetFilename());
 			QString user("");
 			QString pass("");
-			QString type("sqlite3");
 			//QString url("mysql://33.33.33.1");
 			//QString user("root");
 			//QString pass("jarvis");
 			//QString type("mysql");
-			QStringList databases = m_dataEngineConnection->connectToServer(url, user, pass, type);
+			QStringList databases = m_dataEngineConnection->connectToServer(url, user, pass, "sqlite3");
 			QString database("");
 			//QString database("world");
 			QStringList qtables;

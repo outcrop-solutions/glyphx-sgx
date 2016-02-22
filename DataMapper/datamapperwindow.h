@@ -80,7 +80,6 @@ private:
 	bool SaveDataTransform(const QString& filename);
 	bool AskUserToSave();
 	void EnableProjectDependentActions(bool enable);
-	bool ValidateNewDatasource(const QString& datasource);
 	void ProcessCSVFile(const QString& csvFile);
 	void ReadNewMappingDefaults();
 	void WriteNewMappingDefaults();

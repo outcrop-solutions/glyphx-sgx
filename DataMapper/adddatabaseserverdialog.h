@@ -18,38 +18,62 @@
 #ifndef ADDDATABASESERVERWIDGET_H
 #define ADDDATABASESERVERWIDGET_H
 
-#include <QtWidgets/QDialog>
+#include <QtWidgets/QWizard>
 #include "databaseserverdatasource.h"
 #include <QtWidgets/QComboBox>
 #include "passwordlineedit.h"
 #include "prefixsuffixvalidator.h"
+#include "dataengineconnection.h"
+#include <QtWidgets/QListWidget>
 
-class AddDatabaseServerDialog : public QDialog
+class AddDatabaseServerWizard : public QWizard
 {
 	Q_OBJECT
 
 public:
-	AddDatabaseServerDialog(QWidget *parent);
-	~AddDatabaseServerDialog();
+	enum PageType {
+		DatabaseInfoPage = 0,
+		SchemaSelectionPage,
+		TableSelectionPage
+	};
 
-	void SetValues(const SynGlyphX::DatabaseServerDatasource& datasource);
+	AddDatabaseServerWizard(DataEngine::DataEngineConnection::SharedPtr dataEngineConnection, QWidget *parent);
+	~AddDatabaseServerWizard();
+
+	//void SetValues(const SynGlyphX::DatabaseServerDatasource& datasource);
 	SynGlyphX::DatabaseServerDatasource GetValues() const;
 
-	virtual void accept();
+	virtual int nextId() const;
+	virtual bool validateCurrentPage();
+
+protected:
+	virtual void initializePage(int id);
 
 private slots:
 	void OnTypeComboBoxChanged();
 
 private:
+	void CreateDatabaseInfoPage();
+	void CreateSchemaSelectionPage();
+	void CreateTableSelectionPage();
+
 	void SetConnection(const QString& connection);
 	QString GetConnection() const;
 
+	bool ValidateDatabaseInfo();
+
+	DataEngine::DataEngineConnection::SharedPtr m_dataEngineConnection;
+	QStringList m_schemas;
+
+	//Database Info Page Widgets
 	QComboBox* m_typeComboBox;
 	QLineEdit* m_connectionLineEdit;
 	QLineEdit* m_usernameLineEdit;
 	SynGlyphX::PasswordLineEdit* m_passwordLineEdit;
-
 	SynGlyphX::PrefixSuffixValidator* m_connectionValidator;
+
+	//Schema selection page widgets
+	QListWidget* m_schemaListWidget;
 };
 
 #endif // ADDDATABASESERVERWIDGET_H
