@@ -197,6 +197,11 @@ namespace DataEngine
 	//JDBC ACCESSOR FUNCTIONS
 	QStringList DataEngineConnection::connectToServer(QString db_url, QString user, QString pass, QString db_type){
 
+		if (IsConnectionOpen()) {
+
+			closeConnection();
+		}
+
 		jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
 			"connectToServer", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)[Ljava/lang/String;");
 		jobjectArray itr;
@@ -213,6 +218,8 @@ namespace DataEngine
 			}
 
 			int length = jniEnv->GetArrayLength(itr);
+
+			m_openConnection = db_url;
 
 			for (int i = 0; i < length; i++){
 				jstring element = (jstring)jniEnv->GetObjectArrayElement(itr, i);
@@ -456,6 +463,13 @@ namespace DataEngine
 				jniEnv->ExceptionClear();
 			}
 		}
+
+		m_openConnection.clear();
+	}
+
+	bool DataEngineConnection::IsConnectionOpen() const {
+
+		return (!m_openConnection.isEmpty());
 	}
 
 	//JDBC END

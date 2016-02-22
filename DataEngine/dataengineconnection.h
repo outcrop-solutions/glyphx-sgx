@@ -22,6 +22,7 @@ namespace DataEngine
 	};
 
 	private:
+		QString m_openConnection;
 		JavaVM *javaVM;
 		JNIEnv *jniEnv;
 		jclass jcls;
@@ -70,7 +71,7 @@ namespace DataEngine
 		JNIEnv* getEnv() const;
 		jclass getJcls() const;
 		//void testFunction();
-
+		bool IsConnectionOpen() const;
 	};
 }
 #endif // DATAENGINECONNECTION_H
