@@ -6,7 +6,13 @@ namespace SynGlyphX {
 
 	const DatabaseServerDatasource::DBTypeBimap DatabaseServerDatasource::s_dbTypeStrings = boost::assign::list_of < DatabaseServerDatasource::DBTypeBimap::relation >
 		(DatabaseServerDatasource::DBType::MySQL, L"MySQL")
-		(DatabaseServerDatasource::DBType::Vertica, L"Verica");
+		(DatabaseServerDatasource::DBType::Vertica, L"Vertica");
+
+	const DatabaseServerDatasource::DBTypeBimap DatabaseServerDatasource::s_dbTypePrefixes = boost::assign::list_of < DatabaseServerDatasource::DBTypeBimap::relation >
+		(DatabaseServerDatasource::DBType::MySQL, L"mysql")
+		(DatabaseServerDatasource::DBType::Vertica, L"vertica");
+
+	const std::wstring DatabaseServerDatasource::s_prefixSeparator = L"://";
 
 	DatabaseServerDatasource::DatabaseServerDatasource(DBType type, const std::wstring& connection, const std::wstring& schema, const std::wstring& username, const std::wstring& password) :
 		Datasource(connection, username, password),
@@ -131,6 +137,11 @@ namespace SynGlyphX {
 	std::wstring DatabaseServerDatasource::GetDBName() const {
 
 		return m_host;
+	}
+
+	std::wstring DatabaseServerDatasource::GetFullJDBCConnectionString() const {
+
+		return s_dbTypePrefixes.left.at(m_dbType) + s_prefixSeparator + m_host;
 	}
 
 } //namespace SynGlyphX

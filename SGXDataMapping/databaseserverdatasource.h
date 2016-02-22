@@ -57,9 +57,13 @@ namespace SynGlyphX {
 		virtual std::wstring GetFormattedName() const;
 		virtual std::wstring GetDBName() const;
 
+		std::wstring GetFullJDBCConnectionString() const;
+
 		virtual PropertyTree& ExportToPropertyTree(boost::property_tree::wptree& parentPropertyTree);
 
 		static const DBTypeBimap s_dbTypeStrings;
+		static const DBTypeBimap s_dbTypePrefixes;
+		static const std::wstring s_prefixSeparator;
 
 	protected:
 		DBType m_dbType;
