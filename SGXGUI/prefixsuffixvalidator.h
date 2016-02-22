@@ -18,11 +18,12 @@
 #ifndef SYNGLYPHX_PREFIXSUFFIXVALIDATOR_H
 #define SYNGLYPHX_PREFIXSUFFIXVALIDATOR_H
 
+#include "sgxgui_global.h"
 #include <QtGui/QValidator>
 
 namespace SynGlyphX {
 
-	class PrefixSuffixValidator : public QValidator
+	class SGXGUI_EXPORT PrefixSuffixValidator : public QValidator
 	{
 		Q_OBJECT
 

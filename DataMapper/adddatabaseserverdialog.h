@@ -22,6 +22,7 @@
 #include "databaseserverdatasource.h"
 #include <QtWidgets/QComboBox>
 #include "passwordlineedit.h"
+#include "prefixsuffixvalidator.h"
 
 class AddDatabaseServerDialog : public QDialog
 {
@@ -36,11 +37,19 @@ public:
 
 	virtual void accept();
 
+private slots:
+	void OnTypeComboBoxChanged();
+
 private:
+	void SetConnection(const QString& connection);
+	QString GetConnection() const;
+
 	QComboBox* m_typeComboBox;
 	QLineEdit* m_connectionLineEdit;
 	QLineEdit* m_usernameLineEdit;
 	SynGlyphX::PasswordLineEdit* m_passwordLineEdit;
+
+	SynGlyphX::PrefixSuffixValidator* m_connectionValidator;
 };
 
 #endif // ADDDATABASESERVERWIDGET_H

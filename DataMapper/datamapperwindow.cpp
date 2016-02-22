@@ -211,10 +211,10 @@ void DataMapperWindow::CreateMenus() {
 	//Create Datasource Menu
 	m_datasourceMenu = menuBar()->addMenu(tr("Data Source"));
     
-	QAction* addFileDatasourcesAction = m_datasourceMenu->addAction(tr("Add File Datasources"));
+	QAction* addFileDatasourcesAction = m_datasourceMenu->addAction(tr("Add File(s)"));
 	QObject::connect(addFileDatasourcesAction, &QAction::triggered, this, &DataMapperWindow::AddFileDataSources);
 
-	QAction* addDatabaseServerDatasourcesAction = m_datasourceMenu->addAction(tr("Add Database Server Datasources"));
+	QAction* addDatabaseServerDatasourcesAction = m_datasourceMenu->addAction(tr("Add Database Server"));
 	QObject::connect(addDatabaseServerDatasourcesAction, &QAction::triggered, this, &DataMapperWindow::AddDatabaseServerDatasources);
 
 	m_datasourceMenu->addSeparator();
