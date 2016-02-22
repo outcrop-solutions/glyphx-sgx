@@ -33,7 +33,8 @@ namespace SynGlyphX {
 		ChangeDatasourceFileDialog(const FileDatasource& oldDatasourceFile, const QString& acceptButtonText, QWidget *parent = 0);
 		~ChangeDatasourceFileDialog();
 
-		static bool UpdateDatasourceFiles(const std::vector<boost::uuids::uuid>& datasources, DataTransformMapping::SharedPtr mapping, QWidget* dialogParent = nullptr);
+		static bool UpdateDatasourceFiles(const std::vector<boost::uuids::uuid>& datasources, QString sdtfilename, DataTransformMapping::SharedPtr mapping, QWidget* dialogParent = nullptr);
+		static QString IsFileInSameDirectory(std::wstring datasourcename, QString sdtpath);
 
 	private:
 		virtual bool IsNewFileValid() const;
