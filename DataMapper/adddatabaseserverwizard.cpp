@@ -1,4 +1,4 @@
-#include "adddatabaseserverdialog.h"
+#include "adddatabaseserverwizard.h"
 #include <QtWidgets/QFormLayout>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QHBoxLayout>

@@ -34,7 +34,7 @@
 #include "changeimagefiledialog.h"
 #include <fstream>
 #include "glyphtemplatelibrarylistwidget.h"
-#include "adddatabaseserverdialog.h"
+#include "adddatabaseserverwizard.h"
 #include "downloadexception.h"
 
 DataMapperWindow::DataMapperWindow(QWidget *parent)
