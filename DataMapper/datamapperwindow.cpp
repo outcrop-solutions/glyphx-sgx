@@ -35,6 +35,7 @@
 #include <fstream>
 #include "glyphtemplatelibrarylistwidget.h"
 #include "adddatabaseserverwizard.h"
+#include "addfiledatasourcewizard.h"
 #include "downloadexception.h"
 
 DataMapperWindow::DataMapperWindow(QWidget *parent)
@@ -514,6 +515,19 @@ void DataMapperWindow::ProcessCSVFile(const QString& csvFile) {
 }*/
 
 void DataMapperWindow::AddFileDataSources() {
+
+	QSettings settings;
+	settings.beginGroup(s_fileDialogSettingsGroup);
+	QString initialDir = settings.value("DatasourcesDir", "").toString();
+
+	AddFileDatasourceWizard fileDatasourceWizard(initialDir, m_dataEngineConnection, this);
+	if (fileDatasourceWizard.exec() == QDialog::Accepted) {
+
+		//QFileInfo fileInfo(filename);
+		//settings.setValue("DatasourcesDir", fileInfo.absolutePath());
+	}
+
+	settings.endGroup();
 
 	std::wstring datasource = GetFileNameOpenDialog("DatasourcesDir", tr("Add Data Source"), "", "All datasource files (*.*);;CSV files (*.csv)").toStdWString();
 

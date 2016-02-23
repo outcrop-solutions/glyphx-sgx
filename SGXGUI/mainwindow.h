@@ -74,6 +74,9 @@ namespace SynGlyphX {
 
 		QByteArray m_originalState;
 
+		static const QString s_copyright;
+		static const QString s_fileDialogSettingsGroup;
+
     private slots:
         void OnRecentFileSelected();
 		void ShowLicensingDialog();
@@ -82,9 +85,6 @@ namespace SynGlyphX {
 	private:
 		bool m_needToReadSettings;
 		unsigned int m_stateVersion;
-
-		static const QString s_copyright;
-		static const QString s_fileDialogSettingsGroup;
     };
 
 } //namespace SynGlyphX
