@@ -717,6 +717,16 @@ namespace SynGlyphX {
 		SharedPtr subsetMapping(new DataTransformMapping());
 		subsetMapping->SetSceneProperties(m_sceneProperties);
 		subsetMapping->SetDefaults(m_defaults);
+
+		if (!subsetMapping->GetBaseObjects().empty()) {
+
+			subsetMapping->RemoveBaseObject(0);
+		}
+		for (auto baseImage : m_baseObjects) {
+
+			subsetMapping->AddBaseObject(baseImage);
+		}
+
 		boost::uuids::uuid datasourceID = subsetMapping->AddFileDatasource(FileDatasource::FileType::CSV, csvFilename);
 
 		for (auto fieldGroupPair : m_fieldGroups) {

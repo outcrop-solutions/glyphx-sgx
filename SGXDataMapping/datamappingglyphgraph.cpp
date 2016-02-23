@@ -54,6 +54,21 @@ namespace SynGlyphX {
 		}
 
 		m_mergeRoots = propertyTree.get_optional<bool>(L"<xmlattr>.merge").get_value_or(false);
+
+		//Since there was a previous bug where input fields would get written to the file that were not in use, clear them out
+		std::vector<SynGlyphX::InputTable::HashID> fieldsToRemove;
+		for (auto inputField : m_inputFieldReferenceCounts) {
+
+			if (inputField.second == 0) {
+
+				fieldsToRemove.push_back(inputField.first);
+			}
+		}
+		for (auto fieldToRemove : fieldsToRemove) {
+
+			m_inputFields.erase(fieldToRemove);
+			m_inputFieldReferenceCounts.erase(fieldToRemove);
+		}
 	}
 
 	DataMappingGlyphGraph::DataMappingGlyphGraph(const DataMappingGlyphGraph& graph) :
@@ -362,6 +377,9 @@ namespace SynGlyphX {
 				throw std::invalid_argument("Argument inputfield does not match the datasource and table of the other input fields of this tree");
 			}
 		}
+
+		//Clear input binding if field as a previous value
+		ClearInputBinding(node, field);
 
 		InputField::HashID inputFieldID = inputfield.GetHashID();
 		std::unordered_map<InputField::HashID, unsigned int>::iterator referenceCount = m_inputFieldReferenceCounts.find(inputFieldID);
