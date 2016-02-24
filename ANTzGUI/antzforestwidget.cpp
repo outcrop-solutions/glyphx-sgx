@@ -16,6 +16,7 @@
 #include "itemfocusselectionmodel.h"
 #include <stack>
 #include "defaultbaseimagescombobox.h"
+#include "glyphnodeconverter.h"
 
 namespace SynGlyphXANTz {
 
@@ -622,9 +623,10 @@ namespace SynGlyphXANTz {
 			Q_FOREACH(const QModelIndex& modelIndex, m_selectionModel->selectedIndexes()) {
 
 				pNPnode selectedNode = static_cast<pNPnode>(modelIndex.internalPointer());
-				if (m_model->IsTagShownIn3d(selectedNode->tag->title)) {
+				QString tag = QString::fromStdWString(SynGlyphXANTz::GlyphNodeConverter::GetTag(selectedNode));
+				if (m_model->IsTagShownIn3d(tag)) {
 
-					renderText(selectedNode->world.x, selectedNode->world.y, selectedNode->world.z, selectedNode->tag->title, m_oglTextFont);
+					renderText(selectedNode->world.x, selectedNode->world.y, selectedNode->world.z, tag, m_oglTextFont);
 				}
 			}
 		}
