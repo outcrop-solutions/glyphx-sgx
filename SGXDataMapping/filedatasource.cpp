@@ -151,7 +151,8 @@ namespace SynGlyphX {
 
 	FileDatasource::FileType FileDatasource::GetFileTypeForFile(const std::wstring& filename) {
 
-		if (filename.substr(filename.length() - 4) == L".csv") {
+		std::wstring extension = boost::filesystem::path(filename).extension().native();
+		if (extension == L".csv") {
 
 			return FileDatasource::FileType::CSV;
 		}
@@ -161,7 +162,7 @@ namespace SynGlyphX {
 		}
 		else {
 
-			throw std::invalid_argument("Data source file is not a supported type.");
+			throw std::invalid_argument("File is not recognized as a supported data source type.");
 		}
 	}
 
