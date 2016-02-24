@@ -212,8 +212,8 @@ void DataMapperWindow::CreateMenus() {
 	//Create Datasource Menu
 	m_datasourceMenu = menuBar()->addMenu(tr("Data Source"));
     
-	QAction* addFileDatasourcesAction = m_datasourceMenu->addAction(tr("Add File(s)"));
-	QObject::connect(addFileDatasourcesAction, &QAction::triggered, this, &DataMapperWindow::AddFileDataSources);
+	QAction* addFileDatasourceAction = m_datasourceMenu->addAction(tr("Add File"));
+	QObject::connect(addFileDatasourceAction, &QAction::triggered, this, &DataMapperWindow::AddFileDataSource);
 
 	QAction* addDatabaseServerDatasourcesAction = m_datasourceMenu->addAction(tr("Add Database Server"));
 	QObject::connect(addDatabaseServerDatasourcesAction, &QAction::triggered, this, &DataMapperWindow::AddDatabaseServerDatasources);
@@ -514,43 +514,35 @@ void DataMapperWindow::ProcessCSVFile(const QString& csvFile) {
 	}
 }*/
 
-void DataMapperWindow::AddFileDataSources() {
+void DataMapperWindow::AddFileDataSource() {
 
 	QSettings settings;
 	settings.beginGroup(s_fileDialogSettingsGroup);
 	QString initialDir = settings.value("DatasourcesDir", "").toString();
 
 	AddFileDatasourceWizard fileDatasourceWizard(initialDir, m_dataEngineConnection, this);
-	if (fileDatasourceWizard.exec() == QDialog::Accepted) {
+	if (fileDatasourceWizard.Exec() == QDialog::Accepted) {
 
-		//QFileInfo fileInfo(filename);
-		//settings.setValue("DatasourcesDir", fileInfo.absolutePath());
+		const QString& filename = fileDatasourceWizard.GetFilename();
+		QFileInfo fileInfo(filename);
+		settings.setValue("DatasourcesDir", fileInfo.absolutePath());
+
+		try {
+
+			SynGlyphX::FileDatasource::FileType fileDatasourceType = SynGlyphX::FileDatasource::GetFileTypeForFile(filename.toStdWString());
+			boost::uuids::uuid newDBID = m_dataTransformModel->AddFileDatasource(fileDatasourceType, filename.toStdWString());
+
+			m_dataSourceStats->AddNewStatsViews();
+			EnableProjectDependentActions(true);
+
+		}
+		catch (const std::exception& e) {
+
+			QMessageBox::critical(this, tr("Failed To Add Data Source"), QString::fromStdString(e.what()), QMessageBox::Ok);
+		}
 	}
 
 	settings.endGroup();
-
-	std::wstring datasource = GetFileNameOpenDialog("DatasourcesDir", tr("Add Data Source"), "", "All datasource files (*.*);;CSV files (*.csv)").toStdWString();
-
-	if (datasource.empty()) {
-		return;
-	}
-
-	try {
-
-		SynGlyphX::FileDatasource::FileType fileDatasourceType = SynGlyphX::FileDatasource::GetFileTypeForFile(datasource);
-		boost::uuids::uuid newDBID = m_dataTransformModel->AddFileDatasource(fileDatasourceType, datasource);
-
-		
-
-		m_dataSourceStats->AddNewStatsViews();
-		EnableProjectDependentActions(true);
-		
-	}
-	catch (const std::exception& e) {
-
-		QMessageBox::critical(this, tr("Failed To Add Data Source"), QString::fromStdString(e.what()), QMessageBox::Ok);
-		return;
-	}
 
 	if (m_dataEngineConnection->IsConnectionOpen()) {
 

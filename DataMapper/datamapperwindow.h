@@ -57,7 +57,7 @@ private slots:
     void OpenProject();
     bool SaveProject();
     bool SaveAsProject();
-	void AddFileDataSources();
+	void AddFileDataSource();
 	void AddDatabaseServerDatasources();
 	void CreatePortableVisualization(SynGlyphX::PortableVisualizationExport::Platform platform);
 	void AddBaseObject();

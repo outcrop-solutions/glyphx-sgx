@@ -15,28 +15,33 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef ADDFILEDATASOURCEWIZARD_H
-#define ADDFILEDATASOURCEWIZARD_H
+#ifndef SYNGLYPHX_VALIDATEDOPENFILEDIALOG_H
+#define SYNGLYPHX_VALIDATEDOPENFILEDIALOG_H
 
-#include "validatedopenfiledialog.h"
-#include "dataengineconnection.h"
+#include "sgxgui_global.h"
+#include <QtCore/QObject>
+#include <QtCore/QString>
 
-class AddFileDatasourceWizard : public SynGlyphX::ValidatedOpenFileDialog
-{
-	Q_OBJECT
+namespace SynGlyphX {
 
-public:
-	AddFileDatasourceWizard(const QString& startingDirectory, DataEngine::DataEngineConnection::SharedPtr dataEngineConnection, QWidget *parent);
-	~AddFileDatasourceWizard();
+	class SGXGUI_EXPORT ValidatedOpenFileDialog : public QObject
+	{
+		Q_OBJECT
 
-	const QString& GetFilename() const;
+	public:
+		ValidatedOpenFileDialog(const QString& startingDir, const QString& caption, const QString& filter, QWidget *parent);
+		~ValidatedOpenFileDialog();
 
-protected:
-	virtual bool IsFileValid(const QString& filename);
+		int Exec();
 
-private:
-	DataEngine::DataEngineConnection::SharedPtr m_dataEngineConnection;
-	QString m_filename;
-};
+	protected:
+		virtual bool IsFileValid(const QString& filename) = 0;
 
-#endif // ADDFILEDATASOURCEWIZARD_H
+		QString m_startingDirectory;
+		QString m_caption;
+		QString m_filter;
+	};
+
+} //namespace SynGlyphX
+
+#endif // SYNGLYPHX_VALIDATEDOPENFILEDIALOG_H
