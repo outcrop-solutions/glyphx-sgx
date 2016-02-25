@@ -168,6 +168,12 @@ void SourceDataWidget::WriteToFile(QSqlQueryModel* queryModel, const QString& fi
 	}
 	csvFile.WriteLine(headers);
 
+	//QSqlQueryModel may not have loaded all rows, so force it here
+	while (queryModel->canFetchMore()) {
+	
+		queryModel->fetchMore();
+	}
+
 	for (int j = 0; j < queryModel->rowCount(); ++j) {
 
 		SynGlyphX::CSVFileHandler::CSVValues lineOfValues;
