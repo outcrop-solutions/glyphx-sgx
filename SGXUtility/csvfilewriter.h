@@ -27,8 +27,8 @@ namespace SynGlyphX {
 	class SGXUTILITY_API CSVFileWriter : public CSVFileHandler
 	{
 	public:
-		CSVFileWriter(char separator = ',');
-		CSVFileWriter(const std::string& filename, char separator = ',');
+		CSVFileWriter(wchar_t separator = ',');
+		CSVFileWriter(const std::string& filename, wchar_t separator = ',');
 		virtual ~CSVFileWriter();
 
 		void Open(const std::string& filename);
@@ -39,6 +39,8 @@ namespace SynGlyphX {
 		void WriteLine(const CSVValues& values);
 
 	private:
+		void SetupLocale();
+
 		std::wofstream m_filestream;
 		unsigned int m_numFields;
 	};
