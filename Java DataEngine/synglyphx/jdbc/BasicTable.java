@@ -22,6 +22,7 @@ public class BasicTable extends Table{
 		this.end_of_query = name;
 		mapForeignKeys();
 		setColumnNames();
+		createDataStats();
 		loadSampleData();
 	}
 

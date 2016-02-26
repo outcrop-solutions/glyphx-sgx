@@ -17,6 +17,7 @@ public class Functions {
 	}
 
 	public static double logarithmicInterpolation(double x1, double x3, double y1, double y3, double x2){
+		if(x3-x1 == 0){return 0;}
 		return ((Math.log10(x2-x1+1)*(y3-y1))/Math.log10(x3-x1+1))+y1;
 	}
 

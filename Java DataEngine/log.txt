@@ -1,9 +1,13 @@
 
-Reading SDT at C:/Users/Bryan/Desktop/linux_test_sdt/csvtest.sdt
+Reading SDT at C:\Users\Bryan\Desktop\test_for_ray_1\url_and_description.sdt
 Parsed SDT into doc.
 Set input map.
-475ddeb4-2197-488b-9110-0d1177e8cac3OnlyTable
+9dabd6c8-24d8-4f18-8503-0336b73c5018SecondPortion
+9dabd6c8-24d8-4f18-8503-0336b73c5018FirstPortion
 Retrieved data paths.
+Reading table data...
+Finished creating min/max table...
+Reading table data...
 Finished creating min/max table...
 Created DataFrames.
 Checking field groups...
@@ -11,4 +15,24 @@ Finished checking field groups.
 Retrieved Defaults.
 Retrieved Bg color.
 BaseObjects:
-Downloaded Map | 
+Default | World
+Finished absorbing XML.
+Returning data stats model...
+Returning data stats model...
+167.296
+65.594
+-162.304
+-80.205
+Downloaded Map BoundingBox: (-180.0,90.0),(180.0,-90.0)
+Image Size: 2048.0, 1024.0
+Beginning to generate glyphs...
+Executed initial query...
+Returned cursor with size 35...
+1
+2
+Writing all files...
+C:\Users\Bryan\Desktop\test_for_ray_1\Viz
+C:\Users\Bryan\Desktop\test_for_ray_1\Viz/usr/csv/
+DataMapper
+C:\Users\Bryan\Desktop\test_for_ray_1\Viz/usr/csv//../../nourl.html
+71 nodes printing...
