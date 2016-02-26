@@ -26,7 +26,9 @@ public class CSVReader {
 			com.opencsv.CSVReader reader = new com.opencsv.CSVReader(new FileReader(path));
 	     	String [] nextLine;
 	     	while ((nextLine = reader.readNext()) != null) {
-	     		this.data.addRow(CSVtoArrayList(nextLine));
+	     		if(rowNotAllEmpty(nextLine)){
+	     			this.data.addRow(CSVtoArrayList(nextLine));
+	     		}
 	     	}
      	} catch (IOException re) {
 			re.printStackTrace();
@@ -57,8 +59,18 @@ public class CSVReader {
 				}
 			}
 		}
-		
 		return result;
+	}
+
+	private boolean rowNotAllEmpty(String[] row){
+
+		boolean empty = false;
+		for(int i = 0; i < row.length; i++){
+			if(!row[i].equals(" ") && !row[i].equals("") && row[i] != null){
+				empty = true;
+			}
+		}
+		return empty;
 	}
 
 }

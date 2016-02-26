@@ -80,7 +80,6 @@ public class Database {
 		for(int i = 0; i < chosen.length; i++){
 			Logger.getInstance().add(chosen[i]);
 	    	tables.put(chosen[i], temp_tables.get(chosen[i]));
-	    	tables.get(chosen[i]).createDataStats();
 	    }
 	}
 

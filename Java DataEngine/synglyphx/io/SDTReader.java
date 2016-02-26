@@ -48,14 +48,26 @@ public class SDTReader {
 	}
 
 	public void generateGlyphs(){
+		
+		Thread thread = new Thread(){
+    		public void run(){
+      			SQLiteWriter writer = new SQLiteWriter(dataPaths, outDir, rootIds, templates);
+      			writer.writeTableIndex();
+				writer.writeAllTables();
+    		}
+  		};
+  		thread.start();
+
 		mapping = new Mapper();
 		mapping.addNodeTemplates(templates, count);
 		mapping.checkRangeXY(download);
 		mapping.setDefaults(tagFieldDefault, tagValueDefault, scaleZeroDefault);
 		mapping.generateGlyphTrees(dataPaths, rootIds, outDir, colorStr, app, base_objects);
-		SQLiteWriter writer = new SQLiteWriter(dataPaths, outDir, rootIds, templates);
-		writer.writeTableIndex();
-		writer.writeAllTables();
+		try{
+			thread.join();
+		}catch(InterruptedException ie){
+	        ie.printStackTrace();
+		}
 	}
 
 	public void absorbXML(String sdtPath) {
@@ -368,7 +380,7 @@ public class SDTReader {
 					dataPaths.add(csv);
 					dataIds.put(csv.getID()+csv.getTable(),holder);
 					holder++;
-					System.out.println(csv.getID()+csv.getTable());
+					System.out.println(csv.getID()+":"+csv.getTable());
 					Logger.getInstance().add(csv.getID()+csv.getTable());
 				}else{
 					String id = e.getAttribute("id");

@@ -22,11 +22,13 @@ public class MySQLDriver implements Driver {
 	}
 
 	public String basicField(String col_name){
-		return "`"+col_name+"`";
+		//return "`"+col_name+"`";
+		return col_name;
 	}
 
 	public String mergedField(String tbl_name, String col_name){
-		return tbl_name+".`"+col_name+"`";
+		//return tbl_name+".`"+col_name+"`";
+		return tbl_name+"."+col_name;
 	}
 
 	public Connection getConnection(){

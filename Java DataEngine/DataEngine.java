@@ -125,22 +125,22 @@ public class DataEngine {
 	public static void main(String [] args){
 
 		DataEngine d = new DataEngine();
-		
+		/*
 		d.loadFromCSV("C:\\Users\\Bryan\\Desktop\\American Open Approved Hotels 2.csv");
 		String[] fields = d.getFieldsForTable(0,"csv");
 		for(int i = 0; i < fields.length; i++){
 			//System.out.println(fields[i]);
 			String[] stats = d.getStatsForField(0,fields[i]);
 			System.out.println(stats[0]+", "+stats[1]+", "+stats[2]+", "+stats[3]+", "+stats[4]+", "+stats[5]);
-		}
-		//String[] sch_list = d.connectToServer("mysql://33.33.33.1/world","root","jarvis","mysql");
+		}*/
+		String[] sch_list = d.connectToServer("mysql://10.128.132.153:3306/world","synglyphx","password","mysql");
 		//String[] sch_list = d.connectToServer("sqlite://C:/Users/Bryan/Documents/GitHub/DataEngine/Java DataEngine/sqlite_test.db","","","sqlite3");
 		/*String[] sch_list = d.connectToServer("vertica://54.67.93.24:5433/verticanow", "synglyphx_user", "Synglyphx_user@9102", "vertica");
-
+		*/
 		System.out.println("Schema List:");
 		for(int i = 0; i < sch_list.length; i++){
 			System.out.println(sch_list[i]);
-		}*/
+		}
 
 		/*
 		String[] tbl_names = d.getTableNames();
