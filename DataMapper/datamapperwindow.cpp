@@ -215,8 +215,11 @@ void DataMapperWindow::CreateMenus() {
 	QAction* addFileDatasourceAction = m_datasourceMenu->addAction(tr("Add File"));
 	QObject::connect(addFileDatasourceAction, &QAction::triggered, this, &DataMapperWindow::AddFileDataSource);
 
-	QAction* addDatabaseServerDatasourcesAction = m_datasourceMenu->addAction(tr("Add Database Server"));
-	QObject::connect(addDatabaseServerDatasourcesAction, &QAction::triggered, this, &DataMapperWindow::AddDatabaseServerDatasources);
+	if (SynGlyphX::GlyphBuilderApplication::AreInternalSGXFeaturesEnabled()) {
+
+		QAction* addDatabaseServerDatasourcesAction = m_datasourceMenu->addAction(tr("Add Database Server"));
+		QObject::connect(addDatabaseServerDatasourcesAction, &QAction::triggered, this, &DataMapperWindow::AddDatabaseServerDatasources);
+	}
 
 	m_datasourceMenu->addSeparator();
 
