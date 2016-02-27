@@ -15,33 +15,47 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef SYNGLYPHX_TREE2LISTFILTERPROXYMODEL_H
-#define SYNGLYPHX_TREE2LISTFILTERPROXYMODEL_H
+#ifndef TABLECHOICEMODEL_H
+#define TABLECHOICEMODEL_H
 
-#include "sgxgui_global.h"
-#include <QtCore/QSortFilterProxyModel>
+#include "abstracttreemodel.h"
+#include <map>
+#include <vector>
 
-namespace SynGlyphX {
+class TableChoiceModel : public SynGlyphX::AbstractTreeModel
+{
+	Q_OBJECT
 
-	class SGXGUI_EXPORT Tree2ListFilterProxyModel : public QSortFilterProxyModel
-	{
-		Q_OBJECT
+public:
+	typedef std::pair<QString, bool> TableEntry;
+	typedef std::vector<TableEntry> TableEntries;
+	typedef std::map<unsigned int, TableEntries> ForiegnKeyLinkedTableEntries;
 
-	public:
-		Tree2ListFilterProxyModel(QObject *parent);
-		~Tree2ListFilterProxyModel();
+	TableChoiceModel(bool includeCheckboxes, QObject *parent);
+	~TableChoiceModel();
 
-		void SetFilterParent(const QModelIndex& parent);
+	void SetTables(const QStringList& tables, const ForiegnKeyLinkedTableEntries& foriegnKeyTables = ForiegnKeyLinkedTableEntries());
+	QStringList GetChosenTables() const;
 
-	protected:
-		virtual bool filterAcceptsRow(int source_row, const QModelIndex& source_parent) const;
-		virtual bool filterAcceptsColumn(int source_column, const QModelIndex& source_parent) const;
+	const TableEntries& GetChosenLinkedTables(unsigned int tableIndex) const;
 
-	private:
-		QPersistentModelIndex m_parent;
+	virtual unsigned int GetMaxDepth() const;
+	virtual Qt::ItemFlags flags(const QModelIndex& index) const;
+	virtual int rowCount(const QModelIndex& parent = QModelIndex()) const;
+	virtual int columnCount(const QModelIndex& parent = QModelIndex()) const;
+	virtual QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const;
+	virtual bool setData(const QModelIndex& index, const QVariant& value, int role = Qt::EditRole);
+	virtual QModelIndex index(int row, int column, const QModelIndex & parent = QModelIndex()) const;
+	QModelIndex parent(const QModelIndex& index) const;
 
-	};
+private:
+	const TableEntry& GetTableEntry(const QModelIndex& index) const;
 
-} //namespace SynGlyphX
+	bool m_includeCheckboxes;
+	TableEntries m_tables;
+	ForiegnKeyLinkedTableEntries m_tableToTablesLinkedByForiegnKeys;
 
-#endif // SYNGLYPHX_TREE2LISTFILTERPROXYMODEL_H
+	static const quintptr s_rootID;
+};
+
+#endif // TABLECHOICEMODEL_H

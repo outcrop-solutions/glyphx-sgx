@@ -34,7 +34,7 @@ namespace SynGlyphX {
 		~PasswordLineEdit();
 
 		void SetPassword(const QString& password);
-		const QString& GetPassword() const;
+		QString GetPassword() const;
 
 	private slots:
 		void OnShowHidePasswordButtonClicked();

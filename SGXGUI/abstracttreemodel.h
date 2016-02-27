@@ -1,9 +1,3 @@
-///
-/// SynGlyphX Holdings Incorporated ("COMPANY") CONFIDENTIAL
-/// Copyright (c) 2013-2015 SynGlyphX Holdings Incorporated, All Rights Reserved.
-///
-/// NOTICE:  All information contained herein is, and remains the property of COMPANY. The intellectual and technical concepts contained
-/// herein are proprietary to COMPANY and may be covered by U.S. and Foreign Patents, patents in process, and are protected by trade secret or copyright law.
 /// Dissemination of this information or reproduction of this material is strictly forbidden unless prior written permission is obtained
 /// from COMPANY.  Access to the source code contained herein is hereby forbidden to anyone except current COMPANY employees, managers or contractors who have executed 
 /// Confidentiality and Non-disclosure agreements explicitly covering such access.
@@ -15,33 +9,29 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef SYNGLYPHX_TREE2LISTFILTERPROXYMODEL_H
-#define SYNGLYPHX_TREE2LISTFILTERPROXYMODEL_H
+#ifndef SYNGLYPHX_ABSTRACTTREEMODEL_H
+#define SYNGLYPHX_ABSTRACTTREEMODEL_H
 
 #include "sgxgui_global.h"
-#include <QtCore/QSortFilterProxyModel>
+#include <QtCore/QAbstractItemModel>
 
 namespace SynGlyphX {
 
-	class SGXGUI_EXPORT Tree2ListFilterProxyModel : public QSortFilterProxyModel
+	class SGXGUI_EXPORT AbstractTreeModel : public QAbstractItemModel
 	{
 		Q_OBJECT
 
 	public:
-		Tree2ListFilterProxyModel(QObject *parent);
-		~Tree2ListFilterProxyModel();
+		AbstractTreeModel(QObject *parent);
+		~AbstractTreeModel();
 
-		void SetFilterParent(const QModelIndex& parent);
-
-	protected:
-		virtual bool filterAcceptsRow(int source_row, const QModelIndex& source_parent) const;
-		virtual bool filterAcceptsColumn(int source_column, const QModelIndex& source_parent) const;
+		//At some point this should have a default implementation, but should still be overrideable
+		virtual unsigned int GetMaxDepth() const = 0;
 
 	private:
-		QPersistentModelIndex m_parent;
 
 	};
 
 } //namespace SynGlyphX
 
-#endif // SYNGLYPHX_TREE2LISTFILTERPROXYMODEL_H
+#endif // SYNGLYPHX_ABSTRACTTREEMODEL_H

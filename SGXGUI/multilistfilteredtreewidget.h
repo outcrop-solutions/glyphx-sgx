@@ -15,33 +15,30 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef SYNGLYPHX_TREE2LISTFILTERPROXYMODEL_H
-#define SYNGLYPHX_TREE2LISTFILTERPROXYMODEL_H
+#ifndef SYNGLYPHX_MULTILISTFILTEREDTREEWIDGET_H
+#define SYNGLYPHX_MULTILISTFILTEREDTREEWIDGET_H
 
 #include "sgxgui_global.h"
-#include <QtCore/QSortFilterProxyModel>
+#include <QtWidgets/QWidget>
+#include <QtCore/QAbstractItemModel>
+#include "tree2listfilterproxymodel.h"
+#include "abstracttreemodel.h"
 
 namespace SynGlyphX {
 
-	class SGXGUI_EXPORT Tree2ListFilterProxyModel : public QSortFilterProxyModel
+	class SGXGUI_EXPORT MultiListFilteredTreeWidget : public QWidget
 	{
 		Q_OBJECT
 
 	public:
-		Tree2ListFilterProxyModel(QObject *parent);
-		~Tree2ListFilterProxyModel();
-
-		void SetFilterParent(const QModelIndex& parent);
-
-	protected:
-		virtual bool filterAcceptsRow(int source_row, const QModelIndex& source_parent) const;
-		virtual bool filterAcceptsColumn(int source_column, const QModelIndex& source_parent) const;
+		MultiListFilteredTreeWidget(const QStringList& headers, AbstractTreeModel* model, QWidget *parent);
+		~MultiListFilteredTreeWidget();
 
 	private:
-		QPersistentModelIndex m_parent;
-
+		AbstractTreeModel* m_sourceModel;
+		std::vector<Tree2ListFilterProxyModel*> m_filterModels;
 	};
 
 } //namespace SynGlyphX
 
-#endif // SYNGLYPHX_TREE2LISTFILTERPROXYMODEL_H
+#endif // SYNGLYPHX_MULTILISTFILTEREDTREEWIDGET_H

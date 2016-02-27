@@ -25,6 +25,8 @@
 #include "prefixsuffixvalidator.h"
 #include "dataengineconnection.h"
 #include <QtWidgets/QListWidget>
+#include "multilistfilteredtreewidget.h"
+#include "tablechoicemodel.h"
 
 class AddDatabaseServerWizard : public QWizard
 {
@@ -61,6 +63,7 @@ private:
 	QString GetConnection() const;
 
 	bool ValidateDatabaseInfo();
+	bool DoesSchemaHaveTables(const QString& schema) const;
 
 	DataEngine::DataEngineConnection::SharedPtr m_dataEngineConnection;
 	QStringList m_schemas;
@@ -74,6 +77,10 @@ private:
 
 	//Schema selection page widgets
 	QListWidget* m_schemaListWidget;
+
+	//Tree selection page widgets
+	SynGlyphX::MultiListFilteredTreeWidget* m_tableChoiceWidget;
+	TableChoiceModel* m_tableChoiceModel;
 };
 
 #endif // ADDDATABASESERVERWIDGET_H

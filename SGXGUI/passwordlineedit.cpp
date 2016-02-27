@@ -29,7 +29,7 @@ namespace SynGlyphX {
 		m_lineEdit->setText(password);
 	}
 
-	const QString& PasswordLineEdit::GetPassword() const {
+	QString PasswordLineEdit::GetPassword() const {
 
 		return m_lineEdit->text();
 	}

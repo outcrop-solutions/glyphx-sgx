@@ -7,7 +7,7 @@
 
 AddDatabaseServerWizard::AddDatabaseServerWizard(DataEngine::DataEngineConnection::SharedPtr dataEngineConnection, QWidget *parent)
 	: QWizard(parent),
-	m_dataEngineConnection(m_dataEngineConnection)
+	m_dataEngineConnection(dataEngineConnection)
 {
 	//setMinimumWidth(512);
 	setWindowTitle(tr("Add Database Server"));
@@ -33,10 +33,24 @@ void AddDatabaseServerWizard::SetValues(const SynGlyphX::DatabaseServerDatasourc
 
 SynGlyphX::DatabaseServerDatasource AddDatabaseServerWizard::GetValues() const {
 
+	std::wstring schema = L"";
+	if (!m_schemas.isEmpty()) {
+
+		schema = m_schemaListWidget->selectedItems()[0]->text().toStdWString();
+	}
+
 	SynGlyphX::DatabaseServerDatasource datasource(static_cast<SynGlyphX::DatabaseServerDatasource::DBType>(m_typeComboBox->currentData().toUInt()),
 												   GetConnection().toStdWString(),
+												   schema,
 												   m_usernameLineEdit->text().toStdWString(),
 												   m_passwordLineEdit->GetPassword().toStdWString());
+
+	SynGlyphX::Datasource::TableNames tables;
+	for (const auto& table : m_tableChoiceModel->GetChosenTables()) {
+
+		tables.push_back(table.toStdWString());
+	}
+	datasource.AddTables(tables);
 
 	return datasource;
 }
@@ -101,6 +115,18 @@ void AddDatabaseServerWizard::CreateTableSelectionPage() {
 
 	QWizardPage* wizardPage = new QWizardPage(this);
 
+	QVBoxLayout* pageLayout = new QVBoxLayout(wizardPage);
+
+	QStringList tableChoiceHeaders;
+	tableChoiceHeaders << tr("Tables");
+
+	m_tableChoiceModel = new TableChoiceModel(true, this);
+
+	m_tableChoiceWidget = new SynGlyphX::MultiListFilteredTreeWidget(tableChoiceHeaders, m_tableChoiceModel, wizardPage);
+	pageLayout->addWidget(m_tableChoiceWidget);
+
+	wizardPage->setLayout(pageLayout);
+
 	wizardPage->setTitle(tr("Select Tables"));
 
 	setPage(TableSelectionPage, wizardPage);
@@ -160,10 +186,8 @@ bool AddDatabaseServerWizard::validateCurrentPage() {
 			QMessageBox::warning(this, tr("Invalid value"), tr("Connection must not be an empty value"));
 			return false;
 		}
-		else {
-
-			return ValidateDatabaseInfo();
-		}
+		
+		return ValidateDatabaseInfo();
 	}
 	else if (currentPageId == SchemaSelectionPage) {
 
@@ -172,12 +196,22 @@ bool AddDatabaseServerWizard::validateCurrentPage() {
 			QMessageBox::warning(this, tr("Schema Selection Error"), tr("A schema needs to be selected to continue"));
 			return false;
 		}
-		else {
+		else if (!DoesSchemaHaveTables(m_schemaListWidget->selectedItems()[0]->text())) {
 
-			return true;
+			QMessageBox::warning(this, tr("Schema Selection Error"), tr("The selected schema has no tables"));
+			return false;
 		}
+		
+		return true;
 	}
 	else if (currentPageId == TableSelectionPage) {
+
+		QStringList tables = m_tableChoiceModel->GetChosenTables();
+		if (tables.isEmpty()) {
+
+			QMessageBox::warning(this, tr("Table Selection Error"), tr("At least one table must be selected."));
+			return false;
+		}
 
 		return true;
 	}
@@ -196,7 +230,22 @@ void AddDatabaseServerWizard::initializePage(int id) {
 	}
 	else if (id == TableSelectionPage) {
 
-		QString schema = m_schemaListWidget->selectedItems()[0]->text();
+		QString schema;
+		if (!m_schemas.isEmpty()) {
+
+			schema = m_schemaListWidget->selectedItems()[0]->text();
+		}
+
+		QStringList tables;
+		if (schema.isEmpty()) {
+			
+			tables = m_dataEngineConnection->getTables();
+		}
+		else {
+
+			tables = m_dataEngineConnection->getSchemaTableNames(schema);
+		}
+		m_tableChoiceModel->SetTables(tables);
 	}
 }
 
@@ -209,6 +258,15 @@ bool AddDatabaseServerWizard::ValidateDatabaseInfo() {
 															m_usernameLineEdit->text(),
 															m_passwordLineEdit->GetPassword(),
 															QString::fromStdWString(SynGlyphX::DatabaseServerDatasource::s_dbTypePrefixes.left.at(dbType)));
+		if (m_schemas.isEmpty()) {
+
+			if (m_dataEngineConnection->getTables().isEmpty()) {
+
+				QMessageBox::warning(this, tr("Database Failure"), tr("Connection is valid, but the given database has no tables."));
+				return false;
+			}
+		}
+
 		return true;
 	}
 	catch (...) {
@@ -216,4 +274,9 @@ bool AddDatabaseServerWizard::ValidateDatabaseInfo() {
 		QMessageBox::warning(this, tr("Database Connection Failed"), tr("No connection was able to made using the given database information.  Verify that the given database information is correct."));
 		return false;
 	}
+}
+
+bool AddDatabaseServerWizard::DoesSchemaHaveTables(const QString& schema) const {
+
+	return (!m_dataEngineConnection->getSchemaTableNames(schema).isEmpty());
 }

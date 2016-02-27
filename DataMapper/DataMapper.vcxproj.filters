@@ -271,6 +271,15 @@
     <ClCompile Include="GeneratedFiles\Release\moc_addfiledatasourcewizard.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="tablechoicemodel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_tablechoicemodel.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_tablechoicemodel.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="datamapperwindow.h">
@@ -349,6 +358,9 @@
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="addfiledatasourcewizard.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="tablechoicemodel.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>
