@@ -82,7 +82,7 @@ namespace SynGlyphX {
 				}
 				else {
 
-					throw std::runtime_error("One or more datasources weren't found.");
+					return false;
 				}
 			}
 			else {
@@ -95,23 +95,24 @@ namespace SynGlyphX {
 		return wereMissingFilesUpdated;
 	}
 
-	QString ChangeDatasourceFileDialog::IsFileInSameDirectory(std::wstring datasourcename, QString sdtpath){
+	QString ChangeDatasourceFileDialog::IsFileInSameDirectory(const std::wstring& datasourcename, const QString& sdtpath){
 
 		QString source = QString::fromStdWString(datasourcename);
 		int lstIndex = sdtpath.lastIndexOf(QRegExp("[\/]"));
-		sdtpath.truncate(lstIndex);
-		boost::filesystem::path path(sdtpath.toStdString());
+		QString sdtDir = sdtpath.left(lstIndex);
+		boost::filesystem::path path(sdtDir.toStdString());
 
 		if (boost::filesystem::is_directory(path)){
 
-			boost::filesystem::path match((sdtpath + QDir::separator() + source).toStdString());
+			boost::filesystem::path match((sdtDir + QDir::separator() + source).toStdString());
 			if (boost::filesystem::exists(match)){
-				return QString(boost::filesystem::canonical(match).string().c_str());
+
+				return QDir::toNativeSeparators(QString::fromStdString(boost::filesystem::canonical(match).string()));
 			}
 
 		}
-		return QString();
 
+		return QString();
 	}
 
 } //namespace SynGlyphX

@@ -40,7 +40,7 @@ SynGlyphX::DatabaseServerDatasource AddDatabaseServerWizard::GetValues() const {
 	}
 
 	SynGlyphX::DatabaseServerDatasource datasource(static_cast<SynGlyphX::DatabaseServerDatasource::DBType>(m_typeComboBox->currentData().toUInt()),
-												   GetConnection().toStdWString(),
+												   m_connectionLineEdit->text().toStdWString(),
 												   schema,
 												   m_usernameLineEdit->text().toStdWString(),
 												   m_passwordLineEdit->GetPassword().toStdWString());

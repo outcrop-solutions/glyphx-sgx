@@ -373,31 +373,46 @@ bool DataMapperWindow::LoadRecentFile(const QString& filename) {
 
 void DataMapperWindow::UpdateMissingFiles(const QString& mappingFilename) {
 
-	SynGlyphX::DataTransformMapping::SharedPtr mapping = std::make_shared<SynGlyphX::DataTransformMapping>();
-	mapping->ReadFromFile(mappingFilename.toStdString());
+	try {
 
-	std::vector<boost::uuids::uuid> fileDatasourcesToBeUpdated = mapping->GetFileDatasourcesWithInvalidFiles(false);
-	std::vector<unsigned int> localBaseImageIndexes = mapping->GetFileBaseObjectsWithInvalidFiles();
+		SynGlyphX::DataTransformMapping::SharedPtr mapping = std::make_shared<SynGlyphX::DataTransformMapping>();
+		mapping->ReadFromFile(mappingFilename.toStdString());
 
-	bool wasDataTransformUpdated = false;
+		std::vector<boost::uuids::uuid> fileDatasourcesToBeUpdated = mapping->GetFileDatasourcesWithInvalidFiles(false);
+		std::vector<unsigned int> localBaseImageIndexes = mapping->GetFileBaseObjectsWithInvalidFiles();
 
-	if (!localBaseImageIndexes.empty()) {
+		bool wasDataTransformUpdated = false;
 
-		SynGlyphX::Application::restoreOverrideCursor();
-		wasDataTransformUpdated = SynGlyphX::ChangeImageFileDialog::UpdateImageFiles(localBaseImageIndexes, mapping, this);
-		SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
+		if (!localBaseImageIndexes.empty()) {
+
+			SynGlyphX::Application::restoreOverrideCursor();
+			wasDataTransformUpdated = SynGlyphX::ChangeImageFileDialog::UpdateImageFiles(localBaseImageIndexes, mapping, this);
+			if (!wasDataTransformUpdated) {
+
+				throw std::runtime_error("One or more images weren't found.");
+			}
+			SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
+		}
+
+		if (!fileDatasourcesToBeUpdated.empty()) {
+
+			SynGlyphX::Application::restoreOverrideCursor();
+			wasDataTransformUpdated = SynGlyphX::ChangeDatasourceFileDialog::UpdateDatasourceFiles(fileDatasourcesToBeUpdated, mappingFilename, mapping, m_dataEngineConnection, this);
+			if (!wasDataTransformUpdated) {
+
+				throw std::runtime_error("One or more datasources weren't found.");
+			}
+			SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
+		}
+
+		if (wasDataTransformUpdated) {
+
+			mapping->WriteToFile(mappingFilename.toStdString());
+		}
 	}
+	catch (const std::exception& e) {
 
-	if (!fileDatasourcesToBeUpdated.empty()) {
-
-		SynGlyphX::Application::restoreOverrideCursor();
-		wasDataTransformUpdated = SynGlyphX::ChangeDatasourceFileDialog::UpdateDatasourceFiles(fileDatasourcesToBeUpdated, mappingFilename, mapping, m_dataEngineConnection, this);
-		SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
-	}
-
-	if (wasDataTransformUpdated) {
-
-		mapping->WriteToFile(mappingFilename.toStdString());
+		throw;
 	}
 }
 
@@ -557,7 +572,7 @@ void DataMapperWindow::AddDatabaseServerDatasources() {
 	AddDatabaseServerWizard addDatabaseServerWizard(m_dataEngineConnection, this);
 	if (addDatabaseServerWizard.exec() == QDialog::Accepted) {
 
-
+		m_dataTransformModel->AddDatabaseServer(addDatabaseServerWizard.GetValues());
 		m_dataSourceStats->AddNewStatsViews();
 		EnableProjectDependentActions(true);
 	}
