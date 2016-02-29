@@ -1,6 +1,7 @@
 #include "datatransformmodel.h"
 #include "sourcedatamanager.h"
 #include <QtCore/QDir>
+#include <QtCore/QDebug>
 #include <boost/uuid/uuid_io.hpp>
 #include "application.h"
 #include "downloadedmapproperties.h"
@@ -1200,6 +1201,15 @@ void DataTransformModel::AddDatasourceInfoFromDataEngine(const boost::uuids::uui
 				sourceTypeString,
 				QString::fromStdWString(dbmsDatasource->GetSchema()),
 				dbmsDatasource->GetTableNames());
+
+			//QString query = "SELECT City.Population, Country.Code FROM (City INNER JOIN Country ON (City.CountryCode=Country.Code))";
+			/*
+			QString query = "SELECT inventory_fact.qty_in_stock, product_dimension.product_price, ";
+			query += "date_dimension.day_of_week, warehouse_dimension.warehouse_name FROM (inventory_fact ";
+			query += "INNER JOIN product_dimension ON (inventory_fact.product_key=product_dimension.product_key) ";
+			query += "INNER JOIN date_dimension ON (inventory_fact.date_key=date_dimension.date_key) ";
+			query += "INNER JOIN warehouse_dimension ON (inventory_fact.warehouse_key=warehouse_dimension.warehouse_key))";
+			dec->setQueryTables(query);*/
 		}
 
 		for (int i = 0; i < chosenTables.size(); ++i) {

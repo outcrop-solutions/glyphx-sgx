@@ -1,6 +1,7 @@
 #include "changedatasourcefiledialog.h"
 #include <QtCore/QFile>
 #include <QtCore/QDir>
+#include <boost/filesystem.hpp>
 
 namespace SynGlyphX {
 
@@ -59,30 +60,58 @@ namespace SynGlyphX {
 		return false;
 	}
 
-	bool ChangeDatasourceFileDialog::UpdateDatasourceFiles(const std::vector<boost::uuids::uuid>& datasources, DataTransformMapping::SharedPtr mapping, DataEngine::DataEngineConnection::SharedPtr dataEngineConnection, QWidget* dialogParent) {
+	bool ChangeDatasourceFileDialog::UpdateDatasourceFiles(const std::vector<boost::uuids::uuid>& datasources, const QString& sdtfilename, DataTransformMapping::SharedPtr mapping, DataEngine::DataEngineConnection::SharedPtr dataEngineConnection, QWidget* dialogParent) {
 
 		bool wereMissingFilesUpdated = false;
 		for (int i = 0; i < datasources.size(); ++i) {
 
-			QString acceptButtonText = tr("Next");
-			if (i == datasources.size() - 1) {
+			QString newpath = IsFileInSameDirectory(mapping->GetDatasources().at(datasources[i])->GetFormattedName(), sdtfilename);
+			if (newpath.isEmpty()){
 
-				acceptButtonText = tr("Ok");
-			}
+				QString acceptButtonText = tr("Next");
+				if (i == datasources.size() - 1) {
 
-			ChangeDatasourceFileDialog dialog(*std::dynamic_pointer_cast<FileDatasource>(mapping->GetDatasources().at(datasources[i])), acceptButtonText, dataEngineConnection, dialogParent);
-			if (dialog.exec() == QDialog::Accepted) {
+					acceptButtonText = tr("Ok");
+				}
 
-				mapping->UpdateDatasourceName(datasources[i], dialog.GetNewFilename().toStdWString());
-				wereMissingFilesUpdated = true;
+				ChangeDatasourceFileDialog dialog(*std::dynamic_pointer_cast<FileDatasource>(mapping->GetDatasources().at(datasources[i])), acceptButtonText, dataEngineConnection, dialogParent);
+				if (dialog.exec() == QDialog::Accepted) {
+
+					mapping->UpdateDatasourceName(datasources[i], dialog.GetNewFilename().toStdWString());
+					wereMissingFilesUpdated = true;
+				}
+				else {
+
+					throw std::runtime_error("One or more datasources weren't found.");
+				}
 			}
 			else {
 
-				throw std::runtime_error("One or more datasources weren't found.");
+				mapping->UpdateDatasourceName(datasources[i], newpath.toStdWString());
+				wereMissingFilesUpdated = true;
 			}
 		}
 
 		return wereMissingFilesUpdated;
+	}
+
+	QString ChangeDatasourceFileDialog::IsFileInSameDirectory(std::wstring datasourcename, QString sdtpath){
+
+		QString source = QString::fromStdWString(datasourcename);
+		int lstIndex = sdtpath.lastIndexOf(QRegExp("[\/]"));
+		sdtpath.truncate(lstIndex);
+		boost::filesystem::path path(sdtpath.toStdString());
+
+		if (boost::filesystem::is_directory(path)){
+
+			boost::filesystem::path match((sdtpath + QDir::separator() + source).toStdString());
+			if (boost::filesystem::exists(match)){
+				return QString(boost::filesystem::canonical(match).string().c_str());
+			}
+
+		}
+		return QString();
+
 	}
 
 } //namespace SynGlyphX
