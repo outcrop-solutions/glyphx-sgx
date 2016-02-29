@@ -109,6 +109,12 @@ namespace DataEngine
 	void DataEngineConnection::loadCSV(std::string path){
 
 		if (classFound){
+
+			if (IsConnectionOpen()) {
+
+				closeConnection();
+			}
+
 			jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
 				"loadFromCSV", "(Ljava/lang/String;)V");
 			if (methodId != NULL) {
@@ -121,6 +127,8 @@ namespace DataEngine
 					jniEnv->ExceptionClear();
 				}
 			}
+
+			m_openConnection = QString::fromStdString(path);
 		}
 	}
 
