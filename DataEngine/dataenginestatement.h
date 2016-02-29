@@ -27,7 +27,7 @@ namespace DataEngine
 	public:
 		DataEngineStatement(){};
 		void prepare(JNIEnv *jniEnv, jclass jcls);
-		void prepare(JNIEnv *jniEnv, jclass jcls, SynGlyphX::FileDatasource::FileType type);
+		void prepare(JNIEnv *jniEnv, jclass jcls, const QString& sourceTypeString);
 		std::string getTableName(int i);
 		std::string checkMethodID(jmethodID methodId, int i);
 		int size();

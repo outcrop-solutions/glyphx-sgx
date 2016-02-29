@@ -8,12 +8,12 @@ namespace DataEngine
 		jcls = jc;
 	}
 
-	void DataEngineStatement::prepare(JNIEnv *env, jclass jc, SynGlyphX::FileDatasource::FileType type){
+	void DataEngineStatement::prepare(JNIEnv *env, jclass jc, const QString& sourceTypeString){
 
 		std::cout << "Preparing statement" << std::endl;
 		jniEnv = env;
 		jcls = jc;
-		setSourceType(type);
+		sourceType = sourceTypeString;
 	}
 
 	std::string DataEngineStatement::getTableName(int i){
