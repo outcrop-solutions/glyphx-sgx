@@ -44,6 +44,7 @@ public abstract class Table {
             		ranges[2] = rs.getString(i++);
             	}else{
             		ranges[2] = "N/A";
+            		i++;
             	}
             	counts[0] = rs.getString(i++);
             	counts[1] = rs.getString(i++);

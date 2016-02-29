@@ -1,14 +1,11 @@
 
-Reading SDT at C:\Users\Bryan\Desktop\test_for_ray_1\url_and_description.sdt
+Reading SDT at C:\Users\Bryan\Desktop\jdbc_test\jdbc_test.sdt
 Parsed SDT into doc.
 Set input map.
-9dabd6c8-24d8-4f18-8503-0336b73c5018SecondPortion
-9dabd6c8-24d8-4f18-8503-0336b73c5018FirstPortion
+4c96f703-f4ad-44eb-be47-db97c7791709City
+4c96f703-f4ad-44eb-be47-db97c7791709Country
+4c96f703-f4ad-44eb-be47-db97c7791709CountryLanguage
 Retrieved data paths.
-Reading table data...
-Finished creating min/max table...
-Reading table data...
-Finished creating min/max table...
 Created DataFrames.
 Checking field groups...
 Finished checking field groups.
@@ -17,22 +14,162 @@ Retrieved Bg color.
 BaseObjects:
 Default | World
 Finished absorbing XML.
-Returning data stats model...
-Returning data stats model...
-167.296
-65.594
--162.304
--80.205
+Connecting to Server...
+creating datastats
+SELECT MIN(ID),MAX(ID),AVG(ID),COUNT(ID),COUNT(DISTINCT(ID)) FROM City
+real | 1 | 4079 | 2040.0000 | 4079 | 4079
+SELECT MIN(Name),MAX(Name),AVG(Name),COUNT(Name),COUNT(DISTINCT(Name)) FROM City
+text | A Coruña (La Coruña) | ´s-Hertogenbosch | N/A | 4079 | 3998
+SELECT MIN(CountryCode),MAX(CountryCode),AVG(CountryCode),COUNT(CountryCode),COUNT(DISTINCT(CountryCode)) FROM City
+text | ABW | ZWE | N/A | 4079 | 232
+SELECT MIN(District),MAX(District),AVG(District),COUNT(District),COUNT(DISTINCT(District)) FROM City
+text |  | – | N/A | 4079 | 1367
+SELECT MIN(Population),MAX(Population),AVG(Population),COUNT(Population),COUNT(DISTINCT(Population)) FROM City
+real | 42 | 10500000 | 350468.2236 | 4079 | 3897
+Connecting to Server...
+creating datastats
+SELECT MIN(Code),MAX(Code),AVG(Code),COUNT(Code),COUNT(DISTINCT(Code)) FROM Country
+text | ABW | ZWE | N/A | 239 | 239
+SELECT MIN(Name),MAX(Name),AVG(Name),COUNT(Name),COUNT(DISTINCT(Name)) FROM Country
+text | Afghanistan | Zimbabwe | N/A | 239 | 239
+SELECT MIN(Continent),MAX(Continent),AVG(Continent),COUNT(Continent),COUNT(DISTINCT(Continent)) FROM Country
+text | Africa | South America | N/A | 239 | 7
+SELECT MIN(Region),MAX(Region),AVG(Region),COUNT(Region),COUNT(DISTINCT(Region)) FROM Country
+text | Antarctica | Western Europe | N/A | 239 | 25
+SELECT MIN(SurfaceArea),MAX(SurfaceArea),AVG(SurfaceArea),COUNT(SurfaceArea),COUNT(DISTINCT(SurfaceArea)) FROM Country
+real | 0.40 | 17075400.00 | 623248.146025 | 239 | 238
+SELECT MIN(IndepYear),MAX(IndepYear),AVG(IndepYear),COUNT(IndepYear),COUNT(DISTINCT(IndepYear)) FROM Country
+real | -1523 | 1994 | 1847.2604 | 192 | 88
+SELECT MIN(Population),MAX(Population),AVG(Population),COUNT(Population),COUNT(DISTINCT(Population)) FROM Country
+real | 0 | 1277558000 | 25434098.1172 | 239 | 226
+SELECT MIN(LifeExpectancy),MAX(LifeExpectancy),AVG(LifeExpectancy),COUNT(LifeExpectancy),COUNT(DISTINCT(LifeExpectancy)) FROM Country
+real | 37.2 | 83.5 | 66.48604 | 222 | 160
+SELECT MIN(GNP),MAX(GNP),AVG(GNP),COUNT(GNP),COUNT(DISTINCT(GNP)) FROM Country
+real | 0.00 | 8510700.00 | 122823.882427 | 239 | 214
+SELECT MIN(GNPOld),MAX(GNPOld),AVG(GNPOld),COUNT(GNPOld),COUNT(DISTINCT(GNPOld)) FROM Country
+real | 157.00 | 8110900.00 | 165534.314607 | 178 | 178
+SELECT MIN(LocalName),MAX(LocalName),AVG(LocalName),COUNT(LocalName),COUNT(DISTINCT(LocalName)) FROM Country
+text | Afganistan/Afqanestan | – | N/A | 239 | 239
+SELECT MIN(GovernmentForm),MAX(GovernmentForm),AVG(GovernmentForm),COUNT(GovernmentForm),COUNT(DISTINCT(GovernmentForm)) FROM Country
+text | Administrated by the UN | US Territory | N/A | 239 | 35
+SELECT MIN(HeadOfState),MAX(HeadOfState),AVG(HeadOfState),COUNT(HeadOfState),COUNT(DISTINCT(HeadOfState)) FROM Country
+text |  | Zine al-Abidine Ben Ali | N/A | 238 | 179
+SELECT MIN(Capital),MAX(Capital),AVG(Capital),COUNT(Capital),COUNT(DISTINCT(Capital)) FROM Country
+real | 1 | 4074 | 2071.3060 | 232 | 232
+SELECT MIN(Code2),MAX(Code2),AVG(Code2),COUNT(Code2),COUNT(DISTINCT(Code2)) FROM Country
+text | AD | ZW | N/A | 239 | 239
+Connecting to Server...
+creating datastats
+SELECT MIN(CountryCode),MAX(CountryCode),AVG(CountryCode),COUNT(CountryCode),COUNT(DISTINCT(CountryCode)) FROM CountryLanguage
+text | ABW | ZWE | N/A | 984 | 233
+SELECT MIN(Language),MAX(Language),AVG(Language),COUNT(Language),COUNT(DISTINCT(Language)) FROM CountryLanguage
+text | Abhyasi | [South]Mande | N/A | 984 | 457
+SELECT MIN(IsOfficial),MAX(IsOfficial),AVG(IsOfficial),COUNT(IsOfficial),COUNT(DISTINCT(IsOfficial)) FROM CountryLanguage
+text | F | T | N/A | 984 | 2
+SELECT MIN(Percentage),MAX(Percentage),AVG(Percentage),COUNT(Percentage),COUNT(DISTINCT(Percentage)) FROM CountryLanguage
+real | 0.0 | 100.0 | 20.37439 | 984 | 357
+4079.0
+1.05E7
+1.0
+1.0
 Downloaded Map BoundingBox: (-180.0,90.0),(180.0,-90.0)
 Image Size: 2048.0, 1024.0
 Beginning to generate glyphs...
-Executed initial query...
-Returned cursor with size 35...
-1
-2
+Connecting to Server...
+creating datastats
+SELECT MIN(ID),MAX(ID),AVG(ID),COUNT(ID),COUNT(DISTINCT(ID)) FROM City
+real | 1 | 4079 | 2040.0000 | 4079 | 4079
+SELECT MIN(Name),MAX(Name),AVG(Name),COUNT(Name),COUNT(DISTINCT(Name)) FROM City
+text | A Coruña (La Coruña) | ´s-Hertogenbosch | N/A | 4079 | 3998
+SELECT MIN(CountryCode),MAX(CountryCode),AVG(CountryCode),COUNT(CountryCode),COUNT(DISTINCT(CountryCode)) FROM City
+text | ABW | ZWE | N/A | 4079 | 232
+Connecting to Server...
+SELECT MIN(District),MAX(District),AVG(District),COUNT(District),COUNT(DISTINCT(District)) FROM City
+creating datastats
+SELECT MIN(ID),MAX(ID),AVG(ID),COUNT(ID),COUNT(DISTINCT(ID)) FROM City
+text |  | – | N/A | 4079 | 1367
+real | 1 | 4079 | 2040.0000 | 4079 | 4079
+SELECT MIN(Name),MAX(Name),AVG(Name),COUNT(Name),COUNT(DISTINCT(Name)) FROM City
+SELECT MIN(Population),MAX(Population),AVG(Population),COUNT(Population),COUNT(DISTINCT(Population)) FROM City
+real | 42 | 10500000 | 350468.2236 | 4079 | 3897
+Executing query for table, City, data...
+text | A Coruña (La Coruña) | ´s-Hertogenbosch | N/A | 4079 | 3998
+SELECT MIN(CountryCode),MAX(CountryCode),AVG(CountryCode),COUNT(CountryCode),COUNT(DISTINCT(CountryCode)) FROM City
+text | ABW | ZWE | N/A | 4079 | 232
+SELECT MIN(District),MAX(District),AVG(District),COUNT(District),COUNT(DISTINCT(District)) FROM City
+text |  | – | N/A | 4079 | 1367
+SELECT MIN(Population),MAX(Population),AVG(Population),COUNT(Population),COUNT(DISTINCT(Population)) FROM City
+real | 42 | 10500000 | 350468.2236 | 4079 | 3897
+Executing query for table, City, data...
+Connecting to Server...
+creating datastats
+SELECT MIN(Code),MAX(Code),AVG(Code),COUNT(Code),COUNT(DISTINCT(Code)) FROM Country
+text | ABW | ZWE | N/A | 239 | 239
+SELECT MIN(Name),MAX(Name),AVG(Name),COUNT(Name),COUNT(DISTINCT(Name)) FROM Country
+text | Afghanistan | Zimbabwe | N/A | 239 | 239
+SELECT MIN(Continent),MAX(Continent),AVG(Continent),COUNT(Continent),COUNT(DISTINCT(Continent)) FROM Country
+text | Africa | South America | N/A | 239 | 7
+SELECT MIN(Region),MAX(Region),AVG(Region),COUNT(Region),COUNT(DISTINCT(Region)) FROM Country
+text | Antarctica | Western Europe | N/A | 239 | 25
+SELECT MIN(SurfaceArea),MAX(SurfaceArea),AVG(SurfaceArea),COUNT(SurfaceArea),COUNT(DISTINCT(SurfaceArea)) FROM Country
+real | 0.40 | 17075400.00 | 623248.146025 | 239 | 238
+SELECT MIN(IndepYear),MAX(IndepYear),AVG(IndepYear),COUNT(IndepYear),COUNT(DISTINCT(IndepYear)) FROM Country
+real | -1523 | 1994 | 1847.2604 | 192 | 88
+SELECT MIN(Population),MAX(Population),AVG(Population),COUNT(Population),COUNT(DISTINCT(Population)) FROM Country
+real | 0 | 1277558000 | 25434098.1172 | 239 | 226
+SELECT MIN(LifeExpectancy),MAX(LifeExpectancy),AVG(LifeExpectancy),COUNT(LifeExpectancy),COUNT(DISTINCT(LifeExpectancy)) FROM Country
+real | 37.2 | 83.5 | 66.48604 | 222 | 160
+SELECT MIN(GNP),MAX(GNP),AVG(GNP),COUNT(GNP),COUNT(DISTINCT(GNP)) FROM Country
+real | 0.00 | 8510700.00 | 122823.882427 | 239 | 214
+SELECT MIN(GNPOld),MAX(GNPOld),AVG(GNPOld),COUNT(GNPOld),COUNT(DISTINCT(GNPOld)) FROM Country
+real | 157.00 | 8110900.00 | 165534.314607 | 178 | 178
+SELECT MIN(LocalName),MAX(LocalName),AVG(LocalName),COUNT(LocalName),COUNT(DISTINCT(LocalName)) FROM Country
+text | Afganistan/Afqanestan | – | N/A | 239 | 239
+SELECT MIN(GovernmentForm),MAX(GovernmentForm),AVG(GovernmentForm),COUNT(GovernmentForm),COUNT(DISTINCT(GovernmentForm)) FROM Country
+text | Administrated by the UN | US Territory | N/A | 239 | 35
+SELECT MIN(HeadOfState),MAX(HeadOfState),AVG(HeadOfState),COUNT(HeadOfState),COUNT(DISTINCT(HeadOfState)) FROM Country
+text |  | Zine al-Abidine Ben Ali | N/A | 238 | 179
+SELECT MIN(Capital),MAX(Capital),AVG(Capital),COUNT(Capital),COUNT(DISTINCT(Capital)) FROM Country
+real | 1 | 4074 | 2071.3060 | 232 | 232
+SELECT MIN(Code2),MAX(Code2),AVG(Code2),COUNT(Code2),COUNT(DISTINCT(Code2)) FROM Country
+text | AD | ZW | N/A | 239 | 239
+Executing query for table, Country, data...
+Connecting to Server...
+creating datastats
+SELECT MIN(Code),MAX(Code),AVG(Code),COUNT(Code),COUNT(DISTINCT(Code)) FROM Country
+text | ABW | ZWE | N/A | 239 | 239
+SELECT MIN(Name),MAX(Name),AVG(Name),COUNT(Name),COUNT(DISTINCT(Name)) FROM Country
+text | Afghanistan | Zimbabwe | N/A | 239 | 239
+SELECT MIN(Continent),MAX(Continent),AVG(Continent),COUNT(Continent),COUNT(DISTINCT(Continent)) FROM Country
+text | Africa | South America | N/A | 239 | 7
+SELECT MIN(Region),MAX(Region),AVG(Region),COUNT(Region),COUNT(DISTINCT(Region)) FROM Country
+text | Antarctica | Western Europe | N/A | 239 | 25
+SELECT MIN(SurfaceArea),MAX(SurfaceArea),AVG(SurfaceArea),COUNT(SurfaceArea),COUNT(DISTINCT(SurfaceArea)) FROM Country
+real | 0.40 | 17075400.00 | 623248.146025 | 239 | 238
+SELECT MIN(IndepYear),MAX(IndepYear),AVG(IndepYear),COUNT(IndepYear),COUNT(DISTINCT(IndepYear)) FROM Country
+real | -1523 | 1994 | 1847.2604 | 192 | 88
+SELECT MIN(Population),MAX(Population),AVG(Population),COUNT(Population),COUNT(DISTINCT(Population)) FROM Country
+real | 0 | 1277558000 | 25434098.1172 | 239 | 226
+SELECT MIN(LifeExpectancy),MAX(LifeExpectancy),AVG(LifeExpectancy),COUNT(LifeExpectancy),COUNT(DISTINCT(LifeExpectancy)) FROM Country
+real | 37.2 | 83.5 | 66.48604 | 222 | 160
+SELECT MIN(GNP),MAX(GNP),AVG(GNP),COUNT(GNP),COUNT(DISTINCT(GNP)) FROM Country
+real | 0.00 | 8510700.00 | 122823.882427 | 239 | 214
+SELECT MIN(GNPOld),MAX(GNPOld),AVG(GNPOld),COUNT(GNPOld),COUNT(DISTINCT(GNPOld)) FROM Country
+real | 157.00 | 8110900.00 | 165534.314607 | 178 | 178
+SELECT MIN(LocalName),MAX(LocalName),AVG(LocalName),COUNT(LocalName),COUNT(DISTINCT(LocalName)) FROM Country
+text | Afganistan/Afqanestan | – | N/A | 239 | 239
+SELECT MIN(GovernmentForm),MAX(GovernmentForm),AVG(GovernmentForm),COUNT(GovernmentForm),COUNT(DISTINCT(GovernmentForm)) FROM Country
+text | Administrated by the UN | US Territory | N/A | 239 | 35
+SELECT MIN(HeadOfState),MAX(HeadOfState),AVG(HeadOfState),COUNT(HeadOfState),COUNT(DISTINCT(HeadOfState)) FROM Country
+text |  | Zine al-Abidine Ben Ali | N/A | 238 | 179
+SELECT MIN(Capital),MAX(Capital),AVG(Capital),COUNT(Capital),COUNT(DISTINCT(Capital)) FROM Country
+real | 1 | 4074 | 2071.3060 | 232 | 232
+SELECT MIN(Code2),MAX(Code2),AVG(Code2),COUNT(Code2),COUNT(DISTINCT(Code2)) FROM Country
+text | AD | ZW | N/A | 239 | 239
+Executing query for table, Country, data...
 Writing all files...
-C:\Users\Bryan\Desktop\test_for_ray_1\Viz
-C:\Users\Bryan\Desktop\test_for_ray_1\Viz/usr/csv/
+C:\Users\Bryan\Desktop\jdbc_test\Viz
+C:\Users\Bryan\Desktop\jdbc_test\Viz/usr/csv/
 DataMapper
-C:\Users\Bryan\Desktop\test_for_ray_1\Viz/usr/csv//../../nourl.html
-71 nodes printing...
+C:\Users\Bryan\Desktop\jdbc_test\Viz/usr/csv//../../nourl.html
+8637 nodes printing...

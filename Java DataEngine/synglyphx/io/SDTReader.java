@@ -369,7 +369,7 @@ public class SDTReader {
 		int holder = 0;
 		for(int i=0; i < sources.getLength(); i++){
 			Node node = sources.item(i);
-			if(node.getNodeName().equals("File")){
+			if(node.getNodeName().equals("Datasource")){
 				Element e = (Element) node;
 				if(e.getAttribute("type").equals("CSV")){
 					SourceDataInfo csv = new SourceDataInfo();
@@ -384,7 +384,6 @@ public class SDTReader {
 					Logger.getInstance().add(csv.getID()+csv.getTable());
 				}else{
 					String id = e.getAttribute("id");
-					String path = getValue("Name", e);
 					String host = getValue("Host", e);
 					String user = "";
 					String pass = "";
@@ -417,7 +416,7 @@ public class SDTReader {
 								}*/
 							}
 						}
-						tb.setPath(path);
+						tb.setPath(host);
 						tb.setHost("jdbc:"+host);
 						tb.setUsername(user);
 						tb.setPassword(pass);
