@@ -108,7 +108,7 @@ public class GlyphCreator {
 			if(functions.get(fieldNames.get(i)).equals("Linear Interpolation") || functions.get(fieldNames.get(i)).equals("Logarithmic Interpolation")){
 				double y1;
 				double y3;
-				if(download && ((index == 1 && fieldNames.get(i).equals("PositionX"))||(index == 1 && fieldNames.get(i).equals("PositionY")))){
+				if(download && nodeTemp.getChildOf() == 0 && (fieldNames.get(i).equals("PositionX") || fieldNames.get(i).equals("PositionY"))){
 					y1 = Double.parseDouble(csvData.get(currData).getDataFrame().getMinMaxTable().get(input.get(fieldNames.get(i))).get(0));
 					y3 = Double.parseDouble(csvData.get(currData).getDataFrame().getMinMaxTable().get(input.get(fieldNames.get(i))).get(1));
 				}else{
@@ -153,7 +153,7 @@ public class GlyphCreator {
 			}
 		}
 
-		Node node = setFields(fieldNames, ranges, setValues, new Node(), nodeTemp, input);
+		Node node = setFields(fieldNames, setValues, new Node(), nodeTemp, input);
 
 		//TAG STUFF
 		node.setDefaultTagValue(default_tag_value);
@@ -186,86 +186,86 @@ public class GlyphCreator {
 
 	}
 
-	public static Node setFields(ArrayList<String> fieldNames, HashMap<String, ArrayList<Double>> ranges, HashMap<String, Double> setValues, Node node, XMLGlyphTemplate childTemp, Map<String, String> input){
+	public static Node setFields(ArrayList<String> fieldNames, HashMap<String, Double> setValues, Node node, XMLGlyphTemplate childTemp, Map<String, String> input){
 
 		//SET POSITION
 		if(!fieldNames.contains("PositionX")){
-			node.setX(ranges.get("PositionX").get(1));
+			node.setX(childTemp.getDefIfNotBound("PositionX"));
 		}else{
 			node.setX(setValues.get("PositionX"));
 		}
 		if(!fieldNames.contains("PositionY")){
-			node.setY(ranges.get("PositionY").get(1));
+			node.setY(childTemp.getDefIfNotBound("PositionY"));
 		}else{
 			node.setY(setValues.get("PositionY"));
 		}
 		if(!fieldNames.contains("PositionZ")){
-			node.setZ(ranges.get("PositionZ").get(1));
+			node.setZ(childTemp.getDefIfNotBound("PositionZ"));
 		}else{
 			node.setZ(setValues.get("PositionZ"));
 		}
 
 		//SET SCALE
 		if(!fieldNames.contains("ScaleX")){
-			node.setSX(ranges.get("ScaleX").get(1));
+			node.setSX(childTemp.getDefIfNotBound("ScaleX"));
 		}else{
 			node.setSX(setValues.get("ScaleX"));
 		}
 		if(!fieldNames.contains("ScaleY")){
-			node.setSY(ranges.get("ScaleY").get(1));
+			node.setSY(childTemp.getDefIfNotBound("ScaleY"));
 		}else{
 			node.setSY(setValues.get("ScaleY"));
 		}
 		if(!fieldNames.contains("ScaleZ")){
-			node.setSZ(ranges.get("ScaleZ").get(1));
+			node.setSZ(childTemp.getDefIfNotBound("ScaleZ"));
 		}else{
 			node.setSZ(setValues.get("ScaleZ"));
 		}
 
 		//SET ROTATION
 		if(!fieldNames.contains("RotationX")){
-			node.setRX(ranges.get("RotationX").get(1));
+			node.setRX(childTemp.getDefIfNotBound("RotationX"));
 		}else{
 			node.setRX(setValues.get("RotationX"));
 		}
 		if(!fieldNames.contains("RotationY")){
-			node.setRY(ranges.get("RotationY").get(1));
+			node.setRY(childTemp.getDefIfNotBound("RotationY"));
 		}else{
 			node.setRY(setValues.get("RotationY"));
 		}
 		if(!fieldNames.contains("RotationZ")){
-			node.setRZ(ranges.get("RotationZ").get(1));
+			node.setRZ(childTemp.getDefIfNotBound("RotationZ"));
 		}else{
 			node.setRZ(setValues.get("RotationZ"));
 		}
 
 		//SET ROTATION RATE
 		if(!fieldNames.contains("RotationRateX")){
-			node.setRRX(ranges.get("RotationRateX").get(1));
+			node.setRRX(childTemp.getDefIfNotBound("RotationRateX"));
 		}else{
 			node.setRRX(setValues.get("RotationRateX"));
 		}
 		if(!fieldNames.contains("RotationRateY")){
-			node.setRRY(ranges.get("RotationRateY").get(1));
+			node.setRRY(childTemp.getDefIfNotBound("RotationRateY"));
 		}else{
 			node.setRRY(setValues.get("RotationRateY"));
 		}
 		if(!fieldNames.contains("RotationRateZ")){
-			node.setRRZ(ranges.get("RotationRateZ").get(1));
+			node.setRRZ(childTemp.getDefIfNotBound("RotationRateZ"));
 		}else{
 			node.setRRZ(setValues.get("RotationRateZ"));
 		}
 
 		//SET COLOR
 		if(!fieldNames.contains("ColorR")){
-			node.setColor(ranges.get("ColorR").get(1),ranges.get("ColorG").get(1),ranges.get("ColorB").get(1));
+			node.setColor(childTemp.getDefIfNotBound("ColorR"),childTemp.getDefIfNotBound("ColorG"),childTemp.getDefIfNotBound("ColorB"));
 		}else{
 			node.setColor(setValues.get("ColorR"),setValues.get("ColorG"),setValues.get("ColorB"));
 		}
 
 		//SET ALPHA
 		if(!fieldNames.contains("ColorTransparency")){
-			node.setAlpha((int)Math.round(ranges.get("ColorTransparency").get(1)));
+			node.setAlpha((int)Math.round(childTemp.getDefIfNotBound("ColorTransparency")));
 		}else{
 			node.setAlpha((int)Math.round(setValues.get("ColorTransparency")));
 		}

@@ -52,9 +52,9 @@ public class GlyphEngine {
 			String key = "";
 			String check = "";
 			try{
-				File f = new File(outDir+"\\antz\\base_image_2.png");
+				File f = new File(outDir+"/antz/base_image_2.png");
 				if(!f.exists()){return true;}
-				Scanner s = new Scanner(new BufferedReader(new FileReader(outDir+"\\antz\\DownloadedImageSpecs.txt")));
+				Scanner s = new Scanner(new BufferedReader(new FileReader(outDir+"/antz/DownloadedImageSpecs.txt")));
 				sdtReader.getDownloadedBaseObject().setCornerString(temp);
 				key = sdtReader.getDownloadedBaseObject().getUpdateCheckString();
 				check = s.nextLine();
@@ -73,12 +73,15 @@ public class GlyphEngine {
 
 	public static void main(String [] args){
 
-		//String sdtPath = "C:\\Users\\Bryan\\Desktop\\Test HSV\\testhsv.sdt";
-	 	//String outDir = "C:\\Users\\Bryan\\Desktop\\Test HSV\\Viz";
-	 	String sdtPath = "C:\\Users\\Bryan\\Desktop\\jdbc_test\\merged_table_test.sdt";
-	 	String outDir = "C:\\Users\\Bryan\\Desktop\\jdbc_test\\Viz1";
-	 	//String sdtPath = "C:\\Users\\Bryan\\Desktop\\TooMany Elements SizeBug\\Ohio Voter Registration Draft.sdt";
-	 	//String outDir = "C:\\Users\\Bryan\\Desktop\\TooMany Elements SizeBug\\Ohio Voter SampleOut";
+		//String sdtPath = "C:\\Users\\Bryan\\SharePoint\\Synglyphx Team Site - Documents\\VT Marker\\VT Group.sdt";
+	 	//String outDir = "C:\\Users\\Bryan\\SharePoint\\Synglyphx Team Site - Documents\\VT Marker\\Viz";
+	 	//String sdtPath = "C:\\Users\\Bryan\\Desktop\\jdbc_test\\jdbc_test.sdt";
+	 	//String outDir = "C:\\Users\\Bryan\\Desktop\\jdbc_test\\Viz";
+	 	//String sdtPath = "C:/Users/Bryan/Desktop/TooMany Elements SizeBug/Ohio Voter Registration Draft.sdt";
+	 	//String outDir = "C:/Users/Bryan/AppData/Local/SynGlyphX/Glyph Builder - Glyph Viewer/cache/cache_2072a4ce-5cf5-4591-84b0-30f87c5cc214";
+	 	String sdtPath = "C:\\Users\\Bryan\\Desktop\\test_for_ray_1\\url_and_description.sdt";
+	 	String outDir = "C:\\Users\\Bryan\\Desktop\\test_for_ray_1\\Viz";
+	 	
 	 	String expDir = "DataMapper";
 	 	GlyphEngine start = new GlyphEngine();
 	 	double[] nw = new double[2];

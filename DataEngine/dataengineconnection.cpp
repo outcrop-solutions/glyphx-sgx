@@ -40,6 +40,7 @@ namespace DataEngine
 			options[0].optionString =
 				"-Djava.class.path=.\\dataengine.jar;"
 				".\\ojdbc6.jar;"
+				".\\database-drivers\\opencsv-3.7.jar;"
 				".\\database-drivers\\sqlite4java.jar;"
 				".\\database-drivers\\mysql-connector-java-5.1.38-bin.jar;"
 				".\\database-drivers\\sqlite-jdbc-3.8.11.2.jar;"
@@ -48,6 +49,7 @@ namespace DataEngine
 			options[0].optionString =
 				"-Djava.class.path=..\\..\\DataEngine\\Java DataEngine\\dataengine.jar;"
 				"..\\..\\DataEngine\\Java DataEngine\\ojdbc6.jar;"
+				"..\\..\\DataEngine\\Java DataEngine\\database-drivers\\opencsv-3.7.jar;"
 				"..\\..\\DataEngine\\Java DataEngine\\database-drivers\\sqlite4java.jar;"
 				"..\\..\\DataEngine\\Java DataEngine\\database-drivers\\mysql-connector-java-5.1.38-bin.jar;"
 				"..\\..\\DataEngine\\Java DataEngine\\database-drivers\\sqlite-jdbc-3.8.11.2.jar;"
@@ -139,21 +141,6 @@ namespace DataEngine
 			}
 		}
 	}
-	/*
-	std::vector<std::string> DataEngineConnection::getTableNames(){
-
-		std::vector<std::string> str;
-		if (classFound){
-			DataEngine::DataEngineStatement s1;
-			s1.prepare(jniEnv, jcls);
-			int size = s1.tableCount();
-			for (int i = 0; i < size; i++){
-				str.push_back(s1.getTableName(i));
-			}
-		}
-
-		return str;
-	}*/
 
 	JNIEnv* DataEngineConnection::getEnv() const {
 		
@@ -169,31 +156,7 @@ namespace DataEngine
 
 		javaVM->DestroyJavaVM();
 	}
-	/*
-	void DataEngineConnection::addTableNumericFields(boost::uuids::uuid id, std::vector<std::wstring> tableNames){
-		tableNumericFields[id] = tableNames;
-	}
 
-	const std::vector<std::wstring>& DataEngineConnection::getTableNumericFields(boost::uuids::uuid id) const {
-		
-		return tableNumericFields.at(id);
-	}
-
-	const std::map<boost::uuids::uuid, std::vector<std::wstring>>& DataEngineConnection::getNumericFieldsTable() const {
-		
-		return tableNumericFields;
-	}
-
-	void DataEngineConnection::addTableName(boost::uuids::uuid id, std::wstring name){
-		
-		tableNames[id] = name;
-	}
-
-	const std::wstring& DataEngineConnection::getTableName(boost::uuids::uuid id) const {
-		
-		return tableNames.at(id);
-	}
-	*/
 	//JDBC ACCESSOR FUNCTIONS
 	QStringList DataEngineConnection::connectToServer(QString db_url, QString user, QString pass, QString db_type){
 

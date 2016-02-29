@@ -43,19 +43,31 @@ public class SDTReader {
 	public SDTReader(String sdtPath, String outDir, String application){
 		Logger.getInstance().add("Reading SDT at "+sdtPath);
 		absorbXML(sdtPath);
-		this.outDir = outDir;
+		this.outDir = outDir.replace("\\", File.separator);
 		this.app = application;
 	}
 
 	public void generateGlyphs(){
+		
+		Thread thread = new Thread(){
+    		public void run(){
+      			SQLiteWriter writer = new SQLiteWriter(dataPaths, outDir, rootIds, templates);
+      			writer.writeTableIndex();
+				writer.writeAllTables();
+    		}
+  		};
+  		thread.start();
+
 		mapping = new Mapper();
 		mapping.addNodeTemplates(templates, count);
 		mapping.checkRangeXY(download);
 		mapping.setDefaults(tagFieldDefault, tagValueDefault, scaleZeroDefault);
 		mapping.generateGlyphTrees(dataPaths, rootIds, outDir, colorStr, app, base_objects);
-		SQLiteWriter writer = new SQLiteWriter(dataPaths, outDir, rootIds, templates);
-		writer.writeTableIndex();
-		writer.writeAllTables();
+		try{
+			thread.join();
+		}catch(InterruptedException ie){
+	        ie.printStackTrace();
+		}
 	}
 
 	public void absorbXML(String sdtPath) {
@@ -102,7 +114,7 @@ public class SDTReader {
 			Logger.getInstance().add("Failed to parse SDT file.");
 		}
 		setRootAndLastIDs();
-
+		Logger.getInstance().add("Finished absorbing XML.");
 	}
 
 	private String getValue(String tag, Element element) {
@@ -368,7 +380,7 @@ public class SDTReader {
 					dataPaths.add(csv);
 					dataIds.put(csv.getID()+csv.getTable(),holder);
 					holder++;
-					System.out.println(csv.getID()+csv.getTable());
+					System.out.println(csv.getID()+":"+csv.getTable());
 					Logger.getInstance().add(csv.getID()+csv.getTable());
 				}else{
 					String id = e.getAttribute("id");
@@ -617,7 +629,6 @@ public class SDTReader {
 				if(type.equals("Downloaded Map")){
 					name = "downloadedMap.jpg";
 					download = true;
-					System.out.println("here");
 					bObject.setMapInfo(element.getAttribute("mapsource"),element.getAttribute("maptype"));
 					bObject.setImageInfo(element.getAttribute("invert"),element.getAttribute("grayscale"),element.getAttribute("bestfit"),element.getAttribute("margin"));
 				}

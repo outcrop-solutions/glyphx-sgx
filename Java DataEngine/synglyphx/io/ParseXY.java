@@ -17,7 +17,8 @@ import synglyphx.data.SourceDataInfo;
 import synglyphx.jdbc.Table;
 import synglyphx.jdbc.BasicTable;
 import synglyphx.jdbc.MergedTable;
-import synglyphx.jdbc.DriverSelect;
+import synglyphx.jdbc.driver.Driver;
+import synglyphx.jdbc.driver.DriverSelector;
 
 public class ParseXY {
 
@@ -61,7 +62,9 @@ public class ParseXY {
 			setInputMap(doc);
 			
 		}catch(Exception e){
-
+			try{
+			    e.printStackTrace(Logger.getInstance().addError());
+			}catch(Exception ex){}
 		}
 	}
 
@@ -105,21 +108,25 @@ public class ParseXY {
 
 			}else{
 				try{
-			        Class.forName(DriverSelect.getDriver(temp.getType()));
-			        //Logger.getInstance().add("Connecting to Server...");
-			        Connection conn = DriverManager.getConnection(temp.getHost(),temp.getUsername(),temp.getPassword());
-			        Table table; 
-			        if(temp.isMerged()){
-	        			table = new MergedTable(temp.getQuery(), conn);
+			        Driver driver = DriverSelector.getDriver(temp.getType());
+            		Class.forName(driver.packageName());
+	        		Logger.getInstance().add("Connecting to Server...");
+
+	        		driver.createConnection(temp.getHost(),temp.getUsername(),temp.getPassword());
+
+	        		System.out.println(temp.getQuery());
+	        		Table table;
+	        		if(temp.isMerged()){
+	        			table = new MergedTable(temp.getQuery(), driver);
 	        		}else{
-	        			table = new BasicTable(temp.getTable(), conn);
+	        			table = new BasicTable(temp.getTable(), driver);
 	        		}
 			        HashMap<String, DataStats> tds = table.getDataStats();
 			        min_max = findMinMax(temp, x_min_max, y_min_max, convert, tds);
 			        x_min_max[0] = min_max[0]; x_min_max[1] = min_max[1];
 					y_min_max[0] = min_max[2]; y_min_max[1] = min_max[3];
 
-					conn.close();
+					driver.getConnection().close();
 			    }catch(SQLException se){
 			        try{
 			            se.printStackTrace(Logger.getInstance().addError());

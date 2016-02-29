@@ -125,11 +125,18 @@ public class DataEngine {
 	public static void main(String [] args){
 
 		DataEngine d = new DataEngine();
-		
-		//String[] sch_list = d.connectToServer("mysql://33.33.33.1/world","root","jarvis","mysql");
+		/*
+		d.loadFromCSV("C:\\Users\\Bryan\\Desktop\\American Open Approved Hotels 2.csv");
+		String[] fields = d.getFieldsForTable(0,"csv");
+		for(int i = 0; i < fields.length; i++){
+			//System.out.println(fields[i]);
+			String[] stats = d.getStatsForField(0,fields[i]);
+			System.out.println(stats[0]+", "+stats[1]+", "+stats[2]+", "+stats[3]+", "+stats[4]+", "+stats[5]);
+		}*/
+		String[] sch_list = d.connectToServer("mysql://10.128.132.153:3306/world","synglyphx","password","mysql");
 		//String[] sch_list = d.connectToServer("sqlite://C:/Users/Bryan/Documents/GitHub/DataEngine/Java DataEngine/sqlite_test.db","","","sqlite3");
-		String[] sch_list = d.connectToServer("vertica://54.67.93.24:5433/verticanow", "synglyphx_user", "Synglyphx_user@9102", "vertica");
-
+		/*String[] sch_list = d.connectToServer("vertica://54.67.93.24:5433/verticanow", "synglyphx_user", "Synglyphx_user@9102", "vertica");
+		*/
 		System.out.println("Schema List:");
 		for(int i = 0; i < sch_list.length; i++){
 			System.out.println(sch_list[i]);
@@ -148,13 +155,13 @@ public class DataEngine {
 		query += "date_dimension.day_of_week, warehouse_dimension.warehouse_name FROM (inventory_fact "; 
 		query += "INNER JOIN product_dimension ON (inventory_fact.product_key=product_dimension.product_key) ";
 		query += "INNER JOIN date_dimension ON (inventory_fact.date_key=date_dimension.date_key) ";
-		query += "INNER JOIN warehouse_dimension ON (inventory_fact.warehouse_key=warehouse_dimension.warehouse_key))";*/
+		query += "INNER JOIN warehouse_dimension ON (inventory_fact.warehouse_key=warehouse_dimension.warehouse_key))";
 		String query = "SELECT * FROM store.store_sales_fact"; 
 		double t1 = System.currentTimeMillis();
 		System.out.println(d.sizeOfQuery(query));
 		double t2 = System.currentTimeMillis();
 		System.out.println(t2-t1);
-/*
+
 		d.setQueryTables(query);
 		String[] fields = d.getFieldsForTable(0, "vertica");
 
@@ -163,9 +170,6 @@ public class DataEngine {
 			System.out.println(fields[i]+", "+stats[0]+", "+stats[1]+", "+stats[2]+", "+stats[3]+", "+stats[4]+", "+stats[5]);
 		}
 */
-		d.closeConnection();
+		//d.closeConnection();
 	}
 }
-//SELECT inventory_fact.qty_in_stock, product_dimension.product_price, date_dimension.day_of_week, warehouse_dimension.warehouse_name FROM (inventory_fact INNER JOIN product_dimension ON (inventory_fact.product_key=product_dimension.product_key) INNER JOIN date_dimension ON (inventory_fact.date_key=date_dimension.date_key) INNER JOIN warehouse_dimension ON (inventory_fact.warehouse_key=warehouse_dimension.warehouse_key));
-//http://open.mapquestapi.com/geocoding/v1/address?key=Fmjtd%7Cluur2du8nl%2C2l%3Do5-9arx0r&location=4181 Cray Dr, Warrenton, Virginia, 20187
-//SELECT count(*) FROM (inventory_fact INNER JOIN product_dimension ON (inventory_fact.product_key=product_dimension.product_key) INNER JOIN date_dimension ON (inventory_fact.date_key=date_dimension.date_key) INNER JOIN warehouse_dimension ON (inventory_fact.warehouse_key=warehouse_dimension.warehouse_key));

@@ -142,14 +142,14 @@ public class SourceDataInfo {
  	public String getFormattedName(){
  		String[] splitData = path.split(Pattern.quote(File.separator));
  		splitData = splitData[splitData.length-1].split("/");
- 		if(type.equals("sqlite3")){
+ 		if(!type.equals("csv")){
  			return splitData[splitData.length-1]+":"+tableName;
  		}
  		return splitData[splitData.length-1];
  	}
 
  	public String getFormattedID(){
- 		if(type.equals("sqlite3")){
+ 		if(!type.equals("csv")){
  			return id+":"+tableName;
  		}
  		return id;

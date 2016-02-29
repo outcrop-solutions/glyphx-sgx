@@ -44,16 +44,14 @@ public class CSVWriter {
 		this.rootCoords = rootCoords;
 		this.remove_scale_zero = scale_zero;
 		//System.out.println(nodeCount);
+		Logger.getInstance().add(outDir);
 		if(app.equals("DataMapper")){
-			this.outDir = outDir+"\\usr\\csv\\";
-			this.imageDir = outDir+"\\usr\\images\\downloadedMap.jpg";
+			this.outDir = outDir+"/usr/csv/";
+			this.imageDir = outDir+"/usr/images/downloadedMap.jpg";
 		}else if(app.equals("GlyphViewer")){
-			this.outDir = outDir+"\\antz\\";
-			this.imageDir = outDir+"\\antz\\base_image_2.png";
+			this.outDir = outDir+"/antz/";
+			this.imageDir = outDir+"/antz/base_image_2.png";
 		}
-		Logger.getInstance().add(this.outDir);
-		setAntz();
-		newBegin(app);
 
 		String os = System.getProperty("os.name");
         String w = "windows";
@@ -62,6 +60,9 @@ public class CSVWriter {
         }else{
         	this.win = false;
         }
+		Logger.getInstance().add(this.outDir);
+		setAntz();
+		newBegin(app);
 
 		if(app.equals("DataMapper")){
 			antzGlobals(colorStr);
@@ -151,9 +152,10 @@ public class CSVWriter {
 			BufferedWriter bfw = new BufferedWriter(f);
 
 			if(app.equals("DataMapper")){
-				noURLLocation = outDir+"\\..\\..\\nourl.html";
+				noURLLocation = outDir+"/../../nourl.html";
 			}else{
-				noURLLocation = Paths.get(".").toAbsolutePath().normalize().toString()+"\\nourl.html";
+				Logger.getInstance().add(Paths.get(".").toAbsolutePath().normalize().toString());
+				noURLLocation = Paths.get(".").toAbsolutePath().normalize().toString()+"/nourl.html";
 			}
 		    Logger.getInstance().add(noURLLocation);
 
@@ -405,13 +407,14 @@ public class CSVWriter {
 		int offset = 2;
 		File f = new File(imageDir);
 		if(f.exists()){world = false;}
+		//Logger.getInstance().add(String.valueOf(world));
 
 		for(int i = 0; i < base_objects.size(); i++){
 			String template = "";
 			BaseObject bo = base_objects.get(i);
 			String[] color = bo.getGridColor();
 			String number = String.valueOf(i+offset);
-			if(i == 0 && (bo.getName().equals("World") || (bo.getName().equals("Downloaded Map") && world))){number = "1";offset = 1;}
+			if(i == 0 && (bo.getName().equals("World") || (bo.getType().equals("Downloaded Map") && world))){number = "1";offset = 1;}
 			template = String.valueOf(i+6)+",6,"+String.valueOf(i+6)+",1,"+parentID+","+branchLevel+",0,0,"+childCount+",0,0,0,0,1,"+bo.getGLCount(0)+","+bo.getGLCount(1)+",0,0,0,0,0,0,1,0,0,1,1,1,";
 			template += bo.getPosition(0)+","+bo.getPosition(1)+","+bo.getPosition(2)+",0,0,0,0,0,0,"+bo.getRotation(0)+","+bo.getRotation(1)+","+bo.getRotation(2)+",0,0,0,0,0,0,0,0,0,0,0,1,0,0.1,18,"+color[0]+","+color[1]+","+color[2]+",255,";
 			template += "0,"+number+","+bo.showGridLines()+",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"+bo.getGLSegX()+","+bo.getGLSegY()+",0,0,0,0,0,420\n";
