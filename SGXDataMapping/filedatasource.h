@@ -64,11 +64,14 @@ namespace SynGlyphX {
 		virtual std::wstring GetFormattedName() const;
 		virtual std::wstring GetDBName() const;
 
+		static bool CanFileTypeHaveMultipleTables(FileType fileType);
+
 		virtual PropertyTree& ExportToPropertyTree(boost::property_tree::wptree& parentPropertyTree);
 
 		static FileType GetFileTypeForFile(const std::wstring& filename);
 
 		static const FileTypeBimap s_fileTypeStrings;
+		static const FileTypeBimap s_fileTypePrefixes;
 
 	private:
 		static bool IsSQLite3DB(const std::wstring& filename);

@@ -342,17 +342,21 @@ namespace SynGlyphX {
 		}
 	}
 
-	boost::uuids::uuid DataTransformMapping::AddFileDatasource(FileDatasource::FileType type,
-		const std::wstring& name,
-        const std::wstring& host,
-        const std::wstring& username,
-        const std::wstring& password) {
+	boost::uuids::uuid DataTransformMapping::AddFileDatasource(const FileDatasource& datasource) {
 
 		boost::uuids::uuid id = UUIDGenerator::GetNewRandomUUID();
-		m_datasources.insert(std::pair<boost::uuids::uuid, Datasource::SharedPtr>(id, std::make_shared<FileDatasource>(type, name, host, username, password)));
+		m_datasources.insert(std::pair<boost::uuids::uuid, Datasource::SharedPtr>(id, std::make_shared<FileDatasource>(datasource)));
 
         return id;
     }
+
+	boost::uuids::uuid DataTransformMapping::AddDatabaseServer(const DatabaseServerDatasource& datasource) {
+
+		boost::uuids::uuid id = UUIDGenerator::GetNewRandomUUID();
+		m_datasources.insert(std::pair<boost::uuids::uuid, Datasource::SharedPtr>(id, std::make_shared<DatabaseServerDatasource>(datasource)));
+
+		return id;
+	}
 
 	void DataTransformMapping::EnableTables(const boost::uuids::uuid& id, const Datasource::TableNames& tables, bool enable) {
 
@@ -727,7 +731,8 @@ namespace SynGlyphX {
 			subsetMapping->AddBaseObject(baseImage);
 		}
 
-		boost::uuids::uuid datasourceID = subsetMapping->AddFileDatasource(FileDatasource::FileType::CSV, csvFilename);
+		SynGlyphX::FileDatasource newDatasource(FileDatasource::FileType::CSV, csvFilename);
+		boost::uuids::uuid datasourceID = subsetMapping->AddFileDatasource(newDatasource);
 
 		for (auto fieldGroupPair : m_fieldGroups) {
 

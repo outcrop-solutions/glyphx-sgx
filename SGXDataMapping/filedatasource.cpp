@@ -13,6 +13,10 @@ namespace SynGlyphX {
 		(FileDatasource::FileType::XML, L"XML")
 		(FileDatasource::FileType::JSON, L"JSON");
 
+	const FileDatasource::FileTypeBimap FileDatasource::s_fileTypePrefixes = boost::assign::list_of < FileDatasource::FileTypeBimap::relation >
+		(FileDatasource::FileType::SQLITE3, L"sqlite3")
+		(FileDatasource::FileType::CSV, L"csv");
+
 	FileDatasource::FileDatasource(FileType type, const std::wstring& filename, const std::wstring& host, const std::wstring& username, const std::wstring& password) :
 		Datasource(host, username, password),
 		m_fileType(type),
@@ -120,7 +124,12 @@ namespace SynGlyphX {
 
 	bool FileDatasource::CanDatasourceHaveMultipleTables() const {
 
-		return (m_fileType == FileType::SQLITE3);
+		return CanFileTypeHaveMultipleTables(m_fileType);
+	}
+
+	bool FileDatasource::CanFileTypeHaveMultipleTables(FileType fileType) {
+
+		return (fileType == FileType::SQLITE3);
 	}
 
 	bool FileDatasource::IsFile() const {

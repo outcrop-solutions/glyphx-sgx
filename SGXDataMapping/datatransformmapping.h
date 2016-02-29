@@ -60,11 +60,8 @@ namespace SynGlyphX {
 
 		bool HasDatasourceWithId(const boost::uuids::uuid& id) const;
 		void RemoveDatasource(const boost::uuids::uuid& id);
-		boost::uuids::uuid AddFileDatasource(FileDatasource::FileType type, 
-			const std::wstring& name,
-            const std::wstring& host = L"localhost",
-            const std::wstring& username = L"",
-            const std::wstring& password = L"");
+		boost::uuids::uuid AddFileDatasource(const FileDatasource& datasource);
+		boost::uuids::uuid AddDatabaseServer(const DatabaseServerDatasource& datasource);
 
 		void EnableTables(const boost::uuids::uuid& id, const Datasource::TableNames& tables, bool enable = true);
 
