@@ -70,11 +70,11 @@ void BindingLineEdit::SetAcceptedInputTypes(SynGlyphX::MappingFunctionData::Inpu
 	m_acceptedInputTypes = acceptedInputTypes;
 
 	//If input type has changed then clear input field if input field no longer matches input type
-	if ((m_acceptedInputTypes == SynGlyphX::MappingFunctionData::Input::Numeric) && (!m_inputField.IsNumeric())) {
+	if ((m_acceptedInputTypes == SynGlyphX::MappingFunctionData::Input::Numeric) && (m_inputField.IsValid()) && (!m_inputField.IsNumeric())) {
 
 		Clear();
 	}
-	else if ((m_acceptedInputTypes == SynGlyphX::MappingFunctionData::Input::Text) && (m_inputField.IsNumeric())) {
+	else if ((m_acceptedInputTypes == SynGlyphX::MappingFunctionData::Input::Text) && (m_inputField.IsValid()) && (m_inputField.IsNumeric())) {
 
 		Clear();
 	}
