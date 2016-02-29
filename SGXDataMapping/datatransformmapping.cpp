@@ -124,7 +124,7 @@ namespace SynGlyphX {
 				}
 				else if (datasourcePropertyTree.first == Datasource::s_sourceTypeStrings.left.at(Datasource::SourceType::DatabaseServer)) {
 
-
+					newDatasource = std::make_shared<DatabaseServerDatasource>(datasourcePropertyTree.second);
 				}
 
 				if (newDatasource != nullptr) {
