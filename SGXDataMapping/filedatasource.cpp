@@ -17,10 +17,9 @@ namespace SynGlyphX {
 		(FileDatasource::FileType::SQLITE3, L"sqlite3")
 		(FileDatasource::FileType::CSV, L"csv");
 
-	FileDatasource::FileDatasource(FileType type, const std::wstring& filename, const std::wstring& host, const std::wstring& username, const std::wstring& password) :
+	FileDatasource::FileDatasource(FileType type, const std::wstring& host, const std::wstring& username, const std::wstring& password) :
 		Datasource(host, username, password),
-		m_fileType(type),
-		m_filename(filename)
+		m_fileType(type)
 	{
 		//CSV files are a single table so put in a dummy value so that the table count is 1
 		if (!CanDatasourceHaveMultipleTables()) {
@@ -33,8 +32,12 @@ namespace SynGlyphX {
 
 	FileDatasource::FileDatasource(const PropertyTree& propertyTree) :
 		Datasource(propertyTree),
-		m_filename(propertyTree.get<std::wstring>(L"Name")),
 		m_fileType(s_fileTypeStrings.right.at(propertyTree.get<std::wstring>(L"<xmlattr>.type"))) {
+
+		if (m_host == L"localhost") {
+
+			m_host = propertyTree.get<std::wstring>(L"Name");
+		}
 
 		//CSV files are a single table so put in a dummy value so that the table count is 1
 		if (!CanDatasourceHaveMultipleTables()) {
@@ -48,8 +51,7 @@ namespace SynGlyphX {
 
 	FileDatasource::FileDatasource(const FileDatasource& datasource) :
 		Datasource(datasource),
-		m_fileType(datasource.m_fileType),
-		m_filename(datasource.m_filename) {
+		m_fileType(datasource.m_fileType) {
 
 
 	}
@@ -62,7 +64,6 @@ namespace SynGlyphX {
 
 		Datasource::operator=(datasource);
 		m_fileType = datasource.m_fileType;
-		m_filename = datasource.m_filename;
 
 		return *this;
 	}
@@ -75,11 +76,6 @@ namespace SynGlyphX {
 		}
 
 		if (m_fileType != datasource.m_fileType) {
-
-			return false;
-		}
-
-		if (m_filename != datasource.m_filename) {
 
 			return false;
 		}
@@ -104,12 +100,12 @@ namespace SynGlyphX {
 
 	const std::wstring& FileDatasource::GetFilename() const {
 
-		return m_filename;
+		return GetHost();
 	}
 
 	void FileDatasource::ChangeFilename(const std::wstring& filename) {
 
-		m_filename = filename;
+		m_host = filename;
 	}
 
 	bool FileDatasource::RequiresConversionToDB() const {
@@ -139,7 +135,7 @@ namespace SynGlyphX {
 
 	bool FileDatasource::CanDatasourceBeFound() const {
 
-		boost::filesystem::path datasourcePath(m_filename);
+		boost::filesystem::path datasourcePath(GetFilename());
 		return (boost::filesystem::exists(datasourcePath) && boost::filesystem::is_regular_file(datasourcePath));
 	}
 
@@ -147,14 +143,13 @@ namespace SynGlyphX {
 
 		PropertyTree& propertyTree = Datasource::ExportToPropertyTree(parentPropertyTree);
 		propertyTree.put(L"<xmlattr>.type", s_fileTypeStrings.left.at(m_fileType));
-		propertyTree.put(L"Name", m_filename);
 
 		return propertyTree;
 	}
 
 	std::wstring FileDatasource::GetFormattedName() const {
 
-		boost::filesystem::path datasourcePath(m_filename);
+		boost::filesystem::path datasourcePath(GetFilename());
 		return datasourcePath.filename().wstring();
 	}
 
@@ -192,7 +187,7 @@ namespace SynGlyphX {
 
 	std::wstring FileDatasource::GetDBName() const {
 
-		return m_filename;
+		return GetHost();
 	}
 
 } //namespace SynGlyphX

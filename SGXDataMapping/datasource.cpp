@@ -158,8 +158,8 @@ namespace SynGlyphX {
 
 	Datasource::PropertyTree& Datasource::ExportToPropertyTree(boost::property_tree::wptree& parentPropertyTree) {
 
-		PropertyTree& propertyTree = parentPropertyTree.add(s_sourceTypeStrings.left.at(GetSourceType()), L"");
-
+		PropertyTree& propertyTree = parentPropertyTree.add(L"Datasource", L"");
+		propertyTree.put(L"<xmlattr>.source", s_sourceTypeStrings.left.at(GetSourceType()));
 		propertyTree.put(L"Host", m_host);
 
 		if (!m_username.empty()) {

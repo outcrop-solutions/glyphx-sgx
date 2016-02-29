@@ -116,15 +116,20 @@ namespace SynGlyphX {
 
 			for (const boost::property_tree::wptree::value_type& datasourcePropertyTree : datasourcesPropertyTree.get()) {
 
+				std::wstring fileSourceString = Datasource::s_sourceTypeStrings.left.at(Datasource::SourceType::File);
 				Datasource::SharedPtr newDatasource = nullptr;
-				if ((datasourcePropertyTree.first == Datasource::s_sourceTypeStrings.left.at(Datasource::SourceType::File)) || 
-					(datasourcePropertyTree.first == L"Datasource")) {
+				if ((datasourcePropertyTree.first == fileSourceString) || (datasourcePropertyTree.first == L"Datasource")) {
 
-					newDatasource = std::make_shared<FileDatasource>(datasourcePropertyTree.second);
-				}
-				else if (datasourcePropertyTree.first == Datasource::s_sourceTypeStrings.left.at(Datasource::SourceType::DatabaseServer)) {
+					Datasource::SourceType source = Datasource::s_sourceTypeStrings.right.at(datasourcePropertyTree.second.get_optional<std::wstring>(L"<xmlattr>.source").get_value_or(fileSourceString));
 
-					newDatasource = std::make_shared<DatabaseServerDatasource>(datasourcePropertyTree.second);
+					if (source == Datasource::SourceType::File) {
+
+						newDatasource = std::make_shared<FileDatasource>(datasourcePropertyTree.second);
+					}
+					else if (source == Datasource::SourceType::DatabaseServer) {
+
+						newDatasource = std::make_shared<DatabaseServerDatasource>(datasourcePropertyTree.second);
+					}
 				}
 
 				if (newDatasource != nullptr) {

@@ -141,7 +141,7 @@ namespace SynGlyphX {
 
 	std::wstring DatabaseServerDatasource::GetFullJDBCConnectionString() const {
 
-		return s_dbTypePrefixes.left.at(m_dbType) + s_prefixSeparator + m_host;
+		return GetHost();
 	}
 
 } //namespace SynGlyphX

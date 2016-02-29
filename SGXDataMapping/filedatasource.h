@@ -40,7 +40,7 @@ namespace SynGlyphX {
 		typedef std::shared_ptr<FileDatasource> SharedPtr;
 		typedef std::shared_ptr<const FileDatasource> ConstSharedPtr;
 
-		FileDatasource(FileType type, const std::wstring& filename, const std::wstring& host = L"localhost", const std::wstring& username = L"", const std::wstring& password = L"");
+		FileDatasource(FileType type, const std::wstring& host, const std::wstring& username = L"", const std::wstring& password = L"");
 		FileDatasource(const PropertyTree& propertyTree);
 		FileDatasource(const FileDatasource& datasource);
 		virtual ~FileDatasource();
@@ -77,7 +77,6 @@ namespace SynGlyphX {
 		static bool IsSQLite3DB(const std::wstring& filename);
 
 		FileType m_fileType;
-		std::wstring m_filename;
 	};
 
 } //namespace SynGlyphX
