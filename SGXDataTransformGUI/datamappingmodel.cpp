@@ -487,11 +487,11 @@ namespace SynGlyphX {
 		return 0;
 	}
 
-	boost::uuids::uuid DataMappingModel::AddFileDatasource(FileDatasource::FileType type, const std::wstring& name) {
+	boost::uuids::uuid DataMappingModel::AddFileDatasource(const FileDatasource& datasource) {
 
 		int newRow = GetFirstIndexForDataType(DataType::DataSources) + m_dataMapping->GetDatasources().size();
 		beginInsertRows(QModelIndex(), newRow, newRow);
-		boost::uuids::uuid id = m_dataMapping->AddFileDatasource(type, name);
+		boost::uuids::uuid id = m_dataMapping->AddFileDatasource(datasource);
 		endInsertRows();
 
 		return id;

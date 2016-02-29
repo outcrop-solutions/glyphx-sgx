@@ -13,6 +13,7 @@
 #include "defaultbaseimagescombobox.h"
 #include "surfaceradiobuttonwidget.h"
 #include "dataenginestatement.h"
+#include "stringconvert.h"
 
 DataTransformModel::DataTransformModel(QObject *parent)
 	: QAbstractItemModel(parent),
@@ -513,16 +514,28 @@ int	DataTransformModel::rowCount(const QModelIndex& parent) const {
 	return 0;
 }
 
-boost::uuids::uuid DataTransformModel::AddFileDatasource(SynGlyphX::FileDatasource::FileType type, const std::wstring& name) {
+boost::uuids::uuid DataTransformModel::AddFileDatasource(const SynGlyphX::FileDatasource& datasource) {
 
 	int newRow = GetFirstIndexForDataType(DataType::DataSources) + m_dataMapping->GetDatasources().size();
 	beginInsertRows(QModelIndex(), newRow, newRow);
-	boost::uuids::uuid id = m_dataMapping->AddFileDatasource(type, name);
+	boost::uuids::uuid id = m_dataMapping->AddFileDatasource(datasource);
 	AddDatasourceInfoFromDataEngine(id, m_dataMapping->GetDatasources().at(id));
 	endInsertRows();
 
 	return id;
 }
+
+boost::uuids::uuid DataTransformModel::AddDatabaseServer(const SynGlyphX::DatabaseServerDatasource& datasource) {
+
+	int newRow = GetFirstIndexForDataType(DataType::DataSources) + m_dataMapping->GetDatasources().size();
+	beginInsertRows(QModelIndex(), newRow, newRow);
+	boost::uuids::uuid id = m_dataMapping->AddDatabaseServer(datasource);
+	AddDatasourceInfoFromDataEngine(id, m_dataMapping->GetDatasources().at(id));
+	endInsertRows();
+
+	return id;
+}
+
 /*
 void DataTransformModel::SetInputField(const boost::uuids::uuid& treeID, SynGlyphX::DataMappingGlyphGraph::const_iterator& node, SynGlyphX::DataMappingGlyph::MappableField field, const SynGlyphX::InputField& inputfield) {
 
@@ -566,7 +579,7 @@ const SynGlyphX::DataMappingGlyphGraph::InputFieldMap& DataTransformModel::GetIn
 
 	return m_dataMapping->GetGlyphGraphs().at(GetTreeId(index))->GetInputFields();
 }
-
+/*
 void DataTransformModel::EnableTables(const boost::uuids::uuid& id, const SynGlyphX::Datasource::TableNames& tables, bool enable) {
 
 	m_dataMapping->EnableTables(id, tables, enable);
@@ -577,7 +590,7 @@ void DataTransformModel::EnableTables(const boost::uuids::uuid& id, const SynGly
 			GenerateStats(SynGlyphX::InputTable(id, tables[i]), i, SynGlyphX::FileDatasource::FileType::SQLITE3);
 		}
 	}
-}
+}*/
 
 bool DataTransformModel::removeRows(int row, int count, const QModelIndex& parent) {
 
@@ -1149,82 +1162,98 @@ const DataTransformModel::TableStatsMap& DataTransformModel::GetTableStatsMap() 
 
 void DataTransformModel::AddDatasourceInfoFromDataEngine(const boost::uuids::uuid& datasourceId, const SynGlyphX::Datasource::SharedPtr datasource) {
 
-	if (datasource->GetSourceType() == SynGlyphX::Datasource::SourceType::File) {
+	QStringList chosenTables;
+	QString sourceTypeString;
 
-		SynGlyphX::FileDatasource::SharedPtr fileDatasource = std::dynamic_pointer_cast<SynGlyphX::FileDatasource>(datasource);
-		QString datasource = QString::fromStdWString(fileDatasource->GetFilename());
+	try {
 
-		if (fileDatasource->GetFileType() == SynGlyphX::FileDatasource::SQLITE3) {
+		if (datasource->GetSourceType() == SynGlyphX::Datasource::SourceType::File) {
 
-			SynGlyphX::Datasource::TableNames tables;
+			SynGlyphX::FileDatasource::SharedPtr fileDatasource = std::dynamic_pointer_cast<SynGlyphX::FileDatasource>(datasource);
+			sourceTypeString = QString::fromStdWString(SynGlyphX::FileDatasource::s_fileTypePrefixes.left.at(fileDatasource->GetFileType()));
 
-			QString url = QString::fromStdWString(L"sqlite:" + fileDatasource->GetFilename());
-			QString user("");
-			QString pass("");
-			//QString url("mysql://33.33.33.1");
-			//QString user("root");
-			//QString pass("jarvis");
-			//QString type("mysql");
-			QStringList databases = m_dataEngineConnection->connectToServer(url, user, pass, "sqlite3");
-			QString database("");
-			//QString database("world");
-			QStringList qtables;
-			if (databases.empty()) {
+			if (fileDatasource->GetFileType() == SynGlyphX::FileDatasource::SQLITE3) {
 
-				qtables = m_dataEngineConnection->getTables();
+				chosenTables = GetChosenTables(QString::fromStdWString(L"sqlite:" + fileDatasource->GetFilename()),
+					QString::fromStdWString(fileDatasource->GetUsername()),
+					QString::fromStdWString(fileDatasource->GetPassword()),
+					sourceTypeString,
+					"",
+					fileDatasource->GetTableNames());
+
 			}
-			else {
+			else if (fileDatasource->GetFileType() == SynGlyphX::FileDatasource::FileType::CSV) {
 
-				qtables = m_dataEngineConnection->getSchemaTableNames("");
+				m_dataEngineConnection->loadCSV(SynGlyphX::StringConvert::ToStdString(fileDatasource->GetFilename()).c_str());
+				chosenTables << QString::fromStdWString(SynGlyphX::FileDatasource::SingleTableName);
+				//GenerateStats(SynGlyphX::InputTable(datasourceId, SynGlyphX::FileDatasource::SingleTableName), 0, SynGlyphX::FileDatasource::FileType::CSV);
 			}
-			
-			// = dec->chooseDatabase(database);
-			//dec->testFunction();
-			QStringList chosenTables;
-			chosenTables = qtables;
-			//std::vector<DataEngineConnection::ForeignKey> fkeys = dec->getForeignKeys(//table_name);
-			//fkeys.at(0).key;
-			//fkeys.at(0).origin;
-			//fkeys.at(0).value;
-			m_dataEngineConnection->setChosenTables(chosenTables);
-			//QString query = "SELECT City.Population, Country.Code FROM (City INNER JOIN Country ON (City.CountryCode=Country.Code))";
-			//dec->setQueryTables(query);
-
-			if (!m_dataEngineConnection->getTables().isEmpty()) {
-
-				for (const QString& qtable : m_dataEngineConnection->getTables()) {
-
-					tables.push_back(qtable.toStdWString());
-				}
-				EnableTables(datasourceId, tables, true);
-			}
-			else {
-
-				throw std::runtime_error((tr("No tables in ") + datasource).toStdString().c_str());
-			}
-
-			m_dataEngineConnection->closeConnection();
 		}
-		else if (fileDatasource->GetFileType() == SynGlyphX::FileDatasource::FileType::CSV) {
+		else if (datasource->GetSourceType() == SynGlyphX::Datasource::SourceType::DatabaseServer) {
 
-			m_dataEngineConnection->loadCSV(datasource.toUtf8().constData());
-			GenerateStats(SynGlyphX::InputTable(datasourceId, SynGlyphX::FileDatasource::SingleTableName), 0, SynGlyphX::FileDatasource::FileType::CSV);
-			m_dataEngineConnection->closeConnection();
+			SynGlyphX::DatabaseServerDatasource::SharedPtr dbmsDatasource = std::dynamic_pointer_cast<SynGlyphX::DatabaseServerDatasource>(datasource);
+			sourceTypeString = QString::fromStdWString(SynGlyphX::DatabaseServerDatasource::s_dbTypePrefixes.left.at(dbmsDatasource->GetDBType()));
+
+			chosenTables = GetChosenTables(QString::fromStdWString(dbmsDatasource->GetFullJDBCConnectionString()),
+				QString::fromStdWString(dbmsDatasource->GetUsername()),
+				QString::fromStdWString(dbmsDatasource->GetPassword()),
+				sourceTypeString,
+				QString::fromStdWString(dbmsDatasource->GetSchema()),
+				dbmsDatasource->GetTableNames());
 		}
+
+		for (int i = 0; i < chosenTables.size(); ++i) {
+
+			GenerateStats(SynGlyphX::InputTable(datasourceId, chosenTables[i].toStdWString()), i, sourceTypeString);
+		}
+
+		m_dataEngineConnection->closeConnection();
 	}
-	else if (datasource->GetSourceType() == SynGlyphX::Datasource::SourceType::DatabaseServer) {
+	catch (const std::exception& e) {
 
-
+		m_dataEngineConnection->closeConnection();
+		throw;
 	}
 }
 
+QStringList DataTransformModel::GetChosenTables(const QString& url, 
+												const QString& username, 
+												const QString& password, 
+												const QString& db_type, 
+												const QString& schema, 
+												SynGlyphX::Datasource::TableNames tables) {
+
+	QStringList chosenTables;
+
+	QStringList databases = m_dataEngineConnection->connectToServer(url, username, password, db_type);
+	QStringList connectionTables = m_dataEngineConnection->getTables();
+
+	if (connectionTables.isEmpty()) {
+
+		throw std::runtime_error((tr("No tables listed can be found in ") + url).toStdString().c_str());
+	}
+
+	for (const auto& table : tables) {
+
+		QString qTable = QString::fromStdWString(table);
+		if (connectionTables.contains(qTable)) {
+
+			chosenTables.push_back(qTable);
+		}
+	}
+
+	m_dataEngineConnection->setChosenTables(chosenTables);
+
+	return chosenTables;
+}
+
 //JDBC GENERATE STATS
-void DataTransformModel::GenerateStats(const SynGlyphX::InputTable inputTable, int place, SynGlyphX::FileDatasource::FileType type) {
+void DataTransformModel::GenerateStats(const SynGlyphX::InputTable inputTable, int place, const QString& sourceTypeString) {
 
 	TableStats tableStats;
 
 	DataEngine::DataEngineStatement des;
-	des.prepare(m_dataEngineConnection->getEnv(), m_dataEngineConnection->getJcls(), type); //Add datasource type as a third argument
+	des.prepare(m_dataEngineConnection->getEnv(), m_dataEngineConnection->getJcls(), sourceTypeString); 
 
 	SynGlyphX::WStringVector numericCols;
 	des.getFieldsForTable(place);

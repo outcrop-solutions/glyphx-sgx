@@ -526,14 +526,13 @@ void DataMapperWindow::AddFileDataSource() {
 	AddFileDatasourceWizard fileDatasourceWizard(initialDir, m_dataEngineConnection, this);
 	if (fileDatasourceWizard.Exec() == QDialog::Accepted) {
 
-		const QString& filename = fileDatasourceWizard.GetFilename();
-		QFileInfo fileInfo(filename);
+		const SynGlyphX::FileDatasource& fileDatasource = fileDatasourceWizard.GetFileDatasource();
+		QFileInfo fileInfo(QString::fromStdWString(fileDatasource.GetFilename()));
 		settings.setValue("DatasourcesDir", fileInfo.absolutePath());
 
 		try {
 
-			SynGlyphX::FileDatasource::FileType fileDatasourceType = SynGlyphX::FileDatasource::GetFileTypeForFile(filename.toStdWString());
-			boost::uuids::uuid newDBID = m_dataTransformModel->AddFileDatasource(fileDatasourceType, filename.toStdWString());
+			boost::uuids::uuid newDBID = m_dataTransformModel->AddFileDatasource(fileDatasource);
 
 			m_dataSourceStats->AddNewStatsViews();
 			EnableProjectDependentActions(true);

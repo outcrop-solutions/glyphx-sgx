@@ -169,11 +169,11 @@ bool TableChoiceModel::setData(const QModelIndex& index, const QVariant& value, 
 		const QModelIndex& parentIndex = index.parent();
 		if (parentIndex.isValid()) {
 
-			return m_tableToTablesLinkedByForiegnKeys.at(parentIndex.row()).at(index.row()).second = checkState;
+			m_tableToTablesLinkedByForiegnKeys.at(parentIndex.row()).at(index.row()).second = checkState;
 		}
 		else {
 
-			return m_tables.at(index.row()).second = checkState;
+			m_tables.at(index.row()).second = checkState;
 		}
 
 		emit dataChanged(index, index, QVector<int>(1, Qt::CheckStateRole));
@@ -189,11 +189,11 @@ QModelIndex TableChoiceModel::index(int row, int column, const QModelIndex& pare
 
 		if (parent.isValid()) {
 
-			createIndex(row, column, parent.row());
+			return createIndex(row, column, parent.row());
 		}
 		else {
 
-			createIndex(row, column, s_rootID);
+			return createIndex(row, column, s_rootID);
 		}
 	}
 
@@ -215,4 +215,24 @@ QModelIndex TableChoiceModel::parent(const QModelIndex& index) const {
 
 		return createIndex(index.internalId(), 0, s_rootID);
 	}
+}
+
+QVariant TableChoiceModel::headerData(int section, Qt::Orientation orientation, int role) const {
+
+	if (orientation == Qt::Horizontal) {
+
+		if ((section == 0) && (role == Qt::ToolTipRole)) {
+
+			return tr("Select/Unselect All");
+		}
+		else if (role == Qt::DisplayRole) {
+
+			if (section == 1) {
+
+				return tr("Table");
+			}
+		}
+	}
+
+	return QVariant();
 }

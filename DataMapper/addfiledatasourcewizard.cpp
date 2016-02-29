@@ -1,10 +1,13 @@
 #include "addfiledatasourcewizard.h"
-#include "filedatasource.h"
 #include <QtWidgets/QMessageBox>
+#include "tablechoicemodel.h"
+#include "multilistfilteredtreewidget.h"
+#include "singlewidgetdialog.h"
 
 AddFileDatasourceWizard::AddFileDatasourceWizard(const QString& startingDirectory, DataEngine::DataEngineConnection::SharedPtr dataEngineConnection, QWidget *parent)
-	: SynGlyphX::ValidatedOpenFileDialog(startingDirectory, tr("Add File Datasource"), "CSV files (*.csv);;All datasource files (*.*)", parent),
-	m_dataEngineConnection(dataEngineConnection)
+	: SynGlyphX::ValidatedOpenFileDialog(startingDirectory, tr("Add File Datasource"), "CSV files (*.csv);;SQLite DB files(*.*);;All datasource files (*.*)", parent),
+	m_dataEngineConnection(dataEngineConnection),
+	m_fileDatasource(SynGlyphX::FileDatasource::FileType::CSV, L"")
 {
 	
 }
@@ -14,9 +17,9 @@ AddFileDatasourceWizard::~AddFileDatasourceWizard()
 
 }
 
-const QString& AddFileDatasourceWizard::GetFilename() const {
+const SynGlyphX::FileDatasource& AddFileDatasourceWizard::GetFileDatasource() const {
 
-	return m_filename;
+	return m_fileDatasource;
 }
 
 bool AddFileDatasourceWizard::IsFileValid(const QString& filename) {
@@ -32,7 +35,58 @@ bool AddFileDatasourceWizard::IsFileValid(const QString& filename) {
 		return false;
 	}
 
-	m_filename = filename;
+	QStringList chosenTables;
+	if (SynGlyphX::FileDatasource::CanFileTypeHaveMultipleTables(fileType)) {
+
+		TableChoiceModel* tableChoiceModel = new TableChoiceModel(true, this);
+
+		QStringList tableChoiceHeaders;
+		tableChoiceHeaders << tr("Tables");
+
+		SynGlyphX::MultiListFilteredTreeWidget* tableChoiceWidget = new SynGlyphX::MultiListFilteredTreeWidget(tableChoiceHeaders, tableChoiceModel, dynamic_cast<QWidget*>(parent()));
+		SynGlyphX::SingleWidgetDialog tableChoiceDialog(QDialogButtonBox::StandardButton::Ok | QDialogButtonBox::StandardButton::Cancel, tableChoiceWidget, dynamic_cast<QWidget*>(parent()));
+		tableChoiceDialog.setWindowTitle(tr("Select Tables"));
+
+		QString url = QString::fromStdWString(L"sqlite:") + filename;
+		QString user("");
+		QString pass("");
+		QStringList databases = m_dataEngineConnection->connectToServer(url, user, pass, "sqlite3");
+
+		QStringList tables = m_dataEngineConnection->getTables();
+		tableChoiceModel->SetTables(tables);
+
+		if (tableChoiceDialog.exec() == QDialog::Accepted) {
+
+			chosenTables = tableChoiceModel->GetChosenTables();
+			if (chosenTables.isEmpty()) {
+
+				QMessageBox::warning(dynamic_cast<QWidget*>(parent()), tr("Table Choice Error"), tr("At least one table must be chosen from the data source."), QMessageBox::StandardButton::Ok);
+				return false;
+			}
+			m_dataEngineConnection->setChosenTables(chosenTables);
+		}
+		else {
+
+			return false;
+		}
+	}
+	else if (fileType == SynGlyphX::FileDatasource::FileType::CSV) {
+
+		//m_dataEngineConnection->loadCSV(filename.toStdString());
+	}
+
+	m_fileDatasource = SynGlyphX::FileDatasource(fileType, filename.toStdWString());
+	if (!chosenTables.isEmpty()) {
+
+		SynGlyphX::Datasource::TableNames tableNames;
+		for (const auto& table : chosenTables) {
+
+			tableNames.push_back(table.toStdWString());
+		}
+		m_fileDatasource.AddTables(tableNames);
+	}
+
+	m_dataEngineConnection->closeConnection();
 
 	return true;
 }

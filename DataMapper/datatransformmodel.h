@@ -111,7 +111,8 @@ public:
 	void SetBaseObject(unsigned int position, const SynGlyphX::BaseImage& baseImage);
 	void AddBaseObject(const SynGlyphX::BaseImage& baseImage);
 
-	boost::uuids::uuid AddFileDatasource(SynGlyphX::FileDatasource::FileType type, const std::wstring& name);
+	boost::uuids::uuid AddFileDatasource(const SynGlyphX::FileDatasource& datasource);
+	boost::uuids::uuid AddDatabaseServer(const SynGlyphX::DatabaseServerDatasource& datasource);
 
 	//void SetInputField(const boost::uuids::uuid& treeID, SynGlyphX::DataMappingGlyphGraph::const_iterator& node, SynGlyphX::DataMappingGlyph::MappableField field, const SynGlyphX::InputField& inputfield);
 	void SetInputField(const QModelIndex& index, SynGlyphX::DataMappingGlyph::MappableField field, const SynGlyphX::InputField& inputfield);
@@ -121,7 +122,7 @@ public:
 
 	const SynGlyphX::DataMappingGlyphGraph::InputFieldMap& GetInputFieldsForTree(const QModelIndex& index) const;
 
-	void EnableTables(const boost::uuids::uuid& id, const SynGlyphX::Datasource::TableNames& tables, bool enable = true);
+	//void EnableTables(const boost::uuids::uuid& id, const SynGlyphX::Datasource::TableNames& tables, bool enable = true);
 
 	void ResetDataMappingID();
 
@@ -154,7 +155,8 @@ private:
 	void RemoveFieldGroup(const SynGlyphX::DataTransformMapping::FieldGroupName& groupName, bool emitGlyphDataChanged);
 	void RemoveAllAdditionalData(const boost::uuids::uuid& datasourceId);
 	void AddDatasourceInfoFromDataEngine(const boost::uuids::uuid& datasourceId, const SynGlyphX::Datasource::SharedPtr datasource);
-	void GenerateStats(const SynGlyphX::InputTable inputTable, int i, SynGlyphX::FileDatasource::FileType type);
+	QStringList GetChosenTables(const QString& url, const QString& username, const QString& password, const QString& db_type, const QString& schema, SynGlyphX::Datasource::TableNames tables);
+	void GenerateStats(const SynGlyphX::InputTable inputTable, int i, const QString& sourceTypeString);
 
 	SynGlyphX::DataTransformMapping::SharedPtr m_dataMapping;
 	DataEngine::DataEngineConnection::SharedPtr m_dataEngineConnection;

@@ -20,6 +20,7 @@
 
 #include "validatedopenfiledialog.h"
 #include "dataengineconnection.h"
+#include "filedatasource.h"
 
 class AddFileDatasourceWizard : public SynGlyphX::ValidatedOpenFileDialog
 {
@@ -29,14 +30,14 @@ public:
 	AddFileDatasourceWizard(const QString& startingDirectory, DataEngine::DataEngineConnection::SharedPtr dataEngineConnection, QWidget *parent);
 	~AddFileDatasourceWizard();
 
-	const QString& GetFilename() const;
+	const SynGlyphX::FileDatasource& GetFileDatasource() const;
 
 protected:
 	virtual bool IsFileValid(const QString& filename);
 
 private:
 	DataEngine::DataEngineConnection::SharedPtr m_dataEngineConnection;
-	QString m_filename;
+	SynGlyphX::FileDatasource m_fileDatasource;
 };
 
 #endif // ADDFILEDATASOURCEWIZARD_H

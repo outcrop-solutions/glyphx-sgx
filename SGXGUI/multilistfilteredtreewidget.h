@@ -21,8 +21,9 @@
 #include "sgxgui_global.h"
 #include <QtWidgets/QWidget>
 #include <QtCore/QAbstractItemModel>
-#include "tree2listfilterproxymodel.h"
+#include "utilitytypes.h"
 #include "abstracttreemodel.h"
+#include "checkboxheaderview.h"
 
 namespace SynGlyphX {
 
@@ -34,9 +35,16 @@ namespace SynGlyphX {
 		MultiListFilteredTreeWidget(const QStringList& headers, AbstractTreeModel* model, QWidget *parent);
 		~MultiListFilteredTreeWidget();
 
+	private slots:
+		void OnCheckBoxHeaderViewClicked(SynGlyphX::AllSomeNone state);
+		void OnCheckBoxChanged(const QModelIndex& topLeft, const QModelIndex& bottomRight, const QVector<int>& roles = QVector<int>());
+
 	private:
+		void ConnectCheckBoxSignal();
+
+		QMetaObject::Connection m_checkBoxConnection;
 		AbstractTreeModel* m_sourceModel;
-		std::vector<Tree2ListFilterProxyModel*> m_filterModels;
+		std::vector<CheckBoxHeaderView*> m_checkBoxHeaderViews;
 	};
 
 } //namespace SynGlyphX
