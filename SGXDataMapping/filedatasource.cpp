@@ -143,6 +143,7 @@ namespace SynGlyphX {
 
 		PropertyTree& propertyTree = Datasource::ExportToPropertyTree(parentPropertyTree);
 		propertyTree.put(L"<xmlattr>.type", s_fileTypeStrings.left.at(m_fileType));
+		propertyTree.put(L"Name", GetHost());
 
 		return propertyTree;
 	}
