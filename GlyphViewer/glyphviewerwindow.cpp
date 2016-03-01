@@ -473,10 +473,12 @@ void GlyphViewerWindow::ValidateDataMappingFile(const QString& filename) {
 		}
 	}
 
-	if (wasDataTransformUpdated) {
+	/*if (wasDataTransformUpdated) {
 
 		mapping->WriteToFile(filename.toStdString());
-	}
+	}*/
+
+	mapping->WriteToFile(filename.toStdString());
 }
 
 void GlyphViewerWindow::LoadDataTransform(const QString& filename) {
