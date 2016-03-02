@@ -15,8 +15,8 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef SYNGLYPHX_DATASOURCE
-#define SYNGLYPHX_DATASOURCE
+#ifndef SYNGLYPHX_DATASOURCE_H
+#define SYNGLYPHX_DATASOURCE_H
 
 #include "sgxdatamapping.h"
 #include <boost/property_tree/ptree.hpp>
@@ -88,4 +88,4 @@ namespace SynGlyphX {
 
 } //namespace SynGlyphX
 
-#endif //SYNGLYPHX_DATASOURCE
+#endif //SYNGLYPHX_DATASOURCE_H
