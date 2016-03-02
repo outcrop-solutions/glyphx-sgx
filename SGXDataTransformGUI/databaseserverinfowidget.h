@@ -15,58 +15,51 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef ADDDATABASESERVERWIDGET_H
-#define ADDDATABASESERVERWIDGET_H
+#ifndef SYNGLYPHX_DATABASESERVERINFOWIDGET_H
+#define SYNGLYPHX_DATABASESERVERINFOWIDGET_H
 
-#include <QtWidgets/QWizard>
-#include "dataengineconnection.h"
-#include <QtWidgets/QListWidget>
-#include "tablechoicewidget.h"
-#include "databaseserverinfowidget.h"
+#include "sgxdatatransformgui_global.h"
+#include <QtWidgets/QWidget>
+#include <QtWidgets/QComboBox>
+#include "passwordlineedit.h"
+#include "prefixsuffixvalidator.h"
 #include "databaseserverdatasource.h"
 
-class AddDatabaseServerWizard : public QWizard
-{
-	Q_OBJECT
+namespace SynGlyphX {
 
-public:
-	enum PageType {
-		DatabaseInfoPage = 0,
-		SchemaSelectionPage,
-		TableSelectionPage
+	class SGXDATATRANSFORMGUI_EXPORT DatabaseServerInfoWidget : public QWidget
+	{
+		Q_OBJECT
+
+	public:
+		DatabaseServerInfoWidget(bool makeEditable, QWidget *parent);
+		~DatabaseServerInfoWidget();
+
+		DatabaseServerDatasource::DBType GetDBType() const;
+
+		void SetConnection(const QString& connection);
+		QString GetConnection() const;
+
+		void SetUsername(const QString& username);
+		QString GetUsername() const;
+
+		void SetPassword(const QString& password);
+		QString GetPassword() const;
+
+	private slots:
+		void OnTypeComboBoxChanged();
+
+	private:
+		void SetConnectionWithoutPrefix(const QString& connection);
+		QString GetConnectionWithoutPrefix() const;
+
+		QComboBox* m_typeComboBox;
+		QLineEdit* m_connectionLineEdit;
+		QLineEdit* m_usernameLineEdit;
+		SynGlyphX::PasswordLineEdit* m_passwordLineEdit;
+		SynGlyphX::PrefixSuffixValidator* m_connectionValidator;
 	};
 
-	AddDatabaseServerWizard(DataEngine::DataEngineConnection::SharedPtr dataEngineConnection, QWidget *parent);
-	~AddDatabaseServerWizard();
+} //namespace SynGlyphX
 
-	//void SetValues(const SynGlyphX::DatabaseServerDatasource& datasource);
-	SynGlyphX::DatabaseServerDatasource GetValues() const;
-
-	virtual int nextId() const;
-	virtual bool validateCurrentPage();
-
-protected:
-	virtual void initializePage(int id);
-
-private:
-	void CreateDatabaseInfoPage();
-	void CreateSchemaSelectionPage();
-	void CreateTableSelectionPage();
-
-	bool ValidateDatabaseInfo();
-	bool DoesSchemaHaveTables(const QString& schema) const;
-
-	DataEngine::DataEngineConnection::SharedPtr m_dataEngineConnection;
-	QStringList m_schemas;
-
-	//Database Info Page Widgets
-	SynGlyphX::DatabaseServerInfoWidget* m_databaseServerInfoWidget;
-
-	//Schema selection page widgets
-	QListWidget* m_schemaListWidget;
-
-	//Table choice widget
-	TableChoiceWidget* m_tableChoiceWidget;
-};
-
-#endif // ADDDATABASESERVERWIDGET_H
+#endif // SYNGLYPHX_DATABASESERVERINFOWIDGET_H

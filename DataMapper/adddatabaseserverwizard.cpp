@@ -1,5 +1,4 @@
 #include "adddatabaseserverwizard.h"
-#include <QtWidgets/QFormLayout>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QDialogButtonBox>
@@ -39,18 +38,25 @@ SynGlyphX::DatabaseServerDatasource AddDatabaseServerWizard::GetValues() const {
 		schema = m_schemaListWidget->selectedItems()[0]->text().toStdWString();
 	}
 
-	SynGlyphX::DatabaseServerDatasource datasource(static_cast<SynGlyphX::DatabaseServerDatasource::DBType>(m_typeComboBox->currentData().toUInt()),
-												   m_connectionLineEdit->text().toStdWString(),
+	SynGlyphX::DatabaseServerDatasource datasource(m_databaseServerInfoWidget->GetDBType(),
+												   m_databaseServerInfoWidget->GetConnection().toStdWString(),
 												   schema,
-												   m_usernameLineEdit->text().toStdWString(),
-												   m_passwordLineEdit->GetPassword().toStdWString());
+												   m_databaseServerInfoWidget->GetUsername().toStdWString(),
+												   m_databaseServerInfoWidget->GetPassword().toStdWString());
 
-	SynGlyphX::Datasource::TableNames tables;
-	for (const auto& table : m_tableChoiceModel->GetChosenTables()) {
+	if (m_tableChoiceWidget->IsInJoinedTableMode()) {
 
-		tables.push_back(table.toStdWString());
+
 	}
-	datasource.AddTables(tables);
+	else {
+
+		SynGlyphX::Datasource::TableNames tables;
+		for (const auto& table : m_tableChoiceWidget->GetChosenMainTables()) {
+
+			tables.push_back(table.toStdWString());
+		}
+		datasource.AddTables(tables);
+	}
 
 	return datasource;
 }
@@ -59,35 +65,8 @@ void AddDatabaseServerWizard::CreateDatabaseInfoPage() {
 
 	QWizardPage* wizardPage = new QWizardPage(this);
 
-	QFormLayout* formLayout = new QFormLayout(wizardPage);
-
-	QHBoxLayout* comboBoxLayout = new QHBoxLayout(wizardPage);
-	m_typeComboBox = new QComboBox(wizardPage);
-	QStringList databaseTypes;
-	for (auto dbType : SynGlyphX::DatabaseServerDatasource::s_dbTypeStrings) {
-
-		m_typeComboBox->addItem(QString::fromStdWString(dbType.get_right()), dbType.get_left());
-	}
-	QObject::connect(m_typeComboBox, &QComboBox::currentTextChanged, this, &AddDatabaseServerWizard::OnTypeComboBoxChanged);
-
-	comboBoxLayout->addWidget(m_typeComboBox);
-	comboBoxLayout->addStretch(1);
-	formLayout->addRow(tr("Database Type"), comboBoxLayout);
-
-	m_connectionLineEdit = new QLineEdit(wizardPage);
-	m_connectionValidator = new SynGlyphX::PrefixSuffixValidator(wizardPage);
-	m_connectionLineEdit->setValidator(m_connectionValidator);
-	formLayout->addRow(tr("Connection"), m_connectionLineEdit);
-	OnTypeComboBoxChanged();
-
-	m_usernameLineEdit = new QLineEdit(wizardPage);
-	formLayout->addRow(tr("Username"), m_usernameLineEdit);
-
-	m_passwordLineEdit = new SynGlyphX::PasswordLineEdit(wizardPage);
-	m_passwordLineEdit->layout()->setContentsMargins(0, 0, 0, 0);
-	formLayout->addRow(tr("Password"), m_passwordLineEdit);
-
-	wizardPage->setLayout(formLayout);
+	m_databaseServerInfoWidget = new SynGlyphX::DatabaseServerInfoWidget(true, wizardPage);
+	m_databaseServerInfoWidget->layout()->setContentsMargins(0, 0, 0, 0);
 
 	wizardPage->setTitle(tr("Database Info"));
 
@@ -117,12 +96,7 @@ void AddDatabaseServerWizard::CreateTableSelectionPage() {
 
 	QVBoxLayout* pageLayout = new QVBoxLayout(wizardPage);
 
-	QStringList tableChoiceHeaders;
-	tableChoiceHeaders << tr("Tables");
-
-	m_tableChoiceModel = new TableChoiceModel(true, this);
-
-	m_tableChoiceWidget = new SynGlyphX::MultiListFilteredTreeWidget(tableChoiceHeaders, m_tableChoiceModel, wizardPage);
+	m_tableChoiceWidget = new TableChoiceWidget(wizardPage);
 	pageLayout->addWidget(m_tableChoiceWidget);
 
 	wizardPage->setLayout(pageLayout);
@@ -130,28 +104,6 @@ void AddDatabaseServerWizard::CreateTableSelectionPage() {
 	wizardPage->setTitle(tr("Select Tables"));
 
 	setPage(TableSelectionPage, wizardPage);
-}
-
-void AddDatabaseServerWizard::OnTypeComboBoxChanged() {
-
-	QString prefixSeparator = QString::fromStdWString(SynGlyphX::DatabaseServerDatasource::s_prefixSeparator);
-	SynGlyphX::DatabaseServerDatasource::DBType dbType = static_cast<SynGlyphX::DatabaseServerDatasource::DBType>(m_typeComboBox->currentData().toUInt());
-	QString newPrefix = QString::fromStdWString(SynGlyphX::DatabaseServerDatasource::s_dbTypePrefixes.left.at(dbType));
-	QString connection = GetConnection();
-
-	m_connectionValidator->SetPrefix(newPrefix + prefixSeparator);
-
-	SetConnection(connection);
-}
-
-void AddDatabaseServerWizard::SetConnection(const QString& connection) {
-
-	m_connectionLineEdit->setText(m_connectionValidator->GetPrefix() + connection);
-}
-
-QString AddDatabaseServerWizard::GetConnection() const {
-
-	return m_connectionLineEdit->text().mid(m_connectionValidator->GetPrefix().size());
 }
 
 int AddDatabaseServerWizard::nextId() const {
@@ -181,7 +133,7 @@ bool AddDatabaseServerWizard::validateCurrentPage() {
 	int currentPageId = currentId();
 	if (currentPageId == DatabaseInfoPage) {
 
-		if (GetConnection().isEmpty()) {
+		if (m_databaseServerInfoWidget->GetConnection().isEmpty()) {
 
 			QMessageBox::warning(this, tr("Invalid value"), tr("Connection must not be an empty value"));
 			return false;
@@ -206,10 +158,10 @@ bool AddDatabaseServerWizard::validateCurrentPage() {
 	}
 	else if (currentPageId == TableSelectionPage) {
 
-		QStringList tables = m_tableChoiceModel->GetChosenTables();
+		QStringList tables = m_tableChoiceWidget->GetChosenMainTables();
 		if (tables.isEmpty()) {
 
-			QMessageBox::warning(this, tr("Table Selection Error"), tr("At least one table must be selected."));
+			QMessageBox::warning(this, tr("Table Selection Error"), tr("At least one main table must be selected."));
 			return false;
 		}
 
@@ -246,18 +198,30 @@ void AddDatabaseServerWizard::initializePage(int id) {
 
 			tables = m_dataEngineConnection->getSchemaTableNames(schema);
 		}
-		m_tableChoiceModel->SetTables(tables);
+
+		TableChoiceWidget::Table2ForiegnKeyTablesMap foriegnKeyTablesMap;
+		for (const auto& table : tables) {
+
+			DataEngine::DataEngineConnection::ForiegnKeyVector foriegnKeys = m_dataEngineConnection->getForeignKeys(table);
+			QStringList foriegnKeyTables;
+			for (const auto& foriegnKey : foriegnKeys) {
+
+				foriegnKeyTables.push_back(foriegnKey.origin);
+			}
+		}
+
+		m_tableChoiceWidget->SetTables(tables);
 	}
 }
 
 bool AddDatabaseServerWizard::ValidateDatabaseInfo() {
 
-	SynGlyphX::DatabaseServerDatasource::DBType dbType = static_cast<SynGlyphX::DatabaseServerDatasource::DBType>(m_typeComboBox->currentData().toUInt());
+	SynGlyphX::DatabaseServerDatasource::DBType dbType = m_databaseServerInfoWidget->GetDBType();;
 
 	try {
-		m_schemas = m_dataEngineConnection->connectToServer(m_connectionLineEdit->text(),
-															m_usernameLineEdit->text(),
-															m_passwordLineEdit->GetPassword(),
+		m_schemas = m_dataEngineConnection->connectToServer(m_databaseServerInfoWidget->GetConnection(),
+															m_databaseServerInfoWidget->GetUsername(),
+															m_databaseServerInfoWidget->GetPassword(),
 															QString::fromStdWString(SynGlyphX::DatabaseServerDatasource::s_dbTypePrefixes.left.at(dbType)));
 		if (m_schemas.isEmpty()) {
 

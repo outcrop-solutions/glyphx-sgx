@@ -1,7 +1,6 @@
 #include "addfiledatasourcewizard.h"
 #include <QtWidgets/QMessageBox>
-#include "tablechoicemodel.h"
-#include "multilistfilteredtreewidget.h"
+#include "tablechoicewidget.h"
 #include "singlewidgetdialog.h"
 
 AddFileDatasourceWizard::AddFileDatasourceWizard(const QString& startingDirectory, DataEngine::DataEngineConnection::SharedPtr dataEngineConnection, QWidget *parent)
@@ -38,12 +37,7 @@ bool AddFileDatasourceWizard::IsFileValid(const QString& filename) {
 	QStringList chosenTables;
 	if (SynGlyphX::FileDatasource::CanFileTypeHaveMultipleTables(fileType)) {
 
-		TableChoiceModel* tableChoiceModel = new TableChoiceModel(true, this);
-
-		QStringList tableChoiceHeaders;
-		tableChoiceHeaders << tr("Tables");
-
-		SynGlyphX::MultiListFilteredTreeWidget* tableChoiceWidget = new SynGlyphX::MultiListFilteredTreeWidget(tableChoiceHeaders, tableChoiceModel, dynamic_cast<QWidget*>(parent()));
+		TableChoiceWidget* tableChoiceWidget = new TableChoiceWidget(dynamic_cast<QWidget*>(parent()));
 		SynGlyphX::SingleWidgetDialog tableChoiceDialog(QDialogButtonBox::StandardButton::Ok | QDialogButtonBox::StandardButton::Cancel, tableChoiceWidget, dynamic_cast<QWidget*>(parent()));
 		tableChoiceDialog.setWindowTitle(tr("Select Tables"));
 
@@ -53,11 +47,11 @@ bool AddFileDatasourceWizard::IsFileValid(const QString& filename) {
 		QStringList databases = m_dataEngineConnection->connectToServer(url, user, pass, "sqlite3");
 
 		QStringList tables = m_dataEngineConnection->getTables();
-		tableChoiceModel->SetTables(tables);
+		tableChoiceWidget->SetTables(tables);
 
 		if (tableChoiceDialog.exec() == QDialog::Accepted) {
 
-			chosenTables = tableChoiceModel->GetChosenTables();
+			chosenTables = tableChoiceWidget->GetChosenMainTables();
 			if (chosenTables.isEmpty()) {
 
 				QMessageBox::warning(dynamic_cast<QWidget*>(parent()), tr("Table Choice Error"), tr("At least one table must be chosen from the data source."), QMessageBox::StandardButton::Ok);

@@ -5,7 +5,9 @@
 #include <QtWidgets/QLineEdit>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QFormLayout>
 #include <QtCore/QDir>
+#include "databaseserverinfowidget.h"
 
 namespace SynGlyphX {
 
@@ -37,14 +39,35 @@ namespace SynGlyphX {
 
 		if (datasource.CanDatasourceHaveMultipleTables()) {
 
-			QListWidget* tableListWidget = new QListWidget(this);
-			for (const std::wstring& table : datasource.GetTableNames()) {
+			Datasource::Tables::const_iterator tablesQueryIterator = datasource.GetTables().begin();
 
-				tableListWidget->addItem(QString::fromStdWString(table));
+			if (tablesQueryIterator->second.GetQuery().empty()) {
+
+				QListWidget* tableListWidget = new QListWidget(this);
+				tableListWidget->setSelectionMode(QAbstractItemView::NoSelection);
+				for (const std::wstring& table : datasource.GetTableNames()) {
+
+					tableListWidget->addItem(QString::fromStdWString(table));
+				}
+				SynGlyphX::GroupBoxSingleWidget* tableGroupBox = new SynGlyphX::GroupBoxSingleWidget(tr("Tables"), tableListWidget, this);
+
+				mainLayout->addWidget(tableGroupBox);
 			}
-			SynGlyphX::GroupBoxSingleWidget* tableGroupBox = new SynGlyphX::GroupBoxSingleWidget(tr("Tables"), tableListWidget, this);
+			else {
 
-			mainLayout->addWidget(tableGroupBox);
+				QFormLayout* tableQueryLayout = new QFormLayout(this);
+				tableQueryLayout->setContentsMargins(0, 0, 0, 0);
+
+				QLineEdit* tableLineEdit = new QLineEdit(QString::fromStdWString(tablesQueryIterator->first), this);
+				tableLineEdit->setReadOnly(true);
+				tableQueryLayout->addRow(tr("Table:"), tableLineEdit);
+
+				QLineEdit* queryLineEdit = new QLineEdit(QString::fromStdWString(tablesQueryIterator->second.GetQuery()), this);
+				queryLineEdit->setReadOnly(true);
+				tableQueryLayout->addRow(tr("Query:"), queryLineEdit);
+
+				mainLayout->addLayout(tableQueryLayout);
+			}
 		}
 	}
 
@@ -76,6 +99,13 @@ namespace SynGlyphX {
 	void DatasourceInfoWidget::CreateDatabaseServerDatasourceWidgets(const DatabaseServerDatasource& datasource) {
 
 		QVBoxLayout* mainLayout = qobject_cast<QVBoxLayout*>(layout());
+
+		SynGlyphX::DatabaseServerInfoWidget* databaseServerInfoWidget = new SynGlyphX::DatabaseServerInfoWidget(false, this);
+		databaseServerInfoWidget->SetConnection(QString::fromStdWString(datasource.GetHost()));
+		databaseServerInfoWidget->SetUsername(QString::fromStdWString(datasource.GetUsername()));
+		databaseServerInfoWidget->SetPassword(QString::fromStdWString(datasource.GetPassword()));
+
+		mainLayout->addWidget(databaseServerInfoWidget);
 	}
 
 } //namespace SynGlyphX

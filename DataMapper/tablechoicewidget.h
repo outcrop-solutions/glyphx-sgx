@@ -15,58 +15,47 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef ADDDATABASESERVERWIDGET_H
-#define ADDDATABASESERVERWIDGET_H
+#ifndef TABLECHOICEWIDGET_H
+#define TABLECHOICEWIDGET_H
 
-#include <QtWidgets/QWizard>
-#include "dataengineconnection.h"
+#include <QtWidgets/QWidget>
+#include "radiobuttongroupwidget.h"
 #include <QtWidgets/QListWidget>
-#include "tablechoicewidget.h"
-#include "databaseserverinfowidget.h"
-#include "databaseserverdatasource.h"
+#include <QtWidgets/QComboBox>
+#include <unordered_map>
 
-class AddDatabaseServerWizard : public QWizard
+class TableChoiceWidget : public QWidget
 {
 	Q_OBJECT
 
 public:
-	enum PageType {
-		DatabaseInfoPage = 0,
-		SchemaSelectionPage,
-		TableSelectionPage
-	};
+	typedef QMap<QString, QStringList> Table2ForiegnKeyTablesMap;
 
-	AddDatabaseServerWizard(DataEngine::DataEngineConnection::SharedPtr dataEngineConnection, QWidget *parent);
-	~AddDatabaseServerWizard();
+	TableChoiceWidget(QWidget *parent);
+	~TableChoiceWidget();
 
-	//void SetValues(const SynGlyphX::DatabaseServerDatasource& datasource);
-	SynGlyphX::DatabaseServerDatasource GetValues() const;
+	void SetTables(const QStringList& mainTables, Table2ForiegnKeyTablesMap foriegnKeyTablesMap = Table2ForiegnKeyTablesMap());
+	QStringList GetChosenMainTables() const;
+	QStringList GetChosenForiegnTables() const;
+	bool IsInJoinedTableMode() const;
 
-	virtual int nextId() const;
-	virtual bool validateCurrentPage();
-
-protected:
-	virtual void initializePage(int id);
+private slots:
+	void OnNewMainTableInJoinedModeSelected(const QString& mainTable);
 
 private:
-	void CreateDatabaseInfoPage();
-	void CreateSchemaSelectionPage();
-	void CreateTableSelectionPage();
+	QStringList GetSelectedTables(const QListWidget* const listWidget) const;
 
-	bool ValidateDatabaseInfo();
-	bool DoesSchemaHaveTables(const QString& schema) const;
+	SynGlyphX::RadioButtonGroupWidget* m_choiceTypeRadioButtonWidget;
 
-	DataEngine::DataEngineConnection::SharedPtr m_dataEngineConnection;
-	QStringList m_schemas;
+	//Multi base table choice widgets
+	QListWidget* m_baseTableListWidget;
 
-	//Database Info Page Widgets
-	SynGlyphX::DatabaseServerInfoWidget* m_databaseServerInfoWidget;
+	//Joined table widgets
+	QComboBox* m_mainTableComboBox;
+	QListWidget* m_linkedTablesListWidget;
 
-	//Schema selection page widgets
-	QListWidget* m_schemaListWidget;
-
-	//Table choice widget
-	TableChoiceWidget* m_tableChoiceWidget;
+	QStringList m_mainTables;
+	Table2ForiegnKeyTablesMap m_foriegnKeyTablesMap;
 };
 
-#endif // ADDDATABASESERVERWIDGET_H
+#endif // TABLECHOICEWIDGET_H

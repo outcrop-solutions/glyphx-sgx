@@ -24,6 +24,11 @@ namespace SynGlyphX {
 
 	}
 
+	void PasswordLineEdit::SetReadOnly(bool isReadOnly) {
+
+		m_lineEdit->setReadOnly(isReadOnly);
+	}
+
 	void PasswordLineEdit::SetPassword(const QString& password) {
 
 		m_lineEdit->setText(password);

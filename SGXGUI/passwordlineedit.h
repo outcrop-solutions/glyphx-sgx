@@ -33,6 +33,8 @@ namespace SynGlyphX {
 		PasswordLineEdit(QWidget *parent);
 		~PasswordLineEdit();
 
+		void SetReadOnly(bool isReadOnly);
+
 		void SetPassword(const QString& password);
 		QString GetPassword() const;
 
