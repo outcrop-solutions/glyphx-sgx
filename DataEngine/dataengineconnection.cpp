@@ -372,6 +372,10 @@ namespace DataEngine
 
 			for (int i = 0; i < length; i++){
 				jstring element = (jstring)jniEnv->GetObjectArrayElement(itr, i);
+				if ((length == 1) && (element == nullptr)) {
+
+					break;
+				}
 				const char *str = jniEnv->GetStringUTFChars(element, 0);
 				QString fkey_str(str);
 				temp << fkey_str;

@@ -14,30 +14,15 @@ namespace DataEngine
 {
 	class DATAENGINE DataEngineConnection {
 
-	struct ForeignKey {
-		QString key;
-		QString origin;
-		QString value;
-		ForeignKey(QString k, QString o, QString v) : key(k), origin(o), value(v) {}
-	};
-
-	private:
-		QString m_openConnection;
-		JavaVM *javaVM;
-		JNIEnv *jniEnv;
-		jclass jcls;
-		bool classFound = false;
-		QStringList tables;
-		std::map<boost::uuids::uuid, std::vector<std::wstring>> tableNumericFields;
-		std::map<boost::uuids::uuid, std::wstring> tableNames;
-		std::map<QString, QStringList> columnNames;
-		std::map<QString, std::vector<ForeignKey>> foreignKeysByTable;
-		std::map<QString, std::vector<QStringList>> sampleDataByTable;
-		QStringList getForeignKeyString(QString tablename);
-		QStringList getRowOfSampleData(int index, int row);
-		void setTables();
-
 	public:
+		struct ForeignKey {
+			QString key;
+			QString origin;
+			QString value;
+			ForeignKey(QString k, QString o, QString v) : key(k), origin(o), value(v) {}
+		};
+
+		typedef std::vector<DataEngineConnection::ForeignKey> ForiegnKeyVector;
 		typedef std::shared_ptr<DataEngineConnection> SharedPtr;
 
 		DataEngineConnection();
@@ -72,6 +57,22 @@ namespace DataEngine
 		jclass getJcls() const;
 		//void testFunction();
 		bool IsConnectionOpen() const;
+
+	private:
+		QString m_openConnection;
+		JavaVM *javaVM;
+		JNIEnv *jniEnv;
+		jclass jcls;
+		bool classFound = false;
+		QStringList tables;
+		std::map<boost::uuids::uuid, std::vector<std::wstring>> tableNumericFields;
+		std::map<boost::uuids::uuid, std::wstring> tableNames;
+		std::map<QString, QStringList> columnNames;
+		std::map<QString, std::vector<ForeignKey>> foreignKeysByTable;
+		std::map<QString, std::vector<QStringList>> sampleDataByTable;
+		QStringList getForeignKeyString(QString tablename);
+		QStringList getRowOfSampleData(int index, int row);
+		void setTables();
 	};
 }
 #endif // DATAENGINECONNECTION_H
