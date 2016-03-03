@@ -69,7 +69,7 @@ namespace SynGlyphX {
 
 		if (!m_query.empty()) {
 
-			boost::property_tree::wptree& tablePropertyTree = parentPropertyTree.add(L"<xmlattr>.query", m_query);
+			tablePropertyTree.put(L"<xmlattr>.query", m_query);
 		}
 
 		return tablePropertyTree;

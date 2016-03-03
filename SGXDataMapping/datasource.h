@@ -75,6 +75,8 @@ namespace SynGlyphX {
 		virtual std::wstring GetFormattedName() const = 0;
 		virtual std::wstring GetDBName() const = 0;
 
+		bool DoAnyTablesHaveQueries() const;
+
 		virtual PropertyTree& ExportToPropertyTree(boost::property_tree::wptree& parentPropertyTree);
 
 		static const SourceTypeBimap s_sourceTypeStrings;

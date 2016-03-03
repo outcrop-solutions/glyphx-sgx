@@ -156,6 +156,19 @@ namespace SynGlyphX {
 		return tableNames;
 	}
 
+	bool Datasource::DoAnyTablesHaveQueries() const {
+
+		for (auto& table : m_tables) {
+
+			if (!table.second.GetQuery().empty()) {
+
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 	Datasource::PropertyTree& Datasource::ExportToPropertyTree(boost::property_tree::wptree& parentPropertyTree) {
 
 		PropertyTree& propertyTree = parentPropertyTree.add(L"Datasource", L"");
