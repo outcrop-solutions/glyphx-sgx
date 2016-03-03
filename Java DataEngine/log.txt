@@ -1,9 +1,11 @@
-java.sql.SQLException: [Vertica][JDBC](10360) Column name not found: store_sales_fact.date_key.
+java.sql.SQLException: [Vertica][JDBC](10340) Invalid column index: 5.
 	at com.vertica.exceptions.ExceptionConverter.toSQLException(Unknown Source)
-	at com.vertica.jdbc.common.SForwardResultSet.findColumn(Unknown Source)
+	at com.vertica.jdbc.common.SForwardResultSet.checkIfValidColumnNumber(Unknown Source)
+	at com.vertica.jdbc.common.SForwardResultSet.getData(Unknown Source)
 	at com.vertica.jdbc.common.SForwardResultSet.getString(Unknown Source)
-	at synglyphx.jdbc.BasicTable.loadSampleData(BasicTable.java:107)
-	at synglyphx.jdbc.BasicTable.<init>(BasicTable.java:26)
+	at synglyphx.jdbc.Table.columnDataStats(Table.java:50)
+	at synglyphx.jdbc.Table.createDataStats(Table.java:124)
+	at synglyphx.jdbc.BasicTable.<init>(BasicTable.java:25)
 	at synglyphx.jdbc.Database.setTableMetaData(Database.java:70)
 	at synglyphx.jdbc.Database.<init>(Database.java:26)
 	at synglyphx.jdbc.JDBCLoader.connectToServer(JDBCLoader.java:42)
