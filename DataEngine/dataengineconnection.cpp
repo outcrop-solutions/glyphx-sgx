@@ -447,6 +447,22 @@ namespace DataEngine
 		return (!m_openConnection.isEmpty());
 	}
 
+	QString DataEngineConnection::CreateInnerJoinQueryFromForiegnKeys(const QString& mainTable, const ForiegnKeyVector& foriegnKeyTables) {
+
+		QString query = "SELECT * FROM (";
+		query += mainTable;
+
+		for (const auto& foreignKey : foriegnKeyTables) {
+
+			query += " INNER JOIN " + foreignKey.origin + " ON ";
+			query += "(" + mainTable + "." + foreignKey.key + "=" + foreignKey.origin + "." + foreignKey.value + ")";
+		}
+		
+		query += ")";
+
+		return query;
+	}
+
 	//JDBC END
 	/*
 	void DataEngineConnection::testFunction(){

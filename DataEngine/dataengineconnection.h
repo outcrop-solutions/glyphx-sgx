@@ -58,6 +58,8 @@ namespace DataEngine
 		//void testFunction();
 		bool IsConnectionOpen() const;
 
+		static QString CreateInnerJoinQueryFromForiegnKeys(const QString& mainTable, const ForiegnKeyVector& foriegnKeyTables);
+
 	private:
 		QString m_openConnection;
 		JavaVM *javaVM;
