@@ -43,8 +43,8 @@ public class BasicTable extends Table{
             for (int i = 0; i < rowCount; i++) {
             	column_type = metaData.getColumnTypeName(i + 1);
             	column_name = metaData.getColumnName(i + 1);
-                columnNames.add(driver.basicField(column_name));
-                columnTypes.put(driver.basicField(column_name), jdbcTypes.get(column_type));
+                columnNames.add(driver.basicField(metaData.getTableName(i + 1), column_name));
+                columnTypes.put(driver.basicField(metaData.getTableName(i + 1), column_name), jdbcTypes.get(column_type.toUpperCase()));
             }
             rs.close();
 
