@@ -88,11 +88,11 @@ namespace SynGlyphX {
 		QString prefixSeparator = QString::fromStdWString(SynGlyphX::DatabaseServerDatasource::s_prefixSeparator);
 		SynGlyphX::DatabaseServerDatasource::DBType dbType = static_cast<SynGlyphX::DatabaseServerDatasource::DBType>(m_typeComboBox->currentData().toUInt());
 		QString newPrefix = QString::fromStdWString(SynGlyphX::DatabaseServerDatasource::s_dbTypePrefixes.left.at(dbType));
-		QString connection = GetConnection();
+		QString connection = GetConnectionWithoutPrefix();
 
 		m_connectionValidator->SetPrefix(newPrefix + prefixSeparator);
 
-		SetConnection(connection);
+		SetConnectionWithoutPrefix(connection);
 	}
 
 	void DatabaseServerInfoWidget::SetConnectionWithoutPrefix(const QString& connection) {

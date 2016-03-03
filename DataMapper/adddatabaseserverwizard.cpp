@@ -44,17 +44,33 @@ SynGlyphX::DatabaseServerDatasource AddDatabaseServerWizard::GetValues() const {
 												   m_databaseServerInfoWidget->GetUsername().toStdWString(),
 												   m_databaseServerInfoWidget->GetPassword().toStdWString());
 
-	if (m_tableChoiceWidget->IsInJoinedTableMode()) {
-
-
-	}
-	else {
+	QStringList chosenForeignTables = m_tableChoiceWidget->GetChosenForiegnTables();
+	if (chosenForeignTables.isEmpty()) {
 
 		SynGlyphX::Datasource::TableNames tables;
 		for (const auto& table : m_tableChoiceWidget->GetChosenMainTables()) {
 
 			tables.push_back(table.toStdWString());
 		}
+		datasource.AddTables(tables);
+	}
+	else {
+
+		QString chosenMainTable = m_tableChoiceWidget->GetChosenMainTables()[0];
+		DataEngine::DataEngineConnection::ForiegnKeyVector allForeignKeysForTable = m_dataEngineConnection->getForeignKeys(chosenMainTable);
+		DataEngine::DataEngineConnection::ForiegnKeyVector foreignKeysForJoining;
+		for (const auto& foreignKey : allForeignKeysForTable) {
+
+			if (chosenForeignTables.contains(foreignKey.origin)) {
+
+				foreignKeysForJoining.push_back(foreignKey);
+			}
+		}
+
+		QString query = DataEngine::DataEngineConnection::CreateInnerJoinQueryFromForiegnKeys(chosenMainTable, foreignKeysForJoining);
+
+		SynGlyphX::Datasource::Tables tables;
+		tables.insert(std::pair<std::wstring, SynGlyphX::DatasourceTable>(L"Merged", SynGlyphX::DatasourceTable(L"Merged", query.toStdWString())));
 		datasource.AddTables(tables);
 	}
 
@@ -64,10 +80,13 @@ SynGlyphX::DatabaseServerDatasource AddDatabaseServerWizard::GetValues() const {
 void AddDatabaseServerWizard::CreateDatabaseInfoPage() {
 
 	QWizardPage* wizardPage = new QWizardPage(this);
+	QVBoxLayout* pageLayout = new QVBoxLayout(wizardPage);
 
 	m_databaseServerInfoWidget = new SynGlyphX::DatabaseServerInfoWidget(true, wizardPage);
 	m_databaseServerInfoWidget->layout()->setContentsMargins(0, 0, 0, 0);
+	pageLayout->addWidget(m_databaseServerInfoWidget);
 
+	wizardPage->setLayout(pageLayout);
 	wizardPage->setTitle(tr("Database Info"));
 
 	setPage(DatabaseInfoPage, wizardPage);
@@ -208,9 +227,11 @@ void AddDatabaseServerWizard::initializePage(int id) {
 
 				foriegnKeyTables.push_back(foriegnKey.origin);
 			}
-		}
 
-		m_tableChoiceWidget->SetTables(tables);
+			foriegnKeyTablesMap[table] = foriegnKeyTables;
+ 		}
+
+		m_tableChoiceWidget->SetTables(tables, foriegnKeyTablesMap);
 	}
 }
 

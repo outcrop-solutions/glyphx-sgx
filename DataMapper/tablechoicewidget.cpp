@@ -2,6 +2,8 @@
 #include <QtWidgets/QStackedLayout>
 #include "groupboxsinglewidget.h"
 #include <QtWidgets/QVBoxLayout>
+#include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QLabel>
 
 TableChoiceWidget::TableChoiceWidget(QWidget *parent)
 	: QWidget(parent)
@@ -26,14 +28,19 @@ TableChoiceWidget::TableChoiceWidget(QWidget *parent)
 	QVBoxLayout* joinedTableWidgetLayout = new QVBoxLayout(joinedTableWidget);
 	joinedTableWidgetLayout->setContentsMargins(0, 0, 0, 0);
 
+	QHBoxLayout* joinedTableComboBoxLayout = new QHBoxLayout(this);
+	joinedTableComboBoxLayout->addWidget(new QLabel(tr("Main Table:")));
 	m_mainTableComboBox = new QComboBox(this);
-	joinedTableWidgetLayout->addWidget(m_mainTableComboBox);
+	joinedTableComboBoxLayout->addWidget(m_mainTableComboBox);
+	joinedTableComboBoxLayout->addStretch(1);
+
+	joinedTableWidgetLayout->addLayout(joinedTableComboBoxLayout);
 
 	m_linkedTablesListWidget = new QListWidget(this);
 	m_linkedTablesListWidget->setSelectionBehavior(QAbstractItemView::SelectionBehavior::SelectRows);
 	m_linkedTablesListWidget->setSelectionMode(QAbstractItemView::ExtendedSelection);
 	SynGlyphX::GroupBoxSingleWidget* linkedTableChoiceGroupBox = new SynGlyphX::GroupBoxSingleWidget(tr("Choose Linked Table(s)"), m_linkedTablesListWidget, this);
-	stackedLayout->addWidget(linkedTableChoiceGroupBox);
+	joinedTableWidgetLayout->addWidget(linkedTableChoiceGroupBox);
 
 	joinedTableWidget->setLayout(joinedTableWidgetLayout);
 	stackedLayout->addWidget(joinedTableWidget);

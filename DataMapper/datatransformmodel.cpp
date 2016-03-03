@@ -1175,12 +1175,21 @@ void DataTransformModel::AddDatasourceInfoFromDataEngine(const boost::uuids::uui
 
 			if (fileDatasource->GetFileType() == SynGlyphX::FileDatasource::SQLITE3) {
 
-				chosenTables = GetChosenTables(QString::fromStdWString(L"sqlite:" + fileDatasource->GetFilename()),
-					QString::fromStdWString(fileDatasource->GetUsername()),
-					QString::fromStdWString(fileDatasource->GetPassword()),
-					sourceTypeString,
-					"",
-					fileDatasource->GetTableNames());
+				ConnectToDatabase(QString::fromStdWString(L"sqlite:" + fileDatasource->GetFilename()),
+								  QString::fromStdWString(fileDatasource->GetUsername()),
+								  QString::fromStdWString(fileDatasource->GetPassword()),
+								  sourceTypeString);
+
+				if (datasource->DoAnyTablesHaveQueries()) {
+
+					SynGlyphX::Datasource::Tables::const_iterator tablesQueryIterator = datasource->GetTables().begin();
+					m_dataEngineConnection->setQueryTables(QString::fromStdWString(tablesQueryIterator->second.GetQuery()));
+					chosenTables << QString::fromStdWString(tablesQueryIterator->first);
+				}
+				else {
+
+					chosenTables = GetChosenTables("", fileDatasource->GetTableNames());
+				}
 
 			}
 			else if (fileDatasource->GetFileType() == SynGlyphX::FileDatasource::FileType::CSV) {
@@ -1195,12 +1204,23 @@ void DataTransformModel::AddDatasourceInfoFromDataEngine(const boost::uuids::uui
 			SynGlyphX::DatabaseServerDatasource::SharedPtr dbmsDatasource = std::dynamic_pointer_cast<SynGlyphX::DatabaseServerDatasource>(datasource);
 			sourceTypeString = QString::fromStdWString(SynGlyphX::DatabaseServerDatasource::s_dbTypePrefixes.left.at(dbmsDatasource->GetDBType()));
 
-			chosenTables = GetChosenTables(QString::fromStdWString(dbmsDatasource->GetFullJDBCConnectionString()),
-				QString::fromStdWString(dbmsDatasource->GetUsername()),
-				QString::fromStdWString(dbmsDatasource->GetPassword()),
-				sourceTypeString,
-				QString::fromStdWString(dbmsDatasource->GetSchema()),
-				dbmsDatasource->GetTableNames());
+			ConnectToDatabase(QString::fromStdWString(dbmsDatasource->GetFullJDBCConnectionString()),
+							  QString::fromStdWString(dbmsDatasource->GetUsername()),
+							  QString::fromStdWString(dbmsDatasource->GetPassword()),
+							  sourceTypeString);
+
+			if (datasource->DoAnyTablesHaveQueries()) {
+
+				SynGlyphX::Datasource::Tables::const_iterator tablesQueryIterator = datasource->GetTables().begin();
+				m_dataEngineConnection->setQueryTables(QString::fromStdWString(tablesQueryIterator->second.GetQuery()));
+				chosenTables << QString::fromStdWString(tablesQueryIterator->first);
+			}
+			else {
+
+				chosenTables = GetChosenTables(
+					QString::fromStdWString(dbmsDatasource->GetSchema()),
+					dbmsDatasource->GetTableNames());
+			}
 
 			//QString query = "SELECT City.Population, Country.Code FROM (City INNER JOIN Country ON (City.CountryCode=Country.Code))";
 			/*
@@ -1226,21 +1246,34 @@ void DataTransformModel::AddDatasourceInfoFromDataEngine(const boost::uuids::uui
 	}
 }
 
-QStringList DataTransformModel::GetChosenTables(const QString& url, 
-												const QString& username, 
-												const QString& password, 
-												const QString& db_type, 
-												const QString& schema, 
-												SynGlyphX::Datasource::TableNames tables) {
-
-	QStringList chosenTables;
+void DataTransformModel::ConnectToDatabase(const QString& url, const QString& username, const QString& password, const QString& db_type) {
 
 	QStringList databases = m_dataEngineConnection->connectToServer(url, username, password, db_type);
-	QStringList connectionTables = m_dataEngineConnection->getTables();
+}
+
+QStringList DataTransformModel::GetChosenTables(const QString& schema, const SynGlyphX::Datasource::TableNames& tables) {
+
+	QStringList chosenTables;
+	QStringList connectionTables;
+	if (schema.isEmpty()) {
+
+		connectionTables = m_dataEngineConnection->getTables();
+	}
+	else {
+
+		connectionTables = m_dataEngineConnection->getSchemaTableNames(schema);
+	}
 
 	if (connectionTables.isEmpty()) {
 
-		throw std::runtime_error((tr("No tables listed can be found in ") + url).toStdString().c_str());
+		if (schema.isEmpty()) {
+
+			throw std::runtime_error(tr("No tables listed can be found in database").toStdString().c_str());
+		}
+		else {
+
+			throw std::runtime_error((tr("No tables listed can be found in ") + schema).toStdString().c_str());
+		}
 	}
 
 	for (const auto& table : tables) {

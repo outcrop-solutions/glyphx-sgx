@@ -58,6 +58,7 @@ private:
 
 	DataEngine::DataEngineConnection::SharedPtr m_dataEngineConnection;
 	QStringList m_schemas;
+	//QMap<QString, 
 
 	//Database Info Page Widgets
 	SynGlyphX::DatabaseServerInfoWidget* m_databaseServerInfoWidget;

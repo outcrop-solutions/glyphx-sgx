@@ -39,22 +39,9 @@ namespace SynGlyphX {
 
 		if (datasource.CanDatasourceHaveMultipleTables()) {
 
-			Datasource::Tables::const_iterator tablesQueryIterator = datasource.GetTables().begin();
+			if (datasource.DoAnyTablesHaveQueries()) {
 
-			if (tablesQueryIterator->second.GetQuery().empty()) {
-
-				QListWidget* tableListWidget = new QListWidget(this);
-				tableListWidget->setSelectionMode(QAbstractItemView::NoSelection);
-				for (const std::wstring& table : datasource.GetTableNames()) {
-
-					tableListWidget->addItem(QString::fromStdWString(table));
-				}
-				SynGlyphX::GroupBoxSingleWidget* tableGroupBox = new SynGlyphX::GroupBoxSingleWidget(tr("Tables"), tableListWidget, this);
-
-				mainLayout->addWidget(tableGroupBox);
-			}
-			else {
-
+				Datasource::Tables::const_iterator tablesQueryIterator = datasource.GetTables().begin();
 				QFormLayout* tableQueryLayout = new QFormLayout(this);
 				tableQueryLayout->setContentsMargins(0, 0, 0, 0);
 
@@ -67,6 +54,18 @@ namespace SynGlyphX {
 				tableQueryLayout->addRow(tr("Query:"), queryLineEdit);
 
 				mainLayout->addLayout(tableQueryLayout);
+			}
+			else {
+
+				QListWidget* tableListWidget = new QListWidget(this);
+				tableListWidget->setSelectionMode(QAbstractItemView::NoSelection);
+				for (const std::wstring& table : datasource.GetTableNames()) {
+
+					tableListWidget->addItem(QString::fromStdWString(table));
+				}
+				SynGlyphX::GroupBoxSingleWidget* tableGroupBox = new SynGlyphX::GroupBoxSingleWidget(tr("Tables"), tableListWidget, this);
+
+				mainLayout->addWidget(tableGroupBox);
 			}
 		}
 	}

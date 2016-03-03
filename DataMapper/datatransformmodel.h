@@ -155,7 +155,8 @@ private:
 	void RemoveFieldGroup(const SynGlyphX::DataTransformMapping::FieldGroupName& groupName, bool emitGlyphDataChanged);
 	void RemoveAllAdditionalData(const boost::uuids::uuid& datasourceId);
 	void AddDatasourceInfoFromDataEngine(const boost::uuids::uuid& datasourceId, const SynGlyphX::Datasource::SharedPtr datasource);
-	QStringList GetChosenTables(const QString& url, const QString& username, const QString& password, const QString& db_type, const QString& schema, SynGlyphX::Datasource::TableNames tables);
+	void ConnectToDatabase(const QString& url, const QString& username, const QString& password, const QString& db_type);
+	QStringList GetChosenTables(const QString& schema, const SynGlyphX::Datasource::TableNames& tables);
 	void GenerateStats(const SynGlyphX::InputTable inputTable, int i, const QString& sourceTypeString);
 
 	SynGlyphX::DataTransformMapping::SharedPtr m_dataMapping;
