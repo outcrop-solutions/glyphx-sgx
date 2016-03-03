@@ -47,9 +47,12 @@ namespace SynGlyphX {
 		static QString ConvertQVariantToRawString(const QVariant& value);
 
 	private:
+		float total = 0.0;
+		bool noTotal = true;
 		QStringList m_rawData;
 		QStringList m_formattedData;
 		QList<qulonglong> m_counts;
+		QStringList m_percentage;
 	};
 
 } //namespace SynGlyphX

@@ -80,6 +80,7 @@ void SourceDataSelectionModel::SetSourceDataSelectionForTable(const QString& tab
 
 		m_sceneSelectionModel->SetFocus(itemSelection.indexes(), SynGlyphX::ItemFocusSelectionModel::FocusFlag::Focus);
 	}
+	
 }
 
 void SourceDataSelectionModel::ClearSourceDataSelection() {

@@ -146,6 +146,7 @@ void MultiTableElasticListsWidget::UpdateElasticLists(const SourceDataSelectionM
 
 	for (auto table : m_sourceDataCache->GetFormattedNames()) {
 
+		int c = m_sourceDataCache->GetNumberOfRowsInTable(table.first);
 		SingleTableElasticListsWidget* SingleTableElasticListsWidget = m_elasticListWidgetsForEachTable[table.first.toStdString()];
 		SourceDataSelectionModel::IndexSetMap::const_iterator dataIndexesForTable = dataIndexes.find(table.first);
 		if (dataIndexesForTable == dataIndexes.end()) {

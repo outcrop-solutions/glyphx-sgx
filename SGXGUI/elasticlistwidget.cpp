@@ -32,8 +32,9 @@ namespace SynGlyphX {
 		m_dataAndCountView->setSelectionMode(QAbstractItemView::MultiSelection);
 		m_dataAndCountView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 		m_dataAndCountView->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);
-		m_dataAndCountView->horizontalHeader()->setSectionResizeMode(1, QHeaderView::ResizeToContents);
-		m_dataAndCountView->horizontalHeader()->hide();
+		m_dataAndCountView->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
+		m_dataAndCountView->horizontalHeader()->setSectionResizeMode(2, QHeaderView::ResizeToContents);
+		//m_dataAndCountView->horizontalHeader()->hide();
 		m_dataAndCountView->verticalHeader()->setSectionResizeMode(QHeaderView::Fixed);
 		m_dataAndCountView->verticalHeader()->setDefaultSectionSize(fontMetrics().height() + 4);
 		m_dataAndCountView->verticalHeader()->hide();
@@ -86,7 +87,7 @@ namespace SynGlyphX {
 		if (isAllDataInSelection) {
 
 			QItemSelection selection;
-			selection.select(m_dataAndCountView->model()->index(0, 0), m_dataAndCountView->model()->index(data.size() - 1, 1));
+			selection.select(m_dataAndCountView->model()->index(0, 0), m_dataAndCountView->model()->index(data.size()-1, 2));
 			m_dataAndCountView->selectionModel()->select(selection, QItemSelectionModel::Select);
 		}
 		else {
@@ -100,7 +101,7 @@ namespace SynGlyphX {
 	void ElasticListWidget::ResizeTable() {
 
 		int numberOfVisibleRows = std::max(std::min(MaximumNumberOfRowsShown, m_model->rowCount()), 1);
-		m_dataAndCountView->setFixedHeight(numberOfVisibleRows * m_dataAndCountView->verticalHeader()->defaultSectionSize());
+		m_dataAndCountView->setFixedHeight((numberOfVisibleRows+1.5) * m_dataAndCountView->verticalHeader()->defaultSectionSize());
 		m_dataAndCountView->resizeColumnToContents(1);
 	}
 
