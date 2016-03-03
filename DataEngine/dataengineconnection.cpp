@@ -66,27 +66,27 @@ namespace DataEngine
 		
 		if (flag == JNI_ERR) {
 			
-			throw std::exception("JVM Error: Unknown Error");
+			throw std::runtime_error("JVM Error: Unknown Error");
 		}
 		else if (flag == JNI_EDETACHED) {
 
-			throw std::exception("JVM Error: Thread detached from VM");
+			throw std::runtime_error("JVM Error: Thread detached from VM");
 		}
 		else if (flag == JNI_EVERSION) {
 
-			throw std::exception("JVM Error: Version Error");
+			throw std::runtime_error("JVM Error: Version Error");
 		}
 		else if (flag == JNI_ENOMEM) {
 
-			throw std::exception("JVM Error: Not Enough Memory");
+			throw std::runtime_error("JVM Error: Not Enough Memory");
 		}
 		else if (flag == JNI_EEXIST) {
 
-			throw std::exception("JVM Error: JVM already created");
+			throw std::runtime_error("JVM Error: JVM already created");
 		}
 		else if (flag == JNI_EINVAL) {
 
-			throw std::exception("JVM Error: Invalid Arguments");
+			throw std::runtime_error("JVM Error: Invalid Arguments");
 		}
 
 		jcls = jniEnv->FindClass("DataEngine");
@@ -109,6 +109,12 @@ namespace DataEngine
 	void DataEngineConnection::loadCSV(std::string path){
 
 		if (classFound){
+
+			if (IsConnectionOpen()) {
+
+				closeConnection();
+			}
+
 			jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
 				"loadFromCSV", "(Ljava/lang/String;)V");
 			if (methodId != NULL) {
@@ -121,6 +127,8 @@ namespace DataEngine
 					jniEnv->ExceptionClear();
 				}
 			}
+
+			m_openConnection = QString::fromStdString(path);
 		}
 	}
 
@@ -160,6 +168,11 @@ namespace DataEngine
 	//JDBC ACCESSOR FUNCTIONS
 	QStringList DataEngineConnection::connectToServer(QString db_url, QString user, QString pass, QString db_type){
 
+		if (IsConnectionOpen()) {
+
+			closeConnection();
+		}
+
 		jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
 			"connectToServer", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)[Ljava/lang/String;");
 		jobjectArray itr;
@@ -176,6 +189,8 @@ namespace DataEngine
 			}
 
 			int length = jniEnv->GetArrayLength(itr);
+
+			m_openConnection = db_url;
 
 			for (int i = 0; i < length; i++){
 				jstring element = (jstring)jniEnv->GetObjectArrayElement(itr, i);
@@ -357,6 +372,10 @@ namespace DataEngine
 
 			for (int i = 0; i < length; i++){
 				jstring element = (jstring)jniEnv->GetObjectArrayElement(itr, i);
+				if ((length == 1) && (element == nullptr)) {
+
+					break;
+				}
 				const char *str = jniEnv->GetStringUTFChars(element, 0);
 				QString fkey_str(str);
 				temp << fkey_str;
@@ -419,6 +438,29 @@ namespace DataEngine
 				jniEnv->ExceptionClear();
 			}
 		}
+
+		m_openConnection.clear();
+	}
+
+	bool DataEngineConnection::IsConnectionOpen() const {
+
+		return (!m_openConnection.isEmpty());
+	}
+
+	QString DataEngineConnection::CreateInnerJoinQueryFromForiegnKeys(const QString& mainTable, const ForiegnKeyVector& foriegnKeyTables) {
+
+		QString query = "SELECT * FROM (";
+		query += mainTable;
+
+		for (const auto& foreignKey : foriegnKeyTables) {
+
+			query += " INNER JOIN " + foreignKey.origin + " ON ";
+			query += "(" + mainTable + "." + foreignKey.key + "=" + foreignKey.origin + "." + foreignKey.value + ")";
+		}
+		
+		query += ")";
+
+		return query;
 	}
 
 	//JDBC END

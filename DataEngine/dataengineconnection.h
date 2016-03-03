@@ -7,35 +7,24 @@
 #include <QtCore/QString>
 #include <QtCore/QStringList>
 #include <map>
+#include <memory>
 #include "DataEngine_Exports.h"
 
 namespace DataEngine
 {
 	class DATAENGINE DataEngineConnection {
 
-	struct ForeignKey {
-		QString key;
-		QString origin;
-		QString value;
-		ForeignKey(QString k, QString o, QString v) : key(k), origin(o), value(v) {}
-	};
-
-	private:
-		JavaVM *javaVM;
-		JNIEnv *jniEnv;
-		jclass jcls;
-		bool classFound = false;
-		QStringList tables;
-		std::map<boost::uuids::uuid, std::vector<std::wstring>> tableNumericFields;
-		std::map<boost::uuids::uuid, std::wstring> tableNames;
-		std::map<QString, QStringList> columnNames;
-		std::map<QString, std::vector<ForeignKey>> foreignKeysByTable;
-		std::map<QString, std::vector<QStringList>> sampleDataByTable;
-		QStringList getForeignKeyString(QString tablename);
-		QStringList getRowOfSampleData(int index, int row);
-		void setTables();
-
 	public:
+		struct ForeignKey {
+			QString key;
+			QString origin;
+			QString value;
+			ForeignKey(QString k, QString o, QString v) : key(k), origin(o), value(v) {}
+		};
+
+		typedef std::vector<DataEngineConnection::ForeignKey> ForiegnKeyVector;
+		typedef std::shared_ptr<DataEngineConnection> SharedPtr;
+
 		DataEngineConnection();
 		~DataEngineConnection();
 
@@ -49,8 +38,8 @@ namespace DataEngine
 		//const std::wstring& getTableName(boost::uuids::uuid id) const;
 		//const std::vector<std::wstring>& getTableNumericFields(boost::uuids::uuid id) const;
 		//const std::map<boost::uuids::uuid, std::vector<std::wstring>>& getNumericFieldsTable() const;
-		std::vector<std::string> getTableNames();
-		std::vector<std::string> getColumnNames();
+		//std::vector<std::string> getTableNames();
+		//std::vector<std::string> getColumnNames();
 		//JDBC ACCESSOR FUNCTIONS
 		QStringList connectToServer(QString db_url, QString user, QString pass, QString db_type);
 		QStringList getColumnNames(QString tablename);
@@ -67,7 +56,25 @@ namespace DataEngine
 		JNIEnv* getEnv() const;
 		jclass getJcls() const;
 		//void testFunction();
+		bool IsConnectionOpen() const;
 
+		static QString CreateInnerJoinQueryFromForiegnKeys(const QString& mainTable, const ForiegnKeyVector& foriegnKeyTables);
+
+	private:
+		QString m_openConnection;
+		JavaVM *javaVM;
+		JNIEnv *jniEnv;
+		jclass jcls;
+		bool classFound = false;
+		QStringList tables;
+		std::map<boost::uuids::uuid, std::vector<std::wstring>> tableNumericFields;
+		std::map<boost::uuids::uuid, std::wstring> tableNames;
+		std::map<QString, QStringList> columnNames;
+		std::map<QString, std::vector<ForeignKey>> foreignKeysByTable;
+		std::map<QString, std::vector<QStringList>> sampleDataByTable;
+		QStringList getForeignKeyString(QString tablename);
+		QStringList getRowOfSampleData(int index, int row);
+		void setTables();
 	};
 }
 #endif // DATAENGINECONNECTION_H

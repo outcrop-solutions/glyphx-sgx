@@ -62,7 +62,7 @@ namespace DataEngine
 
 				if (!dir.mkpath(bod)) {
 
-					throw std::exception("Instance directory was not created");
+					throw std::runtime_error("Instance directory was not created");
 				}
 			}
 
@@ -235,7 +235,7 @@ namespace DataEngine
 
 				if (!QFile::remove(baseImageFilename)) {
 
-					throw std::exception("Failed to remove old base image");
+					throw std::runtime_error("Failed to remove old base image");
 				}
 			}
 			try {
@@ -250,9 +250,8 @@ namespace DataEngine
 			catch (const DownloadException& e) {
 
 				downloadComplete = false;
-				m_error = QObject::tr("Base image failed to download so the world map was used instead.\n\nError: ") + e.what();
 				GeographicBoundingBox m_overrideRootXYBoundingBox = GeographicBoundingBox(GeographicPoint(0.0, 0.0), 90.0, 180.0);
-				return false;
+				throw;
 			}
 		}
 		else{
@@ -328,9 +327,5 @@ namespace DataEngine
 			}
 		}
 		copyBaseImages();
-	}
-
-	QString GlyphEngine::getError(){
-		return m_error;
 	}
 }
