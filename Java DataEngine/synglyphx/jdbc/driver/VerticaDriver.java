@@ -22,8 +22,8 @@ public class VerticaDriver implements Driver {
 		return sql;
 	}
 
-	public String basicField(String col_name){
-		return col_name;
+	public String basicField(String tbl_name, String col_name){
+		return tbl_name+"."+col_name;
 	}
 
 	public String mergedField(String tbl_name, String col_name){

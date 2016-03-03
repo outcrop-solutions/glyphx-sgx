@@ -39,12 +39,14 @@ public class Database {
 	        	ResultSet priv = md.getTablePrivileges(null,sch.getString(1),null);
 	        	while(priv.next()){
 	        		String schm = priv.getString(2);
-	        		if(!schemas.contains(schm)){
-	        			schemas.add(schm);
-	        			tables_by_schema.put(schm, new ArrayList<String>());
-	        		}
-	        		temp.add(schm+"."+priv.getString(3));
-	        		tables_by_schema.get(schm).add(priv.getString(3));
+	        		if(!schm.contains("VERT_DATATYPE")){
+		        		if(!schemas.contains(schm)){
+		        			schemas.add(schm);
+		        			tables_by_schema.put(schm, new ArrayList<String>());
+		        		}
+		        		temp.add(schm+"."+priv.getString(3));
+		        		tables_by_schema.get(schm).add(priv.getString(3));
+		        	}
 	        	}
 	        	priv.close();
 	        }

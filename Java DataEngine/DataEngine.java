@@ -133,21 +133,21 @@ public class DataEngine {
 			String[] stats = d.getStatsForField(0,fields[i]);
 			System.out.println(stats[0]+", "+stats[1]+", "+stats[2]+", "+stats[3]+", "+stats[4]+", "+stats[5]);
 		}*/
-		String[] sch_list = d.connectToServer("mysql://10.128.132.153:3306/world","synglyphx","password","mysql");
+		//String[] sch_list = d.connectToServer("mysql://10.128.132.153:3306/world","synglyphx","password","mysql");
 		//String[] sch_list = d.connectToServer("sqlite://C:/Users/Bryan/Documents/GitHub/DataEngine/Java DataEngine/sqlite_test.db","","","sqlite3");
-		/*String[] sch_list = d.connectToServer("vertica://54.67.93.24:5433/verticanow", "synglyphx_user", "Synglyphx_user@9102", "vertica");
-		*/
+		String[] sch_list = d.connectToServer("vertica://54.67.93.24:5433/verticanow", "synglyphx_user", "Synglyphx_user@9102", "vertica");
+		
 		System.out.println("Schema List:");
 		for(int i = 0; i < sch_list.length; i++){
 			System.out.println(sch_list[i]);
 		}
 
-		/*
+		
 		String[] tbl_names = d.getTableNames();
 		System.out.println("Table List:");
 		for(int i = 0; i < tbl_names.length; i++){
 			System.out.println(tbl_names[i]);
-		}*/
+		}
 		
 		//String query = "SELECT City.Population, Country.Code "; 
 		//query += "FROM (City INNER JOIN Country ON (City.CountryCode=Country.Code))";
