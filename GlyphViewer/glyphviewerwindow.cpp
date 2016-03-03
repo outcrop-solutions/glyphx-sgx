@@ -27,12 +27,15 @@
 #include <string>
 #include "filesystem.h"
 #include "defaultbaseimageproperties.h"
+#include "downloadexception.h"
 
 GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 	: SynGlyphX::MainWindow(2, parent),
 	m_antzWidget(nullptr),
-	m_showErrorFromTransform(true)
+	m_showErrorFromTransform(true),
+	m_dataEngineConnection(nullptr)
 {
+	m_dataEngineConnection = std::make_shared<DataEngine::DataEngineConnection>();
 	m_mappingModel = new SynGlyphX::DataMappingModel(this);
 	m_sourceDataCache = std::make_shared<SynGlyphX::SourceDataCache>();
 	m_glyphForestModel = new SynGlyphXANTz::GlyphForestModel(this);
@@ -84,8 +87,9 @@ GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 
 	try {
 
-		if (!dec.hasJVM()){
-			dec.createJVM();
+		if (!m_dataEngineConnection->hasJVM()){
+			
+			m_dataEngineConnection->createJVM();
 		}
 	}
 	catch (const std::exception& e) {
@@ -118,7 +122,8 @@ GlyphViewerWindow::~GlyphViewerWindow()
 }
 
 void GlyphViewerWindow::closeJVM(){
-	dec.destroyJVM();
+	
+	m_dataEngineConnection->destroyJVM();
 }
 
 void GlyphViewerWindow::CreateANTzWidget(const QGLFormat& format) {
@@ -133,7 +138,6 @@ void GlyphViewerWindow::CreateANTzWidget(const QGLFormat& format) {
 
 	m_antzWidget = new SynGlyphXANTz::ANTzForestWidget(format, m_glyphForestModel, m_glyphForestSelectionModel, this);
 	m_antzWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-	m_antzWidget->setContextMenuPolicy(Qt::ContextMenuPolicy::ActionsContextMenu);
 	m_antzWidget->addActions(m_treeView->GetSharedActions());
 
 	antzWidgetContainer->addWidget(m_antzWidget);
@@ -353,12 +357,12 @@ void GlyphViewerWindow::LoadVisualization(const QString& filename) {
 	QString extension = fileInfo.suffix().toLower();
 	if ((extension != "sdt") && (extension != "sav")) {
 
-		throw std::exception("File is not a recognized format");
+		throw std::runtime_error("File is not a recognized format");
 	}
 
 	if (!fileInfo.exists()) {
 
-		throw std::exception("File does not exist");
+		throw std::runtime_error("File does not exist");
 	}
 
 	if (m_glyphForestModel->rowCount() > 0) {
@@ -424,19 +428,19 @@ void GlyphViewerWindow::ValidateDataMappingFile(const QString& filename) {
 	SynGlyphX::DataTransformMapping::SharedPtr mapping = std::make_shared<SynGlyphX::DataTransformMapping>();
 	mapping->ReadFromFile(filename.toStdString());
 
-	if (!mapping->GetDatasources().HasDatasources()) {
+	if (mapping->GetDatasources().empty()) {
 
-		throw std::exception("Visualization has no datasources.");
+		throw std::runtime_error("Visualization has no datasources.");
 	}
 
 	if (mapping->GetGlyphGraphs().empty()) {
 
-		throw std::exception("Visualization has no glyph templates.");
+		throw std::runtime_error("Visualization has no glyph templates.");
 	}
 
 	if (!mapping->DoesAtLeastOneGlyphGraphHaveBindingsOnPosition()) {
 
-		throw std::exception("Visualization has no glyph templates with bindings on Position X, Position Y, or Position Z.");
+		throw std::runtime_error("Visualization has no glyph templates with bindings on Position X, Position Y, or Position Z.");
 	}
 
 	bool wasDataTransformUpdated = false;
@@ -453,26 +457,32 @@ void GlyphViewerWindow::ValidateDataMappingFile(const QString& filename) {
 
 		if (!wasDataTransformUpdated) {
 
-			throw std::exception("Visualization has missing base images that need to be updated to their correct locations before the visualization can be loaded");
+			throw std::runtime_error("Visualization has missing base images that need to be updated to their correct locations before the visualization can be loaded");
 		}
 	}
 
 	if (!missingFileDatasources.empty()) {
 
 		SynGlyphX::Application::restoreOverrideCursor();
+<<<<<<< HEAD
 		wasDataTransformUpdated = SynGlyphX::ChangeDatasourceFileDialog::UpdateDatasourceFiles(missingFileDatasources, filename, mapping, this);
+=======
+		wasDataTransformUpdated = SynGlyphX::ChangeDatasourceFileDialog::UpdateDatasourceFiles(missingFileDatasources, filename, mapping, m_dataEngineConnection, this);
+>>>>>>> refs/remotes/origin/development
 		SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
 
 		if (!wasDataTransformUpdated) {
 
-			throw std::exception("Visualization has missing data sources that need to be updated to their correct locations before the visualization can be loaded");
+			throw std::runtime_error("Visualization has missing data sources that need to be updated to their correct locations before the visualization can be loaded");
 		}
 	}
 
-	if (wasDataTransformUpdated) {
+	/*if (wasDataTransformUpdated) {
 
 		mapping->WriteToFile(filename.toStdString());
-	}
+	}*/
+
+	mapping->WriteToFile(filename.toStdString());
 }
 
 void GlyphViewerWindow::LoadDataTransform(const QString& filename) {
@@ -505,8 +515,8 @@ void GlyphViewerWindow::LoadDataTransform(const QString& filename) {
 		DataEngine::GlyphEngine ge;
 		std::string dirPath = cacheDirectoryPath + "\\";
 		std::string baseImageDir = SynGlyphX::GlyphBuilderApplication::GetDefaultBaseImagesLocation().toStdString();
-		ge.initiate(dec.getEnv(), filename.toStdString(), dirPath, baseImageDir, "", "GlyphViewer");
-		ge.getDownloadedBaseImage(m_mappingModel->GetDataMapping().get()->GetBaseObjects());
+		ge.initiate(m_dataEngineConnection->getEnv(), filename.toStdString(), dirPath, baseImageDir, "", "GlyphViewer");
+		DownloadBaseImages(ge);
 		ge.generateGlyphs();
 		std::vector<std::string> images = ge.getBaseImages();
 		
@@ -531,10 +541,6 @@ void GlyphViewerWindow::LoadDataTransform(const QString& filename) {
 		m_antzWidget->SetBackgroundColor(m_mappingModel->GetDataMapping()->GetSceneProperties().GetBackgroundColor());
 
 		SynGlyphX::Application::restoreOverrideCursor();
-		const QString& transformerError = ge.getError();
-		if ((!transformerError.isNull())) { //&& m_showErrorFromTransform
-			QMessageBox::information(this, "Transformation Error", transformerError, QMessageBox::Ok);
-		}
 	}
 	catch (const std::exception& e) {
 
@@ -780,9 +786,13 @@ void GlyphViewerWindow::CreatePortableVisualization(SynGlyphX::PortableVisualiza
 
 	QSet<QString> projectFileDirs;
 	projectFileDirs.insert(QDir::toNativeSeparators(m_currentFilename));
-	for (const auto& fileDatasource : m_mappingModel->GetDataMapping()->GetDatasources().GetFileDatasources()) {
+	for (const auto& datasource : m_mappingModel->GetDataMapping()->GetDatasources()) {
 
-		projectFileDirs.insert(QDir::toNativeSeparators(QString::fromStdWString(fileDatasource.second.GetFilename())));
+		if (datasource.second->GetSourceType() == SynGlyphX::Datasource::SourceType::File) {
+
+			SynGlyphX::FileDatasource::ConstSharedPtr fileDatasource = std::dynamic_pointer_cast<const SynGlyphX::FileDatasource>(datasource.second);
+			projectFileDirs.insert(QDir::toNativeSeparators(QString::fromStdWString(fileDatasource->GetFilename())));
+		}
 	}
 
 	QString csvDirectory = QDir::toNativeSeparators(GetExistingEmptyDirectory(projectFileDirs, "PortableVisualizationExportDir", tr("Select Directory For Portable Visualization"), "", tr("Selected directory contains one or more files relevant to the project.")));
@@ -802,18 +812,11 @@ void GlyphViewerWindow::CreatePortableVisualization(SynGlyphX::PortableVisualiza
 		std::string baseFilename = (QString::fromStdWString(SynGlyphX::DefaultBaseImageProperties::GetBasefilename()).toStdString());
 
 		//App says "DataMapper" because this is equivalent to create portable visualization in DataMapper
-		ge.initiate(dec.getEnv(), m_currentFilename.toStdString(), csvDirectory.toStdString() + "\\", baseImageDir, baseFilename, "DataMapper");
-		ge.getDownloadedBaseImage(m_mappingModel->GetDataMapping().get()->GetBaseObjects());
+		ge.initiate(m_dataEngineConnection->getEnv(), m_currentFilename.toStdString(), csvDirectory.toStdString() + "\\", baseImageDir, baseFilename, "DataMapper");
+		DownloadBaseImages(ge);
 		ge.generateGlyphs();
 
 		SynGlyphX::Application::restoreOverrideCursor();
-
-		const QString& GlyphEngineError = ge.getError();
-
-		if (!GlyphEngineError.isNull()) {
-
-			QMessageBox::information(this, "Transformation Error", GlyphEngineError, QMessageBox::Ok);
-		}
 	}
 	catch (const std::exception& e) {
 
@@ -832,4 +835,22 @@ void GlyphViewerWindow::CreatePortableVisualization(SynGlyphX::PortableVisualiza
 	}
 
 	statusBar()->showMessage("Portable visualization successfully created", 6000);
+}
+
+void GlyphViewerWindow::DownloadBaseImages(DataEngine::GlyphEngine& ge) {
+
+	try {
+
+		ge.getDownloadedBaseImage(m_mappingModel->GetDataMapping().get()->GetBaseObjects());
+	}
+	catch (const DownloadException& e) {
+
+		SynGlyphX::Application::restoreOverrideCursor();
+		QMessageBox::information(this, "Download Image Error", tr("Base image failed to download so the world map was used instead.\n\nError: ") + tr(e.what()), QMessageBox::Ok);
+		SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
+	}
+	catch (const std::exception& e) {
+
+		throw;
+	}
 }

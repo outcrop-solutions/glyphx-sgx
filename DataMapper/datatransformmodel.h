@@ -111,7 +111,8 @@ public:
 	void SetBaseObject(unsigned int position, const SynGlyphX::BaseImage& baseImage);
 	void AddBaseObject(const SynGlyphX::BaseImage& baseImage);
 
-	boost::uuids::uuid AddFileDatasource(SynGlyphX::FileDatasource::SourceType type, const std::wstring& name);
+	boost::uuids::uuid AddFileDatasource(const SynGlyphX::FileDatasource& datasource);
+	boost::uuids::uuid AddDatabaseServer(const SynGlyphX::DatabaseServerDatasource& datasource);
 
 	//void SetInputField(const boost::uuids::uuid& treeID, SynGlyphX::DataMappingGlyphGraph::const_iterator& node, SynGlyphX::DataMappingGlyph::MappableField field, const SynGlyphX::InputField& inputfield);
 	void SetInputField(const QModelIndex& index, SynGlyphX::DataMappingGlyph::MappableField field, const SynGlyphX::InputField& inputfield);
@@ -121,7 +122,7 @@ public:
 
 	const SynGlyphX::DataMappingGlyphGraph::InputFieldMap& GetInputFieldsForTree(const QModelIndex& index) const;
 
-	void EnableTables(const boost::uuids::uuid& id, const SynGlyphX::Datasource::TableNames& tables, bool enable = true);
+	//void EnableTables(const boost::uuids::uuid& id, const SynGlyphX::Datasource::TableNames& tables, bool enable = true);
 
 	void ResetDataMappingID();
 
@@ -137,11 +138,9 @@ public:
 	const NumericFieldsByTable& GetNumericFieldsByTable() const;
 
 	const DataEngine::DataEngineConnection* GetDataEngineConnection() const;
-	void SetDataEngineConn(DataEngine::DataEngineConnection *dec);
+	void SetDataEngineConnection(DataEngine::DataEngineConnection::SharedPtr dataEngineConnection);
 
 	const TableStatsMap& GetTableStatsMap() const;
-
-	void GenerateStats(const SynGlyphX::InputTable inputTable, int i, SynGlyphX::FileDatasource::SourceType type);
 
 private:
 	void Clear();
@@ -155,10 +154,13 @@ private:
 	const SynGlyphX::DataTransformMapping::FieldGroupName& GetFieldGroupName(int row) const;
 	void RemoveFieldGroup(const SynGlyphX::DataTransformMapping::FieldGroupName& groupName, bool emitGlyphDataChanged);
 	void RemoveAllAdditionalData(const boost::uuids::uuid& datasourceId);
-	void AddDatasourceInfoFromDataEngine(const boost::uuids::uuid& datasourceId, const SynGlyphX::FileDatasource& fileDatasource);
+	void AddDatasourceInfoFromDataEngine(const boost::uuids::uuid& datasourceId, const SynGlyphX::Datasource::SharedPtr datasource);
+	void ConnectToDatabase(const QString& url, const QString& username, const QString& password, const QString& db_type);
+	QStringList GetChosenTables(const QString& schema, const SynGlyphX::Datasource::TableNames& tables);
+	void GenerateStats(const SynGlyphX::InputTable inputTable, int i, const QString& sourceTypeString);
 
 	SynGlyphX::DataTransformMapping::SharedPtr m_dataMapping;
-	DataEngine::DataEngineConnection *dec;
+	DataEngine::DataEngineConnection::SharedPtr m_dataEngineConnection;
 
 	//Additional data from datasources
 	NumericFieldsByTable m_numericFields;

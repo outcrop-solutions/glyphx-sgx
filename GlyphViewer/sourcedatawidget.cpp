@@ -94,7 +94,7 @@ void SourceDataWidget::UpdateTables() {
 			queryModel->setQuery(*query.data());
 			if (queryModel->lastError().isValid()) {
 
-				throw std::exception("Failed to set SQL query for source data widget.");
+				throw std::runtime_error("Failed to set SQL query for source data widget.");
 			}
 
 			tableView->verticalHeader()->setVisible(false);
@@ -167,6 +167,12 @@ void SourceDataWidget::WriteToFile(QSqlQueryModel* queryModel, const QString& fi
 		headers.push_back(queryModel->headerData(i, Qt::Horizontal).toString().toStdWString());
 	}
 	csvFile.WriteLine(headers);
+
+	//QSqlQueryModel may not have loaded all rows, so force it here
+	while (queryModel->canFetchMore()) {
+	
+		queryModel->fetchMore();
+	}
 
 	for (int j = 0; j < queryModel->rowCount(); ++j) {
 

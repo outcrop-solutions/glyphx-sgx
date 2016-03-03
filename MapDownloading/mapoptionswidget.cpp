@@ -5,6 +5,8 @@
 #include <QtWidgets/QGroupBox>
 #include <QtCore/QSettings>
 
+const char* ArcGisEnv = "SGXARCGIS";
+
 MapOptionsWidget::MapOptionsWidget(QWidget *parent)
     : QWidget(parent)
 {
@@ -15,7 +17,14 @@ MapOptionsWidget::MapOptionsWidget(QWidget *parent)
 	QLabel* mapServiceLabel = new QLabel(tr("Service:"), this);
 
 	m_mapServiceComboBox = new QComboBox(this);
-	m_mapServiceComboBox->addItem("MapQuest Open (OpenStreetMap)");
+	if (qEnvironmentVariableIsSet(ArcGisEnv) && (qgetenv(ArcGisEnv).toInt() != 0)) {
+
+		m_mapServiceComboBox->addItem("ArcGIS - OpenStreetMap layer");
+	}
+	else {
+
+		m_mapServiceComboBox->addItem("MapQuest Open (OpenStreetMap)");
+	}
 	m_mapServiceComboBox->addItem("Google Maps");
 
 	mapOptionsLayout->addWidget(mapServiceLabel);

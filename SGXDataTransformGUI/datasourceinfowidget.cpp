@@ -5,7 +5,9 @@
 #include <QtWidgets/QLineEdit>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QFormLayout>
 #include <QtCore/QDir>
+#include "databaseserverinfowidget.h"
 
 namespace SynGlyphX {
 
@@ -26,21 +28,45 @@ namespace SynGlyphX {
 
 		mainLayout->addLayout(nameLayout);
 
-		if (datasource.CanDatasourceHaveMultipleTables()) {
-
-			QListWidget* tableListWidget = new QListWidget(this);
-			for (const std::wstring& table : datasource.GetTableNames()) {
-
-				tableListWidget->addItem(QString::fromStdWString(table));
-			}
-			SynGlyphX::GroupBoxSingleWidget* tableGroupBox = new SynGlyphX::GroupBoxSingleWidget(tr("Tables"), tableListWidget, this);
-
-			mainLayout->addWidget(tableGroupBox);
-		}
-
-		if (datasource.IsFile()) {
+		if (datasource.GetSourceType() == Datasource::SourceType::File) {
 
 			CreateFileDatasourceWidgets(dynamic_cast<const FileDatasource&>(datasource));
+		}
+		else if (datasource.GetSourceType() == Datasource::SourceType::DatabaseServer) {
+
+			CreateDatabaseServerDatasourceWidgets(dynamic_cast<const DatabaseServerDatasource&>(datasource));
+		}
+
+		if (datasource.CanDatasourceHaveMultipleTables()) {
+
+			if (datasource.DoAnyTablesHaveQueries()) {
+
+				Datasource::Tables::const_iterator tablesQueryIterator = datasource.GetTables().begin();
+				QFormLayout* tableQueryLayout = new QFormLayout(this);
+				tableQueryLayout->setContentsMargins(0, 0, 0, 0);
+
+				QLineEdit* tableLineEdit = new QLineEdit(QString::fromStdWString(tablesQueryIterator->first), this);
+				tableLineEdit->setReadOnly(true);
+				tableQueryLayout->addRow(tr("Table:"), tableLineEdit);
+
+				QLineEdit* queryLineEdit = new QLineEdit(QString::fromStdWString(tablesQueryIterator->second.GetQuery()), this);
+				queryLineEdit->setReadOnly(true);
+				tableQueryLayout->addRow(tr("Query:"), queryLineEdit);
+
+				mainLayout->addLayout(tableQueryLayout);
+			}
+			else {
+
+				QListWidget* tableListWidget = new QListWidget(this);
+				tableListWidget->setSelectionMode(QAbstractItemView::NoSelection);
+				for (const std::wstring& table : datasource.GetTableNames()) {
+
+					tableListWidget->addItem(QString::fromStdWString(table));
+				}
+				SynGlyphX::GroupBoxSingleWidget* tableGroupBox = new SynGlyphX::GroupBoxSingleWidget(tr("Tables"), tableListWidget, this);
+
+				mainLayout->addWidget(tableGroupBox);
+			}
 		}
 	}
 
@@ -61,12 +87,24 @@ namespace SynGlyphX {
 		filenameLineEdit->setReadOnly(true);
 		fileInfoGroupBoxLayout->addWidget(filenameLineEdit);
 
-		QLabel* typeLabel = new QLabel(tr("Type") + ": " + QString::fromStdWString(FileDatasource::s_sourceTypeStrings.left.at(datasource.GetType())), fileInfoGroupBox);
+		QLabel* typeLabel = new QLabel(tr("Type") + ": " + QString::fromStdWString(FileDatasource::s_fileTypeStrings.left.at(datasource.GetFileType())), fileInfoGroupBox);
 		fileInfoGroupBoxLayout->addWidget(typeLabel);
 
 		fileInfoGroupBox->setLayout(fileInfoGroupBoxLayout);
 
-		mainLayout->insertWidget(1, fileInfoGroupBox);
+		mainLayout->addWidget(fileInfoGroupBox);
+	}
+
+	void DatasourceInfoWidget::CreateDatabaseServerDatasourceWidgets(const DatabaseServerDatasource& datasource) {
+
+		QVBoxLayout* mainLayout = qobject_cast<QVBoxLayout*>(layout());
+
+		SynGlyphX::DatabaseServerInfoWidget* databaseServerInfoWidget = new SynGlyphX::DatabaseServerInfoWidget(false, this);
+		databaseServerInfoWidget->SetConnection(QString::fromStdWString(datasource.GetHost()));
+		databaseServerInfoWidget->SetUsername(QString::fromStdWString(datasource.GetUsername()));
+		databaseServerInfoWidget->SetPassword(QString::fromStdWString(datasource.GetPassword()));
+
+		mainLayout->addWidget(databaseServerInfoWidget);
 	}
 
 } //namespace SynGlyphX

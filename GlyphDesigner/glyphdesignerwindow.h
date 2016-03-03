@@ -44,6 +44,7 @@ private slots:
     bool SaveTemplate();
     bool SaveAsTemplate();
     void OpenTemplate();
+	void OpenTemplateFromLibrary();
     void EditingModeChanged(QAction* action);
 	void OnModelChanged();
 	void ChangeGlobalOptions();

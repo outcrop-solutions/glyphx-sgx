@@ -1,9 +1,11 @@
 #include "glyphbuilderapplication.h"
 #include <QtCore/QDir>
+#include <QtCore/QtGlobal>
 
 namespace SynGlyphX {
 
 	QString GlyphBuilderApplication::s_defaultBaseImagesLocation;
+	const char* GlyphBuilderApplication::s_internalSGXFeaturesEnvName = "SGXGlyphBuilderInternal";
 
 	GlyphBuilderApplication::GlyphBuilderApplication(int& argc, char** argv)
 		: Application(argc, argv)
@@ -31,6 +33,16 @@ namespace SynGlyphX {
 		}
 
 		return s_defaultBaseImagesLocation;
+	}
+
+	bool GlyphBuilderApplication::AreInternalSGXFeaturesEnabled() {
+
+		if (qEnvironmentVariableIsSet(s_internalSGXFeaturesEnvName)) {
+
+			return (qgetenv(s_internalSGXFeaturesEnvName).toInt() != 0);
+		}
+
+		return false;
 	}
 
 } //namespace SynGlyphX

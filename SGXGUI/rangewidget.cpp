@@ -56,7 +56,7 @@ namespace SynGlyphX {
 
 		if (!IsValid()) {
 
-			throw std::exception("Min value of range must be less than max value of range.");
+			throw std::runtime_error("Min value of range must be less than max value of range.");
 		}
 
 		Range range(m_minSpinBox->value(), m_maxSpinBox->value());

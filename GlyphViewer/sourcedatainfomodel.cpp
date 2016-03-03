@@ -81,10 +81,10 @@ void SourceDataInfoModel::Reset() {
 	blockSignals(true);
 
 	clear();
-	SynGlyphX::DatasourceMaps datasourceMaps = m_dataTransformMapping->GetDatasourcesInUse();
-	for (auto fileDatasource : datasourceMaps.GetFileDatasources()) {
+	SynGlyphX::DataTransformMapping::DatasourceMap datasourceMap = m_dataTransformMapping->GetDatasourcesInUse();
+	for (auto datasource : datasourceMap) {
 
-		AddDatasource(fileDatasource.first, fileDatasource.second);
+		AddDatasource(datasource.first, *datasource.second);
 	}
 
 	blockSignals(signalsWereBlocked);

@@ -22,6 +22,7 @@
 #include "replacefilenamedialog.h"
 #include "filedatasource.h"
 #include "datatransformmapping.h"
+#include "dataengineconnection.h"
 
 namespace SynGlyphX {
 
@@ -30,17 +31,18 @@ namespace SynGlyphX {
 		Q_OBJECT
 
 	public:
-		ChangeDatasourceFileDialog(const FileDatasource& oldDatasourceFile, const QString& acceptButtonText, QWidget *parent = 0);
+		ChangeDatasourceFileDialog(const FileDatasource& oldDatasourceFile, const QString& acceptButtonText, DataEngine::DataEngineConnection::SharedPtr dataEngineConnection, QWidget *parent = 0);
 		~ChangeDatasourceFileDialog();
 
-		static bool UpdateDatasourceFiles(const std::vector<boost::uuids::uuid>& datasources, QString sdtfilename, DataTransformMapping::SharedPtr mapping, QWidget* dialogParent = nullptr);
-		static QString IsFileInSameDirectory(std::wstring datasourcename, QString sdtpath);
+		static bool UpdateDatasourceFiles(const std::vector<boost::uuids::uuid>& datasources, const QString& sdtfilename, DataTransformMapping::SharedPtr mapping, DataEngine::DataEngineConnection::SharedPtr dataEngineConnection, QWidget* dialogParent = nullptr);
+		static QString IsFileInSameDirectory(const std::wstring& datasourcename, const QString& sdtpath);
 
 	private:
 		virtual bool IsNewFileValid() const;
 		
-		QStringList m_oldDatasourceTables;
-		FileDatasource::SourceType m_fileSourceType;
+		DataEngine::DataEngineConnection::SharedPtr m_dataEngineConnection;
+		std::unordered_set<std::wstring> m_oldDatasourceTables;
+		FileDatasource m_fileDatasource;
 	};
 
 } //namespace SynGlyphX

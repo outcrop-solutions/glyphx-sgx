@@ -79,6 +79,7 @@ private:
 	GlyphViewerOptions CollectOptions();
 	bool DoesVisualizationNeedToBeRecreated(const SynGlyphX::DataTransformMapping& mapping) const;
 	void CreateExportToPortableVisualizationSubmenu();
+	void DownloadBaseImages(DataEngine::GlyphEngine& ge);
 
 	QMenu* m_fileMenu;
 	QMenu* m_toolsMenu;
@@ -105,7 +106,7 @@ private:
 	MultiTableElasticListsWidget* m_sourceDataSelectionWidget;
 	SourceDataSelectionModel* m_sourceDataSelectionModel;
 	PseudoTimeFilterWidget* m_pseudoTimeFilterWidget;
-	DataEngine::DataEngineConnection dec;
+	DataEngine::DataEngineConnection::SharedPtr m_dataEngineConnection;
 	SynGlyphX::PortableVisualizationExport m_portableVisualizationExport;
 };
 

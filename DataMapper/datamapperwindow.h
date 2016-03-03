@@ -57,7 +57,8 @@ private slots:
     void OpenProject();
     bool SaveProject();
     bool SaveAsProject();
-    void AddDataSources();
+	void AddFileDataSource();
+	void AddDatabaseServerDatasources();
 	void CreatePortableVisualization(SynGlyphX::PortableVisualizationExport::Platform platform);
 	void AddBaseObject();
 	void AddGlyphTemplate();
@@ -79,7 +80,6 @@ private:
 	bool SaveDataTransform(const QString& filename);
 	bool AskUserToSave();
 	void EnableProjectDependentActions(bool enable);
-	bool ValidateNewDatasource(const QString& datasource);
 	void ProcessCSVFile(const QString& csvFile);
 	void ReadNewMappingDefaults();
 	void WriteNewMappingDefaults();
@@ -116,7 +116,7 @@ private:
 	SynGlyphX::SceneProperties m_newMappingSceneProperties;
 
 	QMetaObject::Connection m_modelResetConnection;
-	DataEngine::DataEngineConnection dec;
+	DataEngine::DataEngineConnection::SharedPtr m_dataEngineConnection;
 };
 
 #endif // DATAMAPPERWINDOW_H

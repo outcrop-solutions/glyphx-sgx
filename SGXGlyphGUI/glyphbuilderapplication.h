@@ -35,8 +35,11 @@ namespace SynGlyphX {
 
 		static const QString& GetDefaultBaseImagesLocation();
 
+		static bool AreInternalSGXFeaturesEnabled();
+
 	protected:
 		static QString s_defaultBaseImagesLocation;
+		static const char* s_internalSGXFeaturesEnvName;
 	};
 
 } //namespace SynGlyphX

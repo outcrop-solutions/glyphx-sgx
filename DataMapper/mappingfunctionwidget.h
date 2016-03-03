@@ -53,10 +53,10 @@ public slots:
 
 private slots:
 	void OnFunctionComboBoxChangedByUser();
-	void OnFunctionComboBoxChanged();
 	void OnEditPropertiesClicked();
 
 private:
+	void OnFunctionComboBoxChanged(bool emitInputChange);
 	static QStringList CreateNumericColorFunctionList();
 	static QStringList CreateEnumerationFunctionList();
 

@@ -46,14 +46,14 @@ std::wstring CacheManager::GetCacheDirectory(const boost::uuids::uuid& id) const
 
 		if (!boost::filesystem::is_directory(cacheDirectoryPath)) {
 
-			throw std::exception("Cache directory exists but it is not a directory");
+			throw std::runtime_error("Cache directory exists but it is not a directory");
 		}
 	}
 	else {
 
 		if (!boost::filesystem::create_directories(cacheDirectoryPath)) {
 
-			throw std::exception("Cache directory could not be created");
+			throw std::runtime_error("Cache directory could not be created");
 		}
 	}
 

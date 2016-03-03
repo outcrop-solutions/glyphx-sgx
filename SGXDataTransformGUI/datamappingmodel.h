@@ -107,7 +107,7 @@ namespace SynGlyphX {
 		void SetBaseObject(unsigned int position, const BaseImage& baseImage);
 		void AddBaseObject(const BaseImage& baseImage);
 
-		boost::uuids::uuid AddFileDatasource(FileDatasource::SourceType type, const std::wstring& name);
+		boost::uuids::uuid AddFileDatasource(const FileDatasource& datasource);
 
 		//void SetInputField(const boost::uuids::uuid& treeID, DataMappingGlyphGraph::const_iterator& node, DataMappingGlyph::MappableField field, const InputField& inputfield);
 		void SetInputField(const boost::uuids::uuid& treeID, const QModelIndex& index, DataMappingGlyph::MappableField field, const InputField& inputfield);
