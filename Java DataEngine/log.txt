@@ -1,13 +1,98 @@
-java.sql.SQLException: [Vertica][JDBC](10340) Invalid column index: 5.
-	at com.vertica.exceptions.ExceptionConverter.toSQLException(Unknown Source)
-	at com.vertica.jdbc.common.SForwardResultSet.checkIfValidColumnNumber(Unknown Source)
-	at com.vertica.jdbc.common.SForwardResultSet.getData(Unknown Source)
-	at com.vertica.jdbc.common.SForwardResultSet.getString(Unknown Source)
-	at synglyphx.jdbc.Table.columnDataStats(Table.java:50)
-	at synglyphx.jdbc.Table.createDataStats(Table.java:124)
-	at synglyphx.jdbc.BasicTable.<init>(BasicTable.java:25)
-	at synglyphx.jdbc.Database.setTableMetaData(Database.java:70)
-	at synglyphx.jdbc.Database.<init>(Database.java:26)
-	at synglyphx.jdbc.JDBCLoader.connectToServer(JDBCLoader.java:42)
-	at DataEngine.connectToServer(DataEngine.java:52)
-	at DataEngine.main(DataEngine.java:138)
+
+synglyphx_user | Synglyphx_user@9102
+online_sales.call_center_dimension
+online_sales.online_page_dimension
+online_sales.online_sales_fact
+public.BACKUP_SNAPSHOT_STATUS
+public.backup_status
+public.customer_dimension
+public.date_dimension
+public.employee_dimension
+public.four_cols
+public.inventory_fact
+public.product_dimension
+public.promotion_dimension
+public.shipping_dimension
+public.vendor_dimension
+public.warehouse_dimension
+store.store_dimension
+store.store_orders_fact
+store.store_sales_fact
+online_sales.call_center_dimension
+online_sales.online_page_dimension
+online_sales.online_sales_fact
+creating datastats
+SELECT MIN(call_center_key),MAX(call_center_key),AVG(call_center_key),COUNT(call_center_key),COUNT(DISTINCT(call_center_key)) FROM online_sales.call_center_dimension
+real | 1 | 200 | 100.5 | 200 | 200
+SELECT MIN(cc_closed_date),MAX(cc_closed_date),COUNT(cc_closed_date),COUNT(DISTINCT(cc_closed_date)) FROM online_sales.call_center_dimension
+datetime | 2003-01-05 | 2007-12-17 | N/A | 200 | 185
+SELECT MIN(cc_open_date),MAX(cc_open_date),COUNT(cc_open_date),COUNT(DISTINCT(cc_open_date)) FROM online_sales.call_center_dimension
+datetime | 2003-01-01 | 2007-12-04 | N/A | 200 | 176
+SELECT MIN(cc_name),MAX(cc_name),COUNT(cc_name),COUNT(DISTINCT(cc_name)) FROM online_sales.call_center_dimension
+text | California | Southwest | N/A | 200 | 12
+SELECT MIN(cc_class),MAX(cc_class),COUNT(cc_class),COUNT(DISTINCT(cc_class)) FROM online_sales.call_center_dimension
+text | large | small | N/A | 200 | 3
+SELECT MIN(cc_employees),MAX(cc_employees),AVG(cc_employees),COUNT(cc_employees),COUNT(DISTINCT(cc_employees)) FROM online_sales.call_center_dimension
+real | 1 | 30 | 14.505 | 200 | 30
+SELECT MIN(cc_hours),MAX(cc_hours),COUNT(cc_hours),COUNT(DISTINCT(cc_hours)) FROM online_sales.call_center_dimension
+text | 8AM-12AM             | 8AM-8AM              | N/A | 200 | 3
+SELECT MIN(cc_manager),MAX(cc_manager),COUNT(cc_manager),COUNT(DISTINCT(cc_manager)) FROM online_sales.call_center_dimension
+text | Bob Belcher | Mark Hightower | N/A | 200 | 4
+SELECT MIN(cc_address),MAX(cc_address),COUNT(cc_address),COUNT(DISTINCT(cc_address)) FROM online_sales.call_center_dimension
+text | 10 Green St | 90 Cherry St | N/A | 200 | 200
+SELECT MIN(cc_city),MAX(cc_city),COUNT(cc_city),COUNT(DISTINCT(cc_city)) FROM online_sales.call_center_dimension
+text | Abilene | Wichita Falls | N/A | 200 | 92
+SELECT MIN(cc_state),MAX(cc_state),COUNT(cc_state),COUNT(DISTINCT(cc_state)) FROM online_sales.call_center_dimension
+text | AZ | WI | N/A | 200 | 32
+SELECT MIN(cc_region),MAX(cc_region),COUNT(cc_region),COUNT(DISTINCT(cc_region)) FROM online_sales.call_center_dimension
+text | East | West | N/A | 200 | 6
+creating datastats
+SELECT MIN(online_page_key),MAX(online_page_key),AVG(online_page_key),COUNT(online_page_key),COUNT(DISTINCT(online_page_key)) FROM online_sales.online_page_dimension
+real | 1 | 1000 | 500.5 | 1000 | 1000
+SELECT MIN(start_date),MAX(start_date),COUNT(start_date),COUNT(DISTINCT(start_date)) FROM online_sales.online_page_dimension
+datetime | 2003-01-01 | 2007-12-14 | N/A | 1000 | 589
+SELECT MIN(end_date),MAX(end_date),COUNT(end_date),COUNT(DISTINCT(end_date)) FROM online_sales.online_page_dimension
+datetime | 2003-01-05 | 2007-12-28 | N/A | 1000 | 697
+SELECT MIN(page_number),MAX(page_number),AVG(page_number),COUNT(page_number),COUNT(DISTINCT(page_number)) FROM online_sales.online_page_dimension
+real | 1 | 40 | 20.331 | 1000 | 40
+SELECT MIN(page_description),MAX(page_description),COUNT(page_description),COUNT(DISTINCT(page_description)) FROM online_sales.online_page_dimension
+text | Online Page Description #1 | Online Page Description #8 | N/A | 1000 | 8
+SELECT MIN(page_type),MAX(page_type),COUNT(page_type),COUNT(DISTINCT(page_type)) FROM online_sales.online_page_dimension
+text | bi-annual | quarterly | N/A | 1000 | 3
+creating datastats
+SELECT MIN(sale_date_key),MAX(sale_date_key),AVG(sale_date_key),COUNT(sale_date_key),COUNT(DISTINCT(sale_date_key)) FROM online_sales.online_sales_fact
+real | 1 | 1826 | 908.329698 | 5000000 | 1826
+SELECT MIN(ship_date_key),MAX(ship_date_key),AVG(ship_date_key),COUNT(ship_date_key),COUNT(DISTINCT(ship_date_key)) FROM online_sales.online_sales_fact
+real | 2 | 1826 | 911.320167 | 5000000 | 1825
+SELECT MIN(product_key),MAX(product_key),AVG(product_key),COUNT(product_key),COUNT(DISTINCT(product_key)) FROM online_sales.online_sales_fact
+real | 1 | 19982 | 9992.5812406 | 5000000 | 19982
+SELECT MIN(product_version),MAX(product_version),AVG(product_version),COUNT(product_version),COUNT(DISTINCT(product_version)) FROM online_sales.online_sales_fact
+real | 1 | 5 | 2.0020926 | 5000000 | 5
+SELECT MIN(customer_key),MAX(customer_key),AVG(customer_key),COUNT(customer_key),COUNT(DISTINCT(customer_key)) FROM online_sales.online_sales_fact
+real | 1 | 50000 | 24999.3280336 | 5000000 | 50000
+SELECT MIN(call_center_key),MAX(call_center_key),AVG(call_center_key),COUNT(call_center_key),COUNT(DISTINCT(call_center_key)) FROM online_sales.online_sales_fact
+real | 1 | 200 | 100.4799622 | 5000000 | 200
+SELECT MIN(online_page_key),MAX(online_page_key),AVG(online_page_key),COUNT(online_page_key),COUNT(DISTINCT(online_page_key)) FROM online_sales.online_sales_fact
+real | 1 | 1000 | 500.5590854 | 5000000 | 1000
+SELECT MIN(shipping_key),MAX(shipping_key),AVG(shipping_key),COUNT(shipping_key),COUNT(DISTINCT(shipping_key)) FROM online_sales.online_sales_fact
+real | 1 | 100 | 50.5000546 | 5000000 | 100
+SELECT MIN(warehouse_key),MAX(warehouse_key),AVG(warehouse_key),COUNT(warehouse_key),COUNT(DISTINCT(warehouse_key)) FROM online_sales.online_sales_fact
+real | 1 | 100 | 50.521192 | 5000000 | 100
+SELECT MIN(promotion_key),MAX(promotion_key),AVG(promotion_key),COUNT(promotion_key),COUNT(DISTINCT(promotion_key)) FROM online_sales.online_sales_fact
+real | 1 | 1000 | 500.5090064 | 5000000 | 1000
+SELECT MIN(pos_transaction_number),MAX(pos_transaction_number),AVG(pos_transaction_number),COUNT(pos_transaction_number),COUNT(DISTINCT(pos_transaction_number)) FROM online_sales.online_sales_fact
+real | 1 | 5000000 | 2500000.5 | 5000000 | 5000000
+SELECT MIN(sales_quantity),MAX(sales_quantity),AVG(sales_quantity),COUNT(sales_quantity),COUNT(DISTINCT(sales_quantity)) FROM online_sales.online_sales_fact
+real | 1 | 10 | 5.4999112 | 5000000 | 10
+SELECT MIN(sales_dollar_amount),MAX(sales_dollar_amount),AVG(sales_dollar_amount),COUNT(sales_dollar_amount),COUNT(DISTINCT(sales_dollar_amount)) FROM online_sales.online_sales_fact
+real | -600 | 600 | 272.59896 | 5000000 | 1190
+SELECT MIN(ship_dollar_amount),MAX(ship_dollar_amount),AVG(ship_dollar_amount),COUNT(ship_dollar_amount),COUNT(DISTINCT(ship_dollar_amount)) FROM online_sales.online_sales_fact
+real | -15 | 15 | 8.9976044 | 5000000 | 22
+SELECT MIN(net_dollar_amount),MAX(net_dollar_amount),AVG(net_dollar_amount),COUNT(net_dollar_amount),COUNT(DISTINCT(net_dollar_amount)) FROM online_sales.online_sales_fact
+real | -613 | 615 | 281.5965644 | 5000000 | 1207
+SELECT MIN(cost_dollar_amount),MAX(cost_dollar_amount),AVG(cost_dollar_amount),COUNT(cost_dollar_amount),COUNT(DISTINCT(cost_dollar_amount)) FROM online_sales.online_sales_fact
+real | -300 | 300 | 135.3786266 | 5000000 | 600
+SELECT MIN(gross_profit_dollar_amount),MAX(gross_profit_dollar_amount),AVG(gross_profit_dollar_amount),COUNT(gross_profit_dollar_amount),COUNT(DISTINCT(gross_profit_dollar_amount)) FROM online_sales.online_sales_fact
+real | -300 | 300 | 137.2203334 | 5000000 | 592
+SELECT MIN(transaction_type),MAX(transaction_type),COUNT(transaction_type),COUNT(DISTINCT(transaction_type)) FROM online_sales.online_sales_fact
+text | purchase | return | N/A | 5000000 | 2

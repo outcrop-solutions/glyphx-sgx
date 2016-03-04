@@ -49,6 +49,7 @@ public class DataEngine {
 
 	public static String[] connectToServer(String dburl, String username, String password, String db){
 		sourceType = db;
+		Logger.getInstance().add(username +" | "+ password);
 		String[] schemas = JDBCLoader.getInstance().connectToServer(dburl, username, password, db);
 		return schemas;
 	}
@@ -142,13 +143,31 @@ public class DataEngine {
 			System.out.println(sch_list[i]);
 		}
 
-		
+		/*
 		String[] tbl_names = d.getTableNames();
 		System.out.println("Table List:");
 		for(int i = 0; i < tbl_names.length; i++){
 			System.out.println(tbl_names[i]);
 		}
-		
+		*/
+		String[] sch_tbls = d.getSchemaTableNames("online_sales");
+		//System.out.println("Schema Table List:");
+		for(int i = 0; i < sch_tbls.length; i++){
+			//System.out.println(sch_tbls[i]);
+		}
+
+		String[] stbls = new String[3];
+		stbls[0] = "online_sales.call_center_dimension";
+		stbls[1] = "online_sales.online_page_dimension";
+		stbls[2] = "online_sales.online_sales_fact";
+		d.setChosenTables(stbls);
+
+		for(int j = 0; j < 3; j++){
+			String[] fft = d.getFieldsForTable(j, "vertica");
+			for(int i = 0; i < fft.length; i++){
+				System.out.println(fft[i]);
+			}
+		}
 		//String query = "SELECT City.Population, Country.Code "; 
 		//query += "FROM (City INNER JOIN Country ON (City.CountryCode=Country.Code))";
 		/*String query = "SELECT inventory_fact.qty_in_stock, product_dimension.product_price, ";

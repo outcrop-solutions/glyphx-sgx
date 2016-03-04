@@ -17,6 +17,7 @@ public class Database {
 	private MergedTable mergedTable;
 	private ArrayList<String> schemas;
 	private HashMap<String,ArrayList<String>> tables_by_schema;
+	private Thread thread;
 
 	public Database(Driver driver){
 		this.driver = driver;
@@ -45,7 +46,7 @@ public class Database {
 		        			tables_by_schema.put(schm, new ArrayList<String>());
 		        		}
 		        		temp.add(schm+"."+priv.getString(3));
-		        		tables_by_schema.get(schm).add(priv.getString(3));
+		        		tables_by_schema.get(schm).add(schm+"."+priv.getString(3));
 		        	}
 	        	}
 	        	priv.close();
@@ -67,8 +68,18 @@ public class Database {
 	        for(int i = 0; i < temp.size(); i++){
 	        	table_names[i] = temp.get(i);
 	        	Logger.getInstance().add(temp.get(i));
-	        	temp_tables.put(table_names[i], new BasicTable(temp.get(i), driver));
 	        }
+
+	        thread = new Thread(){
+    			public void run(){
+			        if(schemas.size() == 0){
+			        	for(int i = 0; i < table_names.length; i++){
+			        		temp_tables.put(table_names[i], new BasicTable(table_names[i], driver));
+			        	}
+			        }
+			    }
+			};
+			thread.start();
 
         }catch(SQLException se){
          	try{
@@ -86,7 +97,6 @@ public class Database {
 	}
 
 	public void initializeQueryTables(String query){
-
 	    mergedTable = new MergedTable(query, driver);
 	}
 
@@ -95,6 +105,11 @@ public class Database {
 	}
 
 	public BasicTable getTable(int i){
+		try{
+			thread.join();
+		}catch(InterruptedException ie){
+			ie.printStackTrace();
+		}
 		return temp_tables.get(table_names[i]);
 	}
 
@@ -106,15 +121,30 @@ public class Database {
 		return table_names;
 	}
 
-	public String[] getSchemaTableNames(String sch){
-      return Functions.arrayListToStringList(tables_by_schema.get(sch));
+	public String[] getSchemaTableNames(final String sch){
+		thread = new Thread(){
+    		public void run(){
+    			ArrayList<String> temp = tables_by_schema.get(sch);
+    			for(int i = 0; i < temp.size(); i++){
+					temp_tables.put(temp.get(i), new BasicTable(temp.get(i), driver));
+				}
+    		}
+  		};
+  		thread.start();
+      	return Functions.arrayListToStringList(tables_by_schema.get(sch));
     }
 
 	public String[] getForeignKeys(String tableName){
+		try{
+			thread.join();
+		}catch(InterruptedException ie){
+			ie.printStackTrace();
+		}
 	    return temp_tables.get(tableName).getForeignKeys();
 	}
 
 	public String[] getSampleData(int table, int row){
+		//thread.join();
       	return temp_tables.get(table_names[table]).getSampleData(row);
     }
 
