@@ -1173,6 +1173,17 @@ void DataTransformModel::AddDatasourceInfoFromDataEngine(const boost::uuids::uui
 			SynGlyphX::FileDatasource::SharedPtr fileDatasource = std::dynamic_pointer_cast<SynGlyphX::FileDatasource>(datasource);
 			sourceTypeString = QString::fromStdWString(SynGlyphX::FileDatasource::s_fileTypePrefixes.left.at(fileDatasource->GetFileType()));
 
+
+		//QString url("sqlite:" + datasource);
+		//QString user("");
+		//QString pass("");
+		//QString type("sqlite3");
+
+		QString url("mysql://10.128.132.153:3306/world");
+		QString user("synglyphx");
+		QString pass("password");
+		QString type("mysql");
+
 			if (fileDatasource->GetFileType() == SynGlyphX::FileDatasource::SQLITE3) {
 
 				ConnectToDatabase(QString::fromStdWString(L"sqlite:" + fileDatasource->GetFilename()),
@@ -1200,6 +1211,18 @@ void DataTransformModel::AddDatasourceInfoFromDataEngine(const boost::uuids::uui
 			}
 		}
 		else if (datasource->GetSourceType() == SynGlyphX::Datasource::SourceType::DatabaseServer) {
+
+		//std::vector<DataEngineConnection::ForeignKey> fkeys = dec->getForeignKeys(//table_name);
+		//fkeys.at(0).key;
+		//fkeys.at(0).origin;
+		//fkeys.at(0).value;
+		//dec->setChosenTables(chosenTables);
+		/*
+		QString query = "SELECT inventory_fact.qty_in_stock, product_dimension.product_price, ";
+		query += "date_dimension.day_of_week, warehouse_dimension.warehouse_name FROM (inventory_fact ";
+		query += "INNER JOIN product_dimension ON (inventory_fact.product_key=product_dimension.product_key) ";
+		query += "INNER JOIN date_dimension ON (inventory_fact.date_key=date_dimension.date_key) ";
+		query += "INNER JOIN warehouse_dimension ON (inventory_fact.warehouse_key=warehouse_dimension.warehouse_key))";*/
 
 			SynGlyphX::DatabaseServerDatasource::SharedPtr dbmsDatasource = std::dynamic_pointer_cast<SynGlyphX::DatabaseServerDatasource>(datasource);
 			sourceTypeString = QString::fromStdWString(SynGlyphX::DatabaseServerDatasource::s_dbTypePrefixes.left.at(dbmsDatasource->GetDBType()));
