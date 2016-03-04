@@ -23,7 +23,7 @@ public class BasicTable extends Table{
 		mapForeignKeys();
 		setColumnNames();
 		createDataStats();
-		loadSampleData();
+		//loadSampleData();
 	}
 
 	private void setColumnNames(){
