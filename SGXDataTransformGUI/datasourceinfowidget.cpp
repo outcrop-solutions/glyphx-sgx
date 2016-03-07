@@ -43,7 +43,6 @@ namespace SynGlyphX {
 
 				Datasource::Tables::const_iterator tablesQueryIterator = datasource.GetTables().begin();
 				QFormLayout* tableQueryLayout = new QFormLayout(this);
-				tableQueryLayout->setContentsMargins(0, 0, 0, 0);
 
 				QLineEdit* tableLineEdit = new QLineEdit(QString::fromStdWString(tablesQueryIterator->first), this);
 				tableLineEdit->setReadOnly(true);
@@ -53,7 +52,10 @@ namespace SynGlyphX {
 				queryLineEdit->setReadOnly(true);
 				tableQueryLayout->addRow(tr("Query:"), queryLineEdit);
 
-				mainLayout->addLayout(tableQueryLayout);
+				QGroupBox* groupBox = new QGroupBox(tr("Merged Table"), this);
+				groupBox->setLayout(tableQueryLayout);
+
+				mainLayout->addWidget(groupBox);
 			}
 			else {
 
@@ -104,7 +106,10 @@ namespace SynGlyphX {
 		databaseServerInfoWidget->SetUsername(QString::fromStdWString(datasource.GetUsername()));
 		databaseServerInfoWidget->SetPassword(QString::fromStdWString(datasource.GetPassword()));
 
-		mainLayout->addWidget(databaseServerInfoWidget);
+		SynGlyphX::GroupBoxSingleWidget* groupBox = new SynGlyphX::GroupBoxSingleWidget(tr("Server Info"), databaseServerInfoWidget, this);
+		groupBox->layout()->setContentsMargins(0, 0, 0, 0);
+
+		mainLayout->addWidget(groupBox);
 	}
 
 } //namespace SynGlyphX

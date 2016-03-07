@@ -228,7 +228,10 @@ void AddDatabaseServerWizard::initializePage(int id) {
 				foriegnKeyTables.push_back(foriegnKey.origin);
 			}
 
-			foriegnKeyTablesMap[table] = foriegnKeyTables;
+			if (!foriegnKeyTables.empty()) {
+
+				foriegnKeyTablesMap[table] = foriegnKeyTables;
+			}
  		}
 
 		m_tableChoiceWidget->SetTables(tables, foriegnKeyTablesMap);

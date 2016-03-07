@@ -464,11 +464,7 @@ void GlyphViewerWindow::ValidateDataMappingFile(const QString& filename) {
 	if (!missingFileDatasources.empty()) {
 
 		SynGlyphX::Application::restoreOverrideCursor();
-<<<<<<< HEAD
-		wasDataTransformUpdated = SynGlyphX::ChangeDatasourceFileDialog::UpdateDatasourceFiles(missingFileDatasources, filename, mapping, this);
-=======
 		wasDataTransformUpdated = SynGlyphX::ChangeDatasourceFileDialog::UpdateDatasourceFiles(missingFileDatasources, filename, mapping, m_dataEngineConnection, this);
->>>>>>> refs/remotes/origin/development
 		SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
 
 		if (!wasDataTransformUpdated) {
