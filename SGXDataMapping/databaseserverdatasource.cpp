@@ -31,7 +31,8 @@ namespace SynGlyphX {
 
 	DatabaseServerDatasource::DatabaseServerDatasource(const DatabaseServerDatasource& datasource) :
 		Datasource(datasource),
-		m_dbType(datasource.m_dbType) {
+		m_dbType(datasource.m_dbType),
+		m_schema(datasource.m_schema) {
 
 
 	}
