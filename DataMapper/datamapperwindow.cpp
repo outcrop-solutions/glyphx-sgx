@@ -541,6 +541,8 @@ void DataMapperWindow::AddFileDataSource() {
 	AddFileDatasourceWizard fileDatasourceWizard(initialDir, m_dataEngineConnection, this);
 	if (fileDatasourceWizard.Exec() == QDialog::Accepted) {
 
+		SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
+
 		const SynGlyphX::FileDatasource& fileDatasource = fileDatasourceWizard.GetFileDatasource();
 		QFileInfo fileInfo(QString::fromStdWString(fileDatasource.GetFilename()));
 		settings.setValue("DatasourcesDir", fileInfo.absolutePath());
@@ -555,11 +557,14 @@ void DataMapperWindow::AddFileDataSource() {
 		}
 		catch (const std::exception& e) {
 
+			SynGlyphX::Application::restoreOverrideCursor();
 			QMessageBox::critical(this, tr("Failed To Add Data Source"), QString::fromStdString(e.what()), QMessageBox::Ok);
 		}
 	}
 
 	settings.endGroup();
+	SynGlyphX::Application::restoreOverrideCursor();
+	statusBar()->showMessage("Data source successfully added", 3000);
 
 	if (m_dataEngineConnection->IsConnectionOpen()) {
 
@@ -572,10 +577,24 @@ void DataMapperWindow::AddDatabaseServerDatasources() {
 	AddDatabaseServerWizard addDatabaseServerWizard(m_dataEngineConnection, this);
 	if (addDatabaseServerWizard.exec() == QDialog::Accepted) {
 
-		m_dataTransformModel->AddDatabaseServer(addDatabaseServerWizard.GetValues());
-		m_dataSourceStats->AddNewStatsViews();
-		EnableProjectDependentActions(true);
+		try {
+
+			SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
+
+			m_dataTransformModel->AddDatabaseServer(addDatabaseServerWizard.GetValues());
+			m_dataSourceStats->AddNewStatsViews();
+			EnableProjectDependentActions(true);
+
+		}
+		catch (const std::exception& e) {
+
+			SynGlyphX::Application::restoreOverrideCursor();
+			QMessageBox::critical(this, tr("Failed To Add Data Source"), QString::fromStdString(e.what()), QMessageBox::Ok);
+		}
 	}
+
+	SynGlyphX::Application::restoreOverrideCursor();
+	statusBar()->showMessage("Data source successfully added", 3000);
 
 	if (m_dataEngineConnection->IsConnectionOpen()) {
 

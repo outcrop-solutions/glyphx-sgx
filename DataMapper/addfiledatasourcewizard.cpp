@@ -80,7 +80,7 @@ bool AddFileDatasourceWizard::IsFileValid(const QString& filename) {
 		m_fileDatasource.AddTables(tableNames);
 	}
 
-	m_dataEngineConnection->closeConnection();
+	//m_dataEngineConnection->closeConnection();
 
 	return true;
 }

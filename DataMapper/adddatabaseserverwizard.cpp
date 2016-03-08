@@ -184,7 +184,7 @@ bool AddDatabaseServerWizard::validateCurrentPage() {
 			return false;
 		}
 
-		m_dataEngineConnection->closeConnection();
+		//m_dataEngineConnection->closeConnection();
 		return true;
 	}
 	else {
