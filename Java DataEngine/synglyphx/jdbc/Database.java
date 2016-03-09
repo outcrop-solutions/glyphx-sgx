@@ -18,6 +18,7 @@ public class Database {
 	private ArrayList<String> schemas;
 	private HashMap<String,ArrayList<String>> tables_by_schema;
 	private Thread thread;
+	private String schema = null;
 
 	public Database(Driver driver){
 		this.driver = driver;
@@ -34,25 +35,26 @@ public class Database {
 		try{
 	        DatabaseMetaData md = driver.getConnection().getMetaData();
 	        ResultSet sch = md.getSchemas();
+	        Logger.getInstance().add("Returned list of schemas");
 	        ArrayList<String> temp = new ArrayList<String>();
 	        tables_by_schema = new HashMap<String,ArrayList<String>>();
 	        while(sch.next()){
 	        	ResultSet priv = md.getTablePrivileges(null,sch.getString(1),null);
 	        	while(priv.next()){
 	        		String schm = priv.getString(2);
-	        		if(!schm.contains("VERT_DATATYPE")){
-		        		if(!schemas.contains(schm)){
-		        			schemas.add(schm);
-		        			tables_by_schema.put(schm, new ArrayList<String>());
-		        		}
-		        		temp.add(schm+"."+priv.getString(3));
-		        		tables_by_schema.get(schm).add(schm+"."+priv.getString(3));
+	
+		        	if(!schemas.contains(schm)){
+		        		schemas.add(schm);
+		        		tables_by_schema.put(schm, new ArrayList<String>());
 		        	}
+		        	temp.add(schm+"."+priv.getString(3));
+		        	tables_by_schema.get(schm).add(schm+"."+priv.getString(3));
+		
 	        	}
 	        	priv.close();
 	        }
 	        sch.close();
-			
+			Logger.getInstance().add("Returned "+String.valueOf(schemas.size())+" schemas");
 			if(schemas.size() == 0){
 		        ResultSet rs = md.getTables(null, null, "%", null);
 		        while (rs.next()) {
@@ -70,16 +72,17 @@ public class Database {
 	        	Logger.getInstance().add(temp.get(i));
 	        }
 
-	        thread = new Thread(){
-    			public void run(){
-			        if(schemas.size() == 0){
-			        	for(int i = 0; i < table_names.length; i++){
-			        		temp_tables.put(table_names[i], new BasicTable(table_names[i], driver));
-			        	}
-			        }
-			    }
-			};
-			thread.start();
+	        Logger.getInstance().add("Creating basic tables");
+	        if(schemas.size() == 0){
+		        thread = new Thread(){
+	    			public void run(){
+				        for(int i = 0; i < table_names.length; i++){
+				        	temp_tables.put(table_names[i], new BasicTable(table_names[i], driver));
+				        }
+				    }
+				};
+				thread.start();
+			}
 
         }catch(SQLException se){
          	try{
@@ -90,14 +93,15 @@ public class Database {
 
 	public void initializeChosenTables(String[] chosen){
 
+		table_names = chosen;
 		for(int i = 0; i < chosen.length; i++){
 			Logger.getInstance().add(chosen[i]);
 	    	tables.put(chosen[i], temp_tables.get(chosen[i]));
 	    }
 	}
 
-	public void initializeQueryTables(String query){
-	    mergedTable = new MergedTable(query, driver);
+	public void initializeQueryTables(String query, Driver drive){
+	    mergedTable = new MergedTable(query, drive);
 	}
 
 	public void setBaseTable(String base_table){
@@ -110,6 +114,8 @@ public class Database {
 		}catch(InterruptedException ie){
 			ie.printStackTrace();
 		}
+		Logger.getInstance().add(String.valueOf(i));
+		Logger.getInstance().add(table_names[i]);
 		return temp_tables.get(table_names[i]);
 	}
 
@@ -122,15 +128,20 @@ public class Database {
 	}
 
 	public String[] getSchemaTableNames(final String sch){
-		thread = new Thread(){
-    		public void run(){
-    			ArrayList<String> temp = tables_by_schema.get(sch);
-    			for(int i = 0; i < temp.size(); i++){
-					temp_tables.put(temp.get(i), new BasicTable(temp.get(i), driver));
-				}
-    		}
-  		};
-  		thread.start();
+
+		if(!sch.equals(schema)){
+			this.schema = sch;
+			Logger.getInstance().addT(sch);
+			thread = new Thread(){
+	    		public void run(){
+	    			ArrayList<String> temp = tables_by_schema.get(sch);
+	    			for(int i = 0; i < temp.size(); i++){
+						temp_tables.put(temp.get(i), new BasicTable(temp.get(i), driver));
+					}
+	    		}
+	  		};
+	  		thread.start();
+	  	}
       	return Functions.arrayListToStringList(tables_by_schema.get(sch));
     }
 
@@ -157,7 +168,7 @@ public class Database {
     	int size = 0;
     	try{
 			String sql = "SELECT count(*) FROM"+query.split("FROM")[1];
-			System.out.println(sql);  
+			//System.out.println(sql);  
 			Statement stmt = driver.getConnection().createStatement();
             ResultSet rs = stmt.executeQuery(sql);
             while(rs.next()){

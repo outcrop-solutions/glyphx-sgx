@@ -20,6 +20,7 @@ public abstract class Table {
 	protected HashMap<String,DataStats> dataStats;
 	protected HashMap<String,String> jdbcTypes;
 	protected HashMap<String,ArrayList<String>> min_max_table;
+	protected Thread thread;
 
 	public Table(Driver driver){
 		this.driver = driver;
@@ -32,8 +33,9 @@ public abstract class Table {
 			String[] ranges = new String[3];
 			String[] counts = new String[2];
 			String sql = driver.dataStatsQuery(cn, end_of_query, columnTypes.get(cn).equals("Double"));
-			Logger.getInstance().add(sql);
-			Statement stmt = driver.getConnection().createStatement();
+			//Logger.getInstance().add(sql);
+			Connection con = driver.getNewConnection();
+			Statement stmt = con.createStatement();
             ResultSet rs = stmt.executeQuery(sql);
 
             while(rs.next()){
@@ -56,6 +58,7 @@ public abstract class Table {
             }
 
             rs.close();
+            con.close();
         }catch(SQLException se){
         	try{
             	se.printStackTrace(Logger.getInstance().addError());
@@ -68,6 +71,11 @@ public abstract class Table {
 	}
 
 	public String[] getStats(String field){
+		try{
+			thread.join();
+		}catch(InterruptedException ie){
+			ie.printStackTrace();
+		}
 		String[] stats = new String[6];
 		DataStats ds = dataStats.get(field);
 		stats[0] = ds.getType();
@@ -92,22 +100,30 @@ public abstract class Table {
 		jdbcTypes.put("DOUBLE","Double");
 		jdbcTypes.put("DECIMAL","Double");
 		jdbcTypes.put("REAL","Double");
+		jdbcTypes.put("NUMERIC","Double");
+
 		jdbcTypes.put("TEXT","String");
 		jdbcTypes.put("CHAR","String");
 		jdbcTypes.put("VARCHAR","String");
-		jdbcTypes.put("BIT","Void");
-		jdbcTypes.put("BINARY","Void");
-		jdbcTypes.put("VARBINARY","Void");
-		jdbcTypes.put("TINYBLOB","Void");
-		jdbcTypes.put("BLOB","Void");
-		jdbcTypes.put("MEDIUMBLOB","Void");
-		jdbcTypes.put("LONGBLOB","Void");
+		jdbcTypes.put("BIT","String");
+		jdbcTypes.put("BINARY","String");
+		jdbcTypes.put("VARBINARY","String");
+		jdbcTypes.put("TINYBLOB","String");
+		jdbcTypes.put("BLOB","String");
+		jdbcTypes.put("MEDIUMBLOB","String");
+		jdbcTypes.put("LONGBLOB","String");
 		
-		jdbcTypes.put("DATE","Date");
-		jdbcTypes.put("DATETIME","Timestamp");
-		jdbcTypes.put("TIMESTAMP","Timestamp");
-		jdbcTypes.put("TIME","Time");
-		jdbcTypes.put("YEAR","Date");
+		jdbcTypes.put("DATE","String");
+		jdbcTypes.put("DATETIME","String");
+		jdbcTypes.put("TIMESTAMP","String");
+		jdbcTypes.put("TIME","String");
+		jdbcTypes.put("YEAR","String");
+		jdbcTypes.put("TIMETZ","String");
+		jdbcTypes.put("TIMESTAMPTZ","String");
+		jdbcTypes.put("INTERVAL YEAR TO MONTH","String");
+		jdbcTypes.put("INTERVAL HOUR TO SECOND","String");
+		jdbcTypes.put("INTERVAL HOUR TO MINUTE","String");
+		jdbcTypes.put("INTERVAL DAY TO SECOND","String");
 
 		columnNames = new ArrayList<String>();
 		columnTypes = new HashMap<String,String>();
@@ -115,14 +131,17 @@ public abstract class Table {
 	}
 
 	public void createDataStats(){
-
-		Logger.getInstance().add("creating datastats");
-		dataStats = new HashMap<String,DataStats>();
-		min_max_table = new HashMap<String, ArrayList<String>>();
-		for(int i = 0; i < columnNames.size(); i++){
-			columnDataStats(columnNames.get(i));
-		}
-
+		thread = new Thread(){
+    		public void run(){
+    			Logger.getInstance().add("creating datastats");
+				dataStats = new HashMap<String,DataStats>();
+				min_max_table = new HashMap<String, ArrayList<String>>();
+				for(int i = 0; i < columnNames.size(); i++){
+					columnDataStats(columnNames.get(i));
+				}
+    		}
+  		};
+  		thread.start();
 	}
 
 	public String getTableName(){
@@ -130,10 +149,20 @@ public abstract class Table {
 	}
 
 	public HashMap<String, ArrayList<String>> getMinMaxTable(){
+		try{
+			thread.join();
+		}catch(InterruptedException ie){
+			ie.printStackTrace();
+		}
 		return min_max_table;
 	}
 
 	public HashMap<String,DataStats> getDataStats(){
+		try{
+			thread.join();
+		}catch(InterruptedException ie){
+			ie.printStackTrace();
+		}
 		return dataStats;
 	}
 

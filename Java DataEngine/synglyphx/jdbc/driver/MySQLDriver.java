@@ -1,16 +1,23 @@
 package synglyphx.jdbc.driver;
 
 import java.sql.*;
+import synglyphx.io.Logger;
 
 public class MySQLDriver implements Driver {
 
 	private Connection conn = null;
+	private String conn_str;
+	private String un;
+	private String pw;
 
 	public String packageName(){
 		return "com.mysql.jdbc.Driver";
 	}
 
 	public void createConnection(String conn_str, String un, String pw) throws SQLException {
+		this.conn_str = conn_str;
+		this.un = un;
+		this.pw = pw;
 		this.conn = DriverManager.getConnection(conn_str,un,pw);
 	}
 
@@ -31,7 +38,35 @@ public class MySQLDriver implements Driver {
 		return tbl_name+"."+col_name;
 	}
 
+	public ResultSet getImportedKeys(DatabaseMetaData dm, String name) throws SQLException {
+		return dm.getImportedKeys(null, null, name);
+	}
+
+	public Connection getNewConnection(){
+		try{
+			return DriverManager.getConnection(conn_str,un,pw);
+		}catch(SQLException se){
+	        try{
+	            se.printStackTrace(Logger.getInstance().addError());
+	        }catch(Exception ex){}
+      	}catch(Exception e){
+         	try{
+            	e.printStackTrace(Logger.getInstance().addError());
+         	}catch(Exception ex){}
+      	}
+      	return null;
+	}
+
+	public Connection createTempConnection(String conn_str, String un, String pw) throws SQLException {
+		return DriverManager.getConnection(conn_str,un,pw);
+	}
+
 	public Connection getConnection(){
 		return conn;
+	}
+
+	public String getFormattedName(String name){
+		//String[] split = name.split("\\.");
+		return name.replace("`","");
 	}
 }
