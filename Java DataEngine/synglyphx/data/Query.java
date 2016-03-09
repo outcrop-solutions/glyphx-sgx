@@ -22,7 +22,9 @@ public class Query {
 	}
 
 	public Query append(String heading){
-		incQueries.add(heading.split(","));
+		String[] tmp = new String[1];
+		tmp[0] = heading;
+		incQueries.add(tmp);
 		return this;
 	}
 

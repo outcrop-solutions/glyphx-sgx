@@ -50,11 +50,7 @@ public class CSVReader {
 					temp[splitData.length+i] = " ";
 				}
 				splitData = temp;
-			}else if(headers == 0){headers = splitData.length;
-				for(int i=0; i <splitData.length; i++){
-					System.out.println(splitData[i]);
-				}
-			}
+			}else if(headers == 0){headers = splitData.length;}
 
 			for (int i = 0; i < splitData.length; i++) {
 
