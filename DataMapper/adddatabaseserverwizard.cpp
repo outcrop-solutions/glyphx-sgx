@@ -82,7 +82,7 @@ void AddDatabaseServerWizard::CreateDatabaseInfoPage() {
 	QWizardPage* wizardPage = new QWizardPage(this);
 	QVBoxLayout* pageLayout = new QVBoxLayout(wizardPage);
 
-	m_databaseServerInfoWidget = new SynGlyphX::DatabaseServerInfoWidget(true, wizardPage);
+	m_databaseServerInfoWidget = new SynGlyphX::DatabaseServerInfoWidget(false, true, wizardPage);
 	m_databaseServerInfoWidget->layout()->setContentsMargins(0, 0, 0, 0);
 	pageLayout->addWidget(m_databaseServerInfoWidget);
 

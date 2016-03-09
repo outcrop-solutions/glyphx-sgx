@@ -316,8 +316,13 @@ void DataMapperWindow::CreateNewProject() {
 		return;
 	}
 
-	ClearAndInitializeDataMapping();
+	CloseProject();
+}
+
+void DataMapperWindow::CloseProject() {
+
 	m_dataSourceStats->ClearTabs();
+	ClearAndInitializeDataMapping();
 	m_glyphRolesTableModel->Clear();
 
 	EnableProjectDependentActions(false);
@@ -449,6 +454,8 @@ bool DataMapperWindow::LoadDataTransform(const QString& filename) {
 
 		UpdateMissingFiles(filename);
 
+		CloseProject();
+
 		QObject::disconnect(m_modelResetConnection);
 
 		m_dataTransformModel->LoadDataTransformFile(filename);
@@ -459,7 +466,7 @@ bool DataMapperWindow::LoadDataTransform(const QString& filename) {
 	}
 	catch (const std::exception& e) {
 
-		m_dataTransformModel->ClearAndReset();
+		CloseProject();
 		SynGlyphX::Application::restoreOverrideCursor();
 		QMessageBox::critical(this, tr("Failed To Open Project"), tr("Failed to open project.  Error: ") + e.what(), QMessageBox::Ok);
 		return false;

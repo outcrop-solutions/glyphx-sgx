@@ -54,6 +54,7 @@ protected:
 
 private slots:
     void CreateNewProject();
+	void CloseProject();
     void OpenProject();
     bool SaveProject();
     bool SaveAsProject();

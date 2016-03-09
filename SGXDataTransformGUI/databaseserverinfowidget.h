@@ -32,7 +32,7 @@ namespace SynGlyphX {
 		Q_OBJECT
 
 	public:
-		DatabaseServerInfoWidget(bool makeEditable, QWidget *parent);
+		DatabaseServerInfoWidget(bool includeSchema, bool makeEditable, QWidget *parent);
 		~DatabaseServerInfoWidget();
 
 		DatabaseServerDatasource::DBType GetDBType() const;
@@ -46,6 +46,9 @@ namespace SynGlyphX {
 		void SetPassword(const QString& password);
 		QString GetPassword() const;
 
+		void SetSchema(const QString& schema);
+		QString GetSchema() const;
+
 	private slots:
 		void OnTypeComboBoxChanged();
 
@@ -58,6 +61,8 @@ namespace SynGlyphX {
 		QLineEdit* m_usernameLineEdit;
 		SynGlyphX::PasswordLineEdit* m_passwordLineEdit;
 		SynGlyphX::PrefixSuffixValidator* m_connectionValidator;
+
+		QLineEdit* m_schemaLineEdit;
 	};
 
 } //namespace SynGlyphX

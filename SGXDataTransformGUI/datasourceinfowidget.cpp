@@ -101,10 +101,18 @@ namespace SynGlyphX {
 
 		QVBoxLayout* mainLayout = qobject_cast<QVBoxLayout*>(layout());
 
-		SynGlyphX::DatabaseServerInfoWidget* databaseServerInfoWidget = new SynGlyphX::DatabaseServerInfoWidget(false, this);
+		SynGlyphX::DatabaseServerInfoWidget* databaseServerInfoWidget = new SynGlyphX::DatabaseServerInfoWidget(true, false, this);
 		databaseServerInfoWidget->SetConnection(QString::fromStdWString(datasource.GetHost()));
 		databaseServerInfoWidget->SetUsername(QString::fromStdWString(datasource.GetUsername()));
 		databaseServerInfoWidget->SetPassword(QString::fromStdWString(datasource.GetPassword()));
+		if (datasource.GetSchema().empty()) {
+
+			databaseServerInfoWidget->SetSchema(tr("N/A"));
+		}
+		else {
+
+			databaseServerInfoWidget->SetSchema(QString::fromStdWString(datasource.GetSchema()));
+		}
 
 		SynGlyphX::GroupBoxSingleWidget* groupBox = new SynGlyphX::GroupBoxSingleWidget(tr("Server Info"), databaseServerInfoWidget, this);
 		groupBox->layout()->setContentsMargins(0, 0, 0, 0);

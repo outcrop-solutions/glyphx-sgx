@@ -3,8 +3,9 @@
 
 namespace SynGlyphX {
 
-	DatabaseServerInfoWidget::DatabaseServerInfoWidget(bool makeEditable, QWidget *parent)
-		: QWidget(parent)
+	DatabaseServerInfoWidget::DatabaseServerInfoWidget(bool includeSchema, bool makeEditable, QWidget *parent)
+		: QWidget(parent),
+		m_schemaLineEdit(nullptr)
 	{
 		QFormLayout* formLayout = new QFormLayout(this);
 
@@ -38,6 +39,13 @@ namespace SynGlyphX {
 		m_passwordLineEdit->layout()->setContentsMargins(0, 0, 0, 0);
 		formLayout->addRow(tr("Password:"), m_passwordLineEdit);
 
+		if (includeSchema) {
+
+			m_schemaLineEdit = new QLineEdit(this);
+			m_schemaLineEdit->setReadOnly(!makeEditable);
+			formLayout->addRow(tr("Schema:"), m_schemaLineEdit);
+		}
+
 		setLayout(formLayout);
 	}
 
@@ -54,7 +62,8 @@ namespace SynGlyphX {
 	void DatabaseServerInfoWidget::SetConnection(const QString& connection) {
 
 		QString prefix = connection.left(connection.indexOf(':'));
-		m_typeComboBox->setCurrentText(prefix);
+		DatabaseServerDatasource::DBType type = SynGlyphX::DatabaseServerDatasource::s_dbTypePrefixes.right.at(prefix.toStdWString());
+		m_typeComboBox->setCurrentText(QString::fromStdWString(SynGlyphX::DatabaseServerDatasource::s_dbTypeStrings.left.at(type)));
 		m_connectionLineEdit->setText(connection);
 	}
 
@@ -81,6 +90,26 @@ namespace SynGlyphX {
 	QString DatabaseServerInfoWidget::GetPassword() const {
 
 		return m_passwordLineEdit->GetPassword();
+	}
+
+	void DatabaseServerInfoWidget::SetSchema(const QString& schema) {
+
+		if (m_schemaLineEdit != nullptr) {
+
+			m_schemaLineEdit->setText(schema);
+		}
+	}
+
+	QString DatabaseServerInfoWidget::GetSchema() const {
+
+		if (m_schemaLineEdit != nullptr) {
+
+			return m_schemaLineEdit->text();
+		}
+		else {
+
+			return QString();
+		}
 	}
 
 	void DatabaseServerInfoWidget::OnTypeComboBoxChanged() {

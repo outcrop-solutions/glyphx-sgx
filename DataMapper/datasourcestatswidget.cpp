@@ -122,6 +122,8 @@ void DataSourceStatsWidget::RemoveTableViews(const QString& name) {
 	//This will also delete the associated model since it is the parent of the model object
 	while (QTableView* view = findChild<QTableView*>(name)) {
 
+		view->clearSelection();
+		view->clearFocus();
 		removeTab(indexOf(view));
 		delete view;
 	}
