@@ -57,6 +57,7 @@ namespace DataEngine
 		jclass getJcls() const;
 		//void testFunction();
 		bool IsConnectionOpen() const;
+		bool IsConnectionOpen(const QString& connection) const;
 
 		static QString CreateInnerJoinQueryFromForiegnKeys(const QString& mainTable, const ForiegnKeyVector& foriegnKeyTables);
 
