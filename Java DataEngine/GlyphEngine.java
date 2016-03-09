@@ -73,10 +73,10 @@ public class GlyphEngine {
 
 	public static void main(String [] args){
 
-		//String sdtPath = "C:\\Users\\Bryan\\SharePoint\\Synglyphx Team Site - Documents\\Test Data\\BRYAN\\school shooting.sdt";
-	 	//String outDir = "C:\\Users\\Bryan\\SharePoint\\Synglyphx Team Site - Documents\\Test Data\\BRYAN\\Viz";
-	 	String sdtPath = "C:\\Users\\Bryan\\Desktop\\jdbc_test\\official_multi_test.sdt";
-	 	String outDir = "C:\\Users\\Bryan\\Desktop\\jdbc_test\\official merged";
+		String sdtPath = "C:\\Users\\Bryan\\SharePoint\\Synglyphx Team Site - Documents\\Test Data\\BRYAN\\School Shooting Viz (05-Jan-16).sdt";
+	 	String outDir = "C:\\Users\\Bryan\\SharePoint\\Synglyphx Team Site - Documents\\Test Data\\BRYAN\\Viz";
+	 	//String sdtPath = "C:\\Users\\Bryan\\Desktop\\jdbc_test\\official_multi_test.sdt";
+	 	//String outDir = "C:\\Users\\Bryan\\Desktop\\jdbc_test\\official merged";
 	 	//String sdtPath = "C:/Users/Bryan/Desktop/TooMany Elements SizeBug/Ohio Voter Registration Draft.sdt";
 	 	//String outDir = "C:/Users/Bryan/AppData/Local/SynGlyphX/Glyph Builder - Glyph Viewer/cache/cache_2072a4ce-5cf5-4591-84b0-30f87c5cc214";
 	 	//String sdtPath = "C:\\Users\\Bryan\\Desktop\\test_for_ray_1\\url_and_description.sdt";
