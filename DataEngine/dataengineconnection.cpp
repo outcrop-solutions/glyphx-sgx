@@ -44,7 +44,7 @@ namespace DataEngine
 				".\\database-drivers\\sqlite4java.jar;"
 				".\\database-drivers\\mysql-connector-java-5.1.38-bin.jar;"
 				".\\database-drivers\\sqlite-jdbc-3.8.11.2.jar;"
-			    ".\\database-drivers\\vertica-jdbc-7.2.1-0.jar;";
+			".\\database-drivers\\vertica-jdbc-7.2.1-0.jar;";
 		}else{
 			options[0].optionString =
 				"-Djava.class.path=..\\..\\DataEngine\\Java DataEngine\\dataengine.jar;"
@@ -53,7 +53,7 @@ namespace DataEngine
 				"..\\..\\DataEngine\\Java DataEngine\\database-drivers\\sqlite4java.jar;"
 				"..\\..\\DataEngine\\Java DataEngine\\database-drivers\\mysql-connector-java-5.1.38-bin.jar;"
 				"..\\..\\DataEngine\\Java DataEngine\\database-drivers\\sqlite-jdbc-3.8.11.2.jar;"
-			    "..\\..\\DataEngine\\Java DataEngine\\database-drivers\\vertica-jdbc-7.2.1-0.jar;";
+			"..\\..\\DataEngine\\Java DataEngine\\database-drivers\\vertica-jdbc-7.2.1-0.jar;";
 		}ifile.close();
 		vmArgs.version = JNI_VERSION_1_2;
 		vmArgs.options = options;
@@ -187,14 +187,14 @@ namespace DataEngine
 				jniEnv->ExceptionDescribe();
 				jniEnv->ExceptionClear();
 			}
-
+		
 			int length = jniEnv->GetArrayLength(itr);
 
 			m_openConnection = db_url;
 
 			for (int i = 0; i < length; i++){
 				jstring element = (jstring)jniEnv->GetObjectArrayElement(itr, i);
-				if (length == 1 && element == NULL){break;}
+				if (length == 1 && element == NULL){ break; }
 				const char *str = jniEnv->GetStringUTFChars(element, 0);
 				QString db_name(str);
 				schemas << db_name;

@@ -10,9 +10,9 @@ public class JDBCLoader {
    private static JDBCLoader instance = null;
    public static Driver driver = null;
    public static Database database = null;
-   public static String connectionString;
-   public static String username;
-   public static String password;
+   public static String connectionString = null;
+   public static String username = null;
+   public static String password = null;
    public static String dbType;
    public static boolean merged;
 
@@ -27,19 +27,27 @@ public class JDBCLoader {
    
    public static String[] connectToServer(String db_url, String user, String pass, String db) {
 
+      if(connectionString != null && username != null && password != null){
+         if(connectionString.equals("jdbc:"+db_url) && username.equals(user) && password.equals(pass)){
+            return database.getSchemas();
+         }
+      }
       connectionString = "jdbc:"+db_url;
       username = user;
       password = pass;
       dbType = db;
 
       try{
-    
+         Logger.getInstance().add(username +" | "+ password);
          driver = DriverSelector.getDriver(dbType);
          Class.forName(driver.packageName());
+         Logger.getInstance().add("Loaded driver for "+dbType);
 
          driver.createConnection(connectionString,username,password);
+         Logger.getInstance().add("Connection created");
 
          database = new Database(driver);
+         Logger.getInstance().add("Database created");
 
       }catch(SQLException se){
          try{
@@ -73,7 +81,7 @@ public class JDBCLoader {
 
    public static void setQueryTables(String query){
       merged = true;
-      database.initializeQueryTables(query);
+      database.initializeQueryTables(query, driver);
    }
 
    public static String[] getFieldsForTable(int table){
@@ -100,15 +108,15 @@ public class JDBCLoader {
 
    public static void closeConnection(){
       
-      try{
-         driver.getConnection().close();
+      //try{
+         //driver.getConnection().close();
          Logger.getInstance().add("");
          Logger.getInstance().add("Closing connection to database...");
-      }catch(SQLException se){
-         try{
-            se.printStackTrace(Logger.getInstance().addError());
-         }catch(Exception ex){}
-      }
+      //}catch(SQLException se){
+        // try{
+          //  se.printStackTrace(Logger.getInstance().addError());
+         //}catch(Exception ex){}
+      //}
 
    }
 

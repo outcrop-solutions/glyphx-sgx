@@ -36,8 +36,10 @@ public class MergedTable extends Table{
             	table_name = metaData.getTableName(i + 1);
             	column_type = metaData.getColumnTypeName(i + 1);
             	column_name = metaData.getColumnName(i + 1);
-            	columnNames.add(driver.mergedField(table_name, column_name));
-            	columnTypes.put(driver.mergedField(table_name, column_name), jdbcTypes.get(column_type.toUpperCase()));
+            	if(jdbcTypes.containsKey(column_type.toUpperCase())){
+            		columnNames.add(driver.mergedField(table_name, column_name));
+            		columnTypes.put(driver.mergedField(table_name, column_name), jdbcTypes.get(column_type.toUpperCase()));
+            	}
             }
             rs.close();
 
