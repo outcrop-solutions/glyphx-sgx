@@ -66,6 +66,7 @@ public class SQLiteWriter {
 				st1.reset();
 			} 
 			db.exec("COMMIT TRANSACTION;"); 
+			writeAllTables(db);
 			db.dispose();
 		}catch(SQLiteException se){
 			try{
@@ -74,14 +75,16 @@ public class SQLiteWriter {
 		}
 	}
 
-	public void writeAllTables(){
+	public void writeAllTables(){}
+	public void writeAllTables(SQLiteConnection db){
 
 		try{
-			SQLiteConnection db = new SQLiteConnection(new File(outDir+"/sourcedata.db"));
-			db.open(true);
+			//SQLiteConnection db = new SQLiteConnection(new File(outDir+"/sourcedata.db"));
+			//db.open(true);
 
 			for(int i = 0; i < toPrint.size(); i++){
 				SourceDataInfo sdi = dataframes.get(toPrint.get(i));
+				Logger.getInstance().addT(sdi.getTable());
 				if(sdi.getType().equals("csv") || sdi.getType().equals("sqlite3")){
 					writeCSVTable(db,sdi);
 				}else{
@@ -90,7 +93,7 @@ public class SQLiteWriter {
 			}
 
 			//db.exec("COMMIT TRANSACTION;"); 
-			db.dispose();
+			//db.dispose();
 		}catch(SQLiteException se){
 			try{
 	            se.printStackTrace(Logger.getInstance().addTError());
@@ -182,6 +185,9 @@ public class SQLiteWriter {
 			insertQuery = insertQuery.substring(0, insertQuery.length()-1);
 			query += ");";
 			insertQuery += ");";
+
+			Logger.getInstance().addT(query+"\n");
+			Logger.getInstance().addT(insertQuery);
 			
 			SQLiteStatement st0 = db.prepare(query);
 			db.exec("BEGIN TRANSACTION;"); 

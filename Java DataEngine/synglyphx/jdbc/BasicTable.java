@@ -20,8 +20,8 @@ public class BasicTable extends Table{
 		this.name = name;
 		this.query = "SELECT * FROM "+name;
 		this.end_of_query = name;
-		mapForeignKeys();
 		setColumnNames();
+		mapForeignKeys();
 		createDataStats();
 		//loadSampleData();
 	}
@@ -43,8 +43,10 @@ public class BasicTable extends Table{
             for (int i = 0; i < rowCount; i++) {
             	column_type = metaData.getColumnTypeName(i + 1);
             	column_name = metaData.getColumnName(i + 1);
-                columnNames.add(driver.basicField(metaData.getTableName(i + 1), column_name));
-                columnTypes.put(driver.basicField(metaData.getTableName(i + 1), column_name), jdbcTypes.get(column_type.toUpperCase()));
+            	if(jdbcTypes.containsKey(column_type.toUpperCase())){
+                	columnNames.add(driver.basicField(metaData.getTableName(i + 1), column_name));
+                	columnTypes.put(driver.basicField(metaData.getTableName(i + 1), column_name), jdbcTypes.get(column_type.toUpperCase()));
+            	}
             }
             rs.close();
 
@@ -68,13 +70,18 @@ public class BasicTable extends Table{
 		foreign_key_list = new ArrayList<String>();
 		foreign_key_map = new HashMap<String,ArrayList<String>>();
 		try{
+
 			DatabaseMetaData dm = driver.getConnection().getMetaData();
-	    	ResultSet rs = dm.getImportedKeys(null, null, name);
+	    	ResultSet rs = driver.getImportedKeys(dm, name);
 
 	    	while (rs.next()) {
 	    		String colName = rs.getString(8);
+	    		String schtbl = rs.getString(2);
 	    		String tblName = rs.getString(3);
 	    		String orgName = rs.getString(4);
+	    		if(schtbl != null){
+	    			tblName = schtbl+"."+tblName;
+	    		}
 	    		foreign_key_map.put(colName, new ArrayList<String>());
 	    		foreign_key_map.get(colName).add(tblName);
 	    		foreign_key_map.get(colName).add(orgName);

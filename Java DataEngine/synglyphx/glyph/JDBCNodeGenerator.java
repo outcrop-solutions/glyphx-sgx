@@ -29,6 +29,7 @@ public class JDBCNodeGenerator {
 	private boolean download;
 	private int tempCount;
 	private Table table;
+	private Driver driver;
 
 	public JDBCNodeGenerator(SourceDataInfo source){
 		sourceData = source;
@@ -54,7 +55,7 @@ public class JDBCNodeGenerator {
 
 	    try{
 
-	    	Driver driver = DriverSelector.getDriver(sourceData.getType());
+	    	driver = DriverSelector.getDriver(sourceData.getType());
             Class.forName(driver.packageName());
 	        Logger.getInstance().add("Connecting to Server...");
 
@@ -130,7 +131,7 @@ public class JDBCNodeGenerator {
 					x1 = Double.parseDouble(table.getMinMaxTable().get(input.get(fieldNames.get(i))).get(0));
 					x3 = Double.parseDouble(table.getMinMaxTable().get(input.get(fieldNames.get(i))).get(1));
 				}
-				double x2 = rs.getDouble(input.get(fieldNames.get(i)).replace("`","")); //returns exact value in this row
+				double x2 = rs.getDouble(driver.getFormattedName(input.get(fieldNames.get(i)))); //returns exact value in this row
 				if(functions.get(fieldNames.get(i)).equals("Linear Interpolation")){
 					setValues.put(fieldNames.get(i), Functions.linearInterpolation(x1,x3,y1,y3,x2));
 				}else if(functions.get(fieldNames.get(i)).equals("Logarithmic Interpolation")){
@@ -138,13 +139,13 @@ public class JDBCNodeGenerator {
 				}
 			}
 			else if(functions.get(fieldNames.get(i)).equals("Numeric Field To Value")){
-				setValues.put(fieldNames.get(i), Functions.numericToValue(rs.getDouble(input.get(fieldNames.get(i)).replace("`","")),nodeTemp.getKeyValueMap().get(fieldNames.get(i))));
+				setValues.put(fieldNames.get(i), Functions.numericToValue(rs.getDouble(driver.getFormattedName(input.get(fieldNames.get(i)))),nodeTemp.getKeyValueMap().get(fieldNames.get(i))));
 			}
 			else if(functions.get(fieldNames.get(i)).equals("Text Field To Value")){
-				setValues.put(fieldNames.get(i), Functions.textToValue(rs.getString(input.get(fieldNames.get(i)).replace("`","")),nodeTemp.getKeyValueMap().get(fieldNames.get(i))));
+				setValues.put(fieldNames.get(i), Functions.textToValue(rs.getString(driver.getFormattedName(input.get(fieldNames.get(i)))),nodeTemp.getKeyValueMap().get(fieldNames.get(i))));
 			}
 			else if(functions.get(fieldNames.get(i)).equals("Range To Value")){
-				setValues.put(fieldNames.get(i), Functions.rangeToValue(rs.getDouble(input.get(fieldNames.get(i)).replace("`","")),nodeTemp.getKeyValueMap().get(fieldNames.get(i))));
+				setValues.put(fieldNames.get(i), Functions.rangeToValue(rs.getDouble(driver.getFormattedName(input.get(fieldNames.get(i)))),nodeTemp.getKeyValueMap().get(fieldNames.get(i))));
 			}
 			else if(functions.get(fieldNames.get(i)).equals("None")){
 				setValues.put(fieldNames.get(i), Double.parseDouble(table.getMinMaxTable().get(input.get(fieldNames.get(i))).get(1)));
@@ -157,18 +158,18 @@ public class JDBCNodeGenerator {
 		//TAG STUFF
 		node.setDefaultTagValue(default_tag_value);
 		if(input.get("Tag") != null){
-			node.setTag(input.get("Tag")+": "+rs.getString(input.get("Tag").replace("`","")));
+			node.setTag(input.get("Tag")+": "+rs.getString(driver.getFormattedName(input.get("Tag"))));
 			//node.setTagPos(csvData.get(currData).getDataFrame().getHeaderPlace(input.get("Tag")));
 		}else if(input.get("Tag") == null && input.get(default_tag_field) != null){
-			node.setTag(input.get(default_tag_field)+": "+rs.getString(input.get(default_tag_field).replace("`","")));
+			node.setTag(input.get(default_tag_field)+": "+rs.getString(driver.getFormattedName(input.get(default_tag_field))));
 			//node.setTagPos(csvData.get(currData).getDataFrame().getHeaderPlace(input.get(default_tag_field)));
 		}
 		//END TAG
 		if(input.get("Description") != null){
-			node.setDesc(rs.getString(input.get("Description").replace("`","")));
+			node.setDesc(rs.getString(driver.getFormattedName(input.get("Description"))));
 		}
 		if(input.get("URL") != null){
-			node.setURL(rs.getString(input.get("URL")).replace("`",""));
+			node.setURL(rs.getString(driver.getFormattedName(input.get("URL"))));
 		}
 
 		if(nodeTemp.getChildOf() == 0){
