@@ -22,6 +22,7 @@ public class Cursor {
 		this.indices = indices;
 		//System.out.println(indices.size());
 		this.query = q;
+		
 		for (Map.Entry<String, ArrayList<String>> entry : this.data.entrySet()) {
 			this.randHeader = entry.getKey();
 			break;
