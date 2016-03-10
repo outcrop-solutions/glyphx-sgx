@@ -164,6 +164,15 @@
     <ClCompile Include="GeneratedFiles\Win32\Release\moc_filteringwidget.cpp">
       <Filter>Generated Files\Release_Win32</Filter>
     </ClCompile>
+    <ClCompile Include="rangefilterlistwidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Win32\Debug\moc_rangefilterlistwidget.cpp">
+      <Filter>Generated Files\Debug_Win32</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Win32\Release\moc_rangefilterlistwidget.cpp">
+      <Filter>Generated Files\Release_Win32</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="glyphviewer.qrc">
@@ -206,6 +215,9 @@
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="filteringwidget.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="rangefilterlistwidget.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>

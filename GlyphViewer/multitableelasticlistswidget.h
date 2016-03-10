@@ -34,21 +34,22 @@ public:
 	MultiTableElasticListsWidget(SynGlyphX::SourceDataCache::SharedPtr sourceDataCache, SourceDataSelectionModel* selectionModel, QWidget *parent);
 	~MultiTableElasticListsWidget();
 
+public slots:
+	void SwitchTable(const QString& table);
+
 private slots:
 	void OnSelectionChanged();
 	void OnModelReset();
-	void OnComboBoxChanged(int current);
 	void OnElasticListsSelectionChanged(const QString& table, const SynGlyphX::SourceDataCache::ColumnValueData& selection);
 
 private:
-	typedef std::unordered_map<std::string, SingleTableElasticListsWidget*> NameWidgetMap;
+	typedef std::unordered_map<std::wstring, SingleTableElasticListsWidget*> NameWidgetMap;
 
 	void UpdateElasticListsAndSourceDataWidget();
 	void UpdateElasticLists(const SourceDataSelectionModel::IndexSetMap& dataIndexes = SourceDataSelectionModel::IndexSetMap());
 	void ClearElasticLists();
 
 	SourceDataSelectionModel* m_selectionModel;
-	QComboBox* m_tableComboBox;
 	QStackedLayout* m_elasticListsStackLayout;
 	NameWidgetMap m_elasticListWidgetsForEachTable;
 	SynGlyphX::SourceDataCache::SharedPtr m_sourceDataCache;

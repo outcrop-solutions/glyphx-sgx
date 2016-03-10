@@ -2,7 +2,9 @@
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QTabWidget>
+#include "groupboxsinglewidget.h"
 #include "multitableelasticlistswidget.h"
+#include "rangefilterlistwidget.h"
 
 FilteringWidget::FilteringWidget(SynGlyphX::SourceDataCache::SharedPtr sourceDataCache, SourceDataSelectionModel* selectionModel, QWidget *parent)
 	: QWidget(parent),
@@ -23,10 +25,23 @@ FilteringWidget::FilteringWidget(SynGlyphX::SourceDataCache::SharedPtr sourceDat
 	topLayout->addStretch(1);
 	mainLayout->addLayout(topLayout);
 
+	m_tableComboBox = new QComboBox(this);
+	m_tableComboBox->setEnabled(false);
+	m_tableComboBox->setSizeAdjustPolicy(QComboBox::AdjustToContents);
+	m_tableComboBox->setMinimumContentsLength(15);
+	m_tableComboBox->blockSignals(true);
+
+	SynGlyphX::GroupBoxSingleWidget* tableComboGroupBox = new SynGlyphX::GroupBoxSingleWidget(tr("Source Data Table:"), m_tableComboBox, this);
+	mainLayout->addWidget(tableComboGroupBox);
+
 	QTabWidget* filterMethodsWidget = new QTabWidget(this);
 
 	MultiTableElasticListsWidget* elasticListsWidget = new MultiTableElasticListsWidget(sourceDataCache, selectionModel, filterMethodsWidget);
 	filterMethodsWidget->addTab(elasticListsWidget, tr("Elastic"));
+	QObject::connect(this, &FilteringWidget::TableChanged, elasticListsWidget, &MultiTableElasticListsWidget::SwitchTable);
+	RangeFilterListWidget* rangeListFilterWidget = new RangeFilterListWidget(filterMethodsWidget);
+	filterMethodsWidget->addTab(rangeListFilterWidget, tr("Range"));
+	QObject::connect(this, &FilteringWidget::TableChanged, rangeListFilterWidget, &RangeFilterListWidget::SwitchTable);
 
 	mainLayout->addWidget(filterMethodsWidget, 1);
 
@@ -47,8 +62,10 @@ FilteringWidget::FilteringWidget(SynGlyphX::SourceDataCache::SharedPtr sourceDat
 	m_sourceDataWindow->setVisible(false);
 
 	QObject::connect(m_sourceDataWindow.data(), &SourceDataWidget::WindowHidden, this, &FilteringWidget::OnSourceWidgetWindowHidden);
-	QObject::connect(m_selectionModel, &SourceDataSelectionModel::SelectionChanged, this, &FilteringWidget::OnSourceDataStateChanged);
-	QObject::connect(m_selectionModel->GetSceneSelectionModel()->model(), &QAbstractItemModel::modelReset, this, &FilteringWidget::OnSourceDataStateChanged);
+	QObject::connect(m_selectionModel, &SourceDataSelectionModel::SelectionChanged, this, &FilteringWidget::OnSourceDataSelectionChanged);
+	QObject::connect(m_selectionModel->GetSceneSelectionModel()->model(), &QAbstractItemModel::modelReset, this, &FilteringWidget::OnModelReset);
+
+	QObject::connect(m_tableComboBox, static_cast<void(QComboBox::*)(const QString &)>(&QComboBox::currentIndexChanged), this, &FilteringWidget::OnTableChanged);
 }
 
 FilteringWidget::~FilteringWidget()
@@ -71,16 +88,54 @@ void FilteringWidget::OnSourceWidgetWindowHidden() {
 	m_sourceWidgetButton->setChecked(false);
 }
 
-void FilteringWidget::OnSourceDataStateChanged() {
+void FilteringWidget::OnSourceDataSelectionChanged() {
 
-	bool isSelectionEmpty = m_selectionModel->GetSourceDataSelection().empty();
-	EnableButtons(m_sourceDataCache->IsValid() && (!isSelectionEmpty));
+	const SourceDataSelectionModel::IndexSetMap& sourceDataSelectionSets = m_selectionModel->GetSourceDataSelection();
+	EnableButtons(m_sourceDataCache->IsValid() && (!sourceDataSelectionSets.empty()));
 
-	if (isSelectionEmpty) {
+	if (sourceDataSelectionSets.empty()) {
 
 		m_sourceDataWindow->setVisible(false);
 		OnSourceWidgetWindowHidden();
 	}
+	else {
+
+		//Only change the table shown if it is not in the selection at all
+		if (sourceDataSelectionSets.count(m_tableComboBox->currentData().toString()) == 0) {
+
+			int newComboBoxIndex = m_tableComboBox->findData(sourceDataSelectionSets.rbegin()->first);
+			if ((newComboBoxIndex != -1) && (newComboBoxIndex != m_tableComboBox->currentIndex())) {
+
+				m_tableComboBox->setCurrentIndex(newComboBoxIndex);
+			}
+		}
+	}
+}
+
+void FilteringWidget::OnModelReset() {
+
+	m_tableComboBox->blockSignals(true);
+	m_tableComboBox->clear();
+	m_tableComboBox->setEnabled(m_sourceDataCache->IsValid());
+
+	if (m_sourceDataCache->IsValid()) {
+
+		const SynGlyphX::SourceDataCache::TableNameMap& tableNameMap = m_sourceDataCache->GetFormattedNames();
+		for (auto formattedName : tableNameMap) {
+
+			m_tableComboBox->addItem(formattedName.second, formattedName.first);
+		}
+
+		m_tableComboBox->view()->setMinimumWidth(m_tableComboBox->view()->sizeHintForColumn(0));
+		m_tableComboBox->blockSignals(false);
+	}
+
+	OnSourceDataSelectionChanged();
+}
+
+void FilteringWidget::OnTableChanged(const QString& table) {
+
+	emit TableChanged(m_tableComboBox->currentData().toString());
 }
 
 void FilteringWidget::EnableButtons(bool enable) {

@@ -15,47 +15,24 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef FILTERINGWIDGET_H
-#define FILTERINGWIDGET_H
+#ifndef RANGEFILTERLISTWIDGET_H
+#define RANGEFILTERLISTWIDGET_H
 
 #include <QtWidgets/QWidget>
-#include <QtWidgets/QCheckBox>
-#include <QtWidgets/QPushButton>
-#include "sourcedatawidget.h"
-#include "sourcedataselectionmodel.h"
-#include "linkedwidgetsmanager.h"
 
-class FilteringWidget : public QWidget
+class RangeFilterListWidget : public QWidget
 {
 	Q_OBJECT
 
 public:
-	FilteringWidget(SynGlyphX::SourceDataCache::SharedPtr sourceDataCache, SourceDataSelectionModel* selectionModel, QWidget *parent);
-	~FilteringWidget();
+	RangeFilterListWidget(QWidget *parent);
+	~RangeFilterListWidget();
 
-	void SetupLinkedWidgets(LinkedWidgetsManager& linkedWidgets);
-
-signals:
-	void TableChanged(const QString& table);
-
-private slots:
-	void Clear();
-	void OnSourceWidgetWindowHidden();
-	void OnSourceDataSelectionChanged();
-	void OnModelReset();
-	void OnTableChanged(const QString& table);
+public slots:
+	void SwitchTable(const QString& table);
 
 private:
-	void EnableButtons(bool enable);
-
-	QComboBox* m_tableComboBox;
-	QCheckBox* m_hideUnselectedTreesCheckbox;
-	QPushButton* m_sourceWidgetButton;
-	QPushButton* m_clearButton;
-	QScopedPointer<SourceDataWidget> m_sourceDataWindow;
-
-	SourceDataSelectionModel* m_selectionModel;
-	SynGlyphX::SourceDataCache::SharedPtr m_sourceDataCache;
+	
 };
 
-#endif // FILTERINGWIDGET_H
+#endif // RANGEFILTERLISTWIDGET_H
