@@ -43,6 +43,7 @@ namespace SynGlyphX {
 		void OnSliderUpperUpdated(int upper);
 		void OnMinSpinBoxUpdated(double min);
 		void OnMaxSpinBoxUpdated(double max);
+		void EmitRangeUpdate();
 
 	private:
 		QDoubleSpinBox* m_minSpinBox;

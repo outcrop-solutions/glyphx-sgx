@@ -19,20 +19,33 @@
 #define RANGEFILTERLISTWIDGET_H
 
 #include <QtWidgets/QWidget>
+#include <QtWidgets/QPushButton>
+#include "singlenumericrangefilterwidget.h"
+#include "sourcedataselectionmodel.h"
 
 class RangeFilterListWidget : public QWidget
 {
 	Q_OBJECT
 
 public:
-	RangeFilterListWidget(QWidget *parent);
+	RangeFilterListWidget(SynGlyphX::SourceDataCache::SharedPtr sourceDataCache, SourceDataSelectionModel* selectionModel, QWidget *parent);
 	~RangeFilterListWidget();
 
 public slots:
 	void SwitchTable(const QString& table);
 
+private slots:
+	void OnModelReset();
+	void OnAddFilter();
+	void OnRemoveAllFilters();
+
 private:
-	
+	SynGlyphX::SourceDataCache::SharedPtr m_sourceDataCache;
+	SourceDataSelectionModel* m_selectionModel;
+
+	QPushButton* m_addButton;
+	QPushButton* m_removeAllButton;
+	std::vector<SynGlyphX::SingleNumericRangeFilterWidget*> m_numericFilters;
 };
 
 #endif // RANGEFILTERLISTWIDGET_H

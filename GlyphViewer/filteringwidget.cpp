@@ -39,7 +39,7 @@ FilteringWidget::FilteringWidget(SynGlyphX::SourceDataCache::SharedPtr sourceDat
 	MultiTableElasticListsWidget* elasticListsWidget = new MultiTableElasticListsWidget(sourceDataCache, selectionModel, filterMethodsWidget);
 	filterMethodsWidget->addTab(elasticListsWidget, tr("Elastic"));
 	QObject::connect(this, &FilteringWidget::TableChanged, elasticListsWidget, &MultiTableElasticListsWidget::SwitchTable);
-	RangeFilterListWidget* rangeListFilterWidget = new RangeFilterListWidget(filterMethodsWidget);
+	RangeFilterListWidget* rangeListFilterWidget = new RangeFilterListWidget(sourceDataCache, selectionModel, filterMethodsWidget);
 	filterMethodsWidget->addTab(rangeListFilterWidget, tr("Range"));
 	QObject::connect(this, &FilteringWidget::TableChanged, rangeListFilterWidget, &RangeFilterListWidget::SwitchTable);
 

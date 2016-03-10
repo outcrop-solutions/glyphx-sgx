@@ -49,10 +49,11 @@ private:
 	void UpdateElasticLists(const SourceDataSelectionModel::IndexSetMap& dataIndexes = SourceDataSelectionModel::IndexSetMap());
 	void ClearElasticLists();
 
+	SynGlyphX::SourceDataCache::SharedPtr m_sourceDataCache;
 	SourceDataSelectionModel* m_selectionModel;
+	
 	QStackedLayout* m_elasticListsStackLayout;
 	NameWidgetMap m_elasticListWidgetsForEachTable;
-	SynGlyphX::SourceDataCache::SharedPtr m_sourceDataCache;
 };
 
 #endif // MULTITABLEELASTICLISTSWIDGET_H

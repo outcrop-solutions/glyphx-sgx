@@ -12,6 +12,7 @@ MultiTableElasticListsWidget::MultiTableElasticListsWidget(SynGlyphX::SourceData
 	QVBoxLayout* mainLayout = new QVBoxLayout(this);
 	
 	m_elasticListsStackLayout = new QStackedLayout(this);
+	m_elasticListsStackLayout->setContentsMargins(0, 0, 0, 0);
 	ClearElasticLists();
 	mainLayout->addLayout(m_elasticListsStackLayout, 1);
 

@@ -71,6 +71,9 @@ namespace SynGlyphX {
 		int GetPointValFromOrientation(const QPoint& point) const;
 		int ConvertPixelPositionToRangeValue(int pos) const;
 
+		bool SetLowerPositionNoUpdate(int lower);
+		bool SetUpperPositionNoUpdate(int upper);
+
 		int m_lowerValue;
 		int m_upperValue;
 

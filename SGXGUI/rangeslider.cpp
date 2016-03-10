@@ -10,7 +10,8 @@ namespace SynGlyphX {
 		m_upperHandleState(QStyle::SC_None),
 		m_lastPressedHandle(NoHandle)
 	{
-
+		SetLowerPosition(minimum());
+		SetUpperPosition(maximum());
 	}
 
 	RangeSlider::~RangeSlider()
@@ -31,10 +32,11 @@ namespace SynGlyphX {
 	void RangeSlider::SetLowerValue(int lower) {
 
 		lower = qBound(minimum(), lower, m_upperValue);
+		SetLowerPositionNoUpdate(lower);
 		if (m_lowerValue != lower) {
 
 			m_lowerValue = lower;
-			emit LowerPositionChanged(m_lowerValue);
+			emit LowerValueChanged(m_lowerValue);
 			update();
 		}
 	}
@@ -42,6 +44,7 @@ namespace SynGlyphX {
 	void RangeSlider::SetUpperValue(int upper) {
 
 		upper = qBound(m_lowerValue, upper, maximum());
+		SetUpperPositionNoUpdate(upper);
 		if (m_upperValue != upper) {
 
 			m_upperValue = upper;
@@ -62,13 +65,7 @@ namespace SynGlyphX {
 
 	void RangeSlider::SetLowerPosition(int lower) {
 
-		if (m_lowerPosition != lower) {
-
-			m_lowerPosition = lower;
-			if (isSliderDown()) {
-
-				emit LowerPositionChanged(m_lowerPosition);
-			}
+		if (SetLowerPositionNoUpdate(lower)) {
 
 			if (hasTracking()) {
 
@@ -81,15 +78,25 @@ namespace SynGlyphX {
 		}
 	}
 
-	void RangeSlider::SetUpperPosition(int upper) {
+	bool RangeSlider::SetLowerPositionNoUpdate(int lower) {
 
-		if (m_upperPosition != upper) {
+		if (m_lowerPosition != lower) {
 
-			m_upperPosition = upper;
+			m_lowerPosition = lower;
 			if (isSliderDown()) {
 
-				emit UpperPositionChanged(m_upperPosition);
+				emit LowerPositionChanged(m_lowerPosition);
 			}
+
+			return true;
+		}
+
+		return false;
+	}
+
+	void RangeSlider::SetUpperPosition(int upper) {
+
+		if (SetUpperPositionNoUpdate(upper)) {
 
 			if (hasTracking()) {
 
@@ -101,6 +108,22 @@ namespace SynGlyphX {
 			}
 		}
 		
+	}
+
+	bool RangeSlider::SetUpperPositionNoUpdate(int upper) {
+
+		if (m_upperPosition != upper) {
+
+			m_upperPosition = upper;
+			if (isSliderDown()) {
+
+				emit UpperPositionChanged(m_upperPosition);
+			}
+
+			return true;
+		}
+
+		return false;
 	}
 
 	void RangeSlider::paintEvent(QPaintEvent* event) {
@@ -156,15 +179,26 @@ namespace SynGlyphX {
 
 		QStyleOptionSlider opt;
 		InitStyleOption(&opt);
-		int maxDragDistance = style()->pixelMetric(QStyle::PM_MaximumDragDistance, &opt, this);
+		//int maxDragDistance = style()->pixelMetric(QStyle::PM_MaximumDragDistance, &opt, this);
 		int newPosition = ConvertPixelPositionToRangeValue(GetPointValFromOrientation(event->pos()) - m_previousOffset);
-		if (maxDragDistance > 0) {
+		/*if (maxDragDistance > 0) {
 
-			if (!QRect().adjusted(-maxDragDistance, -maxDragDistance, maxDragDistance, maxDragDistance).contains(event->pos())) {
+			//if (!QRect().adjusted(-maxDragDistance, -maxDragDistance, maxDragDistance, maxDragDistance).contains(event->pos())) {
+			//
+			//	newPosition = m_previousPosition;
+			//}
 
+			if (QRect().adjusted(-maxDragDistance, -maxDragDistance, maxDragDistance, maxDragDistance).contains(event->pos())) {
+
+				m_previousPosition = newPosition;
+			} 
+			else {
+				
 				newPosition = m_previousPosition;
 			}
-		}
+		}*/
+
+		newPosition = qBound(minimum(), newPosition, maximum());
 
 		if (m_upperHandleState == QStyle::SC_SliderHandle) {
 
@@ -190,9 +224,22 @@ namespace SynGlyphX {
 
 		QSlider::mouseReleaseEvent(event);
 		setSliderDown(false);
+
+		if (hasTracking()) {
+
+			update();
+		}
+		else if (m_upperHandleState == QStyle::SC_SliderHandle) {
+
+			SetUpperValue(m_upperPosition);
+		}
+		else if (m_lowerHandleState == QStyle::SC_SliderHandle) {
+
+			SetLowerValue(m_lowerPosition);
+		}
+
 		m_upperHandleState = QStyle::SC_None;
 		m_lowerHandleState = QStyle::SC_None;
-		update();
 	}
 
 	QStyle::SubControl RangeSlider::UpdateHandleOnMousePress(const QPoint& pos, int value, const QStyle::SubControl& oldControl, Handle handle) {

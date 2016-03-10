@@ -9,6 +9,7 @@ SingleTableElasticListsWidget::SingleTableElasticListsWidget(SynGlyphX::SourceDa
 {
 	m_innerWidget = new QWidget(this);
 	QVBoxLayout* layout = new QVBoxLayout(m_innerWidget);
+	layout->setContentsMargins(0, 0, 0, 0);
 	layout->setSpacing(Spacing);
 
 	SynGlyphX::TableColumns columns = m_sourceDataCache->GetColumnsForTable(table);
