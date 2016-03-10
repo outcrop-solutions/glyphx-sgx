@@ -77,7 +77,7 @@ GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 	}
 
 	m_linkedWidgetsManager = new LinkedWidgetsManager(m_antzWidget, this);
-	m_sourceDataSelectionWidget->SetupLinkedWidgets(*m_linkedWidgetsManager);
+	m_filteringWidget->SetupLinkedWidgets(*m_linkedWidgetsManager);
 	m_pseudoTimeFilterWidget->SetupLinkedWidgets(*m_linkedWidgetsManager);
 
 	m_stereoAction->setChecked(m_antzWidget->IsInStereoMode());
@@ -259,9 +259,9 @@ void GlyphViewerWindow::CreateDockWidgets() {
 	tabifyDockWidget(m_glyphListDockWidget, textPropertiesDockWidget);
 	m_glyphListDockWidget->raise();
 
-	QDockWidget* rightDockWidget = new QDockWidget(tr("Source Data Selector"), this);
-	m_sourceDataSelectionWidget = new MultiTableElasticListsWidget(m_sourceDataCache, m_sourceDataSelectionModel, rightDockWidget);
-	rightDockWidget->setWidget(m_sourceDataSelectionWidget);
+	QDockWidget* rightDockWidget = new QDockWidget(tr("Filtering"), this);
+	m_filteringWidget = new FilteringWidget(m_sourceDataCache, m_sourceDataSelectionModel, rightDockWidget);
+	rightDockWidget->setWidget(m_filteringWidget);
 	addDockWidget(Qt::RightDockWidgetArea, rightDockWidget);
 	m_viewMenu->addAction(rightDockWidget->toggleViewAction());
 

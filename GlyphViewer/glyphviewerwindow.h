@@ -27,7 +27,7 @@
 #include "cachemanager.h"
 #include "glyphvieweroptions.h"
 #include "sourcedatacache.h"
-#include "multitableelasticlistswidget.h"
+#include "filteringwidget.h"
 #include "pseudotimefilterwidget.h"
 #include "linkedwidgetsmanager.h"
 #include "itemfocusselectionmodel.h"
@@ -103,7 +103,7 @@ private:
 	GlyphTreeListView* m_treeView;
 	GlyphPropertiesWidgetsContainer* m_glyphPropertiesWidgetContainer;
 	SynGlyphX::SourceDataCache::SharedPtr m_sourceDataCache;
-	MultiTableElasticListsWidget* m_sourceDataSelectionWidget;
+	FilteringWidget* m_filteringWidget;
 	SourceDataSelectionModel* m_sourceDataSelectionModel;
 	PseudoTimeFilterWidget* m_pseudoTimeFilterWidget;
 	DataEngine::DataEngineConnection::SharedPtr m_dataEngineConnection;

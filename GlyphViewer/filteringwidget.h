@@ -15,43 +15,41 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef MULTITABLEELASTICLISTSWIDGET_H
-#define MULTITABLEELASTICLISTSWIDGET_H
+#ifndef FILTERINGWIDGET_H
+#define FILTERINGWIDGET_H
 
 #include <QtWidgets/QWidget>
-#include <QtWidgets/QComboBox>
-#include <QtWidgets/QStackedLayout>
-#include "singlewidgetdialog.h"
-#include <unordered_map>
-#include "singletableelasticlistswidget.h"
+#include <QtWidgets/QCheckBox>
+#include <QtWidgets/QPushButton>
+#include "sourcedatawidget.h"
 #include "sourcedataselectionmodel.h"
+#include "linkedwidgetsmanager.h"
 
-class MultiTableElasticListsWidget : public QWidget
+class FilteringWidget : public QWidget
 {
 	Q_OBJECT
 
 public:
-	MultiTableElasticListsWidget(SynGlyphX::SourceDataCache::SharedPtr sourceDataCache, SourceDataSelectionModel* selectionModel, QWidget *parent);
-	~MultiTableElasticListsWidget();
+	FilteringWidget(SynGlyphX::SourceDataCache::SharedPtr sourceDataCache, SourceDataSelectionModel* selectionModel, QWidget *parent);
+	~FilteringWidget();
+
+	void SetupLinkedWidgets(LinkedWidgetsManager& linkedWidgets);
 
 private slots:
-	void OnSelectionChanged();
-	void OnModelReset();
-	void OnComboBoxChanged(int current);
-	void OnElasticListsSelectionChanged(const QString& table, const SynGlyphX::SourceDataCache::ColumnValueData& selection);
+	void Clear();
+	void OnSourceWidgetWindowHidden();
+	void OnSourceDataStateChanged();
 
 private:
-	typedef std::unordered_map<std::string, SingleTableElasticListsWidget*> NameWidgetMap;
+	void EnableButtons(bool enable);
 
-	void UpdateElasticListsAndSourceDataWidget();
-	void UpdateElasticLists(const SourceDataSelectionModel::IndexSetMap& dataIndexes = SourceDataSelectionModel::IndexSetMap());
-	void ClearElasticLists();
+	QCheckBox* m_hideUnselectedTreesCheckbox;
+	QPushButton* m_sourceWidgetButton;
+	QPushButton* m_clearButton;
+	QScopedPointer<SourceDataWidget> m_sourceDataWindow;
 
 	SourceDataSelectionModel* m_selectionModel;
-	QComboBox* m_tableComboBox;
-	QStackedLayout* m_elasticListsStackLayout;
-	NameWidgetMap m_elasticListWidgetsForEachTable;
 	SynGlyphX::SourceDataCache::SharedPtr m_sourceDataCache;
 };
 
-#endif // MULTITABLEELASTICLISTSWIDGET_H
+#endif // FILTERINGWIDGET_H

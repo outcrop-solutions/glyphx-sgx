@@ -1,6 +1,5 @@
 #include "multitableelasticlistswidget.h"
 #include <QtWidgets/QVBoxLayout>
-#include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QAbstractItemView>
 #include "groupboxsinglewidget.h"
@@ -11,20 +10,7 @@ MultiTableElasticListsWidget::MultiTableElasticListsWidget(SynGlyphX::SourceData
 	m_selectionModel(selectionModel),
 	m_sourceDataCache(sourceDataCache)
 {
-	QVBoxLayout* layout = new QVBoxLayout(this);
-
-	QHBoxLayout* topLayout = new QHBoxLayout;
-
-	m_hideUnselectedTreesCheckbox = new QCheckBox(tr("Filter View"), this);
-	topLayout->addWidget(m_hideUnselectedTreesCheckbox);
-
-	m_clearButton = new QPushButton(tr("Clear"), this);
-	topLayout->addWidget(m_clearButton);
-	QObject::connect(m_clearButton, &QPushButton::clicked, this, &MultiTableElasticListsWidget::Clear);
-
-	topLayout->addStretch(1);
-	
-	layout->addLayout(topLayout);
+	QVBoxLayout* mainLayout = new QVBoxLayout(this);
 
 	m_tableComboBox = new QComboBox(this);
 	m_tableComboBox->setEnabled(false);
@@ -33,48 +19,22 @@ MultiTableElasticListsWidget::MultiTableElasticListsWidget(SynGlyphX::SourceData
 	m_tableComboBox->blockSignals(true);
 
 	SynGlyphX::GroupBoxSingleWidget* tableComboGroupBox = new SynGlyphX::GroupBoxSingleWidget(tr("Source Data Table:"), m_tableComboBox, this);
-	layout->addWidget(tableComboGroupBox);
+	mainLayout->addWidget(tableComboGroupBox);
 	
 	m_elasticListsStackLayout = new QStackedLayout(this);
 	ClearElasticLists();
-	layout->addLayout(m_elasticListsStackLayout, 1);
+	mainLayout->addLayout(m_elasticListsStackLayout, 1);
 	QObject::connect(m_tableComboBox, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &MultiTableElasticListsWidget::OnComboBoxChanged);
 
-	QHBoxLayout* buttonsLayout = new QHBoxLayout(this);
+	setLayout(mainLayout);
 
-	m_sourceWidgetButton = new QPushButton(tr("Show Selected Source Data"), this);
-	m_sourceWidgetButton->setCheckable(true);
-	buttonsLayout->addWidget(m_sourceWidgetButton);
-
-	buttonsLayout->addStretch(1);
-	layout->addLayout(buttonsLayout);
-
-	setLayout(layout);
-
-	EnableButtons(!m_selectionModel->GetSourceDataSelection().empty());
 	QObject::connect(m_selectionModel, &SourceDataSelectionModel::SelectionChanged, this, &MultiTableElasticListsWidget::OnSelectionChanged);
-
-	m_sourceDataWindow.reset(new SourceDataWidget(m_selectionModel));
-	QObject::connect(m_sourceWidgetButton, &QPushButton::toggled, m_sourceDataWindow.data(), &SourceDataWidget::setVisible);
-	m_sourceDataWindow->setVisible(false);
-
-	QObject::connect(m_sourceDataWindow.data(), &SourceDataWidget::WindowHidden, this, &MultiTableElasticListsWidget::OnSourceWidgetWindowHidden);
 	QObject::connect(m_selectionModel->GetSceneSelectionModel()->model(), &QAbstractItemModel::modelReset, this, &MultiTableElasticListsWidget::OnModelReset);
 }
 
 MultiTableElasticListsWidget::~MultiTableElasticListsWidget()
 {
 
-}
-
-void MultiTableElasticListsWidget::SetupLinkedWidgets(LinkedWidgetsManager& linkedWidgets) {
-
-	linkedWidgets.AddFilterViewCheckbox(m_hideUnselectedTreesCheckbox);
-}
-
-void MultiTableElasticListsWidget::OnSourceWidgetWindowHidden() {
-
-	m_sourceWidgetButton->setChecked(false);
 }
 
 void MultiTableElasticListsWidget::OnSelectionChanged() {
@@ -103,10 +63,6 @@ void MultiTableElasticListsWidget::OnModelReset() {
 
 		UpdateElasticListsAndSourceDataWidget();
 	}
-	else {
-
-		EnableButtons(false);
-	}
 }
 
 void MultiTableElasticListsWidget::OnComboBoxChanged(int current) {
@@ -118,7 +74,6 @@ void MultiTableElasticListsWidget::UpdateElasticListsAndSourceDataWidget() {
 
 	const SourceDataSelectionModel::IndexSetMap& sourceDataSelectionSets = m_selectionModel->GetSourceDataSelection();
 	bool isSelectionNotEmpty = !sourceDataSelectionSets.empty();
-	EnableButtons(isSelectionNotEmpty);
 	if (isSelectionNotEmpty) {
 
 		//m_sourceDataWindow->UpdateTables(sourceDataSelectionSets);
@@ -137,8 +92,6 @@ void MultiTableElasticListsWidget::UpdateElasticListsAndSourceDataWidget() {
 	else {
 
 		UpdateElasticLists();
-		m_sourceDataWindow->setVisible(false);
-		OnSourceWidgetWindowHidden();
 	}
 }
 
@@ -197,15 +150,4 @@ void MultiTableElasticListsWidget::OnElasticListsSelectionChanged(const QString&
 		
 		m_selectionModel->SetSourceDataSelectionForTable(table, indexSet);
 	}
-}
-
-void MultiTableElasticListsWidget::EnableButtons(bool enable) {
-
-	m_sourceWidgetButton->setEnabled(enable);
-	m_clearButton->setEnabled(enable);
-}
-
-void MultiTableElasticListsWidget::Clear() {
-
-	m_selectionModel->ClearSourceDataSelection();
 }
