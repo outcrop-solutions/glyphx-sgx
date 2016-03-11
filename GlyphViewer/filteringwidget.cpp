@@ -6,7 +6,7 @@
 #include "multitableelasticlistswidget.h"
 #include "rangefilterlistwidget.h"
 
-FilteringWidget::FilteringWidget(SynGlyphX::SourceDataCache::SharedPtr sourceDataCache, SourceDataSelectionModel* selectionModel, QWidget *parent)
+FilteringWidget::FilteringWidget(SourceDataInfoModel* columnsModel, SynGlyphX::SourceDataCache::SharedPtr sourceDataCache, SourceDataSelectionModel* selectionModel, QWidget *parent)
 	: QWidget(parent),
 	m_selectionModel(selectionModel),
 	m_sourceDataCache(sourceDataCache)
@@ -39,7 +39,7 @@ FilteringWidget::FilteringWidget(SynGlyphX::SourceDataCache::SharedPtr sourceDat
 	MultiTableElasticListsWidget* elasticListsWidget = new MultiTableElasticListsWidget(sourceDataCache, selectionModel, filterMethodsWidget);
 	filterMethodsWidget->addTab(elasticListsWidget, tr("Elastic"));
 	QObject::connect(this, &FilteringWidget::TableChanged, elasticListsWidget, &MultiTableElasticListsWidget::SwitchTable);
-	RangeFilterListWidget* rangeListFilterWidget = new RangeFilterListWidget(sourceDataCache, selectionModel, filterMethodsWidget);
+	RangeFilterListWidget* rangeListFilterWidget = new RangeFilterListWidget(columnsModel, sourceDataCache, selectionModel, filterMethodsWidget);
 	filterMethodsWidget->addTab(rangeListFilterWidget, tr("Range"));
 	QObject::connect(this, &FilteringWidget::TableChanged, rangeListFilterWidget, &RangeFilterListWidget::SwitchTable);
 

@@ -9,11 +9,12 @@
 
 unsigned int PseudoTimeFilterWidget::s_buttonSize = 24;
 
-PseudoTimeFilterWidget::PseudoTimeFilterWidget(SynGlyphX::DataTransformMapping::ConstSharedPtr dataTransformMapping, SynGlyphX::SourceDataCache::SharedPtr sourceDataCache, SourceDataSelectionModel* selectionModel, QWidget *parent)
+PseudoTimeFilterWidget::PseudoTimeFilterWidget(SourceDataInfoModel* columnsModel, SynGlyphX::SourceDataCache::SharedPtr sourceDataCache, SourceDataSelectionModel* selectionModel, QWidget *parent)
 	: QWidget(parent),
 	m_filterState(FilterState::Inactive),
 	m_sourceDataCache(sourceDataCache),
-	m_selectionModel(selectionModel)
+	m_selectionModel(selectionModel),
+	m_columnsModel(columnsModel)
 {
 	m_playTimer.setSingleShot(false);
 
@@ -38,8 +39,6 @@ PseudoTimeFilterWidget::PseudoTimeFilterWidget(SynGlyphX::DataTransformMapping::
 
 	m_fieldSelectorButton = new QPushButton(tr("Select Field"), this);
 	QObject::connect(m_fieldSelectorButton, &QPushButton::clicked, this, &PseudoTimeFilterWidget::OnFilterSelectionButtonClicked);
-	m_columnsModel = new SourceDataInfoModel(dataTransformMapping, sourceDataCache, this);
-	m_columnsModel->SetSelectable(false, false, true);
 
 	buttonsLayoutLeft->addWidget(m_fieldSelectorButton);
 
@@ -127,7 +126,6 @@ void PseudoTimeFilterWidget::ResetForNewVisualization() {
 
 	EnableButtons(true);
 	m_slider->setMaximum(20);
-	m_columnsModel->Reset();
 
 	UpdateSelectedField(m_columnsModel->index(0, 0, m_columnsModel->index(0, 0, m_columnsModel->index(0, 0))));
 	ChangeFilterState(FilterState::Inactive);

@@ -46,9 +46,17 @@ namespace SynGlyphX {
 		void EmitRangeUpdate();
 
 	private:
+		double ConvertSliderPositionToValueInRange(int value);
+		int ConvertValueInRangeToSliderPosition(double value);
+
+		void SetMinSpinBoxBlockSignals(double min);
+		void SetMaxSpinBoxBlockSignals(double max);
+
 		QDoubleSpinBox* m_minSpinBox;
 		QDoubleSpinBox* m_maxSpinBox;
 		RangeSlider* m_rangeSlider;
+
+		double m_ratio;
 	};
 
 } //namespace SynGlyphX

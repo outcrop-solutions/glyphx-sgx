@@ -36,6 +36,7 @@ public:
 	void SetShowUnmappedTables(bool show);
 	void SetSelectable(bool datasourcesSelectable, bool tableSelectable, bool columnsSelectable);
 
+public slots:
 	void Reset();
 
 private:

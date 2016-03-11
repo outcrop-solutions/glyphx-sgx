@@ -43,6 +43,9 @@ GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 	m_glyphForestSelectionModel = new SynGlyphX::ItemFocusSelectionModel(m_glyphForestModel, this);
 	m_sourceDataSelectionModel = new SourceDataSelectionModel(m_mappingModel, m_sourceDataCache, m_glyphForestSelectionModel, this);
 
+	m_columnsModel = new SourceDataInfoModel(m_mappingModel->GetDataMapping(), m_sourceDataCache, this);
+	m_columnsModel->SetSelectable(false, false, true);
+
 	CreateMenus();
 	CreateDockWidgets();
 
@@ -260,16 +263,17 @@ void GlyphViewerWindow::CreateDockWidgets() {
 	m_glyphListDockWidget->raise();
 
 	QDockWidget* rightDockWidget = new QDockWidget(tr("Filtering"), this);
-	m_filteringWidget = new FilteringWidget(m_sourceDataCache, m_sourceDataSelectionModel, rightDockWidget);
+	m_filteringWidget = new FilteringWidget(m_columnsModel, m_sourceDataCache, m_sourceDataSelectionModel, rightDockWidget);
 	rightDockWidget->setWidget(m_filteringWidget);
 	addDockWidget(Qt::RightDockWidgetArea, rightDockWidget);
 	m_viewMenu->addAction(rightDockWidget->toggleViewAction());
 
 	QDockWidget* bottomDockWidget = new QDockWidget(tr("Time Animated Filter"), this);
-	m_pseudoTimeFilterWidget = new PseudoTimeFilterWidget(m_mappingModel->GetDataMapping(), m_sourceDataCache, m_sourceDataSelectionModel, bottomDockWidget);
+	m_pseudoTimeFilterWidget = new PseudoTimeFilterWidget(m_columnsModel, m_sourceDataCache, m_sourceDataSelectionModel, bottomDockWidget);
 	bottomDockWidget->setWidget(m_pseudoTimeFilterWidget);
 	addDockWidget(Qt::BottomDockWidgetArea, bottomDockWidget);
 	m_viewMenu->addAction(bottomDockWidget->toggleViewAction());
+	QObject::connect(m_columnsModel, &SourceDataInfoModel::modelReset, m_pseudoTimeFilterWidget, &PseudoTimeFilterWidget::ResetForNewVisualization);
 }
 
 void GlyphViewerWindow::OpenProject() {
@@ -402,7 +406,7 @@ bool GlyphViewerWindow::LoadNewVisualization(const QString& filename) {
 
 	SetCurrentFile(filename);
 	EnableLoadedVisualizationDependentActions(true);
-	m_pseudoTimeFilterWidget->ResetForNewVisualization();
+	m_columnsModel->Reset();
 	statusBar()->showMessage("Visualization successfully opened", 3000);
 
 	return true;

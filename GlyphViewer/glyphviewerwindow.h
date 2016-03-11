@@ -108,6 +108,7 @@ private:
 	PseudoTimeFilterWidget* m_pseudoTimeFilterWidget;
 	DataEngine::DataEngineConnection::SharedPtr m_dataEngineConnection;
 	SynGlyphX::PortableVisualizationExport m_portableVisualizationExport;
+	SourceDataInfoModel* m_columnsModel;
 };
 
 #endif // GLYPHVIEWERWINDOW_H

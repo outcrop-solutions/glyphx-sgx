@@ -24,7 +24,7 @@ namespace SynGlyphX {
 
 		m_rangeSlider = new RangeSlider(orientation, this);
 		m_rangeSlider->setRange(0, 99);
-		m_rangeSlider->setTracking(false);
+		m_rangeSlider->setTracking(true);
 		mainLayout->addWidget(m_rangeSlider);
 
 		m_maxSpinBox = new QDoubleSpinBox(this);
@@ -68,28 +68,31 @@ namespace SynGlyphX {
 		m_maxSpinBox->blockSignals(false);
 		m_rangeSlider->blockSignals(false);
 
+		m_ratio = (max - min) / (m_rangeSlider->maximum() - m_rangeSlider->minimum());
+
 		emit RangeUpdated(min, max);
 	}
 
 	void SingleNumericRangeFilterWidget::OnSliderLowerUpdated(int lower) {
 
-		m_minSpinBox->blockSignals(true);
-		m_minSpinBox->setValue(lower);
-		m_minSpinBox->blockSignals(false);
+		SetMinSpinBoxBlockSignals(ConvertSliderPositionToValueInRange(lower));
 	}
 
 	void SingleNumericRangeFilterWidget::OnSliderUpperUpdated(int upper) {
 
-		m_maxSpinBox->blockSignals(true);
-		m_maxSpinBox->setValue(upper);
-		m_maxSpinBox->blockSignals(false);
+		SetMaxSpinBoxBlockSignals(ConvertSliderPositionToValueInRange(upper));
 	}
 
 	void SingleNumericRangeFilterWidget::OnMinSpinBoxUpdated(double min) {
 
 		m_rangeSlider->blockSignals(true);
-		m_rangeSlider->SetLowerValue(static_cast<int>(min));
+		m_rangeSlider->SetLowerValue(ConvertValueInRangeToSliderPosition(min));
 		m_rangeSlider->blockSignals(false);
+
+		if (min > m_maxSpinBox->value()) {
+
+			SetMaxSpinBoxBlockSignals(min);
+		}
 
 		EmitRangeUpdate();
 	}
@@ -97,8 +100,13 @@ namespace SynGlyphX {
 	void SingleNumericRangeFilterWidget::OnMaxSpinBoxUpdated(double max) {
 
 		m_rangeSlider->blockSignals(true);
-		m_rangeSlider->SetUpperValue(static_cast<int>(max));
+		m_rangeSlider->SetUpperValue(ConvertValueInRangeToSliderPosition(max));
 		m_rangeSlider->blockSignals(false);
+
+		if (max < m_minSpinBox->value()) {
+
+			SetMinSpinBoxBlockSignals(max);
+		}
 
 		EmitRangeUpdate();
 	}
@@ -106,6 +114,30 @@ namespace SynGlyphX {
 	void SingleNumericRangeFilterWidget::EmitRangeUpdate() {
 
 		emit RangeUpdated(m_minSpinBox->value(), m_maxSpinBox->value());
+	}
+
+	double SingleNumericRangeFilterWidget::ConvertSliderPositionToValueInRange(int value) {
+
+		return ((m_ratio * value) + m_minSpinBox->minimum());
+	}
+
+	int SingleNumericRangeFilterWidget::ConvertValueInRangeToSliderPosition(double value) {
+
+		return static_cast<int>(std::floor((value - m_minSpinBox->minimum()) / m_ratio));
+	}
+
+	void SingleNumericRangeFilterWidget::SetMinSpinBoxBlockSignals(double min) {
+
+		m_minSpinBox->blockSignals(true);
+		m_minSpinBox->setValue(min);
+		m_minSpinBox->blockSignals(false);
+	}
+
+	void SingleNumericRangeFilterWidget::SetMaxSpinBoxBlockSignals(double max) {
+
+		m_maxSpinBox->blockSignals(true);
+		m_maxSpinBox->setValue(max);
+		m_maxSpinBox->blockSignals(false);
 	}
 
 } //namespace SynGlyphX

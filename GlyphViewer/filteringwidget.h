@@ -24,13 +24,14 @@
 #include "sourcedatawidget.h"
 #include "sourcedataselectionmodel.h"
 #include "linkedwidgetsmanager.h"
+#include "sourcedatainfomodel.h"
 
 class FilteringWidget : public QWidget
 {
 	Q_OBJECT
 
 public:
-	FilteringWidget(SynGlyphX::SourceDataCache::SharedPtr sourceDataCache, SourceDataSelectionModel* selectionModel, QWidget *parent);
+	FilteringWidget(SourceDataInfoModel* columnsModel, SynGlyphX::SourceDataCache::SharedPtr sourceDataCache, SourceDataSelectionModel* selectionModel, QWidget *parent);
 	~FilteringWidget();
 
 	void SetupLinkedWidgets(LinkedWidgetsManager& linkedWidgets);

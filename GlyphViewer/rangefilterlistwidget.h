@@ -24,13 +24,14 @@
 #include "singlenumericrangefilterwidget.h"
 #include "verticalscrollarea.h"
 #include "sourcedataselectionmodel.h"
+#include "sourcedatainfomodel.h"
 
 class RangeFilterListWidget : public QWidget
 {
 	Q_OBJECT
 
 public:
-	RangeFilterListWidget(SynGlyphX::SourceDataCache::SharedPtr sourceDataCache, SourceDataSelectionModel* selectionModel, QWidget *parent);
+	RangeFilterListWidget(SourceDataInfoModel* columnsModel, SynGlyphX::SourceDataCache::SharedPtr sourceDataCache, SourceDataSelectionModel* selectionModel, QWidget *parent);
 	~RangeFilterListWidget();
 
 public slots:
@@ -40,6 +41,8 @@ private slots:
 	void OnModelReset();
 	void OnAddFilter();
 	void OnRemoveAllFilters();
+	void OnUpdateFilters();
+	void OnRangesChanged();
 
 private:
 	SynGlyphX::SourceDataCache::SharedPtr m_sourceDataCache;
@@ -47,9 +50,12 @@ private:
 
 	QPushButton* m_addButton;
 	QPushButton* m_removeAllButton;
+	QPushButton* m_updateButton;
 	QStackedLayout* m_filtersLayout;
 	QMap<QString, SynGlyphX::VerticalScrollArea*> m_table2WidgetMap;
 	QMap<QString, QVector<SynGlyphX::SingleNumericRangeFilterWidget*>> m_numericFilters;
+
+	SourceDataInfoModel* m_columnsModel;
 
 	QString m_currentTable;
 };

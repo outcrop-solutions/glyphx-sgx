@@ -18,7 +18,7 @@ class PseudoTimeFilterWidget : public QWidget
 	Q_OBJECT
 
 public:
-	PseudoTimeFilterWidget(SynGlyphX::DataTransformMapping::ConstSharedPtr dataTransformMapping, SynGlyphX::SourceDataCache::SharedPtr sourceDataCache, SourceDataSelectionModel* selectionModel, QWidget *parent);
+	PseudoTimeFilterWidget(SourceDataInfoModel* columnsModel, SynGlyphX::SourceDataCache::SharedPtr sourceDataCache, SourceDataSelectionModel* selectionModel, QWidget *parent);
 	~PseudoTimeFilterWidget();
 
 	void SetupLinkedWidgets(LinkedWidgetsManager& linkedWidgetsManager);
