@@ -5,7 +5,8 @@
 RangeFilterListWidget::RangeFilterListWidget(SynGlyphX::SourceDataCache::SharedPtr sourceDataCache, SourceDataSelectionModel* selectionModel, QWidget *parent)
 	: QWidget(parent),
 	m_selectionModel(selectionModel),
-	m_sourceDataCache(sourceDataCache)
+	m_sourceDataCache(sourceDataCache),
+	m_currentTable("")
 {
 	QVBoxLayout* mainLayout = new QVBoxLayout(this);
 
@@ -15,15 +16,15 @@ RangeFilterListWidget::RangeFilterListWidget(SynGlyphX::SourceDataCache::SharedP
 	buttonLayout->addWidget(m_addButton);
 	m_addButton->setEnabled(false);
 	
-	m_removeAllButton = new QPushButton(tr("RemoveAll"), this);
+	m_removeAllButton = new QPushButton(tr("Remove All"), this);
 	QObject::connect(m_removeAllButton, &QPushButton::clicked, this, &RangeFilterListWidget::OnRemoveAllFilters);
 	buttonLayout->addWidget(m_removeAllButton);
 	m_removeAllButton->setEnabled(false);
 
-	buttonLayout->addStretch(1);
 	mainLayout->addLayout(buttonLayout);
 
-	mainLayout->addStretch(1);
+	m_filtersLayout = new QStackedLayout(this);
+	mainLayout->addLayout(m_filtersLayout, 1);
 
 	setLayout(mainLayout);
 
@@ -37,7 +38,8 @@ RangeFilterListWidget::~RangeFilterListWidget()
 
 void RangeFilterListWidget::SwitchTable(const QString& table) {
 
-
+	m_currentTable = table;
+	m_filtersLayout->setCurrentWidget(m_table2WidgetMap[table]);
 }
 
 void RangeFilterListWidget::OnModelReset() {
@@ -45,28 +47,50 @@ void RangeFilterListWidget::OnModelReset() {
 	m_addButton->setEnabled(m_sourceDataCache->IsValid());
 	m_removeAllButton->setEnabled(false);
 
-	if (!m_sourceDataCache->IsValid()) {
+	for (auto tableWidget : m_table2WidgetMap) {
 
-		OnRemoveAllFilters();
+		m_filtersLayout->removeWidget(tableWidget);
+		delete tableWidget;
+	}
+	m_table2WidgetMap.clear();
+	m_currentTable.clear();
+	m_numericFilters.clear();
+
+	if (m_sourceDataCache->IsValid()) {
+
+		const SynGlyphX::SourceDataCache::TableNameMap& tableNameMap = m_sourceDataCache->GetFormattedNames();
+		for (auto formattedName : tableNameMap) {
+
+			SynGlyphX::VerticalScrollArea* newScrollArea = new SynGlyphX::VerticalScrollArea(this);
+			QWidget* newInnerWidget = new QWidget(this);
+			QVBoxLayout* newLayout = new QVBoxLayout(newInnerWidget);
+			newLayout->addStretch(1);
+			newInnerWidget->setLayout(newLayout);
+			newScrollArea->setWidget(newInnerWidget);
+			m_filtersLayout->addWidget(newScrollArea);
+			m_table2WidgetMap.insert(formattedName.first, newScrollArea);
+			m_numericFilters.insert(formattedName.first, QVector<SynGlyphX::SingleNumericRangeFilterWidget*>());
+		}
+		m_currentTable = tableNameMap.begin()->first;
 	}
 }
 
 void RangeFilterListWidget::OnAddFilter() {
 
 	SynGlyphX::SingleNumericRangeFilterWidget* filter = new SynGlyphX::SingleNumericRangeFilterWidget(Qt::Horizontal, this);
-	QVBoxLayout* mainLayout = dynamic_cast<QVBoxLayout*>(layout());
-	mainLayout->insertWidget(m_numericFilters.size() + 1, filter);
-	m_numericFilters.push_back(filter);
+	QVBoxLayout* mainLayout = dynamic_cast<QVBoxLayout*>(m_table2WidgetMap[m_currentTable]->widget()->layout());
+	mainLayout->insertWidget(m_numericFilters[m_currentTable].size(), filter);
+	m_numericFilters[m_currentTable].push_back(filter);
 	m_removeAllButton->setEnabled(true);
 }
 
 void RangeFilterListWidget::OnRemoveAllFilters() {
 
-	for (SynGlyphX::SingleNumericRangeFilterWidget* filter : m_numericFilters) {
+	for (SynGlyphX::SingleNumericRangeFilterWidget* filter : m_numericFilters[m_currentTable]) {
 
-		layout()->removeWidget(filter);
+		m_table2WidgetMap[m_currentTable]->widget()->layout()->removeWidget(filter);
 		delete filter;
 	}
-	m_numericFilters.clear();
+	m_numericFilters.erase(m_numericFilters.find(m_currentTable));
 	m_removeAllButton->setEnabled(false);
 }

@@ -20,7 +20,9 @@
 
 #include <QtWidgets/QWidget>
 #include <QtWidgets/QPushButton>
+#include <QtWidgets/QStackedLayout>
 #include "singlenumericrangefilterwidget.h"
+#include "verticalscrollarea.h"
 #include "sourcedataselectionmodel.h"
 
 class RangeFilterListWidget : public QWidget
@@ -45,7 +47,11 @@ private:
 
 	QPushButton* m_addButton;
 	QPushButton* m_removeAllButton;
-	std::vector<SynGlyphX::SingleNumericRangeFilterWidget*> m_numericFilters;
+	QStackedLayout* m_filtersLayout;
+	QMap<QString, SynGlyphX::VerticalScrollArea*> m_table2WidgetMap;
+	QMap<QString, QVector<SynGlyphX::SingleNumericRangeFilterWidget*>> m_numericFilters;
+
+	QString m_currentTable;
 };
 
 #endif // RANGEFILTERLISTWIDGET_H

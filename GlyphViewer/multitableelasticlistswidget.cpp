@@ -9,14 +9,11 @@ MultiTableElasticListsWidget::MultiTableElasticListsWidget(SynGlyphX::SourceData
 	m_selectionModel(selectionModel),
 	m_sourceDataCache(sourceDataCache)
 {
-	QVBoxLayout* mainLayout = new QVBoxLayout(this);
-	
 	m_elasticListsStackLayout = new QStackedLayout(this);
 	m_elasticListsStackLayout->setContentsMargins(0, 0, 0, 0);
 	ClearElasticLists();
-	mainLayout->addLayout(m_elasticListsStackLayout, 1);
 
-	setLayout(mainLayout);
+	setLayout(m_elasticListsStackLayout);
 
 	QObject::connect(m_selectionModel, &SourceDataSelectionModel::SelectionChanged, this, &MultiTableElasticListsWidget::OnSelectionChanged);
 	QObject::connect(m_selectionModel->GetSceneSelectionModel()->model(), &QAbstractItemModel::modelReset, this, &MultiTableElasticListsWidget::OnModelReset);

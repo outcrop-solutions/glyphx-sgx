@@ -7,6 +7,7 @@ SingleTableElasticListsWidget::SingleTableElasticListsWidget(SynGlyphX::SourceDa
 	m_sourceDataCache(sourceDataCache),
 	m_table(table)
 {
+	setFrameShape(QFrame::Shape::NoFrame);
 	m_innerWidget = new QWidget(this);
 	QVBoxLayout* layout = new QVBoxLayout(m_innerWidget);
 	layout->setContentsMargins(0, 0, 0, 0);
