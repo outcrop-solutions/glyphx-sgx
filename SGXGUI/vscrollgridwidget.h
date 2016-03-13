@@ -15,49 +15,39 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef RANGEFILTERLISTWIDGET_H
-#define RANGEFILTERLISTWIDGET_H
+#ifndef SYNGLYPHX_VSCROLLGRIDWIDGET_H
+#define SYNGLYPHX_VSCROLLGRIDWIDGET_H
 
-#include <QtWidgets/QWidget>
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QStackedLayout>
-#include "singlenumericrangefilterwidget.h"
-#include "vscrollgridwidget.h"
-#include "sourcedataselectionmodel.h"
-#include "sourcedatainfomodel.h"
+#include "sgxgui_global.h"
+#include "verticalscrollarea.h"
+#include <QtWidgets/QHeaderView>
+#include <QtWidgets/QGridLayout>
 
-class RangeFilterListWidget : public QWidget
-{
-	Q_OBJECT
+namespace SynGlyphX {
 
-public:
-	RangeFilterListWidget(SourceDataInfoModel* columnsModel, SynGlyphX::SourceDataCache::SharedPtr sourceDataCache, SourceDataSelectionModel* selectionModel, QWidget *parent);
-	~RangeFilterListWidget();
+	class SGXGUI_EXPORT VScrollGridWidget : public VerticalScrollArea
+	{
+		Q_OBJECT
 
-public slots:
-	void SwitchTable(const QString& table);
+	public:
+		VScrollGridWidget(const QStringList& headerLabels, QWidget *parent);
+		~VScrollGridWidget();
 
-private slots:
-	void OnModelReset();
-	void OnAddFilter();
-	void OnRemoveAllFilters();
-	void OnUpdateFilters();
-	void OnRangesChanged();
+		void AddRow(QList<QWidget*> widgets);
+		void RemoveAllWidgets();
 
-private:
-	SynGlyphX::SourceDataCache::SharedPtr m_sourceDataCache;
-	SourceDataSelectionModel* m_selectionModel;
+	protected:
+		void ResizeColumns(QList<QWidget*> widgets);
+		void ResetHeaderSectionSizesToContents();
+		void resizeEvent(QResizeEvent* event) override;
 
-	QPushButton* m_addButton;
-	QPushButton* m_removeAllButton;
-	QPushButton* m_updateButton;
-	QStackedLayout* m_filtersLayout;
-	QMap<QString, SynGlyphX::VScrollGridWidget*> m_table2WidgetMap;
-	QMap<QString, QVector<SynGlyphX::SingleNumericRangeFilterWidget*>> m_numericFilters;
+		QHeaderView* m_headerView;
+		QGridLayout* m_scrollAreaLayout;
 
-	SourceDataInfoModel* m_columnsModel;
+		unsigned int m_rowCountIncludingLines;
+		std::vector<unsigned int> m_columnMinimumWidths;
+	};
 
-	QString m_currentTable;
-};
+} //namespace SynGlyphX
 
-#endif // RANGEFILTERLISTWIDGET_H
+#endif // SYNGLYPHX_VSCROLLGRIDWIDGET_H

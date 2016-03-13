@@ -368,6 +368,15 @@
     <ClCompile Include="GeneratedFiles\Release\moc_rangeslider.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="vscrollgridwidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_vscrollgridwidget.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_vscrollgridwidget.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="sgxgui_global.h">
@@ -490,6 +499,9 @@
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="rangeslider.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="vscrollgridwidget.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>

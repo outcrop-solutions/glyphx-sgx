@@ -1,7 +1,7 @@
 #include "rangefilterlistwidget.h"
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QHBoxLayout>
-#include <QtWidgets/QTableView>
+#include <QtWidgets/QLabel>
 #include <QtWidgets/QHeaderView>
 #include "singlewidgetdialog.h"
 
@@ -60,6 +60,7 @@ void RangeFilterListWidget::SwitchTable(const QString& table) {
 
 	m_currentTable = table;
 	m_filtersLayout->setCurrentWidget(m_table2WidgetMap[table]);
+	m_removeAllButton->setEnabled(!m_numericFilters.find(m_currentTable)->empty());
 }
 
 void RangeFilterListWidget::OnModelReset() {
@@ -79,16 +80,14 @@ void RangeFilterListWidget::OnModelReset() {
 
 	if (m_sourceDataCache->IsValid()) {
 
+		QStringList headerLabels;
+		headerLabels << tr("Field") << tr("Range");
+
 		const SynGlyphX::SourceDataCache::TableNameMap& tableNameMap = m_sourceDataCache->GetFormattedNames();
 		for (auto formattedName : tableNameMap) {
 
-			SynGlyphX::VerticalScrollArea* newScrollArea = new SynGlyphX::VerticalScrollArea(this);
+			SynGlyphX::VScrollGridWidget* newScrollArea = new SynGlyphX::VScrollGridWidget(headerLabels, this);
 			newScrollArea->setFrameShape(QFrame::Shape::NoFrame);
-			QWidget* newInnerWidget = new QWidget(this);
-			QVBoxLayout* newLayout = new QVBoxLayout(newInnerWidget);
-			newLayout->addStretch(1);
-			newInnerWidget->setLayout(newLayout);
-			newScrollArea->setWidget(newInnerWidget);
 			m_filtersLayout->addWidget(newScrollArea);
 			m_table2WidgetMap.insert(formattedName.first, newScrollArea);
 			m_numericFilters.insert(formattedName.first, QVector<SynGlyphX::SingleNumericRangeFilterWidget*>());
@@ -114,10 +113,18 @@ void RangeFilterListWidget::OnAddFilter() {
 		
 	}*/
 
+	QLabel* fieldLabel = new QLabel(tr("test test"), this);
+	fieldLabel->setAlignment(Qt::AlignCenter);
+
 	SynGlyphX::SingleNumericRangeFilterWidget* filter = new SynGlyphX::SingleNumericRangeFilterWidget(Qt::Horizontal, this);
 	filter->SetMinMax(25.0, 150.0);
-	QVBoxLayout* mainLayout = dynamic_cast<QVBoxLayout*>(m_table2WidgetMap[m_currentTable]->widget()->layout());
-	mainLayout->insertWidget(m_numericFilters[m_currentTable].size(), filter);
+	
+	SynGlyphX::VScrollGridWidget* gridWidget = m_table2WidgetMap[m_currentTable];
+	QList<QWidget*> widgetsToAdd;
+	widgetsToAdd.push_back(fieldLabel);
+	widgetsToAdd.push_back(filter);
+	gridWidget->AddRow(widgetsToAdd);
+
 	m_numericFilters[m_currentTable].push_back(filter);
 	m_removeAllButton->setEnabled(true);
 	QObject::connect(filter, &SynGlyphX::SingleNumericRangeFilterWidget::RangeUpdated, this, &RangeFilterListWidget::OnRangesChanged);
@@ -125,12 +132,9 @@ void RangeFilterListWidget::OnAddFilter() {
 
 void RangeFilterListWidget::OnRemoveAllFilters() {
 
-	for (SynGlyphX::SingleNumericRangeFilterWidget* filter : m_numericFilters[m_currentTable]) {
-
-		m_table2WidgetMap[m_currentTable]->widget()->layout()->removeWidget(filter);
-		delete filter;
-	}
-	m_numericFilters.erase(m_numericFilters.find(m_currentTable));
+	SynGlyphX::VScrollGridWidget* gridWidget = m_table2WidgetMap[m_currentTable];
+	gridWidget->RemoveAllWidgets();
+	m_numericFilters.find(m_currentTable)->clear();
 	m_removeAllButton->setEnabled(false);
 }
 
