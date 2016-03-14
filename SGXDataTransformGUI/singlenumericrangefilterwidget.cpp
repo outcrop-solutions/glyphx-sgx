@@ -43,7 +43,7 @@ namespace SynGlyphX {
 		QObject::connect(m_minSpinBox, static_cast<void(QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), this, &SingleNumericRangeFilterWidget::OnMinSpinBoxUpdated);
 		QObject::connect(m_maxSpinBox, static_cast<void(QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), this, &SingleNumericRangeFilterWidget::OnMaxSpinBoxUpdated);
 
-		SetMinMax(0.0, 99.0);
+		SetMaxRangeExtents(0.0, 99.0);
 	}
 
 	SingleNumericRangeFilterWidget::~SingleNumericRangeFilterWidget()
@@ -51,26 +51,45 @@ namespace SynGlyphX {
 
 	}
 
-	void SingleNumericRangeFilterWidget::SetMinMax(double min, double max) {
+	void SingleNumericRangeFilterWidget::SetMaxRangeExtents(double min, double max) {
+
+		bool wasRangeUpdated = false;
 
 		m_minSpinBox->blockSignals(true);
 		m_maxSpinBox->blockSignals(true);
 		m_rangeSlider->blockSignals(true);
+
+		if ((m_minSpinBox->value() < min) || (m_maxSpinBox->value() > max)) {
+
+			wasRangeUpdated = true;
+		}
 		
 		m_minSpinBox->setRange(min, max);
-		m_minSpinBox->setValue(min);
 		m_maxSpinBox->setRange(min, max);
-		m_maxSpinBox->setValue(max);
-		m_rangeSlider->SetLowerValue(m_rangeSlider->minimum());
-		m_rangeSlider->SetUpperValue(m_rangeSlider->maximum());
+
+		m_ratio = (max - min) / (m_rangeSlider->maximum() - m_rangeSlider->minimum());
+
+		m_rangeSlider->SetLowerValue(ConvertValueInRangeToSliderPosition(m_minSpinBox->value()));
+		m_rangeSlider->SetUpperValue(ConvertValueInRangeToSliderPosition(m_maxSpinBox->value()));
 
 		m_minSpinBox->blockSignals(false);
 		m_maxSpinBox->blockSignals(false);
 		m_rangeSlider->blockSignals(false);
 
-		m_ratio = (max - min) / (m_rangeSlider->maximum() - m_rangeSlider->minimum());
+		if (wasRangeUpdated) {
 
-		emit RangeUpdated(min, max);
+			EmitRangeUpdate();
+		}
+	}
+
+	void SingleNumericRangeFilterWidget::SetRange(const std::pair<double, double> range) {
+
+		blockSignals(true);
+		m_minSpinBox->setValue(range.first);
+		m_maxSpinBox->setValue(range.second);
+		blockSignals(false);
+
+		EmitRangeUpdate();
 	}
 
 	std::pair<double, double> SingleNumericRangeFilterWidget::GetRange() const {

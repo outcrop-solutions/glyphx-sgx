@@ -32,12 +32,20 @@ namespace SynGlyphX {
 		~RoleDataFilterProxyModel();
 
 		void SetFilterData(int data);
+		void SetFilterData(QList<int> data);
+
+		void SetFilterData(QString data);
+		void SetFilterData(QStringList data);
+
+		void SetNot(bool not);
 
 	protected:
 		virtual bool filterAcceptsRow(int source_row, const QModelIndex& source_parent) const;
 
 	private:
-		int m_filterData;
+		QList<int> m_intFilterData;
+		QStringList m_stringFilterData;
+		bool m_not;
 	};
 
 } //namespace SynGlyphX

@@ -45,7 +45,8 @@ private slots:
 	void OnRangesChanged();
 
 private:
-	typedef QMultiMap<QString, SynGlyphX::SingleNumericRangeFilterWidget*> Column2FilterWidgetMap;
+	typedef std::pair<QString, SynGlyphX::SingleNumericRangeFilterWidget*> ColumnFilter;
+	typedef std::vector<ColumnFilter> Column2FilterWidgetMap;
 	typedef QMap<QString, Column2FilterWidgetMap> Table2FilterWidgetsMap;
 
 	QStringList Separate(const QString& datasourceTable) const;

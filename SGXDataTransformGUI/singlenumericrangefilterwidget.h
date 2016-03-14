@@ -33,7 +33,9 @@ namespace SynGlyphX {
 		SingleNumericRangeFilterWidget(Qt::Orientation orientation, QWidget *parent);
 		~SingleNumericRangeFilterWidget();
 
-		void SetMinMax(double min, double max);
+		void SetMaxRangeExtents(double min, double max);
+
+		void SetRange(const std::pair<double, double> range);
 		std::pair<double, double> GetRange() const;
 
 	signals:
