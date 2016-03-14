@@ -73,6 +73,11 @@ namespace SynGlyphX {
 		emit RangeUpdated(min, max);
 	}
 
+	std::pair<double, double> SingleNumericRangeFilterWidget::GetRange() const {
+
+		return (std::pair<double, double>(m_minSpinBox->value(), m_maxSpinBox->value()));
+	}
+
 	void SingleNumericRangeFilterWidget::OnSliderLowerUpdated(int lower) {
 
 		SetMinSpinBoxBlockSignals(ConvertSliderPositionToValueInRange(lower));

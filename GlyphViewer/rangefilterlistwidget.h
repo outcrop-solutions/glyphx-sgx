@@ -45,6 +45,9 @@ private slots:
 	void OnRangesChanged();
 
 private:
+	typedef QMultiMap<QString, SynGlyphX::SingleNumericRangeFilterWidget*> Column2FilterWidgetMap;
+	typedef QMap<QString, Column2FilterWidgetMap> Table2FilterWidgetsMap;
+
 	SynGlyphX::SourceDataCache::SharedPtr m_sourceDataCache;
 	SourceDataSelectionModel* m_selectionModel;
 
@@ -53,7 +56,7 @@ private:
 	QPushButton* m_updateButton;
 	QStackedLayout* m_filtersLayout;
 	QMap<QString, SynGlyphX::VScrollGridWidget*> m_table2WidgetMap;
-	QMap<QString, QVector<SynGlyphX::SingleNumericRangeFilterWidget*>> m_numericFilters;
+	Table2FilterWidgetsMap m_numericFilters;
 
 	SourceDataInfoModel* m_columnsModel;
 

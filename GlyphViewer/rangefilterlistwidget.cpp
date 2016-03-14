@@ -94,7 +94,7 @@ void RangeFilterListWidget::OnModelReset() {
 			newScrollArea->setFrameShape(QFrame::Shape::NoFrame);
 			m_filtersLayout->addWidget(newScrollArea);
 			m_table2WidgetMap.insert(formattedName.first, newScrollArea);
-			m_numericFilters.insert(formattedName.first, QVector<SynGlyphX::SingleNumericRangeFilterWidget*>());
+			m_numericFilters.insert(formattedName.first, QMultiMap<QString, SynGlyphX::SingleNumericRangeFilterWidget*>());
 		}
 		m_currentTable = tableNameMap.begin()->first;
 	}
@@ -146,10 +146,12 @@ void RangeFilterListWidget::OnAddFilter() {
 			widgetsToAdd.push_back(filter);
 			gridWidget->AddRow(widgetsToAdd);
 
-			m_numericFilters[m_currentTable].push_back(filter);
+			m_numericFilters[m_currentTable].insert(field, filter);
 			m_removeAllButton->setEnabled(true);
 			QObject::connect(filter, &SynGlyphX::SingleNumericRangeFilterWidget::RangeUpdated, this, &RangeFilterListWidget::OnRangesChanged);
 		}
+
+		m_updateButton->setEnabled(true);
 	}
 }
 
@@ -159,10 +161,29 @@ void RangeFilterListWidget::OnRemoveAllFilters() {
 	gridWidget->RemoveAllWidgets();
 	m_numericFilters.find(m_currentTable)->clear();
 	m_removeAllButton->setEnabled(false);
+	m_updateButton->setEnabled(true);
 }
 
 void RangeFilterListWidget::OnUpdateFilters() {
 
+	SourceDataSelectionModel::IndexSetMap indexSets;
+	for (Table2FilterWidgetsMap::const_iterator tableFilters = m_numericFilters.begin(); tableFilters != m_numericFilters.end(); ++tableFilters) {
+
+		SynGlyphX::SourceDataCache::ColumnMinMaxMap columnMinMaxMap;
+		for (Column2FilterWidgetMap::const_iterator columnFilter = tableFilters->begin(); columnFilter != tableFilters->end(); ++columnFilter) {
+
+			columnMinMaxMap.insert(std::pair<QString, std::pair<double, double>>(columnFilter.key(), columnFilter.value()->GetRange()));
+		}
+
+		if (columnMinMaxMap.empty()) {
+
+			m_selectionModel->ClearSourceDataSelectionForTable(tableFilters.key());
+		}
+		else {
+
+			m_selectionModel->SetSourceDataSelectionForTable(tableFilters.key(), m_sourceDataCache->GetIndexesFromTableInRanges(tableFilters.key(), columnMinMaxMap));
+		}
+	}
 	m_updateButton->setEnabled(false);
 }
 

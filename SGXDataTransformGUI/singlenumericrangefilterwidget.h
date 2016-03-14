@@ -34,6 +34,7 @@ namespace SynGlyphX {
 		~SingleNumericRangeFilterWidget();
 
 		void SetMinMax(double min, double max);
+		std::pair<double, double> GetRange() const;
 
 	signals:
 		void RangeUpdated(double min, double max);

@@ -76,7 +76,7 @@ void SourceDataSelectionModel::SetSourceDataSelectionForTable(const QString& tab
 	AddSceneIndexesFromTableToSelection(itemSelection, table);
 
 	m_sceneSelectionModel->select(itemSelection, QItemSelectionModel::Select);
-	if (updateFocus) {
+	if (updateFocus && (!itemSelection.empty())) {
 
 		m_sceneSelectionModel->SetFocus(itemSelection.indexes(), SynGlyphX::ItemFocusSelectionModel::FocusFlag::Focus);
 	}
@@ -100,7 +100,7 @@ void SourceDataSelectionModel::ClearSourceDataSelectionForTable(const QString& t
 	AddSceneIndexesFromTableToSelection(itemSelection, table);
 
 	m_sceneSelectionModel->select(itemSelection, QItemSelectionModel::Deselect);
-	if (updateFocus) {
+	if (updateFocus && (!itemSelection.empty())) {
 
 		m_sceneSelectionModel->SetFocus(itemSelection.indexes(), SynGlyphX::ItemFocusSelectionModel::FocusFlag::Unfocus);
 	}
