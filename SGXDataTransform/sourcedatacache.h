@@ -44,7 +44,9 @@ namespace SynGlyphX {
 		typedef std::vector<std::pair<QString, IndexSet>> DistinctValueIndexMap;
 
 		typedef std::map<QString, std::set<QString>> ColumnValueData;
-		typedef std::multimap<QString, std::pair<double, double>> ColumnMinMaxMap;
+
+		typedef std::pair<QString, std::pair<double, double>> ColumnMinMaxPair;
+		typedef std::vector<ColumnMinMaxPair> ColumnMinMaxMap;
 
 		SourceDataCache();
 		SourceDataCache(const QString& filename);
