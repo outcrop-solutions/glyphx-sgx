@@ -277,8 +277,8 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Glyph Builder (TM)"
-        "ProductCode" = "8:{575D316F-A7A1-42E9-8D9A-5C337F6B07C8}"
-        "PackageCode" = "8:{05199F41-3202-422F-B852-9A167E53275B}"
+        "ProductCode" = "8:{E62BF5DB-31D5-4533-92FF-741B0F3DDF10}"
+        "PackageCode" = "8:{915F394E-4D38-4974-83E5-404BC8FA1CF2}"
         "UpgradeCode" = "8:{0FDA9E6D-1E57-426F-AA0C-B8314DEF2474}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
