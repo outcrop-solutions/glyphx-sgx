@@ -577,6 +577,41 @@ namespace SynGlyphX {
 		return indexSet;
 	}
 
+	IndexSet SourceDataCache::GetIndexesFromTableInRanges(const QString& tableName, const ColumnMinMaxMap& columnRanges) const {
+
+		QString queryString = "SELECT \"" + IndexColumnName + "\" FROM \"" + tableName + "\" WHERE ";
+
+		ColumnMinMaxMap::const_iterator iT = columnRanges.begin();
+		queryString += CreateBetweenString(iT->first, iT->second);
+		++iT;
+		while (iT != columnRanges.end()) {
+
+			queryString += " AND " + CreateBetweenString(iT->first, iT->second);
+			++iT;
+		}
+
+		QSqlQuery query(m_db);
+		query.prepare(queryString);
+		query.exec();
+		if (!query.exec()) {
+
+			throw std::runtime_error((QObject::tr("Failed to get selected indexes from cache: ") + m_db.lastError().text()).toStdString().c_str());
+		}
+
+		IndexSet indexSet;
+		while (query.next()) {
+
+			indexSet.insert(query.value(0).toULongLong() - 1);
+		}
+
+		return indexSet;
+	}
+
+	QString SourceDataCache::CreateBetweenString(const QString& columnName, const std::pair<double, double>& minMax) const {
+
+		return ("(" + columnName + " BETWEEN " + QString::number(minMax.first) + " AND " + QString::number(minMax.second) + ")");
+	}
+
 	SourceDataCache::DistinctValueIndexMap SourceDataCache::GetIndexesOrderedByDistinctValue(const QString& tableName, const QString& columnName) const {
 
 		DistinctValueIndexMap distinctValueIndexMap;

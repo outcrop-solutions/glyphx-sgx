@@ -44,6 +44,7 @@ namespace SynGlyphX {
 		typedef std::vector<std::pair<QString, IndexSet>> DistinctValueIndexMap;
 
 		typedef std::map<QString, std::set<QString>> ColumnValueData;
+		typedef std::multimap<QString, std::pair<double, double>> ColumnMinMaxMap;
 
 		SourceDataCache();
 		SourceDataCache(const QString& filename);
@@ -73,6 +74,7 @@ namespace SynGlyphX {
 		unsigned long GetNumberOfRowsInTable(const InputTable& inputTable) const;
 		unsigned long GetNumberOfRowsInTable(const QString& table) const;
 		IndexSet GetIndexesFromTableWithSelectedValues(const QString& tableName, const ColumnValueData& selectedValues, const IndexSet& previousSelection = IndexSet()) const;
+		IndexSet GetIndexesFromTableInRanges(const QString& tableName, const ColumnMinMaxMap& columnRanges) const;
 
 		bool IsCacheOutOfDate(const DataTransformMapping::DatasourceMap& datasources) const;
 
@@ -101,6 +103,7 @@ namespace SynGlyphX {
 		QString CreateWhereString(const IndexSet& indexSet) const;
 		QString CreateInString(const IndexSet& indexSet) const;
 		QString CreateInString(const QString& columnName, const std::set<QString>& values) const;
+		QString CreateBetweenString(const QString& columnName, const std::pair<double, double>& minMax) const;
 
 		bool DoesFileDatasourceNeedUpdate(const boost::uuids::uuid& id, const FileDatasource& datasource) const;
 		bool DoesFileDatabaseNeedUpdate(const boost::uuids::uuid& id, const FileDatasource& datasource) const;
