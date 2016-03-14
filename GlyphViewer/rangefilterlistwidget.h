@@ -48,6 +48,8 @@ private:
 	typedef QMultiMap<QString, SynGlyphX::SingleNumericRangeFilterWidget*> Column2FilterWidgetMap;
 	typedef QMap<QString, Column2FilterWidgetMap> Table2FilterWidgetsMap;
 
+	QStringList Separate(const QString& datasourceTable) const;
+
 	SynGlyphX::SourceDataCache::SharedPtr m_sourceDataCache;
 	SourceDataSelectionModel* m_selectionModel;
 

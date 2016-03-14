@@ -41,7 +41,7 @@ RangeFilterListWidget::RangeFilterListWidget(SourceDataInfoModel* columnsModel, 
 	buttonLayout->addWidget(m_removeAllButton);
 	m_removeAllButton->setEnabled(false);
 
-	m_updateButton = new QPushButton(tr("Update"), this);
+	m_updateButton = new QPushButton(tr("Update 3D View"), this);
 	QObject::connect(m_updateButton, &QPushButton::clicked, this, &RangeFilterListWidget::OnUpdateFilters);
 	buttonLayout->addWidget(m_updateButton);
 	m_updateButton->setEnabled(false);
@@ -102,11 +102,7 @@ void RangeFilterListWidget::OnModelReset() {
 
 void RangeFilterListWidget::OnAddFilter() {
 
-	QStringList datasourceTable = m_currentTable.split(':');
-	if (datasourceTable.count() < 2) {
-
-		datasourceTable.push_back(QString::fromStdWString(SynGlyphX::Datasource::SingleTableName));
-	}
+	QStringList datasourceTable = Separate(m_currentTable);
 
 	SynGlyphX::RoleDataFilterProxyModel* proxyModel = new SynGlyphX::RoleDataFilterProxyModel(this);
 	proxyModel->setSourceModel(m_columnsModel);
@@ -125,7 +121,18 @@ void RangeFilterListWidget::OnAddFilter() {
 	if (dialog.exec() == QDialog::Accepted) {
 
 		const QModelIndexList& selected = fieldSelectorWidget->selectionModel()->selectedIndexes();
+		if (selected.isEmpty()) {
+
+			return;
+		}
 		boost::uuids::string_generator gen;
+		const Column2FilterWidgetMap& column2FilterWidgets = m_numericFilters.find(m_currentTable).value();
+		SynGlyphX::SourceDataCache::ColumnMinMaxMap columnMinMaxMap;
+		Column2FilterWidgetMap::const_iterator columnFilter;
+		for (columnFilter = column2FilterWidgets.begin(); columnFilter != column2FilterWidgets.end(); ++columnFilter) {
+
+			columnMinMaxMap.insert(std::pair<QString, std::pair<double, double>>(columnFilter.key(), columnFilter.value()->GetRange()));
+		}
 
 		for (const auto& modelIndex : selected) {
 
@@ -135,10 +142,9 @@ void RangeFilterListWidget::OnAddFilter() {
 
 			SynGlyphX::SingleNumericRangeFilterWidget* filter = new SynGlyphX::SingleNumericRangeFilterWidget(Qt::Horizontal, this);
 			SynGlyphX::InputField inputField(gen(datasourceTable[0].toStdWString()), datasourceTable[1].toStdWString(), field.toStdWString(), SynGlyphX::InputField::Real);
-			SynGlyphX::SharedSQLQuery query = m_sourceDataCache->CreateMinMaxQuery(inputField);
-			query->exec();
-			query->first();
-			filter->SetMinMax(query->value(0).toDouble(), query->value(1).toDouble());
+			
+			std::pair<double, double> minMax = m_sourceDataCache->GetMinMax(inputField, columnMinMaxMap);
+			filter->SetMinMax(minMax.first, minMax.second);
 
 			SynGlyphX::VScrollGridWidget* gridWidget = m_table2WidgetMap[m_currentTable];
 			QList<QWidget*> widgetsToAdd;
@@ -189,5 +195,43 @@ void RangeFilterListWidget::OnUpdateFilters() {
 
 void RangeFilterListWidget::OnRangesChanged() {
 
+	boost::uuids::string_generator gen;
+	QStringList datasourceTable = Separate(m_currentTable);
+	SynGlyphX::SingleNumericRangeFilterWidget* updatedFilter = dynamic_cast<SynGlyphX::SingleNumericRangeFilterWidget*>(sender());
+	
+	const Column2FilterWidgetMap& column2FilterWidgets = m_numericFilters.find(m_currentTable).value();
+	SynGlyphX::SourceDataCache::ColumnMinMaxMap columnMinMaxMap;
+	Column2FilterWidgetMap::const_iterator columnFilter;
+	for (columnFilter = column2FilterWidgets.begin(); columnFilter != column2FilterWidgets.end(); ++columnFilter) {
+
+		columnMinMaxMap.insert(std::pair<QString, std::pair<double, double>>(columnFilter.key(), columnFilter.value()->GetRange()));
+		if (columnFilter.value() == updatedFilter) {
+
+			break;
+		}
+	}
+	++columnFilter;
+	for (; columnFilter != column2FilterWidgets.end(); ++columnFilter) {
+
+		SynGlyphX::SingleNumericRangeFilterWidget* filter = columnFilter.value();
+		SynGlyphX::InputField inputField(gen(datasourceTable[0].toStdWString()), datasourceTable[1].toStdWString(), columnFilter.key().toStdWString(), SynGlyphX::InputField::Real);
+		std::pair<double, double> minMax = m_sourceDataCache->GetMinMax(inputField, columnMinMaxMap);
+		filter->blockSignals(true);
+		filter->SetMinMax(minMax.first, minMax.second);
+		filter->blockSignals(false);
+		columnMinMaxMap.insert(std::pair<QString, std::pair<double, double>>(columnFilter.key(), minMax));
+	}
+
 	m_updateButton->setEnabled(true);
+}
+
+QStringList RangeFilterListWidget::Separate(const QString& datasourceTable) const {
+
+	QStringList splitDatasourceTable = m_currentTable.split(':');
+	if (splitDatasourceTable.count() < 2) {
+
+		splitDatasourceTable.push_back(QString::fromStdWString(SynGlyphX::Datasource::SingleTableName));
+	}
+
+	return splitDatasourceTable;
 }
