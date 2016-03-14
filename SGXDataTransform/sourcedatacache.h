@@ -65,6 +65,7 @@ namespace SynGlyphX {
 
 		SharedSQLQuery CreateSelectFieldQueryAscending(const InputField& inputfield) const;
 		SharedSQLQuery CreateMinMaxQuery(const InputField& inputfield) const;
+		std::pair<double, double> GetMinMax(const InputField& inputfield, const ColumnMinMaxMap& otherRanges = ColumnMinMaxMap()) const;
 		
 		SharedSQLQuery CreateSelectQueryForIndexSet(const QString& tableName, const TableColumns& columns, const IndexSet& indexSet) const;
 		SharedSQLQuery CreateDistinctValueQuery(const QString& tableName, const QString& columnName, const IndexSet& indexSet = IndexSet()) const;

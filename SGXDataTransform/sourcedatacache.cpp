@@ -607,6 +607,31 @@ namespace SynGlyphX {
 		return indexSet;
 	}
 
+	std::pair<double, double> SourceDataCache::GetMinMax(const InputField& inputfield, const ColumnMinMaxMap& otherRanges) const {
+
+		SharedSQLQuery query(new QSqlQuery(m_db));
+		QString queryString = QString("SELECT MIN(%1), MAX(%1) FROM ").arg("\"" + QString::fromStdWString(inputfield.GetField()) + "\"") + "\"" + CreateTablename(inputfield) + "\"";
+
+		if (!otherRanges.empty()) {
+
+			queryString += " WHERE ";
+			ColumnMinMaxMap::const_iterator otherRange = otherRanges.begin();
+			queryString += CreateBetweenString(otherRange->first, otherRange->second);
+
+			++otherRange;
+			for (; otherRange != otherRanges.end(); ++otherRange) {
+
+				queryString += " AND " + CreateBetweenString(otherRange->first, otherRange->second);
+			}
+		}
+
+		query->prepare(queryString);
+		query->exec();
+		query->first();
+
+		return std::pair<double, double>(query->value(0).toDouble(), query->value(1).toDouble());
+	}
+
 	QString SourceDataCache::CreateBetweenString(const QString& columnName, const std::pair<double, double>& minMax) const {
 
 		return ("(" + columnName + " BETWEEN " + QString::number(minMax.first) + " AND " + QString::number(minMax.second) + ")");
