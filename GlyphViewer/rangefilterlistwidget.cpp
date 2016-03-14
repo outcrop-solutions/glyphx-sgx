@@ -7,6 +7,7 @@
 #include "singlewidgetdialog.h"
 #include "roledatafilterproxymodel.h"
 #include "datasource.h"
+#include <boost/uuid/uuid_io.hpp>
 
 RangeFilterListWidget::RangeFilterListWidget(SourceDataInfoModel* columnsModel, SynGlyphX::SourceDataCache::SharedPtr sourceDataCache, SourceDataSelectionModel* selectionModel, QWidget *parent)
 	: QWidget(parent),
@@ -124,14 +125,20 @@ void RangeFilterListWidget::OnAddFilter() {
 	if (dialog.exec() == QDialog::Accepted) {
 
 		const QModelIndexList& selected = fieldSelectorWidget->selectionModel()->selectedIndexes();
+		boost::uuids::string_generator gen;
 
 		for (const auto& modelIndex : selected) {
 
-			QLabel* fieldLabel = new QLabel(proxyModel->data(modelIndex).toString(), this);
+			QString field = proxyModel->data(modelIndex).toString();
+			QLabel* fieldLabel = new QLabel(field, this);
 			fieldLabel->setAlignment(Qt::AlignCenter);
 
 			SynGlyphX::SingleNumericRangeFilterWidget* filter = new SynGlyphX::SingleNumericRangeFilterWidget(Qt::Horizontal, this);
-			filter->SetMinMax(25.0, 150.0);
+			SynGlyphX::InputField inputField(gen(datasourceTable[0].toStdWString()), datasourceTable[1].toStdWString(), field.toStdWString(), SynGlyphX::InputField::Real);
+			SynGlyphX::SharedSQLQuery query = m_sourceDataCache->CreateMinMaxQuery(inputField);
+			query->exec();
+			query->first();
+			filter->SetMinMax(query->value(0).toDouble(), query->value(1).toDouble());
 
 			SynGlyphX::VScrollGridWidget* gridWidget = m_table2WidgetMap[m_currentTable];
 			QList<QWidget*> widgetsToAdd;
