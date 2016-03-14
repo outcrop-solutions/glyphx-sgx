@@ -51,7 +51,7 @@ FOR /F "tokens=*" %%p IN ('dir /b /a:d ..\bin\*') DO (
 		mkdir %basedir%\%%p\%%c\jre\lib
 		
 		robocopy /z /e ..\..\DataEngine\jdk1.7.0_79\jre\bin %basedir%\%%p\%%c\jre\bin *.dll
-		robocopy /z /e ..\..\DataEngine\jdk1.7.0_79\jre\lib %basedir%\%%p\%%c\jre\lib *.jar
+		robocopy /z /e ..\..\DataEngine\jdk1.7.0_79\jre\lib %basedir%\%%p\%%c\jre\lib
 		
 		mkdir %basedir%\%%p\%%c\database-drivers
 		robocopy /z /e "..\..\DataEngine\Java DataEngine\database-drivers" %basedir%\%%p\%%c\database-drivers
