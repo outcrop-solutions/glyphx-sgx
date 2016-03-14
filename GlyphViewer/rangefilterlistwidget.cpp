@@ -3,7 +3,10 @@
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QHeaderView>
+#include <QtWidgets/QListView>
 #include "singlewidgetdialog.h"
+#include "roledatafilterproxymodel.h"
+#include "datasource.h"
 
 RangeFilterListWidget::RangeFilterListWidget(SourceDataInfoModel* columnsModel, SynGlyphX::SourceDataCache::SharedPtr sourceDataCache, SourceDataSelectionModel* selectionModel, QWidget *parent)
 	: QWidget(parent),
@@ -98,36 +101,49 @@ void RangeFilterListWidget::OnModelReset() {
 
 void RangeFilterListWidget::OnAddFilter() {
 
-	/*QTableView* fieldSelectorWidget = new QTableView(this);
-	fieldSelectorWidget->horizontalHeader()->hide();
-	fieldSelectorWidget->verticalHeader()->hide();
+	QStringList datasourceTable = m_currentTable.split(':');
+	if (datasourceTable.count() < 2) {
+
+		datasourceTable.push_back(QString::fromStdWString(SynGlyphX::Datasource::SingleTableName));
+	}
+
+	SynGlyphX::RoleDataFilterProxyModel* proxyModel = new SynGlyphX::RoleDataFilterProxyModel(this);
+	proxyModel->setSourceModel(m_columnsModel);
+	proxyModel->setFilterRole(SourceDataInfoModel::TypeRole);
+	proxyModel->SetFilterData(SynGlyphX::SourceDataFieldType::Numeric);
+
+	QListView* fieldSelectorWidget = new QListView(this);
 	fieldSelectorWidget->setSelectionMode(QAbstractItemView::SingleSelection);
-	fieldSelectorWidget->setModel(m_columnsModel);
-	//fieldSelectorWidget->selectionModel()->select(m_selectedField, QItemSelectionModel::ClearAndSelect);
-	//fieldSelectorWidget->scrollTo(m_selectedField);
+	fieldSelectorWidget->setModel(proxyModel);
+	fieldSelectorWidget->setSelectionMode(QAbstractItemView::ExtendedSelection);
+	fieldSelectorWidget->setRootIndex(proxyModel->mapFromSource(m_columnsModel->GetIndexOfTable(datasourceTable[0], datasourceTable[1])));
+	
 	SynGlyphX::SingleWidgetDialog dialog(QDialogButtonBox::StandardButton::Ok | QDialogButtonBox::StandardButton::Cancel, fieldSelectorWidget, this);
-	dialog.setWindowTitle(tr("Select Field For Time Filter"));
+	dialog.setWindowTitle(tr("Select Field(s) For Range Filter(s)"));
 
 	if (dialog.exec() == QDialog::Accepted) {
 
-		
-	}*/
+		const QModelIndexList& selected = fieldSelectorWidget->selectionModel()->selectedIndexes();
 
-	QLabel* fieldLabel = new QLabel(tr("test test"), this);
-	fieldLabel->setAlignment(Qt::AlignCenter);
+		for (const auto& modelIndex : selected) {
 
-	SynGlyphX::SingleNumericRangeFilterWidget* filter = new SynGlyphX::SingleNumericRangeFilterWidget(Qt::Horizontal, this);
-	filter->SetMinMax(25.0, 150.0);
-	
-	SynGlyphX::VScrollGridWidget* gridWidget = m_table2WidgetMap[m_currentTable];
-	QList<QWidget*> widgetsToAdd;
-	widgetsToAdd.push_back(fieldLabel);
-	widgetsToAdd.push_back(filter);
-	gridWidget->AddRow(widgetsToAdd);
+			QLabel* fieldLabel = new QLabel(proxyModel->data(modelIndex).toString(), this);
+			fieldLabel->setAlignment(Qt::AlignCenter);
 
-	m_numericFilters[m_currentTable].push_back(filter);
-	m_removeAllButton->setEnabled(true);
-	QObject::connect(filter, &SynGlyphX::SingleNumericRangeFilterWidget::RangeUpdated, this, &RangeFilterListWidget::OnRangesChanged);
+			SynGlyphX::SingleNumericRangeFilterWidget* filter = new SynGlyphX::SingleNumericRangeFilterWidget(Qt::Horizontal, this);
+			filter->SetMinMax(25.0, 150.0);
+
+			SynGlyphX::VScrollGridWidget* gridWidget = m_table2WidgetMap[m_currentTable];
+			QList<QWidget*> widgetsToAdd;
+			widgetsToAdd.push_back(fieldLabel);
+			widgetsToAdd.push_back(filter);
+			gridWidget->AddRow(widgetsToAdd);
+
+			m_numericFilters[m_currentTable].push_back(filter);
+			m_removeAllButton->setEnabled(true);
+			QObject::connect(filter, &SynGlyphX::SingleNumericRangeFilterWidget::RangeUpdated, this, &RangeFilterListWidget::OnRangesChanged);
+		}
+	}
 }
 
 void RangeFilterListWidget::OnRemoveAllFilters() {

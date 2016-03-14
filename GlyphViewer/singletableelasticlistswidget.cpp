@@ -14,12 +14,12 @@ SingleTableElasticListsWidget::SingleTableElasticListsWidget(SynGlyphX::SourceDa
 	layout->setSpacing(Spacing);
 
 	SynGlyphX::TableColumns columns = m_sourceDataCache->GetColumnsForTable(table);
-	for (const QString& column : columns) {
+	for (const auto& column : columns) {
 
 		SynGlyphX::ElasticListWidget* elasticListWidget = new SynGlyphX::ElasticListWidget(this);
-		elasticListWidget->SetTitle(column);
+		elasticListWidget->SetTitle(column.first);
 		layout->addWidget(elasticListWidget);
-		m_elasticListMap[column.toStdString()] = elasticListWidget;
+		m_elasticListMap[column.first.toStdString()] = elasticListWidget;
 		QObject::connect(elasticListWidget, &SynGlyphX::ElasticListWidget::SelectionChanged, this, &SingleTableElasticListsWidget::OnElasticWidgetSelectionChanged);
 	}
 

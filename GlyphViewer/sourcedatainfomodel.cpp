@@ -2,6 +2,7 @@
 #include <boost/uuid/uuid_io.hpp>
 
 const int SourceDataInfoModel::IDRole = Qt::UserRole;
+const int SourceDataInfoModel::TypeRole = Qt::UserRole + 1;
 
 SourceDataInfoModel::SourceDataInfoModel(SynGlyphX::DataTransformMapping::ConstSharedPtr dataTransformMapping, SynGlyphX::SourceDataCache::SharedPtr sourceDataCache, QObject *parent)
 	: QStandardItemModel(parent),
@@ -134,10 +135,36 @@ void SourceDataInfoModel::AddTable(const boost::uuids::uuid& id, const QString& 
 			SynGlyphX::TableColumns columns = m_sourceDataCache->GetColumnsForTable(id, table);
 			for (auto column : columns) {
 
-				QStandardItem* newColumnItem = new QStandardItem(column);
+				QStandardItem* newColumnItem = new QStandardItem(column.first);
+				newColumnItem->setData(column.second, TypeRole);
 				newColumnItem->setFlags(m_columnFlags | Qt::ItemNeverHasChildren);
 				newTableItem->appendRow(newColumnItem);
 			}
 		}
 	}
+}
+
+QModelIndex SourceDataInfoModel::GetIndexOfTable(const QString& datasourceId, const QString& table) const {
+
+	QModelIndex datasourceIndex;
+	for (int i = 0; i < rowCount(); ++i) {
+
+		datasourceIndex = index(i, 0);
+		if (data(datasourceIndex).toString() == datasourceId) {
+
+			break;
+		}
+	}
+
+	QModelIndex tableIndex;
+	for (int j = 0; j < rowCount(datasourceIndex); ++j) {
+
+		tableIndex = index(j, 0, datasourceIndex);
+		if (data(tableIndex).toString() == table) {
+
+			break;
+		}
+	}
+
+	return tableIndex;
 }

@@ -28,6 +28,7 @@ class SourceDataInfoModel : public QStandardItemModel
 
 public:
 	static const int IDRole;
+	static const int TypeRole;
 
 	SourceDataInfoModel(SynGlyphX::DataTransformMapping::ConstSharedPtr dataTransformMapping, SynGlyphX::SourceDataCache::SharedPtr sourceDataCache, QObject *parent);
 	~SourceDataInfoModel();
@@ -35,6 +36,8 @@ public:
 	void SetShowColumns(bool show);
 	void SetShowUnmappedTables(bool show);
 	void SetSelectable(bool datasourcesSelectable, bool tableSelectable, bool columnsSelectable);
+
+	QModelIndex GetIndexOfTable(const QString& datasourceId, const QString& table) const;
 
 public slots:
 	void Reset();
