@@ -82,6 +82,7 @@ namespace SynGlyphX {
 		static QString CreateTablename(const QString& datasourceID, const QString& originalTablename);
 
 	private:
+		SourceDataFieldType GetSourceDataFieldType(QVariant::Type fieldType) const;
 		virtual void CreateNewCacheTable(const QString& name, const QString& fieldNamesAndTypes);
 		int GetLastIndexOfTable(const QString& tableName);
 		

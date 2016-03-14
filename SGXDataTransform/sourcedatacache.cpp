@@ -237,10 +237,11 @@ namespace SynGlyphX {
 		columnNames.reserve(columns.count());
 		for (int i = 0; i < columns.count(); ++i) {
 
-			QString fieldName = columns.fieldName(i);
+			QSqlField field = columns.field(i);
+			QString fieldName = field.name();
 			if (fieldName != IndexColumnName) {
 
-				columnNames.insert(columnNames.end(), fieldName);
+				columnNames.insert(columnNames.end(), std::pair<QString, SourceDataFieldType>(fieldName, GetSourceDataFieldType(field.type())));
 			}
 		}
 
@@ -400,11 +401,11 @@ namespace SynGlyphX {
 	SharedSQLQuery SourceDataCache::CreateSelectQueryForIndexSet(const QString& tableName, const TableColumns& columns, const IndexSet& indexSet) const {
 
 		TableColumns::const_iterator column = columns.begin();
-		QString columnNameString = "\"" + *column;
+		QString columnNameString = "\"" + column->first;
 		++column;
 		for (; column != columns.end(); ++column) {
 
-			columnNameString += "\", \"" + *column;
+			columnNameString += "\", \"" + column->first;
 		}
 		columnNameString += "\"";
 
@@ -670,6 +671,26 @@ namespace SynGlyphX {
 		}
 
 		return false;
+	}
+
+	SourceDataFieldType SourceDataCache::GetSourceDataFieldType(QVariant::Type fieldType) const {
+
+		if ((fieldType == QVariant::Type::Char) || (fieldType == QVariant::Type::String) || (fieldType == QVariant::Type::Url)) {
+
+			return SourceDataFieldType::Text;
+		}
+		else if ((fieldType == QVariant::Type::Double) || (fieldType == QVariant::Type::Int) || (fieldType == QVariant::Type::UInt) || (fieldType == QVariant::Type::LongLong) || (fieldType == QVariant::Type::ULongLong)) {
+
+			return SourceDataFieldType::Numeric;
+		}
+		else if ((fieldType == QVariant::Type::Date) || (fieldType == QVariant::Type::DateTime) || (fieldType == QVariant::Type::Time)) {
+
+			return SourceDataFieldType::DateTime;
+		}
+		else {
+
+			return SourceDataFieldType::Other;
+		}
 	}
 
 } //namespace SynGlyphX

@@ -31,7 +31,15 @@
 
 namespace SynGlyphX {
 
-	typedef boost::multi_index_container<QString, boost::multi_index::indexed_by<boost::multi_index::random_access<>, boost::multi_index::ordered_unique<boost::multi_index::identity<QString>>>> TableColumns;
+	enum SourceDataFieldType {
+		Numeric,
+		Text,
+		DateTime,
+		Other
+	};
+
+	//typedef boost::multi_index_container<QString, boost::multi_index::indexed_by<boost::multi_index::random_access<>, boost::multi_index::ordered_unique<boost::multi_index::identity<QString>>>> TableColumns;
+	typedef std::vector<std::pair<QString, SourceDataFieldType>> TableColumns;
 	typedef QSharedPointer<QSqlQuery> SharedSQLQuery;
 
 	class SGXDATATRANSFORM_EXPORT DatabaseInfo
