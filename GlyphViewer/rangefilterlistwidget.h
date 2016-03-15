@@ -22,7 +22,7 @@
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QStackedLayout>
 #include "singlenumericrangefilterwidget.h"
-#include "vscrollgridwidget.h"
+#include <QtWidgets/QTableWidget>
 #include "sourcedataselectionmodel.h"
 #include "sourcedatainfomodel.h"
 
@@ -45,10 +45,8 @@ private slots:
 	void OnRangesChanged();
 
 private:
-	typedef std::pair<QString, SynGlyphX::SingleNumericRangeFilterWidget*> ColumnFilter;
-	typedef std::vector<ColumnFilter> Column2FilterWidgetMap;
-	typedef QMap<QString, Column2FilterWidgetMap> Table2FilterWidgetsMap;
-
+	std::pair<double, double> GetRangeFromCell(QTableWidget* widget, int row, int column = 1) const;
+	QString GetTextFromCell(QTableWidget* widget, int row, int column = 0) const;
 	QStringList Separate(const QString& datasourceTable) const;
 
 	SynGlyphX::SourceDataCache::SharedPtr m_sourceDataCache;
@@ -58,8 +56,7 @@ private:
 	QPushButton* m_removeAllButton;
 	QPushButton* m_updateButton;
 	QStackedLayout* m_filtersLayout;
-	QMap<QString, SynGlyphX::VScrollGridWidget*> m_table2WidgetMap;
-	Table2FilterWidgetsMap m_numericFilters;
+	QMap<QString, QTableWidget*> m_table2WidgetMap;
 
 	SourceDataInfoModel* m_columnsModel;
 

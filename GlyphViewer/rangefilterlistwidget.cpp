@@ -63,7 +63,7 @@ void RangeFilterListWidget::SwitchTable(const QString& table) {
 
 	m_currentTable = table;
 	m_filtersLayout->setCurrentWidget(m_table2WidgetMap[table]);
-	m_removeAllButton->setEnabled(!m_numericFilters.find(m_currentTable)->empty());
+	m_removeAllButton->setEnabled(m_table2WidgetMap[table]->rowCount() > 0);
 }
 
 void RangeFilterListWidget::OnModelReset() {
@@ -79,7 +79,6 @@ void RangeFilterListWidget::OnModelReset() {
 	}
 	m_table2WidgetMap.clear();
 	m_currentTable.clear();
-	m_numericFilters.clear();
 
 	if (m_sourceDataCache->IsValid()) {
 
@@ -89,11 +88,17 @@ void RangeFilterListWidget::OnModelReset() {
 		const SynGlyphX::SourceDataCache::TableNameMap& tableNameMap = m_sourceDataCache->GetFormattedNames();
 		for (auto formattedName : tableNameMap) {
 
-			SynGlyphX::VScrollGridWidget* newScrollArea = new SynGlyphX::VScrollGridWidget(headerLabels, this);
-			newScrollArea->setFrameShape(QFrame::Shape::NoFrame);
-			m_filtersLayout->addWidget(newScrollArea);
-			m_table2WidgetMap.insert(formattedName.first, newScrollArea);
-			m_numericFilters.insert(formattedName.first, Column2FilterWidgetMap());
+			QTableWidget* newTableWidget = new QTableWidget(0, 2, this);
+			newTableWidget->setHorizontalHeaderLabels(headerLabels);
+			newTableWidget->setSelectionBehavior(QAbstractItemView::SelectionBehavior::SelectRows);
+			newTableWidget->setSelectionMode(QAbstractItemView::SelectionMode::ExtendedSelection);
+			newTableWidget->setFrameShape(QFrame::Shape::NoFrame);
+			newTableWidget->horizontalHeader()->setStretchLastSection(true);
+			newTableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeMode::ResizeToContents);
+			newTableWidget->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeMode::ResizeToContents);
+			newTableWidget->verticalHeader()->hide();
+			m_filtersLayout->addWidget(newTableWidget);
+			m_table2WidgetMap.insert(formattedName.first, newTableWidget);
 		}
 		m_currentTable = tableNameMap.begin()->first;
 	}
@@ -112,9 +117,9 @@ void RangeFilterListWidget::OnAddFilter() {
 	filterOutFieldsInUseModel->setSourceModel(fieldTypeProxyModel);
 	filterOutFieldsInUseModel->setFilterRole(Qt::DisplayRole);
 	QStringList fieldsInUse;
-	for (const auto& field : m_numericFilters[m_currentTable]) {
+	for (unsigned int row = 0; row < m_table2WidgetMap[m_currentTable]->rowCount(); ++row) {
 
-		fieldsInUse.push_back(field.first);
+		fieldsInUse.push_back(m_table2WidgetMap[m_currentTable]->item(row, 0)->text());
 	}
 	filterOutFieldsInUseModel->SetFilterData(fieldsInUse);
 	filterOutFieldsInUseModel->SetNot(true);
@@ -141,20 +146,20 @@ void RangeFilterListWidget::OnAddFilter() {
 
 			return;
 		}
-		boost::uuids::string_generator gen;
-		const Column2FilterWidgetMap& column2FilterWidgets = m_numericFilters.find(m_currentTable).value();
-		SynGlyphX::SourceDataCache::ColumnMinMaxMap columnMinMaxMap;
-		Column2FilterWidgetMap::const_iterator columnFilter;
-		for (columnFilter = column2FilterWidgets.begin(); columnFilter != column2FilterWidgets.end(); ++columnFilter) {
 
-			columnMinMaxMap.push_back(SynGlyphX::SourceDataCache::ColumnMinMaxPair(columnFilter->first, columnFilter->second->GetRange()));
+		QTableWidget* currentTableWidget = m_table2WidgetMap[m_currentTable];
+		unsigned int nextRow = currentTableWidget->rowCount();
+		currentTableWidget->setRowCount(nextRow + selected.count());
+		boost::uuids::string_generator gen;
+		SynGlyphX::SourceDataCache::ColumnMinMaxMap columnMinMaxMap;
+		for (unsigned int row = 0; row < nextRow; ++row) {
+
+			columnMinMaxMap.push_back(SynGlyphX::SourceDataCache::ColumnMinMaxPair(GetTextFromCell(currentTableWidget, row), GetRangeFromCell(currentTableWidget, row)));
 		}
 
 		for (const auto& modelIndex : selected) {
 
 			QString field = filterOutFieldsInUseModel->data(modelIndex).toString();
-			QLabel* fieldLabel = new QLabel(field, this);
-			fieldLabel->setAlignment(Qt::AlignCenter);
 
 			SynGlyphX::SingleNumericRangeFilterWidget* filter = new SynGlyphX::SingleNumericRangeFilterWidget(Qt::Horizontal, this);
 			SynGlyphX::InputField inputField(gen(datasourceTable[0].toStdWString()), datasourceTable[1].toStdWString(), field.toStdWString(), SynGlyphX::InputField::Real);
@@ -163,13 +168,11 @@ void RangeFilterListWidget::OnAddFilter() {
 			filter->SetMaxRangeExtents(minMax.first, minMax.second);
 			filter->SetRange(minMax);
 
-			SynGlyphX::VScrollGridWidget* gridWidget = m_table2WidgetMap[m_currentTable];
-			QList<QWidget*> widgetsToAdd;
-			widgetsToAdd.push_back(fieldLabel);
-			widgetsToAdd.push_back(filter);
-			gridWidget->AddRow(widgetsToAdd);
+			QTableWidgetItem* item = new QTableWidgetItem(field);
+			item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsDragEnabled | Qt::ItemIsEnabled | Qt::ItemNeverHasChildren);
+			currentTableWidget->setItem(nextRow, 0, item);
+			currentTableWidget->setCellWidget(nextRow++, 1, filter);
 
-			m_numericFilters[m_currentTable].push_back(ColumnFilter(field, filter));
 			m_removeAllButton->setEnabled(true);
 			QObject::connect(filter, &SynGlyphX::SingleNumericRangeFilterWidget::RangeUpdated, this, &RangeFilterListWidget::OnRangesChanged);
 		}
@@ -180,31 +183,33 @@ void RangeFilterListWidget::OnAddFilter() {
 
 void RangeFilterListWidget::OnRemoveAllFilters() {
 
-	SynGlyphX::VScrollGridWidget* gridWidget = m_table2WidgetMap[m_currentTable];
-	gridWidget->RemoveAllWidgets();
-	m_numericFilters.find(m_currentTable)->clear();
+	QTableWidget* currentTableWidget = m_table2WidgetMap[m_currentTable];
+	while (currentTableWidget->rowCount() > 0) {
+
+		currentTableWidget->removeRow(0);
+	}
+	
 	m_removeAllButton->setEnabled(false);
 	m_updateButton->setEnabled(true);
 }
 
 void RangeFilterListWidget::OnUpdateFilters() {
-
-	SourceDataSelectionModel::IndexSetMap indexSets;
-	for (Table2FilterWidgetsMap::const_iterator tableFilters = m_numericFilters.begin(); tableFilters != m_numericFilters.end(); ++tableFilters) {
+	
+	for (QMap<QString, QTableWidget*>::const_iterator table2Widget = m_table2WidgetMap.begin(); table2Widget != m_table2WidgetMap.end(); ++table2Widget) {
 
 		SynGlyphX::SourceDataCache::ColumnMinMaxMap columnMinMaxMap;
-		for (Column2FilterWidgetMap::const_iterator columnFilter = tableFilters->begin(); columnFilter != tableFilters->end(); ++columnFilter) {
+		for (unsigned int row = 0; row < table2Widget.value()->rowCount(); ++row) {
 
-			columnMinMaxMap.push_back(SynGlyphX::SourceDataCache::ColumnMinMaxPair(columnFilter->first, columnFilter->second->GetRange()));
+			columnMinMaxMap.push_back(SynGlyphX::SourceDataCache::ColumnMinMaxPair(GetTextFromCell(table2Widget.value(), row), GetRangeFromCell(table2Widget.value(), row)));
 		}
 
 		if (columnMinMaxMap.empty()) {
 
-			m_selectionModel->ClearSourceDataSelectionForTable(tableFilters.key());
+			m_selectionModel->ClearSourceDataSelectionForTable(table2Widget.key());
 		}
 		else {
 
-			m_selectionModel->SetSourceDataSelectionForTable(tableFilters.key(), m_sourceDataCache->GetIndexesFromTableInRanges(tableFilters.key(), columnMinMaxMap));
+			m_selectionModel->SetSourceDataSelectionForTable(table2Widget.key(), m_sourceDataCache->GetIndexesFromTableInRanges(table2Widget.key(), columnMinMaxMap));
 		}
 	}
 	m_updateButton->setEnabled(false);
@@ -216,30 +221,42 @@ void RangeFilterListWidget::OnRangesChanged() {
 	QStringList datasourceTable = Separate(m_currentTable);
 	SynGlyphX::SingleNumericRangeFilterWidget* updatedFilter = dynamic_cast<SynGlyphX::SingleNumericRangeFilterWidget*>(sender());
 	
-	const Column2FilterWidgetMap& column2FilterWidgets = m_numericFilters.find(m_currentTable).value();
+	QTableWidget* currentTableWidget = m_table2WidgetMap[m_currentTable];
 	SynGlyphX::SourceDataCache::ColumnMinMaxMap columnMinMaxMap;
-	Column2FilterWidgetMap::const_iterator columnFilter;
-	for (columnFilter = column2FilterWidgets.begin(); columnFilter != column2FilterWidgets.end(); ++columnFilter) {
+	unsigned int row = 0;
+	for (; row < currentTableWidget->rowCount(); ++row) {
 
-		columnMinMaxMap.push_back(std::pair<QString, std::pair<double, double>>(columnFilter->first, columnFilter->second->GetRange()));
-		if (columnFilter->second == updatedFilter) {
+		columnMinMaxMap.push_back(SynGlyphX::SourceDataCache::ColumnMinMaxPair(GetTextFromCell(currentTableWidget, row), GetRangeFromCell(currentTableWidget, row)));
+		if (currentTableWidget->cellWidget(row, 1) == updatedFilter) {
 
 			break;
 		}
 	}
-	++columnFilter;
-	for (; columnFilter != column2FilterWidgets.end(); ++columnFilter) {
+	++row;
+	for (; row < currentTableWidget->rowCount(); ++row) {
 
-		SynGlyphX::SingleNumericRangeFilterWidget* filter = columnFilter->second;
-		SynGlyphX::InputField inputField(gen(datasourceTable[0].toStdWString()), datasourceTable[1].toStdWString(), columnFilter->first.toStdWString(), SynGlyphX::InputField::Real);
+		QString field = GetTextFromCell(currentTableWidget, row);
+		SynGlyphX::SingleNumericRangeFilterWidget* filter = dynamic_cast<SynGlyphX::SingleNumericRangeFilterWidget*>(currentTableWidget->cellWidget(row, 1));
+		SynGlyphX::InputField inputField(gen(datasourceTable[0].toStdWString()), datasourceTable[1].toStdWString(), field.toStdWString(), SynGlyphX::InputField::Real);
 		std::pair<double, double> minMax = m_sourceDataCache->GetMinMax(inputField, columnMinMaxMap);
 		filter->blockSignals(true);
 		filter->SetMaxRangeExtents(minMax.first, minMax.second);
 		filter->blockSignals(false);
-		columnMinMaxMap.push_back(std::pair<QString, std::pair<double, double>>(columnFilter->first, minMax));
+		columnMinMaxMap.push_back(std::pair<QString, std::pair<double, double>>(field, minMax));
 	}
 
 	m_updateButton->setEnabled(true);
+}
+
+std::pair<double, double> RangeFilterListWidget::GetRangeFromCell(QTableWidget* widget, int row, int column) const {
+
+	SynGlyphX::SingleNumericRangeFilterWidget* filterWidget = dynamic_cast<SynGlyphX::SingleNumericRangeFilterWidget*>(widget->cellWidget(row, column));
+	return filterWidget->GetRange();
+}
+
+QString RangeFilterListWidget::GetTextFromCell(QTableWidget* widget, int row, int column) const {
+
+	return widget->item(row, column)->text();
 }
 
 QStringList RangeFilterListWidget::Separate(const QString& datasourceTable) const {
