@@ -40,6 +40,7 @@ public slots:
 private slots:
 	void OnModelReset();
 	void OnAddFilter();
+	void OnRemoveSelectedFilters();
 	void OnRemoveAllFilters();
 	void OnUpdateFilters();
 	void OnRangesChanged();

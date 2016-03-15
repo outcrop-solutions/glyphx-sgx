@@ -181,6 +181,10 @@ void RangeFilterListWidget::OnAddFilter() {
 	}
 }
 
+void RangeFilterListWidget::OnRemoveSelectedFilters() {
+
+}
+
 void RangeFilterListWidget::OnRemoveAllFilters() {
 
 	QTableWidget* currentTableWidget = m_table2WidgetMap[m_currentTable];

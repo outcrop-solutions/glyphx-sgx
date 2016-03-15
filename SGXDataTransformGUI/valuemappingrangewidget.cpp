@@ -1,11 +1,11 @@
-#include "rangewidget.h"
+#include "valuemappingrangewidget.h"
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QLabel>
 #include <utility>
 
 namespace SynGlyphX {
 
-	RangeWidget::RangeWidget(QWidget *parent)
+	ValueMappingRangeWidget::ValueMappingRangeWidget(QWidget *parent)
 		: QWidget(parent)
 	{
 		QHBoxLayout* layout = new QHBoxLayout(this);
@@ -41,29 +41,29 @@ namespace SynGlyphX {
 		m_maxSpinBox->setValue(1.0);
 	}
 
-	RangeWidget::~RangeWidget()
+	ValueMappingRangeWidget::~ValueMappingRangeWidget()
 	{
 
 	}
 
-	void RangeWidget::SetRange(const Range& range) {
+	void ValueMappingRangeWidget::SetRange(const ValueMappingRange& range) {
 
 		m_minSpinBox->setValue(range.GetMin());
 		m_maxSpinBox->setValue(range.GetMax());
 	}
 
-	Range RangeWidget::GetRange() const {
+	ValueMappingRange ValueMappingRangeWidget::GetRange() const {
 
 		if (!IsValid()) {
 
 			throw std::runtime_error("Min value of range must be less than max value of range.");
 		}
 
-		Range range(m_minSpinBox->value(), m_maxSpinBox->value());
+		ValueMappingRange range(m_minSpinBox->value(), m_maxSpinBox->value());
 		return range;
 	}
 	
-	bool RangeWidget::IsValid() const {
+	bool ValueMappingRangeWidget::IsValid() const {
 
 		return (m_minSpinBox->value() < m_maxSpinBox->value());
 	}

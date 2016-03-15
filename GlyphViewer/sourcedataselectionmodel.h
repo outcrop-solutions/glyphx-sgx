@@ -23,7 +23,7 @@
 #include "sourcedatacache.h"
 #include "inputtable.h"
 #include "itemfocusselectionmodel.h"
-#include "range.h"
+#include "interval.h"
 #include <unordered_map>
 #include <map>
 #include "guihash.h"
@@ -57,8 +57,8 @@ private slots:
 	void OnSceneModelReset();
 
 private:
-	typedef std::map<SynGlyphX::Range, QString> GlyphTemplateRangeToTableMap;
-	typedef std::unordered_multimap<QString, SynGlyphX::Range, SynGlyphX::QStringHash> TableToGlyphTemplateRangesMap;
+	typedef std::map<SynGlyphX::Interval, QString> GlyphTemplateRangeToTableMap;
+	typedef std::unordered_multimap<QString, SynGlyphX::Interval, SynGlyphX::QStringHash> TableToGlyphTemplateRangesMap;
 
 	void AddSceneIndexesFromTableToSelection(QItemSelection& selection, const QString& table);
 

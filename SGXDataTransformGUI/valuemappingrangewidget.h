@@ -15,25 +15,25 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef RANGEWIDGET_H
-#define RANGEWIDGET_H
+#ifndef SYNGLYPHX_VALUEMAPPINGRANGEWIDGET_H
+#define SYNGLYPHX_VALUEMAPPINGRANGEWIDGET_H
 
-#include "sgxgui_global.h"
+#include "sgxdatatransformgui_global.h"
 #include <QtWidgets/QDoubleSpinBox>
-#include "range.h"
+#include "valuemappingrange.h"
 
 namespace SynGlyphX {
 
-	class SGXGUI_EXPORT RangeWidget : public QWidget
+	class SGXDATATRANSFORMGUI_EXPORT ValueMappingRangeWidget : public QWidget
 	{
 		Q_OBJECT
 
 	public:
-		RangeWidget(QWidget *parent);
-		~RangeWidget();
+		ValueMappingRangeWidget(QWidget *parent);
+		~ValueMappingRangeWidget();
 
-		void SetRange(const Range& range);
-		Range GetRange() const;
+		void SetRange(const ValueMappingRange& range);
+		ValueMappingRange GetRange() const;
 
 		bool IsValid() const;
 
@@ -48,4 +48,4 @@ namespace SynGlyphX {
 
 } //namespace SynGlyphX
 
-#endif // RANGEWIDGET_H
+#endif // SYNGLYPHX_VALUEMAPPINGRANGEWIDGET_H

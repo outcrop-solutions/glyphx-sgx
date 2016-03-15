@@ -30,6 +30,8 @@ namespace SynGlyphX {
 		Q_OBJECT
 
 	public:
+		typedef std::pair<double, double> Range;
+
 		SingleNumericRangeFilterWidget(Qt::Orientation orientation, QWidget *parent);
 		~SingleNumericRangeFilterWidget();
 

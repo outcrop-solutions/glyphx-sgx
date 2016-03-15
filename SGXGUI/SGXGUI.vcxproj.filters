@@ -179,15 +179,6 @@
     <ClCompile Include="GeneratedFiles\Release\moc_doublesizewidget.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
-    <ClCompile Include="rangewidget.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_rangewidget.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_rangewidget.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
     <ClCompile Include="radiobuttongroupwidget.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -436,9 +427,6 @@
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="doublesizewidget.h">
-      <Filter>Header Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="rangewidget.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="radiobuttongroupwidget.h">

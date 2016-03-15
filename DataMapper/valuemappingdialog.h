@@ -24,7 +24,7 @@
 #include <QtWidgets/QLineEdit>
 #include <QtWidgets/QPushButton>
 #include "colorbutton.h"
-#include "rangewidget.h"
+#include "valuemappingrangewidget.h"
 #include "valuemappingfunction.h"
 #include <set>
 #include "glyphenumcombobox.h"
@@ -69,7 +69,7 @@ protected:
 
 	void OnNumberOfRowsInTableChanged();
 	void AddRow();
-	SynGlyphX::Range GetRangeFromWidget(int row, int column = 0);
+	SynGlyphX::ValueMappingRange GetRangeFromWidget(int row, int column = 0);
 	std::wstring GetTextFromWidget(int row, int column = 0);
 	double GetDoubleFromWidget(int row, int column = 0);
 	SynGlyphX::GlyphColor GetColorFromWidget(int row, int column = 1);
@@ -84,7 +84,7 @@ protected:
 	SynGlyphX::GlyphShapeComboBox* m_defaultShapeWidget;
 	SynGlyphX::VirtualTopologyComboBox* m_defaultVirtualTopologyWidget;
 
-	SynGlyphX::RangeWidget* m_inputRangeWidget;
+	SynGlyphX::ValueMappingRangeWidget* m_inputRangeWidget;
 	QDoubleSpinBox* m_inputDoubleWidget;
 	QLineEdit* m_inputTextWidget;
 	QDoubleSpinBox* m_outputDoubleWidget;
