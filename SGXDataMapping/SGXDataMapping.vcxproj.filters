@@ -99,6 +99,9 @@
     <ClInclude Include="databaseserverdatasource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="valuemappingrange.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -174,6 +177,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="databaseserverdatasource.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="valuemappingrange.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

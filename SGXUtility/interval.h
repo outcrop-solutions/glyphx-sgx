@@ -15,62 +15,57 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef SYNGLYPHX_RANGE_H
-#define SYNGLYPHX_RANGE_H
+#ifndef SYNGLYPHX_INTERVAL_H
+#define SYNGLYPHX_INTERVAL_H
 
 #include "sgxutility.h"
 #include <boost/property_tree/ptree.hpp>
 
 namespace SynGlyphX {
 
-	class SGXUTILITY_API Range
+	class SGXUTILITY_API Interval
 	{
 	public:
-		Range(double min, double max);
-		Range(const Range& range);
-		~Range();
+		enum IncludedEndpoints {
 
-		Range& operator=(const Range& range);
-		bool operator==(const Range& range) const;
-		bool operator!=(const Range& range) const;
-		bool operator<(const Range& range) const;
+			Neither,
+			Min,
+			Max,
+			Both
+		};
+
+		enum Type {
+
+			Proper,		//min must be less than max
+			Degenerate	//min can be the same as max
+		};
+
+		Interval(double min, double max, Type type, IncludedEndpoints includedEndpoints);
+		Interval(const Interval& interval);
+		~Interval();
+
+		Interval& operator=(const Interval& interval);
+		bool operator==(const Interval& interval) const;
+		bool operator!=(const Interval& interval) const;
+		bool operator<(const Interval& interval) const;
 		//bool operator<(double value) const;
 
 		double GetMin() const;
 		double GetMax() const;
+		Type GetType() const;
+		IncludedEndpoints GetIncludedEndpoints() const;
 
-		bool IsValueInRange(double value) const;
+		bool IsValueInInterval(double value) const;
 
-	private:
+	protected:
+		bool IsMinMaxValidForThisInterval(double min, double max) const;
+
 		double m_min;
 		double m_max;
-	};
-
-	//This translator is so that Range can be automatically used by boost::property_tree
-	class SGXUTILITY_API RangeTranslator
-	{
-	public:
-		typedef std::wstring internal_type;
-		typedef Range external_type;
-
-		RangeTranslator();
-
-		boost::optional<Range> get_value(std::wstring const &v);
-		boost::optional<std::wstring> put_value(Range const& v);
-
+		Type m_type;
+		IncludedEndpoints m_includedEndpoints;
 	};
 
 } //namespace SynGlyphX
 
-namespace boost{
-
-	namespace property_tree{
-
-		template<>
-		struct translator_between<std::wstring, SynGlyphX::Range>
-		{
-			typedef SynGlyphX::RangeTranslator type;
-		};
-	}
-}
-#endif //SYNGLYPHX_RANGE_H
+#endif //SYNGLYPHX_INTERVAL_H

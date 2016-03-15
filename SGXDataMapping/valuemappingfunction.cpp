@@ -168,9 +168,9 @@ namespace SynGlyphX {
 	}
 
 	template <typename OutputType, typename InputType, typename KeyType>
-	bool ValueMappingData<OutputType, InputType, KeyType>::DoesInputMatch(const Range& range, const double& input) const {
+	bool ValueMappingData<OutputType, InputType, KeyType>::DoesInputMatch(const ValueMappingRange& range, const double& input) const {
 
-		return (range.IsValueInRange(input));
+		return (range.IsValueInInterval(input));
 	}
 
 	template <typename OutputType, typename InputType, typename KeyType>
@@ -189,7 +189,7 @@ namespace SynGlyphX {
 	MappingFunctionData::Function ValueMappingData<OutputType, InputType, KeyType>::GetFunctionForThisType() {
 
 		return std::is_same<std::wstring, InputType>::value ? MappingFunctionData::Function::Text2Value :
-			(std::is_same<Range, KeyType>::value ? MappingFunctionData::Function::Range2Value : MappingFunctionData::Function::Numeric2Value);
+			(std::is_same<ValueMappingRange, KeyType>::value ? MappingFunctionData::Function::Range2Value : MappingFunctionData::Function::Numeric2Value);
 	}
 
 	template <typename OutputType, typename InputType, typename KeyType>
@@ -230,8 +230,8 @@ namespace SynGlyphX {
 	template class ValueMappingData < double, std::wstring > ;
 	template class ValueMappingData < GlyphColor, double >;
 	template class ValueMappingData < GlyphColor, std::wstring >;
-	template class ValueMappingData < double, double, Range >;
-	template class ValueMappingData < GlyphColor, double, Range >;
+	template class ValueMappingData < double, double, ValueMappingRange >;
+	template class ValueMappingData < GlyphColor, double, ValueMappingRange >;
 
 	template class ValueMappingData<GlyphGeometryInfo::Shape, double>;
 	template class ValueMappingData<GlyphGeometryInfo::Shape, std::wstring>;
@@ -239,7 +239,7 @@ namespace SynGlyphX {
 	template class ValueMappingData<VirtualTopologyInfo::Type, double>;
 	template class ValueMappingData<VirtualTopologyInfo::Type, std::wstring>;
 
-	template class ValueMappingData<GlyphGeometryInfo::Shape, double, Range>;
-	template class ValueMappingData<VirtualTopologyInfo::Type, double, Range>;
+	template class ValueMappingData<GlyphGeometryInfo::Shape, double, ValueMappingRange>;
+	template class ValueMappingData<VirtualTopologyInfo::Type, double, ValueMappingRange>;
 
 } //namespace SynGlyphX

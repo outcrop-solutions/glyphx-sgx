@@ -98,7 +98,7 @@
     <ClInclude Include="csvfilewriter.h" />
     <ClInclude Include="csvtfilereaderwriter.h" />
     <ClInclude Include="filesystem.h" />
-    <ClInclude Include="range.h" />
+    <ClInclude Include="interval.h" />
     <ClInclude Include="sgxutility.h" />
     <ClInclude Include="stringconvert.h" />
     <ClInclude Include="targetver.h" />
@@ -120,7 +120,7 @@
       </PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="filesystem.cpp" />
-    <ClCompile Include="range.cpp" />
+    <ClCompile Include="interval.cpp" />
     <ClCompile Include="stringconvert.cpp" />
     <ClCompile Include="uuid.cpp" />
     <ClCompile Include="xmlpropertytreefile.cpp" />
