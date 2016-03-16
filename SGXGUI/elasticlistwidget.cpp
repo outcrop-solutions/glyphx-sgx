@@ -32,7 +32,7 @@ namespace SynGlyphX {
 		m_dataAndCountView->setSelectionMode(QAbstractItemView::MultiSelection);
 		m_dataAndCountView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 		m_dataAndCountView->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);
-		m_dataAndCountView->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
+		m_dataAndCountView->horizontalHeader()->setSectionResizeMode(1, QHeaderView::ResizeToContents);
 		m_dataAndCountView->horizontalHeader()->setSectionResizeMode(2, QHeaderView::ResizeToContents);
 		//m_dataAndCountView->horizontalHeader()->hide();
 		m_dataAndCountView->verticalHeader()->setSectionResizeMode(QHeaderView::Fixed);

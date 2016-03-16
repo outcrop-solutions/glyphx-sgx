@@ -68,7 +68,7 @@ namespace SynGlyphX {
 
 		if (index.isValid()) {
 
-			if (role == Qt::DisplayRole) {
+			if ((role == Qt::DisplayRole) || (role == Qt::ToolTipRole)) {
 
 				if (index.column() == 2) {
 					return m_percentage.at(index.row());
