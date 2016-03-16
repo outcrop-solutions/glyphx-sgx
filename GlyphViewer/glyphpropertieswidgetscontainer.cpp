@@ -47,7 +47,7 @@ void GlyphPropertiesWidgetsContainer::OnSelectionChanged(const QItemSelection& s
 		SynGlyphX::Glyph glyph = m_model->GetGlyphAtIndex(index);
 		//m_visualPropertiesWidget->SetWidgetFromGlyph(glyph, true);
 		//m_visualPropertiesWidget->SetNumberOfChildren(m_model->rowCount(index));
-		m_textPropertiesWidget->SetWidgetFromGlyph(glyph);
+		m_textPropertiesWidget->SetWidget(QString::fromStdWString(glyph.GetTag()), QString::fromStdWString(glyph.GetURL()), QString::fromStdWString(glyph.GetDescription()));
 	}
 }
 

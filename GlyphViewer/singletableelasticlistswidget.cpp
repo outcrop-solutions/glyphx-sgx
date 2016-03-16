@@ -2,7 +2,7 @@
 
 const unsigned int SingleTableElasticListsWidget::Spacing = 2;
 
-SingleTableElasticListsWidget::SingleTableElasticListsWidget(SynGlyphX::SourceDataCache::SharedPtr sourceDataCache, const QString& table, QWidget *parent)
+SingleTableElasticListsWidget::SingleTableElasticListsWidget(SourceDataCache::SharedPtr sourceDataCache, const QString& table, QWidget *parent)
 	: SynGlyphX::VerticalScrollArea(parent),
 	m_sourceDataCache(sourceDataCache),
 	m_table(table)
@@ -13,7 +13,7 @@ SingleTableElasticListsWidget::SingleTableElasticListsWidget(SynGlyphX::SourceDa
 	layout->setContentsMargins(0, 0, 0, 0);
 	layout->setSpacing(Spacing);
 
-	SynGlyphX::TableColumns columns = m_sourceDataCache->GetColumnsForTable(table);
+	SourceDataCache::TableColumns columns = m_sourceDataCache->GetColumnsForTable(table);
 	for (const auto& column : columns) {
 
 		SynGlyphX::ElasticListWidget* elasticListWidget = new SynGlyphX::ElasticListWidget(this);
@@ -42,7 +42,7 @@ void SingleTableElasticListsWidget::PopulateElasticLists(const SynGlyphX::IndexS
 	for (auto column : m_elasticListMap) {
 
 		SynGlyphX::ElasticListModel::Data elasticListData;
-		SynGlyphX::SharedSQLQuery distinctValuesQuery = m_sourceDataCache->CreateDistinctValueAndCountQuery(m_table, QString::fromStdString(column.first), indexSet);
+		SourceDataCache::SharedSQLQuery distinctValuesQuery = m_sourceDataCache->CreateDistinctValueAndCountQuery(m_table, QString::fromStdString(column.first), indexSet);
 		distinctValuesQuery->exec();
 		while (distinctValuesQuery->next()) {
 
@@ -55,7 +55,7 @@ void SingleTableElasticListsWidget::PopulateElasticLists(const SynGlyphX::IndexS
 
 void SingleTableElasticListsWidget::OnElasticWidgetSelectionChanged() {
 
-	SynGlyphX::SourceDataCache::ColumnValueData newSelection;
+	SourceDataCache::ColumnValueData newSelection;
 	for (auto elasticListWidget : m_elasticListMap) {
 
 		const std::set<QString>& columnSelection = elasticListWidget.second->GetSelectedRawData();

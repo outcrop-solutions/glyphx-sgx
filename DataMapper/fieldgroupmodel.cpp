@@ -236,10 +236,6 @@ unsigned int FieldGroupModel::GetTableForRow(int row) const {
 		}
 	}
 
-	//auto table = m_dataTransformModel->GetSourceDataManager().GetNumericFieldsByTable().begin();
-	//auto table = m_dataTransformModel->GetDataEngineConn().getNumericFieldsTable().begin();
-	//std::advance(table, i);
-
 	return i;
 }
 

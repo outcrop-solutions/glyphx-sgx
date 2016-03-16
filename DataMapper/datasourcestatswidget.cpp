@@ -5,7 +5,6 @@
 #include <QtWidgets/QHeaderView>
 #include <boost/uuid/uuid_io.hpp>
 #include "datastatsmodel.h"
-#include "sourcedatamanager.h"
 
 DataSourceStatsWidget::DataSourceStatsWidget(DataTransformModel* dataTransformModel, QWidget *parent)
 	: QTabWidget(parent),

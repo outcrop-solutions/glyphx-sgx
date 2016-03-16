@@ -3,7 +3,6 @@
 #include <QtCore/QMimeData>
 #include <QtWidgets/QMenu>
 #include "inputfieldmimedata.h"
-#include "sourcedatamanager.h"
 #include <QtWidgets/QHBoxLayout>
 
 BindingLineEdit::BindingLineEdit(const GlyphRolesTableModel* model, QWidget *parent, SynGlyphX::MappingFunctionData::Input acceptedInputTypes)

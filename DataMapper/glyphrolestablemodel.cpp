@@ -1,6 +1,5 @@
 #include "glyphrolestablemodel.h"
 #include <QtGui/QColor>
-#include "sourcedatamanager.h"
 #include <QtWidgets/QMessageBox>
 #include <stack>
 #include "interpolationmappingfunction.h"

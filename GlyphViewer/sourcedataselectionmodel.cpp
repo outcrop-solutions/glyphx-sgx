@@ -1,6 +1,6 @@
 #include "sourcedataselectionmodel.h"
 
-SourceDataSelectionModel::SourceDataSelectionModel(SynGlyphX::DataMappingModel* dataMappingModel, SynGlyphX::SourceDataCache::SharedPtr sourceDataCache, SynGlyphX::ItemFocusSelectionModel* sceneSelectionModel, QObject *parent)
+SourceDataSelectionModel::SourceDataSelectionModel(SynGlyphX::DataMappingModel* dataMappingModel, SourceDataCache::SharedPtr sourceDataCache, SynGlyphX::ItemFocusSelectionModel* sceneSelectionModel, QObject *parent)
 	: QObject(parent),
 	m_dataMappingModel(dataMappingModel),
 	m_sourceDataCache(sourceDataCache),
@@ -32,7 +32,7 @@ void SourceDataSelectionModel::OnSceneModelReset() {
 
 			if (glyphGraph.second->IsTransformable()) {
 
-				QString tableName = SynGlyphX::SourceDataCache::CreateTablename(glyphGraph.second->GetInputFields().begin()->second);
+				QString tableName = SourceDataCache::CreateTablename(glyphGraph.second->GetInputFields().begin()->second);
 				if (countsForEachTable.count(tableName) == 0) {
 
 					countsForEachTable[tableName] = m_sourceDataCache->GetNumberOfRowsInTable(tableName);
@@ -45,7 +45,7 @@ void SourceDataSelectionModel::OnSceneModelReset() {
 
 			if (glyphGraph.second->IsTransformable()) {
 
-				QString tableName = SynGlyphX::SourceDataCache::CreateTablename(glyphGraph.second->GetInputFields().begin()->second);
+				QString tableName = SourceDataCache::CreateTablename(glyphGraph.second->GetInputFields().begin()->second);
 				SynGlyphX::Interval range(startingIndex, startingIndex + countsForEachTable.at(tableName), SynGlyphX::Interval::Proper, SynGlyphX::Interval::Min);
 				startingIndex += countsForEachTable.at(tableName);
 
@@ -126,7 +126,7 @@ const SourceDataSelectionModel::IndexSetMap& SourceDataSelectionModel::GetSource
 	return m_selectedSourceDataSets;
 }
 
-SynGlyphX::SourceDataCache::ConstSharedPtr SourceDataSelectionModel::GetSourceDataCache() const {
+SourceDataCache::ConstSharedPtr SourceDataSelectionModel::GetSourceDataCache() const {
 
 	return m_sourceDataCache;
 }

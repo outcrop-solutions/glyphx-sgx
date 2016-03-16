@@ -2,7 +2,6 @@
 #include "glyphbuilderapplication.h"
 #include <QtWidgets/QSplashScreen>
 #include <QtCore/QTimer>
-#include "sourcedatamanager.h"
 #include "licensingdialog.h"
 #include "doubleminmaxwidget.h"
 #include "intminmaxwidget.h"

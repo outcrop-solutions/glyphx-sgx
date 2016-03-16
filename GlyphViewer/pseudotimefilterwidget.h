@@ -18,7 +18,7 @@ class PseudoTimeFilterWidget : public QWidget
 	Q_OBJECT
 
 public:
-	PseudoTimeFilterWidget(SourceDataInfoModel* columnsModel, SynGlyphX::SourceDataCache::SharedPtr sourceDataCache, SourceDataSelectionModel* selectionModel, QWidget *parent);
+	PseudoTimeFilterWidget(SourceDataInfoModel* columnsModel, SourceDataCache::SharedPtr sourceDataCache, SourceDataSelectionModel* selectionModel, QWidget *parent);
 	~PseudoTimeFilterWidget();
 
 	void SetupLinkedWidgets(LinkedWidgetsManager& linkedWidgetsManager);
@@ -70,8 +70,8 @@ private:
 	QTimer m_playTimer;
 
 	FilterState m_filterState;
-	SynGlyphX::SourceDataCache::SharedPtr m_sourceDataCache;
-	SynGlyphX::SourceDataCache::DistinctValueIndexMap m_selectionForEachDistinctValue;
+	SourceDataCache::SharedPtr m_sourceDataCache;
+	SourceDataCache::DistinctValueIndexMap m_selectionForEachDistinctValue;
 	QString m_sourceCacheTableName;
 	SourceDataSelectionModel* m_selectionModel;
 

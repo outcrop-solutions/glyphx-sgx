@@ -30,7 +30,7 @@ public:
 	static const int IDRole;
 	static const int TypeRole;
 
-	SourceDataInfoModel(SynGlyphX::DataTransformMapping::ConstSharedPtr dataTransformMapping, SynGlyphX::SourceDataCache::SharedPtr sourceDataCache, QObject *parent);
+	SourceDataInfoModel(SynGlyphX::DataTransformMapping::ConstSharedPtr dataTransformMapping, SourceDataCache::SharedPtr sourceDataCache, QObject *parent);
 	~SourceDataInfoModel();
 
 	void SetShowColumns(bool show);
@@ -47,7 +47,7 @@ private:
 	void AddTable(const boost::uuids::uuid& id, const QString& table, QStandardItem* newDatasourceItem);
 
 	SynGlyphX::DataTransformMapping::ConstSharedPtr m_dataTransformMapping;
-	SynGlyphX::SourceDataCache::SharedPtr m_sourceDataCache;
+	SourceDataCache::SharedPtr m_sourceDataCache;
 
 	Qt::ItemFlags m_datasourceFlags;
 	Qt::ItemFlags m_tableFlags;

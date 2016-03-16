@@ -35,7 +35,7 @@ class SourceDataSelectionModel : public QObject
 public:
 	typedef std::map<QString, SynGlyphX::IndexSet> IndexSetMap;
 
-	SourceDataSelectionModel(SynGlyphX::DataMappingModel* dataMappingModel, SynGlyphX::SourceDataCache::SharedPtr sourceDataCache, SynGlyphX::ItemFocusSelectionModel* sceneSelectionModel, QObject *parent);
+	SourceDataSelectionModel(SynGlyphX::DataMappingModel* dataMappingModel, SourceDataCache::SharedPtr sourceDataCache, SynGlyphX::ItemFocusSelectionModel* sceneSelectionModel, QObject *parent);
 	~SourceDataSelectionModel();
 
 	const SynGlyphX::ItemFocusSelectionModel* GetSceneSelectionModel() const;
@@ -46,7 +46,7 @@ public:
 	void ClearSourceDataSelectionForTable(const QString& table, bool updateFocus = true);
 	const IndexSetMap& GetSourceDataSelection() const;
 
-	SynGlyphX::SourceDataCache::ConstSharedPtr GetSourceDataCache() const;
+	SourceDataCache::ConstSharedPtr GetSourceDataCache() const;
 	const SynGlyphX::DataMappingModel* GetDataMappingModel() const;
 
 signals:
@@ -63,7 +63,7 @@ private:
 	void AddSceneIndexesFromTableToSelection(QItemSelection& selection, const QString& table);
 
 	SynGlyphX::DataMappingModel* m_dataMappingModel;
-	SynGlyphX::SourceDataCache::SharedPtr m_sourceDataCache;
+	SourceDataCache::SharedPtr m_sourceDataCache;
 	SynGlyphX::ItemFocusSelectionModel* m_sceneSelectionModel;
 
 	TableToGlyphTemplateRangesMap m_tableToGlyphTreeRangesMap;

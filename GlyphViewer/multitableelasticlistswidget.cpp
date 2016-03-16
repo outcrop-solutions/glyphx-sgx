@@ -4,7 +4,7 @@
 #include <QtWidgets/QAbstractItemView>
 #include "elasticlistwidget.h"
 
-MultiTableElasticListsWidget::MultiTableElasticListsWidget(SynGlyphX::SourceDataCache::SharedPtr sourceDataCache, SourceDataSelectionModel* selectionModel, QWidget *parent)
+MultiTableElasticListsWidget::MultiTableElasticListsWidget(SourceDataCache::SharedPtr sourceDataCache, SourceDataSelectionModel* selectionModel, QWidget *parent)
 	: QWidget(parent),
 	m_selectionModel(selectionModel),
 	m_sourceDataCache(sourceDataCache)
@@ -34,7 +34,7 @@ void MultiTableElasticListsWidget::OnModelReset() {
 	ClearElasticLists();
 	if (m_sourceDataCache->IsValid()) {
 
-		const SynGlyphX::SourceDataCache::TableNameMap& tableNameMap = m_sourceDataCache->GetFormattedNames();
+		const SourceDataCache::TableNameMap& tableNameMap = m_sourceDataCache->GetFormattedNames();
 		for (auto formattedName : tableNameMap) {
 
 			SingleTableElasticListsWidget* elasticListsWidgetForTable = new SingleTableElasticListsWidget(m_sourceDataCache, formattedName.first, this);
@@ -95,7 +95,7 @@ void MultiTableElasticListsWidget::ClearElasticLists() {
 	m_elasticListWidgetsForEachTable.clear();
 }
 
-void MultiTableElasticListsWidget::OnElasticListsSelectionChanged(const QString& table, const SynGlyphX::SourceDataCache::ColumnValueData& selection) {
+void MultiTableElasticListsWidget::OnElasticListsSelectionChanged(const QString& table, const SourceDataCache::ColumnValueData& selection) {
 
 	if (selection.empty()) {
 

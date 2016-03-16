@@ -31,7 +31,7 @@ class RangeFilterListWidget : public QWidget
 	Q_OBJECT
 
 public:
-	RangeFilterListWidget(SourceDataInfoModel* columnsModel, SynGlyphX::SourceDataCache::SharedPtr sourceDataCache, SourceDataSelectionModel* selectionModel, QWidget *parent);
+	RangeFilterListWidget(SourceDataInfoModel* columnsModel, SourceDataCache::SharedPtr sourceDataCache, SourceDataSelectionModel* selectionModel, QWidget *parent);
 	~RangeFilterListWidget();
 
 public slots:
@@ -50,7 +50,7 @@ private:
 	QString GetTextFromCell(QTableWidget* widget, int row, int column = 0) const;
 	QStringList Separate(const QString& datasourceTable) const;
 
-	SynGlyphX::SourceDataCache::SharedPtr m_sourceDataCache;
+	SourceDataCache::SharedPtr m_sourceDataCache;
 	SourceDataSelectionModel* m_selectionModel;
 
 	QPushButton* m_addButton;

@@ -1,5 +1,4 @@
 #include "datatransformmodel.h"
-#include "sourcedatamanager.h"
 #include <QtCore/QDir>
 #include <QtCore/QDebug>
 #include <boost/uuid/uuid_io.hpp>

@@ -51,7 +51,7 @@ private:
 	QTabWidget* m_sourceDataTabs;
 	QStatusBar* m_statusBar;
 	std::vector<QSqlQueryModel*> m_sqlQueryModels;
-	//SynGlyphX::SourceDataCache::SharedPtr m_sourceDataCache;
+	//SourceDataCache::SharedPtr m_sourceDataCache;
 	SourceDataSelectionModel* m_selectionModel;
 };
 

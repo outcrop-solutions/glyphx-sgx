@@ -110,7 +110,7 @@ QMimeData* DataStatsModel::mimeData(const QModelIndexList& indexes) const {
 		type = SynGlyphX::InputField::Type::Integer;
 	}
 	else if ((fieldType == QVariant::Type::Date) || (fieldType == QVariant::Type::DateTime) || (fieldType == QVariant::Type::Time)) {
-		type = SynGlyphX::InputField::Type::Date;
+		type = SynGlyphX::InputField::Type::DateTime;
 	}
 	
 	SynGlyphX::InputField inputfield(m_table.GetDatasourceID(), m_table.GetTable(), fieldName.toStdWString(), type);

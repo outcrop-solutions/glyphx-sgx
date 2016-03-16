@@ -4,7 +4,7 @@
 const int SourceDataInfoModel::IDRole = Qt::UserRole;
 const int SourceDataInfoModel::TypeRole = Qt::UserRole + 1;
 
-SourceDataInfoModel::SourceDataInfoModel(SynGlyphX::DataTransformMapping::ConstSharedPtr dataTransformMapping, SynGlyphX::SourceDataCache::SharedPtr sourceDataCache, QObject *parent)
+SourceDataInfoModel::SourceDataInfoModel(SynGlyphX::DataTransformMapping::ConstSharedPtr dataTransformMapping, SourceDataCache::SharedPtr sourceDataCache, QObject *parent)
 	: QStandardItemModel(parent),
 	m_dataTransformMapping(dataTransformMapping),
 	m_sourceDataCache(sourceDataCache),
@@ -132,7 +132,7 @@ void SourceDataInfoModel::AddTable(const boost::uuids::uuid& id, const QString& 
 
 		if (addColumns) {
 
-			SynGlyphX::TableColumns columns = m_sourceDataCache->GetColumnsForTable(id, table);
+			SourceDataCache::TableColumns columns = m_sourceDataCache->GetColumnsForTable(id, table);
 			for (auto column : columns) {
 
 				QStandardItem* newColumnItem = new QStandardItem(column.first);

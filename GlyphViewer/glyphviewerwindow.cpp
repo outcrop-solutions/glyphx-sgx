@@ -13,7 +13,6 @@
 #include "datatransformmapping.h"
 #include "downloadoptionsdialog.h"
 #include "data/npmapfile.h"
-#include "sourcedatamanager.h"
 //#include "glyphviewerantztransformer.h"
 #include "changedatasourcefiledialog.h"
 #include "antzimportdialog.h"
@@ -37,7 +36,7 @@ GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 {
 	m_dataEngineConnection = std::make_shared<DataEngine::DataEngineConnection>();
 	m_mappingModel = new SynGlyphX::DataMappingModel(this);
-	m_sourceDataCache = std::make_shared<SynGlyphX::SourceDataCache>();
+	m_sourceDataCache = std::make_shared<SourceDataCache>();
 	m_glyphForestModel = new SynGlyphXANTz::GlyphForestModel(this);
 
 	m_glyphForestSelectionModel = new SynGlyphX::ItemFocusSelectionModel(m_glyphForestModel, this);

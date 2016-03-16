@@ -6,7 +6,7 @@
 #include "multitableelasticlistswidget.h"
 #include "rangefilterlistwidget.h"
 
-FilteringWidget::FilteringWidget(SourceDataInfoModel* columnsModel, SynGlyphX::SourceDataCache::SharedPtr sourceDataCache, SourceDataSelectionModel* selectionModel, QWidget *parent)
+FilteringWidget::FilteringWidget(SourceDataInfoModel* columnsModel, SourceDataCache::SharedPtr sourceDataCache, SourceDataSelectionModel* selectionModel, QWidget *parent)
 	: QWidget(parent),
 	m_selectionModel(selectionModel),
 	m_sourceDataCache(sourceDataCache)
@@ -120,7 +120,7 @@ void FilteringWidget::OnModelReset() {
 
 	if (m_sourceDataCache->IsValid()) {
 
-		const SynGlyphX::SourceDataCache::TableNameMap& tableNameMap = m_sourceDataCache->GetFormattedNames();
+		const SourceDataCache::TableNameMap& tableNameMap = m_sourceDataCache->GetFormattedNames();
 		for (auto formattedName : tableNameMap) {
 
 			m_tableComboBox->addItem(formattedName.second, formattedName.first);

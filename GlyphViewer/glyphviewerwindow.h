@@ -102,7 +102,7 @@ private:
 	SynGlyphXANTz::ANTzForestWidget* m_antzWidget;
 	GlyphTreeListView* m_treeView;
 	GlyphPropertiesWidgetsContainer* m_glyphPropertiesWidgetContainer;
-	SynGlyphX::SourceDataCache::SharedPtr m_sourceDataCache;
+	SourceDataCache::SharedPtr m_sourceDataCache;
 	FilteringWidget* m_filteringWidget;
 	SourceDataSelectionModel* m_sourceDataSelectionModel;
 	PseudoTimeFilterWidget* m_pseudoTimeFilterWidget;

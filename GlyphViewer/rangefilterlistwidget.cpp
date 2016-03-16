@@ -10,7 +10,7 @@
 #include "datasource.h"
 #include <boost/uuid/uuid_io.hpp>
 
-RangeFilterListWidget::RangeFilterListWidget(SourceDataInfoModel* columnsModel, SynGlyphX::SourceDataCache::SharedPtr sourceDataCache, SourceDataSelectionModel* selectionModel, QWidget *parent)
+RangeFilterListWidget::RangeFilterListWidget(SourceDataInfoModel* columnsModel, SourceDataCache::SharedPtr sourceDataCache, SourceDataSelectionModel* selectionModel, QWidget *parent)
 	: QWidget(parent),
 	m_selectionModel(selectionModel),
 	m_sourceDataCache(sourceDataCache),
@@ -85,7 +85,7 @@ void RangeFilterListWidget::OnModelReset() {
 		QStringList headerLabels;
 		headerLabels << tr("Field") << tr("Range");
 
-		const SynGlyphX::SourceDataCache::TableNameMap& tableNameMap = m_sourceDataCache->GetFormattedNames();
+		const SourceDataCache::TableNameMap& tableNameMap = m_sourceDataCache->GetFormattedNames();
 		for (auto formattedName : tableNameMap) {
 
 			QTableWidget* newTableWidget = new QTableWidget(0, 2, this);
@@ -111,7 +111,7 @@ void RangeFilterListWidget::OnAddFilter() {
 	SynGlyphX::RoleDataFilterProxyModel* fieldTypeProxyModel = new SynGlyphX::RoleDataFilterProxyModel(this);
 	fieldTypeProxyModel->setSourceModel(m_columnsModel);
 	fieldTypeProxyModel->setFilterRole(SourceDataInfoModel::TypeRole);
-	fieldTypeProxyModel->SetFilterData(SynGlyphX::SourceDataFieldType::Numeric);
+	fieldTypeProxyModel->SetFilterData(SynGlyphX::InputField::Type::Real);
 
 	SynGlyphX::RoleDataFilterProxyModel* filterOutFieldsInUseModel = new SynGlyphX::RoleDataFilterProxyModel(this);
 	filterOutFieldsInUseModel->setSourceModel(fieldTypeProxyModel);
@@ -151,10 +151,10 @@ void RangeFilterListWidget::OnAddFilter() {
 		unsigned int nextRow = currentTableWidget->rowCount();
 		currentTableWidget->setRowCount(nextRow + selected.count());
 		boost::uuids::string_generator gen;
-		SynGlyphX::SourceDataCache::ColumnMinMaxMap columnMinMaxMap;
+		SourceDataCache::ColumnMinMaxMap columnMinMaxMap;
 		for (unsigned int row = 0; row < nextRow; ++row) {
 
-			columnMinMaxMap.push_back(SynGlyphX::SourceDataCache::ColumnMinMaxPair(GetTextFromCell(currentTableWidget, row), GetRangeFromCell(currentTableWidget, row)));
+			columnMinMaxMap.push_back(SourceDataCache::ColumnMinMaxPair(GetTextFromCell(currentTableWidget, row), GetRangeFromCell(currentTableWidget, row)));
 		}
 
 		for (const auto& modelIndex : selected) {
@@ -201,10 +201,10 @@ void RangeFilterListWidget::OnUpdateFilters() {
 	
 	for (QMap<QString, QTableWidget*>::const_iterator table2Widget = m_table2WidgetMap.begin(); table2Widget != m_table2WidgetMap.end(); ++table2Widget) {
 
-		SynGlyphX::SourceDataCache::ColumnMinMaxMap columnMinMaxMap;
+		SourceDataCache::ColumnMinMaxMap columnMinMaxMap;
 		for (unsigned int row = 0; row < table2Widget.value()->rowCount(); ++row) {
 
-			columnMinMaxMap.push_back(SynGlyphX::SourceDataCache::ColumnMinMaxPair(GetTextFromCell(table2Widget.value(), row), GetRangeFromCell(table2Widget.value(), row)));
+			columnMinMaxMap.push_back(SourceDataCache::ColumnMinMaxPair(GetTextFromCell(table2Widget.value(), row), GetRangeFromCell(table2Widget.value(), row)));
 		}
 
 		if (columnMinMaxMap.empty()) {
@@ -226,11 +226,11 @@ void RangeFilterListWidget::OnRangesChanged() {
 	SynGlyphX::SingleNumericRangeFilterWidget* updatedFilter = dynamic_cast<SynGlyphX::SingleNumericRangeFilterWidget*>(sender());
 	
 	QTableWidget* currentTableWidget = m_table2WidgetMap[m_currentTable];
-	SynGlyphX::SourceDataCache::ColumnMinMaxMap columnMinMaxMap;
+	SourceDataCache::ColumnMinMaxMap columnMinMaxMap;
 	unsigned int row = 0;
 	for (; row < currentTableWidget->rowCount(); ++row) {
 
-		columnMinMaxMap.push_back(SynGlyphX::SourceDataCache::ColumnMinMaxPair(GetTextFromCell(currentTableWidget, row), GetRangeFromCell(currentTableWidget, row)));
+		columnMinMaxMap.push_back(SourceDataCache::ColumnMinMaxPair(GetTextFromCell(currentTableWidget, row), GetRangeFromCell(currentTableWidget, row)));
 		if (currentTableWidget->cellWidget(row, 1) == updatedFilter) {
 
 			break;

@@ -9,7 +9,7 @@
 
 unsigned int PseudoTimeFilterWidget::s_buttonSize = 24;
 
-PseudoTimeFilterWidget::PseudoTimeFilterWidget(SourceDataInfoModel* columnsModel, SynGlyphX::SourceDataCache::SharedPtr sourceDataCache, SourceDataSelectionModel* selectionModel, QWidget *parent)
+PseudoTimeFilterWidget::PseudoTimeFilterWidget(SourceDataInfoModel* columnsModel, SourceDataCache::SharedPtr sourceDataCache, SourceDataSelectionModel* selectionModel, QWidget *parent)
 	: QWidget(parent),
 	m_filterState(FilterState::Inactive),
 	m_sourceDataCache(sourceDataCache),
@@ -328,7 +328,7 @@ void PseudoTimeFilterWidget::UpdateSelectedField(const QModelIndex& newSelectedF
 	QString dataSourceName = m_columnsModel->data(dataSourceIndex).toString();
 	QString dataSourceIdString = m_columnsModel->data(dataSourceIndex, SourceDataInfoModel::IDRole).toString();
 
-	m_sourceCacheTableName = SynGlyphX::SourceDataCache::CreateTablename(dataSourceIdString, tableName);
+	m_sourceCacheTableName = SourceDataCache::CreateTablename(dataSourceIdString, tableName);
 	m_selectionForEachDistinctValue = m_sourceDataCache->GetIndexesOrderedByDistinctValue(m_sourceCacheTableName, columnName);
 
 	m_slider->setMaximum(m_selectionForEachDistinctValue.size() - 1);

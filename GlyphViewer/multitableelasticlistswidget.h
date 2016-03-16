@@ -31,7 +31,7 @@ class MultiTableElasticListsWidget : public QWidget
 	Q_OBJECT
 
 public:
-	MultiTableElasticListsWidget(SynGlyphX::SourceDataCache::SharedPtr sourceDataCache, SourceDataSelectionModel* selectionModel, QWidget *parent);
+	MultiTableElasticListsWidget(SourceDataCache::SharedPtr sourceDataCache, SourceDataSelectionModel* selectionModel, QWidget *parent);
 	~MultiTableElasticListsWidget();
 
 public slots:
@@ -40,7 +40,7 @@ public slots:
 private slots:
 	void OnSelectionChanged();
 	void OnModelReset();
-	void OnElasticListsSelectionChanged(const QString& table, const SynGlyphX::SourceDataCache::ColumnValueData& selection);
+	void OnElasticListsSelectionChanged(const QString& table, const SourceDataCache::ColumnValueData& selection);
 
 private:
 	typedef std::unordered_map<std::wstring, SingleTableElasticListsWidget*> NameWidgetMap;
@@ -49,7 +49,7 @@ private:
 	void UpdateElasticLists(const SourceDataSelectionModel::IndexSetMap& dataIndexes = SourceDataSelectionModel::IndexSetMap());
 	void ClearElasticLists();
 
-	SynGlyphX::SourceDataCache::SharedPtr m_sourceDataCache;
+	SourceDataCache::SharedPtr m_sourceDataCache;
 	SourceDataSelectionModel* m_selectionModel;
 	
 	QStackedLayout* m_elasticListsStackLayout;

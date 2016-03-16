@@ -45,11 +45,10 @@ namespace SynGlyphX {
 
 	}
 
-	void TextGlyphPropertiesWidget::SetWidgetFromGlyph(const Glyph& glyph) {
+	void TextGlyphPropertiesWidget::SetWidget(const QString& tag, const QString& urlString, const QString& description) {
 
-		m_tagLineEdit->setText(QString::fromStdWString(glyph.GetTag()));
+		m_tagLineEdit->setText(tag);
 
-		QString urlString = QString::fromStdWString(glyph.GetURL());
 		QUrl url = QUrl::fromUserInput(urlString);
 		if (url.isValid() && (urlString != "nourl.html")) {
 
@@ -70,7 +69,7 @@ namespace SynGlyphX {
 			m_urlLineEdit->setPlainText(tr("No URL"));
 		}
 
-		m_descriptionEdit->setHtml(QString::fromStdWString(glyph.GetDescription()));
+		m_descriptionEdit->setHtml(description);
 	}
 
 	void TextGlyphPropertiesWidget::SetReadOnly(bool readOnly) {

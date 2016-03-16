@@ -31,7 +31,7 @@ class FilteringWidget : public QWidget
 	Q_OBJECT
 
 public:
-	FilteringWidget(SourceDataInfoModel* columnsModel, SynGlyphX::SourceDataCache::SharedPtr sourceDataCache, SourceDataSelectionModel* selectionModel, QWidget *parent);
+	FilteringWidget(SourceDataInfoModel* columnsModel, SourceDataCache::SharedPtr sourceDataCache, SourceDataSelectionModel* selectionModel, QWidget *parent);
 	~FilteringWidget();
 
 	void SetupLinkedWidgets(LinkedWidgetsManager& linkedWidgets);
@@ -56,7 +56,7 @@ private:
 	QScopedPointer<SourceDataWidget> m_sourceDataWindow;
 
 	SourceDataSelectionModel* m_selectionModel;
-	SynGlyphX::SourceDataCache::SharedPtr m_sourceDataCache;
+	SourceDataCache::SharedPtr m_sourceDataCache;
 };
 
 #endif // FILTERINGWIDGET_H

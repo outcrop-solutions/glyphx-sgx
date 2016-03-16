@@ -98,7 +98,7 @@ void GlyphTreeListView::OnPropertiesActivated() {
 		SynGlyphX::Glyph glyph = forestModel->GetGlyphAtIndex(index);
 
 		SynGlyphX::TextGlyphPropertiesWidget* glyphPropertiesWidget = new SynGlyphX::TextGlyphPropertiesWidget(this);
-		glyphPropertiesWidget->SetWidgetFromGlyph(glyph);
+		glyphPropertiesWidget->SetWidget(QString::fromStdWString(glyph.GetTag()), QString::fromStdWString(glyph.GetURL()), QString::fromStdWString(glyph.GetDescription()));
 		glyphPropertiesWidget->SetReadOnly(true);
 
 		SynGlyphX::SingleWidgetDialog dialog(QDialogButtonBox::Ok, glyphPropertiesWidget, this);

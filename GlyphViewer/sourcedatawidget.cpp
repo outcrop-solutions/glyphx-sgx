@@ -80,7 +80,7 @@ void SourceDataWidget::UpdateTables() {
 	const SourceDataSelectionModel::IndexSetMap& dataIndexes = m_selectionModel->GetSourceDataSelection();
 	if (!dataIndexes.empty()) {
 
-		const SynGlyphX::SourceDataCache::TableNameMap& formattedNames = m_selectionModel->GetSourceDataCache()->GetFormattedNames();
+		const SourceDataCache::TableNameMap& formattedNames = m_selectionModel->GetSourceDataCache()->GetFormattedNames();
 
 		for (auto indexSet : dataIndexes) {
 
@@ -88,8 +88,8 @@ void SourceDataWidget::UpdateTables() {
 			tableView->setObjectName(indexSet.first);
 			QSqlQueryModel* queryModel = new QSqlQueryModel(this);
 			
-			SynGlyphX::TableColumns columns = m_selectionModel->GetSourceDataCache()->GetColumnsForTable(indexSet.first);
-			SynGlyphX::SharedSQLQuery query = m_selectionModel->GetSourceDataCache()->CreateSelectQueryForIndexSet(indexSet.first, columns, indexSet.second);
+			SourceDataCache::TableColumns columns = m_selectionModel->GetSourceDataCache()->GetColumnsForTable(indexSet.first);
+			SourceDataCache::SharedSQLQuery query = m_selectionModel->GetSourceDataCache()->CreateSelectQueryForIndexSet(indexSet.first, columns, indexSet.second);
 			query->exec();
 			queryModel->setQuery(*query.data());
 			if (queryModel->lastError().isValid()) {
