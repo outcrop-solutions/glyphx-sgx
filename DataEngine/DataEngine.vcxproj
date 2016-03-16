@@ -57,7 +57,7 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;DATAENGINE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>
       </SDLCheck>
-      <AdditionalIncludeDirectories>..\..\Core\SGXFoundation;..\..\3rdParty\include\stlplus_3_11;..\..\Core\SGXUtility;..\..\Core\SGXDataMapping;..\..\Core\SGXDataTransform;..\..\Core\SGXImage\;..\..\GUI\SGXGUI\;..\..\Core\SGXGeospatial\;..\..\3rdParty\include\boost_1_55_0;..\..\DataEngine\jdk1.7.0_79\include\win32;..\..\DataEngine\jdk1.7.0_79\include;..\..\3rdParty\include\Qt_5_2_1;..\..\GUI\MapDownloading;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\Core\SGXFoundation;..\..\3rdParty\include\stlplus_3_11;..\..\Core\SGXUtility;..\..\Core\SGXDataMapping;..\..\Core\SGXImage\;..\..\Core\SGXGeospatial\;..\..\3rdParty\include\boost_1_55_0;..\..\DataEngine\jdk1.7.0_79\include\win32;..\..\DataEngine\jdk1.7.0_79\include;..\..\3rdParty\include\Qt_5_2_1;..\..\GUI\MapDownloading;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
       <MinimalRebuild>false</MinimalRebuild>
@@ -68,7 +68,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>jvm.lib;jawt.lib;SGXImage.lib;SGXGUI.lib;SGXGeospatial.lib;MapDownloading.lib;boost_filesystem-vc120-mt-gd-1_55.lib;boost_system-vc120-mt-gd-1_55.lib;qtmaind.lib;Qt5Cored.lib;Qt5Guid.lib;Qt5Widgetsd.lib;Qt5Networkd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>jvm.lib;jawt.lib;SGXImage.lib;SGXGeospatial.lib;MapDownloading.lib;boost_filesystem-vc120-mt-gd-1_55.lib;boost_system-vc120-mt-gd-1_55.lib;qtmaind.lib;Qt5Cored.lib;Qt5Guid.lib;Qt5Widgetsd.lib;Qt5Networkd.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>..\..\DataEngine\jdk1.7.0_79\lib\;..\..\lib\$(Platform)\$(Configuration)\;..\..\3rdParty\lib\$(Platform)\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ImportLibrary>..\..\lib\$(Platform)\$(Configuration)\$(TargetName).lib</ImportLibrary>
       <LargeAddressAware>true</LargeAddressAware>
@@ -95,7 +95,7 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;QT_DLL;QT_NO_DEBUG;QT_CORE_LIB;QT_GUI_LIB;QT_WIDGETS_LIB;DATAENGINE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>
       </SDLCheck>
-      <AdditionalIncludeDirectories>..\..\Core\SGXFoundation;..\..\3rdParty\include\stlplus_3_11;..\..\Core\SGXUtility;..\..\Core\SGXDataMapping;..\..\Core\SGXDataTransform;..\..\Core\SGXImage\;..\..\GUI\SGXGUI\;..\..\Core\SGXGeospatial\;..\..\3rdParty\include\boost_1_55_0;..\..\DataEngine\jdk1.7.0_79\include\win32;..\..\DataEngine\jdk1.7.0_79\include;..\..\3rdParty\include\Qt_5_2_1;..\..\GUI\MapDownloading;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\Core\SGXFoundation;..\..\3rdParty\include\stlplus_3_11;..\..\Core\SGXUtility;..\..\Core\SGXDataMapping;..\..\Core\SGXImage\;..\..\Core\SGXGeospatial\;..\..\3rdParty\include\boost_1_55_0;..\..\DataEngine\jdk1.7.0_79\include\win32;..\..\DataEngine\jdk1.7.0_79\include;..\..\3rdParty\include\Qt_5_2_1;..\..\GUI\MapDownloading;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <WholeProgramOptimization>true</WholeProgramOptimization>
     </ClCompile>
@@ -105,7 +105,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalLibraryDirectories>..\..\DataEngine\jdk1.7.0_79\lib\;..\..\lib\$(Platform)\$(Configuration)\;..\..\3rdParty\lib\$(Platform)\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>jvm.lib;jawt.lib;SGXImage.lib;SGXGUI.lib;SGXGeospatial.lib;MapDownloading.lib;boost_filesystem-vc120-mt-1_55.lib;boost_system-vc120-mt-1_55.lib;SGXImage.lib;SGXGUI.lib;SGXGeospatial.lib;Qt5Core.lib;Qt5Gui.lib;Qt5Widgets.lib;Qt5Network.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>jvm.lib;jawt.lib;SGXImage.lib;SGXGeospatial.lib;MapDownloading.lib;boost_filesystem-vc120-mt-1_55.lib;boost_system-vc120-mt-1_55.lib;SGXImage.lib;SGXGUI.lib;SGXGeospatial.lib;Qt5Core.lib;Qt5Gui.lib;Qt5Widgets.lib;Qt5Network.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ImportLibrary>..\..\lib\$(Platform)\$(Configuration)\$(TargetName).lib</ImportLibrary>
       <LargeAddressAware>true</LargeAddressAware>
     </Link>
