@@ -52,6 +52,7 @@ int main(int argc, char *argv[])
 	a.processEvents();
 
 	try {
+
 		GlyphViewerWindow w;
 		w.move(50, 50);
 		w.resize(1200, 700);
@@ -66,7 +67,15 @@ int main(int argc, char *argv[])
 		return a.exec();
 		w.closeJVM();
 	}
-	catch (...) {
+	catch (const std::exception& e) {
+
+		QMessageBox::critical(nullptr, QObject::tr("Error"), QObject::tr("Error: ") + e.what() + "\n\n" + QObject::tr("Application is shutting down."), QMessageBox::StandardButton::Ok);
 		return 1;
 	}
+	catch (...) {
+		
+		return 1;
+	}
+
+	return 0;
 }

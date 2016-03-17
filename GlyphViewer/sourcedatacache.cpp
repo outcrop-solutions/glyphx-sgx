@@ -449,7 +449,6 @@ SynGlyphX::IndexSet SourceDataCache::GetIndexesFromTableInRanges(const QString& 
 
 	QSqlQuery query(m_db);
 	query.prepare(queryString);
-	query.exec();
 	if (!query.exec()) {
 
 		throw std::runtime_error((QObject::tr("Failed to get selected indexes from cache: ") + m_db.lastError().text()).toStdString().c_str());
@@ -491,7 +490,7 @@ std::pair<double, double> SourceDataCache::GetMinMax(const SynGlyphX::InputField
 
 QString SourceDataCache::CreateBetweenString(const QString& columnName, const std::pair<double, double>& minMax) const {
 
-	return ("(" + columnName + " BETWEEN " + QString::number(minMax.first) + " AND " + QString::number(minMax.second) + ")");
+	return ("(\"" + columnName + "\" BETWEEN " + QString::number(minMax.first) + " AND " + QString::number(minMax.second) + ")");
 }
 
 SourceDataCache::DistinctValueIndexMap SourceDataCache::GetIndexesOrderedByDistinctValue(const QString& tableName, const QString& columnName) const {

@@ -62,16 +62,30 @@ int main(int argc, char *argv[])
 
     a.processEvents();
 
-    DataMapperWindow w;
-    w.resize(1200, 700);
+	try {
 
-    //Need to figure out better way to not have the splash screen disappear before the user sees it
-    QTimer::singleShot(1500, &splash, SLOT(close()));
-    QTimer::singleShot(1600, &w, SLOT(show()));
+		DataMapperWindow w;
+		w.resize(1200, 700);
 
-    //w.show();
-    //splash.finish(&w);
-    
-    return a.exec();
-	w.closeJVM();
+		//Need to figure out better way to not have the splash screen disappear before the user sees it
+		QTimer::singleShot(1500, &splash, SLOT(close()));
+		QTimer::singleShot(1600, &w, SLOT(show()));
+
+		//w.show();
+		//splash.finish(&w);
+
+		return a.exec();
+		w.closeJVM();
+	}
+	catch (const std::exception& e) {
+
+		QMessageBox::critical(nullptr, QObject::tr("Error"), QObject::tr("Error: ") + e.what() + "\n\n" + QObject::tr("Application is shutting down."), QMessageBox::StandardButton::Ok);
+		return 1;
+	}
+	catch (...) {
+
+		return 1;
+	}
+
+	return 0;
 }
