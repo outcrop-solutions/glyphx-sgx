@@ -3,6 +3,7 @@
 
 const int SourceDataInfoModel::IDRole = Qt::UserRole;
 const int SourceDataInfoModel::TypeRole = Qt::UserRole + 1;
+const int SourceDataInfoModel::NoTypeData = -1;
 
 SourceDataInfoModel::SourceDataInfoModel(SynGlyphX::DataTransformMapping::ConstSharedPtr dataTransformMapping, SourceDataCache::SharedPtr sourceDataCache, QObject *parent)
 	: QStandardItemModel(parent),
@@ -97,6 +98,7 @@ void SourceDataInfoModel::AddDatasource(const boost::uuids::uuid& id, const SynG
 
 	QStandardItem* newDatasourceItem = new QStandardItem(QString::fromStdWString(datasource.GetFormattedName()));
 	newDatasourceItem->setData(QString::fromStdString(boost::uuids::to_string(id)), IDRole);
+	newDatasourceItem->setData(NoTypeData, TypeRole);
 	newDatasourceItem->setFlags(m_datasourceFlags);
 	for (auto table : datasource.GetTables()) {
 
@@ -120,6 +122,7 @@ void SourceDataInfoModel::AddTable(const boost::uuids::uuid& id, const QString& 
 
 		bool addColumns = !m_tableFlags.testFlag(Qt::ItemNeverHasChildren);
 		QStandardItem* newTableItem = new QStandardItem(table);
+		newTableItem->setData(NoTypeData, TypeRole);
 		if (isTableInCache) {
 
 			newTableItem->setFlags(m_tableFlags);
@@ -150,7 +153,8 @@ QModelIndex SourceDataInfoModel::GetIndexOfTable(const QString& datasourceId, co
 	for (int i = 0; i < rowCount(); ++i) {
 
 		datasourceIndex = index(i, 0);
-		if (data(datasourceIndex).toString() == datasourceId) {
+		QString datasourceData = data(datasourceIndex, SourceDataInfoModel::IDRole).toString();
+		if (data(datasourceIndex, SourceDataInfoModel::IDRole).toString() == datasourceId) {
 
 			break;
 		}

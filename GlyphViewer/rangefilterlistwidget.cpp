@@ -111,7 +111,10 @@ void RangeFilterListWidget::OnAddFilter() {
 	SynGlyphX::RoleDataFilterProxyModel* fieldTypeProxyModel = new SynGlyphX::RoleDataFilterProxyModel(this);
 	fieldTypeProxyModel->setSourceModel(m_columnsModel);
 	fieldTypeProxyModel->setFilterRole(SourceDataInfoModel::TypeRole);
-	fieldTypeProxyModel->SetFilterData(SynGlyphX::InputField::Type::Real);
+	QList<int> filterData;
+	filterData.push_back(SourceDataInfoModel::NoTypeData);
+	filterData.push_back(SynGlyphX::InputField::Type::Real);
+	fieldTypeProxyModel->SetFilterData(filterData);
 
 	SynGlyphX::RoleDataFilterProxyModel* filterOutFieldsInUseModel = new SynGlyphX::RoleDataFilterProxyModel(this);
 	filterOutFieldsInUseModel->setSourceModel(fieldTypeProxyModel);
