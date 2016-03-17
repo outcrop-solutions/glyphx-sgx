@@ -7,7 +7,7 @@
 namespace SynGlyphX {
 
 	DataTransformMapping::DataTransformMapping() :
-		XMLPropertyTreeFile(),
+		XMLPropertyTreeFile(true),
 		m_id(UUIDGenerator::GetNewRandomUUID())
     {
 		//There will always be at least one base object
@@ -37,9 +37,21 @@ namespace SynGlyphX {
 			return false;
 		}
 
-		if (m_datasources != mapping.m_datasources) {
+		if (m_datasources.size() != mapping.m_datasources.size()) {
 
 			return false;
+		}
+
+		DatasourceMap::const_iterator thisDatasource = m_datasources.begin();
+		DatasourceMap::const_iterator otherDatasource = mapping.m_datasources.begin();
+		while (thisDatasource != m_datasources.end()) {
+
+			if ((thisDatasource->first != otherDatasource->first) || (thisDatasource->second->operator!=(*otherDatasource->second))) {
+
+				return false;
+			}
+			std::advance(thisDatasource, 1);
+			std::advance(otherDatasource, 1);
 		}
 
 		if (m_glyphTrees.size() != mapping.m_glyphTrees.size()) {
@@ -233,6 +245,14 @@ namespace SynGlyphX {
 			}
 		}
     }
+
+	bool DataTransformMapping::IsDifferentFromGivenPropertyTree(const boost::property_tree::wptree& originalPropertyTree) const {
+
+		DataTransformMapping origininalPropertyTreeMapping;
+		origininalPropertyTreeMapping.ImportFromPropertyTree(originalPropertyTree);
+
+		return operator!=(origininalPropertyTreeMapping);
+	}
 
 	const DataTransformMapping::DatasourceMap& DataTransformMapping::GetDatasources() const {
 

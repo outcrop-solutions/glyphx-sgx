@@ -35,7 +35,7 @@
 
 namespace SynGlyphX {
 
-	class SGXDATAMAPPING_API DataTransformMapping : public XMLPropertyTreeFile, boost::noncopyable
+	class SGXDATAMAPPING_API DataTransformMapping : public XMLPropertyTreeFile
     {
     public:
 		typedef std::unordered_map<boost::uuids::uuid, DataMappingGlyphGraph::SharedPtr, SynGlyphX::UUIDHash> DataMappingGlyphGraphMap;
@@ -119,8 +119,10 @@ namespace SynGlyphX {
 											   DataMappingGlyphGraph::ConstGlyphIterator& oldNode,
 											   const boost::uuids::uuid& datasourceID) const;
 		void Clear(bool addADefaultBaseObjectAfterClear);
-		virtual void ImportFromPropertyTree(const boost::property_tree::wptree& filePropertyTree);
-		virtual void ExportToPropertyTree(boost::property_tree::wptree& filePropertyTree) const;
+
+		void ImportFromPropertyTree(const boost::property_tree::wptree& filePropertyTree) override;
+		void ExportToPropertyTree(boost::property_tree::wptree& filePropertyTree) const override;
+		bool IsDifferentFromGivenPropertyTree(const boost::property_tree::wptree& originalPropertyTree) const override;
 
 		SceneProperties m_sceneProperties;
 		DataMappingDefaults m_defaults;
@@ -130,7 +132,6 @@ namespace SynGlyphX {
 		FieldGroupMap m_fieldGroups;
 
 		boost::uuids::uuid m_id;
-
     };
 
 } //namespace SynGlyphX

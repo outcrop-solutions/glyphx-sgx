@@ -27,7 +27,7 @@ namespace SynGlyphX {
 	class SGXUTILITY_API XMLPropertyTreeFile
 	{
 	public:
-		XMLPropertyTreeFile();
+		XMLPropertyTreeFile(bool includeTimestamp = false);
 		virtual ~XMLPropertyTreeFile();
 
 		void ReadFromFile(const std::string& filename);
@@ -39,9 +39,14 @@ namespace SynGlyphX {
 	protected:
 		virtual void ImportFromPropertyTree(const boost::property_tree::wptree& filePropertyTree) = 0;
 		virtual void ExportToPropertyTree(boost::property_tree::wptree& filePropertyTree) const = 0;
+		virtual bool IsDifferentFromGivenPropertyTree(const boost::property_tree::wptree& originalPropertyTree) const;
 
 	private:
+		bool m_includeTimestamp;
+		boost::property_tree::wptree m_originalPropertyTree;
+
 		static boost::property_tree::xml_writer_settings<wchar_t> s_writeSettings;
+		static const std::wstring s_timestampName;
 	};
 
 } //namespace SynGlyphX
