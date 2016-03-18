@@ -5,16 +5,13 @@
 namespace SynGlyphX {
 
 	ValueMappingRange::ValueMappingRange(double min, double max) :
-		Interval(min, max, Interval::Type::Proper, Interval::IncludedEndpoints::Min)
+		ProperInterval(min, max, ProperInterval::IncludedEndpoints::Min)
 	{
-		if (!IsMinMaxValidForThisInterval(m_min, m_max)) {
-
-			throw std::invalid_argument("Min and max values are not valid for an interval of this type.");
-		}
+		
 	}
 
 	ValueMappingRange::ValueMappingRange(const ValueMappingRange& interval) :
-		Interval(interval) {
+		ProperInterval(interval) {
 
 
 	}
@@ -25,24 +22,24 @@ namespace SynGlyphX {
 
 	ValueMappingRange& ValueMappingRange::operator=(const ValueMappingRange& interval) {
 
-		Interval::operator=(interval);
+		ProperInterval::operator=(interval);
 
 		return *this;
 	}
 
 	bool ValueMappingRange::operator==(const ValueMappingRange& interval) const {
 
-		return Interval::operator==(interval);
+		return ProperInterval::operator==(interval);
 	}
 
 	bool ValueMappingRange::operator!=(const ValueMappingRange& interval) const {
 
-		return !operator==(interval);
+		return !operator== (interval);
 	}
 
 	bool ValueMappingRange::operator<(const ValueMappingRange& interval) const {
 
-		return Interval::operator<(interval);
+		return ProperInterval::operator<(interval);
 	}
 
 	ValueMappingRangeTranslator::ValueMappingRangeTranslator() {

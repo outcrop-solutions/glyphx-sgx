@@ -24,7 +24,7 @@
 
 namespace SynGlyphX {
 
-	class SGXDATAMAPPING_API ValueMappingRange : public Interval
+	class SGXDATAMAPPING_API ValueMappingRange : public ProperInterval
 	{
 	public:
 		ValueMappingRange(double min, double max);

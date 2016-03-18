@@ -19,30 +19,21 @@
 #define SYNGLYPHX_INTERVAL_H
 
 #include "sgxutility.h"
-#include <boost/property_tree/ptree.hpp>
 
 namespace SynGlyphX {
 
 	class SGXUTILITY_API Interval
 	{
 	public:
-		enum IncludedEndpoints {
-
-			Neither,
-			Min,
-			Max,
-			Both
-		};
-
 		enum Type {
 
 			Proper,		//min must be less than max
 			Degenerate	//min can be the same as max
 		};
 
-		Interval(double min, double max, Type type, IncludedEndpoints includedEndpoints);
+		Interval(double min, double max, Type type);
 		Interval(const Interval& interval);
-		~Interval();
+		virtual ~Interval();
 
 		Interval& operator=(const Interval& interval);
 		bool operator==(const Interval& interval) const;
@@ -53,16 +44,60 @@ namespace SynGlyphX {
 		double GetMin() const;
 		double GetMax() const;
 		Type GetType() const;
-		IncludedEndpoints GetIncludedEndpoints() const;
 
-		bool IsValueInInterval(double value) const;
+		virtual bool IsValueInInterval(double value) const = 0;
 
 	protected:
-		bool IsMinMaxValidForThisInterval(double min, double max) const;
+		virtual bool IsMinMaxValidForThisInterval(double min, double max) const = 0;
 
 		double m_min;
 		double m_max;
 		Type m_type;
+	};
+
+	class SGXUTILITY_API DegenerateInterval : public Interval {
+
+	public:
+		DegenerateInterval(double min = 0.0, double max = 1.0);
+		DegenerateInterval(const DegenerateInterval& interval);
+		virtual ~DegenerateInterval();
+
+		DegenerateInterval& operator=(const DegenerateInterval& interval);
+		bool operator==(const DegenerateInterval& interval) const;
+		bool operator!=(const DegenerateInterval& interval) const;
+
+		bool IsValueInInterval(double value) const override;
+
+	protected:
+		bool IsMinMaxValidForThisInterval(double min, double max) const override;
+	};
+
+	class SGXUTILITY_API ProperInterval : public Interval {
+
+	public:
+		enum IncludedEndpoints {
+
+			Neither,
+			Min,
+			Max,
+			Both
+		};
+
+		ProperInterval(double min = 0.0, double max = 1.0, IncludedEndpoints includedEndpoints = IncludedEndpoints::Both);
+		ProperInterval(const ProperInterval& interval);
+		virtual ~ProperInterval();
+
+		ProperInterval& operator=(const ProperInterval& interval);
+		bool operator==(const ProperInterval& interval) const;
+		bool operator!=(const ProperInterval& interval) const;
+
+		IncludedEndpoints GetIncludedEndpoints() const;
+		bool IsValueInInterval(double value) const override;
+
+	protected:
+		bool IsMinMaxValidForThisInterval(double min, double max) const override;
+
+	private:
 		IncludedEndpoints m_includedEndpoints;
 	};
 
