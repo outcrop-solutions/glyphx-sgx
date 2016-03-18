@@ -43,7 +43,7 @@ namespace SynGlyphX {
 		QObject::connect(m_minSpinBox, static_cast<void(QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), this, &SingleNumericRangeFilterWidget::OnMinSpinBoxUpdated);
 		QObject::connect(m_maxSpinBox, static_cast<void(QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), this, &SingleNumericRangeFilterWidget::OnMaxSpinBoxUpdated);
 
-		SetMaxRangeExtents(0.0, 99.0);
+		SetMaxRangeExtents(DegenerateInterval(0.0, 99.0));
 	}
 
 	SingleNumericRangeFilterWidget::~SingleNumericRangeFilterWidget()
@@ -51,7 +51,10 @@ namespace SynGlyphX {
 
 	}
 
-	void SingleNumericRangeFilterWidget::SetMaxRangeExtents(double min, double max) {
+	void SingleNumericRangeFilterWidget::SetMaxRangeExtents(const DegenerateInterval& range) {
+
+		double min = range.GetMin();
+		double max = range.GetMax();
 
 		bool wasRangeUpdated = false;
 
@@ -82,19 +85,24 @@ namespace SynGlyphX {
 		}
 	}
 
-	void SingleNumericRangeFilterWidget::SetRange(const std::pair<double, double> range) {
+	DegenerateInterval SingleNumericRangeFilterWidget::GetMaxRangeExtents() const {
+
+		return (DegenerateInterval(m_minSpinBox->minimum(), m_maxSpinBox->maximum()));
+	}
+
+	void SingleNumericRangeFilterWidget::SetRange(const DegenerateInterval& range) {
 
 		blockSignals(true);
-		m_minSpinBox->setValue(range.first);
-		m_maxSpinBox->setValue(range.second);
+		m_minSpinBox->setValue(range.GetMin());
+		m_maxSpinBox->setValue(range.GetMax());
 		blockSignals(false);
 
 		EmitRangeUpdate();
 	}
 
-	std::pair<double, double> SingleNumericRangeFilterWidget::GetRange() const {
+	DegenerateInterval SingleNumericRangeFilterWidget::GetRange() const {
 
-		return (std::pair<double, double>(m_minSpinBox->value(), m_maxSpinBox->value()));
+		return (DegenerateInterval(m_minSpinBox->value(), m_maxSpinBox->value()));
 	}
 
 	void SingleNumericRangeFilterWidget::OnSliderLowerUpdated(int lower) {
@@ -137,7 +145,7 @@ namespace SynGlyphX {
 
 	void SingleNumericRangeFilterWidget::EmitRangeUpdate() {
 
-		emit RangeUpdated(m_minSpinBox->value(), m_maxSpinBox->value());
+		emit RangeUpdated(DegenerateInterval(m_minSpinBox->value(), m_maxSpinBox->value()));
 	}
 
 	double SingleNumericRangeFilterWidget::ConvertSliderPositionToValueInRange(int value) {

@@ -27,6 +27,7 @@
 #include <boost/bimap.hpp>
 #include "filedatasource.h"
 #include "datatransformmapping.h"
+#include "interval.h"
 
 class SourceDataCache
 {
@@ -43,7 +44,7 @@ public:
 
 	typedef std::map<QString, std::set<QString>> ColumnValueData;
 
-	typedef std::pair<QString, std::pair<double, double>> ColumnMinMaxPair;
+	typedef std::pair<QString, SynGlyphX::DegenerateInterval> ColumnMinMaxPair;
 	typedef std::vector<ColumnMinMaxPair> ColumnMinMaxMap;
 
 	SourceDataCache();
@@ -63,7 +64,7 @@ public:
 
 	SharedSQLQuery CreateSelectFieldQueryAscending(const SynGlyphX::InputField& inputField) const;
 	SharedSQLQuery CreateMinMaxQuery(const SynGlyphX::InputField& inputField) const;
-	std::pair<double, double> GetMinMax(const SynGlyphX::InputField& inputField, const ColumnMinMaxMap& otherRanges = ColumnMinMaxMap()) const;
+	SynGlyphX::DegenerateInterval GetMinMax(const SynGlyphX::InputField& inputField, const ColumnMinMaxMap& otherRanges = ColumnMinMaxMap()) const;
 		
 	SharedSQLQuery CreateSelectQueryForIndexSet(const QString& tableName, const TableColumns& columns, const SynGlyphX::IndexSet& indexSet) const;
 	SharedSQLQuery CreateDistinctValueQuery(const QString& tableName, const QString& columnName, const SynGlyphX::IndexSet& indexSet = SynGlyphX::IndexSet()) const;
@@ -99,7 +100,7 @@ protected:
 	QString CreateWhereString(const SynGlyphX::IndexSet& indexSet) const;
 	QString CreateInString(const SynGlyphX::IndexSet& indexSet) const;
 	QString CreateInString(const QString& columnName, const std::set<QString>& values) const;
-	QString CreateBetweenString(const QString& columnName, const std::pair<double, double>& minMax) const;
+	QString CreateBetweenString(const QString& columnName, const SynGlyphX::DegenerateInterval& minMax) const;
 
 	void SetPragmaValue(const QString& pragmaString);
 	void CreateNewTable(const QString& name, const QString& fieldNamesAndTypes);

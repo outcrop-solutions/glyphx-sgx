@@ -463,7 +463,7 @@ SynGlyphX::IndexSet SourceDataCache::GetIndexesFromTableInRanges(const QString& 
 	return indexSet;
 }
 
-std::pair<double, double> SourceDataCache::GetMinMax(const SynGlyphX::InputField& inputfield, const ColumnMinMaxMap& otherRanges) const {
+SynGlyphX::DegenerateInterval SourceDataCache::GetMinMax(const SynGlyphX::InputField& inputfield, const ColumnMinMaxMap& otherRanges) const {
 
 	SharedSQLQuery query(new QSqlQuery(m_db));
 	QString queryString = QString("SELECT MIN(%1), MAX(%1) FROM ").arg("\"" + QString::fromStdWString(inputfield.GetField()) + "\"") + "\"" + CreateTablename(inputfield) + "\"";
@@ -485,12 +485,12 @@ std::pair<double, double> SourceDataCache::GetMinMax(const SynGlyphX::InputField
 	query->exec();
 	query->first();
 
-	return std::pair<double, double>(query->value(0).toDouble(), query->value(1).toDouble());
+	return SynGlyphX::DegenerateInterval(query->value(0).toDouble(), query->value(1).toDouble());
 }
 
-QString SourceDataCache::CreateBetweenString(const QString& columnName, const std::pair<double, double>& minMax) const {
+QString SourceDataCache::CreateBetweenString(const QString& columnName, const SynGlyphX::DegenerateInterval& minMax) const {
 
-	return ("(\"" + columnName + "\" BETWEEN " + QString::number(minMax.first) + " AND " + QString::number(minMax.second) + ")");
+	return ("(\"" + columnName + "\" BETWEEN " + QString::number(minMax.GetMin()) + " AND " + QString::number(minMax.GetMax()) + ")");
 }
 
 SourceDataCache::DistinctValueIndexMap SourceDataCache::GetIndexesOrderedByDistinctValue(const QString& tableName, const QString& columnName) const {

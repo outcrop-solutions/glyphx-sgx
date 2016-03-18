@@ -25,6 +25,7 @@
 #include <QtWidgets/QTableWidget>
 #include "sourcedataselectionmodel.h"
 #include "sourcedatainfomodel.h"
+#include "interval.h"
 
 class RangeFilterListWidget : public QWidget
 {
@@ -44,11 +45,21 @@ private slots:
 	void OnRemoveAllFilters();
 	void OnUpdateFilters();
 	void OnRangesChanged();
+	void OnSelectionChanged();
 
 private:
-	std::pair<double, double> GetRangeFromCell(QTableWidget* widget, int row, int column = 1) const;
-	QString GetTextFromCell(QTableWidget* widget, int row, int column = 0) const;
+	typedef std::pair<SynGlyphX::DegenerateInterval, SynGlyphX::DegenerateInterval> RangeAndExtent;
+	typedef std::pair<QString, RangeAndExtent> Field2RangeAndExtentPair;
+	typedef std::vector<Field2RangeAndExtentPair> Field2RangeAndExtentVector;
+	typedef QMap<QString, Field2RangeAndExtentVector> Table2RangesAndExtentsMap;
+
+	SynGlyphX::SingleNumericRangeFilterWidget* GetRangeFilterWidgetFromCell(int row, int column = 1) const;
+	QString GetTextFromCell(int row, int column = 0) const;
 	QStringList Separate(const QString& datasourceTable) const;
+	void ClearFiltersFromTableWidget();
+	QTableWidgetItem* CreateItem(const QString& text);
+	void SaveRangesFromFiltersInTableWidget();
+	bool DoAnyTablesHaveFilters() const;
 
 	SourceDataCache::SharedPtr m_sourceDataCache;
 	SourceDataSelectionModel* m_selectionModel;
@@ -56,8 +67,9 @@ private:
 	QPushButton* m_addButton;
 	QPushButton* m_removeAllButton;
 	QPushButton* m_updateButton;
-	QStackedLayout* m_filtersLayout;
-	QMap<QString, QTableWidget*> m_table2WidgetMap;
+	QTableWidget* m_rangeFiltersTableWidget;
+
+	Table2RangesAndExtentsMap m_table2RangesAndExtentsMap;
 
 	SourceDataInfoModel* m_columnsModel;
 

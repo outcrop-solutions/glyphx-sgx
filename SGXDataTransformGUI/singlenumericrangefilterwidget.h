@@ -22,6 +22,7 @@
 #include <QtWidgets/QWidget>
 #include <QtWidgets/QDoubleSpinBox>
 #include "rangeslider.h"
+#include "interval.h"
 
 namespace SynGlyphX {
 
@@ -30,18 +31,17 @@ namespace SynGlyphX {
 		Q_OBJECT
 
 	public:
-		typedef std::pair<double, double> Range;
-
 		SingleNumericRangeFilterWidget(Qt::Orientation orientation, QWidget *parent);
 		~SingleNumericRangeFilterWidget();
 
-		void SetMaxRangeExtents(double min, double max);
+		void SetMaxRangeExtents(const DegenerateInterval& range);
+		DegenerateInterval GetMaxRangeExtents() const;
 
-		void SetRange(const std::pair<double, double> range);
-		std::pair<double, double> GetRange() const;
+		void SetRange(const DegenerateInterval& range);
+		DegenerateInterval GetRange() const;
 
 	signals:
-		void RangeUpdated(double min, double max);
+		void RangeUpdated(DegenerateInterval range);
 
 	private slots:
 		void OnSliderLowerUpdated(int lower);

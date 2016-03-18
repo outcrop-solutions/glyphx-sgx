@@ -46,10 +46,10 @@ void SourceDataSelectionModel::OnSceneModelReset() {
 			if (glyphGraph.second->IsTransformable()) {
 
 				QString tableName = SourceDataCache::CreateTablename(glyphGraph.second->GetInputFields().begin()->second);
-				SynGlyphX::Interval range(startingIndex, startingIndex + countsForEachTable.at(tableName), SynGlyphX::Interval::Proper, SynGlyphX::Interval::Min);
+				SynGlyphX::ProperInterval range(startingIndex, startingIndex + countsForEachTable.at(tableName), SynGlyphX::ProperInterval::Min);
 				startingIndex += countsForEachTable.at(tableName);
 
-				std::pair<QString, SynGlyphX::Interval> newPair(tableName, range);
+				std::pair<QString, SynGlyphX::ProperInterval> newPair(tableName, range);
 				m_tableToGlyphTreeRangesMap.insert(newPair);
 
 				m_glyphTemplateRangeToTableMap[range] = tableName;
