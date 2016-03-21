@@ -58,15 +58,13 @@ GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 	
 	try {
 		
-		CreateANTzWidget(SynGlyphXANTz::ANTzForestWidget::GetStereoFormat());
+		CreateANTzWidget();
 	}
 	catch (const std::exception& e) {
 
 		QMessageBox::critical(nullptr, tr("3D view error"), tr("3D view failed to create: ") + e.what());
 		throw;
 	}
-
-	m_isStereoSupported = m_antzWidget->IsInStereoMode();
 
 	try {
 
@@ -128,7 +126,7 @@ void GlyphViewerWindow::closeJVM(){
 	m_dataEngineConnection->destroyJVM();
 }
 
-void GlyphViewerWindow::CreateANTzWidget(const QGLFormat& format) {
+void GlyphViewerWindow::CreateANTzWidget() {
 	
 	QStackedWidget* antzWidgetContainer = dynamic_cast<QStackedWidget*>(centralWidget());
 	if (m_antzWidget != nullptr) {
@@ -138,7 +136,7 @@ void GlyphViewerWindow::CreateANTzWidget(const QGLFormat& format) {
 		m_antzWidget = nullptr;
 	}
 
-	m_antzWidget = new SynGlyphXANTz::ANTzForestWidget(format, m_glyphForestModel, m_glyphForestSelectionModel, this);
+	m_antzWidget = new SynGlyphXANTz::ANTzForestWidget(m_glyphForestModel, m_glyphForestSelectionModel, this);
 	m_antzWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 	m_antzWidget->addActions(m_treeView->GetSharedActions());
 
@@ -565,10 +563,12 @@ void GlyphViewerWindow::ShowOpenGLSettings() {
 	QString settings = tr("OpenGL Version = ") + QString::number(format.majorVersion()) + "." + QString::number(format.minorVersion()) + '\n';
 		
 	settings += tr("Stereo Support") + " = ";
-	if (m_isStereoSupported) {
+	if (m_antzWidget->IsStereoSupported()) {
+
 		settings += tr("enabled");
 	}
 	else {
+
 		settings += tr("disabled");
 	}
 	QMessageBox::information(this, tr("OpenGL Settings"), settings);
@@ -576,15 +576,15 @@ void GlyphViewerWindow::ShowOpenGLSettings() {
 
 void GlyphViewerWindow::ChangeStereoMode() {
 
-	if (m_isStereoSupported) {
+	if (m_antzWidget->IsStereoSupported()) {
 
-		if (m_antzWidget->IsInStereoMode()) {
+		try {
 
-			CreateANTzWidget(SynGlyphXANTz::ANTzForestWidget::GetNonStereoFormat());
+			m_antzWidget->SetStereoMode(!m_antzWidget->IsInStereoMode());
 		}
-		else {
+		catch (const std::exception& e) {
 
-			CreateANTzWidget(SynGlyphXANTz::ANTzForestWidget::GetStereoFormat());
+			QMessageBox::information(this, tr("Error"), tr("Stereo Error: ") + e.what());
 		}
 	}
 	else {

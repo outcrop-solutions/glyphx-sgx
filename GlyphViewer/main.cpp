@@ -74,6 +74,7 @@ int main(int argc, char *argv[])
 	}
 	catch (...) {
 		
+		QMessageBox::critical(nullptr, QObject::tr("Unknown Error"), QObject::tr("Unknown Error: ") + "\n\n" + QObject::tr("Application is shutting down."), QMessageBox::StandardButton::Ok);
 		return 1;
 	}
 

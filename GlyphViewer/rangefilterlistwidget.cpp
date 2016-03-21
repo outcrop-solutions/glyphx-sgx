@@ -64,7 +64,8 @@ RangeFilterListWidget::RangeFilterListWidget(SourceDataInfoModel* columnsModel, 
 	setLayout(mainLayout);
 
 	QObject::connect(m_selectionModel->GetSceneSelectionModel()->model(), &QAbstractItemModel::modelReset, this, &RangeFilterListWidget::OnModelReset);
-	QObject::connect(m_selectionModel, &SourceDataSelectionModel::SelectionChanged, this, &RangeFilterListWidget::OnSelectionChanged);
+	QObject::connect(m_selectionModel, &SourceDataSelectionModel::SelectionChanged, this, &RangeFilterListWidget::OnSourceDataSelectionChanged);
+	QObject::connect(m_rangeFiltersTableWidget->selectionModel(), &QItemSelectionModel::selectionChanged, this, &RangeFilterListWidget::OnFilterSelectionChanged);
 }
 
 RangeFilterListWidget::~RangeFilterListWidget()
@@ -207,7 +208,7 @@ void RangeFilterListWidget::OnAddFilter() {
 
 void RangeFilterListWidget::OnRemoveSelectedFilters() {
 
-	SaveRangesFromFiltersInTableWidget();
+	//SaveRangesFromFiltersInTableWidget();
 
 	m_removeAllButton->setEnabled(m_rangeFiltersTableWidget->rowCount() > 0);
 	m_updateButton->setEnabled(DoAnyTablesHaveFilters());
@@ -216,7 +217,7 @@ void RangeFilterListWidget::OnRemoveSelectedFilters() {
 void RangeFilterListWidget::OnRemoveAllFilters() {
 
 	ClearFiltersFromTableWidget();
-	SaveRangesFromFiltersInTableWidget();
+	//SaveRangesFromFiltersInTableWidget();
 	
 	m_removeAllButton->setEnabled(false);
 	m_updateButton->setEnabled(DoAnyTablesHaveFilters());
@@ -341,7 +342,7 @@ void RangeFilterListWidget::SaveRangesFromFiltersInTableWidget() {
 	m_table2RangesAndExtentsMap[m_currentTable] = field2RangeAndExtentList;
 }
 
-void RangeFilterListWidget::OnSelectionChanged() {
+void RangeFilterListWidget::OnSourceDataSelectionChanged() {
 
 	if (m_selectionModel->GetSourceDataSelection().empty() && (m_rangeFiltersTableWidget->rowCount() > 0)) {
 
@@ -360,4 +361,9 @@ bool RangeFilterListWidget::DoAnyTablesHaveFilters() const {
 	}
 
 	return false;
+}
+
+void RangeFilterListWidget::OnFilterSelectionChanged(const QItemSelection &selected, const QItemSelection &deselected) {
+
+
 }

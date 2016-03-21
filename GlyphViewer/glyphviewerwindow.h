@@ -75,7 +75,7 @@ private:
 	void EnableLoadedVisualizationDependentActions(bool enable);
 	void ChangeOptions(const GlyphViewerOptions& oldOptions, const GlyphViewerOptions& newOptions);
 	void ClearAllData();
-	void CreateANTzWidget(const QGLFormat& format);
+	void CreateANTzWidget();
 	GlyphViewerOptions CollectOptions();
 	bool DoesVisualizationNeedToBeRecreated(const SynGlyphX::DataTransformMapping& mapping) const;
 	void CreateExportToPortableVisualizationSubmenu();
@@ -92,7 +92,6 @@ private:
 
 	SynGlyphX::DataMappingModel* m_mappingModel;
 	CacheManager m_cacheManager;
-	bool m_isStereoSupported;
 	bool m_showErrorFromTransform;
 
 	LinkedWidgetsManager* m_linkedWidgetsManager;

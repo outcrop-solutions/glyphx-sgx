@@ -45,7 +45,8 @@ private slots:
 	void OnRemoveAllFilters();
 	void OnUpdateFilters();
 	void OnRangesChanged();
-	void OnSelectionChanged();
+	void OnSourceDataSelectionChanged();
+	void OnFilterSelectionChanged(const QItemSelection &selected, const QItemSelection &deselected);
 
 private:
 	typedef std::pair<SynGlyphX::DegenerateInterval, SynGlyphX::DegenerateInterval> RangeAndExtent;
@@ -68,6 +69,10 @@ private:
 	QPushButton* m_removeAllButton;
 	QPushButton* m_updateButton;
 	QTableWidget* m_rangeFiltersTableWidget;
+
+	QAction* m_removeSelectedContextMenuAction;
+	QAction* m_moveRowUpContextMenuAction;
+	QAction* m_moveRowDownContextMenuAction;
 
 	Table2RangesAndExtentsMap m_table2RangesAndExtentsMap;
 
