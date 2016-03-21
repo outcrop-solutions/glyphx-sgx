@@ -35,11 +35,11 @@ namespace SynGlyphXANTz {
 		Q_OBJECT
 
 	public:
-		ANTzForestWidget(const QGLFormat& format, GlyphForestModel* model, SynGlyphX::ItemFocusSelectionModel* selectionModel, QWidget *parent = 0);
+		ANTzForestWidget(GlyphForestModel* model, SynGlyphX::ItemFocusSelectionModel* selectionModel, QWidget *parent = 0);
 		~ANTzForestWidget();
 
 		bool IsInStereoMode() const;
-		//bool IsStereoSupported() const;
+		bool IsStereoSupported() const;
 		bool IsZSpaceAvailable() const;
 
 		bool eventFilter(QObject *object, QEvent *event);
@@ -51,8 +51,7 @@ namespace SynGlyphXANTz {
 
 		void SetBackgroundColor(const SynGlyphX::GlyphColor& color);
 
-		static const QGLFormat& GetNonStereoFormat();
-		static const QGLFormat& GetStereoFormat();
+		bool SetStereoMode(bool stereoOn);
 
 	signals:
 		//void NewStatusMessage(const QString& message, int timeout = 0) const;
@@ -129,8 +128,10 @@ namespace SynGlyphXANTz {
 
 		void DrawLogo();
 
-		static QGLFormat s_format;
-		static QGLFormat s_stereoFormat;
+		//QGLFormat m_glFormat;
+		//QGLFormat m_glStereoFormat;
+
+		bool m_isInStereo;
 
 		QFont m_oglTextFont;
 		bool m_isReseting;
