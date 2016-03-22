@@ -736,11 +736,14 @@
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Rcc%27ing %(Identity)...</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles\qrc_%(Filename).cpp;%(Outputs)</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\rcc.exe" -name "%(Filename)" -no-compress "%(FullPath)" -o .\GeneratedFiles\qrc_%(Filename).cpp</Command>
+      <SubType>Designer</SubType>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
+    <Image Include="Resources\down_arrow.png" />
     <Image Include="Resources\synglyphx_splash.png" />
     <Image Include="Resources\synglyphx_x.ico" />
+    <Image Include="Resources\up_arrow.png" />
     <Image Include="Resources\Video\end.png" />
     <Image Include="Resources\Video\pause.png" />
     <Image Include="Resources\Video\play.png" />

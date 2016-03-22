@@ -47,12 +47,18 @@ private slots:
 	void OnRangesChanged();
 	void OnSourceDataSelectionChanged();
 	void OnFilterSelectionChanged(const QItemSelection &selected, const QItemSelection &deselected);
+	void OnMoveUpRow();
+	void OnMoveDownRow();
 
 private:
 	typedef std::pair<SynGlyphX::DegenerateInterval, SynGlyphX::DegenerateInterval> RangeAndExtent;
 	typedef std::pair<QString, RangeAndExtent> Field2RangeAndExtentPair;
 	typedef std::vector<Field2RangeAndExtentPair> Field2RangeAndExtentVector;
 	typedef QMap<QString, Field2RangeAndExtentVector> Table2RangesAndExtentsMap;
+
+	void UpdatedEnableStateForButton(QAction* action, QPushButton* button);
+	void ResetMinMaxExtentsForFilters(unsigned int startingRow);
+	void MoveRow(unsigned int sourceRow, unsigned int destinationRow);
 
 	SynGlyphX::SingleNumericRangeFilterWidget* GetRangeFilterWidgetFromCell(int row, int column = 1) const;
 	QString GetTextFromCell(int row, int column = 0) const;
@@ -68,6 +74,8 @@ private:
 	QPushButton* m_addButton;
 	QPushButton* m_removeAllButton;
 	QPushButton* m_updateButton;
+	QPushButton* m_moveUpButton;
+	QPushButton* m_moveDownButton;
 	QTableWidget* m_rangeFiltersTableWidget;
 
 	QAction* m_removeSelectedContextMenuAction;

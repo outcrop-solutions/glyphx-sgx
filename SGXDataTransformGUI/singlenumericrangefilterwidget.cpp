@@ -70,10 +70,24 @@ namespace SynGlyphX {
 		m_minSpinBox->setRange(min, max);
 		m_maxSpinBox->setRange(min, max);
 
-		m_ratio = (max - min) / (m_rangeSlider->maximum() - m_rangeSlider->minimum());
+		double difference = max - min;
+		if (difference > 0.001) {
 
-		m_rangeSlider->SetLowerValue(ConvertValueInRangeToSliderPosition(m_minSpinBox->value()));
-		m_rangeSlider->SetUpperValue(ConvertValueInRangeToSliderPosition(m_maxSpinBox->value()));
+			m_ratio = difference / (m_rangeSlider->maximum() - m_rangeSlider->minimum());
+
+			m_rangeSlider->SetLowerValue(ConvertValueInRangeToSliderPosition(m_minSpinBox->value()));
+			m_rangeSlider->SetUpperValue(ConvertValueInRangeToSliderPosition(m_maxSpinBox->value()));
+			setEnabled(true);
+		}
+		else {
+
+			m_ratio = 0.0;
+
+			m_rangeSlider->SetLowerValue(m_rangeSlider->minimum());
+			m_rangeSlider->SetUpperValue(m_rangeSlider->maximum());
+			setEnabled(false);
+		}
+			
 
 		m_minSpinBox->blockSignals(false);
 		m_maxSpinBox->blockSignals(false);
@@ -91,6 +105,11 @@ namespace SynGlyphX {
 	}
 
 	void SingleNumericRangeFilterWidget::SetRange(const DegenerateInterval& range) {
+
+		if (m_ratio == 0.0) {
+
+			return;
+		}
 
 		blockSignals(true);
 		m_minSpinBox->setValue(range.GetMin());

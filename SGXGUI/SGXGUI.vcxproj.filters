@@ -518,6 +518,12 @@
     <Image Include="Resources\Video\stop.png">
       <Filter>Resource Files\Video</Filter>
     </Image>
+    <Image Include="Resources\down_arrow.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\up_arrow.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\qt.conf">
