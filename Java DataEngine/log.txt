@@ -1,0 +1,9 @@
+
+Reading SDT at C:/Users/Bryan/Desktop/TooMany Elements SizeBug/Ohio Voter Registration Draft.sdt
+2dfdf2ca-6c93-4e74-a181-3ebc00f21ee9OnlyTable
+Retrieved data paths.
+Finished creating min/max table...
+Created DataFrames.
+BaseObjects:
+Downloaded Map | 
+No update needed

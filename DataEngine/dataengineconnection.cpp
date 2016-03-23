@@ -447,6 +447,11 @@ namespace DataEngine
 		return (!m_openConnection.isEmpty());
 	}
 
+	bool DataEngineConnection::IsConnectionOpen(const QString& connection) const {
+
+		return (m_openConnection == connection);
+	}
+
 	QString DataEngineConnection::CreateInnerJoinQueryFromForiegnKeys(const QString& mainTable, const ForiegnKeyVector& foriegnKeyTables) {
 
 		QStringList origins;

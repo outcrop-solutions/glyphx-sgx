@@ -130,14 +130,17 @@ public class SQLiteReader {
 
 			if(Double.parseDouble(ts) <= Double.parseDouble(lastChanged) && !toReturn){ 
 				System.out.println("No update needed");
+				Logger.getInstance().add("No update needed");
+				db.exec("COMMIT TRANSACTION;"); 
+				db.dispose();
 				return false; 
 			}
 		
 			db.exec("COMMIT TRANSACTION;"); 
-
+			db.dispose();
 		}catch(SQLiteException se){
-			se.printStackTrace();
-			//Logger.getInstance().add(se.getMessage());
+			//se.printStackTrace();
+			Logger.getInstance().add("SDTInfo table not in sourcedata.db");
 		}
 
 		return true;

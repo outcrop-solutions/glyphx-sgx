@@ -25,14 +25,14 @@ public class GlyphEngine {
 		return sdtReader.isUpdateNeeded();
 	}
 
-	public static void beginGlyphGeneration(){
+	public static boolean beginGlyphGeneration(){
 		try{
 	 		sdtReader.generateGlyphs();
 	 	}catch(OutOfMemoryError e){
 	 		Logger.getInstance().add("Ran out of memory... Shuting down gracefully...");
-	 		//return false;
+	 		return false;
 	 	}
-	 	//return true;
+	 	return true;
 	}
 
 	public static String[] getBaseImages(){
@@ -87,19 +87,23 @@ public class GlyphEngine {
 	 	//String outDir = "C:\\Users\\Bryan\\SharePoint\\Synglyphx Team Site - Documents\\Test Data\\BRYAN\\Viz";
 	 	//String sdtPath = "C:\\Users\\Bryan\\Desktop\\jdbc_test\\official_merged_test.sdt";
 	 	//String outDir = "C:\\Users\\Bryan\\Desktop\\jdbc_test\\official merged";
-	 	//String sdtPath = "C:/Users/Bryan/Desktop/TooMany Elements SizeBug/Ohio Voter Registration Draft.sdt";
-	 	//String outDir = "C:/Users/Bryan/AppData/Local/SynGlyphX/Glyph Builder - Glyph Viewer/cache/cache_2072a4ce-5cf5-4591-84b0-30f87c5cc214";
+	 	String sdtPath = "C:/Users/Bryan/Desktop/TooMany Elements SizeBug/Ohio Voter Registration Draft.sdt";
+	 	String outDir = "C:/Users/Bryan/AppData/Local/SynGlyphX/Glyph Builder - Glyph Viewer/cache/cache_2072a4ce-5cf5-4591-84b0-30f87c5cc214";
 	 	//String sdtPath = "C:\\Users\\Bryan\\Desktop\\test_for_ray_1\\url_and_description.sdt";
 	 	//String outDir = "C:\\Users\\Bryan\\Desktop\\test_for_ray_1\\Viz";
-	 	String sdtPath = "C:/Users/Bryan/Desktop/East Coast Only/East_Coast_Only.sdt";
-	 	String outDir = "C:/Users/Bryan/Desktop/East Coast Only/Viz";
+	 	//String sdtPath = "C:/Users/Bryan/Desktop/East Coast Only/East_Coast_Only.sdt";
+	 	//String outDir = "C:/Users/Bryan/Desktop/East Coast Only/Viz";
 	 	
-	 	String expDir = "DataMapper";
-	 	GlyphEngine start = new GlyphEngine();
+	 	String expDir = "GlyphViewer";
+	 	GlyphEngine start = new GlyphEngine();/*
 	 	double[] nw = new double[2];
 	 	nw[0] = -180.0; nw[1] = 90.0;
 	 	double[] se = new double[2];
-	 	se[0] = 180.0; se[1] = -90.0;
+	 	se[0] = 180.0; se[1] = -90.0;*/
+	 	double[] nw = new double[2];
+	 	nw[0] = -85.25350956479433; nw[1] = 41.618268866536965;
+	 	double[] se = new double[2];
+	 	se[0] = -79.62852983520567; se[1] = 39.46589663346303;
 	 	double[] s = new double[2];
 	 	s[0] = 2048.0; s[1] = 1024.0;
 
