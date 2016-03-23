@@ -513,8 +513,10 @@ void GlyphViewerWindow::LoadDataTransform(const QString& filename) {
 		std::string dirPath = cacheDirectoryPath + "\\";
 		std::string baseImageDir = SynGlyphX::GlyphBuilderApplication::GetDefaultBaseImagesLocation().toStdString();
 		ge.initiate(m_dataEngineConnection->getEnv(), filename.toStdString(), dirPath, baseImageDir, "", "GlyphViewer");
-		DownloadBaseImages(ge);
-		ge.generateGlyphs();
+		if (ge.IsUpdateNeeded()){
+			DownloadBaseImages(ge);
+			ge.generateGlyphs();
+		}
 		std::vector<std::string> images = ge.getBaseImages();
 		
 		QStringList cacheFiles;

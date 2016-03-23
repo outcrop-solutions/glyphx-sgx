@@ -1227,7 +1227,6 @@ void DataTransformModel::AddDatasourceInfoFromDataEngine(const boost::uuids::uui
 				chosenTables << QString::fromStdWString(tablesQueryIterator->first);
 			}
 			else {
-
 				chosenTables = GetChosenTables(
 					QString::fromStdWString(dbmsDatasource->GetSchema()),
 					dbmsDatasource->GetTableNames());
