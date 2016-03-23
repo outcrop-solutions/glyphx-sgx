@@ -20,7 +20,8 @@
 
 #include "sgxdatatransformgui_global.h"
 #include <QtWidgets/QWidget>
-#include <QtWidgets/QDoubleSpinBox>
+#include <QtWidgets/QLineEdit>
+#include <QtGui/QDoubleValidator>
 #include "rangeslider.h"
 #include "interval.h"
 
@@ -46,19 +47,30 @@ namespace SynGlyphX {
 	private slots:
 		void OnSliderLowerUpdated(int lower);
 		void OnSliderUpperUpdated(int upper);
-		void OnMinSpinBoxUpdated(double min);
-		void OnMaxSpinBoxUpdated(double max);
+		void OnMinLineEditUpdated();
+		void OnMaxLineEditUpdated();
 		void EmitRangeUpdate();
 
 	private:
 		double ConvertSliderPositionToValueInRange(int value);
 		int ConvertValueInRangeToSliderPosition(double value);
 
-		void SetMinSpinBoxBlockSignals(double min);
-		void SetMaxSpinBoxBlockSignals(double max);
+		void SetMinLineEditBlockSignals(double min);
+		void SetMaxLineEditBlockSignals(double max);
 
-		QDoubleSpinBox* m_minSpinBox;
-		QDoubleSpinBox* m_maxSpinBox;
+		void SetMinLineEdit(double val);
+		double GetMinLineEdit() const;
+		void SetMaxLineEdit(double val);
+		double GetMaxLineEdit() const;
+
+		QString ConvertDoubleToString(double val, int decimals) const;
+
+		//QDoubleSpinBox* m_minSpinBox;
+		//QDoubleSpinBox* m_maxSpinBox;
+		QLineEdit* m_minLineEdit;
+		QDoubleValidator* m_minValidator;
+		QLineEdit* m_maxLineEdit;
+		QDoubleValidator* m_maxValidator;
 		RangeSlider* m_rangeSlider;
 
 		double m_ratio;

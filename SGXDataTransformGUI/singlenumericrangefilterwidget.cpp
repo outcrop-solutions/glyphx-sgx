@@ -17,20 +17,20 @@ namespace SynGlyphX {
 			mainLayout = new QVBoxLayout(this);
 		}
 
-		m_minSpinBox = new QDoubleSpinBox(this);
-		m_minSpinBox->setDecimals(3);
-		m_minSpinBox->setKeyboardTracking(false);
-		mainLayout->addWidget(m_minSpinBox);
+		m_minLineEdit = new QLineEdit(this);
+		m_minValidator = new QDoubleValidator(m_minLineEdit);
+		m_minLineEdit->setValidator(m_minValidator);
+		mainLayout->addWidget(m_minLineEdit, 1);
 
 		m_rangeSlider = new RangeSlider(orientation, this);
 		m_rangeSlider->setRange(0, 99);
 		m_rangeSlider->setTracking(true);
-		mainLayout->addWidget(m_rangeSlider);
+		mainLayout->addWidget(m_rangeSlider, 3);
 
-		m_maxSpinBox = new QDoubleSpinBox(this);
-		m_maxSpinBox->setDecimals(3);
-		m_maxSpinBox->setKeyboardTracking(false);
-		mainLayout->addWidget(m_maxSpinBox);
+		m_maxLineEdit = new QLineEdit(this);
+		m_maxValidator = new QDoubleValidator(m_maxLineEdit);
+		m_maxLineEdit->setValidator(m_maxValidator);
+		mainLayout->addWidget(m_maxLineEdit, 1);
 
 		setLayout(mainLayout);
 
@@ -40,8 +40,8 @@ namespace SynGlyphX {
 		QObject::connect(m_rangeSlider, &RangeSlider::LowerValueChanged, this, &SingleNumericRangeFilterWidget::EmitRangeUpdate);
 		QObject::connect(m_rangeSlider, &RangeSlider::UpperValueChanged, this, &SingleNumericRangeFilterWidget::EmitRangeUpdate);
 
-		QObject::connect(m_minSpinBox, static_cast<void(QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), this, &SingleNumericRangeFilterWidget::OnMinSpinBoxUpdated);
-		QObject::connect(m_maxSpinBox, static_cast<void(QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), this, &SingleNumericRangeFilterWidget::OnMaxSpinBoxUpdated);
+		QObject::connect(m_minLineEdit, &QLineEdit::editingFinished, this, &SingleNumericRangeFilterWidget::OnMinLineEditUpdated);
+		QObject::connect(m_maxLineEdit, &QLineEdit::editingFinished, this, &SingleNumericRangeFilterWidget::OnMaxLineEditUpdated);
 
 		SetMaxRangeExtents(DegenerateInterval(0.0, 99.0));
 	}
@@ -58,25 +58,25 @@ namespace SynGlyphX {
 
 		bool wasRangeUpdated = false;
 
-		m_minSpinBox->blockSignals(true);
-		m_maxSpinBox->blockSignals(true);
+		m_minLineEdit->blockSignals(true);
+		m_maxLineEdit->blockSignals(true);
 		m_rangeSlider->blockSignals(true);
 
-		if ((m_minSpinBox->value() < min) || (m_maxSpinBox->value() > max)) {
+		if ((GetMinLineEdit() < min) || (GetMaxLineEdit() > max)) {
 
 			wasRangeUpdated = true;
 		}
 		
-		m_minSpinBox->setRange(min, max);
-		m_maxSpinBox->setRange(min, max);
+		m_minValidator->setRange(min, max, 3);
+		m_maxValidator->setRange(min, max, 3);
 
 		double difference = max - min;
 		if (difference > 0.001) {
 
 			m_ratio = difference / (m_rangeSlider->maximum() - m_rangeSlider->minimum());
 
-			m_rangeSlider->SetLowerValue(ConvertValueInRangeToSliderPosition(m_minSpinBox->value()));
-			m_rangeSlider->SetUpperValue(ConvertValueInRangeToSliderPosition(m_maxSpinBox->value()));
+			m_rangeSlider->SetLowerValue(ConvertValueInRangeToSliderPosition(GetMinLineEdit()));
+			m_rangeSlider->SetUpperValue(ConvertValueInRangeToSliderPosition(GetMaxLineEdit()));
 			setEnabled(true);
 		}
 		else {
@@ -89,8 +89,8 @@ namespace SynGlyphX {
 		}
 			
 
-		m_minSpinBox->blockSignals(false);
-		m_maxSpinBox->blockSignals(false);
+		m_minLineEdit->blockSignals(false);
+		m_maxLineEdit->blockSignals(false);
 		m_rangeSlider->blockSignals(false);
 
 		if (wasRangeUpdated) {
@@ -101,7 +101,7 @@ namespace SynGlyphX {
 
 	DegenerateInterval SingleNumericRangeFilterWidget::GetMaxRangeExtents() const {
 
-		return (DegenerateInterval(m_minSpinBox->minimum(), m_maxSpinBox->maximum()));
+		return (DegenerateInterval(m_minValidator->bottom(), m_maxValidator->top()));
 	}
 
 	void SingleNumericRangeFilterWidget::SetRange(const DegenerateInterval& range) {
@@ -112,8 +112,10 @@ namespace SynGlyphX {
 		}
 
 		blockSignals(true);
-		m_minSpinBox->setValue(range.GetMin());
-		m_maxSpinBox->setValue(range.GetMax());
+		SetMinLineEdit(range.GetMin());
+		SetMaxLineEdit(range.GetMax());
+		OnMinLineEditUpdated();
+		OnMaxLineEditUpdated();
 		blockSignals(false);
 
 		EmitRangeUpdate();
@@ -121,42 +123,46 @@ namespace SynGlyphX {
 
 	DegenerateInterval SingleNumericRangeFilterWidget::GetRange() const {
 
-		return (DegenerateInterval(m_minSpinBox->value(), m_maxSpinBox->value()));
+		return (DegenerateInterval(GetMinLineEdit(), GetMaxLineEdit()));
 	}
 
 	void SingleNumericRangeFilterWidget::OnSliderLowerUpdated(int lower) {
 
-		SetMinSpinBoxBlockSignals(ConvertSliderPositionToValueInRange(lower));
+		SetMinLineEditBlockSignals(ConvertSliderPositionToValueInRange(lower));
 	}
 
 	void SingleNumericRangeFilterWidget::OnSliderUpperUpdated(int upper) {
 
-		SetMaxSpinBoxBlockSignals(ConvertSliderPositionToValueInRange(upper));
+		SetMaxLineEditBlockSignals(ConvertSliderPositionToValueInRange(upper));
 	}
 
-	void SingleNumericRangeFilterWidget::OnMinSpinBoxUpdated(double min) {
+	void SingleNumericRangeFilterWidget::OnMinLineEditUpdated() {
+
+		double min = GetMinLineEdit();
 
 		m_rangeSlider->blockSignals(true);
 		m_rangeSlider->SetLowerValue(ConvertValueInRangeToSliderPosition(min));
 		m_rangeSlider->blockSignals(false);
 
-		if (min > m_maxSpinBox->value()) {
+		if (min > GetMaxLineEdit()) {
 
-			SetMaxSpinBoxBlockSignals(min);
+			SetMaxLineEditBlockSignals(min);
 		}
 
 		EmitRangeUpdate();
 	}
 
-	void SingleNumericRangeFilterWidget::OnMaxSpinBoxUpdated(double max) {
+	void SingleNumericRangeFilterWidget::OnMaxLineEditUpdated() {
+
+		double max = GetMaxLineEdit();
 
 		m_rangeSlider->blockSignals(true);
 		m_rangeSlider->SetUpperValue(ConvertValueInRangeToSliderPosition(max));
 		m_rangeSlider->blockSignals(false);
 
-		if (max < m_minSpinBox->value()) {
+		if (max < GetMinLineEdit()) {
 
-			SetMinSpinBoxBlockSignals(max);
+			SetMinLineEditBlockSignals(max);
 		}
 
 		EmitRangeUpdate();
@@ -164,31 +170,66 @@ namespace SynGlyphX {
 
 	void SingleNumericRangeFilterWidget::EmitRangeUpdate() {
 
-		emit RangeUpdated(DegenerateInterval(m_minSpinBox->value(), m_maxSpinBox->value()));
+		emit RangeUpdated(DegenerateInterval(GetMinLineEdit(), GetMaxLineEdit()));
 	}
 
 	double SingleNumericRangeFilterWidget::ConvertSliderPositionToValueInRange(int value) {
 
-		return ((m_ratio * value) + m_minSpinBox->minimum());
+		return ((m_ratio * value) + m_minValidator->bottom());
 	}
 
 	int SingleNumericRangeFilterWidget::ConvertValueInRangeToSliderPosition(double value) {
 
-		return static_cast<int>(std::floor((value - m_minSpinBox->minimum()) / m_ratio));
+		return static_cast<int>(std::floor((value - m_minValidator->bottom()) / m_ratio));
 	}
 
-	void SingleNumericRangeFilterWidget::SetMinSpinBoxBlockSignals(double min) {
+	void SingleNumericRangeFilterWidget::SetMinLineEditBlockSignals(double min) {
 
-		m_minSpinBox->blockSignals(true);
-		m_minSpinBox->setValue(min);
-		m_minSpinBox->blockSignals(false);
+		m_minLineEdit->blockSignals(true);
+		SetMinLineEdit(min);
+		m_minLineEdit->blockSignals(false);
 	}
 
-	void SingleNumericRangeFilterWidget::SetMaxSpinBoxBlockSignals(double max) {
+	void SingleNumericRangeFilterWidget::SetMaxLineEditBlockSignals(double max) {
 
-		m_maxSpinBox->blockSignals(true);
-		m_maxSpinBox->setValue(max);
-		m_maxSpinBox->blockSignals(false);
+		m_maxLineEdit->blockSignals(true);
+		SetMaxLineEdit(max);
+		m_maxLineEdit->blockSignals(false);
+	}
+
+	void SingleNumericRangeFilterWidget::SetMinLineEdit(double val) {
+
+		m_minLineEdit->setText(ConvertDoubleToString(val, m_minValidator->decimals()));
+	}
+
+	double SingleNumericRangeFilterWidget::GetMinLineEdit() const {
+
+		return m_minLineEdit->text().toDouble();
+	}
+
+	void SingleNumericRangeFilterWidget::SetMaxLineEdit(double val) {
+
+		m_maxLineEdit->setText(ConvertDoubleToString(val, m_maxValidator->decimals()));
+	}
+
+	double SingleNumericRangeFilterWidget::GetMaxLineEdit() const {
+
+		return m_maxLineEdit->text().toDouble();
+	}
+
+	QString SingleNumericRangeFilterWidget::ConvertDoubleToString(double val, int decimals) const {
+
+		QString str = QString::number(val, 'f', decimals);
+		while (str.endsWith('0')) {
+
+			str.chop(1);
+		}
+		if (str.endsWith('.')) {
+
+			str.chop(1);
+		}
+
+		return str;
 	}
 
 } //namespace SynGlyphX
