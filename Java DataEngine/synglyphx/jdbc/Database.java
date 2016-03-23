@@ -17,15 +17,22 @@ public class Database {
 	private MergedTable mergedTable;
 	private ArrayList<String> schemas;
 	private HashMap<String,ArrayList<String>> tables_by_schema;
+	private HashMap<String,ArrayList<String>> foreign_key_map; 
 	private Thread thread;
 	private String schema = null;
+	private ArrayList<String> queuedName;
+	private ArrayList<String> queuedQuery;
 
 	public Database(Driver driver){
 		this.driver = driver;
 		tables = new HashMap<String,BasicTable>();
 		temp_tables = new HashMap<String,BasicTable>();
 		schemas = new ArrayList<String>();
+		queuedName = new ArrayList<String>();
+		queuedQuery = new ArrayList<String>();
 		setTableMetaData();
+		if(!driver.packageName().equals("org.sqlite.JDBC"))
+			mapForeignKeys();
 	}
 
 	public void setTableMetaData(){
@@ -78,6 +85,7 @@ public class Database {
 	    			public void run(){
 				        for(int i = 0; i < table_names.length; i++){
 				        	temp_tables.put(table_names[i], new BasicTable(table_names[i], driver));
+				        	temp_tables.get(table_names[i]).createDataStats();
 				        }
 				    }
 				};
@@ -93,16 +101,43 @@ public class Database {
 
 	public void initializeChosenTables(String[] chosen){
 
+		try{
+			thread.join();
+		}catch(Exception e){}
+		
 		table_names = chosen;
 		for(int i = 0; i < chosen.length; i++){
 			Logger.getInstance().add(chosen[i]);
 	    	tables.put(chosen[i], temp_tables.get(chosen[i]));
+	    	tables.get(chosen[i]).createDataStats();
 	    }
 	}
 
 	public void initializeQueryTables(String query, Driver drive){
 	    mergedTable = new MergedTable(query, drive);
 	}
+
+	public void queueATable(String name, String query){
+    	queuedName.add(name);
+    	queuedQuery.add(query);
+    }
+
+    public void removeQueuedTable(String name){
+    	int a = queuedName.indexOf(name);
+    	queuedName.remove(a);
+    	queuedQuery.remove(a);
+    }
+
+    public void executeQueuedTables(){
+
+    	String[] temp_names = new String[queuedName.size()];
+    	for(int i = 0; i < queuedName.size(); i++){
+    		String n = queuedName.get(i);
+    		tables.put(n, new BasicTable(n, queuedQuery.get(i), driver));
+    		temp_names[i] = n;
+        }
+        table_names = temp_names;
+    }
 
 	public void setBaseTable(String base_table){
 		this.base_table = base_table;
@@ -114,9 +149,9 @@ public class Database {
 		}catch(InterruptedException ie){
 			ie.printStackTrace();
 		}
-		Logger.getInstance().add(String.valueOf(i));
-		Logger.getInstance().add(table_names[i]);
-		return temp_tables.get(table_names[i]);
+		//Logger.getInstance().add(String.valueOf(i));
+		//Logger.getInstance().add(table_names[i]);
+		return tables.get(table_names[i]);
 	}
 
 	public MergedTable getMergedTable(){
@@ -146,12 +181,10 @@ public class Database {
     }
 
 	public String[] getForeignKeys(String tableName){
-		try{
-			thread.join();
-		}catch(InterruptedException ie){
-			ie.printStackTrace();
-		}
-	    return temp_tables.get(tableName).getForeignKeys();
+		if(foreign_key_map.containsKey(tableName)){
+	    	return Functions.arrayListToStringList(foreign_key_map.get(tableName));
+	    }
+	    return new String[1];
 	}
 
 	public String[] getSampleData(int table, int row){
@@ -183,4 +216,41 @@ public class Database {
         }
         return size;
     }
+
+    private void mapForeignKeys(){
+
+		foreign_key_map = new HashMap<String,ArrayList<String>>();
+		try{
+
+			DatabaseMetaData dm = driver.getConnection().getMetaData();
+	    	ResultSet rs = dm.getImportedKeys(null, null, null);;
+
+	    	while (rs.next()) {
+	    		String colName = rs.getString(8);
+	    		String schtbl = rs.getString(2);
+	    		String tblName = rs.getString(3);
+	    		String orgName = rs.getString(4);
+	    		String fkschtbl = rs.getString(6);
+	    		String fktblName = rs.getString(7);
+	    		if(schtbl != null){
+	    			tblName = schtbl+"."+tblName;
+	    		}
+	    		if(fkschtbl != null){
+	    			fktblName = fkschtbl+"."+fktblName;
+	    		}
+	    		if(!foreign_key_map.containsKey(fktblName)){
+	    			foreign_key_map.put(fktblName, new ArrayList<String>());
+	    		}
+	    		foreign_key_map.get(fktblName).add(colName);
+	    		foreign_key_map.get(fktblName).add(tblName);
+	    		foreign_key_map.get(fktblName).add(orgName);
+	    	}
+
+	    	rs.close();
+	    }catch(SQLException se){
+	    	try{
+            	se.printStackTrace(Logger.getInstance().addError());
+         	}catch(Exception ex){}
+	    }
+	}
 }

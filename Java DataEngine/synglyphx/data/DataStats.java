@@ -40,7 +40,8 @@ public class DataStats {
  		this.min = ranges[0];
  		this.max = ranges[1];
  		if(this.type.equals("text")){
- 			this.avg = "N/A";
+ 			//this.avg = "N/A";
+ 			this.avg = "-";
  		}else{
  			this.avg = ranges[2];
  		}

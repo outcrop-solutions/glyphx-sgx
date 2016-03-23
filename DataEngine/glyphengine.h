@@ -38,6 +38,7 @@ namespace DataEngine
 		bool getDownloadedBaseImage(std::vector<SynGlyphX::BaseImage> baseImages);
 		std::vector<std::string> getBaseImages();
 		void generateGlyphs();
+		bool IsUpdateNeeded() const;
 		~GlyphEngine(){};
 
 	};

@@ -12,8 +12,6 @@ import synglyphx.jdbc.driver.Driver;
 public class BasicTable extends Table{
 	
 	private ArrayList<String[]> sampleData;
-	private ArrayList<String> foreign_key_list;
-	private HashMap<String,ArrayList<String>> foreign_key_map; 
 
 	public BasicTable(String name, Driver driver){
 		super(driver);
@@ -21,9 +19,17 @@ public class BasicTable extends Table{
 		this.query = "SELECT * FROM "+name;
 		this.end_of_query = name;
 		setColumnNames();
-		mapForeignKeys();
-		createDataStats();
+		//createDataStats();
 		//loadSampleData();
+	}
+
+	public BasicTable(String name, String query, Driver driver){
+		super(driver);
+		this.name = name;
+		this.query = query;
+		this.end_of_query = query.split("FROM")[1];
+		setColumnNames();
+		createDataStats();
 	}
 
 	private void setColumnNames(){
@@ -60,44 +66,7 @@ public class BasicTable extends Table{
 	public String[] getSampleData(int row){
 		return sampleData.get(row);
 	}
-
-	public String[] getForeignKeys(){
-		return Functions.arrayListToStringList(foreign_key_list);
-	}
-
-	private void mapForeignKeys(){
-
-		foreign_key_list = new ArrayList<String>();
-		foreign_key_map = new HashMap<String,ArrayList<String>>();
-		try{
-
-			DatabaseMetaData dm = driver.getConnection().getMetaData();
-	    	ResultSet rs = driver.getImportedKeys(dm, name);
-
-	    	while (rs.next()) {
-	    		String colName = rs.getString(8);
-	    		String schtbl = rs.getString(2);
-	    		String tblName = rs.getString(3);
-	    		String orgName = rs.getString(4);
-	    		if(schtbl != null){
-	    			tblName = schtbl+"."+tblName;
-	    		}
-	    		foreign_key_map.put(colName, new ArrayList<String>());
-	    		foreign_key_map.get(colName).add(tblName);
-	    		foreign_key_map.get(colName).add(orgName);
-	    		foreign_key_list.add(colName);
-	    		foreign_key_list.add(tblName);
-	    		foreign_key_list.add(orgName);
-	    	}
-
-	    	rs.close();
-	    }catch(SQLException se){
-	    	try{
-            	se.printStackTrace(Logger.getInstance().addError());
-         	}catch(Exception ex){}
-	    }
-	}
-
+/*
 	private void loadSampleData(){
 
 		sampleData = new ArrayList<String[]>();
@@ -125,5 +94,5 @@ public class BasicTable extends Table{
          	}catch(Exception ex){}
         }
 	}
-
+*/
 }

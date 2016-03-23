@@ -17,7 +17,6 @@ namespace DataEngine
 		baseImageDir = bid;
 		baseFilename = bfn;
 		application = appName;
-		prepare();
 		/*
 		std::ofstream myfile;
 		myfile.open("dmlog.txt");
@@ -198,6 +197,7 @@ namespace DataEngine
 
 	bool GlyphEngine::getDownloadedBaseImage(std::vector<SynGlyphX::BaseImage> baseImages){
 		
+		prepare();
 		unsigned int nextTextureID = NumberOfDefaultBaseImages + 1;
 		for (const SynGlyphX::BaseImage& baseImage : baseImages) {
 
@@ -283,6 +283,22 @@ namespace DataEngine
 		return updated;
 	}
 
+	bool GlyphEngine::IsUpdateNeeded() const {
+
+		jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
+			"isUpdateNeeded", "()Z");
+
+		if (methodId != NULL) {
+			bool update = (jboolean)jniEnv->CallStaticBooleanMethod(jcls, methodId);
+			if (jniEnv->ExceptionCheck()) {
+				jniEnv->ExceptionDescribe();
+				jniEnv->ExceptionClear();
+			}
+			return update;
+		}
+		return true;
+	}
+
 	std::vector<double> GlyphEngine::getNWandSE(){
 
 		std::vector<double> points;
@@ -317,13 +333,18 @@ namespace DataEngine
 
 		if (jcls != NULL) {
 			jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
-				"beginGlyphGeneration", "()V");
+				"beginGlyphGeneration", "()Z");
+			bool memory = true;
 			if (methodId != NULL) {
-				jniEnv->CallStaticVoidMethod(jcls, methodId);
+				memory = (jboolean)jniEnv->CallStaticBooleanMethod(jcls, methodId);
 				if (jniEnv->ExceptionCheck()) {
 					jniEnv->ExceptionDescribe();
 					jniEnv->ExceptionClear();
 				}
+			}
+
+			if (!memory){
+				throw std::runtime_error("JVM Error: Not Enough Memory");
 			}
 		}
 		copyBaseImages();

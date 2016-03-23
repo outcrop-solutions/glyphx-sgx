@@ -449,13 +449,18 @@ namespace DataEngine
 
 	QString DataEngineConnection::CreateInnerJoinQueryFromForiegnKeys(const QString& mainTable, const ForiegnKeyVector& foriegnKeyTables) {
 
+		QStringList origins;
+
 		QString query = "SELECT * FROM (";
 		query += mainTable;
 
 		for (const auto& foreignKey : foriegnKeyTables) {
 
-			query += " INNER JOIN " + foreignKey.origin + " ON ";
-			query += "(" + mainTable + "." + foreignKey.key + "=" + foreignKey.origin + "." + foreignKey.value + ")";
+			if (!origins.contains(foreignKey.origin)){
+				query += " INNER JOIN " + foreignKey.origin + " ON ";
+				query += "(" + mainTable + "." + foreignKey.key + "=" + foreignKey.origin + "." + foreignKey.value + ")";
+				origins << foreignKey.origin;
+			}
 		}
 		
 		query += ")";
@@ -463,38 +468,89 @@ namespace DataEngine
 		return query;
 	}
 
-	//JDBC END
-	/*
-	void DataEngineConnection::testFunction(){
-		std::ofstream myfile;
-		myfile.open("testlog.txt");
+	void DataEngineConnection::queueATable(QString name, QString query){
 
-		for (int i = 0; i < tables.size(); i++){
-			std::vector<ForeignKey> keys = getForeignKeys(tables.at(i));
-			std::vector<QStringList> sample = getSampleData(tables.at(i));
+		jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
+			"queueATable", "(Ljava/lang/String;Ljava/lang/String;)V");
 
-			myfile << tables.at(i).toStdString() << '\n';
-			myfile << "Foreign Keys:\n";
-			for (int j = 0; j < keys.size(); j++){
-				myfile << "Key: " << keys.at(j).key.toStdString() << ", Origin: " << keys.at(j).origin.toStdString() << ", Value: " << keys.at(j).value.toStdString() << '\n';
+		if (methodId != NULL) {
+			jstring n = jniEnv->NewStringUTF(name.toStdString().c_str());
+			jstring q = jniEnv->NewStringUTF(query.toStdString().c_str());
+			jniEnv->CallStaticObjectMethod(jcls, methodId, n, q);
+			if (jniEnv->ExceptionCheck()) {
+				jniEnv->ExceptionDescribe();
+				jniEnv->ExceptionClear();
 			}
-			myfile << '\n';
-			myfile << "Sample Data:\n";
-			QStringList cols = getColumnNames(tables.at(i));
-			for (int j = 0; j < cols.size(); j++){
-				myfile << cols.at(j).toStdString() << " | ";
-			}
-			myfile << '\n';
-			for (int j = 0; j < sample.size(); j++){
-				QStringList temp = sample.at(j);
-				for (int k = 0; k < temp.size(); k++){
-					myfile << temp.at(k).toStdString() << ", ";
-				}
-				myfile << '\n';
-			}
-			myfile << '\n';
 		}
-		myfile.close();
-	}*/
+	}
+
+	void DataEngineConnection::removeQueuedTable(QString name){
+
+		jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
+			"removeQueuedTable", "(Ljava/lang/String;)V");
+
+		if (methodId != NULL) {
+			jstring n = jniEnv->NewStringUTF(name.toStdString().c_str());
+			jniEnv->CallStaticObjectMethod(jcls, methodId, n);
+			if (jniEnv->ExceptionCheck()) {
+				jniEnv->ExceptionDescribe();
+				jniEnv->ExceptionClear();
+			}
+		}
+	}
+
+	void DataEngineConnection::executeQueuedTables(){
+
+		jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
+			"executeQueuedTable", "()V");
+
+		if (methodId != NULL) {
+			jniEnv->CallStaticObjectMethod(jcls, methodId);
+			if (jniEnv->ExceptionCheck()) {
+				jniEnv->ExceptionDescribe();
+				jniEnv->ExceptionClear();
+			}
+		}
+	}
+
+	//JDBC END
+	
+	QString DataEngineConnection::encryptPassword(QString password){
+
+		jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
+			"encryptPassword", "(Ljava/lang/String;)Ljava/lang/String;");
+		QString encryp;
+		if (methodId != NULL) {
+			jstring q = jniEnv->NewStringUTF(password.toStdString().c_str());
+			jstring encrypted = (jstring)jniEnv->CallStaticObjectMethod(jcls, methodId, q);
+			if (jniEnv->ExceptionCheck()) {
+				jniEnv->ExceptionDescribe();
+				jniEnv->ExceptionClear();
+			}
+			const char *str = jniEnv->GetStringUTFChars(encrypted, 0);
+			encryp = str;
+		}
+		return encryp;
+
+	}
+	
+	QString DataEngineConnection::decryptPassword(QString encrypted){
+
+		jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
+			"decryptPassword", "(Ljava/lang/String;)Ljava/lang/String;");
+		QString decryp;
+		if (methodId != NULL) {
+			jstring q = jniEnv->NewStringUTF(encrypted.toStdString().c_str());
+			jstring decrypted = (jstring)jniEnv->CallStaticObjectMethod(jcls, methodId, q);
+			if (jniEnv->ExceptionCheck()) {
+				jniEnv->ExceptionDescribe();
+				jniEnv->ExceptionClear();
+			}
+			const char *str = jniEnv->GetStringUTFChars(decrypted, 0);
+			decryp = str;
+		}
+		return decryp;
+
+	}
 
 }

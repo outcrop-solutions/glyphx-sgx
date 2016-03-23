@@ -21,8 +21,18 @@ public class GlyphEngine {
 		sdtReader = new SDTReader(sdtPath, outDir, application);
 	}
 
+	public static boolean isUpdateNeeded(){
+		return sdtReader.isUpdateNeeded();
+	}
+
 	public static void beginGlyphGeneration(){
-		sdtReader.generateGlyphs();
+		try{
+	 		sdtReader.generateGlyphs();
+	 	}catch(OutOfMemoryError e){
+	 		Logger.getInstance().add("Ran out of memory... Shuting down gracefully...");
+	 		//return false;
+	 	}
+	 	//return true;
 	}
 
 	public static String[] getBaseImages(){
@@ -73,14 +83,16 @@ public class GlyphEngine {
 
 	public static void main(String [] args){
 
-		String sdtPath = "C:\\Users\\Bryan\\SharePoint\\Synglyphx Team Site - Documents\\Test Data\\BRYAN\\School Shooting Viz (05-Jan-16).sdt";
-	 	String outDir = "C:\\Users\\Bryan\\SharePoint\\Synglyphx Team Site - Documents\\Test Data\\BRYAN\\Viz";
-	 	//String sdtPath = "C:\\Users\\Bryan\\Desktop\\jdbc_test\\official_multi_test.sdt";
+		//String sdtPath = "C:\\Users\\Bryan\\SharePoint\\Synglyphx Team Site - Documents\\Test Data\\BRYAN\\School Shooting Viz (05-Jan-16).sdt";
+	 	//String outDir = "C:\\Users\\Bryan\\SharePoint\\Synglyphx Team Site - Documents\\Test Data\\BRYAN\\Viz";
+	 	//String sdtPath = "C:\\Users\\Bryan\\Desktop\\jdbc_test\\official_merged_test.sdt";
 	 	//String outDir = "C:\\Users\\Bryan\\Desktop\\jdbc_test\\official merged";
 	 	//String sdtPath = "C:/Users/Bryan/Desktop/TooMany Elements SizeBug/Ohio Voter Registration Draft.sdt";
 	 	//String outDir = "C:/Users/Bryan/AppData/Local/SynGlyphX/Glyph Builder - Glyph Viewer/cache/cache_2072a4ce-5cf5-4591-84b0-30f87c5cc214";
 	 	//String sdtPath = "C:\\Users\\Bryan\\Desktop\\test_for_ray_1\\url_and_description.sdt";
 	 	//String outDir = "C:\\Users\\Bryan\\Desktop\\test_for_ray_1\\Viz";
+	 	String sdtPath = "C:/Users/Bryan/Desktop/East Coast Only/East_Coast_Only.sdt";
+	 	String outDir = "C:/Users/Bryan/Desktop/East Coast Only/Viz";
 	 	
 	 	String expDir = "DataMapper";
 	 	GlyphEngine start = new GlyphEngine();
@@ -90,11 +102,21 @@ public class GlyphEngine {
 	 	se[0] = 180.0; se[1] = -90.0;
 	 	double[] s = new double[2];
 	 	s[0] = 2048.0; s[1] = 1024.0;
+
 	 	start.initiate(sdtPath, outDir, expDir);
-	 	double[] nwse = start.getNWandSE();
-	 	//start.hasImageBeenUpdated();
-	 	start.setBoundingBox(nw,se,s);
-	 	start.beginGlyphGeneration();
+
+	 	if(start.isUpdateNeeded()){
+		 	double[] nwse = start.getNWandSE();
+		 	//start.hasImageBeenUpdated();
+		 	start.setBoundingBox(nw,se,s);
+		 	try{
+		 		start.beginGlyphGeneration();
+		 	}catch(OutOfMemoryError e){
+		 		System.out.println("Ran out of memory... Shuting down gracefully...");
+		 	}
+		}
+		String[] images = start.getBaseImages();
+		System.out.println(images.length);
 	} 
 
 }

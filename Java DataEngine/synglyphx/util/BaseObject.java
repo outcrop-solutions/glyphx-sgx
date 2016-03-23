@@ -34,6 +34,7 @@ public class BaseObject {
 		logo_pos = new double[2];
 		logo_pos[0] = 167.77;
 		logo_pos[1] = 87.23;
+		bestfit = "true";
 	}
 
 	public void setName(String name){

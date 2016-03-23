@@ -15,6 +15,7 @@ public class JDBCLoader {
    public static String password = null;
    public static String dbType;
    public static boolean merged;
+   public static int closeCount = 1;
 
    protected JDBCLoader(){}
 
@@ -27,9 +28,10 @@ public class JDBCLoader {
    
    public static String[] connectToServer(String db_url, String user, String pass, String db) {
 
+      boolean same_conn = false;
       if(connectionString != null && username != null && password != null){
          if(connectionString.equals("jdbc:"+db_url) && username.equals(user) && password.equals(pass)){
-            return database.getSchemas();
+            same_conn = true;
          }
       }
       connectionString = "jdbc:"+db_url;
@@ -38,6 +40,9 @@ public class JDBCLoader {
       dbType = db;
 
       try{
+         if(same_conn && !driver.getConnection().isClosed()){
+            return database.getSchemas();
+         }
          Logger.getInstance().add(username +" | "+ password);
          driver = DriverSelector.getDriver(dbType);
          Class.forName(driver.packageName());
@@ -84,6 +89,19 @@ public class JDBCLoader {
       database.initializeQueryTables(query, driver);
    }
 
+   public static void queueATable(String name, String query){
+      merged = false;
+      database.queueATable(name, query);
+   }
+
+   public static void removeQueuedTable(String name){
+      database.removeQueuedTable(name);
+   }
+
+   public static void executeQueuedTables(){
+      database.executeQueuedTables();
+   }
+
    public static String[] getFieldsForTable(int table){
       if(merged){
          return database.getMergedTable().getColumnNames();
@@ -108,15 +126,19 @@ public class JDBCLoader {
 
    public static void closeConnection(){
       
-      //try{
-         //driver.getConnection().close();
-         Logger.getInstance().add("");
-         Logger.getInstance().add("Closing connection to database...");
-      //}catch(SQLException se){
-        // try{
-          //  se.printStackTrace(Logger.getInstance().addError());
-         //}catch(Exception ex){}
-      //}
+      if(closeCount == 2){
+         try{
+            driver.getConnection().close();
+            Logger.getInstance().add("");
+            Logger.getInstance().add("Closing connection to database...");
+         }catch(SQLException se){
+            try{
+               se.printStackTrace(Logger.getInstance().addError());
+            }catch(Exception ex){}
+         }
+         closeCount = 0;
+      }
+      closeCount += 1;
 
    }
 
