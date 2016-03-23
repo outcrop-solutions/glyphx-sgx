@@ -81,6 +81,7 @@ DataMapperWindow::DataMapperWindow(QWidget *parent)
 			m_dataEngineConnection->createJVM();
 			m_dataTransformModel->SetDataEngineConnection(m_dataEngineConnection);
 			m_dataSourceStats->SetDataEngineConnection(m_dataEngineConnection);
+
 		}
 	}
 	catch (const std::exception& e) {
@@ -675,22 +676,23 @@ void DataMapperWindow::CreatePortableVisualization(SynGlyphX::PortableVisualizat
 		std::string baseImageDir = SynGlyphX::GlyphBuilderApplication::GetDefaultBaseImagesLocation().toStdString();
 		std::string baseFilename = (QString::fromStdWString(SynGlyphX::DefaultBaseImageProperties::GetBasefilename()).toStdString());
 		ge.initiate(m_dataEngineConnection->getEnv(), m_currentFilename.toStdString(), csvDirectory.toStdString() + "\\", baseImageDir, baseFilename, "DataMapper");
-		try {
+		if (ge.IsUpdateNeeded()){
+			try {
 
-			ge.getDownloadedBaseImage(m_dataTransformModel->GetDataMapping().get()->GetBaseObjects());
-		}
-		catch (const DownloadException& e) {
+				ge.getDownloadedBaseImage(m_dataTransformModel->GetDataMapping().get()->GetBaseObjects());
+			}
+			catch (const DownloadException& e) {
 
-			SynGlyphX::Application::restoreOverrideCursor();
-			QMessageBox::information(this, "Download Image Error", tr("Base image failed to download so the world map was used instead.\n\nError: ") + tr(e.what()), QMessageBox::Ok);
-			SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
-		}
-		catch (const std::exception& e) {
+				SynGlyphX::Application::restoreOverrideCursor();
+				QMessageBox::information(this, "Download Image Error", tr("Base image failed to download so the world map was used instead.\n\nError: ") + tr(e.what()), QMessageBox::Ok);
+				SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
+			}
+			catch (const std::exception& e) {
 
-			throw;
+				throw;
+			}
+			ge.generateGlyphs();
 		}
-		
-		ge.generateGlyphs();
 
 		//SynGlyphXANTz::ANTzExportTransformer transformer(csvDirectory, m_antzExportDirectories[platform], platform, false);
 		//transformer.Transform(*(m_dataTransformModel->GetDataMapping().get()));
