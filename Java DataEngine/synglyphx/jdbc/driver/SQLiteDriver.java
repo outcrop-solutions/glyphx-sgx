@@ -2,6 +2,7 @@ package synglyphx.jdbc.driver;
 
 import java.sql.*;
 import synglyphx.io.Logger;
+import java.util.ArrayList;
 
 public class SQLiteDriver implements Driver {
 
@@ -19,9 +20,22 @@ public class SQLiteDriver implements Driver {
 
 	public String dataStatsQuery(String cn, String eoq, boolean num){
 
-		String sql = "SELECT MIN(`"+cn+"`),MAX(`"+cn+"`),AVG(`"+cn+"`),";
+		String sql = "SELECT MIN(`"+cn+"`),MAX(`"+cn+"`),";
 		sql += "COUNT(`"+cn+"`),COUNT(DISTINCT(`"+cn+"`)) FROM "+eoq;
 		return sql;
+	}
+
+	public String dataStatsQuery(ArrayList<String> names, String eoq){
+		
+		String query = "SELECT COUNT(`"+names.get(0)+"`),";
+        for(int i = 0; i < names.size(); i++){
+            query += "MIN(`"+names.get(i)+"`),MAX(`"+names.get(i)+"`),COUNT(DISTINCT(`"+names.get(i)+"`))";
+            if(i != names.size()-1){
+               query += ", ";
+            }
+        }query += " FROM "+eoq;
+
+        return query;
 	}
 
 	public String basicField(String tbl_name, String col_name){

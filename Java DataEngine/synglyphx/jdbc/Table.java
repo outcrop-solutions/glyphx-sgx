@@ -20,45 +20,61 @@ public abstract class Table {
 	protected HashMap<String,DataStats> dataStats;
 	protected HashMap<String,String> jdbcTypes;
 	protected HashMap<String,ArrayList<String>> min_max_table;
-	protected Thread thread;
 
 	public Table(Driver driver){
 		this.driver = driver;
 		initialize();
 	}
 
-	private void columnDataStats(String cn){
+	protected void createDataStats(){
 
+		Logger.getInstance().add("creating datastats");
+		dataStats = new HashMap<String,DataStats>();
+		min_max_table = new HashMap<String, ArrayList<String>>();
 		try{
 			String[] ranges = new String[3];
 			String[] counts = new String[2];
-			String sql = driver.dataStatsQuery(cn, end_of_query, columnTypes.get(cn).equals("Double"));
-			//Logger.getInstance().add(sql);
-			Connection con = driver.getNewConnection();
-			Statement stmt = con.createStatement();
+			//String sql = driver.dataStatsQuery(cn, end_of_query, columnTypes.get(cn).equals("Double"));
+			String sql = driver.dataStatsQuery(columnNames, end_of_query);
+			Statement stmt = driver.getConnection().createStatement();
             ResultSet rs = stmt.executeQuery(sql);
-
+            /*
             while(rs.next()){
-            	int i = 1;
-            	ranges[0] = rs.getString(i++);
-            	ranges[1] = rs.getString(i++);
-            	if(columnTypes.get(cn).equals("Double")){
-            		ranges[2] = rs.getString(i++);
-            	}else{
-            		ranges[2] = "N/A";
-            	}
-            	counts[0] = rs.getString(i++);
-            	counts[1] = rs.getString(i++);
+            	ranges[0] = rs.getString(1);
+            	ranges[1] = rs.getString(2);
+            	ranges[2] = "-";
+            	counts[0] = rs.getString(3);
+            	counts[1] = rs.getString(4);
             	dataStats.put(cn, new DataStats(columnTypes.get(cn),ranges,counts));
             	DataStats ds = dataStats.get(cn);
             	Logger.getInstance().add(ds.getType()+" | "+ds.getMin()+" | "+ds.getMax()+" | "+ds.getAverage()+" | "+ds.getCount()+" | "+ds.getDistinct()); 
   				min_max_table.put(cn, new ArrayList<String>());
   				min_max_table.get(cn).add(ds.getMin());   
   				min_max_table.get(cn).add(ds.getMax());       	     	
-            }
+            }*/
+
+            rs.next();
+
+            ranges[2] = "-";
+            counts[0] = rs.getString(1);
+            int cc = 0;
+	        for(int i = 1; i < columnNames.size()*3; i+=3){
+	            ranges[0] = rs.getString(i+1);
+	            ranges[1] = rs.getString(i+2);
+	            counts[1] = rs.getString(i+3);
+	            String temp = columnNames.get(cc);
+	            dataStats.put(temp, new DataStats(columnTypes.get(temp),ranges,counts));
+            	DataStats ds = dataStats.get(temp);
+	            Logger.getInstance().add(ds.getType()+" | "+ds.getMin()+" | "+ds.getMax()+" | "+ds.getAverage()+" | "+ds.getCount()+" | "+ds.getDistinct()); 
+  				min_max_table.put(temp, new ArrayList<String>());
+  				min_max_table.get(temp).add(ds.getMin());   
+  				min_max_table.get(temp).add(ds.getMax());  
+  				cc += 1;
+	        }
+
 
             rs.close();
-            con.close();
+            //con.close();
         }catch(SQLException se){
         	try{
             	se.printStackTrace(Logger.getInstance().addError());
@@ -71,11 +87,7 @@ public abstract class Table {
 	}
 
 	public String[] getStats(String field){
-		try{
-			thread.join();
-		}catch(InterruptedException ie){
-			ie.printStackTrace();
-		}
+
 		String[] stats = new String[6];
 		DataStats ds = dataStats.get(field);
 		stats[0] = ds.getType();
@@ -129,40 +141,26 @@ public abstract class Table {
 		columnTypes = new HashMap<String,String>();
 
 	}
-
+/*
 	public void createDataStats(){
-		thread = new Thread(){
-    		public void run(){
-    			Logger.getInstance().add("creating datastats");
-				dataStats = new HashMap<String,DataStats>();
-				min_max_table = new HashMap<String, ArrayList<String>>();
-				for(int i = 0; i < columnNames.size(); i++){
-					columnDataStats(columnNames.get(i));
-				}
-    		}
-  		};
-  		thread.start();
-	}
 
+		Logger.getInstance().add("creating datastats");
+		dataStats = new HashMap<String,DataStats>();
+		min_max_table = new HashMap<String, ArrayList<String>>();
+		for(int i = 0; i < columnNames.size(); i++){
+			columnDataStats(columnNames.get(i));
+		}
+	}
+*/
 	public String getTableName(){
 		return name;
 	}
 
 	public HashMap<String, ArrayList<String>> getMinMaxTable(){
-		try{
-			thread.join();
-		}catch(InterruptedException ie){
-			ie.printStackTrace();
-		}
 		return min_max_table;
 	}
 
 	public HashMap<String,DataStats> getDataStats(){
-		try{
-			thread.join();
-		}catch(InterruptedException ie){
-			ie.printStackTrace();
-		}
 		return dataStats;
 	}
 

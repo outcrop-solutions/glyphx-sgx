@@ -38,13 +38,15 @@ public class SDTReader {
 	private int count;
 	private String outDir;
 	private String app;
+	private String timestamp;
 	private boolean download = false;
+	private boolean updateNeeded = true;
 
 	public SDTReader(String sdtPath, String outDir, String application){
 		Logger.getInstance().add("Reading SDT at "+sdtPath);
-		absorbXML(sdtPath);
 		this.outDir = outDir.replace("\\", File.separator);
 		this.app = application;
+		initXMLReader(sdtPath);
 	}
 
 	public void generateGlyphs(){
@@ -52,8 +54,8 @@ public class SDTReader {
 		Thread thread = new Thread(){
     		public void run(){
       			SQLiteWriter writer = new SQLiteWriter(dataPaths, outDir, rootIds, templates);
+      			writer.writeSDTInfo(timestamp);
       			writer.writeTableIndex();
-				writer.writeAllTables();
     		}
   		};
   		thread.start();
@@ -70,7 +72,40 @@ public class SDTReader {
 		}
 	}
 
-	public void absorbXML(String sdtPath) {
+	public boolean isUpdateNeeded() {
+		return updateNeeded;
+	}
+
+	public void initXMLReader(String sdtPath) {
+
+		try{
+			File file = new File(sdtPath);
+			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+			Document doc = dBuilder.parse(file);
+			doc.getDocumentElement().normalize();
+
+			Node transform = doc.getElementsByTagName("Transform").item(0);
+			Element tf = (Element) transform;
+			timestamp = tf.getAttribute("Timestamp");
+			getDataPaths(doc);
+			getBaseObjects(doc);
+
+			if(!timestamp.equals("")){
+				updateNeeded = SQLiteReader.isAntzUpdateNeeded(timestamp, outDir, dataPaths);
+			}
+
+			if(updateNeeded){
+				absorbXML(doc);
+			}
+
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+
+	}
+
+	public void absorbXML(Document doc) {
 
 		templates = new HashMap<Integer, XMLGlyphTemplate>();
 		rootIds = new ArrayList<Integer>();
@@ -78,18 +113,10 @@ public class SDTReader {
 
 		try {
 
-			File file = new File(sdtPath);
-			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-			Document doc = dBuilder.parse(file);
-			doc.getDocumentElement().normalize();
-
 			Logger.getInstance().add("Parsed SDT into doc.");
 			setInputMap(doc);
-			getDataPaths(doc);
 			checkFieldGroups(doc);
 			getDefaultsAndPropeties(doc);
-			getBaseObjects(doc);
 
 			NodeList start = doc.getElementsByTagName("Glyphs");
 
@@ -394,26 +421,18 @@ public class SDTReader {
 					NodeList tbls = e.getElementsByTagName("Tables");
 					Element tblObjects = (Element) tbls.item(0);
 					NodeList tables = tblObjects.getElementsByTagName("Table");
-					System.out.println(tables.getLength());
+					//System.out.println(tables.getLength());
 					for(int j=0; j<tables.getLength(); j++){
 	 					Node table = tables.item(j); 
 	 					Element te = (Element) table;
-						//System.out.println(host);
-						//System.out.println(user);
-						//System.out.println(pass);
-						//System.out.println(table.getTextContent());
+
 						SourceDataInfo tb = new SourceDataInfo();
 						tb.setID(id);
 						tb.setTable(table.getTextContent());
 						tb.setType(e.getAttribute("type").toLowerCase());
 						if(te.hasAttribute("query")){
 							if(!te.getAttribute("query").equals("")){
-								tb.setQuery(te.getAttribute("query"));/*
-								tb.setInputFields(this.inputs);
-								if(te.hasAttribute("basetable")){
-									tb.setBaseTableName(te.getAttribute("basetable"));
-									tb.parseForeignKeyData(te.getAttribute("foreignkey"));
-								}*/
+								tb.setQuery(te.getAttribute("query"));
 							}
 						}
 						tb.setPath(host);

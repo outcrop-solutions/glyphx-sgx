@@ -61,7 +61,7 @@ public class JDBCNodeGenerator {
 
 	        driver.createConnection(sourceData.getHost(),sourceData.getUsername(),sourceData.getPassword());
 
-	        System.out.println(sourceData.getQuery());
+	        //System.out.println(sourceData.getQuery());
 	        if(sourceData.isMerged()){
 	        	table = new MergedTable(sourceData.getQuery(), driver);
 	        }else{

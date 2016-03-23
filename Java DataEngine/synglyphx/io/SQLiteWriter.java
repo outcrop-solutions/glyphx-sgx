@@ -43,6 +43,33 @@ public class SQLiteWriter {
 		file.delete();
 	}
 
+
+	public void writeSDTInfo(String timestamp){
+
+		try{
+			SQLiteConnection db = new SQLiteConnection(new File(outDir+"/sourcedata.db"));
+			db.open(true);
+			String query = "CREATE TABLE if NOT EXISTS 'SDTInfo' (lastChanged varchar(255));";
+			SQLiteStatement st0 = db.prepare(query);
+
+			db.exec("BEGIN TRANSACTION;"); 
+			st0.step(); 
+
+			SQLiteStatement st1 = db.prepare("INSERT INTO 'SDTInfo' VALUES (?);", true);
+
+			st1.bind(1, timestamp);
+			st1.step(); 
+			st1.reset();
+		
+			db.exec("COMMIT TRANSACTION;"); 
+			db.dispose();
+		}catch(SQLiteException se){
+			try{
+	            se.printStackTrace(Logger.getInstance().addTError());
+	        }catch(Exception e){}
+		}
+	}
+
 	public void writeTableIndex(){
 
 		try{
@@ -75,12 +102,9 @@ public class SQLiteWriter {
 		}
 	}
 
-	public void writeAllTables(){}
 	public void writeAllTables(SQLiteConnection db){
 
 		try{
-			//SQLiteConnection db = new SQLiteConnection(new File(outDir+"/sourcedata.db"));
-			//db.open(true);
 
 			for(int i = 0; i < toPrint.size(); i++){
 				SourceDataInfo sdi = dataframes.get(toPrint.get(i));
@@ -92,8 +116,6 @@ public class SQLiteWriter {
 				}
 			}
 
-			//db.exec("COMMIT TRANSACTION;"); 
-			//db.dispose();
 		}catch(SQLiteException se){
 			try{
 	            se.printStackTrace(Logger.getInstance().addTError());

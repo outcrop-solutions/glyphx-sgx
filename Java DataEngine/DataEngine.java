@@ -6,6 +6,7 @@ import synglyphx.io.SQLiteReader;
 import synglyphx.jdbc.JDBCLoader;
 import synglyphx.jdbc.Database;
 import synglyphx.io.Logger;
+import synglyphx.util.AESencrp;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
@@ -45,12 +46,31 @@ public class DataEngine {
 		return stats;
 	}
 
+	public static String encryptPassword(String password){
+		Logger.getInstance().addT(password);
+		String encrypted = AESencrp.encrypt(password);
+		Logger.getInstance().addT(encrypted);
+		return encrypted;
+	}
+
+	public static String decryptPassword(String encrypted){
+		Logger.getInstance().addT(encrypted);
+		String decrypted = AESencrp.decrypt(encrypted);
+		Logger.getInstance().addT(decrypted);
+		return decrypted;
+	}
+
 //JDBC ACCESSOR METHODS
 
 	public static String[] connectToServer(String dburl, String username, String password, String db){
+		double start = 0.0;
+		double end = 0.0;
+		start = System.currentTimeMillis();
 		sourceType = db;
 		Logger.getInstance().addT("connectToServer");
 		String[] schemas = JDBCLoader.getInstance().connectToServer(dburl, username, password, db);
+		end = System.currentTimeMillis();
+		Logger.getInstance().addT(String.valueOf((end-start)/1000.00));
 		return schemas;
 	}
 
@@ -67,14 +87,24 @@ public class DataEngine {
 	}
 
 	public static String[] getTableNames(){
+		double start = 0.0;
+		double end = 0.0;
+		start = System.currentTimeMillis();
 		Logger.getInstance().addT("getTableNames");
 		String[] tables = JDBCLoader.getInstance().getTableNames();
+		end = System.currentTimeMillis();
+		Logger.getInstance().addT(String.valueOf((end-start)/1000.00));
 		return tables;
 	}
 
 	public static String[] getSchemaTableNames(String sch){
+		double start = 0.0;
+		double end = 0.0;
+		start = System.currentTimeMillis();
 		Logger.getInstance().addT("getSchemaTableNames");
 		String[] tables = JDBCLoader.getInstance().getSchemaTableNames(sch);
+		end = System.currentTimeMillis();
+		Logger.getInstance().addT(String.valueOf((end-start)/1000.00));
 		return tables;
 	}
 
@@ -84,18 +114,42 @@ public class DataEngine {
 	}
 
 	public static void setQueryTables(String query){
+		double start = 0.0;
+		double end = 0.0;
+		start = System.currentTimeMillis();
 		Logger.getInstance().addT("setQueryTables");
 		Logger.getInstance().add(query);
 		JDBCLoader.getInstance().setQueryTables(query);
+		end = System.currentTimeMillis();
+		Logger.getInstance().addT(String.valueOf((end-start)/1000.00));
+	}
+
+	public static void queueATable(String name, String query){
+		JDBCLoader.getInstance().queueATable(name, query);
+	}
+
+	public static void removeQueuedTable(String name){
+		JDBCLoader.getInstance().removeQueuedTable(name);
+	}
+
+	public static void executeQueuedTables(){
+		JDBCLoader.getInstance().executeQueuedTables();
 	}
 
 	public static String[] getFieldsForTable(int table, String db){
+		double start = 0.0;
+		double end = 0.0;
+		start = System.currentTimeMillis();
 		Logger.getInstance().addT("getFieldsForTable");
 		sourceType = db;
 		if(sourceType.equals("csv")){
+			end = System.currentTimeMillis();
+			Logger.getInstance().addT(String.valueOf((end-start)/1000.00));
 			return headerString;
 		}else{
 			String[] fields = JDBCLoader.getInstance().getFieldsForTable(table);
+			end = System.currentTimeMillis();
+			Logger.getInstance().addT(String.valueOf((end-start)/1000.00));
 			return fields;
 		}
 	}
@@ -135,6 +189,10 @@ public class DataEngine {
 	public static void main(String [] args){
 
 		DataEngine d = new DataEngine();
+		//String enc = d.encryptPassword("Synglyphx_user@9102");
+		//String dec = d.decryptPassword(enc);
+		//System.out.println(enc);
+		//System.out.println(dec);
 		/*
 		d.loadFromCSV("C:\\Users\\Bryan\\Desktop\\American Open Approved Hotels 2.csv");
 		String[] fields = d.getFieldsForTable(0,"csv");
@@ -144,33 +202,55 @@ public class DataEngine {
 			System.out.println(stats[0]+", "+stats[1]+", "+stats[2]+", "+stats[3]+", "+stats[4]+", "+stats[5]);
 		}*/
 		//String[] sch_list = d.connectToServer("mysql://10.128.132.153:3306/world","synglyphx","password","mysql");
-		//String[] sch_list = d.connectToServer("sqlite://C:/Users/Bryan/Documents/GitHub/DataEngine/Java DataEngine/sqlite_test.db","","","sqlite3");
-		
+		String[] sch_list = d.connectToServer("sqlite://C:/Users/Bryan/Documents/GitHub/DataEngine/Java DataEngine/sqlite_test.db","","","sqlite3");
+		/*
 		double start = 0.0;
 		double end = 0.0;
 		start = System.currentTimeMillis();
 		String[] sch_list = d.connectToServer("vertica://54.67.93.24:5433/verticanow", "synglyphx_user", "Synglyphx_user@9102", "vertica");
-	
-		System.out.println("Schema List:");
+	*/
+		//System.out.println("Schema List:");
 		for(int i = 0; i < sch_list.length; i++){
 			System.out.println(sch_list[i]);
-		}
+		}/*
 		end = System.currentTimeMillis();
 		System.out.print("Connect to server: ");
 		System.out.println((end-start)/1000.00);
-		
+		*//*
 		double start1 = 0.0;
 		double end1 = 0.0;
-		start1 = System.currentTimeMillis();
+		start1 = System.currentTimeMillis();*/
 		String[] tbl_names = d.getTableNames();
 		//System.out.println("Table List:");
 		for(int i = 0; i < tbl_names.length; i++){
 			System.out.println(tbl_names[i]+" | "+String.valueOf(d.sizeOfQuery("SELECT * FROM "+tbl_names[i])));
-		}
+		}/*
 		end1 = System.currentTimeMillis();
 		System.out.print("Get table names: ");
-		System.out.println((end1-start1)/1000.00);
+		System.out.println((end1-start1)/1000.00);*/
+/*
+		double start2 = 0.0;
+		double end2 = 0.0;
+		start2 = System.currentTimeMillis();
+		String[] sch_tbls = d.getSchemaTableNames("online_sales");
+		end2 = System.currentTimeMillis();
+		System.out.print("Get schema table names: ");
+		System.out.println((end2-start2)/1000.00);
+		System.out.println("");*/
+/*
+		d.queueATable("online_sales.call_center_dimension", "SELECT * FROM online_sales.call_center_dimension WHERE call_center_key >= 1 AND call_center_key <= 5");
+		d.queueATable("public.inventory_fact", "SELECT * FROM public.inventory_fact WHERE product_key >= 1 AND product_key <= 100");
+		d.removeQueuedTable("online_sales.call_center_dimension");
+		d.executeQueuedTables();
 
+		for(int j = 0; j < 2; j++){
+			String[] fields = d.getFieldsForTable(j, "vertica");
+			for(int i = 0; i < fields.length; i++){
+				String[] stats = d.getStatsForField(j, fields[i]);
+				System.out.println(fields[i]+", "+stats[0]+", "+stats[1]+", "+stats[2]+", "+stats[3]+", "+stats[4]+", "+stats[5]);
+			}
+			System.out.println("");
+		}*/
 /*
 		double start2 = 0.0;
 		double end2 = 0.0;
@@ -189,9 +269,9 @@ public class DataEngine {
 			System.out.println((end-start)/1000.00);
 		}*/
 /*
-		String[] stbls = new String[1];
-		//stbls[0] = "online_sales.call_center_dimension";
-		stbls[0] = "online_sales.online_sales_fact";
+		String[] stbls = new String[2];
+		stbls[0] = "online_sales.call_center_dimension";
+		stbls[1] = "online_sales.online_sales_fact";
 		
 		//String[] stbls = new String[1];
 		//stbls[0] = "public.customer_dimension";
@@ -200,10 +280,10 @@ public class DataEngine {
 		for(int j = 0; j < stbls.length; j++){
 			String[] fft = d.getFieldsForTable(j, "vertica");
 			for(int i = 0; i < fft.length; i++){
-				System.out.println(fft[i]);
 				String[] sts = d.getStatsForField(j,fft[i]);
-				System.out.println(sts[0]+" | "+sts[1]+" | "+sts[2]+" | "+sts[3]+" | "+sts[4]+" | "+sts[5]);
+				System.out.println(fft[i]+" | "+sts[0]+" | "+sts[1]+" | "+sts[2]+" | "+sts[3]+" | "+sts[4]+" | "+sts[5]);
 			}
+			System.out.println("");
 		}
 */
 		//String query = "SELECT City.Population, Country.Code "; 
@@ -218,13 +298,22 @@ public class DataEngine {
 		System.out.println(d.sizeOfQuery(query));
 		double t2 = System.currentTimeMillis();
 		System.out.println(t2-t1);
-		*//*
+		
 		String query = "SELECT * FROM (online_sales.online_sales_fact ";
 		query += "INNER JOIN public.promotion_dimension ON ";
 		query += "(online_sales.online_sales_fact.promotion_key=public.promotion_dimension.promotion_key) ";
 		query += "INNER JOIN public.shipping_dimension ON ";
 		query += "(online_sales.online_sales_fact.shipping_key=public.shipping_dimension.shipping_key))";
 
+		start = 0.0;
+		end = 0.0;
+		start = System.currentTimeMillis();
+		String query = "SELECT * FROM (public.inventory_fact "; 
+		query += "INNER JOIN public.warehouse_dimension ON (public.inventory_fact.warehouse_key=public.warehouse_dimension.warehouse_key) ";
+		query += "INNER JOIN public.product_dimension ON (public.inventory_fact.product_key=public.product_dimension.product_key) ";
+		query += "INNER JOIN public.date_dimension ON (public.inventory_fact.date_key=public.date_dimension.date_key))";
+		//query += " WHERE inventory_fact.date_key >= 1 AND inventory_fact.date_key <= 913";
+		
 		d.setQueryTables(query);
 		String[] fields = d.getFieldsForTable(0, "vertica");
 
@@ -232,7 +321,11 @@ public class DataEngine {
 			String[] stats = d.getStatsForField(0, fields[i]);
 			System.out.println(fields[i]+", "+stats[0]+", "+stats[1]+", "+stats[2]+", "+stats[3]+", "+stats[4]+", "+stats[5]);
 		}
-*/
+		end = System.currentTimeMillis();
+		System.out.println((end-start)/1000.00);
+
+		System.out.println(d.sizeOfQuery(query));*/
+		d.closeConnection();
 		//d.closeConnection();
 	}
 }

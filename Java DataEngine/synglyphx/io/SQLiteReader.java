@@ -2,9 +2,11 @@ package synglyphx.io;
 
 import java.io.*;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.ArrayList;
 import com.almworks.sqlite4java.*;
 import synglyphx.data.DataFrame;
+import synglyphx.data.SourceDataInfo;
 
 public class SQLiteReader {
 
@@ -105,6 +107,74 @@ public class SQLiteReader {
 
 	public DataFrame getDataFrame(){
 		return data;
+	}
+
+	public static boolean isAntzUpdateNeeded(String ts, String dir, ArrayList<SourceDataInfo> dataPaths){
+
+		SQLiteStatement st0 = null;
+		try{
+
+			SQLiteConnection db = new SQLiteConnection(new File(dir+"/sourcedata.db"));
+			db.open(true);
+
+		    st0 = db.prepare("SELECT lastChanged FROM SDTInfo;"); 
+
+			db.exec("BEGIN TRANSACTION;"); 
+			st0.step(); 
+			String lastChanged = st0.columnString(0);
+			st0.dispose();
+
+			boolean toReturn = false;
+			if(checkModified(dataPaths, db))
+				toReturn = true;
+
+			if(Double.parseDouble(ts) <= Double.parseDouble(lastChanged) && !toReturn){ 
+				System.out.println("No update needed");
+				Logger.getInstance().add("No update needed");
+				db.exec("COMMIT TRANSACTION;"); 
+				db.dispose();
+				return false; 
+			}
+		
+			db.exec("COMMIT TRANSACTION;"); 
+			db.dispose();
+		}catch(SQLiteException se){
+			//se.printStackTrace();
+			Logger.getInstance().add("SDTInfo table not in sourcedata.db");
+		}
+
+		return true;
+	}
+
+	private static boolean checkModified(ArrayList<SourceDataInfo> dataPaths, SQLiteConnection db) {
+
+		try{
+			SQLiteStatement st0 = db.prepare("SELECT FormattedName, Timestamp FROM 'TableIndex';"); 
+			st0.step(); 
+
+			HashMap<String, String> timestamps = new HashMap<String, String>();
+			while(st0.hasRow()){
+				timestamps.put(st0.columnString(0),st0.columnString(1));
+				st0.step();
+			}
+			st0.dispose();
+
+			for(int i = 0; i < dataPaths.size(); i++){
+				if(timestamps.containsKey(dataPaths.get(i).getFormattedName())){
+					File file = new File(dataPaths.get(i).getPath());
+					if(file.lastModified() > Double.parseDouble(timestamps.get(dataPaths.get(i).getFormattedName()))){
+						return true;
+					}
+				}
+			}
+			return false;
+
+		}catch(SQLiteException se){
+			se.printStackTrace();
+			Logger.getInstance().add(se.getMessage());
+			return true;
+		}
+
 	}
 /*
 	public static void main(String [] args){

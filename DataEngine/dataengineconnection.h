@@ -32,6 +32,8 @@ namespace DataEngine
 		bool hasJVM() const;
 		void loadCSV(std::string path);
 		void loadSQLite(std::string path);
+		QString encryptPassword(QString password);
+		QString decryptPassword(QString encrypted);
 		//void setTable(int i);
 		//void addTableNumericFields(boost::uuids::uuid id, std::vector<std::wstring> tableNames);
 		//void addTableName(boost::uuids::uuid id, std::wstring name);
@@ -47,6 +49,9 @@ namespace DataEngine
 		const std::vector<QStringList>& getSampleData(QString tablename);
 		void setChosenTables(QStringList chosen);
 		void setQueryTables(QString query);
+		void queueATable(QString name, QString query);
+		void removeQueuedTable(QString name);
+		void executeQueuedTables();
 		QStringList getSchemaTableNames(QString schema);
 		QStringList getTables();
 		int sizeOfQuery(QString query);
