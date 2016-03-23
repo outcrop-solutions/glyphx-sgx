@@ -91,7 +91,7 @@ public class SDTReader {
 			getDataPaths(doc);
 			getBaseObjects(doc);
 
-			if(!timestamp.equals("")){
+			if(!timestamp.equals("") && app.equals("GlyphViewer")){
 				updateNeeded = SQLiteReader.isAntzUpdateNeeded(timestamp, outDir, dataPaths);
 			}
 

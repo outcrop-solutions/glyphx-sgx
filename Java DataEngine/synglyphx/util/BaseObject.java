@@ -191,11 +191,14 @@ public class BaseObject {
 			gridLineCount[1] = 360.0/(gridSegments[1]);
 		}
 
-		double logo_pos_lon = ((gridLineCount[0]*gridSegments[1])/2)-12.23; 
-		double logo_pos_lat = ((gridLineCount[1]*gridSegments[0])/2)-2.77; 
 
-		logo_pos[0] = logo_pos_lon;
-		logo_pos[1] = logo_pos_lat;
+		if(bestfit.equals("false")){
+			logo_pos[0] = 180-((178/((imageSize[0])/360))/2);
+			logo_pos[1] = 90-((40/((imageSize[1])/180))/2);
+		}else{
+			logo_pos[0] = ((gridLineCount[0]*gridSegments[1])/2)-12.23;
+			logo_pos[1] = ((gridLineCount[1]*gridSegments[0])/2)-2.77; 
+		}
 
 	}
 
