@@ -51,10 +51,10 @@ private slots:
 	void OnMoveDownRow();
 
 private:
-	typedef std::pair<SynGlyphX::DegenerateInterval, SynGlyphX::DegenerateInterval> RangeAndExtent;
-	typedef std::pair<QString, RangeAndExtent> Field2RangeAndExtentPair;
-	typedef std::vector<Field2RangeAndExtentPair> Field2RangeAndExtentVector;
-	typedef QMap<QString, Field2RangeAndExtentVector> Table2RangesAndExtentsMap;
+	typedef std::pair<SynGlyphX::DegenerateInterval, SynGlyphX::SingleNumericRangeFilterWidget::SliderPositionValues> RangeAndDistinctValues;
+	typedef std::pair<QString, RangeAndDistinctValues> Field2RangeAndDistinctValues;
+	typedef std::vector<Field2RangeAndDistinctValues> Field2RangeAndDistinctValuesVector;
+	typedef QMap<QString, Field2RangeAndDistinctValuesVector> Table2RangesAndDistinctValuesMap;
 
 	void UpdatedEnableStateForButton(QAction* action, QPushButton* button);
 	void ResetMinMaxExtentsForFilters(unsigned int startingRow);
@@ -82,7 +82,7 @@ private:
 	QAction* m_moveRowUpContextMenuAction;
 	QAction* m_moveRowDownContextMenuAction;
 
-	Table2RangesAndExtentsMap m_table2RangesAndExtentsMap;
+	Table2RangesAndDistinctValuesMap m_table2RangesAndDistinctValuesMap;
 
 	SourceDataInfoModel* m_columnsModel;
 

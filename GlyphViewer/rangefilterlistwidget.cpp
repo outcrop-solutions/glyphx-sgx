@@ -73,6 +73,8 @@ RangeFilterListWidget::RangeFilterListWidget(SourceDataInfoModel* columnsModel, 
 	m_rangeFiltersTableWidget->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeMode::ResizeToContents);
 	m_rangeFiltersTableWidget->verticalHeader()->hide();
 	m_rangeFiltersTableWidget->setContextMenuPolicy(Qt::ContextMenuPolicy::ActionsContextMenu);
+	//m_rangeFiltersTableWidget->setDragDropMode(QAbstractItemView::InternalMove);
+	//m_rangeFiltersTableWidget->setDropIndicatorShown(true);
 
 	m_removeSelectedContextMenuAction = new QAction(tr("Remove"), m_rangeFiltersTableWidget);
 	QObject::connect(m_removeSelectedContextMenuAction, &QAction::triggered, this, &RangeFilterListWidget::OnRemoveSelectedFilters);
@@ -110,7 +112,7 @@ void RangeFilterListWidget::SwitchTable(const QString& table) {
 	SaveRangesFromFiltersInTableWidget();
 
 	//Insert ranges and extents for new table
-	const Field2RangeAndExtentVector& newField2RangeAndExtentList = m_table2RangesAndExtentsMap[table];
+	const Field2RangeAndDistinctValuesVector& newField2RangeAndExtentList = m_table2RangesAndDistinctValuesMap[table];
 	unsigned int newSize = newField2RangeAndExtentList.size();
 	m_currentTable = table;
 	m_removeAllButton->setEnabled(newSize > 0);
@@ -126,7 +128,7 @@ void RangeFilterListWidget::SwitchTable(const QString& table) {
 
 		m_rangeFiltersTableWidget->setItem(j, 0, CreateItem(newField2RangeAndExtentList[j].first));
 		SynGlyphX::SingleNumericRangeFilterWidget* filterWidget = GetRangeFilterWidgetFromCell(j);
-		filterWidget->SetMaxRangeExtents(newField2RangeAndExtentList[j].second.second);
+		filterWidget->SetSliderPositionValuesAndMaxExtents(newField2RangeAndExtentList[j].second.second);
 		filterWidget->SetRange(newField2RangeAndExtentList[j].second.first);
 	}
 }
@@ -137,7 +139,7 @@ void RangeFilterListWidget::OnModelReset() {
 	m_removeAllButton->setEnabled(false);
 	m_updateButton->setEnabled(false);
 	ClearFiltersFromTableWidget();
-	m_table2RangesAndExtentsMap.clear();
+	m_table2RangesAndDistinctValuesMap.clear();
 	m_currentTable.clear();
 
 	if (m_sourceDataCache->IsValid()) {
@@ -222,9 +224,9 @@ void RangeFilterListWidget::OnAddFilter() {
 			SynGlyphX::SingleNumericRangeFilterWidget* filter = new SynGlyphX::SingleNumericRangeFilterWidget(Qt::Horizontal, this);
 			SynGlyphX::InputField inputField(gen(datasourceTable[0].toStdWString()), datasourceTable[1].toStdWString(), field.toStdWString(), SynGlyphX::InputField::Real);
 			
-			SynGlyphX::DegenerateInterval minMax = m_sourceDataCache->GetMinMax(inputField, columnMinMaxMap);
-			filter->SetMaxRangeExtents(minMax);
-			filter->SetRange(minMax);
+			SynGlyphX::SingleNumericRangeFilterWidget::SliderPositionValues sliderPositionValues = m_sourceDataCache->GetSortedNumericDistictValues(inputField, columnMinMaxMap);
+			filter->SetSliderPositionValuesAndMaxExtents(sliderPositionValues);
+			filter->SetRange(SynGlyphX::DegenerateInterval(*sliderPositionValues.begin(), *sliderPositionValues.rbegin()));
 
 			m_rangeFiltersTableWidget->setItem(nextRow, 0, CreateItem(field));
 			m_rangeFiltersTableWidget->setCellWidget(nextRow++, 1, filter);
@@ -276,7 +278,7 @@ void RangeFilterListWidget::OnUpdateFilters() {
 
 		SynGlyphX::GlyphBuilderApplication::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
 		SaveRangesFromFiltersInTableWidget();
-		for (Table2RangesAndExtentsMap::const_iterator tableIterator = m_table2RangesAndExtentsMap.begin(); tableIterator != m_table2RangesAndExtentsMap.end(); ++tableIterator) {
+		for (Table2RangesAndDistinctValuesMap::const_iterator tableIterator = m_table2RangesAndDistinctValuesMap.begin(); tableIterator != m_table2RangesAndDistinctValuesMap.end(); ++tableIterator) {
 
 			SourceDataCache::ColumnMinMaxMap columnMinMaxMap;
 			for (const auto& field2RangeAndExtent : tableIterator.value()) {
@@ -361,18 +363,18 @@ QTableWidgetItem* RangeFilterListWidget::CreateItem(const QString& text) {
 
 void RangeFilterListWidget::SaveRangesFromFiltersInTableWidget() {
 
-	Field2RangeAndExtentVector field2RangeAndExtentList;
+	Field2RangeAndDistinctValuesVector field2RangeAndExtentList;
 	for (unsigned int k = 0; k < m_rangeFiltersTableWidget->rowCount(); ++k) {
 
-		Field2RangeAndExtentPair field2RangeAndExtent;
+		Field2RangeAndDistinctValues field2RangeAndExtent;
 		field2RangeAndExtent.first = GetTextFromCell(k);
 		SynGlyphX::SingleNumericRangeFilterWidget* filterWidget = GetRangeFilterWidgetFromCell(k);
 		field2RangeAndExtent.second.first = filterWidget->GetRange();
-		field2RangeAndExtent.second.second = filterWidget->GetMaxRangeExtents();
+		field2RangeAndExtent.second.second = filterWidget->GetSliderPositionValues();
 
 		field2RangeAndExtentList.push_back(field2RangeAndExtent);
 	}
-	m_table2RangesAndExtentsMap[m_currentTable] = field2RangeAndExtentList;
+	m_table2RangesAndDistinctValuesMap[m_currentTable] = field2RangeAndExtentList;
 }
 
 void RangeFilterListWidget::OnSourceDataSelectionChanged() {
@@ -385,7 +387,7 @@ void RangeFilterListWidget::OnSourceDataSelectionChanged() {
 
 bool RangeFilterListWidget::DoAnyTablesHaveFilters() const {
 
-	for (const auto& rangesInTable : m_table2RangesAndExtentsMap) {
+	for (const auto& rangesInTable : m_table2RangesAndDistinctValuesMap) {
 
 		if (!rangesInTable.empty()) {
 
@@ -438,11 +440,11 @@ void RangeFilterListWidget::ResetMinMaxExtentsForFilters(unsigned int startingRo
 		QString field = GetTextFromCell(j);
 		SynGlyphX::SingleNumericRangeFilterWidget* filter = GetRangeFilterWidgetFromCell(j);
 		SynGlyphX::InputField inputField(gen(datasourceTable[0].toStdWString()), datasourceTable[1].toStdWString(), field.toStdWString(), SynGlyphX::InputField::Real);
-		SynGlyphX::DegenerateInterval minMax = m_sourceDataCache->GetMinMax(inputField, columnMinMaxMap);
+		SynGlyphX::SingleNumericRangeFilterWidget::SliderPositionValues sliderPositionValues = m_sourceDataCache->GetSortedNumericDistictValues(inputField, columnMinMaxMap);
 		filter->blockSignals(true);
-		filter->SetMaxRangeExtents(minMax);
+		filter->SetSliderPositionValuesAndMaxExtents(sliderPositionValues);
 		filter->blockSignals(false);
-		columnMinMaxMap.push_back(std::pair<QString, SynGlyphX::DegenerateInterval>(field, minMax));
+		columnMinMaxMap.push_back(std::pair<QString, SynGlyphX::DegenerateInterval>(field, SynGlyphX::DegenerateInterval(*sliderPositionValues.begin(), *sliderPositionValues.rbegin())));
 	}
 }
 
@@ -466,11 +468,11 @@ void RangeFilterListWidget::MoveRow(unsigned int sourceRow, unsigned int destina
 
 	SaveRangesFromFiltersInTableWidget();
 
-	Field2RangeAndExtentVector& currentTableRanges = m_table2RangesAndExtentsMap[m_currentTable];
-	Field2RangeAndExtentVector::iterator field2RangeMapIterator = currentTableRanges.begin();
+	Field2RangeAndDistinctValuesVector& currentTableRanges = m_table2RangesAndDistinctValuesMap[m_currentTable];
+	Field2RangeAndDistinctValuesVector::iterator field2RangeMapIterator = currentTableRanges.begin();
 	std::advance(field2RangeMapIterator, sourceRow);
 
-	Field2RangeAndExtentPair dataToMove = *field2RangeMapIterator;
+	Field2RangeAndDistinctValues dataToMove = *field2RangeMapIterator;
 	currentTableRanges.erase(field2RangeMapIterator);
 
 	field2RangeMapIterator = currentTableRanges.begin();
@@ -481,7 +483,7 @@ void RangeFilterListWidget::MoveRow(unsigned int sourceRow, unsigned int destina
 	m_rangeFiltersTableWidget->insertRow(destinationRow);
 
 	SynGlyphX::SingleNumericRangeFilterWidget* filter = new SynGlyphX::SingleNumericRangeFilterWidget(Qt::Horizontal, this);
-	filter->SetMaxRangeExtents(dataToMove.second.second);
+	filter->SetSliderPositionValuesAndMaxExtents(dataToMove.second.second);
 	filter->SetRange(dataToMove.second.first);
 
 	m_rangeFiltersTableWidget->setItem(destinationRow, 0, CreateItem(dataToMove.first));

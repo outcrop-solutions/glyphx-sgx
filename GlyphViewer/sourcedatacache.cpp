@@ -465,6 +465,11 @@ SynGlyphX::IndexSet SourceDataCache::GetIndexesFromTableInRanges(const QString& 
 
 SynGlyphX::DegenerateInterval SourceDataCache::GetMinMax(const SynGlyphX::InputField& inputfield, const ColumnMinMaxMap& otherRanges) const {
 
+	if (!inputfield.IsNumeric()) {
+
+		throw std::invalid_argument("SourceDataCache can not get numeric min and max for a field that is not numeric.");
+	}
+
 	SharedSQLQuery query(new QSqlQuery(m_db));
 	QString queryString = QString("SELECT MIN(%1), MAX(%1) FROM ").arg("\"" + QString::fromStdWString(inputfield.GetField()) + "\"") + "\"" + CreateTablename(inputfield) + "\"";
 
@@ -486,6 +491,48 @@ SynGlyphX::DegenerateInterval SourceDataCache::GetMinMax(const SynGlyphX::InputF
 	query->first();
 
 	return SynGlyphX::DegenerateInterval(query->value(0).toDouble(), query->value(1).toDouble());
+}
+
+std::set<double> SourceDataCache::GetSortedNumericDistictValues(const SynGlyphX::InputField& inputField, const ColumnMinMaxMap& otherRanges) const {
+
+	if (!inputField.IsNumeric()) {
+
+		throw std::invalid_argument("SourceDataCache can not get numeric min and max for a field that is not numeric.");
+	}
+
+	QString field = "\"" + QString::fromStdWString(inputField.GetField()) + "\"";
+	QString table = "\"" + CreateTablename(inputField) + "\"";
+
+	QSqlQuery query(m_db);
+	QString queryString = QString("SELECT DISTINCT %1 FROM %2").arg(field).arg(table);
+
+	if (!otherRanges.empty()) {
+
+		queryString += " WHERE ";
+		ColumnMinMaxMap::const_iterator otherRange = otherRanges.begin();
+		queryString += CreateBetweenString(otherRange->first, otherRange->second);
+
+		++otherRange;
+		for (; otherRange != otherRanges.end(); ++otherRange) {
+
+			queryString += " AND " + CreateBetweenString(otherRange->first, otherRange->second);
+		}
+	}
+	queryString += QString(" ORDER BY %1 ASC").arg(field);
+
+	std::set<double> sortedDistinctValues;
+
+	query.prepare(queryString);
+	if (!query.exec()) {
+
+		throw std::runtime_error((QObject::tr("Failed to get sorted numeric distinct values: ") + m_db.lastError().text()).toStdString().c_str());
+	}
+	while (query.next()) {
+
+		sortedDistinctValues.insert(sortedDistinctValues.end(), query.value(0).toDouble());
+	}
+
+	return sortedDistinctValues;
 }
 
 QString SourceDataCache::CreateBetweenString(const QString& columnName, const SynGlyphX::DegenerateInterval& minMax) const {

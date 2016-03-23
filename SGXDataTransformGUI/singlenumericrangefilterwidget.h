@@ -24,6 +24,7 @@
 #include <QtGui/QDoubleValidator>
 #include "rangeslider.h"
 #include "interval.h"
+#include <set>
 
 namespace SynGlyphX {
 
@@ -32,14 +33,19 @@ namespace SynGlyphX {
 		Q_OBJECT
 
 	public:
+		typedef std::set<double> SliderPositionValues;
+
 		SingleNumericRangeFilterWidget(Qt::Orientation orientation, QWidget *parent);
 		~SingleNumericRangeFilterWidget();
 
+		void SetSliderPositionValuesAndMaxExtents(const SliderPositionValues& valuesAtSliderPosition);
 		void SetMaxRangeExtents(const DegenerateInterval& range);
 		DegenerateInterval GetMaxRangeExtents() const;
 
 		void SetRange(const DegenerateInterval& range);
 		DegenerateInterval GetRange() const;
+
+		const SliderPositionValues& GetSliderPositionValues() const;
 
 	signals:
 		void RangeUpdated(DegenerateInterval range);
@@ -65,6 +71,8 @@ namespace SynGlyphX {
 
 		QString ConvertDoubleToString(double val, int decimals) const;
 
+		void SetMaxRangeExtents(double min, double max);
+
 		//QDoubleSpinBox* m_minSpinBox;
 		//QDoubleSpinBox* m_maxSpinBox;
 		QLineEdit* m_minLineEdit;
@@ -74,6 +82,7 @@ namespace SynGlyphX {
 		RangeSlider* m_rangeSlider;
 
 		double m_ratio;
+		SliderPositionValues m_valuesAtSliderPosition;
 	};
 
 } //namespace SynGlyphX

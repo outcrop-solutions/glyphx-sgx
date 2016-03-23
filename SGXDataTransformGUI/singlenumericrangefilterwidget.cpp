@@ -17,7 +17,7 @@ namespace SynGlyphX {
 			mainLayout = new QVBoxLayout(this);
 		}
 
-		m_minLineEdit = new QLineEdit(this);
+		m_minLineEdit = new QLineEdit("0.0", this);
 		m_minValidator = new QDoubleValidator(m_minLineEdit);
 		m_minLineEdit->setValidator(m_minValidator);
 		mainLayout->addWidget(m_minLineEdit, 1);
@@ -27,7 +27,7 @@ namespace SynGlyphX {
 		m_rangeSlider->setTracking(true);
 		mainLayout->addWidget(m_rangeSlider, 3);
 
-		m_maxLineEdit = new QLineEdit(this);
+		m_maxLineEdit = new QLineEdit("0.0", this);
 		m_maxValidator = new QDoubleValidator(m_maxLineEdit);
 		m_maxLineEdit->setValidator(m_maxValidator);
 		mainLayout->addWidget(m_maxLineEdit, 1);
@@ -53,8 +53,12 @@ namespace SynGlyphX {
 
 	void SingleNumericRangeFilterWidget::SetMaxRangeExtents(const DegenerateInterval& range) {
 
-		double min = range.GetMin();
-		double max = range.GetMax();
+		m_valuesAtSliderPosition.clear();
+		m_rangeSlider->setRange(0, 99);
+		SetMaxRangeExtents(range.GetMin(), range.GetMax());
+	}
+
+	void SingleNumericRangeFilterWidget::SetMaxRangeExtents(double min, double max) {
 
 		bool wasRangeUpdated = false;
 
@@ -62,8 +66,14 @@ namespace SynGlyphX {
 		m_maxLineEdit->blockSignals(true);
 		m_rangeSlider->blockSignals(true);
 
-		if ((GetMinLineEdit() < min) || (GetMaxLineEdit() > max)) {
+		if (GetMinLineEdit() < min) {
 
+			SetMinLineEditBlockSignals(min);
+			wasRangeUpdated = true;
+		}
+		if (GetMaxLineEdit() > max) {
+
+			SetMaxLineEditBlockSignals(max);
 			wasRangeUpdated = true;
 		}
 		
@@ -99,6 +109,18 @@ namespace SynGlyphX {
 		}
 	}
 
+	void SingleNumericRangeFilterWidget::SetSliderPositionValuesAndMaxExtents(const SliderPositionValues& valuesAtSliderPosition) {
+
+		m_valuesAtSliderPosition = valuesAtSliderPosition;
+		m_rangeSlider->setRange(0, m_valuesAtSliderPosition.size() - 1);
+		SetMaxRangeExtents(*m_valuesAtSliderPosition.begin(), *m_valuesAtSliderPosition.rbegin());
+	}
+
+	const SingleNumericRangeFilterWidget::SliderPositionValues& SingleNumericRangeFilterWidget::GetSliderPositionValues() const {
+
+		return m_valuesAtSliderPosition;
+	}
+
 	DegenerateInterval SingleNumericRangeFilterWidget::GetMaxRangeExtents() const {
 
 		return (DegenerateInterval(m_minValidator->bottom(), m_maxValidator->top()));
@@ -111,11 +133,16 @@ namespace SynGlyphX {
 			return;
 		}
 
+		double min = qBound(m_minValidator->bottom(), range.GetMin(), m_minValidator->top());
+		double max = qBound(m_maxValidator->bottom(), range.GetMax(), m_maxValidator->top());
+
 		blockSignals(true);
-		SetMinLineEdit(range.GetMin());
-		SetMaxLineEdit(range.GetMax());
-		OnMinLineEditUpdated();
-		OnMaxLineEditUpdated();
+		SetMinLineEdit(min);
+		SetMaxLineEdit(max);
+		m_rangeSlider->blockSignals(true);
+		m_rangeSlider->SetLowerValue(ConvertValueInRangeToSliderPosition(min));
+		m_rangeSlider->SetUpperValue(ConvertValueInRangeToSliderPosition(max));
+		m_rangeSlider->blockSignals(false);
 		blockSignals(false);
 
 		EmitRangeUpdate();
@@ -129,16 +156,19 @@ namespace SynGlyphX {
 	void SingleNumericRangeFilterWidget::OnSliderLowerUpdated(int lower) {
 
 		SetMinLineEditBlockSignals(ConvertSliderPositionToValueInRange(lower));
+		EmitRangeUpdate();
 	}
 
 	void SingleNumericRangeFilterWidget::OnSliderUpperUpdated(int upper) {
 
 		SetMaxLineEditBlockSignals(ConvertSliderPositionToValueInRange(upper));
+		EmitRangeUpdate();
 	}
 
 	void SingleNumericRangeFilterWidget::OnMinLineEditUpdated() {
 
-		double min = GetMinLineEdit();
+		double min = qBound(m_minValidator->bottom(), GetMinLineEdit(), m_minValidator->top());
+		SetMinLineEditBlockSignals(min);
 
 		m_rangeSlider->blockSignals(true);
 		m_rangeSlider->SetLowerValue(ConvertValueInRangeToSliderPosition(min));
@@ -154,7 +184,8 @@ namespace SynGlyphX {
 
 	void SingleNumericRangeFilterWidget::OnMaxLineEditUpdated() {
 
-		double max = GetMaxLineEdit();
+		double max = qBound(m_maxValidator->bottom(), GetMaxLineEdit(), m_maxValidator->top());
+		SetMaxLineEditBlockSignals(max);
 
 		m_rangeSlider->blockSignals(true);
 		m_rangeSlider->SetUpperValue(ConvertValueInRangeToSliderPosition(max));
@@ -175,12 +206,29 @@ namespace SynGlyphX {
 
 	double SingleNumericRangeFilterWidget::ConvertSliderPositionToValueInRange(int value) {
 
-		return ((m_ratio * value) + m_minValidator->bottom());
+		if (m_valuesAtSliderPosition.empty()) {
+
+			return ((m_ratio * value) + m_minValidator->bottom());
+		}
+		else {
+
+			SliderPositionValues::const_iterator iT = m_valuesAtSliderPosition.begin();
+			std::advance(iT, value);
+			return *iT;
+		}
 	}
 
 	int SingleNumericRangeFilterWidget::ConvertValueInRangeToSliderPosition(double value) {
 
-		return static_cast<int>(std::floor((value - m_minValidator->bottom()) / m_ratio));
+		if (m_valuesAtSliderPosition.empty()) {
+
+			return static_cast<int>(std::floor((value - m_minValidator->bottom()) / m_ratio));
+		}
+		else {
+
+			SliderPositionValues::iterator iT = std::lower_bound(m_valuesAtSliderPosition.begin(), m_valuesAtSliderPosition.end(), value);
+			return std::distance(m_valuesAtSliderPosition.begin(), iT);
+		}
 	}
 
 	void SingleNumericRangeFilterWidget::SetMinLineEditBlockSignals(double min) {
