@@ -1299,12 +1299,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_4AA4B370E99A4B748DD04B27C7964DBB"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_4AB9EEA9925B4B69BE81915BD7F41A8C"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -3729,12 +3723,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_E02D05005247434797FC0C6B65FA29DE"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_E2842CB1FC434986AFCB6C3605797627"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -4126,12 +4114,6 @@
         "Entry"
         {
         "MsmKey" = "8:_F74F7314CF6C464491FEDA0AB840021D"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_F78B32326DD54462B3263080F5EAB4C2"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -8570,26 +8552,6 @@
             "TargetName" = "8:Cocos"
             "Tag" = "8:"
             "Folder" = "8:_70091F3DA27245E3AF153B319264EBDD"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_4AA4B370E99A4B748DD04B27C7964DBB"
-            {
-            "SourcePath" = "8:..\\..\\Misc\\InstallerFiles\\Docs\\SynGlyphX_User_Guide.docx"
-            "TargetName" = "8:SynGlyphX_User_Guide.docx"
-            "Tag" = "8:"
-            "Folder" = "8:_0C9AA4F94A97428090886732B9B3D2C2"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -16444,26 +16406,6 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_E02D05005247434797FC0C6B65FA29DE"
-            {
-            "SourcePath" = "8:..\\..\\Misc\\InstallerFiles\\Docs\\SynglyphX_Install_Guide.docx"
-            "TargetName" = "8:SynglyphX_Install_Guide.docx"
-            "Tag" = "8:"
-            "Folder" = "8:_0C9AA4F94A97428090886732B9B3D2C2"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_E2842CB1FC434986AFCB6C3605797627"
             {
             "SourcePath" = "8:..\\..\\DataEngine\\jdk1.7.0_79\\jre\\lib\\zi\\SystemV\\MST7MDT"
@@ -19183,7 +19125,7 @@
         "Module"
         {
         "ModuleSignature" = "8:MergeModule.E7BC5B0DA8E84115B456FD393FF63EDE"
-        "Version" = "8:0.7.27.1"
+        "Version" = "8:0.7.28.0"
         "Title" = "8:SGXSetupMergeModule"
         "Subject" = "8:"
         "Author" = "8:SynGlyphX"
@@ -19702,34 +19644,6 @@
                 {
                 }
             }
-            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_F78B32326DD54462B3263080F5EAB4C2"
-            {
-            "SourcePath" = "8:..\\..\\bin\\Win32\\Release\\SGXDataTransform.dll"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_0FD992B69CC74D489682A631FA99B364"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            "ProjectOutputGroupRegister" = "3:1"
-            "OutputConfiguration" = "8:"
-            "OutputGroupCanonicalName" = "8:Built"
-            "OutputProjectGuid" = "8:{339B5005-8C75-48B9-8F0A-9B60EBF3D067}"
-            "ShowKeyOutput" = "11:TRUE"
-                "ExcludeFilters"
-                {
-                }
-            }
         }
         "Registry"
         {
@@ -19780,20 +19694,6 @@
             "Icon" = "8:_FAA64575586341E1BB230B90C90AE0DA"
             "Feature" = "8:"
             }
-            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_0AB7C10FEDC944EEB7B06D9D601CB364"
-            {
-            "Name" = "8:Shortcut to SynGlyphX_User_Guide.docx"
-            "Arguments" = "8:"
-            "Description" = "8:"
-            "ShowCmd" = "3:1"
-            "IconIndex" = "3:0"
-            "Transitive" = "11:FALSE"
-            "Target" = "8:_4AA4B370E99A4B748DD04B27C7964DBB"
-            "Folder" = "8:_3E7962AF2FAE404889124360555F5ACB"
-            "WorkingFolder" = "8:_0C9AA4F94A97428090886732B9B3D2C2"
-            "Icon" = "8:"
-            "Feature" = "8:"
-            }
             "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_14F7BE2FF809416EA470D24CD77ABD52"
             {
             "Name" = "8:Data Mapper"
@@ -19806,20 +19706,6 @@
             "Folder" = "8:_3E7962AF2FAE404889124360555F5ACB"
             "WorkingFolder" = "8:_0FD992B69CC74D489682A631FA99B364"
             "Icon" = "8:_FAA64575586341E1BB230B90C90AE0DA"
-            "Feature" = "8:"
-            }
-            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_2846EFFE8D864A51BA57E9573450F853"
-            {
-            "Name" = "8:Shortcut to SynglyphX_Install_Guide.docx"
-            "Arguments" = "8:"
-            "Description" = "8:"
-            "ShowCmd" = "3:1"
-            "IconIndex" = "3:0"
-            "Transitive" = "11:FALSE"
-            "Target" = "8:_E02D05005247434797FC0C6B65FA29DE"
-            "Folder" = "8:_3E7962AF2FAE404889124360555F5ACB"
-            "WorkingFolder" = "8:_0C9AA4F94A97428090886732B9B3D2C2"
-            "Icon" = "8:"
             "Feature" = "8:"
             }
             "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_496D1073A8D949F6A1882139560338E3"
