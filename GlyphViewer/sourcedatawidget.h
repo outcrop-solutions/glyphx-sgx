@@ -34,13 +34,15 @@ public:
 signals:
 	void WindowHidden();
 
+public slots:
+	void CreateSubsetVisualization();
+
 protected:
 	virtual void closeEvent(QCloseEvent* event);
 
 private slots:
 	void SaveCurrentTabToFile();
 	void UpdateTables();
-	void CreateSubsetVisualization();
 
 private:
 	void ReadSettings();

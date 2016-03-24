@@ -24,6 +24,7 @@
 #include <QtWidgets/QTableView>
 #include <set>
 #include "elasticlistmodel.h"
+#include <QtWidgets/QCheckBox>
 
 namespace SynGlyphX {
 
@@ -48,13 +49,13 @@ namespace SynGlyphX {
 
 	private slots:
 		void OnNewUserSelection();
-
-	private:
 		void ResizeTable();
 
+	private:
 		std::set<QString> m_selectedRawData;
 		
 		QLabel* m_title;
+		QCheckBox* m_showAllCheckBox;
 		QTableView* m_dataAndCountView;
 		ElasticListModel* m_model;
 	};

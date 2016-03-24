@@ -47,11 +47,16 @@ FilteringWidget::FilteringWidget(SourceDataInfoModel* columnsModel, SourceDataCa
 
 	QHBoxLayout* buttonsLayout = new QHBoxLayout(this);
 
-	m_sourceWidgetButton = new QPushButton(tr("Show Selected Source Data"), this);
+	m_sourceWidgetButton = new QPushButton(tr("Show Filtered Source Data"), this);
 	m_sourceWidgetButton->setCheckable(true);
 	buttonsLayout->addWidget(m_sourceWidgetButton);
 
 	buttonsLayout->addStretch(1);
+
+	m_createSubsetVizButton = new QPushButton(tr("Create Subset Visualization"));
+	m_createSubsetVizButton->setEnabled(false);
+	buttonsLayout->addWidget(m_createSubsetVizButton);
+
 	mainLayout->addLayout(buttonsLayout);
 
 	setLayout(mainLayout);
@@ -66,6 +71,8 @@ FilteringWidget::FilteringWidget(SourceDataInfoModel* columnsModel, SourceDataCa
 	QObject::connect(m_selectionModel->GetSceneSelectionModel()->model(), &QAbstractItemModel::modelReset, this, &FilteringWidget::OnModelReset);
 
 	QObject::connect(m_tableComboBox, static_cast<void(QComboBox::*)(const QString &)>(&QComboBox::currentIndexChanged), this, &FilteringWidget::OnTableChanged);
+
+	QObject::connect(m_createSubsetVizButton, &QPushButton::clicked, m_sourceDataWindow.data(), &SourceDataWidget::CreateSubsetVisualization);
 }
 
 FilteringWidget::~FilteringWidget()
@@ -93,6 +100,7 @@ void FilteringWidget::OnSourceDataSelectionChanged() {
 	const SourceDataSelectionModel::IndexSetMap& sourceDataSelectionSets = m_selectionModel->GetSourceDataSelection();
 	EnableButtons(m_sourceDataCache->IsValid() && (!sourceDataSelectionSets.empty()));
 
+	m_createSubsetVizButton->setEnabled(!sourceDataSelectionSets.empty());
 	if (sourceDataSelectionSets.empty()) {
 
 		m_sourceDataWindow->setVisible(false);

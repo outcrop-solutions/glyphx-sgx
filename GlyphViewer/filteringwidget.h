@@ -52,6 +52,7 @@ private:
 	QComboBox* m_tableComboBox;
 	QCheckBox* m_hideUnselectedTreesCheckbox;
 	QPushButton* m_sourceWidgetButton;
+	QPushButton* m_createSubsetVizButton;
 	QPushButton* m_clearButton;
 	QScopedPointer<SourceDataWidget> m_sourceDataWindow;
 

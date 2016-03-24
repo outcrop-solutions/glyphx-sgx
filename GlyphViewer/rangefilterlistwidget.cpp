@@ -163,79 +163,86 @@ void RangeFilterListWidget::OnModelReset() {
 
 void RangeFilterListWidget::OnAddFilter() {
 
-	QStringList datasourceTable = Separate(m_currentTable);
+	try {
 
-	SynGlyphX::RoleDataFilterProxyModel* fieldTypeProxyModel = new SynGlyphX::RoleDataFilterProxyModel(this);
-	fieldTypeProxyModel->setSourceModel(m_columnsModel);
-	fieldTypeProxyModel->setFilterRole(SourceDataInfoModel::TypeRole);
-	QList<int> filterData;
-	filterData.push_back(SourceDataInfoModel::NoTypeData);
-	filterData.push_back(SynGlyphX::InputField::Type::Real);
-	fieldTypeProxyModel->SetFilterData(filterData);
+		QStringList datasourceTable = Separate(m_currentTable);
 
-	SynGlyphX::RoleDataFilterProxyModel* filterOutFieldsInUseModel = new SynGlyphX::RoleDataFilterProxyModel(this);
-	filterOutFieldsInUseModel->setSourceModel(fieldTypeProxyModel);
-	filterOutFieldsInUseModel->setFilterRole(Qt::DisplayRole);
-	
-	QStringList fieldsInUse;
-	for (unsigned int row = 0; row < m_rangeFiltersTableWidget->rowCount(); ++row) {
+		SynGlyphX::RoleDataFilterProxyModel* fieldTypeProxyModel = new SynGlyphX::RoleDataFilterProxyModel(this);
+		fieldTypeProxyModel->setSourceModel(m_columnsModel);
+		fieldTypeProxyModel->setFilterRole(SourceDataInfoModel::TypeRole);
+		QList<int> filterData;
+		filterData.push_back(SourceDataInfoModel::NoTypeData);
+		filterData.push_back(SynGlyphX::InputField::Type::Real);
+		fieldTypeProxyModel->SetFilterData(filterData);
 
-		fieldsInUse.push_back(GetTextFromCell(row));
-	}
-	filterOutFieldsInUseModel->SetFilterData(fieldsInUse);
-	filterOutFieldsInUseModel->SetNot(true);
+		SynGlyphX::RoleDataFilterProxyModel* filterOutFieldsInUseModel = new SynGlyphX::RoleDataFilterProxyModel(this);
+		filterOutFieldsInUseModel->setSourceModel(fieldTypeProxyModel);
+		filterOutFieldsInUseModel->setFilterRole(Qt::DisplayRole);
 
-	QModelIndex rootIndex = filterOutFieldsInUseModel->mapFromSource(fieldTypeProxyModel->mapFromSource(m_columnsModel->GetIndexOfTable(datasourceTable[0], datasourceTable[1])));
-	if (filterOutFieldsInUseModel->rowCount(rootIndex) == 0) {
+		QStringList fieldsInUse;
+		for (unsigned int row = 0; row < m_rangeFiltersTableWidget->rowCount(); ++row) {
 
-		QMessageBox::information(this, tr("All fields in use"), tr("All fields for this table are already in use."), QMessageBox::StandardButton::Ok);
-		return;
-	}
+			fieldsInUse.push_back(GetTextFromCell(row));
+		}
+		filterOutFieldsInUseModel->SetFilterData(fieldsInUse);
+		filterOutFieldsInUseModel->SetNot(true);
 
-	QListView* fieldSelectorWidget = new QListView(this);
-	fieldSelectorWidget->setSelectionMode(QAbstractItemView::SingleSelection);
-	fieldSelectorWidget->setModel(filterOutFieldsInUseModel);
-	fieldSelectorWidget->setSelectionMode(QAbstractItemView::ExtendedSelection);
-	fieldSelectorWidget->setRootIndex(rootIndex);
-	SynGlyphX::SingleWidgetDialog dialog(QDialogButtonBox::StandardButton::Ok | QDialogButtonBox::StandardButton::Cancel, fieldSelectorWidget, this);
-	dialog.setWindowTitle(tr("Select Field(s) For Range Filter(s)"));
+		QModelIndex rootIndex = filterOutFieldsInUseModel->mapFromSource(fieldTypeProxyModel->mapFromSource(m_columnsModel->GetIndexOfTable(datasourceTable[0], datasourceTable[1])));
+		if (filterOutFieldsInUseModel->rowCount(rootIndex) == 0) {
 
-	if (dialog.exec() == QDialog::Accepted) {
-
-		const QModelIndexList& selected = fieldSelectorWidget->selectionModel()->selectedIndexes();
-		if (selected.isEmpty()) {
-
+			QMessageBox::information(this, tr("All fields in use"), tr("All fields for this table are already in use."), QMessageBox::StandardButton::Ok);
 			return;
 		}
 
-		unsigned int nextRow = m_rangeFiltersTableWidget->rowCount();
-		m_rangeFiltersTableWidget->setRowCount(nextRow + selected.count());
-		boost::uuids::string_generator gen;
-		SourceDataCache::ColumnMinMaxMap columnMinMaxMap;
-		for (unsigned int row = 0; row < nextRow; ++row) {
+		QListView* fieldSelectorWidget = new QListView(this);
+		fieldSelectorWidget->setSelectionMode(QAbstractItemView::SingleSelection);
+		fieldSelectorWidget->setModel(filterOutFieldsInUseModel);
+		fieldSelectorWidget->setSelectionMode(QAbstractItemView::ExtendedSelection);
+		fieldSelectorWidget->setRootIndex(rootIndex);
+		SynGlyphX::SingleWidgetDialog dialog(QDialogButtonBox::StandardButton::Ok | QDialogButtonBox::StandardButton::Cancel, fieldSelectorWidget, this);
+		dialog.setWindowTitle(tr("Select Field(s) For Range Filter(s)"));
 
-			columnMinMaxMap.push_back(SourceDataCache::ColumnMinMaxPair(GetTextFromCell(row), GetRangeFilterWidgetFromCell(row)->GetRange()));
+		if (dialog.exec() == QDialog::Accepted) {
+
+			const QModelIndexList& selected = fieldSelectorWidget->selectionModel()->selectedIndexes();
+			if (selected.isEmpty()) {
+
+				return;
+			}
+
+			unsigned int nextRow = m_rangeFiltersTableWidget->rowCount();
+			m_rangeFiltersTableWidget->setRowCount(nextRow + selected.count());
+			boost::uuids::string_generator gen;
+			SourceDataCache::ColumnMinMaxMap columnMinMaxMap;
+			for (unsigned int row = 0; row < nextRow; ++row) {
+
+				columnMinMaxMap.push_back(SourceDataCache::ColumnMinMaxPair(GetTextFromCell(row), GetRangeFilterWidgetFromCell(row)->GetRange()));
+			}
+
+			for (const auto& modelIndex : selected) {
+
+				QString field = filterOutFieldsInUseModel->data(modelIndex).toString();
+
+				SynGlyphX::SingleNumericRangeFilterWidget* filter = new SynGlyphX::SingleNumericRangeFilterWidget(Qt::Horizontal, this);
+				SynGlyphX::InputField inputField(gen(datasourceTable[0].toStdWString()), datasourceTable[1].toStdWString(), field.toStdWString(), SynGlyphX::InputField::Real);
+
+				SynGlyphX::SingleNumericRangeFilterWidget::SliderPositionValues sliderPositionValues = m_sourceDataCache->GetSortedNumericDistictValues(inputField, columnMinMaxMap);
+				filter->SetSliderPositionValuesAndMaxExtents(sliderPositionValues);
+				filter->SetRange(SynGlyphX::DegenerateInterval(*sliderPositionValues.begin(), *sliderPositionValues.rbegin()));
+
+				m_rangeFiltersTableWidget->setItem(nextRow, 0, CreateItem(field));
+				m_rangeFiltersTableWidget->setCellWidget(nextRow++, 1, filter);
+
+				m_removeAllButton->setEnabled(true);
+				QObject::connect(filter, &SynGlyphX::SingleNumericRangeFilterWidget::RangeUpdated, this, &RangeFilterListWidget::OnRangesChanged);
+			}
+
+			m_updateButton->setEnabled(true);
 		}
+	}
+	catch (const std::exception& e) {
 
-		for (const auto& modelIndex : selected) {
-
-			QString field = filterOutFieldsInUseModel->data(modelIndex).toString();
-
-			SynGlyphX::SingleNumericRangeFilterWidget* filter = new SynGlyphX::SingleNumericRangeFilterWidget(Qt::Horizontal, this);
-			SynGlyphX::InputField inputField(gen(datasourceTable[0].toStdWString()), datasourceTable[1].toStdWString(), field.toStdWString(), SynGlyphX::InputField::Real);
-			
-			SynGlyphX::SingleNumericRangeFilterWidget::SliderPositionValues sliderPositionValues = m_sourceDataCache->GetSortedNumericDistictValues(inputField, columnMinMaxMap);
-			filter->SetSliderPositionValuesAndMaxExtents(sliderPositionValues);
-			filter->SetRange(SynGlyphX::DegenerateInterval(*sliderPositionValues.begin(), *sliderPositionValues.rbegin()));
-
-			m_rangeFiltersTableWidget->setItem(nextRow, 0, CreateItem(field));
-			m_rangeFiltersTableWidget->setCellWidget(nextRow++, 1, filter);
-
-			m_removeAllButton->setEnabled(true);
-			QObject::connect(filter, &SynGlyphX::SingleNumericRangeFilterWidget::RangeUpdated, this, &RangeFilterListWidget::OnRangesChanged);
-		}
-
-		m_updateButton->setEnabled(true);
+		QMessageBox::warning(this, tr("Add Filter Error"), tr("Filtering Error: ") + e.what());
 	}
 }
 

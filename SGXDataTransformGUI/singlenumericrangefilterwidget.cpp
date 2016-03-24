@@ -17,7 +17,7 @@ namespace SynGlyphX {
 			mainLayout = new QVBoxLayout(this);
 		}
 
-		m_minLineEdit = new QLineEdit("0.0", this);
+		m_minLineEdit = new QLineEdit("", this);
 		m_minValidator = new QDoubleValidator(m_minLineEdit);
 		m_minLineEdit->setValidator(m_minValidator);
 		mainLayout->addWidget(m_minLineEdit, 1);
@@ -27,7 +27,7 @@ namespace SynGlyphX {
 		m_rangeSlider->setTracking(true);
 		mainLayout->addWidget(m_rangeSlider, 3);
 
-		m_maxLineEdit = new QLineEdit("0.0", this);
+		m_maxLineEdit = new QLineEdit("", this);
 		m_maxValidator = new QDoubleValidator(m_maxLineEdit);
 		m_maxLineEdit->setValidator(m_maxValidator);
 		mainLayout->addWidget(m_maxLineEdit, 1);
@@ -43,7 +43,7 @@ namespace SynGlyphX {
 		QObject::connect(m_minLineEdit, &QLineEdit::editingFinished, this, &SingleNumericRangeFilterWidget::OnMinLineEditUpdated);
 		QObject::connect(m_maxLineEdit, &QLineEdit::editingFinished, this, &SingleNumericRangeFilterWidget::OnMaxLineEditUpdated);
 
-		SetMaxRangeExtents(DegenerateInterval(0.0, 99.0));
+		SetMaxRangeExtents(DegenerateInterval(std::numeric_limits<double>::lowest(), std::numeric_limits<double>::max()));
 	}
 
 	SingleNumericRangeFilterWidget::~SingleNumericRangeFilterWidget()
@@ -252,7 +252,15 @@ namespace SynGlyphX {
 
 	double SingleNumericRangeFilterWidget::GetMinLineEdit() const {
 
-		return m_minLineEdit->text().toDouble();
+		QString lineEditText = m_minLineEdit->text();
+		if (lineEditText.isEmpty()) {
+
+			return std::numeric_limits<double>::lowest();
+		}
+		else {
+
+			return lineEditText.toDouble();
+		}
 	}
 
 	void SingleNumericRangeFilterWidget::SetMaxLineEdit(double val) {
@@ -262,7 +270,15 @@ namespace SynGlyphX {
 
 	double SingleNumericRangeFilterWidget::GetMaxLineEdit() const {
 
-		return m_maxLineEdit->text().toDouble();
+		QString lineEditText = m_maxLineEdit->text();
+		if (lineEditText.isEmpty()) {
+
+			return std::numeric_limits<double>::max();
+		}
+		else {
+
+			return lineEditText.toDouble();
+		}
 	}
 
 	QString SingleNumericRangeFilterWidget::ConvertDoubleToString(double val, int decimals) const {

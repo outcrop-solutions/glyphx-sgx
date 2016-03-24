@@ -1,6 +1,6 @@
 #include "singletableelasticlistswidget.h"
 
-const unsigned int SingleTableElasticListsWidget::Spacing = 2;
+const unsigned int SingleTableElasticListsWidget::Spacing = 16;
 
 SingleTableElasticListsWidget::SingleTableElasticListsWidget(SourceDataCache::SharedPtr sourceDataCache, const QString& table, QWidget *parent)
 	: SynGlyphX::VerticalScrollArea(parent),
@@ -10,7 +10,6 @@ SingleTableElasticListsWidget::SingleTableElasticListsWidget(SourceDataCache::Sh
 	setFrameShape(QFrame::Shape::NoFrame);
 	m_innerWidget = new QWidget(this);
 	QVBoxLayout* layout = new QVBoxLayout(m_innerWidget);
-	layout->setContentsMargins(0, 0, 0, 0);
 	layout->setSpacing(Spacing);
 
 	SourceDataCache::TableColumns columns = m_sourceDataCache->GetColumnsForTable(table);
