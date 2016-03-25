@@ -67,7 +67,7 @@ void SourceDataSelectionModel::SetSourceDataSelectionForTable(const QString& tab
 
 	if (m_selectedSourceDataSets.count(table) > 0) {
 
-		ClearSourceDataSelectionForTable(table, updateFocus);
+		ClearSourceDataSelectionForTable(table, false);
 	}
 
 	m_selectedSourceDataSets[table] = newSelectionSet;

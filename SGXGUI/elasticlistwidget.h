@@ -33,25 +33,34 @@ namespace SynGlyphX {
 		Q_OBJECT
 
 	public:
-		static const int MaximumNumberOfRowsShown;
+		static const unsigned int MaximumNumberOfRowsShown;
 
 		ElasticListWidget(QWidget *parent);
 		~ElasticListWidget();
 
+		bool HasSelection() const;
+
 		void SetTitle(const QString& title);
 		QString GetTitle() const;
 		void SetData(const ElasticListModel::Data& data);
+		void SetSelectedData(const ElasticListModel::Data& data);
 
 		const std::set<QString>& GetSelectedRawData() const;
 
 	signals:
 		void SelectionChanged();
 
+	protected:
+		bool eventFilter(QObject *obj, QEvent *ev);
+
 	private slots:
 		void OnNewUserSelection();
 		void ResizeTable();
 
 	private:
+		void ChangeSelection();
+
+		bool m_hasUserChangedSelectedItemsInTable;
 		std::set<QString> m_selectedRawData;
 		
 		QLabel* m_title;

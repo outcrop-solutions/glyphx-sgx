@@ -4,13 +4,16 @@
 #include <QtGui/QResizeEvent>
 #include <QtCore/QSortFilterProxyModel>
 #include <QtWidgets/QHBoxLayout>
+#include <QtGui/QMouseEvent>
+#include "application.h"
 
 namespace SynGlyphX {
 
-	const int ElasticListWidget::MaximumNumberOfRowsShown = 4;
+	const unsigned int ElasticListWidget::MaximumNumberOfRowsShown = 4;
 
 	ElasticListWidget::ElasticListWidget(QWidget *parent)
-		: QFrame(parent)
+		: QFrame(parent),
+		m_hasUserChangedSelectedItemsInTable(false)
 	{
 		setFrameStyle(QFrame::Shape::Box | QFrame::Shadow::Sunken);
 
@@ -30,7 +33,6 @@ namespace SynGlyphX {
 		m_showAllCheckBox->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
 		titleLayout->addWidget(m_showAllCheckBox);
 		QObject::connect(m_showAllCheckBox, &QCheckBox::toggled, this, &ElasticListWidget::ResizeTable);
-		m_showAllCheckBox->hide();
 
 		mainLayout->addLayout(titleLayout);
 
@@ -52,7 +54,7 @@ namespace SynGlyphX {
 		m_dataAndCountView->setShowGrid(false);
 		
 		m_dataAndCountView->setSelectionBehavior(QAbstractItemView::SelectRows);
-		m_dataAndCountView->setSelectionMode(QAbstractItemView::MultiSelection);
+		m_dataAndCountView->setSelectionMode(QAbstractItemView::ExtendedSelection);
 		m_dataAndCountView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 		m_dataAndCountView->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);
 		m_dataAndCountView->horizontalHeader()->setSectionResizeMode(1, QHeaderView::ResizeToContents);
@@ -61,6 +63,7 @@ namespace SynGlyphX {
 		m_dataAndCountView->verticalHeader()->setSectionResizeMode(QHeaderView::Fixed);
 		m_dataAndCountView->verticalHeader()->setDefaultSectionSize(fontMetrics().height() + 4);
 		m_dataAndCountView->verticalHeader()->hide();
+		m_dataAndCountView->installEventFilter(this);
 		QObject::connect(m_dataAndCountView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &ElasticListWidget::OnNewUserSelection);
 		mainLayout->addWidget(m_dataAndCountView, 1);
 
@@ -78,6 +81,11 @@ namespace SynGlyphX {
 
 	}
 
+	bool ElasticListWidget::HasSelection() const {
+
+		return (!m_selectedRawData.empty());
+	}
+
 	void ElasticListWidget::SetTitle(const QString& title) {
 
 		m_title->setText(title);
@@ -89,6 +97,21 @@ namespace SynGlyphX {
 	}
 
 	void ElasticListWidget::SetData(const ElasticListModel::Data& data) {
+
+		bool listBlockSignals = signalsBlocked();
+		blockSignals(true);
+
+		m_selectedRawData.clear();
+		m_dataAndCountView->selectionModel()->clear();
+
+		m_model->ResetData(data);
+		m_dataAndCountView->sortByColumn(1, Qt::DescendingOrder);
+		ResizeTable();
+
+		blockSignals(listBlockSignals);
+	}
+
+	void ElasticListWidget::SetSelectedData(const ElasticListModel::Data& data) {
 
 		bool listBlockSignals = signalsBlocked();
 		blockSignals(true);
@@ -130,7 +153,12 @@ namespace SynGlyphX {
 		}
 		else {
 
-			numberOfVisibleRows = std::max(std::min(MaximumNumberOfRowsShown, m_model->rowCount()), 1);
+			unsigned int numberOfAvailableRows = m_dataAndCountView->selectionModel()->selectedRows().count();
+			if (numberOfAvailableRows == 0) {
+
+				numberOfAvailableRows = m_model->rowCount();
+			}
+			numberOfVisibleRows = std::max(std::min(MaximumNumberOfRowsShown, numberOfAvailableRows), 1u);
 		}
 		
 		m_dataAndCountView->setFixedHeight((numberOfVisibleRows + 1.5) * m_dataAndCountView->verticalHeader()->defaultSectionSize());
@@ -138,6 +166,23 @@ namespace SynGlyphX {
 	}
 
 	void ElasticListWidget::OnNewUserSelection() {
+
+		Qt::KeyboardModifiers keyboardModifiers = Application::queryKeyboardModifiers();
+		if (keyboardModifiers.testFlag(Qt::ControlModifier) || keyboardModifiers.testFlag(Qt::ShiftModifier)) {
+
+			//if multiselection wait until Ctrl or Shift is released
+			m_hasUserChangedSelectedItemsInTable = true;
+		}
+		else {
+
+			//if single selection, update
+			ChangeSelection();
+		}
+	}
+
+	void ElasticListWidget::ChangeSelection() {
+
+		m_hasUserChangedSelectedItemsInTable = false;
 
 		m_selectedRawData.clear();
 		QSortFilterProxyModel* sortModel = dynamic_cast<QSortFilterProxyModel*>(m_dataAndCountView->model());
@@ -153,6 +198,26 @@ namespace SynGlyphX {
 	const std::set<QString>& ElasticListWidget::GetSelectedRawData() const {
 
 		return m_selectedRawData;
+	}
+
+	bool ElasticListWidget::eventFilter(QObject *obj, QEvent *ev) {
+
+		//if in the middle of multiselect, then don't call OnNewUserSelection() until multiselect is done
+		if (obj == m_dataAndCountView) {
+
+			//handles multiselection involving ctrl or shift from table
+			if (ev->type() == QEvent::KeyRelease) {
+
+				QKeyEvent *keyEvent = static_cast<QKeyEvent*>(ev);
+				Qt::KeyboardModifiers keyboardModifiers = keyEvent->modifiers();
+				if (((keyEvent->key() == Qt::Key_Shift) || (keyEvent->key() == Qt::Key_Control)) && m_hasUserChangedSelectedItemsInTable) {
+
+					OnNewUserSelection();
+				}
+			}
+		}
+
+		return false;
 	}
 
 } //namespace SynGlyphX

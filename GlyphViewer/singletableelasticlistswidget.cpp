@@ -27,8 +27,6 @@ SingleTableElasticListsWidget::SingleTableElasticListsWidget(SourceDataCache::Sh
 	m_innerWidget->setLayout(layout);
 
 	setWidget(m_innerWidget);
-
-	//PopulateElasticLists();
 }
 
 SingleTableElasticListsWidget::~SingleTableElasticListsWidget()
@@ -40,15 +38,18 @@ void SingleTableElasticListsWidget::PopulateElasticLists(const SynGlyphX::IndexS
 
 	for (auto column : m_elasticListMap) {
 
-		SynGlyphX::ElasticListModel::Data elasticListData;
-		SourceDataCache::SharedSQLQuery distinctValuesQuery = m_sourceDataCache->CreateDistinctValueAndCountQuery(m_table, QString::fromStdString(column.first), indexSet);
-		distinctValuesQuery->exec();
-		while (distinctValuesQuery->next()) {
+		if (indexSet.empty() || (!column.second->HasSelection())) {
 
-			elasticListData.push_back(SynGlyphX::ElasticListModel::DataWithCount(distinctValuesQuery->value(0), distinctValuesQuery->value(1).toULongLong()));
+			SynGlyphX::ElasticListModel::Data elasticListData;
+			SourceDataCache::SharedSQLQuery distinctValuesQuery = m_sourceDataCache->CreateDistinctValueAndCountQuery(m_table, QString::fromStdString(column.first), indexSet);
+			distinctValuesQuery->exec();
+			while (distinctValuesQuery->next()) {
+
+				elasticListData.push_back(SynGlyphX::ElasticListModel::DataWithCount(distinctValuesQuery->value(0), distinctValuesQuery->value(1).toULongLong()));
+			}
+
+			column.second->SetData(elasticListData);
 		}
-
-		column.second->SetData(elasticListData);
 	}
 }
 

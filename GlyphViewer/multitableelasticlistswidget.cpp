@@ -71,16 +71,16 @@ void MultiTableElasticListsWidget::UpdateElasticLists(const SourceDataSelectionM
 
 	for (auto table : m_sourceDataCache->GetFormattedNames()) {
 
-		int c = m_sourceDataCache->GetNumberOfRowsInTable(table.first);
-		SingleTableElasticListsWidget* SingleTableElasticListsWidget = m_elasticListWidgetsForEachTable.at(table.first.toStdWString());
+		//int c = m_sourceDataCache->GetNumberOfRowsInTable(table.first);
+		SingleTableElasticListsWidget* singleTableElasticListsWidget = m_elasticListWidgetsForEachTable.at(table.first.toStdWString());
 		SourceDataSelectionModel::IndexSetMap::const_iterator dataIndexesForTable = dataIndexes.find(table.first);
 		if (dataIndexesForTable == dataIndexes.end()) {
 
-			SingleTableElasticListsWidget->PopulateElasticLists();
+			singleTableElasticListsWidget->PopulateElasticLists();
 		}
 		else {
 
-			SingleTableElasticListsWidget->PopulateElasticLists(dataIndexesForTable->second);
+			singleTableElasticListsWidget->PopulateElasticLists(dataIndexesForTable->second);
 		}
 	}
 }
