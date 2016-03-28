@@ -98,7 +98,7 @@ private:
 
 	SynGlyphX::PortableVisualizationExport m_portableVisualizationExport;
     
-	SynGlyphX::RoleDataFilterProxyModel* m_baseObjectsModel;
+	SynGlyphX::IntRoleDataFilterProxyModel* m_baseObjectsModel;
 	BaseObjectListView* m_baseObjectsView;
 	GlyphTreesView* m_glyphTreesView;
 	DataSourceStatsWidget* m_dataSourceStats;

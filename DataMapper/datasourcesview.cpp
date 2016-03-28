@@ -10,7 +10,7 @@ DataSourcesView::DataSourcesView(DataTransformModel* sourceModel, QWidget *paren
 {
 	setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Preferred);
 
-	SynGlyphX::RoleDataFilterProxyModel* filterModel = new SynGlyphX::RoleDataFilterProxyModel(this);
+	SynGlyphX::IntRoleDataFilterProxyModel* filterModel = new SynGlyphX::IntRoleDataFilterProxyModel(this);
 	filterModel->setFilterRole(DataTransformModel::DataTypeRole);
 	filterModel->setSourceModel(m_sourceModel);
 	filterModel->SetFilterData(DataTransformModel::DataType::DataSources);

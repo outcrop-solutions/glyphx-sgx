@@ -272,7 +272,7 @@ void DataMapperWindow::CreateDockWidgets() {
 	QDockWidget* leftDockWidgetBaseObjects = new QDockWidget(tr("Grids/Base Images"), this);
 
 	m_baseObjectsView = new BaseObjectListView(m_dataTransformModel, leftDockWidgetBaseObjects);
-	m_baseObjectsModel = new SynGlyphX::RoleDataFilterProxyModel(this);
+	m_baseObjectsModel = new SynGlyphX::IntRoleDataFilterProxyModel(this);
 	m_baseObjectsModel->setSourceModel(m_dataTransformModel);
 	m_baseObjectsModel->setFilterRole(DataTransformModel::DataTypeRole);
 	m_baseObjectsModel->SetFilterData(DataTransformModel::DataType::BaseObjects);

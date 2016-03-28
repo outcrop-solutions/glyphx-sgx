@@ -167,7 +167,7 @@ void RangeFilterListWidget::OnAddFilter() {
 
 		QStringList datasourceTable = Separate(m_currentTable);
 
-		SynGlyphX::RoleDataFilterProxyModel* fieldTypeProxyModel = new SynGlyphX::RoleDataFilterProxyModel(this);
+		SynGlyphX::IntRoleDataFilterProxyModel* fieldTypeProxyModel = new SynGlyphX::IntRoleDataFilterProxyModel(this);
 		fieldTypeProxyModel->setSourceModel(m_columnsModel);
 		fieldTypeProxyModel->setFilterRole(SourceDataInfoModel::TypeRole);
 		QList<int> filterData;
@@ -175,7 +175,7 @@ void RangeFilterListWidget::OnAddFilter() {
 		filterData.push_back(SynGlyphX::InputField::Type::Real);
 		fieldTypeProxyModel->SetFilterData(filterData);
 
-		SynGlyphX::RoleDataFilterProxyModel* filterOutFieldsInUseModel = new SynGlyphX::RoleDataFilterProxyModel(this);
+		SynGlyphX::StringRoleDataFilterProxyModel* filterOutFieldsInUseModel = new SynGlyphX::StringRoleDataFilterProxyModel(this);
 		filterOutFieldsInUseModel->setSourceModel(fieldTypeProxyModel);
 		filterOutFieldsInUseModel->setFilterRole(Qt::DisplayRole);
 

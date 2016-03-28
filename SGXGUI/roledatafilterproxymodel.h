@@ -31,21 +31,59 @@ namespace SynGlyphX {
 		RoleDataFilterProxyModel(QObject* parent = nullptr);
 		~RoleDataFilterProxyModel();
 
-		void SetFilterData(int data);
-		void SetFilterData(QList<int> data);
-
-		void SetFilterData(QString data);
-		void SetFilterData(QStringList data);
-
 		void SetNot(bool not);
+		virtual bool HasFilterData() const = 0;
+		void Clear();
 
 	protected:
 		virtual bool filterAcceptsRow(int source_row, const QModelIndex& source_parent) const;
+		virtual bool HasMatch(const QVariant& var) const = 0;
+		virtual void RemoveFilterData() = 0;
+
+	private:
+		bool m_not;
+	};
+
+	class SGXGUI_EXPORT StringRoleDataFilterProxyModel : public RoleDataFilterProxyModel
+	{
+		Q_OBJECT
+
+	public:
+		StringRoleDataFilterProxyModel(QObject* parent = nullptr);
+		~StringRoleDataFilterProxyModel();
+
+		void SetFilterData(const QString& data);
+		void SetFilterData(const QStringList& data);
+
+		bool HasFilterData() const override;
+
+	protected:
+		bool HasMatch(const QVariant& var) const override;
+		void RemoveFilterData() override;
+
+	private:
+		QStringList m_stringFilterData;
+	};
+
+	class SGXGUI_EXPORT IntRoleDataFilterProxyModel : public RoleDataFilterProxyModel
+	{
+		Q_OBJECT
+
+	public:
+		IntRoleDataFilterProxyModel(QObject* parent = nullptr);
+		~IntRoleDataFilterProxyModel();
+
+		void SetFilterData(int data);
+		void SetFilterData(const QList<int>& data);
+
+		bool HasFilterData() const override;
+
+	protected:
+		bool HasMatch(const QVariant& var) const override;
+		void RemoveFilterData() override;
 
 	private:
 		QList<int> m_intFilterData;
-		QStringList m_stringFilterData;
-		bool m_not;
 	};
 
 } //namespace SynGlyphX

@@ -61,6 +61,9 @@ private:
 	typedef std::unordered_multimap<QString, SynGlyphX::ProperInterval, SynGlyphX::QStringHash> TableToGlyphTemplateRangesMap;
 
 	void AddSceneIndexesFromTableToSelection(QItemSelection& selection, const QString& table);
+	void AddSceneIndexesToSelection(QItemSelection& selection, const QString& table, const SynGlyphX::IndexSet& indexSet);
+
+	void ClearSourceDataSelectionForTable(QItemSelection& selection, bool updateFocus);
 
 	SynGlyphX::DataMappingModel* m_dataMappingModel;
 	SourceDataCache::SharedPtr m_sourceDataCache;
