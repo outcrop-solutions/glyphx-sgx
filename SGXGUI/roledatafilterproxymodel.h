@@ -20,6 +20,7 @@
 
 #include "sgxgui_global.h"
 #include <QtCore/QSortFilterProxyModel>
+#include <QtCore/QSet>
 
 namespace SynGlyphX {
 
@@ -53,7 +54,7 @@ namespace SynGlyphX {
 		~StringRoleDataFilterProxyModel();
 
 		void SetFilterData(const QString& data);
-		void SetFilterData(const QStringList& data);
+		void SetFilterData(const QSet<QString>& data);
 
 		bool HasFilterData() const override;
 
@@ -62,7 +63,7 @@ namespace SynGlyphX {
 		void RemoveFilterData() override;
 
 	private:
-		QStringList m_stringFilterData;
+		QSet<QString> m_stringFilterData;
 	};
 
 	class SGXGUI_EXPORT IntRoleDataFilterProxyModel : public RoleDataFilterProxyModel
@@ -74,7 +75,7 @@ namespace SynGlyphX {
 		~IntRoleDataFilterProxyModel();
 
 		void SetFilterData(int data);
-		void SetFilterData(const QList<int>& data);
+		void SetFilterData(const QSet<int>& data);
 
 		bool HasFilterData() const override;
 
@@ -83,7 +84,7 @@ namespace SynGlyphX {
 		void RemoveFilterData() override;
 
 	private:
-		QList<int> m_intFilterData;
+		QSet<int> m_intFilterData;
 	};
 
 } //namespace SynGlyphX

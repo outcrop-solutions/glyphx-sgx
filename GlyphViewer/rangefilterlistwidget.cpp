@@ -170,19 +170,19 @@ void RangeFilterListWidget::OnAddFilter() {
 		SynGlyphX::IntRoleDataFilterProxyModel* fieldTypeProxyModel = new SynGlyphX::IntRoleDataFilterProxyModel(this);
 		fieldTypeProxyModel->setSourceModel(m_columnsModel);
 		fieldTypeProxyModel->setFilterRole(SourceDataInfoModel::TypeRole);
-		QList<int> filterData;
-		filterData.push_back(SourceDataInfoModel::NoTypeData);
-		filterData.push_back(SynGlyphX::InputField::Type::Real);
+		QSet<int> filterData;
+		filterData.insert(SourceDataInfoModel::NoTypeData);
+		filterData.insert(SynGlyphX::InputField::Type::Real);
 		fieldTypeProxyModel->SetFilterData(filterData);
 
 		SynGlyphX::StringRoleDataFilterProxyModel* filterOutFieldsInUseModel = new SynGlyphX::StringRoleDataFilterProxyModel(this);
 		filterOutFieldsInUseModel->setSourceModel(fieldTypeProxyModel);
 		filterOutFieldsInUseModel->setFilterRole(Qt::DisplayRole);
 
-		QStringList fieldsInUse;
+		QSet<QString> fieldsInUse;
 		for (unsigned int row = 0; row < m_rangeFiltersTableWidget->rowCount(); ++row) {
 
-			fieldsInUse.push_back(GetTextFromCell(row));
+			fieldsInUse.insert(GetTextFromCell(row));
 		}
 		filterOutFieldsInUseModel->SetFilterData(fieldsInUse);
 		filterOutFieldsInUseModel->SetNot(true);

@@ -2,7 +2,7 @@
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QHeaderView>
 #include <QtGui/QResizeEvent>
-#include <QtCore/QSortFilterProxyModel>
+#include "roledatafilterproxymodel.h"
 #include <QtWidgets/QHBoxLayout>
 #include <QtGui/QMouseEvent>
 #include "application.h"
@@ -42,13 +42,14 @@ namespace SynGlyphX {
 
 		m_model = new ElasticListModel(this);
 
-		QSortFilterProxyModel* sortModel = new QSortFilterProxyModel(this);
-		sortModel->setFilterKeyColumn(-1);
-		sortModel->setSourceModel(m_model);
+		StringRoleDataFilterProxyModel* filterModel = new StringRoleDataFilterProxyModel(this);
+		filterModel->setFilterKeyColumn(0);
+		filterModel->setFilterRole(ElasticListModel::RawDataRole);
+		filterModel->setSourceModel(m_model);
 
 		m_dataAndCountView = new QTableView(this);
 		m_dataAndCountView->setFrameShape(QFrame::Shape::NoFrame);
-		m_dataAndCountView->setModel(sortModel);
+		m_dataAndCountView->setModel(filterModel);
 		m_dataAndCountView->setSortingEnabled(true);
 		m_dataAndCountView->setMinimumWidth(32);
 		m_dataAndCountView->setShowGrid(false);
@@ -105,12 +106,16 @@ namespace SynGlyphX {
 		m_dataAndCountView->selectionModel()->clear();
 
 		m_model->ResetData(data);
+		
+		QSortFilterProxyModel* filterModel = dynamic_cast<QSortFilterProxyModel*>(m_dataAndCountView->model());
+		filterModel->setFilterKeyColumn(-1);
+		
 		m_dataAndCountView->sortByColumn(1, Qt::DescendingOrder);
 		ResizeTable();
 
 		blockSignals(listBlockSignals);
 	}
-
+	/*
 	void ElasticListWidget::SetSelectedData(const ElasticListModel::Data& data) {
 
 		bool listBlockSignals = signalsBlocked();
@@ -143,20 +148,30 @@ namespace SynGlyphX {
 
 		blockSignals(listBlockSignals);
 	}
-	
+	*/
 	void ElasticListWidget::ResizeTable() {
+
+		StringRoleDataFilterProxyModel* filterModel = dynamic_cast<StringRoleDataFilterProxyModel*>(m_dataAndCountView->model());
+		if (m_selectedRawData.empty() || (m_showAllCheckBox->isChecked())) {
+
+			filterModel->Clear();
+		}
+		else {
+
+			filterModel->SetFilterData(m_selectedRawData);
+		}
 
 		unsigned int numberOfVisibleRows = 0; 
 		if (m_showAllCheckBox->isChecked()) {
 
-			numberOfVisibleRows = m_model->rowCount();
+			numberOfVisibleRows = filterModel->rowCount();
 		}
 		else {
 
 			unsigned int numberOfAvailableRows = m_dataAndCountView->selectionModel()->selectedRows().count();
 			if (numberOfAvailableRows == 0) {
 
-				numberOfAvailableRows = m_model->rowCount();
+				numberOfAvailableRows = filterModel->rowCount();
 			}
 			numberOfVisibleRows = std::max(std::min(MaximumNumberOfRowsShown, numberOfAvailableRows), 1u);
 		}
@@ -182,20 +197,24 @@ namespace SynGlyphX {
 
 	void ElasticListWidget::ChangeSelection() {
 
+		SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
 		m_hasUserChangedSelectedItemsInTable = false;
 
 		m_selectedRawData.clear();
-		QSortFilterProxyModel* sortModel = dynamic_cast<QSortFilterProxyModel*>(m_dataAndCountView->model());
-		QItemSelection selection = sortModel->mapSelectionToSource(m_dataAndCountView->selectionModel()->selection());
+		StringRoleDataFilterProxyModel* filterModel = dynamic_cast<StringRoleDataFilterProxyModel*>(m_dataAndCountView->model());
+		QItemSelection selection = filterModel->mapSelectionToSource(m_dataAndCountView->selectionModel()->selection());
 		for (QModelIndex& selectedIndex : selection.indexes()) {
 
 			m_selectedRawData.insert(m_model->data(selectedIndex, ElasticListModel::RawDataRole).toString());
 		}
 
+		ResizeTable();
+
 		emit SelectionChanged();
+		SynGlyphX::Application::restoreOverrideCursor();
 	}
 
-	const std::set<QString>& ElasticListWidget::GetSelectedRawData() const {
+	const QSet<QString>& ElasticListWidget::GetSelectedRawData() const {
 
 		return m_selectedRawData;
 	}

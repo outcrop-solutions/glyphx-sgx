@@ -18,6 +18,7 @@
 #ifndef SYNGLYPHX_SOURCEDATACACHE_H
 #define SYNGLYPHX_SOURCEDATACACHE_H
 
+#include <QtCore/QSet>
 #include <map>
 #include "utilitytypes.h"
 #include "inputfield.h"
@@ -42,7 +43,7 @@ public:
 
 	typedef std::vector<std::pair<QString, SynGlyphX::IndexSet>> DistinctValueIndexMap;
 
-	typedef std::map<QString, std::set<QString>> ColumnValueData;
+	typedef std::map<QString, QSet<QString>> ColumnValueData;
 
 	typedef std::pair<QString, SynGlyphX::DegenerateInterval> ColumnMinMaxPair;
 	typedef std::vector<ColumnMinMaxPair> ColumnMinMaxMap;
@@ -100,7 +101,7 @@ protected:
 
 	QString CreateWhereString(const SynGlyphX::IndexSet& indexSet) const;
 	QString CreateInString(const SynGlyphX::IndexSet& indexSet) const;
-	QString CreateInString(const QString& columnName, const std::set<QString>& values) const;
+	QString CreateInString(const QString& columnName, const QSet<QString>& values) const;
 	QString CreateBetweenString(const QString& columnName, const SynGlyphX::DegenerateInterval& minMax) const;
 
 	void SetPragmaValue(const QString& pragmaString);

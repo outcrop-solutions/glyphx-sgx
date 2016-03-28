@@ -3,6 +3,7 @@
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QAbstractItemView>
 #include "elasticlistwidget.h"
+#include "application.h"
 
 MultiTableElasticListsWidget::MultiTableElasticListsWidget(SourceDataCache::SharedPtr sourceDataCache, SourceDataSelectionModel* selectionModel, QWidget *parent)
 	: QWidget(parent),
@@ -105,16 +106,7 @@ void MultiTableElasticListsWidget::OnElasticListsSelectionChanged(const QString&
 
 		const SourceDataSelectionModel::IndexSetMap& indexSets = m_selectionModel->GetSourceDataSelection();
 		SourceDataSelectionModel::IndexSetMap::const_iterator previousSelection = indexSets.find(table);
-		SynGlyphX::IndexSet indexSet;
-		
-		if (previousSelection != indexSets.end()) {
-
-			indexSet = m_sourceDataCache->GetIndexesFromTableWithSelectedValues(table, selection, previousSelection->second);
-		}
-		else {
-
-			indexSet = m_sourceDataCache->GetIndexesFromTableWithSelectedValues(table, selection);
-		}
+		SynGlyphX::IndexSet indexSet = m_sourceDataCache->GetIndexesFromTableWithSelectedValues(table, selection);
 		
 		m_selectionModel->SetSourceDataSelectionForTable(table, indexSet);
 	}

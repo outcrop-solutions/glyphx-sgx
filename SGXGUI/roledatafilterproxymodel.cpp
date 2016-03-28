@@ -19,7 +19,7 @@ namespace SynGlyphX {
 
 		QAbstractItemModel* model = sourceModel();
 
-		if ((model != nullptr) || HasFilterData()) {
+		if ((model != nullptr) && HasFilterData()) {
 
 			QModelIndex sourceIndex = model->index(source_row, 0, source_parent);
 			bool match = HasMatch(model->data(sourceIndex, filterRole()));
@@ -63,10 +63,12 @@ namespace SynGlyphX {
 
 	void StringRoleDataFilterProxyModel::SetFilterData(const QString& data) {
 
-		SetFilterData(QStringList(data));
+		QSet<QString> stringSet;
+		stringSet.insert(data);
+		SetFilterData(stringSet);
 	}
 
-	void StringRoleDataFilterProxyModel::SetFilterData(const QStringList& data) {
+	void StringRoleDataFilterProxyModel::SetFilterData(const QSet<QString>& data) {
 
 		RemoveFilterData();
 
@@ -102,12 +104,12 @@ namespace SynGlyphX {
 
 	void IntRoleDataFilterProxyModel::SetFilterData(int data) {
 
-		QList<int> intList;
-		intList.push_back(data);
+		QSet<int> intList;
+		intList.insert(data);
 		SetFilterData(intList);
 	}
 
-	void IntRoleDataFilterProxyModel::SetFilterData(const QList<int>& data) {
+	void IntRoleDataFilterProxyModel::SetFilterData(const QSet<int>& data) {
 
 		RemoveFilterData();
 

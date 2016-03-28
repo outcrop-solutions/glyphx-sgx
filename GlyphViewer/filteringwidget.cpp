@@ -5,6 +5,7 @@
 #include "groupboxsinglewidget.h"
 #include "multitableelasticlistswidget.h"
 #include "rangefilterlistwidget.h"
+#include "application.h"
 
 FilteringWidget::FilteringWidget(SourceDataInfoModel* columnsModel, SourceDataCache::SharedPtr sourceDataCache, SourceDataSelectionModel* selectionModel, QWidget *parent)
 	: QWidget(parent),
@@ -87,7 +88,9 @@ void FilteringWidget::SetupLinkedWidgets(LinkedWidgetsManager& linkedWidgets) {
 
 void FilteringWidget::Clear() {
 
+	SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
 	m_selectionModel->ClearSourceDataSelection();
+	SynGlyphX::Application::restoreOverrideCursor();
 }
 
 void FilteringWidget::OnSourceWidgetWindowHidden() {

@@ -58,7 +58,7 @@ void SingleTableElasticListsWidget::OnElasticWidgetSelectionChanged() {
 	SourceDataCache::ColumnValueData newSelection;
 	for (auto elasticListWidget : m_elasticListMap) {
 
-		const std::set<QString>& columnSelection = elasticListWidget.second->GetSelectedRawData();
+		const QSet<QString>& columnSelection = elasticListWidget.second->GetSelectedRawData();
 		if (!columnSelection.empty()) {
 
 			newSelection[QString::fromStdString(elasticListWidget.first)] = columnSelection;

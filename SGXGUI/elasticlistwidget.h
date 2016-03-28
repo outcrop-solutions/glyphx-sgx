@@ -43,9 +43,9 @@ namespace SynGlyphX {
 		void SetTitle(const QString& title);
 		QString GetTitle() const;
 		void SetData(const ElasticListModel::Data& data);
-		void SetSelectedData(const ElasticListModel::Data& data);
+		//void SetSelectedData(const ElasticListModel::Data& data);
 
-		const std::set<QString>& GetSelectedRawData() const;
+		const QSet<QString>& GetSelectedRawData() const;
 
 	signals:
 		void SelectionChanged();
@@ -61,7 +61,7 @@ namespace SynGlyphX {
 		void ChangeSelection();
 
 		bool m_hasUserChangedSelectedItemsInTable;
-		std::set<QString> m_selectedRawData;
+		QSet<QString> m_selectedRawData;
 		
 		QLabel* m_title;
 		QCheckBox* m_showAllCheckBox;

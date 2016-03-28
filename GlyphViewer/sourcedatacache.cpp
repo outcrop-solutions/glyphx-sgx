@@ -391,9 +391,9 @@ QString SourceDataCache::CreateInString(const SynGlyphX::IndexSet& indexSet) con
 	return whereString;
 }
 
-QString SourceDataCache::CreateInString(const QString& columnName, const std::set<QString>& values) const {
+QString SourceDataCache::CreateInString(const QString& columnName, const QSet<QString>& values) const {
 
-	std::set<QString>::const_iterator iT = values.begin();
+	QSet<QString>::const_iterator iT = values.begin();
 	QString inString = "\"" + columnName + "\" IN (\"" + *iT + "\"";
 	++iT;
 	while (iT != values.end()) {
