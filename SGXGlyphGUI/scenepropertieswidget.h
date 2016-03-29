@@ -22,6 +22,7 @@
 #include <QtWidgets/QWidget>
 #include "colorbutton.h"
 #include "sceneproperties.h"
+#include "browselineedit.h"
 
 namespace SynGlyphX {
 
@@ -38,6 +39,7 @@ namespace SynGlyphX {
 
 	private:
 		ColorButton* m_backgroundColorButton;
+		BrowseLineEdit* m_legendLineEdit;
 	};
 
 } //namespace SynGlyphX

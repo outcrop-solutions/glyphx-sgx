@@ -10,7 +10,10 @@ namespace SynGlyphX {
 		QFormLayout* mainLayout = new QFormLayout(this);
 
 		m_backgroundColorButton = new ColorButton(false, this);
-		mainLayout->addRow(tr("Background Color:"), m_backgroundColorButton);
+		mainLayout->addRow(tr("Background Color") + ":", m_backgroundColorButton);
+
+		m_legendLineEdit = new BrowseLineEdit(BrowseLineEdit::FileDialogType::FileOpen, true, this);
+		mainLayout->addRow(tr("Legend") + ":", m_legendLineEdit);
 
 		setLayout(mainLayout);
 	}
@@ -29,6 +32,7 @@ namespace SynGlyphX {
 
 		SceneProperties properties;
 		properties.SetBackgroundColor(ColorConverter::QColor2GlyphColor(m_backgroundColorButton->GetColor()));
+		properties.SetLegend(m_legendLineEdit->GetText().toStdWString());
 
 		return properties;
 	}
