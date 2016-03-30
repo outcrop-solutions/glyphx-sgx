@@ -5,20 +5,29 @@ namespace SynGlyphX {
 	const std::wstring SceneProperties::s_propertyTreeName(L"SceneProperties");
 
 	SceneProperties::SceneProperties() :
-		m_backgroundColor(GlyphColor::s_black),
-		m_legendImage(L"")
+		m_backgroundColor(GlyphColor::s_black)
 	{
 	}
 
 	SceneProperties::SceneProperties(const boost::property_tree::wptree& propertyTree) :
-		m_backgroundColor(propertyTree.get_optional<GlyphColor>(L"BackgroundColor").get_value_or(GlyphColor::s_black)),
-		m_legendImage(propertyTree.get_optional<std::wstring>(L"Legend").get_value_or(L"")) {
+		m_backgroundColor(propertyTree.get_optional<GlyphColor>(L"BackgroundColor").get_value_or(GlyphColor::s_black)) {
 		
+		boost::optional<const boost::property_tree::wptree&> legendsTree = propertyTree.get_child_optional(L"Legends");
+		if (legendsTree.is_initialized()) {
+
+			for (const boost::property_tree::wptree::value_type& legendPropertyTree : legendsTree.get()) {
+
+				if (legendPropertyTree.first == Legend::s_propertyTreeName) {
+
+					m_legends.emplace_back(legendPropertyTree.second);
+				}
+			}
+		}
 	}
 
 	SceneProperties::SceneProperties(const SceneProperties& properties) :
 		m_backgroundColor(properties.m_backgroundColor),
-		m_legendImage(properties.m_legendImage){
+		m_legends(properties.m_legends){
 
 	}
 
@@ -29,14 +38,14 @@ namespace SynGlyphX {
 	SceneProperties& SceneProperties::operator=(const SceneProperties& properties) {
 
 		m_backgroundColor = properties.m_backgroundColor;
-		m_legendImage = properties.m_legendImage;
+		m_legends = properties.m_legends;
 
 		return *this;
 	}
 
 	bool SceneProperties::operator==(const SceneProperties& properties) const {
 
-		if (m_legendImage != properties.m_legendImage) {
+		if (m_legends != properties.m_legends) {
 
 			return false;
 		}
@@ -54,9 +63,13 @@ namespace SynGlyphX {
 		boost::property_tree::wptree& rootPropertyTree = propertyTree.add(s_propertyTreeName, L"");
 
 		rootPropertyTree.put<GlyphColor>(L"BackgroundColor", m_backgroundColor);
-		if (!m_legendImage.empty()) {
+		if (!m_legends.empty()) {
 
-			rootPropertyTree.put<std::wstring>(L"Legend", m_legendImage);
+			boost::property_tree::wptree& legendsPropertyTree = rootPropertyTree.add(L"Legends", L"");
+			for (const auto& legend : m_legends) {
+
+				legend.ExportToPropertyTree(legendsPropertyTree);
+			}
 		}
 
 		return rootPropertyTree;
@@ -72,14 +85,14 @@ namespace SynGlyphX {
 		m_backgroundColor = color;
 	}
 
-	const std::wstring& SceneProperties::GetLegend() const {
+	const std::vector<Legend>& SceneProperties::GetLegends() const {
 
-		return m_legendImage;
+		return m_legends;
 	}
 
-	void SceneProperties::SetLegend(const std::wstring& legendImage) {
+	void SceneProperties::SetLegends(const std::vector<Legend>& legends) {
 
-		m_legendImage = legendImage;
+		m_legends = legends;
 	}
 
 } //namespace SynGlyphX

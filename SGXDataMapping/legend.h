@@ -15,43 +15,55 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef SYNGLYPHX_SCENEPROPERTIES_H
-#define SYNGLYPHX_SCENEPROPERTIES_H
+#ifndef SYNGLYPHX_LEGEND_H
+#define SYNGLYPHX_LEGEND_H
 
-#include "sgxdatamapping.h"
-#include "glyphcolor.h"
-#include "legend.h"
+#include <string>
 #include <boost/property_tree/ptree.hpp>
+#include <boost/bimap.hpp>
 
 namespace SynGlyphX {
 
-	class SGXDATAMAPPING_API SceneProperties
+	class Legend
 	{
 	public:
-		SceneProperties();
-		SceneProperties(const boost::property_tree::wptree& propertyTree);
-		SceneProperties(const SceneProperties& properties);
-		~SceneProperties();
+		enum Type {
 
-		SceneProperties& operator=(const SceneProperties& properties);
-		bool operator==(const SceneProperties& properties) const;
-		bool operator!=(const SceneProperties& properties) const;
+			Image,
+			Text
+		};
+
+		typedef boost::bimap<Type, std::wstring> TypeBimap;
+
+		Legend();
+		Legend(const boost::property_tree::wptree& propertyTree);
+		Legend(const Legend& legend);
+		~Legend();
+
+		Legend& operator=(const Legend& legend);
+		bool operator==(const Legend& legend) const;
+		bool operator!=(const Legend& legend) const;
 
 		boost::property_tree::wptree& ExportToPropertyTree(boost::property_tree::wptree& propertyTree) const;
 
-		const GlyphColor& GetBackgroundColor() const;
-		void SetBackgroundColor(const GlyphColor& color);
+		void SetTitle(const std::wstring& title);
+		void SetFilename(const std::wstring& filename);
 
-		const std::vector<Legend>& GetLegends() const;
-		void SetLegends(const std::vector<Legend>& legends);
+		const std::wstring& GetTitle() const;
+		const std::wstring& GetFilename() const;
+		Type GetType() const;
+
+		bool IsValid() const;
 
 		static const std::wstring s_propertyTreeName;
+		static const TypeBimap s_typeStrings;
 
 	private:
-		GlyphColor m_backgroundColor;
-		std::vector<Legend> m_legends;
+		std::wstring m_title;
+		std::wstring m_filename;
+		Type m_type;
 	};
 
-} //namespace SynGlyphX
+} //SynGlyphX
 
-#endif //SYNGLYPHX_SCENEPROPERTIES_H
+#endif //SYNGLYPHX_LEGEND_H

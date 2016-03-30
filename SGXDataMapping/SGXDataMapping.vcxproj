@@ -114,6 +114,7 @@
     <ClInclude Include="inputfield.h" />
     <ClInclude Include="inputtable.h" />
     <ClInclude Include="interpolationmappingfunction.h" />
+    <ClInclude Include="legend.h" />
     <ClInclude Include="mindiff.h" />
     <ClInclude Include="sceneproperties.h" />
     <ClInclude Include="sgxdatamapping.h" />
@@ -151,6 +152,7 @@
     <ClCompile Include="inputfield.cpp" />
     <ClCompile Include="inputtable.cpp" />
     <ClCompile Include="interpolationmappingfunction.cpp" />
+    <ClCompile Include="legend.cpp" />
     <ClCompile Include="mindiff.cpp" />
     <ClCompile Include="sceneproperties.cpp" />
     <ClCompile Include="stringconcatmappingfunction.cpp" />
