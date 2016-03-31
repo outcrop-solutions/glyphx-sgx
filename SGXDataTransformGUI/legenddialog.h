@@ -15,32 +15,36 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef SCENEPROPERTIESWIDGET_H
-#define SCENEPROPERTIESWIDGET_H
+#ifndef SYNGLYPHX_LEGENDDIALOG_H
+#define SYNGLYPHX_LEGENDDIALOG_H
 
-#include "sgxglyphgui_global.h"
-#include <QtWidgets/QWidget>
-#include "colorbutton.h"
-#include "sceneproperties.h"
+#include "sgxdatatransformgui_global.h"
 #include "browselineedit.h"
+#include <QtWidgets/QDialog>
+#include "legend.h"
 
 namespace SynGlyphX {
 
-	class SGXGLYPHGUI_EXPORT ScenePropertiesWidget : public QWidget
+	class SGXDATATRANSFORMGUI_EXPORT LegendDialog : public QDialog
 	{
 		Q_OBJECT
 
 	public:
-		ScenePropertiesWidget(QWidget *parent);
-		~ScenePropertiesWidget();
+		LegendDialog(QWidget *parent);
+		~LegendDialog();
 
-		void SetWidgetFromProperties(const SceneProperties& properties);
-		SceneProperties GetPropertiesFromWidget() const;
+		void accept() override;
+
+		void SetLegend(const Legend& legend);
+		Legend GetLegend() const;
 
 	private:
-		ColorButton* m_backgroundColorButton;
+		bool ValidateLegendFilename(const QString& legendFilename);
+
+		QLineEdit* m_titleLineEdit;
+		BrowseLineEdit* m_legendLineEdit;
 	};
 
 } //namespace SynGlyphX
 
-#endif // SCENEPROPERTIESWIDGET_H
+#endif // SYNGLYPHX_LEGENDDIALOG_H

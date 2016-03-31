@@ -35,6 +35,7 @@
 #include "dataengineconnection.h"
 #include "glyphengine.h"
 #include "portablevisualizationexport.h"
+#include "legendlistview.h"
 
 class DataMapperWindow : public SynGlyphX::MainWindow
 {
@@ -70,6 +71,7 @@ private slots:
 	void ChangeNewMappingDefaults();
 	void ChangeSceneProperties();
 	void ChangeOptions();
+	void AddLegend();
 
 private:
     void CreateMenus();
@@ -92,6 +94,7 @@ private:
     QMenu* m_glyphMenu;
 	QMenu* m_baseObjectMenu;
 	QMenu* m_datasourceMenu;
+	QMenu* m_legendMenu;
 	QMenu* m_toolsMenu;
 
 	QAction* m_showAnimation;
@@ -100,9 +103,14 @@ private:
     
 	SynGlyphX::IntRoleDataFilterProxyModel* m_baseObjectsModel;
 	BaseObjectListView* m_baseObjectsView;
+
 	GlyphTreesView* m_glyphTreesView;
+
 	DataSourceStatsWidget* m_dataSourceStats;
 	DataSourcesView* m_dataSourcesView;
+	
+	SynGlyphX::IntRoleDataFilterProxyModel* m_legendsModel;
+	LegendListView* m_legendsView;
 
 	QList<QAction*> m_projectDependentActions;
 

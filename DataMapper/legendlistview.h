@@ -15,32 +15,38 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef SCENEPROPERTIESWIDGET_H
-#define SCENEPROPERTIESWIDGET_H
+#ifndef LEGENDLISTVIEW_H
+#define LEGENDLISTVIEW_H
 
-#include "sgxglyphgui_global.h"
-#include <QtWidgets/QWidget>
-#include "colorbutton.h"
-#include "sceneproperties.h"
-#include "browselineedit.h"
+#include <QtWidgets/QListView>
+#include "sharedactionlist.h"
+#include "datatransformmodel.h"
 
-namespace SynGlyphX {
+class LegendListView : public QListView
+{
+	Q_OBJECT
 
-	class SGXGLYPHGUI_EXPORT ScenePropertiesWidget : public QWidget
-	{
-		Q_OBJECT
+public:
+	LegendListView(DataTransformModel* dataTransformModel, QWidget *parent);
+	~LegendListView();
 
-	public:
-		ScenePropertiesWidget(QWidget *parent);
-		~ScenePropertiesWidget();
+	const SynGlyphX::SharedActionList& GetSharedActions();
 
-		void SetWidgetFromProperties(const SceneProperties& properties);
-		SceneProperties GetPropertiesFromWidget() const;
+protected:
+	virtual void selectionChanged(const QItemSelection& selected, const QItemSelection& deselected);
 
-	private:
-		ColorButton* m_backgroundColorButton;
-	};
+private slots:
+	void RemoveLegend();
+	void ShowLegendProperties();
 
-} //namespace SynGlyphX
+private:
+	void EnableActions();
 
-#endif // SCENEPROPERTIESWIDGET_H
+	DataTransformModel* m_dataTransformModel;
+
+	SynGlyphX::SharedActionList m_sharedActions;
+	QAction* m_removeLegendAction;
+	QAction* m_propertiesAction;
+};
+
+#endif // LEGENDLISTVIEW_H

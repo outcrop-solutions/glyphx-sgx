@@ -34,6 +34,7 @@
 #include "adddatabaseserverwizard.h"
 #include "addfiledatasourcewizard.h"
 #include "downloadexception.h"
+#include "legenddialog.h"
 
 DataMapperWindow::DataMapperWindow(QWidget *parent)
     : SynGlyphX::MainWindow(0, parent),
@@ -221,6 +222,14 @@ void DataMapperWindow::CreateMenus() {
 
 	m_datasourceMenu->addSeparator();
 
+	//Create Legend Menu
+	m_legendMenu = menuBar()->addMenu(tr("Legend"));
+
+	QAction* addLegendAction = m_legendMenu->addAction(tr("Add Legend"));
+	QObject::connect(addLegendAction, &QAction::triggered, this, &DataMapperWindow::AddLegend);
+
+	m_legendMenu->addSeparator();
+
     //Create View Menu
 	CreateViewMenu();
 
@@ -283,6 +292,20 @@ void DataMapperWindow::CreateDockWidgets() {
 	leftDockWidgetBaseObjects->setWidget(m_baseObjectsView);
 	addDockWidget(Qt::LeftDockWidgetArea, leftDockWidgetBaseObjects);
 	m_viewMenu->addAction(leftDockWidgetBaseObjects->toggleViewAction());
+
+	QDockWidget* leftDockWidgetLegends = new QDockWidget(tr("Legends"), this);
+
+	m_legendsView = new LegendListView(m_dataTransformModel, leftDockWidgetBaseObjects);
+	m_legendsModel = new SynGlyphX::IntRoleDataFilterProxyModel(this);
+	m_legendsModel->setSourceModel(m_dataTransformModel);
+	m_legendsModel->setFilterRole(DataTransformModel::DataTypeRole);
+	m_legendsModel->SetFilterData(DataTransformModel::DataType::Legends);
+	m_legendsView->setModel(m_legendsModel);
+	m_legendMenu->addActions(m_legendsView->actions());
+
+	leftDockWidgetLegends->setWidget(m_legendsView);
+	addDockWidget(Qt::LeftDockWidgetArea, leftDockWidgetLegends);
+	m_viewMenu->addAction(leftDockWidgetLegends->toggleViewAction());
 
 	QDockWidget* rightDockWidgetDataStats = new QDockWidget(tr("Data Stats"), this);
 	m_dataSourceStats = new DataSourceStatsWidget(m_dataTransformModel, rightDockWidgetDataStats);
@@ -726,6 +749,18 @@ void DataMapperWindow::AddBaseObject() {
 
 		const SynGlyphX::BaseImage& baseImage = dialog.GetBaseImage();
 		m_dataTransformModel->AddBaseObject(baseImage);
+		EnableProjectDependentActions(true);
+	}
+}
+
+void DataMapperWindow::AddLegend() {
+
+	SynGlyphX::LegendDialog dialog(this);
+	dialog.setWindowTitle(tr("Add New Legend"));
+	if (dialog.exec() == QDialog::Accepted) {
+
+		const SynGlyphX::Legend& legend = dialog.GetLegend();
+		m_dataTransformModel->AddLegend(legend);
 		EnableProjectDependentActions(true);
 	}
 }

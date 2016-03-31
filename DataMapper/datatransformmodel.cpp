@@ -352,6 +352,14 @@ QVariant DataTransformModel::GetDisplayData(const QModelIndex& index) const {
 			std::advance(fieldGroup, fieldGroupIndex);
 			return QString::fromStdWString(fieldGroup->first);
 		}
+		else if (IsParentlessRowInDataType(DataType::Legends, index.row())) {
+
+			int legendIndex = index.row() - GetFirstIndexForDataType(DataType::Legends);
+			std::vector<SynGlyphX::Legend>::const_iterator legend = m_dataMapping->GetLegends().begin();
+			std::advance(legend, legendIndex);
+			QFileInfo baseObjectFileInfo(QString::fromStdWString(legend->GetFilename()));
+			return QString::fromStdWString(legend->GetTitle()) + ": " + baseObjectFileInfo.fileName();
+		}
 	}
 	else {
 
@@ -381,6 +389,10 @@ DataTransformModel::DataType DataTransformModel::GetDataType(const QModelIndex& 
 		else if (IsParentlessRowInDataType(DataType::FieldGroup, index.row())) {
 
 			return DataType::FieldGroup;
+		}
+		else if (IsParentlessRowInDataType(DataType::Legends, index.row())) {
+
+			return DataType::Legends;
 		}
 		else if (IsParentlessRowInDataType(DataType::GlyphTrees, index.row())) {
 
@@ -502,7 +514,8 @@ int	DataTransformModel::rowCount(const QModelIndex& parent) const {
 
 	if (!parent.isValid()) {
 
-		return m_dataMapping->GetGlyphGraphs().size() + m_dataMapping->GetBaseObjects().size() + m_dataMapping->GetDatasources().size() + m_dataMapping->GetFieldGroupMap().size();
+		return m_dataMapping->GetGlyphGraphs().size() + m_dataMapping->GetBaseObjects().size() + m_dataMapping->GetDatasources().size() + 
+			m_dataMapping->GetFieldGroupMap().size() + m_dataMapping->GetLegends().size();
 	}
 
 	if (parent.internalPointer() != nullptr) {
@@ -658,6 +671,11 @@ bool DataTransformModel::removeRows(int row, int count, const QModelIndex& paren
 					m_dataMapping->RemoveFieldGroup(GetFieldGroupName(i));
 					emitGlyphDataChanged = true;
 				}
+				else if (IsParentlessRowInDataType(DataType::Legends, i)) {
+
+					m_dataMapping->RemoveLegend(i - GetFirstIndexForDataType(DataType::Legends));
+					emitGlyphDataChanged = true;
+				}
 			}
 			endRemoveRows();
 
@@ -773,6 +791,21 @@ void DataTransformModel::AddBaseObject(const SynGlyphX::BaseImage& baseImage) {
 	endInsertRows();
 }
 
+void DataTransformModel::SetLegend(unsigned int position, const SynGlyphX::Legend& legend) {
+
+	m_dataMapping->SetLegend(position, legend);
+	QModelIndex modelIndex = index(GetFirstIndexForDataType(DataType::Legends) + position);
+	emit dataChanged(modelIndex, modelIndex);
+}
+
+void DataTransformModel::AddLegend(const SynGlyphX::Legend& legend) {
+
+	int row = GetFirstIndexForDataType(DataType::Legends) + m_dataMapping->GetLegends().size();
+	beginInsertRows(QModelIndex(), row, row);
+	m_dataMapping->AddLegend(legend);
+	endInsertRows();
+}
+
 bool DataTransformModel::IsParentlessRowInDataType(DataType type, int row) const {
 
 	int min = GetFirstIndexForDataType(type);
@@ -788,6 +821,10 @@ bool DataTransformModel::IsParentlessRowInDataType(DataType type, int row) const
 	else if (type == DataType::FieldGroup) {
 
 		max = min + m_dataMapping->GetFieldGroupMap().size();
+	}
+	else if (type == DataType::Legends) {
+
+		max = min + m_dataMapping->GetLegends().size();
 	}
 	else if (type == DataType::GlyphTrees) {
 
@@ -810,6 +847,11 @@ unsigned int DataTransformModel::GetFirstIndexForDataType(DataType type) const {
 	else if (type == DataType::FieldGroup) {
 
 		return m_dataMapping->GetGlyphGraphs().size() + m_dataMapping->GetBaseObjects().size() + m_dataMapping->GetDatasources().size();
+	}
+	else if (type == DataType::Legends) {
+
+		return m_dataMapping->GetGlyphGraphs().size() + m_dataMapping->GetBaseObjects().size() + m_dataMapping->GetDatasources().size() +
+			m_dataMapping->GetFieldGroupMap().size();
 	}
 	else if (type == DataType::GlyphTrees) {
 

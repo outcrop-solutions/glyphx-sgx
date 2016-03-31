@@ -280,6 +280,15 @@
     <ClCompile Include="GeneratedFiles\Release\moc_tablechoicewidget.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="legendlistview.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_legendlistview.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_legendlistview.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="datamapperwindow.h">
@@ -361,6 +370,9 @@
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="tablechoicewidget.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="legendlistview.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>

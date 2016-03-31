@@ -218,3 +218,8 @@ void GlyphTreesView::ChangeOptions() {
 		model()->setData(index, glyphOptionsWidget->GetMergeRoots(), DataTransformModel::OptionsRole);
 	}
 }
+
+QSize GlyphTreesView::sizeHint() const {
+
+	return QSize(250, 500);
+}

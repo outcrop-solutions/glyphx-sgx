@@ -77,3 +77,8 @@ void DataSourcesView::OnRemoveDatasource() {
 		}
 	}
 }
+
+QSize DataSourcesView::sizeHint() const {
+
+	return QSize(250, 100);
+}

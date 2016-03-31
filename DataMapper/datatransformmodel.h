@@ -42,7 +42,8 @@ public:
 		GlyphTrees = 0,
 		BaseObjects = 1,
 		DataSources = 2,
-		FieldGroup = 3
+		FieldGroup = 3,
+		Legends = 4
 	};
 
 	enum PropertyRole {
@@ -110,6 +111,9 @@ public:
 
 	void SetBaseObject(unsigned int position, const SynGlyphX::BaseImage& baseImage);
 	void AddBaseObject(const SynGlyphX::BaseImage& baseImage);
+
+	void SetLegend(unsigned int position, const SynGlyphX::Legend& legend);
+	void AddLegend(const SynGlyphX::Legend& legend);
 
 	boost::uuids::uuid AddFileDatasource(const SynGlyphX::FileDatasource& datasource);
 	boost::uuids::uuid AddDatabaseServer(const SynGlyphX::DatabaseServerDatasource& datasource);

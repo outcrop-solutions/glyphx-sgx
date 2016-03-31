@@ -39,7 +39,7 @@ public:
 	BaseImageDialog(bool enablePositionAndOrientation, bool showDownloadMapOptions, QWidget *parent = 0);
 	~BaseImageDialog();
 
-	virtual void accept();
+	void accept() override;
 
 	void SetBaseImage(const SynGlyphX::BaseImage& baseImage);
 	SynGlyphX::BaseImage GetBaseImage() const;
