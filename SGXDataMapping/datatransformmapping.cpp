@@ -22,7 +22,8 @@ namespace SynGlyphX {
 		m_baseObjects(mapping.m_baseObjects),
 		m_defaults(mapping.m_defaults),
 		m_sceneProperties(mapping.m_sceneProperties),
-		m_fieldGroups(mapping.m_fieldGroups) {
+		m_fieldGroups(mapping.m_fieldGroups),
+		m_legends(mapping.m_legends) {
 
 	}
 
@@ -87,6 +88,11 @@ namespace SynGlyphX {
 		}
 
 		if (m_fieldGroups != mapping.m_fieldGroups) {
+
+			return false;
+		}
+
+		if (m_legends != mapping.m_legends) {
 
 			return false;
 		}
@@ -204,6 +210,18 @@ namespace SynGlyphX {
 				}
 			}
 		}
+
+		boost::optional<const boost::property_tree::wptree&> legendsTree = dataTransformPropertyTree.get_child_optional(L"Legends");
+		if (legendsTree.is_initialized()) {
+
+			for (const boost::property_tree::wptree::value_type& legendPropertyTree : legendsTree.get()) {
+
+				if (legendPropertyTree.first == Legend::s_propertyTreeName) {
+
+					m_legends.emplace_back(legendPropertyTree.second);
+				}
+			}
+		}
     }
 
 	void DataTransformMapping::ExportToPropertyTree(boost::property_tree::wptree& filePropertyTree) const {
@@ -242,6 +260,15 @@ namespace SynGlyphX {
 			for (const InputField& field : fieldGroup.second) {
 
 				field.ExportToPropertyTree(fieldGroupPropertyTree);
+			}
+		}
+
+		if (!m_legends.empty()) {
+
+			boost::property_tree::wptree& legendsPropertyTree = dataTransformPropertyTreeRoot.add(L"Legends", L"");
+			for (const auto& legend : m_legends) {
+
+				legend.ExportToPropertyTree(legendsPropertyTree);
 			}
 		}
     }
@@ -316,6 +343,7 @@ namespace SynGlyphX {
 		m_glyphTrees.clear();
 		m_defaults.Clear();
 		m_baseObjects.clear();
+		m_legends.clear();
 		m_id = UUIDGenerator::GetNewRandomUUID();
 
 		if (addADefaultBaseObjectAfterClear) {
@@ -746,6 +774,7 @@ namespace SynGlyphX {
 		SharedPtr subsetMapping(new DataTransformMapping());
 		subsetMapping->SetSceneProperties(m_sceneProperties);
 		subsetMapping->SetDefaults(m_defaults);
+		subsetMapping->SetLegends(m_legends);
 
 		if (!subsetMapping->GetBaseObjects().empty()) {
 
@@ -808,6 +837,47 @@ namespace SynGlyphX {
 
 			CopyInputBindingsForSubsetMapping(newGlyphGraph, newGlyphGraph->GetChild(newNode, j), oldGlyphGraph, oldGlyphGraph->GetChild(oldNode, j), datasourceID);
 		}
+	}
+
+	void DataTransformMapping::AddLegend(const Legend& legend) {
+
+		m_legends.push_back(legend);
+	}
+
+	void DataTransformMapping::RemoveLegend(unsigned int index) {
+
+		if (index < m_legends.size()) {
+
+			std::vector<Legend>::iterator legend = m_legends.begin();
+			std::advance(legend, index);
+			m_legends.erase(legend);
+		}
+		else {
+
+			throw std::invalid_argument("Index is greater than size of base objects");
+		}
+	}
+
+	void DataTransformMapping::SetLegend(unsigned int index, const Legend& legend) {
+
+		if (index < m_legends.size()) {
+
+			m_legends[index] = legend;
+		}
+		else {
+
+			throw std::invalid_argument("Index is greater than size of legends");
+		}
+	}
+
+	const std::vector<Legend>& DataTransformMapping::GetLegends() const {
+
+		return m_legends;
+	}
+
+	void DataTransformMapping::SetLegends(const std::vector<Legend>& legends) {
+
+		m_legends = legends;
 	}
 
 } //namespace SynGlyphX

@@ -32,6 +32,7 @@
 #include "datasource.h"
 #include "filedatasource.h"
 #include "databaseserverdatasource.h"
+#include "legend.h"
 
 namespace SynGlyphX {
 
@@ -112,6 +113,12 @@ namespace SynGlyphX {
 
 		ConstSharedPtr CreateSubsetMappingWithSingleTable(const InputTable& inputTable, const std::wstring& csvFilename) const;
 
+		void AddLegend(const Legend& legend);
+		void RemoveLegend(unsigned int index);
+		void SetLegend(unsigned int index, const Legend& legend);
+		const std::vector<Legend>& GetLegends() const;
+		void SetLegends(const std::vector<Legend>& legends);
+
     protected:
 		void CopyInputBindingsForSubsetMapping(DataMappingGlyphGraph::SharedPtr newGlyphGraph, 
 											   DataMappingGlyphGraph::GlyphIterator& newNode, 
@@ -130,6 +137,7 @@ namespace SynGlyphX {
 		DataMappingGlyphGraphMap m_glyphTrees;
 		std::vector<BaseImage> m_baseObjects;
 		FieldGroupMap m_fieldGroups;
+		std::vector<Legend> m_legends;
 
 		boost::uuids::uuid m_id;
     };

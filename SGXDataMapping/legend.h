@@ -18,13 +18,14 @@
 #ifndef SYNGLYPHX_LEGEND_H
 #define SYNGLYPHX_LEGEND_H
 
+#include "sgxdatamapping.h"
 #include <string>
 #include <boost/property_tree/ptree.hpp>
 #include <boost/bimap.hpp>
 
 namespace SynGlyphX {
 
-	class Legend
+	class SGXDATAMAPPING_API Legend
 	{
 	public:
 		enum Type {

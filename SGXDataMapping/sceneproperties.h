@@ -42,14 +42,10 @@ namespace SynGlyphX {
 		const GlyphColor& GetBackgroundColor() const;
 		void SetBackgroundColor(const GlyphColor& color);
 
-		const std::vector<Legend>& GetLegends() const;
-		void SetLegends(const std::vector<Legend>& legends);
-
 		static const std::wstring s_propertyTreeName;
 
 	private:
 		GlyphColor m_backgroundColor;
-		std::vector<Legend> m_legends;
 	};
 
 } //namespace SynGlyphX
