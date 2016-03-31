@@ -95,7 +95,7 @@ namespace SynGlyphXANTz {
 
 				if (tagFile.IsOpen()) {
 
-					WriteGlyphTag(tagFile, tree, tree->GetRoot(), (platform != OutputPlatform::WindowsZSpace));
+					WriteGlyphTag(tagFile, tree, tree->GetRoot());
 				}
 
 				if (redirectFile.is_open()) {
@@ -192,7 +192,7 @@ namespace SynGlyphXANTz {
 
 			if (!globalsFile.is_open()) {
 
-				throw std::exception("Globals file failed to open");
+				throw std::runtime_error("Globals file failed to open");
 			}
 
 			globalsFile.setf(std::ios::fixed, std::ios::floatfield);
@@ -217,15 +217,7 @@ namespace SynGlyphXANTz {
 			globalsFile << L"16,\"np_osc\",1,\"rx_ip\",\"s\", 0,\"\",\"\",\"127.0.0.1\"" << std::endl;
 			globalsFile << L"17,\"np_osc\",1,\"tx_port\",\"i\",0,\"\",\"\",\"8000\"" << std::endl;
 			globalsFile << L"18,\"np_osc\",1,\"rx_port\",\"i\",0,\"\",\"\",\"9000\"" << std::endl;
-			
-			if (platform == OutputPlatform::WindowsZSpace) {
-
-				globalsFile << L"19,\"np_browser\",1,\"url\",\"s\",0,\"\",\"\",\"/min redirect.bat \"" << std::endl;
-			}
-			else {
-
-				globalsFile << L"19,\"np_browser\",1,\"url\",\"s\",0,\"\",\"\",\"http://openantz.com/docs/id.html?id=\"" << std::endl;
-			}
+			globalsFile << L"19,\"np_browser\",1,\"url\",\"s\",0,\"\",\"\",\"http://openantz.com/docs/id.html?id=\"" << std::endl;
 			globalsFile << L"20,\"np_globals\",1,\"item_count\",\"i\",1,\"\",\"\",\"20\"" << std::endl;
 
 			globalsFile.close();
@@ -237,7 +229,7 @@ namespace SynGlyphXANTz {
 		}
 	}
 
-	void ANTzCSVWriter::WriteGlyphTag(SynGlyphX::CSVFileWriter& file, const SynGlyphX::GlyphGraph::ConstSharedPtr tree, const SynGlyphX::GlyphGraph::ConstGlyphIterator& glyph, bool outputURL) {
+	void ANTzCSVWriter::WriteGlyphTag(SynGlyphX::CSVFileWriter& file, const SynGlyphX::GlyphGraph::ConstSharedPtr tree, const SynGlyphX::GlyphGraph::ConstGlyphIterator& glyph) {
 
 		unsigned int numberOfChildren = tree->ChildCount(glyph);
 
@@ -248,7 +240,9 @@ namespace SynGlyphXANTz {
 			url = glyph->second.GetURL();
 		}
 
-		if (outputURL && (!url.empty())) {
+		bool outputURL = (!url.empty());
+
+		if (outputURL) {
 			
 			tag += L"<a href=\"" + url + L"\">";
 		}
@@ -262,7 +256,7 @@ namespace SynGlyphXANTz {
 			tag += glyph->second.GetTag();
 		}
 
-		if (outputURL && (!url.empty())) {
+		if (outputURL) {
 
 			tag += L"</a>";
 		}
@@ -280,7 +274,7 @@ namespace SynGlyphXANTz {
 
 		for (unsigned int i = 0; i < numberOfChildren; ++i) {
 
-			WriteGlyphTag(file, tree, tree->GetChild(glyph, i), outputURL);
+			WriteGlyphTag(file, tree, tree->GetChild(glyph, i));
 		}
 	}
 

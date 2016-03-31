@@ -23,6 +23,11 @@ namespace SynGlyphXANTz {
 
 	}
 
+	void MinMaxGlyph3DWidget::AddActionsToMinMaxViews(const QList<QAction*>& actions) {
+
+		m_maxGlyph3DWidget->addActions(actions);
+	}
+
 	void MinMaxGlyph3DWidget::SetAllowMultiselect(bool allowMultiselect) {
 
 		m_maxGlyph3DWidget->SetAllowMultiSelection(allowMultiselect);

@@ -1,7 +1,7 @@
 #include "antzforestwidget.h"
-#include <QtGUI/QOpenGLContext>
-#include <QtGUI/QMouseEvent>
-#include <QtGUI/QFont>
+#include <QtGui/QOpenGLContext>
+#include <QtGui/QMouseEvent>
+#include <QtGui/QFont>
 #include <QtWidgets/QMessageBox>
 #include <QtCore/QDir>
 #include "io/npfile.h"
@@ -16,15 +16,12 @@
 #include "itemfocusselectionmodel.h"
 #include <stack>
 #include "defaultbaseimagescombobox.h"
+#include "glyphnodeconverter.h"
 
 namespace SynGlyphXANTz {
 
-	//The default QGLFormat works for now except we want alpha enabled.  Also want to try and get a stereo enabled context
-	QGLFormat ANTzForestWidget::s_format(QGL::AlphaChannel);
-	QGLFormat ANTzForestWidget::s_stereoFormat(QGL::AlphaChannel | QGL::StereoBuffers);
-
-	ANTzForestWidget::ANTzForestWidget(const QGLFormat& format, GlyphForestModel* model, SynGlyphX::ItemFocusSelectionModel* selectionModel, QWidget *parent)
-		: QGLWidget(format, parent),
+	ANTzForestWidget::ANTzForestWidget(GlyphForestModel* model, SynGlyphX::ItemFocusSelectionModel* selectionModel, QWidget *parent)
+		: QGLWidget(QGL::DoubleBuffer | QGL::DepthBuffer | QGL::AlphaChannel | QGL::StereoBuffers, parent),
 		m_model(model),
 		m_selectionModel(selectionModel),
 		m_antzData(model->GetANTzData()),
@@ -44,8 +41,11 @@ namespace SynGlyphXANTz {
 		m_zSpaceOptions(),
 		m_logoTextureID(0),
 		m_showAnimation(true),
-		m_showTagsOfSelectedObjects(false)
+		m_showTagsOfSelectedObjects(false),
+		m_isInStereo(false)
 	{
+		m_isInStereo = context()->format().stereo();
+
 		setAutoBufferSwap(false);
 		setFocusPolicy(Qt::StrongFocus);
 
@@ -67,7 +67,7 @@ namespace SynGlyphXANTz {
 		QObject::connect(m_model, &GlyphForestModel::modelReset, this, &ANTzForestWidget::OnModelReset);
 		QObject::connect(m_model, &GlyphForestModel::modelAboutToBeReset, this, [this]{ m_isReseting = true; });
 
-		if (IsInStereoMode()) {
+		if (IsStereoSupported()) {
 
 			//m_antzData->GetData()->io.gl.stereo = true;
 			try {
@@ -258,7 +258,7 @@ namespace SynGlyphXANTz {
 				zSpaceErrorString += "Buffer too small";
 			}
 		
-			throw std::exception(zSpaceErrorString.toStdString().c_str());
+			throw std::runtime_error(zSpaceErrorString.toStdString().c_str());
 		}
 	}
 
@@ -358,9 +358,22 @@ namespace SynGlyphXANTz {
 
 	void ANTzForestWidget::paintGL() {
 
+		if (!context()->isValid()) {
+
+			return;
+		}
+
+		glDrawBuffer(GL_BACK_LEFT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		if (IsStereoSupported()) {
+
+			glDrawBuffer(GL_BACK_RIGHT);
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		}
+
 		if (m_isReseting) {
 
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			return;
 		}
 
@@ -368,7 +381,6 @@ namespace SynGlyphXANTz {
 
 		if (antzData->io.gl.pickPass) {
 
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			return;
 		}
 
@@ -622,9 +634,10 @@ namespace SynGlyphXANTz {
 			Q_FOREACH(const QModelIndex& modelIndex, m_selectionModel->selectedIndexes()) {
 
 				pNPnode selectedNode = static_cast<pNPnode>(modelIndex.internalPointer());
-				if (m_model->IsTagShownIn3d(selectedNode->tag->title)) {
+				QString tag = QString::fromStdWString(SynGlyphXANTz::GlyphNodeConverter::GetTag(selectedNode));
+				if (m_model->IsTagShownIn3d(tag)) {
 
-					renderText(selectedNode->world.x, selectedNode->world.y, selectedNode->world.z, selectedNode->tag->title, m_oglTextFont);
+					renderText(selectedNode->world.x, selectedNode->world.y, selectedNode->world.z, tag, m_oglTextFont);
 				}
 			}
 		}
@@ -851,6 +864,16 @@ namespace SynGlyphXANTz {
 			}
 		}
 
+		//Make sure that ANTz combo of left & right button does not cause the context menu to appear
+		if (event->buttons() == Qt::RightButton) {
+
+			setContextMenuPolicy(Qt::ActionsContextMenu);
+		}
+		else {
+
+			setContextMenuPolicy(Qt::NoContextMenu);
+		}
+
 		m_lastMousePosition = event->pos();
 	}
 
@@ -967,17 +990,27 @@ namespace SynGlyphXANTz {
 
 				if (m_selectionModel->GetFocusList().empty()) {
 
-					antzData->io.mouse.mode = kNPmouseModeCamLook;
+					if (event->buttons() & Qt::LeftButton) {
+
+						antzData->io.mouse.mode = kNPmouseModeCamLook;
+					}
 				}
 				else {
 
 					if (event->buttons() & Qt::LeftButton) {
+						
 						if (event->buttons() & Qt::RightButton) {
+						
 							antzData->io.mouse.mode = kNPmouseModeCamExamXZ;
 						}
 						else {
+							
 							antzData->io.mouse.mode = kNPmouseModeCamExamXY;
 						}
+					}
+					else if (event->buttons() & Qt::MidButton) {
+
+						antzData->io.mouse.mode = kNPmouseModeCamExamXZ;
 					}
 				}
 			}
@@ -1057,8 +1090,10 @@ namespace SynGlyphXANTz {
 			antzData->io.mouse.delta.y = event->delta() / 10;
 			event->accept();
 		}
+		else {
 
-		event->ignore();
+			event->ignore();
+		}
 	}
 	/*
 	void ANTzForestWidget::SetStereo(bool enableStereo) {
@@ -1079,19 +1114,19 @@ namespace SynGlyphXANTz {
 
 			setFormat(s_format);
 		}
-	}
+	}*/
 
 	bool ANTzForestWidget::IsStereoSupported() const {
 
-		return (format().stereo());
-	}*/
+		return (context()->format().stereo());
+	}
 
 	bool ANTzForestWidget::IsInStereoMode() const {
 
 		//pData antzData = m_antzData->GetData();
 		//return (antzData->io.gl.stereo);
 
-		return (format().stereo());
+		return m_isInStereo;
 	}
 
 
@@ -1387,6 +1422,11 @@ namespace SynGlyphXANTz {
 		if (m_model->rowCount() == 0) {
 
 			SetGridLinesColor(rootGrid, Qt::blue);
+			rootGrid->segments.x = 12;
+			rootGrid->segments.y = 6;
+			rootGrid->auxA.x = 30;
+			rootGrid->auxA.y = 30;
+			rootGrid->auxA.z = 30;
 		}
 		for (int i = 0; i < rootGrid->childCount; ++i) {
 
@@ -1425,14 +1465,19 @@ namespace SynGlyphXANTz {
 		return bindTexture(image);
 	}
 
-	const QGLFormat& ANTzForestWidget::GetNonStereoFormat() {
+	bool ANTzForestWidget::SetStereoMode(bool stereoOn) {
 
-		return s_format;
-	}
+		if (m_isInStereo != stereoOn) {
 
-	const QGLFormat& ANTzForestWidget::GetStereoFormat() {
+			if (stereoOn && (!IsStereoSupported())) {
 
-		return s_stereoFormat;
+				return false;
+			}
+
+			m_isInStereo = stereoOn;
+		}
+
+		return true;
 	}
 
 	void ANTzForestWidget::StoreRotationRates() {
