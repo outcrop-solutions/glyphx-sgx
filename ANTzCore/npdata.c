@@ -136,9 +136,13 @@ void npInitDataRecordTag (pNPrecordTag recordTag, void* dataRef)
 	recordTag->titleSize = 0;
 	recordTag->descSize = 0;
 
+	char* temp_title = malloc(sizeof(char)*(kNPtitleSizeMax + 1));
+	recordTag->title = temp_title;
 	for (i = 0; i <= kNPtitleSizeMax; i++)
 		recordTag->title[i] = '\0';
 
+	char* temp_desc = malloc(sizeof(char)*(kNPdescSizeMax + 1));
+	recordTag->desc = temp_desc;
 	for (i = 0; i <= kNPdescSizeMax; i++)
 		recordTag->desc[i] = '\0';
 	
@@ -180,11 +184,23 @@ void npInitTextTag (pNPtag tag, void* dataRef)
 	tag->lineColor.a = 64;		//70% opacity
 
 	//note <= since the buffer is (kNPtitleSizeMax + 1) for the null terminator
-	for (i = 0; i <= kNPtitleSizeMax; i++)
+	//char* temp_title = malloc(sizeof(char)*(kNPtitleSizeMax+1));
+	char* temp_title = malloc(sizeof(char)*19);
+	tag->title = temp_title;
+	//for (i = 0; i <= kNPtitleSizeMax; i++)
+	for (i = 0; i <= 12; i++)
 		tag->title[i] = '\0';
+	//char temp_title[1] = { '\0' };
+	//recordTag->title = temp_title;
 
-	for (i = 0; i <= kNPdescSizeMax; i++)
+	//char* temp_desc = malloc(sizeof(char)*(kNPdescSizeMax + 1));
+	char* temp_desc = malloc(sizeof(char)*2);
+	tag->desc = temp_desc;
+	//for (i = 0; i <= kNPdescSizeMax; i++)
+	for (i = 0; i <= 2; i++)
 		tag->desc[i] = '\0';
+	//char temp_desc[1] = { '\0' };
+	//tag->desc = temp_desc;
 }
 
 

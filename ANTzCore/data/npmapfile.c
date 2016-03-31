@@ -1208,11 +1208,12 @@ void npFloatToCSV(char** buffer, const int* value)
 //returns size of cstr in bytes or -1 if reached end size without finding a csv str
 //processess strings with and without quotes, strings w/o quotes have a limited
 //ASCII subset which excludes commas, white space... ie; ,rotate_x,rotate_y,...
-int npCSVstrncpy(char* cstrout, char** csvstr, int size)
+int npCSVstrncpy(char** cstro, char** csvstr, int size)
 {
 	int i = 0;
 	int curs = 0;
 	char* csvPtr = *csvstr;
+	char cstrout[512];
 
 	//	int size = 0;	//number of characters in the source CSV string cstr excludes '\0' at end
 
@@ -1323,6 +1324,16 @@ int npCSVstrncpy(char* cstrout, char** csvstr, int size)
 	//zz debug, does not handle line returns...
 	//	if (*csvstr[0] == '"') *csvstr = &csvPtr[curs + 1];
 	//	if (*csvstr[0] == ',') *csvstr = &csvPtr[curs + 1];
+	
+	for (int f = 0; f < size; f++){
+		free((*cstro)[f]);
+	}
+	free(*cstro);
+
+	*cstro = malloc(sizeof(char)*(i+1));
+	for (int j = 0; j < i+1; j++){
+		(*cstro)[j] = cstrout[j];
+	}
 
 	return i;
 }
@@ -1359,14 +1370,14 @@ pNPrecordTag npCSVtoTag (char** read, int size, int* scanNumRet, void* dataRef)
 	if (strLength >= kNPtitleSizeMax)
 		strLength = kNPtitleSizeMax;
 
-	tag->titleSize = npCSVstrncpy(tag->title, &curs, strLength);
+	tag->titleSize = npCSVstrncpy(&tag->title, &curs, strLength);
 
 	//copy desc
 	strLength = size - (curs - *read);
 	if (strLength >= kNPdescSizeMax)
 		strLength = kNPdescSizeMax;
 
-	tag->descSize = npCSVstrncpy(tag->desc, &curs, strLength);
+	tag->descSize = npCSVstrncpy(&tag->desc, &curs, strLength);
 
 	//update our passed by ref params
 	*scanNumRet = curs - *read;
