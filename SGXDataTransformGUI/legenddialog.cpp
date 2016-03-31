@@ -3,8 +3,11 @@
 #include <QtWidgets/QDialogButtonBox>
 #include <QtWidgets/QMessageBox>
 #include <QtCore/QFile>
+#include <QtGui/QImageReader>
 
 namespace SynGlyphX {
+
+	const QString LegendDialog::s_imageFilters = "Image Files (*.bmp *.gif *.jpg *.jpeg *.png *.svg *.svgz *.tif *.tiff)";
 
 	LegendDialog::LegendDialog(QWidget *parent)
 		: QDialog(parent)
@@ -15,7 +18,7 @@ namespace SynGlyphX {
 		mainLayout->addRow(tr("Name") + ":", m_titleLineEdit);
 
 		m_legendLineEdit = new BrowseLineEdit(BrowseLineEdit::FileDialogType::FileOpen, true, this);
-		m_legendLineEdit->SetFilters("PNG files (*.png)");
+		m_legendLineEdit->SetFilters(s_imageFilters);
 		mainLayout->addRow(tr("File") + ":", m_legendLineEdit);
 
 		QDialogButtonBox* dialogButtonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, this);
@@ -40,14 +43,16 @@ namespace SynGlyphX {
 		}
 
 		QString legendFilename = m_legendLineEdit->GetText();
-		if (ValidateLegendFilename(legendFilename)) {
+		if (!ValidateLegendFilename(legendFilename)) {
 
-			QImage image(legendFilename);
-			if (image.isNull()) {
+			return;
+		}
 
-				QMessageBox::warning(this, tr("Legend Error"), tr("File name listed for legend is an invalid image."));
-				return;
-			}
+		QImage image(legendFilename);
+		if (image.isNull()) {
+
+			QMessageBox::warning(this, tr("Legend Error"), tr("File name listed for legend is an invalid image."));
+			return;
 		}
 
 		QDialog::accept();
@@ -60,14 +65,16 @@ namespace SynGlyphX {
 			QMessageBox::warning(this, tr("Legend Error"), tr("File name listed for legend is empty."));
 			return false;
 		}
-		if (legendFilename.right(4).toLower() != ".png") {
 
-			QMessageBox::warning(this, tr("Legend Error"), tr("File name listed for legend is not a supported file type."));
-			return false;
-		}
 		if (!QFile::exists(legendFilename)) {
 
 			QMessageBox::warning(this, tr("Legend Error"), tr("File name listed for legend does not exist."));
+			return false;
+		}
+
+		if (QImageReader::imageFormat(legendFilename).isEmpty()) {
+
+			QMessageBox::warning(this, tr("Legend Error"), tr("File name listed for legend is not a supported file type."));
 			return false;
 		}
 

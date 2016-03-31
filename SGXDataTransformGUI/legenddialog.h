@@ -43,6 +43,8 @@ namespace SynGlyphX {
 
 		QLineEdit* m_titleLineEdit;
 		BrowseLineEdit* m_legendLineEdit;
+
+		static const QString s_imageFilters;
 	};
 
 } //namespace SynGlyphX
