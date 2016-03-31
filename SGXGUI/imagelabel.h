@@ -37,7 +37,7 @@ namespace SynGlyphX {
 
 	protected:
 		void resizeEvent(QResizeEvent* resizeEvent) override;
-		void ScalePixmap();
+		void ScalePixmap(const QSize& boundingSize);
 
 		QPixmap m_pixmap;
 		double m_imageRatio;

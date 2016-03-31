@@ -7,6 +7,7 @@ namespace SynGlyphX {
 		: QLabel(parent),
 		m_imageRatio(0.0)
 	{
+		setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
 		setScaledContents(false);
 	}
 
@@ -17,9 +18,6 @@ namespace SynGlyphX {
 
 	QSize ImageLabel::sizeHint() const {
 
-		//unsigned int widgetWidth = width();
-		//return QSize(widgetWidth, static_cast<int>(m_imageRatio * widgetWidth));
-		//return QSize(widgetWidth, widgetWidth / 2);
 		return QSize(250, 125);
 	}
 
@@ -27,21 +25,31 @@ namespace SynGlyphX {
 
 		m_pixmap = pixmap;
 		m_imageRatio = pixmap.height() / static_cast<double>(pixmap.width());
-		ScalePixmap();
+		ScalePixmap(size());
 	}
 
 	void ImageLabel::resizeEvent(QResizeEvent* resizeEvent) {
 
-		ScalePixmap();
-		resizeEvent->accept();
+		ScalePixmap(resizeEvent->size());
+		//resizeEvent->accept();
 		QLabel::resizeEvent(resizeEvent);
 	}
 
-	void ImageLabel::ScalePixmap() {
+	void ImageLabel::ScalePixmap(const QSize& boundingSize) {
 
 		if (!m_pixmap.isNull()) {
 
-			setPixmap(m_pixmap.scaled(size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
+			QSize pixmapSize;
+			double widgetAspectRatio = boundingSize.height() / static_cast<double>(boundingSize.width());
+			if (widgetAspectRatio < m_imageRatio) {
+
+				setPixmap(m_pixmap.scaledToHeight(boundingSize.height(), Qt::SmoothTransformation));
+			}
+			else {
+
+				setPixmap(m_pixmap.scaledToWidth(boundingSize.width(), Qt::SmoothTransformation));
+			}
+			
 		}
 	}
 
