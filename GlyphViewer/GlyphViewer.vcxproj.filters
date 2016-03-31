@@ -176,6 +176,15 @@
     <ClCompile Include="sourcedatacache.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="legendsdisplaywidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Win32\Debug\moc_legendsdisplaywidget.cpp">
+      <Filter>Generated Files\Debug_Win32</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Win32\Release\moc_legendsdisplaywidget.cpp">
+      <Filter>Generated Files\Release_Win32</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="glyphviewer.qrc">
@@ -221,6 +230,9 @@
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="rangefilterlistwidget.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="legendsdisplaywidget.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>

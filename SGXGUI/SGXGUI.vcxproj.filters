@@ -377,6 +377,15 @@
     <ClCompile Include="GeneratedFiles\Release\moc_roweditingtableview.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="imagelabel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_imagelabel.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_imagelabel.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="sgxgui_global.h">
@@ -502,6 +511,9 @@
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="roweditingtableview.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="imagelabel.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>

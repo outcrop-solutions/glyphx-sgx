@@ -235,14 +235,9 @@ void GlyphViewerWindow::CreateDockWidgets() {
 	setCorner(Qt::TopRightCorner, Qt::RightDockWidgetArea);
 	setCorner(Qt::BottomRightCorner, Qt::RightDockWidgetArea);
 
-	m_legendWidget = new QLabel(this);
-	m_legendWidget->setScaledContents(true);
-	QPixmap pixmap(200, 100);
-	pixmap.fill(Qt::black);
-	m_legendWidget->setPixmap(pixmap);
-
-	QDockWidget* legendDockWidget = new QDockWidget(tr("Legend"), this);
-	legendDockWidget->setWidget(m_legendWidget);
+	m_legendsWidget = new LegendsDisplayWidget(this);
+	QDockWidget* legendDockWidget = new QDockWidget(tr("Legends"), this);
+	legendDockWidget->setWidget(m_legendsWidget);
 	addDockWidget(Qt::LeftDockWidgetArea, legendDockWidget);
 	m_viewMenu->addAction(legendDockWidget->toggleViewAction());
 
@@ -355,6 +350,7 @@ void GlyphViewerWindow::ClearAllData() {
 	m_sourceDataCache->Close();
 	m_glyphForestModel->Clear();
 	m_mappingModel->Clear();
+	m_legendsWidget->ClearLegends();
 	SynGlyphX::Application::restoreOverrideCursor();
 }
 
@@ -544,6 +540,7 @@ void GlyphViewerWindow::LoadDataTransform(const QString& filename) {
 		LoadFilesIntoModel(outputfiles, qList);
 		m_glyphForestModel->SetTagNotToBeShownIn3d(QString::fromStdWString(m_mappingModel->GetDataMapping()->GetDefaults().GetDefaultTagValue()));
 		m_antzWidget->SetBackgroundColor(m_mappingModel->GetDataMapping()->GetSceneProperties().GetBackgroundColor());
+		m_legendsWidget->SetLegends(m_mappingModel->GetDataMapping()->GetLegends());
 
 		SynGlyphX::Application::restoreOverrideCursor();
 	}

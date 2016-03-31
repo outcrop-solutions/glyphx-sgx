@@ -36,6 +36,7 @@
 #include "dataengineconnection.h"
 #include "glyphengine.h"
 #include "portablevisualizationexport.h"
+#include "legendsdisplaywidget.h"
 
 class GlyphViewerWindow : public SynGlyphX::MainWindow
 {
@@ -89,7 +90,7 @@ private:
 	QList<QAction*> m_loadedVisualizationDependentActions;
 
 	QDockWidget* m_glyphListDockWidget;
-	QLabel* m_legendWidget;
+	LegendsDisplayWidget* m_legendsWidget;
 
 	SynGlyphX::DataMappingModel* m_mappingModel;
 	CacheManager m_cacheManager;
