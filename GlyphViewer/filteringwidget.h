@@ -25,6 +25,8 @@
 #include "sourcedataselectionmodel.h"
 #include "linkedwidgetsmanager.h"
 #include "sourcedatainfomodel.h"
+#include "multitableelasticlistswidget.h"
+#include "rangefilterlistwidget.h"
 
 class FilteringWidget : public QWidget
 {
@@ -35,9 +37,6 @@ public:
 	~FilteringWidget();
 
 	void SetupLinkedWidgets(LinkedWidgetsManager& linkedWidgets);
-
-signals:
-	void TableChanged(const QString& table);
 
 private slots:
 	void Clear();
@@ -55,6 +54,9 @@ private:
 	QPushButton* m_createSubsetVizButton;
 	QPushButton* m_clearButton;
 	QScopedPointer<SourceDataWidget> m_sourceDataWindow;
+
+	RangeFilterListWidget* m_rangeListFilterWidget;
+	MultiTableElasticListsWidget* m_elasticListsWidget;
 
 	SourceDataSelectionModel* m_selectionModel;
 	SourceDataCache::SharedPtr m_sourceDataCache;

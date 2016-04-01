@@ -3,8 +3,6 @@
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QTabWidget>
 #include "groupboxsinglewidget.h"
-#include "multitableelasticlistswidget.h"
-#include "rangefilterlistwidget.h"
 #include "application.h"
 
 FilteringWidget::FilteringWidget(SourceDataInfoModel* columnsModel, SourceDataCache::SharedPtr sourceDataCache, SourceDataSelectionModel* selectionModel, QWidget *parent)
@@ -19,7 +17,7 @@ FilteringWidget::FilteringWidget(SourceDataInfoModel* columnsModel, SourceDataCa
 	m_hideUnselectedTreesCheckbox = new QCheckBox(tr("Filter View"), this);
 	topLayout->addWidget(m_hideUnselectedTreesCheckbox);
 
-	m_clearButton = new QPushButton(tr("Clear"), this);
+	m_clearButton = new QPushButton(tr("Clear Filter(s)"), this);
 	topLayout->addWidget(m_clearButton);
 	QObject::connect(m_clearButton, &QPushButton::clicked, this, &FilteringWidget::Clear);
 
@@ -37,12 +35,11 @@ FilteringWidget::FilteringWidget(SourceDataInfoModel* columnsModel, SourceDataCa
 
 	QTabWidget* filterMethodsWidget = new QTabWidget(this);
 
-	RangeFilterListWidget* rangeListFilterWidget = new RangeFilterListWidget(columnsModel, sourceDataCache, selectionModel, filterMethodsWidget);
-	filterMethodsWidget->addTab(rangeListFilterWidget, tr("Range"));
-	QObject::connect(this, &FilteringWidget::TableChanged, rangeListFilterWidget, &RangeFilterListWidget::SwitchTable);
-	MultiTableElasticListsWidget* elasticListsWidget = new MultiTableElasticListsWidget(sourceDataCache, selectionModel, filterMethodsWidget);
-	filterMethodsWidget->addTab(elasticListsWidget, tr("Elastic"));
-	QObject::connect(this, &FilteringWidget::TableChanged, elasticListsWidget, &MultiTableElasticListsWidget::SwitchTable);
+	m_rangeListFilterWidget = new RangeFilterListWidget(columnsModel, sourceDataCache, selectionModel, filterMethodsWidget);
+	filterMethodsWidget->addTab(m_rangeListFilterWidget, tr("Range"));
+	
+	m_elasticListsWidget = new MultiTableElasticListsWidget(sourceDataCache, selectionModel, filterMethodsWidget);
+	filterMethodsWidget->addTab(m_elasticListsWidget, tr("Elastic"));
 
 	mainLayout->addWidget(filterMethodsWidget, 1);
 
@@ -146,7 +143,9 @@ void FilteringWidget::OnModelReset() {
 
 void FilteringWidget::OnTableChanged(const QString& table) {
 
-	emit TableChanged(m_tableComboBox->currentData().toString());
+	QString tableId = m_tableComboBox->currentData().toString();
+	m_rangeListFilterWidget->SwitchTable(tableId);
+	m_elasticListsWidget->SwitchTable(tableId);
 }
 
 void FilteringWidget::EnableButtons(bool enable) {
