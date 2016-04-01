@@ -15,21 +15,21 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef SYNGLYPHX_IMAGELABEL_H
-#define SYNGLYPHX_IMAGELABEL_H
+#ifndef SYNGLYPHX_FIXEDASPECTRATIOIMAGELABEL_H
+#define SYNGLYPHX_FIXEDASPECTRATIOIMAGELABEL_H
 
 #include "sgxgui_global.h"
 #include <QtWidgets/QLabel>
 
 namespace SynGlyphX {
 
-	class SGXGUI_EXPORT ImageLabel : public QLabel
+	class SGXGUI_EXPORT FixedAspectRatioImageLabel : public QLabel
 	{
 		Q_OBJECT
 
 	public:
-		ImageLabel(QWidget *parent);
-		~ImageLabel();
+		FixedAspectRatioImageLabel(QWidget *parent);
+		~FixedAspectRatioImageLabel();
 
 		QSize sizeHint() const override;
 
@@ -45,4 +45,4 @@ namespace SynGlyphX {
 
 }
 
-#endif // SYNGLYPHX_IMAGELABEL_H
+#endif // SYNGLYPHX_FIXEDASPECTRATIOIMAGELABEL_H
