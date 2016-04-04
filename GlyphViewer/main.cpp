@@ -9,7 +9,7 @@
 
 int main(int argc, char *argv[])
 {
-	SynGlyphX::GlyphBuilderApplication::Setup("Glyph Builder - Glyph Viewer", "0.7.29");
+	SynGlyphX::GlyphBuilderApplication::Setup("Glyph Builder - Glyph Viewer", "0.7.30");
 	SynGlyphX::GlyphBuilderApplication a(argc, argv);
 
 	const QString dumpPath = QStandardPaths::writableLocation(QStandardPaths::HomeLocation) + "/Minidumps";
