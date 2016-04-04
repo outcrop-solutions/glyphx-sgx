@@ -9,11 +9,10 @@
 
 unsigned int PseudoTimeFilterWidget::s_buttonSize = 24;
 
-PseudoTimeFilterWidget::PseudoTimeFilterWidget(SourceDataInfoModel* columnsModel, SourceDataCache::SharedPtr sourceDataCache, SourceDataSelectionModel* selectionModel, QWidget *parent)
+PseudoTimeFilterWidget::PseudoTimeFilterWidget(SourceDataInfoModel* columnsModel, FilteringManager* filteringManager, QWidget *parent)
 	: QWidget(parent),
 	m_filterState(FilterState::Inactive),
-	m_sourceDataCache(sourceDataCache),
-	m_selectionModel(selectionModel),
+	m_filteringManager(filteringManager),
 	m_columnsModel(columnsModel)
 {
 	m_playTimer.setSingleShot(false);
@@ -227,13 +226,13 @@ void PseudoTimeFilterWidget::UpdateTimeFilter() {
 	if (m_filterState == FilterState::Inactive) {
 
 		m_currentPositionLabel->clear();
-		m_selectionModel->ClearSourceDataSelection();
+		m_filteringManager->ClearFilterResults();
 	}
 	else {
 
 		const auto& newSelection = m_selectionForEachDistinctValue.at(sliderValue);
 		m_currentPositionLabel->setText(newSelection.first);
-		m_selectionModel->SetSourceDataSelectionForTable(m_sourceCacheTableName, newSelection.second, m_moveCameraOnUpdateCheckbox->isChecked());
+		m_filteringManager->SetFilterResultsForTable(m_sourceCacheTableName, newSelection.second, m_moveCameraOnUpdateCheckbox->isChecked());
 	}
 }
 
@@ -268,7 +267,7 @@ void PseudoTimeFilterWidget::ChangeFilterState(FilterState newFilterState) {
 			m_slider->setValue(0);
 			m_slider->blockSignals(false);
 			m_currentPositionLabel->clear();
-			m_selectionModel->ClearSourceDataSelection();
+			m_filteringManager->ClearFilterResults();
 		}
 	}
 
@@ -329,7 +328,7 @@ void PseudoTimeFilterWidget::UpdateSelectedField(const QModelIndex& newSelectedF
 	QString dataSourceIdString = m_columnsModel->data(dataSourceIndex, SourceDataInfoModel::IDRole).toString();
 
 	m_sourceCacheTableName = SourceDataCache::CreateTablename(dataSourceIdString, tableName);
-	m_selectionForEachDistinctValue = m_sourceDataCache->GetIndexesOrderedByDistinctValue(m_sourceCacheTableName, columnName);
+	m_selectionForEachDistinctValue = m_filteringManager->GetSourceDataCache()->GetIndexesOrderedByDistinctValue(m_sourceCacheTableName, columnName);
 
 	m_slider->setMaximum(m_selectionForEachDistinctValue.size() - 1);
 

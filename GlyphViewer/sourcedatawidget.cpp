@@ -16,10 +16,10 @@
 #include "glyphbuilderapplication.h"
 #include <boost/uuid/uuid_io.hpp>
 
-SourceDataWidget::SourceDataWidget(SourceDataSelectionModel* selectionModel, QWidget *parent)
+SourceDataWidget::SourceDataWidget(FilteringManager* filteringManager, QWidget *parent)
 	: QWidget(parent),
 	//m_model(model),
-	m_selectionModel(selectionModel)
+	m_filteringManager(filteringManager)
 	//m_sourceDataCache(sourceDataCache)
 {
 	QVBoxLayout* mainLayout = new QVBoxLayout(this);
@@ -53,7 +53,7 @@ SourceDataWidget::SourceDataWidget(SourceDataSelectionModel* selectionModel, QWi
 	setWindowTitle(tr("Source Data Of Selected Glyphs"));
 	ReadSettings();
 
-	QObject::connect(m_selectionModel, &SourceDataSelectionModel::SelectionChanged, this, &SourceDataWidget::UpdateTables);
+	QObject::connect(m_filteringManager, &FilteringManager::FilterResultsChanged, this, &SourceDataWidget::UpdateTables);
 }
 
 SourceDataWidget::~SourceDataWidget()
@@ -77,10 +77,10 @@ void SourceDataWidget::UpdateTables() {
 	m_sourceDataTabs->clear();
 	m_sqlQueryModels.clear();
 
-	const SourceDataSelectionModel::IndexSetMap& dataIndexes = m_selectionModel->GetSourceDataSelection();
+	const FilteringManager::IndexSetMap& dataIndexes = m_filteringManager->GetFilterResultsByTable();
 	if (!dataIndexes.empty()) {
 
-		const SourceDataCache::TableNameMap& formattedNames = m_selectionModel->GetSourceDataCache()->GetFormattedNames();
+		const SourceDataCache::TableNameMap& formattedNames = m_filteringManager->GetSourceDataCache()->GetFormattedNames();
 
 		for (auto indexSet : dataIndexes) {
 
@@ -88,8 +88,8 @@ void SourceDataWidget::UpdateTables() {
 			tableView->setObjectName(indexSet.first);
 			QSqlQueryModel* queryModel = new QSqlQueryModel(this);
 			
-			SourceDataCache::TableColumns columns = m_selectionModel->GetSourceDataCache()->GetColumnsForTable(indexSet.first);
-			SourceDataCache::SharedSQLQuery query = m_selectionModel->GetSourceDataCache()->CreateSelectQueryForIndexSet(indexSet.first, columns, indexSet.second);
+			SourceDataCache::TableColumns columns = m_filteringManager->GetSourceDataCache()->GetColumnsForTable(indexSet.first);
+			SourceDataCache::SharedSQLQuery query = m_filteringManager->GetSourceDataCache()->CreateSelectQueryForIndexSet(indexSet.first, columns, indexSet.second);
 			query->exec();
 			queryModel->setQuery(*query.data());
 			if (queryModel->lastError().isValid()) {
@@ -221,7 +221,7 @@ void SourceDataWidget::CreateSubsetVisualization() {
 			QStringList inputTableValues = m_sourceDataTabs->widget(m_sourceDataTabs->currentIndex())->objectName().split(':');
 			boost::uuids::string_generator gen;
 			SynGlyphX::InputTable inputTable(gen(inputTableValues[0].toStdWString()), (inputTableValues.size() > 1) ? inputTableValues[1].toStdWString() : SynGlyphX::FileDatasource::SingleTableName);
-			SynGlyphX::DataTransformMapping::ConstSharedPtr subsetDataMapping = m_selectionModel->GetDataMappingModel()->GetDataMapping()->CreateSubsetMappingWithSingleTable(inputTable, csvFileLocation.toStdWString());
+			SynGlyphX::DataTransformMapping::ConstSharedPtr subsetDataMapping = m_filteringManager->GetDataMappingModel()->GetDataMapping()->CreateSubsetMappingWithSingleTable(inputTable, csvFileLocation.toStdWString());
 			subsetDataMapping->WriteToFile(sdtFilename.toStdString());
 			
 			settings.setValue("vizSaveDir", stdCanonicalPath);

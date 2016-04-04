@@ -11,14 +11,14 @@
 #include "sourcedatainfomodel.h"
 #include <QtWidgets/QCheckBox>
 #include "linkedwidgetsmanager.h"
-#include "sourcedataselectionmodel.h"
+#include "filteringmanager.h"
 
 class PseudoTimeFilterWidget : public QWidget
 {
 	Q_OBJECT
 
 public:
-	PseudoTimeFilterWidget(SourceDataInfoModel* columnsModel, SourceDataCache::SharedPtr sourceDataCache, SourceDataSelectionModel* selectionModel, QWidget *parent);
+	PseudoTimeFilterWidget(SourceDataInfoModel* columnsModel, FilteringManager* filteringManager, QWidget *parent);
 	~PseudoTimeFilterWidget();
 
 	void SetupLinkedWidgets(LinkedWidgetsManager& linkedWidgetsManager);
@@ -70,10 +70,9 @@ private:
 	QTimer m_playTimer;
 
 	FilterState m_filterState;
-	SourceDataCache::SharedPtr m_sourceDataCache;
 	SourceDataCache::DistinctValueIndexMap m_selectionForEachDistinctValue;
 	QString m_sourceCacheTableName;
-	SourceDataSelectionModel* m_selectionModel;
+	FilteringManager* m_filteringManager;
 
 	QCheckBox* m_filterViewCheckbox;
 	QCheckBox* m_moveCameraOnUpdateCheckbox;

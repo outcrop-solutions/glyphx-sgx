@@ -14,7 +14,14 @@ LinkedWidgetsManager::~LinkedWidgetsManager()
 
 void LinkedWidgetsManager::SetFilterView(bool set) {
 
-	m_antzWidget->SetHideUnselectedGlyphTrees(set);
+	if (set) {
+
+		m_antzWidget->SetFilteredResultsDisplayMode(SynGlyphXANTz::ANTzForestWidget::HideUnfiltered);
+	}
+	else {
+
+		m_antzWidget->SetFilteredResultsDisplayMode(SynGlyphXANTz::ANTzForestWidget::None);
+	}
 	Q_FOREACH(QCheckBox* checkbox, m_filterViewCheckboxes) {
 
 		if (sender() != checkbox) {
@@ -26,7 +33,7 @@ void LinkedWidgetsManager::SetFilterView(bool set) {
 
 bool LinkedWidgetsManager::GetFilterView() const {
 
-	return m_antzWidget->GetHideUnselectedGlyphTrees();
+	return (m_antzWidget->GetFilteredResultsDisplayMode() == SynGlyphXANTz::ANTzForestWidget::HideUnfiltered);
 }
 
 void LinkedWidgetsManager::AddFilterViewCheckbox(QCheckBox *checkbox) {

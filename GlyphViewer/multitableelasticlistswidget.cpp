@@ -5,10 +5,10 @@
 #include "elasticlistwidget.h"
 #include "application.h"
 
-MultiTableElasticListsWidget::MultiTableElasticListsWidget(SourceDataCache::SharedPtr sourceDataCache, SourceDataSelectionModel* selectionModel, QWidget *parent)
+MultiTableElasticListsWidget::MultiTableElasticListsWidget(FilteringManager* filteringManager, QWidget *parent)
 	: QWidget(parent),
-	m_selectionModel(selectionModel),
-	m_sourceDataCache(sourceDataCache)
+	m_filteringManager(filteringManager)
+	//m_sourceDataCache(sourceDataCache)
 {
 	m_elasticListsStackLayout = new QStackedLayout(this);
 	m_elasticListsStackLayout->setContentsMargins(0, 0, 0, 0);
@@ -16,8 +16,8 @@ MultiTableElasticListsWidget::MultiTableElasticListsWidget(SourceDataCache::Shar
 
 	setLayout(m_elasticListsStackLayout);
 
-	QObject::connect(m_selectionModel, &SourceDataSelectionModel::SelectionChanged, this, &MultiTableElasticListsWidget::OnSelectionChanged);
-	QObject::connect(m_selectionModel->GetSceneSelectionModel()->model(), &QAbstractItemModel::modelReset, this, &MultiTableElasticListsWidget::OnModelReset);
+	QObject::connect(m_filteringManager, &FilteringManager::FilterResultsChanged, this, &MultiTableElasticListsWidget::OnFilterResultsChanged);
+	QObject::connect(m_filteringManager->GetSceneSelectionModel()->model(), &QAbstractItemModel::modelReset, this, &MultiTableElasticListsWidget::OnModelReset);
 }
 
 MultiTableElasticListsWidget::~MultiTableElasticListsWidget()
@@ -25,7 +25,7 @@ MultiTableElasticListsWidget::~MultiTableElasticListsWidget()
 
 }
 
-void MultiTableElasticListsWidget::OnSelectionChanged() {
+void MultiTableElasticListsWidget::OnFilterResultsChanged() {
 
 	UpdateElasticListsAndSourceDataWidget();
 }
@@ -33,12 +33,13 @@ void MultiTableElasticListsWidget::OnSelectionChanged() {
 void MultiTableElasticListsWidget::OnModelReset() {
 
 	ClearElasticLists();
-	if (m_sourceDataCache->IsValid()) {
+	SourceDataCache::ConstSharedPtr sourceDataCache = m_filteringManager->GetSourceDataCache();
+	if (sourceDataCache->IsValid()) {
 
-		const SourceDataCache::TableNameMap& tableNameMap = m_sourceDataCache->GetFormattedNames();
+		const SourceDataCache::TableNameMap& tableNameMap = sourceDataCache->GetFormattedNames();
 		for (auto formattedName : tableNameMap) {
 
-			SingleTableElasticListsWidget* elasticListsWidgetForTable = new SingleTableElasticListsWidget(m_sourceDataCache, formattedName.first, this);
+			SingleTableElasticListsWidget* elasticListsWidgetForTable = new SingleTableElasticListsWidget(sourceDataCache, formattedName.first, this);
 			m_elasticListsStackLayout->addWidget(elasticListsWidgetForTable);
 			m_elasticListWidgetsForEachTable[formattedName.first.toStdWString()] = elasticListsWidgetForTable;
 			QObject::connect(elasticListsWidgetForTable, &SingleTableElasticListsWidget::SelectionChanged, this, &MultiTableElasticListsWidget::OnElasticListsSelectionChanged);
@@ -55,12 +56,12 @@ void MultiTableElasticListsWidget::SwitchTable(const QString& table) {
 
 void MultiTableElasticListsWidget::UpdateElasticListsAndSourceDataWidget() {
 
-	const SourceDataSelectionModel::IndexSetMap& sourceDataSelectionSets = m_selectionModel->GetSourceDataSelection();
-	bool isSelectionNotEmpty = !sourceDataSelectionSets.empty();
-	if (isSelectionNotEmpty) {
+	const FilteringManager::IndexSetMap& filterResultsByTable = m_filteringManager->GetFilterResultsByTable();
+	//bool isSelectionNotEmpty = !sourceDataSelectionSets.empty();
+	if (!filterResultsByTable.empty()) {
 
 		//m_sourceDataWindow->UpdateTables(sourceDataSelectionSets);
-		UpdateElasticLists(sourceDataSelectionSets);
+		UpdateElasticLists(filterResultsByTable);
 	}
 	else {
 
@@ -68,13 +69,13 @@ void MultiTableElasticListsWidget::UpdateElasticListsAndSourceDataWidget() {
 	}
 }
 
-void MultiTableElasticListsWidget::UpdateElasticLists(const SourceDataSelectionModel::IndexSetMap& dataIndexes) {
+void MultiTableElasticListsWidget::UpdateElasticLists(const FilteringManager::IndexSetMap& dataIndexes) {
 
-	for (auto table : m_sourceDataCache->GetFormattedNames()) {
+	for (auto table : m_filteringManager->GetSourceDataCache()->GetFormattedNames()) {
 
 		//int c = m_sourceDataCache->GetNumberOfRowsInTable(table.first);
 		SingleTableElasticListsWidget* singleTableElasticListsWidget = m_elasticListWidgetsForEachTable.at(table.first.toStdWString());
-		SourceDataSelectionModel::IndexSetMap::const_iterator dataIndexesForTable = dataIndexes.find(table.first);
+		FilteringManager::IndexSetMap::const_iterator dataIndexesForTable = dataIndexes.find(table.first);
 		if (dataIndexesForTable == dataIndexes.end()) {
 
 			singleTableElasticListsWidget->PopulateElasticLists();
@@ -98,16 +99,5 @@ void MultiTableElasticListsWidget::ClearElasticLists() {
 
 void MultiTableElasticListsWidget::OnElasticListsSelectionChanged(const QString& table, const SourceDataCache::ColumnValueData& selection) {
 
-	if (selection.empty()) {
-
-		m_selectionModel->ClearSourceDataSelectionForTable(table);
-	}
-	else {
-
-		const SourceDataSelectionModel::IndexSetMap& indexSets = m_selectionModel->GetSourceDataSelection();
-		SourceDataSelectionModel::IndexSetMap::const_iterator previousSelection = indexSets.find(table);
-		SynGlyphX::IndexSet indexSet = m_sourceDataCache->GetIndexesFromTableWithSelectedValues(table, selection);
-		
-		m_selectionModel->SetSourceDataSelectionForTable(table, indexSet);
-	}
+	m_filteringManager->SetFilterResultsForTable(table, selection);
 }

@@ -45,8 +45,8 @@ public:
 
 	typedef std::map<QString, QSet<QString>> ColumnValueData;
 
-	typedef std::pair<QString, SynGlyphX::DegenerateInterval> ColumnMinMaxPair;
-	typedef std::vector<ColumnMinMaxPair> ColumnMinMaxMap;
+	typedef std::pair<QString, SynGlyphX::DegenerateInterval> ColumnIntervalPair;
+	typedef std::vector<ColumnIntervalPair> ColumnIntervalMap;
 
 	SourceDataCache();
 	SourceDataCache(const QString& filename);
@@ -65,8 +65,8 @@ public:
 
 	SharedSQLQuery CreateSelectFieldQueryAscending(const SynGlyphX::InputField& inputField) const;
 	SharedSQLQuery CreateMinMaxQuery(const SynGlyphX::InputField& inputField) const;
-	SynGlyphX::DegenerateInterval GetMinMax(const SynGlyphX::InputField& inputField, const ColumnMinMaxMap& otherRanges = ColumnMinMaxMap()) const;
-	std::set<double> GetSortedNumericDistictValues(const SynGlyphX::InputField& inputField, const ColumnMinMaxMap& otherRanges = ColumnMinMaxMap()) const;
+	SynGlyphX::DegenerateInterval GetMinMax(const SynGlyphX::InputField& inputField, const ColumnIntervalMap& otherRanges = ColumnIntervalMap()) const;
+	std::set<double> GetSortedNumericDistictValues(const SynGlyphX::InputField& inputField, const ColumnIntervalMap& otherRanges = ColumnIntervalMap()) const;
 		
 	SharedSQLQuery CreateSelectQueryForIndexSet(const QString& tableName, const TableColumns& columns, const SynGlyphX::IndexSet& indexSet) const;
 	SharedSQLQuery CreateDistinctValueQuery(const QString& tableName, const QString& columnName, const SynGlyphX::IndexSet& indexSet = SynGlyphX::IndexSet()) const;
@@ -76,7 +76,7 @@ public:
 	unsigned long GetNumberOfRowsInTable(const SynGlyphX::InputTable& inputTable) const;
 	unsigned long GetNumberOfRowsInTable(const QString& table) const;
 	SynGlyphX::IndexSet GetIndexesFromTableWithSelectedValues(const QString& tableName, const ColumnValueData& selectedValues, const SynGlyphX::IndexSet& previousSelection = SynGlyphX::IndexSet()) const;
-	SynGlyphX::IndexSet GetIndexesFromTableInRanges(const QString& tableName, const ColumnMinMaxMap& columnRanges) const;
+	SynGlyphX::IndexSet GetIndexesFromTableInRanges(const QString& tableName, const ColumnIntervalMap& columnRanges) const;
 
 	DistinctValueIndexMap GetIndexesOrderedByDistinctValue(const QString& tableName, const QString& columnName) const;
 

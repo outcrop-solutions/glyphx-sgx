@@ -2,7 +2,7 @@
 
 const unsigned int SingleTableElasticListsWidget::Spacing = 16;
 
-SingleTableElasticListsWidget::SingleTableElasticListsWidget(SourceDataCache::SharedPtr sourceDataCache, const QString& table, QWidget *parent)
+SingleTableElasticListsWidget::SingleTableElasticListsWidget(SourceDataCache::ConstSharedPtr sourceDataCache, const QString& table, QWidget *parent)
 	: SynGlyphX::VerticalScrollArea(parent),
 	m_sourceDataCache(sourceDataCache),
 	m_table(table)

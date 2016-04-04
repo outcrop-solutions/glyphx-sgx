@@ -40,7 +40,7 @@ GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 	m_glyphForestModel = new SynGlyphXANTz::GlyphForestModel(this);
 
 	m_glyphForestSelectionModel = new SynGlyphX::ItemFocusSelectionModel(m_glyphForestModel, this);
-	m_sourceDataSelectionModel = new SourceDataSelectionModel(m_mappingModel, m_sourceDataCache, m_glyphForestSelectionModel, this);
+	m_filteringManager = new FilteringManager(m_mappingModel, m_sourceDataCache, m_glyphForestSelectionModel, this);
 
 	m_columnsModel = new SourceDataInfoModel(m_mappingModel->GetDataMapping(), m_sourceDataCache, this);
 	m_columnsModel->SetSelectable(false, false, true);
@@ -145,6 +145,7 @@ void GlyphViewerWindow::CreateANTzWidget() {
 
 	QObject::connect(m_showAnimation, &QAction::toggled, m_antzWidget, &SynGlyphXANTz::ANTzForestWidget::ShowAnimatedRotations);
 	QObject::connect(m_showTagsAction, &QAction::toggled, m_antzWidget, &SynGlyphXANTz::ANTzForestWidget::SetShowTagsOfSelectedObjects);
+	QObject::connect(m_filteringManager, &FilteringManager::FilterResultsChanged, m_antzWidget, &SynGlyphXANTz::ANTzForestWidget::SetFilteredResults);
 }
 
 void GlyphViewerWindow::CreateMenus() {
@@ -261,13 +262,13 @@ void GlyphViewerWindow::CreateDockWidgets() {
 	m_glyphListDockWidget->raise();
 
 	QDockWidget* rightDockWidget = new QDockWidget(tr("Filtering"), this);
-	m_filteringWidget = new FilteringWidget(m_columnsModel, m_sourceDataCache, m_sourceDataSelectionModel, rightDockWidget);
+	m_filteringWidget = new FilteringWidget(m_columnsModel, m_filteringManager, rightDockWidget);
 	rightDockWidget->setWidget(m_filteringWidget);
 	addDockWidget(Qt::RightDockWidgetArea, rightDockWidget);
 	m_viewMenu->addAction(rightDockWidget->toggleViewAction());
 
 	QDockWidget* bottomDockWidget = new QDockWidget(tr("Time Animated Filter"), this);
-	m_pseudoTimeFilterWidget = new PseudoTimeFilterWidget(m_columnsModel, m_sourceDataCache, m_sourceDataSelectionModel, bottomDockWidget);
+	m_pseudoTimeFilterWidget = new PseudoTimeFilterWidget(m_columnsModel, m_filteringManager, bottomDockWidget);
 	bottomDockWidget->setWidget(m_pseudoTimeFilterWidget);
 	addDockWidget(Qt::BottomDockWidgetArea, bottomDockWidget);
 	m_viewMenu->addAction(bottomDockWidget->toggleViewAction());

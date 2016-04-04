@@ -23,7 +23,7 @@
 #include <QtWidgets/QStackedLayout>
 #include "singlenumericrangefilterwidget.h"
 #include <QtWidgets/QTableWidget>
-#include "sourcedataselectionmodel.h"
+#include "filteringmanager.h"
 #include "sourcedatainfomodel.h"
 #include "interval.h"
 
@@ -32,7 +32,7 @@ class RangeFilterListWidget : public QWidget
 	Q_OBJECT
 
 public:
-	RangeFilterListWidget(SourceDataInfoModel* columnsModel, SourceDataCache::SharedPtr sourceDataCache, SourceDataSelectionModel* selectionModel, QWidget *parent);
+	RangeFilterListWidget(SourceDataInfoModel* columnsModel, FilteringManager* filteringManager, QWidget *parent);
 	~RangeFilterListWidget();
 
 public slots:
@@ -45,7 +45,7 @@ private slots:
 	void OnRemoveAllFilters();
 	void OnUpdateFilters();
 	void OnRangesChanged();
-	void OnSourceDataSelectionChanged();
+	void OnFilterResultsChanged();
 	void OnFilterSelectionChanged(const QItemSelection &selected, const QItemSelection &deselected);
 	void OnMoveUpRow();
 	void OnMoveDownRow();
@@ -68,8 +68,7 @@ private:
 	void SaveRangesFromFiltersInTableWidget();
 	bool DoAnyTablesHaveFilters() const;
 
-	SourceDataCache::SharedPtr m_sourceDataCache;
-	SourceDataSelectionModel* m_selectionModel;
+	FilteringManager* m_filteringManager;
 
 	QPushButton* m_addButton;
 	QPushButton* m_removeAllButton;

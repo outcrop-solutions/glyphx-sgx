@@ -442,11 +442,11 @@ SynGlyphX::IndexSet SourceDataCache::GetIndexesFromTableWithSelectedValues(const
 	return indexSet;
 }
 
-SynGlyphX::IndexSet SourceDataCache::GetIndexesFromTableInRanges(const QString& tableName, const ColumnMinMaxMap& columnRanges) const {
+SynGlyphX::IndexSet SourceDataCache::GetIndexesFromTableInRanges(const QString& tableName, const ColumnIntervalMap& columnRanges) const {
 
 	QString queryString = "SELECT \"" + IndexColumnName + "\" FROM \"" + tableName + "\" WHERE ";
 
-	ColumnMinMaxMap::const_iterator iT = columnRanges.begin();
+	ColumnIntervalMap::const_iterator iT = columnRanges.begin();
 	queryString += CreateBetweenString(iT->first, iT->second);
 	++iT;
 	while (iT != columnRanges.end()) {
@@ -471,7 +471,7 @@ SynGlyphX::IndexSet SourceDataCache::GetIndexesFromTableInRanges(const QString& 
 	return indexSet;
 }
 
-SynGlyphX::DegenerateInterval SourceDataCache::GetMinMax(const SynGlyphX::InputField& inputfield, const ColumnMinMaxMap& otherRanges) const {
+SynGlyphX::DegenerateInterval SourceDataCache::GetMinMax(const SynGlyphX::InputField& inputfield, const ColumnIntervalMap& otherRanges) const {
 
 	if (!inputfield.IsNumeric()) {
 
@@ -484,7 +484,7 @@ SynGlyphX::DegenerateInterval SourceDataCache::GetMinMax(const SynGlyphX::InputF
 	if (!otherRanges.empty()) {
 
 		queryString += " WHERE ";
-		ColumnMinMaxMap::const_iterator otherRange = otherRanges.begin();
+		ColumnIntervalMap::const_iterator otherRange = otherRanges.begin();
 		queryString += CreateBetweenString(otherRange->first, otherRange->second);
 
 		++otherRange;
@@ -501,7 +501,7 @@ SynGlyphX::DegenerateInterval SourceDataCache::GetMinMax(const SynGlyphX::InputF
 	return SynGlyphX::DegenerateInterval(query->value(0).toDouble(), query->value(1).toDouble());
 }
 
-std::set<double> SourceDataCache::GetSortedNumericDistictValues(const SynGlyphX::InputField& inputField, const ColumnMinMaxMap& otherRanges) const {
+std::set<double> SourceDataCache::GetSortedNumericDistictValues(const SynGlyphX::InputField& inputField, const ColumnIntervalMap& otherRanges) const {
 
 	if (!inputField.IsNumeric()) {
 
@@ -517,7 +517,7 @@ std::set<double> SourceDataCache::GetSortedNumericDistictValues(const SynGlyphX:
 	if (!otherRanges.empty()) {
 
 		queryString += " WHERE ";
-		ColumnMinMaxMap::const_iterator otherRange = otherRanges.begin();
+		ColumnIntervalMap::const_iterator otherRange = otherRanges.begin();
 		queryString += CreateBetweenString(otherRange->first, otherRange->second);
 
 		++otherRange;

@@ -24,21 +24,21 @@
 #include "singlewidgetdialog.h"
 #include <unordered_map>
 #include "singletableelasticlistswidget.h"
-#include "sourcedataselectionmodel.h"
+#include "filteringmanager.h"
 
 class MultiTableElasticListsWidget : public QWidget
 {
 	Q_OBJECT
 
 public:
-	MultiTableElasticListsWidget(SourceDataCache::SharedPtr sourceDataCache, SourceDataSelectionModel* selectionModel, QWidget *parent);
+	MultiTableElasticListsWidget(FilteringManager* filteringManager, QWidget *parent);
 	~MultiTableElasticListsWidget();
 
 public slots:
 	void SwitchTable(const QString& table);
 
 private slots:
-	void OnSelectionChanged();
+	void OnFilterResultsChanged();
 	void OnModelReset();
 	void OnElasticListsSelectionChanged(const QString& table, const SourceDataCache::ColumnValueData& selection);
 
@@ -46,11 +46,11 @@ private:
 	typedef std::unordered_map<std::wstring, SingleTableElasticListsWidget*> NameWidgetMap;
 
 	void UpdateElasticListsAndSourceDataWidget();
-	void UpdateElasticLists(const SourceDataSelectionModel::IndexSetMap& dataIndexes = SourceDataSelectionModel::IndexSetMap());
+	void UpdateElasticLists(const FilteringManager::IndexSetMap& dataIndexes = FilteringManager::IndexSetMap());
 	void ClearElasticLists();
 
-	SourceDataCache::SharedPtr m_sourceDataCache;
-	SourceDataSelectionModel* m_selectionModel;
+	//SourceDataCache::SharedPtr m_sourceDataCache;
+	FilteringManager* m_filteringManager;
 	
 	QStackedLayout* m_elasticListsStackLayout;
 	NameWidgetMap m_elasticListWidgetsForEachTable;

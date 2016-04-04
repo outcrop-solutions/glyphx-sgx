@@ -29,7 +29,7 @@ class SingleTableElasticListsWidget : public SynGlyphX::VerticalScrollArea
 	Q_OBJECT
 
 public:
-	SingleTableElasticListsWidget(SourceDataCache::SharedPtr sourceDataCache, const QString& table, QWidget *parent);
+	SingleTableElasticListsWidget(SourceDataCache::ConstSharedPtr sourceDataCache, const QString& table, QWidget *parent);
 	~SingleTableElasticListsWidget();
 
 	void PopulateElasticLists(const SynGlyphX::IndexSet& indexSet = SynGlyphX::IndexSet());
@@ -45,7 +45,7 @@ private:
 
 	typedef std::unordered_map<std::string, SynGlyphX::ElasticListWidget*> ColumnToWidgetMap;
 
-	SourceDataCache::SharedPtr m_sourceDataCache;
+	SourceDataCache::ConstSharedPtr m_sourceDataCache;
 	QString m_table;
 	ColumnToWidgetMap m_elasticListMap;
 	QWidget* m_innerWidget;

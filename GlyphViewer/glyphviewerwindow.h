@@ -105,7 +105,7 @@ private:
 	GlyphPropertiesWidgetsContainer* m_glyphPropertiesWidgetContainer;
 	SourceDataCache::SharedPtr m_sourceDataCache;
 	FilteringWidget* m_filteringWidget;
-	SourceDataSelectionModel* m_sourceDataSelectionModel;
+	FilteringManager* m_filteringManager;
 	PseudoTimeFilterWidget* m_pseudoTimeFilterWidget;
 	DataEngine::DataEngineConnection::SharedPtr m_dataEngineConnection;
 	SynGlyphX::PortableVisualizationExport m_portableVisualizationExport;

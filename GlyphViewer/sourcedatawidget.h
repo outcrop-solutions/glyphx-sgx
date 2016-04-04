@@ -20,7 +20,7 @@
 
 #include <QtWidgets/QTabWidget>
 #include "sourcedatacache.h"
-#include "sourcedataselectionmodel.h"
+#include "filteringmanager.h"
 #include <QtWidgets/QStatusBar>
 
 class SourceDataWidget : public QWidget
@@ -28,7 +28,7 @@ class SourceDataWidget : public QWidget
 	Q_OBJECT
 
 public:
-	SourceDataWidget(SourceDataSelectionModel* selectionModel, QWidget *parent = nullptr);
+	SourceDataWidget(FilteringManager* filteringManager, QWidget *parent = nullptr);
 	~SourceDataWidget();
 
 signals:
@@ -54,7 +54,7 @@ private:
 	QStatusBar* m_statusBar;
 	std::vector<QSqlQueryModel*> m_sqlQueryModels;
 	//SourceDataCache::SharedPtr m_sourceDataCache;
-	SourceDataSelectionModel* m_selectionModel;
+	FilteringManager* m_filteringManager;
 };
 
 #endif // SOURCEDATAWIDGET_H

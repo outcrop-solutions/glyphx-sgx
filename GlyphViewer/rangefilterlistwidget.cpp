@@ -13,10 +13,9 @@
 #include "glyphbuilderapplication.h"
 #include "sharedactionlist.h"
 
-RangeFilterListWidget::RangeFilterListWidget(SourceDataInfoModel* columnsModel, SourceDataCache::SharedPtr sourceDataCache, SourceDataSelectionModel* selectionModel, QWidget *parent)
+RangeFilterListWidget::RangeFilterListWidget(SourceDataInfoModel* columnsModel, FilteringManager* filteringManager, QWidget *parent)
 	: QWidget(parent),
-	m_selectionModel(selectionModel),
-	m_sourceDataCache(sourceDataCache),
+	m_filteringManager(filteringManager),
 	m_columnsModel(columnsModel),
 	m_currentTable("")
 {
@@ -96,8 +95,8 @@ RangeFilterListWidget::RangeFilterListWidget(SourceDataInfoModel* columnsModel, 
 
 	setLayout(mainLayout);
 
-	QObject::connect(m_selectionModel->GetSceneSelectionModel()->model(), &QAbstractItemModel::modelReset, this, &RangeFilterListWidget::OnModelReset);
-	QObject::connect(m_selectionModel, &SourceDataSelectionModel::SelectionChanged, this, &RangeFilterListWidget::OnSourceDataSelectionChanged);
+	QObject::connect(m_filteringManager->GetSceneSelectionModel()->model(), &QAbstractItemModel::modelReset, this, &RangeFilterListWidget::OnModelReset);
+	QObject::connect(m_filteringManager, &FilteringManager::FilterResultsChanged, this, &RangeFilterListWidget::OnFilterResultsChanged);
 	QObject::connect(m_rangeFiltersTableWidget->selectionModel(), &QItemSelectionModel::selectionChanged, this, &RangeFilterListWidget::OnFilterSelectionChanged);
 }
 
@@ -135,14 +134,17 @@ void RangeFilterListWidget::SwitchTable(const QString& table) {
 
 void RangeFilterListWidget::OnModelReset() {
 
-	m_addButton->setEnabled(m_sourceDataCache->IsValid());
+	SourceDataCache::ConstSharedPtr sourceDataCache = m_filteringManager->GetSourceDataCache();
+	bool isSourceDataCacheValid = sourceDataCache->IsValid();
+
+	m_addButton->setEnabled(isSourceDataCacheValid);
 	m_removeAllButton->setEnabled(false);
 	m_updateButton->setEnabled(false);
 	ClearFiltersFromTableWidget();
 	m_table2RangesAndDistinctValuesMap.clear();
 	m_currentTable.clear();
 
-	if (m_sourceDataCache->IsValid()) {
+	if (isSourceDataCacheValid) {
 
 		QStringList headerLabels;
 		headerLabels << tr("Field") << tr("Range");
@@ -157,7 +159,7 @@ void RangeFilterListWidget::OnModelReset() {
 		newTableWidget->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeMode::ResizeToContents);
 		newTableWidget->verticalHeader()->hide();
 
-		m_currentTable = m_sourceDataCache->GetFormattedNames().begin()->first;
+		m_currentTable = sourceDataCache->GetFormattedNames().begin()->first;
 	}
 }
 
@@ -213,10 +215,10 @@ void RangeFilterListWidget::OnAddFilter() {
 			unsigned int nextRow = m_rangeFiltersTableWidget->rowCount();
 			m_rangeFiltersTableWidget->setRowCount(nextRow + selected.count());
 			boost::uuids::string_generator gen;
-			SourceDataCache::ColumnMinMaxMap columnMinMaxMap;
+			SourceDataCache::ColumnIntervalMap columnIntervalMap;
 			for (unsigned int row = 0; row < nextRow; ++row) {
 
-				columnMinMaxMap.push_back(SourceDataCache::ColumnMinMaxPair(GetTextFromCell(row), GetRangeFilterWidgetFromCell(row)->GetRange()));
+				columnIntervalMap.push_back(SourceDataCache::ColumnIntervalPair(GetTextFromCell(row), GetRangeFilterWidgetFromCell(row)->GetRange()));
 			}
 
 			for (const auto& modelIndex : selected) {
@@ -226,7 +228,7 @@ void RangeFilterListWidget::OnAddFilter() {
 				SynGlyphX::SingleNumericRangeFilterWidget* filter = new SynGlyphX::SingleNumericRangeFilterWidget(Qt::Horizontal, this);
 				SynGlyphX::InputField inputField(gen(datasourceTable[0].toStdWString()), datasourceTable[1].toStdWString(), field.toStdWString(), SynGlyphX::InputField::Real);
 
-				SynGlyphX::SingleNumericRangeFilterWidget::SliderPositionValues sliderPositionValues = m_sourceDataCache->GetSortedNumericDistictValues(inputField, columnMinMaxMap);
+				SynGlyphX::SingleNumericRangeFilterWidget::SliderPositionValues sliderPositionValues = m_filteringManager->GetSourceDataCache()->GetSortedNumericDistictValues(inputField, columnIntervalMap);
 				filter->SetSliderPositionValuesAndMaxExtents(sliderPositionValues);
 				filter->SetRange(SynGlyphX::DegenerateInterval(*sliderPositionValues.begin(), *sliderPositionValues.rbegin()));
 
@@ -287,20 +289,13 @@ void RangeFilterListWidget::OnUpdateFilters() {
 		SaveRangesFromFiltersInTableWidget();
 		for (Table2RangesAndDistinctValuesMap::const_iterator tableIterator = m_table2RangesAndDistinctValuesMap.begin(); tableIterator != m_table2RangesAndDistinctValuesMap.end(); ++tableIterator) {
 
-			SourceDataCache::ColumnMinMaxMap columnMinMaxMap;
+			SourceDataCache::ColumnIntervalMap columnIntervalMap;
 			for (const auto& field2RangeAndExtent : tableIterator.value()) {
 
-				columnMinMaxMap.push_back(SourceDataCache::ColumnMinMaxPair(field2RangeAndExtent.first, field2RangeAndExtent.second.first));
+				columnIntervalMap.push_back(SourceDataCache::ColumnIntervalPair(field2RangeAndExtent.first, field2RangeAndExtent.second.first));
 			}
 
-			if (columnMinMaxMap.empty()) {
-
-				m_selectionModel->ClearSourceDataSelectionForTable(tableIterator.key());
-			}
-			else {
-
-				m_selectionModel->SetSourceDataSelectionForTable(tableIterator.key(), m_sourceDataCache->GetIndexesFromTableInRanges(tableIterator.key(), columnMinMaxMap));
-			}
+			m_filteringManager->SetFilterResultsForTable(tableIterator.key(), columnIntervalMap);
 		}
 		m_updateButton->setEnabled(false);
 		SynGlyphX::GlyphBuilderApplication::restoreOverrideCursor();
@@ -317,7 +312,6 @@ void RangeFilterListWidget::OnRangesChanged() {
 
 	SynGlyphX::SingleNumericRangeFilterWidget* updatedFilter = dynamic_cast<SynGlyphX::SingleNumericRangeFilterWidget*>(sender());
 	
-	SourceDataCache::ColumnMinMaxMap columnMinMaxMap;
 	unsigned int row = 0;
 	for (; row < m_rangeFiltersTableWidget->rowCount(); ++row) {
 
@@ -384,9 +378,9 @@ void RangeFilterListWidget::SaveRangesFromFiltersInTableWidget() {
 	m_table2RangesAndDistinctValuesMap[m_currentTable] = field2RangeAndExtentList;
 }
 
-void RangeFilterListWidget::OnSourceDataSelectionChanged() {
+void RangeFilterListWidget::OnFilterResultsChanged() {
 
-	if (m_selectionModel->GetSourceDataSelection().empty() && (m_rangeFiltersTableWidget->rowCount() > 0)) {
+	if (m_filteringManager->GetFilterResultsByTable().empty() && (m_rangeFiltersTableWidget->rowCount() > 0)) {
 
 		m_updateButton->setEnabled(true);
 	}
@@ -433,13 +427,13 @@ void RangeFilterListWidget::UpdatedEnableStateForButton(QAction* action, QPushBu
 
 void RangeFilterListWidget::ResetMinMaxExtentsForFilters(unsigned int startingRow) {
 
-	SourceDataCache::ColumnMinMaxMap columnMinMaxMap;
+	SourceDataCache::ColumnIntervalMap columnIntervalMap;
 	QStringList datasourceTable = Separate(m_currentTable);
 	boost::uuids::string_generator gen;
 
 	for (unsigned int i = 0; i < startingRow; ++i) {
 
-		columnMinMaxMap.push_back(SourceDataCache::ColumnMinMaxPair(GetTextFromCell(i), GetRangeFilterWidgetFromCell(i)->GetRange()));
+		columnIntervalMap.push_back(SourceDataCache::ColumnIntervalPair(GetTextFromCell(i), GetRangeFilterWidgetFromCell(i)->GetRange()));
 	}
 
 	for (unsigned int j = startingRow; j < m_rangeFiltersTableWidget->rowCount(); ++j) {
@@ -447,11 +441,11 @@ void RangeFilterListWidget::ResetMinMaxExtentsForFilters(unsigned int startingRo
 		QString field = GetTextFromCell(j);
 		SynGlyphX::SingleNumericRangeFilterWidget* filter = GetRangeFilterWidgetFromCell(j);
 		SynGlyphX::InputField inputField(gen(datasourceTable[0].toStdWString()), datasourceTable[1].toStdWString(), field.toStdWString(), SynGlyphX::InputField::Real);
-		SynGlyphX::SingleNumericRangeFilterWidget::SliderPositionValues sliderPositionValues = m_sourceDataCache->GetSortedNumericDistictValues(inputField, columnMinMaxMap);
+		SynGlyphX::SingleNumericRangeFilterWidget::SliderPositionValues sliderPositionValues = m_filteringManager->GetSourceDataCache()->GetSortedNumericDistictValues(inputField, columnIntervalMap);
 		filter->blockSignals(true);
 		filter->SetSliderPositionValuesAndMaxExtents(sliderPositionValues);
 		filter->blockSignals(false);
-		columnMinMaxMap.push_back(std::pair<QString, SynGlyphX::DegenerateInterval>(field, SynGlyphX::DegenerateInterval(*sliderPositionValues.begin(), *sliderPositionValues.rbegin())));
+		columnIntervalMap.push_back(std::pair<QString, SynGlyphX::DegenerateInterval>(field, SynGlyphX::DegenerateInterval(*sliderPositionValues.begin(), *sliderPositionValues.rbegin())));
 	}
 }
 

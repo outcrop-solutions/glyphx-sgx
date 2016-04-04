@@ -15,8 +15,8 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef SOURCEDATASELECTIONMODEL_H
-#define SOURCEDATASELECTIONMODEL_H
+#ifndef FILTERINGMANAGER_H
+#define FILTERINGMANAGER_H
 
 #include <QtCore/QObject>
 #include "datamappingmodel.h"
@@ -26,43 +26,45 @@
 #include "interval.h"
 #include <unordered_map>
 #include <map>
-#include "guihash.h"
 
-class SourceDataSelectionModel : public QObject
+class FilteringManager : public QObject
 {
 	Q_OBJECT
 
 public:
 	typedef std::map<QString, SynGlyphX::IndexSet> IndexSetMap;
 
-	SourceDataSelectionModel(SynGlyphX::DataMappingModel* dataMappingModel, SourceDataCache::SharedPtr sourceDataCache, SynGlyphX::ItemFocusSelectionModel* sceneSelectionModel, QObject *parent);
-	~SourceDataSelectionModel();
+	FilteringManager(SynGlyphX::DataMappingModel* dataMappingModel, SourceDataCache::SharedPtr sourceDataCache, SynGlyphX::ItemFocusSelectionModel* sceneSelectionModel, QObject *parent);
+	~FilteringManager();
+
+	void SetFilterResultsForTable(const QString& table, const SourceDataCache::ColumnIntervalMap& columnRanges, bool updateFocus = false);
+	void SetFilterResultsForTable(const QString& table, const SourceDataCache::ColumnValueData& sourceData, bool updateFocus = false);
+	void SetFilterResultsForTable(const QString& table, const SynGlyphX::IndexSet& newSelectionSet, bool updateFocus = false);
+	
+	void ClearFilterResults();
+	void ClearFilterResultsForTable(const QString& table, bool updateFocus = false);
+	const IndexSetMap& GetFilterResultsByTable() const;
+	const SynGlyphX::IndexSet& GetGlyphIndexedFilterResults() const;
 
 	const SynGlyphX::ItemFocusSelectionModel* GetSceneSelectionModel() const;
-
-	//void SetNewSourceDataSelection(const IndexSetMap& selectedIndexMap);
-	void SetSourceDataSelectionForTable(const QString& table, const SynGlyphX::IndexSet& newSelectionSet, bool updateFocus = true);
-	void ClearSourceDataSelection();
-	void ClearSourceDataSelectionForTable(const QString& table, bool updateFocus = true);
-	const IndexSetMap& GetSourceDataSelection() const;
-
 	SourceDataCache::ConstSharedPtr GetSourceDataCache() const;
 	const SynGlyphX::DataMappingModel* GetDataMappingModel() const;
 
 signals:
-	void SelectionChanged();
+	void FilterResultsChanged(const SynGlyphX::IndexSet& glyphIndexedFilteredResults);
 
 private slots:
-	void OnSceneSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected);
+	//void OnSceneSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected);
 	void OnSceneModelReset();
 
 private:
 	typedef std::map<SynGlyphX::ProperInterval, QString> GlyphTemplateRangeToTableMap;
-	typedef std::unordered_multimap<QString, SynGlyphX::ProperInterval, SynGlyphX::QStringHash> TableToGlyphTemplateRangesMap;
+	typedef QMultiMap<QString, SynGlyphX::ProperInterval> TableToGlyphTemplateRangesMap;
+
+	void UpdateGlyphIndexedFilterResults();
 
 	void AddSceneIndexesFromTableToSelection(QItemSelection& selection, const QString& table);
 	void AddSceneIndexesToSelection(QItemSelection& selection, const QString& table, const SynGlyphX::IndexSet& indexSet);
-
 	void ClearSourceDataSelectionForTable(QItemSelection& selection, bool updateFocus);
 
 	SynGlyphX::DataMappingModel* m_dataMappingModel;
@@ -72,7 +74,8 @@ private:
 	TableToGlyphTemplateRangesMap m_tableToGlyphTreeRangesMap;
 	GlyphTemplateRangeToTableMap m_glyphTemplateRangeToTableMap;
 
-	IndexSetMap m_selectedSourceDataSets;
+	IndexSetMap m_filterResultsByTable;
+	SynGlyphX::IndexSet m_filterResultsIndexedToGlyphs;
 };
 
 #endif // SOURCEDATASELECTIONMODEL_H

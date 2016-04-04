@@ -22,7 +22,7 @@
 #include <QtWidgets/QCheckBox>
 #include <QtWidgets/QPushButton>
 #include "sourcedatawidget.h"
-#include "sourcedataselectionmodel.h"
+#include "filteringmanager.h"
 #include "linkedwidgetsmanager.h"
 #include "sourcedatainfomodel.h"
 #include "multitableelasticlistswidget.h"
@@ -33,7 +33,7 @@ class FilteringWidget : public QWidget
 	Q_OBJECT
 
 public:
-	FilteringWidget(SourceDataInfoModel* columnsModel, SourceDataCache::SharedPtr sourceDataCache, SourceDataSelectionModel* selectionModel, QWidget *parent);
+	FilteringWidget(SourceDataInfoModel* columnsModel, FilteringManager* filteringManager, QWidget *parent);
 	~FilteringWidget();
 
 	void SetupLinkedWidgets(LinkedWidgetsManager& linkedWidgets);
@@ -41,7 +41,7 @@ public:
 private slots:
 	void Clear();
 	void OnSourceWidgetWindowHidden();
-	void OnSourceDataSelectionChanged();
+	void OnFilterResultsChanged();
 	void OnModelReset();
 	void OnTableChanged(const QString& table);
 
@@ -58,8 +58,7 @@ private:
 	RangeFilterListWidget* m_rangeListFilterWidget;
 	MultiTableElasticListsWidget* m_elasticListsWidget;
 
-	SourceDataSelectionModel* m_selectionModel;
-	SourceDataCache::SharedPtr m_sourceDataCache;
+	FilteringManager* m_filteringManager;
 };
 
 #endif // FILTERINGWIDGET_H
