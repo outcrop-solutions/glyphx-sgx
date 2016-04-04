@@ -34,10 +34,11 @@ namespace DataEngine
 		CreateJVMFunc CreateJVM = (CreateJVMFunc)GetProcAddress(jvmDll, "JNI_CreateJavaVM");
 
 		JavaVMInitArgs vmArgs;
-		JavaVMOption options[1];
+		JavaVMOption options[2];
 		std::ifstream ifile(".\\dataengine.jar");
+		options[0].optionString = "-Xmx1024M"; //Max of 2048M
 		if (ifile){
-			options[0].optionString =
+			options[1].optionString =
 				"-Djava.class.path=.\\dataengine.jar;"
 				".\\ojdbc6.jar;"
 				".\\database-drivers\\opencsv-3.7.jar;"
@@ -46,7 +47,7 @@ namespace DataEngine
 				".\\database-drivers\\sqlite-jdbc-3.8.11.2.jar;"
 			".\\database-drivers\\vertica-jdbc-7.2.1-0.jar;";
 		}else{
-			options[0].optionString =
+			options[1].optionString =
 				"-Djava.class.path=..\\..\\DataEngine\\Java DataEngine\\dataengine.jar;"
 				"..\\..\\DataEngine\\Java DataEngine\\ojdbc6.jar;"
 				"..\\..\\DataEngine\\Java DataEngine\\database-drivers\\opencsv-3.7.jar;"
@@ -57,7 +58,7 @@ namespace DataEngine
 		}ifile.close();
 		vmArgs.version = JNI_VERSION_1_2;
 		vmArgs.options = options;
-		vmArgs.nOptions = 1;
+		vmArgs.nOptions = 2;
 		vmArgs.ignoreUnrecognized = JNI_FALSE;
 
 		// Create the JVM

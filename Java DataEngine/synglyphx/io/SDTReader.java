@@ -123,11 +123,12 @@ public class SDTReader {
 			Node glyphs = start.item(0);
 			NodeList roots = glyphs.getChildNodes();
 
+			System.out.println(roots.getLength());
 			rootCount = 0;
 			for (int i = 0; i < roots.getLength(); i++) {
 
 				Node root = roots.item(i);
-				if(!root.getNodeName().equals("#text")){
+				if(root.getNodeName().equals("Glyph")){
 					XMLGlyphTemplate temp = new XMLGlyphTemplate();
 					NodeList categories = root.getChildNodes();
 					temp.setToMerge(getMergeStatus(root));
