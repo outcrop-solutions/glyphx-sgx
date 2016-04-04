@@ -201,6 +201,10 @@ void GlyphViewerWindow::CreateMenus() {
 
 	m_viewMenu->addSeparator();
 
+	m_clearSelectionAction = CreateMenuAction(m_viewMenu, tr("Clear Selection"));
+	m_clearSelectionAction->setEnabled(false);
+	QObject::connect(m_clearSelectionAction, &QAction::triggered, m_glyphForestSelectionModel, &SynGlyphX::ItemFocusSelectionModel::ClearAll);
+
 	m_showTagsAction = CreateMenuAction(m_viewMenu, tr("Show Tags"), Qt::Key_I);
 	m_showTagsAction->setCheckable(true);
 	m_showTagsAction->setChecked(false);
@@ -625,6 +629,7 @@ void GlyphViewerWindow::EnableLoadedVisualizationDependentActions(bool enable) {
 	m_stereoAction->setEnabled(!enable);
 
 	m_showTagsAction->setChecked(false);
+	m_clearSelectionAction->setEnabled(false);
 }
 
 void GlyphViewerWindow::ChangeOptions() {
@@ -767,7 +772,7 @@ GlyphViewerOptions GlyphViewerWindow::CollectOptions() {
 
 void GlyphViewerWindow::OnSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected) {
 
-	
+	m_clearSelectionAction->setEnabled(!m_glyphForestSelectionModel->selectedIndexes().isEmpty());
 }
 
 void GlyphViewerWindow::CreateExportToPortableVisualizationSubmenu() {

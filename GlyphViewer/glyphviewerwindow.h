@@ -87,6 +87,7 @@ private:
 	QAction* m_stereoAction;
 	QAction* m_showAnimation;
 	QAction* m_showTagsAction;
+	QAction* m_clearSelectionAction;
 	QList<QAction*> m_loadedVisualizationDependentActions;
 
 	QDockWidget* m_glyphListDockWidget;
