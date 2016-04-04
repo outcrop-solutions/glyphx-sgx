@@ -36,7 +36,7 @@ namespace SynGlyphXANTz {
 		m_isReseting(false),
 		m_worldTextureID(0),
 		m_regionSelectionRect(QRect()),
-		m_hideUnselectedGlyphTrees(false),
+		m_filteredResultsDisplayMode(FilteredResultsDisplayMode::None),
 		m_drawHUD(true),
 		m_zSpaceOptions(),
 		m_logoTextureID(0),
@@ -690,8 +690,6 @@ namespace SynGlyphXANTz {
 
 	void ANTzForestWidget::OnSelectionUpdated(const QItemSelection& selected, const QItemSelection& deselected) {
 
-		UpdateGlyphTreesShowHideForSelection();
-
 		pData antzData = m_antzData->GetData();
 
 		//unselect all nodes that are no longer selected
@@ -738,50 +736,38 @@ namespace SynGlyphXANTz {
 		antzData->map.nodeRootIndex = nodeRootIndex;
 	}
 
-	void ANTzForestWidget::UpdateGlyphTreesShowHideForSelection() {
+	void ANTzForestWidget::UpdateGlyphTreesForFilteredResults() {
 
-		if (m_hideUnselectedGlyphTrees) {
+		if (m_filteredResultsDisplayMode == FilteredResultsDisplayMode::HideUnfiltered) {
 
-			const QModelIndexList& currentSelection = m_selectionModel->selectedIndexes();
-			if (currentSelection.empty()) {
+			if (m_filteredResults.empty()) {
 
 				ShowAllGlyphTrees();
 			}
 			else {
 
 				pData antzData = m_antzData->GetData();
-				SynGlyphX::IndexSet selectedGlyphTrees = SynGlyphX::ItemFocusSelectionModel::GetRootRows(currentSelection);
 				for (unsigned int i = kNPnodeRootPin; i < antzData->map.nodeRootCount; ++i) {
 
 					pNPnode node = static_cast<pNPnode>(antzData->map.node[i]);
-					node->hide = (selectedGlyphTrees.count(i - kNPnodeRootPin) == 0);
+					node->hide = (m_filteredResults.count(i - kNPnodeRootPin) == 0);
 				}
 			}
 		}
 	}
 
-	void ANTzForestWidget::SetHideUnselectedGlyphTrees(bool hideUnselectedGlyphTrees) {
+	void ANTzForestWidget::SetFilteredResultsDisplayMode(FilteredResultsDisplayMode mode) {
 
-		if (hideUnselectedGlyphTrees != m_hideUnselectedGlyphTrees) {
+		if (mode != m_filteredResultsDisplayMode) {
 
-			m_hideUnselectedGlyphTrees = hideUnselectedGlyphTrees;
-			if (m_selectionModel != nullptr) {
+			m_filteredResultsDisplayMode = mode;
+			if (m_filteredResultsDisplayMode == FilteredResultsDisplayMode::HideUnfiltered) {
 
-				const QModelIndexList& currentSelection = m_selectionModel->selectedIndexes();
-				if (m_hideUnselectedGlyphTrees) {
+				UpdateGlyphTreesForFilteredResults();
+			}
+			else {
 
-					if (!currentSelection.empty()) {
-
-						UpdateGlyphTreesShowHideForSelection();
-					}
-				}
-				else {
-
-					if (!currentSelection.empty()) {
-
-						ShowAllGlyphTrees();
-					}
-				}
+				ShowAllGlyphTrees();
 			}
 		}
 	}
@@ -794,6 +780,18 @@ namespace SynGlyphXANTz {
 			pNPnode node = static_cast<pNPnode>(antzData->map.node[i]);
 			node->hide = false;
 		}
+	}
+
+	void ANTzForestWidget::SetFilteredResults(const SynGlyphX::IndexSet& filteredResults) {
+
+		m_filteredResults = filteredResults;
+		UpdateGlyphTreesForFilteredResults();
+	}
+
+	void ANTzForestWidget::ClearFilteredResults() {
+
+		m_filteredResults.clear();
+		UpdateGlyphTreesForFilteredResults();
 	}
 
 	void ANTzForestWidget::SetCameraToDefaultPosition() {
@@ -1399,6 +1397,8 @@ namespace SynGlyphXANTz {
 		CreateBoundingBoxes();
 		StoreRotationRates();
 
+		m_filteredResults.clear();
+
 		const QStringList& textures = m_model->GetBaseImageFilenames();
 
 		int size = m_model->rowCount();
@@ -1579,9 +1579,9 @@ namespace SynGlyphXANTz {
 		return m_zSpaceOptions;
 	}
 
-	bool ANTzForestWidget::GetHideUnselectedGlyphTrees() const {
+	ANTzForestWidget::FilteredResultsDisplayMode ANTzForestWidget::GetFilteredResultsDisplayMode() const {
 
-		return m_hideUnselectedGlyphTrees;
+		return m_filteredResultsDisplayMode;
 	}
 
 	void ANTzForestWidget::SetBackgroundColor(const SynGlyphX::GlyphColor& color) {

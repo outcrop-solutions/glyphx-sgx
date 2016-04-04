@@ -35,6 +35,12 @@ namespace SynGlyphXANTz {
 		Q_OBJECT
 
 	public:
+		enum FilteredResultsDisplayMode {
+
+			None,
+			HideUnfiltered
+		};
+
 		ANTzForestWidget(GlyphForestModel* model, SynGlyphX::ItemFocusSelectionModel* selectionModel, QWidget *parent = 0);
 		~ANTzForestWidget();
 
@@ -47,7 +53,7 @@ namespace SynGlyphXANTz {
 		void SetZSpaceOptions(const SynGlyphX::ZSpaceOptions& options);
 		const SynGlyphX::ZSpaceOptions& GetZSpaceOptions() const;
 
-		bool GetHideUnselectedGlyphTrees() const;
+		FilteredResultsDisplayMode GetFilteredResultsDisplayMode() const;
 
 		void SetBackgroundColor(const SynGlyphX::GlyphColor& color);
 
@@ -56,10 +62,13 @@ namespace SynGlyphXANTz {
 	signals:
 		//void NewStatusMessage(const QString& message, int timeout = 0) const;
 
-	public slots :
+	public slots:
 		void ResetCamera();
-		//void SetStereo(bool enableStereo);
-		void SetHideUnselectedGlyphTrees(bool hideUnselectedGlyphTrees);
+		
+		void SetFilteredResultsDisplayMode(FilteredResultsDisplayMode mode);
+		void SetFilteredResults(const SynGlyphX::IndexSet& filteredResults);
+		void ClearFilteredResults();
+		
 		void ShowAnimatedRotations(bool show);
 
 		void SetShowTagsOfSelectedObjects(bool showTagsOfSelectedObjects);
@@ -113,8 +122,9 @@ namespace SynGlyphXANTz {
 		void ClearZSpaceContext();
 		void DrawZSpaceStylus(const ZSMatrix4& stylusMatrix, bool getStylusWorldPosition);
 
-		void UpdateGlyphTreesShowHideForSelection();
+		void ShowOnlyFilteredResultGlyphTrees();
 		void ShowAllGlyphTrees();
+		void UpdateGlyphTreesForFilteredResults();
 
 		void CreateBoundingBoxes();
 		void CreateBoundingBoxes(pNPnode node, const glm::mat4& parentTransform, bool isAncestorBoundingBoxBeingUpdated);
@@ -136,7 +146,9 @@ namespace SynGlyphXANTz {
 		QFont m_oglTextFont;
 		bool m_isReseting;
 		bool m_drawHUD;
-		bool m_hideUnselectedGlyphTrees;
+
+		FilteredResultsDisplayMode m_filteredResultsDisplayMode;
+		SynGlyphX::IndexSet m_filteredResults;
 
 		SynGlyphX::ZSpaceOptions m_zSpaceOptions;
 
