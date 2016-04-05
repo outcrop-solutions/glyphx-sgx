@@ -26,6 +26,7 @@ public class XMLGlyphTemplate{
 	private int branchLevel;
 	private int numChildren;
 	private int datasource;
+	private int lastChildID;
 	private boolean toMerge;
 
 	public XMLGlyphTemplate(){
@@ -37,6 +38,13 @@ public class XMLGlyphTemplate{
 		tag = "No Tag";
 		url = "nourl.html";
 		description = "";
+	}
+	public void setLastChildID(int lastChild){
+		lastChildID = lastChild;
+	}
+
+	public int getLastChildID(){
+		return lastChildID;
 	}
 
 	public void setToMerge(boolean tm){
