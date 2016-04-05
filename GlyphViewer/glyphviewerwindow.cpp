@@ -29,7 +29,7 @@
 #include "downloadexception.h"
 
 GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
-	: SynGlyphX::MainWindow(3, parent),
+	: SynGlyphX::MainWindow(4, parent),
 	m_antzWidget(nullptr),
 	m_showErrorFromTransform(true),
 	m_dataEngineConnection(nullptr)
@@ -243,8 +243,10 @@ void GlyphViewerWindow::CreateDockWidgets() {
 	m_legendsWidget = new LegendsDisplayWidget(this);
 	QDockWidget* legendDockWidget = new QDockWidget(tr("Legends"), this);
 	legendDockWidget->setWidget(m_legendsWidget);
-	addDockWidget(Qt::LeftDockWidgetArea, legendDockWidget);
+	legendDockWidget->setFloating(true);
 	m_viewMenu->addAction(legendDockWidget->toggleViewAction());
+	legendDockWidget->move(100, 100);
+	legendDockWidget->resize(400, 280);
 
 	m_glyphListDockWidget = new QDockWidget(tr("Glyph List"), this);
 	m_treeView = new GlyphTreeListView(m_glyphListDockWidget);
@@ -254,6 +256,7 @@ void GlyphViewerWindow::CreateDockWidgets() {
 	m_glyphListDockWidget->setWidget(m_treeView);
 	addDockWidget(Qt::LeftDockWidgetArea, m_glyphListDockWidget);
 	m_viewMenu->addAction(m_glyphListDockWidget->toggleViewAction());
+	m_glyphListDockWidget->hide();
 
 	m_glyphPropertiesWidgetContainer = new GlyphPropertiesWidgetsContainer(m_glyphForestModel, m_glyphForestSelectionModel, this);
 
@@ -261,9 +264,9 @@ void GlyphViewerWindow::CreateDockWidgets() {
 	textPropertiesDockWidget->setWidget(m_glyphPropertiesWidgetContainer->GetTextProperitesWidget());
 	addDockWidget(Qt::LeftDockWidgetArea, textPropertiesDockWidget);
 	m_viewMenu->addAction(textPropertiesDockWidget->toggleViewAction());
+	textPropertiesDockWidget->hide();
 
 	tabifyDockWidget(m_glyphListDockWidget, textPropertiesDockWidget);
-	m_glyphListDockWidget->raise();
 
 	QDockWidget* rightDockWidget = new QDockWidget(tr("Filtering"), this);
 	m_filteringWidget = new FilteringWidget(m_columnsModel, m_filteringManager, rightDockWidget);
