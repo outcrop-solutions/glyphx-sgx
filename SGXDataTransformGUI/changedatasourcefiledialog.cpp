@@ -1,7 +1,8 @@
 #include "changedatasourcefiledialog.h"
 #include <QtCore/QFile>
+#include <QtCore/QFileInfo>
 #include <QtCore/QDir>
-#include <boost/filesystem.hpp>
+#include "filesystem.h"
 
 namespace SynGlyphX {
 
@@ -63,10 +64,13 @@ namespace SynGlyphX {
 	bool ChangeDatasourceFileDialog::UpdateDatasourceFiles(const std::vector<boost::uuids::uuid>& datasources, const QString& sdtfilename, DataTransformMapping::SharedPtr mapping, DataEngine::DataEngineConnection::SharedPtr dataEngineConnection, QWidget* dialogParent) {
 
 		bool wereMissingFilesUpdated = false;
+		QFileInfo fileInfo(sdtfilename);
+		std::wstring stdDir = fileInfo.canonicalPath().toStdWString();
+
 		for (int i = 0; i < datasources.size(); ++i) {
 
-			QString newpath = IsFileInSameDirectory(mapping->GetDatasources().at(datasources[i])->GetFormattedName(), sdtfilename);
-			if (newpath.isEmpty()){
+			std::wstring newpath = Filesystem::IsFileInDirectory(mapping->GetDatasources().at(datasources[i])->GetFormattedName(), stdDir);
+			if (newpath.empty()) {
 
 				QString acceptButtonText = tr("Next");
 				if (i == datasources.size() - 1) {
@@ -75,6 +79,7 @@ namespace SynGlyphX {
 				}
 
 				ChangeDatasourceFileDialog dialog(*std::dynamic_pointer_cast<FileDatasource>(mapping->GetDatasources().at(datasources[i])), acceptButtonText, dataEngineConnection, dialogParent);
+				dialog.setWindowTitle(tr("Replace Missing Data Source"));
 				if (dialog.exec() == QDialog::Accepted) {
 
 					mapping->UpdateDatasourceName(datasources[i], dialog.GetNewFilename().toStdWString());
@@ -87,32 +92,12 @@ namespace SynGlyphX {
 			}
 			else {
 
-				mapping->UpdateDatasourceName(datasources[i], newpath.toStdWString());
+				mapping->UpdateDatasourceName(datasources[i], newpath);
 				wereMissingFilesUpdated = true;
 			}
 		}
 
 		return wereMissingFilesUpdated;
-	}
-
-	QString ChangeDatasourceFileDialog::IsFileInSameDirectory(const std::wstring& datasourcename, const QString& sdtpath){
-
-		QString source = QString::fromStdWString(datasourcename);
-		int lstIndex = sdtpath.lastIndexOf(QRegExp("[\/]"));
-		QString sdtDir = sdtpath.left(lstIndex);
-		boost::filesystem::path path(sdtDir.toStdString());
-
-		if (boost::filesystem::is_directory(path)){
-
-			boost::filesystem::path match((sdtDir + QDir::separator() + source).toStdString());
-			if (boost::filesystem::exists(match)){
-
-				return QDir::toNativeSeparators(QString::fromStdString(boost::filesystem::canonical(match).string()));
-			}
-
-		}
-
-		return QString();
 	}
 
 } //namespace SynGlyphX

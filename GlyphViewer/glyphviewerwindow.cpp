@@ -454,18 +454,30 @@ void GlyphViewerWindow::ValidateDataMappingFile(const QString& filename) {
 	bool wasDataTransformUpdated = false;
 
 	std::vector<boost::uuids::uuid> missingFileDatasources = mapping->GetFileDatasourcesWithInvalidFiles(true);
-
+	std::vector<unsigned int> missingLegends = mapping->GetLegendsWithInvalidFiles();
 	std::vector<unsigned int> localBaseImageIndexes = mapping->GetFileBaseObjectsWithInvalidFiles();
 
 	if (!localBaseImageIndexes.empty()) {
 
 		SynGlyphX::Application::restoreOverrideCursor();
-		wasDataTransformUpdated = SynGlyphX::ChangeImageFileDialog::UpdateImageFiles(localBaseImageIndexes, mapping, this);
+		wasDataTransformUpdated = SynGlyphX::ChangeImageFileDialog::UpdateImageFiles(localBaseImageIndexes, filename, mapping, this);
 		SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
 
 		if (!wasDataTransformUpdated) {
 
 			throw std::runtime_error("Visualization has missing base images that need to be updated to their correct locations before the visualization can be loaded");
+		}
+	}
+
+	if (!missingLegends.empty()) {
+
+		SynGlyphX::Application::restoreOverrideCursor();
+		wasDataTransformUpdated = SynGlyphX::ChangeImageFileDialog::UpdateLegendFiles(missingLegends, filename, mapping, this);
+		SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
+
+		if (!wasDataTransformUpdated) {
+
+			throw std::runtime_error("Visualization has missing legends that need to be updated to their correct locations before the visualization can be loaded");
 		}
 	}
 

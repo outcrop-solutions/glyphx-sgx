@@ -4,6 +4,8 @@
 #include <QtWidgets/QDialogButtonBox>
 #include <QtWidgets/QMessageBox>
 #include <QtCore/QFile>
+#include <QtCore/QDir>
+#include <boost/filesystem.hpp>
 
 namespace SynGlyphX {
 

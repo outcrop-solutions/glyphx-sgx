@@ -405,17 +405,29 @@ void DataMapperWindow::UpdateMissingFiles(const QString& mappingFilename) {
 		mapping->ReadFromFile(mappingFilename.toStdString());
 
 		std::vector<boost::uuids::uuid> fileDatasourcesToBeUpdated = mapping->GetFileDatasourcesWithInvalidFiles(false);
-		std::vector<unsigned int> localBaseImageIndexes = mapping->GetFileBaseObjectsWithInvalidFiles();
+		std::vector<unsigned int> missingBaseImages = mapping->GetFileBaseObjectsWithInvalidFiles();
+		std::vector<unsigned int> missingLegends = mapping->GetLegendsWithInvalidFiles();
 
 		bool wasDataTransformUpdated = false;
 
-		if (!localBaseImageIndexes.empty()) {
+		if (!missingBaseImages.empty()) {
 
 			SynGlyphX::Application::restoreOverrideCursor();
-			wasDataTransformUpdated = SynGlyphX::ChangeImageFileDialog::UpdateImageFiles(localBaseImageIndexes, mapping, this);
+			wasDataTransformUpdated = SynGlyphX::ChangeImageFileDialog::UpdateImageFiles(missingBaseImages, mappingFilename, mapping, this);
 			if (!wasDataTransformUpdated) {
 
 				throw std::runtime_error("One or more images weren't found.");
+			}
+			SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
+		}
+
+		if (!missingLegends.empty()) {
+
+			SynGlyphX::Application::restoreOverrideCursor();
+			wasDataTransformUpdated = SynGlyphX::ChangeImageFileDialog::UpdateLegendFiles(missingLegends, mappingFilename, mapping, this);
+			if (!wasDataTransformUpdated) {
+
+				throw std::runtime_error("One or more legends weren't found.");
 			}
 			SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
 		}
@@ -652,7 +664,7 @@ void DataMapperWindow::CreatePortableVisualization(SynGlyphX::PortableVisualizat
 		return;
 	}
 
-	std::vector<unsigned int> missingBaseObjects = dataMapping->GetFileBaseObjectsWithInvalidFiles();
+	/*std::vector<unsigned int> missingBaseObjects = dataMapping->GetFileBaseObjectsWithInvalidFiles();
 	if (!missingBaseObjects.empty()) {
 
 		if (SynGlyphX::ChangeImageFileDialog::UpdateImageFiles(missingBaseObjects, std::const_pointer_cast<SynGlyphX::DataTransformMapping>(dataMapping), this)) {
@@ -667,7 +679,7 @@ void DataMapperWindow::CreatePortableVisualization(SynGlyphX::PortableVisualizat
 			QMessageBox::critical(this, tr("Export to ANTz Error"), tr("Portable visualization can't be created when images are still missing."));
 			return;
 		}
-	}
+	}*/
 
 	
 	QSet<QString> projectFileDirs;

@@ -32,7 +32,8 @@ namespace SynGlyphX {
 		ChangeImageFileDialog(const QString& oldFileName, const QString& acceptButtonText, QWidget *parent = 0);
 		~ChangeImageFileDialog();
 
-		static bool UpdateImageFiles(const std::vector<unsigned int>& images, DataTransformMapping::SharedPtr mapping, QWidget* dialogParent = nullptr);
+		static bool UpdateImageFiles(const std::vector<unsigned int>& images, const QString& sdtfilename, DataTransformMapping::SharedPtr mapping, QWidget* dialogParent = nullptr);
+		static bool UpdateLegendFiles(const std::vector<unsigned int>& legends, const QString& sdtfilename, DataTransformMapping::SharedPtr mapping, QWidget* dialogParent = nullptr);
 
 	protected:
 		virtual bool IsNewFileValid() const;

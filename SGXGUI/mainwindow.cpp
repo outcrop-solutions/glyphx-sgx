@@ -243,7 +243,7 @@ namespace SynGlyphX {
 		settings.beginGroup(s_fileDialogSettingsGroup);
 		QString initialDir = settings.value(settingKey, defaultDir).toString();
 
-		QString filename = QFileDialog::getOpenFileName(this, caption, initialDir, filter);
+		QString filename = QDir::toNativeSeparators(QFileDialog::getOpenFileName(this, caption, initialDir, filter));
 		if (!filename.isEmpty()) {
 
 			QFileInfo fileInfo(filename);
@@ -261,6 +261,10 @@ namespace SynGlyphX {
 		QString initialDir = settings.value(settingKey, defaultDir).toString();
 
 		QStringList filenames = QFileDialog::getOpenFileNames(this, caption, initialDir, filter);
+		for (unsigned int i = 0; i < filenames.size(); ++i) {
+
+			filenames[i] = QDir::toNativeSeparators(filenames[i]);
+		}
 		if (!filenames.isEmpty()) {
 
 			QFileInfo fileInfo(filenames[0]);
@@ -277,7 +281,7 @@ namespace SynGlyphX {
 		settings.beginGroup(s_fileDialogSettingsGroup);
 		QString initialDir = settings.value(settingKey, defaultDir).toString();
 
-		QString filename = QFileDialog::getSaveFileName(this, caption, initialDir, filter);
+		QString filename = QDir::toNativeSeparators(QFileDialog::getSaveFileName(this, caption, initialDir, filter));
 		if (!filename.isEmpty()) {
 
 			QFileInfo fileInfo(filename);
