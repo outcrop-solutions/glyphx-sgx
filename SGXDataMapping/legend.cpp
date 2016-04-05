@@ -1,6 +1,7 @@
 #include "legend.h"
 #include <boost/assign/list_of.hpp>
 #include <boost/bimap/list_of.hpp>
+#include <boost/filesystem.hpp>
 
 namespace SynGlyphX {
 
@@ -106,6 +107,12 @@ namespace SynGlyphX {
 	bool Legend::IsValid() const {
 
 		return !(m_title.empty() || m_filename.empty());
+	}
+
+	bool Legend::CanFileBeFound() const {
+
+		boost::filesystem::path filePath(m_filename);
+		return (boost::filesystem::exists(filePath) && boost::filesystem::is_regular_file(filePath));
 	}
 
 } //namespace SynGlyphX

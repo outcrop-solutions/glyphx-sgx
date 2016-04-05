@@ -94,4 +94,22 @@ namespace SynGlyphX {
 		boost::filesystem::copy_file(sourcePath, destinationPath, boost::filesystem::copy_option::overwrite_if_exists);
 	}
 
+	std::wstring Filesystem::IsFileInDirectory(const std::wstring& filename, const std::wstring& directory) {
+
+		boost::filesystem::path path(directory);
+
+		if (boost::filesystem::is_directory(path)) {
+
+			boost::filesystem::path match = boost::filesystem::absolute(boost::filesystem::path(filename).filename(), path);
+			if (boost::filesystem::exists(match)) {
+
+				//return boost::filesystem::canonical(match).wstring();
+				return match.native();
+			}
+
+		}
+
+		return L"";
+	}
+
 } //namespace SynGlyphX

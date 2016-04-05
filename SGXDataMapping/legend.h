@@ -55,6 +55,7 @@ namespace SynGlyphX {
 		Type GetType() const;
 
 		bool IsValid() const;
+		bool CanFileBeFound() const;
 
 		static const std::wstring s_propertyTreeName;
 		static const TypeBimap s_typeStrings;

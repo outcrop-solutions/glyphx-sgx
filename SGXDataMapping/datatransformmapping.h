@@ -110,6 +110,7 @@ namespace SynGlyphX {
 
 		std::vector<boost::uuids::uuid> GetFileDatasourcesWithInvalidFiles(bool onlyUseDatasourcesInUse) const;
 		std::vector<unsigned int> GetFileBaseObjectsWithInvalidFiles() const;
+		std::vector<unsigned int> GetLegendsWithInvalidFiles() const;
 
 		ConstSharedPtr CreateSubsetMappingWithSingleTable(const InputTable& inputTable, const std::wstring& csvFilename) const;
 

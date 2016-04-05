@@ -764,6 +764,21 @@ namespace SynGlyphX {
 		return missingLocalBaseImages;
 	}
 
+	std::vector<unsigned int> DataTransformMapping::GetLegendsWithInvalidFiles() const {
+
+		std::vector<unsigned int> missingImages;
+
+		for (unsigned int i = 0; i < m_legends.size(); ++i) {
+
+			if (!m_legends[i].CanFileBeFound()) {
+
+				missingImages.push_back(i);
+			}
+		}
+
+		return missingImages;
+	}
+
 	DataTransformMapping::ConstSharedPtr DataTransformMapping::CreateSubsetMappingWithSingleTable(const InputTable& inputTable, const std::wstring& csvFilename) const {
 
 		if (!HasDatasourceWithId(inputTable.GetDatasourceID())) {
