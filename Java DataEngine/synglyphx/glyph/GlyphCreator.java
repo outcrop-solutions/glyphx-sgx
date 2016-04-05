@@ -57,19 +57,27 @@ public class GlyphCreator {
 
 		for(int i=0;i < rootIds.size();i++){
 			currData = temps.get(rootIds.get(i)).getDataSource();
-			rootCoords.put(rootIds.get(i), new CoordinateMap(temps.get(rootIds.get(i)).getToMerge(), csvData.get(currData).getLastID()));
+			System.out.print("Current root id: ");
+			System.out.println(rootIds.get(i));
+			System.out.print("Current last id: ");
+			System.out.println(temps.get(rootIds.get(i)).getLastChildID());
+
+			int lastChildID = temps.get(rootIds.get(i)).getLastChildID();
+
+			rootCoords.put(rootIds.get(i), new CoordinateMap(temps.get(rootIds.get(i)).getToMerge(), lastChildID));
 			if(csvData.get(currData).getType().equals("csv") || csvData.get(currData).getType().equals("sqlite3")){
 				Query query = new Query(csvData.get(currData).getDataFrame()).all(); 
 				Logger.getInstance().add("Executed initial query...");
 				Cursor cursor = csvData.get(currData).getDataFrame().query(query);
 				Logger.getInstance().add("Returned cursor with size " + String.valueOf(cursor.size()) +"...");
 
-				Logger.getInstance().add(String.valueOf(csvData.get(currData).getRootID()));
-				Logger.getInstance().add(String.valueOf(csvData.get(currData).getLastID()));
+				Logger.getInstance().add(String.valueOf(rootIds.get(i)));
+				Logger.getInstance().add(String.valueOf(lastChildID));
 
 				while(cursor.next()){
 					for (int j = 1; j < mappingCount+1; j++){
-						if(j >= csvData.get(currData).getRootID() && j <= csvData.get(currData).getLastID()){
+						//if(j >= csvData.get(currData).getRootID() && j <= csvData.get(currData).getLastID()){
+						if(j >= rootIds.get(i) && j <= lastChildID){
 							addNode(j, cursor);
 						}
 					}

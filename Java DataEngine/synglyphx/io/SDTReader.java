@@ -90,6 +90,8 @@ public class SDTReader {
 			timestamp = tf.getAttribute("Timestamp");
 			getDataPaths(doc);
 			getBaseObjects(doc);
+			System.out.print("Datasource count: ");
+			System.out.println(dataPaths.size());
 
 			if(!timestamp.equals("") && app.equals("GlyphViewer")){
 				updateNeeded = SQLiteReader.isAntzUpdateNeeded(timestamp, outDir, dataPaths);
@@ -126,7 +128,6 @@ public class SDTReader {
 			System.out.println(roots.getLength());
 			rootCount = 0;
 			for (int i = 0; i < roots.getLength(); i++) {
-
 				Node root = roots.item(i);
 				if(root.getNodeName().equals("Glyph")){
 					XMLGlyphTemplate temp = new XMLGlyphTemplate();
@@ -366,6 +367,7 @@ public class SDTReader {
 		NodeList start = doc.getElementsByTagName("InputFields");
 
 		for(int j=0;j<start.getLength();j++){
+			System.out.println(start.getLength());
 			Node field = start.item(j);
 			NodeList fields = field.getChildNodes();
 
@@ -718,17 +720,29 @@ public class SDTReader {
 
 		int currentRoot = 1;
 		SourceDataInfo currentDataSource = null;
+		ArrayList<Integer> usedDS = new ArrayList<Integer>();
+		XMLGlyphTemplate prevTemp = null;
 		for(int i = 1; i < count+1; i++){
 			XMLGlyphTemplate temp = templates.get(i);
 			if(temp.getChildOf() == 0){
 				if(i != 1){
-					currentDataSource.setLastID(i-1);
+					currentDataSource.setLastID(i-1); //OLD
+					prevTemp.setLastChildID(i-1); //NEW
 				}
-				currentDataSource = dataPaths.get(temp.getDataSource());
+				if(!usedDS.contains(temp.getDataSource())){
+					currentDataSource = dataPaths.get(temp.getDataSource());
+				}else{
+					dataPaths.add(dataPaths.get(temp.getDataSource()));
+					temp.setDataSource(dataPaths.size()-1);
+					currentDataSource = dataPaths.get(temp.getDataSource());
+				}
 				currentDataSource.setRootID(i);
+				usedDS.add(temp.getDataSource());
+				prevTemp = temp;
 			}
 			if(i == count){
-				currentDataSource.setLastID(i);
+				currentDataSource.setLastID(i); //OLD
+				prevTemp.setLastChildID(i); //NEW
 			}
 		}
 	}
