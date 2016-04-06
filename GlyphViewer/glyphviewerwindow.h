@@ -81,6 +81,7 @@ private:
 	bool DoesVisualizationNeedToBeRecreated(const SynGlyphX::DataTransformMapping& mapping) const;
 	void CreateExportToPortableVisualizationSubmenu();
 	void DownloadBaseImages(DataEngine::GlyphEngine& ge);
+	void CreateLoadingScreen();
 
 	QMenu* m_fileMenu;
 	QMenu* m_toolsMenu;
@@ -92,6 +93,7 @@ private:
 
 	QDockWidget* m_glyphListDockWidget;
 	LegendsDisplayWidget* m_legendsWidget;
+	QDockWidget* m_legendsDockWidget;
 
 	SynGlyphX::DataMappingModel* m_mappingModel;
 	CacheManager m_cacheManager;

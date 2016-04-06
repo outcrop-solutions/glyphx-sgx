@@ -27,6 +27,7 @@
 #include "filesystem.h"
 #include "defaultbaseimageproperties.h"
 #include "downloadexception.h"
+#include "loadingscreenwidget.h"
 
 GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 	: SynGlyphX::MainWindow(4, parent),
@@ -51,10 +52,9 @@ GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 	QStackedWidget* antzWidgetContainer = new QStackedWidget(this);
 	antzWidgetContainer->setContentsMargins(0, 0, 0, 0);
 	antzWidgetContainer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-	QWidget* dummyWidget = new QWidget(antzWidgetContainer);
-	dummyWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-	antzWidgetContainer->addWidget(dummyWidget);
 	setCentralWidget(antzWidgetContainer);
+
+	CreateLoadingScreen();
 	
 	try {
 		
@@ -112,6 +112,10 @@ GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 			QMessageBox::critical(this, tr("Failed To Open Visualization"), tr("Failed to open visualization from command line.  Error: ") + e.what(), QMessageBox::Ok);
 		}
 	}
+	else if (LoadingScreenWidget::DoesGlyphEdDirExist()) {
+
+		antzWidgetContainer->setCurrentIndex(0);
+	}
 
 	statusBar()->showMessage(SynGlyphX::Application::applicationName() + " Started", 3000);
 }
@@ -124,6 +128,23 @@ GlyphViewerWindow::~GlyphViewerWindow()
 void GlyphViewerWindow::closeJVM(){
 	
 	m_dataEngineConnection->destroyJVM();
+}
+
+void GlyphViewerWindow::CreateLoadingScreen() {
+
+	QStackedWidget* antzWidgetContainer = dynamic_cast<QStackedWidget*>(centralWidget());
+
+	if (LoadingScreenWidget::DoesGlyphEdDirExist()) {
+
+		LoadingScreenWidget* loadingScreen = new LoadingScreenWidget(antzWidgetContainer);
+		antzWidgetContainer->addWidget(loadingScreen);
+	}
+	else {
+
+		QWidget* dummyWidget = new QWidget(antzWidgetContainer);
+		dummyWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+		antzWidgetContainer->addWidget(dummyWidget);
+	}
 }
 
 void GlyphViewerWindow::CreateANTzWidget() {
@@ -241,12 +262,13 @@ void GlyphViewerWindow::CreateDockWidgets() {
 	setCorner(Qt::BottomRightCorner, Qt::RightDockWidgetArea);
 
 	m_legendsWidget = new LegendsDisplayWidget(this);
-	QDockWidget* legendDockWidget = new QDockWidget(tr("Legends"), this);
-	legendDockWidget->setWidget(m_legendsWidget);
-	legendDockWidget->setFloating(true);
-	m_viewMenu->addAction(legendDockWidget->toggleViewAction());
-	legendDockWidget->move(100, 100);
-	legendDockWidget->resize(400, 280);
+	m_legendsDockWidget = new QDockWidget(tr("Legends"), this);
+	m_legendsDockWidget->setWidget(m_legendsWidget);
+	m_legendsDockWidget->setFloating(true);
+	m_viewMenu->addAction(m_legendsDockWidget->toggleViewAction());
+	m_legendsDockWidget->move(100, 100);
+	m_legendsDockWidget->resize(400, 280);
+	m_legendsDockWidget->hide();
 
 	m_glyphListDockWidget = new QDockWidget(tr("Glyph List"), this);
 	m_treeView = new GlyphTreeListView(m_glyphListDockWidget);
@@ -348,7 +370,16 @@ void GlyphViewerWindow::CloseVisualization() {
 	EnableLoadedVisualizationDependentActions(false);
 	ClearCurrentFile();
 	m_antzWidget->SetBackgroundColor(SynGlyphX::GlyphColor::s_black);
+	if (m_legendsDockWidget->isFloating()) {
 
+		m_legendsDockWidget->hide();
+	}
+
+	if (LoadingScreenWidget::DoesGlyphEdDirExist()) {
+
+		QStackedWidget* antzWidgetContainer = dynamic_cast<QStackedWidget*>(centralWidget());
+		antzWidgetContainer->setCurrentIndex(0);
+	}
 }
 
 void GlyphViewerWindow::ClearAllData() {
@@ -391,7 +422,13 @@ void GlyphViewerWindow::LoadVisualization(const QString& filename) {
 		LoadANTzCompatibilityVisualization(filename);
 	}
 
-	m_glyphListDockWidget->raise();
+	if (LoadingScreenWidget::DoesGlyphEdDirExist()) {
+
+		QStackedWidget* antzWidgetContainer = dynamic_cast<QStackedWidget*>(centralWidget());
+		antzWidgetContainer->setCurrentIndex(1);
+	}
+
+	m_legendsDockWidget->show();
 }
 
 bool GlyphViewerWindow::LoadNewVisualization(const QString& filename) {
