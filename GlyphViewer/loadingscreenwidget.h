@@ -20,6 +20,7 @@
 
 #include <QtWidgets/QFrame>
 #include <QtWidgets/QListWidget>
+#include "groupboxsinglewidget.h"
 
 class LoadingScreenWidget : public QFrame
 {
@@ -31,10 +32,16 @@ public:
 
 	static bool DoesGlyphEdDirExist();
 
+private slots:
+	void OnLoadVisualization();
+	void OnNewViewSelected();
+
 private:
 	static QString s_glyphEdDir;
 
 	QListWidget* m_viewListWidget;
+	std::vector<QListWidget*> m_filterWidgets;
+	std::vector<SynGlyphX::GroupBoxSingleWidget*> m_filterGroupBoxWidgets;
 };
 
 #endif // LOADINGSCREENWIDGET_H
