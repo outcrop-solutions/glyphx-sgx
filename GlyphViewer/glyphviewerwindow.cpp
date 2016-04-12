@@ -3,6 +3,8 @@
 #include <QtWidgets/QStatusBar>
 #include <QtWidgets/QMessageBox>
 #include <QtWidgets/QMenuBar>
+#include <QtWidgets/QToolBar>
+#include <QtWidgets/QToolButton>
 #include <QtWidgets/QStackedWidget>
 #include <QtCore/QDir>
 #include <QtCore/QStandardPaths>
@@ -46,6 +48,10 @@ GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 	m_columnsModel = new SourceDataInfoModel(m_mappingModel->GetDataMapping(), m_sourceDataCache, this);
 	m_columnsModel->SetSelectable(false, false, true);
 
+	m_toolbar = addToolBar(tr("Toolbar"));
+	m_toolbar->setFloatable(true);
+	m_toolbar->setMovable(true);
+
 	CreateMenus();
 	CreateDockWidgets();
 
@@ -79,6 +85,10 @@ GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 	m_linkedWidgetsManager = new LinkedWidgetsManager(m_antzWidget, this);
 	m_filteringWidget->SetupLinkedWidgets(*m_linkedWidgetsManager);
 	m_pseudoTimeFilterWidget->SetupLinkedWidgets(*m_linkedWidgetsManager);
+
+	QCheckBox* cb = new QCheckBox(tr("Filter View"), this);
+	m_toolbar->addWidget(cb);
+	m_linkedWidgetsManager->AddFilterViewCheckbox(cb);
 
 	m_stereoAction->setChecked(m_antzWidget->IsInStereoMode());
 
@@ -266,6 +276,7 @@ void GlyphViewerWindow::CreateDockWidgets() {
 	m_legendsDockWidget->setWidget(m_legendsWidget);
 	m_legendsDockWidget->setFloating(true);
 	m_viewMenu->addAction(m_legendsDockWidget->toggleViewAction());
+	m_toolbar->addAction(m_legendsDockWidget->toggleViewAction());
 	m_legendsDockWidget->move(100, 100);
 	m_legendsDockWidget->resize(400, 280);
 	m_legendsDockWidget->hide();
@@ -278,6 +289,7 @@ void GlyphViewerWindow::CreateDockWidgets() {
 	m_glyphListDockWidget->setWidget(m_treeView);
 	addDockWidget(Qt::LeftDockWidgetArea, m_glyphListDockWidget);
 	m_viewMenu->addAction(m_glyphListDockWidget->toggleViewAction());
+	m_toolbar->addAction(m_glyphListDockWidget->toggleViewAction());
 	m_glyphListDockWidget->hide();
 
 	m_glyphPropertiesWidgetContainer = new GlyphPropertiesWidgetsContainer(m_glyphForestModel, m_glyphForestSelectionModel, this);
@@ -286,6 +298,7 @@ void GlyphViewerWindow::CreateDockWidgets() {
 	textPropertiesDockWidget->setWidget(m_glyphPropertiesWidgetContainer->GetTextProperitesWidget());
 	addDockWidget(Qt::LeftDockWidgetArea, textPropertiesDockWidget);
 	m_viewMenu->addAction(textPropertiesDockWidget->toggleViewAction());
+	m_toolbar->addAction(textPropertiesDockWidget->toggleViewAction());
 	textPropertiesDockWidget->hide();
 
 	tabifyDockWidget(m_glyphListDockWidget, textPropertiesDockWidget);
@@ -295,13 +308,16 @@ void GlyphViewerWindow::CreateDockWidgets() {
 	rightDockWidget->setWidget(m_filteringWidget);
 	addDockWidget(Qt::RightDockWidgetArea, rightDockWidget);
 	m_viewMenu->addAction(rightDockWidget->toggleViewAction());
+	m_toolbar->addAction(rightDockWidget->toggleViewAction());
 
 	QDockWidget* bottomDockWidget = new QDockWidget(tr("Time Animated Filter"), this);
 	m_pseudoTimeFilterWidget = new PseudoTimeFilterWidget(m_columnsModel, m_filteringManager, bottomDockWidget);
 	bottomDockWidget->setWidget(m_pseudoTimeFilterWidget);
 	addDockWidget(Qt::BottomDockWidgetArea, bottomDockWidget);
 	m_viewMenu->addAction(bottomDockWidget->toggleViewAction());
+	m_toolbar->addAction(bottomDockWidget->toggleViewAction());
 	QObject::connect(m_columnsModel, &SourceDataInfoModel::modelReset, m_pseudoTimeFilterWidget, &PseudoTimeFilterWidget::ResetForNewVisualization);
+	
 }
 
 void GlyphViewerWindow::OpenProject() {
