@@ -43,11 +43,6 @@ public:
 
 	typedef std::vector<std::pair<QString, SynGlyphX::IndexSet>> DistinctValueIndexMap;
 
-	typedef std::map<QString, QSet<QString>> ColumnValueData;
-
-	typedef std::pair<QString, SynGlyphX::DegenerateInterval> ColumnIntervalPair;
-	typedef std::vector<ColumnIntervalPair> ColumnIntervalMap;
-
 	SourceDataCache();
 	SourceDataCache(const QString& filename);
 	virtual ~SourceDataCache();

@@ -26,6 +26,7 @@
 #include "interval.h"
 #include <unordered_map>
 #include <map>
+#include "filteringparameters.h"
 
 class FilteringManager : public QObject
 {
@@ -37,8 +38,7 @@ public:
 	FilteringManager(SynGlyphX::DataMappingModel* dataMappingModel, SourceDataCache::SharedPtr sourceDataCache, SynGlyphX::ItemFocusSelectionModel* sceneSelectionModel, QObject *parent);
 	~FilteringManager();
 
-	void SetFilterResultsForTable(const QString& table, const SourceDataCache::ColumnIntervalMap& columnRanges, bool updateFocus = false);
-	void SetFilterResultsForTable(const QString& table, const SourceDataCache::ColumnValueData& sourceData, bool updateFocus = false);
+	void SetFilterResultsForTable(const QString& table, const FilteringParameters& filters, bool updateFocus = false);
 	void SetFilterResultsForTable(const QString& table, const SynGlyphX::IndexSet& newSelectionSet, bool updateFocus = false);
 	
 	void ClearFilterResults();
@@ -70,6 +70,9 @@ private:
 	SynGlyphX::DataMappingModel* m_dataMappingModel;
 	SourceDataCache::SharedPtr m_sourceDataCache;
 	SynGlyphX::ItemFocusSelectionModel* m_sceneSelectionModel;
+
+	//Results from loading screen filter
+	IndexSetMap m_filterResultsPerTableFromLoadingScreenFilter;
 
 	TableToGlyphTemplateRangesMap m_tableToGlyphTreeRangesMap;
 	GlyphTemplateRangeToTableMap m_glyphTemplateRangeToTableMap;

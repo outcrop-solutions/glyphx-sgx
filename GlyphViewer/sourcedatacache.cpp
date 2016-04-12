@@ -56,7 +56,7 @@ void SourceDataCache::Setup(const QString& filename) {
 	if (!m_db.open()) {
 
 		Close();
-		throw std::runtime_error("CSV cache db failed to open.");
+		throw std::runtime_error("Cache db failed to open.");
 	}
 
 	SetPragmaValue("page_size = 4096");
