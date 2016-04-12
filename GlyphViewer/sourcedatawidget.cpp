@@ -27,7 +27,7 @@ SourceDataWidget::SourceDataWidget(FilteringManager* filteringManager, QWidget *
 	m_sourceDataTabs->setTabsClosable(false);
 	mainLayout->addWidget(m_sourceDataTabs, 1);
 
-	QHBoxLayout* buttonsLayout = new QHBoxLayout(this);
+	QHBoxLayout* buttonsLayout = new QHBoxLayout();
 
 	QPushButton* saveButton = new QPushButton(tr("Save Current Tab To File"), this);
 	buttonsLayout->addWidget(saveButton);

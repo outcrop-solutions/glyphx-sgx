@@ -6,11 +6,38 @@
 #include "exception_handler.h"
 #include <QtCore/QStandardPaths>
 #include <QtWidgets/QMessageBox>
+#include <QtCore/QTextStream>
+
+void myMessageHandler(QtMsgType type, const QMessageLogContext &context, const QString &msg)
+{
+	QString txt;
+	switch (type) {
+	case QtDebugMsg:
+		txt = QString("Debug: %1\n").arg(msg);
+		break;
+	case QtWarningMsg:
+		txt = QString("Warning: %1\n").arg(msg);
+		break;
+	case QtCriticalMsg:
+		txt = QString("Critical: %1\n").arg(msg);
+		break;
+	case QtFatalMsg:
+		txt = QString("Fatal: %1\n").arg(msg);
+		break;
+	}
+	QFile outFile("image_log.txt");
+	outFile.open(QIODevice::WriteOnly | QIODevice::Append);
+	QTextStream ts(&outFile);
+	ts << txt;
+}
+
 
 int main(int argc, char *argv[])
 {
 	SynGlyphX::GlyphBuilderApplication::Setup("Glyph Builder - Glyph Viewer", "0.7.31");
 	SynGlyphX::GlyphBuilderApplication a(argc, argv);
+
+	qInstallMessageHandler(myMessageHandler);
 
 	const QString dumpPath = QStandardPaths::writableLocation(QStandardPaths::HomeLocation) + "/Minidumps";
 	std::wstring pathAsStr = dumpPath.toStdWString();

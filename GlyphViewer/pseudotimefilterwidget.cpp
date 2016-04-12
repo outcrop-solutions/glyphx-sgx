@@ -17,9 +17,9 @@ PseudoTimeFilterWidget::PseudoTimeFilterWidget(SourceDataInfoModel* columnsModel
 {
 	m_playTimer.setSingleShot(false);
 
-	QVBoxLayout* layout = new QVBoxLayout(this);
+	QVBoxLayout* mainLayout = new QVBoxLayout(this);
 
-	QHBoxLayout* sliderValueLayout = new QHBoxLayout(this);
+	QHBoxLayout* sliderValueLayout = new QHBoxLayout();
 
 	m_slider = new QSlider(Qt::Horizontal, this);
 	m_slider->setMinimum(0);
@@ -29,11 +29,11 @@ PseudoTimeFilterWidget::PseudoTimeFilterWidget(SourceDataInfoModel* columnsModel
 	m_currentPositionLabel->setReadOnly(true);
 	sliderValueLayout->addWidget(m_currentPositionLabel);
 
-	layout->addLayout(sliderValueLayout);
+	mainLayout->addLayout(sliderValueLayout);
 
-	QHBoxLayout* buttonsLayout = new QHBoxLayout(this);
+	QHBoxLayout* buttonsLayout = new QHBoxLayout();
 
-	QHBoxLayout* buttonsLayoutLeft = new QHBoxLayout(this);
+	QHBoxLayout* buttonsLayoutLeft = new QHBoxLayout();
 	buttonsLayoutLeft->setContentsMargins(0, 0, 0, 0);
 
 	m_fieldSelectorButton = new QPushButton(tr("Select Field"), this);
@@ -72,7 +72,7 @@ PseudoTimeFilterWidget::PseudoTimeFilterWidget(SourceDataInfoModel* columnsModel
 
 	buttonsLayout->addLayout(buttonsLayoutLeft, 1);
 
-	QHBoxLayout* buttonsLayoutCenter = new QHBoxLayout(this);
+	QHBoxLayout* buttonsLayoutCenter = new QHBoxLayout();
 	buttonsLayoutCenter->setContentsMargins(0, 0, 0, 0);
 	buttonsLayoutCenter->setSizeConstraint(QLayout::SetFixedSize);
 
@@ -84,7 +84,7 @@ PseudoTimeFilterWidget::PseudoTimeFilterWidget(SourceDataInfoModel* columnsModel
 
 	buttonsLayout->addLayout(buttonsLayoutCenter);
 
-	QHBoxLayout* buttonsLayoutRight = new QHBoxLayout(this);
+	QHBoxLayout* buttonsLayoutRight = new QHBoxLayout();
 	buttonsLayoutRight->setContentsMargins(0, 0, 0, 0);
 
 	m_goToEndButton = new QPushButton(this);
@@ -105,9 +105,9 @@ PseudoTimeFilterWidget::PseudoTimeFilterWidget(SourceDataInfoModel* columnsModel
 
 	buttonsLayout->addLayout(buttonsLayoutRight, 1);
 
-	layout->addLayout(buttonsLayout);
+	mainLayout->addLayout(buttonsLayout);
 
-	setLayout(layout);
+	setLayout(mainLayout);
 
 	SetPlayTimerInterval(1000);
 	QObject::connect(&m_playTimer, &QTimer::timeout, this, &PseudoTimeFilterWidget::IncrementTime);

@@ -21,7 +21,7 @@ namespace SynGlyphX {
 		mainLayout->setContentsMargins(0, 0, 1, 1);
 		mainLayout->setSpacing(0);
 
-		QHBoxLayout* titleLayout = new QHBoxLayout(this);
+		QHBoxLayout* titleLayout = new QHBoxLayout();
 		titleLayout->setContentsMargins(4, 4, 3, 4);
 
 		m_title = new QLabel(this);

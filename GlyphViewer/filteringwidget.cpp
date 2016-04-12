@@ -11,7 +11,7 @@ FilteringWidget::FilteringWidget(SourceDataInfoModel* columnsModel, FilteringMan
 {
 	QVBoxLayout* mainLayout = new QVBoxLayout(this);
 
-	QHBoxLayout* topLayout = new QHBoxLayout;
+	QHBoxLayout* topLayout = new QHBoxLayout();
 
 	m_hideUnselectedTreesCheckbox = new QCheckBox(tr("Filter View"), this);
 	topLayout->addWidget(m_hideUnselectedTreesCheckbox);
@@ -42,7 +42,7 @@ FilteringWidget::FilteringWidget(SourceDataInfoModel* columnsModel, FilteringMan
 
 	mainLayout->addWidget(filterMethodsWidget, 1);
 
-	QHBoxLayout* buttonsLayout = new QHBoxLayout(this);
+	QHBoxLayout* buttonsLayout = new QHBoxLayout();
 
 	m_sourceWidgetButton = new QPushButton(tr("Show Filtered Source Data"), this);
 	m_sourceWidgetButton->setCheckable(true);

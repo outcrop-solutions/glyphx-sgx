@@ -23,7 +23,7 @@ RangeFilterListWidget::RangeFilterListWidget(SourceDataInfoModel* columnsModel, 
 	mainLayout->setContentsMargins(0, 0, 0, 0);
 	mainLayout->setSpacing(0);
 
-	QHBoxLayout* buttonLayout = new QHBoxLayout(this);
+	QHBoxLayout* buttonLayout = new QHBoxLayout();
 	buttonLayout->setContentsMargins(8, 8, 8, 8);
 
 	m_addButton = new QPushButton(tr("Add"), this);
