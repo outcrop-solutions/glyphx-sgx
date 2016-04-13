@@ -1,5 +1,6 @@
 #include "roledatafilterproxymodel.h"
-
+#include <QtCore/QDateTime>
+#include <QtCore/QDebug>
 namespace SynGlyphX {
 
 	RoleDataFilterProxyModel::RoleDataFilterProxyModel(QObject* parent) :
@@ -37,6 +38,33 @@ namespace SynGlyphX {
 
 			return true;
 		}
+	}
+
+	bool  RoleDataFilterProxyModel::lessThan(const QModelIndex &left, const QModelIndex &right) const
+	{
+		QVariant leftData = sourceModel()->data(left);
+		QVariant rightData = sourceModel()->data(right);
+
+		Q_ASSERT(leftData.type() == rightData.type());
+
+		if (leftData.type() == QMetaType::QString)
+		{
+			//try to see if String is acually a number or a date
+			// ideally we need to sourceModel to have the correct type to avoid costly conversion here
+			bool o1, o2;
+			double ld = leftData.toDouble(&o1);
+			double rd = rightData.toDouble(&o2);
+			if (o1 && o2)
+			{
+				return ld < rd;
+			}
+			QDateTime l = QDateTime::fromString(leftData.toString(),"d/m/yyyy");
+			QDateTime r = QDateTime::fromString(rightData.toString(),"d/m/yyyy");
+			if (l.isValid() && r.isValid())
+				return l < r;
+		}
+
+		return (leftData < rightData);
 	}
 
 	void RoleDataFilterProxyModel::Clear() {
