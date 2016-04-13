@@ -15,45 +15,28 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef MULTITABLEELASTICLISTSWIDGET_H
-#define MULTITABLEELASTICLISTSWIDGET_H
+#ifndef DATAMAPPINGLOADINGFILTERMODEL_H
+#define DATAMAPPINGLOADINGFILTERMODEL_H
 
-#include <QtWidgets/QWidget>
-#include <QtWidgets/QComboBox>
-#include <QtWidgets/QStackedLayout>
-#include "singlewidgetdialog.h"
-#include <unordered_map>
-#include "singletableelasticlistswidget.h"
-#include "filteringmanager.h"
+#include "datamappingmodel.h"
+#include "filteringparameters.h"
+#include "inputtable.h"
 
-class MultiTableElasticListsWidget : public QWidget
+class DataMappingLoadingFilterModel : public SynGlyphX::DataMappingModel
 {
 	Q_OBJECT
 
 public:
-	MultiTableElasticListsWidget(FilteringManager* filteringManager, QWidget *parent);
-	~MultiTableElasticListsWidget();
+	typedef std::unordered_map<SynGlyphX::InputTable, FilteringParameters> Table2LoadingFiltersMap;
 
-public slots:
-	void SwitchTable(const QString& table);
+	DataMappingLoadingFilterModel(QObject *parent);
+	~DataMappingLoadingFilterModel();
 
-private slots:
-	void OnFilterResultsChanged();
-	void OnModelReset();
-	void OnElasticListsSelectionChanged(const QString& table, const FilteringParameters::ColumnDistinctValuesFilterMap& selection);
+	void LoadDataTransformFile(const QString& filename, const Table2LoadingFiltersMap& loadingFiltersMap);
+	const Table2LoadingFiltersMap& GetLoadingFilters() const;
 
 private:
-	typedef std::unordered_map<std::wstring, SingleTableElasticListsWidget*> NameWidgetMap;
-
-	void UpdateElasticListsAndSourceDataWidget();
-	void UpdateElasticLists(const FilteringManager::IndexSetMap& dataIndexes = FilteringManager::IndexSetMap());
-	void ClearElasticLists();
-
-	//SourceDataCache::SharedPtr m_sourceDataCache;
-	FilteringManager* m_filteringManager;
-	
-	QStackedLayout* m_elasticListsStackLayout;
-	NameWidgetMap m_elasticListWidgetsForEachTable;
+	Table2LoadingFiltersMap m_loadingFiltersMap;
 };
 
-#endif // MULTITABLEELASTICLISTSWIDGET_H
+#endif // DATAMAPPINGLOADINGFILTERMODEL_H

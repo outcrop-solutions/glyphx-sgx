@@ -19,7 +19,7 @@
 #define FILTERINGMANAGER_H
 
 #include <QtCore/QObject>
-#include "datamappingmodel.h"
+#include "datamappingloadingfiltermodel.h"
 #include "sourcedatacache.h"
 #include "inputtable.h"
 #include "itemfocusselectionmodel.h"
@@ -34,21 +34,23 @@ class FilteringManager : public QObject
 
 public:
 	typedef std::map<QString, SynGlyphX::IndexSet> IndexSetMap;
+	typedef QMap<QString, FilteringParameters> Table2FiltersMap;
 
-	FilteringManager(SynGlyphX::DataMappingModel* dataMappingModel, SourceDataCache::SharedPtr sourceDataCache, SynGlyphX::ItemFocusSelectionModel* sceneSelectionModel, QObject *parent);
+	FilteringManager(DataMappingLoadingFilterModel* dataMappingModel, SourceDataCache::SharedPtr sourceDataCache, SynGlyphX::ItemFocusSelectionModel* sceneSelectionModel, QObject *parent);
 	~FilteringManager();
 
-	void SetFilterResultsForTable(const QString& table, const FilteringParameters& filters, bool updateFocus = false);
-	void SetFilterResultsForTable(const QString& table, const SynGlyphX::IndexSet& newSelectionSet, bool updateFocus = false);
+	void GenerateFilterResultsForTable(const QString& table, const FilteringParameters& filters, bool updateFocus = false);
+	void GenerateLoadingFilterResultsForTable(const QString& table, const FilteringParameters::ColumnDistinctValuesFilterMap& filters);
 	
 	void ClearFilterResults();
 	void ClearFilterResultsForTable(const QString& table, bool updateFocus = false);
 	const IndexSetMap& GetFilterResultsByTable() const;
 	const SynGlyphX::IndexSet& GetGlyphIndexedFilterResults() const;
+	const Table2FiltersMap& GetTable2FiltersMap() const;
 
 	const SynGlyphX::ItemFocusSelectionModel* GetSceneSelectionModel() const;
 	SourceDataCache::ConstSharedPtr GetSourceDataCache() const;
-	const SynGlyphX::DataMappingModel* GetDataMappingModel() const;
+	const DataMappingLoadingFilterModel* GetDataMappingModel() const;
 
 signals:
 	void FilterResultsChanged(const SynGlyphX::IndexSet& glyphIndexedFilteredResults);
@@ -67,18 +69,20 @@ private:
 	void AddSceneIndexesToSelection(QItemSelection& selection, const QString& table, const SynGlyphX::IndexSet& indexSet);
 	void ClearSourceDataSelectionForTable(QItemSelection& selection, bool updateFocus);
 
-	SynGlyphX::DataMappingModel* m_dataMappingModel;
+	DataMappingLoadingFilterModel* m_dataMappingModel;
 	SourceDataCache::SharedPtr m_sourceDataCache;
 	SynGlyphX::ItemFocusSelectionModel* m_sceneSelectionModel;
 
 	//Results from loading screen filter
-	IndexSetMap m_filterResultsPerTableFromLoadingScreenFilter;
+	IndexSetMap m_filterResultsPerTableFromLoadingFilter;
 
 	TableToGlyphTemplateRangesMap m_tableToGlyphTreeRangesMap;
 	GlyphTemplateRangeToTableMap m_glyphTemplateRangeToTableMap;
 
 	IndexSetMap m_filterResultsByTable;
 	SynGlyphX::IndexSet m_filterResultsIndexedToGlyphs;
+
+	Table2FiltersMap m_filtersForEachTable;
 };
 
 #endif // SOURCEDATASELECTIONMODEL_H

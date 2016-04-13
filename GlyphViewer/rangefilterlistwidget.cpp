@@ -215,10 +215,10 @@ void RangeFilterListWidget::OnAddFilter() {
 			unsigned int nextRow = m_rangeFiltersTableWidget->rowCount();
 			m_rangeFiltersTableWidget->setRowCount(nextRow + selected.count());
 			boost::uuids::string_generator gen;
-			SourceDataCache::ColumnIntervalMap columnIntervalMap;
+			FilteringParameters::ColumnRangeFilterMap rangeFilterMap;
 			for (unsigned int row = 0; row < nextRow; ++row) {
 
-				columnIntervalMap.push_back(SourceDataCache::ColumnIntervalPair(GetTextFromCell(row), GetRangeFilterWidgetFromCell(row)->GetRange()));
+				rangeFilterMap.push_back(FilteringParameters::ColumnRangeFilter(GetTextFromCell(row), GetRangeFilterWidgetFromCell(row)->GetRange()));
 			}
 
 			for (const auto& modelIndex : selected) {
@@ -228,7 +228,7 @@ void RangeFilterListWidget::OnAddFilter() {
 				SynGlyphX::SingleNumericRangeFilterWidget* filter = new SynGlyphX::SingleNumericRangeFilterWidget(Qt::Horizontal, this);
 				SynGlyphX::InputField inputField(gen(datasourceTable[0].toStdWString()), datasourceTable[1].toStdWString(), field.toStdWString(), SynGlyphX::InputField::Real);
 
-				SynGlyphX::SingleNumericRangeFilterWidget::SliderPositionValues sliderPositionValues = m_filteringManager->GetSourceDataCache()->GetSortedNumericDistictValues(inputField, columnIntervalMap);
+				SynGlyphX::SingleNumericRangeFilterWidget::SliderPositionValues sliderPositionValues = m_filteringManager->GetSourceDataCache()->GetSortedNumericDistictValues(inputField, rangeFilterMap);
 				filter->SetSliderPositionValuesAndMaxExtents(sliderPositionValues);
 				filter->SetRange(SynGlyphX::DegenerateInterval(*sliderPositionValues.begin(), *sliderPositionValues.rbegin()));
 
@@ -289,13 +289,13 @@ void RangeFilterListWidget::OnUpdateFilters() {
 		SaveRangesFromFiltersInTableWidget();
 		for (Table2RangesAndDistinctValuesMap::const_iterator tableIterator = m_table2RangesAndDistinctValuesMap.begin(); tableIterator != m_table2RangesAndDistinctValuesMap.end(); ++tableIterator) {
 
-			SourceDataCache::ColumnIntervalMap columnIntervalMap;
+			FilteringParameters::ColumnRangeFilterMap rangeFilterMap;
 			for (const auto& field2RangeAndExtent : tableIterator.value()) {
 
-				columnIntervalMap.push_back(SourceDataCache::ColumnIntervalPair(field2RangeAndExtent.first, field2RangeAndExtent.second.first));
+				rangeFilterMap.push_back(FilteringParameters::ColumnRangeFilter(field2RangeAndExtent.first, field2RangeAndExtent.second.first));
 			}
 
-			m_filteringManager->SetFilterResultsForTable(tableIterator.key(), columnIntervalMap);
+			m_filteringManager->SetFilterResultsForTable(tableIterator.key(), rangeFilterMap);
 		}
 		m_updateButton->setEnabled(false);
 		SynGlyphX::GlyphBuilderApplication::restoreOverrideCursor();

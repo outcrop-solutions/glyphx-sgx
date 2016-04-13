@@ -21,6 +21,7 @@
 #include <map>
 #include <vector>
 #include <QtCore/QSet>
+#include <QtCore/QString>
 #include "interval.h"
 
 class FilteringParameters
@@ -32,15 +33,25 @@ public:
 	typedef std::vector<ColumnRangeFilter> ColumnRangeFilterMap;
 
 	FilteringParameters();
+	FilteringParameters(const FilteringParameters& filters);
 	~FilteringParameters();
 
-	void Clear();
+	FilteringParameters& operator=(const FilteringParameters& filters);
+	bool operator==(const FilteringParameters& filters);
+	bool operator!=(const FilteringParameters& filters);
 
+	void Clear();
+	bool HasFilters() const;
+
+	void SetDistinctValueFilters(const ColumnDistinctValuesFilterMap& filterMap);
 	void SetDistinctValueFilter(const QString& column, const QSet<QString>& distinctValues);
 	void RemoveDistinctValueFilter(const QString& column);
+	const ColumnDistinctValuesFilterMap& GetDistinctValueFilters() const;
 
+	void SetRangeFilters(const ColumnRangeFilterMap& filterMap);
 	void SetRangeFilter(const QString& column, const SynGlyphX::DegenerateInterval& rangeFilter);
 	void RemoveRangeFilter(const QString& column);
+	const ColumnRangeFilterMap& GetRangeFilters() const;
 
 private:
 	//Filters from Elastic tab in Filtering widget and time animation widget

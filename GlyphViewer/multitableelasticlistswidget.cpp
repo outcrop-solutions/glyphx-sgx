@@ -97,7 +97,14 @@ void MultiTableElasticListsWidget::ClearElasticLists() {
 	m_elasticListWidgetsForEachTable.clear();
 }
 
-void MultiTableElasticListsWidget::OnElasticListsSelectionChanged(const QString& table, const SourceDataCache::ColumnValueData& selection) {
+void MultiTableElasticListsWidget::OnElasticListsSelectionChanged(const QString& table, const FilteringParameters::ColumnDistinctValuesFilterMap& selection) {
 
-	m_filteringManager->SetFilterResultsForTable(table, selection);
+	FilteringParameters newParameters; 
+	const FilteringManager::Table2FiltersMap& table2FiltersMap = m_filteringManager->GetTable2FiltersMap();
+	if (table2FiltersMap.count(table) > 0) {
+
+		newParameters = table2FiltersMap[table];
+	}
+	newParameters.SetDistinctValueFilters(selection);
+	m_filteringManager->GenerateFilterResultsForTable(table, newParameters);
 }

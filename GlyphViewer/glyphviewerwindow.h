@@ -21,7 +21,7 @@
 #include <QtWidgets/QMainWindow>
 #include "glyphtreelistview.h"
 #include "mainwindow.h"
-#include "datamappingmodel.h"
+#include "datamappingloadingfiltermodel.h"
 #include "glyphforestmodel.h"
 #include "antzforestwidget.h"
 #include "cachemanager.h"
@@ -37,6 +37,7 @@
 #include "glyphengine.h"
 #include "portablevisualizationexport.h"
 #include "legendsdisplaywidget.h"
+#include "filteringparameters.h"
 
 class GlyphViewerWindow : public SynGlyphX::MainWindow
 {
@@ -46,6 +47,8 @@ public:
 	GlyphViewerWindow(QWidget *parent = 0);
 	~GlyphViewerWindow();
 	void closeJVM();
+
+	bool LoadNewVisualization(const QString& filename, const DataMappingLoadingFilterModel::Table2LoadingFiltersMap& filters = DataMappingLoadingFilterModel::Table2LoadingFiltersMap());
 
 protected:
 	virtual void ReadSettings();
@@ -65,10 +68,9 @@ private slots:
 
 private:
 	virtual bool LoadRecentFile(const QString& filename);
-	bool LoadNewVisualization(const QString& filename);
-	void LoadVisualization(const QString& filename);
+	void LoadVisualization(const QString& filename, const DataMappingLoadingFilterModel::Table2LoadingFiltersMap& filters);
 	void LoadANTzCompatibilityVisualization(const QString& filename);
-	void LoadDataTransform(const QString& filename);
+	void LoadDataTransform(const QString& filename, const DataMappingLoadingFilterModel::Table2LoadingFiltersMap& filters);
 	void ValidateDataMappingFile(const QString& filename);
 	void LoadFilesIntoModel(const SynGlyphXANTz::ANTzCSVWriter::FilenameList& filesToLoad, const QStringList& baseImageFilenames);
 	void CreateMenus();
@@ -95,7 +97,7 @@ private:
 	LegendsDisplayWidget* m_legendsWidget;
 	QDockWidget* m_legendsDockWidget;
 
-	SynGlyphX::DataMappingModel* m_mappingModel;
+	DataMappingLoadingFilterModel* m_mappingModel;
 	CacheManager m_cacheManager;
 	bool m_showErrorFromTransform;
 

@@ -1,6 +1,6 @@
 #include "filteringmanager.h"
 
-FilteringManager::FilteringManager(SynGlyphX::DataMappingModel* dataMappingModel, SourceDataCache::SharedPtr sourceDataCache, SynGlyphX::ItemFocusSelectionModel* sceneSelectionModel, QObject *parent)
+FilteringManager::FilteringManager(DataMappingLoadingFilterModel* dataMappingModel, SourceDataCache::SharedPtr sourceDataCache, SynGlyphX::ItemFocusSelectionModel* sceneSelectionModel, QObject *parent)
 	: QObject(parent),
 	m_dataMappingModel(dataMappingModel),
 	m_sourceDataCache(sourceDataCache),
@@ -22,8 +22,7 @@ const SynGlyphX::ItemFocusSelectionModel* FilteringManager::GetSceneSelectionMod
 
 void FilteringManager::OnSceneModelReset() {
 
-	m_glyphTemplateRangeToTableMap.clear();
-	m_tableToGlyphTreeRangesMap.clear();
+	ClearFilterResults();
 
 	if (m_sceneSelectionModel->model()->rowCount() > 0) {
 
@@ -57,89 +56,97 @@ void FilteringManager::OnSceneModelReset() {
 	}
 }
 
-void FilteringManager::SetFilterResultsForTable(const QString& table, const SourceDataCache::ColumnIntervalMap& columnRanges, bool updateFocus) {
+void FilteringManager::GenerateFilterResultsForTable(const QString& table, const FilteringParameters& filters, bool updateFocus) {
 
-	if (columnRanges.empty()) {
-
-		ClearFilterResultsForTable(table);
-	}
-	else {
-
-		SetFilterResultsForTable(table, m_sourceDataCache->GetIndexesFromTableInRanges(table, columnRanges), updateFocus);
-	}
-}
-
-void FilteringManager::SetFilterResultsForTable(const QString& table, const SourceDataCache::ColumnValueData& sourceData, bool updateFocus) {
-
-	if (sourceData.empty()) {
+	if (!filters.HasFilters()) {
 
 		ClearFilterResultsForTable(table);
 	}
 	else {
 
-		SetFilterResultsForTable(table, m_sourceDataCache->GetIndexesFromTableWithSelectedValues(table, sourceData), updateFocus);
-	}
-}
+		m_filtersForEachTable[table] = filters;
 
-void FilteringManager::SetFilterResultsForTable(const QString& table, const SynGlyphX::IndexSet& newSelectionSet, bool updateFocus) {
+		SynGlyphX::IndexSet newSelectionSet;
+		SynGlyphX::IndexSet intersectionOfOldAndNewSelectionSet;
+		SynGlyphX::IndexSet deselectIndexSet;
+		SynGlyphX::IndexSet selectIndexSet;
 
-	SynGlyphX::IndexSet intersectionOfOldAndNewSelectionSet;
-	SynGlyphX::IndexSet deselectIndexSet;
-	SynGlyphX::IndexSet selectIndexSet;
-	if (m_filterResultsByTable.count(table) > 0) {
+		if (m_filterResultsPerTableFromLoadingFilter.count(table) > 0) {
 
-		std::set_intersection(m_filterResultsByTable[table].begin(), m_filterResultsByTable[table].end(),
-			newSelectionSet.begin(), newSelectionSet.end(), 
-			std::inserter(intersectionOfOldAndNewSelectionSet, intersectionOfOldAndNewSelectionSet.end()));
-
-		if (intersectionOfOldAndNewSelectionSet.empty()) {
-
-			deselectIndexSet = m_filterResultsByTable[table];
-			selectIndexSet = newSelectionSet;
+			SynGlyphX::IndexSet newFilterSelectionSet = m_sourceDataCache->GetIndexesFromTableThatPassFilters(table, filters);
+			std::set_intersection(m_filterResultsPerTableFromLoadingFilter[table].begin(), m_filterResultsPerTableFromLoadingFilter[table].end(),
+				newFilterSelectionSet.begin(), newFilterSelectionSet.end(),
+				std::inserter(newSelectionSet, newSelectionSet.end()));
 		}
 		else {
 
-			std::set_difference(m_filterResultsByTable[table].begin(), m_filterResultsByTable[table].end(),
-				intersectionOfOldAndNewSelectionSet.begin(), intersectionOfOldAndNewSelectionSet.end(), 
-				std::inserter(deselectIndexSet, deselectIndexSet.end()));
-			std::set_difference(newSelectionSet.begin(), newSelectionSet.end(),
-				intersectionOfOldAndNewSelectionSet.begin(), intersectionOfOldAndNewSelectionSet.end(), 
-				std::inserter(selectIndexSet, selectIndexSet.end()));
-		}
-	}
-	else {
-
-		selectIndexSet = newSelectionSet;
-	}
-
-	if (updateFocus) {
-
-		if (!deselectIndexSet.empty()) {
-
-			QItemSelection deselection;
-			AddSceneIndexesToSelection(deselection, table, deselectIndexSet);
-			ClearSourceDataSelectionForTable(deselection, selectIndexSet.empty());
+			newSelectionSet = m_sourceDataCache->GetIndexesFromTableThatPassFilters(table, filters);
 		}
 
-		if (!selectIndexSet.empty()) {
+		if (m_filterResultsByTable.count(table) > 0) {
 
-			QItemSelection itemSelection;
-			AddSceneIndexesToSelection(itemSelection, table, selectIndexSet);
+			std::set_intersection(m_filterResultsByTable[table].begin(), m_filterResultsByTable[table].end(),
+				newSelectionSet.begin(), newSelectionSet.end(),
+				std::inserter(intersectionOfOldAndNewSelectionSet, intersectionOfOldAndNewSelectionSet.end()));
 
-			m_sceneSelectionModel->select(itemSelection, QItemSelectionModel::Select);
-			if (!itemSelection.empty()) {
+			if (intersectionOfOldAndNewSelectionSet.empty()) {
 
-				m_sceneSelectionModel->SetFocus(itemSelection.indexes(), SynGlyphX::ItemFocusSelectionModel::FocusFlag::Focus);
+				deselectIndexSet = m_filterResultsByTable[table];
+				selectIndexSet = newSelectionSet;
+			}
+			else {
+
+				std::set_difference(m_filterResultsByTable[table].begin(), m_filterResultsByTable[table].end(),
+					intersectionOfOldAndNewSelectionSet.begin(), intersectionOfOldAndNewSelectionSet.end(),
+					std::inserter(deselectIndexSet, deselectIndexSet.end()));
+				std::set_difference(newSelectionSet.begin(), newSelectionSet.end(),
+					intersectionOfOldAndNewSelectionSet.begin(), intersectionOfOldAndNewSelectionSet.end(),
+					std::inserter(selectIndexSet, selectIndexSet.end()));
 			}
 		}
-	}
+		else {
 
-	m_filterResultsByTable[table] = newSelectionSet;
-	UpdateGlyphIndexedFilterResults();
+			selectIndexSet = newSelectionSet;
+		}
+
+		if (updateFocus) {
+
+			if (!deselectIndexSet.empty()) {
+
+				QItemSelection deselection;
+				AddSceneIndexesToSelection(deselection, table, deselectIndexSet);
+				ClearSourceDataSelectionForTable(deselection, selectIndexSet.empty());
+			}
+
+			if (!selectIndexSet.empty()) {
+
+				QItemSelection itemSelection;
+				AddSceneIndexesToSelection(itemSelection, table, selectIndexSet);
+
+				m_sceneSelectionModel->select(itemSelection, QItemSelectionModel::Select);
+				if (!itemSelection.empty()) {
+
+					m_sceneSelectionModel->SetFocus(itemSelection.indexes(), SynGlyphX::ItemFocusSelectionModel::FocusFlag::Focus);
+				}
+			}
+		}
+
+		m_filterResultsByTable[table] = newSelectionSet;
+		UpdateGlyphIndexedFilterResults();
+	}
+}
+
+void FilteringManager::GenerateLoadingFilterResultsForTable(const QString& table, const FilteringParameters::ColumnDistinctValuesFilterMap& filters) {
+
+	
 }
 
 void FilteringManager::ClearFilterResults() {
 
+	m_glyphTemplateRangeToTableMap.clear();
+	m_tableToGlyphTreeRangesMap.clear();
+	m_filterResultsPerTableFromLoadingFilter.clear();
+	m_filtersForEachTable.clear();
 	m_filterResultsByTable.clear();
 	m_filterResultsIndexedToGlyphs.clear();
 	emit FilterResultsChanged(SynGlyphX::IndexSet());
@@ -156,7 +163,13 @@ void FilteringManager::ClearFilterResultsForTable(const QString& table, bool upd
 	AddSceneIndexesFromTableToSelection(itemSelection, table);
 	ClearSourceDataSelectionForTable(itemSelection, updateFocus);
 	m_filterResultsByTable.erase(table);
+	m_filtersForEachTable.remove(table);
 	UpdateGlyphIndexedFilterResults();
+}
+
+const FilteringManager::Table2FiltersMap& FilteringManager::GetTable2FiltersMap() const {
+
+	return m_filtersForEachTable;
 }
 
 void FilteringManager::ClearSourceDataSelectionForTable(QItemSelection& itemSelection, bool updateFocus) {
@@ -220,7 +233,7 @@ SourceDataCache::ConstSharedPtr FilteringManager::GetSourceDataCache() const {
 	return m_sourceDataCache;
 }
 
-const SynGlyphX::DataMappingModel* FilteringManager::GetDataMappingModel() const {
+const DataMappingLoadingFilterModel* FilteringManager::GetDataMappingModel() const {
 
 	return m_dataMappingModel;
 }

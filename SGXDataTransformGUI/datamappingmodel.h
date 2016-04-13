@@ -128,7 +128,7 @@ namespace SynGlyphX {
 		void UpdateFieldGroup(const DataTransformMapping::FieldGroupName& groupName, const FieldGroup& fieldGroup);
 		void RemoveFieldGroup(const DataTransformMapping::FieldGroupName& groupName);
 
-	private:
+	protected:
 		QString GetCacheLocationForID(const boost::uuids::uuid& id);
 		QVariant GetGlyphData(const QModelIndex& index) const;
 		bool IsParentlessRowInDataType(DataType type, int row) const;

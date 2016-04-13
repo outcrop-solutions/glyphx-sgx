@@ -36,7 +36,7 @@ GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 	m_dataEngineConnection(nullptr)
 {
 	m_dataEngineConnection = std::make_shared<DataEngine::DataEngineConnection>();
-	m_mappingModel = new SynGlyphX::DataMappingModel(this);
+	m_mappingModel = new DataMappingLoadingFilterModel(this);
 	m_sourceDataCache = std::make_shared<SourceDataCache>();
 	m_glyphForestModel = new SynGlyphXANTz::GlyphForestModel(this);
 
@@ -105,7 +105,7 @@ GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 
 		try {
 
-			LoadVisualization(QDir::toNativeSeparators(visualizationToLoad.canonicalPath()));
+			LoadVisualization(QDir::toNativeSeparators(visualizationToLoad.canonicalPath()), DataMappingLoadingFilterModel::Table2LoadingFiltersMap());
 		}
 		catch (const std::exception& e) {
 
@@ -351,7 +351,7 @@ void GlyphViewerWindow::RefreshVisualization() {
 		if (DoesVisualizationNeedToBeRecreated(mapping)) {
 
 			ClearAllData();
-			LoadVisualization(m_currentFilename);
+			LoadVisualization(m_currentFilename, m_mappingModel->GetLoadingFilters());
 		}
 	}
 	catch (const std::exception& e) {
@@ -393,7 +393,7 @@ void GlyphViewerWindow::ClearAllData() {
 	SynGlyphX::Application::restoreOverrideCursor();
 }
 
-void GlyphViewerWindow::LoadVisualization(const QString& filename) {
+void GlyphViewerWindow::LoadVisualization(const QString& filename, const DataMappingLoadingFilterModel::Table2LoadingFiltersMap& filters) {
 
 	QFileInfo fileInfo(filename);
 	QString extension = fileInfo.suffix().toLower();
@@ -415,7 +415,7 @@ void GlyphViewerWindow::LoadVisualization(const QString& filename) {
 
 	if (extension == "sdt") {
 
-		LoadDataTransform(filename);
+		LoadDataTransform(filename, filters);
 	}
 	else if (extension == "sav") {
 
@@ -431,7 +431,7 @@ void GlyphViewerWindow::LoadVisualization(const QString& filename) {
 	m_legendsDockWidget->show();
 }
 
-bool GlyphViewerWindow::LoadNewVisualization(const QString& filename) {
+bool GlyphViewerWindow::LoadNewVisualization(const QString& filename, const DataMappingLoadingFilterModel::Table2LoadingFiltersMap& filters) {
 
 	if (filename == m_currentFilename) {
 		
@@ -440,7 +440,7 @@ bool GlyphViewerWindow::LoadNewVisualization(const QString& filename) {
 
 	try {
 
-		LoadVisualization(filename);
+		LoadVisualization(filename, filters);
 	}
 	catch (const std::exception& e) {
 
@@ -541,7 +541,7 @@ void GlyphViewerWindow::ValidateDataMappingFile(const QString& filename) {
 	mapping->WriteToFile(filename.toStdString());
 }
 
-void GlyphViewerWindow::LoadDataTransform(const QString& filename) {
+void GlyphViewerWindow::LoadDataTransform(const QString& filename, const DataMappingLoadingFilterModel::Table2LoadingFiltersMap& filters) {
 	/*
 	try {
 
@@ -561,7 +561,7 @@ void GlyphViewerWindow::LoadDataTransform(const QString& filename) {
 
 		ValidateDataMappingFile(filename);
 
-		m_mappingModel->LoadDataTransformFile(filename);
+		m_mappingModel->LoadDataTransformFile(filename, filters);
 		std::string dcd = GlyphViewerOptions::GetDefaultCacheDirectory().toStdString();
 		std::string cacheDirectoryPath = dcd + ("\\cache_" + boost::uuids::to_string(m_mappingModel->GetDataMapping()->GetID()));
 

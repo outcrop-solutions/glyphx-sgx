@@ -407,11 +407,13 @@ QString SourceDataCache::CreateInString(const QString& columnName, const QSet<QS
 	return inString;
 }
 
-SynGlyphX::IndexSet SourceDataCache::GetIndexesFromTableWithSelectedValues(const QString& tableName, const ColumnValueData& selectedValues, const SynGlyphX::IndexSet& previousSelection) const {
+SynGlyphX::IndexSet SourceDataCache::GetIndexesFromTableWithSelectedValues(const QString& tableName, 
+																		   const FilteringParameters::ColumnDistinctValuesFilterMap& selectedValues, 
+																		   const SynGlyphX::IndexSet& previousSelection) const {
 
 	QString queryString = "SELECT \"" + IndexColumnName + "\" FROM \"" + tableName + "\" WHERE ";
 
-	ColumnValueData::const_iterator iT = selectedValues.begin();
+	FilteringParameters::ColumnDistinctValuesFilterMap::const_iterator iT = selectedValues.begin();
 	queryString += CreateInString(iT->first, iT->second);
 	++iT;
 	while (iT != selectedValues.end()) {
@@ -442,17 +444,28 @@ SynGlyphX::IndexSet SourceDataCache::GetIndexesFromTableWithSelectedValues(const
 	return indexSet;
 }
 
-SynGlyphX::IndexSet SourceDataCache::GetIndexesFromTableInRanges(const QString& tableName, const ColumnIntervalMap& columnRanges) const {
+SynGlyphX::IndexSet SourceDataCache::GetIndexesFromTableThatPassFilters(const QString& tableName, const FilteringParameters& filters) const {
 
 	QString queryString = "SELECT \"" + IndexColumnName + "\" FROM \"" + tableName + "\" WHERE ";
 
-	ColumnIntervalMap::const_iterator iT = columnRanges.begin();
-	queryString += CreateBetweenString(iT->first, iT->second);
-	++iT;
-	while (iT != columnRanges.end()) {
+	const FilteringParameters::ColumnRangeFilterMap& rangeFilters = filters.GetRangeFilters();
+	FilteringParameters::ColumnRangeFilterMap::const_iterator rangeFilter = rangeFilters.begin();
+	queryString += CreateBetweenString(rangeFilter->first, rangeFilter->second);
+	++rangeFilter;
+	while (rangeFilter != rangeFilters.end()) {
 
-		queryString += " AND " + CreateBetweenString(iT->first, iT->second);
-		++iT;
+		queryString += " AND " + CreateBetweenString(rangeFilter->first, rangeFilter->second);
+		++rangeFilter;
+	}
+
+	const FilteringParameters::ColumnDistinctValuesFilterMap& distinctValueFilters = filters.GetDistinctValueFilters();
+	FilteringParameters::ColumnDistinctValuesFilterMap::const_iterator distinctValueFilter = distinctValueFilters.begin();
+	queryString += CreateInString(distinctValueFilter->first, distinctValueFilter->second);
+	++distinctValueFilter;
+	while (distinctValueFilter != distinctValueFilters.end()) {
+
+		queryString += " AND " + CreateInString(distinctValueFilter->first, distinctValueFilter->second);
+		++distinctValueFilter;
 	}
 
 	QSqlQuery query(m_db);
@@ -471,7 +484,7 @@ SynGlyphX::IndexSet SourceDataCache::GetIndexesFromTableInRanges(const QString& 
 	return indexSet;
 }
 
-SynGlyphX::DegenerateInterval SourceDataCache::GetMinMax(const SynGlyphX::InputField& inputfield, const ColumnIntervalMap& otherRanges) const {
+SynGlyphX::DegenerateInterval SourceDataCache::GetMinMax(const SynGlyphX::InputField& inputfield, const FilteringParameters::ColumnRangeFilterMap& otherRanges) const {
 
 	if (!inputfield.IsNumeric()) {
 
@@ -484,7 +497,7 @@ SynGlyphX::DegenerateInterval SourceDataCache::GetMinMax(const SynGlyphX::InputF
 	if (!otherRanges.empty()) {
 
 		queryString += " WHERE ";
-		ColumnIntervalMap::const_iterator otherRange = otherRanges.begin();
+		FilteringParameters::ColumnRangeFilterMap::const_iterator otherRange = otherRanges.begin();
 		queryString += CreateBetweenString(otherRange->first, otherRange->second);
 
 		++otherRange;
@@ -501,7 +514,7 @@ SynGlyphX::DegenerateInterval SourceDataCache::GetMinMax(const SynGlyphX::InputF
 	return SynGlyphX::DegenerateInterval(query->value(0).toDouble(), query->value(1).toDouble());
 }
 
-std::set<double> SourceDataCache::GetSortedNumericDistictValues(const SynGlyphX::InputField& inputField, const ColumnIntervalMap& otherRanges) const {
+std::set<double> SourceDataCache::GetSortedNumericDistictValues(const SynGlyphX::InputField& inputField, const FilteringParameters::ColumnRangeFilterMap& otherRanges) const {
 
 	if (!inputField.IsNumeric()) {
 
@@ -517,7 +530,7 @@ std::set<double> SourceDataCache::GetSortedNumericDistictValues(const SynGlyphX:
 	if (!otherRanges.empty()) {
 
 		queryString += " WHERE ";
-		ColumnIntervalMap::const_iterator otherRange = otherRanges.begin();
+		FilteringParameters::ColumnRangeFilterMap::const_iterator otherRange = otherRanges.begin();
 		queryString += CreateBetweenString(otherRange->first, otherRange->second);
 
 		++otherRange;

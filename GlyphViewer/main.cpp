@@ -25,7 +25,7 @@ void myMessageHandler(QtMsgType type, const QMessageLogContext &context, const Q
 		txt = QString("Fatal: %1\n").arg(msg);
 		break;
 	}
-	QFile outFile("image_log.txt");
+	QFile outFile(QStandardPaths::writableLocation(QStandardPaths::HomeLocation) + QDir::separator() + "sgx_gv_log.txt");
 	outFile.open(QIODevice::WriteOnly | QIODevice::Append);
 	QTextStream ts(&outFile);
 	ts << txt;
