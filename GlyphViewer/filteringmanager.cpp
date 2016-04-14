@@ -22,7 +22,7 @@ const SynGlyphX::ItemFocusSelectionModel* FilteringManager::GetSceneSelectionMod
 
 void FilteringManager::OnSceneModelReset() {
 
-	ClearFilterResults();
+	Clear();
 
 	if (m_sceneSelectionModel->model()->rowCount() > 0) {
 
@@ -53,6 +53,12 @@ void FilteringManager::OnSceneModelReset() {
 				m_glyphTemplateRangeToTableMap[range] = tableName;
 			}
 		}
+
+		const DataMappingLoadingFilterModel::Table2LoadingFiltersMap& table2LoadingFiltersMap = m_dataMappingModel->GetLoadingFilters();
+		for (const auto& tableAndLoadingFilters : table2LoadingFiltersMap) {
+
+			GenerateLoadingFilterResultsForTable(SourceDataCache::CreateTablename(tableAndLoadingFilters.first), tableAndLoadingFilters.second.GetDistinctValueFilters());
+		}
 	}
 }
 
@@ -60,7 +66,7 @@ void FilteringManager::GenerateFilterResultsForTable(const QString& table, const
 
 	if (!filters.HasFilters()) {
 
-		ClearFilterResultsForTable(table);
+		ClearFiltersForTable(table);
 	}
 	else {
 
@@ -138,21 +144,70 @@ void FilteringManager::GenerateFilterResultsForTable(const QString& table, const
 
 void FilteringManager::GenerateLoadingFilterResultsForTable(const QString& table, const FilteringParameters::ColumnDistinctValuesFilterMap& filters) {
 
-	
+	m_filterResultsPerTableFromLoadingFilter[table] = m_sourceDataCache->GetIndexesFromTableWithSelectedValues(table, filters);
+
+	if (m_filtersForEachTable.count(table) > 0) {
+
+		m_filterResultsByTable[table].clear();
+		SynGlyphX::IndexSet filterResults = m_sourceDataCache->GetIndexesFromTableThatPassFilters(table, m_filtersForEachTable[table]);
+		std::set_intersection(m_filterResultsPerTableFromLoadingFilter[table].begin(), m_filterResultsPerTableFromLoadingFilter[table].end(),
+			filterResults.begin(), filterResults.end(),
+			std::inserter(m_filterResultsByTable[table], m_filterResultsByTable[table].end()));
+	}
+	else {
+
+		m_filterResultsByTable[table] = m_filterResultsPerTableFromLoadingFilter[table];
+	}
+
+	UpdateGlyphIndexedFilterResults();
 }
 
-void FilteringManager::ClearFilterResults() {
+void FilteringManager::SetFilterIndexesForTable(const QString& table, const SynGlyphX::IndexSet& filterSet, bool updateFocus) {
+
+	if (m_filterResultsPerTableFromLoadingFilter.count(table) > 0) {
+
+		m_filterResultsByTable[table].clear();
+		std::set_intersection(m_filterResultsPerTableFromLoadingFilter[table].begin(), m_filterResultsPerTableFromLoadingFilter[table].end(),
+			filterSet.begin(), filterSet.end(),
+			std::inserter(m_filterResultsByTable[table], m_filterResultsByTable[table].end()));
+	}
+	else {
+
+		m_filterResultsByTable[table] = filterSet;
+	}
+
+	if (m_filtersForEachTable.count(table) > 0) {
+
+		m_filtersForEachTable.remove(table);
+	}
+
+	UpdateGlyphIndexedFilterResults();
+}
+
+void FilteringManager::Clear() {
+
+	ClearAllFilters();
 
 	m_glyphTemplateRangeToTableMap.clear();
 	m_tableToGlyphTreeRangesMap.clear();
 	m_filterResultsPerTableFromLoadingFilter.clear();
+}
+
+void FilteringManager::ClearAllFilters() {
+
+	bool wasFilterResultsNotEmpty = !m_filterResultsIndexedToGlyphs.empty();
+
 	m_filtersForEachTable.clear();
 	m_filterResultsByTable.clear();
 	m_filterResultsIndexedToGlyphs.clear();
-	emit FilterResultsChanged(SynGlyphX::IndexSet());
+
+	if (wasFilterResultsNotEmpty) {
+
+		emit FilterResultsChanged(SynGlyphX::IndexSet());
+	}
 }
 
-void FilteringManager::ClearFilterResultsForTable(const QString& table, bool updateFocus) {
+void FilteringManager::ClearFiltersForTable(const QString& table, bool updateFocus) {
 
 	if (m_filterResultsByTable.count(table) == 0) {
 
@@ -204,18 +259,22 @@ void FilteringManager::AddSceneIndexesToSelection(QItemSelection& selection, con
 
 void FilteringManager::UpdateGlyphIndexedFilterResults() {
 
-	m_filterResultsIndexedToGlyphs.clear();
+	SynGlyphX::IndexSet newfilterResultsIndexedToGlyphs;
 
 	for (TableToGlyphTemplateRangesMap::iterator tableRange = m_tableToGlyphTreeRangesMap.begin(); tableRange != m_tableToGlyphTreeRangesMap.end(); ++tableRange) {
 
 		unsigned int min = static_cast<unsigned int>(tableRange.value().GetMin());
 		for (auto row : m_filterResultsByTable.at(tableRange.key())) {
 
-			m_filterResultsIndexedToGlyphs.insert(row + min);
+			newfilterResultsIndexedToGlyphs.insert(row + min);
 		}
 	}
 
-	emit FilterResultsChanged(m_filterResultsIndexedToGlyphs);
+	if (newfilterResultsIndexedToGlyphs != m_filterResultsIndexedToGlyphs) {
+
+		m_filterResultsIndexedToGlyphs = newfilterResultsIndexedToGlyphs;
+		emit FilterResultsChanged(m_filterResultsIndexedToGlyphs);
+	}
 }
 
 const FilteringManager::IndexSetMap& FilteringManager::GetFilterResultsByTable() const {

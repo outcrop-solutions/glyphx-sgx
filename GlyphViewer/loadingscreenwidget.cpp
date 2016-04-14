@@ -8,8 +8,9 @@
 
 QString LoadingScreenWidget::s_glyphEdDir;
 
-LoadingScreenWidget::LoadingScreenWidget(QWidget *parent)
-	: QFrame(parent)
+LoadingScreenWidget::LoadingScreenWidget(GlyphViewerWindow* mainWindow, QWidget *parent)
+	: QFrame(parent),
+	m_mainWindow(mainWindow)
 {
 	setFrameShape(QFrame::Shape::Box);
 	setFrameShadow(QFrame::Shadow::Sunken);
@@ -53,6 +54,10 @@ LoadingScreenWidget::LoadingScreenWidget(QWidget *parent)
 	setLayout(mainLayout);
 
 	m_viewListWidget->selectionModel()->select(m_viewListWidget->model()->index(0, 0), QItemSelectionModel::SelectionFlag::ClearAndSelect);
+
+	m_displayNameToSDTPathMap.push_back(GetGlyphEdDir() + QDir::toNativeSeparators("/Global Admissions/View 1 Datamap.sdt"));
+	m_displayNameToSDTPathMap.push_back(GetGlyphEdDir() + QDir::toNativeSeparators("/Admissions Officer/View 2 Datamap.sdt"));
+	m_displayNameToSDTPathMap.push_back(GetGlyphEdDir() + QDir::toNativeSeparators("/High School/View 3 Datamap.sdt"));
 }
 
 LoadingScreenWidget::~LoadingScreenWidget()
@@ -62,24 +67,29 @@ LoadingScreenWidget::~LoadingScreenWidget()
 
 bool LoadingScreenWidget::DoesGlyphEdDirExist() {
 
+	return QDir(GetGlyphEdDir()).exists();
+}
+
+QString LoadingScreenWidget::GetGlyphEdDir() {
+
 	if (s_glyphEdDir.isEmpty()) {
 
 		s_glyphEdDir = QDir::toNativeSeparators(QDir::cleanPath(SynGlyphX::GlyphBuilderApplication::applicationDirPath()) + QDir::separator() + "GlyphEd");
 	}
 
-	return QDir(s_glyphEdDir).exists();
+	return s_glyphEdDir;
 }
 
 void LoadingScreenWidget::OnLoadVisualization() {
 
-	if (m_filterWidgets[0]->selectionModel()->selectedIndexes().empty() || m_filterWidgets[1]->selectionModel()->selectedIndexes().empty()) {
+	//if (m_filterWidgets[0]->selectionModel()->selectedIndexes().empty() || m_filterWidgets[1]->selectionModel()->selectedIndexes().empty()) {
 
-		QMessageBox::information(this, tr("Did not load visualization"), tr("Visualization can not be loaded until at least one value has been selected from each filter."));
-	}
-	else {
+	//	QMessageBox::information(this, tr("Did not load visualization"), tr("Visualization can not be loaded until at least one value has been selected from each filter."));
+	//}
+	//else {
 
-
-	}
+		m_mainWindow->LoadNewVisualization(m_displayNameToSDTPathMap[m_viewListWidget->selectionModel()->selectedIndexes().at(0).row()]);
+	//}
 }
 
 void LoadingScreenWidget::OnNewViewSelected() {

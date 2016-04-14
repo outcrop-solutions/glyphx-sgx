@@ -27,7 +27,7 @@ class DataMappingLoadingFilterModel : public SynGlyphX::DataMappingModel
 	Q_OBJECT
 
 public:
-	typedef std::unordered_map<SynGlyphX::InputTable, FilteringParameters> Table2LoadingFiltersMap;
+	typedef std::unordered_map<SynGlyphX::InputTable, FilteringParameters, SynGlyphX::InputTableHash> Table2LoadingFiltersMap;
 
 	DataMappingLoadingFilterModel(QObject *parent);
 	~DataMappingLoadingFilterModel();

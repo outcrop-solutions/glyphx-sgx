@@ -21,16 +21,18 @@
 #include <QtWidgets/QFrame>
 #include <QtWidgets/QListWidget>
 #include "groupboxsinglewidget.h"
+#include "glyphviewerwindow.h"
 
 class LoadingScreenWidget : public QFrame
 {
 	Q_OBJECT
 
 public:
-	LoadingScreenWidget(QWidget *parent);
+	LoadingScreenWidget(GlyphViewerWindow* mainWindow, QWidget *parent);
 	~LoadingScreenWidget();
 
 	static bool DoesGlyphEdDirExist();
+	static QString GetGlyphEdDir();
 
 private slots:
 	void OnLoadVisualization();
@@ -42,6 +44,8 @@ private:
 	QListWidget* m_viewListWidget;
 	std::vector<QListWidget*> m_filterWidgets;
 	std::vector<SynGlyphX::GroupBoxSingleWidget*> m_filterGroupBoxWidgets;
+	GlyphViewerWindow* m_mainWindow;
+	std::vector<QString> m_displayNameToSDTPathMap;
 };
 
 #endif // LOADINGSCREENWIDGET_H

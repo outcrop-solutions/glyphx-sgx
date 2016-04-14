@@ -55,7 +55,7 @@ void SingleTableElasticListsWidget::PopulateElasticLists(const SynGlyphX::IndexS
 
 void SingleTableElasticListsWidget::OnElasticWidgetSelectionChanged() {
 
-	SourceDataCache::ColumnValueData newSelection;
+	FilteringParameters::ColumnDistinctValuesFilterMap newSelection;
 	for (auto elasticListWidget : m_elasticListMap) {
 
 		const QSet<QString>& columnSelection = elasticListWidget.second->GetSelectedRawData();

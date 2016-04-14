@@ -446,26 +446,39 @@ SynGlyphX::IndexSet SourceDataCache::GetIndexesFromTableWithSelectedValues(const
 
 SynGlyphX::IndexSet SourceDataCache::GetIndexesFromTableThatPassFilters(const QString& tableName, const FilteringParameters& filters) const {
 
+	if (!filters.HasFilters()) {
+
+		throw std::invalid_argument("FilteringParameters parameter has no filters.");
+	}
+
 	QString queryString = "SELECT \"" + IndexColumnName + "\" FROM \"" + tableName + "\" WHERE ";
 
 	const FilteringParameters::ColumnRangeFilterMap& rangeFilters = filters.GetRangeFilters();
-	FilteringParameters::ColumnRangeFilterMap::const_iterator rangeFilter = rangeFilters.begin();
-	queryString += CreateBetweenString(rangeFilter->first, rangeFilter->second);
-	++rangeFilter;
-	while (rangeFilter != rangeFilters.end()) {
+	if (!rangeFilters.empty()) {
 
-		queryString += " AND " + CreateBetweenString(rangeFilter->first, rangeFilter->second);
+		FilteringParameters::ColumnRangeFilterMap::const_iterator rangeFilter = rangeFilters.begin();
+		queryString += CreateBetweenString(rangeFilter->first, rangeFilter->second);
 		++rangeFilter;
+		for (; rangeFilter != rangeFilters.end(); ++rangeFilter) {
+
+			queryString += " AND " + CreateBetweenString(rangeFilter->first, rangeFilter->second);
+		}
 	}
-
+	
 	const FilteringParameters::ColumnDistinctValuesFilterMap& distinctValueFilters = filters.GetDistinctValueFilters();
-	FilteringParameters::ColumnDistinctValuesFilterMap::const_iterator distinctValueFilter = distinctValueFilters.begin();
-	queryString += CreateInString(distinctValueFilter->first, distinctValueFilter->second);
-	++distinctValueFilter;
-	while (distinctValueFilter != distinctValueFilters.end()) {
+	if (!distinctValueFilters.empty()) {
 
-		queryString += " AND " + CreateInString(distinctValueFilter->first, distinctValueFilter->second);
+		FilteringParameters::ColumnDistinctValuesFilterMap::const_iterator distinctValueFilter = distinctValueFilters.begin();
+		if (!rangeFilters.empty()) {
+
+			queryString += " AND ";
+		}
+		queryString += CreateInString(distinctValueFilter->first, distinctValueFilter->second);
 		++distinctValueFilter;
+		for (; distinctValueFilter != distinctValueFilters.end(); ++distinctValueFilter) {
+
+			queryString += " AND " + CreateInString(distinctValueFilter->first, distinctValueFilter->second);
+		}
 	}
 
 	QSqlQuery query(m_db);

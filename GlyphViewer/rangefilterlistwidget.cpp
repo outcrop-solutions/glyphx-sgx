@@ -289,13 +289,21 @@ void RangeFilterListWidget::OnUpdateFilters() {
 		SaveRangesFromFiltersInTableWidget();
 		for (Table2RangesAndDistinctValuesMap::const_iterator tableIterator = m_table2RangesAndDistinctValuesMap.begin(); tableIterator != m_table2RangesAndDistinctValuesMap.end(); ++tableIterator) {
 
+			FilteringParameters filteringParameters;
+			const FilteringManager::Table2FiltersMap& table2FiltersMap = m_filteringManager->GetTable2FiltersMap();
+			if (table2FiltersMap.count(tableIterator.key())) {
+
+				filteringParameters.SetDistinctValueFilters(table2FiltersMap[tableIterator.key()].GetDistinctValueFilters());
+			}
+			
 			FilteringParameters::ColumnRangeFilterMap rangeFilterMap;
 			for (const auto& field2RangeAndExtent : tableIterator.value()) {
 
 				rangeFilterMap.push_back(FilteringParameters::ColumnRangeFilter(field2RangeAndExtent.first, field2RangeAndExtent.second.first));
 			}
+			filteringParameters.SetRangeFilters(rangeFilterMap);
 
-			m_filteringManager->SetFilterResultsForTable(tableIterator.key(), rangeFilterMap);
+			m_filteringManager->GenerateFilterResultsForTable(tableIterator.key(), filteringParameters);
 		}
 		m_updateButton->setEnabled(false);
 		SynGlyphX::GlyphBuilderApplication::restoreOverrideCursor();
@@ -427,13 +435,13 @@ void RangeFilterListWidget::UpdatedEnableStateForButton(QAction* action, QPushBu
 
 void RangeFilterListWidget::ResetMinMaxExtentsForFilters(unsigned int startingRow) {
 
-	SourceDataCache::ColumnIntervalMap columnIntervalMap;
+	FilteringParameters::ColumnRangeFilterMap columnIntervalMap;
 	QStringList datasourceTable = Separate(m_currentTable);
 	boost::uuids::string_generator gen;
 
 	for (unsigned int i = 0; i < startingRow; ++i) {
 
-		columnIntervalMap.push_back(SourceDataCache::ColumnIntervalPair(GetTextFromCell(i), GetRangeFilterWidgetFromCell(i)->GetRange()));
+		columnIntervalMap.push_back(FilteringParameters::ColumnRangeFilter(GetTextFromCell(i), GetRangeFilterWidgetFromCell(i)->GetRange()));
 	}
 
 	for (unsigned int j = startingRow; j < m_rangeFiltersTableWidget->rowCount(); ++j) {

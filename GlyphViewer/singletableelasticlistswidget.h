@@ -35,7 +35,7 @@ public:
 	void PopulateElasticLists(const SynGlyphX::IndexSet& indexSet = SynGlyphX::IndexSet());
 
 signals:
-	void SelectionChanged(const QString& table, const SourceDataCache::ColumnValueData& selection);
+	void SelectionChanged(const QString& table, const FilteringParameters::ColumnDistinctValuesFilterMap& selection);
 
 private slots:
 	void OnElasticWidgetSelectionChanged();

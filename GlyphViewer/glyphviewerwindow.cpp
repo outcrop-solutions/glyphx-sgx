@@ -136,7 +136,7 @@ void GlyphViewerWindow::CreateLoadingScreen() {
 
 	if (LoadingScreenWidget::DoesGlyphEdDirExist()) {
 
-		LoadingScreenWidget* loadingScreen = new LoadingScreenWidget(antzWidgetContainer);
+		LoadingScreenWidget* loadingScreen = new LoadingScreenWidget(this, antzWidgetContainer);
 		antzWidgetContainer->addWidget(loadingScreen);
 	}
 	else {

@@ -41,9 +41,10 @@ public:
 
 	void GenerateFilterResultsForTable(const QString& table, const FilteringParameters& filters, bool updateFocus = false);
 	void GenerateLoadingFilterResultsForTable(const QString& table, const FilteringParameters::ColumnDistinctValuesFilterMap& filters);
+	void SetFilterIndexesForTable(const QString& table, const SynGlyphX::IndexSet& filterSet, bool updateFocus = false);
 	
-	void ClearFilterResults();
-	void ClearFilterResultsForTable(const QString& table, bool updateFocus = false);
+	void ClearAllFilters();
+	void ClearFiltersForTable(const QString& table, bool updateFocus = false);
 	const IndexSetMap& GetFilterResultsByTable() const;
 	const SynGlyphX::IndexSet& GetGlyphIndexedFilterResults() const;
 	const Table2FiltersMap& GetTable2FiltersMap() const;
@@ -63,6 +64,7 @@ private:
 	typedef std::map<SynGlyphX::ProperInterval, QString> GlyphTemplateRangeToTableMap;
 	typedef QMultiMap<QString, SynGlyphX::ProperInterval> TableToGlyphTemplateRangesMap;
 
+	void Clear();
 	void UpdateGlyphIndexedFilterResults();
 
 	void AddSceneIndexesFromTableToSelection(QItemSelection& selection, const QString& table);

@@ -85,7 +85,7 @@ void FilteringWidget::SetupLinkedWidgets(LinkedWidgetsManager& linkedWidgets) {
 void FilteringWidget::Clear() {
 
 	SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
-	m_filteringManager->ClearFilterResults();
+	m_filteringManager->ClearAllFilters();
 	SynGlyphX::Application::restoreOverrideCursor();
 }
 

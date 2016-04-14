@@ -226,13 +226,14 @@ void PseudoTimeFilterWidget::UpdateTimeFilter() {
 	if (m_filterState == FilterState::Inactive) {
 
 		m_currentPositionLabel->clear();
-		m_filteringManager->ClearFilterResults();
+		m_filteringManager->ClearAllFilters();
 	}
 	else {
 
 		const auto& newSelection = m_selectionForEachDistinctValue.at(sliderValue);
 		m_currentPositionLabel->setText(newSelection.first);
-		m_filteringManager->SetFilterResultsForTable(m_sourceCacheTableName, newSelection.second, m_moveCameraOnUpdateCheckbox->isChecked());
+		
+		m_filteringManager->SetFilterIndexesForTable(m_sourceCacheTableName, newSelection.second, m_moveCameraOnUpdateCheckbox->isChecked());
 	}
 }
 
@@ -267,7 +268,7 @@ void PseudoTimeFilterWidget::ChangeFilterState(FilterState newFilterState) {
 			m_slider->setValue(0);
 			m_slider->blockSignals(false);
 			m_currentPositionLabel->clear();
-			m_filteringManager->ClearFilterResults();
+			m_filteringManager->ClearAllFilters();
 		}
 	}
 
