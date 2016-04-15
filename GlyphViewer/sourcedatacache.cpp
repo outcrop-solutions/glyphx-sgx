@@ -394,11 +394,11 @@ QString SourceDataCache::CreateInString(const SynGlyphX::IndexSet& indexSet) con
 QString SourceDataCache::CreateInString(const QString& columnName, const QSet<QString>& values) const {
 
 	QSet<QString>::const_iterator iT = values.begin();
-	QString inString = "\"" + columnName + "\" IN (\"" + *iT + "\"";
+	QString inString = "\"" + columnName + "\" IN ('" + *iT + "'";
 	++iT;
 	while (iT != values.end()) {
 
-		inString += ", \"" + *iT + "\"";
+		inString += ", '" + *iT + "'";
 		++iT;
 	}
 
