@@ -37,12 +37,12 @@ public:
 	~FilteringWidget();
 
 	void SetupLinkedWidgets(LinkedWidgetsManager& linkedWidgets);
+	void OnNewVisualization();
 
 private slots:
 	void Clear();
 	void OnSourceWidgetWindowHidden();
 	void OnFilterResultsChanged();
-	void OnModelReset();
 	void OnTableChanged(const QString& table);
 
 private:

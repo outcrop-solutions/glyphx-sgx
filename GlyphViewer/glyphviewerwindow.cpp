@@ -390,6 +390,7 @@ void GlyphViewerWindow::ClearAllData() {
 	m_glyphForestModel->Clear();
 	m_mappingModel->Clear();
 	m_legendsWidget->ClearLegends();
+	m_filteringWidget->OnNewVisualization();
 	SynGlyphX::Application::restoreOverrideCursor();
 }
 
@@ -592,8 +593,12 @@ void GlyphViewerWindow::LoadDataTransform(const QString& filename, const DataMap
 		for (int i = 0; i < images.size(); i++){
 			qList << images.at(i).c_str();
 		}
-		//m_sourceDataCache->Setup(transformer.GetSourceDataCacheLocation());
+		
 		m_sourceDataCache->Setup(cacheFiles[2]);
+
+		//This must be done before LoadFilesIntoModel is called
+		m_filteringWidget->OnNewVisualization();
+
 		LoadFilesIntoModel(outputfiles, qList);
 		m_glyphForestModel->SetTagNotToBeShownIn3d(QString::fromStdWString(m_mappingModel->GetDataMapping()->GetDefaults().GetDefaultTagValue()));
 		m_antzWidget->SetBackgroundColor(m_mappingModel->GetDataMapping()->GetSceneProperties().GetBackgroundColor());

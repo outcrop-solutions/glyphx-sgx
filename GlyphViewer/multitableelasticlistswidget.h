@@ -35,11 +35,11 @@ public:
 	~MultiTableElasticListsWidget();
 
 public slots:
+	void OnNewVisualization();
 	void SwitchTable(const QString& table);
 
 private slots:
 	void OnFilterResultsChanged();
-	void OnModelReset();
 	void OnElasticListsSelectionChanged(const QString& table, const FilteringParameters::ColumnDistinctValuesFilterMap& selection);
 
 private:

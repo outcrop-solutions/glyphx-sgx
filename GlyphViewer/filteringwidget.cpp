@@ -65,8 +65,7 @@ FilteringWidget::FilteringWidget(SourceDataInfoModel* columnsModel, FilteringMan
 
 	QObject::connect(m_sourceDataWindow.data(), &SourceDataWidget::WindowHidden, this, &FilteringWidget::OnSourceWidgetWindowHidden);
 	QObject::connect(m_filteringManager, &FilteringManager::FilterResultsChanged, this, &FilteringWidget::OnFilterResultsChanged);
-	QObject::connect(m_filteringManager->GetSceneSelectionModel()->model(), &QAbstractItemModel::modelReset, this, &FilteringWidget::OnModelReset);
-
+	
 	QObject::connect(m_tableComboBox, static_cast<void(QComboBox::*)(const QString &)>(&QComboBox::currentIndexChanged), this, &FilteringWidget::OnTableChanged);
 
 	QObject::connect(m_createSubsetVizButton, &QPushButton::clicked, m_sourceDataWindow.data(), &SourceDataWidget::CreateSubsetVisualization);
@@ -96,11 +95,11 @@ void FilteringWidget::OnSourceWidgetWindowHidden() {
 
 void FilteringWidget::OnFilterResultsChanged() {
 
-	const FilteringManager::IndexSetMap& sourceDataSelectionSets = m_filteringManager->GetFilterResultsByTable();
-	EnableButtons(m_filteringManager->GetSourceDataCache()->IsValid() && (!sourceDataSelectionSets.empty()));
+	const FilteringManager::Table2FiltersMap& filtersMap = m_filteringManager->GetTable2FiltersMap();
+	EnableButtons(m_filteringManager->GetSourceDataCache()->IsValid() && (!filtersMap.empty()));
 
-	m_createSubsetVizButton->setEnabled(!sourceDataSelectionSets.empty());
-	if (sourceDataSelectionSets.empty()) {
+	m_createSubsetVizButton->setEnabled(!filtersMap.empty());
+	if (filtersMap.empty()) {
 
 		m_sourceDataWindow->setVisible(false);
 		OnSourceWidgetWindowHidden();
@@ -108,9 +107,9 @@ void FilteringWidget::OnFilterResultsChanged() {
 	else {
 
 		//Only change the table shown if it is not in the selection at all
-		if (sourceDataSelectionSets.count(m_tableComboBox->currentData().toString()) == 0) {
+		if (filtersMap.count(m_tableComboBox->currentData().toString()) == 0) {
 
-			int newComboBoxIndex = m_tableComboBox->findData(sourceDataSelectionSets.rbegin()->first);
+			int newComboBoxIndex = m_tableComboBox->findData(filtersMap.lastKey());
 			if ((newComboBoxIndex != -1) && (newComboBoxIndex != m_tableComboBox->currentIndex())) {
 
 				m_tableComboBox->setCurrentIndex(newComboBoxIndex);
@@ -119,7 +118,7 @@ void FilteringWidget::OnFilterResultsChanged() {
 	}
 }
 
-void FilteringWidget::OnModelReset() {
+void FilteringWidget::OnNewVisualization() {
 
 	m_tableComboBox->blockSignals(true);
 	m_tableComboBox->clear();
@@ -137,6 +136,9 @@ void FilteringWidget::OnModelReset() {
 		m_tableComboBox->view()->setMinimumWidth(m_tableComboBox->view()->sizeHintForColumn(0));
 		m_tableComboBox->blockSignals(false);
 	}
+
+	m_elasticListsWidget->OnNewVisualization();
+	m_rangeListFilterWidget->OnNewVisualization();
 
 	OnFilterResultsChanged();
 }

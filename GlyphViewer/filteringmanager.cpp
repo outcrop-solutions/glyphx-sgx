@@ -195,16 +195,18 @@ void FilteringManager::Clear() {
 
 void FilteringManager::ClearAllFilters() {
 
-	bool wasFilterResultsNotEmpty = !m_filterResultsIndexedToGlyphs.empty();
+	if (m_filterResultsPerTableFromLoadingFilter.empty()) {
+
+		m_filterResultsByTable.clear();
+	}
+	else {
+
+		m_filterResultsByTable = m_filterResultsPerTableFromLoadingFilter;
+	}
 
 	m_filtersForEachTable.clear();
-	m_filterResultsByTable.clear();
-	m_filterResultsIndexedToGlyphs.clear();
 
-	if (wasFilterResultsNotEmpty) {
-
-		emit FilterResultsChanged(SynGlyphX::IndexSet());
-	}
+	UpdateGlyphIndexedFilterResults();
 }
 
 void FilteringManager::ClearFiltersForTable(const QString& table, bool updateFocus) {
@@ -217,7 +219,15 @@ void FilteringManager::ClearFiltersForTable(const QString& table, bool updateFoc
 	QItemSelection itemSelection;
 	AddSceneIndexesFromTableToSelection(itemSelection, table);
 	ClearSourceDataSelectionForTable(itemSelection, updateFocus);
-	m_filterResultsByTable.erase(table);
+	if (m_filterResultsPerTableFromLoadingFilter.count(table) > 0) {
+
+		m_filterResultsByTable[table] = m_filterResultsPerTableFromLoadingFilter[table];
+	}
+	else {
+
+		m_filterResultsByTable.erase(table);
+	}
+	
 	m_filtersForEachTable.remove(table);
 	UpdateGlyphIndexedFilterResults();
 }
@@ -263,10 +273,13 @@ void FilteringManager::UpdateGlyphIndexedFilterResults() {
 
 	for (TableToGlyphTemplateRangesMap::iterator tableRange = m_tableToGlyphTreeRangesMap.begin(); tableRange != m_tableToGlyphTreeRangesMap.end(); ++tableRange) {
 
-		unsigned int min = static_cast<unsigned int>(tableRange.value().GetMin());
-		for (auto row : m_filterResultsByTable.at(tableRange.key())) {
+		if (m_filterResultsByTable.count(tableRange.key()) > 0) {
+		
+			unsigned int min = static_cast<unsigned int>(tableRange.value().GetMin());
+			for (auto row : m_filterResultsByTable.at(tableRange.key())) {
 
-			newfilterResultsIndexedToGlyphs.insert(row + min);
+				newfilterResultsIndexedToGlyphs.insert(row + min);
+			}
 		}
 	}
 

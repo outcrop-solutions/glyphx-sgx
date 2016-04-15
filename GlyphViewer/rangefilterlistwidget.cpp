@@ -95,7 +95,6 @@ RangeFilterListWidget::RangeFilterListWidget(SourceDataInfoModel* columnsModel, 
 
 	setLayout(mainLayout);
 
-	QObject::connect(m_filteringManager->GetSceneSelectionModel()->model(), &QAbstractItemModel::modelReset, this, &RangeFilterListWidget::OnModelReset);
 	QObject::connect(m_filteringManager, &FilteringManager::FilterResultsChanged, this, &RangeFilterListWidget::OnFilterResultsChanged);
 	QObject::connect(m_rangeFiltersTableWidget->selectionModel(), &QItemSelectionModel::selectionChanged, this, &RangeFilterListWidget::OnFilterSelectionChanged);
 }
@@ -132,7 +131,7 @@ void RangeFilterListWidget::SwitchTable(const QString& table) {
 	}
 }
 
-void RangeFilterListWidget::OnModelReset() {
+void RangeFilterListWidget::OnNewVisualization() {
 
 	SourceDataCache::ConstSharedPtr sourceDataCache = m_filteringManager->GetSourceDataCache();
 	bool isSourceDataCacheValid = sourceDataCache->IsValid();

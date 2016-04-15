@@ -50,6 +50,7 @@ private:
 	void ChangeFilterState(FilterState newFilterState);
 	void UpdateTimeFilter();
 	void UpdateSelectedField(const QModelIndex& newSelectedField);
+	void ResetSliderAndLabel();
 
 	QSlider* m_slider;
 	QLineEdit* m_currentPositionLabel;

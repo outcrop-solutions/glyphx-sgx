@@ -105,6 +105,15 @@ namespace SynGlyphX {
 		m_selectedRawData.clear();
 		m_dataAndCountView->selectionModel()->clear();
 
+		if (data.size() > 1) {
+
+			m_dataAndCountView->setSelectionMode(QAbstractItemView::ExtendedSelection);
+		}
+		else {
+
+			m_dataAndCountView->setSelectionMode(QAbstractItemView::NoSelection);
+		}
+
 		m_model->ResetData(data);
 		
 		QSortFilterProxyModel* filterModel = dynamic_cast<QSortFilterProxyModel*>(m_dataAndCountView->model());

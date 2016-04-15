@@ -126,8 +126,12 @@ void PseudoTimeFilterWidget::ResetForNewVisualization() {
 	EnableButtons(true);
 	m_slider->setMaximum(20);
 
+	m_filterState = FilterState::Inactive;
 	UpdateSelectedField(m_columnsModel->index(0, 0, m_columnsModel->index(0, 0, m_columnsModel->index(0, 0))));
-	ChangeFilterState(FilterState::Inactive);
+	m_playPauseButton->setToolTip(tr("Play"));
+	m_playPauseButton->setIcon(QIcon(":SGXGUI/Resources/Video/play.png"));
+	m_playTimer.stop();
+	ResetSliderAndLabel();
 }
 
 void PseudoTimeFilterWidget::Disable() {
@@ -264,16 +268,21 @@ void PseudoTimeFilterWidget::ChangeFilterState(FilterState newFilterState) {
 		
 		if (newFilterState == FilterState::Inactive) {
 
-			m_slider->blockSignals(true);
-			m_slider->setValue(0);
-			m_slider->blockSignals(false);
-			m_currentPositionLabel->clear();
+			ResetSliderAndLabel();
 			m_filteringManager->ClearAllFilters();
 		}
 	}
 
 	m_stopButton->setEnabled(newFilterState != FilterState::Inactive);
 	m_fieldSelectorButton->setEnabled((newFilterState == FilterState::Inactive) && (m_columnsModel->rowCount() > 0));
+}
+
+void PseudoTimeFilterWidget::ResetSliderAndLabel() {
+
+	m_slider->blockSignals(true);
+	m_slider->setValue(0);
+	m_slider->blockSignals(false);
+	m_currentPositionLabel->clear();
 }
 
 void PseudoTimeFilterWidget::SetPlayTimerInterval(unsigned int milliseconds) {

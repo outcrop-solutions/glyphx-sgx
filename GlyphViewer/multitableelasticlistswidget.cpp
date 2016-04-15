@@ -17,7 +17,6 @@ MultiTableElasticListsWidget::MultiTableElasticListsWidget(FilteringManager* fil
 	setLayout(m_elasticListsStackLayout);
 
 	QObject::connect(m_filteringManager, &FilteringManager::FilterResultsChanged, this, &MultiTableElasticListsWidget::OnFilterResultsChanged);
-	QObject::connect(m_filteringManager->GetSceneSelectionModel()->model(), &QAbstractItemModel::modelReset, this, &MultiTableElasticListsWidget::OnModelReset);
 }
 
 MultiTableElasticListsWidget::~MultiTableElasticListsWidget()
@@ -30,7 +29,7 @@ void MultiTableElasticListsWidget::OnFilterResultsChanged() {
 	UpdateElasticListsAndSourceDataWidget();
 }
 
-void MultiTableElasticListsWidget::OnModelReset() {
+void MultiTableElasticListsWidget::OnNewVisualization() {
 
 	ClearElasticLists();
 	SourceDataCache::ConstSharedPtr sourceDataCache = m_filteringManager->GetSourceDataCache();

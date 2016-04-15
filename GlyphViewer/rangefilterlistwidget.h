@@ -36,10 +36,10 @@ public:
 	~RangeFilterListWidget();
 
 public slots:
+	void OnNewVisualization();
 	void SwitchTable(const QString& table);
 
 private slots:
-	void OnModelReset();
 	void OnAddFilter();
 	void OnRemoveSelectedFilters();
 	void OnRemoveAllFilters();
