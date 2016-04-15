@@ -31,7 +31,7 @@
 
 GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 	: SynGlyphX::MainWindow(4, parent),
-	m_antzWidget(nullptr),
+	m_glyph3DView(nullptr),
 	m_showErrorFromTransform(true),
 	m_dataEngineConnection(nullptr)
 {
@@ -76,11 +76,11 @@ GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 		throw;
 	}
 
-	m_linkedWidgetsManager = new LinkedWidgetsManager(m_antzWidget, this);
+	m_linkedWidgetsManager = new LinkedWidgetsManager(m_glyph3DView, this);
 	m_filteringWidget->SetupLinkedWidgets(*m_linkedWidgetsManager);
 	m_pseudoTimeFilterWidget->SetupLinkedWidgets(*m_linkedWidgetsManager);
 
-	m_stereoAction->setChecked(m_antzWidget->IsInStereoMode());
+	m_stereoAction->setChecked(m_glyph3DView->IsInStereoMode());
 
 	//SynGlyphX::Transformer::SetDefaultImagesDirectory(SynGlyphX::GlyphBuilderApplication::GetDefaultBaseImagesLocation());
 	//SynGlyphXANTz::ANTzCSVWriter::GetInstance().SetNOURLLocation(L"");
@@ -150,23 +150,24 @@ void GlyphViewerWindow::CreateLoadingScreen() {
 void GlyphViewerWindow::CreateANTzWidget() {
 	
 	QStackedWidget* antzWidgetContainer = dynamic_cast<QStackedWidget*>(centralWidget());
-	if (m_antzWidget != nullptr) {
+	if (m_glyph3DView != nullptr) {
 		
-		antzWidgetContainer->removeWidget(m_antzWidget);
-		delete m_antzWidget;
-		m_antzWidget = nullptr;
+		antzWidgetContainer->removeWidget(m_glyph3DView);
+		delete m_glyph3DView;
+		m_glyph3DView = nullptr;
 	}
 
-	m_antzWidget = new SynGlyphXANTz::ANTzForestWidget(m_glyphForestModel, m_glyphForestSelectionModel, this);
-	m_antzWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-	m_antzWidget->addActions(m_treeView->GetSharedActions());
+	m_glyph3DView = new Glyph3DView(m_glyphForestModel, m_glyphForestSelectionModel, this);
+	m_glyph3DView->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+	m_glyph3DView->addActions(m_treeView->GetSharedActions());
 
-	antzWidgetContainer->addWidget(m_antzWidget);
-	antzWidgetContainer->setCurrentWidget(m_antzWidget);
+	antzWidgetContainer->addWidget(m_glyph3DView);
+	antzWidgetContainer->setCurrentWidget(m_glyph3DView);
 
-	QObject::connect(m_showAnimation, &QAction::toggled, m_antzWidget, &SynGlyphXANTz::ANTzForestWidget::ShowAnimatedRotations);
-	QObject::connect(m_showTagsAction, &QAction::toggled, m_antzWidget, &SynGlyphXANTz::ANTzForestWidget::SetShowTagsOfSelectedObjects);
-	QObject::connect(m_filteringManager, &FilteringManager::FilterResultsChanged, m_antzWidget, &SynGlyphXANTz::ANTzForestWidget::SetFilteredResults);
+	QObject::connect(m_resetCameraToDefaultPosition, &QAction::triggered, m_glyph3DView, &Glyph3DView::ResetCamera);
+	QObject::connect(m_showAnimation, &QAction::toggled, m_glyph3DView, &SynGlyphXANTz::ANTzForestWidget::ShowAnimatedRotations);
+	QObject::connect(m_showTagsAction, &QAction::toggled, m_glyph3DView, &SynGlyphXANTz::ANTzForestWidget::SetShowTagsOfSelectedObjects);
+	QObject::connect(m_filteringManager, &FilteringManager::FilterResultsChanged, m_glyph3DView, &SynGlyphXANTz::ANTzForestWidget::SetFilteredResults);
 }
 
 void GlyphViewerWindow::CreateMenus() {
@@ -230,6 +231,11 @@ void GlyphViewerWindow::CreateMenus() {
 	m_showTagsAction->setCheckable(true);
 	m_showTagsAction->setChecked(false);
 	m_loadedVisualizationDependentActions.push_back(m_showTagsAction);
+
+	m_viewMenu->addSeparator();
+
+	m_resetCameraToDefaultPosition = CreateMenuAction(m_viewMenu, tr("Reset Camera To Starting Position"));
+	m_loadedVisualizationDependentActions.push_back(m_resetCameraToDefaultPosition);
 
 	m_viewMenu->addSeparator();
 
@@ -369,7 +375,7 @@ void GlyphViewerWindow::CloseVisualization() {
 	ClearAllData();
 	EnableLoadedVisualizationDependentActions(false);
 	ClearCurrentFile();
-	m_antzWidget->SetBackgroundColor(SynGlyphX::GlyphColor::s_black);
+	m_glyph3DView->SetBackgroundColor(SynGlyphX::GlyphColor::s_black);
 	if (m_legendsDockWidget->isFloating()) {
 
 		m_legendsDockWidget->hide();
@@ -411,7 +417,7 @@ void GlyphViewerWindow::LoadVisualization(const QString& filename, const DataMap
 	if (m_glyphForestModel->rowCount() > 0) {
 
 		ClearAllData();
-		m_antzWidget->updateGL();
+		m_glyph3DView->updateGL();
 	}
 
 	if (extension == "sdt") {
@@ -601,7 +607,7 @@ void GlyphViewerWindow::LoadDataTransform(const QString& filename, const DataMap
 
 		LoadFilesIntoModel(outputfiles, qList);
 		m_glyphForestModel->SetTagNotToBeShownIn3d(QString::fromStdWString(m_mappingModel->GetDataMapping()->GetDefaults().GetDefaultTagValue()));
-		m_antzWidget->SetBackgroundColor(m_mappingModel->GetDataMapping()->GetSceneProperties().GetBackgroundColor());
+		m_glyph3DView->SetBackgroundColor(m_mappingModel->GetDataMapping()->GetSceneProperties().GetBackgroundColor());
 		m_legendsWidget->SetLegends(m_mappingModel->GetDataMapping()->GetLegends());
 
 		SynGlyphX::Application::restoreOverrideCursor();
@@ -626,11 +632,11 @@ void GlyphViewerWindow::ChangeMapDownloadSettings() {
 
 void GlyphViewerWindow::ShowOpenGLSettings() {
 
-	const QGLFormat& format = m_antzWidget->context()->format();
+	const QGLFormat& format = m_glyph3DView->context()->format();
 	QString settings = tr("OpenGL Version = ") + QString::number(format.majorVersion()) + "." + QString::number(format.minorVersion()) + '\n';
 		
 	settings += tr("Stereo Support") + " = ";
-	if (m_antzWidget->IsStereoSupported()) {
+	if (m_glyph3DView->IsStereoSupported()) {
 
 		settings += tr("enabled");
 	}
@@ -643,11 +649,11 @@ void GlyphViewerWindow::ShowOpenGLSettings() {
 
 void GlyphViewerWindow::ChangeStereoMode() {
 
-	if (m_antzWidget->IsStereoSupported()) {
+	if (m_glyph3DView->IsStereoSupported()) {
 
 		try {
 
-			m_antzWidget->SetStereoMode(!m_antzWidget->IsInStereoMode());
+			m_glyph3DView->SetStereoMode(!m_glyph3DView->IsInStereoMode());
 		}
 		catch (const std::exception& e) {
 
@@ -735,7 +741,7 @@ void GlyphViewerWindow::ChangeOptions(const GlyphViewerOptions& oldOptions, cons
 
 		if (oldOptions.GetZSpaceOptions() != newOptions.GetZSpaceOptions()) {
 
-			m_antzWidget->SetZSpaceOptions(newOptions.GetZSpaceOptions());
+			m_glyph3DView->SetZSpaceOptions(newOptions.GetZSpaceOptions());
 		}
 
 		if (oldOptions.GetShowMessageWhenImagesDidNotDownload() != newOptions.GetShowMessageWhenImagesDidNotDownload()) {
@@ -821,7 +827,7 @@ GlyphViewerOptions GlyphViewerWindow::CollectOptions() {
 
 	options.SetCacheDirectory(QString::fromStdWString(m_cacheManager.GetBaseCacheDirectory()));
 	options.SetHideUnselectedGlyphTrees(m_linkedWidgetsManager->GetFilterView());
-	options.SetZSpaceOptions(m_antzWidget->GetZSpaceOptions());
+	options.SetZSpaceOptions(m_glyph3DView->GetZSpaceOptions());
 	options.SetShowMessageWhenImagesDidNotDownload(m_showErrorFromTransform);
 
 	return options;

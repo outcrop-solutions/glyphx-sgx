@@ -15,32 +15,58 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef LINKEDWIDGETSMANAGER_H
-#define LINKEDWIDGETSMANAGER_H
+#ifndef GLYPH3DVIEW_H
+#define GLYPH3DVIEW_H
 
-#include <QtCore/QObject>
-#include <QtWidgets/QCheckBox>
-#include "glyph3dview.h"
+#include "antzforestwidget.h"
+#include <QtWidgets/QToolButton>
 
-class LinkedWidgetsManager : public QObject
+class Glyph3DView : public SynGlyphXANTz::ANTzForestWidget
 {
 	Q_OBJECT
 
 public:
-	LinkedWidgetsManager(Glyph3DView* glyph3DView, QObject *parent = nullptr);
-	~LinkedWidgetsManager();
+	Glyph3DView(SynGlyphXANTz::GlyphForestModel* model, SynGlyphX::ItemFocusSelectionModel* selectionModel, QWidget *parent);
+	~Glyph3DView();
 
-	bool GetFilterView() const;
-	void AddFilterViewCheckbox(QCheckBox *checkbox);
+protected:
+	void resizeEvent(QResizeEvent* event) override;
 
-public slots:
-	void SetFilterView(bool set);
+private slots:
+	void OnUpRotate();
+	void OnLeftRotate();
+	void OnRightRotate();
+	void OnDownRotate();
+
+	void OnMoveForward();
+	void OnMoveBackward();
+
+	void OnMoveForwardBackwardUpDown(char wasd);
+	void OnStopMoveForwardBackwardUpDown(char wasd);
+
+	void OnNavigationButtonReleased();
+
+	void ChangeNavButtonMode(const QModelIndexList& indexes);
 
 private:
-	void SetFilterViewOnCheckbox(QCheckBox* checkbox, bool set);
+	QToolButton* CreateNavigationButton(const QString& toolTip, bool autoRepeat);
+	void ConnectMoveForwardBackwardReleaseSignals();
 
-	QList<QCheckBox*> m_filterViewCheckboxes;
-	Glyph3DView* m_glyph3DView;
+	static const unsigned int s_navigationButtonSize;
+
+	//Rotate buttons
+	QToolButton* m_upRotateButton;
+	QToolButton* m_leftRotateButton;
+	QToolButton* m_rightRotateButton;
+	QToolButton* m_downRotateButton;
+
+	//Move Forward/Backward buttons
+	QToolButton* m_moveForwardButton;
+	QToolButton* m_moveBackwardButton;
+
+	//Move Up/Down buttons
+	QToolButton* m_moveUpButton;
+	QToolButton* m_moveDownButton;
 };
 
-#endif // LINKEDWIDGETSMANAGER_H
+#endif // GLYPH3DVIEW_H

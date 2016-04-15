@@ -1,8 +1,8 @@
 #include "linkedwidgetsmanager.h"
 
-LinkedWidgetsManager::LinkedWidgetsManager(SynGlyphXANTz::ANTzForestWidget* antzWidget, QObject *parent)
+LinkedWidgetsManager::LinkedWidgetsManager(Glyph3DView* glyph3DView, QObject *parent)
 	: QObject(parent),
-	m_antzWidget(antzWidget)
+	m_glyph3DView(glyph3DView)
 {
 
 }
@@ -16,11 +16,11 @@ void LinkedWidgetsManager::SetFilterView(bool set) {
 
 	if (set) {
 
-		m_antzWidget->SetFilteredResultsDisplayMode(SynGlyphXANTz::ANTzForestWidget::HideUnfiltered);
+		m_glyph3DView->SetFilteredResultsDisplayMode(SynGlyphXANTz::ANTzForestWidget::HideUnfiltered);
 	}
 	else {
 
-		m_antzWidget->SetFilteredResultsDisplayMode(SynGlyphXANTz::ANTzForestWidget::None);
+		m_glyph3DView->SetFilteredResultsDisplayMode(SynGlyphXANTz::ANTzForestWidget::None);
 	}
 	Q_FOREACH(QCheckBox* checkbox, m_filterViewCheckboxes) {
 
@@ -33,7 +33,7 @@ void LinkedWidgetsManager::SetFilterView(bool set) {
 
 bool LinkedWidgetsManager::GetFilterView() const {
 
-	return (m_antzWidget->GetFilteredResultsDisplayMode() == SynGlyphXANTz::ANTzForestWidget::HideUnfiltered);
+	return (m_glyph3DView->GetFilteredResultsDisplayMode() == SynGlyphXANTz::ANTzForestWidget::HideUnfiltered);
 }
 
 void LinkedWidgetsManager::AddFilterViewCheckbox(QCheckBox *checkbox) {

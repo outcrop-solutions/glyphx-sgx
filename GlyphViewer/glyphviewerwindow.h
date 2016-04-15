@@ -23,7 +23,7 @@
 #include "mainwindow.h"
 #include "datamappingloadingfiltermodel.h"
 #include "glyphforestmodel.h"
-#include "antzforestwidget.h"
+#include "glyph3dview.h"
 #include "cachemanager.h"
 #include "glyphvieweroptions.h"
 #include "sourcedatacache.h"
@@ -91,6 +91,7 @@ private:
 	QAction* m_showAnimation;
 	QAction* m_showTagsAction;
 	QAction* m_clearSelectionAction;
+	QAction* m_resetCameraToDefaultPosition;
 	QList<QAction*> m_loadedVisualizationDependentActions;
 
 	QDockWidget* m_glyphListDockWidget;
@@ -105,7 +106,7 @@ private:
 
 	SynGlyphXANTz::GlyphForestModel* m_glyphForestModel;
 	SynGlyphX::ItemFocusSelectionModel* m_glyphForestSelectionModel;
-	SynGlyphXANTz::ANTzForestWidget* m_antzWidget;
+	Glyph3DView* m_glyph3DView;
 	GlyphTreeListView* m_treeView;
 	GlyphPropertiesWidgetsContainer* m_glyphPropertiesWidgetContainer;
 	SourceDataCache::SharedPtr m_sourceDataCache;
