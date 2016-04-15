@@ -2235,6 +2235,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_8095709C24174DA8B08F470A102FEC23"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_815A4380581945809368C02D86F339CA"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -4264,6 +4270,12 @@
         "Entry"
         {
         "MsmKey" = "8:_FE8EC4B31AD54109A0E6AB30F55FFDDF"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_FEAABD235CCF47268EA844C0417AE2CE"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -11626,6 +11638,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_8095709C24174DA8B08F470A102FEC23"
+            {
+            "SourcePath" = "8:..\\..\\3rdParty\\tools\\vc120redist\\msvcr100.dll"
+            "TargetName" = "8:msvcr100.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_0FD992B69CC74D489682A631FA99B364"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_815A4380581945809368C02D86F339CA"
             {
             "SourcePath" = "8:..\\..\\3rdParty\\tools\\vc120redist\\vccorlib120.dll"
@@ -18172,6 +18204,26 @@
             "TargetName" = "8:Guam"
             "Tag" = "8:"
             "Folder" = "8:_CB66C49CF9884126842E58F8A836199C"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_FEAABD235CCF47268EA844C0417AE2CE"
+            {
+            "SourcePath" = "8:..\\..\\Misc\\InstallerFiles\\GlyphTemplates\\Stacked Bar Graph Template.sgt"
+            "TargetName" = "8:Stacked Bar Graph Template.sgt"
+            "Tag" = "8:"
+            "Folder" = "8:_B4E0754028D04DDF8AEE8716965EFFAF"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
