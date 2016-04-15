@@ -35,6 +35,7 @@ namespace SynGlyphXANTz {
 		m_oglTextFont("Arial", 12, QFont::Normal),
 		m_isReseting(false),
 		m_worldTextureID(0),
+		m_lastMousePosition(boost::none),
 		m_regionSelectionRect(QRect()),
 		m_filteredResultsDisplayMode(FilteredResultsDisplayMode::None),
 		m_drawHUD(true),
@@ -337,7 +338,8 @@ namespace SynGlyphXANTz {
 		if (QFile::exists(logoImageFilename)) {
 
 			QImage image(logoImageFilename);
-			m_logoSize = image.size();
+			m_logoPosition.setCoords(0, 0, 0, 0);
+			m_logoPosition.setSize(QSize(image.width(), -image.height()));
 			m_logoTextureID = bindTexture(image);
 		}
 	
@@ -961,6 +963,8 @@ namespace SynGlyphXANTz {
 			m_selectionModel->SetFocus(indexesInRegion.indexes(), SynGlyphX::ItemFocusSelectionModel::FocusFlag::ClearAndFocus);
 			m_regionSelectionRect = QRect();
 		}
+
+		m_lastMousePosition = boost::none;
 	}
 
 	void ANTzForestWidget::mouseMoveEvent(QMouseEvent* event) {
@@ -971,18 +975,18 @@ namespace SynGlyphXANTz {
 
 		if (event->modifiers() & Qt::ShiftModifier) {
 
-			int x = (m_lastMousePosition.x() < event->x()) ? m_lastMousePosition.x() : event->x();
-			int y = (m_lastMousePosition.y() < event->y()) ? m_lastMousePosition.y() : event->y();
-			m_regionSelectionRect.setRect(x, y, std::abs(m_lastMousePosition.x() - event->x()), std::abs(m_lastMousePosition.y() - event->y()));
+			int x = (m_lastMousePosition.get().x() < event->x()) ? m_lastMousePosition.get().x() : event->x();
+			int y = (m_lastMousePosition.get().y() < event->y()) ? m_lastMousePosition.get().y() : event->y();
+			m_regionSelectionRect.setRect(x, y, std::abs(m_lastMousePosition.get().x() - event->x()), std::abs(m_lastMousePosition.get().y() - event->y()));
 		}
-		else {
+		else if (m_lastMousePosition) {
 
 			if (m_regionSelectionRect.isNull()) {
 
-				antzData->io.mouse.previous.x = m_lastMousePosition.x();
-				antzData->io.mouse.previous.y = m_lastMousePosition.y();
-				antzData->io.mouse.delta.x = event->x() - m_lastMousePosition.x();
-				antzData->io.mouse.delta.y = event->y() - m_lastMousePosition.y();
+				antzData->io.mouse.previous.x = m_lastMousePosition.get().x();
+				antzData->io.mouse.previous.y = m_lastMousePosition.get().y();
+				antzData->io.mouse.delta.x = event->x() - m_lastMousePosition.get().x();
+				antzData->io.mouse.delta.y = event->y() - m_lastMousePosition.get().y();
 				antzData->io.mouse.x = event->x();
 				antzData->io.mouse.y = event->y();
 
@@ -1606,9 +1610,6 @@ namespace SynGlyphXANTz {
 
 		gluOrtho2D(0, width(), 0.0, height());
 
-		QPoint lowerLeft(width() - m_logoSize.width() - 10, height() - m_logoSize.height() - 10);
-		QPoint upperRight(width() - 10, height() - 10);
-
 		glMatrixMode(GL_MODELVIEW);
 		glPushMatrix();
 		glLoadIdentity();
@@ -1618,14 +1619,14 @@ namespace SynGlyphXANTz {
 		glBindTexture(GL_TEXTURE_2D, m_logoTextureID);
 		glBegin(GL_QUADS);
 		glTexCoord2f(0, 0);
-		glVertex2i(lowerLeft.x(), lowerLeft.y());
+		glVertex2i(m_logoPosition.left(), m_logoPosition.bottom());
 		glTexCoord2f(1, 0);
-		glVertex2i(upperRight.x(), lowerLeft.y());
+		glVertex2i(m_logoPosition.right(), m_logoPosition.bottom());
 
 		glTexCoord2f(1, 1);
-		glVertex2i(upperRight.x(), upperRight.y());
+		glVertex2i(m_logoPosition.right(), m_logoPosition.top());
 		glTexCoord2f(0, 1);
-		glVertex2i(lowerLeft.x(), upperRight.y());
+		glVertex2i(m_logoPosition.left(), m_logoPosition.top());
 		glEnd();
 
 		glDisable(GL_TEXTURE_2D);
@@ -1650,6 +1651,16 @@ namespace SynGlyphXANTz {
 	void ANTzForestWidget::SetShowTagsOfSelectedObjects(bool showTagsOfSelectedObjects) {
 
 		m_showTagsOfSelectedObjects = showTagsOfSelectedObjects;
+	}
+
+	void ANTzForestWidget::resizeEvent(QResizeEvent* event) {
+
+		QSize logoSize = m_logoPosition.size();
+		m_logoPosition.setLeft(event->size().width() - logoSize.width() - 10);
+		m_logoPosition.setTop(event->size().height() - 10);
+		m_logoPosition.setSize(logoSize);
+
+		QGLWidget::resizeEvent(event);
 	}
 
 } //namespace SynGlyphXANTz

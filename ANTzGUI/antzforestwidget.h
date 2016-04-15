@@ -73,19 +73,7 @@ namespace SynGlyphXANTz {
 
 		void SetShowTagsOfSelectedObjects(bool showTagsOfSelectedObjects);
 
-	protected:
-		virtual void initializeGL();
-		virtual void resizeGL(int w, int h);
-		virtual void paintGL();
-		virtual void mousePressEvent(QMouseEvent* event);
-		virtual void mouseReleaseEvent(QMouseEvent* event);
-		virtual void mouseMoveEvent(QMouseEvent* event);
-		virtual void keyPressEvent(QKeyEvent* event);
-		virtual void keyReleaseEvent(QKeyEvent* event);
-		virtual void moveEvent(QMoveEvent* event);
-		virtual void wheelEvent(QWheelEvent* event);
-
-	private slots:
+	protected slots:
 		void OnSelectionUpdated(const QItemSelection& selected, const QItemSelection& deselected);
 		void OnFocusChanged(const QModelIndexList& indexes);
 		void OnModelReset();
@@ -95,11 +83,23 @@ namespace SynGlyphXANTz {
 		void ZSpaceStylusMoveHandler(ZSHandle targetHandle, const ZSTrackerEventData* eventData);
 		void ZSpaceStylusTapHandler(ZSHandle targetHandle, const ZSTrackerEventData* eventData);
 
-	private:
+	protected:
 		enum Eye {
 			Left,
 			Right
 		};
+
+		void initializeGL() override;
+		void resizeGL(int w, int h) override;
+		void paintGL() override;
+		void mousePressEvent(QMouseEvent* event) override;
+		void mouseReleaseEvent(QMouseEvent* event) override;
+		void mouseMoveEvent(QMouseEvent* event) override;
+		void keyPressEvent(QKeyEvent* event) override;
+		void keyReleaseEvent(QKeyEvent* event) override;
+		void moveEvent(QMoveEvent* event) override;
+		void wheelEvent(QWheelEvent* event) override;
+		void resizeEvent(QResizeEvent* event) override;
 
 		void DrawSceneForEye(Eye eye, bool getStylusWorldPosition);
 		void SetCameraToDefaultPosition();
@@ -159,7 +159,7 @@ namespace SynGlyphXANTz {
 
 		SynGlyphX::ItemFocusSelectionModel* m_selectionModel;
 		GlyphForestModel* m_model;
-		QPoint m_lastMousePosition;
+		boost::optional<QPoint> m_lastMousePosition;
 		QRect m_regionSelectionRect;
 		QWidget* m_topLevelWindow;
 		//QPoint m_zSpaceStylusScreenPoint;
@@ -186,7 +186,7 @@ namespace SynGlyphXANTz {
 		bool m_showAnimation;
 
 		unsigned int m_logoTextureID;
-		QSize m_logoSize;
+		QRect m_logoPosition;
 
 		bool m_showTagsOfSelectedObjects;
 	};
