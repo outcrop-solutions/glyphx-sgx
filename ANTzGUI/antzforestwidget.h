@@ -189,6 +189,8 @@ namespace SynGlyphXANTz {
 		QRect m_logoPosition;
 
 		bool m_showTagsOfSelectedObjects;
+
+		float m_initialCameraZAngle;
 	};
 
 } //namespace SynGlyphXANTz

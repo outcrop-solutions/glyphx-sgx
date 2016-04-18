@@ -17,6 +17,7 @@
 #include <stack>
 #include "defaultbaseimagescombobox.h"
 #include "glyphnodeconverter.h"
+#include <boost/math/constants/constants.hpp>
 
 namespace SynGlyphXANTz {
 
@@ -43,7 +44,8 @@ namespace SynGlyphXANTz {
 		m_logoTextureID(0),
 		m_showAnimation(true),
 		m_showTagsOfSelectedObjects(false),
-		m_isInStereo(false)
+		m_isInStereo(false),
+		m_initialCameraZAngle(45.0f)
 	{
 		m_isInStereo = context()->format().stereo();
 
@@ -800,13 +802,13 @@ namespace SynGlyphXANTz {
 
 		pData antzData = m_antzData->GetData();
 
-		antzData->map.currentCam->proximity.x = 0;
-		antzData->map.currentCam->translate.x = 0.0;
-		antzData->map.currentCam->translate.y = -345.0;
-		antzData->map.currentCam->translate.z = 345.0;
-		antzData->map.currentCam->rotate.x = 45.0;
-		antzData->map.currentCam->rotate.y = 0;
-		antzData->map.currentCam->rotate.z = 0;
+		antzData->map.currentCam->proximity.x = 0.0f;
+		antzData->map.currentCam->translate.x = 0.0f;
+		antzData->map.currentCam->translate.y = -345.0f;
+		antzData->map.currentCam->translate.z = 345.0f;
+		antzData->map.currentCam->rotate.x = m_initialCameraZAngle;
+		antzData->map.currentCam->rotate.y = 0.0f;
+		antzData->map.currentCam->rotate.z = 0.0f;
 
 		pNPnode node = static_cast<pNPnode>(antzData->map.node[kNPnodeRootGrid]);
 		antzData->io.mouse.targeting = false;
@@ -1435,6 +1437,21 @@ namespace SynGlyphXANTz {
 		for (int i = 0; i < rootGrid->childCount; ++i) {
 
 			SetGridTexture(rootGrid->child[i]);
+		}
+
+		if (m_model->rowCount() > 0) {
+
+			float maxZ = std::numeric_limits<double>::lowest();
+			for (unsigned int i = kNPnodeRootPin; i < antzData->map.nodeRootCount; ++i) {
+
+				pNPnode rootNode = static_cast<pNPnode>(antzData->map.node[i]);
+				maxZ = std::max(maxZ, rootNode->translate.z);
+			}
+			m_initialCameraZAngle = 90.0f - (boost::math::float_constants::radian * std::atan2(345.0f - (0.8f * maxZ), 345.0f));
+		}
+		else {
+
+			m_initialCameraZAngle = 45.0f;
 		}
 	
 		m_isReseting = false;
