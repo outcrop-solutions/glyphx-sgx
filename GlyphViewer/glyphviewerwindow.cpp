@@ -308,6 +308,7 @@ void GlyphViewerWindow::CreateDockWidgets() {
 	addDockWidget(Qt::BottomDockWidgetArea, bottomDockWidget);
 	m_viewMenu->addAction(bottomDockWidget->toggleViewAction());
 	QObject::connect(m_columnsModel, &SourceDataInfoModel::modelReset, m_pseudoTimeFilterWidget, &PseudoTimeFilterWidget::ResetForNewVisualization);
+	bottomDockWidget->hide();
 }
 
 void GlyphViewerWindow::OpenProject() {
