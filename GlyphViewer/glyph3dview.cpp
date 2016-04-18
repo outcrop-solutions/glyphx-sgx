@@ -10,27 +10,35 @@ Glyph3DView::Glyph3DView(SynGlyphXANTz::GlyphForestModel* model, SynGlyphX::Item
 	QObject::connect(selectionModel, &SynGlyphX::ItemFocusSelectionModel::FocusChanged, this, &Glyph3DView::ChangeNavButtonMode);
 
 	m_upRotateButton = CreateNavigationButton(tr("Rotate Up"), true);
+	m_upRotateButton->setIcon(QIcon(":GlyphViewer/Resources/rotate_up.png"));
 	QObject::connect(m_upRotateButton, &QToolButton::pressed, this, &Glyph3DView::OnUpRotate);
 
 	m_leftRotateButton = CreateNavigationButton(tr("Rotate Left"), true);
+	m_leftRotateButton->setIcon(QIcon(":GlyphViewer/Resources/rotate_left.png"));
 	QObject::connect(m_leftRotateButton, &QToolButton::pressed, this, &Glyph3DView::OnLeftRotate);
 
 	m_rightRotateButton = CreateNavigationButton(tr("Rotate Right"), true);
+	m_rightRotateButton->setIcon(QIcon(":GlyphViewer/Resources/rotate_right.png"));
 	QObject::connect(m_rightRotateButton, &QToolButton::pressed, this, &Glyph3DView::OnRightRotate);
 
 	m_downRotateButton = CreateNavigationButton(tr("Rotate Down"), true);
+	m_downRotateButton->setIcon(QIcon(":GlyphViewer/Resources/rotate_down.png"));
 	QObject::connect(m_downRotateButton, &QToolButton::pressed, this, &Glyph3DView::OnDownRotate);
 
 	m_moveForwardButton = CreateNavigationButton(tr("Move Forward"), false);
+	m_moveForwardButton->setIcon(QIcon(":SGXGUI/Resources/up_arrow.png"));
 	QObject::connect(m_moveForwardButton, &QToolButton::pressed, this, &Glyph3DView::OnMoveForward);
 
 	m_moveBackwardButton = CreateNavigationButton(tr("Move Backward"), false);
+	m_moveBackwardButton->setIcon(QIcon(":SGXGUI/Resources/down_arrow.png"));
 	QObject::connect(m_moveBackwardButton, &QToolButton::pressed, this, &Glyph3DView::OnMoveBackward);
 
 	m_moveUpButton = CreateNavigationButton(tr("Move Up"), false);
+	m_moveUpButton->setIcon(QIcon(":SGXGUI/Resources/plus.png"));
 	QObject::connect(m_moveUpButton, &QToolButton::pressed, this, [&, this](){ OnMoveForwardBackwardUpDown('e'); });
 
 	m_moveDownButton = CreateNavigationButton(tr("Move Down"), false);
+	m_moveDownButton->setIcon(QIcon(":SGXGUI/Resources/minus.png"));
 	QObject::connect(m_moveDownButton, &QToolButton::pressed, this, [&, this](){ OnMoveForwardBackwardUpDown('q'); });
 }
 

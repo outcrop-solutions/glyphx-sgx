@@ -429,6 +429,12 @@
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(PlatformName)\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DWIN64 -DQT_DLL -DQT_NO_DEBUG -DNDEBUG -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_SQL_LIB -DQT_OPENGL_LIB -DQT_WIDGETS_LIB  "-I.\..\..\DataEngine\DataEngine" "-I.\..\..\DataEngine\jdk1.7.0_79\include\win32" "-I.\..\..\DataEngine\jdk1.7.0_79\include" "-I.\GeneratedFiles" "-I." "-I.\..\..\3rdParty\include\google_breakpad" "-I.\..\..\3rdParty\include\Qt_5_2_1" "-I.\GeneratedFiles\$(PlatformName)\$(ConfigurationName)\." "-I.\..\..\ANTzPlus\ANTzBridge" "-I.\..\..\3rdParty\include\boost_1_55_0" "-I.\..\..\Core\SGXFoundation" "-I.\..\..\3rdParty\include\stlplus_3_11" "-I.\..\..\Core\SGXGeospatial" "-I.\..\..\GUI\SGXGUI" "-I.\..\..\GUI\MapDownloading" "-I.\..\..\Core\SGXDataTransform" "-I.\..\..\ANTzPlus\ANTzCore" "-I.\..\..\GUI\SGXGlyphGUI" "-I.\..\..\3rdParty\include\zSpace_3_0_0_318" "-I.\..\..\ANTzPlus\ANTzGUI" "-I.\..\..\Core\SGXUtility" "-I.\..\..\3rdParty\include\glm_0_9_6_3" "-I.\..\..\GUI\SGXzSpaceGUI" "-I.\..\..\Core\SGXImage" "-I.\..\..\Core\SGXDataMapping" "-I.\..\..\GUI\SGXDataTransformGUI"</Command>
     </CustomBuild>
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="Resources\rotate_down.png" />
+    <Image Include="Resources\rotate_left.png" />
+    <Image Include="Resources\rotate_right.png" />
+    <Image Include="Resources\rotate_up.png" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

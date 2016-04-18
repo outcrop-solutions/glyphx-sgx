@@ -294,4 +294,18 @@
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="Resources\rotate_down.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\rotate_left.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\rotate_right.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\rotate_up.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
 </Project>

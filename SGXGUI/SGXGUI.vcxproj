@@ -774,6 +774,8 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="Resources\down_arrow.png" />
+    <Image Include="Resources\minus.png" />
+    <Image Include="Resources\plus.png" />
     <Image Include="Resources\synglyphx_splash.png" />
     <Image Include="Resources\synglyphx_x.ico" />
     <Image Include="Resources\up_arrow.png" />

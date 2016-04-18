@@ -545,6 +545,12 @@
     <Image Include="Resources\up_arrow.png">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="Resources\minus.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\plus.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\qt.conf">
