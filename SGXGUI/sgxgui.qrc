@@ -10,6 +10,18 @@
       <file>Resources/Video/end.png</file>
       <file>Resources/down_arrow.png</file>
       <file>Resources/up_arrow.png</file>
+	  <file>Resources/Icons/icon-filter.png</file>
+	  <file>Resources/Icons/icon-filter-a.png</file>
+	  <file>Resources/Icons/icon-filter-time.png</file>
+	  <file>Resources/Icons/icon-filter-time-a.png</file>
+	  <file>Resources/Icons/icon-filter-view.png</file>
+	  <file>Resources/Icons/icon-filter-view-a.png</file>
+	  <file>Resources/Icons/icon-legend.png</file>
+	  <file>Resources/Icons/icon-legend-a.png</file>
+	  <file>Resources/Icons/icon-list.png</file>
+	  <file>Resources/Icons/icon-list-a.png</file>
+	  <file>Resources/Icons/icon-text.png</file>
+	  <file>Resources/Icons/icon-text-a.png</file>
     </qresource>
     <qresource prefix="/qt/etc">
       <file alias="qt.conf">Resources/qt.conf</file>
