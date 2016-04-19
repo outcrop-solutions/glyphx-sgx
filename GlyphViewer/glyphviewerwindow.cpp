@@ -3,6 +3,8 @@
 #include <QtWidgets/QStatusBar>
 #include <QtWidgets/QMessageBox>
 #include <QtWidgets/QMenuBar>
+#include <QtWidgets/QToolBar>
+#include <QtWidgets/QToolButton>
 #include <QtWidgets/QStackedWidget>
 #include <QtCore/QDir>
 #include <QtCore/QStandardPaths>
@@ -46,6 +48,10 @@ GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 	m_columnsModel = new SourceDataInfoModel(m_mappingModel->GetDataMapping(), m_sourceDataCache, this);
 	m_columnsModel->SetSelectable(false, false, true);
 
+	m_toolbar = addToolBar(tr("Toolbar"));
+	m_toolbar->setFloatable(true);
+	m_toolbar->setMovable(true);
+
 	CreateMenus();
 	CreateDockWidgets();
 
@@ -80,8 +86,12 @@ GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 	m_filteringWidget->SetupLinkedWidgets(*m_linkedWidgetsManager);
 	m_pseudoTimeFilterWidget->SetupLinkedWidgets(*m_linkedWidgetsManager);
 
-	m_stereoAction->setChecked(m_glyph3DView->IsInStereoMode());
+	QCheckBox* cb = new QCheckBox(tr("Filter View"), this);
+	
+	m_toolbar->addWidget(cb);
+	m_linkedWidgetsManager->AddFilterViewCheckbox(cb);
 
+	m_stereoAction->setChecked(m_glyph3DView->IsInStereoMode());
 	//SynGlyphX::Transformer::SetDefaultImagesDirectory(SynGlyphX::GlyphBuilderApplication::GetDefaultBaseImagesLocation());
 	//SynGlyphXANTz::ANTzCSVWriter::GetInstance().SetNOURLLocation(L"");
 
@@ -271,7 +281,15 @@ void GlyphViewerWindow::CreateDockWidgets() {
 	m_legendsDockWidget = new QDockWidget(tr("Legends"), this);
 	m_legendsDockWidget->setWidget(m_legendsWidget);
 	m_legendsDockWidget->setFloating(true);
-	m_viewMenu->addAction(m_legendsDockWidget->toggleViewAction());
+	m_toolbar->setIconSize(QSize(42, 32));
+	QIcon icon;
+	icon.addFile(":SGXGUI/Resources/Icons/icon-legend.png", QSize(), QIcon::Normal, QIcon::Off);
+	icon.addFile(":SGXGUI/Resources/Icons/icon-legend-a.png", QSize(), QIcon::Normal, QIcon::On);
+	QAction* act = m_legendsDockWidget->toggleViewAction();
+	//act->setIconVisibleInMenu(false);
+	act->setIcon(icon);
+	m_viewMenu->addAction(act);
+	m_toolbar->addAction(act);
 	m_legendsDockWidget->move(100, 100);
 	m_legendsDockWidget->resize(400, 280);
 	m_legendsDockWidget->hide();
@@ -283,7 +301,12 @@ void GlyphViewerWindow::CreateDockWidgets() {
 
 	m_glyphListDockWidget->setWidget(m_treeView);
 	addDockWidget(Qt::LeftDockWidgetArea, m_glyphListDockWidget);
-	m_viewMenu->addAction(m_glyphListDockWidget->toggleViewAction());
+	act = m_glyphListDockWidget->toggleViewAction();
+	icon.addFile(":SGXGUI/Resources/Icons/icon-list.png", QSize(), QIcon::Normal, QIcon::Off);
+	icon.addFile(":SGXGUI/Resources/Icons/icon-list-a.png", QSize(), QIcon::Normal, QIcon::On);
+	act->setIcon(icon);
+	m_viewMenu->addAction(act);
+	m_toolbar->addAction(act);
 	m_glyphListDockWidget->hide();
 
 	m_glyphPropertiesWidgetContainer = new GlyphPropertiesWidgetsContainer(m_glyphForestModel, m_glyphForestSelectionModel, this);
@@ -291,7 +314,13 @@ void GlyphViewerWindow::CreateDockWidgets() {
 	QDockWidget* textPropertiesDockWidget = new QDockWidget(tr("Text Properties"), this);
 	textPropertiesDockWidget->setWidget(m_glyphPropertiesWidgetContainer->GetTextProperitesWidget());
 	addDockWidget(Qt::LeftDockWidgetArea, textPropertiesDockWidget);
-	m_viewMenu->addAction(textPropertiesDockWidget->toggleViewAction());
+	act = textPropertiesDockWidget->toggleViewAction();
+	icon.addFile(":SGXGUI/Resources/Icons/icon-text.png", QSize(), QIcon::Normal, QIcon::Off);
+	icon.addFile(":SGXGUI/Resources/Icons/icon-text-a.png", QSize(), QIcon::Normal, QIcon::On);
+	act->setIcon(icon);
+	m_viewMenu->addAction(act);
+	m_toolbar->addAction(act);
+	m_toolbar->addAction(textPropertiesDockWidget->toggleViewAction());
 	textPropertiesDockWidget->hide();
 
 	tabifyDockWidget(m_glyphListDockWidget, textPropertiesDockWidget);
@@ -300,16 +329,28 @@ void GlyphViewerWindow::CreateDockWidgets() {
 	m_filteringWidget = new FilteringWidget(m_columnsModel, m_filteringManager, rightDockWidget);
 	rightDockWidget->setWidget(m_filteringWidget);
 	addDockWidget(Qt::RightDockWidgetArea, rightDockWidget);
-	m_viewMenu->addAction(rightDockWidget->toggleViewAction());
+	act = rightDockWidget->toggleViewAction();
+	icon.addFile(":SGXGUI/Resources/Icons/icon-filter.png", QSize(), QIcon::Normal, QIcon::Off);
+	icon.addFile(":SGXGUI/Resources/Icons/icon-filter-a.png", QSize(), QIcon::Normal, QIcon::On);
+	act->setIcon(icon);
+	m_viewMenu->addAction(act);
+	m_toolbar->addAction(act);
 
 	QDockWidget* bottomDockWidget = new QDockWidget(tr("Time Animated Filter"), this);
 	m_pseudoTimeFilterWidget = new PseudoTimeFilterWidget(m_columnsModel, m_filteringManager, bottomDockWidget);
 	bottomDockWidget->setWidget(m_pseudoTimeFilterWidget);
 	addDockWidget(Qt::BottomDockWidgetArea, bottomDockWidget);
-	m_viewMenu->addAction(bottomDockWidget->toggleViewAction());
+	act = bottomDockWidget->toggleViewAction();
+	icon.addFile(":SGXGUI/Resources/Icons/icon-filter-time.png", QSize(), QIcon::Normal, QIcon::Off);
+	icon.addFile(":SGXGUI/Resources/Icons/icon-filter-time-a.png", QSize(), QIcon::Normal, QIcon::On);
+	act->setIcon(icon);
+	m_viewMenu->addAction(act);
+	m_toolbar->addAction(act);
+
+	m_toolbar->addSeparator();
+
 	QObject::connect(m_columnsModel, &SourceDataInfoModel::modelReset, m_pseudoTimeFilterWidget, &PseudoTimeFilterWidget::ResetForNewVisualization);
-	bottomDockWidget->hide();
-}
+	bottomDockWidget->hide();}
 
 void GlyphViewerWindow::OpenProject() {
 

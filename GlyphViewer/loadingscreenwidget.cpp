@@ -70,7 +70,7 @@ void LoadingScreenWidget::SetupVisualizationData() {
 
 	VisualizationData globalAdmissionsView;
 	globalAdmissionsView.m_title = visualizationNames[0];
-	globalAdmissionsView.m_sdtPath = GetGlyphEdDir() + QDir::toNativeSeparators("/Global Admissions View/View 1 Datamap.sdt");
+	globalAdmissionsView.m_sdtPath = GetGlyphEdDir() + QDir::toNativeSeparators("/Global Admissions/View 1 Datamap.sdt");
 
 	globalAdmissionsView.m_filterTitles.push_back("Admissions Counselor");
 	globalAdmissionsView.m_filterFieldNames.push_back("StaffAssigned");
@@ -85,7 +85,7 @@ void LoadingScreenWidget::SetupVisualizationData() {
 
 	VisualizationData admissionsCounselorView;
 	admissionsCounselorView.m_title = visualizationNames[1];
-	admissionsCounselorView.m_sdtPath = GetGlyphEdDir() + QDir::toNativeSeparators("/Admissions Counselor View/View 2 Datamap.sdt");
+	admissionsCounselorView.m_sdtPath = GetGlyphEdDir() + QDir::toNativeSeparators("/Admissions Officer/View 2 Datamap.sdt");
 
 	admissionsCounselorView.m_filterTitles.push_back("Admissions Counselor");
 	admissionsCounselorView.m_filterFieldNames.push_back("StaffAssigned");
@@ -103,7 +103,7 @@ void LoadingScreenWidget::SetupVisualizationData() {
 
 	VisualizationData highSchoolView;
 	highSchoolView.m_title = visualizationNames[2];
-	highSchoolView.m_sdtPath = GetGlyphEdDir() + QDir::toNativeSeparators("/High School View/View 3 Datamap.sdt");
+	highSchoolView.m_sdtPath = GetGlyphEdDir() + QDir::toNativeSeparators("/High School/View 3 Datamap.sdt");
 
 	highSchoolView.m_filterTitles.push_back("High School");
 	highSchoolView.m_filterFieldNames.push_back("HSNameUnique");
@@ -175,7 +175,7 @@ void LoadingScreenWidget::SetupVisualizationData() {
 
 	VisualizationData globalDashboardView;
 	globalDashboardView.m_title = visualizationNames[6];
-	globalDashboardView.m_sdtPath = GetGlyphEdDir() + QDir::toNativeSeparators("/Class Composition/View 4 V3 in 3D All Readers.sdt");
+	globalDashboardView.m_sdtPath = GetGlyphEdDir() + QDir::toNativeSeparators("/GLobal Dashboard/View 4 V3 MASTER READER.sdt");
 	globalDashboardView.m_mustHaveFilter = false;
 
 	globalDashboardView.m_filterTitles.push_back("Admissions Counselor");

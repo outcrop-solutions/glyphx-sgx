@@ -87,6 +87,7 @@ private:
 
 	QMenu* m_fileMenu;
 	QMenu* m_toolsMenu;
+	QToolBar* m_toolbar;
 	QAction* m_stereoAction;
 	QAction* m_showAnimation;
 	QAction* m_showTagsAction;
