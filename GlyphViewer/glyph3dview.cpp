@@ -26,19 +26,19 @@ Glyph3DView::Glyph3DView(SynGlyphXANTz::GlyphForestModel* model, SynGlyphX::Item
 	QObject::connect(m_downRotateButton, &QToolButton::pressed, this, &Glyph3DView::OnDownRotate);
 
 	m_moveForwardButton = CreateNavigationButton(tr("Move Forward"), false);
-	m_moveForwardButton->setIcon(QIcon(":SGXGUI/Resources/up_arrow.png"));
+	m_moveForwardButton->setIcon(QIcon(":SGXGUI/Resources/plus.png"));
 	QObject::connect(m_moveForwardButton, &QToolButton::pressed, this, &Glyph3DView::OnMoveForward);
 
 	m_moveBackwardButton = CreateNavigationButton(tr("Move Backward"), false);
-	m_moveBackwardButton->setIcon(QIcon(":SGXGUI/Resources/down_arrow.png"));
+	m_moveBackwardButton->setIcon(QIcon(":SGXGUI/Resources/minus.png"));
 	QObject::connect(m_moveBackwardButton, &QToolButton::pressed, this, &Glyph3DView::OnMoveBackward);
 
 	m_moveUpButton = CreateNavigationButton(tr("Move Up"), false);
-	m_moveUpButton->setIcon(QIcon(":SGXGUI/Resources/plus.png"));
+	m_moveUpButton->setIcon(QIcon(":SGXGUI/Resources/up_arrow.png"));
 	QObject::connect(m_moveUpButton, &QToolButton::pressed, this, [&, this](){ OnMoveForwardBackwardUpDown('e'); });
 
 	m_moveDownButton = CreateNavigationButton(tr("Move Down"), false);
-	m_moveDownButton->setIcon(QIcon(":SGXGUI/Resources/minus.png"));
+	m_moveDownButton->setIcon(QIcon(":SGXGUI/Resources/down_arrow.png"));
 	QObject::connect(m_moveDownButton, &QToolButton::pressed, this, [&, this](){ OnMoveForwardBackwardUpDown('q'); });
 }
 
