@@ -276,7 +276,7 @@ void GlyphViewerWindow::CreateDockWidgets() {
 	m_legendsDockWidget = new QDockWidget(tr("Legends"), this);
 	m_legendsDockWidget->setWidget(m_legendsWidget);
 	m_legendsDockWidget->setFloating(true);
-	
+	m_toolbar->setIconSize(QSize(42, 32));
 	QIcon icon;
 	icon.addFile(":SGXGUI/Resources/Icons/icon-legend.png", QSize(), QIcon::Normal, QIcon::Off);
 	icon.addFile(":SGXGUI/Resources/Icons/icon-legend-a.png", QSize(), QIcon::Normal, QIcon::On);
