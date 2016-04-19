@@ -15,52 +15,32 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef FILTERINGWIDGET_H
-#define FILTERINGWIDGET_H
+#ifndef KEYWORDFILTERWIDGET_H
+#define KEYWORDFILTERWIDGET_H
 
 #include <QtWidgets/QWidget>
 #include <QtWidgets/QCheckBox>
-#include <QtWidgets/QPushButton>
-#include "sourcedatawidget.h"
-#include "filteringmanager.h"
-#include "linkedwidgetsmanager.h"
-#include "sourcedatainfomodel.h"
-#include "multitableelasticlistswidget.h"
-#include "rangefilterlistwidget.h"
-#include "keywordfilterlistwidget.h"
+#include <QtWidgets/QLineEdit>
+#include "keywordfilter.h"
 
-class FilteringWidget : public QWidget
+class KeywordFilterWidget : public QWidget
 {
 	Q_OBJECT
 
 public:
-	FilteringWidget(SourceDataInfoModel* columnsModel, FilteringManager* filteringManager, QWidget *parent);
-	~FilteringWidget();
+	KeywordFilterWidget(QWidget *parent);
+	~KeywordFilterWidget();
 
-	void SetupLinkedWidgets(LinkedWidgetsManager& linkedWidgets);
-	void OnNewVisualization();
+	void Set(const KeywordFilter& filter);
+	KeywordFilter Get() const;
 
-private slots:
-	void Clear();
-	void OnSourceWidgetWindowHidden();
-	void OnFilterResultsChanged();
-	void OnTableChanged(const QString& table);
+signals:
+	void FilterUpdated();
 
 private:
-	void EnableButtons(bool enable);
-
-	QComboBox* m_tableComboBox;
-	QCheckBox* m_hideUnselectedTreesCheckbox;
-	QPushButton* m_sourceWidgetButton;
-	QPushButton* m_createSubsetVizButton;
-	QPushButton* m_clearButton;
-	QScopedPointer<SourceDataWidget> m_sourceDataWindow;
-
-	RangeFilterListWidget* m_rangeListFilterWidget;
-	MultiTableElasticListsWidget* m_elasticListsWidget;
-	KeywordFilterListWidget* m_keywordFilterListWidget;
-
-	FilteringManager* m_filteringManager;
+	QLineEdit* m_keywordLineEdit;
+	QCheckBox* m_caseSenstiveCheckBox;
+	QCheckBox* m_exactMatchCheckBox;
 };
 
-#endif // FILTERINGWIDGET_H
+#endif // KEYWORDFILTERWIDGET_H

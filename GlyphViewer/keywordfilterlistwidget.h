@@ -15,52 +15,60 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef FILTERINGWIDGET_H
-#define FILTERINGWIDGET_H
+#ifndef KEYWORDFILTERLISTWIDGET_H
+#define KEYWORDFILTERLISTWIDGET_H
 
 #include <QtWidgets/QWidget>
-#include <QtWidgets/QCheckBox>
 #include <QtWidgets/QPushButton>
-#include "sourcedatawidget.h"
+#include <QtWidgets/QStackedLayout>
+#include <QtWidgets/QTableWidget>
 #include "filteringmanager.h"
-#include "linkedwidgetsmanager.h"
 #include "sourcedatainfomodel.h"
-#include "multitableelasticlistswidget.h"
-#include "rangefilterlistwidget.h"
-#include "keywordfilterlistwidget.h"
+#include "keywordfilterwidget.h"
 
-class FilteringWidget : public QWidget
+class KeywordFilterListWidget : public QWidget
 {
 	Q_OBJECT
 
 public:
-	FilteringWidget(SourceDataInfoModel* columnsModel, FilteringManager* filteringManager, QWidget *parent);
-	~FilteringWidget();
+	KeywordFilterListWidget(SourceDataInfoModel* columnsModel, FilteringManager* filteringManager, QWidget *parent);
+	~KeywordFilterListWidget();
 
-	void SetupLinkedWidgets(LinkedWidgetsManager& linkedWidgets);
+public slots:
 	void OnNewVisualization();
+	void SwitchTable(const QString& table);
 
 private slots:
-	void Clear();
-	void OnSourceWidgetWindowHidden();
-	void OnFilterResultsChanged();
-	void OnTableChanged(const QString& table);
+	void OnAddFilter();
+	void OnRemoveSelectedFilters();
+	void OnRemoveAllFilters();
+	void OnUpdateFilters();
+	void OnFilterSelectionChanged(const QItemSelection &selected, const QItemSelection &deselected);
+	void OnFilterChanged();
 
 private:
-	void EnableButtons(bool enable);
+	typedef QMap<QString, FilteringParameters::ColumnKeywordFilterMap> Table2FiltersMap;
 
-	QComboBox* m_tableComboBox;
-	QCheckBox* m_hideUnselectedTreesCheckbox;
-	QPushButton* m_sourceWidgetButton;
-	QPushButton* m_createSubsetVizButton;
-	QPushButton* m_clearButton;
-	QScopedPointer<SourceDataWidget> m_sourceDataWindow;
+	QStringList Separate(const QString& datasourceTable) const;
+	void ClearFiltersFromTableWidget();
+	QTableWidgetItem* CreateItem(const QString& text);
+	void SaveFiltersInTableWidget();
+	bool DoAnyTablesHaveFilters() const;
+	QString GetTextFromCell(int row, int column = 0) const;
+	KeywordFilterWidget* GetKeywordFilterWidgetFromCell(int row, int column = 1) const;
 
-	RangeFilterListWidget* m_rangeListFilterWidget;
-	MultiTableElasticListsWidget* m_elasticListsWidget;
-	KeywordFilterListWidget* m_keywordFilterListWidget;
-
+	SourceDataInfoModel* m_columnsModel;
 	FilteringManager* m_filteringManager;
+	QString m_currentTable;
+
+	QPushButton* m_addButton;
+	QPushButton* m_removeAllButton;
+	QPushButton* m_updateButton;
+	QTableWidget* m_keywordFiltersTableWidget;
+
+	QAction* m_removeSelectedContextMenuAction;
+
+	Table2FiltersMap m_table2FiltersMap;
 };
 
-#endif // FILTERINGWIDGET_H
+#endif // KEYWORDFILTERLISTWIDGET_H

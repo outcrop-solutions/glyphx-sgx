@@ -448,7 +448,7 @@ SynGlyphX::IndexSet SourceDataCache::GetIndexesFromTableThatPassFilters(const QS
 
 	if (!filters.HasFilters()) {
 
-		throw std::invalid_argument("FilteringParameters parameter has no filters.");
+		throw std::invalid_argument("Can not get indexes without at least one filter.");
 	}
 
 	QString queryString = "SELECT \"" + IndexColumnName + "\" FROM \"" + tableName + "\" WHERE ";
@@ -481,6 +481,22 @@ SynGlyphX::IndexSet SourceDataCache::GetIndexesFromTableThatPassFilters(const QS
 		}
 	}
 
+	const FilteringParameters::ColumnKeywordFilterMap& keywordFilters = filters.GetKeywordFilters();
+	if (!keywordFilters.empty()) {
+
+		FilteringParameters::ColumnKeywordFilterMap::const_iterator keywordFilter = keywordFilters.begin();
+		if (!rangeFilters.empty() || !distinctValueFilters.empty()) {
+
+			queryString += " AND ";
+		}
+		queryString += CreateKeywordFilterString(keywordFilter->first, keywordFilter->second);
+		++keywordFilter;
+		for (; keywordFilter != keywordFilters.end(); ++keywordFilter) {
+
+			queryString += " AND " + CreateKeywordFilterString(keywordFilter->first, keywordFilter->second);
+		}
+	}
+
 	QSqlQuery query(m_db);
 	query.prepare(queryString);
 	if (!query.exec()) {
@@ -495,6 +511,40 @@ SynGlyphX::IndexSet SourceDataCache::GetIndexesFromTableThatPassFilters(const QS
 	}
 
 	return indexSet;
+}
+
+QString SourceDataCache::CreateKeywordFilterString(const QString& columnName, const KeywordFilter& filter) const {
+
+	QString filterString = "\"" + columnName + "\"";
+
+	if (filter.GetCaseSensitive()) {
+
+		filterString += " GLOB ";
+	}
+	else {
+
+		filterString += " LIKE ";
+	}
+
+	if (filter.GetExactMatch()) {
+
+		filterString += "'" + filter.GetKeyword() + "'";
+	}
+	else {
+
+		QString wildcard;
+		if (filter.GetCaseSensitive()) {
+
+			wildcard = '*';
+		}
+		else {
+
+			wildcard = '%';
+		}
+		filterString += "'" + wildcard + filter.GetKeyword() + wildcard + "'";
+	}
+
+	return filterString;
 }
 
 SynGlyphX::DegenerateInterval SourceDataCache::GetMinMax(const SynGlyphX::InputField& inputfield, const FilteringParameters::ColumnRangeFilterMap& otherRanges) const {

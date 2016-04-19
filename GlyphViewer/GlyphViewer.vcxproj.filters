@@ -215,6 +215,27 @@
     <ClCompile Include="GeneratedFiles\Win32\Release\moc_glyph3dview.cpp">
       <Filter>Generated Files\Release_Win32</Filter>
     </ClCompile>
+    <ClCompile Include="keywordfilter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="keywordfilterlistwidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Win32\Debug\moc_keywordfilterlistwidget.cpp">
+      <Filter>Generated Files\Debug_Win32</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Win32\Release\moc_keywordfilterlistwidget.cpp">
+      <Filter>Generated Files\Release_Win32</Filter>
+    </ClCompile>
+    <ClCompile Include="keywordfilterwidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Win32\Debug\moc_keywordfilterwidget.cpp">
+      <Filter>Generated Files\Debug_Win32</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Win32\Release\moc_keywordfilterwidget.cpp">
+      <Filter>Generated Files\Release_Win32</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="glyphviewer.qrc">
@@ -274,6 +295,12 @@
     <CustomBuild Include="glyph3dview.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
+    <CustomBuild Include="keywordfilterlistwidget.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="keywordfilterwidget.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="GlyphViewer.rc">
@@ -291,6 +318,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="filteringparameters.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="keywordfilter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

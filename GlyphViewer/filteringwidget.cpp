@@ -16,7 +16,7 @@ FilteringWidget::FilteringWidget(SourceDataInfoModel* columnsModel, FilteringMan
 	m_hideUnselectedTreesCheckbox = new QCheckBox(tr("Filter View"), this);
 	topLayout->addWidget(m_hideUnselectedTreesCheckbox);
 
-	m_clearButton = new QPushButton(tr("Clear Filter(s)"), this);
+	m_clearButton = new QPushButton(tr("Clear Filter Results"), this);
 	topLayout->addWidget(m_clearButton);
 	QObject::connect(m_clearButton, &QPushButton::clicked, this, &FilteringWidget::Clear);
 
@@ -37,6 +37,9 @@ FilteringWidget::FilteringWidget(SourceDataInfoModel* columnsModel, FilteringMan
 	m_rangeListFilterWidget = new RangeFilterListWidget(columnsModel, m_filteringManager, filterMethodsWidget);
 	filterMethodsWidget->addTab(m_rangeListFilterWidget, tr("Range"));
 	
+	m_keywordFilterListWidget = new KeywordFilterListWidget(columnsModel, m_filteringManager, filterMethodsWidget);
+	filterMethodsWidget->addTab(m_keywordFilterListWidget, tr("Keyword"));
+
 	m_elasticListsWidget = new MultiTableElasticListsWidget(m_filteringManager, filterMethodsWidget);
 	filterMethodsWidget->addTab(m_elasticListsWidget, tr("Elastic"));
 
@@ -139,6 +142,7 @@ void FilteringWidget::OnNewVisualization() {
 
 	m_elasticListsWidget->OnNewVisualization();
 	m_rangeListFilterWidget->OnNewVisualization();
+	m_keywordFilterListWidget->OnNewVisualization();
 
 	OnFilterResultsChanged();
 }
@@ -148,6 +152,7 @@ void FilteringWidget::OnTableChanged(const QString& table) {
 	QString tableId = m_tableComboBox->currentData().toString();
 	m_rangeListFilterWidget->SwitchTable(tableId);
 	m_elasticListsWidget->SwitchTable(tableId);
+	m_keywordFilterListWidget->SwitchTable(tableId);
 }
 
 void FilteringWidget::EnableButtons(bool enable) {

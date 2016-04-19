@@ -15,52 +15,35 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef FILTERINGWIDGET_H
-#define FILTERINGWIDGET_H
+#ifndef KEYWORDFILTER_H
+#define KEYWORDFILTER_H
 
-#include <QtWidgets/QWidget>
-#include <QtWidgets/QCheckBox>
-#include <QtWidgets/QPushButton>
-#include "sourcedatawidget.h"
-#include "filteringmanager.h"
-#include "linkedwidgetsmanager.h"
-#include "sourcedatainfomodel.h"
-#include "multitableelasticlistswidget.h"
-#include "rangefilterlistwidget.h"
-#include "keywordfilterlistwidget.h"
+#include <QtCore/QString>
 
-class FilteringWidget : public QWidget
+class KeywordFilter
 {
-	Q_OBJECT
-
 public:
-	FilteringWidget(SourceDataInfoModel* columnsModel, FilteringManager* filteringManager, QWidget *parent);
-	~FilteringWidget();
+	KeywordFilter();
+	KeywordFilter(const KeywordFilter& filter);
+	~KeywordFilter();
 
-	void SetupLinkedWidgets(LinkedWidgetsManager& linkedWidgets);
-	void OnNewVisualization();
+	KeywordFilter& operator=(const KeywordFilter& filter);
+	bool operator==(const KeywordFilter& filter) const;
+	bool operator!=(const KeywordFilter& filter) const;
 
-private slots:
-	void Clear();
-	void OnSourceWidgetWindowHidden();
-	void OnFilterResultsChanged();
-	void OnTableChanged(const QString& table);
+	void SetKeyword(const QString& keyword);
+	const QString& GetKeyword() const;
+
+	void SetCaseSensitive(bool caseSensitive);
+	bool GetCaseSensitive() const;
+
+	void SetExactMatch(bool exactMatch);
+	bool GetExactMatch() const;
 
 private:
-	void EnableButtons(bool enable);
-
-	QComboBox* m_tableComboBox;
-	QCheckBox* m_hideUnselectedTreesCheckbox;
-	QPushButton* m_sourceWidgetButton;
-	QPushButton* m_createSubsetVizButton;
-	QPushButton* m_clearButton;
-	QScopedPointer<SourceDataWidget> m_sourceDataWindow;
-
-	RangeFilterListWidget* m_rangeListFilterWidget;
-	MultiTableElasticListsWidget* m_elasticListsWidget;
-	KeywordFilterListWidget* m_keywordFilterListWidget;
-
-	FilteringManager* m_filteringManager;
+	QString m_keyword;
+	bool m_caseSensitive;
+	bool m_exactMatch;
 };
 
-#endif // FILTERINGWIDGET_H
+#endif //KEYWORDFILTER_H

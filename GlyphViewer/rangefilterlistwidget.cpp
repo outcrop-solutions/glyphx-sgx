@@ -145,19 +145,6 @@ void RangeFilterListWidget::OnNewVisualization() {
 
 	if (isSourceDataCacheValid) {
 
-		QStringList headerLabels;
-		headerLabels << tr("Field") << tr("Range");
-
-		QTableWidget* newTableWidget = new QTableWidget(0, 2, this);
-		newTableWidget->setHorizontalHeaderLabels(headerLabels);
-		newTableWidget->setSelectionBehavior(QAbstractItemView::SelectionBehavior::SelectRows);
-		newTableWidget->setSelectionMode(QAbstractItemView::SelectionMode::ExtendedSelection);
-		newTableWidget->setFrameShape(QFrame::Shape::NoFrame);
-		newTableWidget->horizontalHeader()->setStretchLastSection(true);
-		newTableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeMode::ResizeToContents);
-		newTableWidget->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeMode::ResizeToContents);
-		newTableWidget->verticalHeader()->hide();
-
 		m_currentTable = sourceDataCache->GetFormattedNames().begin()->first;
 	}
 }
@@ -292,7 +279,7 @@ void RangeFilterListWidget::OnUpdateFilters() {
 			const FilteringManager::Table2FiltersMap& table2FiltersMap = m_filteringManager->GetTable2FiltersMap();
 			if (table2FiltersMap.count(tableIterator.key())) {
 
-				filteringParameters.SetDistinctValueFilters(table2FiltersMap[tableIterator.key()].GetDistinctValueFilters());
+				filteringParameters = table2FiltersMap[tableIterator.key()];
 			}
 			
 			FilteringParameters::ColumnRangeFilterMap rangeFilterMap;
@@ -344,7 +331,7 @@ QString RangeFilterListWidget::GetTextFromCell(int row, int column) const {
 
 QStringList RangeFilterListWidget::Separate(const QString& datasourceTable) const {
 
-	QStringList splitDatasourceTable = m_currentTable.split(':');
+	QStringList splitDatasourceTable = datasourceTable.split(':');
 	if (splitDatasourceTable.count() < 2) {
 
 		splitDatasourceTable.push_back(QString::fromStdWString(SynGlyphX::Datasource::SingleTableName));

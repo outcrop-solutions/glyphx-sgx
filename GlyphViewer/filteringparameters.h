@@ -23,6 +23,7 @@
 #include <QtCore/QSet>
 #include <QtCore/QString>
 #include "interval.h"
+#include "keywordfilter.h"
 
 class FilteringParameters
 {
@@ -31,6 +32,9 @@ public:
 
 	typedef std::pair<QString, SynGlyphX::DegenerateInterval> ColumnRangeFilter;
 	typedef std::vector<ColumnRangeFilter> ColumnRangeFilterMap;
+
+	typedef std::pair<QString, KeywordFilter> ColumnKeywordFilter;
+	typedef std::vector<ColumnKeywordFilter> ColumnKeywordFilterMap;
 
 	FilteringParameters();
 	FilteringParameters(const FilteringParameters& filters);
@@ -53,9 +57,17 @@ public:
 	void RemoveRangeFilter(const QString& column);
 	const ColumnRangeFilterMap& GetRangeFilters() const;
 
+	void SetKeywordFilters(const ColumnKeywordFilterMap& filterMap);
+	void SetKeywordFilter(const QString& column, const KeywordFilter& keywordFilter);
+	void RemoveKeywordFilter(const QString& column);
+	const ColumnKeywordFilterMap& GetKeywordFilters() const;
+
 private:
 	//Filters from Elastic tab in Filtering widget and time animation widget
 	ColumnDistinctValuesFilterMap m_distinctValuesFilters;
+
+	//Filters from Keyword tab in Filtering widget
+	ColumnKeywordFilterMap m_keywordFilters;
 
 	//Filters from Range tab in Filtering widget
 	ColumnRangeFilterMap m_rangeFilters;
