@@ -63,6 +63,7 @@ public:
 	SharedSQLQuery CreateMinMaxQuery(const SynGlyphX::InputField& inputField) const;
 	SynGlyphX::DegenerateInterval GetMinMax(const SynGlyphX::InputField& inputField, const FilteringParameters::ColumnRangeFilterMap&  otherRanges = FilteringParameters::ColumnRangeFilterMap()) const;
 	std::set<double> GetSortedNumericDistictValues(const SynGlyphX::InputField& inputField, const FilteringParameters::ColumnRangeFilterMap& otherRanges = FilteringParameters::ColumnRangeFilterMap()) const;
+	QStringList GetSortedDistinctValuesAsStrings(const QString& tableName, const QString& columnName, const QString& whereClause = "") const;
 		
 	SharedSQLQuery CreateSelectQueryForIndexSet(const QString& tableName, const TableColumns& columns, const SynGlyphX::IndexSet& indexSet) const;
 	SharedSQLQuery CreateDistinctValueQuery(const QString& tableName, const QString& columnName, const SynGlyphX::IndexSet& indexSet = SynGlyphX::IndexSet()) const;

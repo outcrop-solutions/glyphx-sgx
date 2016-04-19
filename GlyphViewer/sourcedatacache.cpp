@@ -297,6 +297,29 @@ SourceDataCache::SharedSQLQuery SourceDataCache::CreateDistinctValueQuery(const 
 	return query;
 }
 
+QStringList SourceDataCache::GetSortedDistinctValuesAsStrings(const QString& tableName, const QString& columnName, const QString& whereClause) const {
+
+	QString queryString = "SELECT DISTINCT \"" + columnName + "\" FROM \"" + tableName + "\" ";
+
+	if (!whereClause.isEmpty()) {
+
+		queryString += "WHERE " + whereClause;
+	}
+
+	SharedSQLQuery distinctQuery(new QSqlQuery(m_db));
+	distinctQuery->prepare(queryString);
+
+	QStringList results;
+	distinctQuery->exec();
+	while (distinctQuery->next()) {
+
+		results.push_back(distinctQuery->value(0).toString());
+	}
+
+	results.sort(Qt::CaseInsensitive);
+	return results;
+}
+
 SourceDataCache::SharedSQLQuery SourceDataCache::CreateDistinctValueAndCountQuery(const QString& tableName, const QString& columnName, const SynGlyphX::IndexSet& indexSet) const {
 
 	QString queryString = "SELECT \"" + columnName + "\", COUNT(*) FROM \"" + tableName + "\" ";

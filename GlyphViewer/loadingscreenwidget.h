@@ -20,8 +20,10 @@
 
 #include <QtWidgets/QFrame>
 #include <QtWidgets/QListWidget>
-#include "groupboxsinglewidget.h"
+#include <QtWidgets/QGroupBox>
+#include <QtWidgets/QPushButton>
 #include "glyphviewerwindow.h"
+#include "sourcedatacache.h"
 
 class LoadingScreenWidget : public QFrame
 {
@@ -37,15 +39,47 @@ public:
 private slots:
 	void OnLoadVisualization();
 	void OnNewViewSelected();
+	void OnSelectAll();
 
 private:
+	class VisualizationData {
+
+	public:
+		VisualizationData() : m_mustHaveFilter(true) {}
+		~VisualizationData() {}
+
+		bool HasDataForFilter(unsigned int index) const { return index < m_filterTitles.size(); }
+
+		QString m_title;
+		QString m_sdtPath;
+		bool m_mustHaveFilter;
+
+		std::vector<QString> m_filterTitles;
+		std::vector<QString> m_filterFieldNames;
+		std::vector<bool> m_filterMultiselect;
+		std::vector<QStringList> m_filterValues;
+	};
+
+	void AddFilterList(QHBoxLayout* filterListLayout);
+	void SetMultiSelectionEnabled(unsigned int filterWidgetIndex, bool multiSelectionEnabled);
+	bool AreAnyFiltersMissingSelection() const;
+	bool IsFilterWidgetInUse(unsigned int index) const;
+	void ClearFilters();
+
+	void SetupVisualizationData();
+
 	static QString s_glyphEdDir;
 
 	QListWidget* m_viewListWidget;
 	std::vector<QListWidget*> m_filterWidgets;
-	std::vector<SynGlyphX::GroupBoxSingleWidget*> m_filterGroupBoxWidgets;
+	std::vector<QGroupBox*> m_filterGroupBoxWidgets;
+	std::vector<QPushButton*> m_selectAllButtonWidgets;
+	
 	GlyphViewerWindow* m_mainWindow;
-	std::vector<QString> m_displayNameToSDTPathMap;
+	SourceDataCache m_sourceDataCache;
+	std::vector<VisualizationData> m_visualizationData;
+
+	unsigned int m_currentView;
 };
 
 #endif // LOADINGSCREENWIDGET_H
