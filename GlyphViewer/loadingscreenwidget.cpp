@@ -224,7 +224,7 @@ void LoadingScreenWidget::OnLoadVisualization() {
 					filterData.insert(selectedItem->text());
 				}
 
-				if (!filterData.isEmpty()) {
+				if ((!filterData.isEmpty()) && (filterData.size() != m_filterWidgets[i]->model()->rowCount())) {
 
 					filters.SetDistinctValueFilter(m_visualizationData[m_currentView].m_filterFieldNames[i], filterData);
 				}
@@ -241,7 +241,11 @@ void LoadingScreenWidget::OnLoadVisualization() {
 		SynGlyphX::InputTable inputTable(mapping.GetDatasources().begin()->first, mapping.GetDatasources().begin()->second->GetTableNames().at(0));
 
 		DataMappingLoadingFilterModel::Table2LoadingFiltersMap table2FiltersMap;
-		table2FiltersMap[inputTable] = filters;
+
+		if (filters.HasFilters()) {
+
+			table2FiltersMap[inputTable] = filters;
+		}
 
 		m_mainWindow->LoadNewVisualization(m_visualizationData[m_currentView].m_sdtPath, table2FiltersMap);
 	}
