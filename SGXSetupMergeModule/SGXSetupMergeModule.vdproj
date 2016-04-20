@@ -1287,12 +1287,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_4A66415C1F6A4465AE0184E0AD215A97"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_4AB9EEA9925B4B69BE81915BD7F41A8C"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -1996,6 +1990,12 @@
         "Entry"
         {
         "MsmKey" = "8:_737548DF100B4B26931CC45990ADF7B2"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_73942186C74B42BF895693E3F2FA47FB"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -3369,12 +3369,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_C7912A0A11E042A4B9EBCF355893E14B"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_C7A89D12CD59429AA4E5199F513DC503"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -3670,6 +3664,12 @@
         "Entry"
         {
         "MsmKey" = "8:_DCA86087FF634568B2D9156C71587D69"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_DCF14BC38AE043E48C58C89C318AB94C"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -18285,7 +18285,7 @@
             "IconIndex" = "3:0"
                 "Command"
                 {
-                "Command" = "8:_4A66415C1F6A4465AE0184E0AD215A97"
+                "Command" = "8:_73942186C74B42BF895693E3F2FA47FB"
                 }
                 "Verbs"
                 {
@@ -19250,34 +19250,6 @@
                 {
                 }
             }
-            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_4A66415C1F6A4465AE0184E0AD215A97"
-            {
-            "SourcePath" = "8:..\\..\\bin\\Win32\\Release\\GlyphDesigner.exe"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_0FD992B69CC74D489682A631FA99B364"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            "ProjectOutputGroupRegister" = "3:1"
-            "OutputConfiguration" = "8:"
-            "OutputGroupCanonicalName" = "8:Built"
-            "OutputProjectGuid" = "8:{FD1ED976-29E1-469A-8F9A-593A3CBDA400}"
-            "ShowKeyOutput" = "11:TRUE"
-                "ExcludeFilters"
-                {
-                }
-            }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_6727E8323D0D449AA8D892D5163E5EB3"
             {
             "SourcePath" = "8:..\\..\\bin\\Win32\\Release\\DataEngine.dll"
@@ -19357,6 +19329,34 @@
             "OutputConfiguration" = "8:"
             "OutputGroupCanonicalName" = "8:Built"
             "OutputProjectGuid" = "8:{7D8A83E2-8F45-4F90-9F84-F1120904E0CE}"
+            "ShowKeyOutput" = "11:TRUE"
+                "ExcludeFilters"
+                {
+                }
+            }
+            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_73942186C74B42BF895693E3F2FA47FB"
+            {
+            "SourcePath" = "8:..\\..\\bin\\Win32\\Release\\GlyphDesigner.exe"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_0FD992B69CC74D489682A631FA99B364"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            "ProjectOutputGroupRegister" = "3:1"
+            "OutputConfiguration" = "8:"
+            "OutputGroupCanonicalName" = "8:Built"
+            "OutputProjectGuid" = "8:{C51DA629-7E1F-4211-91C6-54C980A70172}"
             "ShowKeyOutput" = "11:TRUE"
                 "ExcludeFilters"
                 {
@@ -19502,37 +19502,9 @@
                 {
                 }
             }
-            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_C7912A0A11E042A4B9EBCF355893E14B"
-            {
-            "SourcePath" = "8:..\\..\\bin\\Win32\\Release\\GlyphViewer.exe"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_0FD992B69CC74D489682A631FA99B364"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            "ProjectOutputGroupRegister" = "3:1"
-            "OutputConfiguration" = "8:"
-            "OutputGroupCanonicalName" = "8:Built"
-            "OutputProjectGuid" = "8:{819CAA07-8664-4CC9-B3CE-95FE5B6C2F70}"
-            "ShowKeyOutput" = "11:TRUE"
-                "ExcludeFilters"
-                {
-                }
-            }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_CFBBE95372F6428BB47610D4A3F54FF3"
             {
-            "SourcePath" = "8:..\\..\\bin\\Win32\\Release\\DataMapper.exe"
+            "SourcePath" = "8:..\\..\\bin\\Win32\\Release\\GlyphViewer.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_0FD992B69CC74D489682A631FA99B364"
@@ -19609,6 +19581,34 @@
             "OutputConfiguration" = "8:"
             "OutputGroupCanonicalName" = "8:Built"
             "OutputProjectGuid" = "8:{1917E85B-C54C-4A57-8D29-DAC16021149E}"
+            "ShowKeyOutput" = "11:TRUE"
+                "ExcludeFilters"
+                {
+                }
+            }
+            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_DCF14BC38AE043E48C58C89C318AB94C"
+            {
+            "SourcePath" = "8:..\\..\\bin\\Win32\\Release\\DataMapper.exe"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_0FD992B69CC74D489682A631FA99B364"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            "ProjectOutputGroupRegister" = "3:1"
+            "OutputConfiguration" = "8:"
+            "OutputGroupCanonicalName" = "8:Built"
+            "OutputProjectGuid" = "8:{5E911B8A-4BAF-4DEC-A87D-E517F53FDB57}"
             "ShowKeyOutput" = "11:TRUE"
                 "ExcludeFilters"
                 {
@@ -19714,7 +19714,7 @@
             "ShowCmd" = "3:1"
             "IconIndex" = "3:0"
             "Transitive" = "11:FALSE"
-            "Target" = "8:_4A66415C1F6A4465AE0184E0AD215A97"
+            "Target" = "8:_73942186C74B42BF895693E3F2FA47FB"
             "Folder" = "8:_3E7962AF2FAE404889124360555F5ACB"
             "WorkingFolder" = "8:_0FD992B69CC74D489682A631FA99B364"
             "Icon" = "8:_FAA64575586341E1BB230B90C90AE0DA"
@@ -19756,13 +19756,13 @@
             "ShowCmd" = "3:1"
             "IconIndex" = "3:0"
             "Transitive" = "11:FALSE"
-            "Target" = "8:_C7912A0A11E042A4B9EBCF355893E14B"
+            "Target" = "8:_CFBBE95372F6428BB47610D4A3F54FF3"
             "Folder" = "8:_3E7962AF2FAE404889124360555F5ACB"
             "WorkingFolder" = "8:_0FD992B69CC74D489682A631FA99B364"
             "Icon" = "8:_FAA64575586341E1BB230B90C90AE0DA"
             "Feature" = "8:"
             }
-            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_A6B467D1BCF344CFA76F0DD34A92368E"
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_B0E06393C2CE4D1A86F0D2F6C336F2E2"
             {
             "Name" = "8:Glyph Designer - Shortcut"
             "Arguments" = "8:"
@@ -19770,7 +19770,7 @@
             "ShowCmd" = "3:1"
             "IconIndex" = "3:0"
             "Transitive" = "11:FALSE"
-            "Target" = "8:_4A66415C1F6A4465AE0184E0AD215A97"
+            "Target" = "8:_73942186C74B42BF895693E3F2FA47FB"
             "Folder" = "8:_AE5DEF05DB95429488E96B6C98F9888E"
             "WorkingFolder" = "8:_0FD992B69CC74D489682A631FA99B364"
             "Icon" = "8:_FAA64575586341E1BB230B90C90AE0DA"
@@ -19812,7 +19812,7 @@
             "ShowCmd" = "3:1"
             "IconIndex" = "3:0"
             "Transitive" = "11:FALSE"
-            "Target" = "8:_C7912A0A11E042A4B9EBCF355893E14B"
+            "Target" = "8:_CFBBE95372F6428BB47610D4A3F54FF3"
             "Folder" = "8:_AE5DEF05DB95429488E96B6C98F9888E"
             "WorkingFolder" = "8:_0FD992B69CC74D489682A631FA99B364"
             "Icon" = "8:_FAA64575586341E1BB230B90C90AE0DA"
