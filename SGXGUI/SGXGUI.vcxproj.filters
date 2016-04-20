@@ -36,6 +36,9 @@
     <Filter Include="Resource Files\Video">
       <UniqueIdentifier>{8f55759a-a5ad-4f6a-bb46-c84f514725ea}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\GlyphEd">
+      <UniqueIdentifier>{c058df4e-d3ce-42d6-b1d4-4b57d130593c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="application.cpp">
@@ -550,6 +553,18 @@
     </Image>
     <Image Include="Resources\plus.png">
       <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\GlyphEd\glyphed_splash.png">
+      <Filter>Resource Files\GlyphEd</Filter>
+    </Image>
+    <Image Include="Resources\GlyphEd\glyphed_logo_white_border.png">
+      <Filter>Resource Files\GlyphEd</Filter>
+    </Image>
+    <Image Include="Resources\synglyphx_logo_white_border.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\GlyphEd\glyphed_logo_no_border.png">
+      <Filter>Resource Files\GlyphEd</Filter>
     </Image>
   </ItemGroup>
   <ItemGroup>

@@ -1,10 +1,13 @@
 #include "glyphbuilderapplication.h"
 #include <QtCore/QDir>
 #include <QtCore/QtGlobal>
+#include <QtGui/QIcon>
 
 namespace SynGlyphX {
 
 	QString GlyphBuilderApplication::s_defaultBaseImagesLocation;
+	QString GlyphBuilderApplication::s_splashScreenLocation;
+	QMap<GlyphBuilderApplication::LogoType, QString> GlyphBuilderApplication::s_logoLocations;
 	const char* GlyphBuilderApplication::s_internalSGXFeaturesEnvName = "SGXGlyphBuilderInternal";
 
 	GlyphBuilderApplication::GlyphBuilderApplication(int& argc, char** argv)
@@ -17,13 +20,24 @@ namespace SynGlyphX {
 	{
 
 	}
-	/*
-	void GlyphBuilderApplication::Setup(const QString& appName, const QString& appVersion) {
+	
+	void GlyphBuilderApplication::SetupIconsAndLogos() {
 
-		Application::Setup(appName, appVersion);
+		SetupIcons(QIcon(":SGXGUI/Resources/synglyphx_x.ico"));
 
-		s_defaultBaseImagesLocation = QDir::toNativeSeparators(applicationDirPath() + QDir::separator() + "DefaultBaseImages" + QDir::separator());
-	}*/
+		if (QDir(QDir::toNativeSeparators(QDir::cleanPath(SynGlyphX::GlyphBuilderApplication::GetCommonDataLocation()) + "/GlyphEd")).exists()) {
+
+			s_splashScreenLocation = ":SGXGUI/Resources/GlyphEd/glyphed_splash.png";
+			s_logoLocations[LogoType::NoBorder] = ":SGXGUI/Resources/GlyphEd/glyphed_logo_no_border.png";
+			s_logoLocations[LogoType::WhiteBorder] = ":SGXGUI/Resources/GlyphEd/glyphed_logo_white_border.png";
+		}
+		else {
+
+			s_splashScreenLocation = ":SGXGUI/Resources/synglyphx_splash.png";
+			s_logoLocations[LogoType::NoBorder] = ":SGXGUI/Resources/synglyphx_logo_white_border.png";
+			s_logoLocations[LogoType::WhiteBorder] = ":SGXGUI/Resources/synglyphx_logo_white_border.png";
+		}
+	}
 
 	const QString& GlyphBuilderApplication::GetDefaultBaseImagesLocation() {
 
@@ -33,6 +47,16 @@ namespace SynGlyphX {
 		}
 
 		return s_defaultBaseImagesLocation;
+	}
+
+	const QString& GlyphBuilderApplication::GetLogoLocation(LogoType logoType) {
+
+		return s_logoLocations[logoType];
+	}
+
+	const QString& GlyphBuilderApplication::GetSplashScreenLocation() {
+
+		return s_splashScreenLocation;
 	}
 
 	bool GlyphBuilderApplication::AreInternalSGXFeaturesEnabled() {

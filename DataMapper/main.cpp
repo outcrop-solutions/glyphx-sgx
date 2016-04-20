@@ -47,16 +47,17 @@ int main(int argc, char *argv[])
 	qRegisterMetaType<SynGlyphX::DoubleMinDiff>("DoubleMinDiff");
 	qRegisterMetaType<SynGlyphX::InputField>("InputField");
 
+	SynGlyphX::GlyphBuilderApplication::SetupIconsAndLogos();
+
 	if (!SynGlyphX::LicensingDialog::CheckLicense()) {
 
 		return 0;
 	}
 
-    //Setup and show the splash screen
-    QPixmap pixmap(":SGXGUI/Resources/synglyphx_splash.png");
-    QSplashScreen splash;
-    splash.setPixmap(pixmap);
-    splash.show();
+	//Setup and show the splash screen
+	QPixmap pixmap(SynGlyphX::GlyphBuilderApplication::GetSplashScreenLocation());
+	QSplashScreen splash(pixmap, Qt::WindowStaysOnTopHint);
+	splash.show();
 
     splash.showMessage("Loading Data Mapper", Qt::AlignHCenter | Qt::AlignBottom);
 
@@ -69,7 +70,8 @@ int main(int argc, char *argv[])
 
 		//Need to figure out better way to not have the splash screen disappear before the user sees it
 		QTimer::singleShot(1500, &splash, SLOT(close()));
-		QTimer::singleShot(1600, &w, SLOT(show()));
+		w.show();
+		//QTimer::singleShot(1600, &w, SLOT(show()));
 
 		//w.show();
 		//splash.finish(&w);

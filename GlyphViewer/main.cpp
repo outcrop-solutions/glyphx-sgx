@@ -8,6 +8,7 @@
 #include <QtWidgets/QMessageBox>
 #include <QtCore/QTextStream>
 
+/*
 void myMessageHandler(QtMsgType type, const QMessageLogContext &context, const QString &msg)
 {
 	QString txt;
@@ -30,14 +31,14 @@ void myMessageHandler(QtMsgType type, const QMessageLogContext &context, const Q
 	QTextStream ts(&outFile);
 	ts << txt;
 }
-
+*/
 
 int main(int argc, char *argv[])
 {
 	SynGlyphX::GlyphBuilderApplication::Setup("Glyph Builder - Glyph Viewer", "0.7.31");
 	SynGlyphX::GlyphBuilderApplication a(argc, argv);
 
-	qInstallMessageHandler(myMessageHandler);
+	//qInstallMessageHandler(myMessageHandler);
 
 	const QString dumpPath = QStandardPaths::writableLocation(QStandardPaths::HomeLocation) + "/Minidumps";
 	std::wstring pathAsStr = dumpPath.toStdWString();
@@ -61,7 +62,7 @@ int main(int argc, char *argv[])
 		L"",
 		0);
 
-	SynGlyphX::GlyphBuilderApplication::SetupIcons(QIcon(":SGXGUI/Resources/synglyphx_x.ico"));
+	SynGlyphX::GlyphBuilderApplication::SetupIconsAndLogos();
 
 	if (!SynGlyphX::LicensingDialog::CheckLicense()) {
 
@@ -69,9 +70,8 @@ int main(int argc, char *argv[])
 	}
 
 	//Setup and show the splash screen
-	QPixmap pixmap(":SGXGUI/Resources/synglyphx_splash.png");
-	QSplashScreen splash;
-	splash.setPixmap(pixmap);
+	QPixmap pixmap(SynGlyphX::GlyphBuilderApplication::GetSplashScreenLocation());
+	QSplashScreen splash(pixmap, Qt::WindowStaysOnTopHint);
 	splash.show();
 
 	splash.showMessage("Loading Glyph Viewer", Qt::AlignHCenter | Qt::AlignBottom);
@@ -86,7 +86,8 @@ int main(int argc, char *argv[])
 
 		//Need to figure out better way to not have the splash screen disappear before the user sees it
 		QTimer::singleShot(1500, &splash, SLOT(close()));
-		QTimer::singleShot(1600, &w, SLOT(show()));
+		w.show();
+		//QTimer::singleShot(1600, &w, SLOT(show()));
 
 		//w.show();
 		//splash.finish(&w);

@@ -12,6 +12,7 @@
       <file>Resources/up_arrow.png</file>
       <file>Resources/plus.png</file>
       <file>Resources/minus.png</file>
+      <file>Resources/synglyphx_logo_white_border.png</file>
 	  <file>Resources/Icons/icon-filter.png</file>
 	  <file>Resources/Icons/icon-filter-a.png</file>
 	  <file>Resources/Icons/icon-filter-time.png</file>
@@ -24,6 +25,9 @@
 	  <file>Resources/Icons/icon-list-a.png</file>
 	  <file>Resources/Icons/icon-text.png</file>
 	  <file>Resources/Icons/icon-text-a.png</file>
+      <file>Resources/GlyphEd/glyphed_splash.png</file>
+      <file>Resources/GlyphEd/glyphed_logo_white_border.png</file>
+      <file>Resources/GlyphEd/glyphed_logo_no_border.png</file>
     </qresource>
     <qresource prefix="/qt/etc">
       <file alias="qt.conf">Resources/qt.conf</file>

@@ -36,18 +36,17 @@ int main(int argc, char *argv[])
 		L"",
 		0);
 
-	SynGlyphX::GlyphBuilderApplication::SetupIcons(QIcon(":SGXGUI/Resources/synglyphx_x.ico"));
+	SynGlyphX::GlyphBuilderApplication::SetupIconsAndLogos();
 
 	if (!SynGlyphX::LicensingDialog::CheckLicense()) {
 
 		return 0;
 	}
 
-    //Setup and show the splash screen
-    QPixmap pixmap(":SGXGUI/Resources/synglyphx_splash.png");
-    QSplashScreen splash;
-    splash.setPixmap(pixmap);
-    splash.show();
+	//Setup and show the splash screen
+	QPixmap pixmap(SynGlyphX::GlyphBuilderApplication::GetSplashScreenLocation());
+	QSplashScreen splash(pixmap, Qt::WindowStaysOnTopHint);
+	splash.show();
 
     splash.showMessage("Loading Glyph Designer", Qt::AlignHCenter | Qt::AlignBottom);
 
@@ -60,7 +59,8 @@ int main(int argc, char *argv[])
 
 		//Need to figure out better way to not have the splash screen disappear before the user sees it
 		QTimer::singleShot(1500, &splash, SLOT(close()));
-		QTimer::singleShot(1600, &w, SLOT(show()));
+		w.show();
+		//QTimer::singleShot(1600, &w, SLOT(show()));4 yet
 
 		//w.show();
 		//splash.finish(&w);

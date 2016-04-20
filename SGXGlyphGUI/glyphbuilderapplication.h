@@ -28,16 +28,27 @@ namespace SynGlyphX {
 		Q_OBJECT
 
 	public:
+		enum LogoType {
+
+			NoBorder,
+			WhiteBorder
+		};
+
 		GlyphBuilderApplication(int& argc, char** argv);
 		~GlyphBuilderApplication();
 
-		//static void Setup(const QString& appName, const QString& appVersion);
+		static void SetupIconsAndLogos();
 
 		static const QString& GetDefaultBaseImagesLocation();
+		static const QString& GetLogoLocation(LogoType logoType);
+		static const QString& GetSplashScreenLocation();
 
 		static bool AreInternalSGXFeaturesEnabled();
 
 	protected:
+		static QMap<LogoType, QString> s_logoLocations;
+		static QString s_splashScreenLocation;
+
 		static QString s_defaultBaseImagesLocation;
 		static const char* s_internalSGXFeaturesEnvName;
 	};

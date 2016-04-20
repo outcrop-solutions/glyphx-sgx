@@ -774,8 +774,12 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="Resources\down_arrow.png" />
+    <Image Include="Resources\GlyphEd\glyphed_logo_no_border.png" />
+    <Image Include="Resources\GlyphEd\glyphed_logo_white_border.png" />
+    <Image Include="Resources\GlyphEd\glyphed_splash.png" />
     <Image Include="Resources\minus.png" />
     <Image Include="Resources\plus.png" />
+    <Image Include="Resources\synglyphx_logo_white_border.png" />
     <Image Include="Resources\synglyphx_splash.png" />
     <Image Include="Resources\synglyphx_x.ico" />
     <Image Include="Resources\up_arrow.png" />

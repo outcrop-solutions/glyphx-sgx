@@ -42,6 +42,17 @@ LoadingScreenWidget::LoadingScreenWidget(GlyphViewerWindow* mainWindow, QWidget 
 
 	vizAndFilterLayout->addStretch(1);
 
+	QVBoxLayout* logoLayout = new QVBoxLayout(this);
+	logoLayout->setContentsMargins(0, 0, 0, 0);
+
+	QLabel* logoLabel = new QLabel(this);
+	logoLabel->setPixmap(QPixmap(SynGlyphX::GlyphBuilderApplication::GetLogoLocation(SynGlyphX::GlyphBuilderApplication::NoBorder)));
+
+	logoLayout->addWidget(logoLabel);
+	logoLayout->addStretch(1);
+
+	vizAndFilterLayout->addLayout(logoLayout);
+
 	mainLayout->addLayout(vizAndFilterLayout, 1);
 
 	QHBoxLayout* buttonLayout = new QHBoxLayout(this);
