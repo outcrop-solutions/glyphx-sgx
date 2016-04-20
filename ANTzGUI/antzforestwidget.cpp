@@ -336,14 +336,10 @@ namespace SynGlyphXANTz {
 		npInitGLPrimitive(antzData);
 		npInitTags(antzData);
 
-		QString logoImageFilename = QDir::toNativeSeparators(SynGlyphX::GlyphBuilderApplication::applicationDirPath() + QDir::separator() + "logo.png");
-		if (QFile::exists(logoImageFilename)) {
-
-			QImage image(logoImageFilename);
-			m_logoPosition.setCoords(0, 0, 0, 0);
-			m_logoPosition.setSize(QSize(image.width(), -image.height()));
-			m_logoTextureID = bindTexture(image);
-		}
+		QImage image(SynGlyphX::GlyphBuilderApplication::GetLogoLocation(SynGlyphX::GlyphBuilderApplication::WhiteBorder));
+		m_logoPosition.setCoords(0, 0, 0, 0);
+		m_logoPosition.setSize(QSize(image.width(), -image.height()));
+		m_logoTextureID = bindTexture(image);
 	
 		m_worldTextureID = BindTextureInFile(SynGlyphX::GlyphBuilderApplication::GetDefaultBaseImagesLocation() + QString::fromStdWString(SynGlyphX::DefaultBaseImageProperties::GetBasefilename()));
 		pNPnode rootGrid = static_cast<pNPnode>(antzData->map.node[kNPnodeRootGrid]);
