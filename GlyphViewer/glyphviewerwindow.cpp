@@ -608,7 +608,10 @@ void GlyphViewerWindow::LoadDataTransform(const QString& filename, const DataMap
 
 	try {
 
-		ValidateDataMappingFile(filename);
+		if (!filename.contains(SynGlyphX::GlyphBuilderApplication::GetCommonDataLocation(), Qt::CaseInsensitive)) {
+
+			ValidateDataMappingFile(filename);
+		}
 
 		m_mappingModel->LoadDataTransformFile(filename, filters);
 		std::string dcd = GlyphViewerOptions::GetDefaultCacheDirectory().toStdString();
