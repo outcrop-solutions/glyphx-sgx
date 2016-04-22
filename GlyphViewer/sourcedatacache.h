@@ -110,6 +110,8 @@ protected:
 	bool DoesFileDatabaseNeedUpdate(const boost::uuids::uuid& id, const SynGlyphX::FileDatasource& datasource) const;
 	QDateTime GetTimestampForTable(const QString& table) const;
 
+	QString CreateEscapedString(const QString& string) const;
+
 	TableNameMap m_tableNameMap;
 	boost::uuids::uuid m_connectionID;
 	QSqlDatabase m_db;

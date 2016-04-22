@@ -417,11 +417,11 @@ QString SourceDataCache::CreateInString(const SynGlyphX::IndexSet& indexSet) con
 QString SourceDataCache::CreateInString(const QString& columnName, const QSet<QString>& values) const {
 
 	QSet<QString>::const_iterator iT = values.begin();
-	QString inString = "\"" + columnName + "\" IN ('" + *iT + "'";
+	QString inString = "\"" + columnName + "\" IN (" + CreateEscapedString(*iT);
 	++iT;
 	while (iT != values.end()) {
 
-		inString += ", '" + *iT + "'";
+		inString += ", " + CreateEscapedString(*iT);
 		++iT;
 	}
 
@@ -551,7 +551,7 @@ QString SourceDataCache::CreateKeywordFilterString(const QString& columnName, co
 
 	if (filter.GetExactMatch()) {
 
-		filterString += "'" + filter.GetKeyword() + "'";
+		filterString += CreateEscapedString(filter.GetKeyword());
 	}
 	else {
 
@@ -564,7 +564,7 @@ QString SourceDataCache::CreateKeywordFilterString(const QString& columnName, co
 
 			wildcard = '%';
 		}
-		filterString += "'" + wildcard + filter.GetKeyword() + wildcard + "'";
+		filterString += CreateEscapedString(wildcard + filter.GetKeyword() + wildcard);
 	}
 
 	return filterString;
@@ -849,4 +849,14 @@ QDateTime SourceDataCache::GetTimestampForTable(const QString& table) const {
 	qint64 timestamp = timestampQuery.value(0).toULongLong();
 	timestampQuery.finish();
 	return QDateTime::fromMSecsSinceEpoch(timestamp);
+}
+
+QString SourceDataCache::CreateEscapedString(const QString& string) const {
+
+	QString escapedString = string;
+	escapedString.replace('\'', "\'\'");
+	escapedString.prepend('\'');
+	escapedString.append('\'');
+
+	return escapedString;
 }
