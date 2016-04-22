@@ -266,6 +266,15 @@ void LoadingScreenWidget::OnLoadVisualization() {
 			branch.insert("Total");
 			filters.SetDistinctValueFilter("branch_type", branch);
 		}
+		else if (m_currentView == 6) {
+
+			if (!filters.HasFilters()) {
+
+				QSet<QString> readers;
+				readers.insert("TOTAL");
+				filters.SetDistinctValueFilter(m_visualizationData[6].m_filterFieldNames[0], readers);
+			}
+		}
 
 		SynGlyphX::InputTable inputTable(mapping.GetDatasources().begin()->first, mapping.GetDatasources().begin()->second->GetTableNames().at(0));
 
