@@ -52,6 +52,7 @@ private:
 
 		QString m_title;
 		QString m_sdtPath;
+		QString m_tableInGlyphEd;
 		bool m_mustHaveFilter;
 
 		std::vector<QString> m_filterTitles;

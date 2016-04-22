@@ -8,6 +8,7 @@
 #include <QtCore/QFileInfo>
 #include <boost/uuid/uuid_io.hpp>
 #include "uuid.h"
+#include "csvfilewriter.h"
 
 const QString SourceDataCache::IndexColumnName = "rowid";
 const QString SourceDataCache::s_tableIndexName = "TableIndex";
@@ -467,40 +468,35 @@ SynGlyphX::IndexSet SourceDataCache::GetIndexesFromTableWithSelectedValues(const
 	return indexSet;
 }
 
-SynGlyphX::IndexSet SourceDataCache::GetIndexesFromTableThatPassFilters(const QString& tableName, const FilteringParameters& filters) const {
+QString SourceDataCache::CreateFilterString(const FilteringParameters& filters) const {
 
-	if (!filters.HasFilters()) {
-
-		throw std::invalid_argument("Can not get indexes without at least one filter.");
-	}
-
-	QString queryString = "SELECT \"" + IndexColumnName + "\" FROM \"" + tableName + "\" WHERE ";
+	QString filteringString = "WHERE ";
 
 	const FilteringParameters::ColumnRangeFilterMap& rangeFilters = filters.GetRangeFilters();
 	if (!rangeFilters.empty()) {
 
 		FilteringParameters::ColumnRangeFilterMap::const_iterator rangeFilter = rangeFilters.begin();
-		queryString += CreateBetweenString(rangeFilter->first, rangeFilter->second);
+		filteringString += CreateBetweenString(rangeFilter->first, rangeFilter->second);
 		++rangeFilter;
 		for (; rangeFilter != rangeFilters.end(); ++rangeFilter) {
 
-			queryString += " AND " + CreateBetweenString(rangeFilter->first, rangeFilter->second);
+			filteringString += " AND " + CreateBetweenString(rangeFilter->first, rangeFilter->second);
 		}
 	}
-	
+
 	const FilteringParameters::ColumnDistinctValuesFilterMap& distinctValueFilters = filters.GetDistinctValueFilters();
 	if (!distinctValueFilters.empty()) {
 
 		FilteringParameters::ColumnDistinctValuesFilterMap::const_iterator distinctValueFilter = distinctValueFilters.begin();
 		if (!rangeFilters.empty()) {
 
-			queryString += " AND ";
+			filteringString += " AND ";
 		}
-		queryString += CreateInString(distinctValueFilter->first, distinctValueFilter->second);
+		filteringString += CreateInString(distinctValueFilter->first, distinctValueFilter->second);
 		++distinctValueFilter;
 		for (; distinctValueFilter != distinctValueFilters.end(); ++distinctValueFilter) {
 
-			queryString += " AND " + CreateInString(distinctValueFilter->first, distinctValueFilter->second);
+			filteringString += " AND " + CreateInString(distinctValueFilter->first, distinctValueFilter->second);
 		}
 	}
 
@@ -510,15 +506,27 @@ SynGlyphX::IndexSet SourceDataCache::GetIndexesFromTableThatPassFilters(const QS
 		FilteringParameters::ColumnKeywordFilterMap::const_iterator keywordFilter = keywordFilters.begin();
 		if (!rangeFilters.empty() || !distinctValueFilters.empty()) {
 
-			queryString += " AND ";
+			filteringString += " AND ";
 		}
-		queryString += CreateKeywordFilterString(keywordFilter->first, keywordFilter->second);
+		filteringString += CreateKeywordFilterString(keywordFilter->first, keywordFilter->second);
 		++keywordFilter;
 		for (; keywordFilter != keywordFilters.end(); ++keywordFilter) {
 
-			queryString += " AND " + CreateKeywordFilterString(keywordFilter->first, keywordFilter->second);
+			filteringString += " AND " + CreateKeywordFilterString(keywordFilter->first, keywordFilter->second);
 		}
 	}
+
+	return filteringString;
+}
+
+SynGlyphX::IndexSet SourceDataCache::GetIndexesFromTableThatPassFilters(const QString& tableName, const FilteringParameters& filters) const {
+
+	if (!filters.HasFilters()) {
+
+		throw std::invalid_argument("Can not get indexes without at least one filter.");
+	}
+
+	QString queryString = "SELECT \"" + IndexColumnName + "\" FROM \"" + tableName + "\" " + CreateFilterString(filters);
 
 	QSqlQuery query(m_db);
 	query.prepare(queryString);
@@ -859,4 +867,66 @@ QString SourceDataCache::CreateEscapedString(const QString& string) const {
 	escapedString.append('\'');
 
 	return escapedString;
+}
+
+void SourceDataCache::ExportFilteredDataToCSV(const QString& filename, const QString& tableName, const FilteringParameters& filters) const {
+
+	QStringList columnNames;
+	QSqlRecord columns = m_db.record(tableName);
+	for (int i = 0; i < columns.count(); ++i) {
+
+		columnNames.push_back("\"" + columns.field(i).name() + "\"");
+	}
+
+	if (columnNames.isEmpty()) {
+
+		throw std::invalid_argument("Source Data Cache was asked for column names for a table that does not exist");
+	}
+
+	QString queryString = "SELECT " + columnNames.join(", ") + " FROM \"" + tableName + "\" ";
+	if (filters.HasFilters()) {
+
+		queryString += CreateFilterString(filters);
+	}
+
+	QSqlQuery query(m_db);
+	query.prepare(queryString);
+	if (!query.exec()) {
+
+		throw std::runtime_error((QObject::tr("Failed to get filtered data from cache: ") + m_db.lastError().text()).toStdString().c_str());
+	}
+
+	SynGlyphX::CSVFileWriter csvFile(filename.toStdString());
+
+	SynGlyphX::CSVFileHandler::CSVValues headers;
+	for (const auto& columnName : columnNames) {
+
+		headers.push_back(columnName.toStdWString());
+	}
+	csvFile.WriteLine(headers);
+
+	while (query.next()) {
+
+		SynGlyphX::CSVFileHandler::CSVValues lineOfValues;
+		for (int i = 0; i < columnNames.size(); ++i) {
+
+			QVariant var = query.value(i);
+			if (!var.isValid()) {
+
+				lineOfValues.push_back(L"\" \"");
+			}
+			else if ((var.type() == QVariant::Char) || (var.type() == QVariant::String)) {
+
+				lineOfValues.push_back(L"\"" + var.toString().toStdWString() + L"\"");
+			}
+			else {
+
+				lineOfValues.push_back(var.toString().toStdWString());
+			}
+		}
+
+		csvFile.WriteLine(lineOfValues);
+	}
+
+	csvFile.Close();
 }

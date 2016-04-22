@@ -82,30 +82,32 @@ void LoadingScreenWidget::SetupVisualizationData() {
 	VisualizationData globalAdmissionsView;
 	globalAdmissionsView.m_title = visualizationNames[0];
 	globalAdmissionsView.m_sdtPath = GetGlyphEdDir() + QDir::toNativeSeparators("/Global Admissions/View 1 Datamap Recommendations.sdt");
+	globalAdmissionsView.m_tableInGlyphEd = "GlobalAdmissions";
 
 	globalAdmissionsView.m_filterTitles.push_back("Admissions Counselor");
 	globalAdmissionsView.m_filterFieldNames.push_back("StaffAssigned");
 	globalAdmissionsView.m_filterMultiselect.push_back(true);
-	globalAdmissionsView.m_filterValues.push_back(m_sourceDataCache.GetSortedDistinctValuesAsStrings("GlobalAdmissions", "StaffAssigned"));
+	globalAdmissionsView.m_filterValues.push_back(m_sourceDataCache.GetSortedDistinctValuesAsStrings(globalAdmissionsView.m_tableInGlyphEd, "StaffAssigned"));
 	globalAdmissionsView.m_filterTitles.push_back("Year(s)");
 	globalAdmissionsView.m_filterFieldNames.push_back("Year");
 	globalAdmissionsView.m_filterMultiselect.push_back(true);
-	globalAdmissionsView.m_filterValues.push_back(m_sourceDataCache.GetSortedDistinctValuesAsStrings("GlobalAdmissions", "Year"));
+	globalAdmissionsView.m_filterValues.push_back(m_sourceDataCache.GetSortedDistinctValuesAsStrings(globalAdmissionsView.m_tableInGlyphEd, "Year"));
 
 	m_visualizationData.push_back(globalAdmissionsView);
 
 	VisualizationData admissionsCounselorView;
 	admissionsCounselorView.m_title = visualizationNames[1];
 	admissionsCounselorView.m_sdtPath = GetGlyphEdDir() + QDir::toNativeSeparators("/Admissions Officer/View 2 Datamap Recommendations - All Data.sdt");
+	admissionsCounselorView.m_tableInGlyphEd = "GlobalAdmissions";
 
 	admissionsCounselorView.m_filterTitles.push_back("Admissions Counselor");
 	admissionsCounselorView.m_filterFieldNames.push_back("StaffAssigned");
 	admissionsCounselorView.m_filterMultiselect.push_back(false);
-	admissionsCounselorView.m_filterValues.push_back(m_sourceDataCache.GetSortedDistinctValuesAsStrings("GlobalAdmissions", "StaffAssigned"));
+	admissionsCounselorView.m_filterValues.push_back(m_sourceDataCache.GetSortedDistinctValuesAsStrings(admissionsCounselorView.m_tableInGlyphEd, "StaffAssigned"));
 	admissionsCounselorView.m_filterTitles.push_back("Decision Status");
 	admissionsCounselorView.m_filterFieldNames.push_back("Last_Decision_Cluster");
 	admissionsCounselorView.m_filterMultiselect.push_back(true);
-	admissionsCounselorView.m_filterValues.push_back(m_sourceDataCache.GetSortedDistinctValuesAsStrings("GlobalAdmissions", "Last_Decision_Cluster"));
+	admissionsCounselorView.m_filterValues.push_back(m_sourceDataCache.GetSortedDistinctValuesAsStrings(admissionsCounselorView.m_tableInGlyphEd, "Last_Decision_Cluster"));
 	/*admissionsCounselorView.m_filterTitles.push_back("Year(s)");
 	admissionsCounselorView.m_filterMultiselect.push_back(true);
 	admissionsCounselorView.m_filterValues.push_back(m_sourceDataCache.GetSortedDistinctValuesAsStrings("GlobalAdmissions", "Year"));*/
@@ -115,72 +117,76 @@ void LoadingScreenWidget::SetupVisualizationData() {
 	VisualizationData highSchoolView;
 	highSchoolView.m_title = visualizationNames[2];
 	highSchoolView.m_sdtPath = GetGlyphEdDir() + QDir::toNativeSeparators("/High School/View 3 Datamap Recommendations - All Data.sdt");
+	highSchoolView.m_tableInGlyphEd = "HighSchool";
 
 	highSchoolView.m_filterTitles.push_back("High School");
 	highSchoolView.m_filterFieldNames.push_back("HSNameUnique");
 	highSchoolView.m_filterMultiselect.push_back(false);
-	highSchoolView.m_filterValues.push_back(m_sourceDataCache.GetSortedDistinctValuesAsStrings("HighSchool", "HSNameUnique"));
+	highSchoolView.m_filterValues.push_back(m_sourceDataCache.GetSortedDistinctValuesAsStrings(highSchoolView.m_tableInGlyphEd, "HSNameUnique"));
 	highSchoolView.m_filterTitles.push_back("Year(s)");
 	highSchoolView.m_filterFieldNames.push_back("Year");
 	highSchoolView.m_filterMultiselect.push_back(true);
-	highSchoolView.m_filterValues.push_back(m_sourceDataCache.GetSortedDistinctValuesAsStrings("HighSchool", "Year"));
+	highSchoolView.m_filterValues.push_back(m_sourceDataCache.GetSortedDistinctValuesAsStrings(highSchoolView.m_tableInGlyphEd, "Year"));
 
 	m_visualizationData.push_back(highSchoolView);
 
 	VisualizationData classCompositionRaceView;
 	classCompositionRaceView.m_title = visualizationNames[3];
 	classCompositionRaceView.m_sdtPath = GetGlyphEdDir() + QDir::toNativeSeparators("/Class Composition/View 4C Remap.sdt");
+	classCompositionRaceView.m_tableInGlyphEd = "Composition";
 
 	classCompositionRaceView.m_filterTitles.push_back("Race");
 	classCompositionRaceView.m_filterFieldNames.push_back("grouping_title");
 	classCompositionRaceView.m_filterMultiselect.push_back(true);
-	classCompositionRaceView.m_filterValues.push_back(m_sourceDataCache.GetSortedDistinctValuesAsStrings("Composition", "grouping_title", "\"branch_type\"='Race'"));
+	classCompositionRaceView.m_filterValues.push_back(m_sourceDataCache.GetSortedDistinctValuesAsStrings(classCompositionRaceView.m_tableInGlyphEd, "grouping_title", "\"branch_type\"='Race'"));
 	classCompositionRaceView.m_filterTitles.push_back("Year(s)");
 	classCompositionRaceView.m_filterFieldNames.push_back("Year");
 	classCompositionRaceView.m_filterMultiselect.push_back(true);
-	classCompositionRaceView.m_filterValues.push_back(m_sourceDataCache.GetSortedDistinctValuesAsStrings("Composition", "Year"));
+	classCompositionRaceView.m_filterValues.push_back(m_sourceDataCache.GetSortedDistinctValuesAsStrings(classCompositionRaceView.m_tableInGlyphEd, "Year"));
 	classCompositionRaceView.m_filterTitles.push_back("Decision Status");
 	classCompositionRaceView.m_filterFieldNames.push_back("grouping_title_lv2");
 	classCompositionRaceView.m_filterMultiselect.push_back(true);
-	classCompositionRaceView.m_filterValues.push_back(m_sourceDataCache.GetSortedDistinctValuesAsStrings("Composition", "grouping_title", "\"branch_type\"='Status'"));
+	classCompositionRaceView.m_filterValues.push_back(m_sourceDataCache.GetSortedDistinctValuesAsStrings(classCompositionRaceView.m_tableInGlyphEd, "grouping_title", "\"branch_type\"='Status'"));
 
 	m_visualizationData.push_back(classCompositionRaceView);
 
 	VisualizationData classCompositionCohortView;
 	classCompositionCohortView.m_title = visualizationNames[4];
 	classCompositionCohortView.m_sdtPath = GetGlyphEdDir() + QDir::toNativeSeparators("/Class Composition/View 4C Remap.sdt");
+	classCompositionCohortView.m_tableInGlyphEd = "Composition";
 
 	classCompositionCohortView.m_filterTitles.push_back("Cohort");
 	classCompositionCohortView.m_filterFieldNames.push_back("grouping_title");
 	classCompositionCohortView.m_filterMultiselect.push_back(true);
-	classCompositionCohortView.m_filterValues.push_back(m_sourceDataCache.GetSortedDistinctValuesAsStrings("Composition", "grouping_title", "\"branch_type\"='Cohort'"));
+	classCompositionCohortView.m_filterValues.push_back(m_sourceDataCache.GetSortedDistinctValuesAsStrings(classCompositionCohortView.m_tableInGlyphEd, "grouping_title", "\"branch_type\"='Cohort'"));
 	classCompositionCohortView.m_filterTitles.push_back("Year(s)");
 	classCompositionCohortView.m_filterFieldNames.push_back("Year");
 	classCompositionCohortView.m_filterMultiselect.push_back(true);
-	classCompositionCohortView.m_filterValues.push_back(m_sourceDataCache.GetSortedDistinctValuesAsStrings("Composition", "Year"));
+	classCompositionCohortView.m_filterValues.push_back(m_sourceDataCache.GetSortedDistinctValuesAsStrings(classCompositionCohortView.m_tableInGlyphEd, "Year"));
 	classCompositionCohortView.m_filterTitles.push_back("Decision Status");
 	classCompositionCohortView.m_filterFieldNames.push_back("grouping_title_lv2");
 	classCompositionCohortView.m_filterMultiselect.push_back(true);
-	classCompositionCohortView.m_filterValues.push_back(m_sourceDataCache.GetSortedDistinctValuesAsStrings("Composition", "grouping_title", "\"branch_type\"='Status'"));
+	classCompositionCohortView.m_filterValues.push_back(m_sourceDataCache.GetSortedDistinctValuesAsStrings(classCompositionCohortView.m_tableInGlyphEd, "grouping_title", "\"branch_type\"='Status'"));
 
 	m_visualizationData.push_back(classCompositionCohortView);
 
 	VisualizationData classCompositionTotalView;
 	classCompositionTotalView.m_title = visualizationNames[5];
 	classCompositionTotalView.m_sdtPath = GetGlyphEdDir() + QDir::toNativeSeparators("/Class Composition/View 4C Remap.sdt");
+	classCompositionTotalView.m_tableInGlyphEd = "Composition";
 
 	classCompositionTotalView.m_filterTitles.push_back("Total");
 	classCompositionTotalView.m_filterFieldNames.push_back("grouping_title");
 	classCompositionTotalView.m_filterMultiselect.push_back(true);
-	classCompositionTotalView.m_filterValues.push_back(m_sourceDataCache.GetSortedDistinctValuesAsStrings("Composition", "grouping_title", "\"branch_type\"='Total'"));
+	classCompositionTotalView.m_filterValues.push_back(m_sourceDataCache.GetSortedDistinctValuesAsStrings(classCompositionTotalView.m_tableInGlyphEd, "grouping_title", "\"branch_type\"='Total'"));
 	classCompositionTotalView.m_filterTitles.push_back("Year(s)");
 	classCompositionTotalView.m_filterFieldNames.push_back("Year");
 	classCompositionTotalView.m_filterMultiselect.push_back(true);
-	classCompositionTotalView.m_filterValues.push_back(m_sourceDataCache.GetSortedDistinctValuesAsStrings("Composition", "Year"));
+	classCompositionTotalView.m_filterValues.push_back(m_sourceDataCache.GetSortedDistinctValuesAsStrings(classCompositionTotalView.m_tableInGlyphEd, "Year"));
 	classCompositionTotalView.m_filterTitles.push_back("Decision Status");
 	classCompositionTotalView.m_filterFieldNames.push_back("grouping_title_lv2");
 	classCompositionTotalView.m_filterMultiselect.push_back(true);
-	classCompositionTotalView.m_filterValues.push_back(m_sourceDataCache.GetSortedDistinctValuesAsStrings("Composition", "grouping_title", "\"branch_type\"='Status'"));
+	classCompositionTotalView.m_filterValues.push_back(m_sourceDataCache.GetSortedDistinctValuesAsStrings(classCompositionTotalView.m_tableInGlyphEd, "grouping_title", "\"branch_type\"='Status'"));
 
 	m_visualizationData.push_back(classCompositionTotalView);
 
@@ -188,11 +194,12 @@ void LoadingScreenWidget::SetupVisualizationData() {
 	globalDashboardView.m_title = visualizationNames[6];
 	globalDashboardView.m_sdtPath = GetGlyphEdDir() + QDir::toNativeSeparators("/GLobal Dashboard/View 4 V3 MASTER READER.sdt");
 	globalDashboardView.m_mustHaveFilter = false;
+	globalDashboardView.m_tableInGlyphEd = "Dashboard";
 
 	globalDashboardView.m_filterTitles.push_back("Admissions Counselor");
 	globalDashboardView.m_filterFieldNames.push_back("reader_name");
 	globalDashboardView.m_filterMultiselect.push_back(false);
-	globalDashboardView.m_filterValues.push_back(m_sourceDataCache.GetSortedDistinctValuesAsStrings("Dashboard", "reader_name"));
+	globalDashboardView.m_filterValues.push_back(m_sourceDataCache.GetSortedDistinctValuesAsStrings(globalDashboardView.m_tableInGlyphEd, "reader_name"));
 
 	m_visualizationData.push_back(globalDashboardView);
 }
@@ -219,6 +226,8 @@ void LoadingScreenWidget::OnLoadVisualization() {
 		QMessageBox::information(this, tr("Did not load visualization"), tr("Visualization can not be loaded until at least one value has been selected from each filter."));
 	}
 	else {
+
+		SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
 
 		FilteringParameters filters;
 
@@ -268,12 +277,14 @@ void LoadingScreenWidget::OnLoadVisualization() {
 		}
 		else if (m_currentView == 6) {
 
-			if (!filters.HasFilters()) {
+			QSet<QString> readers;
+			if (filters.HasFilters()) {
 
-				QSet<QString> readers;
-				readers.insert("TOTAL");
-				filters.SetDistinctValueFilter(m_visualizationData[6].m_filterFieldNames[0], readers);
+				readers = filters.GetDistinctValueFilters().at(m_visualizationData[6].m_filterFieldNames[0]);
+				
 			}
+			readers.insert("TOTAL");
+			filters.SetDistinctValueFilter(m_visualizationData[6].m_filterFieldNames[0], readers);
 		}
 
 		SynGlyphX::InputTable inputTable(mapping.GetDatasources().begin()->first, mapping.GetDatasources().begin()->second->GetTableNames().at(0));
@@ -285,7 +296,17 @@ void LoadingScreenWidget::OnLoadVisualization() {
 			table2FiltersMap[inputTable] = filters;
 		}
 
-		m_mainWindow->LoadNewVisualization(m_visualizationData[m_currentView].m_sdtPath, table2FiltersMap);
+		QString dataFilename = QDir::toNativeSeparators(QString::fromStdWString(mapping.GetDatasources().begin()->second->GetDBName()));
+		if (QFile::exists(dataFilename)) {
+
+			QFile::remove(dataFilename);
+		}
+
+		m_sourceDataCache.ExportFilteredDataToCSV(dataFilename, m_visualizationData[m_currentView].m_tableInGlyphEd, table2FiltersMap[inputTable]);
+
+		SynGlyphX::Application::restoreOverrideCursor();
+
+		m_mainWindow->LoadNewVisualization(m_visualizationData[m_currentView].m_sdtPath);
 	}
 }
 

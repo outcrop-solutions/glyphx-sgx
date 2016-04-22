@@ -82,6 +82,8 @@ public:
 
 	bool IsCacheOutOfDate(const SynGlyphX::DataTransformMapping::DatasourceMap& datasources) const;
 
+	void ExportFilteredDataToCSV(const QString& filename, const QString& tableName, const FilteringParameters& filters) const;
+
 protected:
 	SynGlyphX::InputField::Type GetSourceDataFieldType(QVariant::Type fieldType) const;
 	int GetLastIndexOfTable(const QString& tableName);
@@ -111,6 +113,7 @@ protected:
 	QDateTime GetTimestampForTable(const QString& table) const;
 
 	QString CreateEscapedString(const QString& string) const;
+	QString CreateFilterString(const FilteringParameters& filters) const;
 
 	TableNameMap m_tableNameMap;
 	boost::uuids::uuid m_connectionID;
