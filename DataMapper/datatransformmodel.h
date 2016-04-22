@@ -124,6 +124,7 @@ public:
 	void ClearInputBinding(const QModelIndex& index, SynGlyphX::DataMappingGlyph::MappableField field);
 	void ClearAllInputBindings(const QModelIndex& index);
 
+	void ClearAbsentBindings(const QModelIndex& index);
 	const SynGlyphX::DataMappingGlyphGraph::InputFieldMap& GetInputFieldsForTree(const QModelIndex& index) const;
 
 	//void EnableTables(const boost::uuids::uuid& id, const SynGlyphX::Datasource::TableNames& tables, bool enable = true);
@@ -140,7 +141,7 @@ public:
 	void RemoveFieldGroup(const SynGlyphX::DataTransformMapping::FieldGroupName& groupName);
 
 	const NumericFieldsByTable& GetNumericFieldsByTable() const;
-
+	
 	const DataEngine::DataEngineConnection* GetDataEngineConnection() const;
 	void SetDataEngineConnection(DataEngine::DataEngineConnection::SharedPtr dataEngineConnection);
 
