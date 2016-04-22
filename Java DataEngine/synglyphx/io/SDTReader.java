@@ -16,6 +16,7 @@ import synglyphx.util.*;
 import synglyphx.glyph.Mapper;
 import synglyphx.io.Logger;
 import synglyphx.glyph.CoordinateMap;
+import synglyphx.link.SDTLinkReader;
 
 public class SDTReader {
 
@@ -27,6 +28,7 @@ public class SDTReader {
 	private ArrayList<BaseObject> base_objects = null;
 	private HashMap<String,Integer> dataIds = null;
 	private HashMap<String,FieldGroup> gNames = null;
+	private SDTLinkReader linkReader = null;
 	private String[] colorStr = null;
 	private String tagFieldDefault;
 	private String tagValueDefault;
@@ -64,6 +66,7 @@ public class SDTReader {
 		mapping.addNodeTemplates(templates, count);
 		mapping.checkRangeXY(download);
 		mapping.setDefaults(tagFieldDefault, tagValueDefault, scaleZeroDefault);
+		mapping.setLinkTemplates(linkReader.getLinkTemps());
 		mapping.generateGlyphTrees(dataPaths, rootIds, outDir, colorStr, app, base_objects);
 		try{
 			thread.join();
@@ -98,7 +101,10 @@ public class SDTReader {
 			}
 
 			if(updateNeeded){
+				System.out.println("Absorbing XML...");
 				absorbXML(doc);
+				System.out.println("Creating SDTLinkReader...");
+				linkReader = new SDTLinkReader(doc, templates, dataPaths, directMap);
 			}
 
 		}catch(Exception e){

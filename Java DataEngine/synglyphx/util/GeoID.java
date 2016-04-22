@@ -45,6 +45,10 @@ public class GeoID {
 
 	}
 
+	public static int getValue(String shape){
+		return shapes.get(shape);
+	}
+
 	public static int getValue(String shape, String surface){
 
 		if(surface.equals("Solid")){

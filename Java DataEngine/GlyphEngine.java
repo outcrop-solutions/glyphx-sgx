@@ -91,19 +91,21 @@ public class GlyphEngine {
 	 	//String outDir = "C:\\Users\\Bryan\\Desktop\\jdbc_test\\official merged";
 	 	//String sdtPath = "C:/Users/Bryan/Desktop/TooMany Elements SizeBug/Ohio Voter Registration Draft.sdt";
 	 	//String outDir = "C:/Users/Bryan/AppData/Local/SynGlyphX/Glyph Builder - Glyph Viewer/cache/cache_2072a4ce-5cf5-4591-84b0-30f87c5cc214";
-	 	//String sdtPath = "C:\\Users\\Bryan\\Desktop\\test_for_ray_1\\url_and_description.sdt";
-	 	//String outDir = "C:\\Users\\Bryan\\Desktop\\test_for_ray_1\\Viz";
+	 	//String sdtPath = "C:\\Users\\Bryan\\Desktop\\test_for_ray\\url_and_description.sdt";
+	 	//String outDir = "C:\\Users\\Bryan\\Desktop\\test_for_ray\\Viz";
 	 	//String sdtPath = "C:/Users/Bryan/Desktop/East Coast Only/East_Coast_Only.sdt";
 	 	//String outDir = "C:/Users/Bryan/Desktop/East Coast Only/Viz";
-	 	String sdtPath = "C:/Users/Bryan/Desktop/ND Bug/View 2 V2 Mockup.sdt";
-	 	String outDir = "C:/Users/Bryan/Desktop/ND Bug/Viz";
+	 	//String sdtPath = "C:/Users/Bryan/Desktop/Links Test/link_test.sdt";
+	 	//String outDir = "C:/Users/Bryan/Desktop/Links Test/viz";
+	 	String sdtPath = "C:/Users/Bryan/Desktop/ND Bug 2/Total Picture DataMap.sdt";
+	 	String outDir = "C:/Users/Bryan/Desktop/ND Bug 2/Viz";
 	 	
 	 	String expDir = "DataMapper";
 	 	GlyphEngine start = new GlyphEngine();
 	 	double[] nw = new double[2];
-	 	nw[0] = -180.0; nw[1] = 90.0;
+	 	nw[0] = -160.0; nw[1] = 160.0;
 	 	double[] se = new double[2];
-	 	se[0] = 180.0; se[1] = -90.0;/*
+	 	se[0] = 160.0; se[1] = -160.0;/*
 	 	double[] nw = new double[2];
 	 	nw[0] = -85.25350956479433; nw[1] = 41.618268866536965;
 	 	double[] se = new double[2];

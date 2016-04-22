@@ -139,6 +139,10 @@ public class SourceDataInfo {
  		return path;
  	}
 
+ 	public int getRowCount(){
+ 		return data.size();
+ 	}
+
  	public String getFormattedName(){
  		String[] splitData = path.split(Pattern.quote(File.separator));
  		splitData = splitData[splitData.length-1].split("/");
