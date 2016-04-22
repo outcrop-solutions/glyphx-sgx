@@ -81,7 +81,8 @@ namespace SynGlyphX {
 		void SetInputField(const boost::uuids::uuid& treeID, DataMappingGlyphGraph::ConstGlyphIterator& node, DataMappingGlyph::MappableField field, const InputField& inputfield);
 		void ClearInputBinding(const boost::uuids::uuid& treeID, DataMappingGlyphGraph::ConstGlyphIterator& node, DataMappingGlyph::MappableField field);
 		void ClearAllInputBindings(const boost::uuids::uuid& treeID, DataMappingGlyphGraph::ConstGlyphIterator& node);
-
+		void ClearInputFieldBindings(const boost::uuids::uuid& treeID, const InputField& inputfield);
+		
 		bool IsTransformable() const;
 		bool DoesAtLeastOneGlyphGraphHaveBindingsOnPosition() const;
 

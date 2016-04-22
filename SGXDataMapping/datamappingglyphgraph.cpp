@@ -427,6 +427,32 @@ namespace SynGlyphX {
 		}
 	}
 
+	void DataMappingGlyphGraph::ClearInputFieldBindings(const InputField& inputfield) {
+		
+		ClearInputFieldBindings(*this, GetRoot(), inputfield);		
+	}
+
+	void DataMappingGlyphGraph::ClearInputFieldBindings(DataMappingGlyphGraph& graph, const GlyphIterator& vertex, const InputField& inputfield) {
+
+		//ClearAllInputBindings(vertex.constify());
+		DataMappingGlyphGraph::ConstGlyphIterator& node = vertex.constify();
+		for (int i = 0; i < DataMappingGlyph::MappableField::MappableFieldSize; ++i) {
+
+			DataMappingGlyph::MappableField field = static_cast<SynGlyphX::DataMappingGlyph::MappableField>(i);
+			const InputBinding& binding = node->second.GetInputBinding(field);
+			if (binding.IsBoundToInputField() && (binding.GetInputFieldID() == inputfield.GetHashID())) {
+				
+				ClearInputBinding(node, field);
+			}
+
+		}
+
+		for (unsigned int i = 0; i < graph.children(vertex); ++i) {
+
+			ClearInputFieldBindings(graph, graph.child(vertex, i), inputfield);
+		}
+	}
+
 	const DataMappingGlyphGraph::InputFieldMap& DataMappingGlyphGraph::GetInputFields() const {
 
 		return m_inputFields;

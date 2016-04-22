@@ -66,6 +66,7 @@ namespace SynGlyphX {
 		void SetInputField(DataMappingGlyphGraph::ConstGlyphIterator& node, DataMappingGlyph::MappableField field, const InputField& inputfield);
 		void ClearInputBinding(DataMappingGlyphGraph::ConstGlyphIterator& node, DataMappingGlyph::MappableField field);
 		void ClearAllInputBindings(DataMappingGlyphGraph::ConstGlyphIterator& node);
+		void ClearInputFieldBindings(const InputField& inputfield);
 		void ClearAllInputBindings();
 
 		const InputFieldMap& GetInputFields() const;
@@ -92,6 +93,7 @@ namespace SynGlyphX {
 	private:
 		void AddAllInputBindingsToSubgraph(DataMappingGlyphGraph& graph, const GlyphIterator& vertex, bool removeFromThisGraph);
 		void ClearAllInputBindings(DataMappingGlyphGraph& graph, const GlyphIterator& vertex);
+		void ClearInputFieldBindings(DataMappingGlyphGraph& graph, const GlyphIterator& vertex, const InputField& inputfield);
 		void ClearFieldGroup(const std::wstring& fieldGroupName, const GlyphIterator& vertex);
 		void IncrementInputBindingCountsFromGlyph(const DataMappingGlyph& glyph);
 		void IncrementInputBindingCount(const InputBinding& binding);

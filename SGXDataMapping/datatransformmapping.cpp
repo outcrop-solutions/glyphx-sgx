@@ -531,6 +531,11 @@ namespace SynGlyphX {
 		glyphTree->ClearAllInputBindings(node);
 	}
 
+	void DataTransformMapping::ClearInputFieldBindings(const boost::uuids::uuid& treeID, const InputField& inputfield) {
+		DataMappingGlyphGraph::SharedPtr glyphTree = m_glyphTrees[treeID];
+		glyphTree->ClearInputFieldBindings(inputfield);
+	}
+
 	const boost::uuids::uuid& DataTransformMapping::GetID() const {
 
 		return m_id;
