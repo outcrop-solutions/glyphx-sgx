@@ -11,10 +11,13 @@ import synglyphx.util.Functions;
 import synglyphx.data.*;
 import synglyphx.io.Logger;
 import synglyphx.util.BaseObject;
+import synglyphx.link.LinkTemplate;
+import synglyphx.link.LinkCreator;
 
 public class GlyphCreator {
 
 	private Map<Integer, XMLGlyphTemplate> temps = null;
+	private Map<Integer, LinkTemplate> link_temps = null;
 	private ArrayList<SourceDataInfo> csvData = null;
 	private ArrayList<Integer> rootIds = null;
 	private GlyphTreeRepository glyphRepo = null;
@@ -53,17 +56,23 @@ public class GlyphCreator {
 		remove_scale_zero = scale_zero;
 	}
 
+	public void setLinkTemplates(Map<Integer, LinkTemplate> link_temps){
+		this.link_temps = link_temps;
+	}
+
 	public void begin(){
+
+		Thread thread = new Thread(){
+			public void run(){
+				LinkCreator linkCreator = new LinkCreator(link_temps, temps, csvData, rootIds);
+				linkCreator.begin();
+			}
+		};
+		thread.start();
 
 		for(int i=0;i < rootIds.size();i++){
 			currData = temps.get(rootIds.get(i)).getDataSource();
-			System.out.print("Current root id: ");
-			System.out.println(rootIds.get(i));
-			System.out.print("Current last id: ");
-			System.out.println(temps.get(rootIds.get(i)).getLastChildID());
-
 			int lastChildID = temps.get(rootIds.get(i)).getLastChildID();
-
 			rootCoords.put(rootIds.get(i), new CoordinateMap(temps.get(rootIds.get(i)).getToMerge(), lastChildID));
 			if(csvData.get(currData).getType().equals("csv") || csvData.get(currData).getType().equals("sqlite3")){
 				Query query = new Query(csvData.get(currData).getDataFrame()).all(); 
@@ -76,7 +85,6 @@ public class GlyphCreator {
 
 				while(cursor.next()){
 					for (int j = 1; j < mappingCount+1; j++){
-						//if(j >= csvData.get(currData).getRootID() && j <= csvData.get(currData).getLastID()){
 						if(j >= rootIds.get(i) && j <= lastChildID){
 							addNode(j, cursor);
 						}
@@ -92,6 +100,11 @@ public class GlyphCreator {
 				rootCoords = jdbc.returnUpdatedRootCoords();
 			}
 			rootCoords.get(rootIds.get(i)).setLastID(glyphRepo.getNodeCount()-1);
+		}
+		try{
+			thread.join();
+		}catch(InterruptedException ie){
+	        ie.printStackTrace();
 		}
 	}
 
@@ -302,7 +315,7 @@ public class GlyphCreator {
 
 	public void printGlyphRepo(String[] colorStr, ArrayList<BaseObject> base_objects){
 		Logger.getInstance().add("Writing all files...");
-		glyphRepo.writeAll(colorStr, base_objects, rootCoords, remove_scale_zero);
+		glyphRepo.writeAll(colorStr, base_objects, rootCoords, remove_scale_zero, link_temps);
 	}
 
 }
