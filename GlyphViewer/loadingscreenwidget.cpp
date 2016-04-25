@@ -117,12 +117,24 @@ void LoadingScreenWidget::SetupVisualizationData() {
 	VisualizationData highSchoolView;
 	highSchoolView.m_title = visualizationNames[2];
 	highSchoolView.m_sdtPath = GetGlyphEdDir() + QDir::toNativeSeparators("/High School/View 3 Datamap Recommendations - All Data.sdt");
-	highSchoolView.m_tableInGlyphEd = "HighSchool";
+	highSchoolView.m_tableInGlyphEd = "GlobalAdmissions";
 
 	highSchoolView.m_filterTitles.push_back("High School");
 	highSchoolView.m_filterFieldNames.push_back("HSNameUnique");
 	highSchoolView.m_filterMultiselect.push_back(false);
-	highSchoolView.m_filterValues.push_back(m_sourceDataCache.GetSortedDistinctValuesAsStrings(highSchoolView.m_tableInGlyphEd, "HSNameUnique"));
+
+	QStringList highSchools;
+	SourceDataCache::SharedSQLQuery distinctValuesQuery = m_sourceDataCache.CreateDistinctValueAndCountQuery(highSchoolView.m_tableInGlyphEd, "HSNameUnique");
+	distinctValuesQuery->exec();
+	while (distinctValuesQuery->next()) {
+
+		if (distinctValuesQuery->value(1).toULongLong() >= 10) {
+
+			highSchools.push_back(distinctValuesQuery->value(0).toString());
+		}
+	}
+	highSchools.sort(Qt::CaseInsensitive);
+	highSchoolView.m_filterValues.push_back(highSchools);
 	highSchoolView.m_filterTitles.push_back("Year(s)");
 	highSchoolView.m_filterFieldNames.push_back("Year");
 	highSchoolView.m_filterMultiselect.push_back(true);
