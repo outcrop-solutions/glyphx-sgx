@@ -279,6 +279,7 @@ void GlyphViewerWindow::CreateDockWidgets() {
 
 	m_legendsWidget = new LegendsDisplayWidget(this);
 	m_legendsDockWidget = new QDockWidget(tr("Legends"), this);
+	m_legendsDockWidget->setAllowedAreas(Qt::NoDockWidgetArea);
 	m_legendsDockWidget->setWidget(m_legendsWidget);
 	m_legendsDockWidget->setFloating(true);
 	m_toolbar->setIconSize(QSize(42, 32));
