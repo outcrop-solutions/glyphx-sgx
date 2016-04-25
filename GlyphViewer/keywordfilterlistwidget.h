@@ -37,11 +37,11 @@ public:
 public slots:
 	void OnNewVisualization();
 	void SwitchTable(const QString& table);
+	void OnRemoveAllFilters();
 
 private slots:
 	void OnAddFilter();
 	void OnRemoveSelectedFilters();
-	void OnRemoveAllFilters();
 	void OnUpdateFilters();
 	void OnFilterSelectionChanged(const QItemSelection &selected, const QItemSelection &deselected);
 	void OnFilterChanged();

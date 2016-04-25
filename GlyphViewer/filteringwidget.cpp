@@ -16,7 +16,7 @@ FilteringWidget::FilteringWidget(SourceDataInfoModel* columnsModel, FilteringMan
 	m_hideUnselectedTreesCheckbox = new QCheckBox(tr("Filter View"), this);
 	topLayout->addWidget(m_hideUnselectedTreesCheckbox);
 
-	m_clearButton = new QPushButton(tr("Clear Filter Results"), this);
+	m_clearButton = new QPushButton(tr("Clear All Filters"), this);
 	topLayout->addWidget(m_clearButton);
 	QObject::connect(m_clearButton, &QPushButton::clicked, this, &FilteringWidget::Clear);
 
@@ -88,6 +88,8 @@ void FilteringWidget::Clear() {
 
 	SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
 	m_filteringManager->ClearAllFilters();
+	m_rangeListFilterWidget->OnRemoveAllFilters();
+	m_keywordFilterListWidget->OnRemoveAllFilters();
 	SynGlyphX::Application::restoreOverrideCursor();
 }
 
