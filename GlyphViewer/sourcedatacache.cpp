@@ -264,7 +264,7 @@ QString SourceDataCache::GetFormattedNameFromCache(const QString& table) {
 	}
 }
 
-SourceDataCache::SharedSQLQuery SourceDataCache::CreateSelectQueryForIndexSet(const QString& tableName, const TableColumns& columns, const SynGlyphX::IndexSet& indexSet) const {
+SourceDataCache::SharedSQLQuery SourceDataCache::CreateSelectQuery(const QString& tableName, const TableColumns& columns, const SynGlyphX::IndexSet& indexSet) const {
 
 	TableColumns::const_iterator column = columns.begin();
 	QString columnNameString = "\"" + column->first;
@@ -275,7 +275,11 @@ SourceDataCache::SharedSQLQuery SourceDataCache::CreateSelectQueryForIndexSet(co
 	}
 	columnNameString += "\"";
 
-	QString queryString = "SELECT " + columnNameString + " FROM \"" + tableName + "\" " + CreateWhereString(indexSet);
+	QString queryString = "SELECT " + columnNameString + " FROM \"" + tableName + "\" ";
+	if (!indexSet.empty()) {
+
+		queryString += CreateWhereString(indexSet);
+	}
 
 	SharedSQLQuery query(new QSqlQuery(m_db));
 	query->prepare(queryString);

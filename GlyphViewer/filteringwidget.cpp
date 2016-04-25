@@ -47,7 +47,8 @@ FilteringWidget::FilteringWidget(SourceDataInfoModel* columnsModel, FilteringMan
 
 	QHBoxLayout* buttonsLayout = new QHBoxLayout();
 
-	m_sourceWidgetButton = new QPushButton(tr("Show Filtered Source Data"), this);
+	m_sourceWidgetButton = new QPushButton(tr("Show Filtered Data"), this);
+	m_sourceWidgetButton->setEnabled(false);
 	m_sourceWidgetButton->setCheckable(true);
 	buttonsLayout->addWidget(m_sourceWidgetButton);
 
@@ -63,6 +64,7 @@ FilteringWidget::FilteringWidget(SourceDataInfoModel* columnsModel, FilteringMan
 
 	EnableButtons(!m_filteringManager->GetFilterResultsByTable().empty());
 	m_sourceDataWindow.reset(new SourceDataWidget(m_filteringManager));
+	m_sourceDataWindow->setWindowTitle(tr("Source Data Of Filtered Glyphs"));
 	QObject::connect(m_sourceWidgetButton, &QPushButton::toggled, m_sourceDataWindow.data(), &SourceDataWidget::setVisible);
 	m_sourceDataWindow->setVisible(false);
 
@@ -104,32 +106,28 @@ void FilteringWidget::OnFilterResultsChanged() {
 	EnableButtons(m_filteringManager->GetSourceDataCache()->IsValid() && (!filtersMap.empty()));
 
 	m_createSubsetVizButton->setEnabled(!filtersMap.empty());
-	if (filtersMap.empty()) {
 
-		m_sourceDataWindow->setVisible(false);
-		OnSourceWidgetWindowHidden();
-	}
-	else {
+	//Only change the table shown if it is not in the selection at all
+	if (!filtersMap.empty() && (filtersMap.count(m_tableComboBox->currentData().toString()) == 0)) {
 
-		//Only change the table shown if it is not in the selection at all
-		if (filtersMap.count(m_tableComboBox->currentData().toString()) == 0) {
+		int newComboBoxIndex = m_tableComboBox->findData(filtersMap.lastKey());
+		if ((newComboBoxIndex != -1) && (newComboBoxIndex != m_tableComboBox->currentIndex())) {
 
-			int newComboBoxIndex = m_tableComboBox->findData(filtersMap.lastKey());
-			if ((newComboBoxIndex != -1) && (newComboBoxIndex != m_tableComboBox->currentIndex())) {
-
-				m_tableComboBox->setCurrentIndex(newComboBoxIndex);
-			}
+			m_tableComboBox->setCurrentIndex(newComboBoxIndex);
 		}
 	}
 }
 
 void FilteringWidget::OnNewVisualization() {
 
+	SourceDataCache::ConstSharedPtr sourceDataCache = m_filteringManager->GetSourceDataCache();
+
 	m_tableComboBox->blockSignals(true);
 	m_tableComboBox->clear();
-	m_tableComboBox->setEnabled(m_filteringManager->GetSourceDataCache()->IsValid());
+	m_tableComboBox->setEnabled(sourceDataCache->IsValid());
 
-	SourceDataCache::ConstSharedPtr sourceDataCache = m_filteringManager->GetSourceDataCache();
+	m_sourceWidgetButton->setEnabled(sourceDataCache->IsValid());
+
 	if (sourceDataCache->IsValid()) {
 
 		const SourceDataCache::TableNameMap& tableNameMap = sourceDataCache->GetFormattedNames();
@@ -140,6 +138,12 @@ void FilteringWidget::OnNewVisualization() {
 
 		m_tableComboBox->view()->setMinimumWidth(m_tableComboBox->view()->sizeHintForColumn(0));
 		m_tableComboBox->blockSignals(false);
+
+		m_sourceDataWindow->UpdateTables();
+	}
+	else {
+
+		OnSourceWidgetWindowHidden();
 	}
 
 	m_elasticListsWidget->OnNewVisualization();
@@ -159,6 +163,5 @@ void FilteringWidget::OnTableChanged(const QString& table) {
 
 void FilteringWidget::EnableButtons(bool enable) {
 
-	m_sourceWidgetButton->setEnabled(enable);
 	m_clearButton->setEnabled(enable);
 }

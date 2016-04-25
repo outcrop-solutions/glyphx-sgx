@@ -36,13 +36,13 @@ signals:
 
 public slots:
 	void CreateSubsetVisualization();
+	void UpdateTables();
 
 protected:
 	virtual void closeEvent(QCloseEvent* event);
 
 private slots:
 	void SaveCurrentTabToFile();
-	void UpdateTables();
 
 private:
 	void ReadSettings();

@@ -50,7 +50,6 @@ SourceDataWidget::SourceDataWidget(FilteringManager* filteringManager, QWidget *
 
 	setLayout(mainLayout);
 
-	setWindowTitle(tr("Source Data Of Selected Glyphs"));
 	ReadSettings();
 
 	QObject::connect(m_filteringManager, &FilteringManager::FilterResultsChanged, this, &SourceDataWidget::UpdateTables);
@@ -78,35 +77,40 @@ void SourceDataWidget::UpdateTables() {
 	m_sqlQueryModels.clear();
 
 	const FilteringManager::IndexSetMap& dataIndexes = m_filteringManager->GetFilterResultsByTable();
-	if (!dataIndexes.empty()) {
+	const SourceDataCache::TableNameMap& formattedNames = m_filteringManager->GetSourceDataCache()->GetFormattedNames();
 
-		const SourceDataCache::TableNameMap& formattedNames = m_filteringManager->GetSourceDataCache()->GetFormattedNames();
+	for (auto tableIDAndName : formattedNames) {
 
-		for (auto indexSet : dataIndexes) {
-
-			QTableView* tableView = new QTableView(this);
-			tableView->setObjectName(indexSet.first);
-			QSqlQueryModel* queryModel = new QSqlQueryModel(this);
+		QTableView* tableView = new QTableView(this);
+		tableView->setObjectName(tableIDAndName.first);
+		QSqlQueryModel* queryModel = new QSqlQueryModel(this);
 			
-			SourceDataCache::TableColumns columns = m_filteringManager->GetSourceDataCache()->GetColumnsForTable(indexSet.first);
-			SourceDataCache::SharedSQLQuery query = m_filteringManager->GetSourceDataCache()->CreateSelectQueryForIndexSet(indexSet.first, columns, indexSet.second);
-			query->exec();
-			queryModel->setQuery(*query.data());
-			if (queryModel->lastError().isValid()) {
+		SourceDataCache::TableColumns columns = m_filteringManager->GetSourceDataCache()->GetColumnsForTable(tableIDAndName.first);
+		SourceDataCache::SharedSQLQuery query;
+		if (dataIndexes.count(tableIDAndName.first) == 0) {
 
-				throw std::runtime_error("Failed to set SQL query for source data widget.");
-			}
-
-			tableView->verticalHeader()->setVisible(false);
-
-			tableView->setModel(queryModel);
-			tableView->resizeColumnsToContents();
-			tableView->resizeRowsToContents();
-			
-			m_sourceDataTabs->addTab(tableView, formattedNames.at(indexSet.first));
-
-			m_sqlQueryModels.push_back(queryModel);
+			query = m_filteringManager->GetSourceDataCache()->CreateSelectQuery(tableIDAndName.first, columns);
 		}
+		else {
+
+			query = m_filteringManager->GetSourceDataCache()->CreateSelectQuery(tableIDAndName.first, columns, dataIndexes.at(tableIDAndName.first));
+		}
+		query->exec();
+		queryModel->setQuery(*query.data());
+		if (queryModel->lastError().isValid()) {
+
+			throw std::runtime_error("Failed to set SQL query for source data widget.");
+		}
+
+		tableView->verticalHeader()->setVisible(false);
+
+		tableView->setModel(queryModel);
+		tableView->resizeColumnsToContents();
+		tableView->resizeRowsToContents();
+			
+		m_sourceDataTabs->addTab(tableView, tableIDAndName.second);
+
+		m_sqlQueryModels.push_back(queryModel);
 	}
 }
 
