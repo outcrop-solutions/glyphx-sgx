@@ -103,11 +103,11 @@ void LoadingScreenWidget::SetupVisualizationData() {
 	admissionsCounselorView.m_filterTitles.push_back("Admissions Counselor");
 	admissionsCounselorView.m_filterFieldNames.push_back("StaffAssigned");
 	admissionsCounselorView.m_filterMultiselect.push_back(false);
-	admissionsCounselorView.m_filterValues.push_back(m_sourceDataCache.GetSortedDistinctValuesAsStrings(admissionsCounselorView.m_tableInGlyphEd, "StaffAssigned"));
+	admissionsCounselorView.m_filterValues.push_back(m_sourceDataCache.GetSortedDistinctValuesAsStrings(admissionsCounselorView.m_tableInGlyphEd, "StaffAssigned", "\"Year\"=2016"));
 	admissionsCounselorView.m_filterTitles.push_back("Decision Status");
 	admissionsCounselorView.m_filterFieldNames.push_back("Last_Decision_Cluster");
 	admissionsCounselorView.m_filterMultiselect.push_back(true);
-	admissionsCounselorView.m_filterValues.push_back(m_sourceDataCache.GetSortedDistinctValuesAsStrings(admissionsCounselorView.m_tableInGlyphEd, "Last_Decision_Cluster"));
+	admissionsCounselorView.m_filterValues.push_back(m_sourceDataCache.GetSortedDistinctValuesAsStrings(admissionsCounselorView.m_tableInGlyphEd, "Last_Decision_Cluster", "\"Year\"=2016"));
 	/*admissionsCounselorView.m_filterTitles.push_back("Year(s)");
 	admissionsCounselorView.m_filterMultiselect.push_back(true);
 	admissionsCounselorView.m_filterValues.push_back(m_sourceDataCache.GetSortedDistinctValuesAsStrings("GlobalAdmissions", "Year"));*/
