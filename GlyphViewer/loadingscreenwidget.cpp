@@ -30,6 +30,7 @@ LoadingScreenWidget::LoadingScreenWidget(GlyphViewerWindow* mainWindow, QWidget 
 
 		m_viewListWidget->addItem(visualizationData.m_title);
 	}
+	m_viewListWidget->setMinimumWidth(m_viewListWidget->sizeHintForColumn(0) + 5);
 	QObject::connect(m_viewListWidget, &QListWidget::itemSelectionChanged, this, &LoadingScreenWidget::OnNewViewSelected);
 
 	SynGlyphX::GroupBoxSingleWidget* visualizationGroupBox = new SynGlyphX::GroupBoxSingleWidget(tr("View(s)"), m_viewListWidget, this);
@@ -336,6 +337,7 @@ void LoadingScreenWidget::OnNewViewSelected() {
 			m_filterGroupBoxWidgets[i]->setTitle(m_visualizationData[m_currentView].m_filterTitles[i]);
 			SetMultiSelectionEnabled(i, m_visualizationData[m_currentView].m_filterMultiselect[i]);
 			m_filterWidgets[i]->addItems(m_visualizationData[m_currentView].m_filterValues[i]);
+			m_filterWidgets[i]->setMinimumWidth(m_filterWidgets[i]->sizeHintForColumn(0) + 30);
 		}
 		else {
 
