@@ -138,6 +138,8 @@ namespace SynGlyphXANTz {
 
 		void DrawLogo();
 
+		void HideGlyph(pNPnode node, bool hide);
+
 		//QGLFormat m_glFormat;
 		//QGLFormat m_glStereoFormat;
 

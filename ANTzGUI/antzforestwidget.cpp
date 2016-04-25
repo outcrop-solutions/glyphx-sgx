@@ -635,7 +635,7 @@ namespace SynGlyphXANTz {
 
 				pNPnode selectedNode = static_cast<pNPnode>(modelIndex.internalPointer());
 				QString tag = QString::fromStdWString(SynGlyphXANTz::GlyphNodeConverter::GetTag(selectedNode));
-				if (m_model->IsTagShownIn3d(tag)) {
+				if (m_model->IsTagShownIn3d(tag) && (!selectedNode->hide)) {
 
 					renderText(selectedNode->world.x, selectedNode->world.y, selectedNode->world.z, tag, m_oglTextFont);
 				}
@@ -750,9 +750,18 @@ namespace SynGlyphXANTz {
 				for (unsigned int i = kNPnodeRootPin; i < antzData->map.nodeRootCount; ++i) {
 
 					pNPnode node = static_cast<pNPnode>(antzData->map.node[i]);
-					node->hide = (m_filteredResults.count(i - kNPnodeRootPin) == 0);
+					HideGlyph(node, (m_filteredResults.count(i - kNPnodeRootPin) == 0));
 				}
 			}
+		}
+	}
+
+	void ANTzForestWidget::HideGlyph(pNPnode node, bool hide) {
+
+		node->hide = hide;
+		for (unsigned int i = 0; i < node->childCount; ++i) {
+
+			HideGlyph(node->child[i], hide);
 		}
 	}
 
@@ -778,7 +787,7 @@ namespace SynGlyphXANTz {
 		for (unsigned int i = kNPnodeRootPin; i < antzData->map.nodeRootCount; ++i) {
 	
 			pNPnode node = static_cast<pNPnode>(antzData->map.node[i]);
-			node->hide = false;
+			HideGlyph(node, false);
 		}
 	}
 
