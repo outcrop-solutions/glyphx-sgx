@@ -143,6 +143,9 @@ void LoadingScreenWidget::SetupVisualizationData() {
 
 	m_visualizationData.push_back(highSchoolView);
 
+	QStringList statuses = m_sourceDataCache.GetSortedDistinctValuesAsStrings("Composition", "grouping_title", "\"branch_type\"='Status'");
+	statuses.push_back("-");
+
 	VisualizationData classCompositionRaceView;
 	classCompositionRaceView.m_title = visualizationNames[3];
 	classCompositionRaceView.m_sdtPath = GetGlyphEdDir() + QDir::toNativeSeparators("/Class Composition/View 4C Remap.sdt");
@@ -159,7 +162,7 @@ void LoadingScreenWidget::SetupVisualizationData() {
 	classCompositionRaceView.m_filterTitles.push_back("Decision Status");
 	classCompositionRaceView.m_filterFieldNames.push_back("grouping_title_lv2");
 	classCompositionRaceView.m_filterMultiselect.push_back(true);
-	classCompositionRaceView.m_filterValues.push_back(m_sourceDataCache.GetSortedDistinctValuesAsStrings(classCompositionRaceView.m_tableInGlyphEd, "grouping_title", "\"branch_type\"='Status'"));
+	classCompositionRaceView.m_filterValues.push_back(statuses);
 
 	m_visualizationData.push_back(classCompositionRaceView);
 
@@ -179,7 +182,7 @@ void LoadingScreenWidget::SetupVisualizationData() {
 	classCompositionCohortView.m_filterTitles.push_back("Decision Status");
 	classCompositionCohortView.m_filterFieldNames.push_back("grouping_title_lv2");
 	classCompositionCohortView.m_filterMultiselect.push_back(true);
-	classCompositionCohortView.m_filterValues.push_back(m_sourceDataCache.GetSortedDistinctValuesAsStrings(classCompositionCohortView.m_tableInGlyphEd, "grouping_title", "\"branch_type\"='Status'"));
+	classCompositionCohortView.m_filterValues.push_back(statuses);
 
 	m_visualizationData.push_back(classCompositionCohortView);
 
@@ -199,7 +202,7 @@ void LoadingScreenWidget::SetupVisualizationData() {
 	classCompositionTotalView.m_filterTitles.push_back("Decision Status");
 	classCompositionTotalView.m_filterFieldNames.push_back("grouping_title_lv2");
 	classCompositionTotalView.m_filterMultiselect.push_back(true);
-	classCompositionTotalView.m_filterValues.push_back(m_sourceDataCache.GetSortedDistinctValuesAsStrings(classCompositionTotalView.m_tableInGlyphEd, "grouping_title", "\"branch_type\"='Status'"));
+	classCompositionTotalView.m_filterValues.push_back(statuses);
 
 	m_visualizationData.push_back(classCompositionTotalView);
 
@@ -257,7 +260,9 @@ void LoadingScreenWidget::OnLoadVisualization() {
 					filterData.insert(selectedItem->text());
 				}
 
-				if ((!filterData.isEmpty()) && (filterData.size() != m_filterWidgets[i]->model()->rowCount())) {
+				if ((!filterData.isEmpty()) && 
+					((filterData.size() != m_filterWidgets[i]->model()->rowCount()) ||
+					(i == 2))) {
 
 					filters.SetDistinctValueFilter(m_visualizationData[m_currentView].m_filterFieldNames[i], filterData);
 				}
