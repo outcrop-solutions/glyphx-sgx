@@ -19151,7 +19151,7 @@
         "Module"
         {
         "ModuleSignature" = "8:MergeModule.E7BC5B0DA8E84115B456FD393FF63EDE"
-        "Version" = "8:0.7.34.0"
+        "Version" = "8:0.7.35.0"
         "Title" = "8:SGXSetupMergeModule"
         "Subject" = "8:"
         "Author" = "8:SynGlyphX"
@@ -19168,7 +19168,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_02A8761212CD4E9987BAAF5BFB4D30C9"
             {
-            "SourcePath" = "8:..\\..\\bin\\Win32\\Release\\SGXDataTransformGUI.dll"
+            "SourcePath" = "8:..\\..\\bin\\Win32\\Debug\\SGXDataTransformGUI.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_0FD992B69CC74D489682A631FA99B364"
@@ -19196,7 +19196,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_25EDCDADCDD54E54ACCED55C743DE2E1"
             {
-            "SourcePath" = "8:..\\..\\bin\\Win32\\Release\\SGXUtility.dll"
+            "SourcePath" = "8:..\\..\\bin\\Win32\\Debug\\SGXUtility.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_0FD992B69CC74D489682A631FA99B364"
@@ -19224,7 +19224,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_2FACC7E00B714516B7BA56FA6F2F6555"
             {
-            "SourcePath" = "8:..\\..\\bin\\Win32\\Release\\SGXGUI.dll"
+            "SourcePath" = "8:..\\..\\bin\\Win32\\Debug\\SGXGUI.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_0FD992B69CC74D489682A631FA99B364"
@@ -19252,7 +19252,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_6727E8323D0D449AA8D892D5163E5EB3"
             {
-            "SourcePath" = "8:..\\..\\bin\\Win32\\Release\\DataEngine.dll"
+            "SourcePath" = "8:..\\..\\bin\\Win32\\Debug\\DataEngine.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_0FD992B69CC74D489682A631FA99B364"
@@ -19280,7 +19280,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_6A89B49745ED410E9E8CDEE801A8A17B"
             {
-            "SourcePath" = "8:..\\..\\bin\\Win32\\Release\\SGXImage.dll"
+            "SourcePath" = "8:..\\..\\bin\\Win32\\Debug\\SGXImage.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_0FD992B69CC74D489682A631FA99B364"
@@ -19308,7 +19308,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_6ADC0B640C3940E0867F28C68B87F598"
             {
-            "SourcePath" = "8:..\\..\\bin\\Win32\\Release\\ANTzCore.dll"
+            "SourcePath" = "8:..\\..\\bin\\Win32\\Debug\\ANTzCore.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_0FD992B69CC74D489682A631FA99B364"
@@ -19336,7 +19336,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_73942186C74B42BF895693E3F2FA47FB"
             {
-            "SourcePath" = "8:..\\..\\bin\\Win32\\Release\\GlyphDesigner.exe"
+            "SourcePath" = "8:..\\..\\bin\\Win32\\Debug\\GlyphDesigner.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_0FD992B69CC74D489682A631FA99B364"
@@ -19364,7 +19364,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_81FF97ED6A5F414A9168C96960FF2219"
             {
-            "SourcePath" = "8:..\\..\\bin\\Win32\\Release\\MapDownloading.dll"
+            "SourcePath" = "8:..\\..\\bin\\Win32\\Debug\\MapDownloading.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_0FD992B69CC74D489682A631FA99B364"
@@ -19392,7 +19392,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_A39E3C1ACADE4FAABD1F046378B079F8"
             {
-            "SourcePath" = "8:..\\..\\bin\\Win32\\Release\\ANTzBridge.dll"
+            "SourcePath" = "8:..\\..\\bin\\Win32\\Debug\\ANTzBridge.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_0FD992B69CC74D489682A631FA99B364"
@@ -19420,7 +19420,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_A7E4EAFA7D2847A2B3676A8F3044EB9E"
             {
-            "SourcePath" = "8:..\\..\\bin\\Win32\\Release\\ANTzGUI.dll"
+            "SourcePath" = "8:..\\..\\bin\\Win32\\Debug\\ANTzGUI.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_0FD992B69CC74D489682A631FA99B364"
@@ -19448,7 +19448,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_A84641ED9ED84AA6B2AFE2149861F43F"
             {
-            "SourcePath" = "8:..\\..\\bin\\Win32\\Release\\SGXGeospatial.dll"
+            "SourcePath" = "8:..\\..\\bin\\Win32\\Debug\\SGXGeospatial.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_0FD992B69CC74D489682A631FA99B364"
@@ -19476,7 +19476,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_B5D19EF0B3BA407EBCEF0C56D7AAD537"
             {
-            "SourcePath" = "8:..\\..\\bin\\Win32\\Release\\SGXDataMapping.dll"
+            "SourcePath" = "8:..\\..\\bin\\Win32\\Debug\\SGXDataMapping.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_0FD992B69CC74D489682A631FA99B364"
@@ -19504,7 +19504,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_CFBBE95372F6428BB47610D4A3F54FF3"
             {
-            "SourcePath" = "8:..\\..\\bin\\Win32\\Release\\GlyphViewer.exe"
+            "SourcePath" = "8:..\\..\\bin\\Win32\\Debug\\GlyphViewer.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_0FD992B69CC74D489682A631FA99B364"
@@ -19532,7 +19532,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_D787F3DF2B28465F8FD35E5366024A69"
             {
-            "SourcePath" = "8:..\\..\\bin\\Win32\\Release\\SGXGlyphGUI.dll"
+            "SourcePath" = "8:..\\..\\bin\\Win32\\Debug\\SGXGlyphGUI.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_0FD992B69CC74D489682A631FA99B364"
@@ -19560,7 +19560,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_DC4A7390B55840E3B8E672CE993EBA45"
             {
-            "SourcePath" = "8:..\\..\\bin\\Win32\\Release\\SGXFoundation.dll"
+            "SourcePath" = "8:..\\..\\bin\\Win32\\Debug\\SGXFoundation.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_0FD992B69CC74D489682A631FA99B364"
@@ -19588,7 +19588,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_DCF14BC38AE043E48C58C89C318AB94C"
             {
-            "SourcePath" = "8:..\\..\\bin\\Win32\\Release\\DataMapper.exe"
+            "SourcePath" = "8:..\\..\\bin\\Win32\\Debug\\DataMapper.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_0FD992B69CC74D489682A631FA99B364"
@@ -19616,7 +19616,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_E6C43DD8A089425DB406DAC531FAFC4A"
             {
-            "SourcePath" = "8:..\\..\\bin\\Win32\\Release\\SGXzSpaceGUI.dll"
+            "SourcePath" = "8:..\\..\\bin\\Win32\\Debug\\SGXzSpaceGUI.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_0FD992B69CC74D489682A631FA99B364"
@@ -19644,7 +19644,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_E7D9EDCCFEB74509A71384BCFD8AE17F"
             {
-            "SourcePath" = "8:..\\..\\bin\\Win32\\Release\\ANTzSingleGlyphGUI.dll"
+            "SourcePath" = "8:..\\..\\bin\\Win32\\Debug\\ANTzSingleGlyphGUI.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_0FD992B69CC74D489682A631FA99B364"
