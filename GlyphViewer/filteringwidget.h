@@ -28,6 +28,7 @@
 #include "multitableelasticlistswidget.h"
 #include "rangefilterlistwidget.h"
 #include "keywordfilterlistwidget.h"
+#include "itemfocusselectionmodel.h"
 
 class FilteringWidget : public QWidget
 {
@@ -47,11 +48,12 @@ private slots:
 	void OnTableChanged(const QString& table);
 
 private:
-	void EnableButtons(bool enable);
+	void EnableFilterRelatedButtons(bool enable);
 
 	QComboBox* m_tableComboBox;
 	QCheckBox* m_hideUnselectedTreesCheckbox;
 	QPushButton* m_sourceWidgetButton;
+	QPushButton* m_selectedSourceWidgetButton;
 	QPushButton* m_createSubsetVizButton;
 	QPushButton* m_clearButton;
 	QScopedPointer<SourceDataWidget> m_sourceDataWindow;

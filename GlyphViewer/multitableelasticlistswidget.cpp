@@ -2,6 +2,7 @@
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QAbstractItemView>
+#include <QtWidgets/QMessageBox>
 #include "elasticlistwidget.h"
 #include "application.h"
 
@@ -105,5 +106,8 @@ void MultiTableElasticListsWidget::OnElasticListsSelectionChanged(const QString&
 		newParameters = table2FiltersMap[table];
 	}
 	newParameters.SetDistinctValueFilters(selection);
-	m_filteringManager->GenerateFilterResultsForTable(table, newParameters);
+	if (!m_filteringManager->GenerateFilterResultsForTable(table, newParameters)) {
+
+		QMessageBox::warning(this, tr("Filtering"), tr("No glyphs match the current combination of filters."));
+	}
 }

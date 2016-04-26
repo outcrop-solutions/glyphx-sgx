@@ -39,7 +39,7 @@ public:
 	FilteringManager(DataMappingLoadingFilterModel* dataMappingModel, SourceDataCache::SharedPtr sourceDataCache, SynGlyphX::ItemFocusSelectionModel* sceneSelectionModel, QObject *parent);
 	~FilteringManager();
 
-	void GenerateFilterResultsForTable(const QString& table, const FilteringParameters& filters, bool updateFocus = false);
+	bool GenerateFilterResultsForTable(const QString& table, const FilteringParameters& filters, bool updateFocus = false);
 	void GenerateLoadingFilterResultsForTable(const QString& table, const FilteringParameters::ColumnDistinctValuesFilterMap& filters);
 	void SetFilterIndexesForTable(const QString& table, const SynGlyphX::IndexSet& filterSet, bool updateFocus = false);
 	

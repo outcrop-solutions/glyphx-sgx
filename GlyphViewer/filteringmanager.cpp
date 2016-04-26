@@ -62,11 +62,12 @@ void FilteringManager::OnSceneModelReset() {
 	}
 }
 
-void FilteringManager::GenerateFilterResultsForTable(const QString& table, const FilteringParameters& filters, bool updateFocus) {
+bool FilteringManager::GenerateFilterResultsForTable(const QString& table, const FilteringParameters& filters, bool updateFocus) {
 
 	if (!filters.HasFilters()) {
 
 		ClearFiltersForTable(table);
+		return true;
 	}
 	else {
 
@@ -87,6 +88,11 @@ void FilteringManager::GenerateFilterResultsForTable(const QString& table, const
 		else {
 
 			newSelectionSet = m_sourceDataCache->GetIndexesFromTableThatPassFilters(table, filters);
+		}
+
+		if (newSelectionSet.empty()) {
+
+			return false;
 		}
 
 		if (m_filterResultsByTable.count(table) > 0) {
@@ -139,6 +145,7 @@ void FilteringManager::GenerateFilterResultsForTable(const QString& table, const
 
 		m_filterResultsByTable[table] = newSelectionSet;
 		UpdateGlyphIndexedFilterResults();
+		return true;
 	}
 }
 

@@ -52,6 +52,11 @@ FilteringWidget::FilteringWidget(SourceDataInfoModel* columnsModel, FilteringMan
 	m_sourceWidgetButton->setCheckable(true);
 	buttonsLayout->addWidget(m_sourceWidgetButton);
 
+	/*m_selectedSourceWidgetButton = new QPushButton(tr("Show Selected Data"), this);
+	m_selectedSourceWidgetButton->setEnabled(false);
+	m_selectedSourceWidgetButton->setCheckable(true);
+	buttonsLayout->addWidget(m_sourceWidgetButton);*/
+
 	buttonsLayout->addStretch(1);
 
 	m_createSubsetVizButton = new QPushButton(tr("Create Subset Visualization"));
@@ -62,7 +67,7 @@ FilteringWidget::FilteringWidget(SourceDataInfoModel* columnsModel, FilteringMan
 
 	setLayout(mainLayout);
 
-	EnableButtons(!m_filteringManager->GetFilterResultsByTable().empty());
+	EnableFilterRelatedButtons(!m_filteringManager->GetFilterResultsByTable().empty());
 	m_sourceDataWindow.reset(new SourceDataWidget(m_filteringManager));
 	m_sourceDataWindow->setWindowTitle(tr("Source Data Of Filtered Glyphs"));
 	QObject::connect(m_sourceWidgetButton, &QPushButton::toggled, m_sourceDataWindow.data(), &SourceDataWidget::setVisible);
@@ -103,7 +108,7 @@ void FilteringWidget::OnSourceWidgetWindowHidden() {
 void FilteringWidget::OnFilterResultsChanged() {
 
 	const FilteringManager::Table2FiltersMap& filtersMap = m_filteringManager->GetTable2FiltersMap();
-	EnableButtons(m_filteringManager->GetSourceDataCache()->IsValid() && (!filtersMap.empty()));
+	EnableFilterRelatedButtons(m_filteringManager->GetSourceDataCache()->IsValid() && (!filtersMap.empty()));
 
 	m_createSubsetVizButton->setEnabled(!filtersMap.empty());
 
@@ -161,7 +166,7 @@ void FilteringWidget::OnTableChanged(const QString& table) {
 	m_keywordFilterListWidget->SwitchTable(tableId);
 }
 
-void FilteringWidget::EnableButtons(bool enable) {
+void FilteringWidget::EnableFilterRelatedButtons(bool enable) {
 
 	m_clearButton->setEnabled(enable);
 }

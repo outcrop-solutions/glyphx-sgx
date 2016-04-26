@@ -250,7 +250,10 @@ void KeywordFilterListWidget::OnUpdateFilters() {
 			}
 			filteringParameters.SetKeywordFilters(keywordFilterMap);
 
-			m_filteringManager->GenerateFilterResultsForTable(tableIterator.key(), filteringParameters);
+			if (!m_filteringManager->GenerateFilterResultsForTable(tableIterator.key(), filteringParameters)) {
+
+				QMessageBox::warning(this, tr("Filtering"), tr("No glyphs match the current combination of filters."));
+			}
 		}
 		m_updateButton->setEnabled(false);
 		SynGlyphX::GlyphBuilderApplication::restoreOverrideCursor();
