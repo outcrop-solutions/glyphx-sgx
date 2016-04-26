@@ -170,6 +170,8 @@ void GlyphViewerWindow::CreateANTzWidget() {
 	m_glyph3DView = new Glyph3DView(m_glyphForestModel, m_glyphForestSelectionModel, this);
 	m_glyph3DView->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 	m_glyph3DView->addActions(m_treeView->GetSharedActions());
+	m_glyph3DView->addAction(SynGlyphX::SharedActionList::CreateSeparator(m_glyph3DView));
+	m_glyph3DView->addAction(m_clearSelectionAction);
 
 	antzWidgetContainer->addWidget(m_glyph3DView);
 	antzWidgetContainer->setCurrentWidget(m_glyph3DView);
