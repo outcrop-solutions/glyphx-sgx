@@ -144,7 +144,7 @@ void LoadingScreenWidget::SetupVisualizationData() {
 	m_visualizationData.push_back(highSchoolView);
 
 	QStringList statuses = m_sourceDataCache.GetSortedDistinctValuesAsStrings("Composition", "grouping_title", "\"branch_type\"='Status'");
-	statuses.push_back("-");
+	statuses.push_back("Cohort Aggregate");
 
 	VisualizationData classCompositionRaceView;
 	classCompositionRaceView.m_title = visualizationNames[3];
