@@ -68,15 +68,20 @@ FilteringWidget::FilteringWidget(SourceDataInfoModel* columnsModel, FilteringMan
 	setLayout(mainLayout);
 
 	EnableFilterRelatedButtons(!m_filteringManager->GetFilterResultsByTable().empty());
+
+	m_selectedSourceDataWindow.reset(new SelectedSourceDataWidget(m_filteringManager->GetSceneSelectionModel(), m_filteringManager->GetSourceDataCache(), m_filteringManager->GetDataMappingModel()->GetDataMapping(), nullptr));
+	QObject::connect(m_selectedSourceWidgetButton, &QPushButton::toggled, m_selectedSourceDataWindow.data(), &SourceDataWidget::setVisible);
+	m_selectedSourceDataWindow->setVisible(false);
+	QObject::connect(m_selectedSourceDataWindow.data(), &SourceDataWidget::WindowHidden, this, &FilteringWidget::OnSelectedSourceWidgetWindowHidden);
+	QObject::connect(m_filteringManager->GetSceneSelectionModel(), &QItemSelectionModel::selectionChanged, this, &FilteringWidget::OnUserSelectionChanged);
+
 	m_filteredSourceDataWindow.reset(new FilteredSourceDataWidget(m_filteringManager, nullptr));
 	QObject::connect(m_sourceWidgetButton, &QPushButton::toggled, m_filteredSourceDataWindow.data(), &SourceDataWidget::setVisible);
 	m_filteredSourceDataWindow->setVisible(false);
-
 	QObject::connect(m_filteredSourceDataWindow.data(), &SourceDataWidget::WindowHidden, this, &FilteringWidget::OnSourceWidgetWindowHidden);
+
 	QObject::connect(m_filteringManager, &FilteringManager::FilterResultsChanged, this, &FilteringWidget::OnFilterResultsChanged);
-	
 	QObject::connect(m_tableComboBox, static_cast<void(QComboBox::*)(const QString &)>(&QComboBox::currentIndexChanged), this, &FilteringWidget::OnTableChanged);
-	QObject::connect(m_filteringManager->GetSceneSelectionModel(), &QItemSelectionModel::selectionChanged, this, &FilteringWidget::OnUserSelectionChanged);
 	QObject::connect(m_createSubsetVizButton, &QPushButton::clicked, m_filteredSourceDataWindow.data(), &SourceDataWidget::CreateSubsetVisualization);
 }
 
@@ -102,6 +107,11 @@ void FilteringWidget::Clear() {
 void FilteringWidget::OnSourceWidgetWindowHidden() {
 
 	m_sourceWidgetButton->setChecked(false);
+}
+
+void FilteringWidget::OnSelectedSourceWidgetWindowHidden() {
+
+	m_selectedSourceWidgetButton->setChecked(false);
 }
 
 void FilteringWidget::OnFilterResultsChanged() {
@@ -148,6 +158,7 @@ void FilteringWidget::OnNewVisualization() {
 	else {
 
 		OnSourceWidgetWindowHidden();
+		OnSelectedSourceWidgetWindowHidden();
 	}
 
 	m_elasticListsWidget->OnNewVisualization();

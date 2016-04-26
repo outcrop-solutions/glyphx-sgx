@@ -15,59 +15,34 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef FILTERINGWIDGET_H
-#define FILTERINGWIDGET_H
+#ifndef SELECTEDSOURCEDATAWIDGET_H
+#define SELECTEDSOURCEDATAWIDGET_H
 
-#include <QtWidgets/QWidget>
-#include <QtWidgets/QCheckBox>
-#include <QtWidgets/QPushButton>
-#include "filteredsourcedatawidget.h"
-#include "selectedsourcedatawidget.h"
-#include "filteringmanager.h"
-#include "linkedwidgetsmanager.h"
-#include "sourcedatainfomodel.h"
-#include "multitableelasticlistswidget.h"
-#include "rangefilterlistwidget.h"
-#include "keywordfilterlistwidget.h"
+#include "sourcedatawidget.h"
 #include "itemfocusselectionmodel.h"
 
-class FilteringWidget : public QWidget
+class SelectedSourceDataWidget : public SourceDataWidget
 {
 	Q_OBJECT
 
 public:
-	FilteringWidget(SourceDataInfoModel* columnsModel, FilteringManager* filteringManager, QWidget *parent);
-	~FilteringWidget();
+	SelectedSourceDataWidget(const SynGlyphX::ItemFocusSelectionModel* selectionModel, 
+							 SourceDataCache::ConstSharedPtr sourceDataCache, 
+							 SynGlyphX::DataTransformMapping::ConstSharedPtr dataTransformMapping, 
+							 QWidget *parent);
+	~SelectedSourceDataWidget();
 
-	void SetupLinkedWidgets(LinkedWidgetsManager& linkedWidgets);
-	void OnNewVisualization();
+protected:
+	SynGlyphX::IndexSet GetSourceIndexesForTable(const QString& table) override;
 
 private slots:
-	void Clear();
-	void OnSourceWidgetWindowHidden();
-	void OnSelectedSourceWidgetWindowHidden();
-	void OnFilterResultsChanged();
-	void OnTableChanged(const QString& table);
-	void OnUserSelectionChanged(const QItemSelection &selected, const QItemSelection &deselected);
+	void OnNewVisualization();
+	void OnSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected);
 
 private:
-	void EnableFilterRelatedButtons(bool enable);
-
-	QComboBox* m_tableComboBox;
-	QCheckBox* m_hideUnselectedTreesCheckbox;
-	QPushButton* m_sourceWidgetButton;
-	QPushButton* m_selectedSourceWidgetButton;
-	QPushButton* m_createSubsetVizButton;
-	QPushButton* m_clearButton;
-
-	QScopedPointer<FilteredSourceDataWidget> m_filteredSourceDataWindow;
-	QScopedPointer<SelectedSourceDataWidget> m_selectedSourceDataWindow;
-
-	RangeFilterListWidget* m_rangeListFilterWidget;
-	MultiTableElasticListsWidget* m_elasticListsWidget;
-	KeywordFilterListWidget* m_keywordFilterListWidget;
-
-	FilteringManager* m_filteringManager;
+	const SynGlyphX::ItemFocusSelectionModel* m_selectionModel;
+	std::map<SynGlyphX::DegenerateInterval, QString> m_glyphTemplateRangeToTableMap;
+	QMap<QString, SynGlyphX::IndexSet> m_selectedIndexesPerTable;
 };
 
-#endif // FILTERINGWIDGET_H
+#endif // SELECTEDSOURCEDATAWIDGET_H
