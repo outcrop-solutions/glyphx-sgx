@@ -82,7 +82,7 @@ void LoadingScreenWidget::SetupVisualizationData() {
 
 	VisualizationData globalAdmissionsView;
 	globalAdmissionsView.m_title = visualizationNames[0];
-	globalAdmissionsView.m_sdtPath = GetGlyphEdDir() + QDir::toNativeSeparators("/Global Admissions/View 1 Datamap Recommendations.sdt");
+	globalAdmissionsView.m_sdtPath = GetGlyphEdDir() + QDir::toNativeSeparators("/Global Admissions/Global Admissions.sdt");
 	globalAdmissionsView.m_tableInGlyphEd = "GlobalAdmissions";
 
 	globalAdmissionsView.m_filterTitles.push_back("Admissions Counselor");
@@ -98,7 +98,7 @@ void LoadingScreenWidget::SetupVisualizationData() {
 
 	VisualizationData admissionsCounselorView;
 	admissionsCounselorView.m_title = visualizationNames[1];
-	admissionsCounselorView.m_sdtPath = GetGlyphEdDir() + QDir::toNativeSeparators("/Admissions Officer/View 2 Datamap Recommendations - All Data.sdt");
+	admissionsCounselorView.m_sdtPath = GetGlyphEdDir() + QDir::toNativeSeparators("/Admissions Officer/Admissions Counselor.sdt");
 	admissionsCounselorView.m_tableInGlyphEd = "GlobalAdmissions";
 
 	admissionsCounselorView.m_filterTitles.push_back("Admissions Counselor");
@@ -117,7 +117,7 @@ void LoadingScreenWidget::SetupVisualizationData() {
 
 	VisualizationData highSchoolView;
 	highSchoolView.m_title = visualizationNames[2];
-	highSchoolView.m_sdtPath = GetGlyphEdDir() + QDir::toNativeSeparators("/High School/View 3 Datamap Recommendations - All Data.sdt");
+	highSchoolView.m_sdtPath = GetGlyphEdDir() + QDir::toNativeSeparators("/High School/High School.sdt");
 	highSchoolView.m_tableInGlyphEd = "GlobalAdmissions";
 
 	highSchoolView.m_filterTitles.push_back("High School");
@@ -148,7 +148,7 @@ void LoadingScreenWidget::SetupVisualizationData() {
 
 	VisualizationData classCompositionRaceView;
 	classCompositionRaceView.m_title = visualizationNames[3];
-	classCompositionRaceView.m_sdtPath = GetGlyphEdDir() + QDir::toNativeSeparators("/Class Composition/View 4C Remap.sdt");
+	classCompositionRaceView.m_sdtPath = GetGlyphEdDir() + QDir::toNativeSeparators("/Class Composition/Class Composition.sdt");
 	classCompositionRaceView.m_tableInGlyphEd = "Composition";
 
 	classCompositionRaceView.m_filterTitles.push_back("Race");
@@ -168,7 +168,7 @@ void LoadingScreenWidget::SetupVisualizationData() {
 
 	VisualizationData classCompositionCohortView;
 	classCompositionCohortView.m_title = visualizationNames[4];
-	classCompositionCohortView.m_sdtPath = GetGlyphEdDir() + QDir::toNativeSeparators("/Class Composition/View 4C Remap.sdt");
+	classCompositionCohortView.m_sdtPath = GetGlyphEdDir() + QDir::toNativeSeparators("/Class Composition/Class Composition.sdt");
 	classCompositionCohortView.m_tableInGlyphEd = "Composition";
 
 	classCompositionCohortView.m_filterTitles.push_back("Cohort");
@@ -188,7 +188,7 @@ void LoadingScreenWidget::SetupVisualizationData() {
 
 	VisualizationData classCompositionTotalView;
 	classCompositionTotalView.m_title = visualizationNames[5];
-	classCompositionTotalView.m_sdtPath = GetGlyphEdDir() + QDir::toNativeSeparators("/Class Composition/View 4C Remap.sdt");
+	classCompositionTotalView.m_sdtPath = GetGlyphEdDir() + QDir::toNativeSeparators("/Class Composition/Class Composition.sdt");
 	classCompositionTotalView.m_tableInGlyphEd = "Composition";
 
 	classCompositionTotalView.m_filterTitles.push_back("Total");
@@ -208,7 +208,7 @@ void LoadingScreenWidget::SetupVisualizationData() {
 
 	VisualizationData globalDashboardView;
 	globalDashboardView.m_title = visualizationNames[6];
-	globalDashboardView.m_sdtPath = GetGlyphEdDir() + QDir::toNativeSeparators("/GLobal Dashboard/View 4 V3 MASTER READER.sdt");
+	globalDashboardView.m_sdtPath = GetGlyphEdDir() + QDir::toNativeSeparators("/Global Dashboard/Global Dashboard.sdt");
 	globalDashboardView.m_mustHaveFilter = false;
 	globalDashboardView.m_tableInGlyphEd = "Dashboard";
 
