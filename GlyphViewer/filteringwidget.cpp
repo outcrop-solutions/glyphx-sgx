@@ -52,10 +52,10 @@ FilteringWidget::FilteringWidget(SourceDataInfoModel* columnsModel, FilteringMan
 	m_sourceWidgetButton->setCheckable(true);
 	buttonsLayout->addWidget(m_sourceWidgetButton);
 
-	/*m_selectedSourceWidgetButton = new QPushButton(tr("Show Selected Data"), this);
+	m_selectedSourceWidgetButton = new QPushButton(tr("Show Selected Data"), this);
 	m_selectedSourceWidgetButton->setEnabled(false);
 	m_selectedSourceWidgetButton->setCheckable(true);
-	buttonsLayout->addWidget(m_sourceWidgetButton);*/
+	buttonsLayout->addWidget(m_selectedSourceWidgetButton);
 
 	buttonsLayout->addStretch(1);
 
@@ -68,17 +68,16 @@ FilteringWidget::FilteringWidget(SourceDataInfoModel* columnsModel, FilteringMan
 	setLayout(mainLayout);
 
 	EnableFilterRelatedButtons(!m_filteringManager->GetFilterResultsByTable().empty());
-	m_sourceDataWindow.reset(new SourceDataWidget(m_filteringManager));
-	m_sourceDataWindow->setWindowTitle(tr("Source Data Of Filtered Glyphs"));
-	QObject::connect(m_sourceWidgetButton, &QPushButton::toggled, m_sourceDataWindow.data(), &SourceDataWidget::setVisible);
-	m_sourceDataWindow->setVisible(false);
+	m_filteredSourceDataWindow.reset(new FilteredSourceDataWidget(m_filteringManager, nullptr));
+	QObject::connect(m_sourceWidgetButton, &QPushButton::toggled, m_filteredSourceDataWindow.data(), &SourceDataWidget::setVisible);
+	m_filteredSourceDataWindow->setVisible(false);
 
-	QObject::connect(m_sourceDataWindow.data(), &SourceDataWidget::WindowHidden, this, &FilteringWidget::OnSourceWidgetWindowHidden);
+	QObject::connect(m_filteredSourceDataWindow.data(), &SourceDataWidget::WindowHidden, this, &FilteringWidget::OnSourceWidgetWindowHidden);
 	QObject::connect(m_filteringManager, &FilteringManager::FilterResultsChanged, this, &FilteringWidget::OnFilterResultsChanged);
 	
 	QObject::connect(m_tableComboBox, static_cast<void(QComboBox::*)(const QString &)>(&QComboBox::currentIndexChanged), this, &FilteringWidget::OnTableChanged);
-
-	QObject::connect(m_createSubsetVizButton, &QPushButton::clicked, m_sourceDataWindow.data(), &SourceDataWidget::CreateSubsetVisualization);
+	QObject::connect(m_filteringManager->GetSceneSelectionModel(), &QItemSelectionModel::selectionChanged, this, &FilteringWidget::OnUserSelectionChanged);
+	QObject::connect(m_createSubsetVizButton, &QPushButton::clicked, m_filteredSourceDataWindow.data(), &SourceDataWidget::CreateSubsetVisualization);
 }
 
 FilteringWidget::~FilteringWidget()
@@ -144,7 +143,7 @@ void FilteringWidget::OnNewVisualization() {
 		m_tableComboBox->view()->setMinimumWidth(m_tableComboBox->view()->sizeHintForColumn(0));
 		m_tableComboBox->blockSignals(false);
 
-		m_sourceDataWindow->UpdateTables();
+		m_filteredSourceDataWindow->UpdateTables();
 	}
 	else {
 
@@ -169,4 +168,9 @@ void FilteringWidget::OnTableChanged(const QString& table) {
 void FilteringWidget::EnableFilterRelatedButtons(bool enable) {
 
 	m_clearButton->setEnabled(enable);
+}
+
+void FilteringWidget::OnUserSelectionChanged(const QItemSelection &selected, const QItemSelection &deselected) {
+
+	m_selectedSourceWidgetButton->setEnabled(m_filteringManager->GetSceneSelectionModel()->hasSelection());
 }

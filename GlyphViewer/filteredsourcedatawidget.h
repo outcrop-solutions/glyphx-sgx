@@ -15,55 +15,25 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef FILTERINGWIDGET_H
-#define FILTERINGWIDGET_H
+#ifndef FILTEREDSOURCEDATAWIDGET_H
+#define FILTEREDSOURCEDATAWIDGET_H
 
-#include <QtWidgets/QWidget>
-#include <QtWidgets/QCheckBox>
-#include <QtWidgets/QPushButton>
-#include "filteredsourcedatawidget.h"
+#include "sourcedatawidget.h"
 #include "filteringmanager.h"
-#include "linkedwidgetsmanager.h"
-#include "sourcedatainfomodel.h"
-#include "multitableelasticlistswidget.h"
-#include "rangefilterlistwidget.h"
-#include "keywordfilterlistwidget.h"
-#include "itemfocusselectionmodel.h"
 
-class FilteringWidget : public QWidget
+class FilteredSourceDataWidget : public SourceDataWidget
 {
 	Q_OBJECT
 
 public:
-	FilteringWidget(SourceDataInfoModel* columnsModel, FilteringManager* filteringManager, QWidget *parent);
-	~FilteringWidget();
+	FilteredSourceDataWidget(FilteringManager* filteringManager, QWidget *parent);
+	~FilteredSourceDataWidget();
 
-	void SetupLinkedWidgets(LinkedWidgetsManager& linkedWidgets);
-	void OnNewVisualization();
-
-private slots:
-	void Clear();
-	void OnSourceWidgetWindowHidden();
-	void OnFilterResultsChanged();
-	void OnTableChanged(const QString& table);
-	void OnUserSelectionChanged(const QItemSelection &selected, const QItemSelection &deselected);
+protected:
+	SynGlyphX::IndexSet GetSourceIndexesForTable(const QString& table) override;
 
 private:
-	void EnableFilterRelatedButtons(bool enable);
-
-	QComboBox* m_tableComboBox;
-	QCheckBox* m_hideUnselectedTreesCheckbox;
-	QPushButton* m_sourceWidgetButton;
-	QPushButton* m_selectedSourceWidgetButton;
-	QPushButton* m_createSubsetVizButton;
-	QPushButton* m_clearButton;
-	QScopedPointer<FilteredSourceDataWidget> m_filteredSourceDataWindow;
-
-	RangeFilterListWidget* m_rangeListFilterWidget;
-	MultiTableElasticListsWidget* m_elasticListsWidget;
-	KeywordFilterListWidget* m_keywordFilterListWidget;
-
 	FilteringManager* m_filteringManager;
 };
 
-#endif // FILTERINGWIDGET_H
+#endif // FILTEREDSOURCEDATAWIDGET_H
