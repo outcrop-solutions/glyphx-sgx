@@ -283,12 +283,12 @@ void LoadingScreenWidget::OnLoadVisualization() {
 			branch.insert("Cohort");
 			filters.SetDistinctValueFilter("branch_type", branch);
 		}
-		/*else if (m_currentView == 5) {
+		else if (m_currentView == 5) {
 
-			QSet<QString> branch;
-			branch.insert("Total");
-			filters.SetDistinctValueFilter("branch_type", branch);
-		}*/
+			QSet<QString> groupingTitle;
+			groupingTitle.insert("Cohort Aggregate");
+			filters.SetDistinctValueFilter("grouping_title_lv2", groupingTitle);
+		}
 		else if (m_currentView == 6) {
 
 			QSet<QString> readers;
