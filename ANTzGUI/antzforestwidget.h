@@ -72,6 +72,7 @@ namespace SynGlyphXANTz {
 		void ShowAnimatedRotations(bool show);
 
 		void SetShowTagsOfSelectedObjects(bool showTagsOfSelectedObjects);
+		void ClearAllTags();
 
 	protected slots:
 		void OnSelectionUpdated(const QItemSelection& selected, const QItemSelection& deselected);
@@ -190,9 +191,9 @@ namespace SynGlyphXANTz {
 		unsigned int m_logoTextureID;
 		QRect m_logoPosition;
 
-		bool m_showTagsOfSelectedObjects;
-
 		float m_initialCameraZAngle;
+
+		QSet<QModelIndex> m_tagIndexes;
 	};
 
 } //namespace SynGlyphXANTz

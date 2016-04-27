@@ -43,7 +43,6 @@ namespace SynGlyphXANTz {
 		m_zSpaceOptions(),
 		m_logoTextureID(0),
 		m_showAnimation(true),
-		m_showTagsOfSelectedObjects(false),
 		m_isInStereo(false),
 		m_initialCameraZAngle(45.0f)
 	{
@@ -629,16 +628,13 @@ namespace SynGlyphXANTz {
 		//Draw tags
 		qglColor(Qt::white);
 
-		if (m_showTagsOfSelectedObjects) {
+		Q_FOREACH(const QModelIndex& modelIndex, m_tagIndexes) {
 
-			Q_FOREACH(const QModelIndex& modelIndex, m_selectionModel->selectedIndexes()) {
+			pNPnode selectedNode = static_cast<pNPnode>(modelIndex.internalPointer());
+			QString tag = QString::fromStdWString(SynGlyphXANTz::GlyphNodeConverter::GetTag(selectedNode));
+			if (m_model->IsTagShownIn3d(tag) && (!selectedNode->hide)) {
 
-				pNPnode selectedNode = static_cast<pNPnode>(modelIndex.internalPointer());
-				QString tag = QString::fromStdWString(SynGlyphXANTz::GlyphNodeConverter::GetTag(selectedNode));
-				if (m_model->IsTagShownIn3d(tag) && (!selectedNode->hide)) {
-
-					renderText(selectedNode->world.x, selectedNode->world.y, selectedNode->world.z, tag, m_oglTextFont);
-				}
+				renderText(selectedNode->world.x, selectedNode->world.y, selectedNode->world.z, tag, m_oglTextFont);
 			}
 		}
 
@@ -1407,6 +1403,7 @@ namespace SynGlyphXANTz {
 
 		CreateBoundingBoxes();
 		StoreRotationRates();
+		ClearAllTags();
 
 		m_filteredResults.clear();
 
@@ -1672,7 +1669,28 @@ namespace SynGlyphXANTz {
 
 	void ANTzForestWidget::SetShowTagsOfSelectedObjects(bool showTagsOfSelectedObjects) {
 
-		m_showTagsOfSelectedObjects = showTagsOfSelectedObjects;
+		if (showTagsOfSelectedObjects) {
+
+			Q_FOREACH(const QModelIndex& modelIndex, m_selectionModel->selectedIndexes()) {
+
+				m_tagIndexes.insert(modelIndex);
+			}
+		}
+		else {
+
+			Q_FOREACH(const QModelIndex& modelIndex, m_selectionModel->selectedIndexes()) {
+
+				if (m_tagIndexes.contains(modelIndex)) {
+
+					m_tagIndexes.remove(modelIndex);
+				}
+			}
+		}
+	}
+
+	void ANTzForestWidget::ClearAllTags() {
+
+		m_tagIndexes.clear();
 	}
 
 	void ANTzForestWidget::resizeEvent(QResizeEvent* event) {
