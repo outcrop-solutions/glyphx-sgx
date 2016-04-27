@@ -243,7 +243,7 @@ void GlyphViewerWindow::CreateMenus() {
 
 	m_showTagsAction = CreateMenuAction(m_viewMenu, tr("Show Tags For Selected Objects"), Qt::Key_I);
 
-	m_hideTagsAction = CreateMenuAction(m_viewMenu, tr("Hide Tags For Selected Objects"), QKeySequence(Qt::SHIFT + Qt::Key_I));
+	m_hideTagsAction = CreateMenuAction(m_viewMenu, tr("Hide Tags For Selected Objects"), Qt::Key_O);
 
 	m_hideAllTagsAction = CreateMenuAction(m_viewMenu, tr("Hide All Visible Tags"));
 	m_loadedVisualizationDependentActions.push_back(m_hideAllTagsAction);
