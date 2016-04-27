@@ -91,6 +91,8 @@ private:
 	QAction* m_stereoAction;
 	QAction* m_showAnimation;
 	QAction* m_showTagsAction;
+	QAction* m_hideTagsAction;
+	QAction* m_hideAllTagsAction;
 	QAction* m_clearSelectionAction;
 	QAction* m_resetCameraToDefaultPosition;
 	QList<QAction*> m_loadedVisualizationDependentActions;

@@ -171,6 +171,10 @@ void GlyphViewerWindow::CreateANTzWidget() {
 	m_glyph3DView->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 	m_glyph3DView->addActions(m_treeView->GetSharedActions());
 	m_glyph3DView->addAction(SynGlyphX::SharedActionList::CreateSeparator(m_glyph3DView));
+	m_glyph3DView->addAction(m_showTagsAction);
+	m_glyph3DView->addAction(m_hideTagsAction);
+	m_glyph3DView->addAction(m_hideAllTagsAction);
+	m_glyph3DView->addAction(SynGlyphX::SharedActionList::CreateSeparator(m_glyph3DView));
 	m_glyph3DView->addAction(m_clearSelectionAction);
 
 	antzWidgetContainer->addWidget(m_glyph3DView);
@@ -178,7 +182,9 @@ void GlyphViewerWindow::CreateANTzWidget() {
 
 	QObject::connect(m_resetCameraToDefaultPosition, &QAction::triggered, m_glyph3DView, &Glyph3DView::ResetCamera);
 	QObject::connect(m_showAnimation, &QAction::toggled, m_glyph3DView, &SynGlyphXANTz::ANTzForestWidget::ShowAnimatedRotations);
-	QObject::connect(m_showTagsAction, &QAction::toggled, m_glyph3DView, &SynGlyphXANTz::ANTzForestWidget::SetShowTagsOfSelectedObjects);
+	QObject::connect(m_showTagsAction, &QAction::triggered, this, [this]{ m_glyph3DView->SetShowTagsOfSelectedObjects(true); });
+	QObject::connect(m_hideTagsAction, &QAction::triggered, this, [this]{ m_glyph3DView->SetShowTagsOfSelectedObjects(false); });
+	QObject::connect(m_hideAllTagsAction, &QAction::triggered, m_glyph3DView, &SynGlyphXANTz::ANTzForestWidget::ClearAllTags);
 	QObject::connect(m_filteringManager, &FilteringManager::FilterResultsChanged, m_glyph3DView, &SynGlyphXANTz::ANTzForestWidget::SetFilteredResults);
 }
 
@@ -239,10 +245,12 @@ void GlyphViewerWindow::CreateMenus() {
 	m_clearSelectionAction->setEnabled(false);
 	QObject::connect(m_clearSelectionAction, &QAction::triggered, m_glyphForestSelectionModel, &SynGlyphX::ItemFocusSelectionModel::ClearAll);
 
-	m_showTagsAction = CreateMenuAction(m_viewMenu, tr("Show Tags"), Qt::Key_I);
-	m_showTagsAction->setCheckable(true);
-	m_showTagsAction->setChecked(false);
-	m_loadedVisualizationDependentActions.push_back(m_showTagsAction);
+	m_showTagsAction = CreateMenuAction(m_viewMenu, tr("Show Tags For Selected Objects"), Qt::Key_I);
+
+	m_hideTagsAction = CreateMenuAction(m_viewMenu, tr("Hide Tags For Selected Objects"), QKeySequence(Qt::SHIFT + Qt::Key_I));
+
+	m_hideAllTagsAction = CreateMenuAction(m_viewMenu, tr("Hide All Visible Tags"));
+	m_loadedVisualizationDependentActions.push_back(m_hideAllTagsAction);
 
 	m_viewMenu->addSeparator();
 
@@ -739,8 +747,9 @@ void GlyphViewerWindow::EnableLoadedVisualizationDependentActions(bool enable) {
 
 	m_stereoAction->setEnabled(!enable);
 
-	m_showTagsAction->setChecked(false);
 	m_clearSelectionAction->setEnabled(false);
+	m_showTagsAction->setEnabled(false);
+	m_hideTagsAction->setEnabled(false);
 }
 
 void GlyphViewerWindow::ChangeOptions() {
@@ -883,7 +892,10 @@ GlyphViewerOptions GlyphViewerWindow::CollectOptions() {
 
 void GlyphViewerWindow::OnSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected) {
 
-	m_clearSelectionAction->setEnabled(!m_glyphForestSelectionModel->selectedIndexes().isEmpty());
+	bool selectionIsNotEmpty = !m_glyphForestSelectionModel->selectedIndexes().isEmpty();
+	m_clearSelectionAction->setEnabled(selectionIsNotEmpty);
+	m_showTagsAction->setEnabled(selectionIsNotEmpty);
+	m_hideTagsAction->setEnabled(selectionIsNotEmpty);
 }
 
 void GlyphViewerWindow::CreateExportToPortableVisualizationSubmenu() {
