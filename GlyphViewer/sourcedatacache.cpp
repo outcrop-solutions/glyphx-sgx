@@ -873,7 +873,7 @@ QString SourceDataCache::CreateEscapedString(const QString& string) const {
 	return escapedString;
 }
 
-void SourceDataCache::ExportFilteredDataToCSV(const QString& filename, const QString& tableName, const FilteringParameters& filters) const {
+bool SourceDataCache::ExportFilteredDataToCSV(const QString& filename, const QString& tableName, const FilteringParameters& filters) const {
 
 	QStringList columnNames;
 	QSqlRecord columns = m_db.record(tableName);
@@ -909,6 +909,7 @@ void SourceDataCache::ExportFilteredDataToCSV(const QString& filename, const QSt
 	}
 	csvFile.WriteLine(headers);
 
+	bool wereAnyValuesWrittenToFile = false;
 	while (query.next()) {
 
 		SynGlyphX::CSVFileHandler::CSVValues lineOfValues;
@@ -930,7 +931,9 @@ void SourceDataCache::ExportFilteredDataToCSV(const QString& filename, const QSt
 		}
 
 		csvFile.WriteLine(lineOfValues);
+		wereAnyValuesWrittenToFile = true;
 	}
 
 	csvFile.Close();
+	return wereAnyValuesWrittenToFile;
 }

@@ -82,7 +82,7 @@ public:
 
 	bool IsCacheOutOfDate(const SynGlyphX::DataTransformMapping::DatasourceMap& datasources) const;
 
-	void ExportFilteredDataToCSV(const QString& filename, const QString& tableName, const FilteringParameters& filters) const;
+	bool ExportFilteredDataToCSV(const QString& filename, const QString& tableName, const FilteringParameters& filters) const;
 
 protected:
 	SynGlyphX::InputField::Type GetSourceDataFieldType(QVariant::Type fieldType) const;

@@ -320,11 +320,18 @@ void LoadingScreenWidget::OnLoadVisualization() {
 			QFile::remove(dataFilename);
 		}
 
-		m_sourceDataCache.ExportFilteredDataToCSV(dataFilename, m_visualizationData[m_currentView].m_tableInGlyphEd, table2FiltersMap[inputTable]);
+		bool didFilterHaveResult = m_sourceDataCache.ExportFilteredDataToCSV(dataFilename, m_visualizationData[m_currentView].m_tableInGlyphEd, table2FiltersMap[inputTable]);
 
 		SynGlyphX::Application::restoreOverrideCursor();
 
-		m_mainWindow->LoadNewVisualization(m_visualizationData[m_currentView].m_sdtPath);
+		if (didFilterHaveResult) {
+
+			m_mainWindow->LoadNewVisualization(m_visualizationData[m_currentView].m_sdtPath);
+		}
+		else {
+
+			QMessageBox::warning(this, tr("Load Visualization"), tr("The selected combination of filters had no results.  Please try a different combination of filters to load a visualization."));
+		}
 	}
 }
 
