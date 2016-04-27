@@ -7,6 +7,7 @@ SelectedSourceDataWidget::SelectedSourceDataWidget(const SynGlyphX::ItemFocusSel
 	: SourceDataWidget(sourceDataCache, dataTransformMapping, parent),
 	m_selectionModel(selectionModel)
 {
+	setWindowTitle(tr("Source Data Of Selected Glyphs"));
 	QObject::connect(m_selectionModel, &QItemSelectionModel::selectionChanged, this, &SelectedSourceDataWidget::OnSelectionChanged);
 	QObject::connect(m_selectionModel->model(), &QAbstractItemModel::modelReset, this, &SelectedSourceDataWidget::OnNewVisualization);
 }
@@ -81,6 +82,10 @@ void SelectedSourceDataWidget::OnSelectionChanged(const QItemSelection& selected
 		}
 
 		UpdateTables();
+	}
+	else {
+
+		ClearTables();
 	}
 }
 

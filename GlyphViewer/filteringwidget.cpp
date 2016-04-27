@@ -183,5 +183,12 @@ void FilteringWidget::EnableFilterRelatedButtons(bool enable) {
 
 void FilteringWidget::OnUserSelectionChanged(const QItemSelection &selected, const QItemSelection &deselected) {
 
-	m_selectedSourceWidgetButton->setEnabled(m_filteringManager->GetSceneSelectionModel()->hasSelection());
+	bool hasSelection = m_filteringManager->GetSceneSelectionModel()->hasSelection();
+
+	if (!hasSelection) {
+
+		OnSelectedSourceWidgetWindowHidden();
+	}
+
+	m_selectedSourceWidgetButton->setEnabled(hasSelection);
 }

@@ -68,10 +68,15 @@ void SourceDataWidget::closeEvent(QCloseEvent* event) {
 	}
 }
 
-void SourceDataWidget::UpdateTables() {
+void SourceDataWidget::ClearTables() {
 
 	m_sourceDataTabs->clear();
 	m_sqlQueryModels.clear();
+}
+
+void SourceDataWidget::UpdateTables() {
+
+	ClearTables();
 
 	const SourceDataCache::TableNameMap& formattedNames = m_sourceDataCache->GetFormattedNames();
 

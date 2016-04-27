@@ -43,7 +43,7 @@ protected slots:
 
 protected:
 	virtual void closeEvent(QCloseEvent* event);
-
+	void ClearTables();
 	virtual SynGlyphX::IndexSet GetSourceIndexesForTable(const QString& table) = 0;
 
 	void ReadSettings();
