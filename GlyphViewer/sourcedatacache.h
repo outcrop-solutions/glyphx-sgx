@@ -68,6 +68,7 @@ public:
 	SharedSQLQuery CreateSelectQuery(const QString& tableName, const TableColumns& columns, const SynGlyphX::IndexSet& indexSet = SynGlyphX::IndexSet()) const;
 	SharedSQLQuery CreateDistinctValueQuery(const QString& tableName, const QString& columnName, const SynGlyphX::IndexSet& indexSet = SynGlyphX::IndexSet()) const;
 	SharedSQLQuery CreateDistinctValueAndCountQuery(const QString& tableName, const QString& columnName, const SynGlyphX::IndexSet& indexSet = SynGlyphX::IndexSet()) const;
+	SharedSQLQuery CreateDistinctValueAndCountQuery(const QString& tableName, const QString& columnName, const QString& whereClause = "") const;
 	SharedSQLQuery CreateOrderedValueAndRowQuery(const QString& tableName, const QString& columnName, const SynGlyphX::IndexSet& indexSet) const;
 	unsigned long GetValueCount(const QString& tableName, const QString& columnName, const QString& value, const SynGlyphX::IndexSet& indexSet = SynGlyphX::IndexSet()) const;
 	unsigned long GetNumberOfRowsInTable(const SynGlyphX::InputTable& inputTable) const;

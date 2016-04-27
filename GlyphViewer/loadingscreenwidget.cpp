@@ -125,7 +125,7 @@ void LoadingScreenWidget::SetupVisualizationData() {
 	highSchoolView.m_filterMultiselect.push_back(false);
 
 	QStringList highSchools;
-	SourceDataCache::SharedSQLQuery distinctValuesQuery = m_sourceDataCache.CreateDistinctValueAndCountQuery(highSchoolView.m_tableInGlyphEd, "HSNameUnique");
+	SourceDataCache::SharedSQLQuery distinctValuesQuery = m_sourceDataCache.CreateDistinctValueAndCountQuery(highSchoolView.m_tableInGlyphEd, "HSNameUnique", "\"Year\"=2016");
 	distinctValuesQuery->exec();
 	while (distinctValuesQuery->next()) {
 
@@ -191,18 +191,14 @@ void LoadingScreenWidget::SetupVisualizationData() {
 	classCompositionTotalView.m_sdtPath = GetGlyphEdDir() + QDir::toNativeSeparators("/Class Composition/Class Composition.sdt");
 	classCompositionTotalView.m_tableInGlyphEd = "Composition";
 
-	classCompositionTotalView.m_filterTitles.push_back("Total");
-	classCompositionTotalView.m_filterFieldNames.push_back("grouping_title");
-	classCompositionTotalView.m_filterMultiselect.push_back(true);
-	classCompositionTotalView.m_filterValues.push_back(m_sourceDataCache.GetSortedDistinctValuesAsStrings(classCompositionTotalView.m_tableInGlyphEd, "grouping_title", "\"branch_type\"='Total'"));
 	classCompositionTotalView.m_filterTitles.push_back("Year(s)");
 	classCompositionTotalView.m_filterFieldNames.push_back("Year");
 	classCompositionTotalView.m_filterMultiselect.push_back(true);
 	classCompositionTotalView.m_filterValues.push_back(m_sourceDataCache.GetSortedDistinctValuesAsStrings(classCompositionTotalView.m_tableInGlyphEd, "Year"));
 	classCompositionTotalView.m_filterTitles.push_back("Decision Status");
-	classCompositionTotalView.m_filterFieldNames.push_back("grouping_title_lv2");
+	classCompositionTotalView.m_filterFieldNames.push_back("grouping_title");
 	classCompositionTotalView.m_filterMultiselect.push_back(true);
-	classCompositionTotalView.m_filterValues.push_back(statuses);
+	classCompositionTotalView.m_filterValues.push_back(m_sourceDataCache.GetSortedDistinctValuesAsStrings("Composition", "grouping_title", "\"branch_type\"='Status'"));
 
 	m_visualizationData.push_back(classCompositionTotalView);
 
@@ -262,7 +258,7 @@ void LoadingScreenWidget::OnLoadVisualization() {
 
 				if ((!filterData.isEmpty()) && 
 					((filterData.size() != m_filterWidgets[i]->model()->rowCount()) ||
-					(i == 2))) {
+					(i == 2) || ((i == 1) && (m_currentView == 5)))) {
 
 					filters.SetDistinctValueFilter(m_visualizationData[m_currentView].m_filterFieldNames[i], filterData);
 				}
@@ -287,12 +283,12 @@ void LoadingScreenWidget::OnLoadVisualization() {
 			branch.insert("Cohort");
 			filters.SetDistinctValueFilter("branch_type", branch);
 		}
-		else if (m_currentView == 5) {
+		/*else if (m_currentView == 5) {
 
 			QSet<QString> branch;
 			branch.insert("Total");
 			filters.SetDistinctValueFilter("branch_type", branch);
-		}
+		}*/
 		else if (m_currentView == 6) {
 
 			QSet<QString> readers;

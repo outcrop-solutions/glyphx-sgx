@@ -342,6 +342,23 @@ SourceDataCache::SharedSQLQuery SourceDataCache::CreateDistinctValueAndCountQuer
 	return query;
 }
 
+SourceDataCache::SharedSQLQuery SourceDataCache::CreateDistinctValueAndCountQuery(const QString& tableName, const QString& columnName, const QString& whereClause) const {
+
+	QString queryString = "SELECT \"" + columnName + "\", COUNT(*) FROM \"" + tableName + "\" ";
+
+	if (!whereClause.isEmpty()) {
+
+		queryString += "WHERE " + whereClause + " ";
+	}
+
+	queryString += "GROUP BY \"" + columnName + "\" ";
+
+	SharedSQLQuery query(new QSqlQuery(m_db));
+	query->prepare(queryString);
+
+	return query;
+}
+
 SourceDataCache::SharedSQLQuery SourceDataCache::CreateOrderedValueAndRowQuery(const QString& tableName, const QString& columnName, const SynGlyphX::IndexSet& indexSet) const {
 
 	QString queryString = "SELECT \"" + columnName + "\", \"" + IndexColumnName + "\" FROM \"" + tableName + "\" ";

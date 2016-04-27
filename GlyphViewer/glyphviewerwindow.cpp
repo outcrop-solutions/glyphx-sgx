@@ -241,16 +241,18 @@ void GlyphViewerWindow::CreateMenus() {
 
 	m_viewMenu->addSeparator();
 
-	m_clearSelectionAction = CreateMenuAction(m_viewMenu, tr("Clear Selection"));
-	m_clearSelectionAction->setEnabled(false);
-	QObject::connect(m_clearSelectionAction, &QAction::triggered, m_glyphForestSelectionModel, &SynGlyphX::ItemFocusSelectionModel::ClearAll);
-
 	m_showTagsAction = CreateMenuAction(m_viewMenu, tr("Show Tags For Selected Objects"), Qt::Key_I);
 
 	m_hideTagsAction = CreateMenuAction(m_viewMenu, tr("Hide Tags For Selected Objects"), QKeySequence(Qt::SHIFT + Qt::Key_I));
 
 	m_hideAllTagsAction = CreateMenuAction(m_viewMenu, tr("Hide All Visible Tags"));
 	m_loadedVisualizationDependentActions.push_back(m_hideAllTagsAction);
+
+	m_viewMenu->addSeparator();
+
+	m_clearSelectionAction = CreateMenuAction(m_viewMenu, tr("Clear Selection"));
+	m_clearSelectionAction->setEnabled(false);
+	QObject::connect(m_clearSelectionAction, &QAction::triggered, m_glyphForestSelectionModel, &SynGlyphX::ItemFocusSelectionModel::ClearAll);
 
 	m_viewMenu->addSeparator();
 
