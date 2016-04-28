@@ -114,7 +114,7 @@ public class Node {
 		this.rot_rate_z = z;
 	}
 
-	public void setColor(double h,double s, double v){
+	public void setColor(double h, double s, double v){
 		double[] rgb = Functions.convertHSVtoRGB(h,s,v);
 		this.color_r = (int)rgb[0];
 		this.color_g = (int)rgb[1];

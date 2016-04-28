@@ -149,6 +149,7 @@ public class CSVWriter {
 		Logger.getInstance().add(app);
 
 		createBaseObjectStrings(app);
+		System.out.println("entering try catch");
 
 		try{
 			//FileWriter file = new FileWriter("C:/Users/Bryan/Desktop/Test on Antz/usr/csv/ANTZ0001.csv");  
@@ -291,6 +292,7 @@ public class CSVWriter {
 	        bfw.close();
 
 	    }catch(IOException ioe){
+	    	ioe.printStackTrace();
 	    	Logger.getInstance().add("Failed to write antznode and antztag files.");
 	    }
 	}
@@ -305,7 +307,7 @@ public class CSVWriter {
 			System.out.println(offset);
 			for(int i = 0; i < entry.getValue().linkCount(); i++){
 				index++;
-				if(!excluded.contains(parent_ids.get(link_index)) || !excluded.contains(parent_ids.get(link_index))){
+				if(!excluded.contains(parent_ids.get(link_index)) && !excluded.contains(parent_ids.get(link_index))){
 					String out = ""; 
 					String key_node_id = String.valueOf(parent_ids.get(link_index)+offset);
 					String value_node_id = String.valueOf(child_ids.get(link_index)+offset);
