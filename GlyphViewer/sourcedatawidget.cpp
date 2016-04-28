@@ -17,7 +17,7 @@
 #include <boost/uuid/uuid_io.hpp>
 
 SourceDataWidget::SourceDataWidget(SourceDataCache::ConstSharedPtr sourceDataCache, SynGlyphX::DataTransformMapping::ConstSharedPtr dataTransformMapping, QWidget *parent)
-	: QWidget(parent),
+	: QWidget(parent, Qt::Window),
 	m_sourceDataCache(sourceDataCache),
 	m_dataTransformMapping(dataTransformMapping)
 {
@@ -59,13 +59,9 @@ SourceDataWidget::~SourceDataWidget()
 
 void SourceDataWidget::closeEvent(QCloseEvent* event) {
 
-	if (parentWidget() == nullptr) {
-
-		WriteSettings();
-		setVisible(false);
-		event->ignore();
-		emit WindowHidden();
-	}
+	WriteSettings();
+	emit WindowHidden();
+	QWidget::closeEvent(event);
 }
 
 void SourceDataWidget::ClearTables() {
