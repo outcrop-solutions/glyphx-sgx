@@ -16,7 +16,7 @@ public class Functions {
 			if(x2 >= y1 && x2 <= y3){
 				return x2;
 			}else{
-				return 0;
+				return y3;
 			}
 		}
 		return (((x2-x1)*(y3-y1))/(x3-x1))+y1;
@@ -27,7 +27,7 @@ public class Functions {
 			if(x2 >= y1 && x2 <= y3){
 				return x2;
 			}else{
-				return 0;
+				return y3;
 			}
 		}
 		return ((Math.log10(x2-x1+1)*(y3-y1))/Math.log10(x3-x1+1))+y1;
