@@ -146,13 +146,15 @@ public class GlyphCreator {
 					x3 = Double.parseDouble(csvData.get(currData).getDataFrame().getMinMaxTable().get(input.get(fieldNames.get(i))).get(1));
 				}
 				double x2 = Double.parseDouble(cursor.get(input.get(fieldNames.get(i)))); //returns exact value in this row
-				if(x3 < Double.parseDouble(csvData.get(currData).getDataFrame().getMinMaxTable().get(input.get(fieldNames.get(i))).get(1))){
-					x3 = Double.parseDouble(csvData.get(currData).getDataFrame().getMinMaxTable().get(input.get(fieldNames.get(i))).get(1));
-					nodeTemp.updateMinMaxField(input.get(fieldNames.get(i)), x1, x3);
-				}
-				if(x1 > Double.parseDouble(csvData.get(currData).getDataFrame().getMinMaxTable().get(input.get(fieldNames.get(i))).get(0))){
-					x1 = Double.parseDouble(csvData.get(currData).getDataFrame().getMinMaxTable().get(input.get(fieldNames.get(i))).get(0));
-					nodeTemp.updateMinMaxField(input.get(fieldNames.get(i)), x1, x3);
+				if(x3 > x1){
+					if(x3 < Double.parseDouble(csvData.get(currData).getDataFrame().getMinMaxTable().get(input.get(fieldNames.get(i))).get(1))){
+						x3 = Double.parseDouble(csvData.get(currData).getDataFrame().getMinMaxTable().get(input.get(fieldNames.get(i))).get(1));
+						nodeTemp.updateMinMaxField(input.get(fieldNames.get(i)), x1, x3);
+					}
+					if(x1 > Double.parseDouble(csvData.get(currData).getDataFrame().getMinMaxTable().get(input.get(fieldNames.get(i))).get(0))){
+						x1 = Double.parseDouble(csvData.get(currData).getDataFrame().getMinMaxTable().get(input.get(fieldNames.get(i))).get(0));
+						nodeTemp.updateMinMaxField(input.get(fieldNames.get(i)), x1, x3);
+					}
 				}
 				if(functions.get(fieldNames.get(i)).equals("Linear Interpolation")){
 					setValues.put(fieldNames.get(i), Functions.linearInterpolation(x1,x3,y1,y3,x2));

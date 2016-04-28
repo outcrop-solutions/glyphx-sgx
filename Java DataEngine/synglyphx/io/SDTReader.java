@@ -501,6 +501,8 @@ public class SDTReader {
 				sqlReader = new SQLiteReader();
 				sqlReader.createDataFrame(dataPaths.get(i).getPath(),dataPaths.get(i).getTable());
 				dataPaths.get(i).setDataFrame(sqlReader.getDataFrame());
+			}else{
+				//dataframe creator for JDBC
 			}
 		}
 

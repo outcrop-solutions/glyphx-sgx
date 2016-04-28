@@ -97,8 +97,8 @@ public class GlyphEngine {
 	 	//String outDir = "C:/Users/Bryan/Desktop/East Coast Only/Viz";
 	 	//String sdtPath = "C:/Users/Bryan/Desktop/Links Test/link_test.sdt";
 	 	//String outDir = "C:/Users/Bryan/Desktop/Links Test/viz";
-	 	String sdtPath = "C:/Users/Bryan/Desktop/ND Bug 2/Total Picture DataMap.sdt";
-	 	String outDir = "C:/Users/Bryan/Desktop/ND Bug 2/Viz";
+	 	String sdtPath = "C:/Users/Bryan/Desktop/ND HS Test/High School.sdt";
+	 	String outDir = "C:/Users/Bryan/Desktop/ND HS Test/Viz";
 	 	
 	 	String expDir = "DataMapper";
 	 	GlyphEngine start = new GlyphEngine();
