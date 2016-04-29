@@ -699,12 +699,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_280CAC2412C04C5EBA56B97EE3FA5801"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_28C9751EC7354CA6B9F512FAECD57478"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -1995,12 +1989,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_73942186C74B42BF895693E3F2FA47FB"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_73B469F712634EC18EFA966D2CE4DB11"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -3237,18 +3225,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_C18FD5D8586D43009E560C651151D0A7"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_C23C16ACEED749FEA2F6A6CA2FF393ED"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_C25338B173224DBBBF5A185F9DAFB75E"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -3316,12 +3292,6 @@
         "Entry"
         {
         "MsmKey" = "8:_C59F90805103422494F10120E0D01A3F"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_C5A5565D16524E158C281AF32DE75AC3"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -3478,12 +3448,6 @@
         "Entry"
         {
         "MsmKey" = "8:_CFBBD88E9BF148D9B3D994E32D7C497B"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_CFBBE95372F6428BB47610D4A3F54FF3"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -3664,12 +3628,6 @@
         "Entry"
         {
         "MsmKey" = "8:_DCA86087FF634568B2D9156C71587D69"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_DCF14BC38AE043E48C58C89C318AB94C"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -6598,26 +6556,6 @@
             "TargetName" = "8:release_2014-06-29.txt"
             "Tag" = "8:"
             "Folder" = "8:_C453C49D780C4D36B12A3D52B6E6868A"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_280CAC2412C04C5EBA56B97EE3FA5801"
-            {
-            "SourcePath" = "8:..\\..\\Misc\\InstallerFiles\\Docs\\SynglyphX_Install_Guide.pdf"
-            "TargetName" = "8:SynglyphX_Install_Guide.pdf"
-            "Tag" = "8:"
-            "Folder" = "8:_0C9AA4F94A97428090886732B9B3D2C2"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -14872,46 +14810,6 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_C18FD5D8586D43009E560C651151D0A7"
-            {
-            "SourcePath" = "8:..\\..\\Misc\\InstallerFiles\\SampleData\\Quickstart_Sample_Data_Olympics.csv"
-            "TargetName" = "8:Quickstart_Sample_Data_Olympics.csv"
-            "Tag" = "8:"
-            "Folder" = "8:_EF6F4723ED554728838CCDB807CD0296"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_C23C16ACEED749FEA2F6A6CA2FF393ED"
-            {
-            "SourcePath" = "8:..\\..\\Misc\\InstallerFiles\\Docs\\SynGlyphX_User_Guide.pdf"
-            "TargetName" = "8:SynGlyphX_User_Guide.pdf"
-            "Tag" = "8:"
-            "Folder" = "8:_0C9AA4F94A97428090886732B9B3D2C2"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_C25338B173224DBBBF5A185F9DAFB75E"
             {
             "SourcePath" = "8:..\\..\\DataEngine\\jdk1.7.0_79\\jre\\lib\\cmm\\LINEAR_RGB.pf"
@@ -15138,26 +15036,6 @@
             "TargetName" = "8:Azores"
             "Tag" = "8:"
             "Folder" = "8:_48AED621CD114A9595681DD954951670"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_C5A5565D16524E158C281AF32DE75AC3"
-            {
-            "SourcePath" = "8:..\\..\\Misc\\InstallerFiles\\SampleData\\Quickstart_Template.png"
-            "TargetName" = "8:Quickstart_Template.png"
-            "Tag" = "8:"
-            "Folder" = "8:_EF6F4723ED554728838CCDB807CD0296"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -18275,52 +18153,6 @@
         }
         "FileType"
         {
-            "{5EB83D71-FA18-4901-BE56-DE22E13CC478}:_41194F45CE834A4896C1C1B9E6106025"
-            {
-            "Name" = "8:SynGlyphX Glyph Template"
-            "Description" = "8:SynGlyphX Glyph Template"
-            "Extensions" = "8:sgt"
-            "MIME" = "8:"
-            "Icon" = "8:_FAA64575586341E1BB230B90C90AE0DA"
-            "IconIndex" = "3:0"
-                "Command"
-                {
-                "Command" = "8:_73942186C74B42BF895693E3F2FA47FB"
-                }
-                "Verbs"
-                {
-                    "{95C0C507-CBF0-42B8-B119-07219E384A4A}:_7AF48A3C66E64794A52088A37933049C"
-                    {
-                    "Command" = "8:&Open"
-                    "Verb" = "8:open"
-                    "Arguments" = "8:\"%1\""
-                    "Order" = "3:0"
-                    }
-                }
-            }
-            "{5EB83D71-FA18-4901-BE56-DE22E13CC478}:_F9FEDCFCC6AB47CAB75D156C05322216"
-            {
-            "Name" = "8:SynGlyphX Data Transform"
-            "Description" = "8:SynGlyphX Data Transform"
-            "Extensions" = "8:sdt"
-            "MIME" = "8:"
-            "Icon" = "8:_FAA64575586341E1BB230B90C90AE0DA"
-            "IconIndex" = "3:0"
-                "Command"
-                {
-                "Command" = "8:_CFBBE95372F6428BB47610D4A3F54FF3"
-                }
-                "Verbs"
-                {
-                    "{95C0C507-CBF0-42B8-B119-07219E384A4A}:_960891D92D3949B4B17E2C34AC3B413E"
-                    {
-                    "Command" = "8:&Open"
-                    "Verb" = "8:open"
-                    "Arguments" = "8:\"%1\""
-                    "Order" = "3:0"
-                    }
-                }
-            }
         }
         "Folder"
         {
@@ -18336,17 +18168,6 @@
             "Property" = "8:NEWRETARGETABLEPROPERTY1"
                 "Folders"
                 {
-                    "{9EF0B969-E518-4E46-987F-47570745A589}:_0C9AA4F94A97428090886732B9B3D2C2"
-                    {
-                    "Name" = "8:docs"
-                    "AlwaysCreate" = "11:TRUE"
-                    "Condition" = "8:"
-                    "Transitive" = "11:FALSE"
-                    "Property" = "8:_B8AE220546884E8092F26E42C8E77198"
-                        "Folders"
-                        {
-                        }
-                    }
                     "{9EF0B969-E518-4E46-987F-47570745A589}:_10B6F7AAC886461BA7F14C41F07434A9"
                     {
                     "Name" = "8:database-drivers"
@@ -18719,17 +18540,6 @@
                                     }
                                 }
                             }
-                        }
-                    }
-                    "{9EF0B969-E518-4E46-987F-47570745A589}:_EF6F4723ED554728838CCDB807CD0296"
-                    {
-                    "Name" = "8:SampleData"
-                    "AlwaysCreate" = "11:TRUE"
-                    "Condition" = "8:"
-                    "Transitive" = "11:FALSE"
-                    "Property" = "8:_9411FD4BA90D47C7BE245B5EE9301A56"
-                        "Folders"
-                        {
                         }
                     }
                     "{9EF0B969-E518-4E46-987F-47570745A589}:_FF508B86533240C496AE8D03ACF7AF60"
@@ -19108,39 +18918,6 @@
                     }
                 }
             }
-            "{1525181F-901A-416C-8A58-119130FE478E}:_AE5DEF05DB95429488E96B6C98F9888E"
-            {
-            "Name" = "8:#1916"
-            "AlwaysCreate" = "11:FALSE"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Property" = "8:DesktopFolder"
-                "Folders"
-                {
-                }
-            }
-            "{1525181F-901A-416C-8A58-119130FE478E}:_AFB1AE09ECE14D8385F83C17D549F5E6"
-            {
-            "Name" = "8:#1919"
-            "AlwaysCreate" = "11:FALSE"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Property" = "8:ProgramMenuFolder"
-                "Folders"
-                {
-                    "{9EF0B969-E518-4E46-987F-47570745A589}:_3E7962AF2FAE404889124360555F5ACB"
-                    {
-                    "Name" = "8:SynGlyphX"
-                    "AlwaysCreate" = "11:TRUE"
-                    "Condition" = "8:"
-                    "Transitive" = "11:FALSE"
-                    "Property" = "8:_32ACBA4FB48A46F28354DF18182E7BF1"
-                        "Folders"
-                        {
-                        }
-                    }
-                }
-            }
         }
         "Sequences"
         {
@@ -19151,7 +18928,7 @@
         "Module"
         {
         "ModuleSignature" = "8:MergeModule.E7BC5B0DA8E84115B456FD393FF63EDE"
-        "Version" = "8:0.7.40.0"
+        "Version" = "8:0.7.41.0"
         "Title" = "8:SGXSetupMergeModule"
         "Subject" = "8:"
         "Author" = "8:SynGlyphX"
@@ -19334,34 +19111,6 @@
                 {
                 }
             }
-            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_73942186C74B42BF895693E3F2FA47FB"
-            {
-            "SourcePath" = "8:..\\..\\bin\\Win32\\Release\\GlyphDesigner.exe"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_0FD992B69CC74D489682A631FA99B364"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            "ProjectOutputGroupRegister" = "3:1"
-            "OutputConfiguration" = "8:"
-            "OutputGroupCanonicalName" = "8:Built"
-            "OutputProjectGuid" = "8:{C51DA629-7E1F-4211-91C6-54C980A70172}"
-            "ShowKeyOutput" = "11:TRUE"
-                "ExcludeFilters"
-                {
-                }
-            }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_81FF97ED6A5F414A9168C96960FF2219"
             {
             "SourcePath" = "8:..\\..\\bin\\Win32\\Release\\MapDownloading.dll"
@@ -19502,34 +19251,6 @@
                 {
                 }
             }
-            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_CFBBE95372F6428BB47610D4A3F54FF3"
-            {
-            "SourcePath" = "8:..\\..\\bin\\Win32\\Release\\GlyphViewer.exe"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_0FD992B69CC74D489682A631FA99B364"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            "ProjectOutputGroupRegister" = "3:1"
-            "OutputConfiguration" = "8:"
-            "OutputGroupCanonicalName" = "8:Built"
-            "OutputProjectGuid" = "8:{B12702AD-ABFB-343A-A199-8E24837244A3}"
-            "ShowKeyOutput" = "11:TRUE"
-                "ExcludeFilters"
-                {
-                }
-            }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_D787F3DF2B28465F8FD35E5366024A69"
             {
             "SourcePath" = "8:..\\..\\bin\\Win32\\Release\\SGXGlyphGUI.dll"
@@ -19581,34 +19302,6 @@
             "OutputConfiguration" = "8:"
             "OutputGroupCanonicalName" = "8:Built"
             "OutputProjectGuid" = "8:{1917E85B-C54C-4A57-8D29-DAC16021149E}"
-            "ShowKeyOutput" = "11:TRUE"
-                "ExcludeFilters"
-                {
-                }
-            }
-            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_DCF14BC38AE043E48C58C89C318AB94C"
-            {
-            "SourcePath" = "8:..\\..\\bin\\Win32\\Release\\DataMapper.exe"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_0FD992B69CC74D489682A631FA99B364"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            "ProjectOutputGroupRegister" = "3:1"
-            "OutputConfiguration" = "8:"
-            "OutputGroupCanonicalName" = "8:Built"
-            "OutputProjectGuid" = "8:{5E911B8A-4BAF-4DEC-A87D-E517F53FDB57}"
             "ShowKeyOutput" = "11:TRUE"
                 "ExcludeFilters"
                 {
@@ -19706,132 +19399,6 @@
         }
         "Shortcut"
         {
-            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_0596ADE97CA641E781F5CCF742B133F8"
-            {
-            "Name" = "8:Glyph Designer"
-            "Arguments" = "8:"
-            "Description" = "8:"
-            "ShowCmd" = "3:1"
-            "IconIndex" = "3:0"
-            "Transitive" = "11:FALSE"
-            "Target" = "8:_73942186C74B42BF895693E3F2FA47FB"
-            "Folder" = "8:_3E7962AF2FAE404889124360555F5ACB"
-            "WorkingFolder" = "8:_0FD992B69CC74D489682A631FA99B364"
-            "Icon" = "8:_FAA64575586341E1BB230B90C90AE0DA"
-            "Feature" = "8:"
-            }
-            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_14F7BE2FF809416EA470D24CD77ABD52"
-            {
-            "Name" = "8:Data Mapper"
-            "Arguments" = "8:"
-            "Description" = "8:"
-            "ShowCmd" = "3:1"
-            "IconIndex" = "3:0"
-            "Transitive" = "11:FALSE"
-            "Target" = "8:_DCF14BC38AE043E48C58C89C318AB94C"
-            "Folder" = "8:_3E7962AF2FAE404889124360555F5ACB"
-            "WorkingFolder" = "8:_0FD992B69CC74D489682A631FA99B364"
-            "Icon" = "8:_FAA64575586341E1BB230B90C90AE0DA"
-            "Feature" = "8:"
-            }
-            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_496D1073A8D949F6A1882139560338E3"
-            {
-            "Name" = "8:Data Mapper - Shortcut"
-            "Arguments" = "8:"
-            "Description" = "8:Shortcut to Data Mapper"
-            "ShowCmd" = "3:1"
-            "IconIndex" = "3:0"
-            "Transitive" = "11:FALSE"
-            "Target" = "8:_DCF14BC38AE043E48C58C89C318AB94C"
-            "Folder" = "8:_AE5DEF05DB95429488E96B6C98F9888E"
-            "WorkingFolder" = "8:_0FD992B69CC74D489682A631FA99B364"
-            "Icon" = "8:_FAA64575586341E1BB230B90C90AE0DA"
-            "Feature" = "8:"
-            }
-            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_5700AAE5191D43E39ACB9CD3E06D7DB3"
-            {
-            "Name" = "8:Glyph Viewer"
-            "Arguments" = "8:"
-            "Description" = "8:"
-            "ShowCmd" = "3:1"
-            "IconIndex" = "3:0"
-            "Transitive" = "11:FALSE"
-            "Target" = "8:_CFBBE95372F6428BB47610D4A3F54FF3"
-            "Folder" = "8:_3E7962AF2FAE404889124360555F5ACB"
-            "WorkingFolder" = "8:_0FD992B69CC74D489682A631FA99B364"
-            "Icon" = "8:_FAA64575586341E1BB230B90C90AE0DA"
-            "Feature" = "8:"
-            }
-            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_B0E06393C2CE4D1A86F0D2F6C336F2E2"
-            {
-            "Name" = "8:Glyph Designer - Shortcut"
-            "Arguments" = "8:"
-            "Description" = "8:Shortcut to Glyph Designer"
-            "ShowCmd" = "3:1"
-            "IconIndex" = "3:0"
-            "Transitive" = "11:FALSE"
-            "Target" = "8:_73942186C74B42BF895693E3F2FA47FB"
-            "Folder" = "8:_AE5DEF05DB95429488E96B6C98F9888E"
-            "WorkingFolder" = "8:_0FD992B69CC74D489682A631FA99B364"
-            "Icon" = "8:_FAA64575586341E1BB230B90C90AE0DA"
-            "Feature" = "8:"
-            }
-            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_CC375CC7ABD545FEB2C4BED969781FB3"
-            {
-            "Name" = "8:Shortcut to SynGlyphX_User_Guide.pdf"
-            "Arguments" = "8:"
-            "Description" = "8:"
-            "ShowCmd" = "3:1"
-            "IconIndex" = "3:0"
-            "Transitive" = "11:FALSE"
-            "Target" = "8:_C23C16ACEED749FEA2F6A6CA2FF393ED"
-            "Folder" = "8:_3E7962AF2FAE404889124360555F5ACB"
-            "WorkingFolder" = "8:_0C9AA4F94A97428090886732B9B3D2C2"
-            "Icon" = "8:"
-            "Feature" = "8:"
-            }
-            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_CC4C6AC7643C434585D72703D70D6587"
-            {
-            "Name" = "8:Shortcut to SynglyphX_Install_Guide.pdf"
-            "Arguments" = "8:"
-            "Description" = "8:"
-            "ShowCmd" = "3:1"
-            "IconIndex" = "3:0"
-            "Transitive" = "11:FALSE"
-            "Target" = "8:_280CAC2412C04C5EBA56B97EE3FA5801"
-            "Folder" = "8:_3E7962AF2FAE404889124360555F5ACB"
-            "WorkingFolder" = "8:_0C9AA4F94A97428090886732B9B3D2C2"
-            "Icon" = "8:"
-            "Feature" = "8:"
-            }
-            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_E3D4FD5D4C554D69AF17891893E0E388"
-            {
-            "Name" = "8:Glyph Viewer - Shortcut"
-            "Arguments" = "8:"
-            "Description" = "8:Shortcut to Glyph Viewer"
-            "ShowCmd" = "3:1"
-            "IconIndex" = "3:0"
-            "Transitive" = "11:FALSE"
-            "Target" = "8:_CFBBE95372F6428BB47610D4A3F54FF3"
-            "Folder" = "8:_AE5DEF05DB95429488E96B6C98F9888E"
-            "WorkingFolder" = "8:_0FD992B69CC74D489682A631FA99B364"
-            "Icon" = "8:_FAA64575586341E1BB230B90C90AE0DA"
-            "Feature" = "8:"
-            }
-            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_ED373569BF9E4442B5E2C0BF38818F28"
-            {
-            "Name" = "8:Sample Data"
-            "Arguments" = "8:"
-            "Description" = "8:"
-            "ShowCmd" = "3:1"
-            "IconIndex" = "3:0"
-            "Transitive" = "11:FALSE"
-            "Target" = "8:_EF6F4723ED554728838CCDB807CD0296"
-            "Folder" = "8:_3E7962AF2FAE404889124360555F5ACB"
-            "WorkingFolder" = "8:_0FD992B69CC74D489682A631FA99B364"
-            "Icon" = "8:_FAA64575586341E1BB230B90C90AE0DA"
-            "Feature" = "8:"
-            }
         }
     }
 }
