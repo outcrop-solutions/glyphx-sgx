@@ -42,7 +42,7 @@ protected slots:
 	void SaveCurrentTabToFile();
 
 protected:
-	virtual void closeEvent(QCloseEvent* event);
+	void closeEvent(QCloseEvent* event) override;
 	void ClearTables();
 	virtual SynGlyphX::IndexSet GetSourceIndexesForTable(const QString& table) = 0;
 

@@ -992,3 +992,10 @@ void GlyphViewerWindow::DownloadBaseImages(DataEngine::GlyphEngine& ge) {
 		throw;
 	}
 }
+
+void GlyphViewerWindow::closeEvent(QCloseEvent* event) {
+
+	m_filteringWidget->CloseSourceDataWidgets();
+
+	SynGlyphX::MainWindow::closeEvent(event);
+}

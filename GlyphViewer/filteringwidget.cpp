@@ -69,13 +69,13 @@ FilteringWidget::FilteringWidget(SourceDataInfoModel* columnsModel, FilteringMan
 
 	EnableFilterRelatedButtons(!m_filteringManager->GetFilterResultsByTable().empty());
 
-	m_selectedSourceDataWindow.reset(new SelectedSourceDataWidget(m_filteringManager->GetSceneSelectionModel(), m_filteringManager->GetSourceDataCache(), m_filteringManager->GetDataMappingModel()->GetDataMapping(), this));
+	m_selectedSourceDataWindow.reset(new SelectedSourceDataWidget(m_filteringManager->GetSceneSelectionModel(), m_filteringManager->GetSourceDataCache(), m_filteringManager->GetDataMappingModel()->GetDataMapping(), nullptr));
 	QObject::connect(m_selectedSourceWidgetButton, &QPushButton::toggled, m_selectedSourceDataWindow.data(), &SourceDataWidget::setVisible);
 	m_selectedSourceDataWindow->setVisible(false);
 	QObject::connect(m_selectedSourceDataWindow.data(), &SourceDataWidget::WindowHidden, this, &FilteringWidget::OnSelectedSourceWidgetWindowHidden);
 	QObject::connect(m_filteringManager->GetSceneSelectionModel(), &QItemSelectionModel::selectionChanged, this, &FilteringWidget::OnUserSelectionChanged);
 
-	m_filteredSourceDataWindow.reset(new FilteredSourceDataWidget(m_filteringManager, this));
+	m_filteredSourceDataWindow.reset(new FilteredSourceDataWidget(m_filteringManager, nullptr));
 	QObject::connect(m_sourceWidgetButton, &QPushButton::toggled, m_filteredSourceDataWindow.data(), &SourceDataWidget::setVisible);
 	m_filteredSourceDataWindow->setVisible(false);
 	QObject::connect(m_filteredSourceDataWindow.data(), &SourceDataWidget::WindowHidden, this, &FilteringWidget::OnSourceWidgetWindowHidden);
@@ -191,4 +191,10 @@ void FilteringWidget::OnUserSelectionChanged(const QItemSelection &selected, con
 	}
 
 	m_selectedSourceWidgetButton->setEnabled(hasSelection);
+}
+
+void FilteringWidget::CloseSourceDataWidgets() {
+
+	m_filteredSourceDataWindow->close();
+	m_selectedSourceDataWindow->close();
 }

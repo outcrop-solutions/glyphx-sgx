@@ -41,6 +41,7 @@ public:
 
 	void SetupLinkedWidgets(LinkedWidgetsManager& linkedWidgets);
 	void OnNewVisualization();
+	void CloseSourceDataWidgets();
 
 private slots:
 	void Clear();

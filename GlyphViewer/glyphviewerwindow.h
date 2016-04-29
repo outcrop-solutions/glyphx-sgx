@@ -54,6 +54,8 @@ protected:
 	virtual void ReadSettings();
 	virtual void WriteSettings();
 
+	void closeEvent(QCloseEvent* event) override;
+
 private slots:
 	void OpenProject();
 	void RefreshVisualization();
