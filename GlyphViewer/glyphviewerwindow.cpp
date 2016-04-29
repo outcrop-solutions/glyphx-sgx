@@ -122,7 +122,7 @@ GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 			QMessageBox::critical(this, tr("Failed To Open Visualization"), tr("Failed to open visualization from command line.  Error: ") + e.what(), QMessageBox::Ok);
 		}
 	}
-	else if (LoadingScreenWidget::DoesGlyphEdDirExist()) {
+	else if (SynGlyphX::GlyphBuilderApplication::IsGlyphEd()) {
 
 		antzWidgetContainer->setCurrentIndex(0);
 	}
@@ -144,7 +144,7 @@ void GlyphViewerWindow::CreateLoadingScreen() {
 
 	QStackedWidget* antzWidgetContainer = dynamic_cast<QStackedWidget*>(centralWidget());
 
-	if (LoadingScreenWidget::DoesGlyphEdDirExist()) {
+	if (SynGlyphX::GlyphBuilderApplication::IsGlyphEd()) {
 
 		LoadingScreenWidget* loadingScreen = new LoadingScreenWidget(this, antzWidgetContainer);
 		antzWidgetContainer->addWidget(loadingScreen);
@@ -439,7 +439,7 @@ void GlyphViewerWindow::CloseVisualization() {
 		m_legendsDockWidget->hide();
 	}
 
-	if (LoadingScreenWidget::DoesGlyphEdDirExist()) {
+	if (SynGlyphX::GlyphBuilderApplication::IsGlyphEd()) {
 
 		QStackedWidget* antzWidgetContainer = dynamic_cast<QStackedWidget*>(centralWidget());
 		antzWidgetContainer->setCurrentIndex(0);
@@ -487,7 +487,7 @@ void GlyphViewerWindow::LoadVisualization(const QString& filename, const DataMap
 		LoadANTzCompatibilityVisualization(filename);
 	}
 
-	if (LoadingScreenWidget::DoesGlyphEdDirExist()) {
+	if (SynGlyphX::GlyphBuilderApplication::IsGlyphEd()) {
 
 		QStackedWidget* antzWidgetContainer = dynamic_cast<QStackedWidget*>(centralWidget());
 		antzWidgetContainer->setCurrentIndex(1);

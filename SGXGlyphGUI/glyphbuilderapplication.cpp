@@ -25,7 +25,7 @@ namespace SynGlyphX {
 
 		SetupIcons(QIcon(":SGXGUI/Resources/synglyphx_x.ico"));
 
-		if (QDir(QDir::toNativeSeparators(QDir::cleanPath(SynGlyphX::GlyphBuilderApplication::GetCommonDataLocation()) + "/GlyphEd")).exists()) {
+		if (IsGlyphEd()) {
 
 			s_splashScreenLocation = ":SGXGUI/Resources/GlyphEd/glyphed_splash.png";
 			s_logoLocations[LogoType::NoBorder] = ":SGXGUI/Resources/GlyphEd/glyphed_logo_no_border.png";
@@ -67,6 +67,12 @@ namespace SynGlyphX {
 		}
 
 		return false;
+	}
+
+	bool GlyphBuilderApplication::IsGlyphEd() {
+
+		QString glyphEdDir = QDir::cleanPath(SynGlyphX::GlyphBuilderApplication::applicationDirPath()) + "/GlyphEd";
+		return QDir(glyphEdDir).exists();
 	}
 
 } //namespace SynGlyphX

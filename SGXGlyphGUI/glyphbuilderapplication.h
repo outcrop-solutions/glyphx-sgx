@@ -45,6 +45,8 @@ namespace SynGlyphX {
 
 		static bool AreInternalSGXFeaturesEnabled();
 
+		static bool IsGlyphEd();
+
 	protected:
 		static QMap<LogoType, QString> s_logoLocations;
 		static QString s_splashScreenLocation;

@@ -33,7 +33,6 @@ public:
 	LoadingScreenWidget(GlyphViewerWindow* mainWindow, QWidget *parent);
 	~LoadingScreenWidget();
 
-	static bool DoesGlyphEdDirExist();
 	static QString GetGlyphEdDir();
 
 private slots:

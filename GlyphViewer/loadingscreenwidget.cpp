@@ -216,11 +216,6 @@ void LoadingScreenWidget::SetupVisualizationData() {
 	m_visualizationData.push_back(globalDashboardView);
 }
 
-bool LoadingScreenWidget::DoesGlyphEdDirExist() {
-
-	return QDir(GetGlyphEdDir()).exists();
-}
-
 QString LoadingScreenWidget::GetGlyphEdDir() {
 
 	if (s_glyphEdDir.isEmpty()) {
