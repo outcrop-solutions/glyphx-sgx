@@ -53,6 +53,7 @@ public class SDTReader {
 
 	public void generateGlyphs(){
 		
+		//double start = System.currentTimeMillis();
 		Thread thread = new Thread(){
     		public void run(){
       			SQLiteWriter writer = new SQLiteWriter(dataPaths, outDir, rootIds, templates);
@@ -73,6 +74,9 @@ public class SDTReader {
 		}catch(InterruptedException ie){
 	        ie.printStackTrace();
 		}
+		double end = System.currentTimeMillis();
+		//System.out.print("Time to generate cache: ");
+		//System.out.println((end-start)/1000.00);
 	}
 
 	public boolean isUpdateNeeded() {

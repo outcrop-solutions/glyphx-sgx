@@ -25,10 +25,14 @@ public class CSVReader {
 		try{
 			com.opencsv.CSVReader reader = new com.opencsv.CSVReader(new FileReader(path));
 	     	String [] nextLine;
+	     	//int x = 1;
 	     	while ((nextLine = reader.readNext()) != null) {
 	     		if(rowNotAllEmpty(nextLine)){
 	     			this.data.addRow(CSVtoArrayList(nextLine));
 	     		}
+	     		//x++;
+	     		//System.out.println(x);
+
 	     	}
      	} catch (IOException re) {
 			re.printStackTrace();
