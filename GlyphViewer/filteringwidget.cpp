@@ -52,16 +52,20 @@ FilteringWidget::FilteringWidget(SourceDataInfoModel* columnsModel, FilteringMan
 	m_sourceWidgetButton->setCheckable(true);
 	buttonsLayout->addWidget(m_sourceWidgetButton);
 
+	m_createSubsetVizButton = new QPushButton(tr("Create Subset Visualization"));
+	m_createSubsetVizButton->setEnabled(false);
+	buttonsLayout->addWidget(m_createSubsetVizButton);
+
+	QFrame* line = new QFrame(this);
+	line->setFrameStyle(QFrame::Shape::VLine | QFrame::Shadow::Sunken);
+	buttonsLayout->addWidget(line);
+
 	m_selectedSourceWidgetButton = new QPushButton(tr("Show Selected Data"), this);
 	m_selectedSourceWidgetButton->setEnabled(false);
 	m_selectedSourceWidgetButton->setCheckable(true);
 	buttonsLayout->addWidget(m_selectedSourceWidgetButton);
 
 	buttonsLayout->addStretch(1);
-
-	m_createSubsetVizButton = new QPushButton(tr("Create Subset Visualization"));
-	m_createSubsetVizButton->setEnabled(false);
-	buttonsLayout->addWidget(m_createSubsetVizButton);
 
 	mainLayout->addLayout(buttonsLayout);
 
@@ -119,8 +123,6 @@ void FilteringWidget::OnFilterResultsChanged() {
 	const FilteringManager::Table2FiltersMap& filtersMap = m_filteringManager->GetTable2FiltersMap();
 	EnableFilterRelatedButtons(m_filteringManager->GetSourceDataCache()->IsValid() && (!filtersMap.empty()));
 
-	m_createSubsetVizButton->setEnabled(!filtersMap.empty());
-
 	//Only change the table shown if it is not in the selection at all
 	if (!filtersMap.empty() && (filtersMap.count(m_tableComboBox->currentData().toString()) == 0)) {
 
@@ -141,6 +143,7 @@ void FilteringWidget::OnNewVisualization() {
 	m_tableComboBox->setEnabled(sourceDataCache->IsValid());
 
 	m_sourceWidgetButton->setEnabled(sourceDataCache->IsValid());
+	m_createSubsetVizButton->setEnabled(sourceDataCache->IsValid());
 
 	if (sourceDataCache->IsValid()) {
 
