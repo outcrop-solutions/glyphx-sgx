@@ -13,7 +13,7 @@
 
 int main(int argc, char *argv[])
 {
-    SynGlyphX::GlyphBuilderApplication::Setup("Glyph Builder - Data Mapper", "0.7.41");
+    SynGlyphX::GlyphBuilderApplication::Setup("Glyph Builder - Data Mapper", "0.7.42");
 	SynGlyphX::GlyphBuilderApplication a(argc, argv);
 
 	const QString dumpPath = QStandardPaths::writableLocation(QStandardPaths::HomeLocation) + "/Minidumps";
