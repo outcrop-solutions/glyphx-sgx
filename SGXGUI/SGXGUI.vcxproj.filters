@@ -566,6 +566,9 @@
     <Image Include="Resources\GlyphEd\glyphed_logo_no_border.png">
       <Filter>Resource Files\GlyphEd</Filter>
     </Image>
+    <Image Include="Resources\GlyphEd\synglyphx_x_ED.ico">
+      <Filter>Resource Files\GlyphEd</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\qt.conf">

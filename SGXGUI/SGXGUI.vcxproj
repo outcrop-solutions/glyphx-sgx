@@ -777,6 +777,7 @@
     <Image Include="Resources\GlyphEd\glyphed_logo_no_border.png" />
     <Image Include="Resources\GlyphEd\glyphed_logo_white_border.png" />
     <Image Include="Resources\GlyphEd\glyphed_splash.png" />
+    <Image Include="Resources\GlyphEd\synglyphx_x_ED.ico" />
     <Image Include="Resources\minus.png" />
     <Image Include="Resources\plus.png" />
     <Image Include="Resources\synglyphx_logo_white_border.png" />
