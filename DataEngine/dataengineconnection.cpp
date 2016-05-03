@@ -3,7 +3,7 @@
 #include "dataengineconnection.h"
 #include "dataenginestatement.h"
 #include <fstream>
-#include <Windows.h>
+#include "utilitytypes.h"
 //#include <QtCore/QDebug>
 
 namespace DataEngine
@@ -24,38 +24,58 @@ namespace DataEngine
 	void DataEngineConnection::createJVM(){
 
 		std::ifstream jre(".\\jre\\bin\\client\\jvm.dll");
-		HMODULE jvmDll;
 		if (jre){
-			jvmDll = LoadLibrary(L".\\jre\\bin\\client\\jvm.dll");
+		
+			jvmDll.Load(".\\jre\\bin\\client\\jvm.dll");
 		}
 		else{
-			jvmDll = LoadLibrary(L"..\\..\\DataEngine\\jdk1.7.0_79\\jre\\bin\\client\\jvm.dll");
-		}jre.close();
-		CreateJVMFunc CreateJVM = (CreateJVMFunc)GetProcAddress(jvmDll, "JNI_CreateJavaVM");
+			
+			jvmDll.Load("..\\..\\DataEngine\\jdk1.7.0_79\\jre\\bin\\client\\jvm.dll");
+		}
+		jre.close();
+		
+		CreateJVMFunc CreateJVM = (CreateJVMFunc)jvmDll.GetAddress("JNI_CreateJavaVM");
 
 		JavaVMInitArgs vmArgs;
 		JavaVMOption options[2];
 		std::ifstream ifile(".\\dataengine.jar");
 		options[0].optionString = "-Xmx1024M"; //Max of 2048M
-		if (ifile){
-			options[1].optionString =
-				"-Djava.class.path=.\\dataengine.jar;"
-				".\\ojdbc6.jar;"
-				".\\database-drivers\\opencsv-3.7.jar;"
-				".\\database-drivers\\sqlite4java.jar;"
-				".\\database-drivers\\mysql-connector-java-5.1.38-bin.jar;"
-				".\\database-drivers\\sqlite-jdbc-3.8.11.2.jar;"
-			".\\database-drivers\\vertica-jdbc-7.2.1-0.jar;";
-		}else{
-			options[1].optionString =
-				"-Djava.class.path=..\\..\\DataEngine\\Java DataEngine\\dataengine.jar;"
-				"..\\..\\DataEngine\\Java DataEngine\\ojdbc6.jar;"
-				"..\\..\\DataEngine\\Java DataEngine\\database-drivers\\opencsv-3.7.jar;"
-				"..\\..\\DataEngine\\Java DataEngine\\database-drivers\\sqlite4java.jar;"
-				"..\\..\\DataEngine\\Java DataEngine\\database-drivers\\mysql-connector-java-5.1.38-bin.jar;"
-				"..\\..\\DataEngine\\Java DataEngine\\database-drivers\\sqlite-jdbc-3.8.11.2.jar;"
-			"..\\..\\DataEngine\\Java DataEngine\\database-drivers\\vertica-jdbc-7.2.1-0.jar;";
-		}ifile.close();
+
+#ifdef WIN32
+		char jarFileSeparator = ';';
+#else
+		char jarFileSeparator = ':';
+#endif
+
+		SynGlyphX::StringVector jarFiles;
+		jarFiles.push_back("dataengine.jar");
+		jarFiles.push_back("ojdbc6.jar");
+		jarFiles.push_back("database-drivers\\opencsv-3.7.jar");
+		jarFiles.push_back("database-drivers\\sqlite4java.jar");
+		jarFiles.push_back("database-drivers\\mysql-connector-java-5.1.38-bin.jar");
+		jarFiles.push_back("database-drivers\\sqlite-jdbc-3.8.11.2.jar");
+		jarFiles.push_back("database-drivers\\vertica-jdbc-7.2.1-0.jar");
+
+		std::string jarFilePrefix;
+		if (ifile) {
+
+			jarFilePrefix = ".\\";
+		} else {
+			
+			jarFilePrefix = "..\\..\\DataEngine\\Java DataEngine\\";
+		}
+
+		std::string jarFilesOptionString = "-Djava.class.path=";
+		for (const auto& jarFile : jarFiles) {
+
+			jarFilesOptionString += jarFilePrefix;
+			jarFilesOptionString += jarFile;
+			jarFilesOptionString += jarFileSeparator;
+		}
+
+		ifile.close();
+		options[1].optionString = const_cast<char*>(jarFilesOptionString.c_str());
+
 		vmArgs.version = JNI_VERSION_1_2;
 		vmArgs.options = options;
 		vmArgs.nOptions = 2;
@@ -104,6 +124,7 @@ namespace DataEngine
 	}
 
 	bool DataEngineConnection::hasJVM() const {
+		
 		return classFound;
 	}
 

@@ -9,6 +9,7 @@
 #include <map>
 #include <memory>
 #include "DataEngine_Exports.h"
+#include "runtimeloadedlibrary.h"
 
 namespace DataEngine
 {
@@ -78,6 +79,9 @@ namespace DataEngine
 		std::map<QString, QStringList> columnNames;
 		std::map<QString, std::vector<ForeignKey>> foreignKeysByTable;
 		std::map<QString, std::vector<QStringList>> sampleDataByTable;
+
+		SynGlyphX::RuntimeLoadedLibrary jvmDll;
+
 		QStringList getForeignKeyString(QString tablename);
 		QStringList getRowOfSampleData(int index, int row);
 		void setTables();
