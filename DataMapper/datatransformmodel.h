@@ -43,7 +43,8 @@ public:
 		BaseObjects = 1,
 		DataSources = 2,
 		FieldGroup = 3,
-		Legends = 4
+		Legends = 4,
+		Links = 5
 	};
 
 	enum PropertyRole {

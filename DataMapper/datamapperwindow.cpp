@@ -208,6 +208,11 @@ void DataMapperWindow::CreateMenus() {
 
 	m_baseObjectMenu->addSeparator();
 
+	//Create Links Menue
+	m_linksMenu = menuBar()->addMenu(tr("Links"));
+	QAction* addLinkAction = m_linksMenu->addAction(tr("Add Link"));
+	QObject::connect(addLinkAction, &QAction::triggered, this, &DataMapperWindow::AddLink);
+
 	//Create Datasource Menu
 	m_datasourceMenu = menuBar()->addMenu(tr("Data Source"));
     
@@ -292,6 +297,22 @@ void DataMapperWindow::CreateDockWidgets() {
 	leftDockWidgetBaseObjects->setWidget(m_baseObjectsView);
 	addDockWidget(Qt::LeftDockWidgetArea, leftDockWidgetBaseObjects);
 	m_viewMenu->addAction(leftDockWidgetBaseObjects->toggleViewAction());
+
+	QDockWidget* leftDockWidgetLinks = new QDockWidget(tr("Links"), this);
+
+	m_linksView = new LinksListView(m_dataTransformModel, leftDockWidgetBaseObjects);
+	m_linksModel = new SynGlyphX::IntRoleDataFilterProxyModel(this);
+	m_linksModel->setSourceModel(m_dataTransformModel);
+	m_linksModel->setFilterRole(DataTransformModel::DataTypeRole);
+	m_linksModel->SetFilterData(DataTransformModel::DataType::Links);
+	m_linksView->setModel(m_baseObjectsModel);
+	m_linksView->addActions(m_linksView->actions());
+
+	//Add linksView to dock widget on left side
+	leftDockWidgetBaseObjects->setWidget(m_linksView);
+	addDockWidget(Qt::LeftDockWidgetArea, leftDockWidgetLinks);
+	m_viewMenu->addAction(leftDockWidgetLinks->toggleViewAction());
+
 
 	QDockWidget* leftDockWidgetLegends = new QDockWidget(tr("Legends"), this);
 
@@ -765,6 +786,9 @@ void DataMapperWindow::AddBaseObject() {
 	}
 }
 
+void DataMapperWindow::AddLink() {
+	QMessageBox::information(this, tr("Link"), tr("Link"), QMessageBox::Ok);
+}
 void DataMapperWindow::AddLegend() {
 
 	SynGlyphX::LegendDialog dialog(this);
