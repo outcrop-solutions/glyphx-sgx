@@ -27,6 +27,7 @@
 #include "antzboundingbox.h"
 #include "zspaceoptions.h"
 #include "zspaceeventdispatcher.h"
+#include <gl/glu.h>
 
 namespace SynGlyphXANTz {
 
@@ -109,6 +110,8 @@ namespace SynGlyphXANTz {
 		void SetGridLinesColor(pNPnode grid, const QColor& color);
 		void CenterCameraOnNode(pNPnode node);
 		void InitIO();
+		void* CreateNewQuadricObject();
+		void DrawSceneAxisInfoObject();
 		void DrawHUD();
 		bool SelectAtPoint(int x, int y, bool multiSelect);
 		void SelectFromStylus(const SynGlyphXANTz::ANTzBoundingBox::Line& line);
@@ -194,6 +197,8 @@ namespace SynGlyphXANTz {
 		float m_initialCameraZAngle;
 
 		QSet<QModelIndex> m_tagIndexes;
+
+		GLUquadric* m_sceneAxisInfoQuadric;
 	};
 
 } //namespace SynGlyphXANTz

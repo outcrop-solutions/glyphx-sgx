@@ -44,7 +44,8 @@ namespace SynGlyphXANTz {
 		m_logoTextureID(0),
 		m_showAnimation(true),
 		m_isInStereo(false),
-		m_initialCameraZAngle(45.0f)
+		m_initialCameraZAngle(45.0f),
+		m_sceneAxisInfoQuadric(static_cast<GLUquadric*>(CreateNewQuadricObject()))
 	{
 		m_isInStereo = context()->format().stereo();
 
@@ -165,6 +166,8 @@ namespace SynGlyphXANTz {
 			deleteTexture(m_logoTextureID);
 			m_logoTextureID = 0;
 		}
+
+		gluDeleteQuadric(m_sceneAxisInfoQuadric);
 
 		ClearZSpaceContext();
 		npCloseGL(m_antzData->GetData());
@@ -494,12 +497,15 @@ namespace SynGlyphXANTz {
 
 		DrawZSpaceStylus(m_zSpaceStylusWorldMatrix, getStylusWorldPosition);
 
-		if (m_drawHUD) {
+		if (!antzData->io.gl.pickPass) {
 
-			DrawHUD();
+			if (m_drawHUD) {
+
+				DrawHUD();
+			}
+
+			DrawLogo();
 		}
-
-		DrawLogo();
 
 		glMatrixMode(GL_PROJECTION);
 		glPopMatrix();
@@ -574,6 +580,157 @@ namespace SynGlyphXANTz {
 				glPopMatrix();
 			}*/
 		}
+	}
+
+	void* ANTzForestWidget::CreateNewQuadricObject() {
+
+		GLUquadric* gluObject = nullptr;
+
+		gluObject = gluNewQuadric();
+		gluQuadricDrawStyle(gluObject, GLU_FILL);
+		//gluQuadricTexture(gluObject, TRUE);
+		gluQuadricNormals(gluObject, GLU_SMOOTH);
+
+		return gluObject;
+	}
+
+	void ANTzForestWidget::DrawSceneAxisInfoObject() {
+
+		pData antzData = m_antzData->GetData();
+		pNPnode currentCamera = npGetActiveCam(antzData);
+
+		GLdouble xTextMatrix[16];
+		GLfloat yTextMatrix[16];
+		GLfloat zTextMatrix[16];
+
+		bool flipXTextPosition = ((currentCamera->rotate.y > 90.0) && (currentCamera->rotate.y <= 270.0));
+		bool flipYTextPosition = (currentCamera->rotate.y > 180.0);
+
+		glViewport(0, antzData->io.gl.height - 200, 200, 200);
+		glMatrixMode(GL_PROJECTION);
+		glPushMatrix();
+		glLoadIdentity();
+		glOrtho(-5.0, 5.0, -5.0, 5.0, -10.0, 10.0);
+
+		glMatrixMode(GL_MODELVIEW);
+		glLoadIdentity();
+
+		gluLookAt(0.0, 2.5, 5.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+
+		qglColor(Qt::red);
+
+		glPushMatrix();
+		
+		glRotatef(currentCamera->rotate.y, 0.0f, 1.0f, 0.0f);
+		glRotatef(90.0f, 0.0f, 1.0f, 0.0f);
+		glTranslatef(0.0f, 0.0f, -3.0f);
+		gluCylinder(m_sceneAxisInfoQuadric, 0.1, 0.1, 6.0, 24, 1);
+
+		gluDisk(m_sceneAxisInfoQuadric, 0.0, 0.4, 24, 1);
+		glRotatef(180.0f, 1.0f, 0.0f, 0.0f);
+		gluCylinder(m_sceneAxisInfoQuadric, 0.4, 0.0, 1.0, 24, 1);
+
+		if (flipXTextPosition) {
+
+			glGetDoublev(GL_MODELVIEW_MATRIX, xTextMatrix);
+		}
+
+		glTranslatef(0.0f, 0.0f, -6.0f);
+		gluDisk(m_sceneAxisInfoQuadric, 0.0, 0.4, 24, 1);
+		glRotatef(180.0f, 1.0f, 0.0f, 0.0f);
+		gluCylinder(m_sceneAxisInfoQuadric, 0.4, 0.0, 1.0, 24, 1);
+
+		if (!flipXTextPosition) {
+
+			glGetDoublev(GL_MODELVIEW_MATRIX, xTextMatrix);
+		}
+		
+		glPopMatrix();
+
+		qglColor(Qt::green);
+
+		glPushMatrix();	
+
+		glRotatef(currentCamera->rotate.y, 0.0f, 1.0f, 0.0f);
+		glTranslatef(0.0f, 0.0f, -3.0f);
+		gluCylinder(m_sceneAxisInfoQuadric, 0.1, 0.1, 6.0, 24, 1);
+
+		gluDisk(m_sceneAxisInfoQuadric, 0.0, 0.4, 24, 1);
+		glRotatef(180.0f, 1.0f, 0.0f, 0.0f);
+		gluCylinder(m_sceneAxisInfoQuadric, 0.4, 0.0, 1.0, 24, 1);
+
+		if (flipYTextPosition) {
+
+			glGetFloatv(GL_MODELVIEW_MATRIX, yTextMatrix);
+		}
+
+		glTranslatef(0.0f, 0.0f, -6.0f);
+		gluDisk(m_sceneAxisInfoQuadric, 0.0, 0.4, 24, 1);
+		glRotatef(180.0f, 1.0f, 0.0f, 0.0f);
+		gluCylinder(m_sceneAxisInfoQuadric, 0.4, 0.0, 1.0, 24, 1);
+
+		if (!flipYTextPosition) {
+
+			glGetFloatv(GL_MODELVIEW_MATRIX, yTextMatrix);
+		}
+
+		glPopMatrix();
+		
+		qglColor(Qt::blue);
+
+		glPushMatrix();
+
+		glRotatef(90.0f, -1.0f, 0.0f, 0.0f);
+		glTranslatef(0.0f, 0.0f, -3.0f);
+		gluCylinder(m_sceneAxisInfoQuadric, 0.1, 0.1, 6.0, 24, 1);
+
+		gluDisk(m_sceneAxisInfoQuadric, 0.0, 0.4, 24, 1);
+		glRotatef(180.0f, 1.0f, 0.0f, 0.0f);
+		gluCylinder(m_sceneAxisInfoQuadric, 0.4, 0.0, 1.0, 24, 1);
+
+		glTranslatef(0.0f, 0.0f, -6.0f);
+		gluDisk(m_sceneAxisInfoQuadric, 0.0, 0.4, 24, 1);
+		glRotatef(180.0f, 1.0f, 0.0f, 0.0f);
+		gluCylinder(m_sceneAxisInfoQuadric, 0.4, 0.0, 1.0, 24, 1);
+
+		glGetFloatv(GL_MODELVIEW_MATRIX, zTextMatrix);
+
+		glPopMatrix();
+
+		//Wait until end to draw text
+		qglColor(Qt::white);
+		glPushMatrix();
+		glDisable(GL_DEPTH_TEST);
+
+		const std::array<QString, 3>& mappedFields = m_model->GetRootPosXYZMappedFields();
+
+		if (!mappedFields[0].isEmpty()) {
+
+			glLoadMatrixd(xTextMatrix);
+			renderText(-0.25, 0.0, 1.5, mappedFields[0], m_oglTextFont);
+		}
+
+		if (!mappedFields[1].isEmpty()) {
+
+			glLoadMatrixf(yTextMatrix);
+			renderText(-0.25, 0.0, 1.5, mappedFields[1], m_oglTextFont);
+		}
+		
+		if (!mappedFields[2].isEmpty()) {
+
+			glLoadMatrixf(zTextMatrix);
+			renderText(-0.25, 0.0, 1.5, mappedFields[2], m_oglTextFont);
+		}
+
+		glEnable(GL_DEPTH_TEST);
+		glPopMatrix();
+
+		glMatrixMode(GL_PROJECTION);
+		glPopMatrix();
+		glMatrixMode(GL_MODELVIEW);
+		glPopMatrix();
+
+		glViewport(0, 0, antzData->io.gl.width, antzData->io.gl.height);
 	}
 
 	void ANTzForestWidget::DrawHUD() {
@@ -657,6 +814,8 @@ namespace SynGlyphXANTz {
 		if (reenableDepthTest) {
 			glEnable(GL_DEPTH_TEST);
 		}
+
+		DrawSceneAxisInfoObject();
 	}
 
 	void ANTzForestWidget::SetZSpaceMatricesForDrawing(ZSEye eye, const ZSMatrix4& originialViewMatrix, NPcameraPtr camData) {

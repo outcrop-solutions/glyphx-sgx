@@ -20,7 +20,7 @@ namespace SynGlyphXANTz {
 		m_antzData(new ANTzPlus::ANTzData()),
 		m_tagNotToBeShownIn3d()
 	{
-
+		ResetFieldsMappedToRootPosXYZ();
 	}
 
 	GlyphForestModel::~GlyphForestModel()
@@ -210,10 +210,29 @@ namespace SynGlyphXANTz {
 
 		m_baseImageFilenames.clear();
 
+		ResetFieldsMappedToRootPosXYZ();
+
 		if (resetModel) {
 
 			endResetModel();
 		}
+	}
+
+	void GlyphForestModel::ResetFieldsMappedToRootPosXYZ() {
+
+		m_fieldsMappedToRootPosXYZ[0] = tr("X/Longitude");
+		m_fieldsMappedToRootPosXYZ[1] = tr("Y/Latitude");
+		m_fieldsMappedToRootPosXYZ[2] = tr("Z/Altitude");
+	}
+
+	const std::array<QString, 3>& GlyphForestModel::GetRootPosXYZMappedFields() const {
+
+		return m_fieldsMappedToRootPosXYZ;
+	}
+
+	void GlyphForestModel::SetRootPosXYZMappedFields(const std::array<QString, 3>& fields) {
+
+		m_fieldsMappedToRootPosXYZ = fields;
 	}
 
 	void GlyphForestModel::LoadANTzVisualization(const SynGlyphXANTz::ANTzCSVWriter::FilenameList& filesToLoad, const QStringList& baseImageFilenames) {
