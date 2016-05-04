@@ -15,46 +15,25 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef SYNGLYPHX_GLYPHBUILDERAPPLICATION_H
-#define SYNGLYPHX_GLYPHBUILDERAPPLICATION_H
+#ifndef FILTEREDSOURCEDATAWIDGET_H
+#define FILTEREDSOURCEDATAWIDGET_H
 
-#include "sgxglyphgui_global.h"
-#include "application.h"
+#include "sourcedatawidget.h"
+#include "filteringmanager.h"
 
-namespace SynGlyphX {
+class FilteredSourceDataWidget : public SourceDataWidget
+{
+	Q_OBJECT
 
-	class SGXGLYPHGUI_EXPORT GlyphBuilderApplication : public Application
-	{
-		Q_OBJECT
+public:
+	FilteredSourceDataWidget(FilteringManager* filteringManager, QWidget *parent);
+	~FilteredSourceDataWidget();
 
-	public:
-		enum LogoType {
+protected:
+	SynGlyphX::IndexSet GetSourceIndexesForTable(const QString& table) override;
 
-			NoBorder,
-			WhiteBorder
-		};
+private:
+	FilteringManager* m_filteringManager;
+};
 
-		GlyphBuilderApplication(int& argc, char** argv);
-		~GlyphBuilderApplication();
-
-		static void SetupIconsAndLogos();
-
-		static const QString& GetDefaultBaseImagesLocation();
-		static const QString& GetLogoLocation(LogoType logoType);
-		static const QString& GetSplashScreenLocation();
-
-		static bool AreInternalSGXFeaturesEnabled();
-
-		static bool IsGlyphEd();
-
-	protected:
-		static QMap<LogoType, QString> s_logoLocations;
-		static QString s_splashScreenLocation;
-
-		static QString s_defaultBaseImagesLocation;
-		static const char* s_internalSGXFeaturesEnvName;
-	};
-
-} //namespace SynGlyphX
-
-#endif // SYNGLYPHX_GLYPHBUILDERAPPLICATION_H
+#endif // FILTEREDSOURCEDATAWIDGET_H

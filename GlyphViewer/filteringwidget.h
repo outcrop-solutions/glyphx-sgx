@@ -21,13 +21,15 @@
 #include <QtWidgets/QWidget>
 #include <QtWidgets/QCheckBox>
 #include <QtWidgets/QPushButton>
-#include "sourcedatawidget.h"
+#include "filteredsourcedatawidget.h"
+#include "selectedsourcedatawidget.h"
 #include "filteringmanager.h"
 #include "linkedwidgetsmanager.h"
 #include "sourcedatainfomodel.h"
 #include "multitableelasticlistswidget.h"
 #include "rangefilterlistwidget.h"
 #include "keywordfilterlistwidget.h"
+#include "itemfocusselectionmodel.h"
 
 class FilteringWidget : public QWidget
 {
@@ -39,22 +41,28 @@ public:
 
 	void SetupLinkedWidgets(LinkedWidgetsManager& linkedWidgets);
 	void OnNewVisualization();
+	void CloseSourceDataWidgets();
 
 private slots:
 	void Clear();
 	void OnSourceWidgetWindowHidden();
+	void OnSelectedSourceWidgetWindowHidden();
 	void OnFilterResultsChanged();
 	void OnTableChanged(const QString& table);
+	void OnUserSelectionChanged(const QItemSelection &selected, const QItemSelection &deselected);
 
 private:
-	void EnableButtons(bool enable);
+	void EnableFilterRelatedButtons(bool enable);
 
 	QComboBox* m_tableComboBox;
 	QCheckBox* m_hideUnselectedTreesCheckbox;
 	QPushButton* m_sourceWidgetButton;
+	QPushButton* m_selectedSourceWidgetButton;
 	QPushButton* m_createSubsetVizButton;
 	QPushButton* m_clearButton;
-	QScopedPointer<SourceDataWidget> m_sourceDataWindow;
+
+	QScopedPointer<FilteredSourceDataWidget> m_filteredSourceDataWindow;
+	QScopedPointer<SelectedSourceDataWidget> m_selectedSourceDataWindow;
 
 	RangeFilterListWidget* m_rangeListFilterWidget;
 	MultiTableElasticListsWidget* m_elasticListsWidget;

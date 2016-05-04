@@ -48,9 +48,9 @@ GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 	m_columnsModel = new SourceDataInfoModel(m_mappingModel->GetDataMapping(), m_sourceDataCache, this);
 	m_columnsModel->SetSelectable(false, false, true);
 
-	m_toolbar = addToolBar(tr("Toolbar"));
-	m_toolbar->setFloatable(true);
-	m_toolbar->setMovable(true);
+	m_showHideToolbar = addToolBar(tr("Show/Hide Toolbar"));
+	m_showHideToolbar->setFloatable(true);
+	m_showHideToolbar->setMovable(true);
 
 	CreateMenus();
 	CreateDockWidgets();
@@ -88,7 +88,7 @@ GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 
 	QCheckBox* cb = new QCheckBox(tr("Filter View"), this);
 	
-	m_toolbar->addWidget(cb);
+	m_showHideToolbar->addWidget(cb);
 	m_linkedWidgetsManager->AddFilterViewCheckbox(cb);
 
 	m_stereoAction->setChecked(m_glyph3DView->IsInStereoMode());
@@ -122,7 +122,7 @@ GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 			QMessageBox::critical(this, tr("Failed To Open Visualization"), tr("Failed to open visualization from command line.  Error: ") + e.what(), QMessageBox::Ok);
 		}
 	}
-	else if (LoadingScreenWidget::DoesGlyphEdDirExist()) {
+	else if (SynGlyphX::GlyphBuilderApplication::IsGlyphEd()) {
 
 		antzWidgetContainer->setCurrentIndex(0);
 	}
@@ -144,7 +144,7 @@ void GlyphViewerWindow::CreateLoadingScreen() {
 
 	QStackedWidget* antzWidgetContainer = dynamic_cast<QStackedWidget*>(centralWidget());
 
-	if (LoadingScreenWidget::DoesGlyphEdDirExist()) {
+	if (SynGlyphX::GlyphBuilderApplication::IsGlyphEd()) {
 
 		LoadingScreenWidget* loadingScreen = new LoadingScreenWidget(this, antzWidgetContainer);
 		antzWidgetContainer->addWidget(loadingScreen);
@@ -170,13 +170,21 @@ void GlyphViewerWindow::CreateANTzWidget() {
 	m_glyph3DView = new Glyph3DView(m_glyphForestModel, m_glyphForestSelectionModel, this);
 	m_glyph3DView->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 	m_glyph3DView->addActions(m_treeView->GetSharedActions());
+	m_glyph3DView->addAction(SynGlyphX::SharedActionList::CreateSeparator(m_glyph3DView));
+	m_glyph3DView->addAction(m_showTagsAction);
+	m_glyph3DView->addAction(m_hideTagsAction);
+	m_glyph3DView->addAction(m_hideAllTagsAction);
+	m_glyph3DView->addAction(SynGlyphX::SharedActionList::CreateSeparator(m_glyph3DView));
+	m_glyph3DView->addAction(m_clearSelectionAction);
 
 	antzWidgetContainer->addWidget(m_glyph3DView);
 	antzWidgetContainer->setCurrentWidget(m_glyph3DView);
 
 	QObject::connect(m_resetCameraToDefaultPosition, &QAction::triggered, m_glyph3DView, &Glyph3DView::ResetCamera);
 	QObject::connect(m_showAnimation, &QAction::toggled, m_glyph3DView, &SynGlyphXANTz::ANTzForestWidget::ShowAnimatedRotations);
-	QObject::connect(m_showTagsAction, &QAction::toggled, m_glyph3DView, &SynGlyphXANTz::ANTzForestWidget::SetShowTagsOfSelectedObjects);
+	QObject::connect(m_showTagsAction, &QAction::triggered, this, [this]{ m_glyph3DView->SetShowTagsOfSelectedObjects(true); });
+	QObject::connect(m_hideTagsAction, &QAction::triggered, this, [this]{ m_glyph3DView->SetShowTagsOfSelectedObjects(false); });
+	QObject::connect(m_hideAllTagsAction, &QAction::triggered, m_glyph3DView, &SynGlyphXANTz::ANTzForestWidget::ClearAllTags);
 	QObject::connect(m_filteringManager, &FilteringManager::FilterResultsChanged, m_glyph3DView, &SynGlyphXANTz::ANTzForestWidget::SetFilteredResults);
 }
 
@@ -233,14 +241,18 @@ void GlyphViewerWindow::CreateMenus() {
 
 	m_viewMenu->addSeparator();
 
+	m_showTagsAction = CreateMenuAction(m_viewMenu, tr("Show Tags For Selected Objects"), Qt::Key_I);
+
+	m_hideTagsAction = CreateMenuAction(m_viewMenu, tr("Hide Tags For Selected Objects"), Qt::Key_O);
+
+	m_hideAllTagsAction = CreateMenuAction(m_viewMenu, tr("Hide All Visible Tags"));
+	m_loadedVisualizationDependentActions.push_back(m_hideAllTagsAction);
+
+	m_viewMenu->addSeparator();
+
 	m_clearSelectionAction = CreateMenuAction(m_viewMenu, tr("Clear Selection"));
 	m_clearSelectionAction->setEnabled(false);
 	QObject::connect(m_clearSelectionAction, &QAction::triggered, m_glyphForestSelectionModel, &SynGlyphX::ItemFocusSelectionModel::ClearAll);
-
-	m_showTagsAction = CreateMenuAction(m_viewMenu, tr("Show Tags"), Qt::Key_I);
-	m_showTagsAction->setCheckable(true);
-	m_showTagsAction->setChecked(false);
-	m_loadedVisualizationDependentActions.push_back(m_showTagsAction);
 
 	m_viewMenu->addSeparator();
 
@@ -248,6 +260,9 @@ void GlyphViewerWindow::CreateMenus() {
 	m_loadedVisualizationDependentActions.push_back(m_resetCameraToDefaultPosition);
 
 	m_viewMenu->addSeparator();
+
+	m_toolbarsSubMenu = m_viewMenu->addMenu("Toolbar");
+	m_toolbarsSubMenu->addAction(m_showHideToolbar->toggleViewAction());
 
 	m_toolsMenu = menuBar()->addMenu(tr("Tools"));
 
@@ -282,7 +297,7 @@ void GlyphViewerWindow::CreateDockWidgets() {
 	m_legendsDockWidget->setAllowedAreas(Qt::NoDockWidgetArea);
 	m_legendsDockWidget->setWidget(m_legendsWidget);
 	m_legendsDockWidget->setFloating(true);
-	m_toolbar->setIconSize(QSize(42, 32));
+	m_showHideToolbar->setIconSize(QSize(42, 32));
 	QIcon icon;
 	icon.addFile(":SGXGUI/Resources/Icons/icon-legend.png", QSize(), QIcon::Normal, QIcon::Off);
 	icon.addFile(":SGXGUI/Resources/Icons/icon-legend-a.png", QSize(), QIcon::Normal, QIcon::On);
@@ -290,7 +305,7 @@ void GlyphViewerWindow::CreateDockWidgets() {
 	//act->setIconVisibleInMenu(false);
 	act->setIcon(icon);
 	m_viewMenu->addAction(act);
-	m_toolbar->addAction(act);
+	m_showHideToolbar->addAction(act);
 	m_legendsDockWidget->move(100, 100);
 	m_legendsDockWidget->resize(400, 280);
 	m_legendsDockWidget->hide();
@@ -307,7 +322,7 @@ void GlyphViewerWindow::CreateDockWidgets() {
 	icon.addFile(":SGXGUI/Resources/Icons/icon-list-a.png", QSize(), QIcon::Normal, QIcon::On);
 	act->setIcon(icon);
 	m_viewMenu->addAction(act);
-	m_toolbar->addAction(act);
+	m_showHideToolbar->addAction(act);
 	m_glyphListDockWidget->hide();
 
 	m_glyphPropertiesWidgetContainer = new GlyphPropertiesWidgetsContainer(m_glyphForestModel, m_glyphForestSelectionModel, this);
@@ -320,8 +335,8 @@ void GlyphViewerWindow::CreateDockWidgets() {
 	icon.addFile(":SGXGUI/Resources/Icons/icon-text-a.png", QSize(), QIcon::Normal, QIcon::On);
 	act->setIcon(icon);
 	m_viewMenu->addAction(act);
-	m_toolbar->addAction(act);
-	m_toolbar->addAction(textPropertiesDockWidget->toggleViewAction());
+	m_showHideToolbar->addAction(act);
+	m_showHideToolbar->addAction(textPropertiesDockWidget->toggleViewAction());
 	textPropertiesDockWidget->hide();
 
 	tabifyDockWidget(m_glyphListDockWidget, textPropertiesDockWidget);
@@ -335,7 +350,7 @@ void GlyphViewerWindow::CreateDockWidgets() {
 	icon.addFile(":SGXGUI/Resources/Icons/icon-filter-a.png", QSize(), QIcon::Normal, QIcon::On);
 	act->setIcon(icon);
 	m_viewMenu->addAction(act);
-	m_toolbar->addAction(act);
+	m_showHideToolbar->addAction(act);
 
 	QDockWidget* bottomDockWidget = new QDockWidget(tr("Time Animated Filter"), this);
 	m_pseudoTimeFilterWidget = new PseudoTimeFilterWidget(m_columnsModel, m_filteringManager, bottomDockWidget);
@@ -346,9 +361,9 @@ void GlyphViewerWindow::CreateDockWidgets() {
 	icon.addFile(":SGXGUI/Resources/Icons/icon-filter-time-a.png", QSize(), QIcon::Normal, QIcon::On);
 	act->setIcon(icon);
 	m_viewMenu->addAction(act);
-	m_toolbar->addAction(act);
+	m_showHideToolbar->addAction(act);
 
-	m_toolbar->addSeparator();
+	m_showHideToolbar->addSeparator();
 
 	QObject::connect(m_columnsModel, &SourceDataInfoModel::modelReset, m_pseudoTimeFilterWidget, &PseudoTimeFilterWidget::ResetForNewVisualization);
 	bottomDockWidget->hide();}
@@ -424,7 +439,7 @@ void GlyphViewerWindow::CloseVisualization() {
 		m_legendsDockWidget->hide();
 	}
 
-	if (LoadingScreenWidget::DoesGlyphEdDirExist()) {
+	if (SynGlyphX::GlyphBuilderApplication::IsGlyphEd()) {
 
 		QStackedWidget* antzWidgetContainer = dynamic_cast<QStackedWidget*>(centralWidget());
 		antzWidgetContainer->setCurrentIndex(0);
@@ -472,7 +487,7 @@ void GlyphViewerWindow::LoadVisualization(const QString& filename, const DataMap
 		LoadANTzCompatibilityVisualization(filename);
 	}
 
-	if (LoadingScreenWidget::DoesGlyphEdDirExist()) {
+	if (SynGlyphX::GlyphBuilderApplication::IsGlyphEd()) {
 
 		QStackedWidget* antzWidgetContainer = dynamic_cast<QStackedWidget*>(centralWidget());
 		antzWidgetContainer->setCurrentIndex(1);
@@ -737,8 +752,9 @@ void GlyphViewerWindow::EnableLoadedVisualizationDependentActions(bool enable) {
 
 	m_stereoAction->setEnabled(!enable);
 
-	m_showTagsAction->setChecked(false);
 	m_clearSelectionAction->setEnabled(false);
+	m_showTagsAction->setEnabled(false);
+	m_hideTagsAction->setEnabled(false);
 }
 
 void GlyphViewerWindow::ChangeOptions() {
@@ -881,7 +897,10 @@ GlyphViewerOptions GlyphViewerWindow::CollectOptions() {
 
 void GlyphViewerWindow::OnSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected) {
 
-	m_clearSelectionAction->setEnabled(!m_glyphForestSelectionModel->selectedIndexes().isEmpty());
+	bool selectionIsNotEmpty = !m_glyphForestSelectionModel->selectedIndexes().isEmpty();
+	m_clearSelectionAction->setEnabled(selectionIsNotEmpty);
+	m_showTagsAction->setEnabled(selectionIsNotEmpty);
+	m_hideTagsAction->setEnabled(selectionIsNotEmpty);
 }
 
 void GlyphViewerWindow::CreateExportToPortableVisualizationSubmenu() {
@@ -972,4 +991,11 @@ void GlyphViewerWindow::DownloadBaseImages(DataEngine::GlyphEngine& ge) {
 
 		throw;
 	}
+}
+
+void GlyphViewerWindow::closeEvent(QCloseEvent* event) {
+
+	m_filteringWidget->CloseSourceDataWidgets();
+
+	SynGlyphX::MainWindow::closeEvent(event);
 }

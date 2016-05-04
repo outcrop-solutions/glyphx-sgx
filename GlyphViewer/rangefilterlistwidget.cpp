@@ -289,7 +289,10 @@ void RangeFilterListWidget::OnUpdateFilters() {
 			}
 			filteringParameters.SetRangeFilters(rangeFilterMap);
 
-			m_filteringManager->GenerateFilterResultsForTable(tableIterator.key(), filteringParameters);
+			if (!m_filteringManager->GenerateFilterResultsForTable(tableIterator.key(), filteringParameters)) {
+
+				QMessageBox::warning(this, tr("Filtering"), tr("No glyphs match the current combination of filters for current."));
+			}
 		}
 		m_updateButton->setEnabled(false);
 		SynGlyphX::GlyphBuilderApplication::restoreOverrideCursor();

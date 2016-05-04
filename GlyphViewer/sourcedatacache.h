@@ -65,9 +65,10 @@ public:
 	std::set<double> GetSortedNumericDistictValues(const SynGlyphX::InputField& inputField, const FilteringParameters::ColumnRangeFilterMap& otherRanges = FilteringParameters::ColumnRangeFilterMap()) const;
 	QStringList GetSortedDistinctValuesAsStrings(const QString& tableName, const QString& columnName, const QString& whereClause = "") const;
 		
-	SharedSQLQuery CreateSelectQueryForIndexSet(const QString& tableName, const TableColumns& columns, const SynGlyphX::IndexSet& indexSet) const;
+	SharedSQLQuery CreateSelectQuery(const QString& tableName, const TableColumns& columns, const SynGlyphX::IndexSet& indexSet = SynGlyphX::IndexSet()) const;
 	SharedSQLQuery CreateDistinctValueQuery(const QString& tableName, const QString& columnName, const SynGlyphX::IndexSet& indexSet = SynGlyphX::IndexSet()) const;
 	SharedSQLQuery CreateDistinctValueAndCountQuery(const QString& tableName, const QString& columnName, const SynGlyphX::IndexSet& indexSet = SynGlyphX::IndexSet()) const;
+	SharedSQLQuery CreateDistinctValueAndCountQuery(const QString& tableName, const QString& columnName, const QString& whereClause = "") const;
 	SharedSQLQuery CreateOrderedValueAndRowQuery(const QString& tableName, const QString& columnName, const SynGlyphX::IndexSet& indexSet) const;
 	unsigned long GetValueCount(const QString& tableName, const QString& columnName, const QString& value, const SynGlyphX::IndexSet& indexSet = SynGlyphX::IndexSet()) const;
 	unsigned long GetNumberOfRowsInTable(const SynGlyphX::InputTable& inputTable) const;
@@ -82,7 +83,7 @@ public:
 
 	bool IsCacheOutOfDate(const SynGlyphX::DataTransformMapping::DatasourceMap& datasources) const;
 
-	void ExportFilteredDataToCSV(const QString& filename, const QString& tableName, const FilteringParameters& filters) const;
+	bool ExportFilteredDataToCSV(const QString& filename, const QString& tableName, const FilteringParameters& filters) const;
 
 protected:
 	SynGlyphX::InputField::Type GetSourceDataFieldType(QVariant::Type fieldType) const;

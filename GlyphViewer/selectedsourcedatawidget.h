@@ -15,71 +15,34 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef LOADINGSCREENWIDGET_H
-#define LOADINGSCREENWIDGET_H
+#ifndef SELECTEDSOURCEDATAWIDGET_H
+#define SELECTEDSOURCEDATAWIDGET_H
 
-#include <QtWidgets/QFrame>
-#include <QtWidgets/QListWidget>
-#include <QtWidgets/QGroupBox>
-#include <QtWidgets/QPushButton>
-#include "glyphviewerwindow.h"
-#include "sourcedatacache.h"
+#include "sourcedatawidget.h"
+#include "itemfocusselectionmodel.h"
 
-class LoadingScreenWidget : public QFrame
+class SelectedSourceDataWidget : public SourceDataWidget
 {
 	Q_OBJECT
 
 public:
-	LoadingScreenWidget(GlyphViewerWindow* mainWindow, QWidget *parent);
-	~LoadingScreenWidget();
+	SelectedSourceDataWidget(const SynGlyphX::ItemFocusSelectionModel* selectionModel, 
+							 SourceDataCache::ConstSharedPtr sourceDataCache, 
+							 SynGlyphX::DataTransformMapping::ConstSharedPtr dataTransformMapping, 
+							 QWidget *parent);
+	~SelectedSourceDataWidget();
 
-	static QString GetGlyphEdDir();
+protected:
+	SynGlyphX::IndexSet GetSourceIndexesForTable(const QString& table) override;
 
 private slots:
-	void OnLoadVisualization();
-	void OnNewViewSelected();
-	void OnSelectAll();
+	void OnNewVisualization();
+	void OnSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected);
 
 private:
-	class VisualizationData {
-
-	public:
-		VisualizationData() : m_mustHaveFilter(true) {}
-		~VisualizationData() {}
-
-		bool HasDataForFilter(unsigned int index) const { return index < m_filterTitles.size(); }
-
-		QString m_title;
-		QString m_sdtPath;
-		QString m_tableInGlyphEd;
-		bool m_mustHaveFilter;
-
-		std::vector<QString> m_filterTitles;
-		std::vector<QString> m_filterFieldNames;
-		std::vector<bool> m_filterMultiselect;
-		std::vector<QStringList> m_filterValues;
-	};
-
-	void AddFilterList(QHBoxLayout* filterListLayout);
-	void SetMultiSelectionEnabled(unsigned int filterWidgetIndex, bool multiSelectionEnabled);
-	bool AreAnyFiltersMissingSelection() const;
-	bool IsFilterWidgetInUse(unsigned int index) const;
-	void ClearFilters();
-
-	void SetupVisualizationData();
-
-	static QString s_glyphEdDir;
-
-	QListWidget* m_viewListWidget;
-	std::vector<QListWidget*> m_filterWidgets;
-	std::vector<QGroupBox*> m_filterGroupBoxWidgets;
-	std::vector<QPushButton*> m_selectAllButtonWidgets;
-	
-	GlyphViewerWindow* m_mainWindow;
-	SourceDataCache m_sourceDataCache;
-	std::vector<VisualizationData> m_visualizationData;
-
-	unsigned int m_currentView;
+	const SynGlyphX::ItemFocusSelectionModel* m_selectionModel;
+	std::map<SynGlyphX::DegenerateInterval, QString> m_glyphTemplateRangeToTableMap;
+	QMap<QString, SynGlyphX::IndexSet> m_selectedIndexesPerTable;
 };
 
-#endif // LOADINGSCREENWIDGET_H
+#endif // SELECTEDSOURCEDATAWIDGET_H

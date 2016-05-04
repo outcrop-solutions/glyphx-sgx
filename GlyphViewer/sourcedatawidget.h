@@ -20,15 +20,15 @@
 
 #include <QtWidgets/QTabWidget>
 #include "sourcedatacache.h"
-#include "filteringmanager.h"
 #include <QtWidgets/QStatusBar>
+#include "datatransformmapping.h"
 
 class SourceDataWidget : public QWidget
 {
 	Q_OBJECT
 
 public:
-	SourceDataWidget(FilteringManager* filteringManager, QWidget *parent = nullptr);
+	SourceDataWidget(SourceDataCache::ConstSharedPtr sourceDataCache, SynGlyphX::DataTransformMapping::ConstSharedPtr dataTransformMapping, QWidget *parent = nullptr);
 	~SourceDataWidget();
 
 signals:
@@ -36,15 +36,16 @@ signals:
 
 public slots:
 	void CreateSubsetVisualization();
-
-protected:
-	virtual void closeEvent(QCloseEvent* event);
-
-private slots:
-	void SaveCurrentTabToFile();
 	void UpdateTables();
 
-private:
+protected slots:
+	void SaveCurrentTabToFile();
+
+protected:
+	void closeEvent(QCloseEvent* event) override;
+	void ClearTables();
+	virtual SynGlyphX::IndexSet GetSourceIndexesForTable(const QString& table) = 0;
+
 	void ReadSettings();
 	void WriteSettings();
 
@@ -53,8 +54,8 @@ private:
 	QTabWidget* m_sourceDataTabs;
 	QStatusBar* m_statusBar;
 	std::vector<QSqlQueryModel*> m_sqlQueryModels;
-	//SourceDataCache::SharedPtr m_sourceDataCache;
-	FilteringManager* m_filteringManager;
+	SourceDataCache::ConstSharedPtr m_sourceDataCache;
+	SynGlyphX::DataTransformMapping::ConstSharedPtr m_dataTransformMapping;
 };
 
 #endif // SOURCEDATAWIDGET_H

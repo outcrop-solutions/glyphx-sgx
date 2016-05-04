@@ -16,11 +16,10 @@
 #include "glyphbuilderapplication.h"
 #include <boost/uuid/uuid_io.hpp>
 
-SourceDataWidget::SourceDataWidget(FilteringManager* filteringManager, QWidget *parent)
-	: QWidget(parent),
-	//m_model(model),
-	m_filteringManager(filteringManager)
-	//m_sourceDataCache(sourceDataCache)
+SourceDataWidget::SourceDataWidget(SourceDataCache::ConstSharedPtr sourceDataCache, SynGlyphX::DataTransformMapping::ConstSharedPtr dataTransformMapping, QWidget *parent)
+	: QWidget(parent, Qt::Window),
+	m_sourceDataCache(sourceDataCache),
+	m_dataTransformMapping(dataTransformMapping)
 {
 	QVBoxLayout* mainLayout = new QVBoxLayout(this);
 	m_sourceDataTabs = new QTabWidget(this);
@@ -50,10 +49,7 @@ SourceDataWidget::SourceDataWidget(FilteringManager* filteringManager, QWidget *
 
 	setLayout(mainLayout);
 
-	setWindowTitle(tr("Source Data Of Selected Glyphs"));
 	ReadSettings();
-
-	QObject::connect(m_filteringManager, &FilteringManager::FilterResultsChanged, this, &SourceDataWidget::UpdateTables);
 }
 
 SourceDataWidget::~SourceDataWidget()
@@ -63,52 +59,74 @@ SourceDataWidget::~SourceDataWidget()
 
 void SourceDataWidget::closeEvent(QCloseEvent* event) {
 
-	if (parentWidget() == nullptr) {
+	WriteSettings();
+	emit WindowHidden();
+	QWidget::closeEvent(event);
+}
 
-		WriteSettings();
-		setVisible(false);
-		event->ignore();
-		emit WindowHidden();
-	}
+void SourceDataWidget::ClearTables() {
+
+	m_sourceDataTabs->clear();
+	m_sqlQueryModels.clear();
 }
 
 void SourceDataWidget::UpdateTables() {
 
-	m_sourceDataTabs->clear();
-	m_sqlQueryModels.clear();
+	ClearTables();
 
-	const FilteringManager::IndexSetMap& dataIndexes = m_filteringManager->GetFilterResultsByTable();
-	if (!dataIndexes.empty()) {
+	const SourceDataCache::TableNameMap& formattedNames = m_sourceDataCache->GetFormattedNames();
 
-		const SourceDataCache::TableNameMap& formattedNames = m_filteringManager->GetSourceDataCache()->GetFormattedNames();
+	for (auto tableIDAndName : formattedNames) {
 
-		for (auto indexSet : dataIndexes) {
+		SourceDataCache::TableColumns columns = m_sourceDataCache->GetColumnsForTable(tableIDAndName.first);
+		SourceDataCache::SharedSQLQuery query = m_sourceDataCache->CreateSelectQuery(tableIDAndName.first, columns, GetSourceIndexesForTable(tableIDAndName.first));
+		
+		/*}
+		else {
 
-			QTableView* tableView = new QTableView(this);
-			tableView->setObjectName(indexSet.first);
-			QSqlQueryModel* queryModel = new QSqlQueryModel(this);
-			
-			SourceDataCache::TableColumns columns = m_filteringManager->GetSourceDataCache()->GetColumnsForTable(indexSet.first);
-			SourceDataCache::SharedSQLQuery query = m_filteringManager->GetSourceDataCache()->CreateSelectQueryForIndexSet(indexSet.first, columns, indexSet.second);
-			query->exec();
-			queryModel->setQuery(*query.data());
-			if (queryModel->lastError().isValid()) {
+			SynGlyphX::IndexSet indexesForTable = GetSelectionSourceIndexesForTable(tableIDAndName.first);
+			if (indexesForTable.empty()) {
 
-				throw std::runtime_error("Failed to set SQL query for source data widget.");
+				continue;
 			}
+			query = m_filteringManager->GetSourceDataCache()->CreateSelectQuery(tableIDAndName.first, columns, indexesForTable);
+		}*/
 
-			tableView->verticalHeader()->setVisible(false);
+		query->exec();
 
-			tableView->setModel(queryModel);
-			tableView->resizeColumnsToContents();
-			tableView->resizeRowsToContents();
-			
-			m_sourceDataTabs->addTab(tableView, formattedNames.at(indexSet.first));
+		QTableView* tableView = new QTableView(this);
+		tableView->setObjectName(tableIDAndName.first);
+		QSqlQueryModel* queryModel = new QSqlQueryModel(this);
 
-			m_sqlQueryModels.push_back(queryModel);
+		queryModel->setQuery(*query.data());
+		if (queryModel->lastError().isValid()) {
+
+			throw std::runtime_error("Failed to set SQL query for source data widget.");
 		}
+
+		tableView->verticalHeader()->setVisible(false);
+
+		tableView->setModel(queryModel);
+		tableView->resizeColumnsToContents();
+		tableView->resizeRowsToContents();
+
+		m_sourceDataTabs->addTab(tableView, tableIDAndName.second);
+
+		m_sqlQueryModels.push_back(queryModel);
 	}
 }
+/*
+SynGlyphX::IndexSet SourceDataWidget::GetSelectionSourceIndexesForTable(const QString& table) {
+
+	SynGlyphX::IndexSet indexes;
+
+	if (m_filteringManager->GetSceneSelectionModel()->hasSelection()) {
+
+		indexes = SynGlyphX::ItemFocusSelectionModel::GetRootRows(m_filteringManager->GetSceneSelectionModel()->selectedIndexes());
+	}
+
+	return indexes;
+}*/
 
 void SourceDataWidget::ReadSettings() {
 
@@ -221,7 +239,7 @@ void SourceDataWidget::CreateSubsetVisualization() {
 			QStringList inputTableValues = m_sourceDataTabs->widget(m_sourceDataTabs->currentIndex())->objectName().split(':');
 			boost::uuids::string_generator gen;
 			SynGlyphX::InputTable inputTable(gen(inputTableValues[0].toStdWString()), (inputTableValues.size() > 1) ? inputTableValues[1].toStdWString() : SynGlyphX::FileDatasource::SingleTableName);
-			SynGlyphX::DataTransformMapping::ConstSharedPtr subsetDataMapping = m_filteringManager->GetDataMappingModel()->GetDataMapping()->CreateSubsetMappingWithSingleTable(inputTable, csvFileLocation.toStdWString());
+			SynGlyphX::DataTransformMapping::ConstSharedPtr subsetDataMapping = m_dataTransformMapping->CreateSubsetMappingWithSingleTable(inputTable, csvFileLocation.toStdWString());
 			subsetDataMapping->WriteToFile(sdtFilename.toStdString());
 			
 			settings.setValue("vizSaveDir", stdCanonicalPath);

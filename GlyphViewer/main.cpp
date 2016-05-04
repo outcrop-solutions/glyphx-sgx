@@ -35,8 +35,12 @@ void myMessageHandler(QtMsgType type, const QMessageLogContext &context, const Q
 
 int main(int argc, char *argv[])
 {
-	SynGlyphX::GlyphBuilderApplication::Setup("Glyph Builder - Glyph Viewer", "0.7.33");
+	SynGlyphX::GlyphBuilderApplication::Setup("Glyph Builder - Glyph Viewer", "0.7.43");
 	SynGlyphX::GlyphBuilderApplication a(argc, argv);
+	if (SynGlyphX::GlyphBuilderApplication::IsGlyphEd()) {
+
+		SynGlyphX::GlyphBuilderApplication::setApplicationName("GlyphEd");
+	}
 
 	//qInstallMessageHandler(myMessageHandler);
 

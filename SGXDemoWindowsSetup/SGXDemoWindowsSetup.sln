@@ -99,6 +99,7 @@ Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "SGXSetupMergeModule", "..\S
 EndProject
 Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "SGXDemoWindowsSetup", "SGXDemoWindowsSetup.vdproj", "{5C0B268E-0715-463B-A7BF-F1795A673214}"
 	ProjectSection(ProjectDependencies) = postProject
+		{DD0CCE25-18BC-4226-B121-DCCCC9B1215B} = {DD0CCE25-18BC-4226-B121-DCCCC9B1215B}
 		{8F542EC5-A302-4C68-A9A3-3DF5DDB7E44C} = {8F542EC5-A302-4C68-A9A3-3DF5DDB7E44C}
 	EndProjectSection
 EndProject
@@ -136,6 +137,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SGXDataMapping", "..\..\Cor
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DataEngine", "..\..\DataEngine\DataEngine\DataEngine.vcxproj", "{10B12A6C-E0F4-4CF8-9DE2-1DC881A47DBD}"
+EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "SGXGlyphITMergeModule", "..\SGXGlyphITMergeModule\SGXGlyphITMergeModule.vdproj", "{DD0CCE25-18BC-4226-B121-DCCCC9B1215B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -269,6 +272,14 @@ Global
 		{10B12A6C-E0F4-4CF8-9DE2-1DC881A47DBD}.Release|Win32.ActiveCfg = Release|Win32
 		{10B12A6C-E0F4-4CF8-9DE2-1DC881A47DBD}.Release|Win32.Build.0 = Release|Win32
 		{10B12A6C-E0F4-4CF8-9DE2-1DC881A47DBD}.Release|x64.ActiveCfg = Release|Win32
+		{DD0CCE25-18BC-4226-B121-DCCCC9B1215B}.Debug|Win32.ActiveCfg = Debug
+		{DD0CCE25-18BC-4226-B121-DCCCC9B1215B}.Debug|Win32.Build.0 = Debug
+		{DD0CCE25-18BC-4226-B121-DCCCC9B1215B}.Debug|x64.ActiveCfg = Debug
+		{DD0CCE25-18BC-4226-B121-DCCCC9B1215B}.Debug|x64.Build.0 = Debug
+		{DD0CCE25-18BC-4226-B121-DCCCC9B1215B}.Release|Win32.ActiveCfg = Release
+		{DD0CCE25-18BC-4226-B121-DCCCC9B1215B}.Release|Win32.Build.0 = Release
+		{DD0CCE25-18BC-4226-B121-DCCCC9B1215B}.Release|x64.ActiveCfg = Release
+		{DD0CCE25-18BC-4226-B121-DCCCC9B1215B}.Release|x64.Build.0 = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

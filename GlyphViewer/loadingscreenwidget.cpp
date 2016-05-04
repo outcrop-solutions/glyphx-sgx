@@ -82,7 +82,7 @@ void LoadingScreenWidget::SetupVisualizationData() {
 
 	VisualizationData globalAdmissionsView;
 	globalAdmissionsView.m_title = visualizationNames[0];
-	globalAdmissionsView.m_sdtPath = GetGlyphEdDir() + QDir::toNativeSeparators("/Global Admissions/View 1 Datamap Recommendations.sdt");
+	globalAdmissionsView.m_sdtPath = GetGlyphEdDir() + QDir::toNativeSeparators("/Global Admissions/Global Admissions.sdt");
 	globalAdmissionsView.m_tableInGlyphEd = "GlobalAdmissions";
 
 	globalAdmissionsView.m_filterTitles.push_back("Admissions Counselor");
@@ -98,7 +98,7 @@ void LoadingScreenWidget::SetupVisualizationData() {
 
 	VisualizationData admissionsCounselorView;
 	admissionsCounselorView.m_title = visualizationNames[1];
-	admissionsCounselorView.m_sdtPath = GetGlyphEdDir() + QDir::toNativeSeparators("/Admissions Officer/View 2 Datamap Recommendations - All Data.sdt");
+	admissionsCounselorView.m_sdtPath = GetGlyphEdDir() + QDir::toNativeSeparators("/Admissions Officer/Admissions Counselor.sdt");
 	admissionsCounselorView.m_tableInGlyphEd = "GlobalAdmissions";
 
 	admissionsCounselorView.m_filterTitles.push_back("Admissions Counselor");
@@ -117,7 +117,7 @@ void LoadingScreenWidget::SetupVisualizationData() {
 
 	VisualizationData highSchoolView;
 	highSchoolView.m_title = visualizationNames[2];
-	highSchoolView.m_sdtPath = GetGlyphEdDir() + QDir::toNativeSeparators("/High School/View 3 Datamap Recommendations - All Data.sdt");
+	highSchoolView.m_sdtPath = GetGlyphEdDir() + QDir::toNativeSeparators("/High School/High School.sdt");
 	highSchoolView.m_tableInGlyphEd = "GlobalAdmissions";
 
 	highSchoolView.m_filterTitles.push_back("High School");
@@ -125,7 +125,7 @@ void LoadingScreenWidget::SetupVisualizationData() {
 	highSchoolView.m_filterMultiselect.push_back(false);
 
 	QStringList highSchools;
-	SourceDataCache::SharedSQLQuery distinctValuesQuery = m_sourceDataCache.CreateDistinctValueAndCountQuery(highSchoolView.m_tableInGlyphEd, "HSNameUnique");
+	SourceDataCache::SharedSQLQuery distinctValuesQuery = m_sourceDataCache.CreateDistinctValueAndCountQuery(highSchoolView.m_tableInGlyphEd, "HSNameUnique", "\"Year\"=2016");
 	distinctValuesQuery->exec();
 	while (distinctValuesQuery->next()) {
 
@@ -143,9 +143,12 @@ void LoadingScreenWidget::SetupVisualizationData() {
 
 	m_visualizationData.push_back(highSchoolView);
 
+	QStringList statuses = m_sourceDataCache.GetSortedDistinctValuesAsStrings("Composition", "grouping_title", "\"branch_type\"='Status'");
+	statuses.push_back("Cohort Aggregate");
+
 	VisualizationData classCompositionRaceView;
 	classCompositionRaceView.m_title = visualizationNames[3];
-	classCompositionRaceView.m_sdtPath = GetGlyphEdDir() + QDir::toNativeSeparators("/Class Composition/View 4C Remap.sdt");
+	classCompositionRaceView.m_sdtPath = GetGlyphEdDir() + QDir::toNativeSeparators("/Class Composition/Class Composition.sdt");
 	classCompositionRaceView.m_tableInGlyphEd = "Composition";
 
 	classCompositionRaceView.m_filterTitles.push_back("Race");
@@ -159,13 +162,13 @@ void LoadingScreenWidget::SetupVisualizationData() {
 	classCompositionRaceView.m_filterTitles.push_back("Decision Status");
 	classCompositionRaceView.m_filterFieldNames.push_back("grouping_title_lv2");
 	classCompositionRaceView.m_filterMultiselect.push_back(true);
-	classCompositionRaceView.m_filterValues.push_back(m_sourceDataCache.GetSortedDistinctValuesAsStrings(classCompositionRaceView.m_tableInGlyphEd, "grouping_title", "\"branch_type\"='Status'"));
+	classCompositionRaceView.m_filterValues.push_back(statuses);
 
 	m_visualizationData.push_back(classCompositionRaceView);
 
 	VisualizationData classCompositionCohortView;
 	classCompositionCohortView.m_title = visualizationNames[4];
-	classCompositionCohortView.m_sdtPath = GetGlyphEdDir() + QDir::toNativeSeparators("/Class Composition/View 4C Remap.sdt");
+	classCompositionCohortView.m_sdtPath = GetGlyphEdDir() + QDir::toNativeSeparators("/Class Composition/Class Composition.sdt");
 	classCompositionCohortView.m_tableInGlyphEd = "Composition";
 
 	classCompositionCohortView.m_filterTitles.push_back("Cohort");
@@ -179,33 +182,29 @@ void LoadingScreenWidget::SetupVisualizationData() {
 	classCompositionCohortView.m_filterTitles.push_back("Decision Status");
 	classCompositionCohortView.m_filterFieldNames.push_back("grouping_title_lv2");
 	classCompositionCohortView.m_filterMultiselect.push_back(true);
-	classCompositionCohortView.m_filterValues.push_back(m_sourceDataCache.GetSortedDistinctValuesAsStrings(classCompositionCohortView.m_tableInGlyphEd, "grouping_title", "\"branch_type\"='Status'"));
+	classCompositionCohortView.m_filterValues.push_back(statuses);
 
 	m_visualizationData.push_back(classCompositionCohortView);
 
 	VisualizationData classCompositionTotalView;
 	classCompositionTotalView.m_title = visualizationNames[5];
-	classCompositionTotalView.m_sdtPath = GetGlyphEdDir() + QDir::toNativeSeparators("/Class Composition/View 4C Remap.sdt");
+	classCompositionTotalView.m_sdtPath = GetGlyphEdDir() + QDir::toNativeSeparators("/Class Composition/Class Composition.sdt");
 	classCompositionTotalView.m_tableInGlyphEd = "Composition";
 
-	classCompositionTotalView.m_filterTitles.push_back("Total");
-	classCompositionTotalView.m_filterFieldNames.push_back("grouping_title");
-	classCompositionTotalView.m_filterMultiselect.push_back(true);
-	classCompositionTotalView.m_filterValues.push_back(m_sourceDataCache.GetSortedDistinctValuesAsStrings(classCompositionTotalView.m_tableInGlyphEd, "grouping_title", "\"branch_type\"='Total'"));
 	classCompositionTotalView.m_filterTitles.push_back("Year(s)");
 	classCompositionTotalView.m_filterFieldNames.push_back("Year");
 	classCompositionTotalView.m_filterMultiselect.push_back(true);
 	classCompositionTotalView.m_filterValues.push_back(m_sourceDataCache.GetSortedDistinctValuesAsStrings(classCompositionTotalView.m_tableInGlyphEd, "Year"));
 	classCompositionTotalView.m_filterTitles.push_back("Decision Status");
-	classCompositionTotalView.m_filterFieldNames.push_back("grouping_title_lv2");
+	classCompositionTotalView.m_filterFieldNames.push_back("grouping_title");
 	classCompositionTotalView.m_filterMultiselect.push_back(true);
-	classCompositionTotalView.m_filterValues.push_back(m_sourceDataCache.GetSortedDistinctValuesAsStrings(classCompositionTotalView.m_tableInGlyphEd, "grouping_title", "\"branch_type\"='Status'"));
+	classCompositionTotalView.m_filterValues.push_back(m_sourceDataCache.GetSortedDistinctValuesAsStrings("Composition", "grouping_title", "\"branch_type\"='Status'"));
 
 	m_visualizationData.push_back(classCompositionTotalView);
 
 	VisualizationData globalDashboardView;
 	globalDashboardView.m_title = visualizationNames[6];
-	globalDashboardView.m_sdtPath = GetGlyphEdDir() + QDir::toNativeSeparators("/GLobal Dashboard/View 4 V3 MASTER READER.sdt");
+	globalDashboardView.m_sdtPath = GetGlyphEdDir() + QDir::toNativeSeparators("/Global Dashboard/Global Dashboard.sdt");
 	globalDashboardView.m_mustHaveFilter = false;
 	globalDashboardView.m_tableInGlyphEd = "Dashboard";
 
@@ -215,11 +214,6 @@ void LoadingScreenWidget::SetupVisualizationData() {
 	globalDashboardView.m_filterValues.push_back(m_sourceDataCache.GetSortedDistinctValuesAsStrings(globalDashboardView.m_tableInGlyphEd, "reader_name"));
 
 	m_visualizationData.push_back(globalDashboardView);
-}
-
-bool LoadingScreenWidget::DoesGlyphEdDirExist() {
-
-	return QDir(GetGlyphEdDir()).exists();
 }
 
 QString LoadingScreenWidget::GetGlyphEdDir() {
@@ -257,7 +251,9 @@ void LoadingScreenWidget::OnLoadVisualization() {
 					filterData.insert(selectedItem->text());
 				}
 
-				if ((!filterData.isEmpty()) && (filterData.size() != m_filterWidgets[i]->model()->rowCount())) {
+				if ((!filterData.isEmpty()) && 
+					((filterData.size() != m_filterWidgets[i]->model()->rowCount()) ||
+					(i == 2) || ((i == 1) && (m_currentView == 5)))) {
 
 					filters.SetDistinctValueFilter(m_visualizationData[m_currentView].m_filterFieldNames[i], filterData);
 				}
@@ -284,9 +280,9 @@ void LoadingScreenWidget::OnLoadVisualization() {
 		}
 		else if (m_currentView == 5) {
 
-			QSet<QString> branch;
-			branch.insert("Total");
-			filters.SetDistinctValueFilter("branch_type", branch);
+			QSet<QString> groupingTitle;
+			groupingTitle.insert("Cohort Aggregate");
+			filters.SetDistinctValueFilter("grouping_title_lv2", groupingTitle);
 		}
 		else if (m_currentView == 6) {
 
@@ -315,11 +311,18 @@ void LoadingScreenWidget::OnLoadVisualization() {
 			QFile::remove(dataFilename);
 		}
 
-		m_sourceDataCache.ExportFilteredDataToCSV(dataFilename, m_visualizationData[m_currentView].m_tableInGlyphEd, table2FiltersMap[inputTable]);
+		bool didFilterHaveResult = m_sourceDataCache.ExportFilteredDataToCSV(dataFilename, m_visualizationData[m_currentView].m_tableInGlyphEd, table2FiltersMap[inputTable]);
 
 		SynGlyphX::Application::restoreOverrideCursor();
 
-		m_mainWindow->LoadNewVisualization(m_visualizationData[m_currentView].m_sdtPath);
+		if (didFilterHaveResult) {
+
+			m_mainWindow->LoadNewVisualization(m_visualizationData[m_currentView].m_sdtPath);
+		}
+		else {
+
+			QMessageBox::warning(this, tr("Load Visualization"), tr("The selected combination of filters had no results.  Please try a different combination of filters to load a visualization."));
+		}
 	}
 }
 

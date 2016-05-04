@@ -264,7 +264,7 @@ QString SourceDataCache::GetFormattedNameFromCache(const QString& table) {
 	}
 }
 
-SourceDataCache::SharedSQLQuery SourceDataCache::CreateSelectQueryForIndexSet(const QString& tableName, const TableColumns& columns, const SynGlyphX::IndexSet& indexSet) const {
+SourceDataCache::SharedSQLQuery SourceDataCache::CreateSelectQuery(const QString& tableName, const TableColumns& columns, const SynGlyphX::IndexSet& indexSet) const {
 
 	TableColumns::const_iterator column = columns.begin();
 	QString columnNameString = "\"" + column->first;
@@ -275,7 +275,11 @@ SourceDataCache::SharedSQLQuery SourceDataCache::CreateSelectQueryForIndexSet(co
 	}
 	columnNameString += "\"";
 
-	QString queryString = "SELECT " + columnNameString + " FROM \"" + tableName + "\" " + CreateWhereString(indexSet);
+	QString queryString = "SELECT " + columnNameString + " FROM \"" + tableName + "\" ";
+	if (!indexSet.empty()) {
+
+		queryString += CreateWhereString(indexSet);
+	}
 
 	SharedSQLQuery query(new QSqlQuery(m_db));
 	query->prepare(queryString);
@@ -328,6 +332,23 @@ SourceDataCache::SharedSQLQuery SourceDataCache::CreateDistinctValueAndCountQuer
 	if (!indexSet.empty()) {
 
 		queryString += CreateWhereString(indexSet) + " ";
+	}
+
+	queryString += "GROUP BY \"" + columnName + "\" ";
+
+	SharedSQLQuery query(new QSqlQuery(m_db));
+	query->prepare(queryString);
+
+	return query;
+}
+
+SourceDataCache::SharedSQLQuery SourceDataCache::CreateDistinctValueAndCountQuery(const QString& tableName, const QString& columnName, const QString& whereClause) const {
+
+	QString queryString = "SELECT \"" + columnName + "\", COUNT(*) FROM \"" + tableName + "\" ";
+
+	if (!whereClause.isEmpty()) {
+
+		queryString += "WHERE " + whereClause + " ";
 	}
 
 	queryString += "GROUP BY \"" + columnName + "\" ";
@@ -869,7 +890,7 @@ QString SourceDataCache::CreateEscapedString(const QString& string) const {
 	return escapedString;
 }
 
-void SourceDataCache::ExportFilteredDataToCSV(const QString& filename, const QString& tableName, const FilteringParameters& filters) const {
+bool SourceDataCache::ExportFilteredDataToCSV(const QString& filename, const QString& tableName, const FilteringParameters& filters) const {
 
 	QStringList columnNames;
 	QSqlRecord columns = m_db.record(tableName);
@@ -905,6 +926,7 @@ void SourceDataCache::ExportFilteredDataToCSV(const QString& filename, const QSt
 	}
 	csvFile.WriteLine(headers);
 
+	bool wereAnyValuesWrittenToFile = false;
 	while (query.next()) {
 
 		SynGlyphX::CSVFileHandler::CSVValues lineOfValues;
@@ -926,7 +948,9 @@ void SourceDataCache::ExportFilteredDataToCSV(const QString& filename, const QSt
 		}
 
 		csvFile.WriteLine(lineOfValues);
+		wereAnyValuesWrittenToFile = true;
 	}
 
 	csvFile.Close();
+	return wereAnyValuesWrittenToFile;
 }

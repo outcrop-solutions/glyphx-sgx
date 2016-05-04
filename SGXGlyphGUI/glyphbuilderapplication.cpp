@@ -23,16 +23,16 @@ namespace SynGlyphX {
 	
 	void GlyphBuilderApplication::SetupIconsAndLogos() {
 
-		SetupIcons(QIcon(":SGXGUI/Resources/synglyphx_x.ico"));
+		if (IsGlyphEd()) {
 
-		if (QDir(QDir::toNativeSeparators(QDir::cleanPath(SynGlyphX::GlyphBuilderApplication::GetCommonDataLocation()) + "/GlyphEd")).exists()) {
-
+			SetupIcons(QIcon(":SGXGUI/Resources/GlyphEd/synglyphx_x_ED.ico"));
 			s_splashScreenLocation = ":SGXGUI/Resources/GlyphEd/glyphed_splash.png";
 			s_logoLocations[LogoType::NoBorder] = ":SGXGUI/Resources/GlyphEd/glyphed_logo_no_border.png";
 			s_logoLocations[LogoType::WhiteBorder] = ":SGXGUI/Resources/GlyphEd/glyphed_logo_white_border.png";
 		}
 		else {
 
+			SetupIcons(QIcon(":SGXGUI/Resources/synglyphx_x.ico"));
 			s_splashScreenLocation = ":SGXGUI/Resources/synglyphx_splash.png";
 			s_logoLocations[LogoType::NoBorder] = ":SGXGUI/Resources/synglyphx_logo_white_border.png";
 			s_logoLocations[LogoType::WhiteBorder] = ":SGXGUI/Resources/synglyphx_logo_white_border.png";
@@ -67,6 +67,12 @@ namespace SynGlyphX {
 		}
 
 		return false;
+	}
+
+	bool GlyphBuilderApplication::IsGlyphEd() {
+
+		QString glyphEdDir = QDir::cleanPath(SynGlyphX::GlyphBuilderApplication::applicationDirPath()) + "/GlyphEd";
+		return QDir(glyphEdDir).exists();
 	}
 
 } //namespace SynGlyphX
