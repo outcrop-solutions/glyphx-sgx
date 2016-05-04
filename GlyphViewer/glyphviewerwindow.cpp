@@ -683,6 +683,19 @@ void GlyphViewerWindow::LoadDataTransform(const QString& filename, const DataMap
 void GlyphViewerWindow::LoadFilesIntoModel(const SynGlyphXANTz::ANTzCSVWriter::FilenameList& filesToLoad, const QStringList& baseImageFilenames) {
 
 	m_glyphForestModel->LoadANTzVisualization(filesToLoad, baseImageFilenames);
+
+	SynGlyphX::DataMappingGlyphGraph::ConstSharedPtr rootGlyph = m_mappingModel->GetDataMapping()->GetGlyphGraphs().begin()->second;
+	std::array<QString, 3> rootPositionFields;
+	for (unsigned int i = 0; i < 3; ++i) {
+
+		const SynGlyphX::InputBinding& posInputBinding = rootGlyph->GetRoot()->second.GetPosition()[i].GetBinding();
+		SynGlyphX::InputTable::HashID id = posInputBinding.GetInputFieldID();
+		if (id != 0) {
+
+			rootPositionFields[i] = QString::fromStdWString(rootGlyph->GetInputFields().at(id).GetField());
+		}
+	}
+	m_glyphForestModel->SetRootPosXYZMappedFields(rootPositionFields);
 }
 
 void GlyphViewerWindow::ChangeMapDownloadSettings() {
