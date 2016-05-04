@@ -115,6 +115,7 @@
     <ClInclude Include="inputtable.h" />
     <ClInclude Include="interpolationmappingfunction.h" />
     <ClInclude Include="legend.h" />
+    <ClInclude Include="Link.h" />
     <ClInclude Include="mindiff.h" />
     <ClInclude Include="sceneproperties.h" />
     <ClInclude Include="sgxdatamapping.h" />

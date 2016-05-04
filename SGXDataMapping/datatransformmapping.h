@@ -33,6 +33,7 @@
 #include "filedatasource.h"
 #include "databaseserverdatasource.h"
 #include "legend.h"
+#include "Link.h"
 
 namespace SynGlyphX {
 
@@ -121,6 +122,9 @@ namespace SynGlyphX {
 		const std::vector<Legend>& GetLegends() const;
 		void SetLegends(const std::vector<Legend>& legends);
 
+		void AddLink(const Link& link);
+		void RemoveLink(unsigned int index);
+
     protected:
 		void CopyInputBindingsForSubsetMapping(DataMappingGlyphGraph::SharedPtr newGlyphGraph, 
 											   DataMappingGlyphGraph::GlyphIterator& newNode, 
@@ -140,7 +144,7 @@ namespace SynGlyphX {
 		std::vector<BaseImage> m_baseObjects;
 		FieldGroupMap m_fieldGroups;
 		std::vector<Legend> m_legends;
-
+		std::vector<Link> m_links;
 		boost::uuids::uuid m_id;
     };
 
