@@ -62,7 +62,7 @@ namespace DataEngine
 
 				if (!dir.mkpath(bod)) {
 
-					throw std::exception("Instance directory was not created");
+					throw std::runtime_error("Instance directory was not created");
 				}
 			}
 
@@ -159,10 +159,10 @@ namespace DataEngine
 				if (images.size() > 1 && i > 0){
 					num = "base_image_" + QString::number(i + offset) + ".png";
 					if (boost::filesystem::exists(boost::filesystem::path(baseImageDir + images.at(i)))){
-						QFile::copy((baseImageDir).c_str() + file, bod + "antz\\" + num);
+						QFile::copy((baseImageDir).c_str() + file, bod + "antz/" + num);
 					}
 					else if (boost::filesystem::exists(boost::filesystem::path(images.at(i)))){
-						QFile::copy((images.at(i)).c_str(), bod + "antz\\" + num);
+						QFile::copy((images.at(i)).c_str(), bod + "antz/" + num);
 					}
 				}
 			}
@@ -213,6 +213,7 @@ namespace DataEngine
 				return downloadBaseImage(baseImage, downloadedImageFilename);
 			}
 		}
+		return true;
 	}
 
 	bool GlyphEngine::downloadBaseImage(const SynGlyphX::BaseImage& baseImage, QString baseImageFilename) {
@@ -235,7 +236,7 @@ namespace DataEngine
 
 				if (!QFile::remove(baseImageFilename)) {
 
-					throw std::exception("Failed to remove old base image");
+					throw std::runtime_error("Failed to remove old base image");
 				}
 			}
 			try {

@@ -3,8 +3,15 @@
 #include "dataengineconnection.h"
 #include "dataenginestatement.h"
 #include <fstream>
+#include <stdexcept>
+#ifdef WIN32
 #include <Windows.h>
+#else
+#include <dlfcn.h>
+#endif
 //#include <QtCore/QDebug>
+#include <iostream>
+#include <QtCore/QCoreApplication>
 
 namespace DataEngine
 {
@@ -23,6 +30,7 @@ namespace DataEngine
 
 	void DataEngineConnection::createJVM(){
 
+#ifdef WIN32
 		std::ifstream jre(".\\jre\\bin\\client\\jvm.dll");
 		HMODULE jvmDll;
 		if (jre){
@@ -30,10 +38,38 @@ namespace DataEngine
 		}
 		else{
 			jvmDll = LoadLibrary(L"..\\..\\DataEngine\\jdk1.7.0_79\\jre\\bin\\client\\jvm.dll");
-		}jre.close();
+		}
+#else
+		std::ifstream jre("./jre/lib/i386/client/libjvm.so");
+		void* jvmDll;
+		if (jre){
+			jvmDll = dlopen("./jre/lib/amd64/server/libjvm.so", RTLD_NOW | RTLD_LOCAL);
+			if (jvmDll == NULL) {
+
+				std::cout << dlerror() << std::endl;
+			}
+		}
+		else{
+			jvmDll = dlopen("../../DataEngine/jdk1.7.0_79/jre/amd64/server/libjvm.so", RTLD_NOW | RTLD_LOCAL);
+		}
+
+#endif
+		jre.close();
+
+#ifdef WIN32
 		CreateJVMFunc CreateJVM = (CreateJVMFunc)GetProcAddress(jvmDll, "JNI_CreateJavaVM");
+#else
+		CreateJVMFunc CreateJVM = (CreateJVMFunc)dlsym(jvmDll, "JNI_CreateJavaVM");
+		if (CreateJVM == NULL) {
+
+			std::cout << "CreateJVM == NULL" << std::endl;
+		}
+#endif
 
 		JavaVMInitArgs vmArgs;
+		
+
+#ifdef WIN32
 		JavaVMOption options[1];
 		std::ifstream ifile(".\\dataengine.jar");
 		if (ifile){
@@ -50,10 +86,41 @@ namespace DataEngine
 				"..\\..\\DataEngine\\Java DataEngine\\database-drivers\\sqlite4java.jar;"
 				"..\\..\\DataEngine\\Java DataEngine\\database-drivers\\mysql-connector-java-5.1.38-bin.jar;"
 				"..\\..\\DataEngine\\Java DataEngine\\database-drivers\\sqlite-jdbc-3.8.11.2.jar;";
-		}ifile.close();
+		}
+#else
+		JavaVMOption options[2];
+		std::ifstream ifile("./dataengine.jar");
+		if (ifile){
+			options[0].optionString =
+				"-Djava.class.path=./dataengine.jar:"
+	 			"./ojdbc6.jar:"
+				"./database-drivers/opencsv-3.7.jar:"
+				"./database-drivers/sqlite4java.jar:"
+				"./database-drivers/mysql-connector-java-5.1.38-bin.jar:"
+				"./database-drivers/sqlite-jdbc-3.8.11.2.jar";
+			QString javaLibraryPath = "-Djava.library.path=" + QCoreApplication::applicationDirPath();
+			//options[1].optionString = "-Djava.library.path=/home/admin/SynGlyphX/cmake/bin/Linux64";//:$LD_LIBRARY_PATH";
+			options[1].optionString = new char[javaLibraryPath.length() + 1];
+			javaLibraryPath.toStdString().copy(options[1].optionString, javaLibraryPath.length(), 0);
+			
+		}else{
+			options[0].optionString =
+				"-Djava.class.path=../../DataEngine/Java DataEngine/dataengine.jar:"
+				"../../DataEngine/Java DataEngine/ojdbc6.jar:"
+				"../../DataEngine/Java DataEngine/database-drivers/opencsv-3.7.jar:"
+				"../../DataEngine/Java DataEngine/database-drivers/sqlite4java.jar:"
+				"../../DataEngine/Java DataEngine/database-drivers/mysql-connector-java-5.1.38-bin.jar:"
+				"../../DataEngine/Java DataEngine/database-drivers/sqlite-jdbc-3.8.11.2.jar:";
+		}
+#endif
+		ifile.close();
 		vmArgs.version = JNI_VERSION_1_2;
 		vmArgs.options = options;
+#ifdef WIN32
 		vmArgs.nOptions = 1;
+#else
+		vmArgs.nOptions = 2;
+#endif
 		vmArgs.ignoreUnrecognized = JNI_FALSE;
 
 		// Create the JVM
@@ -62,27 +129,27 @@ namespace DataEngine
 		
 		if (flag == JNI_ERR) {
 			
-			throw std::exception("JVM Error: Unknown Error");
+			throw std::runtime_error("JVM Error: Unknown Error");
 		}
 		else if (flag == JNI_EDETACHED) {
 
-			throw std::exception("JVM Error: Thread detached from VM");
+			throw std::runtime_error("JVM Error: Thread detached from VM");
 		}
 		else if (flag == JNI_EVERSION) {
 
-			throw std::exception("JVM Error: Version Error");
+			throw std::runtime_error("JVM Error: Version Error");
 		}
 		else if (flag == JNI_ENOMEM) {
 
-			throw std::exception("JVM Error: Not Enough Memory");
+			throw std::runtime_error("JVM Error: Not Enough Memory");
 		}
 		else if (flag == JNI_EEXIST) {
 
-			throw std::exception("JVM Error: JVM already created");
+			throw std::runtime_error("JVM Error: JVM already created");
 		}
 		else if (flag == JNI_EINVAL) {
 
-			throw std::exception("JVM Error: Invalid Arguments");
+			throw std::runtime_error("JVM Error: Invalid Arguments");
 		}
 
 		jcls = jniEnv->FindClass("DataEngine");
