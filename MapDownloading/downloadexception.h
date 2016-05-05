@@ -19,9 +19,9 @@
 #define DOWNLOADEXCEPTION_H
 
 #include "mapdownloading_global.h"
-#include <exception>
+#include <stdexcept>
 
-class MAPDOWNLOADING_EXPORT DownloadException : public std::exception
+class MAPDOWNLOADING_EXPORT DownloadException : public std::runtime_error
 {
 
 public:

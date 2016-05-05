@@ -1188,7 +1188,7 @@ void DataTransformModel::AddDatasourceInfoFromDataEngine(const boost::uuids::uui
 		}
 		else {
 
-			throw std::exception((tr("No tables in ") + datasource).toStdString().c_str());
+			throw std::runtime_error((tr("No tables in ") + datasource).toStdString().c_str());
 		}
 
 		dec->closeConnection();

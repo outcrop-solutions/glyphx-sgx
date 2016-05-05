@@ -79,7 +79,11 @@ namespace SynGlyphX {
 		int numberOfDaysLeft = 0;
 		char version[8];
 		strcpy(version, SynGlyphX::Application::GetApplicationVersionMajorNumber().toStdString().c_str());
+#ifdef WIN32
 		int licenseStatus = rlmez_checkout(version, &numberOfDaysLeft);
+#else
+		int licenseStatus = rlmez_checkout("synglyphx", version, &numberOfDaysLeft);
+#endif
 
 		if (licenseStatus == 0) {
 
@@ -92,9 +96,11 @@ namespace SynGlyphX {
 
 			LicensingDialog dialog(nullptr);
 			if (dialog.exec() == QDialog::Accepted) {
-
+#ifdef WIN32
 				if (rlmez_checkout(version, &numberOfDaysLeft) == 0) {
-
+#else
+				if (rlmez_checkout("synglyphx", version, &numberOfDaysLeft) == 0) {
+#endif
 					result = true;
 				}
 				else {
@@ -161,7 +167,11 @@ namespace SynGlyphX {
 		int numberOfDaysLeft = 0;
 		char version[8];
 		strcpy(version, SynGlyphX::Application::GetApplicationVersionMajorNumber().toStdString().c_str());
+#ifdef WIN32
 		int licenseStatus = rlmez_checkout(version, &numberOfDaysLeft);
+#else
+		int licenseStatus = rlmez_checkout("synglyphx", version, &numberOfDaysLeft);
+#endif
 
 		QDir::setCurrent(previousCurrentDir);
 

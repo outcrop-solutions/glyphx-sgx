@@ -175,7 +175,7 @@ bool GlyphTreeView::DoInputBindingsNeedToBeClearedBeforePaste() {
 
 QModelIndex GlyphTreeView::GetNewSelectedIndexAfterDelete() const {
 
-	QModelIndexList& selectedItems = selectionModel()->selectedIndexes();
+	QModelIndexList selectedItems = selectionModel()->selectedIndexes();
 
 	if (selectedItems.isEmpty()) {
 

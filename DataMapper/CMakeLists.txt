@@ -16,12 +16,9 @@ INCLUDE_DIRECTORIES(BEFORE  ${Boost_INCLUDE_DIRS}
 							../../GUI/SGXDataTransformGUI
 							../../GUI/MapDownloading
 							../../DataEngine/DataEngine
-							../../DataEngine/jdk1.7.0_79/include)
+							${JAVA_INCLUDE_DIRS})
 							
-IF (${WIN32})
-	INCLUDE_DIRECTORIES(AFTER ../../DataEngine/jdk1.7.0_79/include/win32)
-	LINK_DIRECTORIES(${DEVELOPMENT_TOP_DIR}/DataEngine/jdk1.7.0_79/lib)
-ENDIF()
+LINK_DIRECTORIES(${JAVA_LINK_DIRS})
 
 #Enable breakpad if it is available						
 IF (${BREAKPAD_FOUND})
@@ -85,8 +82,9 @@ TARGET_LINK_LIBRARIES(DataMapper ${Boost_LIBRARIES}
 									SGXGeospatial
 									MapDownloading
 									DataEngine
-									SGXDataTransform
-									jawt jvm)
+									SGXDataTransform)
+									
+TARGET_LINK_LIBRARIES(DataMapper jvm jawt)
 
 IF (${BREAKPAD_FOUND})
 	TARGET_LINK_LIBRARIES(DataMapper ${BREAKPAD_LIBRARIES})

@@ -3,6 +3,7 @@
 #include <QtCore/QDir>
 #include "glyphbuilderapplication.h"
 #include "filesystem.h"
+#include <iostream>
 
 namespace SynGlyphX {
 
@@ -40,7 +41,7 @@ namespace SynGlyphX {
 	void PortableVisualizationExport::SetupSourceDirectories() {
 
 		QString sourceBaseDir = QDir::toNativeSeparators(QFileInfo(SynGlyphX::Application::applicationDirPath()).canonicalFilePath()) + QDir::separator();
-
+		
 		QSettings settings;
 		settings.beginGroup("ANTzExport");
 		AddSourceDirectoryToPlatformIfItExists(Platform::Windows, settings.value("windows", sourceBaseDir + "ANTzTemplate").toString());
@@ -53,7 +54,7 @@ namespace SynGlyphX {
 
 		if (m_sourceDirectories.count(platform) == 0) {
 
-			throw std::exception("Platform does not exist");
+			throw std::runtime_error("Platform does not exist");
 		}
 
 		return m_sourceDirectories.at(platform);

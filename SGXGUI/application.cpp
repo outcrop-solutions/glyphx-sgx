@@ -1,4 +1,5 @@
 #include "application.h"
+#include <stdexcept>
 #include <QtCore/QDir>
 #include <QtGui/QIcon>
 #include <QtCore/QStandardPaths>
@@ -32,7 +33,7 @@ namespace SynGlyphX {
 		QDir dir;
 		if (!dir.mkpath(s_tempDirectory)) {
 
-			throw std::exception("Failed to create temp directory");
+			throw std::runtime_error("Failed to create temp directory");
 		}
 
 		QString baseCommonDataPath;

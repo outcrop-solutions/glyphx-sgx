@@ -73,11 +73,13 @@ namespace SynGlyphX {
 
 				if (index.column() == 1) {
 
-					return Qt::AlignRight | Qt::AlignVCenter;
+					QFlags<Qt::AlignmentFlag> flags = Qt::AlignRight | Qt::AlignVCenter;
+					return static_cast<unsigned int>(flags);
 				}
 				else if (index.column() == 0) {
 
-					return Qt::AlignLeft | Qt::AlignVCenter;
+					QFlags<Qt::AlignmentFlag> flags = Qt::AlignLeft | Qt::AlignVCenter;
+					return static_cast<unsigned int>(flags);
 				}
 			}
 			else if (role == RawDataRole) {

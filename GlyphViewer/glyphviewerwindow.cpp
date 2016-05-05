@@ -353,12 +353,12 @@ void GlyphViewerWindow::LoadVisualization(const QString& filename) {
 	QString extension = fileInfo.suffix().toLower();
 	if ((extension != "sdt") && (extension != "sav")) {
 
-		throw std::exception("File is not a recognized format");
+		throw std::runtime_error("File is not a recognized format");
 	}
 
 	if (!fileInfo.exists()) {
 
-		throw std::exception("File does not exist");
+		throw std::runtime_error("File does not exist");
 	}
 
 	if (m_glyphForestModel->rowCount() > 0) {
@@ -426,17 +426,17 @@ void GlyphViewerWindow::ValidateDataMappingFile(const QString& filename) {
 
 	if (!mapping->GetDatasources().HasDatasources()) {
 
-		throw std::exception("Visualization has no datasources.");
+		throw std::runtime_error("Visualization has no datasources.");
 	}
 
 	if (mapping->GetGlyphGraphs().empty()) {
 
-		throw std::exception("Visualization has no glyph templates.");
+		throw std::runtime_error("Visualization has no glyph templates.");
 	}
 
 	if (!mapping->DoesAtLeastOneGlyphGraphHaveBindingsOnPosition()) {
 
-		throw std::exception("Visualization has no glyph templates with bindings on Position X, Position Y, or Position Z.");
+		throw std::runtime_error("Visualization has no glyph templates with bindings on Position X, Position Y, or Position Z.");
 	}
 
 	bool wasDataTransformUpdated = false;
@@ -453,7 +453,7 @@ void GlyphViewerWindow::ValidateDataMappingFile(const QString& filename) {
 
 		if (!wasDataTransformUpdated) {
 
-			throw std::exception("Visualization has missing base images that need to be updated to their correct locations before the visualization can be loaded");
+			throw std::runtime_error("Visualization has missing base images that need to be updated to their correct locations before the visualization can be loaded");
 		}
 	}
 
@@ -465,7 +465,7 @@ void GlyphViewerWindow::ValidateDataMappingFile(const QString& filename) {
 
 		if (!wasDataTransformUpdated) {
 
-			throw std::exception("Visualization has missing data sources that need to be updated to their correct locations before the visualization can be loaded");
+			throw std::runtime_error("Visualization has missing data sources that need to be updated to their correct locations before the visualization can be loaded");
 		}
 	}
 
@@ -497,21 +497,24 @@ void GlyphViewerWindow::LoadDataTransform(const QString& filename) {
 
 		m_mappingModel->LoadDataTransformFile(filename);
 		std::string dcd = GlyphViewerOptions::GetDefaultCacheDirectory().toStdString();
-		std::string cacheDirectoryPath = dcd + ("\\cache_" + boost::uuids::to_string(m_mappingModel->GetDataMapping()->GetID()));
+		std::string cacheDirectoryPath = dcd + ("/cache_" + boost::uuids::to_string(m_mappingModel->GetDataMapping()->GetID()));
 
 		//SynGlyphXANTz::GlyphViewerANTzTransformer transformer(QString::fromStdString(cacheDirectoryPath.string()));
 		//transformer.Transform(*m_mappingModel->GetDataMapping());
 		
 		DataEngine::GlyphEngine ge;
-		std::string dirPath = cacheDirectoryPath + "\\";
+		std::string dirPath = cacheDirectoryPath + "/";
 		std::string baseImageDir = SynGlyphX::GlyphBuilderApplication::GetDefaultBaseImagesLocation().toStdString();
 		ge.initiate(dec.getEnv(), filename.toStdString(), dirPath, baseImageDir, "", "GlyphViewer");
-		ge.getDownloadedBaseImage(m_mappingModel->GetDataMapping().get()->GetBaseObjects());
+		if (!ge.getDownloadedBaseImage(m_mappingModel->GetDataMapping().get()->GetBaseObjects())) {
+		
+			QMessageBox::information(this, tr("Download Error ..."), ge.getError(), QMessageBox::Ok);
+		}
 		ge.generateGlyphs();
 		std::vector<std::string> images = ge.getBaseImages();
 		
 		QStringList cacheFiles;
-		QString localOutputDir = QString::fromStdString(dirPath + "antz\\");
+		QString localOutputDir = QString::fromStdString(dirPath + "antz/");
 		cacheFiles.push_back(localOutputDir + "antz.csv");
 		cacheFiles.push_back(localOutputDir + "antztag.csv");
 		cacheFiles.push_back(QString::fromStdString(dirPath + "sourcedata.db"));
@@ -812,14 +815,17 @@ void GlyphViewerWindow::CreatePortableVisualization(SynGlyphX::PortableVisualiza
 		std::string baseFilename = (QString::fromStdWString(SynGlyphX::DefaultBaseImageProperties::GetBasefilename()).toStdString());
 
 		//App says "DataMapper" because this is equivalent to create portable visualization in DataMapper
-		ge.initiate(dec.getEnv(), m_currentFilename.toStdString(), csvDirectory.toStdString() + "\\", baseImageDir, baseFilename, "DataMapper");
-		ge.getDownloadedBaseImage(m_mappingModel->GetDataMapping().get()->GetBaseObjects());
+		ge.initiate(dec.getEnv(), m_currentFilename.toStdString(), csvDirectory.toStdString() + "/", baseImageDir, baseFilename, "DataMapper");
+		if (!ge.getDownloadedBaseImage(m_mappingModel->GetDataMapping().get()->GetBaseObjects())) {
+			
+			QMessageBox::warning(this, tr("Download image error"), ge.getError(), QMessageBox::Ok);
+		}
+		
 		ge.generateGlyphs();
 
 		SynGlyphX::Application::restoreOverrideCursor();
 
 		const QString& GlyphEngineError = ge.getError();
-
 		if (!GlyphEngineError.isNull()) {
 
 			QMessageBox::information(this, "Transformation Error", GlyphEngineError, QMessageBox::Ok);

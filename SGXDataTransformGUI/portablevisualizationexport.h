@@ -19,7 +19,7 @@
 #include "datatransformmapping.h"
 #include <QtCore/QObject>
 #include <QtCore/QString>
-#include <unordered_map>
+#include <map>
 #include <QtWidgets/QMenu>
 
 namespace SynGlyphX {
@@ -55,7 +55,7 @@ namespace SynGlyphX {
 		void AddSourceDirectoryToPlatformIfItExists(Platform platform, const QString& directoryName);
 		bool DoesSourceDirectoryExist(const QString directoryName) const;
 
-		std::unordered_map<Platform, QString> m_sourceDirectories;
+		std::map<Platform, QString> m_sourceDirectories;
 	};
 
 } //namespace SynGlyphX

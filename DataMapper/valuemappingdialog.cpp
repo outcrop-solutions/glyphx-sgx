@@ -347,12 +347,12 @@ SynGlyphX::Range ValueMappingDialog::GetRangeFromWidget(int row, int column)  {
 	SynGlyphX::RangeWidget* widget = dynamic_cast<SynGlyphX::RangeWidget*>(m_table->cellWidget(row, column));
 	if (widget == nullptr) {
 
-		throw std::exception("Could not get widget of given type.");
+		throw std::runtime_error("Could not get widget of given type.");
 	}
 
 	if (!widget->IsValid()) {
 
-		throw std::exception("All ranges of range value pairs must have a minimum that is less than its maximum.");
+		throw std::runtime_error("All ranges of range value pairs must have a minimum that is less than its maximum.");
 	}
 
 	return widget->GetRange();
@@ -363,13 +363,13 @@ std::wstring ValueMappingDialog::GetTextFromWidget(int row, int column) {
 	QLineEdit* widget = dynamic_cast<QLineEdit*>(m_table->cellWidget(row, column));
 	if (widget == nullptr) {
 
-		throw std::exception("Could not get widget of given type.");
+		throw std::runtime_error("Could not get widget of given type.");
 	}
 
 	QString text = widget->text();
 	if (text.isEmpty()) {
 
-		throw std::exception("All keys of key value pairs must not be empty.");
+		throw std::runtime_error("All keys of key value pairs must not be empty.");
 	}
 
 	return text.toStdWString();
@@ -380,7 +380,7 @@ double ValueMappingDialog::GetDoubleFromWidget(int row, int column) {
 	QDoubleSpinBox* widget = dynamic_cast<QDoubleSpinBox*>(m_table->cellWidget(row, column));
 	if (widget == nullptr) {
 
-		throw std::exception("Could not get widget of given type.");
+		throw std::runtime_error("Could not get widget of given type.");
 	}
 
 	return widget->value();
@@ -391,7 +391,7 @@ SynGlyphX::GlyphColor ValueMappingDialog::GetColorFromWidget(int row, int column
 	SynGlyphX::ColorButton* widget = dynamic_cast<SynGlyphX::ColorButton*>(m_table->cellWidget(row, column));
 	if (widget == nullptr) {
 
-		throw std::exception("Could not get widget of given type.");
+		throw std::runtime_error("Could not get widget of given type.");
 	}
 
 	return SynGlyphX::ColorConverter::QColor2GlyphColor(widget->GetColor());
@@ -402,7 +402,7 @@ SynGlyphX::GlyphGeometryInfo::Shape ValueMappingDialog::GetShapeFromWidget(int r
 	SynGlyphX::GlyphShapeComboBox* widget = dynamic_cast<SynGlyphX::GlyphShapeComboBox*>(m_table->cellWidget(row, column));
 	if (widget == nullptr) {
 
-		throw std::exception("Could not get widget of given type.");
+		throw std::runtime_error("Could not get widget of given type.");
 	}
 
 	return widget->GetCurrentValue();
@@ -413,7 +413,7 @@ SynGlyphX::VirtualTopologyInfo::Type ValueMappingDialog::GetVirtualTopologyFromW
 	SynGlyphX::VirtualTopologyComboBox* widget = dynamic_cast<SynGlyphX::VirtualTopologyComboBox*>(m_table->cellWidget(row, column));
 	if (widget == nullptr) {
 
-		throw std::exception("Could not get widget of given type.");
+		throw std::runtime_error("Could not get widget of given type.");
 	}
 
 	return widget->GetCurrentValue();
@@ -531,7 +531,7 @@ bool Numeric2NumericMappingDialog::CreateMappingData() {
 		double input = GetDoubleFromWidget(row, 0);
 		if (mapping->IsKeyInKeyValueMap(input)) {
 
-			throw std::exception("At least one key is the same as another key.  All keys must be unique.");
+			throw std::runtime_error("At least one key is the same as another key.  All keys must be unique.");
 		}
 
 		double output = GetDoubleFromWidget(row, 1);
@@ -602,7 +602,7 @@ bool Numeric2ColorMappingDialog::CreateMappingData() {
 		double input = GetDoubleFromWidget(row, 0);
 		if (mapping->IsKeyInKeyValueMap(input)) {
 
-			throw std::exception("At least one key is the same as another key.  All keys must be unique.");
+			throw std::runtime_error("At least one key is the same as another key.  All keys must be unique.");
 		}
 
 		SynGlyphX::GlyphColor output = GetColorFromWidget(row, 1);
@@ -674,7 +674,7 @@ bool Text2NumericMappingDialog::CreateMappingData() {
 		std::wstring input = GetTextFromWidget(row, 0);
 		if (mapping->IsKeyInKeyValueMap(input)) {
 
-			throw std::exception("At least one key is the same as another key.  All keys must be unique.");
+			throw std::runtime_error("At least one key is the same as another key.  All keys must be unique.");
 		}
 
 		double output = GetDoubleFromWidget(row, 1);
@@ -746,7 +746,7 @@ bool Text2ColorMappingDialog::CreateMappingData() {
 		std::wstring input = GetTextFromWidget(row, 0);
 		if (mapping->IsKeyInKeyValueMap(input)) {
 
-			throw std::exception("At least one key is the same as another key.  All keys must be unique.");
+			throw std::runtime_error("At least one key is the same as another key.  All keys must be unique.");
 		}
 
 		SynGlyphX::GlyphColor output = GetColorFromWidget(row, 1);
@@ -818,7 +818,7 @@ bool Range2NumericMappingDialog::CreateMappingData() {
 		SynGlyphX::Range input = GetRangeFromWidget(row, 0);
 		if (mapping->IsKeyInKeyValueMap(input)) {
 
-			throw std::exception("At least one range overlaps another range.  All ranges must be distinct from each other.");
+			throw std::runtime_error("At least one range overlaps another range.  All ranges must be distinct from each other.");
 		}
 
 		double output = GetDoubleFromWidget(row, 1);
@@ -890,7 +890,7 @@ bool Range2ColorMappingDialog::CreateMappingData() {
 		SynGlyphX::Range input = GetRangeFromWidget(row, 0);
 		if (mapping->IsKeyInKeyValueMap(input)) {
 
-			throw std::exception("At least one range overlaps another range.  All ranges must be distinct from each other.");
+			throw std::runtime_error("At least one range overlaps another range.  All ranges must be distinct from each other.");
 		}
 
 		SynGlyphX::GlyphColor output = GetColorFromWidget(row, 1);
@@ -961,7 +961,7 @@ bool Numeric2ShapeMappingDialog::CreateMappingData() {
 		double input = GetDoubleFromWidget(row, 0);
 		if (mapping->IsKeyInKeyValueMap(input)) {
 
-			throw std::exception("At least one key is the same as another key.  All keys must be unique.");
+			throw std::runtime_error("At least one key is the same as another key.  All keys must be unique.");
 		}
 
 		SynGlyphX::GlyphGeometryInfo::Shape output = GetShapeFromWidget(row, 1);
@@ -1032,7 +1032,7 @@ bool Numeric2VirtualTopologyMappingDialog::CreateMappingData() {
 		double input = GetDoubleFromWidget(row, 0);
 		if (mapping->IsKeyInKeyValueMap(input)) {
 
-			throw std::exception("At least one key is the same as another key.  All keys must be unique.");
+			throw std::runtime_error("At least one key is the same as another key.  All keys must be unique.");
 		}
 
 		SynGlyphX::VirtualTopologyInfo::Type output = GetVirtualTopologyFromWidget(row, 1);
@@ -1104,7 +1104,7 @@ bool Text2ShapeMappingDialog::CreateMappingData() {
 		std::wstring input = GetTextFromWidget(row, 0);
 		if (mapping->IsKeyInKeyValueMap(input)) {
 
-			throw std::exception("At least one key is the same as another key.  All keys must be unique.");
+			throw std::runtime_error("At least one key is the same as another key.  All keys must be unique.");
 		}
 
 		SynGlyphX::GlyphGeometryInfo::Shape output = GetShapeFromWidget(row, 1);
@@ -1176,7 +1176,7 @@ bool Text2VirtualTopologyMappingDialog::CreateMappingData() {
 		std::wstring input = GetTextFromWidget(row, 0);
 		if (mapping->IsKeyInKeyValueMap(input)) {
 
-			throw std::exception("At least one key is the same as another key.  All keys must be unique.");
+			throw std::runtime_error("At least one key is the same as another key.  All keys must be unique.");
 		}
 
 		SynGlyphX::VirtualTopologyInfo::Type output = GetVirtualTopologyFromWidget(row, 1);
@@ -1248,7 +1248,7 @@ bool Range2ShapeMappingDialog::CreateMappingData() {
 		SynGlyphX::Range input = GetRangeFromWidget(row, 0);
 		if (mapping->IsKeyInKeyValueMap(input)) {
 
-			throw std::exception("At least one key is the same as another key.  All keys must be unique.");
+			throw std::runtime_error("At least one key is the same as another key.  All keys must be unique.");
 		}
 
 		SynGlyphX::GlyphGeometryInfo::Shape output = GetShapeFromWidget(row, 1);
@@ -1320,7 +1320,7 @@ bool Range2VirtualTopologyMappingDialog::CreateMappingData() {
 		SynGlyphX::Range input = GetRangeFromWidget(row, 0);
 		if (mapping->IsKeyInKeyValueMap(input)) {
 
-			throw std::exception("At least one key is the same as another key.  All keys must be unique.");
+			throw std::runtime_error("At least one key is the same as another key.  All keys must be unique.");
 		}
 
 		SynGlyphX::VirtualTopologyInfo::Type output = GetVirtualTopologyFromWidget(row, 1);
