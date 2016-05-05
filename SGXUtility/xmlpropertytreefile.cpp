@@ -2,7 +2,7 @@
 
 namespace SynGlyphX {
 
-	boost::property_tree::xml_writer_settings<wchar_t> XMLPropertyTreeFile::s_writeSettings(L'\t', 1);
+	boost::property_tree::xml_writer_settings<std::wstring> XMLPropertyTreeFile::s_writeSettings(L'\t', 1);
 
 	XMLPropertyTreeFile::XMLPropertyTreeFile()
 	{
@@ -34,7 +34,7 @@ namespace SynGlyphX {
 		return boost::property_tree::xml_parser::trim_whitespace;
 	}
 
-	const boost::property_tree::xml_writer_settings<wchar_t>& XMLPropertyTreeFile::GetWriteSettings() {
+	const boost::property_tree::xml_writer_settings<std::wstring>& XMLPropertyTreeFile::GetWriteSettings() {
 
 		return s_writeSettings;
 	}

@@ -22,7 +22,7 @@
 #include <string>
 #include <unordered_map>
 #include <boost/property_tree/ptree.hpp>
-#include "UUID.h"
+#include "uuid.h"
 #include "filedatasource.h"
 #include "inputtable.h"
 

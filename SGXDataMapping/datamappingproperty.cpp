@@ -328,7 +328,7 @@ namespace SynGlyphX {
 		}
 		else {
 
-			diff = propertyTree.get_optional<GlyphColor>(L"Difference").get_value_or(GlyphColor({ { 0, 0, 0 } }));
+			diff = propertyTree.get_optional<GlyphColor>(L"Difference").get_value_or(GlyphColor::s_black);
 		}
 
 		m_value.SetMinDiff(min, diff);

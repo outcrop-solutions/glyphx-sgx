@@ -186,7 +186,7 @@ namespace SynGlyphX {
 
 		if (m_inputMinMaxType != InputMinMaxType::UserSpecified) {
 
-			throw std::exception("Can't get user specified input min/max value since user specified is not the input min/max type");
+			throw std::runtime_error("Can't get user specified input min/max value since user specified is not the input min/max type");
 		}
 
 		return m_userSpecifiedInputMinMax;
@@ -202,7 +202,7 @@ namespace SynGlyphX {
 
 		if (m_inputMinMaxType != InputMinMaxType::InputFieldGroup) {
 
-			throw std::exception("Can't get field group input min/max value since input field group is not the input min/max type");
+			throw std::runtime_error("Can't get field group input min/max value since input field group is not the input min/max type");
 		}
 
 		return m_inputMinMaxFieldGroup;

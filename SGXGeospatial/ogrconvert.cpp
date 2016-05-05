@@ -35,25 +35,49 @@ namespace SynGlyphX {
         boost::filesystem::path inputPath(inputFilename);
 
         //This should be replaced with using GDAL as a library at some point
-        std::wstring ogr2ogrCommand = L"gdal\\ogr2ogr.exe -append -where \"OGR_GEOMETRY='Point'\" -lco GEOMETRY=AS_XYZ -select Name -f CSV \"" + intermediateCSV.native() + L"\"";
+        std::wstring ogr2ogrCommand = L"gdal\\ogr2ogr.exe -append -where \"OGR_GEOMETRY='Point'\" -lco GEOMETRY=AS_XYZ -select Name -f CSV \"";
+#ifdef WIN32
+	ogr2ogrCommand += intermediateCSV.native();
+#else
+	ogr2ogrCommand += intermediateCSV.wstring();
+#endif
+	ogr2ogrCommand += L"\"";
         if (inputPath.extension().string() == ".kmz") {
 			std::wstring genericInputPath = inputPath.generic_wstring();
 			ogr2ogrCommand += L" \"/vsizip/" + genericInputPath + L"/doc.kml\"";
         }
         else {
-            ogr2ogrCommand += L" \"" + inputPath.native() + L"\"";
+            ogr2ogrCommand += L" \"";
+#ifdef WIN32
+		ogr2ogrCommand += inputPath.native();
+#else
+		ogr2ogrCommand += inputPath.wstring();
+#endif
+            ogr2ogrCommand += L" \"";
         }
 
         boost::filesystem::path ogr2ogrOutput = boost::filesystem::current_path() / "gdal" / "ogr2ogr_output.txt";
         if (!boost::filesystem::exists(ogr2ogrOutput)) {
             boost::filesystem::remove(ogr2ogrOutput);
         }
-        ogr2ogrCommand += L" > " + ogr2ogrOutput.native() + L" 2>&1";
+        ogr2ogrCommand += L" > ";
+#ifdef WIN32
+		ogr2ogrCommand += ogr2ogrOutput.native();
+#else
+		ogr2ogrCommand += ogr2ogrOutput.wstring();
+#endif
+	ogr2ogrCommand += L" 2>&1";
 
         //Windows specific but since we will use GDAL as a library soon enough don't worry about it
-        if (_wsystem(ogr2ogrCommand.c_str()) == -1) {
-            
-            throw std::exception(_strerror("Failed to create intermediate CSV: "));
+        
+#ifdef WIN32
+	if (_wsystem(ogr2ogrCommand.c_str()) == -1) {
+            throw std::runtime_error(_strerror("Failed to create intermediate CSV: "));
+#else
+	std::string s( ogr2ogrCommand.begin(), ogr2ogrCommand.end() );
+	if (system(s.c_str()) == -1) {
+            throw std::runtime_error("Failed to create intermediate CSV: ");
+#endif
         }
 
         MergeCSVFiles(intermediateDir, outputFilename);
@@ -68,7 +92,7 @@ namespace SynGlyphX {
         outputCSV.open(outputFilename.c_str());
 
         if (!outputCSV.is_open()) {
-            throw std::exception("Output CSV failed to open");
+            throw std::runtime_error("Output CSV failed to open");
         }
 
         bool headerNeedsToBeWritten = true;
@@ -81,7 +105,7 @@ namespace SynGlyphX {
                 inputCSV.open(iT->path().c_str());
                 if (!outputCSV.is_open()) {
                     std::string error = iT->path().stem().string() + " failed to open";
-                    throw std::exception(error.c_str());
+                    throw std::runtime_error(error.c_str());
                 }
 
                 std::wstring line;
@@ -110,7 +134,7 @@ namespace SynGlyphX {
         outputCSV.close();
 
         if (!csvFilesWereProcessed) {
-            throw std::exception("No intermediate CSVs were created");
+            throw std::runtime_error("No intermediate CSVs were created");
         }
     }
 

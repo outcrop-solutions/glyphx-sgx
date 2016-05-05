@@ -79,7 +79,7 @@ namespace SynGlyphX {
 		glyph.GetScale()[0] = 1.0;
 		glyph.GetScale()[1] = 1.0;
 		glyph.GetScale()[2] = 1.0;
-		glyph.GetColor() = GlyphColor({ { 50, 101, 101 } });
+		glyph.GetColor() = GlyphColor(GlyphColor::ColorArray({ { 50, 101, 101 } }));
 		glyph.GetTransparency() = 255;
 
 		glyph.GetTag() = L"";

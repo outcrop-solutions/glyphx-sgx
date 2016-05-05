@@ -1,4 +1,5 @@
 #include "inputcombinationfunction.h"
+#include <string>
 
 namespace SynGlyphX {
 

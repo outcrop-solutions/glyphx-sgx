@@ -1,6 +1,7 @@
 #include "datatransformmapping.h"
 #include <boost/property_tree/xml_parser.hpp>
 #include <algorithm>
+#include <stdexcept>
 #include <boost/uuid/uuid_io.hpp>
 #include "userdefinedbaseimageproperties.h"
 
@@ -388,7 +389,7 @@ namespace SynGlyphX {
 		return m_baseObjects;
 	}
 	
-	void DataTransformMapping::SetInputField(const boost::uuids::uuid& treeID, DataMappingGlyphGraph::ConstGlyphIterator& node, DataMappingGlyph::MappableField field, const InputField& inputfield) {
+	void DataTransformMapping::SetInputField(const boost::uuids::uuid& treeID, DataMappingGlyphGraph::ConstGlyphIterator node, DataMappingGlyph::MappableField field, const InputField& inputfield) {
 
 		DataMappingGlyphGraph::SharedPtr glyphTree = m_glyphTrees[treeID];
 		glyphTree->SetInputField(node, field, inputfield);
@@ -541,7 +542,7 @@ namespace SynGlyphX {
 		}
 	}
 
-	void DataTransformMapping::AddChildTreeResetPosition(const boost::uuids::uuid& treeId, DataMappingGlyphGraph::GlyphIterator& parent, const SynGlyphX::DataMappingGlyphGraph& glyphGraph) {
+	void DataTransformMapping::AddChildTreeResetPosition(const boost::uuids::uuid& treeId, DataMappingGlyphGraph::GlyphIterator parent, const SynGlyphX::DataMappingGlyphGraph& glyphGraph) {
 
 		if (!parent.valid()) {
 
@@ -626,7 +627,7 @@ namespace SynGlyphX {
 
 		if (!m_datasources.HasDatasourceWithID(inputTable.GetDatasourceID())) {
 
-			throw std::exception("Can't create subset of mapping with a datasource ID that does not exist in the mapping.");
+			throw std::runtime_error("Can't create subset of mapping with a datasource ID that does not exist in the mapping.");
 		}
 
 		SharedPtr subsetMapping(new DataTransformMapping());
@@ -663,9 +664,9 @@ namespace SynGlyphX {
 	}
 
 	void DataTransformMapping::CopyInputBindingsForSubsetMapping(DataMappingGlyphGraph::SharedPtr newGlyphGraph, 
-																 DataMappingGlyphGraph::GlyphIterator& newNode, 
+																 DataMappingGlyphGraph::GlyphIterator newNode, 
 																 DataMappingGlyphGraph::ConstSharedPtr oldGlyphGraph, 
-																 DataMappingGlyphGraph::ConstGlyphIterator& oldNode,
+																 DataMappingGlyphGraph::ConstGlyphIterator oldNode,
 																 const boost::uuids::uuid& datasourceID) const {
 
 		for (unsigned int i = 0; i < DataMappingGlyph::MappableField::MappableFieldSize; ++i) {

@@ -131,7 +131,7 @@ namespace SynGlyphX {
 
 		boost::property_tree::wptree& keyValuePairsPropertyTree = functionDataPropertyTree.add(L"KeyValuePairs", L"");
 
-		for (std::map<KeyType, OutputType>::const_iterator keyValuePair = m_mappedValues.begin(); keyValuePair != m_mappedValues.end(); ++keyValuePair) {
+		for (typename std::map<KeyType, OutputType>::const_iterator keyValuePair = m_mappedValues.begin(); keyValuePair != m_mappedValues.end(); ++keyValuePair) {
 
 			boost::property_tree::wptree& keyValuePairPropertyTree = keyValuePairsPropertyTree.add(L"KeyValuePair", L"");
 			keyValuePairPropertyTree.put<KeyType>(L"Key", keyValuePair->first);
@@ -144,7 +144,7 @@ namespace SynGlyphX {
 	template <typename OutputType, typename InputType, typename KeyType>
 	OutputType ValueMappingData<OutputType, InputType, KeyType>::GetOutputValueFromInput(const InputType& input) const {
 
-		for (std::map<KeyType, OutputType>::const_iterator iT = m_mappedValues.begin(); iT != m_mappedValues.end(); ++iT) {
+		for (typename std::map<KeyType, OutputType>::const_iterator iT = m_mappedValues.begin(); iT != m_mappedValues.end(); ++iT) {
 
 			if (DoesInputMatch(iT->first, input)) {
 

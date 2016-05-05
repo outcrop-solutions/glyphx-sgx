@@ -75,5 +75,5 @@ namespace SynGlyphX {
 
 } //namespace SynGlyphX
 
-#endif SYNGLYPHX_INPUTFIELD_H
+#endif //SYNGLYPHX_INPUTFIELD_H
 

@@ -35,15 +35,15 @@ namespace SynGlyphX {
 
 		if (m_type == Type::DownloadedMap) {
 
-			m_properties = std::make_unique<DownloadedMapProperties>(propertyTree);
+			m_properties = std::unique_ptr<DownloadedMapProperties>(new DownloadedMapProperties(propertyTree));
 		}
 		else if (m_type == Type::UserImage) {
 
-			m_properties = std::make_unique<UserDefinedBaseImageProperties>(propertyTree);
+			m_properties = std::unique_ptr<UserDefinedBaseImageProperties>(new UserDefinedBaseImageProperties(propertyTree));
 		}
 		else {
 
-			m_properties = std::make_unique<DefaultBaseImageProperties>(propertyTree);
+			m_properties = std::unique_ptr<DefaultBaseImageProperties>(new DefaultBaseImageProperties(propertyTree));
 		}
 
 		boost::optional<const boost::property_tree::wptree&> positionPropertyTree = propertyTree.get_child_optional(L"Position");

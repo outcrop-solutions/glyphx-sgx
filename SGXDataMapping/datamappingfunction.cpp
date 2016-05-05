@@ -120,11 +120,11 @@ namespace SynGlyphX {
 
 		if (v == MappingFunctionData::Input::Numeric) {
 
-			return L"Numeric";
+			return boost::optional<std::wstring>(L"Numeric");
 		}
 		else if (v == MappingFunctionData::Input::Text) {
 
-			return L"Text";
+			return boost::optional<std::wstring>(L"Text");
 		}
 		else {
 
@@ -164,19 +164,19 @@ namespace SynGlyphX {
 
 		if (v == MappingFunctionData::Output::Numeric) {
 
-			return L"Numeric";
+			return boost::optional<std::wstring>(L"Numeric");
 		}
 		else if (v == MappingFunctionData::Output::Color) {
 
-			return L"Color";
+			return boost::optional<std::wstring>(L"Color");
 		}
 		else if (v == MappingFunctionData::Output::Shape) {
 
-			return L"Shape";
+			return boost::optional<std::wstring>(L"Shape");
 		}
 		else if (v == MappingFunctionData::Output::Topology) {
 
-			return L"VirtualTopology";
+			return boost::optional<std::wstring>(L"VirtualTopology");
 		}
 		else {
 

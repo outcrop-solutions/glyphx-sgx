@@ -62,7 +62,7 @@ namespace SynGlyphX {
 
 		if (!IsValid()) {
 
-			throw std::exception("Source data cache is not setup.");
+			throw std::runtime_error("Source data cache is not setup.");
 		}
 
 		for (auto fileDatasource : datasources.GetFileDatasources()) {
@@ -103,7 +103,7 @@ namespace SynGlyphX {
 			}
 			else {
 
-				throw std::exception("File datasource not supported");
+				throw std::runtime_error("File datasource not supported");
 			}
 		}
 		catch (const std::exception& e) {
@@ -130,7 +130,7 @@ namespace SynGlyphX {
 				db.setDatabaseName(QString::fromStdWString(datasource.GetDBName()));
 				if (!db.open()) {
 
-					throw std::exception("File source data source db failed to open.");
+					throw std::runtime_error("File source data source db failed to open.");
 				}
 				closeDatasource = true;
 			}
@@ -208,7 +208,7 @@ namespace SynGlyphX {
 		getDataQuery.prepare("SELECT " + fieldNameList + " FROM \"" + sourceTable + "\"");
 		if (!getDataQuery.exec()) {
 
-			throw std::exception((QObject::tr("Failed to extract source data: ") + m_db.lastError().text()).toStdString().c_str());
+			throw std::runtime_error((QObject::tr("Failed to extract source data: ") + m_db.lastError().text()).toStdString().c_str());
 		}
 
 		std::vector<QVariantList> dataToInsert;
@@ -275,7 +275,7 @@ namespace SynGlyphX {
 		}
 		else {
 
-			throw std::exception((QObject::tr("Table indexing failure: ") + m_db.lastError().text()).toStdString().c_str());
+			throw std::runtime_error((QObject::tr("Table indexing failure: ") + m_db.lastError().text()).toStdString().c_str());
 		}
 	}
 
@@ -393,7 +393,7 @@ namespace SynGlyphX {
 		}
 		else {
 
-			throw std::exception((QObject::tr("Failure to get formatted name from cache: ") + m_db.lastError().text()).toStdString().c_str());
+			throw std::runtime_error((QObject::tr("Failure to get formatted name from cache: ") + m_db.lastError().text()).toStdString().c_str());
 		}
 	}
 
@@ -564,7 +564,7 @@ namespace SynGlyphX {
 		query.exec();
 		if (!query.exec()) {
 
-			throw std::exception((QObject::tr("Failed to get selected indexes from cache: ") + m_db.lastError().text()).toStdString().c_str());
+			throw std::runtime_error((QObject::tr("Failed to get selected indexes from cache: ") + m_db.lastError().text()).toStdString().c_str());
 		}
 
 		IndexSet indexSet;
@@ -586,7 +586,7 @@ namespace SynGlyphX {
 		query.exec();
 		if (!query.exec()) {
 
-			throw std::exception((QObject::tr("Failed to get ordered indexes: ") + m_db.lastError().text()).toStdString().c_str());
+			throw std::runtime_error((QObject::tr("Failed to get ordered indexes: ") + m_db.lastError().text()).toStdString().c_str());
 		}
 
 		QString previousDistinctValue(QString::null);
@@ -610,7 +610,7 @@ namespace SynGlyphX {
 
 		if (!IsValid()) {
 
-			throw std::exception("Source data cache is not setup.");
+			throw std::runtime_error("Source data cache is not setup.");
 		}
 
 		for (auto fileDatasource : datasources.GetFileDatasources()) {

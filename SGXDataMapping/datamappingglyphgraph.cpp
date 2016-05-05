@@ -78,7 +78,7 @@ namespace SynGlyphX {
 		m_rootVertex = add_vertex(DataMappingGlyph(graph[glyphGraphRoot]));*/
 
 		SetRootGlyph(DataMappingGlyph(graph.GetRoot()->second, true));
-		AddGraphGlyphSubgraph(root(), graph.GetRoot(), graph);
+		AddGraphGlyphSubgraph(GetRoot(), graph.GetRoot(), graph);
 
 		for (auto& link : graph.GetLinks()) {
 
@@ -331,7 +331,7 @@ namespace SynGlyphX {
 		}
 	}
 
-	void DataMappingGlyphGraph::AddGraphGlyphSubgraph(DataMappingGlyphGraph::GlyphIterator& parent, const GlyphGraph::ConstGlyphIterator& glyphGraphParent, const GlyphGraph& graph) {
+	void DataMappingGlyphGraph::AddGraphGlyphSubgraph(DataMappingGlyphGraph::GlyphIterator parent, GlyphGraph::ConstGlyphIterator glyphGraphParent, const GlyphGraph& graph) {
 
 		/*std::pair<GlyphGraph::out_edge_iterator, GlyphGraph::out_edge_iterator> children = boost::out_edges(glyphGraphParent, graph);
 		for (GlyphGraph::out_edge_iterator iT = children.first; iT != children.second; ++iT) {
@@ -350,7 +350,7 @@ namespace SynGlyphX {
 		}
 	}
 
-	void DataMappingGlyphGraph::SetInputField(DataMappingGlyphGraph::ConstGlyphIterator& node, DataMappingGlyph::MappableField field, const InputField& inputfield) {
+	void DataMappingGlyphGraph::SetInputField(DataMappingGlyphGraph::ConstGlyphIterator node, DataMappingGlyph::MappableField field, const InputField& inputfield) {
 
 		//Check if new input field is from same table as other input fields.  We shouldn't need to be this restrictive in the future, but that
 		//requires more database work than we have time for right now.
@@ -401,7 +401,7 @@ namespace SynGlyphX {
 		}
 	}
 
-	void DataMappingGlyphGraph::ClearAllInputBindings(DataMappingGlyphGraph::ConstGlyphIterator& node) {
+	void DataMappingGlyphGraph::ClearAllInputBindings(DataMappingGlyphGraph::ConstGlyphIterator node) {
 
 		for (int i = 0; i < DataMappingGlyph::MappableField::MappableFieldSize; ++i) {
 
@@ -466,7 +466,7 @@ namespace SynGlyphX {
 		return glyphTree;
 	}
 
-	void DataMappingGlyphGraph::CreateMinOrMaxGlyphSubtree(const DataMappingGlyphGraph::ConstGlyphIterator& parent, GlyphGraph::GlyphIterator& newVertex, GlyphGraph::SharedPtr newGlyphGraph, bool isMax) const {
+	void DataMappingGlyphGraph::CreateMinOrMaxGlyphSubtree(const DataMappingGlyphGraph::ConstGlyphIterator parent, GlyphGraph::GlyphIterator newVertex, GlyphGraph::SharedPtr newGlyphGraph, bool isMax) const {
 
 		for (int i = 0; i < children(parent); ++i) {
 
