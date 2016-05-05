@@ -606,11 +606,12 @@ namespace SynGlyphXANTz {
 		bool flipXTextPosition = ((currentCamera->rotate.y > 90.0) && (currentCamera->rotate.y <= 270.0));
 		bool flipYTextPosition = (currentCamera->rotate.y > 180.0);
 
-		glViewport(0, antzData->io.gl.height - 200, 200, 200);
+		unsigned int viewportWidth = std::max(150, antzData->io.gl.width);
+		glViewport(0, antzData->io.gl.height - 160, viewportWidth, 150);
 		glMatrixMode(GL_PROJECTION);
 		glPushMatrix();
 		glLoadIdentity();
-		glOrtho(-5.0, 5.0, -5.0, 5.0, -10.0, 10.0);
+		glOrtho(-5.0, -5.0 + (viewportWidth / 15.0), -5.0, 5.0, -10.0, 10.0);
 
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
