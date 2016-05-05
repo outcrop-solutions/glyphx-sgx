@@ -28,8 +28,8 @@
 #include <Windows.h>
 #endif
 
-#include <gl/GL.h>
-#include <gl/GLU.h>
+#include <GL/gl.h>
+#include <GL/glu.h>
 
 #include "npgldraw.h"
 

@@ -3,16 +3,10 @@
 
 #include <QtCore/qglobal.h>
 
-#ifdef WIN32
-
-#ifdef ANTzSingleGlyphGUI_EXPORTS
+#ifdef ANTZSINGLEGLYPHGUI_LIB
 # define ANTZSINGLEGLYPHGUI_EXPORT Q_DECL_EXPORT
 #else
 # define ANTZSINGLEGLYPHGUI_EXPORT Q_DECL_IMPORT
-#endif
-
-#else
-#define ANTZSINGLEGLYPHGUI_EXPORT
 #endif
 
 #endif // ANTZSINGLEGLYPHGUI_GLOBAL_H

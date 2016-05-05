@@ -33,8 +33,8 @@
 
 #include "watchtools.h"
 
-#include <gl/GL.h>
-#include <gl/GLU.h>
+#include <GL/gl.h>
+#include <GL/glu.h>
 
 void npGLResizeScene (int width, int height);
 

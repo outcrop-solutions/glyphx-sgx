@@ -14,5 +14,5 @@
 #endif
 
 #else
-#define ANTCORE_API
+#define ANTZCORE_API
 #endif

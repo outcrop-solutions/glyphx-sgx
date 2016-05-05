@@ -56,6 +56,8 @@
 //	#include <unistd.h>			//debug zz
 #endif
 
+#include <stdio.h>
+
 //-----------------------------------------------------------------------------
 void nposGetAppPath (char* buffer, int* size)
 {
@@ -175,7 +177,25 @@ int nposShowCursor (int hide)
 //-----------------------------------------------------------------------------
 int nposGetKey (void)
 {
-	return getch();																//debug zz
+	return getchar();																//debug zz
+}
+
+//zz-JJ---------------------------------------------------------------------------
+void nposBeginThread (voidFnPtr vfp, void *dataRef)
+{
+	//_beginthread (vfp, 0, dataRef);
+}
+
+
+//zz-JJ---------------------------------------------------------------------------
+void nposEndThread (void)
+{
+	//_endthread();
+}
+
+bool nposSupportsAntzThreads (void)
+{
+	return 0;
 }
 
 #endif

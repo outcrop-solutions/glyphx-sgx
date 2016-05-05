@@ -550,7 +550,7 @@ namespace SynGlyphXANTz {
 			}
 			else {
 
-				throw std::exception("File type not supported");
+				throw std::runtime_error("File type not supported");
 			}
 		}
 		catch (const std::exception& e) {

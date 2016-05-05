@@ -1,7 +1,7 @@
 #include "antzforestwidget.h"
-#include <QtGUI/QOpenGLContext>
-#include <QtGUI/QMouseEvent>
-#include <QtGUI/QFont>
+#include <QtGui/QOpenGLContext>
+#include <QtGui/QMouseEvent>
+#include <QtGui/QFont>
 #include <QtWidgets/QMessageBox>
 #include <QtCore/QDir>
 #include "io/npfile.h"
@@ -874,6 +874,16 @@ namespace SynGlyphXANTz {
 			}
 		}
 
+		//Make sure that ANTz combo of left & right button does not cause the context menu to appear
+		if (event->buttons() == Qt::RightButton) {
+
+			setContextMenuPolicy(Qt::ActionsContextMenu);
+		}
+		else {
+
+			setContextMenuPolicy(Qt::NoContextMenu);
+		}
+
 		m_lastMousePosition = event->pos();
 	}
 
@@ -1002,6 +1012,10 @@ namespace SynGlyphXANTz {
 							antzData->io.mouse.mode = kNPmouseModeCamExamXY;
 						}
 					}
+					else if (event->buttons() & Qt::MidButton) {
+
+						antzData->io.mouse.mode = kNPmouseModeCamExamXZ;
+					}
 				}
 			}
 			else {
@@ -1080,8 +1094,10 @@ namespace SynGlyphXANTz {
 			antzData->io.mouse.delta.y = event->delta() / 10;
 			event->accept();
 		}
+		else {
 
-		event->ignore();
+			event->ignore();
+		}
 	}
 	/*
 	void ANTzForestWidget::SetStereo(bool enableStereo) {

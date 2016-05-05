@@ -31,8 +31,8 @@
 #ifdef WIN32
 #include <Windows.h>
 #endif
-#include <gl/GL.h>
-#include <gl/GLU.h>
+#include <GL/gl.h>
+#include <GL/glu.h>
 
 #ifdef __cplusplus
 extern "C" {

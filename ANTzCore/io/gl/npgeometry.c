@@ -26,8 +26,8 @@
 
 #include "npgldraw.h"
 
-#include <gl/GL.h>
-#include <gl/GLU.h>
+#include <GL/gl.h>
+#include <GL/glu.h>
 
 #define kTorusScreenSizeCount 4
 #define kTorusThicknessCount 4
@@ -1331,7 +1331,7 @@ static GLfloat idata[12][3] =
     { -Z, -X, 0 }
 };
 
-static int index[20][3] =
+static int icosahedron_index[20][3] =
 {
     { 0, 4, 1 },
     { 0, 9, 4 },
@@ -1360,7 +1360,7 @@ void icosahedron(GLenum shadeType)
     int i;
 
     for (i = 19; i >= 0; i--) {
-        drawtriangle(i, idata, index, shadeType);
+        drawtriangle(i, idata, icosahedron_index, shadeType);
     }
 }
 

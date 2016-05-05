@@ -31,8 +31,8 @@
 #include "../../npctrl.h"
 #include "../../os/npos.h"
 
-#include <gl/GL.h>
-#include <gl/GLU.h>
+#include <GL/gl.h>
+#include <GL/glu.h>
 
 void DrawDefault (pNPnode node);
 void DrawCamera (pNPnode node);

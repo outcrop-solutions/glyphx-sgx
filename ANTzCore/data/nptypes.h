@@ -32,6 +32,11 @@
 #include "stdbool.h"
 #endif
 
+#ifndef WIN32
+#define TRUE 1
+#define FALSE 0
+#endif
+
 #define kPI			 3.141593f
 #define k2PI		 6.283185f
 #define kNeg2PI		-6.283185f
