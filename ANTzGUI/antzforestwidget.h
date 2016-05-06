@@ -42,6 +42,13 @@ namespace SynGlyphXANTz {
 			HideUnfiltered
 		};
 
+		enum HUDLocation {
+
+			TopLeft = 0,
+			BottomLeft,
+			BottomRight
+		};
+
 		ANTzForestWidget(GlyphForestModel* model, SynGlyphX::ItemFocusSelectionModel* selectionModel, QWidget *parent = 0);
 		~ANTzForestWidget();
 
@@ -59,6 +66,9 @@ namespace SynGlyphXANTz {
 		void SetBackgroundColor(const SynGlyphX::GlyphColor& color);
 
 		bool SetStereoMode(bool stereoOn);
+
+		void SetAxisInfoObjectLocation(HUDLocation location);
+		HUDLocation GetAxisInfoObjectLocation() const;
 
 	signals:
 		//void NewStatusMessage(const QString& message, int timeout = 0) const;
@@ -101,7 +111,6 @@ namespace SynGlyphXANTz {
 		void keyReleaseEvent(QKeyEvent* event) override;
 		void moveEvent(QMoveEvent* event) override;
 		void wheelEvent(QWheelEvent* event) override;
-		void resizeEvent(QResizeEvent* event) override;
 
 		void DrawSceneForEye(Eye eye, bool getStylusWorldPosition);
 		void SetCameraToDefaultPosition();
@@ -199,6 +208,10 @@ namespace SynGlyphXANTz {
 		QSet<QModelIndex> m_tagIndexes;
 
 		GLUquadric* m_sceneAxisInfoQuadric;
+
+		HUDLocation m_sceneAxisInfoObjectLocation;
+		QRect m_sceneAxisInfoViewport;
+		QRectF m_sceneAxisInfoOrtho;
 	};
 
 } //namespace SynGlyphXANTz

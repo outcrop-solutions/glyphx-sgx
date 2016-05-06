@@ -47,6 +47,8 @@ namespace SynGlyphXANTz {
 		m_initialCameraZAngle(45.0f),
 		m_sceneAxisInfoQuadric(static_cast<GLUquadric*>(CreateNewQuadricObject()))
 	{
+		SetAxisInfoObjectLocation(HUDLocation::TopLeft);
+
 		m_isInStereo = context()->format().stereo();
 
 		setAutoBufferSwap(false);
@@ -355,7 +357,14 @@ namespace SynGlyphXANTz {
 
 		ResizeZSpaceViewport();
 
+		QSize logoSize = m_logoPosition.size();
+		m_logoPosition.setLeft(w - logoSize.width() - 10);
+		m_logoPosition.setTop(h - 10);
+		m_logoPosition.setSize(logoSize);
+
 		npGLResizeScene(w, h);
+
+		SetAxisInfoObjectLocation(m_sceneAxisInfoObjectLocation);
 	}
 
 	void ANTzForestWidget::paintGL() {
@@ -607,11 +616,11 @@ namespace SynGlyphXANTz {
 		bool flipYTextPosition = (currentCamera->rotate.y > 180.0);
 
 		unsigned int viewportWidth = std::max(150, antzData->io.gl.width);
-		glViewport(0, antzData->io.gl.height - 160, viewportWidth, 150);
+		glViewport(m_sceneAxisInfoViewport.left(), m_sceneAxisInfoViewport.top(), m_sceneAxisInfoViewport.width(), m_sceneAxisInfoViewport.height());
 		glMatrixMode(GL_PROJECTION);
 		glPushMatrix();
 		glLoadIdentity();
-		glOrtho(-5.0, -5.0 + (viewportWidth / 15.0), -5.0, 5.0, -10.0, 10.0);
+		glOrtho(m_sceneAxisInfoOrtho.left(), m_sceneAxisInfoOrtho.right(), m_sceneAxisInfoOrtho.top(), m_sceneAxisInfoOrtho.bottom(), -10.0, 10.0);
 
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
@@ -1853,14 +1862,33 @@ namespace SynGlyphXANTz {
 		m_tagIndexes.clear();
 	}
 
-	void ANTzForestWidget::resizeEvent(QResizeEvent* event) {
+	void ANTzForestWidget::SetAxisInfoObjectLocation(HUDLocation location){
 
-		QSize logoSize = m_logoPosition.size();
-		m_logoPosition.setLeft(event->size().width() - logoSize.width() - 10);
-		m_logoPosition.setTop(event->size().height() - 10);
-		m_logoPosition.setSize(logoSize);
+		pData antzData = m_antzData->GetData();
 
-		QGLWidget::resizeEvent(event);
+		m_sceneAxisInfoObjectLocation = location;
+
+		double orthoWidth = antzData->io.gl.width / 15.0;
+		if (m_sceneAxisInfoObjectLocation == HUDLocation::TopLeft) {
+
+			m_sceneAxisInfoViewport = QRect(0, antzData->io.gl.height - 160, antzData->io.gl.width, 150);
+			m_sceneAxisInfoOrtho = QRectF(-5.0, -5.0, orthoWidth, 10.0);
+		}
+		else if (m_sceneAxisInfoObjectLocation == HUDLocation::BottomLeft) {
+
+			m_sceneAxisInfoViewport = QRect(0, 10, antzData->io.gl.width, 150);
+			m_sceneAxisInfoOrtho = QRectF(-5.0, -5.0, orthoWidth, 10.0);
+		}
+		else if (m_sceneAxisInfoObjectLocation == HUDLocation::BottomRight) {
+
+			m_sceneAxisInfoViewport = QRect(0, 10, antzData->io.gl.width, 150);
+			m_sceneAxisInfoOrtho = QRectF(5.0 - orthoWidth, -5.0, orthoWidth, 10.0);
+		}
+	}
+
+	ANTzForestWidget::HUDLocation ANTzForestWidget::GetAxisInfoObjectLocation() const {
+
+		return m_sceneAxisInfoObjectLocation;
 	}
 
 } //namespace SynGlyphXANTz
