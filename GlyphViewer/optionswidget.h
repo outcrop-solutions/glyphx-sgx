@@ -20,6 +20,7 @@
 
 #include <QtWidgets/QTabWidget>
 #include <QtWidgets/QCheckBox>
+#include <QtWidgets/QComboBox>
 #include "glyphvieweroptions.h"
 #include "browselineedit.h"
 #include "zspaceoptionswidget.h"
@@ -47,6 +48,7 @@ private:
 	QCheckBox* m_hideSelectedGlyphsCheckbox;
 	SynGlyphX::ZSpaceOptionsWidget* m_zSpaceOptionsWidget;
 	QCheckBox* m_showDownloadedImageErrorMessages;
+	QComboBox* m_axisObjectLocationComboBox;
 };
 
 #endif // OPTIONSWIDGET_H

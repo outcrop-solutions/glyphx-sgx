@@ -3,6 +3,7 @@
 
 #include <QtCore/QString>
 #include "zspaceoptions.h"
+#include "antzforestwidget.h"
 
 class GlyphViewerOptions
 {
@@ -22,6 +23,9 @@ public:
 	void SetHideUnselectedGlyphTrees(bool hideUnselectedGlyphTrees);
 	bool GetHideUnselectedGlyphTrees() const;
 
+	void SetSceneAxisObjectLocation(SynGlyphXANTz::ANTzForestWidget::HUDLocation location);
+	SynGlyphXANTz::ANTzForestWidget::HUDLocation GetSceneAxisObjectLocation() const;
+
 	void SetZSpaceOptions(const SynGlyphX::ZSpaceOptions& options);
 	const SynGlyphX::ZSpaceOptions& GetZSpaceOptions() const;
 
@@ -34,6 +38,7 @@ private:
 
 	//3D options
 	bool m_hideUnselectedGlyphTrees;
+	SynGlyphXANTz::ANTzForestWidget::HUDLocation m_sceneAxisHUDObjectLocation;
 
 	SynGlyphX::ZSpaceOptions m_zSpaceOptions;
 

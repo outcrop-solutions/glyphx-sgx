@@ -814,6 +814,11 @@ void GlyphViewerWindow::ChangeOptions(const GlyphViewerOptions& oldOptions, cons
 			m_linkedWidgetsManager->SetFilterView(newOptions.GetHideUnselectedGlyphTrees());
 		}
 
+		if (oldOptions.GetSceneAxisObjectLocation() != newOptions.GetSceneAxisObjectLocation()) {
+
+			m_glyph3DView->SetAxisInfoObjectLocation(newOptions.GetSceneAxisObjectLocation());
+		}
+
 		if (oldOptions.GetZSpaceOptions() != newOptions.GetZSpaceOptions()) {
 
 			m_glyph3DView->SetZSpaceOptions(newOptions.GetZSpaceOptions());
@@ -850,6 +855,7 @@ void GlyphViewerWindow::ReadSettings() {
 	}
 	options.SetCacheDirectory(cacheDirectory);
 	options.SetHideUnselectedGlyphTrees(settings.value("hideUnselectedGlyphs", false).toBool());
+	options.SetSceneAxisObjectLocation(static_cast<SynGlyphXANTz::ANTzForestWidget::HUDLocation>(settings.value("axisInfoLocation").toInt()));
 	options.SetShowMessageWhenImagesDidNotDownload(settings.value("showFailedToDownloadImageMessage", true).toBool());
 	settings.endGroup();
 
@@ -887,6 +893,7 @@ void GlyphViewerWindow::WriteSettings() {
 		settings.setValue("cacheDirectory", "");
 	}
 	settings.setValue("hideUnselectedGlyphs", options.GetHideUnselectedGlyphTrees());
+	settings.setValue("axisInfoLocation", options.GetSceneAxisObjectLocation());
 	settings.setValue("showFailedToDownloadImageMessage", options.GetShowMessageWhenImagesDidNotDownload());
 	settings.endGroup();
 
@@ -902,6 +909,7 @@ GlyphViewerOptions GlyphViewerWindow::CollectOptions() {
 
 	options.SetCacheDirectory(QString::fromStdWString(m_cacheManager.GetBaseCacheDirectory()));
 	options.SetHideUnselectedGlyphTrees(m_linkedWidgetsManager->GetFilterView());
+	options.SetSceneAxisObjectLocation(m_glyph3DView->GetAxisInfoObjectLocation());
 	options.SetZSpaceOptions(m_glyph3DView->GetZSpaceOptions());
 	options.SetShowMessageWhenImagesDidNotDownload(m_showErrorFromTransform);
 
