@@ -65,7 +65,8 @@ namespace SynGlyphX {
 
 		void SetInputField(DataMappingGlyphGraph::ConstGlyphIterator node, DataMappingGlyph::MappableField field, const InputField& inputfield);
 		void ClearInputBinding(DataMappingGlyphGraph::ConstGlyphIterator& node, DataMappingGlyph::MappableField field);
-		void ClearAllInputBindings(DataMappingGlyphGraph::ConstGlyphIterator node);
+		void ClearAllInputBindings(DataMappingGlyphGraph::ConstGlyphIterator& node);
+		void ClearInputFieldBindings(const InputField& inputfield);
 		void ClearAllInputBindings();
 
 		const InputFieldMap& GetInputFields() const;

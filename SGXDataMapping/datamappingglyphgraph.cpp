@@ -54,6 +54,21 @@ namespace SynGlyphX {
 		}
 
 		m_mergeRoots = propertyTree.get_optional<bool>(L"<xmlattr>.merge").get_value_or(false);
+
+		//Since there was a previous bug where input fields would get written to the file that were not in use, clear them out
+		std::vector<SynGlyphX::InputTable::HashID> fieldsToRemove;
+		for (auto inputField : m_inputFieldReferenceCounts) {
+
+			if (inputField.second == 0) {
+
+				fieldsToRemove.push_back(inputField.first);
+			}
+		}
+		for (auto fieldToRemove : fieldsToRemove) {
+
+			m_inputFields.erase(fieldToRemove);
+			m_inputFieldReferenceCounts.erase(fieldToRemove);
+		}
 	}
 
 	DataMappingGlyphGraph::DataMappingGlyphGraph(const DataMappingGlyphGraph& graph) :
@@ -363,6 +378,9 @@ namespace SynGlyphX {
 			}
 		}
 
+		//Clear input binding if field as a previous value
+		ClearInputBinding(node, field);
+
 		InputField::HashID inputFieldID = inputfield.GetHashID();
 		std::unordered_map<InputField::HashID, unsigned int>::iterator referenceCount = m_inputFieldReferenceCounts.find(inputFieldID);
 
@@ -401,11 +419,37 @@ namespace SynGlyphX {
 		}
 	}
 
-	void DataMappingGlyphGraph::ClearAllInputBindings(DataMappingGlyphGraph::ConstGlyphIterator node) {
+	void DataMappingGlyphGraph::ClearAllInputBindings(DataMappingGlyphGraph::ConstGlyphIterator& node) {
 
 		for (int i = 0; i < DataMappingGlyph::MappableField::MappableFieldSize; ++i) {
 
 			ClearInputBinding(node, static_cast<SynGlyphX::DataMappingGlyph::MappableField>(i));
+		}
+	}
+
+	void DataMappingGlyphGraph::ClearInputFieldBindings(const InputField& inputfield) {
+		
+		ClearInputFieldBindings(*this, GetRoot(), inputfield);		
+	}
+
+	void DataMappingGlyphGraph::ClearInputFieldBindings(DataMappingGlyphGraph& graph, const GlyphIterator& vertex, const InputField& inputfield) {
+
+		//ClearAllInputBindings(vertex.constify());
+		DataMappingGlyphGraph::ConstGlyphIterator& node = vertex.constify();
+		for (int i = 0; i < DataMappingGlyph::MappableField::MappableFieldSize; ++i) {
+
+			DataMappingGlyph::MappableField field = static_cast<SynGlyphX::DataMappingGlyph::MappableField>(i);
+			const InputBinding& binding = node->second.GetInputBinding(field);
+			if (binding.IsBoundToInputField() && (binding.GetInputFieldID() == inputfield.GetHashID())) {
+				
+				ClearInputBinding(node, field);
+			}
+
+		}
+
+		for (unsigned int i = 0; i < graph.children(vertex); ++i) {
+
+			ClearInputFieldBindings(graph, graph.child(vertex, i), inputfield);
 		}
 	}
 
