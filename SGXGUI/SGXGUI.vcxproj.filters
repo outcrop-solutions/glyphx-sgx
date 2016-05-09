@@ -36,6 +36,9 @@
     <Filter Include="Resource Files\Video">
       <UniqueIdentifier>{8f55759a-a5ad-4f6a-bb46-c84f514725ea}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\GlyphEd">
+      <UniqueIdentifier>{c058df4e-d3ce-42d6-b1d4-4b57d130593c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="application.cpp">
@@ -179,15 +182,6 @@
     <ClCompile Include="GeneratedFiles\Release\moc_doublesizewidget.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
-    <ClCompile Include="rangewidget.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_rangewidget.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_rangewidget.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
     <ClCompile Include="radiobuttongroupwidget.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -305,12 +299,99 @@
     <ClCompile Include="GeneratedFiles\Release\moc_verticaltabordertableview.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="tree2listfilterproxymodel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_tree2listfilterproxymodel.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_tree2listfilterproxymodel.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="passwordlineedit.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_passwordlineedit.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_passwordlineedit.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="prefixsuffixvalidator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_prefixsuffixvalidator.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_prefixsuffixvalidator.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="validatedopenfiledialog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_validatedopenfiledialog.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_validatedopenfiledialog.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="multilistfilteredtreewidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_multilistfilteredtreewidget.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_multilistfilteredtreewidget.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_abstracttreemodel.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_abstracttreemodel.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="abstracttreemodel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="rangeslider.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_rangeslider.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_rangeslider.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="vscrollgridwidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_vscrollgridwidget.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_vscrollgridwidget.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="roweditingtableview.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_roweditingtableview.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_roweditingtableview.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="fixedaspectratioimagelabel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_fixedaspectratioimagelabel.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_fixedaspectratioimagelabel.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="sgxgui_global.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="guihash.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -366,9 +447,6 @@
     <CustomBuild Include="doublesizewidget.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
-    <CustomBuild Include="rangewidget.h">
-      <Filter>Header Files</Filter>
-    </CustomBuild>
     <CustomBuild Include="radiobuttongroupwidget.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
@@ -408,6 +486,36 @@
     <CustomBuild Include="verticaltabordertableview.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
+    <CustomBuild Include="tree2listfilterproxymodel.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="passwordlineedit.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="prefixsuffixvalidator.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="validatedopenfiledialog.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="multilistfilteredtreewidget.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="abstracttreemodel.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="rangeslider.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="vscrollgridwidget.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="roweditingtableview.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="fixedaspectratioimagelabel.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Resources\synglyphx_splash.png">
@@ -433,6 +541,33 @@
     </Image>
     <Image Include="Resources\Video\stop.png">
       <Filter>Resource Files\Video</Filter>
+    </Image>
+    <Image Include="Resources\down_arrow.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\up_arrow.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\minus.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\plus.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\GlyphEd\glyphed_splash.png">
+      <Filter>Resource Files\GlyphEd</Filter>
+    </Image>
+    <Image Include="Resources\GlyphEd\glyphed_logo_white_border.png">
+      <Filter>Resource Files\GlyphEd</Filter>
+    </Image>
+    <Image Include="Resources\synglyphx_logo_white_border.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\GlyphEd\glyphed_logo_no_border.png">
+      <Filter>Resource Files\GlyphEd</Filter>
+    </Image>
+    <Image Include="Resources\GlyphEd\synglyphx_x_ED.ico">
+      <Filter>Resource Files\GlyphEd</Filter>
     </Image>
   </ItemGroup>
   <ItemGroup>

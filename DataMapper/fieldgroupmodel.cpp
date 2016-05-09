@@ -89,10 +89,10 @@ QVariant FieldGroupModel::data(const QModelIndex& index, int role) const {
 				const DataTransformModel::NumericFieldsByTable& numericFields = m_dataTransformModel->GetNumericFieldsByTable();
 				DataTransformModel::NumericFieldsByTable::const_iterator iT = numericFields.begin();
 				std::advance(iT, GetTableForRow(index.row()));
-				const SynGlyphX::Datasource& datasource = m_dataTransformModel->GetDataMapping()->GetDatasources().GetDatasourceByID(iT->first.GetDatasourceID());
+				SynGlyphX::Datasource::ConstSharedPtr datasource = m_dataTransformModel->GetDataMapping()->GetDatasources().at(iT->first.GetDatasourceID());
 				if (index.column() == 2) {
 
-					if (datasource.CanDatasourceHaveMultipleTables()) {
+					if (datasource->CanDatasourceHaveMultipleTables()) {
 
 						return QString::fromStdWString(iT->first.GetTable());
 					}
@@ -103,7 +103,7 @@ QVariant FieldGroupModel::data(const QModelIndex& index, int role) const {
 				}
 				else {
 
-					return QString::fromStdWString(datasource.GetFormattedName());
+					return QString::fromStdWString(datasource->GetFormattedName());
 				}
 			}
 		}
@@ -235,10 +235,6 @@ unsigned int FieldGroupModel::GetTableForRow(int row) const {
 			break;
 		}
 	}
-
-	//auto table = m_dataTransformModel->GetSourceDataManager().GetNumericFieldsByTable().begin();
-	//auto table = m_dataTransformModel->GetDataEngineConn().getNumericFieldsTable().begin();
-	//std::advance(table, i);
 
 	return i;
 }

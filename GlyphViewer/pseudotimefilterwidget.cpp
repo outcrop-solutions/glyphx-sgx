@@ -9,17 +9,17 @@
 
 unsigned int PseudoTimeFilterWidget::s_buttonSize = 24;
 
-PseudoTimeFilterWidget::PseudoTimeFilterWidget(SynGlyphX::DataTransformMapping::ConstSharedPtr dataTransformMapping, SynGlyphX::SourceDataCache::SharedPtr sourceDataCache, SourceDataSelectionModel* selectionModel, QWidget *parent)
+PseudoTimeFilterWidget::PseudoTimeFilterWidget(SourceDataInfoModel* columnsModel, FilteringManager* filteringManager, QWidget *parent)
 	: QWidget(parent),
 	m_filterState(FilterState::Inactive),
-	m_sourceDataCache(sourceDataCache),
-	m_selectionModel(selectionModel)
+	m_filteringManager(filteringManager),
+	m_columnsModel(columnsModel)
 {
 	m_playTimer.setSingleShot(false);
 
-	QVBoxLayout* layout = new QVBoxLayout(this);
+	QVBoxLayout* mainLayout = new QVBoxLayout(this);
 
-	QHBoxLayout* sliderValueLayout = new QHBoxLayout(this);
+	QHBoxLayout* sliderValueLayout = new QHBoxLayout();
 
 	m_slider = new QSlider(Qt::Horizontal, this);
 	m_slider->setMinimum(0);
@@ -29,17 +29,15 @@ PseudoTimeFilterWidget::PseudoTimeFilterWidget(SynGlyphX::DataTransformMapping::
 	m_currentPositionLabel->setReadOnly(true);
 	sliderValueLayout->addWidget(m_currentPositionLabel);
 
-	layout->addLayout(sliderValueLayout);
+	mainLayout->addLayout(sliderValueLayout);
 
-	QHBoxLayout* buttonsLayout = new QHBoxLayout(this);
+	QHBoxLayout* buttonsLayout = new QHBoxLayout();
 
-	QHBoxLayout* buttonsLayoutLeft = new QHBoxLayout(this);
+	QHBoxLayout* buttonsLayoutLeft = new QHBoxLayout();
 	buttonsLayoutLeft->setContentsMargins(0, 0, 0, 0);
 
 	m_fieldSelectorButton = new QPushButton(tr("Select Field"), this);
 	QObject::connect(m_fieldSelectorButton, &QPushButton::clicked, this, &PseudoTimeFilterWidget::OnFilterSelectionButtonClicked);
-	m_columnsModel = new SourceDataInfoModel(dataTransformMapping, sourceDataCache, this);
-	m_columnsModel->SetSelectable(false, false, true);
 
 	buttonsLayoutLeft->addWidget(m_fieldSelectorButton);
 
@@ -74,7 +72,7 @@ PseudoTimeFilterWidget::PseudoTimeFilterWidget(SynGlyphX::DataTransformMapping::
 
 	buttonsLayout->addLayout(buttonsLayoutLeft, 1);
 
-	QHBoxLayout* buttonsLayoutCenter = new QHBoxLayout(this);
+	QHBoxLayout* buttonsLayoutCenter = new QHBoxLayout();
 	buttonsLayoutCenter->setContentsMargins(0, 0, 0, 0);
 	buttonsLayoutCenter->setSizeConstraint(QLayout::SetFixedSize);
 
@@ -86,7 +84,7 @@ PseudoTimeFilterWidget::PseudoTimeFilterWidget(SynGlyphX::DataTransformMapping::
 
 	buttonsLayout->addLayout(buttonsLayoutCenter);
 
-	QHBoxLayout* buttonsLayoutRight = new QHBoxLayout(this);
+	QHBoxLayout* buttonsLayoutRight = new QHBoxLayout();
 	buttonsLayoutRight->setContentsMargins(0, 0, 0, 0);
 
 	m_goToEndButton = new QPushButton(this);
@@ -107,9 +105,9 @@ PseudoTimeFilterWidget::PseudoTimeFilterWidget(SynGlyphX::DataTransformMapping::
 
 	buttonsLayout->addLayout(buttonsLayoutRight, 1);
 
-	layout->addLayout(buttonsLayout);
+	mainLayout->addLayout(buttonsLayout);
 
-	setLayout(layout);
+	setLayout(mainLayout);
 
 	SetPlayTimerInterval(1000);
 	QObject::connect(&m_playTimer, &QTimer::timeout, this, &PseudoTimeFilterWidget::IncrementTime);
@@ -127,10 +125,13 @@ void PseudoTimeFilterWidget::ResetForNewVisualization() {
 
 	EnableButtons(true);
 	m_slider->setMaximum(20);
-	m_columnsModel->Reset();
 
+	m_filterState = FilterState::Inactive;
 	UpdateSelectedField(m_columnsModel->index(0, 0, m_columnsModel->index(0, 0, m_columnsModel->index(0, 0))));
-	ChangeFilterState(FilterState::Inactive);
+	m_playPauseButton->setToolTip(tr("Play"));
+	m_playPauseButton->setIcon(QIcon(":SGXGUI/Resources/Video/play.png"));
+	m_playTimer.stop();
+	ResetSliderAndLabel();
 }
 
 void PseudoTimeFilterWidget::Disable() {
@@ -229,13 +230,14 @@ void PseudoTimeFilterWidget::UpdateTimeFilter() {
 	if (m_filterState == FilterState::Inactive) {
 
 		m_currentPositionLabel->clear();
-		m_selectionModel->ClearSourceDataSelection();
+		m_filteringManager->ClearAllFilters();
 	}
 	else {
 
 		const auto& newSelection = m_selectionForEachDistinctValue.at(sliderValue);
 		m_currentPositionLabel->setText(newSelection.first);
-		m_selectionModel->SetSourceDataSelectionForTable(m_sourceCacheTableName, newSelection.second, m_moveCameraOnUpdateCheckbox->isChecked());
+		
+		m_filteringManager->SetFilterIndexesForTable(m_sourceCacheTableName, newSelection.second, m_moveCameraOnUpdateCheckbox->isChecked());
 	}
 }
 
@@ -266,16 +268,21 @@ void PseudoTimeFilterWidget::ChangeFilterState(FilterState newFilterState) {
 		
 		if (newFilterState == FilterState::Inactive) {
 
-			m_slider->blockSignals(true);
-			m_slider->setValue(0);
-			m_slider->blockSignals(false);
-			m_currentPositionLabel->clear();
-			m_selectionModel->ClearSourceDataSelection();
+			ResetSliderAndLabel();
+			m_filteringManager->ClearAllFilters();
 		}
 	}
 
 	m_stopButton->setEnabled(newFilterState != FilterState::Inactive);
 	m_fieldSelectorButton->setEnabled((newFilterState == FilterState::Inactive) && (m_columnsModel->rowCount() > 0));
+}
+
+void PseudoTimeFilterWidget::ResetSliderAndLabel() {
+
+	m_slider->blockSignals(true);
+	m_slider->setValue(0);
+	m_slider->blockSignals(false);
+	m_currentPositionLabel->clear();
 }
 
 void PseudoTimeFilterWidget::SetPlayTimerInterval(unsigned int milliseconds) {
@@ -330,8 +337,8 @@ void PseudoTimeFilterWidget::UpdateSelectedField(const QModelIndex& newSelectedF
 	QString dataSourceName = m_columnsModel->data(dataSourceIndex).toString();
 	QString dataSourceIdString = m_columnsModel->data(dataSourceIndex, SourceDataInfoModel::IDRole).toString();
 
-	m_sourceCacheTableName = SynGlyphX::SourceDataCache::CreateTablename(dataSourceIdString, tableName);
-	m_selectionForEachDistinctValue = m_sourceDataCache->GetIndexesOrderedByDistinctValue(m_sourceCacheTableName, columnName);
+	m_sourceCacheTableName = SourceDataCache::CreateTablename(dataSourceIdString, tableName);
+	m_selectionForEachDistinctValue = m_filteringManager->GetSourceDataCache()->GetIndexesOrderedByDistinctValue(m_sourceCacheTableName, columnName);
 
 	m_slider->setMaximum(m_selectionForEachDistinctValue.size() - 1);
 

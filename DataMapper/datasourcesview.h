@@ -32,6 +32,8 @@ public:
 
 	const SynGlyphX::SharedActionList& GetSharedActions();
 
+	QSize sizeHint() const override;
+
 protected:
 	virtual void selectionChanged(const QItemSelection& selected, const QItemSelection& deselected);
 

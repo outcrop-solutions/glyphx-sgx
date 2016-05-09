@@ -15,9 +15,7 @@
 #include <QtCore/QTextStream>
 #include "filesystem.h"
 
-#ifdef USE_LICENSING
 #include "rlmez.h"
-#endif
 
 namespace SynGlyphX {
 
@@ -48,11 +46,9 @@ namespace SynGlyphX {
 
 		QHBoxLayout* buttonsLayout = new QHBoxLayout(this);
 
-#ifdef USE_LICENSING
 		QPushButton* installNewLicenseButton = new QPushButton(tr("Install New License File"), this);
 		QObject::connect(installNewLicenseButton, &QPushButton::clicked, this, &LicensingDialog::OnInstallNewLicense);
 		buttonsLayout->addWidget(installNewLicenseButton);
-#endif
 
 		QDialogButtonBox* dialogButtonBox = new QDialogButtonBox(QDialogButtonBox::StandardButton::Close, this);
 		QObject::connect(dialogButtonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
@@ -71,7 +67,6 @@ namespace SynGlyphX {
 
 	bool LicensingDialog::CheckLicense() {
 
-#ifdef USE_LICENSING
 		QString previousCurrentDir = QDir::currentPath();
 		QDir::setCurrent(GetLicenseDirectory());
 
@@ -112,14 +107,10 @@ namespace SynGlyphX {
 
 		QDir::setCurrent(previousCurrentDir);
 		return result;
-#else
-		return true;
-#endif
 	}
 
 	QString LicensingDialog::LicenseStatusToString(int licenseStatus, int numberOfDaysLeft) {
 
-#ifdef USE_LICENSING
 		if (licenseStatus == 0) {
 
 			if (numberOfDaysLeft == 0) {
@@ -153,14 +144,10 @@ namespace SynGlyphX {
 			rlmez_errstring(licenseStatus, error);
 			return (tr("Error with licensing: ") + error);
 		}
-#else
-		return tr("Non-licensed");
-#endif
 	}
 
 	void LicensingDialog::ResetStatusLabel() {
 
-#ifdef USE_LICENSING
 		QString previousCurrentDir = QDir::currentPath();
 		QDir::setCurrent(GetLicenseDirectory());
 
@@ -176,9 +163,6 @@ namespace SynGlyphX {
 		QDir::setCurrent(previousCurrentDir);
 
 		m_licenseLabel->setText(LicenseStatusToString(licenseStatus, numberOfDaysLeft));
-#else
-		m_licenseLabel->setText(tr("Non-licensed"));
-#endif
 	}
 
 	void LicensingDialog::OnInstallNewLicense() {

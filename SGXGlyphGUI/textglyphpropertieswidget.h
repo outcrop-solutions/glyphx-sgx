@@ -22,7 +22,6 @@
 #include <QtWidgets/QWidget>
 #include <QtWidgets/QLineEdit>
 #include <QtWidgets/QTextBrowser>
-#include "glyph.h"
 
 namespace SynGlyphX {
 
@@ -34,7 +33,7 @@ namespace SynGlyphX {
 		TextGlyphPropertiesWidget(QWidget *parent);
 		~TextGlyphPropertiesWidget();
 
-		void SetWidgetFromGlyph(const Glyph& glyph);
+		void SetWidget(const QString& tag, const QString& urlString, const QString& description);
 
 		void SetReadOnly(bool readOnly);
 

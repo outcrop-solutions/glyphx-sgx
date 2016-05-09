@@ -15,26 +15,32 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef DATASOURCEFIELDTYPESDIALOG_H
-#define DATASOURCEFIELDTYPESDIALOG_H
+#ifndef KEYWORDFILTERWIDGET_H
+#define KEYWORDFILTERWIDGET_H
 
-#include <QtWidgets/QDialog>
-#include <QtWidgets/QButtonGroup>
-#include <QtWidgets/QTableWidget>
+#include <QtWidgets/QWidget>
+#include <QtWidgets/QCheckBox>
+#include <QtWidgets/QLineEdit>
+#include "keywordfilter.h"
 
-class DatasourceFieldTypesDialog : public QDialog
+class KeywordFilterWidget : public QWidget
 {
 	Q_OBJECT
 
 public:
-	DatasourceFieldTypesDialog(QStringList fields, const QString& fileFormat = "CSV", QWidget *parent = 0);
-	~DatasourceFieldTypesDialog();
+	KeywordFilterWidget(QWidget *parent);
+	~KeywordFilterWidget();
 
-	QStringList GetFieldTypes() const;
+	void Set(const KeywordFilter& filter);
+	KeywordFilter Get() const;
+
+signals:
+	void FilterUpdated();
 
 private:
-	QTableWidget* m_fieldTypeTable;
-	QList<QButtonGroup*> m_radioButtonGroups;
+	QLineEdit* m_keywordLineEdit;
+	QCheckBox* m_caseSenstiveCheckBox;
+	QCheckBox* m_exactMatchCheckBox;
 };
 
-#endif // DATASOURCEFIELDTYPESDIALOG_H
+#endif // KEYWORDFILTERWIDGET_H

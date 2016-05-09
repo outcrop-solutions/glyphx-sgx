@@ -1,6 +1,5 @@
 #include "valuemappingdialog.h"
 #include "glyphcolor.h"
-#include "range.h"
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QVBoxLayout>
@@ -115,7 +114,7 @@ ValueMappingDialog::ValueMappingDialog(InputType input, OutputType output, QWidg
 
 	if (m_input == InputType::Range) {
 
-		m_inputRangeWidget = new SynGlyphX::RangeWidget(this);
+		m_inputRangeWidget = new SynGlyphX::ValueMappingRangeWidget(this);
 		inputLayout->addWidget(m_inputRangeWidget);
 	}
 	else if (m_input == InputType::Text) {
@@ -239,7 +238,7 @@ void ValueMappingDialog::OnAddKeyValue() {
 		}
 		else if (m_input == InputType::Range) {
 
-			SynGlyphX::RangeWidget* inputTableWidget = dynamic_cast<SynGlyphX::RangeWidget*>(m_table->cellWidget(row, 0));
+			SynGlyphX::ValueMappingRangeWidget* inputTableWidget = dynamic_cast<SynGlyphX::ValueMappingRangeWidget*>(m_table->cellWidget(row, 0));
 			inputTableWidget->SetRange(m_inputRangeWidget->GetRange());
 		}
 		else {
@@ -302,7 +301,7 @@ void ValueMappingDialog::AddRow() {
 	}
 	else if (m_input == InputType::Range) {
 
-		inputWidget = new SynGlyphX::RangeWidget(this);
+		inputWidget = new SynGlyphX::ValueMappingRangeWidget(this);
 	}
 	else {
 
@@ -342,9 +341,9 @@ void ValueMappingDialog::OnClearAllKeyValues() {
 	}
 }
 
-SynGlyphX::Range ValueMappingDialog::GetRangeFromWidget(int row, int column)  {
+SynGlyphX::ValueMappingRange ValueMappingDialog::GetRangeFromWidget(int row, int column)  {
 
-	SynGlyphX::RangeWidget* widget = dynamic_cast<SynGlyphX::RangeWidget*>(m_table->cellWidget(row, column));
+	SynGlyphX::ValueMappingRangeWidget* widget = dynamic_cast<SynGlyphX::ValueMappingRangeWidget*>(m_table->cellWidget(row, column));
 	if (widget == nullptr) {
 
 		throw std::runtime_error("Could not get widget of given type.");
@@ -792,7 +791,7 @@ void Range2NumericMappingDialog::SetDialogFromMapping(SynGlyphX::Range2NumericMa
 		AddRow();
 		int row = m_table->rowCount() - 1;
 
-		SynGlyphX::RangeWidget* inputTableWidget = dynamic_cast<SynGlyphX::RangeWidget*>(m_table->cellWidget(row, 0));
+		SynGlyphX::ValueMappingRangeWidget* inputTableWidget = dynamic_cast<SynGlyphX::ValueMappingRangeWidget*>(m_table->cellWidget(row, 0));
 		inputTableWidget->SetRange(keyValuePair.first);
 
 		QDoubleSpinBox* outputTableWidget = dynamic_cast<QDoubleSpinBox*>(m_table->cellWidget(row, 1));
@@ -815,7 +814,7 @@ bool Range2NumericMappingDialog::CreateMappingData() {
 
 	for (int row = 0; row < m_table->rowCount(); ++row) {
 
-		SynGlyphX::Range input = GetRangeFromWidget(row, 0);
+		SynGlyphX::ValueMappingRange input = GetRangeFromWidget(row, 0);
 		if (mapping->IsKeyInKeyValueMap(input)) {
 
 			throw std::runtime_error("At least one range overlaps another range.  All ranges must be distinct from each other.");
@@ -864,7 +863,7 @@ void Range2ColorMappingDialog::SetDialogFromMapping(SynGlyphX::Range2ColorMappin
 		AddRow();
 		int row = m_table->rowCount() - 1;
 
-		SynGlyphX::RangeWidget* inputTableWidget = dynamic_cast<SynGlyphX::RangeWidget*>(m_table->cellWidget(row, 0));
+		SynGlyphX::ValueMappingRangeWidget* inputTableWidget = dynamic_cast<SynGlyphX::ValueMappingRangeWidget*>(m_table->cellWidget(row, 0));
 		inputTableWidget->SetRange(keyValuePair.first);
 
 		SynGlyphX::ColorButton* outputTableWidget = dynamic_cast<SynGlyphX::ColorButton*>(m_table->cellWidget(row, 1));
@@ -887,7 +886,7 @@ bool Range2ColorMappingDialog::CreateMappingData() {
 
 	for (int row = 0; row < m_table->rowCount(); ++row) {
 
-		SynGlyphX::Range input = GetRangeFromWidget(row, 0);
+		SynGlyphX::ValueMappingRange input = GetRangeFromWidget(row, 0);
 		if (mapping->IsKeyInKeyValueMap(input)) {
 
 			throw std::runtime_error("At least one range overlaps another range.  All ranges must be distinct from each other.");
@@ -1222,7 +1221,7 @@ void Range2ShapeMappingDialog::SetDialogFromMapping(SynGlyphX::Range2ShapeMappin
 		AddRow();
 		int row = m_table->rowCount() - 1;
 
-		SynGlyphX::RangeWidget* inputTableWidget = dynamic_cast<SynGlyphX::RangeWidget*>(m_table->cellWidget(row, 0));
+		SynGlyphX::ValueMappingRangeWidget* inputTableWidget = dynamic_cast<SynGlyphX::ValueMappingRangeWidget*>(m_table->cellWidget(row, 0));
 		inputTableWidget->SetRange(keyValuePair.first);
 
 		SynGlyphX::GlyphShapeComboBox* outputTableWidget = dynamic_cast<SynGlyphX::GlyphShapeComboBox*>(m_table->cellWidget(row, 1));
@@ -1245,7 +1244,7 @@ bool Range2ShapeMappingDialog::CreateMappingData() {
 
 	for (int row = 0; row < m_table->rowCount(); ++row) {
 
-		SynGlyphX::Range input = GetRangeFromWidget(row, 0);
+		SynGlyphX::ValueMappingRange input = GetRangeFromWidget(row, 0);
 		if (mapping->IsKeyInKeyValueMap(input)) {
 
 			throw std::runtime_error("At least one key is the same as another key.  All keys must be unique.");
@@ -1294,7 +1293,7 @@ void Range2VirtualTopologyMappingDialog::SetDialogFromMapping(SynGlyphX::Range2V
 		AddRow();
 		int row = m_table->rowCount() - 1;
 
-		SynGlyphX::RangeWidget* inputTableWidget = dynamic_cast<SynGlyphX::RangeWidget*>(m_table->cellWidget(row, 0));
+		SynGlyphX::ValueMappingRangeWidget* inputTableWidget = dynamic_cast<SynGlyphX::ValueMappingRangeWidget*>(m_table->cellWidget(row, 0));
 		inputTableWidget->SetRange(keyValuePair.first);
 
 		SynGlyphX::VirtualTopologyComboBox* outputTableWidget = dynamic_cast<SynGlyphX::VirtualTopologyComboBox*>(m_table->cellWidget(row, 1));
@@ -1317,7 +1316,7 @@ bool Range2VirtualTopologyMappingDialog::CreateMappingData() {
 
 	for (int row = 0; row < m_table->rowCount(); ++row) {
 
-		SynGlyphX::Range input = GetRangeFromWidget(row, 0);
+		SynGlyphX::ValueMappingRange input = GetRangeFromWidget(row, 0);
 		if (mapping->IsKeyInKeyValueMap(input)) {
 
 			throw std::runtime_error("At least one key is the same as another key.  All keys must be unique.");

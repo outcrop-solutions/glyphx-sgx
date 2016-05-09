@@ -157,7 +157,7 @@ namespace SynGlyphX {
 
 				if (IsParentlessRowInDataType(DataType::DataSources, index.row())) {
 
-					auto datasource = m_dataMapping->GetDatasources().GetFileDatasources().begin();
+					auto datasource = m_dataMapping->GetDatasources().begin();
 					std::advance(datasource, index.row() - GetFirstIndexForDataType(DataType::DataSources));
 					return QString::fromStdString(boost::uuids::to_string(datasource->first));
 				}
@@ -310,10 +310,9 @@ namespace SynGlyphX {
 			else if (IsParentlessRowInDataType(DataType::DataSources, index.row())) {
 
 				int datasourceIndex = index.row() - m_dataMapping->GetGlyphGraphs().size() - m_dataMapping->GetBaseObjects().size();
-				DatasourceMaps::FileDatasourceMap::const_iterator fileDatasource = m_dataMapping->GetDatasources().GetFileDatasources().begin();
-				std::advance(fileDatasource, datasourceIndex);
-				QFileInfo fileDatasourceFileInfo(QString::fromStdWString(fileDatasource->second.GetFilename()));
-				return fileDatasourceFileInfo.fileName();
+				DataTransformMapping::DatasourceMap::const_iterator datasource = m_dataMapping->GetDatasources().begin();
+				std::advance(datasource, datasourceIndex);
+				return QString::fromStdWString(datasource->second->GetFormattedName());
 			}
 			else if (IsParentlessRowInDataType(DataType::GlyphTrees, index.row())) {
 
@@ -321,7 +320,7 @@ namespace SynGlyphX {
 			}
 			else if (IsParentlessRowInDataType(DataType::FieldGroups, index.row())) {
 
-				int fieldGroupIndex = index.row() - (m_dataMapping->GetGlyphGraphs().size() + m_dataMapping->GetBaseObjects().size() + m_dataMapping->GetDatasources().Count());
+				int fieldGroupIndex = index.row() - (m_dataMapping->GetGlyphGraphs().size() + m_dataMapping->GetBaseObjects().size() + m_dataMapping->GetDatasources().size());
 				DataTransformMapping::FieldGroupMap::const_iterator fieldGroup = m_dataMapping->GetFieldGroupMap().begin();
 				std::advance(fieldGroup, fieldGroupIndex);
 				return QString::fromStdWString(fieldGroup->first);
@@ -476,7 +475,7 @@ namespace SynGlyphX {
 
 		if (!parent.isValid()) {
 
-			return m_dataMapping->GetGlyphGraphs().size() + m_dataMapping->GetBaseObjects().size() + m_dataMapping->GetDatasources().Count() + m_dataMapping->GetFieldGroupMap().size();
+			return m_dataMapping->GetGlyphGraphs().size() + m_dataMapping->GetBaseObjects().size() + m_dataMapping->GetDatasources().size() + m_dataMapping->GetFieldGroupMap().size();
 		}
 
 		if (parent.internalPointer() != nullptr) {
@@ -488,11 +487,11 @@ namespace SynGlyphX {
 		return 0;
 	}
 
-	boost::uuids::uuid DataMappingModel::AddFileDatasource(FileDatasource::SourceType type, const std::wstring& name) {
+	boost::uuids::uuid DataMappingModel::AddFileDatasource(const FileDatasource& datasource) {
 
-		int newRow = GetFirstIndexForDataType(DataType::DataSources) + m_dataMapping->GetDatasources().GetFileDatasources().size();
+		int newRow = GetFirstIndexForDataType(DataType::DataSources) + m_dataMapping->GetDatasources().size();
 		beginInsertRows(QModelIndex(), newRow, newRow);
-		boost::uuids::uuid id = m_dataMapping->AddFileDatasource(type, name);
+		boost::uuids::uuid id = m_dataMapping->AddFileDatasource(datasource);
 		endInsertRows();
 
 		return id;
@@ -710,7 +709,7 @@ namespace SynGlyphX {
 		}
 		else if (type == DataType::DataSources) {
 
-			max = min + m_dataMapping->GetDatasources().Count();
+			max = min + m_dataMapping->GetDatasources().size();
 		}
 		else if (type == DataType::FieldGroups) {
 
@@ -736,7 +735,7 @@ namespace SynGlyphX {
 		}
 		else if (type == DataType::FieldGroups) {
 
-			return m_dataMapping->GetGlyphGraphs().size() + m_dataMapping->GetBaseObjects().size() + m_dataMapping->GetDatasources().Count();
+			return m_dataMapping->GetGlyphGraphs().size() + m_dataMapping->GetBaseObjects().size() + m_dataMapping->GetDatasources().size();
 		}
 		else if (type == DataType::GlyphTrees) {
 
@@ -887,7 +886,7 @@ namespace SynGlyphX {
 
 	boost::uuids::uuid DataMappingModel::GetDatasourceId(int row) const {
 
-		DatasourceMaps::FileDatasourceMap::const_iterator datasource = m_dataMapping->GetDatasources().GetFileDatasources().begin();
+		DataTransformMapping::DatasourceMap::const_iterator datasource = m_dataMapping->GetDatasources().begin();
 		std::advance(datasource, row - GetFirstIndexForDataType(DataType::DataSources));
 		return datasource->first;
 	}

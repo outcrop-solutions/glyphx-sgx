@@ -15,23 +15,39 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef SYNGLYPHX_GUIHASH_H
-#define SYNGLYPHX_GUIHASH_H
+#ifndef SYNGLYPHX_VSCROLLGRIDWIDGET_H
+#define SYNGLYPHX_VSCROLLGRIDWIDGET_H
 
-#include <QtCore/QString>
-#include <QtCore/QHash>
+#include "sgxgui_global.h"
+#include "verticalscrollarea.h"
+#include <QtWidgets/QHeaderView>
+#include <QtWidgets/QGridLayout>
 
 namespace SynGlyphX {
 
-	//Hash function for boost uuid so that it can be used in STL classes like unordered_map
-	struct QStringHash {
+	class SGXGUI_EXPORT VScrollGridWidget : public VerticalScrollArea
+	{
+		Q_OBJECT
 
-		std::size_t operator()(const QString& str) const {
-		
-			return qHash(str);
-		}
+	public:
+		VScrollGridWidget(const QStringList& headerLabels, QWidget *parent);
+		~VScrollGridWidget();
+
+		void AddRow(QList<QWidget*> widgets);
+		void RemoveAllWidgets();
+
+	protected:
+		void ResizeColumns(QList<QWidget*> widgets);
+		void ResetHeaderSectionSizesToContents();
+		void resizeEvent(QResizeEvent* event) override;
+
+		QHeaderView* m_headerView;
+		QGridLayout* m_scrollAreaLayout;
+
+		unsigned int m_rowCountIncludingLines;
+		std::vector<unsigned int> m_columnMinimumWidths;
 	};
 
 } //namespace SynGlyphX
 
-#endif //SYNGLYPHX_SGXGUI_HASH_H
+#endif // SYNGLYPHX_VSCROLLGRIDWIDGET_H

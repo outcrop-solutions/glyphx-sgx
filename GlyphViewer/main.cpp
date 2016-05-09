@@ -10,11 +10,43 @@
 
 #include <QtCore/QStandardPaths>
 #include <QtWidgets/QMessageBox>
+#include <QtCore/QTextStream>
+
+/*
+void myMessageHandler(QtMsgType type, const QMessageLogContext &context, const QString &msg)
+{
+	QString txt;
+	switch (type) {
+	case QtDebugMsg:
+		txt = QString("Debug: %1\n").arg(msg);
+		break;
+	case QtWarningMsg:
+		txt = QString("Warning: %1\n").arg(msg);
+		break;
+	case QtCriticalMsg:
+		txt = QString("Critical: %1\n").arg(msg);
+		break;
+	case QtFatalMsg:
+		txt = QString("Fatal: %1\n").arg(msg);
+		break;
+	}
+	QFile outFile(QStandardPaths::writableLocation(QStandardPaths::HomeLocation) + QDir::separator() + "sgx_gv_log.txt");
+	outFile.open(QIODevice::WriteOnly | QIODevice::Append);
+	QTextStream ts(&outFile);
+	ts << txt;
+}
+*/
 
 int main(int argc, char *argv[])
 {
-	SynGlyphX::GlyphBuilderApplication::Setup("Glyph Builder - Glyph Viewer", "0.7.23");
+	SynGlyphX::GlyphBuilderApplication::Setup("Glyph Builder - Glyph Viewer", "0.7.43");
 	SynGlyphX::GlyphBuilderApplication a(argc, argv);
+	if (SynGlyphX::GlyphBuilderApplication::IsGlyphEd()) {
+
+		SynGlyphX::GlyphBuilderApplication::setApplicationName("GlyphEd");
+	}
+
+	//qInstallMessageHandler(myMessageHandler);
 
 #ifdef USE_BREAKPAD
 	const QString dumpPath = QStandardPaths::writableLocation(QStandardPaths::HomeLocation) + "/Minidumps";
@@ -40,17 +72,18 @@ int main(int argc, char *argv[])
 		0);
 #endif
 
-	SynGlyphX::GlyphBuilderApplication::SetupIcons(QIcon(":SGXGUI/Resources/synglyphx_x.ico"));
+	SynGlyphX::GlyphBuilderApplication::SetupIconsAndLogos();
 
+#ifdef USE_LICENSING
 	if (!SynGlyphX::LicensingDialog::CheckLicense()) {
 
 		return 0;
 	}
+#endif
 
 	//Setup and show the splash screen
-	QPixmap pixmap(":SGXGUI/Resources/synglyphx_splash.png");
-	QSplashScreen splash;
-	splash.setPixmap(pixmap);
+	QPixmap pixmap(SynGlyphX::GlyphBuilderApplication::GetSplashScreenLocation());
+	QSplashScreen splash(pixmap, Qt::WindowStaysOnTopHint);
 	splash.show();
 
 	splash.showMessage("Loading Glyph Viewer", Qt::AlignHCenter | Qt::AlignBottom);
@@ -58,13 +91,15 @@ int main(int argc, char *argv[])
 	a.processEvents();
 
 	try {
+
 		GlyphViewerWindow w;
 		w.move(50, 50);
 		w.resize(1200, 700);
 
 		//Need to figure out better way to not have the splash screen disappear before the user sees it
 		QTimer::singleShot(1500, &splash, SLOT(close()));
-		QTimer::singleShot(1600, &w, SLOT(show()));
+		w.show();
+		//QTimer::singleShot(1600, &w, SLOT(show()));
 
 		//w.show();
 		//splash.finish(&w);
@@ -72,7 +107,16 @@ int main(int argc, char *argv[])
 		return a.exec();
 		w.closeJVM();
 	}
-	catch (...) {
+	catch (const std::exception& e) {
+
+		QMessageBox::critical(nullptr, QObject::tr("Error"), QObject::tr("Error: ") + e.what() + "\n\n" + QObject::tr("Application is shutting down."), QMessageBox::StandardButton::Ok);
 		return 1;
 	}
+	catch (...) {
+		
+		QMessageBox::critical(nullptr, QObject::tr("Unknown Error"), QObject::tr("Unknown Error: ") + "\n\n" + QObject::tr("Application is shutting down."), QMessageBox::StandardButton::Ok);
+		return 1;
+	}
+
+	return 0;
 }

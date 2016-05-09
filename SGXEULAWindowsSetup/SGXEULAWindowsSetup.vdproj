@@ -27,6 +27,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_45CCC4BB50F84B548D73F480A8ECD6D5"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_88945B89505547B1B1D0351DC43DDBFE"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -277,15 +283,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Glyph Builder (TM)"
-        "ProductCode" = "8:{68A9B510-6829-4C47-88F4-8FE4CC4A1127}"
-        "PackageCode" = "8:{38670262-17A9-4BBC-92B4-00A8AF8FB680}"
+        "ProductCode" = "8:{23F1B94D-EBEF-4729-8346-29D17BA8CBFB}"
+        "PackageCode" = "8:{5973B29D-D6AA-4F3C-8F71-B4680D648C59}"
         "UpgradeCode" = "8:{0FDA9E6D-1E57-426F-AA0C-B8314DEF2474}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:FALSE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:0.7.23"
+        "ProductVersion" = "8:0.7.43"
         "Manufacturer" = "8:SynGlyphX"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:http://www.synglyphx.com"
@@ -903,6 +909,59 @@
         }
         "ProjectOutput"
         {
+            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_45CCC4BB50F84B548D73F480A8ECD6D5"
+            {
+            "SourcePath" = "8:..\\SGXGlyphITMergeModule\\Release\\SGXGlyphITMergeModule.msm"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_491869EB57F641B48F6F281F79F58BDB"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            "ProjectOutputGroupRegister" = "3:1"
+            "OutputConfiguration" = "8:"
+            "OutputGroupCanonicalName" = "8:Built"
+            "OutputProjectGuid" = "8:{09AD9589-B04A-49D2-A5CE-78954C6B0C2D}"
+            "ShowKeyOutput" = "11:TRUE"
+                "ExcludeFilters"
+                {
+                }
+                "KeyOutputModule"
+                {
+                "UseDynamicProperties" = "11:TRUE"
+                "IsDependency" = "11:FALSE"
+                "SourcePath" = "8:..\\SGXGlyphITMergeModule\\Release\\SGXGlyphITMergeModule.msm"
+                    "Properties"
+                    {
+                        "_A7921E0B63FE4398B5ED7FCC6C76DE51.7E294E91171B4C73B07ADCD2550A868B"
+                        {
+                        "Name" = "8:_A7921E0B63FE4398B5ED7FCC6C76DE51.7E294E91171B4C73B07ADCD2550A868B"
+                        "DisplayName" = "8:Module Retargetable Folder"
+                        "Description" = "8:"
+                        "Type" = "3:32769"
+                        "ContextData" = "8:_RetargetableFolder"
+                        "Attributes" = "3:6"
+                        "Setting" = "3:1"
+                        "UsePlugInResources" = "11:FALSE"
+                        }
+                    }
+                "LanguageId" = "3:1033"
+                "Exclude" = "11:FALSE"
+                "Folder" = "8:_491869EB57F641B48F6F281F79F58BDB"
+                "Feature" = "8:"
+                "IsolateTo" = "8:"
+                }
+            }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_88945B89505547B1B1D0351DC43DDBFE"
             {
             "SourcePath" = "8:..\\SGXSetupMergeModule\\Win32\\Release\\SGXSetupMergeModule.msm"

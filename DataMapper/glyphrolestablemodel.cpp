@@ -1,6 +1,5 @@
 #include "glyphrolestablemodel.h"
 #include <QtGui/QColor>
-#include "sourcedatamanager.h"
 #include <QtWidgets/QMessageBox>
 #include <stack>
 #include "interpolationmappingfunction.h"
@@ -411,7 +410,7 @@ const SynGlyphX::DatasourceTable& GlyphRolesTableModel::GetAssociatedDatasourceT
 
 	if (!DoesGlyphHaveAssociatedDatasoruceTable()) {
 
-		throw std::exception("Glyph tree associated with index has no datasource table associated with it");
+		throw std::runtime_error("Glyph tree associated with index has no datasource table associated with it");
 	}
 
 	const SynGlyphX::InputTable& inputTable = m_dataTransformModel->GetInputFieldsForTree(m_selectedDataTransformModelIndex).begin()->second;

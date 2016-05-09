@@ -10,7 +10,7 @@ namespace SynGlyphX {
 		QFormLayout* mainLayout = new QFormLayout(this);
 
 		m_backgroundColorButton = new ColorButton(false, this);
-		mainLayout->addRow(tr("Background Color:"), m_backgroundColorButton);
+		mainLayout->addRow(tr("Background Color") + ":", m_backgroundColorButton);
 
 		setLayout(mainLayout);
 	}

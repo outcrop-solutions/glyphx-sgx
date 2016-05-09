@@ -20,7 +20,6 @@
 
 #include <QtCore/QAbstractTableModel>
 #include "inputfield.h"
-#include "sourcedatamanager.h"
 #include "datatransformmodel.h"
 #include <vector>
 #include "utilitytypes.h"

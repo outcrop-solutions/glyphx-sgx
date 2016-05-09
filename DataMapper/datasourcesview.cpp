@@ -10,7 +10,7 @@ DataSourcesView::DataSourcesView(DataTransformModel* sourceModel, QWidget *paren
 {
 	setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Preferred);
 
-	SynGlyphX::RoleDataFilterProxyModel* filterModel = new SynGlyphX::RoleDataFilterProxyModel(this);
+	SynGlyphX::IntRoleDataFilterProxyModel* filterModel = new SynGlyphX::IntRoleDataFilterProxyModel(this);
 	filterModel->setFilterRole(DataTransformModel::DataTypeRole);
 	filterModel->setSourceModel(m_sourceModel);
 	filterModel->SetFilterData(DataTransformModel::DataType::DataSources);
@@ -56,10 +56,10 @@ void DataSourcesView::OnShowProperties() {
 	const QModelIndexList& selection = selectionModel()->selectedIndexes();
 	if (!selection.isEmpty()) {
 
-		SynGlyphX::DatasourceMaps::FileDatasourceMap::const_iterator datasource = m_sourceModel->GetDataMapping()->GetDatasources().GetFileDatasources().begin();
+		SynGlyphX::DataTransformMapping::DatasourceMap::const_iterator datasource = m_sourceModel->GetDataMapping()->GetDatasources().begin();
 		std::advance(datasource, selection.front().row());
 
-		SynGlyphX::DatasourceInfoWidget* datasourceInfoWidget = new SynGlyphX::DatasourceInfoWidget(datasource->second, this);
+		SynGlyphX::DatasourceInfoWidget* datasourceInfoWidget = new SynGlyphX::DatasourceInfoWidget(*datasource->second, this);
 		SynGlyphX::SingleWidgetDialog dialog(QDialogButtonBox::StandardButton::Ok, datasourceInfoWidget, this);
 		dialog.setWindowTitle(tr("Datasource Info"));
 		dialog.exec();
@@ -76,4 +76,9 @@ void DataSourcesView::OnRemoveDatasource() {
 			model()->removeRow(selection.front().row());
 		}
 	}
+}
+
+QSize DataSourcesView::sizeHint() const {
+
+	return QSize(250, 100);
 }

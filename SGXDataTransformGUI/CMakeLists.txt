@@ -8,13 +8,18 @@ INCLUDE_DIRECTORIES(BEFORE  ${Boost_INCLUDE_DIRS}
 							../../Core/SGXUtility
 							../../Core/SGXFoundation
 							../../Core/SGXDataTransform
-							../../Core/SGXDataMapping)
+							../../Core/SGXDataMapping
+							../../DataEngine/DataEngine
+							${JAVA_INCLUDE_DIRS})
 
 SET(SRC_ALL 	changedatasourcefiledialog.cpp
 				changeimagefiledialog.cpp
 				datamappingmodel.cpp
 				datasourceinfowidget.cpp
+				databaseserverinfowidget.cpp
 				portablevisualizationexport.cpp)
+
+LINK_DIRECTORIES(${JAVA_LINK_DIRS})
 
 ADD_LIBRARY(SGXDataTransformGUI SHARED ${SRC_ALL})
 TARGET_LINK_LIBRARIES(SGXDataTransformGUI ${Boost_LIBRARIES} 
@@ -23,12 +28,12 @@ TARGET_LINK_LIBRARIES(SGXDataTransformGUI ${Boost_LIBRARIES}
 							  Qt5::Network
 							  Qt5::Widgets 
 							  Qt5::Sql
+							  DataEngine
 							  SGXImage 
 							  SGXUtility 
 							  SGXGUI 
 							  SGXGlyphGUI
 							  SGXFoundation
-							  SGXDataTransform
 							  SGXDataMapping)
 							 
 Set_Windows_Properties(SGXDataTransformGUI)

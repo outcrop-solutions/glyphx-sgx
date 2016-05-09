@@ -20,14 +20,14 @@
 
 #include <QtCore/QObject>
 #include <QtWidgets/QCheckBox>
-#include "antzforestwidget.h"
+#include "glyph3dview.h"
 
 class LinkedWidgetsManager : public QObject
 {
 	Q_OBJECT
 
 public:
-	LinkedWidgetsManager(SynGlyphXANTz::ANTzForestWidget* antzWidget, QObject *parent = nullptr);
+	LinkedWidgetsManager(Glyph3DView* glyph3DView, QObject *parent = nullptr);
 	~LinkedWidgetsManager();
 
 	bool GetFilterView() const;
@@ -40,7 +40,7 @@ private:
 	void SetFilterViewOnCheckbox(QCheckBox* checkbox, bool set);
 
 	QList<QCheckBox*> m_filterViewCheckboxes;
-	SynGlyphXANTz::ANTzForestWidget* m_antzWidget;
+	Glyph3DView* m_glyph3DView;
 };
 
 #endif // LINKEDWIDGETSMANAGER_H

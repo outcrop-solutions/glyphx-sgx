@@ -35,6 +35,7 @@
 #include "dataengineconnection.h"
 #include "glyphengine.h"
 #include "portablevisualizationexport.h"
+#include "legendlistview.h"
 
 class DataMapperWindow : public SynGlyphX::MainWindow
 {
@@ -54,10 +55,12 @@ protected:
 
 private slots:
     void CreateNewProject();
+	void CloseProject();
     void OpenProject();
     bool SaveProject();
     bool SaveAsProject();
-    void AddDataSources();
+	void AddFileDataSource();
+	void AddDatabaseServerDatasources();
 	void CreatePortableVisualization(SynGlyphX::PortableVisualizationExport::Platform platform);
 	void AddBaseObject();
 	void AddGlyphTemplate();
@@ -68,6 +71,7 @@ private slots:
 	void ChangeNewMappingDefaults();
 	void ChangeSceneProperties();
 	void ChangeOptions();
+	void AddLegend();
 
 private:
     void CreateMenus();
@@ -79,7 +83,6 @@ private:
 	bool SaveDataTransform(const QString& filename);
 	bool AskUserToSave();
 	void EnableProjectDependentActions(bool enable);
-	bool ValidateNewDatasource(const QString& datasource);
 	void ProcessCSVFile(const QString& csvFile);
 	void ReadNewMappingDefaults();
 	void WriteNewMappingDefaults();
@@ -91,17 +94,23 @@ private:
     QMenu* m_glyphMenu;
 	QMenu* m_baseObjectMenu;
 	QMenu* m_datasourceMenu;
+	QMenu* m_legendMenu;
 	QMenu* m_toolsMenu;
 
 	QAction* m_showAnimation;
 
 	SynGlyphX::PortableVisualizationExport m_portableVisualizationExport;
     
-	SynGlyphX::RoleDataFilterProxyModel* m_baseObjectsModel;
+	SynGlyphX::IntRoleDataFilterProxyModel* m_baseObjectsModel;
 	BaseObjectListView* m_baseObjectsView;
+
 	GlyphTreesView* m_glyphTreesView;
+
 	DataSourceStatsWidget* m_dataSourceStats;
 	DataSourcesView* m_dataSourcesView;
+	
+	SynGlyphX::IntRoleDataFilterProxyModel* m_legendsModel;
+	LegendListView* m_legendsView;
 
 	QList<QAction*> m_projectDependentActions;
 
@@ -116,7 +125,7 @@ private:
 	SynGlyphX::SceneProperties m_newMappingSceneProperties;
 
 	QMetaObject::Connection m_modelResetConnection;
-	DataEngine::DataEngineConnection dec;
+	DataEngine::DataEngineConnection::SharedPtr m_dataEngineConnection;
 };
 
 #endif // DATAMAPPERWINDOW_H

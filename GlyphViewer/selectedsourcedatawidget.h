@@ -15,37 +15,34 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef RANGEWIDGET_H
-#define RANGEWIDGET_H
+#ifndef SELECTEDSOURCEDATAWIDGET_H
+#define SELECTEDSOURCEDATAWIDGET_H
 
-#include "sgxgui_global.h"
-#include <QtWidgets/QDoubleSpinBox>
-#include "range.h"
+#include "sourcedatawidget.h"
+#include "itemfocusselectionmodel.h"
 
-namespace SynGlyphX {
+class SelectedSourceDataWidget : public SourceDataWidget
+{
+	Q_OBJECT
 
-	class SGXGUI_EXPORT RangeWidget : public QWidget
-	{
-		Q_OBJECT
+public:
+	SelectedSourceDataWidget(const SynGlyphX::ItemFocusSelectionModel* selectionModel, 
+							 SourceDataCache::ConstSharedPtr sourceDataCache, 
+							 SynGlyphX::DataTransformMapping::ConstSharedPtr dataTransformMapping, 
+							 QWidget *parent);
+	~SelectedSourceDataWidget();
 
-	public:
-		RangeWidget(QWidget *parent);
-		~RangeWidget();
+protected:
+	SynGlyphX::IndexSet GetSourceIndexesForTable(const QString& table) override;
 
-		void SetRange(const Range& range);
-		Range GetRange() const;
+private slots:
+	void OnNewVisualization();
+	void OnSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected);
 
-		bool IsValid() const;
+private:
+	const SynGlyphX::ItemFocusSelectionModel* m_selectionModel;
+	std::map<SynGlyphX::DegenerateInterval, QString> m_glyphTemplateRangeToTableMap;
+	QMap<QString, SynGlyphX::IndexSet> m_selectedIndexesPerTable;
+};
 
-	private slots:
-		//void OnMinChanged(double newMin);
-		//void OnMaxChanged(double newMax);
-
-	private:
-		QDoubleSpinBox* m_minSpinBox;
-		QDoubleSpinBox* m_maxSpinBox;
-	};
-
-} //namespace SynGlyphX
-
-#endif // RANGEWIDGET_H
+#endif // SELECTEDSOURCEDATAWIDGET_H

@@ -27,7 +27,7 @@ namespace SynGlyphX {
 
 		m_visualPropertiesWidget->SetWidgetFromGlyph(glyph, isNotRootNode);
 		m_visualPropertiesWidget->SetNumberOfChildren(numberOfChildren);
-		m_textPropertiesWidget->SetWidgetFromGlyph(glyph);
+		m_textPropertiesWidget->SetWidget(QString::fromStdWString(glyph.GetTag()), QString::fromStdWString(glyph.GetURL()), QString::fromStdWString(glyph.GetDescription()));
 	}
 
 } //namespace SynGlyphX

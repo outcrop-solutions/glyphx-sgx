@@ -37,7 +37,6 @@ SET(SRC_ALL baseimagedialog.cpp
 			databindingtableswidget.cpp
 			datamapperwindow.cpp
 			datamapping3dwidget.cpp
-			datasourcefieldtypesdialog.cpp
 			datasourcestatswidget.cpp
 			datasourcesview.cpp
 			datastatsmodel.cpp

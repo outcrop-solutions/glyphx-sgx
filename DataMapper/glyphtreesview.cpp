@@ -13,7 +13,7 @@ GlyphTreesView::GlyphTreesView(DataTransformModel* sourceModel, QWidget *parent)
 	: SynGlyphX::TreeEditView(parent),
 	m_sourceModel(sourceModel)
 {
-	SynGlyphX::RoleDataFilterProxyModel* filterModel = new SynGlyphX::RoleDataFilterProxyModel(this);
+	SynGlyphX::IntRoleDataFilterProxyModel* filterModel = new SynGlyphX::IntRoleDataFilterProxyModel(this);
 	filterModel->setFilterRole(DataTransformModel::DataTypeRole);
 	filterModel->setSourceModel(m_sourceModel);
 	filterModel->SetFilterData(DataTransformModel::DataType::GlyphTrees);
@@ -217,4 +217,9 @@ void GlyphTreesView::ChangeOptions() {
 
 		model()->setData(index, glyphOptionsWidget->GetMergeRoots(), DataTransformModel::OptionsRole);
 	}
+}
+
+QSize GlyphTreesView::sizeHint() const {
+
+	return QSize(250, 500);
 }

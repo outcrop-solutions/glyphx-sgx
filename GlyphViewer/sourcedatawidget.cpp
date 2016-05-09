@@ -16,18 +16,17 @@
 #include "glyphbuilderapplication.h"
 #include <boost/uuid/uuid_io.hpp>
 
-SourceDataWidget::SourceDataWidget(SourceDataSelectionModel* selectionModel, QWidget *parent)
-	: QWidget(parent),
-	//m_model(model),
-	m_selectionModel(selectionModel)
-	//m_sourceDataCache(sourceDataCache)
+SourceDataWidget::SourceDataWidget(SourceDataCache::ConstSharedPtr sourceDataCache, SynGlyphX::DataTransformMapping::ConstSharedPtr dataTransformMapping, QWidget *parent)
+	: QWidget(parent, Qt::Window),
+	m_sourceDataCache(sourceDataCache),
+	m_dataTransformMapping(dataTransformMapping)
 {
 	QVBoxLayout* mainLayout = new QVBoxLayout(this);
 	m_sourceDataTabs = new QTabWidget(this);
 	m_sourceDataTabs->setTabsClosable(false);
 	mainLayout->addWidget(m_sourceDataTabs, 1);
 
-	QHBoxLayout* buttonsLayout = new QHBoxLayout(this);
+	QHBoxLayout* buttonsLayout = new QHBoxLayout();
 
 	QPushButton* saveButton = new QPushButton(tr("Save Current Tab To File"), this);
 	buttonsLayout->addWidget(saveButton);
@@ -50,10 +49,7 @@ SourceDataWidget::SourceDataWidget(SourceDataSelectionModel* selectionModel, QWi
 
 	setLayout(mainLayout);
 
-	setWindowTitle(tr("Source Data Of Selected Glyphs"));
 	ReadSettings();
-
-	QObject::connect(m_selectionModel, &SourceDataSelectionModel::SelectionChanged, this, &SourceDataWidget::UpdateTables);
 }
 
 SourceDataWidget::~SourceDataWidget()
@@ -63,52 +59,74 @@ SourceDataWidget::~SourceDataWidget()
 
 void SourceDataWidget::closeEvent(QCloseEvent* event) {
 
-	if (parentWidget() == nullptr) {
+	WriteSettings();
+	emit WindowHidden();
+	QWidget::closeEvent(event);
+}
 
-		WriteSettings();
-		setVisible(false);
-		event->ignore();
-		emit WindowHidden();
-	}
+void SourceDataWidget::ClearTables() {
+
+	m_sourceDataTabs->clear();
+	m_sqlQueryModels.clear();
 }
 
 void SourceDataWidget::UpdateTables() {
 
-	m_sourceDataTabs->clear();
-	m_sqlQueryModels.clear();
+	ClearTables();
 
-	const SourceDataSelectionModel::IndexSetMap& dataIndexes = m_selectionModel->GetSourceDataSelection();
-	if (!dataIndexes.empty()) {
+	const SourceDataCache::TableNameMap& formattedNames = m_sourceDataCache->GetFormattedNames();
 
-		const SynGlyphX::SourceDataCache::TableNameMap& formattedNames = m_selectionModel->GetSourceDataCache()->GetFormattedNames();
+	for (auto tableIDAndName : formattedNames) {
 
-		for (auto indexSet : dataIndexes) {
+		SourceDataCache::TableColumns columns = m_sourceDataCache->GetColumnsForTable(tableIDAndName.first);
+		SourceDataCache::SharedSQLQuery query = m_sourceDataCache->CreateSelectQuery(tableIDAndName.first, columns, GetSourceIndexesForTable(tableIDAndName.first));
+		
+		/*}
+		else {
 
-			QTableView* tableView = new QTableView(this);
-			tableView->setObjectName(indexSet.first);
-			QSqlQueryModel* queryModel = new QSqlQueryModel(this);
-			
-			SynGlyphX::TableColumns columns = m_selectionModel->GetSourceDataCache()->GetColumnsForTable(indexSet.first);
-			SynGlyphX::SharedSQLQuery query = m_selectionModel->GetSourceDataCache()->CreateSelectQueryForIndexSet(indexSet.first, columns, indexSet.second);
-			query->exec();
-			queryModel->setQuery(*query.data());
-			if (queryModel->lastError().isValid()) {
+			SynGlyphX::IndexSet indexesForTable = GetSelectionSourceIndexesForTable(tableIDAndName.first);
+			if (indexesForTable.empty()) {
 
-				throw std::runtime_error("Failed to set SQL query for source data widget.");
+				continue;
 			}
+			query = m_filteringManager->GetSourceDataCache()->CreateSelectQuery(tableIDAndName.first, columns, indexesForTable);
+		}*/
 
-			tableView->verticalHeader()->setVisible(false);
+		query->exec();
 
-			tableView->setModel(queryModel);
-			tableView->resizeColumnsToContents();
-			tableView->resizeRowsToContents();
-			
-			m_sourceDataTabs->addTab(tableView, formattedNames.at(indexSet.first));
+		QTableView* tableView = new QTableView(this);
+		tableView->setObjectName(tableIDAndName.first);
+		QSqlQueryModel* queryModel = new QSqlQueryModel(this);
 
-			m_sqlQueryModels.push_back(queryModel);
+		queryModel->setQuery(*query.data());
+		if (queryModel->lastError().isValid()) {
+
+			throw std::runtime_error("Failed to set SQL query for source data widget.");
 		}
+
+		tableView->verticalHeader()->setVisible(false);
+
+		tableView->setModel(queryModel);
+		tableView->resizeColumnsToContents();
+		tableView->resizeRowsToContents();
+
+		m_sourceDataTabs->addTab(tableView, tableIDAndName.second);
+
+		m_sqlQueryModels.push_back(queryModel);
 	}
 }
+/*
+SynGlyphX::IndexSet SourceDataWidget::GetSelectionSourceIndexesForTable(const QString& table) {
+
+	SynGlyphX::IndexSet indexes;
+
+	if (m_filteringManager->GetSceneSelectionModel()->hasSelection()) {
+
+		indexes = SynGlyphX::ItemFocusSelectionModel::GetRootRows(m_filteringManager->GetSceneSelectionModel()->selectedIndexes());
+	}
+
+	return indexes;
+}*/
 
 void SourceDataWidget::ReadSettings() {
 
@@ -168,6 +186,12 @@ void SourceDataWidget::WriteToFile(QSqlQueryModel* queryModel, const QString& fi
 	}
 	csvFile.WriteLine(headers);
 
+	//QSqlQueryModel may not have loaded all rows, so force it here
+	while (queryModel->canFetchMore()) {
+	
+		queryModel->fetchMore();
+	}
+
 	for (int j = 0; j < queryModel->rowCount(); ++j) {
 
 		SynGlyphX::CSVFileHandler::CSVValues lineOfValues;
@@ -215,7 +239,7 @@ void SourceDataWidget::CreateSubsetVisualization() {
 			QStringList inputTableValues = m_sourceDataTabs->widget(m_sourceDataTabs->currentIndex())->objectName().split(':');
 			boost::uuids::string_generator gen;
 			SynGlyphX::InputTable inputTable(gen(inputTableValues[0].toStdWString()), (inputTableValues.size() > 1) ? inputTableValues[1].toStdWString() : SynGlyphX::FileDatasource::SingleTableName);
-			SynGlyphX::DataTransformMapping::ConstSharedPtr subsetDataMapping = m_selectionModel->GetDataMappingModel()->GetDataMapping()->CreateSubsetMappingWithSingleTable(inputTable, csvFileLocation.toStdWString());
+			SynGlyphX::DataTransformMapping::ConstSharedPtr subsetDataMapping = m_dataTransformMapping->CreateSubsetMappingWithSingleTable(inputTable, csvFileLocation.toStdWString());
 			subsetDataMapping->WriteToFile(sdtFilename.toStdString());
 			
 			settings.setValue("vizSaveDir", stdCanonicalPath);

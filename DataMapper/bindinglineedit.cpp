@@ -3,7 +3,6 @@
 #include <QtCore/QMimeData>
 #include <QtWidgets/QMenu>
 #include "inputfieldmimedata.h"
-#include "sourcedatamanager.h"
 #include <QtWidgets/QHBoxLayout>
 
 BindingLineEdit::BindingLineEdit(const GlyphRolesTableModel* model, QWidget *parent, SynGlyphX::MappingFunctionData::Input acceptedInputTypes)
@@ -46,10 +45,10 @@ void BindingLineEdit::SetInputField(const SynGlyphX::InputField& inputfield) {
 	m_inputField = inputfield;
 	if (m_inputField.IsValid()) {
 
-		const SynGlyphX::Datasource& datasource = m_model->GetDataTransformMapping()->GetDatasources().GetDatasourceByID(inputfield.GetDatasourceID());
+		SynGlyphX::Datasource::ConstSharedPtr datasource = m_model->GetDataTransformMapping()->GetDatasources().at(inputfield.GetDatasourceID());
 
-		QString text = QString::fromStdWString(datasource.GetFormattedName());
-		if (datasource.CanDatasourceHaveMultipleTables()) {
+		QString text = QString::fromStdWString(datasource->GetFormattedName());
+		if (datasource->CanDatasourceHaveMultipleTables()) {
 		
 			text += ":" + QString::fromStdWString(inputfield.GetTable());
 		}
@@ -70,11 +69,11 @@ void BindingLineEdit::SetAcceptedInputTypes(SynGlyphX::MappingFunctionData::Inpu
 	m_acceptedInputTypes = acceptedInputTypes;
 
 	//If input type has changed then clear input field if input field no longer matches input type
-	if ((m_acceptedInputTypes == SynGlyphX::MappingFunctionData::Input::Numeric) && (!m_inputField.IsNumeric())) {
+	if ((m_acceptedInputTypes == SynGlyphX::MappingFunctionData::Input::Numeric) && (m_inputField.IsValid()) && (!m_inputField.IsNumeric())) {
 
 		Clear();
 	}
-	else if ((m_acceptedInputTypes == SynGlyphX::MappingFunctionData::Input::Text) && (m_inputField.IsNumeric())) {
+	else if ((m_acceptedInputTypes == SynGlyphX::MappingFunctionData::Input::Text) && (m_inputField.IsValid()) && (m_inputField.IsNumeric())) {
 
 		Clear();
 	}

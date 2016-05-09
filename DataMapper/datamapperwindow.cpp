@@ -16,24 +16,25 @@
 #include <boost/uuid/uuid_io.hpp>
 #include <boost/property_tree/xml_parser.hpp>
 #include "glyphbuilderapplication.h"
-#include "sourcedatamanager.h"
 #include "downloadoptionsdialog.h"
 #include "baseimagedialog.h"
 #include "networkdownloader.h"
 #include "filesystem.h"
 //#include "antzexporttransformer.h"
-#include "datasourcefieldtypesdialog.h"
 #include "csvfilereader.h"
 #include "csvtfilereaderwriter.h"
 #include "singlewidgetdialog.h"
 #include "newglyphtreewizard.h"
-#include "databaseinfo.h"
 #include "newmappingdefaultswidget.h"
 #include "singleglyphviewoptionswidget.h"
 #include "changedatasourcefiledialog.h"
 #include "changeimagefiledialog.h"
 #include <fstream>
-#include <QtWidgets/QFileSystemModel>
+#include "glyphtemplatelibrarylistwidget.h"
+#include "adddatabaseserverwizard.h"
+#include "addfiledatasourcewizard.h"
+#include "downloadexception.h"
+#include "legenddialog.h"
 
 DataMapperWindow::DataMapperWindow(QWidget *parent)
     : SynGlyphX::MainWindow(0, parent),
@@ -45,8 +46,11 @@ DataMapperWindow::DataMapperWindow(QWidget *parent)
 	m_dataTransformModel(nullptr),
 	m_minMaxGlyph3DWidget(nullptr),
 	m_baseObjectsModel(nullptr),
-	m_dataSourcesView(nullptr)
+	m_dataSourcesView(nullptr),
+	m_dataEngineConnection(nullptr)
 {
+	m_dataEngineConnection = std::make_shared<DataEngine::DataEngineConnection>();
+
 	m_dataTransformModel = new DataTransformModel(this);
 	QObject::connect(m_dataTransformModel, &DataTransformModel::dataChanged, this, [&, this](const QModelIndex& topLeft, const QModelIndex& bottomRight){ setWindowModified(true); });
 	QObject::connect(m_dataTransformModel, &DataTransformModel::rowsInserted, this, [&, this](const QModelIndex& parent, int first, int last){ setWindowModified(true); });
@@ -73,10 +77,12 @@ DataMapperWindow::DataMapperWindow(QWidget *parent)
 
 	try {
 
-		if (!dec.hasJVM()){
-			dec.createJVM();
-			m_dataTransformModel->SetDataEngineConn(&dec);
-			m_dataSourceStats->SetDataEngineConn(&dec);
+		if (!m_dataEngineConnection->hasJVM()){
+
+			m_dataEngineConnection->createJVM();
+			m_dataTransformModel->SetDataEngineConnection(m_dataEngineConnection);
+			m_dataSourceStats->SetDataEngineConnection(m_dataEngineConnection);
+
 		}
 	}
 	catch (const std::exception& e) {
@@ -101,7 +107,8 @@ DataMapperWindow::~DataMapperWindow()
 }
 
 void DataMapperWindow::closeJVM(){
-	dec.destroyJVM();
+	
+	m_dataEngineConnection->destroyJVM();
 }
 
 void DataMapperWindow::CreateCenterWidget() {
@@ -110,10 +117,11 @@ void DataMapperWindow::CreateCenterWidget() {
 	m_minMaxGlyph3DWidget->SetModel(dynamic_cast<SynGlyphX::RoleDataFilterProxyModel*>(m_glyphTreesView->model()), m_glyphTreesView->selectionModel());
 	m_minMaxGlyph3DWidget->SetAllowMultiselect(true);
 
-	m_minMaxGlyph3DWidget->addActions(m_glyphTreesView->GetGlyphActions());
-	m_minMaxGlyph3DWidget->addAction(SynGlyphX::SharedActionList::CreateSeparator(this));
-	m_minMaxGlyph3DWidget->addActions(m_glyphTreesView->GetEditActions());
-	m_minMaxGlyph3DWidget->setContextMenuPolicy(Qt::ActionsContextMenu);
+	QList<QAction*> actions;
+	actions.append(m_glyphTreesView->GetGlyphActions());
+	actions.push_back(SynGlyphX::SharedActionList::CreateSeparator(this));
+	actions.append(m_glyphTreesView->GetEditActions());
+	m_minMaxGlyph3DWidget->AddActionsToMinMaxViews(actions);
 
 	QObject::connect(m_showAnimation, &QAction::toggled, m_minMaxGlyph3DWidget, &DataMapping3DWidget::EnableAnimation);
 	
@@ -203,10 +211,24 @@ void DataMapperWindow::CreateMenus() {
 	//Create Datasource Menu
 	m_datasourceMenu = menuBar()->addMenu(tr("Data Source"));
     
-	QAction* addDataSourcesAction = m_datasourceMenu->addAction(tr("Add Data Sources"));
-    QObject::connect(addDataSourcesAction, &QAction::triggered, this, &DataMapperWindow::AddDataSources);
+	QAction* addFileDatasourceAction = m_datasourceMenu->addAction(tr("Add File"));
+	QObject::connect(addFileDatasourceAction, &QAction::triggered, this, &DataMapperWindow::AddFileDataSource);
+
+	if (SynGlyphX::GlyphBuilderApplication::AreInternalSGXFeaturesEnabled()) {
+
+		QAction* addDatabaseServerDatasourcesAction = m_datasourceMenu->addAction(tr("Add Database Server"));
+		QObject::connect(addDatabaseServerDatasourcesAction, &QAction::triggered, this, &DataMapperWindow::AddDatabaseServerDatasources);
+	}
 
 	m_datasourceMenu->addSeparator();
+
+	//Create Legend Menu
+	m_legendMenu = menuBar()->addMenu(tr("Legend"));
+
+	QAction* addLegendAction = m_legendMenu->addAction(tr("Add Legend"));
+	QObject::connect(addLegendAction, &QAction::triggered, this, &DataMapperWindow::AddLegend);
+
+	m_legendMenu->addSeparator();
 
     //Create View Menu
 	CreateViewMenu();
@@ -259,7 +281,7 @@ void DataMapperWindow::CreateDockWidgets() {
 	QDockWidget* leftDockWidgetBaseObjects = new QDockWidget(tr("Grids/Base Images"), this);
 
 	m_baseObjectsView = new BaseObjectListView(m_dataTransformModel, leftDockWidgetBaseObjects);
-	m_baseObjectsModel = new SynGlyphX::RoleDataFilterProxyModel(this);
+	m_baseObjectsModel = new SynGlyphX::IntRoleDataFilterProxyModel(this);
 	m_baseObjectsModel->setSourceModel(m_dataTransformModel);
 	m_baseObjectsModel->setFilterRole(DataTransformModel::DataTypeRole);
 	m_baseObjectsModel->SetFilterData(DataTransformModel::DataType::BaseObjects);
@@ -270,6 +292,20 @@ void DataMapperWindow::CreateDockWidgets() {
 	leftDockWidgetBaseObjects->setWidget(m_baseObjectsView);
 	addDockWidget(Qt::LeftDockWidgetArea, leftDockWidgetBaseObjects);
 	m_viewMenu->addAction(leftDockWidgetBaseObjects->toggleViewAction());
+
+	QDockWidget* leftDockWidgetLegends = new QDockWidget(tr("Legends"), this);
+
+	m_legendsView = new LegendListView(m_dataTransformModel, leftDockWidgetBaseObjects);
+	m_legendsModel = new SynGlyphX::IntRoleDataFilterProxyModel(this);
+	m_legendsModel->setSourceModel(m_dataTransformModel);
+	m_legendsModel->setFilterRole(DataTransformModel::DataTypeRole);
+	m_legendsModel->SetFilterData(DataTransformModel::DataType::Legends);
+	m_legendsView->setModel(m_legendsModel);
+	m_legendMenu->addActions(m_legendsView->actions());
+
+	leftDockWidgetLegends->setWidget(m_legendsView);
+	addDockWidget(Qt::LeftDockWidgetArea, leftDockWidgetLegends);
+	m_viewMenu->addAction(leftDockWidgetLegends->toggleViewAction());
 
 	QDockWidget* rightDockWidgetDataStats = new QDockWidget(tr("Data Stats"), this);
 	m_dataSourceStats = new DataSourceStatsWidget(m_dataTransformModel, rightDockWidgetDataStats);
@@ -301,8 +337,13 @@ void DataMapperWindow::CreateNewProject() {
 		return;
 	}
 
-	ClearAndInitializeDataMapping();
+	CloseProject();
+}
+
+void DataMapperWindow::CloseProject() {
+
 	m_dataSourceStats->ClearTabs();
+	ClearAndInitializeDataMapping();
 	m_glyphRolesTableModel->Clear();
 
 	EnableProjectDependentActions(false);
@@ -358,31 +399,58 @@ bool DataMapperWindow::LoadRecentFile(const QString& filename) {
 
 void DataMapperWindow::UpdateMissingFiles(const QString& mappingFilename) {
 
-	SynGlyphX::DataTransformMapping::SharedPtr mapping = std::make_shared<SynGlyphX::DataTransformMapping>();
-	mapping->ReadFromFile(mappingFilename.toStdString());
+	try {
 
-	std::vector<boost::uuids::uuid> fileDatasourcesToBeUpdated = mapping->GetFileDatasourcesWithInvalidFiles(false);
-	std::vector<unsigned int> localBaseImageIndexes = mapping->GetFileBaseObjectsWithInvalidFiles();
+		SynGlyphX::DataTransformMapping::SharedPtr mapping = std::make_shared<SynGlyphX::DataTransformMapping>();
+		mapping->ReadFromFile(mappingFilename.toStdString());
 
-	bool wasDataTransformUpdated = false;
+		std::vector<boost::uuids::uuid> fileDatasourcesToBeUpdated = mapping->GetFileDatasourcesWithInvalidFiles(false);
+		std::vector<unsigned int> missingBaseImages = mapping->GetFileBaseObjectsWithInvalidFiles();
+		std::vector<unsigned int> missingLegends = mapping->GetLegendsWithInvalidFiles();
 
-	if (!localBaseImageIndexes.empty()) {
+		bool wasDataTransformUpdated = false;
 
-		SynGlyphX::Application::restoreOverrideCursor();
-		wasDataTransformUpdated = SynGlyphX::ChangeImageFileDialog::UpdateImageFiles(localBaseImageIndexes, mapping, this);
-		SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
+		if (!missingBaseImages.empty()) {
+
+			SynGlyphX::Application::restoreOverrideCursor();
+			wasDataTransformUpdated = SynGlyphX::ChangeImageFileDialog::UpdateImageFiles(missingBaseImages, mappingFilename, mapping, this);
+			if (!wasDataTransformUpdated) {
+
+				throw std::runtime_error("One or more images weren't found.");
+			}
+			SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
+		}
+
+		if (!missingLegends.empty()) {
+
+			SynGlyphX::Application::restoreOverrideCursor();
+			wasDataTransformUpdated = SynGlyphX::ChangeImageFileDialog::UpdateLegendFiles(missingLegends, mappingFilename, mapping, this);
+			if (!wasDataTransformUpdated) {
+
+				throw std::runtime_error("One or more legends weren't found.");
+			}
+			SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
+		}
+
+		if (!fileDatasourcesToBeUpdated.empty()) {
+
+			SynGlyphX::Application::restoreOverrideCursor();
+			wasDataTransformUpdated = SynGlyphX::ChangeDatasourceFileDialog::UpdateDatasourceFiles(fileDatasourcesToBeUpdated, mappingFilename, mapping, m_dataEngineConnection, this);
+			if (!wasDataTransformUpdated) {
+
+				throw std::runtime_error("One or more datasources weren't found.");
+			}
+			SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
+		}
+
+		if (wasDataTransformUpdated) {
+
+			mapping->WriteToFile(mappingFilename.toStdString());
+		}
 	}
+	catch (const std::exception& e) {
 
-	if (!fileDatasourcesToBeUpdated.empty()) {
-
-		SynGlyphX::Application::restoreOverrideCursor();
-		wasDataTransformUpdated = SynGlyphX::ChangeDatasourceFileDialog::UpdateDatasourceFiles(fileDatasourcesToBeUpdated, mapping, this);
-		SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
-	}
-
-	if (wasDataTransformUpdated) {
-
-		mapping->WriteToFile(mappingFilename.toStdString());
+		throw;
 	}
 }
 
@@ -419,6 +487,8 @@ bool DataMapperWindow::LoadDataTransform(const QString& filename) {
 
 		UpdateMissingFiles(filename);
 
+		CloseProject();
+
 		QObject::disconnect(m_modelResetConnection);
 
 		m_dataTransformModel->LoadDataTransformFile(filename);
@@ -429,7 +499,7 @@ bool DataMapperWindow::LoadDataTransform(const QString& filename) {
 	}
 	catch (const std::exception& e) {
 
-		m_dataTransformModel->ClearAndReset();
+		CloseProject();
 		SynGlyphX::Application::restoreOverrideCursor();
 		QMessageBox::critical(this, tr("Failed To Open Project"), tr("Failed to open project.  Error: ") + e.what(), QMessageBox::Ok);
 		return false;
@@ -463,18 +533,6 @@ bool DataMapperWindow::SaveDataTransform(const QString& filename) {
 	}
 }
 
-bool DataMapperWindow::ValidateNewDatasource(const QString& datasource) {
-
-	if (datasource.right(4).toLower() == ".csv") {
-		return true;
-	}
-
-	if (SynGlyphX::DatabaseInfo::IsSQLiteDB(datasource)) {
-		return true;
-	}
-
-	return false;
-}
 /*
 void DataMapperWindow::ProcessCSVFile(const QString& csvFile) {
 
@@ -487,7 +545,7 @@ void DataMapperWindow::ProcessCSVFile(const QString& csvFile) {
 
 		if (fieldNames.empty()) {
 
-			throw std::exception("No headers found in CSV file");
+			throw std::runtime_error("No headers found in CSV file");
 		}
 
 		QStringList fieldNameList;
@@ -499,7 +557,7 @@ void DataMapperWindow::ProcessCSVFile(const QString& csvFile) {
 		DatasourceFieldTypesDialog dialog(fieldNameList, "CSV", this);
 		if (dialog.exec() == QDialog::Rejected) {
 
-			throw std::exception("CSV file does not have data types associated with its fields");
+			throw std::runtime_error("CSV file does not have data types associated with its fields");
 		}
 
 		QStringList dialogTypes = dialog.GetFieldTypes();
@@ -514,92 +572,73 @@ void DataMapperWindow::ProcessCSVFile(const QString& csvFile) {
 	}
 }*/
 
-void DataMapperWindow::AddDataSources() {
-	/*
-	try {
+void DataMapperWindow::AddFileDataSource() {
 
-		if (!dec.hasJVM()){
-			dec.createJVM();
-			m_dataTransformModel->SetDataEngineConn(&dec);
-			m_dataSourceStats->SetDataEngineConn(&dec);
-		}
-	}
-	catch (const std::exception& e) {
+	QSettings settings;
+	settings.beginGroup(s_fileDialogSettingsGroup);
+	QString initialDir = settings.value("DatasourcesDir", "").toString();
 
-		QMessageBox::critical(this, tr("JVM Error"), tr(e.what()));
-		return;
-	}*/
+	AddFileDatasourceWizard fileDatasourceWizard(initialDir, m_dataEngineConnection, this);
+	if (fileDatasourceWizard.Exec() == QDialog::Accepted) {
 
-	QStringList dataSources = GetFileNamesOpenDialog("DatasourcesDir", tr("Add Data Source"), "", "All datasource files (*.*);;CSV files (*.csv)");
+		SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
 
-	if (dataSources.isEmpty()) {
-		return;
-	}
-
-	unsigned int numNewDatasources = 0;
-	for (const QString& datasource : dataSources) {
-
-		if (!ValidateNewDatasource(datasource)) {
-
-			QMessageBox::critical(this, tr("Failed To Add Data Source"), datasource + tr(" is not a recognized type"), QMessageBox::Ok);
-			continue;
-		}
+		const SynGlyphX::FileDatasource& fileDatasource = fileDatasourceWizard.GetFileDatasource();
+		QFileInfo fileInfo(QString::fromStdWString(fileDatasource.GetFilename()));
+		settings.setValue("DatasourcesDir", fileInfo.absolutePath());
 
 		try {
 
-			SynGlyphX::FileDatasource::SourceType fileDatasourceType = SynGlyphX::FileDatasource::SQLITE3;
-			if (datasource.right(4).toLower() == ".csv") {
+			boost::uuids::uuid newDBID = m_dataTransformModel->AddFileDatasource(fileDatasource);
 
-				fileDatasourceType = SynGlyphX::FileDatasource::CSV;
-				//ProcessCSVFile(datasource);
-			}
+			m_dataSourceStats->AddNewStatsViews();
+			EnableProjectDependentActions(true);
 
-			boost::uuids::uuid newDBID = m_dataTransformModel->AddFileDatasource(fileDatasourceType, datasource.toStdWString());
-			//m_dataTransformModel->AddFileDatasource(fileDatasourceType, datasource.toStdWString());
-			qDebug() << boost::lexical_cast<std::string>(newDBID).c_str();
-			/*
-			SynGlyphX::Datasource::TableNames tables;
-			const SynGlyphX::Datasource& newDatasource = m_dataTransformModel->GetDataMapping()->GetDatasources().GetFileDatasources().at(newDBID);
-
-			if (newDatasource.CanDatasourceHaveMultipleTables()) {
-
-				QSqlDatabase db = QSqlDatabase::database(QString::fromStdString(boost::uuids::to_string(newDBID)));
-
-				if (!db.open()) {
-
-					throw std::exception((datasource + tr(" could not be opened")).toStdString().c_str());
-				}
-
-				QStringList qtables = SynGlyphX::DatabaseInfo::GetListOfTablesWithoutAutogeneratedTables(db);
-
-				if (!qtables.isEmpty()) {
-
-					for (const QString& qtable : qtables) {
-						tables.insert(qtable.toStdWString());
-					}
-
-					m_dataTransformModel->EnableTables(newDBID, tables, true);
-				}
-				else {
-
-					throw std::exception((tr("No tables in ") + datasource).toStdString().c_str());
-				}
-			}
-			*/
-			++numNewDatasources;
 		}
 		catch (const std::exception& e) {
 
-			//QSqlDatabase::removeDatabase(QString::fromStdString(boost::uuids::to_string(newDBID)));
+			SynGlyphX::Application::restoreOverrideCursor();
 			QMessageBox::critical(this, tr("Failed To Add Data Source"), QString::fromStdString(e.what()), QMessageBox::Ok);
-			continue;
 		}
 	}
 
-	if (numNewDatasources > 0) {
+	settings.endGroup();
+	SynGlyphX::Application::restoreOverrideCursor();
+	statusBar()->showMessage("Data source successfully added", 3000);
 
-		m_dataSourceStats->AddNewStatsViews();
-		EnableProjectDependentActions(true);
+	if (m_dataEngineConnection->IsConnectionOpen()) {
+
+		m_dataEngineConnection->closeConnection();
+	}
+}
+
+void DataMapperWindow::AddDatabaseServerDatasources() {
+
+	AddDatabaseServerWizard addDatabaseServerWizard(m_dataEngineConnection, this);
+	if (addDatabaseServerWizard.exec() == QDialog::Accepted) {
+
+		try {
+
+			SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
+
+			m_dataTransformModel->AddDatabaseServer(addDatabaseServerWizard.GetValues());
+			m_dataSourceStats->AddNewStatsViews();
+			EnableProjectDependentActions(true);
+
+		}
+		catch (const std::exception& e) {
+
+			SynGlyphX::Application::restoreOverrideCursor();
+			QMessageBox::critical(this, tr("Failed To Add Data Source"), QString::fromStdString(e.what()), QMessageBox::Ok);
+		}
+	}
+
+	SynGlyphX::Application::restoreOverrideCursor();
+	statusBar()->showMessage("Data source successfully added", 3000);
+
+	if (m_dataEngineConnection->IsConnectionOpen()) {
+
+		m_dataEngineConnection->closeConnection();
 	}
 }
 
@@ -607,7 +646,7 @@ void DataMapperWindow::CreatePortableVisualization(SynGlyphX::PortableVisualizat
 
 	SynGlyphX::DataTransformMapping::ConstSharedPtr dataMapping = m_dataTransformModel->GetDataMapping();
 
-	if (!dataMapping->GetDatasources().HasDatasources()) {
+	if (dataMapping->GetDatasources().empty()) {
 
 		QMessageBox::critical(this, tr("Export to ANTz Error"), tr("Visualization has no datasources."));
 		return;
@@ -625,7 +664,7 @@ void DataMapperWindow::CreatePortableVisualization(SynGlyphX::PortableVisualizat
 		return;
 	}
 
-	std::vector<unsigned int> missingBaseObjects = dataMapping->GetFileBaseObjectsWithInvalidFiles();
+	/*std::vector<unsigned int> missingBaseObjects = dataMapping->GetFileBaseObjectsWithInvalidFiles();
 	if (!missingBaseObjects.empty()) {
 
 		if (SynGlyphX::ChangeImageFileDialog::UpdateImageFiles(missingBaseObjects, std::const_pointer_cast<SynGlyphX::DataTransformMapping>(dataMapping), this)) {
@@ -640,14 +679,18 @@ void DataMapperWindow::CreatePortableVisualization(SynGlyphX::PortableVisualizat
 			QMessageBox::critical(this, tr("Export to ANTz Error"), tr("Portable visualization can't be created when images are still missing."));
 			return;
 		}
-	}
+	}*/
 
 	
 	QSet<QString> projectFileDirs;
 	projectFileDirs.insert(QDir::toNativeSeparators(m_currentFilename));
-	for (const auto& fileDatasource : m_dataTransformModel->GetDataMapping()->GetDatasources().GetFileDatasources()) {
+	for (const auto& datasource : m_dataTransformModel->GetDataMapping()->GetDatasources()) {
 
-		projectFileDirs.insert(QDir::toNativeSeparators(QString::fromStdWString(fileDatasource.second.GetFilename())));
+		if (datasource.second->GetSourceType() == SynGlyphX::Datasource::SourceType::File) {
+
+			SynGlyphX::FileDatasource::ConstSharedPtr fileDatasource = std::dynamic_pointer_cast<const SynGlyphX::FileDatasource>(datasource.second);
+			projectFileDirs.insert(QDir::toNativeSeparators(QString::fromStdWString(fileDatasource->GetFilename())));
+		}
 	}
 
 	QString csvDirectory = QDir::toNativeSeparators(GetExistingEmptyDirectory(projectFileDirs, "ANTzExportDir", tr("Select Directory For Portable Visualization"), "", tr("Selected directory contains one or more files relevant to the project.")));
@@ -667,22 +710,29 @@ void DataMapperWindow::CreatePortableVisualization(SynGlyphX::PortableVisualizat
 		DataEngine::GlyphEngine ge;
 		std::string baseImageDir = SynGlyphX::GlyphBuilderApplication::GetDefaultBaseImagesLocation().toStdString();
 		std::string baseFilename = (QString::fromStdWString(SynGlyphX::DefaultBaseImageProperties::GetBasefilename()).toStdString());
-		ge.initiate(dec.getEnv(), m_currentFilename.toStdString(), csvDirectory.toStdString() + "\\", baseImageDir, baseFilename, "DataMapper");
-		ge.getDownloadedBaseImage(m_dataTransformModel->GetDataMapping().get()->GetBaseObjects());
-		ge.generateGlyphs();
+		ge.initiate(m_dataEngineConnection->getEnv(), m_currentFilename.toStdString(), csvDirectory.toStdString() + "\\", baseImageDir, baseFilename, "DataMapper");
+		if (ge.IsUpdateNeeded()){
+			try {
+
+				ge.getDownloadedBaseImage(m_dataTransformModel->GetDataMapping().get()->GetBaseObjects());
+			}
+			catch (const DownloadException& e) {
+
+				SynGlyphX::Application::restoreOverrideCursor();
+				QMessageBox::information(this, "Download Image Error", tr("Base image failed to download so the world map was used instead.\n\nError: ") + tr(e.what()), QMessageBox::Ok);
+				SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
+			}
+			catch (const std::exception& e) {
+
+				throw;
+			}
+			ge.generateGlyphs();
+		}
 
 		//SynGlyphXANTz::ANTzExportTransformer transformer(csvDirectory, m_antzExportDirectories[platform], platform, false);
 		//transformer.Transform(*(m_dataTransformModel->GetDataMapping().get()));
 
 		SynGlyphX::Application::restoreOverrideCursor();
-
-		const QString& GlyphEngineError = ge.getError();
-		
-		//const QString& transformerError = transformer.GetError();
-		if (!GlyphEngineError.isNull()) {
-
-			QMessageBox::information(this, "Transformation Error", GlyphEngineError, QMessageBox::Ok);
-		}
 	}
 	catch (const std::exception& e) {
 
@@ -715,6 +765,18 @@ void DataMapperWindow::AddBaseObject() {
 	}
 }
 
+void DataMapperWindow::AddLegend() {
+
+	SynGlyphX::LegendDialog dialog(this);
+	dialog.setWindowTitle(tr("Add New Legend"));
+	if (dialog.exec() == QDialog::Accepted) {
+
+		const SynGlyphX::Legend& legend = dialog.GetLegend();
+		m_dataTransformModel->AddLegend(legend);
+		EnableProjectDependentActions(true);
+	}
+}
+
 void DataMapperWindow::AddGlyphTemplate() {
 
 	QStringList glyphTemplates = GetFileNamesOpenDialog("GlyphTemplatesDir", tr("Add Glyph Templates"), "", "SynGlyphX Glyph Template Files (*.sgt *.csv)");
@@ -740,31 +802,25 @@ void DataMapperWindow::AddGlyphTemplate() {
 
 void DataMapperWindow::AddGlyphTemplatesFromLibrary() {
 
-	QFileSystemModel* fileSystemModel = new QFileSystemModel(this);
-	fileSystemModel->setNameFilters(QStringList("*.sgt"));
+	SynGlyphX::GlyphTemplateLibraryListWidget* templateListView = new SynGlyphX::GlyphTemplateLibraryListWidget(true, this);	
 
-	QListView* fileListView = new QListView(this);
-	fileListView->setModel(fileSystemModel);
-	fileListView->setRootIndex(fileSystemModel->setRootPath(m_glyphTemplatesDirectory));
-	fileListView->setSelectionMode(QAbstractItemView::ExtendedSelection);
-
-	SynGlyphX::SingleWidgetDialog dialog(QDialogButtonBox::StandardButton::Open | QDialogButtonBox::StandardButton::Cancel, fileListView, this);
+	SynGlyphX::SingleWidgetDialog dialog(QDialogButtonBox::StandardButton::Open | QDialogButtonBox::StandardButton::Cancel, templateListView, this);
 	dialog.setWindowTitle(tr("Add Glyph Templates From Library"));
 
 	if (dialog.exec() == QDialog::Accepted) {
 
-		const QModelIndexList& selected = fileListView->selectionModel()->selectedIndexes();
+		QStringList templatesToLoad = templateListView->GetSelectedTemplates();
 
-		if (selected.isEmpty()) {
+		if (templatesToLoad.isEmpty()) {
 		
 			return;
 		}
 
 		try {
 		
-			for (const QModelIndex& index : selected) {
+			for (const QString& filename : templatesToLoad) {
 		
-				m_dataTransformModel->AddGlyphFile(fileSystemModel->filePath(index));
+				m_dataTransformModel->AddGlyphFile(filename);
 			}
 		}
 		catch (const std::exception& e) {

@@ -36,6 +36,8 @@ public:
 
 	void SelectLastGlyphTreeRoot();
 
+	QSize sizeHint() const override;
+
 signals:
 	void SelectionChangedSourceModel(const QModelIndexList& selectedIndexes);
 	void UpdateStatusBar(const QString& message, int timeout);

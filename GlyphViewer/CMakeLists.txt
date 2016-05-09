@@ -45,7 +45,6 @@ SET(SRC_ALL 	antzimportdialog.cpp
 				pseudotimefilterwidget.cpp
 				singletableelasticlistswidget.cpp
 				sourcedatainfomodel.cpp
-				sourcedataselectionmodel.cpp
 				sourcedatawidget.cpp)
 				
 #SET(RESOURCES_SRC glyphviewer.qrc)
@@ -74,7 +73,6 @@ TARGET_LINK_LIBRARIES(GlyphViewer ${Boost_LIBRARIES}
 									SGXGeospatial
 									MapDownloading
 									DataEngine
-									SGXDataTransform
 									jawt jvm)
 
 IF (${BREAKPAD_FOUND})

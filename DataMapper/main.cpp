@@ -2,7 +2,6 @@
 #include "glyphbuilderapplication.h"
 #include <QtWidgets/QSplashScreen>
 #include <QtCore/QTimer>
-#include "sourcedatamanager.h"
 #include "licensingdialog.h"
 #include "doubleminmaxwidget.h"
 #include "intminmaxwidget.h"
@@ -18,7 +17,7 @@
 
 int main(int argc, char *argv[])
 {
-    SynGlyphX::GlyphBuilderApplication::Setup("Glyph Builder - Data Mapper", "0.7.23");
+    SynGlyphX::GlyphBuilderApplication::Setup("Glyph Builder - Data Mapper", "0.7.43");
 	SynGlyphX::GlyphBuilderApplication a(argc, argv);
 
 #ifdef USE_BREAKPAD
@@ -54,31 +53,50 @@ int main(int argc, char *argv[])
 	qRegisterMetaType<SynGlyphX::DoubleMinDiff>("DoubleMinDiff");
 	qRegisterMetaType<SynGlyphX::InputField>("InputField");
 
+	SynGlyphX::GlyphBuilderApplication::SetupIconsAndLogos();
+
+#ifdef USE_LICENSING
 	if (!SynGlyphX::LicensingDialog::CheckLicense()) {
 
 		return 0;
 	}
+#endif
 
-    //Setup and show the splash screen
-    QPixmap pixmap(":SGXGUI/Resources/synglyphx_splash.png");
-    QSplashScreen splash;
-    splash.setPixmap(pixmap);
-    splash.show();
+	//Setup and show the splash screen
+	QPixmap pixmap(SynGlyphX::GlyphBuilderApplication::GetSplashScreenLocation());
+	QSplashScreen splash(pixmap, Qt::WindowStaysOnTopHint);
+	splash.show();
 
     splash.showMessage("Loading Data Mapper", Qt::AlignHCenter | Qt::AlignBottom);
 
     a.processEvents();
 
-    DataMapperWindow w;
-    w.resize(1200, 700);
+	try {
 
-    //Need to figure out better way to not have the splash screen disappear before the user sees it
-    QTimer::singleShot(1500, &splash, SLOT(close()));
-    QTimer::singleShot(1600, &w, SLOT(show()));
+		DataMapperWindow w;
+		w.resize(1200, 700);
 
-    //w.show();
-    //splash.finish(&w);
-    
-    return a.exec();
-	w.closeJVM();
+		//Need to figure out better way to not have the splash screen disappear before the user sees it
+		QTimer::singleShot(1500, &splash, SLOT(close()));
+		w.show();
+		//QTimer::singleShot(1600, &w, SLOT(show()));
+
+		//w.show();
+		//splash.finish(&w);
+
+		return a.exec();
+		w.closeJVM();
+	}
+	catch (const std::exception& e) {
+
+		QMessageBox::critical(nullptr, QObject::tr("Error"), QObject::tr("Error: ") + e.what() + "\n\n" + QObject::tr("Application is shutting down."), QMessageBox::StandardButton::Ok);
+		return 1;
+	}
+	catch (...) {
+
+		QMessageBox::critical(nullptr, QObject::tr("Unknown Error"), QObject::tr("Unknown Error: ") + "\n\n" + QObject::tr("Application is shutting down."), QMessageBox::StandardButton::Ok);
+		return 1;
+	}
+
+	return 0;
 }

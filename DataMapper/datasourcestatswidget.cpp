@@ -5,7 +5,6 @@
 #include <QtWidgets/QHeaderView>
 #include <boost/uuid/uuid_io.hpp>
 #include "datastatsmodel.h"
-#include "sourcedatamanager.h"
 
 DataSourceStatsWidget::DataSourceStatsWidget(DataTransformModel* dataTransformModel, QWidget *parent)
 	: QTabWidget(parent),
@@ -31,32 +30,23 @@ void DataSourceStatsWidget::RebuildStatsViews() {
 	AddNewStatsViews();
 }
 
-void DataSourceStatsWidget::SetDataEngineConn(DataEngine::DataEngineConnection *dec){
-	this->dec = dec;
+void DataSourceStatsWidget::SetDataEngineConnection(DataEngine::DataEngineConnection::SharedPtr dataEngineConnection) {
+	
+	m_dataEngineConnection = dataEngineConnection;
 }
 
 void DataSourceStatsWidget::AddNewStatsViews() {
 
-	const SynGlyphX::DatasourceMaps::FileDatasourceMap& fileDatasources = m_model->GetDataMapping()->GetDatasources().GetFileDatasources();
-	SynGlyphX::DatasourceMaps::FileDatasourceMap::const_iterator iT = fileDatasources.begin();
-	for (; iT != fileDatasources.end(); ++iT) {
+	const SynGlyphX::DataTransformMapping::DatasourceMap& datasources = m_model->GetDataMapping()->GetDatasources();
+	SynGlyphX::DataTransformMapping::DatasourceMap::const_iterator iT = datasources.begin();
+	for (; iT != datasources.end(); ++iT) {
 
 		try {
 			if (findChildren<QTableView*>(QString::fromStdString(boost::uuids::to_string(iT->first))).empty()) {
-				QString datasource = QString::fromStdWString(iT->second.GetFilename());
 
-				if (iT->second.GetType() == SynGlyphX::FileDatasource::SQLITE3){
+				for (const auto& table : iT->second->GetTableNames()) {
 
-					for (int i = 0; i < dec->getTables().size(); i++){
-
-						CreateTablesFromDatasource(iT->first, i, QString::fromStdWString(iT->second.GetFormattedName()) + ":" + dec->getTables()[i], iT->second.GetType());
-					}
-					dec->closeConnection();
-				}
-				else if (iT->second.GetType() == SynGlyphX::FileDatasource::CSV){
-					
-					CreateTablesFromDatasource(iT->first, 0, QString::fromStdWString(iT->second.GetFormattedName()), iT->second.GetType());
-					dec->closeConnection();
+					CreateTablesFromDatasource(iT->first, QString::fromStdWString(iT->second->GetFormattedName()), QString::fromStdWString(table));
 				}
 			}
 		}
@@ -75,21 +65,16 @@ void DataSourceStatsWidget::ClearTabs() {
 	clear();
 }
 
-void DataSourceStatsWidget::CreateTablesFromDatasource(const boost::uuids::uuid& id, int place, QString file, SynGlyphX::FileDatasource::SourceType type) {
+void DataSourceStatsWidget::CreateTablesFromDatasource(const boost::uuids::uuid& id, const QString& formattedDatasourceName, const QString& tableName) {
 
 	QString idString = QString::fromStdString(boost::uuids::to_string(id));
-	QString tableName;
-	if (file.right(4).toLower() == ".csv") {
+	QString tabName = formattedDatasourceName;
+	if (tableName != "OnlyTable") {
 
-		tableName = "OnlyTable";
-	}
-	else {
-
-		QStringList qsl = file.split(":");
-		tableName = qsl.at(1);
+		tabName += ":" + tableName;
 	}
 	DataStatsModel* model = new DataStatsModel(id, tableName, m_model, this);
-	CreateTableView(model, file, idString);
+	CreateTableView(model, tabName, idString);
 }
 
 void DataSourceStatsWidget::CreateTableView(DataStatsModel* model, const QString& tabName, const QString& id) {
@@ -136,6 +121,8 @@ void DataSourceStatsWidget::RemoveTableViews(const QString& name) {
 	//This will also delete the associated model since it is the parent of the model object
 	while (QTableView* view = findChild<QTableView*>(name)) {
 
+		view->clearSelection();
+		view->clearFocus();
 		removeTab(indexOf(view));
 		delete view;
 	}

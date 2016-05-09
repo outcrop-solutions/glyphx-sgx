@@ -1,6 +1,6 @@
 #include "datatransformmodel.h"
-#include "sourcedatamanager.h"
 #include <QtCore/QDir>
+#include <QtCore/QDebug>
 #include <boost/uuid/uuid_io.hpp>
 #include "application.h"
 #include "downloadedmapproperties.h"
@@ -13,10 +13,13 @@
 #include "defaultbaseimagescombobox.h"
 #include "surfaceradiobuttonwidget.h"
 #include "dataenginestatement.h"
-
+#include "stringconvert.h"
+#include <set>
+#include <QtWidgets/QMessageBox>
 DataTransformModel::DataTransformModel(QObject *parent)
 	: QAbstractItemModel(parent),
-	m_dataMapping(new SynGlyphX::DataTransformMapping())
+	m_dataMapping(new SynGlyphX::DataTransformMapping()),
+	m_dataEngineConnection(nullptr)
 {
 	ClearAndReset();
 }
@@ -31,9 +34,9 @@ int DataTransformModel::columnCount(const QModelIndex& parent) const {
 	return 1;
 }
 
-void DataTransformModel::SetDataEngineConn(DataEngine::DataEngineConnection *dec){
+void DataTransformModel::SetDataEngineConnection(DataEngine::DataEngineConnection::SharedPtr dataEngineConnection){
 	
-	this->dec = dec;
+	m_dataEngineConnection = dataEngineConnection;
 }
 
 bool DataTransformModel::setData(const QModelIndex& index, const QVariant& value, int role) {
@@ -169,7 +172,7 @@ QVariant DataTransformModel::data(const QModelIndex& index, int role) const {
 
 			if (IsParentlessRowInDataType(DataType::DataSources, index.row())) {
 
-				auto datasource = m_dataMapping->GetDatasources().GetFileDatasources().begin();
+				auto datasource = m_dataMapping->GetDatasources().begin();
 				std::advance(datasource, index.row() - GetFirstIndexForDataType(DataType::DataSources));
 				return QString::fromStdString(boost::uuids::to_string(datasource->first));
 			}
@@ -335,10 +338,9 @@ QVariant DataTransformModel::GetDisplayData(const QModelIndex& index) const {
 		else if (IsParentlessRowInDataType(DataType::DataSources, index.row())) {
 
 			int datasourceIndex = index.row() - m_dataMapping->GetGlyphGraphs().size() - m_dataMapping->GetBaseObjects().size();
-			SynGlyphX::DatasourceMaps::FileDatasourceMap::const_iterator fileDatasource = m_dataMapping->GetDatasources().GetFileDatasources().begin();
-			std::advance(fileDatasource, datasourceIndex);
-			QFileInfo fileDatasourceFileInfo(QString::fromStdWString(fileDatasource->second.GetFilename()));
-			return fileDatasourceFileInfo.fileName();
+			SynGlyphX::DataTransformMapping::DatasourceMap::const_iterator datasource = m_dataMapping->GetDatasources().begin();
+			std::advance(datasource, datasourceIndex);
+			return QString::fromStdWString(datasource->second->GetFormattedName());
 		}
 		else if (IsParentlessRowInDataType(DataType::GlyphTrees, index.row())) {
 
@@ -346,10 +348,18 @@ QVariant DataTransformModel::GetDisplayData(const QModelIndex& index) const {
 		}
 		else if (IsParentlessRowInDataType(DataType::FieldGroup, index.row())) {
 
-			int fieldGroupIndex = index.row() - (m_dataMapping->GetGlyphGraphs().size() + m_dataMapping->GetBaseObjects().size() + m_dataMapping->GetDatasources().Count());
+			int fieldGroupIndex = index.row() - (m_dataMapping->GetGlyphGraphs().size() + m_dataMapping->GetBaseObjects().size() + m_dataMapping->GetDatasources().size());
 			SynGlyphX::DataTransformMapping::FieldGroupMap::const_iterator fieldGroup = m_dataMapping->GetFieldGroupMap().begin();
 			std::advance(fieldGroup, fieldGroupIndex);
 			return QString::fromStdWString(fieldGroup->first);
+		}
+		else if (IsParentlessRowInDataType(DataType::Legends, index.row())) {
+
+			int legendIndex = index.row() - GetFirstIndexForDataType(DataType::Legends);
+			std::vector<SynGlyphX::Legend>::const_iterator legend = m_dataMapping->GetLegends().begin();
+			std::advance(legend, legendIndex);
+			QFileInfo baseObjectFileInfo(QString::fromStdWString(legend->GetFilename()));
+			return QString::fromStdWString(legend->GetTitle()) + ": " + baseObjectFileInfo.fileName();
 		}
 	}
 	else {
@@ -380,6 +390,10 @@ DataTransformModel::DataType DataTransformModel::GetDataType(const QModelIndex& 
 		else if (IsParentlessRowInDataType(DataType::FieldGroup, index.row())) {
 
 			return DataType::FieldGroup;
+		}
+		else if (IsParentlessRowInDataType(DataType::Legends, index.row())) {
+
+			return DataType::Legends;
 		}
 		else if (IsParentlessRowInDataType(DataType::GlyphTrees, index.row())) {
 
@@ -501,7 +515,8 @@ int	DataTransformModel::rowCount(const QModelIndex& parent) const {
 
 	if (!parent.isValid()) {
 
-		return m_dataMapping->GetGlyphGraphs().size() + m_dataMapping->GetBaseObjects().size() + m_dataMapping->GetDatasources().Count() + m_dataMapping->GetFieldGroupMap().size();
+		return m_dataMapping->GetGlyphGraphs().size() + m_dataMapping->GetBaseObjects().size() + m_dataMapping->GetDatasources().size() + 
+			m_dataMapping->GetFieldGroupMap().size() + m_dataMapping->GetLegends().size();
 	}
 
 	if (parent.internalPointer() != nullptr) {
@@ -513,16 +528,28 @@ int	DataTransformModel::rowCount(const QModelIndex& parent) const {
 	return 0;
 }
 
-boost::uuids::uuid DataTransformModel::AddFileDatasource(SynGlyphX::FileDatasource::SourceType type, const std::wstring& name) {
+boost::uuids::uuid DataTransformModel::AddFileDatasource(const SynGlyphX::FileDatasource& datasource) {
 
-	int newRow = GetFirstIndexForDataType(DataType::DataSources) + m_dataMapping->GetDatasources().GetFileDatasources().size();
+	int newRow = GetFirstIndexForDataType(DataType::DataSources) + m_dataMapping->GetDatasources().size();
 	beginInsertRows(QModelIndex(), newRow, newRow);
-	boost::uuids::uuid id = m_dataMapping->AddFileDatasource(type, name);
-	AddDatasourceInfoFromDataEngine(id, m_dataMapping->GetDatasources().GetFileDatasources().at(id));
+	boost::uuids::uuid id = m_dataMapping->AddFileDatasource(datasource);
+	AddDatasourceInfoFromDataEngine(id, m_dataMapping->GetDatasources().at(id));
 	endInsertRows();
 
 	return id;
 }
+
+boost::uuids::uuid DataTransformModel::AddDatabaseServer(const SynGlyphX::DatabaseServerDatasource& datasource) {
+
+	int newRow = GetFirstIndexForDataType(DataType::DataSources) + m_dataMapping->GetDatasources().size();
+	beginInsertRows(QModelIndex(), newRow, newRow);
+	boost::uuids::uuid id = m_dataMapping->AddDatabaseServer(datasource);
+	AddDatasourceInfoFromDataEngine(id, m_dataMapping->GetDatasources().at(id));
+	endInsertRows();
+
+	return id;
+}
+
 /*
 void DataTransformModel::SetInputField(const boost::uuids::uuid& treeID, SynGlyphX::DataMappingGlyphGraph::const_iterator& node, SynGlyphX::DataMappingGlyph::MappableField field, const SynGlyphX::InputField& inputfield) {
 
@@ -557,6 +584,31 @@ void DataTransformModel::ClearAllInputBindings(const QModelIndex& index) {
 	emit dataChanged(index, index);
 }
 
+void DataTransformModel::ClearAbsentBindings(const QModelIndex& index) {
+	//we need a InputFieldMap copy, using const& will cause problems after deleting Inputfield
+	SynGlyphX::DataMappingGlyphGraph::InputFieldMap fieldMap = GetInputFieldsForTree(index); 
+	std::set<SynGlyphX::InputField::HashID> sourceFields;
+	for (const auto& t : m_tableStatsMap) {
+		auto table = t.first;
+		auto stats = t.second;
+		for (const auto& stat : stats) {
+			// use arbitrary Type since it does not affect HashID
+			SynGlyphX::InputField sInputField(table.GetDatasourceID(), table.GetTable(), stat[0].toStdWString(), SynGlyphX::InputField::Type::Text);
+			sourceFields.insert(sInputField.GetHashID());
+			}
+		}
+	for (const auto& field : fieldMap) {
+		if (sourceFields.find(field.first) == sourceFields.end()) { 
+			SynGlyphX::InputField f(field.second);
+			QMessageBox::warning(nullptr, tr("Warning"),
+				tr("Source data does not have field:\n") + QString::fromWCharArray(f.GetField().c_str()) + tr("\nMapping will be removed"));
+			m_dataMapping->ClearInputFieldBindings(GetTreeId(index), f);
+		}
+					
+	}
+	emit dataChanged(index, index);
+}
+
 const SynGlyphX::DataMappingGlyphGraph::InputFieldMap& DataTransformModel::GetInputFieldsForTree(const QModelIndex& index) const {
 
 	if (!index.isValid()) {
@@ -566,7 +618,7 @@ const SynGlyphX::DataMappingGlyphGraph::InputFieldMap& DataTransformModel::GetIn
 
 	return m_dataMapping->GetGlyphGraphs().at(GetTreeId(index))->GetInputFields();
 }
-
+/*
 void DataTransformModel::EnableTables(const boost::uuids::uuid& id, const SynGlyphX::Datasource::TableNames& tables, bool enable) {
 
 	m_dataMapping->EnableTables(id, tables, enable);
@@ -574,10 +626,10 @@ void DataTransformModel::EnableTables(const boost::uuids::uuid& id, const SynGly
 
 		for (int i = 0; i < tables.size(); ++i) {
 
-			GenerateStats(SynGlyphX::InputTable(id, tables[i]), i, SynGlyphX::FileDatasource::SourceType::SQLITE3);
+			GenerateStats(SynGlyphX::InputTable(id, tables[i]), i, SynGlyphX::FileDatasource::FileType::SQLITE3);
 		}
 	}
-}
+}*/
 
 bool DataTransformModel::removeRows(int row, int count, const QModelIndex& parent) {
 
@@ -645,6 +697,11 @@ bool DataTransformModel::removeRows(int row, int count, const QModelIndex& paren
 					m_dataMapping->RemoveFieldGroup(GetFieldGroupName(i));
 					emitGlyphDataChanged = true;
 				}
+				else if (IsParentlessRowInDataType(DataType::Legends, i)) {
+
+					m_dataMapping->RemoveLegend(i - GetFirstIndexForDataType(DataType::Legends));
+					emitGlyphDataChanged = true;
+				}
 			}
 			endRemoveRows();
 
@@ -682,12 +739,14 @@ void DataTransformModel::LoadDataTransformFile(const QString& filename) {
 	Clear();
 	beginResetModel();
 	m_dataMapping->ReadFromFile(filename.toStdString());
-	const SynGlyphX::DatasourceMaps::FileDatasourceMap& fileDatasources = m_dataMapping->GetDatasources().GetFileDatasources();
-	SynGlyphX::DatasourceMaps::FileDatasourceMap::const_iterator iT = fileDatasources.begin();
-	for (; iT != fileDatasources.end(); ++iT) {
+	const SynGlyphX::DataTransformMapping::DatasourceMap& datasources = m_dataMapping->GetDatasources();
+	SynGlyphX::DataTransformMapping::DatasourceMap::const_iterator iT = datasources.begin();
+	for (; iT != datasources.end(); ++iT) {
 
 		AddDatasourceInfoFromDataEngine(iT->first, iT->second);
 	}
+	
+	ClearAbsentBindings(createIndex(0,0));
 	endResetModel();
 }
 
@@ -760,6 +819,21 @@ void DataTransformModel::AddBaseObject(const SynGlyphX::BaseImage& baseImage) {
 	endInsertRows();
 }
 
+void DataTransformModel::SetLegend(unsigned int position, const SynGlyphX::Legend& legend) {
+
+	m_dataMapping->SetLegend(position, legend);
+	QModelIndex modelIndex = index(GetFirstIndexForDataType(DataType::Legends) + position);
+	emit dataChanged(modelIndex, modelIndex);
+}
+
+void DataTransformModel::AddLegend(const SynGlyphX::Legend& legend) {
+
+	int row = GetFirstIndexForDataType(DataType::Legends) + m_dataMapping->GetLegends().size();
+	beginInsertRows(QModelIndex(), row, row);
+	m_dataMapping->AddLegend(legend);
+	endInsertRows();
+}
+
 bool DataTransformModel::IsParentlessRowInDataType(DataType type, int row) const {
 
 	int min = GetFirstIndexForDataType(type);
@@ -770,11 +844,15 @@ bool DataTransformModel::IsParentlessRowInDataType(DataType type, int row) const
 	}
 	else if (type == DataType::DataSources) {
 
-		max = min + m_dataMapping->GetDatasources().Count();
+		max = min + m_dataMapping->GetDatasources().size();
 	}
 	else if (type == DataType::FieldGroup) {
 
 		max = min + m_dataMapping->GetFieldGroupMap().size();
+	}
+	else if (type == DataType::Legends) {
+
+		max = min + m_dataMapping->GetLegends().size();
 	}
 	else if (type == DataType::GlyphTrees) {
 
@@ -796,7 +874,12 @@ unsigned int DataTransformModel::GetFirstIndexForDataType(DataType type) const {
 	}
 	else if (type == DataType::FieldGroup) {
 
-		return m_dataMapping->GetGlyphGraphs().size() + m_dataMapping->GetBaseObjects().size() + m_dataMapping->GetDatasources().Count();
+		return m_dataMapping->GetGlyphGraphs().size() + m_dataMapping->GetBaseObjects().size() + m_dataMapping->GetDatasources().size();
+	}
+	else if (type == DataType::Legends) {
+
+		return m_dataMapping->GetGlyphGraphs().size() + m_dataMapping->GetBaseObjects().size() + m_dataMapping->GetDatasources().size() +
+			m_dataMapping->GetFieldGroupMap().size();
 	}
 	else if (type == DataType::GlyphTrees) {
 
@@ -947,7 +1030,7 @@ boost::uuids::uuid DataTransformModel::GetTreeId(const QModelIndex& index) const
 
 boost::uuids::uuid DataTransformModel::GetDatasourceId(int row) const {
 
-	SynGlyphX::DatasourceMaps::FileDatasourceMap::const_iterator datasource = m_dataMapping->GetDatasources().GetFileDatasources().begin();
+	SynGlyphX::DataTransformMapping::DatasourceMap::const_iterator datasource = m_dataMapping->GetDatasources().begin();
 	std::advance(datasource, row - GetFirstIndexForDataType(DataType::DataSources));
 	return datasource->first;
 }
@@ -1130,7 +1213,7 @@ const DataTransformModel::NumericFieldsByTable& DataTransformModel::GetNumericFi
 
 void DataTransformModel::RemoveAllAdditionalData(const boost::uuids::uuid& datasourceId) {
 
-	for (const auto& table : m_dataMapping->GetDatasources().GetDatasourceByID(datasourceId).GetTables()) {
+	for (const auto& table : m_dataMapping->GetDatasources().at(datasourceId)->GetTables()) {
 
 		SynGlyphX::InputTable inputTable(datasourceId, table.first);
 
@@ -1147,67 +1230,156 @@ const DataTransformModel::TableStatsMap& DataTransformModel::GetTableStatsMap() 
 	return m_tableStatsMap;
 }
 
-void DataTransformModel::AddDatasourceInfoFromDataEngine(const boost::uuids::uuid& datasourceId, const SynGlyphX::FileDatasource& fileDatasource) {
+void DataTransformModel::AddDatasourceInfoFromDataEngine(const boost::uuids::uuid& datasourceId, const SynGlyphX::Datasource::SharedPtr datasource) {
 
-	QString datasource = QString::fromStdWString(fileDatasource.GetFilename());
+	QStringList chosenTables;
+	QString sourceTypeString;
 
-	if (fileDatasource.GetType() == SynGlyphX::FileDatasource::SQLITE3) {
+	try {
 
-		SynGlyphX::Datasource::TableNames tables;
+		if (datasource->GetSourceType() == SynGlyphX::Datasource::SourceType::File) {
 
-		QString url("sqlite:" + datasource);
-		QString user("");
-		QString pass("");
-		QString type("sqlite3");
-		//QString url("mysql://33.33.33.1");
-		//QString user("root");
-		//QString pass("jarvis");
-		//QString type("mysql");
-		QStringList databases = dec->connectToServer(url, user, pass, type);
-		QString database("");
-		//QString database("world");
-		QStringList qtables = dec->chooseDatabase(database);
-		//dec->testFunction();
-		QStringList chosenTables;
-		chosenTables = qtables;
-		//std::vector<DataEngineConnection::ForeignKey> fkeys = dec->getForeignKeys(//table_name);
-		//fkeys.at(0).key;
-		//fkeys.at(0).origin;
-		//fkeys.at(0).value;
-		dec->setChosenTables(chosenTables);
-		//QString query = "SELECT City.Population, Country.Code FROM (City INNER JOIN Country ON (City.CountryCode=Country.Code))";
-		//dec->setQueryTables(query);
+			SynGlyphX::FileDatasource::SharedPtr fileDatasource = std::dynamic_pointer_cast<SynGlyphX::FileDatasource>(datasource);
+			sourceTypeString = QString::fromStdWString(SynGlyphX::FileDatasource::s_fileTypePrefixes.left.at(fileDatasource->GetFileType()));
 
-		if (!dec->getTables().isEmpty()) {
+			if (fileDatasource->GetFileType() == SynGlyphX::FileDatasource::SQLITE3) {
 
-			for (const QString& qtable : dec->getTables()) {
+				ConnectToDatabase(QString::fromStdWString(L"sqlite:" + fileDatasource->GetFilename()),
+								  QString::fromStdWString(fileDatasource->GetUsername()),
+								  QString::fromStdWString(fileDatasource->GetPassword()),
+								  sourceTypeString);
 
-				tables.push_back(qtable.toStdWString());
+				if (datasource->DoAnyTablesHaveQueries()) {
+
+					SynGlyphX::Datasource::Tables::const_iterator tablesQueryIterator = datasource->GetTables().begin();
+					m_dataEngineConnection->setQueryTables(QString::fromStdWString(tablesQueryIterator->second.GetQuery()));
+					chosenTables << QString::fromStdWString(tablesQueryIterator->first);
+				}
+				else {
+
+					chosenTables = GetChosenTables("", fileDatasource->GetTableNames());
+				}
+
 			}
-			EnableTables(datasourceId, tables, true);
-		}
-		else {
+			else if (fileDatasource->GetFileType() == SynGlyphX::FileDatasource::FileType::CSV) {
 
-			throw std::runtime_error((tr("No tables in ") + datasource).toStdString().c_str());
+				m_dataEngineConnection->loadCSV(SynGlyphX::StringConvert::ToStdString(fileDatasource->GetFilename()).c_str());
+				chosenTables << QString::fromStdWString(SynGlyphX::FileDatasource::SingleTableName);
+				//GenerateStats(SynGlyphX::InputTable(datasourceId, SynGlyphX::FileDatasource::SingleTableName), 0, SynGlyphX::FileDatasource::FileType::CSV);
+			}
+		}
+		else if (datasource->GetSourceType() == SynGlyphX::Datasource::SourceType::DatabaseServer) {
+
+			//std::vector<DataEngineConnection::ForeignKey> fkeys = dec->getForeignKeys(//table_name);
+			//fkeys.at(0).key;
+			//fkeys.at(0).origin;
+			//fkeys.at(0).value;
+			//dec->setChosenTables(chosenTables);
+			/*
+			QString query = "SELECT inventory_fact.qty_in_stock, product_dimension.product_price, ";
+			query += "date_dimension.day_of_week, warehouse_dimension.warehouse_name FROM (inventory_fact ";
+			query += "INNER JOIN product_dimension ON (inventory_fact.product_key=product_dimension.product_key) ";
+			query += "INNER JOIN date_dimension ON (inventory_fact.date_key=date_dimension.date_key) ";
+			query += "INNER JOIN warehouse_dimension ON (inventory_fact.warehouse_key=warehouse_dimension.warehouse_key))";*/
+
+			SynGlyphX::DatabaseServerDatasource::SharedPtr dbmsDatasource = std::dynamic_pointer_cast<SynGlyphX::DatabaseServerDatasource>(datasource);
+			sourceTypeString = QString::fromStdWString(SynGlyphX::DatabaseServerDatasource::s_dbTypePrefixes.left.at(dbmsDatasource->GetDBType()));
+
+			ConnectToDatabase(QString::fromStdWString(dbmsDatasource->GetFullJDBCConnectionString()),
+							  QString::fromStdWString(dbmsDatasource->GetUsername()),
+							  QString::fromStdWString(dbmsDatasource->GetPassword()),
+							  sourceTypeString);
+
+			if (datasource->DoAnyTablesHaveQueries()) {
+
+				SynGlyphX::Datasource::Tables::const_iterator tablesQueryIterator = datasource->GetTables().begin();
+				m_dataEngineConnection->setQueryTables(QString::fromStdWString(tablesQueryIterator->second.GetQuery()));
+				chosenTables << QString::fromStdWString(tablesQueryIterator->first);
+			}
+			else {
+				chosenTables = GetChosenTables(
+					QString::fromStdWString(dbmsDatasource->GetSchema()),
+					dbmsDatasource->GetTableNames());
+			}
+
+			//QString query = "SELECT City.Population, Country.Code FROM (City INNER JOIN Country ON (City.CountryCode=Country.Code))";
+			/*
+			QString query = "SELECT inventory_fact.qty_in_stock, product_dimension.product_price, ";
+			query += "date_dimension.day_of_week, warehouse_dimension.warehouse_name FROM (inventory_fact ";
+			query += "INNER JOIN product_dimension ON (inventory_fact.product_key=product_dimension.product_key) ";
+			query += "INNER JOIN date_dimension ON (inventory_fact.date_key=date_dimension.date_key) ";
+			query += "INNER JOIN warehouse_dimension ON (inventory_fact.warehouse_key=warehouse_dimension.warehouse_key))";
+			dec->setQueryTables(query);*/
 		}
 
-		dec->closeConnection();
+		for (int i = 0; i < chosenTables.size(); ++i) {
+
+			GenerateStats(SynGlyphX::InputTable(datasourceId, chosenTables[i].toStdWString()), i, sourceTypeString);
+		}
+
+		m_dataEngineConnection->closeConnection();
 	}
-	else if (fileDatasource.GetType() == SynGlyphX::FileDatasource::CSV) {
+	catch (const std::exception& e) {
 
-		dec->loadCSV(datasource.toUtf8().constData());
-		GenerateStats(SynGlyphX::InputTable(datasourceId, SynGlyphX::FileDatasource::SingleTableName), 0, SynGlyphX::FileDatasource::CSV);
-		dec->closeConnection();
+		m_dataEngineConnection->closeConnection();
+		throw;
 	}
 }
 
+void DataTransformModel::ConnectToDatabase(const QString& url, const QString& username, const QString& password, const QString& db_type) {
+
+	if (!m_dataEngineConnection->IsConnectionOpen(url)) {
+
+		m_dataEngineConnection->connectToServer(url, username, password, db_type);
+	}
+}
+
+QStringList DataTransformModel::GetChosenTables(const QString& schema, const SynGlyphX::Datasource::TableNames& tables) {
+
+	QStringList chosenTables;
+	QStringList connectionTables;
+	if (schema.isEmpty()) {
+
+		connectionTables = m_dataEngineConnection->getTables();
+	}
+	else {
+
+		connectionTables = m_dataEngineConnection->getSchemaTableNames(schema);
+	}
+
+	if (connectionTables.isEmpty()) {
+
+		if (schema.isEmpty()) {
+
+			throw std::runtime_error(tr("No tables listed can be found in database").toStdString().c_str());
+		}
+		else {
+
+			throw std::runtime_error((tr("No tables listed can be found in ") + schema).toStdString().c_str());
+		}
+	}
+
+	for (const auto& table : tables) {
+
+		QString qTable = QString::fromStdWString(table);
+		if (connectionTables.contains(qTable)) {
+
+			chosenTables.push_back(qTable);
+		}
+	}
+
+	m_dataEngineConnection->setChosenTables(chosenTables);
+
+	return chosenTables;
+}
+
 //JDBC GENERATE STATS
-void DataTransformModel::GenerateStats(const SynGlyphX::InputTable inputTable, int place, SynGlyphX::FileDatasource::SourceType sourceType) {
+void DataTransformModel::GenerateStats(const SynGlyphX::InputTable inputTable, int place, const QString& sourceTypeString) {
 
 	TableStats tableStats;
 
 	DataEngine::DataEngineStatement des;
-	des.prepare(dec->getEnv(), dec->getJcls(), sourceType); //Add datasource type as a third argument
+	des.prepare(m_dataEngineConnection->getEnv(), m_dataEngineConnection->getJcls(), sourceTypeString); 
 
 	SynGlyphX::WStringVector numericCols;
 	des.getFieldsForTable(place);

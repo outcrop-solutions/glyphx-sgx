@@ -65,30 +65,33 @@ void MappingFunctionWidget::SetFunction(const QString& function) {
 		bool blockSignals = m_functionComboBox->signalsBlocked();
 		m_functionComboBox->blockSignals(true);
 		m_functionComboBox->setCurrentText(function);
-		OnFunctionComboBoxChanged();
+		OnFunctionComboBoxChanged(false);
 		m_functionComboBox->blockSignals(blockSignals);
 	}
 }
 
 void MappingFunctionWidget::OnFunctionComboBoxChangedByUser() {
 
-	OnFunctionComboBoxChanged();
+	OnFunctionComboBoxChanged(true);
 	emit FunctionChanged();
 }
 
-void MappingFunctionWidget::OnFunctionComboBoxChanged() {
+void MappingFunctionWidget::OnFunctionComboBoxChanged(bool emitInputChange) {
 
 	SynGlyphX::MappingFunctionData::Function function = SynGlyphX::MappingFunctionData::s_functionNames.right.at(m_functionComboBox->currentText().toStdWString());
 	bool hasProperties = (function != SynGlyphX::MappingFunctionData::None);
 	m_editPropertiesButton->setEnabled(hasProperties);
 
-	if (function == SynGlyphX::MappingFunctionData::Function::Text2Value) {
+	if (emitInputChange) {
 
-		emit SupportedInputChanged(SynGlyphX::MappingFunctionData::Input::Text);
-	}
-	else {
+		if (function == SynGlyphX::MappingFunctionData::Function::Text2Value) {
 
-		emit SupportedInputChanged(SynGlyphX::MappingFunctionData::Input::Numeric);
+			emit SupportedInputChanged(SynGlyphX::MappingFunctionData::Input::Text);
+		}
+		else {
+
+			emit SupportedInputChanged(SynGlyphX::MappingFunctionData::Input::Numeric);
+		}
 	}
 }
 

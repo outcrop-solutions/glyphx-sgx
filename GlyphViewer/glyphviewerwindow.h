@@ -21,13 +21,13 @@
 #include <QtWidgets/QMainWindow>
 #include "glyphtreelistview.h"
 #include "mainwindow.h"
-#include "datamappingmodel.h"
+#include "datamappingloadingfiltermodel.h"
 #include "glyphforestmodel.h"
-#include "antzforestwidget.h"
+#include "glyph3dview.h"
 #include "cachemanager.h"
 #include "glyphvieweroptions.h"
 #include "sourcedatacache.h"
-#include "multitableelasticlistswidget.h"
+#include "filteringwidget.h"
 #include "pseudotimefilterwidget.h"
 #include "linkedwidgetsmanager.h"
 #include "itemfocusselectionmodel.h"
@@ -36,6 +36,8 @@
 #include "dataengineconnection.h"
 #include "glyphengine.h"
 #include "portablevisualizationexport.h"
+#include "legendsdisplaywidget.h"
+#include "filteringparameters.h"
 
 class GlyphViewerWindow : public SynGlyphX::MainWindow
 {
@@ -46,9 +48,13 @@ public:
 	~GlyphViewerWindow();
 	void closeJVM();
 
+	bool LoadNewVisualization(const QString& filename, const DataMappingLoadingFilterModel::Table2LoadingFiltersMap& filters = DataMappingLoadingFilterModel::Table2LoadingFiltersMap());
+
 protected:
 	virtual void ReadSettings();
 	virtual void WriteSettings();
+
+	void closeEvent(QCloseEvent* event) override;
 
 private slots:
 	void OpenProject();
@@ -64,10 +70,9 @@ private slots:
 
 private:
 	virtual bool LoadRecentFile(const QString& filename);
-	bool LoadNewVisualization(const QString& filename);
-	void LoadVisualization(const QString& filename);
+	void LoadVisualization(const QString& filename, const DataMappingLoadingFilterModel::Table2LoadingFiltersMap& filters);
 	void LoadANTzCompatibilityVisualization(const QString& filename);
-	void LoadDataTransform(const QString& filename);
+	void LoadDataTransform(const QString& filename, const DataMappingLoadingFilterModel::Table2LoadingFiltersMap& filters);
 	void ValidateDataMappingFile(const QString& filename);
 	void LoadFilesIntoModel(const SynGlyphXANTz::ANTzCSVWriter::FilenameList& filesToLoad, const QStringList& baseImageFilenames);
 	void CreateMenus();
@@ -75,38 +80,48 @@ private:
 	void EnableLoadedVisualizationDependentActions(bool enable);
 	void ChangeOptions(const GlyphViewerOptions& oldOptions, const GlyphViewerOptions& newOptions);
 	void ClearAllData();
-	void CreateANTzWidget(const QGLFormat& format);
+	void CreateANTzWidget();
 	GlyphViewerOptions CollectOptions();
 	bool DoesVisualizationNeedToBeRecreated(const SynGlyphX::DataTransformMapping& mapping) const;
 	void CreateExportToPortableVisualizationSubmenu();
+	void DownloadBaseImages(DataEngine::GlyphEngine& ge);
+	void CreateLoadingScreen();
 
 	QMenu* m_fileMenu;
 	QMenu* m_toolsMenu;
+	QMenu* m_toolbarsSubMenu;
+	QToolBar* m_showHideToolbar;
 	QAction* m_stereoAction;
 	QAction* m_showAnimation;
 	QAction* m_showTagsAction;
+	QAction* m_hideTagsAction;
+	QAction* m_hideAllTagsAction;
+	QAction* m_clearSelectionAction;
+	QAction* m_resetCameraToDefaultPosition;
 	QList<QAction*> m_loadedVisualizationDependentActions;
 
 	QDockWidget* m_glyphListDockWidget;
+	LegendsDisplayWidget* m_legendsWidget;
+	QDockWidget* m_legendsDockWidget;
 
-	SynGlyphX::DataMappingModel* m_mappingModel;
+	DataMappingLoadingFilterModel* m_mappingModel;
 	CacheManager m_cacheManager;
-	bool m_isStereoSupported;
 	bool m_showErrorFromTransform;
 
 	LinkedWidgetsManager* m_linkedWidgetsManager;
 
 	SynGlyphXANTz::GlyphForestModel* m_glyphForestModel;
 	SynGlyphX::ItemFocusSelectionModel* m_glyphForestSelectionModel;
-	SynGlyphXANTz::ANTzForestWidget* m_antzWidget;
+	Glyph3DView* m_glyph3DView;
 	GlyphTreeListView* m_treeView;
 	GlyphPropertiesWidgetsContainer* m_glyphPropertiesWidgetContainer;
-	SynGlyphX::SourceDataCache::SharedPtr m_sourceDataCache;
-	MultiTableElasticListsWidget* m_sourceDataSelectionWidget;
-	SourceDataSelectionModel* m_sourceDataSelectionModel;
+	SourceDataCache::SharedPtr m_sourceDataCache;
+	FilteringWidget* m_filteringWidget;
+	FilteringManager* m_filteringManager;
 	PseudoTimeFilterWidget* m_pseudoTimeFilterWidget;
-	DataEngine::DataEngineConnection dec;
+	DataEngine::DataEngineConnection::SharedPtr m_dataEngineConnection;
 	SynGlyphX::PortableVisualizationExport m_portableVisualizationExport;
+	SourceDataInfoModel* m_columnsModel;
 };
 
 #endif // GLYPHVIEWERWINDOW_H

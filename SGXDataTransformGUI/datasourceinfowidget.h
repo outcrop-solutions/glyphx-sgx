@@ -21,6 +21,7 @@
 #include "sgxdatatransformgui_global.h"
 #include <QtWidgets/QWidget>
 #include "filedatasource.h"
+#include "databaseserverdatasource.h"
 
 namespace SynGlyphX {
 
@@ -34,6 +35,7 @@ namespace SynGlyphX {
 
 	private:
 		void CreateFileDatasourceWidgets(const FileDatasource& datasource);
+		void CreateDatabaseServerDatasourceWidgets(const DatabaseServerDatasource& datasource);
 	};
 
 } //namespace SynGlyphX

@@ -24,6 +24,7 @@
 #include <QtWidgets/QTableView>
 #include <set>
 #include "elasticlistmodel.h"
+#include <QtWidgets/QCheckBox>
 
 namespace SynGlyphX {
 
@@ -32,29 +33,38 @@ namespace SynGlyphX {
 		Q_OBJECT
 
 	public:
-		static const int MaximumNumberOfRowsShown;
+		static const unsigned int MaximumNumberOfRowsShown;
 
 		ElasticListWidget(QWidget *parent);
 		~ElasticListWidget();
 
+		bool HasSelection() const;
+
 		void SetTitle(const QString& title);
 		QString GetTitle() const;
 		void SetData(const ElasticListModel::Data& data);
+		//void SetSelectedData(const ElasticListModel::Data& data);
 
-		const std::set<QString>& GetSelectedRawData() const;
+		const QSet<QString>& GetSelectedRawData() const;
 
 	signals:
 		void SelectionChanged();
 
+	protected:
+		bool eventFilter(QObject *obj, QEvent *ev);
+
 	private slots:
 		void OnNewUserSelection();
-
-	private:
 		void ResizeTable();
 
-		std::set<QString> m_selectedRawData;
+	private:
+		void ChangeSelection();
+
+		bool m_hasUserChangedSelectedItemsInTable;
+		QSet<QString> m_selectedRawData;
 		
 		QLabel* m_title;
+		QCheckBox* m_showAllCheckBox;
 		QTableView* m_dataAndCountView;
 		ElasticListModel* m_model;
 	};

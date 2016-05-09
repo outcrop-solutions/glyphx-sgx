@@ -19,54 +19,41 @@
 #define MULTITABLEELASTICLISTSWIDGET_H
 
 #include <QtWidgets/QWidget>
-#include <QtWidgets/QPushButton>
 #include <QtWidgets/QComboBox>
 #include <QtWidgets/QStackedLayout>
-#include <QtWidgets/QCheckBox>
-#include "sourcedatawidget.h"
 #include "singlewidgetdialog.h"
 #include <unordered_map>
 #include "singletableelasticlistswidget.h"
-#include "linkedwidgetsmanager.h"
-#include "sourcedataselectionmodel.h"
+#include "filteringmanager.h"
 
 class MultiTableElasticListsWidget : public QWidget
 {
 	Q_OBJECT
 
 public:
-	MultiTableElasticListsWidget(SynGlyphX::SourceDataCache::SharedPtr sourceDataCache, SourceDataSelectionModel* selectionModel, QWidget *parent);
+	MultiTableElasticListsWidget(FilteringManager* filteringManager, QWidget *parent);
 	~MultiTableElasticListsWidget();
 
-	void SetupLinkedWidgets(LinkedWidgetsManager& linkedWidgets);
+public slots:
+	void OnNewVisualization();
+	void SwitchTable(const QString& table);
 
 private slots:
-	void OnSourceWidgetWindowHidden();
-	void OnSelectionChanged();
-	void OnModelReset();
-	void OnComboBoxChanged(int current);
-	void OnElasticListsSelectionChanged(const QString& table, const SynGlyphX::SourceDataCache::ColumnValueData& selection);
-	void Clear();
+	void OnFilterResultsChanged();
+	void OnElasticListsSelectionChanged(const QString& table, const FilteringParameters::ColumnDistinctValuesFilterMap& selection);
 
 private:
-	typedef std::unordered_map<std::string, SingleTableElasticListsWidget*> NameWidgetMap;
+	typedef std::unordered_map<std::wstring, SingleTableElasticListsWidget*> NameWidgetMap;
 
 	void UpdateElasticListsAndSourceDataWidget();
-	void UpdateElasticLists(const SourceDataSelectionModel::IndexSetMap& dataIndexes = SourceDataSelectionModel::IndexSetMap());
+	void UpdateElasticLists(const FilteringManager::IndexSetMap& dataIndexes = FilteringManager::IndexSetMap());
 	void ClearElasticLists();
-	void EnableButtons(bool enable);
 
-	SourceDataSelectionModel* m_selectionModel;
-	QPushButton* m_sourceWidgetButton;
-	QPushButton* m_clearButton;
-	QScopedPointer<SourceDataWidget> m_sourceDataWindow;
-	QComboBox* m_tableComboBox;
-	QCheckBox* m_hideUnselectedTreesCheckbox;
-
+	//SourceDataCache::SharedPtr m_sourceDataCache;
+	FilteringManager* m_filteringManager;
+	
 	QStackedLayout* m_elasticListsStackLayout;
 	NameWidgetMap m_elasticListWidgetsForEachTable;
-
-	SynGlyphX::SourceDataCache::SharedPtr m_sourceDataCache;
 };
 
 #endif // MULTITABLEELASTICLISTSWIDGET_H

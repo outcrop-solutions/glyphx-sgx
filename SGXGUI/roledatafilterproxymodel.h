@@ -20,6 +20,7 @@
 
 #include "sgxgui_global.h"
 #include <QtCore/QSortFilterProxyModel>
+#include <QtCore/QSet>
 
 namespace SynGlyphX {
 
@@ -31,13 +32,60 @@ namespace SynGlyphX {
 		RoleDataFilterProxyModel(QObject* parent = nullptr);
 		~RoleDataFilterProxyModel();
 
-		void SetFilterData(int data);
+		void SetNot(bool not);
+		virtual bool HasFilterData() const = 0;
+		void Clear();
 
 	protected:
 		virtual bool filterAcceptsRow(int source_row, const QModelIndex& source_parent) const;
+		virtual bool lessThan(const QModelIndex &left, const QModelIndex &right) const Q_DECL_OVERRIDE;
+		virtual bool HasMatch(const QVariant& var) const = 0;
+		virtual void RemoveFilterData() = 0;
 
 	private:
-		int m_filterData;
+		bool m_not;
+	};
+
+	class SGXGUI_EXPORT StringRoleDataFilterProxyModel : public RoleDataFilterProxyModel
+	{
+		Q_OBJECT
+
+	public:
+		StringRoleDataFilterProxyModel(QObject* parent = nullptr);
+		~StringRoleDataFilterProxyModel();
+
+		void SetFilterData(const QString& data);
+		void SetFilterData(const QSet<QString>& data);
+
+		bool HasFilterData() const override;
+
+	protected:
+		bool HasMatch(const QVariant& var) const override;
+		void RemoveFilterData() override;
+
+	private:
+		QSet<QString> m_stringFilterData;
+	};
+
+	class SGXGUI_EXPORT IntRoleDataFilterProxyModel : public RoleDataFilterProxyModel
+	{
+		Q_OBJECT
+
+	public:
+		IntRoleDataFilterProxyModel(QObject* parent = nullptr);
+		~IntRoleDataFilterProxyModel();
+
+		void SetFilterData(int data);
+		void SetFilterData(const QSet<int>& data);
+
+		bool HasFilterData() const override;
+
+	protected:
+		bool HasMatch(const QVariant& var) const override;
+		void RemoveFilterData() override;
+
+	private:
+		QSet<int> m_intFilterData;
 	};
 
 } //namespace SynGlyphX

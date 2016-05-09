@@ -39,7 +39,7 @@ public:
 
 	virtual QSize sizeHint() const;
 
-	void SetDataEngineConn(DataEngine::DataEngineConnection *dec);
+	void SetDataEngineConnection(DataEngine::DataEngineConnection::SharedPtr dataEngineConnection);
 	void AddNewStatsViews();
 	void ClearTabs();
 
@@ -50,12 +50,12 @@ private slots:
 	void OnRowsRemovedFromModel(const QModelIndex& parent, int start, int end);
 
 private:
-	void CreateTablesFromDatasource(const boost::uuids::uuid& id, int place, QString file, SynGlyphX::FileDatasource::SourceType type);
+	void CreateTablesFromDatasource(const boost::uuids::uuid& id, const QString& formattedDatasourceName, const QString& tableName);
 	void CreateTableView(DataStatsModel* model, const QString& tabName, const QString& id);
 	void RemoveTableViews(const QString& name = QString());
 
 	DataTransformModel* m_model;
-	DataEngine::DataEngineConnection *dec;
+	DataEngine::DataEngineConnection::SharedPtr m_dataEngineConnection;
 };
 
 #endif // DATASOURCESTATSWIDGET_H

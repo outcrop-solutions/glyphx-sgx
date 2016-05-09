@@ -26,7 +26,6 @@ SET(SRC_ALL 	application.cpp
 				mainwindow.cpp
 				notemptyvalidator.cpp
 				radiobuttongroupwidget.cpp
-				rangewidget.cpp
 				replacefilenamedialog.cpp
 				richtexteditor.cpp
 				roledatafilterproxymodel.cpp
@@ -38,6 +37,8 @@ SET(SRC_ALL 	application.cpp
 				treeview.cpp
 				verticaltabordertableview.cpp
 				verticalscrollarea.cpp
+				passwordlineedit.cpp
+				prefixsuffixvalidator.cpp
 				xyzwidget.cpp)
 				
 SET(RESOURCES_SRC sgxgui.qrc)

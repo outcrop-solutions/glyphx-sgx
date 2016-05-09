@@ -11,14 +11,14 @@
 #include "sourcedatainfomodel.h"
 #include <QtWidgets/QCheckBox>
 #include "linkedwidgetsmanager.h"
-#include "sourcedataselectionmodel.h"
+#include "filteringmanager.h"
 
 class PseudoTimeFilterWidget : public QWidget
 {
 	Q_OBJECT
 
 public:
-	PseudoTimeFilterWidget(SynGlyphX::DataTransformMapping::ConstSharedPtr dataTransformMapping, SynGlyphX::SourceDataCache::SharedPtr sourceDataCache, SourceDataSelectionModel* selectionModel, QWidget *parent);
+	PseudoTimeFilterWidget(SourceDataInfoModel* columnsModel, FilteringManager* filteringManager, QWidget *parent);
 	~PseudoTimeFilterWidget();
 
 	void SetupLinkedWidgets(LinkedWidgetsManager& linkedWidgetsManager);
@@ -50,6 +50,7 @@ private:
 	void ChangeFilterState(FilterState newFilterState);
 	void UpdateTimeFilter();
 	void UpdateSelectedField(const QModelIndex& newSelectedField);
+	void ResetSliderAndLabel();
 
 	QSlider* m_slider;
 	QLineEdit* m_currentPositionLabel;
@@ -70,10 +71,9 @@ private:
 	QTimer m_playTimer;
 
 	FilterState m_filterState;
-	SynGlyphX::SourceDataCache::SharedPtr m_sourceDataCache;
-	SynGlyphX::SourceDataCache::DistinctValueIndexMap m_selectionForEachDistinctValue;
+	SourceDataCache::DistinctValueIndexMap m_selectionForEachDistinctValue;
 	QString m_sourceCacheTableName;
-	SourceDataSelectionModel* m_selectionModel;
+	FilteringManager* m_filteringManager;
 
 	QCheckBox* m_filterViewCheckbox;
 	QCheckBox* m_moveCameraOnUpdateCheckbox;
