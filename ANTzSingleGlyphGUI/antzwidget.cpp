@@ -112,13 +112,9 @@ namespace SynGlyphXANTz {
 		npInitGLPrimitive(m_antzData);
 		npInitTags(m_antzData);
 
-		QString logoImageFilename = QDir::toNativeSeparators(SynGlyphX::GlyphBuilderApplication::applicationDirPath() + QDir::separator() + "logo.png");
-		if (QFile::exists(logoImageFilename)) {
-
-			QImage image(logoImageFilename);
-			m_logoSize = image.size();
-			m_logoTextureID = bindTexture(image);
-		}
+		QImage image(SynGlyphX::GlyphBuilderApplication::GetLogoLocation(SynGlyphX::GlyphBuilderApplication::WhiteBorder));
+		m_logoSize = image.size();
+		m_logoTextureID = bindTexture(image);
 	}
 
 	void ANTzWidget::resizeGL(int w, int h) {

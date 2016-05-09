@@ -163,8 +163,10 @@ void npSetNodeTag (pNPnode node, void* dataRef)
 		if ( node->recordID == recordTag->recordID
 			&& node->tableID == recordTag->tableID )
 		{
-			strcpy (node->tag->title, recordTag->title);
-			strcpy (node->tag->desc, recordTag->desc);
+			//strcpy (node->tag->title, recordTag->title);
+			node->tag->title = recordTag->title;
+			//strcpy (node->tag->desc, recordTag->desc);
+			node->tag->desc = recordTag->desc;
 			node->tag->titleSize = recordTag->titleSize;
 			node->tag->descSize = recordTag->descSize;
 
@@ -224,13 +226,14 @@ void npTagNode (pNPnode node, void* dataRef)
 	//if tag is null then allocate memory and init a tag
 	if (node->tag == NULL)
 	{
-		node->tag = malloc (sizeof(NPtag));
+		node->tag = malloc(sizeof(NPtag));
 		npInitTextTag (node->tag, dataRef);
 	}
 
 	//if no recordID then set the tag title to the nodeID
-	if (node->recordID == 0)
-		sprintf (node->tag->title, "id: %d", node->id);
+	if (node->recordID == 0){
+		sprintf(node->tag->title, "id: %d", node->id);
+	}
 	else
 		npSetNodeTag (node, dataRef);
 
@@ -343,7 +346,7 @@ ANTZCORE_API void npSyncTags(void* dataRef)
 	//allocate a pair of destination buffers for the nodes and tags
 	nodes = npMalloc(0, sizeof(pNPnode) * kNPnodeMax, data);			//data->map.nodeCount
 	if (!nodes) return;
-	tags = npMalloc(0, sizeof(pNPnode) * kNPnodeMax, data);			//update to use tag count //zz debug
+	tags = npMalloc(0, sizeof(pNPtag) * kNPnodeMax, data);			//update to use tag count //zz debug
 	if (!tags) return;
 
 	//populate the sort lists, skip over null nodes
@@ -359,8 +362,9 @@ ANTZCORE_API void npSyncTags(void* dataRef)
 
 	//loop through all nodes and update with tag
 	tagsIndex = 0;	//reset the index, takes advantage of sorted lists, zzhp
-	for (i=0; i < j; i++)
+	for (i = 0; i < j; i++){
 		npTagNode(nodes[i], data);
+	}
 
 	//loop through all nodes and attach tagPtr based on recordID and tableID
 //	for (i=0; i < data->map.nodeRootCount; i++)

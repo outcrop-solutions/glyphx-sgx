@@ -50,8 +50,8 @@
 #define kNPmapFileBufferMax	16000000		//512MB = 536870912, was 128MB current file size limit  //zzhp
 #define kNPfileBlockSize	4194304			//65535 4MB 2^22 = 4194304 //65535 //
 
-#define	kNPnodeMax			4194304			// 2097152 8MB with 32bit ptr, 16MB if 64bit	//zzhp
-#define kNPnodeRootMax		4194304			// 1048576 4MB with 32bit ptr, 8MB if 64bit	//zzhp 262144
+#define	kNPnodeMax			2097152			// 2097152 8MB with 32bit ptr, 16MB if 64bit	//zzhp
+#define kNPnodeRootMax		1048576			// 1048576 4MB with 32bit ptr, 8MB if 64bit	//zzhp 262144
 #define kNPnodeChildMax		266				// 1KB RAM each node with 32bit OS	//zzhpa
 											// C99 max fixed array size is 16383
 											// 266 fills a sphere at 15 deg, possibly switch data structure to GTK.org zz
@@ -104,7 +104,7 @@
 #define kNPtagItemCount		5				// debug db //zzsql
 #define kNPChMapItemCount	7				// debug db //zzsql
 
-#define kNPmenuPerPageMax			20
+#define kNPmenuPerPageMax		20
 #define kNPconsoleLineMax		40			//default is 80x40 character layout
 #define kNPconsoleCharPerLine	80
 #define kNPconsoleHistoryMax	800			//max entries to store in RAM
@@ -112,8 +112,8 @@
 #define kNPmessageQueMax		500			//max messages stored in que
 #define kNPmessageLengthMax		127			//max message length
 
-#define kNPtitleSizeMax			63			// max length of the tag title
-#define kNPdescSizeMax			255		// max length of the tag description	//zzhpa
+#define kNPtitleSizeMax			255			// max length of the tag title
+#define kNPdescSizeMax			511			// max length of the tag description	//zzhpa
 #define	kNPtagDrawMax			16383		// max number tags allowed to draw
 #define	kNPrecordTagListMax		kNPnodeMax	// max number of record Tags
 #define kNPlinkQueMax			kNPnodeMax	// max in draw que, not total nodes
@@ -439,9 +439,12 @@ struct NPrecordTag
 	int			recordID;			//recordID of the node
 	int			tableID;			//tableID of the node, may not need these, debug zz
 
-	char		title[kNPtitleSizeMax + 1];	//one line with max width of 63 characters
-	char		desc[kNPdescSizeMax + 1];	//allows for newline in desc
+	//char		title[kNPtitleSizeMax + 1];	//one line with max width of 63 characters
+	//char		desc[kNPdescSizeMax + 1];	//allows for newline in desc
 	
+	char*		title;	//one line with max width of 63 characters
+	char*		desc;	//allows for newline in desc
+
 	int			titleSize;			//number of characters in title
 	int			descSize;			//number of characters in description
 
@@ -455,8 +458,11 @@ struct NPtag
 	int			tableID;			//tableID of the node, may not need these, debug zz
 	int			recordID;			//recordID of the node
 
-	char		title[kNPtitleSizeMax + 1];	//one line with max width of 63 characters
-	char		desc[kNPdescSizeMax + 1];	//allows for newline in desc
+	//char		title[kNPtitleSizeMax + 1];	//one line with max width of 63 characters
+	//char		desc[kNPdescSizeMax + 1];	//allows for newline in desc
+
+	char*		title;	//one line with max width of 63 characters
+	char*		desc;	//allows for newline in desc
 	
 	int			titleSize;		//number of characters in title
 	int			descSize;		//number of characters in description

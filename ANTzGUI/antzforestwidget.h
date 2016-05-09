@@ -24,7 +24,6 @@
 #include "glyphforestmodel.h"
 #include "antzdata.h"
 #include "antzboundingbox.h"
-
 #ifdef USE_ZSPACE
 #include <zSpace.h>
 #include "zspaceoptions.h"
@@ -38,113 +37,129 @@ namespace SynGlyphXANTz {
 		Q_OBJECT
 
 	public:
-		ANTzForestWidget(const QGLFormat& format, GlyphForestModel* model, SynGlyphX::ItemFocusSelectionModel* selectionModel, QWidget *parent = 0);
+		enum FilteredResultsDisplayMode {
+
+			None,
+			HideUnfiltered
+		};
+
+		ANTzForestWidget( GlyphForestModel* model, SynGlyphX::ItemFocusSelectionModel* selectionModel, QWidget *parent = 0 );
 		~ANTzForestWidget();
 
 		bool IsInStereoMode() const;
-		//bool IsStereoSupported() const;
+		bool IsStereoSupported() const;
 		bool IsZSpaceAvailable() const;
 
-		bool eventFilter(QObject *object, QEvent *event);
+		bool eventFilter( QObject *object, QEvent *event );
 
 #ifdef USE_ZSPACE
-		void SetZSpaceOptions(const SynGlyphX::ZSpaceOptions& options);
+		void SetZSpaceOptions( const SynGlyphX::ZSpaceOptions& options );
 		const SynGlyphX::ZSpaceOptions& GetZSpaceOptions() const;
 #endif
 
-		bool GetHideUnselectedGlyphTrees() const;
+		FilteredResultsDisplayMode GetFilteredResultsDisplayMode() const;
 
-		void SetBackgroundColor(const SynGlyphX::GlyphColor& color);
+		void SetBackgroundColor( const SynGlyphX::GlyphColor& color );
 
-		static const QGLFormat& GetNonStereoFormat();
-		static const QGLFormat& GetStereoFormat();
+		bool SetStereoMode( bool stereoOn );
 
 	signals:
 		//void NewStatusMessage(const QString& message, int timeout = 0) const;
 
-	public slots :
-		void ResetCamera();
-		//void SetStereo(bool enableStereo);
-		void SetHideUnselectedGlyphTrees(bool hideUnselectedGlyphTrees);
-		void ShowAnimatedRotations(bool show);
+		public slots :
+			void ResetCamera();
 
-		void SetShowTagsOfSelectedObjects(bool showTagsOfSelectedObjects);
+		void SetFilteredResultsDisplayMode( FilteredResultsDisplayMode mode );
+		void SetFilteredResults( const SynGlyphX::IndexSet& filteredResults );
+		void ClearFilteredResults();
 
-	protected:
-		virtual void initializeGL();
-		virtual void resizeGL(int w, int h);
-		virtual void paintGL();
-		virtual void mousePressEvent(QMouseEvent* event);
-		virtual void mouseReleaseEvent(QMouseEvent* event);
-		virtual void mouseMoveEvent(QMouseEvent* event);
-		virtual void keyPressEvent(QKeyEvent* event);
-		virtual void keyReleaseEvent(QKeyEvent* event);
-		virtual void moveEvent(QMoveEvent* event);
-		virtual void wheelEvent(QWheelEvent* event);
+		void ShowAnimatedRotations( bool show );
 
-	private slots:
-		void OnSelectionUpdated(const QItemSelection& selected, const QItemSelection& deselected);
-		void OnFocusChanged(const QModelIndexList& indexes);
+		void SetShowTagsOfSelectedObjects( bool showTagsOfSelectedObjects );
+		void ClearAllTags();
+
+		protected slots:
+		void OnSelectionUpdated( const QItemSelection& selected, const QItemSelection& deselected );
+		void OnFocusChanged( const QModelIndexList& indexes );
 		void OnModelReset();
 
 #ifdef USE_ZSPACE
-		void ZSpaceButtonPressHandler(ZSHandle targetHandle, const ZSTrackerEventData* eventData);
-		void ZSpaceButtonReleaseHandler(ZSHandle targetHandle, const ZSTrackerEventData* eventData);
-		void ZSpaceStylusMoveHandler(ZSHandle targetHandle, const ZSTrackerEventData* eventData);
-		void ZSpaceStylusTapHandler(ZSHandle targetHandle, const ZSTrackerEventData* eventData);
+		void ZSpaceButtonPressHandler( ZSHandle targetHandle, const ZSTrackerEventData* eventData );
+		void ZSpaceButtonReleaseHandler( ZSHandle targetHandle, const ZSTrackerEventData* eventData );
+		void ZSpaceStylusMoveHandler( ZSHandle targetHandle, const ZSTrackerEventData* eventData );
+		void ZSpaceStylusTapHandler( ZSHandle targetHandle, const ZSTrackerEventData* eventData );
 #endif
 
-	private:
+	protected:
 		enum Eye {
 			Left,
 			Right
 		};
 
-		void DrawSceneForEye(Eye eye, bool getStylusWorldPosition);
+		void initializeGL() override;
+		void resizeGL( int w, int h ) override;
+		void paintGL() override;
+		void mousePressEvent( QMouseEvent* event ) override;
+		void mouseReleaseEvent( QMouseEvent* event ) override;
+		void mouseMoveEvent( QMouseEvent* event ) override;
+		void keyPressEvent( QKeyEvent* event ) override;
+		void keyReleaseEvent( QKeyEvent* event ) override;
+		void moveEvent( QMoveEvent* event ) override;
+		void wheelEvent( QWheelEvent* event ) override;
+		void resizeEvent( QResizeEvent* event ) override;
+
+		void DrawSceneForEye( Eye eye, bool getStylusWorldPosition );
 		void SetCameraToDefaultPosition();
-		unsigned int BindTextureInFile(const QString& imageFilename);
-		void SetGridTexture(pNPnode grid);
-		void SetGridLinesColor(pNPnode grid, const QColor& color);
-		void CenterCameraOnNode(pNPnode node);
+		unsigned int BindTextureInFile( const QString& imageFilename );
+		void SetGridTexture( pNPnode grid );
+		void SetGridLinesColor( pNPnode grid, const QColor& color );
+		void CenterCameraOnNode( pNPnode node );
 		void InitIO();
 		void DrawHUD();
-		bool SelectAtPoint(int x, int y, bool multiSelect);
+		bool SelectAtPoint( int x, int y, bool multiSelect );
+		void SelectFromStylus( const SynGlyphXANTz::ANTzBoundingBox::Line& line );
+		void CheckStylusIntersectionWithNode( pNPnode node, const SynGlyphXANTz::ANTzBoundingBox::Line& line, std::map<float, int>& distanceIdMap );
 
 #ifdef USE_ZSPACE
-		void SelectFromStylus(const SynGlyphXANTz::ANTzBoundingBox::Line& line);
-		void CheckStylusIntersectionWithNode(pNPnode node, const SynGlyphXANTz::ANTzBoundingBox::Line& line, std::map<float, int>& distanceIdMap);
 		void ConnectZSpaceTrackers();
-		void CheckZSpaceError(ZSError error);
+		void CheckZSpaceError( ZSError error );
 		void SetZSpacePosition();
 		void ResizeZSpaceViewport();
 		bool IsInZSpaceStereo() const;
-		void SetZSpaceMatricesForDrawing(ZSEye eye, const ZSMatrix4& originialViewMatrix, NPcameraPtr camData);
+		void SetZSpaceMatricesForDrawing( ZSEye eye, const ZSMatrix4& originialViewMatrix, NPcameraPtr camData );
 		void ClearZSpaceContext();
-		void DrawZSpaceStylus(const ZSMatrix4& stylusMatrix, bool getStylusWorldPosition);
+		void DrawZSpaceStylus( const ZSMatrix4& stylusMatrix, bool getStylusWorldPosition );
 #endif
 
-		void UpdateGlyphTreesShowHideForSelection();
+		void ShowOnlyFilteredResultGlyphTrees();
 		void ShowAllGlyphTrees();
+		void UpdateGlyphTreesForFilteredResults();
 
 		void CreateBoundingBoxes();
-		void CreateBoundingBoxes(pNPnode node, const glm::mat4& parentTransform, bool isAncestorBoundingBoxBeingUpdated);
+		void CreateBoundingBoxes( pNPnode node, const glm::mat4& parentTransform, bool isAncestorBoundingBoxBeingUpdated );
 		void UpdateBoundingBoxes();
-		void UpdateBoundingBoxes(pNPnode node, const glm::mat4& parentTransform);
+		void UpdateBoundingBoxes( pNPnode node, const glm::mat4& parentTransform );
 		void DrawBoundingBoxes();
 
 		void StoreRotationRates();
-		void StoreRotationRates(pNPnode node);
-		bool IsNodeAnimated(pNPnode node);
+		void StoreRotationRates( pNPnode node );
+		bool IsNodeAnimated( pNPnode node );
 
 		void DrawLogo();
 
-		static QGLFormat s_format;
-		static QGLFormat s_stereoFormat;
+		void HideGlyph( pNPnode node, bool hide );
+
+		//QGLFormat m_glFormat;
+		//QGLFormat m_glStereoFormat;
+
+		bool m_isInStereo;
 
 		QFont m_oglTextFont;
 		bool m_isReseting;
 		bool m_drawHUD;
-		bool m_hideUnselectedGlyphTrees;
+
+		FilteredResultsDisplayMode m_filteredResultsDisplayMode;
+		SynGlyphX::IndexSet m_filteredResults;
 
 #ifdef USE_ZSPACE
 		SynGlyphX::ZSpaceOptions m_zSpaceOptions;
@@ -157,7 +172,7 @@ namespace SynGlyphXANTz {
 
 		SynGlyphX::ItemFocusSelectionModel* m_selectionModel;
 		GlyphForestModel* m_model;
-		QPoint m_lastMousePosition;
+		boost::optional<QPoint> m_lastMousePosition;
 		QRect m_regionSelectionRect;
 		QWidget* m_topLevelWindow;
 		//QPoint m_zSpaceStylusScreenPoint;
@@ -175,10 +190,9 @@ namespace SynGlyphXANTz {
 		ZSMatrix4 m_originialViewMatrix;
 		ZSVector3 m_zSpaceStylusLastPosition;
 		SynGlyphX::ZSpaceEventDispatcher m_zSpaceEventDispatcher;
-
-		SynGlyphXANTz::ANTzBoundingBox::Line m_stylusWorldLine;
 #endif
 
+		SynGlyphXANTz::ANTzBoundingBox::Line m_stylusWorldLine;
 		//SynGlyphXANTz::ANTzBoundingBox::Line m_stylusWorldTapLine;
 		std::map<int, SynGlyphXANTz::ANTzBoundingBox> m_boundingBoxes;
 		std::set<int> m_objectsThatNeedBoundingBoxUpdates;
@@ -187,9 +201,11 @@ namespace SynGlyphXANTz {
 		bool m_showAnimation;
 
 		unsigned int m_logoTextureID;
-		QSize m_logoSize;
+		QRect m_logoPosition;
 
-		bool m_showTagsOfSelectedObjects;
+		float m_initialCameraZAngle;
+
+		QSet<QModelIndex> m_tagIndexes;
 	};
 
 } //namespace SynGlyphXANTz
