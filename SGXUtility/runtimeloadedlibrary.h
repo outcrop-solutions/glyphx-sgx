@@ -15,62 +15,43 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef SYNGLYPHX_RANGE_H
-#define SYNGLYPHX_RANGE_H
+#ifndef SYNGLYPHX_RUNTIMELOADEDLIBRARY_H
+#define SYNGLYPHX_RUNTIMELOADEDLIBRARY_H
 
 #include "sgxutility.h"
-#include <boost/property_tree/ptree.hpp>
+#include <string>
+
+#ifdef WIN32
+#define NOMINMAX
+#include <Windows.h>
+#endif
 
 namespace SynGlyphX {
 
-	class SGXUTILITY_API Range
+	class SGXUTILITY_API RuntimeLoadedLibrary
 	{
 	public:
-		Range(double min, double max);
-		Range(const Range& range);
-		~Range();
+		RuntimeLoadedLibrary();
+		RuntimeLoadedLibrary(const std::string& filename);
+		RuntimeLoadedLibrary(const RuntimeLoadedLibrary&) = delete;
+		virtual ~RuntimeLoadedLibrary();
 
-		Range& operator=(const Range& range);
-		bool operator==(const Range& range) const;
-		bool operator!=(const Range& range) const;
-		bool operator<(const Range& range) const;
-		//bool operator<(double value) const;
+		RuntimeLoadedLibrary& operator=(const RuntimeLoadedLibrary&) = delete;
 
-		double GetMin() const;
-		double GetMax() const;
+		bool IsLibraryLoaded() const;
+		bool Load(const std::string& filename);
+		void Unload();
 
-		bool IsValueInRange(double value) const;
+		void* GetAddress(const std::string& proc) const;
 
-	private:
-		double m_min;
-		double m_max;
-	};
-
-	//This translator is so that Range can be automatically used by boost::property_tree
-	class SGXUTILITY_API RangeTranslator
-	{
-	public:
-		typedef std::wstring internal_type;
-		typedef Range external_type;
-
-		RangeTranslator();
-
-		boost::optional<Range> get_value(std::wstring const &v);
-		boost::optional<std::wstring> put_value(Range const& v);
-
+	protected:
+#ifdef WIN32
+		HMODULE m_library;
+#else
+		void* m_library;
+#endif
 	};
 
 } //namespace SynGlyphX
 
-namespace boost{
-
-	namespace property_tree{
-
-		template<>
-		struct translator_between<std::wstring, SynGlyphX::Range>
-		{
-			typedef SynGlyphX::RangeTranslator type;
-		};
-	}
-}
-#endif //SYNGLYPHX_RANGE_H
+#endif //SYNGLYPHX_RUNTIMELOADEDLIBRARY_H

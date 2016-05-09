@@ -33,9 +33,6 @@
     <ClInclude Include="filesystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="range.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="sgxutility.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -49,6 +46,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="csvtfilereaderwriter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="stringconvert.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="interval.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="runtimeloadedlibrary.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -68,9 +74,6 @@
     <ClCompile Include="filesystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="range.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="uuid.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -78,6 +81,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="csvtfilereaderwriter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="stringconvert.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="interval.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="runtimeloadedlibrary.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

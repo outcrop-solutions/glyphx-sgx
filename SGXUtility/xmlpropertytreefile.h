@@ -27,21 +27,26 @@ namespace SynGlyphX {
 	class SGXUTILITY_API XMLPropertyTreeFile
 	{
 	public:
-		XMLPropertyTreeFile();
+		XMLPropertyTreeFile(bool includeTimestamp = false);
 		virtual ~XMLPropertyTreeFile();
 
 		void ReadFromFile(const std::string& filename);
 		void WriteToFile(const std::string& filename) const;
 
 		static int GetReadFlags();
-		static const boost::property_tree::xml_writer_settings<std::wstring>& GetWriteSettings();
+		static const boost::property_tree::xml_writer_settings<wchar_t>& GetWriteSettings();
 
 	protected:
 		virtual void ImportFromPropertyTree(const boost::property_tree::wptree& filePropertyTree) = 0;
 		virtual void ExportToPropertyTree(boost::property_tree::wptree& filePropertyTree) const = 0;
+		virtual bool IsDifferentFromGivenPropertyTree(const boost::property_tree::wptree& originalPropertyTree) const;
 
 	private:
-		static boost::property_tree::xml_writer_settings<std::wstring> s_writeSettings;
+		bool m_includeTimestamp;
+		boost::property_tree::wptree m_originalPropertyTree;
+
+		static boost::property_tree::xml_writer_settings<wchar_t> s_writeSettings;
+		static const std::wstring s_timestampName;
 	};
 
 } //namespace SynGlyphX

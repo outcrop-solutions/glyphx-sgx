@@ -14,8 +14,8 @@ SET(SRC_ALL 	datamappingdefaults.cpp
 				datamappingglyphgraph.cpp
 				datamappingproperty.cpp
 				datamappingvirtualtopology.cpp
+				databaseserverdatasource.cpp
 				datasource.cpp
-				datasourcemaps.cpp
 				datasourcetable.cpp
 				datatransformmapping.cpp
 				filedatasource.cpp
@@ -28,7 +28,9 @@ SET(SRC_ALL 	datamappingdefaults.cpp
 				sceneproperties.cpp
 				stringconcatmappingfunction.cpp
 				stringinputcombinationfunction.cpp
+				legend.cpp
 				valuemappingfile.cpp
+				valuemappingrange.cpp
 				valuemappingfunction.cpp)
 
 ADD_LIBRARY(SGXDataMapping SHARED ${SRC_ALL})

@@ -1,16 +1,18 @@
 #include "csvfilewriter.h"
 #include <stdexcept>
+#include <codecvt>
+#include <locale>
 
 namespace SynGlyphX {
 
-	CSVFileWriter::CSVFileWriter(char separator) :
+	CSVFileWriter::CSVFileWriter(wchar_t separator) :
 		CSVFileHandler(separator),
 		m_numFields(0)
 	{
 		
 	}
 
-	CSVFileWriter::CSVFileWriter(const std::string& filename, char separator) :
+	CSVFileWriter::CSVFileWriter(const std::string& filename, wchar_t separator) :
 		CSVFileHandler(separator),
 		m_numFields(0)
 	{
@@ -23,6 +25,12 @@ namespace SynGlyphX {
 		Close();
 	}
 
+	void CSVFileWriter::SetupLocale() {
+
+		std::locale newLocale = std::locale(std::locale(), new std::codecvt_utf8_utf16<wchar_t>());
+		m_filestream.imbue(newLocale);
+	}
+
 	void CSVFileWriter::Open(const std::string& filename) {
 
 		m_filestream.open(filename, std::ofstream::out | std::ofstream::trunc);
@@ -30,6 +38,7 @@ namespace SynGlyphX {
 
 			throw std::runtime_error("CSV file failed to open");
 		}
+		SetupLocale();
 	}
 
 	void CSVFileWriter::Close() {

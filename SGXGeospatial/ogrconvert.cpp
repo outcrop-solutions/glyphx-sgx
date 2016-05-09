@@ -69,7 +69,6 @@ namespace SynGlyphX {
 	ogr2ogrCommand += L" 2>&1";
 
         //Windows specific but since we will use GDAL as a library soon enough don't worry about it
-        
 #ifdef WIN32
 	if (_wsystem(ogr2ogrCommand.c_str()) == -1) {
             throw std::runtime_error(_strerror("Failed to create intermediate CSV: "));
@@ -78,7 +77,7 @@ namespace SynGlyphX {
 	if (system(s.c_str()) == -1) {
             throw std::runtime_error("Failed to create intermediate CSV: ");
 #endif
-        }
+	}
 
         MergeCSVFiles(intermediateDir, outputFilename);
 

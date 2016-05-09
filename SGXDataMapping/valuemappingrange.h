@@ -15,35 +15,56 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef INPUTFIELDDATA_H
-#define INPUTFIELDDATA_H
+#ifndef SYNGLYPHX_VALUEMAPPINGRANGE_H
+#define SYNGLYPHX_VALUEMAPPINGRANGE_H
 
-#include <QtCore/QVariant>
-#include <boost/shared_ptr.hpp>
+#include "sgxdatamapping.h"
+#include "interval.h"
+#include <boost/property_tree/ptree.hpp>
 
 namespace SynGlyphX {
 
-	class InputFieldData
+	class SGXDATAMAPPING_API ValueMappingRange : public ProperInterval
 	{
 	public:
-		typedef boost::shared_ptr<InputFieldData> SharedPtr;
-		typedef boost::shared_ptr<const InputFieldData> ConstSharedPtr;
+		ValueMappingRange(double min, double max);
+		ValueMappingRange(const ValueMappingRange& interval);
+		~ValueMappingRange();
 
-		InputFieldData(const QVariantList& data, double min = 0.0, double max = 0.0);
-		~InputFieldData();
+		ValueMappingRange& operator=(const ValueMappingRange& interval);
+		bool operator==(const ValueMappingRange& interval) const;
+		bool operator!=(const ValueMappingRange& interval) const;
+		bool operator<(const ValueMappingRange& interval) const;
 
-		const QVariantList& GetData() const;
-		double GetMin() const;
-		double GetMax() const;
-		double GetMaxMinDifference() const;
+	protected:
+		
+	};
 
-	private:
-		double m_min;
-		double m_max;
-		QVariantList m_data;
-		double m_maxMinDifference;
+	//This translator is so that ValueMappingRange can be automatically used by boost::property_tree
+	class SGXDATAMAPPING_API ValueMappingRangeTranslator
+	{
+	public:
+		typedef std::wstring internal_type;
+		typedef ValueMappingRange external_type;
+
+		ValueMappingRangeTranslator();
+
+		boost::optional<ValueMappingRange> get_value(std::wstring const &v);
+		boost::optional<std::wstring> put_value(ValueMappingRange const& v);
+
 	};
 
 } //namespace SynGlyphX
 
-#endif // INPUTFIELDDATA_H
+namespace boost{
+
+	namespace property_tree{
+
+		template<>
+		struct translator_between<std::wstring, SynGlyphX::ValueMappingRange>
+		{
+			typedef SynGlyphX::ValueMappingRangeTranslator type;
+		};
+	}
+}
+#endif //SYNGLYPHX_VALUEMAPPINGRANGE_H

@@ -15,47 +15,40 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef FILEDATASOURCE_H
-#define FILEDATASOURCE_H
+#ifndef SYNGLYPHX_RDBMSDATASOURCE_H
+#define SYNGLYPHX_RDBMSDATASOURCE_H
 
 #include "sgxdatamapping.h"
 #include "datasource.h"
 
 namespace SynGlyphX {
 
-	class SGXDATAMAPPING_API FileDatasource : public Datasource
+	class SGXDATAMAPPING_API DatabaseServerDatasource : public Datasource
 	{
 	public:
-		enum FileType {
-			SQLITE3,
-			CSV,
-			KML,
-			XML,
-			JSON
+		enum DBType {
+			MySQL,
+			Vertica
 		};
 
-		typedef boost::bimap<FileType, std::wstring> FileTypeBimap;
+		typedef boost::bimap<DBType, std::wstring> DBTypeBimap;
 		typedef boost::property_tree::wptree PropertyTree;
 
-		typedef std::shared_ptr<FileDatasource> SharedPtr;
-		typedef std::shared_ptr<const FileDatasource> ConstSharedPtr;
+		typedef std::shared_ptr<DatabaseServerDatasource> SharedPtr;
+		typedef std::shared_ptr<const DatabaseServerDatasource> ConstSharedPtr;
 
-		FileDatasource(FileType type, const std::wstring& host, const std::wstring& username = L"", const std::wstring& password = L"");
-		FileDatasource(const PropertyTree& propertyTree);
-		FileDatasource(const FileDatasource& datasource);
-		virtual ~FileDatasource();
+		DatabaseServerDatasource(DBType type, const std::wstring& connection, const std::wstring& schema, const std::wstring& username = L"", const std::wstring& password = L"");
+		DatabaseServerDatasource(const PropertyTree& propertyTree);
+		DatabaseServerDatasource(const DatabaseServerDatasource& datasource);
+		virtual ~DatabaseServerDatasource();
 
-		FileDatasource& operator=(const FileDatasource& datasource);
-		bool operator==(const FileDatasource& datasource) const;
-		bool operator!=(const FileDatasource& datasource) const;
+		DatabaseServerDatasource& operator=(const DatabaseServerDatasource& datasource);
+		bool operator==(const DatabaseServerDatasource& datasource) const;
+		bool operator!=(const DatabaseServerDatasource& datasource) const;
 
 		virtual SourceType GetSourceType() const;
-		FileType GetFileType() const;
-
-		const std::wstring& GetFilename() const;
-		void ChangeFilename(const std::wstring& filename);
-
-		bool RequiresConversionToDB() const;
+		DBType GetDBType() const;
+		const std::wstring& GetSchema() const;
 
 		virtual bool IsOriginalDatasourceADatabase() const;
 		virtual bool CanDatasourceHaveMultipleTables() const;
@@ -64,21 +57,19 @@ namespace SynGlyphX {
 		virtual std::wstring GetFormattedName() const;
 		virtual std::wstring GetDBName() const;
 
-		static bool CanFileTypeHaveMultipleTables(FileType fileType);
+		std::wstring GetFullJDBCConnectionString() const;
 
 		virtual PropertyTree& ExportToPropertyTree(boost::property_tree::wptree& parentPropertyTree);
 
-		static FileType GetFileTypeForFile(const std::wstring& filename);
+		static const DBTypeBimap s_dbTypeStrings;
+		static const DBTypeBimap s_dbTypePrefixes;
+		static const std::wstring s_prefixSeparator;
 
-		static const FileTypeBimap s_fileTypeStrings;
-		static const FileTypeBimap s_fileTypePrefixes;
-
-	private:
-		static bool IsSQLite3DB(const std::wstring& filename);
-
-		FileType m_fileType;
+	protected:
+		DBType m_dbType;
+		std::wstring m_schema;
 	};
 
 } //namespace SynGlyphX
 
-#endif //FILEDATASOURCE_H
+#endif //SYNGLYPHX_RDBMSDATASOURCE_H

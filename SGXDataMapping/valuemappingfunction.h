@@ -22,7 +22,7 @@
 #include "datamappingfunction.h"
 #include <map>
 #include "glyphcolor.h"
-#include "range.h"
+#include "valuemappingrange.h"
 #include "glyphgeometryinfo.h"
 #include "virtualtopologyinfo.h"
 
@@ -65,7 +65,7 @@ namespace SynGlyphX {
 		static Output GetSupportedOutputForThisType();
 
 	private:
-		bool DoesInputMatch(const Range& range, const double& input) const;
+		bool DoesInputMatch(const ValueMappingRange& range, const double& input) const;
 		bool DoesInputMatch(const std::wstring& key, const std::wstring& input) const;
 		bool DoesInputMatch(const double& key, const double& input) const;
 
@@ -84,11 +84,11 @@ namespace SynGlyphX {
 	typedef ValueMappingData<VirtualTopologyInfo::Type, double> Numeric2VirtualTopologyMappingData;
 	typedef ValueMappingData<VirtualTopologyInfo::Type, std::wstring> Text2VirtualTopologyMappingData;
 
-	typedef ValueMappingData<double, double, Range> Range2NumericMappingData;
-	typedef ValueMappingData<GlyphColor, double, Range> Range2ColorMappingData;
+	typedef ValueMappingData<double, double, ValueMappingRange> Range2NumericMappingData;
+	typedef ValueMappingData<GlyphColor, double, ValueMappingRange> Range2ColorMappingData;
 
-	typedef ValueMappingData<GlyphGeometryInfo::Shape, double, Range> Range2ShapeMappingData;
-	typedef ValueMappingData<VirtualTopologyInfo::Type, double, Range> Range2VirtualTopologyMappingData;
+	typedef ValueMappingData<GlyphGeometryInfo::Shape, double, ValueMappingRange> Range2ShapeMappingData;
+	typedef ValueMappingData<VirtualTopologyInfo::Type, double, ValueMappingRange> Range2VirtualTopologyMappingData;
 
 } // namespace SynGlyphX
 

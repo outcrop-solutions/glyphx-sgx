@@ -37,7 +37,8 @@ namespace SynGlyphX {
 			Integer,
 			Real,
 			Text,
-			Date
+			DateTime,
+			Other
 		};
 
 		typedef boost::shared_ptr<InputField> SharedPtr;

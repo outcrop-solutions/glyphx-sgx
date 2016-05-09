@@ -11,7 +11,8 @@ namespace SynGlyphX {
 		(InputField::Type::Integer, L"Integer")
 		(InputField::Type::Real, L"Real")
 		(InputField::Type::Text, L"Text")
-		(InputField::Type::Date, L"Date");
+		(InputField::Type::DateTime, L"DateTime")
+		(InputField::Type::Other, L"Other");
 
 	InputField::InputField() :
 		InputTable(),

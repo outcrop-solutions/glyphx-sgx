@@ -15,20 +15,30 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef SGXDATATRANSFORM_GLOBAL_H
-#define SGXDATATRANSFORM_GLOBAL_H
+#ifndef SYNGLYPHX_STRINGCONVERT_H
+#define SYNGLYPHX_STRINGCONVERT_H
 
-#include <QtCore/qglobal.h>
+#include "sgxutility.h"
+#include <string>
+#include <locale>
+#include <codecvt>
 
-#ifdef WIN32
-#ifdef SGXDataTransform_EXPORTS
-# define SGXDATATRANSFORM_EXPORT Q_DECL_EXPORT
-#else
-# define SGXDATATRANSFORM_EXPORT Q_DECL_IMPORT
-#endif
+namespace SynGlyphX {
 
-#else
-# define SGXDATATRANSFORM_EXPORT
-#endif
+	class SGXUTILITY_API StringConvert
+	{
+	public:
+		StringConvert();
+		~StringConvert();
 
-#endif // SGXDATATRANSFORM_GLOBAL_H
+		static std::string ToStdString(const std::wstring& str);
+		static std::wstring ToStdWString(const std::string& str);
+
+	private:
+		static std::wstring_convert<std::codecvt_utf8<wchar_t>> s_toStdString;
+		static std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> s_toStdWString;
+	};
+
+} //namespace SynGlyphX
+
+#endif //SYNGLYPHX_STRINGCONVERT_H

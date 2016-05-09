@@ -7,8 +7,10 @@ SET(SRC_ALL 	csvfilehandler.cpp
 				csvfilewriter.cpp
 				csvtfilereaderwriter.cpp
 				filesystem.cpp
-				range.cpp
 				uuid.cpp
+				interval.cpp
+				stringconvert.cpp
+				runtimeloadedlibrary.cpp
 				xmlpropertytreefile.cpp)
 
 ADD_LIBRARY(SGXUtility SHARED ${SRC_ALL})

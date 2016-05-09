@@ -54,7 +54,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;SGXFOUNDATION_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;SGXFoundation_EXPORTS;_DEBUG;_WINDOWS;_USRDLL;SGXFOUNDATION_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <PrecompiledHeaderFile />
       <AdditionalIncludeDirectories>..\..\Core\SGXUtility\;..\..\3rdParty\include\boost_1_55_0;..\..\3rdParty\include\stlplus_3_11</AdditionalIncludeDirectories>
@@ -76,7 +76,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;SGXFOUNDATION_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;SGXFoundation_EXPORTS;NDEBUG;_WINDOWS;_USRDLL;SGXFOUNDATION_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <PrecompiledHeaderFile />
       <AdditionalIncludeDirectories>..\..\Core\SGXUtility\;..\..\3rdParty\include\boost_1_55_0;..\..\3rdParty\include\stlplus_3_11</AdditionalIncludeDirectories>

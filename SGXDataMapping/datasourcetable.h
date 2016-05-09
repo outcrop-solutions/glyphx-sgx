@@ -29,10 +29,7 @@ namespace SynGlyphX {
 	class SGXDATAMAPPING_API DatasourceTable
 	{
 	public:
-		
-		
-
-		DatasourceTable(const std::wstring& name);
+		DatasourceTable(const std::wstring& name, const std::wstring& query = L"");
 		DatasourceTable(const boost::property_tree::wptree& propertyTree);
 		DatasourceTable(const DatasourceTable& table);
 		~DatasourceTable();
@@ -42,12 +39,13 @@ namespace SynGlyphX {
 		bool operator!=(const DatasourceTable& table) const;
 
 		const std::wstring& GetName() const;
-		//void SetName(const std::wstring& name);
+		const std::wstring& GetQuery() const;
 
 		boost::property_tree::wptree& ExportToPropertyTree(boost::property_tree::wptree& parentPropertyTree) const;
 
 	private:
 		std::wstring m_name;
+		std::wstring m_query;
 	};
 
 } //namespace SynGlyphX

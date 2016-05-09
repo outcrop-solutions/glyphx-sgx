@@ -22,21 +22,26 @@
 #include "xmlpropertytreefile.h"
 #include <string>
 #include <memory>
-#include "datasourcemaps.h"
 #include <unordered_map>
 #include <boost/property_tree/ptree.hpp>
-#include "UUID.h"
+#include "uuid.h"
 #include "datamappingglyphgraph.h"
 #include "baseimage.h"
 #include "datamappingdefaults.h"
 #include "sceneproperties.h"
+#include "datasource.h"
+#include "filedatasource.h"
+#include "databaseserverdatasource.h"
+#include "legend.h"
+#include "Link.h"
 
 namespace SynGlyphX {
 
-	class SGXDATAMAPPING_API DataTransformMapping : public XMLPropertyTreeFile, boost::noncopyable
+	class SGXDATAMAPPING_API DataTransformMapping : public XMLPropertyTreeFile
     {
     public:
 		typedef std::unordered_map<boost::uuids::uuid, DataMappingGlyphGraph::SharedPtr, SynGlyphX::UUIDHash> DataMappingGlyphGraphMap;
+		typedef std::unordered_map<boost::uuids::uuid, Datasource::SharedPtr, SynGlyphX::UUIDHash> DatasourceMap;
 
 		typedef std::wstring FieldGroupName;
 		typedef std::unordered_map<FieldGroupName, FieldGroup> FieldGroupMap;
@@ -51,16 +56,14 @@ namespace SynGlyphX {
 		bool operator==(const DataTransformMapping& mapping) const;
 		bool operator!=(const DataTransformMapping& mapping) const;
 
-		const DatasourceMaps& GetDatasources() const;
-		DatasourceMaps GetDatasourcesInUse() const;
+		const DatasourceMap& GetDatasources() const;
+		DatasourceMap GetDatasourcesInUse() const;
+		UUIDUnorderedSet GetDatasourcesBySourceType(Datasource::SourceType type) const;
 
+		bool HasDatasourceWithId(const boost::uuids::uuid& id) const;
 		void RemoveDatasource(const boost::uuids::uuid& id);
-		boost::uuids::uuid AddFileDatasource(FileDatasource::SourceType type, 
-			const std::wstring& name,
-            const std::wstring& host = L"localhost",
-            unsigned int port = 0,
-            const std::wstring& username = L"",
-            const std::wstring& password = L"");
+		boost::uuids::uuid AddFileDatasource(const FileDatasource& datasource);
+		boost::uuids::uuid AddDatabaseServer(const DatabaseServerDatasource& datasource);
 
 		void EnableTables(const boost::uuids::uuid& id, const Datasource::TableNames& tables, bool enable = true);
 
@@ -79,7 +82,8 @@ namespace SynGlyphX {
 		void SetInputField(const boost::uuids::uuid& treeID, DataMappingGlyphGraph::ConstGlyphIterator node, DataMappingGlyph::MappableField field, const InputField& inputfield);
 		void ClearInputBinding(const boost::uuids::uuid& treeID, DataMappingGlyphGraph::ConstGlyphIterator& node, DataMappingGlyph::MappableField field);
 		void ClearAllInputBindings(const boost::uuids::uuid& treeID, DataMappingGlyphGraph::ConstGlyphIterator& node);
-
+		void ClearInputFieldBindings(const boost::uuids::uuid& treeID, const InputField& inputfield);
+		
 		bool IsTransformable() const;
 		bool DoesAtLeastOneGlyphGraphHaveBindingsOnPosition() const;
 
@@ -108,8 +112,18 @@ namespace SynGlyphX {
 
 		std::vector<boost::uuids::uuid> GetFileDatasourcesWithInvalidFiles(bool onlyUseDatasourcesInUse) const;
 		std::vector<unsigned int> GetFileBaseObjectsWithInvalidFiles() const;
+		std::vector<unsigned int> GetLegendsWithInvalidFiles() const;
 
 		ConstSharedPtr CreateSubsetMappingWithSingleTable(const InputTable& inputTable, const std::wstring& csvFilename) const;
+
+		void AddLegend(const Legend& legend);
+		void RemoveLegend(unsigned int index);
+		void SetLegend(unsigned int index, const Legend& legend);
+		const std::vector<Legend>& GetLegends() const;
+		void SetLegends(const std::vector<Legend>& legends);
+
+		void AddLink(const Link& link);
+		void RemoveLink(unsigned int index);
 
     protected:
 		void CopyInputBindingsForSubsetMapping(DataMappingGlyphGraph::SharedPtr newGlyphGraph, 
@@ -118,18 +132,20 @@ namespace SynGlyphX {
 											   DataMappingGlyphGraph::ConstGlyphIterator oldNode,
 											   const boost::uuids::uuid& datasourceID) const;
 		void Clear(bool addADefaultBaseObjectAfterClear);
-		virtual void ImportFromPropertyTree(const boost::property_tree::wptree& filePropertyTree);
-		virtual void ExportToPropertyTree(boost::property_tree::wptree& filePropertyTree) const;
+
+		void ImportFromPropertyTree(const boost::property_tree::wptree& filePropertyTree) override;
+		void ExportToPropertyTree(boost::property_tree::wptree& filePropertyTree) const override;
+		bool IsDifferentFromGivenPropertyTree(const boost::property_tree::wptree& originalPropertyTree) const override;
 
 		SceneProperties m_sceneProperties;
 		DataMappingDefaults m_defaults;
-		DatasourceMaps m_datasources;
+		DatasourceMap m_datasources;
 		DataMappingGlyphGraphMap m_glyphTrees;
 		std::vector<BaseImage> m_baseObjects;
 		FieldGroupMap m_fieldGroups;
-
+		std::vector<Legend> m_legends;
+		std::vector<Link> m_links;
 		boost::uuids::uuid m_id;
-
     };
 
 } //namespace SynGlyphX

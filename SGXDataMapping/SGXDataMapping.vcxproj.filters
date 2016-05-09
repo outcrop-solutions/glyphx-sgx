@@ -54,9 +54,6 @@
     <ClInclude Include="datasource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="datasourcemaps.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="datatransformmapping.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -99,6 +96,18 @@
     <ClInclude Include="datasourcetable.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="databaseserverdatasource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="valuemappingrange.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="legend.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Link.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -129,9 +138,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="datasource.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="datasourcemaps.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="datatransformmapping.cpp">
@@ -174,6 +180,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="datasourcetable.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="databaseserverdatasource.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="valuemappingrange.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="legend.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

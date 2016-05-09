@@ -1,22 +1,24 @@
 #include "datasource.h"
+#include <boost/assign/list_of.hpp>
+#include <boost/bimap/list_of.hpp>
 
 namespace SynGlyphX {
 
+	const Datasource::SourceTypeBimap Datasource::s_sourceTypeStrings = boost::assign::list_of < Datasource::SourceTypeBimap::relation >
+		(Datasource::SourceType::File, L"File")
+		(Datasource::SourceType::DatabaseServer, L"DatabaseServer");
+
 	const std::wstring Datasource::SingleTableName = L"OnlyTable";
 
-	Datasource::Datasource(const std::wstring& dbName, const std::wstring& host, unsigned int port, const std::wstring& username, const std::wstring& password) :
-        m_dbName(dbName),
+	Datasource::Datasource(const std::wstring& host, const std::wstring& username, const std::wstring& password) :
         m_host(host),
-        m_port(port),
         m_username(username),
         m_password(password)
 	{
 	}
 
 	Datasource::Datasource(const PropertyTree& propertyTree) :
-		m_dbName(propertyTree.get<std::wstring>(L"Name")),
 		m_host(propertyTree.get<std::wstring>(L"Host")),
-		m_port(propertyTree.get<unsigned int>(L"Port", 0)),
 		m_username(propertyTree.get<std::wstring>(L"Username", L"")),
 		m_password(propertyTree.get<std::wstring>(L"Password", L"")) {
 
@@ -35,9 +37,7 @@ namespace SynGlyphX {
 	}
 
     Datasource::Datasource(const Datasource& datasource) :
-        m_dbName(datasource.m_dbName),
         m_host(datasource.m_host),
-        m_port(datasource.m_port),
         m_username(datasource.m_username),
         m_password(datasource.m_password),
         m_tables(datasource.m_tables) {
@@ -50,9 +50,7 @@ namespace SynGlyphX {
 
     Datasource& Datasource::operator=(const Datasource& datasource) {
 
-        m_dbName = datasource.m_dbName;
         m_host = datasource.m_host;
-        m_port = datasource.m_port;
         m_username = datasource.m_username;
         m_password = datasource.m_password;
 
@@ -63,17 +61,12 @@ namespace SynGlyphX {
 
 	bool Datasource::operator==(const Datasource& datasource) const {
 
-		if (m_dbName != datasource.m_dbName) {
+		if (GetSourceType() != datasource.GetSourceType()) {
 
 			return false;
 		}
 
 		if (m_host != datasource.m_host) {
-
-			return false;
-		}
-
-		if (m_port != datasource.m_port) {
 
 			return false;
 		}
@@ -101,19 +94,9 @@ namespace SynGlyphX {
 		return !operator==(datasource);
 	}
 
-    const std::wstring& Datasource::GetDBName() const {
-
-        return m_dbName;
-    }
-
     const std::wstring& Datasource::GetHost() const {
 
         return m_host;
-    }
-
-    unsigned int Datasource::GetPort() const {
-
-        return m_port;
     }
 
     const std::wstring& Datasource::GetUsername() const {
@@ -173,16 +156,24 @@ namespace SynGlyphX {
 		return tableNames;
 	}
 
-	Datasource::PropertyTree& Datasource::ExportToPropertyTree(boost::property_tree::wptree& parentPropertyTree, const std::wstring& parentName) {
+	bool Datasource::DoAnyTablesHaveQueries() const {
 
-		PropertyTree& propertyTree = parentPropertyTree.add(parentName, L"");
+		for (auto& table : m_tables) {
 
-		propertyTree.put(L"Name", m_dbName);
-		propertyTree.put(L"Host", m_host);
+			if (!table.second.GetQuery().empty()) {
 
-		if (m_port != 0) {
-			propertyTree.put(L"Port", m_port);
+				return true;
+			}
 		}
+
+		return false;
+	}
+
+	Datasource::PropertyTree& Datasource::ExportToPropertyTree(boost::property_tree::wptree& parentPropertyTree) {
+
+		PropertyTree& propertyTree = parentPropertyTree.add(L"Datasource", L"");
+		propertyTree.put(L"<xmlattr>.source", s_sourceTypeStrings.left.at(GetSourceType()));
+		propertyTree.put(L"Host", m_host);
 
 		if (!m_username.empty()) {
 			propertyTree.put(L"Username", m_username);

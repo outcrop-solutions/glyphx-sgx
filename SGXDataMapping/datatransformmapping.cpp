@@ -8,7 +8,7 @@
 namespace SynGlyphX {
 
 	DataTransformMapping::DataTransformMapping() :
-		XMLPropertyTreeFile(),
+		XMLPropertyTreeFile(true),
 		m_id(UUIDGenerator::GetNewRandomUUID())
     {
 		//There will always be at least one base object
@@ -23,7 +23,8 @@ namespace SynGlyphX {
 		m_baseObjects(mapping.m_baseObjects),
 		m_defaults(mapping.m_defaults),
 		m_sceneProperties(mapping.m_sceneProperties),
-		m_fieldGroups(mapping.m_fieldGroups) {
+		m_fieldGroups(mapping.m_fieldGroups),
+		m_legends(mapping.m_legends) {
 
 	}
 
@@ -38,9 +39,21 @@ namespace SynGlyphX {
 			return false;
 		}
 
-		if (m_datasources != mapping.m_datasources) {
+		if (m_datasources.size() != mapping.m_datasources.size()) {
 
 			return false;
+		}
+
+		DatasourceMap::const_iterator thisDatasource = m_datasources.begin();
+		DatasourceMap::const_iterator otherDatasource = mapping.m_datasources.begin();
+		while (thisDatasource != m_datasources.end()) {
+
+			if ((thisDatasource->first != otherDatasource->first) || (thisDatasource->second->operator!=(*otherDatasource->second))) {
+
+				return false;
+			}
+			std::advance(thisDatasource, 1);
+			std::advance(otherDatasource, 1);
 		}
 
 		if (m_glyphTrees.size() != mapping.m_glyphTrees.size()) {
@@ -80,6 +93,11 @@ namespace SynGlyphX {
 			return false;
 		}
 
+		if (m_legends != mapping.m_legends) {
+
+			return false;
+		}
+
 		return true;
 	}
 
@@ -112,7 +130,33 @@ namespace SynGlyphX {
 			m_baseObjects.push_back(BaseImage(dataTransformPropertyTree.get_child(L"BaseImage")));
 		}
 
-		m_datasources = DatasourceMaps(dataTransformPropertyTree.get_child(L"Datasources"));
+		boost::optional<const boost::property_tree::wptree&> datasourcesPropertyTree = dataTransformPropertyTree.get_child_optional(L"Datasources");
+		if (datasourcesPropertyTree.is_initialized()) {
+
+			for (const boost::property_tree::wptree::value_type& datasourcePropertyTree : datasourcesPropertyTree.get()) {
+
+				std::wstring fileSourceString = Datasource::s_sourceTypeStrings.left.at(Datasource::SourceType::File);
+				Datasource::SharedPtr newDatasource = nullptr;
+				if ((datasourcePropertyTree.first == fileSourceString) || (datasourcePropertyTree.first == L"Datasource")) {
+
+					Datasource::SourceType source = Datasource::s_sourceTypeStrings.right.at(datasourcePropertyTree.second.get_optional<std::wstring>(L"<xmlattr>.source").get_value_or(fileSourceString));
+
+					if (source == Datasource::SourceType::File) {
+
+						newDatasource = std::make_shared<FileDatasource>(datasourcePropertyTree.second);
+					}
+					else if (source == Datasource::SourceType::DatabaseServer) {
+
+						newDatasource = std::make_shared<DatabaseServerDatasource>(datasourcePropertyTree.second);
+					}
+				}
+
+				if (newDatasource != nullptr) {
+
+					m_datasources.insert(std::pair<boost::uuids::uuid, Datasource::SharedPtr>(datasourcePropertyTree.second.get<boost::uuids::uuid>(L"<xmlattr>.id"), newDatasource));
+				}
+			}
+		}
 
 		for (const boost::property_tree::wptree::value_type& glyphPropertyTree : dataTransformPropertyTree.get_child(L"Glyphs")) {
 
@@ -167,6 +211,18 @@ namespace SynGlyphX {
 				}
 			}
 		}
+
+		boost::optional<const boost::property_tree::wptree&> legendsTree = dataTransformPropertyTree.get_child_optional(L"Legends");
+		if (legendsTree.is_initialized()) {
+
+			for (const boost::property_tree::wptree::value_type& legendPropertyTree : legendsTree.get()) {
+
+				if (legendPropertyTree.first == Legend::s_propertyTreeName) {
+
+					m_legends.emplace_back(legendPropertyTree.second);
+				}
+			}
+		}
     }
 
 	void DataTransformMapping::ExportToPropertyTree(boost::property_tree::wptree& filePropertyTree) const {
@@ -180,7 +236,12 @@ namespace SynGlyphX {
 			baseObject.ExportToPropertyTree(baseObjectsPropertyTree);
 		}
 
-		m_datasources.ExportToPropertyTree(dataTransformPropertyTreeRoot);
+		boost::property_tree::wptree& datasourcesPropertyTree = dataTransformPropertyTreeRoot.add(L"Datasources", L"");
+		for (auto datasource : m_datasources) {
+
+			Datasource::PropertyTree& datasourcePropertyTree = datasource.second->ExportToPropertyTree(datasourcesPropertyTree);
+			datasourcePropertyTree.put(L"<xmlattr>.id", datasource.first);
+		}
 
 		boost::property_tree::wptree& glyphTreesPropertyTree = dataTransformPropertyTreeRoot.add(L"Glyphs", L"");
 		for (auto glyphTree : m_glyphTrees) {
@@ -202,16 +263,33 @@ namespace SynGlyphX {
 				field.ExportToPropertyTree(fieldGroupPropertyTree);
 			}
 		}
+
+		if (!m_legends.empty()) {
+
+			boost::property_tree::wptree& legendsPropertyTree = dataTransformPropertyTreeRoot.add(L"Legends", L"");
+			for (const auto& legend : m_legends) {
+
+				legend.ExportToPropertyTree(legendsPropertyTree);
+			}
+		}
     }
 
-	const DatasourceMaps& DataTransformMapping::GetDatasources() const {
+	bool DataTransformMapping::IsDifferentFromGivenPropertyTree(const boost::property_tree::wptree& originalPropertyTree) const {
+
+		DataTransformMapping origininalPropertyTreeMapping;
+		origininalPropertyTreeMapping.ImportFromPropertyTree(originalPropertyTree);
+
+		return operator!=(origininalPropertyTreeMapping);
+	}
+
+	const DataTransformMapping::DatasourceMap& DataTransformMapping::GetDatasources() const {
 
 		return m_datasources;
 	}
 
-	DatasourceMaps DataTransformMapping::GetDatasourcesInUse() const {
+	DataTransformMapping::DatasourceMap DataTransformMapping::GetDatasourcesInUse() const {
 
-		DatasourceMaps datasourceMaps;
+		DatasourceMap datasourceMap;
 
 		std::unordered_map<boost::uuids::uuid, Datasource::TableNames, SynGlyphX::UUIDHash> datasourcesAndTablesInUse;
 		for (auto glyphTree : m_glyphTrees) {
@@ -222,13 +300,36 @@ namespace SynGlyphX {
 
 		for (auto datasourceTables : datasourcesAndTablesInUse) {
 
-			FileDatasource datasource = m_datasources.GetFileDatasources().at(datasourceTables.first);
-			datasource.ClearTables();
-			datasourceMaps.AddFileDatasource(datasourceTables.first, datasource);
-			datasourceMaps.EnableTables(datasourceTables.first, datasourceTables.second);
+			Datasource::SharedPtr copiedDatasource = nullptr;
+			Datasource::SharedPtr origDatasource = m_datasources.at(datasourceTables.first);
+			if (origDatasource->GetSourceType() == Datasource::SourceType::File) {
+
+				copiedDatasource = std::make_shared<FileDatasource>(*std::dynamic_pointer_cast<FileDatasource>(origDatasource));
+			}
+			else if (origDatasource->GetSourceType() == Datasource::SourceType::DatabaseServer) {
+
+				copiedDatasource = std::make_shared<DatabaseServerDatasource>(*std::dynamic_pointer_cast<DatabaseServerDatasource>(origDatasource));
+			}
+			copiedDatasource->ClearTables();
+			copiedDatasource->AddTables(datasourceTables.second);
+			datasourceMap.insert(std::pair<boost::uuids::uuid, Datasource::SharedPtr>(datasourceTables.first, copiedDatasource));
 		}
 
-		return datasourceMaps;
+		return datasourceMap;
+	}
+
+	UUIDUnorderedSet DataTransformMapping::GetDatasourcesBySourceType(Datasource::SourceType type) const {
+
+		UUIDUnorderedSet datasourceIDs;
+		for (auto& datasource : m_datasources) {
+
+			if (datasource.second->GetSourceType() == type) {
+
+				datasourceIDs.insert(datasource.first);
+			}
+		}
+
+		return datasourceIDs;
 	}
 
 	void DataTransformMapping::Clear() {
@@ -239,10 +340,11 @@ namespace SynGlyphX {
 	void DataTransformMapping::Clear(bool addADefaultBaseObjectAfterClear) {
 
 		m_fieldGroups.clear();
-		m_datasources.Clear();
+		m_datasources.clear();
 		m_glyphTrees.clear();
 		m_defaults.Clear();
 		m_baseObjects.clear();
+		m_legends.clear();
 		m_id = UUIDGenerator::GetNewRandomUUID();
 
 		if (addADefaultBaseObjectAfterClear) {
@@ -252,6 +354,11 @@ namespace SynGlyphX {
 			m_baseObjects[0].SetGridLineCounts({ { 5, 11 } });
 		}
     }
+
+	bool DataTransformMapping::HasDatasourceWithId(const boost::uuids::uuid& id) const {
+
+		return (m_datasources.count(id) > 0);
+	}
 
 	void DataTransformMapping::RemoveDatasource(const boost::uuids::uuid& id) {
 
@@ -281,7 +388,7 @@ namespace SynGlyphX {
 				RemoveFieldGroup(name);
 			}
 
-			m_datasources.RemoveDatasource(id);
+			m_datasources.erase(id);
 		}
 		catch (const std::invalid_argument& e) {
 			
@@ -289,21 +396,39 @@ namespace SynGlyphX {
 		}
 	}
 
-	boost::uuids::uuid DataTransformMapping::AddFileDatasource(FileDatasource::SourceType type,
-		const std::wstring& name,
-        const std::wstring& host,
-        unsigned int port,
-        const std::wstring& username,
-        const std::wstring& password) {
+	boost::uuids::uuid DataTransformMapping::AddFileDatasource(const FileDatasource& datasource) {
 
-		boost::uuids::uuid id = m_datasources.AddFileDatasource(type, name, host, port, username, password);
+		boost::uuids::uuid id = UUIDGenerator::GetNewRandomUUID();
+		m_datasources.insert(std::pair<boost::uuids::uuid, Datasource::SharedPtr>(id, std::make_shared<FileDatasource>(datasource)));
 
         return id;
     }
 
+	boost::uuids::uuid DataTransformMapping::AddDatabaseServer(const DatabaseServerDatasource& datasource) {
+
+		boost::uuids::uuid id = UUIDGenerator::GetNewRandomUUID();
+		m_datasources.insert(std::pair<boost::uuids::uuid, Datasource::SharedPtr>(id, std::make_shared<DatabaseServerDatasource>(datasource)));
+
+		return id;
+	}
+
 	void DataTransformMapping::EnableTables(const boost::uuids::uuid& id, const Datasource::TableNames& tables, bool enable) {
 
-		m_datasources.EnableTables(id, tables, enable);
+		DatasourceMap::iterator datasourceIterator = m_datasources.find(id);
+		if (datasourceIterator != m_datasources.end()) {
+
+			if (enable) {
+
+				datasourceIterator->second->AddTables(tables);
+			}
+			else {
+
+				for (const std::wstring& table : tables) {
+
+					datasourceIterator->second->RemoveTable(table);
+				}
+			}
+		}
     }
 
 	boost::uuids::uuid DataTransformMapping::AddGlyphTree(const DataMappingGlyphGraph::SharedPtr glyphTree) {
@@ -328,7 +453,7 @@ namespace SynGlyphX {
 
 	bool DataTransformMapping::IsTransformable() const {
 
-		return (m_datasources.HasDatasources() && DoesAtLeastOneGlyphGraphHaveBindingsOnPosition());
+		return ((!m_datasources.empty()) && DoesAtLeastOneGlyphGraphHaveBindingsOnPosition());
 	}
 
 	bool DataTransformMapping::DoesAtLeastOneGlyphGraphHaveBindingsOnPosition() const {
@@ -407,6 +532,11 @@ namespace SynGlyphX {
 		glyphTree->ClearAllInputBindings(node);
 	}
 
+	void DataTransformMapping::ClearInputFieldBindings(const boost::uuids::uuid& treeID, const InputField& inputfield) {
+		DataMappingGlyphGraph::SharedPtr glyphTree = m_glyphTrees[treeID];
+		glyphTree->ClearInputFieldBindings(inputfield);
+	}
+
 	const boost::uuids::uuid& DataTransformMapping::GetID() const {
 
 		return m_id;
@@ -420,8 +550,25 @@ namespace SynGlyphX {
 	void DataTransformMapping::UpdateDatasourceName(const boost::uuids::uuid& id, const std::wstring& name) {
 
 		try {
+			
+			DatasourceMap::iterator datasourceIterator = m_datasources.find(id);
+			if (datasourceIterator != m_datasources.end()) {
 
-			m_datasources.ChangeDatasourceName(id, name);
+				if (datasourceIterator->second->GetSourceType() == Datasource::SourceType::File) {
+
+					FileDatasource::SharedPtr fileDatasource = std::dynamic_pointer_cast<FileDatasource>(datasourceIterator->second);
+					fileDatasource->ChangeFilename(name);
+				}
+				else {
+
+					throw std::invalid_argument("ID was for a datasource that was not a file datasource.");
+				}
+			}
+			else {
+
+				//If id wasn't found in any datasource throw invalid_argument exception
+				throw std::invalid_argument("ID does not exist in datasources for this data transform mapping.");
+			}
 		}
 		catch (const std::invalid_argument& e) {
 
@@ -530,7 +677,7 @@ namespace SynGlyphX {
 			throw std::invalid_argument("Can't append children to invalid parent");
 		}
 
-		if ((!glyphGraph.GetInputFields().empty()) && (!m_datasources.HasDatasourceWithID(glyphGraph.GetInputFields().begin()->second.GetDatasourceID()))) {
+		if ((!glyphGraph.GetInputFields().empty()) && (!HasDatasourceWithId(glyphGraph.GetInputFields().begin()->second.GetDatasourceID()))) {
 
 			SynGlyphX::DataMappingGlyphGraph clearedGlyphGraph = glyphGraph;
 			clearedGlyphGraph.ClearAllInputBindings();
@@ -586,7 +733,7 @@ namespace SynGlyphX {
 
 	std::vector<boost::uuids::uuid> DataTransformMapping::GetFileDatasourcesWithInvalidFiles(bool onlyUseDatasourcesInUse) const {
 
-		SynGlyphX::DatasourceMaps datasources;
+		DatasourceMap datasources;
 		if (onlyUseDatasourcesInUse) {
 		
 			datasources = GetDatasourcesInUse();
@@ -596,9 +743,9 @@ namespace SynGlyphX {
 			datasources = m_datasources;
 		}
 		std::vector<boost::uuids::uuid> fileDatasourcesToBeUpdated;
-		for (SynGlyphX::DatasourceMaps::FileDatasourceMap::const_iterator datasource = datasources.GetFileDatasources().begin(); datasource != datasources.GetFileDatasources().end(); ++datasource) {
+		for (DatasourceMap::const_iterator datasource = datasources.begin(); datasource != datasources.end(); ++datasource) {
 
-			if (!datasource->second.CanDatasourceBeFound()) {
+			if ((!datasource->second->CanDatasourceBeFound()) && (datasource->second->GetSourceType() == Datasource::SourceType::File)) {
 
 				fileDatasourcesToBeUpdated.push_back(datasource->first);
 			}
@@ -623,9 +770,24 @@ namespace SynGlyphX {
 		return missingLocalBaseImages;
 	}
 
+	std::vector<unsigned int> DataTransformMapping::GetLegendsWithInvalidFiles() const {
+
+		std::vector<unsigned int> missingImages;
+
+		for (unsigned int i = 0; i < m_legends.size(); ++i) {
+
+			if (!m_legends[i].CanFileBeFound()) {
+
+				missingImages.push_back(i);
+			}
+		}
+
+		return missingImages;
+	}
+
 	DataTransformMapping::ConstSharedPtr DataTransformMapping::CreateSubsetMappingWithSingleTable(const InputTable& inputTable, const std::wstring& csvFilename) const {
 
-		if (!m_datasources.HasDatasourceWithID(inputTable.GetDatasourceID())) {
+		if (!HasDatasourceWithId(inputTable.GetDatasourceID())) {
 
 			throw std::runtime_error("Can't create subset of mapping with a datasource ID that does not exist in the mapping.");
 		}
@@ -633,7 +795,19 @@ namespace SynGlyphX {
 		SharedPtr subsetMapping(new DataTransformMapping());
 		subsetMapping->SetSceneProperties(m_sceneProperties);
 		subsetMapping->SetDefaults(m_defaults);
-		boost::uuids::uuid datasourceID = subsetMapping->AddFileDatasource(FileDatasource::SourceType::CSV, csvFilename);
+		subsetMapping->SetLegends(m_legends);
+
+		if (!subsetMapping->GetBaseObjects().empty()) {
+
+			subsetMapping->RemoveBaseObject(0);
+		}
+		for (auto baseImage : m_baseObjects) {
+
+			subsetMapping->AddBaseObject(baseImage);
+		}
+
+		SynGlyphX::FileDatasource newDatasource(FileDatasource::FileType::CSV, csvFilename);
+		boost::uuids::uuid datasourceID = subsetMapping->AddFileDatasource(newDatasource);
 
 		for (auto fieldGroupPair : m_fieldGroups) {
 
@@ -684,6 +858,47 @@ namespace SynGlyphX {
 
 			CopyInputBindingsForSubsetMapping(newGlyphGraph, newGlyphGraph->GetChild(newNode, j), oldGlyphGraph, oldGlyphGraph->GetChild(oldNode, j), datasourceID);
 		}
+	}
+
+	void DataTransformMapping::AddLegend(const Legend& legend) {
+
+		m_legends.push_back(legend);
+	}
+
+	void DataTransformMapping::RemoveLegend(unsigned int index) {
+
+		if (index < m_legends.size()) {
+
+			std::vector<Legend>::iterator legend = m_legends.begin();
+			std::advance(legend, index);
+			m_legends.erase(legend);
+		}
+		else {
+
+			throw std::invalid_argument("Index is greater than size of base objects");
+		}
+	}
+
+	void DataTransformMapping::SetLegend(unsigned int index, const Legend& legend) {
+
+		if (index < m_legends.size()) {
+
+			m_legends[index] = legend;
+		}
+		else {
+
+			throw std::invalid_argument("Index is greater than size of legends");
+		}
+	}
+
+	const std::vector<Legend>& DataTransformMapping::GetLegends() const {
+
+		return m_legends;
+	}
+
+	void DataTransformMapping::SetLegends(const std::vector<Legend>& legends) {
+
+		m_legends = legends;
 	}
 
 } //namespace SynGlyphX

@@ -15,8 +15,8 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef SYNGLYPHX_DATASOURCE
-#define SYNGLYPHX_DATASOURCE
+#ifndef SYNGLYPHX_DATASOURCE_H
+#define SYNGLYPHX_DATASOURCE_H
 
 #include "sgxdatamapping.h"
 #include <boost/property_tree/ptree.hpp>
@@ -30,13 +30,23 @@ namespace SynGlyphX {
 	class SGXDATAMAPPING_API Datasource
 	{
 	public:
+		typedef std::shared_ptr<Datasource> SharedPtr;
+		typedef std::shared_ptr<const Datasource> ConstSharedPtr;
+
 		typedef boost::property_tree::wptree PropertyTree;
 		typedef std::unordered_map<std::wstring, DatasourceTable> Tables;
 		typedef std::vector<std::wstring> TableNames;
 
 		static const std::wstring SingleTableName;
 
-		Datasource(const std::wstring& dbName, const std::wstring& host = L"localhost", unsigned int port = 0, const std::wstring& username = L"", const std::wstring& password = L"");
+		enum SourceType {
+			File,
+			DatabaseServer
+		};
+
+		typedef boost::bimap<SourceType, std::wstring> SourceTypeBimap;
+
+		Datasource(const std::wstring& host = L"localhost", const std::wstring& username = L"", const std::wstring& password = L"");
 		Datasource(const PropertyTree& propertyTree);
         Datasource(const Datasource& datasource);
         virtual ~Datasource();
@@ -45,9 +55,9 @@ namespace SynGlyphX {
 		bool operator==(const Datasource& datasource) const;
 		bool operator!=(const Datasource& datasource) const;
 
-        const std::wstring& GetDBName() const;
+		virtual SourceType GetSourceType() const = 0;
+
         const std::wstring& GetHost() const;
-        unsigned int GetPort() const;
         const std::wstring& GetUsername() const;
         const std::wstring& GetPassword() const;
 		const Tables& GetTables() const;
@@ -62,14 +72,17 @@ namespace SynGlyphX {
 		virtual bool CanDatasourceHaveMultipleTables() const = 0;
 		virtual bool IsFile() const = 0;
 		virtual bool CanDatasourceBeFound() const = 0;
-		virtual const std::wstring& GetFormattedName() const = 0;
+		virtual std::wstring GetFormattedName() const = 0;
+		virtual std::wstring GetDBName() const = 0;
 
-		virtual PropertyTree& ExportToPropertyTree(boost::property_tree::wptree& parentPropertyTree, const std::wstring& parentName);
+		bool DoAnyTablesHaveQueries() const;
+
+		virtual PropertyTree& ExportToPropertyTree(boost::property_tree::wptree& parentPropertyTree);
+
+		static const SourceTypeBimap s_sourceTypeStrings;
 
     protected:
-        std::wstring m_dbName;
         std::wstring m_host;
-        unsigned int m_port;
         std::wstring m_username;
         std::wstring m_password;
 		Tables m_tables;
@@ -77,4 +90,4 @@ namespace SynGlyphX {
 
 } //namespace SynGlyphX
 
-#endif //SYNGLYPHX_DATASOURCE
+#endif //SYNGLYPHX_DATASOURCE_H
