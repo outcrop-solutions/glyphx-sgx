@@ -26,6 +26,7 @@ public class XMLGlyphTemplate{
 	private int branchLevel;
 	private int numChildren;
 	private int datasource;
+	private int lastChildID;
 	private boolean toMerge;
 
 	public XMLGlyphTemplate(){
@@ -37,6 +38,13 @@ public class XMLGlyphTemplate{
 		tag = "No Tag";
 		url = "nourl.html";
 		description = "";
+	}
+	public void setLastChildID(int lastChild){
+		lastChildID = lastChild;
+	}
+
+	public int getLastChildID(){
+		return lastChildID;
 	}
 
 	public void setToMerge(boolean tm){
@@ -88,10 +96,11 @@ public class XMLGlyphTemplate{
 	public void defaultSetter(String field, String type, String def){
 		GeoID geo = new GeoID();
 		if(field.equals("ColorRGB")){
-			String [] defSplit = def.split(",");
-			setDefault("ColorR", type, defSplit[0]);
-			setDefault("ColorG", type, defSplit[1]);
-			setDefault("ColorB", type, defSplit[2]);
+			String[] defSplit = def.split(",");
+			double[] defhsv = Functions.convertRGBtoHSV(Double.parseDouble(defSplit[0]),Double.parseDouble(defSplit[1]),Double.parseDouble(defSplit[2]));
+			setDefault("ColorR", type, String.valueOf(defhsv[0]));
+			setDefault("ColorG", type, String.valueOf(defhsv[1]));
+			setDefault("ColorB", type, String.valueOf(defhsv[2]));
 		}else if(field.equals("GeometryShape")){
 			setDefault(field, type, String.valueOf(geo.getValue(def,this.surface)));
 		}else if(field.equals("VirtualTopologyType")){
@@ -281,6 +290,15 @@ public class XMLGlyphTemplate{
 
 	public HashMap<String,MapFunction> getKeyValueMap(){
 		return keyValueMap;
+	}
+
+	public double getDefIfNotBound(String field){
+
+		if(keyValueMap.get(field) != null){
+			return keyValueMap.get(field).getDefault();
+		}
+		return ranges.get(field).get(1);
+
 	}
 
 }

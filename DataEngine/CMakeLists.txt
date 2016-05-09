@@ -10,7 +10,7 @@ INCLUDE_DIRECTORIES(BEFORE  ${Boost_INCLUDE_DIRS}
 							../../Core/SGXDataMapping
 							../../GUI/MapDownloading
 							${JAVA_INCLUDE_DIRS})
-							
+
 LINK_DIRECTORIES(${JAVA_LINK_DIRS})
 #message("JAVA_LINK_DIRS = ${JAVA_LINK_DIRS}")
 

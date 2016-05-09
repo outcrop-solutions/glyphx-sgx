@@ -16,6 +16,7 @@ import synglyphx.util.*;
 import synglyphx.glyph.Mapper;
 import synglyphx.io.Logger;
 import synglyphx.glyph.CoordinateMap;
+import synglyphx.link.SDTLinkReader;
 
 public class SDTReader {
 
@@ -27,6 +28,7 @@ public class SDTReader {
 	private ArrayList<BaseObject> base_objects = null;
 	private HashMap<String,Integer> dataIds = null;
 	private HashMap<String,FieldGroup> gNames = null;
+	private SDTLinkReader linkReader = null;
 	private String[] colorStr = null;
 	private String tagFieldDefault;
 	private String tagValueDefault;
@@ -38,27 +40,84 @@ public class SDTReader {
 	private int count;
 	private String outDir;
 	private String app;
+	private String timestamp;
 	private boolean download = false;
+	private boolean updateNeeded = true;
 
 	public SDTReader(String sdtPath, String outDir, String application){
 		Logger.getInstance().add("Reading SDT at "+sdtPath);
-		absorbXML(sdtPath);
-		this.outDir = outDir;
+		this.outDir = outDir.replace("\\", File.separator);
 		this.app = application;
+		initXMLReader(sdtPath);
 	}
 
 	public void generateGlyphs(){
+		
+		//double start = System.currentTimeMillis();
+		Thread thread = new Thread(){
+    		public void run(){
+      			SQLiteWriter writer = new SQLiteWriter(dataPaths, outDir, rootIds, templates);
+      			writer.writeSDTInfo(timestamp);
+      			writer.writeTableIndex();
+    		}
+  		};
+  		thread.start();
+
 		mapping = new Mapper();
 		mapping.addNodeTemplates(templates, count);
 		mapping.checkRangeXY(download);
 		mapping.setDefaults(tagFieldDefault, tagValueDefault, scaleZeroDefault);
+		mapping.setLinkTemplates(linkReader.getLinkTemps());
 		mapping.generateGlyphTrees(dataPaths, rootIds, outDir, colorStr, app, base_objects);
-		SQLiteWriter writer = new SQLiteWriter(dataPaths, outDir, rootIds, templates);
-		writer.writeTableIndex();
-		writer.writeAllTables();
+		try{
+			thread.join();
+		}catch(InterruptedException ie){
+	        ie.printStackTrace();
+		}
+		double end = System.currentTimeMillis();
+		//System.out.print("Time to generate cache: ");
+		//System.out.println((end-start)/1000.00);
 	}
 
-	public void absorbXML(String sdtPath) {
+	public boolean isUpdateNeeded() {
+		return updateNeeded;
+	}
+
+	public void initXMLReader(String sdtPath) {
+
+		try{
+			File file = new File(sdtPath);
+			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+			Document doc = dBuilder.parse(file);
+			doc.getDocumentElement().normalize();
+
+			Node transform = doc.getElementsByTagName("Transform").item(0);
+			Element tf = (Element) transform;
+			timestamp = tf.getAttribute("Timestamp");
+			getDataPaths(doc);
+			getBaseObjects(doc);
+			System.out.print("Datasource count: ");
+			System.out.println(dataPaths.size());
+
+			if(!timestamp.equals("") && app.equals("GlyphViewer")){
+				updateNeeded = SQLiteReader.isAntzUpdateNeeded(timestamp, outDir, dataPaths);
+			}
+
+			if(updateNeeded){
+				System.out.println("Absorbing XML...");
+				absorbXML(doc);
+				System.out.println("Creating SDTLinkReader...");
+				linkReader = new SDTLinkReader(doc, templates, dataPaths, directMap);
+			}
+
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+
+	}
+
+	public void absorbXML(Document doc) {
 
 		templates = new HashMap<Integer, XMLGlyphTemplate>();
 		rootIds = new ArrayList<Integer>();
@@ -66,29 +125,21 @@ public class SDTReader {
 
 		try {
 
-			File file = new File(sdtPath);
-			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-			Document doc = dBuilder.parse(file);
-			doc.getDocumentElement().normalize();
-
 			Logger.getInstance().add("Parsed SDT into doc.");
 			setInputMap(doc);
-			getDataPaths(doc);
 			checkFieldGroups(doc);
 			getDefaultsAndPropeties(doc);
-			getBaseObjects(doc);
 
 			NodeList start = doc.getElementsByTagName("Glyphs");
 
 			Node glyphs = start.item(0);
 			NodeList roots = glyphs.getChildNodes();
 
+			System.out.println(roots.getLength());
 			rootCount = 0;
 			for (int i = 0; i < roots.getLength(); i++) {
-
 				Node root = roots.item(i);
-				if(!root.getNodeName().equals("#text")){
+				if(root.getNodeName().equals("Glyph")){
 					XMLGlyphTemplate temp = new XMLGlyphTemplate();
 					NodeList categories = root.getChildNodes();
 					temp.setToMerge(getMergeStatus(root));
@@ -102,7 +153,7 @@ public class SDTReader {
 			Logger.getInstance().add("Failed to parse SDT file.");
 		}
 		setRootAndLastIDs();
-
+		Logger.getInstance().add("Finished absorbing XML.");
 	}
 
 	private String getValue(String tag, Element element) {
@@ -234,7 +285,8 @@ public class SDTReader {
 									}
 							}
 							else if(min && !diff && !value.getNodeName().equals("RGB")){
-									temp.addMinMax(category.getNodeName()+value.getNodeName(), Double.parseDouble(getValue("Min", element)), 0.0);
+									double m_e = Double.parseDouble(getValue("Min", element));
+									temp.addMinMax(category.getNodeName()+value.getNodeName(), m_e, m_e);
 									temp.mapFunction(category.getNodeName()+value.getNodeName(), getFunction(element));
 									if(getFunction(element).contains("To Value")){
 										addKeysAndValues(temp, element, getFunction(element), category.getNodeName()+value.getNodeName());
@@ -325,6 +377,7 @@ public class SDTReader {
 		NodeList start = doc.getElementsByTagName("InputFields");
 
 		for(int j=0;j<start.getLength();j++){
+			System.out.println(start.getLength());
 			Node field = start.item(j);
 			NodeList fields = field.getChildNodes();
 
@@ -356,7 +409,7 @@ public class SDTReader {
 		int holder = 0;
 		for(int i=0; i < sources.getLength(); i++){
 			Node node = sources.item(i);
-			if(node.getNodeName().equals("File")){
+			if(node.getNodeName().equals("Datasource")){
 				Element e = (Element) node;
 				if(e.getAttribute("type").equals("CSV")){
 					SourceDataInfo csv = new SourceDataInfo();
@@ -367,11 +420,10 @@ public class SDTReader {
 					dataPaths.add(csv);
 					dataIds.put(csv.getID()+csv.getTable(),holder);
 					holder++;
-					System.out.println(csv.getID()+csv.getTable());
+					System.out.println(csv.getID()+":"+csv.getTable());
 					Logger.getInstance().add(csv.getID()+csv.getTable());
 				}else{
 					String id = e.getAttribute("id");
-					String path = getValue("Name", e);
 					String host = getValue("Host", e);
 					String user = "";
 					String pass = "";
@@ -382,14 +434,11 @@ public class SDTReader {
 					NodeList tbls = e.getElementsByTagName("Tables");
 					Element tblObjects = (Element) tbls.item(0);
 					NodeList tables = tblObjects.getElementsByTagName("Table");
-					System.out.println(tables.getLength());
+					//System.out.println(tables.getLength());
 					for(int j=0; j<tables.getLength(); j++){
 	 					Node table = tables.item(j); 
 	 					Element te = (Element) table;
-						System.out.println(host);
-						System.out.println(user);
-						System.out.println(pass);
-						System.out.println(table.getTextContent());
+
 						SourceDataInfo tb = new SourceDataInfo();
 						tb.setID(id);
 						tb.setTable(table.getTextContent());
@@ -397,14 +446,9 @@ public class SDTReader {
 						if(te.hasAttribute("query")){
 							if(!te.getAttribute("query").equals("")){
 								tb.setQuery(te.getAttribute("query"));
-								tb.setInputFields(this.inputs);
-								if(te.hasAttribute("basetable")){
-									tb.setBaseTableName(te.getAttribute("basetable"));
-									tb.parseForeignKeyData(te.getAttribute("foreignkey"));
-								}
 							}
 						}
-						tb.setPath(path);
+						tb.setPath(host);
 						tb.setHost("jdbc:"+host);
 						tb.setUsername(user);
 						tb.setPassword(pass);
@@ -461,6 +505,8 @@ public class SDTReader {
 				sqlReader = new SQLiteReader();
 				sqlReader.createDataFrame(dataPaths.get(i).getPath(),dataPaths.get(i).getTable());
 				dataPaths.get(i).setDataFrame(sqlReader.getDataFrame());
+			}else{
+				//dataframe creator for JDBC
 			}
 		}
 
@@ -616,7 +662,6 @@ public class SDTReader {
 				if(type.equals("Downloaded Map")){
 					name = "downloadedMap.jpg";
 					download = true;
-					System.out.println("here");
 					bObject.setMapInfo(element.getAttribute("mapsource"),element.getAttribute("maptype"));
 					bObject.setImageInfo(element.getAttribute("invert"),element.getAttribute("grayscale"),element.getAttribute("bestfit"),element.getAttribute("margin"));
 				}
@@ -687,17 +732,29 @@ public class SDTReader {
 
 		int currentRoot = 1;
 		SourceDataInfo currentDataSource = null;
+		ArrayList<Integer> usedDS = new ArrayList<Integer>();
+		XMLGlyphTemplate prevTemp = null;
 		for(int i = 1; i < count+1; i++){
 			XMLGlyphTemplate temp = templates.get(i);
 			if(temp.getChildOf() == 0){
 				if(i != 1){
-					currentDataSource.setLastID(i-1);
+					currentDataSource.setLastID(i-1); //OLD
+					prevTemp.setLastChildID(i-1); //NEW
 				}
-				currentDataSource = dataPaths.get(temp.getDataSource());
+				if(!usedDS.contains(temp.getDataSource())){
+					currentDataSource = dataPaths.get(temp.getDataSource());
+				}else{
+					dataPaths.add(dataPaths.get(temp.getDataSource()));
+					temp.setDataSource(dataPaths.size()-1);
+					currentDataSource = dataPaths.get(temp.getDataSource());
+				}
 				currentDataSource.setRootID(i);
+				usedDS.add(temp.getDataSource());
+				prevTemp = temp;
 			}
 			if(i == count){
-				currentDataSource.setLastID(i);
+				currentDataSource.setLastID(i); //OLD
+				prevTemp.setLastChildID(i); //NEW
 			}
 		}
 	}

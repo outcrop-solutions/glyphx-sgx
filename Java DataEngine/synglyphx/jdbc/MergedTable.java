@@ -4,11 +4,12 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import synglyphx.io.Logger;
+import synglyphx.jdbc.driver.Driver;
 
 public class MergedTable extends Table{
 
-	public MergedTable(String query, Connection conn){
-		super(conn);
+	public MergedTable(String query, Driver driver){
+		super(driver);
 		this.name = "Merged";
 		this.query = query;
 		this.end_of_query = query.split("FROM")[1];
@@ -24,8 +25,8 @@ public class MergedTable extends Table{
 
 		try{
 
-			String sql = query;
-			PreparedStatement pstmt = conn.prepareStatement(sql);
+			String sql = query+" LIMIT 1";
+			PreparedStatement pstmt = driver.getConnection().prepareStatement(sql);
             ResultSet rs = pstmt.executeQuery();
             ResultSetMetaData metaData = rs.getMetaData();
 
@@ -35,8 +36,10 @@ public class MergedTable extends Table{
             	table_name = metaData.getTableName(i + 1);
             	column_type = metaData.getColumnTypeName(i + 1);
             	column_name = metaData.getColumnName(i + 1);
-            	columnNames.add(table_name+"."+column_name);
-            	columnTypes.put(table_name+"."+column_name, jdbcTypes.get(column_type));
+            	if(jdbcTypes.containsKey(column_type.toUpperCase())){
+            		columnNames.add(driver.mergedField(table_name, column_name));
+            		columnTypes.put(driver.mergedField(table_name, column_name), jdbcTypes.get(column_type.toUpperCase()));
+            	}
             }
             rs.close();
 
@@ -47,3 +50,4 @@ public class MergedTable extends Table{
       	}
 	}
 }
+

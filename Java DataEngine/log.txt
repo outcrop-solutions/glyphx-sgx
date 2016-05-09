@@ -1,31 +1,34 @@
 
-Reading SDT at C:\Users\Bryan\Desktop\TooMany Elements SizeBug\Ohio Voter Registration Draft.sdt
-Parsed SDT into doc.
-Set input map.
-2dfdf2ca-6c93-4e74-a181-3ebc00f21ee9OnlyTable
+Reading SDT at C:/Users/Bryan/Desktop/ND HS Test/High School.sdt
+44088e04-3303-4241-94b0-3b3dac432356OnlyTable
 Retrieved data paths.
 Finished creating min/max table...
 Created DataFrames.
+BaseObjects:
+Local Image | C:\ProgramData\SynGlyphX\GlyphEd\High School\Black_Background.png
+BaseObjects:
+Local Image | C:\ProgramData\SynGlyphX\GlyphEd\High School\Arrows_1024_1024_Bottom_SeeThrough.png
+BaseObjects:
+Local Image | C:\ProgramData\SynGlyphX\GlyphEd\High School\Arrows_1024_1024_Side_SeeThrough.png
+BaseObjects:
+Local Image | C:\ProgramData\SynGlyphX\GlyphEd\High School\HS View Legend Combined SeeThrough.png
+Parsed SDT into doc.
+Set input map.
 Checking field groups...
 Finished checking field groups.
 Retrieved Defaults.
 Retrieved Bg color.
-BaseObjects:
-Downloaded Map | 
-Returning data stats model...
--80.5305683
-41.5117735
--84.3514711
-39.572392
-Downloaded Map BoundingBox: (-85.25350956479433,41.618268866536965),(-79.62852983520567,39.46589663346303)
+Finished absorbing XML.
+Downloaded Map BoundingBox: (-160.0,160.0),(160.0,-160.0)
 Image Size: 2048.0, 1024.0
 Beginning to generate glyphs...
 Executed initial query...
-Returned cursor with size 29050...
+Returned cursor with size 43...
 1
-5
+23
 Writing all files...
-C:\Users\Bryan\Desktop\TooMany Elements SizeBug\Ohio Voter SampleOut\usr\csv\
+C:/Users/Bryan/Desktop/ND HS Test/Viz
+C:/Users/Bryan/Desktop/ND HS Test/Viz/usr/csv/
 DataMapper
-C:\Users\Bryan\Desktop\TooMany Elements SizeBug\Ohio Voter SampleOut\usr\csv\\..\..\nourl.html
-145251 nodes printing...
+C:/Users/Bryan/Desktop/ND HS Test/Viz/usr/csv//../../nourl.html
+990 nodes printing...

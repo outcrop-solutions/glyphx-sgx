@@ -21,8 +21,20 @@ public class GlyphEngine {
 		sdtReader = new SDTReader(sdtPath, outDir, application);
 	}
 
-	public static void beginGlyphGeneration(){
-		sdtReader.generateGlyphs();
+	public static boolean isUpdateNeeded(){
+		return sdtReader.isUpdateNeeded();
+	}
+
+	public static boolean beginGlyphGeneration(){
+		try{
+	 		sdtReader.generateGlyphs();
+	 	//}catch(OutOfMemoryError e){
+	 	}catch(Exception e){
+	 		e.printStackTrace();
+	 		Logger.getInstance().add(e.getMessage());
+	 		return false;
+	 	}
+	 	return true;
 	}
 
 	public static String[] getBaseImages(){
@@ -52,9 +64,9 @@ public class GlyphEngine {
 			String key = "";
 			String check = "";
 			try{
-				File f = new File(outDir+"\\antz\\base_image_2.png");
+				File f = new File(outDir+"/antz/base_image_2.png");
 				if(!f.exists()){return true;}
-				Scanner s = new Scanner(new BufferedReader(new FileReader(outDir+"\\antz\\DownloadedImageSpecs.txt")));
+				Scanner s = new Scanner(new BufferedReader(new FileReader(outDir+"/antz/DownloadedImageSpecs.txt")));
 				sdtReader.getDownloadedBaseObject().setCornerString(temp);
 				key = sdtReader.getDownloadedBaseObject().getUpdateCheckString();
 				check = s.nextLine();
@@ -73,25 +85,46 @@ public class GlyphEngine {
 
 	public static void main(String [] args){
 
-		//String sdtPath = "C:\\Users\\Bryan\\Desktop\\Test HSV\\testhsv.sdt";
-	 	//String outDir = "C:\\Users\\Bryan\\Desktop\\Test HSV\\Viz";
-	 	//String sdtPath = "C:\\Users\\Bryan\\Desktop\\jdbc_test\\merged_table_test.sdt";
-	 	//String outDir = "C:\\Users\\Bryan\\Desktop\\jdbc_test\\Viz1";
-	 	String sdtPath = "C:\\Users\\Bryan\\Desktop\\TooMany Elements SizeBug\\Ohio Voter Registration Draft.sdt";
-	 	String outDir = "C:\\Users\\Bryan\\Desktop\\TooMany Elements SizeBug\\Ohio Voter SampleOut";
+		//String sdtPath = "C:\\Users\\Bryan\\SharePoint\\Synglyphx Team Site - Documents\\Test Data\\BRYAN\\School Shooting Viz (05-Jan-16).sdt";
+	 	//String outDir = "C:\\Users\\Bryan\\SharePoint\\Synglyphx Team Site - Documents\\Test Data\\BRYAN\\Viz";
+	 	//String sdtPath = "C:\\Users\\Bryan\\Desktop\\jdbc_test\\official_merged_test.sdt";
+	 	//String outDir = "C:\\Users\\Bryan\\Desktop\\jdbc_test\\official merged";
+	 	//String sdtPath = "C:/Users/Bryan/Desktop/TooMany Elements SizeBug/Ohio Voter Registration Draft.sdt";
+	 	//String outDir = "C:/Users/Bryan/AppData/Local/SynGlyphX/Glyph Builder - Glyph Viewer/cache/cache_2072a4ce-5cf5-4591-84b0-30f87c5cc214";
+	 	//String sdtPath = "C:\\Users\\Bryan\\Desktop\\test_for_ray\\url_and_description.sdt";
+	 	//String outDir = "C:\\Users\\Bryan\\Desktop\\test_for_ray\\Viz";
+	 	//String sdtPath = "C:/Users/Bryan/Desktop/East Coast Only/East_Coast_Only.sdt";
+	 	//String outDir = "C:/Users/Bryan/Desktop/East Coast Only/Viz";
+	 	//String sdtPath = "C:/Users/Bryan/Desktop/Links Test/link_test.sdt";
+	 	//String outDir = "C:/Users/Bryan/Desktop/Links Test/viz";
+	 	String sdtPath = "C:/Users/Bryan/Desktop/ND HS Test/High School.sdt";
+	 	String outDir = "C:/Users/Bryan/Desktop/ND HS Test/Viz";
+	 	
 	 	String expDir = "DataMapper";
 	 	GlyphEngine start = new GlyphEngine();
 	 	double[] nw = new double[2];
+	 	nw[0] = -160.0; nw[1] = 160.0;
+	 	double[] se = new double[2];
+	 	se[0] = 160.0; se[1] = -160.0;/*
+	 	double[] nw = new double[2];
 	 	nw[0] = -85.25350956479433; nw[1] = 41.618268866536965;
 	 	double[] se = new double[2];
-	 	se[0] = -79.62852983520567; se[1] = 39.46589663346303;
+	 	se[0] = -79.62852983520567; se[1] = 39.46589663346303;*/
 	 	double[] s = new double[2];
 	 	s[0] = 2048.0; s[1] = 1024.0;
+
 	 	start.initiate(sdtPath, outDir, expDir);
-	 	double[] nwse = start.getNWandSE();
-	 	//start.hasImageBeenUpdated();
-	 	start.setBoundingBox(nw,se,s);
-	 	start.beginGlyphGeneration();
+
+	 	if(start.isUpdateNeeded()){
+		 	//double[] nwse = start.getNWandSE();
+		 	//start.hasImageBeenUpdated();
+		 	start.setBoundingBox(nw,se,s);
+		 	
+		 	start.beginGlyphGeneration();
+
+		}
+		String[] images = start.getBaseImages();
+		System.out.println(images.length);
 	} 
 
 }

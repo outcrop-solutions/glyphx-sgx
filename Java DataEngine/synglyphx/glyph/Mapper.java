@@ -8,10 +8,12 @@ import synglyphx.glyph.GlyphCreator;
 import synglyphx.data.SourceDataInfo;
 import synglyphx.io.Logger;
 import synglyphx.util.BaseObject;
+import synglyphx.link.LinkTemplate;
 
 public class Mapper {
 
 	private Map<Integer, XMLGlyphTemplate> temps = null;
+	private Map<Integer, LinkTemplate> link_temps = null;
 	private int mappingCount;
 	private boolean download;
 	private String default_tag_field;
@@ -39,12 +41,17 @@ public class Mapper {
 		default_scale_zero = scale_zero;
 	}
 
+	public void setLinkTemplates(HashMap<Integer, LinkTemplate> link_temps){
+		this.link_temps = link_temps;
+	}
+
 	public void generateGlyphTrees(ArrayList<SourceDataInfo> csvData, ArrayList<Integer> rootIds, String outDir, String[] colorStr, String app, ArrayList<BaseObject> base_objects){
 		GlyphCreator creator = new GlyphCreator(csvData, temps, mappingCount, rootIds);
 		creator.setOutDir(outDir, app);
 		creator.checkRangeXY(download);
 		creator.setDefaults(default_tag_field, default_tag_value, default_scale_zero);
 		Logger.getInstance().add("Beginning to generate glyphs...");
+		creator.setLinkTemplates(link_temps);
 		creator.begin();
 		creator.printGlyphRepo(colorStr, base_objects);
 	}

@@ -2,17 +2,20 @@ package synglyphx.jdbc;
 
 import java.sql.*;
 import synglyphx.io.Logger;
+import synglyphx.jdbc.driver.Driver;
+import synglyphx.jdbc.driver.DriverSelector;
 
 public class JDBCLoader {
 
    private static JDBCLoader instance = null;
-   public static Connection conn = null;
+   public static Driver driver = null;
    public static Database database = null;
-   public static String connectionString;
-   public static String username;
-   public static String password;
+   public static String connectionString = null;
+   public static String username = null;
+   public static String password = null;
    public static String dbType;
    public static boolean merged;
+   public static int closeCount = 1;
 
    protected JDBCLoader(){}
 
@@ -25,47 +28,32 @@ public class JDBCLoader {
    
    public static String[] connectToServer(String db_url, String user, String pass, String db) {
 
+      boolean same_conn = false;
+      if(connectionString != null && username != null && password != null){
+         if(connectionString.equals("jdbc:"+db_url) && username.equals(user) && password.equals(pass)){
+            same_conn = true;
+         }
+      }
       connectionString = "jdbc:"+db_url;
       username = user;
       password = pass;
       dbType = db;
 
-      String[] sqldbs = new String[1];
-
-
       try{
-
-         Class.forName(DriverSelect.getDriver(db));
-
-         Logger.getInstance().add("Connecting to Server...");
-
-         if(db.equals("sqlite3")){
-            sqldbs[0] = "n/a";
-            return sqldbs;
-         }else{
-            conn = DriverManager.getConnection(connectionString,username,password);
+         if(same_conn && !driver.getConnection().isClosed()){
+            return database.getSchemas();
          }
+         Logger.getInstance().add(username +" | "+ password);
+         driver = DriverSelector.getDriver(dbType);
+         Class.forName(driver.packageName());
+         Logger.getInstance().add("Loaded driver for "+dbType);
 
-         ResultSet rs;
-         if(db.equals("mysql")){
-            rs = conn.getMetaData().getCatalogs();
-         }else{
-            rs = conn.getMetaData().getSchemas();
-         }
+         driver.createConnection(connectionString,username,password);
+         Logger.getInstance().add("Connection created");
 
-         int dbcount = 0;
+         database = new Database(driver);
+         Logger.getInstance().add("Database created");
 
-         if(rs.last()){
-            dbcount = rs.getRow();
-            rs.beforeFirst(); 
-         }
-         sqldbs = new String[dbcount];
-         dbcount = 0;
-         while(rs.next()){
-            sqldbs[dbcount++] = rs.getString("TABLE_CAT");
-         }
-         rs.close();
-         conn.close();
       }catch(SQLException se){
          try{
             se.printStackTrace(Logger.getInstance().addError());
@@ -76,37 +64,19 @@ public class JDBCLoader {
          }catch(Exception ex){}
       }
 
-      return sqldbs;
+      return database.getSchemas();
    }
 
-   public static String[] chooseDatabase(String db_name){
+   public static String[] getTableNames(){
+      return database.getTableNames();
+   }
 
-      String[] table_names = new String[1]; 
+   public static String[] getSchemaTableNames(String sch){
+      return database.getSchemaTableNames(sch);
+   }
 
-      try{
-    
-         Class.forName(DriverSelect.getDriver(dbType));
-
-         if(dbType.equals("sqlite3")){
-            conn = DriverManager.getConnection(connectionString);
-         }else{
-            conn = DriverManager.getConnection(connectionString+"/"+db_name,username,password);
-         }
-
-         database = new Database(conn);
-         table_names = database.getTableNames();
-
-      }catch(SQLException se){
-         try{
-            se.printStackTrace(Logger.getInstance().addError());
-         }catch(Exception ex){}
-      }catch(Exception e){
-         try{
-            e.printStackTrace(Logger.getInstance().addError());
-         }catch(Exception ex){}
-      }
-
-      return table_names;
+   public static int sizeOfQuery(String query){
+      return database.sizeOfQuery(query);
    }
 
    public static void setChosenTables(String[] chosen){
@@ -116,7 +86,20 @@ public class JDBCLoader {
 
    public static void setQueryTables(String query){
       merged = true;
-      database.initializeQueryTables(query);
+      database.initializeQueryTables(query, driver);
+   }
+
+   public static void queueATable(String name, String query){
+      merged = false;
+      database.queueATable(name, query);
+   }
+
+   public static void removeQueuedTable(String name){
+      database.removeQueuedTable(name);
+   }
+
+   public static void executeQueuedTables(){
+      database.executeQueuedTables();
    }
 
    public static String[] getFieldsForTable(int table){
@@ -133,25 +116,29 @@ public class JDBCLoader {
       return database.getTable(table).getStats(field);
    }
 
-   public String[] getForeignKeys(String tableName){
+   public static String[] getForeignKeys(String tableName){
       return database.getForeignKeys(tableName);
    }
 
-   public String[] getSampleData(int table, int row){
+   public static String[] getSampleData(int table, int row){
       return database.getSampleData(table, row);
    }
 
    public static void closeConnection(){
       
-      try{
-         conn.close();
-      }catch(SQLException se){
+      if(closeCount == 2){
          try{
-            se.printStackTrace(Logger.getInstance().addError());
-         }catch(Exception ex){}
+            driver.getConnection().close();
+            Logger.getInstance().add("");
+            Logger.getInstance().add("Closing connection to database...");
+         }catch(SQLException se){
+            try{
+               se.printStackTrace(Logger.getInstance().addError());
+            }catch(Exception ex){}
+         }
+         closeCount = 0;
       }
-      Logger.getInstance().add("");
-      Logger.getInstance().add("Closing connection to database...");
+      closeCount += 1;
 
    }
 

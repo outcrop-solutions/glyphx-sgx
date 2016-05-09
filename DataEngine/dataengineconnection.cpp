@@ -3,15 +3,8 @@
 #include "dataengineconnection.h"
 #include "dataenginestatement.h"
 #include <fstream>
-#include <stdexcept>
-#ifdef WIN32
-#include <Windows.h>
-#else
-#include <dlfcn.h>
-#endif
+#include "utilitytypes.h"
 //#include <QtCore/QDebug>
-#include <iostream>
-#include <QtCore/QCoreApplication>
 
 namespace DataEngine
 {
@@ -30,97 +23,62 @@ namespace DataEngine
 
 	void DataEngineConnection::createJVM(){
 
-#ifdef WIN32
 		std::ifstream jre(".\\jre\\bin\\client\\jvm.dll");
-		HMODULE jvmDll;
 		if (jre){
-			jvmDll = LoadLibrary(L".\\jre\\bin\\client\\jvm.dll");
+		
+			jvmDll.Load(".\\jre\\bin\\client\\jvm.dll");
 		}
 		else{
-			jvmDll = LoadLibrary(L"..\\..\\DataEngine\\jdk1.7.0_79\\jre\\bin\\client\\jvm.dll");
+			
+			jvmDll.Load("..\\..\\DataEngine\\jdk1.7.0_79\\jre\\bin\\client\\jvm.dll");
 		}
-#else
-		std::ifstream jre("./jre/lib/i386/client/libjvm.so");
-		void* jvmDll;
-		if (jre){
-			jvmDll = dlopen("./jre/lib/amd64/server/libjvm.so", RTLD_NOW | RTLD_LOCAL);
-			if (jvmDll == NULL) {
-
-				std::cout << dlerror() << std::endl;
-			}
-		}
-		else{
-			jvmDll = dlopen("../../DataEngine/jdk1.7.0_79/jre/amd64/server/libjvm.so", RTLD_NOW | RTLD_LOCAL);
-		}
-
-#endif
 		jre.close();
-
-#ifdef WIN32
-		CreateJVMFunc CreateJVM = (CreateJVMFunc)GetProcAddress(jvmDll, "JNI_CreateJavaVM");
-#else
-		CreateJVMFunc CreateJVM = (CreateJVMFunc)dlsym(jvmDll, "JNI_CreateJavaVM");
-		if (CreateJVM == NULL) {
-
-			std::cout << "CreateJVM == NULL" << std::endl;
-		}
-#endif
+		
+		CreateJVMFunc CreateJVM = (CreateJVMFunc)jvmDll.GetAddress("JNI_CreateJavaVM");
 
 		JavaVMInitArgs vmArgs;
-		
+		JavaVMOption options[2];
+		std::ifstream ifile(".\\dataengine.jar");
+		options[0].optionString = "-Xmx1024M"; //Max of 2048M
 
 #ifdef WIN32
-		JavaVMOption options[1];
-		std::ifstream ifile(".\\dataengine.jar");
-		if (ifile){
-			options[0].optionString =
-				"-Djava.class.path=.\\dataengine.jar;"
-				".\\ojdbc6.jar;"
-				".\\database-drivers\\sqlite4java.jar;"
-				".\\database-drivers\\mysql-connector-java-5.1.38-bin.jar;"
-				".\\database-drivers\\sqlite-jdbc-3.8.11.2.jar;";
-		}else{
-			options[0].optionString =
-				"-Djava.class.path=..\\..\\DataEngine\\Java DataEngine\\dataengine.jar;"
-				"..\\..\\DataEngine\\Java DataEngine\\ojdbc6.jar;"
-				"..\\..\\DataEngine\\Java DataEngine\\database-drivers\\sqlite4java.jar;"
-				"..\\..\\DataEngine\\Java DataEngine\\database-drivers\\mysql-connector-java-5.1.38-bin.jar;"
-				"..\\..\\DataEngine\\Java DataEngine\\database-drivers\\sqlite-jdbc-3.8.11.2.jar;";
-		}
+		char jarFileSeparator = ';';
 #else
-		JavaVMOption options[2];
-		std::ifstream ifile("./dataengine.jar");
-		if (ifile){
-			options[0].optionString =
-				"-Djava.class.path=./dataengine.jar:"
-	 			"./ojdbc6.jar:"
-				"./database-drivers/opencsv-3.7.jar:"
-				"./database-drivers/sqlite4java.jar:"
-				"./database-drivers/mysql-connector-java-5.1.38-bin.jar:"
-				"./database-drivers/sqlite-jdbc-3.8.11.2.jar";
-			QString javaLibraryPath = "-Djava.library.path=" + QCoreApplication::applicationDirPath();
-			//options[1].optionString = "-Djava.library.path=/home/admin/SynGlyphX/cmake/bin/Linux64";//:$LD_LIBRARY_PATH";
-			options[1].optionString = new char[javaLibraryPath.length() + 1];
-			javaLibraryPath.toStdString().copy(options[1].optionString, javaLibraryPath.length(), 0);
-			
-		}else{
-			options[0].optionString =
-				"-Djava.class.path=../../DataEngine/Java DataEngine/dataengine.jar:"
-				"../../DataEngine/Java DataEngine/ojdbc6.jar:"
-				"../../DataEngine/Java DataEngine/database-drivers/opencsv-3.7.jar:"
-				"../../DataEngine/Java DataEngine/database-drivers/sqlite4java.jar:"
-				"../../DataEngine/Java DataEngine/database-drivers/mysql-connector-java-5.1.38-bin.jar:"
-				"../../DataEngine/Java DataEngine/database-drivers/sqlite-jdbc-3.8.11.2.jar:";
-		}
+		char jarFileSeparator = ':';
 #endif
+
+		SynGlyphX::StringVector jarFiles;
+		jarFiles.push_back("dataengine.jar");
+		jarFiles.push_back("ojdbc6.jar");
+		jarFiles.push_back("database-drivers\\opencsv-3.7.jar");
+		jarFiles.push_back("database-drivers\\sqlite4java.jar");
+		jarFiles.push_back("database-drivers\\mysql-connector-java-5.1.38-bin.jar");
+		jarFiles.push_back("database-drivers\\sqlite-jdbc-3.8.11.2.jar");
+		jarFiles.push_back("database-drivers\\vertica-jdbc-7.2.1-0.jar");
+
+		std::string jarFilePrefix;
+		if (ifile) {
+
+			jarFilePrefix = ".\\";
+		} else {
+			
+			jarFilePrefix = "..\\..\\DataEngine\\Java DataEngine\\";
+		}
+
+		std::string jarFilesOptionString = "-Djava.class.path=";
+		for (const auto& jarFile : jarFiles) {
+
+			jarFilesOptionString += jarFilePrefix;
+			jarFilesOptionString += jarFile;
+			jarFilesOptionString += jarFileSeparator;
+		}
+
 		ifile.close();
+		options[1].optionString = const_cast<char*>(jarFilesOptionString.c_str());
+
 		vmArgs.version = JNI_VERSION_1_2;
 		vmArgs.options = options;
-#ifdef WIN32
-		vmArgs.nOptions = 1;
-#else
 		vmArgs.nOptions = 2;
-#endif
 		vmArgs.ignoreUnrecognized = JNI_FALSE;
 
 		// Create the JVM
@@ -166,12 +124,19 @@ namespace DataEngine
 	}
 
 	bool DataEngineConnection::hasJVM() const {
+		
 		return classFound;
 	}
 
 	void DataEngineConnection::loadCSV(std::string path){
 
 		if (classFound){
+
+			if (IsConnectionOpen()) {
+
+				closeConnection();
+			}
+
 			jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
 				"loadFromCSV", "(Ljava/lang/String;)V");
 			if (methodId != NULL) {
@@ -184,6 +149,8 @@ namespace DataEngine
 					jniEnv->ExceptionClear();
 				}
 			}
+
+			m_openConnection = QString::fromStdString(path);
 		}
 	}
 
@@ -204,21 +171,6 @@ namespace DataEngine
 			}
 		}
 	}
-	/*
-	std::vector<std::string> DataEngineConnection::getTableNames(){
-
-		std::vector<std::string> str;
-		if (classFound){
-			DataEngine::DataEngineStatement s1;
-			s1.prepare(jniEnv, jcls);
-			int size = s1.tableCount();
-			for (int i = 0; i < size; i++){
-				str.push_back(s1.getTableName(i));
-			}
-		}
-
-		return str;
-	}*/
 
 	JNIEnv* DataEngineConnection::getEnv() const {
 		
@@ -234,38 +186,19 @@ namespace DataEngine
 
 		javaVM->DestroyJavaVM();
 	}
-	/*
-	void DataEngineConnection::addTableNumericFields(boost::uuids::uuid id, std::vector<std::wstring> tableNames){
-		tableNumericFields[id] = tableNames;
-	}
 
-	const std::vector<std::wstring>& DataEngineConnection::getTableNumericFields(boost::uuids::uuid id) const {
-		
-		return tableNumericFields.at(id);
-	}
-
-	const std::map<boost::uuids::uuid, std::vector<std::wstring>>& DataEngineConnection::getNumericFieldsTable() const {
-		
-		return tableNumericFields;
-	}
-
-	void DataEngineConnection::addTableName(boost::uuids::uuid id, std::wstring name){
-		
-		tableNames[id] = name;
-	}
-
-	const std::wstring& DataEngineConnection::getTableName(boost::uuids::uuid id) const {
-		
-		return tableNames.at(id);
-	}
-	*/
 	//JDBC ACCESSOR FUNCTIONS
 	QStringList DataEngineConnection::connectToServer(QString db_url, QString user, QString pass, QString db_type){
+
+		if (IsConnectionOpen()) {
+
+			closeConnection();
+		}
 
 		jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
 			"connectToServer", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)[Ljava/lang/String;");
 		jobjectArray itr;
-		QStringList databases;
+		QStringList schemas;
 		if (methodId != NULL) {
 			jstring db = jniEnv->NewStringUTF(db_url.toStdString().c_str());
 			jstring usr = jniEnv->NewStringUTF(user.toStdString().c_str());
@@ -276,31 +209,34 @@ namespace DataEngine
 				jniEnv->ExceptionDescribe();
 				jniEnv->ExceptionClear();
 			}
-
+		
 			int length = jniEnv->GetArrayLength(itr);
+
+			m_openConnection = db_url;
 
 			for (int i = 0; i < length; i++){
 				jstring element = (jstring)jniEnv->GetObjectArrayElement(itr, i);
+				if (length == 1 && element == NULL){ break; }
 				const char *str = jniEnv->GetStringUTFChars(element, 0);
 				QString db_name(str);
-				databases << db_name;
+				schemas << db_name;
 			}
 		}
-		return databases;
+		setTables();
+		return schemas;
 	}
 
-	QStringList DataEngineConnection::chooseDatabase(QString db_name){
+	void DataEngineConnection::setTables(){
 
 		foreignKeysByTable.clear();
 		sampleDataByTable.clear();
 		columnNames.clear();
 		tables.clear();
 		jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
-			"chooseDatabase", "(Ljava/lang/String;)[Ljava/lang/String;");
+			"getTableNames", "()[Ljava/lang/String;");
 		jobjectArray itr;
 		if (methodId != NULL) {
-			jstring name = jniEnv->NewStringUTF(db_name.toStdString().c_str());
-			itr = (jobjectArray)jniEnv->CallStaticObjectMethod(jcls, methodId, name);
+			itr = (jobjectArray)jniEnv->CallStaticObjectMethod(jcls, methodId);
 			if (jniEnv->ExceptionCheck()) {
 				jniEnv->ExceptionDescribe();
 				jniEnv->ExceptionClear();
@@ -315,7 +251,6 @@ namespace DataEngine
 				tables << tbl_name;
 			}
 		}
-		return tables;
 	}
 
 	void DataEngineConnection::setChosenTables(QStringList chosen){
@@ -336,6 +271,7 @@ namespace DataEngine
 				jniEnv->ExceptionDescribe();
 				jniEnv->ExceptionClear();
 			}
+			tables = chosen;
 		}
 	}
 
@@ -358,6 +294,33 @@ namespace DataEngine
 
 	QStringList DataEngineConnection::getTables(){
 		return tables;
+	}
+
+	QStringList DataEngineConnection::getSchemaTableNames(QString schema){
+
+		jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
+			"getSchemaTableNames", "(Ljava/lang/String;)[Ljava/lang/String;");
+		jobjectArray itr;
+		QStringList tbls;
+		if (methodId != NULL) {
+			jstring sch = jniEnv->NewStringUTF(schema.toStdString().c_str());
+			itr = (jobjectArray)jniEnv->CallStaticObjectMethod(jcls, methodId, sch);
+			if (jniEnv->ExceptionCheck()) {
+				jniEnv->ExceptionDescribe();
+				jniEnv->ExceptionClear();
+			}
+
+			int length = jniEnv->GetArrayLength(itr);
+
+			for (int i = 0; i < length; i++){
+				jstring element = (jstring)jniEnv->GetObjectArrayElement(itr, i);
+				if (length == 1 && element == NULL){ break; }
+				const char *str = jniEnv->GetStringUTFChars(element, 0);
+				QString tbl_name(str);
+				tbls << tbl_name;
+			}
+		}
+		return tbls;
 	}
 
 	QStringList DataEngineConnection::getColumnNames(QString tablename){
@@ -431,6 +394,10 @@ namespace DataEngine
 
 			for (int i = 0; i < length; i++){
 				jstring element = (jstring)jniEnv->GetObjectArrayElement(itr, i);
+				if ((length == 1) && (element == nullptr)) {
+
+					break;
+				}
 				const char *str = jniEnv->GetStringUTFChars(element, 0);
 				QString fkey_str(str);
 				temp << fkey_str;
@@ -464,6 +431,23 @@ namespace DataEngine
 		return samplerow;
 	}
 
+	int DataEngineConnection::sizeOfQuery(QString query){
+
+		jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
+			"sizeOfQuery", "(Ljava/lang/String;)I");
+
+		jint count;
+		if (methodId != NULL) {
+			jstring name = jniEnv->NewStringUTF(query.toStdString().c_str());
+			count = (jint)jniEnv->CallStaticIntMethod(jcls, methodId, name);
+			if (jniEnv->ExceptionCheck()) {
+				jniEnv->ExceptionDescribe();
+				jniEnv->ExceptionClear();
+			}
+		}
+		return count;
+	}
+
 	void DataEngineConnection::closeConnection(){
 
 		jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
@@ -476,40 +460,124 @@ namespace DataEngine
 				jniEnv->ExceptionClear();
 			}
 		}
+
+		m_openConnection.clear();
+	}
+
+	bool DataEngineConnection::IsConnectionOpen() const {
+
+		return (!m_openConnection.isEmpty());
+	}
+
+	bool DataEngineConnection::IsConnectionOpen(const QString& connection) const {
+
+		return (m_openConnection == connection);
+	}
+
+	QString DataEngineConnection::CreateInnerJoinQueryFromForiegnKeys(const QString& mainTable, const ForiegnKeyVector& foriegnKeyTables) {
+
+		QStringList origins;
+
+		QString query = "SELECT * FROM (";
+		query += mainTable;
+
+		for (const auto& foreignKey : foriegnKeyTables) {
+
+			if (!origins.contains(foreignKey.origin)){
+				query += " INNER JOIN " + foreignKey.origin + " ON ";
+				query += "(" + mainTable + "." + foreignKey.key + "=" + foreignKey.origin + "." + foreignKey.value + ")";
+				origins << foreignKey.origin;
+			}
+		}
+		
+		query += ")";
+
+		return query;
+	}
+
+	void DataEngineConnection::queueATable(QString name, QString query){
+
+		jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
+			"queueATable", "(Ljava/lang/String;Ljava/lang/String;)V");
+
+		if (methodId != NULL) {
+			jstring n = jniEnv->NewStringUTF(name.toStdString().c_str());
+			jstring q = jniEnv->NewStringUTF(query.toStdString().c_str());
+			jniEnv->CallStaticObjectMethod(jcls, methodId, n, q);
+			if (jniEnv->ExceptionCheck()) {
+				jniEnv->ExceptionDescribe();
+				jniEnv->ExceptionClear();
+			}
+		}
+	}
+
+	void DataEngineConnection::removeQueuedTable(QString name){
+
+		jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
+			"removeQueuedTable", "(Ljava/lang/String;)V");
+
+		if (methodId != NULL) {
+			jstring n = jniEnv->NewStringUTF(name.toStdString().c_str());
+			jniEnv->CallStaticObjectMethod(jcls, methodId, n);
+			if (jniEnv->ExceptionCheck()) {
+				jniEnv->ExceptionDescribe();
+				jniEnv->ExceptionClear();
+			}
+		}
+	}
+
+	void DataEngineConnection::executeQueuedTables(){
+
+		jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
+			"executeQueuedTable", "()V");
+
+		if (methodId != NULL) {
+			jniEnv->CallStaticObjectMethod(jcls, methodId);
+			if (jniEnv->ExceptionCheck()) {
+				jniEnv->ExceptionDescribe();
+				jniEnv->ExceptionClear();
+			}
+		}
 	}
 
 	//JDBC END
-	/*
-	void DataEngineConnection::testFunction(){
-		std::ofstream myfile;
-		myfile.open("testlog.txt");
+	
+	QString DataEngineConnection::encryptPassword(QString password){
 
-		for (int i = 0; i < tables.size(); i++){
-			std::vector<ForeignKey> keys = getForeignKeys(tables.at(i));
-			std::vector<QStringList> sample = getSampleData(tables.at(i));
-
-			myfile << tables.at(i).toStdString() << '\n';
-			myfile << "Foreign Keys:\n";
-			for (int j = 0; j < keys.size(); j++){
-				myfile << "Key: " << keys.at(j).key.toStdString() << ", Origin: " << keys.at(j).origin.toStdString() << ", Value: " << keys.at(j).value.toStdString() << '\n';
+		jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
+			"encryptPassword", "(Ljava/lang/String;)Ljava/lang/String;");
+		QString encryp;
+		if (methodId != NULL) {
+			jstring q = jniEnv->NewStringUTF(password.toStdString().c_str());
+			jstring encrypted = (jstring)jniEnv->CallStaticObjectMethod(jcls, methodId, q);
+			if (jniEnv->ExceptionCheck()) {
+				jniEnv->ExceptionDescribe();
+				jniEnv->ExceptionClear();
 			}
-			myfile << '\n';
-			myfile << "Sample Data:\n";
-			QStringList cols = getColumnNames(tables.at(i));
-			for (int j = 0; j < cols.size(); j++){
-				myfile << cols.at(j).toStdString() << " | ";
-			}
-			myfile << '\n';
-			for (int j = 0; j < sample.size(); j++){
-				QStringList temp = sample.at(j);
-				for (int k = 0; k < temp.size(); k++){
-					myfile << temp.at(k).toStdString() << ", ";
-				}
-				myfile << '\n';
-			}
-			myfile << '\n';
+			const char *str = jniEnv->GetStringUTFChars(encrypted, 0);
+			encryp = str;
 		}
-		myfile.close();
-	}*/
+		return encryp;
+
+	}
+	
+	QString DataEngineConnection::decryptPassword(QString encrypted){
+
+		jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
+			"decryptPassword", "(Ljava/lang/String;)Ljava/lang/String;");
+		QString decryp;
+		if (methodId != NULL) {
+			jstring q = jniEnv->NewStringUTF(encrypted.toStdString().c_str());
+			jstring decrypted = (jstring)jniEnv->CallStaticObjectMethod(jcls, methodId, q);
+			if (jniEnv->ExceptionCheck()) {
+				jniEnv->ExceptionDescribe();
+				jniEnv->ExceptionClear();
+			}
+			const char *str = jniEnv->GetStringUTFChars(decrypted, 0);
+			decryp = str;
+		}
+		return decryp;
+
+	}
 
 }

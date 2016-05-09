@@ -17,7 +17,6 @@ namespace DataEngine
 		baseImageDir = bid;
 		baseFilename = bfn;
 		application = appName;
-		prepare();
 		/*
 		std::ofstream myfile;
 		myfile.open("dmlog.txt");
@@ -97,9 +96,19 @@ namespace DataEngine
 			//qDebug() << "Returning count...";
 			itr = (jobjectArray)jniEnv->CallStaticObjectMethod(jcls, methodId);
 			if (jniEnv->ExceptionCheck()) {
+
+				jthrowable exc;
+				exc = jniEnv->ExceptionOccurred();
+				jboolean isCopy = false;
+				jmethodID toString = jniEnv->GetMethodID( jniEnv->FindClass( "java/lang/Object" ), "toString", "()Ljava/lang/String;" );
+				jstring s = (jstring)( jniEnv )->CallObjectMethod( exc, toString );
+				const char* utf = ( jniEnv )->GetStringUTFChars( s, &isCopy );
+
 				jniEnv->ExceptionDescribe();
 				jniEnv->ExceptionClear();
 			}
+
+
 			//qDebug() << itr;
 
 			int length = jniEnv->GetArrayLength(itr);
@@ -198,6 +207,7 @@ namespace DataEngine
 
 	bool GlyphEngine::getDownloadedBaseImage(std::vector<SynGlyphX::BaseImage> baseImages){
 		
+		prepare();
 		unsigned int nextTextureID = NumberOfDefaultBaseImages + 1;
 		for (const SynGlyphX::BaseImage& baseImage : baseImages) {
 
@@ -251,9 +261,8 @@ namespace DataEngine
 			catch (const DownloadException& e) {
 
 				downloadComplete = false;
-				m_error = QObject::tr("Base image failed to download so the world map was used instead.\n\nError: ") + e.what();
 				GeographicBoundingBox m_overrideRootXYBoundingBox = GeographicBoundingBox(GeographicPoint(0.0, 0.0), 90.0, 180.0);
-				return false;
+				throw;
 			}
 		}
 		else{
@@ -283,6 +292,22 @@ namespace DataEngine
 			}
 		}
 		return updated;
+	}
+
+	bool GlyphEngine::IsUpdateNeeded() const {
+
+		jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
+			"isUpdateNeeded", "()Z");
+
+		if (methodId != NULL) {
+			bool update = (jboolean)jniEnv->CallStaticBooleanMethod(jcls, methodId);
+			if (jniEnv->ExceptionCheck()) {
+				jniEnv->ExceptionDescribe();
+				jniEnv->ExceptionClear();
+			}
+			return update;
+		}
+		return true;
 	}
 
 	std::vector<double> GlyphEngine::getNWandSE(){
@@ -319,19 +344,20 @@ namespace DataEngine
 
 		if (jcls != NULL) {
 			jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
-				"beginGlyphGeneration", "()V");
+				"beginGlyphGeneration", "()Z");
+			bool memory = true;
 			if (methodId != NULL) {
-				jniEnv->CallStaticVoidMethod(jcls, methodId);
+				memory = (jboolean)jniEnv->CallStaticBooleanMethod(jcls, methodId);
 				if (jniEnv->ExceptionCheck()) {
 					jniEnv->ExceptionDescribe();
 					jniEnv->ExceptionClear();
 				}
 			}
+
+			if (!memory){
+				throw std::runtime_error("JVM Error: Not Enough Memory");
+			}
 		}
 		copyBaseImages();
-	}
-
-	QString GlyphEngine::getError(){
-		return m_error;
 	}
 }

@@ -12,11 +12,24 @@ public class Functions {
 	}
 
 	public static double linearInterpolation(double x1, double x3, double y1, double y3, double x2){
-		if(x3-x1 == 0){return 0;}
+		if(x3-x1 == 0){
+			if(x2 >= y1 && x2 <= y3){
+				return x2;
+			}else{
+				return y3;
+			}
+		}
 		return (((x2-x1)*(y3-y1))/(x3-x1))+y1;
 	}
 
 	public static double logarithmicInterpolation(double x1, double x3, double y1, double y3, double x2){
+		if(x3-x1 == 0){
+			if(x2 >= y1 && x2 <= y3){
+				return x2;
+			}else{
+				return y3;
+			}
+		}
 		return ((Math.log10(x2-x1+1)*(y3-y1))/Math.log10(x3-x1+1))+y1;
 	}
 
@@ -89,6 +102,16 @@ public class Functions {
 		return rgb;
 	}
 
+	public static String[] arrayListToStringList(ArrayList<String> list){
+		String[] temp = new String[1];
+		if(list.size() > 0){
+			temp = new String[list.size()];
+		}
+    	for(int i = 0; i < list.size(); i++){
+    		temp[i] = list.get(i);
+    	}
+    	return temp;
+	}
 /*
 	public static void main(String[] args){
 		double[] hsv = Functions.convertRGBtoHSV(0,255,0);
@@ -96,7 +119,8 @@ public class Functions {
 		System.out.println(hsv[1]);
 		System.out.println(hsv[2]);
 
-		double[] rgb = Functions.convertHSVtoRGB(hsv[0],hsv[1],hsv[2]);
+		//double[] rgb = Functions.convertHSVtoRGB(hsv[0],hsv[1],hsv[2]);
+		double[] rgb = Functions.convertHSVtoRGB(50,101,101);
 		System.out.println(rgb[0]);
 		System.out.println(rgb[1]);
 		System.out.println(rgb[2]);

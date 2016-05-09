@@ -11,10 +11,13 @@ import synglyphx.util.Functions;
 import synglyphx.data.*;
 import synglyphx.io.Logger;
 import synglyphx.util.BaseObject;
+import synglyphx.link.LinkTemplate;
+import synglyphx.link.LinkCreator;
 
 public class GlyphCreator {
 
 	private Map<Integer, XMLGlyphTemplate> temps = null;
+	private Map<Integer, LinkTemplate> link_temps = null;
 	private ArrayList<SourceDataInfo> csvData = null;
 	private ArrayList<Integer> rootIds = null;
 	private GlyphTreeRepository glyphRepo = null;
@@ -53,23 +56,36 @@ public class GlyphCreator {
 		remove_scale_zero = scale_zero;
 	}
 
+	public void setLinkTemplates(Map<Integer, LinkTemplate> link_temps){
+		this.link_temps = link_temps;
+	}
+
 	public void begin(){
+
+		Thread thread = new Thread(){
+			public void run(){
+				LinkCreator linkCreator = new LinkCreator(link_temps, temps, csvData, rootIds);
+				linkCreator.begin();
+			}
+		};
+		thread.start();
 
 		for(int i=0;i < rootIds.size();i++){
 			currData = temps.get(rootIds.get(i)).getDataSource();
-			rootCoords.put(rootIds.get(i), new CoordinateMap(temps.get(rootIds.get(i)).getToMerge(), csvData.get(currData).getLastID()));
+			int lastChildID = temps.get(rootIds.get(i)).getLastChildID();
+			rootCoords.put(rootIds.get(i), new CoordinateMap(temps.get(rootIds.get(i)).getToMerge(), lastChildID));
 			if(csvData.get(currData).getType().equals("csv") || csvData.get(currData).getType().equals("sqlite3")){
 				Query query = new Query(csvData.get(currData).getDataFrame()).all(); 
 				Logger.getInstance().add("Executed initial query...");
 				Cursor cursor = csvData.get(currData).getDataFrame().query(query);
 				Logger.getInstance().add("Returned cursor with size " + String.valueOf(cursor.size()) +"...");
 
-				Logger.getInstance().add(String.valueOf(csvData.get(currData).getRootID()));
-				Logger.getInstance().add(String.valueOf(csvData.get(currData).getLastID()));
+				Logger.getInstance().add(String.valueOf(rootIds.get(i)));
+				Logger.getInstance().add(String.valueOf(lastChildID));
 
 				while(cursor.next()){
 					for (int j = 1; j < mappingCount+1; j++){
-						if(j >= csvData.get(currData).getRootID() && j <= csvData.get(currData).getLastID()){
+						if(j >= rootIds.get(i) && j <= lastChildID){
 							addNode(j, cursor);
 						}
 					}
@@ -84,6 +100,11 @@ public class GlyphCreator {
 				rootCoords = jdbc.returnUpdatedRootCoords();
 			}
 			rootCoords.get(rootIds.get(i)).setLastID(glyphRepo.getNodeCount()-1);
+		}
+		try{
+			thread.join();
+		}catch(InterruptedException ie){
+	        ie.printStackTrace();
 		}
 	}
 
@@ -108,7 +129,7 @@ public class GlyphCreator {
 			if(functions.get(fieldNames.get(i)).equals("Linear Interpolation") || functions.get(fieldNames.get(i)).equals("Logarithmic Interpolation")){
 				double y1;
 				double y3;
-				if(download && ((index == 1 && fieldNames.get(i).equals("PositionX"))||(index == 1 && fieldNames.get(i).equals("PositionY")))){
+				if(download && nodeTemp.getChildOf() == 0 && (fieldNames.get(i).equals("PositionX") || fieldNames.get(i).equals("PositionY"))){
 					y1 = Double.parseDouble(csvData.get(currData).getDataFrame().getMinMaxTable().get(input.get(fieldNames.get(i))).get(0));
 					y3 = Double.parseDouble(csvData.get(currData).getDataFrame().getMinMaxTable().get(input.get(fieldNames.get(i))).get(1));
 				}else{
@@ -125,13 +146,15 @@ public class GlyphCreator {
 					x3 = Double.parseDouble(csvData.get(currData).getDataFrame().getMinMaxTable().get(input.get(fieldNames.get(i))).get(1));
 				}
 				double x2 = Double.parseDouble(cursor.get(input.get(fieldNames.get(i)))); //returns exact value in this row
-				if(x3 < Double.parseDouble(csvData.get(currData).getDataFrame().getMinMaxTable().get(input.get(fieldNames.get(i))).get(1))){
-					x3 = Double.parseDouble(csvData.get(currData).getDataFrame().getMinMaxTable().get(input.get(fieldNames.get(i))).get(1));
-					nodeTemp.updateMinMaxField(input.get(fieldNames.get(i)), x1, x3);
-				}
-				if(x1 > Double.parseDouble(csvData.get(currData).getDataFrame().getMinMaxTable().get(input.get(fieldNames.get(i))).get(0))){
-					x1 = Double.parseDouble(csvData.get(currData).getDataFrame().getMinMaxTable().get(input.get(fieldNames.get(i))).get(0));
-					nodeTemp.updateMinMaxField(input.get(fieldNames.get(i)), x1, x3);
+				if(x3 > x1){
+					if(x3 < Double.parseDouble(csvData.get(currData).getDataFrame().getMinMaxTable().get(input.get(fieldNames.get(i))).get(1))){
+						x3 = Double.parseDouble(csvData.get(currData).getDataFrame().getMinMaxTable().get(input.get(fieldNames.get(i))).get(1));
+						nodeTemp.updateMinMaxField(input.get(fieldNames.get(i)), x1, x3);
+					}
+					if(x1 > Double.parseDouble(csvData.get(currData).getDataFrame().getMinMaxTable().get(input.get(fieldNames.get(i))).get(0))){
+						x1 = Double.parseDouble(csvData.get(currData).getDataFrame().getMinMaxTable().get(input.get(fieldNames.get(i))).get(0));
+						nodeTemp.updateMinMaxField(input.get(fieldNames.get(i)), x1, x3);
+					}
 				}
 				if(functions.get(fieldNames.get(i)).equals("Linear Interpolation")){
 					setValues.put(fieldNames.get(i), Functions.linearInterpolation(x1,x3,y1,y3,x2));
@@ -148,13 +171,17 @@ public class GlyphCreator {
 			else if(functions.get(fieldNames.get(i)).equals("Range To Value")){
 				setValues.put(fieldNames.get(i), Functions.rangeToValue(Double.parseDouble(cursor.get(input.get(fieldNames.get(i)))),nodeTemp.getKeyValueMap().get(fieldNames.get(i))));
 			}
+			else if(functions.get(fieldNames.get(i)).equals("None")){
+				setValues.put(fieldNames.get(i), Double.parseDouble(csvData.get(currData).getDataFrame().getMinMaxTable().get(input.get(fieldNames.get(i))).get(1)));
+			}
 		}
 
-		Node node = setFields(fieldNames, ranges, setValues, new Node(), nodeTemp, input);
+		Node node = setFields(fieldNames, setValues, new Node(), nodeTemp, input);
 
 		//TAG STUFF
 		node.setDefaultTagValue(default_tag_value);
 		if(input.get("Tag") != null){
+			//System.out.println(input.get("Tag"));
 			node.setTag(input.get("Tag")+": "+cursor.get(input.get("Tag")));
 			node.setTagPos(csvData.get(currData).getDataFrame().getHeaderPlace(input.get("Tag")));
 		}else if(input.get("Tag") == null && input.get(default_tag_field) != null){
@@ -183,86 +210,86 @@ public class GlyphCreator {
 
 	}
 
-	public static Node setFields(ArrayList<String> fieldNames, HashMap<String, ArrayList<Double>> ranges, HashMap<String, Double> setValues, Node node, XMLGlyphTemplate childTemp, Map<String, String> input){
+	public static Node setFields(ArrayList<String> fieldNames, HashMap<String, Double> setValues, Node node, XMLGlyphTemplate childTemp, Map<String, String> input){
 
 		//SET POSITION
 		if(!fieldNames.contains("PositionX")){
-			node.setX(ranges.get("PositionX").get(1));
+			node.setX(childTemp.getDefIfNotBound("PositionX"));
 		}else{
 			node.setX(setValues.get("PositionX"));
 		}
 		if(!fieldNames.contains("PositionY")){
-			node.setY(ranges.get("PositionY").get(1));
+			node.setY(childTemp.getDefIfNotBound("PositionY"));
 		}else{
 			node.setY(setValues.get("PositionY"));
 		}
 		if(!fieldNames.contains("PositionZ")){
-			node.setZ(ranges.get("PositionZ").get(1));
+			node.setZ(childTemp.getDefIfNotBound("PositionZ"));
 		}else{
 			node.setZ(setValues.get("PositionZ"));
 		}
 
 		//SET SCALE
 		if(!fieldNames.contains("ScaleX")){
-			node.setSX(ranges.get("ScaleX").get(1));
+			node.setSX(childTemp.getDefIfNotBound("ScaleX"));
 		}else{
 			node.setSX(setValues.get("ScaleX"));
 		}
 		if(!fieldNames.contains("ScaleY")){
-			node.setSY(ranges.get("ScaleY").get(1));
+			node.setSY(childTemp.getDefIfNotBound("ScaleY"));
 		}else{
 			node.setSY(setValues.get("ScaleY"));
 		}
 		if(!fieldNames.contains("ScaleZ")){
-			node.setSZ(ranges.get("ScaleZ").get(1));
+			node.setSZ(childTemp.getDefIfNotBound("ScaleZ"));
 		}else{
 			node.setSZ(setValues.get("ScaleZ"));
 		}
 
 		//SET ROTATION
 		if(!fieldNames.contains("RotationX")){
-			node.setRX(ranges.get("RotationX").get(1));
+			node.setRX(childTemp.getDefIfNotBound("RotationX"));
 		}else{
 			node.setRX(setValues.get("RotationX"));
 		}
 		if(!fieldNames.contains("RotationY")){
-			node.setRY(ranges.get("RotationY").get(1));
+			node.setRY(childTemp.getDefIfNotBound("RotationY"));
 		}else{
 			node.setRY(setValues.get("RotationY"));
 		}
 		if(!fieldNames.contains("RotationZ")){
-			node.setRZ(ranges.get("RotationZ").get(1));
+			node.setRZ(childTemp.getDefIfNotBound("RotationZ"));
 		}else{
 			node.setRZ(setValues.get("RotationZ"));
 		}
 
 		//SET ROTATION RATE
 		if(!fieldNames.contains("RotationRateX")){
-			node.setRRX(ranges.get("RotationRateX").get(1));
+			node.setRRX(childTemp.getDefIfNotBound("RotationRateX"));
 		}else{
 			node.setRRX(setValues.get("RotationRateX"));
 		}
 		if(!fieldNames.contains("RotationRateY")){
-			node.setRRY(ranges.get("RotationRateY").get(1));
+			node.setRRY(childTemp.getDefIfNotBound("RotationRateY"));
 		}else{
 			node.setRRY(setValues.get("RotationRateY"));
 		}
 		if(!fieldNames.contains("RotationRateZ")){
-			node.setRRZ(ranges.get("RotationRateZ").get(1));
+			node.setRRZ(childTemp.getDefIfNotBound("RotationRateZ"));
 		}else{
 			node.setRRZ(setValues.get("RotationRateZ"));
 		}
 
 		//SET COLOR
 		if(!fieldNames.contains("ColorR")){
-			node.setColor(ranges.get("ColorR").get(1),ranges.get("ColorG").get(1),ranges.get("ColorB").get(1));
+			node.setColor(childTemp.getDefIfNotBound("ColorR"),childTemp.getDefIfNotBound("ColorG"),childTemp.getDefIfNotBound("ColorB"));
 		}else{
 			node.setColor(setValues.get("ColorR"),setValues.get("ColorG"),setValues.get("ColorB"));
 		}
 
 		//SET ALPHA
 		if(!fieldNames.contains("ColorTransparency")){
-			node.setAlpha((int)Math.round(ranges.get("ColorTransparency").get(1)));
+			node.setAlpha((int)Math.round(childTemp.getDefIfNotBound("ColorTransparency")));
 		}else{
 			node.setAlpha((int)Math.round(setValues.get("ColorTransparency")));
 		}
@@ -290,7 +317,7 @@ public class GlyphCreator {
 
 	public void printGlyphRepo(String[] colorStr, ArrayList<BaseObject> base_objects){
 		Logger.getInstance().add("Writing all files...");
-		glyphRepo.writeAll(colorStr, base_objects, rootCoords, remove_scale_zero);
+		glyphRepo.writeAll(colorStr, base_objects, rootCoords, remove_scale_zero, link_temps);
 	}
 
 }

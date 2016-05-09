@@ -10,6 +10,7 @@ import synglyphx.glyph.Edge;
 import synglyphx.util.ColorIndex;
 import synglyphx.util.BaseObject;
 import synglyphx.glyph.CoordinateMap;
+import synglyphx.link.LinkTemplate;
 
 public class CSVWriter {
 	
@@ -20,6 +21,8 @@ public class CSVWriter {
 	private ArrayList<BaseObject> base_objects;
 	private ArrayList<String> baseObjectLines;
 	private HashMap<Integer, CoordinateMap> rootCoords;
+	private Map<Integer, LinkTemplate> link_temps;
+	private ArrayList<Integer> excluded;
 	private String antzHeader; //94 Columns...
 	private String thru10_25;
 	private String thru41_50;
@@ -37,23 +40,25 @@ public class CSVWriter {
 	private boolean win;
 	private boolean remove_scale_zero;
 
-	public CSVWriter(int nodeCount, Map<Integer,Node> nodes, String outDir, String[] colorStr, String app, ArrayList<BaseObject> base_objects, HashMap<Integer, CoordinateMap> rootCoords, boolean scale_zero){
+	public CSVWriter(int nodeCount, Map<Integer,Node> nodes, String outDir,
+		String[] colorStr, String app, ArrayList<BaseObject> base_objects,
+		HashMap<Integer, CoordinateMap> rootCoords, boolean scale_zero,
+		Map<Integer, LinkTemplate> link_temps){
 		this.nodeCount = nodeCount;
 		this.allNodes = nodes;
 		this.base_objects = base_objects;
 		this.rootCoords = rootCoords;
 		this.remove_scale_zero = scale_zero;
+		this.link_temps = link_temps;
 		//System.out.println(nodeCount);
+		Logger.getInstance().add(outDir);
 		if(app.equals("DataMapper")){
-			this.outDir = outDir+"\\usr\\csv\\";
-			this.imageDir = outDir+"\\usr\\images\\downloadedMap.jpg";
+			this.outDir = outDir+"/usr/csv/";
+			this.imageDir = outDir+"/usr/images/downloadedMap.jpg";
 		}else if(app.equals("GlyphViewer")){
-			this.outDir = outDir+"\\antz\\";
-			this.imageDir = outDir+"\\antz\\base_image_2.png";
+			this.outDir = outDir+"/antz/";
+			this.imageDir = outDir+"/antz/base_image_2.png";
 		}
-		Logger.getInstance().add(this.outDir);
-		setAntz();
-		newBegin(app);
 
 		String os = System.getProperty("os.name");
         String w = "windows";
@@ -62,6 +67,9 @@ public class CSVWriter {
         }else{
         	this.win = false;
         }
+		Logger.getInstance().add(this.outDir);
+		setAntz();
+		newBegin(app);
 
 		if(app.equals("DataMapper")){
 			antzGlobals(colorStr);
@@ -141,6 +149,7 @@ public class CSVWriter {
 		Logger.getInstance().add(app);
 
 		createBaseObjectStrings(app);
+		System.out.println("entering try catch");
 
 		try{
 			//FileWriter file = new FileWriter("C:/Users/Bryan/Desktop/Test on Antz/usr/csv/ANTZ0001.csv");  
@@ -151,9 +160,10 @@ public class CSVWriter {
 			BufferedWriter bfw = new BufferedWriter(f);
 
 			if(app.equals("DataMapper")){
-				noURLLocation = outDir+"\\..\\..\\nourl.html";
+				noURLLocation = outDir+"/../../nourl.html";
 			}else{
-				noURLLocation = Paths.get(".").toAbsolutePath().normalize().toString()+"\\nourl.html";
+				Logger.getInstance().add(Paths.get(".").toAbsolutePath().normalize().toString());
+				noURLLocation = Paths.get(".").toAbsolutePath().normalize().toString()+"/nourl.html";
 			}
 		    Logger.getInstance().add(noURLLocation);
 
@@ -181,8 +191,10 @@ public class CSVWriter {
 	        boolean print = true;
 	        String lastRootXYZ = "";
 	        int firstRoot = 1;
+	        excluded = new ArrayList<Integer>();
 	        HashMap<Integer,Double> rotation_lookup = new HashMap<Integer,Double>();
-	        for(int i=1; i< nodeCount; i++){
+	        int i;
+	        for(i = 1; i< nodeCount; i++){
 	        	String line = "";
 	        	String tag = "";
 	        	Node temp = allNodes.get(i);
@@ -264,6 +276,8 @@ public class CSVWriter {
 
 			        bf.write(line);
 			        bfw.write(tag);
+			    }else{
+			    	excluded.add(i);
 			    }
 		    	
 		    	if(rootCoords.get(firstRoot).getLastID() == i){
@@ -272,12 +286,52 @@ public class CSVWriter {
 		    	print = true;
 	        }
 
+	        printLinks(bf, bfw, i, global_offset);
+
 	        bf.close();
 	        bfw.close();
 
 	    }catch(IOException ioe){
+	    	ioe.printStackTrace();
 	    	Logger.getInstance().add("Failed to write antznode and antztag files.");
 	    }
+	}
+
+	public void printLinks(BufferedWriter bf, BufferedWriter bfw, int index, int offset) throws IOException {
+
+		for(Map.Entry<Integer, LinkTemplate> entry : link_temps.entrySet()){
+			ArrayList<Integer> parent_ids = entry.getValue().linkParentID();
+			ArrayList<Integer> child_ids = entry.getValue().linkChildID();
+			int link_index = 0;
+			index += offset-1;
+			System.out.println(offset);
+			for(int i = 0; i < entry.getValue().linkCount(); i++){
+				index++;
+				if(!excluded.contains(parent_ids.get(link_index)) && !excluded.contains(parent_ids.get(link_index))){
+					String out = ""; 
+					String key_node_id = String.valueOf(parent_ids.get(link_index)+offset);
+					String value_node_id = String.valueOf(child_ids.get(link_index)+offset);
+					String color_r = entry.getValue().getCR();
+					String color_g = entry.getValue().getCG();
+					String color_b = entry.getValue().getCB();
+					if(entry.getValue().inheritColor()){ //Capture color from parent
+						Node temp = allNodes.get(parent_ids.get(link_index));
+						color_r = String.valueOf(temp.getCR());
+						color_g = String.valueOf(temp.getCG());
+						color_b = String.valueOf(temp.getCB());
+					}
+					//System.out.println(key_node_id+", "+value_node_id);
+					out += index+",7,"+index+",0,"+key_node_id+",1,"+value_node_id+",";
+					out += "0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0,1.5,0,0,0,0,0,0,0,0,0,";
+					out += "0,0,0,0,0,0,0,"+entry.getValue().getGeo()+",1,0,0.1,0,";
+					out += color_r+","+color_g+","+color_b+","+entry.getValue().getAlpha()+",";
+					out += "0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,16,16,0,0,0,0,"+index+",420\n";
+					bf.write(out);
+					bfw.write(entry.getValue().outputTag(link_index, index));
+				}
+				link_index++;
+			}
+		}
 	}
 
 	private boolean isScaleGTZero(Node temp){
@@ -405,13 +459,14 @@ public class CSVWriter {
 		int offset = 2;
 		File f = new File(imageDir);
 		if(f.exists()){world = false;}
+		//Logger.getInstance().add(String.valueOf(world));
 
 		for(int i = 0; i < base_objects.size(); i++){
 			String template = "";
 			BaseObject bo = base_objects.get(i);
 			String[] color = bo.getGridColor();
 			String number = String.valueOf(i+offset);
-			if(i == 0 && (bo.getName().equals("World") || world)){number = "1";offset = 1;}
+			if(i == 0 && (bo.getName().equals("World") || (bo.getType().equals("Downloaded Map") && world))){number = "1";offset = 1;}
 			template = String.valueOf(i+6)+",6,"+String.valueOf(i+6)+",1,"+parentID+","+branchLevel+",0,0,"+childCount+",0,0,0,0,1,"+bo.getGLCount(0)+","+bo.getGLCount(1)+",0,0,0,0,0,0,1,0,0,1,1,1,";
 			template += bo.getPosition(0)+","+bo.getPosition(1)+","+bo.getPosition(2)+",0,0,0,0,0,0,"+bo.getRotation(0)+","+bo.getRotation(1)+","+bo.getRotation(2)+",0,0,0,0,0,0,0,0,0,0,0,1,0,0.1,18,"+color[0]+","+color[1]+","+color[2]+",255,";
 			template += "0,"+number+","+bo.showGridLines()+",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"+bo.getGLSegX()+","+bo.getGLSegY()+",0,0,0,0,0,420\n";

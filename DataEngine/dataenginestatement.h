@@ -16,7 +16,7 @@ namespace DataEngine
 	private:
 		void constructDataStats(int i);
 		QStringList getStatsForField(int i, QString field);
-		void setSourceType(SynGlyphX::FileDatasource::SourceType type);
+		void setSourceType(SynGlyphX::FileDatasource::FileType type);
 		JNIEnv *jniEnv;
 		jclass jcls;
 		QStringList fields;
@@ -27,7 +27,7 @@ namespace DataEngine
 	public:
 		DataEngineStatement(){};
 		void prepare(JNIEnv *jniEnv, jclass jcls);
-		void prepare(JNIEnv *jniEnv, jclass jcls, SynGlyphX::FileDatasource::SourceType type);
+		void prepare(JNIEnv *jniEnv, jclass jcls, const QString& sourceTypeString);
 		std::string getTableName(int i);
 		std::string checkMethodID(jmethodID methodId, int i);
 		int size();

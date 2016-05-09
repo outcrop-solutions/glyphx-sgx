@@ -15,7 +15,8 @@ import synglyphx.util.BaseObject;
 import synglyphx.jdbc.Table;
 import synglyphx.jdbc.BasicTable;
 import synglyphx.jdbc.MergedTable;
-import synglyphx.jdbc.DriverSelect;
+import synglyphx.jdbc.driver.Driver;
+import synglyphx.jdbc.driver.DriverSelector;
 
 public class JDBCNodeGenerator {
 
@@ -28,6 +29,7 @@ public class JDBCNodeGenerator {
 	private boolean download;
 	private int tempCount;
 	private Table table;
+	private Driver driver;
 
 	public JDBCNodeGenerator(SourceDataInfo source){
 		sourceData = source;
@@ -53,19 +55,21 @@ public class JDBCNodeGenerator {
 
 	    try{
 
-	        Class.forName(DriverSelect.getDriver(sourceData.getType()));
+	    	driver = DriverSelector.getDriver(sourceData.getType());
+            Class.forName(driver.packageName());
 	        Logger.getInstance().add("Connecting to Server...");
 
-	        Connection conn = DriverManager.getConnection(sourceData.getHost(),sourceData.getUsername(),sourceData.getPassword());
+	        driver.createConnection(sourceData.getHost(),sourceData.getUsername(),sourceData.getPassword());
 
+	        //System.out.println(sourceData.getQuery());
 	        if(sourceData.isMerged()){
-	        	table = new MergedTable(sourceData.getQuery(), conn);
+	        	table = new MergedTable(sourceData.getQuery(), driver);
 	        }else{
-	        	table = new BasicTable(sourceData.getTable(), conn);
+	        	table = new BasicTable(sourceData.getTable(), driver);
 	        }
 
 	        String sql = sourceData.getQuery();
-			PreparedStatement pstmt = conn.prepareStatement(sql);
+			PreparedStatement pstmt = driver.getConnection().prepareStatement(sql);
 			Logger.getInstance().add("Executing query for table, "+sourceData.getTable()+", data...");
             ResultSet rs = pstmt.executeQuery();
 
@@ -78,7 +82,7 @@ public class JDBCNodeGenerator {
             }
 
 	        rs.close();
-	        conn.close();
+	        driver.getConnection().close();
 	    }catch(SQLException se){
 	        try{
 	            se.printStackTrace(Logger.getInstance().addError());
@@ -111,7 +115,7 @@ public class JDBCNodeGenerator {
 			if(functions.get(fieldNames.get(i)).equals("Linear Interpolation") || functions.get(fieldNames.get(i)).equals("Logarithmic Interpolation")){
 				double y1;
 				double y3;
-				if(download && ((index == 1 && fieldNames.get(i).equals("PositionX"))||(index == 1 && fieldNames.get(i).equals("PositionY")))){
+				if(download && nodeTemp.getChildOf() == 0 && (fieldNames.get(i).equals("PositionX") || fieldNames.get(i).equals("PositionY"))){
 					y1 = Double.parseDouble(table.getMinMaxTable().get(input.get(fieldNames.get(i))).get(0));
 					y3 = Double.parseDouble(table.getMinMaxTable().get(input.get(fieldNames.get(i))).get(1));
 				}else{
@@ -127,7 +131,7 @@ public class JDBCNodeGenerator {
 					x1 = Double.parseDouble(table.getMinMaxTable().get(input.get(fieldNames.get(i))).get(0));
 					x3 = Double.parseDouble(table.getMinMaxTable().get(input.get(fieldNames.get(i))).get(1));
 				}
-				double x2 = rs.getDouble(input.get(fieldNames.get(i))); //returns exact value in this row
+				double x2 = rs.getDouble(driver.getFormattedName(input.get(fieldNames.get(i)))); //returns exact value in this row
 				if(functions.get(fieldNames.get(i)).equals("Linear Interpolation")){
 					setValues.put(fieldNames.get(i), Functions.linearInterpolation(x1,x3,y1,y3,x2));
 				}else if(functions.get(fieldNames.get(i)).equals("Logarithmic Interpolation")){
@@ -135,34 +139,37 @@ public class JDBCNodeGenerator {
 				}
 			}
 			else if(functions.get(fieldNames.get(i)).equals("Numeric Field To Value")){
-				setValues.put(fieldNames.get(i), Functions.numericToValue(rs.getDouble(input.get(fieldNames.get(i))),nodeTemp.getKeyValueMap().get(fieldNames.get(i))));
+				setValues.put(fieldNames.get(i), Functions.numericToValue(rs.getDouble(driver.getFormattedName(input.get(fieldNames.get(i)))),nodeTemp.getKeyValueMap().get(fieldNames.get(i))));
 			}
 			else if(functions.get(fieldNames.get(i)).equals("Text Field To Value")){
-				setValues.put(fieldNames.get(i), Functions.textToValue(rs.getString(input.get(fieldNames.get(i))),nodeTemp.getKeyValueMap().get(fieldNames.get(i))));
+				setValues.put(fieldNames.get(i), Functions.textToValue(rs.getString(driver.getFormattedName(input.get(fieldNames.get(i)))),nodeTemp.getKeyValueMap().get(fieldNames.get(i))));
 			}
 			else if(functions.get(fieldNames.get(i)).equals("Range To Value")){
-				setValues.put(fieldNames.get(i), Functions.rangeToValue(rs.getDouble(input.get(fieldNames.get(i))),nodeTemp.getKeyValueMap().get(fieldNames.get(i))));
+				setValues.put(fieldNames.get(i), Functions.rangeToValue(rs.getDouble(driver.getFormattedName(input.get(fieldNames.get(i)))),nodeTemp.getKeyValueMap().get(fieldNames.get(i))));
+			}
+			else if(functions.get(fieldNames.get(i)).equals("None")){
+				setValues.put(fieldNames.get(i), Double.parseDouble(table.getMinMaxTable().get(input.get(fieldNames.get(i))).get(1)));
 			}
 		}
 
 		Node node = new Node();
-		node = GlyphCreator.setFields(fieldNames, ranges, setValues, node, nodeTemp, input);
+		node = GlyphCreator.setFields(fieldNames, setValues, node, nodeTemp, input);
 
 		//TAG STUFF
 		node.setDefaultTagValue(default_tag_value);
 		if(input.get("Tag") != null){
-			node.setTag(input.get("Tag")+": "+rs.getString(input.get("Tag")));
+			node.setTag(input.get("Tag")+": "+rs.getString(driver.getFormattedName(input.get("Tag"))));
 			//node.setTagPos(csvData.get(currData).getDataFrame().getHeaderPlace(input.get("Tag")));
 		}else if(input.get("Tag") == null && input.get(default_tag_field) != null){
-			node.setTag(input.get(default_tag_field)+": "+rs.getString(input.get(default_tag_field)));
+			node.setTag(input.get(default_tag_field)+": "+rs.getString(driver.getFormattedName(input.get(default_tag_field))));
 			//node.setTagPos(csvData.get(currData).getDataFrame().getHeaderPlace(input.get(default_tag_field)));
 		}
 		//END TAG
 		if(input.get("Description") != null){
-			node.setDesc(rs.getString(input.get("Description")));
+			node.setDesc(rs.getString(driver.getFormattedName(input.get("Description"))));
 		}
 		if(input.get("URL") != null){
-			node.setURL(rs.getString(input.get("URL")));
+			node.setURL(rs.getString(driver.getFormattedName(input.get("URL"))));
 		}
 
 		if(nodeTemp.getChildOf() == 0){

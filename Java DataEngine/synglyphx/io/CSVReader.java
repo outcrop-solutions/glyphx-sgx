@@ -22,22 +22,20 @@ public class CSVReader {
 
 	private void parseCSV(String path){
 
-		BufferedReader reader = null;
 		try{
-			reader = new BufferedReader(new FileReader(path));
+			com.opencsv.CSVReader reader = new com.opencsv.CSVReader(new FileReader(path));
+	     	String [] nextLine;
+	     	//int x = 1;
+	     	while ((nextLine = reader.readNext()) != null) {
+	     		if(rowNotAllEmpty(nextLine)){
+	     			this.data.addRow(CSVtoArrayList(nextLine));
+	     		}
+	     		//x++;
+	     		//System.out.println(x);
 
-			String line;
-			while((line = reader.readLine()) != null && line.length() > 0){
-				this.data.addRow(CSVtoArrayList(line));
-			}	
-		} catch (IOException re) {
+	     	}
+     	} catch (IOException re) {
 			re.printStackTrace();
-		} finally {
-			try {
-				if (reader != null) reader.close();
-			} catch (IOException rc) {
-				rc.printStackTrace();
-			}
 		}
 
 	}
@@ -46,11 +44,10 @@ public class CSVReader {
 		return data;
 	}
 
-	private ArrayList<String> CSVtoArrayList(String csv) {
+	private ArrayList<String> CSVtoArrayList(String[] splitData) {
 		ArrayList<String> result = new ArrayList<String>();
 		
-		if (csv != null) {
-			String[] splitData = csv.split(",(?=([^\"]*\"[^\"]*\")*[^\"]*$)", -1);
+		if (splitData.length != 0) {
 			if (headers != 0 && splitData.length != headers){
 				String[] temp = Arrays.copyOf(splitData, splitData.length + headers-splitData.length);
 				for (int i = 0; i < headers-splitData.length; i++) {
@@ -66,8 +63,18 @@ public class CSVReader {
 				}
 			}
 		}
-		
 		return result;
+	}
+
+	private boolean rowNotAllEmpty(String[] row){
+
+		boolean empty = false;
+		for(int i = 0; i < row.length; i++){
+			if(!row[i].equals(" ") && !row[i].equals("") && row[i] != null){
+				empty = true;
+			}
+		}
+		return empty;
 	}
 
 }
