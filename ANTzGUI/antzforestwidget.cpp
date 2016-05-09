@@ -80,15 +80,15 @@ namespace SynGlyphXANTz {
 				ZSError error = zsInitialize(&m_zSpaceContext);
 
 				if (error == ZS_ERROR_RUNTIME_NOT_FOUND) { //If zSpace runtime not found, then don't do anything
-				
+
 					ClearZSpaceContext();
 					return;
 				}
 				CheckZSpaceError(error);
-			
+
 				// Find the zSpace display
 				error = zsFindDisplayByType(m_zSpaceContext, ZS_DISPLAY_TYPE_ZSPACE, 0, &m_zSpaceDisplay);
-			
+
 				if (error == ZS_ERROR_DISPLAY_NOT_FOUND) { //If zSpace display not found, then don't do anything
 
 					ClearZSpaceContext();
@@ -145,7 +145,7 @@ namespace SynGlyphXANTz {
 				QMessageBox::critical(nullptr, tr("Startup error"), tr("Error: ") + e.what(), QMessageBox::Ok);
 				throw;
 			}
-			catch(...) {
+			catch (...) {
 
 				QMessageBox::critical(nullptr, tr("Startup error"), tr("Error: Unknown"), QMessageBox::Ok);
 				throw;
@@ -264,7 +264,7 @@ namespace SynGlyphXANTz {
 
 				zSpaceErrorString += "Buffer too small";
 			}
-		
+
 			throw std::runtime_error(zSpaceErrorString.toStdString().c_str());
 		}
 	}
@@ -334,7 +334,7 @@ namespace SynGlyphXANTz {
 	}
 
 	void ANTzForestWidget::initializeGL() {
-    
+
 		pData antzData = m_antzData->GetData();
 		npInitGLDraw(antzData);
 		npInitGLPrimitive(antzData);
@@ -344,7 +344,7 @@ namespace SynGlyphXANTz {
 		m_logoPosition.setCoords(0, 0, 0, 0);
 		m_logoPosition.setSize(QSize(image.width(), -image.height()));
 		m_logoTextureID = bindTexture(image);
-	
+
 		m_worldTextureID = BindTextureInFile(SynGlyphX::GlyphBuilderApplication::GetDefaultBaseImagesLocation() + QString::fromStdWString(SynGlyphX::DefaultBaseImageProperties::GetBasefilename()));
 		pNPnode rootGrid = static_cast<pNPnode>(antzData->map.node[kNPnodeRootGrid]);
 		SetGridTexture(rootGrid);
@@ -427,8 +427,8 @@ namespace SynGlyphXANTz {
 
 		//int err = glGetError();
 		//if (err) {
-	   //     printf("err: 2388 - OpenGL error: %d\n", err);
-	   // }
+		//     printf("err: 2388 - OpenGL error: %d\n", err);
+		// }
 
 		if (doubleBuffer()) {
 
@@ -587,7 +587,7 @@ namespace SynGlyphXANTz {
 				m_stylusWorldTapLine.second.z = m_stylusWorldTapLine.first.z + world.z;
 
 				glPopMatrix();
-			}*/
+				}*/
 		}
 	}
 
@@ -603,24 +603,47 @@ namespace SynGlyphXANTz {
 		return gluObject;
 	}
 
+	bool ANTzForestWidget::IsHUDLocationOnRightSide(HUDLocation location) const {
+
+		return (location == HUDLocation::BottomRight);
+	}
+
 	void ANTzForestWidget::DrawSceneAxisInfoObject() {
 
 		pData antzData = m_antzData->GetData();
 		pNPnode currentCamera = npGetActiveCam(antzData);
 
 		GLdouble xTextMatrix[16];
-		GLfloat yTextMatrix[16];
-		GLfloat zTextMatrix[16];
+		GLdouble yTextMatrix[16];
+		GLdouble zTextMatrix[16];
 
 		bool flipXTextPosition = ((currentCamera->rotate.y > 90.0) && (currentCamera->rotate.y <= 270.0));
 		bool flipYTextPosition = (currentCamera->rotate.y > 180.0);
 
-		unsigned int viewportWidth = std::max(150, antzData->io.gl.width);
-		glViewport(m_sceneAxisInfoViewport.left(), m_sceneAxisInfoViewport.top(), m_sceneAxisInfoViewport.width(), m_sceneAxisInfoViewport.height());
+		const std::array<QString, 3>& mappedFields = m_model->GetRootPosXYZMappedFields();
+		std::array<unsigned int, 3> mappedFieldsWidth = { { 0, 0, 0 } };
+
+		bool putTextOnLeftSide = IsHUDLocationOnRightSide(m_sceneAxisInfoObjectLocation);
+		if (putTextOnLeftSide) {
+
+			QFontMetrics oglFontMetrics(m_oglTextFont);
+			mappedFieldsWidth[0] = oglFontMetrics.width(mappedFields[0]);
+			mappedFieldsWidth[1] = oglFontMetrics.width(mappedFields[1]);
+			mappedFieldsWidth[2] = std::max(0, oglFontMetrics.width(mappedFields[2]) - 65);
+
+			flipXTextPosition = !flipXTextPosition;
+			flipYTextPosition = !flipYTextPosition;
+		}
+
+		GLint viewport[4] = { m_sceneAxisInfoViewport.left(), m_sceneAxisInfoViewport.top(), m_sceneAxisInfoViewport.width(), m_sceneAxisInfoViewport.height() };
+		glViewport(viewport[0], viewport[1], viewport[2], viewport[3]);
 		glMatrixMode(GL_PROJECTION);
 		glPushMatrix();
 		glLoadIdentity();
 		glOrtho(m_sceneAxisInfoOrtho.left(), m_sceneAxisInfoOrtho.right(), m_sceneAxisInfoOrtho.top(), m_sceneAxisInfoOrtho.bottom(), -10.0, 10.0);
+
+		GLdouble orthoMatrix[16];
+		glGetDoublev(GL_PROJECTION_MATRIX, orthoMatrix);
 
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
@@ -671,7 +694,7 @@ namespace SynGlyphXANTz {
 
 		if (flipYTextPosition) {
 
-			glGetFloatv(GL_MODELVIEW_MATRIX, yTextMatrix);
+			glGetDoublev(GL_MODELVIEW_MATRIX, yTextMatrix);
 		}
 
 		glTranslatef(0.0f, 0.0f, -6.0f);
@@ -681,7 +704,7 @@ namespace SynGlyphXANTz {
 
 		if (!flipYTextPosition) {
 
-			glGetFloatv(GL_MODELVIEW_MATRIX, yTextMatrix);
+			glGetDoublev(GL_MODELVIEW_MATRIX, yTextMatrix);
 		}
 
 		glPopMatrix();
@@ -703,33 +726,33 @@ namespace SynGlyphXANTz {
 		glRotatef(180.0f, 1.0f, 0.0f, 0.0f);
 		gluCylinder(m_sceneAxisInfoQuadric, 0.4, 0.0, 1.0, 24, 1);
 
-		glGetFloatv(GL_MODELVIEW_MATRIX, zTextMatrix);
+		glGetDoublev(GL_MODELVIEW_MATRIX, zTextMatrix);
 
-		glPopMatrix();
+		//glPopMatrix();
 
 		//Wait until end to draw text
 		qglColor(Qt::white);
-		glPushMatrix();
+		//glPushMatrix();
 		glDisable(GL_DEPTH_TEST);
 
-		const std::array<QString, 3>& mappedFields = m_model->GetRootPosXYZMappedFields();
+		GLdouble textPosition[3];
 
 		if (!mappedFields[0].isEmpty()) {
 
-			glLoadMatrixd(xTextMatrix);
-			renderText(-0.25, 0.0, 1.5, mappedFields[0], m_oglTextFont);
+			gluProject(-0.25, 0.0, 1.5, xTextMatrix, orthoMatrix, viewport, &textPosition[0], &textPosition[1], &textPosition[2]);
+			renderText(textPosition[0] - mappedFieldsWidth[0], antzData->io.gl.height - textPosition[1], mappedFields[0], m_oglTextFont);
 		}
 
 		if (!mappedFields[1].isEmpty()) {
 
-			glLoadMatrixf(yTextMatrix);
-			renderText(-0.25, 0.0, 1.5, mappedFields[1], m_oglTextFont);
+			gluProject(-0.25, 0.0, 1.5, yTextMatrix, orthoMatrix, viewport, &textPosition[0], &textPosition[1], &textPosition[2]);
+			renderText(textPosition[0] - mappedFieldsWidth[1], antzData->io.gl.height - textPosition[1], mappedFields[1], m_oglTextFont);
 		}
 		
 		if (!mappedFields[2].isEmpty()) {
 
-			glLoadMatrixf(zTextMatrix);
-			renderText(-0.25, 0.0, 1.5, mappedFields[2], m_oglTextFont);
+			gluProject(-0.25, 0.0, 1.5, zTextMatrix, orthoMatrix, viewport, &textPosition[0], &textPosition[1], &textPosition[2]);
+			renderText(textPosition[0] - mappedFieldsWidth[2], antzData->io.gl.height - textPosition[1], mappedFields[2], m_oglTextFont);
 		}
 
 		glEnable(GL_DEPTH_TEST);

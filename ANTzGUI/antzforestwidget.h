@@ -122,6 +122,7 @@ namespace SynGlyphXANTz {
 		void* CreateNewQuadricObject();
 		void DrawSceneAxisInfoObject();
 		void DrawHUD();
+		bool IsHUDLocationOnRightSide(HUDLocation location) const;
 		bool SelectAtPoint(int x, int y, bool multiSelect);
 		void SelectFromStylus(const SynGlyphXANTz::ANTzBoundingBox::Line& line);
 		void CheckStylusIntersectionWithNode(pNPnode node, const SynGlyphXANTz::ANTzBoundingBox::Line& line, std::map<float, int>& distanceIdMap);
