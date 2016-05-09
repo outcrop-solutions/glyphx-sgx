@@ -4,42 +4,125 @@
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QDialogButtonBox>
 #include <QtWidgets/QMessageBox>
-//#include <QtCore/QFile>
-//#include <QtGui/QImage>
-//#include <boost/assign/list_of.hpp>
-//#include <boost/bimap/list_of.hpp>
-//#include "groupboxsinglewidget.h"
-//#include "downloadedmapproperties.h"
-//#include "userdefinedbaseimageproperties.h"
-//#include "colorconverter.h"
+#include <QtWidgets/QGroupBox>
+#include <QtGui/QDragEnterEvent>
 
-//const LinksDialog::PresetMap LinksDialog::s_presets = 
-//	{ PositionOrientation(SynGlyphX::Vector3({ { 0.0, 0.0, 0.0 } }), SynGlyphX::Vector3({ { 0.0, 0.0, 0.0 } })),
-//	PositionOrientation(SynGlyphX::Vector3({ { 0.0, 0.0, 180.0 } }), SynGlyphX::Vector3({ { 180.0, 0.0, 0.0 } })),
-//	PositionOrientation(SynGlyphX::Vector3({ { -180.0, 0.0, 90.0 } }), SynGlyphX::Vector3({ { 90.0, 90.0, 180.0 } })),
-//	PositionOrientation(SynGlyphX::Vector3({ { 180.0, 0.0, 90.0 } }), SynGlyphX::Vector3({ { 90.0, 270.0, 180.0 } })),
-//	PositionOrientation(SynGlyphX::Vector3({ { 0.0, 90.0, 90.0 } }), SynGlyphX::Vector3({ { 90.0, 180.0, 180.0 } })) };
-//
-//const std::vector<std::string> LinksDialog::s_presetNames = { "Up", "Down", "Left", "Right", "Front" };
 
-LinksDialog::LinksDialog(QWidget *parent)
-	: QDialog(parent)
+LinkLineEdit::LinkLineEdit(DataTransformModel* dataTransformModel, QWidget *parent) : QLineEdit(parent),
+m_dataTransformModel(dataTransformModel)
+{
+	setContextMenuPolicy(Qt::NoContextMenu);
+	setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
+	setReadOnly(true);	
+}
+
+void LinkLineEdit::SetInputField(const SynGlyphX::InputField& inputField) {
+	m_inputField = inputField;
+	if (m_inputField.IsValid()) {
+
+		SynGlyphX::Datasource::ConstSharedPtr datasource = m_dataTransformModel->GetDataMapping()->GetDatasources().at(inputField.GetDatasourceID());
+
+		QString text = QString::fromStdWString(datasource->GetFormattedName());
+		if (datasource->CanDatasourceHaveMultipleTables()) {
+
+			text += ":" + QString::fromStdWString(inputField.GetTable());
+		}
+		text += ":" + QString::fromStdWString(inputField.GetField());
+		setText(text);
+	}
+	else {
+
+		clear();
+	}
+}
+void LinkLineEdit::dragEnterEvent(QDragEnterEvent *event) {
+
+	const InputFieldMimeData* mimeData = qobject_cast<const InputFieldMimeData*>(event->mimeData());
+	if (mimeData == nullptr) {
+
+		return;
+	}
+
+	event->acceptProposedAction();
+}
+
+void LinkLineEdit::dropEvent(QDropEvent* event) {
+	const InputFieldMimeData* mimeData = qobject_cast<const InputFieldMimeData*>(event->mimeData());
+	if (mimeData != nullptr) {
+		SetInputField(mimeData->GetInputField());
+	}
+}
+
+LinksDialog::LinksDialog(DataTransformModel* dataTransformModel, GlyphRolesTableModel* glyphRolesTableModel, QWidget *parent)
+	: QDialog(parent),
+	m_dataTransformModel(dataTransformModel)
 {
 	QVBoxLayout* mainLayout = new QVBoxLayout(this);
 
-	mainLayout->addStretch(1);
+	//mainLayout->addStretch(1);
 
-	QDialogButtonBox* dialogButtonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, this);
+	QGroupBox* glyphGroupBox = new QGroupBox(tr("Link Glyphs"), this);
+	//QHBoxLayout* glyphLayout = new QHBoxLayout(glyphGroupBox);
+	QGridLayout* glyphLayout = new QGridLayout(glyphGroupBox);
+	glyphLayout->addWidget(new QLabel(tr("From:"),this), 0, 0);
+	glyphLayout->addWidget(new QLabel(tr("To:"), this), 0, 1);
+
+	
+
+	m_fromGlyphTree = new GlyphTreesView(m_dataTransformModel, glyphGroupBox);
+	m_toGlyphTree = new GlyphTreesView(m_dataTransformModel, glyphGroupBox);
+
+	glyphLayout->addWidget(m_fromGlyphTree, 1, 0);
+	glyphLayout->addWidget(m_toGlyphTree, 1, 1);
+
+	glyphLayout->addWidget(new QLabel(tr("Input:"), this), 2, 0);
+	glyphLayout->addWidget(new QLabel(tr("Input:"), this), 2, 1);
+	m_fromLineEdit = new LinkLineEdit(m_dataTransformModel, this);
+	glyphLayout->addWidget(m_fromLineEdit, 3, 0);
+
+	m_toLineEdit = new LinkLineEdit(m_dataTransformModel, this);
+	glyphLayout->addWidget(m_toLineEdit, 3, 1);
+
+	mainLayout->addWidget(glyphGroupBox);
+
+	QGroupBox* colorGroupBox = new QGroupBox(tr("Link color"), this);
+	QHBoxLayout* colorLayout = new QHBoxLayout(colorGroupBox);
+
+	m_colorButton = new SynGlyphX::ColorButton(this);
+	m_colorButton->SetColor(Qt::blue);
+	colorLayout->addWidget(m_colorButton);
+	colorLayout->addSpacing(20);
+	QLabel* tl = new QLabel(tr("Transparency:"), this);
+	tl->setFixedWidth(75);
+	colorLayout->addWidget(tl);
+	colorLayout->setSpacing(1);
+	m_transparensySpinBox = new QSpinBox(this);
+	m_transparensySpinBox->setRange(0, 255);
+	m_transparensySpinBox->setValue(128);
+	m_transparensySpinBox->setFixedWidth(50);
+	colorLayout->addWidget(m_transparensySpinBox);
+	colorLayout->addSpacing(20);
+	m_inheritColorCheckBox = new QCheckBox(tr("Inherit from parent"), this);
+	colorLayout->addWidget(m_inheritColorCheckBox);
+
+
+	mainLayout->addWidget(colorGroupBox);
+	QDialogButtonBox* dialogButtonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, this);	
 	mainLayout->addWidget(dialogButtonBox);
+
 	QObject::connect(dialogButtonBox, &QDialogButtonBox::accepted, this, &LinksDialog::accept);
 	QObject::connect(dialogButtonBox, &QDialogButtonBox::rejected, this, &LinksDialog::reject);
 
 	setLayout(mainLayout);
 }
+const SynGlyphX::Link& LinksDialog::GetLink() const {
+	////just for debugging 
+	return *new SynGlyphX::Link;
 
-LinksDialog::~LinksDialog()
-{
-
+}
+LinksDialog::~LinksDialog() {
+	delete m_fromGlyphTree;
+	delete m_toGlyphTree;
 }
 
 void LinksDialog::accept() {

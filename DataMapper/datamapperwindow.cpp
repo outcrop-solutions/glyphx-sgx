@@ -69,6 +69,8 @@ DataMapperWindow::DataMapperWindow(QWidget *parent)
 	ReadNewMappingDefaults();
 	ClearAndInitializeDataMapping();
 
+	m_linksDialog = new LinksDialog(m_dataTransformModel, m_glyphRolesTableModel, this);
+	QObject::connect(m_linksDialog, &QDialog::accepted, this, &DataMapperWindow::AddLink);
 	//Setup data transform
 	//SynGlyphXANTz::ANTzExportTransformer::SetLogoFilename(SynGlyphX::GlyphBuilderApplication::applicationDirPath() + QDir::separator() + "logo.png");
 	//SynGlyphX::Transformer::SetDefaultImagesDirectory(SynGlyphX::GlyphBuilderApplication::GetDefaultBaseImagesLocation());
@@ -211,7 +213,7 @@ void DataMapperWindow::CreateMenus() {
 	//Create Links Menue
 	m_linksMenu = menuBar()->addMenu(tr("Links"));
 	QAction* addLinkAction = m_linksMenu->addAction(tr("Add Link"));
-	QObject::connect(addLinkAction, &QAction::triggered, this, &DataMapperWindow::AddLink);
+	QObject::connect(addLinkAction, &QAction::triggered, this, &DataMapperWindow::OnAddLink);
 
 	//Create Datasource Menu
 	m_datasourceMenu = menuBar()->addMenu(tr("Data Source"));
@@ -786,9 +788,18 @@ void DataMapperWindow::AddBaseObject() {
 	}
 }
 
-void DataMapperWindow::AddLink() {
-	QMessageBox::information(this, tr("Link"), tr("Link"), QMessageBox::Ok);
+void DataMapperWindow::OnAddLink() {	
+	m_linksDialog->setWindowTitle(tr("Add New Link"));
+	m_linksDialog->show();
+	m_linksDialog->raise();
+	m_linksDialog->activateWindow();
+
 }
+
+void DataMapperWindow::AddLink() {
+	m_dataTransformModel->AddLink(m_linksDialog->GetLink());
+}
+
 void DataMapperWindow::AddLegend() {
 
 	SynGlyphX::LegendDialog dialog(this);

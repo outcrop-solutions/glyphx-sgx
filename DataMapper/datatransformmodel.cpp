@@ -1003,6 +1003,9 @@ void DataTransformModel::AddChildGlyphGraph(const QModelIndex& parent, const Syn
 	endInsertRows();
 }
 
+void DataTransformModel::AddLink(const SynGlyphX::Link& link) {
+	m_dataMapping->AddLink(link);
+}
 void DataTransformModel::ResetDataMappingID() {
 
 	m_dataMapping->ResetID();

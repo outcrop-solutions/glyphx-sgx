@@ -25,26 +25,58 @@
 #include <QtCore/QSignalMapper>
 #include "mapoptionswidget.h"
 #include "browselineedit.h"
-#include "xyzwidget.h"
 #include "doublesizewidget.h"
 #include "defaultbaseimagescombobox.h"
 #include "colorbutton.h"
+#include "Link.h"
+#include "glyphtreesview.h"
+#include "bindinglineedit.h"
+#include "glyphrolestablemodel.h"
+
+class LinkLineEdit : public QLineEdit
+{
+public:
+	LinkLineEdit(DataTransformModel* dataTransformModel, QWidget *parent = 0);
+	virtual ~LinkLineEdit() {}
+	const SynGlyphX::InputField& GetInputField() const { return m_inputField; }
+	void SetInputField(const SynGlyphX::InputField& inputField);
+protected:
+	virtual void dragEnterEvent(QDragEnterEvent* event);
+	virtual void dropEvent(QDropEvent* event);
+private:
+	SynGlyphX::InputField m_inputField;
+	DataTransformModel* m_dataTransformModel;
+};
 
 class LinksDialog : public QDialog
 {
+	friend class LinkLineEdit;
 	Q_OBJECT
 
 public:
-	LinksDialog(QWidget *parent = 0);
+	LinksDialog(DataTransformModel* dataTransformModel, GlyphRolesTableModel* glyphRolesTableModel, QWidget* parent = 0);
 	~LinksDialog();
 
 	void accept() override;
-
+	const SynGlyphX::Link& GetLink() const;
+	void SetLink(const SynGlyphX::Link& link) {}
 
 private slots:
 
 
 private:
+	LinkLineEdit* m_fromLineEdit;
+	LinkLineEdit* m_toLineEdit;
+
+	DataTransformModel* m_dataTransformModel;
+	GlyphRolesTableModel* m_glyphRolesTableModel;
+
+	GlyphTreesView* m_fromGlyphTree;
+	GlyphTreesView* m_toGlyphTree;
+
+	SynGlyphX::ColorButton* m_colorButton;
+	QCheckBox*	m_inheritColorCheckBox;
+	QSpinBox*	m_transparensySpinBox;
 
 };
 
