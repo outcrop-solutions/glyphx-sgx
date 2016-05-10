@@ -6,7 +6,7 @@
 *
 *  ANTz is hosted at http://openantz.com and NPE at http://neuralphysics.org
 *
-*  Written in 2010-2014 by Shane Saxon - saxon@openantz.com
+*  Written in 2010-2015 by Shane Saxon - saxon@openantz.com
 *
 *  Please see main.c for a complete list of additional code contributors.
 *
@@ -17,7 +17,7 @@
 *  Released under the CC0 license, which is GPL compatible.
 *
 *  You should have received a copy of the CC0 Public Domain Dedication along
-*  with this software (license file named COPYING.txt). If not, see
+*  with this software (license file named LICENSE.txt). If not, see
 *  http://creativecommons.org/publicdomain/zero/1.0/
 *
 * --------------------------------------------------------------------------- */
@@ -47,37 +47,38 @@ void* nposLoadLibrary( char* filePath )
 
 //-----------------------------------------------------------------------------
 // Take file path returned from microsoft createFile, put into fopen and return File Pointer
-FILE* nposFileDialog (const char* fileName, int dialogType, void* dataRef)
+FILE* nposFileDialog( char* fileChosen, const char* initialDir,
+					  int dialogType, void* dataRef )
 {	
 	FILE *filePtr;
 	
 	switch (dialogType)
 	{
 		case kNPfileDialogNew :
-			nposFileDialog (fileName, kNPfileDialogOpen, dataRef);
+			nposFileDialog( fileChosen, initialDir, kNPfileDialogOpen, dataRef);
 			break;
 			
 		case kNPfileDialogOpen : 
-			filePtr = openFileDialog (fileName, kNPfileDialogOpen, dataRef); 
+			filePtr = nposFileDialog (fileChosen, initialDir, kNPfileDialogOpen, dataRef); 
 			break;
 			
 		case kNPfileDialogClose : 
-			nposFileDialog (fileName, kNPfileDialogSaveAs, dataRef);
+			nposFileDialog (fileChosen, initialDir, kNPfileDialogSaveAs, dataRef);
 			break;
 			
 		case kNPfileDialogSave : 
-			nposFileDialog (fileName, kNPfileDialogSaveAs, dataRef); 
+			nposFileDialog (fileChosen, initialDir, kNPfileDialogSaveAs, dataRef); 
 			break;
 			
 		case kNPfileDialogSaveAs : 
-			//filePtr = SaveFileDialog(fileName);  // @todo lde fix
+			//filePtr = SaveFileDialog(fileChosen, initialDir);  // @todo lde fix
 			break;
 			
 		case kNPfileDialogImport : 
-			nposFileDialog (fileName, kNPfileDialogOpen, dataRef);
+			nposFileDialog (fileChosen, initialDir, kNPfileDialogOpen, dataRef);
 			break;
 		case kNPfileDialogExport : 
-			nposFileDialog (fileName, kNPfileDialogSaveAs, dataRef); 
+			nposFileDialog (fileChosen, initialDir, kNPfileDialogSaveAs, dataRef); 
 			break;
 			
 		default : break;
@@ -150,7 +151,7 @@ FILE* nposxFileDialog (const char* fileName, int dialogType, void* dataRef)
 //-----------------------------------------------------------------------------
 FILE* openFileDialog (const char* fileName, int dialogType, void* dataRef)
 {																			//zz-osx debug
-	FILE* filePtr = NULL;
+/*	FILE* filePtr = NULL;
 	
 	NavDialogCreationOptions dialogOptions;
 	NavDialogRef dialog;
@@ -227,7 +228,7 @@ CantRunDialog:
 CantCreateDialog:
 CantGetNavOptions:
 	// return fileAsCFURLRef;	//part of original sample, does not apply here
-	
+	*/
 	return NULL;
 }
 
@@ -250,11 +251,6 @@ void nposxShowCursor (int hide)
 	return;																//debug zz
 }
 
-bool nposSupportsAntzThreads (void)
-{
-	return 1;
-}
-
 void nposEndThread (void)
 {
 	pthread_exit(NULL);
@@ -271,6 +267,35 @@ int nposGetKey (void)
 {
 	//	return getch();																//debug zz
 	return pause();
+}
+
+void nposGetTime()
+{
+    assert(false);//todo
+}
+
+void nposGetCWD(char* buffer, int* size)
+{
+    assert(false);//todo
+}
+
+ANTZCORE_API void nposSleep(double seconds)
+{
+    assert(false);//todo
+}
+
+ANTZCORE_API void nposUpdateTime(void* dataRef)
+{
+    assert(false);//todo
+}
+
+void nposTimeStampCSV(char* fileName)
+{
+    assert(false);//todo
+}
+
+void nposGetAppPath(char* buffer, int* size)
+{
 }
 
 #endif
