@@ -6,7 +6,7 @@
 *
 *  ANTz is hosted at http://openantz.com and NPE at http://neuralphysics.org
 *
-*  Written in 2010-2013 by Shane Saxon - contact@saxondigital.net
+*  Written in 2010-2014 by Shane Saxon - saxon@openantz.com
 *
 *  Please see main.c for a complete list of additional code contributors.
 *
@@ -27,6 +27,10 @@
 
 #include "../../npdata.h"
 
+void* nposLoadLibrary( char* filePath );
+void* nposGetLibSymbol(void* library, char* symbolName); // New function, lde
+
+void* nposxGetLibSymbol(void* library, char* symbolName); // New function, lde
 
 void npOSXGetCWD (char* buffer, int* size);
 
@@ -40,6 +44,13 @@ void npOSXTimeStampCSV (char* fileName);
 void npOSXSetCursorPos (int x, int y);
 void npOSXShowCursor (int hide);
 
+//bool nposSupportsAntzThreads (void); // lde
+void nposEndThread (void); // lde
+void nposBeginThread (voidFnPtr vfp, void *dataRef); // lde
+
+FILE* openFileDialog (const char* fileName, int dialogType, void* dataRef);
+
+int nposGetKey (void); // lde
 
 #endif
 
