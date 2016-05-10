@@ -73,9 +73,9 @@ namespace SynGlyphX {
 		invalidateFilter();
 	}
 
-	void RoleDataFilterProxyModel::SetNot(bool not) {
+	void RoleDataFilterProxyModel::SetNot(bool val) {
 
-		m_not = not;
+		m_not = val;
 	}
 
 	StringRoleDataFilterProxyModel::StringRoleDataFilterProxyModel(QObject* parent) :

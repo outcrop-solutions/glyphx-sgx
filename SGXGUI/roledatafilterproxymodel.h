@@ -32,7 +32,7 @@ namespace SynGlyphX {
 		RoleDataFilterProxyModel(QObject* parent = nullptr);
 		~RoleDataFilterProxyModel();
 
-		void SetNot(bool not);
+		void SetNot(bool val);
 		virtual bool HasFilterData() const = 0;
 		void Clear();
 

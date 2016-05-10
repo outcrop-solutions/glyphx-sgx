@@ -137,7 +137,7 @@ SynGlyphX::DownloadedMapProperties::SharedPtr MapOptionsWidget::GetProperties() 
 
 	downloadedMapProperties->SetSource(static_cast<SynGlyphX::DownloadedMapProperties::MapSource>(m_mapServiceComboBox->currentIndex()));
 	downloadedMapProperties->SetType(static_cast<SynGlyphX::DownloadedMapProperties::MapType>(m_mapTypeComboBox->currentIndex()));
-	downloadedMapProperties->SetSize({ { m_imageSizeWidget->GetSize().width(), m_imageSizeWidget->GetSize().height() } });
+	downloadedMapProperties->SetSize({ { static_cast<unsigned int>(m_imageSizeWidget->GetSize().width()), static_cast<unsigned int>(m_imageSizeWidget->GetSize().height()) } });
 	downloadedMapProperties->SetInvert(m_invertCheckbox->isChecked());
 	downloadedMapProperties->SetGrayscale(m_grayscaleCheckbox->isChecked());
 	downloadedMapProperties->SetUseBestFit(m_bestFitRadioButtonWidget->GetCheckedButton() == 1);

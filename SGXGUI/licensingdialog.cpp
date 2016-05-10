@@ -15,6 +15,8 @@
 #include <QtCore/QTextStream>
 #include "filesystem.h"
 
+#ifdef USE_LICENSING
+
 #include "rlmez.h"
 
 namespace SynGlyphX {
@@ -205,3 +207,6 @@ namespace SynGlyphX {
 		return SynGlyphX::Application::GetCommonDataLocation();
 	}
 }
+
+
+#endif

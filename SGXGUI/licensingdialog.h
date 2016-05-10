@@ -28,6 +28,7 @@ namespace SynGlyphX {
 	{
 		Q_OBJECT
 
+#ifdef USE_LICENSING
 	public:
 		LicensingDialog(QWidget *parent);
 		~LicensingDialog();
@@ -43,6 +44,7 @@ namespace SynGlyphX {
 		void ResetStatusLabel();
 
 		QLabel* m_licenseLabel;
+#endif
 	};
 
 } //namespace SynGlyphX

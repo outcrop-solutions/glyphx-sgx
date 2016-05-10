@@ -73,7 +73,7 @@ namespace SynGlyphX {
 
 	SynGlyphX::IntSize IntSizeWidget::ConvertFromQSize(const QSize& size) {
 
-		return SynGlyphX::IntSize({ { size.width(), size.height() } });
+		return SynGlyphX::IntSize({ { static_cast<unsigned int>(size.width()), static_cast<unsigned int>(size.height()) } });
 	}
 
 } //namespace SynGlyphX
