@@ -33,8 +33,13 @@
 
 #include "watchtools.h"
 
-#include <GL/gl.h>
+#ifdef __APPLE__
+#include <OpenGL/gl.h>
+#include <OpenGL/glu.h>
+#else
 #include <GL/glu.h>
+#include <GL/gl.h>
+#endif
 
 void npGLResizeScene (int width, int height);
 
