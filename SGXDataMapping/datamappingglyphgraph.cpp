@@ -291,8 +291,8 @@ namespace SynGlyphX {
 	}
 
 	void DataMappingGlyphGraph::ClearAllInputBindings(DataMappingGlyphGraph& graph, const GlyphIterator& vertex) {
-
-		ClearAllInputBindings(vertex.constify());
+        auto cvertex = vertex.constify();
+		ClearAllInputBindings(cvertex);
 		for (unsigned int i = 0; i < graph.children(vertex); ++i) {
 
 			ClearAllInputBindings(graph, graph.child(vertex, i));
@@ -435,7 +435,7 @@ namespace SynGlyphX {
 	void DataMappingGlyphGraph::ClearInputFieldBindings(DataMappingGlyphGraph& graph, const GlyphIterator& vertex, const InputField& inputfield) {
 
 		//ClearAllInputBindings(vertex.constify());
-		DataMappingGlyphGraph::ConstGlyphIterator& node = vertex.constify();
+		auto node = vertex.constify();
 		for (int i = 0; i < DataMappingGlyph::MappableField::MappableFieldSize; ++i) {
 
 			DataMappingGlyph::MappableField field = static_cast<SynGlyphX::DataMappingGlyph::MappableField>(i);
