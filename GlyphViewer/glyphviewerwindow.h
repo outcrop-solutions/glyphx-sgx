@@ -67,6 +67,7 @@ private slots:
 	void ChangeOptions();
 	void OnSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected);
 	void CreatePortableVisualization(SynGlyphX::PortableVisualizationExport::Platform platform);
+	void RemapRootPositionMappings();
 
 private:
 	virtual bool LoadRecentFile(const QString& filename);

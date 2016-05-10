@@ -11,6 +11,7 @@
 #include <QtCore/QSettings>
 #include <QtWidgets/QDockWidget>
 #include <QtCore/QDateTime>
+#include <QtWidgets/QFileDialog>
 #include "glyphbuilderapplication.h"
 #include "datatransformmapping.h"
 #include "downloadoptionsdialog.h"
@@ -265,6 +266,12 @@ void GlyphViewerWindow::CreateMenus() {
 	m_toolbarsSubMenu->addAction(m_showHideToolbar->toggleViewAction());
 
 	m_toolsMenu = menuBar()->addMenu(tr("Tools"));
+
+	QAction* remapRootPositionMappingsAction = m_toolsMenu->addAction(tr("Remap Root Position Mappings"));
+	QObject::connect(remapRootPositionMappingsAction, &QAction::triggered, this, &GlyphViewerWindow::RemapRootPositionMappings);
+	m_loadedVisualizationDependentActions.push_back(remapRootPositionMappingsAction);
+
+	m_toolsMenu->addSeparator();
 
 	QAction* optionsAction = m_toolsMenu->addAction(tr("Options"));
 	QObject::connect(optionsAction, &QAction::triggered, this, static_cast<void (GlyphViewerWindow::*)()>(&GlyphViewerWindow::ChangeOptions));
@@ -1019,4 +1026,23 @@ void GlyphViewerWindow::closeEvent(QCloseEvent* event) {
 	m_filteringWidget->CloseSourceDataWidgets();
 
 	SynGlyphX::MainWindow::closeEvent(event);
+}
+
+void GlyphViewerWindow::RemapRootPositionMappings() {
+
+	SynGlyphX::DataTransformMapping::SharedPtr dataTransformMapping;
+
+	QString initialDir = QDir::toNativeSeparators(QFileInfo(m_currentFilename).absolutePath() + "/remap.sdt");
+	QString saveFile = QDir::toNativeSeparators(QFileDialog::getSaveFileName(this, tr("Save Remapped Visualization"), initialDir, "SynGlyphX Data Transform Project Files (*.sdt)"));
+
+	if (!saveFile.isEmpty()) {
+
+		SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
+		//m_dataTransformModel->ResetDataMappingID();
+		
+		dataTransformMapping->WriteToFile(saveFile.toStdString());
+		SynGlyphX::Application::restoreOverrideCursor();
+		
+		LoadNewVisualization(saveFile);
+	}
 }
