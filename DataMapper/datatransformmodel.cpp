@@ -1376,7 +1376,7 @@ QStringList DataTransformModel::GetChosenTables(const QString& schema, const Syn
 //JDBC GENERATE STATS
 void DataTransformModel::GenerateStats(const SynGlyphX::InputTable inputTable, int place, const QString& sourceTypeString) {
 
-	TableStats tableStats;
+	SynGlyphX::DataStatsModel::TableStats tableStats;
 
 	DataEngine::DataEngineStatement des;
 	des.prepare(m_dataEngineConnection->getEnv(), m_dataEngineConnection->getJcls(), sourceTypeString); 

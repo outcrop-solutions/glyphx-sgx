@@ -22,6 +22,7 @@
 #include "utilitytypes.h"
 #include <QtCore/QAbstractItemModel>
 #include "dataengineconnection.h"
+#include "datastatsmodel.h"
 
 class DataTransformModel : public QAbstractItemModel
 {
@@ -30,8 +31,7 @@ class DataTransformModel : public QAbstractItemModel
 public:
 	typedef std::unordered_map<SynGlyphX::InputTable, SynGlyphX::WStringVector, SynGlyphX::InputTableHash> NumericFieldsByTable;
 
-	typedef QList<QStringList> TableStats;
-	typedef std::unordered_map<SynGlyphX::InputTable, TableStats, SynGlyphX::InputTableHash> TableStatsMap;
+	typedef std::unordered_map<SynGlyphX::InputTable, SynGlyphX::DataStatsModel::TableStats, SynGlyphX::InputTableHash> TableStatsMap;
 
 	static const int UUIDRole = Qt::UserRole;
 	static const int DataTypeRole = UUIDRole + 1;

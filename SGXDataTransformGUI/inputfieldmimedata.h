@@ -15,42 +15,32 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef DATASTATSMODEL_H
-#define DATASTATSMODEL_H
+#ifndef INPUTFIELDMIMEDATA_H
+#define INPUTFIELDMIMEDATA_H
 
-#include <QtCore/QAbstractTableModel>
-#include <QtSql/QSqlQuery>
-#include <boost/uuid/uuid.hpp>
-#include "dataengineconnection.h"
-#include "datatransformmodel.h"
-#include "inputtable.h"
+#include "sgxdatatransformgui_global.h"
+#include <QtCore/QMimeData>
+#include "inputfield.h"
 
-class DataStatsModel : public QAbstractTableModel
+Q_DECLARE_METATYPE(SynGlyphX::InputField)
+
+class SGXDATATRANSFORMGUI_EXPORT InputFieldMimeData : public QMimeData
 {
 	Q_OBJECT
 
 public:
-	//DataStatsModel(const boost::uuids::uuid& id, const QString& tableName, QObject *parent = 0);
-	//DataStatsModel(const boost::uuids::uuid& id, const boost::uuids::uuid& databaseId, const QString& tableName, QString filename, DataEngine::DataEngineConnection *dec, QObject *parent = 0);
-	DataStatsModel(const boost::uuids::uuid& id, QString tablename, DataTransformModel* model, QObject *parent = 0);
-	~DataStatsModel();
+	static const QString MimeType;
 
-	virtual int rowCount(const QModelIndex& parent = QModelIndex()) const;
-	virtual int columnCount(const QModelIndex& parent = QModelIndex()) const;
-	virtual QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const;
-	virtual QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
+	InputFieldMimeData(const SynGlyphX::InputField& inputField);
+	~InputFieldMimeData();
 
-	virtual Qt::ItemFlags flags(const QModelIndex & index) const;
-	virtual QStringList mimeTypes() const;
-	virtual QMimeData* mimeData(const QModelIndexList& indexes) const;
+	const SynGlyphX::InputField& GetInputField() const;
+
+	virtual QStringList formats() const;
+	virtual bool hasFormat(const QString& mimeType) const;
 
 private:
-	//void GenerateStats(const boost::uuids::uuid& databaseId, const QString& tableName, QString filename, DataEngine::DataEngineConnection &dec);
-	//void GenerateStats(DataEngine::DataEngineConnection *dec);
-
-	QList<QVariant::Type> m_fieldTypes;
-	SynGlyphX::InputTable m_table;
-	DataTransformModel* m_model;
+	SynGlyphX::InputField m_inputfield;
 };
 
-#endif // DATASTATSMODEL_H
+#endif // INPUTFIELDMIMEDATA_H

@@ -73,15 +73,6 @@
     <ClCompile Include="GeneratedFiles\Release\moc_datasourcestatswidget.cpp">
       <Filter>Generated Files\Debug\Release</Filter>
     </ClCompile>
-    <ClCompile Include="datastatsmodel.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_datastatsmodel.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_datastatsmodel.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
     <ClCompile Include="bindinglineedit.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -98,15 +89,6 @@
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Release\moc_datatransformmodel.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="inputfieldmimedata.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_inputfieldmimedata.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_inputfieldmimedata.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
     <ClCompile Include="baseimagedialog.cpp">
@@ -303,16 +285,10 @@
     <CustomBuild Include="datasourcestatswidget.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
-    <CustomBuild Include="datastatsmodel.h">
-      <Filter>Header Files</Filter>
-    </CustomBuild>
     <CustomBuild Include="bindinglineedit.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="datatransformmodel.h">
-      <Filter>Header Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="inputfieldmimedata.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="baseimagedialog.h">

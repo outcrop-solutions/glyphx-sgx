@@ -15,47 +15,21 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef DATASOURCESTATSWIDGET_H
-#define DATASOURCESTATSWIDGET_H
+#ifndef REMAPDIALOG_H
+#define REMAPDIALOG_H
 
-#include <QtWidgets/QTabWidget>
-#include <QtSql/QSqlDatabase>
-#include <QtWidgets/QTableView>
-#include <unordered_map>
-#include "datatransformmodel.h"
-#include "roledatafilterproxymodel.h"
-#include "dataengineconnection.h"
-#include "uuid.h"
+#include <QtWidgets/QDialog>
 
-class DataStatsModel;
-
-class DataSourceStatsWidget : public QTabWidget
+class RemapDialog : public QDialog
 {
 	Q_OBJECT
 
 public:
-	DataSourceStatsWidget(DataTransformModel* dataTransformModel, QWidget *parent = 0);
-	~DataSourceStatsWidget();
-
-	virtual QSize sizeHint() const;
-
-	void SetDataEngineConnection(DataEngine::DataEngineConnection::SharedPtr dataEngineConnection);
-	void AddNewStatsViews();
-	void ClearTabs();
-
-public slots:
-	void RebuildStatsViews();
-
-private slots:
-	void OnRowsRemovedFromModel(const QModelIndex& parent, int start, int end);
+	RemapDialog(QWidget *parent);
+	~RemapDialog();
 
 private:
-	void CreateTablesFromDatasource(const SynGlyphX::InputTable& inputTable, const QString& formattedDatasourceName);
-	void CreateTableView(SynGlyphX::DataStatsModel* model, const QString& tabName, const QString& id);
-	void RemoveTableViews(const QString& name = QString());
-
-	DataTransformModel* m_model;
-	DataEngine::DataEngineConnection::SharedPtr m_dataEngineConnection;
+	
 };
 
-#endif // DATASOURCESTATSWIDGET_H
+#endif // REMAPDIALOG_H

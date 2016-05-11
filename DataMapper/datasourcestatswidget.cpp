@@ -46,7 +46,8 @@ void DataSourceStatsWidget::AddNewStatsViews() {
 
 				for (const auto& table : iT->second->GetTableNames()) {
 
-					CreateTablesFromDatasource(iT->first, QString::fromStdWString(iT->second->GetFormattedName()), QString::fromStdWString(table));
+					SynGlyphX::InputTable inputTable(iT->first, table);
+					CreateTablesFromDatasource(inputTable, QString::fromStdWString(iT->second->GetFormattedName()));
 				}
 			}
 		}
@@ -65,19 +66,18 @@ void DataSourceStatsWidget::ClearTabs() {
 	clear();
 }
 
-void DataSourceStatsWidget::CreateTablesFromDatasource(const boost::uuids::uuid& id, const QString& formattedDatasourceName, const QString& tableName) {
+void DataSourceStatsWidget::CreateTablesFromDatasource(const SynGlyphX::InputTable& inputTable, const QString& formattedDatasourceName) {
 
-	QString idString = QString::fromStdString(boost::uuids::to_string(id));
 	QString tabName = formattedDatasourceName;
-	if (tableName != "OnlyTable") {
+	if (inputTable.GetTable() != L"OnlyTable") {
 
-		tabName += ":" + tableName;
+		tabName += ":" + QString::fromStdWString(inputTable.GetTable());
 	}
-	DataStatsModel* model = new DataStatsModel(id, tableName, m_model, this);
-	CreateTableView(model, tabName, idString);
+	SynGlyphX::DataStatsModel* model = new SynGlyphX::DataStatsModel(inputTable, m_model->GetTableStatsMap().at(inputTable), this);
+	CreateTableView(model, tabName, QString::fromStdString(boost::uuids::to_string(inputTable.GetDatasourceID())));
 }
 
-void DataSourceStatsWidget::CreateTableView(DataStatsModel* model, const QString& tabName, const QString& id) {
+void DataSourceStatsWidget::CreateTableView(SynGlyphX::DataStatsModel* model, const QString& tabName, const QString& id) {
 
 	QTableView* view = new QTableView(this);
 	view->setObjectName(id);
