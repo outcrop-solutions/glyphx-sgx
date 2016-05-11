@@ -281,12 +281,12 @@ void nposGetCWD(char* buffer, int* size)
 
 ANTZCORE_API void nposSleep(double seconds)
 {
-    assert(false);//todo
+    printf( "nposSleep not yet implemented\n");
 }
 
 ANTZCORE_API void nposUpdateTime(void* dataRef)
 {
-    assert(false);//todo
+    printf( "nposUpdateTime not yet implemented\n");
 }
 
 void nposTimeStampCSV(char* fileName)
