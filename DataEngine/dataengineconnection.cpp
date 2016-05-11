@@ -22,25 +22,35 @@ namespace DataEngine
 	}
 
 	void DataEngineConnection::createJVM(){
-
-		std::ifstream jre(".\\jre\\bin\\client\\jvm.dll");
-		if (jre){
+        
+        std::string jre_name;
+#ifdef WIN32
+        jre_name = ".\\jre\\bin\\client\\jvm.dll";
+#elif __APPLE__
+        jre_name = "../Frameworks/jdk1.7.0_79.jdk/Contents/Home/jre/lib/server/libjvm.dylib";
+#endif
+        
+        std::ifstream jre(jre_name);
+        
+        if (jre){
 		
-			jvmDll.Load(".\\jre\\bin\\client\\jvm.dll");
+			jvmDll.Load(jre_name.c_str());
 		}
-		else{
+#ifdef WIN32
+        else{
 			
 			jvmDll.Load("..\\..\\DataEngine\\jdk1.7.0_79\\jre\\bin\\client\\jvm.dll");
 		}
+#endif
 		jre.close();
 		
 		CreateJVMFunc CreateJVM = (CreateJVMFunc)jvmDll.GetAddress("JNI_CreateJavaVM");
 
 		JavaVMInitArgs vmArgs;
-		JavaVMOption options[2];
+		JavaVMOption options[3];
 		std::ifstream ifile(".\\dataengine.jar");
 		options[0].optionString = "-Xmx1024M"; //Max of 2048M
-
+        
 #ifdef WIN32
 		char jarFileSeparator = ';';
 #else
@@ -76,9 +86,11 @@ namespace DataEngine
 		ifile.close();
 		options[1].optionString = const_cast<char*>(jarFilesOptionString.c_str());
 
-		vmArgs.version = JNI_VERSION_1_2;
+        options[2].optionString = "-verbose:jni";
+
+        vmArgs.version = JNI_VERSION_1_2;
 		vmArgs.options = options;
-		vmArgs.nOptions = 2;
+		vmArgs.nOptions = 3;
 		vmArgs.ignoreUnrecognized = JNI_FALSE;
 
 		// Create the JVM
