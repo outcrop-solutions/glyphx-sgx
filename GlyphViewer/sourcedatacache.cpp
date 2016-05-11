@@ -6,6 +6,7 @@
 #include <QtCore/QVariant>
 #include <QtCore/QDateTime>
 #include <QtCore/QFileInfo>
+#include <QtCore/QSharedPointer>
 #include <boost/uuid/uuid_io.hpp>
 #include "uuid.h"
 #include "csvfilewriter.h"

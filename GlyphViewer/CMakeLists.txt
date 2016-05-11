@@ -34,16 +34,30 @@ ENDIF()
 
 SET(SRC_ALL 	antzimportdialog.cpp
 				cachemanager.cpp
+				datamappingloadingfiltermodel.cpp
 				glyphpropertieswidgetscontainer.cpp
 				glyphtreelistview.cpp
 				glyphvieweroptions.cpp
 				glyphviewerwindow.cpp
+				glyph3dview.cpp
+				filteringwidget.cpp
+				filteringmanager.cpp
+				filteringparameters.cpp
+				filteredsourcedatawidget.cpp
+				rangefilterlistwidget.cpp
+				keywordfilter.cpp
+				keywordfilterwidget.cpp
+				keywordfilterlistwidget.cpp
 				linkedwidgetsmanager.cpp
+				loadingscreenwidget.cpp
+				legendsdisplaywidget.cpp
 				main.cpp
 				multitableelasticlistswidget.cpp
 				optionswidget.cpp
 				pseudotimefilterwidget.cpp
 				singletableelasticlistswidget.cpp
+				selectedsourcedatawidget.cpp
+				sourcedatacache.cpp
 				sourcedatainfomodel.cpp
 				sourcedatawidget.cpp)
 				
@@ -81,6 +95,15 @@ ENDIF()
 
 IF (${ZSPACE_FOUND})
 	TARGET_LINK_LIBRARIES(GlyphViewer SGXzSpaceGUI)
-ENDIF()
+ENDIF()	
 
 Set_Windows_Properties(GlyphViewer)
+
+
+
+
+
+
+
+
+

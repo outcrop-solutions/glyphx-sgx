@@ -11,6 +11,7 @@
 #include <QtCore/QStandardPaths>
 #include <QtWidgets/QMessageBox>
 #include <QtCore/QTextStream>
+#include <QString>
 
 /*
 void myMessageHandler(QtMsgType type, const QMessageLogContext &context, const QString &msg)
@@ -39,7 +40,19 @@ void myMessageHandler(QtMsgType type, const QMessageLogContext &context, const Q
 
 int main(int argc, char *argv[])
 {
-	SynGlyphX::GlyphBuilderApplication::Setup("Glyph Builder - Glyph Viewer", "0.7.43");
+
+#ifdef __APPLE__
+    // Mac: Add plugin path in package.
+    // 'macdeployqt' needs to be run after build for this to work.
+    QDir dir(argv[0]); // e.g. appdir/Contents/MacOS/appname
+    assert(dir.cdUp());
+    assert(dir.cdUp());
+    assert(dir.cd("PlugIns")); // e.g. appdir/Contents/PlugIns
+    QCoreApplication::setLibraryPaths(QStringList(dir.absolutePath()));
+    printf("after change, libraryPaths=(%s)\n", QCoreApplication::libraryPaths().join(",").toUtf8().data());
+#endif
+    
+    SynGlyphX::GlyphBuilderApplication::Setup("Glyph Builder - Glyph Viewer", "0.7.43");
 	SynGlyphX::GlyphBuilderApplication a(argc, argv);
 	if (SynGlyphX::GlyphBuilderApplication::IsGlyphEd()) {
 

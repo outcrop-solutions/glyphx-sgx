@@ -17,6 +17,7 @@ SET(SRC_ALL 	application.cpp
 				doublesizewidget.cpp
 				elasticlistmodel.cpp
 				elasticlistwidget.cpp
+				fixedaspectratioimagelabel.cpp
 				gridwidget.cpp
 				groupboxsinglewidget.cpp
 				horizontalformwidget.cpp
@@ -24,6 +25,7 @@ SET(SRC_ALL 	application.cpp
 				labelline.cpp
 				licensingdialog.cpp
 				mainwindow.cpp
+				rangeslider.cpp
 				notemptyvalidator.cpp
 				radiobuttongroupwidget.cpp
 				replacefilenamedialog.cpp

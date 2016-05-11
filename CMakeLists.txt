@@ -97,6 +97,11 @@ FIND_PACKAGE(Qt5OpenGL)
 FIND_PACKAGE(Qt5Network)
 FIND_PACKAGE(Qt5Sql)
 
+foreach(plugin ${Qt5Gui_PLUGINS})
+	get_target_property(_loc ${plugin} LOCATION)
+	message("Plugin ${plugin} is at location ${_loc}.")
+endforeach()
+
 SET(STLPLUS_INCLUDE_DIR ${THIRDPARTYDIR}/include/stlplus_3_11)
 SET(GLM_INCLUDE_DIR ${THIRDPARTYDIR}/include/glm_0_9_6_3)
 
