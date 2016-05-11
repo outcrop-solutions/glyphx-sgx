@@ -307,7 +307,7 @@ void DataMapperWindow::CreateDockWidgets() {
 	m_linksModel->setSourceModel(m_dataTransformModel);
 	m_linksModel->setFilterRole(DataTransformModel::DataTypeRole);
 	m_linksModel->SetFilterData(DataTransformModel::DataType::Links);
-	m_linksView->setModel(m_baseObjectsModel);
+	m_linksView->setModel(m_linksModel);
 	m_linksView->addActions(m_linksView->actions());
 
 	//Add linksView to dock widget on left side
@@ -798,6 +798,7 @@ void DataMapperWindow::OnAddLink() {
 
 void DataMapperWindow::AddLink() {
 	m_dataTransformModel->AddLink(m_linksDialog->GetLink());
+	EnableProjectDependentActions(true);
 }
 
 void DataMapperWindow::AddLegend() {

@@ -149,6 +149,7 @@ public:
 	void SetDataEngineConnection(DataEngine::DataEngineConnection::SharedPtr dataEngineConnection);
 
 	const TableStatsMap& GetTableStatsMap() const;
+	boost::uuids::uuid GetTreeId(const QModelIndex& index) const;
 
 private:
 	void Clear();
@@ -157,7 +158,6 @@ private:
 	unsigned int GetFirstIndexForDataType(DataType type) const;
 	DataType GetDataType(const QModelIndex& index) const;
 	boost::uuids::uuid GetTreeId(int row) const;
-	boost::uuids::uuid GetTreeId(const QModelIndex& index) const;
 	boost::uuids::uuid GetDatasourceId(int row) const;
 	const SynGlyphX::DataTransformMapping::FieldGroupName& GetFieldGroupName(int row) const;
 	void RemoveFieldGroup(const SynGlyphX::DataTransformMapping::FieldGroupName& groupName, bool emitGlyphDataChanged);

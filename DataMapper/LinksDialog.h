@@ -50,7 +50,6 @@ private:
 
 class LinksDialog : public QDialog
 {
-	friend class LinkLineEdit;
 	Q_OBJECT
 
 public:
@@ -58,13 +57,15 @@ public:
 	~LinksDialog();
 
 	void accept() override;
-	const SynGlyphX::Link& GetLink() const;
+	const SynGlyphX::Link& GetLink();
 	void SetLink(const SynGlyphX::Link& link) {}
 
 private slots:
 
 
 private:
+
+	SynGlyphX::Link::Node GetNode(GlyphTreesView* treeView, LinkLineEdit* lineEdit);
 	LinkLineEdit* m_fromLineEdit;
 	LinkLineEdit* m_toLineEdit;
 
@@ -77,6 +78,8 @@ private:
 	SynGlyphX::ColorButton* m_colorButton;
 	QCheckBox*	m_inheritColorCheckBox;
 	QSpinBox*	m_transparensySpinBox;
+
+	SynGlyphX::Link m_link;
 
 };
 

@@ -6,7 +6,7 @@
 #include <QtWidgets/QMessageBox>
 #include <QtWidgets/QGroupBox>
 #include <QtGui/QDragEnterEvent>
-
+#include "roledatafilterproxymodel.h"
 
 LinkLineEdit::LinkLineEdit(DataTransformModel* dataTransformModel, QWidget *parent) : QLineEdit(parent),
 m_dataTransformModel(dataTransformModel)
@@ -115,11 +115,28 @@ LinksDialog::LinksDialog(DataTransformModel* dataTransformModel, GlyphRolesTable
 
 	setLayout(mainLayout);
 }
-const SynGlyphX::Link& LinksDialog::GetLink() const {
-	////just for debugging 
-	return *new SynGlyphX::Link;
 
+const SynGlyphX::Link& LinksDialog::GetLink() {
+	// 
+	//m_link.m_function = SynGlyphX::LinkFunction::MatchValue;
+	m_link.m_start = GetNode(m_fromGlyphTree, m_fromLineEdit);
+	m_link.m_end = GetNode(m_toGlyphTree, m_toLineEdit);
+	return m_link;
 }
+
+SynGlyphX::Link::Node LinksDialog::GetNode(GlyphTreesView* treeView, LinkLineEdit* lineEdit) {
+
+	QModelIndexList selectedItems = treeView->selectionModel()->selectedIndexes();
+	SynGlyphX::RoleDataFilterProxyModel* filterModel = dynamic_cast<SynGlyphX::RoleDataFilterProxyModel*>(treeView->model());
+
+	QModelIndex sourceIndex = filterModel->mapToSource(selectedItems[0]);
+	SynGlyphX::DataMappingGlyphGraph::Node* treeNode = static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(sourceIndex.internalPointer());
+
+	SynGlyphX::DataMappingGlyphGraph::GlyphIterator fromGlyph(treeNode);
+	SynGlyphX::Link::Node node(m_dataTransformModel->GetTreeId(sourceIndex), fromGlyph->first, lineEdit->GetInputField());
+	return node;
+}
+
 LinksDialog::~LinksDialog() {
 	delete m_fromGlyphTree;
 	delete m_toGlyphTree;
