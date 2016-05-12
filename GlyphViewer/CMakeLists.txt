@@ -98,11 +98,3 @@ ENDIF()
 
 Set_Windows_Properties(GlyphViewer)
 
-
-
-
-
-
-
-
-
