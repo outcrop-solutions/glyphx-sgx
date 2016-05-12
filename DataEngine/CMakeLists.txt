@@ -29,7 +29,7 @@ TARGET_LINK_LIBRARIES(DataEngine ${Boost_LIBRARIES}
 							  SGXDataMapping
 							  MapDownloading)
 							  
-TARGET_LINK_LIBRARIES(DataEngine jvm jawt)
+TARGET_LINK_LIBRARIES(DataEngine)
 
 Set_Windows_Properties(DataEngine)
 
