@@ -31,7 +31,9 @@ ENDIF()
 #	add_definitions(-DUSE_ZSPACE)
 #ENDIF()
 
-SET(SRC_ALL baseimagedialog.cpp
+SET(SRC_ALL adddatabaseserverwizard.cpp
+			addfiledatasourcewizard.cpp
+			baseimagedialog.cpp
 			baseobjectlistview.cpp
 			bindinglineedit.cpp
 			databindingtableswidget.cpp
@@ -50,9 +52,11 @@ SET(SRC_ALL baseimagedialog.cpp
 			glyphtreesview.cpp
 			inputfieldmimedata.cpp
 			interpolationmappingdialog.cpp
+			legendlistview.cpp
 			main.cpp
 			mappingfunctionwidget.cpp
 			newmappingdefaultswidget.cpp
+			tablechoicewidget.cpp
 			valuemappingdialog.cpp)
 				
 #SET(RESOURCES_SRC datamapperwindow.qrc)
@@ -80,10 +84,9 @@ TARGET_LINK_LIBRARIES(DataMapper ${Boost_LIBRARIES}
 									SGXDataTransformGUI
 									SGXGeospatial
 									MapDownloading
-									DataEngine
-									SGXDataTransform)
+									DataEngine)
 									
-TARGET_LINK_LIBRARIES(DataMapper jvm jawt)
+TARGET_LINK_LIBRARIES(DataMapper)
 
 IF (${BREAKPAD_FOUND})
 	TARGET_LINK_LIBRARIES(DataMapper ${BREAKPAD_LIBRARIES})

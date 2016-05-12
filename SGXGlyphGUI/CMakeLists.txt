@@ -19,6 +19,7 @@ SET(SRC_ALL 	allglyphpropertieswidget.cpp
 				glyphenumcombobox.cpp
 				glyphmimedata.cpp
 				glyphstructurewidget.cpp
+				glyphtemplatelibrarylistwidget.cpp
 				intminmaxwidget.cpp
 				itemfocusselectionmodel.cpp
 				linklessgraphmimedata.cpp

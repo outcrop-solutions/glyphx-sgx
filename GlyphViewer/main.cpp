@@ -40,10 +40,9 @@ void myMessageHandler(QtMsgType type, const QMessageLogContext &context, const Q
 
 int main(int argc, char *argv[])
 {
-
 #ifdef __APPLE__
     // Mac: Add plugin path in package.
-    // 'macdeployqt' needs to be run after build for this to work.
+    // 'macdeployqt' needs to be run on the app package after building for this to work.
     QDir dir(argv[0]); // e.g. appdir/Contents/MacOS/appname
     assert(dir.cdUp());
     assert(dir.cdUp());

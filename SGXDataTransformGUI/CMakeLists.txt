@@ -17,8 +17,10 @@ SET(SRC_ALL 	changedatasourcefiledialog.cpp
 				datamappingmodel.cpp
 				datasourceinfowidget.cpp
 				databaseserverinfowidget.cpp
+				legenddialog.cpp
 				singlenumericrangefilterwidget.cpp
-				portablevisualizationexport.cpp)
+				portablevisualizationexport.cpp
+				valuemappingrangewidget.cpp)
 
 LINK_DIRECTORIES(${JAVA_LINK_DIRS})
 

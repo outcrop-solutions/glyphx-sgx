@@ -37,6 +37,7 @@ SET(SRC_ALL 	application.cpp
 				stretchsurroundedwidget.cpp
 				tablesubsetproxymodel.cpp
 				treeview.cpp
+				validatedopenfiledialog.cpp
 				verticaltabordertableview.cpp
 				verticalscrollarea.cpp
 				passwordlineedit.cpp

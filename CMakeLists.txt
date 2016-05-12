@@ -106,21 +106,16 @@ SET(STLPLUS_INCLUDE_DIR ${THIRDPARTYDIR}/include/stlplus_3_11)
 SET(GLM_INCLUDE_DIR ${THIRDPARTYDIR}/include/glm_0_9_6_3)
 
 #Java
+# Note we don't actually need to link against Java since we're loading it dynamically.
+# (In fact on OSX linking against it can lead to JVM crashes if the OS has a different JVM
+# installed from the one we want to use.)
 SET(JAVA_INCLUDE_DIRS ${DEVELOPMENT_TOP_DIR}/DataEngine/jdk1.7.0_79/include)
 IF (${WIN32})
 	LIST(APPEND JAVA_INCLUDE_DIRS ${DEVELOPMENT_TOP_DIR}/DataEngine/jdk1.7.0_79/include/win32)
-	SET(JAVA_LINK_DIRS ${DEVELOPMENT_TOP_DIR}/DataEngine/jdk1.7.0_79/lib)
 ELSEIF(${APPLE})
 	LIST(APPEND JAVA_INCLUDE_DIRS ${DEVELOPMENT_TOP_DIR}/DataEngine/jdk1.7.0_79/include/darwin)
-	SET(JAVA_LINK_DIRS ${DEVELOPMENT_TOP_DIR}/DataEngine/jdk1.7.0_79/lib)
-	LIST(APPEND JAVA_LINK_DIRS ${DEVELOPMENT_TOP_DIR}/DataEngine/jdk1.7.0_79/jre/lib/darwin)
-	LIST(APPEND JAVA_LINK_DIRS ${DEVELOPMENT_TOP_DIR}/DataEngine/jdk1.7.0_79/jre/lib/darwin/server)
 ELSE()
 	LIST(APPEND JAVA_INCLUDE_DIRS ${DEVELOPMENT_TOP_DIR}/DataEngine/jdk1.7.0_79/include/linux)
-	SET(JAVA_LINK_DIRS ${DEVELOPMENT_TOP_DIR}/DataEngine/jdk1.7.0_79/lib)
-	LIST(APPEND JAVA_LINK_DIRS ${DEVELOPMENT_TOP_DIR}/DataEngine/jdk1.7.0_79/jre/lib/amd64)
-	LIST(APPEND JAVA_LINK_DIRS ${DEVELOPMENT_TOP_DIR}/DataEngine/jdk1.7.0_79/jre/lib/amd64/server)
-	LIST(APPEND JAVA_LINK_DIRS ${DEVELOPMENT_TOP_DIR}/DataEngine/jdk1.7.0_79/jre/lib/amd64/xawt)
 ENDIF()
 
 #Setup zSpace, licensing, and breakpad

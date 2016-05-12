@@ -86,8 +86,7 @@ TARGET_LINK_LIBRARIES(GlyphViewer ${Boost_LIBRARIES}
 									SGXDataTransformGUI
 									SGXGeospatial
 									MapDownloading
-									DataEngine
-									jawt jvm)
+									DataEngine)
 
 IF (${BREAKPAD_FOUND})
 	TARGET_LINK_LIBRARIES(GlyphViewer ${BREAKPAD_LIBRARIES})
