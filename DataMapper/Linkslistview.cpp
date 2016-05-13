@@ -13,8 +13,8 @@ LinksListView::LinksListView(DataTransformModel* dataTransformModel, QWidget *pa
 
 	m_sharedActions.AddSeparator();
 
-	m_propertiesAction = m_sharedActions.AddAction(tr("Properties"));
-	QObject::connect(m_propertiesAction, &QAction::triggered, this, &LinksListView::ShowLinkProperties);
+	//m_propertiesAction = m_sharedActions.AddAction(tr("Properties"));
+	//QObject::connect(m_propertiesAction, &QAction::triggered, this, &LinksListView::ShowLinkProperties);
 
 	m_sharedActions.EnableActions(false);
 	addActions(m_sharedActions);
@@ -41,8 +41,8 @@ void LinksListView::EnableActions() {
 	const QModelIndexList& selected = selectionModel()->selectedIndexes();
 	if (!selected.isEmpty()) {
 
-		m_removeLinkAction->setEnabled(selected.front().row() > 0);
-		m_propertiesAction->setEnabled(true);
+		m_removeLinkAction->setEnabled(true); //(selected.front().row() > 0);
+		//m_propertiesAction->setEnabled(true);
 	}
 	else {
 

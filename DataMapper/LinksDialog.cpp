@@ -60,6 +60,13 @@ LinksDialog::LinksDialog(DataTransformModel* dataTransformModel, GlyphRolesTable
 	QVBoxLayout* mainLayout = new QVBoxLayout(this);
 
 	//mainLayout->addStretch(1);
+	m_nameLineEdit = new QLineEdit(this);
+	//m_nameLineEdit->setFixedWidth(100);
+	QHBoxLayout* nameLayout = new QHBoxLayout;
+	nameLayout->addWidget(new QLabel(tr("Link name:"), this));
+	nameLayout->addWidget(m_nameLineEdit);
+	mainLayout->addLayout(nameLayout);
+	//nameLayout->setAlignment(m_nameLineEdit, Qt::AlignLeft);
 
 	QGroupBox* glyphGroupBox = new QGroupBox(tr("Link Glyphs"), this);
 	//QHBoxLayout* glyphLayout = new QHBoxLayout(glyphGroupBox);
@@ -121,6 +128,11 @@ const SynGlyphX::Link& LinksDialog::GetLink() {
 	//m_link.m_function = SynGlyphX::LinkFunction::MatchValue;
 	m_link.m_start = GetNode(m_fromGlyphTree, m_fromLineEdit);
 	m_link.m_end = GetNode(m_toGlyphTree, m_toLineEdit);
+	m_link.m_name = m_nameLineEdit->text().toStdWString();
+	QColor c = m_colorButton->GetColor();
+	m_link.m_color.SetColor(c.red(), c.green(), c.blue());
+	m_link.m_color.m_alpha = m_transparensySpinBox->value();
+	m_link.m_color.m_inheritfromParent = m_inheritColorCheckBox->isChecked();
 	return m_link;
 }
 
@@ -146,4 +158,3 @@ void LinksDialog::accept() {
 
 	QDialog::accept();
 }
-

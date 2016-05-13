@@ -366,8 +366,7 @@ QVariant DataTransformModel::GetDisplayData(const QModelIndex& index) const {
 			int linkIndex = index.row() - GetFirstIndexForDataType(DataType::Links);
 			std::vector<SynGlyphX::Link>::const_iterator link = m_dataMapping->GetLinks().begin();
 			std::advance(link, linkIndex);
-			//QFileInfo baseObjectFileInfo(QString::fromStdWString(legend->GetFilename()));
-			return QString("Link");///QString::fromStdWString(legend->GetTitle()) + ": " + baseObjectFileInfo.fileName();
+			return QString::fromStdWString(link->GetName());
 		}
 	}
 	else {

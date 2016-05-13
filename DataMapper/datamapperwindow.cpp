@@ -300,22 +300,6 @@ void DataMapperWindow::CreateDockWidgets() {
 	addDockWidget(Qt::LeftDockWidgetArea, leftDockWidgetBaseObjects);
 	m_viewMenu->addAction(leftDockWidgetBaseObjects->toggleViewAction());
 
-	QDockWidget* leftDockWidgetLinks = new QDockWidget(tr("Links"), this);
-
-	m_linksView = new LinksListView(m_dataTransformModel, leftDockWidgetBaseObjects);
-	m_linksModel = new SynGlyphX::IntRoleDataFilterProxyModel(this);
-	m_linksModel->setSourceModel(m_dataTransformModel);
-	m_linksModel->setFilterRole(DataTransformModel::DataTypeRole);
-	m_linksModel->SetFilterData(DataTransformModel::DataType::Links);
-	m_linksView->setModel(m_linksModel);
-	m_linksView->addActions(m_linksView->actions());
-
-	//Add linksView to dock widget on left side
-	leftDockWidgetBaseObjects->setWidget(m_linksView);
-	addDockWidget(Qt::LeftDockWidgetArea, leftDockWidgetLinks);
-	m_viewMenu->addAction(leftDockWidgetLinks->toggleViewAction());
-
-
 	QDockWidget* leftDockWidgetLegends = new QDockWidget(tr("Legends"), this);
 
 	m_legendsView = new LegendListView(m_dataTransformModel, leftDockWidgetBaseObjects);
@@ -329,6 +313,22 @@ void DataMapperWindow::CreateDockWidgets() {
 	leftDockWidgetLegends->setWidget(m_legendsView);
 	addDockWidget(Qt::LeftDockWidgetArea, leftDockWidgetLegends);
 	m_viewMenu->addAction(leftDockWidgetLegends->toggleViewAction());
+
+	QDockWidget* leftDockWidgetLinks = new QDockWidget(tr("Links"), this);
+
+	m_linksView = new LinksListView(m_dataTransformModel, leftDockWidgetLinks);
+	m_linksModel = new SynGlyphX::IntRoleDataFilterProxyModel(this);
+	m_linksModel->setSourceModel(m_dataTransformModel);
+	m_linksModel->setFilterRole(DataTransformModel::DataTypeRole);
+	m_linksModel->SetFilterData(DataTransformModel::DataType::Links);
+	m_linksView->setModel(m_linksModel);
+	m_linksView->addActions(m_linksView->actions());
+
+	//Add linksView to dock widget on left side
+	leftDockWidgetLinks->setWidget(m_linksView);
+	addDockWidget(Qt::LeftDockWidgetArea, leftDockWidgetLinks);
+	m_viewMenu->addAction(leftDockWidgetLinks->toggleViewAction());
+
 
 	QDockWidget* rightDockWidgetDataStats = new QDockWidget(tr("Data Stats"), this);
 	m_dataSourceStats = new DataSourceStatsWidget(m_dataTransformModel, rightDockWidgetDataStats);
