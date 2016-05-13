@@ -124,7 +124,7 @@ namespace SynGlyphX {
 
 		void AddLink(const Link& link);
 		void RemoveLink(unsigned int index);
-
+		const std::vector<Link>& GetLinks() const { return m_links; }
     protected:
 		void CopyInputBindingsForSubsetMapping(DataMappingGlyphGraph::SharedPtr newGlyphGraph, 
 											   DataMappingGlyphGraph::GlyphIterator& newNode, 

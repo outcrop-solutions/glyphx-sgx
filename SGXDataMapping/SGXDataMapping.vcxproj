@@ -154,6 +154,7 @@
     <ClCompile Include="inputtable.cpp" />
     <ClCompile Include="interpolationmappingfunction.cpp" />
     <ClCompile Include="legend.cpp" />
+    <ClCompile Include="Link.cpp" />
     <ClCompile Include="mindiff.cpp" />
     <ClCompile Include="sceneproperties.cpp" />
     <ClCompile Include="stringconcatmappingfunction.cpp" />

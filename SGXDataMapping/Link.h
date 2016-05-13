@@ -20,45 +20,68 @@
 
 #include "sgxdatamapping.h"
 
-#include "inputtable.h"
+#include "inputfield.h"
 #include <unordered_set>
 #include <boost/property_tree/ptree.hpp>
 #include <boost/bimap.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/functional/hash.hpp>
 
+class LinksDialog;
+
 namespace SynGlyphX {
 
-	class LinkFunction {
-
-		enum FunctionType
-		{
-			MatchValue = 0,
-			//KeyToValue,
-			//KeyToRange,
-			//////////
-			NFunctions
-		};
-	};
-	//Using GlyphColor will be overkill. Ideally we need a generic color class
-	class LinkColor {
-		typedef std::array<short, 3> ColorArray;
-		ColorArray m_color;
-	};
-
 	class SGXDATAMAPPING_API Link {
+		friend class LinksDialog;
 	public:
 		struct Node { //tree ID and lable should uniquely identify glyph
-			boost::uuids::uuid treeId;
-			unsigned long label;
+			Node(boost::uuids::uuid treeId, unsigned long label, const InputField& inputField) : m_treeId(treeId), m_label(label), m_inputField(inputField) {}
+			Node(boost::property_tree::wptree& parentPropertyTree);
+			Node() {}
+			boost::property_tree::wptree& ExportToPropertyTree(boost::property_tree::wptree& parentPropertyTree) const;
+			boost::uuids::uuid m_treeId;
+			unsigned long m_label;
+			InputField m_inputField;
 		};
 
+		//Using GlyphColor will be overkill. Ideally we need a generic color class
+		struct Color {
+			typedef std::array<unsigned short, 3> ColorArray;
+			ColorArray m_color;
+			unsigned char m_alpha;
+			bool m_inheritfromParent;
+			void SetColor(unsigned short r, unsigned short g, unsigned short b) {
+				m_color[0] = r; m_color[1] = g; m_color[2] = b;
+			}
+			Color() {}
+			Color(const boost::property_tree::wptree& propertyTree);
+			boost::property_tree::wptree& ExportToPropertyTree(boost::property_tree::wptree& parentPropertyTree) const;
+		};
+
+		class Function {
+		public:
+			enum FunctionType
+			{
+				MatchValue = 0,
+				//KeyToValue,
+				//KeyToRange,
+				//////////
+				NFunctions
+			};
+			Function() {}
+			Function(boost::property_tree::wptree& parentPropertyTree);
+			boost::property_tree::wptree& ExportToPropertyTree(boost::property_tree::wptree& parentPropertyTree) const;
+		};
+		Link() {}
+		Link(const boost::property_tree::wptree& propertyTree);
+		const std::wstring& GetName() const { return m_name; } 
+		boost::property_tree::wptree& ExportToPropertyTree(boost::property_tree::wptree& parentPropertyTree) const;
 	private:
+		std::wstring m_name;
 		Node m_start;
 		Node m_end;
-		LinkFunction m_function;
-		LinkColor m_color;
-		unsigned char m_alpha; // transparancy was separare in the specification, also we could use RGBA color scheme.
+		Function m_function;
+		Color m_color;
 	};
 
 } //namespace SynGlyphX
