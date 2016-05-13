@@ -22,8 +22,12 @@
 namespace SynGlyphXANTz {
 
 	ANTzForestWidget::ANTzForestWidget( GlyphForestModel* model, SynGlyphX::ItemFocusSelectionModel* selectionModel, QWidget *parent )
-		: QGLWidget( QGL::DoubleBuffer | QGL::DepthBuffer | QGL::AlphaChannel | QGL::StereoBuffers, parent ),
-		m_model( model ),
+#ifdef __APPLE__
+		: QGLWidget( QGL::DoubleBuffer | QGL::DepthBuffer | QGL::AlphaChannel, parent ),
+#else
+        : QGLWidget( QGL::DoubleBuffer | QGL::DepthBuffer | QGL::AlphaChannel | QGL::StereoBuffers, parent ),
+#endif
+    m_model( model ),
 		m_selectionModel( selectionModel ),
 		m_antzData( model->GetANTzData() ),
 #ifdef USE_ZSPACE
