@@ -82,15 +82,6 @@
     <ClCompile Include="GeneratedFiles\Release\moc_bindinglineedit.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
-    <ClCompile Include="datatransformmodel.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_datatransformmodel.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_datatransformmodel.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
     <ClCompile Include="baseimagedialog.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -286,9 +277,6 @@
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="bindinglineedit.h">
-      <Filter>Header Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="datatransformmodel.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="baseimagedialog.h">

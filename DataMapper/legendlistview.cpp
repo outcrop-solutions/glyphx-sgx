@@ -1,7 +1,7 @@
 #include "legendlistview.h"
 #include "legenddialog.h"
 
-LegendListView::LegendListView(DataTransformModel* dataTransformModel, QWidget *parent)
+LegendListView::LegendListView(SynGlyphX::DataTransformModel* dataTransformModel, QWidget *parent)
 	: QListView(parent),
 	m_dataTransformModel(dataTransformModel)
 {

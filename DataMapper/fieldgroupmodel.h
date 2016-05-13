@@ -42,7 +42,7 @@ public:
 	void SetCheckedItems(const SynGlyphX::FieldGroup& fieldGroup);
 	void UncheckAllItems();
 
-	void ResetTable(DataTransformModel* model);
+	void ResetTable(SynGlyphX::DataTransformModel* model);
 	const SynGlyphX::FieldGroup& GetCheckedItems() const;
 
 	SynGlyphX::AllSomeNone AreFieldsChecked() const;
@@ -52,7 +52,7 @@ private:
 	unsigned int GetTableForRow(int row) const;
 
 	SynGlyphX::FieldGroup m_checkedItems;
-	DataTransformModel* m_dataTransformModel;
+	SynGlyphX::DataTransformModel* m_dataTransformModel;
 	std::vector<unsigned int> m_countOfFieldsPerTable;
 };
 

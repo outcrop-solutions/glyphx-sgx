@@ -51,10 +51,10 @@ DataMapperWindow::DataMapperWindow(QWidget *parent)
 {
 	m_dataEngineConnection = std::make_shared<DataEngine::DataEngineConnection>();
 
-	m_dataTransformModel = new DataTransformModel(this);
-	QObject::connect(m_dataTransformModel, &DataTransformModel::dataChanged, this, [&, this](const QModelIndex& topLeft, const QModelIndex& bottomRight){ setWindowModified(true); });
-	QObject::connect(m_dataTransformModel, &DataTransformModel::rowsInserted, this, [&, this](const QModelIndex& parent, int first, int last){ setWindowModified(true); });
-	QObject::connect(m_dataTransformModel, &DataTransformModel::rowsRemoved, this, [&, this](const QModelIndex& parent, int first, int last){ setWindowModified(true); });
+	m_dataTransformModel = new SynGlyphX::DataTransformModel(this);
+	QObject::connect(m_dataTransformModel, &SynGlyphX::DataTransformModel::dataChanged, this, [&, this](const QModelIndex& topLeft, const QModelIndex& bottomRight){ setWindowModified(true); });
+	QObject::connect(m_dataTransformModel, &SynGlyphX::DataTransformModel::rowsInserted, this, [&, this](const QModelIndex& parent, int first, int last){ setWindowModified(true); });
+	QObject::connect(m_dataTransformModel, &SynGlyphX::DataTransformModel::rowsRemoved, this, [&, this](const QModelIndex& parent, int first, int last){ setWindowModified(true); });
 	
 	m_glyphRolesTableModel = new GlyphRolesTableModel(m_dataTransformModel, this);
 
@@ -283,8 +283,8 @@ void DataMapperWindow::CreateDockWidgets() {
 	m_baseObjectsView = new BaseObjectListView(m_dataTransformModel, leftDockWidgetBaseObjects);
 	m_baseObjectsModel = new SynGlyphX::IntRoleDataFilterProxyModel(this);
 	m_baseObjectsModel->setSourceModel(m_dataTransformModel);
-	m_baseObjectsModel->setFilterRole(DataTransformModel::DataTypeRole);
-	m_baseObjectsModel->SetFilterData(DataTransformModel::DataType::BaseObjects);
+	m_baseObjectsModel->setFilterRole(SynGlyphX::DataTransformModel::DataTypeRole);
+	m_baseObjectsModel->SetFilterData(SynGlyphX::DataTransformModel::DataType::BaseObjects);
 	m_baseObjectsView->setModel(m_baseObjectsModel);
 	m_baseObjectMenu->addActions(m_baseObjectsView->actions());
 
@@ -298,8 +298,8 @@ void DataMapperWindow::CreateDockWidgets() {
 	m_legendsView = new LegendListView(m_dataTransformModel, leftDockWidgetBaseObjects);
 	m_legendsModel = new SynGlyphX::IntRoleDataFilterProxyModel(this);
 	m_legendsModel->setSourceModel(m_dataTransformModel);
-	m_legendsModel->setFilterRole(DataTransformModel::DataTypeRole);
-	m_legendsModel->SetFilterData(DataTransformModel::DataType::Legends);
+	m_legendsModel->setFilterRole(SynGlyphX::DataTransformModel::DataTypeRole);
+	m_legendsModel->SetFilterData(SynGlyphX::DataTransformModel::DataType::Legends);
 	m_legendsView->setModel(m_legendsModel);
 	m_legendMenu->addActions(m_legendsView->actions());
 
@@ -495,7 +495,7 @@ bool DataMapperWindow::LoadDataTransform(const QString& filename) {
 		m_glyphTreesView->SelectLastGlyphTreeRoot();
 		SelectFirstBaseObject();
 
-		m_modelResetConnection = QObject::connect(m_dataTransformModel, &DataTransformModel::modelReset, this, [&, this](){ setWindowModified(true); });
+		m_modelResetConnection = QObject::connect(m_dataTransformModel, &SynGlyphX::DataTransformModel::modelReset, this, [&, this](){ setWindowModified(true); });
 	}
 	catch (const std::exception& e) {
 

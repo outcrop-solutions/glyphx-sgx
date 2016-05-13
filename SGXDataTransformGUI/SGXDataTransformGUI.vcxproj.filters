@@ -49,9 +49,6 @@
     <CustomBuild Include="datasourceinfowidget.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
-    <CustomBuild Include="datamappingmodel.h">
-      <Filter>Header Files</Filter>
-    </CustomBuild>
     <CustomBuild Include="portablevisualizationexport.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
@@ -71,6 +68,9 @@
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="inputfieldmimedata.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="datatransformmodel.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>
@@ -101,15 +101,6 @@
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Win32\Release\moc_datasourceinfowidget.cpp">
       <Filter>Generated Files\Release_Win32</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Win32\Debug\moc_datamappingmodel.cpp">
-      <Filter>Generated Files\Debug_Win32</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Win32\Release\moc_datamappingmodel.cpp">
-      <Filter>Generated Files\Release_Win32</Filter>
-    </ClCompile>
-    <ClCompile Include="datamappingmodel.cpp">
-      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="portablevisualizationexport.cpp">
       <Filter>Source Files</Filter>
@@ -172,6 +163,15 @@
       <Filter>Generated Files\Release_Win32</Filter>
     </ClCompile>
     <ClCompile Include="inputfieldmimedata.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Win32\Debug\moc_datatransformmodel.cpp">
+      <Filter>Generated Files\Debug_Win32</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Win32\Release\moc_datatransformmodel.cpp">
+      <Filter>Generated Files\Release_Win32</Filter>
+    </ClCompile>
+    <ClCompile Include="datatransformmodel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

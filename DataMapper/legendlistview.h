@@ -27,7 +27,7 @@ class LegendListView : public QListView
 	Q_OBJECT
 
 public:
-	LegendListView(DataTransformModel* dataTransformModel, QWidget *parent);
+	LegendListView(SynGlyphX::DataTransformModel* dataTransformModel, QWidget *parent);
 	~LegendListView();
 
 	const SynGlyphX::SharedActionList& GetSharedActions();
@@ -42,7 +42,7 @@ private slots:
 private:
 	void EnableActions();
 
-	DataTransformModel* m_dataTransformModel;
+	SynGlyphX::DataTransformModel* m_dataTransformModel;
 
 	SynGlyphX::SharedActionList m_sharedActions;
 	QAction* m_removeLegendAction;

@@ -6,7 +6,7 @@
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QMessageBox>
 
-InterpolationMappingDialog::InterpolationMappingDialog(DataTransformModel* model, QWidget *parent)
+InterpolationMappingDialog::InterpolationMappingDialog(SynGlyphX::DataTransformModel* model, QWidget *parent)
 	: QDialog(parent),
 	m_model(model),
 	m_isInterpretationLogarithmic(false)

@@ -1,7 +1,7 @@
 #include "filteredsourcedatawidget.h"
 
 FilteredSourceDataWidget::FilteredSourceDataWidget(FilteringManager* filteringManager, QWidget *parent)
-	: SourceDataWidget(filteringManager->GetSourceDataCache(), filteringManager->GetDataMappingModel()->GetDataMapping(), parent),
+	: SourceDataWidget(filteringManager->GetSourceDataCache(), filteringManager->GetDataTransformModel()->GetDataMapping(), parent),
 	m_filteringManager(filteringManager)
 {
 	setWindowTitle(tr("Source Data Of Filtered Glyphs"));

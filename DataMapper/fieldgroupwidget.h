@@ -31,7 +31,7 @@ class FieldGroupWidget : public QWidget
 	Q_OBJECT
 
 public:
-	FieldGroupWidget(DataTransformModel* dataTransformModel, QWidget *parent);
+	FieldGroupWidget(SynGlyphX::DataTransformModel* dataTransformModel, QWidget *parent);
 	~FieldGroupWidget();
 
 	bool CheckIfGroupNeedsToBeSaved();
@@ -61,7 +61,7 @@ private:
 	SynGlyphX::CheckBoxHeaderView* m_fieldTableHeaderView;
 
 	FieldGroupModel* m_fieldGroupModel;
-	DataTransformModel* m_dataTransformModel;
+	SynGlyphX::DataTransformModel* m_dataTransformModel;
 
 	QString m_currentGroupName;
 };

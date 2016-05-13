@@ -27,7 +27,7 @@ class DataSourcesView : public QListView
 	Q_OBJECT
 
 public:
-	DataSourcesView(DataTransformModel* sourceModel, QWidget *parent);
+	DataSourcesView(SynGlyphX::DataTransformModel* sourceModel, QWidget *parent);
 	~DataSourcesView();
 
 	const SynGlyphX::SharedActionList& GetSharedActions();
@@ -42,7 +42,7 @@ private slots:
 	void OnRemoveDatasource();
 
 private:
-	DataTransformModel* m_sourceModel;
+	SynGlyphX::DataTransformModel* m_sourceModel;
 	SynGlyphX::SharedActionList m_sharedActions;
 };
 

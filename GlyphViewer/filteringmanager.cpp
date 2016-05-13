@@ -1,8 +1,8 @@
 #include "filteringmanager.h"
 
-FilteringManager::FilteringManager(DataMappingLoadingFilterModel* dataMappingModel, SourceDataCache::SharedPtr sourceDataCache, SynGlyphX::ItemFocusSelectionModel* sceneSelectionModel, QObject *parent)
+FilteringManager::FilteringManager(DataMappingLoadingFilterModel* DataTransformModel, SourceDataCache::SharedPtr sourceDataCache, SynGlyphX::ItemFocusSelectionModel* sceneSelectionModel, QObject *parent)
 	: QObject(parent),
-	m_dataMappingModel(dataMappingModel),
+	m_DataTransformModel(DataTransformModel),
 	m_sourceDataCache(sourceDataCache),
 	m_sceneSelectionModel(sceneSelectionModel)
 {
@@ -27,7 +27,7 @@ void FilteringManager::OnSceneModelReset() {
 	if (m_sceneSelectionModel->model()->rowCount() > 0) {
 
 		QMap<QString, unsigned long> countsForEachTable;
-		for (const auto& glyphGraph : m_dataMappingModel->GetDataMapping()->GetGlyphGraphs()) {
+		for (const auto& glyphGraph : m_DataTransformModel->GetDataMapping()->GetGlyphGraphs()) {
 
 			if (glyphGraph.second->IsTransformable()) {
 
@@ -40,7 +40,7 @@ void FilteringManager::OnSceneModelReset() {
 		}
 
 		unsigned long startingIndex = 0;
-		for (const auto& glyphGraph : m_dataMappingModel->GetDataMapping()->GetGlyphGraphs()) {
+		for (const auto& glyphGraph : m_DataTransformModel->GetDataMapping()->GetGlyphGraphs()) {
 
 			if (glyphGraph.second->IsTransformable()) {
 
@@ -54,7 +54,7 @@ void FilteringManager::OnSceneModelReset() {
 			}
 		}
 
-		const DataMappingLoadingFilterModel::Table2LoadingFiltersMap& table2LoadingFiltersMap = m_dataMappingModel->GetLoadingFilters();
+		const DataMappingLoadingFilterModel::Table2LoadingFiltersMap& table2LoadingFiltersMap = m_DataTransformModel->GetLoadingFilters();
 		for (const auto& tableAndLoadingFilters : table2LoadingFiltersMap) {
 
 			GenerateLoadingFilterResultsForTable(SourceDataCache::CreateTablename(tableAndLoadingFilters.first), tableAndLoadingFilters.second.GetDistinctValueFilters());
@@ -312,9 +312,9 @@ SourceDataCache::ConstSharedPtr FilteringManager::GetSourceDataCache() const {
 	return m_sourceDataCache;
 }
 
-const DataMappingLoadingFilterModel* FilteringManager::GetDataMappingModel() const {
+const DataMappingLoadingFilterModel* FilteringManager::GetDataTransformModel() const {
 
-	return m_dataMappingModel;
+	return m_DataTransformModel;
 }
 /*
 void FilteringManager::OnSceneSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected) {

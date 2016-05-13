@@ -40,6 +40,7 @@ GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 {
 	m_dataEngineConnection = std::make_shared<DataEngine::DataEngineConnection>();
 	m_mappingModel = new DataMappingLoadingFilterModel(this);
+	m_mappingModel->SetDataEngineConnection(m_dataEngineConnection);
 	m_sourceDataCache = std::make_shared<SourceDataCache>();
 	m_glyphForestModel = new SynGlyphXANTz::GlyphForestModel(this);
 
@@ -459,7 +460,7 @@ void GlyphViewerWindow::ClearAllData() {
 	m_glyphForestSelectionModel->ClearAll();
 	m_sourceDataCache->Close();
 	m_glyphForestModel->Clear();
-	m_mappingModel->Clear();
+	m_mappingModel->ClearAndReset();
 	m_legendsWidget->ClearLegends();
 	m_filteringWidget->OnNewVisualization();
 	SynGlyphX::Application::restoreOverrideCursor();

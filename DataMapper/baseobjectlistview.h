@@ -27,7 +27,7 @@ class BaseObjectListView : public QListView
 	Q_OBJECT
 
 public:
-	BaseObjectListView(DataTransformModel* dataTransformModel, QWidget *parent);
+	BaseObjectListView(SynGlyphX::DataTransformModel* dataTransformModel, QWidget *parent);
 	~BaseObjectListView();
 
 	const SynGlyphX::SharedActionList& GetSharedActions();
@@ -42,7 +42,7 @@ private slots:
 private:
 	void EnableActions();
 
-	DataTransformModel* m_dataTransformModel;
+	SynGlyphX::DataTransformModel* m_dataTransformModel;
 
 	SynGlyphX::SharedActionList m_sharedActions;
 	QAction* m_removeBaseObjectAction;

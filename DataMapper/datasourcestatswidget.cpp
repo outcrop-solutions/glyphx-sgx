@@ -6,12 +6,12 @@
 #include <boost/uuid/uuid_io.hpp>
 #include "datastatsmodel.h"
 
-DataSourceStatsWidget::DataSourceStatsWidget(DataTransformModel* dataTransformModel, QWidget *parent)
+DataSourceStatsWidget::DataSourceStatsWidget(SynGlyphX::DataTransformModel* dataTransformModel, QWidget *parent)
 	: QTabWidget(parent),
 	m_model(dataTransformModel)
 {
-	QObject::connect(m_model, &DataTransformModel::modelReset, this, &DataSourceStatsWidget::RebuildStatsViews);
-	QObject::connect(m_model, &DataTransformModel::rowsAboutToBeRemoved, this, &DataSourceStatsWidget::OnRowsRemovedFromModel);
+	QObject::connect(m_model, &SynGlyphX::DataTransformModel::modelReset, this, &DataSourceStatsWidget::RebuildStatsViews);
+	QObject::connect(m_model, &SynGlyphX::DataTransformModel::rowsAboutToBeRemoved, this, &DataSourceStatsWidget::OnRowsRemovedFromModel);
 }
 
 DataSourceStatsWidget::~DataSourceStatsWidget()
@@ -107,9 +107,9 @@ void DataSourceStatsWidget::OnRowsRemovedFromModel(const QModelIndex& parent, in
 		for (int i = start; i <= end; ++i) {
 
 			QModelIndex index = m_model->index(i);
-			if (m_model->data(index, DataTransformModel::DataTypeRole).toInt() == DataTransformModel::DataType::DataSources) {
+			if (m_model->data(index, SynGlyphX::DataTransformModel::DataTypeRole).toInt() == SynGlyphX::DataTransformModel::DataType::DataSources) {
 
-				QString id = m_model->data(index, DataTransformModel::UUIDRole).toString();
+				QString id = m_model->data(index, SynGlyphX::DataTransformModel::UUIDRole).toString();
 				RemoveTableViews(id);
 			}
 		}

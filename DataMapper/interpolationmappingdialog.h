@@ -30,7 +30,7 @@ class InterpolationMappingDialog : public QDialog
 	Q_OBJECT
 
 public:
-	InterpolationMappingDialog(DataTransformModel* model, QWidget *parent);
+	InterpolationMappingDialog(SynGlyphX::DataTransformModel* model, QWidget *parent);
 	~InterpolationMappingDialog();
 
 	void SetDialogFromMapping(SynGlyphX::InterpolationMappingData::ConstSharedPtr mapping);
@@ -44,7 +44,7 @@ private:
 	SynGlyphX::DoubleMinMaxWidget* m_userSpecifiedMinMaxWidget;
 	FieldGroupWidget* m_fieldGroupWidget;
 
-	DataTransformModel* m_model;
+	SynGlyphX::DataTransformModel* m_model;
 	bool m_isInterpretationLogarithmic;
 };
 
