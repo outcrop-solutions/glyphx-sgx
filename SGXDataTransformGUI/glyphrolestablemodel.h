@@ -18,6 +18,7 @@
 #ifndef GLYPHROLESTABLEMODEL_H
 #define GLYPHROLESTABLEMODEL_H
 
+#include "sgxdatatransformgui_global.h"
 #include <QtCore/QAbstractTableModel>
 #include <QtGui/QFont>
 #include <QtCore/QItemSelection>
@@ -26,7 +27,7 @@
 #include "datamappingfunction.h"
 #include "nonmappablegeometryproperties.h"
 
-class GlyphRolesTableModel : public QAbstractTableModel
+class SGXDATATRANSFORMGUI_EXPORT GlyphRolesTableModel : public QAbstractTableModel
 {
 	Q_OBJECT
 

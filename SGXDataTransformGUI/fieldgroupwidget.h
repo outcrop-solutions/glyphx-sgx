@@ -15,47 +15,56 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef BINDINGLINEEDIT_H
-#define BINDINGLINEEDIT_H
+#ifndef FIELDGROUPWIDGET_H
+#define FIELDGROUPWIDGET_H
 
-#include <QtWidgets/QLineEdit>
-#include "inputbinding.h"
-#include "glyphrolestablemodel.h"
-#include "datamappingfunction.h"
-#include "inputfieldmimedata.h"
+#include "sgxdatatransformgui_global.h"
+#include <QtWidgets/QWidget>
+#include <QtWidgets/QComboBox>
+#include "datatransformmodel.h"
+#include "fieldgroupmodel.h"
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QTableView>
+#include "checkboxheaderview.h"
 
-class BindingLineEdit : public QWidget
+class SGXDATATRANSFORMGUI_EXPORT FieldGroupWidget : public QWidget
 {
 	Q_OBJECT
-	Q_PROPERTY(SynGlyphX::InputField value READ GetInputField WRITE SetInputField USER true)
 
 public:
-	BindingLineEdit(const GlyphRolesTableModel* model, QWidget *parent = 0, SynGlyphX::MappingFunctionData::Input acceptedInputTypes = SynGlyphX::MappingFunctionData::Input::All);
-	~BindingLineEdit();
+	FieldGroupWidget(SynGlyphX::DataTransformModel* dataTransformModel, QWidget *parent);
+	~FieldGroupWidget();
 
-	const SynGlyphX::InputField& GetInputField() const;
-	bool OnlyAcceptsNumericField() const;
+	bool CheckIfGroupNeedsToBeSaved();
 
-public slots:
-	void SetInputField(const SynGlyphX::InputField& inputfield);
-	void Clear();
-	void SetAcceptedInputTypes(SynGlyphX::MappingFunctionData::Input acceptedInputTypes);
+	const QString& GetCurrentGroupName() const;
+	void SetCurrentGroupName(const QString& groupName);
 
-signals:
-	void ValueChanged(SynGlyphX::InputField);
-	void ValueChangedByUser(SynGlyphX::InputField);
-
-protected:
-	virtual void dragEnterEvent(QDragEnterEvent* event);
-	virtual void dropEvent(QDropEvent* event);
-	virtual void contextMenuEvent(QContextMenuEvent* event);
+private slots:
+	void OnSaveGroup();
+	void OnSaveAsGroup();
+	void OnRevertGroup();
+	void OnGroupChanged(int index);
+	void OnFieldGroupModelDataChanged(const QModelIndex& topLeft, const QModelIndex& bottomRight);
+	void OnCheckBoxHeaderViewClicked(SynGlyphX::AllSomeNone state);
+	void OnSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected);
 
 private:
-	const GlyphRolesTableModel* m_model;
-	SynGlyphX::InputField m_inputField;
-	SynGlyphX::MappingFunctionData::Input m_acceptedInputTypes;
-	QAction* m_clearAction;
-	QLineEdit* m_lineEdit;
+	void EnableSaveAndRevertButtons(bool enable);
+	QString GetNewGroupName();
+
+	QComboBox* m_groupsNameComboBox;
+	QPushButton* m_saveButton;
+	QPushButton* m_saveAsButton;
+	QPushButton* m_revertButton;
+
+	QTableView* m_fieldTableView;
+	SynGlyphX::CheckBoxHeaderView* m_fieldTableHeaderView;
+
+	FieldGroupModel* m_fieldGroupModel;
+	SynGlyphX::DataTransformModel* m_dataTransformModel;
+
+	QString m_currentGroupName;
 };
 
-#endif // BINDINGLINEEDIT_H
+#endif // FIELDGROUPWIDGET_H

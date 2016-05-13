@@ -31,6 +31,7 @@
 #include "defaultbaseimageproperties.h"
 #include "downloadexception.h"
 #include "loadingscreenwidget.h"
+#include "remapdialog.h"
 
 GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 	: SynGlyphX::MainWindow(4, parent),
@@ -1033,17 +1034,21 @@ void GlyphViewerWindow::RemapRootPositionMappings() {
 
 	SynGlyphX::DataTransformMapping::SharedPtr dataTransformMapping;
 
-	QString initialDir = QDir::toNativeSeparators(QFileInfo(m_currentFilename).absolutePath() + "/remap.sdt");
-	QString saveFile = QDir::toNativeSeparators(QFileDialog::getSaveFileName(this, tr("Save Remapped Visualization"), initialDir, "SynGlyphX Data Transform Project Files (*.sdt)"));
+	QFileInfo currentFilenameInfo(m_currentFilename);
 
-	if (!saveFile.isEmpty()) {
+	RemapDialog remapDialog(this);
+	remapDialog.SetSaveFilename(currentFilenameInfo.absolutePath() + "/" + currentFilenameInfo.completeBaseName() + "_remap.sdt");
+
+	if (remapDialog.exec() == QDialog::Accepted) {
 
 		SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
 		//m_dataTransformModel->ResetDataMappingID();
-		
-		dataTransformMapping->WriteToFile(saveFile.toStdString());
+
+
+		QString remapFilename = remapDialog.GetSaveFilename();
+		dataTransformMapping->WriteToFile(remapFilename.toStdString());
 		SynGlyphX::Application::restoreOverrideCursor();
 		
-		LoadNewVisualization(saveFile);
+		LoadNewVisualization(remapFilename);
 	}
 }

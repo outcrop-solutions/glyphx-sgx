@@ -19,6 +19,7 @@
 #define REMAPDIALOG_H
 
 #include <QtWidgets/QDialog>
+#include "browselineedit.h"
 
 class RemapDialog : public QDialog
 {
@@ -28,8 +29,13 @@ public:
 	RemapDialog(QWidget *parent);
 	~RemapDialog();
 
+	void SetSaveFilename(const QString& saveFilename);
+	QString GetSaveFilename() const;
+
+	void accept() override;
+
 private:
-	
+	SynGlyphX::BrowseLineEdit* m_saveFilenameEdit;
 };
 
 #endif // REMAPDIALOG_H

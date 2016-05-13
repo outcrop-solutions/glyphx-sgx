@@ -18,6 +18,7 @@
 #ifndef INTERPOLATIONMAPPINGDIALOG_H
 #define INTERPOLATIONMAPPINGDIALOG_H
 
+#include "sgxdatatransformgui_global.h"
 #include <QtWidgets/QDialog>
 #include "interpolationmappingfunction.h"
 #include "doubleminmaxwidget.h"
@@ -25,7 +26,7 @@
 #include "datatransformmodel.h"
 #include "fieldgroupwidget.h"
 
-class InterpolationMappingDialog : public QDialog
+class SGXDATATRANSFORMGUI_EXPORT InterpolationMappingDialog : public QDialog
 {
 	Q_OBJECT
 

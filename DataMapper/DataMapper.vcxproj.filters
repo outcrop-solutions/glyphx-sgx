@@ -73,15 +73,6 @@
     <ClCompile Include="GeneratedFiles\Release\moc_datasourcestatswidget.cpp">
       <Filter>Generated Files\Debug\Release</Filter>
     </ClCompile>
-    <ClCompile Include="bindinglineedit.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_bindinglineedit.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_bindinglineedit.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
     <ClCompile Include="baseimagedialog.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -118,24 +109,6 @@
     <ClCompile Include="GeneratedFiles\Release\moc_baseobjectlistview.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
-    <ClCompile Include="mappingfunctionwidget.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_mappingfunctionwidget.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_mappingfunctionwidget.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="valuemappingdialog.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_valuemappingdialog.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_valuemappingdialog.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\Debug\moc_newmappingdefaultswidget.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
@@ -144,33 +117,6 @@
     </ClCompile>
     <ClCompile Include="newmappingdefaultswidget.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="interpolationmappingdialog.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_interpolationmappingdialog.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_interpolationmappingdialog.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="fieldgroupwidget.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_fieldgroupwidget.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_fieldgroupwidget.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="fieldgroupmodel.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_fieldgroupmodel.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_fieldgroupmodel.cpp">
-      <Filter>Generated Files\Release</Filter>
     </ClCompile>
     <ClCompile Include="datasourcesview.cpp">
       <Filter>Source Files</Filter>
@@ -184,19 +130,10 @@
     <ClCompile Include="databindingtableswidget.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="glyphrolestablemodel.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\Debug\moc_databindingtableswidget.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Release\moc_databindingtableswidget.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_glyphrolestablemodel.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_glyphrolestablemodel.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
     <ClCompile Include="glyphrolessubsettablewidget.cpp">
@@ -276,9 +213,6 @@
     <CustomBuild Include="datasourcestatswidget.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
-    <CustomBuild Include="bindinglineedit.h">
-      <Filter>Header Files</Filter>
-    </CustomBuild>
     <CustomBuild Include="baseimagedialog.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
@@ -291,31 +225,13 @@
     <CustomBuild Include="baseobjectlistview.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
-    <CustomBuild Include="mappingfunctionwidget.h">
-      <Filter>Header Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="valuemappingdialog.h">
-      <Filter>Header Files</Filter>
-    </CustomBuild>
     <CustomBuild Include="newmappingdefaultswidget.h">
-      <Filter>Header Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="interpolationmappingdialog.h">
-      <Filter>Header Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="fieldgroupwidget.h">
-      <Filter>Header Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="fieldgroupmodel.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="datasourcesview.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="databindingtableswidget.h">
-      <Filter>Header Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="glyphrolestablemodel.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="glyphrolessubsettablewidget.h">
