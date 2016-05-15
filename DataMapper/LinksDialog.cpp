@@ -130,7 +130,7 @@ const SynGlyphX::Link& LinksDialog::GetLink() {
 	m_link.m_end = GetNode(m_toGlyphTree, m_toLineEdit);
 	m_link.m_name = m_nameLineEdit->text().toStdWString();
 	QColor c = m_colorButton->GetColor();
-	m_link.m_color.SetColor(c.red(), c.green(), c.blue());
+	m_link.m_color.SetRGB(c.red(), c.green(), c.blue());
 	m_link.m_color.m_alpha = m_transparensySpinBox->value();
 	m_link.m_color.m_inheritfromParent = m_inheritColorCheckBox->isChecked();
 	return m_link;
@@ -145,7 +145,7 @@ SynGlyphX::Link::Node LinksDialog::GetNode(GlyphTreesView* treeView, LinkLineEdi
 	SynGlyphX::DataMappingGlyphGraph::Node* treeNode = static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(sourceIndex.internalPointer());
 
 	SynGlyphX::DataMappingGlyphGraph::GlyphIterator fromGlyph(treeNode);
-	SynGlyphX::Link::Node node(m_dataTransformModel->GetTreeId(sourceIndex), fromGlyph->first, lineEdit->GetInputField());
+	SynGlyphX::Link::Node node(m_dataTransformModel->GetTreeId(sourceIndex), fromGlyph->first, lineEdit->GetInputField().GetHashID());
 	return node;
 }
 
