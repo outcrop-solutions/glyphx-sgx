@@ -35,23 +35,21 @@ namespace SynGlyphX {
 		friend class LinksDialog;
 	public:
 		struct Node { //tree ID and lable should uniquely identify glyph
-			Node(boost::uuids::uuid treeId, unsigned long label, const InputField& inputField) : m_treeId(treeId), m_label(label), m_inputField(inputField) {}
-			Node(boost::property_tree::wptree& parentPropertyTree);
+			Node(boost::uuids::uuid treeId, unsigned long label, size_t inputFieldId) : m_treeId(treeId), m_label(label), m_inputFieldId(inputFieldId) {}
+			Node(const boost::property_tree::wptree& propertyTree);
 			Node() {}
 			boost::property_tree::wptree& ExportToPropertyTree(boost::property_tree::wptree& parentPropertyTree) const;
 			boost::uuids::uuid m_treeId;
 			unsigned long m_label;
-			InputField m_inputField;
+			size_t m_inputFieldId;
 		};
 
 		//Using GlyphColor will be overkill. Ideally we need a generic color class
 		struct Color {
-			typedef std::array<unsigned short, 3> ColorArray;
-			ColorArray m_color;
-			unsigned char m_alpha;
+			unsigned short m_r, m_g, m_b, m_alpha;
 			bool m_inheritfromParent;
-			void SetColor(unsigned short r, unsigned short g, unsigned short b) {
-				m_color[0] = r; m_color[1] = g; m_color[2] = b;
+			void SetRGB(unsigned short r, unsigned short g, unsigned short b) {
+				m_r = r; m_g = g; m_b = b;
 			}
 			Color() {}
 			Color(const boost::property_tree::wptree& propertyTree);
@@ -69,7 +67,7 @@ namespace SynGlyphX {
 				NFunctions
 			};
 			Function() {}
-			Function(boost::property_tree::wptree& parentPropertyTree);
+			Function(const boost::property_tree::wptree& parentPropertyTree);
 			boost::property_tree::wptree& ExportToPropertyTree(boost::property_tree::wptree& parentPropertyTree) const;
 		};
 		Link() {}

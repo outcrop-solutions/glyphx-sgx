@@ -364,6 +364,7 @@ namespace SynGlyphX {
 		m_defaults.Clear();
 		m_baseObjects.clear();
 		m_legends.clear();
+		m_links.clear();
 		m_id = UUIDGenerator::GetNewRandomUUID();
 
 		if (addADefaultBaseObjectAfterClear) {
