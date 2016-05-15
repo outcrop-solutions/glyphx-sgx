@@ -149,12 +149,32 @@ SynGlyphX::Link::Node LinksDialog::GetNode(GlyphTreesView* treeView, LinkLineEdi
 	return node;
 }
 
+bool LinksDialog::Validate() {
+
+	if (m_nameLineEdit->text().isEmpty()){
+		QMessageBox::warning(this, tr("Add Link Error"), tr("Link name is empty. Please enter link name"));
+		return false;
+	}
+	QModelIndexList s1 = m_fromGlyphTree->selectionModel()->selectedIndexes();
+	QModelIndexList s2 = m_toGlyphTree->selectionModel()->selectedIndexes();
+	if (s1.size() != 1 || s2.size() != 1) {
+		QMessageBox::warning(this, tr("Add Link Error"), tr("One glyph must be slected for each side of the link"));
+		return false;
+	}
+	if (m_fromLineEdit->text().isEmpty() || m_fromLineEdit->text().isEmpty()) {
+		QMessageBox::warning(this, tr("Add Link Error"), tr("Input field is empty. Please drag and drop input field from the source data"));
+		return false;
+	}
+
+	return true;
+}
+
 LinksDialog::~LinksDialog() {
 	delete m_fromGlyphTree;
 	delete m_toGlyphTree;
 }
 
 void LinksDialog::accept() {
-
-	QDialog::accept();
+	if (Validate())
+		QDialog::accept();
 }

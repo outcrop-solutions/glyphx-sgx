@@ -65,6 +65,7 @@ private slots:
 
 private:
 	SynGlyphX::Link::Node GetNode(GlyphTreesView* treeView, LinkLineEdit* lineEdit);
+	bool Validate();
 	QLineEdit*	  m_nameLineEdit;
 	LinkLineEdit* m_fromLineEdit;
 	LinkLineEdit* m_toLineEdit;
