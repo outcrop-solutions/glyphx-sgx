@@ -587,7 +587,7 @@ void DataTransformModel::ClearAllInputBindings(const QModelIndex& index) {
 void DataTransformModel::ClearAbsentBindings(const QModelIndex& index) {
 	//we need a InputFieldMap copy, using const& will cause problems after deleting Inputfield
 	SynGlyphX::DataMappingGlyphGraph::InputFieldMap fieldMap = GetInputFieldsForTree(index); 
-	std::set<SynGlyphX::InputField::HashID> sourceFields;
+	std::set<HashID> sourceFields;
 	for (const auto& t : m_tableStatsMap) {
 		auto table = t.first;
 		auto stats = t.second;
