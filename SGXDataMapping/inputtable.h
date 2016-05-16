@@ -21,14 +21,13 @@
 #include "sgxdatamapping.h"
 #include <string>
 #include <boost/uuid/uuid.hpp>
+#include "hashid.h"
 
 namespace SynGlyphX {
 
 	class SGXDATAMAPPING_API InputTable
 	{
 	public:
-		typedef size_t HashID;
-
 		InputTable();
 		InputTable(const boost::uuids::uuid& datasourceID, const std::wstring& table);
 		//InputTable(const boost::property_tree::wptree& propertyTree);

@@ -12,7 +12,7 @@ namespace SynGlyphX {
 	{
 	}
 
-	InputBinding::InputBinding(InputField::HashID inputFieldID) :
+	InputBinding::InputBinding(HashID inputFieldID) :
 		m_inputFieldID(inputFieldID),
 		m_minOverride(0.0),
 		m_maxOverride(0.0),
@@ -21,7 +21,7 @@ namespace SynGlyphX {
 	}
 
 	InputBinding::InputBinding(const boost::property_tree::wptree& propertyTree) :
-		m_inputFieldID(propertyTree.get<InputField::HashID>(L"<xmlattr>.id")) {
+		m_inputFieldID(propertyTree.get<HashID>(L"<xmlattr>.id")) {
 
 		boost::optional<const boost::property_tree::wptree&> overridePropertyTree = propertyTree.get_child_optional(L"Override");
 
@@ -139,7 +139,7 @@ namespace SynGlyphX {
 		return (m_inputFieldID != 0);
 	}
 
-	InputField::HashID InputBinding::GetInputFieldID() const {
+	HashID InputBinding::GetInputFieldID() const {
 
 		return m_inputFieldID;
 	}

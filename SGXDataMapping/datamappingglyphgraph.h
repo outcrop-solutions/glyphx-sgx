@@ -31,14 +31,15 @@
 //#include <boost/graph/directed_graph.hpp>
 #include "glyphgraphtemplate.h"
 #include "glyphgraph.h"
+#include "hashid.h"
 
 namespace SynGlyphX {
 
 	class SGXDATAMAPPING_API DataMappingGlyphGraph : public GlyphGraphTemplate<DataMappingGlyph> {
 
 	public:
-		typedef std::unordered_map<InputField::HashID, InputField> InputFieldMap;
-		typedef std::unordered_map<InputField::HashID, unsigned int> InputFieldCountMap;
+		typedef std::unordered_map<HashID, InputField> InputFieldMap;
+		typedef std::unordered_map<HashID, unsigned int> InputFieldCountMap;
 		typedef boost::property_tree::wptree PropertyTree;
 
 		typedef std::shared_ptr<DataMappingGlyphGraph> SharedPtr;

@@ -5,6 +5,7 @@
 #include <stdexcept>
 #include "csvfilereader.h"
 #include "datamappingglyphgraphexportvisitor.h"
+#include "hashid.h"
 
 namespace SynGlyphX {
 
@@ -56,7 +57,7 @@ namespace SynGlyphX {
 		m_mergeRoots = propertyTree.get_optional<bool>(L"<xmlattr>.merge").get_value_or(false);
 
 		//Since there was a previous bug where input fields would get written to the file that were not in use, clear them out
-		std::vector<SynGlyphX::InputTable::HashID> fieldsToRemove;
+		std::vector<SynGlyphX::HashID> fieldsToRemove;
 		for (auto inputField : m_inputFieldReferenceCounts) {
 
 			if (inputField.second == 0) {
@@ -251,8 +252,8 @@ namespace SynGlyphX {
 			InputBinding& selectedBinding = const_cast<InputBinding&>(vertex->second.GetInputBinding(static_cast<DataMappingGlyph::MappableField>(field)));
 			if (selectedBinding.IsBoundToInputField()) {
 
-				InputField::HashID inputFieldID = selectedBinding.GetInputFieldID();
-				std::unordered_map<InputField::HashID, unsigned int>::iterator referenceCount = graph.m_inputFieldReferenceCounts.find(inputFieldID);
+                HashID inputFieldID = selectedBinding.GetInputFieldID();
+				std::unordered_map<HashID, unsigned int>::iterator referenceCount = graph.m_inputFieldReferenceCounts.find(inputFieldID);
 
 				if (referenceCount == graph.m_inputFieldReferenceCounts.end()) {
 
@@ -381,8 +382,8 @@ namespace SynGlyphX {
 		//Clear input binding if field as a previous value
 		ClearInputBinding(node, field);
 
-		InputField::HashID inputFieldID = inputfield.GetHashID();
-		std::unordered_map<InputField::HashID, unsigned int>::iterator referenceCount = m_inputFieldReferenceCounts.find(inputFieldID);
+		HashID inputFieldID = inputfield.GetHashID();
+		std::unordered_map<HashID, unsigned int>::iterator referenceCount = m_inputFieldReferenceCounts.find(inputFieldID);
 
 		if (referenceCount == m_inputFieldReferenceCounts.end()) {
 
@@ -403,7 +404,7 @@ namespace SynGlyphX {
 
 		if (binding.IsBoundToInputField()) {
 
-			InputField::HashID inputFieldID = binding.GetInputFieldID();
+			HashID inputFieldID = binding.GetInputFieldID();
 
 			if (m_inputFieldReferenceCounts[inputFieldID] == 1) {
 
@@ -614,7 +615,7 @@ namespace SynGlyphX {
 			const InputBinding& selectedBinding = glyphWithoutUnlinkedInputBindings.GetInputBinding(static_cast<DataMappingGlyph::MappableField>(field));
 			if (selectedBinding.IsBoundToInputField()) {
 
-				InputField::HashID inputFieldID = selectedBinding.GetInputFieldID();
+				HashID inputFieldID = selectedBinding.GetInputFieldID();
 				if (m_inputFields.count(inputFieldID) == 0) {
 
 					glyphWithoutUnlinkedInputBindings.ClearInputBinding(static_cast<DataMappingGlyph::MappableField>(field));

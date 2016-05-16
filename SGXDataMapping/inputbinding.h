@@ -30,7 +30,7 @@ namespace SynGlyphX {
 		static const std::wstring PropertyTreeName;
 
 		InputBinding();
-		InputBinding(InputField::HashID inputFieldID);
+		InputBinding(HashID inputFieldID);
 		InputBinding(const boost::property_tree::wptree& propertyTree);
 		InputBinding(const InputBinding& binding);
 		~InputBinding();
@@ -50,12 +50,12 @@ namespace SynGlyphX {
 
 		bool IsBoundToInputField() const;
 
-		InputField::HashID GetInputFieldID() const;
+		HashID GetInputFieldID() const;
 
 		void Clear();
 
 	private:
-		InputField::HashID m_inputFieldID;
+		HashID m_inputFieldID;
 
 		double m_minOverride;
 		double m_maxOverride;
