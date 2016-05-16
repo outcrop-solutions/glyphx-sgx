@@ -50,7 +50,12 @@ namespace DataEngine
         memset(&vmArgs, 0, sizeof(vmArgs));
 		JavaVMOption options[2];
         memset(&options, 0, sizeof(options));
-		std::ifstream ifile(".\\dataengine.jar");
+		std::ifstream ifile
+#ifdef __APPLE__
+        ("../Resources/DataEngine/dataengine.jar");
+#else
+        (".\\dataengine.jar");
+#endif
 		options[0].optionString = "-Xmx1g"; //Max of 2048M
         
 #ifdef WIN32
@@ -70,8 +75,11 @@ namespace DataEngine
 
 		std::string jarFilePrefix;
 		if (ifile) {
-
-			jarFilePrefix = ".\\";
+#ifdef __APPLE__
+			jarFilePrefix = "../Resources/DataEngine/";
+#else
+            jarFilePrefix = ".\\"
+#endif
 		} else {
 			
 			jarFilePrefix = "..\\..\\DataEngine\\Java DataEngine\\";
