@@ -36,6 +36,8 @@
 #include "glyphengine.h"
 #include "portablevisualizationexport.h"
 #include "legendlistview.h"
+#include "LinksListView.h"
+#include "LinksDialog.h"
 
 class DataMapperWindow : public SynGlyphX::MainWindow
 {
@@ -63,6 +65,7 @@ private slots:
 	void AddDatabaseServerDatasources();
 	void CreatePortableVisualization(SynGlyphX::PortableVisualizationExport::Platform platform);
 	void AddBaseObject();
+	void OnAddLink();
 	void AddGlyphTemplate();
 	void AddGlyphTemplatesFromLibrary();
 	void CreateNewGlyphTree();
@@ -88,14 +91,18 @@ private:
 	void WriteNewMappingDefaults();
 	void ClearAndInitializeDataMapping();
 	void SelectFirstBaseObject();
+	void AddLink();
 
     QMenu* m_fileMenu;
 	QMenu* m_editMenu;
     QMenu* m_glyphMenu;
 	QMenu* m_baseObjectMenu;
+	QMenu* m_linksMenu;
 	QMenu* m_datasourceMenu;
 	QMenu* m_legendMenu;
 	QMenu* m_toolsMenu;
+
+	LinksDialog* m_linksDialog;
 
 	QAction* m_showAnimation;
 
@@ -103,6 +110,10 @@ private:
     
 	SynGlyphX::IntRoleDataFilterProxyModel* m_baseObjectsModel;
 	BaseObjectListView* m_baseObjectsView;
+
+	SynGlyphX::IntRoleDataFilterProxyModel* m_linksModel;
+	LinksListView* m_linksView;
+
 
 	GlyphTreesView* m_glyphTreesView;
 
