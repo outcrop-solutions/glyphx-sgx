@@ -1,6 +1,8 @@
 #!/bin/bash
 
 # Script for preparing OSX app bundle (must be run after XCode build, from 3rdParty/scripts directory).
+# You will need to provide execute permission for this script before running it the first time:
+#   chmod +x ./setup_osx.sh
 # Todo:
 # - Some way to change hardcoded paths (command line option? store in a .conf file?)
 # - Error handling (check for Qt, VM, etc and emit an error if not found)
