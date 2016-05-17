@@ -50,6 +50,8 @@ namespace SynGlyphX
         }
     }
 
+    // Add overloads for new types here as necessary, making sure to call the appropriate
+    // signed/unsigned hash function.
 	inline HashID MakeHashID(unsigned int v) { return HashImpl::Unsigned(v); }
 	inline HashID MakeHashID(int v) { return HashImpl::Signed(v); }
 
