@@ -78,7 +78,7 @@ namespace DataEngine
 #ifdef __APPLE__
 			jarFilePrefix = "../Resources/DataEngine/";
 #else
-            jarFilePrefix = ".\\"
+			jarFilePrefix = ".\\";
 #endif
 		} else {
 			
