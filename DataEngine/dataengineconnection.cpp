@@ -46,9 +46,10 @@ namespace DataEngine
 		
 		CreateJVMFunc CreateJVM = (CreateJVMFunc)jvmDll.GetAddress("JNI_CreateJavaVM");
 
+        const auto option_count = 2u;
 		JavaVMInitArgs vmArgs;
         memset(&vmArgs, 0, sizeof(vmArgs));
-		JavaVMOption options[2];
+		JavaVMOption options[option_count];
         memset(&options, 0, sizeof(options));
 		std::ifstream ifile
 #ifdef __APPLE__
@@ -56,7 +57,6 @@ namespace DataEngine
 #else
         (".\\dataengine.jar");
 #endif
-		options[0].optionString = "-Xmx1g"; //Max of 2048M
         
 #ifdef WIN32
 		char jarFileSeparator = ';';
@@ -67,11 +67,11 @@ namespace DataEngine
 		SynGlyphX::StringVector jarFiles;
 		jarFiles.push_back("dataengine.jar");
 		jarFiles.push_back("ojdbc6.jar");
-		jarFiles.push_back("database-drivers\\opencsv-3.7.jar");
-		jarFiles.push_back("database-drivers\\sqlite4java.jar");
-		jarFiles.push_back("database-drivers\\mysql-connector-java-5.1.38-bin.jar");
-		jarFiles.push_back("database-drivers\\sqlite-jdbc-3.8.11.2.jar");
-		jarFiles.push_back("database-drivers\\vertica-jdbc-7.2.1-0.jar");
+		jarFiles.push_back("database-drivers/opencsv-3.7.jar");
+		jarFiles.push_back("database-drivers/sqlite4java.jar");
+		jarFiles.push_back("database-drivers/mysql-connector-java-5.1.38-bin.jar");
+		jarFiles.push_back("database-drivers/sqlite-jdbc-3.8.11.2.jar");
+		jarFiles.push_back("database-drivers/vertica-jdbc-7.2.1-0.jar");
 
 		std::string jarFilePrefix;
 		if (ifile) {
@@ -94,11 +94,12 @@ namespace DataEngine
 		}
 
 		ifile.close();
-		options[1].optionString = const_cast<char*>(jarFilesOptionString.c_str());
+		options[0].optionString = const_cast<char*>(jarFilesOptionString.c_str());
+        options[1].optionString = "-Xmx1g"; //Max of 1G
 
         vmArgs.version = JNI_VERSION_1_2;
 		vmArgs.options = options;
-		vmArgs.nOptions = 2;
+		vmArgs.nOptions = option_count;
 		vmArgs.ignoreUnrecognized = JNI_FALSE;
 
 		// Create the JVM
