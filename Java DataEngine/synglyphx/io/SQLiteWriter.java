@@ -64,6 +64,7 @@ public class SQLiteWriter {
 			db.exec("COMMIT TRANSACTION;"); 
 			db.dispose();
 		}catch(SQLiteException se){
+			System.out.println("writeSDTInfo: SQLite Exception: " + se.toString());
 			try{
 	            se.printStackTrace(Logger.getInstance().addTError());
 	        }catch(Exception e){}
