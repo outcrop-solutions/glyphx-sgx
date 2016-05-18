@@ -21,9 +21,9 @@ int main(int argc, char *argv[])
     // Mac: Add plugin path in package.
     // 'macdeployqt' needs to be run on the app package after building for this to work.
     QDir dir(argv[0]); // e.g. appdir/Contents/MacOS/appname
-    assert(dir.cdUp());
-    assert(dir.cdUp());
-    assert(dir.cd("PlugIns")); // e.g. appdir/Contents/PlugIns
+    dir.cdUp();
+    dir.cdUp();
+    dir.cd("PlugIns"); // e.g. appdir/Contents/PlugIns
     QCoreApplication::setLibraryPaths(QStringList(dir.absolutePath()));
     printf("after change, libraryPaths=(%s)\n", QCoreApplication::libraryPaths().join(",").toUtf8().data());
 #endif
