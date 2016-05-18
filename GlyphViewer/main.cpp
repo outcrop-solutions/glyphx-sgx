@@ -11,7 +11,7 @@
 #include <QtCore/QStandardPaths>
 #include <QtWidgets/QMessageBox>
 #include <QtCore/QTextStream>
-#include <QString>
+#include <QtCore/QString>
 
 /*
 void myMessageHandler(QtMsgType type, const QMessageLogContext &context, const QString &msg)
