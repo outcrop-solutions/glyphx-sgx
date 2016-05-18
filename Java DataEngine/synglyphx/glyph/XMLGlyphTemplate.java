@@ -62,10 +62,13 @@ public class XMLGlyphTemplate{
 	public boolean minMaxFieldExists(String field){
 
 		boolean isIt = false;
-		try{
-			if(minMaxFieldMap.get(field) != null){isIt = true;}
-		}catch(Exception e){
+		if (minMaxFieldMap==null)
+		{
 			isIt = false;
+		}
+		else if(minMaxFieldMap.get(field) != null)
+		{
+			isIt = true;
 		}
 
 		return isIt;
