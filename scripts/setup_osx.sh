@@ -25,7 +25,7 @@ while getopts "drvbmj:" opt; do
 			((appcount++))
 			;;
 		b)
-			app=GlyphBuilder
+			app=GlyphDesigner
 			((appcount++))
 			;;
 		m)
@@ -54,7 +54,7 @@ fi
 
 if [ $appcount != 1 ]; then
 	echo Exactly one app parameter required [got $appcount]:
-	echo Specify -v for GlyphViewer, -b for GlyphBuilder, -m for DataMapper.
+	echo Specify -v for GlyphViewer, -b for GlyphDesigner, -m for DataMapper.
 	quit=true
 fi
 
@@ -82,6 +82,7 @@ mkdir -p ../../cmake/bin/OSX64/$build/$app.app/Contents/Resources/DataEngine
 cp -R ../../DataEngine/Java\ DataEngine/*.jar ../../cmake/bin/OSX64/$build/$app.app/Contents/Resources/DataEngine
 cp -R ../../DataEngine/Java\ DataEngine/database-drivers ../../cmake/bin/OSX64/$build/$app.app/Contents/Resources/DataEngine
 cp -R ../../DataEngine/Java\ DataEngine/converthash/libconverthash.dylib ../../cmake/bin/OSX64/$build/$app.app/Contents/MacOS
+cp -R ../../DataEngine/Java\ DataEngine/libsqlite4java-osx.dylib ../../cmake/bin/OSX64/$build/$app.app/Contents/MacOS
 
 echo Deploying installation files...
 cp -R ../../Misc/InstallerFiles/* ../../cmake/bin/OSX64/$build/$app.app/Contents/MacOS
