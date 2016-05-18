@@ -12,6 +12,8 @@ app=None
 java=7
 appcount=0
 
+# Process command-line options.
+
 while getopts "drvbmj:" opt; do
 	case "$opt" in
 		d)
@@ -45,6 +47,8 @@ while getopts "drvbmj:" opt; do
 	esac
 done
 
+# Validate command line options and quit with a message if invalid.
+
 quit=false
 
 if [ $build = None ]; then
@@ -64,8 +68,15 @@ fi
 
 echo Setting up $app bundle [$build] with JVM $java...
 
+# This shouldn't be necessary but I haven't been able to figure out how to get cmake to set up xcode
+# to drop the libraries in the bundle and link the app against them properly. So just moving them into
+# it before running macdeployqt does the trick.
+echo Moving libraries into app bundle...
+mkdir -p ../../cmake/bin/OSX64/$build/$app.app/Contents/Frameworks
+mv ../../cmake/bin/OSX64/$build/*.dylib ../../cmake/bin/OSX64/$build/$app.app/Contents/Frameworks 2>/dev/null
+
 echo Deploying Qt...
-/Users/Shared/Qt5.6.0/5.6/clang_64/bin/macdeployqt ../../cmake/bin/OSX64/$build/$app.app
+/Users/Shared/Qt5.6.0/5.6/clang_64/bin/macdeployqt ../../cmake/bin/OSX64/$build/$app.app >/dev/null 2>/dev/null
 
 if [ $java = 7 ]; then
 	echo Deploying Java VM 1.7.0_79...
@@ -87,10 +98,8 @@ cp -R ../../DataEngine/Java\ DataEngine/libsqlite4java-osx.dylib ../../cmake/bin
 echo Deploying installation files...
 cp -R ../../Misc/InstallerFiles/* ../../cmake/bin/OSX64/$build/$app.app/Contents/MacOS
 
-# Todo: shouldn't be needed. Figure out why these files are being deployed here in the first place. (Are they
-# build temporaries? Or maybe it's some misconfigured cmake step? Probably the latter...)
+# Todo: shouldn't be needed. Figure out why this is deployed here in the first place...
 echo Cleaning up executable path...
-rm -f ../../cmake/bin/OSX64/$build/*.dylib
 rm -f ../../cmake/bin/OSX64/$build/*.jar
 
 echo Done!
