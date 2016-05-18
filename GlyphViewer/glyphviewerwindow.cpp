@@ -984,6 +984,8 @@ void GlyphViewerWindow::CreatePortableVisualization(SynGlyphX::PortableVisualiza
 		DownloadBaseImages(ge);
 		ge.generateGlyphs();
 
+		m_portableVisualizationExport.CopyLogo(QDir::toNativeSeparators(csvDirectory + "/usr/images/"));
+
 		SynGlyphX::Application::restoreOverrideCursor();
 	}
 	catch (const std::exception& e) {

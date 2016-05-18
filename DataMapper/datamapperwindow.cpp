@@ -727,10 +727,9 @@ void DataMapperWindow::CreatePortableVisualization(SynGlyphX::PortableVisualizat
 				throw;
 			}
 			ge.generateGlyphs();
-		}
 
-		//SynGlyphXANTz::ANTzExportTransformer transformer(csvDirectory, m_antzExportDirectories[platform], platform, false);
-		//transformer.Transform(*(m_dataTransformModel->GetDataMapping().get()));
+			m_portableVisualizationExport.CopyLogo(QDir::toNativeSeparators(csvDirectory + "/usr/images/"));
+		}
 
 		SynGlyphX::Application::restoreOverrideCursor();
 	}
