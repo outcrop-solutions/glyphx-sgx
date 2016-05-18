@@ -13,8 +13,8 @@ LinksListView::LinksListView(DataTransformModel* dataTransformModel, QWidget *pa
 
 	m_sharedActions.AddSeparator();
 
-	//m_propertiesAction = m_sharedActions.AddAction(tr("Properties"));
-	//QObject::connect(m_propertiesAction, &QAction::triggered, this, &LinksListView::ShowLinkProperties);
+	m_propertiesAction = m_sharedActions.AddAction(tr("Edit"));
+	QObject::connect(m_propertiesAction, &QAction::triggered, this, &LinksListView::EditLink);
 
 	m_sharedActions.EnableActions(false);
 	addActions(m_sharedActions);
@@ -41,8 +41,8 @@ void LinksListView::EnableActions() {
 	const QModelIndexList& selected = selectionModel()->selectedIndexes();
 	if (!selected.isEmpty()) {
 
-		m_removeLinkAction->setEnabled(true); //(selected.front().row() > 0);
-		//m_propertiesAction->setEnabled(true);
+		m_removeLinkAction->setEnabled(true); 
+		m_propertiesAction->setEnabled(true);
 	}
 	else {
 
@@ -59,20 +59,21 @@ void LinksListView::RemoveLink() {
 	}
 }
 
-void LinksListView::ShowLinkProperties() {
+void LinksListView::EditLink() {
 
-	//const QModelIndexList& selected = selectionModel()->selectedIndexes();
-	//if (!selected.isEmpty()) {
+	const QModelIndexList& selected = selectionModel()->selectedIndexes();
+	if (!selected.isEmpty()) {
 
-	//	unsigned int row = selected.front().row();
-	//	bool isFirstLink = (row == 0);
-	//	BaseImageDialog dialog(!isFirstLink, isFirstLink, this);
-	//	dialog.setWindowTitle(tr("Base Object Properties"));
-	//	dialog.SetBaseImage(m_dataTransformModel->GetDataMapping()->GetLinks()[row]);
-	//	if (dialog.exec() == QDialog::Accepted) {
+		unsigned int row = selected.front().row();
+		emit editLink(row);
+		//bool isFirstLink = (row == 0);
+		//BaseImageDialog dialog(!isFirstLink, isFirstLink, this);
+		//dialog.setWindowTitle(tr("Base Object Properties"));
+		//dialog.SetBaseImage(m_dataTransformModel->GetDataMapping()->GetLinks()[row]);
+		//if (dialog.exec() == QDialog::Accepted) {
 
-	//		const SynGlyphX::BaseImage& baseImage = dialog.GetBaseImage();
-	//		m_dataTransformModel->SetLink(row, baseImage);
-	//	}
-	//}
+		//	const SynGlyphX::BaseImage& baseImage = dialog.GetBaseImage();
+		//	m_dataTransformModel->SetLink(row, baseImage);
+		//}
+	}
 }

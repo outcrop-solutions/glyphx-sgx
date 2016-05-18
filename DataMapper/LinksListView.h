@@ -35,9 +35,12 @@ public:
 protected:
 	virtual void selectionChanged(const QItemSelection& selected, const QItemSelection& deselected);
 
+signals:
+	void editLink(int row);
+
 private slots:
 	void RemoveLink();
-	void ShowLinkProperties();
+	void EditLink();
 
 private:
 	void EnableActions();

@@ -53,18 +53,25 @@ class LinksDialog : public QDialog
 	Q_OBJECT
 
 public:
+
 	LinksDialog(DataTransformModel* dataTransformModel, GlyphRolesTableModel* glyphRolesTableModel, QWidget* parent = 0);
 	~LinksDialog();
 
 	void accept() override;
 	const SynGlyphX::Link& GetLink();
-	void SetLink(const SynGlyphX::Link& link) {}
+	void SetLink(const SynGlyphX::Link& link);
+
+	//Set -1 for new link
+	void SetEditRow(int row);
+	int GetEditRow() { return m_row;  }
 
 private slots:
 
 
 private:
 	SynGlyphX::Link::Node GetNode(GlyphTreesView* treeView, LinkLineEdit* lineEdit);
+	void SelectGlyph(const QModelIndex &parent, GlyphTreesView* treeView, const SynGlyphX::Link::Node& node);
+	void SetNode(const SynGlyphX::Link::Node& node, GlyphTreesView* treeView, LinkLineEdit* lineEdit);
 	bool Validate();
 	QLineEdit*	  m_nameLineEdit;
 	LinkLineEdit* m_fromLineEdit;
@@ -81,7 +88,7 @@ private:
 	QSpinBox*	m_transparensySpinBox;
 
 	SynGlyphX::Link m_link;
-
+	int m_row;
 };
 
 #endif // LINKSDIALOG_H

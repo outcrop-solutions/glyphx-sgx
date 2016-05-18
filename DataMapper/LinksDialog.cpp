@@ -55,7 +55,8 @@ void LinkLineEdit::dropEvent(QDropEvent* event) {
 
 LinksDialog::LinksDialog(DataTransformModel* dataTransformModel, GlyphRolesTableModel* glyphRolesTableModel, QWidget *parent)
 	: QDialog(parent),
-	m_dataTransformModel(dataTransformModel)
+	m_dataTransformModel(dataTransformModel),
+	m_row(-1)
 {
 	QVBoxLayout* mainLayout = new QVBoxLayout(this);
 
@@ -123,6 +124,13 @@ LinksDialog::LinksDialog(DataTransformModel* dataTransformModel, GlyphRolesTable
 	setLayout(mainLayout);
 }
 
+void LinksDialog::SetEditRow(int row) {
+
+	m_row = row;
+	if (m_row >= 0)
+		SetLink(m_dataTransformModel->GetDataMapping()->GetLinks()[row]);
+}
+
 const SynGlyphX::Link& LinksDialog::GetLink() {
 	// 
 	//m_link.m_function = SynGlyphX::LinkFunction::MatchValue;
@@ -136,6 +144,17 @@ const SynGlyphX::Link& LinksDialog::GetLink() {
 	return m_link;
 }
 
+void LinksDialog::SetLink(const SynGlyphX::Link& link) {
+	
+	m_nameLineEdit->setText(QString::fromStdWString(link.m_name));
+	m_colorButton->SetColor(QColor(link.m_color.m_r, link.m_color.m_g, link.m_color.m_b));
+	m_transparensySpinBox->setValue(link.m_color.m_alpha);
+	m_inheritColorCheckBox->setChecked(m_link.m_color.m_inheritfromParent);
+	SetNode(link.m_start, m_fromGlyphTree, m_fromLineEdit);
+	SetNode(link.m_end, m_toGlyphTree, m_toLineEdit);
+
+}
+
 SynGlyphX::Link::Node LinksDialog::GetNode(GlyphTreesView* treeView, LinkLineEdit* lineEdit) {
 
 	QModelIndexList selectedItems = treeView->selectionModel()->selectedIndexes();
@@ -147,6 +166,51 @@ SynGlyphX::Link::Node LinksDialog::GetNode(GlyphTreesView* treeView, LinkLineEdi
 	SynGlyphX::DataMappingGlyphGraph::GlyphIterator fromGlyph(treeNode);
 	SynGlyphX::Link::Node node(m_dataTransformModel->GetTreeId(sourceIndex), fromGlyph->first, lineEdit->GetInputField().GetHashID());
 	return node;
+}
+
+
+void LinksDialog::SelectGlyph(const QModelIndex &parent, GlyphTreesView* treeView, const SynGlyphX::Link::Node& node){
+
+	int rowCount = m_dataTransformModel->rowCount(parent);
+	for (int i = 0; i < rowCount; ++i) {
+		QModelIndex idx = m_dataTransformModel->index(i, 0, parent);
+
+		if (idx.isValid()) {
+			SynGlyphX::DataMappingGlyphGraph::Node* treeNode = static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(idx.internalPointer());
+			if (!treeNode)
+				break;
+			SynGlyphX::DataMappingGlyphGraph::GlyphIterator fromGlyph(treeNode);
+			if (m_dataTransformModel->GetTreeId(idx) == node.m_treeId && fromGlyph->first == node.m_label) {
+				SynGlyphX::RoleDataFilterProxyModel* filterModel = dynamic_cast<SynGlyphX::RoleDataFilterProxyModel*>(treeView->model());
+				treeView->selectionModel()->select(filterModel->mapFromSource(idx), QItemSelectionModel::Select);
+				break;
+			}
+			else {
+				SelectGlyph(idx, treeView, node);
+			}
+		}
+	}
+}
+
+void LinksDialog::SetNode(const SynGlyphX::Link::Node& node, GlyphTreesView* treeView, LinkLineEdit* lineEdit) {
+
+	const auto& glyphGraph = m_dataTransformModel->GetDataMapping()->GetGlyphGraphs().at(node.m_treeId);
+	const SynGlyphX::DataMappingGlyphGraph::InputFieldMap& inputFields = glyphGraph->GetInputFields();
+	for (const auto& inputField : inputFields) {
+		if (inputField.second.GetHashID() == node.m_inputFieldId) {
+			lineEdit->SetInputField(inputField.second);
+			break;
+		}
+	}
+	int nRows = m_dataTransformModel->GetDataMapping()->GetGlyphGraphs().size();
+	
+	SelectGlyph(QModelIndex(), treeView, node);
+	//for (const auto& glyph : glyphGraphs) {
+	//	if (glyph.second-> == node.m_label) 
+
+	//}
+	//	selectionModel()->select(model()->index(m_sourceModel->GetDataMapping()->GetGlyphGraphs().size() - 1, 0), QItemSelectionModel::ClearAndSelect);
+	//treeView->selectionModel()->select
 }
 
 bool LinksDialog::Validate() {
