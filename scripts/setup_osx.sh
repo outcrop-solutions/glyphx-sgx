@@ -75,6 +75,9 @@ echo Moving libraries into app bundle...
 mkdir -p ../../cmake/bin/OSX64/$build/$app.app/Contents/Frameworks
 mv ../../cmake/bin/OSX64/$build/*.dylib ../../cmake/bin/OSX64/$build/$app.app/Contents/Frameworks 2>/dev/null
 
+# NOTE: We're piping all the macdeployqt output to /dev/null. It spams a LOT of unnecessary text. Run it
+# from the console if you need to see its output for some reason (or remove the two redirections starting
+# with >).
 echo Deploying Qt...
 /Users/Shared/Qt5.6.0/5.6/clang_64/bin/macdeployqt ../../cmake/bin/OSX64/$build/$app.app >/dev/null 2>/dev/null
 
