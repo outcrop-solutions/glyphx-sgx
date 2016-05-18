@@ -857,6 +857,12 @@ void DataTransformModel::AddLink(const SynGlyphX::Link& link) {
 	endInsertRows();
 }
 
+void DataTransformModel::SetLink(unsigned int position, const SynGlyphX::Link& link) {
+	m_dataMapping->SetLink(position, link);
+	QModelIndex modelIndex = index(GetFirstIndexForDataType(DataType::Links) + position);
+	emit dataChanged(modelIndex, modelIndex);
+}
+
 bool DataTransformModel::IsParentlessRowInDataType(DataType type, int row) const {
 
 	int min = GetFirstIndexForDataType(type);

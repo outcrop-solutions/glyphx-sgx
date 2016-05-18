@@ -70,7 +70,7 @@ DataMapperWindow::DataMapperWindow(QWidget *parent)
 	ClearAndInitializeDataMapping();
 
 	m_linksDialog = new LinksDialog(m_dataTransformModel, m_glyphRolesTableModel, this);
-	QObject::connect(m_linksDialog, &QDialog::accepted, this, &DataMapperWindow::AddLink);
+	QObject::connect(m_linksDialog, &QDialog::accepted, this, &DataMapperWindow::OnLinkDialogAccepted);
 	//Setup data transform
 	//SynGlyphXANTz::ANTzExportTransformer::SetLogoFilename(SynGlyphX::GlyphBuilderApplication::applicationDirPath() + QDir::separator() + "logo.png");
 	//SynGlyphX::Transformer::SetDefaultImagesDirectory(SynGlyphX::GlyphBuilderApplication::GetDefaultBaseImagesLocation());
@@ -213,7 +213,7 @@ void DataMapperWindow::CreateMenus() {
 	//Create Links Menue
 	m_linksMenu = menuBar()->addMenu(tr("Links"));
 	QAction* addLinkAction = m_linksMenu->addAction(tr("Add Link"));
-	QObject::connect(addLinkAction, &QAction::triggered, this, &DataMapperWindow::OnAddLink);
+	QObject::connect(addLinkAction, &QAction::triggered, this, [&, this](){ m_linksDialog->SetEditRow(-1); ShowLinkDialog(); });
 
 	//Create Datasource Menu
 	m_datasourceMenu = menuBar()->addMenu(tr("Data Source"));
@@ -322,7 +322,11 @@ void DataMapperWindow::CreateDockWidgets() {
 	m_linksModel->setFilterRole(DataTransformModel::DataTypeRole);
 	m_linksModel->SetFilterData(DataTransformModel::DataType::Links);
 	m_linksView->setModel(m_linksModel);
-	m_linksView->addActions(m_linksView->actions());
+	m_linksMenu->addActions(m_linksView->actions());
+
+	//QObject::connect(m_dataTransformModel, &DataTransformModel::dataChanged, this, [&, this](const QModelIndex& topLeft, const QModelIndex& bottomRight){ setWindowModified(true); });
+
+	QObject::connect(m_linksView, &LinksListView::editLink, this, [&, this](int row){ m_linksDialog->SetEditRow(row); ShowLinkDialog(); });
 
 	//Add linksView to dock widget on left side
 	leftDockWidgetLinks->setWidget(m_linksView);
@@ -788,16 +792,25 @@ void DataMapperWindow::AddBaseObject() {
 	}
 }
 
-void DataMapperWindow::OnAddLink() {	
-	m_linksDialog->setWindowTitle(tr("Add New Link"));
+void DataMapperWindow::ShowLinkDialog() {
+
+	if (m_linksDialog->GetEditRow() >= 0) {
+		m_linksDialog->setWindowTitle(tr("Edit Link"));
+	}
+	else
+		m_linksDialog->setWindowTitle(tr("Add New Link"));
+		
 	m_linksDialog->show();
 	m_linksDialog->raise();
 	m_linksDialog->activateWindow();
 
 }
 
-void DataMapperWindow::AddLink() {
-	m_dataTransformModel->AddLink(m_linksDialog->GetLink());
+void DataMapperWindow::OnLinkDialogAccepted() {
+	if (m_linksDialog->GetEditRow() >= 0)
+		m_dataTransformModel->SetLink(m_linksDialog->GetEditRow(), m_linksDialog->GetLink());
+	else
+		m_dataTransformModel->AddLink(m_linksDialog->GetLink());
 	EnableProjectDependentActions(true);
 }
 

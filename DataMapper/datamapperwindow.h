@@ -65,7 +65,7 @@ private slots:
 	void AddDatabaseServerDatasources();
 	void CreatePortableVisualization(SynGlyphX::PortableVisualizationExport::Platform platform);
 	void AddBaseObject();
-	void OnAddLink();
+	void ShowLinkDialog();
 	void AddGlyphTemplate();
 	void AddGlyphTemplatesFromLibrary();
 	void CreateNewGlyphTree();
@@ -91,7 +91,7 @@ private:
 	void WriteNewMappingDefaults();
 	void ClearAndInitializeDataMapping();
 	void SelectFirstBaseObject();
-	void AddLink();
+	void OnLinkDialogAccepted();
 
     QMenu* m_fileMenu;
 	QMenu* m_editMenu;
