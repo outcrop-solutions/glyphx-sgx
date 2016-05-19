@@ -271,12 +271,12 @@ int nposGetKey (void)
 
 void nposGetTime()
 {
-    assert(false);//todo
+    printf( "nposGetTime not yet implemented\n");
 }
 
 void nposGetCWD(char* buffer, int* size)
 {
-    assert(false);//todo
+    printf( "nposGetCWD not yet implemented\n");
 }
 
 ANTZCORE_API void nposSleep(double seconds)
