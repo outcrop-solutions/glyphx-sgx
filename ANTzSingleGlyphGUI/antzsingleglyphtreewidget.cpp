@@ -48,7 +48,7 @@ namespace SynGlyphXANTz {
 
 		ANTzWidget::initializeGL();
 
-		SetBaseImage(SynGlyphX::DefaultBaseImageProperties::Type::World);
+		SetBaseImage(SynGlyphX::DefaultBaseImageProperties::Type::Clear);
 
 		ResetCamera();
 	}
