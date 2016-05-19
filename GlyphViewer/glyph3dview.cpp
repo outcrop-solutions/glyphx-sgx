@@ -87,6 +87,17 @@ void Glyph3DView::resizeEvent(QResizeEvent* event) {
 
 	topPositionOfButton += s_navigationButtonSize;
 	m_moveDownButton->move(QPoint(leftPosOfButtonsInHCenter, topPositionOfButton));
+
+	auto button_tex = [this]( const char* name ){
+		return bindTexture( QImage( name ) );
+	};
+
+#ifdef __APPLE__
+	// Hack to fix other widgets failing to render on top of the QGLWidget on OSX: just draw the nav buttons ourselves with GL.
+	// (Eventually we should move to QOpenGLWidget since QGLWidget is deprecated, which also should fix the issue and make this
+	// hack unnecessary.)
+	ClearRenderedIcons();
+#endif // __APPLE__
 }
 
 void Glyph3DView::OnUpRotate() {
