@@ -104,12 +104,14 @@ SET(GLM_INCLUDE_DIR ${THIRDPARTYDIR}/include/glm_0_9_6_3)
 # Note we don't actually need to link against Java since we're loading it dynamically.
 # (In fact on OSX linking against it can lead to JVM crashes if the OS has a different JVM
 # installed from the one we want to use.)
-SET(JAVA_INCLUDE_DIRS ${DEVELOPMENT_TOP_DIR}/DataEngine/jdk1.7.0_79/include)
 IF (${WIN32})
+	SET(JAVA_INCLUDE_DIRS ${DEVELOPMENT_TOP_DIR}/DataEngine/jdk1.7.0_79/include)
 	LIST(APPEND JAVA_INCLUDE_DIRS ${DEVELOPMENT_TOP_DIR}/DataEngine/jdk1.7.0_79/include/win32)
 ELSEIF(${APPLE})
-	LIST(APPEND JAVA_INCLUDE_DIRS ${DEVELOPMENT_TOP_DIR}/DataEngine/jdk1.7.0_79/include/darwin)
+	LIST(APPEND JAVA_INCLUDE_DIRS /Library/Java/JavaVirtualMachines/jdk1.7.0_79.jdk/Contents/Home/include)
+	LIST(APPEND JAVA_INCLUDE_DIRS /Library/Java/JavaVirtualMachines/jdk1.7.0_79.jdk/Contents/Home/include/darwin)
 ELSE()
+	SET(JAVA_INCLUDE_DIRS ${DEVELOPMENT_TOP_DIR}/DataEngine/jdk1.7.0_79/include)
 	LIST(APPEND JAVA_INCLUDE_DIRS ${DEVELOPMENT_TOP_DIR}/DataEngine/jdk1.7.0_79/include/linux)
 ENDIF()
 
