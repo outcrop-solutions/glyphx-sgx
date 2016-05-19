@@ -64,12 +64,12 @@ int main(int argc, char *argv[])
     a.processEvents();
 
 	try {
+		//Need to figure out better way to not have the splash screen disappear before the user sees it
+		QTimer::singleShot(1500, &splash, SLOT(close()));
 
 		DataMapperWindow w;
 		w.resize(1200, 700);
 
-		//Need to figure out better way to not have the splash screen disappear before the user sees it
-		QTimer::singleShot(1500, &splash, SLOT(close()));
 		w.show();
 		//QTimer::singleShot(1600, &w, SLOT(show()));
 
