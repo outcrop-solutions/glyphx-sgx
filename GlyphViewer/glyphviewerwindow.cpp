@@ -502,7 +502,14 @@ void GlyphViewerWindow::LoadVisualization(const QString& filename, const DataMap
 		antzWidgetContainer->setCurrentIndex(1);
 	}
 
-	m_legendsDockWidget->show();
+	if (m_legendsWidget->HasLegends()) {
+
+		m_legendsDockWidget->show();
+	}
+	else if (m_legendsDockWidget->isFloating()) {
+
+		m_legendsDockWidget->hide();
+	}
 }
 
 bool GlyphViewerWindow::LoadNewVisualization(const QString& filename, const DataMappingLoadingFilterModel::Table2LoadingFiltersMap& filters) {

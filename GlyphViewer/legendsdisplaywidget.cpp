@@ -38,3 +38,8 @@ void LegendsDisplayWidget::ClearLegends() {
 
 	m_legendTabs->clear();
 }
+
+bool LegendsDisplayWidget::HasLegends() const {
+
+	return (m_legendTabs->count() != 0);
+}
