@@ -97,6 +97,14 @@ void Glyph3DView::resizeEvent(QResizeEvent* event) {
 	// (Eventually we should move to QOpenGLWidget since QGLWidget is deprecated, which also should fix the issue and make this
 	// hack unnecessary.)
 	ClearRenderedIcons();
+	AddRenderedIcon( QRect( m_upRotateButton->pos(), m_upRotateButton->size() ), button_tex( ":SGXGUI/Resources/rotate_up.png" ) );
+	AddRenderedIcon( QRect( m_leftRotateButton->pos(), m_leftRotateButton->size() ), button_tex( ":SGXGUI/Resources/rotate_left.png" ) );
+	AddRenderedIcon( QRect( m_downRotateButton->pos(), m_downRotateButton->size() ), button_tex( ":SGXGUI/Resources/rotate_down.png" ) );
+	AddRenderedIcon( QRect( m_rightRotateButton->pos(), m_rightRotateButton->size() ), button_tex( ":SGXGUI/Resources/rotate_right.png" ) );
+	AddRenderedIcon( QRect( m_moveForwardButton->pos(), m_moveForwardButton->size() ), button_tex( ":SGXGUI/Resources/plus.png" ) );
+	AddRenderedIcon( QRect( m_moveBackwardButton->pos(), m_moveBackwardButton->size() ), button_tex( ":SGXGUI/Resources/minus.png" ) );
+	AddRenderedIcon( QRect( m_moveUpButton->pos(), m_moveUpButton->size() ), button_tex( ":SGXGUI/Resources/up_arrow.png" ) );
+	AddRenderedIcon( QRect( m_moveDownButton->pos(), m_moveDownButton->size() ), button_tex( ":SGXGUI/Resources/down_arrow.png" ) );
 #endif // __APPLE__
 }
 
