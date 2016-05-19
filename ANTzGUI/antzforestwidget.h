@@ -119,6 +119,8 @@ namespace SynGlyphXANTz {
 		bool SelectAtPoint( int x, int y, bool multiSelect );
 		void SelectFromStylus( const SynGlyphXANTz::ANTzBoundingBox::Line& line );
 		void CheckStylusIntersectionWithNode( pNPnode node, const SynGlyphXANTz::ANTzBoundingBox::Line& line, std::map<float, int>& distanceIdMap );
+		void AddRenderedIcon( const QRect& pos, GLuint tex );
+		void ClearRenderedIcons();
 
 #ifdef USE_ZSPACE
 		void ConnectZSpaceTrackers();
@@ -206,6 +208,8 @@ namespace SynGlyphXANTz {
 		float m_initialCameraZAngle;
 
 		QSet<QModelIndex> m_tagIndexes;
+
+		std::vector<std::pair<QRect, GLuint>> m_renderedIcons;
 	};
 
 } //namespace SynGlyphXANTz

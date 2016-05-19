@@ -1687,6 +1687,31 @@ namespace SynGlyphXANTz {
 		glVertex2i( m_logoPosition.left(), m_logoPosition.top() );
 		glEnd();
 
+		glColor3f( 0.8f, 0.8f, 0.8f );
+		GLboolean blend;
+		glGetBooleanv( GL_BLEND, &blend );
+		glDisable( GL_BLEND );
+		for( auto& icon : m_renderedIcons )
+		{
+			glBindTexture( GL_TEXTURE_2D, icon.second );
+			glBegin( GL_QUADS );
+			glTexCoord2f( 0, 0 );
+
+			int top = this->size().height() - icon.first.top();
+			int bottom = this->size().height() - icon.first.bottom();
+
+			glVertex2i( icon.first.left(), bottom );
+			glTexCoord2f( 1, 0 );
+			glVertex2i( icon.first.right(), bottom );
+
+			glTexCoord2f( 1, 1 );
+			glVertex2i( icon.first.right(), top );
+			glTexCoord2f( 0, 1 );
+			glVertex2i( icon.first.left(), top );
+			glEnd();
+		}
+		if ( blend ) glEnable( GL_BLEND );
+
 		glDisable( GL_TEXTURE_2D );
 
 		glMatrixMode( GL_PROJECTION );
@@ -1742,4 +1767,15 @@ namespace SynGlyphXANTz {
 		QGLWidget::resizeEvent( event );
 	}
 
+	void ANTzForestWidget::AddRenderedIcon( const QRect& pos, GLuint tex )
+	{
+		m_renderedIcons.push_back( std::make_pair( pos, tex ) );
+	}
+
+	void ANTzForestWidget::ClearRenderedIcons()
+	{
+		for ( auto icon : m_renderedIcons )
+			deleteTexture( icon.second );
+		m_renderedIcons.clear();
+	}
 } //namespace SynGlyphXANTz
