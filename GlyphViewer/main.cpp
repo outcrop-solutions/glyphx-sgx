@@ -51,7 +51,7 @@ int main(int argc, char *argv[])
     printf("after change, libraryPaths=(%s)\n", QCoreApplication::libraryPaths().join(",").toUtf8().data());
 #endif
     
-    SynGlyphX::GlyphBuilderApplication::Setup("Glyph Builder - Glyph Viewer", "0.7.43");
+	SynGlyphX::GlyphBuilderApplication::Setup("Glyph Builder - Glyph Viewer", "0.7.44");
 	SynGlyphX::GlyphBuilderApplication a(argc, argv);
 	if (SynGlyphX::GlyphBuilderApplication::IsGlyphEd()) {
 

@@ -43,7 +43,8 @@ public:
 		BaseObjects = 1,
 		DataSources = 2,
 		FieldGroup = 3,
-		Legends = 4
+		Legends = 4,
+		Links = 5
 	};
 
 	enum PropertyRole {
@@ -109,6 +110,9 @@ public:
 	void AddChildGlyph(const QModelIndex& parent, const SynGlyphX::DataMappingGlyph& glyphTemplate, unsigned int numberOfChildren = 1);
 	void AddChildGlyphGraph(const QModelIndex& parent, const SynGlyphX::DataMappingGlyphGraph& graph);
 
+	void AddLink(const SynGlyphX::Link& link);
+	void SetLink(unsigned int position, const SynGlyphX::Link& link);
+
 	void SetBaseObject(unsigned int position, const SynGlyphX::BaseImage& baseImage);
 	void AddBaseObject(const SynGlyphX::BaseImage& baseImage);
 
@@ -146,6 +150,7 @@ public:
 	void SetDataEngineConnection(DataEngine::DataEngineConnection::SharedPtr dataEngineConnection);
 
 	const TableStatsMap& GetTableStatsMap() const;
+	boost::uuids::uuid GetTreeId(const QModelIndex& index) const;
 
 private:
 	void Clear();
@@ -154,7 +159,6 @@ private:
 	unsigned int GetFirstIndexForDataType(DataType type) const;
 	DataType GetDataType(const QModelIndex& index) const;
 	boost::uuids::uuid GetTreeId(int row) const;
-	boost::uuids::uuid GetTreeId(const QModelIndex& index) const;
 	boost::uuids::uuid GetDatasourceId(int row) const;
 	const SynGlyphX::DataTransformMapping::FieldGroupName& GetFieldGroupName(int row) const;
 	void RemoveFieldGroup(const SynGlyphX::DataTransformMapping::FieldGroupName& groupName, bool emitGlyphDataChanged);

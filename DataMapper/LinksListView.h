@@ -15,47 +15,42 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef OPTIONSWIDGET_H
-#define OPTIONSWIDGET_H
+#ifndef LINKSLISTVIEW_H
+#define LINKSLISTVIEW_H
 
-#include <QtWidgets/QTabWidget>
-#include <QtWidgets/QCheckBox>
-#include <QtWidgets/QComboBox>
-#include "glyphvieweroptions.h"
-#include "browselineedit.h"
+#include <QtWidgets/QListView>
+#include "sharedactionlist.h"
+#include "datatransformmodel.h"
 
-#ifdef USE_ZSPACE
-#include "zspaceoptionswidget.h"
-#endif
-
-class OptionsWidget : public QTabWidget
+class LinksListView : public QListView
 {
 	Q_OBJECT
 
 public:
-	OptionsWidget(const GlyphViewerOptions& options, bool enableCacheOptions, QWidget *parent);
-	~OptionsWidget();
+	LinksListView(DataTransformModel* dataTransformModel, QWidget *parent);
+	~LinksListView();
 
-	GlyphViewerOptions GetOptions() const;
+	const SynGlyphX::SharedActionList& GetSharedActions();
+
+protected:
+	virtual void selectionChanged(const QItemSelection& selected, const QItemSelection& deselected);
+
+signals:
+	void editLink(int row);
 
 private slots:
-	void ClearCache();
-	void SetToDefaultCacheDirectory();
+	void RemoveLink();
+	void EditLink();
 
 private:
-	void CreateCacheTab(const GlyphViewerOptions& options, bool enableCacheOptions);
-	void Create3DTab(const GlyphViewerOptions& options);
-	void CreateUITab(const GlyphViewerOptions& options);
+	void EnableActions();
 
-	SynGlyphX::BrowseLineEdit* m_cacheDirectoryWidget;
-	QCheckBox* m_hideSelectedGlyphsCheckbox;
+	DataTransformModel* m_dataTransformModel;
 
-#ifdef USE_ZSPACE
-	SynGlyphX::ZSpaceOptionsWidget* m_zSpaceOptionsWidget;
-#endif
-
-	QCheckBox* m_showDownloadedImageErrorMessages;
-	QComboBox* m_axisObjectLocationComboBox;
+	SynGlyphX::SharedActionList m_sharedActions;
+	QAction* m_removeLinkAction;
+	QAction* m_propertiesAction;
+	
 };
 
-#endif // OPTIONSWIDGET_H
+#endif // LINKSLISTVIEW_H

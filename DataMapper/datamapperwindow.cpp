@@ -69,6 +69,8 @@ DataMapperWindow::DataMapperWindow(QWidget *parent)
 	ReadNewMappingDefaults();
 	ClearAndInitializeDataMapping();
 
+	m_linksDialog = new LinksDialog(m_dataTransformModel, m_glyphRolesTableModel, this);
+	QObject::connect(m_linksDialog, &QDialog::accepted, this, &DataMapperWindow::OnLinkDialogAccepted);
 	//Setup data transform
 	//SynGlyphXANTz::ANTzExportTransformer::SetLogoFilename(SynGlyphX::GlyphBuilderApplication::applicationDirPath() + QDir::separator() + "logo.png");
 	//SynGlyphX::Transformer::SetDefaultImagesDirectory(SynGlyphX::GlyphBuilderApplication::GetDefaultBaseImagesLocation());
@@ -208,6 +210,11 @@ void DataMapperWindow::CreateMenus() {
 
 	m_baseObjectMenu->addSeparator();
 
+	//Create Links Menue
+	m_linksMenu = menuBar()->addMenu(tr("Links"));
+	QAction* addLinkAction = m_linksMenu->addAction(tr("Add Link"));
+	QObject::connect(addLinkAction, &QAction::triggered, this, [&, this](){ m_linksDialog->SetEditRow(-1); ShowLinkDialog(); });
+
 	//Create Datasource Menu
 	m_datasourceMenu = menuBar()->addMenu(tr("Data Source"));
     
@@ -306,6 +313,26 @@ void DataMapperWindow::CreateDockWidgets() {
 	leftDockWidgetLegends->setWidget(m_legendsView);
 	addDockWidget(Qt::LeftDockWidgetArea, leftDockWidgetLegends);
 	m_viewMenu->addAction(leftDockWidgetLegends->toggleViewAction());
+
+	QDockWidget* leftDockWidgetLinks = new QDockWidget(tr("Links"), this);
+
+	m_linksView = new LinksListView(m_dataTransformModel, leftDockWidgetLinks);
+	m_linksModel = new SynGlyphX::IntRoleDataFilterProxyModel(this);
+	m_linksModel->setSourceModel(m_dataTransformModel);
+	m_linksModel->setFilterRole(DataTransformModel::DataTypeRole);
+	m_linksModel->SetFilterData(DataTransformModel::DataType::Links);
+	m_linksView->setModel(m_linksModel);
+	m_linksMenu->addActions(m_linksView->actions());
+
+	//QObject::connect(m_dataTransformModel, &DataTransformModel::dataChanged, this, [&, this](const QModelIndex& topLeft, const QModelIndex& bottomRight){ setWindowModified(true); });
+
+	QObject::connect(m_linksView, &LinksListView::editLink, this, [&, this](int row){ m_linksDialog->SetEditRow(row); ShowLinkDialog(); });
+
+	//Add linksView to dock widget on left side
+	leftDockWidgetLinks->setWidget(m_linksView);
+	addDockWidget(Qt::LeftDockWidgetArea, leftDockWidgetLinks);
+	m_viewMenu->addAction(leftDockWidgetLinks->toggleViewAction());
+
 
 	QDockWidget* rightDockWidgetDataStats = new QDockWidget(tr("Data Stats"), this);
 	m_dataSourceStats = new DataSourceStatsWidget(m_dataTransformModel, rightDockWidgetDataStats);
@@ -763,6 +790,28 @@ void DataMapperWindow::AddBaseObject() {
 		m_dataTransformModel->AddBaseObject(baseImage);
 		EnableProjectDependentActions(true);
 	}
+}
+
+void DataMapperWindow::ShowLinkDialog() {
+
+	if (m_linksDialog->GetEditRow() >= 0) {
+		m_linksDialog->setWindowTitle(tr("Edit Link"));
+	}
+	else
+		m_linksDialog->setWindowTitle(tr("Add New Link"));
+		
+	m_linksDialog->show();
+	m_linksDialog->raise();
+	m_linksDialog->activateWindow();
+
+}
+
+void DataMapperWindow::OnLinkDialogAccepted() {
+	if (m_linksDialog->GetEditRow() >= 0)
+		m_dataTransformModel->SetLink(m_linksDialog->GetEditRow(), m_linksDialog->GetLink());
+	else
+		m_dataTransformModel->AddLink(m_linksDialog->GetLink());
+	EnableProjectDependentActions(true);
 }
 
 void DataMapperWindow::AddLegend() {

@@ -683,6 +683,19 @@ void GlyphViewerWindow::LoadDataTransform(const QString& filename, const DataMap
 void GlyphViewerWindow::LoadFilesIntoModel(const SynGlyphXANTz::ANTzCSVWriter::FilenameList& filesToLoad, const QStringList& baseImageFilenames) {
 
 	m_glyphForestModel->LoadANTzVisualization(filesToLoad, baseImageFilenames);
+
+	SynGlyphX::DataMappingGlyphGraph::ConstSharedPtr rootGlyph = m_mappingModel->GetDataMapping()->GetGlyphGraphs().begin()->second;
+	std::array<QString, 3> rootPositionFields;
+	for (unsigned int i = 0; i < 3; ++i) {
+
+		const SynGlyphX::InputBinding& posInputBinding = rootGlyph->GetRoot()->second.GetPosition()[i].GetBinding();
+		SynGlyphX::HashID id = posInputBinding.GetInputFieldID();
+		if (id != 0) {
+
+			rootPositionFields[i] = QString::fromStdWString(rootGlyph->GetInputFields().at(id).GetField());
+		}
+	}
+	m_glyphForestModel->SetRootPosXYZMappedFields(rootPositionFields);
 }
 
 void GlyphViewerWindow::ChangeMapDownloadSettings() {
@@ -801,6 +814,11 @@ void GlyphViewerWindow::ChangeOptions(const GlyphViewerOptions& oldOptions, cons
 			m_linkedWidgetsManager->SetFilterView(newOptions.GetHideUnselectedGlyphTrees());
 		}
 
+		if (oldOptions.GetSceneAxisObjectLocation() != newOptions.GetSceneAxisObjectLocation()) {
+
+			m_glyph3DView->SetAxisInfoObjectLocation(newOptions.GetSceneAxisObjectLocation());
+		}
+
 #ifdef USE_ZSPACE
 		if (oldOptions.GetZSpaceOptions() != newOptions.GetZSpaceOptions()) {
 
@@ -839,6 +857,7 @@ void GlyphViewerWindow::ReadSettings() {
 	}
 	options.SetCacheDirectory(cacheDirectory);
 	options.SetHideUnselectedGlyphTrees(settings.value("hideUnselectedGlyphs", false).toBool());
+	options.SetSceneAxisObjectLocation(static_cast<SynGlyphXANTz::ANTzForestWidget::HUDLocation>(settings.value("axisInfoLocation").toInt()));
 	options.SetShowMessageWhenImagesDidNotDownload(settings.value("showFailedToDownloadImageMessage", true).toBool());
 	settings.endGroup();
 
@@ -878,6 +897,7 @@ void GlyphViewerWindow::WriteSettings() {
 		settings.setValue("cacheDirectory", "");
 	}
 	settings.setValue("hideUnselectedGlyphs", options.GetHideUnselectedGlyphTrees());
+	settings.setValue("axisInfoLocation", options.GetSceneAxisObjectLocation());
 	settings.setValue("showFailedToDownloadImageMessage", options.GetShowMessageWhenImagesDidNotDownload());
 	settings.endGroup();
 
@@ -895,11 +915,10 @@ GlyphViewerOptions GlyphViewerWindow::CollectOptions() {
 
 	options.SetCacheDirectory(QString::fromStdWString(m_cacheManager.GetBaseCacheDirectory()));
 	options.SetHideUnselectedGlyphTrees(m_linkedWidgetsManager->GetFilterView());
-
+	options.SetSceneAxisObjectLocation(m_glyph3DView->GetAxisInfoObjectLocation());
 #ifdef USE_ZSPACE
 	options.SetZSpaceOptions(m_antzWidget->GetZSpaceOptions());
 #endif
-
 	options.SetShowMessageWhenImagesDidNotDownload(m_showErrorFromTransform);
 
 	return options;
