@@ -29,7 +29,11 @@
 #include "zspaceoptions.h"
 #include "zspaceeventdispatcher.h"
 #endif
+#ifdef __APPLE__
+#include <OpenGL/glu.h>
+#else
 #include <gl/glu.h>
+#endif
 
 namespace SynGlyphXANTz {
 
