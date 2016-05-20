@@ -32,7 +32,7 @@ class LinksDialog;
 namespace SynGlyphX {
 
 	class SGXDATAMAPPING_API Link {
-		friend class LinksDialog;
+        friend class ::LinksDialog;
 	public:
 		struct Node { //tree ID and lable should uniquely identify glyph
 			Node(boost::uuids::uuid treeId, unsigned long label, size_t inputFieldId) : m_treeId(treeId), m_label(label), m_inputFieldId(inputFieldId) {}
