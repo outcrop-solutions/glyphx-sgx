@@ -52,27 +52,30 @@ public class SDTLinkReader {
 				Node color_node = element.getElementsByTagName("Color").item(0);
 				Element color_element = (Element) color_node;
 				String inherit = color_element.getAttribute("inherit");
-				String color = getValue("RGB", color_element);
-				String alpha = getValue("Transparency", color_element);
+				String color = "";
+				color += color_element.getAttribute("R")+",";
+				color += color_element.getAttribute("G")+",";
+				color += color_element.getAttribute("B");
+				String alpha = color_element.getAttribute("A");
 
-				Node geo_node = element.getElementsByTagName("Geometry").item(0);
-				Element geo_element = (Element) geo_node;
-				String shape = getValue("Shape", geo_element);
+				//Node geo_node = element.getElementsByTagName("Geometry").item(0);
+				//Element geo_element = (Element) geo_node;
+				String shape = getValue("Shape", element);
 
-				Node points_node = element.getElementsByTagName("Endpoints").item(0);
-				Element points_element = (Element) points_node;
+				//Node points_node = element.getElementsByTagName("Endpoints").item(0);
+				//Element points_element = (Element) points_node;
 
-				Node begin_node = points_element.getElementsByTagName("Begin").item(0);
+				Node begin_node = element.getElementsByTagName("Begin").item(0);
 				Element begin_element = (Element) begin_node;
-				String b_label = getValue("Label", begin_element);
-				String b_id = getValue("ID", begin_element);
-				String b_binding = getInput(begin_element);	
+				String b_label = begin_element.getAttribute("label");
+				String b_id = begin_element.getAttribute("id");
+				String b_binding = begin_element.getAttribute("binding");	
 
-				Node end_node = points_element.getElementsByTagName("End").item(0);
+				Node end_node = element.getElementsByTagName("End").item(0);
 				Element end_element = (Element) end_node;
-				String e_label = getValue("Label", end_element);
-				String e_id = getValue("ID", end_element);
-				String e_binding = getInput(end_element);	
+				String e_label = end_element.getAttribute("label");
+				String e_id = end_element.getAttribute("id");
+				String e_binding = end_element.getAttribute("binding");
 
 				Node funct = element.getElementsByTagName("Function").item(0);
 				Element funct_element = (Element) funct;

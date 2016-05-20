@@ -247,7 +247,7 @@ public class LinkCreator {
 
 					int row_count = 0;
 					while(cursor.next()){
-						String fn = cursor.get(field);
+						String fn = cursor.get(field).toLowerCase();
 						if(!rows.containsKey(fn)){
 							rows.put(fn, new ArrayList<Integer>());
 						}
@@ -272,8 +272,9 @@ public class LinkCreator {
 
 					int row_count = 0;
 					while(cursor.next()){
-						if(key_nodes.containsKey(cursor.get(field_name))){
-							key_nodes.get(cursor.get(field_name)).add(row_count);
+						String fn = cursor.get(field_name).toLowerCase();
+						if(key_nodes.containsKey(fn)){
+							key_nodes.get(fn).add(row_count);
 						}
 						row_count++;
 					}
@@ -295,8 +296,9 @@ public class LinkCreator {
 
 					int row_count = 0;
 					while(cursor.next()){
-						if(value_nodes.containsKey(cursor.get(field_name))){
-							value_nodes.get(cursor.get(field_name)).add(row_count);
+						String fn = cursor.get(field_name).toLowerCase();
+						if(value_nodes.containsKey(fn)){
+							value_nodes.get(fn).add(row_count);
 						}
 						row_count++;
 					}
