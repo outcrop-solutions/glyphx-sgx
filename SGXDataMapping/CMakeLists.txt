@@ -29,6 +29,7 @@ SET(SRC_ALL 	datamappingdefaults.cpp
 				stringconcatmappingfunction.cpp
 				stringinputcombinationfunction.cpp
 				legend.cpp
+				link.cpp
 				valuemappingfile.cpp
 				valuemappingrange.cpp
 				valuemappingfunction.cpp)
