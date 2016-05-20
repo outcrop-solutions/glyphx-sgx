@@ -319,8 +319,8 @@ void DataMapperWindow::CreateDockWidgets() {
 	m_linksView = new LinksListView(m_dataTransformModel, leftDockWidgetLinks);
 	m_linksModel = new SynGlyphX::IntRoleDataFilterProxyModel(this);
 	m_linksModel->setSourceModel(m_dataTransformModel);
-	m_linksModel->setFilterRole(DataTransformModel::DataTypeRole);
-	m_linksModel->SetFilterData(DataTransformModel::DataType::Links);
+	m_linksModel->setFilterRole(SynGlyphX::DataTransformModel::DataTypeRole);
+	m_linksModel->SetFilterData(SynGlyphX::DataTransformModel::DataType::Links);
 	m_linksView->setModel(m_linksModel);
 	m_linksMenu->addActions(m_linksView->actions());
 

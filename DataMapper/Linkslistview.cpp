@@ -1,7 +1,7 @@
 #include "LinksListView.h"
 #include "baseimagedialog.h"
 
-LinksListView::LinksListView(DataTransformModel* dataTransformModel, QWidget *parent)
+LinksListView::LinksListView(SynGlyphX::DataTransformModel* dataTransformModel, QWidget *parent)
 	: QListView(parent),
 	m_dataTransformModel(dataTransformModel)
 {

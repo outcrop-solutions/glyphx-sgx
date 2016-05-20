@@ -364,6 +364,13 @@ namespace SynGlyphX {
 				QFileInfo baseObjectFileInfo(QString::fromStdWString(legend->GetFilename()));
 				return QString::fromStdWString(legend->GetTitle()) + ": " + baseObjectFileInfo.fileName();
 			}
+			else if (IsParentlessRowInDataType(DataType::Links, index.row())) {
+
+				int linkIndex = index.row() - GetFirstIndexForDataType(DataType::Links);
+				std::vector<SynGlyphX::Link>::const_iterator link = m_dataMapping->GetLinks().begin();
+				std::advance(link, linkIndex);
+				return QString::fromStdWString(link->GetName());
+			}
 		}
 		else {
 
@@ -401,6 +408,10 @@ namespace SynGlyphX {
 			else if (IsParentlessRowInDataType(DataType::GlyphTrees, index.row())) {
 
 				return DataType::GlyphTrees;
+			}
+			else if (IsParentlessRowInDataType(DataType::Links, index.row())) {
+
+				return DataType::Links;
 			}
 		}
 		else {
@@ -519,7 +530,7 @@ namespace SynGlyphX {
 		if (!parent.isValid()) {
 
 			return m_dataMapping->GetGlyphGraphs().size() + m_dataMapping->GetBaseObjects().size() + m_dataMapping->GetDatasources().size() + 
-				m_dataMapping->GetFieldGroupMap().size() + m_dataMapping->GetLegends().size();
+				m_dataMapping->GetFieldGroupMap().size() + m_dataMapping->GetLegends().size() + m_dataMapping->GetLinks().size();
 		}
 
 		if (parent.internalPointer() != nullptr) {
@@ -586,7 +597,7 @@ namespace SynGlyphX {
 		m_dataMapping->ClearAllInputBindings(GetTreeId(index), node);
 		emit dataChanged(index, index);
 	}
-
+	
 	void DataTransformModel::ClearAbsentBindings(const QModelIndex& index) {
 		//we need a InputFieldMap copy, using const& will cause problems after deleting Inputfield
 		SynGlyphX::DataMappingGlyphGraph::InputFieldMap fieldMap = GetInputFieldsForTree(index); 
@@ -596,7 +607,7 @@ namespace SynGlyphX {
 			auto stats = t.second;
 			for (const auto& stat : stats) {
 				// use arbitrary Type since it does not affect HashID
-				SynGlyphX::InputField sInputField(table.GetDatasourceID(), table.GetTable(), stat[0].toStdWString(), InputField::Type::Text);
+				SynGlyphX::InputField sInputField(table.GetDatasourceID(), table.GetTable(), stat[0].toStdWString(), SynGlyphX::InputField::Type::Text);
 				sourceFields.insert(sInputField.GetHashID());
 				}
 			}
@@ -607,7 +618,7 @@ namespace SynGlyphX {
 					tr("Source data does not have field:\n") + QString::fromWCharArray(f.GetField().c_str()) + tr("\nMapping will be removed"));
 				m_dataMapping->ClearInputFieldBindings(GetTreeId(index), f);
 			}
-					
+						
 		}
 		emit dataChanged(index, index);
 	}
@@ -703,6 +714,11 @@ namespace SynGlyphX {
 					else if (IsParentlessRowInDataType(DataType::Legends, i)) {
 
 						m_dataMapping->RemoveLegend(i - GetFirstIndexForDataType(DataType::Legends));
+						emitGlyphDataChanged = true;
+					}
+					else if (IsParentlessRowInDataType(DataType::Links, i)) {
+
+						m_dataMapping->RemoveLink(i - GetFirstIndexForDataType(DataType::Links));
 						emitGlyphDataChanged = true;
 					}
 				}
@@ -850,6 +866,19 @@ namespace SynGlyphX {
 		m_dataMapping->AddLegend(legend);
 		endInsertRows();
 	}
+	
+	void DataTransformModel::AddLink(const SynGlyphX::Link& link) {
+		int row = GetFirstIndexForDataType(DataType::Links) + m_dataMapping->GetLinks().size();
+		beginInsertRows(QModelIndex(), row, row);
+		m_dataMapping->AddLink(link);
+		endInsertRows();
+	}
+
+	void DataTransformModel::SetLink(unsigned int position, const SynGlyphX::Link& link) {
+		m_dataMapping->SetLink(position, link);
+		QModelIndex modelIndex = index(GetFirstIndexForDataType(DataType::Links) + position);
+		emit dataChanged(modelIndex, modelIndex);
+	}
 
 	bool DataTransformModel::IsParentlessRowInDataType(DataType type, int row) const {
 
@@ -870,6 +899,10 @@ namespace SynGlyphX {
 		else if (type == DataType::Legends) {
 
 			max = min + m_dataMapping->GetLegends().size();
+		}
+		else if (type == DataType::Links) {
+
+			max = min + m_dataMapping->GetLinks().size();
 		}
 		else if (type == DataType::GlyphTrees) {
 
@@ -897,6 +930,11 @@ namespace SynGlyphX {
 
 			return m_dataMapping->GetGlyphGraphs().size() + m_dataMapping->GetBaseObjects().size() + m_dataMapping->GetDatasources().size() +
 				m_dataMapping->GetFieldGroupMap().size();
+		}
+		else if (type == DataType::Links) {
+
+			return m_dataMapping->GetGlyphGraphs().size() + m_dataMapping->GetBaseObjects().size() + m_dataMapping->GetDatasources().size() +
+				m_dataMapping->GetFieldGroupMap().size() + m_dataMapping->GetLegends().size();
 		}
 		else if (type == DataType::GlyphTrees) {
 

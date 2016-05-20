@@ -8,7 +8,7 @@
 #include <QtGui/QDragEnterEvent>
 #include "roledatafilterproxymodel.h"
 
-LinkLineEdit::LinkLineEdit(DataTransformModel* dataTransformModel, QWidget *parent) : QLineEdit(parent),
+LinkLineEdit::LinkLineEdit(SynGlyphX::DataTransformModel* dataTransformModel, QWidget *parent) : QLineEdit(parent),
 m_dataTransformModel(dataTransformModel)
 {
 	setContextMenuPolicy(Qt::NoContextMenu);
@@ -53,7 +53,7 @@ void LinkLineEdit::dropEvent(QDropEvent* event) {
 	}
 }
 
-LinksDialog::LinksDialog(DataTransformModel* dataTransformModel, GlyphRolesTableModel* glyphRolesTableModel, QWidget *parent)
+LinksDialog::LinksDialog(SynGlyphX::DataTransformModel* dataTransformModel, GlyphRolesTableModel* glyphRolesTableModel, QWidget *parent)
 	: QDialog(parent),
 	m_dataTransformModel(dataTransformModel),
 	m_row(-1)

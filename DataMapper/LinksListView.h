@@ -27,7 +27,7 @@ class LinksListView : public QListView
 	Q_OBJECT
 
 public:
-	LinksListView(DataTransformModel* dataTransformModel, QWidget *parent);
+	LinksListView(SynGlyphX::DataTransformModel* dataTransformModel, QWidget *parent);
 	~LinksListView();
 
 	const SynGlyphX::SharedActionList& GetSharedActions();
@@ -45,7 +45,7 @@ private slots:
 private:
 	void EnableActions();
 
-	DataTransformModel* m_dataTransformModel;
+	SynGlyphX::DataTransformModel* m_dataTransformModel;
 
 	SynGlyphX::SharedActionList m_sharedActions;
 	QAction* m_removeLinkAction;
