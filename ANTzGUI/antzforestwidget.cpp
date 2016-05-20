@@ -1158,8 +1158,11 @@ namespace SynGlyphXANTz {
 			}
 
 			QModelIndex modelIndex = m_model->IndexFromANTzID( pickID );
-			m_selectionModel->select( modelIndex, flags );
-			m_selectionModel->SetFocus( modelIndex, focusFlags );
+            if (modelIndex.isValid())
+            {
+                m_selectionModel->select( modelIndex, flags );
+                m_selectionModel->SetFocus( modelIndex, focusFlags );
+            }
 		}
 
 		//emit NewStatusMessage(tr("Selection At: %1, %2 || Pick ID: %3").arg(x).arg(y).arg(pickID), 4000);
