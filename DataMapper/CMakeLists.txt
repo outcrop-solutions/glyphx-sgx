@@ -53,6 +53,8 @@ SET(SRC_ALL adddatabaseserverwizard.cpp
 			inputfieldmimedata.cpp
 			interpolationmappingdialog.cpp
 			legendlistview.cpp
+			linksdialog.cpp
+			linkslistview.cpp
 			main.cpp
 			mappingfunctionwidget.cpp
 			newmappingdefaultswidget.cpp
