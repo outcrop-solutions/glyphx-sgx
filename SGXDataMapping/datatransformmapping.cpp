@@ -223,6 +223,18 @@ namespace SynGlyphX {
 				}
 			}
 		}
+
+		boost::optional<const boost::property_tree::wptree&> linksTree = dataTransformPropertyTree.get_child_optional(L"Links");
+		if (linksTree.is_initialized()) {
+
+			for (const boost::property_tree::wptree::value_type& linksPropertyTree : linksTree.get()) {
+
+				if (linksPropertyTree.first == L"Link") {
+
+					m_links.emplace_back(Link(linksPropertyTree.second));
+				}
+			}
+		}
     }
 
 	void DataTransformMapping::ExportToPropertyTree(boost::property_tree::wptree& filePropertyTree) const {
@@ -270,6 +282,14 @@ namespace SynGlyphX {
 			for (const auto& legend : m_legends) {
 
 				legend.ExportToPropertyTree(legendsPropertyTree);
+			}
+		}
+
+		if (!m_links.empty()){
+			boost::property_tree::wptree& linksPropertyTree = dataTransformPropertyTreeRoot.add(L"Links", L"");
+			for (const auto& link : m_links) {
+
+				link.ExportToPropertyTree(linksPropertyTree);
 			}
 		}
     }
@@ -345,6 +365,7 @@ namespace SynGlyphX {
 		m_defaults.Clear();
 		m_baseObjects.clear();
 		m_legends.clear();
+		m_links.clear();
 		m_id = UUIDGenerator::GetNewRandomUUID();
 
 		if (addADefaultBaseObjectAfterClear) {
@@ -899,6 +920,22 @@ namespace SynGlyphX {
 	void DataTransformMapping::SetLegends(const std::vector<Legend>& legends) {
 
 		m_legends = legends;
+	}
+
+	void DataTransformMapping::AddLink(const SynGlyphX::Link& link) {
+		m_links.push_back(link);
+	}
+
+	void DataTransformMapping::RemoveLink(unsigned int index) {
+		if (index < m_links.size()) {
+
+			m_links.erase(m_links.begin() + index);
+		}
+		else {
+
+			throw std::invalid_argument("Index is greater than size of base objects");
+		}
+
 	}
 
 } //namespace SynGlyphX
