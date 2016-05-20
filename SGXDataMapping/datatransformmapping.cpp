@@ -933,9 +933,19 @@ namespace SynGlyphX {
 		}
 		else {
 
-			throw std::invalid_argument("Index is greater than size of base objects");
+			throw std::invalid_argument("Index is greater than size of links");
 		}
-
 	}
 
+	void DataTransformMapping::SetLink(unsigned int index, const Link& link) {
+
+		if (index < m_links.size()) {
+
+			m_links[index] = link;
+		}
+		else {
+
+			throw std::invalid_argument("Index is greater than size of links");
+		}
+	}
 } //namespace SynGlyphX
