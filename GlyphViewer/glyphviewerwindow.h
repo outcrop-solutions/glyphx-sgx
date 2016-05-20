@@ -87,11 +87,14 @@ private:
 	void CreateExportToPortableVisualizationSubmenu();
 	void DownloadBaseImages(DataEngine::GlyphEngine& ge);
 	void CreateLoadingScreen();
+	void CreateInteractionToolbar();
 
 	QMenu* m_fileMenu;
 	QMenu* m_toolsMenu;
 	QMenu* m_toolbarsSubMenu;
 	QToolBar* m_showHideToolbar;
+	QToolBar* m_interactionToolbar;
+
 	QAction* m_stereoAction;
 	QAction* m_showAnimation;
 	QAction* m_showTagsAction;
@@ -99,6 +102,7 @@ private:
 	QAction* m_hideAllTagsAction;
 	QAction* m_clearSelectionAction;
 	QAction* m_resetCameraToDefaultPosition;
+	QAction* m_remapRootPositionMappingsAction;
 	QList<QAction*> m_loadedVisualizationDependentActions;
 
 	QDockWidget* m_glyphListDockWidget;

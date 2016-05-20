@@ -89,10 +89,7 @@ GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 	m_filteringWidget->SetupLinkedWidgets(*m_linkedWidgetsManager);
 	m_pseudoTimeFilterWidget->SetupLinkedWidgets(*m_linkedWidgetsManager);
 
-	QCheckBox* cb = new QCheckBox(tr("Filter View"), this);
-	
-	m_showHideToolbar->addWidget(cb);
-	m_linkedWidgetsManager->AddFilterViewCheckbox(cb);
+	CreateInteractionToolbar();
 
 	m_stereoAction->setChecked(m_glyph3DView->IsInStereoMode());
 	//SynGlyphX::Transformer::SetDefaultImagesDirectory(SynGlyphX::GlyphBuilderApplication::GetDefaultBaseImagesLocation());
@@ -269,9 +266,9 @@ void GlyphViewerWindow::CreateMenus() {
 
 	m_toolsMenu = menuBar()->addMenu(tr("Tools"));
 
-	QAction* remapRootPositionMappingsAction = m_toolsMenu->addAction(tr("Change X, Y, Z Position Axes"));
-	QObject::connect(remapRootPositionMappingsAction, &QAction::triggered, this, &GlyphViewerWindow::RemapRootPositionMappings);
-	m_loadedVisualizationDependentActions.push_back(remapRootPositionMappingsAction);
+	m_remapRootPositionMappingsAction = m_toolsMenu->addAction(tr("Change X, Y, Z Position Axes"));
+	QObject::connect(m_remapRootPositionMappingsAction, &QAction::triggered, this, &GlyphViewerWindow::RemapRootPositionMappings);
+	m_loadedVisualizationDependentActions.push_back(m_remapRootPositionMappingsAction);
 
 	m_toolsMenu->addSeparator();
 
@@ -371,8 +368,6 @@ void GlyphViewerWindow::CreateDockWidgets() {
 	act->setIcon(icon);
 	m_viewMenu->addAction(act);
 	m_showHideToolbar->addAction(act);
-
-	m_showHideToolbar->addSeparator();
 
 	QObject::connect(m_columnsModel, &SourceDataInfoModel::modelReset, m_pseudoTimeFilterWidget, &PseudoTimeFilterWidget::ResetForNewVisualization);
 	bottomDockWidget->hide();}
@@ -1057,4 +1052,22 @@ void GlyphViewerWindow::RemapRootPositionMappings() {
 		
 		LoadNewVisualization(remapFilename);
 	}
+}
+
+void GlyphViewerWindow::CreateInteractionToolbar() {
+
+	m_interactionToolbar = addToolBar(tr("Interaction"));
+	m_interactionToolbar->setFloatable(true);
+	m_interactionToolbar->setMovable(true);
+
+	m_interactionToolbar->addAction(m_remapRootPositionMappingsAction);
+
+	m_interactionToolbar->addSeparator();
+
+	QCheckBox* cb = new QCheckBox(tr("Filter View"), this);
+
+	m_interactionToolbar->addWidget(cb);
+	m_linkedWidgetsManager->AddFilterViewCheckbox(cb);
+
+	m_toolbarsSubMenu->addAction(m_interactionToolbar->toggleViewAction());
 }
