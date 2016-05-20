@@ -68,6 +68,13 @@ int main(int argc, char *argv[])
 
 	SynGlyphX::GlyphBuilderApplication::SetupIconsAndLogos();
 
+	qRegisterMetaType<SynGlyphX::GlyphGeometryInfo::Surface>("GlyphGeometryInfo::Surface");
+	qRegisterMetaType<SynGlyphX::NonMappableGeometryProperties>("NonMappableGeometryProperties");
+	qRegisterMetaType<SynGlyphX::ColorMinDiff>("ColorMinDiff");
+	qRegisterMetaType<SynGlyphX::IntMinDiff>("IntMinDiff");
+	qRegisterMetaType<SynGlyphX::DoubleMinDiff>("DoubleMinDiff");
+	qRegisterMetaType<SynGlyphX::InputField>("InputField");
+
 	if (!SynGlyphX::LicensingDialog::CheckLicense()) {
 
 		return 0;

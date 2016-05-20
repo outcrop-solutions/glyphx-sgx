@@ -20,13 +20,18 @@
 
 #include <QtWidgets/QDialog>
 #include "browselineedit.h"
+#include "glyphrolestablemodel.h"
+#include "datatransformmapping.h"
+#include "verticaltabordertableview.h"
+#include "dataengineconnection.h"
+#include "datastatsmodel.h"
 
 class RemapDialog : public QDialog
 {
 	Q_OBJECT
 
 public:
-	RemapDialog(QWidget *parent);
+	RemapDialog(SynGlyphX::DataTransformMapping::ConstSharedPtr dataTransformMapping, DataEngine::DataEngineConnection::SharedPtr dataEngineConnection, QWidget *parent);
 	~RemapDialog();
 
 	void SetSaveFilename(const QString& saveFilename);
@@ -34,8 +39,17 @@ public:
 
 	void accept() override;
 
+	SynGlyphX::DataTransformMapping::ConstSharedPtr GetNewMapping() const;
+
 private:
+	SynGlyphX::VerticalTabOrderTableView* CreateTableView();
+	void AddRowOfWidgets(SynGlyphX::VerticalTabOrderTableView* tableView, int modelRow, double min, double max, bool enable = true);
+
 	SynGlyphX::BrowseLineEdit* m_saveFilenameEdit;
+
+	GlyphRolesTableModel* m_glyphRolesModel;
+	SynGlyphX::DataTransformModel* m_dataTransformModel;
+	SynGlyphX::DataStatsModel* m_dataStatsModel;
 };
 
 #endif // REMAPDIALOG_H

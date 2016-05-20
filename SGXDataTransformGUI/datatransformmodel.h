@@ -75,6 +75,7 @@ namespace SynGlyphX {
 		};
 
 		DataTransformModel(QObject *parent);
+		DataTransformModel(const DataTransformMapping& mapping, QObject *parent);
 		~DataTransformModel();
 
 		//Functions from QAbstractItemModel that need to be implemented
@@ -150,6 +151,8 @@ namespace SynGlyphX {
 
 		const TableStatsMap& GetTableStatsMap() const;
 
+		void ChangeMapping(const DataTransformMapping& mapping);
+
 	private:
 		void Clear();
 		QVariant GetGlyphData(const QModelIndex& index) const;
@@ -166,8 +169,9 @@ namespace SynGlyphX {
 		void ConnectToDatabase(const QString& url, const QString& username, const QString& password, const QString& db_type);
 		QStringList GetChosenTables(const QString& schema, const Datasource::TableNames& tables);
 		void GenerateStats(const InputTable inputTable, int i, const QString& sourceTypeString);
+		void CreateAdditionalData();
 
-		SynGlyphX::DataTransformMapping::SharedPtr m_dataMapping;
+		DataTransformMapping::SharedPtr m_dataMapping;
 		DataEngine::DataEngineConnection::SharedPtr m_dataEngineConnection;
 
 		//Additional data from datasources

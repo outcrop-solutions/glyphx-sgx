@@ -136,15 +136,6 @@
     <ClCompile Include="GeneratedFiles\Release\moc_databindingtableswidget.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
-    <ClCompile Include="glyphrolessubsettablewidget.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_glyphrolessubsettablewidget.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_glyphrolessubsettablewidget.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
     <ClCompile Include="glyphoptionswidget.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -232,9 +223,6 @@
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="databindingtableswidget.h">
-      <Filter>Header Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="glyphrolessubsettablewidget.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="glyphoptionswidget.h">

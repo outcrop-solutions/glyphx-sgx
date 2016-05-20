@@ -269,7 +269,7 @@ void GlyphViewerWindow::CreateMenus() {
 
 	m_toolsMenu = menuBar()->addMenu(tr("Tools"));
 
-	QAction* remapRootPositionMappingsAction = m_toolsMenu->addAction(tr("Remap Root Position Mappings"));
+	QAction* remapRootPositionMappingsAction = m_toolsMenu->addAction(tr("Change X, Y, Z Position Axes"));
 	QObject::connect(remapRootPositionMappingsAction, &QAction::triggered, this, &GlyphViewerWindow::RemapRootPositionMappings);
 	m_loadedVisualizationDependentActions.push_back(remapRootPositionMappingsAction);
 
@@ -1041,19 +1041,16 @@ void GlyphViewerWindow::closeEvent(QCloseEvent* event) {
 
 void GlyphViewerWindow::RemapRootPositionMappings() {
 
-	SynGlyphX::DataTransformMapping::SharedPtr dataTransformMapping;
-
 	QFileInfo currentFilenameInfo(m_currentFilename);
 
-	RemapDialog remapDialog(this);
+	RemapDialog remapDialog(m_mappingModel->GetDataMapping(), m_dataEngineConnection, this);
 	remapDialog.SetSaveFilename(currentFilenameInfo.absolutePath() + "/" + currentFilenameInfo.completeBaseName() + "_remap.sdt");
 
 	if (remapDialog.exec() == QDialog::Accepted) {
 
 		SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
-		//m_dataTransformModel->ResetDataMappingID();
 
-
+		SynGlyphX::DataTransformMapping::ConstSharedPtr dataTransformMapping = remapDialog.GetNewMapping();
 		QString remapFilename = remapDialog.GetSaveFilename();
 		dataTransformMapping->WriteToFile(remapFilename.toStdString());
 		SynGlyphX::Application::restoreOverrideCursor();

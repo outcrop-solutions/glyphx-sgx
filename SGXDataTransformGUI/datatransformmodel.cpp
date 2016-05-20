@@ -737,20 +737,34 @@ namespace SynGlyphX {
 		return m_dataMapping;
 	}
 
+	void DataTransformModel::ChangeMapping(const DataTransformMapping& mapping) {
+
+		Clear();
+		beginResetModel();
+		m_dataMapping.reset(new DataTransformMapping(mapping));
+		CreateAdditionalData();
+		endResetModel();
+	}
+
 	void DataTransformModel::LoadDataTransformFile(const QString& filename) {
 
 		Clear();
 		beginResetModel();
 		m_dataMapping->ReadFromFile(filename.toStdString());
+		CreateAdditionalData();
+		endResetModel();
+	}
+
+	void DataTransformModel::CreateAdditionalData() {
+
 		const DataTransformMapping::DatasourceMap& datasources = m_dataMapping->GetDatasources();
 		SynGlyphX::DataTransformMapping::DatasourceMap::const_iterator iT = datasources.begin();
 		for (; iT != datasources.end(); ++iT) {
 
 			AddDatasourceInfoFromDataEngine(iT->first, iT->second);
 		}
-	
-		ClearAbsentBindings(createIndex(0,0));
-		endResetModel();
+
+		ClearAbsentBindings(createIndex(0, 0));
 	}
 
 	void DataTransformModel::SaveDataTransformFile(const QString& filename) {
