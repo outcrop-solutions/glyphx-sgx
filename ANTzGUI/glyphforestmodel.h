@@ -65,6 +65,9 @@ namespace SynGlyphXANTz {
 
 		SynGlyphX::Glyph GetGlyphAtIndex(const QModelIndex& index) const;
 
+		const std::array<QString, 3>& GetRootPosXYZMappedFields() const;
+		void SetRootPosXYZMappedFields(const std::array<QString, 3>& fields);
+
 	private:
 		void Clear(bool resetModel);
 		void FindNodesInRegion(const QRect& region, pNPnode node, int row, QItemSelection& itemSelection) const;
@@ -72,12 +75,15 @@ namespace SynGlyphXANTz {
 
 		int GetChildIndexFromParent(pNPnode node) const;
 		int FindRowForRootNode(pNPnode node) const;
-		//std::unordered_map<std::wstring, int> m_textures;
+		void ResetFieldsMappedToRootPosXYZ();
+		
 		QString m_defaultBaseImage;
 		ANTzPlus::ANTzData::SharedPtr m_antzData;
 		QStringList m_baseImageFilenames;
 
 		QString m_tagNotToBeShownIn3d;
+
+		std::array<QString, 3> m_fieldsMappedToRootPosXYZ;
 	};
 
 } //namespace SynGlyphXANTz

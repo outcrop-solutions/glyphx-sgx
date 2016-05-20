@@ -29,6 +29,7 @@
 #include "zspaceoptions.h"
 #include "zspaceeventdispatcher.h"
 #endif
+#include <gl/glu.h>
 
 namespace SynGlyphXANTz {
 
@@ -41,6 +42,13 @@ namespace SynGlyphXANTz {
 
 			None,
 			HideUnfiltered
+		};
+
+		enum HUDLocation {
+
+			TopLeft = 0,
+			BottomLeft,
+			BottomRight
 		};
 
 		ANTzForestWidget( GlyphForestModel* model, SynGlyphX::ItemFocusSelectionModel* selectionModel, QWidget *parent = 0 );
@@ -62,6 +70,9 @@ namespace SynGlyphXANTz {
 		void SetBackgroundColor( const SynGlyphX::GlyphColor& color );
 
 		bool SetStereoMode( bool stereoOn );
+
+		void SetAxisInfoObjectLocation( HUDLocation location );
+		HUDLocation GetAxisInfoObjectLocation() const;
 
 	signals:
 		//void NewStatusMessage(const QString& message, int timeout = 0) const;
@@ -99,6 +110,7 @@ namespace SynGlyphXANTz {
 		void initializeGL() override;
 		void resizeGL( int w, int h ) override;
 		void paintGL() override;
+
 		void mousePressEvent( QMouseEvent* event ) override;
 		void mouseReleaseEvent( QMouseEvent* event ) override;
 		void mouseMoveEvent( QMouseEvent* event ) override;
@@ -106,7 +118,6 @@ namespace SynGlyphXANTz {
 		void keyReleaseEvent( QKeyEvent* event ) override;
 		void moveEvent( QMoveEvent* event ) override;
 		void wheelEvent( QWheelEvent* event ) override;
-		void resizeEvent( QResizeEvent* event ) override;
 
 		void DrawSceneForEye( Eye eye, bool getStylusWorldPosition );
 		void SetCameraToDefaultPosition();
@@ -115,7 +126,10 @@ namespace SynGlyphXANTz {
 		void SetGridLinesColor( pNPnode grid, const QColor& color );
 		void CenterCameraOnNode( pNPnode node );
 		void InitIO();
+		void* CreateNewQuadricObject();
+		void DrawSceneAxisInfoObject();
 		void DrawHUD();
+		bool IsHUDLocationOnRightSide( HUDLocation location ) const;
 		bool SelectAtPoint( int x, int y, bool multiSelect );
 		void SelectFromStylus( const SynGlyphXANTz::ANTzBoundingBox::Line& line );
 		void CheckStylusIntersectionWithNode( pNPnode node, const SynGlyphXANTz::ANTzBoundingBox::Line& line, std::map<float, int>& distanceIdMap );
@@ -210,6 +224,12 @@ namespace SynGlyphXANTz {
 		QSet<QModelIndex> m_tagIndexes;
 
 		std::vector<std::pair<QRect, GLuint>> m_renderedIcons;
+
+		GLUquadric* m_sceneAxisInfoQuadric;
+
+		HUDLocation m_sceneAxisInfoObjectLocation;
+		QRect m_sceneAxisInfoViewport;
+		QRectF m_sceneAxisInfoOrtho;
 	};
 
 } //namespace SynGlyphXANTz
