@@ -23,6 +23,9 @@ public:
 	void SetHideUnselectedGlyphTrees(bool hideUnselectedGlyphTrees);
 	bool GetHideUnselectedGlyphTrees() const;
 
+	void SetShowSceneAxisHUDObject(bool show);
+	bool GetShowSceneAxisHUDObject() const;
+
 	void SetSceneAxisObjectLocation(SynGlyphXANTz::ANTzForestWidget::HUDLocation location);
 	SynGlyphXANTz::ANTzForestWidget::HUDLocation GetSceneAxisObjectLocation() const;
 
@@ -38,6 +41,7 @@ private:
 
 	//3D options
 	bool m_hideUnselectedGlyphTrees;
+	bool m_showSceneAxisHUDObject;
 	SynGlyphXANTz::ANTzForestWidget::HUDLocation m_sceneAxisHUDObjectLocation;
 
 	SynGlyphX::ZSpaceOptions m_zSpaceOptions;

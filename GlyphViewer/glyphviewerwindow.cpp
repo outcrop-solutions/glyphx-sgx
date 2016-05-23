@@ -825,6 +825,11 @@ void GlyphViewerWindow::ChangeOptions(const GlyphViewerOptions& oldOptions, cons
 			m_linkedWidgetsManager->SetFilterView(newOptions.GetHideUnselectedGlyphTrees());
 		}
 
+		if (oldOptions.GetShowSceneAxisHUDObject() != newOptions.GetShowSceneAxisHUDObject()) {
+
+			m_glyph3DView->SetShowHUDAxisInfoObject(newOptions.GetShowSceneAxisHUDObject());
+		}
+
 		if (oldOptions.GetSceneAxisObjectLocation() != newOptions.GetSceneAxisObjectLocation()) {
 
 			m_glyph3DView->SetAxisInfoObjectLocation(newOptions.GetSceneAxisObjectLocation());
@@ -866,6 +871,7 @@ void GlyphViewerWindow::ReadSettings() {
 	}
 	options.SetCacheDirectory(cacheDirectory);
 	options.SetHideUnselectedGlyphTrees(settings.value("hideUnselectedGlyphs", false).toBool());
+	options.SetShowSceneAxisHUDObject(settings.value("axisInfoShow", true).toBool());
 	options.SetSceneAxisObjectLocation(static_cast<SynGlyphXANTz::ANTzForestWidget::HUDLocation>(settings.value("axisInfoLocation").toInt()));
 	options.SetShowMessageWhenImagesDidNotDownload(settings.value("showFailedToDownloadImageMessage", true).toBool());
 	settings.endGroup();
@@ -904,6 +910,7 @@ void GlyphViewerWindow::WriteSettings() {
 		settings.setValue("cacheDirectory", "");
 	}
 	settings.setValue("hideUnselectedGlyphs", options.GetHideUnselectedGlyphTrees());
+	settings.setValue("axisInfoShow", options.GetShowSceneAxisHUDObject());
 	settings.setValue("axisInfoLocation", options.GetSceneAxisObjectLocation());
 	settings.setValue("showFailedToDownloadImageMessage", options.GetShowMessageWhenImagesDidNotDownload());
 	settings.endGroup();
@@ -920,6 +927,7 @@ GlyphViewerOptions GlyphViewerWindow::CollectOptions() {
 
 	options.SetCacheDirectory(QString::fromStdWString(m_cacheManager.GetBaseCacheDirectory()));
 	options.SetHideUnselectedGlyphTrees(m_linkedWidgetsManager->GetFilterView());
+	options.SetShowSceneAxisHUDObject(m_glyph3DView->GetShowHUDAxisInfoObject());
 	options.SetSceneAxisObjectLocation(m_glyph3DView->GetAxisInfoObjectLocation());
 	options.SetZSpaceOptions(m_glyph3DView->GetZSpaceOptions());
 	options.SetShowMessageWhenImagesDidNotDownload(m_showErrorFromTransform);
