@@ -53,6 +53,14 @@ void LinkLineEdit::dropEvent(QDropEvent* event) {
 	}
 }
 
+class FunctionDialog : public QDialog {
+
+	Q_OBJECT
+public:
+	FunctionDialog()
+
+};
+
 LinksDialog::LinksDialog(DataTransformModel* dataTransformModel, GlyphRolesTableModel* glyphRolesTableModel, QWidget *parent)
 	: QDialog(parent),
 	m_dataTransformModel(dataTransformModel),
@@ -112,9 +120,35 @@ LinksDialog::LinksDialog(DataTransformModel* dataTransformModel, GlyphRolesTable
 	colorLayout->addSpacing(20);
 	m_inheritColorCheckBox = new QCheckBox(tr("Inherit from parent"), this);
 	colorLayout->addWidget(m_inheritColorCheckBox);
-
-
+	
 	mainLayout->addWidget(colorGroupBox);
+
+	QGroupBox* functionGroupBox = new QGroupBox(tr("Function"), this);
+	QHBoxLayout* functionLayout = new QHBoxLayout(functionGroupBox);
+	
+	m_functionComboBox = new QComboBox(this);
+
+	//TODO get available types from Link class rather then hardcode strings
+	QStringList functions;
+	functions << "Match Value" << "Key to Value" << "Key to Range";
+	m_functionComboBox->addItems(functions);
+
+	m_functionPushButton = new QPushButton(tr("Properties"), this);
+	m_functionPushButton->setDisabled(true);
+	functionLayout->addWidget(m_functionComboBox);
+	functionLayout->addWidget(m_functionPushButton);
+
+	QObject::connect(m_functionComboBox, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, [=](int index){
+		if (index == 0)
+			m_functionPushButton->setDisabled(true);
+		else
+			m_functionPushButton->setDisabled(false);
+	});
+
+	mainLayout->addWidget(functionGroupBox);
+
+
+
 	QDialogButtonBox* dialogButtonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, this);	
 	mainLayout->addWidget(dialogButtonBox);
 
@@ -141,6 +175,7 @@ const SynGlyphX::Link& LinksDialog::GetLink() {
 	m_link.m_color.SetRGB(c.red(), c.green(), c.blue());
 	m_link.m_color.m_alpha = m_transparensySpinBox->value();
 	m_link.m_color.m_inheritfromParent = m_inheritColorCheckBox->isChecked();
+	m_link.m_function.m_propertyTree.put(L"<xmlattr>.type", m_functionComboBox->currentText().toStdWString());
 	return m_link;
 }
 

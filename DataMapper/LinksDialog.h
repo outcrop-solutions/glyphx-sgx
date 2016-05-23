@@ -87,6 +87,8 @@ private:
 	QCheckBox*	m_inheritColorCheckBox;
 	QSpinBox*	m_transparensySpinBox;
 
+	QComboBox* m_functionComboBox;
+	QPushButton* m_functionPushButton;
 	SynGlyphX::Link m_link;
 	int m_row;
 };
