@@ -69,7 +69,7 @@ DataMapperWindow::DataMapperWindow(QWidget *parent)
 	ReadNewMappingDefaults();
 	ClearAndInitializeDataMapping();
 
-	m_linksDialog = new LinksDialog(m_dataTransformModel, m_glyphRolesTableModel, this);
+	m_linksDialog = new LinksDialog(m_dataTransformModel,  this);
 	QObject::connect(m_linksDialog, &QDialog::accepted, this, &DataMapperWindow::OnLinkDialogAccepted);
 	//Setup data transform
 	//SynGlyphXANTz::ANTzExportTransformer::SetLogoFilename(SynGlyphX::GlyphBuilderApplication::applicationDirPath() + QDir::separator() + "logo.png");
@@ -536,6 +536,7 @@ bool DataMapperWindow::LoadDataTransform(const QString& filename) {
 
 	EnableProjectDependentActions(true);
 	SynGlyphX::Application::restoreOverrideCursor();
+	m_linksDialog->Clear();
 	statusBar()->showMessage("Project successfully opened", 3000);
 	return true;
 }

@@ -54,7 +54,7 @@ class LinksDialog : public QDialog
 
 public:
 
-	LinksDialog(DataTransformModel* dataTransformModel, GlyphRolesTableModel* glyphRolesTableModel, QWidget* parent = 0);
+	LinksDialog(DataTransformModel* dataTransformModel, QWidget* parent = 0);
 	~LinksDialog();
 
 	void accept() override;
@@ -64,6 +64,7 @@ public:
 	//Set -1 for new link
 	void SetEditRow(int row);
 	int GetEditRow() { return m_row;  }
+	void Clear();
 
 private slots:
 
@@ -78,7 +79,6 @@ private:
 	LinkLineEdit* m_toLineEdit;
 
 	DataTransformModel* m_dataTransformModel;
-	GlyphRolesTableModel* m_glyphRolesTableModel;
 
 	GlyphTreesView* m_fromGlyphTree;
 	GlyphTreesView* m_toGlyphTree;

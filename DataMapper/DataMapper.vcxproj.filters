@@ -399,6 +399,9 @@
     <CustomBuild Include="LinksListView.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
+    <CustomBuild Include="GeneratedFiles\Debug\LinksDialog.moc">
+      <Filter>Generated Files\Debug</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="DataMapper.rc" />
