@@ -56,21 +56,27 @@ namespace SynGlyphX {
 			boost::property_tree::wptree& ExportToPropertyTree(boost::property_tree::wptree& parentPropertyTree) const;
 		};
 
-		class Function {
+		class Function { //currently implemented as dumb tree-holder, so LinksDialog can deal with it directly
 		public:
-			enum FunctionType
-			{
-				MatchValue = 0,
-				//KeyToValue,
-				//KeyToRange,
-				//////////
-				NFunctions
-			};
+			//enum class Type
+			//{
+			//	MatchValue = 0,
+			//	KeyToValue = 1,
+			//	KeyToRange = 2,
+			//	//////////
+			//	NFunctions
+			//};
 			Function() {}
-			Function(const boost::property_tree::wptree& parentPropertyTree);
-			boost::property_tree::wptree& ExportToPropertyTree(boost::property_tree::wptree& parentPropertyTree) const;
+			//virtual ~Function() {}
+			Function(const boost::property_tree::wptree& propertyTree);
+			virtual boost::property_tree::wptree& ExportToPropertyTree(boost::property_tree::wptree& propertyTree) const;
+			//virtual Type GetType() { return m_type;  }
+			//static std::shared_ptr<Function> CreateFunction(const boost::property_tree::wptree& propertyTree);
+			//Type m_type;
+			boost::property_tree::wptree m_propertyTree;
 		};
-		Link() {}
+		Link();
+		~Link();
 		Link(const boost::property_tree::wptree& propertyTree);
 		const std::wstring& GetName() const { return m_name; } 
 		boost::property_tree::wptree& ExportToPropertyTree(boost::property_tree::wptree& parentPropertyTree) const;
