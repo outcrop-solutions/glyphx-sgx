@@ -475,7 +475,7 @@ void GlyphViewerWindow::LoadVisualization(const QString& filename, const DataMap
 	if (m_glyphForestModel->rowCount() > 0) {
 
 		ClearAllData();
-		m_glyph3DView->updateGL();
+		m_glyph3DView->update();
 	}
 
 	if (extension == "sdt") {
@@ -706,7 +706,7 @@ void GlyphViewerWindow::ChangeMapDownloadSettings() {
 
 void GlyphViewerWindow::ShowOpenGLSettings() {
 
-	const QGLFormat& format = m_glyph3DView->context()->format();
+	const auto& format = m_glyph3DView->context()->format();
 	QString settings = tr("OpenGL Version = ") + QString::number(format.majorVersion()) + "." + QString::number(format.minorVersion()) + '\n';
 		
 	settings += tr("Stereo Support") + " = ";
