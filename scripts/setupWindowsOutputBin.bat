@@ -58,5 +58,11 @@ FOR /F "tokens=*" %%p IN ('dir /b /a:d ..\bin\*') DO (
 		
 		copy /B /Y "..\..\DataEngine\Java DataEngine\ojdbc6.jar" %basedir%\%%p\%%c\ojdbc6.jar
 		copy /B /Y "..\..\DataEngine\Java DataEngine\ConvertHash.dll" %basedir%\%%p\%%c\ConvertHash.dll
+
+		rem TODO: Needed files only.
+		robocopy /z /e "C:\Qt\Qt5.6.0\5.6\msvc2013\bin\*.dll" %basedir%\%%p\%%c
+		robocopy /z /e "C:\Qt\Qt5.6.0\5.6\msvc2013\bin\*.dll" %basedir%\%%p\%%c
+		mkdir %basedir%\%%p\%%c\qt_plugins
+		robocopy /z /e "C:\Qt\Qt5.6.0\5.6\msvc2013\plugins" %basedir%\%%p\%%c\qt_plugins
 	)
 )
