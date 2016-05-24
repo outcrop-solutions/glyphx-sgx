@@ -31,6 +31,8 @@ namespace SynGlyphXANTz {
 
 	ANTzWidget::~ANTzWidget()
 	{
+		makeCurrent();
+
 		if (m_logoTextureID != 0) {
 
             delete m_logoTextureID;

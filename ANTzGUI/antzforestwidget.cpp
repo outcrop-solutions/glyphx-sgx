@@ -172,6 +172,7 @@ namespace SynGlyphXANTz {
 
 	ANTzForestWidget::~ANTzForestWidget()
 	{
+		makeCurrent();
 		if ( m_worldTextureID != nullptr ) {
 
             delete m_worldTextureID;
