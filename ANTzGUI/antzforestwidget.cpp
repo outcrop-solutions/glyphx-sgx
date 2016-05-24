@@ -249,7 +249,6 @@ namespace SynGlyphXANTz {
         painter.end();
         
         // Restore default blend mode since QPainter seems to trash it on OSX.
-        glBlendEquation(GL_FUNC_ADD);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     }
     
@@ -263,7 +262,6 @@ namespace SynGlyphXANTz {
         painter.end();
         
         // Restore default blend mode since QPainter seems to trash it on OSX.
-        glBlendEquation(GL_FUNC_ADD);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     }
     
