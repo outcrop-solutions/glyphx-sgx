@@ -2,8 +2,11 @@
 #include <QtGui/QOpenGLContext>
 #include <QtGui/QMouseEvent>
 #include <QtGui/QFont>
+#include <QtGui/QPainter>
 #include <QtWidgets/QMessageBox>
 #include <QtCore/QDir>
+#include <QtCore/QElapsedTimer>
+#include <QtCore/QDebug>
 #include "io/npfile.h"
 #include "io/npch.h"
 #include "npctrl.h"
@@ -21,13 +24,9 @@
 
 namespace SynGlyphXANTz {
 
-	ANTzForestWidget::ANTzForestWidget( GlyphForestModel* model, SynGlyphX::ItemFocusSelectionModel* selectionModel, QWidget *parent )
-#ifdef __APPLE__
-		: QGLWidget( QGL::DoubleBuffer | QGL::DepthBuffer | QGL::AlphaChannel, parent ),
-#else
-        : QGLWidget( QGL::DoubleBuffer | QGL::DepthBuffer | QGL::AlphaChannel | QGL::StereoBuffers, parent ),
-#endif
-    m_model( model ),
+    ANTzForestWidget::ANTzForestWidget( GlyphForestModel* model, SynGlyphX::ItemFocusSelectionModel* selectionModel, QWidget *parent ) :
+        QOpenGLWidget( parent ),
+        m_model( model ),
 		m_selectionModel( selectionModel ),
 		m_antzData( model->GetANTzData() ),
 #ifdef USE_ZSPACE
@@ -49,17 +48,23 @@ namespace SynGlyphXANTz {
 #ifdef USE_ZSPACE
 		m_zSpaceOptions(),
 #endif
-		m_logoTextureID(0),
+		m_logoTextureID(nullptr),
 		m_showAnimation(true),
 		m_isInStereo(false),
 		m_initialCameraZAngle(45.0f),
 		m_sceneAxisInfoQuadric(static_cast<GLUquadric*>(CreateNewQuadricObject()))
 	{
-		SetAxisInfoObjectLocation(HUDLocation::TopLeft);
+        // Set up timer to attempt to trigger repaints at ~60fps.
+        timer.setInterval(16);
+        timer.setSingleShot(false);
+        connect(&timer,SIGNAL(timeout()), SLOT(update() ) );
+        timer.start();
 
-		m_isInStereo = context()->format().stereo();
+        SetAxisInfoObjectLocation(HUDLocation::TopLeft);
 
-		setAutoBufferSwap( false );
+        m_isInStereo = false;//context()->format().stereo();
+
+		//setAutoBufferSwap( false );
 		setFocusPolicy( Qt::StrongFocus );
 
 		QFont newFont = font();
@@ -167,16 +172,16 @@ namespace SynGlyphXANTz {
 
 	ANTzForestWidget::~ANTzForestWidget()
 	{
-		if ( m_worldTextureID != 0 ) {
+		if ( m_worldTextureID != nullptr ) {
 
-			deleteTexture( m_worldTextureID );
-			m_worldTextureID = 0;
+            delete m_worldTextureID;
+			m_worldTextureID = nullptr;
 		}
 
-		if ( m_logoTextureID != 0 ) {
+		if ( m_logoTextureID != nullptr ) {
 
-			deleteTexture( m_logoTextureID );
-			m_logoTextureID = 0;
+			delete m_logoTextureID;
+			m_logoTextureID = nullptr;
 		}
 
 		gluDeleteQuadric(m_sceneAxisInfoQuadric);
@@ -185,7 +190,88 @@ namespace SynGlyphXANTz {
 #endif
 		npCloseGL( m_antzData->GetData() );
 	}
-
+    
+    namespace
+    {
+        void transform(GLdouble out[4], const GLdouble m[16], const GLdouble in[4])
+        {
+            auto M = [](int row, int col) { return col * 4 + row; };
+            out[0] = M(0, 0) * in[0] + M(0, 1) * in[1] + M(0, 2) * in[2] + M(0, 3) * in[3];
+            out[1] = M(1, 0) * in[0] + M(1, 1) * in[1] + M(1, 2) * in[2] + M(1, 3) * in[3];
+            out[2] = M(2, 0) * in[0] + M(2, 1) * in[1] + M(2, 2) * in[2] + M(2, 3) * in[3];
+            out[3] = M(3, 0) * in[0] + M(3, 1) * in[1] + M(3, 2) * in[2] + M(3, 3) * in[3];
+        }
+        
+        void project(GLdouble objx, GLdouble objy, GLdouble objz,
+                     const GLdouble model[16], const GLdouble proj[16],
+                     const GLint viewport[4],
+                     GLdouble& winx, GLdouble& winy, GLdouble& winz)
+        {
+            GLdouble in[4], out[4];
+            
+            in[0] = objx;
+            in[1] = objy;
+            in[2] = objz;
+            in[3] = 1.0;
+            transform(out, model, in);
+            transform(in, proj, out);
+            
+            in[0] /= in[3];
+            in[1] /= in[3];
+            in[2] /= in[3];
+            
+            winx = viewport[0] + (1 + in[0]) * viewport[2] / 2;
+            winy = viewport[1] + (1 + in[1]) * viewport[3] / 2;
+            winz = (1 + in[2]) / 2;
+        }
+    }
+    
+    void ANTzForestWidget::renderText(double x, double y, double z, const QString& str, const QFont &font)
+    {
+        GLdouble model[16], proj[16];
+        GLint view[4];
+        glGetDoublev(GL_MODELVIEW_MATRIX, model);
+        glGetDoublev(GL_PROJECTION_MATRIX, proj);
+        glGetIntegerv(GL_VIEWPORT, view);
+        GLdouble textPosX = 0, textPosY = 0, textPosZ = 0;
+        
+        project(x, y, z,
+                model, proj, view,
+                textPosX, textPosY, textPosZ);
+        
+        textPosY = height() - textPosY;
+        
+        QPainter painter(this);
+        painter.setPen(Qt::white);
+        painter.setFont(font);
+        painter.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing);
+        painter.drawText(textPosX, textPosY, str);
+        painter.end();
+        
+        // Restore default blend mode since QPainter seems to trash it on OSX.
+        glBlendEquation(GL_FUNC_ADD);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    }
+    
+    void ANTzForestWidget::renderText(int x, int y, const QString& str, const QFont &font)
+    {
+        QPainter painter(this);
+        painter.setPen(Qt::white);
+        painter.setFont(font);
+        painter.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing);
+        painter.drawText(x, y, str);
+        painter.end();
+        
+        // Restore default blend mode since QPainter seems to trash it on OSX.
+        glBlendEquation(GL_FUNC_ADD);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    }
+    
+    void ANTzForestWidget::qglColor(QColor color)
+    {
+        glColor4f(color.redF(), color.blueF(), color.greenF(), color.alphaF());
+    }
+    
 #ifdef USE_ZSPACE
 	void ANTzForestWidget::ClearZSpaceContext() {
 
@@ -356,7 +442,7 @@ namespace SynGlyphXANTz {
 		QImage image(SynGlyphX::GlyphBuilderApplication::GetLogoLocation(SynGlyphX::GlyphBuilderApplication::WhiteBorder));
 		m_logoPosition.setCoords(0, 0, 0, 0);
 		m_logoPosition.setSize(QSize(image.width(), -image.height()));
-		m_logoTextureID = bindTexture(image);
+		m_logoTextureID = new QOpenGLTexture(image.mirrored());
 
 		m_worldTextureID = BindTextureInFile(SynGlyphX::GlyphBuilderApplication::GetDefaultBaseImagesLocation() + QString::fromStdWString(SynGlyphX::DefaultBaseImageProperties::GetBasefilename()));
 		pNPnode rootGrid = static_cast<pNPnode>(antzData->map.node[kNPnodeRootGrid]);
@@ -407,11 +493,14 @@ namespace SynGlyphXANTz {
 
 			return;
 		}
-
+        
+        QElapsedTimer timer;
+        timer.start();
 		npUpdateCh( antzData );
 
 		npUpdateEngine( antzData );		//position, physics, interactions...
 		UpdateBoundingBoxes();
+//        qDebug() << "3D update took " << timer.elapsed() << "ms.";
 
 		//We may need to have a selected pin node during update to position the camera, but we don't want it during drawing
 		antzData->map.selectedPinNode = NULL;
@@ -445,17 +534,6 @@ namespace SynGlyphXANTz {
 		//     printf("err: 2388 - OpenGL error: %d\n", err);
 		// }
 
-		if ( doubleBuffer() ) {
-
-			swapBuffers();
-		}
-		else {
-
-			glFinish();
-		}
-
-		//ANTz assumes that redraw constantly happens.  Need to put this in a thread
-		update();
 	}
 
 	void ANTzForestWidget::DrawSceneForEye( Eye eye, bool getStylusWorldPosition ) {
@@ -542,6 +620,9 @@ namespace SynGlyphXANTz {
 		glPopMatrix();
 		glMatrixMode( GL_MODELVIEW );
 		glPopMatrix();
+        
+        glDisable( GL_CULL_FACE );
+        glDisable( GL_BLEND );
 	}
 
 #ifdef USE_ZSPACE
@@ -1046,7 +1127,7 @@ namespace SynGlyphXANTz {
 		if ( antzData->map.nodeRootCount >= kNPnodeRootPin ) {
 
 			SetCameraToDefaultPosition();
-			updateGL();
+			update();
 		}
 		else {
 
@@ -1104,6 +1185,8 @@ namespace SynGlyphXANTz {
 
 			return false;
 		}
+        
+        makeCurrent();
 
 		//emit NewStatusMessage(tr("Selection Attempt At: %1, %2").arg(x).arg(y), 4000);
 
@@ -1271,7 +1354,7 @@ namespace SynGlyphXANTz {
 		}
 		//}
 
-		QGLWidget::keyPressEvent( event );
+		QWidget::keyPressEvent( event );
 	}
 
 	void ANTzForestWidget::keyReleaseEvent( QKeyEvent* event ) {
@@ -1303,7 +1386,7 @@ namespace SynGlyphXANTz {
 		return;
 		}*/
 
-		QGLWidget::keyReleaseEvent( event );
+		QWidget::keyReleaseEvent( event );
 	}
 
 	void ANTzForestWidget::wheelEvent( QWheelEvent* event ) {
@@ -1344,7 +1427,7 @@ namespace SynGlyphXANTz {
 
 	bool ANTzForestWidget::IsStereoSupported() const {
 
-		return ( context()->format().stereo() );
+        return false;//( context()->format().stereo() );
 	}
 
 	bool ANTzForestWidget::IsInStereoMode() const {
@@ -1361,7 +1444,7 @@ namespace SynGlyphXANTz {
 #ifdef USE_ZSPACE
 		SetZSpacePosition();
 #endif
-		QGLWidget::moveEvent( event );
+		QWidget::moveEvent( event );
 	}
 
 #ifdef USE_ZSPACE
@@ -1631,7 +1714,7 @@ namespace SynGlyphXANTz {
 	}
 
 	void ANTzForestWidget::OnModelReset() {
-
+        
 		CreateBoundingBoxes();
 		StoreRotationRates();
 		ClearAllTags();
@@ -1640,11 +1723,9 @@ namespace SynGlyphXANTz {
 
 		const QStringList& textures = m_model->GetBaseImageFilenames();
 
-		int size = m_model->rowCount();
+		for ( auto texture : m_textureIDs ) {
 
-		for ( unsigned int textureID : m_textureIDs ) {
-
-			deleteTexture( textureID );
+			delete texture;
 		}
 		m_textureIDs.clear();
 
@@ -1697,11 +1778,11 @@ namespace SynGlyphXANTz {
 
 		if ( grid->textureID == 1 ) {
 
-			grid->textureID = m_worldTextureID;
+			grid->textureID = m_worldTextureID->textureId();
 		}
 		else {
 
-			grid->textureID = m_textureIDs[grid->textureID - 2];
+			grid->textureID = m_textureIDs[grid->textureID - 2]->textureId();
 		}
 	}
 
@@ -1713,10 +1794,10 @@ namespace SynGlyphXANTz {
 		grid->color.a = 255;
 	}
 
-	unsigned int ANTzForestWidget::BindTextureInFile( const QString& imageFilename ) {
+	QOpenGLTexture* ANTzForestWidget::BindTextureInFile( const QString& imageFilename ) {
 
 		QImage image( imageFilename );
-		return bindTexture( image );
+		return new QOpenGLTexture( image.mirrored() );
 	}
 
 	bool ANTzForestWidget::SetStereoMode( bool stereoOn ) {
@@ -1855,6 +1936,7 @@ namespace SynGlyphXANTz {
 
 		glDisable( GL_LIGHTING );
 		glDisable( GL_DEPTH_TEST );
+        glEnable( GL_BLEND );
 
 		glMatrixMode( GL_PROJECTION );
 		glPushMatrix();
@@ -1868,7 +1950,7 @@ namespace SynGlyphXANTz {
 
 		glColor3f( 1.0f, 1.0f, 1.0f );
 		glEnable( GL_TEXTURE_2D );
-		glBindTexture( GL_TEXTURE_2D, m_logoTextureID );
+		glBindTexture( GL_TEXTURE_2D, m_logoTextureID->textureId() );
 		glBegin( GL_QUADS );
 		glTexCoord2f( 0, 0 );
 		glVertex2i( m_logoPosition.left(), m_logoPosition.bottom() );
@@ -1880,31 +1962,6 @@ namespace SynGlyphXANTz {
 		glTexCoord2f( 0, 1 );
 		glVertex2i( m_logoPosition.left(), m_logoPosition.top() );
 		glEnd();
-
-		glColor3f( 0.8f, 0.8f, 0.8f );
-		GLboolean blend;
-		glGetBooleanv( GL_BLEND, &blend );
-		glDisable( GL_BLEND );
-		for( auto& icon : m_renderedIcons )
-		{
-			glBindTexture( GL_TEXTURE_2D, icon.second );
-			glBegin( GL_QUADS );
-			glTexCoord2f( 0, 0 );
-
-			int top = this->size().height() - icon.first.top();
-			int bottom = this->size().height() - icon.first.bottom();
-
-			glVertex2i( icon.first.left(), bottom );
-			glTexCoord2f( 1, 0 );
-			glVertex2i( icon.first.right(), bottom );
-
-			glTexCoord2f( 1, 1 );
-			glVertex2i( icon.first.right(), top );
-			glTexCoord2f( 0, 1 );
-			glVertex2i( icon.first.left(), top );
-			glEnd();
-		}
-		if ( blend ) glEnable( GL_BLEND );
 
 		glDisable( GL_TEXTURE_2D );
 
@@ -1923,6 +1980,8 @@ namespace SynGlyphXANTz {
 
 			glEnable( GL_LIGHTING );
 		}
+        
+        glDisable( GL_BLEND );
 	}
 
 	void ANTzForestWidget::SetShowTagsOfSelectedObjects( bool showTagsOfSelectedObjects ) {
@@ -1978,17 +2037,5 @@ namespace SynGlyphXANTz {
 	ANTzForestWidget::HUDLocation ANTzForestWidget::GetAxisInfoObjectLocation() const {
 
 		return m_sceneAxisInfoObjectLocation;
-	}
-
-	void ANTzForestWidget::AddRenderedIcon( const QRect& pos, GLuint tex )
-	{
-		m_renderedIcons.push_back( std::make_pair( pos, tex ) );
-	}
-
-	void ANTzForestWidget::ClearRenderedIcons()
-	{
-		for ( auto icon : m_renderedIcons )
-			deleteTexture( icon.second );
-		m_renderedIcons.clear();
 	}
 } //namespace SynGlyphXANTz

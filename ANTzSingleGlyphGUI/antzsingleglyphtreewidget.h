@@ -27,6 +27,7 @@
 #include "datamappingglyphgraph.h"
 #include "minmaxglyphtreemodel.h"
 #include <QtCore/QItemSelectionModel>
+#include <QtGui/QOpenGLTexture>
 #include "defaultbaseimageproperties.h"
 
 namespace SynGlyphXANTz {
@@ -110,7 +111,7 @@ namespace SynGlyphXANTz {
 		void RemoveNodeFromIDMap(pNPnode node);
 
 		pNPnode m_rootGlyph;
-		unsigned int m_baseImageTextureID;
+		QOpenGLTexture* m_baseImageTextureID;
 
 		SynGlyphX::Glyph m_clipboardGlyph;
 

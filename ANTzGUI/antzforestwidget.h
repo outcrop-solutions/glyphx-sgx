@@ -19,7 +19,10 @@
 #define ANTZFORESTWIDGET_H
 
 #include "antzgui_global.h"
-#include <QtOpenGL/QGLWidget>
+#include <QtWidgets/QOpenGLWidget>
+#include <QtGui/QOpenGLTexture>
+#include <QtGui/QOpenGLFunctions>
+#include <QtCore/QTimer>
 #include "itemfocusselectionmodel.h"
 #include "glyphforestmodel.h"
 #include "antzdata.h"
@@ -37,7 +40,7 @@
 
 namespace SynGlyphXANTz {
 
-	class ANTZGUI_EXPORT ANTzForestWidget : public QGLWidget
+	class ANTZGUI_EXPORT ANTzForestWidget : public QOpenGLWidget
 	{
 		Q_OBJECT
 
@@ -125,7 +128,7 @@ namespace SynGlyphXANTz {
 
 		void DrawSceneForEye( Eye eye, bool getStylusWorldPosition );
 		void SetCameraToDefaultPosition();
-		unsigned int BindTextureInFile( const QString& imageFilename );
+		QOpenGLTexture* BindTextureInFile( const QString& imageFilename );
 		void SetGridTexture( pNPnode grid );
 		void SetGridLinesColor( pNPnode grid, const QColor& color );
 		void CenterCameraOnNode( pNPnode node );
@@ -137,8 +140,11 @@ namespace SynGlyphXANTz {
 		bool SelectAtPoint( int x, int y, bool multiSelect );
 		void SelectFromStylus( const SynGlyphXANTz::ANTzBoundingBox::Line& line );
 		void CheckStylusIntersectionWithNode( pNPnode node, const SynGlyphXANTz::ANTzBoundingBox::Line& line, std::map<float, int>& distanceIdMap );
-		void AddRenderedIcon( const QRect& pos, GLuint tex );
-		void ClearRenderedIcons();
+        
+        // Drop-in replacements for old QGLWidget functionality.
+        void renderText(double x, double y, double z, const QString &str, const QFont & font = QFont());
+        void renderText(int x, int y, const QString &str, const QFont & font = QFont());
+        void qglColor(QColor color);
 
 #ifdef USE_ZSPACE
 		void ConnectZSpaceTrackers();
@@ -185,8 +191,8 @@ namespace SynGlyphXANTz {
 		SynGlyphX::ZSpaceOptions m_zSpaceOptions;
 #endif
 
-		unsigned int m_worldTextureID;
-		std::vector<unsigned int> m_textureIDs;
+		QOpenGLTexture* m_worldTextureID;
+		std::vector<QOpenGLTexture*> m_textureIDs;
 
 		ANTzPlus::ANTzData::SharedPtr m_antzData;
 
@@ -220,7 +226,7 @@ namespace SynGlyphXANTz {
 		std::map<int, NPfloatXYZ> m_rotationRates;
 		bool m_showAnimation;
 
-		unsigned int m_logoTextureID;
+		QOpenGLTexture* m_logoTextureID;
 		QRect m_logoPosition;
 
 		float m_initialCameraZAngle;
@@ -234,6 +240,8 @@ namespace SynGlyphXANTz {
 		HUDLocation m_sceneAxisInfoObjectLocation;
 		QRect m_sceneAxisInfoViewport;
 		QRectF m_sceneAxisInfoOrtho;
+        
+        QTimer timer;
 	};
 
 } //namespace SynGlyphXANTz

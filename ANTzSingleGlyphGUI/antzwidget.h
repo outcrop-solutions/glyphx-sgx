@@ -19,12 +19,14 @@
 #define ANTZWIDGET_H
 
 #include "antzsingleglyphgui_global.h"
-#include <QtOpenGL/QGLWidget>
+#include <QtWidgets/QOpenGLWidget>
+#include <QtGui/QOpenGLTexture>
+#include <QtCore/QTimer>
 #include "data/nptypes.h"
 
 namespace SynGlyphXANTz {
 
-	class ANTZSINGLEGLYPHGUI_EXPORT ANTzWidget : public QGLWidget
+	class ANTZSINGLEGLYPHGUI_EXPORT ANTzWidget : public QOpenGLWidget
 	{
 		Q_OBJECT
 
@@ -41,11 +43,11 @@ namespace SynGlyphXANTz {
 		virtual void paintGL();
 
 		void CenterCameraOnNode(pNPnode node);
-		int PickPinAtPoint(const QPoint& point) const;
+		int PickPinAtPoint(const QPoint& point);
 
 		virtual void DeleteNode(pNPnode node);
 		void DeleteChildren(pNPnode parent, unsigned int first, unsigned int count);
-		unsigned int BindTextureInFile(const QString& imageFilename);
+		QOpenGLTexture* BindTextureInFile(const QString& imageFilename);
 
 		void DrawLogo();
 
@@ -55,12 +57,14 @@ namespace SynGlyphXANTz {
 		pData m_antzData;
 
 		QSize m_logoSize;
-		unsigned int m_logoTextureID;
+		QOpenGLTexture* m_logoTextureID;
 
 	private:
 		void InitIO();
+        
+        QTimer timer;
 
-		static QGLFormat s_format;
+		//static QGLFormat s_format;
 	};
 
 } //namespace SynGlyphXANTz

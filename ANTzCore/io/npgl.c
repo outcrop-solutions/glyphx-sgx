@@ -271,7 +271,9 @@ ANTZCORE_API void npGLShading (void* dataRef)
 
 	
 	//do not render back-faces, faster
-	glEnable (GL_CULL_FACE);
+	glEnable(GL_CULL_FACE);
+    
+    glEnable(GL_BLEND);
 
 	//set shading for flat or smooth
 	if (data->io.gl.shade == kNPglShadeSmooth)
@@ -364,6 +366,8 @@ ANTZCORE_API void npGLDrawScene(void* dataRef)
 	npGLLighting (dataRef);				//set lights
 	npGLShading (dataRef);				//set transparency
 	npDrawNodes (dataRef);				//draws mesh, graphs, pins, etc...
+    
+    glDisable(GL_CULL_FACE);
 
 	//	glOrtho ( -20.0f, 20.0f, -20.0f, 20.0f, -1.0f, 1.0f); // gluOrtho2D	//zz debug
 }
