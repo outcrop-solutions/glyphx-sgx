@@ -917,7 +917,7 @@ GlyphViewerOptions GlyphViewerWindow::CollectOptions() {
 	options.SetHideUnselectedGlyphTrees(m_linkedWidgetsManager->GetFilterView());
 	options.SetSceneAxisObjectLocation(m_glyph3DView->GetAxisInfoObjectLocation());
 #ifdef USE_ZSPACE
-	options.SetZSpaceOptions(m_antzWidget->GetZSpaceOptions());
+	options.SetZSpaceOptions(m_glyph3DView->GetZSpaceOptions());
 #endif
 	options.SetShowMessageWhenImagesDidNotDownload(m_showErrorFromTransform);
 
