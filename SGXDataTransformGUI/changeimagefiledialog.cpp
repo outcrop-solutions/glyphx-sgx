@@ -1,6 +1,7 @@
 #include "changeimagefiledialog.h"
 #include <QtCore/QFileInfo>
 #include <QtCore/QDir>
+#include <algorithm>
 #include "userdefinedbaseimageproperties.h"
 #include "filesystem.h"
 
@@ -36,7 +37,10 @@ namespace SynGlyphX {
 			if (baseImage.GetType() == BaseImage::Type::UserImage) {
 
 				UserDefinedBaseImageProperties::ConstSharedPtr properties = std::dynamic_pointer_cast<const UserDefinedBaseImageProperties>(baseImage.GetProperties());
-				std::wstring newImageFilename = Filesystem::IsFileInDirectory(properties->GetFilename(), sdtDir);
+                std::wstring name = properties->GetFilename();
+                std::replace(name.begin(), name.end(), L'\\', L'/');      // forward slash supported on all platforms
+                
+				std::wstring newImageFilename = Filesystem::IsFileInDirectory(name, sdtDir);
 				if (!newImageFilename.empty()) {
 
 					BaseImage newBaseImage = mapping->GetBaseObjects()[index];
