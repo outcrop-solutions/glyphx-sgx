@@ -32,6 +32,11 @@ IF (${ZSPACE_FOUND})
 	add_definitions(-DUSE_ZSPACE)
 ENDIF()
 
+IF (${LICENSING_FOUND})
+	include_directories(AFTER ${LICENSE_INCLUDE_DIR})
+	add_definitions(-DUSE_LICENSING)
+ENDIF()
+
 SET(SRC_ALL 	antzimportdialog.cpp
 				cachemanager.cpp
 				datamappingloadingfiltermodel.cpp
@@ -95,6 +100,10 @@ ENDIF()
 IF (${ZSPACE_FOUND})
 	TARGET_LINK_LIBRARIES(GlyphViewer SGXzSpaceGUI)
 ENDIF()	
+
+IF (${LICENSING_FOUND})
+	TARGET_LINK_LIBRARIES(GlyphViewer rlmez)
+ENDIF()
 
 Set_Windows_Properties(GlyphViewer)
 
