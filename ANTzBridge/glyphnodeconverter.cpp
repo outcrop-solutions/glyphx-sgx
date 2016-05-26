@@ -2,6 +2,7 @@
 #include <boost/lexical_cast.hpp>
 #include "csvfilereader.h"
 #include "antzcsvwriter.h"
+#include "data/nptypes.h"
 
 namespace SynGlyphXANTz {
 

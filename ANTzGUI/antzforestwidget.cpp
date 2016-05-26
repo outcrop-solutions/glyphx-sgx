@@ -52,7 +52,8 @@ namespace SynGlyphXANTz {
 		m_showAnimation(true),
 		m_isInStereo(false),
 		m_initialCameraZAngle(45.0f),
-		m_sceneAxisInfoQuadric(static_cast<GLUquadric*>(CreateNewQuadricObject()))
+		m_sceneAxisInfoQuadric(static_cast<GLUquadric*>(CreateNewQuadricObject())),
+		m_showHUDAxisInfoObject(true)
 	{
         // Set up timer to attempt to trigger repaints at ~60fps.
         timer.setInterval(16);
@@ -713,6 +714,11 @@ namespace SynGlyphXANTz {
 	}
 
 	void ANTzForestWidget::DrawSceneAxisInfoObject() {
+
+		if (!m_showHUDAxisInfoObject) {
+
+			return;
+		}
 
 		pData antzData = m_antzData->GetData();
 		pNPnode currentCamera = npGetActiveCam(antzData);
@@ -2037,4 +2043,15 @@ namespace SynGlyphXANTz {
 
 		return m_sceneAxisInfoObjectLocation;
 	}
+
+	void ANTzForestWidget::SetShowHUDAxisInfoObject(bool show) {
+
+		m_showHUDAxisInfoObject = show;
+	}
+
+	bool ANTzForestWidget::GetShowHUDAxisInfoObject() const {
+
+		return m_showHUDAxisInfoObject;
+	}
+
 } //namespace SynGlyphXANTz

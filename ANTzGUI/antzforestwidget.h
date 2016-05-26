@@ -78,7 +78,10 @@ namespace SynGlyphXANTz {
 
 		bool SetStereoMode( bool stereoOn );
 
-		void SetAxisInfoObjectLocation( HUDLocation location );
+		void SetShowHUDAxisInfoObject(bool show);
+		bool GetShowHUDAxisInfoObject() const;
+
+		void SetAxisInfoObjectLocation(HUDLocation location);
 		HUDLocation GetAxisInfoObjectLocation() const;
 
 	signals:
@@ -237,6 +240,7 @@ namespace SynGlyphXANTz {
 
 		GLUquadric* m_sceneAxisInfoQuadric;
 
+		bool m_showHUDAxisInfoObject;
 		HUDLocation m_sceneAxisInfoObjectLocation;
 		QRect m_sceneAxisInfoViewport;
 		QRectF m_sceneAxisInfoOrtho;
