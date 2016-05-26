@@ -10,11 +10,12 @@
 build=None
 app=None
 java=7
+qt=5.6
 appcount=0
 
 # Process command-line options.
 
-while getopts "drvbmj:" opt; do
+while getopts "drvbmj:q:" opt; do
 	case "$opt" in
 		d)
 			build=Debug
@@ -43,7 +44,12 @@ while getopts "drvbmj:" opt; do
 				echo Invalid Java JVM version \'$OPTARG\'\; -j7 or j8 are supported.
 				exit 1
 			fi
-			;;			
+			;;
+		q)
+			if [ $OPTARG = 5.7 ]; then
+				qt=5.7
+			fi
+			;;		
 	esac
 done
 
@@ -79,7 +85,7 @@ mv ../../cmake/bin/OSX64/$build/*.dylib ../../cmake/bin/OSX64/$build/$app.app/Co
 # from the console if you need to see its output for some reason (or remove the two redirections starting
 # with >).
 echo Deploying Qt...
-/Users/Shared/Qt5.6.0/5.6/clang_64/bin/macdeployqt ../../cmake/bin/OSX64/$build/$app.app >/dev/null 2>/dev/null
+/Users/Shared/Qt$qt.0/$qt/clang_64/bin/macdeployqt ../../cmake/bin/OSX64/$build/$app.app >/dev/null 2>/dev/null
 
 if [ $java = 7 ]; then
 	echo Deploying Java VM 1.7.0_79...
