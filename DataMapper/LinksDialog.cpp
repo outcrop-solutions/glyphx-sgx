@@ -8,7 +8,7 @@
 #include <QtGui/QDragEnterEvent>
 #include "roledatafilterproxymodel.h"
 
-LinkLineEdit::LinkLineEdit(DataTransformModel* dataTransformModel, QWidget *parent) : QLineEdit(parent),
+LinkLineEdit::LinkLineEdit(SynGlyphX::DataTransformModel* dataTransformModel, QWidget *parent) : QLineEdit(parent),
 m_dataTransformModel(dataTransformModel)
 {
 	setContextMenuPolicy(Qt::NoContextMenu);
@@ -53,7 +53,7 @@ void LinkLineEdit::dropEvent(QDropEvent* event) {
 	}
 }
 
-LinksDialog::LinksDialog(DataTransformModel* dataTransformModel, GlyphRolesTableModel* glyphRolesTableModel, QWidget *parent)
+LinksDialog::LinksDialog(SynGlyphX::DataTransformModel* dataTransformModel, QWidget *parent)
 	: QDialog(parent),
 	m_dataTransformModel(dataTransformModel),
 	m_row(-1)
@@ -168,6 +168,12 @@ SynGlyphX::Link::Node LinksDialog::GetNode(GlyphTreesView* treeView, LinkLineEdi
 	return node;
 }
 
+void LinksDialog::Clear(){
+	m_nameLineEdit->clear();
+	m_fromLineEdit->clear();
+	m_toLineEdit->clear();
+
+}
 
 void LinksDialog::SelectGlyph(const QModelIndex &parent, GlyphTreesView* treeView, const SynGlyphX::Link::Node& node){
 

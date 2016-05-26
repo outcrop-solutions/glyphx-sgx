@@ -51,10 +51,10 @@ DataMapperWindow::DataMapperWindow(QWidget *parent)
 {
 	m_dataEngineConnection = std::make_shared<DataEngine::DataEngineConnection>();
 
-	m_dataTransformModel = new DataTransformModel(this);
-	QObject::connect(m_dataTransformModel, &DataTransformModel::dataChanged, this, [&, this](const QModelIndex& topLeft, const QModelIndex& bottomRight){ setWindowModified(true); });
-	QObject::connect(m_dataTransformModel, &DataTransformModel::rowsInserted, this, [&, this](const QModelIndex& parent, int first, int last){ setWindowModified(true); });
-	QObject::connect(m_dataTransformModel, &DataTransformModel::rowsRemoved, this, [&, this](const QModelIndex& parent, int first, int last){ setWindowModified(true); });
+	m_dataTransformModel = new SynGlyphX::DataTransformModel(this);
+	QObject::connect(m_dataTransformModel, &SynGlyphX::DataTransformModel::dataChanged, this, [&, this](const QModelIndex& topLeft, const QModelIndex& bottomRight){ setWindowModified(true); });
+	QObject::connect(m_dataTransformModel, &SynGlyphX::DataTransformModel::rowsInserted, this, [&, this](const QModelIndex& parent, int first, int last){ setWindowModified(true); });
+	QObject::connect(m_dataTransformModel, &SynGlyphX::DataTransformModel::rowsRemoved, this, [&, this](const QModelIndex& parent, int first, int last){ setWindowModified(true); });
 	
 	m_glyphRolesTableModel = new GlyphRolesTableModel(m_dataTransformModel, this);
 
@@ -69,7 +69,7 @@ DataMapperWindow::DataMapperWindow(QWidget *parent)
 	ReadNewMappingDefaults();
 	ClearAndInitializeDataMapping();
 
-	m_linksDialog = new LinksDialog(m_dataTransformModel, m_glyphRolesTableModel, this);
+	m_linksDialog = new LinksDialog(m_dataTransformModel,  this);
 	QObject::connect(m_linksDialog, &QDialog::accepted, this, &DataMapperWindow::OnLinkDialogAccepted);
 	//Setup data transform
 	//SynGlyphXANTz::ANTzExportTransformer::SetLogoFilename(SynGlyphX::GlyphBuilderApplication::applicationDirPath() + QDir::separator() + "logo.png");
@@ -290,8 +290,8 @@ void DataMapperWindow::CreateDockWidgets() {
 	m_baseObjectsView = new BaseObjectListView(m_dataTransformModel, leftDockWidgetBaseObjects);
 	m_baseObjectsModel = new SynGlyphX::IntRoleDataFilterProxyModel(this);
 	m_baseObjectsModel->setSourceModel(m_dataTransformModel);
-	m_baseObjectsModel->setFilterRole(DataTransformModel::DataTypeRole);
-	m_baseObjectsModel->SetFilterData(DataTransformModel::DataType::BaseObjects);
+	m_baseObjectsModel->setFilterRole(SynGlyphX::DataTransformModel::DataTypeRole);
+	m_baseObjectsModel->SetFilterData(SynGlyphX::DataTransformModel::DataType::BaseObjects);
 	m_baseObjectsView->setModel(m_baseObjectsModel);
 	m_baseObjectMenu->addActions(m_baseObjectsView->actions());
 
@@ -305,8 +305,8 @@ void DataMapperWindow::CreateDockWidgets() {
 	m_legendsView = new LegendListView(m_dataTransformModel, leftDockWidgetBaseObjects);
 	m_legendsModel = new SynGlyphX::IntRoleDataFilterProxyModel(this);
 	m_legendsModel->setSourceModel(m_dataTransformModel);
-	m_legendsModel->setFilterRole(DataTransformModel::DataTypeRole);
-	m_legendsModel->SetFilterData(DataTransformModel::DataType::Legends);
+	m_legendsModel->setFilterRole(SynGlyphX::DataTransformModel::DataTypeRole);
+	m_legendsModel->SetFilterData(SynGlyphX::DataTransformModel::DataType::Legends);
 	m_legendsView->setModel(m_legendsModel);
 	m_legendMenu->addActions(m_legendsView->actions());
 
@@ -319,8 +319,8 @@ void DataMapperWindow::CreateDockWidgets() {
 	m_linksView = new LinksListView(m_dataTransformModel, leftDockWidgetLinks);
 	m_linksModel = new SynGlyphX::IntRoleDataFilterProxyModel(this);
 	m_linksModel->setSourceModel(m_dataTransformModel);
-	m_linksModel->setFilterRole(DataTransformModel::DataTypeRole);
-	m_linksModel->SetFilterData(DataTransformModel::DataType::Links);
+	m_linksModel->setFilterRole(SynGlyphX::DataTransformModel::DataTypeRole);
+	m_linksModel->SetFilterData(SynGlyphX::DataTransformModel::DataType::Links);
 	m_linksView->setModel(m_linksModel);
 	m_linksMenu->addActions(m_linksView->actions());
 
@@ -522,7 +522,7 @@ bool DataMapperWindow::LoadDataTransform(const QString& filename) {
 		m_glyphTreesView->SelectLastGlyphTreeRoot();
 		SelectFirstBaseObject();
 
-		m_modelResetConnection = QObject::connect(m_dataTransformModel, &DataTransformModel::modelReset, this, [&, this](){ setWindowModified(true); });
+		m_modelResetConnection = QObject::connect(m_dataTransformModel, &SynGlyphX::DataTransformModel::modelReset, this, [&, this](){ setWindowModified(true); });
 	}
 	catch (const std::exception& e) {
 
@@ -536,6 +536,7 @@ bool DataMapperWindow::LoadDataTransform(const QString& filename) {
 
 	EnableProjectDependentActions(true);
 	SynGlyphX::Application::restoreOverrideCursor();
+	m_linksDialog->Clear();
 	statusBar()->showMessage("Project successfully opened", 3000);
 	return true;
 }
@@ -754,10 +755,9 @@ void DataMapperWindow::CreatePortableVisualization(SynGlyphX::PortableVisualizat
 				throw;
 			}
 			ge.generateGlyphs();
-		}
 
-		//SynGlyphXANTz::ANTzExportTransformer transformer(csvDirectory, m_antzExportDirectories[platform], platform, false);
-		//transformer.Transform(*(m_dataTransformModel->GetDataMapping().get()));
+			m_portableVisualizationExport.CopyLogo(QDir::toNativeSeparators(csvDirectory + "/usr/images/"));
+		}
 
 		SynGlyphX::Application::restoreOverrideCursor();
 	}

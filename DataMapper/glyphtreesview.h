@@ -27,7 +27,7 @@ class GlyphTreesView : public SynGlyphX::TreeEditView
 	Q_OBJECT
 
 public:
-	GlyphTreesView(DataTransformModel* sourceModel, QWidget *parent = 0);
+	GlyphTreesView(SynGlyphX::DataTransformModel* sourceModel, QWidget *parent = 0);
 	~GlyphTreesView();
 
 	const SynGlyphX::SharedActionList& GetGlyphActions();
@@ -55,7 +55,7 @@ private slots:
 	void ChangeOptions();
 
 private:
-	DataTransformModel* m_sourceModel;
+	SynGlyphX::DataTransformModel* m_sourceModel;
 
 	SynGlyphX::SharedActionList m_glyphActions;
 	QAction* m_addChildrenAction;

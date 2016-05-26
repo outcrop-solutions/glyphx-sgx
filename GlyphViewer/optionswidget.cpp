@@ -2,6 +2,7 @@
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QFormLayout>
+#include <QtWidgets/QLabel>
 #include "groupboxsinglewidget.h"
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QMessageBox>
@@ -72,14 +73,22 @@ void OptionsWidget::Create3DTab(const GlyphViewerOptions& options) {
 
 	QHBoxLayout* hudOuterLayout = new QHBoxLayout(tab);
 
-	QGroupBox* hudGroupBox = new QGroupBox(tr("HUD"), tab);
-	QFormLayout* hudLayout = new QFormLayout(tab);
+	QGroupBox* hudGroupBox = new QGroupBox(tr("HUD Axis Info"), tab);
+	QHBoxLayout* hudAxisInfoLayout = new QHBoxLayout(tab);
+	
+	m_showHUDAxisInfoObjectCheckBox = new QCheckBox(tr("Show"), tab);
+	m_showHUDAxisInfoObjectCheckBox->setChecked(options.GetShowSceneAxisHUDObject());
+	hudAxisInfoLayout->addWidget(m_showHUDAxisInfoObjectCheckBox);
+
+	hudAxisInfoLayout->addWidget(new QLabel(tr("Location:"), tab));
+
 	m_axisObjectLocationComboBox = new QComboBox(tab);
 	QStringList locations;
 	locations << tr("Top Left") << tr("Bottom Left") << tr("Bottom Right");
 	m_axisObjectLocationComboBox->addItems(locations);
-	hudLayout->addRow(tr("Axis Info Location:"), m_axisObjectLocationComboBox);
-	hudGroupBox->setLayout(hudLayout);
+	hudAxisInfoLayout->addWidget(m_axisObjectLocationComboBox);
+
+	hudGroupBox->setLayout(hudAxisInfoLayout);
 	hudOuterLayout->addWidget(hudGroupBox);
 	m_axisObjectLocationComboBox->setCurrentIndex(options.GetSceneAxisObjectLocation());
 
@@ -130,6 +139,8 @@ GlyphViewerOptions OptionsWidget::GetOptions() const {
 	GlyphViewerOptions options;
 	options.SetCacheDirectory(m_cacheDirectoryWidget->GetText());
 	options.SetHideUnselectedGlyphTrees(m_hideSelectedGlyphsCheckbox->isChecked());
+	options.SetShowSceneAxisHUDObject(m_showHUDAxisInfoObjectCheckBox->isChecked());
+	options.SetSceneAxisObjectLocation(static_cast<SynGlyphXANTz::ANTzForestWidget::HUDLocation>(m_axisObjectLocationComboBox->currentIndex()));
 
 #ifdef USE_ZSPACE
 	options.SetZSpaceOptions(m_zSpaceOptionsWidget->GetOptions());

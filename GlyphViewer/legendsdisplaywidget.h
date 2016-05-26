@@ -33,6 +33,8 @@ public:
 	void SetLegends(const std::vector<SynGlyphX::Legend>& legends);
 	void ClearLegends();
 
+	bool HasLegends() const;
+
 private:
 	QTabWidget* m_legendTabs;
 };

@@ -15,36 +15,44 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef SYNGLYPHX_DATATRANSFORMMODEL_H
-#define SYNGLYPHX_DATATRANSFORMMODEL_H
+#ifndef DATATRANSFORMMODEL_H
+#define DATATRANSFORMMODEL_H
 
 #include "sgxdatatransformgui_global.h"
 #include "datatransformmapping.h"
+#include "utilitytypes.h"
 #include <QtCore/QAbstractItemModel>
-#include "glyphenumcombobox.h"
-#include "surfaceradiobuttonwidget.h"
+#include "dataengineconnection.h"
+#include "datastatsmodel.h"
 
 namespace SynGlyphX {
 
-	class SGXDATATRANSFORMGUI_EXPORT DataMappingModel : public QAbstractItemModel
+	class SGXDATATRANSFORMGUI_EXPORT DataTransformModel : public QAbstractItemModel
 	{
 		Q_OBJECT
 
 	public:
+		typedef std::unordered_map<SynGlyphX::InputTable, WStringVector, InputTableHash> NumericFieldsByTable;
+
+		typedef std::unordered_map<SynGlyphX::InputTable, DataStatsModel::TableStats, InputTableHash> TableStatsMap;
+
 		static const int UUIDRole = Qt::UserRole;
 		static const int DataTypeRole = UUIDRole + 1;
+		static const int OptionsRole = DataTypeRole + 1;
 
 		enum DataType {
 
 			GlyphTrees = 0,
 			BaseObjects = 1,
 			DataSources = 2,
-			FieldGroups = 3
+			FieldGroups = 3,
+			Legends = 4,
+			Links = 5
 		};
 
 		enum PropertyRole {
 
-			PositionX = DataTypeRole + 1,
+			PositionX = OptionsRole + 1,
 			PositionY = PositionX + 1,
 			PositionZ = PositionY + 1,
 			RotationX = PositionZ + 1,
@@ -57,7 +65,8 @@ namespace SynGlyphX {
 			Transparency = Color + 1,
 			Tag = Transparency + 1,
 			Description = Tag + 1,
-			RotationRateX = Description + 1,
+			URL = Description + 1,
+			RotationRateX = URL + 1,
 			RotationRateY = RotationRateX + 1,
 			RotationRateZ = RotationRateY + 1,
 			VirtualTopology = RotationRateZ + 1,
@@ -66,8 +75,9 @@ namespace SynGlyphX {
 			GeometryTorusRatio = GeometrySurface + 1
 		};
 
-		DataMappingModel(QObject *parent);
-		~DataMappingModel();
+		DataTransformModel(QObject *parent);
+		DataTransformModel(const DataTransformMapping& mapping, QObject *parent);
+		~DataTransformModel();
 
 		//Functions from QAbstractItemModel that need to be implemented
 		virtual int columnCount(const QModelIndex& parent = QModelIndex()) const;
@@ -84,38 +94,48 @@ namespace SynGlyphX {
 		QVariant GetDataTypeData(const QModelIndex& index) const;
 		QVariant GetPropertyData(const QModelIndex& index, int role) const;
 
-		DataTransformMapping::ConstSharedPtr GetDataMapping() const;
+		SynGlyphX::DataTransformMapping::ConstSharedPtr GetDataMapping() const;
 
 		void SetDefaults(const DataMappingDefaults& defaults);
 		void SetSceneProperties(const SceneProperties& sceneProperties);
 
 		void LoadDataTransformFile(const QString& filename);
 		void SaveDataTransformFile(const QString& filename);
-		void Clear();
+		void ClearAndReset();
 
 		void AddGlyphFile(const QString& filename);
-		void AddGlyphTree(DataMappingGlyphGraph::SharedPtr glyphTree);
+		void AddGlyphTree(SynGlyphX::DataMappingGlyphGraph::SharedPtr glyphTree);
 		void UpdateGlyph(const QModelIndex& index, const DataMappingGlyph& newGlyph);
 		void UpdateGlyph(const QModelIndex& index, const DataMappingGlyphGraph& subgraph);
 		void UpdateGlyphGeometry(const QModelIndex& index, const DataMappingGlyphGeometry& structure);
 		void UpdateVirtualTopology(const QModelIndex& index, const DataMappingVirtualTopology& virtualTopology);
 		const DataMappingGlyph& GetGlyph(const QModelIndex& index) const;
-		DataMappingGlyphGraph GetSubgraph(const QModelIndex& index, bool includeChildren);
+		SynGlyphX::DataMappingGlyphGraph GetSubgraph(const QModelIndex& index, bool includeChildren);
 		void AddChildGlyph(const QModelIndex& parent, const DataMappingGlyph& glyphTemplate, unsigned int numberOfChildren = 1);
 		void AddChildGlyphGraph(const QModelIndex& parent, const DataMappingGlyphGraph& graph);
+		
+		void AddLink(const SynGlyphX::Link& link);
+		void SetLink(unsigned int position, const SynGlyphX::Link& link);
 
 		void SetBaseObject(unsigned int position, const BaseImage& baseImage);
 		void AddBaseObject(const BaseImage& baseImage);
 
+		void SetLegend(unsigned int position, const Legend& legend);
+		void AddLegend(const Legend& legend);
+
 		boost::uuids::uuid AddFileDatasource(const FileDatasource& datasource);
+		boost::uuids::uuid AddDatabaseServer(const DatabaseServerDatasource& datasource);
 
 		//void SetInputField(const boost::uuids::uuid& treeID, DataMappingGlyphGraph::const_iterator& node, DataMappingGlyph::MappableField field, const InputField& inputfield);
-		void SetInputField(const boost::uuids::uuid& treeID, const QModelIndex& index, DataMappingGlyph::MappableField field, const InputField& inputfield);
+		void SetInputField(const QModelIndex& index, DataMappingGlyph::MappableField field, const InputField& inputfield);
 		//void ClearInputBinding(const boost::uuids::uuid& treeID, DataMappingGlyphGraph::const_iterator& node, DataMappingGlyph::MappableField field);
-		void ClearInputBinding(const boost::uuids::uuid& treeID, const QModelIndex& index, DataMappingGlyph::MappableField field);
-		void ClearAllInputBindings(const boost::uuids::uuid& treeID, const QModelIndex& index);
+		void ClearInputBinding(const QModelIndex& index, DataMappingGlyph::MappableField field);
+		void ClearAllInputBindings(const QModelIndex& index);
 
-		void EnableTables(const boost::uuids::uuid& id, const Datasource::TableNames& tables, bool enable = true);
+		void ClearAbsentBindings(const QModelIndex& index);
+		const DataMappingGlyphGraph::InputFieldMap& GetInputFieldsForTree(const QModelIndex& index) const;
+
+		//void EnableTables(const boost::uuids::uuid& id, const Datasource::TableNames& tables, bool enable = true);
 
 		void ResetDataMappingID();
 
@@ -128,19 +148,39 @@ namespace SynGlyphX {
 		void UpdateFieldGroup(const DataTransformMapping::FieldGroupName& groupName, const FieldGroup& fieldGroup);
 		void RemoveFieldGroup(const DataTransformMapping::FieldGroupName& groupName);
 
-	protected:
-		QString GetCacheLocationForID(const boost::uuids::uuid& id);
+		const NumericFieldsByTable& GetNumericFieldsByTable() const;
+
+		const DataEngine::DataEngineConnection* GetDataEngineConnection() const;
+		void SetDataEngineConnection(DataEngine::DataEngineConnection::SharedPtr dataEngineConnection);
+
+		const TableStatsMap& GetTableStatsMap() const;
+		boost::uuids::uuid GetTreeId(const QModelIndex& index) const;
+		
+		void ChangeMapping(const DataTransformMapping& mapping);
+
+	private:
+		void Clear();
 		QVariant GetGlyphData(const QModelIndex& index) const;
 		bool IsParentlessRowInDataType(DataType type, int row) const;
 		unsigned int GetFirstIndexForDataType(DataType type) const;
 		DataType GetDataType(const QModelIndex& index) const;
 		boost::uuids::uuid GetTreeId(int row) const;
-		boost::uuids::uuid GetTreeId(const QModelIndex& index) const;
 		boost::uuids::uuid GetDatasourceId(int row) const;
 		const DataTransformMapping::FieldGroupName& GetFieldGroupName(int row) const;
 		void RemoveFieldGroup(const DataTransformMapping::FieldGroupName& groupName, bool emitGlyphDataChanged);
+		void RemoveAllAdditionalData(const boost::uuids::uuid& datasourceId);
+		void AddDatasourceInfoFromDataEngine(const boost::uuids::uuid& datasourceId, const Datasource::SharedPtr datasource);
+		void ConnectToDatabase(const QString& url, const QString& username, const QString& password, const QString& db_type);
+		QStringList GetChosenTables(const QString& schema, const Datasource::TableNames& tables);
+		void GenerateStats(const InputTable inputTable, int i, const QString& sourceTypeString);
+		void CreateAdditionalData();
 
 		DataTransformMapping::SharedPtr m_dataMapping;
+		DataEngine::DataEngineConnection::SharedPtr m_dataEngineConnection;
+
+		//Additional data from datasources
+		NumericFieldsByTable m_numericFields;
+		TableStatsMap m_tableStatsMap;
 	};
 
 } //namespace SynGlyphX
@@ -151,4 +191,4 @@ Q_DECLARE_METATYPE(SynGlyphX::TextMappingProperty)
 Q_DECLARE_METATYPE(SynGlyphX::GeometryShapeMappingProperty)
 Q_DECLARE_METATYPE(SynGlyphX::VirtualTopologyMappingProperty)
 
-#endif // SYNGLYPHX_DATATRANSFORMMODEL_H
+#endif // DATATRANSFORMMODEL_H

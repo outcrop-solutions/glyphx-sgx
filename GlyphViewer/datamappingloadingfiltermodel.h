@@ -18,11 +18,11 @@
 #ifndef DATAMAPPINGLOADINGFILTERMODEL_H
 #define DATAMAPPINGLOADINGFILTERMODEL_H
 
-#include "datamappingmodel.h"
+#include "DataTransformModel.h"
 #include "filteringparameters.h"
 #include "inputtable.h"
 
-class DataMappingLoadingFilterModel : public SynGlyphX::DataMappingModel
+class DataMappingLoadingFilterModel : public SynGlyphX::DataTransformModel
 {
 	Q_OBJECT
 

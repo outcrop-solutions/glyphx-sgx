@@ -47,6 +47,8 @@ namespace SynGlyphX {
 		bool DoesPlatformHaveSourceDirectory(Platform platform) const;
 		bool DoAnyPlatformsHaveSourceDirectories() const;
 
+		void CopyLogo(const QString& outputDir) const;
+
 	signals:
 		void CreatePortableVisualization(Platform platform);
 

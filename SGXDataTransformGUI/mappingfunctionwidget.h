@@ -15,47 +15,62 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef BINDINGLINEEDIT_H
-#define BINDINGLINEEDIT_H
+#ifndef MAPPINGFUNCTIONWIDGET_H
+#define MAPPINGFUNCTIONWIDGET_H
 
-#include <QtWidgets/QLineEdit>
-#include "inputbinding.h"
-#include "glyphrolestablemodel.h"
+#include "sgxdatatransformgui_global.h"
+#include <QtWidgets/QWidget>
+#include <QtWidgets/QComboBox>
+#include <QtWidgets/QPushButton>
 #include "datamappingfunction.h"
-#include "inputfieldmimedata.h"
+#include "glyphrolestablemodel.h"
 
-class BindingLineEdit : public QWidget
+class SGXDATATRANSFORMGUI_EXPORT MappingFunctionWidget : public QWidget
 {
 	Q_OBJECT
-	Q_PROPERTY(SynGlyphX::InputField value READ GetInputField WRITE SetInputField USER true)
+	Q_PROPERTY(QString function READ GetFunction WRITE SetFunction USER true)
 
 public:
-	BindingLineEdit(const GlyphRolesTableModel* model, QWidget *parent = 0, SynGlyphX::MappingFunctionData::Input acceptedInputTypes = SynGlyphX::MappingFunctionData::Input::All);
-	~BindingLineEdit();
+	enum KeyType {
+		Numeric,
+		Color,
+		GeometryShape,
+		VirtualTopology
+	};
 
-	const SynGlyphX::InputField& GetInputField() const;
-	bool OnlyAcceptsNumericField() const;
+	MappingFunctionWidget(KeyType keyType, GlyphRolesTableModel* model, int row, QWidget *parent);
+	~MappingFunctionWidget();
 
-public slots:
-	void SetInputField(const SynGlyphX::InputField& inputfield);
-	void Clear();
-	void SetAcceptedInputTypes(SynGlyphX::MappingFunctionData::Input acceptedInputTypes);
+	QString GetFunction() const;
+
+	void SetDialogOutputMinMax(double min, double max);
 
 signals:
-	void ValueChanged(SynGlyphX::InputField);
-	void ValueChangedByUser(SynGlyphX::InputField);
+	void SupportedInputChanged(SynGlyphX::MappingFunctionData::Input supportedInput);
+	void FunctionChanged();
 
-protected:
-	virtual void dragEnterEvent(QDragEnterEvent* event);
-	virtual void dropEvent(QDropEvent* event);
-	virtual void contextMenuEvent(QContextMenuEvent* event);
+public slots:
+	void SetFunction(const QString& function);
+
+private slots:
+	void OnFunctionComboBoxChangedByUser();
+	void OnEditPropertiesClicked();
 
 private:
-	const GlyphRolesTableModel* m_model;
-	SynGlyphX::InputField m_inputField;
-	SynGlyphX::MappingFunctionData::Input m_acceptedInputTypes;
-	QAction* m_clearAction;
-	QLineEdit* m_lineEdit;
+	void OnFunctionComboBoxChanged(bool emitInputChange);
+	static QStringList CreateNumericColorFunctionList();
+	static QStringList CreateEnumerationFunctionList();
+
+	QComboBox* m_functionComboBox;
+	QPushButton* m_editPropertiesButton;
+	GlyphRolesTableModel* m_model;
+	int m_row;
+	double m_dialogOutputMin;
+	double m_dialogOutputMax;
+	KeyType m_keyType;
+
+	static const QStringList s_numericColorFunctions;
+	static const QStringList s_enumerationFunctions;
 };
 
-#endif // BINDINGLINEEDIT_H
+#endif // MAPPINGFUNCTIONWIDGET_H

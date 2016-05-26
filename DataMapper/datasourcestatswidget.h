@@ -34,7 +34,7 @@ class DataSourceStatsWidget : public QTabWidget
 	Q_OBJECT
 
 public:
-	DataSourceStatsWidget(DataTransformModel* dataTransformModel, QWidget *parent = 0);
+	DataSourceStatsWidget(SynGlyphX::DataTransformModel* dataTransformModel, QWidget *parent = 0);
 	~DataSourceStatsWidget();
 
 	virtual QSize sizeHint() const;
@@ -50,11 +50,11 @@ private slots:
 	void OnRowsRemovedFromModel(const QModelIndex& parent, int start, int end);
 
 private:
-	void CreateTablesFromDatasource(const boost::uuids::uuid& id, const QString& formattedDatasourceName, const QString& tableName);
-	void CreateTableView(DataStatsModel* model, const QString& tabName, const QString& id);
+	void CreateTablesFromDatasource(const SynGlyphX::InputTable& inputTable, const QString& formattedDatasourceName);
+	void CreateTableView(SynGlyphX::DataStatsModel* model, const QString& tabName, const QString& id);
 	void RemoveTableViews(const QString& name = QString());
 
-	DataTransformModel* m_model;
+	SynGlyphX::DataTransformModel* m_model;
 	DataEngine::DataEngineConnection::SharedPtr m_dataEngineConnection;
 };
 

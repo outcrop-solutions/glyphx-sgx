@@ -6,7 +6,7 @@
 #include <QtWidgets/QMessageBox>
 #include <QtWidgets/QScrollBar>
 
-FieldGroupWidget::FieldGroupWidget(DataTransformModel* dataTransformModel, QWidget *parent)
+FieldGroupWidget::FieldGroupWidget(SynGlyphX::DataTransformModel* dataTransformModel, QWidget *parent)
 	: QWidget(parent),
 	m_dataTransformModel(dataTransformModel)
 {

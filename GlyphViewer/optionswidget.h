@@ -48,6 +48,7 @@ private:
 	void CreateUITab(const GlyphViewerOptions& options);
 
 	SynGlyphX::BrowseLineEdit* m_cacheDirectoryWidget;
+	
 	QCheckBox* m_hideSelectedGlyphsCheckbox;
 
 #ifdef USE_ZSPACE
@@ -55,6 +56,8 @@ private:
 #endif
 
 	QCheckBox* m_showDownloadedImageErrorMessages;
+	
+	QCheckBox* m_showHUDAxisInfoObjectCheckBox;
 	QComboBox* m_axisObjectLocationComboBox;
 };
 

@@ -9,14 +9,14 @@
 #include "minmaxglyphtreemodel.h"
 #include "glyphoptionswidget.h"
 
-GlyphTreesView::GlyphTreesView(DataTransformModel* sourceModel, QWidget *parent)
+GlyphTreesView::GlyphTreesView(SynGlyphX::DataTransformModel* sourceModel, QWidget *parent)
 	: SynGlyphX::TreeEditView(parent),
 	m_sourceModel(sourceModel)
 {
 	SynGlyphX::IntRoleDataFilterProxyModel* filterModel = new SynGlyphX::IntRoleDataFilterProxyModel(this);
-	filterModel->setFilterRole(DataTransformModel::DataTypeRole);
+	filterModel->setFilterRole(SynGlyphX::DataTransformModel::DataTypeRole);
 	filterModel->setSourceModel(m_sourceModel);
-	filterModel->SetFilterData(DataTransformModel::DataType::GlyphTrees);
+	filterModel->SetFilterData(SynGlyphX::DataTransformModel::DataType::GlyphTrees);
 	setModel(filterModel);
 
 	setDragEnabled(true);
@@ -209,13 +209,13 @@ void GlyphTreesView::ChangeOptions() {
 	QModelIndex index = selectedItems.back();
 
 	GlyphOptionsWidget* glyphOptionsWidget = new GlyphOptionsWidget(this);
-	glyphOptionsWidget->SetMergeRoots(model()->data(index, DataTransformModel::OptionsRole).toBool());
+	glyphOptionsWidget->SetMergeRoots(model()->data(index, SynGlyphX::DataTransformModel::OptionsRole).toBool());
 
 	SynGlyphX::SingleWidgetDialog dialog(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, glyphOptionsWidget, this);
 	dialog.setWindowTitle(tr("Glyph Options"));
 	if (dialog.exec() == QDialog::Accepted) {
 
-		model()->setData(index, glyphOptionsWidget->GetMergeRoots(), DataTransformModel::OptionsRole);
+		model()->setData(index, glyphOptionsWidget->GetMergeRoots(), SynGlyphX::DataTransformModel::OptionsRole);
 	}
 }
 

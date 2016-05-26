@@ -15,45 +15,46 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef FIELDGROUPMODEL_H
-#define FIELDGROUPMODEL_H
+#ifndef DATASTATSMODEL_H
+#define DATASTATSMODEL_H
 
+#include "sgxdatatransformgui_global.h"
 #include <QtCore/QAbstractTableModel>
-#include "inputfield.h"
-#include "datatransformmodel.h"
-#include <vector>
-#include "utilitytypes.h"
+#include <QtSql/QSqlQuery>
+#include <boost/uuid/uuid.hpp>
+#include "dataengineconnection.h"
+#include "inputtable.h"
 
-class FieldGroupModel : public QAbstractTableModel
-{
-	Q_OBJECT
+namespace SynGlyphX {
 
-public:
-	FieldGroupModel(QObject *parent);
-	~FieldGroupModel();
+	class SGXDATATRANSFORMGUI_EXPORT DataStatsModel : public QAbstractTableModel
+	{
+		Q_OBJECT
 
-	virtual Qt::ItemFlags flags(const QModelIndex& index) const;
-	virtual int rowCount(const QModelIndex& parent = QModelIndex()) const;
-	virtual int columnCount(const QModelIndex& parent = QModelIndex()) const;
-	virtual QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const;
-	virtual bool setData(const QModelIndex& index, const QVariant& value, int role = Qt::EditRole);
-	virtual QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
+	public:
+		typedef QList<QStringList> TableStats;
 
-	void SetCheckedItems(const SynGlyphX::FieldGroup& fieldGroup);
-	void UncheckAllItems();
+		DataStatsModel(const SynGlyphX::InputTable& table, const TableStats& tableStats, QObject *parent = 0);
+		~DataStatsModel();
 
-	void ResetTable(DataTransformModel* model);
-	const SynGlyphX::FieldGroup& GetCheckedItems() const;
+		virtual int rowCount(const QModelIndex& parent = QModelIndex()) const;
+		virtual int columnCount(const QModelIndex& parent = QModelIndex()) const;
+		virtual QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const;
+		virtual QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
 
-	SynGlyphX::AllSomeNone AreFieldsChecked() const;
+		virtual Qt::ItemFlags flags(const QModelIndex & index) const;
+		virtual QStringList mimeTypes() const;
+		virtual QMimeData* mimeData(const QModelIndexList& indexes) const;
 
-private:
-	SynGlyphX::InputField GetInputFieldForRow(int row) const;
-	unsigned int GetTableForRow(int row) const;
+	private:
+		//void GenerateStats(const boost::uuids::uuid& databaseId, const QString& tableName, QString filename, DataEngine::DataEngineConnection &dec);
+		//void GenerateStats(DataEngine::DataEngineConnection *dec);
 
-	SynGlyphX::FieldGroup m_checkedItems;
-	DataTransformModel* m_dataTransformModel;
-	std::vector<unsigned int> m_countOfFieldsPerTable;
-};
+		QList<QVariant::Type> m_fieldTypes;
+		SynGlyphX::InputTable m_table;
+		TableStats m_stats;
+	};
 
-#endif // FIELDGROUPMODEL_H
+} //namespace SynGlyphX
+
+#endif // DATASTATSMODEL_H
