@@ -59,6 +59,7 @@ SET(SRC_ALL 	antzimportdialog.cpp
 				main.cpp
 				multitableelasticlistswidget.cpp
 				optionswidget.cpp
+				remapdialog.cpp
 				pseudotimefilterwidget.cpp
 				singletableelasticlistswidget.cpp
 				selectedsourcedatawidget.cpp

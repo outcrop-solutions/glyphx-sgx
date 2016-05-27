@@ -10,14 +10,24 @@ INCLUDE_DIRECTORIES(BEFORE  ${Boost_INCLUDE_DIRS}
 							../../Core/SGXDataTransform
 							../../Core/SGXDataMapping
 							../../DataEngine/DataEngine
+							../../ANTzPlus/ANTzBridge
 							${JAVA_INCLUDE_DIRS})
 
 SET(SRC_ALL 	changedatasourcefiledialog.cpp
 				changeimagefiledialog.cpp
-				datamappingmodel.cpp
 				datasourceinfowidget.cpp
+				datatransformmodel.cpp
+				datastatsmodel.cpp
 				databaseserverinfowidget.cpp
 				legenddialog.cpp
+				fieldgroupmodel.cpp
+				fieldgroupwidget.cpp
+				glyphrolestablemodel.cpp
+				inputfieldmimedata.cpp
+				interpolationmappingdialog.cpp
+				mappingfunctionwidget.cpp
+				bindinglineedit.cpp
+				valuemappingdialog.cpp
 				singlenumericrangefilterwidget.cpp
 				portablevisualizationexport.cpp
 				valuemappingrangewidget.cpp)
@@ -31,6 +41,7 @@ TARGET_LINK_LIBRARIES(SGXDataTransformGUI ${Boost_LIBRARIES}
 							  Qt5::Network
 							  Qt5::Widgets 
 							  Qt5::Sql
+							  ANTzBridge
 							  DataEngine
 							  SGXImage 
 							  SGXUtility 

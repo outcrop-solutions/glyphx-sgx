@@ -35,31 +35,20 @@ SET(SRC_ALL adddatabaseserverwizard.cpp
 			addfiledatasourcewizard.cpp
 			baseimagedialog.cpp
 			baseobjectlistview.cpp
-			bindinglineedit.cpp
 			databindingtableswidget.cpp
 			datamapperwindow.cpp
 			datamapping3dwidget.cpp
 			datasourcestatswidget.cpp
 			datasourcesview.cpp
-			datastatsmodel.cpp
-			datatransformmodel.cpp
-			fieldgroupmodel.cpp
-			fieldgroupwidget.cpp
 			glyphoptionswidget.cpp
-			glyphrolessubsettablewidget.cpp
-			glyphrolestablemodel.cpp
 			glyphtagview.cpp
 			glyphtreesview.cpp
-			inputfieldmimedata.cpp
-			interpolationmappingdialog.cpp
 			legendlistview.cpp
 			linksdialog.cpp
 			linkslistview.cpp
 			main.cpp
-			mappingfunctionwidget.cpp
 			newmappingdefaultswidget.cpp
-			tablechoicewidget.cpp
-			valuemappingdialog.cpp)
+			tablechoicewidget.cpp)
 				
 #SET(RESOURCES_SRC datamapperwindow.qrc)
 IF (${WIN32})
