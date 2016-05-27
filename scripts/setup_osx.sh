@@ -123,6 +123,9 @@ if [ $app = GlyphViewer ] || [ $app = DataMapper ]; then
 	cp ../tools/vc120redist/*.dll ../../cmake/bin/OSX64/$build/$app.app/Contents/MacOS/ANTzzSpaceTemplate
 fi
 
+echo Copying icon into app bundle...
+cp ../../Misc/synglyphx_x.icns ../../cmake/bin/OSX64/$build/$app.app/Contents/Resources
+
 # Todo: shouldn't be needed. Figure out why this is deployed here in the first place...
 echo Cleaning up executable path...
 rm -f ../../cmake/bin/OSX64/$build/*.jar
