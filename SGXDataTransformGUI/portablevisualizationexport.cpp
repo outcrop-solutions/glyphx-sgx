@@ -71,7 +71,6 @@ namespace SynGlyphX {
 	}
 
 	void PortableVisualizationExport::AddSourceDirectoryToPlatformIfItExists(Platform platform, const QString& directoryName) {
-
 		if (DoesSourceDirectoryExist(directoryName)) {
 
 			m_sourceDirectories[platform] = directoryName;
@@ -86,19 +85,24 @@ namespace SynGlyphX {
 			return false;
 		}
 
+        if (!baseSourceDir.exists("usr")) {
+            
+            baseSourceDir.mkdir("usr");
+        }
+        
 		if (!baseSourceDir.cd("usr")) {
 
-			return false;
+            return false;
 		}
 
 		if (!baseSourceDir.exists("csv")) {
 
-			return false;
+            baseSourceDir.mkdir("csv");
 		}
 
 		if (!baseSourceDir.exists("images")) {
 
-			return false;
+            baseSourceDir.mkdir("images");
 		}
 
 		return true;
