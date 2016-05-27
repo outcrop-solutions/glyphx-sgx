@@ -116,6 +116,4 @@ namespace SynGlyphX {
 		m_function.ExportToPropertyTree(rootPropertyTree);
 		return rootPropertyTree;
 	}
-	
-
 }
