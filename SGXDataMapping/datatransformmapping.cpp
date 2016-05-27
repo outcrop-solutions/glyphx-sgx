@@ -230,7 +230,7 @@ namespace SynGlyphX {
 
 				if (linksPropertyTree.first == L"Link") {
 
-					m_links.emplace_back(Link(linksPropertyTree.second));
+					m_links.emplace_back(linksPropertyTree.second);
 				}
 			}
 		}
