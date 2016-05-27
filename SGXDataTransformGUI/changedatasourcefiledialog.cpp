@@ -69,7 +69,10 @@ namespace SynGlyphX {
 
 		for (int i = 0; i < datasources.size(); ++i) {
 
-			std::wstring newpath = Filesystem::IsFileInDirectory(mapping->GetDatasources().at(datasources[i])->GetFormattedName(), stdDir);
+            std::wstring name = mapping->GetDatasources().at(datasources[i])->GetFormattedName();
+            std::replace(name.begin(), name.end(), L'\\', L'/');      // forward slash supported on all platforms
+            
+			std::wstring newpath = Filesystem::IsFileInDirectory(name, stdDir);
 			if (newpath.empty()) {
 
 				QString acceptButtonText = tr("Next");

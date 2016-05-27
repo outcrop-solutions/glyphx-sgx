@@ -90,8 +90,10 @@ namespace SynGlyphX {
 		for (unsigned int index : legends) {
 
 			const Legend& legend = mapping->GetLegends()[index];
+            std::wstring name = legend.GetFilename();
+            std::replace(name.begin(), name.end(), L'\\', L'/');      // forward slash supported on all platforms
 
-			std::wstring newLegendFilename = Filesystem::IsFileInDirectory(legend.GetFilename(), sdtDir);
+			std::wstring newLegendFilename = Filesystem::IsFileInDirectory(name, sdtDir);
 			if (!newLegendFilename.empty()) {
 
 				Legend newLegend = mapping->GetLegends()[index];
