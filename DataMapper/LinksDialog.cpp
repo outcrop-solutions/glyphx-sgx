@@ -1,4 +1,5 @@
 #include "LinksDialog.h"
+#include "Link.h"
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QLabel>
@@ -6,7 +7,219 @@
 #include <QtWidgets/QMessageBox>
 #include <QtWidgets/QGroupBox>
 #include <QtGui/QDragEnterEvent>
+#include <QtWidgets/QTableWidget>
+#include <QtWidgets/QHeaderView>
 #include "roledatafilterproxymodel.h"
+
+static void print_tree(boost::property_tree::wptree const& pt)
+{
+	using boost::property_tree::wptree;
+	wptree::const_iterator end = pt.end();
+	for (wptree::const_iterator it = pt.begin(); it != end; ++it) {
+		std::wstringstream ss;
+		ss << it->first << ": " << it->second.get_value<std::wstring>() << std::endl;
+		OutputDebugStringW(ss.str().c_str());
+		print_tree(it->second);
+	}
+}
+
+class FunctionDialog : public QDialog {
+	Q_OBJECT
+	enum class Type //matches combobox order
+	{
+		MatchValue = 0, //should not launch this dialog
+		KeyToValue = 1,
+		KeyToRange = 2,
+		//////////
+		NFunctions
+	};
+public:
+	FunctionDialog(const boost::property_tree::wptree& propertyTree, LinksDialog *parent) :
+		QDialog(parent),
+		m_table(nullptr)
+	{
+		//print_tree(propertyTree);
+		m_type = (Type)parent->m_functionComboBox->currentIndex();
+
+		setWindowTitle(tr("Edit Function Properties"));
+		//QHBoxLayout* defaultLayout = new QHBoxLayout(this);
+		m_table = new QTableWidget(this);
+		if (m_type == Type::KeyToValue)
+			m_table->setColumnCount(2);
+		else if (m_type == Type::KeyToRange)
+			m_table->setColumnCount(3);
+
+		QVBoxLayout* layout = new QVBoxLayout(this);
+		//layout->addLayout(defaultLayout);
+		QStringList headers;
+		if (m_type == Type::KeyToValue)
+			headers << "Key" << "Value";
+		else if (m_type == Type::KeyToRange)
+			headers << "Key" << "Min" << "Max";
+		m_table->setHorizontalHeaderLabels(headers);
+		m_table->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+		m_table->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+		m_table->setSelectionMode(QAbstractItemView::SingleSelection);
+		m_table->setSelectionBehavior(QAbstractItemView::SelectRows);
+		m_table->sortByColumn(0, Qt::SortOrder::AscendingOrder);
+		m_table->setSortingEnabled(true);
+		QObject::connect(m_table, &QTableWidget::itemSelectionChanged, this, &FunctionDialog::OnTableSelectionChanged);
+		layout->addWidget(m_table);
+
+		QHBoxLayout* buttonLayout = new QHBoxLayout(this);
+
+		m_removeEntryButton = new QPushButton(tr("Remove"), this);
+		QObject::connect(m_removeEntryButton, &QPushButton::clicked, this, &FunctionDialog::OnRemoveEntry);
+		buttonLayout->addWidget(m_removeEntryButton);
+
+		//QPushButton* clearAllButton = new QPushButton(tr("ClearAll"), this);
+		//QObject::connect(clearAllButton, &QPushButton::clicked, this, &FunctionDialog::OnClearAllKeyValues);
+		//buttonLayout->addWidget(clearAllButton);
+		buttonLayout->addStretch(1);
+		layout->addLayout(buttonLayout);
+
+		QString groupBoxName;
+		if (m_type == Type::KeyToValue) {
+
+			groupBoxName = tr("New Key to Value entry");
+		}
+		else {
+
+			groupBoxName = tr("New Key to Range entry");
+		}
+		QGroupBox* inputGroupBox = new QGroupBox(groupBoxName, this);
+		QHBoxLayout* inputLayout = new QHBoxLayout(inputGroupBox);
+
+		inputLayout->addWidget(new QLabel(tr("Key:")));
+		m_keyEdit = new QLineEdit(this);
+		inputLayout->addWidget(m_keyEdit);
+		m_valueEdit = new QLineEdit(this);
+		if (m_type == Type::KeyToValue) {
+			inputLayout->addWidget(new QLabel(tr("Value:")));
+			inputLayout->addWidget(m_valueEdit);
+		}
+		else {
+			inputLayout->addWidget(new QLabel(tr("Range:")));
+			inputLayout->addWidget(m_valueEdit);
+			m_rangeEdit = new QLineEdit(this);
+			inputLayout->addWidget(m_rangeEdit);
+		}
+
+		QPushButton* addEntryButton = new QPushButton(tr("Add"), this);
+		QObject::connect(addEntryButton, &QPushButton::clicked, this, &FunctionDialog::OnAddEntry);
+		inputLayout->addWidget(addEntryButton);
+
+		inputGroupBox->setLayout(inputLayout);
+		layout->addWidget(inputGroupBox);
+
+		QDialogButtonBox* dialogButtonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, this);
+		layout->addWidget(dialogButtonBox);
+		QObject::connect(dialogButtonBox, &QDialogButtonBox::accepted, this, &FunctionDialog::accept);
+		QObject::connect(dialogButtonBox, &QDialogButtonBox::rejected, this, &FunctionDialog::reject);
+
+		setLayout(layout);
+		auto type = propertyTree.get_optional<std::wstring>(L"<xmlattr>.type");
+		if (type.is_initialized() && type == parent->m_functionComboBox->currentText().toStdWString())
+			(PopulateFromTree(propertyTree));
+	}
+
+	Type m_type;
+	QPushButton*  m_removeEntryButton;
+	QLineEdit* m_keyEdit;
+	QLineEdit* m_valueEdit;
+	QLineEdit* m_rangeEdit;
+	QTableWidget* m_table;
+signals:
+	public slots :
+		void OnTableSelectionChanged() {
+
+	}
+	void OnRemoveEntry() {
+		int row = m_table->currentRow();
+		m_table->removeRow(row);
+	}
+	void OnAddEntry() {
+		AddRow();
+		int row = m_table->rowCount() - 1;
+		dynamic_cast<QLineEdit*>(m_table->cellWidget(row, 0))->setText(m_keyEdit->text());
+		dynamic_cast<QLineEdit*>(m_table->cellWidget(row, 1))->setText(m_valueEdit->text());
+		if (m_type == Type::KeyToRange)
+			dynamic_cast<QLineEdit*>(m_table->cellWidget(row, 2))->setText(m_rangeEdit->text());
+	}
+	void AddRow() {
+
+		int row = m_table->rowCount();
+		m_table->insertRow(row);
+		for (int i = 0; i < m_table->columnCount(); ++i){
+			QWidget* inputWidget = new QLineEdit(this);
+
+			inputWidget->setContentsMargins(0, 0, 0, 0);
+			m_table->setCellWidget(row, i, inputWidget);
+		}
+	}
+
+	void GetPropertyTree(boost::property_tree::wptree* tree) {
+		tree->clear();
+		for (int row = 0; row < m_table->rowCount(); ++row) {
+			QString key = dynamic_cast<QLineEdit*>(m_table->cellWidget(row, 0))->text();
+			QString value = dynamic_cast<QLineEdit*>(m_table->cellWidget(row, 1))->text();
+			boost::property_tree::wptree& entry = tree->add(L"Pair", L"");
+			entry.put(L"<xmlattr>.key", key.toStdWString());
+			if (m_type == Type::KeyToValue)
+				entry.put(L"<xmlattr>.value", value.toStdWString());
+			else if (m_type == Type::KeyToRange) {
+				entry.put(L"<xmlattr>.min", value.toStdWString());
+				QString range = dynamic_cast<QLineEdit*>(m_table->cellWidget(row, 2))->text();
+				entry.put(L"<xmlattr>.max", range.toStdWString());
+			}
+		}
+	}
+	void PopulateFromTree(const boost::property_tree::wptree& propertyTree) {
+		//print_tree(propertyTree);
+		for (const auto& func : propertyTree) {
+			if (func.first == L"Pair") {
+
+				AddRow();
+				int row = m_table->rowCount() - 1;
+
+				dynamic_cast<QLineEdit*>(m_table->cellWidget(row, 0))->setText(QString::fromStdWString(func.second.get<std::wstring>(L"<xmlattr>.key")));
+
+				if (m_type == Type::KeyToValue) {
+					dynamic_cast<QLineEdit*>(m_table->cellWidget(row, 1))->setText(QString::fromStdWString(func.second.get<std::wstring>(L"<xmlattr>.value")));
+				}
+				else if (m_type == Type::KeyToRange) {
+					dynamic_cast<QLineEdit*>(m_table->cellWidget(row, 1))->setText(QString::fromStdWString(func.second.get<std::wstring>(L"<xmlattr>.min")));
+					dynamic_cast<QLineEdit*>(m_table->cellWidget(row, 2))->setText(QString::fromStdWString(func.second.get<std::wstring>(L"<xmlattr>.max")));
+				}
+			}
+		}
+	}
+	bool Validate() {
+		if (m_table->rowCount() == 0) {
+			QMessageBox::warning(this, tr("Function properties Error"), tr("Function must have at least one Key"));
+			return false;
+		}
+		if (m_type == Type::KeyToRange) {
+
+			for (int row = 0; row < m_table->rowCount(); ++row) {
+				bool okMin, okMax;
+				double min = dynamic_cast<QLineEdit*>(m_table->cellWidget(row, 1))->text().toDouble(&okMin);
+				double max = dynamic_cast<QLineEdit*>(m_table->cellWidget(row, 2))->text().toDouble(&okMax);
+				if (!(okMin && okMax && min <= max)) {
+					QMessageBox::warning(this, tr("Row %n Error", 0, row), tr("Min and max must be numbers, with min less or equal max"));
+					return false;
+				}
+			}
+		}
+
+		return true;
+
+	}
+	virtual void accept() {
+		if (Validate())
+			return QDialog::accept();
+	}
+};
 
 LinkLineEdit::LinkLineEdit(DataTransformModel* dataTransformModel, QWidget *parent) : QLineEdit(parent),
 m_dataTransformModel(dataTransformModel)
@@ -52,14 +265,6 @@ void LinkLineEdit::dropEvent(QDropEvent* event) {
 		SetInputField(mimeData->GetInputField());
 	}
 }
-
-class FunctionDialog : public QDialog {
-
-	Q_OBJECT
-public:
-	FunctionDialog()
-
-};
 
 LinksDialog::LinksDialog(DataTransformModel* dataTransformModel, GlyphRolesTableModel* glyphRolesTableModel, QWidget *parent)
 	: QDialog(parent),
@@ -143,10 +348,12 @@ LinksDialog::LinksDialog(DataTransformModel* dataTransformModel, GlyphRolesTable
 			m_functionPushButton->setDisabled(true);
 		else
 			m_functionPushButton->setDisabled(false);
+		// clear function properties on change. Maybe we need worning dialog here, but it will be annoying 
+		m_link.m_function.m_propertyTree.clear();
 	});
+	QObject::connect(m_functionPushButton, &QPushButton::clicked, this, &LinksDialog::OnFunctionProperties);
 
 	mainLayout->addWidget(functionGroupBox);
-
 
 
 	QDialogButtonBox* dialogButtonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, this);	
@@ -180,13 +387,20 @@ const SynGlyphX::Link& LinksDialog::GetLink() {
 }
 
 void LinksDialog::SetLink(const SynGlyphX::Link& link) {
-	
+
 	m_nameLineEdit->setText(QString::fromStdWString(link.m_name));
 	m_colorButton->SetColor(QColor(link.m_color.m_r, link.m_color.m_g, link.m_color.m_b));
 	m_transparensySpinBox->setValue(link.m_color.m_alpha);
 	m_inheritColorCheckBox->setChecked(m_link.m_color.m_inheritfromParent);
 	SetNode(link.m_start, m_fromGlyphTree, m_fromLineEdit);
-	SetNode(link.m_end, m_toGlyphTree, m_toLineEdit);
+	SetNode(link.m_end, m_toGlyphTree, m_toLineEdit);	
+	const auto& type = link.m_function.m_propertyTree.get_optional<std::wstring>(L"<xmlattr>.type");
+	if (type.is_initialized()) {
+		QString typeStr = QString::fromStdWString(type.get());
+		m_functionComboBox->setCurrentText(QString::fromStdWString(type.get()));
+	}
+	m_link.m_function = link.m_function;
+	//print_tree(link.m_function.m_propertyTree);
 
 }
 
@@ -268,6 +482,16 @@ bool LinksDialog::Validate() {
 	return true;
 }
 
+void LinksDialog::OnFunctionProperties() {
+	//print_tree(m_link.m_function.m_propertyTree);
+	m_link.m_function.m_propertyTree.put(L"<xmlattr>.type", m_functionComboBox->currentText().toStdWString());
+	FunctionDialog dialog(m_link.m_function.m_propertyTree, this);
+	if (dialog.exec() == QDialog::Accepted) {
+		dialog.GetPropertyTree(&m_link.m_function.m_propertyTree);
+	}
+
+}
+
 LinksDialog::~LinksDialog() {
 	delete m_fromGlyphTree;
 	delete m_toGlyphTree;
@@ -277,3 +501,5 @@ void LinksDialog::accept() {
 	if (Validate())
 		QDialog::accept();
 }
+
+#include "LinksDialog.moc" //this is nesseasary to because there is no .h file for FunctionDialog 

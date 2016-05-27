@@ -36,6 +36,9 @@
 #include "downloadexception.h"
 #include "legenddialog.h"
 
+#include "LinksListView.h"
+#include "LinksDialog.h"
+
 DataMapperWindow::DataMapperWindow(QWidget *parent)
     : SynGlyphX::MainWindow(0, parent),
 	m_baseObjectsView(nullptr),
