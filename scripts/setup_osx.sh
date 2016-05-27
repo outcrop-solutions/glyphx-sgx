@@ -107,6 +107,15 @@ cp -R ../../DataEngine/Java\ DataEngine/libsqlite4java-osx.dylib ../../cmake/bin
 echo Deploying installation files...
 cp -R ../../Misc/InstallerFiles/* ../../cmake/bin/OSX64/$build/$app.app/Contents/MacOS
 
+if [ $app = GlyphViewer ] || [ $app = DataMapper ]; then
+	echo Deploying ANTz Templates to $app app bundle...
+	cp -R ../../ANTzPlus/ANTzMacTemplate ../../cmake/bin/OSX64/$build/$app.app/Contents/MacOS
+	cp -R ../../ANTzPlus/ANTzTemplate ../../cmake/bin/OSX64/$build/$app.app/Contents/MacOS
+	cp -R ../../ANTzPlus/ANTzzSpaceTemplate ../../cmake/bin/OSX64/$build/$app.app/Contents/MacOS
+	cp ../tools/vc120redist/*.dll ../../cmake/bin/OSX64/$build/$app.app/Contents/MacOS/ANTzTemplate
+	cp ../tools/vc120redist/*.dll ../../cmake/bin/OSX64/$build/$app.app/Contents/MacOS/ANTzzSpaceTemplate
+fi
+
 # Todo: shouldn't be needed. Figure out why this is deployed here in the first place...
 echo Cleaning up executable path...
 rm -f ../../cmake/bin/OSX64/$build/*.jar
