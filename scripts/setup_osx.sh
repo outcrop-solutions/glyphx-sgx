@@ -90,6 +90,13 @@ echo Deploying Qt...
 if [ $java = 7 ]; then
 	echo Deploying Java VM 1.7.0_79...
 	cp -R /Library/Java/JavaVirtualMachines/jdk1.7.0_79.jdk ../../cmake/bin/OSX64/$build/$app.app/Contents/Frameworks
+	echo Cleaning up unneeded Java files...
+	rm -rf ../../cmake/bin/OSX64/$build/$app.app/Contents/Frameworks/jdk1.7.0_79.jdk/Contents/Home/src.zip
+	rm -rf ../../cmake/bin/OSX64/$build/$app.app/Contents/Frameworks/jdk1.7.0_79.jdk/Contents/Home/man
+	rm -rf ../../cmake/bin/OSX64/$build/$app.app/Contents/Frameworks/jdk1.7.0_79.jdk/Contents/Home/db
+	rm -rf ../../cmake/bin/OSX64/$build/$app.app/Contents/Frameworks/jdk1.7.0_79.jdk/Contents/Home/bin
+	rm -rf ../../cmake/bin/OSX64/$build/$app.app/Contents/Frameworks/jdk1.7.0_79.jdk/Contents/Home/lib
+	rm -rf ../../cmake/bin/OSX64/$build/$app.app/Contents/Frameworks/jdk1.7.0_79.jdk/Contents/Home/include
 fi
 
 if [ $java = 8 ]; then
