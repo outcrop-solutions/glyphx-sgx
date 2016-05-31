@@ -1,3 +1,4 @@
+#pragma once
 #ifndef GLYPHOPTIONSWIDGET_H
 #define GLYPHOPTIONSWIDGET_H
 

@@ -1,3 +1,4 @@
+#pragma once
 #ifndef NEWGLYPHTREEWIZARD_H
 #define NEWGLYPHTREEWIZARD_H
 

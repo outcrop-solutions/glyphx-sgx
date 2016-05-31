@@ -270,6 +270,9 @@
     <CustomBuild Include="GeneratedFiles\Debug\LinksDialog.moc">
       <Filter>Generated Files\Debug</Filter>
     </CustomBuild>
+    <CustomBuild Include="GeneratedFiles\Release\LinksDialog.moc">
+      <Filter>Generated Files\Release</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="DataMapper.rc" />
