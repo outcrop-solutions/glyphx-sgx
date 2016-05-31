@@ -12,14 +12,18 @@
 OptionsWidget::OptionsWidget(const GlyphViewerOptions& options, bool enableCacheOptions, QWidget *parent)
 	: QTabWidget(parent)
 {
-	CreateCacheTab(options, enableCacheOptions);
-	Create3DTab(options);
+	CreateCacheTab(enableCacheOptions);
+	Create3DTab();
 
 	m_zSpaceOptionsWidget = new SynGlyphX::ZSpaceOptionsWidget(this);
 	m_zSpaceOptionsWidget->SetOptions(options.GetZSpaceOptions());
 	addTab(m_zSpaceOptionsWidget, tr("zSpace"));
 
-	CreateUITab(options);
+	CreateUITab();
+
+	SetCacheValues(options);
+	Set3DValues(options);
+	SetUIValues(options);
 }
 
 OptionsWidget::~OptionsWidget()
@@ -27,7 +31,7 @@ OptionsWidget::~OptionsWidget()
 
 }
 
-void OptionsWidget::CreateCacheTab(const GlyphViewerOptions& options, bool enableCacheOptions) {
+void OptionsWidget::CreateCacheTab(bool enableCacheOptions) {
 
 	QWidget* tab = new QWidget(this);
 	QVBoxLayout* layout = new QVBoxLayout(tab);
@@ -35,7 +39,6 @@ void OptionsWidget::CreateCacheTab(const GlyphViewerOptions& options, bool enabl
 	m_cacheDirectoryWidget = new SynGlyphX::BrowseLineEdit(SynGlyphX::BrowseLineEdit::FileDialogType::Directory, true, tab);
 	m_cacheDirectoryWidget->setContentsMargins(4, 4, 4, 4);
 	m_cacheDirectoryWidget->setEnabled(enableCacheOptions);
-	m_cacheDirectoryWidget->SetText(options.GetCacheDirectory());
 	SynGlyphX::GroupBoxSingleWidget* cacheDirectoryGroupBox = new SynGlyphX::GroupBoxSingleWidget(tr("Cache Directory"), m_cacheDirectoryWidget, tab);
 
 	layout->addWidget(cacheDirectoryGroupBox);
@@ -60,13 +63,12 @@ void OptionsWidget::CreateCacheTab(const GlyphViewerOptions& options, bool enabl
 	addTab(tab, tr("Cache"));
 }
 
-void OptionsWidget::Create3DTab(const GlyphViewerOptions& options) {
+void OptionsWidget::Create3DTab() {
 
 	QWidget* tab = new QWidget(this);
 	QVBoxLayout* tabLayout = new QVBoxLayout(tab);
 
 	m_hideSelectedGlyphsCheckbox = new QCheckBox(tr("Filter View (Hide unselected glyph trees when there is an active selection)"), this);
-	m_hideSelectedGlyphsCheckbox->setChecked(options.GetHideUnselectedGlyphTrees());
 	tabLayout->addWidget(m_hideSelectedGlyphsCheckbox);
 
 	QHBoxLayout* hudOuterLayout = new QHBoxLayout(tab);
@@ -75,7 +77,6 @@ void OptionsWidget::Create3DTab(const GlyphViewerOptions& options) {
 	QHBoxLayout* hudAxisInfoLayout = new QHBoxLayout(tab);
 	
 	m_showHUDAxisInfoObjectCheckBox = new QCheckBox(tr("Show"), tab);
-	m_showHUDAxisInfoObjectCheckBox->setChecked(options.GetShowSceneAxisHUDObject());
 	hudAxisInfoLayout->addWidget(m_showHUDAxisInfoObjectCheckBox);
 
 	hudAxisInfoLayout->addWidget(new QLabel(tr("Location:"), tab));
@@ -88,22 +89,22 @@ void OptionsWidget::Create3DTab(const GlyphViewerOptions& options) {
 
 	hudGroupBox->setLayout(hudAxisInfoLayout);
 	hudOuterLayout->addWidget(hudGroupBox);
-	m_axisObjectLocationComboBox->setCurrentIndex(options.GetSceneAxisObjectLocation());
 
 	hudOuterLayout->addStretch(1);
 	tabLayout->addLayout(hudOuterLayout);
 
 	tab->setLayout(tabLayout);
 	addTab(tab, tr("3D"));
+
+	QObject::connect(m_showHUDAxisInfoObjectCheckBox, &QCheckBox::toggled, m_axisObjectLocationComboBox, &QComboBox::setEnabled);
 }
 
-void OptionsWidget::CreateUITab(const GlyphViewerOptions& options) {
+void OptionsWidget::CreateUITab() {
 
 	QWidget* tab = new QWidget(this);
 	QVBoxLayout* layout = new QVBoxLayout(tab);
 
 	m_showDownloadedImageErrorMessages = new QCheckBox(tr("Show an error message when an image failed to download"), this);
-	m_showDownloadedImageErrorMessages->setChecked(options.GetShowMessageWhenImagesDidNotDownload());
 	layout->addWidget(m_showDownloadedImageErrorMessages);
 
 	tab->setLayout(layout);
@@ -143,4 +144,22 @@ GlyphViewerOptions OptionsWidget::GetOptions() const {
 	options.SetShowMessageWhenImagesDidNotDownload(m_showDownloadedImageErrorMessages->isChecked());
 
 	return options;
+}
+
+void OptionsWidget::SetCacheValues(const GlyphViewerOptions& options) {
+
+	m_cacheDirectoryWidget->SetText(options.GetCacheDirectory());
+}
+
+void OptionsWidget::Set3DValues(const GlyphViewerOptions& options) {
+
+	m_hideSelectedGlyphsCheckbox->setChecked(options.GetHideUnselectedGlyphTrees());
+	m_showHUDAxisInfoObjectCheckBox->setChecked(options.GetShowSceneAxisHUDObject());
+	m_axisObjectLocationComboBox->setEnabled(options.GetShowSceneAxisHUDObject());
+	m_axisObjectLocationComboBox->setCurrentIndex(options.GetSceneAxisObjectLocation());
+}
+
+void OptionsWidget::SetUIValues(const GlyphViewerOptions& options) {
+
+	m_showDownloadedImageErrorMessages->setChecked(options.GetShowMessageWhenImagesDidNotDownload());
 }

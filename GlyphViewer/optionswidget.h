@@ -40,9 +40,13 @@ private slots:
 	void SetToDefaultCacheDirectory();
 
 private:
-	void CreateCacheTab(const GlyphViewerOptions& options, bool enableCacheOptions);
-	void Create3DTab(const GlyphViewerOptions& options);
-	void CreateUITab(const GlyphViewerOptions& options);
+	void CreateCacheTab(bool enableCacheOptions);
+	void Create3DTab();
+	void CreateUITab();
+
+	void SetCacheValues(const GlyphViewerOptions& options);
+	void Set3DValues(const GlyphViewerOptions& options);
+	void SetUIValues(const GlyphViewerOptions& options);
 
 	SynGlyphX::BrowseLineEdit* m_cacheDirectoryWidget;
 	
