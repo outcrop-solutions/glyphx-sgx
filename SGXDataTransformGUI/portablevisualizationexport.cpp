@@ -129,6 +129,11 @@ namespace SynGlyphX {
 			QFile::copy(appPath + "msvcr120.dll", destinationDir + "/msvcr120.dll");
 			QFile::copy(appPath + "vccorlib120.dll", destinationDir + "/vccorlib120.dll");
 		}
+        
+#ifdef __APPLE__
+        // On OSX the exectuable won't automatically have the execute permission bit set. Change it.
+        Filesystem::SetExecutable( destinationDir.toStdString() + "/Glyph_Viewer_(Portable)_mac" );
+#endif
 	}
 
 	void PortableVisualizationExport::CopyLogo(const QString& outputDir) const {
