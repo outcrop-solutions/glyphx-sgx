@@ -116,5 +116,11 @@ namespace SynGlyphX {
 
 		return L"";
 	}
+    
+    void Filesystem::SetExecutable(const std::string &file)
+    {
+        boost::filesystem::path path(file);
+        boost::filesystem::permissions(path, boost::filesystem::all_all);
+    }
 
 } //namespace SynGlyphX
