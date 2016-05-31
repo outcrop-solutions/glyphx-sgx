@@ -18,6 +18,7 @@
 #ifndef GLYPHROLESTABLEMODEL_H
 #define GLYPHROLESTABLEMODEL_H
 
+#include "sgxdatatransformgui_global.h"
 #include <QtCore/QAbstractTableModel>
 #include <QtGui/QFont>
 #include <QtCore/QItemSelection>
@@ -26,7 +27,7 @@
 #include "datamappingfunction.h"
 #include "nonmappablegeometryproperties.h"
 
-class GlyphRolesTableModel : public QAbstractTableModel
+class SGXDATATRANSFORMGUI_EXPORT GlyphRolesTableModel : public QAbstractTableModel
 {
 	Q_OBJECT
 
@@ -45,7 +46,7 @@ public:
 	static const unsigned int s_mappingDataColumn = 2;
 	static const unsigned int s_mappedFieldColumn = 3;
 
-	GlyphRolesTableModel(DataTransformModel* dataTransformModel, QObject *parent = nullptr);
+	GlyphRolesTableModel(SynGlyphX::DataTransformModel* dataTransformModel, QObject *parent = nullptr);
 	~GlyphRolesTableModel();
 
 	//Functions from QAbstractItemModel that need to be implemented
@@ -68,7 +69,7 @@ public:
 	//bool DoesGlyphHaveAssociatedDatasoruceTable() const;
 	//const SynGlyphX::InputTable& GetAssociatedDatasourceTable() const;
 
-	DataTransformModel* GetSourceModel() const;
+	SynGlyphX::DataTransformModel* GetSourceModel() const;
 
 public slots:
 	void SetSelectedGlyphTreeIndexes(const QModelIndexList& indexList);
@@ -112,7 +113,7 @@ private:
 
 	QStringList m_propertyHeaders;
 	QStringList m_columnHeaders;
-	DataTransformModel* m_dataTransformModel;
+	SynGlyphX::DataTransformModel* m_dataTransformModel;
 
 	bool m_isAnySelectedGlyphRoot;
 	boost::optional<SynGlyphX::InputTable> m_associatedInputTable;

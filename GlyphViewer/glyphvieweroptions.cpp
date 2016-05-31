@@ -6,6 +6,7 @@
 GlyphViewerOptions::GlyphViewerOptions() :
 	m_cacheDirectory(GetDefaultCacheDirectory()),
 	m_hideUnselectedGlyphTrees(false),
+	m_showSceneAxisHUDObject(true),
 	m_sceneAxisHUDObjectLocation(SynGlyphXANTz::ANTzForestWidget::HUDLocation::TopLeft),
 	m_showMessageWhenImagesDidNotDownload(true) {
 	
@@ -14,6 +15,7 @@ GlyphViewerOptions::GlyphViewerOptions() :
 GlyphViewerOptions::GlyphViewerOptions(const GlyphViewerOptions& options) :
 	m_cacheDirectory(options.m_cacheDirectory),
 	m_hideUnselectedGlyphTrees(options.m_hideUnselectedGlyphTrees),
+	m_showSceneAxisHUDObject(options.m_showSceneAxisHUDObject),
 	m_sceneAxisHUDObjectLocation(options.m_sceneAxisHUDObjectLocation),
 	m_zSpaceOptions(options.m_zSpaceOptions),
 	m_showMessageWhenImagesDidNotDownload(options.m_showMessageWhenImagesDidNotDownload) {
@@ -28,6 +30,7 @@ GlyphViewerOptions& GlyphViewerOptions::operator=(const GlyphViewerOptions& opti
 
 	m_cacheDirectory = options.m_cacheDirectory;
 	m_hideUnselectedGlyphTrees = options.m_hideUnselectedGlyphTrees;
+	m_showSceneAxisHUDObject = options.m_showSceneAxisHUDObject;
 	m_sceneAxisHUDObjectLocation = options.m_sceneAxisHUDObjectLocation;
 	m_zSpaceOptions = options.m_zSpaceOptions;
 	m_showMessageWhenImagesDidNotDownload = options.m_showMessageWhenImagesDidNotDownload;
@@ -43,6 +46,11 @@ bool GlyphViewerOptions::operator==(const GlyphViewerOptions& options) const {
 	}
 
 	if (m_hideUnselectedGlyphTrees != options.m_hideUnselectedGlyphTrees) {
+
+		return false;
+	}
+
+	if (m_showSceneAxisHUDObject != options.m_showSceneAxisHUDObject) {
 
 		return false;
 	}
@@ -93,6 +101,16 @@ void GlyphViewerOptions::SetHideUnselectedGlyphTrees(bool hideUnselectedGlyphTre
 bool GlyphViewerOptions::GetHideUnselectedGlyphTrees() const {
 
 	return m_hideUnselectedGlyphTrees;
+}
+
+void GlyphViewerOptions::SetShowSceneAxisHUDObject(bool show) {
+
+	m_showSceneAxisHUDObject = show;
+}
+
+bool GlyphViewerOptions::GetShowSceneAxisHUDObject() const {
+
+	return m_showSceneAxisHUDObject;
 }
 
 void GlyphViewerOptions::SetSceneAxisObjectLocation(SynGlyphXANTz::ANTzForestWidget::HUDLocation location) {

@@ -15,55 +15,41 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef FIELDGROUPWIDGET_H
-#define FIELDGROUPWIDGET_H
+#ifndef REMAPDIALOG_H
+#define REMAPDIALOG_H
 
-#include <QtWidgets/QWidget>
-#include <QtWidgets/QComboBox>
-#include "datatransformmodel.h"
-#include "fieldgroupmodel.h"
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QTableView>
-#include "checkboxheaderview.h"
+#include <QtWidgets/QDialog>
+#include "browselineedit.h"
+#include "glyphrolestablemodel.h"
+#include "datatransformmapping.h"
+#include "verticaltabordertableview.h"
+#include "dataengineconnection.h"
+#include "datastatsmodel.h"
 
-class FieldGroupWidget : public QWidget
+class RemapDialog : public QDialog
 {
 	Q_OBJECT
 
 public:
-	FieldGroupWidget(DataTransformModel* dataTransformModel, QWidget *parent);
-	~FieldGroupWidget();
+	RemapDialog(SynGlyphX::DataTransformMapping::ConstSharedPtr dataTransformMapping, DataEngine::DataEngineConnection::SharedPtr dataEngineConnection, QWidget *parent);
+	~RemapDialog();
 
-	bool CheckIfGroupNeedsToBeSaved();
+	void SetSaveFilename(const QString& saveFilename);
+	QString GetSaveFilename() const;
 
-	const QString& GetCurrentGroupName() const;
-	void SetCurrentGroupName(const QString& groupName);
+	void accept() override;
 
-private slots:
-	void OnSaveGroup();
-	void OnSaveAsGroup();
-	void OnRevertGroup();
-	void OnGroupChanged(int index);
-	void OnFieldGroupModelDataChanged(const QModelIndex& topLeft, const QModelIndex& bottomRight);
-	void OnCheckBoxHeaderViewClicked(SynGlyphX::AllSomeNone state);
-	void OnSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected);
+	SynGlyphX::DataTransformMapping::ConstSharedPtr GetNewMapping() const;
 
 private:
-	void EnableSaveAndRevertButtons(bool enable);
-	QString GetNewGroupName();
+	SynGlyphX::VerticalTabOrderTableView* CreateTableView();
+	void AddRowOfWidgets(SynGlyphX::VerticalTabOrderTableView* tableView, int modelRow, double min, double max, bool enable = true);
 
-	QComboBox* m_groupsNameComboBox;
-	QPushButton* m_saveButton;
-	QPushButton* m_saveAsButton;
-	QPushButton* m_revertButton;
+	SynGlyphX::BrowseLineEdit* m_saveFilenameEdit;
 
-	QTableView* m_fieldTableView;
-	SynGlyphX::CheckBoxHeaderView* m_fieldTableHeaderView;
-
-	FieldGroupModel* m_fieldGroupModel;
-	DataTransformModel* m_dataTransformModel;
-
-	QString m_currentGroupName;
+	GlyphRolesTableModel* m_glyphRolesModel;
+	SynGlyphX::DataTransformModel* m_dataTransformModel;
+	SynGlyphX::DataStatsModel* m_dataStatsModel;
 };
 
-#endif // FIELDGROUPWIDGET_H
+#endif // REMAPDIALOG_H

@@ -37,7 +37,7 @@ class SynGlyphX::Link;
 class LinkLineEdit : public QLineEdit
 {
 public:
-	LinkLineEdit(DataTransformModel* dataTransformModel, QWidget *parent = 0);
+	LinkLineEdit(SynGlyphX::DataTransformModel* dataTransformModel, QWidget *parent = 0);
 	virtual ~LinkLineEdit() {}
 	const SynGlyphX::InputField& GetInputField() const { return m_inputField; }
 	void SetInputField(const SynGlyphX::InputField& inputField);
@@ -46,7 +46,7 @@ protected:
 	virtual void dropEvent(QDropEvent* event);
 private:
 	SynGlyphX::InputField m_inputField;
-	DataTransformModel* m_dataTransformModel;
+	SynGlyphX::DataTransformModel* m_dataTransformModel;
 };
 
 class LinksDialog : public QDialog
@@ -55,7 +55,7 @@ class LinksDialog : public QDialog
 		friend class FunctionDialog;
 public:
 
-	LinksDialog(DataTransformModel* dataTransformModel, GlyphRolesTableModel* glyphRolesTableModel, QWidget* parent = 0);
+	LinksDialog(SynGlyphX::DataTransformModel* dataTransformModel, QWidget* parent = 0);
 	~LinksDialog();
 
 	void accept() override;
@@ -65,6 +65,7 @@ public:
 	//Set -1 for new link
 	void SetEditRow(int row);
 	int GetEditRow() { return m_row;  }
+	void Clear();
 
 private slots:
 	void OnFunctionProperties();
@@ -78,8 +79,7 @@ private:
 	LinkLineEdit* m_fromLineEdit;
 	LinkLineEdit* m_toLineEdit;
 
-	DataTransformModel* m_dataTransformModel;
-	GlyphRolesTableModel* m_glyphRolesTableModel;
+	SynGlyphX::DataTransformModel* m_dataTransformModel;
 
 	GlyphTreesView* m_fromGlyphTree;
 	GlyphTreesView* m_toGlyphTree;

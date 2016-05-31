@@ -1,7 +1,7 @@
 #include "datamapping3dwidget.h"
 #include <stack>
 
-DataMapping3DWidget::DataMapping3DWidget(DataTransformModel* model, QWidget *parent)
+DataMapping3DWidget::DataMapping3DWidget(SynGlyphX::DataTransformModel* model, QWidget *parent)
 	: SynGlyphXANTz::MinMaxGlyph3DWidget(parent),
 	m_internalModel(nullptr),
 	m_internalSelectionModel(nullptr),
@@ -226,7 +226,7 @@ QModelIndexList DataMapping3DWidget::GetValidExternalIndexes(const QModelIndexLi
 	QModelIndexList validIndexList;
 	for (const QModelIndex& index : indexList) {
 
-		if (index.isValid() && (index.data(DataTransformModel::DataTypeRole) == DataTransformModel::DataType::GlyphTrees)) {
+		if (index.isValid() && (index.data(SynGlyphX::DataTransformModel::DataTypeRole) == SynGlyphX::DataTransformModel::DataType::GlyphTrees)) {
 
 			validIndexList.push_back(index);
 		}

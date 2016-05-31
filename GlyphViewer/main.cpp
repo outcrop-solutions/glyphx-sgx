@@ -35,7 +35,7 @@ void myMessageHandler(QtMsgType type, const QMessageLogContext &context, const Q
 
 int main(int argc, char *argv[])
 {
-	SynGlyphX::GlyphBuilderApplication::Setup("Glyph Builder - Glyph Viewer", "0.7.44");
+	SynGlyphX::GlyphBuilderApplication::Setup("Glyph Builder - Glyph Viewer", "0.7.45");
 	SynGlyphX::GlyphBuilderApplication a(argc, argv);
 	if (SynGlyphX::GlyphBuilderApplication::IsGlyphEd()) {
 
@@ -68,6 +68,13 @@ int main(int argc, char *argv[])
 
 	SynGlyphX::GlyphBuilderApplication::SetupIconsAndLogos();
 
+	qRegisterMetaType<SynGlyphX::GlyphGeometryInfo::Surface>("GlyphGeometryInfo::Surface");
+	qRegisterMetaType<SynGlyphX::NonMappableGeometryProperties>("NonMappableGeometryProperties");
+	qRegisterMetaType<SynGlyphX::ColorMinDiff>("ColorMinDiff");
+	qRegisterMetaType<SynGlyphX::IntMinDiff>("IntMinDiff");
+	qRegisterMetaType<SynGlyphX::DoubleMinDiff>("DoubleMinDiff");
+	qRegisterMetaType<SynGlyphX::InputField>("InputField");
+
 	if (!SynGlyphX::LicensingDialog::CheckLicense()) {
 
 		return 0;
@@ -83,13 +90,13 @@ int main(int argc, char *argv[])
 	a.processEvents();
 
 	try {
+		//Need to figure out better way to not have the splash screen disappear before the user sees it
+		QTimer::singleShot(1500, &splash, SLOT(close()));
 
 		GlyphViewerWindow w;
 		w.move(50, 50);
 		w.resize(1200, 700);
 
-		//Need to figure out better way to not have the splash screen disappear before the user sees it
-		QTimer::singleShot(1500, &splash, SLOT(close()));
 		w.show();
 		//QTimer::singleShot(1600, &w, SLOT(show()));
 

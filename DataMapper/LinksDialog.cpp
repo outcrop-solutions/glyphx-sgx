@@ -221,7 +221,7 @@ signals:
 	}
 };
 
-LinkLineEdit::LinkLineEdit(DataTransformModel* dataTransformModel, QWidget *parent) : QLineEdit(parent),
+LinkLineEdit::LinkLineEdit(SynGlyphX::DataTransformModel* dataTransformModel, QWidget *parent) : QLineEdit(parent),
 m_dataTransformModel(dataTransformModel)
 {
 	setContextMenuPolicy(Qt::NoContextMenu);
@@ -266,7 +266,7 @@ void LinkLineEdit::dropEvent(QDropEvent* event) {
 	}
 }
 
-LinksDialog::LinksDialog(DataTransformModel* dataTransformModel, GlyphRolesTableModel* glyphRolesTableModel, QWidget *parent)
+LinksDialog::LinksDialog(SynGlyphX::DataTransformModel* dataTransformModel, QWidget *parent)
 	: QDialog(parent),
 	m_dataTransformModel(dataTransformModel),
 	m_row(-1)
@@ -401,6 +401,13 @@ void LinksDialog::SetLink(const SynGlyphX::Link& link) {
 	}
 	m_link.m_function = link.m_function;
 	//print_tree(link.m_function.m_propertyTree);
+
+}
+
+void LinksDialog::Clear(){
+	m_nameLineEdit->clear();
+	m_fromLineEdit->clear();
+	m_toLineEdit->clear();
 
 }
 

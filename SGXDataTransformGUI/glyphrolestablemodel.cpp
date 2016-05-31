@@ -11,7 +11,7 @@
 #include "nonmappablegeometrywidget.h"
 #include "glyphenumcombobox.h"
 
-GlyphRolesTableModel::GlyphRolesTableModel(DataTransformModel* dataTransformModel, QObject *parent)
+GlyphRolesTableModel::GlyphRolesTableModel(SynGlyphX::DataTransformModel* dataTransformModel, QObject *parent)
 	: QAbstractTableModel(parent),
 	m_isAnySelectedGlyphRoot(false),
 	m_dataTransformModel(dataTransformModel)
@@ -135,7 +135,7 @@ bool GlyphRolesTableModel::IsDataAtIndexDifferent(const QModelIndex& index) cons
 	if (m_selectedDataTransformModelIndexes.count() > 1) {
 
 		PropertyType propertyType = GetFieldType(index.row());
-		QVariant prop = m_dataTransformModel->data(m_selectedDataTransformModelIndexes.first(), index.row() + DataTransformModel::PropertyRole::PositionX);
+		QVariant prop = m_dataTransformModel->data(m_selectedDataTransformModelIndexes.first(), index.row() + SynGlyphX::DataTransformModel::PropertyRole::PositionX);
 		if (propertyType == PropertyType::Color) {
 
 			return IsDataAtIndexDifferentFromGivenData<SynGlyphX::ColorMappingProperty>(prop, index);
@@ -159,7 +159,7 @@ bool GlyphRolesTableModel::IsDataAtIndexDifferent(const QModelIndex& index) cons
 		else if (index.column() == s_valueColumn) {
 
 			//Non mappable fields
-			if (index.row() + DataTransformModel::PropertyRole::PositionX == DataTransformModel::PropertyRole::GeometrySurface) {
+			if (index.row() + SynGlyphX::DataTransformModel::PropertyRole::PositionX == SynGlyphX::DataTransformModel::PropertyRole::GeometrySurface) {
 
 				return IsDataAtIndexDifferentFromNonMappableProperties<SynGlyphX::GlyphGeometryInfo::Surface>(prop, index);
 			}
@@ -180,7 +180,7 @@ bool GlyphRolesTableModel::IsDataAtIndexDifferentFromGivenData(const QVariant& p
 	MappingPropertyType testingProp = propVariant.value<MappingPropertyType>();
 	for (const QPersistentModelIndex& selectedIndex : m_selectedDataTransformModelIndexes) {
 
-		QVariant selectedProp = m_dataTransformModel->data(selectedIndex, index.row() + DataTransformModel::PropertyRole::PositionX);
+		QVariant selectedProp = m_dataTransformModel->data(selectedIndex, index.row() + SynGlyphX::DataTransformModel::PropertyRole::PositionX);
 		MappingPropertyType selectedTypeProp = selectedProp.value<MappingPropertyType>();
 		if (index.column() == s_mappingDataColumn) {
 
@@ -216,7 +216,7 @@ bool GlyphRolesTableModel::IsDataAtIndexDifferentFromNonMappableProperties(const
 		ValueType testingValue = valueVariant.value<ValueType>();
 		for (const QPersistentModelIndex& selectedIndex : m_selectedDataTransformModelIndexes) {
 
-			QVariant selectedValue = m_dataTransformModel->data(selectedIndex, index.row() + DataTransformModel::PropertyRole::PositionX);
+			QVariant selectedValue = m_dataTransformModel->data(selectedIndex, index.row() + SynGlyphX::DataTransformModel::PropertyRole::PositionX);
 			if (testingValue != selectedValue.value<ValueType>()) {
 
 				return true;
@@ -231,7 +231,7 @@ QVariant GlyphRolesTableModel::GetEditData(const QModelIndex& index) const {
 
 	if ((index.column() != s_propertyNameColumn) && (!m_selectedDataTransformModelIndexes.isEmpty())) {
 
-		QVariant prop = m_dataTransformModel->data(m_selectedDataTransformModelIndexes.last(), index.row() + DataTransformModel::PropertyRole::PositionX);
+		QVariant prop = m_dataTransformModel->data(m_selectedDataTransformModelIndexes.last(), index.row() + SynGlyphX::DataTransformModel::PropertyRole::PositionX);
 		PropertyType propertyType = GetFieldType(index.row());
 		if (propertyType == PropertyType::Color) {
 
@@ -328,8 +328,8 @@ void GlyphRolesTableModel::SetSelectedGlyphTreeIndexes(const QModelIndexList& in
 		DetermineAssociatedInputTable();
 		OnAllDataUpdated();
 
-		m_sourceModelConnections.push_back(QObject::connect(m_dataTransformModel, &DataTransformModel::dataChanged, this, &GlyphRolesTableModel::OnSourceModelDataUpdated));
-		m_sourceModelConnections.push_back(QObject::connect(m_dataTransformModel, &DataTransformModel::modelReset, this, [&, this](){ Clear(); }));
+		m_sourceModelConnections.push_back(QObject::connect(m_dataTransformModel, &SynGlyphX::DataTransformModel::dataChanged, this, &GlyphRolesTableModel::OnSourceModelDataUpdated));
+		m_sourceModelConnections.push_back(QObject::connect(m_dataTransformModel, &SynGlyphX::DataTransformModel::modelReset, this, [&, this](){ Clear(); }));
 	}
 	else {
 
@@ -402,7 +402,7 @@ bool GlyphRolesTableModel::IsInputFieldCompatible(const SynGlyphX::InputField& i
 /*
 bool GlyphRolesTableModel::DoesGlyphHaveAssociatedDatasoruceTable() const {
 
-	const SynGlyphX::DataMappingGlyphGraph::InputFieldMap& inputFields = m_dataTransformModel->GetInputFieldsForTree(m_selectedDataTransformModelIndex);
+	const SynGlyphX::DataMappingGlyphGraph::InputFieldMap& inputFields = m_dataTransformModel->GetInputFieldsForTree(m_selectedSynGlyphX::DataTransformModelIndex);
 	return (!inputFields.empty());
 }
 
@@ -413,7 +413,7 @@ const SynGlyphX::DatasourceTable& GlyphRolesTableModel::GetAssociatedDatasourceT
 		throw std::runtime_error("Glyph tree associated with index has no datasource table associated with it");
 	}
 
-	const SynGlyphX::InputTable& inputTable = m_dataTransformModel->GetInputFieldsForTree(m_selectedDataTransformModelIndex).begin()->second;
+	const SynGlyphX::InputTable& inputTable = m_dataTransformModel->GetInputFieldsForTree(m_selectedSynGlyphX::DataTransformModelIndex).begin()->second;
 }*/
 
 Qt::ItemFlags GlyphRolesTableModel::flags(const QModelIndex & index) const {
@@ -424,7 +424,7 @@ Qt::ItemFlags GlyphRolesTableModel::flags(const QModelIndex & index) const {
 template<typename MappingPropertyType>
 bool GlyphRolesTableModel::SetMappingFunctionEditData(const QVariant& propVariant, PropertyType propertyType, const QModelIndex& index) const {
 
-	int sourceDataRole = index.row() + DataTransformModel::PropertyRole::PositionX;
+	int sourceDataRole = index.row() + SynGlyphX::DataTransformModel::PropertyRole::PositionX;
 	SynGlyphX::MappingFunctionData::Function function = SynGlyphX::MappingFunctionData::s_functionNames.right.at(propVariant.toString().toStdWString());
 
 	for (const QPersistentModelIndex& selectedIndex : m_selectedDataTransformModelIndexes) {
@@ -447,7 +447,7 @@ bool GlyphRolesTableModel::SetMappingFunctionEditData(const QVariant& propVarian
 template<typename MappingPropertyType>
 bool GlyphRolesTableModel::SetSingleValueEditData(const QVariant& propVariant, const QModelIndex& index) const {
 
-	int sourceDataRole = index.row() + DataTransformModel::PropertyRole::PositionX;
+	int sourceDataRole = index.row() + SynGlyphX::DataTransformModel::PropertyRole::PositionX;
 	MappingPropertyType newValue = propVariant.value<MappingPropertyType>();
 	for (const QPersistentModelIndex& selectedIndex : m_selectedDataTransformModelIndexes) {
 
@@ -469,7 +469,7 @@ bool GlyphRolesTableModel::SetSingleValueEditData(const QVariant& propVariant, c
 template<typename MappingPropertyType>
 bool GlyphRolesTableModel::SetMinMaxValueEditData(const QVariant& propVariant, const QModelIndex& index) const {
 
-	int sourceDataRole = index.row() + DataTransformModel::PropertyRole::PositionX;
+	int sourceDataRole = index.row() + SynGlyphX::DataTransformModel::PropertyRole::PositionX;
 	MappingPropertyType newValue = propVariant.value<MappingPropertyType>();
 
 	QVariant lastProp = m_dataTransformModel->data(m_selectedDataTransformModelIndexes.last(), sourceDataRole);
@@ -582,7 +582,7 @@ bool GlyphRolesTableModel::setData(const QModelIndex& index, const QVariant& val
 
 				if (index.column() == s_valueColumn) {
 
-					int sourceDataRole = index.row() + DataTransformModel::PropertyRole::PositionX;
+					int sourceDataRole = index.row() + SynGlyphX::DataTransformModel::PropertyRole::PositionX;
 					for (const QPersistentModelIndex& index : m_selectedDataTransformModelIndexes) {
 
 						if (!(m_dataTransformModel->setData(index, value, sourceDataRole))) {
@@ -754,7 +754,7 @@ SynGlyphX::MappingFunctionData::SharedPtr GlyphRolesTableModel::CreateNewMapping
 
 SynGlyphX::MappingFunctionData::ConstSharedPtr GlyphRolesTableModel::GetMappingFunction(int row) const {
 
-	QVariant prop = m_dataTransformModel->data(m_selectedDataTransformModelIndexes.last(), row + DataTransformModel::PropertyRole::PositionX);
+	QVariant prop = m_dataTransformModel->data(m_selectedDataTransformModelIndexes.last(), row + SynGlyphX::DataTransformModel::PropertyRole::PositionX);
 	PropertyType propertyType = GetFieldType(row);
 	if (propertyType == PropertyType::Color) {
 
@@ -785,7 +785,7 @@ SynGlyphX::MappingFunctionData::ConstSharedPtr GlyphRolesTableModel::GetMappingF
 
 void GlyphRolesTableModel::SetMappingFunction(int row, SynGlyphX::MappingFunctionData::SharedPtr mappingFunction) {
 
-	int sourceDataRole = row + DataTransformModel::PropertyRole::PositionX;
+	int sourceDataRole = row + SynGlyphX::DataTransformModel::PropertyRole::PositionX;
 	QVariant prop = m_dataTransformModel->data(m_selectedDataTransformModelIndexes.last(), sourceDataRole);
 	PropertyType propertyType = GetFieldType(row);
 	QVariant newProp;
@@ -847,9 +847,9 @@ void GlyphRolesTableModel::OnSourceModelDataUpdated(const QModelIndex& topLeft, 
 
 			Q_FOREACH(int role, roles) {
 
-				if (role >= DataTransformModel::PropertyRole::PositionX) {
+				if (role >= SynGlyphX::DataTransformModel::PropertyRole::PositionX) {
 
-					int row = role - DataTransformModel::PropertyRole::PositionX;
+					int row = role - SynGlyphX::DataTransformModel::PropertyRole::PositionX;
 					emit dataChanged(index(row, 0), index(row, columnCount() - 1));
 				}
 			}
@@ -895,7 +895,7 @@ bool GlyphRolesTableModel::IsAnySelectedIndexWithinIndexes(const QModelIndex& to
 	return false;
 }
 
-DataTransformModel* GlyphRolesTableModel::GetSourceModel() const {
+SynGlyphX::DataTransformModel* GlyphRolesTableModel::GetSourceModel() const {
 
 	return m_dataTransformModel;
 }

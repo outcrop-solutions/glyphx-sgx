@@ -15,61 +15,56 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef MAPPINGFUNCTIONWIDGET_H
-#define MAPPINGFUNCTIONWIDGET_H
+#ifndef FIELDGROUPWIDGET_H
+#define FIELDGROUPWIDGET_H
 
+#include "sgxdatatransformgui_global.h"
 #include <QtWidgets/QWidget>
 #include <QtWidgets/QComboBox>
+#include "datatransformmodel.h"
+#include "fieldgroupmodel.h"
 #include <QtWidgets/QPushButton>
-#include "datamappingfunction.h"
-#include "glyphrolestablemodel.h"
+#include <QtWidgets/QTableView>
+#include "checkboxheaderview.h"
 
-class MappingFunctionWidget : public QWidget
+class SGXDATATRANSFORMGUI_EXPORT FieldGroupWidget : public QWidget
 {
 	Q_OBJECT
-	Q_PROPERTY(QString function READ GetFunction WRITE SetFunction USER true)
 
 public:
-	enum KeyType {
-		Numeric,
-		Color,
-		GeometryShape,
-		VirtualTopology
-	};
+	FieldGroupWidget(SynGlyphX::DataTransformModel* dataTransformModel, QWidget *parent);
+	~FieldGroupWidget();
 
-	MappingFunctionWidget(KeyType keyType, GlyphRolesTableModel* model, int row, QWidget *parent);
-	~MappingFunctionWidget();
+	bool CheckIfGroupNeedsToBeSaved();
 
-	QString GetFunction() const;
-
-	void SetDialogOutputMinMax(double min, double max);
-
-signals:
-	void SupportedInputChanged(SynGlyphX::MappingFunctionData::Input supportedInput);
-	void FunctionChanged();
-
-public slots:
-	void SetFunction(const QString& function);
+	const QString& GetCurrentGroupName() const;
+	void SetCurrentGroupName(const QString& groupName);
 
 private slots:
-	void OnFunctionComboBoxChangedByUser();
-	void OnEditPropertiesClicked();
+	void OnSaveGroup();
+	void OnSaveAsGroup();
+	void OnRevertGroup();
+	void OnGroupChanged(int index);
+	void OnFieldGroupModelDataChanged(const QModelIndex& topLeft, const QModelIndex& bottomRight);
+	void OnCheckBoxHeaderViewClicked(SynGlyphX::AllSomeNone state);
+	void OnSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected);
 
 private:
-	void OnFunctionComboBoxChanged(bool emitInputChange);
-	static QStringList CreateNumericColorFunctionList();
-	static QStringList CreateEnumerationFunctionList();
+	void EnableSaveAndRevertButtons(bool enable);
+	QString GetNewGroupName();
 
-	QComboBox* m_functionComboBox;
-	QPushButton* m_editPropertiesButton;
-	GlyphRolesTableModel* m_model;
-	int m_row;
-	double m_dialogOutputMin;
-	double m_dialogOutputMax;
-	KeyType m_keyType;
+	QComboBox* m_groupsNameComboBox;
+	QPushButton* m_saveButton;
+	QPushButton* m_saveAsButton;
+	QPushButton* m_revertButton;
 
-	static const QStringList s_numericColorFunctions;
-	static const QStringList s_enumerationFunctions;
+	QTableView* m_fieldTableView;
+	SynGlyphX::CheckBoxHeaderView* m_fieldTableHeaderView;
+
+	FieldGroupModel* m_fieldGroupModel;
+	SynGlyphX::DataTransformModel* m_dataTransformModel;
+
+	QString m_currentGroupName;
 };
 
-#endif // MAPPINGFUNCTIONWIDGET_H
+#endif // FIELDGROUPWIDGET_H

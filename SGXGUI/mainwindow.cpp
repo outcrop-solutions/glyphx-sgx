@@ -341,6 +341,7 @@ namespace SynGlyphX {
 
 				if (QMessageBox::question(this, tr("Directory isn't empty"), tr("Selected directory is not empty.  All contents of the directory will be deleted before export.  Do you wish to continue?")) == QMessageBox::No) {
 
+					directoryName.clear();
 					break;
 				}
 				else {

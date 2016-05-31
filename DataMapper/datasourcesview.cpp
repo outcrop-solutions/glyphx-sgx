@@ -4,16 +4,16 @@
 #include "singlewidgetdialog.h"
 #include <QtWidgets/QMessageBox>
 
-DataSourcesView::DataSourcesView(DataTransformModel* sourceModel, QWidget *parent)
+DataSourcesView::DataSourcesView(SynGlyphX::DataTransformModel* sourceModel, QWidget *parent)
 	: QListView(parent),
 	m_sourceModel(sourceModel)
 {
 	setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Preferred);
 
 	SynGlyphX::IntRoleDataFilterProxyModel* filterModel = new SynGlyphX::IntRoleDataFilterProxyModel(this);
-	filterModel->setFilterRole(DataTransformModel::DataTypeRole);
+	filterModel->setFilterRole(SynGlyphX::DataTransformModel::DataTypeRole);
 	filterModel->setSourceModel(m_sourceModel);
-	filterModel->SetFilterData(DataTransformModel::DataType::DataSources);
+	filterModel->SetFilterData(SynGlyphX::DataTransformModel::DataType::DataSources);
 	setModel(filterModel);
 
 	setDragEnabled(false);

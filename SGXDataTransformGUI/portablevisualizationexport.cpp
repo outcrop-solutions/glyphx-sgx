@@ -126,4 +126,31 @@ namespace SynGlyphX {
 		}
 	}
 
+	void PortableVisualizationExport::CopyLogo(const QString& outputDir) const {
+
+		if (outputDir.isEmpty()) {
+
+			throw std::runtime_error("Can not save logo to empty directory.");
+		}
+
+		unsigned int logoIndex = QDir(outputDir).entryInfoList(QStringList("*.jpg"), QDir::Filter::Files).size() + 1;
+		QString saveFile = outputDir;
+		if (logoIndex > 99) {
+
+			saveFile += "map00";
+		}
+		else if (logoIndex > 9) {
+
+			saveFile += "map000";
+		}
+		else {
+
+			saveFile += "map0000";
+		}
+		saveFile += QString::number(logoIndex) + ".jpg";
+
+		QImage logoImage(SynGlyphX::GlyphBuilderApplication::GetLogoLocation(SynGlyphX::GlyphBuilderApplication::LogoType::WhiteBorder));
+		logoImage.save(saveFile, "PNG", 100);
+	}
+
 } //namespace SynGlyphX

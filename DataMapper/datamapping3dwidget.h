@@ -28,7 +28,7 @@ class DataMapping3DWidget : public SynGlyphXANTz::MinMaxGlyph3DWidget
 	Q_OBJECT
 
 public:
-	DataMapping3DWidget(DataTransformModel* model, QWidget *parent = 0);
+	DataMapping3DWidget(SynGlyphX::DataTransformModel* model, QWidget *parent = 0);
 	~DataMapping3DWidget();
 
 	virtual void SetModel(SynGlyphX::RoleDataFilterProxyModel* model, QItemSelectionModel* selectionModel);
@@ -50,7 +50,7 @@ private:
 	QModelIndex GetInternalModelIndex(const QModelIndex& externalIndex) const;
 	QModelIndexList GetValidExternalIndexes(const QModelIndexList& indexList) const;
 
-	DataTransformModel* m_dataTransformModel;
+	SynGlyphX::DataTransformModel* m_dataTransformModel;
 
 	SynGlyphXANTz::MinMaxGlyphTreeModel* m_internalModel;
 	QItemSelectionModel* m_internalSelectionModel;

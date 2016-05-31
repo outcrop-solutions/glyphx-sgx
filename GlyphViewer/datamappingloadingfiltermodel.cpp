@@ -1,7 +1,7 @@
 #include "datamappingloadingfiltermodel.h"
 
 DataMappingLoadingFilterModel::DataMappingLoadingFilterModel(QObject *parent)
-	: SynGlyphX::DataMappingModel(parent)
+	: SynGlyphX::DataTransformModel(parent)
 {
 
 }
@@ -13,7 +13,7 @@ DataMappingLoadingFilterModel::~DataMappingLoadingFilterModel()
 
 void DataMappingLoadingFilterModel::LoadDataTransformFile(const QString& filename, const Table2LoadingFiltersMap& loadingFiltersMap) {
 
-	SynGlyphX::DataMappingModel::LoadDataTransformFile(filename);
+	SynGlyphX::DataTransformModel::LoadDataTransformFile(filename);
 
 	m_loadingFiltersMap = loadingFiltersMap;
 }

@@ -18,6 +18,7 @@
 #ifndef VALUEMAPPINGDIALOG_H
 #define VALUEMAPPINGDIALOG_H
 
+#include "sgxdatatransformgui_global.h"
 #include <QtWidgets/QDialog>
 #include <QtWidgets/QDoubleSpinBox>
 #include <QtWidgets/QTableWidget>
@@ -29,7 +30,7 @@
 #include <set>
 #include "glyphenumcombobox.h"
 
-class ValueMappingDialog : public QDialog
+class SGXDATATRANSFORMGUI_EXPORT ValueMappingDialog : public QDialog
 {
 	Q_OBJECT
 
@@ -103,7 +104,7 @@ private:
 	OutputType m_output;
 };
 
-class Numeric2NumericMappingDialog : public ValueMappingDialog
+class SGXDATATRANSFORMGUI_EXPORT Numeric2NumericMappingDialog : public ValueMappingDialog
 {
 	Q_OBJECT
 
@@ -122,7 +123,7 @@ protected:
 	SynGlyphX::Numeric2NumericMappingData::SharedPtr m_mappingData;
 };
 
-class Numeric2ColorMappingDialog : public ValueMappingDialog
+class SGXDATATRANSFORMGUI_EXPORT Numeric2ColorMappingDialog : public ValueMappingDialog
 {
 	Q_OBJECT
 
@@ -141,7 +142,7 @@ protected:
 	SynGlyphX::Numeric2ColorMappingData::SharedPtr m_mappingData;
 };
 
-class Text2NumericMappingDialog : public ValueMappingDialog
+class SGXDATATRANSFORMGUI_EXPORT Text2NumericMappingDialog : public ValueMappingDialog
 {
 	Q_OBJECT
 
@@ -160,7 +161,7 @@ protected:
 	SynGlyphX::Text2NumericMappingData::SharedPtr m_mappingData;
 };
 
-class Text2ColorMappingDialog : public ValueMappingDialog
+class SGXDATATRANSFORMGUI_EXPORT Text2ColorMappingDialog : public ValueMappingDialog
 {
 	Q_OBJECT
 
@@ -179,7 +180,7 @@ protected:
 	SynGlyphX::Text2ColorMappingData::SharedPtr m_mappingData;
 };
 
-class Range2NumericMappingDialog : public ValueMappingDialog
+class SGXDATATRANSFORMGUI_EXPORT Range2NumericMappingDialog : public ValueMappingDialog
 {
 	Q_OBJECT
 
@@ -198,7 +199,7 @@ protected:
 	SynGlyphX::Range2NumericMappingData::SharedPtr m_mappingData;
 };
 
-class Range2ColorMappingDialog : public ValueMappingDialog
+class SGXDATATRANSFORMGUI_EXPORT Range2ColorMappingDialog : public ValueMappingDialog
 {
 	Q_OBJECT
 
@@ -219,7 +220,7 @@ protected:
 
 //---------------------------------------------------------------------
 
-class Numeric2ShapeMappingDialog : public ValueMappingDialog
+class SGXDATATRANSFORMGUI_EXPORT Numeric2ShapeMappingDialog : public ValueMappingDialog
 {
 	Q_OBJECT
 
@@ -238,7 +239,7 @@ protected:
 	SynGlyphX::Numeric2ShapeMappingData::SharedPtr m_mappingData;
 };
 
-class Numeric2VirtualTopologyMappingDialog : public ValueMappingDialog
+class SGXDATATRANSFORMGUI_EXPORT Numeric2VirtualTopologyMappingDialog : public ValueMappingDialog
 {
 	Q_OBJECT
 
@@ -257,7 +258,7 @@ protected:
 	SynGlyphX::Numeric2VirtualTopologyMappingData::SharedPtr m_mappingData;
 };
 
-class Text2ShapeMappingDialog : public ValueMappingDialog
+class SGXDATATRANSFORMGUI_EXPORT Text2ShapeMappingDialog : public ValueMappingDialog
 {
 	Q_OBJECT
 
@@ -276,7 +277,7 @@ protected:
 	SynGlyphX::Text2ShapeMappingData::SharedPtr m_mappingData;
 };
 
-class Text2VirtualTopologyMappingDialog : public ValueMappingDialog
+class SGXDATATRANSFORMGUI_EXPORT Text2VirtualTopologyMappingDialog : public ValueMappingDialog
 {
 	Q_OBJECT
 
@@ -295,7 +296,7 @@ protected:
 	SynGlyphX::Text2VirtualTopologyMappingData::SharedPtr m_mappingData;
 };
 
-class Range2ShapeMappingDialog : public ValueMappingDialog
+class SGXDATATRANSFORMGUI_EXPORT Range2ShapeMappingDialog : public ValueMappingDialog
 {
 	Q_OBJECT
 
@@ -314,7 +315,7 @@ protected:
 	SynGlyphX::Range2ShapeMappingData::SharedPtr m_mappingData;
 };
 
-class Range2VirtualTopologyMappingDialog : public ValueMappingDialog
+class SGXDATATRANSFORMGUI_EXPORT Range2VirtualTopologyMappingDialog : public ValueMappingDialog
 {
 	Q_OBJECT
 

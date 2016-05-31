@@ -15,27 +15,48 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef GLYPHROLESSUBSETTABLEWIDGET_H
-#define GLYPHROLESSUBSETTABLEWIDGET_H
+#ifndef BINDINGLINEEDIT_H
+#define BINDINGLINEEDIT_H
 
-#include <QtWidgets/QAbstractScrollArea>
-#include <QtWidgets/QHeaderView>
+#include "sgxdatatransformgui_global.h"
+#include <QtWidgets/QLineEdit>
+#include "inputbinding.h"
 #include "glyphrolestablemodel.h"
+#include "datamappingfunction.h"
+#include "inputfieldmimedata.h"
 
-class GlyphRolesSubsetTableWidget : public QAbstractScrollArea
+class SGXDATATRANSFORMGUI_EXPORT BindingLineEdit : public QWidget
 {
 	Q_OBJECT
+	Q_PROPERTY(SynGlyphX::InputField value READ GetInputField WRITE SetInputField USER true)
 
 public:
-	GlyphRolesSubsetTableWidget(GlyphRolesTableModel* model, QWidget *parent);
-	~GlyphRolesSubsetTableWidget();
+	BindingLineEdit(const GlyphRolesTableModel* model, QWidget *parent = 0, SynGlyphX::MappingFunctionData::Input acceptedInputTypes = SynGlyphX::MappingFunctionData::Input::All);
+	~BindingLineEdit();
+
+	const SynGlyphX::InputField& GetInputField() const;
+	bool OnlyAcceptsNumericField() const;
+
+public slots:
+	void SetInputField(const SynGlyphX::InputField& inputfield);
+	void Clear();
+	void SetAcceptedInputTypes(SynGlyphX::MappingFunctionData::Input acceptedInputTypes);
+
+signals:
+	void ValueChanged(SynGlyphX::InputField);
+	void ValueChangedByUser(SynGlyphX::InputField);
 
 protected:
-	virtual void resizeEvent(QResizeEvent* event);
+	virtual void dragEnterEvent(QDragEnterEvent* event);
+	virtual void dropEvent(QDropEvent* event);
+	virtual void contextMenuEvent(QContextMenuEvent* event);
 
 private:
-	GlyphRolesTableModel* m_model;
-	QHeaderView* m_headerView;
+	const GlyphRolesTableModel* m_model;
+	SynGlyphX::InputField m_inputField;
+	SynGlyphX::MappingFunctionData::Input m_acceptedInputTypes;
+	QAction* m_clearAction;
+	QLineEdit* m_lineEdit;
 };
 
-#endif // GLYPHROLESSUBSETTABLEWIDGET_H
+#endif // BINDINGLINEEDIT_H

@@ -11,6 +11,7 @@
 #include <QtCore/QSettings>
 #include <QtWidgets/QDockWidget>
 #include <QtCore/QDateTime>
+#include <QtWidgets/QFileDialog>
 #include "glyphbuilderapplication.h"
 #include "datatransformmapping.h"
 #include "downloadoptionsdialog.h"
@@ -30,6 +31,7 @@
 #include "defaultbaseimageproperties.h"
 #include "downloadexception.h"
 #include "loadingscreenwidget.h"
+#include "remapdialog.h"
 
 GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 	: SynGlyphX::MainWindow(4, parent),
@@ -39,6 +41,7 @@ GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 {
 	m_dataEngineConnection = std::make_shared<DataEngine::DataEngineConnection>();
 	m_mappingModel = new DataMappingLoadingFilterModel(this);
+	m_mappingModel->SetDataEngineConnection(m_dataEngineConnection);
 	m_sourceDataCache = std::make_shared<SourceDataCache>();
 	m_glyphForestModel = new SynGlyphXANTz::GlyphForestModel(this);
 
@@ -86,10 +89,7 @@ GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 	m_filteringWidget->SetupLinkedWidgets(*m_linkedWidgetsManager);
 	m_pseudoTimeFilterWidget->SetupLinkedWidgets(*m_linkedWidgetsManager);
 
-	QCheckBox* cb = new QCheckBox(tr("Filter View"), this);
-	
-	m_showHideToolbar->addWidget(cb);
-	m_linkedWidgetsManager->AddFilterViewCheckbox(cb);
+	CreateInteractionToolbar();
 
 	m_stereoAction->setChecked(m_glyph3DView->IsInStereoMode());
 	//SynGlyphX::Transformer::SetDefaultImagesDirectory(SynGlyphX::GlyphBuilderApplication::GetDefaultBaseImagesLocation());
@@ -266,6 +266,12 @@ void GlyphViewerWindow::CreateMenus() {
 
 	m_toolsMenu = menuBar()->addMenu(tr("Tools"));
 
+	m_remapRootPositionMappingsAction = m_toolsMenu->addAction(tr("Change X, Y, Z Position Axes"));
+	QObject::connect(m_remapRootPositionMappingsAction, &QAction::triggered, this, &GlyphViewerWindow::RemapRootPositionMappings);
+	m_loadedVisualizationDependentActions.push_back(m_remapRootPositionMappingsAction);
+
+	m_toolsMenu->addSeparator();
+
 	QAction* optionsAction = m_toolsMenu->addAction(tr("Options"));
 	QObject::connect(optionsAction, &QAction::triggered, this, static_cast<void (GlyphViewerWindow::*)()>(&GlyphViewerWindow::ChangeOptions));
 
@@ -363,8 +369,6 @@ void GlyphViewerWindow::CreateDockWidgets() {
 	m_viewMenu->addAction(act);
 	m_showHideToolbar->addAction(act);
 
-	m_showHideToolbar->addSeparator();
-
 	QObject::connect(m_columnsModel, &SourceDataInfoModel::modelReset, m_pseudoTimeFilterWidget, &PseudoTimeFilterWidget::ResetForNewVisualization);
 	bottomDockWidget->hide();}
 
@@ -452,7 +456,7 @@ void GlyphViewerWindow::ClearAllData() {
 	m_glyphForestSelectionModel->ClearAll();
 	m_sourceDataCache->Close();
 	m_glyphForestModel->Clear();
-	m_mappingModel->Clear();
+	m_mappingModel->ClearAndReset();
 	m_legendsWidget->ClearLegends();
 	m_filteringWidget->OnNewVisualization();
 	SynGlyphX::Application::restoreOverrideCursor();
@@ -493,7 +497,14 @@ void GlyphViewerWindow::LoadVisualization(const QString& filename, const DataMap
 		antzWidgetContainer->setCurrentIndex(1);
 	}
 
-	m_legendsDockWidget->show();
+	if (m_legendsWidget->HasLegends()) {
+
+		m_legendsDockWidget->show();
+	}
+	else if (m_legendsDockWidget->isFloating()) {
+
+		m_legendsDockWidget->hide();
+	}
 }
 
 bool GlyphViewerWindow::LoadNewVisualization(const QString& filename, const DataMappingLoadingFilterModel::Table2LoadingFiltersMap& filters) {
@@ -814,6 +825,11 @@ void GlyphViewerWindow::ChangeOptions(const GlyphViewerOptions& oldOptions, cons
 			m_linkedWidgetsManager->SetFilterView(newOptions.GetHideUnselectedGlyphTrees());
 		}
 
+		if (oldOptions.GetShowSceneAxisHUDObject() != newOptions.GetShowSceneAxisHUDObject()) {
+
+			m_glyph3DView->SetShowHUDAxisInfoObject(newOptions.GetShowSceneAxisHUDObject());
+		}
+
 		if (oldOptions.GetSceneAxisObjectLocation() != newOptions.GetSceneAxisObjectLocation()) {
 
 			m_glyph3DView->SetAxisInfoObjectLocation(newOptions.GetSceneAxisObjectLocation());
@@ -855,6 +871,7 @@ void GlyphViewerWindow::ReadSettings() {
 	}
 	options.SetCacheDirectory(cacheDirectory);
 	options.SetHideUnselectedGlyphTrees(settings.value("hideUnselectedGlyphs", false).toBool());
+	options.SetShowSceneAxisHUDObject(settings.value("axisInfoShow", true).toBool());
 	options.SetSceneAxisObjectLocation(static_cast<SynGlyphXANTz::ANTzForestWidget::HUDLocation>(settings.value("axisInfoLocation").toInt()));
 	options.SetShowMessageWhenImagesDidNotDownload(settings.value("showFailedToDownloadImageMessage", true).toBool());
 	settings.endGroup();
@@ -893,6 +910,7 @@ void GlyphViewerWindow::WriteSettings() {
 		settings.setValue("cacheDirectory", "");
 	}
 	settings.setValue("hideUnselectedGlyphs", options.GetHideUnselectedGlyphTrees());
+	settings.setValue("axisInfoShow", options.GetShowSceneAxisHUDObject());
 	settings.setValue("axisInfoLocation", options.GetSceneAxisObjectLocation());
 	settings.setValue("showFailedToDownloadImageMessage", options.GetShowMessageWhenImagesDidNotDownload());
 	settings.endGroup();
@@ -909,6 +927,7 @@ GlyphViewerOptions GlyphViewerWindow::CollectOptions() {
 
 	options.SetCacheDirectory(QString::fromStdWString(m_cacheManager.GetBaseCacheDirectory()));
 	options.SetHideUnselectedGlyphTrees(m_linkedWidgetsManager->GetFilterView());
+	options.SetShowSceneAxisHUDObject(m_glyph3DView->GetShowHUDAxisInfoObject());
 	options.SetSceneAxisObjectLocation(m_glyph3DView->GetAxisInfoObjectLocation());
 	options.SetZSpaceOptions(m_glyph3DView->GetZSpaceOptions());
 	options.SetShowMessageWhenImagesDidNotDownload(m_showErrorFromTransform);
@@ -975,6 +994,8 @@ void GlyphViewerWindow::CreatePortableVisualization(SynGlyphX::PortableVisualiza
 		DownloadBaseImages(ge);
 		ge.generateGlyphs();
 
+		m_portableVisualizationExport.CopyLogo(QDir::toNativeSeparators(csvDirectory + "/usr/images/"));
+
 		SynGlyphX::Application::restoreOverrideCursor();
 	}
 	catch (const std::exception& e) {
@@ -1019,4 +1040,42 @@ void GlyphViewerWindow::closeEvent(QCloseEvent* event) {
 	m_filteringWidget->CloseSourceDataWidgets();
 
 	SynGlyphX::MainWindow::closeEvent(event);
+}
+
+void GlyphViewerWindow::RemapRootPositionMappings() {
+
+	QFileInfo currentFilenameInfo(m_currentFilename);
+
+	RemapDialog remapDialog(m_mappingModel->GetDataMapping(), m_dataEngineConnection, this);
+	remapDialog.SetSaveFilename(currentFilenameInfo.absolutePath() + "/" + currentFilenameInfo.completeBaseName() + "_remap.sdt");
+
+	if (remapDialog.exec() == QDialog::Accepted) {
+
+		SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
+
+		SynGlyphX::DataTransformMapping::ConstSharedPtr dataTransformMapping = remapDialog.GetNewMapping();
+		QString remapFilename = remapDialog.GetSaveFilename();
+		dataTransformMapping->WriteToFile(remapFilename.toStdString());
+		SynGlyphX::Application::restoreOverrideCursor();
+		
+		LoadNewVisualization(remapFilename);
+	}
+}
+
+void GlyphViewerWindow::CreateInteractionToolbar() {
+
+	m_interactionToolbar = addToolBar(tr("Interaction"));
+	m_interactionToolbar->setFloatable(true);
+	m_interactionToolbar->setMovable(true);
+
+	m_interactionToolbar->addAction(m_remapRootPositionMappingsAction);
+
+	m_interactionToolbar->addSeparator();
+
+	QCheckBox* cb = new QCheckBox(tr("Filter View"), this);
+
+	m_interactionToolbar->addWidget(cb);
+	m_linkedWidgetsManager->AddFilterViewCheckbox(cb);
+
+	m_toolbarsSubMenu->addAction(m_interactionToolbar->toggleViewAction());
 }

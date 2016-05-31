@@ -15,31 +15,45 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef INPUTFIELDMIMEDATA_H
-#define INPUTFIELDMIMEDATA_H
+#ifndef FIELDGROUPMODEL_H
+#define FIELDGROUPMODEL_H
 
-#include <QtCore/QMimeData>
+#include <QtCore/QAbstractTableModel>
 #include "inputfield.h"
+#include "datatransformmodel.h"
+#include <vector>
+#include "utilitytypes.h"
 
-Q_DECLARE_METATYPE(SynGlyphX::InputField)
-
-class InputFieldMimeData : public QMimeData
+class FieldGroupModel : public QAbstractTableModel
 {
 	Q_OBJECT
 
 public:
-	static const QString MimeType;
+	FieldGroupModel(QObject *parent);
+	~FieldGroupModel();
 
-	InputFieldMimeData(const SynGlyphX::InputField& inputField);
-	~InputFieldMimeData();
+	virtual Qt::ItemFlags flags(const QModelIndex& index) const;
+	virtual int rowCount(const QModelIndex& parent = QModelIndex()) const;
+	virtual int columnCount(const QModelIndex& parent = QModelIndex()) const;
+	virtual QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const;
+	virtual bool setData(const QModelIndex& index, const QVariant& value, int role = Qt::EditRole);
+	virtual QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
 
-	const SynGlyphX::InputField& GetInputField() const;
+	void SetCheckedItems(const SynGlyphX::FieldGroup& fieldGroup);
+	void UncheckAllItems();
 
-	virtual QStringList formats() const;
-	virtual bool hasFormat(const QString& mimeType) const;
+	void ResetTable(SynGlyphX::DataTransformModel* model);
+	const SynGlyphX::FieldGroup& GetCheckedItems() const;
+
+	SynGlyphX::AllSomeNone AreFieldsChecked() const;
 
 private:
-	SynGlyphX::InputField m_inputfield;
+	SynGlyphX::InputField GetInputFieldForRow(int row) const;
+	unsigned int GetTableForRow(int row) const;
+
+	SynGlyphX::FieldGroup m_checkedItems;
+	SynGlyphX::DataTransformModel* m_dataTransformModel;
+	std::vector<unsigned int> m_countOfFieldsPerTable;
 };
 
-#endif // INPUTFIELDMIMEDATA_H
+#endif // FIELDGROUPMODEL_H

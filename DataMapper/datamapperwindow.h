@@ -129,7 +129,7 @@ private:
 	DataBindingTablesWidget* m_dataBindingWidget;
 	GlyphRolesTableModel* m_glyphRolesTableModel;
 
-	DataTransformModel* m_dataTransformModel;
+	SynGlyphX::DataTransformModel* m_dataTransformModel;
 	
 	DataMapping3DWidget* m_minMaxGlyph3DWidget;
 

@@ -86,8 +86,8 @@ QVariant FieldGroupModel::data(const QModelIndex& index, int role) const {
 			}
 			else {
 				
-				const DataTransformModel::NumericFieldsByTable& numericFields = m_dataTransformModel->GetNumericFieldsByTable();
-				DataTransformModel::NumericFieldsByTable::const_iterator iT = numericFields.begin();
+				const SynGlyphX::DataTransformModel::NumericFieldsByTable& numericFields = m_dataTransformModel->GetNumericFieldsByTable();
+				SynGlyphX::DataTransformModel::NumericFieldsByTable::const_iterator iT = numericFields.begin();
 				std::advance(iT, GetTableForRow(index.row()));
 				SynGlyphX::Datasource::ConstSharedPtr datasource = m_dataTransformModel->GetDataMapping()->GetDatasources().at(iT->first.GetDatasourceID());
 				if (index.column() == 2) {
@@ -175,7 +175,7 @@ void FieldGroupModel::UncheckAllItems() {
 	emit dataChanged(index(0, 0), index(rowCount() - 1, 0), QVector<int>(1, Qt::CheckStateRole));
 }
 
-void FieldGroupModel::ResetTable(DataTransformModel* model) {
+void FieldGroupModel::ResetTable(SynGlyphX::DataTransformModel* model) {
 
 	beginResetModel();
 	m_dataTransformModel = model;
@@ -216,8 +216,8 @@ SynGlyphX::InputField FieldGroupModel::GetInputFieldForRow(int row) const {
 		index = row - m_countOfFieldsPerTable[i - 1];
 	}
 	
-	const DataTransformModel::NumericFieldsByTable& numericFields = m_dataTransformModel->GetNumericFieldsByTable();
-	DataTransformModel::NumericFieldsByTable::const_iterator iT = numericFields.begin();
+	const SynGlyphX::DataTransformModel::NumericFieldsByTable& numericFields = m_dataTransformModel->GetNumericFieldsByTable();
+	SynGlyphX::DataTransformModel::NumericFieldsByTable::const_iterator iT = numericFields.begin();
 	std::advance(iT, i);
 	auto field = iT->second.begin();
 	std::advance(field, index);
