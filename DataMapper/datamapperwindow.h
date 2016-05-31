@@ -36,8 +36,9 @@
 #include "glyphengine.h"
 #include "portablevisualizationexport.h"
 #include "legendlistview.h"
-#include "LinksListView.h"
-#include "LinksDialog.h"
+
+class LinksListView;
+class LinksDialog;
 
 class DataMapperWindow : public SynGlyphX::MainWindow
 {
