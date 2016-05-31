@@ -1,3 +1,4 @@
+#pragma once
 #ifndef SGXGLYPHGUI_GLOBAL_H
 #define SGXGLYPHGUI_GLOBAL_H
 

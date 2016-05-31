@@ -1,3 +1,4 @@
+#pragma once
 #ifndef XYZWIDGET_H
 #define XYZWIDGET_H
 
