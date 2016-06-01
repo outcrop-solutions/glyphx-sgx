@@ -1,5 +1,6 @@
 #include "inputtable.h"
 #include "datasource.h"
+#include "hashid.h"
 
 namespace SynGlyphX {
 
@@ -74,14 +75,14 @@ namespace SynGlyphX {
 		return !(m_datasourceID.is_nil() || m_table.empty());
 	}
 
-	InputTable::HashID InputTable::GetHashID() const {
+	HashID InputTable::GetHashID() const {
 
-		std::size_t seed = 0;
+        HashID seed = 0;
 
 		if (IsValid()) {
 
-			boost::hash_combine(seed, m_datasourceID);
-			boost::hash_combine(seed, m_table);
+			CombineHashID(seed, m_datasourceID);
+			CombineHashID(seed, m_table);
 		}
 
 		return seed;

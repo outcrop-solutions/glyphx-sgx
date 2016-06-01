@@ -28,7 +28,7 @@ namespace SynGlyphX {
         boost::filesystem::path gdalData = boost::filesystem::current_path() / "gdal" / "data";
 
         std::string imageFormat = outputFilename.substr(outputFilename.length() - 3);
-        std::transform(imageFormat.begin(), imageFormat.end(), imageFormat.begin(), std::toupper);
+        std::transform(imageFormat.begin(), imageFormat.end(), imageFormat.begin(), [](unsigned char c) { return std::toupper(c); });
 
         std::string gdalEnv = "GDAL_DATA=" + gdalData.string();
         std::string gdalCommand = "gdal\\gdal_translate.exe -a_ullr " + boundingBox.ToString() + " -a_srs " + spatialRef + " -of " + imageFormat + " \"" + inputFilename + "\" \"" + outputFilename + "\"";
@@ -39,11 +39,14 @@ namespace SynGlyphX {
         }
         gdalCommand += " > " + outputErrFilename.string() + " 2>&1";
 
-        putenv(gdalEnv.c_str());
+        putenv(const_cast<char*>(gdalEnv.c_str()));
 
         if (std::system(gdalCommand.c_str()) == -1) {
-
+#ifdef WIN32
             throw std::runtime_error(_strerror("Georeferce command failed:"));
+#else
+            throw std::runtime_error("Georeferce command failed:");		
+#endif
         }
 
         if (!boost::filesystem::exists(outputFilename)) {

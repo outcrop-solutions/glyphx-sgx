@@ -117,13 +117,13 @@ namespace SynGlyphX {
 		return m_type;
 	}
 
-	InputField::HashID InputField::GetHashID() const {
+	HashID InputField::GetHashID() const {
 
-		std::size_t seed = InputTable::GetHashID();
+		HashID seed = InputTable::GetHashID();
 
 		if (IsValid()) {
 
-			boost::hash_combine(seed, m_field);
+			CombineHashID(seed, m_field);
 		}
 
 		return seed;

@@ -5,6 +5,7 @@
 #include <stdexcept>
 #include "csvfilereader.h"
 #include "datamappingglyphgraphexportvisitor.h"
+#include "hashid.h"
 
 namespace SynGlyphX {
 
@@ -56,7 +57,7 @@ namespace SynGlyphX {
 		m_mergeRoots = propertyTree.get_optional<bool>(L"<xmlattr>.merge").get_value_or(false);
 
 		//Since there was a previous bug where input fields would get written to the file that were not in use, clear them out
-		std::vector<SynGlyphX::InputTable::HashID> fieldsToRemove;
+		std::vector<SynGlyphX::HashID> fieldsToRemove;
 		for (auto inputField : m_inputFieldReferenceCounts) {
 
 			if (inputField.second == 0) {
@@ -93,7 +94,7 @@ namespace SynGlyphX {
 		m_rootVertex = add_vertex(DataMappingGlyph(graph[glyphGraphRoot]));*/
 
 		SetRootGlyph(DataMappingGlyph(graph.GetRoot()->second, true));
-		AddGraphGlyphSubgraph(root(), graph.GetRoot(), graph);
+		AddGraphGlyphSubgraph(GetRoot(), graph.GetRoot(), graph);
 
 		for (auto& link : graph.GetLinks()) {
 
@@ -251,8 +252,8 @@ namespace SynGlyphX {
 			InputBinding& selectedBinding = const_cast<InputBinding&>(vertex->second.GetInputBinding(static_cast<DataMappingGlyph::MappableField>(field)));
 			if (selectedBinding.IsBoundToInputField()) {
 
-				InputField::HashID inputFieldID = selectedBinding.GetInputFieldID();
-				std::unordered_map<InputField::HashID, unsigned int>::iterator referenceCount = graph.m_inputFieldReferenceCounts.find(inputFieldID);
+                HashID inputFieldID = selectedBinding.GetInputFieldID();
+				std::unordered_map<HashID, unsigned int>::iterator referenceCount = graph.m_inputFieldReferenceCounts.find(inputFieldID);
 
 				if (referenceCount == graph.m_inputFieldReferenceCounts.end()) {
 
@@ -291,8 +292,8 @@ namespace SynGlyphX {
 	}
 
 	void DataMappingGlyphGraph::ClearAllInputBindings(DataMappingGlyphGraph& graph, const GlyphIterator& vertex) {
-
-		ClearAllInputBindings(vertex.constify());
+        auto cvertex = vertex.constify();
+		ClearAllInputBindings(cvertex);
 		for (unsigned int i = 0; i < graph.children(vertex); ++i) {
 
 			ClearAllInputBindings(graph, graph.child(vertex, i));
@@ -346,7 +347,7 @@ namespace SynGlyphX {
 		}
 	}
 
-	void DataMappingGlyphGraph::AddGraphGlyphSubgraph(DataMappingGlyphGraph::GlyphIterator& parent, const GlyphGraph::ConstGlyphIterator& glyphGraphParent, const GlyphGraph& graph) {
+	void DataMappingGlyphGraph::AddGraphGlyphSubgraph(DataMappingGlyphGraph::GlyphIterator parent, GlyphGraph::ConstGlyphIterator glyphGraphParent, const GlyphGraph& graph) {
 
 		/*std::pair<GlyphGraph::out_edge_iterator, GlyphGraph::out_edge_iterator> children = boost::out_edges(glyphGraphParent, graph);
 		for (GlyphGraph::out_edge_iterator iT = children.first; iT != children.second; ++iT) {
@@ -365,7 +366,7 @@ namespace SynGlyphX {
 		}
 	}
 
-	void DataMappingGlyphGraph::SetInputField(DataMappingGlyphGraph::ConstGlyphIterator& node, DataMappingGlyph::MappableField field, const InputField& inputfield) {
+	void DataMappingGlyphGraph::SetInputField(DataMappingGlyphGraph::ConstGlyphIterator node, DataMappingGlyph::MappableField field, const InputField& inputfield) {
 
 		//Check if new input field is from same table as other input fields.  We shouldn't need to be this restrictive in the future, but that
 		//requires more database work than we have time for right now.
@@ -381,8 +382,8 @@ namespace SynGlyphX {
 		//Clear input binding if field as a previous value
 		ClearInputBinding(node, field);
 
-		InputField::HashID inputFieldID = inputfield.GetHashID();
-		std::unordered_map<InputField::HashID, unsigned int>::iterator referenceCount = m_inputFieldReferenceCounts.find(inputFieldID);
+		HashID inputFieldID = inputfield.GetHashID();
+		std::unordered_map<HashID, unsigned int>::iterator referenceCount = m_inputFieldReferenceCounts.find(inputFieldID);
 
 		if (referenceCount == m_inputFieldReferenceCounts.end()) {
 
@@ -403,7 +404,7 @@ namespace SynGlyphX {
 
 		if (binding.IsBoundToInputField()) {
 
-			InputField::HashID inputFieldID = binding.GetInputFieldID();
+			HashID inputFieldID = binding.GetInputFieldID();
 
 			if (m_inputFieldReferenceCounts[inputFieldID] == 1) {
 
@@ -435,7 +436,7 @@ namespace SynGlyphX {
 	void DataMappingGlyphGraph::ClearInputFieldBindings(DataMappingGlyphGraph& graph, const GlyphIterator& vertex, const InputField& inputfield) {
 
 		//ClearAllInputBindings(vertex.constify());
-		DataMappingGlyphGraph::ConstGlyphIterator& node = vertex.constify();
+		auto node = vertex.constify();
 		for (int i = 0; i < DataMappingGlyph::MappableField::MappableFieldSize; ++i) {
 
 			DataMappingGlyph::MappableField field = static_cast<SynGlyphX::DataMappingGlyph::MappableField>(i);
@@ -510,7 +511,7 @@ namespace SynGlyphX {
 		return glyphTree;
 	}
 
-	void DataMappingGlyphGraph::CreateMinOrMaxGlyphSubtree(const DataMappingGlyphGraph::ConstGlyphIterator& parent, GlyphGraph::GlyphIterator& newVertex, GlyphGraph::SharedPtr newGlyphGraph, bool isMax) const {
+	void DataMappingGlyphGraph::CreateMinOrMaxGlyphSubtree(const DataMappingGlyphGraph::ConstGlyphIterator parent, GlyphGraph::GlyphIterator newVertex, GlyphGraph::SharedPtr newGlyphGraph, bool isMax) const {
 
 		for (int i = 0; i < children(parent); ++i) {
 
@@ -614,7 +615,7 @@ namespace SynGlyphX {
 			const InputBinding& selectedBinding = glyphWithoutUnlinkedInputBindings.GetInputBinding(static_cast<DataMappingGlyph::MappableField>(field));
 			if (selectedBinding.IsBoundToInputField()) {
 
-				InputField::HashID inputFieldID = selectedBinding.GetInputFieldID();
+				HashID inputFieldID = selectedBinding.GetInputFieldID();
 				if (m_inputFields.count(inputFieldID) == 0) {
 
 					glyphWithoutUnlinkedInputBindings.ClearInputBinding(static_cast<DataMappingGlyph::MappableField>(field));

@@ -74,12 +74,12 @@ namespace SynGlyphX {
 
 		void AddChildGlyph(const boost::uuids::uuid& treeId, DataMappingGlyphGraph::GlyphIterator& parent, const DataMappingGlyph& glyphTemplate, unsigned int numberOfChildren = 1);
 		void AddChildTree(const boost::uuids::uuid& treeId, DataMappingGlyphGraph::GlyphIterator& parent, const SynGlyphX::DataMappingGlyphGraph& glyphGraph);
-		void AddChildTreeResetPosition(const boost::uuids::uuid& treeId, DataMappingGlyphGraph::GlyphIterator& parent, const SynGlyphX::DataMappingGlyphGraph& glyphGraph);
+		void AddChildTreeResetPosition(const boost::uuids::uuid& treeId, DataMappingGlyphGraph::GlyphIterator parent, const SynGlyphX::DataMappingGlyphGraph& glyphGraph);
 		void RemoveGlyph(const boost::uuids::uuid& treeId, DataMappingGlyphGraph::ConstGlyphIterator& parent, int child);
 
 		void UpdateGlyph(const boost::uuids::uuid& treeId, DataMappingGlyphGraph::GlyphIterator& vertex, const DataMappingGlyph& glyph);
 
-		void SetInputField(const boost::uuids::uuid& treeID, DataMappingGlyphGraph::ConstGlyphIterator& node, DataMappingGlyph::MappableField field, const InputField& inputfield);
+		void SetInputField(const boost::uuids::uuid& treeID, DataMappingGlyphGraph::ConstGlyphIterator node, DataMappingGlyph::MappableField field, const InputField& inputfield);
 		void ClearInputBinding(const boost::uuids::uuid& treeID, DataMappingGlyphGraph::ConstGlyphIterator& node, DataMappingGlyph::MappableField field);
 		void ClearAllInputBindings(const boost::uuids::uuid& treeID, DataMappingGlyphGraph::ConstGlyphIterator& node);
 		void ClearInputFieldBindings(const boost::uuids::uuid& treeID, const InputField& inputfield);
@@ -128,9 +128,9 @@ namespace SynGlyphX {
 		const std::vector<Link>& GetLinks() const { return m_links; }
     protected:
 		void CopyInputBindingsForSubsetMapping(DataMappingGlyphGraph::SharedPtr newGlyphGraph, 
-											   DataMappingGlyphGraph::GlyphIterator& newNode, 
+											   DataMappingGlyphGraph::GlyphIterator newNode, 
 											   DataMappingGlyphGraph::ConstSharedPtr oldGlyphGraph, 
-											   DataMappingGlyphGraph::ConstGlyphIterator& oldNode,
+											   DataMappingGlyphGraph::ConstGlyphIterator oldNode,
 											   const boost::uuids::uuid& datasourceID) const;
 		void Clear(bool addADefaultBaseObjectAfterClear);
 

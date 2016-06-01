@@ -35,6 +35,8 @@ namespace SynGlyphX {
 		static void CopyFileOverwrite(const std::string& sourceFile, const std::string& destinationFile);
 
 		static std::wstring IsFileInDirectory(const std::wstring& filename, const std::wstring& directory);
+        
+        static void SetExecutable(const std::string& file);
 
 	private:
 		static void CopyDirectoryOverwrite(const boost::filesystem::path& sourcePath, const boost::filesystem::path& destinationPath, bool recursive);

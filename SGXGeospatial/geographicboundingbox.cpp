@@ -1,6 +1,7 @@
-#include "GeographicBoundingBox.h"
+#include "geographicboundingbox.h"
 #include <sstream>
 #include <fstream>
+#include <stdexcept>
 #include <boost/filesystem.hpp>
 
 GeographicBoundingBox::GeographicBoundingBox() :

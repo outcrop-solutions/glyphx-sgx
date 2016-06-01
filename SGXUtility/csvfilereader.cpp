@@ -1,5 +1,5 @@
 #include "csvfilereader.h"
-#include <exception>
+#include <stdexcept>
 #include <boost/algorithm/string/trim.hpp>
 
 namespace SynGlyphX {

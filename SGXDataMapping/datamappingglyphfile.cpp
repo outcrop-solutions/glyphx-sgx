@@ -1,4 +1,5 @@
 #include "datamappingglyphfile.h"
+#include <stdexcept>
 
 namespace SynGlyphX {
 

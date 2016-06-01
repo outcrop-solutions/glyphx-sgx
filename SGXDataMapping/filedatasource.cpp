@@ -156,8 +156,12 @@ namespace SynGlyphX {
 
 	FileDatasource::FileType FileDatasource::GetFileTypeForFile(const std::wstring& filename) {
 
+#ifdef WIN32
 		std::wstring extension = boost::filesystem::path(filename).extension().native();
-		if (extension == L".csv") {
+#else
+        std::wstring extension = StringConvert::ToStdWString(boost::filesystem::path(filename).extension().native());
+#endif
+        if (extension == L".csv") {
 
 			return FileDatasource::FileType::CSV;
 		}

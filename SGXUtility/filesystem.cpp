@@ -1,4 +1,5 @@
 #include "filesystem.h"
+#include "stringconvert.h"
 #include <stdexcept>
 #include <boost/filesystem.hpp>
 
@@ -104,12 +105,22 @@ namespace SynGlyphX {
 			if (boost::filesystem::exists(match)) {
 
 				//return boost::filesystem::canonical(match).wstring();
+#ifndef WIN32
+                return StringConvert::ToStdWString(match.native());
+#else
 				return match.native();
+#endif
 			}
 
 		}
 
 		return L"";
 	}
+    
+    void Filesystem::SetExecutable(const std::string &file)
+    {
+        boost::filesystem::path path(file);
+        boost::filesystem::permissions(path, boost::filesystem::all_all);
+    }
 
 } //namespace SynGlyphX

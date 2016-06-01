@@ -29,7 +29,7 @@
 namespace SynGlyphX {
 
 	template <typename GlyphType, typename LinkType = GlyphType>
-	class GlyphGraphTemplate : protected stlplus::ntree<std::pair<unsigned long, GlyphType>> {
+	class GlyphGraphTemplate : public stlplus::ntree<std::pair<unsigned long, GlyphType>> {
 
 	public:
 		/*enum Edge {
@@ -40,8 +40,8 @@ namespace SynGlyphX {
 
 		typedef unsigned long Label;
 
-		typedef iterator GlyphIterator;
-		typedef const_iterator ConstGlyphIterator;
+		typedef typename stlplus::ntree<std::pair<long unsigned int, GlyphType> >::iterator GlyphIterator;
+		typedef typename stlplus::ntree<std::pair<long unsigned int, GlyphType> >::const_iterator ConstGlyphIterator;
 
 		typedef std::map<std::pair<Label, Label>, LinkType> LinkMap;
 		typedef std::pair<Label, GlyphType> VertexType;
@@ -58,7 +58,7 @@ namespace SynGlyphX {
 			stlplus::ntree<std::pair<unsigned long, GlyphType>>(),
 			m_nextLabel(0) {
 
-			insert(VertexType(GetNextLabel(), rootGlyph));
+			stlplus::ntree<std::pair<long unsigned int, GlyphType> >::insert(VertexType(GetNextLabel(), rootGlyph));
 		}
 
 		GlyphGraphTemplate(const GlyphGraphTemplate& graph) :
@@ -72,7 +72,7 @@ namespace SynGlyphX {
 			stlplus::ntree<std::pair<unsigned long, GlyphType>>(),
 			m_nextLabel(0) {
 
-			insert(VertexType(GetNextLabel(), graph.root()->second));
+			stlplus::ntree<std::pair<long unsigned int, GlyphType> >::insert(VertexType(GetNextLabel(), graph.root()->second));
 			CopyChildren(GetRoot(), graph.root(), graph);
 		}
 
@@ -83,52 +83,52 @@ namespace SynGlyphX {
 
 		ConstGlyphIterator GetRoot() const {
 
-			return root();
+			return stlplus::ntree<std::pair<long unsigned int, GlyphType> >::root();
 		}
 
 		GlyphIterator GetRoot() {
 
-			return root();
+			return stlplus::ntree<std::pair<long unsigned int, GlyphType> >::root();
 		}
 
 		ConstGlyphIterator GetParent(const ConstGlyphIterator& vertex) const {
 
-			return parent(vertex);
+			return stlplus::ntree<std::pair<long unsigned int, GlyphType> >::parent(vertex);
 		}
 
 		GlyphIterator GetParent(const GlyphIterator& vertex) {
 
-			return parent(vertex);
+			return stlplus::ntree<std::pair<long unsigned int, GlyphType> >::parent(vertex);
 		}
 
 		ConstGlyphIterator GetChild(const ConstGlyphIterator& vertex, unsigned int pos) const {
 
-			return child(vertex, pos);
+			return stlplus::ntree<std::pair<long unsigned int, GlyphType> >::child(vertex, pos);
 		}
 
 		GlyphIterator GetChild(const GlyphIterator& vertex, unsigned int pos) {
 
-			return child(vertex, pos);
+			return stlplus::ntree<std::pair<long unsigned int, GlyphType> >::child(vertex, pos);
 		}
 
 		GlyphGraphTemplate GetSubgraph(const GlyphIterator& vertex) {
 
-			return GlyphGraphTemplate(subtree(vertex));
+			return GlyphGraphTemplate(stlplus::ntree<std::pair<long unsigned int, GlyphType> >::subtree(vertex));
 		}
 
 		GlyphGraphTemplate GetAndRemoveSubgraph(const GlyphIterator& vertex) {
 
-			return GlyphGraphTemplate(cut(vertex));
+			return GlyphGraphTemplate(stlplus::ntree<std::pair<long unsigned int, GlyphType> >::cut(vertex));
 		}
 
 		unsigned int ChildCount(const ConstGlyphIterator& vertex) const {
 
-			return children(vertex);
+			return stlplus::ntree<std::pair<long unsigned int, GlyphType> >::children(vertex);
 		}
 
 		unsigned int GetDepth(const ConstGlyphIterator& vertex) const {
 
-			return depth(vertex);
+			return stlplus::ntree<std::pair<long unsigned int, GlyphType> >::depth(vertex);
 		}
 
 		GlyphIterator SetRootGlyph(const GlyphType& glyph) {
@@ -166,13 +166,13 @@ namespace SynGlyphX {
 
 		void Remove(const GlyphIterator& vertex) {
 
-			for (int i = children(vertex) - 1; i >= 0; --i) {
+			for (int i = stlplus::ntree<std::pair<long unsigned int, GlyphType> >::children(vertex) - 1; i >= 0; --i) {
 
 				Remove(GetChild(vertex, i));
 			}
 
 			RemoveRelatedLinks(vertex);
-			erase(vertex);
+			stlplus::ntree<std::pair<long unsigned int, GlyphType> >::erase(vertex);
 		}
 
 		virtual void UpdateGlyph(const GlyphIterator& vertex, const GlyphType& glyph) {
@@ -213,12 +213,12 @@ namespace SynGlyphX {
 	protected:
 		GlyphIterator SetRootGlyph(const GlyphType& glyph, Label label) {
 
-			if (!empty()) {
+			if (!stlplus::ntree<std::pair<long unsigned int, GlyphType> >::empty()) {
 
 				throw std::invalid_argument("Can't set root glyph on non empty glyph graph");
 			}
 
-			GlyphIterator newIterator = insert(VertexType(label, glyph));
+			GlyphIterator newIterator = stlplus::ntree<std::pair<long unsigned int, GlyphType> >::insert(VertexType(label, glyph));
 
 			return newIterator;
 		}
@@ -294,7 +294,7 @@ namespace SynGlyphX {
 				m_nextLabel = label + 1;
 			}
 
-			GlyphIterator newIterator = insert(vertex, VertexType(label, glyph));
+			GlyphIterator newIterator = stlplus::ntree<std::pair<long unsigned int, GlyphType> >::insert(vertex, VertexType(label, glyph));
 
 			return newIterator;
 		}

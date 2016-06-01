@@ -41,7 +41,7 @@ namespace SynGlyphX {
 	};
 
 	//This translator is so that ValueMappingRange can be automatically used by boost::property_tree
-	class SGXUTILITY_API ValueMappingRangeTranslator
+	class SGXDATAMAPPING_API ValueMappingRangeTranslator
 	{
 	public:
 		typedef std::wstring internal_type;
