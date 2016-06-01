@@ -21,6 +21,7 @@ IF (${WIN32})
 		#For 32 bit windows apps & libraries to be able to access 4GB of memory
 		SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /LARGEADDRESSAWARE")
 		SET(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} /LARGEADDRESSAWARE")
+		SET(CMAKE_CXX_FLAGS "/MP /Gm-")	# Enable multiprocess builds (and disable minimal rebuild since it's incompatible with /MP)
 	ELSE()
 		SET(ARCH_DIR Win64)
 	ENDIF()
