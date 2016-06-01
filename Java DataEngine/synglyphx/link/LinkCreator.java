@@ -110,12 +110,13 @@ public class LinkCreator {
 				if(b_temp_seg == -1){b_temp_seg = i;}
 				if(e_temp_seg == -1){e_temp_seg = i;}
 				if(rootIds.size() == rootIds.get(i)){
-					if(rootIds.get(i) == temps.get(rootIds.get(i)).getLastChildID())
+					if(rootIds.get(i) == temps.get(rootIds.get(i)).getLastChildID()){
 						segment_sizes.add(1);
-					else
+					}else{
 						segment_sizes.add(temps.get(rootIds.get(i)).getLastChildID());
+					}
 				}else{
-					segment_sizes.add(rootIds.size()-rootIds.get(i));
+					segment_sizes.add(temps.size()-(rootIds.get(i)-1));
 				}
 			}
 			nodes_per_seg.add(segment_sizes.get(i)*dataPaths.get(temps.get(rootIds.get(i)).getDataSource()).getRowCount());
@@ -159,18 +160,17 @@ public class LinkCreator {
 		//System.out.println(nodes_per_seg.get(0));
 
 		for(Map.Entry<String,ArrayList<Integer>> entry : key_rows.entrySet()){
-			ArrayList<Integer> base_set = entry.getValue();
-			ArrayList<Integer> end_set = value_rows.get(entry.getKey());
-			//System.out.println(entry.getKey());
-			//System.out.println(base_set.size());
-			for(int i = 0; i < base_set.size(); i++){
-
-				int b_id = ((base_set.get(i) - 1) * segment_sizes.get(seg_info[1])) + b_e_ids[0] + 1;
-				if(i < 5){System.out.println(b_id);}
-				for(int j = 0; j < end_set.size(); j++){
-					int e_id = ((end_set.get(j) - 1) * segment_sizes.get(seg_info[3])) + b_e_ids[1] + 1;
-					if(b_id != e_id){ //Needs to be removed for intra-glyph links
-						link_temp.addEndpointIDs(b_id, e_id);
+			if(value_rows.containsKey(entry.getKey())){
+				ArrayList<Integer> base_set = entry.getValue();
+				ArrayList<Integer> end_set = value_rows.get(entry.getKey());
+				for(int i = 0; i < base_set.size(); i++){
+					int b_id = ((base_set.get(i) - 1) * segment_sizes.get(seg_info[1])) + b_e_ids[0];
+					if(i < 5){System.out.println(b_id);}
+					for(int j = 0; j < end_set.size(); j++){
+						int e_id = ((end_set.get(j)) * segment_sizes.get(seg_info[3])) + b_e_ids[1];
+						if(b_id != e_id){ //Needs to be removed for intra-glyph links
+							link_temp.addEndpointIDs(b_id, e_id);
+						}
 					}
 				}
 			}

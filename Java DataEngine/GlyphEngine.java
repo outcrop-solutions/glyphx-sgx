@@ -95,17 +95,19 @@ public class GlyphEngine {
 	 	//String outDir = "C:\\Users\\Bryan\\Desktop\\test_for_ray\\Viz";
 	 	//String sdtPath = "C:/Users/Bryan/Desktop/East Coast Only/East_Coast_Only.sdt";
 	 	//String outDir = "C:/Users/Bryan/Desktop/East Coast Only/Viz";
+	 	String sdtPath = "C:/Users/Bryan/Desktop/Link Test Exo/linktest.sdt";
+	 	String outDir = "C:/Users/Bryan/Desktop/Link Test Exo/viz";
 	 	//String sdtPath = "C:/Users/Bryan/Desktop/Links Test/link_test.sdt";
-	 	//String outDir = "C:/Users/Bryan/Desktop/Links Test/viz";
-	 	String sdtPath = "C:/Users/Bryan/Desktop/ND HS Test/High School.sdt";
-	 	String outDir = "C:/Users/Bryan/Desktop/ND HS Test/Viz";
+	 	//String outDir = "C:/Users/Bryan/Desktop/Links Test/Viz";
+	 	//String sdtPath = "C:/Users/Bryan/Desktop/ND HS Test/High School.sdt";
+	 	//String outDir = "C:/Users/Bryan/Desktop/ND HS Test/Viz";
 	 	
 	 	String expDir = "DataMapper";
 	 	GlyphEngine start = new GlyphEngine();
 	 	double[] nw = new double[2];
-	 	nw[0] = -160.0; nw[1] = 160.0;
+	 	nw[0] = -180.0; nw[1] = 90.0;
 	 	double[] se = new double[2];
-	 	se[0] = 160.0; se[1] = -160.0;/*
+	 	se[0] = 180.0; se[1] = -90.0;/*
 	 	double[] nw = new double[2];
 	 	nw[0] = -85.25350956479433; nw[1] = 41.618268866536965;
 	 	double[] se = new double[2];

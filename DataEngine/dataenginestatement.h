@@ -1,3 +1,4 @@
+#pragma once
 #ifndef DATAENGINESTATEMENT_H
 #define DATAENGINESTATEMENT_H
 

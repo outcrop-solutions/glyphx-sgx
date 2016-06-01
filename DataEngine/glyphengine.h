@@ -1,3 +1,4 @@
+#pragma once
 #ifndef DATAENGINE_H
 #define DATAENGINE_H
 

@@ -35,7 +35,7 @@ public class SDTLinkReader {
 		loadLinks(doc);
 	}
 
-	public SDTLinkReader(){}
+	//public SDTLinkReader(){}
 
 	private void loadLinks(Document doc){
 
@@ -106,7 +106,7 @@ public class SDTLinkReader {
 	}
 
 	private int getDataPathForTemplate(String field, String code){
-
+		
 		ConvertHash convert = new ConvertHash();
 		for(int i = 0; i < dataPaths.size(); i++){
 			SourceDataInfo tb = dataPaths.get(i);
