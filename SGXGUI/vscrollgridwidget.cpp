@@ -2,6 +2,8 @@
 #include <QtGui/QStandardItemModel>
 #include <QtGui/QResizeEvent>
 #include <QtWidgets/QVBoxLayout>
+#include <QtWidgets/QHeaderView>
+#include <QtWidgets/QGridLayout>
 
 namespace SynGlyphX {
 

@@ -3,6 +3,7 @@
 #include <QtCore/QFileInfo>
 #include <QtCore/QDir>
 #include "filesystem.h"
+#include "browselineedit.h"
 
 namespace SynGlyphX {
 

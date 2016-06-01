@@ -1,10 +1,3 @@
-#pragma once
-#ifndef XYZWIDGET_H
-#define XYZWIDGET_H
-
-#include "sgxgui_global.h"
-#include <QtWidgets/QWidget>
-#include <QtWidgets/QDoubleSpinBox>
 ///
 /// SynGlyphX Holdings Incorporated ("COMPANY") CONFIDENTIAL
 /// Copyright (c) 2013-2015 SynGlyphX Holdings Incorporated, All Rights Reserved.
@@ -21,10 +14,15 @@
 /// LAWS AND INTERNATIONAL TREATIES.  THE RECEIPT OR POSSESSION OF  THIS SOURCE CODE AND/OR RELATED INFORMATION DOES NOT CONVEY OR IMPLY ANY RIGHTS  
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
+#pragma once
+#ifndef XYZWIDGET_H
+#define XYZWIDGET_H
 
-#include <QtWidgets/QCheckBox>
+#include "sgxgui_global.h"
+#include <QtWidgets/QWidget>
 #include "utilitytypes.h"
-
+class QDoubleSpinBox;
+class QCheckBox;
 namespace SynGlyphX {
 
 	class SGXGUI_EXPORT XYZWidget : public QWidget

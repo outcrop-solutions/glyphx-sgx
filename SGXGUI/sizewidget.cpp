@@ -1,5 +1,7 @@
 #include "sizewidget.h"
 #include <QtWidgets/QLayout>
+#include <QtWidgets/QAbstractSpinBox>
+#include <QtWidgets/QCheckBox>
 
 namespace SynGlyphX {
 

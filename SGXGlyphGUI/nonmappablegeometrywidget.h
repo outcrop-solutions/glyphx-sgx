@@ -22,8 +22,9 @@
 #include "nonmappablegeometryproperties.h"
 #include <QtWidgets/QWidget>
 #include "surfaceradiobuttonwidget.h"
-#include <QtWidgets/QDoubleSpinBox>
 #include "groupboxsinglewidget.h"
+
+class QDoubleSpinBox;
 
 Q_DECLARE_METATYPE(SynGlyphX::NonMappableGeometryProperties)
 

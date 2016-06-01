@@ -2,6 +2,8 @@
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/xml_parser.hpp>
 #include <sstream>
+#include <QtCore/QMimeData>
+#include "datamappingglyphgraph.h"
 
 namespace SynGlyphX {
 

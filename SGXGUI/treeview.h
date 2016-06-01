@@ -20,7 +20,8 @@
 
 #include "sgxgui_global.h"
 #include <QtWidgets/QTreeView>
-#include <QtWidgets/QAction>
+
+class QAction;
 
 namespace SynGlyphX {
 

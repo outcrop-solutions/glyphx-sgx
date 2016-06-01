@@ -19,12 +19,14 @@
 #define COLORALPHAWIDGET_H
 
 #include "sgxgui_global.h"
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QSpinBox>
-#include "utilitytypes.h"
-#include "colorbutton.h"
+#include "QtWidgets/QWidget"
+
+class QColor;
+class QSpinBox;
 
 namespace SynGlyphX {
+	
+	class ColorButton;
 
 	class SGXGUI_EXPORT ColorAlphaWidget : public QWidget
 	{

@@ -4,6 +4,7 @@
 #include <algorithm>
 #include "userdefinedbaseimageproperties.h"
 #include "filesystem.h"
+#include "browselineedit.h"
 
 namespace SynGlyphX {
 

@@ -19,11 +19,10 @@
 #define SYNGLYPHX_COLORCONVERTER_H
 
 #include "sgxglyphgui_global.h"
-#include <QtGui/QColor>
-#include "glyphcolor.h"
 
+class QColor;
 namespace SynGlyphX {
-
+	class GlyphColor;
 	class SGXGLYPHGUI_EXPORT ColorConverter
 	{
 

@@ -1,4 +1,5 @@
 #include "intminmaxwidget.h"
+#include <QtWidgets/QSpinBox>
 
 namespace SynGlyphX {
 

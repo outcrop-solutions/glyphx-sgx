@@ -20,9 +20,10 @@
 
 #include "sgxgui_global.h"
 #include <QtWidgets/QDialog>
-#include "browselineedit.h"
 
 namespace SynGlyphX {
+
+	class BrowseLineEdit;
 
 	class SGXGUI_EXPORT ReplaceFilenameDialog : public QDialog
 	{

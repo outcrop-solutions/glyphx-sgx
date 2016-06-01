@@ -19,8 +19,9 @@
 #define DOUBLESIZEWIDGET_H
 
 #include "sizewidget.h"
-#include <QtWidgets/QDoubleSpinBox>
 #include "utilitytypes.h"
+
+class QDoubleSpinBox;
 
 namespace SynGlyphX {
 

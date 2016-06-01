@@ -1,6 +1,9 @@
 #include "coloralphawidget.h"
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QSpinBox>
+#include "utilitytypes.h"
+#include "colorbutton.h"
 
 namespace SynGlyphX {
 

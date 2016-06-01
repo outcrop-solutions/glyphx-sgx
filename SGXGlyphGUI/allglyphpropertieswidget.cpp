@@ -1,5 +1,6 @@
 #include "allglyphpropertieswidget.h"
-
+#include "glyph.h"
+#include "textglyphpropertieswidget.h"
 namespace SynGlyphX {
 
 	AllGlyphPropertiesWidget::AllGlyphPropertiesWidget(bool addLockToScaleWidget, VisualGlyphPropertiesWidget::ChildOptions childOptions, QWidget *parent)

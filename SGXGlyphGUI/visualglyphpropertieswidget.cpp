@@ -1,8 +1,16 @@
 #include "visualglyphpropertieswidget.h"
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QSpinBox>
+#include <QtWidgets/QPushButton>
 #include "labelline.h"
 #include "colorconverter.h"
+#include "glyph.h"
+#include "coloralphawidget.h"
+#include "xyzwidget.h"
+#include "groupboxsinglewidget.h"
+#include "glyphstructurewidget.h"
 
 namespace SynGlyphX {
 

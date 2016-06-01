@@ -1,4 +1,6 @@
 #include "colorconverter.h"
+#include <QtGui/QColor>
+#include "glyphcolor.h"
 
 namespace SynGlyphX {
 

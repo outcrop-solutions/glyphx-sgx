@@ -1,5 +1,6 @@
 #include "validatedopenfiledialog.h"
 #include <QtWidgets/QFileDialog>
+#include <QtCore/QString>
 
 namespace SynGlyphX {
 

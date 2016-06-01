@@ -20,7 +20,8 @@
 
 #include "sgxgui_global.h"
 #include <QtWidgets/QWidget>
-#include <QtWidgets/QButtonGroup>
+
+class QButtonGroup;
 
 namespace SynGlyphX {
 

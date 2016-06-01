@@ -20,7 +20,8 @@
 
 #include "sgxgui_global.h"
 #include <QtWidgets/QDialog>
-#include <QtWidgets/QLabel>
+
+class QLabel;
 
 namespace SynGlyphX {
 

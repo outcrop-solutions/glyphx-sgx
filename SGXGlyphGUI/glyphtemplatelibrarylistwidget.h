@@ -20,8 +20,8 @@
 
 #include "sgxglyphgui_global.h"
 #include <QtWidgets/QListView>
-#include <QtWidgets/QFileSystemModel>
 
+class QFileSystemModel;
 namespace SynGlyphX {
 
 	class SGXGLYPHGUI_EXPORT GlyphTemplateLibraryListWidget : public QListView

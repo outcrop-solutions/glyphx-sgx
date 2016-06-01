@@ -4,11 +4,12 @@
 
 #include "sgxglyphgui_global.h"
 #include <QtWidgets/QWizard>
-#include "visualglyphpropertieswidget.h"
-#include "datamappingglyphgraph.h"
+#include <memory>
 
 namespace SynGlyphX {
 
+	class VisualGlyphPropertiesWidget;
+	class DataMappingGlyphGraph;
 	class SGXGLYPHGUI_EXPORT NewGlyphTreeWizard : public QWizard
 	{
 		Q_OBJECT
@@ -18,14 +19,14 @@ namespace SynGlyphX {
 		~NewGlyphTreeWizard();
 
 		virtual void accept();
-		DataMappingGlyphGraph::SharedPtr GetNewDataMappingGlyphGraph() const;
+		std::shared_ptr<DataMappingGlyphGraph> GetNewDataMappingGlyphGraph() const;
 
-		static DataMappingGlyphGraph::SharedPtr RunNewGlyphTreeWizard(QWidget *parent);
+		static std::shared_ptr<DataMappingGlyphGraph> RunNewGlyphTreeWizard(QWidget *parent);
 
 	private:
 		//Qt will take care of deleting the objects in this vector
 		std::vector<SynGlyphX::VisualGlyphPropertiesWidget*> m_glyphWidgets;
-		DataMappingGlyphGraph::SharedPtr m_dataMappingGlyphGraph;
+		std::shared_ptr<DataMappingGlyphGraph>  m_dataMappingGlyphGraph;
 	};
 
 } //namespace SynGlyphX

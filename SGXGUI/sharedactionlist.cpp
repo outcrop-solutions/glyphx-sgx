@@ -1,4 +1,5 @@
 #include "sharedactionlist.h"
+#include <QtCore/QObject>
 
 namespace SynGlyphX {
 

@@ -2,6 +2,7 @@
 #include <QtWidgets/QFormLayout>
 #include <QtWidgets/QDialogButtonBox>
 #include <QtWidgets/QMessageBox>
+#include <QtWidgets/QLineEdit>
 #include <QtCore/QFile>
 #include <QtGui/QImageReader>
 

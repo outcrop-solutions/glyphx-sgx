@@ -1,6 +1,8 @@
 #include "browselineedit.h"
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QFileDialog>
+#include <QtWidgets/QLineEdit>
+#include <QtWidgets/QPushButton>
 
 namespace SynGlyphX {
 

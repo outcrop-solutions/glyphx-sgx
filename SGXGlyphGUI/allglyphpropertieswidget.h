@@ -20,12 +20,11 @@
 
 #include "sgxglyphgui_global.h"
 #include <QtWidgets/QTabWidget>
-#include "glyph.h"
 #include "visualglyphpropertieswidget.h"
-#include "textglyphpropertieswidget.h"
 
 namespace SynGlyphX {
-
+	class Glyph;
+	class TextGlyphPropertiesWidget;
 	class SGXGLYPHGUI_EXPORT AllGlyphPropertiesWidget : public QTabWidget
 	{
 		Q_OBJECT

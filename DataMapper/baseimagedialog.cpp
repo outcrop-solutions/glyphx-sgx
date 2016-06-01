@@ -3,6 +3,7 @@
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QDialogButtonBox>
+#include <QtWidgets/QPushButton>
 #include <QtWidgets/QMessageBox>
 #include <QtCore/QFile>
 #include <QtGui/QImage>

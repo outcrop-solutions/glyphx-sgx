@@ -1,6 +1,9 @@
 #include "roweditingtableview.h"
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QHeaderView>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QTableView>
+#include <QtWidgets/QHBoxLayout>
 #include <set>
 #include <functional>
 #include "sharedactionlist.h"

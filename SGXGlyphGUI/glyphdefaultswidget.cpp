@@ -1,6 +1,9 @@
 #include "glyphdefaultswidget.h"
 #include <QtWidgets/QFormLayout>
 #include <QtWidgets/QVBoxLayout>
+#include <QtWidgets/QComboBox>
+#include <QtWidgets/QLineEdit>
+#include <QtWidgets/QCheckBox>
 #include "notemptyvalidator.h"
 
 namespace SynGlyphX {

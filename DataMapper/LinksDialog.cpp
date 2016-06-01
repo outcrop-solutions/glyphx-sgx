@@ -9,6 +9,8 @@
 #include <QtGui/QDragEnterEvent>
 #include <QtWidgets/QTableWidget>
 #include <QtWidgets/QHeaderView>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QSpinBox>
 #include "roledatafilterproxymodel.h"
 
 static void print_tree(boost::property_tree::wptree const& pt)

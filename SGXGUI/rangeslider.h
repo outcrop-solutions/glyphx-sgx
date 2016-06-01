@@ -21,7 +21,8 @@
 #include "sgxgui_global.h"
 #include <QtWidgets/QSlider>
 #include <QtWidgets/QStyle>
-#include <QtWidgets/QStylePainter>
+
+class QStylePainter;
 
 namespace SynGlyphX {
 

@@ -1,6 +1,7 @@
 #include "rangeslider.h"
 #include <QtWidgets/QStyleOptionSlider>
 #include <QtGui/QMouseEvent>
+#include <QtWidgets/QStylePainter>
 
 namespace SynGlyphX {
 

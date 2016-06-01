@@ -1,5 +1,6 @@
 #include "colorminmaxwidget.h"
 #include "colorconverter.h"
+#include "colorbutton.h"
 
 namespace SynGlyphX {
 

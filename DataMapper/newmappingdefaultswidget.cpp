@@ -1,6 +1,7 @@
 #include "newmappingdefaultswidget.h"
 #include <QtWidgets/QVBoxLayout>
 #include "groupboxsinglewidget.h"
+#include "sceneproperties.h"
 
 NewMappingDefaultsWidget::NewMappingDefaultsWidget(QWidget *parent)
 	: QWidget(parent)

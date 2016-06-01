@@ -20,12 +20,14 @@
 
 #include "sgxgui_global.h"
 #include <QtWidgets/QWidget>
-#include <QtCore/QAbstractItemModel>
 #include "utilitytypes.h"
-#include "abstracttreemodel.h"
-#include "checkboxheaderview.h"
+
+class AbstractTreeModel;
 
 namespace SynGlyphX {
+
+	class AbstractTreeModel;
+	class CheckBoxHeaderView;
 
 	class SGXGUI_EXPORT MultiListFilteredTreeWidget : public QWidget
 	{

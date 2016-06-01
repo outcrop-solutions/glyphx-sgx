@@ -19,8 +19,9 @@
 #define INTSIZEWIDGET_H
 
 #include "sizewidget.h"
-#include <QtWidgets/QSpinBox>
 #include "utilitytypes.h"
+
+class QSpinBox;
 
 namespace SynGlyphX {
 

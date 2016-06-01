@@ -1,4 +1,5 @@
 #include "doubleminmaxwidget.h"
+#include <QtWidgets/QDoubleSpinBox>
 
 namespace SynGlyphX {
 

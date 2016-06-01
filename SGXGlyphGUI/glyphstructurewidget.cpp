@@ -2,6 +2,8 @@
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QLabel>
+#include "glyphenumcombobox.h"
+#include "nonmappablegeometrywidget.h"
 
 namespace SynGlyphX {
 

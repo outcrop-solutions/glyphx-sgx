@@ -1,6 +1,8 @@
 #include "xyzwidget.h"
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QLabel>
+#include <QtWidgets/QCheckBox>
+#include <QtWidgets/QDoubleSpinBox>
 
 namespace SynGlyphX {
 

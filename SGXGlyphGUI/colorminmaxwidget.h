@@ -21,12 +21,11 @@
 #include "sgxglyphgui_global.h"
 #include "horizontalformwidget.h"
 #include "mindiff.h"
-#include "colorbutton.h"
 
 Q_DECLARE_METATYPE(SynGlyphX::ColorMinDiff)
 
 namespace SynGlyphX {
-
+	class ColorButton;
 	class SGXGLYPHGUI_EXPORT ColorMinMaxWidget : public HorizontalFormWidget
 	{
 		Q_OBJECT
