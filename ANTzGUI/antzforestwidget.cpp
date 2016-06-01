@@ -7,6 +7,7 @@
 #include <QtCore/QDir>
 #include <QtCore/QElapsedTimer>
 #include <QtCore/QDebug>
+#include <QtGui/QSurfaceFormat>
 #include "io/npfile.h"
 #include "io/npch.h"
 #include "npctrl.h"
@@ -63,9 +64,8 @@ namespace SynGlyphXANTz {
 
         SetAxisInfoObjectLocation(HUDLocation::TopLeft);
 
-        m_isInStereo = false;//context()->format().stereo();
+		m_isInStereo = QSurfaceFormat::defaultFormat().stereo();
 
-		//setAutoBufferSwap( false );
 		setFocusPolicy( Qt::StrongFocus );
 
 		QFont newFont = font();
@@ -529,11 +529,12 @@ namespace SynGlyphXANTz {
 			DrawSceneForEye( Eye::Right, false );
 		}
 
-		//int err = glGetError();
-		//if (err) {
-		//     printf("err: 2388 - OpenGL error: %d\n", err);
-		// }
-
+		/*
+		while ( auto error = glGetError() )
+		{
+			qDebug() << "OpenGL Error " << error << ": " << reinterpret_cast<const char*>( gluErrorString( error ) );
+		}
+		*/
 	}
 
 	void ANTzForestWidget::DrawSceneForEye( Eye eye, bool getStylusWorldPosition ) {
@@ -1432,7 +1433,7 @@ namespace SynGlyphXANTz {
 
 	bool ANTzForestWidget::IsStereoSupported() const {
 
-        return false;//( context()->format().stereo() );
+		return QSurfaceFormat::defaultFormat().stereo();
 	}
 
 	bool ANTzForestWidget::IsInStereoMode() const {
