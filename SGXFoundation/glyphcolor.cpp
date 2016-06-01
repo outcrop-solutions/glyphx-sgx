@@ -3,6 +3,7 @@
 #include <string>
 #include <sstream>
 #include <boost/lexical_cast.hpp>
+#include <boost/property_tree/ptree.hpp>
 
 namespace SynGlyphX {
 

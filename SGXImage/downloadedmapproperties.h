@@ -21,7 +21,7 @@
 #include "SGXImage.h"
 #include "baseimageproperties.h"
 #include <array>
-#include <boost/property_tree/ptree.hpp>
+#include <boost/property_tree/ptree_fwd.hpp>
 #include <boost/bimap.hpp>
 #include "utilitytypes.h"
 

@@ -20,7 +20,7 @@
 
 #include "sgxdatamapping.h"
 #include <array>
-#include <boost/property_tree/ptree.hpp>
+#include <boost/property_tree/ptree_fwd.hpp>
 #include "mindiff.h"
 #include "inputbinding.h"
 #include <memory>

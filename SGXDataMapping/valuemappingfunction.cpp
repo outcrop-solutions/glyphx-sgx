@@ -1,6 +1,7 @@
 #include "valuemappingfunction.h"
 #include "glyphcolor.h"
 #include <type_traits>
+#include <boost/property_tree/ptree.hpp>
 
 namespace SynGlyphX {
 

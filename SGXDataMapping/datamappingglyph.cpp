@@ -1,6 +1,7 @@
 #include "datamappingglyph.h"
 #include <utility>
 #include "interpolationmappingfunction.h"
+#include <boost/property_tree/ptree.hpp>
 
 namespace SynGlyphX {
 

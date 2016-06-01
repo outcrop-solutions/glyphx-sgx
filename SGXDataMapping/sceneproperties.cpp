@@ -1,4 +1,5 @@
 #include "sceneproperties.h"
+#include <boost/property_tree/ptree.hpp>
 
 namespace SynGlyphX {
 

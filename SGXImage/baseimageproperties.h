@@ -19,7 +19,7 @@
 #define SYNGLYPHX_BASEIMAGEPROPERTIES_H
 
 #include "SGXImage.h"
-#include <boost/property_tree/ptree.hpp>
+#include <boost/property_tree/ptree_fwd.hpp>
 #include <memory>
 
 namespace SynGlyphX {

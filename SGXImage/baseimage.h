@@ -23,7 +23,7 @@
 #include "baseimageproperties.h"
 #include "glyphcolor.h"
 #include <boost/bimap.hpp>
-#include <boost/property_tree/ptree.hpp>
+#include <boost/property_tree/ptree_fwd.hpp>
 #include <memory>
 
 namespace SynGlyphX {

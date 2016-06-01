@@ -20,7 +20,7 @@
 
 #include "sgxfoundation.h"
 #include <array>
-#include <boost/property_tree/ptree.hpp>
+#include<boost/property_tree/ptree_fwd.hpp>
 
 namespace SynGlyphX {
 

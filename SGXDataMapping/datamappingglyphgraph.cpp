@@ -1,5 +1,6 @@
 #include "datamappingglyphgraph.h"
 #include <boost/property_tree/xml_parser.hpp>
+#include <boost/property_tree/ptree.hpp>
 #include <exception>
 #include <stack>
 #include <stdexcept>

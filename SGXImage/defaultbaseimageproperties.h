@@ -19,7 +19,7 @@
 #define SYNGLYPHX_DEFAULTBASEIMAGEPROPERTIES_H
 
 #include "SGXImage.h"
-#include <boost/property_tree/ptree.hpp>
+#include <boost/property_tree/ptree_fwd.hpp>
 #include <boost/bimap.hpp>
 #include "baseimageproperties.h"
 

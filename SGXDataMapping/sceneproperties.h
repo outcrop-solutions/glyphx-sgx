@@ -21,7 +21,7 @@
 #include "sgxdatamapping.h"
 #include "glyphcolor.h"
 #include "legend.h"
-#include <boost/property_tree/ptree.hpp>
+#include <boost/property_tree/ptree_fwd.hpp>
 
 namespace SynGlyphX {
 

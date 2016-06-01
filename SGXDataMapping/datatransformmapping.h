@@ -23,7 +23,7 @@
 #include <string>
 #include <memory>
 #include <unordered_map>
-#include <boost/property_tree/ptree.hpp>
+#include <boost/property_tree/ptree_fwd.hpp>
 #include "uuid.h"
 #include "datamappingglyphgraph.h"
 #include "baseimage.h"

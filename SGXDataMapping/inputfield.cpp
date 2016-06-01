@@ -2,6 +2,7 @@
 #include <boost/uuid/uuid_io.hpp>
 #include <boost/assign/list_of.hpp>
 #include <boost/bimap/list_of.hpp>
+#include <boost/property_tree/ptree.hpp>
 #include "datasource.h"
 
 namespace SynGlyphX {

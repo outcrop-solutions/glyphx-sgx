@@ -22,7 +22,7 @@
 #include <string>
 #include <unordered_set>
 #include <unordered_map>
-#include <boost/property_tree/ptree.hpp>
+#include <boost/property_tree/ptree_fwd.hpp>
 
 namespace SynGlyphX {
 

@@ -1,4 +1,5 @@
 #include "datamappingglyphgeometry.h"
+#include <boost/property_tree/ptree.hpp>
 
 namespace SynGlyphX {
 

@@ -26,6 +26,8 @@
 
 namespace SynGlyphX {
 
+	class GlyphColor;
+
 	class SGXFOUNDATION_API Glyph : public GlyphTemplate < double, GlyphColor, std::wstring, GlyphGeometry, VirtualTopology>
 	{
 	public:

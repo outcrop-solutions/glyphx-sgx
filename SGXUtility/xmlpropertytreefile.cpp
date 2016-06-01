@@ -1,6 +1,7 @@
 #include "xmlpropertytreefile.h"
 #include <chrono>
 #include <boost/lexical_cast.hpp>
+#include <boost/property_tree/ptree.hpp>
 
 namespace SynGlyphX {
 

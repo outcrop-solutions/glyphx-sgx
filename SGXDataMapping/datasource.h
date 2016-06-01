@@ -19,7 +19,7 @@
 #define SYNGLYPHX_DATASOURCE_H
 
 #include "sgxdatamapping.h"
-#include <boost/property_tree/ptree.hpp>
+#include <boost/property_tree/ptree_fwd.hpp>
 #include <string>
 #include <unordered_set>
 #include <boost/bimap.hpp>

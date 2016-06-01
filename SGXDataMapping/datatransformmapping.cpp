@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <stdexcept>
 #include <boost/uuid/uuid_io.hpp>
+#include <boost/property_tree/ptree.hpp>
 #include "userdefinedbaseimageproperties.h"
 
 namespace SynGlyphX {

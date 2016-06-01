@@ -21,7 +21,7 @@
 #include "sgxdatamapping.h"
 #include "inputtable.h"
 #include <unordered_set>
-#include <boost/property_tree/ptree.hpp>
+#include <boost/property_tree/ptree_fwd.hpp>
 #include <boost/bimap.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/functional/hash.hpp>

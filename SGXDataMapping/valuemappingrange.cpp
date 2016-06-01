@@ -1,6 +1,7 @@
 #include "valuemappingrange.h"
 #include <stdexcept>
 #include <boost/lexical_cast.hpp>
+#include <boost/property_tree/ptree.hpp>
 
 namespace SynGlyphX {
 
