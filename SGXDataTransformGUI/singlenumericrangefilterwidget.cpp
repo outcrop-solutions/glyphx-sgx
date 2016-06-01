@@ -1,6 +1,7 @@
 #include "singlenumericrangefilterwidget.h"
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QVBoxLayout>
+#include <cmath>
 
 namespace SynGlyphX {
 

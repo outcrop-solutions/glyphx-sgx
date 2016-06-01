@@ -1,4 +1,5 @@
 #include "application.h"
+#include <stdexcept>
 #include <QtCore/QDir>
 #include <QtGui/QIcon>
 #include <QtCore/QStandardPaths>

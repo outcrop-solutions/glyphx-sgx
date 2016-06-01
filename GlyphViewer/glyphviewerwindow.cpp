@@ -479,7 +479,7 @@ void GlyphViewerWindow::LoadVisualization(const QString& filename, const DataMap
 	if (m_glyphForestModel->rowCount() > 0) {
 
 		ClearAllData();
-		m_glyph3DView->updateGL();
+		m_glyph3DView->update();
 	}
 
 	if (extension == "sdt") {
@@ -642,13 +642,13 @@ void GlyphViewerWindow::LoadDataTransform(const QString& filename, const DataMap
 
 		m_mappingModel->LoadDataTransformFile(filename, filters);
 		std::string dcd = GlyphViewerOptions::GetDefaultCacheDirectory().toStdString();
-		std::string cacheDirectoryPath = dcd + ("\\cache_" + boost::uuids::to_string(m_mappingModel->GetDataMapping()->GetID()));
+		std::string cacheDirectoryPath = dcd + ("/cache_" + boost::uuids::to_string(m_mappingModel->GetDataMapping()->GetID()));
 
 		//SynGlyphXANTz::GlyphViewerANTzTransformer transformer(QString::fromStdString(cacheDirectoryPath.string()));
 		//transformer.Transform(*m_mappingModel->GetDataMapping());
 		
 		DataEngine::GlyphEngine ge;
-		std::string dirPath = cacheDirectoryPath + "\\";
+		std::string dirPath = cacheDirectoryPath + "/";
 		std::string baseImageDir = SynGlyphX::GlyphBuilderApplication::GetDefaultBaseImagesLocation().toStdString();
 		ge.initiate(m_dataEngineConnection->getEnv(), filename.toStdString(), dirPath, baseImageDir, "", "GlyphViewer");
 		if (ge.IsUpdateNeeded()){
@@ -658,7 +658,7 @@ void GlyphViewerWindow::LoadDataTransform(const QString& filename, const DataMap
 		std::vector<std::string> images = ge.getBaseImages();
 		
 		QStringList cacheFiles;
-		QString localOutputDir = QString::fromStdString(dirPath + "antz\\");
+		QString localOutputDir = QString::fromStdString(dirPath + "antz/");
 		cacheFiles.push_back(localOutputDir + "antz.csv");
 		cacheFiles.push_back(localOutputDir + "antztag.csv");
 		cacheFiles.push_back(QString::fromStdString(dirPath + "sourcedata.db"));
@@ -700,7 +700,7 @@ void GlyphViewerWindow::LoadFilesIntoModel(const SynGlyphXANTz::ANTzCSVWriter::F
 	for (unsigned int i = 0; i < 3; ++i) {
 
 		const SynGlyphX::InputBinding& posInputBinding = rootGlyph->GetRoot()->second.GetPosition()[i].GetBinding();
-		SynGlyphX::InputTable::HashID id = posInputBinding.GetInputFieldID();
+		SynGlyphX::HashID id = posInputBinding.GetInputFieldID();
 		if (id != 0) {
 
 			rootPositionFields[i] = QString::fromStdWString(rootGlyph->GetInputFields().at(id).GetField());
@@ -717,7 +717,7 @@ void GlyphViewerWindow::ChangeMapDownloadSettings() {
 
 void GlyphViewerWindow::ShowOpenGLSettings() {
 
-	const QGLFormat& format = m_glyph3DView->context()->format();
+	const auto& format = m_glyph3DView->context()->format();
 	QString settings = tr("OpenGL Version = ") + QString::number(format.majorVersion()) + "." + QString::number(format.minorVersion()) + '\n';
 		
 	settings += tr("Stereo Support") + " = ";
@@ -835,10 +835,12 @@ void GlyphViewerWindow::ChangeOptions(const GlyphViewerOptions& oldOptions, cons
 			m_glyph3DView->SetAxisInfoObjectLocation(newOptions.GetSceneAxisObjectLocation());
 		}
 
+#ifdef USE_ZSPACE
 		if (oldOptions.GetZSpaceOptions() != newOptions.GetZSpaceOptions()) {
 
 			m_glyph3DView->SetZSpaceOptions(newOptions.GetZSpaceOptions());
 		}
+#endif
 
 		if (oldOptions.GetShowMessageWhenImagesDidNotDownload() != newOptions.GetShowMessageWhenImagesDidNotDownload()) {
 
@@ -876,6 +878,7 @@ void GlyphViewerWindow::ReadSettings() {
 	options.SetShowMessageWhenImagesDidNotDownload(settings.value("showFailedToDownloadImageMessage", true).toBool());
 	settings.endGroup();
 
+#ifdef USE_ZSPACE
 	settings.beginGroup("zSpace");
 	SynGlyphX::ZSpaceOptions zSpaceOptions;
 	zSpaceOptions.SetStylusColor(settings.value("stylusColor", QColor(Qt::green)).value<QColor>());
@@ -883,6 +886,7 @@ void GlyphViewerWindow::ReadSettings() {
 	settings.endGroup();
 
 	options.SetZSpaceOptions(zSpaceOptions);
+#endif
 
 	ChangeOptions(CollectOptions(), options);
 }
@@ -915,10 +919,12 @@ void GlyphViewerWindow::WriteSettings() {
 	settings.setValue("showFailedToDownloadImageMessage", options.GetShowMessageWhenImagesDidNotDownload());
 	settings.endGroup();
 
+#ifdef USE_ZSPACE
 	settings.beginGroup("zSpace");
 	settings.setValue("stylusColor", options.GetZSpaceOptions().GetStylusColor());
 	settings.setValue("stylusLength", options.GetZSpaceOptions().GetStylusLength());
 	settings.endGroup();
+#endif
 }
 
 GlyphViewerOptions GlyphViewerWindow::CollectOptions() {
@@ -929,7 +935,9 @@ GlyphViewerOptions GlyphViewerWindow::CollectOptions() {
 	options.SetHideUnselectedGlyphTrees(m_linkedWidgetsManager->GetFilterView());
 	options.SetShowSceneAxisHUDObject(m_glyph3DView->GetShowHUDAxisInfoObject());
 	options.SetSceneAxisObjectLocation(m_glyph3DView->GetAxisInfoObjectLocation());
+#ifdef USE_ZSPACE
 	options.SetZSpaceOptions(m_glyph3DView->GetZSpaceOptions());
+#endif
 	options.SetShowMessageWhenImagesDidNotDownload(m_showErrorFromTransform);
 
 	return options;
@@ -990,7 +998,7 @@ void GlyphViewerWindow::CreatePortableVisualization(SynGlyphX::PortableVisualiza
 		std::string baseFilename = (QString::fromStdWString(SynGlyphX::DefaultBaseImageProperties::GetBasefilename()).toStdString());
 
 		//App says "DataMapper" because this is equivalent to create portable visualization in DataMapper
-		ge.initiate(m_dataEngineConnection->getEnv(), m_currentFilename.toStdString(), csvDirectory.toStdString() + "\\", baseImageDir, baseFilename, "DataMapper");
+		ge.initiate(m_dataEngineConnection->getEnv(), m_currentFilename.toStdString(), csvDirectory.toStdString() + "/", baseImageDir, baseFilename, "DataMapper");
 		DownloadBaseImages(ge);
 		ge.generateGlyphs();
 

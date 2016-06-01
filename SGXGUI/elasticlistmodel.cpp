@@ -85,15 +85,16 @@ namespace SynGlyphX {
 			else if (role == Qt::TextAlignmentRole) {
 
 				if (index.column() == 2) {
-					return Qt::AlignRight | Qt::AlignVCenter;
+					return static_cast<QVariant>(Qt::AlignRight | Qt::AlignVCenter);
 				}
 				else if (index.column() == 1) {
 
-					return Qt::AlignHCenter | Qt::AlignVCenter;
+					return static_cast<QVariant>(Qt::AlignHCenter | Qt::AlignVCenter);
 				}
 				else if (index.column() == 0) {
 
-					return Qt::AlignLeft | Qt::AlignVCenter;
+					QFlags<Qt::AlignmentFlag> flags = Qt::AlignLeft | Qt::AlignVCenter;
+					return static_cast<unsigned int>(flags);
 				}
 			}
 			else if (role == RawDataRole) {

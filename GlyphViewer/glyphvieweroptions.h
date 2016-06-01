@@ -2,7 +2,10 @@
 #define GLYPHVIEWEROPTIONS_H
 
 #include <QtCore/QString>
+
+#ifdef USE_ZSPACE
 #include "zspaceoptions.h"
+#endif
 #include "antzforestwidget.h"
 
 class GlyphViewerOptions
@@ -29,8 +32,10 @@ public:
 	void SetSceneAxisObjectLocation(SynGlyphXANTz::ANTzForestWidget::HUDLocation location);
 	SynGlyphXANTz::ANTzForestWidget::HUDLocation GetSceneAxisObjectLocation() const;
 
+#ifdef USE_ZSPACE
 	void SetZSpaceOptions(const SynGlyphX::ZSpaceOptions& options);
 	const SynGlyphX::ZSpaceOptions& GetZSpaceOptions() const;
+#endif
 
 	void SetShowMessageWhenImagesDidNotDownload(bool showMessageWhenImagesDidNotDownload);
 	bool GetShowMessageWhenImagesDidNotDownload() const;
@@ -44,7 +49,9 @@ private:
 	bool m_showSceneAxisHUDObject;
 	SynGlyphXANTz::ANTzForestWidget::HUDLocation m_sceneAxisHUDObjectLocation;
 
+#ifdef USE_ZSPACE
 	SynGlyphX::ZSpaceOptions m_zSpaceOptions;
+#endif
 
 	//UI options
 	bool m_showMessageWhenImagesDidNotDownload;

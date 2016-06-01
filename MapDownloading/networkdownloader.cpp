@@ -160,18 +160,21 @@ GeographicBoundingBox NetworkDownloader::DownloadMap(const std::vector<Geographi
 	reply->deleteLater();
 
 	if (reply->error() != QNetworkReply::NoError) {
-		//qDebug() << (reply->errorString().toStdString()).c_str();
+		qDebug() << (reply->errorString().toStdString()).c_str();
+		std::cout << "Network Error: " << reply->errorString().toStdString() << std::endl;
 		throw DownloadException(("Network Error: "+ reply->errorString().toStdString()).c_str());
 	}
 
 	QByteArray imageData = reply->readAll();
 	if (imageData.isEmpty()) {
+		
 		throw DownloadException("Download returned no data");
 	}
 
     QImage image = QImage::fromData(imageData, ImageFormat);
 	if (image.isNull()) {
         
+		
 		throw DownloadException("Failed to get data into image");
 	}
 
@@ -196,6 +199,7 @@ GeographicBoundingBox NetworkDownloader::DownloadMap(const std::vector<Geographi
 	}
 
 	if (!image.save(QString::fromStdString(filename), ImageFormat)) {
+		
 		throw DownloadException("Failed to save image");
 	}
 

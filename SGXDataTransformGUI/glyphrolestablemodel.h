@@ -14,7 +14,7 @@
 /// LAWS AND INTERNATIONAL TREATIES.  THE RECEIPT OR POSSESSION OF  THIS SOURCE CODE AND/OR RELATED INFORMATION DOES NOT CONVEY OR IMPLY ANY RIGHTS  
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
-
+#pragma once
 #ifndef GLYPHROLESTABLEMODEL_H
 #define GLYPHROLESTABLEMODEL_H
 
@@ -87,7 +87,7 @@ private:
 	void DisconnectAllSignalsFromSourceModel();
 	PropertyType GetFieldType(int row) const;
 	SynGlyphX::MappingFunctionData::SharedPtr CreateNewMappingFunction(SynGlyphX::MappingFunctionData::Function function, PropertyType type) const;
-	const SynGlyphX::InputField GetInputField(SynGlyphX::InputField::HashID fieldID) const;
+	const SynGlyphX::InputField GetInputField(SynGlyphX::HashID fieldID) const;
 	bool IsAnySelectedIndexWithinIndexes(const QModelIndex& topLeft, const QModelIndex& bottomRight) const;
 	void DetermineAssociatedInputTable();
 

@@ -15,6 +15,8 @@
 #include <QtCore/QTextStream>
 #include "filesystem.h"
 
+#ifdef USE_LICENSING
+
 #include "rlmez.h"
 
 namespace SynGlyphX {
@@ -74,7 +76,7 @@ namespace SynGlyphX {
 		int numberOfDaysLeft = 0;
 		char version[8];
 		strcpy(version, SynGlyphX::Application::GetApplicationVersionMajorNumber().toStdString().c_str());
-		int licenseStatus = rlmez_checkout(version, &numberOfDaysLeft);
+		int licenseStatus = rlmez_checkout("synglyphx", version, &numberOfDaysLeft);
 
 		if (licenseStatus == 0) {
 
@@ -87,9 +89,7 @@ namespace SynGlyphX {
 
 			LicensingDialog dialog(nullptr);
 			if (dialog.exec() == QDialog::Accepted) {
-
-				if (rlmez_checkout(version, &numberOfDaysLeft) == 0) {
-
+				if (rlmez_checkout("synglyphx", version, &numberOfDaysLeft) == 0) {
 					result = true;
 				}
 				else {
@@ -148,7 +148,7 @@ namespace SynGlyphX {
 		int numberOfDaysLeft = 0;
 		char version[8];
 		strcpy(version, SynGlyphX::Application::GetApplicationVersionMajorNumber().toStdString().c_str());
-		int licenseStatus = rlmez_checkout(version, &numberOfDaysLeft);
+		int licenseStatus = rlmez_checkout("synglyphx", version, &numberOfDaysLeft);
 
 		QDir::setCurrent(previousCurrentDir);
 
@@ -195,3 +195,6 @@ namespace SynGlyphX {
 		return SynGlyphX::Application::GetCommonDataLocation();
 	}
 }
+
+
+#endif

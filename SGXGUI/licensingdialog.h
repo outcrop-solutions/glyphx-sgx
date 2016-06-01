@@ -14,7 +14,7 @@
 /// LAWS AND INTERNATIONAL TREATIES.  THE RECEIPT OR POSSESSION OF  THIS SOURCE CODE AND/OR RELATED INFORMATION DOES NOT CONVEY OR IMPLY ANY RIGHTS  
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
-
+#pragma once
 #ifndef SYNGLYPHX_LICENSINGDIALOG_H
 #define SYNGLYPHX_LICENSINGDIALOG_H
 
@@ -28,6 +28,7 @@ namespace SynGlyphX {
 	{
 		Q_OBJECT
 
+#ifdef USE_LICENSING
 	public:
 		LicensingDialog(QWidget *parent);
 		~LicensingDialog();
@@ -43,6 +44,7 @@ namespace SynGlyphX {
 		void ResetStatusLabel();
 
 		QLabel* m_licenseLabel;
+#endif
 	};
 
 } //namespace SynGlyphX

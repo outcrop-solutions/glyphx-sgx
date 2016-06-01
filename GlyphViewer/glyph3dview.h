@@ -49,7 +49,7 @@ private slots:
 	void ChangeNavButtonMode(const QModelIndexList& indexes);
 
 private:
-	QToolButton* CreateNavigationButton(const QString& toolTip, bool autoRepeat);
+	QToolButton* CreateNavigationButton( const QString& toolTip, bool autoRepeat );
 	void ConnectMoveForwardBackwardReleaseSignals();
 
 	static const unsigned int s_navigationButtonSize;

@@ -2,6 +2,7 @@
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QLabel>
 #include <utility>
+#include <stdexcept>
 
 namespace SynGlyphX {
 

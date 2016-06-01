@@ -15,9 +15,11 @@ OptionsWidget::OptionsWidget(const GlyphViewerOptions& options, bool enableCache
 	CreateCacheTab(enableCacheOptions);
 	Create3DTab();
 
+#ifdef USE_ZSPACE
 	m_zSpaceOptionsWidget = new SynGlyphX::ZSpaceOptionsWidget(this);
 	m_zSpaceOptionsWidget->SetOptions(options.GetZSpaceOptions());
 	addTab(m_zSpaceOptionsWidget, tr("zSpace"));
+#endif
 
 	CreateUITab();
 
@@ -140,7 +142,11 @@ GlyphViewerOptions OptionsWidget::GetOptions() const {
 	options.SetHideUnselectedGlyphTrees(m_hideSelectedGlyphsCheckbox->isChecked());
 	options.SetShowSceneAxisHUDObject(m_showHUDAxisInfoObjectCheckBox->isChecked());
 	options.SetSceneAxisObjectLocation(static_cast<SynGlyphXANTz::ANTzForestWidget::HUDLocation>(m_axisObjectLocationComboBox->currentIndex()));
+
+#ifdef USE_ZSPACE
 	options.SetZSpaceOptions(m_zSpaceOptionsWidget->GetOptions());
+#endif
+
 	options.SetShowMessageWhenImagesDidNotDownload(m_showDownloadedImageErrorMessages->isChecked());
 
 	return options;

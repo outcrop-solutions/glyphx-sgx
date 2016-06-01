@@ -14,7 +14,7 @@
 /// LAWS AND INTERNATIONAL TREATIES.  THE RECEIPT OR POSSESSION OF  THIS SOURCE CODE AND/OR RELATED INFORMATION DOES NOT CONVEY OR IMPLY ANY RIGHTS  
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
-
+#pragma once
 #ifndef ROLEDATAFILTERPROXYMODEL_H
 #define ROLEDATAFILTERPROXYMODEL_H
 
@@ -32,7 +32,7 @@ namespace SynGlyphX {
 		RoleDataFilterProxyModel(QObject* parent = nullptr);
 		~RoleDataFilterProxyModel();
 
-		void SetNot(bool not);
+		void SetNot(bool val);
 		virtual bool HasFilterData() const = 0;
 		void Clear();
 

@@ -11,7 +11,7 @@
 
 namespace SynGlyphX {
 
-	const QString MainWindow::s_copyright = QString::fromStdWString(L"Copyright © 2013-2015 SynGlyphX Holdings Incorporated. All Rights Reserved.\n\nSynGlyphX, Glyph IT, Glyph KIT are either registered trademarks or trademarks of SynGlyphX Holdings Incorporated in the United States and/or other countries.  All other trademarks are the property of their respective owners.");
+	const QString MainWindow::s_copyright = QString::fromStdString("Copyright ï¿½ 2013-2015 SynGlyphX Holdings Incorporated. All Rights Reserved.\n\nSynGlyphX, Glyph IT, Glyph KIT are either registered trademarks or trademarks of SynGlyphX Holdings Incorporated in the United States and/or other countries.  All other trademarks are the property of their respective owners.");
 	const QString MainWindow::s_fileDialogSettingsGroup = "FileDialogSettings";
 
 	MainWindow::MainWindow(unsigned int stateVersion, QWidget *parent)
@@ -201,9 +201,10 @@ namespace SynGlyphX {
     }
 
 	void MainWindow::ShowLicensingDialog() {
-
+#ifdef USE_LICENSING
 		SynGlyphX::LicensingDialog dialog(this);
 		dialog.exec();
+#endif
 	}
 
     void MainWindow::ShowAboutBox() {

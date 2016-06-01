@@ -75,7 +75,7 @@ int	GlyphRolesTableModel::rowCount(const QModelIndex& parent) const {
 	}
 }
 
-const SynGlyphX::InputField GlyphRolesTableModel::GetInputField(SynGlyphX::InputField::HashID fieldID) const {
+const SynGlyphX::InputField GlyphRolesTableModel::GetInputField(SynGlyphX::HashID fieldID) const {
 
 	if ((fieldID == 0) || (m_selectedDataTransformModelIndexes.isEmpty())) {
 

@@ -38,12 +38,6 @@
     <ClCompile Include="downloadedmap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_downloadedmap.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_downloadedmap.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
     <ClCompile Include="networkdownloader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

@@ -3,6 +3,7 @@
 #include <QtCore/QDir>
 #include "glyphbuilderapplication.h"
 #include "filesystem.h"
+#include <iostream>
 
 namespace SynGlyphX {
 
@@ -40,7 +41,7 @@ namespace SynGlyphX {
 	void PortableVisualizationExport::SetupSourceDirectories() {
 
 		QString sourceBaseDir = QDir::toNativeSeparators(QFileInfo(SynGlyphX::Application::applicationDirPath()).canonicalFilePath()) + QDir::separator();
-
+		
 		QSettings settings;
 		settings.beginGroup("ANTzExport");
 		AddSourceDirectoryToPlatformIfItExists(Platform::Windows, settings.value("windows", sourceBaseDir + "ANTzTemplate").toString());
@@ -70,7 +71,6 @@ namespace SynGlyphX {
 	}
 
 	void PortableVisualizationExport::AddSourceDirectoryToPlatformIfItExists(Platform platform, const QString& directoryName) {
-
 		if (DoesSourceDirectoryExist(directoryName)) {
 
 			m_sourceDirectories[platform] = directoryName;
@@ -85,19 +85,24 @@ namespace SynGlyphX {
 			return false;
 		}
 
+        if (!baseSourceDir.exists("usr")) {
+            
+            baseSourceDir.mkdir("usr");
+        }
+        
 		if (!baseSourceDir.cd("usr")) {
 
-			return false;
+            return false;
 		}
 
 		if (!baseSourceDir.exists("csv")) {
 
-			return false;
+            baseSourceDir.mkdir("csv");
 		}
 
 		if (!baseSourceDir.exists("images")) {
 
-			return false;
+            baseSourceDir.mkdir("images");
 		}
 
 		return true;
@@ -124,6 +129,11 @@ namespace SynGlyphX {
 			QFile::copy(appPath + "msvcr120.dll", destinationDir + "/msvcr120.dll");
 			QFile::copy(appPath + "vccorlib120.dll", destinationDir + "/vccorlib120.dll");
 		}
+        
+#ifdef __APPLE__
+        // On OSX the exectuable won't automatically have the execute permission bit set. Change it.
+        Filesystem::SetExecutable( destinationDir.toStdString() + "/Glyph_Viewer_(Portable)_mac" );
+#endif
 	}
 
 	void PortableVisualizationExport::CopyLogo(const QString& outputDir) const {

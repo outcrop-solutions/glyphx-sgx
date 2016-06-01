@@ -23,7 +23,10 @@
 #include <QtWidgets/QComboBox>
 #include "glyphvieweroptions.h"
 #include "browselineedit.h"
+
+#ifdef USE_ZSPACE
 #include "zspaceoptionswidget.h"
+#endif
 
 class OptionsWidget : public QTabWidget
 {
@@ -51,8 +54,10 @@ private:
 	SynGlyphX::BrowseLineEdit* m_cacheDirectoryWidget;
 	
 	QCheckBox* m_hideSelectedGlyphsCheckbox;
-	
+
+#ifdef USE_ZSPACE
 	SynGlyphX::ZSpaceOptionsWidget* m_zSpaceOptionsWidget;
+#endif
 
 	QCheckBox* m_showDownloadedImageErrorMessages;
 	

@@ -14,7 +14,7 @@
 /// LAWS AND INTERNATIONAL TREATIES.  THE RECEIPT OR POSSESSION OF  THIS SOURCE CODE AND/OR RELATED INFORMATION DOES NOT CONVEY OR IMPLY ANY RIGHTS  
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
-
+#pragma once
 #ifndef LINKSDIALOG_H
 #define LINKSDIALOG_H
 
@@ -28,10 +28,11 @@
 #include "doublesizewidget.h"
 #include "defaultbaseimagescombobox.h"
 #include "colorbutton.h"
-#include "Link.h"
 #include "glyphtreesview.h"
 #include "bindinglineedit.h"
 #include "glyphrolestablemodel.h"
+
+class SynGlyphX::Link;
 
 class LinkLineEdit : public QLineEdit
 {
@@ -51,7 +52,7 @@ private:
 class LinksDialog : public QDialog
 {
 	Q_OBJECT
-
+		friend class FunctionDialog;
 public:
 
 	LinksDialog(SynGlyphX::DataTransformModel* dataTransformModel, QWidget* parent = 0);
@@ -67,7 +68,7 @@ public:
 	void Clear();
 
 private slots:
-
+	void OnFunctionProperties();
 
 private:
 	SynGlyphX::Link::Node GetNode(GlyphTreesView* treeView, LinkLineEdit* lineEdit);
@@ -87,6 +88,8 @@ private:
 	QCheckBox*	m_inheritColorCheckBox;
 	QSpinBox*	m_transparensySpinBox;
 
+	QComboBox* m_functionComboBox;
+	QPushButton* m_functionPushButton;
 	SynGlyphX::Link m_link;
 	int m_row;
 };

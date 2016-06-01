@@ -4,16 +4,31 @@
 #include <QtCore/QTimer>
 #include "glyphbuilderapplication.h"
 #include "licensingdialog.h"
-#include "exception_handler.h"
 #include <QtCore/QStandardPaths>
 #include <QtWidgets/QMessageBox>
 #include <boost/filesystem.hpp>
 
+#ifdef USE_BREAKPAD
+#include "exception_handler.h"
+#endif
+
 int main(int argc, char *argv[])
 {
+#ifdef __APPLE__
+    // Mac: Add plugin path in package.
+    // 'macdeployqt' needs to be run on the app package after building for this to work.
+    QDir dir(argv[0]); // e.g. appdir/Contents/MacOS/appname
+    dir.cdUp();
+    dir.cdUp();
+    dir.cd("PlugIns"); // e.g. appdir/Contents/PlugIns
+    QCoreApplication::setLibraryPaths(QStringList(dir.absolutePath()));
+    printf("after change, libraryPaths=(%s)\n", QCoreApplication::libraryPaths().join(",").toUtf8().data());
+#endif
+    
     SynGlyphX::GlyphBuilderApplication::Setup("Glyph Builder - Glyph Designer", "0.7.45");
 	SynGlyphX::GlyphBuilderApplication a(argc, argv);
 
+#ifdef USE_BREAKPAD
 	const QString dumpPath = QStandardPaths::writableLocation(QStandardPaths::HomeLocation) + "/Minidumps";
 	std::wstring pathAsStr = dumpPath.toStdWString();
 	boost::filesystem::path dir(pathAsStr);
@@ -35,13 +50,16 @@ int main(int argc, char *argv[])
 		MiniDumpNormal,
 		L"",
 		0);
+#endif
 
 	SynGlyphX::GlyphBuilderApplication::SetupIconsAndLogos();
 
+#ifdef USE_LICENSING
 	if (!SynGlyphX::LicensingDialog::CheckLicense()) {
 
 		return 0;
 	}
+#endif
 
 	//Setup and show the splash screen
 	QPixmap pixmap(SynGlyphX::GlyphBuilderApplication::GetSplashScreenLocation());

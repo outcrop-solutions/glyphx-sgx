@@ -17,7 +17,9 @@ GlyphViewerOptions::GlyphViewerOptions(const GlyphViewerOptions& options) :
 	m_hideUnselectedGlyphTrees(options.m_hideUnselectedGlyphTrees),
 	m_showSceneAxisHUDObject(options.m_showSceneAxisHUDObject),
 	m_sceneAxisHUDObjectLocation(options.m_sceneAxisHUDObjectLocation),
+#ifdef USE_ZSPACE
 	m_zSpaceOptions(options.m_zSpaceOptions),
+#endif
 	m_showMessageWhenImagesDidNotDownload(options.m_showMessageWhenImagesDidNotDownload) {
 
 }
@@ -32,7 +34,9 @@ GlyphViewerOptions& GlyphViewerOptions::operator=(const GlyphViewerOptions& opti
 	m_hideUnselectedGlyphTrees = options.m_hideUnselectedGlyphTrees;
 	m_showSceneAxisHUDObject = options.m_showSceneAxisHUDObject;
 	m_sceneAxisHUDObjectLocation = options.m_sceneAxisHUDObjectLocation;
+#ifdef USE_ZSPACE
 	m_zSpaceOptions = options.m_zSpaceOptions;
+#endif
 	m_showMessageWhenImagesDidNotDownload = options.m_showMessageWhenImagesDidNotDownload;
 
 	return *this;
@@ -60,10 +64,12 @@ bool GlyphViewerOptions::operator==(const GlyphViewerOptions& options) const {
 		return false;
 	}
 
+#ifdef USE_ZSPACE
 	if (m_zSpaceOptions != options.m_zSpaceOptions) {
 
 		return false;
 	}
+#endif
 
 	if (m_showMessageWhenImagesDidNotDownload != options.m_showMessageWhenImagesDidNotDownload) {
 
@@ -123,6 +129,7 @@ SynGlyphXANTz::ANTzForestWidget::HUDLocation GlyphViewerOptions::GetSceneAxisObj
 	return m_sceneAxisHUDObjectLocation;
 }
 
+#ifdef USE_ZSPACE
 void GlyphViewerOptions::SetZSpaceOptions(const SynGlyphX::ZSpaceOptions& options) {
 
 	m_zSpaceOptions = options;
@@ -132,6 +139,7 @@ const SynGlyphX::ZSpaceOptions& GlyphViewerOptions::GetZSpaceOptions() const {
 
 	return m_zSpaceOptions;
 }
+#endif
 
 void GlyphViewerOptions::SetShowMessageWhenImagesDidNotDownload(bool showMessageWhenImagesDidNotDownload) {
 
