@@ -59,6 +59,8 @@
       <PrecompiledHeaderFile />
       <AdditionalIncludeDirectories>..\..\Core\SGXUtility\;..\..\3rdParty\include\boost_1_55_0;..\..\3rdParty\include\stlplus_3_11</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <MinimalRebuild>false</MinimalRebuild>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -81,6 +83,7 @@
       <PrecompiledHeaderFile />
       <AdditionalIncludeDirectories>..\..\Core\SGXUtility\;..\..\3rdParty\include\boost_1_55_0;..\..\3rdParty\include\stlplus_3_11</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

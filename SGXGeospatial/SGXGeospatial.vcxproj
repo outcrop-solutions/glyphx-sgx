@@ -57,6 +57,8 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;SGXGeospatial_EXPORTS;_DEBUG;_WINDOWS;_USRDLL;SGXGGEOSPATIAL_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>..\..\3rdParty\include\boost_1_55_0</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <MinimalRebuild>false</MinimalRebuild>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -76,6 +78,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;SGXGeospatial_EXPORTS;NDEBUG;_WINDOWS;_USRDLL;SGXGGEOSPATIAL_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>..\..\3rdParty\include\boost_1_55_0</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

@@ -57,6 +57,8 @@
       <PreprocessorDefinitions>WIN32;SGXDataMapping_EXPORTS;_DEBUG;_WINDOWS;_USRDLL;SGXDATAMAPPING_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile />
       <AdditionalIncludeDirectories>..\..\Core\SGXFoundation;..\..\3rdParty\include\stlplus_3_11;..\..\Core\SGXUtility\;..\..\Core\SGXImage;..\..\3rdParty\include\boost_1_55_0</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <MinimalRebuild>false</MinimalRebuild>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -78,6 +80,7 @@
       <PreprocessorDefinitions>WIN32;SGXDataMapping_EXPORTS;NDEBUG;_WINDOWS;_USRDLL;SGXDATAMAPPING_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile />
       <AdditionalIncludeDirectories>..\..\Core\SGXFoundation;..\..\3rdParty\include\stlplus_3_11;..\..\Core\SGXUtility\;..\..\Core\SGXImage;..\..\3rdParty\include\boost_1_55_0</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

@@ -57,6 +57,8 @@
       <PreprocessorDefinitions>SGXImage_EXPORTS;WIN32;_DEBUG;_WINDOWS;_USRDLL;SGXIMAGE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>..\..\Core\SGXUtility;..\..\3rdParty\include\boost_1_55_0;..\..\Core\SGXFoundation;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <MinimalRebuild>false</MinimalRebuild>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -77,6 +79,7 @@
       <PreprocessorDefinitions>SGXImage_EXPORTS;WIN32;NDEBUG;_WINDOWS;_USRDLL;SGXIMAGE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>..\..\Core\SGXUtility;..\..\3rdParty\include\boost_1_55_0;..\..\Core\SGXFoundation;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

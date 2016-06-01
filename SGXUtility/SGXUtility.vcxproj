@@ -57,6 +57,8 @@
       <PreprocessorDefinitions>SGXUtility_EXPORTS;WIN32;_DEBUG;_WINDOWS;_USRDLL;SGXUTILITY_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>..\..\3rdParty\include\boost_1_55_0</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile />
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <MinimalRebuild>false</MinimalRebuild>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -77,6 +79,7 @@
       <PreprocessorDefinitions>SGXUtility_EXPORTS;WIN32;NDEBUG;_WINDOWS;_USRDLL;SGXUTILITY_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>..\..\3rdParty\include\boost_1_55_0</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile />
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
