@@ -50,6 +50,13 @@ int main(int argc, char *argv[])
     QCoreApplication::setLibraryPaths(QStringList(dir.absolutePath()));
     printf("after change, libraryPaths=(%s)\n", QCoreApplication::libraryPaths().join(",").toUtf8().data());
 #endif
+
+#ifdef WIN32
+	QSurfaceFormat fmt = QSurfaceFormat::defaultFormat();
+	fmt.setOption( QSurfaceFormat::StereoBuffers );
+	fmt.setStereo( true );
+	QSurfaceFormat::setDefaultFormat( fmt );
+#endif
     
 	SynGlyphX::GlyphBuilderApplication::Setup("Glyph Builder - Glyph Viewer", "0.7.45");
 	SynGlyphX::GlyphBuilderApplication a(argc, argv);
