@@ -21,7 +21,7 @@
 #include "ANTzBridge.h"
 #include "xmlpropertytreefile.h"
 #include <string>
-#include <boost/property_tree/ptree.hpp>
+#include <boost/property_tree/ptree_fwd.hpp>
 #include "uuid.h"
 
 namespace SynGlyphXANTz {
