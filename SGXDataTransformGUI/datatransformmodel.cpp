@@ -16,6 +16,8 @@
 #include "stringconvert.h"
 #include <set>
 #include <QtWidgets/QMessageBox>
+#include "Link.h"
+#include "baseimage.h"
 
 namespace SynGlyphX {
 

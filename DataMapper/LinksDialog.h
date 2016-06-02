@@ -19,35 +19,25 @@
 #define LINKSDIALOG_H
 
 #include <QtWidgets/QDialog>
+#include <QtWidgets/QLineEdit>
 #include <QtWidgets/QStackedWidget>
-#include <QtWidgets/QComboBox>
-#include <QtWidgets/QCheckBox>
 #include <QtCore/QSignalMapper>
 #include "mapoptionswidget.h"
 #include "browselineedit.h"
 #include "doublesizewidget.h"
 #include "defaultbaseimagescombobox.h"
-#include "colorbutton.h"
-#include "glyphtreesview.h"
-#include "bindinglineedit.h"
-#include "glyphrolestablemodel.h"
 
-class SynGlyphX::Link;
+class QComboBox;
+class QCheckBox;
+class GlyphTreesView;
+class LinkLineEdit;
 
-class LinkLineEdit : public QLineEdit
-{
-public:
-	LinkLineEdit(SynGlyphX::DataTransformModel* dataTransformModel, QWidget *parent = 0);
-	virtual ~LinkLineEdit() {}
-	const SynGlyphX::InputField& GetInputField() const { return m_inputField; }
-	void SetInputField(const SynGlyphX::InputField& inputField);
-protected:
-	virtual void dragEnterEvent(QDragEnterEvent* event);
-	virtual void dropEvent(QDropEvent* event);
-private:
-	SynGlyphX::InputField m_inputField;
-	SynGlyphX::DataTransformModel* m_dataTransformModel;
-};
+namespace SynGlyphX {
+	class Link;
+	class LinkNode;
+	class DataTransformModel;
+	class ColorButton;
+}
 
 class LinksDialog : public QDialog
 {
@@ -71,9 +61,9 @@ private slots:
 	void OnFunctionProperties();
 
 private:
-	SynGlyphX::Link::Node GetNode(GlyphTreesView* treeView, LinkLineEdit* lineEdit);
-	void SelectGlyph(const QModelIndex &parent, GlyphTreesView* treeView, const SynGlyphX::Link::Node& node);
-	void SetNode(const SynGlyphX::Link::Node& node, GlyphTreesView* treeView, LinkLineEdit* lineEdit);
+	SynGlyphX::LinkNode GetNode(GlyphTreesView* treeView, LinkLineEdit* lineEdit);
+	void SelectGlyph(const QModelIndex &parent, GlyphTreesView* treeView, const SynGlyphX::LinkNode& node);
+	void SetNode(const SynGlyphX::LinkNode& node, GlyphTreesView* treeView, LinkLineEdit* lineEdit);
 	bool Validate();
 	QLineEdit*	  m_nameLineEdit;
 	LinkLineEdit* m_fromLineEdit;
@@ -90,7 +80,7 @@ private:
 
 	QComboBox* m_functionComboBox;
 	QPushButton* m_functionPushButton;
-	SynGlyphX::Link m_link;
+	SynGlyphX::Link* m_link;
 	int m_row;
 };
 

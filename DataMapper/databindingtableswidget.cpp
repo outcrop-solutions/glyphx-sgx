@@ -7,6 +7,7 @@
 #include <QtWidgets/QHeaderView>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QVBoxLayout>
+#include <QtWidgets/QDataWidgetMapper>
 #include "colorminmaxwidget.h"
 #include "doubleminmaxwidget.h"
 #include "intminmaxwidget.h"
@@ -14,6 +15,7 @@
 #include "mappingfunctionwidget.h"
 #include "glyphenumcombobox.h"
 #include "stretchsurroundedwidget.h"
+#include "baseimage.h"
 
 const QMargins DataBindingTablesWidget::s_cellMargins(8, 5, 8, 5);
 

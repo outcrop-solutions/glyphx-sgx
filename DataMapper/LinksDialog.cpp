@@ -12,6 +12,10 @@
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QSpinBox>
 #include "roledatafilterproxymodel.h"
+#include "colorbutton.h"
+#include "glyphtreesview.h"
+#include "inputfieldmimedata.h"
+#include "inputfield.h"
 
 static void print_tree(boost::property_tree::wptree const& pt)
 {
@@ -24,6 +28,22 @@ static void print_tree(boost::property_tree::wptree const& pt)
 		print_tree(it->second);
 	}
 }
+
+class LinkLineEdit : public QLineEdit
+{
+public:
+	LinkLineEdit(SynGlyphX::DataTransformModel* dataTransformModel, QWidget *parent = 0);
+	virtual ~LinkLineEdit() {}
+	const SynGlyphX::InputField& GetInputField() const { return m_inputField; }
+	void SetInputField(const SynGlyphX::InputField& inputField);
+protected:
+	virtual void dragEnterEvent(QDragEnterEvent* event);
+	virtual void dropEvent(QDropEvent* event);
+private:
+	SynGlyphX::InputField m_inputField;
+	SynGlyphX::DataTransformModel* m_dataTransformModel;
+};
+
 
 class FunctionDialog : public QDialog {
 	Q_OBJECT
@@ -271,6 +291,7 @@ void LinkLineEdit::dropEvent(QDropEvent* event) {
 LinksDialog::LinksDialog(SynGlyphX::DataTransformModel* dataTransformModel, QWidget *parent)
 	: QDialog(parent),
 	m_dataTransformModel(dataTransformModel),
+	m_link(new SynGlyphX::Link),
 	m_row(-1)
 {
 	QVBoxLayout* mainLayout = new QVBoxLayout(this);
@@ -351,7 +372,7 @@ LinksDialog::LinksDialog(SynGlyphX::DataTransformModel* dataTransformModel, QWid
 		else
 			m_functionPushButton->setDisabled(false);
 		// clear function properties on change. Maybe we need worning dialog here, but it will be annoying 
-		m_link.m_function.m_propertyTree.clear();
+		m_link->m_function.m_propertyTree.clear();
 	});
 	QObject::connect(m_functionPushButton, &QPushButton::clicked, this, &LinksDialog::OnFunctionProperties);
 
@@ -376,16 +397,16 @@ void LinksDialog::SetEditRow(int row) {
 
 const SynGlyphX::Link& LinksDialog::GetLink() {
 	// 
-	//m_link.m_function = SynGlyphX::LinkFunction::MatchValue;
-	m_link.m_start = GetNode(m_fromGlyphTree, m_fromLineEdit);
-	m_link.m_end = GetNode(m_toGlyphTree, m_toLineEdit);
-	m_link.m_name = m_nameLineEdit->text().toStdWString();
+	//m_link->m_function = SynGlyphX::LinkFunction::MatchValue;
+	m_link->m_start = GetNode(m_fromGlyphTree, m_fromLineEdit);
+	m_link->m_end = GetNode(m_toGlyphTree, m_toLineEdit);
+	m_link->m_name = m_nameLineEdit->text().toStdWString();
 	QColor c = m_colorButton->GetColor();
-	m_link.m_color.SetRGB(c.red(), c.green(), c.blue());
-	m_link.m_color.m_alpha = m_transparensySpinBox->value();
-	m_link.m_color.m_inheritfromParent = m_inheritColorCheckBox->isChecked();
-	m_link.m_function.m_propertyTree.put(L"<xmlattr>.type", m_functionComboBox->currentText().toStdWString());
-	return m_link;
+	m_link->m_color.SetRGB(c.red(), c.green(), c.blue());
+	m_link->m_color.m_alpha = m_transparensySpinBox->value();
+	m_link->m_color.m_inheritfromParent = m_inheritColorCheckBox->isChecked();
+	m_link->m_function.m_propertyTree.put(L"<xmlattr>.type", m_functionComboBox->currentText().toStdWString());
+	return *m_link;
 }
 
 void LinksDialog::SetLink(const SynGlyphX::Link& link) {
@@ -393,7 +414,7 @@ void LinksDialog::SetLink(const SynGlyphX::Link& link) {
 	m_nameLineEdit->setText(QString::fromStdWString(link.m_name));
 	m_colorButton->SetColor(QColor(link.m_color.m_r, link.m_color.m_g, link.m_color.m_b));
 	m_transparensySpinBox->setValue(link.m_color.m_alpha);
-	m_inheritColorCheckBox->setChecked(m_link.m_color.m_inheritfromParent);
+	m_inheritColorCheckBox->setChecked(m_link->m_color.m_inheritfromParent);
 	SetNode(link.m_start, m_fromGlyphTree, m_fromLineEdit);
 	SetNode(link.m_end, m_toGlyphTree, m_toLineEdit);	
 	const auto& type = link.m_function.m_propertyTree.get_optional<std::wstring>(L"<xmlattr>.type");
@@ -401,7 +422,7 @@ void LinksDialog::SetLink(const SynGlyphX::Link& link) {
 		QString typeStr = QString::fromStdWString(type.get());
 		m_functionComboBox->setCurrentText(QString::fromStdWString(type.get()));
 	}
-	m_link.m_function = link.m_function;
+	m_link->m_function = link.m_function;
 	//print_tree(link.m_function.m_propertyTree);
 
 }
@@ -413,7 +434,7 @@ void LinksDialog::Clear(){
 
 }
 
-SynGlyphX::Link::Node LinksDialog::GetNode(GlyphTreesView* treeView, LinkLineEdit* lineEdit) {
+SynGlyphX::LinkNode LinksDialog::GetNode(GlyphTreesView* treeView, LinkLineEdit* lineEdit) {
 
 	QModelIndexList selectedItems = treeView->selectionModel()->selectedIndexes();
 	SynGlyphX::RoleDataFilterProxyModel* filterModel = dynamic_cast<SynGlyphX::RoleDataFilterProxyModel*>(treeView->model());
@@ -422,12 +443,12 @@ SynGlyphX::Link::Node LinksDialog::GetNode(GlyphTreesView* treeView, LinkLineEdi
 	SynGlyphX::DataMappingGlyphGraph::Node* treeNode = static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(sourceIndex.internalPointer());
 
 	SynGlyphX::DataMappingGlyphGraph::GlyphIterator fromGlyph(treeNode);
-	SynGlyphX::Link::Node node(m_dataTransformModel->GetTreeId(sourceIndex), fromGlyph->first, lineEdit->GetInputField().GetHashID());
+	SynGlyphX::LinkNode node(m_dataTransformModel->GetTreeId(sourceIndex), fromGlyph->first, lineEdit->GetInputField().GetHashID());
 	return node;
 }
 
 
-void LinksDialog::SelectGlyph(const QModelIndex &parent, GlyphTreesView* treeView, const SynGlyphX::Link::Node& node){
+void LinksDialog::SelectGlyph(const QModelIndex &parent, GlyphTreesView* treeView, const SynGlyphX::LinkNode& node){
 
 	int rowCount = m_dataTransformModel->rowCount(parent);
 	for (int i = 0; i < rowCount; ++i) {
@@ -450,7 +471,7 @@ void LinksDialog::SelectGlyph(const QModelIndex &parent, GlyphTreesView* treeVie
 	}
 }
 
-void LinksDialog::SetNode(const SynGlyphX::Link::Node& node, GlyphTreesView* treeView, LinkLineEdit* lineEdit) {
+void LinksDialog::SetNode(const SynGlyphX::LinkNode& node, GlyphTreesView* treeView, LinkLineEdit* lineEdit) {
 
 	const auto& glyphGraph = m_dataTransformModel->GetDataMapping()->GetGlyphGraphs().at(node.m_treeId);
 	const SynGlyphX::DataMappingGlyphGraph::InputFieldMap& inputFields = glyphGraph->GetInputFields();
@@ -492,11 +513,11 @@ bool LinksDialog::Validate() {
 }
 
 void LinksDialog::OnFunctionProperties() {
-	//print_tree(m_link.m_function.m_propertyTree);
-	m_link.m_function.m_propertyTree.put(L"<xmlattr>.type", m_functionComboBox->currentText().toStdWString());
-	FunctionDialog dialog(m_link.m_function.m_propertyTree, this);
+	//print_tree(m_link->m_function.m_propertyTree);
+	m_link->m_function.m_propertyTree.put(L"<xmlattr>.type", m_functionComboBox->currentText().toStdWString());
+	FunctionDialog dialog(m_link->m_function.m_propertyTree, this);
 	if (dialog.exec() == QDialog::Accepted) {
-		dialog.GetPropertyTree(&m_link.m_function.m_propertyTree);
+		dialog.GetPropertyTree(&m_link->m_function.m_propertyTree);
 	}
 
 }
@@ -504,6 +525,7 @@ void LinksDialog::OnFunctionProperties() {
 LinksDialog::~LinksDialog() {
 	delete m_fromGlyphTree;
 	delete m_toGlyphTree;
+	delete m_link;
 }
 
 void LinksDialog::accept() {
