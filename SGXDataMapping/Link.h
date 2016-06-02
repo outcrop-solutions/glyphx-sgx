@@ -31,19 +31,19 @@ class LinksDialog;
 
 namespace SynGlyphX {
 
+	struct LinkNode { //tree ID and lable should uniquely identify glyph
+		LinkNode(boost::uuids::uuid treeId, unsigned long label, size_t inputFieldId) : m_treeId(treeId), m_label(label), m_inputFieldId(inputFieldId) {}
+		LinkNode(const boost::property_tree::wptree& propertyTree);
+		LinkNode() {}
+		boost::property_tree::wptree& ExportToPropertyTree(boost::property_tree::wptree& parentPropertyTree) const;
+		boost::uuids::uuid m_treeId;
+		unsigned long m_label;
+		size_t m_inputFieldId;
+	};
+
 	class SGXDATAMAPPING_API Link {
         friend class ::LinksDialog;
 	public:
-		struct Node { //tree ID and lable should uniquely identify glyph
-			Node(boost::uuids::uuid treeId, unsigned long label, size_t inputFieldId) : m_treeId(treeId), m_label(label), m_inputFieldId(inputFieldId) {}
-			Node(const boost::property_tree::wptree& propertyTree);
-			Node() {}
-			boost::property_tree::wptree& ExportToPropertyTree(boost::property_tree::wptree& parentPropertyTree) const;
-			boost::uuids::uuid m_treeId;
-			unsigned long m_label;
-			size_t m_inputFieldId;
-		};
-
 		//Using GlyphColor will be overkill. Ideally we need a generic color class
 		struct Color {
 			unsigned short m_r, m_g, m_b, m_alpha;
@@ -82,8 +82,8 @@ namespace SynGlyphX {
 		boost::property_tree::wptree& ExportToPropertyTree(boost::property_tree::wptree& parentPropertyTree) const;
 	private:
 		std::wstring m_name;
-		Node m_start;
-		Node m_end;
+		LinkNode m_start;
+		LinkNode m_end;
 		Function m_function;
 		Color m_color;
 	};

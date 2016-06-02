@@ -2,6 +2,8 @@
 #include "interpolationmappingfunction.h"
 #include "valuemappingfunction.h"
 #include <boost/property_tree/ptree.hpp>
+#include "Link.h"
+#include "baseimage.h"
 
 namespace SynGlyphX {
 

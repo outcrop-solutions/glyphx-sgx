@@ -5,6 +5,10 @@
 #include <boost/uuid/uuid_io.hpp>
 #include <boost/property_tree/ptree.hpp>
 #include "userdefinedbaseimageproperties.h"
+#include "Link.h"
+#include "legend.h"
+#include "baseimage.h"
+#include "datamappingglyphgraph.h"
 
 namespace SynGlyphX {
 

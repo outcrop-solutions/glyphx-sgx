@@ -74,13 +74,14 @@ namespace SynGlyphX {
 		return propertyTree;
 	}
 
-	Link::Node::Node(const boost::property_tree::wptree& propertyTree) :
+	LinkNode::LinkNode(const boost::property_tree::wptree& propertyTree) :
 		m_treeId(propertyTree.get<boost::uuids::uuid>(L"<xmlattr>.id")),
 		m_label(propertyTree.get<unsigned long>(L"<xmlattr>.label")),
 		m_inputFieldId(propertyTree.get<size_t>(L"<xmlattr>.binding"))
 	{
 	}
-	boost::property_tree::wptree& Link::Node::ExportToPropertyTree(boost::property_tree::wptree& propertyTree) const  {
+
+	boost::property_tree::wptree& LinkNode::ExportToPropertyTree(boost::property_tree::wptree& propertyTree) const  {
 		propertyTree.put(L"<xmlattr>.label", m_label);
 		propertyTree.put(L"<xmlattr>.id", m_treeId);
 		propertyTree.put(L"<xmlattr>.binding", m_inputFieldId);

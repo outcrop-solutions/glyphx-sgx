@@ -26,16 +26,17 @@
 #include <boost/property_tree/ptree_fwd.hpp>
 #include "uuid.h"
 #include "datamappingglyphgraph.h"
-#include "baseimage.h"
 #include "datamappingdefaults.h"
 #include "sceneproperties.h"
 #include "datasource.h"
 #include "filedatasource.h"
 #include "databaseserverdatasource.h"
-#include "legend.h"
-#include "Link.h"
 
 namespace SynGlyphX {
+
+	class Link;
+	class Legend;
+	class BaseImage;
 
 	class SGXDATAMAPPING_API DataTransformMapping : public XMLPropertyTreeFile
     {

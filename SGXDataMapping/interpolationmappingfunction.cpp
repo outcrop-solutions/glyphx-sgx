@@ -2,6 +2,8 @@
 #include "glyphcolor.h"
 #include <boost/assign/list_of.hpp>
 #include <boost/bimap/list_of.hpp>
+#include "Link.h"
+#include "baseimage.h"
 
 namespace SynGlyphX {
 

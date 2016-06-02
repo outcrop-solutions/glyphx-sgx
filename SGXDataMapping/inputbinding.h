@@ -19,7 +19,7 @@
 #define SYNGLYPHX_INPUTBINDING_H
 
 #include "sgxdatamapping.h"
-#include "inputfield.h"
+#include "hashid.h"
 #include <boost/property_tree/ptree_fwd.hpp>
 
 namespace SynGlyphX {
