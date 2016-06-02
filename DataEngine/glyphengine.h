@@ -7,7 +7,8 @@
 #include <boost/filesystem.hpp>
 #include "georeference.h"
 #include <QtCore/QString>
-#include "datatransformmapping.h"
+//#include "datatransformmapping.h"
+#include "baseimage.h"
 #include "DataEngine_Exports.h"
 
 namespace DataEngine
