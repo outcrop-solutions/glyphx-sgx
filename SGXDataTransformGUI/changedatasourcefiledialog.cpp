@@ -4,6 +4,8 @@
 #include <QtCore/QDir>
 #include "filesystem.h"
 #include "browselineedit.h"
+#include "datatransformmapping.h"
+#include "dataengineconnection.h"
 
 namespace SynGlyphX {
 

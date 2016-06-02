@@ -23,8 +23,11 @@
 #include "interpolationmappingfunction.h"
 #include "doubleminmaxwidget.h"
 #include "radiobuttongroupwidget.h"
-#include "datatransformmodel.h"
 #include "fieldgroupwidget.h"
+
+namespace SynGlyphX {
+	class DataTransformModel;
+}
 
 class SGXDATATRANSFORMGUI_EXPORT InterpolationMappingDialog : public QDialog
 {

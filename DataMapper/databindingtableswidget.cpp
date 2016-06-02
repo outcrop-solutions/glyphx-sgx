@@ -16,6 +16,7 @@
 #include "glyphenumcombobox.h"
 #include "stretchsurroundedwidget.h"
 #include "baseimage.h"
+#include "datatransformmapping.h"
 
 const QMargins DataBindingTablesWidget::s_cellMargins(8, 5, 8, 5);
 

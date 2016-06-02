@@ -6,6 +6,7 @@
 #include "filesystem.h"
 #include "browselineedit.h"
 #include "baseimage.h"
+#include "datatransformmapping.h"
 
 namespace SynGlyphX {
 

@@ -23,9 +23,15 @@
 #include <QtGui/QFont>
 #include <QtCore/QItemSelection>
 #include "datamappingglyphgraph.h"
-#include "datatransformmodel.h"
 #include "datamappingfunction.h"
 #include "nonmappablegeometryproperties.h"
+#include <boost/optional.hpp>
+
+namespace SynGlyphX {
+	class DataTransformModel;
+	class DataTransformMapping;
+	class InputTable;
+}
 
 class SGXDATATRANSFORMGUI_EXPORT GlyphRolesTableModel : public QAbstractTableModel
 {
@@ -57,7 +63,7 @@ public:
 	virtual bool setData(const QModelIndex& index, const QVariant& value, int role = Qt::EditRole);
 	virtual QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
 
-	SynGlyphX::DataTransformMapping::ConstSharedPtr GetDataTransformMapping() const;
+	std::shared_ptr<const SynGlyphX::DataTransformMapping> GetDataTransformMapping() const;
 	bool IsAnyCurrentGlyphRoot() const;
 	bool IsClear() const;
 

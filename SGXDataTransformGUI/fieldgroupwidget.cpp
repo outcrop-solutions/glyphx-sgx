@@ -5,6 +5,7 @@
 #include <QtWidgets/QInputDialog>
 #include <QtWidgets/QMessageBox>
 #include <QtWidgets/QScrollBar>
+#include "datatransformmodel.h"
 
 FieldGroupWidget::FieldGroupWidget(SynGlyphX::DataTransformModel* dataTransformModel, QWidget *parent)
 	: QWidget(parent),

@@ -1,5 +1,6 @@
 #include "baseobjectlistview.h"
 #include "baseimagedialog.h"
+#include "datatransformmodel.h"
 
 BaseObjectListView::BaseObjectListView(SynGlyphX::DataTransformModel* dataTransformModel, QWidget *parent)
 	: QListView(parent),

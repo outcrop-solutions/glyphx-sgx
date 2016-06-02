@@ -5,6 +5,8 @@
 #include <QtWidgets/QHeaderView>
 #include <boost/uuid/uuid_io.hpp>
 #include "datastatsmodel.h"
+#include "datatransformmodel.h"
+#include "roledatafilterproxymodel.h"
 
 DataSourceStatsWidget::DataSourceStatsWidget(SynGlyphX::DataTransformModel* dataTransformModel, QWidget *parent)
 	: QTabWidget(parent),

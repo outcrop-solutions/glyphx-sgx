@@ -3,6 +3,7 @@
 #include "datasourceinfowidget.h"
 #include "singlewidgetdialog.h"
 #include <QtWidgets/QMessageBox>
+#include "datatransformmodel.h"
 
 DataSourcesView::DataSourcesView(SynGlyphX::DataTransformModel* sourceModel, QWidget *parent)
 	: QListView(parent),

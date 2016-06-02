@@ -35,7 +35,8 @@
 #include "addfiledatasourcewizard.h"
 #include "downloadexception.h"
 #include "legenddialog.h"
-
+#include "datatransformmodel.h"
+#include "roledatafilterproxymodel.h"
 #include "LinksListView.h"
 #include "LinksDialog.h"
 

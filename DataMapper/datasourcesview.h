@@ -20,7 +20,10 @@
 
 #include <QtWidgets/QListView>
 #include "sharedactionlist.h"
-#include "datatransformmodel.h"
+
+namespace SynGlyphX {
+	class DataTransformModel;
+}
 
 class DataSourcesView : public QListView
 {

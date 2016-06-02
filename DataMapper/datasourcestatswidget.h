@@ -22,12 +22,17 @@
 #include <QtSql/QSqlDatabase>
 #include <QtWidgets/QTableView>
 #include <unordered_map>
-#include "datatransformmodel.h"
-#include "roledatafilterproxymodel.h"
 #include "dataengineconnection.h"
 #include "uuid.h"
 
 class DataStatsModel;
+
+namespace SynGlyphX {
+	class DataTransformModel;
+	class RoleDataFilterProxyModel;
+	class InputTable;
+	class DataStatsModel;
+}
 
 class DataSourceStatsWidget : public QTabWidget
 {

@@ -20,9 +20,12 @@
 
 #include <QtCore/QAbstractTableModel>
 #include "inputfield.h"
-#include "datatransformmodel.h"
 #include <vector>
 #include "utilitytypes.h"
+
+namespace SynGlyphX {
+	class DataTransformModel;
+}
 
 class FieldGroupModel : public QAbstractTableModel
 {

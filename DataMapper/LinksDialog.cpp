@@ -11,11 +11,14 @@
 #include <QtWidgets/QHeaderView>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QSpinBox>
+#include <QtWidgets/QCheckBox>
+#include <QtWidgets/QComboBox>
 #include "roledatafilterproxymodel.h"
 #include "colorbutton.h"
 #include "glyphtreesview.h"
 #include "inputfieldmimedata.h"
 #include "inputfield.h"
+#include "datatransformmodel.h"
 
 static void print_tree(boost::property_tree::wptree const& pt)
 {

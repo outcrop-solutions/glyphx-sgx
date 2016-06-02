@@ -22,12 +22,9 @@
 #include <QtWidgets/QLineEdit>
 #include <QtWidgets/QStackedWidget>
 #include <QtCore/QSignalMapper>
-#include "mapoptionswidget.h"
-#include "browselineedit.h"
-#include "doublesizewidget.h"
-#include "defaultbaseimagescombobox.h"
 
 class QComboBox;
+class QSpinBox;
 class QCheckBox;
 class GlyphTreesView;
 class LinkLineEdit;
