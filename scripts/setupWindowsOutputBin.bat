@@ -9,6 +9,7 @@ SET antzmactemplate=ANTzMacTemplate
 SET defaultbaseimages=DefaultBaseImages
 SET glyphtemplates=GlyphTemplates
 SET logo=logo.png
+SET qtdlllist=Qt5Core Qt5Gui Qt5Network Qt5OpenGL Qt5Sql Qt5Widgets
 
 if "%basedir%." == "." SET basedir=..\..\bin
 
@@ -58,10 +59,23 @@ FOR /F "tokens=*" %%p IN ('dir /b /a:d ..\bin\*') DO (
 		
 		copy /B /Y "..\..\DataEngine\Java DataEngine\ojdbc6.jar" %basedir%\%%p\%%c\ojdbc6.jar
 		copy /B /Y "..\..\DataEngine\Java DataEngine\ConvertHash.dll" %basedir%\%%p\%%c\ConvertHash.dll
-
-		rem TODO: Needed files only.
-		robocopy /z /e "%QTDIR%\bin\*.dll" %basedir%\%%p\%%c
-		robocopy /z /e "%QTDIR%\bin\*.dll" %basedir%\%%p\%%c
+		
+		IF /I %%c==debug (
+		
+			FOR %%d IN (%qtdlllist%) DO (
+			
+				copy /B /Y "%QTDIR%\bin\%%dd.dll" "%basedir%\%%p\%%c\%%dd.dll"
+				copy /B /Y "%QTDIR%\bin\%%dd.dll" "%basedir%\%%p\%%c\%%dd.dll"	
+			)
+		) ELSE (
+			
+			FOR %%d IN (%qtdlllist%) DO (
+			
+				copy /B /Y "%QTDIR%\bin\%%d.dll" "%basedir%\%%p\%%c\%%d.dll"
+				copy /B /Y "%QTDIR%\bin\%%d.dll" "%basedir%\%%p\%%c\%%d.dll"	
+			)
+		)
+		
 		mkdir %basedir%\%%p\%%c\qt_plugins
 		robocopy /z /e "%QTDIR%\plugins" %basedir%\%%p\%%c\qt_plugins
 	)
