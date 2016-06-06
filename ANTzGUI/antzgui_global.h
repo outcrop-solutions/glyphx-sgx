@@ -20,7 +20,7 @@
 
 #include <QtCore/qglobal.h>
 
-#ifdef ANTZGUI_LIB
+#ifdef ANTzGUI_EXPORTS
 # define ANTZGUI_EXPORT Q_DECL_EXPORT
 #else
 # define ANTZGUI_EXPORT Q_DECL_IMPORT

@@ -39,7 +39,7 @@ namespace SynGlyphXANTz {
 
 		if (m_baseImageTextureID != 0) {
 
-			deleteTexture(m_baseImageTextureID);
+			delete (m_baseImageTextureID);
 			m_baseImageTextureID = 0;
 		}
 	}
@@ -48,7 +48,7 @@ namespace SynGlyphXANTz {
 
 		ANTzWidget::initializeGL();
 
-		SetBaseImage(SynGlyphX::DefaultBaseImageProperties::Type::World);
+		SetBaseImage(SynGlyphX::DefaultBaseImageProperties::Type::Clear);
 
 		ResetCamera();
 	}
@@ -659,13 +659,13 @@ namespace SynGlyphXANTz {
 
 		if ((baseImage != m_baseImage) || (m_baseImageTextureID == 0)) {
 
-			unsigned int newTextureID = BindTextureInFile(SynGlyphX::GlyphBuilderApplication::GetDefaultBaseImagesLocation() + QString::fromStdWString(SynGlyphX::DefaultBaseImageProperties::GetBasefilename(baseImage)));
+			QOpenGLTexture* newTextureID = BindTextureInFile(SynGlyphX::GlyphBuilderApplication::GetDefaultBaseImagesLocation() + QString::fromStdWString(SynGlyphX::DefaultBaseImageProperties::GetBasefilename(baseImage)));
 			pNPnode rootGrid = static_cast<pNPnode>(m_antzData->map.node[kNPnodeRootGrid]);
-			rootGrid->textureID = newTextureID;
+			rootGrid->textureID = newTextureID->textureId();
 
 			if (m_baseImageTextureID != 0) {
 
-				deleteTexture(m_baseImageTextureID);
+				delete (m_baseImageTextureID);
 			}
 
 			m_baseImageTextureID = newTextureID;

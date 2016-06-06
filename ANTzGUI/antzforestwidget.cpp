@@ -2,8 +2,12 @@
 #include <QtGui/QOpenGLContext>
 #include <QtGui/QMouseEvent>
 #include <QtGui/QFont>
+#include <QtGui/QPainter>
 #include <QtWidgets/QMessageBox>
 #include <QtCore/QDir>
+#include <QtCore/QElapsedTimer>
+#include <QtCore/QDebug>
+#include <QtGui/QSurfaceFormat>
 #include "io/npfile.h"
 #include "io/npch.h"
 #include "npctrl.h"
@@ -21,42 +25,52 @@
 
 namespace SynGlyphXANTz {
 
-	ANTzForestWidget::ANTzForestWidget(GlyphForestModel* model, SynGlyphX::ItemFocusSelectionModel* selectionModel, QWidget *parent)
-		: QGLWidget(QGL::DoubleBuffer | QGL::DepthBuffer | QGL::AlphaChannel | QGL::StereoBuffers, parent),
-		m_model(model),
-		m_selectionModel(selectionModel),
-		m_antzData(model->GetANTzData()),
-		m_zSpaceContext(nullptr),
-		m_zSpaceDisplay(nullptr),
-		m_zSpaceBuffer(nullptr),
-		m_zSpaceViewport(nullptr),
-		m_zSpaceFrustum(nullptr),
-		m_zSpaceStylus(nullptr),
-		m_topLevelWindow(nullptr),
-		m_oglTextFont("Arial", 12, QFont::Normal),
-		m_isReseting(false),
-		m_worldTextureID(0),
-		m_lastMousePosition(boost::none),
-		m_regionSelectionRect(QRect()),
-		m_filteredResultsDisplayMode(FilteredResultsDisplayMode::None),
-		m_drawHUD(true),
+    ANTzForestWidget::ANTzForestWidget( GlyphForestModel* model, SynGlyphX::ItemFocusSelectionModel* selectionModel, QWidget *parent ) :
+        QOpenGLWidget( parent ),
+        m_model( model ),
+		m_selectionModel( selectionModel ),
+		m_antzData( model->GetANTzData() ),
+#ifdef USE_ZSPACE
+		m_zSpaceContext( nullptr ),
+		m_zSpaceDisplay( nullptr ),
+		m_zSpaceBuffer( nullptr ),
+		m_zSpaceViewport( nullptr ),
+		m_zSpaceFrustum( nullptr ),
+		m_zSpaceStylus( nullptr ),
+#endif
+		m_topLevelWindow( nullptr ),
+		m_oglTextFont( "Arial", 12, QFont::Normal ),
+		m_isReseting( false ),
+		m_worldTextureID( 0 ),
+		m_lastMousePosition( boost::none ),
+		m_regionSelectionRect( QRect() ),
+		m_filteredResultsDisplayMode( FilteredResultsDisplayMode::None ),
+		m_drawHUD( true ),
+#ifdef USE_ZSPACE
 		m_zSpaceOptions(),
-		m_logoTextureID(0),
+#endif
+		m_logoTextureID(nullptr),
 		m_showAnimation(true),
 		m_isInStereo(false),
 		m_initialCameraZAngle(45.0f),
-		m_sceneAxisInfoQuadric(static_cast<GLUquadric*>(CreateNewQuadricObject()))
+		m_sceneAxisInfoQuadric(static_cast<GLUquadric*>(CreateNewQuadricObject())),
+		m_showHUDAxisInfoObject(true)
 	{
-		SetAxisInfoObjectLocation(HUDLocation::TopLeft);
+        // Set up timer to attempt to trigger repaints at ~60fps.
+        timer.setInterval(16);
+        timer.setSingleShot(false);
+        connect(&timer,SIGNAL(timeout()), SLOT(update() ) );
+        timer.start();
 
-		m_isInStereo = context()->format().stereo();
+        SetAxisInfoObjectLocation(HUDLocation::TopLeft);
 
-		setAutoBufferSwap(false);
-		setFocusPolicy(Qt::StrongFocus);
+		m_isInStereo = QSurfaceFormat::defaultFormat().stereo();
+
+		setFocusPolicy( Qt::StrongFocus );
 
 		QFont newFont = font();
-		newFont.setPointSize(12);
-		setFont(newFont);
+		newFont.setPointSize( 12 );
+		setFont( newFont );
 
 		InitIO();
 
@@ -64,20 +78,21 @@ namespace SynGlyphXANTz {
 		m_antzData->GetData()->ctrl.slow = 0.5f;
 		m_antzData->GetData()->ctrl.fast = 0.75f;
 
-		if (m_selectionModel != nullptr) {
-			QObject::connect(m_selectionModel, &SynGlyphX::ItemFocusSelectionModel::selectionChanged, this, &ANTzForestWidget::OnSelectionUpdated);
-			QObject::connect(m_selectionModel, &SynGlyphX::ItemFocusSelectionModel::FocusChanged, this, &ANTzForestWidget::OnFocusChanged);
+		if ( m_selectionModel != nullptr ) {
+			QObject::connect( m_selectionModel, &SynGlyphX::ItemFocusSelectionModel::selectionChanged, this, &ANTzForestWidget::OnSelectionUpdated );
+			QObject::connect( m_selectionModel, &SynGlyphX::ItemFocusSelectionModel::FocusChanged, this, &ANTzForestWidget::OnFocusChanged );
 		}
 
-		QObject::connect(m_model, &GlyphForestModel::modelReset, this, &ANTzForestWidget::OnModelReset);
-		QObject::connect(m_model, &GlyphForestModel::modelAboutToBeReset, this, [this]{ m_isReseting = true; });
+		QObject::connect( m_model, &GlyphForestModel::modelReset, this, &ANTzForestWidget::OnModelReset );
+		QObject::connect( m_model, &GlyphForestModel::modelAboutToBeReset, this, [this]{ m_isReseting = true; } );
 
-		if (IsStereoSupported()) {
+		if ( IsStereoSupported() ) {
 
+#ifdef USE_ZSPACE
 			//m_antzData->GetData()->io.gl.stereo = true;
 			try {
 
-				ZSError error = zsInitialize(&m_zSpaceContext);
+				ZSError error = zsInitialize( &m_zSpaceContext );
 
 				if (error == ZS_ERROR_RUNTIME_NOT_FOUND) { //If zSpace runtime not found, then don't do anything
 
@@ -94,34 +109,34 @@ namespace SynGlyphXANTz {
 					ClearZSpaceContext();
 					return;
 				}
-				CheckZSpaceError(error);
+				CheckZSpaceError( error );
 
-				error = zsCreateStereoBuffer(m_zSpaceContext, ZS_RENDERER_QUAD_BUFFER_GL, 0, &m_zSpaceBuffer);
-				CheckZSpaceError(error);
+				error = zsCreateStereoBuffer( m_zSpaceContext, ZS_RENDERER_QUAD_BUFFER_GL, 0, &m_zSpaceBuffer );
+				CheckZSpaceError( error );
 
-				error = zsSetStereoBufferFullScreen(m_zSpaceBuffer, false);
-				CheckZSpaceError(error);
+				error = zsSetStereoBufferFullScreen( m_zSpaceBuffer, false );
+				CheckZSpaceError( error );
 
-				error = zsCreateViewport(m_zSpaceContext, &m_zSpaceViewport);
-				CheckZSpaceError(error);
+				error = zsCreateViewport( m_zSpaceContext, &m_zSpaceViewport );
+				CheckZSpaceError( error );
 
-				error = zsFindFrustum(m_zSpaceViewport, &m_zSpaceFrustum);
-				CheckZSpaceError(error);
+				error = zsFindFrustum( m_zSpaceViewport, &m_zSpaceFrustum );
+				CheckZSpaceError( error );
 
 				// Grab a handle to the stylus target.
-				error = zsFindTargetByType(m_zSpaceContext, ZS_TARGET_TYPE_PRIMARY, 0, &m_zSpaceStylus);
-				CheckZSpaceError(error);
+				error = zsFindTargetByType( m_zSpaceContext, ZS_TARGET_TYPE_PRIMARY, 0, &m_zSpaceStylus );
+				CheckZSpaceError( error );
 
 				//Get the top level window so that we can track its movements for zSpace viewport
 				m_topLevelWindow = parentWidget();
-				while (!m_topLevelWindow->isWindow()) {
+				while ( !m_topLevelWindow->isWindow() ) {
 
 					m_topLevelWindow = m_topLevelWindow->parentWidget();
 				}
-				m_topLevelWindow->installEventFilter(this);
+				m_topLevelWindow->installEventFilter( this );
 
-				error = zsSetMouseEmulationEnabled(m_zSpaceContext, false);
-				CheckZSpaceError(error);
+				error = zsSetMouseEmulationEnabled( m_zSpaceContext, false );
+				CheckZSpaceError( error );
 				/*
 				error = zsSetMouseEmulationTarget(m_zSpaceContext, m_zSpaceStylus);
 				CheckZSpaceError(error);
@@ -132,24 +147,25 @@ namespace SynGlyphXANTz {
 				error = zsSetMouseEmulationButtonMapping(m_zSpaceContext, 1, ZS_MOUSE_BUTTON_RIGHT);
 				CheckZSpaceError(error);*/
 
-				error = zsSetTrackingEnabled(m_zSpaceContext, true);
-				CheckZSpaceError(error);
+				error = zsSetTrackingEnabled( m_zSpaceContext, true );
+				CheckZSpaceError( error );
 
-				error = zsSetTargetVibrationEnabled(m_zSpaceStylus, true);
-				CheckZSpaceError(error);
+				error = zsSetTargetVibrationEnabled( m_zSpaceStylus, true );
+				CheckZSpaceError( error );
 
 				ConnectZSpaceTrackers();
 			}
-			catch (const std::exception& e) {
+			catch ( const std::exception& e ) {
 
-				QMessageBox::critical(nullptr, tr("Startup error"), tr("Error: ") + e.what(), QMessageBox::Ok);
+				QMessageBox::critical( nullptr, tr( "Startup error" ), tr( "Error: " ) + e.what(), QMessageBox::Ok );
 				throw;
 			}
 			catch (...) {
 
-				QMessageBox::critical(nullptr, tr("Startup error"), tr("Error: Unknown"), QMessageBox::Ok);
+				QMessageBox::critical( nullptr, tr( "Startup error" ), tr( "Error: Unknown" ), QMessageBox::Ok );
 				throw;
 			}
+#endif
 		}
 
 		setFocus();
@@ -157,110 +173,192 @@ namespace SynGlyphXANTz {
 
 	ANTzForestWidget::~ANTzForestWidget()
 	{
-		if (m_worldTextureID != 0) {
+		makeCurrent();
+		if ( m_worldTextureID != nullptr ) {
 
-			deleteTexture(m_worldTextureID);
-			m_worldTextureID = 0;
+            delete m_worldTextureID;
+			m_worldTextureID = nullptr;
 		}
 
-		if (m_logoTextureID != 0) {
+		if ( m_logoTextureID != nullptr ) {
 
-			deleteTexture(m_logoTextureID);
-			m_logoTextureID = 0;
+			delete m_logoTextureID;
+			m_logoTextureID = nullptr;
 		}
 
 		gluDeleteQuadric(m_sceneAxisInfoQuadric);
-
+#ifdef USE_ZSPACE
 		ClearZSpaceContext();
-		npCloseGL(m_antzData->GetData());
+#endif
+		npCloseGL( m_antzData->GetData() );
 	}
-
+    
+    namespace
+    {
+        void transform(GLdouble out[4], const GLdouble m[16], const GLdouble in[4])
+        {
+            auto M = [](int row, int col) { return col * 4 + row; };
+            out[0] = M(0, 0) * in[0] + M(0, 1) * in[1] + M(0, 2) * in[2] + M(0, 3) * in[3];
+            out[1] = M(1, 0) * in[0] + M(1, 1) * in[1] + M(1, 2) * in[2] + M(1, 3) * in[3];
+            out[2] = M(2, 0) * in[0] + M(2, 1) * in[1] + M(2, 2) * in[2] + M(2, 3) * in[3];
+            out[3] = M(3, 0) * in[0] + M(3, 1) * in[1] + M(3, 2) * in[2] + M(3, 3) * in[3];
+        }
+        
+        void project(GLdouble objx, GLdouble objy, GLdouble objz,
+                     const GLdouble model[16], const GLdouble proj[16],
+                     const GLint viewport[4],
+                     GLdouble& winx, GLdouble& winy, GLdouble& winz)
+        {
+            GLdouble in[4], out[4];
+            
+            in[0] = objx;
+            in[1] = objy;
+            in[2] = objz;
+            in[3] = 1.0;
+            transform(out, model, in);
+            transform(in, proj, out);
+            
+            in[0] /= in[3];
+            in[1] /= in[3];
+            in[2] /= in[3];
+            
+            winx = viewport[0] + (1 + in[0]) * viewport[2] / 2;
+            winy = viewport[1] + (1 + in[1]) * viewport[3] / 2;
+            winz = (1 + in[2]) / 2;
+        }
+    }
+    
+    void ANTzForestWidget::renderText(double x, double y, double z, const QString& str, const QFont &font)
+    {
+        GLdouble model[16], proj[16];
+        GLint view[4];
+        glGetDoublev(GL_MODELVIEW_MATRIX, model);
+        glGetDoublev(GL_PROJECTION_MATRIX, proj);
+        glGetIntegerv(GL_VIEWPORT, view);
+        GLdouble textPosX = 0, textPosY = 0, textPosZ = 0;
+        
+        project(x, y, z,
+                model, proj, view,
+                textPosX, textPosY, textPosZ);
+        
+        textPosY = height() - textPosY;
+        
+        QPainter painter(this);
+        painter.setPen(Qt::white);
+        painter.setFont(font);
+        painter.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing);
+        painter.drawText(textPosX, textPosY, str);
+        painter.end();
+        
+        // Restore default blend mode since QPainter seems to trash it on OSX.
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    }
+    
+    void ANTzForestWidget::renderText(int x, int y, const QString& str, const QFont &font)
+    {
+        QPainter painter(this);
+        painter.setPen(Qt::white);
+        painter.setFont(font);
+        painter.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing);
+        painter.drawText(x, y, str);
+        painter.end();
+        
+        // Restore default blend mode since QPainter seems to trash it on OSX.
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    }
+    
+    void ANTzForestWidget::qglColor(QColor color)
+    {
+        glColor4f(color.redF(), color.blueF(), color.greenF(), color.alphaF());
+    }
+    
+#ifdef USE_ZSPACE
 	void ANTzForestWidget::ClearZSpaceContext() {
 
-		if (m_zSpaceContext != nullptr) {
+		if ( m_zSpaceContext != nullptr ) {
 
-			zsShutdown(m_zSpaceContext);
+			zsShutdown( m_zSpaceContext );
 		}
 	}
 
 	void ANTzForestWidget::ConnectZSpaceTrackers() {
 
-		ZSError error = zsAddTrackerEventHandler(m_zSpaceStylus, ZS_TRACKER_EVENT_BUTTON_PRESS, &SynGlyphX::ZSpaceEventDispatcher::Dispatch, &m_zSpaceEventDispatcher);
-		CheckZSpaceError(error);
-		QObject::connect(&m_zSpaceEventDispatcher, &SynGlyphX::ZSpaceEventDispatcher::ZSpaceButtonPressed, this, &ANTzForestWidget::ZSpaceButtonPressHandler, Qt::BlockingQueuedConnection);
+		ZSError error = zsAddTrackerEventHandler( m_zSpaceStylus, ZS_TRACKER_EVENT_BUTTON_PRESS, &SynGlyphX::ZSpaceEventDispatcher::Dispatch, &m_zSpaceEventDispatcher );
+		CheckZSpaceError( error );
+		QObject::connect( &m_zSpaceEventDispatcher, &SynGlyphX::ZSpaceEventDispatcher::ZSpaceButtonPressed, this, &ANTzForestWidget::ZSpaceButtonPressHandler, Qt::BlockingQueuedConnection );
 		//QObject::connect(&m_zSpaceEventDispatcher, &ZSpaceEventDispatcher::ZSpaceButtonPressed, this, &ANTzForestWidget::ZSpaceButtonReleaseHandler, Qt::BlockingQueuedConnection);
 
-		error = zsAddTrackerEventHandler(m_zSpaceStylus, ZS_TRACKER_EVENT_BUTTON_RELEASE, &SynGlyphX::ZSpaceEventDispatcher::Dispatch, &m_zSpaceEventDispatcher);
-		CheckZSpaceError(error);
-		QObject::connect(&m_zSpaceEventDispatcher, &SynGlyphX::ZSpaceEventDispatcher::ZSpaceButtonReleased, this, &ANTzForestWidget::ZSpaceButtonReleaseHandler, Qt::BlockingQueuedConnection);
+		error = zsAddTrackerEventHandler( m_zSpaceStylus, ZS_TRACKER_EVENT_BUTTON_RELEASE, &SynGlyphX::ZSpaceEventDispatcher::Dispatch, &m_zSpaceEventDispatcher );
+		CheckZSpaceError( error );
+		QObject::connect( &m_zSpaceEventDispatcher, &SynGlyphX::ZSpaceEventDispatcher::ZSpaceButtonReleased, this, &ANTzForestWidget::ZSpaceButtonReleaseHandler, Qt::BlockingQueuedConnection );
 
-		error = zsAddTrackerEventHandler(m_zSpaceStylus, ZS_TRACKER_EVENT_MOVE, &SynGlyphX::ZSpaceEventDispatcher::Dispatch, &m_zSpaceEventDispatcher);
-		CheckZSpaceError(error);
-		QObject::connect(&m_zSpaceEventDispatcher, &SynGlyphX::ZSpaceEventDispatcher::ZSpaceStylusMoved, this, &ANTzForestWidget::ZSpaceStylusMoveHandler, Qt::BlockingQueuedConnection);
+		error = zsAddTrackerEventHandler( m_zSpaceStylus, ZS_TRACKER_EVENT_MOVE, &SynGlyphX::ZSpaceEventDispatcher::Dispatch, &m_zSpaceEventDispatcher );
+		CheckZSpaceError( error );
+		QObject::connect( &m_zSpaceEventDispatcher, &SynGlyphX::ZSpaceEventDispatcher::ZSpaceStylusMoved, this, &ANTzForestWidget::ZSpaceStylusMoveHandler, Qt::BlockingQueuedConnection );
 
 		//error = zsAddTrackerEventHandler(m_zSpaceStylus, ZS_TRACKER_EVENT_TAP_SINGLE, &ZSpaceEventDispatcher, this);
 		//CheckZSpaceError(error);
 	}
 
-	void ANTzForestWidget::CheckZSpaceError(ZSError error) {
+	void ANTzForestWidget::CheckZSpaceError( ZSError error ) {
 
-		if (error != ZS_ERROR_OKAY) {
+		if ( error != ZS_ERROR_OKAY ) {
 
-			QString zSpaceErrorString = tr("zSpace error in ");
+			QString zSpaceErrorString = tr( "zSpace error in " );
 			zSpaceErrorString += ":";
-			if (error == ZS_ERROR_NOT_IMPLEMENTED) {
+			if ( error == ZS_ERROR_NOT_IMPLEMENTED ) {
 
 				zSpaceErrorString += "Not Implemented";
 			}
-			else if (error == ZS_ERROR_NOT_INITIALIZED) {
+			else if ( error == ZS_ERROR_NOT_INITIALIZED ) {
 
 				zSpaceErrorString += "Not Initalized";
 			}
-			else if (error == ZS_ERROR_ALREADY_INITIALIZED) {
+			else if ( error == ZS_ERROR_ALREADY_INITIALIZED ) {
 
 				zSpaceErrorString += "Already Initalized";
 			}
-			else if (error == ZS_ERROR_INVALID_PARAMETER) {
+			else if ( error == ZS_ERROR_INVALID_PARAMETER ) {
 
 				zSpaceErrorString += "Invalid Parameter";
 			}
-			else if (error == ZS_ERROR_INVALID_CONTEXT) {
+			else if ( error == ZS_ERROR_INVALID_CONTEXT ) {
 
 				zSpaceErrorString += "Invalid Context";
 			}
-			else if (error == ZS_ERROR_INVALID_HANDLE) {
+			else if ( error == ZS_ERROR_INVALID_HANDLE ) {
 
 				zSpaceErrorString += "Invalid Handle";
 			}
-			else if (error == ZS_ERROR_RUNTIME_INCOMPATIBLE) {
+			else if ( error == ZS_ERROR_RUNTIME_INCOMPATIBLE ) {
 
 				zSpaceErrorString += "Incompatible Runtime";
 			}
-			else if (error == ZS_ERROR_RUNTIME_NOT_FOUND) {
+			else if ( error == ZS_ERROR_RUNTIME_NOT_FOUND ) {
 
 				zSpaceErrorString += "Runtime Not Found";
 			}
-			else if (error == ZS_ERROR_SYMBOL_NOT_FOUND) {
+			else if ( error == ZS_ERROR_SYMBOL_NOT_FOUND ) {
 
 				zSpaceErrorString += "Symbol Not Found";
 			}
-			else if (error == ZS_ERROR_DISPLAY_NOT_FOUND) {
+			else if ( error == ZS_ERROR_DISPLAY_NOT_FOUND ) {
 
 				zSpaceErrorString += "Display Not Found";
 			}
-			else if (error == ZS_ERROR_DEVICE_NOT_FOUND) {
+			else if ( error == ZS_ERROR_DEVICE_NOT_FOUND ) {
 
 				zSpaceErrorString += "Device Not Found";
 			}
-			else if (error == ZS_ERROR_TARGET_NOT_FOUND) {
+			else if ( error == ZS_ERROR_TARGET_NOT_FOUND ) {
 
 				zSpaceErrorString += "Target Not Found";
 			}
-			else if (error == ZS_ERROR_CAPABILITY_NOT_FOUND) {
+			else if ( error == ZS_ERROR_CAPABILITY_NOT_FOUND ) {
 
 				zSpaceErrorString += "Error Capability Not Found";
 			}
-			else if (error == ZS_ERROR_BUFFER_TOO_SMALL) {
+			else if ( error == ZS_ERROR_BUFFER_TOO_SMALL ) {
 
 				zSpaceErrorString += "Buffer too small";
 			}
@@ -268,6 +366,7 @@ namespace SynGlyphXANTz {
 			throw std::runtime_error(zSpaceErrorString.toStdString().c_str());
 		}
 	}
+#endif
 
 	void ANTzForestWidget::InitIO()
 	{
@@ -330,7 +429,7 @@ namespace SynGlyphXANTz {
 
 		data->io.mouse.linkA = NULL;
 
-		data->io.mouse.size = sizeof(NPmouse);
+		data->io.mouse.size = sizeof( NPmouse );
 	}
 
 	void ANTzForestWidget::initializeGL() {
@@ -343,7 +442,7 @@ namespace SynGlyphXANTz {
 		QImage image(SynGlyphX::GlyphBuilderApplication::GetLogoLocation(SynGlyphX::GlyphBuilderApplication::WhiteBorder));
 		m_logoPosition.setCoords(0, 0, 0, 0);
 		m_logoPosition.setSize(QSize(image.width(), -image.height()));
-		m_logoTextureID = bindTexture(image);
+		m_logoTextureID = new QOpenGLTexture(image.mirrored());
 
 		m_worldTextureID = BindTextureInFile(SynGlyphX::GlyphBuilderApplication::GetDefaultBaseImagesLocation() + QString::fromStdWString(SynGlyphX::DefaultBaseImageProperties::GetBasefilename()));
 		pNPnode rootGrid = static_cast<pNPnode>(antzData->map.node[kNPnodeRootGrid]);
@@ -353,10 +452,10 @@ namespace SynGlyphXANTz {
 		SetCameraToDefaultPosition();
 	}
 
-	void ANTzForestWidget::resizeGL(int w, int h) {
-
+	void ANTzForestWidget::resizeGL( int w, int h ) {
+#ifdef USE_ZSPACE
 		ResizeZSpaceViewport();
-
+#endif
 		QSize logoSize = m_logoPosition.size();
 		m_logoPosition.setLeft(w - logoSize.width() - 10);
 		m_logoPosition.setTop(h - 10);
@@ -369,36 +468,39 @@ namespace SynGlyphXANTz {
 
 	void ANTzForestWidget::paintGL() {
 
-		if (!context()->isValid()) {
+		if ( !context()->isValid() ) {
 
 			return;
 		}
 
-		glDrawBuffer(GL_BACK_LEFT);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glDrawBuffer( GL_BACK_LEFT );
+		glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
-		if (IsStereoSupported()) {
+		if ( IsStereoSupported() ) {
 
-			glDrawBuffer(GL_BACK_RIGHT);
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			glDrawBuffer( GL_BACK_RIGHT );
+			glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 		}
 
-		if (m_isReseting) {
+		if ( m_isReseting ) {
 
 			return;
 		}
 
 		pData antzData = m_antzData->GetData();
 
-		if (antzData->io.gl.pickPass) {
+		if ( antzData->io.gl.pickPass ) {
 
 			return;
 		}
+        
+        QElapsedTimer timer;
+        timer.start();
+		npUpdateCh( antzData );
 
-		npUpdateCh(antzData);
-
-		npUpdateEngine(antzData);		//position, physics, interactions...
+		npUpdateEngine( antzData );		//position, physics, interactions...
 		UpdateBoundingBoxes();
+//        qDebug() << "3D update took " << timer.elapsed() << "ms.";
 
 		//We may need to have a selected pin node during update to position the camera, but we don't want it during drawing
 		antzData->map.selectedPinNode = NULL;
@@ -408,103 +510,102 @@ namespace SynGlyphXANTz {
 		antzData->io.mouse.delta.x = 0.0f;
 		antzData->io.mouse.delta.y = 0.0f;
 
-		glMatrixMode(GL_MODELVIEW);
+		glMatrixMode( GL_MODELVIEW );
 		glLoadIdentity();
-		npSetLookAtFromCamera(antzData);
+		npSetLookAtFromCamera( antzData );
 
-		if (IsInZSpaceStereo()) {
+#ifdef USE_ZSPACE
+		if ( IsInZSpaceStereo() ) {
 
-			ZSError error = zsUpdate(m_zSpaceContext);
-			error = zsBeginStereoBufferFrame(m_zSpaceBuffer);
-			glGetFloatv(GL_MODELVIEW_MATRIX, m_originialViewMatrix.f);
+			ZSError error = zsUpdate( m_zSpaceContext );
+			error = zsBeginStereoBufferFrame( m_zSpaceBuffer );
+			glGetFloatv( GL_MODELVIEW_MATRIX, m_originialViewMatrix.f );
+		}
+#endif
+
+		DrawSceneForEye( Eye::Left, true );
+		if ( IsInStereoMode() )  {
+
+			DrawSceneForEye( Eye::Right, false );
 		}
 
-		DrawSceneForEye(Eye::Left, true);
-		if (IsInStereoMode())  {
-
-			DrawSceneForEye(Eye::Right, false);
+		/*
+		while ( auto error = glGetError() )
+		{
+			qDebug() << "OpenGL Error " << error << ": " << reinterpret_cast<const char*>( gluErrorString( error ) );
 		}
-
-		//int err = glGetError();
-		//if (err) {
-		//     printf("err: 2388 - OpenGL error: %d\n", err);
-		// }
-
-		if (doubleBuffer()) {
-
-			swapBuffers();
-		}
-		else {
-
-			glFinish();
-		}
-
-		//ANTz assumes that redraw constantly happens.  Need to put this in a thread
-		update();
+		*/
 	}
 
-	void ANTzForestWidget::DrawSceneForEye(Eye eye, bool getStylusWorldPosition) {
+	void ANTzForestWidget::DrawSceneForEye( Eye eye, bool getStylusWorldPosition ) {
 
 		pData antzData = m_antzData->GetData();
-		pNPnode camNode = npGetActiveCam(antzData);
-		NPcameraPtr camData = static_cast<NPcameraPtr>(camNode->data);
+		pNPnode camNode = npGetActiveCam( antzData );
+		NPcameraPtr camData = static_cast<NPcameraPtr>( camNode->data );
 
+#ifdef USE_ZSPACE
 		ZSEye zSpaceEye;
-		if (eye == Eye::Left) {
+		if ( eye == Eye::Left ) {
 
-			glDrawBuffer(GL_BACK_LEFT);
+			glDrawBuffer( GL_BACK_LEFT );
 			zSpaceEye = ZS_EYE_LEFT;
 		}
 		else {
 
-			glDrawBuffer(GL_BACK_RIGHT);
+			glDrawBuffer( GL_BACK_RIGHT );
 			zSpaceEye = ZS_EYE_RIGHT;
 		}
+#endif
 
-		glMatrixMode(GL_MODELVIEW);
+		glMatrixMode( GL_MODELVIEW );
 		glPushMatrix();
 
-		glMatrixMode(GL_PROJECTION);
+		glMatrixMode( GL_PROJECTION );
 		glPushMatrix();
 
-		if (IsInZSpaceStereo()) {
+#ifdef USE_ZSPACE
+		if ( IsInZSpaceStereo() ) {
 
 			ZSTrackerPose stylusPose;
-			ZSError error = zsGetTargetPose(m_zSpaceStylus, &stylusPose);
+			ZSError error = zsGetTargetPose( m_zSpaceStylus, &stylusPose );
 
 			// Transform the stylus pose from tracker to camera space.
-			error = zsTransformMatrix(m_zSpaceViewport, ZS_COORDINATE_SPACE_TRACKER, ZS_COORDINATE_SPACE_CAMERA, &stylusPose.matrix);
+			error = zsTransformMatrix( m_zSpaceViewport, ZS_COORDINATE_SPACE_TRACKER, ZS_COORDINATE_SPACE_CAMERA, &stylusPose.matrix );
 
 			ZSMatrix4 displayToCameraMatrix;
-			error = zsTransformMatrix(m_zSpaceViewport, ZS_COORDINATE_SPACE_DISPLAY, ZS_COORDINATE_SPACE_CAMERA, &displayToCameraMatrix);
+			error = zsTransformMatrix( m_zSpaceViewport, ZS_COORDINATE_SPACE_DISPLAY, ZS_COORDINATE_SPACE_CAMERA, &displayToCameraMatrix );
 
 			ZSMatrix4 originalCameraMatrix;
-			npInvertMatrixf(m_originialViewMatrix.f, originalCameraMatrix.f);
+			npInvertMatrixf( m_originialViewMatrix.f, originalCameraMatrix.f );
 
 			// Transform the stylus pose from camera space to world space.
 			// This is done by multiplying the pose (camera space) by the 
 			// application's camera matrix.
-			npMultMatrix(m_zSpaceStylusWorldMatrix.f, originalCameraMatrix.f, stylusPose.matrix.f);
-			npMultMatrix(m_zSpaceDisplayWorldMatrix.f, originalCameraMatrix.f, displayToCameraMatrix.f);
+			npMultMatrix( m_zSpaceStylusWorldMatrix.f, originalCameraMatrix.f, stylusPose.matrix.f );
+			npMultMatrix( m_zSpaceDisplayWorldMatrix.f, originalCameraMatrix.f, displayToCameraMatrix.f );
 
-			SetZSpaceMatricesForDrawing(zSpaceEye, m_originialViewMatrix, camData);
+			SetZSpaceMatricesForDrawing( zSpaceEye, m_originialViewMatrix, camData );
 		}
-		else if (!IsInStereoMode()) {
+		else if ( !IsInStereoMode() ) 
+#endif
+		{
 
-			glGetFloatv(GL_MODELVIEW_MATRIX, camData->matrix);
-			npInvertMatrixf(camData->matrix, camData->inverseMatrix);
+			glGetFloatv( GL_MODELVIEW_MATRIX, camData->matrix );
+			npInvertMatrixf( camData->matrix, camData->inverseMatrix );
 		}
 
-		glMatrixMode(GL_MODELVIEW);
+		glMatrixMode( GL_MODELVIEW );
 
-		npGLLighting(antzData);
-		npGLShading(antzData);
-		npDrawNodes(antzData);
+		npGLLighting( antzData );
+		npGLShading( antzData );
+		npDrawNodes( antzData );
 
 		//Leave this here so that bounding boxes can be shown for debugging
 		//DrawBoundingBoxes();
 
-		DrawZSpaceStylus(m_zSpaceStylusWorldMatrix, getStylusWorldPosition);
+#ifdef USE_ZSPACE
+		DrawZSpaceStylus( m_zSpaceStylusWorldMatrix, getStylusWorldPosition );
+#endif
 
 		if (!antzData->io.gl.pickPass) {
 
@@ -516,40 +617,44 @@ namespace SynGlyphXANTz {
 			DrawLogo();
 		}
 
-		glMatrixMode(GL_PROJECTION);
+		glMatrixMode( GL_PROJECTION );
 		glPopMatrix();
-		glMatrixMode(GL_MODELVIEW);
+		glMatrixMode( GL_MODELVIEW );
 		glPopMatrix();
+        
+        glDisable( GL_CULL_FACE );
+        glDisable( GL_BLEND );
 	}
 
-	void ANTzForestWidget::DrawZSpaceStylus(const ZSMatrix4& stylusMatrix, bool getStylusWorldPosition) {
+#ifdef USE_ZSPACE
+	void ANTzForestWidget::DrawZSpaceStylus( const ZSMatrix4& stylusMatrix, bool getStylusWorldPosition ) {
 
-		if (IsInZSpaceStereo()) {
+		if ( IsInZSpaceStereo() ) {
 
 			pData antzData = m_antzData->GetData();
-			pNPnode camNode = npGetActiveCam(antzData);
-			NPcameraPtr camData = static_cast<NPcameraPtr>(camNode->data);
+			pNPnode camNode = npGetActiveCam( antzData );
+			NPcameraPtr camData = static_cast<NPcameraPtr>( camNode->data );
 
-			qglColor(m_zSpaceOptions.GetStylusColor());
+			qglColor( m_zSpaceOptions.GetStylusColor() );
 
 			// Multiply the model-view matrix by the stylus world matrix.
-			glMatrixMode(GL_MODELVIEW);
+			glMatrixMode( GL_MODELVIEW );
 			glPushMatrix();
-			glMultMatrixf(stylusMatrix.f);
+			glMultMatrixf( stylusMatrix.f );
 
 			// Draw the line.
-			glBegin(GL_LINES);
-			glVertex3f(0.0f, 0.0f, 0.0f);
-			glVertex3f(0.0f, 0.0f, -m_zSpaceOptions.GetStylusLength());
+			glBegin( GL_LINES );
+			glVertex3f( 0.0f, 0.0f, 0.0f );
+			glVertex3f( 0.0f, 0.0f, -m_zSpaceOptions.GetStylusLength() );
 
 			glEnd();
 
-			if (getStylusWorldPosition) {
+			if ( getStylusWorldPosition ) {
 
 				NPfloatXYZ world = { 0.0f, 0.0f, 0.0f };
 				GLfloat modelView[16];
-				glGetFloatv(GL_MODELVIEW_MATRIX, modelView);
-				npLocalToWorld(&world, camData->inverseMatrix, modelView);
+				glGetFloatv( GL_MODELVIEW_MATRIX, modelView );
+				npLocalToWorld( &world, camData->inverseMatrix, modelView );
 
 				m_stylusWorldLine.first.x = world.x;
 				m_stylusWorldLine.first.y = world.y;
@@ -557,11 +662,11 @@ namespace SynGlyphXANTz {
 
 				//m_stylusWorldTapLine.first = m_stylusWorldLine.first;
 
-				glTranslatef(0.0f, 0.0f, -m_zSpaceOptions.GetStylusLength());
+				glTranslatef( 0.0f, 0.0f, -m_zSpaceOptions.GetStylusLength() );
 				//glScalef(0.0025f, 0.0025f, 0.0025f);
 				//npGLPrimitive(kNPgeoSphere, 0.1f);
-				glGetFloatv(GL_MODELVIEW_MATRIX, modelView);
-				npLocalToWorld(&world, camData->inverseMatrix, modelView);
+				glGetFloatv( GL_MODELVIEW_MATRIX, modelView );
+				npLocalToWorld( &world, camData->inverseMatrix, modelView );
 
 				m_stylusWorldLine.second.x = world.x;
 				m_stylusWorldLine.second.y = world.y;
@@ -573,23 +678,24 @@ namespace SynGlyphXANTz {
 
 			/*if (getStylusWorldPosition) {
 
-				glPushMatrix();
-				glMultMatrixf(m_zSpaceDisplayWorldMatrix.f);
-				glTranslatef(0.0f, 0.0f, -1.0);
+			glPushMatrix();
+			glMultMatrixf(m_zSpaceDisplayWorldMatrix.f);
+			glTranslatef(0.0f, 0.0f, -1.0);
 
-				NPfloatXYZ world = { 0.0f, 0.0f, 0.0f };
-				GLfloat modelView[16];
-				glGetFloatv(GL_MODELVIEW_MATRIX, modelView);
-				npLocalToWorld(&world, camData->inverseMatrix, modelView);
+			NPfloatXYZ world = { 0.0f, 0.0f, 0.0f };
+			GLfloat modelView[16];
+			glGetFloatv(GL_MODELVIEW_MATRIX, modelView);
+			npLocalToWorld(&world, camData->inverseMatrix, modelView);
 
-				m_stylusWorldTapLine.second.x = m_stylusWorldTapLine.first.x + world.x;
-				m_stylusWorldTapLine.second.y = m_stylusWorldTapLine.first.y + world.y;
-				m_stylusWorldTapLine.second.z = m_stylusWorldTapLine.first.z + world.z;
+			m_stylusWorldTapLine.second.x = m_stylusWorldTapLine.first.x + world.x;
+			m_stylusWorldTapLine.second.y = m_stylusWorldTapLine.first.y + world.y;
+			m_stylusWorldTapLine.second.z = m_stylusWorldTapLine.first.z + world.z;
 
-				glPopMatrix();
-				}*/
+			glPopMatrix();
+			}*/
 		}
 	}
+#endif
 
 	void* ANTzForestWidget::CreateNewQuadricObject() {
 
@@ -609,6 +715,11 @@ namespace SynGlyphXANTz {
 	}
 
 	void ANTzForestWidget::DrawSceneAxisInfoObject() {
+
+		if (!m_showHUDAxisInfoObject) {
+
+			return;
+		}
 
 		pData antzData = m_antzData->GetData();
 		pNPnode currentCamera = npGetActiveCam(antzData);
@@ -770,147 +881,149 @@ namespace SynGlyphXANTz {
 
 		pData antzData = m_antzData->GetData();
 
-		bool reenableDepthTest = glIsEnabled(GL_DEPTH_TEST);
-		if (reenableDepthTest) {
-			glDisable(GL_DEPTH_TEST);
+		bool reenableDepthTest = glIsEnabled( GL_DEPTH_TEST );
+		if ( reenableDepthTest ) {
+			glDisable( GL_DEPTH_TEST );
 		}
 
 		//Draw region selection rectangle
-		if ((m_regionSelectionRect.width() > 0) && (m_regionSelectionRect.height() > 0)) {
+		if ( ( m_regionSelectionRect.width() > 0 ) && ( m_regionSelectionRect.height() > 0 ) ) {
 
-			glMatrixMode(GL_PROJECTION);
+			glMatrixMode( GL_PROJECTION );
 			glPushMatrix();
 			glLoadIdentity();
-			gluOrtho2D(0, antzData->io.gl.width, 0, antzData->io.gl.height);
-		
-			glMatrixMode(GL_MODELVIEW);
+			gluOrtho2D( 0, antzData->io.gl.width, 0, antzData->io.gl.height );
+
+			glMatrixMode( GL_MODELVIEW );
 			glLoadIdentity();
 
-			glColor4ub(64, 32, 0, 100);
+			glColor4ub( 64, 32, 0, 100 );
 
 			int glRegionLeft = m_regionSelectionRect.x();
 			int glRegionRight = m_regionSelectionRect.x() + m_regionSelectionRect.width();
 			int glRegionTop = antzData->io.gl.height - m_regionSelectionRect.y();
 			int glRegionBottom = glRegionTop - m_regionSelectionRect.height();
 
-			glBegin(GL_QUADS);
-			glVertex2i(glRegionLeft, glRegionTop);
-			glVertex2f(glRegionLeft, glRegionBottom);
-			glVertex2f(glRegionRight, glRegionBottom);
-			glVertex2f(glRegionRight, glRegionTop);
+			glBegin( GL_QUADS );
+			glVertex2i( glRegionLeft, glRegionTop );
+			glVertex2f( glRegionLeft, glRegionBottom );
+			glVertex2f( glRegionRight, glRegionBottom );
+			glVertex2f( glRegionRight, glRegionTop );
 			glEnd();
 
-			glColor4ub(255, 255, 0, 100);
+			glColor4ub( 255, 255, 0, 100 );
 
-			glBegin(GL_LINE_LOOP);
-			glVertex2i(glRegionLeft, glRegionTop);
-			glVertex2f(glRegionLeft, glRegionBottom);
-			glVertex2f(glRegionRight, glRegionBottom);
-			glVertex2f(glRegionRight, glRegionTop);
+			glBegin( GL_LINE_LOOP );
+			glVertex2i( glRegionLeft, glRegionTop );
+			glVertex2f( glRegionLeft, glRegionBottom );
+			glVertex2f( glRegionRight, glRegionBottom );
+			glVertex2f( glRegionRight, glRegionTop );
 			glEnd();
 
-			glMatrixMode(GL_PROJECTION);
+			glMatrixMode( GL_PROJECTION );
 			glPopMatrix();
-			glMatrixMode(GL_MODELVIEW);
+			glMatrixMode( GL_MODELVIEW );
 			glPopMatrix();
 		}
 
 		//Draw tags
-		qglColor(Qt::white);
+		qglColor( Qt::white );
 
-		Q_FOREACH(const QModelIndex& modelIndex, m_tagIndexes) {
+		Q_FOREACH( const QModelIndex& modelIndex, m_tagIndexes ) {
 
-			pNPnode selectedNode = static_cast<pNPnode>(modelIndex.internalPointer());
-			QString tag = QString::fromStdWString(SynGlyphXANTz::GlyphNodeConverter::GetTag(selectedNode));
-			if (m_model->IsTagShownIn3d(tag) && (!selectedNode->hide)) {
+			pNPnode selectedNode = static_cast<pNPnode>( modelIndex.internalPointer() );
+			QString tag = QString::fromStdWString( SynGlyphXANTz::GlyphNodeConverter::GetTag( selectedNode ) );
+			if ( m_model->IsTagShownIn3d( tag ) && ( !selectedNode->hide ) ) {
 
-				renderText(selectedNode->world.x, selectedNode->world.y, selectedNode->world.z, tag, m_oglTextFont);
+				renderText( selectedNode->world.x, selectedNode->world.y, selectedNode->world.z, tag, m_oglTextFont );
 			}
 		}
 
 		//Draw HUD
 		QString positionHUD;
-		
-		if (!m_selectionModel->GetFocusList().empty()) {
 
-			pNPnode lastFocusNode = static_cast<pNPnode>(m_selectionModel->GetFocusList().back().internalPointer());
-			positionHUD = tr("Glyph Position: X: %1, Y: %2, Z: %3").arg(QString::number(lastFocusNode->world.x), QString::number(lastFocusNode->world.y), QString::number(lastFocusNode->world.z));
+		if ( !m_selectionModel->GetFocusList().empty() ) {
+
+			pNPnode lastFocusNode = static_cast<pNPnode>( m_selectionModel->GetFocusList().back().internalPointer() );
+			positionHUD = tr( "Glyph Position: X: %1, Y: %2, Z: %3" ).arg( QString::number( lastFocusNode->world.x ), QString::number( lastFocusNode->world.y ), QString::number( lastFocusNode->world.z ) );
 		}
 		else {
 
-			positionHUD = tr("Camera Position: X: %1, Y: %2, Z: %3").arg(QString::number(antzData->map.currentCam->translate.x), QString::number(antzData->map.currentCam->translate.y), QString::number(antzData->map.currentCam->translate.z));
+			positionHUD = tr( "Camera Position: X: %1, Y: %2, Z: %3" ).arg( QString::number( antzData->map.currentCam->translate.x ), QString::number( antzData->map.currentCam->translate.y ), QString::number( antzData->map.currentCam->translate.z ) );
 		}
 
-		QFontMetrics hudFontMetrics(m_oglTextFont);
-		renderText((width() / 2) - (hudFontMetrics.width(positionHUD) / 2), height() - 16, positionHUD, m_oglTextFont);
+		QFontMetrics hudFontMetrics( m_oglTextFont );
+		renderText( ( width() / 2 ) - ( hudFontMetrics.width( positionHUD ) / 2 ), height() - 16, positionHUD, m_oglTextFont );
 
-		if (reenableDepthTest) {
-			glEnable(GL_DEPTH_TEST);
+		if ( reenableDepthTest ) {
+			glEnable( GL_DEPTH_TEST );
 		}
 
 		DrawSceneAxisInfoObject();
 	}
 
-	void ANTzForestWidget::SetZSpaceMatricesForDrawing(ZSEye eye, const ZSMatrix4& originialViewMatrix, NPcameraPtr camData) {
+#ifdef USE_ZSPACE
+	void ANTzForestWidget::SetZSpaceMatricesForDrawing( ZSEye eye, const ZSMatrix4& originialViewMatrix, NPcameraPtr camData ) {
 
 		ZSMatrix4 zSpaceEyeViewMatrix;
-		ZSError mverror = zsGetFrustumViewMatrix(m_zSpaceFrustum, eye, &zSpaceEyeViewMatrix);
+		ZSError mverror = zsGetFrustumViewMatrix( m_zSpaceFrustum, eye, &zSpaceEyeViewMatrix );
 
-		glMatrixMode(GL_MODELVIEW);
+		glMatrixMode( GL_MODELVIEW );
 
 		//Probably should be at bottom of this function
 		//glGetFloatv(GL_MODELVIEW_MATRIX, camData->matrix);
 		//npInvertMatrixf(camData->matrix, camData->inverseMatrix);
 
-		glLoadMatrixf(zSpaceEyeViewMatrix.f);
-		glMultMatrixf(originialViewMatrix.f);
+		glLoadMatrixf( zSpaceEyeViewMatrix.f );
+		glMultMatrixf( originialViewMatrix.f );
 
-		glMatrixMode(GL_PROJECTION);
+		glMatrixMode( GL_PROJECTION );
 		ZSMatrix4 projectionMatrix;
-		ZSError projError = zsGetFrustumProjectionMatrix(m_zSpaceFrustum, eye, &projectionMatrix);
+		ZSError projError = zsGetFrustumProjectionMatrix( m_zSpaceFrustum, eye, &projectionMatrix );
 
-		glLoadMatrixf(projectionMatrix.f);
+		glLoadMatrixf( projectionMatrix.f );
 		//glMultMatrixf(m_originialProjectionMatrix.f);
 
-		glGetFloatv(GL_MODELVIEW_MATRIX, camData->matrix);
-		npInvertMatrixf(camData->matrix, camData->inverseMatrix);
+		glGetFloatv( GL_MODELVIEW_MATRIX, camData->matrix );
+		npInvertMatrixf( camData->matrix, camData->inverseMatrix );
 	}
+#endif
 
-	void ANTzForestWidget::OnSelectionUpdated(const QItemSelection& selected, const QItemSelection& deselected) {
+	void ANTzForestWidget::OnSelectionUpdated( const QItemSelection& selected, const QItemSelection& deselected ) {
 
 		pData antzData = m_antzData->GetData();
 
 		//unselect all nodes that are no longer selected
 		const QModelIndexList& deselectedIndicies = deselected.indexes();
-		for (int i = 0; i < deselectedIndicies.length(); ++i) {
-			if (deselectedIndicies[i].isValid()) {
-				pNPnode node = static_cast<pNPnode>(deselectedIndicies[i].internalPointer());
+		for ( int i = 0; i < deselectedIndicies.length(); ++i ) {
+			if ( deselectedIndicies[i].isValid() ) {
+				pNPnode node = static_cast<pNPnode>( deselectedIndicies[i].internalPointer() );
 				node->selected = false;
 			}
 		}
 
 		//select all newly selected nodes
 		const QModelIndexList& selectedIndicies = selected.indexes();
-		for (int i = 0; i < selectedIndicies.length(); ++i) {
-			if (selectedIndicies[i].isValid()) {
-				pNPnode node = static_cast<pNPnode>(selectedIndicies[i].internalPointer());
+		for ( int i = 0; i < selectedIndicies.length(); ++i ) {
+			if ( selectedIndicies[i].isValid() ) {
+				pNPnode node = static_cast<pNPnode>( selectedIndicies[i].internalPointer() );
 				node->selected = true;
 			}
 		}
 	}
 
-	void ANTzForestWidget::OnFocusChanged(const QModelIndexList& indexes) {
+	void ANTzForestWidget::OnFocusChanged( const QModelIndexList& indexes ) {
 
 		pData antzData = m_antzData->GetData();
 
 		int nodeRootIndex = 0;
-		if (!indexes.isEmpty())  {
+		if ( !indexes.isEmpty() )  {
 			const QModelIndex& last = indexes.back();
-			if (last.isValid()) {
+			if ( last.isValid() ) {
 
-				pNPnode node = static_cast<pNPnode>(last.internalPointer());
-				CenterCameraOnNode(node);
-				while (node->branchLevel != 0) {
+				pNPnode node = static_cast<pNPnode>( last.internalPointer() );
+				CenterCameraOnNode( node );
+				while ( node->branchLevel != 0 ) {
 					node = node->parent;
 				}
 				nodeRootIndex = node->id;
@@ -926,39 +1039,39 @@ namespace SynGlyphXANTz {
 
 	void ANTzForestWidget::UpdateGlyphTreesForFilteredResults() {
 
-		if (m_filteredResultsDisplayMode == FilteredResultsDisplayMode::HideUnfiltered) {
+		if ( m_filteredResultsDisplayMode == FilteredResultsDisplayMode::HideUnfiltered ) {
 
-			if (m_filteredResults.empty()) {
+			if ( m_filteredResults.empty() ) {
 
 				ShowAllGlyphTrees();
 			}
 			else {
 
 				pData antzData = m_antzData->GetData();
-				for (unsigned int i = kNPnodeRootPin; i < antzData->map.nodeRootCount; ++i) {
+				for ( unsigned int i = kNPnodeRootPin; i < antzData->map.nodeRootCount; ++i ) {
 
-					pNPnode node = static_cast<pNPnode>(antzData->map.node[i]);
-					HideGlyph(node, (m_filteredResults.count(i - kNPnodeRootPin) == 0));
+					pNPnode node = static_cast<pNPnode>( antzData->map.node[i] );
+					HideGlyph( node, ( m_filteredResults.count( i - kNPnodeRootPin ) == 0 ) );
 				}
 			}
 		}
 	}
 
-	void ANTzForestWidget::HideGlyph(pNPnode node, bool hide) {
+	void ANTzForestWidget::HideGlyph( pNPnode node, bool hide ) {
 
 		node->hide = hide;
-		for (unsigned int i = 0; i < node->childCount; ++i) {
+		for ( unsigned int i = 0; i < node->childCount; ++i ) {
 
-			HideGlyph(node->child[i], hide);
+			HideGlyph( node->child[i], hide );
 		}
 	}
 
-	void ANTzForestWidget::SetFilteredResultsDisplayMode(FilteredResultsDisplayMode mode) {
+	void ANTzForestWidget::SetFilteredResultsDisplayMode( FilteredResultsDisplayMode mode ) {
 
-		if (mode != m_filteredResultsDisplayMode) {
+		if ( mode != m_filteredResultsDisplayMode ) {
 
 			m_filteredResultsDisplayMode = mode;
-			if (m_filteredResultsDisplayMode == FilteredResultsDisplayMode::HideUnfiltered) {
+			if ( m_filteredResultsDisplayMode == FilteredResultsDisplayMode::HideUnfiltered ) {
 
 				UpdateGlyphTreesForFilteredResults();
 			}
@@ -972,14 +1085,14 @@ namespace SynGlyphXANTz {
 	void ANTzForestWidget::ShowAllGlyphTrees() {
 
 		pData antzData = m_antzData->GetData();
-		for (unsigned int i = kNPnodeRootPin; i < antzData->map.nodeRootCount; ++i) {
-	
-			pNPnode node = static_cast<pNPnode>(antzData->map.node[i]);
-			HideGlyph(node, false);
+		for ( unsigned int i = kNPnodeRootPin; i < antzData->map.nodeRootCount; ++i ) {
+
+			pNPnode node = static_cast<pNPnode>( antzData->map.node[i] );
+			HideGlyph( node, false );
 		}
 	}
 
-	void ANTzForestWidget::SetFilteredResults(const SynGlyphX::IndexSet& filteredResults) {
+	void ANTzForestWidget::SetFilteredResults( const SynGlyphX::IndexSet& filteredResults ) {
 
 		m_filteredResults = filteredResults;
 		UpdateGlyphTreesForFilteredResults();
@@ -1003,7 +1116,7 @@ namespace SynGlyphXANTz {
 		antzData->map.currentCam->rotate.y = 0.0f;
 		antzData->map.currentCam->rotate.z = 0.0f;
 
-		pNPnode node = static_cast<pNPnode>(antzData->map.node[kNPnodeRootGrid]);
+		pNPnode node = static_cast<pNPnode>( antzData->map.node[kNPnodeRootGrid] );
 		antzData->io.mouse.targeting = false;
 		antzData->map.selectedPinNode = node;
 		antzData->map.selectedPinIndex = node->id;
@@ -1013,14 +1126,14 @@ namespace SynGlyphXANTz {
 	}
 
 	void ANTzForestWidget::ResetCamera() {
-    
+
 		pData antzData = m_antzData->GetData();
 
 		//We only want to center the camera when there are actual root nodes
-		if (antzData->map.nodeRootCount >= kNPnodeRootPin) {
+		if ( antzData->map.nodeRootCount >= kNPnodeRootPin ) {
 
 			SetCameraToDefaultPosition();
-			updateGL();
+			update();
 		}
 		else {
 
@@ -1030,11 +1143,11 @@ namespace SynGlyphXANTz {
 		}
 	}
 
-	void ANTzForestWidget::CenterCameraOnNode(pNPnode node) {
-	
+	void ANTzForestWidget::CenterCameraOnNode( pNPnode node ) {
+
 		pData antzData = m_antzData->GetData();
 
-		npSetCamTargetNode(node, antzData);
+		npSetCamTargetNode( node, antzData );
 		antzData->io.mouse.targeting = false;
 		antzData->map.selectedPinNode = node;
 		antzData->map.selectedPinIndex = node->id;
@@ -1043,72 +1156,74 @@ namespace SynGlyphXANTz {
 		antzData->map.currentNode = antzData->map.currentCam;
 	}
 
-	void ANTzForestWidget::mousePressEvent(QMouseEvent* event) {
+	void ANTzForestWidget::mousePressEvent( QMouseEvent* event ) {
 
-		if (event->button() == Qt::LeftButton) {
-		
+		if ( event->button() == Qt::LeftButton ) {
+
 			Qt::KeyboardModifiers keys = event->modifiers();
-			if (keys & Qt::ShiftModifier) {
+			if ( keys & Qt::ShiftModifier ) {
 
 				m_selectionModel->clearSelection();
 				m_selectionModel->ClearFocus();
 			}
 			else {
 
-				SelectAtPoint(event->x(), event->y(), keys & Qt::ControlModifier);
+				SelectAtPoint( event->x(), event->y(), keys & Qt::ControlModifier );
 			}
 		}
 
 		//Make sure that ANTz combo of left & right button does not cause the context menu to appear
-		if (event->buttons() == Qt::RightButton) {
+		if ( event->buttons() == Qt::RightButton ) {
 
-			setContextMenuPolicy(Qt::ActionsContextMenu);
+			setContextMenuPolicy( Qt::ActionsContextMenu );
 		}
 		else {
 
-			setContextMenuPolicy(Qt::NoContextMenu);
+			setContextMenuPolicy( Qt::NoContextMenu );
 		}
 
 		m_lastMousePosition = event->pos();
 	}
 
-	bool ANTzForestWidget::SelectAtPoint(int x, int y, bool multiSelect) {
-	
-		if (!rect().contains(x, y)) {
+	bool ANTzForestWidget::SelectAtPoint( int x, int y, bool multiSelect ) {
+
+		if ( !rect().contains( x, y ) ) {
 
 			return false;
 		}
+        
+        makeCurrent();
 
 		//emit NewStatusMessage(tr("Selection Attempt At: %1, %2").arg(x).arg(y), 4000);
 
 		int pickID = 0;
 
 		pData antzData = m_antzData->GetData();
-	
+
 		int glX = x;
 		int glY = antzData->io.gl.height - y;
 
 		//if (IsInStereoMode()) {
 
-		glMatrixMode(GL_MODELVIEW);
+		glMatrixMode( GL_MODELVIEW );
 		glLoadIdentity();
-		npSetLookAtFromCamera(antzData);
+		npSetLookAtFromCamera( antzData );
 
 		//antzData->io.gl.stereo = false;
 		antzData->io.gl.pickPass = true;
 
-		DrawSceneForEye(Eye::Left, false);
+		DrawSceneForEye( Eye::Left, false );
 
 		glFinish();
-		glReadBuffer(GL_BACK_LEFT);
-		pickID = npPickPinStereoSingleEye(glX, glY, antzData);
+		glReadBuffer( GL_BACK_LEFT );
+		pickID = npPickPinStereoSingleEye( glX, glY, antzData );
 
 		/*if ((pickID == 0) && IsInStereoMode()) {
 
-			DrawSceneForEye(Eye::Right, false);
-			glFinish();
-			glReadBuffer(GL_BACK_RIGHT);
-			pickID = npPickPinStereoSingleEye(glX, glY, antzData);
+		DrawSceneForEye(Eye::Right, false);
+		glFinish();
+		glReadBuffer(GL_BACK_RIGHT);
+		pickID = npPickPinStereoSingleEye(glX, glY, antzData);
 		}*/
 
 		//antzData->io.gl.stereo = true;
@@ -1120,28 +1235,31 @@ namespace SynGlyphXANTz {
 		//	pickID = npPickPin(glX, glY, antzData);
 		//}
 
-		if (pickID != 0) {
+		if ( pickID != 0 ) {
 
 			//pNPnode node = static_cast<pNPnode>(antzData->map.nodeID[pickID]);
 			QItemSelectionModel::SelectionFlags flags = QItemSelectionModel::ClearAndSelect;
 			SynGlyphX::ItemFocusSelectionModel::FocusFlags focusFlags = SynGlyphX::ItemFocusSelectionModel::FocusFlag::ClearAndFocus;
-			if (multiSelect) {
+			if ( multiSelect ) {
 
 				flags = QItemSelectionModel::Toggle;
 				focusFlags = SynGlyphX::ItemFocusSelectionModel::FocusFlag::Toggle;
 			}
 
-			QModelIndex modelIndex = m_model->IndexFromANTzID(pickID);
-			m_selectionModel->select(modelIndex, flags);
-			m_selectionModel->SetFocus(modelIndex, focusFlags);
+			QModelIndex modelIndex = m_model->IndexFromANTzID( pickID );
+            if (modelIndex.isValid())
+            {
+                m_selectionModel->select( modelIndex, flags );
+                m_selectionModel->SetFocus( modelIndex, focusFlags );
+            }
 		}
 
 		//emit NewStatusMessage(tr("Selection At: %1, %2 || Pick ID: %3").arg(x).arg(y).arg(pickID), 4000);
-	
-		return (pickID != 0);
+
+		return ( pickID != 0 );
 	}
 
-	void ANTzForestWidget::mouseReleaseEvent(QMouseEvent* event) {
+	void ANTzForestWidget::mouseReleaseEvent( QMouseEvent* event ) {
 
 		//Reset ANTz mouse values back to the original values
 		pData antzData = m_antzData->GetData();
@@ -1149,34 +1267,34 @@ namespace SynGlyphXANTz {
 		antzData->io.mouse.tool = kNPtoolNull;
 		antzData->io.mouse.buttonR = false;
 
-		if (!m_regionSelectionRect.isNull()) {
-		
-			QRect glRect(m_regionSelectionRect.x(), height() - m_regionSelectionRect.y() - m_regionSelectionRect.height(), m_regionSelectionRect.width(), m_regionSelectionRect.height());
+		if ( !m_regionSelectionRect.isNull() ) {
+
+			QRect glRect( m_regionSelectionRect.x(), height() - m_regionSelectionRect.y() - m_regionSelectionRect.height(), m_regionSelectionRect.width(), m_regionSelectionRect.height() );
 			QItemSelection indexesInRegion;
-			m_model->FindIndexesInRegion(glRect, indexesInRegion);
-			m_selectionModel->select(indexesInRegion, QItemSelectionModel::Select);
-			m_selectionModel->SetFocus(indexesInRegion.indexes(), SynGlyphX::ItemFocusSelectionModel::FocusFlag::ClearAndFocus);
+			m_model->FindIndexesInRegion( glRect, indexesInRegion );
+			m_selectionModel->select( indexesInRegion, QItemSelectionModel::Select );
+			m_selectionModel->SetFocus( indexesInRegion.indexes(), SynGlyphX::ItemFocusSelectionModel::FocusFlag::ClearAndFocus );
 			m_regionSelectionRect = QRect();
 		}
 
 		m_lastMousePosition = boost::none;
 	}
 
-	void ANTzForestWidget::mouseMoveEvent(QMouseEvent* event) {
+	void ANTzForestWidget::mouseMoveEvent( QMouseEvent* event ) {
 
 		pData antzData = m_antzData->GetData();
 		antzData->io.mouse.tool = kNPtoolNull;
 		antzData->io.mouse.mode = kNPmouseModeNull;
 
-		if (event->modifiers() & Qt::ShiftModifier) {
+		if ( event->modifiers() & Qt::ShiftModifier ) {
 
-			int x = (m_lastMousePosition.get().x() < event->x()) ? m_lastMousePosition.get().x() : event->x();
-			int y = (m_lastMousePosition.get().y() < event->y()) ? m_lastMousePosition.get().y() : event->y();
-			m_regionSelectionRect.setRect(x, y, std::abs(m_lastMousePosition.get().x() - event->x()), std::abs(m_lastMousePosition.get().y() - event->y()));
+			int x = ( m_lastMousePosition.get().x() < event->x() ) ? m_lastMousePosition.get().x() : event->x();
+			int y = ( m_lastMousePosition.get().y() < event->y() ) ? m_lastMousePosition.get().y() : event->y();
+			m_regionSelectionRect.setRect( x, y, std::abs( m_lastMousePosition.get().x() - event->x() ), std::abs( m_lastMousePosition.get().y() - event->y() ) );
 		}
-		else if (m_lastMousePosition) {
+		else if ( m_lastMousePosition ) {
 
-			if (m_regionSelectionRect.isNull()) {
+			if ( m_regionSelectionRect.isNull() ) {
 
 				antzData->io.mouse.previous.x = m_lastMousePosition.get().x();
 				antzData->io.mouse.previous.y = m_lastMousePosition.get().y();
@@ -1185,27 +1303,27 @@ namespace SynGlyphXANTz {
 				antzData->io.mouse.x = event->x();
 				antzData->io.mouse.y = event->y();
 
-				if (m_selectionModel->GetFocusList().empty()) {
+				if ( m_selectionModel->GetFocusList().empty() ) {
 
-					if (event->buttons() & Qt::LeftButton) {
+					if ( event->buttons() & Qt::LeftButton ) {
 
 						antzData->io.mouse.mode = kNPmouseModeCamLook;
 					}
 				}
 				else {
 
-					if (event->buttons() & Qt::LeftButton) {
-						
-						if (event->buttons() & Qt::RightButton) {
-						
+					if ( event->buttons() & Qt::LeftButton ) {
+
+						if ( event->buttons() & Qt::RightButton ) {
+
 							antzData->io.mouse.mode = kNPmouseModeCamExamXZ;
 						}
 						else {
-							
+
 							antzData->io.mouse.mode = kNPmouseModeCamExamXY;
 						}
 					}
-					else if (event->buttons() & Qt::MidButton) {
+					else if ( event->buttons() & Qt::MidButton ) {
 
 						antzData->io.mouse.mode = kNPmouseModeCamExamXZ;
 					}
@@ -1219,67 +1337,67 @@ namespace SynGlyphXANTz {
 		}
 	}
 
-	void ANTzForestWidget::keyPressEvent(QKeyEvent* event) {
+	void ANTzForestWidget::keyPressEvent( QKeyEvent* event ) {
 
 		//if (m_selectionModel->selectedIndexes().empty()) {
 
-			pData antzData = m_antzData->GetData();
-			if ((event->key() == 'w') ||
-				(event->key() == 'W') ||
-				(event->key() == 's') ||
-				(event->key() == 'S') ||
-				(event->key() == 'a') ||
-				(event->key() == 'A') ||
-				(event->key() == 'd') ||
-				(event->key() == 'D') ||
-				(event->key() == 'e') ||
-				(event->key() == 'E') ||
-				(event->key() == 'q') ||
-				(event->key() == 'Q')) {
+		pData antzData = m_antzData->GetData();
+		if ( ( event->key() == 'w' ) ||
+			( event->key() == 'W' ) ||
+			( event->key() == 's' ) ||
+			( event->key() == 'S' ) ||
+			( event->key() == 'a' ) ||
+			( event->key() == 'A' ) ||
+			( event->key() == 'd' ) ||
+			( event->key() == 'D' ) ||
+			( event->key() == 'e' ) ||
+			( event->key() == 'E' ) ||
+			( event->key() == 'q' ) ||
+			( event->key() == 'Q' ) ) {
 
-				npCtrlCommand(antzData->io.key.map[kKeyDown][npKeyRAWASCII(event->key())], antzData);
-				return;
-			}
+			npCtrlCommand( antzData->io.key.map[kKeyDown][npKeyRAWASCII( event->key() )], antzData );
+			return;
+		}
 		//}
 
-		QGLWidget::keyPressEvent(event);
+		QWidget::keyPressEvent( event );
 	}
 
-	void ANTzForestWidget::keyReleaseEvent(QKeyEvent* event) {
+	void ANTzForestWidget::keyReleaseEvent( QKeyEvent* event ) {
 
 		//if (m_selectionModel->selectedIndexes().empty()) {
 
-			pData antzData = m_antzData->GetData();
-			if ((event->key() == 'w') ||
-				(event->key() == 'W') ||
-				(event->key() == 's') ||
-				(event->key() == 'S') ||
-				(event->key() == 'a') ||
-				(event->key() == 'A') ||
-				(event->key() == 'd') ||
-				(event->key() == 'D') ||
-				(event->key() == 'e') ||
-				(event->key() == 'E') ||
-				(event->key() == 'q') ||
-				(event->key() == 'Q')) {
+		pData antzData = m_antzData->GetData();
+		if ( ( event->key() == 'w' ) ||
+			( event->key() == 'W' ) ||
+			( event->key() == 's' ) ||
+			( event->key() == 'S' ) ||
+			( event->key() == 'a' ) ||
+			( event->key() == 'A' ) ||
+			( event->key() == 'd' ) ||
+			( event->key() == 'D' ) ||
+			( event->key() == 'e' ) ||
+			( event->key() == 'E' ) ||
+			( event->key() == 'q' ) ||
+			( event->key() == 'Q' ) ) {
 
-				npCtrlCommand(antzData->io.key.map[kKeyUp][npKeyRAWASCII(event->key())], antzData);
-				return;
-			}
+			npCtrlCommand( antzData->io.key.map[kKeyUp][npKeyRAWASCII( event->key() )], antzData );
+			return;
+		}
 		//}
 
-			/*if ((event->key() == 't') || (event->key() == 'T')) {
+		/*if ((event->key() == 't') || (event->key() == 'T')) {
 
-				SelectFromStylus(SynGlyphXANTz::ANTzBoundingBox::Line());
-				return;
-			}*/
+		SelectFromStylus(SynGlyphXANTz::ANTzBoundingBox::Line());
+		return;
+		}*/
 
-		QGLWidget::keyReleaseEvent(event);
+		QWidget::keyReleaseEvent( event );
 	}
 
-	void ANTzForestWidget::wheelEvent(QWheelEvent* event) {
+	void ANTzForestWidget::wheelEvent( QWheelEvent* event ) {
 
-		if (!m_selectionModel->GetFocusList().empty()) {
+		if ( !m_selectionModel->GetFocusList().empty() ) {
 
 			pData antzData = m_antzData->GetData();
 			antzData->io.mouse.mode = kNPmouseModeCamExamXZ;
@@ -1295,27 +1413,27 @@ namespace SynGlyphXANTz {
 	/*
 	void ANTzForestWidget::SetStereo(bool enableStereo) {
 
-		pData antzData = m_antzData->GetData();
-		antzData->io.gl.stereo = enableStereo;
+	pData antzData = m_antzData->GetData();
+	antzData->io.gl.stereo = enableStereo;
 
-		if (enableStereo) {
+	if (enableStereo) {
 
-			setFormat(s_stereoFormat);
-			if (IsZSpaceAvailable()) {
+	setFormat(s_stereoFormat);
+	if (IsZSpaceAvailable()) {
 
-				SetZSpacePosition();
-				ResizeZSpaceViewport();
-			}
-		}
-		else {
+	SetZSpacePosition();
+	ResizeZSpaceViewport();
+	}
+	}
+	else {
 
-			setFormat(s_format);
-		}
+	setFormat(s_format);
+	}
 	}*/
 
 	bool ANTzForestWidget::IsStereoSupported() const {
 
-		return (context()->format().stereo());
+		return QSurfaceFormat::defaultFormat().stereo();
 	}
 
 	bool ANTzForestWidget::IsInStereoMode() const {
@@ -1328,18 +1446,20 @@ namespace SynGlyphXANTz {
 
 
 
-	void ANTzForestWidget::moveEvent(QMoveEvent* event) {
-
+	void ANTzForestWidget::moveEvent( QMoveEvent* event ) {
+#ifdef USE_ZSPACE
 		SetZSpacePosition();
-		QGLWidget::moveEvent(event);
+#endif
+		QWidget::moveEvent( event );
 	}
 
+#ifdef USE_ZSPACE
 	void ANTzForestWidget::SetZSpacePosition() {
 
-		if (IsInZSpaceStereo()) {
+		if ( IsInZSpaceStereo() ) {
 
-			QPoint zSpaceViewportPosition = mapToGlobal(QPoint(0, 0));
-			zsSetViewportPosition(m_zSpaceViewport, zSpaceViewportPosition.x(), zSpaceViewportPosition.y());
+			QPoint zSpaceViewportPosition = mapToGlobal( QPoint( 0, 0 ) );
+			zsSetViewportPosition( m_zSpaceViewport, zSpaceViewportPosition.x(), zSpaceViewportPosition.y() );
 
 			//ZSError error = zsUpdate(m_zSpaceContext);
 		}
@@ -1347,92 +1467,99 @@ namespace SynGlyphXANTz {
 
 	void ANTzForestWidget::ResizeZSpaceViewport() {
 
-		if (IsInZSpaceStereo()) {
+		if ( IsInZSpaceStereo() ) {
 
-			zsSetViewportSize(m_zSpaceViewport, size().width(), size().height());
-			glGetFloatv(GL_PROJECTION_MATRIX, m_originialProjectionMatrix.f);
+			zsSetViewportSize( m_zSpaceViewport, size().width(), size().height() );
+			glGetFloatv( GL_PROJECTION_MATRIX, m_originialProjectionMatrix.f );
 
 			//ZSError error = zsUpdate(m_zSpaceContext);
 		}
 	}
+#endif
 
-	bool ANTzForestWidget::eventFilter(QObject *object, QEvent *event) {
+	bool ANTzForestWidget::eventFilter( QObject *object, QEvent *event ) {
 
-		if ((object == m_topLevelWindow) && (event->type() == QEvent::Move)) {
+#ifdef USE_ZSPACE
+		if ( ( object == m_topLevelWindow ) && ( event->type() == QEvent::Move ) ) {
 
 			SetZSpacePosition();
 		}
+#endif
 
 		return false;
 	}
 
+#ifdef USE_ZSPACE
 	bool ANTzForestWidget::IsInZSpaceStereo() const {
 
-		return (IsInStereoMode() && IsZSpaceAvailable());
+		return ( IsInStereoMode() && IsZSpaceAvailable() );
 	}
 
 	bool ANTzForestWidget::IsZSpaceAvailable() const {
 
-		return (m_zSpaceContext != nullptr);
+		return ( m_zSpaceContext != nullptr );
 	}
+#endif
 
-	void ANTzForestWidget::SelectFromStylus(const SynGlyphXANTz::ANTzBoundingBox::Line& line) {
+	void ANTzForestWidget::SelectFromStylus( const SynGlyphXANTz::ANTzBoundingBox::Line& line ) {
 
 		Qt::KeyboardModifiers keyboardModifiers = QGuiApplication::queryKeyboardModifiers();
 
 		std::map<float, int> distanceIdMap;
 		pData antzData = m_antzData->GetData();
-		for (int i = kNPnodeRootPin; i < antzData->map.nodeRootCount; ++i) {
+		for ( int i = kNPnodeRootPin; i < antzData->map.nodeRootCount; ++i ) {
 
-			pNPnode node = static_cast<pNPnode>(antzData->map.node[i]);
-			CheckStylusIntersectionWithNode(node, line, distanceIdMap);
+			pNPnode node = static_cast<pNPnode>( antzData->map.node[i] );
+			CheckStylusIntersectionWithNode( node, line, distanceIdMap );
 		}
 
-		if (distanceIdMap.empty()) {
-
-			zsStartTargetVibration(m_zSpaceStylus, 0.04f, 0.04f, 4);
+		if ( distanceIdMap.empty() ) {
+#ifdef USE_ZSPACE
+			zsStartTargetVibration( m_zSpaceStylus, 0.04f, 0.04f, 4 );
+#endif
 		}
 		else {
 
-			if ((keyboardModifiers.testFlag(Qt::ControlModifier)) || (keyboardModifiers.testFlag(Qt::ShiftModifier))) {
+			if ( ( keyboardModifiers.testFlag( Qt::ControlModifier ) ) || ( keyboardModifiers.testFlag( Qt::ShiftModifier ) ) ) {
 
 				QItemSelection stylusItems;
-				for (auto id : distanceIdMap) {
+				for ( auto id : distanceIdMap ) {
 
-					QModelIndex index = m_model->IndexFromANTzID(id.second);
-					QItemSelection newStylusItem(index, index);
-					stylusItems.merge(newStylusItem, QItemSelectionModel::Select);
+					QModelIndex index = m_model->IndexFromANTzID( id.second );
+					QItemSelection newStylusItem( index, index );
+					stylusItems.merge( newStylusItem, QItemSelectionModel::Select );
 				}
-				m_selectionModel->select(stylusItems, QItemSelectionModel::Select);	
+				m_selectionModel->select( stylusItems, QItemSelectionModel::Select );
 			}
 			else {
 
-				QModelIndex index = m_model->IndexFromANTzID(distanceIdMap.begin()->second);
-				m_selectionModel->select(index, QItemSelectionModel::ClearAndSelect);		
+				QModelIndex index = m_model->IndexFromANTzID( distanceIdMap.begin()->second );
+				m_selectionModel->select( index, QItemSelectionModel::ClearAndSelect );
 			}
 		}
 	}
 
-	void ANTzForestWidget::CheckStylusIntersectionWithNode(pNPnode node, const SynGlyphXANTz::ANTzBoundingBox::Line& line, std::map<float, int>& distanceIdMap) {
+	void ANTzForestWidget::CheckStylusIntersectionWithNode( pNPnode node, const SynGlyphXANTz::ANTzBoundingBox::Line& line, std::map<float, int>& distanceIdMap ) {
 
 		//Only test on visible objects
-		if ((!node->hide) && (node->screen.z >= 0.0f) && (node->screen.z <= 1.0f)) {
+		if ( ( !node->hide ) && ( node->screen.z >= 0.0f ) && ( node->screen.z <= 1.0f ) ) {
 
-			SynGlyphXANTz::ANTzBoundingBox::Intersection intersection = m_boundingBoxes[node->id].DoesLineIntersect(line);
-			if (intersection.is_initialized()) {
+			SynGlyphXANTz::ANTzBoundingBox::Intersection intersection = m_boundingBoxes[node->id].DoesLineIntersect( line );
+			if ( intersection.is_initialized() ) {
 
 				distanceIdMap[intersection.get()] = node->id;
 			}
 		}
-		for (int j = 0; j < node->childCount; ++j) {
+		for ( int j = 0; j < node->childCount; ++j ) {
 
-			CheckStylusIntersectionWithNode(node->child[j], line, distanceIdMap);
+			CheckStylusIntersectionWithNode( node->child[j], line, distanceIdMap );
 		}
 	}
 
-	void ANTzForestWidget::ZSpaceButtonPressHandler(ZSHandle targetHandle, const ZSTrackerEventData* eventData) {
+#ifdef USE_ZSPACE
+	void ANTzForestWidget::ZSpaceButtonPressHandler( ZSHandle targetHandle, const ZSTrackerEventData* eventData ) {
 
-		if ((eventData->buttonId == 1) || (eventData->buttonId == 2)) {
+		if ( ( eventData->buttonId == 1 ) || ( eventData->buttonId == 2 ) ) {
 
 			m_zSpaceStylusLastPosition.x = eventData->poseMatrix.m03;
 			m_zSpaceStylusLastPosition.y = eventData->poseMatrix.m13;
@@ -1440,47 +1567,47 @@ namespace SynGlyphXANTz {
 		}
 	}
 
-	void ANTzForestWidget::ZSpaceButtonReleaseHandler(ZSHandle targetHandle, const ZSTrackerEventData* eventData) {
+	void ANTzForestWidget::ZSpaceButtonReleaseHandler( ZSHandle targetHandle, const ZSTrackerEventData* eventData ) {
 
-		if (eventData->buttonId == 0) {
+		if ( eventData->buttonId == 0 ) {
 
-			SelectFromStylus(m_stylusWorldLine);
+			SelectFromStylus( m_stylusWorldLine );
 		}
 	}
 
-	void ANTzForestWidget::ZSpaceStylusMoveHandler(ZSHandle targetHandle, const ZSTrackerEventData* eventData) {
+	void ANTzForestWidget::ZSpaceStylusMoveHandler( ZSHandle targetHandle, const ZSTrackerEventData* eventData ) {
 
 		ZSBool isButton2ButtonPressed = false;
 		ZSBool isButton1ButtonPressed = false;
-		ZSError error = zsIsTargetButtonPressed(targetHandle, 2, &isButton2ButtonPressed);
-		error = zsIsTargetButtonPressed(targetHandle, 1, &isButton1ButtonPressed);
-		if (!isButton2ButtonPressed && !isButton1ButtonPressed) {
+		ZSError error = zsIsTargetButtonPressed( targetHandle, 2, &isButton2ButtonPressed );
+		error = zsIsTargetButtonPressed( targetHandle, 1, &isButton1ButtonPressed );
+		if ( !isButton2ButtonPressed && !isButton1ButtonPressed ) {
 
 			return;
 		}
 
 		pData antzData = m_antzData->GetData();
-		antzData->io.mouse.delta.x = (eventData->poseMatrix.m03 - m_zSpaceStylusLastPosition.x) * 1000;
+		antzData->io.mouse.delta.x = ( eventData->poseMatrix.m03 - m_zSpaceStylusLastPosition.x ) * 1000;
 
 		bool isSelectionEmpty = m_selectionModel->selectedIndexes().empty();
 
-		if (isButton2ButtonPressed) {
+		if ( isButton2ButtonPressed ) {
 
-			if (isSelectionEmpty) {
+			if ( isSelectionEmpty ) {
 
 				antzData->io.mouse.mode = kNPmouseModeCamLook;
-				antzData->io.mouse.delta.y = -(eventData->poseMatrix.m13 - m_zSpaceStylusLastPosition.y) * 1000;
+				antzData->io.mouse.delta.y = -( eventData->poseMatrix.m13 - m_zSpaceStylusLastPosition.y ) * 1000;
 			}
 			else {
 
 				antzData->io.mouse.mode = kNPmouseModeCamExamXY;
-				antzData->io.mouse.delta.y = -(eventData->poseMatrix.m13 - m_zSpaceStylusLastPosition.y) * 1000;
+				antzData->io.mouse.delta.y = -( eventData->poseMatrix.m13 - m_zSpaceStylusLastPosition.y ) * 1000;
 			}
 		}
-		else if (isButton1ButtonPressed && !isSelectionEmpty) {
+		else if ( isButton1ButtonPressed && !isSelectionEmpty ) {
 
 			antzData->io.mouse.mode = kNPmouseModeCamExamXZ;
-			antzData->io.mouse.delta.y = -(eventData->poseMatrix.m23 - m_zSpaceStylusLastPosition.z) * 1000;
+			antzData->io.mouse.delta.y = -( eventData->poseMatrix.m23 - m_zSpaceStylusLastPosition.z ) * 1000;
 		}
 
 		m_zSpaceStylusLastPosition.x = eventData->poseMatrix.m03;
@@ -1488,13 +1615,14 @@ namespace SynGlyphXANTz {
 		m_zSpaceStylusLastPosition.z = eventData->poseMatrix.m23;
 	}
 
-	void ANTzForestWidget::ZSpaceStylusTapHandler(ZSHandle targetHandle, const ZSTrackerEventData* eventData) {
+	void ANTzForestWidget::ZSpaceStylusTapHandler( ZSHandle targetHandle, const ZSTrackerEventData* eventData ) {
 
 		//emit NewStatusMessage(tr("Source: (%1, %2, %3)").arg(m_stylusWorldLine.first.x).arg(m_stylusWorldLine.first.y).arg(m_stylusWorldLine.first.z) +
 		//	" " + tr("Dest: (%1, %2, %3)").arg(m_stylusWorldLine.second.x).arg(m_stylusWorldLine.second.y).arg(m_stylusWorldLine.second.z), 4000);
 
 		//SelectFromStylus(m_stylusWorldTapLine);
 	}
+#endif
 
 	void ANTzForestWidget::CreateBoundingBoxes() {
 
@@ -1502,97 +1630,97 @@ namespace SynGlyphXANTz {
 		m_objectsThatNeedBoundingBoxUpdates.clear();
 
 		pData antzData = m_antzData->GetData();
-		pNPnode rootGrid = static_cast<pNPnode>(antzData->map.node[kNPnodeRootGrid]);
-		for (int i = kNPnodeRootPin; i < antzData->map.nodeRootCount; ++i) {
+		pNPnode rootGrid = static_cast<pNPnode>( antzData->map.node[kNPnodeRootGrid] );
+		for ( int i = kNPnodeRootPin; i < antzData->map.nodeRootCount; ++i ) {
 
-			pNPnode node = static_cast<pNPnode>(antzData->map.node[i]);
-			m_boundingBoxes[node->id] = SynGlyphXANTz::ANTzBoundingBox::CreateBoundingBox(node, rootGrid->scale.z);
-			bool doesBoundingBoxNeedUpdating = IsNodeAnimated(node);
-			if (doesBoundingBoxNeedUpdating) {
+			pNPnode node = static_cast<pNPnode>( antzData->map.node[i] );
+			m_boundingBoxes[node->id] = SynGlyphXANTz::ANTzBoundingBox::CreateBoundingBox( node, rootGrid->scale.z );
+			bool doesBoundingBoxNeedUpdating = IsNodeAnimated( node );
+			if ( doesBoundingBoxNeedUpdating ) {
 
-				m_objectsThatNeedBoundingBoxUpdates.insert(node->id);
+				m_objectsThatNeedBoundingBoxUpdates.insert( node->id );
 			}
 
-			for (int j = 0; j < node->childCount; ++j) {
+			for ( int j = 0; j < node->childCount; ++j ) {
 
-				CreateBoundingBoxes(node->child[j], m_boundingBoxes[node->id].GetTransform(), doesBoundingBoxNeedUpdating);
+				CreateBoundingBoxes( node->child[j], m_boundingBoxes[node->id].GetTransform(), doesBoundingBoxNeedUpdating );
 			}
 		}
 	}
 
-	void ANTzForestWidget::CreateBoundingBoxes(pNPnode node, const glm::mat4& parentTransform, bool isAncestorBoundingBoxBeingUpdated) {
+	void ANTzForestWidget::CreateBoundingBoxes( pNPnode node, const glm::mat4& parentTransform, bool isAncestorBoundingBoxBeingUpdated ) {
 
 		bool doesBoundingBoxNeedUpdating = false;
-	
-		if (!isAncestorBoundingBoxBeingUpdated) {
 
-			doesBoundingBoxNeedUpdating = IsNodeAnimated(node);
-			if (doesBoundingBoxNeedUpdating) {
+		if ( !isAncestorBoundingBoxBeingUpdated ) {
 
-				m_objectsThatNeedBoundingBoxUpdates.insert(node->id);
+			doesBoundingBoxNeedUpdating = IsNodeAnimated( node );
+			if ( doesBoundingBoxNeedUpdating ) {
+
+				m_objectsThatNeedBoundingBoxUpdates.insert( node->id );
 			}
 		}
 
-		m_boundingBoxes[node->id] = SynGlyphXANTz::ANTzBoundingBox::CreateBoundingBox(node, parentTransform);
-		for (int j = 0; j < node->childCount; ++j) {
+		m_boundingBoxes[node->id] = SynGlyphXANTz::ANTzBoundingBox::CreateBoundingBox( node, parentTransform );
+		for ( int j = 0; j < node->childCount; ++j ) {
 
-			CreateBoundingBoxes(node->child[j], m_boundingBoxes[node->id].GetTransform(), doesBoundingBoxNeedUpdating);
+			CreateBoundingBoxes( node->child[j], m_boundingBoxes[node->id].GetTransform(), doesBoundingBoxNeedUpdating );
 		}
 	}
 
 	void ANTzForestWidget::DrawBoundingBoxes() {
 
-		qglColor(Qt::magenta);
+		qglColor( Qt::magenta );
 
-		for (auto boundingBox : m_boundingBoxes) {
+		for ( auto boundingBox : m_boundingBoxes ) {
 
 			glm::vec3 minPoint = boundingBox.second.GetMinCorner();
 			glm::vec3 maxPoint = boundingBox.second.GetMaxCorner();
 
-			glm::vec4 bll = boundingBox.second.GetTransform() * glm::vec4(minPoint.x, minPoint.y, minPoint.z, 1.0f);
-			glm::vec4 blr = boundingBox.second.GetTransform() * glm::vec4(maxPoint.x, minPoint.y, minPoint.z, 1.0f);
+			glm::vec4 bll = boundingBox.second.GetTransform() * glm::vec4( minPoint.x, minPoint.y, minPoint.z, 1.0f );
+			glm::vec4 blr = boundingBox.second.GetTransform() * glm::vec4( maxPoint.x, minPoint.y, minPoint.z, 1.0f );
 
-			glm::vec4 bur = boundingBox.second.GetTransform() * glm::vec4(maxPoint.x, maxPoint.y, minPoint.z, 1.0f);
-			glm::vec4 bul = boundingBox.second.GetTransform() * glm::vec4(minPoint.x, maxPoint.y, minPoint.z, 1.0f);
+			glm::vec4 bur = boundingBox.second.GetTransform() * glm::vec4( maxPoint.x, maxPoint.y, minPoint.z, 1.0f );
+			glm::vec4 bul = boundingBox.second.GetTransform() * glm::vec4( minPoint.x, maxPoint.y, minPoint.z, 1.0f );
 
-			glm::vec4 tll = boundingBox.second.GetTransform() * glm::vec4(minPoint.x, minPoint.y, maxPoint.z, 1.0f);
-			glm::vec4 tlr = boundingBox.second.GetTransform() * glm::vec4(maxPoint.x, minPoint.y, maxPoint.z, 1.0f);
+			glm::vec4 tll = boundingBox.second.GetTransform() * glm::vec4( minPoint.x, minPoint.y, maxPoint.z, 1.0f );
+			glm::vec4 tlr = boundingBox.second.GetTransform() * glm::vec4( maxPoint.x, minPoint.y, maxPoint.z, 1.0f );
 
-			glm::vec4 tur = boundingBox.second.GetTransform() * glm::vec4(maxPoint.x, maxPoint.y, maxPoint.z, 1.0f);
-			glm::vec4 tul = boundingBox.second.GetTransform() * glm::vec4(minPoint.x, maxPoint.y, maxPoint.z, 1.0f);
+			glm::vec4 tur = boundingBox.second.GetTransform() * glm::vec4( maxPoint.x, maxPoint.y, maxPoint.z, 1.0f );
+			glm::vec4 tul = boundingBox.second.GetTransform() * glm::vec4( minPoint.x, maxPoint.y, maxPoint.z, 1.0f );
 
-			glBegin(GL_LINE_LOOP);
-			glVertex3f(bll.x, bll.y, bll.z);
-			glVertex3f(blr.x, blr.y, blr.z);
-			glVertex3f(bur.x, bur.y, bur.z);
-			glVertex3f(bul.x, bul.y, bul.z);
+			glBegin( GL_LINE_LOOP );
+			glVertex3f( bll.x, bll.y, bll.z );
+			glVertex3f( blr.x, blr.y, blr.z );
+			glVertex3f( bur.x, bur.y, bur.z );
+			glVertex3f( bul.x, bul.y, bul.z );
 			glEnd();
 
-			glBegin(GL_LINE_LOOP);
-			glVertex3f(tll.x, tll.y, tll.z);
-			glVertex3f(tlr.x, tlr.y, tlr.z);
-			glVertex3f(tur.x, tur.y, tur.z);
-			glVertex3f(tul.x, tul.y, tul.z);
+			glBegin( GL_LINE_LOOP );
+			glVertex3f( tll.x, tll.y, tll.z );
+			glVertex3f( tlr.x, tlr.y, tlr.z );
+			glVertex3f( tur.x, tur.y, tur.z );
+			glVertex3f( tul.x, tul.y, tul.z );
 			glEnd();
 
-			glBegin(GL_LINE_LOOP);
-			glVertex3f(bll.x, bll.y, bll.z);
-			glVertex3f(tll.x, tll.y, tll.z);
-			glVertex3f(tul.x, tul.y, tul.z);
-			glVertex3f(bul.x, bul.y, bul.z);
+			glBegin( GL_LINE_LOOP );
+			glVertex3f( bll.x, bll.y, bll.z );
+			glVertex3f( tll.x, tll.y, tll.z );
+			glVertex3f( tul.x, tul.y, tul.z );
+			glVertex3f( bul.x, bul.y, bul.z );
 			glEnd();
 
-			glBegin(GL_LINE_LOOP);
-			glVertex3f(blr.x, blr.y, blr.z);
-			glVertex3f(tlr.x, tlr.y, tlr.z);
-			glVertex3f(tur.x, tur.y, tur.z);
-			glVertex3f(bur.x, bur.y, bur.z);
+			glBegin( GL_LINE_LOOP );
+			glVertex3f( blr.x, blr.y, blr.z );
+			glVertex3f( tlr.x, tlr.y, tlr.z );
+			glVertex3f( tur.x, tur.y, tur.z );
+			glVertex3f( bur.x, bur.y, bur.z );
 			glEnd();
 		}
 	}
 
 	void ANTzForestWidget::OnModelReset() {
-
+        
 		CreateBoundingBoxes();
 		StoreRotationRates();
 		ClearAllTags();
@@ -1601,72 +1729,70 @@ namespace SynGlyphXANTz {
 
 		const QStringList& textures = m_model->GetBaseImageFilenames();
 
-		int size = m_model->rowCount();
+		for ( auto texture : m_textureIDs ) {
 
-		for (unsigned int textureID : m_textureIDs) {
-
-			deleteTexture(textureID);
+			delete texture;
 		}
 		m_textureIDs.clear();
-	
-		Q_FOREACH(const QString& texture, textures) {
 
-			m_textureIDs.push_back(BindTextureInFile(texture));
+		Q_FOREACH( const QString& texture, textures ) {
+
+			m_textureIDs.push_back( BindTextureInFile( texture ) );
 		}
 
 		pData antzData = m_antzData->GetData();
 		antzData->io.gl.textureCount = m_textureIDs.size() + 1;
 
-		pNPnode rootGrid = static_cast<pNPnode>(antzData->map.node[kNPnodeRootGrid]);
-		SetGridTexture(rootGrid);
-		if (m_model->rowCount() == 0) {
+		pNPnode rootGrid = static_cast<pNPnode>( antzData->map.node[kNPnodeRootGrid] );
+		SetGridTexture( rootGrid );
+		if ( m_model->rowCount() == 0 ) {
 
-			SetGridLinesColor(rootGrid, Qt::blue);
+			SetGridLinesColor( rootGrid, Qt::blue );
 			rootGrid->segments.x = 12;
 			rootGrid->segments.y = 6;
 			rootGrid->auxA.x = 30;
 			rootGrid->auxA.y = 30;
 			rootGrid->auxA.z = 30;
 		}
-		for (int i = 0; i < rootGrid->childCount; ++i) {
+		for ( int i = 0; i < rootGrid->childCount; ++i ) {
 
-			SetGridTexture(rootGrid->child[i]);
+			SetGridTexture( rootGrid->child[i] );
 		}
 
-		if (m_model->rowCount() > 0) {
+		if ( m_model->rowCount() > 0 ) {
 
 			float maxZ = std::numeric_limits<double>::lowest();
-			for (unsigned int i = kNPnodeRootPin; i < antzData->map.nodeRootCount; ++i) {
+			for ( unsigned int i = kNPnodeRootPin; i < antzData->map.nodeRootCount; ++i ) {
 
-				pNPnode rootNode = static_cast<pNPnode>(antzData->map.node[i]);
-				maxZ = std::max(maxZ, rootNode->translate.z);
+				pNPnode rootNode = static_cast<pNPnode>( antzData->map.node[i] );
+				maxZ = std::max( maxZ, rootNode->translate.z );
 			}
-			m_initialCameraZAngle = 90.0f - (boost::math::float_constants::radian * std::atan2(345.0f - (0.8f * maxZ), 345.0f));
+			m_initialCameraZAngle = 90.0f - ( boost::math::float_constants::radian * std::atan2( 345.0f - ( 0.8f * maxZ ), 345.0f ) );
 		}
 		else {
 
 			m_initialCameraZAngle = 45.0f;
 		}
-	
+
 		m_isReseting = false;
 		update();
 
 		ResetCamera();
 	}
 
-	void ANTzForestWidget::SetGridTexture(pNPnode grid) {
+	void ANTzForestWidget::SetGridTexture( pNPnode grid ) {
 
-		if (grid->textureID == 1) {
+		if ( grid->textureID == 1 ) {
 
-			grid->textureID = m_worldTextureID;
+			grid->textureID = m_worldTextureID->textureId();
 		}
 		else {
 
-			grid->textureID = m_textureIDs[grid->textureID - 2];
+			grid->textureID = m_textureIDs[grid->textureID - 2]->textureId();
 		}
 	}
 
-	void ANTzForestWidget::SetGridLinesColor(pNPnode grid, const QColor& color) {
+	void ANTzForestWidget::SetGridLinesColor( pNPnode grid, const QColor& color ) {
 
 		grid->color.r = color.red();
 		grid->color.g = color.green();
@@ -1674,17 +1800,17 @@ namespace SynGlyphXANTz {
 		grid->color.a = 255;
 	}
 
-	unsigned int ANTzForestWidget::BindTextureInFile(const QString& imageFilename) {
+	QOpenGLTexture* ANTzForestWidget::BindTextureInFile( const QString& imageFilename ) {
 
-		QImage image(imageFilename);
-		return bindTexture(image);
+		QImage image( imageFilename );
+		return new QOpenGLTexture( image.mirrored() );
 	}
 
-	bool ANTzForestWidget::SetStereoMode(bool stereoOn) {
+	bool ANTzForestWidget::SetStereoMode( bool stereoOn ) {
 
-		if (m_isInStereo != stereoOn) {
+		if ( m_isInStereo != stereoOn ) {
 
-			if (stereoOn && (!IsStereoSupported())) {
+			if ( stereoOn && ( !IsStereoSupported() ) ) {
 
 				return false;
 			}
@@ -1699,37 +1825,37 @@ namespace SynGlyphXANTz {
 
 		m_rotationRates.clear();
 		pData antzData = m_antzData->GetData();
-	
-		for (int i = kNPnodeRootPin; i < antzData->map.nodeRootCount; ++i) {
 
-			StoreRotationRates(static_cast<pNPnode>(antzData->map.node[i]));
+		for ( int i = kNPnodeRootPin; i < antzData->map.nodeRootCount; ++i ) {
+
+			StoreRotationRates( static_cast<pNPnode>( antzData->map.node[i] ) );
 		}
 	}
 
-	void ANTzForestWidget::StoreRotationRates(pNPnode node) {
+	void ANTzForestWidget::StoreRotationRates( pNPnode node ) {
 
-		if (IsNodeAnimated(node)) {
+		if ( IsNodeAnimated( node ) ) {
 
 			m_rotationRates[node->id] = node->rotateRate;
 		}
 
-		for (int i = 0; i < node->childCount; ++i) {
+		for ( int i = 0; i < node->childCount; ++i ) {
 
-			StoreRotationRates(node->child[i]);
+			StoreRotationRates( node->child[i] );
 		}
 	}
 
-	void ANTzForestWidget::ShowAnimatedRotations(bool show) {
+	void ANTzForestWidget::ShowAnimatedRotations( bool show ) {
 
-		if (show != m_showAnimation) {
+		if ( show != m_showAnimation ) {
 
 			pData antzData = m_antzData->GetData();
 			m_showAnimation = show;
-			if (m_showAnimation) {
+			if ( m_showAnimation ) {
 
-				for (auto idRatePair : m_rotationRates) {
+				for ( auto idRatePair : m_rotationRates ) {
 
-					pNPnode node = static_cast<pNPnode>(antzData->map.nodeID[idRatePair.first]);
+					pNPnode node = static_cast<pNPnode>( antzData->map.nodeID[idRatePair.first] );
 					node->rotateRate.x = idRatePair.second.x;
 					node->rotateRate.y = idRatePair.second.y;
 					node->rotateRate.z = idRatePair.second.z;
@@ -1737,9 +1863,9 @@ namespace SynGlyphXANTz {
 			}
 			else {
 
-				for (auto idRatePair : m_rotationRates) {
+				for ( auto idRatePair : m_rotationRates ) {
 
-					pNPnode node = static_cast<pNPnode>(antzData->map.nodeID[idRatePair.first]);
+					pNPnode node = static_cast<pNPnode>( antzData->map.nodeID[idRatePair.first] );
 					node->rotateRate.x = 0.0f;
 					node->rotateRate.y = 0.0f;
 					node->rotateRate.z = 0.0f;
@@ -1748,43 +1874,44 @@ namespace SynGlyphXANTz {
 		}
 	}
 
-	bool ANTzForestWidget::IsNodeAnimated(pNPnode node) {
+	bool ANTzForestWidget::IsNodeAnimated( pNPnode node ) {
 
-		return ((node->rotateRate.x != 0.0f) || (node->rotateRate.y != 0.0f) || (node->rotateRate.z != 0.0f));
+		return ( ( node->rotateRate.x != 0.0f ) || ( node->rotateRate.y != 0.0f ) || ( node->rotateRate.z != 0.0f ) );
 	}
 
 	void ANTzForestWidget::UpdateBoundingBoxes() {
 
 		pData antzData = m_antzData->GetData();
-		pNPnode rootGrid = static_cast<pNPnode>(antzData->map.node[kNPnodeRootGrid]);
-		for (int id : m_objectsThatNeedBoundingBoxUpdates) {
+		pNPnode rootGrid = static_cast<pNPnode>( antzData->map.node[kNPnodeRootGrid] );
+		for ( int id : m_objectsThatNeedBoundingBoxUpdates ) {
 
-			pNPnode node = static_cast<pNPnode>(antzData->map.nodeID[id]);
-			if (node->parent == nullptr) {
+			pNPnode node = static_cast<pNPnode>( antzData->map.nodeID[id] );
+			if ( node->parent == nullptr ) {
 
-				m_boundingBoxes[node->id].SetTransform(SynGlyphXANTz::ANTzBoundingBox::CreateTransform(node, rootGrid->scale.z));
-				for (int i = 0; i < node->childCount; ++i) {
+				m_boundingBoxes[node->id].SetTransform( SynGlyphXANTz::ANTzBoundingBox::CreateTransform( node, rootGrid->scale.z ) );
+				for ( int i = 0; i < node->childCount; ++i ) {
 
-					UpdateBoundingBoxes(node->child[i], m_boundingBoxes[node->id].GetTransform());
+					UpdateBoundingBoxes( node->child[i], m_boundingBoxes[node->id].GetTransform() );
 				}
 			}
 			else {
 
-				UpdateBoundingBoxes(node, m_boundingBoxes[node->parent->id].GetTransform());
+				UpdateBoundingBoxes( node, m_boundingBoxes[node->parent->id].GetTransform() );
 			}
 		}
 	}
 
-	void ANTzForestWidget::UpdateBoundingBoxes(pNPnode node, const glm::mat4& parentTransform) {
+	void ANTzForestWidget::UpdateBoundingBoxes( pNPnode node, const glm::mat4& parentTransform ) {
 
-		m_boundingBoxes[node->id].SetTransform(SynGlyphXANTz::ANTzBoundingBox::CreateTransform(node, parentTransform));
-		for (int i = 0; i < node->childCount; ++i) {
+		m_boundingBoxes[node->id].SetTransform( SynGlyphXANTz::ANTzBoundingBox::CreateTransform( node, parentTransform ) );
+		for ( int i = 0; i < node->childCount; ++i ) {
 
-			UpdateBoundingBoxes(node->child[i], m_boundingBoxes[node->id].GetTransform());
+			UpdateBoundingBoxes( node->child[i], m_boundingBoxes[node->id].GetTransform() );
 		}
 	}
 
-	void ANTzForestWidget::SetZSpaceOptions(const SynGlyphX::ZSpaceOptions& options) {
+#ifdef USE_ZSPACE
+	void ANTzForestWidget::SetZSpaceOptions( const SynGlyphX::ZSpaceOptions& options ) {
 
 		m_zSpaceOptions = options;
 	}
@@ -1793,13 +1920,14 @@ namespace SynGlyphXANTz {
 
 		return m_zSpaceOptions;
 	}
+#endif
 
 	ANTzForestWidget::FilteredResultsDisplayMode ANTzForestWidget::GetFilteredResultsDisplayMode() const {
 
 		return m_filteredResultsDisplayMode;
 	}
 
-	void ANTzForestWidget::SetBackgroundColor(const SynGlyphX::GlyphColor& color) {
+	void ANTzForestWidget::SetBackgroundColor( const SynGlyphX::GlyphColor& color ) {
 
 		pData antzData = m_antzData->GetData();
 		antzData->io.clear.r = color[0] / 255.0f;
@@ -1809,72 +1937,75 @@ namespace SynGlyphXANTz {
 
 	void ANTzForestWidget::DrawLogo() {
 
-		bool isLightingEnabled = glIsEnabled(GL_LIGHTING);
-		bool isDepthTestEnabled = glIsEnabled(GL_DEPTH_TEST);
+		bool isLightingEnabled = glIsEnabled( GL_LIGHTING );
+		bool isDepthTestEnabled = glIsEnabled( GL_DEPTH_TEST );
 
-		glDisable(GL_LIGHTING);
-		glDisable(GL_DEPTH_TEST);
+		glDisable( GL_LIGHTING );
+		glDisable( GL_DEPTH_TEST );
+        glEnable( GL_BLEND );
 
-		glMatrixMode(GL_PROJECTION);
+		glMatrixMode( GL_PROJECTION );
 		glPushMatrix();
 		glLoadIdentity();
 
-		gluOrtho2D(0, width(), 0.0, height());
+		gluOrtho2D( 0, width(), 0.0, height() );
 
-		glMatrixMode(GL_MODELVIEW);
+		glMatrixMode( GL_MODELVIEW );
 		glPushMatrix();
 		glLoadIdentity();
 
-		glColor3f(1.0f, 1.0f, 1.0f);
-		glEnable(GL_TEXTURE_2D);
-		glBindTexture(GL_TEXTURE_2D, m_logoTextureID);
-		glBegin(GL_QUADS);
-		glTexCoord2f(0, 0);
-		glVertex2i(m_logoPosition.left(), m_logoPosition.bottom());
-		glTexCoord2f(1, 0);
-		glVertex2i(m_logoPosition.right(), m_logoPosition.bottom());
+		glColor3f( 1.0f, 1.0f, 1.0f );
+		glEnable( GL_TEXTURE_2D );
+		glBindTexture( GL_TEXTURE_2D, m_logoTextureID->textureId() );
+		glBegin( GL_QUADS );
+		glTexCoord2f( 0, 0 );
+		glVertex2i( m_logoPosition.left(), m_logoPosition.bottom() );
+		glTexCoord2f( 1, 0 );
+		glVertex2i( m_logoPosition.right(), m_logoPosition.bottom() );
 
-		glTexCoord2f(1, 1);
-		glVertex2i(m_logoPosition.right(), m_logoPosition.top());
-		glTexCoord2f(0, 1);
-		glVertex2i(m_logoPosition.left(), m_logoPosition.top());
+		glTexCoord2f( 1, 1 );
+		glVertex2i( m_logoPosition.right(), m_logoPosition.top() );
+		glTexCoord2f( 0, 1 );
+		glVertex2i( m_logoPosition.left(), m_logoPosition.top() );
 		glEnd();
 
-		glDisable(GL_TEXTURE_2D);
+		glDisable( GL_TEXTURE_2D );
 
-		glMatrixMode(GL_PROJECTION);
+		glMatrixMode( GL_PROJECTION );
 		glPopMatrix();
 
-		glMatrixMode(GL_MODELVIEW);
+		glMatrixMode( GL_MODELVIEW );
 		glPopMatrix();
 
-		if (isLightingEnabled) {
+		if ( isLightingEnabled ) {
 
-			glEnable(GL_DEPTH_TEST);
+			glEnable( GL_DEPTH_TEST );
 		}
 
-		if (isDepthTestEnabled) {
+		if ( isDepthTestEnabled ) {
 
-			glEnable(GL_LIGHTING);
+			glEnable( GL_LIGHTING );
 		}
+        
+        glDisable( GL_BLEND );
 	}
 
-	void ANTzForestWidget::SetShowTagsOfSelectedObjects(bool showTagsOfSelectedObjects) {
+	void ANTzForestWidget::SetShowTagsOfSelectedObjects( bool showTagsOfSelectedObjects ) {
 
-		if (showTagsOfSelectedObjects) {
+		if ( showTagsOfSelectedObjects ) {
 
-			Q_FOREACH(const QModelIndex& modelIndex, m_selectionModel->selectedIndexes()) {
+			Q_FOREACH( const QModelIndex& modelIndex, m_selectionModel->selectedIndexes() ) {
 
-				m_tagIndexes.insert(modelIndex);
+				m_tagIndexes.insert( modelIndex );
 			}
 		}
 		else {
 
-			Q_FOREACH(const QModelIndex& modelIndex, m_selectionModel->selectedIndexes()) {
+			Q_FOREACH( const QModelIndex& modelIndex, m_selectionModel->selectedIndexes() ) {
 
-				if (m_tagIndexes.contains(modelIndex)) {
+				if ( m_tagIndexes.contains( modelIndex ) ) {
 
-					m_tagIndexes.remove(modelIndex);
+					m_tagIndexes.remove( modelIndex );
 				}
 			}
 		}
@@ -1912,6 +2043,16 @@ namespace SynGlyphXANTz {
 	ANTzForestWidget::HUDLocation ANTzForestWidget::GetAxisInfoObjectLocation() const {
 
 		return m_sceneAxisInfoObjectLocation;
+	}
+
+	void ANTzForestWidget::SetShowHUDAxisInfoObject(bool show) {
+
+		m_showHUDAxisInfoObject = show;
+	}
+
+	bool ANTzForestWidget::GetShowHUDAxisInfoObject() const {
+
+		return m_showHUDAxisInfoObject;
 	}
 
 } //namespace SynGlyphXANTz

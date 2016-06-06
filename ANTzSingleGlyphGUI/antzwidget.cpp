@@ -11,28 +11,31 @@
 
 namespace SynGlyphXANTz {
 
-	//The default QGLFormat works for now except we want alpha enabled.  May want to turn on stereo at some point
-	QGLFormat ANTzWidget::s_format(QGL::AlphaChannel);
-
-	ANTzWidget::ANTzWidget(QWidget *parent)
-		: QGLWidget(s_format, parent),
+    ANTzWidget::ANTzWidget(QWidget *parent)
+		: QOpenGLWidget(parent),
 		m_logoTextureID(0),
 		m_antzData(nullptr)
 	{
-		setAutoBufferSwap(false);
-
 		m_antzData = static_cast<pData>(npInitData(0, NULL));
 		InitIO();
 		npInitFile(m_antzData);
 		npInitCh(m_antzData);
 		npInitCtrl(m_antzData);
+        
+        // Set up timer to attempt to trigger repaints at ~60fps.
+        timer.setInterval(17);
+        timer.setSingleShot(false);
+        connect(&timer,SIGNAL(timeout()), SLOT(update() ) );
+        timer.start();
 	}
 
 	ANTzWidget::~ANTzWidget()
 	{
+		makeCurrent();
+
 		if (m_logoTextureID != 0) {
 
-			deleteTexture(m_logoTextureID);
+            delete m_logoTextureID;
 			m_logoTextureID = 0;
 		}
 
@@ -114,7 +117,7 @@ namespace SynGlyphXANTz {
 
 		QImage image(SynGlyphX::GlyphBuilderApplication::GetLogoLocation(SynGlyphX::GlyphBuilderApplication::WhiteBorder));
 		m_logoSize = image.size();
-		m_logoTextureID = bindTexture(image);
+		m_logoTextureID = new QOpenGLTexture(image.mirrored());
 	}
 
 	void ANTzWidget::resizeGL(int w, int h) {
@@ -123,7 +126,7 @@ namespace SynGlyphXANTz {
 	}
 
 	void ANTzWidget::paintGL() {
-
+        
 		npUpdateCh(m_antzData);
 
 		npUpdateEngine(m_antzData);		//position, physics, interactions...
@@ -141,27 +144,15 @@ namespace SynGlyphXANTz {
 		//antzData->io.mouse.pickMode = kNPmodePin;
 		npGLDrawScene(m_antzData);
 		//antzData->io.mouse.pickMode = kNPmodeNull;
-
+        
 		DrawLogo();
 
 		AfterDrawScene();
-
+        
 		int err = glGetError();
 		if (err) {
 			printf("err: 2388 - OpenGL error: %d\n", err);
 		}
-
-		if (doubleBuffer()) {
-
-			swapBuffers();
-		}
-		else {
-
-			glFinish();
-		}
-
-		//ANTz assumes that redraw constantly happens.  Need to put this in a thread
-		update();
 	}
 
 	void ANTzWidget::ResetCamera() {
@@ -183,8 +174,8 @@ namespace SynGlyphXANTz {
 		m_antzData->map.currentNode = m_antzData->map.currentCam;
 	}
 
-	int ANTzWidget::PickPinAtPoint(const QPoint& point) const {
-
+	int ANTzWidget::PickPinAtPoint(const QPoint& point) {
+        makeCurrent();
 		return npPickPin(point.x(), m_antzData->io.gl.height - point.y(), m_antzData);
 	}
 
@@ -204,10 +195,10 @@ namespace SynGlyphXANTz {
 		}
 	}
 
-	unsigned int ANTzWidget::BindTextureInFile(const QString& imageFilename) {
+	QOpenGLTexture* ANTzWidget::BindTextureInFile(const QString& imageFilename) {
 
 		QImage image(imageFilename);
-		return bindTexture(image);
+		return new QOpenGLTexture(image.mirrored());
 	}
 
 	void ANTzWidget::DrawLogo() {
@@ -233,10 +224,10 @@ namespace SynGlyphXANTz {
 
 		glColor3f(1.0f, 1.0f, 1.0f);
 		glEnable(GL_TEXTURE_2D);
-		glBindTexture(GL_TEXTURE_2D, m_logoTextureID);
+		glBindTexture(GL_TEXTURE_2D, m_logoTextureID->textureId());
 		glBegin(GL_QUADS);
 		glTexCoord2f(0, 0);
-		glVertex2i(lowerLeft.x(), lowerLeft.y());
+		glVertex2i(lowerLeft.x(),  lowerLeft.y());
 		glTexCoord2f(1, 0);
 		glVertex2i(upperRight.x(), lowerLeft.y());
 
@@ -246,7 +237,7 @@ namespace SynGlyphXANTz {
 		glVertex2i(lowerLeft.x(), upperRight.y());
 		glEnd();
 
-		glDisable(GL_TEXTURE_2D);
+        glDisable(GL_TEXTURE_2D);
 
 		glMatrixMode(GL_PROJECTION);
 		glPopMatrix();

@@ -20,9 +20,11 @@
 
 #include "ANTzBridge.h"
 #include "glyphgraph.h"
-#include "data/nptypes.h"
 #include "csvfilehandler.h"
 #include <string>
+
+struct NPnode;
+typedef NPnode* pNPnode;
 
 namespace SynGlyphXANTz {
 

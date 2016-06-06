@@ -259,12 +259,18 @@ namespace SynGlyphXANTz {
 
 		pNPnode node = static_cast<pNPnode>(m_antzData->GetData()->map.nodeID[id]);
 
-		if (node->branchLevel == 0) {
-			return createIndex(FindRowForRootNode(node), 0, node);
-		}
-		else {
-			return createIndex(GetChildIndexFromParent(node), 0, node);
-		}
+        if (node)
+        {
+            if (node->branchLevel == 0) {
+                return createIndex(FindRowForRootNode(node), 0, node);
+            }
+            else {
+                return createIndex(GetChildIndexFromParent(node), 0, node);
+            }
+        }
+        else{
+            return QModelIndex();
+        }
 	}
 
 	int GlyphForestModel::FindRowForRootNode(pNPnode node) const {

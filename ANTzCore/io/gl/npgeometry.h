@@ -31,8 +31,13 @@
 #ifdef WIN32
 #include <Windows.h>
 #endif
-#include <gl/GL.h>
-#include <gl/GLU.h>
+#ifdef __APPLE__
+#include <OpenGL/gl.h>
+#include <OpenGL/glu.h>
+#else
+#include <GL/glu.h>
+#include <GL/gl.h>
+#endif
 
 #ifdef __cplusplus
 extern "C" {

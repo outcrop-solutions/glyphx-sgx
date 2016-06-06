@@ -1,6 +1,7 @@
 #include "antzcsvwriter.h"
 #include <fstream>
 #include <locale>
+#include <stdexcept>
 #include <boost/lexical_cast.hpp>
 #include "glyphnodeconverter.h"
 
@@ -15,26 +16,26 @@ namespace SynGlyphXANTz {
 		m_channelMapHeaders({ L"id", L"channel_id", L"track_id", L"attribute", L"track_table_id", L"ch_map_table_id", L"record_id" }),
 		m_noURLLocation(L"nourl.html")
 	{
-		m_predefinedColors[0] = SynGlyphX::GlyphColor({ { 50, 101, 101 } });
-		m_predefinedColors[1] = SynGlyphX::GlyphColor({ { 0, 255, 0 } });
-		m_predefinedColors[2] = SynGlyphX::GlyphColor({ { 255, 0, 0 } });
-		m_predefinedColors[3] = SynGlyphX::GlyphColor({ { 0, 0, 255 } });
-		m_predefinedColors[4] = SynGlyphX::GlyphColor({ { 255, 255, 0 } });
-		m_predefinedColors[5] = SynGlyphX::GlyphColor({ { 152, 0, 255 } });
-		m_predefinedColors[6] = SynGlyphX::GlyphColor({ { 255, 168, 0 } });
-		m_predefinedColors[7] = SynGlyphX::GlyphColor({ { 0, 255, 255 } });
-		m_predefinedColors[8] = SynGlyphX::GlyphColor({ { 255, 0, 255 } });
-		m_predefinedColors[9] = SynGlyphX::GlyphColor({ { 0, 153, 0 } });
-		m_predefinedColors[10] = SynGlyphX::GlyphColor({ { 185, 153, 102 } });
-		m_predefinedColors[11] = SynGlyphX::GlyphColor({ { 255, 180, 255 } });
-		m_predefinedColors[12] = SynGlyphX::GlyphColor({ { 0, 152, 255 } });
-		m_predefinedColors[13] = SynGlyphX::GlyphColor({ { 185, 255, 0 } });
-		m_predefinedColors[14] = SynGlyphX::GlyphColor({ { 152, 0, 0 } });
-		m_predefinedColors[15] = SynGlyphX::GlyphColor({ { 127, 127, 127 } });
-		m_predefinedColors[16] = SynGlyphX::GlyphColor({ { 127, 127, 255 } });
-		m_predefinedColors[17] = SynGlyphX::GlyphColor({ { 197, 82, 0 } });
-		m_predefinedColors[18] = SynGlyphX::GlyphColor({ { 0, 0, 0 } });
-		m_predefinedColors[19] = SynGlyphX::GlyphColor({ { 255, 255, 255 } });
+		m_predefinedColors[0] = SynGlyphX::GlyphColor(SynGlyphX::GlyphColor::ColorArray({ { 50, 101, 101 } }));
+		m_predefinedColors[1] = SynGlyphX::GlyphColor(SynGlyphX::GlyphColor::ColorArray({ { 0, 255, 0 } }));
+		m_predefinedColors[2] = SynGlyphX::GlyphColor(SynGlyphX::GlyphColor::ColorArray({ { 255, 0, 0 } }));
+		m_predefinedColors[3] = SynGlyphX::GlyphColor(SynGlyphX::GlyphColor::ColorArray({ { 0, 0, 255 } }));
+		m_predefinedColors[4] = SynGlyphX::GlyphColor(SynGlyphX::GlyphColor::ColorArray({ { 255, 255, 0 } }));
+		m_predefinedColors[5] = SynGlyphX::GlyphColor(SynGlyphX::GlyphColor::ColorArray({ { 152, 0, 255 } }));
+		m_predefinedColors[6] = SynGlyphX::GlyphColor(SynGlyphX::GlyphColor::ColorArray({ { 255, 168, 0 } }));
+		m_predefinedColors[7] = SynGlyphX::GlyphColor(SynGlyphX::GlyphColor::ColorArray({ { 0, 255, 255 } }));
+		m_predefinedColors[8] = SynGlyphX::GlyphColor(SynGlyphX::GlyphColor::ColorArray({ { 255, 0, 255 } }));
+		m_predefinedColors[9] = SynGlyphX::GlyphColor(SynGlyphX::GlyphColor::ColorArray({ { 0, 153, 0 } }));
+		m_predefinedColors[10] = SynGlyphX::GlyphColor(SynGlyphX::GlyphColor::ColorArray({ { 185, 153, 102 } }));
+		m_predefinedColors[11] = SynGlyphX::GlyphColor(SynGlyphX::GlyphColor::ColorArray({ { 255, 180, 255 } }));
+		m_predefinedColors[12] = SynGlyphX::GlyphColor(SynGlyphX::GlyphColor::ColorArray({ { 0, 152, 255 } }));
+		m_predefinedColors[13] = SynGlyphX::GlyphColor(SynGlyphX::GlyphColor::ColorArray({ { 185, 255, 0 } }));
+		m_predefinedColors[14] = SynGlyphX::GlyphColor(SynGlyphX::GlyphColor::ColorArray({ { 152, 0, 0 } }));
+		m_predefinedColors[15] = SynGlyphX::GlyphColor(SynGlyphX::GlyphColor::ColorArray({ { 127, 127, 127 } }));
+		m_predefinedColors[16] = SynGlyphX::GlyphColor(SynGlyphX::GlyphColor::ColorArray({ { 127, 127, 255 } }));
+		m_predefinedColors[17] = SynGlyphX::GlyphColor(SynGlyphX::GlyphColor::ColorArray({ { 197, 82, 0 } }));
+		m_predefinedColors[18] = SynGlyphX::GlyphColor(SynGlyphX::GlyphColor::ColorArray({ { 0, 0, 0 } }));
+		m_predefinedColors[19] = SynGlyphX::GlyphColor(SynGlyphX::GlyphColor::ColorArray({ { 255, 255, 255 } }));
 
 		m_cameras[0] = { L"1", L"0", L"1", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"1", L"0", L"0", L"0", L"0", L"0", L"0", L"0.000000", L"1.000000", L"0.000000", L"0.000000", L"0.000000", L"1.000000", L"1.000000", L"1.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"1.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0", L"0", L"1.000000", L"0.000000", L"0.100000", L"0", L"50", L"101", L"101", L"255", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"1", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0", L"0", L"0", L"16", L"16", L"0", L"0", L"0", L"0", L"0", L"420" };
 		m_cameras[1] = { L"2", L"1", L"2", L"0", L"0", L"0", L"0", L"2", L"3", L"0", L"0", L"0", L"0", L"1", L"0", L"0", L"0", L"0", L"0", L"0", L"0.000000", L"0.000000", L"0.000000", L"1.000000", L"0.000000", L"1.000000", L"1.000000", L"1.000000", L"0.000000", L"-350.000000", L"350.000000", L"0.000000", L"0.000000", L"1.000000", L"0.000000", L"0.000000", L"0.000000", L"45.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0", L"0", L"1.000000", L"0.000000", L"0.100000", L"0", L"50", L"101", L"101", L"255", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"0.000000", L"488.000000", L"0.000000", L"0.000000", L"0", L"0", L"0", L"16", L"16", L"0", L"0", L"0", L"0", L"0", L"420" };
