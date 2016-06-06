@@ -18,7 +18,9 @@ public class BasicTable extends Table{
 		this.name = name;
 		this.query = "SELECT * FROM "+name;
 		this.end_of_query = name;
+        Logger.getInstance().addT("Creating "+name+"...");
 		setColumnNames();
+        Logger.getInstance().addT(name+" creation complete.");
 		//createDataStats();
 		//loadSampleData();
 	}
@@ -38,27 +40,34 @@ public class BasicTable extends Table{
 		String column_name;
 
 		try{
-
-			String sql = query+" LIMIT 1";
+            Logger.getInstance().addT("Setting column names");
+			String sql = query+" WHERE ROWNUM = 1";
 			PreparedStatement pstmt = driver.getConnection().prepareStatement(sql);
+            Logger.getInstance().addT("Returned prepared statement");
             ResultSet rs = pstmt.executeQuery();
+            Logger.getInstance().addT("Returned result set");
             ResultSetMetaData metaData = rs.getMetaData();
-
+            Logger.getInstance().addT("Returned result set meta data");
             int rowCount = metaData.getColumnCount();
-
+            Logger.getInstance().addT(sql+" | "+String.valueOf(rowCount));
+            //System.out.println(sql+" | "+String.valueOf(rowCount));
             for (int i = 0; i < rowCount; i++) {
             	column_type = metaData.getColumnTypeName(i + 1);
             	column_name = metaData.getColumnName(i + 1);
+            	//System.out.print(column_name+" ");
             	if(jdbcTypes.containsKey(column_type.toUpperCase())){
                 	columnNames.add(driver.basicField(metaData.getTableName(i + 1), column_name));
                 	columnTypes.put(driver.basicField(metaData.getTableName(i + 1), column_name), jdbcTypes.get(column_type.toUpperCase()));
+            	}else{
+            		columnNames.add(driver.basicField(metaData.getTableName(i + 1), column_name));
+                	columnTypes.put(driver.basicField(metaData.getTableName(i + 1), column_name), "String");
             	}
-            }
+            }//System.out.println("");
             rs.close();
 
 		}catch(SQLException se){
          	try{
-            	se.printStackTrace(Logger.getInstance().addError());
+            	se.printStackTrace(Logger.getInstance().addTError());
          	}catch(Exception ex){}
       	}
 	}

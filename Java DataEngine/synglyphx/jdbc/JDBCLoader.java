@@ -38,7 +38,7 @@ public class JDBCLoader {
       username = user;
       password = pass;
       dbType = db;
-
+ 
       try{
          if(same_conn && !driver.getConnection().isClosed()){
             return database.getSchemas();
@@ -51,7 +51,13 @@ public class JDBCLoader {
          driver.createConnection(connectionString,username,password);
          Logger.getInstance().add("Connection created");
 
+         double start = 0.0;
+         double end = 0.0;
+         start = System.currentTimeMillis();
          database = new Database(driver);
+         end = System.currentTimeMillis();
+         System.out.print("Create database: ");
+         System.out.println((end-start)/1000.00);
          Logger.getInstance().add("Database created");
 
       }catch(SQLException se){

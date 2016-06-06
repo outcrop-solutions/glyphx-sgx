@@ -1,5 +1,6 @@
 package synglyphx.io;
 
+import java.sql.*;
 import java.io.File;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -17,6 +18,11 @@ import synglyphx.glyph.Mapper;
 import synglyphx.io.Logger;
 import synglyphx.glyph.CoordinateMap;
 import synglyphx.link.SDTLinkReader;
+import synglyphx.jdbc.Table;
+import synglyphx.jdbc.BasicTable;
+import synglyphx.jdbc.MergedTable;
+import synglyphx.jdbc.driver.Driver;
+import synglyphx.jdbc.driver.DriverSelector;
 
 public class SDTReader {
 
@@ -501,12 +507,35 @@ public class SDTReader {
 				reader = new CSVReader();
 				reader.createDataFrame(dataPaths.get(i).getPath());
 				dataPaths.get(i).setDataFrame(reader.getDataFrame());
-			}else if(dataPaths.get(i).getType().equals("sqlite3")){
+			}/*else if(dataPaths.get(i).getType().equals("sqlite3")){
 				sqlReader = new SQLiteReader();
 				sqlReader.createDataFrame(dataPaths.get(i).getPath(),dataPaths.get(i).getTable());
 				dataPaths.get(i).setDataFrame(sqlReader.getDataFrame());
-			}else{
+			}*/else{
 				//dataframe creator for JDBC
+				Table table = null;
+				try{
+			    	Driver driver = DriverSelector.getDriver(dataPaths.get(i).getType());
+		            Class.forName(driver.packageName());
+			        Logger.getInstance().add("Connecting to Server...");
+
+			        driver.createConnection(dataPaths.get(i).getHost(),dataPaths.get(i).getUsername(),dataPaths.get(i).getPassword());
+			        //System.out.println(sourceData.getQuery());
+			        if(dataPaths.get(i).isMerged()){
+			        	table = new MergedTable(dataPaths.get(i).getQuery(), driver);
+			        }else{
+			        	table = new BasicTable(dataPaths.get(i).getTable(), dataPaths.get(i).getQuery(), driver);
+			        }
+			    }catch(SQLException se){
+			        try{
+			            se.printStackTrace(Logger.getInstance().addError());
+			        }catch(Exception ex){}
+			    }catch(Exception e){
+			        try{
+			            e.printStackTrace(Logger.getInstance().addError());
+			        }catch(Exception ex){}
+			    }
+			    dataPaths.get(i).setDataFrame(table.createDataFrame());
 			}
 		}
 

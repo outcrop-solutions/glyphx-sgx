@@ -109,11 +109,11 @@ public class SQLiteWriter {
 			for(int i = 0; i < toPrint.size(); i++){
 				SourceDataInfo sdi = dataframes.get(toPrint.get(i));
 				Logger.getInstance().addT(sdi.getTable());
-				if(sdi.getType().equals("csv") || sdi.getType().equals("sqlite3")){
+				//if(sdi.getType().equals("csv") || sdi.getType().equals("sqlite3")){
 					writeCSVTable(db,sdi);
-				}else{
+				/*}else{
 					writeSQLTable(db,sdi);
-				}
+				}*/
 			}
 
 		}catch(SQLiteException se){

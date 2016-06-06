@@ -92,6 +92,9 @@ public class SDTLinkReader {
 				int b_glyph_id = findGlyphTemplateId(doc, b_label, b_id);
 				int e_glyph_id = findGlyphTemplateId(doc, e_label, e_id);
 
+				System.out.println(b_glyph_id);
+				System.out.println(e_glyph_id);
+
 				int b_data_id = getDataPathForTemplate(directMap.get(b_binding), b_binding);
 				int e_data_id = getDataPathForTemplate(directMap.get(e_binding), e_binding);
 
@@ -122,17 +125,19 @@ public class SDTLinkReader {
 		NodeList glyphsObj = doc.getElementsByTagName("Glyphs");
 		int tempCount = 0;
 		boolean canReturn = false;
-
+		System.out.println(glyphsObj.getLength());
 		for (int i = 0; i < glyphsObj.getLength(); i++) {
 			Element glyphObject = (Element) glyphsObj.item(i);
 			NodeList glyphs = glyphObject.getElementsByTagName("Glyph");
-
+			System.out.println(glyphs.getLength());
 			for(int j = 0; j < glyphs.getLength(); j++){
 				Element glyph = (Element) glyphs.item(j);
 
 				if(glyph.getAttribute("label").equals("0")){
 					tempCount++;
 					rootCount++;
+					System.out.println(glyph.getAttribute("id"));
+					System.out.println(id);
 					if(id.equals(glyph.getAttribute("id"))){
 						canReturn = true;
 					}
@@ -140,24 +145,43 @@ public class SDTLinkReader {
 					if(label.equals(glyph.getAttribute("label"))){
 						if(canReturn)
 							return tempCount;
-					}else{
-						NodeList childrenObj = glyph.getElementsByTagName("Children");
+					}
+					NodeList childrenObj = glyph.getElementsByTagName("Children");
+					if(childrenObj.getLength() > 0){
 						Element children = (Element) childrenObj.item(i);
-						NodeList childGlyphs = children.getElementsByTagName("Glyph");
-
-						for(int k = 0; k < childGlyphs.getLength(); k++){
-							Element childGlyph = (Element) childGlyphs.item(k);
-							tempCount++;
-							if(label.equals(childGlyph.getAttribute("label"))){
-								if(canReturn)
-									return tempCount;
-							}
+						if(canReturn){
+							int[] returned = handleChildren(children,tempCount,label);
+							System.out.print("handleChildren: ");
+							System.out.println(returned[1]);
+							if(returned[0] == 1)
+								return returned[1];
+							else
+								tempCount = returned[1];
 						}
 					}
 				}
 			}
 		}
 		return tempCount;
+	}
+
+	private int[] handleChildren(Element children, int tempCount, String label){
+		NodeList childGlyphs = children.getElementsByTagName("Glyph");
+		int[] toReturn = new int[2];
+		for(int k = 0; k < childGlyphs.getLength(); k++){
+			Element childGlyph = (Element) childGlyphs.item(k);
+			tempCount++;
+			if(label.equals(childGlyph.getAttribute("label"))){
+				toReturn[0] = 1;
+				toReturn[1] = tempCount;
+				System.out.print("inside handleChildren: ");
+				System.out.println(tempCount);
+				return toReturn;
+			}
+		}
+		toReturn[0] = 0;
+		toReturn[1] = tempCount;
+		return toReturn;
 	}
 
 	private void functionHandler(LinkTemplate link_temp, Element funct_element){

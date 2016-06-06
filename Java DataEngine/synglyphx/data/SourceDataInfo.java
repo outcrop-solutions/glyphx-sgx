@@ -146,7 +146,10 @@ public class SourceDataInfo {
  	public String getFormattedName(){
  		String[] splitData = path.split(Pattern.quote(File.separator));
  		splitData = splitData[splitData.length-1].split("/");
- 		if(!type.equals("csv")){
+ 		
+ 		if(type.equals("oracle")){
+ 			return tableName;
+ 		}else if(!type.equals("csv")){
  			return splitData[splitData.length-1]+":"+tableName;
  		}
  		return splitData[splitData.length-1];

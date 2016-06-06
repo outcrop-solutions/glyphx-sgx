@@ -194,7 +194,7 @@ public class DataEngine {
 		//System.out.println(enc);
 		//System.out.println(dec);
 		/*
-		d.loadFromCSV("C:\\Users\\Bryan\\Desktop\\American Open Approved Hotels 2.csv");
+		d.loadFromCSV("C:/Users/Bryan/Desktop/GlobalAdmissions20132016/GlobalAdmissions20132016/Apps_2013_Forward_Recommend.csv");
 		String[] fields = d.getFieldsForTable(0,"csv");
 		for(int i = 0; i < fields.length; i++){
 			//System.out.println(fields[i]);
@@ -202,14 +202,18 @@ public class DataEngine {
 			System.out.println(stats[0]+", "+stats[1]+", "+stats[2]+", "+stats[3]+", "+stats[4]+", "+stats[5]);
 		}*/
 		//String[] sch_list = d.connectToServer("mysql://10.128.132.153:3306/world","synglyphx","password","mysql");
-		String[] sch_list = d.connectToServer("sqlite://C:/Users/Bryan/Documents/GitHub/DataEngine/Java DataEngine/sqlite_test.db","","","sqlite3");
+		String host = "oracle://@10.128.132.153:1521:orcl";
+		String user = "nduser";
+		String pw = "ndpw";
+		String type = "oracle";
+		String[] sch_list = d.connectToServer(host,user,pw,type);
 		/*
 		double start = 0.0;
 		double end = 0.0;
 		start = System.currentTimeMillis();
 		String[] sch_list = d.connectToServer("vertica://54.67.93.24:5433/verticanow", "synglyphx_user", "Synglyphx_user@9102", "vertica");
-	*/
-		//System.out.println("Schema List:");
+		*/
+		System.out.println("Schema List:");
 		for(int i = 0; i < sch_list.length; i++){
 			System.out.println(sch_list[i]);
 		}/*
@@ -219,24 +223,27 @@ public class DataEngine {
 		*//*
 		double start1 = 0.0;
 		double end1 = 0.0;
-		start1 = System.currentTimeMillis();*/
+		start1 = System.currentTimeMillis();
 		String[] tbl_names = d.getTableNames();
 		//System.out.println("Table List:");
 		for(int i = 0; i < tbl_names.length; i++){
 			System.out.println(tbl_names[i]+" | "+String.valueOf(d.sizeOfQuery("SELECT * FROM "+tbl_names[i])));
-		}/*
+		}
 		end1 = System.currentTimeMillis();
 		System.out.print("Get table names: ");
-		System.out.println((end1-start1)/1000.00);*/
-/*
+		System.out.println((end1-start1)/1000.00);
+
 		double start2 = 0.0;
 		double end2 = 0.0;
-		start2 = System.currentTimeMillis();
-		String[] sch_tbls = d.getSchemaTableNames("online_sales");
+		start2 = System.currentTimeMillis();*/
+		String[] sch_tbls = d.getSchemaTableNames("NDUSER");/*
 		end2 = System.currentTimeMillis();
 		System.out.print("Get schema table names: ");
 		System.out.println((end2-start2)/1000.00);
 		System.out.println("");*/
+		for(int i = 0; i < sch_tbls.length; i++){
+			System.out.println(sch_tbls[i]);
+		}
 /*
 		d.queueATable("online_sales.call_center_dimension", "SELECT * FROM online_sales.call_center_dimension WHERE call_center_key >= 1 AND call_center_key <= 5");
 		d.queueATable("public.inventory_fact", "SELECT * FROM public.inventory_fact WHERE product_key >= 1 AND product_key <= 100");
