@@ -4,6 +4,7 @@
 #include "glyphforestmodel.h"
 #include "allglyphpropertieswidget.h"
 #include "singlewidgetdialog.h"
+#include "textglyphpropertieswidget.h"
 
 GlyphTreeListView::GlyphTreeListView(QWidget *parent)
 	: SynGlyphX::TreeView(parent),

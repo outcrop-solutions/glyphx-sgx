@@ -1,5 +1,7 @@
 #include "passwordlineedit.h"
 #include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QLineEdit>
+#include <QtWidgets/QPushButton>
 
 namespace SynGlyphX {
 

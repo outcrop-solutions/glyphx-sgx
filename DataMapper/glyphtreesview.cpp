@@ -8,6 +8,7 @@
 #include "antzcsvwriter.h"
 #include "minmaxglyphtreemodel.h"
 #include "glyphoptionswidget.h"
+#include "datatransformmodel.h"
 
 GlyphTreesView::GlyphTreesView(SynGlyphX::DataTransformModel* sourceModel, QWidget *parent)
 	: SynGlyphX::TreeEditView(parent),

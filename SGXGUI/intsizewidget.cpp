@@ -1,5 +1,5 @@
 #include "intsizewidget.h"
-
+#include <QtWidgets/QSpinBox>
 namespace SynGlyphX {
 
 	IntSizeWidget::IntSizeWidget(bool showLockRatioCheckBox, QWidget *parent)

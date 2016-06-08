@@ -24,11 +24,9 @@
 #include "datasourcestatswidget.h"
 #include "databindingtableswidget.h"
 #include "glyphrolestablemodel.h"
-#include "datatransformmodel.h"
 #include "antzwidget.h"
 #include "datamapping3dwidget.h"
 #include "glyphtreesview.h"
-#include "roledatafilterproxymodel.h"
 #include "baseobjectlistview.h"
 #include "datasourcesview.h"
 #include "antzcsvwriter.h"
@@ -36,9 +34,17 @@
 #include "glyphengine.h"
 #include "portablevisualizationexport.h"
 #include "legendlistview.h"
+#include "datamappingdefaults.h"
+#include "sceneproperties.h"
 
 class LinksListView;
 class LinksDialog;
+
+namespace SynGlyphX {
+	class DataTransformModel;
+	class RoleDataFilterProxyModel;
+	class IntRoleDataFilterProxyModel;
+}
 
 class DataMapperWindow : public SynGlyphX::MainWindow
 {

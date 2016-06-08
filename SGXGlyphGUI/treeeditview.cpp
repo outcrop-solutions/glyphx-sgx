@@ -2,6 +2,8 @@
 #include <QtGui/QClipboard>
 #include "glyphbuilderapplication.h"
 #include "linklessgraphmimedata.h"
+#include <QtCore/QMimeData>
+#include "datamappingglyphgraph.h"
 
 namespace SynGlyphX {
 

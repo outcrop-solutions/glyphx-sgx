@@ -16,7 +16,6 @@
 #define PORTABLEVISUALIZATIONEXPORT_H
 
 #include "sgxdatatransformgui_global.h"
-#include "datatransformmapping.h"
 #include <QtCore/QObject>
 #include <QtCore/QString>
 #include <map>

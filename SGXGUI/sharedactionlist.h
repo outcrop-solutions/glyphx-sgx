@@ -19,8 +19,9 @@
 #define SHAREDACTIONLIST_H
 
 #include "sgxgui_global.h"
-#include <QtCore/QObject>
 #include <QtWidgets/QAction>
+
+class QObject;
 
 namespace SynGlyphX {
 

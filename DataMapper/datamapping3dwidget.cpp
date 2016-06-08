@@ -1,5 +1,7 @@
 #include "datamapping3dwidget.h"
 #include <stack>
+#include "roledatafilterproxymodel.h"
+#include "datatransformmodel.h"
 
 DataMapping3DWidget::DataMapping3DWidget(SynGlyphX::DataTransformModel* model, QWidget *parent)
 	: SynGlyphXANTz::MinMaxGlyph3DWidget(parent),

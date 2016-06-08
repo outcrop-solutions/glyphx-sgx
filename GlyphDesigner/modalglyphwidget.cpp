@@ -1,4 +1,7 @@
 #include "modalglyphwidget.h"
+#include "coloralphawidget.h"
+#include "glyphstructurewidget.h"
+#include "xyzwidget.h"
 
 ModalGlyphWidget::ModalGlyphWidget(SynGlyphXANTz::MinMaxGlyphTreeModel::GlyphType glyphTreeType, QWidget *parent)
 	: SynGlyphX::VisualGlyphPropertiesWidget(true, SynGlyphX::VisualGlyphPropertiesWidget::ShowOnBottom | SynGlyphX::VisualGlyphPropertiesWidget::AddChildrenButton, parent),

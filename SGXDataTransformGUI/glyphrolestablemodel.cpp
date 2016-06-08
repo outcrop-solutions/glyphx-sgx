@@ -10,6 +10,7 @@
 #include "inputfieldmimedata.h"
 #include "nonmappablegeometrywidget.h"
 #include "glyphenumcombobox.h"
+#include "datatransformmodel.h"
 
 GlyphRolesTableModel::GlyphRolesTableModel(SynGlyphX::DataTransformModel* dataTransformModel, QObject *parent)
 	: QAbstractTableModel(parent),

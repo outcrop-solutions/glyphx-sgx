@@ -6,6 +6,7 @@
 #include <QtCore/QFile>
 #include <QtCore/QDir>
 #include <boost/filesystem.hpp>
+#include "browselineedit.h"
 
 namespace SynGlyphX {
 

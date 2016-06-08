@@ -12,6 +12,7 @@
 #include <QtWidgets/QMessageBox>
 #include <QtCore/QTextStream>
 #include <QtCore/QString>
+#include "nonmappablegeometryproperties.h"
 
 /*
 void myMessageHandler(QtMsgType type, const QMessageLogContext &context, const QString &msg)

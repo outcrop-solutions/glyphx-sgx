@@ -20,11 +20,11 @@
 
 #include "sgxglyphgui_global.h"
 #include <QtWidgets/QTabWidget>
-#include <QtWidgets/QComboBox>
-#include <QtWidgets/QLineEdit>
-#include <QtWidgets/QCheckBox>
 #include "datamappingdefaults.h"
 
+class QComboBox;
+class QLineEdit;
+class QCheckBox;
 namespace SynGlyphX {
 
 	class SGXGLYPHGUI_EXPORT GlyphDefaultsWidget : public QTabWidget

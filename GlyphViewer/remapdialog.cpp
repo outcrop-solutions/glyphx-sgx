@@ -12,6 +12,8 @@
 #include "doubleminmaxwidget.h"
 #include "mappingfunctionwidget.h"
 #include "bindinglineedit.h"
+#include "baseimage.h"
+#include "datatransformmodel.h"
 
 RemapDialog::RemapDialog(SynGlyphX::DataTransformMapping::ConstSharedPtr dataTransformMapping, DataEngine::DataEngineConnection::SharedPtr dataEngineConnection, QWidget *parent)
 	: QDialog(parent)

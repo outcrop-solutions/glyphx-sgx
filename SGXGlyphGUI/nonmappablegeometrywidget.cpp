@@ -1,5 +1,6 @@
 #include "nonmappablegeometrywidget.h"
 #include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QDoubleSpinBox>
 
 namespace SynGlyphX {
 

@@ -20,13 +20,14 @@
 
 #include "sgxglyphgui_global.h"
 #include <QtWidgets/QWidget>
-#include "glyphenumcombobox.h"
-#include "nonmappablegeometrywidget.h"
 #include "glyphgeometry.h"
 #include "virtualtopology.h"
 #include "propertyupdate.h"
 
 namespace SynGlyphX {
+	class GlyphShapeComboBox;
+	class NonMappableGeometryWidget;
+	class VirtualTopologyComboBox;
 
 	class SGXGLYPHGUI_EXPORT GlyphStructureWidget : public QWidget
 	{

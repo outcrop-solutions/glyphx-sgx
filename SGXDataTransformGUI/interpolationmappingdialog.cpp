@@ -5,6 +5,8 @@
 #include "groupboxsinglewidget.h"
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QMessageBox>
+#include "datatransformmodel.h"
+
 
 InterpolationMappingDialog::InterpolationMappingDialog(SynGlyphX::DataTransformModel* model, QWidget *parent)
 	: QDialog(parent),

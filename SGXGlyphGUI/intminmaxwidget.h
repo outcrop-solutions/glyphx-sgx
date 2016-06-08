@@ -21,7 +21,8 @@
 #include "sgxglyphgui_global.h"
 #include "horizontalformwidget.h"
 #include "mindiff.h"
-#include <QtWidgets/QSpinBox>
+
+class QSpinBox;
 
 Q_DECLARE_METATYPE(SynGlyphX::IntMinDiff)
 

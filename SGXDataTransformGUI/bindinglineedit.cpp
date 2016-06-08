@@ -4,6 +4,7 @@
 #include <QtWidgets/QMenu>
 #include "inputfieldmimedata.h"
 #include <QtWidgets/QHBoxLayout>
+#include "datatransformmapping.h"
 
 BindingLineEdit::BindingLineEdit(const GlyphRolesTableModel* model, QWidget *parent, SynGlyphX::MappingFunctionData::Input acceptedInputTypes)
 	: QWidget(parent),

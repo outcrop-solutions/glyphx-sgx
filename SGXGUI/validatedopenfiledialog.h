@@ -20,7 +20,8 @@
 
 #include "sgxgui_global.h"
 #include <QtCore/QObject>
-#include <QtCore/QString>
+
+class QString;
 
 namespace SynGlyphX {
 

@@ -20,8 +20,9 @@
 
 #include "sgxglyphgui_global.h"
 #include <QtWidgets/QWidget>
-#include <QtWidgets/QCheckBox>
 #include "defaultbaseimagescombobox.h"
+
+class QCheckBox;
 
 namespace SynGlyphX {
 

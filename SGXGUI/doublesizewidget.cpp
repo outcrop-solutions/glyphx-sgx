@@ -1,4 +1,6 @@
 #include "doublesizewidget.h"
+#include <QtWidgets/QDoubleSpinBox>
+#include "utilitytypes.h"
 
 namespace SynGlyphX {
 

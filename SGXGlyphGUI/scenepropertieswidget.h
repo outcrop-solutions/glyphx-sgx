@@ -20,11 +20,11 @@
 
 #include "sgxglyphgui_global.h"
 #include <QtWidgets/QWidget>
-#include "colorbutton.h"
-#include "sceneproperties.h"
-#include "browselineedit.h"
 
 namespace SynGlyphX {
+	
+	class SceneProperties;
+	class ColorButton;
 
 	class SGXGLYPHGUI_EXPORT ScenePropertiesWidget : public QWidget
 	{

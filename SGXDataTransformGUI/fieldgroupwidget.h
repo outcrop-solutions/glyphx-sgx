@@ -21,11 +21,14 @@
 #include "sgxdatatransformgui_global.h"
 #include <QtWidgets/QWidget>
 #include <QtWidgets/QComboBox>
-#include "datatransformmodel.h"
 #include "fieldgroupmodel.h"
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QTableView>
 #include "checkboxheaderview.h"
+
+namespace SynGlyphX {
+	class DataTransformModel;
+}
 
 class SGXDATATRANSFORMGUI_EXPORT FieldGroupWidget : public QWidget
 {

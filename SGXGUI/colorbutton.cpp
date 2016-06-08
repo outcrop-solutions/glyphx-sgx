@@ -2,6 +2,8 @@
 #include <QtWidgets/QColorDialog>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QWidgetAction>
+#include <QtWidgets/QMenu>
+#include "utilitytypes.h"
 
 namespace SynGlyphX {
 

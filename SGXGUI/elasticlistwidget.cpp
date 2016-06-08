@@ -6,6 +6,9 @@
 #include <QtWidgets/QHBoxLayout>
 #include <QtGui/QMouseEvent>
 #include "application.h"
+#include <QtWidgets/QCheckBox>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QTableView>
 
 namespace SynGlyphX {
 

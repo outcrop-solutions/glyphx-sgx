@@ -1,6 +1,8 @@
 #include "scenepropertieswidget.h"
 #include <QtWidgets/QFormLayout>
 #include "colorconverter.h"
+#include "colorbutton.h"
+#include "sceneproperties.h"
 
 namespace SynGlyphX {
 

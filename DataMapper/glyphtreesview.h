@@ -20,7 +20,11 @@
 
 #include "treeeditview.h"
 #include "sharedactionlist.h"
-#include "datatransformmodel.h"
+
+namespace SynGlyphX {
+	class DataTransformModel;
+}
+
 
 class GlyphTreesView : public SynGlyphX::TreeEditView
 {

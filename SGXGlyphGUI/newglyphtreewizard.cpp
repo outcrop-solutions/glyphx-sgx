@@ -1,6 +1,8 @@
 #include "newglyphtreewizard.h"
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QInputDialog>
+#include "visualglyphpropertieswidget.h"
+#include "datamappingglyphgraph.h"
 
 namespace SynGlyphX {
 

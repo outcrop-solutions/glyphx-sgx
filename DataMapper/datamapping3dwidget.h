@@ -19,9 +19,12 @@
 #define DATAMAPPING3DWIDGET_H
 
 #include "minmaxglyph3dwidget.h"
-#include "roledatafilterproxymodel.h"
-#include "datatransformmodel.h"
 #include <stack>
+
+namespace SynGlyphX {
+	class DataTransformModel;
+	class RoleDataFilterProxyModel;
+}
 
 class DataMapping3DWidget : public SynGlyphXANTz::MinMaxGlyph3DWidget
 {

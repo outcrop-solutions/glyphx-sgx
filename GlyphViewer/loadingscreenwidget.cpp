@@ -5,6 +5,7 @@
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QMessageBox>
+#include "groupboxsinglewidget.h"
 
 QString LoadingScreenWidget::s_glyphEdDir;
 

@@ -1,6 +1,8 @@
 #include "singleglyphviewoptionswidget.h"
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QFormLayout>
+#include <QtWidgets/QCheckBox>
+#include "defaultbaseimagescombobox.h"
 
 namespace SynGlyphX {
 

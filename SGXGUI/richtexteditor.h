@@ -19,7 +19,9 @@
 #define RICHTEXTEDITOR_H
 
 #include "sgxgui_global.h"
-#include <QtWidgets/QTextEdit>
+#include <QtWidgets/QWidget>
+
+class QTextEdit;
 
 namespace SynGlyphX {
 

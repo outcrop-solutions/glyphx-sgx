@@ -20,8 +20,9 @@
 
 #include "sgxgui_global.h"
 #include "horizontalformwidget.h"
-#include <QtWidgets/QAbstractSpinBox>
-#include <QtWidgets/QCheckBox>
+
+class QAbstractSpinBox;
+class QCheckBox;
 
 namespace SynGlyphX {
 

@@ -19,10 +19,12 @@
 #define SYNGLYPHX_LINKLESSGRAPHMIMEDATA_H
 
 #include "sgxglyphgui_global.h"
-#include <QtCore/QMimeData>
-#include "datamappingglyphgraph.h"
+
+class QMimeData;
 
 namespace SynGlyphX {
+	
+	class DataMappingGlyphGraph;
 
 	class SGXGLYPHGUI_EXPORT LinklessGraphMimeData
 	{

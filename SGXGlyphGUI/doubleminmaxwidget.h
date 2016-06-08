@@ -21,9 +21,11 @@
 #include "sgxglyphgui_global.h"
 #include "horizontalformwidget.h"
 #include "mindiff.h"
-#include <QtWidgets/QDoubleSpinBox>
+
 
 Q_DECLARE_METATYPE(SynGlyphX::DoubleMinDiff)
+
+class QDoubleSpinBox;
 
 namespace SynGlyphX {
 

@@ -20,16 +20,16 @@
 
 #include <QtWidgets/QTabWidget>
 #include <QtWidgets/QTextEdit>
-#include <QtWidgets/QDataWidgetMapper>
 #include "verticaltabordertableview.h"
-#include <QtWidgets/QDoubleSpinBox>
 #include "bindinglineedit.h"
-#include "datatransformmapping.h"
 #include "glyphrolestablemodel.h"
 #include "surfaceradiobuttonwidget.h"
 #include "mappingfunctionwidget.h"
 #include "tablesubsetproxymodel.h"
 #include <map>
+
+class QDataWidgetMapper;
+class QDoubleSpinBox;
 
 class DataBindingTablesWidget : public QTabWidget
 {

@@ -21,9 +21,11 @@
 #include "sgxglyphgui_global.h"
 #include "treeview.h"
 #include "sharedactionlist.h"
-#include "datamappingglyphgraph.h"
-
+#include <functional>
 namespace SynGlyphX {
+
+	class DataMappingGlyphGraph;
+	class DepthSortedModelIndexes;
 
 	class SGXGLYPHGUI_EXPORT TreeEditView : public TreeView
 	{

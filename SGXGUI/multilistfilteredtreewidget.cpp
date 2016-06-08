@@ -3,6 +3,9 @@
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QGridLayout>
 #include <QtWidgets/QHeaderView>
+#include "abstracttreemodel.h"
+#include "checkboxheaderview.h"
+#include <QtCore/QAbstractItemModel>
 
 namespace SynGlyphX {
 

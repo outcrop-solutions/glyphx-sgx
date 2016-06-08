@@ -14,6 +14,7 @@
 #include <QtGui/QTextDocument>
 #include <QtCore/QTextStream>
 #include "filesystem.h"
+#include <QtWidgets/QLabel>
 
 #ifdef USE_LICENSING
 

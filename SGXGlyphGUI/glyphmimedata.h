@@ -20,7 +20,6 @@
 
 #include "sgxglyphgui_global.h"
 #include <QtCore/QMimeData>
-#include "glyph.h"
 #include <QtCore/QModelIndex>
 
 namespace SynGlyphX {

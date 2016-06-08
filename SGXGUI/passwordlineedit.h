@@ -20,8 +20,9 @@
 
 #include "sgxgui_global.h"
 #include <QtWidgets/QWidget>
-#include <QtWidgets/QLineEdit>
-#include <QtWidgets/QPushButton>
+
+class QLineEdit;
+class QPushButton;
 
 namespace SynGlyphX {
 

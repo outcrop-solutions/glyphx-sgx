@@ -1,5 +1,5 @@
 #include "LinksListView.h"
-#include "baseimagedialog.h"
+#include "datatransformmodel.h"
 
 LinksListView::LinksListView(SynGlyphX::DataTransformModel* dataTransformModel, QWidget *parent)
 	: QListView(parent),
@@ -66,14 +66,6 @@ void LinksListView::EditLink() {
 
 		unsigned int row = selected.front().row();
 		emit editLink(row);
-		//bool isFirstLink = (row == 0);
-		//BaseImageDialog dialog(!isFirstLink, isFirstLink, this);
-		//dialog.setWindowTitle(tr("Base Object Properties"));
-		//dialog.SetBaseImage(m_dataTransformModel->GetDataMapping()->GetLinks()[row]);
-		//if (dialog.exec() == QDialog::Accepted) {
 
-		//	const SynGlyphX::BaseImage& baseImage = dialog.GetBaseImage();
-		//	m_dataTransformModel->SetLink(row, baseImage);
-		//}
 	}
 }

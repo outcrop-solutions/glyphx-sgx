@@ -1,5 +1,6 @@
 #include "fieldgroupmodel.h"
 #include <QtCore/QDebug>
+#include "datatransformmodel.h"
 
 FieldGroupModel::FieldGroupModel(QObject *parent)
 	: QAbstractTableModel(parent),

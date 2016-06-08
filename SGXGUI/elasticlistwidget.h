@@ -19,12 +19,13 @@
 #define SYNGLYPHX_ELASTICLISTWIDGET_H
 
 #include "sgxgui_global.h"
+#include <QtCore/QSet>
 #include <QtWidgets/QFrame>
-#include <QtWidgets/QLabel>
-#include <QtWidgets/QTableView>
-#include <set>
 #include "elasticlistmodel.h"
-#include <QtWidgets/QCheckBox>
+
+class QLabel;
+class QTableView;
+class QCheckBox;
 
 namespace SynGlyphX {
 

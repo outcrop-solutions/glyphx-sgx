@@ -2,6 +2,7 @@
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QRadioButton>
+#include <QtWidgets/QButtonGroup>
 
 namespace SynGlyphX {
 

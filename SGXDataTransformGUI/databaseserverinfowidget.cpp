@@ -1,5 +1,6 @@
 #include "databaseserverinfowidget.h"
 #include <QtWidgets/QFormLayout>
+#include <QtWidgets/QLineEdit>
 
 namespace SynGlyphX {
 

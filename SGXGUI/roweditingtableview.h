@@ -20,9 +20,10 @@
 
 #include "sgxgui_global.h"
 #include <QtWidgets/QWidget>
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QTableView>
-#include <QtWidgets/QHBoxLayout>
+
+class QPushButton;
+class QTableView;
+class QHBoxLayout;
 
 namespace SynGlyphX {
 

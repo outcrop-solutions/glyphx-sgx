@@ -20,20 +20,16 @@
 
 #include "sgxglyphgui_global.h"
 #include <QtWidgets/QWidget>
-#include <QtWidgets/QComboBox>
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QLabel>
-#include <QtWidgets/QSpinBox>
-#include <QtWidgets/QDoubleSpinBox>
-#include <QtWidgets/QGroupBox>
 #include <boost/shared_ptr.hpp>
-#include "coloralphawidget.h"
-#include "xyzwidget.h"
-#include "glyph.h"
-#include "groupboxsinglewidget.h"
-#include "glyphstructurewidget.h"
+
+class QSpinBox;
 
 namespace SynGlyphX {
+
+	class Glyph; 
+	class XYZWidget;
+	class ColorAlphaWidget;
+	class GlyphStructureWidget;
 
 	class SGXGLYPHGUI_EXPORT VisualGlyphPropertiesWidget : public QWidget
 	{

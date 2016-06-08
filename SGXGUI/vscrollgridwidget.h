@@ -20,8 +20,9 @@
 
 #include "sgxgui_global.h"
 #include "verticalscrollarea.h"
-#include <QtWidgets/QHeaderView>
-#include <QtWidgets/QGridLayout>
+
+class QHeaderView;
+class QGridLayout;
 
 namespace SynGlyphX {
 

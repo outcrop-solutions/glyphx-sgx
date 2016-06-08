@@ -4,6 +4,7 @@
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QGroupBox>
 #include <QtCore/QSettings>
+#include <QtWidgets/QSpinBox>
 
 const char* ArcGisEnv = "SGXARCGIS";
 
