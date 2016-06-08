@@ -576,6 +576,8 @@ struct NPnode
 	float		distFromCamera;				//MB-Transp					//zz debug
 	int			hudType;					//removethis, use existing param //zz debug
 	bool		linkFlag;					//for establishing link nodes
+
+	unsigned char m_originalAlpha;
 };
 
 

@@ -47,7 +47,7 @@ namespace SynGlyphXANTz {
 	public:
 		enum FilteredResultsDisplayMode {
 
-			None,
+			TranslucentUnfiltered,
 			HideUnfiltered
 		};
 
@@ -87,8 +87,8 @@ namespace SynGlyphXANTz {
 	signals:
 		//void NewStatusMessage(const QString& message, int timeout = 0) const;
 
-		public slots :
-			void ResetCamera();
+	public slots :
+		void ResetCamera();
 
 		void SetFilteredResultsDisplayMode( FilteredResultsDisplayMode mode );
 		void SetFilteredResults( const SynGlyphX::IndexSet& filteredResults );
@@ -99,7 +99,7 @@ namespace SynGlyphXANTz {
 		void SetShowTagsOfSelectedObjects( bool showTagsOfSelectedObjects );
 		void ClearAllTags();
 
-		protected slots:
+	protected slots:
 		void OnSelectionUpdated( const QItemSelection& selected, const QItemSelection& deselected );
 		void OnFocusChanged( const QModelIndexList& indexes );
 		void OnModelReset();
@@ -160,9 +160,9 @@ namespace SynGlyphXANTz {
 		void DrawZSpaceStylus( const ZSMatrix4& stylusMatrix, bool getStylusWorldPosition );
 #endif
 
-		void ShowOnlyFilteredResultGlyphTrees();
-		void ShowAllGlyphTrees();
-		void UpdateGlyphTreesForFilteredResults();
+		//void ShowOnlyFilteredResultGlyphTrees();
+		//void ShowAllGlyphTrees();
+		//void UpdateGlyphTreesForFilteredResults();
 
 		void CreateBoundingBoxes();
 		void CreateBoundingBoxes( pNPnode node, const glm::mat4& parentTransform, bool isAncestorBoundingBoxBeingUpdated );
@@ -176,7 +176,8 @@ namespace SynGlyphXANTz {
 
 		void DrawLogo();
 
-		void HideGlyph( pNPnode node, bool hide );
+		void HideFilteredGlyph( bool hide );
+		void HideFilteredGlyph( pNPnode node, bool hide );
 
 		//QGLFormat m_glFormat;
 		//QGLFormat m_glStereoFormat;

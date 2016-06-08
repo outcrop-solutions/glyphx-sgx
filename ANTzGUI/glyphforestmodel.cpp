@@ -250,9 +250,24 @@ namespace SynGlyphXANTz {
 		
 		npSyncTags(static_cast<void*>(antzData));
 
+		for (unsigned int i = kNPnodeRootPin; i < antzData->map.nodeRootCount; ++i) {
+
+			pNPnode node = static_cast<pNPnode>(antzData->map.node[i]);
+			SetupOriginalAlphaValues(node);
+		}
+
 		endResetModel();
 
 		antzData->map.nodeRootIndex = 0;
+	}
+
+	void GlyphForestModel::SetupOriginalAlphaValues(pNPnode node) {
+
+		node->m_originalAlpha = node->color.a;
+		for (int i = 0; i < node->childCount; ++i) {
+
+			SetupOriginalAlphaValues(node->child[i]);
+		}
 	}
 
 	QModelIndex GlyphForestModel::IndexFromANTzID(int id) const {

@@ -25,6 +25,8 @@
 
 namespace SynGlyphXANTz {
 
+	const double s_unfilteredTransparencyMultiplier = 0.5;
+
     ANTzForestWidget::ANTzForestWidget( GlyphForestModel* model, SynGlyphX::ItemFocusSelectionModel* selectionModel, QWidget *parent ) :
         QOpenGLWidget( parent ),
         m_model( model ),
@@ -44,7 +46,7 @@ namespace SynGlyphXANTz {
 		m_worldTextureID( 0 ),
 		m_lastMousePosition( boost::none ),
 		m_regionSelectionRect( QRect() ),
-		m_filteredResultsDisplayMode( FilteredResultsDisplayMode::None ),
+		m_filteredResultsDisplayMode( FilteredResultsDisplayMode::TranslucentUnfiltered ),
 		m_drawHUD( true ),
 #ifdef USE_ZSPACE
 		m_zSpaceOptions(),
@@ -1037,32 +1039,27 @@ namespace SynGlyphXANTz {
 		antzData->map.nodeRootIndex = nodeRootIndex;
 	}
 
-	void ANTzForestWidget::UpdateGlyphTreesForFilteredResults() {
+	void ANTzForestWidget::HideFilteredGlyph(pNPnode node, bool hide) {
 
-		if ( m_filteredResultsDisplayMode == FilteredResultsDisplayMode::HideUnfiltered ) {
+		if (m_filteredResultsDisplayMode == FilteredResultsDisplayMode::HideUnfiltered) {
 
-			if ( m_filteredResults.empty() ) {
+			node->hide = hide;
+		}
+		else {
 
-				ShowAllGlyphTrees();
+			if (hide) {
+
+				node->color.a = static_cast<unsigned char>(s_unfilteredTransparencyMultiplier * node->color.a);
 			}
 			else {
 
-				pData antzData = m_antzData->GetData();
-				for ( unsigned int i = kNPnodeRootPin; i < antzData->map.nodeRootCount; ++i ) {
-
-					pNPnode node = static_cast<pNPnode>( antzData->map.node[i] );
-					HideGlyph( node, ( m_filteredResults.count( i - kNPnodeRootPin ) == 0 ) );
-				}
+				node->color.a = node->m_originalAlpha;
 			}
 		}
-	}
 
-	void ANTzForestWidget::HideGlyph( pNPnode node, bool hide ) {
-
-		node->hide = hide;
 		for ( unsigned int i = 0; i < node->childCount; ++i ) {
 
-			HideGlyph( node->child[i], hide );
+			HideFilteredGlyph(node->child[i], hide);
 		}
 	}
 
@@ -1070,38 +1067,41 @@ namespace SynGlyphXANTz {
 
 		if ( mode != m_filteredResultsDisplayMode ) {
 
+			HideFilteredGlyph(false);
 			m_filteredResultsDisplayMode = mode;
-			if ( m_filteredResultsDisplayMode == FilteredResultsDisplayMode::HideUnfiltered ) {
-
-				UpdateGlyphTreesForFilteredResults();
-			}
-			else {
-
-				ShowAllGlyphTrees();
-			}
+			HideFilteredGlyph(true);
 		}
 	}
 
-	void ANTzForestWidget::ShowAllGlyphTrees() {
+	void ANTzForestWidget::HideFilteredGlyph(bool hide) {
+
+		if (m_filteredResults.empty()) {
+
+			return;
+		}
 
 		pData antzData = m_antzData->GetData();
 		for ( unsigned int i = kNPnodeRootPin; i < antzData->map.nodeRootCount; ++i ) {
 
-			pNPnode node = static_cast<pNPnode>( antzData->map.node[i] );
-			HideGlyph( node, false );
+			if (m_filteredResults.count(i - kNPnodeRootPin) == 0) {
+
+				pNPnode node = static_cast<pNPnode>(antzData->map.node[i]);
+				HideFilteredGlyph(node, hide);
+			}
 		}
 	}
 
 	void ANTzForestWidget::SetFilteredResults( const SynGlyphX::IndexSet& filteredResults ) {
 
+		HideFilteredGlyph(false);
 		m_filteredResults = filteredResults;
-		UpdateGlyphTreesForFilteredResults();
+		HideFilteredGlyph(true);
 	}
 
 	void ANTzForestWidget::ClearFilteredResults() {
 
+		HideFilteredGlyph(false);
 		m_filteredResults.clear();
-		UpdateGlyphTreesForFilteredResults();
 	}
 
 	void ANTzForestWidget::SetCameraToDefaultPosition() {

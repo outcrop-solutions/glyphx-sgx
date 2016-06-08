@@ -69,6 +69,7 @@ namespace SynGlyphXANTz {
 		void SetRootPosXYZMappedFields(const std::array<QString, 3>& fields);
 
 	private:
+		void SetupOriginalAlphaValues(pNPnode node);
 		void Clear(bool resetModel);
 		void FindNodesInRegion(const QRect& region, pNPnode node, int row, QItemSelection& itemSelection) const;
 		std::set<unsigned int> GetChildIndexesThatAreNotLinks(pNPnode node) const;
