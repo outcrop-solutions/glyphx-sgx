@@ -1,6 +1,6 @@
 import java.sql.*;
 import com.almworks.sqlite4java.*;
-import java.io.File;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -194,14 +194,64 @@ public class SQLite2Oracle {
 		}
 	}
 
+	public static void moveMySQL2CSV(){
+		try{
+			Class.forName("com.mysql.jdbc.Driver");
+			String url = "jdbc:mysql://localhost:3306/shorewarecdr";
+    		String username = "root";
+    		String password = "password";
+
+    		Connection connection = DriverManager.getConnection(url, username, password);
+    		DatabaseMetaData md = connection.getMetaData();
+	        ResultSet tbls = md.getTables(null, null, "%", null);
+	        Statement stmt = connection.createStatement();
+	        String path = "C:/Users/Bryan/Desktop/CSVs_for_Katie/";
+	        while(tbls.next()){
+	        	FileWriter f = new FileWriter(path+tbls.getString(3)+".csv");  
+				BufferedWriter bfw = new BufferedWriter(f);
+	        	String q = "SELECT * FROM `"+tbls.getString(3)+"`";
+	        	//q += "SELECT * FROM `"+tbls.getString(3)+"` INTO OUTFILE '"+path+tbls.getString(3)+".csv' ";
+    			//q += "FIELDS ENCLOSED BY '\"' TERMINATED BY ',' ESCAPED BY '\"' LINES TERMINATED BY '\r\n';";
+    			ResultSet row = stmt.executeQuery(q);
+    			ResultSetMetaData rsmd = row.getMetaData();
+    			int col_count = rsmd.getColumnCount();
+    			String header = "";
+    			for(int i = 0; i < col_count; i++){
+    				header += rsmd.getColumnName(i+1);
+    				if(i+1 < col_count){
+    					header += ",";
+    				}
+    			}
+    			bfw.write(header+"\n");
+    			while(row.next()){
+    				String output = "";
+    				for(int i = 0; i < col_count; i++){
+    					output += row.getString(rsmd.getColumnName(i+1));
+    					if(i+1 < col_count){
+    						output += ",";
+    					}
+    				}
+    				bfw.write(output+"\n");
+    			}
+    			bfw.close();
+    			f.close();
+	        }
+	        tbls.close();
+	        connection.close();
+    	}catch(Exception e){
+    		e.printStackTrace();
+    	}
+	}
+
 	public static void main(String[] args){
 
-		String sqlite_path = "C:/ProgramData/SynGlyphX/GlyphEd/glyphed.db";
+		//String sqlite_path = "C:/ProgramData/SynGlyphX/GlyphEd/glyphed.db";
 		//String sqlite_path = "C:/Users/Bryan/AppData/Local/SynGlyphX/Glyph Builder - Glyph Viewer/cache/cache_f28a4f1c-c014-4eed-b3f7-1c8e561c954d/sourcedata.db";
 		//SQLite2Oracle.readSQLite(sqlite_path,"51c1f523-f0a9-411b-805d-249cce19b526");
 		//SQLite2Oracle.readSQLite(sqlite_path,"Composition");
 		//SQLite2Oracle.readSQLite(sqlite_path,"Dashboard");
-		SQLite2Oracle.readSQLite(sqlite_path,"GlobalAdmissions");
+		//SQLite2Oracle.readSQLite(sqlite_path,"GlobalAdmissions");
+		SQLite2Oracle.moveMySQL2CSV();
 /*
 		SQLite2Oracle.revokeAllForSchema("GSMADMIN_INTERNAL");
 		SQLite2Oracle.revokeAllForSchema("GSMCATUSER");

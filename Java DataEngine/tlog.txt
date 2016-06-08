@@ -1,7 +1,3 @@
 
-Setting column names
-Returned prepared statement
-Returned result set
-Returned result set meta data
-SELECT * FROM NDUSER.GLOBALADMISSIONS WHERE ROWNUM = 1 | 62
-NDUSER.GLOBALADMISSIONS
+OnlyTable
+OnlyTable

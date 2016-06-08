@@ -10,6 +10,7 @@ public class VerticaDriver implements Driver {
 	private String conn_str;
 	private String un;
 	private String pw;
+	private String query;
 
 	public String packageName(){
 		return "com.vertica.jdbc.Driver";
@@ -70,6 +71,14 @@ public class VerticaDriver implements Driver {
 			return dm.getImportedKeys(null, null, name);
 		}
 		return dm.getImportedKeys(null, split[0], split[1]);
+	}
+
+	public String getLimit(){
+		return " LIMIT 1";
+	}
+
+	public void setQuery(String query){
+		this.query = query;
 	}
 
 	public Connection getNewConnection(){

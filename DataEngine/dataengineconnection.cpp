@@ -77,7 +77,7 @@ namespace DataEngine
 		ifile.close();
 		options[1].optionString = const_cast<char*>(jarFilesOptionString.c_str());
 
-		vmArgs.version = JNI_VERSION_1_2;
+		vmArgs.version = JNI_VERSION_1_6;
 		vmArgs.options = options;
 		vmArgs.nOptions = 2;
 		vmArgs.ignoreUnrecognized = JNI_FALSE;

@@ -17,4 +17,5 @@ public interface Driver {
 	public Connection getConnection();
 	public String getFormattedName(String name);
 	public void setQuery(String query);
+	public String getLimit();
 }

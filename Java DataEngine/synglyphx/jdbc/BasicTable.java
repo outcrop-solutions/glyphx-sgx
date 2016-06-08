@@ -21,6 +21,8 @@ public class BasicTable extends Table{
         Logger.getInstance().addT("Creating "+name+"...");
 		setColumnNames();
         Logger.getInstance().addT(name+" creation complete.");
+        String sql = query+driver.getLimit();
+        Logger.getInstance().addT(sql);
 		//createDataStats();
 		//loadSampleData();
 	}
@@ -41,7 +43,7 @@ public class BasicTable extends Table{
 
 		try{
             Logger.getInstance().addT("Setting column names");
-			String sql = query+" WHERE ROWNUM = 1";
+			String sql = query+driver.getLimit();
 			PreparedStatement pstmt = driver.getConnection().prepareStatement(sql);
             Logger.getInstance().addT("Returned prepared statement");
             ResultSet rs = pstmt.executeQuery();

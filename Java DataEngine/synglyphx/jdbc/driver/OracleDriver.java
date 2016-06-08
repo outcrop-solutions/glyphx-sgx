@@ -152,6 +152,10 @@ public class OracleDriver implements Driver {
 		used = new ArrayList<Integer>();
 	}
 
+	public String getLimit(){
+		return " WHERE ROWNUM = 1";
+	}
+
 	private void populateColumns(String tbl){
 		try{
 			String sql = "SELECT * FROM "+tbl+" WHERE 1 = 0";
