@@ -297,6 +297,15 @@ public class CSVWriter {
 	    }
 	}
 
+	private int evaluateID(int id) {
+		if(excluded.contains(id)){
+			return evaluateID(allNodes.get(id).getParent());
+		}
+		else{
+			return id;
+		}
+	}
+
 	public void printLinks(BufferedWriter bf, BufferedWriter bfw, int index, int offset) throws IOException {
 
 		for(Map.Entry<Integer, LinkTemplate> entry : link_temps.entrySet()){
@@ -307,7 +316,10 @@ public class CSVWriter {
 			System.out.println(offset);
 			for(int i = 0; i < entry.getValue().linkCount(); i++){
 				index++;
-				if(!excluded.contains(parent_ids.get(link_index)) && !excluded.contains(parent_ids.get(link_index))){
+				int p_id = evaluateID(parent_ids.get(link_index));
+				int c_id = evaluateID(child_ids.get(link_index));
+	
+				if(p_id != 0 && c_id != 0){
 					String out = ""; 
 					String key_node_id = String.valueOf(parent_ids.get(link_index)+offset);
 					String value_node_id = String.valueOf(child_ids.get(link_index)+offset);

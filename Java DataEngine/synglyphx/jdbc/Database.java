@@ -19,6 +19,7 @@ public class Database {
 	private HashMap<String,ArrayList<String>> tables_by_schema;
 	private HashMap<String,ArrayList<String>> foreign_key_map; 
 	private Thread thread;
+	private Thread fkthread;
 	private String schema = null;
 	private ArrayList<String> queuedName;
 	private ArrayList<String> queuedQuery;
@@ -31,8 +32,14 @@ public class Database {
 		queuedName = new ArrayList<String>();
 		queuedQuery = new ArrayList<String>();
 		setTableMetaData();
-		if(!driver.packageName().equals("org.sqlite.JDBC"))
-			mapForeignKeys();
+		if(!driver.packageName().equals("org.sqlite.JDBC")){
+			fkthread = new Thread(){
+	    		public void run(){
+					mapForeignKeys();
+				}
+			};
+			fkthread.start();
+		}
 	}
 
 	public void setTableMetaData(){
@@ -45,22 +52,43 @@ public class Database {
 	        Logger.getInstance().add("Returned list of schemas");
 	        ArrayList<String> temp = new ArrayList<String>();
 	        tables_by_schema = new HashMap<String,ArrayList<String>>();
+	        double start = 0.0;
+			double end = 0.0;
+			start = System.currentTimeMillis();
 	        while(sch.next()){
+	        	//System.out.println(sch.getString(1));
 	        	ResultSet priv = md.getTablePrivileges(null,sch.getString(1),null);
 	        	while(priv.next()){
-	        		String schm = priv.getString(2);
-	
-		        	if(!schemas.contains(schm)){
-		        		schemas.add(schm);
-		        		tables_by_schema.put(schm, new ArrayList<String>());
-		        	}
-		        	temp.add(schm+"."+priv.getString(3));
-		        	tables_by_schema.get(schm).add(schm+"."+priv.getString(3));
+	        		if(priv.getString(6).equals("SELECT")){ // TEST ON OTHER DBs
+		        		String schm = priv.getString(2);
 		
+			        	if(!schemas.contains(schm)){
+			        		schemas.add(schm);
+			        		tables_by_schema.put(schm, new ArrayList<String>());
+			        	}
+			        	String tb_name = priv.getString(3);/*
+			        	if(schm.equals("NDUSER")){
+			        		System.out.println("NDUSER table:");
+			        		System.out.println("1: "+priv.getString(1));
+			        		System.out.println("2: "+priv.getString(2));
+			        		System.out.println("3: "+priv.getString(3));
+			        		System.out.println("4: "+priv.getString(4));
+			        		System.out.println("5: "+priv.getString(5));
+			        		System.out.println("6: "+priv.getString(6));
+			        		System.out.println("7: "+priv.getString(7));
+			        	}*/
+			        	if(!tb_name.contains("BIN$")){
+				        	//temp.add(schm+"."+tb_name);
+				        	//tables_by_schema.get(schm).add(schm+"."+tb_name);
+				        	temp.add(tb_name);
+				        	tables_by_schema.get(schm).add(tb_name);
+				        }
+					}
 	        	}
 	        	priv.close();
 	        }
 	        sch.close();
+	        
 			Logger.getInstance().add("Returned "+String.valueOf(schemas.size())+" schemas");
 			if(schemas.size() == 0){
 		        ResultSet rs = md.getTables(null, null, "%", null);
@@ -76,8 +104,11 @@ public class Database {
 	        table_names = new String[temp.size()];
 	        for(int i = 0; i < temp.size(); i++){
 	        	table_names[i] = temp.get(i);
-	        	Logger.getInstance().add(temp.get(i));
+	        	//Logger.getInstance().add(temp.get(i));
 	        }
+	        end = System.currentTimeMillis();
+			System.out.print("Tables by schema: ");
+			System.out.println((end-start)/1000.00);
 
 	        Logger.getInstance().add("Creating basic tables");
 	        if(schemas.size() == 0){
@@ -181,6 +212,11 @@ public class Database {
     }
 
 	public String[] getForeignKeys(String tableName){
+
+		try{
+			fkthread.join();
+		}catch(Exception e){}
+
 		if(foreign_key_map.containsKey(tableName)){
 	    	return Functions.arrayListToStringList(foreign_key_map.get(tableName));
 	    }
@@ -217,11 +253,12 @@ public class Database {
         return size;
     }
 
+
     private void mapForeignKeys(){
 
 		foreign_key_map = new HashMap<String,ArrayList<String>>();
 		try{
-
+			//System.out.println("Mapping foreign keys...");
 			DatabaseMetaData dm = driver.getConnection().getMetaData();
 	    	ResultSet rs = dm.getImportedKeys(null, null, null);;
 

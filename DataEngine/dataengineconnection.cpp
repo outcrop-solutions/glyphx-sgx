@@ -73,7 +73,7 @@ namespace DataEngine
 		jarFiles.push_back("database-drivers\\mysql-connector-java-5.1.38-bin.jar");
 		jarFiles.push_back("database-drivers\\sqlite-jdbc-3.8.11.2.jar");
 		jarFiles.push_back("database-drivers\\vertica-jdbc-7.2.1-0.jar");
-
+		
 		std::string jarFilePrefix;
 		if (ifile) {
 #ifdef __APPLE__

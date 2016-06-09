@@ -74,7 +74,7 @@ public class GlyphCreator {
 			currData = temps.get(rootIds.get(i)).getDataSource();
 			int lastChildID = temps.get(rootIds.get(i)).getLastChildID();
 			rootCoords.put(rootIds.get(i), new CoordinateMap(temps.get(rootIds.get(i)).getToMerge(), lastChildID));
-			if(csvData.get(currData).getType().equals("csv") || csvData.get(currData).getType().equals("sqlite3")){
+			//if(csvData.get(currData).getType().equals("csv") || csvData.get(currData).getType().equals("sqlite3")){
 				Query query = new Query(csvData.get(currData).getDataFrame()).all(); 
 				Logger.getInstance().add("Executed initial query...");
 				Cursor cursor = csvData.get(currData).getDataFrame().query(query);
@@ -90,7 +90,7 @@ public class GlyphCreator {
 						}
 					}
 				}
-			}else{
+			/*}else{
 				JDBCNodeGenerator jdbc = new JDBCNodeGenerator(csvData.get(currData));
 				jdbc.initialize(temps, rootCoords, glyphRepo, mappingCount);
 				jdbc.setDefaults(default_tag_field, default_tag_value);
@@ -98,7 +98,7 @@ public class GlyphCreator {
 				jdbc.generateNodes();
 				glyphRepo = jdbc.returnUpdatedGlyphRepo();
 				rootCoords = jdbc.returnUpdatedRootCoords();
-			}
+			}*/
 			rootCoords.get(rootIds.get(i)).setLastID(glyphRepo.getNodeCount()-1);
 		}
 		try{

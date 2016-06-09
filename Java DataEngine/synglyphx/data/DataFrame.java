@@ -184,6 +184,14 @@ public class DataFrame {
 		return true;  
 	}
 
+	public void setFieldTypes(HashMap<String, Boolean> ft){
+		this.fieldType = ft;
+	}
+
+	public void setMinMaxTable(HashMap<String, ArrayList<String>> mmt){
+		this.minMaxTable = mmt;
+	}
+
 	public void createMinMaxTable(){
 		minMaxTable = new HashMap<String, ArrayList<String>>();
 		fieldType = new HashMap<String, Boolean>();

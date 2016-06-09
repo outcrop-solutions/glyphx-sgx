@@ -25,7 +25,8 @@ public class MergedTable extends Table{
 
 		try{
 
-			String sql = query+" LIMIT 1";
+			String sql = query;
+			driver.setQuery(query);
 			PreparedStatement pstmt = driver.getConnection().prepareStatement(sql);
             ResultSet rs = pstmt.executeQuery();
             ResultSetMetaData metaData = rs.getMetaData();
@@ -36,9 +37,14 @@ public class MergedTable extends Table{
             	table_name = metaData.getTableName(i + 1);
             	column_type = metaData.getColumnTypeName(i + 1);
             	column_name = metaData.getColumnName(i + 1);
+            	//System.out.println(column_type);
+            	String temp = driver.mergedField(table_name, column_name);
             	if(jdbcTypes.containsKey(column_type.toUpperCase())){
-            		columnNames.add(driver.mergedField(table_name, column_name));
-            		columnTypes.put(driver.mergedField(table_name, column_name), jdbcTypes.get(column_type.toUpperCase()));
+            		columnNames.add(temp);
+            		columnTypes.put(temp, jdbcTypes.get(column_type.toUpperCase()));
+            	}else{
+            		columnNames.add(temp);
+            		columnTypes.put(temp, "String");
             	}
             }
             rs.close();

@@ -10,6 +10,7 @@ public class MySQLDriver implements Driver {
 	private String conn_str;
 	private String un;
 	private String pw;
+	private String query;
 
 	public String packageName(){
 		return "com.mysql.jdbc.Driver";
@@ -54,6 +55,14 @@ public class MySQLDriver implements Driver {
 
 	public ResultSet getImportedKeys(DatabaseMetaData dm, String name) throws SQLException {
 		return dm.getImportedKeys(null, null, name);
+	}
+
+	public String getLimit(){
+		return " LIMIT 1";
+	}
+
+	public void setQuery(String query){
+		this.query = query;
 	}
 
 	public Connection getNewConnection(){

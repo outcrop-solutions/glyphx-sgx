@@ -16,4 +16,6 @@ public interface Driver {
 	public Connection createTempConnection(String conn_str, String un, String pw) throws SQLException;
 	public Connection getConnection();
 	public String getFormattedName(String name);
+	public void setQuery(String query);
+	public String getLimit();
 }

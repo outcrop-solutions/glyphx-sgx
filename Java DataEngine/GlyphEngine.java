@@ -95,30 +95,32 @@ public class GlyphEngine {
 	 	//String outDir = "C:\\Users\\Bryan\\Desktop\\test_for_ray\\Viz";
 	 	//String sdtPath = "C:/Users/Bryan/Desktop/East Coast Only/East_Coast_Only.sdt";
 	 	//String outDir = "C:/Users/Bryan/Desktop/East Coast Only/Viz";
-	 	String sdtPath = "C:/Users/Bryan/Desktop/Link Test Exo/linktest.sdt";
-	 	String outDir = "C:/Users/Bryan/Desktop/Link Test Exo/viz";
+	 	//String sdtPath = "C:/Users/Bryan/Desktop/Link Test Exo/linktest.sdt";
+	 	//String outDir = "C:/Users/Bryan/Desktop/Link Test Exo/viz";
 	 	//String sdtPath = "C:/Users/Bryan/Desktop/Links Test/link_test.sdt";
 	 	//String outDir = "C:/Users/Bryan/Desktop/Links Test/Viz";
-	 	//String sdtPath = "C:/Users/Bryan/Desktop/ND HS Test/High School.sdt";
-	 	//String outDir = "C:/Users/Bryan/Desktop/ND HS Test/Viz";
+	 	String sdtPath = "C:/Users/Bryan/Desktop/TELCO Small Subset/Customers Subset.sdt";
+	 	String outDir = "C:/Users/Bryan/Desktop/TELCO Small Subset/Viz";
+	 	//String sdtPath = "C:/Users/Bryan/Desktop/GlobalAdmissions20132016/GlobalAdmissions20132016/View 1 Datamap Recommendations.sdt";
+	 	//String outDir = "C:/Users/Bryan/Desktop/GlobalAdmissions20132016/GlobalAdmissions20132016/Viz";
 	 	
 	 	String expDir = "DataMapper";
-	 	GlyphEngine start = new GlyphEngine();
+	 	GlyphEngine start = new GlyphEngine();/*
 	 	double[] nw = new double[2];
 	 	nw[0] = -180.0; nw[1] = 90.0;
 	 	double[] se = new double[2];
-	 	se[0] = 180.0; se[1] = -90.0;/*
+	 	se[0] = 180.0; se[1] = -90.0;*/
 	 	double[] nw = new double[2];
-	 	nw[0] = -85.25350956479433; nw[1] = 41.618268866536965;
+	 	nw[0] = -92.53099621718249; nw[1] = 35.15804917558482;
 	 	double[] se = new double[2];
-	 	se[0] = -79.62852983520567; se[1] = 39.46589663346303;*/
+	 	se[0] = -92.3692917828175; se[1] = 34.97863982441518;
 	 	double[] s = new double[2];
-	 	s[0] = 2048.0; s[1] = 1024.0;
-
+	 	//s[0] = 2048.0; s[1] = 1024.0;
+	 	s[0] = 471.0; s[1] = 634.0;
 	 	start.initiate(sdtPath, outDir, expDir);
 
 	 	if(start.isUpdateNeeded()){
-		 	//double[] nwse = start.getNWandSE();
+		 	double[] nwse = start.getNWandSE();
 		 	//start.hasImageBeenUpdated();
 		 	start.setBoundingBox(nw,se,s);
 		 	

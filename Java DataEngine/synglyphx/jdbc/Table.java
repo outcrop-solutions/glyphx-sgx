@@ -7,6 +7,7 @@ import java.util.Map;
 import synglyphx.data.DataStats;
 import synglyphx.io.Logger;
 import synglyphx.util.Functions;
+import synglyphx.data.DataFrame;
 import synglyphx.jdbc.driver.Driver;
 
 public abstract class Table {
@@ -15,6 +16,7 @@ public abstract class Table {
 	protected String query;
 	protected String end_of_query;
 	protected Driver driver;
+	protected DataFrame data;
 	protected ArrayList<String> columnNames;
 	protected HashMap<String,String> columnTypes;
 	protected HashMap<String,DataStats> dataStats;
@@ -37,6 +39,7 @@ public abstract class Table {
 			//String sql = driver.dataStatsQuery(cn, end_of_query, columnTypes.get(cn).equals("Double"));
 			String sql = driver.dataStatsQuery(columnNames, end_of_query);
 			Statement stmt = driver.getConnection().createStatement();
+			//System.out.println(sql);
             ResultSet rs = stmt.executeQuery(sql);
             /*
             while(rs.next()){
@@ -75,7 +78,8 @@ public abstract class Table {
 
             rs.close();
             //con.close();
-        }catch(SQLException se){
+        }catch(Exception se){
+        	se.printStackTrace();
         	try{
             	se.printStackTrace(Logger.getInstance().addError());
          	}catch(Exception ex){}
@@ -113,10 +117,13 @@ public abstract class Table {
 		jdbcTypes.put("DECIMAL","Double");
 		jdbcTypes.put("REAL","Double");
 		jdbcTypes.put("NUMERIC","Double");
+		jdbcTypes.put("LONG","Double");
+		jdbcTypes.put("NUMBER","Double");
 
 		jdbcTypes.put("TEXT","String");
 		jdbcTypes.put("CHAR","String");
 		jdbcTypes.put("VARCHAR","String");
+		jdbcTypes.put("VARCHAR2","String");
 		jdbcTypes.put("BIT","String");
 		jdbcTypes.put("BINARY","String");
 		jdbcTypes.put("VARBINARY","String");
@@ -162,6 +169,59 @@ public abstract class Table {
 
 	public HashMap<String,DataStats> getDataStats(){
 		return dataStats;
+	}
+
+	public DataFrame createDataFrame(){
+
+		this.data = new DataFrame();
+		this.data.addRow(columnNames);
+
+		try{
+			PreparedStatement pstmt = driver.getConnection().prepareStatement(this.query);
+	        ResultSet rs = pstmt.executeQuery();
+
+	        while(rs.next()){
+	        	ArrayList<String> row = new ArrayList<String>();
+	        	for(int i = 0; i < columnNames.size(); i++){
+	        		String temp = rs.getString(columnNames.get(i));
+	        		if(temp == null){temp = "";}
+	        		row.add(temp);
+	        	}   	     	
+	  			this.data.addRow(row);
+	        }
+		    rs.close();
+		    driver.getConnection().close();
+		}catch(SQLException se){
+	        try{
+	            se.printStackTrace(Logger.getInstance().addError());
+	        }catch(Exception ex){}
+	    }catch(Exception e){
+	        try{
+	            e.printStackTrace(Logger.getInstance().addError());
+	        }catch(Exception ex){}
+	    }
+
+	    HashMap<String, ArrayList<String>> minMaxTable = new HashMap<String, ArrayList<String>>();
+	    HashMap<String, Boolean> fieldType = new HashMap<String, Boolean>();
+	    for(int i = 0; i < columnNames.size(); i++){
+	    	minMaxTable.put(columnNames.get(i), new ArrayList<String>());
+	    	String[] stats = getStats(columnNames.get(i));
+	    	minMaxTable.get(columnNames.get(i)).add(stats[1]);
+	    	minMaxTable.get(columnNames.get(i)).add(stats[2]);
+	    	if(stats[0].equals("real")){
+	    		fieldType.put(columnNames.get(i), true);
+	    	}else{
+	    		fieldType.put(columnNames.get(i), false);
+	    	}
+	    }	
+	    data.setMinMaxTable(minMaxTable);
+	    data.setFieldTypes(fieldType);
+
+		return data;
+	}
+
+	public DataFrame getDataFrame(){
+		return data;
 	}
 
 }

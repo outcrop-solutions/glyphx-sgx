@@ -7,6 +7,7 @@ import synglyphx.data.Query;
 import synglyphx.data.Cursor;
 import synglyphx.data.SourceDataInfo;
 import synglyphx.glyph.XMLGlyphTemplate;
+import synglyphx.io.Logger;
 
 public class LinkCreator {
 	
@@ -23,6 +24,7 @@ public class LinkCreator {
 		this.dataPaths = dataPaths;
 		this.rootIds = rootIds;
 		this.temps = temps;
+		System.out.println("Number of data sources: "+String.valueOf(dataPaths.size()));
 	}
 
 	public void begin(){
@@ -51,19 +53,22 @@ public class LinkCreator {
 				ArrayList<String> kv_values = new ArrayList<String>();
 				HashMap<String, ArrayList<Integer>> value_nodes = new HashMap<String, ArrayList<Integer>>();
 				for(Map.Entry<String, String> kv : key_value.entrySet()){
-					kv_keys.add(kv.getKey());
-					kv_values.add(kv.getValue());
-					if(!key_nodes.containsKey(kv.getKey())){
-						key_nodes.put(kv.getKey(), new ArrayList<Integer>());
+					String lc_key = kv.getKey().toLowerCase();
+					String lc_value = kv.getValue().toLowerCase();
+					kv_keys.add(lc_key);
+					kv_values.add(lc_value);
+					if(!key_nodes.containsKey(lc_key)){
+						key_nodes.put(lc_key, new ArrayList<Integer>());
 					}	
-					if(!value_nodes.containsKey(kv.getValue())){
-						value_nodes.put(kv.getValue(), new ArrayList<Integer>());
+					if(!value_nodes.containsKey(lc_value)){
+						value_nodes.put(lc_value, new ArrayList<Integer>());
 					}	
 				}
 				t1 = retrieveNodesMatchingKey(key_nodes, dataPaths.get(entry.getValue().getDatasourceID(0)), kv_keys, entry.getValue().getFieldName(0)); 
 				t2 = retrieveNodesMatchingValue(value_nodes, dataPaths.get(entry.getValue().getDatasourceID(1)), kv_values, entry.getValue().getFieldName(1));
 				wait(t1,t2);
 				setFinalKeyValueEndpoints(entry.getValue(), key_nodes, value_nodes, segment_sizes, nodes_per_seg, seg_info);
+				System.out.println("Exiting Key Value linking code...");
 			}
 			else if(funct.type().name().equals("KEYRANGE")){
 				HashMap<String, double[]> range_value = funct.getKeyRangePairs();
@@ -93,11 +98,17 @@ public class LinkCreator {
 		//NEED TO CHECK FOR CSV OR SQLITE3
 		int b_temp_id = link_temp.getGlyphTempID(0);
 		int e_temp_id = link_temp.getGlyphTempID(1);
-
+		System.out.println(b_temp_id);
+		System.out.println(e_temp_id);
 		int b_temp_seg = -1;
 		int e_temp_seg = -1;
 
+		System.out.print("Temps size: ");
+		System.out.println(temps.size());
+
 		for(int i = 0; i < rootIds.size(); i++){
+			System.out.print("root id: ");
+			System.out.println(rootIds.get(i));
 			if(i+1 != rootIds.size()){
 				if(b_temp_id >= rootIds.get(i) && b_temp_id < rootIds.get(i+1)){
 					b_temp_seg = i;
@@ -113,7 +124,11 @@ public class LinkCreator {
 					if(rootIds.get(i) == temps.get(rootIds.get(i)).getLastChildID()){
 						segment_sizes.add(1);
 					}else{
-						segment_sizes.add(temps.get(rootIds.get(i)).getLastChildID());
+						int prev_sizes = 0;
+						for(int x = 0; x < segment_sizes.size(); x++){
+							prev_sizes += segment_sizes.get(x);
+						}
+						segment_sizes.add(temps.get(rootIds.get(i)).getLastChildID()-prev_sizes);
 					}
 				}else{
 					segment_sizes.add(temps.size()-(rootIds.get(i)-1));
@@ -128,6 +143,8 @@ public class LinkCreator {
 		int[] temps = new int[4];
 		temps[0] = b_temp_id; temps[1] = b_temp_seg;
 		temps[2] = e_temp_id; temps[3] = e_temp_seg;
+		System.out.println(b_temp_seg);
+		System.out.println(e_temp_seg);
 		return temps;
 	}
 
@@ -136,16 +153,38 @@ public class LinkCreator {
 		ArrayList<Integer> nodes_per_seg){
 
 		int[] ids = new int[2];
-		int place_b_id = seg_info[0];
-		for(int i = seg_info[1]; i > 0; i--){place_b_id-=segment_sizes.get(i);}
-		int place_e_id = seg_info[2];
-		for(int i = seg_info[3]; i > 0; i--){place_e_id-=segment_sizes.get(i);}
-		ids[0] = place_b_id;
-		for(int i = seg_info[1]; i > 0; i--){ids[0]+=nodes_per_seg.get(i-1);}
-		ids[1] = place_e_id;
-		for(int i = seg_info[3]; i > 0; i--){ids[1]+=nodes_per_seg.get(i-1);}
-
+		ids[0] = getNodeStartPos(seg_info[0],seg_info[1],segment_sizes,nodes_per_seg);
+		ids[1] = getNodeStartPos(seg_info[2],seg_info[3],segment_sizes,nodes_per_seg);
 		return ids;
+	}
+
+	private int getNodeStartPos(int glyph_temp_pos, int segment_id,
+		ArrayList<Integer> segment_sizes,
+		ArrayList<Integer> nodes_per_seg){
+
+		if(segment_id == 0){
+			return 0;
+		}else{
+			int total_displacement = 0;
+			for(int i = segment_id-1; i >= 0; i--){
+				total_displacement += nodes_per_seg.get(i);
+			}
+			return total_displacement;
+		}
+	}
+
+	private int placeInSegment(int glyph_temp_pos, int segment_id, 
+		ArrayList<Integer> segment_sizes){
+
+		if(segment_id == 0){
+			return glyph_temp_pos;
+		}else{
+			int total_displacement = 0;
+			for(int i = segment_id-1; i >= 0; i--){
+				total_displacement += segment_sizes.get(i);
+			}
+			return glyph_temp_pos-total_displacement;
+		}
 	}
 
 	public void setFinalMatchValueEndpoints(LinkTemplate link_temp,
@@ -156,19 +195,18 @@ public class LinkCreator {
 		int[] seg_info){
 
 		int[] b_e_ids = getPlaceIDs(seg_info, segment_sizes, nodes_per_seg);
-		//System.out.println(segment_sizes.get(0));
-		//System.out.println(nodes_per_seg.get(0));
 
 		for(Map.Entry<String,ArrayList<Integer>> entry : key_rows.entrySet()){
 			if(value_rows.containsKey(entry.getKey())){
 				ArrayList<Integer> base_set = entry.getValue();
 				ArrayList<Integer> end_set = value_rows.get(entry.getKey());
 				for(int i = 0; i < base_set.size(); i++){
-					int b_id = ((base_set.get(i) - 1) * segment_sizes.get(seg_info[1])) + b_e_ids[0];
-					if(i < 5){System.out.println(b_id);}
+					int b_id = ((base_set.get(i)) * segment_sizes.get(seg_info[1])) + b_e_ids[0];
+					b_id += placeInSegment(seg_info[0],seg_info[1],segment_sizes);
 					for(int j = 0; j < end_set.size(); j++){
 						int e_id = ((end_set.get(j)) * segment_sizes.get(seg_info[3])) + b_e_ids[1];
-						if(b_id != e_id){ //Needs to be removed for intra-glyph links
+						e_id += placeInSegment(seg_info[2],seg_info[3],segment_sizes);
+						if(b_id != e_id){ //Needs to be removed for intra-glyph links 
 							link_temp.addEndpointIDs(b_id, e_id);
 						}
 					}
@@ -190,18 +228,37 @@ public class LinkCreator {
 		HashMap<String, String> key_value = link_temp.getLinkFunction().getKeyValuePairs();
 
 		for(Map.Entry<String,String> entry : key_value.entrySet()){
-
-			ArrayList<Integer> base_set = key_rows.get(entry.getKey());
-			ArrayList<Integer> end_set = value_rows.get(entry.getValue());
-
-			for(int i = 0; i < base_set.size(); i++){
-
-				int b_id = ((base_set.get(i) - 1) * segment_sizes.get(seg_info[1])) + b_e_ids[0] + 1;
-	
-				for(int j = 0; j < end_set.size(); j++){
-					int e_id = ((end_set.get(j) - 1) * segment_sizes.get(seg_info[3])) + b_e_ids[1] + 1;
-					if(b_id != e_id){ //Needs to be removed for intra-glyph links
-						link_temp.addEndpointIDs(b_id, e_id);
+			ArrayList<Integer> base_set = key_rows.get(entry.getKey().toLowerCase());
+			ArrayList<Integer> end_set = value_rows.get(entry.getValue().toLowerCase());
+			if(base_set != null && end_set != null){
+				for(int i = 0; i < base_set.size(); i++){
+					int b_id = ((base_set.get(i)) * segment_sizes.get(seg_info[1])) + b_e_ids[0];
+					b_id += placeInSegment(seg_info[0],seg_info[1],segment_sizes);
+					for(int j = 0; j < end_set.size(); j++){
+						int e_id = ((end_set.get(j)) * segment_sizes.get(seg_info[3])) + b_e_ids[1];
+						e_id += placeInSegment(seg_info[2],seg_info[3],segment_sizes);
+						if(b_id != e_id){ //Needs to be removed for intra-glyph links
+							if(j == 0){/*
+								System.out.println(entry.getKey());
+								System.out.print("placeInSegment 0 1: ");
+								System.out.println(placeInSegment(seg_info[0],seg_info[1],segment_sizes));
+								System.out.print("placeInSegment 2 3: ");
+								System.out.println(placeInSegment(seg_info[2],seg_info[3],segment_sizes));
+								System.out.print(seg_info[0]);System.out.print(",");System.out.println(seg_info[1]);
+								System.out.print(seg_info[2]);System.out.print(",");System.out.println(seg_info[3]);
+								System.out.print(b_id+7);System.out.print(",");System.out.println(e_id+7);
+								System.out.print("Base set: ");
+								System.out.println(base_set.get(i));
+								System.out.print("End set: ");
+								System.out.println(end_set.get(j));
+								System.out.print("b_e_ids 0: ");
+								System.out.println(b_e_ids[0]);
+								System.out.print("b_e_ids 1: ");
+								System.out.println(b_e_ids[1]);
+								System.out.println("");*/
+							}
+							link_temp.addEndpointIDs(b_id, e_id);
+						}
 					}
 				}
 			}
@@ -220,17 +277,18 @@ public class LinkCreator {
 		HashMap<String, double[]> key_range = link_temp.getLinkFunction().getKeyRangePairs();
 
 		for(Map.Entry<String,double[]> entry : key_range.entrySet()){
-			ArrayList<Integer> base_set = key_rows.get(entry.getKey());
+			ArrayList<Integer> base_set = key_rows.get(entry.getKey().toLowerCase());
 			ArrayList<Integer> end_set = value_rows.get(entry.getValue());
-
-			for(int i = 0; i < base_set.size(); i++){
-
-				int b_id = ((base_set.get(i) - 1) * segment_sizes.get(seg_info[1])) + b_e_ids[0] + 1;
-	
-				for(int j = 0; j < end_set.size(); j++){
-					int e_id = ((end_set.get(j) - 1) * segment_sizes.get(seg_info[3])) + b_e_ids[1] + 1;
-					if(b_id != e_id){ //Needs to be removed for intra-glyph links
-						link_temp.addEndpointIDs(b_id, e_id);
+			if(base_set != null && end_set != null){
+				for(int i = 0; i < base_set.size(); i++){
+					int b_id = ((base_set.get(i)) * segment_sizes.get(seg_info[1])) + b_e_ids[0];
+					b_id += placeInSegment(seg_info[0],seg_info[1],segment_sizes);
+					for(int j = 0; j < end_set.size(); j++){
+						int e_id = ((end_set.get(j)) * segment_sizes.get(seg_info[3])) + b_e_ids[1];
+						e_id += placeInSegment(seg_info[2],seg_info[3],segment_sizes);
+						if(b_id != e_id){ //Needs to be removed for intra-glyph links
+							link_temp.addEndpointIDs(b_id, e_id);
+						}
 					}
 				}
 			}
@@ -269,11 +327,12 @@ public class LinkCreator {
 				if(ds.getType().equals("csv") || ds.getType().equals("sqlite3")){
 					Query query = new Query(ds.getDataFrame()).all(); 
 					Cursor cursor = ds.getDataFrame().query(query);
-
+					Logger.getInstance().addT("Retrieving nodes matching keys..."+String.valueOf(key_nodes.size()));
 					int row_count = 0;
 					while(cursor.next()){
 						String fn = cursor.get(field_name).toLowerCase();
 						if(key_nodes.containsKey(fn)){
+							Logger.getInstance().addT("Key: "+fn);
 							key_nodes.get(fn).add(row_count);
 						}
 						row_count++;
@@ -298,6 +357,7 @@ public class LinkCreator {
 					while(cursor.next()){
 						String fn = cursor.get(field_name).toLowerCase();
 						if(value_nodes.containsKey(fn)){
+							Logger.getInstance().addT("Value: "+fn);
 							value_nodes.get(fn).add(row_count);
 						}
 						row_count++;

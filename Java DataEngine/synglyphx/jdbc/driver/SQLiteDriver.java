@@ -8,13 +8,20 @@ public class SQLiteDriver implements Driver {
 
 	private Connection conn = null;
 	private String conn_str;
+	private String query;
 
 	public String packageName(){
 		return "org.sqlite.JDBC";
 	}
 
-	public void createConnection(String conn_str, String un, String pw) throws SQLException {
-		this.conn_str = conn_str;
+	public void createConnection(String con_str, String un, String pw) throws SQLException {
+		String[] splt_str = con_str.split("jdbc:");
+		if(con_str.contains("sqlite:")){
+			this.conn_str = con_str;
+		}else{
+			this.conn_str = "jdbc:sqlite:"+splt_str[1];
+		}
+		Logger.getInstance().addT(conn_str);
 		this.conn = DriverManager.getConnection(conn_str);
 	}
 
@@ -48,6 +55,14 @@ public class SQLiteDriver implements Driver {
 
 	public ResultSet getImportedKeys(DatabaseMetaData dm, String name) throws SQLException {
 		return dm.getImportedKeys(null, null, name);
+	}
+
+	public String getLimit(){
+		return " LIMIT 1";
+	}
+
+	public void setQuery(String query){
+		this.query = query;
 	}
 
 	public Connection getNewConnection(){
