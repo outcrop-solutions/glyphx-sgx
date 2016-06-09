@@ -66,12 +66,13 @@ namespace DataEngine
 
 		SynGlyphX::StringVector jarFiles;
 		jarFiles.push_back("dataengine.jar");
-		jarFiles.push_back("ojdbc6.jar");
-		jarFiles.push_back("database-drivers/opencsv-3.7.jar");
-		jarFiles.push_back("database-drivers/sqlite4java.jar");
-		jarFiles.push_back("database-drivers/mysql-connector-java-5.1.38-bin.jar");
-		jarFiles.push_back("database-drivers/sqlite-jdbc-3.8.11.2.jar");
-		jarFiles.push_back("database-drivers/vertica-jdbc-7.2.1-0.jar");
+		jarFiles.push_back("database-drivers\\commons-lang3-3.1.jar");
+		jarFiles.push_back("database-drivers\\ojdbc7.jar");
+		jarFiles.push_back("database-drivers\\opencsv-3.7.jar");
+		jarFiles.push_back("database-drivers\\sqlite4java.jar");
+		jarFiles.push_back("database-drivers\\mysql-connector-java-5.1.38-bin.jar");
+		jarFiles.push_back("database-drivers\\sqlite-jdbc-3.8.11.2.jar");
+		jarFiles.push_back("database-drivers\\vertica-jdbc-7.2.1-0.jar");
 
 		std::string jarFilePrefix;
 		if (ifile) {
@@ -97,7 +98,7 @@ namespace DataEngine
 		options[0].optionString = const_cast<char*>(jarFilesOptionString.c_str());
         options[1].optionString = "-Xmx1g"; //Max of 1G
 
-        vmArgs.version = JNI_VERSION_1_2;
+        vmArgs.version = JNI_VERSION_1_6;
 		vmArgs.options = options;
 		vmArgs.nOptions = option_count;
 		vmArgs.ignoreUnrecognized = JNI_FALSE;
