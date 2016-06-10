@@ -7,6 +7,8 @@
 #include <QtCore/QStandardPaths>
 #include <QtWidgets/QMessageBox>
 #include <boost/filesystem.hpp>
+#include "GDServices.h"
+#include "GDGlobal.h"
 
 #ifdef USE_BREAKPAD
 #include "exception_handler.h"
@@ -69,12 +71,12 @@ int main(int argc, char *argv[])
     splash.showMessage("Loading Glyph Designer", Qt::AlignHCenter | Qt::AlignBottom);
 
     a.processEvents();
-
+	
 	try {
 
 		GlyphDesignerWindow w;
 		w.resize(1200, 700);
-
+		GDGlobal::Init(new GDServices(&w));
 		//Need to figure out better way to not have the splash screen disappear before the user sees it
 		QTimer::singleShot(1500, &splash, SLOT(close()));
 		w.show();

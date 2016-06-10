@@ -179,8 +179,7 @@ void DataMapperWindow::CreateMenus() {
     QAction* exitAction = CreateMenuAction(m_fileMenu, tr("Exit"), QKeySequence::Quit);
     QObject::connect(exitAction, &QAction::triggered, this, &DataMapperWindow::close);
 
-	//Create Edit Menu
-	m_editMenu = menuBar()->addMenu(tr("Edit"));
+	CreateEditMenu();
 
     //Create Glyph Menu
     m_glyphMenu = menuBar()->addMenu(tr("Glyph"));

@@ -95,8 +95,7 @@ void GlyphDesignerWindow::CreateMenus() {
     QAction* exitAction = CreateMenuAction(m_fileMenu, tr("Exit"), QKeySequence::Quit);
     QObject::connect(exitAction, &QAction::triggered, this, &GlyphDesignerWindow::close);
 
-    //Create Edit Menu
-    m_editMenu = menuBar()->addMenu(tr("Edit"));
+	CreateEditMenu();
 
     QMenu* editingModeMenu = m_editMenu->addMenu(tr("Editing Mode"));
 

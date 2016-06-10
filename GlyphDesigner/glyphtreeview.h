@@ -22,6 +22,7 @@
 #include "minmaxglyphtreemodel.h"
 #include "sharedactionlist.h"
 
+class GlyphTreeViewMemento;
 class GlyphTreeView : public SynGlyphX::TreeEditView
 {
     Q_OBJECT
@@ -31,6 +32,10 @@ public:
     ~GlyphTreeView();
 
 	const SynGlyphX::SharedActionList& GetGlyphActions() const;
+
+	GlyphTreeViewMemento* CreateMemento() const;
+	void ReinstateMemento(GlyphTreeViewMemento* m);
+
 
 public slots:
 	void AddChildren();

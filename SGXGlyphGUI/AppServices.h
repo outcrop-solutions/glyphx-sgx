@@ -14,62 +14,27 @@
 /// LAWS AND INTERNATIONAL TREATIES.  THE RECEIPT OR POSSESSION OF  THIS SOURCE CODE AND/OR RELATED INFORMATION DOES NOT CONVEY OR IMPLY ANY RIGHTS  
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
+#pragma once
+#include "sgxglyphgui_global.h"
 
-#ifndef GLYPHDESIGNERWINDOW_H
-#define GLYPHDESIGNERWINDOW_H
+class QUndoStack;
+namespace SynGlyphX {
+	class MainWindow;
+	class CommandService;
 
-#include "mainwindow.h"
-#include "glyphtreeview.h"
-#include "antzsingleglyphtreewidget.h"
-#include "minmaxglyphtreemodel.h"
-class GDServicesImpl;
-class GlyphDesignerWindow : public SynGlyphX::MainWindow
-{
-	Q_OBJECT
-		friend class GDServicesImpl;
-public:
-    GlyphDesignerWindow(QWidget *parent = 0);
-    ~GlyphDesignerWindow();
+	enum class TransactionType {
+		ChangeTree
+	};
 
-protected:
-    virtual bool LoadRecentFile(const QString& filename);
-    virtual void closeEvent(QCloseEvent* event);
+	class SGXGLYPHGUI_EXPORT AppServices {
+	public:
+		AppServices(MainWindow* mw);
+		virtual void BeginTransaction(const char* name, TransactionType t) = 0;
+		virtual void EndTransaction() = 0 ;
 
-	virtual void ReadSettings();
-	virtual void WriteSettings();
-
-private slots:
-    void CreateNewGlyphTree();
-    void ExportToCSV();
-    bool SaveTemplate();
-    bool SaveAsTemplate();
-    void OpenTemplate();
-	void OpenTemplateFromLibrary();
-    void EditingModeChanged(QAction* action);
-	void OnModelChanged();
-	void ChangeGlobalOptions();
-
-private:
-    void CreateMenus();
-    void CreateDockWidgets();
-    bool LoadTemplate(const QString& filename);
-    bool SaveTemplateFile(const QString& filename);
-    bool AskUserToSave();
-	void SelectRootGlyphInModel();
-
-	SynGlyphXANTz::ANTzSingleGlyphTreeWidget* m_3dView;
-    GlyphTreeView* m_treeView;
-
-    QMenu* m_fileMenu;
-    QMenu* m_glyphMenu;
-	QMenu* m_toolsMenu;
-
-	QAction* m_showAnimation;
-
-	SynGlyphXANTz::MinMaxGlyphTreeModel* m_glyphTreeModel;
-	QItemSelectionModel* m_sharedSelectionModel;
-
-	bool m_isFileLoadingOrDefaultGlyphSet;
-};
-
-#endif // GLYPHDESIGNERWINDOW_H
+		QUndoStack* GetUndoStack();
+		virtual ~AppServices() {}
+	protected:
+		MainWindow* m_window;
+	};
+}

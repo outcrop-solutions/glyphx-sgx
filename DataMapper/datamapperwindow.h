@@ -101,7 +101,6 @@ private:
 	void OnLinkDialogAccepted();
 
     QMenu* m_fileMenu;
-	QMenu* m_editMenu;
     QMenu* m_glyphMenu;
 	QMenu* m_baseObjectMenu;
 	QMenu* m_linksMenu;

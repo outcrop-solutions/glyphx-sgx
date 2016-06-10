@@ -8,6 +8,7 @@
 #include <QtWidgets/QMessageBox>
 #include <QtWidgets/QFileDialog>
 #include "licensingdialog.h"
+#include <QtWidgets/QUndoStack>
 
 namespace SynGlyphX {
 
@@ -34,6 +35,7 @@ namespace SynGlyphX {
         m_recentFileActions[0]->setSeparator(true);
 
 		ClearCurrentFile();
+		m_undoStack = new QUndoStack(this);
     }
 
     MainWindow::~MainWindow()
@@ -237,6 +239,19 @@ namespace SynGlyphX {
 
 		m_viewMenu->addSeparator();
     }
+
+	void MainWindow::CreateEditMenu() {
+		//Create Edit Menu
+		m_editMenu = menuBar()->addMenu(tr("Edit"));
+		m_undoAction = m_undoStack->createUndoAction(this, tr("&Undo"));
+		m_undoAction->setShortcuts(QKeySequence::Undo);
+		m_redoAction = m_undoStack->createRedoAction(this, tr("&Redo"));
+		m_redoAction->setShortcuts(QKeySequence::Redo);
+
+		m_editMenu->addAction(m_undoAction);
+		m_editMenu->addAction(m_redoAction);
+		m_editMenu->addSeparator();
+	}
 
 	QString MainWindow::GetFileNameOpenDialog(const QString& settingKey, const QString& caption, const QString& defaultDir, const QString& filter) {
 
