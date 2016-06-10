@@ -45,10 +45,12 @@ private slots:
 private:
 	void CreateCacheTab(bool enableCacheOptions);
 	void Create3DTab();
+	void CreateFilteringTab();
 	void CreateUITab();
 
 	void SetCacheValues(const GlyphViewerOptions& options);
 	void Set3DValues(const GlyphViewerOptions& options);
+	void SetFilteringValues(const GlyphViewerOptions& options);
 	void SetUIValues(const GlyphViewerOptions& options);
 
 	SynGlyphX::BrowseLineEdit* m_cacheDirectoryWidget;

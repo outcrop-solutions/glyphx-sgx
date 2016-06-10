@@ -10,44 +10,43 @@ namespace SynGlyphX {
 	ZSpaceOptionsWidget::ZSpaceOptionsWidget(QWidget *parent)
 		: QWidget(parent)
 	{
-		QVBoxLayout* layout = new QVBoxLayout(this);
+		QVBoxLayout* mainLayout = new QVBoxLayout(this);
 
-		QHBoxLayout* stylusLayout = new QHBoxLayout(this);
-
-		QGroupBox* stylusGroupBox = new QGroupBox(tr("Stylus"), this);
-
-		QHBoxLayout* stylusGroupBoxLayout = new QHBoxLayout(stylusGroupBox);
-		QLabel* stylusColorLabel = new QLabel(tr("Color:"), stylusGroupBox);
-		stylusGroupBoxLayout->addWidget(stylusColorLabel);
-		m_stylusColorButton = new SynGlyphX::ColorButton(false, stylusGroupBox);
-		stylusGroupBoxLayout->addWidget(m_stylusColorButton);
-		QLabel* stylusLengthLabel = new QLabel(tr("Length:"), stylusGroupBox);
-		stylusGroupBoxLayout->addWidget(stylusLengthLabel);
-		m_stylusLengthSpinBox = new QDoubleSpinBox(stylusGroupBox);
+		QGroupBox* optionsGroupBox = new QGroupBox(tr("zSpace Options"), this);
+		QVBoxLayout* optionsGroupBoxLayout = new QVBoxLayout(optionsGroupBox);
+		
+		QHBoxLayout* stylusLayout = new QHBoxLayout(optionsGroupBox);
+		QLabel* stylusColorLabel = new QLabel(tr("Stylus Color:"), optionsGroupBox);
+		stylusLayout->addWidget(stylusColorLabel);
+		m_stylusColorButton = new SynGlyphX::ColorButton(false, optionsGroupBox);
+		stylusLayout->addWidget(m_stylusColorButton);
+		QLabel* stylusLengthLabel = new QLabel(tr("Stylus Length:"), optionsGroupBox);
+		stylusLayout->addWidget(stylusLengthLabel);
+		m_stylusLengthSpinBox = new QDoubleSpinBox(optionsGroupBox);
 		m_stylusLengthSpinBox->setMinimum(0.05);
 		m_stylusLengthSpinBox->setMaximum(1.0);
 		m_stylusLengthSpinBox->setSingleStep(0.01);
-		stylusGroupBoxLayout->addWidget(m_stylusLengthSpinBox);
-		stylusGroupBox->setLayout(stylusLayout);
+		stylusLayout->addWidget(m_stylusLengthSpinBox);;
 
-		stylusLayout->addWidget(stylusGroupBox);
-		stylusLayout->addStretch(1);
-
-		layout->addLayout(stylusLayout);
+		optionsGroupBoxLayout->addLayout(stylusLayout);
+		//stylusLayout->addStretch(1);
 
 		QHBoxLayout* buttonLayout = new QHBoxLayout(this);
 
-		QPushButton* defaultsButton = new QPushButton(tr("Set To Defaults"), this);
+		QPushButton* defaultsButton = new QPushButton(tr("Set To Defaults"), optionsGroupBox);
 		QObject::connect(defaultsButton, &QPushButton::clicked, this, &ZSpaceOptionsWidget::OnSetDefaults);
 		buttonLayout->addWidget(defaultsButton);
 
 		buttonLayout->addStretch(1);
 
-		layout->addLayout(buttonLayout);
+		optionsGroupBoxLayout->addLayout(buttonLayout);
 
-		layout->addStretch(1);
+		optionsGroupBox->setLayout(optionsGroupBoxLayout);
+		mainLayout->addWidget(optionsGroupBox);
 
-		setLayout(layout);
+		mainLayout->addStretch(1);
+
+		setLayout(mainLayout);
 	}
 
 	ZSpaceOptionsWidget::~ZSpaceOptionsWidget()

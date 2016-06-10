@@ -14,13 +14,7 @@ OptionsWidget::OptionsWidget(const GlyphViewerOptions& options, bool enableCache
 {
 	CreateCacheTab(enableCacheOptions);
 	Create3DTab();
-
-#ifdef USE_ZSPACE
-	m_zSpaceOptionsWidget = new SynGlyphX::ZSpaceOptionsWidget(this);
-	m_zSpaceOptionsWidget->SetOptions(options.GetZSpaceOptions());
-	addTab(m_zSpaceOptionsWidget, tr("zSpace"));
-#endif
-
+	CreateFilteringTab();
 	CreateUITab();
 
 	SetCacheValues(options);
@@ -36,14 +30,14 @@ OptionsWidget::~OptionsWidget()
 void OptionsWidget::CreateCacheTab(bool enableCacheOptions) {
 
 	QWidget* tab = new QWidget(this);
-	QVBoxLayout* layout = new QVBoxLayout(tab);
+	QVBoxLayout* tabLayout = new QVBoxLayout(tab);
 
 	m_cacheDirectoryWidget = new SynGlyphX::BrowseLineEdit(SynGlyphX::BrowseLineEdit::FileDialogType::Directory, true, tab);
 	m_cacheDirectoryWidget->setContentsMargins(4, 4, 4, 4);
 	m_cacheDirectoryWidget->setEnabled(enableCacheOptions);
 	SynGlyphX::GroupBoxSingleWidget* cacheDirectoryGroupBox = new SynGlyphX::GroupBoxSingleWidget(tr("Cache Directory"), m_cacheDirectoryWidget, tab);
 
-	layout->addWidget(cacheDirectoryGroupBox);
+	tabLayout->addWidget(cacheDirectoryGroupBox);
 
 	QHBoxLayout* buttonLayout = new QHBoxLayout(tab);
 
@@ -59,9 +53,11 @@ void OptionsWidget::CreateCacheTab(bool enableCacheOptions) {
 	QObject::connect(defaultCacheDirectoryButton, &QPushButton::clicked, this, &OptionsWidget::SetToDefaultCacheDirectory);
 	buttonLayout->addWidget(defaultCacheDirectoryButton);
 
-	layout->addLayout(buttonLayout);
+	tabLayout->addLayout(buttonLayout);
 
-	tab->setLayout(layout);
+	tabLayout->addStretch(1);
+
+	tab->setLayout(tabLayout);
 	addTab(tab, tr("Cache"));
 }
 
@@ -69,9 +65,6 @@ void OptionsWidget::Create3DTab() {
 
 	QWidget* tab = new QWidget(this);
 	QVBoxLayout* tabLayout = new QVBoxLayout(tab);
-
-	m_hideSelectedGlyphsCheckbox = new QCheckBox(tr("Filter View (Hide unselected glyph trees when there is an active selection)"), this);
-	tabLayout->addWidget(m_hideSelectedGlyphsCheckbox);
 
 	QHBoxLayout* hudOuterLayout = new QHBoxLayout(tab);
 
@@ -95,21 +88,45 @@ void OptionsWidget::Create3DTab() {
 	hudOuterLayout->addStretch(1);
 	tabLayout->addLayout(hudOuterLayout);
 
+#ifdef USE_ZSPACE
+	m_zSpaceOptionsWidget = new SynGlyphX::ZSpaceOptionsWidget(this);
+	m_zSpaceOptionsWidget->layout()->setContentsMargins(0, 0, 0, 0);
+	tabLayout->addWidget(m_zSpaceOptionsWidget);
+#endif
+
+	tabLayout->addStretch(1);
+
 	tab->setLayout(tabLayout);
 	addTab(tab, tr("3D"));
 
 	QObject::connect(m_showHUDAxisInfoObjectCheckBox, &QCheckBox::toggled, m_axisObjectLocationComboBox, &QComboBox::setEnabled);
 }
 
+void OptionsWidget::CreateFilteringTab() {
+
+	QWidget* tab = new QWidget(this);
+	QVBoxLayout* tabLayout = new QVBoxLayout(tab);
+
+	m_hideSelectedGlyphsCheckbox = new QCheckBox(tr("Hide Filtered"), this);
+	tabLayout->addWidget(m_hideSelectedGlyphsCheckbox);
+
+	tabLayout->addStretch(1);
+
+	tab->setLayout(tabLayout);
+	addTab(tab, tr("Filtering"));
+}
+
 void OptionsWidget::CreateUITab() {
 
 	QWidget* tab = new QWidget(this);
-	QVBoxLayout* layout = new QVBoxLayout(tab);
+	QVBoxLayout* tabLayout = new QVBoxLayout(tab);
 
 	m_showDownloadedImageErrorMessages = new QCheckBox(tr("Show an error message when an image failed to download"), this);
-	layout->addWidget(m_showDownloadedImageErrorMessages);
+	tabLayout->addWidget(m_showDownloadedImageErrorMessages);
 
-	tab->setLayout(layout);
+	tabLayout->addStretch(1);
+
+	tab->setLayout(tabLayout);
 	addTab(tab, tr("UI"));
 }
 
@@ -159,10 +176,18 @@ void OptionsWidget::SetCacheValues(const GlyphViewerOptions& options) {
 
 void OptionsWidget::Set3DValues(const GlyphViewerOptions& options) {
 
-	m_hideSelectedGlyphsCheckbox->setChecked(options.GetHideUnselectedGlyphTrees());
 	m_showHUDAxisInfoObjectCheckBox->setChecked(options.GetShowSceneAxisHUDObject());
 	m_axisObjectLocationComboBox->setEnabled(options.GetShowSceneAxisHUDObject());
 	m_axisObjectLocationComboBox->setCurrentIndex(options.GetSceneAxisObjectLocation());
+
+#ifdef USE_ZSPACE
+	m_zSpaceOptionsWidget->SetOptions(options.GetZSpaceOptions());
+#endif
+}
+
+void OptionsWidget::SetFilteringValues(const GlyphViewerOptions& options) {
+
+	m_hideSelectedGlyphsCheckbox->setChecked(options.GetHideUnselectedGlyphTrees());
 }
 
 void OptionsWidget::SetUIValues(const GlyphViewerOptions& options) {

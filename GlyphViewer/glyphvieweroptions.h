@@ -19,6 +19,9 @@ public:
 	bool operator==(const GlyphViewerOptions& options) const;
 	bool operator!=(const GlyphViewerOptions& options) const;
 
+	void WriteToSettings() const;
+	void ReadFromSettings();
+
 	void SetCacheDirectory(const QString& newCacheDirectory);
 	const QString& GetCacheDirectory() const;
 	static QString GetDefaultCacheDirectory();
@@ -45,13 +48,17 @@ private:
 	QString m_cacheDirectory;
 
 	//3D options
-	bool m_hideUnselectedGlyphTrees;
 	bool m_showSceneAxisHUDObject;
 	SynGlyphXANTz::ANTzForestWidget::HUDLocation m_sceneAxisHUDObjectLocation;
 
 #ifdef USE_ZSPACE
 	SynGlyphX::ZSpaceOptions m_zSpaceOptions;
 #endif
+
+	//Filtering options
+	bool m_hideUnselectedGlyphTrees;
+	bool m_loadSubsetVisualization;
+	bool m_loadSubsetVisualizationInNewInstance;
 
 	//UI options
 	bool m_showMessageWhenImagesDidNotDownload;

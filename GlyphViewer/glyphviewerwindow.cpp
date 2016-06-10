@@ -864,29 +864,7 @@ void GlyphViewerWindow::ReadSettings() {
 	}
 	settings.endGroup();
 
-	settings.beginGroup("Options");
-
-	QString cacheDirectory = QDir::toNativeSeparators(settings.value("cacheDirectory", GlyphViewerOptions::GetDefaultCacheDirectory()).toString());
-	if (cacheDirectory.isEmpty()) {
-
-		cacheDirectory = GlyphViewerOptions::GetDefaultCacheDirectory();
-	}
-	options.SetCacheDirectory(cacheDirectory);
-	options.SetHideUnselectedGlyphTrees(settings.value("hideUnselectedGlyphs", false).toBool());
-	options.SetShowSceneAxisHUDObject(settings.value("axisInfoShow", true).toBool());
-	options.SetSceneAxisObjectLocation(static_cast<SynGlyphXANTz::ANTzForestWidget::HUDLocation>(settings.value("axisInfoLocation").toInt()));
-	options.SetShowMessageWhenImagesDidNotDownload(settings.value("showFailedToDownloadImageMessage", true).toBool());
-	settings.endGroup();
-
-#ifdef USE_ZSPACE
-	settings.beginGroup("zSpace");
-	SynGlyphX::ZSpaceOptions zSpaceOptions;
-	zSpaceOptions.SetStylusColor(settings.value("stylusColor", QColor(Qt::green)).value<QColor>());
-	zSpaceOptions.SetStylusLength(settings.value("stylusLength", 0.15f).toFloat());
-	settings.endGroup();
-
-	options.SetZSpaceOptions(zSpaceOptions);
-#endif
+	
 
 	ChangeOptions(CollectOptions(), options);
 }
@@ -902,29 +880,7 @@ void GlyphViewerWindow::WriteSettings() {
 	settings.endGroup();
 
 	GlyphViewerOptions options = CollectOptions();
-
-	settings.beginGroup("Options");
-
-	if (options.GetCacheDirectory() != GlyphViewerOptions::GetDefaultCacheDirectory()) {
-
-		settings.setValue("cacheDirectory", options.GetCacheDirectory());
-	}
-	else {
-
-		settings.setValue("cacheDirectory", "");
-	}
-	settings.setValue("hideUnselectedGlyphs", options.GetHideUnselectedGlyphTrees());
-	settings.setValue("axisInfoShow", options.GetShowSceneAxisHUDObject());
-	settings.setValue("axisInfoLocation", options.GetSceneAxisObjectLocation());
-	settings.setValue("showFailedToDownloadImageMessage", options.GetShowMessageWhenImagesDidNotDownload());
-	settings.endGroup();
-
-#ifdef USE_ZSPACE
-	settings.beginGroup("zSpace");
-	settings.setValue("stylusColor", options.GetZSpaceOptions().GetStylusColor());
-	settings.setValue("stylusLength", options.GetZSpaceOptions().GetStylusLength());
-	settings.endGroup();
-#endif
+	options.WriteToSettings();
 }
 
 GlyphViewerOptions GlyphViewerWindow::CollectOptions() {
