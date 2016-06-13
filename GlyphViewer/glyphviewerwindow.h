@@ -71,7 +71,7 @@ private slots:
 
 private:
 	virtual bool LoadRecentFile(const QString& filename);
-	void LoadVisualization(const QString& filename, const DataMappingLoadingFilterModel::Table2LoadingFiltersMap& filters);
+	void LoadVisualization(const QString& filename, const DataMappingLoadingFilterModel::Table2LoadingFiltersMap& filters = DataMappingLoadingFilterModel::Table2LoadingFiltersMap());
 	void LoadANTzCompatibilityVisualization(const QString& filename);
 	void LoadDataTransform(const QString& filename, const DataMappingLoadingFilterModel::Table2LoadingFiltersMap& filters);
 	void ValidateDataMappingFile(const QString& filename);

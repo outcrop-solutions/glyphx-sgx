@@ -43,6 +43,12 @@ public:
 	void SetShowMessageWhenImagesDidNotDownload(bool showMessageWhenImagesDidNotDownload);
 	bool GetShowMessageWhenImagesDidNotDownload() const;
 
+	void SetLoadSubsetVisualization(bool loadSubsetVisualization);
+	bool GetLoadSubsetVisualization() const;
+
+	void SetLoadSubsetVisualizationInNewInstance(bool loadSubsetVisualizationInNewInstance);
+	bool GetLoadSubsetVisualizationInNewInstance() const;
+
 private:
 	//Cache options
 	QString m_cacheDirectory;

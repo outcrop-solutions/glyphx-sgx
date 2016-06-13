@@ -115,7 +115,7 @@ GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 
 		try {
 
-			LoadVisualization(QDir::toNativeSeparators(visualizationToLoad.canonicalPath()), DataMappingLoadingFilterModel::Table2LoadingFiltersMap());
+			LoadNewVisualization(QDir::toNativeSeparators(visualizationToLoad.canonicalPath()), DataMappingLoadingFilterModel::Table2LoadingFiltersMap());
 		}
 		catch (const std::exception& e) {
 
@@ -357,6 +357,8 @@ void GlyphViewerWindow::CreateDockWidgets() {
 	act->setIcon(icon);
 	m_viewMenu->addAction(act);
 	m_showHideToolbar->addAction(act);
+
+	QObject::connect(m_filteringWidget, &FilteringWidget::LoadSubsetVisualization, this, [this](QString filename){ LoadNewVisualization(filename); }, Qt::QueuedConnection);
 
 	QDockWidget* bottomDockWidget = new QDockWidget(tr("Time Animated Filter"), this);
 	m_pseudoTimeFilterWidget = new PseudoTimeFilterWidget(m_columnsModel, m_filteringManager, bottomDockWidget);
@@ -820,11 +822,6 @@ void GlyphViewerWindow::ChangeOptions(const GlyphViewerOptions& oldOptions, cons
 			m_cacheManager.SetBaseCacheDirectory(newCacheDirectory.toStdWString());
 		}
 
-		if (oldOptions.GetHideUnselectedGlyphTrees() != newOptions.GetHideUnselectedGlyphTrees()) {
-
-			m_linkedWidgetsManager->SetFilterView(newOptions.GetHideUnselectedGlyphTrees());
-		}
-
 		if (oldOptions.GetShowSceneAxisHUDObject() != newOptions.GetShowSceneAxisHUDObject()) {
 
 			m_glyph3DView->SetShowHUDAxisInfoObject(newOptions.GetShowSceneAxisHUDObject());
@@ -841,6 +838,21 @@ void GlyphViewerWindow::ChangeOptions(const GlyphViewerOptions& oldOptions, cons
 			m_glyph3DView->SetZSpaceOptions(newOptions.GetZSpaceOptions());
 		}
 #endif
+
+		if (oldOptions.GetHideUnselectedGlyphTrees() != newOptions.GetHideUnselectedGlyphTrees()) {
+
+			m_linkedWidgetsManager->SetFilterView(newOptions.GetHideUnselectedGlyphTrees());
+		}
+
+		if (oldOptions.GetLoadSubsetVisualization() != newOptions.GetLoadSubsetVisualization()) {
+
+			m_filteringWidget->SetLoadSubsetVisualization(newOptions.GetLoadSubsetVisualization());
+		}
+
+		if (oldOptions.GetLoadSubsetVisualizationInNewInstance() != newOptions.GetLoadSubsetVisualizationInNewInstance()) {
+
+			m_filteringWidget->SetLoadSubsetVisualizationInNewInstance(newOptions.GetLoadSubsetVisualizationInNewInstance());
+		}
 
 		if (oldOptions.GetShowMessageWhenImagesDidNotDownload() != newOptions.GetShowMessageWhenImagesDidNotDownload()) {
 
@@ -864,7 +876,7 @@ void GlyphViewerWindow::ReadSettings() {
 	}
 	settings.endGroup();
 
-	
+	options.ReadFromSettings();
 
 	ChangeOptions(CollectOptions(), options);
 }
@@ -888,12 +900,17 @@ GlyphViewerOptions GlyphViewerWindow::CollectOptions() {
 	GlyphViewerOptions options;
 
 	options.SetCacheDirectory(QString::fromStdWString(m_cacheManager.GetBaseCacheDirectory()));
-	options.SetHideUnselectedGlyphTrees(m_linkedWidgetsManager->GetFilterView());
+	
 	options.SetShowSceneAxisHUDObject(m_glyph3DView->GetShowHUDAxisInfoObject());
 	options.SetSceneAxisObjectLocation(m_glyph3DView->GetAxisInfoObjectLocation());
 #ifdef USE_ZSPACE
 	options.SetZSpaceOptions(m_glyph3DView->GetZSpaceOptions());
 #endif
+
+	options.SetHideUnselectedGlyphTrees(m_linkedWidgetsManager->GetFilterView());
+	options.SetLoadSubsetVisualization(m_filteringWidget->GetLoadSubsetVisualization());
+	options.SetLoadSubsetVisualizationInNewInstance(m_filteringWidget->GetLoadSubsetVisualizationInNewInstance());
+
 	options.SetShowMessageWhenImagesDidNotDownload(m_showErrorFromTransform);
 
 	return options;

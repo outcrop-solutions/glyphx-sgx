@@ -19,6 +19,7 @@ OptionsWidget::OptionsWidget(const GlyphViewerOptions& options, bool enableCache
 
 	SetCacheValues(options);
 	Set3DValues(options);
+	SetFilteringValues(options);
 	SetUIValues(options);
 }
 
@@ -89,9 +90,12 @@ void OptionsWidget::Create3DTab() {
 	tabLayout->addLayout(hudOuterLayout);
 
 #ifdef USE_ZSPACE
+	QHBoxLayout* zSpaceLayout = new QHBoxLayout(tab);
 	m_zSpaceOptionsWidget = new SynGlyphX::ZSpaceOptionsWidget(this);
 	m_zSpaceOptionsWidget->layout()->setContentsMargins(0, 0, 0, 0);
-	tabLayout->addWidget(m_zSpaceOptionsWidget);
+	zSpaceLayout->addWidget(m_zSpaceOptionsWidget);
+	zSpaceLayout->addStretch(1);
+	tabLayout->addLayout(zSpaceLayout);
 #endif
 
 	tabLayout->addStretch(1);
@@ -110,10 +114,24 @@ void OptionsWidget::CreateFilteringTab() {
 	m_hideSelectedGlyphsCheckbox = new QCheckBox(tr("Hide Filtered"), this);
 	tabLayout->addWidget(m_hideSelectedGlyphsCheckbox);
 
+	QGroupBox* createSubsetGroupBox = new QGroupBox(tr("Create Subset Options"), tab);
+	QHBoxLayout* createSubsetLayout = new QHBoxLayout(tab);
+
+	m_loadSubsetVisualizationCheckBox = new QCheckBox(tr("Load after subset is created"), tab);
+	createSubsetLayout->addWidget(m_loadSubsetVisualizationCheckBox);
+
+	m_loadSubsetVisualizationInNewInstanceCheckBox = new QCheckBox(tr("Load subset into new Glyph Viewer"), tab);
+	createSubsetLayout->addWidget(m_loadSubsetVisualizationInNewInstanceCheckBox);
+
+	createSubsetGroupBox->setLayout(createSubsetLayout);
+	tabLayout->addWidget(createSubsetGroupBox);
+
 	tabLayout->addStretch(1);
 
 	tab->setLayout(tabLayout);
 	addTab(tab, tr("Filtering"));
+
+	QObject::connect(m_loadSubsetVisualizationCheckBox, &QCheckBox::toggled, m_loadSubsetVisualizationInNewInstanceCheckBox, &QCheckBox::setEnabled);
 }
 
 void OptionsWidget::CreateUITab() {
@@ -155,8 +173,11 @@ void OptionsWidget::SetToDefaultCacheDirectory() {
 GlyphViewerOptions OptionsWidget::GetOptions() const {
 
 	GlyphViewerOptions options;
+
+	//Cache
 	options.SetCacheDirectory(m_cacheDirectoryWidget->GetText());
-	options.SetHideUnselectedGlyphTrees(m_hideSelectedGlyphsCheckbox->isChecked());
+	
+	//3D
 	options.SetShowSceneAxisHUDObject(m_showHUDAxisInfoObjectCheckBox->isChecked());
 	options.SetSceneAxisObjectLocation(static_cast<SynGlyphXANTz::ANTzForestWidget::HUDLocation>(m_axisObjectLocationComboBox->currentIndex()));
 
@@ -164,6 +185,12 @@ GlyphViewerOptions OptionsWidget::GetOptions() const {
 	options.SetZSpaceOptions(m_zSpaceOptionsWidget->GetOptions());
 #endif
 
+	//Filtering
+	options.SetHideUnselectedGlyphTrees(m_hideSelectedGlyphsCheckbox->isChecked());
+	options.SetLoadSubsetVisualization(m_loadSubsetVisualizationCheckBox->isChecked());
+	options.SetLoadSubsetVisualizationInNewInstance(m_loadSubsetVisualizationInNewInstanceCheckBox->isChecked());
+
+	//UI
 	options.SetShowMessageWhenImagesDidNotDownload(m_showDownloadedImageErrorMessages->isChecked());
 
 	return options;
@@ -188,6 +215,8 @@ void OptionsWidget::Set3DValues(const GlyphViewerOptions& options) {
 void OptionsWidget::SetFilteringValues(const GlyphViewerOptions& options) {
 
 	m_hideSelectedGlyphsCheckbox->setChecked(options.GetHideUnselectedGlyphTrees());
+	m_loadSubsetVisualizationCheckBox->setChecked(options.GetLoadSubsetVisualization());
+	m_loadSubsetVisualizationInNewInstanceCheckBox->setChecked(options.GetLoadSubsetVisualizationInNewInstance());
 }
 
 void OptionsWidget::SetUIValues(const GlyphViewerOptions& options) {

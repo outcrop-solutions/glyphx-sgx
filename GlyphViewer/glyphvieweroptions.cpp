@@ -226,3 +226,23 @@ bool GlyphViewerOptions::GetShowMessageWhenImagesDidNotDownload() const {
 
 	return m_showMessageWhenImagesDidNotDownload;
 }
+
+void GlyphViewerOptions::SetLoadSubsetVisualization(bool loadSubsetVisualization) {
+
+	m_loadSubsetVisualization = loadSubsetVisualization;
+}
+
+bool GlyphViewerOptions::GetLoadSubsetVisualization() const {
+
+	return m_loadSubsetVisualization;
+}
+
+void GlyphViewerOptions::SetLoadSubsetVisualizationInNewInstance(bool loadSubsetVisualizationInNewInstance) {
+
+	m_loadSubsetVisualizationInNewInstance = loadSubsetVisualizationInNewInstance;
+}
+
+bool GlyphViewerOptions::GetLoadSubsetVisualizationInNewInstance() const {
+
+	return m_loadSubsetVisualizationInNewInstance;
+}
