@@ -16,8 +16,10 @@
 ///
 #pragma once
 #include "sgxglyphgui_global.h"
+#include "AppServices.h"
+
 namespace SynGlyphX {
-	class AppServices;
+
 	class SGXGLYPHGUI_EXPORT AppGlobal {
 	public:
 		static void Init(AppServices* s); //this should be initialized by application level Global class

@@ -6,4 +6,5 @@ void AppGlobal::Init(AppServices* s) {
 	Q_ASSERT(!instance);
 	instance = s;
 }
+AppServices* AppGlobal::Services() { return instance;  }
 }

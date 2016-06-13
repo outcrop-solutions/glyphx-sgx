@@ -1,7 +1,6 @@
 #include "GDGlobal.h"
 #include <QtCore/qglobal.h>
 #include "AppGlobal.h"
-#include "GDServices.h"
 
 GDServices* instance = nullptr;
 void GDGlobal::Init(GDServices* s) {

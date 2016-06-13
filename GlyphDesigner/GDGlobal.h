@@ -15,7 +15,8 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 #pragma once
-class GDServices;
+#include "GDServices.h"
+
 class GDGlobal {
 public:
 	static void Init(GDServices* s);
