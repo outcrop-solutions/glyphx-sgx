@@ -108,21 +108,7 @@ GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 		return;
 	}
 
-	QStringList commandLineArguments = SynGlyphX::Application::arguments();
-	if (commandLineArguments.size() > 1) {
-
-		QDir visualizationToLoad(commandLineArguments[1]);
-
-		try {
-
-			LoadNewVisualization(QDir::toNativeSeparators(visualizationToLoad.canonicalPath()), DataMappingLoadingFilterModel::Table2LoadingFiltersMap());
-		}
-		catch (const std::exception& e) {
-
-			QMessageBox::critical(this, tr("Failed To Open Visualization"), tr("Failed to open visualization from command line.  Error: ") + e.what(), QMessageBox::Ok);
-		}
-	}
-	else if (SynGlyphX::GlyphBuilderApplication::IsGlyphEd()) {
+	if (SynGlyphX::GlyphBuilderApplication::IsGlyphEd()) {
 
 		antzWidgetContainer->setCurrentIndex(0);
 	}
