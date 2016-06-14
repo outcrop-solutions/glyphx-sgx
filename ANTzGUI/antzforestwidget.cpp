@@ -56,7 +56,8 @@ namespace SynGlyphXANTz {
 		m_isInStereo(false),
 		m_initialCameraZAngle(45.0f),
 		m_sceneAxisInfoQuadric(static_cast<GLUquadric*>(CreateNewQuadricObject())),
-		m_showHUDAxisInfoObject(true)
+		m_showHUDAxisInfoObject(true),
+		m_showSceneAxisInfoObject(true)
 	{
         // Set up timer to attempt to trigger repaints at ~60fps.
         timer.setInterval(16);
@@ -602,14 +603,16 @@ namespace SynGlyphXANTz {
 		npGLShading( antzData );
 		npDrawNodes( antzData );
 
-		//Leave this here so that bounding boxes can be shown for debugging
-		//DrawBoundingBoxes();
+		if (!antzData->io.gl.pickPass) {
+
+			DrawSceneAxisInfoObject();
+
+			//Leave this here so that bounding boxes can be shown for debugging
+			//DrawBoundingBoxes();
 
 #ifdef USE_ZSPACE
-		DrawZSpaceStylus( m_zSpaceStylusWorldMatrix, getStylusWorldPosition );
+			DrawZSpaceStylus(m_zSpaceStylusWorldMatrix, getStylusWorldPosition);
 #endif
-
-		if (!antzData->io.gl.pickPass) {
 
 			if (m_drawHUD) {
 
@@ -718,6 +721,91 @@ namespace SynGlyphXANTz {
 
 	void ANTzForestWidget::DrawSceneAxisInfoObject() {
 
+		if (!m_showSceneAxisInfoObject) {
+
+			return;
+		}
+
+		const std::array<QString, 3>& mappedFields = m_model->GetRootPosXYZMappedFields();
+
+		glMatrixMode(GL_MODELVIEW);
+		glPushMatrix();
+
+		glTranslatef(-181.0f, -91.0f, 0.0f);
+
+		glColor3f(1.0f, 0.0f, 0.0f);
+
+		glPushMatrix();
+
+		glRotatef(90.0f, 0.0f, 1.0f, 0.0f);
+		gluCylinder(m_sceneAxisInfoQuadric, 1.0, 1.0, 361.0, 24, 1);
+
+		glTranslatef(0.0f, 0.0f, 361.0f);
+		gluCylinder(m_sceneAxisInfoQuadric, 3.0, 0.0, 10.0, 24, 1);
+		glRotatef(180.0f, 1.0f, 0.0f, 0.0f);
+		gluDisk(m_sceneAxisInfoQuadric, 0.0, 3.0, 24, 1);
+		
+		glPopMatrix();
+
+		glColor3f(0.0f, 1.0f, 0.0f);
+
+		glPushMatrix();
+
+		glRotatef(-90.0f, 1.0f, 0.0f, 0.0f);
+		gluCylinder(m_sceneAxisInfoQuadric, 1.0, 1.0, 181.0, 24, 1);
+
+		glTranslatef(0.0f, 0.0f, 181.0f);
+		gluCylinder(m_sceneAxisInfoQuadric, 3.0, 0.0, 10.0, 24, 1);
+		glRotatef(180.0f, 1.0f, 0.0f, 0.0f);
+		gluDisk(m_sceneAxisInfoQuadric, 0.0, 3.0, 24, 1);
+
+		glPopMatrix();
+
+		glColor3f(0.0f, 0.0f, 1.0f);
+
+		glPushMatrix();
+
+		gluCylinder(m_sceneAxisInfoQuadric, 1.0, 1.0, 180.0, 24, 1);
+
+		glTranslatef(0.0f, 0.0f, 180.0f);
+		gluCylinder(m_sceneAxisInfoQuadric, 3.0, 0.0, 5.0, 24, 1);
+		glRotatef(180.0f, 1.0f, 0.0f, 0.0f);
+		gluDisk(m_sceneAxisInfoQuadric, 0.0, 3.0, 24, 1);
+
+		glPopMatrix();
+
+		//Wait until end to draw text
+		qglColor(Qt::white);
+		
+		//glDisable(GL_DEPTH_TEST);
+
+		//GLdouble textPosition[3];
+
+		/*if (!mappedFields[0].isEmpty()) {
+
+			gluProject(-0.25, 0.0, 1.5, xTextMatrix, orthoMatrix, viewport, &textPosition[0], &textPosition[1], &textPosition[2]);
+			renderText(textPosition[0] - mappedFieldsWidth[0], antzData->io.gl.height - textPosition[1], mappedFields[0], m_oglTextFont);
+		}
+
+		if (!mappedFields[1].isEmpty()) {
+
+			gluProject(-0.25, 0.0, 1.5, yTextMatrix, orthoMatrix, viewport, &textPosition[0], &textPosition[1], &textPosition[2]);
+			renderText(textPosition[0] - mappedFieldsWidth[1], antzData->io.gl.height - textPosition[1], mappedFields[1], m_oglTextFont);
+		}
+
+		if (!mappedFields[2].isEmpty()) {
+
+			gluProject(-0.25, 0.0, 1.5, zTextMatrix, orthoMatrix, viewport, &textPosition[0], &textPosition[1], &textPosition[2]);
+			renderText(textPosition[0] - mappedFieldsWidth[2], antzData->io.gl.height - textPosition[1], mappedFields[2], m_oglTextFont);
+		}*/
+
+		//glEnable(GL_DEPTH_TEST);
+		
+		glPopMatrix();
+	}
+
+	void ANTzForestWidget::DrawHUDAxisInfoObject() {
+
 		if (!m_showHUDAxisInfoObject) {
 
 			return;
@@ -763,7 +851,7 @@ namespace SynGlyphXANTz {
 
 		gluLookAt(0.0, 2.5, 5.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
 
-		qglColor(Qt::red);
+		glColor3f(1.0f, 0.0f, 0.0f);
 
 		glPushMatrix();
 		
@@ -793,7 +881,7 @@ namespace SynGlyphXANTz {
 		
 		glPopMatrix();
 
-		qglColor(Qt::green);
+		glColor3f(0.0f, 1.0f, 0.0f);
 
 		glPushMatrix();	
 
@@ -822,7 +910,7 @@ namespace SynGlyphXANTz {
 
 		glPopMatrix();
 		
-		qglColor(Qt::blue);
+		glColor3f(0.0f, 0.0f, 1.0f);
 
 		glPushMatrix();
 
@@ -961,7 +1049,7 @@ namespace SynGlyphXANTz {
 			glEnable( GL_DEPTH_TEST );
 		}
 
-		DrawSceneAxisInfoObject();
+		DrawHUDAxisInfoObject();
 	}
 
 #ifdef USE_ZSPACE

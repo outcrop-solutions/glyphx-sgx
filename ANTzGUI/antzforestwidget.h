@@ -137,6 +137,7 @@ namespace SynGlyphXANTz {
 		void CenterCameraOnNode( pNPnode node );
 		void InitIO();
 		void* CreateNewQuadricObject();
+		void DrawHUDAxisInfoObject();
 		void DrawSceneAxisInfoObject();
 		void DrawHUD();
 		bool IsHUDLocationOnRightSide( HUDLocation location ) const;
@@ -241,6 +242,7 @@ namespace SynGlyphXANTz {
 
 		GLUquadric* m_sceneAxisInfoQuadric;
 
+		bool m_showSceneAxisInfoObject;
 		bool m_showHUDAxisInfoObject;
 		HUDLocation m_sceneAxisInfoObjectLocation;
 		QRect m_sceneAxisInfoViewport;
