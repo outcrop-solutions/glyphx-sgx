@@ -39,7 +39,7 @@ namespace DataEngine
 #ifdef WIN32
         else{
 			
-			jvmDll.Load("..\\..\\DataEngine\\jdk1.7.0_79\\jre\\bin\\client\\jvm.dll");
+			jvmDll.Load("..\\..\\DataEngine\\jdk\\jre\\bin\\client\\jvm.dll");
 		}
 #endif
 		jre.close();
@@ -83,7 +83,7 @@ namespace DataEngine
 #endif
 		} else {
 			
-			jarFilePrefix = "..\\..\\DataEngine\\Java DataEngine\\";
+			jarFilePrefix = "..\\..\\classes\\";
 		}
 
 		std::string jarFilesOptionString = "-Djava.class.path=";
@@ -98,7 +98,7 @@ namespace DataEngine
 		options[0].optionString = const_cast<char*>(jarFilesOptionString.c_str());
         options[1].optionString = "-Xmx1g"; //Max of 1G
 
-        vmArgs.version = JNI_VERSION_1_6;
+        vmArgs.version = JNI_VERSION_1_8;
 		vmArgs.options = options;
 		vmArgs.nOptions = option_count;
 		vmArgs.ignoreUnrecognized = JNI_FALSE;
@@ -135,12 +135,11 @@ namespace DataEngine
 		jcls = jniEnv->FindClass("DataEngine");
 
 		if (jcls == NULL) {
-			std::cout << "Class not found." << std::endl;
 			jniEnv->ExceptionDescribe();
 			javaVM->DestroyJavaVM();
+			throw std::runtime_error("JVM Error: Java class could not be found");
 		}
 		if (jcls != NULL) {
-			std::cout << "Class found." << std::endl;
 			classFound = true;
 		}
 	}
