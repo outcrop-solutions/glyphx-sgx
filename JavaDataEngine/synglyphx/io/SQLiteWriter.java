@@ -4,7 +4,7 @@ import java.sql.*;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.ArrayList;
-import com.almworks.sqlite4java.*;
+//import com.almworks.sqlite4java.*;
 import java.io.File;
 import synglyphx.jdbc.Table;
 import synglyphx.jdbc.BasicTable;
@@ -32,6 +32,7 @@ public class SQLiteWriter {
 	private ArrayList<Integer> rootIds;
 	private ArrayList<Integer> toPrint;
 	private String outDir;
+	private Connection conn = null;
 
 	public SQLiteWriter(ArrayList<SourceDataInfo> sdi, String outDir, ArrayList<Integer> rootIds, HashMap<Integer, XMLGlyphTemplate> templates){
 		this.dataframes = sdi;
@@ -47,24 +48,20 @@ public class SQLiteWriter {
 	public void writeSDTInfo(String timestamp){
 
 		try{
-			SQLiteConnection db = new SQLiteConnection(new File(outDir+"/sourcedata.db"));
-			db.open(true);
-			String query = "CREATE TABLE if NOT EXISTS 'SDTInfo' (lastChanged varchar(255));";
-			SQLiteStatement st0 = db.prepare(query);
+			File file = new File(outDir+"/sourcedata.db");
+			Class.forName("org.sqlite.JDBC");
+			String conn_str = "jdbc:sqlite:"+outDir+"/sourcedata.db";
+			conn = DriverManager.getConnection(conn_str);
 
-			db.exec("BEGIN TRANSACTION;"); 
-			st0.step(); 
+			String query = "CREATE TABLE if NOT EXISTS 'SDTInfo' (lastChanged TEXT)";
+			PreparedStatement pstmt = conn.prepareStatement(query);
+	        boolean created = pstmt.execute();
 
-			SQLiteStatement st1 = db.prepare("INSERT INTO 'SDTInfo' VALUES (?);", true);
+	        query = "INSERT INTO 'SDTInfo' VALUES ("+timestamp+")";
+	        pstmt = conn.prepareStatement(query);
+	        boolean inserted = pstmt.execute();
 
-			st1.bind(1, timestamp);
-			st1.step(); 
-			st1.reset();
-		
-			db.exec("COMMIT TRANSACTION;"); 
-			db.dispose();
-		}catch(SQLiteException se){
-			System.out.println("writeSDTInfo: SQLite Exception: " + se.toString());
+		}catch(Exception se){
 			try{
 	            se.printStackTrace(Logger.getInstance().addTError());
 	        }catch(Exception e){}
@@ -74,57 +71,49 @@ public class SQLiteWriter {
 	public void writeTableIndex(){
 
 		try{
-			SQLiteConnection db = new SQLiteConnection(new File(outDir+"/sourcedata.db"));
-			db.open(true);
-			String query = "CREATE TABLE if NOT EXISTS 'TableIndex' "; 
-			query += "(TableName varchar(255), FormattedName varchar(255), Timestamp timestamp);";
-			SQLiteStatement st0 = db.prepare(query);
+			String query = "CREATE TABLE if NOT EXISTS TableIndex "; 
+			query += "(TableName TEXT, FormattedName TEXT, Timestamp INTEGER);";
+			Statement stmt = conn.createStatement();
+	        boolean created = stmt.execute(query);
 
-			db.exec("BEGIN TRANSACTION;"); 
-			st0.step(); 
-
-			SQLiteStatement st1 = db.prepare("INSERT INTO 'TableIndex' VALUES (?,?,?);", true);
+			PreparedStatement pstmt = conn.prepareStatement("INSERT INTO TableIndex VALUES(?,?,?);");
 			for(int i = 0; i < toPrint.size(); i++){
 				SourceDataInfo sdi = dataframes.get(toPrint.get(i));
 				File file = new File(sdi.getPath());
-				st1.bind(1, sdi.getFormattedID())
-				.bind(2, sdi.getFormattedName())
-				.bind(3, file.lastModified());
-				st1.step(); 
-				st1.reset();
+				pstmt.setString(1, sdi.getFormattedID());
+				pstmt.setString(2, sdi.getFormattedName());
+				pstmt.setLong(3, file.lastModified());
+				pstmt.addBatch();
 			} 
-			db.exec("COMMIT TRANSACTION;"); 
-			writeAllTables(db);
-			db.dispose();
-		}catch(SQLiteException se){
+			int[] updates = pstmt.executeBatch();
+			writeAllTables();
+			conn.close();
+		}catch(Exception se){
+			se.printStackTrace();
 			try{
 	            se.printStackTrace(Logger.getInstance().addTError());
 	        }catch(Exception e){}
 		}
 	}
 
-	public void writeAllTables(SQLiteConnection db){
+	public void writeAllTables(){
 
 		try{
-
+			conn.setAutoCommit(false);
 			for(int i = 0; i < toPrint.size(); i++){
 				SourceDataInfo sdi = dataframes.get(toPrint.get(i));
 				Logger.getInstance().addT(sdi.getTable());
-				//if(sdi.getType().equals("csv") || sdi.getType().equals("sqlite3")){
-					writeCSVTable(db,sdi);
-				/*}else{
-					writeSQLTable(db,sdi);
-				}*/
+				writeTable(sdi);
 			}
 
-		}catch(SQLiteException se){
+		}catch(SQLException se){
 			try{
 	            se.printStackTrace(Logger.getInstance().addTError());
 	        }catch(Exception e){}
 		}
 	}
 
-	private void writeCSVTable(SQLiteConnection db, SourceDataInfo sdi) throws SQLiteException{
+	private void writeTable(SourceDataInfo sdi) throws SQLException{
 
 		DataFrame data = sdi.getDataFrame();
 		ArrayList<String> headers = data.getHeaders();
@@ -149,105 +138,25 @@ public class SQLiteWriter {
 		query += ");";
 		insertQuery += ");";
 		
-		SQLiteStatement st0 = db.prepare(query);
+		PreparedStatement pstmt = conn.prepareStatement(query);
+	    boolean created = pstmt.execute();
 
-		db.exec("BEGIN TRANSACTION;"); 
-		st0.step(); 
+	    pstmt = conn.prepareStatement(insertQuery);
 
-		SQLiteStatement st1 = db.prepare(insertQuery, true);
 		int size = data.size();
 		for(int i = 0; i < size; i++){
 			ArrayList<String> row = data.getRow(i);
 			for(int j = 0; j < row.size(); j++){
-				st1.bind(j+1, row.get(j));
+				pstmt.setString(j+1, row.get(j));
 			}
-			st1.step(); 
-			st1.reset();
+			pstmt.addBatch();
+			if(i+1 % 100 == 0){
+				int[] updates = pstmt.executeBatch();
+				conn.commit();
+			}
 		}
-
-		db.exec("COMMIT TRANSACTION;"); 
-	}
-
-	private void writeSQLTable(SQLiteConnection db, SourceDataInfo sourceData) throws SQLiteException{
-
-		try{
-
-	    	Driver driver = DriverSelector.getDriver(sourceData.getType());
-            Class.forName(driver.packageName());
-	        Logger.getInstance().add("Connecting to Server...");
-
-	        driver.createConnection(sourceData.getHost(),sourceData.getUsername(),sourceData.getPassword());
-
-	        Table table;
-	        if(sourceData.isMerged()){
-	        	table = new MergedTable(sourceData.getQuery(), driver);
-	        }else{
-	        	table = new BasicTable(sourceData.getTable(), driver);
-	        }
-
-	        String[] fields = table.getColumnNames();
-
-	        String query = "CREATE TABLE if NOT EXISTS '"+sourceData.getFormattedID()+"' ("; 
-			String insertQuery = "INSERT INTO '"+sourceData.getFormattedID()+"' VALUES (";
-
-			HashMap<String, Boolean> types = new HashMap<String, Boolean>();
-			for(int i = 0; i < fields.length; i++){
-				String temp = "'"+fields[i]+"'";
-				query += temp;
-				if(table.getStats(fields[i])[0].equals("real")){
-					query += " REAL,";
-					types.put(fields[i], true);
-				}else{
-					query += " TEXT,";
-					types.put(fields[i], false);
-				}
-				insertQuery += "?,";
-			}
-
-			query = query.substring(0, query.length()-1);
-			insertQuery = insertQuery.substring(0, insertQuery.length()-1);
-			query += ");";
-			insertQuery += ");";
-
-			Logger.getInstance().addT(query+"\n");
-			Logger.getInstance().addT(insertQuery);
-			
-			SQLiteStatement st0 = db.prepare(query);
-			db.exec("BEGIN TRANSACTION;"); 
-			st0.step(); 
-
-			SQLiteStatement st1 = db.prepare(insertQuery, true);
-
-	        String sql = sourceData.getQuery();
-			PreparedStatement pstmt = driver.getConnection().prepareStatement(sql);
-			Logger.getInstance().add("Executing query for table, "+sourceData.getTable()+", data...");
-            ResultSet rs = pstmt.executeQuery();
-
-            while(rs.next()){
-
-				for(int i = 0; i < fields.length; i++){
-					if(types.get(fields[i])){
-						st1.bind(i+1, rs.getDouble(fields[i]));
-					}else{
-						st1.bind(i+1, rs.getString(fields[i]));
-					}
-
-				}
-				st1.step(); 
-				st1.reset();
-			}
-	        rs.close();
-	        db.exec("COMMIT TRANSACTION;"); 
-	        driver.getConnection().close();
-	    }catch(SQLException se){
-	        try{
-	            se.printStackTrace(Logger.getInstance().addError());
-	        }catch(Exception ex){}
-	    }catch(Exception e){
-	        try{
-	            e.printStackTrace(Logger.getInstance().addError());
-	        }catch(Exception ex){}
-	    }
+		int[] updates = pstmt.executeBatch();
+		conn.commit();
 	}
 
 	private void setToPrint(){

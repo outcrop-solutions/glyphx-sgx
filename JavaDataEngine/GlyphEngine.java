@@ -31,7 +31,9 @@ public class GlyphEngine {
 	 	//}catch(OutOfMemoryError e){
 	 	}catch(Exception e){
 	 		e.printStackTrace();
-	 		Logger.getInstance().add(e.getMessage());
+	 		try{
+	            e.printStackTrace(Logger.getInstance().addError());
+	        }catch(Exception se){}
 	 		return false;
 	 	}
 	 	return true;
@@ -39,6 +41,7 @@ public class GlyphEngine {
 
 	public static String[] getBaseImages(){
 		String[] images = sdtReader.getBaseImages();
+		Logger.getInstance().add("# of base images: "+String.valueOf(images.length));
 		return images;
 	}
 

@@ -1,10 +1,10 @@
 package synglyphx.io;
 
 import java.io.*;
+import java.sql.*;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.ArrayList;
-import com.almworks.sqlite4java.*;
 import synglyphx.data.DataFrame;
 import synglyphx.data.SourceDataInfo;
 
@@ -17,7 +17,7 @@ public class SQLiteReader {
 	public SQLiteReader(){
 		//System.loadLibrary("../../DataEngine/sqlite4java-392/sqlite4java-win32-x64");
 	}
-
+	/*
 	public void createDataFrame(String path, String name){
 		this.data = new DataFrame();
 		this.readSQLite(path, name);
@@ -107,57 +107,61 @@ public class SQLiteReader {
 
 	public DataFrame getDataFrame(){
 		return data;
-	}
+	}*/
 
 	public static boolean isAntzUpdateNeeded(String ts, String dir, ArrayList<SourceDataInfo> dataPaths){
 
-		SQLiteStatement st0 = null;
+		File f = new File(dir+"/sourcedata.db");
+		if(!f.exists()){return true;}
+		
 		try{
 
-			SQLiteConnection db = new SQLiteConnection(new File(dir+"/sourcedata.db"));
-			db.open(true);
+			Class.forName("org.sqlite.JDBC");
+			String conn_str = "jdbc:sqlite:"+dir+"/sourcedata.db";
+			Connection conn = DriverManager.getConnection(conn_str);
+		    String query = "SELECT lastChanged FROM SDTInfo;";
+			PreparedStatement pstmt = conn.prepareStatement(query);
+	        ResultSet rs = pstmt.executeQuery();
 
-		    st0 = db.prepare("SELECT lastChanged FROM SDTInfo;"); 
-
-			db.exec("BEGIN TRANSACTION;"); 
-			st0.step(); 
-			String lastChanged = st0.columnString(0);
-			st0.dispose();
+	        rs.next();
+			String lastChanged = rs.getString("lastChanged");
+			rs.close();
 
 			boolean toReturn = false;
-			if(checkModified(dataPaths, db))
+			if(checkModified(dataPaths, conn))
 				toReturn = true;
 
 			if(Double.parseDouble(ts) <= Double.parseDouble(lastChanged) && !toReturn){ 
 				System.out.println("No update needed");
 				Logger.getInstance().add("No update needed");
-				db.exec("COMMIT TRANSACTION;"); 
-				db.dispose();
+				conn.close();
 				return false; 
 			}
-		
-			db.exec("COMMIT TRANSACTION;"); 
-			db.dispose();
-		}catch(SQLiteException se){
-			//se.printStackTrace();
+			conn.close();
+		}catch(Exception se){
+			try{
+			    se.printStackTrace(Logger.getInstance().addError());
+			}catch(Exception ex){}
 			Logger.getInstance().add("SDTInfo table not in sourcedata.db");
+			return true;
 		}
 
 		return true;
 	}
 
-	private static boolean checkModified(ArrayList<SourceDataInfo> dataPaths, SQLiteConnection db) {
+	private static boolean checkModified(ArrayList<SourceDataInfo> dataPaths, Connection conn) {
 
 		try{
-			SQLiteStatement st0 = db.prepare("SELECT FormattedName, Timestamp FROM 'TableIndex';"); 
-			st0.step(); 
+			
+			String query = "SELECT FormattedName, Timestamp FROM 'TableIndex';";
+			PreparedStatement pstmt = conn.prepareStatement(query);
+	        ResultSet rs = pstmt.executeQuery();
 
 			HashMap<String, String> timestamps = new HashMap<String, String>();
-			while(st0.hasRow()){
-				timestamps.put(st0.columnString(0),st0.columnString(1));
-				st0.step();
+			while(rs.next()){
+				timestamps.put(rs.getString("FormattedName"),rs.getString("Timestamp"));
 			}
-			st0.dispose();
+			rs.close();
 
 			for(int i = 0; i < dataPaths.size(); i++){
 				if(timestamps.containsKey(dataPaths.get(i).getFormattedName())){
@@ -169,12 +173,11 @@ public class SQLiteReader {
 			}
 			return false;
 
-		}catch(SQLiteException se){
+		}catch(SQLException se){
 			se.printStackTrace();
 			Logger.getInstance().add(se.getMessage());
 			return true;
 		}
-
 	}
 /*
 	public static void main(String [] args){
