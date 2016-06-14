@@ -51,14 +51,13 @@ FOR /F "tokens=*" %%p IN ('dir /b /a:d ..\bin\*') DO (
 		mkdir %basedir%\%%p\%%c\jre\bin
 		mkdir %basedir%\%%p\%%c\jre\lib
 		
-		robocopy /z /e ..\..\DataEngine\jdk1.7.0_79\jre\bin %basedir%\%%p\%%c\jre\bin *.dll
-		robocopy /z /e ..\..\DataEngine\jdk1.7.0_79\jre\lib %basedir%\%%p\%%c\jre\lib
+		robocopy /z /e ..\..\DataEngine\jdk\jre\bin %basedir%\%%p\%%c\jre\bin *.dll
+		robocopy /z /e ..\..\DataEngine\jdk\jre\lib %basedir%\%%p\%%c\jre\lib
 		
 		mkdir %basedir%\%%p\%%c\database-drivers
-		robocopy /z /e "..\..\DataEngine\Java DataEngine\database-drivers" %basedir%\%%p\%%c\database-drivers
+		robocopy /z /e "..\..\DataEngine\JavaDataEngine\database-drivers" %basedir%\%%p\%%c\database-drivers
 		
-		copy /B /Y "..\..\DataEngine\Java DataEngine\ojdbc6.jar" %basedir%\%%p\%%c\ojdbc6.jar
-		copy /B /Y "..\..\DataEngine\Java DataEngine\ConvertHash.dll" %basedir%\%%p\%%c\ConvertHash.dll
+		copy /B /Y "..\..\DataEngine\JavaDataEngine\ConvertHash.dll" %basedir%\%%p\%%c\ConvertHash.dll
 		
 		IF /I %%c==debug (
 		
