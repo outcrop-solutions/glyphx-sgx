@@ -100,7 +100,7 @@ PseudoTimeFilterWidget::PseudoTimeFilterWidget(SourceDataInfoModel* columnsModel
 	m_moveCameraOnUpdateCheckbox = new QCheckBox(tr("Move Camera"), this);
 	buttonsLayoutRight->addWidget(m_moveCameraOnUpdateCheckbox);
 
-	m_filterViewCheckbox = new QCheckBox(tr("Filter View"), this);
+	m_filterViewCheckbox = new QCheckBox(tr("Hide Filtered"), this);
 	buttonsLayoutRight->addWidget(m_filterViewCheckbox);
 
 	buttonsLayout->addLayout(buttonsLayoutRight, 1);

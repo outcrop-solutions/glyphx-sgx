@@ -91,7 +91,6 @@ GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 
 	CreateInteractionToolbar();
 
-	m_stereoAction->setChecked(m_glyph3DView->IsInStereoMode());
 	//SynGlyphX::Transformer::SetDefaultImagesDirectory(SynGlyphX::GlyphBuilderApplication::GetDefaultBaseImagesLocation());
 	//SynGlyphXANTz::ANTzCSVWriter::GetInstance().SetNOURLLocation(L"");
 
@@ -172,6 +171,7 @@ void GlyphViewerWindow::CreateANTzWidget() {
 	QObject::connect(m_hideTagsAction, &QAction::triggered, this, [this]{ m_glyph3DView->SetShowTagsOfSelectedObjects(false); });
 	QObject::connect(m_hideAllTagsAction, &QAction::triggered, m_glyph3DView, &SynGlyphXANTz::ANTzForestWidget::ClearAllTags);
 	QObject::connect(m_filteringManager, &FilteringManager::FilterResultsChanged, m_glyph3DView, &SynGlyphXANTz::ANTzForestWidget::SetFilteredResults);
+	QObject::connect(m_glyph3DView, &Glyph3DView::StereoSetup, this, &GlyphViewerWindow::OnStereoSetup);
 }
 
 void GlyphViewerWindow::CreateMenus() {
@@ -1039,10 +1039,15 @@ void GlyphViewerWindow::CreateInteractionToolbar() {
 
 	m_interactionToolbar->addSeparator();
 
-	QCheckBox* cb = new QCheckBox(tr("Filter View"), this);
+	QCheckBox* cb = new QCheckBox(tr("Hide Filtered"), this);
 
 	m_interactionToolbar->addWidget(cb);
 	m_linkedWidgetsManager->AddFilterViewCheckbox(cb);
 
 	m_toolbarsSubMenu->addAction(m_interactionToolbar->toggleViewAction());
+}
+
+void GlyphViewerWindow::OnStereoSetup(bool stereoEnabled) {
+
+	m_stereoAction->setChecked(stereoEnabled);
 }

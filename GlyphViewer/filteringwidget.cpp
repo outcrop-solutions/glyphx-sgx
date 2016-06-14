@@ -14,7 +14,7 @@ FilteringWidget::FilteringWidget(SourceDataInfoModel* columnsModel, FilteringMan
 
 	QHBoxLayout* topLayout = new QHBoxLayout();
 
-	m_hideUnselectedTreesCheckbox = new QCheckBox(tr("Filter View"), this);
+	m_hideUnselectedTreesCheckbox = new QCheckBox(tr("Hide Filtered"), this);
 	topLayout->addWidget(m_hideUnselectedTreesCheckbox);
 
 	m_clearButton = new QPushButton(tr("Clear All Filters"), this);
@@ -35,14 +35,14 @@ FilteringWidget::FilteringWidget(SourceDataInfoModel* columnsModel, FilteringMan
 
 	QTabWidget* filterMethodsWidget = new QTabWidget(this);
 
+	m_elasticListsWidget = new MultiTableElasticListsWidget(m_filteringManager, filterMethodsWidget);
+	filterMethodsWidget->addTab(m_elasticListsWidget, tr("Elastic"));
+
 	m_rangeListFilterWidget = new RangeFilterListWidget(columnsModel, m_filteringManager, filterMethodsWidget);
 	filterMethodsWidget->addTab(m_rangeListFilterWidget, tr("Range"));
 	
 	m_keywordFilterListWidget = new KeywordFilterListWidget(columnsModel, m_filteringManager, filterMethodsWidget);
 	filterMethodsWidget->addTab(m_keywordFilterListWidget, tr("Keyword"));
-
-	m_elasticListsWidget = new MultiTableElasticListsWidget(m_filteringManager, filterMethodsWidget);
-	filterMethodsWidget->addTab(m_elasticListsWidget, tr("Elastic"));
 
 	mainLayout->addWidget(filterMethodsWidget, 1);
 
