@@ -3,7 +3,7 @@
 <repository name='Bundle pool' type='org.eclipse.equinox.p2.artifact.repository.simpleRepository' version='1'>
   <properties size='2'>
     <property name='p2.system' value='true'/>
-    <property name='p2.timestamp' value='1423861213937'/>
+    <property name='p2.timestamp' value='1423496956672'/>
   </properties>
   <mappings size='3'>
     <rule filter='(&amp; (classifier=osgi.bundle))' output='${repoUrl}/plugins/${id}_${version}.jar'/>
@@ -737,7 +737,7 @@
     </artifact>
     <artifact classifier='osgi.bundle' id='com.jrockit.mc.rjmx' version='5.5.0.165303'>
       <properties size='1'>
-        <property name='download.size' value='1064721'/>
+        <property name='download.size' value='1064701'/>
       </properties>
       <repositoryProperties size='1'>
         <property name='artifact.folder' value='true'/>
@@ -889,7 +889,7 @@
     </artifact>
     <artifact classifier='osgi.bundle' id='com.jrockit.mc.console.ui.notification' version='5.5.0.165303'>
       <properties size='1'>
-        <property name='download.size' value='183559'/>
+        <property name='download.size' value='183553'/>
       </properties>
       <repositoryProperties size='1'>
         <property name='artifact.folder' value='true'/>
