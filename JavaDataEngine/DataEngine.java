@@ -2,7 +2,7 @@
 import synglyphx.data.DataFrame;
 import synglyphx.data.DataStats;
 import synglyphx.io.CSVReader;
-import synglyphx.io.SQLiteReader;
+//import synglyphx.io.SQLiteReader;
 import synglyphx.jdbc.JDBCLoader;
 import synglyphx.jdbc.Database;
 import synglyphx.io.Logger;
@@ -183,9 +183,8 @@ public class DataEngine {
 		Logger.getInstance().addT("closeConnection");
 		JDBCLoader.getInstance().closeConnection();
 	}
-
 //JDBC END
-
+	
 	public static void main(String [] args){
 
 		DataEngine d = new DataEngine();
@@ -193,30 +192,30 @@ public class DataEngine {
 		//String dec = d.decryptPassword(enc);
 		//System.out.println(enc);
 		//System.out.println(dec);
-		/*
-		d.loadFromCSV("C:/Users/Bryan/Desktop/GlobalAdmissions20132016/GlobalAdmissions20132016/Apps_2013_Forward_Recommend.csv");
+		
+		d.loadFromCSV("C:/Users/Bryan/Desktop/East Coast Only/Data_Sample_Mockup_Trimmed.csv");
 		String[] fields = d.getFieldsForTable(0,"csv");
 		for(int i = 0; i < fields.length; i++){
 			//System.out.println(fields[i]);
 			String[] stats = d.getStatsForField(0,fields[i]);
 			System.out.println(stats[0]+", "+stats[1]+", "+stats[2]+", "+stats[3]+", "+stats[4]+", "+stats[5]);
-		}*/
+		}
 		//String[] sch_list = d.connectToServer("mysql://10.128.132.153:3306/world","synglyphx","password","mysql");
-		String host = "oracle://@10.128.132.153:1521:orcl";
+		/*String host = "oracle://@10.128.132.153:1521:orcl";
 		String user = "nduser";
 		String pw = "ndpw";
 		String type = "oracle";
 		String[] sch_list = d.connectToServer(host,user,pw,type);
-		/*
+	
 		double start = 0.0;
 		double end = 0.0;
 		start = System.currentTimeMillis();
 		String[] sch_list = d.connectToServer("vertica://54.67.93.24:5433/verticanow", "synglyphx_user", "Synglyphx_user@9102", "vertica");
-		*/
+	
 		System.out.println("Schema List:");
 		for(int i = 0; i < sch_list.length; i++){
 			System.out.println(sch_list[i]);
-		}/*
+		}
 		end = System.currentTimeMillis();
 		System.out.print("Connect to server: ");
 		System.out.println((end-start)/1000.00);
@@ -235,12 +234,12 @@ public class DataEngine {
 
 		double start2 = 0.0;
 		double end2 = 0.0;
-		start2 = System.currentTimeMillis();*/
+		start2 = System.currentTimeMillis();
 		String[] sch_tbls = d.getSchemaTableNames("NDUSER");/*
 		end2 = System.currentTimeMillis();
 		System.out.print("Get schema table names: ");
 		System.out.println((end2-start2)/1000.00);
-		System.out.println("");*/
+		System.out.println("");
 		for(int i = 0; i < sch_tbls.length; i++){
 			System.out.println(sch_tbls[i]);
 		}

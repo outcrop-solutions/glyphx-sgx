@@ -62,9 +62,12 @@ public class SDTReader {
 		//double start = System.currentTimeMillis();
 		Thread thread = new Thread(){
     		public void run(){
+    			double start = System.currentTimeMillis();
       			SQLiteWriter writer = new SQLiteWriter(dataPaths, outDir, rootIds, templates);
       			writer.writeSDTInfo(timestamp);
       			writer.writeTableIndex();
+      			double end = System.currentTimeMillis();
+      			Logger.getInstance().addT(String.valueOf((end-start)/1000.00));
     		}
   		};
   		thread.start();
@@ -111,14 +114,17 @@ public class SDTReader {
 			}
 
 			if(updateNeeded){
-				System.out.println("Absorbing XML...");
+				Logger.getInstance().add("Absorbing XML...");
 				absorbXML(doc);
-				System.out.println("Creating SDTLinkReader...");
+				Logger.getInstance().add("Creating SDTLinkReader...");
 				linkReader = new SDTLinkReader(doc, templates, dataPaths, directMap);
 			}
 
 		}catch(Exception e){
-			e.printStackTrace();
+			//e.printStackTrace();
+			try{
+			    e.printStackTrace(Logger.getInstance().addError());
+			}catch(Exception ex){}
 		}
 
 	}
@@ -133,8 +139,11 @@ public class SDTReader {
 
 			Logger.getInstance().add("Parsed SDT into doc.");
 			setInputMap(doc);
+			Logger.getInstance().add("Setup input map...");
 			checkFieldGroups(doc);
-			getDefaultsAndPropeties(doc);
+			Logger.getInstance().add("Checking for field groups...");
+			getDefaultsAndProperties(doc);
+			Logger.getInstance().add("Set defaults and properties...");
 
 			NodeList start = doc.getElementsByTagName("Glyphs");
 
@@ -264,15 +273,21 @@ public class SDTReader {
 							boolean diff = true;
 							boolean bind = true;
 
-							if (element.getElementsByTagName("Min").getLength()==0){
+							try{
+								getValue("Min", element);
+							}catch(Exception e){
 								min = false;
 							}
 
-							if (element.getElementsByTagName("Difference").getLength()==0){
+							try{
+								getValue("Difference", element);
+							}catch(Exception e){
 								diff = false;
 							}
 
-							if (element.getElementsByTagName("Binding").getLength()==0){
+							try{
+								getInput(element);
+							}catch(Exception e){
 								bind = false;
 							}
 
@@ -466,7 +481,7 @@ public class SDTReader {
 
 	}
 
-	void getDefaultsAndPropeties(Document doc){
+	void getDefaultsAndProperties(Document doc){
 
 		NodeList defaults = doc.getElementsByTagName("Defaults");
 		Node def = defaults.item(0);
@@ -673,8 +688,6 @@ public class SDTReader {
 				}else if(element.hasAttribute("filename")){
 					name = element.getAttribute("filename");
 				}
-				Logger.getInstance().add("BaseObjects:");
-				Logger.getInstance().add(type+" | "+name);
 
 				Element pos = (Element) element.getElementsByTagName("Position").item(0);
 				Element rot = (Element) element.getElementsByTagName("Rotation").item(0);
@@ -697,6 +710,8 @@ public class SDTReader {
 					bObject.setGridColor(getValue("Color", gl));
 				}
 				base_objects.add(bObject);
+				Logger.getInstance().add("BaseObjects:");
+				Logger.getInstance().add(type+" | "+name);
 			}
 		}
 	}
@@ -753,32 +768,38 @@ public class SDTReader {
 
 	public void setRootAndLastIDs(){
 
-		int currentRoot = 1;
-		SourceDataInfo currentDataSource = null;
-		ArrayList<Integer> usedDS = new ArrayList<Integer>();
-		XMLGlyphTemplate prevTemp = null;
-		for(int i = 1; i < count+1; i++){
-			XMLGlyphTemplate temp = templates.get(i);
-			if(temp.getChildOf() == 0){
-				if(i != 1){
-					currentDataSource.setLastID(i-1); //OLD
-					prevTemp.setLastChildID(i-1); //NEW
+		try{
+			int currentRoot = 1;
+			SourceDataInfo currentDataSource = null;
+			ArrayList<Integer> usedDS = new ArrayList<Integer>();
+			XMLGlyphTemplate prevTemp = null;
+			for(int i = 1; i < count+1; i++){
+				XMLGlyphTemplate temp = templates.get(i);
+				if(temp.getChildOf() == 0){
+					if(i != 1){
+						currentDataSource.setLastID(i-1); //OLD
+						prevTemp.setLastChildID(i-1); //NEW
+					}
+					if(!usedDS.contains(temp.getDataSource())){
+						currentDataSource = dataPaths.get(temp.getDataSource());
+					}else{
+						dataPaths.add(dataPaths.get(temp.getDataSource()));
+						temp.setDataSource(dataPaths.size()-1);
+						currentDataSource = dataPaths.get(temp.getDataSource());
+					}
+					currentDataSource.setRootID(i);
+					usedDS.add(temp.getDataSource());
+					prevTemp = temp;
 				}
-				if(!usedDS.contains(temp.getDataSource())){
-					currentDataSource = dataPaths.get(temp.getDataSource());
-				}else{
-					dataPaths.add(dataPaths.get(temp.getDataSource()));
-					temp.setDataSource(dataPaths.size()-1);
-					currentDataSource = dataPaths.get(temp.getDataSource());
+				if(i == count){
+					currentDataSource.setLastID(i); //OLD
+					prevTemp.setLastChildID(i); //NEW
 				}
-				currentDataSource.setRootID(i);
-				usedDS.add(temp.getDataSource());
-				prevTemp = temp;
 			}
-			if(i == count){
-				currentDataSource.setLastID(i); //OLD
-				prevTemp.setLastChildID(i); //NEW
-			}
+		}catch(Exception e){
+			try{
+			    e.printStackTrace(Logger.getInstance().addError());
+			}catch(Exception ex){}
 		}
 	}
 }

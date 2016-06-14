@@ -100,13 +100,13 @@ public class ParseXY {
 
 		for(int i = 0; i < sdi.size(); i++){
 			SourceDataInfo temp = sdi.get(i);
-			if(temp.getType().equals("csv") || temp.getType().equals("sqlite3")){
+			//if(temp.getType().equals("csv") || temp.getType().equals("sqlite3")){
 				HashMap<String, DataStats> ds = temp.getDataFrame().dataStatsModel();
 				min_max = findMinMax(temp, x_min_max, y_min_max, convert, ds);
 				x_min_max[0] = min_max[0]; x_min_max[1] = min_max[1];
 				y_min_max[0] = min_max[2]; y_min_max[1] = min_max[3];
 
-			}else{
+			/*}else{
 				try{
 			        Driver driver = DriverSelector.getDriver(temp.getType());
             		Class.forName(driver.packageName());
@@ -136,8 +136,7 @@ public class ParseXY {
 			            e.printStackTrace(Logger.getInstance().addError());
 			        }catch(Exception ex){}
 	    		}
-
-			}
+			}*/
 		}
 
 		double[] to_return = new double[4];
