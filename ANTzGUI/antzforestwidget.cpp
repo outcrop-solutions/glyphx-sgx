@@ -57,7 +57,8 @@ namespace SynGlyphXANTz {
 		m_initialCameraZAngle(45.0f),
 		m_sceneAxisInfoQuadric(static_cast<GLUquadric*>(CreateNewQuadricObject())),
 		m_showHUDAxisInfoObject(true),
-		m_showSceneAxisInfoObject(true)
+		m_showSceneAxisInfoObject(true),
+		m_isStereoSetup(false)
 	{
         // Set up timer to attempt to trigger repaints at ~60fps.
         timer.setInterval(16);
@@ -66,8 +67,6 @@ namespace SynGlyphXANTz {
         timer.start();
 
         SetAxisInfoObjectLocation(HUDLocation::TopLeft);
-
-		m_isInStereo = QSurfaceFormat::defaultFormat().stereo();
 
 		setFocusPolicy( Qt::StrongFocus );
 
@@ -88,88 +87,6 @@ namespace SynGlyphXANTz {
 
 		QObject::connect( m_model, &GlyphForestModel::modelReset, this, &ANTzForestWidget::OnModelReset );
 		QObject::connect( m_model, &GlyphForestModel::modelAboutToBeReset, this, [this]{ m_isReseting = true; } );
-
-		if ( IsStereoSupported() ) {
-
-#ifdef USE_ZSPACE
-			//m_antzData->GetData()->io.gl.stereo = true;
-			try {
-
-				ZSError error = zsInitialize( &m_zSpaceContext );
-
-				if (error == ZS_ERROR_RUNTIME_NOT_FOUND) { //If zSpace runtime not found, then don't do anything
-
-					ClearZSpaceContext();
-					return;
-				}
-				CheckZSpaceError(error);
-
-				// Find the zSpace display
-				error = zsFindDisplayByType(m_zSpaceContext, ZS_DISPLAY_TYPE_ZSPACE, 0, &m_zSpaceDisplay);
-
-				if (error == ZS_ERROR_DISPLAY_NOT_FOUND) { //If zSpace display not found, then don't do anything
-
-					ClearZSpaceContext();
-					return;
-				}
-				CheckZSpaceError( error );
-
-				error = zsCreateStereoBuffer( m_zSpaceContext, ZS_RENDERER_QUAD_BUFFER_GL, 0, &m_zSpaceBuffer );
-				CheckZSpaceError( error );
-
-				error = zsSetStereoBufferFullScreen( m_zSpaceBuffer, false );
-				CheckZSpaceError( error );
-
-				error = zsCreateViewport( m_zSpaceContext, &m_zSpaceViewport );
-				CheckZSpaceError( error );
-
-				error = zsFindFrustum( m_zSpaceViewport, &m_zSpaceFrustum );
-				CheckZSpaceError( error );
-
-				// Grab a handle to the stylus target.
-				error = zsFindTargetByType( m_zSpaceContext, ZS_TARGET_TYPE_PRIMARY, 0, &m_zSpaceStylus );
-				CheckZSpaceError( error );
-
-				//Get the top level window so that we can track its movements for zSpace viewport
-				m_topLevelWindow = parentWidget();
-				while ( !m_topLevelWindow->isWindow() ) {
-
-					m_topLevelWindow = m_topLevelWindow->parentWidget();
-				}
-				m_topLevelWindow->installEventFilter( this );
-
-				error = zsSetMouseEmulationEnabled( m_zSpaceContext, false );
-				CheckZSpaceError( error );
-				/*
-				error = zsSetMouseEmulationTarget(m_zSpaceContext, m_zSpaceStylus);
-				CheckZSpaceError(error);
-
-				error = zsSetMouseEmulationButtonMapping(m_zSpaceContext, 0, ZS_MOUSE_BUTTON_LEFT);
-				CheckZSpaceError(error);
-
-				error = zsSetMouseEmulationButtonMapping(m_zSpaceContext, 1, ZS_MOUSE_BUTTON_RIGHT);
-				CheckZSpaceError(error);*/
-
-				error = zsSetTrackingEnabled( m_zSpaceContext, true );
-				CheckZSpaceError( error );
-
-				error = zsSetTargetVibrationEnabled( m_zSpaceStylus, true );
-				CheckZSpaceError( error );
-
-				ConnectZSpaceTrackers();
-			}
-			catch ( const std::exception& e ) {
-
-				QMessageBox::critical( nullptr, tr( "Startup error" ), tr( "Error: " ) + e.what(), QMessageBox::Ok );
-				throw;
-			}
-			catch (...) {
-
-				QMessageBox::critical( nullptr, tr( "Startup error" ), tr( "Error: Unknown" ), QMessageBox::Ok );
-				throw;
-			}
-#endif
-		}
 
 		setFocus();
 	}
@@ -640,7 +557,8 @@ namespace SynGlyphXANTz {
 			pNPnode camNode = npGetActiveCam( antzData );
 			NPcameraPtr camData = static_cast<NPcameraPtr>( camNode->data );
 
-			qglColor( m_zSpaceOptions.GetStylusColor() );
+			const QColor& stylusColor = m_zSpaceOptions.GetStylusColor();
+			glColor3f(stylusColor.redF(), stylusColor.greenF(), stylusColor.blueF());
 
 			// Multiply the model-view matrix by the stylus world matrix.
 			glMatrixMode( GL_MODELVIEW );
@@ -1521,7 +1439,7 @@ namespace SynGlyphXANTz {
 
 	bool ANTzForestWidget::IsStereoSupported() const {
 
-		return QSurfaceFormat::defaultFormat().stereo();
+		return format().stereo();
 	}
 
 	bool ANTzForestWidget::IsInStereoMode() const {
@@ -2141,6 +2059,100 @@ namespace SynGlyphXANTz {
 	bool ANTzForestWidget::GetShowHUDAxisInfoObject() const {
 
 		return m_showHUDAxisInfoObject;
+	}
+
+	void ANTzForestWidget::showEvent(QShowEvent* event) {
+
+		QOpenGLWidget::showEvent(event);
+
+		if (!m_isStereoSetup) {
+
+			m_isStereoSetup = true;
+
+			m_isInStereo = IsStereoSupported();
+			emit StereoSetup(m_isInStereo);
+			if (IsStereoSupported()) {
+
+#ifdef USE_ZSPACE
+				//m_antzData->GetData()->io.gl.stereo = true;
+				try {
+
+					ZSError error = zsInitialize(&m_zSpaceContext);
+
+					if (error == ZS_ERROR_RUNTIME_NOT_FOUND) { //If zSpace runtime not found, then don't do anything
+
+						ClearZSpaceContext();
+						return;
+					}
+					CheckZSpaceError(error);
+
+					// Find the zSpace display
+					error = zsFindDisplayByType(m_zSpaceContext, ZS_DISPLAY_TYPE_ZSPACE, 0, &m_zSpaceDisplay);
+
+					if (error == ZS_ERROR_DISPLAY_NOT_FOUND) { //If zSpace display not found, then don't do anything
+
+						ClearZSpaceContext();
+						return;
+					}
+					CheckZSpaceError(error);
+
+					error = zsCreateStereoBuffer(m_zSpaceContext, ZS_RENDERER_QUAD_BUFFER_GL, 0, &m_zSpaceBuffer);
+					CheckZSpaceError(error);
+
+					error = zsSetStereoBufferFullScreen(m_zSpaceBuffer, false);
+					CheckZSpaceError(error);
+
+					error = zsCreateViewport(m_zSpaceContext, &m_zSpaceViewport);
+					CheckZSpaceError(error);
+
+					error = zsFindFrustum(m_zSpaceViewport, &m_zSpaceFrustum);
+					CheckZSpaceError(error);
+
+					// Grab a handle to the stylus target.
+					error = zsFindTargetByType(m_zSpaceContext, ZS_TARGET_TYPE_PRIMARY, 0, &m_zSpaceStylus);
+					CheckZSpaceError(error);
+
+					//Get the top level window so that we can track its movements for zSpace viewport
+					m_topLevelWindow = parentWidget();
+					while (!m_topLevelWindow->isWindow()) {
+
+						m_topLevelWindow = m_topLevelWindow->parentWidget();
+					}
+					m_topLevelWindow->installEventFilter(this);
+
+					error = zsSetMouseEmulationEnabled(m_zSpaceContext, false);
+					CheckZSpaceError(error);
+					/*
+					error = zsSetMouseEmulationTarget(m_zSpaceContext, m_zSpaceStylus);
+					CheckZSpaceError(error);
+
+					error = zsSetMouseEmulationButtonMapping(m_zSpaceContext, 0, ZS_MOUSE_BUTTON_LEFT);
+					CheckZSpaceError(error);
+
+					error = zsSetMouseEmulationButtonMapping(m_zSpaceContext, 1, ZS_MOUSE_BUTTON_RIGHT);
+					CheckZSpaceError(error);*/
+
+					error = zsSetTrackingEnabled(m_zSpaceContext, true);
+					CheckZSpaceError(error);
+
+					error = zsSetTargetVibrationEnabled(m_zSpaceStylus, true);
+					CheckZSpaceError(error);
+
+					ConnectZSpaceTrackers();
+				}
+				catch (const std::exception& e) {
+
+					QMessageBox::critical(nullptr, tr("Startup error"), tr("Error: ") + e.what(), QMessageBox::Ok);
+					throw;
+				}
+				catch (...) {
+
+					QMessageBox::critical(nullptr, tr("Startup error"), tr("Error: Unknown"), QMessageBox::Ok);
+					throw;
+				}
+#endif
+			}
+		}
 	}
 
 } //namespace SynGlyphXANTz

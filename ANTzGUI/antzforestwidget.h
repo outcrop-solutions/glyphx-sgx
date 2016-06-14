@@ -86,6 +86,7 @@ namespace SynGlyphXANTz {
 
 	signals:
 		//void NewStatusMessage(const QString& message, int timeout = 0) const;
+		void StereoSetup(bool stereoEnabled);
 
 	public slots :
 		void ResetCamera();
@@ -128,6 +129,7 @@ namespace SynGlyphXANTz {
 		void keyReleaseEvent( QKeyEvent* event ) override;
 		void moveEvent( QMoveEvent* event ) override;
 		void wheelEvent( QWheelEvent* event ) override;
+		void showEvent(QShowEvent* event) override;
 
 		void DrawSceneForEye( Eye eye, bool getStylusWorldPosition );
 		void SetCameraToDefaultPosition();
@@ -249,6 +251,8 @@ namespace SynGlyphXANTz {
 		QRectF m_sceneAxisInfoOrtho;
         
         QTimer timer;
+
+		bool m_isStereoSetup;
 	};
 
 } //namespace SynGlyphXANTz
