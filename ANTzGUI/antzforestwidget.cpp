@@ -953,11 +953,11 @@ namespace SynGlyphXANTz {
 		if ( !m_selectionModel->GetFocusList().empty() ) {
 
 			pNPnode lastFocusNode = static_cast<pNPnode>( m_selectionModel->GetFocusList().back().internalPointer() );
-			positionHUD = tr( "Glyph Position: X: %1, Y: %2, Z: %3" ).arg( QString::number( lastFocusNode->world.x ), QString::number( lastFocusNode->world.y ), QString::number( lastFocusNode->world.z ) );
+			positionHUD = tr("Glyph Position: X: %1, Y: %2, Z: %3").arg(QString::number(lastFocusNode->world.x, 'f', 3), QString::number(lastFocusNode->world.y, 'f', 3), QString::number(lastFocusNode->world.z, 'f', 3));
 		}
 		else {
 
-			positionHUD = tr( "Camera Position: X: %1, Y: %2, Z: %3" ).arg( QString::number( antzData->map.currentCam->translate.x ), QString::number( antzData->map.currentCam->translate.y ), QString::number( antzData->map.currentCam->translate.z ) );
+			positionHUD = tr( "Camera Position: X: %1, Y: %2, Z: %3" ).arg( QString::number( antzData->map.currentCam->translate.x, 'f', 3 ), QString::number( antzData->map.currentCam->translate.y, 'f', 3 ), QString::number( antzData->map.currentCam->translate.z, 'f', 3 ) );
 		}
 
 		QFontMetrics hudFontMetrics( m_oglTextFont );
