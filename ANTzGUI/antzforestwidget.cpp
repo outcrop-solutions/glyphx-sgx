@@ -943,7 +943,7 @@ namespace SynGlyphXANTz {
 			QString tag = QString::fromStdWString( SynGlyphXANTz::GlyphNodeConverter::GetTag( selectedNode ) );
 			if ( m_model->IsTagShownIn3d( tag ) && ( !selectedNode->hide ) ) {
 
-				renderText( selectedNode->world.x, selectedNode->world.y, selectedNode->world.z, tag, m_oglTextFont );
+				renderText( selectedNode->screen.x, height() - selectedNode->screen.y, tag, m_oglTextFont );
 			}
 		}
 
