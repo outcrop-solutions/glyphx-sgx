@@ -47,13 +47,15 @@ public class SDTReader {
 	private String outDir;
 	private String app;
 	private String timestamp;
-	private boolean download = false;
-	private boolean updateNeeded = true;
+	private boolean download;
+	private boolean updateNeeded;
 
 	public SDTReader(String sdtPath, String outDir, String application){
 		Logger.getInstance().add("Reading SDT at "+sdtPath);
 		this.outDir = outDir.replace("\\", File.separator);
 		this.app = application;
+		this.download = false;
+		this.updateNeeded = true;
 		initXMLReader(sdtPath);
 	}
 
