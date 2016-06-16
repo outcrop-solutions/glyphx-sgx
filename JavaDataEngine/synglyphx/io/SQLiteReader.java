@@ -127,11 +127,10 @@ public class SQLiteReader {
 			String lastChanged = rs.getString("lastChanged");
 			rs.close();
 
-			boolean toReturn = false;
 			if(checkModified(dataPaths, conn))
-				toReturn = true;
+				return true;
 
-			if(Double.parseDouble(ts) <= Double.parseDouble(lastChanged) && !toReturn){ 
+			if(Double.parseDouble(ts) <= Double.parseDouble(lastChanged)){ 
 				System.out.println("No update needed");
 				Logger.getInstance().add("No update needed");
 				conn.close();
@@ -160,12 +159,15 @@ public class SQLiteReader {
 			HashMap<String, String> timestamps = new HashMap<String, String>();
 			while(rs.next()){
 				timestamps.put(rs.getString("FormattedName"),rs.getString("Timestamp"));
+				Logger.getInstance().add("CM: "+rs.getString("FormattedName"));
 			}
 			rs.close();
 
 			for(int i = 0; i < dataPaths.size(); i++){
+				Logger.getInstance().add("CM: "+dataPaths.get(i).getFormattedName());
 				if(timestamps.containsKey(dataPaths.get(i).getFormattedName())){
 					File file = new File(dataPaths.get(i).getPath());
+					Logger.getInstance().add(dataPaths.get(i).getPath());
 					if(file.lastModified() > Double.parseDouble(timestamps.get(dataPaths.get(i).getFormattedName()))){
 						return true;
 					}
