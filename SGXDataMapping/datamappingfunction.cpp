@@ -12,6 +12,7 @@ namespace SynGlyphX {
 		(MappingFunctionData::Function::None, L"None")
 		(MappingFunctionData::Function::LinearInterpolation, L"Linear Interpolation")
 		(MappingFunctionData::Function::LogarithmicInterpolation, L"Logarithmic Interpolation")
+		(MappingFunctionData::Function::TextInterpolation, L"Text Interpolation")
 		(MappingFunctionData::Function::Numeric2Value, L"Numeric Field To Value")
 		(MappingFunctionData::Function::Text2Value, L"Text Field To Value")
 		(MappingFunctionData::Function::Range2Value, L"Range To Value");

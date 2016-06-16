@@ -38,7 +38,7 @@ namespace SynGlyphX {
 		typedef std::shared_ptr<InterpolationMappingData> SharedPtr;
 		typedef std::shared_ptr<const InterpolationMappingData> ConstSharedPtr;
 
-		InterpolationMappingData(bool useLogarithmic = false);
+		InterpolationMappingData(int useLogarithmic = 0);
 		InterpolationMappingData(const boost::property_tree::wptree& propertyTree);
 		InterpolationMappingData(const InterpolationMappingData& data);
 		virtual ~InterpolationMappingData();
