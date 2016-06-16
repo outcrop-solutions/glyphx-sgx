@@ -644,6 +644,7 @@ namespace SynGlyphXANTz {
 			return;
 		}
 
+		pData antzData = m_antzData->GetData();
 		const std::array<QString, 3>& mappedFields = m_model->GetRootPosXYZMappedFields();
 
 		glMatrixMode(GL_MODELVIEW);
@@ -660,6 +661,10 @@ namespace SynGlyphXANTz {
 
 		glTranslatef(0.0f, 0.0f, 361.0f);
 		gluCylinder(m_sceneAxisInfoQuadric, 3.0, 0.0, 10.0, 24, 1);
+
+		GLdouble xTextModelMatrix[16];
+		glGetDoublev(GL_MODELVIEW_MATRIX, xTextModelMatrix);
+
 		glRotatef(180.0f, 1.0f, 0.0f, 0.0f);
 		gluDisk(m_sceneAxisInfoQuadric, 0.0, 3.0, 24, 1);
 		
@@ -674,6 +679,10 @@ namespace SynGlyphXANTz {
 
 		glTranslatef(0.0f, 0.0f, 181.0f);
 		gluCylinder(m_sceneAxisInfoQuadric, 3.0, 0.0, 10.0, 24, 1);
+
+		GLdouble yTextModelMatrix[16];
+		glGetDoublev(GL_MODELVIEW_MATRIX, yTextModelMatrix);
+
 		glRotatef(180.0f, 1.0f, 0.0f, 0.0f);
 		gluDisk(m_sceneAxisInfoQuadric, 0.0, 3.0, 24, 1);
 
@@ -683,10 +692,15 @@ namespace SynGlyphXANTz {
 
 		glPushMatrix();
 
-		gluCylinder(m_sceneAxisInfoQuadric, 1.0, 1.0, 180.0, 24, 1);
+		glTranslatef(0.0f, 0.0f, -0.5f);
+		gluCylinder(m_sceneAxisInfoQuadric, 1.0, 1.0, 180.5, 24, 1);
 
-		glTranslatef(0.0f, 0.0f, 180.0f);
+		glTranslatef(0.0f, 0.0f, 180.5f);
 		gluCylinder(m_sceneAxisInfoQuadric, 3.0, 0.0, 5.0, 24, 1);
+
+		GLdouble zTextModelMatrix[16];
+		glGetDoublev(GL_MODELVIEW_MATRIX, zTextModelMatrix);
+
 		glRotatef(180.0f, 1.0f, 0.0f, 0.0f);
 		gluDisk(m_sceneAxisInfoQuadric, 0.0, 3.0, 24, 1);
 
@@ -695,29 +709,35 @@ namespace SynGlyphXANTz {
 		//Wait until end to draw text
 		qglColor(Qt::white);
 		
-		//glDisable(GL_DEPTH_TEST);
+		GLdouble orthoMatrix[16];
+		glGetDoublev(GL_PROJECTION_MATRIX, orthoMatrix);
 
-		//GLdouble textPosition[3];
+		GLint viewport[4];
+		glGetIntegerv(GL_VIEWPORT, viewport);
 
-		/*if (!mappedFields[0].isEmpty()) {
+		glDisable(GL_DEPTH_TEST);
 
-			gluProject(-0.25, 0.0, 1.5, xTextMatrix, orthoMatrix, viewport, &textPosition[0], &textPosition[1], &textPosition[2]);
-			renderText(textPosition[0] - mappedFieldsWidth[0], antzData->io.gl.height - textPosition[1], mappedFields[0], m_oglTextFont);
+		GLdouble textPosition[3];
+
+		if (!mappedFields[0].isEmpty()) {
+
+			gluProject(0.0, 0.0, 12.0, xTextModelMatrix, orthoMatrix, viewport, &textPosition[0], &textPosition[1], &textPosition[2]);
+			renderText(textPosition[0], antzData->io.gl.height - textPosition[1], mappedFields[0], m_oglTextFont);
 		}
 
 		if (!mappedFields[1].isEmpty()) {
 
-			gluProject(-0.25, 0.0, 1.5, yTextMatrix, orthoMatrix, viewport, &textPosition[0], &textPosition[1], &textPosition[2]);
-			renderText(textPosition[0] - mappedFieldsWidth[1], antzData->io.gl.height - textPosition[1], mappedFields[1], m_oglTextFont);
+			gluProject(0.0, 0.0, 12.0, yTextModelMatrix, orthoMatrix, viewport, &textPosition[0], &textPosition[1], &textPosition[2]);
+			renderText(textPosition[0], antzData->io.gl.height - textPosition[1], mappedFields[1], m_oglTextFont);
 		}
 
 		if (!mappedFields[2].isEmpty()) {
 
-			gluProject(-0.25, 0.0, 1.5, zTextMatrix, orthoMatrix, viewport, &textPosition[0], &textPosition[1], &textPosition[2]);
-			renderText(textPosition[0] - mappedFieldsWidth[2], antzData->io.gl.height - textPosition[1], mappedFields[2], m_oglTextFont);
-		}*/
+			gluProject(0.0, 0.0, 8.0, zTextModelMatrix, orthoMatrix, viewport, &textPosition[0], &textPosition[1], &textPosition[2]);
+			renderText(textPosition[0], antzData->io.gl.height - textPosition[1], mappedFields[2], m_oglTextFont);
+		}
 
-		//glEnable(GL_DEPTH_TEST);
+		glEnable(GL_DEPTH_TEST);
 		
 		glPopMatrix();
 	}
