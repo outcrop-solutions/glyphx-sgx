@@ -273,21 +273,15 @@ public class SDTReader {
 							boolean diff = true;
 							boolean bind = true;
 
-							try{
-								getValue("Min", element);
-							}catch(Exception e){
+							if(element.getElementsByTagName("Min").getLength() == 0){
 								min = false;
 							}
 
-							try{
-								getValue("Difference", element);
-							}catch(Exception e){
+							if(element.getElementsByTagName("Difference").getLength() == 0){
 								diff = false;
 							}
-
-							try{
-								getInput(element);
-							}catch(Exception e){
+		
+							if(element.getElementsByTagName("Binding").getLength() == 0){
 								bind = false;
 							}
 
