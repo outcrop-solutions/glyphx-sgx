@@ -896,7 +896,7 @@ void* npMapNodeAdd (int id, int type, int branchLevel, int parentID,
 	pNPnode node = NULL;
 	pNPnode nodeChild = NULL;
 	
-	pData data = (pData) dataRef;
+ 	pData data = (pData) dataRef;
 
 	
 	//process node logic based on type and branchLevel

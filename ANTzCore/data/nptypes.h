@@ -52,7 +52,7 @@
 
 #define	kNPnodeMax			2097152			// 2097152 8MB with 32bit ptr, 16MB if 64bit	//zzhp
 #define kNPnodeRootMax		1048576			// 1048576 4MB with 32bit ptr, 8MB if 64bit	//zzhp 262144
-#define kNPnodeChildMax		266				// 1KB RAM each node with 32bit OS	//zzhpa
+#define kNPnodeChildMax		512				// 1KB RAM each node with 32bit OS	//zzhpa
 											// C99 max fixed array size is 16383
 											// 266 fills a sphere at 15 deg, possibly switch data structure to GTK.org zz
 
