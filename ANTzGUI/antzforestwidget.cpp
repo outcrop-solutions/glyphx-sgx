@@ -59,7 +59,7 @@ namespace SynGlyphXANTz {
 		m_showHUDAxisInfoObject(true),
 		m_showSceneAxisInfoObject(true),
 		m_isStereoSetup(false),
-		m_sceneAxisBoundingBox(glm::vec3(-185.0f, -95.0f, 0.0f), glm::vec3(185.0f, 95.0f, 0.0f))
+		m_sceneAxisBoundingBox(glm::vec3(-185.0f, -95.0f, 0.0f), glm::vec3(185.0f, 95.0f, 185.0f))
 	{
         // Set up timer to attempt to trigger repaints at ~60fps.
         timer.setInterval(16);
@@ -648,19 +648,23 @@ namespace SynGlyphXANTz {
 		pData antzData = m_antzData->GetData();
 		const std::array<QString, 3>& mappedFields = m_model->GetRootPosXYZMappedFields();
 
+		const glm::vec3 minPoint = m_sceneAxisBoundingBox.GetMinCorner();
+		const glm::vec3 maxPoint = m_sceneAxisBoundingBox.GetMaxCorner();
+
 		glMatrixMode(GL_MODELVIEW);
 		glPushMatrix();
 		
-		glTranslatef(-181.0f, -91.0f, 0.0f);
+		glTranslatef(minPoint[0], minPoint[1], minPoint[2]);
 
 		glColor3f(1.0f, 0.0f, 0.0f);
 
 		glPushMatrix();
 
 		glRotatef(90.0f, 0.0f, 1.0f, 0.0f);
-		gluCylinder(m_sceneAxisInfoQuadric, 1.0, 1.0, 361.0, 24, 1);
+		float cylinderLength = maxPoint[0] - minPoint[0];
+		gluCylinder(m_sceneAxisInfoQuadric, 1.0, 1.0, cylinderLength, 24, 1);
 
-		glTranslatef(0.0f, 0.0f, 361.0f);
+		glTranslatef(0.0f, 0.0f, cylinderLength);
 		gluCylinder(m_sceneAxisInfoQuadric, 3.0, 0.0, 10.0, 24, 1);
 
 		GLdouble xTextModelMatrix[16];
@@ -676,9 +680,10 @@ namespace SynGlyphXANTz {
 		glPushMatrix();
 
 		glRotatef(-90.0f, 1.0f, 0.0f, 0.0f);
-		gluCylinder(m_sceneAxisInfoQuadric, 1.0, 1.0, 181.0, 24, 1);
+		cylinderLength = maxPoint[1] - minPoint[1];
+		gluCylinder(m_sceneAxisInfoQuadric, 1.0, 1.0, cylinderLength, 24, 1);
 
-		glTranslatef(0.0f, 0.0f, 181.0f);
+		glTranslatef(0.0f, 0.0f, cylinderLength);
 		gluCylinder(m_sceneAxisInfoQuadric, 3.0, 0.0, 10.0, 24, 1);
 
 		GLdouble yTextModelMatrix[16];
@@ -693,10 +698,12 @@ namespace SynGlyphXANTz {
 
 		glPushMatrix();
 
-		glTranslatef(0.0f, 0.0f, -0.5f);
-		gluCylinder(m_sceneAxisInfoQuadric, 1.0, 1.0, 180.5, 24, 1);
+		cylinderLength = maxPoint[2] - minPoint[2] + 0.5f;
 
-		glTranslatef(0.0f, 0.0f, 180.5f);
+		glTranslatef(0.0f, 0.0f, -0.5f);
+		gluCylinder(m_sceneAxisInfoQuadric, 1.0, 1.0, cylinderLength, 24, 1);
+
+		glTranslatef(0.0f, 0.0f, cylinderLength);
 		gluCylinder(m_sceneAxisInfoQuadric, 3.0, 0.0, 5.0, 24, 1);
 
 		GLdouble zTextModelMatrix[16];
@@ -1794,22 +1801,22 @@ namespace SynGlyphXANTz {
 			for ( unsigned int i = kNPnodeRootPin; i < antzData->map.nodeRootCount; ++i ) {
 
 				pNPnode rootNode = static_cast<pNPnode>( antzData->map.node[i] );
-				maxPoint[0] = std::max(maxPoint[2], rootNode->translate.x);
-				maxPoint[1] = std::max(maxPoint[2], rootNode->translate.y);
+				maxPoint[0] = std::max(maxPoint[0], rootNode->translate.x);
+				maxPoint[1] = std::max(maxPoint[1], rootNode->translate.y);
 				maxPoint[2] = std::max(maxPoint[2], rootNode->translate.z);
 
-				minPoint[0] = std::min(minPoint[2], rootNode->translate.x);
-				minPoint[1] = std::min(minPoint[2], rootNode->translate.y);
+				minPoint[0] = std::min(minPoint[0], rootNode->translate.x);
+				minPoint[1] = std::min(minPoint[1], rootNode->translate.y);
 				minPoint[2] = std::min(minPoint[2], rootNode->translate.z);
 			}
 			m_initialCameraZAngle = 90.0f - (boost::math::float_constants::radian * std::atan2(345.0f - (0.8f * maxPoint[2]), 345.0f));
 
-			maxPoint[0] += 5.0;
-			maxPoint[1] += 5.0;
-			maxPoint[2] += 5.0;
+			maxPoint[0] = 5.0f + std::max(maxPoint[0], 180.0f);
+			maxPoint[1] = 5.0f + std::max(maxPoint[1], 90.0f);
+			maxPoint[2] = 5.0f + std::max(maxPoint[2], 180.0f);
 
-			minPoint[0] -= 5.0;
-			minPoint[1] -= 5.0;
+			minPoint[0] = -5.0f + std::min(minPoint[0], -180.0f);
+			minPoint[1] = -5.0f + std::min(minPoint[1], -90.0f);
 			minPoint[2] = std::min(minPoint[2], 0.0f);
 
 			m_sceneAxisBoundingBox = ANTzBoundingBox(minPoint, maxPoint);
@@ -1817,7 +1824,7 @@ namespace SynGlyphXANTz {
 		else {
 
 			m_initialCameraZAngle = 45.0f;
-			m_sceneAxisBoundingBox = ANTzBoundingBox(glm::vec3(-185.0f, -95.0f, 0.0f), glm::vec3(185.0f, 95.0f, 0.0f));
+			m_sceneAxisBoundingBox = ANTzBoundingBox(glm::vec3(-185.0f, -95.0f, 0.0f), glm::vec3(185.0f, 95.0f, 185.0f));
 		}
 
 		m_isReseting = false;
@@ -2099,6 +2106,16 @@ namespace SynGlyphXANTz {
 	bool ANTzForestWidget::GetShowHUDAxisInfoObject() const {
 
 		return m_showHUDAxisInfoObject;
+	}
+
+	void ANTzForestWidget::SetShowSceneAxisInfoObject(bool show) {
+
+		m_showSceneAxisInfoObject = show;
+	}
+
+	bool ANTzForestWidget::GetShowSceneAxisInfoObject() const {
+
+		return m_showSceneAxisInfoObject;
 	}
 
 	void ANTzForestWidget::showEvent(QShowEvent* event) {

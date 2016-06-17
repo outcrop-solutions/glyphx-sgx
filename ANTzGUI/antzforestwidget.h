@@ -84,6 +84,9 @@ namespace SynGlyphXANTz {
 		void SetAxisInfoObjectLocation(HUDLocation location);
 		HUDLocation GetAxisInfoObjectLocation() const;
 
+		void SetShowSceneAxisInfoObject(bool show);
+		bool GetShowSceneAxisInfoObject() const;
+
 	signals:
 		//void NewStatusMessage(const QString& message, int timeout = 0) const;
 		void StereoSetup(bool stereoEnabled);
