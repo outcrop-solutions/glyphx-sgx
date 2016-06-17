@@ -60,16 +60,10 @@ public class XMLGlyphTemplate{
 	}
 
 	public boolean minMaxFieldExists(String field){
-
-		boolean isIt = false;
-		try{
-			if(minMaxFieldMap.get(field) != null){isIt = true;}
-		}catch(Exception e){
-			isIt = false;
+		if(minMaxFieldMap.containsKey(field)){
+			return true;
 		}
-
-		return isIt;
-		
+		return false;
 	}
 
 	public ArrayList<Double> getMinMaxField(String field){
@@ -293,12 +287,10 @@ public class XMLGlyphTemplate{
 	}
 
 	public double getDefIfNotBound(String field){
-
-		if(keyValueMap.get(field) != null){
+		if(keyValueMap.containsKey(field)){
 			return keyValueMap.get(field).getDefault();
 		}
 		return ranges.get(field).get(1);
-
 	}
 
 }
