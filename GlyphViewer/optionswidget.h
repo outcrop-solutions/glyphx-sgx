@@ -66,6 +66,8 @@ private:
 	QCheckBox* m_showHUDAxisInfoObjectCheckBox;
 	QComboBox* m_axisObjectLocationComboBox;
 
+	QCheckBox* m_showSceneAxisInfoObjectCheckBox;
+
 	QCheckBox* m_loadSubsetVisualizationCheckBox;
 	QCheckBox* m_loadSubsetVisualizationInNewInstanceCheckBox;
 };

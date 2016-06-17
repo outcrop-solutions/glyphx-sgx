@@ -67,7 +67,7 @@ void OptionsWidget::Create3DTab() {
 	QWidget* tab = new QWidget(this);
 	QVBoxLayout* tabLayout = new QVBoxLayout(tab);
 
-	QHBoxLayout* hudOuterLayout = new QHBoxLayout(tab);
+	QHBoxLayout* sceneAxisOuterLayout = new QHBoxLayout(tab);
 
 	QGroupBox* hudGroupBox = new QGroupBox(tr("HUD Axis Info"), tab);
 	QHBoxLayout* hudAxisInfoLayout = new QHBoxLayout(tab);
@@ -84,10 +84,19 @@ void OptionsWidget::Create3DTab() {
 	hudAxisInfoLayout->addWidget(m_axisObjectLocationComboBox);
 
 	hudGroupBox->setLayout(hudAxisInfoLayout);
-	hudOuterLayout->addWidget(hudGroupBox);
+	sceneAxisOuterLayout->addWidget(hudGroupBox);
 
-	hudOuterLayout->addStretch(1);
-	tabLayout->addLayout(hudOuterLayout);
+	QGroupBox* sceneGroupBox = new QGroupBox(tr("Scene Axis Info"), tab);
+	QHBoxLayout* sceneAxisInfoLayout = new QHBoxLayout(tab);
+
+	m_showSceneAxisInfoObjectCheckBox = new QCheckBox(tr("Show"), tab);
+	sceneAxisInfoLayout->addWidget(m_showSceneAxisInfoObjectCheckBox);
+
+	sceneGroupBox->setLayout(sceneAxisInfoLayout);
+	sceneAxisOuterLayout->addWidget(sceneGroupBox);
+
+	sceneAxisOuterLayout->addStretch(1);
+	tabLayout->addLayout(sceneAxisOuterLayout);
 
 #ifdef USE_ZSPACE
 	QHBoxLayout* zSpaceLayout = new QHBoxLayout(tab);
@@ -178,8 +187,10 @@ GlyphViewerOptions OptionsWidget::GetOptions() const {
 	options.SetCacheDirectory(m_cacheDirectoryWidget->GetText());
 	
 	//3D
-	options.SetShowSceneAxisHUDObject(m_showHUDAxisInfoObjectCheckBox->isChecked());
-	options.SetSceneAxisObjectLocation(static_cast<SynGlyphXANTz::ANTzForestWidget::HUDLocation>(m_axisObjectLocationComboBox->currentIndex()));
+	options.SetShowHUDAxisObject(m_showHUDAxisInfoObjectCheckBox->isChecked());
+	options.SetHUDAxisObjectLocation(static_cast<SynGlyphXANTz::ANTzForestWidget::HUDLocation>(m_axisObjectLocationComboBox->currentIndex()));
+
+	options.SetShowSceneAxisObject(m_showSceneAxisInfoObjectCheckBox->isChecked());
 
 #ifdef USE_ZSPACE
 	options.SetZSpaceOptions(m_zSpaceOptionsWidget->GetOptions());
@@ -203,9 +214,11 @@ void OptionsWidget::SetCacheValues(const GlyphViewerOptions& options) {
 
 void OptionsWidget::Set3DValues(const GlyphViewerOptions& options) {
 
-	m_showHUDAxisInfoObjectCheckBox->setChecked(options.GetShowSceneAxisHUDObject());
-	m_axisObjectLocationComboBox->setEnabled(options.GetShowSceneAxisHUDObject());
-	m_axisObjectLocationComboBox->setCurrentIndex(options.GetSceneAxisObjectLocation());
+	m_showHUDAxisInfoObjectCheckBox->setChecked(options.GetShowHUDAxisObject());
+	m_axisObjectLocationComboBox->setEnabled(options.GetShowHUDAxisObject());
+	m_axisObjectLocationComboBox->setCurrentIndex(options.GetHUDAxisObjectLocation());
+
+	m_showSceneAxisInfoObjectCheckBox->setChecked(options.GetShowSceneAxisObject());
 
 #ifdef USE_ZSPACE
 	m_zSpaceOptionsWidget->SetOptions(options.GetZSpaceOptions());

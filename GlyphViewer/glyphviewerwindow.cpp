@@ -809,14 +809,19 @@ void GlyphViewerWindow::ChangeOptions(const GlyphViewerOptions& oldOptions, cons
 			m_cacheManager.SetBaseCacheDirectory(newCacheDirectory.toStdWString());
 		}
 
-		if (oldOptions.GetShowSceneAxisHUDObject() != newOptions.GetShowSceneAxisHUDObject()) {
+		if (oldOptions.GetShowHUDAxisObject() != newOptions.GetShowHUDAxisObject()) {
 
-			m_glyph3DView->SetShowHUDAxisInfoObject(newOptions.GetShowSceneAxisHUDObject());
+			m_glyph3DView->SetShowHUDAxisInfoObject(newOptions.GetShowHUDAxisObject());
 		}
 
-		if (oldOptions.GetSceneAxisObjectLocation() != newOptions.GetSceneAxisObjectLocation()) {
+		if (oldOptions.GetHUDAxisObjectLocation() != newOptions.GetHUDAxisObjectLocation()) {
 
-			m_glyph3DView->SetAxisInfoObjectLocation(newOptions.GetSceneAxisObjectLocation());
+			m_glyph3DView->SetAxisInfoObjectLocation(newOptions.GetHUDAxisObjectLocation());
+		}
+
+		if (oldOptions.GetShowSceneAxisObject() != newOptions.GetShowSceneAxisObject()) {
+
+			m_glyph3DView->SetShowSceneAxisInfoObject(newOptions.GetShowSceneAxisObject());
 		}
 
 #ifdef USE_ZSPACE
@@ -888,8 +893,9 @@ GlyphViewerOptions GlyphViewerWindow::CollectOptions() {
 
 	options.SetCacheDirectory(QString::fromStdWString(m_cacheManager.GetBaseCacheDirectory()));
 	
-	options.SetShowSceneAxisHUDObject(m_glyph3DView->GetShowHUDAxisInfoObject());
-	options.SetSceneAxisObjectLocation(m_glyph3DView->GetAxisInfoObjectLocation());
+	options.SetShowHUDAxisObject(m_glyph3DView->GetShowHUDAxisInfoObject());
+	options.SetHUDAxisObjectLocation(m_glyph3DView->GetAxisInfoObjectLocation());
+	options.SetShowSceneAxisObject(m_glyph3DView->GetShowSceneAxisInfoObject());
 #ifdef USE_ZSPACE
 	options.SetZSpaceOptions(m_glyph3DView->GetZSpaceOptions());
 #endif

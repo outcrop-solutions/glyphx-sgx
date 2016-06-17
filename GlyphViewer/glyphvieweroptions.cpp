@@ -7,8 +7,9 @@
 GlyphViewerOptions::GlyphViewerOptions() :
 	m_cacheDirectory(GetDefaultCacheDirectory()),
 	m_hideUnselectedGlyphTrees(false),
-	m_showSceneAxisHUDObject(true),
+	m_showHUDAxisObject(true),
 	m_sceneAxisHUDObjectLocation(SynGlyphXANTz::ANTzForestWidget::HUDLocation::TopLeft),
+	m_showSceneAxisObject(true),
 	m_showMessageWhenImagesDidNotDownload(true),
 	m_loadSubsetVisualization(true),
 	m_loadSubsetVisualizationInNewInstance(true) {
@@ -18,8 +19,9 @@ GlyphViewerOptions::GlyphViewerOptions() :
 GlyphViewerOptions::GlyphViewerOptions(const GlyphViewerOptions& options) :
 	m_cacheDirectory(options.m_cacheDirectory),
 	m_hideUnselectedGlyphTrees(options.m_hideUnselectedGlyphTrees),
-	m_showSceneAxisHUDObject(options.m_showSceneAxisHUDObject),
+	m_showHUDAxisObject(options.m_showHUDAxisObject),
 	m_sceneAxisHUDObjectLocation(options.m_sceneAxisHUDObjectLocation),
+	m_showSceneAxisObject(options.m_showSceneAxisObject),
 #ifdef USE_ZSPACE
 	m_zSpaceOptions(options.m_zSpaceOptions),
 #endif
@@ -37,8 +39,9 @@ GlyphViewerOptions& GlyphViewerOptions::operator=(const GlyphViewerOptions& opti
 
 	m_cacheDirectory = options.m_cacheDirectory;
 	m_hideUnselectedGlyphTrees = options.m_hideUnselectedGlyphTrees;
-	m_showSceneAxisHUDObject = options.m_showSceneAxisHUDObject;
+	m_showHUDAxisObject = options.m_showHUDAxisObject;
 	m_sceneAxisHUDObjectLocation = options.m_sceneAxisHUDObjectLocation;
+	m_showSceneAxisObject = options.m_showSceneAxisObject;
 #ifdef USE_ZSPACE
 	m_zSpaceOptions = options.m_zSpaceOptions;
 #endif
@@ -61,12 +64,17 @@ bool GlyphViewerOptions::operator==(const GlyphViewerOptions& options) const {
 		return false;
 	}
 
-	if (m_showSceneAxisHUDObject != options.m_showSceneAxisHUDObject) {
+	if (m_showHUDAxisObject != options.m_showHUDAxisObject) {
 
 		return false;
 	}
 
 	if (m_sceneAxisHUDObjectLocation != options.m_sceneAxisHUDObjectLocation) {
+
+		return false;
+	}
+
+	if (m_showSceneAxisObject != options.m_showSceneAxisObject) {
 
 		return false;
 	}
@@ -116,8 +124,9 @@ void GlyphViewerOptions::WriteToSettings() const {
 		settings.setValue("cacheDirectory", "");
 	}
 	settings.setValue("hideUnselectedGlyphs", m_hideUnselectedGlyphTrees);
-	settings.setValue("axisInfoShow", m_showSceneAxisHUDObject);
+	settings.setValue("axisInfoShow", m_showHUDAxisObject);
 	settings.setValue("axisInfoLocation", m_sceneAxisHUDObjectLocation);
+	settings.setValue("sceneAxisInfoShow", m_showSceneAxisObject);
 	settings.setValue("showFailedToDownloadImageMessage", m_showMessageWhenImagesDidNotDownload);
 	settings.setValue("loadSubsetVisualization", m_loadSubsetVisualization);
 	settings.setValue("loadSubsetVisualizationNewInstance", m_loadSubsetVisualizationInNewInstance);
@@ -144,8 +153,9 @@ void GlyphViewerOptions::ReadFromSettings() {
 	}
 	SetCacheDirectory(cacheDirectory);
 	SetHideUnselectedGlyphTrees(settings.value("hideUnselectedGlyphs", false).toBool());
-	SetShowSceneAxisHUDObject(settings.value("axisInfoShow", true).toBool());
-	SetSceneAxisObjectLocation(static_cast<SynGlyphXANTz::ANTzForestWidget::HUDLocation>(settings.value("axisInfoLocation").toInt()));
+	SetShowHUDAxisObject(settings.value("axisInfoShow", true).toBool());
+	SetHUDAxisObjectLocation(static_cast<SynGlyphXANTz::ANTzForestWidget::HUDLocation>(settings.value("axisInfoLocation").toInt()));
+	SetShowSceneAxisObject(settings.value("sceneAxisInfoShow", true).toBool());
 	SetShowMessageWhenImagesDidNotDownload(settings.value("showFailedToDownloadImageMessage", true).toBool());
 	settings.endGroup();
 
@@ -185,24 +195,34 @@ bool GlyphViewerOptions::GetHideUnselectedGlyphTrees() const {
 	return m_hideUnselectedGlyphTrees;
 }
 
-void GlyphViewerOptions::SetShowSceneAxisHUDObject(bool show) {
+void GlyphViewerOptions::SetShowHUDAxisObject(bool show) {
 
-	m_showSceneAxisHUDObject = show;
+	m_showHUDAxisObject = show;
 }
 
-bool GlyphViewerOptions::GetShowSceneAxisHUDObject() const {
+bool GlyphViewerOptions::GetShowHUDAxisObject() const {
 
-	return m_showSceneAxisHUDObject;
+	return m_showHUDAxisObject;
 }
 
-void GlyphViewerOptions::SetSceneAxisObjectLocation(SynGlyphXANTz::ANTzForestWidget::HUDLocation location) {
+void GlyphViewerOptions::SetHUDAxisObjectLocation(SynGlyphXANTz::ANTzForestWidget::HUDLocation location) {
 
 	m_sceneAxisHUDObjectLocation = location;
 }
 
-SynGlyphXANTz::ANTzForestWidget::HUDLocation GlyphViewerOptions::GetSceneAxisObjectLocation() const {
+SynGlyphXANTz::ANTzForestWidget::HUDLocation GlyphViewerOptions::GetHUDAxisObjectLocation() const {
 
 	return m_sceneAxisHUDObjectLocation;
+}
+
+void GlyphViewerOptions::SetShowSceneAxisObject(bool show) {
+
+	m_showSceneAxisObject = show;
+}
+
+bool GlyphViewerOptions::GetShowSceneAxisObject() const {
+
+	return m_showSceneAxisObject;
 }
 
 #ifdef USE_ZSPACE

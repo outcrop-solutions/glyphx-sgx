@@ -29,11 +29,14 @@ public:
 	void SetHideUnselectedGlyphTrees(bool hideUnselectedGlyphTrees);
 	bool GetHideUnselectedGlyphTrees() const;
 
-	void SetShowSceneAxisHUDObject(bool show);
-	bool GetShowSceneAxisHUDObject() const;
+	void SetShowHUDAxisObject(bool show);
+	bool GetShowHUDAxisObject() const;
 
-	void SetSceneAxisObjectLocation(SynGlyphXANTz::ANTzForestWidget::HUDLocation location);
-	SynGlyphXANTz::ANTzForestWidget::HUDLocation GetSceneAxisObjectLocation() const;
+	void SetHUDAxisObjectLocation(SynGlyphXANTz::ANTzForestWidget::HUDLocation location);
+	SynGlyphXANTz::ANTzForestWidget::HUDLocation GetHUDAxisObjectLocation() const;
+
+	void SetShowSceneAxisObject(bool show);
+	bool GetShowSceneAxisObject() const;
 
 #ifdef USE_ZSPACE
 	void SetZSpaceOptions(const SynGlyphX::ZSpaceOptions& options);
@@ -54,8 +57,10 @@ private:
 	QString m_cacheDirectory;
 
 	//3D options
-	bool m_showSceneAxisHUDObject;
+	bool m_showHUDAxisObject;
 	SynGlyphXANTz::ANTzForestWidget::HUDLocation m_sceneAxisHUDObjectLocation;
+
+	bool m_showSceneAxisObject;
 
 #ifdef USE_ZSPACE
 	SynGlyphX::ZSpaceOptions m_zSpaceOptions;
