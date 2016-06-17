@@ -19,6 +19,14 @@ namespace SynGlyphXANTz {
 	{
 	}
 
+	ANTzBoundingBox::ANTzBoundingBox(const glm::vec3& minCorner, const glm::vec3& maxCorner) :
+		m_minCorner(minCorner),
+		m_maxCorner(maxCorner),
+		m_matrixTransform(1.0) {
+
+
+	}
+
 	ANTzBoundingBox::ANTzBoundingBox(const ANTzBoundingBox& boundingBox) :
 		m_minCorner(boundingBox.m_minCorner),
 		m_maxCorner(boundingBox.m_maxCorner),

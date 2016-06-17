@@ -58,7 +58,8 @@ namespace SynGlyphXANTz {
 		m_sceneAxisInfoQuadric(static_cast<GLUquadric*>(CreateNewQuadricObject())),
 		m_showHUDAxisInfoObject(true),
 		m_showSceneAxisInfoObject(true),
-		m_isStereoSetup(false)
+		m_isStereoSetup(false),
+		m_sceneAxisBoundingBox(glm::vec3(-185.0f, -95.0f, 0.0f), glm::vec3(185.0f, 95.0f, 0.0f))
 	{
         // Set up timer to attempt to trigger repaints at ~60fps.
         timer.setInterval(16);
@@ -383,7 +384,7 @@ namespace SynGlyphXANTz {
 
 		npGLResizeScene(w, h);
 
-		SetAxisInfoObjectLocation(m_sceneAxisInfoObjectLocation);
+		SetAxisInfoObjectLocation(m_hudAxisInfoObjectLocation);
 	}
 
 	void ANTzForestWidget::paintGL() {
@@ -649,7 +650,7 @@ namespace SynGlyphXANTz {
 
 		glMatrixMode(GL_MODELVIEW);
 		glPushMatrix();
-
+		
 		glTranslatef(-181.0f, -91.0f, 0.0f);
 
 		glColor3f(1.0f, 0.0f, 0.0f);
@@ -762,7 +763,7 @@ namespace SynGlyphXANTz {
 		const std::array<QString, 3>& mappedFields = m_model->GetRootPosXYZMappedFields();
 		std::array<unsigned int, 3> mappedFieldsWidth = { { 0, 0, 0 } };
 
-		bool putTextOnLeftSide = IsHUDLocationOnRightSide(m_sceneAxisInfoObjectLocation);
+		bool putTextOnLeftSide = IsHUDLocationOnRightSide(m_hudAxisInfoObjectLocation);
 		if (putTextOnLeftSide) {
 
 			QFontMetrics oglFontMetrics(m_oglTextFont);
@@ -774,12 +775,12 @@ namespace SynGlyphXANTz {
 			flipYTextPosition = !flipYTextPosition;
 		}
 
-		GLint viewport[4] = { m_sceneAxisInfoViewport.left(), m_sceneAxisInfoViewport.top(), m_sceneAxisInfoViewport.width(), m_sceneAxisInfoViewport.height() };
+		GLint viewport[4] = { m_hudAxisInfoViewport.left(), m_hudAxisInfoViewport.top(), m_hudAxisInfoViewport.width(), m_hudAxisInfoViewport.height() };
 		glViewport(viewport[0], viewport[1], viewport[2], viewport[3]);
 		glMatrixMode(GL_PROJECTION);
 		glPushMatrix();
 		glLoadIdentity();
-		glOrtho(m_sceneAxisInfoOrtho.left(), m_sceneAxisInfoOrtho.right(), m_sceneAxisInfoOrtho.top(), m_sceneAxisInfoOrtho.bottom(), -10.0, 10.0);
+		glOrtho(m_hudAxisInfoOrtho.left(), m_hudAxisInfoOrtho.right(), m_hudAxisInfoOrtho.top(), m_hudAxisInfoOrtho.bottom(), -10.0, 10.0);
 
 		GLdouble orthoMatrix[16];
 		glGetDoublev(GL_PROJECTION_MATRIX, orthoMatrix);
@@ -1787,17 +1788,36 @@ namespace SynGlyphXANTz {
 
 		if ( m_model->rowCount() > 0 ) {
 
-			float maxZ = std::numeric_limits<double>::lowest();
+			glm::vec3 maxPoint(std::numeric_limits<float>::lowest(), std::numeric_limits<float>::lowest(), std::numeric_limits<float>::lowest());
+			glm::vec3 minPoint(std::numeric_limits<float>::max(), std::numeric_limits<float>::max(), std::numeric_limits<float>::max());
+			
 			for ( unsigned int i = kNPnodeRootPin; i < antzData->map.nodeRootCount; ++i ) {
 
 				pNPnode rootNode = static_cast<pNPnode>( antzData->map.node[i] );
-				maxZ = std::max( maxZ, rootNode->translate.z );
+				maxPoint[0] = std::max(maxPoint[2], rootNode->translate.x);
+				maxPoint[1] = std::max(maxPoint[2], rootNode->translate.y);
+				maxPoint[2] = std::max(maxPoint[2], rootNode->translate.z);
+
+				minPoint[0] = std::min(minPoint[2], rootNode->translate.x);
+				minPoint[1] = std::min(minPoint[2], rootNode->translate.y);
+				minPoint[2] = std::min(minPoint[2], rootNode->translate.z);
 			}
-			m_initialCameraZAngle = 90.0f - ( boost::math::float_constants::radian * std::atan2( 345.0f - ( 0.8f * maxZ ), 345.0f ) );
+			m_initialCameraZAngle = 90.0f - (boost::math::float_constants::radian * std::atan2(345.0f - (0.8f * maxPoint[2]), 345.0f));
+
+			maxPoint[0] += 5.0;
+			maxPoint[1] += 5.0;
+			maxPoint[2] += 5.0;
+
+			minPoint[0] -= 5.0;
+			minPoint[1] -= 5.0;
+			minPoint[2] = std::min(minPoint[2], 0.0f);
+
+			m_sceneAxisBoundingBox = ANTzBoundingBox(minPoint, maxPoint);
 		}
 		else {
 
 			m_initialCameraZAngle = 45.0f;
+			m_sceneAxisBoundingBox = ANTzBoundingBox(glm::vec3(-185.0f, -95.0f, 0.0f), glm::vec3(185.0f, 95.0f, 0.0f));
 		}
 
 		m_isReseting = false;
@@ -2046,29 +2066,29 @@ namespace SynGlyphXANTz {
 
 		pData antzData = m_antzData->GetData();
 
-		m_sceneAxisInfoObjectLocation = location;
+		m_hudAxisInfoObjectLocation = location;
 
 		double orthoWidth = antzData->io.gl.width / 15.0;
-		if (m_sceneAxisInfoObjectLocation == HUDLocation::TopLeft) {
+		if (m_hudAxisInfoObjectLocation == HUDLocation::TopLeft) {
 
-			m_sceneAxisInfoViewport = QRect(0, antzData->io.gl.height - 160, antzData->io.gl.width, 150);
-			m_sceneAxisInfoOrtho = QRectF(-5.0, -5.0, orthoWidth, 10.0);
+			m_hudAxisInfoViewport = QRect(0, antzData->io.gl.height - 160, antzData->io.gl.width, 150);
+			m_hudAxisInfoOrtho = QRectF(-5.0, -5.0, orthoWidth, 10.0);
 		}
-		else if (m_sceneAxisInfoObjectLocation == HUDLocation::BottomLeft) {
+		else if (m_hudAxisInfoObjectLocation == HUDLocation::BottomLeft) {
 
-			m_sceneAxisInfoViewport = QRect(0, 10, antzData->io.gl.width, 150);
-			m_sceneAxisInfoOrtho = QRectF(-5.0, -5.0, orthoWidth, 10.0);
+			m_hudAxisInfoViewport = QRect(0, 10, antzData->io.gl.width, 150);
+			m_hudAxisInfoOrtho = QRectF(-5.0, -5.0, orthoWidth, 10.0);
 		}
-		else if (m_sceneAxisInfoObjectLocation == HUDLocation::BottomRight) {
+		else if (m_hudAxisInfoObjectLocation == HUDLocation::BottomRight) {
 
-			m_sceneAxisInfoViewport = QRect(0, 10, antzData->io.gl.width, 150);
-			m_sceneAxisInfoOrtho = QRectF(5.0 - orthoWidth, -5.0, orthoWidth, 10.0);
+			m_hudAxisInfoViewport = QRect(0, 10, antzData->io.gl.width, 150);
+			m_hudAxisInfoOrtho = QRectF(5.0 - orthoWidth, -5.0, orthoWidth, 10.0);
 		}
 	}
 
 	ANTzForestWidget::HUDLocation ANTzForestWidget::GetAxisInfoObjectLocation() const {
 
-		return m_sceneAxisInfoObjectLocation;
+		return m_hudAxisInfoObjectLocation;
 	}
 
 	void ANTzForestWidget::SetShowHUDAxisInfoObject(bool show) {

@@ -245,10 +245,12 @@ namespace SynGlyphXANTz {
 		GLUquadric* m_sceneAxisInfoQuadric;
 
 		bool m_showSceneAxisInfoObject;
+		ANTzBoundingBox m_sceneAxisBoundingBox;
+
 		bool m_showHUDAxisInfoObject;
-		HUDLocation m_sceneAxisInfoObjectLocation;
-		QRect m_sceneAxisInfoViewport;
-		QRectF m_sceneAxisInfoOrtho;
+		HUDLocation m_hudAxisInfoObjectLocation;
+		QRect m_hudAxisInfoViewport;
+		QRectF m_hudAxisInfoOrtho;
         
         QTimer timer;
 

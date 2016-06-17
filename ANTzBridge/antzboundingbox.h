@@ -18,6 +18,7 @@ namespace SynGlyphXANTz {
 		typedef boost::optional<float> Intersection;
 
 		ANTzBoundingBox();
+		ANTzBoundingBox(const glm::vec3& minCorner, const glm::vec3& maxCorner);
 		ANTzBoundingBox(const ANTzBoundingBox& boundingBox);
 		~ANTzBoundingBox();
 
