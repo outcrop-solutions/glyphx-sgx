@@ -120,6 +120,7 @@ public class SDTReader {
 				absorbXML(doc);
 				Logger.getInstance().add("Creating SDTLinkReader...");
 				linkReader = new SDTLinkReader(doc, templates, dataPaths, directMap);
+				System.out.println("Link Reader created");
 			}
 
 		}catch(Exception e){
@@ -169,6 +170,8 @@ public class SDTReader {
 			ex.printStackTrace();
 			Logger.getInstance().add("Failed to parse SDT file.");
 		}
+		createDataFrames();
+		Logger.getInstance().add("Created DataFrames.");
 		setRootAndLastIDs();
 		Logger.getInstance().add("Finished absorbing XML.");
 	}
@@ -366,6 +369,10 @@ public class SDTReader {
 								if(field_name.equals("PositionX")){
 									temp.setDataSource(getDataPathForTemplate(directMap.get(code), code));
 								}
+								if(getFunction(element).equals("Text Interpolation")){
+									dataPaths.get(temp.getDataSource()).setHasTextInterpolation();
+									dataPaths.get(temp.getDataSource()).addTextInterpolationField(directMap.get(code));
+								}
 								temp.mapInput(field_name, directMap.get(code));
 								checkForFunctionMinMax(temp, element);
 							}
@@ -472,8 +479,6 @@ public class SDTReader {
 			}
 		}
 		Logger.getInstance().add("Retrieved data paths.");
-		createDataFrames();
-		Logger.getInstance().add("Created DataFrames.");
 
 	}
 
@@ -512,11 +517,7 @@ public class SDTReader {
 				reader = new CSVReader();
 				reader.createDataFrame(dataPaths.get(i).getPath());
 				dataPaths.get(i).setDataFrame(reader.getDataFrame());
-			}/*else if(dataPaths.get(i).getType().equals("sqlite3")){
-				sqlReader = new SQLiteReader();
-				sqlReader.createDataFrame(dataPaths.get(i).getPath(),dataPaths.get(i).getTable());
-				dataPaths.get(i).setDataFrame(sqlReader.getDataFrame());
-			}*/else{
+			}else{
 				//dataframe creator for JDBC
 				Table table = null;
 				try{
@@ -541,6 +542,10 @@ public class SDTReader {
 			        }catch(Exception ex){}
 			    }
 			    dataPaths.get(i).setDataFrame(table.createDataFrame());
+			}
+
+			if(dataPaths.get(i).hasTextInterpolation()){
+				dataPaths.get(i).setTextInterpolationFields();
 			}
 		}
 
