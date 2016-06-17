@@ -32,6 +32,7 @@
 #include "downloadexception.h"
 #include "loadingscreenwidget.h"
 #include "remapdialog.h"
+#include "baseimage.h"
 
 GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 	: SynGlyphX::MainWindow(4, parent),
