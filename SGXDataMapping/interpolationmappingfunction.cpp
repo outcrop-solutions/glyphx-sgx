@@ -12,8 +12,8 @@ namespace SynGlyphX {
 		(InterpolationMappingData::InputMinMaxType::UserSpecified, L"UserSpecified")
 		(InterpolationMappingData::InputMinMaxType::InputFieldGroup, L"FieldGroup");
 	
-	InterpolationMappingData::InterpolationMappingData(bool useLogarithmic) :
-		MappingFunctionData(useLogarithmic ? MappingFunctionData::Function::LogarithmicInterpolation : MappingFunctionData::Function::LinearInterpolation),
+	InterpolationMappingData::InterpolationMappingData(int useLogarithmic) :
+		MappingFunctionData((useLogarithmic == 1) ? MappingFunctionData::Function::LogarithmicInterpolation : ((useLogarithmic == 0) ? MappingFunctionData::Function::LinearInterpolation : MappingFunctionData::Function::TextInterpolation)),
 		m_inputMinMaxType(InputMinMaxType::BoundInputField),
 		m_userSpecifiedInputMinMax(),
 		m_inputMinMaxFieldGroup(L"") {
@@ -27,19 +27,21 @@ namespace SynGlyphX {
 		m_userSpecifiedInputMinMax(),
 		m_inputMinMaxFieldGroup(L"") {
 
-		boost::optional<const boost::property_tree::wptree&> minMaxSettingsPropertyTreeOpt = propertyTree.get_child_optional(L"MinMax");
+		if (m_function != MappingFunctionData::Function::TextInterpolation) {
+			boost::optional<const boost::property_tree::wptree&> minMaxSettingsPropertyTreeOpt = propertyTree.get_child_optional(L"MinMax");
 
-		if (minMaxSettingsPropertyTreeOpt.is_initialized()) {
+			if (minMaxSettingsPropertyTreeOpt.is_initialized()) {
 
-			const boost::property_tree::wptree& minMaxSettingsPropertyTree = minMaxSettingsPropertyTreeOpt.get();
-			m_inputMinMaxType = s_minMaxTypeNames.right.at(minMaxSettingsPropertyTree.get<std::wstring>(L"<xmlattr>.type"));
-			if (m_inputMinMaxType == InputMinMaxType::InputFieldGroup) {
+				const boost::property_tree::wptree& minMaxSettingsPropertyTree = minMaxSettingsPropertyTreeOpt.get();
+				m_inputMinMaxType = s_minMaxTypeNames.right.at(minMaxSettingsPropertyTree.get<std::wstring>(L"<xmlattr>.type"));
+				if (m_inputMinMaxType == InputMinMaxType::InputFieldGroup) {
 
-				m_inputMinMaxFieldGroup = minMaxSettingsPropertyTree.get<DataTransformMapping::FieldGroupName>(L"Group");
-			}
-			else if (m_inputMinMaxType == InputMinMaxType::UserSpecified) {
+					m_inputMinMaxFieldGroup = minMaxSettingsPropertyTree.get<DataTransformMapping::FieldGroupName>(L"Group");
+				}
+				else if (m_inputMinMaxType == InputMinMaxType::UserSpecified) {
 
-				m_userSpecifiedInputMinMax.SetMinDiff(minMaxSettingsPropertyTree.get<double>(L"Min"), minMaxSettingsPropertyTree.get_optional<double>(L"Difference").get_value_or(0.0));
+					m_userSpecifiedInputMinMax.SetMinDiff(minMaxSettingsPropertyTree.get<double>(L"Min"), minMaxSettingsPropertyTree.get_optional<double>(L"Difference").get_value_or(0.0));
+				}
 			}
 		}
 	}
@@ -108,20 +110,23 @@ namespace SynGlyphX {
 	boost::property_tree::wptree& InterpolationMappingData::ExportToPropertyTree(boost::property_tree::wptree& propertyTree) const {
 
 		boost::property_tree::wptree& functionDataPropertyTree = this->MappingFunctionData::ExportToPropertyTree(propertyTree);
-		boost::property_tree::wptree& minMaxSettingsPropertyTree = functionDataPropertyTree.add(L"MinMax", L"");
 
-		minMaxSettingsPropertyTree.put<std::wstring>(L"<xmlattr>.type", s_minMaxTypeNames.left.at(m_inputMinMaxType));
-		if (m_inputMinMaxType == InputMinMaxType::InputFieldGroup) {
+		if (m_function != MappingFunctionData::Function::TextInterpolation){
 
-			minMaxSettingsPropertyTree.put<DataTransformMapping::FieldGroupName>(L"Group", m_inputMinMaxFieldGroup);
-		}
-		else {
+			boost::property_tree::wptree& minMaxSettingsPropertyTree = functionDataPropertyTree.add(L"MinMax", L"");
+			minMaxSettingsPropertyTree.put<std::wstring>(L"<xmlattr>.type", s_minMaxTypeNames.left.at(m_inputMinMaxType));
+			if (m_inputMinMaxType == InputMinMaxType::InputFieldGroup) {
 
-			minMaxSettingsPropertyTree.put<double>(L"Min", m_userSpecifiedInputMinMax.GetMin());
+				minMaxSettingsPropertyTree.put<DataTransformMapping::FieldGroupName>(L"Group", m_inputMinMaxFieldGroup);
+			}
+			else {
 
-			if (std::abs(m_userSpecifiedInputMinMax.GetDiff()) > 0.01) {
+				minMaxSettingsPropertyTree.put<double>(L"Min", m_userSpecifiedInputMinMax.GetMin());
 
-				minMaxSettingsPropertyTree.put<double>(L"Difference", m_userSpecifiedInputMinMax.GetDiff());
+				if (std::abs(m_userSpecifiedInputMinMax.GetDiff()) > 0.01) {
+
+					minMaxSettingsPropertyTree.put<double>(L"Difference", m_userSpecifiedInputMinMax.GetDiff());
+				}
 			}
 		}
 

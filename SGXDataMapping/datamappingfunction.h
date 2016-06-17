@@ -33,6 +33,7 @@ namespace SynGlyphX {
 			None,
 			LinearInterpolation,
 			LogarithmicInterpolation,
+			TextInterpolation,
 			Numeric2Value,
 			Text2Value,
 			Range2Value
