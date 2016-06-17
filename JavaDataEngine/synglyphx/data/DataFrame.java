@@ -3,6 +3,7 @@ package synglyphx.data;
 import java.io.*;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Collections;
@@ -18,6 +19,8 @@ public class DataFrame {
 	private boolean first = false;
 	private HashMap<String, ArrayList<String>> minMaxTable = null;
 	private HashMap<String, Boolean> fieldType = null;
+	private HashMap<String, Thread> textInterpolationThreads = null;
+	private HashMap<String, ArrayList<String>> textInterpolationFields = null;
 	private String[] headerString;
 
 	public DataFrame(){
@@ -53,6 +56,38 @@ public class DataFrame {
 
 	public int size(){
 		return data.size();
+	}
+
+	public void setTextInterpolationFields(ArrayList<String> ti_fields){
+		textInterpolationFields = new HashMap<String, ArrayList<String>>();
+		textInterpolationThreads = new HashMap<String, Thread>();
+		for(int i = 0; i < ti_fields.size(); i++){
+			textInterpolationThreads.put(ti_fields.get(i), textInterpolationThread(ti_fields.get(i)));
+		}
+	}
+
+	public Thread textInterpolationThread(final String field){
+		Thread thread = new Thread(){
+    		public void run(){
+    			ArrayList<String> values = new ArrayList<String>(new HashSet<String>(getColumn(field)));
+    			Collections.sort(values, String.CASE_INSENSITIVE_ORDER);
+    			textInterpolationFields.put(field, values);
+    		}
+  		};thread.start();
+  		return thread;
+	}
+
+	public double getTIMax(String field){
+		try{
+			textInterpolationThreads.get(field).join();
+		}catch(InterruptedException ie){
+	        ie.printStackTrace();
+		}
+		return textInterpolationFields.get(field).size()-1;
+	}
+
+	public double getTIPos(String field, String value){
+		return textInterpolationFields.get(field).indexOf(value);
 	}
 
 	public ArrayList<String> getHeaders(){

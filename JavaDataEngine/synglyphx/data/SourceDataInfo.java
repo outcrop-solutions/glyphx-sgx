@@ -16,16 +16,25 @@ public class SourceDataInfo {
  	private String password;
  	private String type;
  	private String query;
- 	private DataFrame data;
+ 	private DataFrame data = null;
  	//private String base_table;
  	//private String lookup_table;
  	//private String foreign_key;
  	//private String primary_key;
  	private boolean merged_table;
+ 	private boolean hasTextInterpolation;
+ 	private ArrayList<String> textInterpolationFields;
  	//private ArrayList<String> inputFields;
 
  	public SourceDataInfo(){
+ 		this.hasTextInterpolation = false;
+ 	}
 
+ 	public void setHasTextInterpolation(){
+ 		if(!hasTextInterpolation){
+ 			textInterpolationFields = new ArrayList<String>();
+ 		}
+ 		this.hasTextInterpolation = true;
  	}
 
  	public void setRootID(int id){
@@ -74,6 +83,10 @@ public class SourceDataInfo {
  		merged_table = true;
  		this.query = query;
  	}
+
+ 	public void addTextInterpolationField(String ti_field){
+ 		textInterpolationFields.add(ti_field);
+ 	}
 /*
  	public void setInputFields(ArrayList<ArrayList<String>> inputs){
  		inputFields = new ArrayList<String>();
@@ -97,6 +110,10 @@ public class SourceDataInfo {
 */
  	public boolean isMerged(){
  		return merged_table;
+ 	}
+
+ 	public boolean hasTextInterpolation(){
+ 		return hasTextInterpolation;
  	}
 
  	public String getHost(){
@@ -141,6 +158,12 @@ public class SourceDataInfo {
 
  	public int getRowCount(){
  		return data.size();
+ 	}
+
+ 	public void setTextInterpolationFields(){
+ 		if(data != null){
+ 			data.setTextInterpolationFields(textInterpolationFields);
+ 		}
  	}
 
  	public String getFormattedName(){
