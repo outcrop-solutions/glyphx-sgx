@@ -261,7 +261,8 @@ QStringList MappingFunctionWidget::CreateEnumerationFunctionList() {
 
 	for (SynGlyphX::MappingFunctionData::FunctionBimap::const_iterator iT = SynGlyphX::MappingFunctionData::s_functionNames.begin(); iT != SynGlyphX::MappingFunctionData::s_functionNames.end(); ++iT) {
 
-		if ((iT->left != SynGlyphX::MappingFunctionData::Function::LinearInterpolation) && (iT->left != SynGlyphX::MappingFunctionData::Function::LogarithmicInterpolation)) {
+		if ((iT->left != SynGlyphX::MappingFunctionData::Function::LinearInterpolation) && (iT->left != SynGlyphX::MappingFunctionData::Function::LogarithmicInterpolation)
+			&& (iT->left != SynGlyphX::MappingFunctionData::Function::TextInterpolation)) {
 
 			functions.append(QString::fromStdWString(SynGlyphX::MappingFunctionData::s_functionNames.left.at(iT->left)));
 		}
