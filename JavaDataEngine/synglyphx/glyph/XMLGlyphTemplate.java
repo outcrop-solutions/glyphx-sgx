@@ -60,6 +60,7 @@ public class XMLGlyphTemplate{
 	}
 
 	public boolean minMaxFieldExists(String field){
+		if(minMaxFieldMap == null){return false;}
 		if(minMaxFieldMap.containsKey(field)){
 			return true;
 		}
