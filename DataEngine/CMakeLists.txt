@@ -35,6 +35,8 @@ Set_Windows_Properties(DataEngine)
 
 IF(${WIN32})
 	ADD_CUSTOM_COMMAND(TARGET DataEngine POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different "${DEVELOPMENT_TOP_DIR}/DataEngine/Java DataEngine/dataengine.jar" $<TARGET_FILE_DIR:DataEngine>)
+ELSEIF(${APPLE})
+	# setup_osx.sh takes care of this for apple, not necessary here
 ELSE()
 	ADD_CUSTOM_COMMAND(TARGET DataEngine POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different "${DEVELOPMENT_TOP_DIR}/DataEngine/Java DataEngine/dataengine.jar" $<TARGET_FILE_DIR:DataEngine>)
 ENDIF()

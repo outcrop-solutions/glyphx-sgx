@@ -27,7 +27,7 @@ namespace DataEngine
 #ifdef WIN32
         ".\\jre\\bin\\client\\jvm.dll";
 #elif __APPLE__
-        "../Frameworks/jdk1.7.0_79.jdk/Contents/Home/jre/lib/server/libjvm.dylib";
+        "../Frameworks/jdk1.8.0_92.jdk/Contents/Home/jre/lib/server/libjvm.dylib";
 #endif
         
         std::ifstream jre(jre_name);
@@ -66,13 +66,14 @@ namespace DataEngine
 
 		SynGlyphX::StringVector jarFiles;
 		jarFiles.push_back("dataengine.jar");
-		jarFiles.push_back("database-drivers\\commons-lang3-3.1.jar");
-		jarFiles.push_back("database-drivers\\ojdbc7.jar");
-		jarFiles.push_back("database-drivers\\opencsv-3.7.jar");
-		jarFiles.push_back("database-drivers\\sqlite4java.jar");
-		jarFiles.push_back("database-drivers\\mysql-connector-java-5.1.38-bin.jar");
-		jarFiles.push_back("database-drivers\\sqlite-jdbc-3.8.11.2.jar");
-		jarFiles.push_back("database-drivers\\vertica-jdbc-7.2.1-0.jar");
+		jarFiles.push_back("database-drivers/commons-lang3-3.1.jar");
+		jarFiles.push_back("database-drivers/ojdbc7.jar");
+		jarFiles.push_back("database-drivers/opencsv-3.7.jar");
+		jarFiles.push_back("database-drivers/sqlite4java.jar");
+		jarFiles.push_back("database-drivers/mysql-connector-java-5.1.38-bin.jar");
+		jarFiles.push_back("database-drivers/sqlite-jdbc-3.8.11.2.jar");
+		jarFiles.push_back("database-drivers/vertica-jdbc-7.2.1-0.jar");
+        // Note: please use forward slashes! Paths with \\ are NOT cross-platform.
 		
 		std::string jarFilePrefix;
 		if (ifile) {
