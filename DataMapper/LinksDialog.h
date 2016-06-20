@@ -58,7 +58,7 @@ private slots:
 	void OnFunctionProperties();
 
 private:
-	SynGlyphX::LinkNode GetNode(GlyphTreesView* treeView, LinkLineEdit* lineEdit);
+	const SynGlyphX::LinkNode& GetNode(GlyphTreesView* treeView, LinkLineEdit* lineEdit);
 	void SelectGlyph(const QModelIndex &parent, GlyphTreesView* treeView, const SynGlyphX::LinkNode& node);
 	void SetNode(const SynGlyphX::LinkNode& node, GlyphTreesView* treeView, LinkLineEdit* lineEdit);
 	bool Validate();
