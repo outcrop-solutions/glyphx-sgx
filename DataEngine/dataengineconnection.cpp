@@ -208,6 +208,24 @@ namespace DataEngine
 		javaVM->DestroyJavaVM();
 	}
 
+	QString DataEngineConnection::VersionNumber(){
+
+		jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
+			"getVersion", "()Ljava/lang/String;");
+		QString version;
+		if (methodId != NULL) {
+			jstring ver = (jstring)jniEnv->CallStaticObjectMethod(jcls, methodId);
+			if (jniEnv->ExceptionCheck()) {
+				jniEnv->ExceptionDescribe();
+				jniEnv->ExceptionClear();
+			}
+			const char *str = jniEnv->GetStringUTFChars(ver, 0);
+			version = str;
+		}
+		return "DataEngine v"+version;
+
+	}
+
 	//JDBC ACCESSOR FUNCTIONS
 	QStringList DataEngineConnection::connectToServer(QString db_url, QString user, QString pass, QString db_type){
 
