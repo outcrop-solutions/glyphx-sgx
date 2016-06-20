@@ -102,14 +102,20 @@ fi
 if [ $java = 8 ]; then
 	echo Deploying Java VM 1.8.0_92...
 	cp -R /Library/Java/JavaVirtualMachines/jdk1.8.0_92.jdk ../../cmake/bin/OSX64/$build/$app.app/Contents/Frameworks
+	rm -rf ../../cmake/bin/OSX64/$build/$app.app/Contents/Frameworks/jdk1.8.0_92.jdk/Contents/Home/src.zip
+	rm -rf ../../cmake/bin/OSX64/$build/$app.app/Contents/Frameworks/jdk1.8.0_92.jdk/Contents/Home/man
+	rm -rf ../../cmake/bin/OSX64/$build/$app.app/Contents/Frameworks/jdk1.8.0_92.jdk/Contents/Home/db
+	rm -rf ../../cmake/bin/OSX64/$build/$app.app/Contents/Frameworks/jdk1.8.0_92.jdk/Contents/Home/bin
+	rm -rf ../../cmake/bin/OSX64/$build/$app.app/Contents/Frameworks/jdk1.8.0_92.jdk/Contents/Home/lib
+	rm -rf ../../cmake/bin/OSX64/$build/$app.app/Contents/Frameworks/jdk1.8.0_92.jdk/Contents/Home/include
 fi
 
 echo Deploying Data Engine...
 mkdir -p ../../cmake/bin/OSX64/$build/$app.app/Contents/Resources/DataEngine
-cp -R ../../DataEngine/Java\ DataEngine/*.jar ../../cmake/bin/OSX64/$build/$app.app/Contents/Resources/DataEngine
-cp -R ../../DataEngine/Java\ DataEngine/database-drivers ../../cmake/bin/OSX64/$build/$app.app/Contents/Resources/DataEngine
-cp -R ../../DataEngine/Java\ DataEngine/converthash/libconverthash.dylib ../../cmake/bin/OSX64/$build/$app.app/Contents/MacOS
-cp -R ../../DataEngine/Java\ DataEngine/libsqlite4java-osx.dylib ../../cmake/bin/OSX64/$build/$app.app/Contents/MacOS
+cp -R ../../DataEngine/JavaDataEngine/*.jar ../../cmake/bin/OSX64/$build/$app.app/Contents/Resources/DataEngine
+cp -R ../../DataEngine/JavaDataEngine/database-drivers ../../cmake/bin/OSX64/$build/$app.app/Contents/Resources/DataEngine
+cp -R ../../DataEngine/JavaDataEngine/converthash/libconverthash.dylib ../../cmake/bin/OSX64/$build/$app.app/Contents/MacOS
+#cp -R ../../DataEngine/JavaDataEngine/libsqlite4java-osx.dylib ../../cmake/bin/OSX64/$build/$app.app/Contents/MacOS
 
 echo Deploying installation files...
 cp -R ../../Misc/InstallerFiles/* ../../cmake/bin/OSX64/$build/$app.app/Contents/MacOS
