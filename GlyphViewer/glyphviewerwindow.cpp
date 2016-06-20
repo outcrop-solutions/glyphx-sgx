@@ -52,7 +52,7 @@ GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 	m_columnsModel = new SourceDataInfoModel(m_mappingModel->GetDataMapping(), m_sourceDataCache, this);
 	m_columnsModel->SetSelectable(false, false, true);
 
-	m_showHideToolbar = addToolBar(tr("Show/Hide Toolbar"));
+	m_showHideToolbar = addToolBar(tr("Show/Hide Widgets"));
 	m_showHideToolbar->setFloatable(true);
 	m_showHideToolbar->setMovable(true);
 
@@ -249,8 +249,10 @@ void GlyphViewerWindow::CreateMenus() {
 
 	m_viewMenu->addSeparator();
 
-	m_toolbarsSubMenu = m_viewMenu->addMenu("Toolbar");
+	m_toolbarsSubMenu = m_viewMenu->addMenu("Toolbars");
 	m_toolbarsSubMenu->addAction(m_showHideToolbar->toggleViewAction());
+
+	m_viewMenu->addSeparator();
 
 	m_toolsMenu = menuBar()->addMenu(tr("Tools"));
 
@@ -852,6 +854,9 @@ void GlyphViewerWindow::ChangeOptions(const GlyphViewerOptions& oldOptions, cons
 			m_showErrorFromTransform = newOptions.GetShowMessageWhenImagesDidNotDownload();
 		}
 	}
+
+	m_showHideHUDAxisAction->setChecked(newOptions.GetShowHUDAxisObject());
+	m_showHideSceneAxisAction->setChecked(newOptions.GetShowSceneAxisObject());
 }
 
 void GlyphViewerWindow::ReadSettings() {
@@ -1043,6 +1048,16 @@ void GlyphViewerWindow::CreateInteractionToolbar() {
 	m_interactionToolbar->setFloatable(true);
 	m_interactionToolbar->setMovable(true);
 
+	m_showHideHUDAxisAction = new QAction(tr("Show/Hide HUD Axis"), m_interactionToolbar);
+	m_showHideHUDAxisAction->setCheckable(true);
+	QObject::connect(m_showHideHUDAxisAction, &QAction::toggled, this, &GlyphViewerWindow::OnShowHideHUDAxis);
+	m_interactionToolbar->addAction(m_showHideHUDAxisAction);
+
+	m_showHideSceneAxisAction = new QAction(tr("Show/Hide Scene Axis"), m_interactionToolbar);
+	m_showHideSceneAxisAction->setCheckable(true);
+	QObject::connect(m_showHideSceneAxisAction, &QAction::toggled, this, &GlyphViewerWindow::OnShowHideSceneAxis);
+	m_interactionToolbar->addAction(m_showHideSceneAxisAction);
+
 	m_interactionToolbar->addAction(m_remapRootPositionMappingsAction);
 
 	m_interactionToolbar->addSeparator();
@@ -1058,4 +1073,14 @@ void GlyphViewerWindow::CreateInteractionToolbar() {
 void GlyphViewerWindow::OnStereoSetup(bool stereoEnabled) {
 
 	m_stereoAction->setChecked(stereoEnabled);
+}
+
+void GlyphViewerWindow::OnShowHideHUDAxis(bool show) {
+
+	m_glyph3DView->SetShowHUDAxisInfoObject(show);
+}
+
+void GlyphViewerWindow::OnShowHideSceneAxis(bool show) {
+
+	m_glyph3DView->SetShowSceneAxisInfoObject(show);
 }

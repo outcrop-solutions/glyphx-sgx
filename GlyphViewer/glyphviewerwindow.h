@@ -69,6 +69,8 @@ private slots:
 	void CreatePortableVisualization(SynGlyphX::PortableVisualizationExport::Platform platform);
 	void RemapRootPositionMappings();
 	void OnStereoSetup(bool stereoEnabled);
+	void OnShowHideHUDAxis(bool show);
+	void OnShowHideSceneAxis(bool show);
 
 private:
 	virtual bool LoadRecentFile(const QString& filename);
@@ -105,6 +107,9 @@ private:
 	QAction* m_resetCameraToDefaultPosition;
 	QAction* m_remapRootPositionMappingsAction;
 	QList<QAction*> m_loadedVisualizationDependentActions;
+
+	QAction* m_showHideHUDAxisAction;
+	QAction* m_showHideSceneAxisAction;
 
 	QDockWidget* m_glyphListDockWidget;
 	LegendsDisplayWidget* m_legendsWidget;
