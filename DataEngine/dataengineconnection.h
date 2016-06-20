@@ -32,6 +32,7 @@ namespace DataEngine
 
 		void createJVM();
 		bool hasJVM() const;
+		QString VersionNumber();
 		void loadCSV(std::string path);
 		void loadSQLite(std::string path);
 		QString encryptPassword(QString password);

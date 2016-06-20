@@ -19,7 +19,12 @@ public class DataEngine {
 	private static ArrayList<String> tableNames = null;
 	private static String currPath;
 	private static String sourceType;
+	private static String VERSION = "0.1.46.2";
 	
+	public static String getVersion(){
+		return VERSION;
+	}
+
 	public static void loadFromCSV(final String path){
 		Logger.getInstance().add("Loading CSV...");
 		CSVReader reader = new CSVReader();
