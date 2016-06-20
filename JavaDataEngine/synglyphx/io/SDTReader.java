@@ -143,10 +143,6 @@ public class SDTReader {
 			Logger.getInstance().add("Parsed SDT into doc.");
 			setInputMap(doc);
 			Logger.getInstance().add("Setup input map...");
-			checkFieldGroups(doc);
-			Logger.getInstance().add("Checking for field groups...");
-			getDefaultsAndProperties(doc);
-			Logger.getInstance().add("Set defaults and properties...");
 
 			NodeList start = doc.getElementsByTagName("Glyphs");
 
@@ -172,6 +168,10 @@ public class SDTReader {
 		}
 		createDataFrames();
 		Logger.getInstance().add("Created DataFrames.");
+		checkFieldGroups(doc);
+		Logger.getInstance().add("Checking for field groups...");
+		getDefaultsAndProperties(doc);
+		Logger.getInstance().add("Set defaults and properties...");
 		setRootAndLastIDs();
 		Logger.getInstance().add("Finished absorbing XML.");
 	}
