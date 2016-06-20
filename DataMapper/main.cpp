@@ -28,7 +28,7 @@ int main(int argc, char *argv[])
     printf("after change, libraryPaths=(%s)\n", QCoreApplication::libraryPaths().join(",").toUtf8().data());
 #endif
     
-    SynGlyphX::GlyphBuilderApplication::Setup("Glyph Builder - Data Mapper", "0.7.46");
+    SynGlyphX::GlyphBuilderApplication::Setup("Glyph Builder - Data Mapper", "0.7.47");
 	SynGlyphX::GlyphBuilderApplication a(argc, argv);
 
 #ifdef USE_BREAKPAD
