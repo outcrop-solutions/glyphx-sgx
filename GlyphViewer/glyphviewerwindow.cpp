@@ -465,6 +465,12 @@ void GlyphViewerWindow::LoadVisualization(const QString& filename, const DataMap
 		throw std::runtime_error("File does not exist");
 	}
 
+	if (SynGlyphX::GlyphBuilderApplication::IsGlyphEd()) {
+
+		QStackedWidget* antzWidgetContainer = dynamic_cast<QStackedWidget*>(centralWidget());
+		antzWidgetContainer->setCurrentIndex(1);
+	}
+
 	if (m_glyphForestModel->rowCount() > 0) {
 
 		ClearAllData();
@@ -478,12 +484,6 @@ void GlyphViewerWindow::LoadVisualization(const QString& filename, const DataMap
 	else if (extension == "sav") {
 
 		LoadANTzCompatibilityVisualization(filename);
-	}
-
-	if (SynGlyphX::GlyphBuilderApplication::IsGlyphEd()) {
-
-		QStackedWidget* antzWidgetContainer = dynamic_cast<QStackedWidget*>(centralWidget());
-		antzWidgetContainer->setCurrentIndex(1);
 	}
 
 	if (m_legendsWidget->HasLegends()) {
