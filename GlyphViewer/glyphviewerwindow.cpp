@@ -101,6 +101,7 @@ GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 		if (!m_dataEngineConnection->hasJVM()){
 			
 			m_dataEngineConnection->createJVM();
+			de_version = m_dataEngineConnection->VersionNumber();
 		}
 	}
 	catch (const std::exception& e) {
