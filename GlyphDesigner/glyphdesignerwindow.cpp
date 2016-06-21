@@ -16,6 +16,7 @@
 #include "singleglyphviewoptionswidget.h"
 #include "singlewidgetdialog.h"
 #include "glyphtemplatelibrarylistwidget.h"
+#include "GDGlobal.h"
 
 GlyphDesignerWindow::GlyphDesignerWindow(QWidget *parent)
     : SynGlyphX::MainWindow(0, parent),
@@ -292,7 +293,7 @@ bool GlyphDesignerWindow::LoadTemplate(const QString& filename) {
 		QMessageBox::warning(this, tr("Loading Template Failed"), tr("Failed to load template: ") + e.what());
 		return false;
 	}
-
+	GDGlobal::Services()->ClearUndoStack();
 	return true;
 }
 

@@ -14,6 +14,7 @@
 #include <boost/filesystem.hpp>
 #include <QtCore/QStandardPaths>
 #include <QtWidgets/QMessageBox>
+#include "DMGlobal.h"
 
 int main(int argc, char *argv[])
 {
@@ -89,6 +90,7 @@ int main(int argc, char *argv[])
 		DataMapperWindow w;
 		w.resize(1200, 700);
 
+		DMGlobal::Init(new DMServices(&w));
 		w.show();
 		//QTimer::singleShot(1600, &w, SLOT(show()));
 

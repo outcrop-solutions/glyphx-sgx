@@ -25,11 +25,13 @@
 #include "datamappingfunction.h"
 #include "inputfieldmimedata.h"
 
+class BindingLineEditChangeCommand;
+
 class SGXDATATRANSFORMGUI_EXPORT BindingLineEdit : public QWidget
 {
 	Q_OBJECT
-	Q_PROPERTY(SynGlyphX::InputField value READ GetInputField WRITE SetInputField USER true)
-
+		Q_PROPERTY(SynGlyphX::InputField value READ GetInputField WRITE SetInputField USER true)
+		friend class BindingLineEditChangeCommand;
 public:
 	BindingLineEdit(const GlyphRolesTableModel* model, QWidget *parent = 0, SynGlyphX::MappingFunctionData::Input acceptedInputTypes = SynGlyphX::MappingFunctionData::Input::All);
 	~BindingLineEdit();

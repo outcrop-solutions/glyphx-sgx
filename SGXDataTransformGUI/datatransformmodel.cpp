@@ -838,7 +838,11 @@ namespace SynGlyphX {
 		m_dataMapping->AddGlyphTree(glyphTree);
 		endInsertRows();
 	}
-
+	void DataTransformModel::SetGlyphGraphMap(const DataTransformMapping::DataMappingGlyphGraphMap& glyphGraphs) {
+		beginResetModel();
+		m_dataMapping->SetGlyphGraphMap(glyphGraphs);
+		endResetModel();
+	}
 	void DataTransformModel::SetBaseObject(unsigned int position, const BaseImage& baseImage) {
 
 		m_dataMapping->SetBaseObject(position, baseImage);

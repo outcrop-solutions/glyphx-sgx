@@ -15,12 +15,16 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 #pragma once
-#include "GDServices.h"
-class GDGlobal {
+#include "AppServices.h"
+class DataMapperWindow;
+class DMServicesImpl; //in this case we need external Impl to make it friend of GlyphDesignerWindow
+class DMServices : public SynGlyphX::AppServices {
+
 public:
-	static void Init(GDServices* s);
-	static void Destroy();
-	static GDServices* Services();
+	DMServices(DataMapperWindow* w);
+	virtual ~DMServices();
+	virtual void BeginTransaction(const char* name, SynGlyphX::TransactionType t) override;
+	virtual void EndTransaction() override;
 private:
-	GDGlobal();
+	DMServicesImpl* pImpl;
 };

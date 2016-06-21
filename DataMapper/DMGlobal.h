@@ -15,12 +15,13 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 #pragma once
-#include "GDServices.h"
-class GDGlobal {
+#include "DMServices.h"
+
+class DMGlobal {
 public:
-	static void Init(GDServices* s);
+	static void Init(DMServices* s);
 	static void Destroy();
-	static GDServices* Services();
+	static DMServices* Services();
 private:
-	GDGlobal();
+	DMGlobal();
 };

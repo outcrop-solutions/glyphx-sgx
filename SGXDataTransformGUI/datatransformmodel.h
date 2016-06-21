@@ -123,6 +123,8 @@ namespace SynGlyphX {
 		void SetLegend(unsigned int position, const Legend& legend);
 		void AddLegend(const Legend& legend);
 
+		void SetGlyphGraphMap(const DataTransformMapping::DataMappingGlyphGraphMap& glyphGraphs);
+
 		boost::uuids::uuid AddFileDatasource(const FileDatasource& datasource);
 		boost::uuids::uuid AddDatabaseServer(const DatabaseServerDatasource& datasource);
 

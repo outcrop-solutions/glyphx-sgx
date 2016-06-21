@@ -9,6 +9,66 @@
 #include "minmaxglyphtreemodel.h"
 #include "glyphoptionswidget.h"
 #include "datatransformmodel.h"
+#include "datatransformmapping.h"
+#include "DMGlobal.h"
+
+using namespace SynGlyphX;
+class GlyphTreesViewMemento {
+public:
+	typedef  QPair<boost::uuids::uuid, unsigned long> TreeNode;
+	GlyphTreesViewMemento(const GlyphTreesView* tv) {
+		auto trees = tv->m_sourceModel->GetDataMapping()->GetGlyphGraphs();
+		// create deep copy of glyphTrees
+		for (auto glyphTree : trees) {
+			m_glyphTrees.insert(std::pair<boost::uuids::uuid, DataMappingGlyphGraph::SharedPtr>(glyphTree.first, std::make_shared<SynGlyphX::DataMappingGlyphGraph>(*glyphTree.second)));
+		}
+		//m_glyphGraph //= std::make_shared<SynGlyphX::DataMappingGlyphGraph>(*tv->m_sourceModel->GetGlyphGraph());
+		for (int row = 0; row < tv->m_sourceModel->rowCount(); ++row) {
+			SaveExpandedOnLevel(tv, tv->m_sourceModel->index(row, 0));
+		}
+			
+	}
+	void SaveExpandedOnLevel(const GlyphTreesView* tv, const QModelIndex& index) {
+		OutputDebugStringA(index.data(Qt::DisplayRole).toString().toStdString().c_str());
+		OutputDebugStringA("\n");
+		if (tv->isExpanded(dynamic_cast<SynGlyphX::RoleDataFilterProxyModel*>(tv->model())->mapFromSource(index))) {
+			if (index.isValid()){
+
+				SynGlyphX::DataMappingGlyphGraph::Node* treeNode = static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(index.internalPointer());
+				SynGlyphX::DataMappingGlyphGraph::GlyphIterator glyph(treeNode);
+				//SynGlyphX::LinkNode node(m_dataTransformModel->GetTreeId(sourceIndex), fromGlyph->first, lineEdit->GetInputField().GetHashID());
+				m_list << TreeNode(tv->m_sourceModel->GetTreeId(index), glyph->first);
+
+				OutputDebugStringA(QString::number(glyph->first).toStdString().c_str());
+				OutputDebugStringA("\n");
+			}
+
+			//for (int row = 0; row < tv->m_sourceModel->rowCount(index); ++row)
+			//	SaveExpandedOnLevel(tv, index.child(row, 0));
+		}
+		for (int row = 0; row < tv->m_sourceModel->rowCount(index); ++row)
+			SaveExpandedOnLevel(tv, index.child(row, 0));
+	}
+	void RestoreExpandedOnLevel(GlyphTreesView* tv, QModelIndex& index){
+
+		SynGlyphX::DataMappingGlyphGraph::Node* treeNode = static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(index.internalPointer());
+		if (treeNode){
+			SynGlyphX::DataMappingGlyphGraph::GlyphIterator glyph(treeNode);
+			if (m_list.contains(TreeNode(tv->m_sourceModel->GetTreeId(index), glyph->first))) {
+				tv->setExpanded(dynamic_cast<SynGlyphX::RoleDataFilterProxyModel*>(tv->model())->mapFromSource(index), true);
+				for (int row = 0; row < tv->m_sourceModel->rowCount(index); ++row)
+					RestoreExpandedOnLevel(tv, index.child(row, 0));
+			}
+		}
+	}
+	~GlyphTreesViewMemento() {
+		//m_tree = nullptr;
+	}
+	DataTransformMapping::DataMappingGlyphGraphMap m_glyphTrees;
+
+	QList<TreeNode > m_list;
+
+};
 
 GlyphTreesView::GlyphTreesView(SynGlyphX::DataTransformModel* sourceModel, QWidget *parent)
 	: SynGlyphX::TreeEditView(parent),
@@ -55,6 +115,19 @@ GlyphTreesView::GlyphTreesView(SynGlyphX::DataTransformModel* sourceModel, QWidg
 GlyphTreesView::~GlyphTreesView()
 {
 
+}
+
+GlyphTreesViewMemento* GlyphTreesView::CreateMemento() const {
+
+	return new GlyphTreesViewMemento(this);
+}
+
+void GlyphTreesView::ReinstateMemento(GlyphTreesViewMemento* m) {
+	m_sourceModel->SetGlyphGraphMap(m->m_glyphTrees);
+	setUpdatesEnabled(false);
+	for (int row = 0; row < m_sourceModel->rowCount(); ++row)
+		m->RestoreExpandedOnLevel(this, m_sourceModel->index(row, 0));
+	setUpdatesEnabled(true);
 }
 
 const SynGlyphX::SharedActionList& GlyphTreesView::GetGlyphActions() {
@@ -118,7 +191,7 @@ void GlyphTreesView::AddChildren() {
 	SynGlyphX::SingleWidgetDialog dialog(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, singleGlyphWidget, this);
 	dialog.setWindowTitle(tr("Add Children"));
 	if (dialog.exec() == QDialog::Accepted) {
-
+		DMGlobal::Services()->BeginTransaction("AddChildren", SynGlyphX::TransactionType::ChangeTree);
 		SynGlyphX::Glyph glyph;
 		singleGlyphWidget->SetGlyphFromWidget(glyph);
 		SynGlyphX::DataMappingGlyph minMaxGlyph(glyph);
@@ -130,6 +203,7 @@ void GlyphTreesView::AddChildren() {
 			SynGlyphX::RoleDataFilterProxyModel* filterModel = dynamic_cast<SynGlyphX::RoleDataFilterProxyModel*>(model());
 			m_sourceModel->AddChildGlyph(filterModel->mapToSource(selectedItems.front()), minMaxGlyph, singleGlyphWidget->GetNumberOfChildren());
 		}
+		DMGlobal::Services()->EndTransaction();
 	}
 }
 

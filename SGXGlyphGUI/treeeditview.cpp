@@ -192,7 +192,7 @@ namespace SynGlyphX {
 	}
 
 	void TreeEditView::DeleteChildrenFromSelected() {
-
+		AppGlobal::Services()->BeginTransaction("Delete Glyphs", TransactionType::ChangeTree);
 		DepthSortedModelIndexes sortedIndexList = GetSelectedIndexListForDeletion();
 		if (!sortedIndexList.empty()) {
 
@@ -202,6 +202,7 @@ namespace SynGlyphX {
 				treeModel->removeRows(0, treeModel->rowCount(index.second), index.second);
 			}
 		}
+		AppGlobal::Services()->EndTransaction();
 	}
 
 	TreeEditView::DepthSortedModelIndexes TreeEditView::GetSelectedIndexListForDeletion() const {

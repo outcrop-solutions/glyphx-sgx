@@ -39,6 +39,7 @@
 #include "roledatafilterproxymodel.h"
 #include "LinksListView.h"
 #include "LinksDialog.h"
+#include "DMGlobal.h"
 
 DataMapperWindow::DataMapperWindow(QWidget *parent)
     : SynGlyphX::MainWindow(0, parent),
@@ -534,7 +535,7 @@ bool DataMapperWindow::LoadDataTransform(const QString& filename) {
 		QMessageBox::critical(this, tr("Failed To Open Project"), tr("Failed to open project.  Error: ") + e.what(), QMessageBox::Ok);
 		return false;
 	}
-
+	DMGlobal::Services()->ClearUndoStack();
 	SetCurrentFile(filename);
 
 	EnableProjectDependentActions(true);
