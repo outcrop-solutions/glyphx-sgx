@@ -22,6 +22,7 @@
 #include <QtWidgets/QLineEdit>
 #include <QtWidgets/QStackedWidget>
 #include <QtCore/QSignalMapper>
+#include "Link.h"
 
 class QComboBox;
 class QSpinBox;
@@ -30,8 +31,6 @@ class GlyphTreesView;
 class LinkLineEdit;
 
 namespace SynGlyphX {
-	class Link;
-	class LinkNode;
 	class DataTransformModel;
 	class ColorButton;
 }
@@ -58,7 +57,7 @@ private slots:
 	void OnFunctionProperties();
 
 private:
-	const SynGlyphX::LinkNode& GetNode(GlyphTreesView* treeView, LinkLineEdit* lineEdit);
+	SynGlyphX::LinkNode GetNode(GlyphTreesView* treeView, LinkLineEdit* lineEdit);
 	void SelectGlyph(const QModelIndex &parent, GlyphTreesView* treeView, const SynGlyphX::LinkNode& node);
 	void SetNode(const SynGlyphX::LinkNode& node, GlyphTreesView* treeView, LinkLineEdit* lineEdit);
 	bool Validate();

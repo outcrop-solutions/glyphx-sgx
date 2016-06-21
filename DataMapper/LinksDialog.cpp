@@ -439,7 +439,7 @@ void LinksDialog::Clear(){
 
 }
 
-const SynGlyphX::LinkNode& LinksDialog::GetNode(GlyphTreesView* treeView, LinkLineEdit* lineEdit) {
+SynGlyphX::LinkNode LinksDialog::GetNode(GlyphTreesView* treeView, LinkLineEdit* lineEdit) {
 
 	QModelIndexList selectedItems = treeView->selectionModel()->selectedIndexes();
 	SynGlyphX::RoleDataFilterProxyModel* filterModel = dynamic_cast<SynGlyphX::RoleDataFilterProxyModel*>(treeView->model());
