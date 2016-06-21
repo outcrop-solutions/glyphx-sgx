@@ -29,8 +29,8 @@ public:
 			
 	}
 	void SaveExpandedOnLevel(const GlyphTreesView* tv, const QModelIndex& index) {
-		OutputDebugStringA(index.data(Qt::DisplayRole).toString().toStdString().c_str());
-		OutputDebugStringA("\n");
+		//OutputDebugStringA(index.data(Qt::DisplayRole).toString().toStdString().c_str());
+		//OutputDebugStringA("\n");
 		if (tv->isExpanded(dynamic_cast<SynGlyphX::RoleDataFilterProxyModel*>(tv->model())->mapFromSource(index))) {
 			if (index.isValid()){
 
@@ -39,8 +39,8 @@ public:
 				//SynGlyphX::LinkNode node(m_dataTransformModel->GetTreeId(sourceIndex), fromGlyph->first, lineEdit->GetInputField().GetHashID());
 				m_list << TreeNode(tv->m_sourceModel->GetTreeId(index), glyph->first);
 
-				OutputDebugStringA(QString::number(glyph->first).toStdString().c_str());
-				OutputDebugStringA("\n");
+				//OutputDebugStringA(QString::number(glyph->first).toStdString().c_str());
+				//OutputDebugStringA("\n");
 			}
 
 			//for (int row = 0; row < tv->m_sourceModel->rowCount(index); ++row)
