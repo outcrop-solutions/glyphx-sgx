@@ -71,6 +71,9 @@ namespace SynGlyphX {
 		boost::uuids::uuid AddGlyphTree(const DataMappingGlyphGraph::SharedPtr glyphTree);
 		void RemoveGlyphTree(const boost::uuids::uuid& id);
 		const DataMappingGlyphGraphMap& GetGlyphGraphs() const;
+
+		void SetGlyphGraphMap(const DataMappingGlyphGraphMap& glyphGraphs);
+
 		DataMappingGlyphGraph GetSubgraph(const boost::uuids::uuid& treeId, DataMappingGlyphGraph::ConstGlyphIterator& vertex, bool includeChildren);
 
 		void AddChildGlyph(const boost::uuids::uuid& treeId, DataMappingGlyphGraph::GlyphIterator& parent, const DataMappingGlyph& glyphTemplate, unsigned int numberOfChildren = 1);

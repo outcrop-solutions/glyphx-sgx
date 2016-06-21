@@ -471,6 +471,15 @@ namespace SynGlyphX {
 		return m_glyphTrees;
 	}
 
+	void DataTransformMapping::SetGlyphGraphMap(const DataMappingGlyphGraphMap& glyphGraphs) {
+		// create deep copy of glyphTrees
+		m_glyphTrees.clear();
+		for (auto glyphTree : glyphGraphs) {
+			m_glyphTrees.insert(std::pair<boost::uuids::uuid, DataMappingGlyphGraph::SharedPtr>(glyphTree.first, std::make_shared<SynGlyphX::DataMappingGlyphGraph>(*glyphTree.second)));
+		}
+	
+	}
+
 	DataMappingGlyphGraph DataTransformMapping::GetSubgraph(const boost::uuids::uuid& treeId, DataMappingGlyphGraph::ConstGlyphIterator& vertex, bool includeChildren) {
 
 		DataMappingGlyphGraph::SharedPtr glyphTree = m_glyphTrees[treeId];
