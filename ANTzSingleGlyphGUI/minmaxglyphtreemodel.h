@@ -86,6 +86,7 @@ namespace SynGlyphXANTz {
 		QModelIndex GetIndexFromLabel(SynGlyphX::DataMappingGlyphGraph::Label label) const;
 
 		static bool GreaterBranchLevel(const QModelIndex& left, const QModelIndex& right);
+		QModelIndexList GetPersistentIndexList() { return persistentIndexList(); }
 
 	private:
 		QVariant GetDisplayData(const QModelIndex& index) const;

@@ -26,7 +26,7 @@ namespace SynGlyphXANTz {
 	void MinMaxGlyphTreeModel::SetMinMaxGlyphTree(SynGlyphX::DataMappingGlyphGraph::SharedPtr minMaxGlyphTree) {
 
 		beginResetModel();
-		m_minMaxGlyphTree = minMaxGlyphTree;
+		m_minMaxGlyphTree = std::make_shared<SynGlyphX::DataMappingGlyphGraph>(*minMaxGlyphTree); // create deep copy, otherwise memento will be modified
 		endResetModel();
 	}
 
