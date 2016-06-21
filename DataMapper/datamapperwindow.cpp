@@ -39,6 +39,7 @@
 #include "roledatafilterproxymodel.h"
 #include "LinksListView.h"
 #include "LinksDialog.h"
+#include "DMGlobal.h"
 
 DataMapperWindow::DataMapperWindow(QWidget *parent)
     : SynGlyphX::MainWindow(0, parent),
@@ -179,8 +180,7 @@ void DataMapperWindow::CreateMenus() {
     QAction* exitAction = CreateMenuAction(m_fileMenu, tr("Exit"), QKeySequence::Quit);
     QObject::connect(exitAction, &QAction::triggered, this, &DataMapperWindow::close);
 
-	//Create Edit Menu
-	m_editMenu = menuBar()->addMenu(tr("Edit"));
+	CreateEditMenu();
 
     //Create Glyph Menu
     m_glyphMenu = menuBar()->addMenu(tr("Glyph"));
@@ -535,7 +535,7 @@ bool DataMapperWindow::LoadDataTransform(const QString& filename) {
 		QMessageBox::critical(this, tr("Failed To Open Project"), tr("Failed to open project.  Error: ") + e.what(), QMessageBox::Ok);
 		return false;
 	}
-
+	DMGlobal::Services()->ClearUndoStack();
 	SetCurrentFile(filename);
 
 	EnableProjectDependentActions(true);

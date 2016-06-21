@@ -4,6 +4,7 @@
 #include "linklessgraphmimedata.h"
 #include <QtCore/QMimeData>
 #include "datamappingglyphgraph.h"
+#include "AppGlobal.h"
 
 namespace SynGlyphX {
 
@@ -105,7 +106,6 @@ namespace SynGlyphX {
 			SynGlyphX::LinklessGraphMimeData::ConvertToMimeData(GetGraphForCopyToClipboard(index, includeChildren), mimeData);
 
 			if (removeFromTree) {
-
 				DeleteSelectedAndSelectNewIndex();
 			}
 
@@ -114,7 +114,7 @@ namespace SynGlyphX {
 	}
 
 	void TreeEditView::PasteFromClipboard(bool addAsChild) {
-
+		AppGlobal::Services()->BeginTransaction("Paste Glyphs", TransactionType::ChangeTree);
 		const QModelIndexList& selected = selectionModel()->selectedIndexes();
 		if (!selected.isEmpty()) {
 
@@ -140,6 +140,7 @@ namespace SynGlyphX {
 				}
 			}
 		}
+		AppGlobal::Services()->EndTransaction();
 	}
 
 	void TreeEditView::OnRowsInsertedOrRemoved() {
@@ -153,7 +154,7 @@ namespace SynGlyphX {
 	}
 
 	void TreeEditView::DeleteSelectedAndSelectNewIndex() {
-
+		AppGlobal::Services()->BeginTransaction("Delete Glyphs", TransactionType::ChangeTree);
 		DepthSortedModelIndexes sortedIndexList = GetSelectedIndexListForDeletion();
 		if (!sortedIndexList.empty()) {
 
@@ -187,10 +188,11 @@ namespace SynGlyphX {
 				}
 			}
 		}
+		AppGlobal::Services()->EndTransaction();
 	}
 
 	void TreeEditView::DeleteChildrenFromSelected() {
-
+		AppGlobal::Services()->BeginTransaction("Delete Glyphs", TransactionType::ChangeTree);
 		DepthSortedModelIndexes sortedIndexList = GetSelectedIndexListForDeletion();
 		if (!sortedIndexList.empty()) {
 
@@ -200,6 +202,7 @@ namespace SynGlyphX {
 				treeModel->removeRows(0, treeModel->rowCount(index.second), index.second);
 			}
 		}
+		AppGlobal::Services()->EndTransaction();
 	}
 
 	TreeEditView::DepthSortedModelIndexes TreeEditView::GetSelectedIndexListForDeletion() const {

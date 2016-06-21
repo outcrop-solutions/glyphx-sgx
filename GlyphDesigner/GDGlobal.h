@@ -14,62 +14,13 @@
 /// LAWS AND INTERNATIONAL TREATIES.  THE RECEIPT OR POSSESSION OF  THIS SOURCE CODE AND/OR RELATED INFORMATION DOES NOT CONVEY OR IMPLY ANY RIGHTS  
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
-
-#ifndef GLYPHDESIGNERWINDOW_H
-#define GLYPHDESIGNERWINDOW_H
-
-#include "mainwindow.h"
-#include "glyphtreeview.h"
-#include "antzsingleglyphtreewidget.h"
-#include "minmaxglyphtreemodel.h"
-class GDServicesImpl;
-class GlyphDesignerWindow : public SynGlyphX::MainWindow
-{
-	Q_OBJECT
-		friend class GDServicesImpl;
+#pragma once
+#include "GDServices.h"
+class GDGlobal {
 public:
-    GlyphDesignerWindow(QWidget *parent = 0);
-    ~GlyphDesignerWindow();
-
-protected:
-    virtual bool LoadRecentFile(const QString& filename);
-    virtual void closeEvent(QCloseEvent* event);
-
-	virtual void ReadSettings();
-	virtual void WriteSettings();
-
-private slots:
-    void CreateNewGlyphTree();
-    void ExportToCSV();
-    bool SaveTemplate();
-    bool SaveAsTemplate();
-    void OpenTemplate();
-	void OpenTemplateFromLibrary();
-    void EditingModeChanged(QAction* action);
-	void OnModelChanged();
-	void ChangeGlobalOptions();
-
+	static void Init(GDServices* s);
+	static void Destroy();
+	static GDServices* Services();
 private:
-    void CreateMenus();
-    void CreateDockWidgets();
-    bool LoadTemplate(const QString& filename);
-    bool SaveTemplateFile(const QString& filename);
-    bool AskUserToSave();
-	void SelectRootGlyphInModel();
-
-	SynGlyphXANTz::ANTzSingleGlyphTreeWidget* m_3dView;
-    GlyphTreeView* m_treeView;
-
-    QMenu* m_fileMenu;
-    QMenu* m_glyphMenu;
-	QMenu* m_toolsMenu;
-
-	QAction* m_showAnimation;
-
-	SynGlyphXANTz::MinMaxGlyphTreeModel* m_glyphTreeModel;
-	QItemSelectionModel* m_sharedSelectionModel;
-
-	bool m_isFileLoadingOrDefaultGlyphSet;
+	GDGlobal();
 };
-
-#endif // GLYPHDESIGNERWINDOW_H

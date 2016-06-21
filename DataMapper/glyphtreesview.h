@@ -25,14 +25,20 @@ namespace SynGlyphX {
 	class DataTransformModel;
 }
 
+class GlyphTreesViewMemento;
 
 class GlyphTreesView : public SynGlyphX::TreeEditView
 {
+	friend class GlyphTreesViewMemento;
 	Q_OBJECT
 
 public:
 	GlyphTreesView(SynGlyphX::DataTransformModel* sourceModel, QWidget *parent = 0);
 	~GlyphTreesView();
+
+	//Memento lifetime is managed by undo command (deleted in command destructor), consider changing to shared_ptr
+	GlyphTreesViewMemento* CreateMemento() const;
+	void ReinstateMemento(GlyphTreesViewMemento* m);
 
 	const SynGlyphX::SharedActionList& GetGlyphActions();
 
