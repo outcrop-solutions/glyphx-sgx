@@ -43,6 +43,14 @@ public:
 	void OnNewVisualization();
 	void CloseSourceDataWidgets();
 
+	void SetLoadSubsetVisualization(bool loadSubsetVisualization);
+	bool GetLoadSubsetVisualization() const;
+	void SetLoadSubsetVisualizationInNewInstance(bool loadSubsetVisualizationInNewInstance);
+	bool GetLoadSubsetVisualizationInNewInstance() const;
+
+signals:
+	void LoadSubsetVisualization(QString filename);
+
 private slots:
 	void Clear();
 	void OnSourceWidgetWindowHidden();
@@ -50,6 +58,7 @@ private slots:
 	void OnFilterResultsChanged();
 	void OnTableChanged(const QString& table);
 	void OnUserSelectionChanged(const QItemSelection &selected, const QItemSelection &deselected);
+	void OnSubsetVisualizationCreated(const QString& subsetVisualizationFilename);
 
 private:
 	void EnableFilterRelatedButtons(bool enable);
@@ -69,6 +78,9 @@ private:
 	KeywordFilterListWidget* m_keywordFilterListWidget;
 
 	FilteringManager* m_filteringManager;
+
+	bool m_loadSubsetVisualization;
+	bool m_loadSubsetVisualizationInNewInstance;
 };
 
 #endif // FILTERINGWIDGET_H

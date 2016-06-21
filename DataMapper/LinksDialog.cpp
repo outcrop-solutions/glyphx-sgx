@@ -20,17 +20,19 @@
 #include "inputfield.h"
 #include "datatransformmodel.h"
 
-//static void print_tree(boost::property_tree::wptree const& pt)
-//{
-//	using boost::property_tree::wptree;
-//	wptree::const_iterator end = pt.end();
-//	for (wptree::const_iterator it = pt.begin(); it != end; ++it) {
-//		std::wstringstream ss;
-//		ss << it->first << ": " << it->second.get_value<std::wstring>() << std::endl;
-//		OutputDebugStringW(ss.str().c_str());
-//		print_tree(it->second);
-//	}
-//}
+static void print_tree(boost::property_tree::wptree const& pt)
+{
+#ifdef WIN32
+	using boost::property_tree::wptree;
+	wptree::const_iterator end = pt.end();
+	for (wptree::const_iterator it = pt.begin(); it != end; ++it) {
+		std::wstringstream ss;
+		ss << it->first << ": " << it->second.get_value<std::wstring>() << std::endl;
+		OutputDebugStringW(ss.str().c_str());
+		print_tree(it->second);
+	}
+#endif
+}
 
 class LinkLineEdit : public QLineEdit
 {
@@ -536,4 +538,4 @@ void LinksDialog::accept() {
 		QDialog::accept();
 }
 
-#include "LinksDialog.moc" //this is nesseasary to because there is no .h file for FunctionDialog 
+#include "linksdialog.moc" //this is nesseasary to because there is no .h file for FunctionDialog

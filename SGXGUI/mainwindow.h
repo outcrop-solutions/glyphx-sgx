@@ -68,6 +68,7 @@ namespace SynGlyphX {
 
         QList<QAction*> m_recentFileActions;
         QString m_currentFilename;
+		QString de_version;
 		QMenu* m_viewMenu;
         QMenu* m_helpMenu;
 		QMenu* m_editMenu;

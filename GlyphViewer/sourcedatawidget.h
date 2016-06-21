@@ -31,8 +31,14 @@ public:
 	SourceDataWidget(SourceDataCache::ConstSharedPtr sourceDataCache, SynGlyphX::DataTransformMapping::ConstSharedPtr dataTransformMapping, QWidget *parent = nullptr);
 	~SourceDataWidget();
 
+	void SetLoadSubsetVisualization(bool loadSubsetVisualization);
+	bool GetLoadSubsetVisualization() const;
+	void SetLoadSubsetVisualizationInNewInstance(bool loadSubsetVisualizationInNewInstance);
+	bool GetLoadSubsetVisualizationInNewInstance() const;
+
 signals:
 	void WindowHidden();
+	void SubsetVisualizationCreated(const QString& newSubsetVisualizationFilename);
 
 public slots:
 	void CreateSubsetVisualization();

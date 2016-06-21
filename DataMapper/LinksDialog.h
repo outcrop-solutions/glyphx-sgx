@@ -22,6 +22,7 @@
 #include <QtWidgets/QLineEdit>
 #include <QtWidgets/QStackedWidget>
 #include <QtCore/QSignalMapper>
+#include "Link.h"
 
 class QComboBox;
 class QSpinBox;
@@ -30,8 +31,6 @@ class GlyphTreesView;
 class LinkLineEdit;
 
 namespace SynGlyphX {
-	class Link;
-	class LinkNode;
 	class DataTransformModel;
 	class ColorButton;
 }

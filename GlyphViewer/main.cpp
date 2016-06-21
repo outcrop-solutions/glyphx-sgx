@@ -59,7 +59,7 @@ int main(int argc, char *argv[])
 	QSurfaceFormat::setDefaultFormat( fmt );
 #endif
     
-	SynGlyphX::GlyphBuilderApplication::Setup("Glyph Builder - Glyph Viewer", "0.7.45");
+	SynGlyphX::GlyphBuilderApplication::Setup("Glyph Builder - Glyph Viewer", "0.7.47");
 	SynGlyphX::GlyphBuilderApplication a(argc, argv);
 	if (SynGlyphX::GlyphBuilderApplication::IsGlyphEd()) {
 
@@ -126,10 +126,18 @@ int main(int argc, char *argv[])
 		w.resize(1200, 700);
 
 		w.show();
-		//QTimer::singleShot(1600, &w, SLOT(show()));
 
-		//w.show();
-		//splash.finish(&w);
+		QStringList commandLineArguments = SynGlyphX::Application::arguments();
+		if (commandLineArguments.size() > 1) {
+
+			QDir visualizationToLoad(commandLineArguments[1]);
+
+			if (!w.LoadNewVisualization(QDir::toNativeSeparators(visualizationToLoad.canonicalPath()), DataMappingLoadingFilterModel::Table2LoadingFiltersMap())) {
+
+				w.closeJVM();
+				return 2;
+			}
+		}
 
 		return a.exec();
 		w.closeJVM();

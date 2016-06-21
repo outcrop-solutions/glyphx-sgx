@@ -8,6 +8,7 @@
 #include <QtWidgets/QMessageBox>
 #include <QtWidgets/QFileDialog>
 #include "licensingdialog.h"
+//#include "dataengineconnection.h"
 #include <QtWidgets/QUndoStack>
 
 namespace SynGlyphX {
@@ -212,7 +213,7 @@ namespace SynGlyphX {
     void MainWindow::ShowAboutBox() {
 
         QString appName = SynGlyphX::Application::organizationName() + " " + SynGlyphX::Application::applicationName();
-		QMessageBox::about(this, "About " + appName, appName + " " + SynGlyphX::Application::applicationVersion() + "\n\n" + s_copyright);
+		QMessageBox::about(this, "About " + appName, appName + " " + SynGlyphX::Application::applicationVersion() + "\n"+de_version+"\n\n" + s_copyright);
     }
 
     void MainWindow::SwitchBetweenFullAndNormalScreen() {

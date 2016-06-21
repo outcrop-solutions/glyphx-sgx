@@ -43,9 +43,15 @@ private slots:
 	void SetToDefaultCacheDirectory();
 
 private:
-	void CreateCacheTab(const GlyphViewerOptions& options, bool enableCacheOptions);
-	void Create3DTab(const GlyphViewerOptions& options);
-	void CreateUITab(const GlyphViewerOptions& options);
+	void CreateCacheTab(bool enableCacheOptions);
+	void Create3DTab();
+	void CreateFilteringTab();
+	void CreateUITab();
+
+	void SetCacheValues(const GlyphViewerOptions& options);
+	void Set3DValues(const GlyphViewerOptions& options);
+	void SetFilteringValues(const GlyphViewerOptions& options);
+	void SetUIValues(const GlyphViewerOptions& options);
 
 	SynGlyphX::BrowseLineEdit* m_cacheDirectoryWidget;
 	
@@ -59,6 +65,11 @@ private:
 	
 	QCheckBox* m_showHUDAxisInfoObjectCheckBox;
 	QComboBox* m_axisObjectLocationComboBox;
+
+	QCheckBox* m_showSceneAxisInfoObjectCheckBox;
+
+	QCheckBox* m_loadSubsetVisualizationCheckBox;
+	QCheckBox* m_loadSubsetVisualizationInNewInstanceCheckBox;
 };
 
 #endif // OPTIONSWIDGET_H
