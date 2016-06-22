@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.ArrayList;
 import synglyphx.glyph.XMLGlyphTemplate;
 import synglyphx.data.SourceDataInfo;
+import synglyphx.data.FilterField;
 import synglyphx.util.*;
 import synglyphx.glyph.Mapper;
 import synglyphx.io.Logger;
@@ -34,6 +35,7 @@ public class SDTReader {
 	private ArrayList<BaseObject> base_objects = null;
 	private HashMap<String,Integer> dataIds = null;
 	private HashMap<String,FieldGroup> gNames = null;
+	private ArrayList<FilterField> frontEndFilters = null; 
 	private SDTLinkReader linkReader = null;
 	private String[] colorStr = null;
 	private String tagFieldDefault;
@@ -49,6 +51,9 @@ public class SDTReader {
 	private String timestamp;
 	private boolean download;
 	private boolean updateNeeded;
+	private boolean finishedLoading;
+	private Document doc;
+	private int error_code;
 
 	public SDTReader(String sdtPath, String outDir, String application){
 		Logger.getInstance().add("Reading SDT at "+sdtPath);
@@ -56,7 +61,13 @@ public class SDTReader {
 		this.app = application;
 		this.download = false;
 		this.updateNeeded = true;
+		this.finishedLoading = false;
+		this.error_code = 0;
 		initXMLReader(sdtPath);
+	}
+
+	public int errorCode(){
+		return error_code;
 	}
 
 	public void generateGlyphs(){
@@ -100,7 +111,7 @@ public class SDTReader {
 			File file = new File(sdtPath);
 			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-			Document doc = dBuilder.parse(file);
+			doc = dBuilder.parse(file);
 			doc.getDocumentElement().normalize();
 
 			Node transform = doc.getElementsByTagName("Transform").item(0);
@@ -158,6 +169,7 @@ public class SDTReader {
 					NodeList categories = root.getChildNodes();
 					temp.setToMerge(getMergeStatus(root));
 					addNode(categories, temp, 0);
+					setFrontEnd(root);
 					rootCount++;
 				}
 
@@ -166,6 +178,9 @@ public class SDTReader {
 			ex.printStackTrace();
 			Logger.getInstance().add("Failed to parse SDT file.");
 		}
+	}
+
+	public void finishLoading() {
 		createDataFrames();
 		Logger.getInstance().add("Created DataFrames.");
 		checkFieldGroups(doc);
@@ -174,6 +189,11 @@ public class SDTReader {
 		Logger.getInstance().add("Set defaults and properties...");
 		setRootAndLastIDs();
 		Logger.getInstance().add("Finished absorbing XML.");
+		finishedLoading = true;
+	}
+
+	public boolean finishedLoading() {
+		return finishedLoading;
 	}
 
 	private String getValue(String tag, Element element) {
@@ -413,6 +433,28 @@ public class SDTReader {
 
 		}
 		Logger.getInstance().add("Set input map.");
+	}
+
+	private void setFrontEnd(Node root){
+
+		Element rootElement = (Element) root;
+		if(rootElement.getElementsByTagName("FrontEnd").getLength() == 0) return;
+		Element frontEnd = (Element) rootElement.getElementsByTagName("FrontEnd").item(0);
+		NodeList filterFields = frontEnd.getElementsByTagName("FilterField");
+
+		if(frontEndFilters == null)
+			frontEndFilters = new ArrayList<FilterField>();
+
+		for(int i = 0; i < filterFields.getLength(); i++) {
+			Node object = filterFields.item(i);
+			Element element = (Element) object;
+			String id = element.getAttribute("id");
+			String table = element.getAttribute("table");
+			String field = element.getAttribute("field");
+			if(!frontEndFilters.contains(new FilterField(id, table, field)))
+				frontEndFilters.add(new FilterField(id, table, field));
+		}
+		
 	}
 
 	private void getDataPaths(Document doc){
@@ -801,6 +843,57 @@ public class SDTReader {
 			try{
 			    e.printStackTrace(Logger.getInstance().addError());
 			}catch(Exception ex){}
+		}
+	}
+
+	public String[] distinctValuesForField(String id, String table, String field){
+		SourceDataInfo temp = null;
+		for(SourceDataInfo sdi : dataPaths){
+			if(sdi.getID().equals(id) && sdi.getTable().equals(table)){
+				temp = sdi;
+				break;
+			}
+		}
+		if(temp.getType().equals("sqlite3")){
+			for(FilterField filter : frontEndFilters){
+				if(filter.id().equals(id) && filter.table().equals(table) && filter.field().equals(field)){
+					return filter.distinctValues(dataDriver(temp));
+				}
+			}
+		}
+		return new String[1];
+	}
+
+	private Driver dataDriver(SourceDataInfo sdi){
+
+		if(sdi.getDriver() != null){
+			return sdi.getDriver();
+		}
+		try{
+			Driver driver = DriverSelector.getDriver(sdi.getType());
+         	Class.forName(driver.packageName());
+         	driver.createConnection(sdi.getHost(),sdi.getUsername(),sdi.getPassword());
+         	sdi.setDriver(driver);
+
+		}catch(SQLException se){
+	        try{
+	            se.printStackTrace(Logger.getInstance().addError());
+	        }catch(Exception ex){}
+      	}catch(Exception e){
+         	try{
+            	e.printStackTrace(Logger.getInstance().addError());
+         	}catch(Exception ex){}
+      	}
+
+      	return sdi.getDriver();
+	}
+
+	public void setQueryForDatasource(String id, String table, String query){
+		for(SourceDataInfo sdi : dataPaths){
+			if(sdi.getID().equals(id) && sdi.getTable().equals(table)){
+				sdi.setQuery(query);
+				break;
+			}
 		}
 	}
 }

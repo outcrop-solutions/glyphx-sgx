@@ -80,6 +80,13 @@ public class SQLiteDriver implements Driver {
       	return null;
 	}
 
+	public String getDistinctQuery(String table, String field){
+		String query = "SELECT `"+field+"` FROM ";
+		query += "(SELECT * FROM "+table+" ORDER BY `"+field+"` DESC) ";
+		query += "GROUP BY `"+field+"`;";
+		return query;
+	}
+
 	public Connection createTempConnection(String conn_str, String un, String pw) throws SQLException {
 		return DriverManager.getConnection(conn_str);
 	}

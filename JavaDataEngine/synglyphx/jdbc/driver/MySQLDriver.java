@@ -92,4 +92,8 @@ public class MySQLDriver implements Driver {
 		//String[] split = name.split("\\.");
 		return name.replace("`","");
 	}
+
+	public String getDistinctQuery(String table, String field){
+		return "";
+	}
 }

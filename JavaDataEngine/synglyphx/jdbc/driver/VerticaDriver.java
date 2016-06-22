@@ -111,4 +111,8 @@ public class VerticaDriver implements Driver {
 		}
 		return name;
 	}
+
+	public String getDistinctQuery(String table, String field){
+		return "";
+	}
 }

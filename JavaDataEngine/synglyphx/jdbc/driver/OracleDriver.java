@@ -178,4 +178,8 @@ public class OracleDriver implements Driver {
          	}catch(Exception ex){}
       	}
 	}
+
+	public String getDistinctQuery(String table, String field){
+		return "";
+	}
 }

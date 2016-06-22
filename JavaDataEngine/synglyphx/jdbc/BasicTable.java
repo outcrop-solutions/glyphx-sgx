@@ -9,7 +9,7 @@ import synglyphx.io.Logger;
 import synglyphx.util.Functions;
 import synglyphx.jdbc.driver.Driver;
 
-public class BasicTable extends Table{
+public class BasicTable extends Table {
 	
 	private ArrayList<String[]> sampleData;
 
@@ -31,7 +31,8 @@ public class BasicTable extends Table{
 		super(driver);
 		this.name = name;
 		this.query = query;
-		this.end_of_query = query.split("FROM")[1];
+		this.end_of_query = query.split("(?i)from")[1];
+        System.out.println(end_of_query);
 		setColumnNames();
 		createDataStats();
 	}
