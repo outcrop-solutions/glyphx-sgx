@@ -537,7 +537,7 @@ bool DataMapperWindow::LoadDataTransform(const QString& filename) {
 	}
 	DMGlobal::Services()->ClearUndoStack();
 	SetCurrentFile(filename);
-
+	m_dataTransformModel->ClearAbsentBindings();
 	EnableProjectDependentActions(true);
 	SynGlyphX::Application::restoreOverrideCursor();
 	m_linksDialog->Clear();

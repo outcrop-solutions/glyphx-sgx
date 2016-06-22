@@ -134,7 +134,7 @@ namespace SynGlyphX {
 		void ClearInputBinding(const QModelIndex& index, DataMappingGlyph::MappableField field);
 		void ClearAllInputBindings(const QModelIndex& index);
 
-		void ClearAbsentBindings(const QModelIndex& index);
+		void ClearAbsentBindings();
 		const DataMappingGlyphGraph::InputFieldMap& GetInputFieldsForTree(const QModelIndex& index) const;
 
 		//void EnableTables(const boost::uuids::uuid& id, const Datasource::TableNames& tables, bool enable = true);

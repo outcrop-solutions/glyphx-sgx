@@ -15,9 +15,9 @@
 #include "dataenginestatement.h"
 #include "stringconvert.h"
 #include <set>
-#include <QtWidgets/QMessageBox>
 #include "Link.h"
 #include "baseimage.h"
+#include "AppGlobal.h"
 
 namespace SynGlyphX {
 
@@ -600,8 +600,9 @@ namespace SynGlyphX {
 		emit dataChanged(index, index);
 	}
 	
-	void DataTransformModel::ClearAbsentBindings(const QModelIndex& index) {
-		//we need a InputFieldMap copy, using const& will cause problems after deleting Inputfield
+	void DataTransformModel::ClearAbsentBindings() {
+
+		QModelIndex index = createIndex(0, 0);
 		SynGlyphX::DataMappingGlyphGraph::InputFieldMap fieldMap = GetInputFieldsForTree(index); 
 		std::set<SynGlyphX::HashID> sourceFields;
 		for (const auto& t : m_tableStatsMap) {
@@ -616,8 +617,8 @@ namespace SynGlyphX {
 		for (const auto& field : fieldMap) {
 			if (sourceFields.find(field.first) == sourceFields.end()) { 
 				SynGlyphX::InputField f(field.second);
-				QMessageBox::warning(nullptr, tr("Warning"),
-					tr("Source data does not have field:\n") + QString::fromWCharArray(f.GetField().c_str()) + tr("\nMapping will be removed"));
+				AppGlobal::Services()->ShowWarningDialog(tr("Source data does not have field:\n") + QString::fromWCharArray(f.GetField().c_str()) + tr("\nMapping will be removed"));
+				AppGlobal::Services()->SetModified(true);
 				m_dataMapping->ClearInputFieldBindings(GetTreeId(index), f);
 			}
 						
@@ -781,8 +782,6 @@ namespace SynGlyphX {
 
 			AddDatasourceInfoFromDataEngine(iT->first, iT->second);
 		}
-
-		ClearAbsentBindings(createIndex(0, 0));
 	}
 
 	void DataTransformModel::SaveDataTransformFile(const QString& filename) {

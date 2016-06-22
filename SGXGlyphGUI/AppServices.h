@@ -31,6 +31,8 @@ namespace SynGlyphX {
 		AppServices(MainWindow* mw);
 		virtual void BeginTransaction(const char* name, TransactionType t) = 0;
 		virtual void EndTransaction() = 0 ;
+		void SetModified(bool m = true);
+		void ShowWarningDialog(const QString& msg);
 		void ClearUndoStack();
 		QUndoStack* GetUndoStack();
 		virtual ~AppServices() {}
