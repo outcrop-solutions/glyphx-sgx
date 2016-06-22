@@ -84,6 +84,7 @@
   <ItemGroup>
     <ClCompile Include="adddatabaseserverwizard.cpp" />
     <ClCompile Include="addfiledatasourcewizard.cpp" />
+    <ClCompile Include="aliaseswidget.cpp" />
     <ClCompile Include="baseimagedialog.cpp" />
     <ClCompile Include="baseobjectlistview.cpp" />
     <ClCompile Include="databindingtableswidget.cpp" />
@@ -95,6 +96,9 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Debug\moc_addfiledatasourcewizard.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_aliaseswidget.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Debug\moc_baseimagedialog.cpp">
@@ -155,6 +159,9 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Release\moc_addfiledatasourcewizard.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_aliaseswidget.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Release\moc_baseimagedialog.cpp">
@@ -463,6 +470,18 @@
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Moc%27ing LinksDialog.cpp...</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles\$(ConfigurationName)\%(Filename).moc</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"  "LinksDialog.cpp" -o ".\GeneratedFiles\$(ConfigurationName)\%(Filename).moc"  -DUNICODE -DWIN32 -DWIN64 -DQT_DLL -DQT_NO_DEBUG -DNDEBUG  "-I.\..\..\DataEngine\jdk\include\win32" "-I.\..\..\DataEngine\jdk\include" "-I.\..\..\DataEngine\DataEngine" "-I.\GeneratedFiles" "-I." "-I.\..\..\3rdParty\include\google_breakpad" "-I$(QTDIR)\include" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I.\..\..\Core\SGXFoundation" "-I.\..\..\GUI\SGXGUI" "-I.\..\..\Core\SGXDataTransform" "-I.\..\..\3rdParty\include\boost_1_55_0" "-I.\..\..\Core\SGXDataMapping" "-I.\..\..\ANTzPlus\ANTzBridge" "-I.\..\..\3rdParty\include\stlplus_3_11" "-I.\..\..\Core\SGXGeospatial" "-I.\..\..\GUI\MapDownloading" "-I.\..\..\ANTzPlus\ANTzSingleGlyphGUI" "-I.\..\..\ANTzPlus\ANTzCore" "-I.\..\..\GUI\SGXDataTransformGUI" "-I.\..\..\Core\SGXUtility" "-I.\..\..\GUI\SGXGlyphGUI" "-I.\..\..\Core\SGXImage"</Command>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="aliaseswidget.h">
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath);$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing aliaseswidget.h...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DWIN64 -DQT_DLL "-I.\..\..\DataEngine\jdk\include\win32" "-I.\..\..\DataEngine\jdk\include" "-I.\..\..\DataEngine\DataEngine" "-I.\GeneratedFiles" "-I." "-I.\..\..\3rdParty\include\google_breakpad" "-I$(QTDIR)\include" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I.\..\..\Core\SGXFoundation" "-I.\..\..\GUI\SGXGUI" "-I.\..\..\Core\SGXDataTransform" "-I.\..\..\3rdParty\include\boost_1_55_0" "-I.\..\..\Core\SGXDataMapping" "-I.\..\..\ANTzPlus\ANTzBridge" "-I.\..\..\3rdParty\include\stlplus_3_11" "-I.\..\..\Core\SGXGeospatial" "-I.\..\..\GUI\MapDownloading" "-I.\..\..\ANTzPlus\ANTzSingleGlyphGUI" "-I.\..\..\ANTzPlus\ANTzCore" "-I.\..\..\GUI\SGXDataTransformGUI" "-I.\..\..\Core\SGXUtility" "-I.\..\..\GUI\SGXGlyphGUI" "-I.\..\..\Core\SGXImage"</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath);$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Moc%27ing aliaseswidget.h...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DWIN64 -DQT_DLL -DQT_NO_DEBUG -DNDEBUG "-I.\..\..\DataEngine\jdk\include\win32" "-I.\..\..\DataEngine\jdk\include" "-I.\..\..\DataEngine\DataEngine" "-I.\GeneratedFiles" "-I." "-I.\..\..\3rdParty\include\google_breakpad" "-I$(QTDIR)\include" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I.\..\..\Core\SGXFoundation" "-I.\..\..\GUI\SGXGUI" "-I.\..\..\Core\SGXDataTransform" "-I.\..\..\3rdParty\include\boost_1_55_0" "-I.\..\..\Core\SGXDataMapping" "-I.\..\..\ANTzPlus\ANTzBridge" "-I.\..\..\3rdParty\include\stlplus_3_11" "-I.\..\..\Core\SGXGeospatial" "-I.\..\..\GUI\MapDownloading" "-I.\..\..\ANTzPlus\ANTzSingleGlyphGUI" "-I.\..\..\ANTzPlus\ANTzCore" "-I.\..\..\GUI\SGXDataTransformGUI" "-I.\..\..\Core\SGXUtility" "-I.\..\..\GUI\SGXGlyphGUI" "-I.\..\..\Core\SGXImage"</Command>
     </CustomBuild>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
