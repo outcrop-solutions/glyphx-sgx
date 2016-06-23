@@ -814,7 +814,7 @@ void DataMapperWindow::OnLinkDialogAccepted() {
 	if (m_linksDialog->GetEditRow() >= 0)
 		m_dataTransformModel->SetLink(m_linksDialog->GetEditRow(), m_linksDialog->GetLink());
 	else
-		m_dataTransformModel->AddLink(m_linksDialog->GetLink());
+		m_dataTransformModel->CreateAddLinkCommand(m_linksDialog->GetLink());
 	EnableProjectDependentActions(true);
 }
 

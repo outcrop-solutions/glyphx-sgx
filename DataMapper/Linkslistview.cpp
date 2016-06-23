@@ -1,5 +1,28 @@
 #include "LinksListView.h"
 #include "datatransformmodel.h"
+#include <QtWidgets/QUndoStack>
+#include <QtWidgets/QUndoCommand>
+#include "Link.h"
+#include "AppGlobal.h"
+
+class RemoveLinkCommand : public QUndoCommand{
+public:
+	RemoveLinkCommand(SynGlyphX::DataTransformModel* dtm, int index) :
+		m_dtm(dtm),
+		m_index(index)
+	{
+		m_link = dtm->GetDataMapping()->GetLinks()[index];
+	}
+	void undo() override {
+		m_dtm->InsertLink(m_index, m_link);
+	}
+	void redo() override {
+		m_dtm->RemoveLink(m_index);
+	}
+	int m_index;
+	SynGlyphX::DataTransformModel* m_dtm;
+	SynGlyphX::Link m_link;
+};
 
 LinksListView::LinksListView(SynGlyphX::DataTransformModel* dataTransformModel, QWidget *parent)
 	: QListView(parent),
@@ -54,8 +77,8 @@ void LinksListView::RemoveLink() {
 
 	const QModelIndexList& selected = selectionModel()->selectedIndexes();
 	if (!selected.isEmpty()) {
-
-		model()->removeRow(selected.front().row());
+		SynGlyphX::AppGlobal::Services()->GetUndoStack()->push(new RemoveLinkCommand(m_dataTransformModel, selected.front().row()));
+		//model()->removeRow(selected.front().row());
 	}
 }
 

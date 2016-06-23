@@ -18,9 +18,33 @@
 #include "Link.h"
 #include "baseimage.h"
 #include "AppGlobal.h"
+#include <QtWidgets/QUndoStack>
+#include <QtWidgets/QUndoCommand>
 
 namespace SynGlyphX {
-
+	class DataTransformModel::Command : public QUndoCommand{
+	public:
+		DataTransformModel::Command(DataTransformModel* dtm) : m_dtm(dtm){}
+		DataTransformMapping::SharedPtr GetDataMapping() { return m_dtm->m_dataMapping;  }
+		DataTransformModel* m_dtm;
+	};
+	class AddLinkCommand : public DataTransformModel::Command {
+	public:
+		AddLinkCommand(DataTransformModel* dtm, unsigned int index, const Link& link) : 
+			DataTransformModel::Command(dtm),
+			m_index(index),
+			m_link(link)
+		{
+		}
+		void undo() override {
+			m_dtm->RemoveLink(m_index);
+		}
+		void redo() override {
+			m_dtm->InsertLink(m_index, m_link);
+		}
+		int m_index;
+		Link m_link;
+	};
 	DataTransformModel::DataTransformModel(QObject *parent)
 		: QAbstractItemModel(parent),
 		m_dataMapping(new DataTransformMapping()),
@@ -721,8 +745,11 @@ namespace SynGlyphX {
 					}
 					else if (IsParentlessRowInDataType(DataType::Links, i)) {
 
-						m_dataMapping->RemoveLink(i - GetFirstIndexForDataType(DataType::Links));
-						emitGlyphDataChanged = true;
+						Q_ASSERT(0);//should not be here, removing of link must be handled by command
+
+						//AppGlobal::Services()->GetUndoStack()->push(new RemoveLinkCommand(this, i - GetFirstIndexForDataType(DataType::Links)));
+						//m_dataMapping->RemoveLink(i - GetFirstIndexForDataType(DataType::Links));
+						//emitGlyphDataChanged = true; //do we need this?
 					}
 				}
 				endRemoveRows();
@@ -879,12 +906,30 @@ namespace SynGlyphX {
 		endInsertRows();
 	}
 
+	void DataTransformModel::InsertLink(unsigned int position, const SynGlyphX::Link& link) {
+		int row = GetFirstIndexForDataType(DataType::Links) + position;
+		beginInsertRows(QModelIndex(), row, row);
+		m_dataMapping->InsertLink(position, link);
+		endInsertRows();
+	}
+
 	void DataTransformModel::SetLink(unsigned int position, const SynGlyphX::Link& link) {
 		m_dataMapping->SetLink(position, link);
 		QModelIndex modelIndex = index(GetFirstIndexForDataType(DataType::Links) + position);
 		emit dataChanged(modelIndex, modelIndex);
 	}
 
+	void DataTransformModel::RemoveLink(unsigned int position) {
+		int row = GetFirstIndexForDataType(DataType::Links) + position;
+		//QModelIndex modelIndex = index(row);
+		beginRemoveRows(QModelIndex(), row, row);
+		m_dataMapping->RemoveLink(position);
+		endRemoveRows();
+	}
+
+	void DataTransformModel::CreateAddLinkCommand(const SynGlyphX::Link& link) {
+		AppGlobal::Services()->GetUndoStack()->push(new AddLinkCommand(this, m_dataMapping->GetLinks().size(), link));
+	}
 	bool DataTransformModel::IsParentlessRowInDataType(DataType type, int row) const {
 
 		int min = GetFirstIndexForDataType(type);

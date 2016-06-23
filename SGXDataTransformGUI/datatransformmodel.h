@@ -30,8 +30,10 @@ namespace SynGlyphX {
 	class SGXDATATRANSFORMGUI_EXPORT DataTransformModel : public QAbstractItemModel
 	{
 		Q_OBJECT
-
 	public:
+		class Command;
+		friend class Command;
+
 		typedef std::unordered_map<SynGlyphX::InputTable, WStringVector, InputTableHash> NumericFieldsByTable;
 
 		typedef std::unordered_map<SynGlyphX::InputTable, DataStatsModel::TableStats, InputTableHash> TableStatsMap;
@@ -115,10 +117,13 @@ namespace SynGlyphX {
 		void AddChildGlyphGraph(const QModelIndex& parent, const DataMappingGlyphGraph& graph);
 		
 		void AddLink(const SynGlyphX::Link& link);
+		void InsertLink(unsigned int position, const SynGlyphX::Link& link);
 		void SetLink(unsigned int position, const SynGlyphX::Link& link);
-
+		void RemoveLink(unsigned int position);
 		void SetBaseObject(unsigned int position, const BaseImage& baseImage);
 		void AddBaseObject(const BaseImage& baseImage);
+
+		void CreateAddLinkCommand(const SynGlyphX::Link& link);
 
 		void SetLegend(unsigned int position, const Legend& legend);
 		void AddLegend(const Legend& legend);
