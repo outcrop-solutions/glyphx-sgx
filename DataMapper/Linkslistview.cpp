@@ -77,7 +77,9 @@ void LinksListView::RemoveLink() {
 
 	const QModelIndexList& selected = selectionModel()->selectedIndexes();
 	if (!selected.isEmpty()) {
-		SynGlyphX::AppGlobal::Services()->GetUndoStack()->push(new RemoveLinkCommand(m_dataTransformModel, selected.front().row()));
+		auto command = new RemoveLinkCommand(m_dataTransformModel, selected.front().row());
+		command->setText(tr("Remove Link"));
+		SynGlyphX::AppGlobal::Services()->GetUndoStack()->push(command);
 		//model()->removeRow(selected.front().row());
 	}
 }

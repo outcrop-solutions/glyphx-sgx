@@ -40,6 +40,7 @@
 class LinksListView;
 class LinksDialog;
 class DMServicesImpl;
+class QUndoView;
 
 namespace SynGlyphX {
 	class DataTransformModel;
@@ -121,6 +122,7 @@ private:
 	SynGlyphX::IntRoleDataFilterProxyModel* m_linksModel;
 	LinksListView* m_linksView;
 
+	QUndoView *m_undoView;
 
 	GlyphTreesView* m_glyphTreesView;
 

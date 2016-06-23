@@ -38,9 +38,10 @@ public:
 
 		if (t == TransactionType::ChangeTree) {
 			tcc = new TreeChangeCommand();
+			tcc->setText(name);
 			tcc->m_tvmBegin = m_w->m_glyphTreesView->CreateMemento();
 		}
-		m_name = name;
+
 	}
 
 	void EndTransaction(){
@@ -50,7 +51,6 @@ public:
 		tcc->m_tv = m_w->m_glyphTreesView;
 	}
 
-	QString m_name;
 	DataMapperWindow* m_w;
 	TreeChangeCommand* tcc;
 };

@@ -40,6 +40,7 @@
 #include "LinksListView.h"
 #include "LinksDialog.h"
 #include "DMGlobal.h"
+#include <QtWidgets/QUndoview>
 
 DataMapperWindow::DataMapperWindow(QWidget *parent)
     : SynGlyphX::MainWindow(0, parent),
@@ -360,6 +361,12 @@ void DataMapperWindow::CreateDockWidgets() {
 	topDockWidget->setWidget(m_dataBindingWidget);
 	addDockWidget(Qt::TopDockWidgetArea, topDockWidget);
 	m_viewMenu->addAction(topDockWidget->toggleViewAction());
+
+	QDockWidget* rightDockWidgetUndo = new QDockWidget(tr("Undoable Actions "), this);
+	m_undoView = new QUndoView(m_undoStack);
+	rightDockWidgetUndo->setWidget(m_undoView);
+	addDockWidget(Qt::RightDockWidgetArea, rightDockWidgetUndo);
+	m_viewMenu->addAction(rightDockWidgetUndo->toggleViewAction());
 }
 
 void DataMapperWindow::CreateNewProject() {

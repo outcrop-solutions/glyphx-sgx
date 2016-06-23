@@ -191,7 +191,7 @@ void GlyphTreesView::AddChildren() {
 	SynGlyphX::SingleWidgetDialog dialog(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, singleGlyphWidget, this);
 	dialog.setWindowTitle(tr("Add Children"));
 	if (dialog.exec() == QDialog::Accepted) {
-		DMGlobal::Services()->BeginTransaction("AddChildren", SynGlyphX::TransactionType::ChangeTree);
+		DMGlobal::Services()->BeginTransaction("Add Children", SynGlyphX::TransactionType::ChangeTree);
 		SynGlyphX::Glyph glyph;
 		singleGlyphWidget->SetGlyphFromWidget(glyph);
 		SynGlyphX::DataMappingGlyph minMaxGlyph(glyph);

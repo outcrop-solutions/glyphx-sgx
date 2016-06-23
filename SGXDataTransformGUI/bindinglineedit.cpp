@@ -138,7 +138,9 @@ void BindingLineEdit::dropEvent(QDropEvent* event) {
 
 	const InputFieldMimeData* mimeData = qobject_cast<const InputFieldMimeData*>(event->mimeData());
 	if (mimeData != nullptr) {
-		SynGlyphX::AppGlobal::Services()->GetUndoStack()->push(new BindingLineEditChangeCommand(this, mimeData->GetInputField()));
+		auto command = new BindingLineEditChangeCommand(this, mimeData->GetInputField());
+		command->setText(tr("Change Binding"));
+		SynGlyphX::AppGlobal::Services()->GetUndoStack()->push(command);
 		//SetInputField(mimeData->GetInputField());
 		//m_inputField = mimeData->GetInputField();
 		//emit ValueChangedByUser(m_inputField);

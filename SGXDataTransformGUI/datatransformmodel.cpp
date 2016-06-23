@@ -928,7 +928,9 @@ namespace SynGlyphX {
 	}
 
 	void DataTransformModel::CreateAddLinkCommand(const SynGlyphX::Link& link) {
-		AppGlobal::Services()->GetUndoStack()->push(new AddLinkCommand(this, m_dataMapping->GetLinks().size(), link));
+		auto command = new AddLinkCommand(this, m_dataMapping->GetLinks().size(), link);
+		command->setText(tr("Add Link"));
+		AppGlobal::Services()->GetUndoStack()->push(command);
 	}
 	bool DataTransformModel::IsParentlessRowInDataType(DataType type, int row) const {
 
