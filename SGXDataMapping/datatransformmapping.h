@@ -128,6 +128,7 @@ namespace SynGlyphX {
 
 		void AddLink(const Link& link);
 		void RemoveLink(unsigned int index);
+		void InsertLink(unsigned int index, const Link& link);
 		void SetLink(unsigned int index, const Link& link);
 		const std::vector<Link>& GetLinks() const { return m_links; }
     protected:

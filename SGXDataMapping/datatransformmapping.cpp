@@ -940,6 +940,19 @@ namespace SynGlyphX {
 		m_links.push_back(link);
 	}
 
+	void DataTransformMapping::InsertLink(unsigned int index, const Link& link) {
+		if (index < m_links.size()) {
+			m_links.insert(m_links.begin() + index, link);
+		}
+		else if (index == m_links.size()) {
+			m_links.push_back(link);
+		}
+		else {
+
+			throw std::invalid_argument("Index is greater than size of links");
+		}
+	}
+
 	void DataTransformMapping::RemoveLink(unsigned int index) {
 		if (index < m_links.size()) {
 
