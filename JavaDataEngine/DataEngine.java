@@ -77,6 +77,10 @@ public class DataEngine {
 		return ErrorHandler.getInstance().getErrors();
 	}
 
+	public static void clearErrors(){
+		ErrorHandler.getInstance().clearErrors();
+	}
+
 //JDBC ACCESSOR METHODS
 
 	public static int connectToServer(String dburl, String username, String password, String db){

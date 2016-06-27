@@ -34,6 +34,10 @@ public class ErrorHandler {
 		return temp;
 	}
 
+	public void clearErrors(){
+		errors = new ArrayList<StringWriter>();
+	}
+
 	public int hasErrors(){
 		if(errors.size() > 0)
 			return 1;

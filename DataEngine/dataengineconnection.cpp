@@ -668,4 +668,18 @@ namespace DataEngine
 		return errors;
 	}
 
+	void DataEngineConnection::ClearJavaErrors(){
+
+		jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
+			"clearErrors", "()V");
+
+		if (methodId != NULL) {
+			jniEnv->CallStaticVoidMethod(jcls, methodId);
+			if (jniEnv->ExceptionCheck()) {
+				jniEnv->ExceptionDescribe();
+				jniEnv->ExceptionClear();
+			}
+		}
+	}
+
 }

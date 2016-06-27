@@ -59,6 +59,7 @@ namespace DataEngine
 		QStringList getTables();
 		int sizeOfQuery(QString query);
 		QString JavaErrors();
+		void ClearJavaErrors();
 		void closeConnection();
 		//JDBC END
 		void destroyJVM();
