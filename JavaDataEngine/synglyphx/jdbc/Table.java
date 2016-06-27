@@ -9,6 +9,7 @@ import synglyphx.io.Logger;
 import synglyphx.util.Functions;
 import synglyphx.data.DataFrame;
 import synglyphx.jdbc.driver.Driver;
+import synglyphx.util.ErrorHandler;
 
 public abstract class Table {
 	
@@ -75,14 +76,12 @@ public abstract class Table {
   				cc += 1;
 	        }
 
-
             rs.close();
-            //con.close();
-        }catch(Exception se){
-        	se.printStackTrace();
+        }catch(Exception e){
         	try{
-            	se.printStackTrace(Logger.getInstance().addError());
+            	e.printStackTrace(ErrorHandler.getInstance().addError());
          	}catch(Exception ex){}
+         	e.printStackTrace();
         }
 	}
 
@@ -191,14 +190,11 @@ public abstract class Table {
 	        }
 		    rs.close();
 		    driver.getConnection().close();
-		}catch(SQLException se){
+		}catch(Exception e){
 	        try{
-	            se.printStackTrace(Logger.getInstance().addError());
+	            e.printStackTrace(ErrorHandler.getInstance().addError());
 	        }catch(Exception ex){}
-	    }catch(Exception e){
-	        try{
-	            e.printStackTrace(Logger.getInstance().addError());
-	        }catch(Exception ex){}
+	        e.printStackTrace();
 	    }
 
 	    HashMap<String, ArrayList<String>> minMaxTable = new HashMap<String, ArrayList<String>>();

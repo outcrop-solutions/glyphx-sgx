@@ -19,6 +19,7 @@ import synglyphx.jdbc.BasicTable;
 import synglyphx.jdbc.MergedTable;
 import synglyphx.jdbc.driver.Driver;
 import synglyphx.jdbc.driver.DriverSelector;
+import synglyphx.util.ErrorHandler;
 
 public class ParseXY {
 
@@ -62,10 +63,11 @@ public class ParseXY {
 			setInputMap(doc);
 			
 		}catch(Exception e){
-			try{
-			    e.printStackTrace(Logger.getInstance().addError());
-			}catch(Exception ex){}
-		}
+	        try{
+	            e.printStackTrace(ErrorHandler.getInstance().addError());
+	        }catch(Exception ex){}
+	        e.printStackTrace();
+        }
 	}
 
 	private void setInputMap(Document doc){

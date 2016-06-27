@@ -40,6 +40,9 @@ namespace DataEngine
 		std::vector<std::string> getBaseImages();
 		void generateGlyphs();
 		bool IsUpdateNeeded() const;
+		QString JavaErrors();
+		QStringList DistinctValuesForField(QString id, QString table, QString field);
+		void SetQueryForDatasource(QString id, QString table, QString query);
 		~GlyphEngine(){};
 
 	};

@@ -4,6 +4,7 @@ import java.sql.*;
 import synglyphx.io.Logger;
 import synglyphx.jdbc.driver.Driver;
 import synglyphx.jdbc.driver.DriverSelector;
+import synglyphx.util.ErrorHandler;
 
 public class JDBCLoader {
 
@@ -26,7 +27,7 @@ public class JDBCLoader {
       return instance;
    }
    
-   public static String[] connectToServer(String db_url, String user, String pass, String db) {
+   public static int connectToServer(String db_url, String user, String pass, String db) {
 
       boolean same_conn = false;
       if(connectionString != null && username != null && password != null){
@@ -41,7 +42,7 @@ public class JDBCLoader {
  
       try{
          if(same_conn && !driver.getConnection().isClosed()){
-            return database.getSchemas();
+            return 0;
          }
          Logger.getInstance().add(username +" | "+ password);
          driver = DriverSelector.getDriver(dbType);
@@ -49,6 +50,8 @@ public class JDBCLoader {
          Logger.getInstance().add("Loaded driver for "+dbType);
 
          driver.createConnection(connectionString,username,password);
+         System.out.println("Driver is closed: " + driver.getConnection().isClosed());
+         System.out.println("Driver is valid: " + driver.getConnection().isValid(1000));
          Logger.getInstance().add("Connection created");
 
          double start = 0.0;
@@ -60,16 +63,18 @@ public class JDBCLoader {
          System.out.println((end-start)/1000.00);
          Logger.getInstance().add("Database created");
 
-      }catch(SQLException se){
-         try{
-            se.printStackTrace(Logger.getInstance().addError());
-         }catch(Exception ex){}
       }catch(Exception e){
+         System.out.println("Failed1");
          try{
-            e.printStackTrace(Logger.getInstance().addError());
+            e.printStackTrace(ErrorHandler.getInstance().addError());
+            return 1;
          }catch(Exception ex){}
+         e.printStackTrace();
       }
+      return 0;
+   }
 
+   public static String[] getSchemas(){
       return database.getSchemas();
    }
 
@@ -137,10 +142,11 @@ public class JDBCLoader {
             driver.getConnection().close();
             Logger.getInstance().add("");
             Logger.getInstance().add("Closing connection to database...");
-         }catch(SQLException se){
+         }catch(Exception e){
             try{
-               se.printStackTrace(Logger.getInstance().addError());
+               e.printStackTrace(ErrorHandler.getInstance().addError());
             }catch(Exception ex){}
+            e.printStackTrace();
          }
          closeCount = 0;
       }

@@ -4,7 +4,7 @@ import java.security.*;
 import javax.crypto.*;
 import javax.crypto.spec.*;
 import java.io.*;
-import synglyphx.io.Logger;
+import synglyphx.util.ErrorHandler;
  
 public class AESencrp {
 
@@ -41,10 +41,10 @@ public class AESencrp {
             return bytesToHex(encrypted);
         }
         catch(Exception e){
-            e.printStackTrace();
             try{
-                e.printStackTrace(Logger.getInstance().addError());
+                e.printStackTrace(ErrorHandler.getInstance().addError());
             }catch(Exception ex){}
+            e.printStackTrace();
         }
         return null;
     }
@@ -61,10 +61,10 @@ public class AESencrp {
             return originalString;
         }
         catch(Exception e){
-            e.printStackTrace();
             try{
-                e.printStackTrace(Logger.getInstance().addError());
+                e.printStackTrace(ErrorHandler.getInstance().addError());
             }catch(Exception ex){}
+            e.printStackTrace();
         }
         return null;
     }

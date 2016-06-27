@@ -4,40 +4,31 @@ import java.io.*;
 import java.util.Arrays;
 import java.util.ArrayList;
 import synglyphx.data.DataFrame;
+import synglyphx.util.ErrorHandler;
 
 public class CSVReader {
 
 	private DataFrame data = null;
 	private int headers = 0;
 
-	public CSVReader(){
+	public CSVReader(){}
 
+	public void createDataFrame(String path) throws Exception{
+			this.data = new DataFrame();
+			this.parseCSV(path);
+			data.createMinMaxTable();
 	}
 
-	public void createDataFrame(String path){
-		this.data = new DataFrame();
-		this.parseCSV(path);
-		data.createMinMaxTable();
-	}
+	private void parseCSV(String path) throws Exception{
 
-	private void parseCSV(String path){
+		com.opencsv.CSVReader reader = new com.opencsv.CSVReader(new FileReader(path));
+	    String [] nextLine;
 
-		try{
-			com.opencsv.CSVReader reader = new com.opencsv.CSVReader(new FileReader(path));
-	     	String [] nextLine;
-	     	//int x = 1;
-	     	while ((nextLine = reader.readNext()) != null) {
-	     		if(rowNotAllEmpty(nextLine)){
-	     			this.data.addRow(CSVtoArrayList(nextLine));
-	     		}
-	     		//x++;
-	     		//System.out.println(x);
-
-	     	}
-     	} catch (IOException re) {
-			re.printStackTrace();
-		}
-
+     	while ((nextLine = reader.readNext()) != null) {
+     		if(rowNotAllEmpty(nextLine)){
+     			this.data.addRow(CSVtoArrayList(nextLine));
+     		}
+     	}
 	}
 
 	public DataFrame getDataFrame(){

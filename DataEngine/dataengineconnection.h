@@ -58,6 +58,8 @@ namespace DataEngine
 		QStringList getSchemaTableNames(QString schema);
 		QStringList getTables();
 		int sizeOfQuery(QString query);
+		QString JavaErrors();
+		void ClearJavaErrors();
 		void closeConnection();
 		//JDBC END
 		void destroyJVM();
@@ -86,6 +88,7 @@ namespace DataEngine
 
 		QStringList getForeignKeyString(QString tablename);
 		QStringList getRowOfSampleData(int index, int row);
+		QStringList getSchemas();
 		void setTables();
 	};
 }

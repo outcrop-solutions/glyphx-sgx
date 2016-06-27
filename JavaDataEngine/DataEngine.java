@@ -7,6 +7,7 @@ import synglyphx.jdbc.JDBCLoader;
 import synglyphx.jdbc.Database;
 import synglyphx.io.Logger;
 import synglyphx.util.AESencrp;
+import synglyphx.util.ErrorHandler;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
@@ -25,12 +26,19 @@ public class DataEngine {
 		return VERSION;
 	}
 
-	public static void loadFromCSV(final String path){
+	public static int loadFromCSV(final String path){
 		Logger.getInstance().add("Loading CSV...");
-		CSVReader reader = new CSVReader();
-		reader.createDataFrame(path);
-		DataFrame data = reader.getDataFrame();
-		createDataStats(data);
+		try{
+			CSVReader reader = new CSVReader();
+			reader.createDataFrame(path);
+			DataFrame data = reader.getDataFrame();
+			createDataStats(data);
+		}catch(Exception e){
+			try{
+			    e.printStackTrace(ErrorHandler.getInstance().addError());
+			}catch(Exception er){}
+		}
+		return ErrorHandler.getInstance().hasErrors();
 	}
 
 	public static void createDataStats(DataFrame data){
@@ -65,18 +73,30 @@ public class DataEngine {
 		return decrypted;
 	}
 
+	public static String[] getErrors(){
+		return ErrorHandler.getInstance().getErrors();
+	}
+
+	public static void clearErrors(){
+		ErrorHandler.getInstance().clearErrors();
+	}
+
 //JDBC ACCESSOR METHODS
 
-	public static String[] connectToServer(String dburl, String username, String password, String db){
+	public static int connectToServer(String dburl, String username, String password, String db){
 		double start = 0.0;
 		double end = 0.0;
 		start = System.currentTimeMillis();
 		sourceType = db;
 		Logger.getInstance().addT("connectToServer");
-		String[] schemas = JDBCLoader.getInstance().connectToServer(dburl, username, password, db);
+		JDBCLoader.getInstance().connectToServer(dburl, username, password, db);
 		end = System.currentTimeMillis();
 		Logger.getInstance().addT(String.valueOf((end-start)/1000.00));
-		return schemas;
+		return ErrorHandler.getInstance().hasErrors();
+	}
+
+	public static String[] getSchemas(){
+		return JDBCLoader.getInstance().getSchemas();
 	}
 
 	public static int sizeOfQuery(String query){
@@ -197,14 +217,28 @@ public class DataEngine {
 		//String dec = d.decryptPassword(enc);
 		//System.out.println(enc);
 		//System.out.println(dec);
-		
-		d.loadFromCSV("C:/Users/Bryan/Desktop/East Coast Only/Data_Sample_Mockup_Trimmed.csv");
-		String[] fields = d.getFieldsForTable(0,"csv");
-		for(int i = 0; i < fields.length; i++){
-			//System.out.println(fields[i]);
-			String[] stats = d.getStatsForField(0,fields[i]);
-			System.out.println(stats[0]+", "+stats[1]+", "+stats[2]+", "+stats[3]+", "+stats[4]+", "+stats[5]);
+		/*
+		int err = d.loadFromCSV("C:/Users/Bryan/Desktop/East Coast Only/Data_Sample_Mockup_Trimmed.csv");
+		if(err == 1){
+			String [] errors = d.getErrors();
+			System.out.println("Error List:\n");
+			for(int i = 0; i < errors.length; i++){
+				System.out.println(errors[i]);
+			}
+		}else{
+			String[] fields = d.getFieldsForTable(0,"csv");
+			for(int i = 0; i < fields.length; i++){
+				//System.out.println(fields[i]);
+				String[] stats = d.getStatsForField(0,fields[i]);
+				System.out.println(stats[0]+", "+stats[1]+", "+stats[2]+", "+stats[3]+", "+stats[4]+", "+stats[5]);
+			}
+		}*/
+		int err = d.connectToServer("sqlite:C:/Users/Bryan/Desktop/Link Test Exo/test_exoplanet.db","","","sqlite3");
+		String[] tbls = d.getTableNames();
+		for(int i = 0; i < tbls.length; i++){
+			System.out.println(tbls[i]);
 		}
+		String[] sch_list = d.getSchemas();
 		//String[] sch_list = d.connectToServer("mysql://10.128.132.153:3306/world","synglyphx","password","mysql");
 		/*String host = "oracle://@10.128.132.153:1521:orcl";
 		String user = "nduser";

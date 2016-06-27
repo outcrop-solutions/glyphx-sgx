@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.ArrayList;
 import synglyphx.glyph.XMLGlyphTemplate;
 import synglyphx.data.SourceDataInfo;
+import synglyphx.data.FilterField;
 import synglyphx.util.*;
 import synglyphx.glyph.Mapper;
 import synglyphx.io.Logger;
@@ -34,6 +35,7 @@ public class SDTReader {
 	private ArrayList<BaseObject> base_objects = null;
 	private HashMap<String,Integer> dataIds = null;
 	private HashMap<String,FieldGroup> gNames = null;
+	private ArrayList<FilterField> frontEndFilters = null; 
 	private SDTLinkReader linkReader = null;
 	private String[] colorStr = null;
 	private String tagFieldDefault;
@@ -49,6 +51,8 @@ public class SDTReader {
 	private String timestamp;
 	private boolean download;
 	private boolean updateNeeded;
+	private boolean finishedLoading;
+	private Document doc;
 
 	public SDTReader(String sdtPath, String outDir, String application){
 		Logger.getInstance().add("Reading SDT at "+sdtPath);
@@ -56,6 +60,7 @@ public class SDTReader {
 		this.app = application;
 		this.download = false;
 		this.updateNeeded = true;
+		this.finishedLoading = false;
 		initXMLReader(sdtPath);
 	}
 
@@ -100,7 +105,7 @@ public class SDTReader {
 			File file = new File(sdtPath);
 			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-			Document doc = dBuilder.parse(file);
+			doc = dBuilder.parse(file);
 			doc.getDocumentElement().normalize();
 
 			Node transform = doc.getElementsByTagName("Transform").item(0);
@@ -124,11 +129,11 @@ public class SDTReader {
 			}
 
 		}catch(Exception e){
-			//e.printStackTrace();
-			try{
-			    e.printStackTrace(Logger.getInstance().addError());
-			}catch(Exception ex){}
-		}
+	        try{
+	            e.printStackTrace(ErrorHandler.getInstance().addError());
+	        }catch(Exception ex){}
+	        e.printStackTrace();
+        }
 
 	}
 
@@ -158,14 +163,20 @@ public class SDTReader {
 					NodeList categories = root.getChildNodes();
 					temp.setToMerge(getMergeStatus(root));
 					addNode(categories, temp, 0);
+					setFrontEnd(root);
 					rootCount++;
 				}
 
 			}
-		} catch (Exception ex) {
-			ex.printStackTrace();
-			Logger.getInstance().add("Failed to parse SDT file.");
-		}
+		}catch(Exception e){
+	        try{
+	            e.printStackTrace(ErrorHandler.getInstance().addError());
+	        }catch(Exception ex){}
+	        e.printStackTrace();
+        }
+	}
+
+	public void finishLoading() throws Exception{
 		createDataFrames();
 		Logger.getInstance().add("Created DataFrames.");
 		checkFieldGroups(doc);
@@ -174,6 +185,11 @@ public class SDTReader {
 		Logger.getInstance().add("Set defaults and properties...");
 		setRootAndLastIDs();
 		Logger.getInstance().add("Finished absorbing XML.");
+		finishedLoading = true;
+	}
+
+	public boolean finishedLoading() {
+		return finishedLoading;
 	}
 
 	private String getValue(String tag, Element element) {
@@ -415,6 +431,28 @@ public class SDTReader {
 		Logger.getInstance().add("Set input map.");
 	}
 
+	private void setFrontEnd(Node root){
+
+		Element rootElement = (Element) root;
+		if(rootElement.getElementsByTagName("FrontEnd").getLength() == 0) return;
+		Element frontEnd = (Element) rootElement.getElementsByTagName("FrontEnd").item(0);
+		NodeList filterFields = frontEnd.getElementsByTagName("FilterField");
+
+		if(frontEndFilters == null)
+			frontEndFilters = new ArrayList<FilterField>();
+
+		for(int i = 0; i < filterFields.getLength(); i++) {
+			Node object = filterFields.item(i);
+			Element element = (Element) object;
+			String id = element.getAttribute("id");
+			String table = element.getAttribute("table");
+			String field = element.getAttribute("field");
+			if(!frontEndFilters.contains(new FilterField(id, table, field)))
+				frontEndFilters.add(new FilterField(id, table, field));
+		}
+		
+	}
+
 	private void getDataPaths(Document doc){
 
 		dataPaths = new ArrayList<SourceDataInfo>();
@@ -510,7 +548,7 @@ public class SDTReader {
 		
 	}
 
-	private void createDataFrames(){
+	private void createDataFrames() throws Exception{
 
 		for(int i=0; i < dataPaths.size();i++){
 			if(dataPaths.get(i).getType().equals("csv")){
@@ -520,27 +558,19 @@ public class SDTReader {
 			}else{
 				//dataframe creator for JDBC
 				Table table = null;
-				try{
-			    	Driver driver = DriverSelector.getDriver(dataPaths.get(i).getType());
-		            Class.forName(driver.packageName());
-			        Logger.getInstance().add("Connecting to Server...");
+		
+		    	Driver driver = DriverSelector.getDriver(dataPaths.get(i).getType());
+	            Class.forName(driver.packageName());
+		        Logger.getInstance().add("Connecting to Server...");
 
-			        driver.createConnection(dataPaths.get(i).getHost(),dataPaths.get(i).getUsername(),dataPaths.get(i).getPassword());
-			        //System.out.println(sourceData.getQuery());
-			        if(dataPaths.get(i).isMerged()){
-			        	table = new MergedTable(dataPaths.get(i).getQuery(), driver);
-			        }else{
-			        	table = new BasicTable(dataPaths.get(i).getTable(), dataPaths.get(i).getQuery(), driver);
-			        }
-			    }catch(SQLException se){
-			        try{
-			            se.printStackTrace(Logger.getInstance().addError());
-			        }catch(Exception ex){}
-			    }catch(Exception e){
-			        try{
-			            e.printStackTrace(Logger.getInstance().addError());
-			        }catch(Exception ex){}
-			    }
+		        driver.createConnection(dataPaths.get(i).getHost(),dataPaths.get(i).getUsername(),dataPaths.get(i).getPassword());
+		        //System.out.println(sourceData.getQuery());
+		        if(dataPaths.get(i).isMerged()){
+		        	table = new MergedTable(dataPaths.get(i).getQuery(), driver);
+		        }else{
+		        	table = new BasicTable(dataPaths.get(i).getTable(), dataPaths.get(i).getQuery(), driver);
+		        }
+
 			    dataPaths.get(i).setDataFrame(table.createDataFrame());
 			}
 
@@ -664,8 +694,11 @@ public class SDTReader {
 			}
 
 		}catch(Exception e){
-			//e.printStackTrace();
-		}
+	        try{
+	            e.printStackTrace(ErrorHandler.getInstance().addError());
+	        }catch(Exception ex){}
+	        e.printStackTrace();
+        }
 
 	}
 
@@ -769,38 +802,80 @@ public class SDTReader {
 
 	public void setRootAndLastIDs(){
 
-		try{
-			int currentRoot = 1;
-			SourceDataInfo currentDataSource = null;
-			ArrayList<Integer> usedDS = new ArrayList<Integer>();
-			XMLGlyphTemplate prevTemp = null;
-			for(int i = 1; i < count+1; i++){
-				XMLGlyphTemplate temp = templates.get(i);
-				if(temp.getChildOf() == 0){
-					if(i != 1){
-						currentDataSource.setLastID(i-1); //OLD
-						prevTemp.setLastChildID(i-1); //NEW
-					}
-					if(!usedDS.contains(temp.getDataSource())){
-						currentDataSource = dataPaths.get(temp.getDataSource());
-					}else{
-						dataPaths.add(dataPaths.get(temp.getDataSource()));
-						temp.setDataSource(dataPaths.size()-1);
-						currentDataSource = dataPaths.get(temp.getDataSource());
-					}
-					currentDataSource.setRootID(i);
-					usedDS.add(temp.getDataSource());
-					prevTemp = temp;
+		int currentRoot = 1;
+		SourceDataInfo currentDataSource = null;
+		ArrayList<Integer> usedDS = new ArrayList<Integer>();
+		XMLGlyphTemplate prevTemp = null;
+		for(int i = 1; i < count+1; i++){
+			XMLGlyphTemplate temp = templates.get(i);
+			if(temp.getChildOf() == 0){
+				if(i != 1){
+					currentDataSource.setLastID(i-1); //OLD
+					prevTemp.setLastChildID(i-1); //NEW
 				}
-				if(i == count){
-					currentDataSource.setLastID(i); //OLD
-					prevTemp.setLastChildID(i); //NEW
+				if(!usedDS.contains(temp.getDataSource())){
+					currentDataSource = dataPaths.get(temp.getDataSource());
+				}else{
+					dataPaths.add(dataPaths.get(temp.getDataSource()));
+					temp.setDataSource(dataPaths.size()-1);
+					currentDataSource = dataPaths.get(temp.getDataSource());
+				}
+				currentDataSource.setRootID(i);
+				usedDS.add(temp.getDataSource());
+				prevTemp = temp;
+			}
+			if(i == count){
+				currentDataSource.setLastID(i); //OLD
+				prevTemp.setLastChildID(i); //NEW
+			}
+		}
+	}
+
+	public String[] distinctValuesForField(String id, String table, String field){
+		SourceDataInfo temp = null;
+		for(SourceDataInfo sdi : dataPaths){
+			if(sdi.getID().equals(id) && sdi.getTable().equals(table)){
+				temp = sdi;
+				break;
+			}
+		}
+		if(temp.getType().equals("sqlite3")){
+			for(FilterField filter : frontEndFilters){
+				if(filter.id().equals(id) && filter.table().equals(table) && filter.field().equals(field)){
+					return filter.distinctValues(dataDriver(temp));
 				}
 			}
+		}
+		return new String[1];
+	}
+
+	private Driver dataDriver(SourceDataInfo sdi){
+
+		if(sdi.getDriver() != null){
+			return sdi.getDriver();
+		}
+		try{
+			Driver driver = DriverSelector.getDriver(sdi.getType());
+         	Class.forName(driver.packageName());
+         	driver.createConnection(sdi.getHost(),sdi.getUsername(),sdi.getPassword());
+         	sdi.setDriver(driver);
+
 		}catch(Exception e){
-			try{
-			    e.printStackTrace(Logger.getInstance().addError());
-			}catch(Exception ex){}
+	        try{
+	            e.printStackTrace(ErrorHandler.getInstance().addError());
+	        }catch(Exception ex){}
+	        e.printStackTrace();
+        }
+
+      	return sdi.getDriver();
+	}
+
+	public void setQueryForDatasource(String id, String table, String query){
+		for(SourceDataInfo sdi : dataPaths){
+			if(sdi.getID().equals(id) && sdi.getTable().equals(table)){
+				sdi.setQuery(query);
+				break;
+			}
 		}
 	}
 }

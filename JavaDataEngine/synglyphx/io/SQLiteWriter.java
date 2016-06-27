@@ -4,7 +4,6 @@ import java.sql.*;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.ArrayList;
-//import com.almworks.sqlite4java.*;
 import java.io.File;
 import synglyphx.jdbc.Table;
 import synglyphx.jdbc.BasicTable;
@@ -14,6 +13,7 @@ import synglyphx.jdbc.driver.DriverSelector;
 import synglyphx.data.DataFrame;
 import synglyphx.data.SourceDataInfo;
 import synglyphx.glyph.XMLGlyphTemplate;
+import synglyphx.util.ErrorHandler;
 
 /*
 TABLE INDEX
@@ -61,11 +61,12 @@ public class SQLiteWriter {
 	        pstmt = conn.prepareStatement(query);
 	        boolean inserted = pstmt.execute();
 
-		}catch(Exception se){
-			try{
-	            se.printStackTrace(Logger.getInstance().addTError());
-	        }catch(Exception e){}
-		}
+		}catch(Exception e){
+	        try{
+	            e.printStackTrace(ErrorHandler.getInstance().addError());
+	        }catch(Exception ex){}
+	        e.printStackTrace();
+	    }
 	}
 
 	public void writeTableIndex(){
@@ -88,12 +89,12 @@ public class SQLiteWriter {
 			int[] updates = pstmt.executeBatch();
 			writeAllTables();
 			conn.close();
-		}catch(Exception se){
-			se.printStackTrace();
-			try{
-	            se.printStackTrace(Logger.getInstance().addTError());
-	        }catch(Exception e){}
-		}
+		}catch(Exception e){
+	        try{
+	            e.printStackTrace(ErrorHandler.getInstance().addError());
+	        }catch(Exception ex){}
+	        e.printStackTrace();
+	    }
 	}
 
 	public void writeAllTables(){
@@ -106,11 +107,12 @@ public class SQLiteWriter {
 				writeTable(sdi);
 			}
 
-		}catch(SQLException se){
-			try{
-	            se.printStackTrace(Logger.getInstance().addTError());
-	        }catch(Exception e){}
-		}
+		}catch(Exception e){
+	        try{
+	            e.printStackTrace(ErrorHandler.getInstance().addError());
+	        }catch(Exception ex){}
+	        e.printStackTrace();
+	    }
 	}
 
 	private void writeTable(SourceDataInfo sdi) throws SQLException{

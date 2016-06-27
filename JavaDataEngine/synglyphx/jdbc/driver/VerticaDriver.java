@@ -3,6 +3,7 @@ package synglyphx.jdbc.driver;
 import java.sql.*;
 import synglyphx.io.Logger;
 import java.util.ArrayList;
+import synglyphx.util.ErrorHandler;
 
 public class VerticaDriver implements Driver {
 
@@ -16,7 +17,7 @@ public class VerticaDriver implements Driver {
 		return "com.vertica.jdbc.Driver";
 	}
 
-	public void createConnection(String conn_str, String un, String pw) throws SQLException {
+	public void createConnection(String conn_str, String un, String pw) throws Exception {
 		Logger.getInstance().add("Creating connection...");
 		Logger.getInstance().add(conn_str);
 		Logger.getInstance().add(un);
@@ -24,17 +25,7 @@ public class VerticaDriver implements Driver {
 		this.conn_str = conn_str;
 		this.un = un;
 		this.pw = pw;
-		try{
-			this.conn = DriverManager.getConnection(conn_str,un,pw);
-		}catch(SQLException se){
-	        try{
-	            se.printStackTrace(Logger.getInstance().addError());
-	        }catch(Exception ex){}
-      	}catch(Exception e){
-         	try{
-            	e.printStackTrace(Logger.getInstance().addError());
-         	}catch(Exception ex){}
-      	}
+		this.conn = DriverManager.getConnection(conn_str,un,pw);
 	}
 
 	public String dataStatsQuery(String cn, String eoq, boolean num){
@@ -84,15 +75,12 @@ public class VerticaDriver implements Driver {
 	public Connection getNewConnection(){
 		try{
 			return DriverManager.getConnection(conn_str,un,pw);
-		}catch(SQLException se){
-	        try{
-	            se.printStackTrace(Logger.getInstance().addError());
-	        }catch(Exception ex){}
-      	}catch(Exception e){
-         	try{
-            	e.printStackTrace(Logger.getInstance().addError());
-         	}catch(Exception ex){}
-      	}
+		}catch(Exception e){
+            try{
+                e.printStackTrace(ErrorHandler.getInstance().addError());
+            }catch(Exception ex){}
+            e.printStackTrace();
+        }
       	return null;
 	}
 
@@ -110,5 +98,9 @@ public class VerticaDriver implements Driver {
 			return split[1];
 		}
 		return name;
+	}
+
+	public String getDistinctQuery(String table, String field){
+		return "";
 	}
 }

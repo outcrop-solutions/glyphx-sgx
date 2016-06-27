@@ -3,6 +3,7 @@ package synglyphx.jdbc.driver;
 import java.sql.*;
 import synglyphx.io.Logger;
 import java.util.ArrayList;
+import synglyphx.util.ErrorHandler;
 
 public class SQLiteDriver implements Driver {
 
@@ -14,7 +15,7 @@ public class SQLiteDriver implements Driver {
 		return "org.sqlite.JDBC";
 	}
 
-	public void createConnection(String con_str, String un, String pw) throws SQLException {
+	public void createConnection(String con_str, String un, String pw) throws Exception {
 		String[] splt_str = con_str.split("jdbc:");
 		if(con_str.contains("sqlite:")){
 			this.conn_str = con_str;
@@ -68,16 +69,20 @@ public class SQLiteDriver implements Driver {
 	public Connection getNewConnection(){
 		try{
 			return DriverManager.getConnection(conn_str);
-		}catch(SQLException se){
-	        try{
-	            se.printStackTrace(Logger.getInstance().addError());
-	        }catch(Exception ex){}
-      	}catch(Exception e){
-         	try{
-            	e.printStackTrace(Logger.getInstance().addError());
-         	}catch(Exception ex){}
-      	}
+		}catch(Exception e){
+            try{
+                e.printStackTrace(ErrorHandler.getInstance().addError());
+            }catch(Exception ex){}
+            e.printStackTrace();
+        }
       	return null;
+	}
+
+	public String getDistinctQuery(String table, String field){
+		String query = "SELECT `"+field+"` FROM ";
+		query += "(SELECT * FROM "+table+" ORDER BY `"+field+"` DESC) ";
+		query += "GROUP BY `"+field+"`;";
+		return query;
 	}
 
 	public Connection createTempConnection(String conn_str, String un, String pw) throws SQLException {

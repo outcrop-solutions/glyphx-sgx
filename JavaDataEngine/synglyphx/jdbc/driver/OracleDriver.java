@@ -4,6 +4,7 @@ import java.sql.*;
 import synglyphx.io.Logger;
 import java.util.ArrayList;
 import java.util.HashMap;
+import synglyphx.util.ErrorHandler;
 
 public class OracleDriver implements Driver {
 
@@ -20,7 +21,7 @@ public class OracleDriver implements Driver {
 		return "oracle.jdbc.driver.OracleDriver";
 	}
 
-	public void createConnection(String conn_str, String un, String pw) throws SQLException {
+	public void createConnection(String conn_str, String un, String pw) throws Exception {
 		String[] strsplt = conn_str.split("oracle:");
 		conn_str = strsplt[0]+"oracle:thin:"+strsplt[1];
 		Logger.getInstance().add("Creating connection...");
@@ -30,17 +31,8 @@ public class OracleDriver implements Driver {
 		this.conn_str = conn_str;
 		this.un = un;
 		this.pw = pw;
-		try{
-			this.conn = DriverManager.getConnection(conn_str,un,pw);
-		}catch(SQLException se){
-	        try{
-	            se.printStackTrace(Logger.getInstance().addError());
-	        }catch(Exception ex){}
-      	}catch(Exception e){
-         	try{
-            	e.printStackTrace(Logger.getInstance().addError());
-         	}catch(Exception ex){}
-      	}
+		this.conn = DriverManager.getConnection(conn_str,un,pw);
+
 	}
 
 	public String dataStatsQuery(String cn, String eoq, boolean num){
@@ -106,15 +98,12 @@ public class OracleDriver implements Driver {
 	public Connection getNewConnection(){
 		try{
 			return DriverManager.getConnection(conn_str,un,pw);
-		}catch(SQLException se){
-	        try{
-	            se.printStackTrace(Logger.getInstance().addError());
-	        }catch(Exception ex){}
-      	}catch(Exception e){
-         	try{
-            	e.printStackTrace(Logger.getInstance().addError());
-         	}catch(Exception ex){}
-      	}
+		}catch(Exception e){
+            try{
+                e.printStackTrace(ErrorHandler.getInstance().addError());
+            }catch(Exception ex){}
+            e.printStackTrace();
+        }
       	return null;
 	}
 
@@ -177,5 +166,9 @@ public class OracleDriver implements Driver {
             	se.printStackTrace(Logger.getInstance().addError());
          	}catch(Exception ex){}
       	}
+	}
+
+	public String getDistinctQuery(String table, String field){
+		return "";
 	}
 }

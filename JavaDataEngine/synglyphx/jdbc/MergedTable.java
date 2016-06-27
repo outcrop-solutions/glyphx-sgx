@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import synglyphx.io.Logger;
 import synglyphx.jdbc.driver.Driver;
+import synglyphx.util.ErrorHandler;
 
 public class MergedTable extends Table{
 
@@ -28,32 +29,33 @@ public class MergedTable extends Table{
 			String sql = query;
 			driver.setQuery(query);
 			PreparedStatement pstmt = driver.getConnection().prepareStatement(sql);
-            ResultSet rs = pstmt.executeQuery();
-            ResultSetMetaData metaData = rs.getMetaData();
+                  ResultSet rs = pstmt.executeQuery();
+                  ResultSetMetaData metaData = rs.getMetaData();
 
-            int rowCount = metaData.getColumnCount();
+                  int rowCount = metaData.getColumnCount();
 
-            for (int i = 0; i < rowCount; i++) {
-            	table_name = metaData.getTableName(i + 1);
-            	column_type = metaData.getColumnTypeName(i + 1);
-            	column_name = metaData.getColumnName(i + 1);
-            	//System.out.println(column_type);
-            	String temp = driver.mergedField(table_name, column_name);
-            	if(jdbcTypes.containsKey(column_type.toUpperCase())){
-            		columnNames.add(temp);
-            		columnTypes.put(temp, jdbcTypes.get(column_type.toUpperCase()));
-            	}else{
-            		columnNames.add(temp);
-            		columnTypes.put(temp, "String");
-            	}
+                  for (int i = 0; i < rowCount; i++) {
+                  	table_name = metaData.getTableName(i + 1);
+                  	column_type = metaData.getColumnTypeName(i + 1);
+                  	column_name = metaData.getColumnName(i + 1);
+                  	//System.out.println(column_type);
+                  	String temp = driver.mergedField(table_name, column_name);
+                  	if(jdbcTypes.containsKey(column_type.toUpperCase())){
+                  		columnNames.add(temp);
+                  		columnTypes.put(temp, jdbcTypes.get(column_type.toUpperCase()));
+                  	}else{
+                  		columnNames.add(temp);
+                  		columnTypes.put(temp, "String");
+                  	}
+                  }
+                  rs.close();
+
+		}catch(Exception e){
+                  try{
+                  e.printStackTrace(ErrorHandler.getInstance().addError());
+                  }catch(Exception ex){}
+                  e.printStackTrace();
             }
-            rs.close();
-
-		}catch(SQLException se){
-         	try{
-            	se.printStackTrace(Logger.getInstance().addError());
-         	}catch(Exception ex){}
-      	}
 	}
 }
 

@@ -11,6 +11,7 @@ import synglyphx.util.ColorIndex;
 import synglyphx.util.BaseObject;
 import synglyphx.glyph.CoordinateMap;
 import synglyphx.link.LinkTemplate;
+import synglyphx.util.ErrorHandler;
 
 public class CSVWriter {
 	
@@ -99,9 +100,11 @@ public class CSVWriter {
 		        epibfw.write(eposid);
 	        }
 	        epibfw.close();
-	    }catch(IOException ioe){
-	    	ioe.printStackTrace();
-	    	Logger.getInstance().add(ioe.getMessage());
+	    }catch(Exception e){
+	        try{
+	            e.printStackTrace(ErrorHandler.getInstance().addError());
+	        }catch(Exception ex){}
+	        e.printStackTrace();
 	    }
 
 	}
@@ -291,9 +294,11 @@ public class CSVWriter {
 	        bf.close();
 	        bfw.close();
 
-	    }catch(IOException ioe){
-	    	ioe.printStackTrace();
-	    	Logger.getInstance().add("Failed to write antznode and antztag files.");
+	    }catch(Exception e){
+	        try{
+	            e.printStackTrace(ErrorHandler.getInstance().addError());
+	        }catch(Exception ex){}
+	        e.printStackTrace();
 	    }
 	}
 
@@ -435,8 +440,11 @@ public class CSVWriter {
 			bf.write("20 \"np_globals\",1,\"item_count\",\"i\",1,\"\",\"\",\"20\"");
 
 			bf.close();
-	    }catch(IOException ioe){
-	    	Logger.getInstance().add("Failed to write antzglobals.csv");
+	    }catch(Exception e){
+	        try{
+	            e.printStackTrace(ErrorHandler.getInstance().addError());
+	        }catch(Exception ex){}
+	        e.printStackTrace();
 	    }
 	}
 
@@ -455,8 +463,11 @@ public class CSVWriter {
 			nourl.write("</html>");
 
 			nourl.close();
-		}catch(IOException ioe){
-	    	Logger.getInstance().add("Failed to create nourl.html file.");
+		}catch(Exception e){
+	        try{
+	            e.printStackTrace(ErrorHandler.getInstance().addError());
+	        }catch(Exception ex){}
+	        e.printStackTrace();
 	    }
 	}
 
@@ -507,9 +518,12 @@ public class CSVWriter {
 					BufferedWriter bf = new BufferedWriter(file);
 					bf.write(bo.getUpdateCheckString());
 					bf.close();
-				}catch(IOException ioe){
-
-				}
+				}catch(Exception e){
+			        try{
+			            e.printStackTrace(ErrorHandler.getInstance().addError());
+			        }catch(Exception ex){}
+			        e.printStackTrace();
+			    }
 			}
 		}
 	}

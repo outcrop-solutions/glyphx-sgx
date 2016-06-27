@@ -3,6 +3,7 @@ package synglyphx.data;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
+import synglyphx.jdbc.driver.Driver;
 
 public class SourceDataInfo {
 
@@ -24,6 +25,7 @@ public class SourceDataInfo {
  	private boolean merged_table;
  	private boolean hasTextInterpolation;
  	private ArrayList<String> textInterpolationFields;
+ 	private Driver tempDriver = null;
  	//private ArrayList<String> inputFields;
 
  	public SourceDataInfo(){
@@ -35,6 +37,10 @@ public class SourceDataInfo {
  			textInterpolationFields = new ArrayList<String>();
  		}
  		this.hasTextInterpolation = true;
+ 	}
+
+ 	public void setDriver(Driver driver){
+ 		tempDriver = driver;
  	}
 
  	public void setRootID(int id){
@@ -80,7 +86,8 @@ public class SourceDataInfo {
  	}
 
  	public void setQuery(String query){
- 		merged_table = true;
+ 		if(tableName.equals("Merged"))
+ 			merged_table = true;
  		this.query = query;
  	}
 
@@ -114,6 +121,10 @@ public class SourceDataInfo {
 
  	public boolean hasTextInterpolation(){
  		return hasTextInterpolation;
+ 	}
+
+ 	public Driver getDriver(){
+ 		return tempDriver;
  	}
 
  	public String getHost(){

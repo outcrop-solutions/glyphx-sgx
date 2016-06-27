@@ -31,12 +31,13 @@ namespace DataEngine
 		if (jcls != NULL) {
 			//qDebug() << "GlyphEngine class found";
 			jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
-				"initiate", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V");
+				"initiate", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)I");
+			int err_code = 0;
 			if (methodId != NULL) {
 				jstring str = jniEnv->NewStringUTF(sdtPath.c_str());
 				jstring out = jniEnv->NewStringUTF(outDir.c_str());
 				jstring exp = jniEnv->NewStringUTF(appName.c_str());
-				jniEnv->CallStaticVoidMethod(jcls, methodId, str, out, exp);
+				err_code = (jint)jniEnv->CallStaticIntMethod(jcls, methodId, str, out, exp);
 
 				if (jniEnv->ExceptionCheck()) {
 					jniEnv->ExceptionDescribe();
@@ -48,6 +49,7 @@ namespace DataEngine
 			}
 		}
 		//myfile.close();
+
 	}
 
 	void GlyphEngine::prepare(){
@@ -344,20 +346,92 @@ namespace DataEngine
 
 		if (jcls != NULL) {
 			jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
-				"beginGlyphGeneration", "()Z");
-			bool memory = true;
+				"beginGlyphGeneration", "()I");
+			int err_code = 0;
 			if (methodId != NULL) {
-				memory = (jboolean)jniEnv->CallStaticBooleanMethod(jcls, methodId);
+				err_code = (jint)jniEnv->CallStaticIntMethod(jcls, methodId);
 				if (jniEnv->ExceptionCheck()) {
 					jniEnv->ExceptionDescribe();
 					jniEnv->ExceptionClear();
 				}
 			}
 
-			if (!memory){
-				throw std::runtime_error("JVM Error: Not Enough Memory");
+			if (err_code == 1){
+				throw std::runtime_error("Failed to generate glyphs");
 			}
 		}
 		copyBaseImages();
+	}
+
+	QStringList GlyphEngine::DistinctValuesForField(QString id, QString table, QString field){
+
+		jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
+			"distinctValuesForField", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)[Ljava/lang/String;");
+		jobjectArray itr;
+		QStringList values;
+		if (methodId != NULL) {
+			jstring jid = jniEnv->NewStringUTF(id.toStdString().c_str());
+			jstring jtbl = jniEnv->NewStringUTF(table.toStdString().c_str());
+			jstring jfld = jniEnv->NewStringUTF(field.toStdString().c_str());
+			itr = (jobjectArray)jniEnv->CallStaticObjectMethod(jcls, methodId, jid, jtbl, jfld);
+			if (jniEnv->ExceptionCheck()) {
+				jniEnv->ExceptionDescribe();
+				jniEnv->ExceptionClear();
+			}
+
+			int length = jniEnv->GetArrayLength(itr);
+
+			for (int i = 0; i < length; i++){
+				jstring element = (jstring)jniEnv->GetObjectArrayElement(itr, i);
+				if (length == 1 && element == NULL){ break; }
+				const char *str = jniEnv->GetStringUTFChars(element, 0);
+				QString value(str);
+				values << value;
+			}
+		}
+
+		return values;
+	}
+
+	void GlyphEngine::SetQueryForDatasource(QString id, QString table, QString query){
+		
+		jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
+			"setQueryForDatasource", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V");
+		if (methodId != NULL) {
+			jstring jid = jniEnv->NewStringUTF(id.toStdString().c_str());
+			jstring jtbl = jniEnv->NewStringUTF(table.toStdString().c_str());
+			jstring jqry = jniEnv->NewStringUTF(query.toStdString().c_str());
+			jniEnv->CallStaticVoidMethod(jcls, methodId, jid, jtbl, jqry);
+			if (jniEnv->ExceptionCheck()) {
+				jniEnv->ExceptionDescribe();
+				jniEnv->ExceptionClear();
+			}
+		}
+	}
+
+	QString GlyphEngine::JavaErrors(){
+
+		jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
+			"getErrors", "()[Ljava/lang/String;");
+		jobjectArray itr;
+		QString errors;
+		if (methodId != NULL) {
+			itr = (jobjectArray)jniEnv->CallStaticObjectMethod(jcls, methodId);
+			if (jniEnv->ExceptionCheck()) {
+				jniEnv->ExceptionDescribe();
+				jniEnv->ExceptionClear();
+			}
+
+			int length = jniEnv->GetArrayLength(itr);
+
+			for (int i = 0; i < length; i++){
+				jstring element = (jstring)jniEnv->GetObjectArrayElement(itr, i);
+				if (length == 1 && element == NULL){ break; }
+				const char *str = jniEnv->GetStringUTFChars(element, 0);
+				QString error(str);
+				errors += "\n" + error;
+			}
+		}
+		return errors;
 	}
 }
