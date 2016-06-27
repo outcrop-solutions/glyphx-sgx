@@ -229,6 +229,7 @@ public class DataEngine {
 				System.out.println(stats[0]+", "+stats[1]+", "+stats[2]+", "+stats[3]+", "+stats[4]+", "+stats[5]);
 			}
 		}*/
+		int err = d.connectToServer("sqlite:C:/Users/Bryan/Desktop/Link Test Exo/test_exoplanet.db","","","sqlite3");
 		String[] tbls = d.getTableNames();
 		for(int i = 0; i < tbls.length; i++){
 			System.out.println(tbls[i]);

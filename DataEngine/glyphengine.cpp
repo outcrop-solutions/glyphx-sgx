@@ -357,6 +357,7 @@ namespace DataEngine
 			}
 
 			if (err_code == 1){
+				throw std::runtime_error("Failed to generate glyphs");
 			}
 		}
 		copyBaseImages();
