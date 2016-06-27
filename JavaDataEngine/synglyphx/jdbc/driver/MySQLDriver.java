@@ -3,6 +3,7 @@ package synglyphx.jdbc.driver;
 import java.sql.*;
 import synglyphx.io.Logger;
 import java.util.ArrayList;
+import synglyphx.util.ErrorHandler;
 
 public class MySQLDriver implements Driver {
 
@@ -16,7 +17,7 @@ public class MySQLDriver implements Driver {
 		return "com.mysql.jdbc.Driver";
 	}
 
-	public void createConnection(String conn_str, String un, String pw) throws SQLException {
+	public void createConnection(String conn_str, String un, String pw) throws Exception {
 		this.conn_str = conn_str;
 		this.un = un;
 		this.pw = pw;
@@ -68,15 +69,12 @@ public class MySQLDriver implements Driver {
 	public Connection getNewConnection(){
 		try{
 			return DriverManager.getConnection(conn_str,un,pw);
-		}catch(SQLException se){
-	        try{
-	            se.printStackTrace(Logger.getInstance().addError());
-	        }catch(Exception ex){}
-      	}catch(Exception e){
-         	try{
-            	e.printStackTrace(Logger.getInstance().addError());
-         	}catch(Exception ex){}
-      	}
+		}catch(Exception e){
+            try{
+                e.printStackTrace(ErrorHandler.getInstance().addError());
+            }catch(Exception ex){}
+            e.printStackTrace();
+        }
       	return null;
 	}
 

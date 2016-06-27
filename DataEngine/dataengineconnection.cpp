@@ -160,16 +160,19 @@ namespace DataEngine
 			}
 
 			jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
-				"loadFromCSV", "(Ljava/lang/String;)V");
+				"loadFromCSV", "(Ljava/lang/String;)I");
+			int err_code = 0;
 			if (methodId != NULL) {
-				std::cout << "Loading csv..." << std::endl;
-
 				jstring str = jniEnv->NewStringUTF(path.c_str());
-				jniEnv->CallStaticVoidMethod(jcls, methodId, str);
+				err_code = (jint)jniEnv->CallStaticIntMethod(jcls, methodId, str);
 				if (jniEnv->ExceptionCheck()) {
 					jniEnv->ExceptionDescribe();
 					jniEnv->ExceptionClear();
 				}
+			}
+
+			if (err_code == 1){
+				throw std::runtime_error("Failed to load CSV.");
 			}
 
 			m_openConnection = QString::fromStdString(path);
@@ -236,23 +239,43 @@ namespace DataEngine
 		}
 
 		jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
-			"connectToServer", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)[Ljava/lang/String;");
-		jobjectArray itr;
-		QStringList schemas;
+			"connectToServer", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)I");
+		int err_code = 0;
 		if (methodId != NULL) {
 			jstring db = jniEnv->NewStringUTF(db_url.toStdString().c_str());
 			jstring usr = jniEnv->NewStringUTF(user.toStdString().c_str());
 			jstring pwd = jniEnv->NewStringUTF(pass.toStdString().c_str());
 			jstring type = jniEnv->NewStringUTF(db_type.toStdString().c_str());
-			itr = (jobjectArray)jniEnv->CallStaticObjectMethod(jcls, methodId, db, usr, pwd, type);
+			err_code = (jint)jniEnv->CallStaticIntMethod(jcls, methodId, db, usr, pwd, type);
 			if (jniEnv->ExceptionCheck()) {
 				jniEnv->ExceptionDescribe();
 				jniEnv->ExceptionClear();
 			}
-		
-			int length = jniEnv->GetArrayLength(itr);
 
 			m_openConnection = db_url;
+
+			if (err_code != 0){
+				throw std::runtime_error("Failed to connect to database.");
+			}
+
+		}
+		setTables();
+		return getSchemas();
+	}
+
+	QStringList DataEngineConnection::getSchemas(){
+		jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
+			"getSchemas", "()[Ljava/lang/String;");
+		jobjectArray itr;
+		QStringList schemas;
+		if (methodId != NULL) {
+			itr = (jobjectArray)jniEnv->CallStaticObjectMethod(jcls, methodId);
+			if (jniEnv->ExceptionCheck()) {
+				jniEnv->ExceptionDescribe();
+				jniEnv->ExceptionClear();
+			}
+
+			int length = jniEnv->GetArrayLength(itr);
 
 			for (int i = 0; i < length; i++){
 				jstring element = (jstring)jniEnv->GetObjectArrayElement(itr, i);
@@ -262,7 +285,6 @@ namespace DataEngine
 				schemas << db_name;
 			}
 		}
-		setTables();
 		return schemas;
 	}
 
@@ -618,6 +640,32 @@ namespace DataEngine
 		}
 		return decryp;
 
+	}
+
+	QString DataEngineConnection::JavaErrors(){
+
+		jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
+			"getErrors", "()[Ljava/lang/String;");
+		jobjectArray itr;
+		QString errors;
+		if (methodId != NULL) {
+			itr = (jobjectArray)jniEnv->CallStaticObjectMethod(jcls, methodId);
+			if (jniEnv->ExceptionCheck()) {
+				jniEnv->ExceptionDescribe();
+				jniEnv->ExceptionClear();
+			}
+
+			int length = jniEnv->GetArrayLength(itr);
+
+			for (int i = 0; i < length; i++){
+				jstring element = (jstring)jniEnv->GetObjectArrayElement(itr, i);
+				if (length == 1 && element == NULL){ break; }
+				const char *str = jniEnv->GetStringUTFChars(element, 0);
+				QString error(str);
+				errors += "\n"+error;
+			}
+		}
+		return errors;
 	}
 
 }

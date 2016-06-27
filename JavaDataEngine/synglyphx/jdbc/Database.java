@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import synglyphx.util.Functions;
 import synglyphx.io.Logger;
 import synglyphx.jdbc.driver.Driver;
+import synglyphx.util.ErrorHandler;
 
 public class Database {
 	
@@ -123,11 +124,13 @@ public class Database {
 				thread.start();
 			}
 
-        }catch(SQLException se){
-         	try{
-            	se.printStackTrace(Logger.getInstance().addError());
-         	}catch(Exception ex){}
-      	}
+        }catch(Exception e){
+        	System.out.println("Failed2");
+	        try{
+	            e.printStackTrace(ErrorHandler.getInstance().addError());
+	        }catch(Exception ex){}
+	        e.printStackTrace();
+        }
 	}
 
 	public void initializeChosenTables(String[] chosen){
@@ -284,10 +287,11 @@ public class Database {
 	    	}
 
 	    	rs.close();
-	    }catch(SQLException se){
-	    	try{
-            	se.printStackTrace(Logger.getInstance().addError());
-         	}catch(Exception ex){}
-	    }
+	    }catch(Exception e){
+	        try{
+	            e.printStackTrace(ErrorHandler.getInstance().addError());
+	        }catch(Exception ex){}
+	        e.printStackTrace();
+        }
 	}
 }

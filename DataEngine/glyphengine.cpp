@@ -357,7 +357,6 @@ namespace DataEngine
 			}
 
 			if (err_code == 1){
-				throw std::runtime_error("JVM Error: Not Enough Memory");
 			}
 		}
 		copyBaseImages();
@@ -407,5 +406,31 @@ namespace DataEngine
 				jniEnv->ExceptionClear();
 			}
 		}
+	}
+
+	QString GlyphEngine::JavaErrors(){
+
+		jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
+			"getErrors", "()[Ljava/lang/String;");
+		jobjectArray itr;
+		QString errors;
+		if (methodId != NULL) {
+			itr = (jobjectArray)jniEnv->CallStaticObjectMethod(jcls, methodId);
+			if (jniEnv->ExceptionCheck()) {
+				jniEnv->ExceptionDescribe();
+				jniEnv->ExceptionClear();
+			}
+
+			int length = jniEnv->GetArrayLength(itr);
+
+			for (int i = 0; i < length; i++){
+				jstring element = (jstring)jniEnv->GetObjectArrayElement(itr, i);
+				if (length == 1 && element == NULL){ break; }
+				const char *str = jniEnv->GetStringUTFChars(element, 0);
+				QString error(str);
+				errors += "\n" + error;
+			}
+		}
+		return errors;
 	}
 }

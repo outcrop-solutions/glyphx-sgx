@@ -53,7 +53,6 @@ public class SDTReader {
 	private boolean updateNeeded;
 	private boolean finishedLoading;
 	private Document doc;
-	private int error_code;
 
 	public SDTReader(String sdtPath, String outDir, String application){
 		Logger.getInstance().add("Reading SDT at "+sdtPath);
@@ -62,12 +61,7 @@ public class SDTReader {
 		this.download = false;
 		this.updateNeeded = true;
 		this.finishedLoading = false;
-		this.error_code = 0;
 		initXMLReader(sdtPath);
-	}
-
-	public int errorCode(){
-		return error_code;
 	}
 
 	public void generateGlyphs(){
@@ -135,11 +129,11 @@ public class SDTReader {
 			}
 
 		}catch(Exception e){
-			//e.printStackTrace();
-			try{
-			    e.printStackTrace(Logger.getInstance().addError());
-			}catch(Exception ex){}
-		}
+	        try{
+	            e.printStackTrace(ErrorHandler.getInstance().addError());
+	        }catch(Exception ex){}
+	        e.printStackTrace();
+        }
 
 	}
 
@@ -174,13 +168,15 @@ public class SDTReader {
 				}
 
 			}
-		} catch (Exception ex) {
-			ex.printStackTrace();
-			Logger.getInstance().add("Failed to parse SDT file.");
-		}
+		}catch(Exception e){
+	        try{
+	            e.printStackTrace(ErrorHandler.getInstance().addError());
+	        }catch(Exception ex){}
+	        e.printStackTrace();
+        }
 	}
 
-	public void finishLoading() {
+	public void finishLoading() throws Exception{
 		createDataFrames();
 		Logger.getInstance().add("Created DataFrames.");
 		checkFieldGroups(doc);
@@ -552,7 +548,7 @@ public class SDTReader {
 		
 	}
 
-	private void createDataFrames(){
+	private void createDataFrames() throws Exception{
 
 		for(int i=0; i < dataPaths.size();i++){
 			if(dataPaths.get(i).getType().equals("csv")){
@@ -562,27 +558,19 @@ public class SDTReader {
 			}else{
 				//dataframe creator for JDBC
 				Table table = null;
-				try{
-			    	Driver driver = DriverSelector.getDriver(dataPaths.get(i).getType());
-		            Class.forName(driver.packageName());
-			        Logger.getInstance().add("Connecting to Server...");
+		
+		    	Driver driver = DriverSelector.getDriver(dataPaths.get(i).getType());
+	            Class.forName(driver.packageName());
+		        Logger.getInstance().add("Connecting to Server...");
 
-			        driver.createConnection(dataPaths.get(i).getHost(),dataPaths.get(i).getUsername(),dataPaths.get(i).getPassword());
-			        //System.out.println(sourceData.getQuery());
-			        if(dataPaths.get(i).isMerged()){
-			        	table = new MergedTable(dataPaths.get(i).getQuery(), driver);
-			        }else{
-			        	table = new BasicTable(dataPaths.get(i).getTable(), dataPaths.get(i).getQuery(), driver);
-			        }
-			    }catch(SQLException se){
-			        try{
-			            se.printStackTrace(Logger.getInstance().addError());
-			        }catch(Exception ex){}
-			    }catch(Exception e){
-			        try{
-			            e.printStackTrace(Logger.getInstance().addError());
-			        }catch(Exception ex){}
-			    }
+		        driver.createConnection(dataPaths.get(i).getHost(),dataPaths.get(i).getUsername(),dataPaths.get(i).getPassword());
+		        //System.out.println(sourceData.getQuery());
+		        if(dataPaths.get(i).isMerged()){
+		        	table = new MergedTable(dataPaths.get(i).getQuery(), driver);
+		        }else{
+		        	table = new BasicTable(dataPaths.get(i).getTable(), dataPaths.get(i).getQuery(), driver);
+		        }
+
 			    dataPaths.get(i).setDataFrame(table.createDataFrame());
 			}
 
@@ -706,8 +694,11 @@ public class SDTReader {
 			}
 
 		}catch(Exception e){
-			//e.printStackTrace();
-		}
+	        try{
+	            e.printStackTrace(ErrorHandler.getInstance().addError());
+	        }catch(Exception ex){}
+	        e.printStackTrace();
+        }
 
 	}
 
@@ -811,38 +802,32 @@ public class SDTReader {
 
 	public void setRootAndLastIDs(){
 
-		try{
-			int currentRoot = 1;
-			SourceDataInfo currentDataSource = null;
-			ArrayList<Integer> usedDS = new ArrayList<Integer>();
-			XMLGlyphTemplate prevTemp = null;
-			for(int i = 1; i < count+1; i++){
-				XMLGlyphTemplate temp = templates.get(i);
-				if(temp.getChildOf() == 0){
-					if(i != 1){
-						currentDataSource.setLastID(i-1); //OLD
-						prevTemp.setLastChildID(i-1); //NEW
-					}
-					if(!usedDS.contains(temp.getDataSource())){
-						currentDataSource = dataPaths.get(temp.getDataSource());
-					}else{
-						dataPaths.add(dataPaths.get(temp.getDataSource()));
-						temp.setDataSource(dataPaths.size()-1);
-						currentDataSource = dataPaths.get(temp.getDataSource());
-					}
-					currentDataSource.setRootID(i);
-					usedDS.add(temp.getDataSource());
-					prevTemp = temp;
+		int currentRoot = 1;
+		SourceDataInfo currentDataSource = null;
+		ArrayList<Integer> usedDS = new ArrayList<Integer>();
+		XMLGlyphTemplate prevTemp = null;
+		for(int i = 1; i < count+1; i++){
+			XMLGlyphTemplate temp = templates.get(i);
+			if(temp.getChildOf() == 0){
+				if(i != 1){
+					currentDataSource.setLastID(i-1); //OLD
+					prevTemp.setLastChildID(i-1); //NEW
 				}
-				if(i == count){
-					currentDataSource.setLastID(i); //OLD
-					prevTemp.setLastChildID(i); //NEW
+				if(!usedDS.contains(temp.getDataSource())){
+					currentDataSource = dataPaths.get(temp.getDataSource());
+				}else{
+					dataPaths.add(dataPaths.get(temp.getDataSource()));
+					temp.setDataSource(dataPaths.size()-1);
+					currentDataSource = dataPaths.get(temp.getDataSource());
 				}
+				currentDataSource.setRootID(i);
+				usedDS.add(temp.getDataSource());
+				prevTemp = temp;
 			}
-		}catch(Exception e){
-			try{
-			    e.printStackTrace(Logger.getInstance().addError());
-			}catch(Exception ex){}
+			if(i == count){
+				currentDataSource.setLastID(i); //OLD
+				prevTemp.setLastChildID(i); //NEW
+			}
 		}
 	}
 
@@ -875,15 +860,12 @@ public class SDTReader {
          	driver.createConnection(sdi.getHost(),sdi.getUsername(),sdi.getPassword());
          	sdi.setDriver(driver);
 
-		}catch(SQLException se){
+		}catch(Exception e){
 	        try{
-	            se.printStackTrace(Logger.getInstance().addError());
+	            e.printStackTrace(ErrorHandler.getInstance().addError());
 	        }catch(Exception ex){}
-      	}catch(Exception e){
-         	try{
-            	e.printStackTrace(Logger.getInstance().addError());
-         	}catch(Exception ex){}
-      	}
+	        e.printStackTrace();
+        }
 
       	return sdi.getDriver();
 	}

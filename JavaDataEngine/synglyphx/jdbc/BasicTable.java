@@ -8,6 +8,7 @@ import synglyphx.data.DataStats;
 import synglyphx.io.Logger;
 import synglyphx.util.Functions;
 import synglyphx.jdbc.driver.Driver;
+import synglyphx.util.ErrorHandler;
 
 public class BasicTable extends Table {
 	
@@ -68,11 +69,12 @@ public class BasicTable extends Table {
             }//System.out.println("");
             rs.close();
 
-		}catch(SQLException se){
-         	try{
-            	se.printStackTrace(Logger.getInstance().addTError());
-         	}catch(Exception ex){}
-      	}
+		}catch(Exception e){
+            try{
+                e.printStackTrace(ErrorHandler.getInstance().addError());
+            }catch(Exception ex){}
+            e.printStackTrace();
+        }
 	}
 
 	public String[] getSampleData(int row){

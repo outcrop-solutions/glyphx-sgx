@@ -31,8 +31,6 @@ namespace DataEngine
 		bool downloadBaseImage(const SynGlyphX::BaseImage& baseImage, QString baseImageFilename);
 		void setGeoBoundingBox(std::vector<double> nw, std::vector<double> se, std::vector<double> size);
 		bool hasImageBeenUpdated();
-		QStringList DistinctValuesForField(QString id, QString table, QString field);
-		void SetQueryForDatasource(QString id, QString table, QString query);
 		std::vector<double> getNWandSE();
 
 	public:
@@ -42,6 +40,9 @@ namespace DataEngine
 		std::vector<std::string> getBaseImages();
 		void generateGlyphs();
 		bool IsUpdateNeeded() const;
+		QString JavaErrors();
+		QStringList DistinctValuesForField(QString id, QString table, QString field);
+		void SetQueryForDatasource(QString id, QString table, QString query);
 		~GlyphEngine(){};
 
 	};
