@@ -539,7 +539,15 @@ bool DataMapperWindow::LoadDataTransform(const QString& filename) {
 
 		CloseProject();
 		SynGlyphX::Application::restoreOverrideCursor();
-		QMessageBox::critical(this, tr("Failed To Open Project"), tr("Failed to open project.  Error: ") + e.what(), QMessageBox::Ok);
+		QMessageBox critical_error(QMessageBox::Critical, tr("Failed To Open Project"), tr("Failed to open project.  Error: ") + e.what(), QMessageBox::Ok, this);
+		critical_error.setDetailedText(m_dataEngineConnection->JavaErrors());
+		critical_error.setStyleSheet("QLabel{margin-right:75px;},QTextEdit{min-width:500px;}");
+		critical_error.setStandardButtons(QMessageBox::Ok);
+		critical_error.setDefaultButton(QMessageBox::Ok);
+		critical_error.setEscapeButton(QMessageBox::Ok);
+		critical_error.exec();
+		m_dataEngineConnection->ClearJavaErrors();
+		//QMessageBox::critical(this, tr("Failed To Open Project"), tr("Failed to open project.  Error: ") + e.what(), QMessageBox::Ok);
 		return false;
 	}
 	DMGlobal::Services()->ClearUndoStack();
