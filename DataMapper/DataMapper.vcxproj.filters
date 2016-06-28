@@ -217,6 +217,12 @@
     <ClCompile Include="GeneratedFiles\Release\moc_aliaseswidget.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="DMGlobal.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DMServices.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="datamapperwindow.h">
@@ -288,5 +294,13 @@
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="DataMapper.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="DMGlobal.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DMServices.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

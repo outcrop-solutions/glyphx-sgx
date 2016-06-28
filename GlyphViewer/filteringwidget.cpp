@@ -2,6 +2,7 @@
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QTabWidget>
+#include <QtCore/QProcess>
 #include "groupboxsinglewidget.h"
 #include "application.h"
 
@@ -13,7 +14,7 @@ FilteringWidget::FilteringWidget(SourceDataInfoModel* columnsModel, FilteringMan
 
 	QHBoxLayout* topLayout = new QHBoxLayout();
 
-	m_hideUnselectedTreesCheckbox = new QCheckBox(tr("Filter View"), this);
+	m_hideUnselectedTreesCheckbox = new QCheckBox(tr("Hide Filtered"), this);
 	topLayout->addWidget(m_hideUnselectedTreesCheckbox);
 
 	m_clearButton = new QPushButton(tr("Clear All Filters"), this);
@@ -34,14 +35,14 @@ FilteringWidget::FilteringWidget(SourceDataInfoModel* columnsModel, FilteringMan
 
 	QTabWidget* filterMethodsWidget = new QTabWidget(this);
 
+	m_elasticListsWidget = new MultiTableElasticListsWidget(m_filteringManager, filterMethodsWidget);
+	filterMethodsWidget->addTab(m_elasticListsWidget, tr("Elastic"));
+
 	m_rangeListFilterWidget = new RangeFilterListWidget(columnsModel, m_filteringManager, filterMethodsWidget);
 	filterMethodsWidget->addTab(m_rangeListFilterWidget, tr("Range"));
 	
 	m_keywordFilterListWidget = new KeywordFilterListWidget(columnsModel, m_filteringManager, filterMethodsWidget);
 	filterMethodsWidget->addTab(m_keywordFilterListWidget, tr("Keyword"));
-
-	m_elasticListsWidget = new MultiTableElasticListsWidget(m_filteringManager, filterMethodsWidget);
-	filterMethodsWidget->addTab(m_elasticListsWidget, tr("Elastic"));
 
 	mainLayout->addWidget(filterMethodsWidget, 1);
 
@@ -87,6 +88,9 @@ FilteringWidget::FilteringWidget(SourceDataInfoModel* columnsModel, FilteringMan
 	QObject::connect(m_filteringManager, &FilteringManager::FilterResultsChanged, this, &FilteringWidget::OnFilterResultsChanged);
 	QObject::connect(m_tableComboBox, static_cast<void(QComboBox::*)(const QString &)>(&QComboBox::currentIndexChanged), this, &FilteringWidget::OnTableChanged);
 	QObject::connect(m_createSubsetVizButton, &QPushButton::clicked, m_filteredSourceDataWindow.data(), &SourceDataWidget::CreateSubsetVisualization);
+
+	QObject::connect(m_filteredSourceDataWindow.data(), &SourceDataWidget::SubsetVisualizationCreated, this, &FilteringWidget::OnSubsetVisualizationCreated);
+	QObject::connect(m_selectedSourceDataWindow.data(), &SourceDataWidget::SubsetVisualizationCreated, this, &FilteringWidget::OnSubsetVisualizationCreated);
 }
 
 FilteringWidget::~FilteringWidget()
@@ -200,4 +204,39 @@ void FilteringWidget::CloseSourceDataWidgets() {
 
 	m_filteredSourceDataWindow->close();
 	m_selectedSourceDataWindow->close();
+}
+
+void FilteringWidget::SetLoadSubsetVisualization(bool loadSubsetVisualization) {
+
+	m_loadSubsetVisualization = loadSubsetVisualization;
+}
+
+bool FilteringWidget::GetLoadSubsetVisualization() const {
+
+	return m_loadSubsetVisualization;
+}
+
+void FilteringWidget::SetLoadSubsetVisualizationInNewInstance(bool loadSubsetVisualizationInNewInstance) {
+
+	m_loadSubsetVisualizationInNewInstance = loadSubsetVisualizationInNewInstance;
+}
+
+bool FilteringWidget::GetLoadSubsetVisualizationInNewInstance() const {
+
+	return m_loadSubsetVisualizationInNewInstance;
+}
+
+void FilteringWidget::OnSubsetVisualizationCreated(const QString& subsetVisualizationFilename) {
+
+	if (m_loadSubsetVisualization) {
+
+		if (m_loadSubsetVisualizationInNewInstance) {
+
+			QProcess::startDetached(QCoreApplication::applicationFilePath(), QStringList() << subsetVisualizationFilename);
+		}
+		else {
+
+			emit LoadSubsetVisualization(subsetVisualizationFilename);
+		}
+	}
 }

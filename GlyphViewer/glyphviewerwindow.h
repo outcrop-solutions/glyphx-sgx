@@ -68,10 +68,13 @@ private slots:
 	void OnSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected);
 	void CreatePortableVisualization(SynGlyphX::PortableVisualizationExport::Platform platform);
 	void RemapRootPositionMappings();
+	void OnStereoSetup(bool stereoEnabled);
+	void OnShowHideHUDAxis(bool show);
+	void OnShowHideSceneAxis(bool show);
 
 private:
 	virtual bool LoadRecentFile(const QString& filename);
-	void LoadVisualization(const QString& filename, const DataMappingLoadingFilterModel::Table2LoadingFiltersMap& filters);
+	void LoadVisualization(const QString& filename, const DataMappingLoadingFilterModel::Table2LoadingFiltersMap& filters = DataMappingLoadingFilterModel::Table2LoadingFiltersMap());
 	void LoadANTzCompatibilityVisualization(const QString& filename);
 	void LoadDataTransform(const QString& filename, const DataMappingLoadingFilterModel::Table2LoadingFiltersMap& filters);
 	void ValidateDataMappingFile(const QString& filename);
@@ -104,6 +107,9 @@ private:
 	QAction* m_resetCameraToDefaultPosition;
 	QAction* m_remapRootPositionMappingsAction;
 	QList<QAction*> m_loadedVisualizationDependentActions;
+
+	QAction* m_showHideHUDAxisAction;
+	QAction* m_showHideSceneAxisAction;
 
 	QDockWidget* m_glyphListDockWidget;
 	LegendsDisplayWidget* m_legendsWidget;

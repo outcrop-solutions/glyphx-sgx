@@ -5,6 +5,35 @@
 #include "inputfieldmimedata.h"
 #include <QtWidgets/QHBoxLayout>
 #include "datatransformmapping.h"
+#include <QtWidgets/QUndoCommand>
+#include <QtCore/QPointer>
+#include "AppGlobal.h"
+#include <QtWidgets/QUndoStack>
+
+class BindingLineEditChangeCommand : public QUndoCommand {
+public:
+	BindingLineEditChangeCommand(BindingLineEdit* ble, const SynGlyphX::InputField& newInputField) : 
+		m_ble(ble),
+		m_newInputField(newInputField),
+		m_oldInputField(ble->m_inputField) // since it is called from ble, should not  not be null at time of construction
+	{	
+	}
+	void undo() override {
+		if (m_ble) {
+			m_ble->m_inputField = m_oldInputField;
+			m_ble->ValueChangedByUser(m_ble->m_inputField);
+		}
+	}
+	void redo() override {
+		if (m_ble) {
+			m_ble->m_inputField = m_newInputField;
+			m_ble->ValueChangedByUser(m_ble->m_inputField);
+		}
+	}
+	QPointer<BindingLineEdit> m_ble;
+	SynGlyphX::InputField m_newInputField;
+	SynGlyphX::InputField m_oldInputField;
+};
 
 BindingLineEdit::BindingLineEdit(const GlyphRolesTableModel* model, QWidget *parent, SynGlyphX::MappingFunctionData::Input acceptedInputTypes)
 	: QWidget(parent),
@@ -109,10 +138,12 @@ void BindingLineEdit::dropEvent(QDropEvent* event) {
 
 	const InputFieldMimeData* mimeData = qobject_cast<const InputFieldMimeData*>(event->mimeData());
 	if (mimeData != nullptr) {
-
+		auto command = new BindingLineEditChangeCommand(this, mimeData->GetInputField());
+		command->setText(tr("Change Binding"));
+		SynGlyphX::AppGlobal::Services()->GetUndoStack()->push(command);
 		//SetInputField(mimeData->GetInputField());
-		m_inputField = mimeData->GetInputField();
-		emit ValueChangedByUser(m_inputField);
+		//m_inputField = mimeData->GetInputField();
+		//emit ValueChangedByUser(m_inputField);
 	}
 }
 

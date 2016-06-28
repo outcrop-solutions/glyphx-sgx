@@ -15,12 +15,36 @@
 #include "dataenginestatement.h"
 #include "stringconvert.h"
 #include <set>
-#include <QtWidgets/QMessageBox>
 #include "Link.h"
 #include "baseimage.h"
+#include "AppGlobal.h"
+#include <QtWidgets/QUndoStack>
+#include <QtWidgets/QUndoCommand>
 
 namespace SynGlyphX {
-
+	class DataTransformModel::Command : public QUndoCommand{
+	public:
+		DataTransformModel::Command(DataTransformModel* dtm) : m_dtm(dtm){}
+		DataTransformMapping::SharedPtr GetDataMapping() { return m_dtm->m_dataMapping;  }
+		DataTransformModel* m_dtm;
+	};
+	class AddLinkCommand : public DataTransformModel::Command {
+	public:
+		AddLinkCommand(DataTransformModel* dtm, unsigned int index, const Link& link) : 
+			DataTransformModel::Command(dtm),
+			m_index(index),
+			m_link(link)
+		{
+		}
+		void undo() override {
+			m_dtm->RemoveLink(m_index);
+		}
+		void redo() override {
+			m_dtm->InsertLink(m_index, m_link);
+		}
+		int m_index;
+		Link m_link;
+	};
 	DataTransformModel::DataTransformModel(QObject *parent)
 		: QAbstractItemModel(parent),
 		m_dataMapping(new DataTransformMapping()),
@@ -600,8 +624,9 @@ namespace SynGlyphX {
 		emit dataChanged(index, index);
 	}
 	
-	void DataTransformModel::ClearAbsentBindings(const QModelIndex& index) {
-		//we need a InputFieldMap copy, using const& will cause problems after deleting Inputfield
+	void DataTransformModel::ClearAbsentBindings() {
+
+		QModelIndex index = createIndex(0, 0);
 		SynGlyphX::DataMappingGlyphGraph::InputFieldMap fieldMap = GetInputFieldsForTree(index); 
 		std::set<SynGlyphX::HashID> sourceFields;
 		for (const auto& t : m_tableStatsMap) {
@@ -616,8 +641,8 @@ namespace SynGlyphX {
 		for (const auto& field : fieldMap) {
 			if (sourceFields.find(field.first) == sourceFields.end()) { 
 				SynGlyphX::InputField f(field.second);
-				QMessageBox::warning(nullptr, tr("Warning"),
-					tr("Source data does not have field:\n") + QString::fromWCharArray(f.GetField().c_str()) + tr("\nMapping will be removed"));
+				AppGlobal::Services()->ShowWarningDialog(tr("Source data does not have field:\n") + QString::fromWCharArray(f.GetField().c_str()) + tr("\nMapping will be removed"));
+				AppGlobal::Services()->SetModified(true);
 				m_dataMapping->ClearInputFieldBindings(GetTreeId(index), f);
 			}
 						
@@ -720,8 +745,11 @@ namespace SynGlyphX {
 					}
 					else if (IsParentlessRowInDataType(DataType::Links, i)) {
 
-						m_dataMapping->RemoveLink(i - GetFirstIndexForDataType(DataType::Links));
-						emitGlyphDataChanged = true;
+						Q_ASSERT(0);//should not be here, removing of link must be handled by command
+
+						//AppGlobal::Services()->GetUndoStack()->push(new RemoveLinkCommand(this, i - GetFirstIndexForDataType(DataType::Links)));
+						//m_dataMapping->RemoveLink(i - GetFirstIndexForDataType(DataType::Links));
+						//emitGlyphDataChanged = true; //do we need this?
 					}
 				}
 				endRemoveRows();
@@ -781,8 +809,6 @@ namespace SynGlyphX {
 
 			AddDatasourceInfoFromDataEngine(iT->first, iT->second);
 		}
-
-		ClearAbsentBindings(createIndex(0, 0));
 	}
 
 	void DataTransformModel::SaveDataTransformFile(const QString& filename) {
@@ -838,7 +864,11 @@ namespace SynGlyphX {
 		m_dataMapping->AddGlyphTree(glyphTree);
 		endInsertRows();
 	}
-
+	void DataTransformModel::SetGlyphGraphMap(const DataTransformMapping::DataMappingGlyphGraphMap& glyphGraphs) {
+		beginResetModel();
+		m_dataMapping->SetGlyphGraphMap(glyphGraphs);
+		endResetModel();
+	}
 	void DataTransformModel::SetBaseObject(unsigned int position, const BaseImage& baseImage) {
 
 		m_dataMapping->SetBaseObject(position, baseImage);
@@ -876,12 +906,32 @@ namespace SynGlyphX {
 		endInsertRows();
 	}
 
+	void DataTransformModel::InsertLink(unsigned int position, const SynGlyphX::Link& link) {
+		int row = GetFirstIndexForDataType(DataType::Links) + position;
+		beginInsertRows(QModelIndex(), row, row);
+		m_dataMapping->InsertLink(position, link);
+		endInsertRows();
+	}
+
 	void DataTransformModel::SetLink(unsigned int position, const SynGlyphX::Link& link) {
 		m_dataMapping->SetLink(position, link);
 		QModelIndex modelIndex = index(GetFirstIndexForDataType(DataType::Links) + position);
 		emit dataChanged(modelIndex, modelIndex);
 	}
 
+	void DataTransformModel::RemoveLink(unsigned int position) {
+		int row = GetFirstIndexForDataType(DataType::Links) + position;
+		//QModelIndex modelIndex = index(row);
+		beginRemoveRows(QModelIndex(), row, row);
+		m_dataMapping->RemoveLink(position);
+		endRemoveRows();
+	}
+
+	void DataTransformModel::CreateAddLinkCommand(const SynGlyphX::Link& link) {
+		auto command = new AddLinkCommand(this, m_dataMapping->GetLinks().size(), link);
+		command->setText(tr("Add Link"));
+		AppGlobal::Services()->GetUndoStack()->push(command);
+	}
 	bool DataTransformModel::IsParentlessRowInDataType(DataType type, int row) const {
 
 		int min = GetFirstIndexForDataType(type);

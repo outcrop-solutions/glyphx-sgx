@@ -22,15 +22,21 @@
 #include "minmaxglyphtreemodel.h"
 #include "sharedactionlist.h"
 
+class GlyphTreeViewMemento;
 class GlyphTreeView : public SynGlyphX::TreeEditView
 {
-    Q_OBJECT
+	friend class GlyphTreeViewMemento;
+	Q_OBJECT
 
 public:
 	GlyphTreeView(SynGlyphXANTz::MinMaxGlyphTreeModel* model, SynGlyphXANTz::MinMaxGlyphTreeModel::GlyphType glyphTreeType, QWidget *parent = 0);
     ~GlyphTreeView();
 
 	const SynGlyphX::SharedActionList& GetGlyphActions() const;
+	//Memento lifetime is managed by undo command (deleted in command destructor), consider changing to shared_ptr
+	GlyphTreeViewMemento* CreateMemento() const;
+	void ReinstateMemento(GlyphTreeViewMemento* m);
+
 
 public slots:
 	void AddChildren();
@@ -51,7 +57,7 @@ private:
 	void CreateContextMenuActions();
 	void CreatePropertiesDialog();
 	void CreateAddChildrenDialog();
-
+		
 	SynGlyphXANTz::MinMaxGlyphTreeModel* m_model;
 	SynGlyphXANTz::MinMaxGlyphTreeModel::GlyphType m_glyphTreeType;
 

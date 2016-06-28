@@ -41,6 +41,12 @@
     <ClInclude Include="propertyupdate.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="AppServices.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AppGlobal.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="glyphstructurewidget.cpp">
@@ -228,6 +234,12 @@
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Win32\Release\moc_glyphtemplatelibrarylistwidget.cpp">
       <Filter>Generated Files\Release_Win32</Filter>
+    </ClCompile>
+    <ClCompile Include="AppServices.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AppGlobal.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

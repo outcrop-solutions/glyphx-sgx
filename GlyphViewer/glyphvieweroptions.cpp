@@ -2,25 +2,32 @@
 #include <exception>
 #include "application.h"
 #include <QtCore/QDir>
+#include <QtCore/QSettings>
 
 GlyphViewerOptions::GlyphViewerOptions() :
 	m_cacheDirectory(GetDefaultCacheDirectory()),
 	m_hideUnselectedGlyphTrees(false),
-	m_showSceneAxisHUDObject(true),
+	m_showHUDAxisObject(true),
 	m_sceneAxisHUDObjectLocation(SynGlyphXANTz::ANTzForestWidget::HUDLocation::TopLeft),
-	m_showMessageWhenImagesDidNotDownload(true) {
+	m_showSceneAxisObject(true),
+	m_showMessageWhenImagesDidNotDownload(true),
+	m_loadSubsetVisualization(true),
+	m_loadSubsetVisualizationInNewInstance(true) {
 	
 }
 
 GlyphViewerOptions::GlyphViewerOptions(const GlyphViewerOptions& options) :
 	m_cacheDirectory(options.m_cacheDirectory),
 	m_hideUnselectedGlyphTrees(options.m_hideUnselectedGlyphTrees),
-	m_showSceneAxisHUDObject(options.m_showSceneAxisHUDObject),
+	m_showHUDAxisObject(options.m_showHUDAxisObject),
 	m_sceneAxisHUDObjectLocation(options.m_sceneAxisHUDObjectLocation),
+	m_showSceneAxisObject(options.m_showSceneAxisObject),
 #ifdef USE_ZSPACE
 	m_zSpaceOptions(options.m_zSpaceOptions),
 #endif
-	m_showMessageWhenImagesDidNotDownload(options.m_showMessageWhenImagesDidNotDownload) {
+	m_showMessageWhenImagesDidNotDownload(options.m_showMessageWhenImagesDidNotDownload),
+	m_loadSubsetVisualization(options.m_loadSubsetVisualization),
+	m_loadSubsetVisualizationInNewInstance(options.m_loadSubsetVisualizationInNewInstance) {
 
 }
 
@@ -32,12 +39,15 @@ GlyphViewerOptions& GlyphViewerOptions::operator=(const GlyphViewerOptions& opti
 
 	m_cacheDirectory = options.m_cacheDirectory;
 	m_hideUnselectedGlyphTrees = options.m_hideUnselectedGlyphTrees;
-	m_showSceneAxisHUDObject = options.m_showSceneAxisHUDObject;
+	m_showHUDAxisObject = options.m_showHUDAxisObject;
 	m_sceneAxisHUDObjectLocation = options.m_sceneAxisHUDObjectLocation;
+	m_showSceneAxisObject = options.m_showSceneAxisObject;
 #ifdef USE_ZSPACE
 	m_zSpaceOptions = options.m_zSpaceOptions;
 #endif
 	m_showMessageWhenImagesDidNotDownload = options.m_showMessageWhenImagesDidNotDownload;
+	m_loadSubsetVisualization = options.m_loadSubsetVisualization;
+	m_loadSubsetVisualizationInNewInstance = options.m_loadSubsetVisualizationInNewInstance;
 
 	return *this;
 }
@@ -54,12 +64,17 @@ bool GlyphViewerOptions::operator==(const GlyphViewerOptions& options) const {
 		return false;
 	}
 
-	if (m_showSceneAxisHUDObject != options.m_showSceneAxisHUDObject) {
+	if (m_showHUDAxisObject != options.m_showHUDAxisObject) {
 
 		return false;
 	}
 
 	if (m_sceneAxisHUDObjectLocation != options.m_sceneAxisHUDObjectLocation) {
+
+		return false;
+	}
+
+	if (m_showSceneAxisObject != options.m_showSceneAxisObject) {
 
 		return false;
 	}
@@ -76,12 +91,83 @@ bool GlyphViewerOptions::operator==(const GlyphViewerOptions& options) const {
 		return false;
 	}
 
+	if (m_loadSubsetVisualization != options.m_loadSubsetVisualization) {
+
+		return false;
+	}
+
+	if (m_loadSubsetVisualizationInNewInstance != options.m_loadSubsetVisualizationInNewInstance) {
+
+		return false;
+	}
+
 	return true;
 }
 
 bool GlyphViewerOptions::operator!=(const GlyphViewerOptions& options) const {
 
 	return !operator==(options);
+}
+
+void GlyphViewerOptions::WriteToSettings() const {
+
+	QSettings settings;
+
+	settings.beginGroup("Options");
+
+	if (GetCacheDirectory() != GlyphViewerOptions::GetDefaultCacheDirectory()) {
+
+		settings.setValue("cacheDirectory", m_cacheDirectory);
+	}
+	else {
+
+		settings.setValue("cacheDirectory", "");
+	}
+	settings.setValue("hideUnselectedGlyphs", m_hideUnselectedGlyphTrees);
+	settings.setValue("axisInfoShow", m_showHUDAxisObject);
+	settings.setValue("axisInfoLocation", m_sceneAxisHUDObjectLocation);
+	settings.setValue("sceneAxisInfoShow", m_showSceneAxisObject);
+	settings.setValue("showFailedToDownloadImageMessage", m_showMessageWhenImagesDidNotDownload);
+	settings.setValue("loadSubsetVisualization", m_loadSubsetVisualization);
+	settings.setValue("loadSubsetVisualizationNewInstance", m_loadSubsetVisualizationInNewInstance);
+	settings.endGroup();
+
+#ifdef USE_ZSPACE
+	settings.beginGroup("zSpace");
+	settings.setValue("stylusColor", GetZSpaceOptions().GetStylusColor());
+	settings.setValue("stylusLength", GetZSpaceOptions().GetStylusLength());
+	settings.endGroup();
+#endif
+}
+
+void GlyphViewerOptions::ReadFromSettings() {
+
+	QSettings settings;
+
+	settings.beginGroup("Options");
+
+	QString cacheDirectory = QDir::toNativeSeparators(settings.value("cacheDirectory", GlyphViewerOptions::GetDefaultCacheDirectory()).toString());
+	if (cacheDirectory.isEmpty()) {
+
+		cacheDirectory = GlyphViewerOptions::GetDefaultCacheDirectory();
+	}
+	SetCacheDirectory(cacheDirectory);
+	SetHideUnselectedGlyphTrees(settings.value("hideUnselectedGlyphs", false).toBool());
+	SetShowHUDAxisObject(settings.value("axisInfoShow", true).toBool());
+	SetHUDAxisObjectLocation(static_cast<SynGlyphXANTz::ANTzForestWidget::HUDLocation>(settings.value("axisInfoLocation").toInt()));
+	SetShowSceneAxisObject(settings.value("sceneAxisInfoShow", true).toBool());
+	SetShowMessageWhenImagesDidNotDownload(settings.value("showFailedToDownloadImageMessage", true).toBool());
+	settings.endGroup();
+
+#ifdef USE_ZSPACE
+	settings.beginGroup("zSpace");
+	SynGlyphX::ZSpaceOptions zSpaceOptions;
+	zSpaceOptions.SetStylusColor(settings.value("stylusColor", QColor(Qt::green)).value<QColor>());
+	zSpaceOptions.SetStylusLength(settings.value("stylusLength", 0.15f).toFloat());
+	settings.endGroup();
+
+	SetZSpaceOptions(zSpaceOptions);
+#endif
 }
 
 void GlyphViewerOptions::SetCacheDirectory(const QString& newCacheDirectory) {
@@ -109,24 +195,34 @@ bool GlyphViewerOptions::GetHideUnselectedGlyphTrees() const {
 	return m_hideUnselectedGlyphTrees;
 }
 
-void GlyphViewerOptions::SetShowSceneAxisHUDObject(bool show) {
+void GlyphViewerOptions::SetShowHUDAxisObject(bool show) {
 
-	m_showSceneAxisHUDObject = show;
+	m_showHUDAxisObject = show;
 }
 
-bool GlyphViewerOptions::GetShowSceneAxisHUDObject() const {
+bool GlyphViewerOptions::GetShowHUDAxisObject() const {
 
-	return m_showSceneAxisHUDObject;
+	return m_showHUDAxisObject;
 }
 
-void GlyphViewerOptions::SetSceneAxisObjectLocation(SynGlyphXANTz::ANTzForestWidget::HUDLocation location) {
+void GlyphViewerOptions::SetHUDAxisObjectLocation(SynGlyphXANTz::ANTzForestWidget::HUDLocation location) {
 
 	m_sceneAxisHUDObjectLocation = location;
 }
 
-SynGlyphXANTz::ANTzForestWidget::HUDLocation GlyphViewerOptions::GetSceneAxisObjectLocation() const {
+SynGlyphXANTz::ANTzForestWidget::HUDLocation GlyphViewerOptions::GetHUDAxisObjectLocation() const {
 
 	return m_sceneAxisHUDObjectLocation;
+}
+
+void GlyphViewerOptions::SetShowSceneAxisObject(bool show) {
+
+	m_showSceneAxisObject = show;
+}
+
+bool GlyphViewerOptions::GetShowSceneAxisObject() const {
+
+	return m_showSceneAxisObject;
 }
 
 #ifdef USE_ZSPACE
@@ -149,4 +245,24 @@ void GlyphViewerOptions::SetShowMessageWhenImagesDidNotDownload(bool showMessage
 bool GlyphViewerOptions::GetShowMessageWhenImagesDidNotDownload() const {
 
 	return m_showMessageWhenImagesDidNotDownload;
+}
+
+void GlyphViewerOptions::SetLoadSubsetVisualization(bool loadSubsetVisualization) {
+
+	m_loadSubsetVisualization = loadSubsetVisualization;
+}
+
+bool GlyphViewerOptions::GetLoadSubsetVisualization() const {
+
+	return m_loadSubsetVisualization;
+}
+
+void GlyphViewerOptions::SetLoadSubsetVisualizationInNewInstance(bool loadSubsetVisualizationInNewInstance) {
+
+	m_loadSubsetVisualizationInNewInstance = loadSubsetVisualizationInNewInstance;
+}
+
+bool GlyphViewerOptions::GetLoadSubsetVisualizationInNewInstance() const {
+
+	return m_loadSubsetVisualizationInNewInstance;
 }

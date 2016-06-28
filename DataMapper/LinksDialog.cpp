@@ -22,6 +22,7 @@
 
 static void print_tree(boost::property_tree::wptree const& pt)
 {
+#ifdef WIN32
 	using boost::property_tree::wptree;
 	wptree::const_iterator end = pt.end();
 	for (wptree::const_iterator it = pt.begin(); it != end; ++it) {
@@ -30,6 +31,7 @@ static void print_tree(boost::property_tree::wptree const& pt)
 		OutputDebugStringW(ss.str().c_str());
 		print_tree(it->second);
 	}
+#endif
 }
 
 class LinkLineEdit : public QLineEdit
@@ -536,4 +538,4 @@ void LinksDialog::accept() {
 		QDialog::accept();
 }
 
-#include "LinksDialog.moc" //this is nesseasary to because there is no .h file for FunctionDialog 
+#include "linksdialog.moc" //this is nesseasary to because there is no .h file for FunctionDialog

@@ -14,62 +14,29 @@
 /// LAWS AND INTERNATIONAL TREATIES.  THE RECEIPT OR POSSESSION OF  THIS SOURCE CODE AND/OR RELATED INFORMATION DOES NOT CONVEY OR IMPLY ANY RIGHTS  
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
+#pragma once
+#include "sgxglyphgui_global.h"
 
-#ifndef OPTIONSWIDGET_H
-#define OPTIONSWIDGET_H
+class QUndoStack;
+namespace SynGlyphX {
+	class MainWindow;
+	class CommandService;
 
-#include <QtWidgets/QTabWidget>
-#include <QtWidgets/QCheckBox>
-#include <QtWidgets/QComboBox>
-#include "glyphvieweroptions.h"
-#include "browselineedit.h"
+	enum class TransactionType {
+		ChangeTree
+	};
 
-#ifdef USE_ZSPACE
-#include "zspaceoptionswidget.h"
-#endif
-
-class OptionsWidget : public QTabWidget
-{
-	Q_OBJECT
-
-public:
-	OptionsWidget(const GlyphViewerOptions& options, bool enableCacheOptions, QWidget *parent);
-	~OptionsWidget();
-
-	GlyphViewerOptions GetOptions() const;
-
-private slots:
-	void ClearCache();
-	void SetToDefaultCacheDirectory();
-
-private:
-	void CreateCacheTab(bool enableCacheOptions);
-	void Create3DTab();
-	void CreateFilteringTab();
-	void CreateUITab();
-
-	void SetCacheValues(const GlyphViewerOptions& options);
-	void Set3DValues(const GlyphViewerOptions& options);
-	void SetFilteringValues(const GlyphViewerOptions& options);
-	void SetUIValues(const GlyphViewerOptions& options);
-
-	SynGlyphX::BrowseLineEdit* m_cacheDirectoryWidget;
-	
-	QCheckBox* m_hideSelectedGlyphsCheckbox;
-
-#ifdef USE_ZSPACE
-	SynGlyphX::ZSpaceOptionsWidget* m_zSpaceOptionsWidget;
-#endif
-
-	QCheckBox* m_showDownloadedImageErrorMessages;
-	
-	QCheckBox* m_showHUDAxisInfoObjectCheckBox;
-	QComboBox* m_axisObjectLocationComboBox;
-
-	QCheckBox* m_showSceneAxisInfoObjectCheckBox;
-
-	QCheckBox* m_loadSubsetVisualizationCheckBox;
-	QCheckBox* m_loadSubsetVisualizationInNewInstanceCheckBox;
-};
-
-#endif // OPTIONSWIDGET_H
+	class SGXGLYPHGUI_EXPORT AppServices {
+	public:
+		AppServices(MainWindow* mw);
+		virtual void BeginTransaction(const char* name, TransactionType t) = 0;
+		virtual void EndTransaction() = 0 ;
+		void SetModified(bool m = true);
+		void ShowWarningDialog(const QString& msg);
+		void ClearUndoStack();
+		QUndoStack* GetUndoStack();
+		virtual ~AppServices() {}
+	protected:
+		MainWindow* m_window;
+	};
+}

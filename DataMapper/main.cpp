@@ -14,6 +14,7 @@
 #include <boost/filesystem.hpp>
 #include <QtCore/QStandardPaths>
 #include <QtWidgets/QMessageBox>
+#include "DMGlobal.h"
 
 int main(int argc, char *argv[])
 {
@@ -28,7 +29,7 @@ int main(int argc, char *argv[])
     printf("after change, libraryPaths=(%s)\n", QCoreApplication::libraryPaths().join(",").toUtf8().data());
 #endif
     
-    SynGlyphX::GlyphBuilderApplication::Setup("Glyph Builder - Data Mapper", "0.7.45");
+    SynGlyphX::GlyphBuilderApplication::Setup("Glyph Builder - Data Mapper", "0.7.47");
 	SynGlyphX::GlyphBuilderApplication a(argc, argv);
 
 #ifdef USE_BREAKPAD
@@ -89,6 +90,7 @@ int main(int argc, char *argv[])
 		DataMapperWindow w;
 		w.resize(1200, 700);
 
+		DMGlobal::Init(new DMServices(&w));
 		w.show();
 		//QTimer::singleShot(1600, &w, SLOT(show()));
 

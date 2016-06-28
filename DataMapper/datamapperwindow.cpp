@@ -39,6 +39,8 @@
 #include "roledatafilterproxymodel.h"
 #include "LinksListView.h"
 #include "LinksDialog.h"
+#include "DMGlobal.h"
+#include <QtWidgets/QUndoview>
 
 DataMapperWindow::DataMapperWindow(QWidget *parent)
     : SynGlyphX::MainWindow(0, parent),
@@ -179,8 +181,7 @@ void DataMapperWindow::CreateMenus() {
     QAction* exitAction = CreateMenuAction(m_fileMenu, tr("Exit"), QKeySequence::Quit);
     QObject::connect(exitAction, &QAction::triggered, this, &DataMapperWindow::close);
 
-	//Create Edit Menu
-	m_editMenu = menuBar()->addMenu(tr("Edit"));
+	CreateEditMenu();
 
     //Create Glyph Menu
     m_glyphMenu = menuBar()->addMenu(tr("Glyph"));
@@ -368,6 +369,12 @@ void DataMapperWindow::CreateDockWidgets() {
 	topDockWidget->setWidget(m_dataBindingWidget);
 	addDockWidget(Qt::TopDockWidgetArea, topDockWidget);
 	m_viewMenu->addAction(topDockWidget->toggleViewAction());
+
+	QDockWidget* rightDockWidgetUndo = new QDockWidget(tr("Undoable Actions "), this);
+	m_undoView = new QUndoView(m_undoStack);
+	rightDockWidgetUndo->setWidget(m_undoView);
+	addDockWidget(Qt::RightDockWidgetArea, rightDockWidgetUndo);
+	m_viewMenu->addAction(rightDockWidgetUndo->toggleViewAction());
 }
 
 void DataMapperWindow::CreateNewProject() {
@@ -540,12 +547,20 @@ bool DataMapperWindow::LoadDataTransform(const QString& filename) {
 
 		CloseProject();
 		SynGlyphX::Application::restoreOverrideCursor();
-		QMessageBox::critical(this, tr("Failed To Open Project"), tr("Failed to open project.  Error: ") + e.what(), QMessageBox::Ok);
+		QMessageBox critical_error(QMessageBox::Critical, tr("Failed To Open Project"), tr("Failed to open project.  Error: ") + e.what(), QMessageBox::Ok, this);
+		critical_error.setDetailedText(m_dataEngineConnection->JavaErrors());
+		critical_error.setStyleSheet("QLabel{margin-right:75px;},QTextEdit{min-width:500px;}");
+		critical_error.setStandardButtons(QMessageBox::Ok);
+		critical_error.setDefaultButton(QMessageBox::Ok);
+		critical_error.setEscapeButton(QMessageBox::Ok);
+		critical_error.exec();
+		m_dataEngineConnection->ClearJavaErrors();
+		//QMessageBox::critical(this, tr("Failed To Open Project"), tr("Failed to open project.  Error: ") + e.what(), QMessageBox::Ok);
 		return false;
 	}
-
+	DMGlobal::Services()->ClearUndoStack();
 	SetCurrentFile(filename);
-
+	m_dataTransformModel->ClearAbsentBindings();
 	EnableProjectDependentActions(true);
 	SynGlyphX::Application::restoreOverrideCursor();
 	m_linksDialog->Clear();
@@ -822,7 +837,7 @@ void DataMapperWindow::OnLinkDialogAccepted() {
 	if (m_linksDialog->GetEditRow() >= 0)
 		m_dataTransformModel->SetLink(m_linksDialog->GetEditRow(), m_linksDialog->GetLink());
 	else
-		m_dataTransformModel->AddLink(m_linksDialog->GetLink());
+		m_dataTransformModel->CreateAddLinkCommand(m_linksDialog->GetLink());
 	EnableProjectDependentActions(true);
 }
 

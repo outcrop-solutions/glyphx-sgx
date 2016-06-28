@@ -7,6 +7,8 @@
 #include <QtCore/QStandardPaths>
 #include <QtWidgets/QMessageBox>
 #include <boost/filesystem.hpp>
+#include "GDServices.h"
+#include "GDGlobal.h"
 
 #ifdef USE_BREAKPAD
 #include "exception_handler.h"
@@ -25,7 +27,7 @@ int main(int argc, char *argv[])
     printf("after change, libraryPaths=(%s)\n", QCoreApplication::libraryPaths().join(",").toUtf8().data());
 #endif
     
-    SynGlyphX::GlyphBuilderApplication::Setup("Glyph Builder - Glyph Designer", "0.7.45");
+    SynGlyphX::GlyphBuilderApplication::Setup("Glyph Builder - Glyph Designer", "0.7.47");
 	SynGlyphX::GlyphBuilderApplication a(argc, argv);
 
 #ifdef USE_BREAKPAD
@@ -69,12 +71,12 @@ int main(int argc, char *argv[])
     splash.showMessage("Loading Glyph Designer", Qt::AlignHCenter | Qt::AlignBottom);
 
     a.processEvents();
-
+	
 	try {
 
 		GlyphDesignerWindow w;
 		w.resize(1200, 700);
-
+		GDGlobal::Init(new GDServices(&w));
 		//Need to figure out better way to not have the splash screen disappear before the user sees it
 		QTimer::singleShot(1500, &splash, SLOT(close()));
 		w.show();

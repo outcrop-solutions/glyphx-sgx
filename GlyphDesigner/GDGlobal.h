@@ -14,62 +14,13 @@
 /// LAWS AND INTERNATIONAL TREATIES.  THE RECEIPT OR POSSESSION OF  THIS SOURCE CODE AND/OR RELATED INFORMATION DOES NOT CONVEY OR IMPLY ANY RIGHTS  
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
-
-#ifndef OPTIONSWIDGET_H
-#define OPTIONSWIDGET_H
-
-#include <QtWidgets/QTabWidget>
-#include <QtWidgets/QCheckBox>
-#include <QtWidgets/QComboBox>
-#include "glyphvieweroptions.h"
-#include "browselineedit.h"
-
-#ifdef USE_ZSPACE
-#include "zspaceoptionswidget.h"
-#endif
-
-class OptionsWidget : public QTabWidget
-{
-	Q_OBJECT
-
+#pragma once
+#include "GDServices.h"
+class GDGlobal {
 public:
-	OptionsWidget(const GlyphViewerOptions& options, bool enableCacheOptions, QWidget *parent);
-	~OptionsWidget();
-
-	GlyphViewerOptions GetOptions() const;
-
-private slots:
-	void ClearCache();
-	void SetToDefaultCacheDirectory();
-
+	static void Init(GDServices* s);
+	static void Destroy();
+	static GDServices* Services();
 private:
-	void CreateCacheTab(bool enableCacheOptions);
-	void Create3DTab();
-	void CreateFilteringTab();
-	void CreateUITab();
-
-	void SetCacheValues(const GlyphViewerOptions& options);
-	void Set3DValues(const GlyphViewerOptions& options);
-	void SetFilteringValues(const GlyphViewerOptions& options);
-	void SetUIValues(const GlyphViewerOptions& options);
-
-	SynGlyphX::BrowseLineEdit* m_cacheDirectoryWidget;
-	
-	QCheckBox* m_hideSelectedGlyphsCheckbox;
-
-#ifdef USE_ZSPACE
-	SynGlyphX::ZSpaceOptionsWidget* m_zSpaceOptionsWidget;
-#endif
-
-	QCheckBox* m_showDownloadedImageErrorMessages;
-	
-	QCheckBox* m_showHUDAxisInfoObjectCheckBox;
-	QComboBox* m_axisObjectLocationComboBox;
-
-	QCheckBox* m_showSceneAxisInfoObjectCheckBox;
-
-	QCheckBox* m_loadSubsetVisualizationCheckBox;
-	QCheckBox* m_loadSubsetVisualizationInNewInstanceCheckBox;
+	GDGlobal();
 };
-
-#endif // OPTIONSWIDGET_H

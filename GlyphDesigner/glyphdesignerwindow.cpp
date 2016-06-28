@@ -16,6 +16,7 @@
 #include "singleglyphviewoptionswidget.h"
 #include "singlewidgetdialog.h"
 #include "glyphtemplatelibrarylistwidget.h"
+#include "GDGlobal.h"
 
 GlyphDesignerWindow::GlyphDesignerWindow(QWidget *parent)
     : SynGlyphX::MainWindow(0, parent),
@@ -95,8 +96,7 @@ void GlyphDesignerWindow::CreateMenus() {
     QAction* exitAction = CreateMenuAction(m_fileMenu, tr("Exit"), QKeySequence::Quit);
     QObject::connect(exitAction, &QAction::triggered, this, &GlyphDesignerWindow::close);
 
-    //Create Edit Menu
-    m_editMenu = menuBar()->addMenu(tr("Edit"));
+	CreateEditMenu();
 
     QMenu* editingModeMenu = m_editMenu->addMenu(tr("Editing Mode"));
 
@@ -293,7 +293,7 @@ bool GlyphDesignerWindow::LoadTemplate(const QString& filename) {
 		QMessageBox::warning(this, tr("Loading Template Failed"), tr("Failed to load template: ") + e.what());
 		return false;
 	}
-
+	GDGlobal::Services()->ClearUndoStack();
 	return true;
 }
 

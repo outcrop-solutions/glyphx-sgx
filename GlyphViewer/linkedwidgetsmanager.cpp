@@ -20,7 +20,7 @@ void LinkedWidgetsManager::SetFilterView(bool set) {
 	}
 	else {
 
-		m_glyph3DView->SetFilteredResultsDisplayMode(SynGlyphXANTz::ANTzForestWidget::None);
+		m_glyph3DView->SetFilteredResultsDisplayMode(SynGlyphXANTz::ANTzForestWidget::TranslucentUnfiltered);
 	}
 	Q_FOREACH(QCheckBox* checkbox, m_filterViewCheckboxes) {
 

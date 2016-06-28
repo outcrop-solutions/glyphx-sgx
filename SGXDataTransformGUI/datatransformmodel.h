@@ -30,8 +30,10 @@ namespace SynGlyphX {
 	class SGXDATATRANSFORMGUI_EXPORT DataTransformModel : public QAbstractItemModel
 	{
 		Q_OBJECT
-
 	public:
+		class Command;
+		friend class Command;
+
 		typedef std::unordered_map<SynGlyphX::InputTable, WStringVector, InputTableHash> NumericFieldsByTable;
 
 		typedef std::unordered_map<SynGlyphX::InputTable, DataStatsModel::TableStats, InputTableHash> TableStatsMap;
@@ -115,13 +117,18 @@ namespace SynGlyphX {
 		void AddChildGlyphGraph(const QModelIndex& parent, const DataMappingGlyphGraph& graph);
 		
 		void AddLink(const SynGlyphX::Link& link);
+		void InsertLink(unsigned int position, const SynGlyphX::Link& link);
 		void SetLink(unsigned int position, const SynGlyphX::Link& link);
-
+		void RemoveLink(unsigned int position);
 		void SetBaseObject(unsigned int position, const BaseImage& baseImage);
 		void AddBaseObject(const BaseImage& baseImage);
 
+		void CreateAddLinkCommand(const SynGlyphX::Link& link);
+
 		void SetLegend(unsigned int position, const Legend& legend);
 		void AddLegend(const Legend& legend);
+
+		void SetGlyphGraphMap(const DataTransformMapping::DataMappingGlyphGraphMap& glyphGraphs);
 
 		boost::uuids::uuid AddFileDatasource(const FileDatasource& datasource);
 		boost::uuids::uuid AddDatabaseServer(const DatabaseServerDatasource& datasource);
@@ -132,7 +139,7 @@ namespace SynGlyphX {
 		void ClearInputBinding(const QModelIndex& index, DataMappingGlyph::MappableField field);
 		void ClearAllInputBindings(const QModelIndex& index);
 
-		void ClearAbsentBindings(const QModelIndex& index);
+		void ClearAbsentBindings();
 		const DataMappingGlyphGraph::InputFieldMap& GetInputFieldsForTree(const QModelIndex& index) const;
 
 		//void EnableTables(const boost::uuids::uuid& id, const Datasource::TableNames& tables, bool enable = true);

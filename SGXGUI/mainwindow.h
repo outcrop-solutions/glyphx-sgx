@@ -20,8 +20,9 @@
 
 #include "sgxgui_global.h"
 #include <QtWidgets/QMainWindow>
-#include <QtCore/QDir>
 #include <QtCore/QSet>
+
+class QUndoStack;
 
 namespace SynGlyphX {
 
@@ -29,7 +30,8 @@ namespace SynGlyphX {
 
     class SGXGUI_EXPORT MainWindow : public QMainWindow
     {
-        Q_OBJECT
+		friend class AppServices;
+		Q_OBJECT
 
     public:
 		MainWindow(unsigned int stateVersion, QWidget *parent = 0);
@@ -56,6 +58,7 @@ namespace SynGlyphX {
         QAction* CreateMenuAction(QMenu* menu, const QString& title, QKeySequence shortcut = QKeySequence());
         void CreateHelpMenu();
         void CreateViewMenu();
+		void CreateEditMenu();
 
 		QString GetFileNameOpenDialog(const QString& settingKey = "", const QString& caption = "", const QString& defaultDir = "", const QString& filter = "");
 		QStringList GetFileNamesOpenDialog(const QString& settingKey = "", const QString& caption = "", const QString& defaultDir = "", const QString& filter = "");
@@ -68,6 +71,7 @@ namespace SynGlyphX {
 		QString de_version;
 		QMenu* m_viewMenu;
         QMenu* m_helpMenu;
+		QMenu* m_editMenu;
         QAction* m_fullScreenAction;
 		QAction* m_aboutBoxAction;
 
@@ -77,6 +81,11 @@ namespace SynGlyphX {
 
 		static const QString s_copyright;
 		static const QString s_fileDialogSettingsGroup;
+
+		QUndoStack* m_undoStack;
+
+		QAction* m_undoAction;
+		QAction* m_redoAction;
 
     private slots:
         void OnRecentFileSelected();

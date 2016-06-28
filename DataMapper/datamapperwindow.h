@@ -40,6 +40,8 @@
 
 class LinksListView;
 class LinksDialog;
+class DMServicesImpl;
+class QUndoView;
 
 namespace SynGlyphX {
 	class DataTransformModel;
@@ -49,8 +51,8 @@ namespace SynGlyphX {
 
 class DataMapperWindow : public SynGlyphX::MainWindow
 {
-    Q_OBJECT
-
+	Q_OBJECT
+		friend class DMServicesImpl;
 public:
     DataMapperWindow(QWidget *parent = 0);
     ~DataMapperWindow();
@@ -102,7 +104,6 @@ private:
 	void OnLinkDialogAccepted();
 
     QMenu* m_fileMenu;
-	QMenu* m_editMenu;
     QMenu* m_glyphMenu;
 	QMenu* m_baseObjectMenu;
 	QMenu* m_linksMenu;
@@ -122,6 +123,7 @@ private:
 	SynGlyphX::IntRoleDataFilterProxyModel* m_linksModel;
 	LinksListView* m_linksView;
 
+	QUndoView *m_undoView;
 
 	GlyphTreesView* m_glyphTreesView;
 

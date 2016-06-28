@@ -1,6 +1,42 @@
 #include "glyphtreeview.h"
 #include "singlewidgetdialog.h"
 #include "visualglyphpropertieswidget.h"
+#include "GDGlobal.h"
+
+class GlyphTreeViewMemento {
+public:
+	GlyphTreeViewMemento(const GlyphTreeView* tv) {
+		m_tree = std::make_shared<SynGlyphX::DataMappingGlyphGraph>(*tv->m_model->GetMinMaxGlyphTree());
+		for (int row = 0; row < tv->m_model->rowCount(); ++row)
+			SaveExpandedOnLevel(tv, tv->m_model->index(row, 0));
+			//if (tv->isExpanded(index)) {
+			//	m_list << index.data(Qt::UserRole).toUInt();
+			//}
+		//}	
+	}
+	void SaveExpandedOnLevel(const GlyphTreeView* tv, const QModelIndex& index) {
+		if (tv->isExpanded(index)) {
+			if (index.isValid())
+				m_list << index.data(Qt::UserRole).toUInt();
+			for (int row = 0; row < tv->m_model->rowCount(index); ++row)
+				SaveExpandedOnLevel(tv, index.child(row, 0));
+		}
+	}
+	void RestoreExpandedOnLevel(GlyphTreeView* tv, QModelIndex& index){
+		if (m_list.contains(index.data(Qt::UserRole).toUInt())) {
+			tv->setExpanded(index, true);
+			for (int row = 0; row < tv->m_model->rowCount(index); ++row)
+				RestoreExpandedOnLevel(tv, index.child(row, 0));
+		}
+	}
+	~GlyphTreeViewMemento() {
+		//m_tree = nullptr;
+	}
+	SynGlyphX::DataMappingGlyphGraph::SharedPtr m_tree;	
+	
+	QList<unsigned long > m_list;
+
+};
 
 GlyphTreeView::GlyphTreeView(SynGlyphXANTz::MinMaxGlyphTreeModel* model, SynGlyphXANTz::MinMaxGlyphTreeModel::GlyphType glyphTreeType, QWidget *parent)
 	: SynGlyphX::TreeEditView(parent),
@@ -24,6 +60,19 @@ GlyphTreeView::GlyphTreeView(SynGlyphXANTz::MinMaxGlyphTreeModel* model, SynGlyp
 GlyphTreeView::~GlyphTreeView()
 {
 
+}
+
+GlyphTreeViewMemento* GlyphTreeView::CreateMemento() const {
+
+	return new GlyphTreeViewMemento(this);
+}
+
+void GlyphTreeView::ReinstateMemento(GlyphTreeViewMemento* m) {
+	m_model->SetMinMaxGlyphTree(m->m_tree);
+	setUpdatesEnabled(false);
+	for (int row = 0; row < m_model->rowCount(); ++row)
+		m->RestoreExpandedOnLevel(this, m_model->index(row, 0));
+	setUpdatesEnabled(true);
 }
 
 const SynGlyphX::SharedActionList& GlyphTreeView::GetGlyphActions() const {
@@ -83,7 +132,6 @@ void GlyphTreeView::PropertiesActivated() {
 }
 
 void GlyphTreeView::AddChildren() {
-
 	const QModelIndexList& selectedItems = selectionModel()->selectedIndexes();
 
 	SynGlyphX::VisualGlyphPropertiesWidget* singleGlyphWidget = new SynGlyphX::VisualGlyphPropertiesWidget(true, SynGlyphX::VisualGlyphPropertiesWidget::ShowOnTop | SynGlyphX::VisualGlyphPropertiesWidget::EnabledSpinBox, this);
@@ -92,7 +140,7 @@ void GlyphTreeView::AddChildren() {
 	SynGlyphX::SingleWidgetDialog dialog(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, singleGlyphWidget, this);
 	dialog.setWindowTitle(tr("Add Children"));
 	if (dialog.exec() == QDialog::Accepted) {
-
+		GDGlobal::Services()->BeginTransaction("Add Children", SynGlyphX::TransactionType::ChangeTree);
 		SynGlyphX::Glyph glyph;
 		singleGlyphWidget->SetGlyphFromWidget(glyph);
 		SynGlyphX::DataMappingGlyph minMaxGlyph(glyph);
@@ -100,6 +148,7 @@ void GlyphTreeView::AddChildren() {
 
 			m_model->AppendChild(selectedItems[i], minMaxGlyph, singleGlyphWidget->GetNumberOfChildren());
 		}
+		GDGlobal::Services()->EndTransaction();
 	}
 }
 

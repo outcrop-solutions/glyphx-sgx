@@ -246,6 +246,8 @@ void SourceDataWidget::CreateSubsetVisualization() {
 			SynGlyphX::GlyphBuilderApplication::restoreOverrideCursor();
 
 			m_statusBar->showMessage(tr("Visualization successfully created"), 3000);
+
+			emit SubsetVisualizationCreated(sdtFilename);
 		}
 		catch (const std::exception& e) {
 

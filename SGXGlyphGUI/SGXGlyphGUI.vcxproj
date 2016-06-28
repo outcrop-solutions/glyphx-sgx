@@ -278,6 +278,8 @@
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles\$(PlatformName)\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(PlatformName)\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DWIN64 -DQT_DLL -DSGXGlyphGUI_EXPORTS -DQT_NO_DEBUG -DNDEBUG -DQT_CORE_LIB -DQT_GUI_LIB -DQT_SQL_LIB -DQT_OPENGL_LIB -DQT_WIDGETS_LIB -DQT_XML_LIB -DSGXGLYPHGUI_LIB -D_WINDLL  "-I.\GeneratedFiles" "-I." "-I.\GeneratedFiles\$(PlatformName)\$(ConfigurationName)\." "-I$(QTDIR)\include" "-I.\..\..\3rdParty\include\boost_1_55_0" "-I.\..\..\Core\SGXFoundation" "-I.\..\..\Core\SGXDataMapping" "-I.\..\..\Core\SGXUtility" "-I.\..\..\GUI\SGXGUI" "-I.\..\..\3rdParty\include\stlplus_3_11" "-I.\..\..\Core\SGXImage"</Command>
     </CustomBuild>
+    <ClInclude Include="AppGlobal.h" />
+    <ClInclude Include="AppServices.h" />
     <ClInclude Include="propertyupdate.h" />
     <CustomBuild Include="colorconverter.h">
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -317,6 +319,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="allglyphpropertieswidget.cpp" />
+    <ClCompile Include="AppGlobal.cpp" />
+    <ClCompile Include="AppServices.cpp" />
     <ClCompile Include="colorminmaxwidget.cpp" />
     <ClCompile Include="defaultbaseimagescombobox.cpp" />
     <ClCompile Include="doubleminmaxwidget.cpp" />

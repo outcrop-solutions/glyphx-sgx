@@ -22,11 +22,11 @@
 #include "glyphtreeview.h"
 #include "antzsingleglyphtreewidget.h"
 #include "minmaxglyphtreemodel.h"
-
+class GDServicesImpl;
 class GlyphDesignerWindow : public SynGlyphX::MainWindow
 {
-    Q_OBJECT
-
+	Q_OBJECT
+		friend class GDServicesImpl;
 public:
     GlyphDesignerWindow(QWidget *parent = 0);
     ~GlyphDesignerWindow();
@@ -61,7 +61,6 @@ private:
     GlyphTreeView* m_treeView;
 
     QMenu* m_fileMenu;
-    QMenu* m_editMenu;
     QMenu* m_glyphMenu;
 	QMenu* m_toolsMenu;
 
