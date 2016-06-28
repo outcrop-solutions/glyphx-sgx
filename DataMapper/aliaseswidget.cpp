@@ -32,6 +32,7 @@ AliasesWidget::AliasesWidget(GlyphRolesTableModel* model, QWidget *parent)
 
 	m_aliasesTableWidget->setSelectionBehavior(QAbstractItemView::SelectionBehavior::SelectRows);
 	m_aliasesTableWidget->setSelectionMode(QAbstractItemView::SelectionMode::SingleSelection);
+	m_aliasesTableWidget->setDragDropMode(QAbstractItemView::DragDrop);
 	m_aliasesTableWidget->setFrameShape(QFrame::Shape::NoFrame);
 	m_aliasesTableWidget->horizontalHeader()->setStretchLastSection(true);
 	m_aliasesTableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeMode::ResizeToContents);
@@ -125,6 +126,7 @@ void AliasesWidget::sectionClicked(int index)
 		//nameLayout->addWidget(nameLineEdit);
 
 		m_aliasesTableWidget->setItem(rows, 0, new QTableWidgetItem("A"+QString::number(rows)));
+		m_aliasesTableWidget->item(rows, 0)->setFlags(Qt::ItemIsDragEnabled | m_aliasesTableWidget->item(rows, 0)->flags());
 
 		//TEST BEGIN
 		/*
@@ -142,5 +144,6 @@ void AliasesWidget::sectionClicked(int index)
 		//TEST END
 
 		m_aliasesTableWidget->setItem(rows, 1, new QTableWidgetItem(" "));
+		//m_aliasesTableWidget->item(rows, 1)->setFlags(Qt::ItemIsDragEnabled | m_aliasesTableWidget->item(rows, 1)->flags());
 	}
 }
