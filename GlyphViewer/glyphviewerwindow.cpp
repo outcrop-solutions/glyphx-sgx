@@ -33,6 +33,7 @@
 #include "loadingscreenwidget.h"
 #include "remapdialog.h"
 #include "baseimage.h"
+#include "sharedactionlist.h"
 
 GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 	: SynGlyphX::MainWindow(4, parent),
@@ -156,7 +157,18 @@ void GlyphViewerWindow::CreateANTzWidget() {
 
 	m_glyph3DView = new Glyph3DView(m_glyphForestModel, m_glyphForestSelectionModel, this);
 	m_glyph3DView->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-	m_glyph3DView->addActions(m_treeView->GetSharedActions());
+
+	m_openURLAction = new QAction(tr("Open URL"), this);
+	m_openURLAction->setShortcut(Qt::Key_U);
+	m_openURLAction->setEnabled(false);
+	QObject::connect(m_openURLAction, &QAction::triggered, this, &GlyphViewerWindow::OnOpenURLs);
+
+	m_propertiesAction = new QAction(tr("Properties"), this);
+	m_propertiesAction->setEnabled(false);
+	QObject::connect(m_propertiesAction, &QAction::triggered, this, &GlyphViewerWindow::OnPropertiesActivated);
+
+	m_glyph3DView->addAction(m_openURLAction);
+	m_glyph3DView->addAction(m_propertiesAction);
 	m_glyph3DView->addAction(SynGlyphX::SharedActionList::CreateSeparator(m_glyph3DView));
 	m_glyph3DView->addAction(m_showTagsAction);
 	m_glyph3DView->addAction(m_hideTagsAction);
@@ -306,21 +318,6 @@ void GlyphViewerWindow::CreateDockWidgets() {
 	m_legendsDockWidget->resize(400, 280);
 	m_legendsDockWidget->hide();
 
-	m_glyphListDockWidget = new QDockWidget(tr("Glyph List"), this);
-	m_treeView = new GlyphTreeListView(m_glyphListDockWidget);
-	m_treeView->setModel(m_glyphForestModel);
-	m_treeView->SetItemFocusSelectionModel(m_glyphForestSelectionModel);
-
-	m_glyphListDockWidget->setWidget(m_treeView);
-	addDockWidget(Qt::LeftDockWidgetArea, m_glyphListDockWidget);
-	act = m_glyphListDockWidget->toggleViewAction();
-	icon.addFile(":SGXGUI/Resources/Icons/icon-list.png", QSize(), QIcon::Normal, QIcon::Off);
-	icon.addFile(":SGXGUI/Resources/Icons/icon-list-a.png", QSize(), QIcon::Normal, QIcon::On);
-	act->setIcon(icon);
-	m_viewMenu->addAction(act);
-	m_showHideToolbar->addAction(act);
-	m_glyphListDockWidget->hide();
-
 	m_glyphPropertiesWidgetContainer = new GlyphPropertiesWidgetsContainer(m_glyphForestModel, m_glyphForestSelectionModel, this);
 
 	QDockWidget* textPropertiesDockWidget = new QDockWidget(tr("Text Properties"), this);
@@ -334,8 +331,6 @@ void GlyphViewerWindow::CreateDockWidgets() {
 	m_showHideToolbar->addAction(act);
 	m_showHideToolbar->addAction(textPropertiesDockWidget->toggleViewAction());
 	textPropertiesDockWidget->hide();
-
-	tabifyDockWidget(m_glyphListDockWidget, textPropertiesDockWidget);
 
 	QDockWidget* rightDockWidget = new QDockWidget(tr("Filtering"), this);
 	m_filteringWidget = new FilteringWidget(m_columnsModel, m_filteringManager, rightDockWidget);
@@ -929,6 +924,9 @@ void GlyphViewerWindow::OnSelectionChanged(const QItemSelection& selected, const
 	m_clearSelectionAction->setEnabled(selectionIsNotEmpty);
 	m_showTagsAction->setEnabled(selectionIsNotEmpty);
 	m_hideTagsAction->setEnabled(selectionIsNotEmpty);
+
+	m_openURLAction->setEnabled(selectionIsNotEmpty);
+	m_propertiesAction->setEnabled(selectionIsNotEmpty);
 }
 
 void GlyphViewerWindow::CreateExportToPortableVisualizationSubmenu() {
@@ -1091,4 +1089,31 @@ void GlyphViewerWindow::OnShowHideHUDAxis(bool show) {
 void GlyphViewerWindow::OnShowHideSceneAxis(bool show) {
 
 	m_glyph3DView->SetShowSceneAxisInfoObject(show);
+}
+
+void GlyphViewerWindow::OnOpenURLs() {
+
+	bool anyURLsOpened = m_glyphForestModel->OpenURLs(m_glyphForestSelectionModel->selectedIndexes());
+	if (!anyURLsOpened) {
+
+		QMessageBox::information(this, tr("No URLs Opened"), tr("No files or URLs were opened since none of the selected objects had a file or URL associated with them."));
+	}
+}
+
+void GlyphViewerWindow::OnPropertiesActivated() {
+
+	const QModelIndexList& selectedItems = m_glyphForestSelectionModel->selectedIndexes();
+	if (!selectedItems.empty()) {
+
+		const QModelIndex& index = selectedItems.back();
+		SynGlyphX::Glyph glyph = m_glyphForestModel->GetGlyphAtIndex(index);
+
+		SynGlyphX::TextGlyphPropertiesWidget* glyphPropertiesWidget = new SynGlyphX::TextGlyphPropertiesWidget(this);
+		glyphPropertiesWidget->SetWidget(QString::fromStdWString(glyph.GetTag()), QString::fromStdWString(glyph.GetURL()), QString::fromStdWString(glyph.GetDescription()));
+		glyphPropertiesWidget->SetReadOnly(true);
+
+		SynGlyphX::SingleWidgetDialog dialog(QDialogButtonBox::Ok, glyphPropertiesWidget, this);
+		dialog.setWindowTitle(tr("Glyph Properties"));
+		dialog.exec();
+	}
 }

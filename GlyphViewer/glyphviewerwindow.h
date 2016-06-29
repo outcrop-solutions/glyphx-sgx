@@ -19,7 +19,6 @@
 #define GLYPHVIEWERWINDOW_H
 
 #include <QtWidgets/QMainWindow>
-#include "glyphtreelistview.h"
 #include "mainwindow.h"
 #include "datamappingloadingfiltermodel.h"
 #include "glyphforestmodel.h"
@@ -71,6 +70,8 @@ private slots:
 	void OnStereoSetup(bool stereoEnabled);
 	void OnShowHideHUDAxis(bool show);
 	void OnShowHideSceneAxis(bool show);
+	void OnOpenURLs();
+	void OnPropertiesActivated();
 
 private:
 	virtual bool LoadRecentFile(const QString& filename);
@@ -111,7 +112,9 @@ private:
 	QAction* m_showHideHUDAxisAction;
 	QAction* m_showHideSceneAxisAction;
 
-	QDockWidget* m_glyphListDockWidget;
+	QAction* m_openURLAction;
+	QAction* m_propertiesAction;
+
 	LegendsDisplayWidget* m_legendsWidget;
 	QDockWidget* m_legendsDockWidget;
 
@@ -124,7 +127,7 @@ private:
 	SynGlyphXANTz::GlyphForestModel* m_glyphForestModel;
 	SynGlyphX::ItemFocusSelectionModel* m_glyphForestSelectionModel;
 	Glyph3DView* m_glyph3DView;
-	GlyphTreeListView* m_treeView;
+	
 	GlyphPropertiesWidgetsContainer* m_glyphPropertiesWidgetContainer;
 	SourceDataCache::SharedPtr m_sourceDataCache;
 	FilteringWidget* m_filteringWidget;

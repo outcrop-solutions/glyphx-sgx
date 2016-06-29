@@ -2,6 +2,7 @@
 #include "glyphbuilderapplication.h"
 #include <QtWidgets/QSplashScreen>
 #include <QtCore/QTimer>
+#include <QtCore/QDir>
 #include "licensingdialog.h"
 
 #ifdef USE_BREAKPAD
