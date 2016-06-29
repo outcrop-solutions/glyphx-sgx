@@ -730,19 +730,28 @@ namespace SynGlyphXANTz {
 		if (!mappedFields[0].isEmpty()) {
 
 			gluProject(0.0, 0.0, 12.0, xTextModelMatrix, orthoMatrix, viewport, &textPosition[0], &textPosition[1], &textPosition[2]);
-			renderText(textPosition[0], antzData->io.gl.height - textPosition[1], mappedFields[0], m_oglTextFont);
+			if (textPosition[2] < 1.0) {
+
+				renderText(textPosition[0], antzData->io.gl.height - textPosition[1], mappedFields[0], m_oglTextFont);
+			}
 		}
 
 		if (!mappedFields[1].isEmpty()) {
 
 			gluProject(0.0, 0.0, 12.0, yTextModelMatrix, orthoMatrix, viewport, &textPosition[0], &textPosition[1], &textPosition[2]);
-			renderText(textPosition[0], antzData->io.gl.height - textPosition[1], mappedFields[1], m_oglTextFont);
+			if (textPosition[2] < 1.0) {
+
+				renderText(textPosition[0], antzData->io.gl.height - textPosition[1], mappedFields[1], m_oglTextFont);
+			}
 		}
 
 		if (!mappedFields[2].isEmpty()) {
 
 			gluProject(0.0, 0.0, 8.0, zTextModelMatrix, orthoMatrix, viewport, &textPosition[0], &textPosition[1], &textPosition[2]);
-			renderText(textPosition[0], antzData->io.gl.height - textPosition[1], mappedFields[2], m_oglTextFont);
+			if (textPosition[2] < 1.0) {
+
+				renderText(textPosition[0], antzData->io.gl.height - textPosition[1], mappedFields[2], m_oglTextFont);
+			}
 		}
 
 		glEnable(GL_DEPTH_TEST);
