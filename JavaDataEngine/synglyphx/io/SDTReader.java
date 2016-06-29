@@ -388,9 +388,10 @@ public class SDTReader {
 								if(getFunction(element).equals("Text Interpolation")){
 									dataPaths.get(temp.getDataSource()).setHasTextInterpolation();
 									dataPaths.get(temp.getDataSource()).addTextInterpolationField(directMap.get(code));
+								}else{
+									checkForFunctionMinMax(temp, element);
 								}
 								temp.mapInput(field_name, directMap.get(code));
-								checkForFunctionMinMax(temp, element);
 							}
 								
 						}

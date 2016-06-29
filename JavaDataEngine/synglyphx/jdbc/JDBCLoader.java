@@ -139,9 +139,11 @@ public class JDBCLoader {
       
       if(closeCount == 2){
          try{
-            driver.getConnection().close();
-            Logger.getInstance().add("");
-            Logger.getInstance().add("Closing connection to database...");
+            if(!driver.getConnection().isClosed()){
+               driver.getConnection().close();
+               Logger.getInstance().add("");
+               Logger.getInstance().add("Closing connection to database...");
+            }
          }catch(Exception e){
             try{
                e.printStackTrace(ErrorHandler.getInstance().addError());

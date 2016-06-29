@@ -132,12 +132,12 @@ public class GlyphEngine {
 	 	//String outDir = "C:/Users/Bryan/AppData/Local/SynGlyphX/Glyph Builder - Glyph Viewer/cache/cache_2072a4ce-5cf5-4591-84b0-30f87c5cc214";
 	 	//String sdtPath = "C:/Users/Bryan/Desktop/WC Data and Files/WC Sample.sdt";
 	 	//String outDir = "C:/Users/Bryan/Desktop/WC Data and Files/Viz";
-	 	String sdtPath = "C:/Users/Bryan/Desktop/East Coast Only/East_Coast_Only.sdt";
-	 	String outDir = "C:/Users/Bryan/Desktop/East Coast Only/Viz";
+	 	//String sdtPath = "C:/Users/Bryan/Desktop/East Coast Only/East_Coast_Only.sdt";
+	 	//String outDir = "C:/Users/Bryan/Desktop/East Coast Only/Viz";
 	 	//String sdtPath = "C:/Users/Bryan/ODBA/1/Synglyphx Team Site - ~1/School Shooting Remap/School Shooting DataMap.sdt";
 	 	//String outDir = "C:/Users/Bryan/ODBA/1/Synglyphx Team Site - ~1/School Shooting Remap/School Shooting Portable";
-	 	//String sdtPath = "C:/Users/Bryan/Desktop/Text Interpolation/text_interpolation_test.sdt";
-	 	//String outDir = "C:/Users/Bryan/Desktop/Text Interpolation/Viz";
+	 	String sdtPath = "C:/Users/Bryan/Desktop/Text Interpolation/text_interpolation_test.sdt";
+	 	String outDir = "C:/Users/Bryan/Desktop/Text Interpolation/Viz";
 	 	//String sdtPath = "C:/Users/Bryan/Desktop/Link Test Exo/linktest.sdt";
 	 	//String outDir = "C:/Users/Bryan/Desktop/Link Test Exo/viz";
 	 	//String sdtPath = "C:/Users/Bryan/Desktop/TELCO Small Subset/Customers Subset.sdt";
@@ -181,7 +181,7 @@ public class GlyphEngine {
 		}
 
 	 	if(start.isUpdateNeeded()){
-		 	double[] nwse = start.getNWandSE();
+		 	//double[] nwse = start.getNWandSE();
 		 	//start.hasImageBeenUpdated();
 		 	start.setBoundingBox(nw,se,s);
 		 	
