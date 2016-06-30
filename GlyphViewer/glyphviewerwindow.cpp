@@ -269,6 +269,10 @@ void GlyphViewerWindow::CreateMenus() {
 	m_toolsMenu = menuBar()->addMenu(tr("Tools"));
 
 	m_remapRootPositionMappingsAction = m_toolsMenu->addAction(tr("Change X, Y, Z Position Axes"));
+	QIcon remapIcon;
+	remapIcon.addFile(":SGXGUI/Resources/Icons/icon-xyz.png", QSize(), QIcon::Normal, QIcon::Off);
+	remapIcon.addFile(":SGXGUI/Resources/Icons/icon-xyz-a.png", QSize(), QIcon::Normal, QIcon::On);
+	m_remapRootPositionMappingsAction->setIcon(remapIcon);
 	QObject::connect(m_remapRootPositionMappingsAction, &QAction::triggered, this, &GlyphViewerWindow::RemapRootPositionMappings);
 	m_loadedVisualizationDependentActions.push_back(m_remapRootPositionMappingsAction);
 
@@ -1056,11 +1060,19 @@ void GlyphViewerWindow::CreateInteractionToolbar() {
 
 	m_showHideHUDAxisAction = new QAction(tr("Show/Hide HUD Axis"), m_interactionToolbar);
 	m_showHideHUDAxisAction->setCheckable(true);
+	QIcon hudAxisIcon;
+	hudAxisIcon.addFile(":SGXGUI/Resources/Icons/icon-axis-hud.png", QSize(), QIcon::Normal, QIcon::Off);
+	hudAxisIcon.addFile(":SGXGUI/Resources/Icons/icon-axis-hud-a.png", QSize(), QIcon::Normal, QIcon::On);
+	m_showHideHUDAxisAction->setIcon(hudAxisIcon);
 	QObject::connect(m_showHideHUDAxisAction, &QAction::toggled, this, &GlyphViewerWindow::OnShowHideHUDAxis);
 	m_interactionToolbar->addAction(m_showHideHUDAxisAction);
 
 	m_showHideSceneAxisAction = new QAction(tr("Show/Hide Scene Axis"), m_interactionToolbar);
 	m_showHideSceneAxisAction->setCheckable(true);
+	QIcon sceneAxisIcon;
+	sceneAxisIcon.addFile(":SGXGUI/Resources/Icons/icon-axis-scene.png", QSize(), QIcon::Normal, QIcon::Off);
+	sceneAxisIcon.addFile(":SGXGUI/Resources/Icons/icon-axis-scene-a.png", QSize(), QIcon::Normal, QIcon::On);
+	m_showHideSceneAxisAction->setIcon(sceneAxisIcon);
 	QObject::connect(m_showHideSceneAxisAction, &QAction::toggled, this, &GlyphViewerWindow::OnShowHideSceneAxis);
 	m_interactionToolbar->addAction(m_showHideSceneAxisAction);
 

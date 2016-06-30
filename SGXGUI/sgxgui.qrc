@@ -21,10 +21,14 @@
 	    <file>Resources/Icons/icon-filter-view-a.png</file>
 	    <file>Resources/Icons/icon-legend.png</file>
 	    <file>Resources/Icons/icon-legend-a.png</file>
-	    <file>Resources/Icons/icon-list.png</file>
-	    <file>Resources/Icons/icon-list-a.png</file>
 	    <file>Resources/Icons/icon-text.png</file>
 	    <file>Resources/Icons/icon-text-a.png</file>
+      <file>Resources/Icons/icon-xyz.png</file>
+      <file>Resources/Icons/icon-xyz-a.png</file>
+      <file>Resources/Icons/icon-axis-hud.png</file>
+      <file>Resources/Icons/icon-axis-hud-a.png</file>
+      <file>Resources/Icons/icon-axis-scene.png</file>
+      <file>Resources/Icons/icon-axis-scene-a.png</file>
       <file>Resources/GlyphEd/glyphed_splash.png</file>
       <file>Resources/GlyphEd/glyphed_logo_white_border.png</file>
       <file>Resources/GlyphEd/glyphed_logo_no_border.png</file>
