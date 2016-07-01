@@ -15,64 +15,27 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef LOADINGSCREENWIDGET_H
-#define LOADINGSCREENWIDGET_H
+#ifndef LOADINGFILTERWIDGET_H
+#define LOADINGFILTERWIDGET_H
 
-#include <QtWidgets/QFrame>
-#include <QtWidgets/QListWidget>
-#include <QtWidgets/QGroupBox>
-#include <QtWidgets/QPushButton>
-#include "glyphviewerwindow.h"
-#include "sourcedatacache.h"
+#include <QtWidgets/QSplitter>
 
-class LoadingFilterWidget;
+class QListWidget;
 
-class LoadingScreenWidget : public QFrame
+class LoadingFilterWidget : public QSplitter
 {
 	Q_OBJECT
 
 public:
-	LoadingScreenWidget(GlyphViewerWindow* mainWindow, QWidget *parent);
-	~LoadingScreenWidget();
+	LoadingFilterWidget(QWidget *parent);
+	~LoadingFilterWidget();
 
-	static QString GetGlyphEdDir();
+	void AddFilter(const QString& name, bool allowMultiselect, const QStringList& filterValues);
 
-private slots:
-	void OnLoadVisualization();
+	bool DoAllFiltersHaveASelection() const;
 
 private:
-	class VisualizationData {
-
-	public:
-		VisualizationData() : m_mustHaveFilter(true) {}
-		~VisualizationData() {}
-
-		bool HasDataForFilter(unsigned int index) const { return index < m_filterTitles.size(); }
-
-		QString m_title;
-		QString m_sdtPath;
-		QString m_tableInGlyphEd;
-		bool m_mustHaveFilter;
-
-		std::vector<QString> m_filterTitles;
-		std::vector<QString> m_filterFieldNames;
-		std::vector<bool> m_filterMultiselect;
-		std::vector<QStringList> m_filterValues;
-	};
-
-	bool AreAnyFiltersMissingSelection() const;
-
-	void SetupVisualizationData();
-
-	static QString s_glyphEdDir;
-
-	QListWidget* m_viewListWidget;
-	QList<LoadingFilterWidget*> m_loadingFilterWidgets;
-	QStackedLayout* m_loadingFilterWidgetLayout;
-	
-	GlyphViewerWindow* m_mainWindow;
-	SourceDataCache m_sourceDataCache;
-	std::vector<VisualizationData> m_visualizationData;
+	QList<QListWidget*> m_filterListWidgets;
 };
 
-#endif // LOADINGSCREENWIDGET_H
+#endif // LOADINGFILTERWIDGET_H

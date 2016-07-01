@@ -6,13 +6,13 @@
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QMessageBox>
 #include "groupboxsinglewidget.h"
+#include "LoadingFilterWidget.h"
 
 QString LoadingScreenWidget::s_glyphEdDir;
 
 LoadingScreenWidget::LoadingScreenWidget(GlyphViewerWindow* mainWindow, QWidget *parent)
 	: QFrame(parent),
-	m_mainWindow(mainWindow),
-	m_currentView(0)
+	m_mainWindow(mainWindow)
 {
 	m_sourceDataCache.Setup(GetGlyphEdDir() + QDir::toNativeSeparators("/glyphed.db"));
 
@@ -32,17 +32,26 @@ LoadingScreenWidget::LoadingScreenWidget(GlyphViewerWindow* mainWindow, QWidget 
 		m_viewListWidget->addItem(visualizationData.m_title);
 	}
 	m_viewListWidget->setMinimumWidth(m_viewListWidget->sizeHintForColumn(0) + 5);
-	QObject::connect(m_viewListWidget, &QListWidget::itemSelectionChanged, this, &LoadingScreenWidget::OnNewViewSelected);
 
 	SynGlyphX::GroupBoxSingleWidget* visualizationGroupBox = new SynGlyphX::GroupBoxSingleWidget(tr("View(s)"), m_viewListWidget, this);
 	vizAndFilterLayout->addWidget(visualizationGroupBox);
 
-	for (unsigned int i = 0; i < 3; ++i) {
+	m_loadingFilterWidgetLayout = new QStackedLayout(this);
+	for (unsigned int i = 0; i < m_visualizationData.size(); ++i) {
 
-		AddFilterList(vizAndFilterLayout);
+		LoadingFilterWidget* loadingFilterWidget = new LoadingFilterWidget(this);
+		for(unsigned int j = 0; j < m_visualizationData[i].m_filterTitles.size(); ++j) {
+
+			loadingFilterWidget->AddFilter(m_visualizationData[i].m_filterTitles[j],
+				m_visualizationData[i].m_filterMultiselect[j],
+				m_visualizationData[i].m_filterValues[j]);
+		}
+
+		m_loadingFilterWidgetLayout->addWidget(loadingFilterWidget);
+		m_loadingFilterWidgets.append(loadingFilterWidget);
 	}
 
-	vizAndFilterLayout->addStretch(1);
+	vizAndFilterLayout->addLayout(m_loadingFilterWidgetLayout, 1);
 
 	QVBoxLayout* logoLayout = new QVBoxLayout(this);
 	logoLayout->setContentsMargins(0, 0, 0, 0);
@@ -67,6 +76,7 @@ LoadingScreenWidget::LoadingScreenWidget(GlyphViewerWindow* mainWindow, QWidget 
 
 	setLayout(mainLayout);
 
+	QObject::connect(m_viewListWidget, &QListWidget::currentRowChanged, m_loadingFilterWidgetLayout, &QStackedLayout::setCurrentIndex);
 	m_viewListWidget->selectionModel()->select(m_viewListWidget->model()->index(0, 0), QItemSelectionModel::SelectionFlag::ClearAndSelect);
 }
 
@@ -229,13 +239,14 @@ QString LoadingScreenWidget::GetGlyphEdDir() {
 
 void LoadingScreenWidget::OnLoadVisualization() {
 
-	if (m_visualizationData[m_currentView].m_mustHaveFilter && AreAnyFiltersMissingSelection()) {
+	unsigned int currentView = m_loadingFilterWidgetLayout->currentIndex();
+	if (m_visualizationData[currentView].m_mustHaveFilter && AreAnyFiltersMissingSelection()) {
 
 		QMessageBox::information(this, tr("Did not load visualization"), tr("Visualization can not be loaded until at least one value has been selected from each filter."));
 	}
 	else {
 
-		SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
+		/*SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
 
 		FilteringParameters filters;
 
@@ -323,96 +334,12 @@ void LoadingScreenWidget::OnLoadVisualization() {
 		else {
 
 			QMessageBox::warning(this, tr("Load Visualization"), tr("The selected combination of filters had no results.  Please try a different combination of filters to load a visualization."));
-		}
+		}*/
 	}
-}
-
-void LoadingScreenWidget::OnNewViewSelected() {
-
-	m_currentView = m_viewListWidget->selectionModel()->selectedIndexes().front().row();
-
-	ClearFilters();
-
-	for (unsigned int i = 0; i < m_filterWidgets.size(); ++i) {
-
-		if (i < m_visualizationData[m_currentView].m_filterTitles.size()) {
-
-			m_filterGroupBoxWidgets[i]->setVisible(true);
-			m_filterGroupBoxWidgets[i]->setTitle(m_visualizationData[m_currentView].m_filterTitles[i]);
-			SetMultiSelectionEnabled(i, m_visualizationData[m_currentView].m_filterMultiselect[i]);
-			m_filterWidgets[i]->addItems(m_visualizationData[m_currentView].m_filterValues[i]);
-			m_filterWidgets[i]->setMinimumWidth(m_filterWidgets[i]->sizeHintForColumn(0) + 30);
-		}
-		else {
-
-			m_filterGroupBoxWidgets[i]->setVisible(false);
-		}
-	}
-}
-
-void LoadingScreenWidget::AddFilterList(QHBoxLayout* filterListLayout) {
-
-	QListWidget* filterListWidget = new QListWidget(this);
-	m_filterWidgets.push_back(filterListWidget);
-
-	QPushButton* selectAllButton = new QPushButton(tr("Select All"), this);
-	m_selectAllButtonWidgets.push_back(selectAllButton);
-	QObject::connect(selectAllButton, &QPushButton::clicked, this, &LoadingScreenWidget::OnSelectAll);
-
-	QVBoxLayout* groupBoxLayout = new QVBoxLayout(this);
-	groupBoxLayout->addWidget(selectAllButton);
-	groupBoxLayout->addWidget(filterListWidget);
-
-	QGroupBox* groupBox = new QGroupBox(this);
-	groupBox->setLayout(groupBoxLayout);
-	m_filterGroupBoxWidgets.push_back(groupBox);
-	filterListLayout->addWidget(groupBox);
-}
-
-void LoadingScreenWidget::OnSelectAll() {
-
-	unsigned int i = 0;
-	for (; i < m_selectAllButtonWidgets.size(); ++i) {
-
-		if (sender() == m_selectAllButtonWidgets[i]) {
-
-			break;
-		}
-	}
-
-	QItemSelection selection(m_filterWidgets[i]->model()->index(0, 0), m_filterWidgets[i]->model()->index(m_filterWidgets[i]->model()->rowCount()-1, 0));
-	m_filterWidgets[i]->selectionModel()->select(selection, QItemSelectionModel::ClearAndSelect);
-}
-
-void LoadingScreenWidget::SetMultiSelectionEnabled(unsigned int filterWidgetIndex, bool multiSelectionEnabled) {
-
-	m_filterWidgets[filterWidgetIndex]->setSelectionMode(multiSelectionEnabled ? QAbstractItemView::ExtendedSelection : QAbstractItemView::SingleSelection);
-	m_selectAllButtonWidgets[filterWidgetIndex]->setEnabled(multiSelectionEnabled);
 }
 
 bool LoadingScreenWidget::AreAnyFiltersMissingSelection() const {
 
-	for (unsigned int i = 0; i < m_filterWidgets.size(); ++i) {
-
-		if (IsFilterWidgetInUse(i) && m_filterWidgets[i]->selectionModel()->selectedIndexes().empty()) {
-
-			return true;
-		}
-	}
-
-	return false;
-}
-
-bool LoadingScreenWidget::IsFilterWidgetInUse(unsigned int index) const {
-
-	return m_filterGroupBoxWidgets[index]->isVisible();
-}
-
-void LoadingScreenWidget::ClearFilters() {
-
-	for (auto& filterWidget : m_filterWidgets) {
-
-		filterWidget->selectionModel()->clearSelection();
-		filterWidget->clear();
-	}
+	unsigned int currentView = m_loadingFilterWidgetLayout->currentIndex();
+	return !m_loadingFilterWidgets[currentView]->DoAllFiltersHaveASelection();
 }

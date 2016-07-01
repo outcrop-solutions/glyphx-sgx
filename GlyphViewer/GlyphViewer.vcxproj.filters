@@ -254,6 +254,15 @@
     <ClCompile Include="GeneratedFiles\Win32\Release\moc_remapdialog.cpp">
       <Filter>Generated Files\Release_Win32</Filter>
     </ClCompile>
+    <ClCompile Include="LoadingFilterWidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Win32\Debug\moc_LoadingFilterWidget.cpp">
+      <Filter>Generated Files\Debug_Win32</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Win32\Release\moc_LoadingFilterWidget.cpp">
+      <Filter>Generated Files\Release_Win32</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="glyphviewer.qrc">
@@ -323,6 +332,9 @@
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="remapdialog.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="LoadingFilterWidget.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>
