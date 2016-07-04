@@ -1,11 +1,10 @@
 #include "loadingscreenwidget.h"
 #include "glyphbuilderapplication.h"
 #include <QtCore/QDir>
-#include <QtWidgets/QVBoxLayout>
-#include <QtWidgets/QHBoxLayout>
-#include <QtWidgets/QPushButton>
+#include <QtWidgets/QGridLayout>
+#include <QtWidgets/QSplitter>
 #include <QtWidgets/QMessageBox>
-#include "groupboxsinglewidget.h"
+#include "TitleListWidget.h"
 #include "LoadingFilterWidget.h"
 
 QString LoadingScreenWidget::s_glyphEdDir;
@@ -18,25 +17,54 @@ LoadingScreenWidget::LoadingScreenWidget(GlyphViewerWindow* mainWindow, QWidget 
 
 	SetupVisualizationData();
 
-	setFrameShape(QFrame::Shape::Box);
-	setFrameShadow(QFrame::Shadow::Sunken);
+	setFrameStyle(QFrame::Box | QFrame::Sunken);
 	
-	QVBoxLayout* mainLayout = new QVBoxLayout(this);
+	QGridLayout* mainLayout = new QGridLayout(this);
+	mainLayout->setRowStretch(1, 1);
+	mainLayout->setColumnStretch(1, 1);
 
-	QHBoxLayout* vizAndFilterLayout = new QHBoxLayout(this);
+	QLabel* logoLabel = new QLabel(this);
+	logoLabel->setPixmap(QPixmap(SynGlyphX::GlyphBuilderApplication::GetLogoLocation(SynGlyphX::GlyphBuilderApplication::NoBorder)));
+	mainLayout->addWidget(logoLabel, 0, 0);
 
-	m_viewListWidget = new QListWidget(this);
-	m_viewListWidget->setSortingEnabled(false);
+	QHBoxLayout* loadButtonLayout = new QHBoxLayout(this);
+	loadButtonLayout->addStretch(1);
+	QPushButton* loadButton = new QPushButton(tr("Load Visualization"), this);
+	QObject::connect(loadButton, &QPushButton::clicked, this, &LoadingScreenWidget::OnLoadVisualization);
+	loadButtonLayout->addWidget(loadButton);
+
+	mainLayout->addLayout(loadButtonLayout, 0, 1);
+
+	QFrame* vizAndFilterFrame = new QFrame(this);
+	vizAndFilterFrame->setFrameStyle(QFrame::Box | QFrame::Sunken);
+	vizAndFilterFrame->setLineWidth(1);
+	vizAndFilterFrame->setMidLineWidth(2);
+
+	QHBoxLayout* vizAndFilterFrameLayout = new QHBoxLayout(vizAndFilterFrame);
+	vizAndFilterFrameLayout->setContentsMargins(0, 0, 0, 0);
+	vizAndFilterFrameLayout->setSpacing(0);
+
+	QSplitter* vizAndFilterSplitter = new QSplitter(Qt::Horizontal, this);
+	vizAndFilterSplitter->setChildrenCollapsible(false);
+	vizAndFilterSplitter->setHandleWidth(2);
+	vizAndFilterSplitter->setStyleSheet("QSplitter::handle:horizontal { background: qlineargradient(x1 : 0, y1 : 0, x2 : 1, y2 : 1, stop : 0 #eee, stop:1 #ccc);"
+		"border: 1px solid #777; width: 0px; margin - top: 0px; margin - bottom: 0px; border - radius: 2px; }");
+
+	m_viewListWidget = new SynGlyphX::TitleListWidget(this);
+	m_viewListWidget->SetAllowMultiselect(false);
+	m_viewListWidget->ShowSelectAllButton(false);
+	m_viewListWidget->SetTitle(tr("View(s)"));
+	m_viewListWidget->layout()->setContentsMargins(0, 0, 0, 0);
+
+	QStringList visualizations;
 	for (const auto& visualizationData : m_visualizationData) {
 
-		m_viewListWidget->addItem(visualizationData.m_title);
+		visualizations << visualizationData.m_title;
 	}
-	m_viewListWidget->setMinimumWidth(m_viewListWidget->sizeHintForColumn(0) + 5);
+	m_viewListWidget->SetItems(visualizations);
+	vizAndFilterSplitter->addWidget(m_viewListWidget);
 
-	SynGlyphX::GroupBoxSingleWidget* visualizationGroupBox = new SynGlyphX::GroupBoxSingleWidget(tr("View(s)"), m_viewListWidget, this);
-	vizAndFilterLayout->addWidget(visualizationGroupBox);
-
-	m_loadingFilterWidgetLayout = new QStackedLayout(this);
+	m_loadingFilterStackedWidget = new QStackedWidget(this);
 	for (unsigned int i = 0; i < m_visualizationData.size(); ++i) {
 
 		LoadingFilterWidget* loadingFilterWidget = new LoadingFilterWidget(this);
@@ -47,37 +75,20 @@ LoadingScreenWidget::LoadingScreenWidget(GlyphViewerWindow* mainWindow, QWidget 
 				m_visualizationData[i].m_filterValues[j]);
 		}
 
-		m_loadingFilterWidgetLayout->addWidget(loadingFilterWidget);
+		m_loadingFilterStackedWidget->addWidget(loadingFilterWidget);
 		m_loadingFilterWidgets.append(loadingFilterWidget);
 	}
+	vizAndFilterSplitter->addWidget(m_loadingFilterStackedWidget);
 
-	vizAndFilterLayout->addLayout(m_loadingFilterWidgetLayout, 1);
+	vizAndFilterFrameLayout->addWidget(vizAndFilterSplitter);
+	vizAndFilterFrame->setLayout(vizAndFilterFrameLayout);
 
-	QVBoxLayout* logoLayout = new QVBoxLayout(this);
-	logoLayout->setContentsMargins(0, 0, 0, 0);
-
-	QLabel* logoLabel = new QLabel(this);
-	logoLabel->setPixmap(QPixmap(SynGlyphX::GlyphBuilderApplication::GetLogoLocation(SynGlyphX::GlyphBuilderApplication::NoBorder)));
-
-	logoLayout->addWidget(logoLabel);
-	logoLayout->addStretch(1);
-
-	vizAndFilterLayout->addLayout(logoLayout);
-
-	mainLayout->addLayout(vizAndFilterLayout, 1);
-
-	QHBoxLayout* buttonLayout = new QHBoxLayout(this);
-
-	QPushButton* loadButton = new QPushButton(tr("Load Visualization"), this);
-	buttonLayout->addWidget(loadButton, 1);
-	QObject::connect(loadButton, &QPushButton::clicked, this, &LoadingScreenWidget::OnLoadVisualization);
-
-	mainLayout->addLayout(buttonLayout);
+	mainLayout->addWidget(vizAndFilterFrame, 1, 1);
 
 	setLayout(mainLayout);
 
-	QObject::connect(m_viewListWidget, &QListWidget::currentRowChanged, m_loadingFilterWidgetLayout, &QStackedLayout::setCurrentIndex);
-	m_viewListWidget->selectionModel()->select(m_viewListWidget->model()->index(0, 0), QItemSelectionModel::SelectionFlag::ClearAndSelect);
+	QObject::connect(m_viewListWidget, &SynGlyphX::TitleListWidget::CurrentRowChanged, m_loadingFilterStackedWidget, &QStackedWidget::setCurrentIndex);
+	m_viewListWidget->SelectItem(0);
 }
 
 LoadingScreenWidget::~LoadingScreenWidget()
@@ -239,7 +250,7 @@ QString LoadingScreenWidget::GetGlyphEdDir() {
 
 void LoadingScreenWidget::OnLoadVisualization() {
 
-	unsigned int currentView = m_loadingFilterWidgetLayout->currentIndex();
+	unsigned int currentView = m_loadingFilterStackedWidget->currentIndex();
 	if (m_visualizationData[currentView].m_mustHaveFilter && AreAnyFiltersMissingSelection()) {
 
 		QMessageBox::information(this, tr("Did not load visualization"), tr("Visualization can not be loaded until at least one value has been selected from each filter."));
@@ -340,6 +351,6 @@ void LoadingScreenWidget::OnLoadVisualization() {
 
 bool LoadingScreenWidget::AreAnyFiltersMissingSelection() const {
 
-	unsigned int currentView = m_loadingFilterWidgetLayout->currentIndex();
+	unsigned int currentView = m_loadingFilterStackedWidget->currentIndex();
 	return !m_loadingFilterWidgets[currentView]->DoAllFiltersHaveASelection();
 }

@@ -15,66 +15,40 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef LOADINGSCREENWIDGET_H
-#define LOADINGSCREENWIDGET_H
+#pragma once
 
-#include <QtWidgets/QStackedWidget>
-#include "sourcedatacache.h"
-
-class GlyphViewerWindow;
-class LoadingFilterWidget;
+#include "sgxgui_global.h"
+#include <QtWidgets/QWidget>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QListWidget>
 
 namespace SynGlyphX {
 
-	class TitleListWidget;
-}
-
-class LoadingScreenWidget : public QFrame
-{
-	Q_OBJECT
-
-public:
-	LoadingScreenWidget(GlyphViewerWindow* mainWindow, QWidget *parent);
-	~LoadingScreenWidget();
-
-	static QString GetGlyphEdDir();
-
-private slots:
-	void OnLoadVisualization();
-
-private:
-	class VisualizationData {
+	class SGXGUI_EXPORT TitleListWidget : public QWidget
+	{
+		Q_OBJECT
 
 	public:
-		VisualizationData() : m_mustHaveFilter(true) {}
-		~VisualizationData() {}
+		TitleListWidget(QWidget *parent);
+		~TitleListWidget();
 
-		bool HasDataForFilter(unsigned int index) const { return index < m_filterTitles.size(); }
+		void ShowSelectAllButton(bool show);
+		void SetAllowMultiselect(bool allow);
+		void SetTitle(const QString& title);
+		void SetItems(const QStringList& items);
+		bool AreAnyItemsSelected() const;
+		void SelectItem(unsigned int index);
 
-		QString m_title;
-		QString m_sdtPath;
-		QString m_tableInGlyphEd;
-		bool m_mustHaveFilter;
+	signals:
+		void CurrentRowChanged(int row);
 
-		std::vector<QString> m_filterTitles;
-		std::vector<QString> m_filterFieldNames;
-		std::vector<bool> m_filterMultiselect;
-		std::vector<QStringList> m_filterValues;
+	private:
+		QLabel* m_titleLabel;
+		QPushButton* m_selectAllButton;
+		QListWidget* m_listWidget;
 	};
 
-	bool AreAnyFiltersMissingSelection() const;
+} //namespace SynGlyphX
 
-	void SetupVisualizationData();
-
-	static QString s_glyphEdDir;
-
-	SynGlyphX::TitleListWidget* m_viewListWidget;
-	QList<LoadingFilterWidget*> m_loadingFilterWidgets;
-	QStackedWidget* m_loadingFilterStackedWidget;
-	
-	GlyphViewerWindow* m_mainWindow;
-	SourceDataCache m_sourceDataCache;
-	std::vector<VisualizationData> m_visualizationData;
-};
-
-#endif // LOADINGSCREENWIDGET_H
+//#pragma once

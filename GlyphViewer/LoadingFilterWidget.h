@@ -15,12 +15,14 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef LOADINGFILTERWIDGET_H
-#define LOADINGFILTERWIDGET_H
+#pragma once
 
 #include <QtWidgets/QSplitter>
 
-class QListWidget;
+namespace SynGlyphX {
+
+	class TitleListWidget;
+}
 
 class LoadingFilterWidget : public QSplitter
 {
@@ -35,7 +37,7 @@ public:
 	bool DoAllFiltersHaveASelection() const;
 
 private:
-	QList<QListWidget*> m_filterListWidgets;
+	QList<SynGlyphX::TitleListWidget*> m_filterListWidgets;
 };
 
-#endif // LOADINGFILTERWIDGET_H
+//#pragma once

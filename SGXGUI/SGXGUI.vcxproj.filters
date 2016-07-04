@@ -389,6 +389,15 @@
     <ClCompile Include="GeneratedFiles\Release\moc_fixedaspectratioimagelabel.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="TitleListWidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_TitleListWidget.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_TitleListWidget.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="sgxgui_global.h">
@@ -520,6 +529,9 @@
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="fixedaspectratioimagelabel.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="TitleListWidget.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>
