@@ -380,15 +380,6 @@
     <ClCompile Include="GeneratedFiles\Release\moc_roweditingtableview.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
-    <ClCompile Include="fixedaspectratioimagelabel.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_fixedaspectratioimagelabel.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_fixedaspectratioimagelabel.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
     <ClCompile Include="TitleListWidget.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -396,6 +387,15 @@
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Release\moc_TitleListWidget.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="ResizeableImageLabel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_ResizeableImageLabel.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_ResizeableImageLabel.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
   </ItemGroup>
@@ -528,10 +528,10 @@
     <CustomBuild Include="roweditingtableview.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
-    <CustomBuild Include="fixedaspectratioimagelabel.h">
+    <CustomBuild Include="TitleListWidget.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
-    <CustomBuild Include="TitleListWidget.h">
+    <CustomBuild Include="ResizeableImageLabel.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>
@@ -585,6 +585,12 @@
       <Filter>Resource Files\GlyphEd</Filter>
     </Image>
     <Image Include="Resources\GlyphEd\synglyphx_x_ED.ico">
+      <Filter>Resource Files\GlyphEd</Filter>
+    </Image>
+    <Image Include="Resources\GlyphEd\dashboard_top_image.png">
+      <Filter>Resource Files\GlyphEd</Filter>
+    </Image>
+    <Image Include="Resources\GlyphEd\glyphed_logo_homepage.png">
       <Filter>Resource Files\GlyphEd</Filter>
     </Image>
   </ItemGroup>

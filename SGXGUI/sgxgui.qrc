@@ -33,6 +33,8 @@
       <file>Resources/GlyphEd/glyphed_logo_white_border.png</file>
       <file>Resources/GlyphEd/glyphed_logo_no_border.png</file>
       <file>Resources/GlyphEd/synglyphx_x_ED.ico</file>
+      <file>Resources/GlyphEd/glyphed_logo_homepage.png</file>
+      <file>Resources/GlyphEd/dashboard_top_image.png</file>
     </qresource>
     <qresource prefix="/qt/etc">
       <file alias="qt.conf">Resources/qt.conf</file>

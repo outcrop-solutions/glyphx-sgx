@@ -99,7 +99,6 @@
     <ClCompile Include="doublesizewidget.cpp" />
     <ClCompile Include="elasticlistmodel.cpp" />
     <ClCompile Include="elasticlistwidget.cpp" />
-    <ClCompile Include="fixedaspectratioimagelabel.cpp" />
     <ClCompile Include="GeneratedFiles\Debug\moc_abstracttreemodel.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
@@ -125,9 +124,6 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Debug\moc_elasticlistwidget.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_fixedaspectratioimagelabel.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Debug\moc_gridwidget.cpp">
@@ -170,6 +166,9 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Debug\moc_replacefilenamedialog.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_ResizeableImageLabel.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Debug\moc_richtexteditor.cpp">
@@ -250,9 +249,6 @@
     <ClCompile Include="GeneratedFiles\Release\moc_elasticlistwidget.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_fixedaspectratioimagelabel.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\Release\moc_gridwidget.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
@@ -293,6 +289,9 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Release\moc_replacefilenamedialog.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_ResizeableImageLabel.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Release\moc_richtexteditor.cpp">
@@ -352,6 +351,7 @@
     <ClCompile Include="radiobuttongroupwidget.cpp" />
     <ClCompile Include="rangeslider.cpp" />
     <ClCompile Include="replacefilenamedialog.cpp" />
+    <ClCompile Include="ResizeableImageLabel.cpp" />
     <ClCompile Include="roledatafilterproxymodel.cpp" />
     <ClCompile Include="mainwindow.cpp" />
     <ClCompile Include="notemptyvalidator.cpp" />
@@ -706,16 +706,6 @@
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUSE_LICENSING -DBOOST_ALL_DYN_LINK -DUNICODE -DWIN32 -DWIN64 -DQT_DLL -DSGXGUI_EXPORTS -DQT_NO_DEBUG -DNDEBUG -DQT_CORE_LIB -DQT_GUI_LIB -DQT_OPENGL_LIB -DQT_WIDGETS_LIB -DSGXGUI_LIB -D_WINDLL  "-I.\GeneratedFiles" "-I." "-I$(QTDIR)\include" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I.\..\..\3rdParty\include\boost_1_55_0" "-I.\..\..\Core\SGXUtility" "-I.\..\..\3rdParty\include\rlm_ez_12_0"</Command>
     </CustomBuild>
-    <CustomBuild Include="fixedaspectratioimagelabel.h">
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing fixedaspectratioimagelabel.h...</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUSE_LICENSING -DBOOST_ALL_DYN_LINK -DUNICODE -DWIN32 -DWIN64 -DQT_DLL -DSGXGUI_EXPORTS -DQT_CORE_LIB -DQT_GUI_LIB -DQT_OPENGL_LIB -DQT_WIDGETS_LIB -DSGXGUI_LIB -D_WINDLL  "-I.\GeneratedFiles" "-I." "-I$(QTDIR)\include" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I.\..\..\3rdParty\include\boost_1_55_0" "-I.\..\..\Core\SGXUtility" "-I.\..\..\3rdParty\include\rlm_ez_12_0"</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Moc%27ing fixedaspectratioimagelabel.h...</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUSE_LICENSING -DBOOST_ALL_DYN_LINK -DUNICODE -DWIN32 -DWIN64 -DQT_DLL -DSGXGUI_EXPORTS -DQT_NO_DEBUG -DNDEBUG -DQT_CORE_LIB -DQT_GUI_LIB -DQT_OPENGL_LIB -DQT_WIDGETS_LIB -DSGXGUI_LIB -D_WINDLL  "-I.\GeneratedFiles" "-I." "-I$(QTDIR)\include" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I.\..\..\3rdParty\include\boost_1_55_0" "-I.\..\..\Core\SGXUtility" "-I.\..\..\3rdParty\include\rlm_ez_12_0"</Command>
-    </CustomBuild>
     <CustomBuild Include="tablesubsetproxymodel.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath);$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing tablesubsetproxymodel.h...</Message>
@@ -778,6 +768,16 @@
     </CustomBuild>
     <ClInclude Include="EditorEnvironment.h" />
     <ClInclude Include="Environment.h" />
+    <CustomBuild Include="ResizeableImageLabel.h">
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing ResizeableImageLabel.h...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUSE_LICENSING -DBOOST_ALL_DYN_LINK -DUNICODE -DWIN32 -DWIN64 -DQT_DLL -DSGXGUI_EXPORTS -DQT_CORE_LIB -DQT_GUI_LIB -DQT_OPENGL_LIB -DQT_WIDGETS_LIB -DSGXGUI_LIB -D_WINDLL "-I.\GeneratedFiles" "-I." "-I$(QTDIR)\include" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I.\..\..\3rdParty\include\boost_1_55_0" "-I.\..\..\Core\SGXUtility" "-I.\..\..\3rdParty\include\rlm_ez_12_0"</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Moc%27ing ResizeableImageLabel.h...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUSE_LICENSING -DBOOST_ALL_DYN_LINK -DUNICODE -DWIN32 -DWIN64 -DQT_DLL -DSGXGUI_EXPORTS -DQT_NO_DEBUG -DNDEBUG -DQT_CORE_LIB -DQT_GUI_LIB -DQT_OPENGL_LIB -DQT_WIDGETS_LIB -DSGXGUI_LIB -D_WINDLL "-I.\GeneratedFiles" "-I." "-I$(QTDIR)\include" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I.\..\..\3rdParty\include\boost_1_55_0" "-I.\..\..\Core\SGXUtility" "-I.\..\..\3rdParty\include\rlm_ez_12_0"</Command>
+    </CustomBuild>
     <ClInclude Include="sgxgui_global.h" />
   </ItemGroup>
   <ItemGroup>
@@ -795,6 +795,8 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="Resources\down_arrow.png" />
+    <Image Include="Resources\GlyphEd\dashboard_top_image.png" />
+    <Image Include="Resources\GlyphEd\glyphed_logo_homepage.png" />
     <Image Include="Resources\GlyphEd\glyphed_logo_no_border.png" />
     <Image Include="Resources\GlyphEd\glyphed_logo_white_border.png" />
     <Image Include="Resources\GlyphEd\glyphed_splash.png" />

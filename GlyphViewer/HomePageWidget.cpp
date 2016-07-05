@@ -6,6 +6,7 @@
 #include "TitleListWidget.h"
 #include "LoadingFilterWidget.h"
 #include "glyphviewerwindow.h"
+#include "ResizeableImageLabel.h"
 
 QString HomePageWidget::s_glyphEdDir;
 
@@ -24,7 +25,7 @@ HomePageWidget::HomePageWidget(GlyphViewerWindow* mainWindow, QWidget *parent)
 	m_mainLayout->setColumnStretch(1, 1);
 
 	QLabel* logoLabel = new QLabel(this);
-	logoLabel->setPixmap(QPixmap(SynGlyphX::GlyphBuilderApplication::GetLogoLocation(SynGlyphX::GlyphBuilderApplication::NoBorder)));
+	logoLabel->setPixmap(QPixmap(":SGXGUI/Resources/GlyphEd/glyphed_logo_homepage.png"));
 	m_mainLayout->addWidget(logoLabel, 0, 0);
 
 	m_optionsButtonGroup = new QButtonGroup(this);
@@ -45,7 +46,7 @@ HomePageWidget::HomePageWidget(GlyphViewerWindow* mainWindow, QWidget *parent)
 	CreateAllViewsWidget();
 	CreateRecentViewsWidget();
 	CreateMyViewsWidget();
-	CreateHelpWidget();
+	//CreateHelpWidget();
 
 	m_mainLayout->addLayout(m_homePageWidgetsLayout, 1, 1);
 
@@ -67,7 +68,7 @@ HomePageWidget::~HomePageWidget()
 void HomePageWidget::CreateHomePageOptionsWidget() {
 
 	QStringList options;
-	options << tr("Dashboard") << tr("All Views") << tr("Recent Views") << tr("My Views") << tr("Help");
+	options << tr("Dashboard") << tr("All Views") << tr("Recent Views") << tr("My Views"); // << tr("Help");
 
 	QVBoxLayout* optionsLayout = new QVBoxLayout(this);
 	optionsLayout->setSpacing(20);
@@ -137,7 +138,14 @@ void HomePageWidget::CreateAllViewsWidget() {
 	vizAndFilterFrameLayout->addWidget(vizAndFilterSplitter);
 	vizAndFilterFrame->setLayout(vizAndFilterFrameLayout);
 
-	m_homePageWidgetsLayout->addWidget(vizAndFilterFrame);
+	QWidget* allViewsWidget = new QWidget(this);
+	QVBoxLayout* allViewsLayout = new QVBoxLayout(this);
+	allViewsLayout->setContentsMargins(0, 0, 0, 0);
+	allViewsLayout->addWidget(vizAndFilterFrame, 1);
+	allViewsLayout->addStretch(2);
+	allViewsWidget->setLayout(allViewsLayout);
+
+	m_homePageWidgetsLayout->addWidget(allViewsWidget);
 }
 
 void HomePageWidget::CreateRecentViewsWidget() {
@@ -160,7 +168,41 @@ void HomePageWidget::CreateHelpWidget() {
 
 void HomePageWidget::CreateDashboardWidget() {
 
-	QWidget* widget = new QWidget(this);
+	QFrame* widget = new QFrame(this);
+	widget->setFrameStyle(QFrame::Box | QFrame::Plain);
+	widget->setLineWidth(1);
+	widget->setMidLineWidth(1);
+
+	QGridLayout* mainLayout = new QGridLayout(widget);
+	mainLayout->setContentsMargins(30, 20, 30, 10);
+	mainLayout->setSpacing(15);
+	mainLayout->setRowStretch(0, 1);
+	mainLayout->setRowStretch(1, 1);
+	mainLayout->setRowStretch(2, 2);
+
+	SynGlyphX::ResizeableImageLabel* topDashboardImage = new SynGlyphX::ResizeableImageLabel(true, widget);
+	topDashboardImage->SetPixmap(QPixmap(":SGXGUI/Resources/GlyphEd/dashboard_top_image.png"));
+	mainLayout->addWidget(topDashboardImage, 0, 0, 1, 3);
+
+	SynGlyphX::ResizeableImageLabel* leftDashboardImage = new SynGlyphX::ResizeableImageLabel(false, widget);
+	QPixmap leftPixmap(16, 16);
+	leftPixmap.fill();
+	leftDashboardImage->SetPixmap(leftPixmap);
+	mainLayout->addWidget(leftDashboardImage, 1, 0, 2, 1);
+
+	SynGlyphX::ResizeableImageLabel* upperRightDashboardImage = new SynGlyphX::ResizeableImageLabel(false, widget);
+	QPixmap upperRightPixmap(16, 16);
+	upperRightPixmap.fill();
+	upperRightDashboardImage->SetPixmap(upperRightPixmap);
+	mainLayout->addWidget(upperRightDashboardImage, 1, 1, 1, 2);
+
+	SynGlyphX::ResizeableImageLabel* lowerRightDashboardImage = new SynGlyphX::ResizeableImageLabel(false, widget);
+	QPixmap lowerRightPixmap(16, 16);
+	lowerRightPixmap.fill();
+	lowerRightDashboardImage->SetPixmap(lowerRightPixmap);
+	mainLayout->addWidget(lowerRightDashboardImage, 2, 1, 1, 2);
+
+	widget->setLayout(mainLayout);
 	m_homePageWidgetsLayout->addWidget(widget);
 }
 
@@ -427,5 +469,5 @@ void HomePageWidget::OnLoadVisualization() {
 void HomePageWidget::OnNewOptionSelected(int index) {
 
 	m_homePageWidgetsLayout->setCurrentIndex(index);
-	m_loadVisualizationButton->setVisible(index == 1);
+	m_loadVisualizationButton->setVisible((index != 0) && (index != 4));
 }
