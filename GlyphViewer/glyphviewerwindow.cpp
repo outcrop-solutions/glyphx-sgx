@@ -30,7 +30,7 @@
 #include "filesystem.h"
 #include "defaultbaseimageproperties.h"
 #include "downloadexception.h"
-#include "loadingscreenwidget.h"
+#include "HomePageWidget.h"
 #include "remapdialog.h"
 #include "baseimage.h"
 #include "sharedactionlist.h"
@@ -134,8 +134,8 @@ void GlyphViewerWindow::CreateLoadingScreen() {
 
 	if (SynGlyphX::GlyphBuilderApplication::IsGlyphEd()) {
 
-		LoadingScreenWidget* loadingScreen = new LoadingScreenWidget(this, antzWidgetContainer);
-		antzWidgetContainer->addWidget(loadingScreen);
+		HomePageWidget* homePage = new HomePageWidget(this, antzWidgetContainer);
+		antzWidgetContainer->addWidget(homePage);
 	}
 	else {
 

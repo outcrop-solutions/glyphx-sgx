@@ -15,8 +15,7 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef LOADINGSCREENWIDGET_H
-#define LOADINGSCREENWIDGET_H
+#pragma once
 
 #include <QtWidgets/QStackedWidget>
 #include <QtWidgets/QStackedLayout>
@@ -33,13 +32,13 @@ namespace SynGlyphX {
 	class TitleListWidget;
 }
 
-class LoadingScreenWidget : public QFrame
+class HomePageWidget : public QFrame
 {
 	Q_OBJECT
 
 public:
-	LoadingScreenWidget(GlyphViewerWindow* mainWindow, QWidget *parent);
-	~LoadingScreenWidget();
+	HomePageWidget(GlyphViewerWindow* mainWindow, QWidget *parent);
+	~HomePageWidget();
 
 	static QString GetGlyphEdDir();
 
@@ -94,4 +93,4 @@ private:
 	std::vector<VisualizationData> m_visualizationData;
 };
 
-#endif // LOADINGSCREENWIDGET_H
+//#pragma once

@@ -1,4 +1,4 @@
-#include "loadingscreenwidget.h"
+#include "HomePageWidget.h"
 #include "glyphbuilderapplication.h"
 #include <QtCore/QDir>
 #include <QtWidgets/QSplitter>
@@ -7,9 +7,9 @@
 #include "LoadingFilterWidget.h"
 #include "glyphviewerwindow.h"
 
-QString LoadingScreenWidget::s_glyphEdDir;
+QString HomePageWidget::s_glyphEdDir;
 
-LoadingScreenWidget::LoadingScreenWidget(GlyphViewerWindow* mainWindow, QWidget *parent)
+HomePageWidget::HomePageWidget(GlyphViewerWindow* mainWindow, QWidget *parent)
 	: QFrame(parent),
 	m_mainWindow(mainWindow)
 {
@@ -33,7 +33,7 @@ LoadingScreenWidget::LoadingScreenWidget(GlyphViewerWindow* mainWindow, QWidget 
 	QHBoxLayout* loadButtonLayout = new QHBoxLayout(this);
 	loadButtonLayout->addStretch(1);
 	m_loadVisualizationButton = new QPushButton(tr("Load Visualization"), this);
-	QObject::connect(m_loadVisualizationButton, &QPushButton::clicked, this, &LoadingScreenWidget::OnLoadVisualization);
+	QObject::connect(m_loadVisualizationButton, &QPushButton::clicked, this, &HomePageWidget::OnLoadVisualization);
 	loadButtonLayout->addWidget(m_loadVisualizationButton);
 
 	m_mainLayout->addLayout(loadButtonLayout, 0, 1);
@@ -54,17 +54,17 @@ LoadingScreenWidget::LoadingScreenWidget(GlyphViewerWindow* mainWindow, QWidget 
 	QObject::connect(m_viewListWidget, &SynGlyphX::TitleListWidget::CurrentRowChanged, m_loadingFilterStackedWidget, &QStackedWidget::setCurrentIndex);
 	m_viewListWidget->SelectItem(0);
 
-	QObject::connect(m_optionsButtonGroup, static_cast<void (QButtonGroup::*)(int)>(&QButtonGroup::buttonClicked), this, &LoadingScreenWidget::OnNewOptionSelected);
+	QObject::connect(m_optionsButtonGroup, static_cast<void (QButtonGroup::*)(int)>(&QButtonGroup::buttonClicked), this, &HomePageWidget::OnNewOptionSelected);
 	m_optionsButtonGroup->button(0)->setChecked(true);
 	OnNewOptionSelected(0);
 }
 
-LoadingScreenWidget::~LoadingScreenWidget()
+HomePageWidget::~HomePageWidget()
 {
 
 }
 
-void LoadingScreenWidget::CreateHomePageOptionsWidget() {
+void HomePageWidget::CreateHomePageOptionsWidget() {
 
 	QStringList options;
 	options << tr("Dashboard") << tr("All Views") << tr("Recent Views") << tr("My Views") << tr("Help");
@@ -87,7 +87,7 @@ void LoadingScreenWidget::CreateHomePageOptionsWidget() {
 	m_mainLayout->addLayout(optionsLayout, 1, 0);
 }
 
-void LoadingScreenWidget::CreateAllViewsWidget() {
+void HomePageWidget::CreateAllViewsWidget() {
 
 	QFrame* vizAndFilterFrame = new QFrame(this);
 	vizAndFilterFrame->setFrameStyle(QFrame::Box | QFrame::Sunken);
@@ -140,31 +140,31 @@ void LoadingScreenWidget::CreateAllViewsWidget() {
 	m_homePageWidgetsLayout->addWidget(vizAndFilterFrame);
 }
 
-void LoadingScreenWidget::CreateRecentViewsWidget() {
+void HomePageWidget::CreateRecentViewsWidget() {
 
 	QWidget* widget = new QWidget(this);
 	m_homePageWidgetsLayout->addWidget(widget);
 }
 
-void LoadingScreenWidget::CreateMyViewsWidget() {
+void HomePageWidget::CreateMyViewsWidget() {
 
 	QWidget* widget = new QWidget(this);
 	m_homePageWidgetsLayout->addWidget(widget);
 }
 
-void LoadingScreenWidget::CreateHelpWidget() {
+void HomePageWidget::CreateHelpWidget() {
 
 	QWidget* widget = new QWidget(this);
 	m_homePageWidgetsLayout->addWidget(widget);
 }
 
-void LoadingScreenWidget::CreateDashboardWidget() {
+void HomePageWidget::CreateDashboardWidget() {
 
 	QWidget* widget = new QWidget(this);
 	m_homePageWidgetsLayout->addWidget(widget);
 }
 
-void LoadingScreenWidget::SetupVisualizationData() {
+void HomePageWidget::SetupVisualizationData() {
 
 	QStringList visualizationNames;
 	visualizationNames << "Global Admissions View" << "Admissions Counselor View (2016)" << "High School View" << 
@@ -320,7 +320,7 @@ void LoadingScreenWidget::SetupVisualizationData() {
 	m_visualizationData.push_back(globalDashboardView);
 }
 
-QString LoadingScreenWidget::GetGlyphEdDir() {
+QString HomePageWidget::GetGlyphEdDir() {
 
 	if (s_glyphEdDir.isEmpty()) {
 
@@ -330,7 +330,7 @@ QString LoadingScreenWidget::GetGlyphEdDir() {
 	return s_glyphEdDir;
 }
 
-void LoadingScreenWidget::OnLoadVisualization() {
+void HomePageWidget::OnLoadVisualization() {
 
 	unsigned int currentView = m_loadingFilterStackedWidget->currentIndex();
 	for (int j = 0; j < m_visualizationData[currentView].m_mustHaveFilter.size(); ++j) {
@@ -424,7 +424,7 @@ void LoadingScreenWidget::OnLoadVisualization() {
 	}
 }
 
-void LoadingScreenWidget::OnNewOptionSelected(int index) {
+void HomePageWidget::OnNewOptionSelected(int index) {
 
 	m_homePageWidgetsLayout->setCurrentIndex(index);
 	m_loadVisualizationButton->setVisible(index == 1);
