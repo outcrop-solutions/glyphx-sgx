@@ -29,15 +29,17 @@ void LoadingFilterWidget::AddFilter(const QString& name, bool allowMultiselect, 
 	m_filterListWidgets.append(filterWidget);
 }
 
-bool LoadingFilterWidget::DoAllFiltersHaveASelection() const {
+QSet<QString> LoadingFilterWidget::GetFilterData(unsigned int index) const {
 
-	for (unsigned int i = 0; i < m_filterListWidgets.size(); ++i) {
+	return m_filterListWidgets[index]->GetSelectedItems().toSet();
+}
 
-		if (!m_filterListWidgets[i]->AreAnyItemsSelected()) {
+bool LoadingFilterWidget::AreAllValuesSelected(unsigned int index) const {
 
-			return false;
-		}
-	}
+	return m_filterListWidgets[index]->AreAllItemsSelected();
+}
 
-	return true;
+bool LoadingFilterWidget::AreAnyValuesSelected(unsigned int index) const {
+
+	return m_filterListWidgets[index]->AreAnyItemsSelected();
 }

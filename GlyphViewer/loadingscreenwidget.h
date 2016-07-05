@@ -19,6 +19,10 @@
 #define LOADINGSCREENWIDGET_H
 
 #include <QtWidgets/QStackedWidget>
+#include <QtWidgets/QStackedLayout>
+#include <QtWidgets/QGridLayout>
+#include <QtWidgets/QButtonGroup>
+#include <QtWidgets/QPushButton>
 #include "sourcedatacache.h"
 
 class GlyphViewerWindow;
@@ -41,12 +45,13 @@ public:
 
 private slots:
 	void OnLoadVisualization();
+	void OnNewOptionSelected(int index);
 
 private:
 	class VisualizationData {
 
 	public:
-		VisualizationData() : m_mustHaveFilter(true) {}
+		VisualizationData() {}
 		~VisualizationData() {}
 
 		bool HasDataForFilter(unsigned int index) const { return index < m_filterTitles.size(); }
@@ -54,19 +59,31 @@ private:
 		QString m_title;
 		QString m_sdtPath;
 		QString m_tableInGlyphEd;
-		bool m_mustHaveFilter;
-
+		
+		std::vector<bool> m_mustHaveFilter;
 		std::vector<QString> m_filterTitles;
 		std::vector<QString> m_filterFieldNames;
 		std::vector<bool> m_filterMultiselect;
 		std::vector<QStringList> m_filterValues;
 	};
 
-	bool AreAnyFiltersMissingSelection() const;
+	void CreateHomePageOptionsWidget();
+	void CreateAllViewsWidget();
+	void CreateRecentViewsWidget();
+	void CreateMyViewsWidget();
+	void CreateHelpWidget();
+	void CreateDashboardWidget();
 
 	void SetupVisualizationData();
 
 	static QString s_glyphEdDir;
+
+	QGridLayout* m_mainLayout;
+	QStackedLayout* m_homePageWidgetsLayout;
+
+	QButtonGroup* m_optionsButtonGroup;
+
+	QPushButton* m_loadVisualizationButton;
 
 	SynGlyphX::TitleListWidget* m_viewListWidget;
 	QList<LoadingFilterWidget*> m_loadingFilterWidgets;

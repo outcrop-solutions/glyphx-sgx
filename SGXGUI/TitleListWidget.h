@@ -37,8 +37,12 @@ namespace SynGlyphX {
 		void SetAllowMultiselect(bool allow);
 		void SetTitle(const QString& title);
 		void SetItems(const QStringList& items);
+
 		bool AreAnyItemsSelected() const;
+		bool AreAllItemsSelected() const;
 		void SelectItem(unsigned int index);
+
+		QStringList GetSelectedItems() const;
 
 	signals:
 		void CurrentRowChanged(int row);

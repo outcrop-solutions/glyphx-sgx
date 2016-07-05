@@ -87,9 +87,25 @@ namespace SynGlyphX {
 		return !m_listWidget->selectedItems().isEmpty();
 	}
 
+	bool TitleListWidget::AreAllItemsSelected() const {
+
+		return (m_listWidget->selectedItems().size() == m_listWidget->count());
+	}
+
 	void TitleListWidget::SelectItem(unsigned int index) {
 
 		m_listWidget->selectionModel()->select(m_listWidget->model()->index(index, 0), QItemSelectionModel::SelectionFlag::ClearAndSelect);
+	}
+
+	QStringList TitleListWidget::GetSelectedItems() const {
+
+		QStringList items;
+		for (const auto& selectedItem : m_listWidget->selectedItems()) {
+
+			items.append(selectedItem->text());
+		}
+
+		return items;
 	}
 
 } //namespace SynGlyphX

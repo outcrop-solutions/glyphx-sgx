@@ -34,7 +34,9 @@ public:
 
 	void AddFilter(const QString& name, bool allowMultiselect, const QStringList& filterValues);
 
-	bool DoAllFiltersHaveASelection() const;
+	QSet<QString> GetFilterData(unsigned int index) const;
+	bool AreAllValuesSelected(unsigned int index) const;
+	bool AreAnyValuesSelected(unsigned int index) const;
 
 private:
 	QList<SynGlyphX::TitleListWidget*> m_filterListWidgets;
