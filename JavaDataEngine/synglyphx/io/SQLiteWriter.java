@@ -149,7 +149,11 @@ public class SQLiteWriter {
 		for(int i = 0; i < size; i++){
 			ArrayList<String> row = data.getRow(i);
 			for(int j = 0; j < row.size(); j++){
-				pstmt.setString(j+1, row.get(j));
+				if(row.get(j).equals("")){
+					pstmt.setString(j+1, Character.toString((char)128));
+				}else{
+					pstmt.setString(j+1, row.get(j));
+				}
 			}
 			pstmt.addBatch();
 			if(i+1 % 100 == 0){
