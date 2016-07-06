@@ -10,6 +10,7 @@
 #endif
 
 #include <QtCore/QStandardPaths>
+#include <QtCore/QDir>
 #include <QtWidgets/QMessageBox>
 #include <QtCore/QTextStream>
 #include <QtCore/QString>
