@@ -398,6 +398,9 @@
     <ClCompile Include="GeneratedFiles\Release\moc_ResizeableImageLabel.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="SettingsStoredFileList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="sgxgui_global.h">
@@ -407,6 +410,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="EditorEnvironment.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SettingsStoredFileList.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

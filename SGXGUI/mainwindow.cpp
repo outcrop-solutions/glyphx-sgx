@@ -16,6 +16,8 @@ namespace SynGlyphX {
 	const QString MainWindow::s_copyright = QString::fromStdString("Copyright � 2013-2015 SynGlyphX Holdings Incorporated. All Rights Reserved.\n\nSynGlyphX, Glyph IT, Glyph KIT are either registered trademarks or trademarks of SynGlyphX Holdings Incorporated in the United States and/or other countries.  All other trademarks are the property of their respective owners.");
 	const QString MainWindow::s_fileDialogSettingsGroup = "FileDialogSettings";
 
+	SettingsStoredFileList MainWindow::s_recentFileList("recentFileList", MainWindow::MaxRecentFiles);
+
 	MainWindow::MainWindow(unsigned int stateVersion, QWidget *parent)
         : QMainWindow(parent),
 		m_stateVersion(stateVersion),
@@ -25,7 +27,7 @@ namespace SynGlyphX {
         statusBar();
 
         //Add an additional 
-        for (int i = 0; i < MaxRecentFiles + 1; ++i) {
+		for (int i = 0; i < MaxRecentFileMenuEntries + 1; ++i) {
             QAction* recentFileAction = new QAction(this);
             recentFileAction->setVisible(false);
             if (i != 0) {
@@ -62,6 +64,7 @@ namespace SynGlyphX {
 		restoreState(settings.value("state").toByteArray(), m_stateVersion);
         settings.endGroup();
 
+		s_recentFileList.ReadFromSettings();
         UpdateRecentFileList();
     }
 
@@ -73,6 +76,8 @@ namespace SynGlyphX {
         settings.setValue("geometry", saveGeometry());
 		settings.setValue("state", saveState(m_stateVersion));
         settings.endGroup();
+
+		s_recentFileList.WriteToSettings();
     }
 
 	void MainWindow::showEvent(QShowEvent* event) {
@@ -102,17 +107,7 @@ namespace SynGlyphX {
 
 				if (QMessageBox::question(this, tr("Recent File Failed To Load"), tr("The selected recent file failed to load.  Do you wish to remove it from the recent file list?")) == QMessageBox::Yes) {
 
-					QSettings settings;
-					settings.beginGroup("RecentFiles");
-					QStringList files = settings.value("recentFileList").toStringList();
-					settings.endGroup();
-
-					files.removeAll(recentFile);
-
-					settings.beginGroup("RecentFiles");
-					settings.setValue("recentFileList", files);
-					settings.endGroup();
-
+					s_recentFileList.RemoveFile(recentFile);
 					UpdateRecentFileList();
 				}
 			}
@@ -121,12 +116,9 @@ namespace SynGlyphX {
 
     void MainWindow::UpdateRecentFileList() {
 
-        QSettings settings;
-        settings.beginGroup("RecentFiles");
-        QStringList files = settings.value("recentFileList").toStringList();
-        settings.endGroup();
+		const QStringList& files = s_recentFileList.GetFiles();
 
-        int numRecentFiles = qMin(files.size(), static_cast<int>(MaxRecentFiles));
+		int numRecentFiles = qMin(files.size(), static_cast<int>(MaxRecentFileMenuEntries));
 
         for (int i = 1; i < numRecentFiles + 1; ++i) {
             QString text = tr("&%1 %2").arg(i).arg(QFileInfo(files[i - 1]).fileName());
@@ -134,7 +126,7 @@ namespace SynGlyphX {
             m_recentFileActions[i]->setData(files[i - 1]);
             m_recentFileActions[i]->setVisible(true);
         }
-        for (int j = numRecentFiles + 1; j < MaxRecentFiles + 1; ++j)
+		for (int j = numRecentFiles + 1; j < MaxRecentFileMenuEntries + 1; ++j)
             m_recentFileActions[j]->setVisible(false);
 
         //If there are any files in the recent file list make the separator visible
@@ -156,22 +148,9 @@ namespace SynGlyphX {
 
         m_currentFilename = filename;
 
-        QSettings settings;
-        settings.beginGroup("RecentFiles");
-        QStringList files = settings.value("recentFileList").toStringList();
-        settings.endGroup();
-
-        files.removeAll(filename);
-        files.prepend(filename);
-        while (files.size() > MaxRecentFiles) {
-            files.removeLast();
-        }
-
-        settings.beginGroup("RecentFiles");
-        settings.setValue("recentFileList", files);
-        settings.endGroup();
-
+		s_recentFileList.AddFile(filename);
         UpdateRecentFileList();
+
         UpdateFilenameWindowTitle(QFileInfo(filename).fileName());
         setWindowModified(false);
     }
@@ -383,6 +362,11 @@ namespace SynGlyphX {
 
 			restoreState(m_originalState);
 		}
+	}
+
+	const SettingsStoredFileList& MainWindow::GetRecentFileListInstance() {
+
+		return s_recentFileList;
 	}
 
 } //namespace SynGlyphX
