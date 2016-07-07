@@ -7,6 +7,11 @@
 #include "LoadingFilterWidget.h"
 #include "glyphviewerwindow.h"
 #include "ResizeableImageLabel.h"
+#include <QtWidgets/QStackedWidget>
+#include <QtWidgets/QStackedLayout>
+#include <QtWidgets/QGridLayout>
+#include <QtWidgets/QButtonGroup>
+#include <QtWidgets/QPushButton>
 
 QString HomePageWidget::s_glyphEdDir;
 
@@ -52,8 +57,7 @@ HomePageWidget::HomePageWidget(GlyphViewerWindow* mainWindow, QWidget *parent)
 
 	setLayout(m_mainLayout);
 
-	QObject::connect(m_viewListWidget, &SynGlyphX::TitleListWidget::CurrentRowChanged, m_loadingFilterStackedWidget, &QStackedWidget::setCurrentIndex);
-	m_viewListWidget->SelectItem(0);
+	QObject::connect(m_mainWindow, &GlyphViewerWindow::RecentFileListChanged, this, &HomePageWidget::OnRecentListUpdated);
 
 	QObject::connect(m_optionsButtonGroup, static_cast<void (QButtonGroup::*)(int)>(&QButtonGroup::buttonClicked), this, &HomePageWidget::OnNewOptionSelected);
 	m_optionsButtonGroup->button(0)->setChecked(true);
@@ -99,6 +103,50 @@ void HomePageWidget::CreateAllViewsWidget() {
 	vizAndFilterFrameLayout->setContentsMargins(0, 0, 0, 0);
 	vizAndFilterFrameLayout->setSpacing(0);
 
+	
+
+	QStringList visualizations;
+	for (const auto& visualizationData : m_visualizationData) {
+
+		visualizations << visualizationData.m_title;
+	}
+	m_viewListWidget->SetItems(visualizations, visualizations);
+	vizAndFilterSplitter->addWidget(m_viewListWidget);
+
+	m_loadingFilterStackedWidget = new QStackedWidget(this);
+	for (unsigned int i = 0; i < m_visualizationData.size(); ++i) {
+
+		
+
+		m_loadingFilterStackedWidget->addWidget(loadingFilterWidget);
+		m_loadingFilterWidgets.append(loadingFilterWidget);
+	}
+	vizAndFilterSplitter->addWidget(m_loadingFilterStackedWidget);
+
+	vizAndFilterFrameLayout->addWidget(vizAndFilterSplitter);
+	vizAndFilterFrame->setLayout(vizAndFilterFrameLayout);
+
+	QWidget* allViewsWidget = new QWidget(this);
+	QVBoxLayout* allViewsLayout = new QVBoxLayout(this);
+	allViewsLayout->setContentsMargins(0, 0, 0, 0);
+	allViewsLayout->addWidget(vizAndFilterFrame, 1);
+	allViewsLayout->addStretch(2);
+	allViewsWidget->setLayout(allViewsLayout);
+
+	m_homePageWidgetsLayout->addWidget(allViewsWidget);
+}
+
+void HomePageWidget::OnRecentListUpdated() {
+
+	QFrame* vizAndFilterFrame = new QFrame(this);
+	vizAndFilterFrame->setFrameStyle(QFrame::Box | QFrame::Sunken);
+	vizAndFilterFrame->setLineWidth(1);
+	vizAndFilterFrame->setMidLineWidth(1);
+
+	QHBoxLayout* vizAndFilterFrameLayout = new QHBoxLayout(vizAndFilterFrame);
+	vizAndFilterFrameLayout->setContentsMargins(0, 0, 0, 0);
+	vizAndFilterFrameLayout->setSpacing(0);
+
 	QSplitter* vizAndFilterSplitter = new QSplitter(Qt::Horizontal, this);
 	vizAndFilterSplitter->setChildrenCollapsible(false);
 	vizAndFilterSplitter->setHandleWidth(2);
@@ -112,11 +160,22 @@ void HomePageWidget::CreateAllViewsWidget() {
 	m_viewListWidget->layout()->setContentsMargins(0, 0, 0, 0);
 
 	QStringList visualizations;
-	for (const auto& visualizationData : m_visualizationData) {
+	for (const auto& recentVisualization : GlyphViewerWindow::GetRecentFileListInstance().GetFiles()) {
 
-		visualizations << visualizationData.m_title;
+		QString title = QFileInfo(recentVisualization).fileName();
+		for (const auto& visualizationData : m_visualizationData) {
+
+			if (visualizationData.m_sdtPath == recentVisualization) {
+
+				title = visualizationData.m_title;
+				break;
+			}
+		}
+
+		visualizations.push_back(title);
 	}
-	m_viewListWidget->SetItems(visualizations);
+
+	m_viewListWidget->SetItems(visualizations, GlyphViewerWindow::GetRecentFileListInstance().GetFiles());
 	vizAndFilterSplitter->addWidget(m_viewListWidget);
 
 	m_loadingFilterStackedWidget = new QStackedWidget(this);
@@ -138,20 +197,22 @@ void HomePageWidget::CreateAllViewsWidget() {
 	vizAndFilterFrameLayout->addWidget(vizAndFilterSplitter);
 	vizAndFilterFrame->setLayout(vizAndFilterFrameLayout);
 
-	QWidget* allViewsWidget = new QWidget(this);
-	QVBoxLayout* allViewsLayout = new QVBoxLayout(this);
-	allViewsLayout->setContentsMargins(0, 0, 0, 0);
-	allViewsLayout->addWidget(vizAndFilterFrame, 1);
-	allViewsLayout->addStretch(2);
-	allViewsWidget->setLayout(allViewsLayout);
-
-	m_homePageWidgetsLayout->addWidget(allViewsWidget);
+	m_recentViewsLayout->removeWidget(0);
+	m_recentViewsLayout->insertWidget(0, vizAndFilterFrame, 1);
 }
 
 void HomePageWidget::CreateRecentViewsWidget() {
 
-	QWidget* widget = new QWidget(this);
-	m_homePageWidgetsLayout->addWidget(widget);
+	QWidget* blankWidget = new QWidget(this);
+
+	QWidget* recentViewsWidget = new QWidget(this);
+	m_recentViewsLayout = new QVBoxLayout(this);
+	m_recentViewsLayout->setContentsMargins(0, 0, 0, 0);
+	m_recentViewsLayout->addWidget(blankWidget, 1);
+	m_recentViewsLayout->addStretch(2);
+	recentViewsWidget->setLayout(m_recentViewsLayout);
+
+	m_homePageWidgetsLayout->addWidget(recentViewsWidget);
 }
 
 void HomePageWidget::CreateMyViewsWidget() {

@@ -17,15 +17,18 @@
 
 #pragma once
 
-#include <QtWidgets/QStackedWidget>
-#include <QtWidgets/QStackedLayout>
-#include <QtWidgets/QGridLayout>
-#include <QtWidgets/QButtonGroup>
-#include <QtWidgets/QPushButton>
 #include "sourcedatacache.h"
+#include <QtWidgets/QFrame>
+#include "MultiLoadingFilterWidget.h"
+
+class QStackedWidget;
+class QStackedLayout;
+class QGridLayout;
+class QButtonGroup;
+class QPushButton;
+class QVBoxLayout;
 
 class GlyphViewerWindow;
-class LoadingFilterWidget;
 
 namespace SynGlyphX {
 
@@ -45,27 +48,9 @@ public:
 private slots:
 	void OnLoadVisualization();
 	void OnNewOptionSelected(int index);
+	void OnRecentListUpdated();
 
 private:
-	class VisualizationData {
-
-	public:
-		VisualizationData() {}
-		~VisualizationData() {}
-
-		bool HasDataForFilter(unsigned int index) const { return index < m_filterTitles.size(); }
-
-		QString m_title;
-		QString m_sdtPath;
-		QString m_tableInGlyphEd;
-		
-		std::vector<bool> m_mustHaveFilter;
-		std::vector<QString> m_filterTitles;
-		std::vector<QString> m_filterFieldNames;
-		std::vector<bool> m_filterMultiselect;
-		std::vector<QStringList> m_filterValues;
-	};
-
 	void CreateHomePageOptionsWidget();
 	void CreateAllViewsWidget();
 	void CreateRecentViewsWidget();
@@ -90,7 +75,9 @@ private:
 	
 	GlyphViewerWindow* m_mainWindow;
 	SourceDataCache m_sourceDataCache;
-	std::vector<VisualizationData> m_visualizationData;
+	std::vector<MultiLoadingFilterWidget::VisualizationData> m_visualizationData;
+
+	QVBoxLayout* m_recentViewsLayout;
 };
 
 //#pragma once

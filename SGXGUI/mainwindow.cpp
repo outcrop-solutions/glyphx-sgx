@@ -131,6 +131,8 @@ namespace SynGlyphX {
 
         //If there are any files in the recent file list make the separator visible
         m_recentFileActions[0]->setVisible(numRecentFiles > 0);
+
+		emit RecentFileListChanged();
     }
 
 	void MainWindow::UpdateFilenameWindowTitle(const QString& title) {

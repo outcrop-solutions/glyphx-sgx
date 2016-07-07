@@ -17,43 +17,62 @@
 
 #pragma once
 
-#include "sgxgui_global.h"
-#include <QtWidgets/QWidget>
-#include <QtWidgets/QLabel>
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QListWidget>
+#include <QtWidgets/QSplitter>
+#include <unordered_map>
+#include "filteringparameters.h"
 
 namespace SynGlyphX {
 
-	class SGXGUI_EXPORT TitleListWidget : public QWidget
-	{
-		Q_OBJECT
+	class TitleListWidget;
+}
+
+class LoadingFilterWidget;
+
+class QStackWidget;
+
+class MultiLoadingFilterWidget : public QSplitter
+{
+	Q_OBJECT
+
+public:
+	class VisualizationData {
 
 	public:
-		TitleListWidget(QWidget *parent);
-		~TitleListWidget();
+		VisualizationData() {}
+		~VisualizationData() {}
 
-		void ShowSelectAllButton(bool show);
-		void SetAllowMultiselect(bool allow);
-		void SetTitle(const QString& title);
-		void SetItems(const QStringList& labels, const QStringList& tooltips = QStringList());
+		bool HasDataForFilter(unsigned int index) const { return index < m_filterTitles.size(); }
 
-		bool AreAnyItemsSelected() const;
-		bool AreAllItemsSelected() const;
-		void SelectItem(unsigned int index);
+		QString m_title;
+		QString m_sdtPath;
+		QString m_tableInGlyphEd;
 
-		QStringList GetSelectedLabels() const;
-		QStringList GetSelectedTooltips() const;
-
-	signals:
-		void CurrentRowChanged(int row);
-
-	private:
-		QLabel* m_titleLabel;
-		QPushButton* m_selectAllButton;
-		QListWidget* m_listWidget;
+		std::vector<bool> m_mustHaveFilter;
+		std::vector<QString> m_filterTitles;
+		std::vector<QString> m_filterFieldNames;
+		std::vector<bool> m_filterMultiselect;
+		std::vector<QStringList> m_filterValues;
 	};
 
-} //namespace SynGlyphX
+	MultiLoadingFilterWidget(QWidget *parent);
+	~MultiLoadingFilterWidget();
+
+	void Reset(const std::vector<VisualizationData>& dataAndFilters);
+	
+	bool DoCurrentNecessaryFiltersHaveSelection() const;
+	QString GetCurrentFilename() const;
+	bool CanCurrentHaveFilters() const;
+	FilteringParameters GetCurrentFilterValues() const;
+
+private slots:
+	void OnFileSelected(int row);
+
+private:
+	SynGlyphX::TitleListWidget* m_viewListWidget;
+	QStackedWidget* m_loadingFilterWidgetsStack;
+	std::unordered_map<unsigned int, LoadingFilterWidget*> m_loadingFilterWidgetMap;
+	std::unordered_map<unsigned int, std::vector<bool>> m_mustHaveFilterMap;
+	std::unordered_map<unsigned int, QStringList> m_fieldNameMap;
+};
 
 //#pragma once

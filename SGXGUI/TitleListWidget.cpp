@@ -76,10 +76,18 @@ namespace SynGlyphX {
 		m_titleLabel->setText(title);
 	}
 
-	void TitleListWidget::SetItems(const QStringList& items) {
+	void TitleListWidget::SetItems(const QStringList& labels, const QStringList& tooltips) {
 
 		m_listWidget->clear();
-		m_listWidget->addItems(items);
+		m_listWidget->addItems(labels);
+
+		if (!tooltips.isEmpty()) {
+
+			for (unsigned int i = 0; i < labels.size(); ++i) {
+
+				m_listWidget->item(i)->setToolTip(tooltips[i]);
+			}
+		}
 	}
 
 	bool TitleListWidget::AreAnyItemsSelected() const {
@@ -97,12 +105,23 @@ namespace SynGlyphX {
 		m_listWidget->selectionModel()->select(m_listWidget->model()->index(index, 0), QItemSelectionModel::SelectionFlag::ClearAndSelect);
 	}
 
-	QStringList TitleListWidget::GetSelectedItems() const {
+	QStringList TitleListWidget::GetSelectedLabels() const {
 
 		QStringList items;
 		for (const auto& selectedItem : m_listWidget->selectedItems()) {
 
 			items.append(selectedItem->text());
+		}
+
+		return items;
+	}
+
+	QStringList TitleListWidget::GetSelectedTooltips() const {
+
+		QStringList items;
+		for (const auto& selectedItem : m_listWidget->selectedItems()) {
+
+			items.append(selectedItem->toolTip());
 		}
 
 		return items;

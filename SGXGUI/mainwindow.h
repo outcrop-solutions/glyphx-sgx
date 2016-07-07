@@ -41,6 +41,9 @@ namespace SynGlyphX {
 
 		static const SettingsStoredFileList& GetRecentFileListInstance();
 
+	signals:
+		void RecentFileListChanged();
+
     protected slots:
         void SwitchBetweenFullAndNormalScreen();
 		void RestoreOriginalLayout();
