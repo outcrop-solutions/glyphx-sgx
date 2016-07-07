@@ -29,6 +29,8 @@ HomePageWidget::HomePageWidget(GlyphViewerWindow* mainWindow, QWidget *parent)
 	m_mainLayout = new QGridLayout(this);
 	m_mainLayout->setRowStretch(1, 1);
 	m_mainLayout->setColumnStretch(1, 1);
+	m_mainLayout->setHorizontalSpacing(0);
+	m_mainLayout->setContentsMargins(0, 8, 16, 16);
 
 	QLabel* logoLabel = new QLabel(this);
 	logoLabel->setPixmap(QPixmap(":SGXGUI/Resources/GlyphEd/glyphed_logo_homepage.png"));
@@ -40,6 +42,7 @@ HomePageWidget::HomePageWidget(GlyphViewerWindow* mainWindow, QWidget *parent)
 	QHBoxLayout* loadButtonLayout = new QHBoxLayout(this);
 	loadButtonLayout->addStretch(1);
 	m_loadVisualizationButton = new QPushButton(tr("Load Visualization"), this);
+	m_loadVisualizationButton->setObjectName("load_viz_button");
 	QObject::connect(m_loadVisualizationButton, &QPushButton::clicked, this, &HomePageWidget::OnLoadVisualization);
 	loadButtonLayout->addWidget(m_loadVisualizationButton);
 
@@ -74,7 +77,7 @@ HomePageWidget::~HomePageWidget()
 void HomePageWidget::CreateHomePageOptionsWidget() {
 
 	QStringList options;
-	options << tr("Dashboard") << tr("All Views") << tr("Recent Views") << tr("My Views"); // << tr("Help");
+	options << tr("   Dashboard") << tr("   All Views") << tr("   Recent Views") << tr("   My Views"); // << tr("Help");
 
 	QVBoxLayout* optionsLayout = new QVBoxLayout(this);
 	optionsLayout->setSpacing(20);
@@ -84,7 +87,7 @@ void HomePageWidget::CreateHomePageOptionsWidget() {
 
 		QPushButton* button = new QPushButton(options[i], this);
 		button->setCheckable(true);
-		button->setStyleSheet("QPushButton { border: 0px;  font-size: 14pt; font-weight: bold; } QPushButton:checked{ text-decoration: underline; }");
+		button->setStyleSheet("QPushButton { font-family:'Calibri', Helvetica, Arial, Sans; padding: 5px; border: 0px; font-size: 12pt; text-align: left;} QPushButton:hover{background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #c7cbd2, stop: 1 #afb3ba); color: white;} QPushButton:open{ background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #cdcfd4, stop: 1 #e7e9ea);}");
 		optionsLayout->addWidget(button);
 		m_optionsButtonGroup->addButton(button, i);
 	}
@@ -226,9 +229,10 @@ void HomePageWidget::CreateHelpWidget() {
 void HomePageWidget::CreateDashboardWidget() {
 
 	QFrame* widget = new QFrame(this);
-	widget->setFrameStyle(QFrame::Box | QFrame::Plain);
-	widget->setLineWidth(1);
-	widget->setMidLineWidth(1);
+	widget->setObjectName("dashboard_frame");
+	widget->setFrameStyle(QFrame::Panel | QFrame::Sunken);
+	widget->setLineWidth(2);
+	widget->setMidLineWidth(2);
 
 	QGridLayout* mainLayout = new QGridLayout(widget);
 	mainLayout->setContentsMargins(30, 20, 30, 10);
@@ -238,22 +242,35 @@ void HomePageWidget::CreateDashboardWidget() {
 	mainLayout->setRowStretch(2, 2);
 
 	SynGlyphX::ResizeableImageLabel* topDashboardImage = new SynGlyphX::ResizeableImageLabel(true, widget);
+	topDashboardImage->setStyleSheet("QLabel{background-color: white;}");
 	topDashboardImage->SetPixmap(QPixmap(":SGXGUI/Resources/GlyphEd/dashboard_top_image.png"));
+	topDashboardImage->setFrameStyle(QFrame::Panel | QFrame::Raised);
+	topDashboardImage->setLineWidth(2);
+	topDashboardImage->setMidLineWidth(3);
 	mainLayout->addWidget(topDashboardImage, 0, 0, 1, 3);
 
 	SynGlyphX::ResizeableImageLabel* leftDashboardImage = new SynGlyphX::ResizeableImageLabel(false, widget);
+	leftDashboardImage->setFrameStyle(QFrame::Panel | QFrame::Raised);
+	leftDashboardImage->setLineWidth(2);
+	leftDashboardImage->setMidLineWidth(3);
 	QPixmap leftPixmap(16, 16);
 	leftPixmap.fill();
 	leftDashboardImage->SetPixmap(leftPixmap);
 	mainLayout->addWidget(leftDashboardImage, 1, 0, 2, 1);
 
 	SynGlyphX::ResizeableImageLabel* upperRightDashboardImage = new SynGlyphX::ResizeableImageLabel(false, widget);
+	upperRightDashboardImage->setFrameStyle(QFrame::Panel | QFrame::Raised);
+	upperRightDashboardImage->setLineWidth(2);
+	upperRightDashboardImage->setMidLineWidth(3);
 	QPixmap upperRightPixmap(16, 16);
 	upperRightPixmap.fill();
 	upperRightDashboardImage->SetPixmap(upperRightPixmap);
 	mainLayout->addWidget(upperRightDashboardImage, 1, 1, 1, 2);
 
 	SynGlyphX::ResizeableImageLabel* lowerRightDashboardImage = new SynGlyphX::ResizeableImageLabel(false, widget);
+	lowerRightDashboardImage->setFrameStyle(QFrame::Panel | QFrame::Raised);
+	lowerRightDashboardImage->setLineWidth(2);
+	lowerRightDashboardImage->setMidLineWidth(3);
 	QPixmap lowerRightPixmap(16, 16);
 	lowerRightPixmap.fill();
 	lowerRightDashboardImage->SetPixmap(lowerRightPixmap);

@@ -12,14 +12,16 @@ namespace SynGlyphX {
 		mainLayout->setSpacing(0);
 
 		QWidget* titleWidget = new QWidget(this);
+		titleWidget->setStyleSheet("QWidget{background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #cdcfd4, stop: 1 #e7e9ea);}");
 		QHBoxLayout* titleLayout = new QHBoxLayout(titleWidget);
 
 		m_titleLabel = new QLabel(titleWidget);
-		m_titleLabel->setStyleSheet("font-weight: bold");
+		m_titleLabel->setStyleSheet("font-family:'Calibri', Helvetica, Arial, Sans; font-weight: bold; text-transform: uppercase; font-size: 13px; line-height: 24px;");
 		titleLayout->addWidget(m_titleLabel);
 		titleLayout->addStretch(1);
 
 		m_selectAllButton = new QPushButton(tr("Select All"), titleWidget);
+		m_selectAllButton->setStyleSheet("QPushButton{background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #e9edf3, stop: 1 #f3f5f8); border-radius: 8px; font-size: 12px; padding: 4px; border-top: 0.5px solid #fff; border-right: 1px outset #fff; border-bottom: 1px solid gray; border-left: 0.5px solid gray;} QPushButton:hover{background-color: #68cff5;}");
 		titleLayout->addWidget(m_selectAllButton);
 
 		titleWidget->setLayout(titleLayout);

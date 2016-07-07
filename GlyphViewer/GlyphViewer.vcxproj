@@ -41,6 +41,8 @@
     <IntDir>$(Platform)\$(Configuration)\</IntDir>
     <IncludePath>$(QTDIR)\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(QTDIR)\lib;$(LibraryPath)</LibraryPath>
+    <CustomBuildBeforeTargets>
+    </CustomBuildBeforeTargets>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>..\..\bin\$(Platform)\$(Configuration)\</OutDir>
@@ -68,6 +70,10 @@
       <AdditionalDependencies>crash_generation_client.lib;crash_generation_server.lib;crash_report_sender.lib;common.lib;exception_handler.lib;SGXDataMapping.lib;SGXDataTransformGUI.lib;ANTzGUI.lib;SGXGeospatial.lib;SGXFoundation.lib;ANTzBridge.lib;ANTzCore.lib;SGXGlyphGUI.lib;SGXGUI.lib;SGXImage.lib;MapDownloading.lib;SGXUtility.lib;SGXzSpaceGUI.lib;qtmaind.lib;boost_system-vc120-mt-gd-1_55.lib;boost_filesystem-vc120-mt-gd-1_55.lib;Qt5Cored.lib;Qt5Guid.lib;Qt5Networkd.lib;Qt5Sqld.lib;Qt5OpenGLd.lib;opengl32.lib;glu32.lib;Qt5Widgetsd.lib;DataEngine.lib;jawt.lib;jvm.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <LargeAddressAware>true</LargeAddressAware>
     </Link>
+    <CustomBuildStep>
+      <Command>
+      </Command>
+    </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -542,6 +548,9 @@
     <Image Include="Resources\rotate_left.png" />
     <Image Include="Resources\rotate_right.png" />
     <Image Include="Resources\rotate_up.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\glyphed_stylesheet.qss" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

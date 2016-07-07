@@ -10,6 +10,7 @@
 #endif
 
 #include <QtCore/QStandardPaths>
+#include <QtCore/QDir>
 #include <QtWidgets/QMessageBox>
 #include <QtCore/QTextStream>
 #include <QtCore/QString>
@@ -123,6 +124,11 @@ int main(int argc, char *argv[])
 		QTimer::singleShot(1500, &splash, SLOT(close()));
 
 		GlyphViewerWindow w;
+		QFile file(":GlyphViewer/Resources/glyphed_stylesheet.qss"); //For building app 
+		//QFile file("../../../GUI/GlyphViewer/Resources/glyphed_stylesheet.qss"); //For faster style testing
+		file.open(QFile::ReadOnly);
+		QString styleSheet = QLatin1String(file.readAll());
+		w.setStyleSheet(styleSheet);
 		w.move(50, 50);
 		w.resize(1200, 700);
 

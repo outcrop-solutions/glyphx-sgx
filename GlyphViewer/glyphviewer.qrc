@@ -1,8 +1,9 @@
 <RCC>
-    <qresource prefix="GlyphViewer">
-      <file>Resources/rotate_up.png</file>
-      <file>Resources/rotate_left.png</file>
-      <file>Resources/rotate_right.png</file>
-      <file>Resources/rotate_down.png</file>
+    <qresource prefix="/GlyphViewer">
+        <file>Resources/rotate_up.png</file>
+        <file>Resources/rotate_left.png</file>
+        <file>Resources/rotate_right.png</file>
+        <file>Resources/rotate_down.png</file>
+        <file>Resources/glyphed_stylesheet.qss</file>
     </qresource>
 </RCC>

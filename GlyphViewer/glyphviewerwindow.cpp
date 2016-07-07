@@ -137,6 +137,7 @@ void GlyphViewerWindow::CreateLoadingScreen() {
 	if (SynGlyphX::GlyphBuilderApplication::IsGlyphEd()) {
 
 		HomePageWidget* homePage = new HomePageWidget(this, antzWidgetContainer);
+		homePage->setObjectName("home_page");
 		antzWidgetContainer->addWidget(homePage);
 	}
 	else {

@@ -386,4 +386,9 @@
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\glyphed_stylesheet.qss">
+      <Filter>Resource Files</Filter>
+    </None>
+  </ItemGroup>
 </Project>
