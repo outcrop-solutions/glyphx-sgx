@@ -81,13 +81,14 @@ void MultiLoadingFilterWidget::Reset(const std::vector<VisualizationData>& dataA
 
 	m_viewListWidget->blockSignals(false);
 
-	if (m_loadingFilterWidgetMap.empty()) {
+	if (dataAndFilters.empty()) {
 
 		m_loadingFilterWidgetsStack->setVisible(false);
 	}
 	else {
 
 		m_viewListWidget->SelectItem(0);
+		OnFileSelected(0);
 	}
 }
 
@@ -124,13 +125,16 @@ FilteringParameters MultiLoadingFilterWidget::GetCurrentFilterValues() const {
 
 	FilteringParameters filteringParameters;
 
-	for (unsigned int i = 0; i < m_fieldNameMap.at(currentWidget).size(); ++i) {
+	if (m_fieldNameMap.count(currentWidget) != 0) {
 
-		QSet<QString> filterData = m_loadingFilterWidgetMap.at(currentWidget)->GetFilterData(i);
+		for (unsigned int i = 0; i < m_fieldNameMap.at(currentWidget).size(); ++i) {
 
-		if ((!filterData.isEmpty()) && (!m_loadingFilterWidgetMap.at(currentWidget)->AreAllValuesSelected(i))) {
+			QSet<QString> filterData = m_loadingFilterWidgetMap.at(currentWidget)->GetFilterData(i);
 
-			filteringParameters.SetDistinctValueFilter(m_fieldNameMap.at(currentWidget).at(i), filterData);
+			if ((!filterData.isEmpty()) && (!m_loadingFilterWidgetMap.at(currentWidget)->AreAllValuesSelected(i))) {
+
+				filteringParameters.SetDistinctValueFilter(m_fieldNameMap.at(currentWidget).at(i), filterData);
+			}
 		}
 	}
 
