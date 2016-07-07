@@ -41,12 +41,10 @@ namespace SynGlyphX {
 
 		static const SettingsStoredFileList& GetRecentFileListInstance();
 
-	signals:
-		void RecentFileListChanged();
-
     protected slots:
         void SwitchBetweenFullAndNormalScreen();
 		void RestoreOriginalLayout();
+		void UpdateRecentFileList();
 
     protected:
 		virtual void showEvent(QShowEvent* event);
@@ -58,7 +56,6 @@ namespace SynGlyphX {
         virtual bool LoadRecentFile(const QString& filename) = 0;
 
 		void SaveOriginalState();
-        void UpdateRecentFileList();
         void UpdateFilenameWindowTitle(const QString& title);
 		void ClearCurrentFile();
         void SetCurrentFile(const QString& filename);

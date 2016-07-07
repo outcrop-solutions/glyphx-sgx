@@ -27,15 +27,17 @@ namespace SynGlyphX {
 	void SettingsStoredFileList::ReadFromSettings() {
 
 		QSettings settings;
-		settings.beginGroup("RecentFiles");
+		settings.beginGroup("FileLists");
 		m_files = settings.value(m_settingsName).toStringList();
 		settings.endGroup();
+
+		emit FileListChanged();
 	}
 
 	void SettingsStoredFileList::WriteToSettings() {
 
 		QSettings settings;
-		settings.beginGroup("RecentFiles");
+		settings.beginGroup("FileLists");
 		settings.setValue(m_settingsName, m_files);
 		settings.endGroup();
 	}
@@ -43,6 +45,7 @@ namespace SynGlyphX {
 	void SettingsStoredFileList::RemoveFile(const QString& filename) {
 
 		m_files.removeAll(filename);
+		emit FileListChanged();
 	}
 
 	void SettingsStoredFileList::AddFile(const QString& filename) {
@@ -58,6 +61,7 @@ namespace SynGlyphX {
 			}
 		}
 		
+		emit FileListChanged();
 	}
 
 } //namespace SynGlyphX

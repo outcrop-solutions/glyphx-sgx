@@ -18,13 +18,16 @@
 #pragma once
 
 #include "sgxgui_global.h"
+#include <QtCore/QObject>
 #include <QtCore/QString>
 #include <QtCore/QStringList>
 
 namespace SynGlyphX {
 
-	class SGXGUI_EXPORT SettingsStoredFileList
+	class SGXGUI_EXPORT SettingsStoredFileList : public QObject
 	{
+		Q_OBJECT
+
 	public:
 		SettingsStoredFileList(const QString& settingsName, unsigned int maxFileCount = 0);
 		~SettingsStoredFileList();
@@ -37,6 +40,9 @@ namespace SynGlyphX {
 
 		void RemoveFile(const QString& filename);
 		void AddFile(const QString& filename);
+
+	signals:
+		void FileListChanged();
 
 	private:
 		QStringList m_files;

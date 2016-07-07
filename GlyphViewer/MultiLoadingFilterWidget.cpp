@@ -5,7 +5,8 @@
 #include "LoadingFilterWidget.h"
 
 MultiLoadingFilterWidget::MultiLoadingFilterWidget(QWidget *parent)
-	: QSplitter(Qt::Horizontal, parent)
+	: QSplitter(Qt::Horizontal, parent),
+	m_loadingFilterWidgetsStack(nullptr)
 {
 	setChildrenCollapsible(false);
 	setHandleWidth(2);
@@ -20,10 +21,6 @@ MultiLoadingFilterWidget::MultiLoadingFilterWidget(QWidget *parent)
 
 	addWidget(m_viewListWidget);
 
-	m_loadingFilterWidgetsStack = new QStackedWidget(this);
-
-	addWidget(m_loadingFilterWidgetsStack);
-
 	QObject::connect(m_viewListWidget, &SynGlyphX::TitleListWidget::CurrentRowChanged, this, &MultiLoadingFilterWidget::OnFileSelected);
 }
 
@@ -35,6 +32,16 @@ MultiLoadingFilterWidget::~MultiLoadingFilterWidget()
 void MultiLoadingFilterWidget::Reset(const std::vector<VisualizationData>& dataAndFilters) {
 
 	m_viewListWidget->blockSignals(true);
+
+	m_loadingFilterWidgetMap.clear();
+	m_mustHaveFilterMap.clear();
+	m_fieldNameMap.clear();
+	if (m_loadingFilterWidgetsStack != nullptr) {
+
+		delete m_loadingFilterWidgetsStack;
+	}
+	m_loadingFilterWidgetsStack = new QStackedWidget(this);
+	addWidget(m_loadingFilterWidgetsStack);
 
 	QStringList titles;
 	QStringList files;
@@ -73,7 +80,15 @@ void MultiLoadingFilterWidget::Reset(const std::vector<VisualizationData>& dataA
 	m_viewListWidget->SetItems(titles, files);
 
 	m_viewListWidget->blockSignals(false);
-	m_viewListWidget->SelectItem(0);
+
+	if (m_loadingFilterWidgetMap.empty()) {
+
+		m_loadingFilterWidgetsStack->setVisible(false);
+	}
+	else {
+
+		m_viewListWidget->SelectItem(0);
+	}
 }
 
 bool MultiLoadingFilterWidget::DoCurrentNecessaryFiltersHaveSelection() const {
@@ -125,5 +140,5 @@ FilteringParameters MultiLoadingFilterWidget::GetCurrentFilterValues() const {
 void MultiLoadingFilterWidget::OnFileSelected(int row) {
 
 	m_loadingFilterWidgetsStack->setCurrentIndex(row);
-	m_loadingFilterWidgetsStack->setVisible(m_loadingFilterWidgetMap.count(row) == 0);
+	m_loadingFilterWidgetsStack->setVisible(m_loadingFilterWidgetMap.count(row) != 0);
 }

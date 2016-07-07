@@ -27,8 +27,7 @@ namespace SynGlyphX {
 }
 
 class LoadingFilterWidget;
-
-class QStackWidget;
+class QStackedWidget;
 
 class MultiLoadingFilterWidget : public QSplitter
 {

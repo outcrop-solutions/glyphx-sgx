@@ -35,6 +35,8 @@
 #include "baseimage.h"
 #include "sharedactionlist.h"
 
+SynGlyphX::SettingsStoredFileList GlyphViewerWindow::s_subsetFileList("subsetFileList");
+
 GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 	: SynGlyphX::MainWindow(4, parent),
 	m_glyph3DView(nullptr),
@@ -873,6 +875,8 @@ void GlyphViewerWindow::ReadSettings() {
 
 	SynGlyphX::MainWindow::ReadSettings();
 
+	s_subsetFileList.ReadFromSettings();
+
 	GlyphViewerOptions options;
 
 	QSettings settings;
@@ -892,6 +896,8 @@ void GlyphViewerWindow::ReadSettings() {
 void GlyphViewerWindow::WriteSettings() {
 
 	SynGlyphX::MainWindow::WriteSettings();
+
+	s_subsetFileList.WriteToSettings();
 
 	QSettings settings;
 
@@ -1132,4 +1138,14 @@ void GlyphViewerWindow::OnPropertiesActivated() {
 		dialog.setWindowTitle(tr("Glyph Properties"));
 		dialog.exec();
 	}
+}
+
+const SynGlyphX::SettingsStoredFileList& GlyphViewerWindow::GetSubsetFileListInstance() {
+
+	return s_subsetFileList;
+}
+
+void GlyphViewerWindow::AddSubsetVisualization(const QString& filename) {
+
+	s_subsetFileList.AddFile(filename);
 }

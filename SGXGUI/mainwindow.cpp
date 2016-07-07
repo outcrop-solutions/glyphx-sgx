@@ -39,6 +39,8 @@ namespace SynGlyphX {
 
 		ClearCurrentFile();
 		m_undoStack = new QUndoStack(this);
+
+		QObject::connect(&s_recentFileList, &SettingsStoredFileList::FileListChanged, this, &MainWindow::UpdateRecentFileList);
     }
 
     MainWindow::~MainWindow()
@@ -65,7 +67,6 @@ namespace SynGlyphX {
         settings.endGroup();
 
 		s_recentFileList.ReadFromSettings();
-        UpdateRecentFileList();
     }
 
     void MainWindow::WriteSettings() {
@@ -108,7 +109,6 @@ namespace SynGlyphX {
 				if (QMessageBox::question(this, tr("Recent File Failed To Load"), tr("The selected recent file failed to load.  Do you wish to remove it from the recent file list?")) == QMessageBox::Yes) {
 
 					s_recentFileList.RemoveFile(recentFile);
-					UpdateRecentFileList();
 				}
 			}
         }
@@ -131,8 +131,6 @@ namespace SynGlyphX {
 
         //If there are any files in the recent file list make the separator visible
         m_recentFileActions[0]->setVisible(numRecentFiles > 0);
-
-		emit RecentFileListChanged();
     }
 
 	void MainWindow::UpdateFilenameWindowTitle(const QString& title) {
@@ -151,7 +149,6 @@ namespace SynGlyphX {
         m_currentFilename = filename;
 
 		s_recentFileList.AddFile(filename);
-        UpdateRecentFileList();
 
         UpdateFilenameWindowTitle(QFileInfo(filename).fileName());
         setWindowModified(false);

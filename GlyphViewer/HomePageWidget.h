@@ -49,6 +49,7 @@ private slots:
 	void OnLoadVisualization();
 	void OnNewOptionSelected(int index);
 	void OnRecentListUpdated();
+	void OnSubsetListUpdated();
 
 private:
 	void CreateHomePageOptionsWidget();
@@ -69,15 +70,15 @@ private:
 
 	QPushButton* m_loadVisualizationButton;
 
-	SynGlyphX::TitleListWidget* m_viewListWidget;
-	QList<LoadingFilterWidget*> m_loadingFilterWidgets;
-	QStackedWidget* m_loadingFilterStackedWidget;
+	MultiLoadingFilterWidget* m_allViewsFilteringWidget;
+	MultiLoadingFilterWidget* m_recentViewsFilteringWidget;
+	MultiLoadingFilterWidget* m_subsetViewsFilteringWidget;
 	
 	GlyphViewerWindow* m_mainWindow;
 	SourceDataCache m_sourceDataCache;
-	std::vector<MultiLoadingFilterWidget::VisualizationData> m_visualizationData;
 
-	QVBoxLayout* m_recentViewsLayout;
+	std::vector<MultiLoadingFilterWidget::VisualizationData> m_allVisualizationData;
+	std::vector<MultiLoadingFilterWidget::VisualizationData> m_recentVisualizationData;
 };
 
 //#pragma once

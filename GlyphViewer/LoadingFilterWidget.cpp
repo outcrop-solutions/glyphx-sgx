@@ -31,7 +31,7 @@ void LoadingFilterWidget::AddFilter(const QString& name, bool allowMultiselect, 
 
 QSet<QString> LoadingFilterWidget::GetFilterData(unsigned int index) const {
 
-	return m_filterListWidgets[index]->GetSelectedItems().toSet();
+	return m_filterListWidgets[index]->GetSelectedLabels().toSet();
 }
 
 bool LoadingFilterWidget::AreAllValuesSelected(unsigned int index) const {

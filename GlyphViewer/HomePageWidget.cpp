@@ -12,6 +12,7 @@
 #include <QtWidgets/QGridLayout>
 #include <QtWidgets/QButtonGroup>
 #include <QtWidgets/QPushButton>
+#include "MultiLoadingFilterWidget.h"
 
 QString HomePageWidget::s_glyphEdDir;
 
@@ -57,7 +58,8 @@ HomePageWidget::HomePageWidget(GlyphViewerWindow* mainWindow, QWidget *parent)
 
 	setLayout(m_mainLayout);
 
-	QObject::connect(m_mainWindow, &GlyphViewerWindow::RecentFileListChanged, this, &HomePageWidget::OnRecentListUpdated);
+	QObject::connect(&GlyphViewerWindow::GetRecentFileListInstance(), &SynGlyphX::SettingsStoredFileList::FileListChanged, this, &HomePageWidget::OnRecentListUpdated);
+	QObject::connect(&GlyphViewerWindow::GetSubsetFileListInstance(), &SynGlyphX::SettingsStoredFileList::FileListChanged, this, &HomePageWidget::OnSubsetListUpdated);
 
 	QObject::connect(m_optionsButtonGroup, static_cast<void (QButtonGroup::*)(int)>(&QButtonGroup::buttonClicked), this, &HomePageWidget::OnNewOptionSelected);
 	m_optionsButtonGroup->button(0)->setChecked(true);
@@ -103,27 +105,10 @@ void HomePageWidget::CreateAllViewsWidget() {
 	vizAndFilterFrameLayout->setContentsMargins(0, 0, 0, 0);
 	vizAndFilterFrameLayout->setSpacing(0);
 
-	
+	m_allViewsFilteringWidget = new MultiLoadingFilterWidget(this);
+	m_allViewsFilteringWidget->Reset(m_allVisualizationData);
 
-	QStringList visualizations;
-	for (const auto& visualizationData : m_visualizationData) {
-
-		visualizations << visualizationData.m_title;
-	}
-	m_viewListWidget->SetItems(visualizations, visualizations);
-	vizAndFilterSplitter->addWidget(m_viewListWidget);
-
-	m_loadingFilterStackedWidget = new QStackedWidget(this);
-	for (unsigned int i = 0; i < m_visualizationData.size(); ++i) {
-
-		
-
-		m_loadingFilterStackedWidget->addWidget(loadingFilterWidget);
-		m_loadingFilterWidgets.append(loadingFilterWidget);
-	}
-	vizAndFilterSplitter->addWidget(m_loadingFilterStackedWidget);
-
-	vizAndFilterFrameLayout->addWidget(vizAndFilterSplitter);
+	vizAndFilterFrameLayout->addWidget(m_allViewsFilteringWidget);
 	vizAndFilterFrame->setLayout(vizAndFilterFrameLayout);
 
 	QWidget* allViewsWidget = new QWidget(this);
@@ -138,6 +123,34 @@ void HomePageWidget::CreateAllViewsWidget() {
 
 void HomePageWidget::OnRecentListUpdated() {
 
+	m_recentVisualizationData.clear();
+
+	for (const auto& recentFile : GlyphViewerWindow::GetRecentFileListInstance().GetFiles()) {
+
+		MultiLoadingFilterWidget::VisualizationData visualizationDataToAdd;
+		for (const auto& visualizationData : m_allVisualizationData) {
+
+			if (visualizationData.m_sdtPath == recentFile) {
+
+				visualizationDataToAdd = visualizationData;
+				break;
+			}
+		}
+
+		if (visualizationDataToAdd.m_sdtPath.isEmpty()) {
+
+			visualizationDataToAdd.m_sdtPath = recentFile;
+			visualizationDataToAdd.m_title = QFileInfo(recentFile).fileName();
+		}
+
+		m_recentVisualizationData.push_back(visualizationDataToAdd);
+	}
+
+	m_recentViewsFilteringWidget->Reset(m_recentVisualizationData);
+}
+
+void HomePageWidget::CreateRecentViewsWidget() {
+
 	QFrame* vizAndFilterFrame = new QFrame(this);
 	vizAndFilterFrame->setFrameStyle(QFrame::Box | QFrame::Sunken);
 	vizAndFilterFrame->setLineWidth(1);
@@ -147,78 +160,61 @@ void HomePageWidget::OnRecentListUpdated() {
 	vizAndFilterFrameLayout->setContentsMargins(0, 0, 0, 0);
 	vizAndFilterFrameLayout->setSpacing(0);
 
-	QSplitter* vizAndFilterSplitter = new QSplitter(Qt::Horizontal, this);
-	vizAndFilterSplitter->setChildrenCollapsible(false);
-	vizAndFilterSplitter->setHandleWidth(2);
-	vizAndFilterSplitter->setStyleSheet("QSplitter::handle:horizontal { background: qlineargradient(x1 : 0, y1 : 0, x2 : 1, y2 : 1, stop : 0 #eee, stop:1 #ccc);"
-		"border: 1px solid #777; width: 0px; margin - top: 0px; margin - bottom: 0px; border - radius: 2px; }");
+	m_recentViewsFilteringWidget = new MultiLoadingFilterWidget(this);
 
-	m_viewListWidget = new SynGlyphX::TitleListWidget(this);
-	m_viewListWidget->SetAllowMultiselect(false);
-	m_viewListWidget->ShowSelectAllButton(false);
-	m_viewListWidget->SetTitle(tr("View(s)"));
-	m_viewListWidget->layout()->setContentsMargins(0, 0, 0, 0);
-
-	QStringList visualizations;
-	for (const auto& recentVisualization : GlyphViewerWindow::GetRecentFileListInstance().GetFiles()) {
-
-		QString title = QFileInfo(recentVisualization).fileName();
-		for (const auto& visualizationData : m_visualizationData) {
-
-			if (visualizationData.m_sdtPath == recentVisualization) {
-
-				title = visualizationData.m_title;
-				break;
-			}
-		}
-
-		visualizations.push_back(title);
-	}
-
-	m_viewListWidget->SetItems(visualizations, GlyphViewerWindow::GetRecentFileListInstance().GetFiles());
-	vizAndFilterSplitter->addWidget(m_viewListWidget);
-
-	m_loadingFilterStackedWidget = new QStackedWidget(this);
-	for (unsigned int i = 0; i < m_visualizationData.size(); ++i) {
-
-		LoadingFilterWidget* loadingFilterWidget = new LoadingFilterWidget(this);
-		for (unsigned int j = 0; j < m_visualizationData[i].m_filterTitles.size(); ++j) {
-
-			loadingFilterWidget->AddFilter(m_visualizationData[i].m_filterTitles[j],
-				m_visualizationData[i].m_filterMultiselect[j],
-				m_visualizationData[i].m_filterValues[j]);
-		}
-
-		m_loadingFilterStackedWidget->addWidget(loadingFilterWidget);
-		m_loadingFilterWidgets.append(loadingFilterWidget);
-	}
-	vizAndFilterSplitter->addWidget(m_loadingFilterStackedWidget);
-
-	vizAndFilterFrameLayout->addWidget(vizAndFilterSplitter);
+	vizAndFilterFrameLayout->addWidget(m_recentViewsFilteringWidget);
 	vizAndFilterFrame->setLayout(vizAndFilterFrameLayout);
 
-	m_recentViewsLayout->removeWidget(0);
-	m_recentViewsLayout->insertWidget(0, vizAndFilterFrame, 1);
-}
-
-void HomePageWidget::CreateRecentViewsWidget() {
-
-	QWidget* blankWidget = new QWidget(this);
-
 	QWidget* recentViewsWidget = new QWidget(this);
-	m_recentViewsLayout = new QVBoxLayout(this);
-	m_recentViewsLayout->setContentsMargins(0, 0, 0, 0);
-	m_recentViewsLayout->addWidget(blankWidget, 1);
-	m_recentViewsLayout->addStretch(2);
-	recentViewsWidget->setLayout(m_recentViewsLayout);
+	QVBoxLayout* recentViewsLayout = new QVBoxLayout(this);
+	recentViewsLayout->setContentsMargins(0, 0, 0, 0);
+	recentViewsLayout->addWidget(vizAndFilterFrame, 1);
+	recentViewsLayout->addStretch(2);
+	recentViewsWidget->setLayout(recentViewsLayout);
 
 	m_homePageWidgetsLayout->addWidget(recentViewsWidget);
 }
 
+void HomePageWidget::OnSubsetListUpdated() {
+
+	std::vector<MultiLoadingFilterWidget::VisualizationData> subsetVisualizationData;
+
+	for (const auto& recentFile : GlyphViewerWindow::GetSubsetFileListInstance().GetFiles()) {
+
+		MultiLoadingFilterWidget::VisualizationData visualizationDataToAdd;
+		visualizationDataToAdd.m_sdtPath = recentFile;
+		visualizationDataToAdd.m_title = QFileInfo(recentFile).fileName();
+
+		subsetVisualizationData.push_back(visualizationDataToAdd);
+	}
+
+	m_subsetViewsFilteringWidget->Reset(subsetVisualizationData);
+}
+
 void HomePageWidget::CreateMyViewsWidget() {
 
-	QWidget* widget = new QWidget(this);
-	m_homePageWidgetsLayout->addWidget(widget);
+	QFrame* vizAndFilterFrame = new QFrame(this);
+	vizAndFilterFrame->setFrameStyle(QFrame::Box | QFrame::Sunken);
+	vizAndFilterFrame->setLineWidth(1);
+	vizAndFilterFrame->setMidLineWidth(1);
+
+	QHBoxLayout* vizAndFilterFrameLayout = new QHBoxLayout(vizAndFilterFrame);
+	vizAndFilterFrameLayout->setContentsMargins(0, 0, 0, 0);
+	vizAndFilterFrameLayout->setSpacing(0);
+
+	m_subsetViewsFilteringWidget = new MultiLoadingFilterWidget(this);
+
+	vizAndFilterFrameLayout->addWidget(m_subsetViewsFilteringWidget);
+	vizAndFilterFrame->setLayout(vizAndFilterFrameLayout);
+
+	QWidget* myViewsWidget = new QWidget(this);
+	QVBoxLayout* myViewsLayout = new QVBoxLayout(this);
+	myViewsLayout->setContentsMargins(0, 0, 0, 0);
+	myViewsLayout->addWidget(vizAndFilterFrame, 1);
+	myViewsLayout->addStretch(2);
+	myViewsWidget->setLayout(myViewsLayout);
+
+	m_homePageWidgetsLayout->addWidget(myViewsWidget);
 }
 
 void HomePageWidget::CreateHelpWidget() {
@@ -273,7 +269,7 @@ void HomePageWidget::SetupVisualizationData() {
 	visualizationNames << "Global Admissions View" << "Admissions Counselor View (2016)" << "High School View" << 
 		"Class Composition (Diversity)" << "Class Composition (Cohort)" << "Class Composition (Total)" << "Global Dashboard";
 
-	VisualizationData globalAdmissionsView;
+	MultiLoadingFilterWidget::VisualizationData globalAdmissionsView;
 	globalAdmissionsView.m_title = visualizationNames[0];
 	globalAdmissionsView.m_sdtPath = GetGlyphEdDir() + QDir::toNativeSeparators("/Global Admissions/Global Admissions.sdt");
 	globalAdmissionsView.m_tableInGlyphEd = "GlobalAdmissions";
@@ -289,9 +285,9 @@ void HomePageWidget::SetupVisualizationData() {
 	globalAdmissionsView.m_filterMultiselect.push_back(true);
 	globalAdmissionsView.m_filterValues.push_back(m_sourceDataCache.GetSortedDistinctValuesAsStrings(globalAdmissionsView.m_tableInGlyphEd, "Year"));
 
-	m_visualizationData.push_back(globalAdmissionsView);
+	m_allVisualizationData.push_back(globalAdmissionsView);
 
-	VisualizationData admissionsCounselorView;
+	MultiLoadingFilterWidget::VisualizationData admissionsCounselorView;
 	admissionsCounselorView.m_title = visualizationNames[1];
 	admissionsCounselorView.m_sdtPath = GetGlyphEdDir() + QDir::toNativeSeparators("/Admissions Officer/Admissions Counselor.sdt");
 	admissionsCounselorView.m_tableInGlyphEd = "GlobalAdmissions";
@@ -306,13 +302,10 @@ void HomePageWidget::SetupVisualizationData() {
 	admissionsCounselorView.m_filterFieldNames.push_back("Last_Decision_Cluster");
 	admissionsCounselorView.m_filterMultiselect.push_back(true);
 	admissionsCounselorView.m_filterValues.push_back(m_sourceDataCache.GetSortedDistinctValuesAsStrings(admissionsCounselorView.m_tableInGlyphEd, "Last_Decision_Cluster", "\"Year\"=2016"));
-	/*admissionsCounselorView.m_filterTitles.push_back("Year(s)");
-	admissionsCounselorView.m_filterMultiselect.push_back(true);
-	admissionsCounselorView.m_filterValues.push_back(m_sourceDataCache.GetSortedDistinctValuesAsStrings("GlobalAdmissions", "Year"));*/
 
-	m_visualizationData.push_back(admissionsCounselorView);
+	m_allVisualizationData.push_back(admissionsCounselorView);
 
-	VisualizationData highSchoolView;
+	MultiLoadingFilterWidget::VisualizationData highSchoolView;
 	highSchoolView.m_title = visualizationNames[2];
 	highSchoolView.m_sdtPath = GetGlyphEdDir() + QDir::toNativeSeparators("/High School/High School.sdt");
 	highSchoolView.m_tableInGlyphEd = "GlobalAdmissions";
@@ -340,14 +333,14 @@ void HomePageWidget::SetupVisualizationData() {
 	highSchoolView.m_filterMultiselect.push_back(true);
 	highSchoolView.m_filterValues.push_back(m_sourceDataCache.GetSortedDistinctValuesAsStrings(highSchoolView.m_tableInGlyphEd, "Year"));
 
-	m_visualizationData.push_back(highSchoolView);
+	m_allVisualizationData.push_back(highSchoolView);
 
 	QStringList statuses = m_sourceDataCache.GetSortedDistinctValuesAsStrings("Composition", "grouping_title", "\"branch_type\"='Status'");
 	statuses.push_back("Cohort Aggregate");
 
-	VisualizationData classCompositionRaceView;
+	MultiLoadingFilterWidget::VisualizationData classCompositionRaceView;
 	classCompositionRaceView.m_title = visualizationNames[3];
-	classCompositionRaceView.m_sdtPath = GetGlyphEdDir() + QDir::toNativeSeparators("/Class Composition/Class Composition.sdt");
+	classCompositionRaceView.m_sdtPath = GetGlyphEdDir() + QDir::toNativeSeparators("/Class Composition/Class Composition Diversity.sdt");
 	classCompositionRaceView.m_tableInGlyphEd = "Composition";
 
 	classCompositionRaceView.m_filterTitles.push_back("Race");
@@ -366,11 +359,11 @@ void HomePageWidget::SetupVisualizationData() {
 	classCompositionRaceView.m_filterMultiselect.push_back(true);
 	classCompositionRaceView.m_filterValues.push_back(statuses);
 
-	m_visualizationData.push_back(classCompositionRaceView);
+	m_allVisualizationData.push_back(classCompositionRaceView);
 
-	VisualizationData classCompositionCohortView;
+	MultiLoadingFilterWidget::VisualizationData classCompositionCohortView;
 	classCompositionCohortView.m_title = visualizationNames[4];
-	classCompositionCohortView.m_sdtPath = GetGlyphEdDir() + QDir::toNativeSeparators("/Class Composition/Class Composition.sdt");
+	classCompositionCohortView.m_sdtPath = GetGlyphEdDir() + QDir::toNativeSeparators("/Class Composition/Class Composition Cohort.sdt");
 	classCompositionCohortView.m_tableInGlyphEd = "Composition";
 
 	classCompositionCohortView.m_filterTitles.push_back("Cohort");
@@ -389,11 +382,11 @@ void HomePageWidget::SetupVisualizationData() {
 	classCompositionCohortView.m_filterMultiselect.push_back(true);
 	classCompositionCohortView.m_filterValues.push_back(statuses);
 
-	m_visualizationData.push_back(classCompositionCohortView);
+	m_allVisualizationData.push_back(classCompositionCohortView);
 
-	VisualizationData classCompositionTotalView;
+	MultiLoadingFilterWidget::VisualizationData classCompositionTotalView;
 	classCompositionTotalView.m_title = visualizationNames[5];
-	classCompositionTotalView.m_sdtPath = GetGlyphEdDir() + QDir::toNativeSeparators("/Class Composition/Class Composition.sdt");
+	classCompositionTotalView.m_sdtPath = GetGlyphEdDir() + QDir::toNativeSeparators("/Class Composition/Class Composition Total.sdt");
 	classCompositionTotalView.m_tableInGlyphEd = "Composition";
 
 	classCompositionTotalView.m_filterTitles.push_back("Year(s)");
@@ -407,9 +400,9 @@ void HomePageWidget::SetupVisualizationData() {
 	classCompositionTotalView.m_filterMultiselect.push_back(true);
 	classCompositionTotalView.m_filterValues.push_back(m_sourceDataCache.GetSortedDistinctValuesAsStrings("Composition", "grouping_title", "\"branch_type\"='Status'"));
 
-	m_visualizationData.push_back(classCompositionTotalView);
+	m_allVisualizationData.push_back(classCompositionTotalView);
 
-	VisualizationData globalDashboardView;
+	MultiLoadingFilterWidget::VisualizationData globalDashboardView;
 	globalDashboardView.m_title = visualizationNames[6];
 	globalDashboardView.m_sdtPath = GetGlyphEdDir() + QDir::toNativeSeparators("/Global Dashboard/Global Dashboard.sdt");
 	globalDashboardView.m_tableInGlyphEd = "Dashboard";
@@ -420,7 +413,7 @@ void HomePageWidget::SetupVisualizationData() {
 	globalDashboardView.m_filterMultiselect.push_back(false);
 	globalDashboardView.m_filterValues.push_back(m_sourceDataCache.GetSortedDistinctValuesAsStrings(globalDashboardView.m_tableInGlyphEd, "reader_name"));
 
-	m_visualizationData.push_back(globalDashboardView);
+	m_allVisualizationData.push_back(globalDashboardView);
 }
 
 QString HomePageWidget::GetGlyphEdDir() {
@@ -435,96 +428,113 @@ QString HomePageWidget::GetGlyphEdDir() {
 
 void HomePageWidget::OnLoadVisualization() {
 
-	unsigned int currentView = m_loadingFilterStackedWidget->currentIndex();
-	for (int j = 0; j < m_visualizationData[currentView].m_mustHaveFilter.size(); ++j) {
+	unsigned int whichFilteringWidget = m_homePageWidgetsLayout->currentIndex();
+	MultiLoadingFilterWidget* currentLoadingFilterWidget = nullptr;
+	if (whichFilteringWidget == 1) {
 
-		if (m_visualizationData[currentView].m_mustHaveFilter[j] && (!m_loadingFilterWidgets[currentView]->AreAnyValuesSelected(j))) {
+		currentLoadingFilterWidget = m_allViewsFilteringWidget;
+	}
+	else if (whichFilteringWidget == 2) {
 
-			QMessageBox::information(this, tr("Did not load visualization"), tr("Visualization can not be loaded until at least one value has been selected from ") + m_visualizationData[currentView].m_filterTitles[j] + ".");
-			return;
-		}
+		currentLoadingFilterWidget = m_recentViewsFilteringWidget;
+	}
+	else if (whichFilteringWidget == 3) {
+
+		currentLoadingFilterWidget = m_subsetViewsFilteringWidget;
+	}
+
+	if (!currentLoadingFilterWidget->DoCurrentNecessaryFiltersHaveSelection()) {
+
+		QMessageBox::information(this, tr("Did not load visualization"), tr("Visualization can not be loaded until at least one value has been selected from all necessary filters."));
+		return;
 	}
 
 	SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
 
-	FilteringParameters filters;
+	FilteringParameters filters = currentLoadingFilterWidget->GetCurrentFilterValues();
+	QString sdtToLoad = currentLoadingFilterWidget->GetCurrentFilename();
 
 	SynGlyphX::DataTransformMapping mapping;
-	mapping.ReadFromFile(m_visualizationData[currentView].m_sdtPath.toStdString());
+	mapping.ReadFromFile(sdtToLoad.toStdString());
 
-	for (unsigned int i = 0; i < m_visualizationData[currentView].m_filterFieldNames.size(); ++i) {
+	int currentDataVisualization = -1;
+	for (unsigned int k = 0; k < m_allVisualizationData.size(); ++k) {
 
-		QSet<QString> filterData = m_loadingFilterWidgets[currentView]->GetFilterData(i);
+		if (m_allVisualizationData[k].m_sdtPath == sdtToLoad) {
 
-		if ((!filterData.isEmpty()) && (!m_loadingFilterWidgets[currentView]->AreAllValuesSelected(i))) {
-
-			filters.SetDistinctValueFilter(m_visualizationData[currentView].m_filterFieldNames[i], filterData);
+			currentDataVisualization = k;
+			break;
 		}
 	}
 
-	if (currentView == 1) {
+	if (currentDataVisualization != -1) {
 
-		QSet<QString> years;
-		years.insert("2016");
-		filters.SetDistinctValueFilter("Year", years);
-	}
-	else if (currentView == 3) {
+		if (currentDataVisualization == 1) {
 
-		QSet<QString> branch;
-		branch.insert("Race");
-		filters.SetDistinctValueFilter("branch_type", branch);
-	}
-	else if (currentView == 4) {
+			QSet<QString> years;
+			years.insert("2016");
+			filters.SetDistinctValueFilter("Year", years);
+		}
+		else if (currentDataVisualization == 3) {
 
-		QSet<QString> branch;
-		branch.insert("Cohort");
-		filters.SetDistinctValueFilter("branch_type", branch);
-	}
-	else if (currentView == 5) {
+			QSet<QString> branch;
+			branch.insert("Race");
+			filters.SetDistinctValueFilter("branch_type", branch);
+		}
+		else if (currentDataVisualization == 4) {
 
-		QSet<QString> groupingTitle;
-		groupingTitle.insert("Cohort Aggregate");
-		filters.SetDistinctValueFilter("grouping_title_lv2", groupingTitle);
-	}
-	else if (currentView == 6) {
+			QSet<QString> branch;
+			branch.insert("Cohort");
+			filters.SetDistinctValueFilter("branch_type", branch);
+		}
+		else if (currentDataVisualization == 5) {
 
-		QSet<QString> readers;
+			QSet<QString> groupingTitle;
+			groupingTitle.insert("Cohort Aggregate");
+			filters.SetDistinctValueFilter("grouping_title_lv2", groupingTitle);
+		}
+		else if (currentDataVisualization == 6) {
+
+			QSet<QString> readers;
+			if (filters.HasFilters()) {
+
+				readers = filters.GetDistinctValueFilters().at(m_allVisualizationData[6].m_filterFieldNames[0]);
+
+			}
+			readers.insert("TOTAL");
+			filters.SetDistinctValueFilter(m_allVisualizationData[6].m_filterFieldNames[0], readers);
+		}
+
+		SynGlyphX::InputTable inputTable(mapping.GetDatasources().begin()->first, mapping.GetDatasources().begin()->second->GetTableNames().at(0));
+
+		DataMappingLoadingFilterModel::Table2LoadingFiltersMap table2FiltersMap;
 		if (filters.HasFilters()) {
 
-			readers = filters.GetDistinctValueFilters().at(m_visualizationData[6].m_filterFieldNames[0]);
-				
+			table2FiltersMap[inputTable] = filters;
 		}
-		readers.insert("TOTAL");
-		filters.SetDistinctValueFilter(m_visualizationData[6].m_filterFieldNames[0], readers);
-	}
 
-	SynGlyphX::InputTable inputTable(mapping.GetDatasources().begin()->first, mapping.GetDatasources().begin()->second->GetTableNames().at(0));
+		QString dataFilename = QDir::toNativeSeparators(QString::fromStdWString(mapping.GetDatasources().begin()->second->GetDBName()));
+		if (QFile::exists(dataFilename)) {
 
-	DataMappingLoadingFilterModel::Table2LoadingFiltersMap table2FiltersMap;
+			QFile::remove(dataFilename);
+		}
 
-	if (filters.HasFilters()) {
+		bool didFilterHaveResult = m_sourceDataCache.ExportFilteredDataToCSV(dataFilename, m_allVisualizationData[currentDataVisualization].m_tableInGlyphEd, table2FiltersMap[inputTable]);
 
-		table2FiltersMap[inputTable] = filters;
-	}
+		SynGlyphX::Application::restoreOverrideCursor();
 
-	QString dataFilename = QDir::toNativeSeparators(QString::fromStdWString(mapping.GetDatasources().begin()->second->GetDBName()));
-	if (QFile::exists(dataFilename)) {
+		if (!didFilterHaveResult) {
 
-		QFile::remove(dataFilename);
-	}
-
-	bool didFilterHaveResult = m_sourceDataCache.ExportFilteredDataToCSV(dataFilename, m_visualizationData[currentView].m_tableInGlyphEd, table2FiltersMap[inputTable]);
-
-	SynGlyphX::Application::restoreOverrideCursor();
-
-	if (didFilterHaveResult) {
-
-		m_mainWindow->LoadNewVisualization(m_visualizationData[currentView].m_sdtPath);
+			QMessageBox::warning(this, tr("Load Visualization"), tr("The selected combination of filters had no results.  Please try a different combination of filters to load a visualization."));
+			return;
+		}
 	}
 	else {
 
-		QMessageBox::warning(this, tr("Load Visualization"), tr("The selected combination of filters had no results.  Please try a different combination of filters to load a visualization."));
+		SynGlyphX::Application::restoreOverrideCursor();
 	}
+
+	m_mainWindow->LoadNewVisualization(sdtToLoad);
 }
 
 void HomePageWidget::OnNewOptionSelected(int index) {

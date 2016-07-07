@@ -37,6 +37,7 @@
 #include "portablevisualizationexport.h"
 #include "legendsdisplaywidget.h"
 #include "filteringparameters.h"
+#include "SettingsStoredFileList.h"
 
 class GlyphViewerWindow : public SynGlyphX::MainWindow
 {
@@ -49,9 +50,12 @@ public:
 
 	bool LoadNewVisualization(const QString& filename, const DataMappingLoadingFilterModel::Table2LoadingFiltersMap& filters = DataMappingLoadingFilterModel::Table2LoadingFiltersMap());
 
+	static const SynGlyphX::SettingsStoredFileList& GetSubsetFileListInstance();
+	static void AddSubsetVisualization(const QString& filename);
+
 protected:
-	virtual void ReadSettings();
-	virtual void WriteSettings();
+	void ReadSettings() override;
+	void WriteSettings() override;
 
 	void closeEvent(QCloseEvent* event) override;
 
@@ -136,6 +140,8 @@ private:
 	DataEngine::DataEngineConnection::SharedPtr m_dataEngineConnection;
 	SynGlyphX::PortableVisualizationExport m_portableVisualizationExport;
 	SourceDataInfoModel* m_columnsModel;
+
+	static SynGlyphX::SettingsStoredFileList s_subsetFileList;
 };
 
 #endif // GLYPHVIEWERWINDOW_H
