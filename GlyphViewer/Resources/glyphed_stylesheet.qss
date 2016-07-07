@@ -1,0 +1,58 @@
+#home_page {
+	background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #c7cbd2, stop: 1 #afb3ba);
+	border-radius: 12px;
+	border: #a9adb4 1px solid;
+}
+
+#dashboard_frame {
+	background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #cdcfd4, stop: 1 #e7e9ea);
+}
+
+#load_viz_button {
+	background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #a5d9eb, stop: 1 #e8f3eb); 
+	border-radius: 8px; 
+	border-top: 0.5px solid #fff; 
+	border-right: 1px outset #fff; 
+	border-bottom: 1px solid gray;
+	border-left: 0.5px solid gray; 
+	padding: 5px; 
+} 
+
+#load_viz_button:hover {
+	background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #1ec1fd, stop: 1 #b3e8fb);
+}
+
+QScrollBar:vertical {               
+	border: none;
+    background: #e7e9ea;
+    width: 20px;    
+    margin: 0px 0px 0px 0px;
+}
+
+QScrollBar::handle:vertical {
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:0, stop: 0  #e3f4fb, stop:1 #bfe7f8);
+	margin-left:3px;
+	margin-right:3px;
+    min-height: 0px;
+	border-top: 0.5px solid #fff; 
+	border-right: 1px outset #fff; 
+	border-bottom: 1px solid #c1c1c1;
+	border-left: 0.5px solid #c1c1c1; 
+	border-radius: 6px;
+}
+
+QScrollBar::add-line:vertical {
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:0, stop: 0  #e3f4fb, stop:1 #bfe7f8);
+    height: px;
+    subcontrol-position: bottom;
+    subcontrol-origin: margin;
+}
+    
+QScrollBar::sub-line:vertical {
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:0, stop: 0  #e3f4fb, stop:1 #bfe7f8);
+    height: 0px;
+    subcontrol-position: top;
+    subcontrol-origin: margin;
+}
+
+
