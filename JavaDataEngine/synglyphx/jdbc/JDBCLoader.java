@@ -145,9 +145,9 @@ public class JDBCLoader {
                Logger.getInstance().add("Closing connection to database...");
             }
          }catch(Exception e){
-            try{
+            /*try{
                e.printStackTrace(ErrorHandler.getInstance().addError());
-            }catch(Exception ex){}
+            }catch(Exception ex){}*/
             e.printStackTrace();
          }
          closeCount = 0;
