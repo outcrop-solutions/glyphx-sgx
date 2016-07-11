@@ -16,6 +16,7 @@
 	border-bottom: 1px solid gray;
 	border-left: 0.5px solid gray; 
 	padding: 5px; 
+	font-size: 14pt;
 } 
 
 #load_viz_button:hover {

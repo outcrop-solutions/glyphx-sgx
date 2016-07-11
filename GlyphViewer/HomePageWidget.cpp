@@ -87,7 +87,7 @@ void HomePageWidget::CreateHomePageOptionsWidget() {
 
 		QPushButton* button = new QPushButton(options[i], this);
 		button->setCheckable(true);
-		button->setStyleSheet("QPushButton { font-family:'Calibri', Helvetica, Arial, Sans; padding: 5px; border: 0px; font-size: 12pt; text-align: left;} QPushButton:hover{background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #c7cbd2, stop: 1 #afb3ba); color: white;} QPushButton:open{ background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #cdcfd4, stop: 1 #e7e9ea);}");
+		button->setStyleSheet("QPushButton { font-family:'Calibri', Helvetica, Arial, Sans; padding: 5px; border: 0px; font-size: 16pt; text-align: left;} QPushButton:hover{background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #c7cbd2, stop: 1 #afb3ba); color: white;} QPushButton:open{ background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #cdcfd4, stop: 1 #e7e9ea);}");
 		optionsLayout->addWidget(button);
 		m_optionsButtonGroup->addButton(button, i);
 	}
@@ -118,7 +118,7 @@ void HomePageWidget::CreateAllViewsWidget() {
 	QVBoxLayout* allViewsLayout = new QVBoxLayout(this);
 	allViewsLayout->setContentsMargins(0, 0, 0, 0);
 	allViewsLayout->addWidget(vizAndFilterFrame, 1);
-	allViewsLayout->addStretch(2);
+	allViewsLayout->addStretch(1);
 	allViewsWidget->setLayout(allViewsLayout);
 
 	m_homePageWidgetsLayout->addWidget(allViewsWidget);
@@ -214,7 +214,7 @@ void HomePageWidget::CreateMyViewsWidget() {
 	QVBoxLayout* myViewsLayout = new QVBoxLayout(this);
 	myViewsLayout->setContentsMargins(0, 0, 0, 0);
 	myViewsLayout->addWidget(vizAndFilterFrame, 1);
-	myViewsLayout->addStretch(2);
+	myViewsLayout->addStretch(1);
 	myViewsWidget->setLayout(myViewsLayout);
 
 	m_homePageWidgetsLayout->addWidget(myViewsWidget);
