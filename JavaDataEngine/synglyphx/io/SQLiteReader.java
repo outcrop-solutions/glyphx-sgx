@@ -21,7 +21,7 @@ public class SQLiteReader {
 
 		File f = new File(dir+"/sourcedata.db");
 		if(!f.exists()){return true;}
-		
+
 		try{
 
 			Class.forName("org.sqlite.JDBC");
@@ -34,6 +34,7 @@ public class SQLiteReader {
 	        rs.next();
 			String lastChanged = rs.getString("lastChanged");
 			rs.close();
+			pstmt.close();
 
 			if(checkModified(dataPaths, conn))
 				return true;
@@ -69,7 +70,8 @@ public class SQLiteReader {
 				Logger.getInstance().add("CM: "+rs.getString("FormattedName"));
 			}
 			rs.close();
-
+			pstmt.close();
+			conn.close();
 			for(int i = 0; i < dataPaths.size(); i++){
 				Logger.getInstance().add("CM: "+dataPaths.get(i).getFormattedName());
 				if(timestamps.containsKey(dataPaths.get(i).getFormattedName())){

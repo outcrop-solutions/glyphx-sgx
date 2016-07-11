@@ -44,7 +44,6 @@ public class SQLiteWriter {
 		file.delete();
 	}
 
-
 	public void writeSDTInfo(String timestamp){
 
 		try{
@@ -60,6 +59,7 @@ public class SQLiteWriter {
 	        query = "INSERT INTO 'SDTInfo' VALUES ("+timestamp+")";
 	        pstmt = conn.prepareStatement(query);
 	        boolean inserted = pstmt.execute();
+	        pstmt.close();
 
 		}catch(Exception e){
 	        try{
@@ -76,6 +76,7 @@ public class SQLiteWriter {
 			query += "(TableName TEXT, FormattedName TEXT, Timestamp INTEGER);";
 			Statement stmt = conn.createStatement();
 	        boolean created = stmt.execute(query);
+	        stmt.close();
 
 			PreparedStatement pstmt = conn.prepareStatement("INSERT INTO TableIndex VALUES(?,?,?);");
 			for(int i = 0; i < toPrint.size(); i++){
@@ -87,6 +88,7 @@ public class SQLiteWriter {
 				pstmt.addBatch();
 			} 
 			int[] updates = pstmt.executeBatch();
+			pstmt.close();
 			writeAllTables();
 			conn.close();
 		}catch(Exception e){
@@ -162,6 +164,7 @@ public class SQLiteWriter {
 			}
 		}
 		int[] updates = pstmt.executeBatch();
+		pstmt.close();
 		conn.commit();
 	}
 
