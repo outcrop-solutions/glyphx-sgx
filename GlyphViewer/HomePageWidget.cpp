@@ -242,6 +242,8 @@ void HomePageWidget::CreateDashboardWidget() {
 
 	mainLayout->addWidget(recentViewsWidget, 1, 0, 2, 1);
 
+	QObject::connect(m_recentViewsFilteringWidget, &QListWidget::itemClicked, this, &HomePageWidget::OnRecentViewClicked);
+
 	SynGlyphX::ResizeableImageLabel* upperRightDashboardImage = new SynGlyphX::ResizeableImageLabel(false, widget);
 	upperRightDashboardImage->setFrameStyle(QFrame::Panel | QFrame::Raised);
 	upperRightDashboardImage->setLineWidth(2);
