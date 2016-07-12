@@ -34,6 +34,7 @@
 #include "remapdialog.h"
 #include "baseimage.h"
 #include "sharedactionlist.h"
+#include "GVGlobal.h"
 
 SynGlyphX::SettingsStoredFileList GlyphViewerWindow::s_subsetFileList("subsetFileList");
 
@@ -511,6 +512,7 @@ bool GlyphViewerWindow::LoadNewVisualization(const QString& filename, const Dist
 		return true;
 	}
 
+	GVGlobal::Services()->ClearUndoStack();
 	try {
 
 		LoadVisualization(filename, filters);
@@ -950,12 +952,12 @@ void GlyphViewerWindow::WriteSettings() {
 	settings.setValue("ShowAnimation", m_showAnimation->isChecked());
 	settings.endGroup();
 
-	settings.beginGroup("Filters");
+	/*settings.beginGroup("Filters");
 
 	for (unsigned int i = 0; i < m_recentFilters.size(); ++i) {
 
 		
-	}
+	}*/
 
 	settings.endGroup();
 

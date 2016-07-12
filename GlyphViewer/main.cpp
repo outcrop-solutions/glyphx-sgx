@@ -15,6 +15,7 @@
 #include <QtCore/QTextStream>
 #include <QtCore/QString>
 #include "nonmappablegeometryproperties.h"
+#include "GVGlobal.h"
 
 /*
 void myMessageHandler(QtMsgType type, const QMessageLogContext &context, const QString &msg)
@@ -131,6 +132,8 @@ int main(int argc, char *argv[])
 		w.setStyleSheet(styleSheet);
 		w.move(50, 50);
 		w.resize(1200, 700);
+
+		GVGlobal::Init(new GVServices(&w));
 
 		w.show();
 

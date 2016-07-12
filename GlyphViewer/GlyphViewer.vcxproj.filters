@@ -266,6 +266,12 @@
     <ClCompile Include="DistinctValueFilteringParameters.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="GVServices.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GVGlobal.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="glyphviewer.qrc">
@@ -363,6 +369,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="DistinctValueFilteringParameters.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GVServices.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GVGlobal.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
