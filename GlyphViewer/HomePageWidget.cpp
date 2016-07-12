@@ -13,6 +13,7 @@
 #include <QtWidgets/QButtonGroup>
 #include <QtWidgets/QPushButton>
 #include "MultiLoadingFilterWidget.h"
+#include "application.h"
 
 QString HomePageWidget::s_glyphEdDir;
 
@@ -33,6 +34,7 @@ HomePageWidget::HomePageWidget(GlyphViewerWindow* mainWindow, QWidget *parent)
 	m_mainLayout->setContentsMargins(0, 8, 16, 16);
 
 	QLabel* logoLabel = new QLabel(this);
+	logoLabel->setAlignment(Qt::AlignCenter);
 	logoLabel->setPixmap(QPixmap(":SGXGUI/Resources/GlyphEd/glyphed_logo_homepage.png"));
 	m_mainLayout->addWidget(logoLabel, 0, 0);
 
@@ -54,7 +56,7 @@ HomePageWidget::HomePageWidget(GlyphViewerWindow* mainWindow, QWidget *parent)
 	CreateDashboardWidget();
 	CreateAllViewsWidget();;
 	CreateMyViewsWidget();
-	//CreateHelpWidget();
+	CreateHelpWidget();
 
 	m_mainLayout->addLayout(m_homePageWidgetsLayout, 1, 1);
 
@@ -76,7 +78,7 @@ HomePageWidget::~HomePageWidget()
 void HomePageWidget::CreateHomePageOptionsWidget() {
 
 	QStringList options;
-	options << tr("   Dashboard") << tr("   All Views") << tr("   My Views"); // << tr("Help");
+	options << tr("   Dashboard") << tr("   All Views") << tr("   My Views") << tr("   Help") << tr("   Exit");
 
 	QVBoxLayout* optionsLayout = new QVBoxLayout(this);
 	optionsLayout->setSpacing(20);
@@ -212,13 +214,29 @@ void HomePageWidget::CreateDashboardWidget() {
 	mainLayout->setRowStretch(1, 1);
 	mainLayout->setRowStretch(2, 2);
 
-	SynGlyphX::ResizeableImageLabel* topDashboardImage = new SynGlyphX::ResizeableImageLabel(true, widget);
-	topDashboardImage->setStyleSheet("QLabel{background-color: white;}");
-	topDashboardImage->SetPixmap(QPixmap(":SGXGUI/Resources/GlyphEd/dashboard_top_image.png"));
-	topDashboardImage->setFrameStyle(QFrame::Panel | QFrame::Raised);
-	topDashboardImage->setLineWidth(2);
-	topDashboardImage->setMidLineWidth(3);
-	mainLayout->addWidget(topDashboardImage, 0, 0, 1, 3);
+	QFrame* welcomeWidget = new QFrame(this);
+	welcomeWidget->setFrameStyle(QFrame::Panel | QFrame::Raised);
+	welcomeWidget->setLineWidth(2);
+	welcomeWidget->setMidLineWidth(3);
+	welcomeWidget->setStyleSheet("background-color: white;");
+
+	QVBoxLayout* welcomeWidgetLayout = new QVBoxLayout(welcomeWidget);
+	welcomeWidgetLayout->setSpacing(0);
+
+	QLabel* welcomeLabel = new QLabel(tr("Welcome to"), welcomeWidget);
+	welcomeLabel->setAlignment(Qt::AlignCenter);
+	welcomeLabel->setStyleSheet("QLabel{font-size: 48pt; font-weight: bold; background-color: white;}");
+	welcomeWidgetLayout->addWidget(welcomeLabel);
+
+	QLabel* logoImage = new QLabel(widget);
+	logoImage->setAlignment(Qt::AlignCenter);
+	logoImage->setStyleSheet("QLabel{background-color: white;}");
+	logoImage->setPixmap(QPixmap(":SGXGUI/Resources/GlyphEd/glyphed_logo_large.png"));
+
+	welcomeWidgetLayout->addWidget(logoImage);
+	welcomeWidget->setLayout(welcomeWidgetLayout);
+
+	mainLayout->addWidget(welcomeWidget, 0, 0, 1, 3);
 
 	QFrame* recentViewsWidget = new QFrame(this);
 	recentViewsWidget->setFrameStyle(QFrame::Panel | QFrame::Raised);
@@ -245,6 +263,7 @@ void HomePageWidget::CreateDashboardWidget() {
 	QObject::connect(m_recentViewsFilteringWidget, &QListWidget::itemClicked, this, &HomePageWidget::OnRecentViewClicked);
 
 	SynGlyphX::ResizeableImageLabel* upperRightDashboardImage = new SynGlyphX::ResizeableImageLabel(true, widget);
+	upperRightDashboardImage->setAlignment(Qt::AlignCenter);
 	upperRightDashboardImage->setFrameStyle(QFrame::Panel | QFrame::Raised);
 	upperRightDashboardImage->setLineWidth(2);
 	upperRightDashboardImage->setMidLineWidth(3);
@@ -538,8 +557,13 @@ bool HomePageWidget::LoadVisualization(const QString& sdtToLoad, const DistinctV
 
 void HomePageWidget::OnNewOptionSelected(int index) {
 
+	if (index == (m_optionsButtonGroup->buttons().count() - 1)) {
+
+		SynGlyphX::Application::instance()->exit();
+	}
+
 	m_homePageWidgetsLayout->setCurrentIndex(index);
-	m_loadVisualizationButton->setVisible((index != 0) && (index != 4));
+	m_loadVisualizationButton->setVisible((index == 1) || (index == 2));
 }
 
 void HomePageWidget::OnRecentViewClicked(QListWidgetItem *item) {
