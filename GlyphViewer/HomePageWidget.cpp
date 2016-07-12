@@ -244,13 +244,16 @@ void HomePageWidget::CreateDashboardWidget() {
 
 	QObject::connect(m_recentViewsFilteringWidget, &QListWidget::itemClicked, this, &HomePageWidget::OnRecentViewClicked);
 
-	SynGlyphX::ResizeableImageLabel* upperRightDashboardImage = new SynGlyphX::ResizeableImageLabel(false, widget);
+	SynGlyphX::ResizeableImageLabel* upperRightDashboardImage = new SynGlyphX::ResizeableImageLabel(true, widget);
 	upperRightDashboardImage->setFrameStyle(QFrame::Panel | QFrame::Raised);
 	upperRightDashboardImage->setLineWidth(2);
 	upperRightDashboardImage->setMidLineWidth(3);
-	QPixmap upperRightPixmap(16, 16);
-	upperRightPixmap.fill();
-	upperRightDashboardImage->SetPixmap(upperRightPixmap);
+	upperRightDashboardImage->setStyleSheet("QLabel{background-color: white;}");
+	QString customerLogo = QDir::toNativeSeparators(GetGlyphEdDir() + "/customer.png");
+	if (QFileInfo::exists(customerLogo)) {
+
+		upperRightDashboardImage->SetPixmap(QPixmap(customerLogo));
+	}
 	mainLayout->addWidget(upperRightDashboardImage, 1, 1, 1, 2);
 
 	SynGlyphX::ResizeableImageLabel* lowerRightDashboardImage = new SynGlyphX::ResizeableImageLabel(false, widget);

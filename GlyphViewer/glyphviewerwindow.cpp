@@ -897,6 +897,35 @@ void GlyphViewerWindow::ReadSettings() {
 
 	QSettings settings;
 
+	settings.beginGroup("Filters");
+
+	QStringList files = settings.allKeys();
+	for (const QString& file : files) {
+
+		DistinctValueFilteringParameters filters;
+		settings.beginGroup(file);
+		QStringList fieldNames = settings.allKeys();
+		for (const QString& fieldName : fieldNames) {
+
+			settings.beginGroup(fieldName);
+			int numberOfValues = settings.beginReadArray("value");
+			QSet<QString> filterValues;
+			for (int i = 0; i < numberOfValues; ++i) {
+
+				settings.setArrayIndex(i);
+				filterValues.insert(settings.value("value").toString());
+			}
+			settings.endGroup();
+
+			filters.SetDistinctValueFilter(fieldName, filterValues);
+		}
+		settings.endGroup();
+
+		m_recentFilters[file] = filters;
+	}
+
+	settings.endGroup();
+
 	settings.beginGroup("Display");
 	if (!settings.value("ShowAnimation", true).toBool()) {
 
@@ -919,6 +948,15 @@ void GlyphViewerWindow::WriteSettings() {
 
 	settings.beginGroup("Display");
 	settings.setValue("ShowAnimation", m_showAnimation->isChecked());
+	settings.endGroup();
+
+	settings.beginGroup("Filters");
+
+	for (unsigned int i = 0; i < m_recentFilters.size(); ++i) {
+
+		
+	}
+
 	settings.endGroup();
 
 	GlyphViewerOptions options = CollectOptions();
