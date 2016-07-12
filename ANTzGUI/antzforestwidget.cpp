@@ -648,8 +648,19 @@ namespace SynGlyphXANTz {
 		pData antzData = m_antzData->GetData();
 		const std::array<QString, 3>& mappedFields = m_model->GetRootPosXYZMappedFields();
 
-		const glm::vec3 minPoint(-180.0, -180.0, 0.0);
-		const glm::vec3 maxPoint(180.0, 180.0, 360.0);
+		glm::vec3 minPoint;
+		glm::vec3 maxPoint;
+
+		if (m_model->rowCount() == 0) {
+
+			minPoint = glm::vec3(-180.0, -90.0, 0.0);
+			maxPoint = glm::vec3(180.0, 90.0, 180.0);
+		}
+		else {
+
+			minPoint = glm::vec3(-180.0, -180.0, 0.0);
+			maxPoint = glm::vec3(180.0, 180.0, 360.0);
+		}
 
 		glMatrixMode(GL_MODELVIEW);
 		glPushMatrix();
