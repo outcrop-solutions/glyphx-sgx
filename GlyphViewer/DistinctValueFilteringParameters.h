@@ -15,28 +15,36 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef DATAMAPPINGLOADINGFILTERMODEL_H
-#define DATAMAPPINGLOADINGFILTERMODEL_H
+#pragma once
 
-#include "DataTransformModel.h"
-#include "filteringparameters.h"
-#include "inputtable.h"
+#include <map>
+#include <QtCore/QSet>
+#include <QtCore/QString>
 
-class DataMappingLoadingFilterModel : public SynGlyphX::DataTransformModel
+class DistinctValueFilteringParameters
 {
-	Q_OBJECT
-
 public:
-	typedef std::unordered_map<SynGlyphX::InputTable, FilteringParameters, SynGlyphX::InputTableHash> Table2LoadingFiltersMap;
+	typedef std::map<QString, QSet<QString>> ColumnDistinctValuesFilterMap;
 
-	DataMappingLoadingFilterModel(QObject *parent);
-	~DataMappingLoadingFilterModel();
+	DistinctValueFilteringParameters();
+	DistinctValueFilteringParameters(const DistinctValueFilteringParameters& filters);
+	virtual ~DistinctValueFilteringParameters();
 
-	void LoadDataTransformFile(const QString& filename, const Table2LoadingFiltersMap& loadingFiltersMap);
-	const Table2LoadingFiltersMap& GetLoadingFilters() const;
+	DistinctValueFilteringParameters& operator=(const DistinctValueFilteringParameters& filters);
+	bool operator==(const DistinctValueFilteringParameters& filters);
+	bool operator!=(const DistinctValueFilteringParameters& filters);
 
-private:
-	Table2LoadingFiltersMap m_loadingFiltersMap;
+	virtual void Clear();
+	virtual bool HasFilters() const;
+
+	void SetDistinctValueFilters(const ColumnDistinctValuesFilterMap& filterMap);
+	void SetDistinctValueFilter(const QString& column, const QSet<QString>& distinctValues);
+	void RemoveDistinctValueFilter(const QString& column);
+	const ColumnDistinctValuesFilterMap& GetDistinctValueFilters() const;
+
+protected:
+	//Filters from Elastic tab in Filtering widget and time animation widget (and home page filters)
+	ColumnDistinctValuesFilterMap m_distinctValuesFilters;
 };
 
-#endif // DATAMAPPINGLOADINGFILTERMODEL_H
+//#pragma once

@@ -119,11 +119,11 @@ bool MultiLoadingFilterWidget::CanCurrentHaveFilters() const {
 	return (m_loadingFilterWidgetMap.count(m_loadingFilterWidgetsStack->currentIndex()) != 0);
 }
 
-FilteringParameters MultiLoadingFilterWidget::GetCurrentFilterValues() const {
+DistinctValueFilteringParameters MultiLoadingFilterWidget::GetCurrentFilterValues() const {
 
 	unsigned int currentWidget = m_loadingFilterWidgetsStack->currentIndex();
 
-	FilteringParameters filteringParameters;
+	DistinctValueFilteringParameters filteringParameters;
 
 	if (m_fieldNameMap.count(currentWidget) != 0) {
 

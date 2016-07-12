@@ -20,7 +20,7 @@
 
 #include <QtWidgets/QMainWindow>
 #include "mainwindow.h"
-#include "datamappingloadingfiltermodel.h"
+#include "datatransformmodel.h"
 #include "glyphforestmodel.h"
 #include "glyph3dview.h"
 #include "cachemanager.h"
@@ -36,8 +36,10 @@
 #include "glyphengine.h"
 #include "portablevisualizationexport.h"
 #include "legendsdisplaywidget.h"
-#include "filteringparameters.h"
+#include "DistinctValueFilteringParameters.h"
 #include "SettingsStoredFileList.h"
+
+class HomePageWidget;
 
 class GlyphViewerWindow : public SynGlyphX::MainWindow
 {
@@ -48,10 +50,13 @@ public:
 	~GlyphViewerWindow();
 	void closeJVM();
 
-	bool LoadNewVisualization(const QString& filename, const DataMappingLoadingFilterModel::Table2LoadingFiltersMap& filters = DataMappingLoadingFilterModel::Table2LoadingFiltersMap());
+	bool LoadNewVisualization(const QString& filename, const DistinctValueFilteringParameters& filters = DistinctValueFilteringParameters());
 
 	static const SynGlyphX::SettingsStoredFileList& GetSubsetFileListInstance();
 	static void AddSubsetVisualization(const QString& filename);
+
+public slots:
+	bool LoadRecentFile(const QString& filename) override;
 
 protected:
 	void ReadSettings() override;
@@ -78,10 +83,9 @@ private slots:
 	void OnPropertiesActivated();
 
 private:
-	virtual bool LoadRecentFile(const QString& filename);
-	void LoadVisualization(const QString& filename, const DataMappingLoadingFilterModel::Table2LoadingFiltersMap& filters = DataMappingLoadingFilterModel::Table2LoadingFiltersMap());
+	void LoadVisualization(const QString& filename, const DistinctValueFilteringParameters& filters = DistinctValueFilteringParameters());
 	void LoadANTzCompatibilityVisualization(const QString& filename);
-	void LoadDataTransform(const QString& filename, const DataMappingLoadingFilterModel::Table2LoadingFiltersMap& filters);
+	void LoadDataTransform(const QString& filename);
 	void ValidateDataMappingFile(const QString& filename);
 	void LoadFilesIntoModel(const SynGlyphXANTz::ANTzCSVWriter::FilenameList& filesToLoad, const QStringList& baseImageFilenames);
 	void CreateMenus();
@@ -122,7 +126,7 @@ private:
 	LegendsDisplayWidget* m_legendsWidget;
 	QDockWidget* m_legendsDockWidget;
 
-	DataMappingLoadingFilterModel* m_mappingModel;
+	SynGlyphX::DataTransformModel* m_mappingModel;
 	CacheManager m_cacheManager;
 	bool m_showErrorFromTransform;
 
@@ -140,6 +144,9 @@ private:
 	DataEngine::DataEngineConnection::SharedPtr m_dataEngineConnection;
 	SynGlyphX::PortableVisualizationExport m_portableVisualizationExport;
 	SourceDataInfoModel* m_columnsModel;
+
+	QMap<QString, DistinctValueFilteringParameters> m_recentFilters;
+	HomePageWidget* m_homePage;
 
 	static SynGlyphX::SettingsStoredFileList s_subsetFileList;
 };

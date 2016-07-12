@@ -27,7 +27,8 @@ class QGridLayout;
 class QButtonGroup;
 class QPushButton;
 class QVBoxLayout;
-
+class QListWidget;
+class QListWidgetItem;
 class GlyphViewerWindow;
 
 namespace SynGlyphX {
@@ -45,16 +46,18 @@ public:
 
 	static QString GetGlyphEdDir();
 
+	bool LoadVisualization(const QString& sdtToLoad, const DistinctValueFilteringParameters& userSelectedFilters);
+
 private slots:
 	void OnLoadVisualization();
 	void OnNewOptionSelected(int index);
 	void OnRecentListUpdated();
 	void OnSubsetListUpdated();
+	void OnRecentViewClicked(QListWidgetItem *item);
 
 private:
 	void CreateHomePageOptionsWidget();
 	void CreateAllViewsWidget();
-	void CreateRecentViewsWidget();
 	void CreateMyViewsWidget();
 	void CreateHelpWidget();
 	void CreateDashboardWidget();
@@ -71,14 +74,13 @@ private:
 	QPushButton* m_loadVisualizationButton;
 
 	MultiLoadingFilterWidget* m_allViewsFilteringWidget;
-	MultiLoadingFilterWidget* m_recentViewsFilteringWidget;
+	QListWidget* m_recentViewsFilteringWidget;
 	MultiLoadingFilterWidget* m_subsetViewsFilteringWidget;
 	
 	GlyphViewerWindow* m_mainWindow;
 	SourceDataCache m_sourceDataCache;
 
 	std::vector<MultiLoadingFilterWidget::VisualizationData> m_allVisualizationData;
-	std::vector<MultiLoadingFilterWidget::VisualizationData> m_recentVisualizationData;
 };
 
 //#pragma once

@@ -1,4 +1,5 @@
 #include "filteredsourcedatawidget.h"
+#include "datatransformmodel.h"
 
 FilteredSourceDataWidget::FilteredSourceDataWidget(FilteringManager* filteringManager, QWidget *parent)
 	: SourceDataWidget(filteringManager->GetSourceDataCache(), filteringManager->GetDataTransformModel()->GetDataMapping(), parent),

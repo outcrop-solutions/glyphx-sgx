@@ -44,7 +44,7 @@ GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 	m_dataEngineConnection(nullptr)
 {
 	m_dataEngineConnection = std::make_shared<DataEngine::DataEngineConnection>();
-	m_mappingModel = new DataMappingLoadingFilterModel(this);
+	m_mappingModel = new SynGlyphX::DataTransformModel(this);
 	m_mappingModel->SetDataEngineConnection(m_dataEngineConnection);
 	m_sourceDataCache = std::make_shared<SourceDataCache>();
 	m_glyphForestModel = new SynGlyphXANTz::GlyphForestModel(this);
@@ -136,9 +136,9 @@ void GlyphViewerWindow::CreateLoadingScreen() {
 
 	if (SynGlyphX::GlyphBuilderApplication::IsGlyphEd()) {
 
-		HomePageWidget* homePage = new HomePageWidget(this, antzWidgetContainer);
-		homePage->setObjectName("home_page");
-		antzWidgetContainer->addWidget(homePage);
+		m_homePage = new HomePageWidget(this, antzWidgetContainer);
+		m_homePage->setObjectName("home_page");
+		antzWidgetContainer->addWidget(m_homePage);
 	}
 	else {
 
@@ -416,7 +416,7 @@ void GlyphViewerWindow::RefreshVisualization() {
 		if (DoesVisualizationNeedToBeRecreated(mapping)) {
 
 			ClearAllData();
-			LoadVisualization(m_currentFilename, m_mappingModel->GetLoadingFilters());
+			LoadVisualization(m_currentFilename);
 		}
 	}
 	catch (const std::exception& e) {
@@ -459,7 +459,7 @@ void GlyphViewerWindow::ClearAllData() {
 	SynGlyphX::Application::restoreOverrideCursor();
 }
 
-void GlyphViewerWindow::LoadVisualization(const QString& filename, const DataMappingLoadingFilterModel::Table2LoadingFiltersMap& filters) {
+void GlyphViewerWindow::LoadVisualization(const QString& filename, const DistinctValueFilteringParameters& filters) {
 
 	QFileInfo fileInfo(filename);
 	QString extension = fileInfo.suffix().toLower();
@@ -487,7 +487,7 @@ void GlyphViewerWindow::LoadVisualization(const QString& filename, const DataMap
 
 	if (extension == "sdt") {
 
-		LoadDataTransform(filename, filters);
+		LoadDataTransform(filename);
 	}
 	else if (extension == "sav") {
 
@@ -504,7 +504,7 @@ void GlyphViewerWindow::LoadVisualization(const QString& filename, const DataMap
 	}
 }
 
-bool GlyphViewerWindow::LoadNewVisualization(const QString& filename, const DataMappingLoadingFilterModel::Table2LoadingFiltersMap& filters) {
+bool GlyphViewerWindow::LoadNewVisualization(const QString& filename, const DistinctValueFilteringParameters& filters) {
 
 	if (filename == m_currentFilename) {
 		
@@ -530,6 +530,14 @@ bool GlyphViewerWindow::LoadNewVisualization(const QString& filename, const Data
 	}
 
 	SetCurrentFile(filename);
+	if (filters.HasFilters()) {
+
+		m_recentFilters[filename] = filters;
+	}
+	else if (m_recentFilters.contains(filename)) {
+
+		m_recentFilters.remove(filename);
+	}
 	EnableLoadedVisualizationDependentActions(true);
 	m_columnsModel->Reset();
 	statusBar()->showMessage("Visualization successfully opened", 3000);
@@ -549,7 +557,14 @@ void GlyphViewerWindow::LoadANTzCompatibilityVisualization(const QString& filena
 
 bool GlyphViewerWindow::LoadRecentFile(const QString& filename) {
 
-	return LoadNewVisualization(filename);
+	if (m_recentFilters.contains(filename)) {
+
+		return m_homePage->LoadVisualization(filename, m_recentFilters[filename]);
+	}
+	else {
+
+		return LoadNewVisualization(filename);
+	}
 }
 
 void GlyphViewerWindow::ValidateDataMappingFile(const QString& filename) {
@@ -622,7 +637,7 @@ void GlyphViewerWindow::ValidateDataMappingFile(const QString& filename) {
 	mapping->WriteToFile(filename.toStdString());
 }
 
-void GlyphViewerWindow::LoadDataTransform(const QString& filename, const DataMappingLoadingFilterModel::Table2LoadingFiltersMap& filters) {
+void GlyphViewerWindow::LoadDataTransform(const QString& filename) {
 	/*
 	try {
 
@@ -645,7 +660,7 @@ void GlyphViewerWindow::LoadDataTransform(const QString& filename, const DataMap
 			ValidateDataMappingFile(filename);
 		}
 
-		m_mappingModel->LoadDataTransformFile(filename, filters);
+		m_mappingModel->LoadDataTransformFile(filename);
 		std::string dcd = GlyphViewerOptions::GetDefaultCacheDirectory().toStdString();
 		std::string cacheDirectoryPath = dcd + ("/cache_" + boost::uuids::to_string(m_mappingModel->GetDataMapping()->GetID()));
 

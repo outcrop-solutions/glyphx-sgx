@@ -18,18 +18,14 @@
 #ifndef FILTERINGPARAMETERS_H
 #define FILTERINGPARAMETERS_H
 
-#include <map>
+#include "DistinctValueFilteringParameters.h"
 #include <vector>
-#include <QtCore/QSet>
-#include <QtCore/QString>
 #include "interval.h"
 #include "keywordfilter.h"
 
-class FilteringParameters
+class FilteringParameters : public DistinctValueFilteringParameters
 {
 public:
-	typedef std::map<QString, QSet<QString>> ColumnDistinctValuesFilterMap;
-
 	typedef std::pair<QString, SynGlyphX::DegenerateInterval> ColumnRangeFilter;
 	typedef std::vector<ColumnRangeFilter> ColumnRangeFilterMap;
 
@@ -38,19 +34,14 @@ public:
 
 	FilteringParameters();
 	FilteringParameters(const FilteringParameters& filters);
-	~FilteringParameters();
+	virtual ~FilteringParameters();
 
 	FilteringParameters& operator=(const FilteringParameters& filters);
 	bool operator==(const FilteringParameters& filters);
 	bool operator!=(const FilteringParameters& filters);
 
-	void Clear();
-	bool HasFilters() const;
-
-	void SetDistinctValueFilters(const ColumnDistinctValuesFilterMap& filterMap);
-	void SetDistinctValueFilter(const QString& column, const QSet<QString>& distinctValues);
-	void RemoveDistinctValueFilter(const QString& column);
-	const ColumnDistinctValuesFilterMap& GetDistinctValueFilters() const;
+	void Clear() override;
+	bool HasFilters() const override;
 
 	void SetRangeFilters(const ColumnRangeFilterMap& filterMap);
 	void SetRangeFilter(const QString& column, const SynGlyphX::DegenerateInterval& rangeFilter);
@@ -63,9 +54,6 @@ public:
 	const ColumnKeywordFilterMap& GetKeywordFilters() const;
 
 private:
-	//Filters from Elastic tab in Filtering widget and time animation widget
-	ColumnDistinctValuesFilterMap m_distinctValuesFilters;
-
 	//Filters from Keyword tab in Filtering widget
 	ColumnKeywordFilterMap m_keywordFilters;
 

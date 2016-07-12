@@ -52,8 +52,7 @@ HomePageWidget::HomePageWidget(GlyphViewerWindow* mainWindow, QWidget *parent)
 	m_homePageWidgetsLayout->setContentsMargins(0, 0, 0, 0);
 
 	CreateDashboardWidget();
-	CreateAllViewsWidget();
-	CreateRecentViewsWidget();
+	CreateAllViewsWidget();;
 	CreateMyViewsWidget();
 	//CreateHelpWidget();
 
@@ -77,7 +76,7 @@ HomePageWidget::~HomePageWidget()
 void HomePageWidget::CreateHomePageOptionsWidget() {
 
 	QStringList options;
-	options << tr("   Dashboard") << tr("   All Views") << tr("   Recent Views") << tr("   My Views"); // << tr("Help");
+	options << tr("   Dashboard") << tr("   All Views") << tr("   My Views"); // << tr("Help");
 
 	QVBoxLayout* optionsLayout = new QVBoxLayout(this);
 	optionsLayout->setSpacing(20);
@@ -126,56 +125,28 @@ void HomePageWidget::CreateAllViewsWidget() {
 
 void HomePageWidget::OnRecentListUpdated() {
 
-	m_recentVisualizationData.clear();
+	m_recentViewsFilteringWidget->clear();
 
 	for (const auto& recentFile : GlyphViewerWindow::GetRecentFileListInstance().GetFiles()) {
 
-		MultiLoadingFilterWidget::VisualizationData visualizationDataToAdd;
+		QString title;
 		for (const auto& visualizationData : m_allVisualizationData) {
 
 			if (visualizationData.m_sdtPath == recentFile) {
 
-				visualizationDataToAdd = visualizationData;
+				title = visualizationData.m_title;
 				break;
 			}
 		}
 
-		if (visualizationDataToAdd.m_sdtPath.isEmpty()) {
+		if (title.isEmpty()) {
 
-			visualizationDataToAdd.m_sdtPath = recentFile;
-			visualizationDataToAdd.m_title = QFileInfo(recentFile).fileName();
+			title = QFileInfo(recentFile).fileName();
 		}
 
-		m_recentVisualizationData.push_back(visualizationDataToAdd);
+		m_recentViewsFilteringWidget->addItem(title);
+		m_recentViewsFilteringWidget->item(m_recentViewsFilteringWidget->count() - 1)->setToolTip(recentFile);
 	}
-
-	m_recentViewsFilteringWidget->Reset(m_recentVisualizationData);
-}
-
-void HomePageWidget::CreateRecentViewsWidget() {
-
-	QFrame* vizAndFilterFrame = new QFrame(this);
-	vizAndFilterFrame->setFrameStyle(QFrame::Box | QFrame::Sunken);
-	vizAndFilterFrame->setLineWidth(1);
-	vizAndFilterFrame->setMidLineWidth(1);
-
-	QHBoxLayout* vizAndFilterFrameLayout = new QHBoxLayout(vizAndFilterFrame);
-	vizAndFilterFrameLayout->setContentsMargins(0, 0, 0, 0);
-	vizAndFilterFrameLayout->setSpacing(0);
-
-	m_recentViewsFilteringWidget = new MultiLoadingFilterWidget(this);
-
-	vizAndFilterFrameLayout->addWidget(m_recentViewsFilteringWidget);
-	vizAndFilterFrame->setLayout(vizAndFilterFrameLayout);
-
-	QWidget* recentViewsWidget = new QWidget(this);
-	QVBoxLayout* recentViewsLayout = new QVBoxLayout(this);
-	recentViewsLayout->setContentsMargins(0, 0, 0, 0);
-	recentViewsLayout->addWidget(vizAndFilterFrame, 1);
-	recentViewsLayout->addStretch(2);
-	recentViewsWidget->setLayout(recentViewsLayout);
-
-	m_homePageWidgetsLayout->addWidget(recentViewsWidget);
 }
 
 void HomePageWidget::OnSubsetListUpdated() {
@@ -249,14 +220,27 @@ void HomePageWidget::CreateDashboardWidget() {
 	topDashboardImage->setMidLineWidth(3);
 	mainLayout->addWidget(topDashboardImage, 0, 0, 1, 3);
 
-	SynGlyphX::ResizeableImageLabel* leftDashboardImage = new SynGlyphX::ResizeableImageLabel(false, widget);
-	leftDashboardImage->setFrameStyle(QFrame::Panel | QFrame::Raised);
-	leftDashboardImage->setLineWidth(2);
-	leftDashboardImage->setMidLineWidth(3);
-	QPixmap leftPixmap(16, 16);
-	leftPixmap.fill();
-	leftDashboardImage->SetPixmap(leftPixmap);
-	mainLayout->addWidget(leftDashboardImage, 1, 0, 2, 1);
+	QFrame* recentViewsWidget = new QFrame(this);
+	recentViewsWidget->setFrameStyle(QFrame::Panel | QFrame::Raised);
+	recentViewsWidget->setLineWidth(2);
+	recentViewsWidget->setMidLineWidth(3);
+	recentViewsWidget->setStyleSheet("background-color: white;");
+	QVBoxLayout* recentViewsLayout = new QVBoxLayout(recentViewsWidget);
+	recentViewsLayout->setSpacing(15);
+
+	QLabel* recentViewsLabel = new QLabel(tr("Recent Views"), recentViewsWidget);
+	recentViewsLabel->setStyleSheet("font-size: 16pt; font-weight: bold; text-align: left;");
+	recentViewsLayout->addWidget(recentViewsLabel);
+
+	m_recentViewsFilteringWidget = new QListWidget(recentViewsWidget);
+	m_recentViewsFilteringWidget->setFrameStyle(QFrame::NoFrame);
+	m_recentViewsFilteringWidget->setSortingEnabled(false);
+	m_recentViewsFilteringWidget->setStyleSheet("font-size: 14px;");
+	m_recentViewsFilteringWidget->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
+	recentViewsLayout->addWidget(m_recentViewsFilteringWidget, 1);
+	recentViewsWidget->setLayout(recentViewsLayout);
+
+	mainLayout->addWidget(recentViewsWidget, 1, 0, 2, 1);
 
 	SynGlyphX::ResizeableImageLabel* upperRightDashboardImage = new SynGlyphX::ResizeableImageLabel(false, widget);
 	upperRightDashboardImage->setFrameStyle(QFrame::Panel | QFrame::Raised);
@@ -453,10 +437,6 @@ void HomePageWidget::OnLoadVisualization() {
 	}
 	else if (whichFilteringWidget == 2) {
 
-		currentLoadingFilterWidget = m_recentViewsFilteringWidget;
-	}
-	else if (whichFilteringWidget == 3) {
-
 		currentLoadingFilterWidget = m_subsetViewsFilteringWidget;
 	}
 
@@ -468,8 +448,13 @@ void HomePageWidget::OnLoadVisualization() {
 
 	SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
 
-	FilteringParameters filters = currentLoadingFilterWidget->GetCurrentFilterValues();
-	QString sdtToLoad = currentLoadingFilterWidget->GetCurrentFilename();
+	LoadVisualization(currentLoadingFilterWidget->GetCurrentFilename(), currentLoadingFilterWidget->GetCurrentFilterValues());
+}
+
+bool HomePageWidget::LoadVisualization(const QString& sdtToLoad, const DistinctValueFilteringParameters& userSelectedFilters) {
+	
+	FilteringParameters filters;
+	filters.DistinctValueFilteringParameters::operator=(userSelectedFilters);
 
 	SynGlyphX::DataTransformMapping mapping;
 	mapping.ReadFromFile(sdtToLoad.toStdString());
@@ -522,28 +507,20 @@ void HomePageWidget::OnLoadVisualization() {
 			filters.SetDistinctValueFilter(m_allVisualizationData[6].m_filterFieldNames[0], readers);
 		}
 
-		SynGlyphX::InputTable inputTable(mapping.GetDatasources().begin()->first, mapping.GetDatasources().begin()->second->GetTableNames().at(0));
-
-		DataMappingLoadingFilterModel::Table2LoadingFiltersMap table2FiltersMap;
-		if (filters.HasFilters()) {
-
-			table2FiltersMap[inputTable] = filters;
-		}
-
 		QString dataFilename = QDir::toNativeSeparators(QString::fromStdWString(mapping.GetDatasources().begin()->second->GetDBName()));
 		if (QFile::exists(dataFilename)) {
 
 			QFile::remove(dataFilename);
 		}
 
-		bool didFilterHaveResult = m_sourceDataCache.ExportFilteredDataToCSV(dataFilename, m_allVisualizationData[currentDataVisualization].m_tableInGlyphEd, table2FiltersMap[inputTable]);
+		bool didFilterHaveResult = m_sourceDataCache.ExportFilteredDataToCSV(dataFilename, m_allVisualizationData[currentDataVisualization].m_tableInGlyphEd, filters);
 
 		SynGlyphX::Application::restoreOverrideCursor();
 
 		if (!didFilterHaveResult) {
 
 			QMessageBox::warning(this, tr("Load Visualization"), tr("The selected combination of filters had no results.  Please try a different combination of filters to load a visualization."));
-			return;
+			return false;
 		}
 	}
 	else {
@@ -551,11 +528,16 @@ void HomePageWidget::OnLoadVisualization() {
 		SynGlyphX::Application::restoreOverrideCursor();
 	}
 
-	m_mainWindow->LoadNewVisualization(sdtToLoad);
+	return m_mainWindow->LoadNewVisualization(sdtToLoad, userSelectedFilters);
 }
 
 void HomePageWidget::OnNewOptionSelected(int index) {
 
 	m_homePageWidgetsLayout->setCurrentIndex(index);
 	m_loadVisualizationButton->setVisible((index != 0) && (index != 4));
+}
+
+void HomePageWidget::OnRecentViewClicked(QListWidgetItem *item) {
+
+	m_mainWindow->LoadRecentFile(item->toolTip());
 }

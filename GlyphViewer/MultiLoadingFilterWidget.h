@@ -19,7 +19,7 @@
 
 #include <QtWidgets/QSplitter>
 #include <unordered_map>
-#include "filteringparameters.h"
+#include "DistinctValueFilteringParameters.h"
 
 namespace SynGlyphX {
 
@@ -61,7 +61,7 @@ public:
 	bool DoCurrentNecessaryFiltersHaveSelection() const;
 	QString GetCurrentFilename() const;
 	bool CanCurrentHaveFilters() const;
-	FilteringParameters GetCurrentFilterValues() const;
+	DistinctValueFilteringParameters GetCurrentFilterValues() const;
 
 private slots:
 	void OnFileSelected(int row);

@@ -1,6 +1,7 @@
 #include "filteringmanager.h"
+#include "datatransformmodel.h"
 
-FilteringManager::FilteringManager(DataMappingLoadingFilterModel* DataTransformModel, SourceDataCache::SharedPtr sourceDataCache, SynGlyphX::ItemFocusSelectionModel* sceneSelectionModel, QObject *parent)
+FilteringManager::FilteringManager(SynGlyphX::DataTransformModel* DataTransformModel, SourceDataCache::SharedPtr sourceDataCache, SynGlyphX::ItemFocusSelectionModel* sceneSelectionModel, QObject *parent)
 	: QObject(parent),
 	m_DataTransformModel(DataTransformModel),
 	m_sourceDataCache(sourceDataCache),
@@ -52,12 +53,6 @@ void FilteringManager::OnSceneModelReset() {
 
 				m_glyphTemplateRangeToTableMap[range] = tableName;
 			}
-		}
-
-		const DataMappingLoadingFilterModel::Table2LoadingFiltersMap& table2LoadingFiltersMap = m_DataTransformModel->GetLoadingFilters();
-		for (const auto& tableAndLoadingFilters : table2LoadingFiltersMap) {
-
-			GenerateLoadingFilterResultsForTable(SourceDataCache::CreateTablename(tableAndLoadingFilters.first), tableAndLoadingFilters.second.GetDistinctValueFilters());
 		}
 	}
 }
@@ -312,41 +307,7 @@ SourceDataCache::ConstSharedPtr FilteringManager::GetSourceDataCache() const {
 	return m_sourceDataCache;
 }
 
-const DataMappingLoadingFilterModel* FilteringManager::GetDataTransformModel() const {
+const SynGlyphX::DataTransformModel* FilteringManager::GetDataTransformModel() const {
 
 	return m_DataTransformModel;
 }
-/*
-void FilteringManager::OnSceneSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected) {
-
-	m_selectedSourceDataSets.clear();
-	const QItemSelection& selection = m_sceneSelectionModel->selection();
-	if (!selection.isEmpty()) {
-
-		SynGlyphX::IndexSet rootIndexRows = SynGlyphX::ItemFocusSelectionModel::GetRootRows(selection.indexes());
-		SynGlyphX::IndexSet::iterator startOfTableRange = rootIndexRows.begin();
-		for (const auto& range : m_glyphTemplateRangeToTableMap) {
-
-			SynGlyphX::IndexSet::iterator endOfTableRange = rootIndexRows.lower_bound(static_cast<unsigned long>(range.first.GetMax()));
-			if (startOfTableRange != endOfTableRange) {
-
-				SynGlyphX::IndexSet indexesForTable;
-				for (SynGlyphX::IndexSet::iterator iT = startOfTableRange; iT != endOfTableRange; ++iT) {
-
-					indexesForTable.insert(*iT - range.first.GetMin());
-				}
-				m_selectedSourceDataSets[range.second] = indexesForTable;
-				if (endOfTableRange != rootIndexRows.end()) {
-
-					startOfTableRange = endOfTableRange;
-				}
-				else {
-
-					break;
-				}
-			}
-		}
-	}
-
-	emit SelectionChanged();
-}*/

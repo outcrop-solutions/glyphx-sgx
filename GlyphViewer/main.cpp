@@ -139,7 +139,7 @@ int main(int argc, char *argv[])
 
 			QDir visualizationToLoad(commandLineArguments[1]);
 
-			if (!w.LoadNewVisualization(QDir::toNativeSeparators(visualizationToLoad.canonicalPath()), DataMappingLoadingFilterModel::Table2LoadingFiltersMap())) {
+			if (!w.LoadNewVisualization(QDir::toNativeSeparators(visualizationToLoad.canonicalPath()))) {
 
 				w.closeJVM();
 				return 2;

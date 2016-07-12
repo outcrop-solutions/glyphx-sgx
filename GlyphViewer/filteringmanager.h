@@ -19,7 +19,6 @@
 #define FILTERINGMANAGER_H
 
 #include <QtCore/QObject>
-#include "datamappingloadingfiltermodel.h"
 #include "sourcedatacache.h"
 #include "inputtable.h"
 #include "itemfocusselectionmodel.h"
@@ -27,6 +26,11 @@
 #include <unordered_map>
 #include <map>
 #include "filteringparameters.h"
+
+namespace SynGlyphX {
+
+	class DataTransformModel;
+}
 
 class FilteringManager : public QObject
 {
@@ -36,7 +40,7 @@ public:
 	typedef std::map<QString, SynGlyphX::IndexSet> IndexSetMap;
 	typedef QMap<QString, FilteringParameters> Table2FiltersMap;
 
-	FilteringManager(DataMappingLoadingFilterModel* DataTransformModel, SourceDataCache::SharedPtr sourceDataCache, SynGlyphX::ItemFocusSelectionModel* sceneSelectionModel, QObject *parent);
+	FilteringManager(SynGlyphX::DataTransformModel* DataTransformModel, SourceDataCache::SharedPtr sourceDataCache, SynGlyphX::ItemFocusSelectionModel* sceneSelectionModel, QObject *parent);
 	~FilteringManager();
 
 	bool GenerateFilterResultsForTable(const QString& table, const FilteringParameters& filters, bool updateFocus = false);
@@ -51,7 +55,7 @@ public:
 
 	const SynGlyphX::ItemFocusSelectionModel* GetSceneSelectionModel() const;
 	SourceDataCache::ConstSharedPtr GetSourceDataCache() const;
-	const DataMappingLoadingFilterModel* GetDataTransformModel() const;
+	const SynGlyphX::DataTransformModel* GetDataTransformModel() const;
 
 signals:
 	void FilterResultsChanged(const SynGlyphX::IndexSet& glyphIndexedFilteredResults);
@@ -71,7 +75,7 @@ private:
 	void AddSceneIndexesToSelection(QItemSelection& selection, const QString& table, const SynGlyphX::IndexSet& indexSet);
 	void ClearSourceDataSelectionForTable(QItemSelection& selection, bool updateFocus);
 
-	DataMappingLoadingFilterModel* m_DataTransformModel;
+	SynGlyphX::DataTransformModel* m_DataTransformModel;
 	SourceDataCache::SharedPtr m_sourceDataCache;
 	SynGlyphX::ItemFocusSelectionModel* m_sceneSelectionModel;
 

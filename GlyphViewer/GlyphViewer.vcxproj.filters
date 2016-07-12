@@ -179,15 +179,6 @@
     <ClCompile Include="filteringparameters.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="datamappingloadingfiltermodel.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Win32\Debug\moc_datamappingloadingfiltermodel.cpp">
-      <Filter>Generated Files\Debug_Win32</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Win32\Release\moc_datamappingloadingfiltermodel.cpp">
-      <Filter>Generated Files\Release_Win32</Filter>
-    </ClCompile>
     <ClCompile Include="glyph3dview.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -272,6 +263,9 @@
     <ClCompile Include="GeneratedFiles\Win32\Release\moc_MultiLoadingFilterWidget.cpp">
       <Filter>Generated Files\Release_Win32</Filter>
     </ClCompile>
+    <ClCompile Include="DistinctValueFilteringParameters.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="glyphviewer.qrc">
@@ -317,9 +311,6 @@
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="filteringmanager.h">
-      <Filter>Header Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="datamappingloadingfiltermodel.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="glyph3dview.h">
@@ -369,6 +360,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="keywordfilter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DistinctValueFilteringParameters.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
