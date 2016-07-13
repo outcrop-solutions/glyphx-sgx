@@ -25,7 +25,7 @@
 
 namespace SynGlyphXANTz {
 
-	const double s_unfilteredTransparencyMultiplier = 0.5;
+	const double s_unfilteredTransparencyMultiplier = 0.15;
 
     ANTzForestWidget::ANTzForestWidget( GlyphForestModel* model, SynGlyphX::ItemFocusSelectionModel* selectionModel, QWidget *parent ) :
         QOpenGLWidget( parent ),
