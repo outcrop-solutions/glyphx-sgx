@@ -1099,10 +1099,8 @@ void GlyphViewerWindow::closeEvent(QCloseEvent* event) {
 
 void GlyphViewerWindow::RemapRootPositionMappings() {
 
-	QFileInfo currentFilenameInfo(m_currentFilename);
-
 	RemapDialog remapDialog(m_mappingModel->GetDataMapping(), m_dataEngineConnection, this);
-	remapDialog.SetSaveFilename(currentFilenameInfo.absolutePath() + "/" + currentFilenameInfo.completeBaseName() + "_remap.sdt");
+	remapDialog.SetSaveFilename(m_currentFilename);
 
 	if (remapDialog.exec() == QDialog::Accepted) {
 

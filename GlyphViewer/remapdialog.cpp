@@ -14,6 +14,8 @@
 #include "bindinglineedit.h"
 #include "baseimage.h"
 #include "datatransformmodel.h"
+#include <QtCore/QSettings>
+#include <QtCore/QStandardPaths>
 
 RemapDialog::RemapDialog(SynGlyphX::DataTransformMapping::ConstSharedPtr dataTransformMapping, DataEngine::DataEngineConnection::SharedPtr dataEngineConnection, QWidget *parent)
 	: QDialog(parent)
@@ -49,6 +51,7 @@ RemapDialog::RemapDialog(SynGlyphX::DataTransformMapping::ConstSharedPtr dataTra
 	mainLayout->addWidget(dataStatsView);
 
 	m_saveFilenameEdit = new SynGlyphX::BrowseLineEdit(SynGlyphX::BrowseLineEdit::FileDialogType::FileSave, this);
+	m_saveFilenameEdit->SetFilters("SynGlyphX Data Transform(*.sdt)");
 	m_saveFilenameEdit->setContentsMargins(4, 4, 4, 4);
 	SynGlyphX::GroupBoxSingleWidget* saveFilenameGroupBox = new SynGlyphX::GroupBoxSingleWidget(tr("Filename"), m_saveFilenameEdit, this);
 	mainLayout->addWidget(saveFilenameGroupBox);
@@ -73,7 +76,14 @@ RemapDialog::~RemapDialog()
 
 void RemapDialog::SetSaveFilename(const QString& saveFilename) {
 
-	m_saveFilenameEdit->SetText(QDir::toNativeSeparators(saveFilename));
+	QSettings settings;
+	settings.beginGroup("Remap");
+	QString saveDirectory = settings.value("saveDirectory", QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation)).toString();
+	settings.endGroup();
+
+	QFileInfo saveFilenameInfo(saveFilename);
+
+	m_saveFilenameEdit->SetText(QDir::toNativeSeparators(saveDirectory + "/" + saveFilenameInfo.completeBaseName() + "_remap.sdt"));
 }
 
 QString RemapDialog::GetSaveFilename() const {
@@ -97,6 +107,12 @@ void RemapDialog::accept() {
 			return;
 		}
 	}
+
+	QFileInfo saveFilenameInfo(saveFilename);
+	QSettings settings;
+	settings.beginGroup("Remap");
+	settings.setValue("saveDirectory", saveFilenameInfo.absolutePath());
+	settings.endGroup();
 
 	QDialog::accept();
 }
