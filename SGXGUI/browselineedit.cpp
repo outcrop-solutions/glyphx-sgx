@@ -3,6 +3,7 @@
 #include <QtWidgets/QFileDialog>
 #include <QtWidgets/QLineEdit>
 #include <QtWidgets/QPushButton>
+#include <QtCore/QStandardPaths>
 
 namespace SynGlyphX {
 
@@ -10,7 +11,8 @@ BrowseLineEdit::BrowseLineEdit(FileDialogType type, bool convertToNativeSeparato
     : QWidget(parent),
     m_dialogType(type),
     m_convertToNativeSeparators(convertToNativeSeparators),
-    m_filters(QString())
+    m_filters(QString()),
+	m_initialBrowseDirectory(QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation))
 {
     m_lineEdit = new QLineEdit(this);
 	m_lineEdit->setMinimumWidth(350);

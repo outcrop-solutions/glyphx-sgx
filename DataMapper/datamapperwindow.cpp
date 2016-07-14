@@ -41,6 +41,7 @@
 #include "LinksDialog.h"
 #include "DMGlobal.h"
 #include <QtWidgets/QUndoview>
+#include <QtCore/QStandardPaths>
 
 DataMapperWindow::DataMapperWindow(QWidget *parent)
     : SynGlyphX::MainWindow(0, parent),
@@ -624,6 +625,10 @@ void DataMapperWindow::AddFileDataSource() {
 	QSettings settings;
 	settings.beginGroup(s_fileDialogSettingsGroup);
 	QString initialDir = settings.value("DatasourcesDir", "").toString();
+	if (initialDir.isEmpty()) {
+
+		initialDir = QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation);
+	}
 
 	AddFileDatasourceWizard fileDatasourceWizard(initialDir, m_dataEngineConnection, this);
 	if (fileDatasourceWizard.Exec() == QDialog::Accepted) {

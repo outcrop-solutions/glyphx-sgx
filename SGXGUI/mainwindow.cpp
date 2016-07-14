@@ -8,7 +8,7 @@
 #include <QtWidgets/QMessageBox>
 #include <QtWidgets/QFileDialog>
 #include "licensingdialog.h"
-//#include "dataengineconnection.h"
+#include <QtCore/QStandardPaths>
 #include <QtWidgets/QUndoStack>
 
 namespace SynGlyphX {
@@ -237,6 +237,10 @@ namespace SynGlyphX {
 		QSettings settings;
 		settings.beginGroup(s_fileDialogSettingsGroup);
 		QString initialDir = settings.value(settingKey, defaultDir).toString();
+		if (initialDir.isEmpty()) {
+
+			initialDir = QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation);
+		}
 
 		QString filename = QDir::toNativeSeparators(QFileDialog::getOpenFileName(this, caption, initialDir, filter));
 		if (!filename.isEmpty()) {
@@ -254,6 +258,10 @@ namespace SynGlyphX {
 		QSettings settings;
 		settings.beginGroup(s_fileDialogSettingsGroup);
 		QString initialDir = settings.value(settingKey, defaultDir).toString();
+		if (initialDir.isEmpty()) {
+
+			initialDir = QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation);
+		}
 
 		QStringList filenames = QFileDialog::getOpenFileNames(this, caption, initialDir, filter);
 		for (unsigned int i = 0; i < filenames.size(); ++i) {
@@ -275,6 +283,10 @@ namespace SynGlyphX {
 		QSettings settings;
 		settings.beginGroup(s_fileDialogSettingsGroup);
 		QString initialDir = settings.value(settingKey, defaultDir).toString();
+		if (initialDir.isEmpty()) {
+
+			initialDir = QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation);
+		}
 
 		QString filename = QDir::toNativeSeparators(QFileDialog::getSaveFileName(this, caption, initialDir, filter));
 		if (!filename.isEmpty()) {
