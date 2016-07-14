@@ -6,14 +6,14 @@ namespace SynGlyphX {
 	const std::wstring InputBinding::PropertyTreeName = L"Binding";
 
 	InputBinding::InputBinding() :
-		m_inputFieldID(0),
+		m_inputFieldID(L""),
 		m_minOverride(0.0),
 		m_maxOverride(0.0),
 		m_overrideInUse(false)
 	{
 	}
 
-	InputBinding::InputBinding(HashID inputFieldID) :
+	InputBinding::InputBinding(const std::wstring& inputFieldID) :
 		m_inputFieldID(inputFieldID),
 		m_minOverride(0.0),
 		m_maxOverride(0.0),
@@ -21,8 +21,9 @@ namespace SynGlyphX {
 
 	}
 
-	InputBinding::InputBinding(const boost::property_tree::wptree& propertyTree) :
-		m_inputFieldID(propertyTree.get<HashID>(L"<xmlattr>.id")) {
+	InputBinding::InputBinding(const boost::property_tree::wptree& propertyTree) /*:
+		m_inputFieldID(propertyTree.get<HashID>(L"<xmlattr>.id"))*/ 
+	{ //TODO: deal with backward compatibility
 
 		boost::optional<const boost::property_tree::wptree&> overridePropertyTree = propertyTree.get_child_optional(L"Override");
 
@@ -137,17 +138,17 @@ namespace SynGlyphX {
 
 	bool InputBinding::IsBoundToInputField() const {
 
-		return (m_inputFieldID != 0);
+		return (!m_inputFieldID.empty());
 	}
 
-	HashID InputBinding::GetInputFieldID() const {
+	const std::wstring& InputBinding::GetInputFieldID() const {
 
 		return m_inputFieldID;
 	}
 
 	void InputBinding::Clear() {
 
-		m_inputFieldID = 0;
+		m_inputFieldID = L"";
 		ClearMinMaxOverride();
 	}
 

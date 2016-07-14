@@ -3,6 +3,7 @@
 #include "interpolationmappingfunction.h"
 #include <boost/property_tree/ptree.hpp>
 #include "Link.h"
+#include "Alias.h"
 #include "baseimage.h"
 
 namespace SynGlyphX {

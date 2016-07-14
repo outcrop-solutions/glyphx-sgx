@@ -38,6 +38,18 @@ namespace SynGlyphX {
 	class Legend;
 	class BaseImage;
 
+	class InputFieldManager
+	{
+	public:
+		const InputField& GetInputField(const std::wstring& fieldID) const;
+		void SetInputField(const std::wstring& fieldID, const InputField& field);
+		void SetInputField(const InputField& field); //generate the ID
+		std::wstring GenerateInputFieldID(const InputField& field);
+		void Clear();
+	private:
+		std::unordered_map<std::wstring, InputField> m_imputFields;
+	};
+
 	class SGXDATAMAPPING_API DataTransformMapping : public XMLPropertyTreeFile
     {
     public:
@@ -83,10 +95,12 @@ namespace SynGlyphX {
 
 		void UpdateGlyph(const boost::uuids::uuid& treeId, DataMappingGlyphGraph::GlyphIterator& vertex, const DataMappingGlyph& glyph);
 
+		void SetInputField(const boost::uuids::uuid& treeID, DataMappingGlyphGraph::ConstGlyphIterator node, DataMappingGlyph::MappableField field, const std::wstring& inputfield);
 		void SetInputField(const boost::uuids::uuid& treeID, DataMappingGlyphGraph::ConstGlyphIterator node, DataMappingGlyph::MappableField field, const InputField& inputfield);
+
 		void ClearInputBinding(const boost::uuids::uuid& treeID, DataMappingGlyphGraph::ConstGlyphIterator& node, DataMappingGlyph::MappableField field);
 		void ClearAllInputBindings(const boost::uuids::uuid& treeID, DataMappingGlyphGraph::ConstGlyphIterator& node);
-		void ClearInputFieldBindings(const boost::uuids::uuid& treeID, const InputField& inputfield);
+		void ClearInputFieldBindings(const boost::uuids::uuid& treeID, const std::wstring& inputfield);
 		
 		bool IsTransformable() const;
 		bool DoesAtLeastOneGlyphGraphHaveBindingsOnPosition() const;
@@ -131,6 +145,7 @@ namespace SynGlyphX {
 		void InsertLink(unsigned int index, const Link& link);
 		void SetLink(unsigned int index, const Link& link);
 		const std::vector<Link>& GetLinks() const { return m_links; }
+		InputFieldManager* GetInputFieldManager() { return &m_inputFieldManager; }
     protected:
 		void CopyInputBindingsForSubsetMapping(DataMappingGlyphGraph::SharedPtr newGlyphGraph, 
 											   DataMappingGlyphGraph::GlyphIterator newNode, 
@@ -151,6 +166,7 @@ namespace SynGlyphX {
 		FieldGroupMap m_fieldGroups;
 		std::vector<Legend> m_legends;
 		std::vector<Link> m_links;
+		InputFieldManager m_inputFieldManager;
 		boost::uuids::uuid m_id;
     };
 

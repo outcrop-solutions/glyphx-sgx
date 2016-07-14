@@ -6,11 +6,39 @@
 #include <boost/property_tree/ptree.hpp>
 #include "userdefinedbaseimageproperties.h"
 #include "Link.h"
+#include "Alias.h"
 #include "legend.h"
 #include "baseimage.h"
 #include "datamappingglyphgraph.h"
 
 namespace SynGlyphX {
+
+	const InputField& InputFieldManager::GetInputField(const std::wstring& fieldID) const
+	{
+		const static InputField empty;
+		auto it = m_imputFields.find(fieldID);
+		if (it != m_imputFields.end())
+			return it->second;
+		else
+			return empty;
+	}
+
+	void InputFieldManager::SetInputField(const std::wstring& fieldID, const InputField& field)
+	{
+		m_imputFields[fieldID] = field;
+	}
+	
+	void InputFieldManager::SetInputField(const InputField& field)
+	{
+		m_imputFields[GenerateInputFieldID(field)] = field;
+	}
+	std::wstring InputFieldManager::GenerateInputFieldID(const InputField& field)
+	{
+		HashID id = field.GetHashID();
+		std::wstring str = L"~";
+		str += std::to_wstring(id);
+		return str;
+	}
 
 	DataTransformMapping::DataTransformMapping() :
 		XMLPropertyTreeFile(true),
@@ -29,7 +57,9 @@ namespace SynGlyphX {
 		m_defaults(mapping.m_defaults),
 		m_sceneProperties(mapping.m_sceneProperties),
 		m_fieldGroups(mapping.m_fieldGroups),
-		m_legends(mapping.m_legends) {
+		m_legends(mapping.m_legends),
+		m_links(mapping.m_links),
+		m_inputFieldManager(mapping.m_inputFieldManager) {
 
 	}
 
@@ -551,6 +581,14 @@ namespace SynGlyphX {
 	
 	void DataTransformMapping::SetInputField(const boost::uuids::uuid& treeID, DataMappingGlyphGraph::ConstGlyphIterator node, DataMappingGlyph::MappableField field, const InputField& inputfield) {
 
+		std::wstring fieldId = m_inputFieldManager.GenerateInputFieldID(inputfield);
+		m_inputFieldManager.SetInputField(fieldId, inputfield);
+		DataMappingGlyphGraph::SharedPtr glyphTree = m_glyphTrees[treeID];
+		glyphTree->SetInputField(node, field, fieldId);
+	}
+
+	void DataTransformMapping::SetInputField(const boost::uuids::uuid& treeID, DataMappingGlyphGraph::ConstGlyphIterator node, DataMappingGlyph::MappableField field, const std::wstring& inputfield) {
+
 		DataMappingGlyphGraph::SharedPtr glyphTree = m_glyphTrees[treeID];
 		glyphTree->SetInputField(node, field, inputfield);
 	}
@@ -567,7 +605,7 @@ namespace SynGlyphX {
 		glyphTree->ClearAllInputBindings(node);
 	}
 
-	void DataTransformMapping::ClearInputFieldBindings(const boost::uuids::uuid& treeID, const InputField& inputfield) {
+	void DataTransformMapping::ClearInputFieldBindings(const boost::uuids::uuid& treeID, const std::wstring& inputfield) {
 		DataMappingGlyphGraph::SharedPtr glyphTree = m_glyphTrees[treeID];
 		glyphTree->ClearInputFieldBindings(inputfield);
 	}
@@ -877,22 +915,22 @@ namespace SynGlyphX {
 																 DataMappingGlyphGraph::ConstSharedPtr oldGlyphGraph, 
 																 DataMappingGlyphGraph::ConstGlyphIterator oldNode,
 																 const boost::uuids::uuid& datasourceID) const {
+		assert(0);//TODO: rewrirte after converting to strings 
+		//for (unsigned int i = 0; i < DataMappingGlyph::MappableField::MappableFieldSize; ++i) {
 
-		for (unsigned int i = 0; i < DataMappingGlyph::MappableField::MappableFieldSize; ++i) {
+		//	DataMappingGlyph::MappableField mappableField = static_cast<DataMappingGlyph::MappableField>(i);
+		//	const InputBinding& inputBinding = oldNode->second.GetInputBinding(mappableField);
+		//	if (inputBinding.IsBoundToInputField()) {
 
-			DataMappingGlyph::MappableField mappableField = static_cast<DataMappingGlyph::MappableField>(i);
-			const InputBinding& inputBinding = oldNode->second.GetInputBinding(mappableField);
-			if (inputBinding.IsBoundToInputField()) {
+		//		const InputField& oldInputField = oldGlyphGraph->GetInputFields().at(inputBinding.GetInputFieldID());
+		//		newGlyphGraph->SetInputField(newNode.constify(), mappableField, InputField(datasourceID, FileDatasource::SingleTableName, oldInputField.GetField(), oldInputField.GetType()));
+		//	}
+		//}
 
-				const InputField& oldInputField = oldGlyphGraph->GetInputFields().at(inputBinding.GetInputFieldID());
-				newGlyphGraph->SetInputField(newNode.constify(), mappableField, InputField(datasourceID, FileDatasource::SingleTableName, oldInputField.GetField(), oldInputField.GetType()));
-			}
-		}
+		//for (unsigned int j = 0; j < oldGlyphGraph->ChildCount(oldNode); ++j) {
 
-		for (unsigned int j = 0; j < oldGlyphGraph->ChildCount(oldNode); ++j) {
-
-			CopyInputBindingsForSubsetMapping(newGlyphGraph, newGlyphGraph->GetChild(newNode, j), oldGlyphGraph, oldGlyphGraph->GetChild(oldNode, j), datasourceID);
-		}
+		//	CopyInputBindingsForSubsetMapping(newGlyphGraph, newGlyphGraph->GetChild(newNode, j), oldGlyphGraph, oldGlyphGraph->GetChild(oldNode, j), datasourceID);
+		//}
 	}
 
 	void DataTransformMapping::AddLegend(const Legend& legend) {

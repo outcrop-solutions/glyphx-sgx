@@ -50,6 +50,13 @@ namespace SynGlyphX {
 
 	}
 
+	//InputField::InputField(const InputFieldAlias& inputFieldAlias) :
+	//	InputTable(inputFieldAlias.GetInputField()),
+	//	m_field(inputFieldAlias.GetInputField().m_field),
+	//	m_type(inputFieldAlias.GetInputField().m_type) {
+
+	//}
+
 	InputField::~InputField()
 	{
 	}
@@ -130,4 +137,6 @@ namespace SynGlyphX {
 		return seed;
 	}
 
+	//InputFieldAlias::InputFieldAlias() : m_imputField(), m_name(L"")  {}
+	//InputFieldAlias::InputFieldAlias(const InputField& inputField) : m_imputField(inputField), m_name(L"")  {}
 } //namespace SynGlyphX
