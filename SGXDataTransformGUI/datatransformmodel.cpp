@@ -16,6 +16,7 @@
 #include "stringconvert.h"
 #include <set>
 #include "Link.h"
+#include "Alias.h"
 #include "baseimage.h"
 #include "AppGlobal.h"
 #include <QtWidgets/QUndoStack>
@@ -597,7 +598,7 @@ namespace SynGlyphX {
 	}*/
 
 	void DataTransformModel::SetInputField(const QModelIndex& index, DataMappingGlyph::MappableField field, const InputField& inputfield) {
-
+		//_ASSERT(0); //TODO reimplement after fefactoring
 		SynGlyphX::DataMappingGlyphGraph::ConstGlyphIterator node(static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(index.internalPointer()));
 		//SetInputField(treeID, node, field, inputfield);
 		m_dataMapping->SetInputField(GetTreeId(index), node, field, inputfield);
@@ -626,28 +627,30 @@ namespace SynGlyphX {
 	
 	void DataTransformModel::ClearAbsentBindings() {
 
-		QModelIndex index = createIndex(0, 0);
-		SynGlyphX::DataMappingGlyphGraph::InputFieldMap fieldMap = GetInputFieldsForTree(index); 
-		std::set<SynGlyphX::HashID> sourceFields;
-		for (const auto& t : m_tableStatsMap) {
-			auto table = t.first;
-			auto stats = t.second;
-			for (const auto& stat : stats) {
-				// use arbitrary Type since it does not affect HashID
-				SynGlyphX::InputField sInputField(table.GetDatasourceID(), table.GetTable(), stat[0].toStdWString(), SynGlyphX::InputField::Type::Text);
-				sourceFields.insert(sInputField.GetHashID());
-				}
-			}
-		for (const auto& field : fieldMap) {
-			if (sourceFields.find(field.first) == sourceFields.end()) { 
-				SynGlyphX::InputField f(field.second);
-				AppGlobal::Services()->ShowWarningDialog(tr("Source data does not have field:\n") + QString::fromWCharArray(f.GetField().c_str()) + tr("\nMapping will be removed"));
-				AppGlobal::Services()->SetModified(true);
-				m_dataMapping->ClearInputFieldBindings(GetTreeId(index), f);
-			}
+		//assert(0);//TODO reimplement after refactoring
+		_ASSERT(0);
+		//QModelIndex index = createIndex(0, 0);
+		//SynGlyphX::DataMappingGlyphGraph::InputFieldMap fieldMap = GetInputFieldsForTree(index); 
+		//std::set<SynGlyphX::HashID> sourceFields;
+		//for (const auto& t : m_tableStatsMap) {
+		//	auto table = t.first;
+		//	auto stats = t.second;
+		//	for (const auto& stat : stats) {
+		//		// use arbitrary Type since it does not affect HashID
+		//		SynGlyphX::InputField sInputField(table.GetDatasourceID(), table.GetTable(), stat[0].toStdWString(), SynGlyphX::InputField::Type::Text);
+		//		sourceFields.insert(sInputField.GetHashID());
+		//		}
+		//	}
+		//for (const auto& field : fieldMap) {
+		//	if (sourceFields.find(field.first) == sourceFields.end()) { 
+		//		SynGlyphX::InputField f(field.second);
+		//		AppGlobal::Services()->ShowWarningDialog(tr("Source data does not have field:\n") + QString::fromWCharArray(f.GetField().c_str()) + tr("\nMapping will be removed"));
+		//		AppGlobal::Services()->SetModified(true);
+		//		m_dataMapping->ClearInputFieldBindings(GetTreeId(index), f);
+		//	}
 						
-		}
-		emit dataChanged(index, index);
+		//}
+		//emit dataChanged(index, index);
 	}
 
 	const DataMappingGlyphGraph::InputFieldMap& DataTransformModel::GetInputFieldsForTree(const QModelIndex& index) const {

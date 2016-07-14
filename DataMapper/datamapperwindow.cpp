@@ -357,7 +357,7 @@ void DataMapperWindow::CreateDockWidgets() {
 	m_viewMenu->addAction(rightDockWidgetDataSources->toggleViewAction());
 
 	QDockWidget* rightDockWidgetAliases = new QDockWidget(tr("Aliases"), this);
-	m_aliases = new AliasesWidget(m_glyphRolesTableModel, rightDockWidgetAliases);
+	m_aliases = new AliasesWidget(rightDockWidgetAliases);
 
 	rightDockWidgetAliases->setWidget(m_aliases);
 	m_aliases->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);

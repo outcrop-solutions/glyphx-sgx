@@ -30,23 +30,24 @@ class BindingLineEditChangeCommand;
 class SGXDATATRANSFORMGUI_EXPORT BindingLineEdit : public QWidget
 {
 	Q_OBJECT
-		Q_PROPERTY(SynGlyphX::InputField value READ GetInputField WRITE SetInputField USER true)
+		//Q_PROPERTY(SynGlyphX::InputField value READ GetInputField WRITE SetInputField USER true)
+		Q_PROPERTY(std::wstring value READ GetInputField WRITE SetInputField USER true) //do we need this?
 		friend class BindingLineEditChangeCommand;
 public:
 	BindingLineEdit(const GlyphRolesTableModel* model, QWidget *parent = 0, SynGlyphX::MappingFunctionData::Input acceptedInputTypes = SynGlyphX::MappingFunctionData::Input::All);
 	~BindingLineEdit();
 
-	const SynGlyphX::InputField& GetInputField() const;
+	const std::wstring& GetInputField() const;
 	bool OnlyAcceptsNumericField() const;
 
 public slots:
-	void SetInputField(const SynGlyphX::InputField& inputfield);
+	void SetInputField(const std::wstring& inputfield);
 	void Clear();
 	void SetAcceptedInputTypes(SynGlyphX::MappingFunctionData::Input acceptedInputTypes);
 
 signals:
-	void ValueChanged(SynGlyphX::InputField);
-	void ValueChangedByUser(SynGlyphX::InputField);
+	void ValueChanged(std::wstring);
+	void ValueChangedByUser(std::wstring);
 
 protected:
 	virtual void dragEnterEvent(QDragEnterEvent* event);
@@ -55,7 +56,7 @@ protected:
 
 private:
 	const GlyphRolesTableModel* m_model;
-	SynGlyphX::InputField m_inputField;
+	std::wstring m_inputFieldId;
 	SynGlyphX::MappingFunctionData::Input m_acceptedInputTypes;
 	QAction* m_clearAction;
 	QLineEdit* m_lineEdit;

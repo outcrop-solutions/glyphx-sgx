@@ -6,10 +6,14 @@
 #include <QtCore/QDebug>
 #include "application.h"
 #include "singlewidgetdialog.h"
+#include <QtWidgets/QTableWidget>
+#include <QtWidgets/QAction>
+#include <QtWidgets/QHeaderView>
+#include <QtWidgets/QPushButton>
 
-AliasesWidget::AliasesWidget(GlyphRolesTableModel* model, QWidget *parent)
-	: QWidget(parent),
-	m_model(model)
+AliasesWidget::AliasesWidget(QWidget *parent)
+	: QWidget(parent)
+	//m_model(model)
 {
 	QVBoxLayout* mainLayout = new QVBoxLayout(this);
 	mainLayout->setContentsMargins(0, 0, 0, 0);

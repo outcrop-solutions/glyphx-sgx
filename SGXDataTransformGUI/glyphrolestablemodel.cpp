@@ -275,7 +275,8 @@ QVariant GlyphRolesTableModel::GetEditDataForTextMappingProperty(const QVariant&
 	}
 	else if (index.column() == s_mappedFieldColumn) {
 
-		return QVariant::fromValue(GetInputField(mappingProperty.GetBinding().GetInputFieldID()));
+		//return QVariant::fromValue(GetInputField(mappingProperty.GetBinding().GetInputFieldID()));
+		return QString::fromStdWString(mappingProperty.GetBinding().GetInputFieldID()); //TODO check this
 	}
 	else {
 
@@ -293,7 +294,8 @@ QVariant GlyphRolesTableModel::GetEditDataForType(const QVariant& propVariant, c
 	}
 	else if (index.column() == s_mappedFieldColumn) {
 
-		return QVariant::fromValue(GetInputField(mappingProperty.GetBinding().GetInputFieldID()));
+		//return QVariant::fromValue(GetInputField(mappingProperty.GetBinding().GetInputFieldID()));
+		QString::fromStdWString(mappingProperty.GetBinding().GetInputFieldID());
 	}
 	else {
 

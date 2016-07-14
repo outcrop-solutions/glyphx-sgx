@@ -1,14 +1,10 @@
 #pragma once
-#ifndef ALIASESWIDGET_H
-#define ALIASESWIDGET_H
-
-#include <QtWidgets/QTableWidget>
 #include <QtWidgets/QWidget>
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QAction>
-#include <QtWidgets/QHeaderView>
-#include <QtWidgets/QDataWidgetMapper>
-#include "glyphrolestablemodel.h"
+
+class QTableWidget;
+class QHeaderView;
+class QPushButton;
+class QTableWidget;
 
 namespace SynGlyphX {
 	class DataTransformModel;
@@ -19,7 +15,7 @@ class AliasesWidget : public QWidget
 	Q_OBJECT
 
 public:
-	AliasesWidget(GlyphRolesTableModel* model, QWidget *parent = 0);
+	AliasesWidget(QWidget *parent = 0);
 	~AliasesWidget();
 
 	QSize sizeHint() const;
@@ -39,7 +35,5 @@ private:
 	QAction* m_removeSelectedContextMenuAction;
 
 	//std::map<QDataWidgetMapper*, unsigned int> m_dataWidgetMappersAndRows;
-	GlyphRolesTableModel* m_model;
+	//GlyphRolesTableModel* m_model;
 };
-
-#endif //ALIASESWIDGET_H
