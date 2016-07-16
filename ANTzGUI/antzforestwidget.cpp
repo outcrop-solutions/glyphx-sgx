@@ -1339,8 +1339,11 @@ namespace SynGlyphXANTz {
 			QRect glRect( m_regionSelectionRect.x(), height() - m_regionSelectionRect.y() - m_regionSelectionRect.height(), m_regionSelectionRect.width(), m_regionSelectionRect.height() );
 			QItemSelection indexesInRegion;
 			m_model->FindIndexesInRegion( glRect, indexesInRegion );
-			m_selectionModel->select( indexesInRegion, QItemSelectionModel::Select );
-			m_selectionModel->SetFocus( indexesInRegion.indexes(), SynGlyphX::ItemFocusSelectionModel::FocusFlag::ClearAndFocus );
+			if (!indexesInRegion.isEmpty()) {
+
+				m_selectionModel->select(indexesInRegion, QItemSelectionModel::Select);
+				m_selectionModel->SetFocus(indexesInRegion.indexes(), SynGlyphX::ItemFocusSelectionModel::FocusFlag::ClearAndFocus);
+			}
 			m_regionSelectionRect = QRect();
 		}
 
