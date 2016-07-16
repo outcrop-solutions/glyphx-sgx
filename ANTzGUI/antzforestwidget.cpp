@@ -953,6 +953,14 @@ namespace SynGlyphXANTz {
 			glMatrixMode( GL_MODELVIEW );
 			glLoadIdentity();
 
+			bool isBlendEnabled = glIsEnabled(GL_BLEND);
+			if (!isBlendEnabled) {
+
+				glEnable(GL_BLEND);
+			}
+
+			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
 			glColor4ub( 64, 32, 0, 100 );
 
 			int glRegionLeft = m_regionSelectionRect.x();
@@ -980,6 +988,11 @@ namespace SynGlyphXANTz {
 			glPopMatrix();
 			glMatrixMode( GL_MODELVIEW );
 			glPopMatrix();
+
+			if (!isBlendEnabled) {
+
+				glDisable(GL_BLEND);
+			}
 		}
 
 		//Draw tags
