@@ -604,6 +604,14 @@ namespace SynGlyphX {
 		m_dataMapping->SetInputField(GetTreeId(index), node, field, inputfield);
 		emit dataChanged(index, index);
 	}
+
+	void DataTransformModel::SetInputField(const QModelIndex& index, DataMappingGlyph::MappableField field, const QString& inputfield) {
+		//_ASSERT(0); //TODO reimplement after fefactoring
+		SynGlyphX::DataMappingGlyphGraph::ConstGlyphIterator node(static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(index.internalPointer()));
+		//SetInputField(treeID, node, field, inputfield);
+		m_dataMapping->SetInputField(GetTreeId(index), node, field, inputfield.toStdWString());
+		emit dataChanged(index, index);
+	}
 	/*
 	void DataTransformModel::ClearInputBinding(const boost::uuids::uuid& treeID, DataMappingGlyphGraph::const_iterator& node, DataMappingGlyph::MappableField field) {
 

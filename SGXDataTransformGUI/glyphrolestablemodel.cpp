@@ -517,19 +517,20 @@ bool GlyphRolesTableModel::setData(const QModelIndex& index, const QVariant& val
 		if (index.column() == s_mappedFieldColumn) {
 
 			SynGlyphX::DataMappingGlyph::MappableField mappableField = static_cast<SynGlyphX::DataMappingGlyph::MappableField>(index.row());
-			SynGlyphX::InputField inputField = value.value<SynGlyphX::InputField>();
-			if (inputField.IsValid()) {
+			//SynGlyphX::InputField inputField = value.value<SynGlyphX::InputField>();
+			QString inputField = value.value<QString>();
+			if (inputField.isNull() || inputField.isEmpty()) {
 
 				for (const QPersistentModelIndex& index : m_selectedDataTransformModelIndexes) {
 
-					m_dataTransformModel->SetInputField(index, mappableField, inputField);
+					m_dataTransformModel->ClearInputBinding(index, mappableField);
 				}
 			}
 			else {
 
 				for (const QPersistentModelIndex& index : m_selectedDataTransformModelIndexes) {
 
-					m_dataTransformModel->ClearInputBinding(index, mappableField);
+					m_dataTransformModel->SetInputField(index, mappableField, inputField);
 				}
 			}
 			DetermineAssociatedInputTable();
