@@ -28,16 +28,20 @@ namespace SynGlyphX {
 		m_imputFields[fieldID] = field;
 	}
 	
-	void InputFieldManager::SetInputField(const InputField& field)
-	{
-		m_imputFields[GenerateInputFieldID(field)] = field;
-	}
-	std::wstring InputFieldManager::GenerateInputFieldID(const InputField& field)
+	std::wstring InputFieldManager::GenerateInputFieldID(const InputField& field) 
 	{
 		HashID id = field.GetHashID();
 		std::wstring str = L"~";
 		str += std::to_wstring(id);
 		return str;
+	}
+	
+	void InputFieldManager::ExportToPropertyTree(boost::property_tree::wptree& propertyTree) const 
+	{
+		for (auto field : m_imputFields)
+		{
+			field.second.ExportToPropertyTree(propertyTree, field.first);
+		}
 	}
 
 	DataTransformMapping::DataTransformMapping() :
@@ -196,8 +200,22 @@ namespace SynGlyphX {
 		for (const boost::property_tree::wptree::value_type& glyphPropertyTree : dataTransformPropertyTree.get_child(L"Glyphs")) {
 
 			if (glyphPropertyTree.first == L"Glyph") {
-
 				DataMappingGlyphGraph::SharedPtr glyphGraph = std::make_shared<DataMappingGlyphGraph>(glyphPropertyTree.second);
+				//This is for backwards compatibility, TODO: remove in future versions
+				boost::optional<const boost::property_tree::wptree&> inputFieldsPropertyTree = glyphPropertyTree.second.get_child_optional(L"InputFields");
+				if (inputFieldsPropertyTree.is_initialized()) {
+
+					for (const boost::property_tree::wptree::value_type& inputfieldProperties : inputFieldsPropertyTree.get()) {
+
+						if (inputfieldProperties.first == L"InputField") {
+
+							InputField inputfield(inputfieldProperties.second);
+							m_inputFieldManager.SetInputField(m_inputFieldManager.GenerateInputFieldID(inputfield), inputfield);
+							//m_inputFields[inputfield.GetHashID()] = inputfield;
+							//m_inputFieldReferenceCounts[inputfield.GetHashID()] = 0;
+						}
+					}
+				}
 				m_glyphTrees.insert(std::pair<boost::uuids::uuid, DataMappingGlyphGraph::SharedPtr>(glyphPropertyTree.second.get<boost::uuids::uuid>(L"<xmlattr>.id"), glyphGraph));
 			}
 		}
@@ -327,6 +345,12 @@ namespace SynGlyphX {
 				link.ExportToPropertyTree(linksPropertyTree);
 			}
 		}
+
+		{
+			boost::property_tree::wptree& inputFieldsPropertyTree = dataTransformPropertyTreeRoot.add(L"InputFields", L"");
+			m_inputFieldManager.ExportToPropertyTree(inputFieldsPropertyTree);
+		}
+
     }
 
 	bool DataTransformMapping::IsDifferentFromGivenPropertyTree(const boost::property_tree::wptree& originalPropertyTree) const {

@@ -22,9 +22,12 @@ namespace SynGlyphX {
 	}
 
 	InputBinding::InputBinding(const boost::property_tree::wptree& propertyTree) /*:
-		m_inputFieldID(propertyTree.get<HashID>(L"<xmlattr>.id"))*/ 
-	{ //TODO: deal with backward compatibility
-
+		m_inputFieldID(propertyTree.get<HashID>(L"<xmlattr>.id")) */
+	{ 
+		//this horrible hack to deal with backwards compatibility TODO: remove in the future 
+		auto hash = propertyTree.get_optional<HashID>(L"<xmlattr>.id");
+		if (hash.is_initialized())
+			m_inputFieldID = L"~" + std::to_wstring(hash.get());
 		boost::optional<const boost::property_tree::wptree&> overridePropertyTree = propertyTree.get_child_optional(L"Override");
 
 		m_overrideInUse = overridePropertyTree.is_initialized();
@@ -126,7 +129,7 @@ namespace SynGlyphX {
 	void InputBinding::ExportToPropertyTree(boost::property_tree::wptree& propertyTree) const {
 
 		boost::property_tree::wptree& inputFieldPropertyTree = propertyTree.add(PropertyTreeName, L"");
-		inputFieldPropertyTree.put(L"<xmlattr>.id", m_inputFieldID);
+		inputFieldPropertyTree.put(L"<xmlattr>.fieldId", m_inputFieldID);
 
 		if (m_overrideInUse) {
 

@@ -105,10 +105,12 @@ namespace SynGlyphX {
 		return (InputTable::IsValid() && !m_field.empty());
 	}
 
-	void InputField::ExportToPropertyTree(boost::property_tree::wptree& propertyTree) const {
-
+	void InputField::ExportToPropertyTree(boost::property_tree::wptree& propertyTree, const std::wstring& name /*= std::wstring()*/) const {
 		boost::property_tree::wptree& inputFieldPropertyTree = propertyTree.add(L"InputField", L"");
-		
+		if (!name.empty()) {
+			inputFieldPropertyTree.put(L"<xmlattr>.name", name);
+		}
+
 		inputFieldPropertyTree.put(L"<xmlattr>.id", m_datasourceID);
 		inputFieldPropertyTree.put(L"<xmlattr>.table", m_table);
 		inputFieldPropertyTree.put(L"<xmlattr>.field", m_field);

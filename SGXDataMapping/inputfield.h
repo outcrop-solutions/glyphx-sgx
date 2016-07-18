@@ -59,7 +59,7 @@ namespace SynGlyphX {
 
 		virtual bool IsValid() const;
 
-		void ExportToPropertyTree(boost::property_tree::wptree& propertyTree) const;
+		void ExportToPropertyTree(boost::property_tree::wptree& propertyTree, const std::wstring& name = std::wstring()) const;
 
 		bool IsNumeric() const;
 		Type GetType() const;

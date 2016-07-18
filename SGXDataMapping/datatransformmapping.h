@@ -38,14 +38,15 @@ namespace SynGlyphX {
 	class Legend;
 	class BaseImage;
 
-	class InputFieldManager
+	class SGXDATAMAPPING_API InputFieldManager
 	{
 	public:
 		const InputField& GetInputField(const std::wstring& fieldID) const;
 		void SetInputField(const std::wstring& fieldID, const InputField& field);
-		void SetInputField(const InputField& field); //generate the ID
-		std::wstring GenerateInputFieldID(const InputField& field);
+		std::wstring GenerateInputFieldID(const InputField& field); //may not be const with future implementation
 		void Clear();
+
+		void ExportToPropertyTree(boost::property_tree::wptree& propertyTree) const;
 	private:
 		std::unordered_map<std::wstring, InputField> m_imputFields;
 	};
