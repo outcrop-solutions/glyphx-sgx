@@ -16,10 +16,11 @@
 #include "sourcedatainfomodel.h"
 #include "singlewidgetdialog.h"
 
-FilteringTable::FilteringTable(SourceDataInfoModel* columnsModel, FilteringManager* filteringManager, const QString& label, bool includeMoveUpDown, QWidget *parent)
+FilteringTable::FilteringTable(SourceDataInfoModel* columnsModel, FilteringManager* filteringManager, SynGlyphX::InputField::Type fieldType, const QString& label, bool includeMoveUpDown, QWidget *parent)
 	: QWidget(parent),
 	m_columnsModel(columnsModel),
 	m_filteringManager(filteringManager),
+	m_fieldType(fieldType),
 	m_removeSelectedContextMenuAction(nullptr),
 	m_moveRowUpContextMenuAction(nullptr),
 	m_moveRowDownContextMenuAction(nullptr),
@@ -308,7 +309,7 @@ void FilteringTable::OnAddFilter() {
 		fieldTypeProxyModel->setFilterRole(SourceDataInfoModel::TypeRole);
 		QSet<int> filterData;
 		filterData.insert(SourceDataInfoModel::NoTypeData);
-		filterData.insert(SynGlyphX::InputField::Type::Real);
+		filterData.insert(m_fieldType);
 		fieldTypeProxyModel->SetFilterData(filterData);
 
 		SynGlyphX::StringRoleDataFilterProxyModel* filterOutFieldsInUseModel = new SynGlyphX::StringRoleDataFilterProxyModel(this);
@@ -361,4 +362,9 @@ void FilteringTable::OnAddFilter() {
 
 		QMessageBox::warning(this, tr("Add Filter Error"), tr("Filtering Error: ") + e.what());
 	}
+}
+
+void FilteringTable::OnFilterChanged() {
+
+	m_updateButton->setEnabled(true);
 }

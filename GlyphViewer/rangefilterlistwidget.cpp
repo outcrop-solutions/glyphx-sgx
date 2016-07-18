@@ -8,7 +8,7 @@
 #include "filteringmanager.h"
 
 RangeFilterListWidget::RangeFilterListWidget(SourceDataInfoModel* columnsModel, FilteringManager* filteringManager, QWidget *parent)
-	: FilteringTable(columnsModel, filteringManager, tr("Range"), true, parent)
+	: FilteringTable(columnsModel, filteringManager, SynGlyphX::InputField::Type::Real, tr("Range"), true, parent)
 {
 
 }
@@ -113,7 +113,7 @@ void RangeFilterListWidget::OnRangesChanged() {
 	}
 	ResetMinMaxExtentsForFilters(row + 1);
 
-	m_updateButton->setEnabled(true);
+	OnFilterChanged();
 }
 
 SynGlyphX::SingleNumericRangeFilterWidget* RangeFilterListWidget::GetRangeFilterWidgetFromCell(int row, int column) const {

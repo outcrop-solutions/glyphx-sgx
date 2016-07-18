@@ -18,6 +18,7 @@
 #pragma once
 
 #include <QtWidgets/QWidget>
+#include "inputfield.h"
 
 class SourceDataInfoModel;
 class FilteringManager;
@@ -33,7 +34,12 @@ class FilteringTable : public QWidget
 	Q_OBJECT
 
 public:
-	FilteringTable(SourceDataInfoModel* columnsModel, FilteringManager* filteringManager, const QString& label, bool includeMoveUpDown, QWidget *parent);
+	FilteringTable(SourceDataInfoModel* columnsModel, 
+				   FilteringManager* filteringManager, 
+				   SynGlyphX::InputField::Type fieldType,
+				   const QString& label, 
+				   bool includeMoveUpDown, 
+				   QWidget *parent);
 	~FilteringTable();
 
 public slots:
@@ -51,6 +57,7 @@ protected slots:
 
 	void OnUpdateFilters();
 	void OnAddFilter();
+	void OnFilterChanged();
 
 protected:
 	virtual void UpdateFromSelectedRowsRemoved(unsigned int startingRowToUpdate) = 0;
@@ -84,6 +91,7 @@ protected:
 	FilteringManager* m_filteringManager;
 
 	QString m_currentTable;
+	SynGlyphX::InputField::Type m_fieldType;
 };
 
 //#pragma once

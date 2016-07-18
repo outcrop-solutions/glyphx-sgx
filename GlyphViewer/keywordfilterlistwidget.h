@@ -15,18 +15,16 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef KEYWORDFILTERLISTWIDGET_H
-#define KEYWORDFILTERLISTWIDGET_H
+#pragma once
 
-#include <QtWidgets/QWidget>
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QStackedLayout>
-#include <QtWidgets/QTableWidget>
-#include "filteringmanager.h"
-#include "sourcedatainfomodel.h"
-#include "keywordfilterwidget.h"
+#include "FilteringTable.h"
+#include "filteringparameters.h"
+#include <QtCore/QMap>
+#include <QtCore/QString>
 
-class KeywordFilterListWidget : public QWidget
+class KeywordFilterWidget;
+
+class KeywordFilterListWidget : public FilteringTable
 {
 	Q_OBJECT
 
@@ -34,41 +32,22 @@ public:
 	KeywordFilterListWidget(SourceDataInfoModel* columnsModel, FilteringManager* filteringManager, QWidget *parent);
 	~KeywordFilterListWidget();
 
-public slots:
-	void OnNewVisualization();
-	void SwitchTable(const QString& table);
-	void OnRemoveAllFilters();
-
-private slots:
-	void OnAddFilter();
-	void OnRemoveSelectedFilters();
-	void OnUpdateFilters();
-	void OnFilterSelectionChanged(const QItemSelection &selected, const QItemSelection &deselected);
-	void OnFilterChanged();
+protected:
+	void UpdateFromSelectedRowsRemoved(unsigned int rowToStartUpdates) override;
+	void ClearData() override;
+	void ResetForNewTable() override;
+	void SaveFiltersInTableWidget() override;
+	bool DoAnyTablesHaveFilters() const override;
+	void MoveRow(unsigned int sourceRow, unsigned int destinationRow) override;
+	void GetFilteringParametersForTable(const QString& table, FilteringParameters& filteringParameters) override;
+	void AddFilters(const QSet<QString>& fields) override;
 
 private:
 	typedef QMap<QString, FilteringParameters::ColumnKeywordFilterMap> Table2FiltersMap;
 
-	QStringList Separate(const QString& datasourceTable) const;
-	void ClearFiltersFromTableWidget();
-	QTableWidgetItem* CreateItem(const QString& text);
-	void SaveFiltersInTableWidget();
-	bool DoAnyTablesHaveFilters() const;
-	QString GetTextFromCell(int row, int column = 0) const;
 	KeywordFilterWidget* GetKeywordFilterWidgetFromCell(int row, int column = 1) const;
-
-	SourceDataInfoModel* m_columnsModel;
-	FilteringManager* m_filteringManager;
-	QString m_currentTable;
-
-	QPushButton* m_addButton;
-	QPushButton* m_removeAllButton;
-	QPushButton* m_updateButton;
-	QTableWidget* m_keywordFiltersTableWidget;
-
-	QAction* m_removeSelectedContextMenuAction;
 
 	Table2FiltersMap m_table2FiltersMap;
 };
 
-#endif // KEYWORDFILTERLISTWIDGET_H
+//#pragma once
