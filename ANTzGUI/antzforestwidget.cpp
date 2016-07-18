@@ -25,7 +25,7 @@
 
 namespace SynGlyphXANTz {
 
-	const double s_unfilteredTransparencyMultiplier = 0.15;
+	const double s_unfilteredTransparencyMultiplier = 0.25;
 
     ANTzForestWidget::ANTzForestWidget( GlyphForestModel* model, SynGlyphX::ItemFocusSelectionModel* selectionModel, QWidget *parent ) :
         QOpenGLWidget( parent ),
@@ -1150,10 +1150,14 @@ namespace SynGlyphXANTz {
 		pData antzData = m_antzData->GetData();
 		for ( unsigned int i = kNPnodeRootPin; i < antzData->map.nodeRootCount; ++i ) {
 
+			pNPnode node = static_cast<pNPnode>(antzData->map.node[i]);
 			if (m_filteredResults.count(i - kNPnodeRootPin) == 0) {
 
-				pNPnode node = static_cast<pNPnode>(antzData->map.node[i]);
 				HideFilteredGlyph(node, hide);
+			}
+			else {
+
+				HideFilteredGlyph(node, false);
 			}
 		}
 	}
