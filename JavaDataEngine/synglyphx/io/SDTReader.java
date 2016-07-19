@@ -666,6 +666,7 @@ public class SDTReader {
 					gNames.put(gName, new FieldGroup(dataPaths.get(dataIds.get(id+table))));
 					gNames.get(gName).setName(gName);
 					gNames.get(gName).setColNames(input);
+					//System.out.println(gName +"| min: "+String.valueOf(gNames.get(gName).getMin())+", max: "+String.valueOf(gNames.get(gName).getMax()));
 				}
 			}
 		}
