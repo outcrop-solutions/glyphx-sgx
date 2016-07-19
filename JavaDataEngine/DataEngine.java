@@ -20,7 +20,7 @@ public class DataEngine {
 	private static ArrayList<String> tableNames = null;
 	private static String currPath;
 	private static String sourceType;
-	private static String VERSION = "0.1.48.0";
+	private static String VERSION = "0.1.50.0";
 	
 	public static String getVersion(){
 		return VERSION;

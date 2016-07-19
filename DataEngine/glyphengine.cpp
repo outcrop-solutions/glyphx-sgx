@@ -1,11 +1,13 @@
 #include "glyphengine.h"
 #include <QtCore/QDir>
 #include <QtCore/QDebug>
+#include <QtWidgets/QMessageBox>
 #include <fstream>
 #include "networkdownloader.h"
 #include "downloadexception.h"
 #include "downloadedmapproperties.h"
 #include "baseimage.h"
+#include "application.h"
 
 namespace DataEngine
 {
@@ -335,7 +337,7 @@ namespace DataEngine
 		return points;
 	}
 
-	void GlyphEngine::generateGlyphs(){
+	void GlyphEngine::generateGlyphs(QWidget *mainWindow){
 
 		if (!downloadComplete){
 			std::vector<double> nw = { -180.0, 90.0 };
@@ -344,10 +346,10 @@ namespace DataEngine
 			setGeoBoundingBox(nw, se, size);
 		}
 
+		int err_code = 0;
 		if (jcls != NULL) {
 			jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
 				"beginGlyphGeneration", "()I");
-			int err_code = 0;
 			if (methodId != NULL) {
 				err_code = (jint)jniEnv->CallStaticIntMethod(jcls, methodId);
 				if (jniEnv->ExceptionCheck()) {
@@ -356,9 +358,21 @@ namespace DataEngine
 				}
 			}
 
-			if (err_code == 1){
-				throw std::runtime_error("Failed to generate glyphs");
-			}
+		}
+		if (err_code == 1){
+			throw std::runtime_error("Failed to generate glyphs");
+		}
+		else if (err_code == 2){
+			SynGlyphX::Application::restoreOverrideCursor();
+			QMessageBox warning_error(QMessageBox::Warning, mainWindow->tr("Failed To Open Project"), mainWindow->tr("The visualization has loaded, but errors were thrown. The visualization may appear different than intended"), QMessageBox::Ok, mainWindow);
+			warning_error.setDetailedText(JavaErrors());
+			warning_error.setStyleSheet("QLabel{margin-right:75px;},QTextEdit{min-width:500px;}");
+			warning_error.setStandardButtons(QMessageBox::Ok);
+			warning_error.setDefaultButton(QMessageBox::Ok);
+			warning_error.setEscapeButton(QMessageBox::Ok);
+			warning_error.exec();
+			ClearJavaErrors();
+			SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
 		}
 		copyBaseImages();
 	}
@@ -433,5 +447,19 @@ namespace DataEngine
 			}
 		}
 		return errors;
+	}
+
+	void GlyphEngine::ClearJavaErrors(){
+
+		jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
+			"clearErrors", "()V");
+
+		if (methodId != NULL) {
+			jniEnv->CallStaticVoidMethod(jcls, methodId);
+			if (jniEnv->ExceptionCheck()) {
+				jniEnv->ExceptionDescribe();
+				jniEnv->ExceptionClear();
+			}
+		}
 	}
 }

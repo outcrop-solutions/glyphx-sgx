@@ -7,6 +7,7 @@
 #include <boost/filesystem.hpp>
 #include "georeference.h"
 #include <QtCore/QString>
+#include <QtWidgets/QWidget>
 #include "baseimage.h"
 #include "DataEngine_Exports.h"
 
@@ -38,9 +39,10 @@ namespace DataEngine
 		void initiate(JNIEnv *env, std::string sdtPath, std::string outDir, std::string bid, std::string bfn,std::string appName);
 		bool getDownloadedBaseImage(std::vector<SynGlyphX::BaseImage> baseImages);
 		std::vector<std::string> getBaseImages();
-		void generateGlyphs();
+		void generateGlyphs(QWidget *mainWindow);
 		bool IsUpdateNeeded() const;
 		QString JavaErrors();
+		void ClearJavaErrors();
 		QStringList DistinctValuesForField(QString id, QString table, QString field);
 		void SetQueryForDatasource(QString id, QString table, QString query);
 		~GlyphEngine(){};

@@ -91,6 +91,7 @@ public class SQLiteWriter {
 			pstmt.close();
 			writeAllTables();
 			conn.close();
+			ErrorHandler.getInstance().sqliteWriterCompleted();
 		}catch(Exception e){
 	        try{
 	            e.printStackTrace(ErrorHandler.getInstance().addError());
@@ -126,7 +127,7 @@ public class SQLiteWriter {
 		String query = "CREATE TABLE if NOT EXISTS '"+sdi.getFormattedID()+"' ("; 
 		String insertQuery = "INSERT INTO '"+sdi.getFormattedID()+"' VALUES (";
 		for(int i = 0; i < headers.size(); i++){
-			query += "'"+headers.get(i).replace("'","''")+"'";;
+			query += "'"+headers.get(i).replace("'","''")+"'";
 			if(fieldType.get(headers.get(i))){
 				query += " REAL,";
 			}else{

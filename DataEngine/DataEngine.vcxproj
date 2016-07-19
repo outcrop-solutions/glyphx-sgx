@@ -57,7 +57,7 @@
       <PreprocessorDefinitions>DataEngine_EXPORTS;WIN32;_DEBUG;_LIB;DATAENGINE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>
       </SDLCheck>
-      <AdditionalIncludeDirectories>..\..\Core\SGXFoundation;..\..\3rdParty\include\stlplus_3_11;..\..\Core\SGXUtility;..\..\Core\SGXDataMapping;..\..\Core\SGXImage\;..\..\Core\SGXGeospatial\;..\..\3rdParty\include\boost_1_55_0;..\..\DataEngine\jdk\include\win32;..\..\DataEngine\jdk\include;$(QTDIR)\include;..\..\GUI\MapDownloading;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\Core\SGXFoundation;..\..\3rdParty\include\stlplus_3_11;..\..\Core\SGXUtility;..\..\Core\SGXDataMapping;..\..\Core\SGXImage\;..\..\Core\SGXGeospatial\;..\..\3rdParty\include\boost_1_55_0;..\..\DataEngine\jdk\include\win32;..\..\DataEngine\jdk\include;$(QTDIR)\include;..\..\GUI\SGXGUI;..\..\GUI\MapDownloading;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
       <MinimalRebuild>false</MinimalRebuild>
@@ -69,7 +69,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>jvm.lib;jawt.lib;SGXImage.lib;SGXGeospatial.lib;SGXUtility.lib;MapDownloading.lib;boost_filesystem-vc120-mt-gd-1_55.lib;boost_system-vc120-mt-gd-1_55.lib;qtmaind.lib;Qt5Cored.lib;Qt5Guid.lib;Qt5Widgetsd.lib;Qt5Networkd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>jvm.lib;jawt.lib;SGXImage.lib;SGXGeospatial.lib;SGXUtility.lib;SGXGUI.lib;MapDownloading.lib;boost_filesystem-vc120-mt-gd-1_55.lib;boost_system-vc120-mt-gd-1_55.lib;qtmaind.lib;Qt5Cored.lib;Qt5Guid.lib;Qt5Widgetsd.lib;Qt5Networkd.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(QTDIR)\lib;..\..\DataEngine\jdk\lib\;..\..\lib\$(Platform)\$(Configuration)\;..\..\3rdParty\lib\$(Platform)\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ImportLibrary>..\..\lib\$(Platform)\$(Configuration)\$(TargetName).lib</ImportLibrary>
       <LargeAddressAware>true</LargeAddressAware>

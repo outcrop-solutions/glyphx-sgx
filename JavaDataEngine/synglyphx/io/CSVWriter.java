@@ -293,7 +293,7 @@ public class CSVWriter {
 
 	        bf.close();
 	        bfw.close();
-
+	        ErrorHandler.getInstance().csvWriterCompleted();
 	    }catch(Exception e){
 	        try{
 	            e.printStackTrace(ErrorHandler.getInstance().addError());
