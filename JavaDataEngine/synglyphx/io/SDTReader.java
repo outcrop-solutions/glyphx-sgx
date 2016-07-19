@@ -215,7 +215,7 @@ public class SDTReader {
 		Node node = element.getElementsByTagName("Binding").item(0);
 		Element ele = (Element) node;
 
-		return ele.getAttribute("id");
+		return ele.getAttribute("fieldId");
 
 	}
 
@@ -224,11 +224,13 @@ public class SDTReader {
 		String id = ele.getAttribute("id");
 		String table = ele.getAttribute("table");
 		String field = ele.getAttribute("field");
+		String name = ele.getAttribute("name");
 
 		ArrayList<String> array = new ArrayList<String>();
 		array.add(id);
 		array.add(table);
 		array.add(field);
+		array.add(name);
 
 		//Logger.getInstance().add("Retrieved input fields.");
 		return array;
@@ -408,7 +410,7 @@ public class SDTReader {
 
 		inputs = new ArrayList<ArrayList<String>>();
 		directMap = new HashMap<String, String>();
-		ConvertHash convert = new ConvertHash();
+		//ConvertHash convert = new ConvertHash();
 		NodeList start = doc.getElementsByTagName("InputFields");
 
 		for(int j=0;j<start.getLength();j++){
@@ -425,11 +427,23 @@ public class SDTReader {
 			}
 		}
 		for(int i=0; i < inputs.size(); i++){
-			String code = convert.getHash(inputs.get(i).get(0), inputs.get(i).get(1), inputs.get(i).get(2));
+			String code = inputs.get(i).get(3);
+			//convert.getHash(inputs.get(i).get(0), inputs.get(i).get(1), inputs.get(i).get(2));
 			directMap.put(code, inputs.get(i).get(2));
+			matchSourceDataID(inputs.get(i).get(0), inputs.get(i).get(1)).addBoundField(code);
 
 		}
 		Logger.getInstance().add("Set input map.");
+	}
+
+	private SourceDataInfo matchSourceDataID(String id, String table){
+
+		for(SourceDataInfo data : dataPaths){
+			if(data.getID().equals(id) && data.getTable().equals(table)){
+				return data;
+			}
+		}
+		return null;
 	}
 
 	private void setFrontEnd(Node root){
@@ -792,10 +806,11 @@ public class SDTReader {
 
 	public int getDataPathForTemplate(String field, String code){
 
-		ConvertHash convert = new ConvertHash();
+		//ConvertHash convert = new ConvertHash();
 		for(int i = 0; i < dataPaths.size(); i++){
 			SourceDataInfo tb = dataPaths.get(i);
-			if(convert.getHash(tb.getID(),tb.getTable(),field).equals(code)){
+			//if(convert.getHash(tb.getID(),tb.getTable(),field).equals(code)){
+			if(tb.hasBoundField(code)){
 				return i;
 			}
 		}

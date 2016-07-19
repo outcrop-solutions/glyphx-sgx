@@ -11,7 +11,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import synglyphx.data.SourceDataInfo;
-import synglyphx.util.ConvertHash;
+//import synglyphx.util.ConvertHash;
 import synglyphx.glyph.XMLGlyphTemplate;
 
 public class SDTLinkReader {
@@ -114,12 +114,11 @@ public class SDTLinkReader {
 
 	private int getDataPathForTemplate(String field, String code){
 		
-		ConvertHash convert = new ConvertHash();
+		//ConvertHash convert = new ConvertHash();
 		for(int i = 0; i < dataPaths.size(); i++){
 			SourceDataInfo tb = dataPaths.get(i);
-			if(convert.getHash(tb.getID(),tb.getTable(),field).equals(code)){
-				//System.out.println(tb.getTable()+" | "+field+" | "+code);
-				//System.out.println(tb.getRowCount());
+			//if(convert.getHash(tb.getID(),tb.getTable(),field).equals(code)){
+			if(tb.hasBoundField(code)){
 				return i;
 			}
 		}
@@ -239,7 +238,7 @@ public class SDTLinkReader {
 	private String getInput(Element element) {
 		Node node = element.getElementsByTagName("Binding").item(0);
 		Element ele = (Element) node;
-		return ele.getAttribute("id");
+		return ele.getAttribute("fieldId");
 	}
 
 	public HashMap<Integer, LinkTemplate> getLinkTemps(){
