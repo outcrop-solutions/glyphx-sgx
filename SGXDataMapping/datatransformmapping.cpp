@@ -977,7 +977,7 @@ namespace SynGlyphX {
 																 DataMappingGlyphGraph::ConstSharedPtr oldGlyphGraph, 
 																 DataMappingGlyphGraph::ConstGlyphIterator oldNode,
 																 const boost::uuids::uuid& datasourceID) const {
-		assert(0);//TODO: rewrirte after converting to strings 
+		assert(0); //do we ever hit this? //TODO: rewrirte after converting to strings 
 		//for (unsigned int i = 0; i < DataMappingGlyph::MappableField::MappableFieldSize; ++i) {
 
 		//	DataMappingGlyph::MappableField mappableField = static_cast<DataMappingGlyph::MappableField>(i);

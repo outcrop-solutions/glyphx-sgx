@@ -24,7 +24,7 @@ namespace SynGlyphX {
 	InputBinding::InputBinding(const boost::property_tree::wptree& propertyTree) /*:
 		m_inputFieldID(propertyTree.get<HashID>(L"<xmlattr>.fieldId")) */
 	{ 
-		//this horrible hack to deal with backwards compatibility TODO: remove in the future 
+		// to deal with backwards compatibility, TODO: remove in the future 
 		auto hash = propertyTree.get_optional<HashID>(L"<xmlattr>.id");
 		if (hash.is_initialized())
 			m_inputFieldID = L"~" + std::to_wstring(hash.get());
