@@ -77,7 +77,7 @@ namespace SynGlyphX {
 	LinkNode::LinkNode(const boost::property_tree::wptree& propertyTree) :
 		m_treeId(propertyTree.get<boost::uuids::uuid>(L"<xmlattr>.id")),
 		m_label(propertyTree.get<unsigned long>(L"<xmlattr>.label")),
-		m_inputFieldId(propertyTree.get<size_t>(L"<xmlattr>.binding"))
+		m_inputFieldId(propertyTree.get<std::wstring>(L"<xmlattr>.binding"))
 	{
 	}
 

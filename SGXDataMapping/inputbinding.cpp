@@ -22,12 +22,18 @@ namespace SynGlyphX {
 	}
 
 	InputBinding::InputBinding(const boost::property_tree::wptree& propertyTree) /*:
-		m_inputFieldID(propertyTree.get<HashID>(L"<xmlattr>.id")) */
+		m_inputFieldID(propertyTree.get<HashID>(L"<xmlattr>.fieldId")) */
 	{ 
 		//this horrible hack to deal with backwards compatibility TODO: remove in the future 
 		auto hash = propertyTree.get_optional<HashID>(L"<xmlattr>.id");
 		if (hash.is_initialized())
 			m_inputFieldID = L"~" + std::to_wstring(hash.get());
+		
+		auto fieldId = propertyTree.get_optional<std::wstring>(L"<xmlattr>.fieldId");
+		if (fieldId.is_initialized())
+			m_inputFieldID = fieldId.get();
+			
+
 		boost::optional<const boost::property_tree::wptree&> overridePropertyTree = propertyTree.get_child_optional(L"Override");
 
 		m_overrideInUse = overridePropertyTree.is_initialized();

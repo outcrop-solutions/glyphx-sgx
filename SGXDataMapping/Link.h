@@ -32,13 +32,13 @@ class LinksDialog;
 namespace SynGlyphX {
 
 	struct LinkNode { //tree ID and lable should uniquely identify glyph
-		LinkNode(boost::uuids::uuid treeId, unsigned long label, size_t inputFieldId) : m_treeId(treeId), m_label(label), m_inputFieldId(inputFieldId) {}
+		LinkNode(boost::uuids::uuid treeId, unsigned long label, const std::wstring& inputFieldId) : m_treeId(treeId), m_label(label), m_inputFieldId(inputFieldId) {}
 		LinkNode(const boost::property_tree::wptree& propertyTree);
 		LinkNode() {}
 		boost::property_tree::wptree& ExportToPropertyTree(boost::property_tree::wptree& parentPropertyTree) const;
 		boost::uuids::uuid m_treeId;
 		unsigned long m_label;
-		size_t m_inputFieldId;
+		std::wstring m_inputFieldId;
 	};
 
 	class SGXDATAMAPPING_API Link {

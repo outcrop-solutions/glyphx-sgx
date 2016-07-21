@@ -16,16 +16,21 @@ namespace SynGlyphX {
 	const InputField& InputFieldManager::GetInputField(const std::wstring& fieldID) const
 	{
 		const static InputField empty;
-		auto it = m_imputFields.find(fieldID);
-		if (it != m_imputFields.end())
+		auto it = m_inputFields.find(fieldID);
+		if (it != m_inputFields.end())
 			return it->second;
 		else
 			return empty;
 	}
 
+	void InputFieldManager::ClearInputFieldBindings(const std::wstring& fieldID)
+	{
+		m_dataTransformMapping->ClearInputFieldBindings(fieldID);
+	}
+
 	void InputFieldManager::SetInputField(const std::wstring& fieldID, const InputField& field)
 	{
-		m_imputFields[fieldID] = field;
+		m_inputFields[fieldID] = field;
 	}
 	
 	std::wstring InputFieldManager::GenerateInputFieldID(const InputField& field) 
@@ -38,15 +43,37 @@ namespace SynGlyphX {
 	
 	void InputFieldManager::ExportToPropertyTree(boost::property_tree::wptree& propertyTree) const 
 	{
-		for (auto field : m_imputFields)
+		for (auto field : m_inputFields)
 		{
 			field.second.ExportToPropertyTree(propertyTree, field.first);
 		}
 	}
 
+	void InputFieldManager::ImportFromPropertyTree(const boost::property_tree::wptree& propertyTree)
+	{
+		for (const boost::property_tree::wptree::value_type& inputField : propertyTree) 
+		{
+			if (inputField.first == L"InputField") 
+			{	
+				m_inputFields[inputField.second.get<std::wstring>(L"<xmlattr>.name")] = InputField(inputField.second);
+			}
+		}
+	}
+
+	void InputFieldManager::Clear()
+	{
+		m_inputFields.clear();
+	}
+
+	const std::unordered_map<std::wstring, InputField>& InputFieldManager::GetFieldMap() const
+	{ 
+		return m_inputFields;  
+	}
+
 	DataTransformMapping::DataTransformMapping() :
 		XMLPropertyTreeFile(true),
-		m_id(UUIDGenerator::GetNewRandomUUID())
+		m_id(UUIDGenerator::GetNewRandomUUID()),
+		m_inputFieldManager(this)
     {
 		//There will always be at least one base object
 		m_baseObjects.push_back(BaseImage(nullptr));
@@ -288,6 +315,11 @@ namespace SynGlyphX {
 				}
 			}
 		}
+
+		boost::optional<const boost::property_tree::wptree&> inputFieldsTree = dataTransformPropertyTree.get_child_optional(L"InputFields");
+		if (inputFieldsTree.is_initialized())
+			m_inputFieldManager.ImportFromPropertyTree(inputFieldsTree.get());
+
     }
 
 	void DataTransformMapping::ExportToPropertyTree(boost::property_tree::wptree& filePropertyTree) const {
@@ -425,6 +457,7 @@ namespace SynGlyphX {
 		m_baseObjects.clear();
 		m_legends.clear();
 		m_links.clear();
+		m_inputFieldManager.Clear();
 		m_id = UUIDGenerator::GetNewRandomUUID();
 
 		if (addADefaultBaseObjectAfterClear) {
@@ -632,6 +665,11 @@ namespace SynGlyphX {
 	void DataTransformMapping::ClearInputFieldBindings(const boost::uuids::uuid& treeID, const std::wstring& inputfield) {
 		DataMappingGlyphGraph::SharedPtr glyphTree = m_glyphTrees[treeID];
 		glyphTree->ClearInputFieldBindings(inputfield);
+	}
+
+	void DataTransformMapping::ClearInputFieldBindings(const std::wstring& inputfield) {
+		for (auto glyphTree : m_glyphTrees)
+			glyphTree.second->ClearInputFieldBindings(inputfield);
 	}
 
 	const boost::uuids::uuid& DataTransformMapping::GetID() const {
