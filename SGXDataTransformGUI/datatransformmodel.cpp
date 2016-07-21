@@ -634,29 +634,31 @@ namespace SynGlyphX {
 	}
 	
 	void DataTransformModel::ClearAbsentBindings() {
+		//Does not work correctly after Aliases
+		//TODO reimplement 
 
-		//assert(0);//TODO reimplement after refactoring
-		_ASSERT(0);
+		////_ASSERT(0);
 		//QModelIndex index = createIndex(0, 0);
 		//SynGlyphX::DataMappingGlyphGraph::InputFieldMap fieldMap = GetInputFieldsForTree(index); 
-		//std::set<SynGlyphX::HashID> sourceFields;
+		//std::list<SynGlyphX::InputField> sourceFields;
 		//for (const auto& t : m_tableStatsMap) {
 		//	auto table = t.first;
 		//	auto stats = t.second;
 		//	for (const auto& stat : stats) {
 		//		// use arbitrary Type since it does not affect HashID
 		//		SynGlyphX::InputField sInputField(table.GetDatasourceID(), table.GetTable(), stat[0].toStdWString(), SynGlyphX::InputField::Type::Text);
-		//		sourceFields.insert(sInputField.GetHashID());
+		//		sourceFields.push_back(sInputField);
 		//		}
 		//	}
-		//for (const auto& field : fieldMap) {
-		//	if (sourceFields.find(field.first) == sourceFields.end()) { 
+		//for (const auto& field : GetInputFieldManager()->GetFieldMap()) {
+		//	auto it = find(sourceFields.begin(), sourceFields.end(), field.second);
+		//	if (it == sourceFields.end()) { 
 		//		SynGlyphX::InputField f(field.second);
 		//		AppGlobal::Services()->ShowWarningDialog(tr("Source data does not have field:\n") + QString::fromWCharArray(f.GetField().c_str()) + tr("\nMapping will be removed"));
 		//		AppGlobal::Services()->SetModified(true);
-		//		m_dataMapping->ClearInputFieldBindings(GetTreeId(index), f);
+		//		m_dataMapping->ClearInputFieldBindings(GetTreeId(index), field.first);
 		//	}
-						
+		//				
 		//}
 		//emit dataChanged(index, index);
 	}

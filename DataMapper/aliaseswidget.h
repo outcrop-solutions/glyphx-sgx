@@ -4,7 +4,7 @@
 class QTableWidget;
 class QHeaderView;
 class QPushButton;
-class QTableWidget;
+class AliasTableWidget;
 
 namespace SynGlyphX {
 	class DataTransformModel;
@@ -15,25 +15,30 @@ class AliasesWidget : public QWidget
 	Q_OBJECT
 
 public:
-	AliasesWidget(QWidget *parent = 0);
+	AliasesWidget(SynGlyphX::DataTransformModel* model, QWidget *parent = 0);
 	~AliasesWidget();
 
 	QSize sizeHint() const;
 	void removeAlias();
 	void Clear();
+	void Refresh();
 	QString customStyleSheet();
 	QHeaderView* SelectableHeaderView();
 
+	void dragEnterEvent(QDragEnterEvent *event) override;
+
 public slots:
 	void sectionClicked(int index);
+	void OnCellChanged(int row, int column);
 
 private:
+	QString GenerateUniqueName(QString hint = QString());
 	QPushButton* m_addAliasButton;
-	QTableWidget* m_aliasesTableWidget;
+	AliasTableWidget* m_aliasesTableWidget;
 	QHeaderView* m_headers;
 
 	QAction* m_removeSelectedContextMenuAction;
 
 	//std::map<QDataWidgetMapper*, unsigned int> m_dataWidgetMappersAndRows;
-	//GlyphRolesTableModel* m_model;
+	SynGlyphX::DataTransformModel* m_model;
 };

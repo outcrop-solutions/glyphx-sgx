@@ -18,6 +18,8 @@
 #include "AppServices.h"
 class DataMapperWindow;
 class DMServicesImpl; //in this case we need external Impl to make it friend of GlyphDesignerWindow
+class GlyphRolesTableModel;
+
 class DMServices : public SynGlyphX::AppServices {
 
 public:
@@ -25,6 +27,7 @@ public:
 	virtual ~DMServices();
 	virtual void BeginTransaction(const char* name, SynGlyphX::TransactionType t) override;
 	virtual void EndTransaction() override;
+	GlyphRolesTableModel* GetGlyphRolesTableModel();
 private:
 	DMServicesImpl* pImpl;
 };

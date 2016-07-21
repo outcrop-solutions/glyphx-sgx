@@ -295,7 +295,7 @@ QVariant GlyphRolesTableModel::GetEditDataForType(const QVariant& propVariant, c
 	else if (index.column() == s_mappedFieldColumn) {
 
 		//return QVariant::fromValue(GetInputField(mappingProperty.GetBinding().GetInputFieldID()));
-		QString::fromStdWString(mappingProperty.GetBinding().GetInputFieldID());
+		return QString::fromStdWString(mappingProperty.GetBinding().GetInputFieldID());
 	}
 	else {
 
@@ -381,6 +381,15 @@ void GlyphRolesTableModel::Clear() {
 	m_selectedDataTransformModelIndexes.clear();
 	OnAllDataUpdated();
 }
+
+void GlyphRolesTableModel::Refresh() {
+
+	DisconnectAllSignalsFromSourceModel();
+
+	OnAllDataUpdated();
+}
+
+
 
 bool GlyphRolesTableModel::IsClear() const {
 

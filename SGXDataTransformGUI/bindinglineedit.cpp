@@ -120,22 +120,32 @@ void BindingLineEdit::SetAcceptedInputTypes(SynGlyphX::MappingFunctionData::Inpu
 
 void BindingLineEdit::dragEnterEvent(QDragEnterEvent *event) {
 
-	const InputFieldMimeData* mimeData = qobject_cast<const InputFieldMimeData*>(event->mimeData());
-	if (mimeData == nullptr) {
-
-		return;
+	auto ifm = m_model->GetSourceModel()->GetInputFieldManager();
+	SynGlyphX::InputField field;
+	if (event->mimeData()->hasText())
+	{
+		QString fieldID = event->mimeData()->text();
+		field = ifm->GetInputField(fieldID.toStdWString());
+	}
+	else
+	{
+		const InputFieldMimeData* mimeData = qobject_cast<const InputFieldMimeData*>(event->mimeData());
+		if (mimeData == nullptr) 
+			return;
+		field = mimeData->GetInputField();
 	}
 
-	if ((m_acceptedInputTypes == SynGlyphX::MappingFunctionData::Input::Numeric) && (!mimeData->GetInputField().IsNumeric())) {
+
+	if ((m_acceptedInputTypes == SynGlyphX::MappingFunctionData::Input::Numeric) && (!field.IsNumeric())) {
 		
 		return;
 	}
-	else if ((m_acceptedInputTypes == SynGlyphX::MappingFunctionData::Input::Text) && (mimeData->GetInputField().IsNumeric())) {
+	else if ((m_acceptedInputTypes == SynGlyphX::MappingFunctionData::Input::Text) && (field.IsNumeric())) {
 
 		return;
 	}
 
-	if (!m_model->IsInputFieldCompatible(mimeData->GetInputField())) {
+	if (!m_model->IsInputFieldCompatible(field)) {
 
 		return;
 	}
@@ -145,17 +155,24 @@ void BindingLineEdit::dragEnterEvent(QDragEnterEvent *event) {
 
 void BindingLineEdit::dropEvent(QDropEvent* event) {
 
-	const InputFieldMimeData* mimeData = qobject_cast<const InputFieldMimeData*>(event->mimeData());
 	auto ifm = m_model->GetSourceModel()->GetInputFieldManager();
+	if (event->mimeData()->hasText())
+	{
+		QString fieldID = event->mimeData()->text();
+		ifm->GetInputField(fieldID.toStdWString());
+		auto command = new BindingLineEditChangeCommand(this, fieldID);
+		command->setText(tr("Change Binding"));
+		SynGlyphX::AppGlobal::Services()->GetUndoStack()->push(command);
+		return;
+	}
+	const InputFieldMimeData* mimeData = qobject_cast<const InputFieldMimeData*>(event->mimeData());
+	
 	std::wstring fieldID = ifm->GenerateInputFieldID(mimeData->GetInputField());
 	ifm->SetInputField(fieldID, mimeData->GetInputField());
 	if (mimeData != nullptr) {
 		auto command = new BindingLineEditChangeCommand(this, QString::fromStdWString(fieldID)/*mimeData->GetInputField()*/);
 		command->setText(tr("Change Binding"));
 		SynGlyphX::AppGlobal::Services()->GetUndoStack()->push(command);
-		//SetInputField(mimeData->GetInputField());
-		//m_inputFieldId = mimeData->GetInputField();
-		//emit ValueChangedByUser(m_inputFieldId);
 	}
 }
 

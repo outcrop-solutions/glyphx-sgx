@@ -51,6 +51,9 @@ public:
 		tcc->m_tv = m_w->m_glyphTreesView;
 	}
 
+	GlyphRolesTableModel* GetGlyphRolesTableModel() {
+		return m_w->m_glyphRolesTableModel;
+	}
 	DataMapperWindow* m_w;
 	TreeChangeCommand* tcc;
 };
@@ -65,6 +68,10 @@ void DMServices::BeginTransaction(const char* name, SynGlyphX::TransactionType t
 
 void DMServices::EndTransaction() {
 	pImpl->EndTransaction();
+}
+
+GlyphRolesTableModel* DMServices::GetGlyphRolesTableModel() {
+	return pImpl->GetGlyphRolesTableModel();
 }
 
 DMServices::~DMServices() {

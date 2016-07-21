@@ -80,6 +80,7 @@ public:
 public slots:
 	void SetSelectedGlyphTreeIndexes(const QModelIndexList& indexList);
 	void Clear();
+	void Refresh();
 	void ClearInputBindings();
 
 private slots:

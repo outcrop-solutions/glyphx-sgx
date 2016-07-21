@@ -357,7 +357,7 @@ void DataMapperWindow::CreateDockWidgets() {
 	m_viewMenu->addAction(rightDockWidgetDataSources->toggleViewAction());
 
 	QDockWidget* rightDockWidgetAliases = new QDockWidget(tr("Aliases"), this);
-	m_aliases = new AliasesWidget(rightDockWidgetAliases);
+	m_aliases = new AliasesWidget(m_dataTransformModel, rightDockWidgetAliases);
 
 	rightDockWidgetAliases->setWidget(m_aliases);
 	m_aliases->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
@@ -539,6 +539,7 @@ bool DataMapperWindow::LoadDataTransform(const QString& filename) {
 
 		m_dataTransformModel->LoadDataTransformFile(filename);
 		m_glyphTreesView->SelectLastGlyphTreeRoot();
+		m_aliases->Refresh();
 		SelectFirstBaseObject();
 
 		m_modelResetConnection = QObject::connect(m_dataTransformModel, &SynGlyphX::DataTransformModel::modelReset, this, [&, this](){ setWindowModified(true); });
