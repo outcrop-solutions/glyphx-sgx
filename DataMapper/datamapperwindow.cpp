@@ -782,7 +782,7 @@ void DataMapperWindow::CreatePortableVisualization(SynGlyphX::PortableVisualizat
 
 				throw;
 			}
-			ge.generateGlyphs();
+			ge.generateGlyphs(this);
 
 			m_portableVisualizationExport.CopyLogo(QDir::toNativeSeparators(csvDirectory + "/usr/images/"));
 		}

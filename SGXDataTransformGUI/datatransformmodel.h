@@ -133,8 +133,6 @@ namespace SynGlyphX {
 		boost::uuids::uuid AddFileDatasource(const FileDatasource& datasource);
 		boost::uuids::uuid AddDatabaseServer(const DatabaseServerDatasource& datasource);
 
-		//void SetInputField(const boost::uuids::uuid& treeID, DataMappingGlyphGraph::const_iterator& node, DataMappingGlyph::MappableField field, const InputField& inputfield);
-		void SetInputField(const QModelIndex& index, DataMappingGlyph::MappableField field, const InputField& inputfield);
 		void SetInputField(const QModelIndex& index, DataMappingGlyph::MappableField field, const QString& inputfield);
 
 		//void ClearInputBinding(const boost::uuids::uuid& treeID, DataMappingGlyphGraph::const_iterator& node, DataMappingGlyph::MappableField field);
@@ -142,7 +140,7 @@ namespace SynGlyphX {
 		void ClearAllInputBindings(const QModelIndex& index);
 
 		void ClearAbsentBindings();
-		const DataMappingGlyphGraph::InputFieldMap& GetInputFieldsForTree(const QModelIndex& index) const;
+		//const DataMappingGlyphGraph::InputFieldMap& GetInputFieldsForTree(const QModelIndex& index) const;
 
 		//void EnableTables(const boost::uuids::uuid& id, const Datasource::TableNames& tables, bool enable = true);
 

@@ -653,7 +653,7 @@ void GlyphViewerWindow::LoadDataTransform(const QString& filename, const DataMap
 		ge.initiate(m_dataEngineConnection->getEnv(), filename.toStdString(), dirPath, baseImageDir, "", "GlyphViewer");
 		if (ge.IsUpdateNeeded()){
 			DownloadBaseImages(ge);
-			ge.generateGlyphs();
+			ge.generateGlyphs(this);
 		}
 		std::vector<std::string> images = ge.getBaseImages();
 		
@@ -696,15 +696,16 @@ void GlyphViewerWindow::LoadFilesIntoModel(const SynGlyphXANTz::ANTzCSVWriter::F
 	m_glyphForestModel->LoadANTzVisualization(filesToLoad, baseImageFilenames);
 
 	SynGlyphX::DataMappingGlyphGraph::ConstSharedPtr rootGlyph = m_mappingModel->GetDataMapping()->GetGlyphGraphs().begin()->second;
+	//TODO: fix this!
 	std::array<QString, 3> rootPositionFields;
 	for (unsigned int i = 0; i < 3; ++i) {
 
-		const SynGlyphX::InputBinding& posInputBinding = rootGlyph->GetRoot()->second.GetPosition()[i].GetBinding();
-		SynGlyphX::HashID id = posInputBinding.GetInputFieldID();
-		if (id != 0) {
+		//const SynGlyphX::InputBinding& posInputBinding = rootGlyph->GetRoot()->second.GetPosition()[i].GetBinding();
+		//SynGlyphX::HashID id = posInputBinding.GetInputFieldID();
+		//if (id != 0) {
 
-			rootPositionFields[i] = QString::fromStdWString(rootGlyph->GetInputFields().at(id).GetField());
-		}
+		rootPositionFields[i] = "Fix this!"; /*QString::fromStdWString(rootGlyph->GetInputFields().at(id).GetField());*/
+		//
 	}
 	m_glyphForestModel->SetRootPosXYZMappedFields(rootPositionFields);
 }
@@ -980,7 +981,7 @@ void GlyphViewerWindow::CreatePortableVisualization(SynGlyphX::PortableVisualiza
 		//App says "DataMapper" because this is equivalent to create portable visualization in DataMapper
 		ge.initiate(m_dataEngineConnection->getEnv(), m_currentFilename.toStdString(), csvDirectory.toStdString() + "/", baseImageDir, baseFilename, "DataMapper");
 		DownloadBaseImages(ge);
-		ge.generateGlyphs();
+		ge.generateGlyphs(this);
 
 		m_portableVisualizationExport.CopyLogo(QDir::toNativeSeparators(csvDirectory + "/usr/images/"));
 

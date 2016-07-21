@@ -3,7 +3,7 @@
 #include <QtWidgets/QSplashScreen>
 #include <QtCore/QTimer>
 #include "licensingdialog.h"
-
+#include <QtCore/QDir>
 #ifdef USE_BREAKPAD
 #include "exception_handler.h"
 #endif

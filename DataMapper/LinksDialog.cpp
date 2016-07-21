@@ -394,7 +394,6 @@ LinksDialog::LinksDialog(SynGlyphX::DataTransformModel* dataTransformModel, QWid
 	
 	m_functionComboBox = new QComboBox(this);
 
-	//TODO get available types from Link class rather then hardcode strings
 	QStringList functions;
 	functions << "Match Value" << "Key to Value" << "Key to Range";
 	m_functionComboBox->addItems(functions);

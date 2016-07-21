@@ -94,7 +94,7 @@ private:
 	void DisconnectAllSignalsFromSourceModel();
 	PropertyType GetFieldType(int row) const;
 	SynGlyphX::MappingFunctionData::SharedPtr CreateNewMappingFunction(SynGlyphX::MappingFunctionData::Function function, PropertyType type) const;
-	const SynGlyphX::InputField GetInputField(SynGlyphX::HashID fieldID) const;
+	//const SynGlyphX::InputField GetInputField(SynGlyphX::HashID fieldID) const;
 	bool IsAnySelectedIndexWithinIndexes(const QModelIndex& topLeft, const QModelIndex& bottomRight) const;
 	void DetermineAssociatedInputTable();
 

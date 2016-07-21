@@ -597,13 +597,6 @@ namespace SynGlyphX {
 		m_dataMapping->SetInputField(treeID, node, field, inputfield);
 	}*/
 
-	void DataTransformModel::SetInputField(const QModelIndex& index, DataMappingGlyph::MappableField field, const InputField& inputfield) {
-		//_ASSERT(0); //TODO reimplement after fefactoring
-		SynGlyphX::DataMappingGlyphGraph::ConstGlyphIterator node(static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(index.internalPointer()));
-		//SetInputField(treeID, node, field, inputfield);
-		m_dataMapping->SetInputField(GetTreeId(index), node, field, inputfield);
-		emit dataChanged(index, index);
-	}
 
 	void DataTransformModel::SetInputField(const QModelIndex& index, DataMappingGlyph::MappableField field, const QString& inputfield) {
 		//_ASSERT(0); //TODO reimplement after fefactoring
@@ -663,15 +656,15 @@ namespace SynGlyphX {
 		//emit dataChanged(index, index);
 	}
 
-	const DataMappingGlyphGraph::InputFieldMap& DataTransformModel::GetInputFieldsForTree(const QModelIndex& index) const {
+	//const DataMappingGlyphGraph::InputFieldMap& DataTransformModel::GetInputFieldsForTree(const QModelIndex& index) const {
 
-		if (!index.isValid()) {
+	//	if (!index.isValid()) {
 
-			throw std::invalid_argument("Can't get input field map from invalid index");
-		}
+	//		throw std::invalid_argument("Can't get input field map from invalid index");
+	//	}
 
-		return m_dataMapping->GetGlyphGraphs().at(GetTreeId(index))->GetInputFields();
-	}
+	//	return m_dataMapping->GetGlyphGraphs().at(GetTreeId(index))->GetInputFields();
+	//}
 	/*
 	void DataTransformModel::EnableTables(const boost::uuids::uuid& id, const Datasource::TableNames& tables, bool enable) {
 

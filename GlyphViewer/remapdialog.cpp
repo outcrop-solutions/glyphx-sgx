@@ -31,8 +31,11 @@ RemapDialog::RemapDialog(SynGlyphX::DataTransformMapping::ConstSharedPtr dataTra
 
 	SynGlyphX::VerticalTabOrderTableView* tableView = CreateTableView();
 	mainLayout->addWidget(tableView);
-
-	SynGlyphX::InputTable tableInDataStats = dataTransformMapping->GetGlyphGraphs().begin()->second->GetInputFields().begin()->second;
+	//TODO: check this!
+	SynGlyphX::InputTable tableInDataStats =
+		const_cast<SynGlyphX::DataTransformMapping*>(dataTransformMapping.get())->GetInputFieldManager()->GetFieldMap().begin()->second;
+		
+		/*dataTransformMapping->GetGlyphGraphs().begin()->second->GetInputFields().begin()->second;*/
 	m_dataStatsModel = new SynGlyphX::DataStatsModel(tableInDataStats, m_dataTransformModel->GetTableStatsMap().at(tableInDataStats), this);
 	QTableView* dataStatsView = new QTableView(this);
 	dataStatsView->setModel(m_dataStatsModel);
