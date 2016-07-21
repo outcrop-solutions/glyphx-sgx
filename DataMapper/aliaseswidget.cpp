@@ -220,6 +220,8 @@ void AliasesWidget::Clear() {
 }
 
 void AliasesWidget::Refresh() {
+	while (m_aliasesTableWidget->rowCount() > 0)
+		m_aliasesTableWidget->removeRow(0);
 	QObject::disconnect(m_aliasesTableWidget, &QTableWidget::cellChanged, this, &AliasesWidget::OnCellChanged);
 	auto fieldMap = m_model->GetInputFieldManager()->GetFieldMap();
 	for (const auto& field : m_model->GetInputFieldManager()->GetFieldMap())

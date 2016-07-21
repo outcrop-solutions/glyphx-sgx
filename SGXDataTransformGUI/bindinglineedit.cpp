@@ -77,7 +77,6 @@ void BindingLineEdit::SetInputField(const QString& inputFieldID) {
 
 	auto ifm = m_model->GetSourceModel()->GetInputFieldManager();
 	m_inputFieldId = inputFieldID;
-	//TODO implement correctly
 	if (m_inputFieldId[0] == '~')
 	{
 		auto inputField = ifm->GetInputField(m_inputFieldId.toStdWString());
@@ -106,16 +105,17 @@ void BindingLineEdit::SetAcceptedInputTypes(SynGlyphX::MappingFunctionData::Inpu
 
 	m_acceptedInputTypes = acceptedInputTypes;
 
-	//TODO: Impmlement correctly after refactoring
 	//If input type has changed then clear input field if input field no longer matches input type
-	//if ((m_acceptedInputTypes == SynGlyphX::MappingFunctionData::Input::Numeric) && (m_inputFieldId.GetInputField().IsValid()) && (!m_inputFieldId.GetInputField().IsNumeric())) {
+	auto ifm = m_model->GetSourceModel()->GetInputFieldManager();
+	auto inputField = ifm->GetInputField(m_inputFieldId.toStdWString());
+	if ((m_acceptedInputTypes == SynGlyphX::MappingFunctionData::Input::Numeric) && (inputField.IsValid()) && (!inputField.IsNumeric())) {
 
-	//	Clear();
-	//}
-	//else if ((m_acceptedInputTypes == SynGlyphX::MappingFunctionData::Input::Text) && (m_inputFieldId.GetInputField().IsValid()) && (m_inputFieldId.GetInputField().IsNumeric())) {
+		Clear();
+	}
+	else if ((m_acceptedInputTypes == SynGlyphX::MappingFunctionData::Input::Text) && (inputField.IsValid()) && (inputField.IsNumeric())) {
 
-	//	Clear();
-	//}
+		Clear();
+	}
 }
 
 void BindingLineEdit::dragEnterEvent(QDragEnterEvent *event) {
@@ -194,10 +194,6 @@ void BindingLineEdit::Clear() {
 
 		auto command = new BindingLineEditChangeCommand(this, QString());
 		command->setText(tr("Clear Binding"));
-		SynGlyphX::AppGlobal::Services()->GetUndoStack()->push(command);
-		
-		//m_inputFieldId.clear();
-		//SetInputField(QString());//for now call explicitely, used to work without it TODO: investigate
-		//emit ValueChangedByUser(m_inputFieldId);
+		SynGlyphX::AppGlobal::Services()->GetUndoStack()->push(command);		
 	}
 }
