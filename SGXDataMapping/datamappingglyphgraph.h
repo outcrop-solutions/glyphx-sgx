@@ -70,7 +70,7 @@ namespace SynGlyphX {
 		void ClearInputFieldBindings(const std::wstring& inputfield);
 		void ClearAllInputBindings();
 
-		const InputFieldMap& GetInputFields() const;
+		//const InputFieldMap& GetInputFields() const;
 
 		bool DoesRootGlyphPositionXYHaveBindings() const;
 

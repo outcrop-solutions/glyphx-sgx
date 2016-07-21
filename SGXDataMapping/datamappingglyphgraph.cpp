@@ -8,6 +8,7 @@
 #include "datamappingglyphgraphexportvisitor.h"
 #include "hashid.h"
 
+
 namespace SynGlyphX {
 
 	DataMappingGlyphGraph::DataMappingGlyphGraph() :
@@ -382,7 +383,6 @@ namespace SynGlyphX {
 		//		throw std::invalid_argument("Argument inputfield does not match the datasource and table of the other input fields of this tree");
 		//	}
 		//}
-
 		//Clear input binding if field as a previous value
 		ClearInputBinding(node, field);
 
@@ -458,10 +458,10 @@ namespace SynGlyphX {
 		}
 	}
 
-	const DataMappingGlyphGraph::InputFieldMap& DataMappingGlyphGraph::GetInputFields() const {
+	//const DataMappingGlyphGraph::InputFieldMap& DataMappingGlyphGraph::GetInputFields() const {
 
-		return m_inputFields;
-	}
+	//	return m_inputFields;
+	//}
 
 	bool DataMappingGlyphGraph::DoesRootGlyphPositionXYHaveBindings() const {
 
