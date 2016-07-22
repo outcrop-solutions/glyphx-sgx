@@ -3,7 +3,6 @@
 #include <boost/assign/list_of.hpp>
 #include <boost/bimap/list_of.hpp>
 #include "Link.h"
-#include "Alias.h"
 #include "baseimage.h"
 
 namespace SynGlyphX {

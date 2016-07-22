@@ -315,10 +315,32 @@ namespace SynGlyphX {
 				}
 			}
 		}
-
+		
 		boost::optional<const boost::property_tree::wptree&> inputFieldsTree = dataTransformPropertyTree.get_child_optional(L"InputFields");
 		if (inputFieldsTree.is_initialized())
 			m_inputFieldManager.ImportFromPropertyTree(inputFieldsTree.get());
+
+		//This is for backwards compatibility, TODO: remove in future versions
+		for (auto& link : m_links)
+		{
+			InputField s = m_inputFieldManager.GetInputField(link.m_start.m_inputFieldId);
+			if (!s.IsValid())
+			{
+				std::wstring newId = L"~" + link.m_start.m_inputFieldId;
+				s = m_inputFieldManager.GetInputField(newId);
+				if (s.IsValid())
+					link.m_start.m_inputFieldId = newId;
+			}
+
+			InputField e = m_inputFieldManager.GetInputField(link.m_end.m_inputFieldId);
+			if (!e.IsValid())
+			{
+				std::wstring newId = L"~" + link.m_end.m_inputFieldId;
+				e = m_inputFieldManager.GetInputField(newId);
+				if (e.IsValid())
+					link.m_end.m_inputFieldId = newId;
+			}
+		}
 
     }
 
