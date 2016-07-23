@@ -146,26 +146,16 @@ void FilteringTable::OnRemoveSelectedFilters() {
 
 void FilteringTable::OnFilterSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected) {
 
-	RowSet rowsWithSelection = GetRowSelectionMap();
+	GroupedRowMap rowsWithSelection = GetGroupedRowSelectionMap();
 	m_removeSelectedContextMenuAction->setEnabled(!rowsWithSelection.empty());
 
 	if (m_moveRowUpContextMenuAction != nullptr) {
 
-		bool areSelectedRowsInOneField = true;
-		QString previousField = GetTextFromCell(*rowsWithSelection.begin());
-		for (const auto& row : rowsWithSelection) {
+		if (rowsWithSelection.size() == 1) {
 
-			if (previousField != GetTextFromCell(*rowsWithSelection.begin())) {
-
-				areSelectedRowsInOneField = false;
-				break;
-			}
-		}
-
-		if (areSelectedRowsInOneField) {
-
-			m_moveRowUpContextMenuAction->setEnabled(previousField != GetTextFromCell(0));
-			m_moveRowDownContextMenuAction->setEnabled(previousField != GetTextFromCell(m_filterListTableWidget->rowCount() - 1));
+			unsigned int span = rowsWithSelection.begin()->first;
+			m_moveRowUpContextMenuAction->setEnabled(span != 0);
+			m_moveRowDownContextMenuAction->setEnabled(span != (m_filterGroups[m_currentTable].GetNumberOfGroups() - 1));
 		}
 		else {
 
@@ -244,23 +234,60 @@ void FilteringTable::OnRemoveAllFilters() {
 
 void FilteringTable::OnMoveUpRow() {
 
-	const QModelIndexList& modelIndexList = m_filterListTableWidget->selectionModel()->selectedRows();
-	unsigned int sourceRow = modelIndexList[0].row();
+	GroupedRowMap rowsWithSelection = GetGroupedRowSelectionMap();
+	unsigned int span = rowsWithSelection.begin()->first;
 
-	MoveRow(sourceRow, sourceRow - 1);
+	MoveRow(span, span - 1);
 }
 
 void FilteringTable::OnMoveDownRow() {
 
-	const QModelIndexList& modelIndexList = m_filterListTableWidget->selectionModel()->selectedRows();
-	unsigned int sourceRow = modelIndexList[0].row();
+	GroupedRowMap rowsWithSelection = GetGroupedRowSelectionMap();
+	unsigned int span = rowsWithSelection.begin()->first;
 
-	MoveRow(sourceRow, sourceRow + 1);
+	MoveRow(span, span + 1);
 }
 
-void FilteringTable::MoveRow(unsigned int sourceRow, unsigned int destinationRow) {
+void FilteringTable::MoveRow(unsigned int sourceSpan, unsigned int destinationSpan) {
 
-	//default for move row where move row is not enabled
+	unsigned int firstSourceRow = 0;
+	unsigned int firstDesitinationRow = 0;
+	unsigned int numberOfRowsToMove = m_filterGroups[m_currentTable].GetCountForGroup(sourceSpan);
+
+	for (unsigned int i = 0; i < sourceSpan; ++i) {
+
+		firstSourceRow += m_filterGroups[m_currentTable].GetCountForGroup(i);
+	}
+
+	std::vector < std::pair<QTableWidgetItem*, QWidget*>> itemsToMove;
+	for (unsigned int j = 0; j < numberOfRowsToMove; ++j) {
+
+		itemsToMove.push_back(std::pair<QTableWidgetItem*, QWidget*>(m_filterListTableWidget->takeItem(firstSourceRow, 0),
+			m_filterListTableWidget->cellWidget(firstSourceRow, 1)));
+	}
+
+	for (unsigned int i = 0; i < destinationSpan; ++i) {
+
+		firstDesitinationRow += m_filterGroups[m_currentTable].GetCountForGroup(i);
+	}
+
+	for (unsigned int j = 0; j < numberOfRowsToMove; ++j) {
+
+		unsigned int destinationRow = firstDesitinationRow + j;
+		m_filterListTableWidget->insertRow(destinationRow);
+		m_filterListTableWidget->setItem(destinationRow, 0, itemsToMove[j].first);
+		m_filterListTableWidget->setCellWidget(destinationRow, 1, itemsToMove[j].second);
+	}
+
+	for (unsigned int j = 0; j < numberOfRowsToMove; ++j) {
+
+		m_filterListTableWidget->removeRow(firstSourceRow);
+	}
+
+	m_filterGroups[m_currentTable].SwapGroups(sourceSpan, destinationSpan);
+
+	UpdateRowSpansInWidget();
+	ResetFiltersAfterAddOrRemove();
 }
 
 QString FilteringTable::GetTextFromCell(int row) const {
@@ -496,6 +523,17 @@ FilteringTable::RowSet FilteringTable::GetRowSelectionMap() const {
 	return rowSelectionMap;*/
 }
 
+FilteringTable::GroupedRowMap FilteringTable::GetGroupedRowSelectionMap() const {
+
+	GroupedRowMap rowMap;
+	for (const auto& modelIndex : m_filterListTableWidget->selectionModel()->selectedIndexes()) {
+
+		FilterWidgetGroupsManager::GroupedIndex index = m_filterGroups[m_currentTable].GetGroupedIndex(modelIndex.row());
+		rowMap[index.first].push_back(index.second);
+	}
+	return rowMap;
+}
+
 void FilteringTable::UpdateRowSpansInWidget() {
 
 	unsigned int firstTableRow = 0;
@@ -628,4 +666,21 @@ FilteringTable::FilterWidgetGroupsManager::GroupedIndex FilteringTable::FilterWi
 	}
 
 	throw std::invalid_argument("Index exceeds total number of widgets.");
+}
+
+void FilteringTable::FilterWidgetGroupsManager::SwapGroups(unsigned int sourceGroup, unsigned int destinationGroup) {
+
+	std::vector<FilterWidgetGroup>::iterator iT = m_filterWidgets.begin();
+	std::advance(iT, sourceGroup);
+	FilterWidgetGroup groupToMove = *iT;
+	m_filterWidgets.erase(iT);
+
+	QString fieldToMove = m_fields[sourceGroup];
+	m_fields.removeAt(sourceGroup);
+
+	iT = m_filterWidgets.begin();
+	std::advance(iT, destinationGroup);
+	m_filterWidgets.insert(iT, groupToMove);
+
+	m_fields.insert(destinationGroup, fieldToMove);
 }

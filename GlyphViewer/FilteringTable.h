@@ -89,6 +89,8 @@ protected:
 
 		GroupedIndex GetGroupedIndex(unsigned int index) const;
 
+		void SwapGroups(unsigned int sourceGroup, unsigned int destinationGroup);
+
 	private:
 		std::vector<FilterWidgetGroup> m_filterWidgets;
 		QStringList m_fields;
@@ -96,6 +98,7 @@ protected:
 
 
 	typedef std::set<unsigned int, std::greater<unsigned int>, std::allocator<unsigned int>> RowSet;
+	typedef std::map<unsigned int, std::vector<unsigned int>> GroupedRowMap;
 
 	virtual void ResetFiltersAfterAddOrRemove() = 0;
 	virtual void ClearData() = 0;
@@ -104,8 +107,8 @@ protected:
 	virtual bool DoAnyTablesHaveFilters() const = 0;
 	virtual void GetFilteringParametersForTable(const QString& table, FilteringParameters& filteringParameters) = 0;
 	virtual QWidget* AddFilter(const QString& field, unsigned int span) = 0;
-	virtual void MoveRow(unsigned int sourceRow, unsigned int destinationRow);
-
+	
+	void MoveRow(unsigned int sourceSpan, unsigned int destinationSpan);
 	void UpdatedEnableStateForButton(QAction* action, QPushButton* button);
 	void ClearFiltersFromTableWidget();
 	QString GetTextFromCell(int row) const;
@@ -113,6 +116,7 @@ protected:
 	void AddRow(const QString& field);
 	bool DoAnySubTablesHaveAllItemsSelected() const;
 	RowSet GetRowSelectionMap() const;
+	GroupedRowMap GetGroupedRowSelectionMap() const;
 	//unsigned int GetFirstTableRow(unsigned int rowSpanIndex) const;
 	void UpdateRowSpansInWidget();
 

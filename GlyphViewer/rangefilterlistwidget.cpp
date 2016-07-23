@@ -8,7 +8,7 @@
 #include "filteringmanager.h"
 
 RangeFilterListWidget::RangeFilterListWidget(SourceDataInfoModel* columnsModel, FilteringManager* filteringManager, QWidget *parent)
-	: FilteringTable(columnsModel, filteringManager, SynGlyphX::InputField::Type::Real, tr("Range"), false, parent)
+	: FilteringTable(columnsModel, filteringManager, SynGlyphX::InputField::Type::Real, tr("Range"), true, parent)
 {
 
 }
@@ -251,34 +251,6 @@ void RangeFilterListWidget::ResetMinMaxExtentsForFilters(unsigned int startingSp
 		
 		columnIntervalMap.push_back(std::pair<QString, SynGlyphX::DegenerateIntervalUnion>(field, intervalUnion));
 	}
-}
-
-void RangeFilterListWidget::MoveRow(unsigned int sourceRow, unsigned int destinationRow) {
-
-	/*SaveFiltersInTableWidget();
-
-	Field2RangeAndDistinctValuesVector& currentTableRanges = m_table2RangesAndDistinctValuesMap[m_currentTable];
-	Field2RangeAndDistinctValuesVector::iterator field2RangeMapIterator = currentTableRanges.begin();
-	std::advance(field2RangeMapIterator, sourceRow);
-
-	Field2RangeAndDistinctValues dataToMove = *field2RangeMapIterator;
-	currentTableRanges.erase(field2RangeMapIterator);
-
-	field2RangeMapIterator = currentTableRanges.begin();
-	std::advance(field2RangeMapIterator, destinationRow);
-	currentTableRanges.insert(field2RangeMapIterator, dataToMove);
-
-	m_filterTableWidget->removeRow(sourceRow);
-	m_filterTableWidget->insertRow(destinationRow);
-
-	SynGlyphX::SingleNumericRangeFilterWidget* filter = new SynGlyphX::SingleNumericRangeFilterWidget(Qt::Horizontal, this);
-	filter->SetSliderPositionValuesAndMaxExtents(dataToMove.second.second);
-	filter->SetRange(dataToMove.second.first);
-
-	m_filterTableWidget->setItem(destinationRow, 0, CreateItem(dataToMove.first));
-	m_filterTableWidget->setCellWidget(destinationRow, 1, filter);
-
-	ResetMinMaxExtentsForFilters(std::min(sourceRow, destinationRow));*/
 }
 
 void RangeFilterListWidget::ClearData() {

@@ -114,8 +114,3 @@ bool KeywordFilterListWidget::DoAnyTablesHaveFilters() const {
 
 	return false;
 }
-
-void KeywordFilterListWidget::MoveRow(unsigned int sourceRow, unsigned int destinationRow) {
-
-
-}

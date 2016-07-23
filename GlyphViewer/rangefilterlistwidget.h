@@ -37,7 +37,6 @@ protected:
 	void ResetForNewTable() override;
 	void SaveFiltersInTableWidget() override;
 	bool DoAnyTablesHaveFilters() const override;
-	void MoveRow(unsigned int sourceRow, unsigned int destinationRow) override;
 	void GetFilteringParametersForTable(const QString& table, FilteringParameters& filteringParameters) override;
 	QWidget* AddFilter(const QString& field, unsigned int span) override;
 
