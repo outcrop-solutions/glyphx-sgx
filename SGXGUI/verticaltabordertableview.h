@@ -36,7 +36,7 @@ namespace SynGlyphX {
 
 	protected:
 		bool focusNextPrevChild(bool next);
-		//virtual bool eventFilter(QObject* watched, QEvent* event);
+		virtual bool eventFilter(QObject* watched, QEvent* event);
 
 	private:
 		std::unordered_map<QObject*, QPersistentModelIndex> m_widgetToModelIndexMap;

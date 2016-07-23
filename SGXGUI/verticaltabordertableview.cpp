@@ -36,7 +36,7 @@ namespace SynGlyphX {
 							QWidget* widget = indexWidget(currentModel->index(0, column + 1));
 							if (widget != nullptr) {
 
-								widget->setFocus();
+								widget->setFocus(Qt::TabFocusReason);
 								return true;
 							}
 						}
@@ -46,7 +46,7 @@ namespace SynGlyphX {
 						QWidget* widget = indexWidget(currentModel->index(row + 1, column));
 						if (widget != nullptr) {
 
-							widget->setFocus();
+							widget->setFocus(Qt::TabFocusReason);
 							return true;
 						}
 					}
@@ -60,7 +60,7 @@ namespace SynGlyphX {
 							QWidget* widget = indexWidget(currentModel->index(currentModel->rowCount() - 1, column - 1));
 							if (widget != nullptr) {
 
-								widget->setFocus();
+								widget->setFocus(Qt::BacktabFocusReason);
 								return true;
 							}
 						}
@@ -70,7 +70,7 @@ namespace SynGlyphX {
 						QWidget* widget = indexWidget(currentModel->index(row - 1, column));
 						if (widget != nullptr) {
 
-							widget->setFocus();
+							widget->setFocus(Qt::BacktabFocusReason);
 							return true;
 						}
 					}
@@ -88,7 +88,7 @@ namespace SynGlyphX {
 		QTableView::setIndexWidget(index, widget);
 	}
 
-	/*bool VerticalTabOrderTableView::eventFilter(QObject* watched, QEvent* event) {
+	bool VerticalTabOrderTableView::eventFilter(QObject* watched, QEvent* event) {
 
 		if (event->type() == QEvent::FocusIn) {
 		
@@ -98,6 +98,6 @@ namespace SynGlyphX {
 			}
 		}
 		return false;
-	}*/
+	}
 
 } //namespace SynGlyphX

@@ -52,6 +52,10 @@ signals:
 public slots:
 	void SetFunction(const QString& function);
 
+protected:
+	bool focusNextPrevChild(bool next) override;
+	void focusInEvent(QFocusEvent* event) override;
+
 private slots:
 	void OnFunctionComboBoxChangedByUser();
 	void OnEditPropertiesClicked();

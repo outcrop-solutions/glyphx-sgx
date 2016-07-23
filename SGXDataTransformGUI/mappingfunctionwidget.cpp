@@ -3,6 +3,8 @@
 #include <QtWidgets/QHBoxLayout>
 #include "valuemappingdialog.h"
 #include "interpolationmappingdialog.h"
+#include <QtWidgets/QApplication>
+#include <QtGUi/QFocusEvent>
 
 const QStringList MappingFunctionWidget::s_numericColorFunctions = MappingFunctionWidget::CreateNumericColorFunctionList();
 const QStringList MappingFunctionWidget::s_enumerationFunctions = MappingFunctionWidget::CreateEnumerationFunctionList();
@@ -38,7 +40,6 @@ MappingFunctionWidget::MappingFunctionWidget(KeyType keyType, GlyphRolesTableMod
 	setLayout(layout);
 
 	setFocusPolicy(Qt::StrongFocus);
-	setFocusProxy(m_functionComboBox);
 	setTabOrder(m_functionComboBox, m_editPropertiesButton);
 }
 
@@ -269,4 +270,53 @@ QStringList MappingFunctionWidget::CreateEnumerationFunctionList() {
 	}
 
 	return functions;
+}
+
+bool MappingFunctionWidget::focusNextPrevChild(bool next) {
+
+	QHBoxLayout* currentLayout = dynamic_cast<QHBoxLayout*>(layout());
+
+	int focusWidgetIndex = currentLayout->indexOf(QApplication::focusWidget());
+	if (focusWidgetIndex != -1) {
+
+		if (next) {
+
+			focusWidgetIndex += 1;
+			if (focusWidgetIndex < currentLayout->count()) {
+
+				currentLayout->itemAt(focusWidgetIndex)->widget()->setFocus(Qt::TabFocusReason);
+				return true;
+			}
+		}
+		else {
+
+			focusWidgetIndex -= 1;
+			if (focusWidgetIndex >= 0) {
+
+				currentLayout->itemAt(focusWidgetIndex)->widget()->setFocus(Qt::BacktabFocusReason);
+				return true;
+			}
+		}
+	}
+
+	return QWidget::focusNextPrevChild(next);
+}
+
+void MappingFunctionWidget::focusInEvent(QFocusEvent* event) {
+
+	if (layout()->count() >= 2) {
+
+		if (event->reason() == Qt::FocusReason::TabFocusReason) {
+
+			layout()->itemAt(0)->widget()->setFocus(Qt::FocusReason::TabFocusReason);
+			event->accept();
+		}
+		else if (event->reason() == Qt::FocusReason::BacktabFocusReason) {
+
+			layout()->itemAt(1)->widget()->setFocus(Qt::FocusReason::BacktabFocusReason);
+			event->accept();
+		}
+	}
+
+	QWidget::focusInEvent(event);
 }
