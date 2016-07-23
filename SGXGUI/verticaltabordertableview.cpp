@@ -33,14 +33,22 @@ namespace SynGlyphX {
 
 						if (column < (currentModel->columnCount() - 1)) {
 
-							indexWidget(currentModel->index(0, column + 1))->setFocus();
-							return true;
+							QWidget* widget = indexWidget(currentModel->index(0, column + 1));
+							if (widget != nullptr) {
+
+								widget->setFocus();
+								return true;
+							}
 						}
 					}
 					else {
 
-						indexWidget(currentModel->index(row + 1, column))->setFocus();
-						return true;
+						QWidget* widget = indexWidget(currentModel->index(row + 1, column));
+						if (widget != nullptr) {
+
+							widget->setFocus();
+							return true;
+						}
 					}
 				}
 				else {
@@ -49,14 +57,22 @@ namespace SynGlyphX {
 
 						if (column > 0) {
 
-							indexWidget(currentModel->index(currentModel->rowCount() - 1, column - 1))->setFocus();
-							return true;
+							QWidget* widget = indexWidget(currentModel->index(currentModel->rowCount() - 1, column - 1));
+							if (widget != nullptr) {
+
+								widget->setFocus();
+								return true;
+							}
 						}
 					}
 					else {
 
-						indexWidget(currentModel->index(row - 1, column))->setFocus();
-						return true;
+						QWidget* widget = indexWidget(currentModel->index(row - 1, column));
+						if (widget != nullptr) {
+
+							widget->setFocus();
+							return true;
+						}
 					}
 				}
 			}
