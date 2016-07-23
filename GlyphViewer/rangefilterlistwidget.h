@@ -21,8 +21,7 @@
 #include "FilteringTable.h"
 #include "singlenumericrangefilterwidget.h"
 #include "interval.h"
-
-class FilteringParameters;
+#include "filteringparameters.h"
 
 class RangeFilterListWidget : public FilteringTable
 {
@@ -33,28 +32,31 @@ public:
 	~RangeFilterListWidget();
 
 protected:
-	void UpdateFromSelectedRowsRemoved(unsigned int rowToStartUpdates) override;
+	void ResetFiltersAfterAddOrRemove() override;
 	void ClearData() override;
 	void ResetForNewTable() override;
 	void SaveFiltersInTableWidget() override;
 	bool DoAnyTablesHaveFilters() const override;
 	void MoveRow(unsigned int sourceRow, unsigned int destinationRow) override;
 	void GetFilteringParametersForTable(const QString& table, FilteringParameters& filteringParameters) override;
-	void AddFilters(const QSet<QString>& fields) override;
+	QWidget* AddFilter(const QString& field, unsigned int span) override;
 
 private slots:
 	void OnRangesChanged();
 
 private:
 	typedef std::pair<SynGlyphX::DegenerateInterval, SynGlyphX::SingleNumericRangeFilterWidget::SliderPositionValues> RangeAndDistinctValues;
-	typedef std::pair<QString, RangeAndDistinctValues> Field2RangeAndDistinctValues;
+	typedef std::pair<QString, std::vector<RangeAndDistinctValues>> Field2RangeAndDistinctValues;
 	typedef std::vector<Field2RangeAndDistinctValues> Field2RangeAndDistinctValuesVector;
 	typedef QMap<QString, Field2RangeAndDistinctValuesVector> Table2RangesAndDistinctValuesMap;
 
-	void ResetMinMaxExtentsForFilters(unsigned int startingRow);
+	FilteringParameters::ColumnRangeFilterMap GatherRangesBeforeSpan(int span);
+	void ResetMinMaxExtentsForFilters(unsigned int startingSpan);
 	SynGlyphX::SingleNumericRangeFilterWidget* GetRangeFilterWidgetFromCell(int row, int column = 1) const;
+	SynGlyphX::SingleNumericRangeFilterWidget* GetRangeFilterWidgetFromGroup(const FilterWidgetGroupsManager::GroupedIndex& index) const;
+	SynGlyphX::SingleNumericRangeFilterWidget* CreateRangeFilterWidget();
 
-	FilteringTable* m_rangeFiltersTableWidget;
+	//FilteringTable* m_rangeFiltersTableWidget;
 	Table2RangesAndDistinctValuesMap m_table2RangesAndDistinctValuesMap;
 };
 

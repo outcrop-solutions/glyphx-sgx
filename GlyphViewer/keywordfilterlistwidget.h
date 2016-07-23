@@ -33,19 +33,21 @@ public:
 	~KeywordFilterListWidget();
 
 protected:
-	void UpdateFromSelectedRowsRemoved(unsigned int rowToStartUpdates) override;
+	void ResetFiltersAfterAddOrRemove() override;
 	void ClearData() override;
 	void ResetForNewTable() override;
 	void SaveFiltersInTableWidget() override;
 	bool DoAnyTablesHaveFilters() const override;
 	void MoveRow(unsigned int sourceRow, unsigned int destinationRow) override;
 	void GetFilteringParametersForTable(const QString& table, FilteringParameters& filteringParameters) override;
-	void AddFilters(const QSet<QString>& fields) override;
+	QWidget* AddFilter(const QString& field, unsigned int span) override;
+
+	KeywordFilterWidget* GetKeywordFilterWidgetFromCell(int row, int column = 1) const;
+	KeywordFilterWidget* GetKeywordFilterWidgetFromGroup(const FilterWidgetGroupsManager::GroupedIndex& index) const;
+	KeywordFilterWidget* CreateFilter();
 
 private:
 	typedef QMap<QString, FilteringParameters::ColumnKeywordFilterMap> Table2FiltersMap;
-
-	KeywordFilterWidget* GetKeywordFilterWidgetFromCell(int row, int column = 1) const;
 
 	Table2FiltersMap m_table2FiltersMap;
 };

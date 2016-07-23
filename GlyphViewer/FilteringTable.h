@@ -18,6 +18,7 @@
 #pragma once
 
 #include <QtWidgets/QWidget>
+#include <QtCore/QMap>
 #include "inputfield.h"
 
 class SourceDataInfoModel;
@@ -56,24 +57,64 @@ protected slots:
 	void OnMoveDownRow();
 
 	void OnUpdateFilters();
-	void OnAddFilter();
+	void OnAddFilters();
 	void OnFilterChanged();
 
 protected:
-	virtual void UpdateFromSelectedRowsRemoved(unsigned int startingRowToUpdate) = 0;
+	class FilterWidgetGroupsManager {
+
+	public:
+		typedef std::pair<unsigned int, unsigned int> GroupedIndex;
+		typedef std::vector<QWidget*> FilterWidgetGroup;
+
+		FilterWidgetGroupsManager();
+		~FilterWidgetGroupsManager();
+
+		QWidget* GetWidget(unsigned int index) const;
+		QWidget* GetWidget(const GroupedIndex index) const;
+		const QStringList& GetFields() const;
+
+		void AddWidgetToGroup(unsigned int group, QWidget* widget);
+		void AddWidgetToNewGroup(QWidget* widget, const QString& field);
+		void AddGroup(const FilterWidgetGroup& group, const QString& field);
+
+		void RemoveWidget(unsigned int index);
+		void RemoveWidget(const GroupedIndex index);
+
+		void Clear();
+
+		unsigned int GetNumberOfGroups() const;
+		unsigned int GetCountForGroup(unsigned int group) const;
+		std::vector<unsigned int> GetCountGorEachGroup() const;
+
+		GroupedIndex GetGroupedIndex(unsigned int index) const;
+
+	private:
+		std::vector<FilterWidgetGroup> m_filterWidgets;
+		QStringList m_fields;
+	};
+
+
+	typedef std::set<unsigned int, std::greater<unsigned int>, std::allocator<unsigned int>> RowSet;
+
+	virtual void ResetFiltersAfterAddOrRemove() = 0;
 	virtual void ClearData() = 0;
 	virtual void ResetForNewTable() = 0;
 	virtual void SaveFiltersInTableWidget() = 0;
 	virtual bool DoAnyTablesHaveFilters() const = 0;
 	virtual void GetFilteringParametersForTable(const QString& table, FilteringParameters& filteringParameters) = 0;
-	virtual void AddFilters(const QSet<QString>& fields) = 0;
+	virtual QWidget* AddFilter(const QString& field, unsigned int span) = 0;
 	virtual void MoveRow(unsigned int sourceRow, unsigned int destinationRow);
 
 	void UpdatedEnableStateForButton(QAction* action, QPushButton* button);
 	void ClearFiltersFromTableWidget();
 	QString GetTextFromCell(int row) const;
 	QStringList Separate(const QString& datasourceTable) const;
-	QTableWidgetItem* CreateItem(const QString& text);
+	void AddRow(const QString& field);
+	bool DoAnySubTablesHaveAllItemsSelected() const;
+	RowSet GetRowSelectionMap() const;
+	//unsigned int GetFirstTableRow(unsigned int rowSpanIndex) const;
+	void UpdateRowSpansInWidget();
 
 	QAction* m_removeSelectedContextMenuAction;
 	QAction* m_moveRowUpContextMenuAction;
@@ -85,13 +126,15 @@ protected:
 	QPushButton* m_moveUpButton;
 	QPushButton* m_moveDownButton;
 
-	QTableWidget* m_filterTableWidget;
+	QTableWidget* m_filterListTableWidget;
 
 	SourceDataInfoModel* m_columnsModel;
 	FilteringManager* m_filteringManager;
 
 	QString m_currentTable;
 	SynGlyphX::InputField::Type m_fieldType;
+
+	QMap<QString, FilterWidgetGroupsManager> m_filterGroups;
 };
 
 //#pragma once

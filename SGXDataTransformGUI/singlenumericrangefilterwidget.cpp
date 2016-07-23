@@ -137,6 +137,7 @@ namespace SynGlyphX {
 		double min = qBound(m_minValidator->bottom(), range.GetMin(), m_minValidator->top());
 		double max = qBound(m_maxValidator->bottom(), range.GetMax(), m_maxValidator->top());
 
+		bool unblockSignals = signalsBlocked();
 		blockSignals(true);
 		SetMinLineEdit(min);
 		SetMaxLineEdit(max);
@@ -144,7 +145,7 @@ namespace SynGlyphX {
 		m_rangeSlider->SetLowerValue(ConvertValueInRangeToSliderPosition(min));
 		m_rangeSlider->SetUpperValue(ConvertValueInRangeToSliderPosition(max));
 		m_rangeSlider->blockSignals(false);
-		blockSignals(false);
+		blockSignals(unblockSignals);
 
 		EmitRangeUpdate();
 	}

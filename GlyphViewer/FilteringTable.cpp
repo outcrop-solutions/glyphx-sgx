@@ -34,7 +34,7 @@ FilteringTable::FilteringTable(SourceDataInfoModel* columnsModel, FilteringManag
 	buttonLayout->setContentsMargins(8, 8, 8, 8);
 
 	m_addButton = new QPushButton(tr("Add"), this);
-	QObject::connect(m_addButton, &QPushButton::clicked, this, &FilteringTable::OnAddFilter);
+	QObject::connect(m_addButton, &QPushButton::clicked, this, &FilteringTable::OnAddFilters);
 	buttonLayout->addWidget(m_addButton, 1);
 	m_addButton->setEnabled(false);
 
@@ -69,48 +69,48 @@ FilteringTable::FilteringTable(SourceDataInfoModel* columnsModel, FilteringManag
 	border->setFrameStyle(QFrame::Shape::HLine | QFrame::Shadow::Sunken);
 	mainLayout->addWidget(border);
 
-	m_filterTableWidget = new QTableWidget(0, 2, this);
-	m_filterTableWidget->setSelectionBehavior(QAbstractItemView::SelectionBehavior::SelectRows);
-	m_filterTableWidget->setSelectionMode(QAbstractItemView::SelectionMode::ExtendedSelection);
-	m_filterTableWidget->setFrameShape(QFrame::Shape::NoFrame);
-	m_filterTableWidget->horizontalHeader()->setStretchLastSection(true);
-	m_filterTableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeMode::ResizeToContents);
-	m_filterTableWidget->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeMode::ResizeToContents);
-	m_filterTableWidget->verticalHeader()->hide();
-	m_filterTableWidget->setContextMenuPolicy(Qt::ContextMenuPolicy::ActionsContextMenu);
+	m_filterListTableWidget = new QTableWidget(0, 2, this);
+	m_filterListTableWidget->setSelectionMode(QAbstractItemView::SelectionMode::ExtendedSelection);
+	m_filterListTableWidget->setSelectionBehavior(QAbstractItemView::SelectionBehavior::SelectItems);
+	m_filterListTableWidget->setFrameShape(QFrame::Shape::NoFrame);
+	m_filterListTableWidget->horizontalHeader()->setStretchLastSection(true);
+	m_filterListTableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeMode::ResizeToContents);
+	m_filterListTableWidget->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeMode::ResizeToContents);
+	m_filterListTableWidget->verticalHeader()->hide();
+	m_filterListTableWidget->setContextMenuPolicy(Qt::ContextMenuPolicy::ActionsContextMenu);
 
 	QStringList headerLabels;
 	headerLabels << tr("Field") << label;
-	m_filterTableWidget->setHorizontalHeaderLabels(headerLabels);
+	m_filterListTableWidget->setHorizontalHeaderLabels(headerLabels);
 
-	m_removeSelectedContextMenuAction = new QAction(tr("Remove"), this);
+	m_removeSelectedContextMenuAction = new QAction(tr("Remove"), m_filterListTableWidget);
 	m_removeSelectedContextMenuAction->setEnabled(false);
 	QObject::connect(m_removeSelectedContextMenuAction, &QAction::triggered, this, &FilteringTable::OnRemoveSelectedFilters);
-	m_filterTableWidget->addAction(m_removeSelectedContextMenuAction);
+	m_filterListTableWidget->addAction(m_removeSelectedContextMenuAction);
 
 	if (includeMoveUpDown) {
 
-		m_filterTableWidget->addAction(SynGlyphX::SharedActionList::CreateSeparator(this));
+		m_filterListTableWidget->addAction(SynGlyphX::SharedActionList::CreateSeparator(this));
 
-		m_moveRowUpContextMenuAction = new QAction(tr("Move Up"), m_filterTableWidget);
+		m_moveRowUpContextMenuAction = new QAction(tr("Move Up"), m_filterListTableWidget);
 		m_moveRowUpContextMenuAction->setEnabled(false);
 		QObject::connect(m_moveRowUpContextMenuAction, &QAction::triggered, this, &FilteringTable::OnMoveUpRow);
 		QObject::connect(m_moveRowUpContextMenuAction, &QAction::changed, this, [&, this](){ UpdatedEnableStateForButton(m_moveRowUpContextMenuAction, m_moveUpButton); });
-		m_filterTableWidget->addAction(m_moveRowUpContextMenuAction);
+		m_filterListTableWidget->addAction(m_moveRowUpContextMenuAction);
 
-		m_moveRowDownContextMenuAction = new QAction(tr("Move Down"), m_filterTableWidget);
+		m_moveRowDownContextMenuAction = new QAction(tr("Move Down"), m_filterListTableWidget);
 		m_moveRowDownContextMenuAction->setEnabled(false);
 		QObject::connect(m_moveRowDownContextMenuAction, &QAction::triggered, this, &FilteringTable::OnMoveDownRow);
 		QObject::connect(m_moveRowDownContextMenuAction, &QAction::changed, this, [&, this](){ UpdatedEnableStateForButton(m_moveRowDownContextMenuAction, m_moveDownButton); });
-		m_filterTableWidget->addAction(m_moveRowDownContextMenuAction);
+		m_filterListTableWidget->addAction(m_moveRowDownContextMenuAction);
 	}
 
-	mainLayout->addWidget(m_filterTableWidget);
+	mainLayout->addWidget(m_filterListTableWidget);
 
 	setLayout(mainLayout);
 
 	QObject::connect(m_filteringManager, &FilteringManager::FilterResultsChanged, this, &FilteringTable::OnFilterResultsChanged);
-	QObject::connect(m_filterTableWidget->selectionModel(), &QItemSelectionModel::selectionChanged, this, &FilteringTable::OnFilterSelectionChanged);
+	QObject::connect(m_filterListTableWidget->selectionModel(), &QItemSelectionModel::selectionChanged, this, &FilteringTable::OnFilterSelectionChanged);
 }
 
 FilteringTable::~FilteringTable()
@@ -120,38 +120,52 @@ FilteringTable::~FilteringTable()
 
 void FilteringTable::OnRemoveSelectedFilters() {
 
-	const QModelIndexList& modelIndexList = m_filterTableWidget->selectionModel()->selectedRows();
+	if (DoAnySubTablesHaveAllItemsSelected()) {
+
+		if (QMessageBox::question(this, tr("Remove fields"), tr("One or more fields has all of their filters selected.  That will cause those fields to be removed."
+			"  Do you wish to continue?"), QMessageBox::StandardButton::Yes, QMessageBox::StandardButton::No) == QMessageBox::No) {
+
+			return;
+		}
+	}
 
 	//sort into highest row number first
-	std::set<unsigned int, std::greater<unsigned int>> rowsToRemove;
-	for (const auto& modelIndex : modelIndexList) {
+	RowSet rowsWithSelection = GetRowSelectionMap();
+	for (const auto& row : rowsWithSelection) {
 
-		rowsToRemove.insert(modelIndex.row());
-	}
-	
-	for (unsigned int row : rowsToRemove) {
-
-		m_filterTableWidget->removeRow(row);
+		m_filterGroups[m_currentTable].RemoveWidget(row);
+		m_filterListTableWidget->removeRow(row);
 	}
 
-	m_removeAllButton->setEnabled(m_filterTableWidget->rowCount() > 0);
+	m_removeAllButton->setEnabled(m_filterListTableWidget->rowCount() > 0);
 	m_updateButton->setEnabled(DoAnyTablesHaveFilters());
 
-	UpdateFromSelectedRowsRemoved(*rowsToRemove.rbegin());
+	UpdateRowSpansInWidget();
+	ResetFiltersAfterAddOrRemove();
 }
 
 void FilteringTable::OnFilterSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected) {
 
-	const QModelIndexList& modelIndexList = m_filterTableWidget->selectionModel()->selectedRows();
-	m_removeSelectedContextMenuAction->setEnabled(!modelIndexList.empty());
+	RowSet rowsWithSelection = GetRowSelectionMap();
+	m_removeSelectedContextMenuAction->setEnabled(!rowsWithSelection.empty());
 
 	if (m_moveRowUpContextMenuAction != nullptr) {
 
-		if (modelIndexList.count() == 1) {
+		bool areSelectedRowsInOneField = true;
+		QString previousField = GetTextFromCell(*rowsWithSelection.begin());
+		for (const auto& row : rowsWithSelection) {
 
-			int row = modelIndexList[0].row();
-			m_moveRowUpContextMenuAction->setEnabled(row > 0);
-			m_moveRowDownContextMenuAction->setEnabled(row < (m_filterTableWidget->rowCount() - 1));
+			if (previousField != GetTextFromCell(*rowsWithSelection.begin())) {
+
+				areSelectedRowsInOneField = false;
+				break;
+			}
+		}
+
+		if (areSelectedRowsInOneField) {
+
+			m_moveRowUpContextMenuAction->setEnabled(previousField != GetTextFromCell(0));
+			m_moveRowDownContextMenuAction->setEnabled(previousField != GetTextFromCell(m_filterListTableWidget->rowCount() - 1));
 		}
 		else {
 
@@ -171,7 +185,7 @@ void FilteringTable::UpdatedEnableStateForButton(QAction* action, QPushButton* b
 
 void FilteringTable::OnFilterResultsChanged() {
 
-	if (m_filteringManager->GetFilterResultsByTable().empty() && (m_filterTableWidget->rowCount() > 0)) {
+	if (m_filteringManager->GetFilterResultsByTable().empty() && (m_filterListTableWidget->rowCount() > 0)) {
 
 		m_updateButton->setEnabled(true);
 	}
@@ -188,6 +202,7 @@ void FilteringTable::OnNewVisualization() {
 	ClearFiltersFromTableWidget();
 	m_currentTable.clear();
 	ClearData();
+	m_filterGroups.clear();
 
 	if (isSourceDataCacheValid) {
 
@@ -198,16 +213,25 @@ void FilteringTable::OnNewVisualization() {
 void FilteringTable::SwitchTable(const QString& table) {
 
 	SaveFiltersInTableWidget();
+	ClearFiltersFromTableWidget();
 	m_currentTable = table;
+	for (const auto& field : m_filterGroups[m_currentTable].GetFields()) {
+
+		AddRow(field);
+	}
 	ResetForNewTable();
+	UpdateRowSpansInWidget();
+	m_removeAllButton->setEnabled(m_filterGroups[m_currentTable].GetNumberOfGroups() != 0);
 }
 
 void FilteringTable::ClearFiltersFromTableWidget() {
 
-	while (m_filterTableWidget->rowCount() > 0) {
+	while (m_filterListTableWidget->rowCount() > 0) {
 
-		m_filterTableWidget->removeRow(0);
+		m_filterListTableWidget->removeRow(0);
 	}
+
+	m_filterGroups[m_currentTable].Clear();
 }
 
 void FilteringTable::OnRemoveAllFilters() {
@@ -220,7 +244,7 @@ void FilteringTable::OnRemoveAllFilters() {
 
 void FilteringTable::OnMoveUpRow() {
 
-	const QModelIndexList& modelIndexList = m_filterTableWidget->selectionModel()->selectedRows();
+	const QModelIndexList& modelIndexList = m_filterListTableWidget->selectionModel()->selectedRows();
 	unsigned int sourceRow = modelIndexList[0].row();
 
 	MoveRow(sourceRow, sourceRow - 1);
@@ -228,7 +252,7 @@ void FilteringTable::OnMoveUpRow() {
 
 void FilteringTable::OnMoveDownRow() {
 
-	const QModelIndexList& modelIndexList = m_filterTableWidget->selectionModel()->selectedRows();
+	const QModelIndexList& modelIndexList = m_filterListTableWidget->selectionModel()->selectedRows();
 	unsigned int sourceRow = modelIndexList[0].row();
 
 	MoveRow(sourceRow, sourceRow + 1);
@@ -241,7 +265,7 @@ void FilteringTable::MoveRow(unsigned int sourceRow, unsigned int destinationRow
 
 QString FilteringTable::GetTextFromCell(int row) const {
 
-	return m_filterTableWidget->item(row, 0)->text();
+	return m_filterListTableWidget->item(row, 0)->text();
 }
 
 void FilteringTable::OnUpdateFilters() {
@@ -290,15 +314,44 @@ QStringList FilteringTable::Separate(const QString& datasourceTable) const {
 	return splitDatasourceTable;
 }
 
-QTableWidgetItem* FilteringTable::CreateItem(const QString& text) {
+void FilteringTable::AddRow(const QString& field) {
 
-	QTableWidgetItem* item = new QTableWidgetItem(text);
-	item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemNeverHasChildren);
+	int span = 0;
+	for (; span < m_filterGroups[m_currentTable].GetNumberOfGroups(); ++span) {
 
-	return item;
+		if (m_filterGroups[m_currentTable].GetFields().at(span) == field) {
+
+			break;
+		}
+	}
+
+	QWidget* newFilterWidget = AddFilter(field, span);
+
+	unsigned int row = 0;
+	if (span == m_filterGroups[m_currentTable].GetNumberOfGroups()) {
+
+		row = m_filterListTableWidget->rowCount();
+		m_filterGroups[m_currentTable].AddWidgetToNewGroup(newFilterWidget, field);
+	}
+	else {
+
+		for (int i = 0; i <= span; ++i) {
+
+			row += m_filterGroups[m_currentTable].GetCountForGroup(i);
+		}
+		m_filterGroups[m_currentTable].AddWidgetToGroup(span, newFilterWidget);
+	}
+
+	m_filterListTableWidget->insertRow(row);
+
+	QTableWidgetItem* fieldItem = new QTableWidgetItem(field);
+	fieldItem->setFlags(Qt::ItemIsEnabled | Qt::ItemNeverHasChildren);
+	m_filterListTableWidget->setItem(row, 0, fieldItem);
+
+	m_filterListTableWidget->setCellWidget(row, 1, newFilterWidget);
 }
 
-void FilteringTable::OnAddFilter() {
+void FilteringTable::OnAddFilters() {
 
 	try {
 
@@ -312,28 +365,28 @@ void FilteringTable::OnAddFilter() {
 		filterData.insert(m_fieldType);
 		fieldTypeProxyModel->SetFilterData(filterData);
 
-		SynGlyphX::StringRoleDataFilterProxyModel* filterOutFieldsInUseModel = new SynGlyphX::StringRoleDataFilterProxyModel(this);
+		/*SynGlyphX::StringRoleDataFilterProxyModel* filterOutFieldsInUseModel = new SynGlyphX::StringRoleDataFilterProxyModel(this);
 		filterOutFieldsInUseModel->setSourceModel(fieldTypeProxyModel);
 		filterOutFieldsInUseModel->setFilterRole(Qt::DisplayRole);
 
 		QSet<QString> fieldsInUse;
-		for (unsigned int row = 0; row < m_filterTableWidget->rowCount(); ++row) {
+		for (unsigned int row = 0; row < m_filterListTableWidget->rowCount(); ++row) {
 
 			fieldsInUse.insert(GetTextFromCell(row));
 		}
 		filterOutFieldsInUseModel->SetFilterData(fieldsInUse);
-		filterOutFieldsInUseModel->SetNot(true);
+		filterOutFieldsInUseModel->SetNot(true);*/
 
-		QModelIndex rootIndex = filterOutFieldsInUseModel->mapFromSource(fieldTypeProxyModel->mapFromSource(m_columnsModel->GetIndexOfTable(datasourceTable[0], datasourceTable[1])));
-		if (filterOutFieldsInUseModel->rowCount(rootIndex) == 0) {
-
-			QMessageBox::information(this, tr("All fields in use"), tr("All fields for this table are already in use."), QMessageBox::StandardButton::Ok);
-			return;
-		}
+		//QModelIndex rootIndex = filterOutFieldsInUseModel->mapFromSource(fieldTypeProxyModel->mapFromSource(m_columnsModel->GetIndexOfTable(datasourceTable[0], datasourceTable[1])));
+		QModelIndex rootIndex = fieldTypeProxyModel->mapFromSource(m_columnsModel->GetIndexOfTable(datasourceTable[0], datasourceTable[1]));
+		//if (filterOutFieldsInUseModel->rowCount(rootIndex) == 0) {
+		//
+		//	QMessageBox::information(this, tr("All fields in use"), tr("All fields for this table are already in use."), QMessageBox::StandardButton::Ok);
+		//	return;
+		//}
 
 		QListView* fieldSelectorWidget = new QListView(this);
-		fieldSelectorWidget->setSelectionMode(QAbstractItemView::SingleSelection);
-		fieldSelectorWidget->setModel(filterOutFieldsInUseModel);
+		fieldSelectorWidget->setModel(fieldTypeProxyModel);
 		fieldSelectorWidget->setSelectionMode(QAbstractItemView::ExtendedSelection);
 		fieldSelectorWidget->setRootIndex(rootIndex);
 		SynGlyphX::SingleWidgetDialog dialog(QDialogButtonBox::StandardButton::Ok | QDialogButtonBox::StandardButton::Cancel, fieldSelectorWidget, this);
@@ -347,15 +400,41 @@ void FilteringTable::OnAddFilter() {
 				return;
 			}
 
-			QSet<QString> newFields;
+			//QSet<QString> newFields;
 			for (const auto& modelIndex : selected) {
 
-				newFields.insert(filterOutFieldsInUseModel->data(modelIndex).toString());
+				AddRow(fieldTypeProxyModel->data(modelIndex).toString());
 			}
-			AddFilters(newFields);
 
+			/*unsigned int row = 0;
+			while (row < m_filterTableWidget->rowCount()) {
+
+				unsigned int rowSpanSize = m_filterTableWidget->rowSpan(row, 0);
+				QString currentField = GetTextFromCell(row);
+				if (newFields.contains(currentField)) {
+
+					newFields.remove(currentField);
+					unsigned newRow = row + rowSpanSize;
+					m_filterTableWidget->insertRow(newRow);
+					m_filterTableWidget->setSpan(row, 0, rowSpanSize + 1, 1);
+					AddFilterToFieldInUse(row);
+					row += rowSpanSize + 1;
+				}
+				else {
+
+					row += rowSpanSize;
+				}
+			}
+
+			if (!newFields.isEmpty()) {*/
+
+				//AddFilters(newFields);
+			//}
+
+			UpdateRowSpansInWidget();
 			m_removeAllButton->setEnabled(true);
 			m_updateButton->setEnabled(true);
+			ResetFiltersAfterAddOrRemove();
 		}
 	}
 	catch (const std::exception& e) {
@@ -367,4 +446,186 @@ void FilteringTable::OnAddFilter() {
 void FilteringTable::OnFilterChanged() {
 
 	m_updateButton->setEnabled(true);
+}
+
+bool FilteringTable::DoAnySubTablesHaveAllItemsSelected() const {
+
+	/*RowSet rowSelectionMap = GetRowSelectionMap();
+	std::vector<unsigned int, RowSet> field2RowsMap;
+	QString previousField;
+	int field2RowsMapIndex
+	for (unsigned int i = 0; i < m_filterListTableWidget->rowCount(); ++i) {
+
+		
+	}*/
+
+	return false;
+}
+
+FilteringTable::RowSet FilteringTable::GetRowSelectionMap() const {
+
+	RowSet rows;
+	for (const auto& modelIndex : m_filterListTableWidget->selectionModel()->selectedIndexes()) {
+
+		rows.insert(modelIndex.row());
+	}
+
+	return rows;
+
+	/*RowMap rowSelectionMap;
+	unsigned int baseRow = 0;
+	const std::vector<unsigned int>& rowSpans = m_table2RowSpanList[m_currentTable];
+	std::set<unsigned int>::const_iterator row = rows.begin();
+	for (unsigned int rowSpanIndex = 0; rowSpanIndex < rowSpans.size(); ++rowSpanIndex) {
+
+		std::set<unsigned int, std::greater<unsigned int>> subRows;
+		while ((row != rows.end()) && (*row < baseRow + rowSpans[rowSpanIndex])) {
+
+			subRows.insert(*row - baseRow);
+			++row;
+		}
+
+		if (!subRows.empty()) {
+
+			rowSelectionMap[rowSpanIndex] = subRows;
+		}
+
+		baseRow += rowSpans[rowSpanIndex];
+	}
+
+	return rowSelectionMap;*/
+}
+
+void FilteringTable::UpdateRowSpansInWidget() {
+
+	unsigned int firstTableRow = 0;
+	std::vector<unsigned int> rowSpans = m_filterGroups[m_currentTable].GetCountGorEachGroup();
+	for (unsigned int i = 0; i < rowSpans.size(); ++i) {
+
+		m_filterListTableWidget->setSpan(firstTableRow, 0, rowSpans[i], 1);
+		firstTableRow += rowSpans[i];
+	}
+}
+
+FilteringTable::FilterWidgetGroupsManager::FilterWidgetGroupsManager() {
+
+
+}
+
+FilteringTable::FilterWidgetGroupsManager::~FilterWidgetGroupsManager() {
+
+
+}
+
+QWidget* FilteringTable::FilterWidgetGroupsManager::GetWidget(unsigned int index) const {
+
+	try {
+
+		return GetWidget(GetGroupedIndex(index));
+	}
+	catch (const std::exception& e) {
+
+		throw;
+	}
+}
+
+QWidget* FilteringTable::FilterWidgetGroupsManager::GetWidget(const GroupedIndex index) const {
+
+	return m_filterWidgets.at(index.first).at(index.second);
+}
+
+const QStringList& FilteringTable::FilterWidgetGroupsManager::GetFields() const {
+
+	return m_fields;
+}
+
+void FilteringTable::FilterWidgetGroupsManager::AddWidgetToGroup(unsigned int group, QWidget* widget) {
+
+	m_filterWidgets[group].push_back(widget);
+}
+
+void FilteringTable::FilterWidgetGroupsManager::AddWidgetToNewGroup(QWidget* widget, const QString& field) {
+
+	FilterWidgetGroup group;
+	group.push_back(widget);
+	AddGroup(group, field);
+}
+
+void FilteringTable::FilterWidgetGroupsManager::AddGroup(const FilterWidgetGroup& group, const QString& field) {
+
+	m_filterWidgets.push_back(group);
+	m_fields.push_back(field);
+}
+
+void FilteringTable::FilterWidgetGroupsManager::RemoveWidget(unsigned int index) {
+
+	try {
+
+		RemoveWidget(GetGroupedIndex(index));
+	}
+	catch (const std::exception& e) {
+
+		throw;
+	}
+}
+
+void FilteringTable::FilterWidgetGroupsManager::RemoveWidget(const GroupedIndex index) {
+
+	if (m_filterWidgets[index.first].size() == 1) {
+
+		std::vector<FilterWidgetGroup>::iterator iT = m_filterWidgets.begin();
+		std::advance(iT, index.first);
+		m_filterWidgets.erase(iT);
+		m_fields.removeAt(index.first);
+	}
+	else {
+
+		FilterWidgetGroup::iterator iT = m_filterWidgets[index.first].begin();
+		std::advance(iT, index.second);
+		m_filterWidgets[index.first].erase(iT);
+	}
+}
+
+void FilteringTable::FilterWidgetGroupsManager::Clear() {
+
+	m_filterWidgets.clear();
+	m_fields.clear();
+}
+
+unsigned int FilteringTable::FilterWidgetGroupsManager::GetNumberOfGroups() const {
+
+	return m_filterWidgets.size();
+}
+
+unsigned int FilteringTable::FilterWidgetGroupsManager::GetCountForGroup(unsigned int group) const {
+
+	return m_filterWidgets[group].size();
+}
+
+std::vector<unsigned int> FilteringTable::FilterWidgetGroupsManager::GetCountGorEachGroup() const {
+
+	std::vector<unsigned int> counts;
+
+	for (const auto& group : m_filterWidgets) {
+
+		counts.push_back(group.size());
+	}
+
+	return counts;
+}
+
+FilteringTable::FilterWidgetGroupsManager::GroupedIndex FilteringTable::FilterWidgetGroupsManager::GetGroupedIndex(unsigned int index) const {
+
+	unsigned int totalSize = 0;
+	for (unsigned int i = 0; i < m_filterWidgets.size(); ++i) {
+
+		if (index < totalSize + m_filterWidgets[i].size()) {
+
+			return GroupedIndex(i, index - totalSize);
+		}
+
+		totalSize += m_filterWidgets[i].size();
+	}
+
+	throw std::invalid_argument("Index exceeds total number of widgets.");
 }
