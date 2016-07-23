@@ -675,7 +675,7 @@ void GlyphViewerWindow::LoadDataTransform(const QString& filename) {
 		ge.initiate(m_dataEngineConnection->getEnv(), filename.toStdString(), dirPath, baseImageDir, "", "GlyphViewer");
 		if (ge.IsUpdateNeeded()){
 			DownloadBaseImages(ge);
-			ge.generateGlyphs();
+			ge.generateGlyphs(this);
 		}
 		std::vector<std::string> images = ge.getBaseImages();
 		
@@ -1047,7 +1047,7 @@ void GlyphViewerWindow::CreatePortableVisualization(SynGlyphX::PortableVisualiza
 		//App says "DataMapper" because this is equivalent to create portable visualization in DataMapper
 		ge.initiate(m_dataEngineConnection->getEnv(), m_currentFilename.toStdString(), csvDirectory.toStdString() + "/", baseImageDir, baseFilename, "DataMapper");
 		DownloadBaseImages(ge);
-		ge.generateGlyphs();
+		ge.generateGlyphs(this);
 
 		m_portableVisualizationExport.CopyLogo(QDir::toNativeSeparators(csvDirectory + "/usr/images/"));
 
