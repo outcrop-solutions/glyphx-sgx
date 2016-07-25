@@ -163,7 +163,8 @@ void BindingLineEdit::Clear() {
 
 	if (m_inputField.IsValid()) {
 
-		m_inputField = SynGlyphX::InputField();
-		emit ValueChangedByUser(m_inputField);
+		auto command = new BindingLineEditChangeCommand(this, SynGlyphX::InputField());
+		command->setText(tr("Clear Binding"));
+		SynGlyphX::AppGlobal::Services()->GetUndoStack()->push(command);
 	}
 }
