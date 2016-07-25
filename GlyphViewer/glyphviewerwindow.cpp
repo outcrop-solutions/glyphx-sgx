@@ -30,9 +30,13 @@
 #include "filesystem.h"
 #include "defaultbaseimageproperties.h"
 #include "downloadexception.h"
-#include "loadingscreenwidget.h"
+#include "HomePageWidget.h"
 #include "remapdialog.h"
 #include "baseimage.h"
+#include "sharedactionlist.h"
+#include "GVGlobal.h"
+
+SynGlyphX::SettingsStoredFileList GlyphViewerWindow::s_subsetFileList("subsetFileList");
 
 GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 	: SynGlyphX::MainWindow(4, parent),
@@ -41,7 +45,7 @@ GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 	m_dataEngineConnection(nullptr)
 {
 	m_dataEngineConnection = std::make_shared<DataEngine::DataEngineConnection>();
-	m_mappingModel = new DataMappingLoadingFilterModel(this);
+	m_mappingModel = new SynGlyphX::DataTransformModel(this);
 	m_mappingModel->SetDataEngineConnection(m_dataEngineConnection);
 	m_sourceDataCache = std::make_shared<SourceDataCache>();
 	m_glyphForestModel = new SynGlyphXANTz::GlyphForestModel(this);
@@ -133,8 +137,9 @@ void GlyphViewerWindow::CreateLoadingScreen() {
 
 	if (SynGlyphX::GlyphBuilderApplication::IsGlyphEd()) {
 
-		LoadingScreenWidget* loadingScreen = new LoadingScreenWidget(this, antzWidgetContainer);
-		antzWidgetContainer->addWidget(loadingScreen);
+		m_homePage = new HomePageWidget(this, antzWidgetContainer);
+		m_homePage->setObjectName("home_page");
+		antzWidgetContainer->addWidget(m_homePage);
 	}
 	else {
 
@@ -156,7 +161,18 @@ void GlyphViewerWindow::CreateANTzWidget() {
 
 	m_glyph3DView = new Glyph3DView(m_glyphForestModel, m_glyphForestSelectionModel, this);
 	m_glyph3DView->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-	m_glyph3DView->addActions(m_treeView->GetSharedActions());
+
+	m_openURLAction = new QAction(tr("Open URL"), this);
+	m_openURLAction->setShortcut(Qt::Key_U);
+	m_openURLAction->setEnabled(false);
+	QObject::connect(m_openURLAction, &QAction::triggered, this, &GlyphViewerWindow::OnOpenURLs);
+
+	m_propertiesAction = new QAction(tr("Properties"), this);
+	m_propertiesAction->setEnabled(false);
+	QObject::connect(m_propertiesAction, &QAction::triggered, this, &GlyphViewerWindow::OnPropertiesActivated);
+
+	m_glyph3DView->addAction(m_openURLAction);
+	m_glyph3DView->addAction(m_propertiesAction);
 	m_glyph3DView->addAction(SynGlyphX::SharedActionList::CreateSeparator(m_glyph3DView));
 	m_glyph3DView->addAction(m_showTagsAction);
 	m_glyph3DView->addAction(m_hideTagsAction);
@@ -257,6 +273,10 @@ void GlyphViewerWindow::CreateMenus() {
 	m_toolsMenu = menuBar()->addMenu(tr("Tools"));
 
 	m_remapRootPositionMappingsAction = m_toolsMenu->addAction(tr("Change X, Y, Z Position Axes"));
+	QIcon remapIcon;
+	remapIcon.addFile(":SGXGUI/Resources/Icons/icon-xyz.png", QSize(), QIcon::Normal, QIcon::Off);
+	remapIcon.addFile(":SGXGUI/Resources/Icons/icon-xyz-a.png", QSize(), QIcon::Normal, QIcon::On);
+	m_remapRootPositionMappingsAction->setIcon(remapIcon);
 	QObject::connect(m_remapRootPositionMappingsAction, &QAction::triggered, this, &GlyphViewerWindow::RemapRootPositionMappings);
 	m_loadedVisualizationDependentActions.push_back(m_remapRootPositionMappingsAction);
 
@@ -294,32 +314,17 @@ void GlyphViewerWindow::CreateDockWidgets() {
 	m_legendsDockWidget->setWidget(m_legendsWidget);
 	m_legendsDockWidget->setFloating(true);
 	m_showHideToolbar->setIconSize(QSize(42, 32));
-	QIcon icon;
-	icon.addFile(":SGXGUI/Resources/Icons/icon-legend.png", QSize(), QIcon::Normal, QIcon::Off);
-	icon.addFile(":SGXGUI/Resources/Icons/icon-legend-a.png", QSize(), QIcon::Normal, QIcon::On);
+	QIcon legendIcon;
+	legendIcon.addFile(":SGXGUI/Resources/Icons/icon-legend.png", QSize(), QIcon::Normal, QIcon::Off);
+	legendIcon.addFile(":SGXGUI/Resources/Icons/icon-legend-a.png", QSize(), QIcon::Normal, QIcon::On);
 	QAction* act = m_legendsDockWidget->toggleViewAction();
 	//act->setIconVisibleInMenu(false);
-	act->setIcon(icon);
+	act->setIcon(legendIcon);
 	m_viewMenu->addAction(act);
 	m_showHideToolbar->addAction(act);
 	m_legendsDockWidget->move(100, 100);
 	m_legendsDockWidget->resize(400, 280);
 	m_legendsDockWidget->hide();
-
-	m_glyphListDockWidget = new QDockWidget(tr("Glyph List"), this);
-	m_treeView = new GlyphTreeListView(m_glyphListDockWidget);
-	m_treeView->setModel(m_glyphForestModel);
-	m_treeView->SetItemFocusSelectionModel(m_glyphForestSelectionModel);
-
-	m_glyphListDockWidget->setWidget(m_treeView);
-	addDockWidget(Qt::LeftDockWidgetArea, m_glyphListDockWidget);
-	act = m_glyphListDockWidget->toggleViewAction();
-	icon.addFile(":SGXGUI/Resources/Icons/icon-list.png", QSize(), QIcon::Normal, QIcon::Off);
-	icon.addFile(":SGXGUI/Resources/Icons/icon-list-a.png", QSize(), QIcon::Normal, QIcon::On);
-	act->setIcon(icon);
-	m_viewMenu->addAction(act);
-	m_showHideToolbar->addAction(act);
-	m_glyphListDockWidget->hide();
 
 	m_glyphPropertiesWidgetContainer = new GlyphPropertiesWidgetsContainer(m_glyphForestModel, m_glyphForestSelectionModel, this);
 
@@ -327,24 +332,24 @@ void GlyphViewerWindow::CreateDockWidgets() {
 	textPropertiesDockWidget->setWidget(m_glyphPropertiesWidgetContainer->GetTextProperitesWidget());
 	addDockWidget(Qt::LeftDockWidgetArea, textPropertiesDockWidget);
 	act = textPropertiesDockWidget->toggleViewAction();
-	icon.addFile(":SGXGUI/Resources/Icons/icon-text.png", QSize(), QIcon::Normal, QIcon::Off);
-	icon.addFile(":SGXGUI/Resources/Icons/icon-text-a.png", QSize(), QIcon::Normal, QIcon::On);
-	act->setIcon(icon);
+	QIcon textIcon;
+	textIcon.addFile(":SGXGUI/Resources/Icons/icon-text.png", QSize(), QIcon::Normal, QIcon::Off);
+	textIcon.addFile(":SGXGUI/Resources/Icons/icon-text-a.png", QSize(), QIcon::Normal, QIcon::On);
+	act->setIcon(textIcon);
 	m_viewMenu->addAction(act);
 	m_showHideToolbar->addAction(act);
 	m_showHideToolbar->addAction(textPropertiesDockWidget->toggleViewAction());
 	textPropertiesDockWidget->hide();
-
-	tabifyDockWidget(m_glyphListDockWidget, textPropertiesDockWidget);
 
 	QDockWidget* rightDockWidget = new QDockWidget(tr("Filtering"), this);
 	m_filteringWidget = new FilteringWidget(m_columnsModel, m_filteringManager, rightDockWidget);
 	rightDockWidget->setWidget(m_filteringWidget);
 	addDockWidget(Qt::RightDockWidgetArea, rightDockWidget);
 	act = rightDockWidget->toggleViewAction();
-	icon.addFile(":SGXGUI/Resources/Icons/icon-filter.png", QSize(), QIcon::Normal, QIcon::Off);
-	icon.addFile(":SGXGUI/Resources/Icons/icon-filter-a.png", QSize(), QIcon::Normal, QIcon::On);
-	act->setIcon(icon);
+	QIcon filterIcon;
+	filterIcon.addFile(":SGXGUI/Resources/Icons/icon-filter.png", QSize(), QIcon::Normal, QIcon::Off);
+	filterIcon.addFile(":SGXGUI/Resources/Icons/icon-filter-a.png", QSize(), QIcon::Normal, QIcon::On);
+	act->setIcon(filterIcon);
 	m_viewMenu->addAction(act);
 	m_showHideToolbar->addAction(act);
 
@@ -355,9 +360,10 @@ void GlyphViewerWindow::CreateDockWidgets() {
 	bottomDockWidget->setWidget(m_pseudoTimeFilterWidget);
 	addDockWidget(Qt::BottomDockWidgetArea, bottomDockWidget);
 	act = bottomDockWidget->toggleViewAction();
-	icon.addFile(":SGXGUI/Resources/Icons/icon-filter-time.png", QSize(), QIcon::Normal, QIcon::Off);
-	icon.addFile(":SGXGUI/Resources/Icons/icon-filter-time-a.png", QSize(), QIcon::Normal, QIcon::On);
-	act->setIcon(icon);
+	QIcon filterTimeIcon;
+	filterTimeIcon.addFile(":SGXGUI/Resources/Icons/icon-filter-time.png", QSize(), QIcon::Normal, QIcon::Off);
+	filterTimeIcon.addFile(":SGXGUI/Resources/Icons/icon-filter-time-a.png", QSize(), QIcon::Normal, QIcon::On);
+	act->setIcon(filterTimeIcon);
 	m_viewMenu->addAction(act);
 	m_showHideToolbar->addAction(act);
 
@@ -411,7 +417,7 @@ void GlyphViewerWindow::RefreshVisualization() {
 		if (DoesVisualizationNeedToBeRecreated(mapping)) {
 
 			ClearAllData();
-			LoadVisualization(m_currentFilename, m_mappingModel->GetLoadingFilters());
+			LoadVisualization(m_currentFilename);
 		}
 	}
 	catch (const std::exception& e) {
@@ -454,7 +460,7 @@ void GlyphViewerWindow::ClearAllData() {
 	SynGlyphX::Application::restoreOverrideCursor();
 }
 
-void GlyphViewerWindow::LoadVisualization(const QString& filename, const DataMappingLoadingFilterModel::Table2LoadingFiltersMap& filters) {
+void GlyphViewerWindow::LoadVisualization(const QString& filename, const DistinctValueFilteringParameters& filters) {
 
 	QFileInfo fileInfo(filename);
 	QString extension = fileInfo.suffix().toLower();
@@ -482,7 +488,7 @@ void GlyphViewerWindow::LoadVisualization(const QString& filename, const DataMap
 
 	if (extension == "sdt") {
 
-		LoadDataTransform(filename, filters);
+		LoadDataTransform(filename);
 	}
 	else if (extension == "sav") {
 
@@ -499,13 +505,14 @@ void GlyphViewerWindow::LoadVisualization(const QString& filename, const DataMap
 	}
 }
 
-bool GlyphViewerWindow::LoadNewVisualization(const QString& filename, const DataMappingLoadingFilterModel::Table2LoadingFiltersMap& filters) {
+bool GlyphViewerWindow::LoadNewVisualization(const QString& filename, const DistinctValueFilteringParameters& filters) {
 
 	if (filename == m_currentFilename) {
 		
 		return true;
 	}
 
+	GVGlobal::Services()->ClearUndoStack();
 	try {
 
 		LoadVisualization(filename, filters);
@@ -525,6 +532,14 @@ bool GlyphViewerWindow::LoadNewVisualization(const QString& filename, const Data
 	}
 
 	SetCurrentFile(filename);
+	if (filters.HasFilters()) {
+
+		m_recentFilters[filename] = filters;
+	}
+	else if (m_recentFilters.contains(filename)) {
+
+		m_recentFilters.remove(filename);
+	}
 	EnableLoadedVisualizationDependentActions(true);
 	m_columnsModel->Reset();
 	statusBar()->showMessage("Visualization successfully opened", 3000);
@@ -544,7 +559,14 @@ void GlyphViewerWindow::LoadANTzCompatibilityVisualization(const QString& filena
 
 bool GlyphViewerWindow::LoadRecentFile(const QString& filename) {
 
-	return LoadNewVisualization(filename);
+	if (m_recentFilters.contains(filename)) {
+
+		return m_homePage->LoadVisualization(filename, m_recentFilters[filename]);
+	}
+	else {
+
+		return LoadNewVisualization(filename);
+	}
 }
 
 void GlyphViewerWindow::ValidateDataMappingFile(const QString& filename) {
@@ -617,7 +639,7 @@ void GlyphViewerWindow::ValidateDataMappingFile(const QString& filename) {
 	mapping->WriteToFile(filename.toStdString());
 }
 
-void GlyphViewerWindow::LoadDataTransform(const QString& filename, const DataMappingLoadingFilterModel::Table2LoadingFiltersMap& filters) {
+void GlyphViewerWindow::LoadDataTransform(const QString& filename) {
 	/*
 	try {
 
@@ -640,7 +662,7 @@ void GlyphViewerWindow::LoadDataTransform(const QString& filename, const DataMap
 			ValidateDataMappingFile(filename);
 		}
 
-		m_mappingModel->LoadDataTransformFile(filename, filters);
+		m_mappingModel->LoadDataTransformFile(filename);
 		std::string dcd = GlyphViewerOptions::GetDefaultCacheDirectory().toStdString();
 		std::string cacheDirectoryPath = dcd + ("/cache_" + boost::uuids::to_string(m_mappingModel->GetDataMapping()->GetID()));
 
@@ -875,9 +897,40 @@ void GlyphViewerWindow::ReadSettings() {
 
 	SynGlyphX::MainWindow::ReadSettings();
 
+	s_subsetFileList.ReadFromSettings();
+
 	GlyphViewerOptions options;
 
 	QSettings settings;
+
+	settings.beginGroup("Filters");
+
+	QStringList files = settings.allKeys();
+	for (const QString& file : files) {
+
+		DistinctValueFilteringParameters filters;
+		settings.beginGroup(file);
+		QStringList fieldNames = settings.allKeys();
+		for (const QString& fieldName : fieldNames) {
+
+			settings.beginGroup(fieldName);
+			int numberOfValues = settings.beginReadArray("value");
+			QSet<QString> filterValues;
+			for (int i = 0; i < numberOfValues; ++i) {
+
+				settings.setArrayIndex(i);
+				filterValues.insert(settings.value("value").toString());
+			}
+			settings.endGroup();
+
+			filters.SetDistinctValueFilter(fieldName, filterValues);
+		}
+		settings.endGroup();
+
+		m_recentFilters[file] = filters;
+	}
+
+	settings.endGroup();
 
 	settings.beginGroup("Display");
 	if (!settings.value("ShowAnimation", true).toBool()) {
@@ -895,10 +948,21 @@ void GlyphViewerWindow::WriteSettings() {
 
 	SynGlyphX::MainWindow::WriteSettings();
 
+	s_subsetFileList.WriteToSettings();
+
 	QSettings settings;
 
 	settings.beginGroup("Display");
 	settings.setValue("ShowAnimation", m_showAnimation->isChecked());
+	settings.endGroup();
+
+	/*settings.beginGroup("Filters");
+
+	for (unsigned int i = 0; i < m_recentFilters.size(); ++i) {
+
+		
+	}*/
+
 	settings.endGroup();
 
 	GlyphViewerOptions options = CollectOptions();
@@ -933,6 +997,9 @@ void GlyphViewerWindow::OnSelectionChanged(const QItemSelection& selected, const
 	m_clearSelectionAction->setEnabled(selectionIsNotEmpty);
 	m_showTagsAction->setEnabled(selectionIsNotEmpty);
 	m_hideTagsAction->setEnabled(selectionIsNotEmpty);
+
+	m_openURLAction->setEnabled(selectionIsNotEmpty);
+	m_propertiesAction->setEnabled(selectionIsNotEmpty);
 }
 
 void GlyphViewerWindow::CreateExportToPortableVisualizationSubmenu() {
@@ -1036,10 +1103,8 @@ void GlyphViewerWindow::closeEvent(QCloseEvent* event) {
 
 void GlyphViewerWindow::RemapRootPositionMappings() {
 
-	QFileInfo currentFilenameInfo(m_currentFilename);
-
 	RemapDialog remapDialog(m_mappingModel->GetDataMapping(), m_dataEngineConnection, this);
-	remapDialog.SetSaveFilename(currentFilenameInfo.absolutePath() + "/" + currentFilenameInfo.completeBaseName() + "_remap.sdt");
+	remapDialog.SetSaveFilename(m_currentFilename);
 
 	if (remapDialog.exec() == QDialog::Accepted) {
 
@@ -1059,14 +1124,23 @@ void GlyphViewerWindow::CreateInteractionToolbar() {
 	m_interactionToolbar = addToolBar(tr("Interaction"));
 	m_interactionToolbar->setFloatable(true);
 	m_interactionToolbar->setMovable(true);
+	m_interactionToolbar->setIconSize(QSize(42, 32));
 
 	m_showHideHUDAxisAction = new QAction(tr("Show/Hide HUD Axis"), m_interactionToolbar);
 	m_showHideHUDAxisAction->setCheckable(true);
+	QIcon hudAxisIcon;
+	hudAxisIcon.addFile(":SGXGUI/Resources/Icons/icon-axis-hud.png", QSize(), QIcon::Normal, QIcon::Off);
+	hudAxisIcon.addFile(":SGXGUI/Resources/Icons/icon-axis-hud-a.png", QSize(), QIcon::Normal, QIcon::On);
+	m_showHideHUDAxisAction->setIcon(hudAxisIcon);
 	QObject::connect(m_showHideHUDAxisAction, &QAction::toggled, this, &GlyphViewerWindow::OnShowHideHUDAxis);
 	m_interactionToolbar->addAction(m_showHideHUDAxisAction);
 
 	m_showHideSceneAxisAction = new QAction(tr("Show/Hide Scene Axis"), m_interactionToolbar);
 	m_showHideSceneAxisAction->setCheckable(true);
+	QIcon sceneAxisIcon;
+	sceneAxisIcon.addFile(":SGXGUI/Resources/Icons/icon-axis-scene.png", QSize(), QIcon::Normal, QIcon::Off);
+	sceneAxisIcon.addFile(":SGXGUI/Resources/Icons/icon-axis-scene-a.png", QSize(), QIcon::Normal, QIcon::On);
+	m_showHideSceneAxisAction->setIcon(sceneAxisIcon);
 	QObject::connect(m_showHideSceneAxisAction, &QAction::toggled, this, &GlyphViewerWindow::OnShowHideSceneAxis);
 	m_interactionToolbar->addAction(m_showHideSceneAxisAction);
 
@@ -1095,4 +1169,41 @@ void GlyphViewerWindow::OnShowHideHUDAxis(bool show) {
 void GlyphViewerWindow::OnShowHideSceneAxis(bool show) {
 
 	m_glyph3DView->SetShowSceneAxisInfoObject(show);
+}
+
+void GlyphViewerWindow::OnOpenURLs() {
+
+	bool anyURLsOpened = m_glyphForestModel->OpenURLs(m_glyphForestSelectionModel->selectedIndexes());
+	if (!anyURLsOpened) {
+
+		QMessageBox::information(this, tr("No URLs Opened"), tr("No files or URLs were opened since none of the selected objects had a file or URL associated with them."));
+	}
+}
+
+void GlyphViewerWindow::OnPropertiesActivated() {
+
+	const QModelIndexList& selectedItems = m_glyphForestSelectionModel->selectedIndexes();
+	if (!selectedItems.empty()) {
+
+		const QModelIndex& index = selectedItems.back();
+		SynGlyphX::Glyph glyph = m_glyphForestModel->GetGlyphAtIndex(index);
+
+		SynGlyphX::TextGlyphPropertiesWidget* glyphPropertiesWidget = new SynGlyphX::TextGlyphPropertiesWidget(this);
+		glyphPropertiesWidget->SetWidget(QString::fromStdWString(glyph.GetTag()), QString::fromStdWString(glyph.GetURL()), QString::fromStdWString(glyph.GetDescription()));
+		glyphPropertiesWidget->SetReadOnly(true);
+
+		SynGlyphX::SingleWidgetDialog dialog(QDialogButtonBox::Ok, glyphPropertiesWidget, this);
+		dialog.setWindowTitle(tr("Glyph Properties"));
+		dialog.exec();
+	}
+}
+
+const SynGlyphX::SettingsStoredFileList& GlyphViewerWindow::GetSubsetFileListInstance() {
+
+	return s_subsetFileList;
+}
+
+void GlyphViewerWindow::AddSubsetVisualization(const QString& filename) {
+
+	s_subsetFileList.AddFile(filename);
 }

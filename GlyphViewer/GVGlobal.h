@@ -14,51 +14,17 @@
 /// LAWS AND INTERNATIONAL TREATIES.  THE RECEIPT OR POSSESSION OF  THIS SOURCE CODE AND/OR RELATED INFORMATION DOES NOT CONVEY OR IMPLY ANY RIGHTS  
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
+#pragma once
 
-#ifndef FILTERINGPARAMETERS_H
-#define FILTERINGPARAMETERS_H
+#include "GVServices.h"
 
-#include "DistinctValueFilteringParameters.h"
-#include <vector>
-#include "interval.h"
-#include "keywordfilter.h"
+class GVGlobal {
 
-class FilteringParameters : public DistinctValueFilteringParameters
-{
 public:
-	typedef std::pair<QString, SynGlyphX::DegenerateInterval> ColumnRangeFilter;
-	typedef std::vector<ColumnRangeFilter> ColumnRangeFilterMap;
-
-	typedef std::pair<QString, KeywordFilter> ColumnKeywordFilter;
-	typedef std::vector<ColumnKeywordFilter> ColumnKeywordFilterMap;
-
-	FilteringParameters();
-	FilteringParameters(const FilteringParameters& filters);
-	virtual ~FilteringParameters();
-
-	FilteringParameters& operator=(const FilteringParameters& filters);
-	bool operator==(const FilteringParameters& filters);
-	bool operator!=(const FilteringParameters& filters);
-
-	void Clear() override;
-	bool HasFilters() const override;
-
-	void SetRangeFilters(const ColumnRangeFilterMap& filterMap);
-	void SetRangeFilter(const QString& column, const SynGlyphX::DegenerateInterval& rangeFilter);
-	void RemoveRangeFilter(const QString& column);
-	const ColumnRangeFilterMap& GetRangeFilters() const;
-
-	void SetKeywordFilters(const ColumnKeywordFilterMap& filterMap);
-	void SetKeywordFilter(const QString& column, const KeywordFilter& keywordFilter);
-	void RemoveKeywordFilter(const QString& column);
-	const ColumnKeywordFilterMap& GetKeywordFilters() const;
+	static void Init(GVServices* s);
+	static void Destroy();
+	static GVServices* Services();
 
 private:
-	//Filters from Keyword tab in Filtering widget
-	ColumnKeywordFilterMap m_keywordFilters;
-
-	//Filters from Range tab in Filtering widget
-	ColumnRangeFilterMap m_rangeFilters;
+	GVGlobal();
 };
-
-#endif //FILTERINGPARAMETERS_H

@@ -5,6 +5,7 @@
 #include <QtCore/QProcess>
 #include "groupboxsinglewidget.h"
 #include "application.h"
+#include "glyphviewerwindow.h"
 
 FilteringWidget::FilteringWidget(SourceDataInfoModel* columnsModel, FilteringManager* filteringManager, QWidget *parent)
 	: QWidget(parent),
@@ -228,6 +229,7 @@ bool FilteringWidget::GetLoadSubsetVisualizationInNewInstance() const {
 
 void FilteringWidget::OnSubsetVisualizationCreated(const QString& subsetVisualizationFilename) {
 
+	GlyphViewerWindow::AddSubsetVisualization(subsetVisualizationFilename);
 	if (m_loadSubsetVisualization) {
 
 		if (m_loadSubsetVisualizationInNewInstance) {

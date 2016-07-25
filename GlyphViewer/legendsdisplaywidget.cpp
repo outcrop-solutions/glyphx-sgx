@@ -1,6 +1,6 @@
 #include "legendsdisplaywidget.h"
 #include <QtWidgets/QVBoxLayout>
-#include "fixedaspectratioimagelabel.h"
+#include "ResizeableImageLabel.h"
 
 LegendsDisplayWidget::LegendsDisplayWidget(QWidget *parent)
 	: QWidget(parent)
@@ -25,7 +25,7 @@ void LegendsDisplayWidget::SetLegends(const std::vector<SynGlyphX::Legend>& lege
 
 	for (const auto& legend : legends) {
 
-		SynGlyphX::FixedAspectRatioImageLabel* legendLabel = new SynGlyphX::FixedAspectRatioImageLabel(m_legendTabs);
+		SynGlyphX::ResizeableImageLabel* legendLabel = new SynGlyphX::ResizeableImageLabel(true, m_legendTabs);
 
 		QPixmap pixmap(QString::fromStdWString(legend.GetFilename()));
 		legendLabel->SetPixmap(pixmap);

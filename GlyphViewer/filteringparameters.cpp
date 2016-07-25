@@ -1,12 +1,13 @@
 #include "filteringparameters.h"
 
 
-FilteringParameters::FilteringParameters()
-{
+FilteringParameters::FilteringParameters() :
+	DistinctValueFilteringParameters() {
+
 }
 
 FilteringParameters::FilteringParameters(const FilteringParameters& filters) :
-	m_distinctValuesFilters(filters.m_distinctValuesFilters),
+	DistinctValueFilteringParameters(filters),
 	m_rangeFilters(filters.m_rangeFilters),
 	m_keywordFilters(filters.m_keywordFilters) {
 
@@ -18,7 +19,7 @@ FilteringParameters::~FilteringParameters()
 
 FilteringParameters& FilteringParameters::operator=(const FilteringParameters& filters) {
 
-	m_distinctValuesFilters = filters.m_distinctValuesFilters;
+	DistinctValueFilteringParameters::operator=(filters);
 	m_rangeFilters = filters.m_rangeFilters;
 	m_keywordFilters = filters.m_keywordFilters;
 
@@ -27,7 +28,7 @@ FilteringParameters& FilteringParameters::operator=(const FilteringParameters& f
 
 bool FilteringParameters::operator==(const FilteringParameters& filters) {
 
-	if (m_distinctValuesFilters != filters.m_distinctValuesFilters) {
+	if (DistinctValueFilteringParameters::operator!=(filters)) {
 
 		return false;
 	}
@@ -52,34 +53,14 @@ bool FilteringParameters::operator!=(const FilteringParameters& filters) {
 
 void FilteringParameters::Clear() {
 
-	m_distinctValuesFilters.clear();
+	DistinctValueFilteringParameters::Clear();
 	m_rangeFilters.clear();
 	m_keywordFilters.clear();
 }
 
 bool FilteringParameters::HasFilters() const {
 
-	return (!m_distinctValuesFilters.empty() || !m_rangeFilters.empty() || !m_keywordFilters.empty());
-}
-
-void FilteringParameters::SetDistinctValueFilters(const ColumnDistinctValuesFilterMap& filterMap) {
-
-	m_distinctValuesFilters = filterMap;
-}
-
-void FilteringParameters::SetDistinctValueFilter(const QString& column, const QSet<QString>& distinctValues) {
-
-	m_distinctValuesFilters[column] = distinctValues;
-}
-
-void FilteringParameters::RemoveDistinctValueFilter(const QString& column) {
-
-	m_distinctValuesFilters.erase(column);
-}
-
-const FilteringParameters::ColumnDistinctValuesFilterMap& FilteringParameters::GetDistinctValueFilters() const {
-
-	return m_distinctValuesFilters;
+	return (DistinctValueFilteringParameters::HasFilters() || !m_rangeFilters.empty() || !m_keywordFilters.empty());
 }
 
 void FilteringParameters::SetRangeFilters(const ColumnRangeFilterMap& filterMap) {

@@ -2,6 +2,7 @@
 #include "glyphbuilderapplication.h"
 #include <QtWidgets/QSplashScreen>
 #include <QtCore/QTimer>
+#include <QtCore/QDir>
 #include "licensingdialog.h"
 #include <QtCore/QDir>
 #ifdef USE_BREAKPAD
@@ -9,10 +10,12 @@
 #endif
 
 #include <QtCore/QStandardPaths>
+#include <QtCore/QDir>
 #include <QtWidgets/QMessageBox>
 #include <QtCore/QTextStream>
 #include <QtCore/QString>
 #include "nonmappablegeometryproperties.h"
+#include "GVGlobal.h"
 
 /*
 void myMessageHandler(QtMsgType type, const QMessageLogContext &context, const QString &msg)
@@ -59,7 +62,7 @@ int main(int argc, char *argv[])
 	QSurfaceFormat::setDefaultFormat( fmt );
 #endif
     
-	SynGlyphX::GlyphBuilderApplication::Setup("Glyph Builder - Glyph Viewer", "0.7.47");
+	SynGlyphX::GlyphBuilderApplication::Setup("Glyph Builder - Glyph Viewer", "0.7.51");
 	SynGlyphX::GlyphBuilderApplication a(argc, argv);
 	if (SynGlyphX::GlyphBuilderApplication::IsGlyphEd()) {
 
@@ -122,8 +125,15 @@ int main(int argc, char *argv[])
 		QTimer::singleShot(1500, &splash, SLOT(close()));
 
 		GlyphViewerWindow w;
+		QFile file(":GlyphViewer/Resources/glyphed_stylesheet.qss"); //For building app 
+		//QFile file("../../../GUI/GlyphViewer/Resources/glyphed_stylesheet.qss"); //For faster style testing
+		file.open(QFile::ReadOnly);
+		QString styleSheet = QLatin1String(file.readAll());
+		w.setStyleSheet(styleSheet);
 		w.move(50, 50);
 		w.resize(1200, 700);
+
+		GVGlobal::Init(new GVServices(&w));
 
 		w.show();
 
@@ -132,7 +142,7 @@ int main(int argc, char *argv[])
 
 			QDir visualizationToLoad(commandLineArguments[1]);
 
-			if (!w.LoadNewVisualization(QDir::toNativeSeparators(visualizationToLoad.canonicalPath()), DataMappingLoadingFilterModel::Table2LoadingFiltersMap())) {
+			if (!w.LoadNewVisualization(QDir::toNativeSeparators(visualizationToLoad.canonicalPath()))) {
 
 				w.closeJVM();
 				return 2;

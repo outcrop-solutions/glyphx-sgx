@@ -15,28 +15,31 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef DATAMAPPINGLOADINGFILTERMODEL_H
-#define DATAMAPPINGLOADINGFILTERMODEL_H
+#pragma once
 
-#include "DataTransformModel.h"
-#include "filteringparameters.h"
-#include "inputtable.h"
+#include <QtWidgets/QSplitter>
 
-class DataMappingLoadingFilterModel : public SynGlyphX::DataTransformModel
+namespace SynGlyphX {
+
+	class TitleListWidget;
+}
+
+class LoadingFilterWidget : public QSplitter
 {
 	Q_OBJECT
 
 public:
-	typedef std::unordered_map<SynGlyphX::InputTable, FilteringParameters, SynGlyphX::InputTableHash> Table2LoadingFiltersMap;
+	LoadingFilterWidget(QWidget *parent);
+	~LoadingFilterWidget();
 
-	DataMappingLoadingFilterModel(QObject *parent);
-	~DataMappingLoadingFilterModel();
+	void AddFilter(const QString& name, bool allowMultiselect, const QStringList& filterValues);
 
-	void LoadDataTransformFile(const QString& filename, const Table2LoadingFiltersMap& loadingFiltersMap);
-	const Table2LoadingFiltersMap& GetLoadingFilters() const;
+	QSet<QString> GetFilterData(unsigned int index) const;
+	bool AreAllValuesSelected(unsigned int index) const;
+	bool AreAnyValuesSelected(unsigned int index) const;
 
 private:
-	Table2LoadingFiltersMap m_loadingFiltersMap;
+	QList<SynGlyphX::TitleListWidget*> m_filterListWidgets;
 };
 
-#endif // DATAMAPPINGLOADINGFILTERMODEL_H
+//#pragma once

@@ -129,7 +129,7 @@ void GlyphViewerOptions::WriteToSettings() const {
 	settings.setValue("sceneAxisInfoShow", m_showSceneAxisObject);
 	settings.setValue("showFailedToDownloadImageMessage", m_showMessageWhenImagesDidNotDownload);
 	settings.setValue("loadSubsetVisualization", m_loadSubsetVisualization);
-	settings.setValue("loadSubsetVisualizationNewInstance", m_loadSubsetVisualizationInNewInstance);
+	settings.setValue("loadSubsetVisualizationInNewInstance", m_loadSubsetVisualizationInNewInstance);
 	settings.endGroup();
 
 #ifdef USE_ZSPACE
@@ -157,6 +157,8 @@ void GlyphViewerOptions::ReadFromSettings() {
 	SetHUDAxisObjectLocation(static_cast<SynGlyphXANTz::ANTzForestWidget::HUDLocation>(settings.value("axisInfoLocation").toInt()));
 	SetShowSceneAxisObject(settings.value("sceneAxisInfoShow", true).toBool());
 	SetShowMessageWhenImagesDidNotDownload(settings.value("showFailedToDownloadImageMessage", true).toBool());
+	SetLoadSubsetVisualization(settings.value("loadSubsetVisualization", true).toBool());
+	SetLoadSubsetVisualizationInNewInstance(settings.value("loadSubsetVisualizationInNewInstance", false).toBool());
 	settings.endGroup();
 
 #ifdef USE_ZSPACE

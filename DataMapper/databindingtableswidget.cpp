@@ -209,9 +209,9 @@ void DataBindingTablesWidget::CreateBasePropertiesTable() {
 													SynGlyphX::DataMappingGlyph::MappableField::Transparency });
 
 	//Position
-	CreateDoublePropertyWidgets(tableView, SynGlyphX::DataMappingGlyph::MappableField::PositionX, -1000.0, 1000.0, true);
-	CreateDoublePropertyWidgets(tableView, SynGlyphX::DataMappingGlyph::MappableField::PositionY, -1000.0, 1000.0, true);
-	CreateDoublePropertyWidgets(tableView, SynGlyphX::DataMappingGlyph::MappableField::PositionZ, 0.0, 1000.0);
+	CreateDoublePropertyWidgets(tableView, SynGlyphX::DataMappingGlyph::MappableField::PositionX, -10000.0, 10000.0, true);
+	CreateDoublePropertyWidgets(tableView, SynGlyphX::DataMappingGlyph::MappableField::PositionY, -10000.0, 10000.0, true);
+	CreateDoublePropertyWidgets(tableView, SynGlyphX::DataMappingGlyph::MappableField::PositionZ, 0.0, 10000.0);
 
 	//Rotation
 	CreateDoublePropertyWidgets(tableView, SynGlyphX::DataMappingGlyph::MappableField::RotationX, -360.0, 360.0);

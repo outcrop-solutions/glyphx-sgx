@@ -21,12 +21,11 @@
 #include "sgxgui_global.h"
 #include <QtWidgets/QMainWindow>
 #include <QtCore/QSet>
+#include "SettingsStoredFileList.h"
 
 class QUndoStack;
 
 namespace SynGlyphX {
-
-    const unsigned int MaxRecentFiles = 4;
 
     class SGXGUI_EXPORT MainWindow : public QMainWindow
     {
@@ -34,12 +33,18 @@ namespace SynGlyphX {
 		Q_OBJECT
 
     public:
+		static const unsigned int MaxRecentFiles = 12;
+		static const unsigned int MaxRecentFileMenuEntries = 4;
+
 		MainWindow(unsigned int stateVersion, QWidget *parent = 0);
         ~MainWindow();
+
+		static const SettingsStoredFileList& GetRecentFileListInstance();
 
     protected slots:
         void SwitchBetweenFullAndNormalScreen();
 		void RestoreOriginalLayout();
+		void UpdateRecentFileList();
 
     protected:
 		virtual void showEvent(QShowEvent* event);
@@ -51,7 +56,6 @@ namespace SynGlyphX {
         virtual bool LoadRecentFile(const QString& filename) = 0;
 
 		void SaveOriginalState();
-        void UpdateRecentFileList();
         void UpdateFilenameWindowTitle(const QString& title);
 		void ClearCurrentFile();
         void SetCurrentFile(const QString& filename);
@@ -86,6 +90,8 @@ namespace SynGlyphX {
 
 		QAction* m_undoAction;
 		QAction* m_redoAction;
+
+		static SettingsStoredFileList s_recentFileList;
 
     private slots:
         void OnRecentFileSelected();

@@ -15,36 +15,41 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef GLYPHTREELISTVIEW_H
-#define GLYPHTREELISTVIEW_H
+#pragma once
 
-#include "treeview.h"
-#include "itemfocusselectionmodel.h"
-#include "sharedactionlist.h"
+#include "sgxgui_global.h"
+#include <QtCore/QObject>
+#include <QtCore/QString>
+#include <QtCore/QStringList>
 
-class GlyphTreeListView : public SynGlyphX::TreeView
-{
-	Q_OBJECT
+namespace SynGlyphX {
 
-public:
-	GlyphTreeListView(QWidget *parent = 0);
-	~GlyphTreeListView();
+	class SGXGUI_EXPORT SettingsStoredFileList : public QObject
+	{
+		Q_OBJECT
 
-	const SynGlyphX::SharedActionList& GetSharedActions() const;
+	public:
+		SettingsStoredFileList(const QString& settingsName, unsigned int maxFileCount = 0);
+		~SettingsStoredFileList();
 
-	void SetItemFocusSelectionModel(SynGlyphX::ItemFocusSelectionModel* itemFocusSelectionModel);
+		const QStringList& GetFiles() const;
+		unsigned int GetMaxFileCount() const;
 
-protected:
-	virtual QItemSelectionModel::SelectionFlags selectionCommand(const QModelIndex& index, const QEvent* event = 0) const;
-	virtual void EnableActions(const QItemSelection& selected);
+		void ReadFromSettings();
+		void WriteToSettings();
 
-private slots:
-	void OnOpenURLs();
-	void OnPropertiesActivated();
+		void RemoveFile(const QString& filename);
+		void AddFile(const QString& filename);
 
-private:
-	SynGlyphX::ItemFocusSelectionModel* m_itemFocusSelectionModel;
-	SynGlyphX::SharedActionList m_actions;
-};
+	signals:
+		void FileListChanged();
 
-#endif // GLYPHTREELISTVIEW_H
+	private:
+		QStringList m_files;
+		QString m_settingsName;
+		unsigned int m_maxFileCount;
+	};
+
+} //namespace SynGlyphX
+
+//#pragma once

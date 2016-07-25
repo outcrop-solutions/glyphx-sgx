@@ -15,71 +15,45 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef LOADINGSCREENWIDGET_H
-#define LOADINGSCREENWIDGET_H
+#pragma once
 
-#include <QtWidgets/QFrame>
-#include <QtWidgets/QListWidget>
-#include <QtWidgets/QGroupBox>
+#include "sgxgui_global.h"
+#include <QtWidgets/QWidget>
+#include <QtWidgets/QLabel>
 #include <QtWidgets/QPushButton>
-#include "glyphviewerwindow.h"
-#include "sourcedatacache.h"
+#include <QtWidgets/QListWidget>
 
-class LoadingScreenWidget : public QFrame
-{
-	Q_OBJECT
+namespace SynGlyphX {
 
-public:
-	LoadingScreenWidget(GlyphViewerWindow* mainWindow, QWidget *parent);
-	~LoadingScreenWidget();
-
-	static QString GetGlyphEdDir();
-
-private slots:
-	void OnLoadVisualization();
-	void OnNewViewSelected();
-	void OnSelectAll();
-
-private:
-	class VisualizationData {
+	class SGXGUI_EXPORT TitleListWidget : public QWidget
+	{
+		Q_OBJECT
 
 	public:
-		VisualizationData() : m_mustHaveFilter(true) {}
-		~VisualizationData() {}
+		TitleListWidget(QWidget *parent);
+		~TitleListWidget();
 
-		bool HasDataForFilter(unsigned int index) const { return index < m_filterTitles.size(); }
+		void ShowSelectAllButton(bool show);
+		void SetAllowMultiselect(bool allow);
+		void SetTitle(const QString& title);
+		void SetItems(const QStringList& labels, const QStringList& tooltips = QStringList());
 
-		QString m_title;
-		QString m_sdtPath;
-		QString m_tableInGlyphEd;
-		bool m_mustHaveFilter;
+		bool AreAnyItemsSelected() const;
+		bool AreAllItemsSelected() const;
+		void SelectItem(unsigned int index);
 
-		std::vector<QString> m_filterTitles;
-		std::vector<QString> m_filterFieldNames;
-		std::vector<bool> m_filterMultiselect;
-		std::vector<QStringList> m_filterValues;
+		QStringList GetSelectedLabels() const;
+		QStringList GetSelectedTooltips() const;
+
+	signals:
+		void CurrentRowChanged(int row);
+
+	private:
+		QLabel* m_titleLabel;
+		QPushButton* m_selectAllButton;
+		QListWidget* m_listWidget;
 	};
 
-	void AddFilterList(QHBoxLayout* filterListLayout);
-	void SetMultiSelectionEnabled(unsigned int filterWidgetIndex, bool multiSelectionEnabled);
-	bool AreAnyFiltersMissingSelection() const;
-	bool IsFilterWidgetInUse(unsigned int index) const;
-	void ClearFilters();
+} //namespace SynGlyphX
 
-	void SetupVisualizationData();
-
-	static QString s_glyphEdDir;
-
-	QListWidget* m_viewListWidget;
-	std::vector<QListWidget*> m_filterWidgets;
-	std::vector<QGroupBox*> m_filterGroupBoxWidgets;
-	std::vector<QPushButton*> m_selectAllButtonWidgets;
-	
-	GlyphViewerWindow* m_mainWindow;
-	SourceDataCache m_sourceDataCache;
-	std::vector<VisualizationData> m_visualizationData;
-
-	unsigned int m_currentView;
-};
-
-#endif // LOADINGSCREENWIDGET_H
+//#pragma once

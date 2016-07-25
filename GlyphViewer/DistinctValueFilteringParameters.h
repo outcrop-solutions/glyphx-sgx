@@ -15,50 +15,36 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef FILTERINGPARAMETERS_H
-#define FILTERINGPARAMETERS_H
+#pragma once
 
-#include "DistinctValueFilteringParameters.h"
-#include <vector>
-#include "interval.h"
-#include "keywordfilter.h"
+#include <map>
+#include <QtCore/QSet>
+#include <QtCore/QString>
 
-class FilteringParameters : public DistinctValueFilteringParameters
+class DistinctValueFilteringParameters
 {
 public:
-	typedef std::pair<QString, SynGlyphX::DegenerateInterval> ColumnRangeFilter;
-	typedef std::vector<ColumnRangeFilter> ColumnRangeFilterMap;
+	typedef std::map<QString, QSet<QString>> ColumnDistinctValuesFilterMap;
 
-	typedef std::pair<QString, KeywordFilter> ColumnKeywordFilter;
-	typedef std::vector<ColumnKeywordFilter> ColumnKeywordFilterMap;
+	DistinctValueFilteringParameters();
+	DistinctValueFilteringParameters(const DistinctValueFilteringParameters& filters);
+	virtual ~DistinctValueFilteringParameters();
 
-	FilteringParameters();
-	FilteringParameters(const FilteringParameters& filters);
-	virtual ~FilteringParameters();
+	DistinctValueFilteringParameters& operator=(const DistinctValueFilteringParameters& filters);
+	bool operator==(const DistinctValueFilteringParameters& filters);
+	bool operator!=(const DistinctValueFilteringParameters& filters);
 
-	FilteringParameters& operator=(const FilteringParameters& filters);
-	bool operator==(const FilteringParameters& filters);
-	bool operator!=(const FilteringParameters& filters);
+	virtual void Clear();
+	virtual bool HasFilters() const;
 
-	void Clear() override;
-	bool HasFilters() const override;
+	void SetDistinctValueFilters(const ColumnDistinctValuesFilterMap& filterMap);
+	void SetDistinctValueFilter(const QString& column, const QSet<QString>& distinctValues);
+	void RemoveDistinctValueFilter(const QString& column);
+	const ColumnDistinctValuesFilterMap& GetDistinctValueFilters() const;
 
-	void SetRangeFilters(const ColumnRangeFilterMap& filterMap);
-	void SetRangeFilter(const QString& column, const SynGlyphX::DegenerateInterval& rangeFilter);
-	void RemoveRangeFilter(const QString& column);
-	const ColumnRangeFilterMap& GetRangeFilters() const;
-
-	void SetKeywordFilters(const ColumnKeywordFilterMap& filterMap);
-	void SetKeywordFilter(const QString& column, const KeywordFilter& keywordFilter);
-	void RemoveKeywordFilter(const QString& column);
-	const ColumnKeywordFilterMap& GetKeywordFilters() const;
-
-private:
-	//Filters from Keyword tab in Filtering widget
-	ColumnKeywordFilterMap m_keywordFilters;
-
-	//Filters from Range tab in Filtering widget
-	ColumnRangeFilterMap m_rangeFilters;
+protected:
+	//Filters from Elastic tab in Filtering widget and time animation widget (and home page filters)
+	ColumnDistinctValuesFilterMap m_distinctValuesFilters;
 };
 
-#endif //FILTERINGPARAMETERS_H
+//#pragma once

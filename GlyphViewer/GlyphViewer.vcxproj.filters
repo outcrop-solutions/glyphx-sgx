@@ -50,15 +50,6 @@
     <ClCompile Include="GeneratedFiles\Win32\Release\moc_glyphviewerwindow.cpp">
       <Filter>Generated Files\Release_Win32</Filter>
     </ClCompile>
-    <ClCompile Include="glyphtreelistview.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Win32\Debug\moc_glyphtreelistview.cpp">
-      <Filter>Generated Files\Debug_Win32</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Win32\Release\moc_glyphtreelistview.cpp">
-      <Filter>Generated Files\Release_Win32</Filter>
-    </ClCompile>
     <ClCompile Include="antzimportdialog.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -185,26 +176,8 @@
     <ClCompile Include="GeneratedFiles\Win32\Release\moc_filteringmanager.cpp">
       <Filter>Generated Files\Release_Win32</Filter>
     </ClCompile>
-    <ClCompile Include="loadingscreenwidget.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Win32\Debug\moc_loadingscreenwidget.cpp">
-      <Filter>Generated Files\Debug_Win32</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Win32\Release\moc_loadingscreenwidget.cpp">
-      <Filter>Generated Files\Release_Win32</Filter>
-    </ClCompile>
     <ClCompile Include="filteringparameters.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="datamappingloadingfiltermodel.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Win32\Debug\moc_datamappingloadingfiltermodel.cpp">
-      <Filter>Generated Files\Debug_Win32</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Win32\Release\moc_datamappingloadingfiltermodel.cpp">
-      <Filter>Generated Files\Release_Win32</Filter>
     </ClCompile>
     <ClCompile Include="glyph3dview.cpp">
       <Filter>Source Files</Filter>
@@ -263,15 +236,48 @@
     <ClCompile Include="GeneratedFiles\Win32\Release\moc_remapdialog.cpp">
       <Filter>Generated Files\Release_Win32</Filter>
     </ClCompile>
+    <ClCompile Include="LoadingFilterWidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Win32\Debug\moc_LoadingFilterWidget.cpp">
+      <Filter>Generated Files\Debug_Win32</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Win32\Release\moc_LoadingFilterWidget.cpp">
+      <Filter>Generated Files\Release_Win32</Filter>
+    </ClCompile>
+    <ClCompile Include="HomePageWidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Win32\Debug\moc_HomePageWidget.cpp">
+      <Filter>Generated Files\Debug_Win32</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Win32\Release\moc_HomePageWidget.cpp">
+      <Filter>Generated Files\Release_Win32</Filter>
+    </ClCompile>
+    <ClCompile Include="MultiLoadingFilterWidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Win32\Debug\moc_MultiLoadingFilterWidget.cpp">
+      <Filter>Generated Files\Debug_Win32</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Win32\Release\moc_MultiLoadingFilterWidget.cpp">
+      <Filter>Generated Files\Release_Win32</Filter>
+    </ClCompile>
+    <ClCompile Include="DistinctValueFilteringParameters.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GVServices.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GVGlobal.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="glyphviewer.qrc">
       <Filter>Resource Files</Filter>
     </CustomBuild>
     <CustomBuild Include="glyphviewerwindow.h">
-      <Filter>Header Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="glyphtreelistview.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="antzimportdialog.h">
@@ -313,12 +319,6 @@
     <CustomBuild Include="filteringmanager.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
-    <CustomBuild Include="loadingscreenwidget.h">
-      <Filter>Header Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="datamappingloadingfiltermodel.h">
-      <Filter>Header Files</Filter>
-    </CustomBuild>
     <CustomBuild Include="glyph3dview.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
@@ -335,6 +335,15 @@
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="remapdialog.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="LoadingFilterWidget.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="HomePageWidget.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="MultiLoadingFilterWidget.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>
@@ -359,6 +368,15 @@
     <ClInclude Include="keywordfilter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="DistinctValueFilteringParameters.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GVServices.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GVGlobal.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Resources\rotate_down.png">
@@ -373,5 +391,10 @@
     <Image Include="Resources\rotate_up.png">
       <Filter>Resource Files</Filter>
     </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\glyphed_stylesheet.qss">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

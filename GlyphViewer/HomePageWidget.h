@@ -15,50 +15,72 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef FILTERINGPARAMETERS_H
-#define FILTERINGPARAMETERS_H
+#pragma once
 
-#include "DistinctValueFilteringParameters.h"
-#include <vector>
-#include "interval.h"
-#include "keywordfilter.h"
+#include "sourcedatacache.h"
+#include <QtWidgets/QFrame>
+#include "MultiLoadingFilterWidget.h"
 
-class FilteringParameters : public DistinctValueFilteringParameters
+class QStackedWidget;
+class QStackedLayout;
+class QGridLayout;
+class QButtonGroup;
+class QPushButton;
+class QVBoxLayout;
+class QListWidget;
+class QListWidgetItem;
+class GlyphViewerWindow;
+
+namespace SynGlyphX {
+
+	class TitleListWidget;
+}
+
+class HomePageWidget : public QFrame
 {
+	Q_OBJECT
+
 public:
-	typedef std::pair<QString, SynGlyphX::DegenerateInterval> ColumnRangeFilter;
-	typedef std::vector<ColumnRangeFilter> ColumnRangeFilterMap;
+	HomePageWidget(GlyphViewerWindow* mainWindow, QWidget *parent);
+	~HomePageWidget();
 
-	typedef std::pair<QString, KeywordFilter> ColumnKeywordFilter;
-	typedef std::vector<ColumnKeywordFilter> ColumnKeywordFilterMap;
+	static QString GetGlyphEdDir();
 
-	FilteringParameters();
-	FilteringParameters(const FilteringParameters& filters);
-	virtual ~FilteringParameters();
+	bool LoadVisualization(const QString& sdtToLoad, const DistinctValueFilteringParameters& userSelectedFilters);
 
-	FilteringParameters& operator=(const FilteringParameters& filters);
-	bool operator==(const FilteringParameters& filters);
-	bool operator!=(const FilteringParameters& filters);
-
-	void Clear() override;
-	bool HasFilters() const override;
-
-	void SetRangeFilters(const ColumnRangeFilterMap& filterMap);
-	void SetRangeFilter(const QString& column, const SynGlyphX::DegenerateInterval& rangeFilter);
-	void RemoveRangeFilter(const QString& column);
-	const ColumnRangeFilterMap& GetRangeFilters() const;
-
-	void SetKeywordFilters(const ColumnKeywordFilterMap& filterMap);
-	void SetKeywordFilter(const QString& column, const KeywordFilter& keywordFilter);
-	void RemoveKeywordFilter(const QString& column);
-	const ColumnKeywordFilterMap& GetKeywordFilters() const;
+private slots:
+	void OnLoadVisualization();
+	void OnNewOptionSelected(int index);
+	void OnRecentListUpdated();
+	void OnSubsetListUpdated();
+	void OnRecentViewClicked(QListWidgetItem *item);
 
 private:
-	//Filters from Keyword tab in Filtering widget
-	ColumnKeywordFilterMap m_keywordFilters;
+	void CreateHomePageOptionsWidget();
+	void CreateAllViewsWidget();
+	void CreateMyViewsWidget();
+	void CreateHelpWidget();
+	void CreateDashboardWidget();
 
-	//Filters from Range tab in Filtering widget
-	ColumnRangeFilterMap m_rangeFilters;
+	void SetupVisualizationData();
+
+	static QString s_glyphEdDir;
+
+	QGridLayout* m_mainLayout;
+	QStackedLayout* m_homePageWidgetsLayout;
+
+	QButtonGroup* m_optionsButtonGroup;
+
+	QPushButton* m_loadVisualizationButton;
+
+	MultiLoadingFilterWidget* m_allViewsFilteringWidget;
+	QListWidget* m_recentViewsFilteringWidget;
+	MultiLoadingFilterWidget* m_subsetViewsFilteringWidget;
+	
+	GlyphViewerWindow* m_mainWindow;
+	SourceDataCache m_sourceDataCache;
+
+	std::vector<MultiLoadingFilterWidget::VisualizationData> m_allVisualizationData;
 };
 
-#endif //FILTERINGPARAMETERS_H
+//#pragma once

@@ -19,9 +19,8 @@
 #define GLYPHVIEWERWINDOW_H
 
 #include <QtWidgets/QMainWindow>
-#include "glyphtreelistview.h"
 #include "mainwindow.h"
-#include "datamappingloadingfiltermodel.h"
+#include "datatransformmodel.h"
 #include "glyphforestmodel.h"
 #include "glyph3dview.h"
 #include "cachemanager.h"
@@ -37,7 +36,10 @@
 #include "glyphengine.h"
 #include "portablevisualizationexport.h"
 #include "legendsdisplaywidget.h"
-#include "filteringparameters.h"
+#include "DistinctValueFilteringParameters.h"
+#include "SettingsStoredFileList.h"
+
+class HomePageWidget;
 
 class GlyphViewerWindow : public SynGlyphX::MainWindow
 {
@@ -48,11 +50,17 @@ public:
 	~GlyphViewerWindow();
 	void closeJVM();
 
-	bool LoadNewVisualization(const QString& filename, const DataMappingLoadingFilterModel::Table2LoadingFiltersMap& filters = DataMappingLoadingFilterModel::Table2LoadingFiltersMap());
+	bool LoadNewVisualization(const QString& filename, const DistinctValueFilteringParameters& filters = DistinctValueFilteringParameters());
+
+	static const SynGlyphX::SettingsStoredFileList& GetSubsetFileListInstance();
+	static void AddSubsetVisualization(const QString& filename);
+
+public slots:
+	bool LoadRecentFile(const QString& filename) override;
 
 protected:
-	virtual void ReadSettings();
-	virtual void WriteSettings();
+	void ReadSettings() override;
+	void WriteSettings() override;
 
 	void closeEvent(QCloseEvent* event) override;
 
@@ -71,12 +79,13 @@ private slots:
 	void OnStereoSetup(bool stereoEnabled);
 	void OnShowHideHUDAxis(bool show);
 	void OnShowHideSceneAxis(bool show);
+	void OnOpenURLs();
+	void OnPropertiesActivated();
 
 private:
-	virtual bool LoadRecentFile(const QString& filename);
-	void LoadVisualization(const QString& filename, const DataMappingLoadingFilterModel::Table2LoadingFiltersMap& filters = DataMappingLoadingFilterModel::Table2LoadingFiltersMap());
+	void LoadVisualization(const QString& filename, const DistinctValueFilteringParameters& filters = DistinctValueFilteringParameters());
 	void LoadANTzCompatibilityVisualization(const QString& filename);
-	void LoadDataTransform(const QString& filename, const DataMappingLoadingFilterModel::Table2LoadingFiltersMap& filters);
+	void LoadDataTransform(const QString& filename);
 	void ValidateDataMappingFile(const QString& filename);
 	void LoadFilesIntoModel(const SynGlyphXANTz::ANTzCSVWriter::FilenameList& filesToLoad, const QStringList& baseImageFilenames);
 	void CreateMenus();
@@ -111,11 +120,13 @@ private:
 	QAction* m_showHideHUDAxisAction;
 	QAction* m_showHideSceneAxisAction;
 
-	QDockWidget* m_glyphListDockWidget;
+	QAction* m_openURLAction;
+	QAction* m_propertiesAction;
+
 	LegendsDisplayWidget* m_legendsWidget;
 	QDockWidget* m_legendsDockWidget;
 
-	DataMappingLoadingFilterModel* m_mappingModel;
+	SynGlyphX::DataTransformModel* m_mappingModel;
 	CacheManager m_cacheManager;
 	bool m_showErrorFromTransform;
 
@@ -124,7 +135,7 @@ private:
 	SynGlyphXANTz::GlyphForestModel* m_glyphForestModel;
 	SynGlyphX::ItemFocusSelectionModel* m_glyphForestSelectionModel;
 	Glyph3DView* m_glyph3DView;
-	GlyphTreeListView* m_treeView;
+	
 	GlyphPropertiesWidgetsContainer* m_glyphPropertiesWidgetContainer;
 	SourceDataCache::SharedPtr m_sourceDataCache;
 	FilteringWidget* m_filteringWidget;
@@ -133,6 +144,11 @@ private:
 	DataEngine::DataEngineConnection::SharedPtr m_dataEngineConnection;
 	SynGlyphX::PortableVisualizationExport m_portableVisualizationExport;
 	SourceDataInfoModel* m_columnsModel;
+
+	QMap<QString, DistinctValueFilteringParameters> m_recentFilters;
+	HomePageWidget* m_homePage;
+
+	static SynGlyphX::SettingsStoredFileList s_subsetFileList;
 };
 
 #endif // GLYPHVIEWERWINDOW_H

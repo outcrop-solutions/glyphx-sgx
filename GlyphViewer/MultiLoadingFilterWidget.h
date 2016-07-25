@@ -15,50 +15,63 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef FILTERINGPARAMETERS_H
-#define FILTERINGPARAMETERS_H
+#pragma once
 
+#include <QtWidgets/QSplitter>
+#include <unordered_map>
 #include "DistinctValueFilteringParameters.h"
-#include <vector>
-#include "interval.h"
-#include "keywordfilter.h"
 
-class FilteringParameters : public DistinctValueFilteringParameters
+namespace SynGlyphX {
+
+	class TitleListWidget;
+}
+
+class LoadingFilterWidget;
+class QStackedWidget;
+
+class MultiLoadingFilterWidget : public QSplitter
 {
+	Q_OBJECT
+
 public:
-	typedef std::pair<QString, SynGlyphX::DegenerateInterval> ColumnRangeFilter;
-	typedef std::vector<ColumnRangeFilter> ColumnRangeFilterMap;
+	class VisualizationData {
 
-	typedef std::pair<QString, KeywordFilter> ColumnKeywordFilter;
-	typedef std::vector<ColumnKeywordFilter> ColumnKeywordFilterMap;
+	public:
+		VisualizationData() {}
+		~VisualizationData() {}
 
-	FilteringParameters();
-	FilteringParameters(const FilteringParameters& filters);
-	virtual ~FilteringParameters();
+		bool HasDataForFilter(unsigned int index) const { return index < m_filterTitles.size(); }
 
-	FilteringParameters& operator=(const FilteringParameters& filters);
-	bool operator==(const FilteringParameters& filters);
-	bool operator!=(const FilteringParameters& filters);
+		QString m_title;
+		QString m_sdtPath;
+		QString m_tableInGlyphEd;
 
-	void Clear() override;
-	bool HasFilters() const override;
+		std::vector<bool> m_mustHaveFilter;
+		std::vector<QString> m_filterTitles;
+		std::vector<QString> m_filterFieldNames;
+		std::vector<bool> m_filterMultiselect;
+		std::vector<QStringList> m_filterValues;
+	};
 
-	void SetRangeFilters(const ColumnRangeFilterMap& filterMap);
-	void SetRangeFilter(const QString& column, const SynGlyphX::DegenerateInterval& rangeFilter);
-	void RemoveRangeFilter(const QString& column);
-	const ColumnRangeFilterMap& GetRangeFilters() const;
+	MultiLoadingFilterWidget(QWidget *parent);
+	~MultiLoadingFilterWidget();
 
-	void SetKeywordFilters(const ColumnKeywordFilterMap& filterMap);
-	void SetKeywordFilter(const QString& column, const KeywordFilter& keywordFilter);
-	void RemoveKeywordFilter(const QString& column);
-	const ColumnKeywordFilterMap& GetKeywordFilters() const;
+	void Reset(const std::vector<VisualizationData>& dataAndFilters);
+	
+	bool DoCurrentNecessaryFiltersHaveSelection() const;
+	QString GetCurrentFilename() const;
+	bool CanCurrentHaveFilters() const;
+	DistinctValueFilteringParameters GetCurrentFilterValues() const;
+
+private slots:
+	void OnFileSelected(int row);
 
 private:
-	//Filters from Keyword tab in Filtering widget
-	ColumnKeywordFilterMap m_keywordFilters;
-
-	//Filters from Range tab in Filtering widget
-	ColumnRangeFilterMap m_rangeFilters;
+	SynGlyphX::TitleListWidget* m_viewListWidget;
+	QStackedWidget* m_loadingFilterWidgetsStack;
+	std::unordered_map<unsigned int, LoadingFilterWidget*> m_loadingFilterWidgetMap;
+	std::unordered_map<unsigned int, std::vector<bool>> m_mustHaveFilterMap;
+	std::unordered_map<unsigned int, QStringList> m_fieldNameMap;
 };
 
-#endif //FILTERINGPARAMETERS_H
+//#pragma once
