@@ -16,15 +16,20 @@ public:
 		m_ble(ble),
 		m_newInputField(newInputField),
 		m_oldInputField(ble->m_inputField) // since it is called from ble, should not  not be null at time of construction
-	{	
+
+	{
+		// this will not work after undoing tree operation, will need to somehow store selection in a model-independent way
+		m_selection = SynGlyphX::AppGlobal::Services()->GetTreeViewSelectionModel()->selection();
 	}
 	void undo() override {
+		SynGlyphX::AppGlobal::Services()->GetTreeViewSelectionModel()->select(m_selection, QItemSelectionModel::ClearAndSelect);
 		if (m_ble) {
 			m_ble->m_inputField = m_oldInputField;
 			m_ble->ValueChangedByUser(m_ble->m_inputField);
 		}
 	}
 	void redo() override {
+		SynGlyphX::AppGlobal::Services()->GetTreeViewSelectionModel()->select(m_selection, QItemSelectionModel::ClearAndSelect);
 		if (m_ble) {
 			m_ble->m_inputField = m_newInputField;
 			m_ble->ValueChangedByUser(m_ble->m_inputField);
@@ -33,6 +38,7 @@ public:
 	QPointer<BindingLineEdit> m_ble;
 	SynGlyphX::InputField m_newInputField;
 	SynGlyphX::InputField m_oldInputField;
+	QItemSelection m_selection;
 };
 
 BindingLineEdit::BindingLineEdit(const GlyphRolesTableModel* model, QWidget *parent, SynGlyphX::MappingFunctionData::Input acceptedInputTypes)
