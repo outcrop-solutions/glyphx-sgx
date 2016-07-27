@@ -107,7 +107,9 @@ protected:
 	virtual bool DoAnyTablesHaveFilters() const = 0;
 	virtual void GetFilteringParametersForTable(const QString& table, FilteringParameters& filteringParameters) = 0;
 	virtual QWidget* AddFilter(const QString& field, unsigned int span) = 0;
+	virtual void MoveRowData(unsigned int sourceSpan, unsigned int destinationSpan);
 	
+	void RebuildRows(const QString& newTable);
 	void MoveRow(unsigned int sourceSpan, unsigned int destinationSpan);
 	void UpdatedEnableStateForButton(QAction* action, QPushButton* button);
 	void ClearFiltersFromTableWidget();

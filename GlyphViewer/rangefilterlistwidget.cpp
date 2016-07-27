@@ -257,3 +257,17 @@ void RangeFilterListWidget::ClearData() {
 
 	m_table2RangesAndDistinctValuesMap.clear();
 }
+
+void RangeFilterListWidget::MoveRowData(unsigned int sourceSpan, unsigned int destinationSpan) {
+
+	Field2RangeAndDistinctValuesVector& newField2RangeAndExtentList = m_table2RangesAndDistinctValuesMap[m_currentTable];
+
+	Field2RangeAndDistinctValues spanToSwap = newField2RangeAndExtentList.at(sourceSpan);
+	Field2RangeAndDistinctValuesVector::iterator iT = newField2RangeAndExtentList.begin();
+	std::advance(iT, sourceSpan);
+	newField2RangeAndExtentList.erase(iT);
+
+	iT = newField2RangeAndExtentList.begin();
+	std::advance(iT, destinationSpan);
+	newField2RangeAndExtentList.insert(iT, spanToSwap);
+}

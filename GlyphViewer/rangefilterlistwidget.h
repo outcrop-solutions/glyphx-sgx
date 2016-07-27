@@ -39,6 +39,7 @@ protected:
 	bool DoAnyTablesHaveFilters() const override;
 	void GetFilteringParametersForTable(const QString& table, FilteringParameters& filteringParameters) override;
 	QWidget* AddFilter(const QString& field, unsigned int span) override;
+	void MoveRowData(unsigned int sourceSpan, unsigned int destinationSpan) override;
 
 private slots:
 	void OnRangesChanged();

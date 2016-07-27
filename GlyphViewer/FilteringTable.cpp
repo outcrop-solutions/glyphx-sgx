@@ -204,13 +204,7 @@ void FilteringTable::SwitchTable(const QString& table) {
 
 	SaveFiltersInTableWidget();
 	ClearFiltersFromTableWidget();
-	m_currentTable = table;
-	for (const auto& field : m_filterGroups[m_currentTable].GetFields()) {
-
-		AddRow(field);
-	}
-	ResetForNewTable();
-	UpdateRowSpansInWidget();
+	RebuildRows(table);
 	m_removeAllButton->setEnabled(m_filterGroups[m_currentTable].GetNumberOfGroups() != 0);
 }
 
@@ -250,41 +244,36 @@ void FilteringTable::OnMoveDownRow() {
 
 void FilteringTable::MoveRow(unsigned int sourceSpan, unsigned int destinationSpan) {
 
-	unsigned int firstSourceRow = 0;
-	unsigned int firstDesitinationRow = 0;
-	unsigned int numberOfRowsToMove = m_filterGroups[m_currentTable].GetCountForGroup(sourceSpan);
+	SaveFiltersInTableWidget();
+	MoveRowData(sourceSpan, destinationSpan);
 
-	for (unsigned int i = 0; i < sourceSpan; ++i) {
+	RebuildRows(m_currentTable);
 
-		firstSourceRow += m_filterGroups[m_currentTable].GetCountForGroup(i);
+	m_updateButton->setEnabled(true);
+}
+
+void FilteringTable::RebuildRows(const QString& newTable) {
+
+	ClearFiltersFromTableWidget();
+	m_currentTable = newTable;
+	ResetForNewTable();
+
+	unsigned int row = 0;
+	for (unsigned int i = 0; i < m_filterGroups[m_currentTable].GetNumberOfGroups(); ++i) {
+
+		for (unsigned int j = 0; j < m_filterGroups[m_currentTable].GetCountForGroup(i); ++j) {
+
+			m_filterListTableWidget->insertRow(row);
+
+			QTableWidgetItem* fieldItem = new QTableWidgetItem(m_filterGroups[m_currentTable].GetFields().at(i));
+			fieldItem->setFlags(Qt::ItemIsEnabled | Qt::ItemNeverHasChildren);
+			m_filterListTableWidget->setItem(row, 0, fieldItem);
+
+			m_filterListTableWidget->setCellWidget(row, 1, m_filterGroups[m_currentTable].GetWidget(FilterWidgetGroupsManager::GroupedIndex(i, j)));
+
+			++row;
+		}
 	}
-
-	std::vector < std::pair<QTableWidgetItem*, QWidget*>> itemsToMove;
-	for (unsigned int j = 0; j < numberOfRowsToMove; ++j) {
-
-		itemsToMove.push_back(std::pair<QTableWidgetItem*, QWidget*>(m_filterListTableWidget->takeItem(firstSourceRow, 0),
-			m_filterListTableWidget->cellWidget(firstSourceRow, 1)));
-	}
-
-	for (unsigned int i = 0; i < destinationSpan; ++i) {
-
-		firstDesitinationRow += m_filterGroups[m_currentTable].GetCountForGroup(i);
-	}
-
-	for (unsigned int j = 0; j < numberOfRowsToMove; ++j) {
-
-		unsigned int destinationRow = firstDesitinationRow + j;
-		m_filterListTableWidget->insertRow(destinationRow);
-		m_filterListTableWidget->setItem(destinationRow, 0, itemsToMove[j].first);
-		m_filterListTableWidget->setCellWidget(destinationRow, 1, itemsToMove[j].second);
-	}
-
-	for (unsigned int j = 0; j < numberOfRowsToMove; ++j) {
-
-		m_filterListTableWidget->removeRow(firstSourceRow);
-	}
-
-	m_filterGroups[m_currentTable].SwapGroups(sourceSpan, destinationSpan);
 
 	UpdateRowSpansInWidget();
 	ResetFiltersAfterAddOrRemove();
@@ -543,6 +532,11 @@ void FilteringTable::UpdateRowSpansInWidget() {
 		m_filterListTableWidget->setSpan(firstTableRow, 0, rowSpans[i], 1);
 		firstTableRow += rowSpans[i];
 	}
+}
+
+void FilteringTable::MoveRowData(unsigned int sourceSpan, unsigned int destinationSpan) {
+
+
 }
 
 FilteringTable::FilterWidgetGroupsManager::FilterWidgetGroupsManager() {
