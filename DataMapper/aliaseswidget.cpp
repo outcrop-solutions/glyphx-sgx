@@ -71,9 +71,10 @@ void AliasLineEdit::dragEnterEvent(QDragEnterEvent *event) {
 
 	const InputFieldMimeData* mimeData = qobject_cast<const InputFieldMimeData*>(event->mimeData());
 	if (mimeData == nullptr) {
-
 		return;
 	}
+	else if (m_inputField.IsValid() && (mimeData->GetInputField().IsNumeric() != m_inputField.IsNumeric()))
+		return;
 
 	event->acceptProposedAction();
 }
