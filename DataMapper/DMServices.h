@@ -26,6 +26,10 @@ public:
 	virtual void BeginTransaction(const char* name, SynGlyphX::TransactionType t) override;
 	virtual void EndTransaction() override;
 	virtual QItemSelectionModel* GetTreeViewSelectionModel() override;
+
+	virtual TreeSelection* CreateTreeSelection() override;
+	virtual void ApplyTreeSelection(const TreeSelection& selection) override;
+
 private:
 	DMServicesImpl* pImpl;
 };

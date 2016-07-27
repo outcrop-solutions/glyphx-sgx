@@ -9,7 +9,7 @@
 #include <QtCore/QPointer>
 #include "AppGlobal.h"
 #include <QtWidgets/QUndoStack>
-
+class TreeSelection;
 class BindingLineEditChangeCommand : public QUndoCommand {
 public:
 	BindingLineEditChangeCommand(BindingLineEdit* ble, const SynGlyphX::InputField& newInputField) : 
@@ -19,26 +19,34 @@ public:
 
 	{
 		// this will not work after undoing tree operation, will need to somehow store selection in a model-independent way
-		m_selection = SynGlyphX::AppGlobal::Services()->GetTreeViewSelectionModel()->selection();
+		//m_selection = SynGlyphX::AppGlobal::Services()->GetTreeViewSelectionModel()->selection();
+		m_selection = SynGlyphX::AppGlobal::Services()->CreateTreeSelection();
 	}
 	void undo() override {
-		SynGlyphX::AppGlobal::Services()->GetTreeViewSelectionModel()->select(m_selection, QItemSelectionModel::ClearAndSelect);
+		SynGlyphX::AppGlobal::Services()->ApplyTreeSelection(*m_selection);
 		if (m_ble) {
 			m_ble->m_inputField = m_oldInputField;
 			m_ble->ValueChangedByUser(m_ble->m_inputField);
 		}
 	}
 	void redo() override {
-		SynGlyphX::AppGlobal::Services()->GetTreeViewSelectionModel()->select(m_selection, QItemSelectionModel::ClearAndSelect);
+		SynGlyphX::AppGlobal::Services()->ApplyTreeSelection(*m_selection);
 		if (m_ble) {
 			m_ble->m_inputField = m_newInputField;
 			m_ble->ValueChangedByUser(m_ble->m_inputField);
 		}
 	}
+	virtual ~BindingLineEditChangeCommand()
+	{
+		if (!m_selection)
+			delete m_selection;
+	}
 	QPointer<BindingLineEdit> m_ble;
 	SynGlyphX::InputField m_newInputField;
 	SynGlyphX::InputField m_oldInputField;
-	QItemSelection m_selection;
+	//QItemSelection m_selection;
+	TreeSelection* m_selection;
+
 };
 
 BindingLineEdit::BindingLineEdit(const GlyphRolesTableModel* model, QWidget *parent, SynGlyphX::MappingFunctionData::Input acceptedInputTypes)
