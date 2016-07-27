@@ -50,6 +50,9 @@ public:
 		us->push(tcc);
 		tcc->m_tv = m_w->m_glyphTreesView;
 	}
+	GlyphTreesView* GetTreeView() {
+		return m_w->m_glyphTreesView;
+	}
 
 	DataMapperWindow* m_w;
 	TreeChangeCommand* tcc;
@@ -65,6 +68,10 @@ void DMServices::BeginTransaction(const char* name, SynGlyphX::TransactionType t
 
 void DMServices::EndTransaction() {
 	pImpl->EndTransaction();
+}
+
+QItemSelectionModel* DMServices::GetTreeViewSelectionModel() {
+	return pImpl->GetTreeView()->selectionModel();
 }
 
 DMServices::~DMServices() {

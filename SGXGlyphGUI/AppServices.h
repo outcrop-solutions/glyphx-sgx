@@ -18,6 +18,8 @@
 #include "sgxglyphgui_global.h"
 
 class QUndoStack;
+class QItemSelectionModel;
+
 namespace SynGlyphX {
 	class MainWindow;
 	class CommandService;
@@ -35,6 +37,7 @@ namespace SynGlyphX {
 		void ShowWarningDialog(const QString& msg);
 		void ClearUndoStack();
 		QUndoStack* GetUndoStack();
+		virtual QItemSelectionModel* GetTreeViewSelectionModel() { return nullptr; }
 		virtual ~AppServices() {}
 	protected:
 		MainWindow* m_window;

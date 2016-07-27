@@ -25,6 +25,7 @@ public:
 	virtual ~DMServices();
 	virtual void BeginTransaction(const char* name, SynGlyphX::TransactionType t) override;
 	virtual void EndTransaction() override;
+	virtual QItemSelectionModel* GetTreeViewSelectionModel() override;
 private:
 	DMServicesImpl* pImpl;
 };
