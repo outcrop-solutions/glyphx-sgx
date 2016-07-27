@@ -19,6 +19,7 @@
 #define SYNGLYPHX_INTERVAL_H
 
 #include "sgxutility.h"
+#include <vector>
 
 namespace SynGlyphX {
 
@@ -72,6 +73,8 @@ namespace SynGlyphX {
 		bool IsMinMaxValidForThisInterval(double min, double max) const override;
 	};
 
+	typedef std::vector<DegenerateInterval> DegenerateIntervalUnion;
+
 	class SGXUTILITY_API ProperInterval : public Interval {
 
 	public:
@@ -100,6 +103,8 @@ namespace SynGlyphX {
 	private:
 		IncludedEndpoints m_includedEndpoints;
 	};
+
+	typedef std::vector<ProperInterval> ProperIntervalUnion;
 
 } //namespace SynGlyphX
 
