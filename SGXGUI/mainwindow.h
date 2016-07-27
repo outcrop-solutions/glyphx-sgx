@@ -78,6 +78,7 @@ namespace SynGlyphX {
 		QMenu* m_editMenu;
         QAction* m_fullScreenAction;
 		QAction* m_aboutBoxAction;
+		QAction* m_fullHelpMenu;
 
 		QString m_glyphTemplatesDirectory;
 
@@ -96,6 +97,7 @@ namespace SynGlyphX {
     private slots:
         void OnRecentFileSelected();
 		void ShowLicensingDialog();
+		void ShowTutorial();
         void ShowAboutBox();
 
 	private:
