@@ -59,7 +59,7 @@
       <OutputFile>$(OutDir)\$(ProjectName).dll</OutputFile>
       <AdditionalLibraryDirectories>$(QTDIR)\lib;..\..\lib\$(Platform)\$(Configuration)\;..\..\3rdParty\lib\$(Platform)\$(Configuration)\;..\..\3rdParty\tools\rlm_ez_12_0\$(Platform)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>rlmez.lib;rlmid1.lib;ws2_32.lib;SGXUtility.lib;qtmaind.lib;Qt5Cored.lib;Qt5Guid.lib;Qt5OpenGLd.lib;opengl32.lib;glu32.lib;Qt5Widgetsd.lib;boost_filesystem-vc120-mt-gd-1_55.lib;boost_system-vc120-mt-gd-1_55.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>rlmez.lib;rlmid1.lib;ws2_32.lib;SGXUtility.lib;qtmaind.lib;Qt5Cored.lib;Qt5Guid.lib;Qt5OpenGLd.lib;opengl32.lib;glu32.lib;Qt5Widgetsd.lib;Qt5WebEngineWidgetsd.lib;boost_filesystem-vc120-mt-gd-1_55.lib;boost_system-vc120-mt-gd-1_55.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ImportLibrary>..\..\lib\$(Platform)\$(Configuration)\$(TargetName).lib</ImportLibrary>
       <IgnoreSpecificDefaultLibraries>libcmt.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
@@ -81,7 +81,7 @@
       <OutputFile>$(OutDir)\$(ProjectName).dll</OutputFile>
       <AdditionalLibraryDirectories>$(QTDIR)\lib;..\..\lib\$(Platform)\$(Configuration)\;..\..\3rdParty\lib\$(Platform)\$(Configuration)\;..\..\3rdParty\tools\rlm_ez_12_0\$(Platform)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>rlmez.lib;rlmid1.lib;ws2_32.lib;SGXUtility.lib;qtmain.lib;Qt5Core.lib;Qt5Gui.lib;Qt5OpenGL.lib;opengl32.lib;glu32.lib;Qt5Widgets.lib;boost_filesystem-vc120-mt-1_55.lib;boost_system-vc120-mt-1_55.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>rlmez.lib;rlmid1.lib;ws2_32.lib;SGXUtility.lib;qtmain.lib;Qt5Core.lib;Qt5Gui.lib;Qt5OpenGL.lib;opengl32.lib;glu32.lib;Qt5Widgets.lib;Qt5WebEngineWidgets.lib;boost_filesystem-vc120-mt-1_55.lib;boost_system-vc120-mt-1_55.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ImportLibrary>..\..\lib\$(Platform)\$(Configuration)\$(TargetName).lib</ImportLibrary>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
@@ -130,6 +130,9 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Debug\moc_groupboxsinglewidget.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_helpdialog.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Debug\moc_horizontalformwidget.cpp">
@@ -258,6 +261,9 @@
     <ClCompile Include="GeneratedFiles\Release\moc_groupboxsinglewidget.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_helpdialog.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="GeneratedFiles\Release\moc_horizontalformwidget.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
@@ -347,6 +353,7 @@
     </ClCompile>
     <ClCompile Include="gridwidget.cpp" />
     <ClCompile Include="groupboxsinglewidget.cpp" />
+    <ClCompile Include="helpdialog.cpp" />
     <ClCompile Include="horizontalformwidget.cpp" />
     <ClCompile Include="intsizewidget.cpp" />
     <ClCompile Include="labelline.cpp" />
@@ -792,6 +799,16 @@
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUSE_LICENSING -DBOOST_ALL_DYN_LINK -DUNICODE -DWIN32 -DWIN64 -DQT_DLL -DSGXGUI_EXPORTS -DQT_CORE_LIB -DQT_GUI_LIB -DQT_OPENGL_LIB -DQT_WIDGETS_LIB -DSGXGUI_LIB -D_WINDLL "-I.\GeneratedFiles" "-I." "-I$(QTDIR)\include" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I.\..\..\3rdParty\include\boost_1_55_0" "-I.\..\..\Core\SGXUtility" "-I.\..\..\3rdParty\include\rlm_ez_12_0"</Command>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Moc%27ing SettingsStoredFileList.h...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUSE_LICENSING -DBOOST_ALL_DYN_LINK -DUNICODE -DWIN32 -DWIN64 -DQT_DLL -DSGXGUI_EXPORTS -DQT_NO_DEBUG -DNDEBUG -DQT_CORE_LIB -DQT_GUI_LIB -DQT_OPENGL_LIB -DQT_WIDGETS_LIB -DSGXGUI_LIB -D_WINDLL "-I.\GeneratedFiles" "-I." "-I$(QTDIR)\include" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I.\..\..\3rdParty\include\boost_1_55_0" "-I.\..\..\Core\SGXUtility" "-I.\..\..\3rdParty\include\rlm_ez_12_0"</Command>
+    </CustomBuild>
+    <CustomBuild Include="helpdialog.h">
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing helpdialog.h...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUSE_LICENSING -DBOOST_ALL_DYN_LINK -DUNICODE -DWIN32 -DWIN64 -DQT_DLL -DSGXGUI_EXPORTS -DQT_CORE_LIB -DQT_GUI_LIB -DQT_OPENGL_LIB -DQT_WIDGETS_LIB -DSGXGUI_LIB -D_WINDLL "-I.\GeneratedFiles" "-I." "-I$(QTDIR)\include" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I.\..\..\3rdParty\include\boost_1_55_0" "-I.\..\..\Core\SGXUtility" "-I.\..\..\3rdParty\include\rlm_ez_12_0"</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Moc%27ing helpdialog.h...</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUSE_LICENSING -DBOOST_ALL_DYN_LINK -DUNICODE -DWIN32 -DWIN64 -DQT_DLL -DSGXGUI_EXPORTS -DQT_NO_DEBUG -DNDEBUG -DQT_CORE_LIB -DQT_GUI_LIB -DQT_OPENGL_LIB -DQT_WIDGETS_LIB -DSGXGUI_LIB -D_WINDLL "-I.\GeneratedFiles" "-I." "-I$(QTDIR)\include" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I.\..\..\3rdParty\include\boost_1_55_0" "-I.\..\..\Core\SGXUtility" "-I.\..\..\3rdParty\include\rlm_ez_12_0"</Command>
     </CustomBuild>

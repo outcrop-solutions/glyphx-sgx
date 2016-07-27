@@ -173,7 +173,7 @@ namespace SynGlyphX {
 
         m_helpMenu = menuBar()->addMenu(tr("Help"));
 
-		m_fullHelpMenu = m_helpMenu->addAction("Tutorial");
+		m_fullHelpMenu = m_helpMenu->addAction("Guide");
 		QObject::connect(m_fullHelpMenu, &QAction::triggered, this, &MainWindow::ShowTutorial);
 
 		QAction* licensingAction = m_helpMenu->addAction(tr("Licensing"));

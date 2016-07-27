@@ -27,7 +27,7 @@ namespace SynGlyphX {
 		QVBoxLayout* layout = new QVBoxLayout(this);
 
 		QWebEngineView *view = new QWebEngineView(this);
-		view->setMinimumSize(920,870);
+		view->setMinimumSize(970,920);
 		QString path = SynGlyphX::Application::GetCommonDataLocation() + QDir::separator() + "Help" + QDir::separator();
 		path.replace("\\", "/");
 		view->load(QUrl((path + "index.htm")));

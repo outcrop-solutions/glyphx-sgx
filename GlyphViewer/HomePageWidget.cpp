@@ -14,6 +14,7 @@
 #include <QtWidgets/QPushButton>
 #include "MultiLoadingFilterWidget.h"
 #include "application.h"
+#include "helpdialog.h"
 
 QString HomePageWidget::s_glyphEdDir;
 
@@ -570,6 +571,10 @@ void HomePageWidget::OnNewOptionSelected(int index) {
 
 	m_homePageWidgetsLayout->setCurrentIndex(index);
 	m_loadVisualizationButton->setVisible((index == 1) || (index == 2));
+	if (index == 3){
+		SynGlyphX::HelpDialog dialog(this);
+		dialog.exec();
+	}
 }
 
 void HomePageWidget::OnRecentViewClicked(QListWidgetItem *item) {
