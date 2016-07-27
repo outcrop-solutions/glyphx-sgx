@@ -297,7 +297,7 @@ void HomePageWidget::CreateDashboardWidget() {
 void HomePageWidget::SetupVisualizationData() {
 
 	QStringList visualizationNames;
-	visualizationNames << "Global Admissions View" << "Admissions Counselor View (2016)" << "High School View" << 
+	visualizationNames << "Global Admissions View" << "Reader View (2016)" << "High School View" << 
 		"Class Composition (Diversity)" << "Class Composition (Cohort)" << "Class Composition (Total)" << "Global Dashboard";
 
 	MultiLoadingFilterWidget::VisualizationData globalAdmissionsView;
@@ -305,7 +305,7 @@ void HomePageWidget::SetupVisualizationData() {
 	globalAdmissionsView.m_sdtPath = GetGlyphEdDir() + QDir::toNativeSeparators("/Global Admissions/Global Admissions.sdt");
 	globalAdmissionsView.m_tableInGlyphEd = "GlobalAdmissions";
 
-	globalAdmissionsView.m_filterTitles.push_back("Admissions Counselor");
+	globalAdmissionsView.m_filterTitles.push_back("Reader");
 	globalAdmissionsView.m_mustHaveFilter.push_back(true);
 	globalAdmissionsView.m_filterFieldNames.push_back("StaffAssigned");
 	globalAdmissionsView.m_filterMultiselect.push_back(true);
@@ -323,7 +323,7 @@ void HomePageWidget::SetupVisualizationData() {
 	admissionsCounselorView.m_sdtPath = GetGlyphEdDir() + QDir::toNativeSeparators("/Admissions Officer/Admissions Counselor.sdt");
 	admissionsCounselorView.m_tableInGlyphEd = "GlobalAdmissions";
 
-	admissionsCounselorView.m_filterTitles.push_back("Admissions Counselor");
+	admissionsCounselorView.m_filterTitles.push_back("Reader");
 	admissionsCounselorView.m_mustHaveFilter.push_back(true);
 	admissionsCounselorView.m_filterFieldNames.push_back("StaffAssigned");
 	admissionsCounselorView.m_filterMultiselect.push_back(false);
@@ -439,7 +439,7 @@ void HomePageWidget::SetupVisualizationData() {
 	globalDashboardView.m_tableInGlyphEd = "Dashboard";
 
 	globalDashboardView.m_mustHaveFilter.push_back(false);
-	globalDashboardView.m_filterTitles.push_back("Admissions Counselor");
+	globalDashboardView.m_filterTitles.push_back("Reader");
 	globalDashboardView.m_filterFieldNames.push_back("reader_name");
 	globalDashboardView.m_filterMultiselect.push_back(false);
 	globalDashboardView.m_filterValues.push_back(m_sourceDataCache.GetSortedDistinctValuesAsStrings(globalDashboardView.m_tableInGlyphEd, "reader_name"));

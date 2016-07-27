@@ -33,7 +33,8 @@ namespace SynGlyphX {
 
 	protected:
 		void AddWidget(const QString& labelText, QWidget* widget);
-		virtual bool focusNextPrevChild(bool next);
+		bool focusNextPrevChild(bool next) override;
+		void focusInEvent(QFocusEvent* event) override;
 
 	private:
 

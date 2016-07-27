@@ -68,7 +68,7 @@ void FilteringParameters::SetRangeFilters(const ColumnRangeFilterMap& filterMap)
 	m_rangeFilters = filterMap;
 }
 
-void FilteringParameters::SetRangeFilter(const QString& column, const SynGlyphX::DegenerateInterval& rangeFilter) {
+void FilteringParameters::SetRangeFilter(const QString& column, const SynGlyphX::DegenerateIntervalUnion& rangeFilter) {
 
 	for (auto& filter : m_rangeFilters) {
 
@@ -104,7 +104,7 @@ void FilteringParameters::SetKeywordFilters(const ColumnKeywordFilterMap& filter
 	m_keywordFilters = filterMap;
 }
 
-void FilteringParameters::SetKeywordFilter(const QString& column, const KeywordFilter& keywordFilter) {
+void FilteringParameters::SetKeywordFilter(const QString& column, const MultiKeywordFilter& keywordFilter) {
 
 	for (auto& filter : m_keywordFilters) {
 

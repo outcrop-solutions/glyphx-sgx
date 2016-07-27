@@ -2,6 +2,7 @@
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QApplication>
+#include <QtGUi/QFocusEvent>
 
 namespace SynGlyphX {
 
@@ -25,11 +26,11 @@ namespace SynGlyphX {
 
 		QHBoxLayout* currentLayout = dynamic_cast<QHBoxLayout*>(layout());
 
-		unsigned int widgetCount = currentLayout->count();
-		if (widgetCount == 0) {
+		//unsigned int widgetCount = currentLayout->count();
+		//if (widgetCount == 0) {
 
-			setFocusProxy(widget);
-		}
+		//	setFocusProxy(widget);
+		//}
 
 		QLabel* label = new QLabel(labelText, this);
 		currentLayout->addWidget(label);
@@ -50,7 +51,7 @@ namespace SynGlyphX {
 				focusWidgetIndex += 2;
 				if (focusWidgetIndex < currentLayout->count()) {
 
-					currentLayout->itemAt(focusWidgetIndex)->widget()->setFocus();
+					currentLayout->itemAt(focusWidgetIndex)->widget()->setFocus(Qt::TabFocusReason);
 					return true;
 				}
 			}
@@ -59,12 +60,31 @@ namespace SynGlyphX {
 				focusWidgetIndex -= 2;
 				if (focusWidgetIndex > 0) {
 
-					currentLayout->itemAt(focusWidgetIndex)->widget()->setFocus();
+					currentLayout->itemAt(focusWidgetIndex)->widget()->setFocus(Qt::BacktabFocusReason);
 					return true;
 				}
 			}
 		}
 		
 		return QWidget::focusNextPrevChild(next);
+	}
+
+	void HorizontalFormWidget::focusInEvent(QFocusEvent* event) {
+
+		if (layout()->count() >= 2) {
+
+			if (event->reason() == Qt::FocusReason::TabFocusReason) {
+
+				layout()->itemAt(1)->widget()->setFocus(Qt::FocusReason::TabFocusReason);
+				event->accept();
+			}
+			else if (event->reason() == Qt::FocusReason::BacktabFocusReason) {
+
+				layout()->itemAt(layout()->count() - 1)->widget()->setFocus(Qt::FocusReason::BacktabFocusReason);
+				event->accept();
+			}
+		}
+		
+		QWidget::focusInEvent(event);
 	}
 }

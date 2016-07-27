@@ -39,6 +39,7 @@ class FilteringManager : public QObject
 public:
 	typedef std::map<QString, SynGlyphX::IndexSet> IndexSetMap;
 	typedef QMap<QString, FilteringParameters> Table2FiltersMap;
+	typedef QMultiMap<QString, SynGlyphX::ProperInterval> TableToGlyphTemplateRangesMap;
 
 	FilteringManager(SynGlyphX::DataTransformModel* DataTransformModel, SourceDataCache::SharedPtr sourceDataCache, SynGlyphX::ItemFocusSelectionModel* sceneSelectionModel, QObject *parent);
 	~FilteringManager();
@@ -52,6 +53,7 @@ public:
 	const IndexSetMap& GetFilterResultsByTable() const;
 	const SynGlyphX::IndexSet& GetGlyphIndexedFilterResults() const;
 	const Table2FiltersMap& GetTable2FiltersMap() const;
+	const TableToGlyphTemplateRangesMap& GetTableToGlyphTemplateRangesMap() const;
 
 	const SynGlyphX::ItemFocusSelectionModel* GetSceneSelectionModel() const;
 	SourceDataCache::ConstSharedPtr GetSourceDataCache() const;
@@ -66,7 +68,6 @@ private slots:
 
 private:
 	typedef std::map<SynGlyphX::ProperInterval, QString> GlyphTemplateRangeToTableMap;
-	typedef QMultiMap<QString, SynGlyphX::ProperInterval> TableToGlyphTemplateRangesMap;
 
 	void Clear();
 	void UpdateGlyphIndexedFilterResults();

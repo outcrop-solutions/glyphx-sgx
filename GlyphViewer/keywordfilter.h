@@ -19,6 +19,7 @@
 #define KEYWORDFILTER_H
 
 #include <QtCore/QString>
+#include <vector>
 
 class KeywordFilter
 {
@@ -45,5 +46,7 @@ private:
 	bool m_caseSensitive;
 	bool m_exactMatch;
 };
+
+typedef std::vector<KeywordFilter> MultiKeywordFilter;
 
 #endif //KEYWORDFILTER_H

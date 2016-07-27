@@ -103,7 +103,9 @@ protected:
 	QString CreateInString(const SynGlyphX::IndexSet& indexSet) const;
 	QString CreateInString(const QString& columnName, const QSet<QString>& values) const;
 	QString CreateBetweenString(const QString& columnName, const SynGlyphX::DegenerateInterval& minMax) const;
+	QString CreateBetweenString(const QString& columnName, const SynGlyphX::DegenerateIntervalUnion& intervals) const;
 	QString CreateKeywordFilterString(const QString& columnName, const KeywordFilter& filter) const;
+	QString CreateKeywordFilterString(const QString& columnName, const MultiKeywordFilter& filter) const;
 
 	void SetPragmaValue(const QString& pragmaString);
 	void CreateNewTable(const QString& name, const QString& fieldNamesAndTypes);

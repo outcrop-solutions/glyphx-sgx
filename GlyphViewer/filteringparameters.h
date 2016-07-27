@@ -26,10 +26,10 @@
 class FilteringParameters : public DistinctValueFilteringParameters
 {
 public:
-	typedef std::pair<QString, SynGlyphX::DegenerateInterval> ColumnRangeFilter;
+	typedef std::pair<QString, SynGlyphX::DegenerateIntervalUnion> ColumnRangeFilter;
 	typedef std::vector<ColumnRangeFilter> ColumnRangeFilterMap;
 
-	typedef std::pair<QString, KeywordFilter> ColumnKeywordFilter;
+	typedef std::pair<QString, MultiKeywordFilter> ColumnKeywordFilter;
 	typedef std::vector<ColumnKeywordFilter> ColumnKeywordFilterMap;
 
 	FilteringParameters();
@@ -44,12 +44,12 @@ public:
 	bool HasFilters() const override;
 
 	void SetRangeFilters(const ColumnRangeFilterMap& filterMap);
-	void SetRangeFilter(const QString& column, const SynGlyphX::DegenerateInterval& rangeFilter);
+	void SetRangeFilter(const QString& column, const SynGlyphX::DegenerateIntervalUnion& rangeFilter);
 	void RemoveRangeFilter(const QString& column);
 	const ColumnRangeFilterMap& GetRangeFilters() const;
 
 	void SetKeywordFilters(const ColumnKeywordFilterMap& filterMap);
-	void SetKeywordFilter(const QString& column, const KeywordFilter& keywordFilter);
+	void SetKeywordFilter(const QString& column, const MultiKeywordFilter& keywordFilter);
 	void RemoveKeywordFilter(const QString& column);
 	const ColumnKeywordFilterMap& GetKeywordFilters() const;
 

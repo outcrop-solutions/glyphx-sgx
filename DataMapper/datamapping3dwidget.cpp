@@ -198,10 +198,10 @@ QModelIndex DataMapping3DWidget::GetModelIndexFromStack(std::stack<unsigned int>
 
 void DataMapping3DWidget::OnExternalModelReset() {
 
-	if ((m_externalModel->rowCount() == 0) && (m_internalModel->rowCount() > 0)) {
+	//if ((m_externalModel->rowCount() == 0) && (m_internalModel->rowCount() > 0)) {
 
 		Clear();
-	}
+	//}
 }
 
 void DataMapping3DWidget::Clear() {

@@ -373,7 +373,7 @@
         "Module"
         {
         "ModuleSignature" = "8:MergeModule.7E294E91171B4C73B07ADCD2550A868B"
-        "Version" = "8:0.7.48.0"
+        "Version" = "8:0.7.52.0"
         "Title" = "8:SGXGlyphITMergeModule"
         "Subject" = "8:"
         "Author" = "8:Default Company Name"
@@ -390,7 +390,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_1051F8AF228B4207864BFBD8DF4672D4"
             {
-            "SourcePath" = "8:..\\..\\bin\\Win32\\Release\\GlyphViewer.exe"
+            "SourcePath" = "8:..\\..\\bin\\Win32\\Debug\\GlyphViewer.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_A7921E0B63FE4398B5ED7FCC6C76DE51"
@@ -418,7 +418,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_B00A52B879054D92AB76277BB1F1A704"
             {
-            "SourcePath" = "8:..\\..\\bin\\Win32\\Release\\DataMapper.exe"
+            "SourcePath" = "8:..\\..\\bin\\Win32\\Debug\\DataMapper.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_A7921E0B63FE4398B5ED7FCC6C76DE51"
@@ -446,7 +446,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_FE9665390BA04D8CB2AA93BF820A2EF0"
             {
-            "SourcePath" = "8:..\\..\\bin\\Win32\\Release\\GlyphDesigner.exe"
+            "SourcePath" = "8:..\\..\\bin\\Win32\\Debug\\GlyphDesigner.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_A7921E0B63FE4398B5ED7FCC6C76DE51"

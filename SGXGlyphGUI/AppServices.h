@@ -18,6 +18,8 @@
 #include "sgxglyphgui_global.h"
 
 class QUndoStack;
+class QItemSelectionModel;
+class TreeSelection;
 namespace SynGlyphX {
 	class MainWindow;
 	class CommandService;
@@ -35,6 +37,10 @@ namespace SynGlyphX {
 		void ShowWarningDialog(const QString& msg);
 		void ClearUndoStack();
 		QUndoStack* GetUndoStack();
+		virtual QItemSelectionModel* GetTreeViewSelectionModel() { return nullptr; }
+		//calling object is responsible for deleting this, dont want to polute global object inteface with std::shared_ptr
+		virtual TreeSelection* CreateTreeSelection() { return nullptr; } 
+		virtual void ApplyTreeSelection(const TreeSelection& selection) {}
 		virtual ~AppServices() {}
 	protected:
 		MainWindow* m_window;

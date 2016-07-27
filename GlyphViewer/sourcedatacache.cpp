@@ -600,6 +600,31 @@ QString SourceDataCache::CreateKeywordFilterString(const QString& columnName, co
 	return filterString;
 }
 
+QString SourceDataCache::CreateKeywordFilterString(const QString& columnName, const MultiKeywordFilter& filter) const {
+
+	int numberOfKeywords = filter.size();
+	if (numberOfKeywords == 0) {
+
+		throw std::invalid_argument("Keyword filter string can not be created for zero keywords.");
+	}
+	else {
+
+		QString keywordsString = CreateKeywordFilterString(columnName, filter[0]);
+		if (numberOfKeywords != 1) {
+
+			for (int i = 1; i < numberOfKeywords; ++i) {
+
+				keywordsString += " OR " + CreateKeywordFilterString(columnName, filter[i]);
+			}
+
+			keywordsString.prepend("(");
+			keywordsString.append(")");
+		}
+
+		return keywordsString;
+	}
+}
+
 SynGlyphX::DegenerateInterval SourceDataCache::GetMinMax(const SynGlyphX::InputField& inputfield, const FilteringParameters::ColumnRangeFilterMap& otherRanges) const {
 
 	if (!inputfield.IsNumeric()) {
@@ -675,6 +700,31 @@ std::set<double> SourceDataCache::GetSortedNumericDistictValues(const SynGlyphX:
 QString SourceDataCache::CreateBetweenString(const QString& columnName, const SynGlyphX::DegenerateInterval& minMax) const {
 
 	return ("(\"" + columnName + "\" BETWEEN " + QString::number(minMax.GetMin()) + " AND " + QString::number(minMax.GetMax()) + ")");
+}
+
+QString SourceDataCache::CreateBetweenString(const QString& columnName, const SynGlyphX::DegenerateIntervalUnion& intervals) const {
+
+	int numberOfIntervals = intervals.size();
+	if (numberOfIntervals == 0) {
+
+		throw std::invalid_argument("Between string can not be created for zero intervals.");
+	}
+	else {
+
+		QString intervalsString = CreateBetweenString(columnName, intervals[0]);
+		if (numberOfIntervals != 1) {
+
+			for (int i = 1; i < numberOfIntervals; ++i) {
+
+				intervalsString += " OR " + CreateBetweenString(columnName, intervals[i]);
+			}
+
+			intervalsString.prepend("(");
+			intervalsString.append(")");
+		}
+
+		return intervalsString;
+	}
 }
 
 SourceDataCache::DistinctValueIndexMap SourceDataCache::GetIndexesOrderedByDistinctValue(const QString& tableName, const QString& columnName) const {

@@ -240,6 +240,11 @@ const FilteringManager::Table2FiltersMap& FilteringManager::GetTable2FiltersMap(
 	return m_filtersForEachTable;
 }
 
+const FilteringManager::TableToGlyphTemplateRangesMap& FilteringManager::GetTableToGlyphTemplateRangesMap() const {
+
+	return m_tableToGlyphTreeRangesMap;
+}
+
 void FilteringManager::ClearSourceDataSelectionForTable(QItemSelection& itemSelection, bool updateFocus) {
 
 	m_sceneSelectionModel->select(itemSelection, QItemSelectionModel::Deselect);

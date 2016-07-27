@@ -11,15 +11,21 @@
 #include <QtWidgets/QUndoStack>
 #include "datatransformmodel.h" //refactor to exclude this
 
+class TreeSelection;
 class BindingLineEditChangeCommand : public QUndoCommand {
 public:
 	BindingLineEditChangeCommand(BindingLineEdit* ble, const QString& newInputField) : 
 		m_ble(ble),
 		m_newInputField(newInputField),
-		m_oldInputField(ble->m_inputFieldId) // since it is called from ble, should not  not be null at time of construction
-	{	
+		m_oldInputField(ble->m_inputFieldId), // since it is called from ble, should not  not be null at time of construction
+		m_firstCall(true)
+	{
+		// this will not work after undoing tree operation, will need to somehow store selection in a model-independent way
+		//m_selection = SynGlyphX::AppGlobal::Services()->GetTreeViewSelectionModel()->selection();
+		m_selection = SynGlyphX::AppGlobal::Services()->CreateTreeSelection();
 	}
 	void undo() override {
+		SynGlyphX::AppGlobal::Services()->ApplyTreeSelection(*m_selection);
 		if (m_ble) {
 			m_ble->m_inputFieldId = m_oldInputField;
 			m_ble->SetInputField(m_ble->m_inputFieldId); //for now call explicitely, used to work without it TODO: investigate
@@ -27,15 +33,29 @@ public:
 		}
 	}
 	void redo() override {
+		if (!m_firstCall)
+			SynGlyphX::AppGlobal::Services()->ApplyTreeSelection(*m_selection);
+		else
+			m_firstCall = false;
+
 		if (m_ble) {
 			m_ble->m_inputFieldId = m_newInputField;
 			m_ble->SetInputField(m_ble->m_inputFieldId); //for now call explicitely, used to work without it TODO: investigate
 			m_ble->ValueChangedByUser(m_ble->m_inputFieldId);
 		}
 	}
+	virtual ~BindingLineEditChangeCommand()
+	{
+		if (!m_selection)
+			delete m_selection;
+	}
 	QPointer<BindingLineEdit> m_ble;
 	QString m_newInputField;
 	QString m_oldInputField;
+	//QItemSelection m_selection;
+	bool m_firstCall;
+	TreeSelection* m_selection;
+
 };
 
 BindingLineEdit::BindingLineEdit(const GlyphRolesTableModel* model, QWidget *parent, SynGlyphX::MappingFunctionData::Input acceptedInputTypes)

@@ -18,16 +18,12 @@
 #ifndef RANGEFILTERLISTWIDGET_H
 #define RANGEFILTERLISTWIDGET_H
 
-#include <QtWidgets/QWidget>
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QStackedLayout>
+#include "FilteringTable.h"
 #include "singlenumericrangefilterwidget.h"
-#include <QtWidgets/QTableWidget>
-#include "filteringmanager.h"
-#include "sourcedatainfomodel.h"
 #include "interval.h"
+#include "filteringparameters.h"
 
-class RangeFilterListWidget : public QWidget
+class RangeFilterListWidget : public FilteringTable
 {
 	Q_OBJECT
 
@@ -35,57 +31,33 @@ public:
 	RangeFilterListWidget(SourceDataInfoModel* columnsModel, FilteringManager* filteringManager, QWidget *parent);
 	~RangeFilterListWidget();
 
-public slots:
-	void OnNewVisualization();
-	void SwitchTable(const QString& table);
-	void OnRemoveAllFilters();
+protected:
+	void ResetFiltersAfterAddOrRemove() override;
+	void ClearData() override;
+	void ResetForNewTable() override;
+	void SaveFiltersInTableWidget() override;
+	bool DoAnyTablesHaveFilters() const override;
+	void GetFilteringParametersForTable(const QString& table, FilteringParameters& filteringParameters) override;
+	QWidget* AddFilter(const QString& field, unsigned int span) override;
+	void MoveRowData(unsigned int sourceSpan, unsigned int destinationSpan) override;
 
 private slots:
-	void OnAddFilter();
-	void OnRemoveSelectedFilters();
-	void OnUpdateFilters();
 	void OnRangesChanged();
-	void OnFilterResultsChanged();
-	void OnFilterSelectionChanged(const QItemSelection &selected, const QItemSelection &deselected);
-	void OnMoveUpRow();
-	void OnMoveDownRow();
 
 private:
 	typedef std::pair<SynGlyphX::DegenerateInterval, SynGlyphX::SingleNumericRangeFilterWidget::SliderPositionValues> RangeAndDistinctValues;
-	typedef std::pair<QString, RangeAndDistinctValues> Field2RangeAndDistinctValues;
+	typedef std::pair<QString, std::vector<RangeAndDistinctValues>> Field2RangeAndDistinctValues;
 	typedef std::vector<Field2RangeAndDistinctValues> Field2RangeAndDistinctValuesVector;
 	typedef QMap<QString, Field2RangeAndDistinctValuesVector> Table2RangesAndDistinctValuesMap;
 
-	void UpdatedEnableStateForButton(QAction* action, QPushButton* button);
-	void ResetMinMaxExtentsForFilters(unsigned int startingRow);
-	void MoveRow(unsigned int sourceRow, unsigned int destinationRow);
-
+	FilteringParameters::ColumnRangeFilterMap GatherRangesBeforeSpan(int span);
+	void ResetMinMaxExtentsForFilters(unsigned int startingSpan);
 	SynGlyphX::SingleNumericRangeFilterWidget* GetRangeFilterWidgetFromCell(int row, int column = 1) const;
-	QString GetTextFromCell(int row, int column = 0) const;
-	QStringList Separate(const QString& datasourceTable) const;
-	void ClearFiltersFromTableWidget();
-	QTableWidgetItem* CreateItem(const QString& text);
-	void SaveRangesFromFiltersInTableWidget();
-	bool DoAnyTablesHaveFilters() const;
+	SynGlyphX::SingleNumericRangeFilterWidget* GetRangeFilterWidgetFromGroup(const FilterWidgetGroupsManager::GroupedIndex& index) const;
+	SynGlyphX::SingleNumericRangeFilterWidget* CreateRangeFilterWidget();
 
-	FilteringManager* m_filteringManager;
-
-	QPushButton* m_addButton;
-	QPushButton* m_removeAllButton;
-	QPushButton* m_updateButton;
-	QPushButton* m_moveUpButton;
-	QPushButton* m_moveDownButton;
-	QTableWidget* m_rangeFiltersTableWidget;
-
-	QAction* m_removeSelectedContextMenuAction;
-	QAction* m_moveRowUpContextMenuAction;
-	QAction* m_moveRowDownContextMenuAction;
-
+	//FilteringTable* m_rangeFiltersTableWidget;
 	Table2RangesAndDistinctValuesMap m_table2RangesAndDistinctValuesMap;
-
-	SourceDataInfoModel* m_columnsModel;
-
-	QString m_currentTable;
 };
 
 #endif // RANGEFILTERLISTWIDGET_H

@@ -26,7 +26,7 @@ public:
 		for (int row = 0; row < tv->m_sourceModel->rowCount(); ++row) {
 			SaveExpandedOnLevel(tv, tv->m_sourceModel->index(row, 0));
 		}
-			
+		
 	}
 	void SaveExpandedOnLevel(const GlyphTreesView* tv, const QModelIndex& index) {
 		//OutputDebugStringA(index.data(Qt::DisplayRole).toString().toStdString().c_str());
@@ -128,6 +128,7 @@ void GlyphTreesView::ReinstateMemento(GlyphTreesViewMemento* m) {
 	for (int row = 0; row < m_sourceModel->rowCount(); ++row)
 		m->RestoreExpandedOnLevel(this, m_sourceModel->index(row, 0));
 	setUpdatesEnabled(true);
+	SelectLastGlyphTreeRoot();
 }
 
 const SynGlyphX::SharedActionList& GlyphTreesView::GetGlyphActions() {

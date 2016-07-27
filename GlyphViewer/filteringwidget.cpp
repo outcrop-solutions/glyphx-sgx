@@ -2,6 +2,7 @@
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QTabWidget>
+#include <QtWidgets/QAbstractItemView>
 #include <QtCore/QProcess>
 #include "groupboxsinglewidget.h"
 #include "application.h"

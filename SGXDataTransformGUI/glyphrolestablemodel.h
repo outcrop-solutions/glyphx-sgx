@@ -36,7 +36,7 @@ namespace SynGlyphX {
 class SGXDATATRANSFORMGUI_EXPORT GlyphRolesTableModel : public QAbstractTableModel
 {
 	Q_OBJECT
-
+	friend class BindingLineEditChangeCommand;
 public:
 	enum PropertyType {
 		Numeric,
