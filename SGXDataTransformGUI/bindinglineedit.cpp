@@ -15,8 +15,8 @@ public:
 	BindingLineEditChangeCommand(BindingLineEdit* ble, const SynGlyphX::InputField& newInputField) : 
 		m_ble(ble),
 		m_newInputField(newInputField),
-		m_oldInputField(ble->m_inputField) // since it is called from ble, should not  not be null at time of construction
-
+		m_oldInputField(ble->m_inputField), // since it is called from ble, should not  not be null at time of construction
+		m_firstCall(true)
 	{
 		// this will not work after undoing tree operation, will need to somehow store selection in a model-independent way
 		//m_selection = SynGlyphX::AppGlobal::Services()->GetTreeViewSelectionModel()->selection();
@@ -30,7 +30,11 @@ public:
 		}
 	}
 	void redo() override {
-		SynGlyphX::AppGlobal::Services()->ApplyTreeSelection(*m_selection);
+		if (!m_firstCall)
+			SynGlyphX::AppGlobal::Services()->ApplyTreeSelection(*m_selection);
+		else
+			m_firstCall = false;
+
 		if (m_ble) {
 			m_ble->m_inputField = m_newInputField;
 			m_ble->ValueChangedByUser(m_ble->m_inputField);
@@ -45,6 +49,7 @@ public:
 	SynGlyphX::InputField m_newInputField;
 	SynGlyphX::InputField m_oldInputField;
 	//QItemSelection m_selection;
+	bool m_firstCall;
 	TreeSelection* m_selection;
 
 };
