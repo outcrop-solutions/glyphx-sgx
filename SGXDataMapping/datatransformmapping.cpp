@@ -25,6 +25,7 @@ namespace SynGlyphX {
 
 	void InputFieldManager::ClearInputFieldBindings(const std::wstring& fieldID)
 	{
+		m_inputFields.erase(fieldID);
 		m_dataTransformMapping->ClearInputFieldBindings(fieldID);
 	}
 
