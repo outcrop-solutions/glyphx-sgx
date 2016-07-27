@@ -527,6 +527,7 @@ bool GlyphViewerWindow::LoadNewVisualization(const QString& filename, const Dist
 		critical_error.setEscapeButton(QMessageBox::Ok);
 		critical_error.exec();
 		m_dataEngineConnection->ClearJavaErrors();
+		CloseVisualization();
 		//QMessageBox::critical(this, tr("Failed To Open Visualization"), tr("Failed to open visualization.  Error: ") + e.what(), QMessageBox::Ok);
 		return false;
 	}
