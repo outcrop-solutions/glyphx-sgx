@@ -9,7 +9,7 @@ SET antzmactemplate=ANTzMacTemplate
 SET defaultbaseimages=DefaultBaseImages
 SET glyphtemplates=GlyphTemplates
 SET logo=logo.png
-SET qtdlllist=Qt5Core Qt5Gui Qt5Network Qt5OpenGL Qt5Sql Qt5Widgets
+SET qtdlllist=Qt5Core Qt5Gui Qt5Network Qt5OpenGL Qt5Sql Qt5Widgets Qt5WebEngineCore Qt5WebEngine Qt5WebEngineWidgets
 
 if "%basedir%." == "." SET basedir=..\..\bin
 
@@ -77,5 +77,12 @@ FOR /F "tokens=*" %%p IN ('dir /b /a:d ..\bin\*') DO (
 		
 		mkdir %basedir%\%%p\%%c\qt_plugins
 		robocopy /z /e "%QTDIR%\plugins" %basedir%\%%p\%%c\qt_plugins
+		
+		copy /B /Y "%QTDIR%\bin\QtWebEngineProcess.exe" "%basedir%\%%p\%%c\QtWebEngineProcess.exe"
+		
+		robocopy /z /e "%QTDIR%\resources" "%basedir%\%%p\%%c"
 	)
 )
+
+mkdir "C:\ProgramData\SynGlyphX\Help"
+robocopy /z /e ..\..\Misc\Help "C:\ProgramData\SynGlyphX\Help"
