@@ -347,16 +347,16 @@ public class SDTReader {
 							}
 							else if(category.getNodeName().equals("Tag") && value.getNodeName().equals("Binding")){
 								try{
-									temp.setTag(directMap.get(element.getAttribute("id")));
-									temp.mapInput("Tag", directMap.get(element.getAttribute("id")));
+									temp.setTag(directMap.get(element.getAttribute("fieldId")));
+									temp.mapInput("Tag", directMap.get(element.getAttribute("fieldId")));
 								}catch(Exception e){
 									temp.setTag("");
 								}
 							}
 							else if(category.getNodeName().equals("Description") && value.getNodeName().equals("Binding")){
 								try{
-									temp.setDescription(directMap.get(element.getAttribute("id")));
-									temp.mapInput("Description", directMap.get(element.getAttribute("id")));
+									temp.setDescription(directMap.get(element.getAttribute("fieldId")));
+									temp.mapInput("Description", directMap.get(element.getAttribute("fieldId")));
 								}catch(Exception e){
 									temp.setDescription("");
 								}
@@ -373,8 +373,8 @@ public class SDTReader {
 							}
 							else if(category.getNodeName().equals("URL") && value.getNodeName().equals("Binding")){
 								try{
-									temp.setURL(directMap.get(element.getAttribute("id")));
-									temp.mapInput("URL", directMap.get(element.getAttribute("id")));
+									temp.setURL(directMap.get(element.getAttribute("fieldId")));
+									temp.mapInput("URL", directMap.get(element.getAttribute("fieldId")));
 								}catch(Exception e){
 									temp.setURL("");
 								}
