@@ -83,6 +83,7 @@ namespace SynGlyphX {
 		boost::property_tree::wptree& ExportToPropertyTree(boost::property_tree::wptree& parentPropertyTree) const;
 	private:
 		std::wstring m_name;
+		std::wstring m_shape;
 		LinkNode m_start;
 		LinkNode m_end;
 		Function m_function;

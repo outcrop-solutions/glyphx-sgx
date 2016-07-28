@@ -90,6 +90,7 @@ namespace SynGlyphX {
 
 	Link::Link(const boost::property_tree::wptree& propertyTree):
 		m_name(propertyTree.get<std::wstring>(L"<xmlattr>.name")),
+		m_shape(propertyTree.get<std::wstring>(L"Shape")),
 		m_start(propertyTree.get_child(L"Begin")), 
 		m_end(propertyTree.get_child(L"End")),
 		//m_function(Function::CreateFunction(propertyTree.get_child(L"Function"))),
@@ -109,7 +110,7 @@ namespace SynGlyphX {
 	boost::property_tree::wptree& Link::ExportToPropertyTree(boost::property_tree::wptree& propertyTree) const  {
 		boost::property_tree::wptree& rootPropertyTree = propertyTree.add(L"Link", L"");
 		rootPropertyTree.put<std::wstring>(L"<xmlattr>.name", m_name);
-		rootPropertyTree.add(L"Shape", L"Cube");
+		rootPropertyTree.add(L"Shape", m_shape);
 		m_color.ExportToPropertyTree(rootPropertyTree.add(L"Color", L""));
 		m_start.ExportToPropertyTree(rootPropertyTree.add(L"Begin", L""));
 		m_end.ExportToPropertyTree(rootPropertyTree.add(L"End", L""));
