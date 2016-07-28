@@ -24,12 +24,14 @@ public class SourceDataInfo {
  	//private String primary_key;
  	private boolean merged_table;
  	private boolean hasTextInterpolation;
- 	private ArrayList<String> textInterpolationFields;
+ 	private ArrayList<String> textInterpolationFields = null;
+ 	private ArrayList<String> boundFields = null;
  	private Driver tempDriver = null;
  	//private ArrayList<String> inputFields;
 
  	public SourceDataInfo(){
  		this.hasTextInterpolation = false;
+ 		this.boundFields = new ArrayList<String>();
  	}
 
  	public void setHasTextInterpolation(){
@@ -91,6 +93,10 @@ public class SourceDataInfo {
  		this.query = query;
  	}
 
+ 	public void addBoundField(String field_id){
+ 		boundFields.add(field_id);
+ 	}
+
  	public void addTextInterpolationField(String ti_field){
  		textInterpolationFields.add(ti_field);
  	}
@@ -121,6 +127,10 @@ public class SourceDataInfo {
 
  	public boolean hasTextInterpolation(){
  		return hasTextInterpolation;
+ 	}
+
+ 	public boolean hasBoundField(String field_id){
+ 		return boundFields.contains(field_id);
  	}
 
  	public Driver getDriver(){

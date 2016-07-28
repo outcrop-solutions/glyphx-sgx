@@ -11,7 +11,7 @@ import org.w3c.dom.NodeList;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.ArrayList;
-import synglyphx.util.ConvertHash;
+//import synglyphx.util.ConvertHash;
 import synglyphx.data.DataStats;
 import synglyphx.data.SourceDataInfo;
 import synglyphx.jdbc.Table;
@@ -54,8 +54,8 @@ public class ParseXY {
 					Element pos = (Element) element.getElementsByTagName("Position").item(0);
 					Element x = (Element) pos.getElementsByTagName("X").item(0);
 					Element y = (Element) pos.getElementsByTagName("Y").item(0);
-					String x_bind_id = ((Element) x.getElementsByTagName("Binding").item(0)).getAttribute("id");
-					String y_bind_id = ((Element) y.getElementsByTagName("Binding").item(0)).getAttribute("id");
+					String x_bind_id = ((Element) x.getElementsByTagName("Binding").item(0)).getAttribute("fieldId");
+					String y_bind_id = ((Element) y.getElementsByTagName("Binding").item(0)).getAttribute("fieldId");
 					x_binds.add(x_bind_id);
 					y_binds.add(y_bind_id);
 				}
@@ -73,7 +73,7 @@ public class ParseXY {
 	private void setInputMap(Document doc){
 
 		directMap = new HashMap<String,String>();
-		ConvertHash convert = new ConvertHash();
+		//ConvertHash convert = new ConvertHash();
 
 		NodeList inputfields = doc.getElementsByTagName("InputField");
 
@@ -83,9 +83,10 @@ public class ParseXY {
 			String id = element.getAttribute("id");
 			String table = element.getAttribute("table");
 			String field = element.getAttribute("field");
-			String code = convert.getHash(id, table, field);
+			String code = element.getAttribute("name");
+			//convert.getHash(id, table, field);
 			if(x_binds.contains(code) || y_binds.contains(code)){
-				directMap.put(code, field);
+				directMap.put(id+table+field, code);
 			}
 		}
 	}
@@ -96,49 +97,17 @@ public class ParseXY {
 		x_min_max[0] = 180.0; x_min_max[1] = -180.0;
 		double[] y_min_max = new double[2];
 		y_min_max[0] = 90.0; y_min_max[1] = -90.0;
-		ConvertHash convert = new ConvertHash();
+		//ConvertHash convert = new ConvertHash();
 
 		double[] min_max = new double[4];
 
 		for(int i = 0; i < sdi.size(); i++){
 			SourceDataInfo temp = sdi.get(i);
-			//if(temp.getType().equals("csv") || temp.getType().equals("sqlite3")){
-				HashMap<String, DataStats> ds = temp.getDataFrame().dataStatsModel();
-				min_max = findMinMax(temp, x_min_max, y_min_max, convert, ds);
-				x_min_max[0] = min_max[0]; x_min_max[1] = min_max[1];
-				y_min_max[0] = min_max[2]; y_min_max[1] = min_max[3];
+			HashMap<String, DataStats> ds = temp.getDataFrame().dataStatsModel();
+			min_max = findMinMax(temp, x_min_max, y_min_max, ds);
+			x_min_max[0] = min_max[0]; x_min_max[1] = min_max[1];
+			y_min_max[0] = min_max[2]; y_min_max[1] = min_max[3];
 
-			/*}else{
-				try{
-			        Driver driver = DriverSelector.getDriver(temp.getType());
-            		Class.forName(driver.packageName());
-	        		Logger.getInstance().add("Connecting to Server...");
-
-	        		driver.createConnection(temp.getHost(),temp.getUsername(),temp.getPassword());
-
-	        		System.out.println(temp.getQuery());
-	        		Table table;
-	        		if(temp.isMerged()){
-	        			table = new MergedTable(temp.getQuery(), driver);
-	        		}else{
-	        			table = new BasicTable(temp.getTable(), driver);
-	        		}
-			        HashMap<String, DataStats> tds = table.getDataStats();
-			        min_max = findMinMax(temp, x_min_max, y_min_max, convert, tds);
-			        x_min_max[0] = min_max[0]; x_min_max[1] = min_max[1];
-					y_min_max[0] = min_max[2]; y_min_max[1] = min_max[3];
-
-					driver.getConnection().close();
-			    }catch(SQLException se){
-			        try{
-			            se.printStackTrace(Logger.getInstance().addError());
-			        }catch(Exception ex){}
-			    }catch(Exception e){
-			        try{
-			            e.printStackTrace(Logger.getInstance().addError());
-			        }catch(Exception ex){}
-	    		}
-			}*/
 		}
 
 		double[] to_return = new double[4];
@@ -148,13 +117,14 @@ public class ParseXY {
 		return to_return;
 	}
 
-	public double[] findMinMax(SourceDataInfo temp, double[] x_min_max, double[] y_min_max, ConvertHash convert, HashMap<String, DataStats> ds){
+	public double[] findMinMax(SourceDataInfo temp, double[] x_min_max, double[] y_min_max, HashMap<String, DataStats> ds){
 
 		String id = temp.getID();
 		String table = temp.getTable();
 
 		for(Map.Entry<String,DataStats> entry : ds.entrySet()){
-			String code = convert.getHash(id,table,entry.getKey());
+			String code = directMap.get(id+table+entry.getKey());
+			//convert.getHash(id,table,entry.getKey());
 			if(x_binds.contains(code)){
 				if(Double.parseDouble(entry.getValue().getMin()) < x_min_max[0]){
 					x_min_max[0] = Double.parseDouble(entry.getValue().getMin());

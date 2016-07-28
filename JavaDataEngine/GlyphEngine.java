@@ -138,8 +138,8 @@ public class GlyphEngine {
 	 	//String outDir = "C:/Users/Bryan/ODBA/1/Synglyphx Team Site - ~1/School Shooting Remap/School Shooting Portable";
 	 	//String sdtPath = "C:/Users/Bryan/Desktop/Text Interpolation/text_interpolation_test.sdt";
 	 	//String outDir = "C:/Users/Bryan/Desktop/Text Interpolation/Viz";
-	 	String sdtPath = "C:/Users/Bryan/Desktop/Katie Afghan Elections Multi Year/Afghan Elections Disc 2.sdt";
-	 	String outDir = "C:/Users/Bryan/Desktop/Katie Afghan Elections Multi Year/Viz";
+	 	String sdtPath = "C:/Users/Bryan/Desktop/Test New SDT/alases.sdt";
+	 	String outDir = "C:/Users/Bryan/Desktop/Test New SDT/Viz";
 	 	//String sdtPath = "C:/Users/Bryan/Desktop/Link Test Exo/linktest.sdt";
 	 	//String outDir = "C:/Users/Bryan/Desktop/Link Test Exo/viz";
 	 	//String sdtPath = "C:/Users/Bryan/Desktop/TELCO Small Subset/Customers Subset.sdt";
