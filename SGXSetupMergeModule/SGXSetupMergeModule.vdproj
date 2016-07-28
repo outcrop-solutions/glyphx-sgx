@@ -27,6 +27,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_00EE92E323854344AF89D0FA8EDEFEE8"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_018E8492F95D40DC99CE22D633994C86"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -256,6 +262,12 @@
         "Entry"
         {
         "MsmKey" = "8:_14D5E2BF4E3743FB88C048685644D981"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_150705411E1B4E15915786B393331C61"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -706,6 +718,12 @@
         "Entry"
         {
         "MsmKey" = "8:_422B9B0729EB4AED98C77B0D464F50ED"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_4327C1D5A07D47E49AF74FFBB6809C98"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -2678,6 +2696,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_00EE92E323854344AF89D0FA8EDEFEE8"
+            {
+            "SourcePath" = "8:..\\..\\3rdParty\\bin\\Win32\\Release\\Qt5Qml.dll"
+            "TargetName" = "8:Qt5Qml.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_0FD992B69CC74D489682A631FA99B364"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_018E8492F95D40DC99CE22D633994C86"
             {
             "SourcePath" = "8:..\\..\\ANTzPlus\\ANTzzSpaceTemplate\\README.md"
@@ -3424,6 +3462,26 @@
             "TargetName" = "8:qgif.dll"
             "Tag" = "8:"
             "Folder" = "8:_7E19FBC6548E446FA427B3EC570C927A"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_150705411E1B4E15915786B393331C61"
+            {
+            "SourcePath" = "8:..\\..\\3rdParty\\bin\\Win32\\Release\\Qt5Quick.dll"
+            "TargetName" = "8:Qt5Quick.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_0FD992B69CC74D489682A631FA99B364"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -4884,6 +4942,26 @@
             "TargetName" = "8:cr_icon.jpg"
             "Tag" = "8:"
             "Folder" = "8:_E15693EAFAD340DB9B5348F69EE42D1E"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_4327C1D5A07D47E49AF74FFBB6809C98"
+            {
+            "SourcePath" = "8:..\\..\\3rdParty\\bin\\Win32\\Release\\Qt5WebChannel.dll"
+            "TargetName" = "8:Qt5WebChannel.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_0FD992B69CC74D489682A631FA99B364"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -11597,7 +11675,7 @@
         "Module"
         {
         "ModuleSignature" = "8:MergeModule.E7BC5B0DA8E84115B456FD393FF63EDE"
-        "Version" = "8:0.7.53.0"
+        "Version" = "8:0.7.54.0"
         "Title" = "8:SGXSetupMergeModule"
         "Subject" = "8:"
         "Author" = "8:SynGlyphX"
