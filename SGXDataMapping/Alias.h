@@ -15,54 +15,11 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 #pragma once
-#ifndef SYNGLYPHX_INPUTBINDING_H
-#define SYNGLYPHX_INPUTBINDING_H
-
 #include "sgxdatamapping.h"
-#include "hashid.h"
-#include <boost/property_tree/ptree_fwd.hpp>
-
+#include <string>
 namespace SynGlyphX {
-
-	class SGXDATAMAPPING_API InputBinding
-	{
-	public:
-		static const std::wstring PropertyTreeName;
-
-		InputBinding();
-		InputBinding(const std::wstring& inputFieldID);
-		InputBinding(const boost::property_tree::wptree& propertyTree);
-		InputBinding(const InputBinding& binding);
-		~InputBinding();
-
-		InputBinding& operator=(const InputBinding& binding);
-		bool operator==(const InputBinding& binding) const;
-		bool operator!=(const InputBinding& binding) const;
-
-		double GetMinOverride() const;
-		double GetMaxOverride() const;
-		void SetMinMaxOverride(double min, double max);
-		bool IsMinMaxOverrideInUse() const;
-		void ClearMinMaxOverride();
-		double GetMaxMinOverrideDifference() const;
-
-		void ExportToPropertyTree(boost::property_tree::wptree& propertyTree) const;
-
-		bool IsBoundToInputField() const;
-
-		const std::wstring& GetInputFieldID() const;
-
-		void Clear();
-
-	private:
-		std::wstring m_inputFieldID;
-
-		double m_minOverride;
-		double m_maxOverride;
-		bool m_overrideInUse;
-		double m_maxMinOverrideDifference;
+	struct SGXDATAMAPPING_API Alias {
+		unsigned long m_label;
+		std::wstring m_name;
 	};
-
-} //namespace SynGlyphX
-
-#endif //SYNGLYPHX_INPUTBINDING_H
+}

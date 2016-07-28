@@ -6,14 +6,14 @@ namespace SynGlyphX {
 	const std::wstring InputBinding::PropertyTreeName = L"Binding";
 
 	InputBinding::InputBinding() :
-		m_inputFieldID(0),
+		m_inputFieldID(L""),
 		m_minOverride(0.0),
 		m_maxOverride(0.0),
 		m_overrideInUse(false)
 	{
 	}
 
-	InputBinding::InputBinding(HashID inputFieldID) :
+	InputBinding::InputBinding(const std::wstring& inputFieldID) :
 		m_inputFieldID(inputFieldID),
 		m_minOverride(0.0),
 		m_maxOverride(0.0),
@@ -21,8 +21,18 @@ namespace SynGlyphX {
 
 	}
 
-	InputBinding::InputBinding(const boost::property_tree::wptree& propertyTree) :
-		m_inputFieldID(propertyTree.get<HashID>(L"<xmlattr>.id")) {
+	InputBinding::InputBinding(const boost::property_tree::wptree& propertyTree) /*:
+		m_inputFieldID(propertyTree.get<HashID>(L"<xmlattr>.fieldId")) */
+	{ 
+		// to deal with backwards compatibility, TODO: remove in the future 
+		auto hash = propertyTree.get_optional<HashID>(L"<xmlattr>.id");
+		if (hash.is_initialized())
+			m_inputFieldID = L"~" + std::to_wstring(hash.get());
+		
+		auto fieldId = propertyTree.get_optional<std::wstring>(L"<xmlattr>.fieldId");
+		if (fieldId.is_initialized())
+			m_inputFieldID = fieldId.get();
+			
 
 		boost::optional<const boost::property_tree::wptree&> overridePropertyTree = propertyTree.get_child_optional(L"Override");
 
@@ -125,7 +135,7 @@ namespace SynGlyphX {
 	void InputBinding::ExportToPropertyTree(boost::property_tree::wptree& propertyTree) const {
 
 		boost::property_tree::wptree& inputFieldPropertyTree = propertyTree.add(PropertyTreeName, L"");
-		inputFieldPropertyTree.put(L"<xmlattr>.id", m_inputFieldID);
+		inputFieldPropertyTree.put(L"<xmlattr>.fieldId", m_inputFieldID);
 
 		if (m_overrideInUse) {
 
@@ -137,17 +147,17 @@ namespace SynGlyphX {
 
 	bool InputBinding::IsBoundToInputField() const {
 
-		return (m_inputFieldID != 0);
+		return (!m_inputFieldID.empty());
 	}
 
-	HashID InputBinding::GetInputFieldID() const {
+	const std::wstring& InputBinding::GetInputFieldID() const {
 
 		return m_inputFieldID;
 	}
 
 	void InputBinding::Clear() {
 
-		m_inputFieldID = 0;
+		m_inputFieldID = L"";
 		ClearMinMaxOverride();
 	}
 

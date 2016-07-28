@@ -27,7 +27,6 @@
 #include <boost/functional/hash.hpp>
 
 namespace SynGlyphX {
-
 	class SGXDATAMAPPING_API InputField : public InputTable
 	{
 
@@ -58,7 +57,7 @@ namespace SynGlyphX {
 
 		virtual bool IsValid() const;
 
-		void ExportToPropertyTree(boost::property_tree::wptree& propertyTree) const;
+		void ExportToPropertyTree(boost::property_tree::wptree& propertyTree, const std::wstring& name = std::wstring()) const;
 
 		bool IsNumeric() const;
 		Type GetType() const;
@@ -74,6 +73,17 @@ namespace SynGlyphX {
 
 	typedef std::unordered_set<InputField, InputTableHash> FieldGroup;
 
+	//class SGXDATAMAPPING_API InputFieldAlias
+	//{
+	//public:
+	//	InputFieldAlias(const InputField& inputField);
+	//	InputFieldAlias();
+	//	const InputField& GetInputField() const { return m_imputField; }
+	//	const std::wstring& GetName() const { return m_name; };
+	//private:
+	//	InputField m_imputField;
+	//	std::wstring m_name;
+	//};
 } //namespace SynGlyphX
 
 #endif //SYNGLYPHX_INPUTFIELD_H

@@ -37,6 +37,27 @@ namespace SynGlyphX {
 	class Link;
 	class Legend;
 	class BaseImage;
+	class DataTransformMapping;
+
+	class SGXDATAMAPPING_API InputFieldManager
+	{
+	public:
+		InputFieldManager(DataTransformMapping* m) : m_dataTransformMapping(m) {}
+		const InputField& GetInputField(const std::wstring& fieldID) const;
+		void SetInputField(const std::wstring& fieldID, const InputField& field);
+		void ClearInputFieldBindings(const std::wstring& fieldID);
+		std::wstring GenerateInputFieldID(const InputField& field); //may not be const with future implementation
+		void Clear();
+
+
+		void ExportToPropertyTree(boost::property_tree::wptree& propertyTree) const;
+		void ImportFromPropertyTree(const boost::property_tree::wptree& propertyTree);
+
+		const std::unordered_map<std::wstring, InputField>& GetFieldMap() const;
+	private:
+		std::unordered_map<std::wstring, InputField> m_inputFields;
+		DataTransformMapping* m_dataTransformMapping;
+	};
 
 	class SGXDATAMAPPING_API DataTransformMapping : public XMLPropertyTreeFile
     {
@@ -83,10 +104,13 @@ namespace SynGlyphX {
 
 		void UpdateGlyph(const boost::uuids::uuid& treeId, DataMappingGlyphGraph::GlyphIterator& vertex, const DataMappingGlyph& glyph);
 
+		void SetInputField(const boost::uuids::uuid& treeID, DataMappingGlyphGraph::ConstGlyphIterator node, DataMappingGlyph::MappableField field, const std::wstring& inputfield);
 		void SetInputField(const boost::uuids::uuid& treeID, DataMappingGlyphGraph::ConstGlyphIterator node, DataMappingGlyph::MappableField field, const InputField& inputfield);
+
 		void ClearInputBinding(const boost::uuids::uuid& treeID, DataMappingGlyphGraph::ConstGlyphIterator& node, DataMappingGlyph::MappableField field);
 		void ClearAllInputBindings(const boost::uuids::uuid& treeID, DataMappingGlyphGraph::ConstGlyphIterator& node);
-		void ClearInputFieldBindings(const boost::uuids::uuid& treeID, const InputField& inputfield);
+		void ClearInputFieldBindings(const boost::uuids::uuid& treeID, const std::wstring& inputfield);
+		void ClearInputFieldBindings(const std::wstring& inputfield);
 		
 		bool IsTransformable() const;
 		bool DoesAtLeastOneGlyphGraphHaveBindingsOnPosition() const;
@@ -131,6 +155,7 @@ namespace SynGlyphX {
 		void InsertLink(unsigned int index, const Link& link);
 		void SetLink(unsigned int index, const Link& link);
 		const std::vector<Link>& GetLinks() const { return m_links; }
+		InputFieldManager* GetInputFieldManager() { return &m_inputFieldManager; }
     protected:
 		void CopyInputBindingsForSubsetMapping(DataMappingGlyphGraph::SharedPtr newGlyphGraph, 
 											   DataMappingGlyphGraph::GlyphIterator newNode, 
@@ -151,6 +176,7 @@ namespace SynGlyphX {
 		FieldGroupMap m_fieldGroups;
 		std::vector<Legend> m_legends;
 		std::vector<Link> m_links;
+		InputFieldManager m_inputFieldManager;
 		boost::uuids::uuid m_id;
     };
 

@@ -64,13 +64,13 @@ namespace SynGlyphX {
 		DataMappingGlyphGraph GetSubgraph(const GlyphIterator& vertex, bool includeChildren);
 		DataMappingGlyphGraph GetAndRemoveSubgraph(const GlyphIterator& vertex);
 
-		void SetInputField(DataMappingGlyphGraph::ConstGlyphIterator node, DataMappingGlyph::MappableField field, const InputField& inputfield);
+		void SetInputField(DataMappingGlyphGraph::ConstGlyphIterator node, DataMappingGlyph::MappableField field, const std::wstring& inputfield);
 		void ClearInputBinding(DataMappingGlyphGraph::ConstGlyphIterator& node, DataMappingGlyph::MappableField field);
 		void ClearAllInputBindings(DataMappingGlyphGraph::ConstGlyphIterator& node);
-		void ClearInputFieldBindings(const InputField& inputfield);
+		void ClearInputFieldBindings(const std::wstring& inputfield);
 		void ClearAllInputBindings();
 
-		const InputFieldMap& GetInputFields() const;
+		//const InputFieldMap& GetInputFields() const;
 
 		bool DoesRootGlyphPositionXYHaveBindings() const;
 
@@ -94,7 +94,7 @@ namespace SynGlyphX {
 	private:
 		void AddAllInputBindingsToSubgraph(DataMappingGlyphGraph& graph, const GlyphIterator& vertex, bool removeFromThisGraph);
 		void ClearAllInputBindings(DataMappingGlyphGraph& graph, const GlyphIterator& vertex);
-		void ClearInputFieldBindings(DataMappingGlyphGraph& graph, const GlyphIterator& vertex, const InputField& inputfield);
+		void ClearInputFieldBindings(DataMappingGlyphGraph& graph, const GlyphIterator& vertex, const std::wstring& inputfield);
 		void ClearFieldGroup(const std::wstring& fieldGroupName, const GlyphIterator& vertex);
 		void IncrementInputBindingCountsFromGlyph(const DataMappingGlyph& glyph);
 		void IncrementInputBindingCount(const InputBinding& binding);

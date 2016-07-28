@@ -50,6 +50,13 @@ namespace SynGlyphX {
 
 	}
 
+	//InputField::InputField(const InputFieldAlias& inputFieldAlias) :
+	//	InputTable(inputFieldAlias.GetInputField()),
+	//	m_field(inputFieldAlias.GetInputField().m_field),
+	//	m_type(inputFieldAlias.GetInputField().m_type) {
+
+	//}
+
 	InputField::~InputField()
 	{
 	}
@@ -98,10 +105,12 @@ namespace SynGlyphX {
 		return (InputTable::IsValid() && !m_field.empty());
 	}
 
-	void InputField::ExportToPropertyTree(boost::property_tree::wptree& propertyTree) const {
-
+	void InputField::ExportToPropertyTree(boost::property_tree::wptree& propertyTree, const std::wstring& name /*= std::wstring()*/) const {
 		boost::property_tree::wptree& inputFieldPropertyTree = propertyTree.add(L"InputField", L"");
-		
+		if (!name.empty()) {
+			inputFieldPropertyTree.put(L"<xmlattr>.name", name);
+		}
+
 		inputFieldPropertyTree.put(L"<xmlattr>.id", m_datasourceID);
 		inputFieldPropertyTree.put(L"<xmlattr>.table", m_table);
 		inputFieldPropertyTree.put(L"<xmlattr>.field", m_field);
@@ -130,4 +139,6 @@ namespace SynGlyphX {
 		return seed;
 	}
 
+	//InputFieldAlias::InputFieldAlias() : m_imputField(), m_name(L"")  {}
+	//InputFieldAlias::InputFieldAlias(const InputField& inputField) : m_imputField(inputField), m_name(L"")  {}
 } //namespace SynGlyphX
