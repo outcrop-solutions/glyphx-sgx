@@ -367,7 +367,7 @@ LinksDialog::LinksDialog(SynGlyphX::DataTransformModel* dataTransformModel, QWid
 
 	mainLayout->addWidget(glyphGroupBox);
 
-	QGroupBox* colorGroupBox = new QGroupBox(tr("Link color"), this);
+	QGroupBox* colorGroupBox = new QGroupBox(tr("Link Properties"), this);
 	QHBoxLayout* colorLayout = new QHBoxLayout(colorGroupBox);
 
 	m_colorButton = new SynGlyphX::ColorButton(this);
@@ -386,6 +386,16 @@ LinksDialog::LinksDialog(SynGlyphX::DataTransformModel* dataTransformModel, QWid
 	colorLayout->addSpacing(20);
 	m_inheritColorCheckBox = new QCheckBox(tr("Inherit from parent"), this);
 	colorLayout->addWidget(m_inheritColorCheckBox);
+	colorLayout->addSpacing(20);
+	QLabel* sh = new QLabel(tr("Shape:"), this);
+	sh->setFixedWidth(40);
+	colorLayout->addWidget(sh);
+	m_shapeComboBox = new QComboBox(this);
+	QStringList shapes;
+	shapes << "Cylinder" << "Cube";
+	m_shapeComboBox->addItems(shapes);
+	m_shapeComboBox->setFixedWidth(75);
+	colorLayout->addWidget(m_shapeComboBox);
 	
 	mainLayout->addWidget(colorGroupBox);
 
@@ -438,6 +448,7 @@ const SynGlyphX::Link& LinksDialog::GetLink() {
 	m_link->m_start = GetNode(m_fromGlyphTree, m_fromLineEdit);
 	m_link->m_end = GetNode(m_toGlyphTree, m_toLineEdit);
 	m_link->m_name = m_nameLineEdit->text().toStdWString();
+	m_link->m_shape = m_shapeComboBox->currentText().toStdWString();
 	QColor c = m_colorButton->GetColor();
 	m_link->m_color.SetRGB(c.red(), c.green(), c.blue());
 	m_link->m_color.m_alpha = m_transparensySpinBox->value();
@@ -449,6 +460,7 @@ const SynGlyphX::Link& LinksDialog::GetLink() {
 void LinksDialog::SetLink(const SynGlyphX::Link& link) {
 
 	m_nameLineEdit->setText(QString::fromStdWString(link.m_name));
+	m_shapeComboBox->setCurrentText(QString::fromStdWString(link.m_shape));
 	m_colorButton->SetColor(QColor(link.m_color.m_r, link.m_color.m_g, link.m_color.m_b));
 	m_transparensySpinBox->setValue(link.m_color.m_alpha);
 	m_inheritColorCheckBox->setChecked(m_link->m_color.m_inheritfromParent);
