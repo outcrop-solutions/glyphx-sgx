@@ -23,6 +23,7 @@
 #include "inputfield.h"
 
 Q_DECLARE_METATYPE(SynGlyphX::InputField)
+Q_DECLARE_METATYPE(std::wstring)
 
 class SGXDATATRANSFORMGUI_EXPORT InputFieldMimeData : public QMimeData
 {

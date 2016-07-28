@@ -232,3 +232,4 @@ qrc_*.cpp
 /SGXEULAWindowsSetup/Win32
 /SGXSetupMergeModule/Win32
 /SGXDemoWindowsSetup/Win32
+*.orig

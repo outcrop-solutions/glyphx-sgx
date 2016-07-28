@@ -36,6 +36,7 @@
 #include "legendlistview.h"
 #include "datamappingdefaults.h"
 #include "sceneproperties.h"
+#include "aliaseswidget.h"
 
 class LinksListView;
 class LinksDialog;
@@ -128,6 +129,7 @@ private:
 
 	DataSourceStatsWidget* m_dataSourceStats;
 	DataSourcesView* m_dataSourcesView;
+	AliasesWidget* m_aliases;
 	
 	SynGlyphX::IntRoleDataFilterProxyModel* m_legendsModel;
 	LegendListView* m_legendsView;

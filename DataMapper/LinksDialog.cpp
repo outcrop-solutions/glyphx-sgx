@@ -19,6 +19,8 @@
 #include "inputfieldmimedata.h"
 #include "inputfield.h"
 #include "datatransformmodel.h"
+#include "DMGlobal.h"
+#include "glyphrolestablemodel.h"
 
 static void print_tree(boost::property_tree::wptree const& pt)
 {
@@ -39,13 +41,12 @@ class LinkLineEdit : public QLineEdit
 public:
 	LinkLineEdit(SynGlyphX::DataTransformModel* dataTransformModel, QWidget *parent = 0);
 	virtual ~LinkLineEdit() {}
-	const SynGlyphX::InputField& GetInputField() const { return m_inputField; }
-	void SetInputField(const SynGlyphX::InputField& inputField);
+	const std::wstring& GetInputField() const { return m_inputField; }
+	void SetInputField(const std::wstring&);
 protected:
 	virtual void dragEnterEvent(QDragEnterEvent* event);
 	virtual void dropEvent(QDropEvent* event);
-private:
-	SynGlyphX::InputField m_inputField;
+	std::wstring m_inputField;
 	SynGlyphX::DataTransformModel* m_dataTransformModel;
 };
 
@@ -256,13 +257,17 @@ m_dataTransformModel(dataTransformModel)
 	setReadOnly(true);	
 }
 
-void LinkLineEdit::SetInputField(const SynGlyphX::InputField& inputField) {
-	m_inputField = inputField;
-	if (m_inputField.IsValid()) {
+void LinkLineEdit::SetInputField(const std::wstring& inputField) {
 
-		SynGlyphX::Datasource::ConstSharedPtr datasource = m_dataTransformModel->GetDataMapping()->GetDatasources().at(inputField.GetDatasourceID());
+	auto ifm = m_dataTransformModel->GetInputFieldManager();
+	m_inputField = inputField;
+	if (m_inputField[0] == '~')
+	{
+		auto inputField = ifm->GetInputField(m_inputField);
+		SynGlyphX::Datasource::ConstSharedPtr datasource = DMGlobal::Services()->GetGlyphRolesTableModel()->GetDataTransformMapping()->GetDatasources().at(inputField.GetDatasourceID());
 
 		QString text = QString::fromStdWString(datasource->GetFormattedName());
+
 		if (datasource->CanDatasourceHaveMultipleTables()) {
 
 			text += ":" + QString::fromStdWString(inputField.GetTable());
@@ -270,26 +275,54 @@ void LinkLineEdit::SetInputField(const SynGlyphX::InputField& inputField) {
 		text += ":" + QString::fromStdWString(inputField.GetField());
 		setText(text);
 	}
-	else {
-
-		clear();
+	else
+	{
+		setText(QString::fromStdWString(m_inputField));
 	}
+
 }
+
 void LinkLineEdit::dragEnterEvent(QDragEnterEvent *event) {
 
-	const InputFieldMimeData* mimeData = qobject_cast<const InputFieldMimeData*>(event->mimeData());
-	if (mimeData == nullptr) {
-
-		return;
+	auto ifm = m_dataTransformModel->GetInputFieldManager();
+	SynGlyphX::InputField field;
+	if (event->mimeData()->hasText())
+	{
+		QString fieldID = event->mimeData()->text();
+		field = ifm->GetInputField(fieldID.toStdWString());
+	}
+	else
+	{
+		const InputFieldMimeData* mimeData = qobject_cast<const InputFieldMimeData*>(event->mimeData());
+		if (mimeData == nullptr)
+			return;
+		field = mimeData->GetInputField();
 	}
 
-	event->acceptProposedAction();
+	///////////////////////////////////
+	//const InputFieldMimeData* mimeData = qobject_cast<const InputFieldMimeData*>(event->mimeData());
+	//if (mimeData == nullptr) {
+
+	//	return;
+	//}
+	if (field.IsValid())
+		event->acceptProposedAction();
 }
 
 void LinkLineEdit::dropEvent(QDropEvent* event) {
+	auto ifm = m_dataTransformModel->GetInputFieldManager();
+	if (event->mimeData()->hasText())
+	{
+		QString fieldID = event->mimeData()->text();
+		SetInputField(fieldID.toStdWString());
+		return;
+	}
 	const InputFieldMimeData* mimeData = qobject_cast<const InputFieldMimeData*>(event->mimeData());
+
+	std::wstring fieldID = ifm->GenerateInputFieldID(mimeData->GetInputField());
+	ifm->SetInputField(fieldID, mimeData->GetInputField());
 	if (mimeData != nullptr) {
-		SetInputField(mimeData->GetInputField());
+		SetInputField(fieldID);
 	}
 }
 
@@ -361,7 +394,6 @@ LinksDialog::LinksDialog(SynGlyphX::DataTransformModel* dataTransformModel, QWid
 	
 	m_functionComboBox = new QComboBox(this);
 
-	//TODO get available types from Link class rather then hardcode strings
 	QStringList functions;
 	functions << "Match Value" << "Key to Value" << "Key to Range";
 	m_functionComboBox->addItems(functions);
@@ -448,7 +480,7 @@ SynGlyphX::LinkNode LinksDialog::GetNode(GlyphTreesView* treeView, LinkLineEdit*
 	SynGlyphX::DataMappingGlyphGraph::Node* treeNode = static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(sourceIndex.internalPointer());
 
 	SynGlyphX::DataMappingGlyphGraph::GlyphIterator fromGlyph(treeNode);
-	SynGlyphX::LinkNode node(m_dataTransformModel->GetTreeId(sourceIndex), fromGlyph->first, lineEdit->GetInputField().GetHashID());
+	SynGlyphX::LinkNode node(m_dataTransformModel->GetTreeId(sourceIndex), fromGlyph->first, lineEdit->GetInputField());
 	return node;
 }
 
@@ -478,14 +510,15 @@ void LinksDialog::SelectGlyph(const QModelIndex &parent, GlyphTreesView* treeVie
 
 void LinksDialog::SetNode(const SynGlyphX::LinkNode& node, GlyphTreesView* treeView, LinkLineEdit* lineEdit) {
 
-	const auto& glyphGraph = m_dataTransformModel->GetDataMapping()->GetGlyphGraphs().at(node.m_treeId);
-	const SynGlyphX::DataMappingGlyphGraph::InputFieldMap& inputFields = glyphGraph->GetInputFields();
-	for (const auto& inputField : inputFields) {
-		if (inputField.second.GetHashID() == node.m_inputFieldId) {
-			lineEdit->SetInputField(inputField.second);
-			break;
-		}
-	}
+	//const auto& glyphGraph = m_dataTransformModel->GetDataMapping()->GetGlyphGraphs().at(node.m_treeId);
+	//const SynGlyphX::DataMappingGlyphGraph::InputFieldMap& inputFields = glyphGraph->GetInputFields();
+	//for (const auto& inputField : inputFields) {
+	//	if (inputField.second.GetHashID() == node.m_inputFieldId) {
+	//		lineEdit->SetInputField(inputField.second);
+	//		break;
+	//	}
+	//}
+	lineEdit->SetInputField(node.m_inputFieldId);
 	int nRows = m_dataTransformModel->GetDataMapping()->GetGlyphGraphs().size();
 	
 	SelectGlyph(QModelIndex(), treeView, node);

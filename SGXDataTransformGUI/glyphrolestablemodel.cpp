@@ -76,23 +76,23 @@ int	GlyphRolesTableModel::rowCount(const QModelIndex& parent) const {
 	}
 }
 
-const SynGlyphX::InputField GlyphRolesTableModel::GetInputField(SynGlyphX::HashID fieldID) const {
-
-	if ((fieldID == 0) || (m_selectedDataTransformModelIndexes.isEmpty())) {
-
-		return SynGlyphX::InputField();
-	}
-
-	const SynGlyphX::DataMappingGlyphGraph::InputFieldMap& fieldMap = m_dataTransformModel->GetInputFieldsForTree(m_selectedDataTransformModelIndexes.last());
-	if (fieldMap.count(fieldID) > 0) {
-
-		return fieldMap.at(fieldID);
-	}
-	else {
-
-		throw std::invalid_argument("FieldID is not listed in input field list");
-	}
-}
+//const SynGlyphX::InputField GlyphRolesTableModel::GetInputField(SynGlyphX::HashID fieldID) const {
+//
+//	if ((fieldID == 0) || (m_selectedDataTransformModelIndexes.isEmpty())) {
+//
+//		return SynGlyphX::InputField();
+//	}
+//
+//	const SynGlyphX::DataMappingGlyphGraph::InputFieldMap& fieldMap = m_dataTransformModel->GetInputFieldsForTree(m_selectedDataTransformModelIndexes.last());
+//	if (fieldMap.count(fieldID) > 0) {
+//
+//		return fieldMap.at(fieldID);
+//	}
+//	else {
+//
+//		throw std::invalid_argument("FieldID is not listed in input field list");
+//	}
+//}
 
 QVariant GlyphRolesTableModel::data(const QModelIndex& index, int role) const {
 
@@ -275,7 +275,8 @@ QVariant GlyphRolesTableModel::GetEditDataForTextMappingProperty(const QVariant&
 	}
 	else if (index.column() == s_mappedFieldColumn) {
 
-		return QVariant::fromValue(GetInputField(mappingProperty.GetBinding().GetInputFieldID()));
+		//return QVariant::fromValue(GetInputField(mappingProperty.GetBinding().GetInputFieldID()));
+		return QString::fromStdWString(mappingProperty.GetBinding().GetInputFieldID()); //TODO check this
 	}
 	else {
 
@@ -293,7 +294,8 @@ QVariant GlyphRolesTableModel::GetEditDataForType(const QVariant& propVariant, c
 	}
 	else if (index.column() == s_mappedFieldColumn) {
 
-		return QVariant::fromValue(GetInputField(mappingProperty.GetBinding().GetInputFieldID()));
+		//return QVariant::fromValue(GetInputField(mappingProperty.GetBinding().GetInputFieldID()));
+		return QString::fromStdWString(mappingProperty.GetBinding().GetInputFieldID());
 	}
 	else {
 
@@ -339,27 +341,28 @@ void GlyphRolesTableModel::SetSelectedGlyphTreeIndexes(const QModelIndexList& in
 }
 
 void GlyphRolesTableModel::DetermineAssociatedInputTable() {
-
+	//TODO handle after refactoring
+	//_ASSERT(0);
 	m_associatedInputTable.reset();
 	SynGlyphX::InputTable inputTable;
-	for (const QPersistentModelIndex& index : m_selectedDataTransformModelIndexes) {
+	//for (const QPersistentModelIndex& index : m_selectedDataTransformModelIndexes) {
 
-		const SynGlyphX::DataMappingGlyphGraph::InputFieldMap& inputFields = m_dataTransformModel->GetInputFieldsForTree(index);
-		if (!inputFields.empty()) {
+	//	const SynGlyphX::DataMappingGlyphGraph::InputFieldMap& inputFields = m_dataTransformModel->GetInputFieldsForTree(index);
+	//	if (!inputFields.empty()) {
 
-			if (inputTable.IsValid()) {
+	//		if (inputTable.IsValid()) {
 
-				if (inputTable != inputFields.begin()->second) {
+	//			if (inputTable != inputFields.begin()->second) {
 
-					return;
-				}
-			}
-			else {
+	//				return;
+	//			}
+	//		}
+	//		else {
 
-				inputTable = inputFields.begin()->second;
-			}
-		}
-	}
+	//			inputTable = inputFields.begin()->second;
+	//		}
+	//	}
+	//}
 	m_associatedInputTable.reset(inputTable);
 }
 
@@ -379,6 +382,15 @@ void GlyphRolesTableModel::Clear() {
 	m_selectedDataTransformModelIndexes.clear();
 	OnAllDataUpdated();
 }
+
+void GlyphRolesTableModel::Refresh() {
+
+	DisconnectAllSignalsFromSourceModel();
+
+	OnAllDataUpdated();
+}
+
+
 
 bool GlyphRolesTableModel::IsClear() const {
 
@@ -515,19 +527,20 @@ bool GlyphRolesTableModel::setData(const QModelIndex& index, const QVariant& val
 		if (index.column() == s_mappedFieldColumn) {
 
 			SynGlyphX::DataMappingGlyph::MappableField mappableField = static_cast<SynGlyphX::DataMappingGlyph::MappableField>(index.row());
-			SynGlyphX::InputField inputField = value.value<SynGlyphX::InputField>();
-			if (inputField.IsValid()) {
+			//SynGlyphX::InputField inputField = value.value<SynGlyphX::InputField>();
+			QString inputField = value.value<QString>();
+			if (inputField.isNull() || inputField.isEmpty()) {
 
 				for (const QPersistentModelIndex& index : m_selectedDataTransformModelIndexes) {
 
-					m_dataTransformModel->SetInputField(index, mappableField, inputField);
+					m_dataTransformModel->ClearInputBinding(index, mappableField);
 				}
 			}
 			else {
 
 				for (const QPersistentModelIndex& index : m_selectedDataTransformModelIndexes) {
 
-					m_dataTransformModel->ClearInputBinding(index, mappableField);
+					m_dataTransformModel->SetInputField(index, mappableField, inputField);
 				}
 			}
 			DetermineAssociatedInputTable();
