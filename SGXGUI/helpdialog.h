@@ -15,51 +15,24 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 #pragma once
-#ifndef BINDINGLINEEDIT_H
-#define BINDINGLINEEDIT_H
+#ifndef SYNGLYPHX_HELPDIALOG_H
+#define SYNGLYPHX_HELPDIALOG_H
 
-#include "sgxdatatransformgui_global.h"
-#include <QtWidgets/QLineEdit>
-#include "inputbinding.h"
-#include "glyphrolestablemodel.h"
-#include "datamappingfunction.h"
-#include "inputfieldmimedata.h"
+#include "sgxgui_global.h"
+#include <QtWidgets/QDialog>
 
-class BindingLineEditChangeCommand;
+namespace SynGlyphX {
 
-class SGXDATATRANSFORMGUI_EXPORT BindingLineEdit : public QWidget
-{
-	Q_OBJECT
-		//Q_PROPERTY(SynGlyphX::InputField value READ GetInputField WRITE SetInputField USER true)
-		Q_PROPERTY(QString value READ GetInputField WRITE SetInputField USER true) //do we need this?
-		friend class BindingLineEditChangeCommand;
-public:
-	BindingLineEdit(const GlyphRolesTableModel* model, QWidget *parent = 0, SynGlyphX::MappingFunctionData::Input acceptedInputTypes = SynGlyphX::MappingFunctionData::Input::All);
-	~BindingLineEdit();
+	class SGXGUI_EXPORT HelpDialog : public QDialog
+	{
+		Q_OBJECT
 
-	const QString& GetInputField() const;
-	bool OnlyAcceptsNumericField() const;
+	public:
+		HelpDialog(QWidget *parent);
+		~HelpDialog();
 
-public slots:
-	void SetInputField(const QString& inputfield);
-	void Clear();
-	void SetAcceptedInputTypes(SynGlyphX::MappingFunctionData::Input acceptedInputTypes);
+	};
 
-signals:
-	void ValueChanged(QString);
-	void ValueChangedByUser(QString);
+} //namespace SynGlyphX
 
-protected:
-	virtual void dragEnterEvent(QDragEnterEvent* event);
-	virtual void dropEvent(QDropEvent* event);
-	virtual void contextMenuEvent(QContextMenuEvent* event);
-
-private:
-	const GlyphRolesTableModel* m_model;
-	QString m_inputFieldId;
-	SynGlyphX::MappingFunctionData::Input m_acceptedInputTypes;
-	QAction* m_clearAction;
-	QLineEdit* m_lineEdit;
-};
-
-#endif // BINDINGLINEEDIT_H
+#endif // LICENSINGDIALOG_H

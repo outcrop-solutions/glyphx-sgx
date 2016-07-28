@@ -34,7 +34,7 @@ QScrollBar::handle:vertical {
     background: qlineargradient(x1:0, y1:0, x2:1, y2:0, stop: 0  #e3f4fb, stop:1 #bfe7f8);
 	margin-left:3px;
 	margin-right:3px;
-    min-height: 0px;
+    min-height: 12px;
 	border-top: 0.5px solid #fff; 
 	border-right: 1px outset #fff; 
 	border-bottom: 1px solid #c1c1c1;

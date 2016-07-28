@@ -59,7 +59,9 @@ public:
 		us->push(tcc);
 		tcc->m_tv = m_w->m_glyphTreesView;
 	}
-
+		GlyphRolesTableModel* GetGlyphRolesTableModel() {
+		return m_w->m_glyphRolesTableModel;
+	}
 	GlyphTreesView* GetTreeView() {
 		return m_w->m_glyphTreesView;
 	}
@@ -112,6 +114,10 @@ void DMServices::BeginTransaction(const char* name, SynGlyphX::TransactionType t
 
 void DMServices::EndTransaction() {
 	pImpl->EndTransaction();
+}
+
+GlyphRolesTableModel* DMServices::GetGlyphRolesTableModel() {
+	return pImpl->GetGlyphRolesTableModel();
 }
 
 QItemSelectionModel* DMServices::GetTreeViewSelectionModel() {

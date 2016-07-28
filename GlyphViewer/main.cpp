@@ -4,7 +4,7 @@
 #include <QtCore/QTimer>
 #include <QtCore/QDir>
 #include "licensingdialog.h"
-
+#include <QtCore/QDir>
 #ifdef USE_BREAKPAD
 #include "exception_handler.h"
 #endif
@@ -62,7 +62,7 @@ int main(int argc, char *argv[])
 	QSurfaceFormat::setDefaultFormat( fmt );
 #endif
     
-	SynGlyphX::GlyphBuilderApplication::Setup("Glyph Builder - Glyph Viewer", "0.7.52");
+	SynGlyphX::GlyphBuilderApplication::Setup("Glyph Builder - Glyph Viewer", "0.7.53");
 	SynGlyphX::GlyphBuilderApplication a(argc, argv);
 	if (SynGlyphX::GlyphBuilderApplication::IsGlyphEd()) {
 

@@ -527,6 +527,7 @@ bool GlyphViewerWindow::LoadNewVisualization(const QString& filename, const Dist
 		critical_error.setEscapeButton(QMessageBox::Ok);
 		critical_error.exec();
 		m_dataEngineConnection->ClearJavaErrors();
+		CloseVisualization();
 		//QMessageBox::critical(this, tr("Failed To Open Visualization"), tr("Failed to open visualization.  Error: ") + e.what(), QMessageBox::Ok);
 		return false;
 	}
@@ -718,14 +719,18 @@ void GlyphViewerWindow::LoadFilesIntoModel(const SynGlyphXANTz::ANTzCSVWriter::F
 	m_glyphForestModel->LoadANTzVisualization(filesToLoad, baseImageFilenames);
 
 	SynGlyphX::DataMappingGlyphGraph::ConstSharedPtr rootGlyph = m_mappingModel->GetDataMapping()->GetGlyphGraphs().begin()->second;
+	//TODO: fix this!
 	std::array<QString, 3> rootPositionFields;
+	auto ifm = const_cast<SynGlyphX::DataTransformMapping*>(m_mappingModel->GetDataMapping().get())->GetInputFieldManager();
 	for (unsigned int i = 0; i < 3; ++i) {
 
 		const SynGlyphX::InputBinding& posInputBinding = rootGlyph->GetRoot()->second.GetPosition()[i].GetBinding();
-		SynGlyphX::HashID id = posInputBinding.GetInputFieldID();
-		if (id != 0) {
+		//SynGlyphX::HashID id = posInputBinding.GetInputFieldID();
 
-			rootPositionFields[i] = QString::fromStdWString(rootGlyph->GetInputFields().at(id).GetField());
+		SynGlyphX::InputField field = ifm->GetInputField(posInputBinding.GetInputFieldID());
+
+		if (field.IsValid()) {
+			rootPositionFields[i] = QString::fromStdWString(field.GetField());
 		}
 	}
 	m_glyphForestModel->SetRootPosXYZMappedFields(rootPositionFields);

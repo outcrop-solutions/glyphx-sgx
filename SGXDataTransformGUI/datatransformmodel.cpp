@@ -16,6 +16,7 @@
 #include "stringconvert.h"
 #include <set>
 #include "Link.h"
+#include "Alias.h"
 #include "baseimage.h"
 #include "AppGlobal.h"
 #include <QtWidgets/QUndoStack>
@@ -596,11 +597,12 @@ namespace SynGlyphX {
 		m_dataMapping->SetInputField(treeID, node, field, inputfield);
 	}*/
 
-	void DataTransformModel::SetInputField(const QModelIndex& index, DataMappingGlyph::MappableField field, const InputField& inputfield) {
 
+	void DataTransformModel::SetInputField(const QModelIndex& index, DataMappingGlyph::MappableField field, const QString& inputfield) {
+		//_ASSERT(0); //TODO reimplement after fefactoring
 		SynGlyphX::DataMappingGlyphGraph::ConstGlyphIterator node(static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(index.internalPointer()));
 		//SetInputField(treeID, node, field, inputfield);
-		m_dataMapping->SetInputField(GetTreeId(index), node, field, inputfield);
+		m_dataMapping->SetInputField(GetTreeId(index), node, field, inputfield.toStdWString());
 		emit dataChanged(index, index);
 	}
 	/*
@@ -625,40 +627,44 @@ namespace SynGlyphX {
 	}
 	
 	void DataTransformModel::ClearAbsentBindings() {
+		//Does not work correctly after Aliases
+		//TODO reimplement 
 
-		QModelIndex index = createIndex(0, 0);
-		SynGlyphX::DataMappingGlyphGraph::InputFieldMap fieldMap = GetInputFieldsForTree(index); 
-		std::set<SynGlyphX::HashID> sourceFields;
-		for (const auto& t : m_tableStatsMap) {
-			auto table = t.first;
-			auto stats = t.second;
-			for (const auto& stat : stats) {
-				// use arbitrary Type since it does not affect HashID
-				SynGlyphX::InputField sInputField(table.GetDatasourceID(), table.GetTable(), stat[0].toStdWString(), SynGlyphX::InputField::Type::Text);
-				sourceFields.insert(sInputField.GetHashID());
-				}
-			}
-		for (const auto& field : fieldMap) {
-			if (sourceFields.find(field.first) == sourceFields.end()) { 
-				SynGlyphX::InputField f(field.second);
-				AppGlobal::Services()->ShowWarningDialog(tr("Source data does not have field:\n") + QString::fromWCharArray(f.GetField().c_str()) + tr("\nMapping will be removed"));
-				AppGlobal::Services()->SetModified(true);
-				m_dataMapping->ClearInputFieldBindings(GetTreeId(index), f);
-			}
-						
-		}
-		emit dataChanged(index, index);
+		////_ASSERT(0);
+		//QModelIndex index = createIndex(0, 0);
+		//SynGlyphX::DataMappingGlyphGraph::InputFieldMap fieldMap = GetInputFieldsForTree(index); 
+		//std::list<SynGlyphX::InputField> sourceFields;
+		//for (const auto& t : m_tableStatsMap) {
+		//	auto table = t.first;
+		//	auto stats = t.second;
+		//	for (const auto& stat : stats) {
+		//		// use arbitrary Type since it does not affect HashID
+		//		SynGlyphX::InputField sInputField(table.GetDatasourceID(), table.GetTable(), stat[0].toStdWString(), SynGlyphX::InputField::Type::Text);
+		//		sourceFields.push_back(sInputField);
+		//		}
+		//	}
+		//for (const auto& field : GetInputFieldManager()->GetFieldMap()) {
+		//	auto it = find(sourceFields.begin(), sourceFields.end(), field.second);
+		//	if (it == sourceFields.end()) { 
+		//		SynGlyphX::InputField f(field.second);
+		//		AppGlobal::Services()->ShowWarningDialog(tr("Source data does not have field:\n") + QString::fromWCharArray(f.GetField().c_str()) + tr("\nMapping will be removed"));
+		//		AppGlobal::Services()->SetModified(true);
+		//		m_dataMapping->ClearInputFieldBindings(GetTreeId(index), field.first);
+		//	}
+		//				
+		//}
+		//emit dataChanged(index, index);
 	}
 
-	const DataMappingGlyphGraph::InputFieldMap& DataTransformModel::GetInputFieldsForTree(const QModelIndex& index) const {
+	//const DataMappingGlyphGraph::InputFieldMap& DataTransformModel::GetInputFieldsForTree(const QModelIndex& index) const {
 
-		if (!index.isValid()) {
+	//	if (!index.isValid()) {
 
-			throw std::invalid_argument("Can't get input field map from invalid index");
-		}
+	//		throw std::invalid_argument("Can't get input field map from invalid index");
+	//	}
 
-		return m_dataMapping->GetGlyphGraphs().at(GetTreeId(index))->GetInputFields();
-	}
+	//	return m_dataMapping->GetGlyphGraphs().at(GetTreeId(index))->GetInputFields();
+	//}
 	/*
 	void DataTransformModel::EnableTables(const boost::uuids::uuid& id, const Datasource::TableNames& tables, bool enable) {
 

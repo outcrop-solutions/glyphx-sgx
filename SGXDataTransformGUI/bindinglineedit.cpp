@@ -9,13 +9,15 @@
 #include <QtCore/QPointer>
 #include "AppGlobal.h"
 #include <QtWidgets/QUndoStack>
+#include "datatransformmodel.h" //refactor to exclude this
+
 class TreeSelection;
 class BindingLineEditChangeCommand : public QUndoCommand {
 public:
-	BindingLineEditChangeCommand(BindingLineEdit* ble, const SynGlyphX::InputField& newInputField) : 
+	BindingLineEditChangeCommand(BindingLineEdit* ble, const QString& newInputField) : 
 		m_ble(ble),
 		m_newInputField(newInputField),
-		m_oldInputField(ble->m_inputField), // since it is called from ble, should not  not be null at time of construction
+		m_oldInputField(ble->m_inputFieldId), // since it is called from ble, should not  not be null at time of construction
 		m_firstCall(true)
 	{
 		// this will not work after undoing tree operation, will need to somehow store selection in a model-independent way
@@ -25,8 +27,9 @@ public:
 	void undo() override {
 		SynGlyphX::AppGlobal::Services()->ApplyTreeSelection(*m_selection);
 		if (m_ble) {
-			m_ble->m_inputField = m_oldInputField;
-			m_ble->ValueChangedByUser(m_ble->m_inputField);
+			m_ble->m_inputFieldId = m_oldInputField;
+			m_ble->SetInputField(m_ble->m_inputFieldId); //for now call explicitely, used to work without it TODO: investigate
+			m_ble->ValueChangedByUser(m_ble->m_inputFieldId);
 		}
 	}
 	void redo() override {
@@ -36,8 +39,9 @@ public:
 			m_firstCall = false;
 
 		if (m_ble) {
-			m_ble->m_inputField = m_newInputField;
-			m_ble->ValueChangedByUser(m_ble->m_inputField);
+			m_ble->m_inputFieldId = m_newInputField;
+			m_ble->SetInputField(m_ble->m_inputFieldId); //for now call explicitely, used to work without it TODO: investigate
+			m_ble->ValueChangedByUser(m_ble->m_inputFieldId);
 		}
 	}
 	virtual ~BindingLineEditChangeCommand()
@@ -46,8 +50,8 @@ public:
 			delete m_selection;
 	}
 	QPointer<BindingLineEdit> m_ble;
-	SynGlyphX::InputField m_newInputField;
-	SynGlyphX::InputField m_oldInputField;
+	QString m_newInputField;
+	QString m_oldInputField;
 	//QItemSelection m_selection;
 	bool m_firstCall;
 	TreeSelection* m_selection;
@@ -84,33 +88,37 @@ BindingLineEdit::~BindingLineEdit()
 
 }
 
-const SynGlyphX::InputField& BindingLineEdit::GetInputField() const {
+const QString& BindingLineEdit::GetInputField() const {
 
-	return m_inputField;
+	return m_inputFieldId;
 }
 
-void BindingLineEdit::SetInputField(const SynGlyphX::InputField& inputfield) {
+void BindingLineEdit::SetInputField(const QString& inputFieldID) {
 
-	m_inputField = inputfield;
-	if (m_inputField.IsValid()) {
-
-		SynGlyphX::Datasource::ConstSharedPtr datasource = m_model->GetDataTransformMapping()->GetDatasources().at(inputfield.GetDatasourceID());
+	auto ifm = m_model->GetSourceModel()->GetInputFieldManager();
+	m_inputFieldId = inputFieldID;
+	if (m_inputFieldId[0] == '~')
+	{
+		auto inputField = ifm->GetInputField(m_inputFieldId.toStdWString());
+		SynGlyphX::Datasource::ConstSharedPtr datasource = m_model->GetDataTransformMapping()->GetDatasources().at(inputField.GetDatasourceID());
 
 		QString text = QString::fromStdWString(datasource->GetFormattedName());
+
 		if (datasource->CanDatasourceHaveMultipleTables()) {
 		
-			text += ":" + QString::fromStdWString(inputfield.GetTable());
+			text += ":" + QString::fromStdWString(inputField.GetTable());
 		}
-		text += ":" + QString::fromStdWString(inputfield.GetField());
+		text += ":" + QString::fromStdWString(inputField.GetField());
 		m_lineEdit->setText(text);
 	}
-	else {
-
-		m_lineEdit->clear();
+	else 
+	{
+		m_lineEdit->setText(inputFieldID);
 	}
 
-	m_clearAction->setEnabled(m_inputField.IsValid());
-	//m_useInputFieldMinMaxActon->setEnabled(m_inputField.IsValid());
+	m_clearAction->setEnabled(!m_inputFieldId.isEmpty());
+	//m_clearAction->setEnabled(m_inputFieldId.GetInputField().IsValid());
+	//m_useInputFieldMinMaxActon->setEnabled(!m_inputFieldId.isEmpty());
 }
 
 void BindingLineEdit::SetAcceptedInputTypes(SynGlyphX::MappingFunctionData::Input acceptedInputTypes) {
@@ -118,11 +126,13 @@ void BindingLineEdit::SetAcceptedInputTypes(SynGlyphX::MappingFunctionData::Inpu
 	m_acceptedInputTypes = acceptedInputTypes;
 
 	//If input type has changed then clear input field if input field no longer matches input type
-	if ((m_acceptedInputTypes == SynGlyphX::MappingFunctionData::Input::Numeric) && (m_inputField.IsValid()) && (!m_inputField.IsNumeric())) {
+	auto ifm = m_model->GetSourceModel()->GetInputFieldManager();
+	auto inputField = ifm->GetInputField(m_inputFieldId.toStdWString());
+	if ((m_acceptedInputTypes == SynGlyphX::MappingFunctionData::Input::Numeric) && (inputField.IsValid()) && (!inputField.IsNumeric())) {
 
 		Clear();
 	}
-	else if ((m_acceptedInputTypes == SynGlyphX::MappingFunctionData::Input::Text) && (m_inputField.IsValid()) && (m_inputField.IsNumeric())) {
+	else if ((m_acceptedInputTypes == SynGlyphX::MappingFunctionData::Input::Text) && (inputField.IsValid()) && (inputField.IsNumeric())) {
 
 		Clear();
 	}
@@ -130,22 +140,32 @@ void BindingLineEdit::SetAcceptedInputTypes(SynGlyphX::MappingFunctionData::Inpu
 
 void BindingLineEdit::dragEnterEvent(QDragEnterEvent *event) {
 
-	const InputFieldMimeData* mimeData = qobject_cast<const InputFieldMimeData*>(event->mimeData());
-	if (mimeData == nullptr) {
-
-		return;
+	auto ifm = m_model->GetSourceModel()->GetInputFieldManager();
+	SynGlyphX::InputField field;
+	if (event->mimeData()->hasText())
+	{
+		QString fieldID = event->mimeData()->text();
+		field = ifm->GetInputField(fieldID.toStdWString());
+	}
+	else
+	{
+		const InputFieldMimeData* mimeData = qobject_cast<const InputFieldMimeData*>(event->mimeData());
+		if (mimeData == nullptr) 
+			return;
+		field = mimeData->GetInputField();
 	}
 
-	if ((m_acceptedInputTypes == SynGlyphX::MappingFunctionData::Input::Numeric) && (!mimeData->GetInputField().IsNumeric())) {
+
+	if ((m_acceptedInputTypes == SynGlyphX::MappingFunctionData::Input::Numeric) && (!field.IsNumeric())) {
 		
 		return;
 	}
-	else if ((m_acceptedInputTypes == SynGlyphX::MappingFunctionData::Input::Text) && (mimeData->GetInputField().IsNumeric())) {
+	else if ((m_acceptedInputTypes == SynGlyphX::MappingFunctionData::Input::Text) && (field.IsNumeric())) {
 
 		return;
 	}
 
-	if (!m_model->IsInputFieldCompatible(mimeData->GetInputField())) {
+	if (!m_model->IsInputFieldCompatible(field)) {
 
 		return;
 	}
@@ -155,14 +175,24 @@ void BindingLineEdit::dragEnterEvent(QDragEnterEvent *event) {
 
 void BindingLineEdit::dropEvent(QDropEvent* event) {
 
-	const InputFieldMimeData* mimeData = qobject_cast<const InputFieldMimeData*>(event->mimeData());
-	if (mimeData != nullptr) {
-		auto command = new BindingLineEditChangeCommand(this, mimeData->GetInputField());
+	auto ifm = m_model->GetSourceModel()->GetInputFieldManager();
+	if (event->mimeData()->hasText())
+	{
+		QString fieldID = event->mimeData()->text();
+		ifm->GetInputField(fieldID.toStdWString());
+		auto command = new BindingLineEditChangeCommand(this, fieldID);
 		command->setText(tr("Change Binding"));
 		SynGlyphX::AppGlobal::Services()->GetUndoStack()->push(command);
-		//SetInputField(mimeData->GetInputField());
-		//m_inputField = mimeData->GetInputField();
-		//emit ValueChangedByUser(m_inputField);
+		return;
+	}
+	const InputFieldMimeData* mimeData = qobject_cast<const InputFieldMimeData*>(event->mimeData());
+	
+	std::wstring fieldID = ifm->GenerateInputFieldID(mimeData->GetInputField());
+	ifm->SetInputField(fieldID, mimeData->GetInputField());
+	if (mimeData != nullptr) {
+		auto command = new BindingLineEditChangeCommand(this, QString::fromStdWString(fieldID)/*mimeData->GetInputField()*/);
+		command->setText(tr("Change Binding"));
+		SynGlyphX::AppGlobal::Services()->GetUndoStack()->push(command);
 	}
 }
 
@@ -180,10 +210,10 @@ void BindingLineEdit::contextMenuEvent(QContextMenuEvent* event) {
 
 void BindingLineEdit::Clear() {
 
-	if (m_inputField.IsValid()) {
+	if (!m_inputFieldId.isEmpty()) {
 
-		auto command = new BindingLineEditChangeCommand(this, SynGlyphX::InputField());
+		auto command = new BindingLineEditChangeCommand(this, QString());
 		command->setText(tr("Clear Binding"));
-		SynGlyphX::AppGlobal::Services()->GetUndoStack()->push(command);
+		SynGlyphX::AppGlobal::Services()->GetUndoStack()->push(command);		
 	}
 }

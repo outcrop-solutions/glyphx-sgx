@@ -8,6 +8,7 @@
 #include <QtWidgets/QMessageBox>
 #include <QtWidgets/QFileDialog>
 #include "licensingdialog.h"
+#include "helpdialog.h"
 #include <QtCore/QStandardPaths>
 #include <QtWidgets/QUndoStack>
 
@@ -172,6 +173,9 @@ namespace SynGlyphX {
 
         m_helpMenu = menuBar()->addMenu(tr("Help"));
 
+		m_fullHelpMenu = m_helpMenu->addAction("Guide");
+		QObject::connect(m_fullHelpMenu, &QAction::triggered, this, &MainWindow::ShowTutorial);
+
 		QAction* licensingAction = m_helpMenu->addAction(tr("Licensing"));
 		QObject::connect(licensingAction, &QAction::triggered, this, &MainWindow::ShowLicensingDialog);
 
@@ -187,6 +191,12 @@ namespace SynGlyphX {
 		dialog.exec();
 #endif
 	}
+
+	void MainWindow::ShowTutorial() {
+		SynGlyphX::HelpDialog dialog(this);
+		dialog.exec();
+	}
+
 
     void MainWindow::ShowAboutBox() {
 

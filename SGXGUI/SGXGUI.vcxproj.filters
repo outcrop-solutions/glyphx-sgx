@@ -407,6 +407,15 @@
     <ClCompile Include="GeneratedFiles\Release\moc_SettingsStoredFileList.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="helpdialog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_helpdialog.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_helpdialog.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="sgxgui_global.h">
@@ -544,6 +553,9 @@
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="SettingsStoredFileList.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="helpdialog.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>
