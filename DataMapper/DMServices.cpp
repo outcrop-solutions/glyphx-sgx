@@ -59,9 +59,15 @@ public:
 		us->push(tcc);
 		tcc->m_tv = m_w->m_glyphTreesView;
 	}
-		GlyphRolesTableModel* GetGlyphRolesTableModel() {
+
+	GlyphRolesTableModel* GetGlyphRolesTableModel() {
 		return m_w->m_glyphRolesTableModel;
 	}
+
+	SynGlyphX::DataTransformModel*  GetDataTransformModel() {
+		return m_w->m_dataTransformModel;
+	}
+
 	GlyphTreesView* GetTreeView() {
 		return m_w->m_glyphTreesView;
 	}
@@ -100,6 +106,8 @@ public:
 			GetSelectedOnLevel(&selection, &qselection, m_w->m_dataTransformModel->index(row, 0));
 		GetTreeView()->selectionModel()->select(filterModel->mapSelectionFromSource(qselection), QItemSelectionModel::ClearAndSelect);
 	}
+
+
 	DataMapperWindow* m_w;
 	TreeChangeCommand* tcc;
 };
@@ -118,6 +126,10 @@ void DMServices::EndTransaction() {
 
 GlyphRolesTableModel* DMServices::GetGlyphRolesTableModel() {
 	return pImpl->GetGlyphRolesTableModel();
+}
+
+SynGlyphX::DataTransformModel*  DMServices::GetDataTransformModel() {
+	return pImpl->GetDataTransformModel();
 }
 
 QItemSelectionModel* DMServices::GetTreeViewSelectionModel() {

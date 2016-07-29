@@ -28,6 +28,7 @@ public:
 	virtual void BeginTransaction(const char* name, SynGlyphX::TransactionType t) override;
 	virtual void EndTransaction() override;
 	GlyphRolesTableModel* GetGlyphRolesTableModel();
+	virtual SynGlyphX::DataTransformModel*  GetDataTransformModel() override;
 	virtual QItemSelectionModel* GetTreeViewSelectionModel() override;
 
 	virtual TreeSelection* CreateTreeSelection() override;

@@ -17,27 +17,97 @@
 #include "inputfieldmimedata.h"
 #include "DMGlobal.h"
 #include "glyphrolestablemodel.h"
+#include <QtWidgets/QUndoStack>
+#include <QtWidgets/QUndoCommand>
+#include <QtCore/QPointer>
+
+
+class AliasTableWidget : public QTableWidget
+{
+//Q_OBJECT
+public:
+	explicit AliasTableWidget(QWidget *parent = Q_NULLPTR) : QTableWidget(parent) {}
+	AliasTableWidget(int rows, int columns, QWidget *parent = Q_NULLPTR) : QTableWidget(rows, columns, parent) {}
+private:
+	virtual QMimeData*	mimeData(const QList<QTableWidgetItem *> items) const override
+	{
+		QMimeData* mimeData = new QMimeData();
+		if (items.size() > 0 && items[0])
+		{
+			mimeData->setText(items[0]->text());
+		}
+
+		return mimeData;
+	}
+};
+
+
+//class RemoveAliasCommand : public QUndoCommand
+//{
+//public:
+//	RemoveAliasCommand(AliasTableWidget* tw, int row)
+//
+//int m_row
+//	
+//}
+
+
 
 class AliasLineEdit : public QLineEdit
 {
 public:
-	AliasLineEdit(SynGlyphX::DataTransformModel* dataTransformModel, QTableWidgetItem* nameItem, QWidget *parent = 0);
+	AliasLineEdit(QTableWidgetItem* nameItem, int row, AliasTableWidget* parent);
 	virtual ~AliasLineEdit() {}
 	const SynGlyphX::InputField& GetInputField() const { return m_inputField; }
 	void SetInputField(const SynGlyphX::InputField& inputField);
-protected:
 	virtual void dragEnterEvent(QDragEnterEvent* event);
 	virtual void dropEvent(QDropEvent* event);
-private:
 	SynGlyphX::InputField m_inputField;
 	QTableWidgetItem* m_nameItem;
-	SynGlyphX::DataTransformModel* m_dataTransformModel;
+	AliasTableWidget* m_tw;
+	int m_row;
 };
 
-AliasLineEdit::AliasLineEdit(SynGlyphX::DataTransformModel* dataTransformModel, QTableWidgetItem* nameItem, QWidget *parent) :
+class ChangeAliasFieldCommand : public QUndoCommand 
+{
+	// we cannot store pointer to the widget, because undoing add/remove alias will recreate the widgets
+public:
+	ChangeAliasFieldCommand(AliasTableWidget* tw, int row, const SynGlyphX::InputField& inputField) :
+		m_tw(tw),
+		m_row(row),
+		m_oldInputField(dynamic_cast<AliasLineEdit*>(tw->cellWidget(row, 1))->m_inputField),
+		m_newInputField(inputField)
+	{
+	}
+	void undo() override
+	{
+		auto ale = dynamic_cast<AliasLineEdit*>(m_tw->cellWidget(m_row, 1));
+		if (ale) 
+		{
+			ale->m_inputField = m_oldInputField;
+			ale->SetInputField(ale->m_inputField);
+		}
+	}
+	void redo() override
+	{
+		auto ale = dynamic_cast<AliasLineEdit*>(m_tw->cellWidget(m_row, 1));
+		if (ale) 
+		{
+			ale->m_inputField = m_newInputField;
+			ale->SetInputField(ale->m_inputField);
+		}
+	}
+	SynGlyphX::InputField m_newInputField;
+	SynGlyphX::InputField m_oldInputField;
+	AliasTableWidget* m_tw;
+	int m_row;
+};
+
+AliasLineEdit::AliasLineEdit(QTableWidgetItem* nameItem, int row, AliasTableWidget* parent) :
 QLineEdit(parent),
 m_nameItem(nameItem),
-m_dataTransformModel(dataTransformModel)
+m_row(row),
+m_tw(parent)
 {
 	setContextMenuPolicy(Qt::NoContextMenu);
 	setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
@@ -48,7 +118,8 @@ void AliasLineEdit::SetInputField(const SynGlyphX::InputField& inputField) {
 	m_inputField = inputField;
 	if (m_inputField.IsValid()) {
 
-		SynGlyphX::Datasource::ConstSharedPtr datasource = m_dataTransformModel->GetDataMapping()->GetDatasources().at(inputField.GetDatasourceID());
+		SynGlyphX::Datasource::ConstSharedPtr datasource = 
+			DMGlobal::Services()->GetDataTransformModel()->GetDataMapping()->GetDatasources().at(inputField.GetDatasourceID());
 
 		QString text = QString::fromStdWString(datasource->GetFormattedName());
 		if (datasource->CanDatasourceHaveMultipleTables()) {
@@ -58,11 +129,11 @@ void AliasLineEdit::SetInputField(const SynGlyphX::InputField& inputField) {
 		text += ":" + QString::fromStdWString(inputField.GetField());
 		setText(text);
 		QString name = m_nameItem->text();
-		m_dataTransformModel->GetInputFieldManager()->SetInputField(name.toStdWString(), m_inputField);
+		DMGlobal::Services()->GetDataTransformModel()->GetInputFieldManager()->SetInputField(name.toStdWString(), m_inputField);
 		m_nameItem->setFlags(m_nameItem->flags() & (~Qt::ItemIsEditable) | Qt::ItemIsDragEnabled);
 	}
 	else {
-
+		m_nameItem->setFlags(m_nameItem->flags() & ~Qt::ItemIsDragEnabled | Qt::ItemIsEditable);
 		clear();
 	}
 }
@@ -82,26 +153,44 @@ void AliasLineEdit::dragEnterEvent(QDragEnterEvent *event) {
 void AliasLineEdit::dropEvent(QDropEvent* event) {
 	const InputFieldMimeData* mimeData = qobject_cast<const InputFieldMimeData*>(event->mimeData());
 	if (mimeData != nullptr) {
-		SetInputField(mimeData->GetInputField());
+		auto command = new ChangeAliasFieldCommand(m_tw, m_row, mimeData->GetInputField());
+		command->setText(tr("Change Alias Field"));
+		DMGlobal::Services()->GetUndoStack()->push(command);
 	}
 }
 
-class AliasTableWidget : public QTableWidget
+
+class AddAliasCommand : public QUndoCommand
 {
 public:
-	explicit AliasTableWidget(QWidget *parent = Q_NULLPTR) : QTableWidget(parent) {}
-	AliasTableWidget(int rows, int columns, QWidget *parent = Q_NULLPTR) : QTableWidget(rows, columns, parent) {}
-private:
-	virtual QMimeData*	mimeData(const QList<QTableWidgetItem *> items) const override
+	AddAliasCommand(AliasTableWidget* tw,  QString name) :
+		m_firstCall(true),
+		m_aliasesTableWidget(tw),
+		m_name(name)
 	{
-		QMimeData* mimeData = new QMimeData();
-		if (items.size() > 0 && items[0])
-		{
-			mimeData->setText(items[0]->text());
-		}
-		
-		return mimeData;
+		setText(QObject::tr("Add Alias"));
+		m_row = m_aliasesTableWidget->rowCount();
 	}
+
+	void undo() override
+	{
+		m_aliasesTableWidget->removeRow(m_row);
+	}
+
+	void redo() override
+	{
+		QTableWidgetItem* nameItem = new QTableWidgetItem(m_name);
+		nameItem->setFlags(nameItem->flags() & ~Qt::ItemIsDragEnabled);
+		auto ale = new AliasLineEdit(nameItem, m_row, m_aliasesTableWidget);
+		ale->setContentsMargins(0, 0, 0, 0);
+		m_aliasesTableWidget->insertRow(m_row);
+		m_aliasesTableWidget->setItem(m_row, 0, ale->m_nameItem);
+		m_aliasesTableWidget->setCellWidget(m_row, 1, ale);
+	}
+	bool m_firstCall;
+	AliasTableWidget* m_aliasesTableWidget;
+	QString m_name;
+	int m_row;
 };
 
 class AliasItemDelegate : public QStyledItemDelegate
@@ -124,9 +213,8 @@ public:
 
 };
 
-AliasesWidget::AliasesWidget(SynGlyphX::DataTransformModel* model, QWidget *parent)
-	: QWidget(parent),
-	m_model(model)
+AliasesWidget::AliasesWidget(QWidget *parent)
+	: QWidget(parent)
 {
 	QVBoxLayout* mainLayout = new QVBoxLayout(this);
 	mainLayout->setContentsMargins(0, 0, 0, 0);
@@ -205,7 +293,9 @@ void AliasesWidget::removeAlias() {
 
 		if (dialog.exec() == QDialog::Accepted) {
 			QString name = selection.at(0)->text();
-			m_model->GetInputFieldManager()->ClearInputFieldBindings(name.toStdWString());
+			DMGlobal::Services()->BeginTransaction("Remove Alias Bindigns", SynGlyphX::TransactionType::ChangeTree);
+			DMGlobal::Services()->GetDataTransformModel()->GetInputFieldManager()->ClearInputFieldBindings(name.toStdWString());
+			DMGlobal::Services()->EndTransaction();
 			DMGlobal::Services()->GetGlyphRolesTableModel()->Refresh();
 			m_aliasesTableWidget->removeRow(selection.at(0)->row());
 
@@ -224,8 +314,8 @@ void AliasesWidget::Refresh() {
 	while (m_aliasesTableWidget->rowCount() > 0)
 		m_aliasesTableWidget->removeRow(0);
 	QObject::disconnect(m_aliasesTableWidget, &QTableWidget::cellChanged, this, &AliasesWidget::OnCellChanged);
-	auto fieldMap = m_model->GetInputFieldManager()->GetFieldMap();
-	for (const auto& field : m_model->GetInputFieldManager()->GetFieldMap())
+	auto fieldMap = DMGlobal::Services()->GetDataTransformModel()->GetInputFieldManager()->GetFieldMap();
+	for (const auto& field : fieldMap)
 	{ 
 		QString name = QString::fromStdWString(field.first);
 		if (name[0] != '~')
@@ -238,7 +328,7 @@ void AliasesWidget::Refresh() {
 			//m_aliasesTableWidget->setCellWidget(row, 0, nameInputWidget);
 			m_aliasesTableWidget->setItem(row, 0, nameItem);
 
-			AliasLineEdit* fieldInputWidget = new AliasLineEdit(m_model, nameItem, this);
+			AliasLineEdit* fieldInputWidget = new AliasLineEdit(nameItem, row, m_aliasesTableWidget);
 			fieldInputWidget->SetInputField(field.second);
 			fieldInputWidget->setContentsMargins(0, 0, 0, 0);
 			m_aliasesTableWidget->setCellWidget(row, 1, fieldInputWidget);
@@ -296,18 +386,9 @@ void AliasesWidget::sectionClicked(int index)
 	if (index == 0){
 
 		int row = m_aliasesTableWidget->rowCount();
-		m_aliasesTableWidget->insertRow(row);
-		//QWidget* nameInputWidget = new QLineEdit(this);
-		QTableWidgetItem* nameItem = new QTableWidgetItem(GenerateUniqueName("A" + QString::number(row)));
-		nameItem->setFlags(nameItem->flags() & ~Qt::ItemIsDragEnabled);
-		//nameInputWidget->setContentsMargins(0, 0, 0, 0);
-		//m_aliasesTableWidget->setCellWidget(row, 0, nameInputWidget);
-		m_aliasesTableWidget->setItem(row, 0, nameItem);
 
-		QWidget* fieldInputWidget = new AliasLineEdit(m_model, nameItem, this);
-
-		fieldInputWidget->setContentsMargins(0, 0, 0, 0);
-		m_aliasesTableWidget->setCellWidget(row, 1, fieldInputWidget);
+		auto command = new AddAliasCommand(m_aliasesTableWidget, GenerateUniqueName("A" + QString::number(row)));
+		DMGlobal::Services()->GetUndoStack()->push(command);
 	}
 
 }
@@ -316,3 +397,5 @@ void AliasesWidget::dragEnterEvent(QDragEnterEvent *event)
 {
 	event->acceptProposedAction();
 }
+
+//#include "aliaseswidget.moc"

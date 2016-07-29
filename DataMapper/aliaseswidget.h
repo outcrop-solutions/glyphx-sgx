@@ -15,7 +15,7 @@ class AliasesWidget : public QWidget
 	Q_OBJECT
 
 public:
-	AliasesWidget(SynGlyphX::DataTransformModel* model, QWidget *parent = 0);
+	AliasesWidget(QWidget *parent = 0);
 	~AliasesWidget();
 
 	QSize sizeHint() const;
@@ -40,5 +40,4 @@ private:
 	QAction* m_removeSelectedContextMenuAction;
 
 	//std::map<QDataWidgetMapper*, unsigned int> m_dataWidgetMappersAndRows;
-	SynGlyphX::DataTransformModel* m_model;
 };
