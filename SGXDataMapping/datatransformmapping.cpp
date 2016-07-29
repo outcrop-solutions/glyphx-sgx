@@ -23,7 +23,7 @@ namespace SynGlyphX {
 			return empty;
 	}
 
-	void InputFieldManager::ClearInputFieldBindings(const std::wstring& fieldID)
+	void InputFieldManager::RemoveInputFieldAndBindings(const std::wstring& fieldID)
 	{
 		m_inputFields.erase(fieldID);
 		m_dataTransformMapping->ClearInputFieldBindings(fieldID);
@@ -666,14 +666,6 @@ namespace SynGlyphX {
 		return m_baseObjects;
 	}
 	
-	void DataTransformMapping::SetInputField(const boost::uuids::uuid& treeID, DataMappingGlyphGraph::ConstGlyphIterator node, DataMappingGlyph::MappableField field, const InputField& inputfield) {
-
-		std::wstring fieldId = m_inputFieldManager.GenerateInputFieldID(inputfield);
-		m_inputFieldManager.SetInputField(fieldId, inputfield);
-		DataMappingGlyphGraph::SharedPtr glyphTree = m_glyphTrees[treeID];
-		glyphTree->SetInputField(node, field, fieldId);
-	}
-
 	void DataTransformMapping::SetInputField(const boost::uuids::uuid& treeID, DataMappingGlyphGraph::ConstGlyphIterator node, DataMappingGlyph::MappableField field, const std::wstring& inputfield) {
 
 		DataMappingGlyphGraph::SharedPtr glyphTree = m_glyphTrees[treeID];

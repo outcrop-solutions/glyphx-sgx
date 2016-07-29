@@ -45,7 +45,7 @@ namespace SynGlyphX {
 		InputFieldManager(DataTransformMapping* m) : m_dataTransformMapping(m) {}
 		const InputField& GetInputField(const std::wstring& fieldID) const;
 		void SetInputField(const std::wstring& fieldID, const InputField& field);
-		void ClearInputFieldBindings(const std::wstring& fieldID);
+		void RemoveInputFieldAndBindings(const std::wstring& fieldID);
 		std::wstring GenerateInputFieldID(const InputField& field); //may not be const with future implementation
 		void Clear();
 
@@ -58,6 +58,8 @@ namespace SynGlyphX {
 		std::unordered_map<std::wstring, InputField> m_inputFields;
 		DataTransformMapping* m_dataTransformMapping;
 	};
+
+
 
 	class SGXDATAMAPPING_API DataTransformMapping : public XMLPropertyTreeFile
     {
@@ -105,7 +107,6 @@ namespace SynGlyphX {
 		void UpdateGlyph(const boost::uuids::uuid& treeId, DataMappingGlyphGraph::GlyphIterator& vertex, const DataMappingGlyph& glyph);
 
 		void SetInputField(const boost::uuids::uuid& treeID, DataMappingGlyphGraph::ConstGlyphIterator node, DataMappingGlyph::MappableField field, const std::wstring& inputfield);
-		void SetInputField(const boost::uuids::uuid& treeID, DataMappingGlyphGraph::ConstGlyphIterator node, DataMappingGlyph::MappableField field, const InputField& inputfield);
 
 		void ClearInputBinding(const boost::uuids::uuid& treeID, DataMappingGlyphGraph::ConstGlyphIterator& node, DataMappingGlyph::MappableField field);
 		void ClearAllInputBindings(const boost::uuids::uuid& treeID, DataMappingGlyphGraph::ConstGlyphIterator& node);
