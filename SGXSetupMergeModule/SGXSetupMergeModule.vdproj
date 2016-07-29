@@ -81,6 +81,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_06CA5BBCAB584EA9A400BF146DB8F861"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_072D2600EBDE45999BB08BB7811FF0BD"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -454,6 +460,12 @@
         "Entry"
         {
         "MsmKey" = "8:_23133B154CFE40FF910CCEF9D5136B9F"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_2367FF97FF9045C5B123C1519D12296D"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -1000,6 +1012,12 @@
         "Entry"
         {
         "MsmKey" = "8:_60E24C17895046039D562F835028F188"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_61474D8E36084E04A73C6EE33C9D44D7"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -1839,6 +1857,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_B2BC23ADE99A4B7082B7F2BFF5F4E5A4"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_B31B451BEA8E43F1BCAFFEE9410FE17B"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -1852,12 +1876,6 @@
         "Entry"
         {
         "MsmKey" = "8:_B564E06378A64FD3B9331132399AA86C"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_B58CFE9751AE4CF0B171A22CC76B4F6B"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -2842,6 +2860,26 @@
             "TargetName" = "8:dcpr.dll"
             "Tag" = "8:"
             "Folder" = "8:_36F1FCC38D7848FBA6A0FE803EBD0AFB"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_06CA5BBCAB584EA9A400BF146DB8F861"
+            {
+            "SourcePath" = "8:..\\..\\Misc\\Help\\images\\elastic_filter.png"
+            "TargetName" = "8:elastic_filter.png"
+            "Tag" = "8:"
+            "Folder" = "8:_44B0D0803FFE4C72A3F75A1AD8DF9E7E"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -4102,6 +4140,26 @@
             "TargetName" = "8:index.htm"
             "Tag" = "8:"
             "Folder" = "8:_EB0F9953713648E6970E1A6DD4F7BD63"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_2367FF97FF9045C5B123C1519D12296D"
+            {
+            "SourcePath" = "8:..\\..\\Misc\\Help\\images\\keyword_filter.png"
+            "TargetName" = "8:keyword_filter.png"
+            "Tag" = "8:"
+            "Folder" = "8:_44B0D0803FFE4C72A3F75A1AD8DF9E7E"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -5882,6 +5940,26 @@
             "TargetName" = "8:fontconfig.bfc"
             "Tag" = "8:"
             "Folder" = "8:_DEF6FEA099BF435B9C8EC59DED77C589"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_61474D8E36084E04A73C6EE33C9D44D7"
+            {
+            "SourcePath" = "8:..\\..\\Misc\\Help\\images\\new_tp_img.png"
+            "TargetName" = "8:new_tp_img.png"
+            "Tag" = "8:"
+            "Folder" = "8:_44B0D0803FFE4C72A3F75A1AD8DF9E7E"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -8536,6 +8614,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_B2BC23ADE99A4B7082B7F2BFF5F4E5A4"
+            {
+            "SourcePath" = "8:..\\..\\Misc\\Help\\images\\range_filter.png"
+            "TargetName" = "8:range_filter.png"
+            "Tag" = "8:"
+            "Folder" = "8:_44B0D0803FFE4C72A3F75A1AD8DF9E7E"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_B31B451BEA8E43F1BCAFFEE9410FE17B"
             {
             "SourcePath" = "8:..\\..\\DataEngine\\jdk\\jre\\bin\\rmid.exe"
@@ -8582,26 +8680,6 @@
             "TargetName" = "8:qtwebengine_resources_200p.pak"
             "Tag" = "8:"
             "Folder" = "8:_0FD992B69CC74D489682A631FA99B364"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_B58CFE9751AE4CF0B171A22CC76B4F6B"
-            {
-            "SourcePath" = "8:..\\..\\Misc\\Help\\images\\image014.png"
-            "TargetName" = "8:image014.png"
-            "Tag" = "8:"
-            "Folder" = "8:_44B0D0803FFE4C72A3F75A1AD8DF9E7E"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -11675,7 +11753,7 @@
         "Module"
         {
         "ModuleSignature" = "8:MergeModule.E7BC5B0DA8E84115B456FD393FF63EDE"
-        "Version" = "8:0.7.54.0"
+        "Version" = "8:0.7.55.0"
         "Title" = "8:SGXSetupMergeModule"
         "Subject" = "8:"
         "Author" = "8:SynGlyphX"

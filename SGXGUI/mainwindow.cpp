@@ -12,6 +12,7 @@
 #include "helpdialog.h"
 #include <QtCore/QStandardPaths>
 #include <QtWidgets/QUndoStack>
+#include "singlewidgetdialog.h"
 
 namespace SynGlyphX {
 
@@ -174,7 +175,7 @@ namespace SynGlyphX {
 
         m_helpMenu = menuBar()->addMenu(tr("Help"));
 
-		m_fullHelpMenu = m_helpMenu->addAction("Guide");
+		m_fullHelpMenu = CreateMenuAction(m_helpMenu, tr("Guide"), QKeySequence::HelpContents);
 		QObject::connect(m_fullHelpMenu, &QAction::triggered, this, &MainWindow::ShowTutorial);
 
 		QAction* licensingAction = m_helpMenu->addAction(tr("Licensing"));
@@ -195,12 +196,9 @@ namespace SynGlyphX {
 
 	void MainWindow::ShowTutorial() {
 
-		QDialog* d = new QDialog(this);
-		d->setWindowTitle(tr("Help"));
-		QVBoxLayout* layout = new QVBoxLayout(d);
-		layout->addWidget(new SynGlyphX::HelpDialog(970, 920, d));
-		d->setLayout(layout);
-		d->exec();
+		SingleWidgetDialog* helpDialog = new SingleWidgetDialog(QDialogButtonBox::StandardButton::Close, new SynGlyphX::HelpDialog(970, 920, this), this);
+		helpDialog->setWindowTitle(tr("Help"));
+		helpDialog->show();
 	}
 
 
