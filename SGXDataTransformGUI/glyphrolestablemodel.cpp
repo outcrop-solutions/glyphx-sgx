@@ -275,8 +275,7 @@ QVariant GlyphRolesTableModel::GetEditDataForTextMappingProperty(const QVariant&
 	}
 	else if (index.column() == s_mappedFieldColumn) {
 
-		//return QVariant::fromValue(GetInputField(mappingProperty.GetBinding().GetInputFieldID()));
-		return QString::fromStdWString(mappingProperty.GetBinding().GetInputFieldID()); //TODO check this
+		return QString::fromStdWString(mappingProperty.GetBinding().GetInputFieldID()); 
 	}
 	else {
 
