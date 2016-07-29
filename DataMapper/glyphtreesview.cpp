@@ -16,7 +16,9 @@ using namespace SynGlyphX;
 class GlyphTreesViewMemento {
 public:
 	typedef  QPair<boost::uuids::uuid, unsigned long> TreeNode;
-	GlyphTreesViewMemento(const GlyphTreesView* tv) {
+	GlyphTreesViewMemento(const GlyphTreesView* tv) :
+		m_selection(nullptr)
+	{
 		auto trees = tv->m_sourceModel->GetDataMapping()->GetGlyphGraphs();
 		// create deep copy of glyphTrees
 		for (auto glyphTree : trees) {
@@ -26,7 +28,7 @@ public:
 		for (int row = 0; row < tv->m_sourceModel->rowCount(); ++row) {
 			SaveExpandedOnLevel(tv, tv->m_sourceModel->index(row, 0));
 		}
-		
+		m_selection = DMGlobal::Services()->CreateTreeSelection();
 	}
 	void SaveExpandedOnLevel(const GlyphTreesView* tv, const QModelIndex& index) {
 		//OutputDebugStringA(index.data(Qt::DisplayRole).toString().toStdString().c_str());
@@ -63,9 +65,11 @@ public:
 	}
 	~GlyphTreesViewMemento() {
 		//m_tree = nullptr;
+		if (!m_selection)
+			delete m_selection;
 	}
 	DataTransformMapping::DataMappingGlyphGraphMap m_glyphTrees;
-
+	TreeSelection* m_selection;
 	QList<TreeNode > m_list;
 
 };
@@ -128,7 +132,7 @@ void GlyphTreesView::ReinstateMemento(GlyphTreesViewMemento* m) {
 	for (int row = 0; row < m_sourceModel->rowCount(); ++row)
 		m->RestoreExpandedOnLevel(this, m_sourceModel->index(row, 0));
 	setUpdatesEnabled(true);
-	SelectLastGlyphTreeRoot();
+	DMGlobal::Services()->ApplyTreeSelection(*m->m_selection);
 }
 
 const SynGlyphX::SharedActionList& GlyphTreesView::GetGlyphActions() {

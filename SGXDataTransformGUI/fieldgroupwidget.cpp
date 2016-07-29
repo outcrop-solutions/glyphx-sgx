@@ -211,7 +211,6 @@ void FieldGroupWidget::OnCheckBoxHeaderViewClicked(SynGlyphX::AllSomeNone state)
 		for (const auto& table : m_dataTransformModel->GetNumericFieldsByTable()) {
 
 			for (const auto& field : table.second) {
-
 				fieldGroup.emplace(SynGlyphX::InputField(table.first.GetDatasourceID(), table.first.GetTable(), field, SynGlyphX::InputField::Type::Real));
 			}
 		}

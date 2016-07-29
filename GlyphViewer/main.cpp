@@ -4,7 +4,7 @@
 #include <QtCore/QTimer>
 #include <QtCore/QDir>
 #include "licensingdialog.h"
-
+#include <QtCore/QDir>
 #ifdef USE_BREAKPAD
 #include "exception_handler.h"
 #endif

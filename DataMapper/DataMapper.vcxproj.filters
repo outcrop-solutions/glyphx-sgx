@@ -208,6 +208,15 @@
     <ClCompile Include="Linkslistview.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="aliaseswidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_aliaseswidget.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_aliaseswidget.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
     <ClCompile Include="DMGlobal.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -278,6 +287,9 @@
     </CustomBuild>
     <CustomBuild Include="GeneratedFiles\Release\LinksDialog.moc">
       <Filter>Generated Files\Release</Filter>
+    </CustomBuild>
+    <CustomBuild Include="aliaseswidget.h">
+      <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
