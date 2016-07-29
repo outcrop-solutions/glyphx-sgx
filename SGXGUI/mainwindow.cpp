@@ -4,6 +4,7 @@
 #include <QtCore/QFileInfo>
 #include <QtWidgets/QMenu>
 #include <QtWidgets/QMenuBar>
+#include <QtWidgets/QVBoxLayout>
 #include "application.h"
 #include <QtWidgets/QMessageBox>
 #include <QtWidgets/QFileDialog>
@@ -193,8 +194,13 @@ namespace SynGlyphX {
 	}
 
 	void MainWindow::ShowTutorial() {
-		SynGlyphX::HelpDialog dialog(this);
-		dialog.exec();
+
+		QDialog* d = new QDialog(this);
+		d->setWindowTitle(tr("Help"));
+		QVBoxLayout* layout = new QVBoxLayout(d);
+		layout->addWidget(new SynGlyphX::HelpDialog(970, 920, d));
+		d->setLayout(layout);
+		d->exec();
 	}
 
 

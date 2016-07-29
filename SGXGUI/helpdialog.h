@@ -19,20 +19,20 @@
 #define SYNGLYPHX_HELPDIALOG_H
 
 #include "sgxgui_global.h"
-#include <QtWidgets/QDialog>
+#include <QtWebEngineWidgets/QWebEngineView>
 
 namespace SynGlyphX {
 
-	class SGXGUI_EXPORT HelpDialog : public QDialog
+	class SGXGUI_EXPORT HelpDialog : public QWebEngineView
 	{
 		Q_OBJECT
 
 	public:
-		HelpDialog(QWidget *parent);
+		HelpDialog(int width, int height, QWidget *parent);
 		~HelpDialog();
 
 	};
 
 } //namespace SynGlyphX
 
-#endif // LICENSINGDIALOG_H
+#endif // HELPDIALOG_H
