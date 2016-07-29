@@ -603,6 +603,22 @@ namespace SynGlyphX {
 		return glyphTree->GetSubgraph(vertex.deconstify(), includeChildren);
 	}
 
+	const InputTable& DataTransformMapping::GetInputTalbe(const boost::uuids::uuid& treeId) const {
+		static const InputTable empty;
+		DataMappingGlyphGraph::SharedPtr glyphTree = m_glyphTrees.at(treeId);
+		for (auto i = glyphTree->prefix_begin(); i != glyphTree->prefix_end(); i++){
+			auto glyph = i->second;
+			for (unsigned int field = 0; field < DataMappingGlyph::MappableField::MappableFieldSize; ++field) {
+
+				InputBinding& binding = const_cast<InputBinding&>(glyph.GetInputBinding(static_cast< DataMappingGlyph::MappableField>(field)));
+				if (binding.IsBoundToInputField())
+					return m_inputFieldManager.GetInputField(binding.GetInputFieldID());
+			}
+
+		}
+		return empty;
+	}
+
 	bool DataTransformMapping::IsTransformable() const {
 
 		return ((!m_datasources.empty()) && DoesAtLeastOneGlyphGraphHaveBindingsOnPosition());

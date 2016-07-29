@@ -113,6 +113,7 @@ namespace SynGlyphX {
 		void ClearInputFieldBindings(const boost::uuids::uuid& treeID, const std::wstring& inputfield);
 		void ClearInputFieldBindings(const std::wstring& inputfield);
 		
+		const InputTable& GetInputTalbe(const boost::uuids::uuid& treeId) const;
 		bool IsTransformable() const;
 		bool DoesAtLeastOneGlyphGraphHaveBindingsOnPosition() const;
 

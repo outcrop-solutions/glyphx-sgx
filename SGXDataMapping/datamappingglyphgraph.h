@@ -38,8 +38,8 @@ namespace SynGlyphX {
 	class SGXDATAMAPPING_API DataMappingGlyphGraph : public GlyphGraphTemplate<DataMappingGlyph> {
 
 	public:
-		typedef std::unordered_map<HashID, InputField> InputFieldMap;
-		typedef std::unordered_map<HashID, unsigned int> InputFieldCountMap;
+		//typedef std::unordered_map<HashID, InputField> InputFieldMap;
+		//typedef std::unordered_map<HashID, unsigned int> InputFieldCountMap;
 		typedef boost::property_tree::wptree PropertyTree;
 
 		typedef std::shared_ptr<DataMappingGlyphGraph> SharedPtr;
@@ -96,8 +96,8 @@ namespace SynGlyphX {
 		void ClearAllInputBindings(DataMappingGlyphGraph& graph, const GlyphIterator& vertex);
 		void ClearInputFieldBindings(DataMappingGlyphGraph& graph, const GlyphIterator& vertex, const std::wstring& inputfield);
 		void ClearFieldGroup(const std::wstring& fieldGroupName, const GlyphIterator& vertex);
-		void IncrementInputBindingCountsFromGlyph(const DataMappingGlyph& glyph);
-		void IncrementInputBindingCount(const InputBinding& binding);
+		//void IncrementInputBindingCountsFromGlyph(const DataMappingGlyph& glyph);
+		//void IncrementInputBindingCount(const InputBinding& binding);
 		void ExportChildrenToPropertyTree(const DataMappingGlyphGraph::ConstGlyphIterator& parent, boost::property_tree::wptree& propertyTreeParent) const;
 		void ProcessPropertyTreeChildren(const DataMappingGlyphGraph::GlyphIterator& parent, const boost::property_tree::wptree& propertyTree);
 		void AddGraphGlyphSubgraph(DataMappingGlyphGraph::GlyphIterator parent, GlyphGraph::ConstGlyphIterator glyphGraphParent, const GlyphGraph& graph);
@@ -105,8 +105,8 @@ namespace SynGlyphX {
 		void CreateMinOrMaxGlyphSubtree(const DataMappingGlyphGraph::ConstGlyphIterator parent, GlyphGraph::GlyphIterator newVertex, GlyphGraph::SharedPtr newGlyphGraph, bool isMax) const;
 		bool AreSubtreesEqual(const DataMappingGlyphGraph::ConstGlyphIterator& thisTreeNode, const DataMappingGlyphGraph::ConstGlyphIterator& otherTreeNode, const DataMappingGlyphGraph& otherTree) const;
 
-		InputFieldMap m_inputFields;
-		InputFieldCountMap m_inputFieldReferenceCounts;
+		//InputFieldMap m_inputFields;
+		//InputFieldCountMap m_inputFieldReferenceCounts;
 
 		bool m_mergeRoots;
 	};

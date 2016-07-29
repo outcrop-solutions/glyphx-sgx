@@ -39,7 +39,7 @@ namespace SynGlyphX {
 		//IncrementInputBindingCountsFromGlyph(operator[](m_rootVertex));
 		DataMappingGlyph rootGlyph(propertyTree);
 		SetRootGlyph(rootGlyph, propertyTree.get_optional<Label>(L"<xmlattr>.label").get_value_or(GetNextLabel()));
-		IncrementInputBindingCountsFromGlyph(GetRoot()->second);
+		//IncrementInputBindingCountsFromGlyph(GetRoot()->second);
 		ProcessPropertyTreeChildren(GetRoot(), propertyTree);
 
 		boost::optional<const PropertyTree&> linksPropertyTree = propertyTree.get_child_optional(L"Links");
@@ -59,25 +59,25 @@ namespace SynGlyphX {
 		m_mergeRoots = propertyTree.get_optional<bool>(L"<xmlattr>.merge").get_value_or(false);
 
 		//Since there was a previous bug where input fields would get written to the file that were not in use, clear them out
-		std::vector<SynGlyphX::HashID> fieldsToRemove;
-		for (auto inputField : m_inputFieldReferenceCounts) {
+		//std::vector<SynGlyphX::HashID> fieldsToRemove;
+		//for (auto inputField : m_inputFieldReferenceCounts) {
 
-			if (inputField.second == 0) {
+		//	if (inputField.second == 0) {
 
-				fieldsToRemove.push_back(inputField.first);
-			}
-		}
-		for (auto fieldToRemove : fieldsToRemove) {
+		//		fieldsToRemove.push_back(inputField.first);
+		//	}
+		//}
+		//for (auto fieldToRemove : fieldsToRemove) {
 
-			m_inputFields.erase(fieldToRemove);
-			m_inputFieldReferenceCounts.erase(fieldToRemove);
-		}
+		//	m_inputFields.erase(fieldToRemove);
+		//	m_inputFieldReferenceCounts.erase(fieldToRemove);
+		//}
 	}
 
 	DataMappingGlyphGraph::DataMappingGlyphGraph(const DataMappingGlyphGraph& graph) :
 		GlyphGraphTemplate<DataMappingGlyph>(graph),
-		m_inputFields(graph.m_inputFields),
-		m_inputFieldReferenceCounts(graph.m_inputFieldReferenceCounts),
+		//m_inputFields(graph.m_inputFields),
+		//m_inputFieldReferenceCounts(graph.m_inputFieldReferenceCounts),
 		m_mergeRoots(graph.m_mergeRoots) {
 
 
@@ -122,10 +122,10 @@ namespace SynGlyphX {
 			return false;
 		}
 
-		if (m_inputFields != graph.m_inputFields) {
+		//if (m_inputFields != graph.m_inputFields) {
 
-			return false;
-		}
+		//	return false;
+		//}
 
 		if (empty() != graph.empty()) {
 
@@ -192,15 +192,15 @@ namespace SynGlyphX {
 			}
 		}
 
-		if (!m_inputFields.empty()) {
+		//if (!m_inputFields.empty()) {
 
-			boost::property_tree::wptree& inputFieldsPropertyTree = rootPropertyTree.add(L"InputFields", L"");
+		//	boost::property_tree::wptree& inputFieldsPropertyTree = rootPropertyTree.add(L"InputFields", L"");
 
-			for (auto inputfield : m_inputFields) {
+		//	for (auto inputfield : m_inputFields) {
 
-				inputfield.second.ExportToPropertyTree(inputFieldsPropertyTree);
-			}
-		}
+		//		inputfield.second.ExportToPropertyTree(inputFieldsPropertyTree);
+		//	}
+		//}
 
 		rootPropertyTree.put<bool>(L"<xmlattr>.merge", m_mergeRoots);
 
@@ -334,7 +334,7 @@ namespace SynGlyphX {
 					//ProcessPropertyTreeChildren(child, glyphTree.second);
 
 					DataMappingGlyph glyph(glyphTree.second);
-					IncrementInputBindingCountsFromGlyph(glyph);
+					//IncrementInputBindingCountsFromGlyph(glyph);
 					boost::optional<Label> label = glyphTree.second.get_optional<Label>(L"<xmlattr>.label");
 					GlyphIterator newChild;
 					if (label.is_initialized()) {
@@ -550,24 +550,24 @@ namespace SynGlyphX {
 		return newGraph;
 	}
 
-	void DataMappingGlyphGraph::IncrementInputBindingCountsFromGlyph(const DataMappingGlyph& glyph) {
+	//void DataMappingGlyphGraph::IncrementInputBindingCountsFromGlyph(const DataMappingGlyph& glyph) {
 
-		if (!m_inputFields.empty()) {
+	//	if (!m_inputFields.empty()) {
 
-			for (unsigned int field = 0; field < DataMappingGlyph::MappableField::MappableFieldSize; ++field) {
+	//		for (unsigned int field = 0; field < DataMappingGlyph::MappableField::MappableFieldSize; ++field) {
 
-				IncrementInputBindingCount(glyph.GetInputBinding(static_cast<DataMappingGlyph::MappableField>(field)));
-			}
-		}
-	}
+	//			IncrementInputBindingCount(glyph.GetInputBinding(static_cast<DataMappingGlyph::MappableField>(field)));
+	//		}
+	//	}
+	//}
 
-	void DataMappingGlyphGraph::IncrementInputBindingCount(const InputBinding& binding) {
+	//void DataMappingGlyphGraph::IncrementInputBindingCount(const InputBinding& binding) {
 
-		//if (binding.IsBoundToInputField()) {
+	//	//if (binding.IsBoundToInputField()) {
 
-		//	++m_inputFieldReferenceCounts[binding.GetInputFieldID()];
-		//}
-	}
+	//	//	++m_inputFieldReferenceCounts[binding.GetInputFieldID()];
+	//	//}
+	//}
 
 	void DataMappingGlyphGraph::ResetRootMinMaxPositionXY() {
 
@@ -576,37 +576,37 @@ namespace SynGlyphX {
 	}
 
 	DataMappingGlyphGraph::GlyphIterator DataMappingGlyphGraph::AddChildGlyphGraph(const GlyphIterator& vertex, const DataMappingGlyphGraph& graph) {
+		// TODO check bindings sources
+		//if (!m_inputFields.empty() && !graph.m_inputFields.empty()) {
+		//	if ((graph.m_inputFields.begin()->second.GetDatasourceID() != m_inputFields.begin()->second.GetDatasourceID()) ||
+		//		(graph.m_inputFields.begin()->second.GetTable() != m_inputFields.begin()->second.GetTable())) {
 
-		if (!m_inputFields.empty() && !graph.m_inputFields.empty()) {
-			if ((graph.m_inputFields.begin()->second.GetDatasourceID() != m_inputFields.begin()->second.GetDatasourceID()) ||
-				(graph.m_inputFields.begin()->second.GetTable() != m_inputFields.begin()->second.GetTable())) {
+		//		DataMappingGlyphGraph graphWithoutInputBindings = graph;
+		//		graphWithoutInputBindings.ClearAllInputBindings();
+		//		return GlyphGraphTemplate<DataMappingGlyph>::AddChildGlyphGraph(vertex, graphWithoutInputBindings);
+		//	}
+		//}
 
-				DataMappingGlyphGraph graphWithoutInputBindings = graph;
-				graphWithoutInputBindings.ClearAllInputBindings();
-				return GlyphGraphTemplate<DataMappingGlyph>::AddChildGlyphGraph(vertex, graphWithoutInputBindings);
-			}
-		}
+		//for (auto inputField : graph.m_inputFields) {
 
-		for (auto inputField : graph.m_inputFields) {
+		//	if (m_inputFields.count(inputField.first) == 0) {
 
-			if (m_inputFields.count(inputField.first) == 0) {
+		//		m_inputFields[inputField.first] = inputField.second;
+		//	}
+		//}
 
-				m_inputFields[inputField.first] = inputField.second;
-			}
-		}
+		//for (auto inputFieldCount : graph.m_inputFieldReferenceCounts) {
 
-		for (auto inputFieldCount : graph.m_inputFieldReferenceCounts) {
+		//	if (m_inputFieldReferenceCounts.count(inputFieldCount.first) == 0) {
 
-			if (m_inputFieldReferenceCounts.count(inputFieldCount.first) == 0) {
+		//		m_inputFieldReferenceCounts[inputFieldCount.first] = 1;
+		//	}
+		//	else {
 
-				m_inputFieldReferenceCounts[inputFieldCount.first] = 1;
-			}
-			else {
+		//		m_inputFieldReferenceCounts[inputFieldCount.first] += inputFieldCount.second;
+		//	}
 
-				m_inputFieldReferenceCounts[inputFieldCount.first] += inputFieldCount.second;
-			}
-
-		}
+		//}
 
 		return GlyphGraphTemplate<DataMappingGlyph>::AddChildGlyphGraph(vertex, graph);
 	}
@@ -632,7 +632,7 @@ namespace SynGlyphX {
 
 	bool DataMappingGlyphGraph::IsTransformable() const {
 
-		return ((GetRoot()->second.IsAnInputFieldBoundToAPosition()) && (!m_inputFields.empty()));
+		return ((GetRoot()->second.IsAnInputFieldBoundToAPosition()) /*&& (!m_inputFields.empty())*/);
 	}
 
 	void DataMappingGlyphGraph::SetMergeRoots(bool mergeRoots) {
