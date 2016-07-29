@@ -27,8 +27,7 @@ void SelectedSourceDataWidget::OnNewVisualization() {
 		for (const auto& glyphGraph : m_dataTransformMapping->GetGlyphGraphs()) {
 
 			if (glyphGraph.second->IsTransformable()) {
-				//TODO : Fix this
-				QString tableName = "Test"; /*SourceDataCache::CreateTablename(glyphGraph.second->GetInputFields().begin()->second);*/
+				QString tableName = SourceDataCache::CreateTablename(m_dataTransformMapping->GetInputTalbe(glyphGraph.first));
 				if (countsForEachTable.count(tableName) == 0) {
 
 					countsForEachTable[tableName] = m_sourceDataCache->GetNumberOfRowsInTable(tableName);
@@ -40,8 +39,8 @@ void SelectedSourceDataWidget::OnNewVisualization() {
 		for (const auto& glyphGraph : m_dataTransformMapping->GetGlyphGraphs()) {
 
 			if (glyphGraph.second->IsTransformable()) {
-				//TODO : Fix this
-				QString tableName = "Test";/* SourceDataCache::CreateTablename(glyphGraph.second->GetInputFields().begin()->second);*/
+
+				QString tableName = SourceDataCache::CreateTablename(m_dataTransformMapping->GetInputTalbe(glyphGraph.first));
 				SynGlyphX::DegenerateInterval range(startingIndex, startingIndex + countsForEachTable[tableName] - 1);
 				startingIndex += countsForEachTable[tableName];
 

@@ -719,7 +719,7 @@ void GlyphViewerWindow::LoadFilesIntoModel(const SynGlyphXANTz::ANTzCSVWriter::F
 	m_glyphForestModel->LoadANTzVisualization(filesToLoad, baseImageFilenames);
 
 	SynGlyphX::DataMappingGlyphGraph::ConstSharedPtr rootGlyph = m_mappingModel->GetDataMapping()->GetGlyphGraphs().begin()->second;
-	//TODO: fix this!
+
 	std::array<QString, 3> rootPositionFields;
 	auto ifm = const_cast<SynGlyphX::DataTransformMapping*>(m_mappingModel->GetDataMapping().get())->GetInputFieldManager();
 	for (unsigned int i = 0; i < 3; ++i) {

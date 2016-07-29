@@ -33,7 +33,7 @@ RemapDialog::RemapDialog(SynGlyphX::DataTransformMapping::ConstSharedPtr dataTra
 
 	SynGlyphX::VerticalTabOrderTableView* tableView = CreateTableView();
 	mainLayout->addWidget(tableView);
-	//TODO: check this!
+
 	SynGlyphX::InputTable tableInDataStats =
 		const_cast<SynGlyphX::DataTransformMapping*>(dataTransformMapping.get())->GetInputFieldManager()->GetFieldMap().begin()->second;
 		
