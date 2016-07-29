@@ -1,40 +1,18 @@
 #include "helpdialog.h"
-#include <QtWidgets/QVBoxLayout>
-#include <QtWidgets/QHBoxLayout>
-#include <QtWidgets/QDialogButtonBox>
 #include "application.h"
-#include <string>
-#include <QtWidgets/QMessageBox>
-#include "groupboxsinglewidget.h"
 #include <QtWidgets/QFileDialog>
-#include <QtCore/QSettings>
 #include <QtCore/QStandardPaths>
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QTextEdit>
-#include <QtGui/QTextDocument>
-#include <QtCore/QTextStream>
-#include "filesystem.h"
-#include <QtWidgets/QLabel>
 #include <QtWebEngineWidgets/QWebEngineView>
 
 namespace SynGlyphX {
 
-	HelpDialog::HelpDialog(QWidget *parent)
-		: QDialog(parent)
+	HelpDialog::HelpDialog(int width, int height, QWidget *parent)
+		: QWebEngineView(parent)
 	{
-		setWindowTitle(tr("Help"));
-
-		QVBoxLayout* layout = new QVBoxLayout(this);
-
-		QWebEngineView *view = new QWebEngineView(this);
-		view->setMinimumSize(970,920);
+		setMinimumSize(width, height);
 		QString path = SynGlyphX::Application::GetCommonDataLocation() + QDir::separator() + "Help" + QDir::separator();
 		path.replace("\\", "/");
-		view->load(QUrl((path + "index.htm")));
-
-		layout->addWidget(view);
-
-		setLayout(layout);
+		load(QUrl((path + "index.htm")));
 	}
 
 	HelpDialog::~HelpDialog()
