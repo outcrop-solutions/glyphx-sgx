@@ -196,7 +196,28 @@ void HomePageWidget::CreateMyViewsWidget() {
 
 void HomePageWidget::CreateHelpWidget() {
 
-	QWidget* widget = new QWidget(this);
+	QFrame* widget = new QFrame(this);
+	widget->setFrameStyle(QFrame::Panel | QFrame::Sunken);
+	widget->setLineWidth(2);
+	widget->setMidLineWidth(2);
+	widget->setStyleSheet("background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #cdcfd4, stop: 1 #e7e9ea)");
+
+	QGridLayout* mainLayout = new QGridLayout(widget);
+	mainLayout->setContentsMargins(200, 0, 200, 0);
+
+	QFrame* helpWidget = new QFrame(this);
+	helpWidget->setFrameStyle(QFrame::Panel | QFrame::Raised);
+	helpWidget->setLineWidth(2);
+	helpWidget->setMidLineWidth(3);
+	helpWidget->setStyleSheet("background-color: white;");
+
+	QVBoxLayout* helpLayout = new QVBoxLayout(this);
+	helpLayout->setContentsMargins(0, 0, 0, 0);
+	helpLayout->addWidget(new SynGlyphX::HelpDialog(970, 850, helpWidget));
+	helpWidget->setLayout(helpLayout);
+
+	mainLayout->addWidget(helpWidget, 0, 0, 0, 0);
+	widget->setLayout(mainLayout);
 	m_homePageWidgetsLayout->addWidget(widget);
 }
 
@@ -571,10 +592,6 @@ void HomePageWidget::OnNewOptionSelected(int index) {
 
 	m_homePageWidgetsLayout->setCurrentIndex(index);
 	m_loadVisualizationButton->setVisible((index == 1) || (index == 2));
-	if (index == 3){
-		SynGlyphX::HelpDialog dialog(this);
-		dialog.exec();
-	}
 }
 
 void HomePageWidget::OnRecentViewClicked(QListWidgetItem *item) {
