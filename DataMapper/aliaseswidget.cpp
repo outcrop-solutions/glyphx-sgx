@@ -42,17 +42,6 @@ private:
 };
 
 
-//class RemoveAliasCommand : public QUndoCommand
-//{
-//public:
-//	RemoveAliasCommand(AliasTableWidget* tw, int row)
-//
-//int m_row
-//	
-//}
-
-
-
 class AliasLineEdit : public QLineEdit
 {
 public:
@@ -78,9 +67,11 @@ public:
 		m_oldInputField(dynamic_cast<AliasLineEdit*>(tw->cellWidget(row, 1))->m_inputField),
 		m_newInputField(inputField)
 	{
+		DMGlobal::Services()->SetModified();
 	}
 	void undo() override
 	{
+		DMGlobal::Services()->SetModified();
 		auto ale = dynamic_cast<AliasLineEdit*>(m_tw->cellWidget(m_row, 1));
 		if (ale) 
 		{
@@ -90,6 +81,7 @@ public:
 	}
 	void redo() override
 	{
+		DMGlobal::Services()->SetModified();
 		auto ale = dynamic_cast<AliasLineEdit*>(m_tw->cellWidget(m_row, 1));
 		if (ale) 
 		{
@@ -174,11 +166,13 @@ public:
 
 	void undo() override
 	{
+		DMGlobal::Services()->SetModified();
 		m_aliasesTableWidget->removeRow(m_row);
 	}
 
 	void redo() override
 	{
+		DMGlobal::Services()->SetModified();
 		QTableWidgetItem* nameItem = new QTableWidgetItem(m_name);
 		nameItem->setFlags(nameItem->flags() & ~Qt::ItemIsDragEnabled);
 		auto ale = new AliasLineEdit(nameItem, m_row, m_aliasesTableWidget);
@@ -192,6 +186,48 @@ public:
 	QString m_name;
 	int m_row;
 };
+
+class RemoveAliasCommand : public QUndoCommand
+{
+public:
+	RemoveAliasCommand(AliasTableWidget* tw, int row) :
+		m_firstCall(true),
+		m_aliasesTableWidget(tw),
+		m_row(row)
+	{
+		setText(QObject::tr("Remove Alias"));
+		auto ale = dynamic_cast<AliasLineEdit*>(tw->cellWidget(row, 1));
+		m_inputField = ale->m_inputField;
+		m_name = ale->m_nameItem->text();
+	}
+
+	void undo() override
+	{
+		DMGlobal::Services()->SetModified();
+		QTableWidgetItem* nameItem = new QTableWidgetItem(m_name);
+		nameItem->setFlags(nameItem->flags() & ~Qt::ItemIsDragEnabled);
+		auto ale = new AliasLineEdit(nameItem, m_row, m_aliasesTableWidget);
+		ale->SetInputField(m_inputField);
+		ale->setContentsMargins(0, 0, 0, 0);
+		m_aliasesTableWidget->insertRow(m_row);
+		m_aliasesTableWidget->setItem(m_row, 0, ale->m_nameItem);
+		m_aliasesTableWidget->setCellWidget(m_row, 1, ale);
+
+	}
+
+	void redo() override
+	{
+		DMGlobal::Services()->SetModified();
+		m_aliasesTableWidget->removeRow(m_row);
+	}
+
+	bool m_firstCall;
+	AliasTableWidget* m_aliasesTableWidget;
+	int m_row;
+	SynGlyphX::InputField m_inputField;
+	QString m_name;
+};
+
 
 class AliasItemDelegate : public QStyledItemDelegate
 {
@@ -293,13 +329,15 @@ void AliasesWidget::removeAlias() {
 
 		if (dialog.exec() == QDialog::Accepted) {
 			QString name = selection.at(0)->text();
+			auto undoStack = DMGlobal::Services()->GetUndoStack();
+			undoStack->beginMacro(tr("Remove Alias"));
 			DMGlobal::Services()->BeginTransaction("Remove Alias Bindigns", SynGlyphX::TransactionType::ChangeTree);
-			DMGlobal::Services()->GetDataTransformModel()->GetInputFieldManager()->ClearInputFieldBindings(name.toStdWString());
+			DMGlobal::Services()->GetDataTransformModel()->GetInputFieldManager()->RemoveInputFieldAndBindings(name.toStdWString());
 			DMGlobal::Services()->EndTransaction();
 			DMGlobal::Services()->GetGlyphRolesTableModel()->Refresh();
-			m_aliasesTableWidget->removeRow(selection.at(0)->row());
-
-			//Remove associated bindings
+			auto command = new RemoveAliasCommand(m_aliasesTableWidget, selection.at(0)->row());
+			undoStack->push(command);
+			undoStack->endMacro();
 		}
 	}
 }
