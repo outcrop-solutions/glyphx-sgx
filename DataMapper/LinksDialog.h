@@ -29,6 +29,7 @@ class QSpinBox;
 class QCheckBox;
 class GlyphTreesView;
 class LinkLineEdit;
+class DataMapping3DWidget;
 
 namespace SynGlyphX {
 	class DataTransformModel;
@@ -69,6 +70,9 @@ private:
 
 	GlyphTreesView* m_fromGlyphTree;
 	GlyphTreesView* m_toGlyphTree;
+
+	DataMapping3DWidget* m_fromGlyph3DView;
+	DataMapping3DWidget* m_toGlyph3DView;
 
 	SynGlyphX::ColorButton* m_colorButton;
 	QCheckBox*	m_inheritColorCheckBox;

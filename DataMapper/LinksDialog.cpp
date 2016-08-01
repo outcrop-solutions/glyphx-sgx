@@ -21,6 +21,7 @@
 #include "datatransformmodel.h"
 #include "DMGlobal.h"
 #include "glyphrolestablemodel.h"
+#include "datamapping3dwidget.h"
 
 static void print_tree(boost::property_tree::wptree const& pt)
 {
@@ -349,21 +350,33 @@ LinksDialog::LinksDialog(SynGlyphX::DataTransformModel* dataTransformModel, QWid
 	glyphLayout->addWidget(new QLabel(tr("From:"),this), 0, 0);
 	glyphLayout->addWidget(new QLabel(tr("To:"), this), 0, 1);
 
-	
-
 	m_fromGlyphTree = new GlyphTreesView(m_dataTransformModel, glyphGroupBox);
 	m_toGlyphTree = new GlyphTreesView(m_dataTransformModel, glyphGroupBox);
 
 	glyphLayout->addWidget(m_fromGlyphTree, 1, 0);
 	glyphLayout->addWidget(m_toGlyphTree, 1, 1);
 
-	glyphLayout->addWidget(new QLabel(tr("Input:"), this), 2, 0);
-	glyphLayout->addWidget(new QLabel(tr("Input:"), this), 2, 1);
+	m_fromGlyph3DView = new DataMapping3DWidget(m_dataTransformModel, this);
+	m_fromGlyph3DView->SetModel(dynamic_cast<SynGlyphX::RoleDataFilterProxyModel*>(m_fromGlyphTree->model()), m_fromGlyphTree->selectionModel());
+	m_fromGlyph3DView->SetAllowMultiselect(true);
+	m_fromGlyph3DView->EnableAnimation(false);
+	m_fromGlyph3DView->setMinimumSize(300, 300);
+	m_toGlyph3DView = new DataMapping3DWidget(m_dataTransformModel, this);
+	m_toGlyph3DView->SetModel(dynamic_cast<SynGlyphX::RoleDataFilterProxyModel*>(m_toGlyphTree->model()), m_toGlyphTree->selectionModel());
+	m_toGlyph3DView->SetAllowMultiselect(true);
+	m_toGlyph3DView->EnableAnimation(false);
+	m_toGlyph3DView->setMinimumSize(300, 300);
+
+	glyphLayout->addWidget(m_fromGlyph3DView, 2, 0);
+	glyphLayout->addWidget(m_toGlyph3DView, 2, 1);
+
+	glyphLayout->addWidget(new QLabel(tr("Input:"), this), 3, 0);
+	glyphLayout->addWidget(new QLabel(tr("Input:"), this), 3, 1);
 	m_fromLineEdit = new LinkLineEdit(m_dataTransformModel, this);
-	glyphLayout->addWidget(m_fromLineEdit, 3, 0);
+	glyphLayout->addWidget(m_fromLineEdit, 4, 0);
 
 	m_toLineEdit = new LinkLineEdit(m_dataTransformModel, this);
-	glyphLayout->addWidget(m_toLineEdit, 3, 1);
+	glyphLayout->addWidget(m_toLineEdit, 4, 1);
 
 	mainLayout->addWidget(glyphGroupBox);
 
@@ -573,6 +586,10 @@ void LinksDialog::OnFunctionProperties() {
 }
 
 LinksDialog::~LinksDialog() {
+
+	delete m_fromGlyph3DView;
+	delete m_toGlyph3DView;
+
 	delete m_fromGlyphTree;
 	delete m_toGlyphTree;
 	delete m_link;
