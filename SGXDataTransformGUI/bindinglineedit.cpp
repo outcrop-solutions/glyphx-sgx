@@ -28,7 +28,7 @@ public:
 		SynGlyphX::AppGlobal::Services()->ApplyTreeSelection(*m_selection);
 		if (m_ble) {
 			m_ble->m_inputFieldId = m_oldInputField;
-			m_ble->SetInputField(m_ble->m_inputFieldId); //for now call explicitely, used to work without it TODO: investigate
+			m_ble->SetInputField(m_ble->m_inputFieldId); //call explicitely for consistency
 			m_ble->ValueChangedByUser(m_ble->m_inputFieldId);
 		}
 	}
@@ -40,7 +40,7 @@ public:
 
 		if (m_ble) {
 			m_ble->m_inputFieldId = m_newInputField;
-			m_ble->SetInputField(m_ble->m_inputFieldId); //for now call explicitely, used to work without it TODO: investigate
+			m_ble->SetInputField(m_ble->m_inputFieldId); //call explicitely for consistency
 			m_ble->ValueChangedByUser(m_ble->m_inputFieldId);
 		}
 	}

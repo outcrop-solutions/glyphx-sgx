@@ -140,7 +140,7 @@ namespace SynGlyphX {
 		void ClearAllInputBindings(const QModelIndex& index);
 
 		void ClearAbsentBindings();
-		//const DataMappingGlyphGraph::InputFieldMap& GetInputFieldsForTree(const QModelIndex& index) const;
+		const SynGlyphX::InputTable& GetInputTableForTree(const QModelIndex& index) const;
 
 		//void EnableTables(const boost::uuids::uuid& id, const Datasource::TableNames& tables, bool enable = true);
 
