@@ -655,15 +655,15 @@ namespace SynGlyphX {
 		//emit dataChanged(index, index);
 	}
 
-	//const DataMappingGlyphGraph::InputFieldMap& DataTransformModel::GetInputFieldsForTree(const QModelIndex& index) const {
+	const SynGlyphX::InputTable& DataTransformModel::GetInputTableForTree(const QModelIndex& index) const {
 
-	//	if (!index.isValid()) {
+		if (!index.isValid()) {
 
-	//		throw std::invalid_argument("Can't get input field map from invalid index");
-	//	}
+			throw std::invalid_argument("Can't get input field map from invalid index");
+		}
 
-	//	return m_dataMapping->GetGlyphGraphs().at(GetTreeId(index))->GetInputFields();
-	//}
+		return m_dataMapping->GetInputTalbe(GetTreeId(index));
+	}
 	/*
 	void DataTransformModel::EnableTables(const boost::uuids::uuid& id, const Datasource::TableNames& tables, bool enable) {
 

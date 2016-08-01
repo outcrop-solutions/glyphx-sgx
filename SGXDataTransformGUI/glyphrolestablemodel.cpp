@@ -340,28 +340,22 @@ void GlyphRolesTableModel::SetSelectedGlyphTreeIndexes(const QModelIndexList& in
 }
 
 void GlyphRolesTableModel::DetermineAssociatedInputTable() {
-	//TODO handle after refactoring
-	//_ASSERT(0);
 	m_associatedInputTable.reset();
 	SynGlyphX::InputTable inputTable;
-	//for (const QPersistentModelIndex& index : m_selectedDataTransformModelIndexes) {
+	for (const QPersistentModelIndex& index : m_selectedDataTransformModelIndexes) {
+		const SynGlyphX::InputTable& it = m_dataTransformModel->GetInputTableForTree(index);
+		if (inputTable.IsValid()) {
 
-	//	const SynGlyphX::DataMappingGlyphGraph::InputFieldMap& inputFields = m_dataTransformModel->GetInputFieldsForTree(index);
-	//	if (!inputFields.empty()) {
+			if (inputTable != it) {
 
-	//		if (inputTable.IsValid()) {
+				return;
+			}
+		}
+		else {
 
-	//			if (inputTable != inputFields.begin()->second) {
-
-	//				return;
-	//			}
-	//		}
-	//		else {
-
-	//			inputTable = inputFields.begin()->second;
-	//		}
-	//	}
-	//}
+			inputTable = it;
+		}
+	}
 	m_associatedInputTable.reset(inputTable);
 }
 
