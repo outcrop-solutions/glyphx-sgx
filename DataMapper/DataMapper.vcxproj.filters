@@ -223,6 +223,15 @@
     <ClCompile Include="DMServices.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="DataMappingListView.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_DataMappingListView.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_DataMappingListView.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="datamapperwindow.h">
@@ -289,6 +298,9 @@
       <Filter>Generated Files\Release</Filter>
     </CustomBuild>
     <CustomBuild Include="aliaseswidget.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="DataMappingListView.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>

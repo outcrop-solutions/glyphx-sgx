@@ -18,14 +18,14 @@
 #ifndef DATASOURCESVIEW_H
 #define DATASOURCESVIEW_H
 
-#include <QtWidgets/QListView>
+#include "DataMappingListView.h"
 #include "sharedactionlist.h"
 
 namespace SynGlyphX {
 	class DataTransformModel;
 }
 
-class DataSourcesView : public QListView
+class DataSourcesView : public DataMappingListView
 {
 	Q_OBJECT
 
@@ -38,7 +38,8 @@ public:
 	QSize sizeHint() const override;
 
 protected:
-	virtual void selectionChanged(const QItemSelection& selected, const QItemSelection& deselected);
+	void selectionChanged(const QItemSelection& selected, const QItemSelection& deselected) override;
+	void ShowEditDialog(const QModelIndex &index) override;
 
 private slots:
 	void OnShowProperties();

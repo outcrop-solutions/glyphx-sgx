@@ -25,7 +25,7 @@ public:
 };
 
 LinksListView::LinksListView(SynGlyphX::DataTransformModel* dataTransformModel, QWidget *parent)
-	: QListView(parent),
+	: DataMappingListView(parent),
 	m_dataTransformModel(dataTransformModel)
 {
 	setSelectionMode(QAbstractItemView::SingleSelection);
@@ -89,8 +89,12 @@ void LinksListView::EditLink() {
 	const QModelIndexList& selected = selectionModel()->selectedIndexes();
 	if (!selected.isEmpty()) {
 
-		unsigned int row = selected.front().row();
-		emit editLink(row);
-
+		ShowEditDialog(selected.front());
 	}
+}
+
+void LinksListView::ShowEditDialog(const QModelIndex &index) {
+
+	unsigned int row = index.row();
+	emit editLink(row);
 }

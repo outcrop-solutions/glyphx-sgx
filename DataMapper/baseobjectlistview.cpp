@@ -3,7 +3,7 @@
 #include "datatransformmodel.h"
 
 BaseObjectListView::BaseObjectListView(SynGlyphX::DataTransformModel* dataTransformModel, QWidget *parent)
-	: QListView(parent),
+	: DataMappingListView(parent),
 	m_dataTransformModel(dataTransformModel)
 {
 	setSelectionMode(QAbstractItemView::SingleSelection);
@@ -14,7 +14,7 @@ BaseObjectListView::BaseObjectListView(SynGlyphX::DataTransformModel* dataTransf
 
 	m_sharedActions.AddSeparator();
 
-	m_propertiesAction = m_sharedActions.AddAction(tr("Properties"));
+	m_propertiesAction = m_sharedActions.AddAction(tr("Edit"));
 	QObject::connect(m_propertiesAction, &QAction::triggered, this, &BaseObjectListView::ShowBaseObjectProperties);
 
 	m_sharedActions.EnableActions(false);
@@ -65,15 +65,20 @@ void BaseObjectListView::ShowBaseObjectProperties() {
 	const QModelIndexList& selected = selectionModel()->selectedIndexes();
 	if (!selected.isEmpty()) {
 
-		unsigned int row = selected.front().row();
-		bool isFirstBaseObject = (row == 0);
-		BaseImageDialog dialog(!isFirstBaseObject, isFirstBaseObject, this);
-		dialog.setWindowTitle(tr("Base Object Properties"));
-		dialog.SetBaseImage(m_dataTransformModel->GetDataMapping()->GetBaseObjects()[row]);
-		if (dialog.exec() == QDialog::Accepted) {
+		ShowEditDialog(selected.front());
+	}
+}
 
-			const SynGlyphX::BaseImage& baseImage = dialog.GetBaseImage();
-			m_dataTransformModel->SetBaseObject(row, baseImage);
-		}
+void BaseObjectListView::ShowEditDialog(const QModelIndex &index) {
+
+	unsigned int row = index.row();
+	bool isFirstBaseObject = (row == 0);
+	BaseImageDialog dialog(!isFirstBaseObject, isFirstBaseObject, this);
+	dialog.setWindowTitle(tr("Base Object Properties"));
+	dialog.SetBaseImage(m_dataTransformModel->GetDataMapping()->GetBaseObjects()[row]);
+	if (dialog.exec() == QDialog::Accepted) {
+
+		const SynGlyphX::BaseImage& baseImage = dialog.GetBaseImage();
+		m_dataTransformModel->SetBaseObject(row, baseImage);
 	}
 }

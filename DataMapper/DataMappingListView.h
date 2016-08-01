@@ -14,43 +14,25 @@
 /// LAWS AND INTERNATIONAL TREATIES.  THE RECEIPT OR POSSESSION OF  THIS SOURCE CODE AND/OR RELATED INFORMATION DOES NOT CONVEY OR IMPLY ANY RIGHTS  
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
+
 #pragma once
-#ifndef LEGENDLISTVIEW_H
-#define LEGENDLISTVIEW_H
 
-#include "DataMappingListView.h"
-#include "sharedactionlist.h"
+#include <QtWidgets/QListView>
 
-namespace SynGlyphX {
-	class DataTransformModel;
-}
-
-class LegendListView : public DataMappingListView
+class DataMappingListView : public QListView
 {
 	Q_OBJECT
 
 public:
-	LegendListView(SynGlyphX::DataTransformModel* dataTransformModel, QWidget *parent);
-	~LegendListView();
-
-	const SynGlyphX::SharedActionList& GetSharedActions();
+	DataMappingListView(QWidget *parent);
+	~DataMappingListView();
 
 protected:
-	void selectionChanged(const QItemSelection& selected, const QItemSelection& deselected) override;
-	void ShowEditDialog(const QModelIndex &index) override;
-
-private slots:
-	void RemoveLegend();
-	void ShowLegendProperties();
+	bool edit(const QModelIndex &index, EditTrigger trigger, QEvent *event) override;
+	virtual void ShowEditDialog(const QModelIndex &index) = 0;
 
 private:
-	void EnableActions();
-
-	SynGlyphX::DataTransformModel* m_dataTransformModel;
-
-	SynGlyphX::SharedActionList m_sharedActions;
-	QAction* m_removeLegendAction;
-	QAction* m_propertiesAction;
+	
 };
 
-#endif // LEGENDLISTVIEW_H
+//#pragma once

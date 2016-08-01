@@ -6,7 +6,7 @@
 #include "datatransformmodel.h"
 
 DataSourcesView::DataSourcesView(SynGlyphX::DataTransformModel* sourceModel, QWidget *parent)
-	: QListView(parent),
+	: DataMappingListView(parent),
 	m_sourceModel(sourceModel)
 {
 	setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Preferred);
@@ -57,13 +57,7 @@ void DataSourcesView::OnShowProperties() {
 	const QModelIndexList& selection = selectionModel()->selectedIndexes();
 	if (!selection.isEmpty()) {
 
-		SynGlyphX::DataTransformMapping::DatasourceMap::const_iterator datasource = m_sourceModel->GetDataMapping()->GetDatasources().begin();
-		std::advance(datasource, selection.front().row());
-
-		SynGlyphX::DatasourceInfoWidget* datasourceInfoWidget = new SynGlyphX::DatasourceInfoWidget(*datasource->second, this);
-		SynGlyphX::SingleWidgetDialog dialog(QDialogButtonBox::StandardButton::Ok, datasourceInfoWidget, this);
-		dialog.setWindowTitle(tr("Datasource Info"));
-		dialog.exec();
+		ShowEditDialog(selection.front());
 	}
 }
 
@@ -82,4 +76,15 @@ void DataSourcesView::OnRemoveDatasource() {
 QSize DataSourcesView::sizeHint() const {
 
 	return QSize(250, 100);
+}
+
+void DataSourcesView::ShowEditDialog(const QModelIndex &index) {
+
+	SynGlyphX::DataTransformMapping::DatasourceMap::const_iterator datasource = m_sourceModel->GetDataMapping()->GetDatasources().begin();
+	std::advance(datasource, index.row());
+
+	SynGlyphX::DatasourceInfoWidget* datasourceInfoWidget = new SynGlyphX::DatasourceInfoWidget(*datasource->second, this);
+	SynGlyphX::SingleWidgetDialog dialog(QDialogButtonBox::StandardButton::Ok, datasourceInfoWidget, this);
+	dialog.setWindowTitle(tr("Datasource Info"));
+	dialog.exec();
 }

@@ -3,7 +3,7 @@
 #include "datatransformmodel.h"
 
 LegendListView::LegendListView(SynGlyphX::DataTransformModel* dataTransformModel, QWidget *parent)
-	: QListView(parent),
+	: DataMappingListView(parent),
 	m_dataTransformModel(dataTransformModel)
 {
 	setSelectionMode(QAbstractItemView::SingleSelection);
@@ -14,7 +14,7 @@ LegendListView::LegendListView(SynGlyphX::DataTransformModel* dataTransformModel
 
 	m_sharedActions.AddSeparator();
 
-	m_propertiesAction = m_sharedActions.AddAction(tr("Properties"));
+	m_propertiesAction = m_sharedActions.AddAction(tr("Edit"));
 	QObject::connect(m_propertiesAction, &QAction::triggered, this, &LegendListView::ShowLegendProperties);
 
 	m_sharedActions.EnableActions(false);
@@ -57,14 +57,19 @@ void LegendListView::ShowLegendProperties() {
 	const QModelIndexList& selected = selectionModel()->selectedIndexes();
 	if (!selected.isEmpty()) {
 
-		unsigned int row = selected.front().row();
-		SynGlyphX::LegendDialog dialog(this);
-		dialog.setWindowTitle(tr("Legend Properties"));
-		dialog.SetLegend(m_dataTransformModel->GetDataMapping()->GetLegends()[row]);
-		if (dialog.exec() == QDialog::Accepted) {
+		ShowEditDialog(selected.front());
+	}
+}
 
-			const SynGlyphX::Legend& legend = dialog.GetLegend();
-			m_dataTransformModel->SetLegend(row, legend);
-		}
+void LegendListView::ShowEditDialog(const QModelIndex &index) {
+
+	unsigned int row = index.row();
+	SynGlyphX::LegendDialog dialog(this);
+	dialog.setWindowTitle(tr("Legend Properties"));
+	dialog.SetLegend(m_dataTransformModel->GetDataMapping()->GetLegends()[row]);
+	if (dialog.exec() == QDialog::Accepted) {
+
+		const SynGlyphX::Legend& legend = dialog.GetLegend();
+		m_dataTransformModel->SetLegend(row, legend);
 	}
 }

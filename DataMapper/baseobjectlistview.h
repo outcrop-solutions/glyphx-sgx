@@ -18,14 +18,14 @@
 #ifndef BASEOBJECTLISTVIEW_H
 #define BASEOBJECTLISTVIEW_H
 
-#include <QtWidgets/QListView>
+#include "DataMappingListView.h"
 #include "sharedactionlist.h"
 
 namespace SynGlyphX {
 	class DataTransformModel;
 }
 
-class BaseObjectListView : public QListView
+class BaseObjectListView : public DataMappingListView
 {
 	Q_OBJECT
 
@@ -36,7 +36,8 @@ public:
 	const SynGlyphX::SharedActionList& GetSharedActions();
 
 protected:
-	virtual void selectionChanged(const QItemSelection& selected, const QItemSelection& deselected);
+	void selectionChanged(const QItemSelection& selected, const QItemSelection& deselected) override;
+	void ShowEditDialog(const QModelIndex &index) override;
 
 private slots:
 	void RemoveBaseObject();

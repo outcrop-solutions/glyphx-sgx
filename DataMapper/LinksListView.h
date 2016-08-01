@@ -18,14 +18,14 @@
 #ifndef LINKSLISTVIEW_H
 #define LINKSLISTVIEW_H
 
-#include <QtWidgets/QListView>
+#include "DataMappingListView.h"
 #include "sharedactionlist.h"
 
 namespace SynGlyphX {
 	class DataTransformModel;
 }
 
-class LinksListView : public QListView
+class LinksListView : public DataMappingListView
 {
 	Q_OBJECT
 
@@ -36,7 +36,8 @@ public:
 	const SynGlyphX::SharedActionList& GetSharedActions();
 
 protected:
-	virtual void selectionChanged(const QItemSelection& selected, const QItemSelection& deselected);
+	void selectionChanged(const QItemSelection& selected, const QItemSelection& deselected) override;
+	void ShowEditDialog(const QModelIndex &index) override;
 
 signals:
 	void editLink(int row);
