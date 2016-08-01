@@ -20,7 +20,7 @@ namespace ANTzPlus {
 		npCloseCtrl(m_data);
 		npCloseFile(m_data);
 		npCloseCh(m_data);
-		npCloseData();
+		npCloseData(m_data);
 	}
 
 	pData ANTzData::GetData() const {

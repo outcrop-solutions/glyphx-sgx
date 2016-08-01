@@ -34,7 +34,7 @@
 
 #include "npui.h"
 
-void* gData;
+//void* gData;
 
 void npInitDataMap (void* dataRef);
 void npInitDataIO (int argc, char** argv, void* dataRef);
@@ -59,14 +59,14 @@ ANTZCORE_API void* npInitData(int argc, char** argv)
 		printf ("err 4213 - malloc failed cannot run app \n");
 		return NULL;
 	}
-	gData = data;						//store a copy for retrieval
+	//gData = data;						//store a copy for retrieval
 
 	// initialize data
 	npInitDataMap (data);
 	npInitDataIO (argc, argv, data);	//stores the command line arguements
 	npInitDataCtrl (data);
 
-	return gData;
+	return data;
 	// create a fixed array of global data pointers that is thread safe, zz
 	// need to support multiple instances within a single app
 }
@@ -738,9 +738,9 @@ void npInitDataCtrl(void* dataRef)
 
 
 //------------------------------------------------------------------------------
-ANTZCORE_API void npCloseData()
+ANTZCORE_API void npCloseData(void* dataRef)
 {
-	pData data = (pData) gData;
+	pData data = (pData)dataRef;
 
 
 	//recursively release all data structures
@@ -751,10 +751,10 @@ ANTZCORE_API void npCloseData()
 
 
 //------------------------------------------------------------------------------
-ANTZCORE_API void* npGetDataRef()
+/*ANTZCORE_API void* npGetDataRef()
 {
 	return gData;
-}
+}*/
 
 
 //------------------------------------------------------------------------------

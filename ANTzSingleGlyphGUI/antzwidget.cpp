@@ -43,7 +43,7 @@ namespace SynGlyphXANTz {
 		npCloseCtrl(m_antzData);
 		npCloseFile(m_antzData);
 		npCloseCh(m_antzData);
-		npCloseData();
+		npCloseData(m_antzData);
 		m_antzData = nullptr;
 	}
 
@@ -122,7 +122,7 @@ namespace SynGlyphXANTz {
 
 	void ANTzWidget::resizeGL(int w, int h) {
 
-		npGLResizeScene(w, h);
+		npGLResizeScene(w, h, m_antzData);
 	}
 
 	void ANTzWidget::paintGL() {

@@ -382,7 +382,7 @@ namespace SynGlyphXANTz {
 		m_logoPosition.setTop(h - 10);
 		m_logoPosition.setSize(logoSize);
 
-		npGLResizeScene(w, h);
+		npGLResizeScene(w, h, m_antzData->GetData());
 
 		SetAxisInfoObjectLocation(m_hudAxisInfoObjectLocation);
 	}

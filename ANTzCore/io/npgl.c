@@ -41,7 +41,7 @@
 #include <GL/gl.h>
 #endif
 
-void npGLResizeScene (int width, int height);
+void npGLResizeScene(int width, int height, void* dataRef);
 
 
 //Textures, fonts, display lists, etc... can all be shared provided that:
@@ -137,14 +137,14 @@ ANTZCORE_API void npCloseGL(void* dataRef)
 // currently just single window support, add multi-screen capability later... debug zz
 // redbook has info on how to calculate the projections
 //------------------------------------------------------------------------------
-ANTZCORE_API void npGLResizeScene(int width, int height)
+ANTZCORE_API void npGLResizeScene(int width, int height, void* dataRef)
 {
 	static int resizeCount = 0;
 	char msg[128];
 
 	GLfloat ratio = 1.0;
 
-	pData data = npGetDataRef();
+	pData data = (pData)dataRef;
 
 	pNPnode camNode = data->map.currentCam;
 	NPcameraPtr camData = camNode->data;

@@ -62,14 +62,14 @@
 //--- Functions ----------------------------------------------------------------
 
 ANTZCORE_API void* npInitData(int argc, char** argv);		// inits global data map
-ANTZCORE_API void npCloseData();
+ANTZCORE_API void npCloseData(void* dataRef);
 void npUpdateData (void* dataRef);
 
 ANTZCORE_API void npInitDataHUD(void* dataRef);
 
 void npSystemConsoleHelp (int argc, char** argv);
 
-ANTZCORE_API void* npGetDataRef();
+//ANTZCORE_API void* npGetDataRef();
 
 char* npGetDataTypeName (int type);
 char* npGetDataTypeDesc (int type);

@@ -1187,7 +1187,8 @@ void DrawGrid(pNPnode node, void* dataRef)
 //------------------------------------------------------------------------------
 ANTZCORE_API void npDrawSelect(void* dataRef)
 {
-	pData data = (pData) npGetDataRef();
+	//pData data = (pData) npGetDataRef();
+	pData data = (pData)dataRef;
 	pNPnode tool = data->ctrl.user[0]->tool;
 
 	if(tool->hide)

@@ -51,7 +51,7 @@ ANTZCORE_API void npSetLookAtFromCamera(void* dataRef);
 
 ANTZCORE_API void npGLDrawScene(void* dataRef);
 
-ANTZCORE_API void npGLResizeScene(int width, int height);
+ANTZCORE_API void npGLResizeScene(int width, int height, void* dataRef);
 
 ANTZCORE_API void npPick(int x, int y, void* dataRef);
 ANTZCORE_API int npPickPin(int x, int y, void* dataRef);
