@@ -12,6 +12,7 @@
 #include <QtCore/QSettings>
 #include <QtWidgets/QFileDialog>
 #include <QtWidgets/QMessageBox>
+#include <QtCore/QStandardPaths>
 #include "csvfilewriter.h"
 #include "glyphbuilderapplication.h"
 #include <boost/uuid/uuid_io.hpp>
@@ -223,7 +224,7 @@ void SourceDataWidget::CreateSubsetVisualization() {
 
 	QSettings settings;
 	settings.beginGroup("SourceDataWidget");
-	QString initialDir = settings.value("vizSaveDir", "").toString();
+	QString initialDir = settings.value("vizSaveDir", QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation)).toString();
 
 	QString sdtFilename = QFileDialog::getSaveFileName(this, tr("Save Current Tab To New Visualization"), initialDir, "SynGlyphX Visualization Files (*.sdt)");
 	if (!sdtFilename.isEmpty()) {
