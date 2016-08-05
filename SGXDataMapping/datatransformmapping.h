@@ -161,9 +161,7 @@ namespace SynGlyphX {
     protected:
 		void CopyInputBindingsForSubsetMapping(DataMappingGlyphGraph::SharedPtr newGlyphGraph, 
 											   DataMappingGlyphGraph::GlyphIterator newNode, 
-											   DataMappingGlyphGraph::ConstSharedPtr oldGlyphGraph, 
-											   DataMappingGlyphGraph::ConstGlyphIterator oldNode,
-											   const boost::uuids::uuid& datasourceID) const;
+											   const std::unordered_map<std::wstring, std::wstring>& oldToNewIDMap) const;
 		void Clear(bool addADefaultBaseObjectAfterClear);
 
 		void ImportFromPropertyTree(const boost::property_tree::wptree& filePropertyTree) override;

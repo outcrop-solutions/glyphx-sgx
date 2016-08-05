@@ -983,6 +983,16 @@ namespace SynGlyphX {
 		SynGlyphX::FileDatasource newDatasource(FileDatasource::FileType::CSV, csvFilename);
 		boost::uuids::uuid datasourceID = subsetMapping->AddFileDatasource(newDatasource);
 
+		InputFieldManager* newInputFieldManager = subsetMapping->GetInputFieldManager();
+		std::unordered_map<std::wstring, std::wstring> oldToNewFieldIDMap;
+		for (const auto& field : m_inputFieldManager.GetFieldMap()) {
+
+			InputField newInputField(datasourceID, FileDatasource::SingleTableName, field.second.GetField(), field.second.GetType());
+			std::wstring newFieldID = newInputFieldManager->GenerateInputFieldID(newInputField);
+			newInputFieldManager->SetInputField(newFieldID, newInputField);
+			oldToNewFieldIDMap[field.first] = newFieldID;
+		}
+
 		for (auto fieldGroupPair : m_fieldGroups) {
 
 			if (inputTable == *fieldGroupPair.second.begin()) {
@@ -997,43 +1007,38 @@ namespace SynGlyphX {
 			}
 		}
 
-		//TODO check if wee need this after refactoring
+		for (auto glyphGraphPair : m_glyphTrees) {
 
-		//for (auto glyphGraphPair : m_glyphTrees) {
+			if (inputTable == GetInputTalbe(glyphGraphPair.first)) {
 
-		//	if (inputTable == glyphGraphPair.second->GetInputFields().begin()->second) {
+				DataMappingGlyphGraph::SharedPtr glyphGraph(new DataMappingGlyphGraph(*glyphGraphPair.second.get()));
+				CopyInputBindingsForSubsetMapping(glyphGraph, glyphGraph->GetRoot(), oldToNewFieldIDMap);
 
-		//		DataMappingGlyphGraph::SharedPtr glyphGraph(new DataMappingGlyphGraph(*glyphGraphPair.second.get()));
-		//		glyphGraph->ClearAllInputBindings();
-		//		CopyInputBindingsForSubsetMapping(glyphGraph, glyphGraph->GetRoot(), glyphGraphPair.second, glyphGraphPair.second->GetRoot().constify(), datasourceID);
-		//		subsetMapping->AddGlyphTree(glyphGraph);
-		//	}
-		//}
+				subsetMapping->AddGlyphTree(glyphGraph);
+			}
+		}
 
 		return subsetMapping;
 	}
 
 	void DataTransformMapping::CopyInputBindingsForSubsetMapping(DataMappingGlyphGraph::SharedPtr newGlyphGraph, 
 																 DataMappingGlyphGraph::GlyphIterator newNode, 
-																 DataMappingGlyphGraph::ConstSharedPtr oldGlyphGraph, 
-																 DataMappingGlyphGraph::ConstGlyphIterator oldNode,
-																 const boost::uuids::uuid& datasourceID) const {
-		assert(0); //do we ever hit this? //TODO: rewrirte after converting to strings 
-		//for (unsigned int i = 0; i < DataMappingGlyph::MappableField::MappableFieldSize; ++i) {
+																 const std::unordered_map<std::wstring, std::wstring>& oldToNewIDMap) const {
+		//TODO: rewrirte after converting to strings 
+		for (unsigned int i = 0; i < DataMappingGlyph::MappableField::MappableFieldSize; ++i) {
 
-		//	DataMappingGlyph::MappableField mappableField = static_cast<DataMappingGlyph::MappableField>(i);
-		//	const InputBinding& inputBinding = oldNode->second.GetInputBinding(mappableField);
-		//	if (inputBinding.IsBoundToInputField()) {
+			DataMappingGlyph::MappableField mappableField = static_cast<DataMappingGlyph::MappableField>(i);
+			const InputBinding& inputBinding = newNode->second.GetInputBinding(mappableField);
+			if (inputBinding.IsBoundToInputField()) {
 
-		//		const InputField& oldInputField = oldGlyphGraph->GetInputFields().at(inputBinding.GetInputFieldID());
-		//		newGlyphGraph->SetInputField(newNode.constify(), mappableField, InputField(datasourceID, FileDatasource::SingleTableName, oldInputField.GetField(), oldInputField.GetType()));
-		//	}
-		//}
+				newGlyphGraph->SetInputField(newNode.constify(), mappableField, oldToNewIDMap.at(inputBinding.GetInputFieldID()));
+			}
+		}
 
-		//for (unsigned int j = 0; j < oldGlyphGraph->ChildCount(oldNode); ++j) {
+		for (unsigned int j = 0; j < newGlyphGraph->ChildCount(newNode.constify()); ++j) {
 
-		//	CopyInputBindingsForSubsetMapping(newGlyphGraph, newGlyphGraph->GetChild(newNode, j), oldGlyphGraph, oldGlyphGraph->GetChild(oldNode, j), datasourceID);
-		//}
+			CopyInputBindingsForSubsetMapping(newGlyphGraph, newGlyphGraph->GetChild(newNode, j), oldToNewIDMap);
+		}
 	}
 
 	void DataTransformMapping::AddLegend(const Legend& legend) {
