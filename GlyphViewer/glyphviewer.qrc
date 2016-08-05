@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/GlyphViewer">
+        <file>Resources/icon-close-viz.png</file>
         <file>Resources/rotate_up.png</file>
         <file>Resources/rotate_left.png</file>
         <file>Resources/rotate_right.png</file>

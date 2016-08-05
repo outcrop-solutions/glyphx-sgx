@@ -56,6 +56,11 @@ GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 	m_columnsModel = new SourceDataInfoModel(m_mappingModel->GetDataMapping(), m_sourceDataCache, this);
 	m_columnsModel->SetSelectable(false, false, true);
 
+	m_fileToolbar = addToolBar(tr("File"));
+	m_fileToolbar->setFloatable(true);
+	m_fileToolbar->setMovable(true);
+	m_fileToolbar->setIconSize(QSize(42, 32));
+
 	m_showHideToolbar = addToolBar(tr("Show/Hide Widgets"));
 	m_showHideToolbar->setFloatable(true);
 	m_showHideToolbar->setMovable(true);
@@ -216,8 +221,14 @@ void GlyphViewerWindow::CreateMenus() {
 	//m_fileMenu->addSeparator();
 
 	QAction* closeVisualizationAction = CreateMenuAction(m_fileMenu, tr("Close Visualization"), QKeySequence::Close);
+	QIcon closeVizIcon;
+	//closeVizIcon.addFile(":GlyphViewer/Resources/icon-close-viz.png", QSize(), QIcon::Normal, QIcon::Off);
+	closeVizIcon.addFile(":GlyphViewer/Resources/icon-close-viz.png", QSize(), QIcon::Normal, QIcon::On);
+	closeVisualizationAction->setIcon(closeVizIcon);
 	QObject::connect(closeVisualizationAction, &QAction::triggered, this, &GlyphViewerWindow::CloseVisualization);
 	m_loadedVisualizationDependentActions.push_back(closeVisualizationAction);
+
+	m_fileToolbar->addAction(closeVisualizationAction);
 
 	CreateExportToPortableVisualizationSubmenu();
 	
@@ -266,6 +277,7 @@ void GlyphViewerWindow::CreateMenus() {
 	m_viewMenu->addSeparator();
 
 	m_toolbarsSubMenu = m_viewMenu->addMenu("Toolbars");
+	m_toolbarsSubMenu->addAction(m_fileToolbar->toggleViewAction());
 	m_toolbarsSubMenu->addAction(m_showHideToolbar->toggleViewAction());
 
 	m_viewMenu->addSeparator();

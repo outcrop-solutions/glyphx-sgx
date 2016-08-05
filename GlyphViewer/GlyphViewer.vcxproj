@@ -550,6 +550,7 @@
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
+    <Image Include="Resources\icon-close-viz.png" />
     <Image Include="Resources\rotate_down.png" />
     <Image Include="Resources\rotate_left.png" />
     <Image Include="Resources\rotate_right.png" />

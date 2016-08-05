@@ -104,6 +104,7 @@ private:
 	QMenu* m_fileMenu;
 	QMenu* m_toolsMenu;
 	QMenu* m_toolbarsSubMenu;
+	QToolBar* m_fileToolbar;
 	QToolBar* m_showHideToolbar;
 	QToolBar* m_interactionToolbar;
 

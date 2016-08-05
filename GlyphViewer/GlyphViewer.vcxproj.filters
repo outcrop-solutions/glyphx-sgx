@@ -403,6 +403,9 @@
     <Image Include="Resources\rotate_up.png">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="Resources\icon-close-viz.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\glyphed_stylesheet.qss">
