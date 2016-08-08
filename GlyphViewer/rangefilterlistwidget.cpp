@@ -53,56 +53,6 @@ SynGlyphX::SingleNumericRangeFilterWidget* RangeFilterListWidget::CreateRangeFil
 	QObject::connect(filter, &SynGlyphX::SingleNumericRangeFilterWidget::RangeUpdated, this, &RangeFilterListWidget::OnRangesChanged);
 	return filter;
 }
-/*
-void RangeFilterListWidget::AddFilter(unsigned int row) {
-
-	try {
-
-		QStringList datasourceTable = Separate(m_currentTable);
-
-		QSet<QString> newFields = fields;
-
-		for (unsigned int i = 0; i < m_filterTableWidget->rowCount();) {
-
-			int span = m_filterTableWidget->rowSpan(i, 0);
-			QString field = GetTextFromCell(i);
-			if (field.contains(field)) {
-
-				newFields.remove(field);
-				m_filterTableWidget->insertRow(i + span);
-				m_filterTableWidget->setSpan(i, 0, span + 1, 1);
-
-				i += span + 1;
-			}
-			else {
-
-				i += span;
-			}
-		}
-
-		unsigned int nextRow = m_filterTableWidget->rowCount();
-		m_filterTableWidget->setRowCount(nextRow + fields.count());
-		boost::uuids::string_generator gen;
-		FilteringParameters::ColumnRangeFilterMap rangeFilterMap = GatherRangesBeforeRow(nextRow);
-
-		for (const auto& field : fields) {
-
-			SynGlyphX::SingleNumericRangeFilterWidget* filter = CreateRangeFilterWidget();
-			SynGlyphX::InputField inputField(gen(datasourceTable[0].toStdWString()), datasourceTable[1].toStdWString(), field.toStdWString(), SynGlyphX::InputField::Real);
-
-			SynGlyphX::SingleNumericRangeFilterWidget::SliderPositionValues sliderPositionValues = m_filteringManager->GetSourceDataCache()->GetSortedNumericDistictValues(inputField, rangeFilterMap);
-			filter->SetSliderPositionValuesAndMaxExtents(sliderPositionValues);
-			filter->SetRange(SynGlyphX::DegenerateInterval(*sliderPositionValues.begin(), *sliderPositionValues.rbegin()));
-
-			m_filterTableWidget->setItem(nextRow, 0, CreateItem(field));
-			m_filterTableWidget->setCellWidget(nextRow++, 1, filter);
-		}
-	}
-	catch (const std::exception& e) {
-
-		throw;
-	}
-}*/
 
 QWidget* RangeFilterListWidget::AddFilter(const QString& field, unsigned int span) {
 

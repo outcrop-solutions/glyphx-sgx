@@ -113,9 +113,9 @@ protected:
 	void MoveRow(unsigned int sourceSpan, unsigned int destinationSpan);
 	void UpdatedEnableStateForButton(QAction* action, QPushButton* button);
 	void ClearFiltersFromTableWidget();
-	QString GetTextFromCell(int row) const;
+	//QString GetTextFromCell(int row) const;
 	QStringList Separate(const QString& datasourceTable) const;
-	void AddRow(const QString& field);
+	void AddRow(const QString& alias, const QString& field);
 	bool DoAnySubTablesHaveAllItemsSelected() const;
 	RowSet GetRowSelectionMap() const;
 	GroupedRowMap GetGroupedRowSelectionMap() const;

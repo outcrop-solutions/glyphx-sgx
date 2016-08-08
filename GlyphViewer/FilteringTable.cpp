@@ -279,10 +279,10 @@ void FilteringTable::RebuildRows(const QString& newTable) {
 	ResetFiltersAfterAddOrRemove();
 }
 
-QString FilteringTable::GetTextFromCell(int row) const {
+/*QString FilteringTable::GetTextFromCell(int row) const {
 
 	return m_filterListTableWidget->item(row, 0)->text();
-}
+}*/
 
 void FilteringTable::OnUpdateFilters() {
 
@@ -330,7 +330,7 @@ QStringList FilteringTable::Separate(const QString& datasourceTable) const {
 	return splitDatasourceTable;
 }
 
-void FilteringTable::AddRow(const QString& field) {
+void FilteringTable::AddRow(const QString& alias, const QString& field) {
 
 	int span = 0;
 	for (; span < m_filterGroups[m_currentTable].GetNumberOfGroups(); ++span) {
@@ -360,7 +360,7 @@ void FilteringTable::AddRow(const QString& field) {
 
 	m_filterListTableWidget->insertRow(row);
 
-	QTableWidgetItem* fieldItem = new QTableWidgetItem(field);
+	QTableWidgetItem* fieldItem = new QTableWidgetItem(alias);
 	fieldItem->setFlags(Qt::ItemIsEnabled | Qt::ItemNeverHasChildren);
 	m_filterListTableWidget->setItem(row, 0, fieldItem);
 
@@ -381,25 +381,7 @@ void FilteringTable::OnAddFilters() {
 		filterData.insert(m_fieldType);
 		fieldTypeProxyModel->SetFilterData(filterData);
 
-		/*SynGlyphX::StringRoleDataFilterProxyModel* filterOutFieldsInUseModel = new SynGlyphX::StringRoleDataFilterProxyModel(this);
-		filterOutFieldsInUseModel->setSourceModel(fieldTypeProxyModel);
-		filterOutFieldsInUseModel->setFilterRole(Qt::DisplayRole);
-
-		QSet<QString> fieldsInUse;
-		for (unsigned int row = 0; row < m_filterListTableWidget->rowCount(); ++row) {
-
-			fieldsInUse.insert(GetTextFromCell(row));
-		}
-		filterOutFieldsInUseModel->SetFilterData(fieldsInUse);
-		filterOutFieldsInUseModel->SetNot(true);*/
-
-		//QModelIndex rootIndex = filterOutFieldsInUseModel->mapFromSource(fieldTypeProxyModel->mapFromSource(m_columnsModel->GetIndexOfTable(datasourceTable[0], datasourceTable[1])));
 		QModelIndex rootIndex = fieldTypeProxyModel->mapFromSource(m_columnsModel->GetIndexOfTable(datasourceTable[0], datasourceTable[1]));
-		//if (filterOutFieldsInUseModel->rowCount(rootIndex) == 0) {
-		//
-		//	QMessageBox::information(this, tr("All fields in use"), tr("All fields for this table are already in use."), QMessageBox::StandardButton::Ok);
-		//	return;
-		//}
 
 		QListView* fieldSelectorWidget = new QListView(this);
 		fieldSelectorWidget->setModel(fieldTypeProxyModel);
@@ -419,33 +401,8 @@ void FilteringTable::OnAddFilters() {
 			//QSet<QString> newFields;
 			for (const auto& modelIndex : selected) {
 
-				AddRow(fieldTypeProxyModel->data(modelIndex).toString());
+				AddRow(fieldTypeProxyModel->data(modelIndex).toString(), fieldTypeProxyModel->data(modelIndex, SourceDataInfoModel::FieldRole).toString());
 			}
-
-			/*unsigned int row = 0;
-			while (row < m_filterTableWidget->rowCount()) {
-
-				unsigned int rowSpanSize = m_filterTableWidget->rowSpan(row, 0);
-				QString currentField = GetTextFromCell(row);
-				if (newFields.contains(currentField)) {
-
-					newFields.remove(currentField);
-					unsigned newRow = row + rowSpanSize;
-					m_filterTableWidget->insertRow(newRow);
-					m_filterTableWidget->setSpan(row, 0, rowSpanSize + 1, 1);
-					AddFilterToFieldInUse(row);
-					row += rowSpanSize + 1;
-				}
-				else {
-
-					row += rowSpanSize;
-				}
-			}
-
-			if (!newFields.isEmpty()) {*/
-
-				//AddFilters(newFields);
-			//}
 
 			UpdateRowSpansInWidget();
 			m_removeAllButton->setEnabled(true);
