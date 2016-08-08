@@ -157,7 +157,10 @@ namespace SynGlyphX {
 		void InsertLink(unsigned int index, const Link& link);
 		void SetLink(unsigned int index, const Link& link);
 		const std::vector<Link>& GetLinks() const { return m_links; }
+
 		InputFieldManager* GetInputFieldManager() { return &m_inputFieldManager; }
+		std::unordered_map<std::wstring, std::wstring> GetFieldToAliasMapForTable(const InputTable& table) const;
+
     protected:
 		void CopyInputBindingsForSubsetMapping(DataMappingGlyphGraph::SharedPtr newGlyphGraph, 
 											   DataMappingGlyphGraph::GlyphIterator newNode, 

@@ -988,9 +988,17 @@ namespace SynGlyphX {
 		for (const auto& field : m_inputFieldManager.GetFieldMap()) {
 
 			InputField newInputField(datasourceID, FileDatasource::SingleTableName, field.second.GetField(), field.second.GetType());
-			std::wstring newFieldID = newInputFieldManager->GenerateInputFieldID(newInputField);
-			newInputFieldManager->SetInputField(newFieldID, newInputField);
-			oldToNewFieldIDMap[field.first] = newFieldID;
+			if (field.first[0] == '~') {
+
+				std::wstring newFieldID = newInputFieldManager->GenerateInputFieldID(newInputField);
+				newInputFieldManager->SetInputField(newFieldID, newInputField);
+				oldToNewFieldIDMap[field.first] = newFieldID;
+			}
+			else {
+
+				newInputFieldManager->SetInputField(field.first, newInputField);
+				oldToNewFieldIDMap[field.first] = field.first;
+			}
 		}
 
 		for (auto fieldGroupPair : m_fieldGroups) {
@@ -1120,5 +1128,20 @@ namespace SynGlyphX {
 
 			throw std::invalid_argument("Index is greater than size of links");
 		}
+	}
+
+	std::unordered_map<std::wstring, std::wstring> DataTransformMapping::GetFieldToAliasMapForTable(const InputTable& table) const {
+
+		std::unordered_map<std::wstring, std::wstring> fieldToAliasMap;
+
+		for (const auto& field : m_inputFieldManager.GetFieldMap()) {
+
+			if ((table == field.second) && (field.first[0] != '~')) {
+
+				fieldToAliasMap[field.second.GetField()] = field.first;
+			}
+		}
+
+		return fieldToAliasMap;
 	}
 } //namespace SynGlyphX
