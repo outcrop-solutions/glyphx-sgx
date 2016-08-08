@@ -3,6 +3,7 @@
 
 const int SourceDataInfoModel::IDRole = Qt::UserRole;
 const int SourceDataInfoModel::TypeRole = Qt::UserRole + 1;
+const int SourceDataInfoModel::FieldRole = SourceDataInfoModel::TypeRole + 1;
 const int SourceDataInfoModel::NoTypeData = -1;
 
 SourceDataInfoModel::SourceDataInfoModel(SynGlyphX::DataTransformMapping::ConstSharedPtr dataTransformMapping, SourceDataCache::SharedPtr sourceDataCache, QObject *parent)
@@ -120,6 +121,8 @@ void SourceDataInfoModel::AddTable(const boost::uuids::uuid& id, const QString& 
 	bool isTableInCache = m_sourceDataCache->IsTableInCache(id, table);
 	if (isTableInCache || m_showUnmappedTables) {
 
+		std::unordered_map<std::wstring, std::wstring> fieldToAliasMap = m_dataTransformMapping->GetFieldToAliasMapForTable(SynGlyphX::InputTable(id, table.toStdWString()));
+
 		bool addColumns = !m_tableFlags.testFlag(Qt::ItemNeverHasChildren);
 		QStandardItem* newTableItem = new QStandardItem(table);
 		newTableItem->setData(NoTypeData, TypeRole);
@@ -138,7 +141,14 @@ void SourceDataInfoModel::AddTable(const boost::uuids::uuid& id, const QString& 
 			SourceDataCache::TableColumns columns = m_sourceDataCache->GetColumnsForTable(id, table);
 			for (auto column : columns) {
 
-				QStandardItem* newColumnItem = new QStandardItem(column.first);
+				QString alias = column.first;
+				if (fieldToAliasMap.count(column.first.toStdWString()) != 0) {
+
+					alias = QString::fromStdWString(fieldToAliasMap.at(column.first.toStdWString()));
+				}
+
+				QStandardItem* newColumnItem = new QStandardItem(alias);
+				newColumnItem->setData(column.first, FieldRole);
 				newColumnItem->setData(column.second, TypeRole);
 				newColumnItem->setFlags(m_columnFlags | Qt::ItemNeverHasChildren);
 				newTableItem->appendRow(newColumnItem);

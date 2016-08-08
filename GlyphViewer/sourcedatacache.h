@@ -80,6 +80,7 @@ public:
 
 	static QString CreateTablename(const SynGlyphX::InputTable& inputTable);
 	static QString CreateTablename(const QString& datasourceID, const QString& originalTablename);
+	static QString CreateTablename(const boost::uuids::uuid& id, const QString& originalTablename);
 
 	bool IsCacheOutOfDate(const SynGlyphX::DataTransformMapping::DatasourceMap& datasources) const;
 

@@ -554,7 +554,7 @@ bool GlyphViewerWindow::LoadNewVisualization(const QString& filename, const Dist
 		m_recentFilters.remove(filename);
 	}
 	EnableLoadedVisualizationDependentActions(true);
-	m_columnsModel->Reset();
+	
 	statusBar()->showMessage("Visualization successfully opened", 3000);
 
 	return true;
@@ -708,6 +708,7 @@ void GlyphViewerWindow::LoadDataTransform(const QString& filename) {
 		}
 		
 		m_sourceDataCache->Setup(cacheFiles[2]);
+		m_columnsModel->Reset();
 
 		//This must be done before LoadFilesIntoModel is called
 		m_filteringWidget->OnNewVisualization();

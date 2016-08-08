@@ -5,11 +5,12 @@
 #include <QtWidgets/QMessageBox>
 #include "elasticlistwidget.h"
 #include "application.h"
+#include "sourcedatainfomodel.h"
 
-MultiTableElasticListsWidget::MultiTableElasticListsWidget(FilteringManager* filteringManager, QWidget *parent)
+MultiTableElasticListsWidget::MultiTableElasticListsWidget(SourceDataInfoModel* columnsModel, FilteringManager* filteringManager, QWidget *parent)
 	: QWidget(parent),
+	m_sourceDataInfoModel(columnsModel),
 	m_filteringManager(filteringManager)
-	//m_sourceDataCache(sourceDataCache)
 {
 	m_elasticListsStackLayout = new QStackedLayout(this);
 	m_elasticListsStackLayout->setContentsMargins(0, 0, 0, 0);
@@ -36,13 +37,29 @@ void MultiTableElasticListsWidget::OnNewVisualization() {
 	SourceDataCache::ConstSharedPtr sourceDataCache = m_filteringManager->GetSourceDataCache();
 	if (sourceDataCache->IsValid()) {
 
-		const SourceDataCache::TableNameMap& tableNameMap = sourceDataCache->GetFormattedNames();
-		for (auto formattedName : tableNameMap) {
+		for (unsigned int i = 0; i < m_sourceDataInfoModel->rowCount(); ++i) {
 
-			SingleTableElasticListsWidget* elasticListsWidgetForTable = new SingleTableElasticListsWidget(sourceDataCache, formattedName.first, this);
-			m_elasticListsStackLayout->addWidget(elasticListsWidgetForTable);
-			m_elasticListWidgetsForEachTable[formattedName.first.toStdWString()] = elasticListsWidgetForTable;
-			QObject::connect(elasticListsWidgetForTable, &SingleTableElasticListsWidget::SelectionChanged, this, &MultiTableElasticListsWidget::OnElasticListsSelectionChanged);
+			QModelIndex datasourceIndex = m_sourceDataInfoModel->index(i, 0);
+			for (unsigned int j = 0; j < m_sourceDataInfoModel->rowCount(datasourceIndex); ++j) {
+
+				QModelIndex tableIndex = m_sourceDataInfoModel->index(j, 0, datasourceIndex);
+				QString sourceDataCacheTablename = SourceDataCache::CreateTablename(m_sourceDataInfoModel->data(datasourceIndex, SourceDataInfoModel::IDRole).toString(),
+					m_sourceDataInfoModel->data(tableIndex).toString());
+
+				SingleTableElasticListsWidget::AliasAndFieldList aliasAndFieldList;
+
+				for (unsigned int k = 0; k < m_sourceDataInfoModel->rowCount(tableIndex); ++k) {
+
+					QModelIndex fieldIndex = m_sourceDataInfoModel->index(k, 0, tableIndex);
+					aliasAndFieldList.push_back(SingleTableElasticListsWidget::AliasAndField(m_sourceDataInfoModel->data(fieldIndex).toString(),
+						m_sourceDataInfoModel->data(fieldIndex, SourceDataInfoModel::FieldRole).toString()));
+				}
+
+				SingleTableElasticListsWidget* elasticListsWidgetForTable = new SingleTableElasticListsWidget(aliasAndFieldList, sourceDataCache, sourceDataCacheTablename, this);
+				m_elasticListsStackLayout->addWidget(elasticListsWidgetForTable);
+				m_elasticListWidgetsForEachTable[sourceDataCacheTablename.toStdWString()] = elasticListsWidgetForTable;
+				QObject::connect(elasticListsWidgetForTable, &SingleTableElasticListsWidget::SelectionChanged, this, &MultiTableElasticListsWidget::OnElasticListsSelectionChanged);
+			}
 		}
 
 		UpdateElasticListsAndSourceDataWidget();

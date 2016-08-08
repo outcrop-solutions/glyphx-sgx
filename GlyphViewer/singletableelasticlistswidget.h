@@ -29,7 +29,10 @@ class SingleTableElasticListsWidget : public SynGlyphX::VerticalScrollArea
 	Q_OBJECT
 
 public:
-	SingleTableElasticListsWidget(SourceDataCache::ConstSharedPtr sourceDataCache, const QString& table, QWidget *parent);
+	typedef std::pair<QString, QString> AliasAndField;
+	typedef std::vector<AliasAndField> AliasAndFieldList;
+
+	SingleTableElasticListsWidget(AliasAndFieldList aliasAndFieldList, SourceDataCache::ConstSharedPtr sourceDataCache, const QString& table, QWidget *parent);
 	~SingleTableElasticListsWidget();
 
 	void PopulateElasticLists(const SynGlyphX::IndexSet& indexSet = SynGlyphX::IndexSet());

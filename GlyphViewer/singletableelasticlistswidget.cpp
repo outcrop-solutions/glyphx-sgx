@@ -2,7 +2,7 @@
 
 const unsigned int SingleTableElasticListsWidget::Spacing = 16;
 
-SingleTableElasticListsWidget::SingleTableElasticListsWidget(SourceDataCache::ConstSharedPtr sourceDataCache, const QString& table, QWidget *parent)
+SingleTableElasticListsWidget::SingleTableElasticListsWidget(AliasAndFieldList aliasAndFieldList, SourceDataCache::ConstSharedPtr sourceDataCache, const QString& table, QWidget *parent)
 	: SynGlyphX::VerticalScrollArea(parent),
 	m_sourceDataCache(sourceDataCache),
 	m_table(table)
@@ -12,13 +12,12 @@ SingleTableElasticListsWidget::SingleTableElasticListsWidget(SourceDataCache::Co
 	QVBoxLayout* layout = new QVBoxLayout(m_innerWidget);
 	layout->setSpacing(Spacing);
 
-	SourceDataCache::TableColumns columns = m_sourceDataCache->GetColumnsForTable(table);
-	for (const auto& column : columns) {
+	for (const auto& aliasAndField : aliasAndFieldList) {
 
 		SynGlyphX::ElasticListWidget* elasticListWidget = new SynGlyphX::ElasticListWidget(this);
-		elasticListWidget->SetTitle(column.first);
+		elasticListWidget->SetTitle(aliasAndField.first);
 		layout->addWidget(elasticListWidget);
-		m_elasticListMap[column.first.toStdString()] = elasticListWidget;
+		m_elasticListMap[aliasAndField.second.toStdString()] = elasticListWidget;
 		QObject::connect(elasticListWidget, &SynGlyphX::ElasticListWidget::SelectionChanged, this, &SingleTableElasticListsWidget::OnElasticWidgetSelectionChanged);
 	}
 

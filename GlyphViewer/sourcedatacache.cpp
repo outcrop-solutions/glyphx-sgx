@@ -171,7 +171,7 @@ SourceDataCache::SharedSQLQuery SourceDataCache::CreateSelectFieldQueryAscending
 
 QString SourceDataCache::CreateTablename(const SynGlyphX::InputTable& inputTable) {
 
-	return CreateTablename(QString::fromStdString(boost::uuids::to_string(inputTable.GetDatasourceID())), QString::fromStdWString(inputTable.GetTable()));
+	return CreateTablename(inputTable.GetDatasourceID(), QString::fromStdWString(inputTable.GetTable()));
 }
 		
 QString SourceDataCache::CreateTablename(const QString& datasourceID, const QString& originalTablename) {
@@ -184,6 +184,11 @@ QString SourceDataCache::CreateTablename(const QString& datasourceID, const QStr
 
 		return datasourceID + ":" + originalTablename;
 	}
+}
+
+QString SourceDataCache::CreateTablename(const boost::uuids::uuid& id, const QString& originalTablename) {
+
+	return CreateTablename(QString::fromStdString(boost::uuids::to_string(id)), originalTablename);
 }
 
 SourceDataCache::SharedSQLQuery SourceDataCache::CreateMinMaxQuery(const SynGlyphX::InputField& inputfield) const {

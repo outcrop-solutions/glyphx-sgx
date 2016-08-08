@@ -26,12 +26,14 @@
 #include "singletableelasticlistswidget.h"
 #include "filteringmanager.h"
 
+class SourceDataInfoModel;
+
 class MultiTableElasticListsWidget : public QWidget
 {
 	Q_OBJECT
 
 public:
-	MultiTableElasticListsWidget(FilteringManager* filteringManager, QWidget *parent);
+	MultiTableElasticListsWidget(SourceDataInfoModel* columnsModel, FilteringManager* filteringManager, QWidget *parent);
 	~MultiTableElasticListsWidget();
 
 public slots:
@@ -49,7 +51,7 @@ private:
 	void UpdateElasticLists(const FilteringManager::IndexSetMap& dataIndexes = FilteringManager::IndexSetMap());
 	void ClearElasticLists();
 
-	//SourceDataCache::SharedPtr m_sourceDataCache;
+	SourceDataInfoModel* m_sourceDataInfoModel;
 	FilteringManager* m_filteringManager;
 	
 	QStackedLayout* m_elasticListsStackLayout;

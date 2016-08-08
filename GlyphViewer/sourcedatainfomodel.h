@@ -29,6 +29,7 @@ class SourceDataInfoModel : public QStandardItemModel
 public:
 	static const int IDRole;
 	static const int TypeRole;
+	static const int FieldRole;
 	static const int NoTypeData;
 
 	SourceDataInfoModel(SynGlyphX::DataTransformMapping::ConstSharedPtr dataTransformMapping, SourceDataCache::SharedPtr sourceDataCache, QObject *parent);

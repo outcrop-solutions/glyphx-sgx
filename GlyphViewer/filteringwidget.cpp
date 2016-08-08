@@ -37,7 +37,7 @@ FilteringWidget::FilteringWidget(SourceDataInfoModel* columnsModel, FilteringMan
 
 	QTabWidget* filterMethodsWidget = new QTabWidget(this);
 
-	m_elasticListsWidget = new MultiTableElasticListsWidget(m_filteringManager, filterMethodsWidget);
+	m_elasticListsWidget = new MultiTableElasticListsWidget(columnsModel, m_filteringManager, filterMethodsWidget);
 	filterMethodsWidget->addTab(m_elasticListsWidget, tr("Elastic"));
 
 	m_rangeListFilterWidget = new RangeFilterListWidget(columnsModel, m_filteringManager, filterMethodsWidget);
