@@ -90,6 +90,7 @@ public class QueryBuilder {
 		}
 		return false;
 	}
+	/*
 	public static void main(String args[]){
 		try{
 			File file = new File("qbtest.txt");
@@ -109,4 +110,5 @@ public class QueryBuilder {
 	        e.printStackTrace();
         }
 	}
+	*/
 }
