@@ -731,19 +731,31 @@ void GlyphViewerWindow::LoadFilesIntoModel(const SynGlyphXANTz::ANTzCSVWriter::F
 
 	m_glyphForestModel->LoadANTzVisualization(filesToLoad, baseImageFilenames);
 
-	SynGlyphX::DataMappingGlyphGraph::ConstSharedPtr rootGlyph = m_mappingModel->GetDataMapping()->GetGlyphGraphs().begin()->second;
+	SynGlyphX::DataTransformMapping::ConstSharedPtr dataTransformMapping = m_mappingModel->GetDataMapping();
+
+	auto rootGlyph = dataTransformMapping->GetGlyphGraphs().begin();
+
+	std::unordered_map<std::wstring, std::wstring> fieldToAliasMap = dataTransformMapping->GetFieldToAliasMapForTable(dataTransformMapping->GetInputTalbe(rootGlyph->first));
 
 	std::array<QString, 3> rootPositionFields;
-	auto ifm = const_cast<SynGlyphX::DataTransformMapping*>(m_mappingModel->GetDataMapping().get())->GetInputFieldManager();
+	auto ifm = std::const_pointer_cast<SynGlyphX::DataTransformMapping>(dataTransformMapping)->GetInputFieldManager();
 	for (unsigned int i = 0; i < 3; ++i) {
 
-		const SynGlyphX::InputBinding& posInputBinding = rootGlyph->GetRoot()->second.GetPosition()[i].GetBinding();
+		const SynGlyphX::InputBinding& posInputBinding = rootGlyph->second->GetRoot()->second.GetPosition()[i].GetBinding();
 		//SynGlyphX::HashID id = posInputBinding.GetInputFieldID();
 
 		SynGlyphX::InputField field = ifm->GetInputField(posInputBinding.GetInputFieldID());
 
 		if (field.IsValid()) {
-			rootPositionFields[i] = QString::fromStdWString(field.GetField());
+
+			if (fieldToAliasMap.count(field.GetField()) == 0) {
+
+				rootPositionFields[i] = QString::fromStdWString(field.GetField());
+			}
+			else {
+
+				rootPositionFields[i] = QString::fromStdWString(fieldToAliasMap[field.GetField()]);
+			}
 		}
 	}
 	m_glyphForestModel->SetRootPosXYZMappedFields(rootPositionFields);
