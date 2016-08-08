@@ -20,6 +20,7 @@ import synglyphx.io.Logger;
 import synglyphx.glyph.CoordinateMap;
 import synglyphx.link.SDTLinkReader;
 import synglyphx.jdbc.Table;
+import synglyphx.jdbc.QueryBuilder;
 import synglyphx.jdbc.BasicTable;
 import synglyphx.jdbc.MergedTable;
 import synglyphx.jdbc.driver.Driver;
@@ -514,11 +515,12 @@ public class SDTReader {
 						tb.setID(id);
 						tb.setTable(table.getTextContent());
 						tb.setType(e.getAttribute("type").toLowerCase());
-						if(te.hasAttribute("query")){
+						tb.setQuery(QueryBuilder.build(tb.getType(), tb.getTable(), e.getElementsByTagName("Query")));
+						/*if(te.hasAttribute("query")){
 							if(!te.getAttribute("query").equals("")){
 								tb.setQuery(te.getAttribute("query"));
 							}
-						}
+						}*/
 						tb.setPath(host);
 						tb.setHost("jdbc:"+host);
 						tb.setUsername(user);
