@@ -1233,3 +1233,8 @@ void GlyphViewerWindow::AddSubsetVisualization(const QString& filename) {
 
 	s_subsetFileList.AddFile(filename);
 }
+
+bool GlyphViewerWindow::DoesHelpExist() const {
+
+	return SynGlyphX::GlyphBuilderApplication::IsGlyphEd();
+}

@@ -64,6 +64,8 @@ protected:
 
 	void closeEvent(QCloseEvent* event) override;
 
+	bool DoesHelpExist() const override;
+
 private slots:
 	void OpenProject();
 	void RefreshVisualization();

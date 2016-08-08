@@ -55,6 +55,8 @@ namespace SynGlyphX {
 
         virtual bool LoadRecentFile(const QString& filename) = 0;
 
+		virtual bool DoesHelpExist() const;
+
 		void SaveOriginalState();
         void UpdateFilenameWindowTitle(const QString& title);
 		void ClearCurrentFile();

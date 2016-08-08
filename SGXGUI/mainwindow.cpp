@@ -175,8 +175,11 @@ namespace SynGlyphX {
 
         m_helpMenu = menuBar()->addMenu(tr("Help"));
 
-		m_fullHelpMenu = CreateMenuAction(m_helpMenu, tr("Guide"), QKeySequence::HelpContents);
-		QObject::connect(m_fullHelpMenu, &QAction::triggered, this, &MainWindow::ShowTutorial);
+		if (DoesHelpExist()) {
+
+			m_fullHelpMenu = CreateMenuAction(m_helpMenu, tr("Guide"), QKeySequence::HelpContents);
+			QObject::connect(m_fullHelpMenu, &QAction::triggered, this, &MainWindow::ShowTutorial);
+		}
 
 		QAction* licensingAction = m_helpMenu->addAction(tr("Licensing"));
 		QObject::connect(licensingAction, &QAction::triggered, this, &MainWindow::ShowLicensingDialog);
@@ -392,6 +395,11 @@ namespace SynGlyphX {
 	const SettingsStoredFileList& MainWindow::GetRecentFileListInstance() {
 
 		return s_recentFileList;
+	}
+
+	bool MainWindow::DoesHelpExist() const {
+
+		return false;
 	}
 
 } //namespace SynGlyphX
