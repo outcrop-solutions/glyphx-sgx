@@ -416,6 +416,15 @@
     <ClCompile Include="GeneratedFiles\Release\moc_helpdialog.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="HeaderProxyModel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_HeaderProxyModel.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_HeaderProxyModel.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="sgxgui_global.h">
@@ -556,6 +565,9 @@
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="helpdialog.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="HeaderProxyModel.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>

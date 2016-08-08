@@ -16,6 +16,7 @@
 #include "csvfilewriter.h"
 #include "glyphbuilderapplication.h"
 #include <boost/uuid/uuid_io.hpp>
+#include "HeaderProxyModel.h"
 
 SourceDataWidget::SourceDataWidget(SourceDataCache::ConstSharedPtr sourceDataCache, SynGlyphX::DataTransformMapping::ConstSharedPtr dataTransformMapping, QWidget *parent)
 	: QWidget(parent, Qt::Window),
@@ -75,59 +76,50 @@ void SourceDataWidget::UpdateTables() {
 
 	ClearTables();
 
-	const SourceDataCache::TableNameMap& formattedNames = m_sourceDataCache->GetFormattedNames();
+	SynGlyphX::DataTransformMapping::DatasourceMap datasourceMap = m_dataTransformMapping->GetDatasourcesInUse();
+	for (auto datasource : datasourceMap) {
 
-	for (auto tableIDAndName : formattedNames) {
+		for (auto table : datasource.second->GetTables()) {
 
-		SourceDataCache::TableColumns columns = m_sourceDataCache->GetColumnsForTable(tableIDAndName.first);
-		SourceDataCache::SharedSQLQuery query = m_sourceDataCache->CreateSelectQuery(tableIDAndName.first, columns, GetSourceIndexesForTable(tableIDAndName.first));
-		
-		/*}
-		else {
+			SynGlyphX::InputTable inputTable(datasource.first, table.first);
+			if (m_sourceDataCache->IsTableInCache(inputTable)) {
 
-			SynGlyphX::IndexSet indexesForTable = GetSelectionSourceIndexesForTable(tableIDAndName.first);
-			if (indexesForTable.empty()) {
+				std::unordered_map<std::wstring, std::wstring> fieldToAliasMap = m_dataTransformMapping->GetFieldToAliasMapForTable(inputTable);
 
-				continue;
+				SourceDataCache::TableColumns columns = m_sourceDataCache->GetColumnsForTable(inputTable);
+				QString sourceDataTablename = SourceDataCache::CreateTablename(inputTable);
+				SourceDataCache::SharedSQLQuery query = m_sourceDataCache->CreateSelectQuery(sourceDataTablename,
+					columns, GetSourceIndexesForTable(sourceDataTablename));
+
+				query->exec();
+
+				QTableView* tableView = new QTableView(this);
+				tableView->setObjectName(sourceDataTablename);
+				QSqlQueryModel* queryModel = new QSqlQueryModel(this);
+
+				SynGlyphX::HeaderProxyModel* headerProxyModel = new SynGlyphX::HeaderProxyModel(this);
+				headerProxyModel->setSourceModel(queryModel);
+				headerProxyModel->SetHorizontalHeaderMap(fieldToAliasMap);
+
+				queryModel->setQuery(*query.data());
+				if (queryModel->lastError().isValid()) {
+
+					throw std::runtime_error("Failed to set SQL query for source data widget.");
+				}
+
+				tableView->verticalHeader()->setVisible(false);
+
+				tableView->setModel(headerProxyModel);
+				tableView->resizeColumnsToContents();
+				tableView->resizeRowsToContents();
+
+				m_sourceDataTabs->addTab(tableView, m_sourceDataCache->GetFormattedNames().at(sourceDataTablename));
+
+				m_sqlQueryModels.push_back(queryModel);
 			}
-			query = m_filteringManager->GetSourceDataCache()->CreateSelectQuery(tableIDAndName.first, columns, indexesForTable);
-		}*/
-
-		query->exec();
-
-		QTableView* tableView = new QTableView(this);
-		tableView->setObjectName(tableIDAndName.first);
-		QSqlQueryModel* queryModel = new QSqlQueryModel(this);
-
-		queryModel->setQuery(*query.data());
-		if (queryModel->lastError().isValid()) {
-
-			throw std::runtime_error("Failed to set SQL query for source data widget.");
 		}
-
-		tableView->verticalHeader()->setVisible(false);
-
-		tableView->setModel(queryModel);
-		tableView->resizeColumnsToContents();
-		tableView->resizeRowsToContents();
-
-		m_sourceDataTabs->addTab(tableView, tableIDAndName.second);
-
-		m_sqlQueryModels.push_back(queryModel);
 	}
 }
-/*
-SynGlyphX::IndexSet SourceDataWidget::GetSelectionSourceIndexesForTable(const QString& table) {
-
-	SynGlyphX::IndexSet indexes;
-
-	if (m_filteringManager->GetSceneSelectionModel()->hasSelection()) {
-
-		indexes = SynGlyphX::ItemFocusSelectionModel::GetRootRows(m_filteringManager->GetSceneSelectionModel()->selectedIndexes());
-	}
-
-	return indexes;
-}*/
 
 void SourceDataWidget::ReadSettings() {
 

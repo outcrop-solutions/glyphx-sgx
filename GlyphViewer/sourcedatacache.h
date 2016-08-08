@@ -56,8 +56,10 @@ public:
 	const TableNameMap& GetFormattedNames() const;
 	TableColumns GetColumnsForTable(const QString& table) const;
 	TableColumns GetColumnsForTable(const boost::uuids::uuid& datasourceID, const QString& originalTablename) const;
+	TableColumns GetColumnsForTable(const SynGlyphX::InputTable& inputTable) const;
 
 	bool IsTableInCache(const boost::uuids::uuid& datasourceID, const QString& originalTablename) const;
+	bool IsTableInCache(const SynGlyphX::InputTable& inputTable) const;
 
 	SharedSQLQuery CreateSelectFieldQueryAscending(const SynGlyphX::InputField& inputField) const;
 	SharedSQLQuery CreateMinMaxQuery(const SynGlyphX::InputField& inputField) const;

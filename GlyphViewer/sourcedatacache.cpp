@@ -131,10 +131,20 @@ SourceDataCache::TableColumns SourceDataCache::GetColumnsForTable(const boost::u
 	return GetColumnsForTable(tableName);
 }
 
+SourceDataCache::TableColumns SourceDataCache::GetColumnsForTable(const SynGlyphX::InputTable& inputTable) const {
+
+	return GetColumnsForTable(inputTable.GetDatasourceID(), QString::fromStdWString(inputTable.GetTable()));
+}
+
 bool SourceDataCache::IsTableInCache(const boost::uuids::uuid& datasourceID, const QString& originalTablename) const {
 
 	QString tableName = CreateTablename(QString::fromStdString(boost::uuids::to_string(datasourceID)), originalTablename);
 	return (m_tableNameMap.count(tableName) != 0);
+}
+
+bool SourceDataCache::IsTableInCache(const SynGlyphX::InputTable& inputTable) const {
+
+	return IsTableInCache(inputTable.GetDatasourceID(), QString::fromStdWString(inputTable.GetTable()));
 }
 
 int SourceDataCache::GetLastIndexOfTable(const QString& tableName) {
