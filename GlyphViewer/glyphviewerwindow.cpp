@@ -653,18 +653,6 @@ void GlyphViewerWindow::ValidateDataMappingFile(const QString& filename) {
 }
 
 void GlyphViewerWindow::LoadDataTransform(const QString& filename) {
-	/*
-	try {
-
-		if (!dec.hasJVM()){
-			dec.createJVM();
-		}
-	}
-	catch (const std::exception& e) {
-
-		QMessageBox::critical(this, tr("JVM Error"), tr(e.what()));
-		return;
-	}*/
 
 	SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
 
@@ -678,9 +666,6 @@ void GlyphViewerWindow::LoadDataTransform(const QString& filename) {
 		m_mappingModel->LoadDataTransformFile(filename);
 		std::string dcd = GlyphViewerOptions::GetDefaultCacheDirectory().toStdString();
 		std::string cacheDirectoryPath = dcd + ("/cache_" + boost::uuids::to_string(m_mappingModel->GetDataMapping()->GetID()));
-
-		//SynGlyphXANTz::GlyphViewerANTzTransformer transformer(QString::fromStdString(cacheDirectoryPath.string()));
-		//transformer.Transform(*m_mappingModel->GetDataMapping());
 		
 		DataEngine::GlyphEngine ge;
 		std::string dirPath = cacheDirectoryPath + "/";
@@ -717,6 +702,13 @@ void GlyphViewerWindow::LoadDataTransform(const QString& filename) {
 		m_glyphForestModel->SetTagNotToBeShownIn3d(QString::fromStdWString(m_mappingModel->GetDataMapping()->GetDefaults().GetDefaultTagValue()));
 		m_glyph3DView->SetBackgroundColor(m_mappingModel->GetDataMapping()->GetSceneProperties().GetBackgroundColor());
 		m_legendsWidget->SetLegends(m_mappingModel->GetDataMapping()->GetLegends());
+
+		//Hide in scene axes if visualization has downloaded maps
+		const auto& baseObjects = m_mappingModel->GetDataMapping()->GetBaseObjects();
+		if ((!baseObjects.empty()) && (baseObjects[0].GetType() == SynGlyphX::BaseImage::Type::DownloadedMap)) {
+
+			m_showHideSceneAxisAction->setChecked(false);
+		}
 
 		SynGlyphX::Application::restoreOverrideCursor();
 	}
