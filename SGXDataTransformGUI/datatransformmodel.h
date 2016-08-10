@@ -166,6 +166,10 @@ namespace SynGlyphX {
 		void ChangeMapping(const DataTransformMapping& mapping);
 
 		InputFieldManager* GetInputFieldManager() { return m_dataMapping->GetInputFieldManager(); }
+
+		const MultiTableFrontEndFilters& GetFrontEndFilters() const { return m_dataMapping->GetFrontEndFilters(); }
+		void SetFrontEndFilters(const MultiTableFrontEndFilters& filters) { m_dataMapping->SetFrontEndFilters(filters); }
+
 	private:
 		void Clear();
 		QVariant GetGlyphData(const QModelIndex& index) const;

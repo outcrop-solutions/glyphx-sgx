@@ -21,14 +21,17 @@
 #include "AppGlobal.h"
 #include <QtWidgets/QUndoStack>
 #include <QtWidgets/QUndoCommand>
+#include "FrontEndFilterManager.h"
 
 namespace SynGlyphX {
+
 	class DataTransformModel::Command : public QUndoCommand{
 	public:
 		DataTransformModel::Command(DataTransformModel* dtm) : m_dtm(dtm){}
 		DataTransformMapping::SharedPtr GetDataMapping() { return m_dtm->m_dataMapping;  }
 		DataTransformModel* m_dtm;
 	};
+
 	class AddLinkCommand : public DataTransformModel::Command {
 	public:
 		AddLinkCommand(DataTransformModel* dtm, unsigned int index, const Link& link) : 
@@ -46,6 +49,32 @@ namespace SynGlyphX {
 		int m_index;
 		Link m_link;
 	};
+
+	class UpdateFrontEndFiltersCommand : public DataTransformModel::Command {
+
+	public:
+		UpdateFrontEndFiltersCommand(const MultiTableFrontEndFilters& filters, DataTransformModel* dtm) :
+			DataTransformModel::Command(dtm),
+			m_newFilters(filters) {
+
+			m_oldFilters = m_dtm->GetFrontEndFilters();
+		}
+
+		void undo() override {
+
+			m_dtm->SetFrontEndFilters(m_oldFilters);
+		}
+
+		void redo() override {
+
+			m_dtm->SetFrontEndFilters(m_newFilters);
+		}
+
+	private:
+		MultiTableFrontEndFilters m_newFilters;
+		MultiTableFrontEndFilters m_oldFilters;
+	};
+
 	DataTransformModel::DataTransformModel(QObject *parent)
 		: QAbstractItemModel(parent),
 		m_dataMapping(new DataTransformMapping()),
