@@ -26,7 +26,7 @@
 #include "datasourcetable.h"
 
 namespace SynGlyphX {
-
+	//class DatasourceTable;
 	class SGXDATAMAPPING_API Datasource
 	{
 	public:
@@ -61,6 +61,9 @@ namespace SynGlyphX {
         const std::wstring& GetUsername() const;
         const std::wstring& GetPassword() const;
 		const Tables& GetTables() const;
+
+		const boost::property_tree::wptree& GetQuery(const std::wstring& table) const;
+		void SetQuery(const std::wstring& table, const boost::property_tree::wptree& query);
 
 		void AddTables(const Tables& tables);
 		void AddTables(const TableNames& tableNames);

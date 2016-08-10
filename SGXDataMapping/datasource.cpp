@@ -2,6 +2,7 @@
 #include <boost/assign/list_of.hpp>
 #include <boost/bimap/list_of.hpp>
 #include <boost/property_tree/ptree.hpp>
+#include "datasourcetable.h"
 
 namespace SynGlyphX {
 
@@ -115,6 +116,14 @@ namespace SynGlyphX {
         return m_tables;
     }
 
+	const boost::property_tree::wptree& Datasource::GetQuery(const std::wstring& table) const {
+		return m_tables.at(table).GetQuery();
+	}
+
+	void Datasource::SetQuery(const std::wstring& table, const boost::property_tree::wptree& query) {
+		m_tables.at(table).SetQuery(query);
+	}
+
 	void Datasource::AddTables(const Tables& tables) {
 
 		m_tables.insert(tables.begin(), tables.end());
@@ -158,7 +167,7 @@ namespace SynGlyphX {
 	}
 
 	bool Datasource::DoAnyTablesHaveQueries() const {
-
+		_ASSERT(0); //TODO: dont forget to remove
 		for (auto& table : m_tables) {
 
 			if (!table.second.GetQuery().empty()) {

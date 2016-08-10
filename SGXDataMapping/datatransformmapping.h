@@ -84,6 +84,9 @@ namespace SynGlyphX {
 		DatasourceMap GetDatasourcesInUse() const;
 		UUIDUnorderedSet GetDatasourcesBySourceType(Datasource::SourceType type) const;
 
+		Datasource::SharedPtr GetDataSource(boost::uuids::uuid sourceId);
+
+
 		bool HasDatasourceWithId(const boost::uuids::uuid& id) const;
 		void RemoveDatasource(const boost::uuids::uuid& id);
 		boost::uuids::uuid AddFileDatasource(const FileDatasource& datasource);

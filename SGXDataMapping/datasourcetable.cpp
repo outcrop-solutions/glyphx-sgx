@@ -3,15 +3,15 @@
 
 namespace SynGlyphX {
 
-	DatasourceTable::DatasourceTable(const std::wstring& name, const std::wstring& query) :
+	DatasourceTable::DatasourceTable(const std::wstring& name, const boost::property_tree::wptree& query) :
 		m_name(name),
 		m_query(query)
 	{
 	}
 
 	DatasourceTable::DatasourceTable(const boost::property_tree::wptree& propertyTree) :
-		m_name(propertyTree.data()),
-		m_query(propertyTree.get_optional<std::wstring>(L"<xmlattr>.query").get_value_or(L"")) {
+		m_name(propertyTree.get<std::wstring>(L"<xmlattr>.name")),
+		m_query(propertyTree.get_child_optional(L"Query").get_value_or(boost::property_tree::wptree())) {
 
 	}
 
@@ -59,18 +59,22 @@ namespace SynGlyphX {
 		return m_name;
 	}
 
-	const std::wstring& DatasourceTable::GetQuery() const {
+	const boost::property_tree::wptree& DatasourceTable::GetQuery() const {
 
 		return m_query;
 	}
 
+	void DatasourceTable::SetQuery(const boost::property_tree::wptree& query)
+	{
+		m_query = query;
+	}
+
 	boost::property_tree::wptree& DatasourceTable::ExportToPropertyTree(boost::property_tree::wptree& parentPropertyTree) const {
 
-		boost::property_tree::wptree& tablePropertyTree = parentPropertyTree.add(L"Table", m_name);
-
+		boost::property_tree::wptree& tablePropertyTree = parentPropertyTree.add(L"Table", L"");
+		tablePropertyTree.put(L"<xmlattr>.name", m_name);
 		if (!m_query.empty()) {
-
-			tablePropertyTree.put(L"<xmlattr>.query", m_query);
+			tablePropertyTree.add_child(L"Query", m_query);
 		}
 
 		return tablePropertyTree;

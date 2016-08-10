@@ -22,16 +22,20 @@
 #include <string>
 #include <unordered_set>
 #include <unordered_map>
-#include <boost/property_tree/ptree_fwd.hpp>
+#include <boost/property_tree/ptree.hpp>
 
 namespace SynGlyphX {
 
 	class SGXDATAMAPPING_API DatasourceTable
 	{
 	public:
-		DatasourceTable(const std::wstring& name, const std::wstring& query = L"");
+		DatasourceTable(const std::wstring& name, const boost::property_tree::wptree& query = boost::property_tree::wptree());
 		DatasourceTable(const boost::property_tree::wptree& propertyTree);
 		DatasourceTable(const DatasourceTable& table);
+		DatasourceTable()
+		{
+
+		}
 		~DatasourceTable();
 
 		DatasourceTable& operator=(const DatasourceTable& table);
@@ -39,13 +43,14 @@ namespace SynGlyphX {
 		bool operator!=(const DatasourceTable& table) const;
 
 		const std::wstring& GetName() const;
-		const std::wstring& GetQuery() const;
+		const boost::property_tree::wptree& GetQuery() const;
+		void  SetQuery(const boost::property_tree::wptree& query);
 
 		boost::property_tree::wptree& ExportToPropertyTree(boost::property_tree::wptree& parentPropertyTree) const;
 
 	private:
 		std::wstring m_name;
-		std::wstring m_query;
+		boost::property_tree::wptree m_query;
 	};
 
 } //namespace SynGlyphX

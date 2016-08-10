@@ -471,7 +471,10 @@ namespace SynGlyphX {
 
 		return datasourceIDs;
 	}
+	Datasource::SharedPtr DataTransformMapping::GetDataSource(boost::uuids::uuid sourceId) {
 
+		return m_datasources.at(sourceId);
+	}
 	void DataTransformMapping::Clear() {
 
 		Clear(true);
