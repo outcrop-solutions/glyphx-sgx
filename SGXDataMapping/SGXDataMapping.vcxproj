@@ -112,6 +112,7 @@
     <ClInclude Include="datasourcetable.h" />
     <ClInclude Include="datatransformmapping.h" />
     <ClInclude Include="filedatasource.h" />
+    <ClInclude Include="FrontEndFilter.h" />
     <ClInclude Include="inputbinding.h" />
     <ClInclude Include="inputcombinationfunction.h" />
     <ClInclude Include="inputfield.h" />
@@ -151,6 +152,7 @@
       </PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="filedatasource.cpp" />
+    <ClCompile Include="FrontEndFilter.cpp" />
     <ClCompile Include="inputbinding.cpp" />
     <ClCompile Include="inputcombinationfunction.cpp" />
     <ClCompile Include="inputfield.cpp" />

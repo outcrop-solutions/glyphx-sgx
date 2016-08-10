@@ -31,6 +31,7 @@
 #include "datasource.h"
 #include "filedatasource.h"
 #include "databaseserverdatasource.h"
+#include "FrontEndFilter.h"
 
 namespace SynGlyphX {
 
@@ -58,8 +59,6 @@ namespace SynGlyphX {
 		std::unordered_map<std::wstring, InputField> m_inputFields;
 		DataTransformMapping* m_dataTransformMapping;
 	};
-
-
 
 	class SGXDATAMAPPING_API DataTransformMapping : public XMLPropertyTreeFile
     {
@@ -161,6 +160,9 @@ namespace SynGlyphX {
 		InputFieldManager* GetInputFieldManager() { return &m_inputFieldManager; }
 		std::unordered_map<std::wstring, std::wstring> GetFieldToAliasMapForTable(const InputTable& table) const;
 
+		const MultiTableFrontEndFilters& GetFrontEndFilters() const { return m_frontEndFilters; }
+		void SetFrontEndFilters(const MultiTableFrontEndFilters& filters) { m_frontEndFilters = filters; }
+
     protected:
 		void CopyInputBindingsForSubsetMapping(DataMappingGlyphGraph::SharedPtr newGlyphGraph, 
 											   DataMappingGlyphGraph::GlyphIterator newNode, 
@@ -180,6 +182,7 @@ namespace SynGlyphX {
 		std::vector<Legend> m_legends;
 		std::vector<Link> m_links;
 		InputFieldManager m_inputFieldManager;
+		MultiTableFrontEndFilters m_frontEndFilters;
 		boost::uuids::uuid m_id;
     };
 

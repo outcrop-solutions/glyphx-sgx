@@ -91,7 +91,8 @@ namespace SynGlyphX {
 		m_fieldGroups(mapping.m_fieldGroups),
 		m_legends(mapping.m_legends),
 		m_links(mapping.m_links),
-		m_inputFieldManager(mapping.m_inputFieldManager) {
+		m_inputFieldManager(mapping.m_inputFieldManager),
+		m_frontEndFilters(mapping.m_frontEndFilters) {
 
 	}
 
@@ -161,6 +162,11 @@ namespace SynGlyphX {
 		}
 
 		if (m_legends != mapping.m_legends) {
+
+			return false;
+		}
+
+		if (m_frontEndFilters != mapping.m_frontEndFilters) {
 
 			return false;
 		}
@@ -244,7 +250,33 @@ namespace SynGlyphX {
 						}
 					}
 				}
-				m_glyphTrees.insert(std::pair<boost::uuids::uuid, DataMappingGlyphGraph::SharedPtr>(glyphPropertyTree.second.get<boost::uuids::uuid>(L"<xmlattr>.id"), glyphGraph));
+				boost::uuids::uuid treeID = glyphPropertyTree.second.get<boost::uuids::uuid>(L"<xmlattr>.id");
+				m_glyphTrees.insert(std::pair<boost::uuids::uuid, DataMappingGlyphGraph::SharedPtr>(treeID, glyphGraph));
+
+				boost::optional<const boost::property_tree::wptree&> frontEndFieldsPropertyTree = glyphPropertyTree.second.get_child_optional(L"FrontEnd");
+				if (frontEndFieldsPropertyTree.is_initialized()) {
+
+					//Bryan needs the front end filters in the glyph, but we only need it once so if it has already been read in, skip it
+					InputField table(frontEndFieldsPropertyTree.get().get_child(L"FilterField"));
+					if (m_frontEndFilters.count(table) == 0) {
+
+						SingleTableFrontEndFilters filters;
+						for (const boost::property_tree::wptree::value_type& frontEndfieldProperties : frontEndFieldsPropertyTree.get()) {
+
+							if (frontEndfieldProperties.first == L"FilterField") {
+
+								InputField inputfield(frontEndfieldProperties.second);
+								filters[inputfield.GetField()] = FrontEndFilterOptions(frontEndfieldProperties.second.get<bool>(L"<xmlattr>.required"),
+									frontEndfieldProperties.second.get<bool>(L"<xmlattr>.selectall"));
+							}
+						}
+
+						if (!filters.empty()) {
+
+							m_frontEndFilters[table] = filters;
+						}
+					}
+				}
 			}
 		}
 
@@ -368,6 +400,21 @@ namespace SynGlyphX {
 			
 			boost::property_tree::wptree& glyphPropertyTree = glyphTree.second->ExportToPropertyTree(glyphTreesPropertyTree);
 			glyphPropertyTree.put(L"<xmlattr>.id", glyphTree.first);
+
+			InputTable table = GetInputTalbe(glyphTree.first);
+			if (m_frontEndFilters.count(table) != 0) {
+
+				boost::property_tree::wptree& frontEndFiltersPropertyTree = glyphPropertyTree.add(L"FrontEnd", L"");
+				for (const auto& field : m_frontEndFilters.at(table)) {
+
+					boost::property_tree::wptree& filterFieldPropertyTree = glyphPropertyTree.add(L"FilterField", L"");
+					filterFieldPropertyTree.put(L"<xmlattr>.id", table.GetDatasourceID());
+					filterFieldPropertyTree.put(L"<xmlattr>.table", table.GetTable());
+					filterFieldPropertyTree.put(L"<xmlattr>.field", field.first);
+					filterFieldPropertyTree.put(L"<xmlattr>.required", field.second.IsRequired());
+					filterFieldPropertyTree.put(L"<xmlattr>.selectall", field.second.IsMultiselectAllowed());
+				}
+			}
 		}
 
 		m_defaults.ExportToPropertyTree(dataTransformPropertyTreeRoot);
