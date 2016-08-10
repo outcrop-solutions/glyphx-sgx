@@ -17,6 +17,10 @@
 #pragma once
 #include <QtWidgets/QDialog>
 class QueryTreeWidget;
+namespace SynGlyphX
+{
+	class InputTable;
+}
 class QueryBuilderDialog : public QDialog 
 {
 	Q_OBJECT
@@ -25,4 +29,5 @@ public:
 	void accept() override;
 private:
 	QueryTreeWidget* m_treeWidget;
+	QList<SynGlyphX::InputTable> tableList;
 };

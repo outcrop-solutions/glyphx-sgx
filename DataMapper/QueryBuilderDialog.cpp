@@ -16,6 +16,7 @@ using namespace SynGlyphX;
 
 class GroupWidget : public QWidget
 {
+	Q_OBJECT
 public:
 	GroupWidget(QWidget *parent) : QWidget(parent)
 	{
@@ -37,6 +38,7 @@ public:
 
 class StatementWidget : public QWidget
 {
+	Q_OBJECT
 public:
 	StatementWidget(const QStringList& nameList, QWidget *parent) : QWidget(parent)
 	{
@@ -70,25 +72,14 @@ public:
 
 class QueryTreeWidget : public QTreeWidget
 {
+	Q_OBJECT
 public:
-	QueryTreeWidget(QWidget* parent) : QTreeWidget(parent)
+	QueryTreeWidget(const QStringList& names, QWidget* parent) : QTreeWidget(parent),
+		m_names(names)
 	{
 		setColumnCount(1);
 		setHeaderLabel("Conditions:");
-		auto model = DMGlobal::Services()->GetDataTransformModel();
-		const DataTransformMapping::DatasourceMap& datasources = model->GetDataMapping()->GetDatasources();
-		for (auto ds = datasources.begin(); ds != datasources.end(); ++ds)
-		{
-			if (Datasource::SourceType::DatabaseServer == ds->second->GetSourceType())
-			{
-				InputTable inputTable(datasources.begin()->first, datasources.begin()->second->GetTableNames().at(0));
 
-				auto stats = model->GetTableStatsMap().at(inputTable);
-				for (auto s : stats)
-					m_names.push_back(s[0]);
-			}
-
-		}
 
 		setMinimumSize(400, 400);
 	}
@@ -187,7 +178,7 @@ public:
 		if (item->data(0, Qt::UserRole).toString() == tr("Group"))
 		{
 			boost::property_tree::wptree& entry = tree.add(L"Group", L"");
-			GroupWidget* sw = dynamic_cast<GroupWidget*>(item->treeWidget());
+			GroupWidget* sw = qobject_cast<GroupWidget*>(itemWidget(item, 0));
 			entry.put(L"<xmlattr>.columnname", sw->m_cb->currentText().toStdWString());
 			for (int i = 0; i < item->childCount(); i++)
 			{
@@ -197,13 +188,17 @@ public:
 		}
 		else
 		{
-			boost::property_tree::wptree& entry = tree.add(L"Statement", L"");
-			StatementWidget* sw = dynamic_cast<StatementWidget*>(item->treeWidget());
+			StatementWidget* sw = qobject_cast<StatementWidget*>(itemWidget(item, 0));
+			if (sw)
+			{
+				boost::property_tree::wptree& entry = tree.add(L"Statement", L"");
+				entry.put(L"<xmlattr>.columnname", sw->m_fieldCb->currentText().toStdWString());
+				entry.put(L"<xmlattr>.operator", sw->m_conditionCb->currentText().toStdWString());
+				entry.put(L"<xmlattr>.value", sw->m_lineEdit->text().toStdWString());
+			}
 
-			entry.put(L"<xmlattr>.columnname", sw->m_fieldCb->currentText().toStdWString());
-			entry.put(L"<xmlattr>.operator", sw->m_conditionCb->currentText().toStdWString());
-			entry.put(L"<xmlattr>.value", sw->m_lineEdit->text().toStdWString());
 		}
+		return tree;
 	}
 
 	void GetPropertyTree(boost::property_tree::wptree&  tree)
@@ -228,7 +223,27 @@ QueryBuilderDialog::QueryBuilderDialog(QWidget* parent) : QDialog(parent)
 	QVBoxLayout* queryLayout = new QVBoxLayout(queryGroupBox);
 	mainLayout->addWidget(queryGroupBox);
 
-	m_treeWidget = new QueryTreeWidget(this);
+
+	QStringList names;
+	auto model = DMGlobal::Services()->GetDataTransformModel();
+	const DataTransformMapping::DatasourceMap& datasources = model->GetDataMapping()->GetDatasources();
+	for (auto ds = datasources.begin(); ds != datasources.end(); ++ds)
+	{
+		if (Datasource::SourceType::DatabaseServer == ds->second->GetSourceType())
+		{
+			InputTable inputTable(datasources.begin()->first, datasources.begin()->second->GetTableNames().at(0));
+			tableList.push_back(inputTable);
+			auto stats = model->GetTableStatsMap().at(inputTable);
+			for (auto s : stats)
+				names.push_back(s[0]);
+		}
+
+	}
+	auto dataSource = model->GetDataSource(tableList[0].GetDatasourceID());
+	boost::property_tree::wptree  tree;
+	m_treeWidget->GetPropertyTree(tree);
+	m_treeWidget = new QueryTreeWidget(names, this);
+	m_treeWidget->SetFromTree(dataSource->GetQuery(dataSource->GetTableNames()[0]));
 	queryLayout->addWidget(m_treeWidget);
 
 	//queryLayout->removeWidget(m_treeWidget);
@@ -257,6 +272,19 @@ QueryBuilderDialog::QueryBuilderDialog(QWidget* parent) : QDialog(parent)
 
 void QueryBuilderDialog::accept()
 {
-
-
+	auto model = DMGlobal::Services()->GetDataTransformModel();
+	auto dataSource = model->GetDataSource(tableList[0].GetDatasourceID());
+	boost::property_tree::wptree  tree;
+	m_treeWidget->GetPropertyTree(tree);
+	dataSource->SetQuery(dataSource->GetTableNames()[0], tree);
+	//const DataTransformMapping::DatasourceMap& datasources = model->GetDataMapping()->GetDatasources();
+	//auto source = datasources.at(tableList[0].GetDatasourceID()).get();
+	//boost::property_tree::wptree  tree;
+	//m_treeWidget->GetPropertyTree(tree);
+	//auto tables = source->GetTables();
+	//auto table = tables[0];
+	//table.SetQuery(tree);
+	QDialog::accept();
 }
+
+#include "QueryBuilderDialog.moc"
