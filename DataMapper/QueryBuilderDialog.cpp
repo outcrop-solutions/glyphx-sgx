@@ -101,7 +101,7 @@ public:
 				selection[0]->parent()->setExpanded(true);
 			}
 			else
-				insertTopLevelItem(indexOfTopLevelItem(selection[0]), item);
+				insertTopLevelItem(indexOfTopLevelItem(selection[0]) + 1, item);
 
 		}
 		else
@@ -153,6 +153,7 @@ public:
 	void AddGroup(QTreeWidgetItem* parent, const boost::property_tree::wptree& tree)
 	{
 		QTreeWidgetItem *widgetItem = new QTreeWidgetItem();
+		widgetItem->setData(0, Qt::UserRole, tr("Group"));
 		parent->addChild(widgetItem);
 		setItemWidget(widgetItem, 0, new GroupWidget(tree, this));
 		resizeColumnToContents(0);
@@ -239,7 +240,7 @@ QueryBuilderDialog::QueryBuilderDialog(QWidget* parent) : QDialog(parent)
 	mainLayout->addWidget(queryGroupBox);
 
 
-	QStringList names;
+	
 	auto model = DMGlobal::Services()->GetDataTransformModel();
 	const DataTransformMapping::DatasourceMap& datasources = model->GetDataMapping()->GetDatasources();
 	if (datasources.size() == 0)
@@ -249,36 +250,57 @@ QueryBuilderDialog::QueryBuilderDialog(QWidget* parent) : QDialog(parent)
 	{
 		if (Datasource::SourceType::DatabaseServer == ds->second->GetSourceType())
 		{
-			InputTable inputTable(datasources.begin()->first, datasources.begin()->second->GetTableNames().at(0));
-			m_tableList.push_back(inputTable);
-			auto stats = model->GetTableStatsMap().at(inputTable);
-			for (auto s : stats)
-				names.push_back(s[0]);
+			auto tableNames = ds->second->GetTableNames();
+			for (auto tableName : tableNames)
+			{
+				QStringList names;
+				InputTable inputTable(ds->first, tableName);
+				m_tableList.push_back(inputTable);
+				auto stats = model->GetTableStatsMap().at(inputTable);
+				for (auto s : stats)
+					names.push_back(s[0]);
+				auto treeWidget = new QueryTreeWidget(names, this);
+				m_treeWidgets.push_back(treeWidget);
+				treeWidget->SetFromTree(ds->second->GetQuery(tableName));
+				queryLayout->addWidget(treeWidget);
+				treeWidget->hide();
+			}
+			break; //currently only one database source supported 
 		}
-
 	}
+
 	if (m_tableList.size() == 0)
 		return;
 
-	auto dataSource = model->GetDataSource(m_tableList[0].GetDatasourceID());
+	m_currentTreeWidget = m_treeWidgets[0];
+	m_treeWidgets[0]->show();
 
-	m_treeWidget = new QueryTreeWidget(names, this);
-	m_treeWidget->SetFromTree(dataSource->GetQuery(m_tableList[0].GetTable()));
+	for (int i = 0; i < m_tableList.size(); ++i)
+	{
+		m_tableComboBox->insertItem(i, QString::fromStdWString(m_tableList[i].GetTable()));
+
+	}
+
+	QObject::connect(m_tableComboBox, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, [=](int index){
+		m_currentTreeWidget->hide();
+		m_currentTreeWidget = m_treeWidgets[index];
+		m_currentTreeWidget->show();
+	});
 	//m_treeWidget->SetFromTree(dataSource->GetQuery(dataSource->GetTableNames()[0]));
-	queryLayout->addWidget(m_treeWidget);
+	
 
 	//queryLayout->removeWidget(m_treeWidget);
 
 	QPushButton* addConditionButton = new QPushButton(tr("Add Condition"), this);
-	QObject::connect(addConditionButton, &QPushButton::clicked, m_treeWidget, &QueryTreeWidget::OnAddCondition);
+	QObject::connect(addConditionButton, &QPushButton::clicked, this, [=]() { m_currentTreeWidget->OnAddCondition(); });
 	queryLayout->addWidget(addConditionButton);
 	
 	QPushButton* addGroupButton = new QPushButton(tr("Add Group"), this);
-	QObject::connect(addGroupButton, &QPushButton::clicked, m_treeWidget, &QueryTreeWidget::OnAddGroup);
+	QObject::connect(addGroupButton, &QPushButton::clicked, this, [=]() { m_currentTreeWidget->OnAddGroup(); });
 	queryLayout->addWidget(addGroupButton);
 
 	QPushButton* removeButton = new QPushButton(tr("Remove"), this);
-	QObject::connect(removeButton, &QPushButton::clicked, m_treeWidget, &QueryTreeWidget::OnRemove);
+	QObject::connect(removeButton, &QPushButton::clicked, this, [=]() { m_currentTreeWidget->OnRemove(); });
 	queryLayout->addWidget(removeButton);
 
 	QDialogButtonBox* dialogButtonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, this);
@@ -294,17 +316,15 @@ QueryBuilderDialog::QueryBuilderDialog(QWidget* parent) : QDialog(parent)
 void QueryBuilderDialog::accept()
 {
 	auto model = DMGlobal::Services()->GetDataTransformModel();
-	auto dataSource = model->GetDataSource(m_tableList[0].GetDatasourceID());
-	boost::property_tree::wptree  tree;
-	m_treeWidget->GetPropertyTree(tree);
-	dataSource->SetQuery(dataSource->GetTableNames()[0], tree);
-	//const DataTransformMapping::DatasourceMap& datasources = model->GetDataMapping()->GetDatasources();
-	//auto source = datasources.at(m_tableList[0].GetDatasourceID()).get();
-	//boost::property_tree::wptree  tree;
-	//m_treeWidget->GetPropertyTree(tree);
-	//auto tables = source->GetTables();
-	//auto table = tables[0];
-	//table.SetQuery(tree);
+	auto dataSource = model->GetDataSource(m_tableList[0].GetDatasourceID()); //one data source is currently supported
+	for (int i = 0; i < m_treeWidgets.size(); ++i)
+	{
+		boost::property_tree::wptree  tree;
+		m_treeWidgets[i]->GetPropertyTree(tree);
+		dataSource->SetQuery(m_tableList[i].GetTable(), tree);
+	}
+
+	DMGlobal::Services()->SetModified(true);
 	QDialog::accept();
 }
 

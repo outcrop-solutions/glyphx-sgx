@@ -29,7 +29,8 @@ public:
 	QueryBuilderDialog(QWidget* parent = 0);
 	void accept() override;
 private:
-	QueryTreeWidget* m_treeWidget;
+	QList<QueryTreeWidget*> m_treeWidgets;
+	QueryTreeWidget* m_currentTreeWidget;
 	QList<SynGlyphX::InputTable> m_tableList;
 	QComboBox* m_tableComboBox;
 };
