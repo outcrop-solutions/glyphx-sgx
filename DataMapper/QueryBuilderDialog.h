@@ -17,6 +17,7 @@
 #pragma once
 #include <QtWidgets/QDialog>
 class QueryTreeWidget;
+class QComboBox;
 namespace SynGlyphX
 {
 	class InputTable;
@@ -29,5 +30,6 @@ public:
 	void accept() override;
 private:
 	QueryTreeWidget* m_treeWidget;
-	QList<SynGlyphX::InputTable> tableList;
+	QList<SynGlyphX::InputTable> m_tableList;
+	QComboBox* m_tableComboBox;
 };
