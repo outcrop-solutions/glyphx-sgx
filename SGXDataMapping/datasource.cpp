@@ -32,7 +32,7 @@ namespace SynGlyphX {
 
 				if (tableValue.first == L"Table") {
 
-					m_tables.emplace(tableValue.second.data(), DatasourceTable(tableValue.second));
+					m_tables.emplace(tableValue.second.get<std::wstring>(L"<xmlattr>.name"), DatasourceTable(tableValue.second));
 				}
 			}
 		}
