@@ -513,14 +513,15 @@ public class SDTReader {
 
 						SourceDataInfo tb = new SourceDataInfo();
 						tb.setID(id);
-						tb.setTable(table.getTextContent());
+						tb.setTable(te.getAttribute("name"));
 						tb.setType(e.getAttribute("type").toLowerCase());
-						tb.setQuery(QueryBuilder.build(tb.getType(), tb.getTable(), e.getElementsByTagName("Query")));
+						tb.setQuery(QueryBuilder.build(tb.getType(), tb.getTable(), te.getElementsByTagName("Query").item(0)));
 						/*if(te.hasAttribute("query")){
 							if(!te.getAttribute("query").equals("")){
 								tb.setQuery(te.getAttribute("query"));
 							}
 						}*/
+						//System.out.println(tb.getQuery());
 						tb.setPath(host);
 						tb.setHost("jdbc:"+host);
 						tb.setUsername(user);

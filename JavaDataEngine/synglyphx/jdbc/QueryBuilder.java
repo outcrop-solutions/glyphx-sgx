@@ -14,28 +14,17 @@ public class QueryBuilder {
 
 	}
 
-	public static String build(String dbtype, String tblname, NodeList queries){
+	public static String build(String dbtype, String tblname, Node qe){
 		String query = "SELECT * FROM "+tblname;
-		try{
-			Node qe = getQuery(tblname, queries);
-			return query + logicalStatement(qe);
+		if(qe != null){
+			try{
+				return query + logicalStatement(qe);
 
-		}catch(Exception e){
-			e.printStackTrace();
-		}
-
-		return query;
-	}
-
-	private static Node getQuery(String tblname, NodeList queries) throws Exception{
-		for(int i=0; i<queries.getLength(); i++){
-			Node query = queries.item(i); 
-			Element qe = (Element) query;
-			if(qe.getAttribute("table").equals(tblname)){
-				return query;
+			}catch(Exception e){
+				e.printStackTrace();
 			}
 		}
-		return null;
+		return query;
 	}
 
 	private static String logicalStatement(Node qe) throws Exception{
@@ -50,7 +39,6 @@ public class QueryBuilder {
 
 	private static String createStatement(String whereStmt, Node node) throws Exception{
 		if(node.getNodeType() == Node.ELEMENT_NODE) {
-			System.out.println(node.getNodeName());
 			Element e = (Element) node;
 			if(node.getNodeName().equals("Statement")){
 				whereStmt += (" "+e.getAttribute("columnname")+getOperator(e.getAttribute("operator"))+"'"+e.getAttribute("value")+"'");
