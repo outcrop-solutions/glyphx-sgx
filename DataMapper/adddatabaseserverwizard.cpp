@@ -44,8 +44,8 @@ SynGlyphX::DatabaseServerDatasource AddDatabaseServerWizard::GetValues() const {
 												   m_databaseServerInfoWidget->GetUsername().toStdWString(),
 												   m_databaseServerInfoWidget->GetPassword().toStdWString());
 
-	QStringList chosenForeignTables = m_tableChoiceWidget->GetChosenForiegnTables();
-	if (chosenForeignTables.isEmpty()) {
+	//QStringList chosenForeignTables = m_tableChoiceWidget->GetChosenForiegnTables();
+	//if (chosenForeignTables.isEmpty()) {
 
 		SynGlyphX::Datasource::TableNames tables;
 		for (const auto& table : m_tableChoiceWidget->GetChosenMainTables()) {
@@ -53,26 +53,26 @@ SynGlyphX::DatabaseServerDatasource AddDatabaseServerWizard::GetValues() const {
 			tables.push_back(table.toStdWString());
 		}
 		datasource.AddTables(tables);
-	}
-	else {
+	//}
+	//else {
 
-		QString chosenMainTable = m_tableChoiceWidget->GetChosenMainTables()[0];
-		DataEngine::DataEngineConnection::ForiegnKeyVector allForeignKeysForTable = m_dataEngineConnection->getForeignKeys(chosenMainTable);
-		DataEngine::DataEngineConnection::ForiegnKeyVector foreignKeysForJoining;
-		for (const auto& foreignKey : allForeignKeysForTable) {
+	//	QString chosenMainTable = m_tableChoiceWidget->GetChosenMainTables()[0];
+	//	DataEngine::DataEngineConnection::ForiegnKeyVector allForeignKeysForTable = m_dataEngineConnection->getForeignKeys(chosenMainTable);
+	//	DataEngine::DataEngineConnection::ForiegnKeyVector foreignKeysForJoining;
+	//	for (const auto& foreignKey : allForeignKeysForTable) {
 
-			if (chosenForeignTables.contains(foreignKey.origin)) {
+	//		if (chosenForeignTables.contains(foreignKey.origin)) {
 
-				foreignKeysForJoining.push_back(foreignKey);
-			}
-		}
+	//			foreignKeysForJoining.push_back(foreignKey);
+	//		}
+	//	}
 
-		QString query = DataEngine::DataEngineConnection::CreateInnerJoinQueryFromForiegnKeys(chosenMainTable, foreignKeysForJoining);
+	//	QString query = DataEngine::DataEngineConnection::CreateInnerJoinQueryFromForiegnKeys(chosenMainTable, foreignKeysForJoining);
 
-		SynGlyphX::Datasource::Tables tables;
-		tables.insert(std::pair<std::wstring, SynGlyphX::DatasourceTable>(L"Merged", SynGlyphX::DatasourceTable(L"Merged", query.toStdWString())));
-		datasource.AddTables(tables);
-	}
+	//	SynGlyphX::Datasource::Tables tables;
+	//	tables.insert(std::pair<std::wstring, SynGlyphX::DatasourceTable>(L"Merged", SynGlyphX::DatasourceTable(L"Merged", query.toStdWString())));
+	//	datasource.AddTables(tables);
+	//}
 
 	return datasource;
 }

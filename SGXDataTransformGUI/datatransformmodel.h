@@ -164,6 +164,7 @@ namespace SynGlyphX {
 		boost::uuids::uuid GetTreeId(const QModelIndex& index) const;
 		
 		void ChangeMapping(const DataTransformMapping& mapping);
+		Datasource::SharedPtr GetDataSource(boost::uuids::uuid sourceId) { return m_dataMapping->GetDataSource(sourceId); }
 
 		InputFieldManager* GetInputFieldManager() { return m_dataMapping->GetInputFieldManager(); }
 	private:

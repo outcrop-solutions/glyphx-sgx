@@ -1361,13 +1361,13 @@ namespace SynGlyphX {
 									  QString::fromStdWString(fileDatasource->GetPassword()),
 									  sourceTypeString);
 
-					if (datasource->DoAnyTablesHaveQueries()) {
+/*					if (datasource->DoAnyTablesHaveQueries()) {
 
 						SynGlyphX::Datasource::Tables::const_iterator tablesQueryIterator = datasource->GetTables().begin();
 						m_dataEngineConnection->setQueryTables(QString::fromStdWString(tablesQueryIterator->second.GetQuery()));
 						chosenTables << QString::fromStdWString(tablesQueryIterator->first);
 					}
-					else {
+					else*/ {
 
 						chosenTables = GetChosenTables("", fileDatasource->GetTableNames());
 					}
@@ -1402,17 +1402,17 @@ namespace SynGlyphX {
 								  QString::fromStdWString(dbmsDatasource->GetPassword()),
 								  sourceTypeString);
 
-				if (datasource->DoAnyTablesHaveQueries()) {
+				//if (datasource->DoAnyTablesHaveQueries()) {
 
-					SynGlyphX::Datasource::Tables::const_iterator tablesQueryIterator = datasource->GetTables().begin();
-					m_dataEngineConnection->setQueryTables(QString::fromStdWString(tablesQueryIterator->second.GetQuery()));
-					chosenTables << QString::fromStdWString(tablesQueryIterator->first);
-				}
-				else {
+				//	SynGlyphX::Datasource::Tables::const_iterator tablesQueryIterator = datasource->GetTables().begin();
+				//	//m_dataEngineConnection->setQueryTables(QString::fromStdWString(tablesQueryIterator->second.GetQuery()));
+				//	chosenTables << QString::fromStdWString(tablesQueryIterator->first);
+				//}
+				//else {
 					chosenTables = GetChosenTables(
 						QString::fromStdWString(dbmsDatasource->GetSchema()),
 						dbmsDatasource->GetTableNames());
-				}
+				//}
 
 				//QString query = "SELECT City.Population, Country.Code FROM (City INNER JOIN Country ON (City.CountryCode=Country.Code))";
 				/*

@@ -30,6 +30,9 @@ DataSourcesView::DataSourcesView(SynGlyphX::DataTransformModel* sourceModel, QWi
 	QAction* propertiesAction = m_sharedActions.AddAction(tr("Properties"));
 	QObject::connect(propertiesAction, &QAction::triggered, this, &DataSourcesView::OnShowProperties);
 
+	QAction* queryAction = m_sharedActions.AddAction(tr("Query"));
+	QObject::connect(queryAction, &QAction::triggered, this, &DataSourcesView::OnShowProperties);
+
 	m_sharedActions.EnableActions(false);
 
 	addActions(m_sharedActions);
