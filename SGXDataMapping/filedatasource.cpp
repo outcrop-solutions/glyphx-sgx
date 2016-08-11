@@ -4,6 +4,7 @@
 #include <boost/filesystem.hpp>
 #include "stringconvert.h"
 #include <boost/property_tree/ptree.hpp>
+#include "datasourcetable.h"
 
 namespace SynGlyphX {
 
