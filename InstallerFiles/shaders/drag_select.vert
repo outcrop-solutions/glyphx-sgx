@@ -1,5 +1,3 @@
-
-#version 330 core
  
 layout(std140) uniform camera_data
 {

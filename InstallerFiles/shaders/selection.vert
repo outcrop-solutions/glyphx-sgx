@@ -1,6 +1,4 @@
 
-#version 330 core
- 
 layout(std140) uniform camera_data
 {
 	mat4 view, proj;
@@ -10,11 +8,13 @@ layout(std140) uniform camera_data
 layout(std140) uniform global_data
 {
 	float scale;
+	float elapsed_seconds;
 };
 
 layout(std140) uniform instance_data
 {
 	mat4 world;
+	vec4 rotation_animation;
 };
 
 layout (location = 0) in vec4 position;
@@ -30,7 +30,11 @@ void main()
 	nml = vec3( view * world * normalize( vec4( normal, 0 ) ) );
 	eye = eyevec;
 
-	vec4 pos = vec4( position.xyz * scale, 1 );
+	vec3 rotation_axis = rotation_animation.xyz;
+	float rotation_rate = rotation_animation.w;
+	mat3 rotation = rotation_matrix( rotation_axis, elapsed_seconds * rotation_rate );
 
-    gl_Position = proj * view * world * pos;
+	vec3 pos = rotation * position.xyz;
+
+    gl_Position = proj * view * world * vec4( pos * scale, 1 );
 }
