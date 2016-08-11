@@ -16,6 +16,6 @@ uniform sampler2D base_texture;
 void main()
 {
 	vec4 result = tint_color;
-	result.a *= 1 - abs( dot( nml, eye ) );
+	result.a *= clamp( 0.5f + 2.f * ( abs( dot( nml, eye ) ) ), 0, 1 );
     outputF = result;
 }
