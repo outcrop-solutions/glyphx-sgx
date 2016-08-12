@@ -46,6 +46,7 @@ public:
 		m_fieldCb = new QComboBox(this);
 		m_fieldCb->addItems(nameList);
 		mainLayout->addWidget(m_fieldCb);
+		m_fieldCb->setFixedWidth(120);
 
 		m_conditionCb = new QComboBox(this);
 		m_conditionCb->addItems(QStringList({ "eq", "neq", "gt", "lt", "gte", "lte", "btw", "like" }));
@@ -53,14 +54,14 @@ public:
 		mainLayout->addWidget(m_conditionCb);
 
 		m_lineEdit = new QLineEdit(this);
-		m_lineEdit->setFixedWidth(50);
+		m_lineEdit->setFixedWidth(60);
 		m_lineEdit2 = new QLineEdit(this);
-		m_lineEdit2->setFixedWidth(50);
+		m_lineEdit2->setFixedWidth(60);
 		mainLayout->addWidget(m_lineEdit);
 		mainLayout->addWidget(m_lineEdit2);
 		m_lineEdit2->hide();
 		setLayout(mainLayout);
-		setFixedSize(320, 40);
+		setFixedSize(360, 40);
 
 		connect(m_conditionCb, static_cast<void(QComboBox::*)(const QString &)>(&QComboBox::currentTextChanged),
 			[=](const QString &text)
@@ -192,6 +193,7 @@ public:
 			else if (childItem.first == L"Statement")
 				AddStatement(widgetItem, childItem.second);
 		}
+		widgetItem->setExpanded(true);
 	}
 
 	void AddTree(QTreeWidgetItem* parent, const boost::property_tree::wptree& tree)
