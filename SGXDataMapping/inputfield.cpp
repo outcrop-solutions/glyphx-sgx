@@ -30,17 +30,10 @@ namespace SynGlyphX {
 	}
 
 	InputField::InputField(const boost::property_tree::wptree& propertyTree) :
+		InputTable(propertyTree),
 		m_field(propertyTree.get<std::wstring>(L"<xmlattr>.field")),
 		m_type(s_fieldTypeStrings.right.at(propertyTree.get<std::wstring>(L"<xmlattr>.type"))) {
 
-		m_datasourceID = propertyTree.get<boost::uuids::uuid>(L"<xmlattr>.id");
-		m_table = propertyTree.get<std::wstring>(L"<xmlattr>.table");
-
-		//Since some datasources are single table make sure table has a non-empty value
-		if (m_table.empty()) {
-
-			m_table = Datasource::SingleTableName;
-		}
 	}
 
 	InputField::InputField(const InputField& inputField) :

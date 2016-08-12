@@ -257,7 +257,7 @@ namespace SynGlyphX {
 				if (frontEndFieldsPropertyTree.is_initialized()) {
 
 					//Bryan needs the front end filters in the glyph, but we only need it once so if it has already been read in, skip it
-					InputField table(frontEndFieldsPropertyTree.get().get_child(L"FilterField"));
+					InputTable table(frontEndFieldsPropertyTree.get().get_child(L"FilterField"));
 					if (m_frontEndFilters.count(table) == 0) {
 
 						SingleTableFrontEndFilters filters;
@@ -265,8 +265,8 @@ namespace SynGlyphX {
 
 							if (frontEndfieldProperties.first == L"FilterField") {
 
-								InputField inputfield(frontEndfieldProperties.second);
-								filters[inputfield.GetField()] = FrontEndFilterOptions(frontEndfieldProperties.second.get<bool>(L"<xmlattr>.required"),
+								std::wstring inputfield = frontEndfieldProperties.second.get<std::wstring>(L"<xmlattr>.field");
+								filters[inputfield] = FrontEndFilterOptions(frontEndfieldProperties.second.get<bool>(L"<xmlattr>.required"),
 									frontEndfieldProperties.second.get<bool>(L"<xmlattr>.selectall"));
 							}
 						}
@@ -407,7 +407,7 @@ namespace SynGlyphX {
 				boost::property_tree::wptree& frontEndFiltersPropertyTree = glyphPropertyTree.add(L"FrontEnd", L"");
 				for (const auto& field : m_frontEndFilters.at(table)) {
 
-					boost::property_tree::wptree& filterFieldPropertyTree = glyphPropertyTree.add(L"FilterField", L"");
+					boost::property_tree::wptree& filterFieldPropertyTree = frontEndFiltersPropertyTree.add(L"FilterField", L"");
 					filterFieldPropertyTree.put(L"<xmlattr>.id", table.GetDatasourceID());
 					filterFieldPropertyTree.put(L"<xmlattr>.table", table.GetTable());
 					filterFieldPropertyTree.put(L"<xmlattr>.field", field.first);

@@ -1,6 +1,8 @@
 #include "inputtable.h"
 #include "datasource.h"
 #include "hashid.h"
+#include <boost/property_tree/ptree.hpp>
+#include <boost/uuid/uuid_io.hpp>
 
 namespace SynGlyphX {
 
@@ -19,7 +21,17 @@ namespace SynGlyphX {
 		}
 	}
 
-	//InputTable(const boost::property_tree::wptree& propertyTree);
+	InputTable::InputTable(const boost::property_tree::wptree& propertyTree) {
+
+		m_datasourceID = propertyTree.get<boost::uuids::uuid>(L"<xmlattr>.id");
+		m_table = propertyTree.get<std::wstring>(L"<xmlattr>.table");
+
+		//Since some datasources are single table make sure table has a non-empty value
+		if (m_table.empty()) {
+
+			m_table = Datasource::SingleTableName;
+		}
+	}
 	
 	InputTable::InputTable(const InputTable& inputTable) :
 		m_datasourceID(inputTable.m_datasourceID),

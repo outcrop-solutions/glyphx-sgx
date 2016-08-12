@@ -21,6 +21,7 @@
 #include "sgxdatamapping.h"
 #include <string>
 #include <boost/uuid/uuid.hpp>
+#include <boost/property_tree/ptree_fwd.hpp>
 #include "hashid.h"
 
 namespace SynGlyphX {
@@ -30,7 +31,7 @@ namespace SynGlyphX {
 	public:
 		InputTable();
 		InputTable(const boost::uuids::uuid& datasourceID, const std::wstring& table);
-		//InputTable(const boost::property_tree::wptree& propertyTree);
+		InputTable(const boost::property_tree::wptree& propertyTree);
 		InputTable(const InputTable& inputTable);
 		virtual ~InputTable();
 
