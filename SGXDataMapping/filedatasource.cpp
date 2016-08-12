@@ -117,7 +117,7 @@ namespace SynGlyphX {
 
 	bool FileDatasource::IsOriginalDatasourceADatabase() const {
 
-		return ((m_fileType == FileType::SQLITE3) || (m_fileType == FileType::CSV));
+		return (m_fileType == FileType::SQLITE3);
 	}
 
 	bool FileDatasource::CanDatasourceHaveMultipleTables() const {
