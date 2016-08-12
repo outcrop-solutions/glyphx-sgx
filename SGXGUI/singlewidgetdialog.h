@@ -32,8 +32,10 @@ namespace SynGlyphX {
 		SingleWidgetDialog(QDialogButtonBox::StandardButtons buttons, QWidget* widget, QWidget *parent = 0);
 		~SingleWidgetDialog();
 
-	private:
+		QWidget* GetWidget() const { return m_widget; }
 
+	private:
+		QWidget* m_widget;
 	};
 
 } //namespace SynGlyphX

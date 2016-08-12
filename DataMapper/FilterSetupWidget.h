@@ -16,9 +16,48 @@
 ///
 
 #pragma once
-#include <QtWidgets/QTableView>
+#include <QtWidgets/QWidget>
+#include <QtCore/QAbstractTableModel>
+#include <set>
+#include "FrontEndFilter.h"
 
-class FilterSetupWidget : public QTableView
+class QComboBox;
+class QTableView;
+class QItemSelection;
+
+class FrontEndFilterModel : public QAbstractTableModel {
+
+	Q_OBJECT
+
+public:
+	FrontEndFilterModel(QObject* parent = nullptr);
+	~FrontEndFilterModel();
+
+	void SetFilters(const SynGlyphX::MultiTableFrontEndFilters& filters);
+	const SynGlyphX::MultiTableFrontEndFilters& GetFilters() const;
+
+	void SetCurrentTable(const SynGlyphX::InputTable& table);
+	SynGlyphX::InputTable GetCurrentTable();
+
+	void AddField(const SynGlyphX::InputField& newField);
+	void RemoveFields(const std::set<std::wstring>& fieldsToRemove);
+
+	void RemoveTable(const SynGlyphX::InputTable& table);
+
+	int rowCount(const QModelIndex& parent = QModelIndex()) const override;
+	int columnCount(const QModelIndex& parent = QModelIndex()) const override { return 3; }
+	Qt::ItemFlags flags(const QModelIndex& index) const override;
+	QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const override;
+
+	QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const override;
+	bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole) override;
+
+private:
+	SynGlyphX::MultiTableFrontEndFilters m_filters;
+	SynGlyphX::MultiTableFrontEndFilters::iterator m_currentTableFilters;
+};
+
+class FilterSetupWidget : public QWidget
 {
 	Q_OBJECT
 
@@ -26,11 +65,33 @@ public:
 	FilterSetupWidget(QWidget *parent);
 	~FilterSetupWidget();
 
+	const SynGlyphX::MultiTableFrontEndFilters& GetFilters() const;
+	void SetFilters(const SynGlyphX::MultiTableFrontEndFilters& filters);
+
+protected:
+	void dragEnterEvent(QDragEnterEvent* event) override;
+	void dropEvent(QDropEvent* event) override;
+
 private slots:
-	void OnHeaderSectionClicked(int index);
+	void OnTableSelected(int index);
+	void OnSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected);
+	void OnRemoveSelected();
+	void OnRemoveTable();
+	void OnRemoveAllTables();
 
 private:
-	
+	bool IsTableInUse(const SynGlyphX::InputTable& table) const;
+	void AddTable(const SynGlyphX::InputTable& table);
+	void UpdateContextMenuEnableStates();
+
+	QComboBox* m_tableComboBox;
+	QTableView* m_table;
+	FrontEndFilterModel* m_model;
+	std::vector<SynGlyphX::InputTable> m_inputTables;
+
+	QAction* m_removeSelectedAction;
+	QAction* m_removeTableAction;
+	QAction* m_removeAllTablesAction;
 };
 
 //#pragma once

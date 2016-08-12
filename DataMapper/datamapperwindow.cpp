@@ -42,6 +42,7 @@
 #include "DMGlobal.h"
 #include <QtWidgets/QUndoview>
 #include <QtCore/QStandardPaths>
+#include "FilterSetupWidget.h"
 
 DataMapperWindow::DataMapperWindow(QWidget *parent)
     : SynGlyphX::MainWindow(0, parent),
@@ -78,6 +79,11 @@ DataMapperWindow::DataMapperWindow(QWidget *parent)
 
 	m_linksDialog = new LinksDialog(m_dataTransformModel,  this);
 	QObject::connect(m_linksDialog, &QDialog::accepted, this, &DataMapperWindow::OnLinkDialogAccepted);
+
+	m_frontEndFiltersSetupDialog = new SynGlyphX::SingleWidgetDialog(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, new FilterSetupWidget(this), this);
+	m_frontEndFiltersSetupDialog->setWindowTitle(tr("Filter Setup"));
+	QObject::connect(m_frontEndFiltersSetupDialog, &QDialog::accepted, this, &DataMapperWindow::OnFrontEndFiltersDialogAccepted);
+
 	//Setup data transform
 	//SynGlyphXANTz::ANTzExportTransformer::SetLogoFilename(SynGlyphX::GlyphBuilderApplication::applicationDirPath() + QDir::separator() + "logo.png");
 	//SynGlyphX::Transformer::SetDefaultImagesDirectory(SynGlyphX::GlyphBuilderApplication::GetDefaultBaseImagesLocation());
@@ -223,7 +229,12 @@ void DataMapperWindow::CreateMenus() {
 
 	//Create Datasource Menu
 	m_datasourceMenu = menuBar()->addMenu(tr("Data Source"));
-    
+
+	QAction* filterSetupAction = m_datasourceMenu->addAction(tr("Setup Filters"));
+	QObject::connect(filterSetupAction, &QAction::triggered, this, &DataMapperWindow::ChangeFrontEndFilters);
+
+	m_datasourceMenu->addSeparator();
+
 	QAction* addFileDatasourceAction = m_datasourceMenu->addAction(tr("Add File"));
 	QObject::connect(addFileDatasourceAction, &QAction::triggered, this, &DataMapperWindow::AddFileDataSource);
 
@@ -1129,4 +1140,21 @@ void DataMapperWindow::ChangeOptions() {
 		m_minMaxGlyph3DWidget->SetBaseImage(optionsWidget->GetDefaultBaseImage());
 		m_minMaxGlyph3DWidget->SetLockZPositionToZero(optionsWidget->IsZAlwaysZeroIn3D());
 	}
+}
+
+void DataMapperWindow::ChangeFrontEndFilters() {
+
+	FilterSetupWidget* filterSetupWidget = dynamic_cast<FilterSetupWidget*>(m_frontEndFiltersSetupDialog->GetWidget());
+	filterSetupWidget->SetFilters(m_dataTransformModel->GetFrontEndFilters());
+	
+	m_frontEndFiltersSetupDialog->show();
+	m_frontEndFiltersSetupDialog->raise();
+	m_frontEndFiltersSetupDialog->activateWindow();
+}
+
+void DataMapperWindow::OnFrontEndFiltersDialogAccepted() {
+
+	FilterSetupWidget* filterSetupWidget = dynamic_cast<FilterSetupWidget*>(m_frontEndFiltersSetupDialog->GetWidget());
+	m_dataTransformModel->SetFrontEndFiltersUndoRedo(filterSetupWidget->GetFilters());
+	DMGlobal::Services()->SetModified();
 }

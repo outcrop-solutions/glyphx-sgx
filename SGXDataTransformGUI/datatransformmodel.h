@@ -169,6 +169,7 @@ namespace SynGlyphX {
 
 		const MultiTableFrontEndFilters& GetFrontEndFilters() const { return m_dataMapping->GetFrontEndFilters(); }
 		void SetFrontEndFilters(const MultiTableFrontEndFilters& filters) { m_dataMapping->SetFrontEndFilters(filters); }
+		void SetFrontEndFiltersUndoRedo(const MultiTableFrontEndFilters& filters);
 
 	private:
 		void Clear();

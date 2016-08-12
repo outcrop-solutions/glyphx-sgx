@@ -4,8 +4,11 @@
 namespace SynGlyphX {
 
 	SingleWidgetDialog::SingleWidgetDialog(QDialogButtonBox::StandardButtons buttons, QWidget* widget, QWidget *parent)
-		: QDialog(parent)
+		: QDialog(parent),
+		m_widget(widget)
 	{
+		m_widget->setParent(this);
+
 		QVBoxLayout* layout = new QVBoxLayout(this);
 		layout->addWidget(widget);
 

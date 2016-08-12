@@ -47,6 +47,7 @@ namespace SynGlyphX {
 	class DataTransformModel;
 	class RoleDataFilterProxyModel;
 	class IntRoleDataFilterProxyModel;
+	class SingleWidgetDialog;
 }
 
 class DataMapperWindow : public SynGlyphX::MainWindow
@@ -85,6 +86,8 @@ private slots:
 	void ChangeSceneProperties();
 	void ChangeOptions();
 	void AddLegend();
+	void ChangeFrontEndFilters();
+	void OnFrontEndFiltersDialogAccepted();
 
 private:
     void CreateMenus();
@@ -112,6 +115,7 @@ private:
 	QMenu* m_toolsMenu;
 
 	LinksDialog* m_linksDialog;
+	SynGlyphX::SingleWidgetDialog* m_frontEndFiltersSetupDialog;
 
 	QAction* m_showAnimation;
 

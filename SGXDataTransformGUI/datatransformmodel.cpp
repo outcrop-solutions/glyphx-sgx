@@ -21,7 +21,7 @@
 #include "AppGlobal.h"
 #include <QtWidgets/QUndoStack>
 #include <QtWidgets/QUndoCommand>
-#include "FrontEndFilterManager.h"
+#include "FrontEndFilter.h"
 
 namespace SynGlyphX {
 
@@ -1550,6 +1550,13 @@ namespace SynGlyphX {
 			m_numericFields.emplace(inputTable, numericCols);
 		}
 		m_tableStatsMap.emplace(inputTable, tableStats);
+	}
+
+	void DataTransformModel::SetFrontEndFiltersUndoRedo(const MultiTableFrontEndFilters& filters) {
+
+		auto command = new UpdateFrontEndFiltersCommand(filters, this);
+		command->setText(tr("Filters Updated"));
+		AppGlobal::Services()->GetUndoStack()->push(command);
 	}
 
 } //namespace SynGlyphX
