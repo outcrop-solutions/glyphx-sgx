@@ -452,7 +452,7 @@ QString SourceDataCache::CreateInString(const SynGlyphX::IndexSet& indexSet) con
 	return whereString;
 }
 
-QString SourceDataCache::CreateInString(const QString& columnName, const QSet<QString>& values) const {
+QString SourceDataCache::CreateInString(const QString& columnName, const QSet<QString>& values) {
 
 	QSet<QString>::const_iterator iT = values.begin();
 	QString inString = "\"" + columnName + "\" IN (" + CreateEscapedString(*iT);
@@ -946,7 +946,7 @@ QDateTime SourceDataCache::GetTimestampForTable(const QString& table) const {
 	return QDateTime::fromMSecsSinceEpoch(timestamp);
 }
 
-QString SourceDataCache::CreateEscapedString(const QString& string) const {
+QString SourceDataCache::CreateEscapedString(const QString& string) {
 
 	QString escapedString = string;
 	escapedString.replace('\'', "\'\'");

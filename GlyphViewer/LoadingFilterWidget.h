@@ -17,21 +17,44 @@
 
 #pragma once
 
-#include <QtWidgets/QWidget>
-
-namespace SynGlyphX {
-
-	class TitleListWidget;
-	class FrontEndFilterOptions;
-	class MultiTableFrontEndFilters;
-}
+#include <QtWidgets/QScrollArea>
+#include "inputtable.h"
+#include <unordered_map>
+#include "TitleListWidget.h"
+#include "FrontEndFilter.h"
 
 namespace DataEngine {
 
 	class GlyphEngine;
 }
 
-class LoadingFilterWidget : public QWidget
+class QSplitter;
+
+class LoadingFilterMissingChoice : public std::runtime_error {
+
+public:
+	LoadingFilterMissingChoice(const std::wstring& field);
+	~LoadingFilterMissingChoice() {}
+
+	const std::wstring& GetField() const { return m_field; }
+
+private:
+	std::wstring m_field;
+};
+
+class SingleLoadingFilterWidget : public SynGlyphX::TitleListWidget {
+
+public:
+	SingleLoadingFilterWidget(bool isRequired, QWidget* parent);
+	~SingleLoadingFilterWidget() {}
+
+	bool IsRequired() const { return m_isRequired; }
+
+protected:
+	bool m_isRequired;
+};
+
+class LoadingFilterWidget : public QScrollArea
 {
 	Q_OBJECT
 
@@ -43,13 +66,17 @@ public:
 
 	bool AreSelectionsValid() const;
 
-	QString GenerateQuery() const;
+	bool IsQueryNeeded(const SynGlyphX::InputTable& table) const;
+	QString GenerateQuery(const SynGlyphX::InputTable& table) const;
 
 private:
+	typedef std::unordered_map<std::wstring, SingleLoadingFilterWidget*> FieldToWidgetMap;
+	typedef std::unordered_map<SynGlyphX::InputTable, FieldToWidgetMap, SynGlyphX::InputTableHash> TableToWidgetsMap;
+
+	QSplitter* AddFiltersForTable(DataEngine::GlyphEngine& glyphEngine, const SynGlyphX::SingleTableFrontEndFilters& filters, const SynGlyphX::InputTable& table);
 	void AddFilter(const QString& name, const SynGlyphX::FrontEndFilterOptions& options, const QStringList& filterValues);
 
-	QList<SynGlyphX::TitleListWidget*> m_filterListWidgets;
-	std::vector<bool> m_isRequired;
+	TableToWidgetsMap m_filterListWidgets;
 };
 
 //#pragma once

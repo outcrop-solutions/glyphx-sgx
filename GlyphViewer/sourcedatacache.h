@@ -88,6 +88,9 @@ public:
 
 	bool ExportFilteredDataToCSV(const QString& filename, const QString& tableName, const FilteringParameters& filters) const;
 
+	static QString CreateEscapedString(const QString& string);
+	static QString CreateInString(const QString& columnName, const QSet<QString>& values);
+
 protected:
 	SynGlyphX::InputField::Type GetSourceDataFieldType(QVariant::Type fieldType) const;
 	int GetLastIndexOfTable(const QString& tableName);
@@ -104,7 +107,6 @@ protected:
 
 	QString CreateWhereString(const SynGlyphX::IndexSet& indexSet) const;
 	QString CreateInString(const SynGlyphX::IndexSet& indexSet) const;
-	QString CreateInString(const QString& columnName, const QSet<QString>& values) const;
 	QString CreateBetweenString(const QString& columnName, const SynGlyphX::DegenerateInterval& minMax) const;
 	QString CreateBetweenString(const QString& columnName, const SynGlyphX::DegenerateIntervalUnion& intervals) const;
 	QString CreateKeywordFilterString(const QString& columnName, const KeywordFilter& filter) const;
@@ -118,7 +120,6 @@ protected:
 	bool DoesFileDatabaseNeedUpdate(const boost::uuids::uuid& id, const SynGlyphX::FileDatasource& datasource) const;
 	QDateTime GetTimestampForTable(const QString& table) const;
 
-	QString CreateEscapedString(const QString& string) const;
 	QString CreateFilterString(const FilteringParameters& filters) const;
 
 	TableNameMap m_tableNameMap;
