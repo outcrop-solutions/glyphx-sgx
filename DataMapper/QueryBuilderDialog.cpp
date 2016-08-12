@@ -48,13 +48,30 @@ public:
 		mainLayout->addWidget(m_fieldCb);
 
 		m_conditionCb = new QComboBox(this);
-		m_conditionCb->addItems(QStringList({ "eq", "neq", "gt", "lt", "gte", "lte", "like" })); //add btw
+		m_conditionCb->addItems(QStringList({ "eq", "neq", "gt", "lt", "gte", "lte", "btw", "like" }));
+		m_conditionCb->setFixedWidth(50);
 		mainLayout->addWidget(m_conditionCb);
-		
+
 		m_lineEdit = new QLineEdit(this);
+		m_lineEdit->setFixedWidth(50);
+		m_lineEdit2 = new QLineEdit(this);
+		m_lineEdit2->setFixedWidth(50);
 		mainLayout->addWidget(m_lineEdit);
+		mainLayout->addWidget(m_lineEdit2);
+		m_lineEdit2->hide();
 		setLayout(mainLayout);
 		setFixedSize(320, 40);
+
+		connect(m_conditionCb, static_cast<void(QComboBox::*)(const QString &)>(&QComboBox::currentTextChanged),
+			[=](const QString &text)
+		{
+			if (text == "btw")
+				m_lineEdit2->show();
+			else
+				m_lineEdit2->hide();
+
+		});
+
 	}
 
 	StatementWidget(const boost::property_tree::wptree& tree, const QStringList& nameList, QWidget *parent)
@@ -62,12 +79,22 @@ public:
 	{	
 		m_fieldCb->setCurrentText(QString::fromStdWString(tree.get<std::wstring>(L"<xmlattr>.columnname")));
 		m_conditionCb->setCurrentText(QString::fromStdWString(tree.get<std::wstring>(L"<xmlattr>.operator")));
-		m_lineEdit->setText(QString::fromStdWString(tree.get<std::wstring>(L"<xmlattr>.value")));
+		if (m_conditionCb->currentText() == "btw")
+		{
+			m_lineEdit->setText(QString::fromStdWString(tree.get<std::wstring>(L"<xmlattr>.min")));
+			m_lineEdit2->setText(QString::fromStdWString(tree.get<std::wstring>(L"<xmlattr>.max")));
+		}
+		else
+		{
+			m_lineEdit->setText(QString::fromStdWString(tree.get<std::wstring>(L"<xmlattr>.value")));
+		}
+		
 	}
 
 	QComboBox* m_fieldCb;
 	QComboBox* m_conditionCb;
 	QLineEdit* m_lineEdit;
+	QLineEdit* m_lineEdit2;
 };
 
 class QueryTreeWidget : public QTreeWidget
@@ -208,7 +235,16 @@ public:
 				boost::property_tree::wptree& entry = tree.add(L"Statement", L"");
 				entry.put(L"<xmlattr>.columnname", sw->m_fieldCb->currentText().toStdWString());
 				entry.put(L"<xmlattr>.operator", sw->m_conditionCb->currentText().toStdWString());
-				entry.put(L"<xmlattr>.value", sw->m_lineEdit->text().toStdWString());
+				if (sw->m_conditionCb->currentText() == "btw")
+				{
+					entry.put(L"<xmlattr>.min", sw->m_lineEdit->text().toStdWString());
+					entry.put(L"<xmlattr>.max", sw->m_lineEdit2->text().toStdWString());
+				}
+				else
+				{
+					entry.put(L"<xmlattr>.value", sw->m_lineEdit->text().toStdWString());
+				}
+				
 			}
 
 		}
