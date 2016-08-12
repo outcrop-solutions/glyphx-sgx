@@ -80,8 +80,7 @@ DataMapperWindow::DataMapperWindow(QWidget *parent)
 	m_linksDialog = new LinksDialog(m_dataTransformModel,  this);
 	QObject::connect(m_linksDialog, &QDialog::accepted, this, &DataMapperWindow::OnLinkDialogAccepted);
 
-	m_queryBuilderDialog = nullptr; //new QueryBuilderDialog(this);
-	QObject::connect(m_queryBuilderDialog, &QDialog::accepted, this, &DataMapperWindow::OnQueryBuilderDialogAccepted);
+
 	//Setup data transform
 	//SynGlyphXANTz::ANTzExportTransformer::SetLogoFilename(SynGlyphX::GlyphBuilderApplication::applicationDirPath() + QDir::separator() + "logo.png");
 	//SynGlyphX::Transformer::SetDefaultImagesDirectory(SynGlyphX::GlyphBuilderApplication::GetDefaultBaseImagesLocation());
@@ -235,8 +234,7 @@ void DataMapperWindow::CreateMenus() {
 
 		QAction* addDatabaseServerDatasourcesAction = m_datasourceMenu->addAction(tr("Add Database Server"));
 		QObject::connect(addDatabaseServerDatasourcesAction, &QAction::triggered, this, &DataMapperWindow::AddDatabaseServerDatasources);
-		QAction* queryBulderDialogAction = m_datasourceMenu->addAction(tr("QueryBuilder"));
-		QObject::connect(queryBulderDialogAction, &QAction::triggered, this, [&, this](){ ShowQueryBuilderDialog(); });
+
 	}
 
 	m_datasourceMenu->addSeparator();
@@ -853,27 +851,6 @@ void DataMapperWindow::OnLinkDialogAccepted() {
 	EnableProjectDependentActions(true);
 }
 
-
-void DataMapperWindow::ShowQueryBuilderDialog() {
-	//if (!m_queryBuilderDialog) {
-	//	m_queryBuilderDialog = new QueryBuilderDialog(this);
-	//	QObject::connect(m_queryBuilderDialog, &QDialog::accepted, this, &DataMapperWindow::OnQueryBuilderDialogAccepted);
-	//}
-	//m_queryBuilderDialog->setWindowTitle(tr("Query Builder"));
-	//m_queryBuilderDialog->show();
-	//m_queryBuilderDialog->raise();
-	//m_queryBuilderDialog->activateWindow();
-	QueryBuilderDialog dialog(this);
-	if (dialog.exec() == QDialog::Accepted) {
-
-	}
-
-}
-
-void DataMapperWindow::OnQueryBuilderDialogAccepted() {
-
-	EnableProjectDependentActions(true);
-}
 
 void DataMapperWindow::AddLegend() {
 

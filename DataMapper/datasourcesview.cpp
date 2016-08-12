@@ -4,6 +4,7 @@
 #include "singlewidgetdialog.h"
 #include <QtWidgets/QMessageBox>
 #include "datatransformmodel.h"
+#include "QueryBuilderDialog.h"
 
 DataSourcesView::DataSourcesView(SynGlyphX::DataTransformModel* sourceModel, QWidget *parent)
 	: DataMappingListView(parent),
@@ -31,7 +32,7 @@ DataSourcesView::DataSourcesView(SynGlyphX::DataTransformModel* sourceModel, QWi
 	QObject::connect(propertiesAction, &QAction::triggered, this, &DataSourcesView::OnShowProperties);
 
 	QAction* queryAction = m_sharedActions.AddAction(tr("Query"));
-	QObject::connect(queryAction, &QAction::triggered, this, &DataSourcesView::OnShowProperties);
+	QObject::connect(queryAction, &QAction::triggered, this, [=]() { QueryBuilderDialog dialog(this); dialog.exec(); });
 
 	m_sharedActions.EnableActions(false);
 

@@ -40,7 +40,6 @@
 
 class LinksListView;
 class LinksDialog;
-class QueryBuilderDialog;
 class DMServicesImpl;
 class QUndoView;
 
@@ -77,7 +76,6 @@ private slots:
 	void CreatePortableVisualization(SynGlyphX::PortableVisualizationExport::Platform platform);
 	void AddBaseObject();
 	void ShowLinkDialog();
-	void ShowQueryBuilderDialog();
 	void AddGlyphTemplate();
 	void AddGlyphTemplatesFromLibrary();
 	void CreateNewGlyphTree();
@@ -104,7 +102,6 @@ private:
 	void ClearAndInitializeDataMapping();
 	void SelectFirstBaseObject();
 	void OnLinkDialogAccepted();
-	void OnQueryBuilderDialogAccepted();
 
     QMenu* m_fileMenu;
     QMenu* m_glyphMenu;
@@ -115,7 +112,6 @@ private:
 	QMenu* m_toolsMenu;
 
 	LinksDialog* m_linksDialog;
-	QueryBuilderDialog* m_queryBuilderDialog;
 
 	QAction* m_showAnimation;
 
