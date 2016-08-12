@@ -286,7 +286,7 @@ QueryBuilderDialog::QueryBuilderDialog(QWidget* parent) : QDialog(parent)
 
 	for (auto ds = datasources.begin(); ds != datasources.end(); ++ds)
 	{
-		if (Datasource::SourceType::DatabaseServer == ds->second->GetSourceType())
+		if (Datasource::SourceType::DatabaseServer == ds->second->GetSourceType() || ds->second->IsOriginalDatasourceADatabase())
 		{
 			auto tableNames = ds->second->GetTableNames();
 			for (auto tableName : tableNames)
