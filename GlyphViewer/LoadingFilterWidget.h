@@ -17,14 +17,21 @@
 
 #pragma once
 
-#include <QtWidgets/QSplitter>
+#include <QtWidgets/QWidget>
 
 namespace SynGlyphX {
 
 	class TitleListWidget;
+	class FrontEndFilterOptions;
+	class MultiTableFrontEndFilters;
 }
 
-class LoadingFilterWidget : public QSplitter
+namespace DataEngine {
+
+	class GlyphEngine;
+}
+
+class LoadingFilterWidget : public QWidget
 {
 	Q_OBJECT
 
@@ -32,14 +39,17 @@ public:
 	LoadingFilterWidget(QWidget *parent);
 	~LoadingFilterWidget();
 
-	void AddFilter(const QString& name, bool allowMultiselect, const QStringList& filterValues);
+	void SetFilters(DataEngine::GlyphEngine& glyphEngine, const SynGlyphX::MultiTableFrontEndFilters& filters);
 
-	QSet<QString> GetFilterData(unsigned int index) const;
-	bool AreAllValuesSelected(unsigned int index) const;
-	bool AreAnyValuesSelected(unsigned int index) const;
+	bool AreSelectionsValid() const;
+
+	QString GenerateQuery() const;
 
 private:
+	void AddFilter(const QString& name, const SynGlyphX::FrontEndFilterOptions& options, const QStringList& filterValues);
+
 	QList<SynGlyphX::TitleListWidget*> m_filterListWidgets;
+	std::vector<bool> m_isRequired;
 };
 
 //#pragma once

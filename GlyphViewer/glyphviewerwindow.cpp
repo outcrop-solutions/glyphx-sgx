@@ -672,6 +672,12 @@ void GlyphViewerWindow::LoadDataTransform(const QString& filename) {
 		std::string baseImageDir = SynGlyphX::GlyphBuilderApplication::GetDefaultBaseImagesLocation().toStdString();
 		ge.initiate(m_dataEngineConnection->getEnv(), filename.toStdString(), dirPath, baseImageDir, "", "GlyphViewer");
 		if (ge.IsUpdateNeeded()){
+
+			if (!m_mappingModel->GetFrontEndFilters().empty()) {
+
+
+			}
+
 			DownloadBaseImages(ge);
 			ge.generateGlyphs(this);
 		}
