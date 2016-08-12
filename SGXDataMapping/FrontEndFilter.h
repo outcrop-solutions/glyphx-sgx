@@ -46,28 +46,6 @@ namespace SynGlyphX {
 	typedef std::unordered_map<std::wstring, FrontEndFilterOptions> SingleTableFrontEndFilters;
 	typedef std::unordered_map<InputTable, SingleTableFrontEndFilters, InputTableHash> MultiTableFrontEndFilters;
 
-	/*class FrontEndFilterManager
-	{
-	public:
-		
-
-		FrontEndFilterManager();
-		~FrontEndFilterManager();
-
-		void Clear();
-		void Remove(const InputField& field);
-		void Add(const InputField& field, const FrontEndFilterOptions& options = FrontEndFilterOptions());
-		void SetOptions(const InputField& field, const FrontEndFilterOptions& options);
-
-		bool HasFilter(const InputField& field) const;
-
-		const MultiTableFrontEndFilters& GetFilters() const;
-		const SingleTableFrontEndFilters& GetFiltersForTable(const InputTable& table) const;
-
-	private:
-		MultiTableFrontEndFilters m_filtersForAllTables;
-	};*/
-
 } //namespace SynGlyphX
 
 //#pragma once
