@@ -50,13 +50,11 @@ public:
 	~GlyphViewerWindow();
 	void closeJVM();
 
-	bool LoadNewVisualization(const QString& filename, const DistinctValueFilteringParameters& filters = DistinctValueFilteringParameters());
-
 	static const SynGlyphX::SettingsStoredFileList& GetSubsetFileListInstance();
 	static void AddSubsetVisualization(const QString& filename);
 
 public slots:
-	bool LoadRecentFile(const QString& filename) override;
+	bool LoadNewVisualization(const QString& filename, const MultiTableDistinctValueFilteringParameters& filters = MultiTableDistinctValueFilteringParameters());
 
 protected:
 	void ReadSettings() override;
@@ -83,9 +81,10 @@ private slots:
 	void OnShowHideSceneAxis(bool show);
 	void OnOpenURLs();
 	void OnPropertiesActivated();
+	bool LoadRecentFile(const QString& filename) override;
 
 private:
-	void LoadVisualization(const QString& filename, const DistinctValueFilteringParameters& filters = DistinctValueFilteringParameters());
+	void LoadVisualization(const QString& filename, const MultiTableDistinctValueFilteringParameters& filters = MultiTableDistinctValueFilteringParameters());
 	void LoadANTzCompatibilityVisualization(const QString& filename);
 	void LoadDataTransform(const QString& filename);
 	void ValidateDataMappingFile(const QString& filename);
@@ -148,7 +147,7 @@ private:
 	SynGlyphX::PortableVisualizationExport m_portableVisualizationExport;
 	SourceDataInfoModel* m_columnsModel;
 
-	QMap<QString, DistinctValueFilteringParameters> m_recentFilters;
+	QMap<QString, MultiTableDistinctValueFilteringParameters> m_recentFilters;
 	HomePageWidget* m_homePage;
 
 	static SynGlyphX::SettingsStoredFileList s_subsetFileList;

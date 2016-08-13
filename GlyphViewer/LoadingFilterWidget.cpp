@@ -25,7 +25,7 @@ SingleLoadingFilterWidget::SingleLoadingFilterWidget(bool isRequired, QWidget* p
 
 
 LoadingFilterWidget::LoadingFilterWidget(QWidget *parent)
-	: QScrollArea(parent)
+	: QWidget(parent)
 {
 	
 }
@@ -37,10 +37,11 @@ LoadingFilterWidget::~LoadingFilterWidget()
 
 void LoadingFilterWidget::SetFilters(DataEngine::GlyphEngine& glyphEngine, const SynGlyphX::MultiTableFrontEndFilters& filters) {
 
-	QWidget* innerWidget = new QWidget(this);
-	setWidget(innerWidget);
+	//QWidget* innerWidget = new QWidget(this);
+	//setWidget(innerWidget);
 
-	QVBoxLayout* innerWidgetLayout = new QVBoxLayout(innerWidget);
+	//QVBoxLayout* innerWidgetLayout = new QVBoxLayout(innerWidget);
+	QVBoxLayout* innerWidgetLayout = new QVBoxLayout(this);
 
 	for (const auto& filtersForTable : filters) {
 
@@ -48,13 +49,14 @@ void LoadingFilterWidget::SetFilters(DataEngine::GlyphEngine& glyphEngine, const
 		innerWidgetLayout->addWidget(splitter, 1);
 	}
 
-	int stretchSize = 3 - filters.size();
-	if (stretchSize > 0) {
+	//int stretchSize = 3 - filters.size();
+	//if (stretchSize > 0) {
 
-		innerWidgetLayout->addStretch(stretchSize);
-	}
+	//	innerWidgetLayout->addStretch(stretchSize);
+	//}
 
-	innerWidget->setLayout(innerWidgetLayout);
+	//innerWidget->setLayout(innerWidgetLayout);
+	setLayout(innerWidgetLayout);
 }
 
 QSplitter* LoadingFilterWidget::AddFiltersForTable(DataEngine::GlyphEngine& glyphEngine, const SynGlyphX::SingleTableFrontEndFilters& filters, const SynGlyphX::InputTable& table) {
@@ -119,6 +121,31 @@ bool LoadingFilterWidget::IsQueryNeeded(const SynGlyphX::InputTable& table) cons
 	return false;
 }
 
+MultiTableDistinctValueFilteringParameters LoadingFilterWidget::GetFilterValues() const {
+
+	MultiTableDistinctValueFilteringParameters filteringParameters;
+
+	for (const auto& tableFilterWidgets : m_filterListWidgets) {
+
+		DistinctValueFilteringParameters filteringParametersForTable;
+		for (const auto& filterWidget : tableFilterWidgets.second) {
+
+			QSet<QString> filterData = filterWidget.second->GetSelectedLabels().toSet();
+			if ((!filterData.isEmpty()) && (!filterWidget.second->AreAllItemsSelected())) {
+
+				filteringParametersForTable.SetDistinctValueFilter(QString::fromStdWString(filterWidget.first), filterData);
+			}
+		}
+
+		if (filteringParametersForTable.HasFilters()) {
+
+			filteringParameters[tableFilterWidgets.first] = filteringParametersForTable;
+		}
+	}
+
+	return filteringParameters;
+}
+/*
 QString LoadingFilterWidget::GenerateQuery(const SynGlyphX::InputTable& table) const {
 
 	for (const auto& filterWidget : m_filterListWidgets.find(table)->second) {
@@ -153,3 +180,4 @@ QString LoadingFilterWidget::GenerateQuery(const SynGlyphX::InputTable& table) c
 	
 	return query;
 }
+*/

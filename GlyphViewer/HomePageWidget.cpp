@@ -12,20 +12,14 @@
 #include <QtWidgets/QGridLayout>
 #include <QtWidgets/QButtonGroup>
 #include <QtWidgets/QPushButton>
-#include "MultiLoadingFilterWidget.h"
+#include "SharedViewsWidget.h"
 #include "application.h"
 #include "helpdialog.h"
 
-QString HomePageWidget::s_glyphEdDir;
-
-HomePageWidget::HomePageWidget(GlyphViewerWindow* mainWindow, QWidget *parent)
+HomePageWidget::HomePageWidget(DataEngine::DataEngineConnection::SharedPtr dataEngineConnection, QWidget *parent)
 	: QFrame(parent),
-	m_mainWindow(mainWindow)
+	m_dataEngineConnection(dataEngineConnection)
 {
-	m_sourceDataCache.Setup(GetGlyphEdDir() + QDir::toNativeSeparators("/glyphed.db"));
-
-	SetupVisualizationData();
-
 	setFrameStyle(QFrame::Box | QFrame::Sunken);
 	
 	m_mainLayout = new QGridLayout(this);
@@ -110,8 +104,8 @@ void HomePageWidget::CreateAllViewsWidget() {
 	vizAndFilterFrameLayout->setContentsMargins(0, 0, 0, 0);
 	vizAndFilterFrameLayout->setSpacing(0);
 
-	m_allViewsFilteringWidget = new MultiLoadingFilterWidget(this);
-	m_allViewsFilteringWidget->Reset(m_allVisualizationData);
+	m_allViewsFilteringWidget = new SharedVisualizationsWidget(this);
+	m_allViewsFilteringWidget->Reset(m_dataEngineConnection);
 
 	vizAndFilterFrameLayout->addWidget(m_allViewsFilteringWidget);
 	vizAndFilterFrame->setLayout(vizAndFilterFrameLayout);
@@ -133,11 +127,11 @@ void HomePageWidget::OnRecentListUpdated() {
 	for (const auto& recentFile : GlyphViewerWindow::GetRecentFileListInstance().GetFiles()) {
 
 		QString title;
-		for (const auto& visualizationData : m_allVisualizationData) {
+		for (const auto& visualizationInfo: m_allViewsFilteringWidget->GetSharedVisualizationsInfo()) {
 
-			if (visualizationData.m_sdtPath == recentFile) {
+			if (visualizationInfo.second == recentFile.toStdWString()) {
 
-				title = visualizationData.m_title;
+				title = QString::fromStdWString(visualizationInfo.first);
 				break;
 			}
 		}
@@ -154,18 +148,16 @@ void HomePageWidget::OnRecentListUpdated() {
 
 void HomePageWidget::OnSubsetListUpdated() {
 
-	std::vector<MultiLoadingFilterWidget::VisualizationData> subsetVisualizationData;
+	QStringList titles;
+	QStringList filenames;
 
 	for (const auto& recentFile : GlyphViewerWindow::GetSubsetFileListInstance().GetFiles()) {
 
-		MultiLoadingFilterWidget::VisualizationData visualizationDataToAdd;
-		visualizationDataToAdd.m_sdtPath = recentFile;
-		visualizationDataToAdd.m_title = QFileInfo(recentFile).fileName();
-
-		subsetVisualizationData.push_back(visualizationDataToAdd);
+		filenames.push_back(recentFile);
+		titles.push_back(QFileInfo(recentFile).fileName());
 	}
 
-	m_subsetViewsFilteringWidget->Reset(subsetVisualizationData);
+	m_subsetViewsFilteringWidget->SetItems(titles, filenames);
 }
 
 void HomePageWidget::CreateMyViewsWidget() {
@@ -179,7 +171,11 @@ void HomePageWidget::CreateMyViewsWidget() {
 	vizAndFilterFrameLayout->setContentsMargins(0, 0, 0, 0);
 	vizAndFilterFrameLayout->setSpacing(0);
 
-	m_subsetViewsFilteringWidget = new MultiLoadingFilterWidget(this);
+	m_subsetViewsFilteringWidget = new SynGlyphX::TitleListWidget(this);
+	m_subsetViewsFilteringWidget->SetAllowMultiselect(false);
+	m_subsetViewsFilteringWidget->ShowSelectAllButton(false);
+	m_subsetViewsFilteringWidget->SetTitle(tr("View(s)"));
+	m_subsetViewsFilteringWidget->layout()->setContentsMargins(0, 0, 0, 0);
 
 	vizAndFilterFrameLayout->addWidget(m_subsetViewsFilteringWidget);
 	vizAndFilterFrame->setLayout(vizAndFilterFrameLayout);
@@ -290,7 +286,7 @@ void HomePageWidget::CreateDashboardWidget() {
 	upperRightDashboardImage->setLineWidth(2);
 	upperRightDashboardImage->setMidLineWidth(3);
 	upperRightDashboardImage->setStyleSheet("QLabel{background-color: white;}");
-	QString customerLogo = QDir::toNativeSeparators(GetGlyphEdDir() + "/customer.png");
+	QString customerLogo = QDir::toNativeSeparators(QDir::cleanPath(SynGlyphX::GlyphBuilderApplication::GetCommonDataLocation()) + "/customer.png");
 	if (QFileInfo::exists(customerLogo)) {
 
 		upperRightDashboardImage->SetPixmap(QPixmap(customerLogo));
@@ -316,7 +312,7 @@ void HomePageWidget::CreateDashboardWidget() {
 	m_homePageWidgetsLayout->addWidget(widget);
 }
 
-void HomePageWidget::SetupVisualizationData() {
+/*void HomePageWidget::SetupVisualizationData() {
 
 	QStringList visualizationNames;
 	visualizationNames << "Global Admissions View" << "Reader View (2016)" << "High School View" << 
@@ -467,43 +463,37 @@ void HomePageWidget::SetupVisualizationData() {
 	globalDashboardView.m_filterValues.push_back(m_sourceDataCache.GetSortedDistinctValuesAsStrings(globalDashboardView.m_tableInGlyphEd, "reader_name"));
 
 	m_allVisualizationData.push_back(globalDashboardView);
-}
-
-QString HomePageWidget::GetGlyphEdDir() {
-
-	if (s_glyphEdDir.isEmpty()) {
-
-		s_glyphEdDir = QDir::toNativeSeparators(QDir::cleanPath(SynGlyphX::GlyphBuilderApplication::GetCommonDataLocation()) + "/GlyphEd");
-	}
-
-	return s_glyphEdDir;
-}
+}*/
 
 void HomePageWidget::OnLoadVisualization() {
 
+	QString fileToLoad;
+	MultiTableDistinctValueFilteringParameters filteringParameters;
+
 	unsigned int whichFilteringWidget = m_homePageWidgetsLayout->currentIndex();
-	MultiLoadingFilterWidget* currentLoadingFilterWidget = nullptr;
+	SharedVisualizationsWidget* currentLoadingFilterWidget = nullptr;
 	if (whichFilteringWidget == 1) {
 
-		currentLoadingFilterWidget = m_allViewsFilteringWidget;
+		if (!m_allViewsFilteringWidget->DoCurrentNecessaryFiltersHaveSelection()) {
+
+			QMessageBox::information(this, tr("Did not load visualization"), tr("Visualization can not be loaded until at least one value has been selected from all necessary filters."));
+			return;
+		}
+		fileToLoad = m_allViewsFilteringWidget->GetCurrentFilename();
+		filteringParameters = m_allViewsFilteringWidget->GetCurrentFilterValues();
+		
 	}
 	else if (whichFilteringWidget == 2) {
 
-		currentLoadingFilterWidget = m_subsetViewsFilteringWidget;
-	}
-
-	if (!currentLoadingFilterWidget->DoCurrentNecessaryFiltersHaveSelection()) {
-
-		QMessageBox::information(this, tr("Did not load visualization"), tr("Visualization can not be loaded until at least one value has been selected from all necessary filters."));
-		return;
+		fileToLoad = m_subsetViewsFilteringWidget->GetSelectedTooltips().front();
 	}
 
 	SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
 
-	LoadVisualization(currentLoadingFilterWidget->GetCurrentFilename(), currentLoadingFilterWidget->GetCurrentFilterValues());
+	emit LoadVisualization(fileToLoad, filteringParameters);
 }
 
-bool HomePageWidget::LoadVisualization(const QString& sdtToLoad, const DistinctValueFilteringParameters& userSelectedFilters) {
+/*bool HomePageWidget::LoadVisualization(const QString& sdtToLoad, const DistinctValueFilteringParameters& userSelectedFilters) {
 	
 	FilteringParameters filters;
 	filters.DistinctValueFilteringParameters::operator=(userSelectedFilters);
@@ -581,7 +571,7 @@ bool HomePageWidget::LoadVisualization(const QString& sdtToLoad, const DistinctV
 	}
 
 	return m_mainWindow->LoadNewVisualization(sdtToLoad, userSelectedFilters);
-}
+}*/
 
 void HomePageWidget::OnNewOptionSelected(int index) {
 
@@ -596,5 +586,5 @@ void HomePageWidget::OnNewOptionSelected(int index) {
 
 void HomePageWidget::OnRecentViewClicked(QListWidgetItem *item) {
 
-	m_mainWindow->LoadRecentFile(item->toolTip());
+	emit LoadRecentFile(item->toolTip());
 }

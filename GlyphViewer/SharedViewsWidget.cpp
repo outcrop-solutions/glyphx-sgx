@@ -1,10 +1,36 @@
-#include "MultiLoadingFilterWidget.h"
+#include "SharedViewsWidget.h"
 #include "TitleListWidget.h"
 #include <QtWidgets/QStackedWidget>
 #include <QtWidgets/QLayout>
 #include "LoadingFilterWidget.h"
+#include <QtCore/QDir>
+#include "glyphbuilderapplication.h"
+#include "datatransformmapping.h"
+#include "stringconvert.h"
+#include "glyphengine.h"
 
-MultiLoadingFilterWidget::MultiLoadingFilterWidget(QWidget *parent)
+void SharedVisualizationsFile::ImportFromPropertyTree(const boost::property_tree::wptree& filePropertyTree) {
+
+	m_visualizations.clear();
+
+	const boost::property_tree::wptree& sharedVizPropertyTree = filePropertyTree.get_child(L"SharedVisualizations");
+	for (const boost::property_tree::wptree::value_type& vizPropertyTree : sharedVizPropertyTree) {
+
+		if (vizPropertyTree.first == L"Visualization") {
+
+			std::pair<std::wstring, std::wstring> visualization(vizPropertyTree.second.get<std::wstring>(L"<xmlattr>.name"),
+				vizPropertyTree.second.get<std::wstring>(L""));
+			m_visualizations.push_back(visualization);
+		}
+	}
+}
+
+void SharedVisualizationsFile::ExportToPropertyTree(boost::property_tree::wptree& filePropertyTree) const {
+
+
+}
+
+SharedVisualizationsWidget::SharedVisualizationsWidget(QWidget *parent)
 	: QSplitter(Qt::Horizontal, parent),
 	m_loadingFilterWidgetsStack(nullptr)
 {
@@ -21,21 +47,20 @@ MultiLoadingFilterWidget::MultiLoadingFilterWidget(QWidget *parent)
 
 	addWidget(m_viewListWidget);
 
-	QObject::connect(m_viewListWidget, &SynGlyphX::TitleListWidget::CurrentRowChanged, this, &MultiLoadingFilterWidget::OnFileSelected);
+	QObject::connect(m_viewListWidget, &SynGlyphX::TitleListWidget::CurrentRowChanged, this, &SharedVisualizationsWidget::OnFileSelected);
 }
 
-MultiLoadingFilterWidget::~MultiLoadingFilterWidget()
+SharedVisualizationsWidget::~SharedVisualizationsWidget()
 {
 
 }
 
-void MultiLoadingFilterWidget::Reset(const std::vector<VisualizationData>& dataAndFilters) {
+void SharedVisualizationsWidget::Reset(DataEngine::DataEngineConnection::SharedPtr dataEngineConnection) {
 
 	m_viewListWidget->blockSignals(true);
 
 	m_loadingFilterWidgetMap.clear();
-	m_mustHaveFilterMap.clear();
-	m_fieldNameMap.clear();
+	m_sharedVisualizationsInfo.clear();
 	if (m_loadingFilterWidgetsStack != nullptr) {
 
 		delete m_loadingFilterWidgetsStack;
@@ -45,35 +70,34 @@ void MultiLoadingFilterWidget::Reset(const std::vector<VisualizationData>& dataA
 
 	QStringList titles;
 	QStringList files;
-	for (unsigned int i = 0; i < dataAndFilters.size(); ++i) {
+	bool visualizationsAdded = false;
+	QString sharedVizListing = QDir::toNativeSeparators(QDir::cleanPath(SynGlyphX::GlyphBuilderApplication::GetCommonDataLocation()) + "/sharedvisualizations.xml");
+	if (QFile::exists(sharedVizListing)) {
 
-		titles.push_back(dataAndFilters[i].m_title);
-		files.push_back(dataAndFilters[i].m_sdtPath);
+		SharedVisualizationsFile sharedVisualizationsFile;
+		sharedVisualizationsFile.ReadFromFile(sharedVizListing.toStdString());
+		m_sharedVisualizationsInfo = sharedVisualizationsFile.Get();
 
-		if (dataAndFilters[i].m_tableInGlyphEd.isEmpty()) {
+		for (unsigned int i = 0; i < m_sharedVisualizationsInfo.size(); ++i) {
+			
+			visualizationsAdded = true;
+			titles.push_back(QString::fromStdWString(m_sharedVisualizationsInfo[i].first));
+			files.push_back(QString::fromStdWString(m_sharedVisualizationsInfo[i].second));
 
-			QWidget* widget = new QWidget(this);
-			m_loadingFilterWidgetsStack->addWidget(widget);
-		}
-		else {
+			SynGlyphX::DataTransformMapping mapping;
+			mapping.ReadFromFile(SynGlyphX::StringConvert::ToStdString(m_sharedVisualizationsInfo[i].second));
 
-			LoadingFilterWidget* loadingFilterWidget = new LoadingFilterWidget(this);
+			DataEngine::GlyphEngine ge;
+			ge.initiate(dataEngineConnection->getEnv(), SynGlyphX::StringConvert::ToStdString(m_sharedVisualizationsInfo[i].second), "", "", "", "GlyphViewer");
 
-			QStringList fieldNames;
-			for (unsigned int j = 0; j < dataAndFilters[i].m_filterTitles.size(); ++j) {
+			if (!mapping.GetFrontEndFilters().empty()) {
 
-				loadingFilterWidget->AddFilter(dataAndFilters[i].m_filterTitles[j],
-					dataAndFilters[i].m_filterMultiselect[j],
-					dataAndFilters[i].m_filterValues[j]);
-
-				fieldNames.push_back(dataAndFilters[i].m_filterFieldNames[j]);
+				LoadingFilterWidget* loadingFilterWidget = new LoadingFilterWidget(this);
+				loadingFilterWidget->SetFilters(ge, mapping.GetFrontEndFilters());
+				loadingFilterWidget->layout()->setContentsMargins(0, 0, 0, 0);
+				m_loadingFilterWidgetsStack->addWidget(loadingFilterWidget);
+				m_loadingFilterWidgetMap[i] = loadingFilterWidget;
 			}
-
-			m_loadingFilterWidgetsStack->addWidget(loadingFilterWidget);
-			m_loadingFilterWidgetMap[i] = loadingFilterWidget;
-
-			m_mustHaveFilterMap[i] = dataAndFilters[i].m_mustHaveFilter;
-			m_fieldNameMap[i] = fieldNames;
 		}
 	}
 
@@ -81,68 +105,52 @@ void MultiLoadingFilterWidget::Reset(const std::vector<VisualizationData>& dataA
 
 	m_viewListWidget->blockSignals(false);
 
-	if (dataAndFilters.empty()) {
-
-		m_loadingFilterWidgetsStack->setVisible(false);
-	}
-	else {
+	if (visualizationsAdded) {
 
 		m_viewListWidget->SelectItem(0);
 		OnFileSelected(0);
 	}
+	else {
+
+		m_loadingFilterWidgetsStack->setVisible(false);
+	}
 }
 
-bool MultiLoadingFilterWidget::DoCurrentNecessaryFiltersHaveSelection() const {
+bool SharedVisualizationsWidget::DoCurrentNecessaryFiltersHaveSelection() const {
 
 	if (CanCurrentHaveFilters()) {
 
 		unsigned int current = m_loadingFilterWidgetsStack->currentIndex();
-		for (unsigned int i = 0; i < m_mustHaveFilterMap.at(current).size(); ++i) {
-
-			if (m_mustHaveFilterMap.at(current).at(i) && (!m_loadingFilterWidgetMap.at(current)->AreAnyValuesSelected(i))) {
-
-				return false;
-			}
-		}
+		return m_loadingFilterWidgetMap.at(current)->AreSelectionsValid();
 	}
 
 	return true;
 }
 
-QString MultiLoadingFilterWidget::GetCurrentFilename() const {
+QString SharedVisualizationsWidget::GetCurrentFilename() const {
 
 	return m_viewListWidget->GetSelectedTooltips().first();
 }
 
-bool MultiLoadingFilterWidget::CanCurrentHaveFilters() const {
+bool SharedVisualizationsWidget::CanCurrentHaveFilters() const {
 
 	return (m_loadingFilterWidgetMap.count(m_loadingFilterWidgetsStack->currentIndex()) != 0);
 }
 
-DistinctValueFilteringParameters MultiLoadingFilterWidget::GetCurrentFilterValues() const {
+MultiTableDistinctValueFilteringParameters SharedVisualizationsWidget::GetCurrentFilterValues() const {
 
-	unsigned int currentWidget = m_loadingFilterWidgetsStack->currentIndex();
-
-	DistinctValueFilteringParameters filteringParameters;
-
-	if (m_fieldNameMap.count(currentWidget) != 0) {
-
-		for (unsigned int i = 0; i < m_fieldNameMap.at(currentWidget).size(); ++i) {
-
-			QSet<QString> filterData = m_loadingFilterWidgetMap.at(currentWidget)->GetFilterData(i);
-
-			if ((!filterData.isEmpty()) && (!m_loadingFilterWidgetMap.at(currentWidget)->AreAllValuesSelected(i))) {
-
-				filteringParameters.SetDistinctValueFilter(m_fieldNameMap.at(currentWidget).at(i), filterData);
-			}
-		}
-	}
-
-	return filteringParameters;
+	return m_loadingFilterWidgetMap.at(m_loadingFilterWidgetsStack->currentIndex())->GetFilterValues();
 }
 
-void MultiLoadingFilterWidget::OnFileSelected(int row) {
+void SharedVisualizationsWidget::OnFileSelected(int row) {
 
-	m_loadingFilterWidgetsStack->setCurrentIndex(row);
-	m_loadingFilterWidgetsStack->setVisible(m_loadingFilterWidgetMap.count(row) != 0);
+	if (m_loadingFilterWidgetMap.count(row) != 0) {
+
+		m_loadingFilterWidgetsStack->setCurrentWidget(m_loadingFilterWidgetMap.at(row));
+		m_loadingFilterWidgetsStack->setVisible(true);
+	}
+	else {
+
+		m_loadingFilterWidgetsStack->setVisible(false);
+	}
 }

@@ -19,7 +19,8 @@
 
 #include "sourcedatacache.h"
 #include <QtWidgets/QFrame>
-#include "MultiLoadingFilterWidget.h"
+#include "SharedViewsWidget.h"
+#include "dataengineconnection.h"
 
 class QStackedWidget;
 class QStackedLayout;
@@ -29,7 +30,6 @@ class QPushButton;
 class QVBoxLayout;
 class QListWidget;
 class QListWidgetItem;
-class GlyphViewerWindow;
 
 namespace SynGlyphX {
 
@@ -41,12 +41,12 @@ class HomePageWidget : public QFrame
 	Q_OBJECT
 
 public:
-	HomePageWidget(GlyphViewerWindow* mainWindow, QWidget *parent);
+	HomePageWidget(DataEngine::DataEngineConnection::SharedPtr dataEngineConnection, QWidget *parent);
 	~HomePageWidget();
 
-	static QString GetGlyphEdDir();
-
-	bool LoadVisualization(const QString& sdtToLoad, const DistinctValueFilteringParameters& userSelectedFilters);
+signals:
+	void LoadRecentFile(QString filename);
+	bool LoadVisualization(const QString& sdtToLoad, const MultiTableDistinctValueFilteringParameters& userSelectedFilters);
 
 private slots:
 	void OnLoadVisualization();
@@ -62,10 +62,6 @@ private:
 	void CreateHelpWidget();
 	void CreateDashboardWidget();
 
-	void SetupVisualizationData();
-
-	static QString s_glyphEdDir;
-
 	QGridLayout* m_mainLayout;
 	QStackedLayout* m_homePageWidgetsLayout;
 
@@ -73,14 +69,12 @@ private:
 
 	QPushButton* m_loadVisualizationButton;
 
-	MultiLoadingFilterWidget* m_allViewsFilteringWidget;
+	SharedVisualizationsWidget* m_allViewsFilteringWidget;
 	QListWidget* m_recentViewsFilteringWidget;
-	MultiLoadingFilterWidget* m_subsetViewsFilteringWidget;
-	
-	GlyphViewerWindow* m_mainWindow;
-	SourceDataCache m_sourceDataCache;
 
-	std::vector<MultiLoadingFilterWidget::VisualizationData> m_allVisualizationData;
+	SynGlyphX::TitleListWidget* m_subsetViewsFilteringWidget;
+	
+	DataEngine::DataEngineConnection::SharedPtr m_dataEngineConnection;
 };
 
 //#pragma once

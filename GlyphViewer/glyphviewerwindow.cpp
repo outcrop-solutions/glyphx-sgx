@@ -68,10 +68,24 @@ GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 	CreateMenus();
 	CreateDockWidgets();
 
-	QStackedWidget* antzWidgetContainer = new QStackedWidget(this);
-	antzWidgetContainer->setContentsMargins(0, 0, 0, 0);
-	antzWidgetContainer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-	setCentralWidget(antzWidgetContainer);
+	QStackedWidget* centerWidgetsContainer = new QStackedWidget(this);
+	centerWidgetsContainer->setContentsMargins(0, 0, 0, 0);
+	centerWidgetsContainer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+	setCentralWidget(centerWidgetsContainer);
+
+	try {
+
+		if (!m_dataEngineConnection->hasJVM()){
+
+			m_dataEngineConnection->createJVM();
+			de_version = m_dataEngineConnection->VersionNumber();
+		}
+	}
+	catch (const std::exception& e) {
+
+		QMessageBox::critical(this, tr("JVM Error"), tr(e.what()));
+		return;
+	}
 
 	CreateLoadingScreen();
 	
@@ -101,27 +115,7 @@ GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 
 	CreateInteractionToolbar();
 
-	//SynGlyphX::Transformer::SetDefaultImagesDirectory(SynGlyphX::GlyphBuilderApplication::GetDefaultBaseImagesLocation());
-	//SynGlyphXANTz::ANTzCSVWriter::GetInstance().SetNOURLLocation(L"");
-
-	try {
-
-		if (!m_dataEngineConnection->hasJVM()){
-			
-			m_dataEngineConnection->createJVM();
-			de_version = m_dataEngineConnection->VersionNumber();
-		}
-	}
-	catch (const std::exception& e) {
-
-		QMessageBox::critical(this, tr("JVM Error"), tr(e.what()));
-		return;
-	}
-
-	if (SynGlyphX::GlyphBuilderApplication::IsGlyphEd()) {
-
-		antzWidgetContainer->setCurrentIndex(0);
-	}
+	centerWidgetsContainer->setCurrentIndex(0);
 
 	statusBar()->showMessage(SynGlyphX::Application::applicationName() + " Started", 3000);
 }
@@ -138,20 +132,13 @@ void GlyphViewerWindow::closeJVM(){
 
 void GlyphViewerWindow::CreateLoadingScreen() {
 
-	QStackedWidget* antzWidgetContainer = dynamic_cast<QStackedWidget*>(centralWidget());
+	QStackedWidget* centerWidgetsContainer = dynamic_cast<QStackedWidget*>(centralWidget());
 
-	if (SynGlyphX::GlyphBuilderApplication::IsGlyphEd()) {
-
-		m_homePage = new HomePageWidget(this, antzWidgetContainer);
-		m_homePage->setObjectName("home_page");
-		antzWidgetContainer->addWidget(m_homePage);
-	}
-	else {
-
-		QWidget* dummyWidget = new QWidget(antzWidgetContainer);
-		dummyWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-		antzWidgetContainer->addWidget(dummyWidget);
-	}
+	m_homePage = new HomePageWidget(m_dataEngineConnection, centerWidgetsContainer);
+	m_homePage->setObjectName("home_page");
+	centerWidgetsContainer->addWidget(m_homePage);
+	QObject::connect(m_homePage, &HomePageWidget::LoadRecentFile, this, &GlyphViewerWindow::LoadRecentFile);
+	QObject::connect(m_homePage, &HomePageWidget::LoadVisualization, this, &GlyphViewerWindow::LoadNewVisualization);
 }
 
 void GlyphViewerWindow::CreateANTzWidget() {
@@ -453,11 +440,8 @@ void GlyphViewerWindow::CloseVisualization() {
 		m_legendsDockWidget->hide();
 	}
 
-	if (SynGlyphX::GlyphBuilderApplication::IsGlyphEd()) {
-
-		QStackedWidget* antzWidgetContainer = dynamic_cast<QStackedWidget*>(centralWidget());
-		antzWidgetContainer->setCurrentIndex(0);
-	}
+	QStackedWidget* centerWidgetsContainer = dynamic_cast<QStackedWidget*>(centralWidget());
+	centerWidgetsContainer->setCurrentIndex(0);
 }
 
 void GlyphViewerWindow::ClearAllData() {
@@ -472,7 +456,7 @@ void GlyphViewerWindow::ClearAllData() {
 	SynGlyphX::Application::restoreOverrideCursor();
 }
 
-void GlyphViewerWindow::LoadVisualization(const QString& filename, const DistinctValueFilteringParameters& filters) {
+void GlyphViewerWindow::LoadVisualization(const QString& filename, const MultiTableDistinctValueFilteringParameters& filters) {
 
 	QFileInfo fileInfo(filename);
 	QString extension = fileInfo.suffix().toLower();
@@ -486,11 +470,8 @@ void GlyphViewerWindow::LoadVisualization(const QString& filename, const Distinc
 		throw std::runtime_error("File does not exist");
 	}
 
-	if (SynGlyphX::GlyphBuilderApplication::IsGlyphEd()) {
-
-		QStackedWidget* antzWidgetContainer = dynamic_cast<QStackedWidget*>(centralWidget());
-		antzWidgetContainer->setCurrentIndex(1);
-	}
+	QStackedWidget* centerWidgetsContainer = dynamic_cast<QStackedWidget*>(centralWidget());
+	centerWidgetsContainer->setCurrentIndex(1);
 
 	if (m_glyphForestModel->rowCount() > 0) {
 
@@ -517,7 +498,7 @@ void GlyphViewerWindow::LoadVisualization(const QString& filename, const Distinc
 	}
 }
 
-bool GlyphViewerWindow::LoadNewVisualization(const QString& filename, const DistinctValueFilteringParameters& filters) {
+bool GlyphViewerWindow::LoadNewVisualization(const QString& filename, const MultiTableDistinctValueFilteringParameters& filters) {
 
 	if (filename == m_currentFilename) {
 		
@@ -545,7 +526,7 @@ bool GlyphViewerWindow::LoadNewVisualization(const QString& filename, const Dist
 	}
 
 	SetCurrentFile(filename);
-	if (filters.HasFilters()) {
+	if (!filters.empty()) {
 
 		m_recentFilters[filename] = filters;
 	}
@@ -932,7 +913,7 @@ void GlyphViewerWindow::ReadSettings() {
 	QStringList files = settings.allKeys();
 	for (const QString& file : files) {
 
-		DistinctValueFilteringParameters filters;
+		MultiTableDistinctValueFilteringParameters filters;
 		settings.beginGroup(file);
 		QStringList fieldNames = settings.allKeys();
 		for (const QString& fieldName : fieldNames) {
@@ -947,7 +928,7 @@ void GlyphViewerWindow::ReadSettings() {
 			}
 			settings.endGroup();
 
-			filters.SetDistinctValueFilter(fieldName, filterValues);
+			//filters.SetDistinctValueFilter(fieldName, filterValues);
 		}
 		settings.endGroup();
 

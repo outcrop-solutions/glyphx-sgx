@@ -22,6 +22,7 @@
 #include <unordered_map>
 #include "TitleListWidget.h"
 #include "FrontEndFilter.h"
+#include "DistinctValueFilteringParameters.h"
 
 namespace DataEngine {
 
@@ -54,7 +55,7 @@ protected:
 	bool m_isRequired;
 };
 
-class LoadingFilterWidget : public QScrollArea
+class LoadingFilterWidget : public QWidget
 {
 	Q_OBJECT
 
@@ -67,7 +68,8 @@ public:
 	bool AreSelectionsValid() const;
 
 	bool IsQueryNeeded(const SynGlyphX::InputTable& table) const;
-	QString GenerateQuery(const SynGlyphX::InputTable& table) const;
+	MultiTableDistinctValueFilteringParameters GetFilterValues() const;
+	//QString GenerateQuery(const SynGlyphX::InputTable& table) const;
 
 private:
 	typedef std::unordered_map<std::wstring, SingleLoadingFilterWidget*> FieldToWidgetMap;

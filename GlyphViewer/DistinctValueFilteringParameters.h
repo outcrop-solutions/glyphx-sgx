@@ -18,8 +18,10 @@
 #pragma once
 
 #include <map>
+#include <unordered_map>
 #include <QtCore/QSet>
 #include <QtCore/QString>
+#include "inputtable.h"
 
 class DistinctValueFilteringParameters
 {
@@ -46,5 +48,7 @@ protected:
 	//Filters from Elastic tab in Filtering widget and time animation widget (and home page filters)
 	ColumnDistinctValuesFilterMap m_distinctValuesFilters;
 };
+
+typedef std::unordered_map<SynGlyphX::InputTable, DistinctValueFilteringParameters, SynGlyphX::InputTableHash> MultiTableDistinctValueFilteringParameters;
 
 //#pragma once

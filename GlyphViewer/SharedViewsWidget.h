@@ -20,48 +20,56 @@
 #include <QtWidgets/QSplitter>
 #include <unordered_map>
 #include "DistinctValueFilteringParameters.h"
+#include "xmlpropertytreefile.h"
+#include "dataengineconnection.h"
 
 namespace SynGlyphX {
 
 	class TitleListWidget;
 }
 
+namespace DataEngine {
+
+	class GlyphEngine;
+}
+
 class LoadingFilterWidget;
 class QStackedWidget;
 
-class MultiLoadingFilterWidget : public QSplitter
+class SharedVisualizationsFile : public SynGlyphX::XMLPropertyTreeFile {
+
+public:
+	typedef std::vector<std::pair<std::wstring, std::wstring>> Visualizations;
+
+	SharedVisualizationsFile() : SynGlyphX::XMLPropertyTreeFile() {}
+	~SharedVisualizationsFile() {}
+
+	const Visualizations& Get() const { return m_visualizations; }
+
+protected:
+	void ImportFromPropertyTree(const boost::property_tree::wptree& filePropertyTree) override;
+	void ExportToPropertyTree(boost::property_tree::wptree& filePropertyTree) const override;
+
+	Visualizations m_visualizations;
+};
+
+class SharedVisualizationsWidget : public QSplitter
 {
 	Q_OBJECT
 
 public:
-	class VisualizationData {
 
-	public:
-		VisualizationData() {}
-		~VisualizationData() {}
+	SharedVisualizationsWidget(QWidget *parent);
+	~SharedVisualizationsWidget();
 
-		bool HasDataForFilter(unsigned int index) const { return index < m_filterTitles.size(); }
-
-		QString m_title;
-		QString m_sdtPath;
-		QString m_tableInGlyphEd;
-
-		std::vector<bool> m_mustHaveFilter;
-		std::vector<QString> m_filterTitles;
-		std::vector<QString> m_filterFieldNames;
-		std::vector<bool> m_filterMultiselect;
-		std::vector<QStringList> m_filterValues;
-	};
-
-	MultiLoadingFilterWidget(QWidget *parent);
-	~MultiLoadingFilterWidget();
-
-	void Reset(const std::vector<VisualizationData>& dataAndFilters);
+	void Reset(DataEngine::DataEngineConnection::SharedPtr dataEngineConnection);
 	
 	bool DoCurrentNecessaryFiltersHaveSelection() const;
 	QString GetCurrentFilename() const;
 	bool CanCurrentHaveFilters() const;
-	DistinctValueFilteringParameters GetCurrentFilterValues() const;
+	MultiTableDistinctValueFilteringParameters GetCurrentFilterValues() const;
+
+	const SharedVisualizationsFile::Visualizations& GetSharedVisualizationsInfo() const { return m_sharedVisualizationsInfo; }
 
 private slots:
 	void OnFileSelected(int row);
@@ -70,8 +78,7 @@ private:
 	SynGlyphX::TitleListWidget* m_viewListWidget;
 	QStackedWidget* m_loadingFilterWidgetsStack;
 	std::unordered_map<unsigned int, LoadingFilterWidget*> m_loadingFilterWidgetMap;
-	std::unordered_map<unsigned int, std::vector<bool>> m_mustHaveFilterMap;
-	std::unordered_map<unsigned int, QStringList> m_fieldNameMap;
+	SharedVisualizationsFile::Visualizations m_sharedVisualizationsInfo;
 };
 
 //#pragma once
