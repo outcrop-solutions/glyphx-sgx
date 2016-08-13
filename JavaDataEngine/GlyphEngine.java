@@ -138,15 +138,17 @@ public class GlyphEngine {
 	 	//String outDir = "C:/Users/Bryan/ODBA/1/Synglyphx Team Site - ~1/School Shooting Remap/School Shooting Portable";
 	 	//String sdtPath = "C:/Users/Bryan/Desktop/Text Interpolation/text_interpolation_test.sdt";
 	 	//String outDir = "C:/Users/Bryan/Desktop/Text Interpolation/Viz";
-	 	String sdtPath = "C:/Users/Bryan/Desktop/Test New SDT/alases.sdt";
-	 	String outDir = "C:/Users/Bryan/Desktop/Test New SDT/Viz";
+	 	//String sdtPath = "C:/Users/Bryan/Desktop/Test New SDT/alases.sdt";
+	 	//String outDir = "C:/Users/Bryan/Desktop/Test New SDT/Viz";
 	 	//String sdtPath = "C:/Users/Bryan/Desktop/Link Test Exo/linktest.sdt";
 	 	//String outDir = "C:/Users/Bryan/Desktop/Link Test Exo/viz";
 	 	//String sdtPath = "C:/Users/Bryan/Desktop/TELCO Small Subset/Customers Subset.sdt";
 	 	//String outDir = "C:/Users/Bryan/Desktop/TELCO Small Subset/Viz";
 	 	//String sdtPath = "C:/Users/Bryan/Desktop/GlobalAdmissions20132016/GlobalAdmissions20132016/View 1 Datamap Recommendations.sdt";
 	 	//String outDir = "C:/Users/Bryan/Desktop/GlobalAdmissions20132016/GlobalAdmissions20132016/Viz";
-	 	
+	 	String sdtPath = "D:/Downloads/frontend_example.sdt";
+	 	String outDir = "D:/Downloads";
+
 	 	String expDir = "DataMapper";
 	 	GlyphEngine start = new GlyphEngine();
 	 	double[] nw = new double[2];
@@ -161,19 +163,19 @@ public class GlyphEngine {
 	 	s[0] = 2048.0; s[1] = 1024.0;
 	 	//s[0] = 471.0; s[1] = 634.0;
 	 	int err = start.initiate(sdtPath, outDir, expDir);
-/*
-	 	String id = "8f101839-db92-4f15-8dd9-375f223e48f1";
-	 	String table = "FirstPortion";
-	 	String field = "SpectralType";
+
+	 	String id = "cdd96014-8e17-4d2a-927a-4a1f8ac4662c";
+	 	String table = "OnlyTable";
+	 	String field = "Name";
 	 	String[] distinct = start.distinctValuesForField(id, table, field);
 	 	for(int i = 0; i < distinct.length; i++)
 	 	{
 	 		System.out.println((i+1) +": "+ distinct[i]);
 	 	}
-
+/*
 	 	String query = "select * from FirstPortion where `OrbitalEcc.` between 0 and 0.2;";
 	 	start.setQueryForDatasource(id, table, query);
-*/	 	
+*/	 	/*
 	 	if(err == 1){
 			String [] errors = start.getErrors();
 			//System.out.println("Error List:\n");
@@ -199,7 +201,7 @@ public class GlyphEngine {
 			for(int i = 0; i < errors.length; i++){
 				//System.out.println(errors[i]);
 			}
-		}
+		}*/
 		
 	} 
 
