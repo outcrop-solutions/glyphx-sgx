@@ -481,7 +481,7 @@ void GlyphViewerWindow::LoadVisualization(const QString& filename, const MultiTa
 
 	if (extension == "sdt") {
 
-		LoadDataTransform(filename);
+		LoadDataTransform(filename, filters);
 	}
 	else if (extension == "sav") {
 
@@ -633,7 +633,7 @@ void GlyphViewerWindow::ValidateDataMappingFile(const QString& filename) {
 	mapping->WriteToFile(filename.toStdString());
 }
 
-void GlyphViewerWindow::LoadDataTransform(const QString& filename) {
+void GlyphViewerWindow::LoadDataTransform(const QString& filename, const MultiTableDistinctValueFilteringParameters& filters) {
 
 	SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
 
@@ -652,12 +652,13 @@ void GlyphViewerWindow::LoadDataTransform(const QString& filename) {
 		std::string dirPath = cacheDirectoryPath + "/";
 		std::string baseImageDir = SynGlyphX::GlyphBuilderApplication::GetDefaultBaseImagesLocation().toStdString();
 		ge.initiate(m_dataEngineConnection->getEnv(), filename.toStdString(), dirPath, baseImageDir, "", "GlyphViewer");
+		for (const auto& filter : filters) {
+
+			ge.SetQueryForDatasource(QString::fromStdString(boost::uuids::to_string(filter.first.GetDatasourceID())),
+				QString::fromStdWString(filter.first.GetTable()),
+				filter.second.GenerateQuery(filter.first)); 
+		}
 		if (ge.IsUpdateNeeded()){
-
-			if (!m_mappingModel->GetFrontEndFilters().empty()) {
-
-
-			}
 
 			DownloadBaseImages(ge);
 			ge.generateGlyphs(this);

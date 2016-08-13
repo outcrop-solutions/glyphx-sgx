@@ -44,6 +44,8 @@ public:
 	void RemoveDistinctValueFilter(const QString& column);
 	const ColumnDistinctValuesFilterMap& GetDistinctValueFilters() const;
 
+	QString GenerateQuery(const SynGlyphX::InputTable& table) const;
+
 protected:
 	//Filters from Elastic tab in Filtering widget and time animation widget (and home page filters)
 	ColumnDistinctValuesFilterMap m_distinctValuesFilters;

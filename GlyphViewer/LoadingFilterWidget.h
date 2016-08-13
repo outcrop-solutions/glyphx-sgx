@@ -69,7 +69,6 @@ public:
 
 	bool IsQueryNeeded(const SynGlyphX::InputTable& table) const;
 	MultiTableDistinctValueFilteringParameters GetFilterValues() const;
-	//QString GenerateQuery(const SynGlyphX::InputTable& table) const;
 
 private:
 	typedef std::unordered_map<std::wstring, SingleLoadingFilterWidget*> FieldToWidgetMap;

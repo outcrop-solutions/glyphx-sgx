@@ -4,10 +4,10 @@
 #include "glyphengine.h"
 #include <QtWidgets/QSplitter>
 #include <QtWidgets/QVBoxLayout>
-#include <boost/uuid/uuid_io.hpp>
 #include "datasource.h"
 #include "sourcedatacache.h"
 #include "stringconvert.h"
+#include <boost/uuid/uuid_io.hpp>
 
 LoadingFilterMissingChoice::LoadingFilterMissingChoice(const std::wstring& field) :
 	std::runtime_error(""),
@@ -81,7 +81,10 @@ QSplitter* LoadingFilterWidget::AddFiltersForTable(DataEngine::GlyphEngine& glyp
 		filterWidget->SetAllowMultiselect(filter.second.IsMultiselectAllowed());
 		filterWidget->ShowSelectAllButton(true);
 		filterWidget->SetTitle(qField);
-		filterWidget->SetItems(glyphEngine.DistinctValuesForField(id, tableName, qField));
+
+		QStringList distinctValues = glyphEngine.DistinctValuesForField(id, tableName, qField);
+		distinctValues.sort(Qt::CaseInsensitive);
+		filterWidget->SetItems(distinctValues);
 
 		splitter->addWidget(filterWidget);
 		fieldToWidgetMap[filter.first] = filterWidget;
@@ -145,39 +148,3 @@ MultiTableDistinctValueFilteringParameters LoadingFilterWidget::GetFilterValues(
 
 	return filteringParameters;
 }
-/*
-QString LoadingFilterWidget::GenerateQuery(const SynGlyphX::InputTable& table) const {
-
-	for (const auto& filterWidget : m_filterListWidgets.find(table)->second) {
-
-		if (filterWidget.second->IsRequired() && !filterWidget.second->AreAnyItemsSelected()) {
-
-			throw LoadingFilterMissingChoice(filterWidget.first);
-		}
-	}
-
-	QString query = "SELECT * FROM \"" + QString::fromStdWString(boost::uuids::to_wstring(table.GetDatasourceID()));
-	if (table.GetTable() != SynGlyphX::Datasource::SingleTableName) {
-
-		query += ":" + QString::fromStdWString(table.GetTable());
-	}
-
-	query += "\" WHERE ";
-	
-	const FieldToWidgetMap& singleTableFilters = m_filterListWidgets.find(table)->second;
-	for (const auto& filter : singleTableFilters) {
-
-		if (!filter.second->AreAllItemsSelected()) {
-
-			if (filter != *singleTableFilters.cbegin()) {
-
-				query += " AND ";
-			}
-
-			query += SourceDataCache::CreateInString(QString::fromStdWString(filter.first), filter.second->GetSelectedLabels().toSet());
-		}
-	}
-	
-	return query;
-}
-*/

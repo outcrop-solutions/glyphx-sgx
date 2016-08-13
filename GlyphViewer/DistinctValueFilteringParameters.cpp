@@ -1,4 +1,7 @@
 #include "DistinctValueFilteringParameters.h"
+#include "datasource.h"
+#include "sourcedatacache.h"
+#include <boost/uuid/uuid_io.hpp>
 
 DistinctValueFilteringParameters::DistinctValueFilteringParameters()
 {
@@ -64,4 +67,22 @@ void DistinctValueFilteringParameters::RemoveDistinctValueFilter(const QString& 
 const DistinctValueFilteringParameters::ColumnDistinctValuesFilterMap& DistinctValueFilteringParameters::GetDistinctValueFilters() const {
 
 	return m_distinctValuesFilters;
+}
+
+QString DistinctValueFilteringParameters::GenerateQuery(const SynGlyphX::InputTable& table) const {
+
+	QString query = "SELECT * FROM \"" + QString::fromStdWString(boost::uuids::to_wstring(table.GetDatasourceID()));
+	if (table.GetTable() != SynGlyphX::Datasource::SingleTableName) {
+
+		query += ":" + QString::fromStdWString(table.GetTable());
+	}
+
+	query += "\" WHERE ";
+
+	for (const auto& filter : m_distinctValuesFilters) {
+
+		query += SourceDataCache::CreateInString(filter.first, filter.second);
+	}
+
+	return query;
 }
