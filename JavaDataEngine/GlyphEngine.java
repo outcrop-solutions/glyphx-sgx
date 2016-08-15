@@ -146,6 +146,9 @@ public class GlyphEngine {
 	 	//String outDir = "C:/Users/Bryan/Desktop/TELCO Small Subset/Viz";
 	 	//String sdtPath = "C:/Users/Bryan/Desktop/GlobalAdmissions20132016/GlobalAdmissions20132016/View 1 Datamap Recommendations.sdt";
 	 	//String outDir = "C:/Users/Bryan/Desktop/GlobalAdmissions20132016/GlobalAdmissions20132016/Viz";
+	 	//String sdtPath = "D:/Downloads/query.sdt";
+	 	//String outDir = "";
+	 	
 	 	String sdtPath = "D:/Downloads/frontend_example.sdt";
 	 	String outDir = "D:/Downloads";
 
