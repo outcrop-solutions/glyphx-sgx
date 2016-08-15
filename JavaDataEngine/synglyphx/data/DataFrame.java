@@ -308,12 +308,24 @@ public class DataFrame {
 	}
 
 	public void createSQLiteTable4CSV(String path) throws Exception{
-		Thread parse2SQLite = new Thread(){
+		parse2SQLite = new Thread(){
     		public void run(){
     			createTable(path);
     		}
   		};
   		parse2SQLite.start();
+	}
+
+	public void wait4CSV2SQLite(){
+		try{
+			parse2SQLite.join();
+		}catch(InterruptedException ie){
+	        ie.printStackTrace();
+		}
+	}
+
+	public Connection getConn(){
+		return conn;
 	}
 
 	private void createTable(String path) {
@@ -322,7 +334,6 @@ public class DataFrame {
 		HashMap<String, Boolean> fieldTypes = getFieldType();
 
 		try{
-			//File file = new File(":memory:");
 			Class.forName("org.sqlite.JDBC");
 			String conn_str = "jdbc:sqlite::memory:";
 			conn = DriverManager.getConnection(conn_str);
@@ -366,7 +377,7 @@ public class DataFrame {
 			}
 			int[] updates = pstmt.executeBatch();
 			pstmt.close();
-			conn.commit();
+			//conn.commit();
 		}catch(Exception e){/*
 	        try{
 	            e.printStackTrace(ErrorHandler.getInstance().addError());

@@ -82,6 +82,10 @@ public class MySQLDriver implements Driver {
 		return DriverManager.getConnection(conn_str,un,pw);
 	}
 
+	public void setConnection(Connection c){
+		conn = c;
+	}
+
 	public Connection getConnection(){
 		return conn;
 	}

@@ -490,6 +490,7 @@ public class SDTReader {
 					csv.setTable("OnlyTable");
 					csv.setType("csv");
 					csv.setPath(getValue("Name", e));
+					csv.setHost("jdbc:sqlite::memory:");
 					dataPaths.add(csv);
 					dataIds.put(csv.getID()+csv.getTable(),holder);
 					holder++;
@@ -584,14 +585,19 @@ public class SDTReader {
 	}
 
 	private void setupDataFrame(SourceDataInfo sdi) {
+
 		try{
 			Table table = null;
 			
 	    	Driver driver = DriverSelector.getDriver(sdi.getType());
 	        Class.forName(driver.packageName());
 	        Logger.getInstance().add("Connecting to Server...");
-
-	        driver.createConnection(sdi.getHost(),sdi.getUsername(),sdi.getPassword());
+	        if(sdi.getType().equals("csv")){
+				sdi.getDataFrame().wait4CSV2SQLite();
+				driver.setConnection(sdi.getDataFrame().getConn());
+			}else{
+				driver.createConnection(sdi.getHost(),sdi.getUsername(),sdi.getPassword());
+			}
 	        //System.out.println(sourceData.getQuery());
 	        if(sdi.isMerged()){
 	        	table = new MergedTable(sdi.getQuery(), driver);

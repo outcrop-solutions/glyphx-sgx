@@ -146,10 +146,10 @@ public class GlyphEngine {
 	 	//String outDir = "C:/Users/Bryan/Desktop/TELCO Small Subset/Viz";
 	 	//String sdtPath = "C:/Users/Bryan/Desktop/GlobalAdmissions20132016/GlobalAdmissions20132016/View 1 Datamap Recommendations.sdt";
 	 	//String outDir = "C:/Users/Bryan/Desktop/GlobalAdmissions20132016/GlobalAdmissions20132016/Viz";
-	 	//String sdtPath = "D:/Downloads/frontend_example.sdt";
-	 	//String outDir = "D:/Downloads";
-	 	String sdtPath = "C:/Users/Bryan/Desktop/Test Files/working_sqlite/animatedrotate_planets_noscale.sdt";
-	 	String outDir = "C:/Users/Bryan/Desktop/Test Files/working_sqlite";
+	 	String sdtPath = "D:/Downloads/frontend_example.sdt";
+	 	String outDir = "D:/Downloads";
+	 	//String sdtPath = "C:/Users/Bryan/Desktop/Test Files/working_sqlite/animatedrotate_planets_noscale.sdt";
+	 	//String outDir = "C:/Users/Bryan/Desktop/Test Files/working_sqlite";
 
 	 	String expDir = "DataMapper";
 	 	GlyphEngine start = new GlyphEngine();
@@ -165,7 +165,7 @@ public class GlyphEngine {
 	 	s[0] = 2048.0; s[1] = 1024.0;
 	 	//s[0] = 471.0; s[1] = 634.0;
 	 	int err = start.initiate(sdtPath, outDir, expDir);
-/*
+
 	 	String id = "cdd96014-8e17-4d2a-927a-4a1f8ac4662c";
 	 	String table = "OnlyTable";
 	 	String field = "Name";
@@ -175,8 +175,8 @@ public class GlyphEngine {
 	 		System.out.println((i+1) +": "+ distinct[i]);
 	 	}
 	 	String query = "SELECT * FROM OnlyTable WHERE Department='Data Wrangler'";
-	 	start.setQueryForDatasource(id, table, query);*/
-
+	 	start.setQueryForDatasource(id, table, query);
+/*
 	 	String id = "d0179c53-c1ed-4c17-8d50-011327863db8";
 	 	String table = "FirstPortion";
 	 	String query = "select * from FirstPortion where `OrbitalEcc.` between 0 and 0.2;";
