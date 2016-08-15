@@ -626,33 +626,27 @@ namespace SynGlyphX {
 	}
 	
 	void DataTransformModel::ClearAbsentBindings() {
-		//Does not work correctly after Aliases
-		//TODO reimplement 
 
-		////_ASSERT(0);
-		//QModelIndex index = createIndex(0, 0);
-		//SynGlyphX::DataMappingGlyphGraph::InputFieldMap fieldMap = GetInputFieldsForTree(index); 
-		//std::list<SynGlyphX::InputField> sourceFields;
-		//for (const auto& t : m_tableStatsMap) {
-		//	auto table = t.first;
-		//	auto stats = t.second;
-		//	for (const auto& stat : stats) {
-		//		// use arbitrary Type since it does not affect HashID
-		//		SynGlyphX::InputField sInputField(table.GetDatasourceID(), table.GetTable(), stat[0].toStdWString(), SynGlyphX::InputField::Type::Text);
-		//		sourceFields.push_back(sInputField);
-		//		}
-		//	}
-		//for (const auto& field : GetInputFieldManager()->GetFieldMap()) {
-		//	auto it = find(sourceFields.begin(), sourceFields.end(), field.second);
-		//	if (it == sourceFields.end()) { 
-		//		SynGlyphX::InputField f(field.second);
-		//		AppGlobal::Services()->ShowWarningDialog(tr("Source data does not have field:\n") + QString::fromWCharArray(f.GetField().c_str()) + tr("\nMapping will be removed"));
-		//		AppGlobal::Services()->SetModified(true);
-		//		m_dataMapping->ClearInputFieldBindings(GetTreeId(index), field.first);
-		//	}
-		//				
-		//}
-		//emit dataChanged(index, index);
+		std::list<std::wstring> sourceFields;
+		for (const auto& t : m_tableStatsMap) {
+			auto table = t.first;
+			auto stats = t.second;
+			for (const auto& stat : stats) {
+				sourceFields.push_back(stat[0].toStdWString());
+				}
+			}
+		for (const auto& field : GetInputFieldManager()->GetFieldMap()) {
+			auto f = GetInputFieldManager()->GetInputField(field.first).GetField();
+
+			auto it = find(sourceFields.begin(), sourceFields.end(), f);
+			if (it == sourceFields.end()) {
+
+				AppGlobal::Services()->ShowWarningDialog(tr("Source data does not have field:\n") + QString::fromStdWString(f) + tr("\nMapping and aliases using this field will be removed"));
+				AppGlobal::Services()->SetModified(true);
+				GetInputFieldManager()->RemoveInputFieldAndBindings(field.first);
+			}
+						
+		}
 	}
 
 	const SynGlyphX::InputTable& DataTransformModel::GetInputTableForTree(const QModelIndex& index) const {
