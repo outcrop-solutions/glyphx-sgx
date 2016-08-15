@@ -17,65 +17,45 @@
 
 #pragma once
 
-#include "sourcedatacache.h"
-#include <QtWidgets/QFrame>
-#include "dataengineconnection.h"
+#include "sgxgui_global.h"
+#include <QtWidgets/QWidget>
+#include <containers/ntree.hpp>
 
-class QStackedWidget;
-class QStackedLayout;
-class QGridLayout;
-class QButtonGroup;
-class QPushButton;
-class QVBoxLayout;
-class QListWidget;
-class QListWidgetItem;
-
-class SharedVisualizationsWidget;
+class QLabel;
+class QTreeWidget;
+class QTreeWidgetItem;
 
 namespace SynGlyphX {
 
-	class TitleListWidget;
-}
+	class SGXGUI_EXPORT TitleTreeWidget : public QWidget
+	{
+		Q_OBJECT
 
-class HomePageWidget : public QFrame
-{
-	Q_OBJECT
+	public:
+		TitleTreeWidget(QWidget *parent);
+		~TitleTreeWidget();
 
-public:
-	HomePageWidget(DataEngine::DataEngineConnection::SharedPtr dataEngineConnection, QWidget *parent);
-	~HomePageWidget();
+		void SetAllowMultiselect(bool allow);
+		void SetTitle(const QString& title);
+		void SetItems(const stlplus::ntree<QStringList>& labelsAndTooltips);
 
-signals:
-	void LoadRecentFile(QString filename);
-	bool LoadVisualization(const QString& sdtToLoad, const MultiTableDistinctValueFilteringParameters& userSelectedFilters);
+		void SelectFirstSelectableItem();
 
-private slots:
-	void OnLoadVisualization();
-	void OnNewOptionSelected(int index);
-	void OnRecentListUpdated();
-	void OnSubsetListUpdated();
-	void OnRecentViewClicked(QListWidgetItem *item);
+	signals:
+		void SelectedTooltipChanged(QString tooltip);
 
-private:
-	void CreateHomePageOptionsWidget();
-	void CreateAllViewsWidget();
-	void CreateMyViewsWidget();
-	void CreateHelpWidget();
-	void CreateDashboardWidget();
+	private slots:
+		void OnSelectionChanged();
 
-	QGridLayout* m_mainLayout;
-	QStackedLayout* m_homePageWidgetsLayout;
+	private:
+		void SetItems(const stlplus::ntree<QStringList>& labelsAndTooltips, stlplus::ntree<QStringList>::const_iterator iT, QTreeWidgetItem* parentItem);
+		void SetItem(stlplus::ntree<QStringList>::const_iterator iT, QTreeWidgetItem* item);
 
-	QButtonGroup* m_optionsButtonGroup;
+		QLabel* m_titleLabel;
+		QTreeWidget* m_treeWidget;
+		QTreeWidgetItem* m_firstSelectableItem;
+	};
 
-	QPushButton* m_loadVisualizationButton;
-
-	SharedVisualizationsWidget* m_allViewsFilteringWidget;
-	QListWidget* m_recentViewsFilteringWidget;
-
-	SynGlyphX::TitleListWidget* m_subsetViewsFilteringWidget;
-	
-	DataEngine::DataEngineConnection::SharedPtr m_dataEngineConnection;
-};
+} //namespace SynGlyphX
 
 //#pragma once

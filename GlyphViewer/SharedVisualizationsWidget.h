@@ -22,10 +22,12 @@
 #include "DistinctValueFilteringParameters.h"
 #include "xmlpropertytreefile.h"
 #include "dataengineconnection.h"
+#include <containers/ntree.hpp>
+#include <QtCore/QMap>
 
 namespace SynGlyphX {
 
-	class TitleListWidget;
+	class TitleTreeWidget;
 }
 
 namespace DataEngine {
@@ -39,18 +41,20 @@ class QStackedWidget;
 class SharedVisualizationsFile : public SynGlyphX::XMLPropertyTreeFile {
 
 public:
-	typedef std::vector<std::pair<std::wstring, std::wstring>> Visualizations;
-
 	SharedVisualizationsFile() : SynGlyphX::XMLPropertyTreeFile() {}
 	~SharedVisualizationsFile() {}
 
-	const Visualizations& Get() const { return m_visualizations; }
+	const stlplus::ntree<QStringList>& GetInfoTree() const { return m_groupedVisualizations; }
+	const QMap<QString, QString>& GetFilenameToTitleMap() const { return m_filenameToTitleMap; }
 
 protected:
 	void ImportFromPropertyTree(const boost::property_tree::wptree& filePropertyTree) override;
 	void ExportToPropertyTree(boost::property_tree::wptree& filePropertyTree) const override;
 
-	Visualizations m_visualizations;
+	void ImportFromPropertyTree(const boost::property_tree::wptree& propertyTree, stlplus::ntree<QStringList>::iterator parent);
+
+	stlplus::ntree<QStringList> m_groupedVisualizations;
+	QMap<QString, QString> m_filenameToTitleMap;
 };
 
 class SharedVisualizationsWidget : public QSplitter
@@ -69,16 +73,17 @@ public:
 	bool CanCurrentHaveFilters() const;
 	MultiTableDistinctValueFilteringParameters GetCurrentFilterValues() const;
 
-	const SharedVisualizationsFile::Visualizations& GetSharedVisualizationsInfo() const { return m_sharedVisualizationsInfo; }
+	const QMap<QString, QString>& GetSharedVisualizationsInfo() const { return m_filenameToTitleMap; }
 
 private slots:
-	void OnFileSelected(int row);
+	void OnFileSelected(QString filename);
 
 private:
-	SynGlyphX::TitleListWidget* m_viewListWidget;
+	SynGlyphX::TitleTreeWidget* m_viewListWidget;
 	QStackedWidget* m_loadingFilterWidgetsStack;
-	std::unordered_map<unsigned int, LoadingFilterWidget*> m_loadingFilterWidgetMap;
-	SharedVisualizationsFile::Visualizations m_sharedVisualizationsInfo;
+	std::unordered_map<std::string, LoadingFilterWidget*> m_loadingFilterWidgetMap;
+	QMap<QString, QString> m_filenameToTitleMap;
+	std::string m_currentFilename;
 };
 
 //#pragma once

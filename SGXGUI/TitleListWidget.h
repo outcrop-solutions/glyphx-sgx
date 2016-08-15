@@ -19,9 +19,10 @@
 
 #include "sgxgui_global.h"
 #include <QtWidgets/QWidget>
-#include <QtWidgets/QLabel>
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QListWidget>
+
+class QLabel;
+class QPushButton;
+class QListWidget;
 
 namespace SynGlyphX {
 

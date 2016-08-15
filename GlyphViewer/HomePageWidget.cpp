@@ -12,7 +12,8 @@
 #include <QtWidgets/QGridLayout>
 #include <QtWidgets/QButtonGroup>
 #include <QtWidgets/QPushButton>
-#include "SharedViewsWidget.h"
+#include <QtWidgets/QListWidget>
+#include "SharedVisualizationsWidget.h"
 #include "application.h"
 #include "helpdialog.h"
 
@@ -127,16 +128,12 @@ void HomePageWidget::OnRecentListUpdated() {
 	for (const auto& recentFile : GlyphViewerWindow::GetRecentFileListInstance().GetFiles()) {
 
 		QString title;
-		for (const auto& visualizationInfo: m_allViewsFilteringWidget->GetSharedVisualizationsInfo()) {
+		const QMap<QString, QString>& visualizationInfo = m_allViewsFilteringWidget->GetSharedVisualizationsInfo();
+		if (visualizationInfo.contains(recentFile)) {
 
-			if (visualizationInfo.second == recentFile.toStdWString()) {
-
-				title = QString::fromStdWString(visualizationInfo.first);
-				break;
-			}
+			title = visualizationInfo[recentFile];
 		}
-
-		if (title.isEmpty()) {
+		else {
 
 			title = QFileInfo(recentFile).fileName();
 		}
