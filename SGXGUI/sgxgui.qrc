@@ -1,6 +1,7 @@
 <RCC>
     <qresource prefix="SGXGUI">
       <file>Resources/synglyphx_splash.png</file>
+      <file>Resources/synglyphx_logo_large.png</file>
       <file>Resources/synglyphx_x.ico</file>
       <file>Resources/Video/pause.png</file>
       <file>Resources/Video/play.png</file>

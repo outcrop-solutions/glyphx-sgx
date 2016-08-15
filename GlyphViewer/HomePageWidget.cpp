@@ -14,7 +14,7 @@
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QListWidget>
 #include "SharedVisualizationsWidget.h"
-#include "application.h"
+#include "glyphbuilderapplication.h"
 #include "helpdialog.h"
 
 HomePageWidget::HomePageWidget(DataEngine::DataEngineConnection::SharedPtr dataEngineConnection, QWidget *parent)
@@ -31,7 +31,14 @@ HomePageWidget::HomePageWidget(DataEngine::DataEngineConnection::SharedPtr dataE
 
 	QLabel* logoLabel = new QLabel(this);
 	logoLabel->setAlignment(Qt::AlignCenter);
-	logoLabel->setPixmap(QPixmap(":SGXGUI/Resources/GlyphEd/glyphed_logo_homepage.png"));
+	if (SynGlyphX::GlyphBuilderApplication::IsGlyphEd()) {
+
+		logoLabel->setPixmap(QPixmap(":SGXGUI/Resources/GlyphEd/glyphed_logo_homepage.png"));
+	}
+	else {
+
+		logoLabel->setPixmap(QPixmap(":SGXGUI/Resources/synglyphx_logo_white_border.png"));
+	}
 	m_mainLayout->addWidget(logoLabel, 0, 0);
 
 	m_optionsButtonGroup = new QButtonGroup(this);
@@ -246,7 +253,14 @@ void HomePageWidget::CreateDashboardWidget() {
 	QLabel* logoImage = new QLabel(widget);
 	logoImage->setAlignment(Qt::AlignCenter);
 	logoImage->setStyleSheet("QLabel{background-color: white;}");
-	logoImage->setPixmap(QPixmap(":SGXGUI/Resources/GlyphEd/glyphed_logo_large.png"));
+	if (SynGlyphX::GlyphBuilderApplication::IsGlyphEd()) {
+
+		logoImage->setPixmap(QPixmap(":SGXGUI/Resources/GlyphEd/glyphed_logo_large.png"));
+	}
+	else {
+
+		logoImage->setPixmap(QPixmap(":SGXGUI/Resources/synglyphx_logo_large.png"));
+	}
 
 	welcomeWidgetLayout->addWidget(logoImage);
 	welcomeWidget->setLayout(welcomeWidgetLayout);
@@ -299,10 +313,12 @@ void HomePageWidget::CreateDashboardWidget() {
 	lowerRightLabel->setAlignment(Qt::AlignLeft | Qt::AlignTop);
 	lowerRightLabel->setOpenExternalLinks(true);
 	lowerRightLabel->setStyleSheet("font-size: 12pt; background-color: white;");
-	lowerRightLabel->setText(QString::fromStdWString(L"<p>Welcome to GlyphEd™.  GlyphEd™ is data visualization software designed to help the Enrollment Management "
-		L"Office more quickly make sense of all the available data.  You are viewing a Beta version of the software.  We appreciate you taking the "
-		L"time to review what we are doing – and we welcome your feedback.</p>"
-		L"<p>To learn more, share feedback, or just ask questions, please feel free to contact Mark Sloan at 703.507.9788, <a href=\"mailto:mark@GlyphEd.co\">mark@GlyphEd.co</a></p>"));
+	if (SynGlyphX::GlyphBuilderApplication::IsGlyphEd()) {
+		lowerRightLabel->setText(QString::fromStdWString(L"<p>Welcome to GlyphEd™.  GlyphEd™ is data visualization software designed to help the Enrollment Management "
+			L"Office more quickly make sense of all the available data.  You are viewing a Beta version of the software.  We appreciate you taking the "
+			L"time to review what we are doing – and we welcome your feedback.</p>"
+			L"<p>To learn more, share feedback, or just ask questions, please feel free to contact Mark Sloan at 703.507.9788, <a href=\"mailto:mark@GlyphEd.co\">mark@GlyphEd.co</a></p>"));
+	}
 	mainLayout->addWidget(lowerRightLabel, 2, 1, 1, 2);
 
 	widget->setLayout(mainLayout);
