@@ -150,7 +150,7 @@ public class ParseXY {
 	}
 
 	public static void main(String[] args){
-		ParseXY temp = new ParseXY("C:\\Users\\Bryan\\Desktop\\New folder\\Crazy_Complicated_Datamap_V3_Anim.sdt");
+		ParseXY temp = new ParseXY("C:\\Users\\Bryan\\Desktop\\Test Files\\working_sqlite\\animatedrotate_planets_noscale.sdt");
 
 	}
 }
