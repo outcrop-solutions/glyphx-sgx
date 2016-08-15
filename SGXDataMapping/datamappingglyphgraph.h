@@ -38,8 +38,7 @@ namespace SynGlyphX {
 	class SGXDATAMAPPING_API DataMappingGlyphGraph : public GlyphGraphTemplate<DataMappingGlyph> {
 
 	public:
-		//typedef std::unordered_map<HashID, InputField> InputFieldMap;
-		//typedef std::unordered_map<HashID, unsigned int> InputFieldCountMap;
+
 		typedef boost::property_tree::wptree PropertyTree;
 
 		typedef std::shared_ptr<DataMappingGlyphGraph> SharedPtr;
@@ -85,28 +84,24 @@ namespace SynGlyphX {
 		void ClearFieldGroup(const std::wstring& fieldGroupName);
 
 		virtual GlyphIterator AddChildGlyphGraph(const GlyphIterator& vertex, const DataMappingGlyphGraph& graph);
-		virtual void UpdateGlyph(const GlyphIterator& vertex, const DataMappingGlyph& glyph);
+		//virtual void UpdateGlyph(const GlyphIterator& vertex, const DataMappingGlyph& glyph);
 
 		bool IsTransformable() const;
 
 		static SharedPtr CreateDefault();
 
 	private:
-		void AddAllInputBindingsToSubgraph(DataMappingGlyphGraph& graph, const GlyphIterator& vertex, bool removeFromThisGraph);
+
 		void ClearAllInputBindings(DataMappingGlyphGraph& graph, const GlyphIterator& vertex);
 		void ClearInputFieldBindings(DataMappingGlyphGraph& graph, const GlyphIterator& vertex, const std::wstring& inputfield);
 		void ClearFieldGroup(const std::wstring& fieldGroupName, const GlyphIterator& vertex);
-		//void IncrementInputBindingCountsFromGlyph(const DataMappingGlyph& glyph);
-		//void IncrementInputBindingCount(const InputBinding& binding);
+
 		void ExportChildrenToPropertyTree(const DataMappingGlyphGraph::ConstGlyphIterator& parent, boost::property_tree::wptree& propertyTreeParent) const;
 		void ProcessPropertyTreeChildren(const DataMappingGlyphGraph::GlyphIterator& parent, const boost::property_tree::wptree& propertyTree);
 		void AddGraphGlyphSubgraph(DataMappingGlyphGraph::GlyphIterator parent, GlyphGraph::ConstGlyphIterator glyphGraphParent, const GlyphGraph& graph);
 		GlyphGraph::SharedPtr CreateMinOrMaxGlyphSubtree(bool isMax) const;
 		void CreateMinOrMaxGlyphSubtree(const DataMappingGlyphGraph::ConstGlyphIterator parent, GlyphGraph::GlyphIterator newVertex, GlyphGraph::SharedPtr newGlyphGraph, bool isMax) const;
 		bool AreSubtreesEqual(const DataMappingGlyphGraph::ConstGlyphIterator& thisTreeNode, const DataMappingGlyphGraph::ConstGlyphIterator& otherTreeNode, const DataMappingGlyphGraph& otherTree) const;
-
-		//InputFieldMap m_inputFields;
-		//InputFieldCountMap m_inputFieldReferenceCounts;
 
 		bool m_mergeRoots;
 	};

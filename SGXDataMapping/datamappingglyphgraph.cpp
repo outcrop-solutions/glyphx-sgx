@@ -21,25 +21,9 @@ namespace SynGlyphX {
 		GlyphGraphTemplate<DataMappingGlyph>(),
 		m_mergeRoots(false) {
 
-		boost::optional<const PropertyTree&> inputFieldsPropertyTree = propertyTree.get_child_optional(L"InputFields");
-		if (inputFieldsPropertyTree.is_initialized()) {
-
-			//for (const PropertyTree::value_type& inputfieldProperties : inputFieldsPropertyTree.get()) {
-
-			//	if (inputfieldProperties.first == L"InputField") {
-
-			//		InputField inputfield(inputfieldProperties.second);
-			//		m_inputFields[inputfield.GetHashID()] = inputfield;
-			//		m_inputFieldReferenceCounts[inputfield.GetHashID()] = 0;
-			//	}
-			//}
-		}
-
-		//m_rootVertex = add_vertex(DataMappingGlyph(propertyTree));
-		//IncrementInputBindingCountsFromGlyph(operator[](m_rootVertex));
 		DataMappingGlyph rootGlyph(propertyTree);
 		SetRootGlyph(rootGlyph, propertyTree.get_optional<Label>(L"<xmlattr>.label").get_value_or(GetNextLabel()));
-		//IncrementInputBindingCountsFromGlyph(GetRoot()->second);
+
 		ProcessPropertyTreeChildren(GetRoot(), propertyTree);
 
 		boost::optional<const PropertyTree&> linksPropertyTree = propertyTree.get_child_optional(L"Links");
@@ -58,26 +42,10 @@ namespace SynGlyphX {
 
 		m_mergeRoots = propertyTree.get_optional<bool>(L"<xmlattr>.merge").get_value_or(false);
 
-		//Since there was a previous bug where input fields would get written to the file that were not in use, clear them out
-		//std::vector<SynGlyphX::HashID> fieldsToRemove;
-		//for (auto inputField : m_inputFieldReferenceCounts) {
-
-		//	if (inputField.second == 0) {
-
-		//		fieldsToRemove.push_back(inputField.first);
-		//	}
-		//}
-		//for (auto fieldToRemove : fieldsToRemove) {
-
-		//	m_inputFields.erase(fieldToRemove);
-		//	m_inputFieldReferenceCounts.erase(fieldToRemove);
-		//}
 	}
 
 	DataMappingGlyphGraph::DataMappingGlyphGraph(const DataMappingGlyphGraph& graph) :
 		GlyphGraphTemplate<DataMappingGlyph>(graph),
-		//m_inputFields(graph.m_inputFields),
-		//m_inputFieldReferenceCounts(graph.m_inputFieldReferenceCounts),
 		m_mergeRoots(graph.m_mergeRoots) {
 
 
@@ -86,14 +54,6 @@ namespace SynGlyphX {
 	DataMappingGlyphGraph::DataMappingGlyphGraph(const GlyphGraph& graph) :
 		GlyphGraphTemplate<DataMappingGlyph>(),
 		m_mergeRoots(false) {
-
-		/*if (!graph.HasSingleRoot()) {
-
-			throw std::invalid_argument("GlyphGraph must only have one root vertex.");
-		}
-
-		const GlyphGraph::Vertex& glyphGraphRoot = graph.GetRootVertices()[0];
-		m_rootVertex = add_vertex(DataMappingGlyph(graph[glyphGraphRoot]));*/
 
 		SetRootGlyph(DataMappingGlyph(graph.GetRoot()->second, true));
 		AddGraphGlyphSubgraph(GetRoot(), graph.GetRoot(), graph);
@@ -121,11 +81,6 @@ namespace SynGlyphX {
 
 			return false;
 		}
-
-		//if (m_inputFields != graph.m_inputFields) {
-
-		//	return false;
-		//}
 
 		if (empty() != graph.empty()) {
 
@@ -192,16 +147,6 @@ namespace SynGlyphX {
 			}
 		}
 
-		//if (!m_inputFields.empty()) {
-
-		//	boost::property_tree::wptree& inputFieldsPropertyTree = rootPropertyTree.add(L"InputFields", L"");
-
-		//	for (auto inputfield : m_inputFields) {
-
-		//		inputfield.second.ExportToPropertyTree(inputFieldsPropertyTree);
-		//	}
-		//}
-
 		rootPropertyTree.put<bool>(L"<xmlattr>.merge", m_mergeRoots);
 
 		return rootPropertyTree;
@@ -236,58 +181,13 @@ namespace SynGlyphX {
 			graph.SetRootGlyph(vertex->second);
 		}
 
-		AddAllInputBindingsToSubgraph(graph, graph.GetRoot(), false);
 		return graph;
 	}
 
 	DataMappingGlyphGraph DataMappingGlyphGraph::GetAndRemoveSubgraph(const GlyphIterator& vertex) {
 
 		DataMappingGlyphGraph graph = GlyphGraphTemplate<DataMappingGlyph>::GetAndRemoveSubgraph(vertex);
-		AddAllInputBindingsToSubgraph(graph, graph.GetRoot(), true);
 		return graph;
-	}
-
-	void DataMappingGlyphGraph::AddAllInputBindingsToSubgraph(DataMappingGlyphGraph& graph, const GlyphIterator& vertex, bool removeFromThisGraph) {
-
-		assert(0); //TODO check if we need this after refactoring 
-
-		//for (unsigned int field = 0; field < DataMappingGlyph::MappableField::MappableFieldSize; ++field) {
-
-		//	InputBinding& selectedBinding = const_cast<InputBinding&>(vertex->second.GetInputBinding(static_cast<DataMappingGlyph::MappableField>(field)));
-		//	if (selectedBinding.IsBoundToInputField()) {
-
-  //              HashID inputFieldID = selectedBinding.GetInputFieldID();
-		//		std::unordered_map<HashID, unsigned int>::iterator referenceCount = graph.m_inputFieldReferenceCounts.find(inputFieldID);
-
-		//		if (referenceCount == graph.m_inputFieldReferenceCounts.end()) {
-
-		//			graph.m_inputFieldReferenceCounts[inputFieldID] = 1;
-		//			graph.m_inputFields[inputFieldID] = m_inputFields[inputFieldID];
-		//		}
-		//		else {
-
-		//			++graph.m_inputFieldReferenceCounts[inputFieldID];
-		//		}
-
-		//		if (removeFromThisGraph) {
-
-		//			if (m_inputFieldReferenceCounts[inputFieldID] == 1) {
-
-		//				m_inputFieldReferenceCounts.erase(m_inputFieldReferenceCounts.find(inputFieldID));
-		//				m_inputFields.erase(m_inputFields.find(inputFieldID));
-		//			}
-		//			else {
-
-		//				--m_inputFieldReferenceCounts[inputFieldID];
-		//			}
-		//		}
-		//	}
-		//}
-
-		//for (unsigned int i = 0; i < graph.children(vertex); ++i) {
-
-		//	AddAllInputBindingsToSubgraph(graph, graph.child(vertex, i), removeFromThisGraph);
-		//}
 	}
 
 	void DataMappingGlyphGraph::ClearAllInputBindings() {
@@ -386,19 +286,6 @@ namespace SynGlyphX {
 		//Clear input binding if field as a previous value
 		ClearInputBinding(node, field);
 
-		//HashID inputFieldID = inputfield.GetHashID();
-		//std::unordered_map<HashID, unsigned int>::iterator referenceCount = m_inputFieldReferenceCounts.find(inputFieldID);
-
-		//if (referenceCount == m_inputFieldReferenceCounts.end()) {
-
-		//	m_inputFieldReferenceCounts[inputFieldID] = 1;
-		//	m_inputFields[inputFieldID] = inputfield;
-		//}
-		//else {
-
-		//	++m_inputFieldReferenceCounts[inputFieldID];
-		//}
-
 		node.deconstify()->second.SetInputBinding(field, InputBinding(inputfield));
 	}
 
@@ -407,18 +294,6 @@ namespace SynGlyphX {
 		const InputBinding& binding = node->second.GetInputBinding(field);
 
 		if (binding.IsBoundToInputField()) {
-
-		//	HashID inputFieldID = binding.GetInputFieldID();
-
-		//	if (m_inputFieldReferenceCounts[inputFieldID] == 1) {
-
-		//		m_inputFieldReferenceCounts.erase(m_inputFieldReferenceCounts.find(inputFieldID));
-		//		m_inputFields.erase(m_inputFields.find(inputFieldID));
-		//	}
-		//	else {
-
-		//		--m_inputFieldReferenceCounts[inputFieldID];
-		//	}
 
 			node.deconstify()->second.ClearInputBinding(field);
 		}
@@ -457,11 +332,6 @@ namespace SynGlyphX {
 			ClearInputFieldBindings(graph, graph.child(vertex, i), inputfield);
 		}
 	}
-
-	//const DataMappingGlyphGraph::InputFieldMap& DataMappingGlyphGraph::GetInputFields() const {
-
-	//	return m_inputFields;
-	//}
 
 	bool DataMappingGlyphGraph::DoesRootGlyphPositionXYHaveBindings() const {
 
@@ -550,24 +420,7 @@ namespace SynGlyphX {
 		return newGraph;
 	}
 
-	//void DataMappingGlyphGraph::IncrementInputBindingCountsFromGlyph(const DataMappingGlyph& glyph) {
 
-	//	if (!m_inputFields.empty()) {
-
-	//		for (unsigned int field = 0; field < DataMappingGlyph::MappableField::MappableFieldSize; ++field) {
-
-	//			IncrementInputBindingCount(glyph.GetInputBinding(static_cast<DataMappingGlyph::MappableField>(field)));
-	//		}
-	//	}
-	//}
-
-	//void DataMappingGlyphGraph::IncrementInputBindingCount(const InputBinding& binding) {
-
-	//	//if (binding.IsBoundToInputField()) {
-
-	//	//	++m_inputFieldReferenceCounts[binding.GetInputFieldID()];
-	//	//}
-	//}
 
 	void DataMappingGlyphGraph::ResetRootMinMaxPositionXY() {
 
@@ -611,24 +464,24 @@ namespace SynGlyphX {
 		return GlyphGraphTemplate<DataMappingGlyph>::AddChildGlyphGraph(vertex, graph);
 	}
 
-	void DataMappingGlyphGraph::UpdateGlyph(const GlyphIterator& vertex, const DataMappingGlyph& glyph) {
-		assert(0);//TODO check if we need this after refactoring
-		//DataMappingGlyph glyphWithoutUnlinkedInputBindings = glyph;
-		//for (unsigned int field = 0; field < DataMappingGlyph::MappableField::MappableFieldSize; ++field) {
+	//void DataMappingGlyphGraph::UpdateGlyph(const GlyphIterator& vertex, const DataMappingGlyph& glyph) {
+	//	assert(0);//TODO check if we need this after refactoring
+	//	//DataMappingGlyph glyphWithoutUnlinkedInputBindings = glyph;
+	//	//for (unsigned int field = 0; field < DataMappingGlyph::MappableField::MappableFieldSize; ++field) {
 
-		//	const InputBinding& selectedBinding = glyphWithoutUnlinkedInputBindings.GetInputBinding(static_cast<DataMappingGlyph::MappableField>(field));
-		//	if (selectedBinding.IsBoundToInputField()) {
+	//	//	const InputBinding& selectedBinding = glyphWithoutUnlinkedInputBindings.GetInputBinding(static_cast<DataMappingGlyph::MappableField>(field));
+	//	//	if (selectedBinding.IsBoundToInputField()) {
 
-		//		HashID inputFieldID = selectedBinding.GetInputFieldID();
-		//		if (m_inputFields.count(inputFieldID) == 0) {
+	//	//		HashID inputFieldID = selectedBinding.GetInputFieldID();
+	//	//		if (m_inputFields.count(inputFieldID) == 0) {
 
-		//			glyphWithoutUnlinkedInputBindings.ClearInputBinding(static_cast<DataMappingGlyph::MappableField>(field));
-		//		}
-		//	}
-		//}
+	//	//			glyphWithoutUnlinkedInputBindings.ClearInputBinding(static_cast<DataMappingGlyph::MappableField>(field));
+	//	//		}
+	//	//	}
+	//	//}
 
-		//GlyphGraphTemplate<DataMappingGlyph>::UpdateGlyph(vertex, glyphWithoutUnlinkedInputBindings);
-	}
+	//	//GlyphGraphTemplate<DataMappingGlyph>::UpdateGlyph(vertex, glyphWithoutUnlinkedInputBindings);
+	//}
 
 	bool DataMappingGlyphGraph::IsTransformable() const {
 
