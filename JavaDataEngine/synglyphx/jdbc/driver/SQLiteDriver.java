@@ -89,6 +89,10 @@ public class SQLiteDriver implements Driver {
 		return DriverManager.getConnection(conn_str);
 	}
 
+	public void setConnection(Connection c){
+		conn = c;
+	}
+
 	public Connection getConnection(){
 		return conn;
 	}

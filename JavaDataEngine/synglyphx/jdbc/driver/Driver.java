@@ -19,4 +19,5 @@ public interface Driver {
 	public void setQuery(String query);
 	public String getDistinctQuery(String table, String field);
 	public String getLimit();
+	public void setConnection(Connection c);
 }
