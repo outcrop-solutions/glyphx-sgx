@@ -8,6 +8,7 @@
 #include "sourcedatacache.h"
 #include "stringconvert.h"
 #include <boost/uuid/uuid_io.hpp>
+#include "datatransformmapping.h"
 
 LoadingFilterMissingChoice::LoadingFilterMissingChoice(const std::wstring& field) :
 	std::runtime_error(""),
@@ -35,7 +36,7 @@ LoadingFilterWidget::~LoadingFilterWidget()
 
 }
 
-void LoadingFilterWidget::SetFilters(DataEngine::GlyphEngine& glyphEngine, const SynGlyphX::MultiTableFrontEndFilters& filters) {
+void LoadingFilterWidget::SetFilters(DataEngine::GlyphEngine& glyphEngine, const SynGlyphX::DataTransformMapping& mapping) {
 
 	//QWidget* innerWidget = new QWidget(this);
 	//setWidget(innerWidget);
@@ -43,9 +44,10 @@ void LoadingFilterWidget::SetFilters(DataEngine::GlyphEngine& glyphEngine, const
 	//QVBoxLayout* innerWidgetLayout = new QVBoxLayout(innerWidget);
 	QVBoxLayout* innerWidgetLayout = new QVBoxLayout(this);
 
+	const SynGlyphX::MultiTableFrontEndFilters& filters = mapping.GetFrontEndFilters();
 	for (const auto& filtersForTable : filters) {
 
-		QSplitter* splitter = AddFiltersForTable(glyphEngine, filtersForTable.second, filtersForTable.first);
+		QSplitter* splitter = AddFiltersForTable(glyphEngine, mapping.GetFieldToAliasMapForTable(filtersForTable.first), filtersForTable.second, filtersForTable.first);
 		innerWidgetLayout->addWidget(splitter, 1);
 	}
 
@@ -59,7 +61,7 @@ void LoadingFilterWidget::SetFilters(DataEngine::GlyphEngine& glyphEngine, const
 	setLayout(innerWidgetLayout);
 }
 
-QSplitter* LoadingFilterWidget::AddFiltersForTable(DataEngine::GlyphEngine& glyphEngine, const SynGlyphX::SingleTableFrontEndFilters& filters, const SynGlyphX::InputTable& table) {
+QSplitter* LoadingFilterWidget::AddFiltersForTable(DataEngine::GlyphEngine& glyphEngine, const std::unordered_map<std::wstring, std::wstring>& fieldToAliasMap, const SynGlyphX::SingleTableFrontEndFilters& filters, const SynGlyphX::InputTable& table) {
 
 	QSplitter* splitter = new QSplitter(Qt::Horizontal, this);
 
@@ -80,7 +82,14 @@ QSplitter* LoadingFilterWidget::AddFiltersForTable(DataEngine::GlyphEngine& glyp
 		filterWidget->layout()->setContentsMargins(0, 0, 0, 0);
 		filterWidget->SetAllowMultiselect(filter.second.IsMultiselectAllowed());
 		filterWidget->ShowSelectAllButton(true);
-		filterWidget->SetTitle(qField);
+		if (fieldToAliasMap.count(filter.first) == 0) {
+
+			filterWidget->SetTitle(qField);
+		}
+		else {
+
+			filterWidget->SetTitle(QString::fromStdWString(fieldToAliasMap.at(filter.first)));
+		}
 
 		QStringList distinctValues = glyphEngine.DistinctValuesForField(id, tableName, qField);
 		distinctValues.sort(Qt::CaseInsensitive);

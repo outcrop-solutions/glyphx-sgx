@@ -105,7 +105,7 @@ void SharedVisualizationsWidget::Reset(DataEngine::DataEngineConnection::SharedP
 			if (!mapping.GetFrontEndFilters().empty()) {
 
 				LoadingFilterWidget* loadingFilterWidget = new LoadingFilterWidget(this);
-				loadingFilterWidget->SetFilters(ge, mapping.GetFrontEndFilters());
+				loadingFilterWidget->SetFilters(ge, mapping);
 				loadingFilterWidget->layout()->setContentsMargins(0, 0, 0, 0);
 				m_loadingFilterWidgetsStack->addWidget(loadingFilterWidget);
 				m_loadingFilterWidgetMap[filename] = loadingFilterWidget;
