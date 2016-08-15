@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import synglyphx.glyph.XMLGlyphTemplate;
 import synglyphx.data.SourceDataInfo;
 import synglyphx.data.FilterField;
+import synglyphx.data.Query;
+import synglyphx.data.Cursor;
 import synglyphx.util.*;
 import synglyphx.glyph.Mapper;
 import synglyphx.io.Logger;
@@ -859,10 +861,21 @@ public class SDTReader {
 				break;
 			}
 		}
-		if(temp.getType().equals("sqlite3")){
-			for(FilterField filter : frontEndFilters){
-				if(filter.id().equals(id) && filter.table().equals(table) && filter.field().equals(field)){
+		
+		for(FilterField filter : frontEndFilters){
+			if(filter.id().equals(id) && filter.table().equals(table) && filter.field().equals(field)){
+				if(temp.getType().equals("sqlite3")){
 					return filter.distinctValues(dataDriver(temp));
+				}
+				else if(temp.getType().equals("csv")){
+					Query query = new Query(temp.getDataFrame()).append(field).distinct(); 
+					Cursor cursor = temp.getDataFrame().query(query);
+					String[] holder = new String[cursor.size()];
+					int i = 0;
+					while(cursor.next()){
+						holder[i++] = cursor.get(field);
+					}
+					return holder;
 				}
 			}
 		}
