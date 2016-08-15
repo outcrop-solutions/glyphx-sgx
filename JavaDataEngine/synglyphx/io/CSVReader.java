@@ -17,7 +17,7 @@ public class CSVReader {
 			this.data = new DataFrame();
 			this.parseCSV(path);
 			data.createMinMaxTable();
-			data.createSQLiteTable4CSV(path);
+			//data.createSQLiteTable4CSV(path);
 	}
 
 	private void parseCSV(String path) throws Exception{

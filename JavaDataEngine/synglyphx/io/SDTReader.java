@@ -574,28 +574,35 @@ public class SDTReader {
 				dataPaths.get(i).setDataFrame(reader.getDataFrame());
 			}else{
 				//dataframe creator for JDBC
-				Table table = null;
-		
-		    	Driver driver = DriverSelector.getDriver(dataPaths.get(i).getType());
-	            Class.forName(driver.packageName());
-		        Logger.getInstance().add("Connecting to Server...");
-
-		        driver.createConnection(dataPaths.get(i).getHost(),dataPaths.get(i).getUsername(),dataPaths.get(i).getPassword());
-		        //System.out.println(sourceData.getQuery());
-		        if(dataPaths.get(i).isMerged()){
-		        	table = new MergedTable(dataPaths.get(i).getQuery(), driver);
-		        }else{
-		        	table = new BasicTable(dataPaths.get(i).getTable(), dataPaths.get(i).getQuery(), driver);
-		        }
-
-			    dataPaths.get(i).setDataFrame(table.createDataFrame());
+				setupDataFrame(dataPaths.get(i));
 			}
 
 			if(dataPaths.get(i).hasTextInterpolation()){
 				dataPaths.get(i).setTextInterpolationFields();
 			}
 		}
+	}
 
+	private void setupDataFrame(SourceDataInfo sdi) {
+		try{
+			Table table = null;
+			
+	    	Driver driver = DriverSelector.getDriver(sdi.getType());
+	        Class.forName(driver.packageName());
+	        Logger.getInstance().add("Connecting to Server...");
+
+	        driver.createConnection(sdi.getHost(),sdi.getUsername(),sdi.getPassword());
+	        //System.out.println(sourceData.getQuery());
+	        if(sdi.isMerged()){
+	        	table = new MergedTable(sdi.getQuery(), driver);
+	        }else{
+	        	table = new BasicTable(sdi.getTable(), sdi.getQuery(), driver);
+	        }
+		    sdi.setDataFrame(table.createDataFrame());
+
+		}catch(Exception e){
+			e.printStackTrace();
+		}
 	}
 
 	private void addKeysAndValues(XMLGlyphTemplate temp, Element element, String type, String field){
@@ -904,6 +911,9 @@ public class SDTReader {
 		for(SourceDataInfo sdi : dataPaths){
 			if(sdi.getID().equals(id) && sdi.getTable().equals(table)){
 				sdi.setQuery(query);
+				System.out.println("Before: " + sdi.getDataFrame().size());
+				setupDataFrame(sdi);
+				System.out.println("After: " + sdi.getDataFrame().size());
 				break;
 			}
 		}
