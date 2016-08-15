@@ -19,8 +19,8 @@ vec3 get_lighting(vec3 surface_normal)
 	const vec3 color1 = vec3( light1_str );
 	const vec3 color2 = vec3( light2_str );
 	vec3 light_dir = normalize( vec3( 1, 1, -1 ) );
-    vec3 light1 = clamp( color1 * dot( surface_normal, light_dir ), 0, 1 );
-    vec3 light2 = clamp( color2 * dot( surface_normal, -light_dir ), 0, 1 );
+    vec3 light1 = clamp( color1 * dot( surface_normal, -light_dir ), 0, 1 );
+    vec3 light2 = clamp( color2 * dot( surface_normal, light_dir ), 0, 1 );
     vec3 light = clamp( ambient + ( light1 + light2 ), 0, 1 );
 
     return light;
