@@ -1,6 +1,7 @@
 package synglyphx.data;
 
 import java.io.*;
+import java.sql.*;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -22,6 +23,8 @@ public class DataFrame {
 	private HashMap<String, Thread> textInterpolationThreads = null;
 	private HashMap<String, ArrayList<String>> textInterpolationFields = null;
 	private String[] headerString;
+	private Thread parse2SQLite;
+	private Connection conn;
 
 	public DataFrame(){
 
@@ -302,6 +305,74 @@ public class DataFrame {
 		Logger.getInstance().add("Returning data stats model...");
 
 		return holder;
+	}
+
+	public void createSQLiteTable4CSV(String path) throws Exception{
+		Thread parse2SQLite = new Thread(){
+    		public void run(){
+    			createTable(path);
+    		}
+  		};
+  		parse2SQLite.start();
+	}
+
+	private void createTable(String path) {
+
+		ArrayList<String> headings = getHeaders();
+		HashMap<String, Boolean> fieldTypes = getFieldType();
+
+		try{
+			//File file = new File(":memory:");
+			Class.forName("org.sqlite.JDBC");
+			String conn_str = "jdbc:sqlite::memory:";
+			conn = DriverManager.getConnection(conn_str);
+			String query = "CREATE TABLE if NOT EXISTS 'OnlyTable' ("; 
+			String insertQuery = "INSERT INTO 'OnlyTable' VALUES (";
+			for(int i = 0; i < headings.size(); i++){
+				query += "'"+headings.get(i).replace("'","''")+"'";
+				if(fieldTypes.get(headings.get(i))){
+					query += " REAL,";
+				}else{
+					query += " TEXT,";
+				}
+				insertQuery += "?,";
+			}
+
+			query = query.substring(0, query.length()-1);
+			insertQuery = insertQuery.substring(0, insertQuery.length()-1);
+			query += ");";
+			insertQuery += ");";
+			
+			PreparedStatement pstmt = conn.prepareStatement(query);
+		    boolean created = pstmt.execute();
+
+		    pstmt = conn.prepareStatement(insertQuery);
+
+			int size = size();
+			for(int i = 0; i < size; i++){
+				ArrayList<String> row = getRow(i);
+				for(int j = 0; j < row.size(); j++){
+					if(row.get(j).equals("")){
+						pstmt.setString(j+1, Character.toString((char)128));
+					}else{
+						pstmt.setString(j+1, row.get(j));
+					}
+				}
+				pstmt.addBatch();
+				if(i+1 % 100 == 0){
+					int[] updates = pstmt.executeBatch();
+					conn.commit();
+				}
+			}
+			int[] updates = pstmt.executeBatch();
+			pstmt.close();
+			conn.commit();
+		}catch(Exception e){/*
+	        try{
+	            e.printStackTrace(ErrorHandler.getInstance().addError());
+	        }catch(Exception ex){}*/
+	        e.printStackTrace();
+	    }
 	}
 
 	public HashMap<String, ArrayList<String>> getMinMaxTable(){
