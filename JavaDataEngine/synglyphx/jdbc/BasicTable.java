@@ -18,7 +18,7 @@ public class BasicTable extends Table {
 		super(driver);
 		this.name = name;
 		this.query = "SELECT * FROM '"+name+"'";
-		this.end_of_query = "'"+name+"'";
+        this.end_of_query = "'"+name+"'";
         Logger.getInstance().addT("Creating "+name+"...");
 		setColumnNames();
         Logger.getInstance().addT(name+" creation complete.");

@@ -6,6 +6,7 @@ public class DriverSelector {
 
 		switch(type){
 			case "mysql": return new MySQLDriver();
+			case "csv": return new SQLiteDriver();
 			case "sqlite3": return new SQLiteDriver();
 			case "vertica": return new VerticaDriver();
 			case "oracle": return new OracleDriver();
