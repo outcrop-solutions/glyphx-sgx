@@ -293,7 +293,7 @@ public class DataFrame {
 
 			if(numeric){
 				temp = new DataStats(fieldType.get(colNames.get(i)), minMaxTable.get(colNames.get(i)).get(0), minMaxTable.get(colNames.get(i)).get(1), 
-					Double.parseDouble(minMaxTable.get(colNames.get(i)).get(2)), rowData.size(), dist.size());
+					0.0, rowData.size(), dist.size());
 			}else{
 				Collections.sort(rowData);
 				temp = new DataStats(fieldType.get(colNames.get(i)), rowData.get(0), rowData.get(rowData.size()-1), 0.0, rowData.size(), dist.size());
