@@ -181,7 +181,7 @@ public class GlyphEngine {
 
 	 	}
 
-	 	}*/
+	 	}
 	 	String query = "SELECT * FROM OnlyTable WHERE Department='Data Wrangler'";
 	 	start.setQueryForDatasource(id, table, query);
 
@@ -189,7 +189,7 @@ public class GlyphEngine {
 	 	String table2 = "OnlyTable";
 	 	//String field2 = "Name";
 	 	String query2 = "SELECT * FROM OnlyTable WHERE Department='Management'";
-	 	start.setQueryForDatasource(id2, table2, query2);
+	 	start.setQueryForDatasource(id2, table2, query2);*/
 
 /*
 	 	String id = "d0179c53-c1ed-4c17-8d50-011327863db8";
