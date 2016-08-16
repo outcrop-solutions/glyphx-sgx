@@ -423,6 +423,24 @@ namespace DataEngine
 		}
 	}
 
+	int GlyphEngine::SizeOfQuery(QString id, QString table, QString query){
+
+		jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
+			"sizeOfQuery", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)I");
+		int count = 0;
+		if (methodId != NULL) {
+			jstring jid = jniEnv->NewStringUTF(id.toStdString().c_str());
+			jstring jtbl = jniEnv->NewStringUTF(table.toStdString().c_str());
+			jstring jqry = jniEnv->NewStringUTF(query.toStdString().c_str());
+			count = (jint)jniEnv->CallStaticIntMethod(jcls, methodId, jid, jtbl, jqry);
+			if (jniEnv->ExceptionCheck()) {
+				jniEnv->ExceptionDescribe();
+				jniEnv->ExceptionClear();
+			}
+		}
+		return count;
+	}
+
 	QString GlyphEngine::JavaErrors(){
 
 		jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
