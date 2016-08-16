@@ -122,13 +122,7 @@ public class SDTReader {
 				updateNeeded = SQLiteReader.isAntzUpdateNeeded(timestamp, outDir, dataPaths);
 			}
 
-			if(updateNeeded){
-				Logger.getInstance().add("Absorbing XML...");
-				absorbXML(doc);
-				Logger.getInstance().add("Creating SDTLinkReader...");
-				linkReader = new SDTLinkReader(doc, templates, dataPaths, directMap);
-				System.out.println("Link Reader created");
-			}
+			continueInitXML();
 
 		}catch(Exception e){
 	        try{
@@ -139,7 +133,17 @@ public class SDTReader {
 
 	}
 
-	public void absorbXML(Document doc) {
+	public void continueInitXML() throws Exception{
+		if(updateNeeded){
+			Logger.getInstance().add("Absorbing XML...");
+			absorbXML();
+			Logger.getInstance().add("Creating SDTLinkReader...");
+			linkReader = new SDTLinkReader(doc, templates, dataPaths, directMap);
+			System.out.println("Link Reader created");
+		}
+	}
+
+	public void absorbXML() {
 
 		templates = new HashMap<Integer, XMLGlyphTemplate>();
 		rootIds = new ArrayList<Integer>();
@@ -586,6 +590,7 @@ public class SDTReader {
 
 	private void setupDataFrame(SourceDataInfo sdi) {
 
+		checkIfXMLAbsorbed();
 		try{
 			Table table = null;
 			
@@ -608,6 +613,13 @@ public class SDTReader {
 
 		}catch(Exception e){
 			e.printStackTrace();
+		}
+	}
+
+	private void checkIfXMLAbsorbed(){
+		if(!updateNeeded){
+			absorbXML();
+			updateNeeded = true;
 		}
 	}
 
@@ -864,6 +876,7 @@ public class SDTReader {
 	}
 
 	public String[] distinctValuesForField(String id, String table, String field){
+		checkIfXMLAbsorbed();
 		SourceDataInfo temp = null;
 		for(SourceDataInfo sdi : dataPaths){
 			if(sdi.getID().equals(id) && sdi.getTable().equals(table)){
