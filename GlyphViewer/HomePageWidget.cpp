@@ -483,12 +483,15 @@ void HomePageWidget::OnLoadVisualization() {
 	QString fileToLoad;
 	MultiTableDistinctValueFilteringParameters filteringParameters;
 
+	SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
+
 	unsigned int whichFilteringWidget = m_homePageWidgetsLayout->currentIndex();
 	SharedVisualizationsWidget* currentLoadingFilterWidget = nullptr;
 	if (whichFilteringWidget == 1) {
 
 		if (!m_allViewsFilteringWidget->DoCurrentNecessaryFiltersHaveSelection()) {
 
+			SynGlyphX::Application::restoreOverrideCursor();
 			QMessageBox::information(this, tr("Did not load visualization"), tr("Visualization can not be loaded until at least one value has been selected from all necessary filters."));
 			return;
 		}
@@ -501,7 +504,7 @@ void HomePageWidget::OnLoadVisualization() {
 		fileToLoad = m_subsetViewsFilteringWidget->GetSelectedTooltips().front();
 	}
 
-	SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
+	SynGlyphX::Application::restoreOverrideCursor();
 
 	emit LoadVisualization(fileToLoad, filteringParameters);
 }
