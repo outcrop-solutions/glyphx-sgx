@@ -167,7 +167,6 @@ namespace SynGlyphX {
 	}
 
 	bool Datasource::DoAnyTablesHaveQueries() const {
-		_ASSERT(0); //TODO: dont forget to remove
 		for (auto& table : m_tables) {
 
 			if (!table.second.GetQuery().empty()) {
