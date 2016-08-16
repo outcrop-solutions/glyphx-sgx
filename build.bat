@@ -36,7 +36,7 @@ if not "%~1"=="" (
 	if "%~1"=="run" (
 		if not "%~2"=="" (
 			if not exist %jp%\ConvertHash.dll ( xcopy %jp%\ConvertHash.dll %outpath%\ )
-			if "%~2"=="-g" %jcmd%\java GlyphEngine
+			if "%~2"=="-g" %jcmd%\java -Xmx1g GlyphEngine
 			if "%~2"=="-d" %jcmd%\java DataEngine
 		)
 	)

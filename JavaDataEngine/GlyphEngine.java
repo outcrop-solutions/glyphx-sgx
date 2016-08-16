@@ -42,6 +42,11 @@ public class GlyphEngine {
 		return ErrorHandler.getInstance().getErrors();
 	}
 
+	public int sizeOfQuery(final String id, final String table, final String query){
+		int size = sdtReader.sizeOfQuery(id, table, query);
+		return size;
+	}
+
 	public static String[] distinctValuesForField(final String id, final String table, final String field){
 		String[] distincts = sdtReader.distinctValuesForField(id,table,field);
 		return distincts;
@@ -148,8 +153,8 @@ public class GlyphEngine {
 	 	//String outDir = "C:/Users/Bryan/Desktop/GlobalAdmissions20132016/GlobalAdmissions20132016/Viz";
 	 	//String sdtPath = "C:\\Users\\Bryan\\Desktop\\Test Files\\working_sqlite\\animatedrotate_planets_noscale.sdt";
 	 	//String outDir = "C:\\Users\\Bryan\\Desktop\\Test Files\\working_sqlite";
-	 	String sdtPath = "D:/Downloads/frontend_example2.sdt";
-	 	String outDir = "D:/Downloads";
+	 	String sdtPath = "C:\\Users\\Bryan\\Desktop\\Test Files\\High School\\High School.sdt";
+	 	String outDir = "C:\\Users\\Bryan\\Desktop\\Test Files\\High School\\";
 	 	//String sdtPath = "C:/Users/Bryan/Desktop/Test Files/working_sqlite/animatedrotate_planets_noscale.sdt";
 	 	//String outDir = "C:/Users/Bryan/Desktop/Test Files/working_sqlite";
 
@@ -184,12 +189,13 @@ public class GlyphEngine {
 	 	}
 	 	String query = "SELECT * FROM OnlyTable WHERE Department='Data Wrangler'";
 	 	start.setQueryForDatasource(id, table, query);
-
-	 	String id2 = "4029a78c-d20c-4750-ab69-250e0b4d6a84";
+*/
+	 	String id2 = "44088e04-3303-4241-94b0-3b3dac432356";
 	 	String table2 = "OnlyTable";
 	 	//String field2 = "Name";
-	 	String query2 = "SELECT * FROM OnlyTable WHERE Department='Management'";
-	 	start.setQueryForDatasource(id2, table2, query2);*/
+	 	String query2 = "SELECT * FROM OnlyTable WHERE HSRank=1";
+	 	System.out.println(start.sizeOfQuery(id2, table2, query2));
+	 	//start.setQueryForDatasource(id2, table2, query2);
 
 /*
 	 	String id = "d0179c53-c1ed-4c17-8d50-011327863db8";

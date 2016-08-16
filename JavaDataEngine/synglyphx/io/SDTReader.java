@@ -930,6 +930,34 @@ public class SDTReader {
       	return sdi.getDriver();
 	}
 
+	public int sizeOfQuery(String id, String table, String query){
+		int rowCount = 0;
+		for(SourceDataInfo sdi : dataPaths){
+			if(sdi.getID().equals(id) && sdi.getTable().equals(table)){
+				try{
+			    	Driver driver = DriverSelector.getDriver(sdi.getType());
+			        Class.forName(driver.packageName());
+
+			        if(sdi.getType().equals("csv")){
+						sdi.getDataFrame().wait4CSV2SQLite();
+						driver.setConnection(sdi.getDataFrame().getConn());
+					}else{
+						driver.createConnection(sdi.getHost(),sdi.getUsername(),sdi.getPassword());
+					}
+					Statement stmt = driver.getConnection().createStatement();
+		            ResultSet rs = stmt.executeQuery("SELECT COUNT(*) FROM ( "+query+" )");
+		            rs.next();
+		            rowCount = rs.getInt(1);
+		            rs.close();
+
+				}catch(Exception e){
+					e.printStackTrace();
+				}
+			}
+		}
+		return rowCount;
+	}
+
 	public void setQueryForDatasource(String id, String table, String query){
 		for(SourceDataInfo sdi : dataPaths){
 			if(sdi.getID().equals(id) && sdi.getTable().equals(table)){

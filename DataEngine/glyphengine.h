@@ -45,6 +45,7 @@ namespace DataEngine
 		void ClearJavaErrors();
 		QStringList DistinctValuesForField(QString id, QString table, QString field);
 		void SetQueryForDatasource(QString id, QString table, QString query);
+		int SizeOfQuery(QString id, QString table, QString query);
 		~GlyphEngine(){};
 
 	};
