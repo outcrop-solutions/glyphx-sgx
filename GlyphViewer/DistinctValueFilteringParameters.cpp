@@ -71,9 +71,14 @@ const DistinctValueFilteringParameters::ColumnDistinctValuesFilterMap& DistinctV
 
 QString DistinctValueFilteringParameters::GenerateQuery(const SynGlyphX::InputTable& table) const {
 
-	QString query = "SELECT * FROM `" + QString::fromStdWString(table.GetTable()) + "` WHERE";
+	QString query = "SELECT * FROM `" + QString::fromStdWString(table.GetTable()) + "` WHERE ";
 
 	for (const auto& filter : m_distinctValuesFilters) {
+
+		if (filter != *m_distinctValuesFilters.begin()) {
+
+			query += " AND ";
+		}
 
 		query += CreateInString(filter.first, filter.second);
 	}
@@ -83,23 +88,16 @@ QString DistinctValueFilteringParameters::GenerateQuery(const SynGlyphX::InputTa
 
 QString DistinctValueFilteringParameters::CreateInString(const QString& columnName, const QSet<QString>& values) const {
 
-//	QString inString = "'" + columnName + "' IN (" + SourceDataCache::CreateEscapedString(*iT);
-	QString inString;
-	for (QSet<QString>::const_iterator iT = values.begin();  iT != values.end(); ++iT) {
+	QSet<QString>::const_iterator iT = values.begin();
+	QString inString = "`" + columnName + "` IN (" + SourceDataCache::CreateEscapedString(*iT);
+	++iT;
+	while (iT != values.end()) {
 
-		if (iT != values.begin()) {
-
-			inString += " AND ";
-		}
-		else {
-
-			inString += " ";
-		}
-
-		inString += "`" + columnName + "`=" + SourceDataCache::CreateEscapedString(*iT);
+		inString += ", " + SourceDataCache::CreateEscapedString(*iT);
+		++iT;
 	}
 
-//	inString += ")";
+	inString += ")";
 
 	return inString;
 }
