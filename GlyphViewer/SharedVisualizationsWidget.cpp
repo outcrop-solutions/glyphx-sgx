@@ -153,6 +153,10 @@ MultiTableDistinctValueFilteringParameters SharedVisualizationsWidget::GetCurren
 
 		return m_loadingFilterWidgetMap.at(m_currentFilename)->GetFilterValues();
 	}
+	else {
+
+		return MultiTableDistinctValueFilteringParameters();
+	}
 }
 
 void SharedVisualizationsWidget::OnFileSelected(QString filename) {
