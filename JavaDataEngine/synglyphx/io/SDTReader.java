@@ -619,7 +619,11 @@ public class SDTReader {
 	private void checkIfXMLAbsorbed(){
 		if(!updateNeeded){
 			updateNeeded = true;
-			continueInitXML();
+			try{
+				continueInitXML();
+			}catch(Exception e){
+				e.printStackTrace();
+			}
 		}
 	}
 
