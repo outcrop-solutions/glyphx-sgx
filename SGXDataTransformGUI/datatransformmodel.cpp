@@ -21,6 +21,7 @@
 #include "AppGlobal.h"
 #include <QtWidgets/QUndoStack>
 #include <QtWidgets/QUndoCommand>
+#include "AppGlobal.h"
 
 namespace SynGlyphX {
 	class DataTransformModel::Command : public QUndoCommand{
@@ -1220,8 +1221,7 @@ namespace SynGlyphX {
 			SynGlyphX::DataMappingGlyphGraph::ConstGlyphIterator newParentGlyph(static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(parent.internalPointer()));
 			const QModelIndexList& indexes = glyphData->GetGlyphs();
 
-			bool glyphsMoved = false;
-
+			SynGlyphX::AppGlobal::Services()->BeginTransaction("Move Glyphs", TransactionType::ChangeTree);
 			for (int j = 0; j < indexes.length(); ++j) {
 
 				SynGlyphX::DataMappingGlyphGraph::ConstGlyphIterator oldGlyph(static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(indexes[j].internalPointer()));
@@ -1231,17 +1231,23 @@ namespace SynGlyphX {
 				if (oldParentGlyph != newParentGlyph) {
 				
 					unsigned int numberOfChildren = newParentGlyph.owner()->children(newParentGlyph);
-
-					//Only do an insert here.  The MoveAction will take care of deleting the old object
+					QPersistentModelIndex idx = indexes[j];
+					//Also handle remove here and return false instead of letting MoveAction to take care of it, to allow undo
 					beginInsertRows(parent, numberOfChildren, numberOfChildren);
 					SynGlyphX::DataMappingGlyphGraph oldGlyphSubtree = GetSubgraph(indexes[j], true);
 					m_dataMapping->AddChildTreeResetPosition(GetTreeId(parent), newParentGlyph.deconstify(), oldGlyphSubtree);
 					endInsertRows();
-					glyphsMoved = true;
+					if (idx.isValid()) { 
+						removeRow(idx.row(), idx.parent());
+					}
+					else {
+						removeRow(idx.row(), QModelIndex());
+					}
 				}
 			}
-
-			return glyphsMoved;
+			SynGlyphX::AppGlobal::Services()->EndTransaction();
+			//return glyphsMoved;
+			return false;
 		}
 
 		return false;
