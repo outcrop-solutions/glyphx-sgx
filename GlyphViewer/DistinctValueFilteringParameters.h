@@ -47,6 +47,8 @@ public:
 	QString GenerateQuery(const SynGlyphX::InputTable& table) const;
 
 protected:
+	QString CreateInString(const QString& columnName, const QSet<QString>& values) const;
+
 	//Filters from Elastic tab in Filtering widget and time animation widget (and home page filters)
 	ColumnDistinctValuesFilterMap m_distinctValuesFilters;
 };
