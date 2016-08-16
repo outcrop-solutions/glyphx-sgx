@@ -131,12 +131,16 @@ void AliasLineEdit::SetInputField(const SynGlyphX::InputField& inputField) {
 }
 
 void AliasLineEdit::dragEnterEvent(QDragEnterEvent *event) {
-
+	
 	const InputFieldMimeData* mimeData = qobject_cast<const InputFieldMimeData*>(event->mimeData());
+	auto table = mimeData->GetInputField().GetTable();
 	if (mimeData == nullptr) {
 		return;
 	}
 	else if (m_inputField.IsValid() && (mimeData->GetInputField().IsNumeric() != m_inputField.IsNumeric()))
+		return;
+	else if (m_inputField.IsValid() && ((m_inputField.GetDatasourceID() != mimeData->GetInputField().GetDatasourceID()) 
+		|| (m_inputField.GetTable() != mimeData->GetInputField().GetTable())))
 		return;
 
 	event->acceptProposedAction();
