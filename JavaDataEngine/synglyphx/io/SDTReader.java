@@ -618,8 +618,8 @@ public class SDTReader {
 
 	private void checkIfXMLAbsorbed(){
 		if(!updateNeeded){
-			absorbXML();
 			updateNeeded = true;
+			absorbXML();
 		}
 	}
 
@@ -929,6 +929,7 @@ public class SDTReader {
 	public void setQueryForDatasource(String id, String table, String query){
 		for(SourceDataInfo sdi : dataPaths){
 			if(sdi.getID().equals(id) && sdi.getTable().equals(table)){
+				checkIfXMLAbsorbed();
 				sdi.setQuery(query);
 				System.out.println("Before: " + sdi.getDataFrame().size());
 				setupDataFrame(sdi);
