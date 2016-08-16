@@ -16,6 +16,7 @@
 #include "SharedVisualizationsWidget.h"
 #include "glyphbuilderapplication.h"
 #include "helpdialog.h"
+#include <boost/uuid/uuid_io.hpp>
 
 HomePageWidget::HomePageWidget(DataEngine::DataEngineConnection::SharedPtr dataEngineConnection, QWidget *parent)
 	: QFrame(parent),
@@ -121,7 +122,7 @@ void HomePageWidget::CreateAllViewsWidget() {
 	QWidget* allViewsWidget = new QWidget(this);
 	QVBoxLayout* allViewsLayout = new QVBoxLayout(this);
 	allViewsLayout->setContentsMargins(0, 0, 0, 0);
-	allViewsLayout->addWidget(vizAndFilterFrame, 1);
+	allViewsLayout->addWidget(vizAndFilterFrame, 5);
 	allViewsLayout->addStretch(1);
 	allViewsWidget->setLayout(allViewsLayout);
 
@@ -497,6 +498,20 @@ void HomePageWidget::OnLoadVisualization() {
 		}
 		fileToLoad = m_allViewsFilteringWidget->GetCurrentFilename();
 		filteringParameters = m_allViewsFilteringWidget->GetCurrentFilterValues();
+
+		for (const auto& filtersForTable : filteringParameters) {
+
+			DataEngine::GlyphEngine ge;
+			ge.initiate(m_dataEngineConnection->getEnv(), fileToLoad.toStdString(), "", "", "", "GlyphViewer");
+			QString id = QString::fromStdWString(boost::uuids::to_wstring(filtersForTable.first.GetDatasourceID()));
+			QString tableName = QString::fromStdWString(filtersForTable.first.GetTable());
+			if (ge.SizeOfQuery(id, tableName, filtersForTable.second.GenerateQuery(filtersForTable.first)) == 0) {
+
+				SynGlyphX::Application::restoreOverrideCursor();
+				QMessageBox::information(this, tr("Did not load visualization"), tr("The selected combination of filters generate zero results.  Please try a different combination of filters."));
+				return;
+			}
+		}
 		
 	}
 	else if (whichFilteringWidget == 2) {

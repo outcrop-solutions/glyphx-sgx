@@ -99,10 +99,10 @@ void SharedVisualizationsWidget::Reset(DataEngine::DataEngineConnection::SharedP
 			SynGlyphX::DataTransformMapping mapping;
 			mapping.ReadFromFile(filename);
 
-			DataEngine::GlyphEngine ge;
-			ge.initiate(dataEngineConnection->getEnv(), filename, "", "", "", "GlyphViewer");
-
 			if (!mapping.GetFrontEndFilters().empty()) {
+
+				DataEngine::GlyphEngine ge;
+				ge.initiate(dataEngineConnection->getEnv(), filename, "", "", "", "GlyphViewer");
 
 				LoadingFilterWidget* loadingFilterWidget = new LoadingFilterWidget(this);
 				loadingFilterWidget->SetFilters(ge, mapping);

@@ -6,6 +6,8 @@ namespace SynGlyphX {
     GroupBoxSingleWidget::GroupBoxSingleWidget(const QString& title, QWidget* widget, QWidget *parent)
         : QGroupBox(title, parent)
     {
+		widget->setParent(this);
+
         QHBoxLayout* layout = new QHBoxLayout(this);
         layout->addWidget(widget);
 		if (widget->layout() != NULL) {

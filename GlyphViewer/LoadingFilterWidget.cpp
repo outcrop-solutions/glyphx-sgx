@@ -9,6 +9,7 @@
 #include "stringconvert.h"
 #include <boost/uuid/uuid_io.hpp>
 #include "datatransformmapping.h"
+#include "groupboxsinglewidget.h"
 
 LoadingFilterMissingChoice::LoadingFilterMissingChoice(const std::wstring& field) :
 	std::runtime_error(""),
@@ -48,7 +49,11 @@ void LoadingFilterWidget::SetFilters(DataEngine::GlyphEngine& glyphEngine, const
 	for (const auto& filtersForTable : filters) {
 
 		QSplitter* splitter = AddFiltersForTable(glyphEngine, mapping.GetFieldToAliasMapForTable(filtersForTable.first), filtersForTable.second, filtersForTable.first);
-		innerWidgetLayout->addWidget(splitter, 1);
+		QString title = QString::fromStdWString(mapping.GetFormattedName(filtersForTable.first.GetDatasourceID(), filtersForTable.first.GetTable()));
+		SynGlyphX::GroupBoxSingleWidget* groupBox = new SynGlyphX::GroupBoxSingleWidget(title, splitter, this);
+		groupBox->setContentsMargins(0, 0, 0, 0);
+		groupBox->setStyleSheet("QGroupBox{font-family:'Calibri', Helvetica, Arial, Sans; font-weight: bold; text-transform: uppercase; font-size: 16px; line-height: 24px;}");
+		innerWidgetLayout->addWidget(groupBox);
 	}
 
 	//int stretchSize = 3 - filters.size();
