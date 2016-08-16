@@ -163,6 +163,8 @@ namespace SynGlyphX {
 		const MultiTableFrontEndFilters& GetFrontEndFilters() const { return m_frontEndFilters; }
 		void SetFrontEndFilters(const MultiTableFrontEndFilters& filters) { m_frontEndFilters = filters; }
 
+		std::wstring GetFormattedName(const boost::uuids::uuid& datasourceID, const std::wstring& table) const;
+
     protected:
 		void CopyInputBindingsForSubsetMapping(DataMappingGlyphGraph::SharedPtr newGlyphGraph, 
 											   DataMappingGlyphGraph::GlyphIterator newNode, 

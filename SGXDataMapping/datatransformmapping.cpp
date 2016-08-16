@@ -1191,4 +1191,21 @@ namespace SynGlyphX {
 
 		return fieldToAliasMap;
 	}
+
+	std::wstring DataTransformMapping::GetFormattedName(const boost::uuids::uuid& datasourceID, const std::wstring& table) const {
+
+		if (m_datasources.count(datasourceID) == 0) {
+
+			throw std::invalid_argument("Can't get formatted name since datasource ID does not exist in this mapping.");
+		}
+
+		std::wstring formattedName = m_datasources.at(datasourceID)->GetFormattedName();
+		if (table != Datasource::SingleTableName) {
+
+			formattedName += L":";
+			formattedName += table;
+		}
+
+		return formattedName;
+	}
 } //namespace SynGlyphX
