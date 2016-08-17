@@ -242,7 +242,7 @@ public:
 		if (index.column() == 0)
 		{
 			QLineEdit* editor = new QLineEdit(parent);
-			editor->setValidator(new QRegExpValidator(QRegExp("[A-Za-z0-9_]+"), editor));
+			editor->setValidator(new QRegExpValidator(QRegExp("[A-Za-z0-9_ ]+"), editor));
 			return editor;
 		}
 		else

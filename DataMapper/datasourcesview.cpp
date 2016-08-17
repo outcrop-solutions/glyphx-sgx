@@ -70,7 +70,10 @@ void DataSourcesView::OnRemoveDatasource() {
 	const QModelIndexList& selection = selectionModel()->selectedIndexes();
 	if (!selection.isEmpty()) {
 
-		if (QMessageBox::warning(this, tr("Remove Datasource"), tr("Removing this datasource will also remove any bindings in glyphs and field groups that use this datasource.  Do you wish to remove this datasource?"), QMessageBox::Yes, QMessageBox::No) == QMessageBox::Yes) {
+		if (QMessageBox::warning(this, tr("Remove Datasource"),
+			tr("Removing this datasource will also remove any links, bindings in glyphs and field groups that use this datasource." 
+			" This action cannot be reverted with 'Undo'. Do you wish to remove this datasource?"), 
+			QMessageBox::Yes, QMessageBox::No) == QMessageBox::Yes) {
 
 			model()->removeRow(selection.front().row());
 		}

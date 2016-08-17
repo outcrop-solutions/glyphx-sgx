@@ -657,7 +657,7 @@ namespace SynGlyphX {
 			throw std::invalid_argument("Can't get input field map from invalid index");
 		}
 
-		return m_dataMapping->GetInputTalbe(GetTreeId(index));
+		return m_dataMapping->GetInputTable(GetTreeId(index));
 	}
 	/*
 	void DataTransformModel::EnableTables(const boost::uuids::uuid& id, const Datasource::TableNames& tables, bool enable) {
