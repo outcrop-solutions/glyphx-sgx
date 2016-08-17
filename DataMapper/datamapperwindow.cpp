@@ -103,6 +103,8 @@ DataMapperWindow::DataMapperWindow(QWidget *parent)
 		throw;
 	}
 
+	DMGlobal::Init(new DMServices(this));
+
 	QStringList commandLineArguments = SynGlyphX::Application::arguments();
 	if (commandLineArguments.size() > 1) {
 
