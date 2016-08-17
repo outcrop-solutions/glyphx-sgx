@@ -64,4 +64,10 @@ namespace SynGlyphX {
 		emit FileListChanged();
 	}
 
+	void SettingsStoredFileList::ClearFiles() {
+
+		m_files.clear();
+		emit FileListChanged();
+	}
+
 } //namespace SynGlyphX

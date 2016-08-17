@@ -8,6 +8,13 @@
 #include <QtWidgets/QMessageBox>
 #include <QtCore/QDir>
 #include "filesystem.h"
+#include "glyphviewerwindow.h"
+#include <QtWidgets/QTabWidget>
+#include <QtWidgets/QCheckBox>
+#include <QtWidgets/QComboBox>
+#include "browselineedit.h"
+#include <QtWidgets/QMessageBox>
+#include <QtWidgets/QGroupBox>
 
 OptionsWidget::OptionsWidget(const GlyphViewerOptions& options, bool enableCacheOptions, QWidget *parent)
 	: QTabWidget(parent)
@@ -151,6 +158,22 @@ void OptionsWidget::CreateUITab() {
 	m_showDownloadedImageErrorMessages = new QCheckBox(tr("Show an error message when an image failed to download"), this);
 	tabLayout->addWidget(m_showDownloadedImageErrorMessages);
 
+	QGroupBox* homePageGroupBox = new QGroupBox(tr("Home Page"), tab);
+
+	QHBoxLayout* clearListsLayout = new QHBoxLayout(tab);
+
+	m_clearRecentListButton = new QPushButton(tr("Clear Recent Views"), tab);
+	clearListsLayout->addWidget(m_clearRecentListButton);
+	QObject::connect(m_clearRecentListButton, &QPushButton::clicked, this, &OptionsWidget::OnClearRecentViews);
+
+	m_clearSubsetListButton = new QPushButton(tr("Clear My Views"), tab);
+	clearListsLayout->addWidget(m_clearSubsetListButton);
+	QObject::connect(m_clearSubsetListButton, &QPushButton::clicked, this, &OptionsWidget::OnClearSubsetViews);
+
+	homePageGroupBox->setLayout(clearListsLayout);
+
+	tabLayout->addWidget(homePageGroupBox);
+
 	tabLayout->addStretch(1);
 
 	tab->setLayout(tabLayout);
@@ -235,4 +258,20 @@ void OptionsWidget::SetFilteringValues(const GlyphViewerOptions& options) {
 void OptionsWidget::SetUIValues(const GlyphViewerOptions& options) {
 
 	m_showDownloadedImageErrorMessages->setChecked(options.GetShowMessageWhenImagesDidNotDownload());
+	m_clearRecentListButton->setEnabled(!GlyphViewerWindow::GetRecentFileListInstance().GetFiles().isEmpty());
+	m_clearSubsetListButton->setEnabled(!GlyphViewerWindow::GetSubsetFileListInstance().GetFiles().isEmpty());
+}
+
+void OptionsWidget::OnClearRecentViews() {
+
+	GlyphViewerWindow::ClearRecentFileList();
+	QMessageBox::information(this, tr("Recent Views Cleared"), tr("Recent views are cleared."));
+	m_clearRecentListButton->setEnabled(false);
+}
+
+void OptionsWidget::OnClearSubsetViews() {
+
+	GlyphViewerWindow::ClearSubsetFileList();
+	QMessageBox::information(this, tr("My Views Cleared"), tr("My views are cleared."));
+	m_clearSubsetListButton->setEnabled(false);
 }

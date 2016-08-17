@@ -18,15 +18,21 @@
 #ifndef OPTIONSWIDGET_H
 #define OPTIONSWIDGET_H
 
-#include <QtWidgets/QTabWidget>
-#include <QtWidgets/QCheckBox>
-#include <QtWidgets/QComboBox>
 #include "glyphvieweroptions.h"
-#include "browselineedit.h"
+#include <QtWidgets/QTabWidget>
 
 #ifdef USE_ZSPACE
 #include "zspaceoptionswidget.h"
 #endif
+
+class QPushButton;
+class QCheckBox;
+class QComboBox;
+
+namespace SynGlyphX {
+
+	class BrowseLineEdit;
+}
 
 class OptionsWidget : public QTabWidget
 {
@@ -41,6 +47,8 @@ public:
 private slots:
 	void ClearCache();
 	void SetToDefaultCacheDirectory();
+	void OnClearRecentViews();
+	void OnClearSubsetViews();
 
 private:
 	void CreateCacheTab(bool enableCacheOptions);
@@ -70,6 +78,9 @@ private:
 
 	QCheckBox* m_loadSubsetVisualizationCheckBox;
 	QCheckBox* m_loadSubsetVisualizationInNewInstanceCheckBox;
+
+	QPushButton* m_clearRecentListButton;
+	QPushButton* m_clearSubsetListButton;
 };
 
 #endif // OPTIONSWIDGET_H

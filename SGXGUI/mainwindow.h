@@ -40,6 +40,7 @@ namespace SynGlyphX {
         ~MainWindow();
 
 		static const SettingsStoredFileList& GetRecentFileListInstance();
+		static void ClearRecentFileList() { s_recentFileList.ClearFiles(); }
 
     protected slots:
         void SwitchBetweenFullAndNormalScreen();

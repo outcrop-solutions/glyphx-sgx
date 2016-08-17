@@ -41,6 +41,8 @@ namespace SynGlyphX {
 		void RemoveFile(const QString& filename);
 		void AddFile(const QString& filename);
 
+		void ClearFiles();
+
 	signals:
 		void FileListChanged();
 

@@ -51,6 +51,7 @@ public:
 	void closeJVM();
 
 	static const SynGlyphX::SettingsStoredFileList& GetSubsetFileListInstance();
+	static void ClearSubsetFileList() { s_subsetFileList.ClearFiles(); }
 	static void AddSubsetVisualization(const QString& filename);
 
 public slots:
