@@ -17,6 +17,7 @@
 #include "sgxdatamapping.h"
 #include <unordered_map>
 #include "inputfield.h"
+#include "InsertionOrderMap.h"
 
 namespace SynGlyphX {
 
@@ -43,7 +44,8 @@ namespace SynGlyphX {
 		bool m_muliselectAllowed;
 	};
 
-	typedef std::unordered_map<std::wstring, FrontEndFilterOptions> SingleTableFrontEndFilters;
+	typedef InsertionOrderMap<std::wstring, FrontEndFilterOptions> SingleTableFrontEndFilters;
+
 	typedef std::unordered_map<InputTable, SingleTableFrontEndFilters, InputTableHash> MultiTableFrontEndFilters;
 
 } //namespace SynGlyphX

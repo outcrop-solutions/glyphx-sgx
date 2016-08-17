@@ -266,8 +266,8 @@ namespace SynGlyphX {
 							if (frontEndfieldProperties.first == L"FilterField") {
 
 								std::wstring inputfield = frontEndfieldProperties.second.get<std::wstring>(L"<xmlattr>.field");
-								filters[inputfield] = FrontEndFilterOptions(frontEndfieldProperties.second.get<bool>(L"<xmlattr>.required"),
-									frontEndfieldProperties.second.get<bool>(L"<xmlattr>.selectall"));
+								filters.Insert(inputfield, FrontEndFilterOptions(frontEndfieldProperties.second.get<bool>(L"<xmlattr>.required"),
+									frontEndfieldProperties.second.get<bool>(L"<xmlattr>.selectall")));
 							}
 						}
 

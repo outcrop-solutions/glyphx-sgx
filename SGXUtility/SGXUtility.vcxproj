@@ -106,6 +106,7 @@
     <ClInclude Include="sgxutility.h" />
     <ClInclude Include="stringconvert.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="InsertionOrderMap.h" />
     <ClInclude Include="utilitytypes.h" />
     <ClInclude Include="uuid.h" />
     <ClInclude Include="xmlpropertytreefile.h" />

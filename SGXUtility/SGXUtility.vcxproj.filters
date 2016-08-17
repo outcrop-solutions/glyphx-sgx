@@ -57,6 +57,9 @@
     <ClInclude Include="runtimeloadedlibrary.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="InsertionOrderMap.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
