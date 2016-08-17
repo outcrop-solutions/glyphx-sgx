@@ -46,7 +46,9 @@ namespace SynGlyphX {
 		const InputField& GetInputField(const std::wstring& fieldID) const;
 		void SetInputField(const std::wstring& fieldID, const InputField& field);
 		void RemoveInputFieldAndBindings(const std::wstring& fieldID);
+		void OnRemoveDataSource(const boost::uuids::uuid& id);
 		std::wstring GenerateInputFieldID(const InputField& field); //may not be const with future implementation
+
 		void Clear();
 
 
@@ -116,8 +118,8 @@ namespace SynGlyphX {
 		void ClearInputFieldBindings(const boost::uuids::uuid& treeID, const std::wstring& inputfield);
 		void ClearInputFieldBindings(const std::wstring& inputfield);
 		
-		const InputTable& GetInputTalbe(const boost::uuids::uuid& treeId) const;
-		const InputTable& GetInputTalbe(const DataMappingGlyphGraph& graph) const;
+		const InputTable& GetInputTable(const boost::uuids::uuid& treeId) const;
+		const InputTable& GetInputTable(const DataMappingGlyphGraph& graph) const;
 
 		bool IsTransformable() const;
 		bool DoesAtLeastOneGlyphGraphHaveBindingsOnPosition() const;
