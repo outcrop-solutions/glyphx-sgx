@@ -14,6 +14,7 @@
 #include <QtGui/QDropEvent>
 #include "datatransformmodel.h"
 #include <QtWidgets/QAction>
+#include "RowMimeData.h"
 
 FrontEndFilterModel::FrontEndFilterModel(QObject* parent) :
 	QAbstractTableModel(parent) {
@@ -135,11 +136,11 @@ Qt::ItemFlags FrontEndFilterModel::flags(const QModelIndex& index) const {
 
 	if (index.column() == 0) {
 
-		return Qt::ItemNeverHasChildren | Qt::ItemIsSelectable | Qt::ItemIsEnabled;
+		return Qt::ItemNeverHasChildren | Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled;
 	}
 	else {
 
-		return Qt::ItemNeverHasChildren | Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsUserCheckable;
+		return Qt::ItemNeverHasChildren | Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled | Qt::ItemIsUserCheckable;
 	}
 }
 
@@ -236,6 +237,69 @@ bool FrontEndFilterModel::setData(const QModelIndex &index, const QVariant &valu
 	return false;
 }
 
+QStringList FrontEndFilterModel::mimeTypes() const {
+
+	QStringList types;
+	types.push_back(SynGlyphX::RowMimeData::s_format);
+	return types;
+}
+
+bool FrontEndFilterModel::canDropMimeData(const QMimeData* data, Qt::DropAction action, int row, int column, const QModelIndex& parent) const {
+
+	const SynGlyphX::RowMimeData* mimeData = qobject_cast<const SynGlyphX::RowMimeData*>(data);
+
+	return (mimeData != nullptr);
+}
+
+QMimeData* FrontEndFilterModel::mimeData(const QModelIndexList& indexes) const {
+
+	std::set<unsigned int> rows;
+	for (const auto& index : indexes) {
+
+		rows.insert(index.row());
+	}
+
+	SynGlyphX::RowMimeData* mimeData = new SynGlyphX::RowMimeData(rows);
+	return mimeData;
+}
+
+bool FrontEndFilterModel::dropMimeData(const QMimeData* data, Qt::DropAction action, int row, int column, const QModelIndex& parent) {
+
+	const SynGlyphX::RowMimeData* rowMimeData = qobject_cast<const SynGlyphX::RowMimeData*>(data);
+
+	if (rowMimeData != nullptr) {
+
+		const std::set<unsigned int>& rowsToMove = rowMimeData->GetRowList();
+		if (!rowsToMove.empty()) {
+
+			SynGlyphX::SingleTableFrontEndFilters filtersToMove;
+			for (const auto& rowToMove : rowsToMove) {
+
+				filtersToMove.push_back(m_currentTableFilters->second[rowToMove]);
+			}
+			if (parent.row() == -1) {
+
+				for (unsigned int i = 0; i < filtersToMove.size(); ++i) {
+
+					m_currentTableFilters->second.Insert(filtersToMove[i].first, filtersToMove[i].second);
+				}
+			}
+			else {
+
+				for (unsigned int i = 0; i < filtersToMove.size(); ++i) {
+
+					m_currentTableFilters->second.Insert(parent.row() + i, filtersToMove[i]);
+				}
+			}
+			
+
+			return true;
+		}
+	}
+
+	return false;
+}
+
 FilterSetupWidget::FilterSetupWidget(QWidget *parent)
 	: QWidget(parent)
 {
@@ -255,8 +319,9 @@ FilterSetupWidget::FilterSetupWidget(QWidget *parent)
 
 	m_table->setSelectionMode(QAbstractItemView::SelectionMode::ExtendedSelection);
 	m_table->setSelectionBehavior(QAbstractItemView::SelectionBehavior::SelectRows);
-	m_table->setDragDropMode(QAbstractItemView::DragDropMode::NoDragDrop);
+	m_table->setDragDropMode(QAbstractItemView::DragDropMode::DragDrop);
 	m_table->setContextMenuPolicy(Qt::ContextMenuPolicy::NoContextMenu);
+	m_table->setDragEnabled(true);
 
 	m_table->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeMode::ResizeToContents);
 	m_table->verticalHeader()->hide();

@@ -434,6 +434,15 @@
     <ClCompile Include="GeneratedFiles\Release\moc_TitleTreeWidget.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="RowMimeData.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_RowMimeData.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_RowMimeData.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="sgxgui_global.h">
@@ -580,6 +589,9 @@
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="TitleTreeWidget.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="RowMimeData.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>

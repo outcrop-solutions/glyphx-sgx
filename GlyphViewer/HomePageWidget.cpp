@@ -268,7 +268,12 @@ void HomePageWidget::CreateDashboardWidget() {
 	}
 	else {
 
-		logoImage->setPixmap(QPixmap(":SGXGUI/Resources/synglyphx_logo_large.png"));
+		QString topLogo = QDir::toNativeSeparators(QDir::cleanPath(SynGlyphX::GlyphBuilderApplication::GetCommonDataLocation()) + "/toplogo.png");
+		if (QFileInfo::exists(topLogo)) {
+
+			logoImage->setPixmap(QPixmap(topLogo));
+		}
+		//logoImage->setPixmap(QPixmap(":SGXGUI/Resources/synglyphx_logo_large.png"));
 	}
 
 	welcomeWidgetLayout->addWidget(logoImage);
@@ -306,29 +311,50 @@ void HomePageWidget::CreateDashboardWidget() {
 	upperRightDashboardImage->setLineWidth(2);
 	upperRightDashboardImage->setMidLineWidth(3);
 	upperRightDashboardImage->setStyleSheet("QLabel{background-color: white;}");
-	QString customerLogo = QDir::toNativeSeparators(QDir::cleanPath(SynGlyphX::GlyphBuilderApplication::GetCommonDataLocation()) + "/customer.png");
-	if (QFileInfo::exists(customerLogo)) {
+	
+	//QString customerLogo = QDir::toNativeSeparators(QDir::cleanPath(SynGlyphX::GlyphBuilderApplication::GetCommonDataLocation()) + "/customer.png");
+	QString upperRightLogo = QDir::toNativeSeparators(QDir::cleanPath(SynGlyphX::GlyphBuilderApplication::GetCommonDataLocation()) + "/rightupper.png");
+	if (QFileInfo::exists(upperRightLogo)) {
 
-		upperRightDashboardImage->SetPixmap(QPixmap(customerLogo));
+		upperRightDashboardImage->SetPixmap(QPixmap(upperRightLogo));
 	}
 	mainLayout->addWidget(upperRightDashboardImage, 1, 1, 1, 2);
 
-	QLabel* lowerRightLabel = new QLabel(widget);
-	lowerRightLabel->setFrameStyle(QFrame::Panel | QFrame::Raised);
-	lowerRightLabel->setLineWidth(2);
-	lowerRightLabel->setMidLineWidth(3);
-	lowerRightLabel->setWordWrap(true);
-	lowerRightLabel->setTextFormat(Qt::RichText);
-	lowerRightLabel->setAlignment(Qt::AlignLeft | Qt::AlignTop);
-	lowerRightLabel->setOpenExternalLinks(true);
-	lowerRightLabel->setStyleSheet("font-size: 12pt; background-color: white;");
 	if (SynGlyphX::GlyphBuilderApplication::IsGlyphEd()) {
+
+		QLabel* lowerRightLabel = new QLabel(widget);
+		lowerRightLabel->setFrameStyle(QFrame::Panel | QFrame::Raised);
+		lowerRightLabel->setLineWidth(2);
+		lowerRightLabel->setMidLineWidth(3);
+		lowerRightLabel->setWordWrap(true);
+		lowerRightLabel->setTextFormat(Qt::RichText);
+		lowerRightLabel->setAlignment(Qt::AlignLeft | Qt::AlignTop);
+		lowerRightLabel->setOpenExternalLinks(true);
+		lowerRightLabel->setStyleSheet("font-size: 12pt; background-color: white;");
+	
 		lowerRightLabel->setText(QString::fromStdWString(L"<p>Welcome to GlyphEd™.  GlyphEd™ is data visualization software designed to help the Enrollment Management "
 			L"Office more quickly make sense of all the available data.  You are viewing a Beta version of the software.  We appreciate you taking the "
 			L"time to review what we are doing – and we welcome your feedback.</p>"
 			L"<p>To learn more, share feedback, or just ask questions, please feel free to contact Mark Sloan at 703.507.9788, <a href=\"mailto:mark@GlyphEd.co\">mark@GlyphEd.co</a></p>"));
+	
+		mainLayout->addWidget(lowerRightLabel, 2, 1, 1, 2);
 	}
-	mainLayout->addWidget(lowerRightLabel, 2, 1, 1, 2);
+	else {
+
+		SynGlyphX::ResizeableImageLabel* lowerRightDashboardImage = new SynGlyphX::ResizeableImageLabel(true, widget);
+		lowerRightDashboardImage->setAlignment(Qt::AlignCenter);
+		lowerRightDashboardImage->setFrameStyle(QFrame::Panel | QFrame::Raised);
+		lowerRightDashboardImage->setLineWidth(2);
+		lowerRightDashboardImage->setMidLineWidth(3);
+		lowerRightDashboardImage->setStyleSheet("QLabel{background-color: white;}");
+
+		QString lowerRightLogo = QDir::toNativeSeparators(QDir::cleanPath(SynGlyphX::GlyphBuilderApplication::GetCommonDataLocation()) + "/rightlower.png");
+		if (QFileInfo::exists(lowerRightLogo)) {
+
+			lowerRightDashboardImage->SetPixmap(QPixmap(lowerRightLogo));
+		}
+		mainLayout->addWidget(lowerRightDashboardImage, 2, 1, 1, 2);
+	}
 
 	widget->setLayout(mainLayout);
 	m_homePageWidgetsLayout->addWidget(widget);
