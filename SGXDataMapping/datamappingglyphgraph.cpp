@@ -272,18 +272,8 @@ namespace SynGlyphX {
 
 	void DataMappingGlyphGraph::SetInputField(DataMappingGlyphGraph::ConstGlyphIterator node, DataMappingGlyph::MappableField field, const std::wstring& inputfield) {
 
-		//Check if new input field is from same table as other input fields.  We shouldn't need to be this restrictive in the future, but that
-		//requires more database work than we have time for right now.
-
-		//TODO: handle this
-		//if (!m_inputFields.empty()) {
-		//	if ((inputfield.GetDatasourceID() != m_inputFields.begin()->second.GetDatasourceID()) ||
-		//		(inputfield.GetTable() != m_inputFields.begin()->second.GetTable())) {
-
-		//		throw std::invalid_argument("Argument inputfield does not match the datasource and table of the other input fields of this tree");
-		//	}
-		//}
-		//Clear input binding if field as a previous value
+		//Checking if new input field is from same table as other input fields is done before calling this
+	
 		ClearInputBinding(node, field);
 
 		node.deconstify()->second.SetInputBinding(field, InputBinding(inputfield));
@@ -429,63 +419,14 @@ namespace SynGlyphX {
 	}
 
 	DataMappingGlyphGraph::GlyphIterator DataMappingGlyphGraph::AddChildGlyphGraph(const GlyphIterator& vertex, const DataMappingGlyphGraph& graph) {
-		// TODO check bindings sources
-		//if (!m_inputFields.empty() && !graph.m_inputFields.empty()) {
-		//	if ((graph.m_inputFields.begin()->second.GetDatasourceID() != m_inputFields.begin()->second.GetDatasourceID()) ||
-		//		(graph.m_inputFields.begin()->second.GetTable() != m_inputFields.begin()->second.GetTable())) {
-
-		//		DataMappingGlyphGraph graphWithoutInputBindings = graph;
-		//		graphWithoutInputBindings.ClearAllInputBindings();
-		//		return GlyphGraphTemplate<DataMappingGlyph>::AddChildGlyphGraph(vertex, graphWithoutInputBindings);
-		//	}
-		//}
-
-		//for (auto inputField : graph.m_inputFields) {
-
-		//	if (m_inputFields.count(inputField.first) == 0) {
-
-		//		m_inputFields[inputField.first] = inputField.second;
-		//	}
-		//}
-
-		//for (auto inputFieldCount : graph.m_inputFieldReferenceCounts) {
-
-		//	if (m_inputFieldReferenceCounts.count(inputFieldCount.first) == 0) {
-
-		//		m_inputFieldReferenceCounts[inputFieldCount.first] = 1;
-		//	}
-		//	else {
-
-		//		m_inputFieldReferenceCounts[inputFieldCount.first] += inputFieldCount.second;
-		//	}
-
-		//}
-
+		// source checking is done by caller
 		return GlyphGraphTemplate<DataMappingGlyph>::AddChildGlyphGraph(vertex, graph);
 	}
 
-	//void DataMappingGlyphGraph::UpdateGlyph(const GlyphIterator& vertex, const DataMappingGlyph& glyph) {
-	//	assert(0);//TODO check if we need this after refactoring
-	//	//DataMappingGlyph glyphWithoutUnlinkedInputBindings = glyph;
-	//	//for (unsigned int field = 0; field < DataMappingGlyph::MappableField::MappableFieldSize; ++field) {
-
-	//	//	const InputBinding& selectedBinding = glyphWithoutUnlinkedInputBindings.GetInputBinding(static_cast<DataMappingGlyph::MappableField>(field));
-	//	//	if (selectedBinding.IsBoundToInputField()) {
-
-	//	//		HashID inputFieldID = selectedBinding.GetInputFieldID();
-	//	//		if (m_inputFields.count(inputFieldID) == 0) {
-
-	//	//			glyphWithoutUnlinkedInputBindings.ClearInputBinding(static_cast<DataMappingGlyph::MappableField>(field));
-	//	//		}
-	//	//	}
-	//	//}
-
-	//	//GlyphGraphTemplate<DataMappingGlyph>::UpdateGlyph(vertex, glyphWithoutUnlinkedInputBindings);
-	//}
 
 	bool DataMappingGlyphGraph::IsTransformable() const {
 
-		return ((GetRoot()->second.IsAnInputFieldBoundToAPosition()) /*&& (!m_inputFields.empty())*/);
+		return ((GetRoot()->second.IsAnInputFieldBoundToAPosition()));
 	}
 
 	void DataMappingGlyphGraph::SetMergeRoots(bool mergeRoots) {

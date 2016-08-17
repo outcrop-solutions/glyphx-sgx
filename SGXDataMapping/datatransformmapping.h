@@ -117,6 +117,8 @@ namespace SynGlyphX {
 		void ClearInputFieldBindings(const std::wstring& inputfield);
 		
 		const InputTable& GetInputTalbe(const boost::uuids::uuid& treeId) const;
+		const InputTable& GetInputTalbe(const DataMappingGlyphGraph& graph) const;
+
 		bool IsTransformable() const;
 		bool DoesAtLeastOneGlyphGraphHaveBindingsOnPosition() const;
 
