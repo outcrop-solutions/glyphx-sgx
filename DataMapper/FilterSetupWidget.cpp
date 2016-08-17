@@ -77,7 +77,7 @@ void FrontEndFilterModel::AddField(const SynGlyphX::InputField& newField) {
 	if (m_filters.count(newTable) == 0) {
 
 		SynGlyphX::SingleTableFrontEndFilters newFilterTable;
-		newFilterTable[newField.GetField()] = SynGlyphX::FrontEndFilterOptions();
+		newFilterTable.Insert(newField.GetField(), SynGlyphX::FrontEndFilterOptions());
 		m_filters[newField] = newFilterTable;
 
 		if (m_filters.size() == 1) {
@@ -91,14 +91,14 @@ void FrontEndFilterModel::AddField(const SynGlyphX::InputField& newField) {
 
 		int newRow = rowCount();
 		beginInsertRows(QModelIndex(), newRow, newRow);
-		m_currentTableFilters->second[newField.GetField()] = SynGlyphX::FrontEndFilterOptions();
+		m_currentTableFilters->second.Insert(newField.GetField(), SynGlyphX::FrontEndFilterOptions());
 		endInsertRows();
 		SetCurrentTable(newField);
 	}
 	else {
 		
 		SynGlyphX::MultiTableFrontEndFilters::iterator iT = m_filters.find(newField);
-		iT->second[newField.GetField()] = SynGlyphX::FrontEndFilterOptions();
+		iT->second.Insert(newField.GetField(), SynGlyphX::FrontEndFilterOptions());
 		SetCurrentTable(newField);
 	}
 }
@@ -108,7 +108,7 @@ void FrontEndFilterModel::RemoveFields(const std::set<std::wstring>& fieldsToRem
 	beginResetModel();
 	for (const auto& fieldToRemove : fieldsToRemove) {
 
-		m_currentTableFilters->second.erase(fieldToRemove);
+		m_currentTableFilters->second.Erase(fieldToRemove);
 	}
 	endResetModel();
 }
