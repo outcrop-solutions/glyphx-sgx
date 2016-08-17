@@ -60,7 +60,10 @@ HomePageWidget::HomePageWidget(DataEngine::DataEngineConnection::SharedPtr dataE
 	CreateDashboardWidget();
 	CreateAllViewsWidget();;
 	CreateMyViewsWidget();
-	CreateHelpWidget();
+	if (SynGlyphX::GlyphBuilderApplication::IsGlyphEd()) {
+
+		CreateHelpWidget();
+	}
 
 	m_mainLayout->addLayout(m_homePageWidgetsLayout, 1, 1);
 
@@ -82,7 +85,12 @@ HomePageWidget::~HomePageWidget()
 void HomePageWidget::CreateHomePageOptionsWidget() {
 
 	QStringList options;
-	options << tr("   Dashboard") << tr("   All Views") << tr("   My Views") << tr("   Help") << tr("   Exit");
+	options << tr("   Dashboard") << tr("   All Views") << tr("   My Views");
+	if (SynGlyphX::GlyphBuilderApplication::IsGlyphEd()) {
+
+		options << tr("   Help");
+	} 
+	options << tr("   Exit");
 
 	QVBoxLayout* optionsLayout = new QVBoxLayout(this);
 	optionsLayout->setSpacing(20);
