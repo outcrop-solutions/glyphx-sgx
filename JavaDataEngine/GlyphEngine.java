@@ -42,7 +42,7 @@ public class GlyphEngine {
 		return ErrorHandler.getInstance().getErrors();
 	}
 
-	public int sizeOfQuery(final String id, final String table, final String query){
+	public static int sizeOfQuery(final String id, final String table, final String query){
 		int size = sdtReader.sizeOfQuery(id, table, query);
 		return size;
 	}
@@ -153,8 +153,10 @@ public class GlyphEngine {
 	 	//String outDir = "C:/Users/Bryan/Desktop/GlobalAdmissions20132016/GlobalAdmissions20132016/Viz";
 	 	//String sdtPath = "C:\\Users\\Bryan\\Desktop\\Test Files\\working_sqlite\\animatedrotate_planets_noscale.sdt";
 	 	//String outDir = "C:\\Users\\Bryan\\Desktop\\Test Files\\working_sqlite";
-	 	String sdtPath = "C:\\Users\\Bryan\\Desktop\\Test Files\\High School\\High School.sdt";
-	 	String outDir = "C:\\Users\\Bryan\\Desktop\\Test Files\\High School\\";
+	 	//String sdtPath = "C:\\Users\\Bryan\\Desktop\\Test Files\\High School\\High School.sdt";
+	 	//String outDir = "C:\\Users\\Bryan\\Desktop\\Test Files\\High School\\";
+	 	String sdtPath = "D:\\Downloads\\Phase 3 Data Sets\\Phase 3 Data Sets\\Poppy Production and Drug Busts.sdt";
+	 	String outDir = "D:\\Downloads\\Phase 3 Data Sets\\Phase 3 Data Sets";
 	 	//String sdtPath = "C:/Users/Bryan/Desktop/Test Files/working_sqlite/animatedrotate_planets_noscale.sdt";
 	 	//String outDir = "C:/Users/Bryan/Desktop/Test Files/working_sqlite";
 
@@ -190,12 +192,15 @@ public class GlyphEngine {
 	 	String query = "SELECT * FROM OnlyTable WHERE Department='Data Wrangler'";
 	 	start.setQueryForDatasource(id, table, query);
 */
-	 	String id2 = "44088e04-3303-4241-94b0-3b3dac432356";
+	 	String id2 = "5dad197e-ea1d-4d61-8d1f-cad99e1ec505";
 	 	String table2 = "OnlyTable";
-	 	//String field2 = "Name";
-	 	String query2 = "SELECT * FROM OnlyTable WHERE HSRank=1";
-	 	System.out.println(start.sizeOfQuery(id2, table2, query2));
-	 	//start.setQueryForDatasource(id2, table2, query2);
+	 	String query2 = "SELECT * FROM `OnlyTable` WHERE `Year` IN ('1997', '1998', '1999', '2000', '2002', '2001')";
+	 	start.setQueryForDatasource(id2, table2, query2);
+
+	 	String id = "643cf5b6-d4dc-49bb-a216-69fb092fabf5";
+	 	String table = "OnlyTable";
+	 	String query = "SELECT * FROM `OnlyTable` WHERE `From` IN ('Mocorito') AND `To` IN ('Sinaloa')";
+	 	start.setQueryForDatasource(id, table, query);
 
 /*
 	 	String id = "d0179c53-c1ed-4c17-8d50-011327863db8";
