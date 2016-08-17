@@ -76,7 +76,6 @@ int main(int argc, char *argv[])
 
 		GlyphDesignerWindow w;
 		w.resize(1200, 700);
-		GDGlobal::Init(new GDServices(&w));
 		//Need to figure out better way to not have the splash screen disappear before the user sees it
 		QTimer::singleShot(1500, &splash, SLOT(close()));
 		w.show();
