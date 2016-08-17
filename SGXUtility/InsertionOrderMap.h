@@ -29,6 +29,8 @@ namespace SynGlyphX {
 	class InsertionOrderMap : public std::vector<std::pair<Key, Value>> {
 
 	public:
+		typedef std::pair<Key, Value> KeyValuePair;
+
 		InsertionOrderMap() : std::vector<std::pair<Key, Value>>() {}
 		InsertionOrderMap(const InsertionOrderMap& vector) : std::vector<std::pair<Key, Value>>(vector) {}
 		virtual ~InsertionOrderMap() {}
@@ -65,6 +67,13 @@ namespace SynGlyphX {
 		void Insert(const Key& key, const Value& value) {
 
 			push_back(std::pair<Key, Value>(key, value));
+		}
+
+		void Insert(unsigned int index, const KeyValuePair& keyValuePair) {
+
+			std::vector<KeyValuePair>::iterator iT = begin();
+			std::advance(iT, index + 1);
+			this->insert(iT, keyValuePair);
 		}
 
 		void Erase(const Key& key) {
