@@ -35,8 +35,10 @@
 #include "baseimage.h"
 #include "sharedactionlist.h"
 #include "GVGlobal.h"
+#include <boost/uuid/uuid_io.hpp>
 
 SynGlyphX::SettingsStoredFileList GlyphViewerWindow::s_subsetFileList("subsetFileList");
+QMap<QString, MultiTableDistinctValueFilteringParameters> GlyphViewerWindow::s_recentFilters;
 
 GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 	: SynGlyphX::MainWindow(4, parent),
@@ -75,7 +77,7 @@ GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 
 	try {
 
-		if (!m_dataEngineConnection->hasJVM()){
+		if (!m_dataEngineConnection->hasJVM()) {
 
 			m_dataEngineConnection->createJVM();
 			de_version = m_dataEngineConnection->VersionNumber();
@@ -528,11 +530,11 @@ bool GlyphViewerWindow::LoadNewVisualization(const QString& filename, const Mult
 	SetCurrentFile(filename);
 	if (!filters.empty()) {
 
-		m_recentFilters[filename] = filters;
+		s_recentFilters[filename] = filters;
 	}
-	else if (m_recentFilters.contains(filename)) {
+	else if (s_recentFilters.contains(filename)) {
 
-		m_recentFilters.remove(filename);
+		s_recentFilters.remove(filename);
 	}
 	EnableLoadedVisualizationDependentActions(true);
 	
@@ -553,9 +555,9 @@ void GlyphViewerWindow::LoadANTzCompatibilityVisualization(const QString& filena
 
 bool GlyphViewerWindow::LoadRecentFile(const QString& filename) {
 
-	if (m_recentFilters.contains(filename)) {
+	if (s_recentFilters.contains(filename)) {
 
-		return m_homePage->LoadVisualization(filename, m_recentFilters[filename]);
+		return m_homePage->LoadVisualization(filename, s_recentFilters[filename]);
 	}
 	else {
 
@@ -907,36 +909,54 @@ void GlyphViewerWindow::ReadSettings() {
 
 	GlyphViewerOptions options;
 
+	boost::uuids::string_generator gen;
+
 	QSettings settings;
-
+	s_recentFilters.clear();
 	settings.beginGroup("Filters");
+	QStringList files = settings.childGroups();
 
-	QStringList files = settings.allKeys();
 	for (const QString& file : files) {
 
-		MultiTableDistinctValueFilteringParameters filters;
+		MultiTableDistinctValueFilteringParameters filtersAllTables;
 		settings.beginGroup(file);
-		QStringList fieldNames = settings.allKeys();
-		for (const QString& fieldName : fieldNames) {
 
-			settings.beginGroup(fieldName);
-			int numberOfValues = settings.beginReadArray("value");
-			QSet<QString> filterValues;
-			for (int i = 0; i < numberOfValues; ++i) {
+		QStringList tables = settings.childGroups();
 
-				settings.setArrayIndex(i);
-				filterValues.insert(settings.value("value").toString());
+		for (const QString& table : tables) {
+
+			DistinctValueFilteringParameters filtersSingleTable;
+
+			settings.beginGroup(table);
+			QStringList datasourceTablePair = table.split(':');
+			SynGlyphX::InputTable inputTable(gen(datasourceTablePair[0].toStdString()), datasourceTablePair[1].toStdWString());
+
+			QStringList fieldNames = settings.childGroups();
+			for (const QString& fieldName : fieldNames) {
+
+				int numberOfValues = settings.beginReadArray(fieldName);
+				QSet<QString> filterValues;
+				for (int i = 0; i < numberOfValues; ++i) {
+
+					settings.setArrayIndex(i);
+					filterValues.insert(settings.value("FilterValue").toString());
+				}
+				settings.endArray(); //filter values array
+
+				filtersSingleTable.SetDistinctValueFilter(fieldName, filterValues);
 			}
-			settings.endGroup();
 
-			//filters.SetDistinctValueFilter(fieldName, filterValues);
+			filtersAllTables[inputTable] = filtersSingleTable;
+
+			settings.endGroup(); //table group
 		}
-		settings.endGroup();
 
-		m_recentFilters[file] = filters;
+		settings.endGroup(); //file group
+
+		s_recentFilters[file] = filtersAllTables;
 	}
 
-	settings.endGroup();
+	settings.endGroup(); //filter group
 
 	settings.beginGroup("Display");
 	if (!settings.value("ShowAnimation", true).toBool()) {
@@ -962,12 +982,38 @@ void GlyphViewerWindow::WriteSettings() {
 	settings.setValue("ShowAnimation", m_showAnimation->isChecked());
 	settings.endGroup();
 
-	/*settings.beginGroup("Filters");
+	settings.beginGroup("Filters");
+	settings.remove("");
 
-	for (unsigned int i = 0; i < m_recentFilters.size(); ++i) {
+	for (auto file : s_recentFilters.keys()) {
 
-		
-	}*/
+		settings.beginGroup(file);
+
+		for (const auto& table : s_recentFilters[file]) {
+
+			QString tableGroup = QString::fromStdString(boost::uuids::to_string(table.first.GetDatasourceID())) + ":" + 
+				QString::fromStdWString(table.first.GetTable());
+			settings.beginGroup(tableGroup);
+
+			QStringList fieldNames = settings.allKeys();
+			for (const auto& field : table.second.GetDistinctValueFilters()) {
+
+				settings.beginWriteArray(field.first);
+				QSet<QString> filterValues;
+				unsigned index = 0;
+				for (const auto& filterValue : field.second) {
+
+					settings.setArrayIndex(index++);
+					settings.setValue("FilterValue", filterValue);
+				}
+				settings.endArray(); //filter values array
+			}
+
+			settings.endGroup(); //table group
+		}
+
+		settings.endGroup(); //file group
+	}
 
 	settings.endGroup();
 
@@ -1217,4 +1263,10 @@ void GlyphViewerWindow::AddSubsetVisualization(const QString& filename) {
 bool GlyphViewerWindow::DoesHelpExist() const {
 
 	return SynGlyphX::GlyphBuilderApplication::IsGlyphEd();
+}
+
+void GlyphViewerWindow::ClearRecentFileList() {
+
+	SynGlyphX::MainWindow::ClearRecentFileList();
+	s_recentFilters.clear();
 }

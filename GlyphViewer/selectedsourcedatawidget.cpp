@@ -61,7 +61,10 @@ void SelectedSourceDataWidget::OnSelectionChanged(const QItemSelection& selected
 		for (const auto& range : m_glyphTemplateRangeToTableMap) {
 
 			SynGlyphX::IndexSet::iterator endOfTableRange = rootIndexRows.lower_bound(static_cast<unsigned long>(range.first.GetMax()));
-			std::advance(endOfTableRange, 1);
+			if ((endOfTableRange != rootIndexRows.end()) && (*endOfTableRange == range.first.GetMax())) {
+
+				std::advance(endOfTableRange, 1);
+			}
 			if (startOfTableRange != endOfTableRange) {
 
 				SynGlyphX::IndexSet indexesForTable;

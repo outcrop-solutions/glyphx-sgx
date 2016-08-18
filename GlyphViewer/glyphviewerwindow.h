@@ -52,6 +52,7 @@ public:
 
 	static const SynGlyphX::SettingsStoredFileList& GetSubsetFileListInstance();
 	static void ClearSubsetFileList() { s_subsetFileList.ClearFiles(); }
+	static void ClearRecentFileList();
 	static void AddSubsetVisualization(const QString& filename);
 
 public slots:
@@ -148,10 +149,10 @@ private:
 	SynGlyphX::PortableVisualizationExport m_portableVisualizationExport;
 	SourceDataInfoModel* m_columnsModel;
 
-	QMap<QString, MultiTableDistinctValueFilteringParameters> m_recentFilters;
 	HomePageWidget* m_homePage;
 
 	static SynGlyphX::SettingsStoredFileList s_subsetFileList;
+	static QMap<QString, MultiTableDistinctValueFilteringParameters> s_recentFilters;
 };
 
 #endif // GLYPHVIEWERWINDOW_H
