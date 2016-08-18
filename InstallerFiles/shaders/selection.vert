@@ -10,6 +10,7 @@ layout(std140) uniform camera_data
 layout(std140) uniform global_data
 {
 	float elapsed_seconds;
+	float selection_anim_max_scale;
 	vec4 tint_color;
 };
 
@@ -64,7 +65,7 @@ void main()
 	// we'd need to scale the object to make that line desired_screen_size pixels long.
 	// (This computation is done on the GPU because each instance will have a different position and
 	// different bounds, so we want each one to compute its own max_scale.)
-	const float desired_screen_size = 64;
+	float desired_screen_size = selection_anim_max_scale;
 	float max_scale = 1.24;
 	vec2 screen_pt0 = world_pt_to_window_pt( bound.xyz );
 	vec2 screen_pt1 = world_pt_to_window_pt( bound.xyz + normalize( cross(eyevec, upvec ) ) * bound.w );
