@@ -103,6 +103,17 @@ namespace SynGlyphX {
 
 	Link::Link() /*: m_function(new MatchFunction)*/ {}
 
+	Link::Link(const Link& link) :
+		m_name(link.m_name),
+		m_shape(link.m_shape),
+		m_start(link.m_start),
+		m_end(link.m_end),
+		m_function(link.m_function),
+		m_color(link.m_color) {
+
+
+	}
+
 	Link::~Link() {
 
 	}
@@ -117,5 +128,17 @@ namespace SynGlyphX {
 		//m_function.ExportToPropertyTree(rootPropertyTree.add(L"Function", L""));
 		m_function.ExportToPropertyTree(rootPropertyTree);
 		return rootPropertyTree;
+	}
+
+	Link& Link::operator=(const Link& link) {
+
+		m_name = link.m_name;
+		m_shape = link.m_shape;
+		m_start = link.m_start;
+		m_end = link.m_end;
+		m_function = link.m_function;
+		m_color = link.m_color;
+
+		return *this;
 	}
 }

@@ -33,9 +33,11 @@ namespace SynGlyphX {
 
 	struct LinkNode { //tree ID and lable should uniquely identify glyph
 		LinkNode(boost::uuids::uuid treeId, unsigned long label, const std::wstring& inputFieldId) : m_treeId(treeId), m_label(label), m_inputFieldId(inputFieldId) {}
+		LinkNode(const LinkNode& node) : m_treeId(node.m_treeId), m_label(node.m_label), m_inputFieldId(node.m_inputFieldId) {}
 		LinkNode(const boost::property_tree::wptree& propertyTree);
 		LinkNode() {}
 		boost::property_tree::wptree& ExportToPropertyTree(boost::property_tree::wptree& parentPropertyTree) const;
+		LinkNode& operator=(const LinkNode& node) { m_treeId = node.m_treeId; m_label = node.m_label; m_inputFieldId = node.m_inputFieldId; return *this; }
 		boost::uuids::uuid m_treeId;
 		unsigned long m_label;
 		std::wstring m_inputFieldId;
@@ -53,8 +55,10 @@ namespace SynGlyphX {
 				m_r = r; m_g = g; m_b = b;
 			}
 			Color() {}
+			Color(const Color& color) : m_r(color.m_r), m_g(color.m_g), m_b(color.m_b), m_alpha(color.m_alpha), m_inheritfromParent(color.m_inheritfromParent) {}
 			Color(const boost::property_tree::wptree& propertyTree);
 			boost::property_tree::wptree& ExportToPropertyTree(boost::property_tree::wptree& parentPropertyTree) const;
+			Color& operator=(const Color& color) { m_r = color.m_r; m_g = color.m_g; m_b = color.m_b; m_alpha = color.m_alpha; m_inheritfromParent = color.m_inheritfromParent; return *this; }
 		};
 
 		class Function { //currently implemented as dumb tree-holder, so LinksDialog can deal with it directly
@@ -69,18 +73,22 @@ namespace SynGlyphX {
 			//};
 			Function() {}
 			//virtual ~Function() {}
+			Function(const Function& function) : m_propertyTree(function.m_propertyTree) {}
 			Function(const boost::property_tree::wptree& propertyTree);
 			virtual boost::property_tree::wptree& ExportToPropertyTree(boost::property_tree::wptree& propertyTree) const;
+			Function& operator=(const Function& function) { m_propertyTree = function.m_propertyTree; return *this; }
 			//virtual Type GetType() { return m_type;  }
 			//static std::shared_ptr<Function> CreateFunction(const boost::property_tree::wptree& propertyTree);
 			//Type m_type;
 			boost::property_tree::wptree m_propertyTree;
 		};
 		Link();
+		Link(const Link& link);
 		~Link();
 		Link(const boost::property_tree::wptree& propertyTree);
 		const std::wstring& GetName() const { return m_name; } 
 		boost::property_tree::wptree& ExportToPropertyTree(boost::property_tree::wptree& parentPropertyTree) const;
+		Link& operator=(const Link& link);
 	private:
 		std::wstring m_name;
 		std::wstring m_shape;

@@ -624,10 +624,13 @@ namespace SynGlyphX {
 	boost::uuids::uuid DataTransformMapping::AddGlyphTree(const DataMappingGlyphGraph::SharedPtr glyphTree) {
 
 		boost::uuids::uuid id = UUIDGenerator::GetNewRandomUUID();
+		AddGlyphTree(id, glyphTree);
+		return id;
+	}
+
+	void DataTransformMapping::AddGlyphTree(const boost::uuids::uuid& id, const DataMappingGlyphGraph::SharedPtr glyphTree) {
 
 		m_glyphTrees.insert(std::pair<boost::uuids::uuid, DataMappingGlyphGraph::SharedPtr>(id, glyphTree));
-
-		return id;
 	}
 
 	const DataTransformMapping::DataMappingGlyphGraphMap& DataTransformMapping::GetGlyphGraphs() const {
@@ -1069,8 +1072,15 @@ namespace SynGlyphX {
 				DataMappingGlyphGraph::SharedPtr glyphGraph(new DataMappingGlyphGraph(*glyphGraphPair.second.get()));
 				CopyInputBindingsForSubsetMapping(glyphGraph, glyphGraph->GetRoot(), oldToNewFieldIDMap);
 
-				subsetMapping->AddGlyphTree(glyphGraph);
+				subsetMapping->AddGlyphTree(glyphGraphPair.first, glyphGraph);
 			}
+		}
+
+		subsetMapping->m_links = m_links;
+		for (auto& link : subsetMapping->m_links) {
+
+			link.m_start.m_inputFieldId = oldToNewFieldIDMap[link.m_start.m_inputFieldId];
+			link.m_end.m_inputFieldId = oldToNewFieldIDMap[link.m_end.m_inputFieldId];
 		}
 
 		return subsetMapping;

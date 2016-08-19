@@ -171,6 +171,8 @@ namespace SynGlyphX {
 											   const std::unordered_map<std::wstring, std::wstring>& oldToNewIDMap) const;
 		void Clear(bool addADefaultBaseObjectAfterClear);
 
+		void AddGlyphTree(const boost::uuids::uuid& id, const DataMappingGlyphGraph::SharedPtr glyphTree);
+
 		void ImportFromPropertyTree(const boost::property_tree::wptree& filePropertyTree) override;
 		void ExportToPropertyTree(boost::property_tree::wptree& filePropertyTree) const override;
 		bool IsDifferentFromGivenPropertyTree(const boost::property_tree::wptree& originalPropertyTree) const override;
