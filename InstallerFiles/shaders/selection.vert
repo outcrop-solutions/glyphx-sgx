@@ -19,9 +19,9 @@ layout(std140) uniform instance_data
 	mat4 world[512];
 };
 
-layout(std140) uniform material
+layout(std140) uniform bounds
 {
-	vec4 color[512];
+	vec4 bound[512];
 };
 
 layout(std140) uniform animation
@@ -57,7 +57,7 @@ void main()
 {
 	mat4x4 w = world[gl_InstanceID];
 
-	vec4 bound = color[gl_InstanceID];	// bound packed into color (xyz = center, w = radius)
+	vec4 b = bound[gl_InstanceID];
 
 	// Figure out a maximum scale to animate to that's about desired_screen_size in screen-space.
 	// We do this by transforming a line from the center of the object to the edge of its bounding
@@ -67,8 +67,8 @@ void main()
 	// different bounds, so we want each one to compute its own max_scale.)
 	float desired_screen_size = selection_anim_max_scale;
 	float max_scale = 1.24;
-	vec2 screen_pt0 = world_pt_to_window_pt( bound.xyz );
-	vec2 screen_pt1 = world_pt_to_window_pt( bound.xyz + normalize( cross(eyevec, upvec ) ) * bound.w );
+	vec2 screen_pt0 = world_pt_to_window_pt( b.xyz );
+	vec2 screen_pt1 = world_pt_to_window_pt( b.xyz + normalize( cross(eyevec, upvec ) ) * b.w );
 	float screen_size = length( screen_pt1 - screen_pt0 ) * 2;
 	float ratio = desired_screen_size / screen_size;
 	max_scale = max( max_scale, ratio );
