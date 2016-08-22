@@ -153,8 +153,8 @@ public class GlyphEngine {
 	 	//String outDir = "C:/Users/Bryan/Desktop/GlobalAdmissions20132016/GlobalAdmissions20132016/Viz";
 	 	//String sdtPath = "C:\\Users\\Bryan\\Desktop\\Test Files\\working_sqlite\\animatedrotate_planets_noscale.sdt";
 	 	//String outDir = "C:\\Users\\Bryan\\Desktop\\Test Files\\working_sqlite";
-	 	String sdtPath = "C:\\Users\\Bryan\\Desktop\\Test Files\\High School\\High School.sdt";
-	 	String outDir = "C:\\Users\\Bryan\\Desktop\\Test Files\\High School\\";
+	 	String sdtPath = "D:/Downloads/Big Data Set/Big Data Set/Mexican Port Traffic.sdt";
+	 	String outDir = "D:/Downloads/Big Data Set/Big Data Set";
 	 	//String sdtPath = "D:\\Downloads\\Phase 3 Data Sets\\Phase 3 Data Sets\\Poppy Production and Drug Busts.sdt";
 	 	//String outDir = "D:\\Downloads\\Phase 3 Data Sets\\Phase 3 Data Sets";
 	 	//String sdtPath = "C:/Users/Bryan/Desktop/Test Files/working_sqlite/animatedrotate_planets_noscale.sdt";
@@ -181,31 +181,31 @@ public class GlyphEngine {
 		double end = 0.0;
 		st = System.currentTimeMillis();
 
-	 	String id = "44088e04-3303-4241-94b0-3b3dac432356";
+	 	String id = "cf127266-5047-40d0-a74c-64e3f462fc75";
 	 	String table = "OnlyTable";
-	 	String field = "Year";
+	 	String field = "Port";
 	 	String[] distinct1 = start.distinctValuesForField(id, table, field);
 
 	 	end = System.currentTimeMillis();
-		System.out.println("Year: "+String.valueOf((end-st)/1000.00));
+		System.out.println("Port: "+String.valueOf((end-st)/1000.00));
 
-	 	field = "HSNameUnique";
+	 	field = "Arrival Time";
 	 	String[] distinct2 = start.distinctValuesForField(id, table, field);
 
 	 	end = System.currentTimeMillis();
-		System.out.println("HSNameUnique: "+String.valueOf((end-st)/1000.00));
+		System.out.println("Arrival Time: "+String.valueOf((end-st)/1000.00));
 
-		field = "StaffAssigned";
+		field = "Departure Time";
 	 	String[] distinct3 = start.distinctValuesForField(id, table, field);
 
 	 	end = System.currentTimeMillis();
-		System.out.println("StaffAssigned: "+String.valueOf((end-st)/1000.00));
+		System.out.println("Departure Time: "+String.valueOf((end-st)/1000.00));
 
-		field = "GPA";
+		field = "Vessel Type";
 	 	String[] distinct4 = start.distinctValuesForField(id, table, field);
 
 	 	end = System.currentTimeMillis();
-		System.out.println("GPA: "+String.valueOf((end-st)/1000.00));
+		System.out.println("Vessel Type: "+String.valueOf((end-st)/1000.00));
 	 	/*
 	 	for(int i = 0; i < distinct.length; i++)
 	 	{

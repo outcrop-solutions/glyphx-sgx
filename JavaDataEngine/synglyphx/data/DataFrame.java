@@ -114,6 +114,10 @@ public class DataFrame {
 		return headerString;
 	}
 
+	public ArrayList<String> distinct(String field){
+		return new ArrayList<String>(new HashSet<String>(getColumn(field)));
+	}
+
 	public Cursor query(Query q){
 
 		queryResults = new HashMap<String, ArrayList<String>>();

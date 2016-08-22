@@ -894,15 +894,15 @@ public class SDTReader {
 				if(temp.getType().equals("sqlite3")){
 					return filter.distinctValues(dataDriver(temp));
 				}
-				else if(temp.getType().equals("csv")){
+				else if(temp.getType().equals("csv")){/*
 					Query query = new Query(temp.getDataFrame()).append(field).distinct(); 
 					Cursor cursor = temp.getDataFrame().query(query);
 					String[] holder = new String[cursor.size()];
 					int i = 0;
 					while(cursor.next()){
 						holder[i++] = cursor.get(field);
-					}
-					return holder;
+					}*/
+					return Functions.arrayListToStringList(temp.getDataFrame().distinct(field));
 				}
 			}
 		}
