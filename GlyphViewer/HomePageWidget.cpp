@@ -533,10 +533,10 @@ void HomePageWidget::OnLoadVisualization() {
 		fileToLoad = m_allViewsFilteringWidget->GetCurrentFilename();
 		filteringParameters = m_allViewsFilteringWidget->GetCurrentFilterValues();
 
+		DataEngine::GlyphEngine ge;
+		ge.initiate(m_dataEngineConnection->getEnv(), fileToLoad.toStdString(), "", "", "", "GlyphViewer");
 		for (const auto& filtersForTable : filteringParameters) {
 
-			DataEngine::GlyphEngine ge;
-			ge.initiate(m_dataEngineConnection->getEnv(), fileToLoad.toStdString(), "", "", "", "GlyphViewer");
 			QString id = QString::fromStdWString(boost::uuids::to_wstring(filtersForTable.first.GetDatasourceID()));
 			QString tableName = QString::fromStdWString(filtersForTable.first.GetTable());
 			if (ge.SizeOfQuery(id, tableName, filtersForTable.second.GenerateQuery(filtersForTable.first)) == 0) {

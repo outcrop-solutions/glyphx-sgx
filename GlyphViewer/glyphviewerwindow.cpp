@@ -36,6 +36,7 @@
 #include "sharedactionlist.h"
 #include "GVGlobal.h"
 #include <boost/uuid/uuid_io.hpp>
+#include "LoadingFilterDialog.h"
 
 SynGlyphX::SettingsStoredFileList GlyphViewerWindow::s_subsetFileList("subsetFileList");
 QMap<QString, MultiTableDistinctValueFilteringParameters> GlyphViewerWindow::s_recentFilters;
@@ -376,7 +377,24 @@ void GlyphViewerWindow::OpenProject() {
 	QString openFile = GetFileNameOpenDialog("VisualizationDir", tr("Open Visualization"), "", tr("SynGlyphX Visualization Files (*.sdt *.sav);;SynGlyphX Data Transform Files (*.sdt);;SynGlyphX ANTz Visualization Files (*.sav)"));
 	if (!openFile.isEmpty()) {
 
-		LoadNewVisualization(openFile);
+		SynGlyphX::DataTransformMapping::SharedPtr mapping = std::make_shared<SynGlyphX::DataTransformMapping>();
+		mapping->ReadFromFile(openFile.toStdString());
+
+		ValidateDataMappingFile(mapping, openFile);
+
+		MultiTableDistinctValueFilteringParameters filters;
+		if (!mapping->GetFrontEndFilters().empty()) {
+
+			LoadingFilterDialog loadingFilterDialog(m_dataEngineConnection, openFile, this);
+			loadingFilterDialog.SetupFilters(*mapping);
+			if (loadingFilterDialog.exec() == QDialog::Rejected) {
+
+				return;
+			}
+			filters = loadingFilterDialog.GetFilterValues();
+		}
+
+		LoadNewVisualization(openFile, filters);
 	}
 }
 
@@ -565,10 +583,13 @@ bool GlyphViewerWindow::LoadRecentFile(const QString& filename) {
 	}
 }
 
-void GlyphViewerWindow::ValidateDataMappingFile(const QString& filename) {
+void GlyphViewerWindow::ValidateDataMappingFile(SynGlyphX::DataTransformMapping::SharedPtr mapping, const QString& filename) {
 
-	SynGlyphX::DataTransformMapping::SharedPtr mapping = std::make_shared<SynGlyphX::DataTransformMapping>();
-	mapping->ReadFromFile(filename.toStdString());
+	QFileInfo fi(filename);
+	if (!fi.isWritable()) {
+
+		return;
+	}
 
 	if (mapping->GetDatasources().empty()) {
 
@@ -640,11 +661,6 @@ void GlyphViewerWindow::LoadDataTransform(const QString& filename, const MultiTa
 	SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
 
 	try {
-
-		if (!filename.contains(SynGlyphX::GlyphBuilderApplication::GetCommonDataLocation(), Qt::CaseInsensitive)) {
-
-			ValidateDataMappingFile(filename);
-		}
 
 		m_mappingModel->LoadDataTransformFile(filename);
 		std::string dcd = GlyphViewerOptions::GetDefaultCacheDirectory().toStdString();
