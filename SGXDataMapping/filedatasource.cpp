@@ -152,7 +152,7 @@ namespace SynGlyphX {
 	std::wstring FileDatasource::GetFormattedName() const {
 
 		boost::filesystem::path datasourcePath(GetFilename());
-		return datasourcePath.filename().wstring();
+		return datasourcePath.stem().wstring();
 	}
 
 	FileDatasource::FileType FileDatasource::GetFileTypeForFile(const std::wstring& filename) {
