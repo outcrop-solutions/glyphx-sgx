@@ -597,7 +597,6 @@ public class SDTReader {
 				dataPaths.get(i).setTextInterpolationFields();
 			}
 			if(dataPaths.get(i).hasPercentRank()){
-				System.out.println("Setting percent rank...");
 				dataPaths.get(i).setPercentRankFields();
 			}
 		}

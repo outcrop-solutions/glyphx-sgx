@@ -22,6 +22,7 @@ public class XMLGlyphTemplate{
 	private HashMap<String,String> functionMapping = null;
 	private HashMap<String,MapFunction> keyValueMap = null;
 	private HashMap<String,ArrayList<Double>> minMaxFieldMap = null;
+	private HashMap<String,double[]> riBounds = null; //range interpolation constraints
 	private int childOf;
 	private int branchLevel;
 	private int numChildren;
@@ -65,6 +66,22 @@ public class XMLGlyphTemplate{
 			return true;
 		}
 		return false;
+	}
+
+	public void setRangeInterpolationConstraints(String field, double ib, double db, double ia, double da){
+		if(riBounds == null){
+			riBounds = new HashMap<String, double[]>();
+		}
+		double[] bounds = new double[4];
+		bounds[0] = ib;
+		bounds[1] = db;
+		bounds[2] = ia;
+		bounds[3] = da;
+		riBounds.put(field, bounds);
+	}
+
+	public double[] getRangeInterpolationConstraints(String field){
+		return riBounds.get(field);
 	}
 
 	public ArrayList<Double> getMinMaxField(String field){

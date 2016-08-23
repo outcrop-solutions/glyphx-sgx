@@ -33,6 +33,18 @@ public class Functions {
 		return ((Math.log10(x2-x1+1)*(y3-y1))/Math.log10(x3-x1+1))+y1;
 	}
 
+	public static double rangeInterpolation(double x1, double x3, double y1, double y3, double x2, double ifbelow, double defbelow, double ifabove, double defabove){
+		if(x2 < ifbelow){
+			return defbelow;
+		}
+		else if(x2 > ifabove){
+			return defabove;
+		}
+		else{
+			return linearInterpolation(x1,x3,y1,y3,x2);
+		}
+	}
+
 	public static double numericToValue(double x1, MapFunction n2v){
 		
 		ArrayList<String> temp = n2v.getKeys();
