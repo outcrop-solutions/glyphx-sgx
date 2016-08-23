@@ -153,8 +153,8 @@ public class GlyphEngine {
 	 	//String outDir = "C:/Users/Bryan/Desktop/GlobalAdmissions20132016/GlobalAdmissions20132016/Viz";
 	 	//String sdtPath = "C:\\Users\\Bryan\\Desktop\\Test Files\\working_sqlite\\animatedrotate_planets_noscale.sdt";
 	 	//String outDir = "C:\\Users\\Bryan\\Desktop\\Test Files\\working_sqlite";
-	 	String sdtPath = "D:/Downloads/Big Data Set/Big Data Set/Mexican Port Traffic.sdt";
-	 	String outDir = "D:/Downloads/Big Data Set/Big Data Set";
+	 	String sdtPath = "C:/Users/Bryan/Desktop/Test Files/PercentRank/percentrank.sdt";
+	 	String outDir = "C:/Users/Bryan/Desktop/Test Files/PercentRank/viz";
 	 	//String sdtPath = "D:\\Downloads\\Phase 3 Data Sets\\Phase 3 Data Sets\\Poppy Production and Drug Busts.sdt";
 	 	//String outDir = "D:\\Downloads\\Phase 3 Data Sets\\Phase 3 Data Sets";
 	 	//String sdtPath = "C:/Users/Bryan/Desktop/Test Files/working_sqlite/animatedrotate_planets_noscale.sdt";
@@ -176,7 +176,7 @@ public class GlyphEngine {
 	 	int err = start.initiate(sdtPath, outDir, expDir);
 
 	 	//double[] nwse = start.getNWandSE();
-
+/*
 	 	double st = 0.0;
 		double end = 0.0;
 		st = System.currentTimeMillis();
@@ -205,7 +205,7 @@ public class GlyphEngine {
 	 	String[] distinct4 = start.distinctValuesForField(id, table, field);
 
 	 	end = System.currentTimeMillis();
-		System.out.println("Vessel Type: "+String.valueOf((end-st)/1000.00));
+		System.out.println("Vessel Type: "+String.valueOf((end-st)/1000.00));*/
 	 	/*
 	 	for(int i = 0; i < distinct.length; i++)
 	 	{
@@ -231,14 +231,14 @@ public class GlyphEngine {
 	 	String table = "FirstPortion";
 	 	String query = "select * from FirstPortion where `OrbitalEcc.` between 0 and 0.2;";
 	 	start.setQueryForDatasource(id, table, query);
- 	/*
+ 	
 	 	if(err == 1){
 			String [] errors = start.getErrors();
 			//System.out.println("Error List:\n");
 			for(int i = 0; i < errors.length; i++){
 				//System.out.println(errors[i]);
 			}
-		}
+		}*/
 
 	 	if(start.isUpdateNeeded()){
 		 	double[] nwse = start.getNWandSE();
@@ -250,7 +250,7 @@ public class GlyphEngine {
 		}
 		String[] images = start.getBaseImages();
 		System.out.println(images.length);
-*/
+
 		if(err > 0){
 			String [] errors = start.getErrors();
 			System.out.println("Error List:\n");
