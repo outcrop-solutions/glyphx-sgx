@@ -24,13 +24,16 @@ public class SourceDataInfo {
  	//private String primary_key;
  	private boolean merged_table;
  	private boolean hasTextInterpolation;
+ 	private boolean hasPercentRank;
  	private ArrayList<String> textInterpolationFields = null;
+ 	private ArrayList<String> percentRankFields = null;
  	private ArrayList<String> boundFields = null;
  	private Driver tempDriver = null;
  	//private ArrayList<String> inputFields;
 
  	public SourceDataInfo(){
  		this.hasTextInterpolation = false;
+ 		this.hasPercentRank = false;
  		this.boundFields = new ArrayList<String>();
  	}
 
@@ -39,6 +42,13 @@ public class SourceDataInfo {
  			textInterpolationFields = new ArrayList<String>();
  		}
  		this.hasTextInterpolation = true;
+ 	}
+
+ 	public void setHasPercentRank(){
+ 		if(!hasPercentRank){
+ 			percentRankFields = new ArrayList<String>();
+ 		}
+ 		this.hasPercentRank = true;
  	}
 
  	public void setDriver(Driver driver){
@@ -100,6 +110,10 @@ public class SourceDataInfo {
  	public void addTextInterpolationField(String ti_field){
  		textInterpolationFields.add(ti_field);
  	}
+
+ 	public void addPercentRankField(String pr_field){
+ 		percentRankFields.add(pr_field);
+ 	}
 /*
  	public void setInputFields(ArrayList<ArrayList<String>> inputs){
  		inputFields = new ArrayList<String>();
@@ -127,6 +141,10 @@ public class SourceDataInfo {
 
  	public boolean hasTextInterpolation(){
  		return hasTextInterpolation;
+ 	}
+
+ 	public boolean hasPercentRank(){
+ 		return hasPercentRank;
  	}
 
  	public boolean hasBoundField(String field_id){
@@ -184,6 +202,12 @@ public class SourceDataInfo {
  	public void setTextInterpolationFields(){
  		if(data != null){
  			data.setTextInterpolationFields(textInterpolationFields);
+ 		}
+ 	}
+
+ 	public void setPercentRankFields(){
+ 		if(data != null){
+ 			data.setPercentRankFields(percentRankFields);
  		}
  	}
 
