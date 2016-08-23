@@ -34,6 +34,7 @@ namespace SynGlyphX {
 			LinearInterpolation,
 			LogarithmicInterpolation,
 			TextInterpolation,
+			PercentRank,
 			Numeric2Value,
 			Text2Value,
 			Range2Value
