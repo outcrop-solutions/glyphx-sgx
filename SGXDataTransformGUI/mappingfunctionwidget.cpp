@@ -80,7 +80,7 @@ void MappingFunctionWidget::OnFunctionComboBoxChangedByUser() {
 void MappingFunctionWidget::OnFunctionComboBoxChanged(bool emitInputChange) {
 
 	SynGlyphX::MappingFunctionData::Function function = SynGlyphX::MappingFunctionData::s_functionNames.right.at(m_functionComboBox->currentText().toStdWString());
-	bool hasProperties = (function != SynGlyphX::MappingFunctionData::None && function != SynGlyphX::MappingFunctionData::TextInterpolation);
+	bool hasProperties = (function != SynGlyphX::MappingFunctionData::None && function != SynGlyphX::MappingFunctionData::TextInterpolation && function != SynGlyphX::MappingFunctionData::PercentRank);
 	m_editPropertiesButton->setEnabled(hasProperties);
 
 	if (emitInputChange) {
@@ -263,7 +263,7 @@ QStringList MappingFunctionWidget::CreateEnumerationFunctionList() {
 	for (SynGlyphX::MappingFunctionData::FunctionBimap::const_iterator iT = SynGlyphX::MappingFunctionData::s_functionNames.begin(); iT != SynGlyphX::MappingFunctionData::s_functionNames.end(); ++iT) {
 
 		if ((iT->left != SynGlyphX::MappingFunctionData::Function::LinearInterpolation) && (iT->left != SynGlyphX::MappingFunctionData::Function::LogarithmicInterpolation)
-			&& (iT->left != SynGlyphX::MappingFunctionData::Function::TextInterpolation)) {
+			&& (iT->left != SynGlyphX::MappingFunctionData::Function::TextInterpolation) && (iT->left != SynGlyphX::MappingFunctionData::Function::PercentRank)) {
 
 			functions.append(QString::fromStdWString(SynGlyphX::MappingFunctionData::s_functionNames.left.at(iT->left)));
 		}
