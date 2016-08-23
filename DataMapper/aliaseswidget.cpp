@@ -323,7 +323,7 @@ void AliasesWidget::removeAlias() {
 
 		QHBoxLayout* nameLayout = new QHBoxLayout(page);
 
-		QLabel* nameLabel = new QLabel(tr("Remove alias ") + selection.at(0)->text() + " and all of it's associated bindings?", page);
+		QLabel* nameLabel = new QLabel(tr("Remove alias ") + selection.at(0)->text() + " and all of it's associated bindings and links?", page);
 		nameLayout->addWidget(nameLabel);
 
 		mainLayout->addLayout(nameLayout);
@@ -335,7 +335,7 @@ void AliasesWidget::removeAlias() {
 			QString name = selection.at(0)->text();
 			auto undoStack = DMGlobal::Services()->GetUndoStack();
 			undoStack->beginMacro(tr("Remove Alias"));
-			DMGlobal::Services()->BeginTransaction("Remove Alias Bindigns", SynGlyphX::TransactionType::ChangeTree);
+			DMGlobal::Services()->BeginTransaction("Remove Alias Bindigns", SynGlyphX::TransactionType::ChangeTree | SynGlyphX::TransactionType::ChangeLinks);
 			DMGlobal::Services()->GetDataTransformModel()->GetInputFieldManager()->RemoveInputFieldAndBindings(name.toStdWString());
 			DMGlobal::Services()->EndTransaction();
 			DMGlobal::Services()->GetGlyphRolesTableModel()->Refresh();

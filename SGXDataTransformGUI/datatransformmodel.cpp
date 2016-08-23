@@ -919,6 +919,28 @@ namespace SynGlyphX {
 		emit dataChanged(modelIndex, modelIndex);
 	}
 
+	void DataTransformModel::SetLinks(const std::vector<Link>& links) {
+		int extraRows = links.size() - m_dataMapping->GetLinks().size();
+		auto startIndex = GetFirstIndexForDataType(DataType::Links);
+		if (extraRows >  0) {
+			auto insertIndex = startIndex + m_dataMapping->GetLinks().size();
+			beginInsertRows(QModelIndex(), insertIndex, insertIndex + extraRows - 1);
+			m_dataMapping->SetLinks(links);
+			endInsertRows();
+			emit dataChanged(index(startIndex), index(insertIndex));
+		}
+		else if (extraRows < 0) {
+			auto removeIndex = startIndex + links.size();
+			beginRemoveRows(QModelIndex(), removeIndex, removeIndex - extraRows );
+			m_dataMapping->SetLinks(links);
+			endRemoveRows();
+			emit dataChanged(index(startIndex), index(removeIndex));
+		}
+		else {
+			emit dataChanged(index(startIndex), index(startIndex + links.size()));
+		}
+	}
+
 	void DataTransformModel::RemoveLink(unsigned int position) {
 		int row = GetFirstIndexForDataType(DataType::Links) + position;
 		//QModelIndex modelIndex = index(row);

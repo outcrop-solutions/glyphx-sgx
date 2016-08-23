@@ -24,14 +24,15 @@ namespace SynGlyphX {
 	class MainWindow;
 	class CommandService;
 	class DataTransformModel;
-	enum class TransactionType {
-		ChangeTree
+	enum  TransactionType {
+		ChangeTree = 0x01,
+		ChangeLinks = 0x02
 	};
 
 	class SGXGLYPHGUI_EXPORT AppServices {
 	public:
 		AppServices(MainWindow* mw);
-		virtual void BeginTransaction(const char* name, TransactionType t) = 0;
+		virtual void BeginTransaction(const char* name, int type) = 0;
 		virtual void EndTransaction() = 0 ;
 		void SetModified(bool m = true);
 		void ShowWarningDialog(const QString& msg);
