@@ -27,6 +27,16 @@ namespace SynGlyphX {
 	{
 		m_inputFields.erase(fieldID);
 		m_dataTransformMapping->ClearInputFieldBindings(fieldID);
+		const auto& links = m_dataTransformMapping->GetLinks();
+		//need to do it in reverse so removing will not affect indexes
+		for (int i = links.size() - 1; i >= 0; --i) 
+		{
+			if (links[i].m_start.m_inputFieldId == fieldID ||
+				links[i].m_end.m_inputFieldId == fieldID)
+			{
+				m_dataTransformMapping->RemoveLink((unsigned)i);
+			}
+		}
 	}
 
 	void InputFieldManager::OnRemoveDataSource(const boost::uuids::uuid& id)
@@ -520,16 +530,6 @@ namespace SynGlyphX {
 	void DataTransformMapping::RemoveDatasource(const boost::uuids::uuid& id) {
 
 		try {
-			//Remove links that reference input field with data source
-			//need to do it in reverse so removing will not affect indexes
-			for (int i = m_links.size() - 1; i >= 0; --i) { 
-
-				if (m_inputFieldManager.GetInputField(m_links[i].m_start.m_inputFieldId).GetDatasourceID() == id ||
-					m_inputFieldManager.GetInputField(m_links[i].m_end.m_inputFieldId).GetDatasourceID() == id) {
-
-					RemoveLink((unsigned)i);
-				}
-			}
 			//Clear all input bindings that use the datasource before removing the datasource
 			m_inputFieldManager.OnRemoveDataSource(id);
 			
@@ -1158,6 +1158,10 @@ namespace SynGlyphX {
 
 			throw std::invalid_argument("Index is greater than size of links");
 		}
+	}
+
+	void DataTransformMapping::SetLinks(const std::vector<Link>& links) {
+		m_links = links; 
 	}
 
 	std::unordered_map<std::wstring, std::wstring> DataTransformMapping::GetFieldToAliasMapForTable(const InputTable& table) const {
