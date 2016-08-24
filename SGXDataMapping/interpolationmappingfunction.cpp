@@ -13,7 +13,7 @@ namespace SynGlyphX {
 		(InterpolationMappingData::InputMinMaxType::InputFieldGroup, L"FieldGroup");
 	
 	InterpolationMappingData::InterpolationMappingData(int useLogarithmic) :
-		MappingFunctionData((useLogarithmic == 1) ? MappingFunctionData::Function::LogarithmicInterpolation : ((useLogarithmic == 0) ? MappingFunctionData::Function::LinearInterpolation : MappingFunctionData::Function::TextInterpolation)),
+		MappingFunctionData((useLogarithmic == 1) ? MappingFunctionData::Function::LogarithmicInterpolation : ((useLogarithmic == 0) ? MappingFunctionData::Function::LinearInterpolation : ((useLogarithmic == 2) ? MappingFunctionData::Function::TextInterpolation : MappingFunctionData::Function::PercentRank))),
 		m_inputMinMaxType(InputMinMaxType::BoundInputField),
 		m_userSpecifiedInputMinMax(),
 		m_inputMinMaxFieldGroup(L"") {
@@ -27,7 +27,7 @@ namespace SynGlyphX {
 		m_userSpecifiedInputMinMax(),
 		m_inputMinMaxFieldGroup(L"") {
 
-		if (m_function != MappingFunctionData::Function::TextInterpolation) {
+		if (m_function != MappingFunctionData::Function::TextInterpolation && m_function != MappingFunctionData::Function::PercentRank) {
 			boost::optional<const boost::property_tree::wptree&> minMaxSettingsPropertyTreeOpt = propertyTree.get_child_optional(L"MinMax");
 
 			if (minMaxSettingsPropertyTreeOpt.is_initialized()) {
@@ -111,7 +111,7 @@ namespace SynGlyphX {
 
 		boost::property_tree::wptree& functionDataPropertyTree = this->MappingFunctionData::ExportToPropertyTree(propertyTree);
 
-		if (m_function != MappingFunctionData::Function::TextInterpolation){
+		if (m_function != MappingFunctionData::Function::TextInterpolation && m_function != MappingFunctionData::Function::PercentRank){
 
 			boost::property_tree::wptree& minMaxSettingsPropertyTree = functionDataPropertyTree.add(L"MinMax", L"");
 			minMaxSettingsPropertyTree.put<std::wstring>(L"<xmlattr>.type", s_minMaxTypeNames.left.at(m_inputMinMaxType));

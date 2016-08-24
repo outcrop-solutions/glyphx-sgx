@@ -175,6 +175,10 @@ namespace SynGlyphX {
 
 			m_mappingFunctionData = std::make_shared<InterpolationMappingData>(propertyTree);
 		}
+		else if (function == MappingFunctionData::Function::PercentRank) {
+
+			m_mappingFunctionData = std::make_shared<InterpolationMappingData>(propertyTree);
+		}
 		else if (function == MappingFunctionData::Function::Numeric2Value) {
 
 			m_mappingFunctionData = std::make_shared<Numeric2NumericMappingData>(propertyTree);
@@ -201,6 +205,10 @@ namespace SynGlyphX {
 			m_mappingFunctionData = std::make_shared<InterpolationMappingData>(propertyTree);
 		}
 		else if (function == MappingFunctionData::Function::TextInterpolation) {
+
+			m_mappingFunctionData = std::make_shared<InterpolationMappingData>(propertyTree);
+		}
+		else if (function == MappingFunctionData::Function::PercentRank) {
 
 			m_mappingFunctionData = std::make_shared<InterpolationMappingData>(propertyTree);
 		}
@@ -264,7 +272,7 @@ namespace SynGlyphX {
 		MappingFunctionData::Function function = mappingFunctionData->GetFunction();
 		if ((std::is_same<GlyphGeometryInfo::Shape, PropertyType>::value) || (std::is_same<VirtualTopologyInfo::Type, PropertyType>::value)) {
 
-			return ((function != MappingFunctionData::Function::LinearInterpolation) && (function != MappingFunctionData::Function::LogarithmicInterpolation) && (function != MappingFunctionData::Function::TextInterpolation));
+			return ((function != MappingFunctionData::Function::LinearInterpolation) && (function != MappingFunctionData::Function::LogarithmicInterpolation) && (function != MappingFunctionData::Function::TextInterpolation) && (function != MappingFunctionData::Function::PercentRank));
 		}
 		else if (std::is_same<std::wstring, PropertyType>::value) {
 
