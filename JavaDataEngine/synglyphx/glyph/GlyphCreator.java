@@ -157,8 +157,8 @@ public class GlyphCreator {
 					}
 				}
 				if(functions.get(fieldNames.get(i)).equals("Linear Interpolation")){
-					if(nodeTemp.hasRangeBoundForField(fieldNames.get(i))){
-						double[] riBounds = nodeTemp.getRangeInterpolationConstraints(fieldNames.get(i));
+					if(nodeTemp.hasRangeBoundForField(input.get(fieldNames.get(i)))){
+						double[] riBounds = nodeTemp.getRangeInterpolationConstraints(input.get(fieldNames.get(i)));
 						setValues.put(fieldNames.get(i), Functions.rangeInterpolation(x1,x3,y1,y3,x2,riBounds[0],riBounds[1],riBounds[2],riBounds[3]));
 					}else{
 						setValues.put(fieldNames.get(i), Functions.linearInterpolation(x1,x3,y1,y3,x2));

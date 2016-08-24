@@ -238,8 +238,8 @@ public class GlyphEngine {
 			for(int i = 0; i < errors.length; i++){
 				//System.out.println(errors[i]);
 			}
-		}*/
-
+		}
+*/
 	 	if(start.isUpdateNeeded()){
 		 	double[] nwse = start.getNWandSE();
 		 	//start.hasImageBeenUpdated();
