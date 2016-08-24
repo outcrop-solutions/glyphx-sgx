@@ -47,7 +47,9 @@ namespace SynGlyphX {
 		const InputField& GetInputField(const std::wstring& fieldID) const;
 		void SetInputField(const std::wstring& fieldID, const InputField& field);
 		void RemoveInputFieldAndBindings(const std::wstring& fieldID);
+		void OnRemoveDataSource(const boost::uuids::uuid& id);
 		std::wstring GenerateInputFieldID(const InputField& field); //may not be const with future implementation
+
 		void Clear();
 
 
@@ -83,6 +85,9 @@ namespace SynGlyphX {
 		DatasourceMap GetDatasourcesInUse() const;
 		UUIDUnorderedSet GetDatasourcesBySourceType(Datasource::SourceType type) const;
 
+		Datasource::SharedPtr GetDataSource(boost::uuids::uuid sourceId);
+
+
 		bool HasDatasourceWithId(const boost::uuids::uuid& id) const;
 		void RemoveDatasource(const boost::uuids::uuid& id);
 		boost::uuids::uuid AddFileDatasource(const FileDatasource& datasource);
@@ -112,7 +117,9 @@ namespace SynGlyphX {
 		void ClearInputFieldBindings(const boost::uuids::uuid& treeID, const std::wstring& inputfield);
 		void ClearInputFieldBindings(const std::wstring& inputfield);
 		
-		const InputTable& GetInputTalbe(const boost::uuids::uuid& treeId) const;
+		const InputTable& GetInputTable(const boost::uuids::uuid& treeId) const;
+		const InputTable& GetInputTable(const DataMappingGlyphGraph& graph) const;
+
 		bool IsTransformable() const;
 		bool DoesAtLeastOneGlyphGraphHaveBindingsOnPosition() const;
 
@@ -156,6 +163,7 @@ namespace SynGlyphX {
 		void InsertLink(unsigned int index, const Link& link);
 		void SetLink(unsigned int index, const Link& link);
 		const std::vector<Link>& GetLinks() const { return m_links; }
+		void SetLinks(const std::vector<Link>& links); 
 
 		InputFieldManager* GetInputFieldManager() { return &m_inputFieldManager; }
 		std::unordered_map<std::wstring, std::wstring> GetFieldToAliasMapForTable(const InputTable& table) const;

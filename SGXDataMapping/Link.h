@@ -46,6 +46,7 @@ namespace SynGlyphX {
 	class SGXDATAMAPPING_API Link {
         friend class ::LinksDialog;
 		friend class DataTransformMapping;
+		friend class InputFieldManager;
 	public:
 		//Using GlyphColor will be overkill. Ideally we need a generic color class
 		struct Color {

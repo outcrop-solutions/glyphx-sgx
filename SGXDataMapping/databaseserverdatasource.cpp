@@ -2,6 +2,7 @@
 #include <boost/assign/list_of.hpp>
 #include <boost/bimap/list_of.hpp>
 #include <boost/property_tree/ptree.hpp>
+#include "datasourcetable.h"
 
 namespace SynGlyphX {
 

@@ -4,6 +4,7 @@
 #include <boost/filesystem.hpp>
 #include "stringconvert.h"
 #include <boost/property_tree/ptree.hpp>
+#include "datasourcetable.h"
 
 namespace SynGlyphX {
 
@@ -116,7 +117,7 @@ namespace SynGlyphX {
 
 	bool FileDatasource::IsOriginalDatasourceADatabase() const {
 
-		return ((m_fileType == FileType::SQLITE3) || (m_fileType == FileType::CSV));
+		return (m_fileType == FileType::SQLITE3);
 	}
 
 	bool FileDatasource::CanDatasourceHaveMultipleTables() const {

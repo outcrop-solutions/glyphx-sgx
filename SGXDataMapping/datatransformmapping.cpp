@@ -27,6 +27,28 @@ namespace SynGlyphX {
 	{
 		m_inputFields.erase(fieldID);
 		m_dataTransformMapping->ClearInputFieldBindings(fieldID);
+		const auto& links = m_dataTransformMapping->GetLinks();
+		//need to do it in reverse so removing will not affect indexes
+		for (int i = links.size() - 1; i >= 0; --i) 
+		{
+			if (links[i].m_start.m_inputFieldId == fieldID ||
+				links[i].m_end.m_inputFieldId == fieldID)
+			{
+				m_dataTransformMapping->RemoveLink((unsigned)i);
+			}
+		}
+	}
+
+	void InputFieldManager::OnRemoveDataSource(const boost::uuids::uuid& id)
+	{
+		std::vector<std::wstring> toRemove;
+		for (const auto& field : m_inputFields)
+		{
+			if (field.second.GetDatasourceID() == id)
+				toRemove.push_back(field.first);
+		}
+		for (const auto& field : toRemove)
+			RemoveInputFieldAndBindings(field);
 	}
 
 	void InputFieldManager::SetInputField(const std::wstring& fieldID, const InputField& field)
@@ -518,7 +540,10 @@ namespace SynGlyphX {
 
 		return datasourceIDs;
 	}
+	Datasource::SharedPtr DataTransformMapping::GetDataSource(boost::uuids::uuid sourceId) {
 
+		return m_datasources.at(sourceId);
+	}
 	void DataTransformMapping::Clear() {
 
 		Clear(true);
@@ -550,40 +575,33 @@ namespace SynGlyphX {
 	}
 
 	void DataTransformMapping::RemoveDatasource(const boost::uuids::uuid& id) {
-		// TODO: fix after refactoring
 
-		//try {
+		try {
+			//Clear all input bindings that use the datasource before removing the datasource
+			m_inputFieldManager.OnRemoveDataSource(id);
+			
+			//Clear all field groups that use the datasource before removing the datasource
+			std::vector<FieldGroupName> fieldGroupsToBeRemoved;
+			for (auto& fieldGroup : m_fieldGroups) {
 
-		//	//Clear all input bindings that use the datasource before removing the datasource
-		//	for (auto& glyphTree : m_glyphTrees) {
+				if (DoesFieldGroupHaveFieldsFromDatasource(fieldGroup.first, id)) {
 
-		//		if (glyphTree.second->GetInputFields().begin()->second.GetDatasourceID() == id) {
+					fieldGroupsToBeRemoved.push_back(fieldGroup.first);
+				}
+			}
 
-		//			glyphTree.second->ClearAllInputBindings();
-		//		}
-		//	}
 
-		//	//Clear all field groups that use the datasource before removing the datasource
-		//	std::vector<FieldGroupName> fieldGroupsToBeRemoved;
-		//	for (auto& fieldGroup : m_fieldGroups) {
+			for (const FieldGroupName& name : fieldGroupsToBeRemoved) {
 
-		//		if (DoesFieldGroupHaveFieldsFromDatasource(fieldGroup.first, id)) {
+				RemoveFieldGroup(name);
+			}
 
-		//			fieldGroupsToBeRemoved.push_back(fieldGroup.first);
-		//		}
-		//	}
-
-		//	for (const FieldGroupName& name : fieldGroupsToBeRemoved) {
-
-		//		RemoveFieldGroup(name);
-		//	}
-
-		//	m_datasources.erase(id);
-		//}
-		//catch (const std::invalid_argument& e) {
-		//	
-		//	throw;
-		//}
+			m_datasources.erase(id);
+		}
+		catch (const std::invalid_argument& e) {
+			
+			throw;
+		}
 	}
 
 	boost::uuids::uuid DataTransformMapping::AddFileDatasource(const FileDatasource& datasource) {
@@ -653,10 +671,14 @@ namespace SynGlyphX {
 		return glyphTree->GetSubgraph(vertex.deconstify(), includeChildren);
 	}
 
-	const InputTable& DataTransformMapping::GetInputTalbe(const boost::uuids::uuid& treeId) const {
-		static const InputTable empty;
+	const InputTable& DataTransformMapping::GetInputTable(const boost::uuids::uuid& treeId) const {
 		DataMappingGlyphGraph::SharedPtr glyphTree = m_glyphTrees.at(treeId);
-		for (auto i = glyphTree->prefix_begin(); i != glyphTree->prefix_end(); i++){
+		return GetInputTable(*glyphTree.get());
+	}
+
+	const InputTable& DataTransformMapping::GetInputTable(const DataMappingGlyphGraph& graph) const {
+		static const InputTable empty;		
+		for (auto i = graph.prefix_begin(); i != graph.prefix_end(); i++){
 			auto glyph = i->second;
 			for (unsigned int field = 0; field < DataMappingGlyph::MappableField::MappableFieldSize; ++field) {
 
@@ -664,7 +686,6 @@ namespace SynGlyphX {
 				if (binding.IsBoundToInputField())
 					return m_inputFieldManager.GetInputField(binding.GetInputFieldID());
 			}
-
 		}
 		return empty;
 	}
@@ -900,17 +921,16 @@ namespace SynGlyphX {
 			throw std::invalid_argument("Can't append children to invalid parent");
 		}
 
-		//TODO: check if we need this and handle after refactoring
-		//if ((!glyphGraph.GetInputFields().empty()) && (!HasDatasourceWithId(glyphGraph.GetInputFields().begin()->second.GetDatasourceID()))) {
+		if (GetInputTable(treeId).GetDatasourceID() == GetInputTable(glyphGraph).GetDatasourceID()) {
 
-		//	SynGlyphX::DataMappingGlyphGraph clearedGlyphGraph = glyphGraph;
-		//	clearedGlyphGraph.ClearAllInputBindings();
-		//	m_glyphTrees[treeId]->AddChildGlyphGraph(parent, clearedGlyphGraph);
-		//}
-		//else {
+			SynGlyphX::DataMappingGlyphGraph clearedGlyphGraph = glyphGraph;
+			clearedGlyphGraph.ClearAllInputBindings();
+			m_glyphTrees[treeId]->AddChildGlyphGraph(parent, clearedGlyphGraph);
+		}
+		else {
 
 			m_glyphTrees[treeId]->AddChildGlyphGraph(parent, glyphGraph);
-		//}
+		}
 	}
 
 	void DataTransformMapping::AddChildTreeResetPosition(const boost::uuids::uuid& treeId, DataMappingGlyphGraph::GlyphIterator parent, const SynGlyphX::DataMappingGlyphGraph& glyphGraph) {
@@ -929,7 +949,17 @@ namespace SynGlyphX {
 			newPosition[0] -= 15.0;
 		}
 
-		SynGlyphX::DataMappingGlyphGraph::GlyphIterator newChildGlyph = m_glyphTrees[treeId]->AddChildGlyphGraph(parent, glyphGraph);
+		SynGlyphX::DataMappingGlyphGraph::GlyphIterator newChildGlyph;
+		if (GetInputTable(treeId).GetDatasourceID() == GetInputTable(glyphGraph).GetDatasourceID()) {
+
+			SynGlyphX::DataMappingGlyphGraph clearedGlyphGraph = glyphGraph;
+			clearedGlyphGraph.ClearAllInputBindings();
+			newChildGlyph = m_glyphTrees[treeId]->AddChildGlyphGraph(parent, clearedGlyphGraph);
+		}
+		else {
+
+			newChildGlyph = m_glyphTrees[treeId]->AddChildGlyphGraph(parent, glyphGraph);
+		}
 		newChildGlyph->second.GetPosition()[0].GetValue().SetMinDiff(newPosition[0], 0.0);
 		newChildGlyph->second.GetPosition()[1].GetValue().SetMinDiff(newPosition[1], 0.0);
 		newChildGlyph->second.GetPosition()[2].GetValue().SetMinDiff(newPosition[2], 0.0);
@@ -1067,7 +1097,7 @@ namespace SynGlyphX {
 
 		for (auto glyphGraphPair : m_glyphTrees) {
 
-			if (inputTable == GetInputTalbe(glyphGraphPair.first)) {
+			if (inputTable == GetInputTable(glyphGraphPair.first)) {
 
 				DataMappingGlyphGraph::SharedPtr glyphGraph(new DataMappingGlyphGraph(*glyphGraphPair.second.get()));
 				CopyInputBindingsForSubsetMapping(glyphGraph, glyphGraph->GetRoot(), oldToNewFieldIDMap);
@@ -1089,7 +1119,7 @@ namespace SynGlyphX {
 	void DataTransformMapping::CopyInputBindingsForSubsetMapping(DataMappingGlyphGraph::SharedPtr newGlyphGraph, 
 																 DataMappingGlyphGraph::GlyphIterator newNode, 
 																 const std::unordered_map<std::wstring, std::wstring>& oldToNewIDMap) const {
-		//TODO: rewrirte after converting to strings 
+
 		for (unsigned int i = 0; i < DataMappingGlyph::MappableField::MappableFieldSize; ++i) {
 
 			DataMappingGlyph::MappableField mappableField = static_cast<DataMappingGlyph::MappableField>(i);
@@ -1185,6 +1215,10 @@ namespace SynGlyphX {
 
 			throw std::invalid_argument("Index is greater than size of links");
 		}
+	}
+
+	void DataTransformMapping::SetLinks(const std::vector<Link>& links) {
+		m_links = links; 
 	}
 
 	std::unordered_map<std::wstring, std::wstring> DataTransformMapping::GetFieldToAliasMapForTable(const InputTable& table) const {
