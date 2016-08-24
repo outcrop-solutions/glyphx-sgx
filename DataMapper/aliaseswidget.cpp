@@ -131,12 +131,16 @@ void AliasLineEdit::SetInputField(const SynGlyphX::InputField& inputField) {
 }
 
 void AliasLineEdit::dragEnterEvent(QDragEnterEvent *event) {
-
+	
 	const InputFieldMimeData* mimeData = qobject_cast<const InputFieldMimeData*>(event->mimeData());
+	auto table = mimeData->GetInputField().GetTable();
 	if (mimeData == nullptr) {
 		return;
 	}
 	else if (m_inputField.IsValid() && (mimeData->GetInputField().IsNumeric() != m_inputField.IsNumeric()))
+		return;
+	else if (m_inputField.IsValid() && ((m_inputField.GetDatasourceID() != mimeData->GetInputField().GetDatasourceID()) 
+		|| (m_inputField.GetTable() != mimeData->GetInputField().GetTable())))
 		return;
 
 	event->acceptProposedAction();
@@ -238,7 +242,7 @@ public:
 		if (index.column() == 0)
 		{
 			QLineEdit* editor = new QLineEdit(parent);
-			editor->setValidator(new QRegExpValidator(QRegExp("[A-Za-z0-9_]+"), editor));
+			editor->setValidator(new QRegExpValidator(QRegExp("[A-Za-z0-9_ ]+"), editor));
 			return editor;
 		}
 		else
@@ -319,7 +323,7 @@ void AliasesWidget::removeAlias() {
 
 		QHBoxLayout* nameLayout = new QHBoxLayout(page);
 
-		QLabel* nameLabel = new QLabel(tr("Remove alias ") + selection.at(0)->text() + " and all of it's associated bindings?", page);
+		QLabel* nameLabel = new QLabel(tr("Remove alias ") + selection.at(0)->text() + " and all of it's associated bindings and links?", page);
 		nameLayout->addWidget(nameLabel);
 
 		mainLayout->addLayout(nameLayout);
@@ -331,7 +335,7 @@ void AliasesWidget::removeAlias() {
 			QString name = selection.at(0)->text();
 			auto undoStack = DMGlobal::Services()->GetUndoStack();
 			undoStack->beginMacro(tr("Remove Alias"));
-			DMGlobal::Services()->BeginTransaction("Remove Alias Bindigns", SynGlyphX::TransactionType::ChangeTree);
+			DMGlobal::Services()->BeginTransaction("Remove Alias Bindigns", SynGlyphX::TransactionType::ChangeTree | SynGlyphX::TransactionType::ChangeLinks);
 			DMGlobal::Services()->GetDataTransformModel()->GetInputFieldManager()->RemoveInputFieldAndBindings(name.toStdWString());
 			DMGlobal::Services()->EndTransaction();
 			DMGlobal::Services()->GetGlyphRolesTableModel()->Refresh();

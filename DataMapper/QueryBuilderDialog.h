@@ -15,37 +15,22 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 #pragma once
-#include "sgxglyphgui_global.h"
-
-class QUndoStack;
-class QItemSelectionModel;
-class TreeSelection;
-namespace SynGlyphX {
-	class MainWindow;
-	class CommandService;
-	class DataTransformModel;
-	enum  TransactionType {
-		ChangeTree = 0x01,
-		ChangeLinks = 0x02
-	};
-
-	class SGXGLYPHGUI_EXPORT AppServices {
-	public:
-		AppServices(MainWindow* mw);
-		virtual void BeginTransaction(const char* name, int type) = 0;
-		virtual void EndTransaction() = 0 ;
-		void SetModified(bool m = true);
-		void ShowWarningDialog(const QString& msg);
-		void ClearUndoStack();
-		QUndoStack* GetUndoStack();
-		virtual QItemSelectionModel* GetTreeViewSelectionModel() { return nullptr; }
-		virtual DataTransformModel*  GetDataTransformModel() { return nullptr; }
-		//calling object is responsible for deleting this, dont want to polute global object inteface with std::shared_ptr
-		virtual TreeSelection* CreateTreeSelection() { return nullptr; }
-
-		virtual void ApplyTreeSelection(const TreeSelection& selection) {}
-		virtual ~AppServices() {}
-	protected:
-		MainWindow* m_window;
-	};
+#include <QtWidgets/QDialog>
+class QueryTreeWidget;
+class QComboBox;
+namespace SynGlyphX
+{
+	class InputTable;
 }
+class QueryBuilderDialog : public QDialog 
+{
+	Q_OBJECT
+public:
+	QueryBuilderDialog(QWidget* parent = 0);
+	void accept() override;
+private:
+	QList<QueryTreeWidget*> m_treeWidgets;
+	QueryTreeWidget* m_currentTreeWidget;
+	QList<SynGlyphX::InputTable> m_tableList;
+	QComboBox* m_tableComboBox;
+};

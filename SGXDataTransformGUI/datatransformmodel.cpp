@@ -21,6 +21,7 @@
 #include "AppGlobal.h"
 #include <QtWidgets/QUndoStack>
 #include <QtWidgets/QUndoCommand>
+#include "AppGlobal.h"
 #include "FrontEndFilter.h"
 
 namespace SynGlyphX {
@@ -655,33 +656,27 @@ namespace SynGlyphX {
 	}
 	
 	void DataTransformModel::ClearAbsentBindings() {
-		//Does not work correctly after Aliases
-		//TODO reimplement 
 
-		////_ASSERT(0);
-		//QModelIndex index = createIndex(0, 0);
-		//SynGlyphX::DataMappingGlyphGraph::InputFieldMap fieldMap = GetInputFieldsForTree(index); 
-		//std::list<SynGlyphX::InputField> sourceFields;
-		//for (const auto& t : m_tableStatsMap) {
-		//	auto table = t.first;
-		//	auto stats = t.second;
-		//	for (const auto& stat : stats) {
-		//		// use arbitrary Type since it does not affect HashID
-		//		SynGlyphX::InputField sInputField(table.GetDatasourceID(), table.GetTable(), stat[0].toStdWString(), SynGlyphX::InputField::Type::Text);
-		//		sourceFields.push_back(sInputField);
-		//		}
-		//	}
-		//for (const auto& field : GetInputFieldManager()->GetFieldMap()) {
-		//	auto it = find(sourceFields.begin(), sourceFields.end(), field.second);
-		//	if (it == sourceFields.end()) { 
-		//		SynGlyphX::InputField f(field.second);
-		//		AppGlobal::Services()->ShowWarningDialog(tr("Source data does not have field:\n") + QString::fromWCharArray(f.GetField().c_str()) + tr("\nMapping will be removed"));
-		//		AppGlobal::Services()->SetModified(true);
-		//		m_dataMapping->ClearInputFieldBindings(GetTreeId(index), field.first);
-		//	}
-		//				
-		//}
-		//emit dataChanged(index, index);
+		std::list<std::wstring> sourceFields;
+		for (const auto& t : m_tableStatsMap) {
+			auto table = t.first;
+			auto stats = t.second;
+			for (const auto& stat : stats) {
+				sourceFields.push_back(stat[0].toStdWString());
+	}
+			}
+		for (const auto& field : GetInputFieldManager()->GetFieldMap()) {
+			auto f = GetInputFieldManager()->GetInputField(field.first).GetField();
+
+			auto it = find(sourceFields.begin(), sourceFields.end(), f);
+			if (it == sourceFields.end()) {
+
+				AppGlobal::Services()->ShowWarningDialog(tr("Source data does not have field:\n") + QString::fromStdWString(f) + tr("\nMapping and aliases using this field will be removed"));
+				AppGlobal::Services()->SetModified(true);
+				GetInputFieldManager()->RemoveInputFieldAndBindings(field.first);
+			}
+						
+		}
 	}
 
 	const SynGlyphX::InputTable& DataTransformModel::GetInputTableForTree(const QModelIndex& index) const {
@@ -691,7 +686,7 @@ namespace SynGlyphX {
 			throw std::invalid_argument("Can't get input field map from invalid index");
 		}
 
-		return m_dataMapping->GetInputTalbe(GetTreeId(index));
+		return m_dataMapping->GetInputTable(GetTreeId(index));
 	}
 	/*
 	void DataTransformModel::EnableTables(const boost::uuids::uuid& id, const Datasource::TableNames& tables, bool enable) {
@@ -951,6 +946,28 @@ namespace SynGlyphX {
 		m_dataMapping->SetLink(position, link);
 		QModelIndex modelIndex = index(GetFirstIndexForDataType(DataType::Links) + position);
 		emit dataChanged(modelIndex, modelIndex);
+	}
+
+	void DataTransformModel::SetLinks(const std::vector<Link>& links) {
+		int extraRows = links.size() - m_dataMapping->GetLinks().size();
+		auto startIndex = GetFirstIndexForDataType(DataType::Links);
+		if (extraRows >  0) {
+			auto insertIndex = startIndex + m_dataMapping->GetLinks().size();
+			beginInsertRows(QModelIndex(), insertIndex, insertIndex + extraRows - 1);
+			m_dataMapping->SetLinks(links);
+			endInsertRows();
+			emit dataChanged(index(startIndex), index(insertIndex));
+		}
+		else if (extraRows < 0) {
+			auto removeIndex = startIndex + links.size();
+			beginRemoveRows(QModelIndex(), removeIndex, removeIndex - extraRows );
+			m_dataMapping->SetLinks(links);
+			endRemoveRows();
+			emit dataChanged(index(startIndex), index(removeIndex));
+		}
+		else {
+			emit dataChanged(index(startIndex), index(startIndex + links.size()));
+		}
 	}
 
 	void DataTransformModel::RemoveLink(unsigned int position) {
@@ -1255,8 +1272,7 @@ namespace SynGlyphX {
 			SynGlyphX::DataMappingGlyphGraph::ConstGlyphIterator newParentGlyph(static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(parent.internalPointer()));
 			const QModelIndexList& indexes = glyphData->GetGlyphs();
 
-			bool glyphsMoved = false;
-
+			SynGlyphX::AppGlobal::Services()->BeginTransaction("Move Glyphs", TransactionType::ChangeTree);
 			for (int j = 0; j < indexes.length(); ++j) {
 
 				SynGlyphX::DataMappingGlyphGraph::ConstGlyphIterator oldGlyph(static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(indexes[j].internalPointer()));
@@ -1266,17 +1282,23 @@ namespace SynGlyphX {
 				if (oldParentGlyph != newParentGlyph) {
 				
 					unsigned int numberOfChildren = newParentGlyph.owner()->children(newParentGlyph);
-
-					//Only do an insert here.  The MoveAction will take care of deleting the old object
+					QPersistentModelIndex idx = indexes[j];
+					//Also handle remove here and return false instead of letting MoveAction to take care of it, to allow undo
 					beginInsertRows(parent, numberOfChildren, numberOfChildren);
 					SynGlyphX::DataMappingGlyphGraph oldGlyphSubtree = GetSubgraph(indexes[j], true);
 					m_dataMapping->AddChildTreeResetPosition(GetTreeId(parent), newParentGlyph.deconstify(), oldGlyphSubtree);
 					endInsertRows();
-					glyphsMoved = true;
+					if (idx.isValid()) { 
+						removeRow(idx.row(), idx.parent());
 				}
+					else {
+						removeRow(idx.row(), QModelIndex());
 			}
-
-			return glyphsMoved;
+		}
+			}
+			SynGlyphX::AppGlobal::Services()->EndTransaction();
+			//return glyphsMoved;
+			return false;
 		}
 
 		return false;
@@ -1390,13 +1412,13 @@ namespace SynGlyphX {
 									  QString::fromStdWString(fileDatasource->GetPassword()),
 									  sourceTypeString);
 
-					if (datasource->DoAnyTablesHaveQueries()) {
+/*					if (datasource->DoAnyTablesHaveQueries()) {
 
 						SynGlyphX::Datasource::Tables::const_iterator tablesQueryIterator = datasource->GetTables().begin();
 						m_dataEngineConnection->setQueryTables(QString::fromStdWString(tablesQueryIterator->second.GetQuery()));
 						chosenTables << QString::fromStdWString(tablesQueryIterator->first);
 					}
-					else {
+					else*/ {
 
 						chosenTables = GetChosenTables("", fileDatasource->GetTableNames());
 					}
@@ -1431,17 +1453,17 @@ namespace SynGlyphX {
 								  QString::fromStdWString(dbmsDatasource->GetPassword()),
 								  sourceTypeString);
 
-				if (datasource->DoAnyTablesHaveQueries()) {
+				//if (datasource->DoAnyTablesHaveQueries()) {
 
-					SynGlyphX::Datasource::Tables::const_iterator tablesQueryIterator = datasource->GetTables().begin();
-					m_dataEngineConnection->setQueryTables(QString::fromStdWString(tablesQueryIterator->second.GetQuery()));
-					chosenTables << QString::fromStdWString(tablesQueryIterator->first);
-				}
-				else {
+				//	SynGlyphX::Datasource::Tables::const_iterator tablesQueryIterator = datasource->GetTables().begin();
+				//	//m_dataEngineConnection->setQueryTables(QString::fromStdWString(tablesQueryIterator->second.GetQuery()));
+				//	chosenTables << QString::fromStdWString(tablesQueryIterator->first);
+				//}
+				//else {
 					chosenTables = GetChosenTables(
 						QString::fromStdWString(dbmsDatasource->GetSchema()),
 						dbmsDatasource->GetTableNames());
-				}
+				//}
 
 				//QString query = "SELECT City.Population, Country.Code FROM (City INNER JOIN Country ON (City.CountryCode=Country.Code))";
 				/*

@@ -25,7 +25,7 @@ class DMServices : public SynGlyphX::AppServices {
 public:
 	DMServices(DataMapperWindow* w);
 	virtual ~DMServices();
-	virtual void BeginTransaction(const char* name, SynGlyphX::TransactionType t) override;
+	virtual void BeginTransaction(const char* name, int type) override;
 	virtual void EndTransaction() override;
 	GlyphRolesTableModel* GetGlyphRolesTableModel();
 	virtual SynGlyphX::DataTransformModel*  GetDataTransformModel() override;

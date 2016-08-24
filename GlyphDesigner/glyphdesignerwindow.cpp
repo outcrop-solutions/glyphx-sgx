@@ -49,6 +49,7 @@ GlyphDesignerWindow::GlyphDesignerWindow(QWidget *parent)
 	
 	SelectRootGlyphInModel();
 
+	GDGlobal::Init(new GDServices(this));
 	QStringList commandLineArguments = SynGlyphX::Application::arguments();
 	if (commandLineArguments.size() > 1) {
 

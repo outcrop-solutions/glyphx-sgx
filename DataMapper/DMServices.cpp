@@ -4,9 +4,11 @@
 #include <QtWidgets/QUndoCommand>
 #include "datatransformmodel.h"
 #include "roledatafilterproxymodel.h"
+#include "Link.h"
 
 using namespace SynGlyphX;
-class TreeChangeCommand : public QUndoCommand {
+class TreeChangeCommand : public QUndoCommand 
+{
 public:
 	TreeChangeCommand() :
 		m_tv(nullptr), //tree view is also used as a flag to avoid first redo execution when command added to undo stack
@@ -15,15 +17,18 @@ public:
 	{
 	}
 
-	void undo() {
+	void undo() 
+	{
 		if (m_tv)
 			m_tv->ReinstateMemento(m_tvmBegin);
 	}
-	void redo() {
+	void redo() 
+	{
 		if (m_tv)
 			m_tv->ReinstateMemento(m_tvmEnd);
 	}
-	virtual ~TreeChangeCommand() {
+	virtual ~TreeChangeCommand() 
+	{
 		delete m_tvmBegin;
 		delete m_tvmEnd;
 	}
@@ -32,6 +37,32 @@ public:
 	GlyphTreesViewMemento* m_tvmEnd;
 };
 
+class LinksChangeCommand : public QUndoCommand 
+{
+public:
+	LinksChangeCommand() : firstRun(true) {}
+	LinksChangeCommand(const std::vector<Link>& links) : 
+		firstRun(true),
+		m_oldLinks(DMGlobal::Services()->GetDataTransformModel()->GetDataMapping()->GetLinks()),
+		m_newLinks(links)
+	{}
+	void undo() 
+	{
+		DMGlobal::Services()->GetDataTransformModel()->SetLinks(m_oldLinks);
+		firstRun = false;
+	}
+	void redo() 
+	{
+		if (!firstRun)
+			DMGlobal::Services()->GetDataTransformModel()->SetLinks(m_newLinks);
+	}
+
+	bool firstRun;
+	std::vector<Link> m_oldLinks;
+	std::vector<Link> m_newLinks;
+};
+
+
 class TreeSelection
 {
 public:
@@ -39,46 +70,73 @@ public:
 	QList<TreeNode > m_list;
 };
 
-class DMServicesImpl  {
+class DMServicesImpl 
+{
 public:
 	DMServicesImpl(DataMapperWindow* w) : m_w(w)  {}
 
-	void BeginTransaction(const char* name, SynGlyphX::TransactionType t) {
-
-		if (t == TransactionType::ChangeTree) {
+	void BeginTransaction(const char* name, int type) 
+	{
+		m_type = type;
+		DMGlobal::Services()->GetUndoStack()->beginMacro(name);
+		if (type & TransactionType::ChangeTree) 
+		{
 			tcc = new TreeChangeCommand();
-			tcc->setText(name);
+			//tcc->setText(name);
 			tcc->m_tvmBegin = m_w->m_glyphTreesView->CreateMemento();
 		}
 
+		if (type & TransactionType::ChangeLinks) 
+		{
+			lcc = new LinksChangeCommand();
+			lcc->m_oldLinks = GetDataTransformModel()->GetDataMapping()->GetLinks();
+		}
 	}
 
-	void EndTransaction(){
-		tcc->m_tvmEnd = m_w->m_glyphTreesView->CreateMemento();
-		auto us = DMGlobal::Services()->GetUndoStack();
-		us->push(tcc);
-		tcc->m_tv = m_w->m_glyphTreesView;
+	void EndTransaction()
+	{
+		if (m_type & TransactionType::ChangeTree)
+		{
+			tcc->m_tvmEnd = m_w->m_glyphTreesView->CreateMemento();
+			auto us = DMGlobal::Services()->GetUndoStack();
+			us->push(tcc);
+			tcc->m_tv = m_w->m_glyphTreesView;
+		}
+
+		if (m_type & TransactionType::ChangeLinks)
+		{
+			lcc->m_newLinks = GetDataTransformModel()->GetDataMapping()->GetLinks();
+			DMGlobal::Services()->GetUndoStack()->push(lcc);
+		}
+
+		DMGlobal::Services()->GetUndoStack()->endMacro();
 	}
 
-	GlyphRolesTableModel* GetGlyphRolesTableModel() {
+	GlyphRolesTableModel* GetGlyphRolesTableModel() 
+	{
 		return m_w->m_glyphRolesTableModel;
 	}
 
-	SynGlyphX::DataTransformModel*  GetDataTransformModel() {
+	SynGlyphX::DataTransformModel*  GetDataTransformModel() 
+	{
 		return m_w->m_dataTransformModel;
 	}
 
-	GlyphTreesView* GetTreeView() {
+	GlyphTreesView* GetTreeView() 
+	{
 		return m_w->m_glyphTreesView;
 	}
 
-	TreeSelection* CreateTreeSelection() {
+	TreeSelection* CreateTreeSelection() 
+	{
 		TreeSelection* s = new TreeSelection;
 		SynGlyphX::RoleDataFilterProxyModel* filterModel = dynamic_cast<SynGlyphX::RoleDataFilterProxyModel*>(GetTreeView()->model());
 		auto selectIndexes = filterModel->mapSelectionToSource(GetTreeView()->selectionModel()->selection()).indexes();
 
-		for (auto index : selectIndexes) {
-			if (index.isValid()){
+		for (auto index : selectIndexes) 
+		{
+			if (index.isValid())
+			{
 				SynGlyphX::DataMappingGlyphGraph::Node* treeNode = static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(index.internalPointer());
 				SynGlyphX::DataMappingGlyphGraph::GlyphIterator glyph(treeNode);
 				s->m_list << TreeSelection::TreeNode(m_w->m_dataTransformModel->GetTreeId(index), glyph->first);
@@ -87,9 +145,11 @@ public:
 		return s;
 	}
 
-	void GetSelectedOnLevel(const TreeSelection* s, QItemSelection* qs, QModelIndex& index){
+	void GetSelectedOnLevel(const TreeSelection* s, QItemSelection* qs, QModelIndex& index)
+	{
 		SynGlyphX::DataMappingGlyphGraph::Node* treeNode = static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(index.internalPointer());
-		if (treeNode){
+		if (treeNode)
+		{
 			SynGlyphX::DataMappingGlyphGraph::GlyphIterator glyph(treeNode);
 			if (s->m_list.contains(TreeSelection::TreeNode(m_w->m_dataTransformModel->GetTreeId(index), glyph->first))) {
 				qs->select(index, index);
@@ -99,7 +159,8 @@ public:
 		}
 	}
 
-	void ApplyTreeSelection(const TreeSelection& selection)  {
+	void ApplyTreeSelection(const TreeSelection& selection)  
+	{
 		SynGlyphX::RoleDataFilterProxyModel* filterModel = dynamic_cast<SynGlyphX::RoleDataFilterProxyModel*>(GetTreeView()->model());
 		QItemSelection qselection;
 		for (int row = 0; row < m_w->m_dataTransformModel->rowCount(); ++row)
@@ -107,42 +168,52 @@ public:
 		GetTreeView()->selectionModel()->select(filterModel->mapSelectionFromSource(qselection), QItemSelectionModel::ClearAndSelect);
 	}
 
-
+	int m_type;
 	DataMapperWindow* m_w;
 	TreeChangeCommand* tcc;
+	LinksChangeCommand* lcc;
 };
 
-DMServices::DMServices(DataMapperWindow* w) : SynGlyphX::AppServices(w) {
+DMServices::DMServices(DataMapperWindow* w) : SynGlyphX::AppServices(w) 
+{
 	pImpl = new DMServicesImpl(w);
 }
 
-void DMServices::BeginTransaction(const char* name, SynGlyphX::TransactionType t) {
-	pImpl->BeginTransaction(name, t);
+void DMServices::BeginTransaction(const char* name, int type) 
+{
+	pImpl->BeginTransaction(name, type);
 }
 
-void DMServices::EndTransaction() {
+void DMServices::EndTransaction() 
+{
 	pImpl->EndTransaction();
 }
 
-GlyphRolesTableModel* DMServices::GetGlyphRolesTableModel() {
+GlyphRolesTableModel* DMServices::GetGlyphRolesTableModel() 
+{
 	return pImpl->GetGlyphRolesTableModel();
 }
 
-SynGlyphX::DataTransformModel*  DMServices::GetDataTransformModel() {
+SynGlyphX::DataTransformModel*  DMServices::GetDataTransformModel() 
+{
 	return pImpl->GetDataTransformModel();
 }
 
-QItemSelectionModel* DMServices::GetTreeViewSelectionModel() {
+QItemSelectionModel* DMServices::GetTreeViewSelectionModel() 
+{
 	return pImpl->GetTreeView()->selectionModel();
 }
 
-TreeSelection* DMServices::CreateTreeSelection() {
+TreeSelection* DMServices::CreateTreeSelection() 
+{
 	return pImpl->CreateTreeSelection();
 }
-void DMServices::ApplyTreeSelection(const TreeSelection& selection) {
+void DMServices::ApplyTreeSelection(const TreeSelection& selection) 
+{
 	pImpl->ApplyTreeSelection(selection);
 }
 
-DMServices::~DMServices() {
+DMServices::~DMServices() 
+{
 	delete pImpl;
 }

@@ -39,6 +39,7 @@
 #include "roledatafilterproxymodel.h"
 #include "LinksListView.h"
 #include "LinksDialog.h"
+#include "QueryBuilderDialog.h"
 #include "DMGlobal.h"
 #include <QtWidgets/QUndoview>
 #include <QtCore/QStandardPaths>
@@ -105,6 +106,8 @@ DataMapperWindow::DataMapperWindow(QWidget *parent)
 		QMessageBox::critical(this, tr("JVM Error"), tr(e.what()));
 		throw;
 	}
+
+	DMGlobal::Init(new DMServices(this));
 
 	QStringList commandLineArguments = SynGlyphX::Application::arguments();
 	if (commandLineArguments.size() > 1) {
@@ -242,6 +245,7 @@ void DataMapperWindow::CreateMenus() {
 
 		QAction* addDatabaseServerDatasourcesAction = m_datasourceMenu->addAction(tr("Add Database Server"));
 		QObject::connect(addDatabaseServerDatasourcesAction, &QAction::triggered, this, &DataMapperWindow::AddDatabaseServerDatasources);
+
 	}
 
 	m_datasourceMenu->addSeparator();
@@ -857,6 +861,7 @@ void DataMapperWindow::OnLinkDialogAccepted() {
 		m_dataTransformModel->CreateAddLinkCommand(m_linksDialog->GetLink());
 	EnableProjectDependentActions(true);
 }
+
 
 void DataMapperWindow::AddLegend() {
 

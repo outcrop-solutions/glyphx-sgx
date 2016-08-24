@@ -4,6 +4,7 @@
 #include "singlewidgetdialog.h"
 #include <QtWidgets/QMessageBox>
 #include "datatransformmodel.h"
+#include "QueryBuilderDialog.h"
 
 DataSourcesView::DataSourcesView(SynGlyphX::DataTransformModel* sourceModel, QWidget *parent)
 	: DataMappingListView(parent),
@@ -29,6 +30,9 @@ DataSourcesView::DataSourcesView(SynGlyphX::DataTransformModel* sourceModel, QWi
 
 	QAction* propertiesAction = m_sharedActions.AddAction(tr("Properties"));
 	QObject::connect(propertiesAction, &QAction::triggered, this, &DataSourcesView::OnShowProperties);
+
+	QAction* queryAction = m_sharedActions.AddAction(tr("Query"));
+	QObject::connect(queryAction, &QAction::triggered, this, [=]() { QueryBuilderDialog dialog(this); dialog.exec(); });
 
 	m_sharedActions.EnableActions(false);
 
@@ -66,7 +70,10 @@ void DataSourcesView::OnRemoveDatasource() {
 	const QModelIndexList& selection = selectionModel()->selectedIndexes();
 	if (!selection.isEmpty()) {
 
-		if (QMessageBox::warning(this, tr("Remove Datasource"), tr("Removing this datasource will also remove any bindings in glyphs and field groups that use this datasource.  Do you wish to remove this datasource?"), QMessageBox::Yes, QMessageBox::No) == QMessageBox::Yes) {
+		if (QMessageBox::warning(this, tr("Remove Datasource"),
+			tr("Removing this datasource will also remove any links, bindings in glyphs and field groups that use this datasource." 
+			" This action cannot be reverted with 'Undo'. Do you wish to remove this datasource?"), 
+			QMessageBox::Yes, QMessageBox::No) == QMessageBox::Yes) {
 
 			model()->removeRow(selection.front().row());
 		}

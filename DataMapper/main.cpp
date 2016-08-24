@@ -90,7 +90,6 @@ int main(int argc, char *argv[])
 		DataMapperWindow w;
 		w.resize(1200, 700);
 
-		DMGlobal::Init(new DMServices(&w));
 		w.show();
 		//QTimer::singleShot(1600, &w, SLOT(show()));
 

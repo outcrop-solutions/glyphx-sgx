@@ -39,25 +39,26 @@ namespace SynGlyphX {
 
 		if (datasource.CanDatasourceHaveMultipleTables()) {
 
-			if (datasource.DoAnyTablesHaveQueries()) {
+			//if (datasource.DoAnyTablesHaveQueries()) {
 
-				Datasource::Tables::const_iterator tablesQueryIterator = datasource.GetTables().begin();
-				QFormLayout* tableQueryLayout = new QFormLayout(this);
+			//	Datasource::Tables::const_iterator tablesQueryIterator = datasource.GetTables().begin();
+			//	QFormLayout* tableQueryLayout = new QFormLayout(this);
 
-				QLineEdit* tableLineEdit = new QLineEdit(QString::fromStdWString(tablesQueryIterator->first), this);
-				tableLineEdit->setReadOnly(true);
-				tableQueryLayout->addRow(tr("Table:"), tableLineEdit);
+			//	QLineEdit* tableLineEdit = new QLineEdit(QString::fromStdWString(tablesQueryIterator->first), this);
+			//	tableLineEdit->setReadOnly(true);
+			//	tableQueryLayout->addRow(tr("Table:"), tableLineEdit);
 
-				QLineEdit* queryLineEdit = new QLineEdit(QString::fromStdWString(tablesQueryIterator->second.GetQuery()), this);
-				queryLineEdit->setReadOnly(true);
-				tableQueryLayout->addRow(tr("Query:"), queryLineEdit);
+			//	//QLineEdit* queryLineEdit = new QLineEdit(QString::fromStdWString(tablesQueryIterator->second.GetQuery()), this);
+			//	//queryLineEdit->setReadOnly(true);
+			//	//tableQueryLayout->addRow(tr("Query:"), queryLineEdit);
 
-				QGroupBox* groupBox = new QGroupBox(tr("Merged Table"), this);
-				groupBox->setLayout(tableQueryLayout);
+			//	//QGroupBox* groupBox = new QGroupBox(tr("Merged Table"), this);
+			//	//groupBox->setLayout(tableQueryLayout);
 
-				mainLayout->addWidget(groupBox);
-			}
-			else {
+			//	//mainLayout->addWidget(groupBox);
+			//}
+			//else 
+			{
 
 				QListWidget* tableListWidget = new QListWidget(this);
 				tableListWidget->setSelectionMode(QAbstractItemView::NoSelection);

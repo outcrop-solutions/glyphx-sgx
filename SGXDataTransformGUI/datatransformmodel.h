@@ -25,6 +25,8 @@
 #include "dataengineconnection.h"
 #include "datastatsmodel.h"
 
+class DMServicesImpl;
+
 namespace SynGlyphX {
 
 	class SGXDATATRANSFORMGUI_EXPORT DataTransformModel : public QAbstractItemModel
@@ -33,6 +35,7 @@ namespace SynGlyphX {
 	public:
 		class Command;
 		friend class Command;
+		friend class DMServicesImpl;
 
 		typedef std::unordered_map<SynGlyphX::InputTable, WStringVector, InputTableHash> NumericFieldsByTable;
 
@@ -119,6 +122,7 @@ namespace SynGlyphX {
 		void AddLink(const SynGlyphX::Link& link);
 		void InsertLink(unsigned int position, const SynGlyphX::Link& link);
 		void SetLink(unsigned int position, const SynGlyphX::Link& link);
+		void SetLinks(const std::vector<Link>& links);
 		void RemoveLink(unsigned int position);
 		void SetBaseObject(unsigned int position, const BaseImage& baseImage);
 		void AddBaseObject(const BaseImage& baseImage);
@@ -164,6 +168,7 @@ namespace SynGlyphX {
 		boost::uuids::uuid GetTreeId(const QModelIndex& index) const;
 		
 		void ChangeMapping(const DataTransformMapping& mapping);
+		Datasource::SharedPtr GetDataSource(boost::uuids::uuid sourceId) { return m_dataMapping->GetDataSource(sourceId); }
 
 		InputFieldManager* GetInputFieldManager() { return m_dataMapping->GetInputFieldManager(); }
 
