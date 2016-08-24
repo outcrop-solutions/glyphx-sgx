@@ -676,7 +676,7 @@ GlyphRolesTableModel::PropertyType GlyphRolesTableModel::GetFieldType(int row) c
 SynGlyphX::MappingFunctionData::SharedPtr GlyphRolesTableModel::CreateNewMappingFunction(SynGlyphX::MappingFunctionData::Function function, PropertyType type) const {
 
 	if (function == SynGlyphX::MappingFunctionData::Function::LinearInterpolation || function == SynGlyphX::MappingFunctionData::Function::LogarithmicInterpolation
-		|| function == SynGlyphX::MappingFunctionData::Function::TextInterpolation) {
+		|| function == SynGlyphX::MappingFunctionData::Function::TextInterpolation || function == SynGlyphX::MappingFunctionData::Function::PercentRank) {
 
 		int interpolation = 0;
 		if (function == SynGlyphX::MappingFunctionData::Function::LogarithmicInterpolation){
@@ -684,6 +684,9 @@ SynGlyphX::MappingFunctionData::SharedPtr GlyphRolesTableModel::CreateNewMapping
 		}
 		else if (function == SynGlyphX::MappingFunctionData::Function::TextInterpolation){
 			interpolation = 2;
+		}
+		else if (function == SynGlyphX::MappingFunctionData::Function::PercentRank){
+			interpolation = 3;
 		}
 		return std::make_shared<SynGlyphX::InterpolationMappingData>(interpolation);
 	}
@@ -703,7 +706,7 @@ SynGlyphX::MappingFunctionData::SharedPtr GlyphRolesTableModel::CreateNewMapping
 			return std::make_shared<SynGlyphX::Range2ColorMappingData>();
 		}
 		else if (function == SynGlyphX::MappingFunctionData::Function::LinearInterpolation || function == SynGlyphX::MappingFunctionData::Function::LogarithmicInterpolation
-			|| function == SynGlyphX::MappingFunctionData::Function::TextInterpolation) {
+			|| function == SynGlyphX::MappingFunctionData::Function::TextInterpolation || function == SynGlyphX::MappingFunctionData::Function::PercentRank) {
 
 			int interpolation = 0;
 			if (function == SynGlyphX::MappingFunctionData::Function::LogarithmicInterpolation){
@@ -711,6 +714,9 @@ SynGlyphX::MappingFunctionData::SharedPtr GlyphRolesTableModel::CreateNewMapping
 			}
 			else if (function == SynGlyphX::MappingFunctionData::Function::TextInterpolation){
 				interpolation = 2;
+			}
+			else if (function == SynGlyphX::MappingFunctionData::Function::PercentRank){
+				interpolation = 3;
 			}
 			return std::make_shared<SynGlyphX::InterpolationMappingData>(interpolation);
 		}
@@ -730,7 +736,7 @@ SynGlyphX::MappingFunctionData::SharedPtr GlyphRolesTableModel::CreateNewMapping
 			return std::make_shared<SynGlyphX::Range2NumericMappingData>();
 		}
 		else if (function == SynGlyphX::MappingFunctionData::Function::LinearInterpolation || function == SynGlyphX::MappingFunctionData::Function::LogarithmicInterpolation
-			|| function == SynGlyphX::MappingFunctionData::Function::TextInterpolation) {
+			|| function == SynGlyphX::MappingFunctionData::Function::TextInterpolation || function == SynGlyphX::MappingFunctionData::Function::PercentRank) {
 
 			int interpolation = 0;
 			if (function == SynGlyphX::MappingFunctionData::Function::LogarithmicInterpolation){
@@ -738,6 +744,9 @@ SynGlyphX::MappingFunctionData::SharedPtr GlyphRolesTableModel::CreateNewMapping
 			}
 			else if (function == SynGlyphX::MappingFunctionData::Function::TextInterpolation){
 				interpolation = 2;
+			}
+			else if (function == SynGlyphX::MappingFunctionData::Function::PercentRank){
+				interpolation = 3;
 			}
 			return std::make_shared<SynGlyphX::InterpolationMappingData>(interpolation);
 		}
