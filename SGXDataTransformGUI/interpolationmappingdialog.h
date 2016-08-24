@@ -29,6 +29,8 @@ namespace SynGlyphX {
 	class DataTransformModel;
 }
 
+class RangeBoundWidget;
+
 class SGXDATATRANSFORMGUI_EXPORT InterpolationMappingDialog : public QDialog
 {
 	Q_OBJECT
@@ -47,7 +49,7 @@ private:
 	SynGlyphX::RadioButtonGroupWidget* m_minMaxTypeWidget;
 	SynGlyphX::DoubleMinMaxWidget* m_userSpecifiedMinMaxWidget;
 	FieldGroupWidget* m_fieldGroupWidget;
-
+	RangeBoundWidget* m_rangeBoundWidget;
 	SynGlyphX::DataTransformModel* m_model;
 	bool m_isInterpretationLogarithmic;
 };
