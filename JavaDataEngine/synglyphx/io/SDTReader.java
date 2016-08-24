@@ -753,6 +753,12 @@ public class SDTReader {
 				//System.out.println(field+" | "+String.valueOf(gNames.get(gName).getMin())+" | "+String.valueOf(gNames.get(gName).getMax()));
 				temp.addMinMaxField(field,gNames.get(gName).getMin(),gNames.get(gName).getMax());
 			}
+			else if(mm.getAttribute("type").equals("RangeBound")){
+				String field = directMap.get(getInput(element));
+				Element min = (Element) mm.getElementsByTagName("Min").item(0).getChildNodes().item(0);
+				Element max = (Element) mm.getElementsByTagName("Max").item(0).getChildNodes().item(0);
+				temp.setRangeInterpolationConstraints(field, min.getAttribute("bound"),min.getAttribute("value"),max.getAttribute("bound"),max.getAttribute("value"));
+			}
 
 		}catch(Exception e){
 	        try{

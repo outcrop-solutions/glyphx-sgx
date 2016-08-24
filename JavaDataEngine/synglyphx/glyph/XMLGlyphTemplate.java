@@ -68,16 +68,23 @@ public class XMLGlyphTemplate{
 		return false;
 	}
 
-	public void setRangeInterpolationConstraints(String field, double ib, double db, double ia, double da){
+	public void setRangeInterpolationConstraints(String field, String ib, String db, String ia, String da){
 		if(riBounds == null){
 			riBounds = new HashMap<String, double[]>();
 		}
 		double[] bounds = new double[4];
-		bounds[0] = ib;
-		bounds[1] = db;
-		bounds[2] = ia;
-		bounds[3] = da;
+		bounds[0] = Double.parseDouble(ib);
+		bounds[1] = Double.parseDouble(db);
+		bounds[2] = Double.parseDouble(ia);
+		bounds[3] = Double.parseDouble(da);
 		riBounds.put(field, bounds);
+	}
+
+	public boolean hasRangeBoundForField(String field){
+		if(riBounds.containsKey(field)){
+			return true;
+		}
+		return false;
 	}
 
 	public double[] getRangeInterpolationConstraints(String field){
