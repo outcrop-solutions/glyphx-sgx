@@ -423,7 +423,7 @@ namespace SynGlyphX {
 			boost::property_tree::wptree& glyphPropertyTree = glyphTree.second->ExportToPropertyTree(glyphTreesPropertyTree);
 			glyphPropertyTree.put(L"<xmlattr>.id", glyphTree.first);
 
-			InputTable table = GetInputTalbe(glyphTree.first);
+			InputTable table = GetInputTable(glyphTree.first);
 			if (m_frontEndFilters.count(table) != 0) {
 
 				boost::property_tree::wptree& frontEndFiltersPropertyTree = glyphPropertyTree.add(L"FrontEnd", L"");

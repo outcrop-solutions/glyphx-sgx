@@ -10,7 +10,7 @@ namespace SynGlyphX {
 	}
 
 	DatasourceTable::DatasourceTable(const boost::property_tree::wptree& propertyTree) :
-		m_name(propertyTree.get<std::wstring>(L"<xmlattr>.name")),
+		m_name(propertyTree.get_optional<std::wstring>(L"<xmlattr>.name").get_value_or(propertyTree.get<std::wstring>(L""))),
 		m_query(propertyTree.get_child_optional(L"Query").get_value_or(boost::property_tree::wptree())) {
 
 	}
