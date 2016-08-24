@@ -22,6 +22,8 @@ public class DataFrame {
 	private HashMap<String, Boolean> fieldType = null;
 	private HashMap<String, Thread> textInterpolationThreads = null;
 	private HashMap<String, ArrayList<String>> textInterpolationFields = null;
+	private HashMap<String, Thread> percentRankThreads = null;
+	private HashMap<String, HashMap<Double, Double>> percentRankFields = null;
 	private String[] headerString;
 	private Thread parse2SQLite;
 	private Connection conn;
@@ -80,6 +82,47 @@ public class DataFrame {
   		return thread;
 	}
 
+	public void setPercentRankFields(ArrayList<String> pr_fields){
+		percentRankFields = new HashMap<String, HashMap<Double, Double>>();
+		percentRankThreads = new HashMap<String, Thread>();
+		System.out.println("PercentRank fields: "+pr_fields.size());
+		for(int i = 0; i < pr_fields.size(); i++){
+			percentRankThreads.put(pr_fields.get(i), percentRankThread(pr_fields.get(i)));
+		}
+	}
+
+	public Thread percentRankThread(final String field){
+		Thread thread = new Thread(){
+    		public void run(){
+    			HashMap<Double, Double> pairs = new HashMap<Double, Double>();
+    			ArrayList<String> temp = getColumn(field);
+    			ArrayList<Double> values = new ArrayList<Double>();
+    			for(int i = 0; i < temp.size(); i++){
+    				values.add(Double.parseDouble(temp.get(i)));
+    			}
+    			Collections.sort(values);
+    			for(int i = 0; i < values.size(); i++){
+					if(!pairs.containsKey(values.get(i))){
+						pairs.put(values.get(i), i/(values.size()-1.0));
+					}
+				}
+				percentRankFields.put(field, pairs);
+    		}
+  		};thread.start();
+  		return thread;
+	}
+
+	public double getPercentRank(String field, String value){
+		try{
+			if(percentRankThreads.get(field).getState() != Thread.State.TERMINATED){
+				percentRankThreads.get(field).join();
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return percentRankFields.get(field).get(Double.parseDouble(value));
+	}
+
 	public double getTIMax(String field){
 		try{
 			textInterpolationThreads.get(field).join();
@@ -112,6 +155,10 @@ public class DataFrame {
 
 	public String[] getHeaderString(){
 		return headerString;
+	}
+
+	public ArrayList<String> distinct(String field){
+		return new ArrayList<String>(new HashSet<String>(getColumn(field)));
 	}
 
 	public Cursor query(Query q){

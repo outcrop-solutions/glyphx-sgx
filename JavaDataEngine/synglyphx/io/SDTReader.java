@@ -179,6 +179,7 @@ public class SDTReader {
 				}
 
 			}
+			functionSetup();
 		}catch(Exception e){
 	        try{
 	            e.printStackTrace(ErrorHandler.getInstance().addError());
@@ -397,7 +398,13 @@ public class SDTReader {
 								if(getFunction(element).equals("Text Interpolation")){
 									dataPaths.get(temp.getDataSource()).setHasTextInterpolation();
 									dataPaths.get(temp.getDataSource()).addTextInterpolationField(directMap.get(code));
-								}else{
+								}
+								else if(getFunction(element).equals("Percent Rank")){
+									dataPaths.get(temp.getDataSource()).setHasPercentRank();
+									System.out.println("Percent Rank found "+dataPaths.get(temp.getDataSource()).hasPercentRank());
+									dataPaths.get(temp.getDataSource()).addPercentRankField(directMap.get(code));
+								}
+								else{
 									checkForFunctionMinMax(temp, element);
 								}
 								temp.mapInput(field_name, directMap.get(code));
@@ -584,9 +591,17 @@ public class SDTReader {
 				//dataframe creator for JDBC
 				setupDataFrame(dataPaths.get(i));
 			}
+		}
+	}
 
+	private void functionSetup(){
+		for(int i=0; i < dataPaths.size();i++){
 			if(dataPaths.get(i).hasTextInterpolation()){
 				dataPaths.get(i).setTextInterpolationFields();
+			}
+			if(dataPaths.get(i).hasPercentRank()){
+				System.out.println("Setting percent rank...");
+				dataPaths.get(i).setPercentRankFields();
 			}
 		}
 	}
@@ -898,14 +913,7 @@ public class SDTReader {
 					return filter.distinctValues(dataDriver(temp));
 				}
 				else if(temp.getType().equals("csv")){
-					Query query = new Query(temp.getDataFrame()).append(field).distinct(); 
-					Cursor cursor = temp.getDataFrame().query(query);
-					String[] holder = new String[cursor.size()];
-					int i = 0;
-					while(cursor.next()){
-						holder[i++] = cursor.get(field);
-					}
-					return holder;
+					return Functions.arrayListToStringList(temp.getDataFrame().distinct(field));
 				}
 			}
 		}

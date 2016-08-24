@@ -151,6 +151,14 @@ public class GlyphEngine {
 	 	//String outDir = "C:/Users/Bryan/Desktop/TELCO Small Subset/Viz";
 	 	//String sdtPath = "C:/Users/Bryan/Desktop/GlobalAdmissions20132016/GlobalAdmissions20132016/View 1 Datamap Recommendations.sdt";
 	 	//String outDir = "C:/Users/Bryan/Desktop/GlobalAdmissions20132016/GlobalAdmissions20132016/Viz";
+	 	//String sdtPath = "C:\\Users\\Bryan\\Desktop\\Test Files\\working_sqlite\\animatedrotate_planets_noscale.sdt";
+	 	//String outDir = "C:\\Users\\Bryan\\Desktop\\Test Files\\working_sqlite";
+	 	String sdtPath = "C:/Users/Bryan/Desktop/Test Files/PercentRank/percentrank.sdt";
+	 	String outDir = "C:/Users/Bryan/Desktop/Test Files/PercentRank/viz";
+	 	//String sdtPath = "D:\\Downloads\\Phase 3 Data Sets\\Phase 3 Data Sets\\Poppy Production and Drug Busts.sdt";
+	 	//String outDir = "D:\\Downloads\\Phase 3 Data Sets\\Phase 3 Data Sets";
+	 	//String sdtPath = "C:/Users/Bryan/Desktop/Test Files/working_sqlite/animatedrotate_planets_noscale.sdt";
+	 	//String outDir = "C:/Users/Bryan/Desktop/Test Files/working_sqlite";
 
 	 	String expDir = "DataMapper";
 	 	GlyphEngine start = new GlyphEngine();
@@ -169,22 +177,46 @@ public class GlyphEngine {
 
 	 	//double[] nwse = start.getNWandSE();
 /*
-	 	String id = "cdd96014-8e17-4d2a-927a-4a1f8ac4662c";
-	 	String id = "39ddcb94-a2fd-4cea-849c-424e9afe0c1d";
+	 	double st = 0.0;
+		double end = 0.0;
+		st = System.currentTimeMillis();
+
+	 	String id = "cf127266-5047-40d0-a74c-64e3f462fc75";
 	 	String table = "OnlyTable";
-	 	String field = "Name";
-	 	String[] distinct = start.distinctValuesForField(id, table, field);
+	 	String field = "Port";
+	 	String[] distinct1 = start.distinctValuesForField(id, table, field);
+
+	 	end = System.currentTimeMillis();
+		System.out.println("Port: "+String.valueOf((end-st)/1000.00));
+
+	 	field = "Arrival Time";
+	 	String[] distinct2 = start.distinctValuesForField(id, table, field);
+
+	 	end = System.currentTimeMillis();
+		System.out.println("Arrival Time: "+String.valueOf((end-st)/1000.00));
+
+		field = "Departure Time";
+	 	String[] distinct3 = start.distinctValuesForField(id, table, field);
+
+	 	end = System.currentTimeMillis();
+		System.out.println("Departure Time: "+String.valueOf((end-st)/1000.00));
+
+		field = "Vessel Type";
+	 	String[] distinct4 = start.distinctValuesForField(id, table, field);
+
+	 	end = System.currentTimeMillis();
+		System.out.println("Vessel Type: "+String.valueOf((end-st)/1000.00));*/
+	 	/*
 	 	for(int i = 0; i < distinct.length; i++)
 	 	{
 	 		System.out.println((i+1) +": "+ distinct[i]);
 
-	 	}
-
-	 	}
-	 	String query = "SELECT * FROM OnlyTable WHERE Department='Data Wrangler'";
+	 	}*/
+/*
+	 	String query = "SELECT * FROM `OnlyTable` WHERE `Department`='Data Wrangler'";
 	 	start.setQueryForDatasource(id, table, query);
-*/
-	 	String id2 = "5dad197e-ea1d-4d61-8d1f-cad99e1ec505";
+
+	 	String id2 = "44088e04-3303-4241-94b0-3b3dac432356";
 	 	String table2 = "OnlyTable";
 	 	String query2 = "SELECT * FROM `OnlyTable` WHERE `Year` IN ('1997', '1998', '1999', '2000', '2002', '2001')";
 	 	start.setQueryForDatasource(id2, table2, query2);
@@ -194,19 +226,19 @@ public class GlyphEngine {
 	 	String query = "SELECT * FROM `OnlyTable` WHERE `From` IN ('Mocorito') AND `To` IN ('Sinaloa')";
 	 	start.setQueryForDatasource(id, table, query);
 
-/*
+
 	 	String id = "d0179c53-c1ed-4c17-8d50-011327863db8";
 	 	String table = "FirstPortion";
 	 	String query = "select * from FirstPortion where `OrbitalEcc.` between 0 and 0.2;";
 	 	start.setQueryForDatasource(id, table, query);
- 	/*
+ 	
 	 	if(err == 1){
 			String [] errors = start.getErrors();
 			//System.out.println("Error List:\n");
 			for(int i = 0; i < errors.length; i++){
 				//System.out.println(errors[i]);
 			}
-		}
+		}*/
 
 	 	if(start.isUpdateNeeded()){
 		 	double[] nwse = start.getNWandSE();
@@ -218,7 +250,7 @@ public class GlyphEngine {
 		}
 		String[] images = start.getBaseImages();
 		System.out.println(images.length);
-*/
+
 		if(err > 0){
 			String [] errors = start.getErrors();
 			System.out.println("Error List:\n");
