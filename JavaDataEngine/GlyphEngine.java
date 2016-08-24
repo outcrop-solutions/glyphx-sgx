@@ -151,14 +151,6 @@ public class GlyphEngine {
 	 	//String outDir = "C:/Users/Bryan/Desktop/TELCO Small Subset/Viz";
 	 	//String sdtPath = "C:/Users/Bryan/Desktop/GlobalAdmissions20132016/GlobalAdmissions20132016/View 1 Datamap Recommendations.sdt";
 	 	//String outDir = "C:/Users/Bryan/Desktop/GlobalAdmissions20132016/GlobalAdmissions20132016/Viz";
-	 	//String sdtPath = "C:\\Users\\Bryan\\Desktop\\Test Files\\working_sqlite\\animatedrotate_planets_noscale.sdt";
-	 	//String outDir = "C:\\Users\\Bryan\\Desktop\\Test Files\\working_sqlite";
-	 	//String sdtPath = "C:\\Users\\Bryan\\Desktop\\Test Files\\High School\\High School.sdt";
-	 	//String outDir = "C:\\Users\\Bryan\\Desktop\\Test Files\\High School\\";
-	 	String sdtPath = "D:\\Downloads\\Phase 3 Data Sets\\Phase 3 Data Sets\\Poppy Production and Drug Busts.sdt";
-	 	String outDir = "D:\\Downloads\\Phase 3 Data Sets\\Phase 3 Data Sets";
-	 	//String sdtPath = "C:/Users/Bryan/Desktop/Test Files/working_sqlite/animatedrotate_planets_noscale.sdt";
-	 	//String outDir = "C:/Users/Bryan/Desktop/Test Files/working_sqlite";
 
 	 	String expDir = "DataMapper";
 	 	GlyphEngine start = new GlyphEngine();
