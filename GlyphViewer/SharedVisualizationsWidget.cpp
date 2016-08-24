@@ -51,11 +51,12 @@ SharedVisualizationsWidget::SharedVisualizationsWidget(QWidget *parent)
 	m_loadingFilterWidgetsStack(nullptr)
 {
 	setChildrenCollapsible(false);
-	setHandleWidth(2);
+	setHandleWidth(1);
 	setStyleSheet("QSplitter::handle:horizontal { background: qlineargradient(x1 : 0, y1 : 0, x2 : 1, y2 : 1, stop : 0 #eee, stop:1 #ccc);"
-		"border: 1px solid #777; width: 0px; margin - top: 0px; margin - bottom: 0px; border - radius: 2px; }");
+		"border: 1px solid #777; width: 0px; margin-top: 0px; margin-bottom: 0px; border-radius: 2px; }");
 
 	m_viewListWidget = new SynGlyphX::TitleTreeWidget(this);
+	m_viewListWidget->setStyleSheet("background-color: #eff2f7;");
 	m_viewListWidget->SetAllowMultiselect(false);
 	m_viewListWidget->SetTitle(tr("View(s)"));
 	m_viewListWidget->layout()->setContentsMargins(0, 0, 0, 0);

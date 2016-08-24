@@ -65,6 +65,7 @@ GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 	m_fileToolbar->setIconSize(QSize(42, 32));
 
 	m_showHideToolbar = addToolBar(tr("Show/Hide Widgets"));
+	m_showHideToolbar->setObjectName("main_toolbar");
 	m_showHideToolbar->setFloatable(true);
 	m_showHideToolbar->setMovable(true);
 
@@ -1190,6 +1191,7 @@ void GlyphViewerWindow::RemapRootPositionMappings() {
 void GlyphViewerWindow::CreateInteractionToolbar() {
 
 	m_interactionToolbar = addToolBar(tr("Interaction"));
+	m_interactionToolbar->setObjectName("main_toolbar");
 	m_interactionToolbar->setFloatable(true);
 	m_interactionToolbar->setMovable(true);
 	m_interactionToolbar->setIconSize(QSize(42, 32));
@@ -1217,7 +1219,6 @@ void GlyphViewerWindow::CreateInteractionToolbar() {
 	m_interactionToolbar->addSeparator();
 
 	QCheckBox* cb = new QCheckBox(tr("Hide Filtered"), this);
-
 	m_interactionToolbar->addWidget(cb);
 	m_linkedWidgetsManager->AddFilterViewCheckbox(cb);
 

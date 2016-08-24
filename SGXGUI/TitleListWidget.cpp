@@ -13,6 +13,7 @@ namespace SynGlyphX {
 	{
 		QVBoxLayout* mainLayout = new QVBoxLayout(this);
 		mainLayout->setSpacing(0);
+		setStyleSheet("QTableWidget::item:selected{ background-color: red }");
 
 		QWidget* titleWidget = new QWidget(this);
 		titleWidget->setStyleSheet("QWidget{background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #cdcfd4, stop: 1 #e7e9ea);}");
@@ -24,7 +25,7 @@ namespace SynGlyphX {
 		titleLayout->addStretch(1);
 
 		m_selectAllButton = new QPushButton(tr("Select All"), titleWidget);
-		m_selectAllButton->setStyleSheet("QPushButton{background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #e9edf3, stop: 1 #f3f5f8); border-radius: 8px; font-size: 14px; padding: 4px; border-top: 0.5px solid #fff; border-right: 1px outset #fff; border-bottom: 1px solid gray; border-left: 0.5px solid gray;} QPushButton:hover{background-color: #68cff5;}");
+		m_selectAllButton->setStyleSheet("QPushButton{background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #e9edf3, stop: 1 #f3f5f8); border-radius: 8px; font-size: 14px; padding: 4px; border-top: 0.5px solid #fff; border-right: 1px outset #fff; border-bottom: 1px solid #c3c5c5; border-left: 0.5px solid #c3c5c5;} QPushButton:hover{background-color: #68cff5;}");
 		titleLayout->addWidget(m_selectAllButton);
 
 		titleWidget->setLayout(titleLayout);
@@ -35,17 +36,17 @@ namespace SynGlyphX {
 		m_selectAllButton->setSizePolicy(sizePolicy);
 
 		QFrame* hLine = new QFrame(this);
-		hLine->setFrameStyle(QFrame::HLine | QFrame::Sunken);
+		hLine->setFrameStyle(QFrame::HLine | QFrame::Plain);
 		hLine->setLineWidth(1);
-		hLine->setMidLineWidth(2);
+		hLine->setMidLineWidth(1);
 		hLine->setContentsMargins(0, 0, 0, 0);
 		mainLayout->addWidget(hLine);
 
 		m_listWidget = new QListWidget(this);
-		m_listWidget->setStyleSheet("font-size: 14px;");
+		m_listWidget->setStyleSheet("QListWidget{font-size: 14px;background-color: #eff2f7;} QListWidget::item:selected {background-color: #4acaf8;color: white;}");
 		m_listWidget->setFrameStyle(QFrame::NoFrame);
 		m_listWidget->setSortingEnabled(false);
-		
+
 		mainLayout->addWidget(m_listWidget);
 
 		setLayout(mainLayout);

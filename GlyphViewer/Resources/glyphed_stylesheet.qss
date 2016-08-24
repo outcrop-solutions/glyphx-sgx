@@ -1,7 +1,17 @@
+#main_toolbar QToolButton:hover {
+	background-color:#F0F0F0;
+	border: none;
+}
+
+#main_toolbar QToolButton:checked {
+	background-color:#F0F0F0;
+	border: none;
+}
+
 #home_page {
 	background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #c7cbd2, stop: 1 #afb3ba);
-	border-radius: 12px;
-	border: #a9adb4 1px solid;
+	/*border-radius: 12px;
+	border: #a9adb4 1px solid;*/
 }
 
 #dashboard_frame {

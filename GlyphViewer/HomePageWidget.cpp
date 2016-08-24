@@ -100,7 +100,6 @@ void HomePageWidget::CreateHomePageOptionsWidget() {
 
 		QPushButton* button = new QPushButton(options[i], this);
 		button->setCheckable(true);
-		button->setStyleSheet("QPushButton { font-family:'Calibri', Helvetica, Arial, Sans; padding: 5px; border: 0px; font-size: 16pt; text-align: left;} QPushButton:hover{background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #c7cbd2, stop: 1 #afb3ba); color: white;} QPushButton:open{ background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #cdcfd4, stop: 1 #e7e9ea);}");
 		optionsLayout->addWidget(button);
 		m_optionsButtonGroup->addButton(button, i);
 	}
@@ -113,7 +112,7 @@ void HomePageWidget::CreateHomePageOptionsWidget() {
 void HomePageWidget::CreateAllViewsWidget() {
 
 	QFrame* vizAndFilterFrame = new QFrame(this);
-	vizAndFilterFrame->setFrameStyle(QFrame::Box | QFrame::Sunken);
+	vizAndFilterFrame->setFrameStyle(QFrame::Box | QFrame::Plain);
 	vizAndFilterFrame->setLineWidth(1);
 	vizAndFilterFrame->setMidLineWidth(1);
 
@@ -176,7 +175,7 @@ void HomePageWidget::OnSubsetListUpdated() {
 void HomePageWidget::CreateMyViewsWidget() {
 
 	QFrame* vizAndFilterFrame = new QFrame(this);
-	vizAndFilterFrame->setFrameStyle(QFrame::Box | QFrame::Sunken);
+	vizAndFilterFrame->setFrameStyle(QFrame::Box | QFrame::Plain);
 	vizAndFilterFrame->setLineWidth(1);
 	vizAndFilterFrame->setMidLineWidth(1);
 
