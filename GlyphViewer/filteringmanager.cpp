@@ -32,7 +32,7 @@ void FilteringManager::OnSceneModelReset() {
 
 			if (glyphGraph.second->IsTransformable()) {
 				QString tableName = 
-					SourceDataCache::CreateTablename(m_DataTransformModel->GetDataMapping()->GetInputTalbe(glyphGraph.first));
+					SourceDataCache::CreateTablename(m_DataTransformModel->GetDataMapping()->GetInputTable(glyphGraph.first));
 				if (countsForEachTable.count(tableName) == 0) {
 
 					countsForEachTable[tableName] = m_sourceDataCache->GetNumberOfRowsInTable(tableName);
@@ -45,7 +45,7 @@ void FilteringManager::OnSceneModelReset() {
 
 			if (glyphGraph.second->IsTransformable()) {
 				QString tableName = 
-					SourceDataCache::CreateTablename(m_DataTransformModel->GetDataMapping()->GetInputTalbe(glyphGraph.first));
+					SourceDataCache::CreateTablename(m_DataTransformModel->GetDataMapping()->GetInputTable(glyphGraph.first));
 				SynGlyphX::ProperInterval range(startingIndex, startingIndex + countsForEachTable.value(tableName), SynGlyphX::ProperInterval::Min);
 				startingIndex += countsForEachTable.value(tableName);
 

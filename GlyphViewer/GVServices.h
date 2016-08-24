@@ -25,7 +25,7 @@ class GVServices : public SynGlyphX::AppServices {
 public:
 	GVServices(GlyphViewerWindow* w);
 	virtual ~GVServices();
-	virtual void BeginTransaction(const char* name, SynGlyphX::TransactionType t) override;
+	virtual void BeginTransaction(const char* name, int type) override;
 	virtual void EndTransaction() override;
 
 private:
