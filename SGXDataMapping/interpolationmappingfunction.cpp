@@ -10,7 +10,8 @@ namespace SynGlyphX {
 	const boost::bimap<InterpolationMappingData::InputMinMaxType, std::wstring> InterpolationMappingData::s_minMaxTypeNames = boost::assign::list_of < boost::bimap<InterpolationMappingData::InputMinMaxType, std::wstring>::relation >
 		(InterpolationMappingData::InputMinMaxType::BoundInputField, L"BoundField")
 		(InterpolationMappingData::InputMinMaxType::UserSpecified, L"UserSpecified")
-		(InterpolationMappingData::InputMinMaxType::InputFieldGroup, L"FieldGroup");
+		(InterpolationMappingData::InputMinMaxType::InputFieldGroup, L"FieldGroup")
+		(InterpolationMappingData::InputMinMaxType::RangeBound, L"RangeBound");
 	
 	InterpolationMappingData::InterpolationMappingData(int useLogarithmic) :
 		MappingFunctionData((useLogarithmic == 1) ? MappingFunctionData::Function::LogarithmicInterpolation : ((useLogarithmic == 0) ? MappingFunctionData::Function::LinearInterpolation : ((useLogarithmic == 2) ? MappingFunctionData::Function::TextInterpolation : MappingFunctionData::Function::PercentRank))),
@@ -41,6 +42,14 @@ namespace SynGlyphX {
 				else if (m_inputMinMaxType == InputMinMaxType::UserSpecified) {
 
 					m_userSpecifiedInputMinMax.SetMinDiff(minMaxSettingsPropertyTree.get<double>(L"Min"), minMaxSettingsPropertyTree.get_optional<double>(L"Difference").get_value_or(0.0));
+				}
+				else if (m_inputMinMaxType == InputMinMaxType::RangeBound) {
+					const auto& minTree = minMaxSettingsPropertyTree.get_child(L"Min");
+					m_rangeBound.min = minTree.get<double>(L"<xmlattr>.bound");
+					m_rangeBound.minValue = minTree.get<double>(L"<xmlattr>.value");
+					const auto& maxTree = minMaxSettingsPropertyTree.get_child(L"Max");
+					m_rangeBound.max = maxTree.get<double>(L"<xmlattr>.bound");
+					m_rangeBound.maxValue = maxTree.get<double>(L"<xmlattr>.value");
 				}
 			}
 		}
@@ -118,6 +127,14 @@ namespace SynGlyphX {
 			if (m_inputMinMaxType == InputMinMaxType::InputFieldGroup) {
 
 				minMaxSettingsPropertyTree.put<DataTransformMapping::FieldGroupName>(L"Group", m_inputMinMaxFieldGroup);
+			}
+			else if (m_inputMinMaxType == InputMinMaxType::RangeBound) {
+				boost::property_tree::wptree& minTree = minMaxSettingsPropertyTree.add(L"Min", "");
+				minTree.put<double>(L"<xmlattr>.bound", m_rangeBound.min);
+				minTree.put<double>(L"<xmlattr>.value", m_rangeBound.minValue);
+				boost::property_tree::wptree& maxTree = minMaxSettingsPropertyTree.add(L"Max", "");
+				maxTree.put<double>(L"<xmlattr>.bound", m_rangeBound.max);
+				maxTree.put<double>(L"<xmlattr>.value", m_rangeBound.maxValue);
 			}
 			else {
 
@@ -197,6 +214,18 @@ namespace SynGlyphX {
 		}
 
 		return m_userSpecifiedInputMinMax;
+	}
+
+	void InterpolationMappingData::SetRangeBound(double min, double minValue, double max, double maxValue) {
+		m_inputMinMaxType = InputMinMaxType::RangeBound;
+		m_rangeBound.max = max;
+		m_rangeBound.maxValue = maxValue;
+		m_rangeBound.min = min;
+		m_rangeBound.minValue = minValue;
+	}
+
+	InterpolationMappingData::RangeBoundType InterpolationMappingData::GetRangeBound() const {
+		return m_rangeBound;
 	}
 
 	void InterpolationMappingData::SetInputMinMaxFieldGroup(const DataTransformMapping::FieldGroupName& minMaxFieldGroup) {

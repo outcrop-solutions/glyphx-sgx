@@ -32,7 +32,16 @@ namespace SynGlyphX {
 		enum InputMinMaxType {
 			BoundInputField,
 			UserSpecified,
-			InputFieldGroup
+			InputFieldGroup,
+			RangeBound
+		};
+
+		struct RangeBoundType
+		{
+			double min;
+			double max;
+			double minValue;
+			double maxValue;
 		};
 
 		typedef std::shared_ptr<InterpolationMappingData> SharedPtr;
@@ -61,6 +70,8 @@ namespace SynGlyphX {
 		void SetUserSpecifiedInputMinMax(const DoubleMinDiff& minMax);
 		const DoubleMinDiff& GetUserSpecifiedInputMinMax() const;
 
+		void SetRangeBound(double min, double minValue, double max, double maxValue);
+		RangeBoundType GetRangeBound() const;
 		void SetInputMinMaxFieldGroup(const DataTransformMapping::FieldGroupName& minMaxFieldGroup);
 		const DataTransformMapping::FieldGroupName& GetInputMinMaxFieldGroup() const;
 
@@ -71,6 +82,9 @@ namespace SynGlyphX {
 
 		InputMinMaxType m_inputMinMaxType;
 		DoubleMinDiff m_userSpecifiedInputMinMax;
+
+		RangeBoundType m_rangeBound;
+
 		DataTransformMapping::FieldGroupName m_inputMinMaxFieldGroup;
 	};
 
