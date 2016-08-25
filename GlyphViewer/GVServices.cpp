@@ -9,7 +9,7 @@ GVServices::~GVServices() {
 
 }
 
-void GVServices::BeginTransaction(const char* name, SynGlyphX::TransactionType t) {
+void GVServices::BeginTransaction(const char* name, int t) {
 	
 }
 
