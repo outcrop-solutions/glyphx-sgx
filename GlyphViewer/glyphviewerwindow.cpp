@@ -735,7 +735,7 @@ void GlyphViewerWindow::LoadFilesIntoModel(const SynGlyphXANTz::ANTzCSVWriter::F
 
 	auto rootGlyph = dataTransformMapping->GetGlyphGraphs().begin();
 
-	std::unordered_map<std::wstring, std::wstring> fieldToAliasMap = dataTransformMapping->GetFieldToAliasMapForTable(dataTransformMapping->GetInputTalbe(rootGlyph->first));
+	std::unordered_map<std::wstring, std::wstring> fieldToAliasMap = dataTransformMapping->GetFieldToAliasMapForTable(dataTransformMapping->GetInputTable(rootGlyph->first));
 
 	std::array<QString, 3> rootPositionFields;
 	auto ifm = std::const_pointer_cast<SynGlyphX::DataTransformMapping>(dataTransformMapping)->GetInputFieldManager();
