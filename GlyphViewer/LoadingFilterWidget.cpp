@@ -50,10 +50,15 @@ void LoadingFilterWidget::SetFilters(DataEngine::GlyphEngine& glyphEngine, const
 
 		QSplitter* splitter = AddFiltersForTable(glyphEngine, mapping.GetFieldToAliasMapForTable(filtersForTable.first), filtersForTable.second, filtersForTable.first);
 		QString title = QString::fromStdWString(mapping.GetFormattedName(filtersForTable.first.GetDatasourceID(), filtersForTable.first.GetTable()));
-		SynGlyphX::GroupBoxSingleWidget* groupBox = new SynGlyphX::GroupBoxSingleWidget(title, splitter, this);
-		groupBox->setContentsMargins(0, 0, 0, 0);
-		groupBox->setStyleSheet("QGroupBox{font-family:'Calibri', Helvetica, Arial, Sans; font-weight: bold; text-transform: uppercase; font-size: 16px; line-height: 24px;}");
-		innerWidgetLayout->addWidget(groupBox);
+		if (filters.size() == 1){
+			innerWidgetLayout->addWidget(splitter);
+		} 
+		else{
+			SynGlyphX::GroupBoxSingleWidget* groupBox = new SynGlyphX::GroupBoxSingleWidget(title, splitter, this);
+			groupBox->setContentsMargins(0, 0, 0, 0);
+			groupBox->setStyleSheet("QGroupBox{font-family:'Calibri', Helvetica, Arial, Sans; font-weight: bold; text-transform: uppercase; font-size: 16px; line-height: 24px;}");
+			innerWidgetLayout->addWidget(groupBox);
+		}
 	}
 
 	//int stretchSize = 3 - filters.size();
@@ -71,9 +76,9 @@ QSplitter* LoadingFilterWidget::AddFiltersForTable(DataEngine::GlyphEngine& glyp
 	QSplitter* splitter = new QSplitter(Qt::Horizontal, this);
 
 	splitter->setChildrenCollapsible(false);
-	splitter->setHandleWidth(2);
+	splitter->setHandleWidth(1);
 	splitter->setStyleSheet("QSplitter::handle:horizontal { background: qlineargradient(x1 : 0, y1 : 0, x2 : 1, y2 : 1, stop : 0 #eee, stop:1 #ccc);"
-		"border: 1px solid #777; width: 0px; margin - top: 0px; margin - bottom: 0px; border - radius: 2px; }");
+		"border: 1px solid #777; width: 0px; margin-top: 0px; margin-bottom: 0px; border-radius: 2px; }");
 
 	QString id = QString::fromStdWString(boost::uuids::to_wstring(table.GetDatasourceID()));
 	QString tableName = QString::fromStdWString(table.GetTable());

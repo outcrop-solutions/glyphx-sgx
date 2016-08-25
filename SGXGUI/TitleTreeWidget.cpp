@@ -37,14 +37,14 @@ namespace SynGlyphX {
 		selectAllButton->hide();
 
 		QFrame* hLine = new QFrame(this);
-		hLine->setFrameStyle(QFrame::HLine | QFrame::Sunken);
+		hLine->setFrameStyle(QFrame::HLine | QFrame::Plain);
 		hLine->setLineWidth(1);
-		hLine->setMidLineWidth(2);
+		hLine->setMidLineWidth(1);
 		hLine->setContentsMargins(0, 0, 0, 0);
 		mainLayout->addWidget(hLine);
 
 		m_treeWidget = new QTreeWidget(this);
-		m_treeWidget->setStyleSheet("font-size: 14px;");
+		m_treeWidget->setStyleSheet("QTreeWidget{font-size: 14px;background-color: #eff2f7;} QTreeWidget::item:selected {background-color: #4acaf8;color: white;}");
 		m_treeWidget->setFrameStyle(QFrame::NoFrame);
 		m_treeWidget->setSortingEnabled(false);
 		m_treeWidget->header()->close();
