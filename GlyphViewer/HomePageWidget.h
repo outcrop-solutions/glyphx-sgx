@@ -62,6 +62,8 @@ private:
 	void CreateMyViewsWidget();
 	void CreateHelpWidget();
 	void CreateDashboardWidget();
+	void SetupGlyphEdViz();
+	void ProduceGlyphEdCSV(const QString& sdtToLoad, const QString& tableInDB, unsigned int currentDataVisualization);
 
 	QGridLayout* m_mainLayout;
 	QStackedLayout* m_homePageWidgetsLayout;
@@ -76,6 +78,11 @@ private:
 	SynGlyphX::TitleListWidget* m_subsetViewsFilteringWidget;
 	
 	DataEngine::DataEngineConnection::SharedPtr m_dataEngineConnection;
+
+	//GlyphEd only.  Will get rid of ASAP
+	SourceDataCache m_sourceDataCache;
+	QStringList m_glyphEdSDTFiles;
+	QStringList m_glyphEdTablesInDB;
 };
 
 //#pragma once

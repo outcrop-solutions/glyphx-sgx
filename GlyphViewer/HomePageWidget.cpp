@@ -360,16 +360,39 @@ void HomePageWidget::CreateDashboardWidget() {
 	m_homePageWidgetsLayout->addWidget(widget);
 }
 
-/*void HomePageWidget::SetupVisualizationData() {
+void HomePageWidget::SetupGlyphEdViz() {
 
-	QStringList visualizationNames;
-	visualizationNames << "Global Admissions View" << "Reader View (2016)" << "High School View" << 
-		"Class Composition (Diversity)" << "Class Composition (Cohort)" << "Class Composition (Total)" << "Global Dashboard";
+	//QStringList visualizationNames;
+	//visualizationNames << "Global Admissions View" << "Reader View (2016)" << "High School View" << 
+	//	"Class Composition (Diversity)" << "Class Composition (Cohort)" << "Class Composition (Total)" << "Global Dashboard";
 
-	MultiLoadingFilterWidget::VisualizationData globalAdmissionsView;
+	m_sourceDataCache.Setup(QDir::cleanPath(SynGlyphX::GlyphBuilderApplication::GetCommonDataLocation()) + QDir::toNativeSeparators("/GlyphEd/glyphed.db"));
+
+	m_glyphEdSDTFiles << QDir::cleanPath(SynGlyphX::GlyphBuilderApplication::GetCommonDataLocation()) + QDir::toNativeSeparators("/GlyphEd/Global Admissions/Global Admissions.sdt");
+	m_glyphEdSDTFiles << QDir::cleanPath(SynGlyphX::GlyphBuilderApplication::GetCommonDataLocation()) + QDir::toNativeSeparators("/GlyphEd/Admissions Officer/Reader View.sdt");
+	m_glyphEdSDTFiles << QDir::cleanPath(SynGlyphX::GlyphBuilderApplication::GetCommonDataLocation()) + QDir::toNativeSeparators("/GlyphEd/High School/High School.sdt");
+	m_glyphEdSDTFiles << QDir::cleanPath(SynGlyphX::GlyphBuilderApplication::GetCommonDataLocation()) + QDir::toNativeSeparators("/GlyphEd/Class Composition/Class Composition Diversity.sdt");
+	m_glyphEdSDTFiles << QDir::cleanPath(SynGlyphX::GlyphBuilderApplication::GetCommonDataLocation()) + QDir::toNativeSeparators("/GlyphEd/Class Composition/Class Composition Cohort.sdt");
+	m_glyphEdSDTFiles << QDir::cleanPath(SynGlyphX::GlyphBuilderApplication::GetCommonDataLocation()) + QDir::toNativeSeparators("/GlyphEd/Class Composition/Class Composition Total.sdt");
+	m_glyphEdSDTFiles << QDir::cleanPath(SynGlyphX::GlyphBuilderApplication::GetCommonDataLocation()) + QDir::toNativeSeparators("/GlyphEd/Global Dashboard/Global Dashboard.sdt");
+
+	m_glyphEdTablesInDB << "GlobalAdmissions";
+	m_glyphEdTablesInDB << "GlobalAdmissions";
+	m_glyphEdTablesInDB << "GlobalAdmissions";
+	m_glyphEdTablesInDB << "Composition";
+	m_glyphEdTablesInDB << "Composition";
+	m_glyphEdTablesInDB << "Composition";
+	m_glyphEdTablesInDB << "Dashboard";
+
+	for (unsigned int i = 0; i < m_glyphEdTablesInDB.size(); ++i) {
+
+		ProduceGlyphEdCSV(m_glyphEdSDTFiles[i], m_glyphEdTablesInDB[i], i);
+	}
+
+	/*MultiLoadingFilterWidget::VisualizationData globalAdmissionsView;
 	globalAdmissionsView.m_title = visualizationNames[0];
-	globalAdmissionsView.m_sdtPath = GetGlyphEdDir() + QDir::toNativeSeparators("/Global Admissions/Global Admissions.sdt");
-	globalAdmissionsView.m_tableInGlyphEd = "GlobalAdmissions";
+	globalAdmissionsView.m_sdtPath = 
+	globalAdmissionsView.m_tableInGlyphEd = ;
 
 	globalAdmissionsView.m_filterTitles.push_back("Reader");
 	globalAdmissionsView.m_mustHaveFilter.push_back(true);
@@ -387,7 +410,7 @@ void HomePageWidget::CreateDashboardWidget() {
 	MultiLoadingFilterWidget::VisualizationData admissionsCounselorView;
 	admissionsCounselorView.m_title = visualizationNames[1];
 	admissionsCounselorView.m_sdtPath = GetGlyphEdDir() + QDir::toNativeSeparators("/Admissions Officer/Admissions Counselor.sdt");
-	admissionsCounselorView.m_tableInGlyphEd = "GlobalAdmissions";
+	admissionsCounselorView.m_tableInGlyphEd = "";
 
 	admissionsCounselorView.m_filterTitles.push_back("Reader");
 	admissionsCounselorView.m_mustHaveFilter.push_back(true);
@@ -510,8 +533,8 @@ void HomePageWidget::CreateDashboardWidget() {
 	globalDashboardView.m_filterMultiselect.push_back(false);
 	globalDashboardView.m_filterValues.push_back(m_sourceDataCache.GetSortedDistinctValuesAsStrings(globalDashboardView.m_tableInGlyphEd, "reader_name"));
 
-	m_allVisualizationData.push_back(globalDashboardView);
-}*/
+	m_allVisualizationData.push_back(globalDashboardView);*/
+}
 
 void HomePageWidget::OnLoadVisualization() {
 
@@ -533,6 +556,25 @@ void HomePageWidget::OnLoadVisualization() {
 		fileToLoad = m_allViewsFilteringWidget->GetCurrentFilename();
 		filteringParameters = m_allViewsFilteringWidget->GetCurrentFilterValues();
 
+		if (SynGlyphX::GlyphBuilderApplication::IsGlyphEd()) {
+
+			if (fileToLoad.endsWith("Global Dashboard.sdt")) {
+
+				auto& singleTableFilters = filteringParameters.begin();
+				QSet<QString> readers;
+				if (!filteringParameters.empty()) {
+
+					if (singleTableFilters->second.HasFilters()) {
+
+						readers = singleTableFilters->second.GetDistinctValueFilters().at("reader_name");
+					}
+
+				}
+				readers.insert("TOTAL");
+				singleTableFilters->second.SetDistinctValueFilter("reader_name", readers);
+			}
+		}
+
 		DataEngine::GlyphEngine ge;
 		ge.initiate(m_dataEngineConnection->getEnv(), fileToLoad.toStdString(), "", "", "", "GlyphViewer");
 		for (const auto& filtersForTable : filteringParameters) {
@@ -546,7 +588,6 @@ void HomePageWidget::OnLoadVisualization() {
 				return;
 			}
 		}
-		
 	}
 	else if (whichFilteringWidget == 2) {
 
@@ -558,23 +599,11 @@ void HomePageWidget::OnLoadVisualization() {
 	emit LoadVisualization(fileToLoad, filteringParameters);
 }
 
-/*bool HomePageWidget::LoadVisualization(const QString& sdtToLoad, const DistinctValueFilteringParameters& userSelectedFilters) {
-	
-	FilteringParameters filters;
-	filters.DistinctValueFilteringParameters::operator=(userSelectedFilters);
+void HomePageWidget::ProduceGlyphEdCSV(const QString& sdtToLoad, const QString& tableInDB, unsigned int currentDataVisualization) {
 
 	SynGlyphX::DataTransformMapping mapping;
 	mapping.ReadFromFile(sdtToLoad.toStdString());
-
-	int currentDataVisualization = -1;
-	for (unsigned int k = 0; k < m_allVisualizationData.size(); ++k) {
-
-		if (m_allVisualizationData[k].m_sdtPath == sdtToLoad) {
-
-			currentDataVisualization = k;
-			break;
-		}
-	}
+	FilteringParameters filters;
 
 	if (currentDataVisualization != -1) {
 
@@ -602,7 +631,7 @@ void HomePageWidget::OnLoadVisualization() {
 			groupingTitle.insert("Cohort Aggregate");
 			filters.SetDistinctValueFilter("grouping_title_lv2", groupingTitle);
 		}
-		else if (currentDataVisualization == 6) {
+		/*else if (currentDataVisualization == 6) {
 
 			QSet<QString> readers;
 			if (filters.HasFilters()) {
@@ -612,7 +641,7 @@ void HomePageWidget::OnLoadVisualization() {
 			}
 			readers.insert("TOTAL");
 			filters.SetDistinctValueFilter(m_allVisualizationData[6].m_filterFieldNames[0], readers);
-		}
+		}*/
 
 		QString dataFilename = QDir::toNativeSeparators(QString::fromStdWString(mapping.GetDatasources().begin()->second->GetDBName()));
 		if (QFile::exists(dataFilename)) {
@@ -620,23 +649,14 @@ void HomePageWidget::OnLoadVisualization() {
 			QFile::remove(dataFilename);
 		}
 
-		bool didFilterHaveResult = m_sourceDataCache.ExportFilteredDataToCSV(dataFilename, m_allVisualizationData[currentDataVisualization].m_tableInGlyphEd, filters);
-
-		SynGlyphX::Application::restoreOverrideCursor();
+		bool didFilterHaveResult = m_sourceDataCache.ExportFilteredDataToCSV(dataFilename, tableInDB, filters);
 
 		if (!didFilterHaveResult) {
 
-			QMessageBox::warning(this, tr("Load Visualization"), tr("The selected combination of filters had no results.  Please try a different combination of filters to load a visualization."));
-			return false;
+			QMessageBox::warning(this, tr("GlyphEd Generate Visualization"), tr("The selected combination of filters had no results.  Please try a different combination of filters to load a visualization."));
 		}
 	}
-	else {
-
-		SynGlyphX::Application::restoreOverrideCursor();
-	}
-
-	return m_mainWindow->LoadNewVisualization(sdtToLoad, userSelectedFilters);
-}*/
+}
 
 void HomePageWidget::OnNewOptionSelected(int index) {
 
