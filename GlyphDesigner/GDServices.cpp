@@ -34,7 +34,7 @@ class GDServicesImpl  {
 public:
 	GDServicesImpl(GlyphDesignerWindow* w) : m_w(w)  {}
 
-	void BeginTransaction(const char* name, SynGlyphX::TransactionType t) {
+	void BeginTransaction(const char* name, int t) {
 
 		if (t == TransactionType::ChangeTree) {
 			tcc = new TreeChangeCommand();
@@ -59,7 +59,7 @@ GDServices::GDServices(GlyphDesignerWindow* w) : SynGlyphX::AppServices(w) {
 	pImpl = new GDServicesImpl(w);
 }
 
-void GDServices::BeginTransaction(const char* name, SynGlyphX::TransactionType t) {
+void GDServices::BeginTransaction(const char* name, int t) {
 	pImpl->BeginTransaction(name, t);
 }
 

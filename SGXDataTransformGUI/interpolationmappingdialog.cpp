@@ -1,12 +1,55 @@
 #include "interpolationmappingdialog.h"
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QDialogButtonBox>
+#include <QtWidgets/QDoubleSpinBox>
 #include <QtWidgets/QStackedLayout>
 #include "groupboxsinglewidget.h"
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QMessageBox>
 #include "datatransformmodel.h"
 
+class RangeBoundWidget : public QWidget
+{
+public:
+	RangeBoundWidget(QWidget* parent) : QWidget(parent)
+	{
+		m_minBound = new QDoubleSpinBox(this);
+		m_minBound->setRange((double)std::numeric_limits<int>::min(), (double)std::numeric_limits<int>::max());
+		m_maxBound = new QDoubleSpinBox(this);
+		m_maxBound->setRange((double)std::numeric_limits<int>::min(), (double)std::numeric_limits<int>::max());
+
+		m_minValue = new QDoubleSpinBox(this);
+		m_minValue->setRange((double)std::numeric_limits<int>::min(), (double)std::numeric_limits<int>::max());
+		m_maxValue = new QDoubleSpinBox(this);
+		m_maxValue->setRange((double)std::numeric_limits<int>::min(), (double)std::numeric_limits<int>::max());
+
+		//m_minBound->setRange()
+
+		QVBoxLayout* mainLayout = new QVBoxLayout(this);
+		QHBoxLayout* minLayout = new QHBoxLayout;
+
+		minLayout->addWidget(new QLabel(tr("Min:"), this), 0, Qt::AlignRight);
+		minLayout->addWidget(m_minBound, 0, Qt::AlignLeft);
+		minLayout->addWidget(new QLabel(tr("Value:"), this), 0, Qt::AlignRight);
+		minLayout->addWidget(m_minValue, 0, Qt::AlignLeft);
+
+		QHBoxLayout* maxLayout = new QHBoxLayout;
+		maxLayout->addWidget(new QLabel(tr("Max:"), this), 0, Qt::AlignRight);
+		maxLayout->addWidget(m_maxBound, 0, Qt::AlignLeft);
+		maxLayout->addWidget(new QLabel(tr("Value:"), this), 0, Qt::AlignRight);
+		maxLayout->addWidget(m_maxValue, 0, Qt::AlignLeft);
+
+		mainLayout->addLayout(minLayout);
+		mainLayout->addLayout(maxLayout);
+
+		setLayout(mainLayout);
+	}
+	QDoubleSpinBox* m_minBound;
+	QDoubleSpinBox* m_maxBound;
+
+	QDoubleSpinBox* m_minValue;
+	QDoubleSpinBox* m_maxValue;
+};
 
 InterpolationMappingDialog::InterpolationMappingDialog(SynGlyphX::DataTransformModel* model, QWidget *parent)
 	: QDialog(parent),
@@ -16,7 +59,8 @@ InterpolationMappingDialog::InterpolationMappingDialog(SynGlyphX::DataTransformM
 	QVBoxLayout* mainLayout = new QVBoxLayout(this);
 
 	QStringList interpolationOptionsList;
-	interpolationOptionsList << tr("Get Min && Max From Bound Input Field") << tr("User Specified Min && Max") << tr("Get Min && Max From Group Of Input Fields");
+	interpolationOptionsList << tr("Get Min && Max From Bound Input Field") << tr("User Specified Min && Max") << tr("Get Min && Max From Group Of Input Fields") <<
+		tr("Range Bound Min && Max");
 	m_minMaxTypeWidget = new SynGlyphX::RadioButtonGroupWidget(interpolationOptionsList, Qt::Vertical, this);
 
 	SynGlyphX::GroupBoxSingleWidget* interpolationOptionsGroupBox = new SynGlyphX::GroupBoxSingleWidget(tr("Input Min/Max Type:"), m_minMaxTypeWidget, this);
@@ -46,6 +90,9 @@ InterpolationMappingDialog::InterpolationMappingDialog(SynGlyphX::DataTransformM
 
 		m_minMaxTypeWidget->SetButtonEnabled(2, false);
 	}
+
+	m_rangeBoundWidget = new RangeBoundWidget(this);
+	minMaxParameterWidgetsLayout->addWidget(m_rangeBoundWidget);
 
 	mainLayout->addLayout(minMaxParameterWidgetsLayout);
 	QObject::connect(m_minMaxTypeWidget, &SynGlyphX::RadioButtonGroupWidget::ButtonClicked, minMaxParameterWidgetsLayout, &QStackedLayout::setCurrentIndex);
@@ -93,6 +140,15 @@ void InterpolationMappingDialog::SetDialogFromMapping(SynGlyphX::InterpolationMa
 
 		m_fieldGroupWidget->SetCurrentGroupName(QString::fromStdWString(mapping->GetInputMinMaxFieldGroup()));
 	}
+	else if (minMaxType == SynGlyphX::InterpolationMappingData::InputMinMaxType::RangeBound) {
+
+		auto range = mapping->GetRangeBound();
+		m_rangeBoundWidget->m_minBound->setValue(range.min);
+		m_rangeBoundWidget->m_minValue->setValue(range.minValue);
+
+		m_rangeBoundWidget->m_maxBound->setValue(range.max);
+		m_rangeBoundWidget->m_maxValue->setValue(range.maxValue);
+	}
 }
 
 SynGlyphX::InterpolationMappingData::SharedPtr InterpolationMappingDialog::GetMappingFromDialog() const {
@@ -111,6 +167,11 @@ SynGlyphX::InterpolationMappingData::SharedPtr InterpolationMappingDialog::GetMa
 	else if (inputMinMaxType == SynGlyphX::InterpolationMappingData::InputMinMaxType::InputFieldGroup) {
 
 		newMappingData->SetInputMinMaxFieldGroup(m_fieldGroupWidget->GetCurrentGroupName().toStdWString());
+	}
+	else if (inputMinMaxType == SynGlyphX::InterpolationMappingData::InputMinMaxType::RangeBound) {
+
+		newMappingData->SetRangeBound(m_rangeBoundWidget->m_minBound->value(), m_rangeBoundWidget->m_minValue->value(),
+			m_rangeBoundWidget->m_maxBound->value(), m_rangeBoundWidget->m_maxValue->value());
 	}
 
 	return newMappingData;

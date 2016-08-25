@@ -23,7 +23,7 @@ class GDServices : public SynGlyphX::AppServices {
 public:
 	GDServices(GlyphDesignerWindow* w);
 	virtual ~GDServices();
-	virtual void BeginTransaction(const char* name, SynGlyphX::TransactionType t) override;
+	virtual void BeginTransaction(const char* name, int t) override;
 	virtual void EndTransaction() override;
 private:
 	GDServicesImpl* pImpl;
