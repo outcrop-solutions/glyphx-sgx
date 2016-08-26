@@ -35,6 +35,7 @@ public class XMLGlyphTemplate{
 		inputMapping = new HashMap<String,String>();
 		functionMapping = new HashMap<String,String>();
 		keyValueMap = new HashMap<String,MapFunction>();
+		riBounds = new HashMap<String, double[]>();
 		numChildren = 0;
 		tag = "No Tag";
 		url = "nourl.html";
@@ -69,9 +70,7 @@ public class XMLGlyphTemplate{
 	}
 
 	public void setRangeInterpolationConstraints(String field, String ib, String db, String ia, String da){
-		if(riBounds == null){
-			riBounds = new HashMap<String, double[]>();
-		}
+
 		double[] bounds = new double[4];
 		bounds[0] = Double.parseDouble(ib);
 		bounds[1] = Double.parseDouble(db);
