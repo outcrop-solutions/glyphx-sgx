@@ -1,0 +1,163 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClInclude Include="SGXGraphicsPCH.h" />
+    <ClInclude Include="hal\context.h">
+      <Filter>hal</Filter>
+    </ClInclude>
+    <ClInclude Include="hal\device.h">
+      <Filter>hal</Filter>
+    </ClInclude>
+    <ClInclude Include="hal\hal.h">
+      <Filter>hal</Filter>
+    </ClInclude>
+    <ClInclude Include="hal\log.h">
+      <Filter>hal</Filter>
+    </ClInclude>
+    <ClInclude Include="hal\types.h">
+      <Filter>hal</Filter>
+    </ClInclude>
+    <ClInclude Include="hal\vertex_format.h">
+      <Filter>hal</Filter>
+    </ClInclude>
+    <ClInclude Include="hal\internal\context_internal.h">
+      <Filter>hal\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="hal\internal\device_internal.h">
+      <Filter>hal\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="hal\internal\effect.h">
+      <Filter>hal\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="hal\internal\gl.h">
+      <Filter>hal\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="hal\internal\ref_counted.h">
+      <Filter>hal\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="hal\internal\types_internal.h">
+      <Filter>hal\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="render\camera.h">
+      <Filter>render</Filter>
+    </ClInclude>
+    <ClInclude Include="render\model.h">
+      <Filter>render</Filter>
+    </ClInclude>
+    <ClInclude Include="render\model_loader.h">
+      <Filter>render</Filter>
+    </ClInclude>
+    <ClInclude Include="render\ortho_camera.h">
+      <Filter>render</Filter>
+    </ClInclude>
+    <ClInclude Include="render\perspective_camera.h">
+      <Filter>render</Filter>
+    </ClInclude>
+    <ClInclude Include="render\renderer.h">
+      <Filter>render</Filter>
+    </ClInclude>
+    <ClInclude Include="render\types.h">
+      <Filter>render</Filter>
+    </ClInclude>
+    <ClInclude Include="platform.h" />
+    <ClInclude Include="render\bounds.h">
+      <Filter>render</Filter>
+    </ClInclude>
+    <ClInclude Include="hal\readback_utils.h">
+      <Filter>hal</Filter>
+    </ClInclude>
+    <ClInclude Include="render\octree.h">
+      <Filter>render</Filter>
+    </ClInclude>
+    <ClInclude Include="render\grid_renderer.h">
+      <Filter>render</Filter>
+    </ClInclude>
+    <ClInclude Include="render\torus_generator.h">
+      <Filter>render</Filter>
+    </ClInclude>
+    <ClInclude Include="hal\debug.h">
+      <Filter>hal</Filter>
+    </ClInclude>
+    <ClInclude Include="render\color.h">
+      <Filter>render</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="SGXGraphicsPCH.cpp" />
+    <ClCompile Include="hal\context.cpp">
+      <Filter>hal</Filter>
+    </ClCompile>
+    <ClCompile Include="hal\device.cpp">
+      <Filter>hal</Filter>
+    </ClCompile>
+    <ClCompile Include="hal\log.cpp">
+      <Filter>hal</Filter>
+    </ClCompile>
+    <ClCompile Include="hal\vertex_format.cpp">
+      <Filter>hal</Filter>
+    </ClCompile>
+    <ClCompile Include="hal\internal\context_internal.cpp">
+      <Filter>hal\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="hal\internal\device_internal.cpp">
+      <Filter>hal\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="hal\internal\effect.cpp">
+      <Filter>hal\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="hal\internal\gl.cpp">
+      <Filter>hal\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="render\camera.cpp">
+      <Filter>render</Filter>
+    </ClCompile>
+    <ClCompile Include="render\model.cpp">
+      <Filter>render</Filter>
+    </ClCompile>
+    <ClCompile Include="render\model_loader.cpp">
+      <Filter>render</Filter>
+    </ClCompile>
+    <ClCompile Include="render\ortho_camera.cpp">
+      <Filter>render</Filter>
+    </ClCompile>
+    <ClCompile Include="render\perspective_camera.cpp">
+      <Filter>render</Filter>
+    </ClCompile>
+    <ClCompile Include="render\renderer.cpp">
+      <Filter>render</Filter>
+    </ClCompile>
+    <ClCompile Include="render\bounds.cpp">
+      <Filter>render</Filter>
+    </ClCompile>
+    <ClCompile Include="hal\readback_utils.cpp">
+      <Filter>hal</Filter>
+    </ClCompile>
+    <ClCompile Include="render\octree.cpp">
+      <Filter>render</Filter>
+    </ClCompile>
+    <ClCompile Include="render\grid_renderer.cpp">
+      <Filter>render</Filter>
+    </ClCompile>
+    <ClCompile Include="render\torus_generator.cpp">
+      <Filter>render</Filter>
+    </ClCompile>
+    <ClCompile Include="hal\internal\debug_internal.cpp">
+      <Filter>hal\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="render\color.cpp">
+      <Filter>render</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="hal">
+      <UniqueIdentifier>{da5a635e-ece1-4714-b4c5-4c8c7d3fc3bd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="hal\internal">
+      <UniqueIdentifier>{2c930fa4-e09f-4bf9-92a3-9c378f40826b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="render">
+      <UniqueIdentifier>{7b078664-20fe-45d9-9e1e-cc6e9087e92b}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

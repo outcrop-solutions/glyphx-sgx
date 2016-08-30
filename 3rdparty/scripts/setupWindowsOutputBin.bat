@@ -8,6 +8,8 @@ SET antzzspacetemplate=ANTzzSpaceTemplate
 SET antzmactemplate=ANTzMacTemplate
 SET defaultbaseimages=DefaultBaseImages
 SET glyphtemplates=GlyphTemplates
+SET meshes=meshes
+SET shaders=shaders
 SET logo=logo.png
 SET qtdlllist=Qt5Core Qt5Gui Qt5Network Qt5OpenGL Qt5Sql Qt5Widgets Qt5WebEngineCore Qt5WebEngine Qt5WebEngineWidgets Qt5Quick Qt5WebChannel Qt5Qml
 
@@ -44,7 +46,10 @@ FOR /F "tokens=*" %%p IN ('dir /b /a:d ..\bin\*') DO (
 		robocopy /z /e ..\..\Misc\InstallerFiles\%defaultbaseimages% %basedir%\%%p\%%c\%defaultbaseimages%
 		
 		robocopy /z /e ..\..\Misc\InstallerFiles\%glyphtemplates% %basedir%\%%p\%%c\%glyphtemplates%
-		
+
+		robocopy /z /e ..\..\Misc\InstallerFiles\%meshes% %basedir%\%%p\%%c\%meshes%
+		robocopy /z /e ..\..\Misc\InstallerFiles\%shaders% %basedir%\%%p\%%c\%shaders%
+
 		copy /B /Y ..\..\Misc\InstallerFiles\Images\%logo% %basedir%\%%p\%%c\%logo%
 		
 		mkdir %basedir%\%%p\%%c\jre
