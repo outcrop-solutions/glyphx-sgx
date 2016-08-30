@@ -40,8 +40,10 @@
 #include "SettingsStoredFileList.h"
 
 class HomePageWidget;
-
-class GlyphViewerWindow : public SynGlyphX::MainWindow
+namespace SynGlyphX
+{
+	class SceneViewer;
+}class GlyphViewerWindow : public SynGlyphX::MainWindow
 {
 	Q_OBJECT
 
@@ -81,6 +83,7 @@ private slots:
 	void OnStereoSetup(bool stereoEnabled);
 	void OnShowHideHUDAxis(bool show);
 	void OnShowHideSceneAxis(bool show);
+	void OnEnableDisableFlyToObjectAction( bool enable );
 	void OnOpenURLs();
 	void OnPropertiesActivated();
 	bool LoadRecentFile(const QString& filename) override;
@@ -123,6 +126,7 @@ private:
 
 	QAction* m_showHideHUDAxisAction;
 	QAction* m_showHideSceneAxisAction;
+	QAction* m_enableDisableFlyToObjectAction;
 
 	QAction* m_openURLAction;
 	QAction* m_propertiesAction;
@@ -138,8 +142,7 @@ private:
 
 	SynGlyphXANTz::GlyphForestModel* m_glyphForestModel;
 	SynGlyphX::ItemFocusSelectionModel* m_glyphForestSelectionModel;
-	Glyph3DView* m_glyph3DView;
-	
+	SynGlyphX::SceneViewer* m_viewer;
 	GlyphPropertiesWidgetsContainer* m_glyphPropertiesWidgetContainer;
 	SourceDataCache::SharedPtr m_sourceDataCache;
 	FilteringWidget* m_filteringWidget;
