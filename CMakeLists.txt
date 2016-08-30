@@ -1,0 +1,31 @@
+CMAKE_MINIMUM_REQUIRED(VERSION 3.0.2)
+PROJECT (ANTzTest)
+
+SET(BUILD_SHARED_LIBS ON) 
+
+#Suppress warnings in Windows about using non-secure standard library functions
+IF (${WIN32})
+	add_definitions(-D_CRT_SECURE_NO_WARNINGS)
+ENDIF()
+
+#Setup platform directory
+IF (${WIN32})
+	SET(ARCH_DIR Win32)
+ELSEIF (${APPLE})
+	SET(ARCH_DIR OSX)
+ELSE()
+	SET(ARCH_DIR Linux32)
+ENDIF()
+
+SET(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/../cmake/lib/${ARCH_DIR})
+SET(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/../cmake/lib/${ARCH_DIR})
+SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/../cmake/bin/${ARCH_DIR})
+
+FIND_PACKAGE(OpenGL)
+
+#INCLUDE_DIRECTORIES(BEFORE  ${OPENGL_INCLUDE_DIR}
+#							../3rdParty/include/SOIL_20080707)
+							
+LINK_DIRECTORIES(../3rdParty/lib/${ARCH_DIR} ${CMAKE_SOURCE_DIR}/../cmake/lib/${ARCH_DIR})
+
+ADD_SUBDIRECTORY(ANTzCore)
