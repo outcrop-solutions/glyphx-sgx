@@ -1,0 +1,174 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{72BF141A-129B-474B-B059-EF204CBD31F6}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>SGXDataMapping</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>..\..\bin\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(Platform)\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>..\..\bin\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(Platform)\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;SGXDataMapping_EXPORTS;_DEBUG;_WINDOWS;_USRDLL;SGXDATAMAPPING_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeaderFile />
+      <AdditionalIncludeDirectories>..\..\Core\SGXFoundation;..\..\3rdParty\include\stlplus_3_11;..\..\Core\SGXUtility\;..\..\Core\SGXImage;..\..\3rdParty\include\boost_1_55_0</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <MinimalRebuild>false</MinimalRebuild>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>..\..\lib\$(Platform)\$(Configuration)\;..\..\3rdParty\lib\$(Platform)\$(Configuration)\;</AdditionalLibraryDirectories>
+      <OutputFile>$(OutDir)\$(ProjectName).dll</OutputFile>
+      <ImportLibrary>..\..\lib\$(Platform)\$(Configuration)\$(TargetName).lib</ImportLibrary>
+      <AdditionalDependencies>SGXImage.lib;SGXFoundation.lib;SGXUtility.lib;boost_system-vc120-mt-gd-1_55.lib;boost_filesystem-vc120-mt-gd-1_55.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <LargeAddressAware>true</LargeAddressAware>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;SGXDataMapping_EXPORTS;NDEBUG;_WINDOWS;_USRDLL;SGXDATAMAPPING_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeaderFile />
+      <AdditionalIncludeDirectories>..\..\Core\SGXFoundation;..\..\3rdParty\include\stlplus_3_11;..\..\Core\SGXUtility\;..\..\Core\SGXImage;..\..\3rdParty\include\boost_1_55_0</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>..\..\lib\$(Platform)\$(Configuration)\;..\..\3rdParty\lib\$(Platform)\$(Configuration)\;</AdditionalLibraryDirectories>
+      <OutputFile>$(OutDir)\$(ProjectName).dll</OutputFile>
+      <ImportLibrary>..\..\lib\$(Platform)\$(Configuration)\$(TargetName).lib</ImportLibrary>
+      <AdditionalDependencies>SGXImage.lib;SGXFoundation.lib;SGXUtility.lib;boost_system-vc120-mt-1_55.lib;boost_filesystem-vc120-mt-1_55.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <LargeAddressAware>true</LargeAddressAware>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="databaseserverdatasource.h" />
+    <ClInclude Include="datamappingdefaults.h" />
+    <ClInclude Include="datamappingfunction.h" />
+    <ClInclude Include="datamappingglyph.h" />
+    <ClInclude Include="datamappingglyphfile.h" />
+    <ClInclude Include="datamappingglyphgeometry.h" />
+    <ClInclude Include="datamappingglyphgraph.h" />
+    <ClInclude Include="datamappingglyphgraphexportvisitor.h" />
+    <ClInclude Include="datamappingproperty.h" />
+    <ClInclude Include="datamappingvirtualtopology.h" />
+    <ClInclude Include="datasource.h" />
+    <ClInclude Include="datasourcetable.h" />
+    <ClInclude Include="datatransformmapping.h" />
+    <ClInclude Include="filedatasource.h" />
+    <ClInclude Include="FrontEndFilter.h" />
+    <ClInclude Include="inputbinding.h" />
+    <ClInclude Include="inputcombinationfunction.h" />
+    <ClInclude Include="inputfield.h" />
+    <ClInclude Include="inputtable.h" />
+    <ClInclude Include="interpolationmappingfunction.h" />
+    <ClInclude Include="legend.h" />
+    <ClInclude Include="Link.h" />
+    <ClInclude Include="mindiff.h" />
+    <ClInclude Include="sceneproperties.h" />
+    <ClInclude Include="sgxdatamapping.h" />
+    <ClInclude Include="stringconcatmappingfunction.h" />
+    <ClInclude Include="stringinputcombinationfunction.h" />
+    <ClInclude Include="targetver.h" />
+    <ClInclude Include="valuemappingfile.h" />
+    <ClInclude Include="valuemappingfunction.h" />
+    <ClInclude Include="valuemappingrange.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="databaseserverdatasource.cpp" />
+    <ClCompile Include="datamappingdefaults.cpp" />
+    <ClCompile Include="datamappingfunction.cpp" />
+    <ClCompile Include="datamappingglyph.cpp" />
+    <ClCompile Include="datamappingglyphfile.cpp" />
+    <ClCompile Include="datamappingglyphgeometry.cpp" />
+    <ClCompile Include="datamappingglyphgraph.cpp" />
+    <ClCompile Include="datamappingproperty.cpp" />
+    <ClCompile Include="datamappingvirtualtopology.cpp" />
+    <ClCompile Include="datasource.cpp" />
+    <ClCompile Include="datasourcetable.cpp" />
+    <ClCompile Include="datatransformmapping.cpp" />
+    <ClCompile Include="dllmain.cpp">
+      <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</CompileAsManaged>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </PrecompiledHeader>
+      <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</CompileAsManaged>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      </PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="filedatasource.cpp" />
+    <ClCompile Include="FrontEndFilter.cpp" />
+    <ClCompile Include="inputbinding.cpp" />
+    <ClCompile Include="inputcombinationfunction.cpp" />
+    <ClCompile Include="inputfield.cpp" />
+    <ClCompile Include="inputtable.cpp" />
+    <ClCompile Include="interpolationmappingfunction.cpp" />
+    <ClCompile Include="legend.cpp" />
+    <ClCompile Include="Link.cpp" />
+    <ClCompile Include="mindiff.cpp" />
+    <ClCompile Include="sceneproperties.cpp" />
+    <ClCompile Include="stringconcatmappingfunction.cpp" />
+    <ClCompile Include="stringinputcombinationfunction.cpp" />
+    <ClCompile Include="valuemappingfile.cpp" />
+    <ClCompile Include="valuemappingfunction.cpp" />
+    <ClCompile Include="valuemappingrange.cpp" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
