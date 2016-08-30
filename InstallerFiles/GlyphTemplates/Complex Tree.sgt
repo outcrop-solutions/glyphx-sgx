@@ -1,0 +1,777 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Glyph Shape="Cylinder" Surface="Solid" Topology="Rod">
+	<Position>
+		<X>
+			<Min>-180</Min>
+			<Difference>360</Difference>
+			<Function type="Linear Interpolation"/>
+		</X>
+		<Y>
+			<Min>-90</Min>
+			<Difference>180</Difference>
+			<Function type="Linear Interpolation"/>
+		</Y>
+		<Z>
+			<Min>0</Min>
+			<Function type="Linear Interpolation"/>
+		</Z>
+	</Position>
+	<Rotation>
+		<X>
+			<Min>-180</Min>
+			<Difference>180</Difference>
+			<Function type="Linear Interpolation"/>
+		</X>
+		<Y>
+			<Min>-180</Min>
+			<Difference>180</Difference>
+			<Function type="Linear Interpolation"/>
+		</Y>
+		<Z>
+			<Min>-180</Min>
+			<Difference>180</Difference>
+			<Function type="Linear Interpolation"/>
+		</Z>
+	</Rotation>
+	<Scale>
+		<X>
+			<Min>0.1</Min>
+			<Difference>0.9</Difference>
+			<Function type="Linear Interpolation"/>
+		</X>
+		<Y>
+			<Min>0.1</Min>
+			<Difference>0.9</Difference>
+			<Function type="Linear Interpolation"/>
+		</Y>
+		<Z>
+			<Min>0.1</Min>
+			<Difference>0.9</Difference>
+			<Function type="Linear Interpolation"/>
+		</Z>
+	</Scale>
+	<Color>
+		<RGB>
+			<Min>0,0,0</Min>
+			<Difference>50,101,101</Difference>
+			<Function type="Linear Interpolation"/>
+		</RGB>
+		<Transparency>
+			<Min>0</Min>
+			<Difference>255</Difference>
+			<Function type="Linear Interpolation"/>
+		</Transparency>
+	</Color>
+	<Tag>
+		<Value/>
+		<Function type="Linear Interpolation"/>
+	</Tag>
+	<Description>
+		<Value/>
+		<Function type="Linear Interpolation"/>
+	</Description>
+	<RotationRate>
+		<X>
+			<Min>0</Min>
+			<Function type="Linear Interpolation"/>
+		</X>
+		<Y>
+			<Min>0</Min>
+			<Function type="Linear Interpolation"/>
+		</Y>
+		<Z>
+			<Min>0</Min>
+			<Function type="Linear Interpolation"/>
+		</Z>
+	</RotationRate>
+	<Ratio>0.1</Ratio>
+	<Children>
+		<Glyph Shape="Cylinder" Surface="Solid" Topology="Rod">
+			<Position>
+				<X>
+					<Min>0</Min>
+					<Function type="Linear Interpolation"/>
+				</X>
+				<Y>
+					<Min>0</Min>
+					<Function type="Linear Interpolation"/>
+				</Y>
+				<Z>
+					<Min>0</Min>
+					<Function type="Linear Interpolation"/>
+				</Z>
+			</Position>
+			<Rotation>
+				<X>
+					<Min>-180</Min>
+					<Difference>270</Difference>
+					<Function type="Linear Interpolation"/>
+				</X>
+				<Y>
+					<Min>-180</Min>
+					<Difference>180</Difference>
+					<Function type="Linear Interpolation"/>
+				</Y>
+				<Z>
+					<Min>-180</Min>
+					<Difference>180</Difference>
+					<Function type="Linear Interpolation"/>
+				</Z>
+			</Rotation>
+			<Scale>
+				<X>
+					<Min>0.1</Min>
+					<Difference>0.4</Difference>
+					<Function type="Linear Interpolation"/>
+				</X>
+				<Y>
+					<Min>0.1</Min>
+					<Difference>0.4</Difference>
+					<Function type="Linear Interpolation"/>
+				</Y>
+				<Z>
+					<Min>0.1</Min>
+					<Difference>0.4</Difference>
+					<Function type="Linear Interpolation"/>
+				</Z>
+			</Scale>
+			<Color>
+				<RGB>
+					<Min>0,0,0</Min>
+					<Difference>50,101,101</Difference>
+					<Function type="Linear Interpolation"/>
+				</RGB>
+				<Transparency>
+					<Min>0</Min>
+					<Difference>255</Difference>
+					<Function type="Linear Interpolation"/>
+				</Transparency>
+			</Color>
+			<Tag>
+				<Value/>
+				<Function type="Linear Interpolation"/>
+			</Tag>
+			<Description>
+				<Value/>
+				<Function type="Linear Interpolation"/>
+			</Description>
+			<RotationRate>
+				<X>
+					<Min>0</Min>
+					<Function type="Linear Interpolation"/>
+				</X>
+				<Y>
+					<Min>0</Min>
+					<Function type="Linear Interpolation"/>
+				</Y>
+				<Z>
+					<Min>0</Min>
+					<Function type="Linear Interpolation"/>
+				</Z>
+			</RotationRate>
+			<Ratio>0.1</Ratio>
+		</Glyph>
+		<Glyph Shape="Cylinder" Surface="Solid" Topology="Rod">
+			<Position>
+				<X>
+					<Min>-15</Min>
+					<Difference>15</Difference>
+					<Function type="Linear Interpolation"/>
+				</X>
+				<Y>
+					<Min>0</Min>
+					<Function type="Linear Interpolation"/>
+				</Y>
+				<Z>
+					<Min>0</Min>
+					<Function type="Linear Interpolation"/>
+				</Z>
+			</Position>
+			<Rotation>
+				<X>
+					<Min>-180</Min>
+					<Difference>270</Difference>
+					<Function type="Linear Interpolation"/>
+				</X>
+				<Y>
+					<Min>-180</Min>
+					<Difference>270</Difference>
+					<Function type="Linear Interpolation"/>
+				</Y>
+				<Z>
+					<Min>-180</Min>
+					<Difference>180</Difference>
+					<Function type="Linear Interpolation"/>
+				</Z>
+			</Rotation>
+			<Scale>
+				<X>
+					<Min>0.1</Min>
+					<Difference>0.4</Difference>
+					<Function type="Linear Interpolation"/>
+				</X>
+				<Y>
+					<Min>0.1</Min>
+					<Difference>0.4</Difference>
+					<Function type="Linear Interpolation"/>
+				</Y>
+				<Z>
+					<Min>0.1</Min>
+					<Difference>0.4</Difference>
+					<Function type="Linear Interpolation"/>
+				</Z>
+			</Scale>
+			<Color>
+				<RGB>
+					<Min>0,0,0</Min>
+					<Difference>50,101,101</Difference>
+					<Function type="Linear Interpolation"/>
+				</RGB>
+				<Transparency>
+					<Min>0</Min>
+					<Difference>255</Difference>
+					<Function type="Linear Interpolation"/>
+				</Transparency>
+			</Color>
+			<Tag>
+				<Value/>
+				<Function type="Linear Interpolation"/>
+			</Tag>
+			<Description>
+				<Value/>
+				<Function type="Linear Interpolation"/>
+			</Description>
+			<RotationRate>
+				<X>
+					<Min>0</Min>
+					<Function type="Linear Interpolation"/>
+				</X>
+				<Y>
+					<Min>0</Min>
+					<Function type="Linear Interpolation"/>
+				</Y>
+				<Z>
+					<Min>0</Min>
+					<Function type="Linear Interpolation"/>
+				</Z>
+			</RotationRate>
+			<Ratio>0.1</Ratio>
+		</Glyph>
+		<Glyph Shape="Cylinder" Surface="Solid" Topology="Rod">
+			<Position>
+				<X>
+					<Min>-30</Min>
+					<Difference>30</Difference>
+					<Function type="Linear Interpolation"/>
+				</X>
+				<Y>
+					<Min>0</Min>
+					<Function type="Linear Interpolation"/>
+				</Y>
+				<Z>
+					<Min>0</Min>
+					<Function type="Linear Interpolation"/>
+				</Z>
+			</Position>
+			<Rotation>
+				<X>
+					<Min>-180</Min>
+					<Difference>270</Difference>
+					<Function type="Linear Interpolation"/>
+				</X>
+				<Y>
+					<Min>-180</Min>
+					<Difference>360</Difference>
+					<Function type="Linear Interpolation"/>
+				</Y>
+				<Z>
+					<Min>-180</Min>
+					<Difference>180</Difference>
+					<Function type="Linear Interpolation"/>
+				</Z>
+			</Rotation>
+			<Scale>
+				<X>
+					<Min>0.1</Min>
+					<Difference>0.4</Difference>
+					<Function type="Linear Interpolation"/>
+				</X>
+				<Y>
+					<Min>0.1</Min>
+					<Difference>0.4</Difference>
+					<Function type="Linear Interpolation"/>
+				</Y>
+				<Z>
+					<Min>0.1</Min>
+					<Difference>0.4</Difference>
+					<Function type="Linear Interpolation"/>
+				</Z>
+			</Scale>
+			<Color>
+				<RGB>
+					<Min>0,0,0</Min>
+					<Difference>50,101,101</Difference>
+					<Function type="Linear Interpolation"/>
+				</RGB>
+				<Transparency>
+					<Min>0</Min>
+					<Difference>255</Difference>
+					<Function type="Linear Interpolation"/>
+				</Transparency>
+			</Color>
+			<Tag>
+				<Value/>
+				<Function type="Linear Interpolation"/>
+			</Tag>
+			<Description>
+				<Value/>
+				<Function type="Linear Interpolation"/>
+			</Description>
+			<RotationRate>
+				<X>
+					<Min>0</Min>
+					<Function type="Linear Interpolation"/>
+				</X>
+				<Y>
+					<Min>0</Min>
+					<Function type="Linear Interpolation"/>
+				</Y>
+				<Z>
+					<Min>0</Min>
+					<Function type="Linear Interpolation"/>
+				</Z>
+			</RotationRate>
+			<Ratio>0.1</Ratio>
+		</Glyph>
+		<Glyph Shape="Cylinder" Surface="Solid" Topology="Rod">
+			<Position>
+				<X>
+					<Min>-45</Min>
+					<Difference>45</Difference>
+					<Function type="Linear Interpolation"/>
+				</X>
+				<Y>
+					<Min>0</Min>
+					<Function type="Linear Interpolation"/>
+				</Y>
+				<Z>
+					<Min>0</Min>
+					<Function type="Linear Interpolation"/>
+				</Z>
+			</Position>
+			<Rotation>
+				<X>
+					<Min>-180</Min>
+					<Difference>270</Difference>
+					<Function type="Linear Interpolation"/>
+				</X>
+				<Y>
+					<Min>-180</Min>
+					<Difference>90</Difference>
+					<Function type="Linear Interpolation"/>
+				</Y>
+				<Z>
+					<Min>-180</Min>
+					<Difference>180</Difference>
+					<Function type="Linear Interpolation"/>
+				</Z>
+			</Rotation>
+			<Scale>
+				<X>
+					<Min>0.1</Min>
+					<Difference>0.4</Difference>
+					<Function type="Linear Interpolation"/>
+				</X>
+				<Y>
+					<Min>0.1</Min>
+					<Difference>0.4</Difference>
+					<Function type="Linear Interpolation"/>
+				</Y>
+				<Z>
+					<Min>0.1</Min>
+					<Difference>0.4</Difference>
+					<Function type="Linear Interpolation"/>
+				</Z>
+			</Scale>
+			<Color>
+				<RGB>
+					<Min>0,0,0</Min>
+					<Difference>50,101,101</Difference>
+					<Function type="Linear Interpolation"/>
+				</RGB>
+				<Transparency>
+					<Min>0</Min>
+					<Difference>255</Difference>
+					<Function type="Linear Interpolation"/>
+				</Transparency>
+			</Color>
+			<Tag>
+				<Value/>
+				<Function type="Linear Interpolation"/>
+			</Tag>
+			<Description>
+				<Value/>
+				<Function type="Linear Interpolation"/>
+			</Description>
+			<RotationRate>
+				<X>
+					<Min>0</Min>
+					<Function type="Linear Interpolation"/>
+				</X>
+				<Y>
+					<Min>0</Min>
+					<Function type="Linear Interpolation"/>
+				</Y>
+				<Z>
+					<Min>0</Min>
+					<Function type="Linear Interpolation"/>
+				</Z>
+			</RotationRate>
+			<Ratio>0.1</Ratio>
+		</Glyph>
+		<Glyph Shape="Cylinder" Surface="Solid" Topology="Rod">
+			<Position>
+				<X>
+					<Min>-60</Min>
+					<Difference>30</Difference>
+					<Function type="Linear Interpolation"/>
+				</X>
+				<Y>
+					<Min>0</Min>
+					<Function type="Linear Interpolation"/>
+				</Y>
+				<Z>
+					<Min>0</Min>
+					<Function type="Linear Interpolation"/>
+				</Z>
+			</Position>
+			<Rotation>
+				<X>
+					<Min>-180</Min>
+					<Difference>270</Difference>
+					<Function type="Linear Interpolation"/>
+				</X>
+				<Y>
+					<Min>-180</Min>
+					<Difference>180</Difference>
+					<Function type="Linear Interpolation"/>
+				</Y>
+				<Z>
+					<Min>-180</Min>
+					<Difference>180</Difference>
+					<Function type="Linear Interpolation"/>
+				</Z>
+			</Rotation>
+			<Scale>
+				<X>
+					<Min>0.1</Min>
+					<Difference>0.4</Difference>
+					<Function type="Linear Interpolation"/>
+				</X>
+				<Y>
+					<Min>0.1</Min>
+					<Difference>0.4</Difference>
+					<Function type="Linear Interpolation"/>
+				</Y>
+				<Z>
+					<Min>0.1</Min>
+					<Difference>0.4</Difference>
+					<Function type="Linear Interpolation"/>
+				</Z>
+			</Scale>
+			<Color>
+				<RGB>
+					<Min>0,0,0</Min>
+					<Difference>50,101,101</Difference>
+					<Function type="Linear Interpolation"/>
+				</RGB>
+				<Transparency>
+					<Min>0</Min>
+					<Difference>255</Difference>
+					<Function type="Linear Interpolation"/>
+				</Transparency>
+			</Color>
+			<Tag>
+				<Value/>
+				<Function type="Linear Interpolation"/>
+			</Tag>
+			<Description>
+				<Value/>
+				<Function type="Linear Interpolation"/>
+			</Description>
+			<RotationRate>
+				<X>
+					<Min>0</Min>
+					<Function type="Linear Interpolation"/>
+				</X>
+				<Y>
+					<Min>0</Min>
+					<Function type="Linear Interpolation"/>
+				</Y>
+				<Z>
+					<Min>0</Min>
+					<Function type="Linear Interpolation"/>
+				</Z>
+			</RotationRate>
+			<Ratio>0.1</Ratio>
+		</Glyph>
+		<Glyph Shape="Cylinder" Surface="Solid" Topology="Rod">
+			<Position>
+				<X>
+					<Min>-75</Min>
+					<Difference>45</Difference>
+					<Function type="Linear Interpolation"/>
+				</X>
+				<Y>
+					<Min>0</Min>
+					<Function type="Linear Interpolation"/>
+				</Y>
+				<Z>
+					<Min>0</Min>
+					<Function type="Linear Interpolation"/>
+				</Z>
+			</Position>
+			<Rotation>
+				<X>
+					<Min>-180</Min>
+					<Difference>270</Difference>
+					<Function type="Linear Interpolation"/>
+				</X>
+				<Y>
+					<Min>-180</Min>
+					<Difference>270</Difference>
+					<Function type="Linear Interpolation"/>
+				</Y>
+				<Z>
+					<Min>-180</Min>
+					<Difference>180</Difference>
+					<Function type="Linear Interpolation"/>
+				</Z>
+			</Rotation>
+			<Scale>
+				<X>
+					<Min>0.1</Min>
+					<Difference>0.4</Difference>
+					<Function type="Linear Interpolation"/>
+				</X>
+				<Y>
+					<Min>0.1</Min>
+					<Difference>0.4</Difference>
+					<Function type="Linear Interpolation"/>
+				</Y>
+				<Z>
+					<Min>0.1</Min>
+					<Difference>0.4</Difference>
+					<Function type="Linear Interpolation"/>
+				</Z>
+			</Scale>
+			<Color>
+				<RGB>
+					<Min>0,0,0</Min>
+					<Difference>50,101,101</Difference>
+					<Function type="Linear Interpolation"/>
+				</RGB>
+				<Transparency>
+					<Min>0</Min>
+					<Difference>255</Difference>
+					<Function type="Linear Interpolation"/>
+				</Transparency>
+			</Color>
+			<Tag>
+				<Value/>
+				<Function type="Linear Interpolation"/>
+			</Tag>
+			<Description>
+				<Value/>
+				<Function type="Linear Interpolation"/>
+			</Description>
+			<RotationRate>
+				<X>
+					<Min>0</Min>
+					<Function type="Linear Interpolation"/>
+				</X>
+				<Y>
+					<Min>0</Min>
+					<Function type="Linear Interpolation"/>
+				</Y>
+				<Z>
+					<Min>0</Min>
+					<Function type="Linear Interpolation"/>
+				</Z>
+			</RotationRate>
+			<Ratio>0.1</Ratio>
+		</Glyph>
+		<Glyph Shape="Cylinder" Surface="Solid" Topology="Rod">
+			<Position>
+				<X>
+					<Min>-90</Min>
+					<Difference>60</Difference>
+					<Function type="Linear Interpolation"/>
+				</X>
+				<Y>
+					<Min>0</Min>
+					<Function type="Linear Interpolation"/>
+				</Y>
+				<Z>
+					<Min>0</Min>
+					<Function type="Linear Interpolation"/>
+				</Z>
+			</Position>
+			<Rotation>
+				<X>
+					<Min>-180</Min>
+					<Difference>270</Difference>
+					<Function type="Linear Interpolation"/>
+				</X>
+				<Y>
+					<Min>-180</Min>
+					<Difference>360</Difference>
+					<Function type="Linear Interpolation"/>
+				</Y>
+				<Z>
+					<Min>-180</Min>
+					<Difference>180</Difference>
+					<Function type="Linear Interpolation"/>
+				</Z>
+			</Rotation>
+			<Scale>
+				<X>
+					<Min>0.1</Min>
+					<Difference>0.4</Difference>
+					<Function type="Linear Interpolation"/>
+				</X>
+				<Y>
+					<Min>0.1</Min>
+					<Difference>0.4</Difference>
+					<Function type="Linear Interpolation"/>
+				</Y>
+				<Z>
+					<Min>0.1</Min>
+					<Difference>0.4</Difference>
+					<Function type="Linear Interpolation"/>
+				</Z>
+			</Scale>
+			<Color>
+				<RGB>
+					<Min>0,0,0</Min>
+					<Difference>50,101,101</Difference>
+					<Function type="Linear Interpolation"/>
+				</RGB>
+				<Transparency>
+					<Min>0</Min>
+					<Difference>255</Difference>
+					<Function type="Linear Interpolation"/>
+				</Transparency>
+			</Color>
+			<Tag>
+				<Value/>
+				<Function type="Linear Interpolation"/>
+			</Tag>
+			<Description>
+				<Value/>
+				<Function type="Linear Interpolation"/>
+			</Description>
+			<RotationRate>
+				<X>
+					<Min>0</Min>
+					<Function type="Linear Interpolation"/>
+				</X>
+				<Y>
+					<Min>0</Min>
+					<Function type="Linear Interpolation"/>
+				</Y>
+				<Z>
+					<Min>0</Min>
+					<Function type="Linear Interpolation"/>
+				</Z>
+			</RotationRate>
+			<Ratio>0.1</Ratio>
+		</Glyph>
+		<Glyph Shape="Cylinder" Surface="Solid" Topology="Rod">
+			<Position>
+				<X>
+					<Min>-105</Min>
+					<Difference>75</Difference>
+					<Function type="Linear Interpolation"/>
+				</X>
+				<Y>
+					<Min>0</Min>
+					<Function type="Linear Interpolation"/>
+				</Y>
+				<Z>
+					<Min>0</Min>
+					<Function type="Linear Interpolation"/>
+				</Z>
+			</Position>
+			<Rotation>
+				<X>
+					<Min>-180</Min>
+					<Difference>270</Difference>
+					<Function type="Linear Interpolation"/>
+				</X>
+				<Y>
+					<Min>-180</Min>
+					<Difference>90</Difference>
+					<Function type="Linear Interpolation"/>
+				</Y>
+				<Z>
+					<Min>-180</Min>
+					<Difference>180</Difference>
+					<Function type="Linear Interpolation"/>
+				</Z>
+			</Rotation>
+			<Scale>
+				<X>
+					<Min>0.1</Min>
+					<Difference>0.4</Difference>
+					<Function type="Linear Interpolation"/>
+				</X>
+				<Y>
+					<Min>0.1</Min>
+					<Difference>0.4</Difference>
+					<Function type="Linear Interpolation"/>
+				</Y>
+				<Z>
+					<Min>0.1</Min>
+					<Difference>0.4</Difference>
+					<Function type="Linear Interpolation"/>
+				</Z>
+			</Scale>
+			<Color>
+				<RGB>
+					<Min>0,0,0</Min>
+					<Difference>50,101,101</Difference>
+					<Function type="Linear Interpolation"/>
+				</RGB>
+				<Transparency>
+					<Min>0</Min>
+					<Difference>255</Difference>
+					<Function type="Linear Interpolation"/>
+				</Transparency>
+			</Color>
+			<Tag>
+				<Value/>
+				<Function type="Linear Interpolation"/>
+			</Tag>
+			<Description>
+				<Value/>
+				<Function type="Linear Interpolation"/>
+			</Description>
+			<RotationRate>
+				<X>
+					<Min>0</Min>
+					<Function type="Linear Interpolation"/>
+				</X>
+				<Y>
+					<Min>0</Min>
+					<Function type="Linear Interpolation"/>
+				</Y>
+				<Z>
+					<Min>0</Min>
+					<Function type="Linear Interpolation"/>
+				</Z>
+			</RotationRate>
+			<Ratio>0.1</Ratio>
+		</Glyph>
+	</Children>
+</Glyph>

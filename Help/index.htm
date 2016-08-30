@@ -1,0 +1,186 @@
+<HTML>
+<head>
+    <meta charset="utf-8"/>
+    <title>Help Menu</title>
+    <link rel="stylesheet" type="text/css" href="pages/global.css"/>
+    <link rel="stylesheet" type="text/css" href="w2ui-1.4.2/w2ui-1.4.2.min.css"/>
+    <script src="jquery-1.7.2/jquery-3.1.0.min.js"></script>
+    <script type="text/javascript" src="w2ui-1.4.2/w2ui-1.4.2.min.js"></script>
+</head>
+<body>
+    <div id="container">
+      <div id="layout" style="width:100%;height:100%;"></div>
+    </div>
+    <script type="text/javascript">
+
+        var paths = [
+          {id : "home", path: 'pages/home.htm'},
+          {id : "1-1", path: 'pages/Front End Navigation Guide/selectionmenu.htm'},
+          {id : "1-2-1", path: 'pages/Front End Navigation Guide/Understanding the Viewer/toolbar.htm'},
+          {id : "1-2-2", path: 'pages/Front End Navigation Guide/Understanding the Viewer/legendbox.htm'},
+          {id : "1-2-4", path: 'pages/Front End Navigation Guide/Understanding the Viewer/textproperties.htm'},
+          {id : "1-2-7", path: 'pages/Front End Navigation Guide/Understanding the Viewer/compassrose.htm'},
+          {id : "1-2-8", path: 'pages/Front End Navigation Guide/Understanding the Viewer/axislabel.htm'},
+          {id : "1-2-9", path: 'pages/Front End Navigation Guide/Understanding the Viewer/dynamicxyz.htm'},
+          {id : "1-2-5-1", path: 'pages/Front End Navigation Guide/Understanding the Viewer/Filtering Pane/rangefilter.htm'},
+          {id : "1-2-5-2", path: 'pages/Front End Navigation Guide/Understanding the Viewer/Filtering Pane/keywordfilter.htm'},
+          {id : "1-2-5-3", path: 'pages/Front End Navigation Guide/Understanding the Viewer/Filtering Pane/elasticfilter.htm'},
+          /*{id : "1-2-5-4", path: 'pages/Front End Navigation Guide/Understanding the Viewer/Filtering Pane/filtereddata.htm'},
+          {id : "1-2-5-5", path: 'pages/Front End Navigation Guide/Understanding the Viewer/Filtering Pane/subsetvisualization.htm'},
+          {id : "1-2-5-6", path: 'pages/Front End Navigation Guide/Understanding the Viewer/Filtering Pane/selecteddata.htm'},*/
+          {id : "1-2-5-7", path: 'pages/Front End Navigation Guide/Understanding the Viewer/Filtering Pane/filtereddataoptions.htm'},
+          {id : "1-2-6", path: 'pages/Front End Navigation Guide/Understanding the Viewer/timeanimation.htm'},
+          {id : "1-3-1", path: 'pages/Front End Navigation Guide/Navigating the Viewer/basics.htm'},
+          {id : "1-3-2", path: 'pages/Front End Navigation Guide/Navigating the Viewer/tagsshortcuts.htm'}
+          //{id : "1-3-3", path: 'pages/Front End Navigation Guide/Navigating the Viewer/shortcutkeys.htm'}
+          /*{id : "2-1", path: 'pages/Legends/legend_ga.htm'},
+          {id : "2-2", path: 'pages/Legends/legend_ac.htm'},
+          {id : "2-3", path: 'pages/Legends/legend_hs.htm'},
+          {id : "2-4", path: 'pages/Legends/legend_cc.htm'},
+          {id : "2-5", path: 'pages/Legends/legend_gd.htm'},
+          {id : "3-1", path: 'pages/Filters/filters_ga.htm'},
+          {id : "3-2", path: 'pages/Filters/filters_ac.htm'},
+          {id : "3-3", path: 'pages/Filters/filters_hs.htm'},
+          {id : "3-4", path: 'pages/Filters/filters_cc.htm'},
+          {id : "3-5", path: 'pages/Filters/filters_gd.htm'}*/
+        ];
+
+        var to_find;
+        var current_page = 0;
+        function findPath(row) {
+          if(row.id === to_find){
+            current_page = paths.indexOf(row);
+            setBtnVisibility();
+            return row.path;
+          }
+        }
+
+        function nextPage() {
+            current_page += 1;
+            setBtnVisibility();
+            w2ui['sidebar'].select(paths[current_page].id);
+            w2ui['inner'].load('main', paths[current_page].path);
+        }
+
+        function prevPage() {
+            current_page -= 1;
+            setBtnVisibility();
+            w2ui['sidebar'].select(paths[current_page].id);
+            w2ui['inner'].load('main', paths[current_page].path);
+        }
+
+        function setBtnVisibility() {
+            if(current_page === 0){
+                w2ui['sidebar'].unselect(paths[1].id);
+                document.getElementById('previous').disabled = true;
+                document.getElementById('next').disabled = false;
+            }
+            else if(current_page === paths.length-1){
+                document.getElementById('previous').disabled = false;
+                document.getElementById('next').disabled = true;
+            }
+            else{
+                document.getElementById('previous').disabled = false;
+                document.getElementById('next').disabled = false;
+            }
+
+        }
+
+        $(function () {
+            var pstyle = 'border: 1px solid #dfdfdf; padding: 5px;';
+            $('#layout').w2layout({
+                name: 'layout',
+                panels: [
+                    { type: 'left', size: '30%', resizable: true, style: pstyle },
+                    { type: 'main', size: '70%', style: 'background-color: white;', overflow: 'hidden' }
+                ]
+            });
+
+            w2ui['layout'].content('main', $().w2layout({
+                name: 'inner',
+                panels: [
+                    { type: 'main', size: '70%', style: 'background-color: white;'},
+                    { type: 'bottom', size: 40, style: 'background-color: white;' }
+                ]
+            }));
+
+            w2ui['layout'].content('left', $().w2sidebar({
+                name: 'sidebar',
+                img: null,
+                nodes: [
+                    {
+                        id: '1', text: 'Front End Navigation Guide', img: 'icon-folder', expanded: true, group: true,
+                        nodes: [
+                          { id: '1-1', text: 'The Selection Menu', img: 'icon-page' },
+                          { id: '1-2', text: 'Understanding the Viewer', img: 'icon-folder', expanded: true, 
+                          nodes: [
+                              { id: '1-2-1', text: 'The Toolbar', img: 'icon-page' },
+                              { id: '1-2-2', text: 'Legend Box', img: 'icon-l' },
+                              { id: '1-2-4', text: 'Text Properties', img: 'icon-tp' },
+                              { id: '1-2-7', text: 'Compass Rose', img: 'icon-cr' },
+                              { id: '1-2-8', text: 'Axes & Labels', img: 'icon-a' },
+                              { id: '1-2-9', text: 'Changing X/Y/Z', img: 'icon-xyz' },
+                              { id: '1-2-5', text: 'Filtering Pane', img: 'icon-fp', expanded: true,
+                              nodes: [
+                                  { id: '1-2-5-1', text: 'Range Filter', img: 'icon-page'},
+                                  { id: '1-2-5-2', text: 'Keyword Filter', img: 'icon-page'},
+                                  { id: '1-2-5-3', text: 'Elastic Filter', img: 'icon-page'},
+                                  /*{ id: '1-2-5-4', text: 'Show Filtered Data', img: 'icon-page'},
+                                  { id: '1-2-5-5', text: 'Create Subset Visualization', img: 'icon-page'},
+                                  { id: '1-2-5-6', text: 'Show Selected Data', img: 'icon-page'},*/
+                                  { id: '1-2-5-7', text: 'Filtered Data Options', img: 'icon-page'} 
+                              ] 
+                            },
+                              { id: '1-2-6', text: 'Time Animation Filter', img: 'icon-t' }
+                          ]
+                          },
+                          { id: '1-3', text: 'Navigating the Viewer', img: 'icon-folder', expanded: true,
+                          nodes: [
+                              { id: '1-3-1', text: 'The Basics', img: 'icon-page' },
+                              { id: '1-3-2', text: 'Tags & Shortcuts', img: 'icon-page' }
+                              //{ id: '1-3-3', text: 'Shortcut Keys', img: 'icon-page' }
+                          ] 
+                          }
+                        ]
+                    }/*,
+                    {
+                        id: '2', text: 'Legends', img: 'icon-folder', group: true,
+                        nodes: [
+                          { id: '2-1', text: 'Global Admissions View', img: 'icon-page' },
+                          { id: '2-2', text: 'Admissions Counselor View', img: 'icon-page' },
+                          { id: '2-3', text: 'High School View', img: 'icon-page' },
+                          { id: '2-4', text: 'Class Composition View', img: 'icon-page' },
+                          { id: '2-5', text: 'Global Dashboard View', img: 'icon-page' }
+                        ]
+                    },
+                    {
+                        id: '3', text: 'Filters', img: 'icon-folder', group: true,
+                        nodes: [
+                          { id: '3-1', text: 'Global Admissions View', img: 'icon-page' },
+                          { id: '3-2', text: 'Admissions Counselor View', img: 'icon-page' },
+                          { id: '3-3', text: 'High School View', img: 'icon-page' },
+                          { id: '3-4', text: 'Class Composition View', img: 'icon-page' },
+                          { id: '3-5', text: 'Global Dashboard View', img: 'icon-page' }
+                        ]
+                    }*/
+                ],
+                onClick: function (event) {
+                  if (['1-2','1-2-5','1-3'].indexOf(event.target) < 0) {
+                    to_find = event.target;
+                    w2ui['inner'].load('main', paths.find(findPath).path);
+                  }
+                }
+            }));
+
+            w2ui['sidebar'].disable('1-2');
+            w2ui['sidebar'].disable('1-2-5');
+            w2ui['sidebar'].disable('1-3');
+            w2ui['inner'].load('main', 'pages/home.htm');
+            w2ui['inner'].html('bottom', '<button id="next" class="btn" onclick="nextPage()">Next</button><button id="previous" class="btn" onclick="prevPage()" disabled=true>Back</button>');
+
+        });
+
+    </script>
+
+</body>
+</HTML>

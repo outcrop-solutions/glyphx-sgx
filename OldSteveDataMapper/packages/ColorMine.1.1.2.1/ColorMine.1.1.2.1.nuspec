@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>ColorMine</id>
+    <version>1.1.2.1</version>
+    <authors>Joe Zack</authors>
+    <owners>Joe Zack</owners>
+    <licenseUrl>http://opensource.org/licenses/MIT</licenseUrl>
+    <projectUrl>https://github.com/THEjoezack/ColorMine</projectUrl>
+    <iconUrl>https://s3.amazonaws.com/colormine/colormine.png</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Open source library that makes converting and comparing colors easy.
+
+Supported Color Models:
+CMY
+CMYK
+HSL
+HSB
+HSV
+CIE L*AB
+Hunter LAB
+LCH
+LUV
+sRGB
+XYZ
+YXY
+
+Supported Comparisons
+CIE76
+CMC l:c
+CIE94
+CIE2000
+
+Demonstrations at http://colormine.org.</description>
+    <summary>Open source library that makes converting and comparing colors easy. Demonstrations at http://colormine.org.</summary>
+    <releaseNotes>1.1.2.1 - 03/12/2014
+
+Now strongly signed
+
+1.1.2 - 03/12/2014
+
+Fixed CIE2000 calculations</releaseNotes>
+    <copyright>2014</copyright>
+    <tags>color delta-e rgb to lab</tags>
+  </metadata>
+</package>

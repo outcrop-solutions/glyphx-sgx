@@ -1,0 +1,100 @@
+/*INDEX START*/
+#container{
+	width: 960px;
+}
+
+#next {
+	float: right;
+	margin-top: 7.25px;
+	font-size: 16px !important;
+	font-family:"Calibri", Helvetica, Arial, Sans;
+}
+
+#previous {
+	float: right;
+	margin-top: 7.25px;
+	font-size: 16px !important;
+	font-family:"Calibri", Helvetica, Arial, Sans;
+}
+
+.w2ui-icon.icon-tp{
+	background-image: url('../images/icons/tp_icon.jpg');
+	background-size: contain;
+	background-repeat: no-repeat;
+}
+
+.w2ui-icon.icon-a{
+	background-image: url('../images/icons/a_icon.jpg');
+	background-size: contain;
+	background-repeat: no-repeat;
+}
+
+.w2ui-icon.icon-cr{
+	background-image: url('../images/icons/cr_icon.jpg');
+	background-size: contain;
+	background-repeat: no-repeat;
+}
+
+.w2ui-icon.icon-fp{
+	background-image: url('../images/icons/fp_icon.jpg');
+	background-size: contain;
+	background-repeat: no-repeat;
+}
+
+.w2ui-icon.icon-l{
+	background-image: url('../images/icons/l_icon.jpg');
+	background-size: contain;
+	background-repeat: no-repeat;
+}
+
+.w2ui-icon.icon-t{
+	background-image: url('../images/icons/t_icon.jpg');
+	background-size: contain;
+	background-repeat: no-repeat;
+}
+
+.w2ui-icon.icon-xyz{
+	background-image: url('../images/icons/xyz_icon.jpg');
+	background-size: contain;
+	background-repeat: no-repeat;
+}
+/*INDEX END*/
+
+/*HOME START*/
+#homecontainer {
+	width: 570px;
+	height: auto;
+	margin: 0 50px 0 50px;
+}
+
+#homeheader {
+	background-image: url("../images/homeheader.jpg");
+	background-size: cover;
+	background-repeat: no-repeat;
+	width: 662.5px;
+	height: 150px;
+}
+
+#logo {
+	background-image: url("../images/logo.png");
+	background-size: contain;
+	background-repeat: no-repeat;
+	width: 423.5px;
+	height: 79.2px;
+	margin-top: 180px;
+	float: right;
+	text-align: right;
+}
+
+#hometext {
+	clear: right;
+	text-align: right;
+}
+
+#secondarytext{
+	color:#229dd0;
+	font-weight:bold;
+	font-size:20px;
+	margin-top:100px;
+}
+/*HOME END*/

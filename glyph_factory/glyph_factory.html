@@ -1,0 +1,162 @@
+<HTML>
+<HEAD>
+<TITLE>glyph_factory 0.1 doc</TITLE>
+</HEAD>
+<BODY>
+<FONT FACE="Arial">
+<H1>glyph_factory 0.1 doc</H1>
+<P>
+A set of four tools can work together to create glyphs.  They are:
+<UL>
+<LI><FONT SIZE=+1><B><TT>antz</TT></B></FONT>
+<LI><FONT SIZE=+1><B><TT>glyph_diff</TT></B></FONT>
+<LI><FONT SIZE=+1><B><TT>data_stats</TT></B></FONT>
+<LI><FONT SIZE=+1><B><TT>glyph_factory</TT></B></FONT>
+</UL>
+<P>
+<H2>Workflow Summary</H2>
+<P>
+You start with a data file in Comma Separated Value (CSV) form, such as this:
+<P>
+<UL><FONT SIZE=+1><B><TT>test_data.txt</TT></B></FONT>
+<TABLE BORDER=2><TR><TD><PRE><TT>
+AAA,bbb,c,d,e
+1,2.2,3,4.4,5
+6,7.7,8,9.9,5
+11,12.12,13,14.14,5
+</TT></PRE></TD></TR></TABLE></UL>
+<P>
+Think of a glyph to display all of these columns of data.
+Use <FONT SIZE=+1><B><TT>antz</TT></B></FONT> to create a single glyph with any number of children.
+Modify all of its parts to their "minmum" configurations of size, location
+and/or color.  Save it.  Modify it agin so that all of its parts are in their
+"maximum" configuration.  Save it again.
+<P>
+<CENTER>
+<IMG SRC="two_glyphs.png" WIDTH=192><BR>
+<B><I>two copies of a glyph with minimum and maximum configurations</I></B>
+</CENTER>
+<P>
+Feed the two antz csv files to <FONT SIZE=+1><B><TT>glyph_diff</TT></B></FONT> which will
+produce a glyph differences file such as this:
+<P>
+<UL><FONT SIZE=+1><B><TT>glyph_diff.txt</TT></B></FONT>
+<TABLE BORDER=2><TR><TD><PRE><TT>
+12,25:0.915000,1.000000
+12,26:0.915000,1.000000
+12,27:0.915000,1.000000
+12,53:0.100000,0.322000</TT></PRE></TD></TR></TABLE></UL>
+<P>
+<UL><FONT SIZE=+1><B><TT>format:</TT></B></FONT>
+<TABLE BORDER=2><TR><TD><PRE><TT>
+row,col:min,max</TT></PRE></TD></TR></TABLE></UL>
+<P>
+(In all the tools here row zero is the header and row one is the first row
+of data; column one is the first column.)
+Take your original data file and feed it to <FONT SIZE=+1><B><TT>data_stats</TT></B></FONT>
+to create a data statistics file like this:
+<P>
+<UL><FONT SIZE=+1><B><TT>data_stats.txt</TT></B>
+<TABLE BORDER=2><TR><TD><PRE><TT>
+1,1.000000,11.000000,AAA
+2,2.200000,12.120000,bbb
+3,3.000000,13.000000,c
+4,4.400000,14.140000,d
+</TT></PRE></TD></TR></TABLE></UL>
+<P>
+<UL><FONT SIZE=+1><B><TT>format:</TT></B></FONT>
+<TABLE BORDER=2><TR><TD><PRE><TT>
+col,min,max,column_name</TT></PRE></TD></TR></TABLE></UL>
+<P>
+Only the columns that change are listed.
+<P>
+Now you are ready to study these files and figure out which data columns
+will map onto which glyph rows and columns.  This is the hardest part,
+since you must study the raw CSV files and compare them with the display to
+figure out which glyph parameters to use.  (In the future I plan to create
+a way to use tags to speed this up.)  Then you use an editor like
+<FONT SIZE=+1><B><TT>notepad</TT></B></FONT> to create a mapping file,
+like this:
+<UL><FONT SIZE=+1><B><TT>mapper.txt</TT></B>
+<TABLE BORDER=2><TR><TD><PRE><TT>
+12,25:1
+12,26:1
+12,27:1
+12,53:1
+</TT></PRE></TD></TR></TABLE></UL>
+<P>
+<UL><FONT SIZE=+1><B><TT>format:</TT></B></FONT>
+<TABLE BORDER=2><TR><TD><PRE><TT>
+glyh_row,glyh_col:data_col</TT></PRE></TD></TR></TABLE></UL>
+<P>
+From this point the process is "automagic," in that you run the
+<FONT SIZE=+1><B><TT>glyph_factory</TT></B></FONT>
+program and it takes all of the above files and produces a final
+CVS file with one glyph per data row, with all parameters correctly
+mapped from ranges of min/max in the data to ranges of min/max in the glyph.
+<P>
+<CENTER>
+<IMG SRC="glyph_factory.png" WIDTH=384><BR>
+<B><I>final glyphs with data mapped onto sizes/postions/colors</I></B>
+<P>
+</CENTER>
+<H2>Technical Details</H2>
+<P>
+Programs are compatible with the latest version of
+<FONT SIZE=+1><B><TT>antz</TT></B></FONT> as of March 2014.
+<P>
+Note that all the programs below simply read and write text files.
+Each of them could have been written any modern language.  I chose
+what I thought was the best tool in each case.
+<P>
+The <FONT SIZE=+1><B><TT>glyph_diff</TT></B></FONT> program is written
+in Python and its source code is at:
+<P>
+<UL><A HREF="http://www.well.com/user/abs/Antz2014/glyph_diff_code.txt">www.well.com/user/abs/Antz2014/glyph_diff_code.txt</A></UL>
+<P>
+This prototype code is not self-documenting yet.  It expects its inputs to
+be in files names "file1.txt" and "file2.txt" and takes one or two command
+line parameters: type and ignore.  Type refers to an an antz row type, where
+5 is the "pin" type used by all glyphs.  If present this parameter means
+only look at rows of this type.  Ignore refers to a column to ignore.
+Column 4 is the selection column, which is always only 0 or 1 and is not
+important for the glyph diff, so the program can be told to ignore
+that (or any other) single column.  This is why the code is run this way:
+<P>
+<TABLE BORDER=2><TR><TD><PRE><TT>
+python ./glyph_diff.py 5 4 > glyph_diff.txt</TT></PRE></TD></TR></TABLE></UL>
+<P>
+The <FONT SIZE=+1><B><TT>data_stats</TT></B></FONT> program is written
+in R and its source code is at:
+<P>
+<UL><A HREF="http://www.well.com/user/abs/Antz2014/data_stats_code.txt">www.well.com/user/abs/Antz2014/data_stats_code.txt</A></UL>
+<P>
+Note that there is no script.R file; I was struggling with getting batch jobs
+to run correcly and finally resorted to imbeding the R code in a Bash script,
+as you will see in the Test file.
+<P>
+The <FONT SIZE=+1><B><TT>glyph_factory</TT></B></FONT> program is written
+in C and its source code is at:
+<P>
+<UL><A HREF="http://www.well.com/user/abs/Antz2014/glyph_factory_code.txt">www.well.com/user/abs/Antz2014/glyph_factory_code.txt</A></UL>
+<P>
+It is partially self-documenting with the flags -u (usage) and -h (help)
+but needs more work.  It assumes the data file is coming from standard
+input, and the other input files are named:
+<P>
+<UL>
+     <LI><FONT SIZE=+1><B><TT>glyph_in.csv</TT></B></FONT>
+     <LI><FONT SIZE=+1><B><TT>data_stats.txt</TT></B></FONT>
+     <LI><FONT SIZE=+1><B><TT>mapper.txt</TT></B></FONT>
+     <LI><FONT SIZE=+1><B><TT>glyph_diff.txt</TT></B></FONT>
+</UL>
+<P>
+You can pass it either the minimum or maximum glyph; whichever you use
+will be the the default mapping for columns that do not change.
+<P>
+Expect improvements to these prototypes soon.
+<P>
+<TT>Last update by ABS
+Tue, Apr 15, 2014  2:28:20 PM
+</BODY>
+</HTML>

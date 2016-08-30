@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<DiscoveryClientResultsFile xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Results>
+    <DiscoveryClientResult referenceType="System.Web.Services.Discovery.ContractReference" url="http://gisdata.usgs.net/xmlwebservices2/elevation_service.asmx?wsdl" filename="elevation_service.wsdl" />
+    <DiscoveryClientResult referenceType="System.Web.Services.Discovery.DiscoveryDocumentReference" url="http://gisdata.usgs.net/xmlwebservices2/elevation_service.asmx?disco" filename="elevation_service.disco" />
+  </Results>
+</DiscoveryClientResultsFile>

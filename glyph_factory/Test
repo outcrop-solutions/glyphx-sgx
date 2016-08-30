@@ -1,0 +1,15 @@
+#
+dest=/cygdrive/c/Users/Alan/Antz2014/antz_msw_2013-11-21/usr/csv
+#
+echo '------------------------------------------------------------------------------'
+echo 'this need better test data'
+echo '------------------------------------------------------------------------------'
+./glyph_factory.exe -c 4 -D -t -G glyph_in.csv -g `wc -l glyph_in.csv` -n `wc -l test_data.txt` < test_data.txt > test_body.csv
+#
+cat head.csv test_body.csv > test_out.csv
+#
+cp test_out.csv ${dest}
+cp test_out.csv ANTz0001.csv
+cp ANTz0001.csv ${dest}
+cp ANTzTag0001.csv ${dest}
+echo '------------------------------------------------------------------------------'
