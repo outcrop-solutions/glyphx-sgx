@@ -1,0 +1,639 @@
+﻿"DeployProject"
+{
+"VSVersion" = "3:800"
+"ProjectType" = "8:{06A35CCD-C46D-44D5-987B-CF40FF872267}"
+"IsWebType" = "8:FALSE"
+"ProjectName" = "8:SGXGlyphITMergeModule"
+"LanguageId" = "3:1033"
+"CodePage" = "3:1252"
+"UILanguageId" = "3:1033"
+"SccProjectName" = "8:"
+"SccLocalPath" = "8:"
+"SccAuxPath" = "8:"
+"SccProvider" = "8:"
+    "Hierarchy"
+    {
+        "Entry"
+        {
+        "MsmKey" = "8:_1051F8AF228B4207864BFBD8DF4672D4"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_5D33DAE9BAF54CC5AB2966C157435E29"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_865FF73169644267B62421CC2172A080"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_A16BC6D9DA24471597F92A05AA831F9D"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_B00A52B879054D92AB76277BB1F1A704"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_B1B91FFEA3FE49F0B12A75643A35A438"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_D2FB408A39BE43F69B0130ABBBDB0DB7"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_FE9665390BA04D8CB2AA93BF820A2EF0"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+    }
+    "Configurations"
+    {
+        "Debug"
+        {
+        "DisplayName" = "8:Debug"
+        "IsDebugOnly" = "11:TRUE"
+        "IsReleaseOnly" = "11:FALSE"
+        "OutputFilename" = "8:Debug\\SGXGlyphITMergeModule.msm"
+        "PackageFilesAs" = "3:2"
+        "PackageFileSize" = "3:-2147483648"
+        "CabType" = "3:1"
+        "Compression" = "3:2"
+        "SignOutput" = "11:FALSE"
+        "CertificateFile" = "8:"
+        "PrivateKeyFile" = "8:"
+        "TimeStampServer" = "8:"
+        "InstallerBootstrapper" = "3:1"
+            "BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
+            {
+            "Enabled" = "11:FALSE"
+            "PromptEnabled" = "11:TRUE"
+            "PrerequisitesLocation" = "2:1"
+            "Url" = "8:"
+            "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.5"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 4.5 (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.5"
+                    }
+                }
+            }
+        }
+        "Release"
+        {
+        "DisplayName" = "8:Release"
+        "IsDebugOnly" = "11:FALSE"
+        "IsReleaseOnly" = "11:TRUE"
+        "OutputFilename" = "8:Release\\SGXGlyphITMergeModule.msm"
+        "PackageFilesAs" = "3:2"
+        "PackageFileSize" = "3:-2147483648"
+        "CabType" = "3:1"
+        "Compression" = "3:2"
+        "SignOutput" = "11:FALSE"
+        "CertificateFile" = "8:"
+        "PrivateKeyFile" = "8:"
+        "TimeStampServer" = "8:"
+        "InstallerBootstrapper" = "3:1"
+            "BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
+            {
+            "Enabled" = "11:FALSE"
+            "PromptEnabled" = "11:TRUE"
+            "PrerequisitesLocation" = "2:1"
+            "Url" = "8:"
+            "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.5"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 4.5 (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.5"
+                    }
+                }
+            }
+        }
+    }
+    "Deployable"
+    {
+        "CustomAction"
+        {
+        }
+        "DefaultFeature"
+        {
+        "Name" = "8:DefaultFeature"
+        "Title" = "8:"
+        "Description" = "8:"
+        }
+        "File"
+        {
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_5D33DAE9BAF54CC5AB2966C157435E29"
+            {
+            "SourcePath" = "8:..\\..\\Misc\\InstallerFiles\\Images\\synglyphx_x.ico"
+            "TargetName" = "8:synglyphx_x.ico"
+            "Tag" = "8:"
+            "Folder" = "8:_A7921E0B63FE4398B5ED7FCC6C76DE51"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:TRUE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_865FF73169644267B62421CC2172A080"
+            {
+            "SourcePath" = "8:..\\..\\Misc\\InstallerFiles\\SampleData\\Quickstart_Template.png"
+            "TargetName" = "8:Quickstart_Template.png"
+            "Tag" = "8:"
+            "Folder" = "8:_3D828B887A544F0192DFE0867400D7C3"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_A16BC6D9DA24471597F92A05AA831F9D"
+            {
+            "SourcePath" = "8:..\\..\\Misc\\InstallerFiles\\SampleData\\Quickstart_Sample_Data_Olympics.csv"
+            "TargetName" = "8:Quickstart_Sample_Data_Olympics.csv"
+            "Tag" = "8:"
+            "Folder" = "8:_3D828B887A544F0192DFE0867400D7C3"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_B1B91FFEA3FE49F0B12A75643A35A438"
+            {
+            "SourcePath" = "8:..\\..\\Misc\\InstallerFiles\\Docs\\SynGlyphX_User_Guide.pdf"
+            "TargetName" = "8:SynGlyphX_User_Guide.pdf"
+            "Tag" = "8:"
+            "Folder" = "8:_C16967E7EFDB4ED1B32EA817B05F38E9"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_D2FB408A39BE43F69B0130ABBBDB0DB7"
+            {
+            "SourcePath" = "8:..\\..\\Misc\\InstallerFiles\\Docs\\SynglyphX_Install_Guide.pdf"
+            "TargetName" = "8:SynglyphX_Install_Guide.pdf"
+            "Tag" = "8:"
+            "Folder" = "8:_C16967E7EFDB4ED1B32EA817B05F38E9"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+        }
+        "FileType"
+        {
+            "{5EB83D71-FA18-4901-BE56-DE22E13CC478}:_34E21C9D6D034BF694571E06F424B2E4"
+            {
+            "Name" = "8:SynGlyphX Glyph Template"
+            "Description" = "8:SynGlyphX Glyph Template"
+            "Extensions" = "8:sgt"
+            "MIME" = "8:"
+            "Icon" = "8:_5D33DAE9BAF54CC5AB2966C157435E29"
+            "IconIndex" = "3:0"
+                "Command"
+                {
+                "Command" = "8:_FE9665390BA04D8CB2AA93BF820A2EF0"
+                }
+                "Verbs"
+                {
+                    "{95C0C507-CBF0-42B8-B119-07219E384A4A}:_402A23BA4A87470EAF8E1118BE65422E"
+                    {
+                    "Command" = "8:&Open"
+                    "Verb" = "8:open"
+                    "Arguments" = "8:\"%1\""
+                    "Order" = "3:0"
+                    }
+                }
+            }
+            "{5EB83D71-FA18-4901-BE56-DE22E13CC478}:_C75AB7A981FE4404B008416EFD3064DD"
+            {
+            "Name" = "8:SynGlyphX Data Transform Mapping"
+            "Description" = "8:SynGlyphX Data Transform Mapping"
+            "Extensions" = "8:sdt"
+            "MIME" = "8:"
+            "Icon" = "8:_5D33DAE9BAF54CC5AB2966C157435E29"
+            "IconIndex" = "3:0"
+                "Command"
+                {
+                "Command" = "8:_1051F8AF228B4207864BFBD8DF4672D4"
+                }
+                "Verbs"
+                {
+                    "{95C0C507-CBF0-42B8-B119-07219E384A4A}:_B34DC2B13D6A4BB9BEFCAFBB2F2A807C"
+                    {
+                    "Command" = "8:&Open"
+                    "Verb" = "8:open"
+                    "Arguments" = "8:\"%1\""
+                    "Order" = "3:0"
+                    }
+                }
+            }
+        }
+        "Folder"
+        {
+            "{1525181F-901A-416C-8A58-119130FE478E}:_1D6BA50E179545F5A3FA451DA18D8D60"
+            {
+            "Name" = "8:#1916"
+            "AlwaysCreate" = "11:FALSE"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Property" = "8:DesktopFolder"
+                "Folders"
+                {
+                }
+            }
+            "{1525181F-901A-416C-8A58-119130FE478E}:_7DCA52D8E80D47B0A191C4C4DAC9881D"
+            {
+            "Name" = "8:#1919"
+            "AlwaysCreate" = "11:FALSE"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Property" = "8:ProgramMenuFolder"
+                "Folders"
+                {
+                    "{9EF0B969-E518-4E46-987F-47570745A589}:_8ACF95A2A1EA475B8D9AB3691149FBC8"
+                    {
+                    "Name" = "8:SynGlyphX"
+                    "AlwaysCreate" = "11:FALSE"
+                    "Condition" = "8:"
+                    "Transitive" = "11:FALSE"
+                    "Property" = "8:_6880E50ACF734FB3BDBCD45253123A52"
+                        "Folders"
+                        {
+                        }
+                    }
+                }
+            }
+            "{F4FE1E22-A4D2-4EE8-9259-29A1CE8BB2FF}:_A7921E0B63FE4398B5ED7FCC6C76DE51"
+            {
+            "DefaultLocation" = "8:[TARGETDIR]"
+            "DisplayName" = "8:Module Retargetable Folder"
+            "Description" = "8:"
+            "Name" = "8:Module Retargetable Folder"
+            "AlwaysCreate" = "11:FALSE"
+            "Condition" = "8:"
+            "Transitive" = "11:TRUE"
+            "Property" = "8:NEWRETARGETABLEPROPERTY1"
+                "Folders"
+                {
+                    "{9EF0B969-E518-4E46-987F-47570745A589}:_3D828B887A544F0192DFE0867400D7C3"
+                    {
+                    "Name" = "8:SampleData"
+                    "AlwaysCreate" = "11:TRUE"
+                    "Condition" = "8:"
+                    "Transitive" = "11:FALSE"
+                    "Property" = "8:_91E7A59D6C3242DAA3DC3D4C9A1A2979"
+                        "Folders"
+                        {
+                        }
+                    }
+                    "{9EF0B969-E518-4E46-987F-47570745A589}:_C16967E7EFDB4ED1B32EA817B05F38E9"
+                    {
+                    "Name" = "8:docs"
+                    "AlwaysCreate" = "11:TRUE"
+                    "Condition" = "8:"
+                    "Transitive" = "11:FALSE"
+                    "Property" = "8:_106128A5E3C04823A612C32E5FDF9CD1"
+                        "Folders"
+                        {
+                        }
+                    }
+                }
+            }
+        }
+        "Sequences"
+        {
+        }
+        "MergeModule"
+        {
+        }
+        "Module"
+        {
+        "ModuleSignature" = "8:MergeModule.7E294E91171B4C73B07ADCD2550A868B"
+        "Version" = "8:0.7.58.0"
+        "Title" = "8:SGXGlyphITMergeModule"
+        "Subject" = "8:"
+        "Author" = "8:Default Company Name"
+        "Keywords" = "8:"
+        "Comments" = "8:"
+        "SearchPath" = "8:"
+        "UseSystemSearchPath" = "11:TRUE"
+        "TargetPlatform" = "3:0"
+        "PreBuildEvent" = "8:"
+        "PostBuildEvent" = "8:"
+        "RunPostBuildEvent" = "3:0"
+        }
+        "ProjectOutput"
+        {
+            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_1051F8AF228B4207864BFBD8DF4672D4"
+            {
+            "SourcePath" = "8:..\\..\\bin\\Win32\\Release\\GlyphViewer.exe"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_A7921E0B63FE4398B5ED7FCC6C76DE51"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            "ProjectOutputGroupRegister" = "3:1"
+            "OutputConfiguration" = "8:"
+            "OutputGroupCanonicalName" = "8:Built"
+            "OutputProjectGuid" = "8:{819CAA07-8664-4CC9-B3CE-95FE5B6C2F70}"
+            "ShowKeyOutput" = "11:TRUE"
+                "ExcludeFilters"
+                {
+                }
+            }
+            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_B00A52B879054D92AB76277BB1F1A704"
+            {
+            "SourcePath" = "8:..\\..\\bin\\Win32\\Release\\DataMapper.exe"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_A7921E0B63FE4398B5ED7FCC6C76DE51"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            "ProjectOutputGroupRegister" = "3:1"
+            "OutputConfiguration" = "8:"
+            "OutputGroupCanonicalName" = "8:Built"
+            "OutputProjectGuid" = "8:{B12702AD-ABFB-343A-A199-8E24837244A3}"
+            "ShowKeyOutput" = "11:TRUE"
+                "ExcludeFilters"
+                {
+                }
+            }
+            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_FE9665390BA04D8CB2AA93BF820A2EF0"
+            {
+            "SourcePath" = "8:..\\..\\bin\\Win32\\Release\\GlyphDesigner.exe"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_A7921E0B63FE4398B5ED7FCC6C76DE51"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            "ProjectOutputGroupRegister" = "3:1"
+            "OutputConfiguration" = "8:"
+            "OutputGroupCanonicalName" = "8:Built"
+            "OutputProjectGuid" = "8:{FD1ED976-29E1-469A-8F9A-593A3CBDA400}"
+            "ShowKeyOutput" = "11:TRUE"
+                "ExcludeFilters"
+                {
+                }
+            }
+        }
+        "Registry"
+        {
+            "HKLM"
+            {
+                "Keys"
+                {
+                }
+            }
+            "HKCU"
+            {
+                "Keys"
+                {
+                }
+            }
+            "HKCR"
+            {
+                "Keys"
+                {
+                }
+            }
+            "HKU"
+            {
+                "Keys"
+                {
+                }
+            }
+            "HKPU"
+            {
+                "Keys"
+                {
+                }
+            }
+        }
+        "Shortcut"
+        {
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_045819BB28AB47C8961ED3B60F4E6770"
+            {
+            "Name" = "8:Data Mapper"
+            "Arguments" = "8:"
+            "Description" = "8:"
+            "ShowCmd" = "3:1"
+            "IconIndex" = "3:0"
+            "Transitive" = "11:FALSE"
+            "Target" = "8:_B00A52B879054D92AB76277BB1F1A704"
+            "Folder" = "8:_8ACF95A2A1EA475B8D9AB3691149FBC8"
+            "WorkingFolder" = "8:_A7921E0B63FE4398B5ED7FCC6C76DE51"
+            "Icon" = "8:_5D33DAE9BAF54CC5AB2966C157435E29"
+            "Feature" = "8:"
+            }
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_1F65DD7173524260B8F88369E14B2D13"
+            {
+            "Name" = "8:Install Guide"
+            "Arguments" = "8:"
+            "Description" = "8:"
+            "ShowCmd" = "3:1"
+            "IconIndex" = "3:0"
+            "Transitive" = "11:FALSE"
+            "Target" = "8:_D2FB408A39BE43F69B0130ABBBDB0DB7"
+            "Folder" = "8:_8ACF95A2A1EA475B8D9AB3691149FBC8"
+            "WorkingFolder" = "8:_C16967E7EFDB4ED1B32EA817B05F38E9"
+            "Icon" = "8:_5D33DAE9BAF54CC5AB2966C157435E29"
+            "Feature" = "8:"
+            }
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_30C11BAE6B794E26A46F229ECD692E31"
+            {
+            "Name" = "8:Glyph Viewer"
+            "Arguments" = "8:"
+            "Description" = "8:"
+            "ShowCmd" = "3:1"
+            "IconIndex" = "3:0"
+            "Transitive" = "11:FALSE"
+            "Target" = "8:_1051F8AF228B4207864BFBD8DF4672D4"
+            "Folder" = "8:_8ACF95A2A1EA475B8D9AB3691149FBC8"
+            "WorkingFolder" = "8:_A7921E0B63FE4398B5ED7FCC6C76DE51"
+            "Icon" = "8:_5D33DAE9BAF54CC5AB2966C157435E29"
+            "Feature" = "8:"
+            }
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_562C30AB4CFD4EC5BB3CDDB8A9FCD2B5"
+            {
+            "Name" = "8:Glyph Viewer"
+            "Arguments" = "8:"
+            "Description" = "8:"
+            "ShowCmd" = "3:1"
+            "IconIndex" = "3:0"
+            "Transitive" = "11:FALSE"
+            "Target" = "8:_1051F8AF228B4207864BFBD8DF4672D4"
+            "Folder" = "8:_1D6BA50E179545F5A3FA451DA18D8D60"
+            "WorkingFolder" = "8:_A7921E0B63FE4398B5ED7FCC6C76DE51"
+            "Icon" = "8:_5D33DAE9BAF54CC5AB2966C157435E29"
+            "Feature" = "8:"
+            }
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_77994A261EB544AEA5F08B41CB26F67E"
+            {
+            "Name" = "8:Glyph Designer"
+            "Arguments" = "8:"
+            "Description" = "8:"
+            "ShowCmd" = "3:1"
+            "IconIndex" = "3:0"
+            "Transitive" = "11:FALSE"
+            "Target" = "8:_FE9665390BA04D8CB2AA93BF820A2EF0"
+            "Folder" = "8:_8ACF95A2A1EA475B8D9AB3691149FBC8"
+            "WorkingFolder" = "8:_A7921E0B63FE4398B5ED7FCC6C76DE51"
+            "Icon" = "8:_5D33DAE9BAF54CC5AB2966C157435E29"
+            "Feature" = "8:"
+            }
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_8D0677620EF64471A61571E99AEBB5D1"
+            {
+            "Name" = "8:User Guide"
+            "Arguments" = "8:"
+            "Description" = "8:"
+            "ShowCmd" = "3:1"
+            "IconIndex" = "3:0"
+            "Transitive" = "11:FALSE"
+            "Target" = "8:_B1B91FFEA3FE49F0B12A75643A35A438"
+            "Folder" = "8:_8ACF95A2A1EA475B8D9AB3691149FBC8"
+            "WorkingFolder" = "8:_C16967E7EFDB4ED1B32EA817B05F38E9"
+            "Icon" = "8:_5D33DAE9BAF54CC5AB2966C157435E29"
+            "Feature" = "8:"
+            }
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_91561C817C7345BBB741F081E2A75B73"
+            {
+            "Name" = "8:Data Mapper"
+            "Arguments" = "8:"
+            "Description" = "8:"
+            "ShowCmd" = "3:1"
+            "IconIndex" = "3:0"
+            "Transitive" = "11:FALSE"
+            "Target" = "8:_B00A52B879054D92AB76277BB1F1A704"
+            "Folder" = "8:_1D6BA50E179545F5A3FA451DA18D8D60"
+            "WorkingFolder" = "8:_A7921E0B63FE4398B5ED7FCC6C76DE51"
+            "Icon" = "8:_5D33DAE9BAF54CC5AB2966C157435E29"
+            "Feature" = "8:"
+            }
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_92AC97D6E5344667ABD9944EE901BAA4"
+            {
+            "Name" = "8:Sample Data"
+            "Arguments" = "8:"
+            "Description" = "8:"
+            "ShowCmd" = "3:1"
+            "IconIndex" = "3:0"
+            "Transitive" = "11:FALSE"
+            "Target" = "8:_3D828B887A544F0192DFE0867400D7C3"
+            "Folder" = "8:_8ACF95A2A1EA475B8D9AB3691149FBC8"
+            "WorkingFolder" = "8:_A7921E0B63FE4398B5ED7FCC6C76DE51"
+            "Icon" = "8:_5D33DAE9BAF54CC5AB2966C157435E29"
+            "Feature" = "8:"
+            }
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_F8472462D0DA414B95FC302BEEA8F303"
+            {
+            "Name" = "8:Glyph Designer"
+            "Arguments" = "8:"
+            "Description" = "8:"
+            "ShowCmd" = "3:1"
+            "IconIndex" = "3:0"
+            "Transitive" = "11:FALSE"
+            "Target" = "8:_FE9665390BA04D8CB2AA93BF820A2EF0"
+            "Folder" = "8:_1D6BA50E179545F5A3FA451DA18D8D60"
+            "WorkingFolder" = "8:_A7921E0B63FE4398B5ED7FCC6C76DE51"
+            "Icon" = "8:_5D33DAE9BAF54CC5AB2966C157435E29"
+            "Feature" = "8:"
+            }
+        }
+    }
+}

@@ -1,0 +1,130 @@
+City
+Foreign Keys:
+Key: CountryCode, Origin: Country, Value: Code
+
+Sample Data:
+ID | Name | CountryCode | District | Population | 
+1, Kabul, AFG, Kabol, 1780000, 
+2, Qandahar, AFG, Qandahar, 237500, 
+3, Herat, AFG, Herat, 186800, 
+4, Mazar-e-Sharif, AFG, Balkh, 127800, 
+5, Amsterdam, NLD, Noord-Holland, 731200, 
+6, Rotterdam, NLD, Zuid-Holland, 593321, 
+7, Haag, NLD, Zuid-Holland, 440900, 
+8, Utrecht, NLD, Utrecht, 234323, 
+9, Eindhoven, NLD, Noord-Brabant, 201843, 
+10, Tilburg, NLD, Noord-Brabant, 193238, 
+11, Groningen, NLD, Groningen, 172701, 
+12, Breda, NLD, Noord-Brabant, 160398, 
+13, Apeldoorn, NLD, Gelderland, 153491, 
+14, Nijmegen, NLD, Gelderland, 152463, 
+15, Enschede, NLD, Overijssel, 149544, 
+
+Country
+Foreign Keys:
+
+Sample Data:
+Code | Name | Continent | Region | SurfaceArea | IndepYear | Population | LifeExpectancy | GNP | GNPOld | LocalName | GovernmentForm | HeadOfState | Capital | Code2 | 
+ABW, Aruba, North America, Caribbean, 193.00, , 103000, 78.4, 828.00, 793.00, Aruba, Nonmetropolitan Territory of The Netherlands, Beatrix, 129, AW, 
+AFG, Afghanistan, Asia, Southern and Central Asia, 652090.00, 1919, 22720000, 45.9, 5976.00, , Afganistan/Afqanestan, Islamic Emirate, Mohammad Omar, 1, AF, 
+AGO, Angola, Africa, Central Africa, 1246700.00, 1975, 12878000, 38.3, 6648.00, 7984.00, Angola, Republic, José Eduardo dos Santos, 56, AO, 
+AIA, Anguilla, North America, Caribbean, 96.00, , 8000, 76.1, 63.20, , Anguilla, Dependent Territory of the UK, Elisabeth II, 62, AI, 
+ALB, Albania, Europe, Southern Europe, 28748.00, 1912, 3401200, 71.6, 3205.00, 2500.00, Shqipëria, Republic, Rexhep Mejdani, 34, AL, 
+AND, Andorra, Europe, Southern Europe, 468.00, 1278, 78000, 83.5, 1630.00, , Andorra, Parliamentary Coprincipality, , 55, AD, 
+ANT, Netherlands Antilles, North America, Caribbean, 800.00, , 217000, 74.7, 1941.00, , Nederlandse Antillen, Nonmetropolitan Territory of The Netherlands, Beatrix, 33, AN, 
+ARE, United Arab Emirates, Asia, Middle East, 83600.00, 1971, 2441000, 74.1, 37966.00, 36846.00, Al-Imarat al-´Arabiya al-Muttahida, Emirate Federation, Zayid bin Sultan al-Nahayan, 65, AE, 
+ARG, Argentina, South America, South America, 2780400.00, 1816, 37032000, 75.1, 340238.00, 323310.00, Argentina, Federal Republic, Fernando de la Rúa, 69, AR, 
+ARM, Armenia, Asia, Middle East, 29800.00, 1991, 3520000, 66.4, 1813.00, 1627.00, Hajastan, Republic, Robert Kotšarjan, 126, AM, 
+ASM, American Samoa, Oceania, Polynesia, 199.00, , 68000, 75.1, 334.00, , Amerika Samoa, US Territory, George W. Bush, 54, AS, 
+ATA, Antarctica, Antarctica, Antarctica, 13120000.00, , 0, , 0.00, , –, Co-administrated, , , AQ, 
+ATF, French Southern territories, Antarctica, Antarctica, 7780.00, , 0, , 0.00, , Terres australes françaises, Nonmetropolitan Territory of France, Jacques Chirac, , TF, 
+ATG, Antigua and Barbuda, North America, Caribbean, 442.00, 1981, 68000, 70.5, 612.00, 584.00, Antigua and Barbuda, Constitutional Monarchy, Elisabeth II, 63, AG, 
+AUS, Australia, Oceania, Australia and New Zealand, 7741220.00, 1901, 18886000, 79.8, 351182.00, 392911.00, Australia, Constitutional Monarchy, Federation, Elisabeth II, 135, AU, 
+
+CountryLanguage
+Foreign Keys:
+Key: CountryCode, Origin: Country, Value: Code
+
+Sample Data:
+CountryCode | Language | IsOfficial | Percentage | 
+ABW, Dutch, T, 5.3, 
+ABW, English, F, 9.5, 
+ABW, Papiamento, F, 76.7, 
+ABW, Spanish, F, 7.4, 
+AFG, Balochi, F, 0.9, 
+AFG, Dari, T, 32.1, 
+AFG, Pashto, T, 52.4, 
+AFG, Turkmenian, F, 1.9, 
+AFG, Uzbek, F, 8.8, 
+AGO, Ambo, F, 2.4, 
+AGO, Chokwe, F, 4.2, 
+AGO, Kongo, F, 13.2, 
+AGO, Luchazi, F, 2.4, 
+AGO, Luimbe-nganguela, F, 5.4, 
+AGO, Luvale, F, 3.6, 
+
+City
+Foreign Keys:
+Key: CountryCode, Origin: Country, Value: Code
+
+Sample Data:
+ID | Name | CountryCode | District | Population | 
+1, Kabul, AFG, Kabol, 1780000, 
+2, Qandahar, AFG, Qandahar, 237500, 
+3, Herat, AFG, Herat, 186800, 
+4, Mazar-e-Sharif, AFG, Balkh, 127800, 
+5, Amsterdam, NLD, Noord-Holland, 731200, 
+6, Rotterdam, NLD, Zuid-Holland, 593321, 
+7, Haag, NLD, Zuid-Holland, 440900, 
+8, Utrecht, NLD, Utrecht, 234323, 
+9, Eindhoven, NLD, Noord-Brabant, 201843, 
+10, Tilburg, NLD, Noord-Brabant, 193238, 
+11, Groningen, NLD, Groningen, 172701, 
+12, Breda, NLD, Noord-Brabant, 160398, 
+13, Apeldoorn, NLD, Gelderland, 153491, 
+14, Nijmegen, NLD, Gelderland, 152463, 
+15, Enschede, NLD, Overijssel, 149544, 
+
+Country
+Foreign Keys:
+
+Sample Data:
+Code | Name | Continent | Region | SurfaceArea | IndepYear | Population | LifeExpectancy | GNP | GNPOld | LocalName | GovernmentForm | HeadOfState | Capital | Code2 | 
+ABW, Aruba, North America, Caribbean, 193.00, , 103000, 78.4, 828.00, 793.00, Aruba, Nonmetropolitan Territory of The Netherlands, Beatrix, 129, AW, 
+AFG, Afghanistan, Asia, Southern and Central Asia, 652090.00, 1919, 22720000, 45.9, 5976.00, , Afganistan/Afqanestan, Islamic Emirate, Mohammad Omar, 1, AF, 
+AGO, Angola, Africa, Central Africa, 1246700.00, 1975, 12878000, 38.3, 6648.00, 7984.00, Angola, Republic, José Eduardo dos Santos, 56, AO, 
+AIA, Anguilla, North America, Caribbean, 96.00, , 8000, 76.1, 63.20, , Anguilla, Dependent Territory of the UK, Elisabeth II, 62, AI, 
+ALB, Albania, Europe, Southern Europe, 28748.00, 1912, 3401200, 71.6, 3205.00, 2500.00, Shqipëria, Republic, Rexhep Mejdani, 34, AL, 
+AND, Andorra, Europe, Southern Europe, 468.00, 1278, 78000, 83.5, 1630.00, , Andorra, Parliamentary Coprincipality, , 55, AD, 
+ANT, Netherlands Antilles, North America, Caribbean, 800.00, , 217000, 74.7, 1941.00, , Nederlandse Antillen, Nonmetropolitan Territory of The Netherlands, Beatrix, 33, AN, 
+ARE, United Arab Emirates, Asia, Middle East, 83600.00, 1971, 2441000, 74.1, 37966.00, 36846.00, Al-Imarat al-´Arabiya al-Muttahida, Emirate Federation, Zayid bin Sultan al-Nahayan, 65, AE, 
+ARG, Argentina, South America, South America, 2780400.00, 1816, 37032000, 75.1, 340238.00, 323310.00, Argentina, Federal Republic, Fernando de la Rúa, 69, AR, 
+ARM, Armenia, Asia, Middle East, 29800.00, 1991, 3520000, 66.4, 1813.00, 1627.00, Hajastan, Republic, Robert Kotšarjan, 126, AM, 
+ASM, American Samoa, Oceania, Polynesia, 199.00, , 68000, 75.1, 334.00, , Amerika Samoa, US Territory, George W. Bush, 54, AS, 
+ATA, Antarctica, Antarctica, Antarctica, 13120000.00, , 0, , 0.00, , –, Co-administrated, , , AQ, 
+ATF, French Southern territories, Antarctica, Antarctica, 7780.00, , 0, , 0.00, , Terres australes françaises, Nonmetropolitan Territory of France, Jacques Chirac, , TF, 
+ATG, Antigua and Barbuda, North America, Caribbean, 442.00, 1981, 68000, 70.5, 612.00, 584.00, Antigua and Barbuda, Constitutional Monarchy, Elisabeth II, 63, AG, 
+AUS, Australia, Oceania, Australia and New Zealand, 7741220.00, 1901, 18886000, 79.8, 351182.00, 392911.00, Australia, Constitutional Monarchy, Federation, Elisabeth II, 135, AU, 
+
+CountryLanguage
+Foreign Keys:
+Key: CountryCode, Origin: Country, Value: Code
+
+Sample Data:
+CountryCode | Language | IsOfficial | Percentage | 
+ABW, Dutch, T, 5.3, 
+ABW, English, F, 9.5, 
+ABW, Papiamento, F, 76.7, 
+ABW, Spanish, F, 7.4, 
+AFG, Balochi, F, 0.9, 
+AFG, Dari, T, 32.1, 
+AFG, Pashto, T, 52.4, 
+AFG, Turkmenian, F, 1.9, 
+AFG, Uzbek, F, 8.8, 
+AGO, Ambo, F, 2.4, 
+AGO, Chokwe, F, 4.2, 
+AGO, Kongo, F, 13.2, 
+AGO, Luchazi, F, 2.4, 
+AGO, Luimbe-nganguela, F, 5.4, 
+AGO, Luvale, F, 3.6, 
+
