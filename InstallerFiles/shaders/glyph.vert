@@ -35,5 +35,5 @@ void main()
 
 	frag_normal = normalize( ( world[gl_InstanceID] * vec4( rotation_mat * normal, 0 )  ).xyz );
 	frag_color = color[gl_InstanceID];
-    gl_Position = proj * view * world[gl_InstanceID] * vec4( pos, 1 );
+    gl_Position = proj * ( view * ( world[gl_InstanceID] * vec4( pos, 1 ) ) );
 }

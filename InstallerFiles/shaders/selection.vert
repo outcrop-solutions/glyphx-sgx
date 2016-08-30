@@ -90,5 +90,5 @@ void main()
 	frag_color = tint_color;
 	frag_color.a = alpha;
 
-    gl_Position = proj * view * w * vec4( pos * scale, 1 );
+    gl_Position = proj * ( view * ( w * vec4( pos * scale, 1 ) ) );
 }
