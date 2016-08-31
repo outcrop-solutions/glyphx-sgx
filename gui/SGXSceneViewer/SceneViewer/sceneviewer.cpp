@@ -759,16 +759,19 @@ namespace SynGlyphX
 				{
 					unsigned int count = 0u;
 					selection_center = glm::vec3();
-					float largest_bound = FLT_MIN;
-					scene.enumSelected( [this, &count, &largest_bound]( const Glyph3DNode& glyph ) {
+					float largest_bound = 0.f;
+					bool glyphs_selected = false;
+					scene.enumSelected( [this, &count, &largest_bound, &glyphs_selected]( const Glyph3DNode& glyph ) {
 						selection_center += glyph.getCachedPosition();
-						if ( glyph.getCachedBound().get_radius() > largest_bound ) largest_bound = glyph.getCachedBound().get_radius();
+						if ( glyph.getType() != Glyph3DNodeType::Link && glyph.getCachedBound().get_radius() > largest_bound ) largest_bound = glyph.getCachedBound().get_radius();
+						if ( glyph.getType() == Glyph3DNodeType::GlyphElement ) glyphs_selected = true;
 						++count;
 					} );
 					selection_center /= static_cast<float>( count );
 					float selection_radius = 2.f * scene.getSingleSelection()->getCachedBound().get_radius();
 
-					float orbit_min_distance = selection_radius + largest_bound;
+					// if we only have links selected don't restrict the zoom distance (they tend to have huge bounds)
+					float orbit_min_distance = glyphs_selected ? selection_radius + largest_bound : 0.f;
 					orbit_cam_control->setOrbitTarget( selection_center );
 					orbit_cam_control->setOrbitMinDistance( orbit_min_distance );
 
