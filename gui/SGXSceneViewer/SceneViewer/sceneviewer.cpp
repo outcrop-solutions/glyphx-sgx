@@ -41,7 +41,7 @@ namespace SynGlyphX
 	SceneViewer::SceneViewer( QWidget *parent )
 		: QOpenGLWidget( parent ), hud_font( "Arial", 12, QFont::Normal ), glyph_renderer( nullptr ),
 		renderer( nullptr ), wireframe( false ), enable_fly_to_object( false ), scene_axes_enabled( true ), wheel_delta( 0.f ),
-		hud_axes_enabled( true ), hud_axes_location( HUDAxesLocation::TopLeft ), animation_enabled( false ), background_color( render::color::black() ),
+		hud_axes_enabled( true ), hud_axes_location( HUDAxesLocation::TopLeft ), animation_enabled( true ), background_color( render::color::black() ),
 		initialized( false )
 	{
 		memset( key_states, 0, sizeof( key_states ) );
