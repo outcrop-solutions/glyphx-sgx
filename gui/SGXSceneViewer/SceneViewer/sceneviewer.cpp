@@ -23,7 +23,6 @@
 #include "placementpolicy.h"
 #include "axisrenderer.h"
 #include "baseimagerenderer.h"
-#include "linksrenderer.h"
 #include "legacyscenereader.h"
 #include "freecameracontroller.h"
 #include "orbitcameracontroller.h"
@@ -43,7 +42,7 @@ namespace SynGlyphX
 		: QOpenGLWidget( parent ), hud_font( "Arial", 12, QFont::Normal ), glyph_renderer( nullptr ),
 		renderer( nullptr ), wireframe( false ), enable_fly_to_object( false ), scene_axes_enabled( true ), wheel_delta( 0.f ),
 		hud_axes_enabled( true ), hud_axes_location( HUDAxesLocation::TopLeft ), animation_enabled( false ), background_color( render::color::black() ),
-		filter_mode( FilteredResultsDisplayMode::TranslucentUnfiltered ), initialized( false )
+		initialized( false )
 	{
 		memset( key_states, 0, sizeof( key_states ) );
 
@@ -102,7 +101,6 @@ namespace SynGlyphX
 			delete glyph_renderer;
 			delete axis_renderer;
 			delete base_images;
-			delete links;
 			delete renderer;
 			delete grids;
 			delete free_cam_control;
@@ -135,7 +133,6 @@ namespace SynGlyphX
 		// Clear out current scene.
 		scene.clear();
 		base_images->clear();
-		links->clear();
 		grids->clear();
 		GlyphGeometryDB::reset();
 		resetCamera();
@@ -149,14 +146,13 @@ namespace SynGlyphX
 			textures.push_back( tex.second );
 		}
 
-		SynGlyphX::LegacySceneReader::LoadLegacyScene( getScene(), *base_images, *links, *grids, default_base_texture.second, nodeFile, tagFile, textures );
+		SynGlyphX::LegacySceneReader::LoadLegacyScene( getScene(), *base_images, *grids, default_base_texture.second, nodeFile, tagFile, textures );
 	}
 
 	void SceneViewer::clearScene()
 	{
 		scene.clear();
 		base_images->clear();
-		links->clear();
 		grids->clear();
 		for ( int i = 0; i < 3; ++i )
 			axis_names[i] = "";
@@ -213,7 +209,6 @@ namespace SynGlyphX
 		grids = new render::grid_renderer;
 		axis_renderer = new AxisRenderer;
 		base_images = new BaseImageRenderer;
-		links = new LinksRenderer;
 
 		camera = new render::perspective_camera();
 		camera->set_clip_planes( 1.f, 2048.f );
@@ -343,7 +338,6 @@ namespace SynGlyphX
 		if ( format().profile() == QSurfaceFormat::CompatibilityProfile ) painter.beginNativePainting();
 
 		glyph_renderer->enableAnimation( animation_enabled );
-		glyph_renderer->setFilterMode( filter_mode );
 
 		hal::rasterizer_state rast{ true, true, false };
 		context->set_rasterizer_state( rast );
@@ -382,9 +376,6 @@ namespace SynGlyphX
 
 			// Draw the grids.
 			grids->draw( context, camera, render::color::white() );
-
-			// Draw links (last to ensure their transparency doesn't cause issues).
-			links->draw( context, camera, scene, filter_mode );
 
 			// Clear depth so it doesn't interfere with screen-space elements.
 			context->clear( hal::clear_type::depth );
@@ -644,7 +635,7 @@ namespace SynGlyphX
 
 					glm::vec3 origin, dir;
 					camera->viewport_pt_to_ray( event->x(), event->y(), origin, dir );
-					const Glyph3DNode* g = scene.pick( origin, dir, filter_mode == FilteredResultsDisplayMode::TranslucentUnfiltered );
+					const Glyph3DNode* g = scene.pick( origin, dir, scene.getFilterMode() == FilteredResultsDisplayMode::TranslucentUnfiltered );
 					if ( g )
 					{
 						if ( alt || ( ctrl && scene.isSelected( g ) ) )
@@ -672,7 +663,7 @@ namespace SynGlyphX
 						&& pos2d.y > std::min( drag_info( button::left ).drag_start_y, mouse_y )
 						&& pos2d.y < std::max( drag_info( button::left ).drag_start_y, mouse_y ) )
 					{
-						if ( filter_mode != FilteredResultsDisplayMode::HideUnfiltered || scene.isFiltered( &node ) )
+						if ( scene.getFilterMode() != FilteredResultsDisplayMode::HideUnfiltered || scene.isFiltered( &node ) )
 						{
 							if ( !alt )
 								scene.setSelected( &node );
@@ -850,7 +841,7 @@ namespace SynGlyphX
 
 	void SceneViewer::setFilteredResultsDisplayMode( FilteredResultsDisplayMode mode )
 	{
-		filter_mode = mode; 
+		scene.setFilterMode( mode );
 
 		if ( mode == FilteredResultsDisplayMode::HideUnfiltered )
 			scene.clearFilteredOutFromSelection();

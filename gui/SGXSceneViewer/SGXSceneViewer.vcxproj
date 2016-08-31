@@ -110,7 +110,6 @@
     <ClCompile Include="SceneViewer\glyphscene.cpp" />
     <ClCompile Include="SceneViewer\legacyglyphplacement.cpp" />
     <ClCompile Include="SceneViewer\legacyscenereader.cpp" />
-    <ClCompile Include="SceneViewer\linksrenderer.cpp" />
     <ClCompile Include="SceneViewer\orbitcameracontroller.cpp" />
     <ClCompile Include="SceneViewer\overheadcameracontroller.cpp" />
     <ClCompile Include="SceneViewer\placementpolicy.cpp" />
@@ -147,7 +146,6 @@
     <ClInclude Include="SceneViewer\types.h" />
     <ClInclude Include="SceneViewer\legacyglyphplacement.h" />
     <ClInclude Include="SceneViewer\legacyscenereader.h" />
-    <ClInclude Include="SceneViewer\linksrenderer.h" />
     <ClInclude Include="SceneViewer\placementpolicy.h" />
     <ClInclude Include="SGXSceneViewerPCH.h" />
   </ItemGroup>

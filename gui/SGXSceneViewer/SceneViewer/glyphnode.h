@@ -12,12 +12,19 @@ namespace SynGlyphX
 	class Glyph3DNode;
 	class PlacementPolicy;
 
+	enum class Glyph3DNodeType
+	{
+		GlyphElement,
+		Link,
+	};
+
 	class SGXSCENEVIEWER_API Glyph3DNode
 	{
 	public:
 		Glyph3DNode( const Glyph3DNode& ) = delete;
 		~Glyph3DNode();
 
+		Glyph3DNodeType getType() const { return type; }
 		int getFilteringIndex() { return filtering_index; }
 
 		void setPlacementPolicy( PlacementPolicy* policy ) { placement = policy; }
@@ -27,6 +34,13 @@ namespace SynGlyphX
 		void setGeometry( const GlyphShape& geom, bool _wireframe = false ) { geometry = geom; setWireframe( _wireframe ); }
 		GlyphShape getGeometry() const { return geometry; }
 		render::model* getModel( float dist = 0.f ) const;
+
+		void setLinkTargets( const Glyph3DNode* a, const Glyph3DNode* b ) {
+			assert( type == Glyph3DNodeType::Link );
+			link_a = a; link_b = b;
+		}
+		const Glyph3DNode* getLinkTarget1() const { return link_a; }
+		const Glyph3DNode* getLinkTarget2() const { return link_b; }
 
 		const glm::vec3& getLocalPosition() const { return local_position; }
 		void setLocalPosition( const glm::vec3& position ) { local_position = position; }
@@ -79,8 +93,8 @@ namespace SynGlyphX
 		static void clearTagPool();	// call when loading a new scene
 
 	private:
-		Glyph3DNode( unsigned int _id, bool _isRoot, int _filtering_index = -1 ) : placement( nullptr ), id( _id ), root( _isRoot ), tag( nullptr ), animation_axis( 1.f, 0.f, 0.f ), animation_rate( 0.f ),
-			torus_ratio( 0.1f ), filtering_index( _filtering_index ), parent( nullptr ) { }
+		Glyph3DNode( unsigned int _id, bool _isRoot, Glyph3DNodeType _type, int _filtering_index ) : placement( nullptr ), id( _id ), root( _isRoot ), tag( nullptr ), animation_axis( 1.f, 0.f, 0.f ), animation_rate( 0.f ),
+			torus_ratio( 0.1f ), filtering_index( _filtering_index ), parent( nullptr ), type( _type ) { }
 
 		PlacementPolicy* placement;
 		GlyphShape geometry;
@@ -95,10 +109,14 @@ namespace SynGlyphX
 		float animation_rate;
 		bool wireframe, root;
 		std::vector<Glyph3DNode*> children;
+		const Glyph3DNode* link_a, *link_b;
 		Glyph3DNode* parent;
 		const char* tag;
 		unsigned int id;
 		int filtering_index;
+		bool is_link;
+
+		Glyph3DNodeType type;
 
 		friend class GlyphScene;	// so glyphscene can instantiate
 

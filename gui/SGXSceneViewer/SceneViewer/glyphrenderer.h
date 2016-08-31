@@ -29,7 +29,7 @@ namespace SynGlyphX
 		void setWireframeMode( bool val ) { global_wireframe = val; }
 		void enableAnimation( bool val ) { animation = val; }
 
-		void setFilterMode( FilteredResultsDisplayMode mode, float alpha = 0.5f, float wire_alpha = 0.1f ) { filter_mode = mode; filter_alpha = alpha; wire_filter_alpha = wire_alpha; }
+		void setFilterAlpha( float alpha = 0.5f, float wire_alpha = 0.1f ) { filter_alpha = alpha; wire_filter_alpha = wire_alpha; }
 
 		void enableBoundVis( bool enable );
 		bool boundVisEnabled() { return bound_vis_enabled; }
@@ -75,7 +75,6 @@ namespace SynGlyphX
 
 		bool global_wireframe, animation;
 
-		FilteredResultsDisplayMode filter_mode;
 		float filter_alpha, wire_filter_alpha;
 
 		GlyphScene* scene;

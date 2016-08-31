@@ -22,6 +22,8 @@ namespace SynGlyphX
 		add_model( GlyphShape::Dodecahedron, "meshes/dodecahedron_0.dae", FLT_MAX );
 		add_model( GlyphShape::Tetrahedron, "meshes/tetrahedron_0.dae", FLT_MAX );
 		add_model( GlyphShape::Pin, create_pin(), FLT_MAX);
+		add_model( GlyphShape::Link_Cylinder, "meshes/link_cylinder.dae", FLT_MAX, glm::rotate( glm::mat4(), glm::half_pi<float>(), glm::vec3( 1.f, 0.f, 0.f ) ) );
+		add_model( GlyphShape::Link_Cube, "meshes/link_cube.dae", FLT_MAX );
 		add_model( GlyphShape::ErrorModel, "meshes/cube_0.dae", FLT_MAX );
 	}
 

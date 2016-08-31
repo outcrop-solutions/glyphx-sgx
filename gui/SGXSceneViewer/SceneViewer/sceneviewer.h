@@ -36,7 +36,7 @@ namespace SynGlyphX
 	namespace render { class grid_renderer; }
 	typedef std::set<unsigned long> IndexSet;
 
-	class AxisRenderer; class BaseImageRenderer; class LinksRenderer;
+	class AxisRenderer; class BaseImageRenderer;
 	class FreeCameraController; class OrbitCameraController; class OverheadCameraController; class CameraController;
 
 	enum class HUDAxesLocation : unsigned int
@@ -86,7 +86,7 @@ namespace SynGlyphX
 
 		void setFilteredResults( const IndexSet& results );
 		void setFilteredResultsDisplayMode( FilteredResultsDisplayMode mode );
-		FilteredResultsDisplayMode filteredResultsDisplayMode() { return filter_mode; }
+		FilteredResultsDisplayMode filteredResultsDisplayMode() { return scene.getFilterMode(); }
 
 		bool hudAxesEnabled() { return hud_axes_enabled; }
 		bool sceneAxesEnabled() { return scene_axes_enabled; }
@@ -163,7 +163,6 @@ namespace SynGlyphX
 		bool enable_fly_to_object;
 		bool animation_enabled;
 		bool wireframe;
-		FilteredResultsDisplayMode filter_mode;
 
 		// Callbacks (todo: use Qt signals/slots mechanism for this?)
 		std::function<void( bool )> on_selection_changed;
@@ -179,7 +178,6 @@ namespace SynGlyphX
 		AxisRenderer* axis_renderer;
 		std::string axis_names[3];
 		BaseImageRenderer* base_images;
-		LinksRenderer* links;
 		render::renderer* renderer;
 		render::grid_renderer* grids;
 		hal::context* context;
