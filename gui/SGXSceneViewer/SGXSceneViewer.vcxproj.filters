@@ -56,9 +56,6 @@
     <ClInclude Include="SceneViewer\baseimagerenderer.h">
       <Filter>SceneViewer</Filter>
     </ClInclude>
-    <ClInclude Include="SceneViewer\linksrenderer.h">
-      <Filter>SceneViewer</Filter>
-    </ClInclude>
     <ClInclude Include="SceneViewer\types.h">
       <Filter>SceneViewer</Filter>
     </ClInclude>
@@ -117,9 +114,6 @@
       <Filter>SceneViewer</Filter>
     </ClCompile>
     <ClCompile Include="SceneViewer\baseimagerenderer.cpp">
-      <Filter>SceneViewer</Filter>
-    </ClCompile>
-    <ClCompile Include="SceneViewer\linksrenderer.cpp">
       <Filter>SceneViewer</Filter>
     </ClCompile>
     <ClCompile Include="SceneViewer\freecameracontroller.cpp">

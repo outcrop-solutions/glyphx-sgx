@@ -15,11 +15,12 @@ namespace SynGlyphX
 	class SGXSCENEVIEWER_API GlyphScene
 	{
 	public:
-		GlyphScene() : octree( nullptr ), filter_applied( false ), selection_changed( false ), glyph_storage( nullptr ), glyph_storage_next( 0u ) { }
+		GlyphScene() : octree( nullptr ), filter_applied( false ), selection_changed( false ), glyph_storage( nullptr ), glyph_storage_next( 0u ),
+			filter_mode( FilteredResultsDisplayMode::TranslucentUnfiltered ) { }
 		~GlyphScene();
 		GlyphScene( const GlyphScene& ) = delete;
 
-		Glyph3DNode* allocGlyph( unsigned int _id, bool _isRoot, int _filtering_index );
+		Glyph3DNode* allocGlyph( unsigned int _id, bool _isRoot, Glyph3DNodeType _type, int _filtering_index = -1 );
 
 		void beginAdding( unsigned int count );
 		void add( Glyph3DNode* glyph );
@@ -53,9 +54,11 @@ namespace SynGlyphX
 		void disableAllTags() const { tag_enabled.clear(); }
 		void enumTagEnabled( std::function<void( const Glyph3DNode& glyph )> fn ) const;
 
+		void setFilterMode( FilteredResultsDisplayMode mode ) { filter_mode = mode; scene_changed = true; }
+		FilteredResultsDisplayMode getFilterMode() { return filter_mode; }
 		void setFiltered( unsigned int index );
 		void clearFilter() { filtered.clear(); scene_changed = true; filter_applied = false; }
-		bool isFiltered( const Glyph3DNode* node ) const { return filter_applied ? filtered.find( node ) != filtered.end() : true; }
+		bool isFiltered( const Glyph3DNode* node ) const;
 		bool filterApplied() const { return filter_applied; }	// true if any filters have been applied since clearFilter() was called
 		
 		Glyph3DNode* getGlyph3D( Glyph3DHandle handle );
@@ -85,6 +88,7 @@ namespace SynGlyphX
 
 		bool scene_changed;
 		bool selection_changed;
+		FilteredResultsDisplayMode filter_mode;
 
 		char* glyph_storage;
 		unsigned int glyph_storage_next, glyph_storage_size;

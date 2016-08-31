@@ -109,7 +109,7 @@ namespace SynGlyphX
 	}
 
 	GlyphRenderer::GlyphRenderer() : transform_binding_point( UINT_MAX ), material_binding_point( UINT_MAX ), selection_anim_max_scale( 64.f ),
-		animation( true ), global_wireframe( false ), scene( nullptr ), filter_mode( FilteredResultsDisplayMode::TranslucentUnfiltered ), filter_alpha( 0.5f ),
+		animation( true ), global_wireframe( false ), scene( nullptr ), filter_alpha( 0.5f ),
 		bound_vis_enabled( false )
 	{
 		glyph_effect = hal::device::create_effect( "shaders/glyph.vert", nullptr, "shaders/glyph.frag" );
@@ -132,7 +132,7 @@ namespace SynGlyphX
 	{
 		scene.enumGlyphs( [this, &scene]( const Glyph3DNode& glyph )
 		{
-			int filter = scene.isFiltered( glyph.getRootParent() ) ? FILTERED : UNFILTERED;
+			int filter = scene.isFiltered( &glyph ) ? FILTERED : UNFILTERED;
 
 			glyph_bucket* bucket = &solid[filter];
 			if ( global_wireframe || glyph.getWireframe() )
@@ -220,6 +220,7 @@ namespace SynGlyphX
 			context->bind( glyph_effect );
 			context->set_rasterizer_state( filled );
 			solid[FILTERED].draw( context, transform_binding_point, material_binding_point, anim_binding_point );
+			auto filter_mode = scene->getFilterMode();
 			if ( filter_mode == FilteredResultsDisplayMode::ShowUnfiltered ) solid[UNFILTERED].draw( context, transform_binding_point, material_binding_point, anim_binding_point );
 
 			context->set_rasterizer_state( wire );
@@ -248,6 +249,7 @@ namespace SynGlyphX
 			context->bind( glyph_effect );
 			blended[FILTERED].draw( context, transform_binding_point, material_binding_point, anim_binding_point );
 			wireframe_blended[FILTERED].draw( context, transform_binding_point, material_binding_point, anim_binding_point );
+			auto filter_mode = scene->getFilterMode();
 			if ( filter_mode == FilteredResultsDisplayMode::ShowUnfiltered )
 			{
 				blended[UNFILTERED].draw( context, transform_binding_point, material_binding_point, anim_binding_point );

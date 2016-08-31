@@ -10,13 +10,13 @@ namespace SynGlyphX
 		clear();
 	}
 
-	Glyph3DNode* GlyphScene::allocGlyph( unsigned int _id, bool _isRoot, int _filtering_index )
+	Glyph3DNode* GlyphScene::allocGlyph( unsigned int _id, bool _isRoot, Glyph3DNodeType _type, int _filtering_index )
 	{
 		assert( glyph_storage_size != 0u );
 		assert( glyph_storage_next < glyph_storage_size );
 		char* mem = glyph_storage + sizeof( Glyph3DNode ) * glyph_storage_next;
 		++glyph_storage_next;
-		return new ( mem ) Glyph3DNode( _id, _isRoot, _filtering_index );
+		return new ( mem ) Glyph3DNode( _id, _isRoot, _type, _filtering_index );
 	}
 
 	void GlyphScene::add( Glyph3DNode* glyph )
@@ -301,5 +301,25 @@ namespace SynGlyphX
 	void GlyphScene::debugPrint( const Glyph3DNode* node )
 	{
 		debug_print( *this, node->getRootParent(), 0u );
+	}
+
+	bool GlyphScene::isFiltered( const Glyph3DNode* node ) const
+	{
+		bool passes = true;
+		if ( filter_applied )
+		{
+			if ( node->getType() == Glyph3DNodeType::GlyphElement )
+				passes = filtered.find( node->getRootParent() ) != filtered.end();	// filtering is based on root node
+			else if ( node->getType() == Glyph3DNodeType::Link )
+			{
+				// if mode is translucent, show link if either of its targets pass the filter, otherwise show only if
+				// both of its targets pass the filter
+				if ( filter_mode == FilteredResultsDisplayMode::TranslucentUnfiltered )
+					passes = ( isFiltered( node->getLinkTarget1() ) || isFiltered( node->getLinkTarget2() ) );
+				else
+					passes = ( isFiltered( node->getLinkTarget1() ) && isFiltered( node->getLinkTarget2() ) );
+			}
+		}
+		return passes;
 	}
 }

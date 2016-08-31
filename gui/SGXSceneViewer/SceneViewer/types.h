@@ -18,7 +18,15 @@ namespace SynGlyphX
 		Icosahedron,
 		Pin,
 		Cylinder,
+		Link_Cylinder,
+		Link_Cube,
 		ErrorModel,
+	};
+
+	enum class LinkProfile
+	{
+		Circle,
+		Square,
 	};
 
 	enum class FilteredResultsDisplayMode : unsigned int

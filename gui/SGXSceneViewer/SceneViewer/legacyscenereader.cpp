@@ -7,13 +7,13 @@
 #include <sstream>
 #include <render/grid_renderer.h>
 #include <glm/gtx/euler_angles.hpp>
+#include <glm/gtx/rotate_vector.hpp>
 #include <hal/debug.h>
 #include "glyphscene.h"
 #include "glyphnode.h"
 #include "glyphgeometrydb.h"
 #include "legacyglyphplacement.h"
 #include "baseimagerenderer.h"
-#include "linksrenderer.h"
 
 namespace SynGlyphX
 {
@@ -228,7 +228,7 @@ namespace SynGlyphX
 	{
 		const float BASE_SCALE = 1.f;	// temporary scale to make objects more visible until topo code available
 
-		SGXSCENEVIEWER_API bool LoadLegacyScene( GlyphScene& scene, BaseImageRenderer& base_images, LinksRenderer& links, render::grid_renderer& grids, hal::texture* default_base_texture, const char* mainCSV, const char* tagCSV, const std::vector<hal::texture*>& base_image_textures )
+		SGXSCENEVIEWER_API bool LoadLegacyScene( GlyphScene& scene, BaseImageRenderer& base_images, render::grid_renderer& grids, hal::texture* default_base_texture, const char* mainCSV, const char* tagCSV, const std::vector<hal::texture*>& base_image_textures )
 		{
 			hal::debug::profile_timer timer;
 			unsigned int object_count = 0u;
@@ -303,7 +303,7 @@ namespace SynGlyphX
 							data.ratio = GetItemF( dataline, columns.ratio );
 							data.rotation_rates = GetItemVec3( dataline, columns.rotate_rate_x );
 
-							auto* glyphnode = scene.allocGlyph( data.id, data.is_root, data.is_root ? next_filtering_index++ : -1 );
+							auto* glyphnode = scene.allocGlyph( data.id, data.is_root, Glyph3DNodeType::GlyphElement, data.is_root ? next_filtering_index++ : -1 );
 							SetupGeometry( data.geom_type, *glyphnode );
 							glyphnode->setColor( data.color );
 							glyphnode->setPlacementPolicy( ChoosePlacementPolicy( data ) );
@@ -411,7 +411,27 @@ namespace SynGlyphX
 							float thickness = GetItemF( dataline, columns.ratio );
 							LinkProfile profile = ( geom_type == int( GeomType::CYLINDER ) ) ? LinkProfile::Circle : LinkProfile::Square;
 							hal::debug::_assert( glyph0 && glyph1, "can't find glyph referenced by link" );
-							if ( glyph0 && glyph1 ) links.add( glyph0, glyph1, color, thickness, profile );
+
+							if ( glyph0 && glyph1 )
+							{
+								// need linked glyphs to have up-to-date transforms so we know where to put the link
+								glyph0->getRootParent()->updateCachedTransforms();
+								glyph1->getRootParent()->updateCachedTransforms();
+								auto pt0 = glyph0->getCachedPosition();
+								auto pt1 = glyph1->getCachedPosition();
+								glm::vec3 origin = ( pt0 + pt1 ) * 0.5f;
+								auto translate = glm::translate( glm::mat4(), origin );
+								auto rotate = glm::orientation( glm::normalize( pt1 - pt0 ), glm::vec3( 0.f, 0.f, 1.f ) );
+								float length = glm::length( pt0 - pt1 );
+								auto scale = glm::scale( glm::mat4(), glm::vec3( thickness, thickness, length ) );
+
+								Glyph3DNode* linknode = scene.allocGlyph( GetItemI( dataline, columns.id ), true, Glyph3DNodeType::Link );
+								linknode->setCachedTransform( translate * rotate * scale );
+								linknode->setColor( color );
+								linknode->setGeometry( profile == LinkProfile::Circle ? GlyphShape::Link_Cylinder : GlyphShape::Link_Cube );
+								linknode->setLinkTargets( glyph0, glyph1 );
+								scene.add( linknode );
+							}
 						}
 					}
 				}
