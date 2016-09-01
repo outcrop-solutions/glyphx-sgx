@@ -25,13 +25,11 @@ vec3 dir_light(vec3 surface_normal, vec3 light_dir, vec3 light_color)
     return ret;
 }
 
-vec3 get_lighting(vec3 surface_normal, vec3 eye, float rim_scale)
+vec3 get_lighting(vec3 surface_normal, vec3 eye, float intensity0, float intensity1, float rim_scale)
 {
 	const vec3 ambient = vec3( 0.2 );
-	const float light1_str = 0.5;
-	const float light2_str = 0.15;
-	const vec3 color1 = vec3( light1_str );
-	const vec3 color2 = vec3( light2_str );
+	vec3 color1 = vec3( intensity0 );
+	vec3 color2 = vec3( intensity1 );
 	vec3 light_dir = normalize( vec3( 1, 1, -1 ) );
     vec3 light1 = dir_light( surface_normal, -light_dir, color1 );
     vec3 light2 = dir_light( surface_normal, light_dir, color2 );

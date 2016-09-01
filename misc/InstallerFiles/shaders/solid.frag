@@ -10,6 +10,6 @@ layout(std140) uniform material
 
 void main()
 {
-	vec3 lit = tint_color.rgb * get_lighting( frag_normal, scene_eye, 0 );
+	vec3 lit = tint_color.rgb * get_lighting( frag_normal, scene_eye, 1, 0.25, 0 );
     outputF = vec4( lit, tint_color.a );
 }
