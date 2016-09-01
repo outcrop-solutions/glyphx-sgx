@@ -664,7 +664,7 @@ namespace SynGlyphX
 						&& pos2d.y > std::min( drag_info( button::left ).drag_start_y, mouse_y )
 						&& pos2d.y < std::max( drag_info( button::left ).drag_start_y, mouse_y ) )
 					{
-						if ( scene.getFilterMode() != FilteredResultsDisplayMode::HideUnfiltered || scene.isFiltered( &node ) )
+						if ( scene.getFilterMode() != FilteredResultsDisplayMode::HideUnfiltered || scene.passedFilter( &node ) )
 						{
 							if ( !alt )
 								scene.setSelected( &node );
@@ -823,7 +823,7 @@ namespace SynGlyphX
 	{
 		scene.clearFilter();
 		for ( auto index : results )
-			scene.setFiltered( index );
+			scene.setPassedFilter( index );
 	}
 
 	void SceneViewer::setAxisNames( const char* X, const char* Y, const char* Z )

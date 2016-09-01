@@ -56,9 +56,9 @@ namespace SynGlyphX
 
 		void setFilterMode( FilteredResultsDisplayMode mode ) { filter_mode = mode; scene_changed = true; }
 		FilteredResultsDisplayMode getFilterMode() { return filter_mode; }
-		void setFiltered( unsigned int index );
+		void setPassedFilter( unsigned int index );
 		void clearFilter() { filtered.clear(); scene_changed = true; filter_applied = false; }
-		bool isFiltered( const Glyph3DNode* node ) const;
+		bool passedFilter( const Glyph3DNode* node ) const;
 		bool filterApplied() const { return filter_applied; }	// true if any filters have been applied since clearFilter() was called
 		
 		Glyph3DNode* getGlyph3D( Glyph3DHandle handle );

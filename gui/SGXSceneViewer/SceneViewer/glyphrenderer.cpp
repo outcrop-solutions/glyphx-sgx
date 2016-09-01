@@ -132,7 +132,7 @@ namespace SynGlyphX
 	{
 		scene.enumGlyphs( [this, &scene]( const Glyph3DNode& glyph )
 		{
-			int filter = scene.isFiltered( &glyph ) ? FILTERED : UNFILTERED;
+			int filter = scene.passedFilter( &glyph ) ? FILTERED : UNFILTERED;
 
 			glyph_bucket* bucket = &solid[filter];
 			if ( global_wireframe || glyph.getWireframe() )
