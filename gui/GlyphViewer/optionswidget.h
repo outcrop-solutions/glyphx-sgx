@@ -72,7 +72,9 @@ private:
 #endif
 
 	QCheckBox* m_showDownloadedImageErrorMessages;
-	
+	QCheckBox* m_showHomePage;
+
+
 	QCheckBox* m_showHUDAxisInfoObjectCheckBox;
 	QComboBox* m_axisObjectLocationComboBox;
 

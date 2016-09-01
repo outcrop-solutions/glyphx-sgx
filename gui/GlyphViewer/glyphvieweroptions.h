@@ -45,7 +45,8 @@ public:
 
 	void SetShowMessageWhenImagesDidNotDownload(bool showMessageWhenImagesDidNotDownload);
 	bool GetShowMessageWhenImagesDidNotDownload() const;
-
+	void SetShowHomePage(bool v) { m_showHomePage = v;  }
+	bool GetShowHomePage() const { return m_showHomePage;  }
 	void SetLoadSubsetVisualization(bool loadSubsetVisualization);
 	bool GetLoadSubsetVisualization() const;
 
@@ -77,6 +78,7 @@ private:
 
 	//UI options
 	bool m_showMessageWhenImagesDidNotDownload;
+	bool m_showHomePage;
 };
 
 #endif //GLYPHVIEWEROPTIONS_H

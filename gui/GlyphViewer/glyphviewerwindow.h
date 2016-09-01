@@ -142,6 +142,7 @@ private:
 	SynGlyphX::DataTransformModel* m_mappingModel;
 	CacheManager m_cacheManager;
 	bool m_showErrorFromTransform;
+	bool m_showHomePage;
 
 	LinkedWidgetsManager* m_linkedWidgetsManager;
 

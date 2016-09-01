@@ -168,9 +168,12 @@ void OptionsWidget::CreateUITab() {
 	tabLayout->addWidget(m_showDownloadedImageErrorMessages);
 
 	QGroupBox* homePageGroupBox = new QGroupBox(tr("Home Page"), tab);
+	QVBoxLayout* homePageLayout = new QVBoxLayout(tab);
 
+	m_showHomePage = new QCheckBox(tr("Show home page on startup"), this);
+	homePageLayout->addWidget(m_showHomePage);
 	QHBoxLayout* clearListsLayout = new QHBoxLayout(tab);
-
+	homePageLayout->addLayout(clearListsLayout);
 	m_clearRecentListButton = new QPushButton(tr("Clear Recent Views"), tab);
 	clearListsLayout->addWidget(m_clearRecentListButton);
 	QObject::connect(m_clearRecentListButton, &QPushButton::clicked, this, &OptionsWidget::OnClearRecentViews);
@@ -179,7 +182,7 @@ void OptionsWidget::CreateUITab() {
 	clearListsLayout->addWidget(m_clearSubsetListButton);
 	QObject::connect(m_clearSubsetListButton, &QPushButton::clicked, this, &OptionsWidget::OnClearSubsetViews);
 
-	homePageGroupBox->setLayout(clearListsLayout);
+	homePageGroupBox->setLayout(homePageLayout);
 
 	tabLayout->addWidget(homePageGroupBox);
 
@@ -236,6 +239,7 @@ GlyphViewerOptions OptionsWidget::GetOptions() const {
 
 	//UI
 	options.SetShowMessageWhenImagesDidNotDownload(m_showDownloadedImageErrorMessages->isChecked());
+	options.SetShowHomePage(m_showHomePage->isChecked());
 
 	return options;
 }
@@ -269,6 +273,7 @@ void OptionsWidget::SetFilteringValues(const GlyphViewerOptions& options) {
 void OptionsWidget::SetUIValues(const GlyphViewerOptions& options) {
 
 	m_showDownloadedImageErrorMessages->setChecked(options.GetShowMessageWhenImagesDidNotDownload());
+	m_showHomePage->setChecked(options.GetShowHomePage());
 	m_clearRecentListButton->setEnabled(!GlyphViewerWindow::GetRecentFileListInstance().GetFiles().isEmpty());
 	m_clearSubsetListButton->setEnabled(!GlyphViewerWindow::GetSubsetFileListInstance().GetFiles().isEmpty());
 }

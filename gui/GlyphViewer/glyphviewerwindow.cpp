@@ -46,6 +46,7 @@ GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 	: SynGlyphX::MainWindow(4, parent),
 	m_viewer( nullptr ),
 	m_showErrorFromTransform(true),
+	m_showHomePage(false),
 	m_dataEngineConnection(nullptr)
 {
 	m_dataEngineConnection = std::make_shared<DataEngine::DataEngineConnection>();
@@ -98,6 +99,7 @@ GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 		
 		CreateANTzWidget();
 	}
+
 	catch (const std::exception& e) {
 
 		QMessageBox::critical(nullptr, tr("3D view error"), tr("3D view failed to create: ") + e.what());
@@ -950,6 +952,10 @@ void GlyphViewerWindow::ChangeOptions(const GlyphViewerOptions& oldOptions, cons
 		}
 
 		m_viewer->setFilteredGlyphOpacity( newOptions.GetFilteredGlyphOpacity() );
+		if (oldOptions.GetShowHomePage() != newOptions.GetShowHomePage()) {
+
+			m_showHomePage = newOptions.GetShowHomePage();
+		}
 	}
 
 	m_showHideHUDAxisAction->setChecked(newOptions.GetShowHUDAxisObject());
@@ -1023,6 +1029,10 @@ void GlyphViewerWindow::ReadSettings() {
 	options.ReadFromSettings();
 
 	ChangeOptions(CollectOptions(), options);
+	if (m_showHomePage)
+		dynamic_cast<QStackedWidget*>(centralWidget())->setCurrentIndex(0);
+	else
+		dynamic_cast<QStackedWidget*>(centralWidget())->setCurrentIndex(1);
 }
 
 void GlyphViewerWindow::WriteSettings() {
@@ -1107,6 +1117,7 @@ GlyphViewerOptions GlyphViewerWindow::CollectOptions() {
 	options.SetLoadSubsetVisualizationInNewInstance(m_filteringWidget->GetLoadSubsetVisualizationInNewInstance());
 
 	options.SetShowMessageWhenImagesDidNotDownload(m_showErrorFromTransform);
+	options.SetShowHomePage(m_showHomePage);
 
 	return options;
 }
