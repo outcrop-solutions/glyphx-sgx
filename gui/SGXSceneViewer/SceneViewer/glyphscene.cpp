@@ -102,7 +102,7 @@ namespace SynGlyphX
 		// Gather candidates by picking against the octree.
 		std::unordered_set<const Glyph3DNode*> candidates;
 		octree->pick( ray_origin, ray_dir, [&]( const Glyph3DNode* node ) {
-			if ( include_filtered_out || isFiltered( node ) )
+			if ( include_filtered_out || passedFilter( node ) )
 				candidates.insert( node );
 		} );
 
@@ -255,7 +255,7 @@ namespace SynGlyphX
 		}
 	}
 
-	void GlyphScene::setFiltered( unsigned int index )
+	void GlyphScene::setPassedFilter( unsigned int index )
 	{
 		auto it = glyphs_by_filtering_index.find( index );
 		hal::debug::print( "filtering index %i", index );
@@ -274,7 +274,7 @@ namespace SynGlyphX
 		// clear elements that fail the filter from the current selection
 		for ( auto it = selection.begin(); it != selection.end(); /* intentionally blank */ )
 		{
-			if ( !isFiltered( *it ) )
+			if ( !passedFilter( *it ) )
 				selection.erase( it++ );
 			else
 				++it;
@@ -308,7 +308,7 @@ namespace SynGlyphX
 		debug_print( *this, node->getRootParent(), 0u );
 	}
 
-	bool GlyphScene::isFiltered( const Glyph3DNode* node ) const
+	bool GlyphScene::passedFilter( const Glyph3DNode* node ) const
 	{
 		bool passes = true;
 		if ( filter_applied )
@@ -320,9 +320,9 @@ namespace SynGlyphX
 				// if mode is translucent, show link if either of its targets pass the filter, otherwise show only if
 				// both of its targets pass the filter
 				if ( filter_mode == FilteredResultsDisplayMode::TranslucentUnfiltered )
-					passes = ( isFiltered( node->getLinkTarget1() ) || isFiltered( node->getLinkTarget2() ) );
+					passes = ( passedFilter( node->getLinkTarget1() ) || passedFilter( node->getLinkTarget2() ) );
 				else
-					passes = ( isFiltered( node->getLinkTarget1() ) && isFiltered( node->getLinkTarget2() ) );
+					passes = ( passedFilter( node->getLinkTarget1() ) && passedFilter( node->getLinkTarget2() ) );
 			}
 		}
 		return passes;
