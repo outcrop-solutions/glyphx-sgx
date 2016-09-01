@@ -55,7 +55,7 @@ namespace SynGlyphX
 		octree = new render::octree<Glyph3DNode>( scene_bound, render::octree_settings{ 0.1f, 4u, 16u } );
 
 		hal::debug::profile_timer timer1;
-		for ( auto g : glyphs )
+		for ( auto& g : glyphs )
 			if ( g.second->isRoot() ) octree->insert( g.second, g.second->getCachedCombinedBound() );
 		octree->gather_stats_DEBUG();
 		timer1.print_ms_to_debug( "built octree" );
@@ -65,7 +65,12 @@ namespace SynGlyphX
 	{
 		bound_update_needed = true;
 		scene_changed = true;
-		delete[] glyph_storage;
+		if ( glyph_storage )
+		{
+			for ( auto& g : glyphs )
+				g.second->~Glyph3DNode();		// explicit destruct since we used placement new
+			delete[] glyph_storage;
+		}
 		glyph_storage = nullptr;
 		glyph_storage_next = 0u;
 		glyphs.clear();
