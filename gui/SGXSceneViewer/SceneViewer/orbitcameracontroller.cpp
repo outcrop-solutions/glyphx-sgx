@@ -6,7 +6,7 @@
 namespace SynGlyphX
 {
 	OrbitCameraController::OrbitCameraController( render::perspective_camera* _camera )
-		: camera( _camera ), turn_speed( 32.f ), move_speed( 32.f ), flying_to_target( false ), turning_to_target( false ), orbit_max_dist( 1000.f )
+		: camera( _camera ), turn_speed( 32.f ), move_speed( 32.f ), flying_to_target( false ), sliding_to_target( false ), orbit_max_dist( 1000.f )
 	{
 	}
 
@@ -27,18 +27,13 @@ namespace SynGlyphX
 		orbit_new_dist = std::max( orbit_new_dist, orbit_min_dist );
 		orbit_new_dist = std::min( orbit_new_dist, orbit_max_dist );
 
-		glm::vec3 desired_fwd = glm::normalize( orbit_target - cam_pos );
-		auto fwd = camera->get_forward();
-		auto interp = glm::normalize( glm::lerp( fwd, desired_fwd, 0.25f ) );
-		camera->set_forward( interp );
-
-		if ( turning_to_target && acosf( glm::dot( fwd, desired_fwd ) ) < 0.001f )
-			turning_to_target = false;
-		if ( glm::length( angle_motion ) > 1.f )
-			turning_to_target = false;
-
 		if ( flying_to_target )
 		{
+			glm::vec3 desired_fwd = glm::normalize( orbit_target - cam_pos );
+			auto fwd = camera->get_forward();
+			auto interp = glm::normalize( glm::lerp( fwd, desired_fwd, 0.25f ) );
+			camera->set_forward( interp );
+
 			float fly_target_dist = orbit_min_dist * 10.f;
 			glm::vec3 camera_to_object = -glm::normalize( cam_pos - orbit_target );
 			float dist_to_travel = orbit_cur_dist - fly_target_dist;
@@ -47,12 +42,22 @@ namespace SynGlyphX
 			if ( glm::length( camera->get_position() - orbit_target ) < ( fly_target_dist + 0.1f ) )
 				cancelFlyToTarget();
 		}
-		else if ( !turning_to_target )
+		else if ( sliding_to_target )
+		{
+			glm::vec3 new_cam_pos = glm::lerp( camera_slide_origin, camera_slide_target, glm::smoothstep( 0.f, 1.f, slide_state ) );
+			const float slide_speed = 0.005f;
+			slide_state = slide_state + timeDelta * slide_speed;
+			if ( slide_state >= 1.f )
+				sliding_to_target = false;
+			camera->set_position( new_cam_pos );
+		}
+		else
 		{
 			// Slightly clunky way to restrict pitching the camera into a singularity. If the current vertical angle delta will
 			// put us close to 90 degrees, clamp it to just under.
-			glm::vec3 unit_target_to_camera = glm::normalize( target_to_camera );
-			glm::vec3 fwd_proj_xy = glm::normalize( glm::vec3( fwd.x, fwd.y, 0.f ) );
+			auto unit_target_to_camera = glm::normalize( target_to_camera );
+			auto fwd = camera->get_forward();
+			auto fwd_proj_xy = glm::normalize( glm::vec3( fwd.x, fwd.y, 0.f ) );
 			float pitch = acosf( dot( unit_target_to_camera, -fwd_proj_xy ) );
 			if ( unit_target_to_camera.z < 0.f ) pitch = -pitch;
 			const float pitch_limit = 1.5f;
@@ -86,5 +91,26 @@ namespace SynGlyphX
 
 	void OrbitCameraController::doActivate()
 	{
+	}
+
+	void OrbitCameraController::setOrbitTarget( const glm::vec3& pos )
+	{
+		if ( orbit_target != pos )
+		{
+			auto old_orbit_target = orbit_target;
+			camera_slide_origin = camera->get_position();
+			orbit_target = pos;
+			sliding_to_target = true;
+			slide_state = 0.f;
+
+			// maintain camera orientation and try to maintain distance
+			camera_slide_target = orbit_target + -camera->get_forward() * glm::distance( camera->get_position(), old_orbit_target );
+		}
+	}
+
+	void OrbitCameraController::cancelFlyToTarget()
+	{
+		flying_to_target = false;
+		sliding_to_target = false;
 	}
 }

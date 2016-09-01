@@ -16,7 +16,9 @@ namespace SynGlyphX
 			SGXGRAPHICS_API void print_noln( const char* message, ... );
 			SGXGRAPHICS_API void debug_break();
 			SGXGRAPHICS_API void _assert( bool condition, const char* message, ... );
-			SGXGRAPHICS_API void print_matrix( const glm::mat4& mat );
+			SGXGRAPHICS_API void print_val( const glm::mat4& mat );
+			SGXGRAPHICS_API void print_val( const glm::vec3& vec );
+			SGXGRAPHICS_API void print_val( const glm::vec4& vec );
 
 			class SGXGRAPHICS_API profile_timer
 			{
