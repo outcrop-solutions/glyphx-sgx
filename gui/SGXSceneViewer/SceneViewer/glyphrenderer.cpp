@@ -239,6 +239,7 @@ namespace SynGlyphX
 			context->set_constant( glyph_effect, "scene_data", "view", camera->get_view() );
 			context->set_constant( glyph_effect, "scene_data", "proj", camera->get_proj() );
 			context->set_constant( glyph_effect, "scene_data", "elapsed_seconds", animation ? elapsed_seconds : zero );
+			context->set_constant( glyph_effect, "scene_data", "eye", camera->get_eye() );
 
 			hal::rasterizer_state filled{ true, true, false };
 			

@@ -3,6 +3,7 @@ layout(std140) uniform scene_data
 {
 	mat4 view, proj;
 	float elapsed_seconds;
+	vec3 eye;
 };
 
 layout(std140) uniform instance_data
@@ -24,6 +25,7 @@ layout (location = 0) in vec3 position;
 layout (location = 1) in vec3 normal;
 out vec3 frag_normal;
 out vec4 frag_color;
+out vec3 scene_eye;
 
 void main()
 {
@@ -33,7 +35,9 @@ void main()
 
 	vec3 pos = rotation_mat * position.xyz;
 
-	frag_normal = normalize( ( world[gl_InstanceID] * vec4( rotation_mat * normal, 0 )  ).xyz );
+	frag_normal = normalize( ( inverse( transpose( world[gl_InstanceID] ) ) * vec4( rotation_mat * normal, 0 )  ).xyz );
 	frag_color = color[gl_InstanceID];
+	scene_eye = eye;
     gl_Position = proj * ( view * ( world[gl_InstanceID] * vec4( pos, 1 ) ) );
 }
+ 
