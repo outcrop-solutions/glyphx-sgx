@@ -34,7 +34,8 @@ namespace SynGlyphX
 	{
 		const unsigned int navigationButtonSize = 24;
 		const float buttonRotateRate = 1.f;
-		const float buttonMoveRate = 10.f;
+		const float buttonMoveUpDownRate = 0.5f;
+		const float buttonMoveForwardBackRate = 1.f;
 		const float flyToObjectDistance = 5.f;
 	}
 
@@ -73,21 +74,21 @@ namespace SynGlyphX
 				cur_cam_control->move( glm::vec3( 0.f, 0.f, amt ) );
 		};
 
-		m_moveForwardButton = CreateNavigationButton( tr( "Move Forward" ), false );
+		m_moveForwardButton = CreateNavigationButton( tr( "Move Forward" ), true );
 		m_moveForwardButton->setIcon( QIcon( ":SGXGUI/Resources/plus.png" ) );
-		QObject::connect( m_moveForwardButton, &QToolButton::pressed, this, [this, move]() { move( camera->get_forward(), buttonMoveRate ); } );
+		QObject::connect( m_moveForwardButton, &QToolButton::pressed, this, [this, move]() { move( camera->get_forward(), buttonMoveForwardBackRate ); } );
 
-		m_moveBackwardButton = CreateNavigationButton( tr( "Move Backward" ), false );
+		m_moveBackwardButton = CreateNavigationButton( tr( "Move Backward" ), true );
 		m_moveBackwardButton->setIcon( QIcon( ":SGXGUI/Resources/minus.png" ) );
-		QObject::connect( m_moveBackwardButton, &QToolButton::pressed, this, [this, move]() { move( camera->get_forward(), -buttonMoveRate ); } );
+		QObject::connect( m_moveBackwardButton, &QToolButton::pressed, this, [this, move]() { move( camera->get_forward(), -buttonMoveForwardBackRate ); } );
 
-		m_moveUpButton = CreateNavigationButton( tr( "Move Up" ), false );
+		m_moveUpButton = CreateNavigationButton( tr( "Move Up" ), true );
 		m_moveUpButton->setIcon( QIcon( ":SGXGUI/Resources/up_arrow.png" ) );
-		QObject::connect( m_moveUpButton, &QToolButton::pressed, this, [this, move]() { move( camera->get_world_up(), buttonMoveRate ); } );
+		QObject::connect( m_moveUpButton, &QToolButton::pressed, this, [this, move]() { move( camera->get_world_up(), buttonMoveUpDownRate ); } );
 
-		m_moveDownButton = CreateNavigationButton( tr( "Move Down" ), false );
+		m_moveDownButton = CreateNavigationButton( tr( "Move Down" ), true );
 		m_moveDownButton->setIcon( QIcon( ":SGXGUI/Resources/down_arrow.png" ) );
-		QObject::connect( m_moveDownButton, &QToolButton::pressed, this, [this, move]() { move( camera->get_world_up(), -buttonMoveRate ); } );
+		QObject::connect( m_moveDownButton, &QToolButton::pressed, this, [this, move]() { move( camera->get_world_up(), -buttonMoveUpDownRate ); } );
 
 		desired_selection_dist = flyToObjectDistance;
 	}
