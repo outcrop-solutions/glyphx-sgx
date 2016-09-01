@@ -292,7 +292,8 @@ namespace SynGlyphX
 							GlyphCSVData data;
 							data.id = GetItemI( dataline, columns.id );
 							data.parent_id = GetItemI( dataline, columns.parent_id );
-							data.is_root = ( data.parent_id == 0 );
+							Glyph3DNode* parent = data.parent_id ? scene.getGlyph3D( data.parent_id ) : nullptr;
+							data.is_root = ( data.parent_id == 0 ) || !parent;
 							data.color = GetItemColor( dataline, columns.r );
 							data.pos = GetItemVec3( dataline, columns.x );
 							data.rot = GetItemVec3( dataline, columns.rx );
@@ -302,6 +303,8 @@ namespace SynGlyphX
 							data.topo = GetItemI( dataline, columns.topo );
 							data.ratio = GetItemF( dataline, columns.ratio );
 							data.rotation_rates = GetItemVec3( dataline, columns.rotate_rate_x );
+
+							hal::debug::_assert( data.parent_id == 0 || parent, "glyph %i is parented to nonexistent glyph %i", data.id, data.parent_id );
 
 							auto* glyphnode = scene.allocGlyph( data.id, data.is_root, Glyph3DNodeType::GlyphElement, data.is_root ? next_filtering_index++ : -1 );
 							SetupGeometry( data.geom_type, *glyphnode );
@@ -363,9 +366,9 @@ namespace SynGlyphX
 							}
 							else
 							{
-								auto parent = scene.getGlyph3D( data.parent_id );
-								assert( parent );	// this expects CSV to always have parents before children
-								parent->setChild( glyphnode );
+								auto glyph_parent = scene.getGlyph3D( data.parent_id );
+								assert( glyph_parent );	// this expects CSV to always have parents before children
+								glyph_parent->setChild( glyphnode );
 							}
 							scene.add( glyphnode );
 						}
