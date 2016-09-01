@@ -135,6 +135,7 @@
       </PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="hal\context.cpp" />
+    <ClCompile Include="hal\debug.cpp" />
     <ClCompile Include="hal\device.cpp" />
     <ClCompile Include="hal\internal\context_internal.cpp" />
     <ClCompile Include="hal\internal\debug_internal.cpp" />

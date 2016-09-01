@@ -20,12 +20,12 @@ namespace SynGlyphX
 		void setMovementSpeed( float speed ) override { move_speed = speed; }
 		void setTurnSpeed( float speed ) override { turn_speed = speed; }
 
-		void setOrbitTarget( const glm::vec3& pos ) { if ( orbit_target != pos ) { orbit_target = pos; turning_to_target = true; } }
+		void setOrbitTarget( const glm::vec3& pos );
 		void setOrbitMinDistance( const float dist ) { orbit_min_dist = dist; }
 		void setOrbitMaxDistance( const float dist ) { orbit_max_dist = dist; }
 
 		void flyToTarget() { flying_to_target = true; }
-		void cancelFlyToTarget() { flying_to_target = false; }
+		void cancelFlyToTarget();
 
 	protected:
 		void doActivate() override;
@@ -36,7 +36,11 @@ namespace SynGlyphX
 		glm::vec3 orbit_target;
 		float orbit_min_dist, orbit_max_dist;
 		float orbit_cur_dist;
-		bool flying_to_target, turning_to_target;
+		bool flying_to_target;
 		float move_speed, turn_speed;
+
+		bool sliding_to_target;
+		float slide_state;
+		glm::vec3 camera_slide_origin, camera_slide_target;
 	};
 }

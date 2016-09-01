@@ -148,6 +148,9 @@
     <ClCompile Include="render\color.cpp">
       <Filter>render</Filter>
     </ClCompile>
+    <ClCompile Include="hal\debug.cpp">
+      <Filter>hal</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="hal">
