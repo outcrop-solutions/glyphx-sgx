@@ -15,7 +15,7 @@ namespace SynGlyphX
 			perspective_camera( unsigned int _viewport_w = 512u, unsigned int _viewport_h = 512u );
 			void update_viewport_size( unsigned int w, unsigned int h ) { viewport_w = w; viewport_h = h; }
 
-			const glm::vec3& get_position() const { return pos; }
+			const glm::vec3& get_position() const override { return pos; }
 			void set_position( const glm::vec3& _pos ) { pos = _pos; dirty = true; }
 
 			const glm::vec3& get_world_up() const { return world_up; }
@@ -35,7 +35,7 @@ namespace SynGlyphX
 
 			const glm::mat4& get_view() const override { recalculate(); return view; }
 			const glm::mat4& get_proj() const override { recalculate(); return proj; }
-			const glm::vec3& get_eye() const override { return fwd; }
+			const glm::vec3& get_eye() const { return fwd; }
 
 			unsigned int get_viewport_w() { return viewport_w; }
 			unsigned int get_viewport_h() { return viewport_h; }
