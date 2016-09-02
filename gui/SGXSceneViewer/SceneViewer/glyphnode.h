@@ -124,7 +124,7 @@ namespace SynGlyphX
 		bool root : 1;
 		bool is_link : 1;
 		Glyph3DNodeType type : 1;
-		GlyphShape geometry : 8;
+		GlyphShape geometry : 4;
 
 		friend class GlyphScene;	// so glyphscene can instantiate
 	};
