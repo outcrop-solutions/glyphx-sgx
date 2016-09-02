@@ -116,5 +116,10 @@ namespace SynGlyphX
 			root = root->parent;
 		return root;
 	}
+
+	glm::mat4 Glyph3DNode::getVisualTransform() const
+	{
+		return glm::scale( glm::mat4(), visual_scale ); 
+	}
 }
 

@@ -8,6 +8,10 @@ namespace SynGlyphX
 {
 	namespace render
 	{
+		typedef uint32_t packed_color;
+		SGXGRAPHICS_API packed_color pack_color( const glm::vec4& color );
+		SGXGRAPHICS_API glm::vec4 unpack_color( packed_color packed_color );
+
 		namespace color
 		{
 			SGXGRAPHICS_API glm::vec4 red();
