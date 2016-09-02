@@ -4,6 +4,7 @@
 #include "../platform.h"
 #include <render/types.h>
 #include <render/bounds.h>
+#include <render/color.h>
 #include <functional>
 #include "types.h"
 
@@ -62,8 +63,8 @@ namespace SynGlyphX
 
 		// additional transform that's applied during rendering and picking, but that isn't inherited by
 		// this node's children.
-		const glm::mat4& getVisualTransform() const { return visual_transform; }
-		void setVisualTransform( const glm::mat4& vtransform ) const { visual_transform = vtransform; }
+		glm::mat4 getVisualTransform() const;
+		void setVisualScale( const glm::vec3& vscale ) const { visual_scale = vscale; }
 
 		const glm::mat4& getCachedTransform() const { return cached_transform; }
 		glm::vec3 getCachedPosition() const { return glm::vec3( cached_transform[3] ); }
@@ -76,8 +77,8 @@ namespace SynGlyphX
 		const Glyph3DNode* getParent() const { return parent; };
 		const Glyph3DNode* getRootParent() const;
 
-		const glm::vec4& getColor() const { return color; }
-		void setColor( const glm::vec4& _color ) { color = _color; }
+		glm::vec4 getColor() const { return render::unpack_color( color ); }
+		void setColor( const glm::vec4& _color ) { color = render::pack_color( _color ); }
 
 		bool getWireframe() const { return wireframe; }
 		void setWireframe( bool _wireframe ) { wireframe = _wireframe; }
@@ -97,32 +98,34 @@ namespace SynGlyphX
 			torus_ratio( 0.1f ), filtering_index( _filtering_index ), parent( nullptr ), type( _type ) { }
 
 		PlacementPolicy* placement;
-		GlyphShape geometry;
 
 		glm::vec3 local_position;
 		glm::vec3 local_rotation;
 		glm::vec3 local_scale;
 		float torus_ratio;
 
-		glm::vec4 color;
+		render::packed_color color;
 		glm::vec3 animation_axis;
 		float animation_rate;
-		bool wireframe, root;
 		std::vector<Glyph3DNode*> children;
 		const Glyph3DNode* link_a, *link_b;
 		Glyph3DNode* parent;
 		const char* tag;
 		unsigned int id;
 		int filtering_index;
-		bool is_link;
-
-		Glyph3DNodeType type;
-
-		friend class GlyphScene;	// so glyphscene can instantiate
 
 		// Cached and temporary settings that don't affect logical const-ness of object.
 		mutable glm::mat4 cached_transform;
 		mutable render::sphere_bound bound, combined_bound;
-		mutable glm::mat4 visual_transform;
+		mutable glm::vec3 visual_scale;
+
+		// flags( packed )
+		bool wireframe : 1;
+		bool root : 1;
+		bool is_link : 1;
+		Glyph3DNodeType type : 1;
+		GlyphShape geometry : 8;
+
+		friend class GlyphScene;	// so glyphscene can instantiate
 	};
 }

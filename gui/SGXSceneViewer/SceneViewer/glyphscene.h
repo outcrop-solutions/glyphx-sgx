@@ -16,7 +16,7 @@ namespace SynGlyphX
 	{
 	public:
 		GlyphScene() : octree( nullptr ), filter_applied( false ), selection_changed( false ), glyph_storage( nullptr ), glyph_storage_next( 0u ),
-			filter_mode( FilteredResultsDisplayMode::TranslucentUnfiltered ) { }
+			filter_mode( FilteredResultsDisplayMode::TranslucentUnfiltered ) { hal::debug::print( "sizeof(Glyph3DNode)=%i", sizeof( Glyph3DNode ) ); /*temp test*/ }
 		~GlyphScene();
 		GlyphScene( const GlyphScene& ) = delete;
 

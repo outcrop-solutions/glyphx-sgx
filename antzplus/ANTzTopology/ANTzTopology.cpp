@@ -36,9 +36,10 @@ namespace SynGlyphXANTz {
 			transform = glm::translate(transform, glm::vec3(0.0f, 0.0f, s_offsetUnit));
 	}
 
-	void ANTzPlacementPolicy::ApplyFinalChildOffset(const SynGlyphX::Glyph3DNode& glyph, glm::mat4& transform, glm::mat4& visual_transform) {
+	void ANTzPlacementPolicy::ApplyFinalChildOffset(const SynGlyphX::Glyph3DNode& glyph, glm::mat4& transform, glm::vec3& visual_scale) {
 
 		const ANTzPinPlacementPolicy* const placementPolicy = dynamic_cast<const ANTzPinPlacementPolicy* const>(glyph.getPlacementPolicy());
+		visual_scale = glm::vec3( 1.f, 1.f, 1.f );
 
 		if (placementPolicy != nullptr) {
 
@@ -48,7 +49,7 @@ namespace SynGlyphXANTz {
 			}
 			else if (placementPolicy->isRodTopology())
 			{					//width uses ratio, length uses scale 2 * 5 = 10
-				visual_transform = glm::scale(visual_transform, glm::vec3(glyph.getTorusRatio() * 2.0f, glyph.getTorusRatio() * 2.0f, glyph.getLocalScale().z * s_offsetPin));
+				visual_scale = glm::vec3( glyph.getTorusRatio() * 2.0f, glyph.getTorusRatio() * 2.0f, glyph.getLocalScale().z * s_offsetPin );
 				transform = glm::translate(transform, glm::vec3(0.0f, 0.0f, s_offsetUnit));
 			}
 		}
@@ -103,11 +104,11 @@ namespace SynGlyphXANTz {
 
 			ApplyRotation(childGlyph->getLocalRotation(), transform);
 
-			glm::mat4 visual_transform;
-			ApplyFinalChildOffset(*childGlyph, transform, visual_transform);
+			glm::vec3 visual_scale;
+			ApplyFinalChildOffset(*childGlyph, transform, visual_scale);
 
 			childGlyph->setCachedTransform(transform);
-			childGlyph->setVisualTransform(visual_transform);
+			childGlyph->setVisualScale(visual_scale);
 		}
 	}
 
@@ -169,11 +170,11 @@ namespace SynGlyphXANTz {
 			}	 	
 
 			ApplyNonPinRodOffset(*childGlyph, glyph, transform);
-			glm::mat4 visual_transform;
-			ApplyFinalChildOffset(*childGlyph, transform, visual_transform);
+			glm::vec3 visual_scale;
+			ApplyFinalChildOffset(*childGlyph, transform, visual_scale);
 
 			childGlyph->setCachedTransform(transform);
-			childGlyph->setVisualTransform(visual_transform);
+			childGlyph->setVisualScale(visual_scale);
 		}
 	}
 
@@ -213,11 +214,11 @@ namespace SynGlyphXANTz {
 				transform = glm::scale(transform, glm::vec3(childScale.x * 0.25f, childScale.y * 0.25f, childScale.z * 0.25f));	//node scale
 
 			ApplyNonPinRodOffset(*childGlyph, glyph, transform);
-			glm::mat4 visual_transform;
-			ApplyFinalChildOffset(*childGlyph, transform, visual_transform );
+			glm::vec3 visual_scale;
+			ApplyFinalChildOffset(*childGlyph, transform, visual_scale );
 
 			childGlyph->setCachedTransform(transform);
-			childGlyph->setVisualTransform( visual_transform );
+			childGlyph->setVisualScale( visual_scale );
 		}
 	}
 
@@ -253,11 +254,11 @@ namespace SynGlyphXANTz {
 				transform = glm::scale(transform, glm::vec3(childScale.x * 0.25f, childScale.y * 0.25f, childScale.z * 0.25f));			//node scale
 
 			ApplyNonPinRodOffset(*childGlyph, glyph, transform);
-			glm::mat4 visual_transform;
-			ApplyFinalChildOffset(*childGlyph, transform, visual_transform );
+			glm::vec3 visual_scale;
+			ApplyFinalChildOffset(*childGlyph, transform, visual_scale );
 
 			childGlyph->setCachedTransform(transform);
-			childGlyph->setVisualTransform( visual_transform );
+			childGlyph->setVisualScale( visual_scale );
 		}
 	}
 
@@ -317,11 +318,11 @@ namespace SynGlyphXANTz {
 				transform = glm::scale(transform, glm::vec3(childScale.x * 0.33333333f, childScale.y * 0.33333333f, childScale.z * 0.33333333f));	//node scale
 
 			ApplyNonPinRodOffset(*childGlyph, glyph, transform);
-			glm::mat4 visual_transform;
-			ApplyFinalChildOffset(*childGlyph, transform, visual_transform );
+			glm::vec3 visual_scale;
+			ApplyFinalChildOffset(*childGlyph, transform, visual_scale );
 
 			childGlyph->setCachedTransform(transform);
-			childGlyph->setVisualTransform(visual_transform);
+			childGlyph->setVisualScale( visual_scale );
 		}
 	}
 }

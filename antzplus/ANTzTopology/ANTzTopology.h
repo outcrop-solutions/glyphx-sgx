@@ -49,7 +49,7 @@ namespace SynGlyphXANTz {
 		static const float s_offsetTorus;
 		
 		void ApplyNonPinRodOffset(const SynGlyphX::Glyph3DNode& glyph, const SynGlyphX::Glyph3DNode& parentGlyph, glm::mat4& transform);
-		void ApplyFinalChildOffset(const SynGlyphX::Glyph3DNode& glyph, glm::mat4& transform, glm::mat4& visual_transform);
+		void ApplyFinalChildOffset(const SynGlyphX::Glyph3DNode& glyph, glm::mat4& transform, glm::vec3& visual_scale);
 		void ApplyRotation(const glm::vec3& rotation, glm::mat4& transform);
 	};
 
