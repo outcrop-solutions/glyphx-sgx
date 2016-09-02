@@ -80,5 +80,7 @@ namespace SynGlyphX
 		GlyphScene* scene;
 
 		void renderSelection( hal::context* context, render::perspective_camera* camera, float elapsed_seconds );
+		float selection_animation_time, selection_animation_state;
+		float previous_frame_time;
 	};
 }
