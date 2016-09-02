@@ -2,6 +2,7 @@
 #include "glyphrenderer.h"
 #include <hal/debug.h>
 #include <render/perspective_camera.h>
+#include <glm/gtx/compatibility.hpp>
 #include "glyphnode.h"
 #include "glyphgeometrydb.h"
 
@@ -109,7 +110,7 @@ namespace SynGlyphX
 	}
 
 	GlyphRenderer::GlyphRenderer() : transform_binding_point( UINT_MAX ), material_binding_point( UINT_MAX ), selection_anim_max_scale( 64.f ),
-		animation( true ), global_wireframe( false ), scene( nullptr ), filter_alpha( 0.5f ),
+		animation( true ), global_wireframe( false ), scene( nullptr ), filter_alpha( 0.5f ), selection_animation_time( 0.f ),
 		bound_vis_enabled( false )
 	{
 		glyph_effect = hal::device::create_effect( "shaders/glyph.vert", nullptr, "shaders/glyph.frag" );
@@ -272,6 +273,8 @@ namespace SynGlyphX
 
 			renderSelection( context, camera, elapsed_seconds );
 		}
+
+		previous_frame_time = elapsed_seconds;
 	}
 
 	void GlyphRenderer::renderSelection( hal::context* context, render::perspective_camera* camera, float elapsed_seconds )
@@ -282,8 +285,11 @@ namespace SynGlyphX
 			sel_bound_binding_point = context->get_uniform_block_index( selection_effect, "bounds" );
 			sel_anim_binding_point = context->get_uniform_block_index( selection_effect, "animation" );
 
+			selection_animation_time += elapsed_seconds - previous_frame_time;
+
 			if ( scene->getSelectionChanged() )
 			{
+				selection_animation_time = selection_animation_state = 0.f;
 				hal::debug::profile_timer timer;
 				selection.clear();
 				scene->enumSelected( [&]( const Glyph3DNode& glyph ) {
@@ -301,6 +307,17 @@ namespace SynGlyphX
 				timer.print_ms_to_debug( "built selection instance buffers" );
 			}
 
+			// Pulse starts off fast for fixed_speed_time seconds and then slows down over slowdown_time seconds.
+			const float fixed_speed_time = 0.5f;
+			const float slowdown_time = 1.5f;
+			const float min_speed = 0.5f, max_speed = 1.5f;
+			float lerp_param = glm::clamp( selection_animation_time / slowdown_time - fixed_speed_time, 0.f, 1.f );
+			float speed = glm::clamp( glm::lerp( max_speed, min_speed, lerp_param ), min_speed, max_speed );
+			selection_animation_state += speed * ( elapsed_seconds - previous_frame_time );
+			float junk;
+			float anim_state = modf( selection_animation_state, &junk );
+			anim_state = sinf( anim_state * glm::pi<float>() * 0.5f );
+
 			context->set_depth_state( hal::depth_state::read_only );
 			context->bind( selection_effect );
 			hal::rasterizer_state rast{ true, true, false };
@@ -308,8 +325,9 @@ namespace SynGlyphX
 			context->set_blend_state( hal::blend_state::alpha );
 
 			context->set_constant( selection_effect, "global_data", "tint_color", render::color::yellow() );
-			context->set_constant( selection_effect, "global_data", "elapsed_seconds", elapsed_seconds );
+			context->set_constant( selection_effect, "global_data", "elapsed_seconds", selection_animation_time );
 			context->set_constant( selection_effect, "global_data", "selection_anim_max_scale", selection_anim_max_scale );
+			context->set_constant( selection_effect, "global_data", "selection_anim_state", anim_state );
 			context->set_constant( selection_effect, "camera_data", "viewport", glm::vec2( camera->get_viewport_w(), camera->get_viewport_h() ) );
 			context->set_constant( selection_effect, "camera_data", "view", camera->get_view() );
 			context->set_constant( selection_effect, "camera_data", "proj", camera->get_proj() );

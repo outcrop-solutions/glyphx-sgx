@@ -11,6 +11,7 @@ layout(std140) uniform global_data
 {
 	float elapsed_seconds;
 	float selection_anim_max_scale;
+	float selection_anim_state;
 	vec4 tint_color;
 };
 
@@ -74,10 +75,8 @@ void main()
 	max_scale = max( max_scale, ratio );
 
 	// Animate selection scale and alpha.
-	float intpart;
-	float selection_anim = modf( elapsed_seconds * 2.f, intpart );
-	float scale = mix( 1.05, max_scale, selection_anim );
-	float alpha = mix( 0.8, 0, selection_anim );
+	float scale = mix( 1.05, max_scale, selection_anim_state );
+	float alpha = mix( 0.8, 0, selection_anim_state );
 
 	nml = vec3( view * w * normalize( vec4( normal, 0 ) ) );
 	eye = eyevec;
