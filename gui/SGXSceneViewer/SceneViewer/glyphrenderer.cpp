@@ -331,7 +331,7 @@ namespace SynGlyphX
 			context->set_constant( selection_effect, "camera_data", "viewport", glm::vec2( camera->get_viewport_w(), camera->get_viewport_h() ) );
 			context->set_constant( selection_effect, "camera_data", "view", camera->get_view() );
 			context->set_constant( selection_effect, "camera_data", "proj", camera->get_proj() );
-			context->set_constant( selection_effect, "camera_data", "eyevec", camera->get_eye() );
+			context->set_constant( selection_effect, "camera_data", "camera_pos", camera->get_position() );
 			context->set_constant( selection_effect, "camera_data", "upvec", camera->get_world_up() );
 
 			selection.draw( context, sel_transform_binding_point, sel_bound_binding_point, sel_anim_binding_point );
