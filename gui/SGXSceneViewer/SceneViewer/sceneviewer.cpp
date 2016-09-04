@@ -732,8 +732,8 @@ namespace SynGlyphX
 				glm::vec3 cam_fwd = camera->get_forward();
 				glm::vec3 cam_right = camera->get_right();
 
-				float mouse_zoom_speed = 1.f;
-				float wheel_zoom_speed = 0.1f;
+				const float mouse_zoom_speed = 1.f;
+				const float wheel_zoom_speed = 0.1f;
 
 				if ( scene.selectionEmpty() )
 				{
@@ -746,6 +746,13 @@ namespace SynGlyphX
 						motion += cam_right;
 					else if ( key_states['a'] )
 						motion -= cam_right;
+
+					motion += cam_fwd * wheel_delta * wheel_zoom_speed;
+					if ( drag_info( button::middle ).dragging )
+					{
+						motion += cam_right * ( drag_info( button::middle ).drag_delta_x * mouse_zoom_speed );
+						motion -= camera->get_up() * ( drag_info( button::middle ).drag_delta_y * mouse_zoom_speed );
+					}
 
 					// Move the camera up and down along the world vertical axis. (To move along the camera's local
 					// up/down axis instead, use get_up instead of get_world_up.)
