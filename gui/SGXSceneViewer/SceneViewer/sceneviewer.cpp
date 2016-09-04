@@ -776,8 +776,7 @@ namespace SynGlyphX
 
 					// if we only have links selected don't restrict the zoom distance (they tend to have huge bounds)
 					float orbit_min_distance = glyphs_selected ? selection_radius + largest_bound : 0.f;
-					orbit_cam_control->setOrbitTarget( selection_center );
-					orbit_cam_control->setOrbitMinDistance( orbit_min_distance );
+					orbit_cam_control->setOrbitTarget( selection_center, orbit_min_distance );
 
 					// Handle zooming with middle button, L/R buttons, or wheel.
 					float zoom = 0.f;

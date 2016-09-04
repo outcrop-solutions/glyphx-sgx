@@ -93,8 +93,9 @@ namespace SynGlyphX
 	{
 	}
 
-	void OrbitCameraController::setOrbitTarget( const glm::vec3& pos )
+	void OrbitCameraController::setOrbitTarget( const glm::vec3& pos, float min_dist )
 	{
+		setOrbitMinDistance( min_dist );
 		if ( orbit_target != pos )
 		{
 			auto old_orbit_target = orbit_target;
@@ -104,7 +105,8 @@ namespace SynGlyphX
 			slide_state = 0.f;
 
 			// maintain camera orientation and try to maintain distance
-			camera_slide_target = orbit_target + -camera->get_forward() * glm::distance( camera->get_position(), old_orbit_target );
+			float target_dist = std::max( glm::distance( camera->get_position(), old_orbit_target ), orbit_min_dist );
+			camera_slide_target = orbit_target + -camera->get_forward() * target_dist;
 		}
 	}
 

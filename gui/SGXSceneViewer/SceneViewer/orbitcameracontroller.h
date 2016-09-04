@@ -20,7 +20,7 @@ namespace SynGlyphX
 		void setMovementSpeed( float speed ) override { move_speed = speed; }
 		void setTurnSpeed( float speed ) override { turn_speed = speed; }
 
-		void setOrbitTarget( const glm::vec3& pos );
+		void setOrbitTarget( const glm::vec3& pos, float min_dist );
 		void setOrbitMinDistance( const float dist ) { orbit_min_dist = dist; }
 		void setOrbitMaxDistance( const float dist ) { orbit_max_dist = dist; }
 
