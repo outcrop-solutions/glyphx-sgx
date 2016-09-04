@@ -664,12 +664,15 @@ namespace SynGlyphX
 						&& pos2d.y > std::min( drag_info( button::left ).drag_start_y, mouse_y )
 						&& pos2d.y < std::max( drag_info( button::left ).drag_start_y, mouse_y ) )
 					{
-						if ( scene.getFilterMode() != FilteredResultsDisplayMode::HideUnfiltered || scene.passedFilter( &node ) )
+						if ( glm::dot( pos - camera->get_position(), camera->get_forward() ) > 0.f )	// make sure it's not behind the camera
 						{
-							if ( !alt )
-								scene.setSelected( &node );
-							else
-								scene.setUnSelected( &node );
+							if ( scene.getFilterMode() != FilteredResultsDisplayMode::HideUnfiltered || scene.passedFilter( &node ) )
+							{
+								if ( !alt )
+									scene.setSelected( &node );
+								else
+									scene.setUnSelected( &node );
+							}
 						}
 					}
 					return true;
