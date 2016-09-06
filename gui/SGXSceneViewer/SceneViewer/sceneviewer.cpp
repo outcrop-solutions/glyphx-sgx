@@ -48,7 +48,7 @@ namespace SynGlyphX
 		: QOpenGLWidget( parent ), hud_font( "Arial", 12, QFont::Normal ), glyph_renderer( nullptr ),
 		renderer( nullptr ), wireframe( false ), enable_fly_to_object( false ), scene_axes_enabled( true ), wheel_delta( 0.f ),
 		hud_axes_enabled( true ), hud_axes_location( HUDAxesLocation::TopLeft ), animation_enabled( true ), background_color( render::color::black() ),
-		initialized( false )
+		initialized( false ), filtered_glyph_opacity( 0.5f )
 	{
 		memset( key_states, 0, sizeof( key_states ) );
 
@@ -81,11 +81,11 @@ namespace SynGlyphX
 
 		m_moveForwardButton = CreateNavigationButton( tr( "Move Forward" ), true );
 		m_moveForwardButton->setIcon( QIcon( ":SGXGUI/Resources/plus.png" ) );
-		QObject::connect( m_moveForwardButton, &QToolButton::pressed, this, [this, move]() { move( camera->get_forward(), buttonMoveForwardBackRate ); } );
+		QObject::connect( m_moveForwardButton, &QToolButton::pressed, this, [this, move]() { move( camera->get_forward(), scene.selectionEmpty() ? buttonMoveForwardBackRate : -buttonMoveForwardBackRate ); } );
 
 		m_moveBackwardButton = CreateNavigationButton( tr( "Move Backward" ), true );
 		m_moveBackwardButton->setIcon( QIcon( ":SGXGUI/Resources/minus.png" ) );
-		QObject::connect( m_moveBackwardButton, &QToolButton::pressed, this, [this, move]() { move( camera->get_forward(), -buttonMoveForwardBackRate ); } );
+		QObject::connect( m_moveBackwardButton, &QToolButton::pressed, this, [this, move]() { move( camera->get_forward(), scene.selectionEmpty() ? -buttonMoveForwardBackRate : buttonMoveForwardBackRate ); } );
 
 		m_moveUpButton = CreateNavigationButton( tr( "Move Up" ), true );
 		m_moveUpButton->setIcon( QIcon( ":SGXGUI/Resources/up_arrow.png" ) );
@@ -344,6 +344,7 @@ namespace SynGlyphX
 		if ( format().profile() == QSurfaceFormat::CompatibilityProfile ) painter.beginNativePainting();
 
 		glyph_renderer->enableAnimation( animation_enabled );
+		glyph_renderer->setFilterAlpha( glm::lerp( 0.1f, 0.8f, filtered_glyph_opacity ) );
 
 		hal::rasterizer_state rast{ true, true, false };
 		context->set_rasterizer_state( rast );
@@ -769,6 +770,9 @@ namespace SynGlyphX
 					free_cam_control->turn( glm::vec2( float( drag_info( button::left ).drag_delta_x ), float( drag_info( button::left ).drag_delta_y ) ) );
 					free_cam_control->move( motion * ( fast ? 5.f : 1.f ) );
 					set_cam_control( free_cam_control );
+
+					m_moveUpButton->setEnabled( true );
+					m_moveDownButton->setEnabled( true );
 				}
 				else
 				{
@@ -818,6 +822,9 @@ namespace SynGlyphX
 					orbit_cam_control->move( glm::vec3( 0.f, 0.f, zoom * ( fast ? 5.f : 1.f ) ) );
 
 					set_cam_control( orbit_cam_control );
+
+					m_moveUpButton->setEnabled( false );
+					m_moveDownButton->setEnabled( false );
 				}
 
 			}

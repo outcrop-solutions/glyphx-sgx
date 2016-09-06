@@ -12,7 +12,8 @@ GlyphViewerOptions::GlyphViewerOptions() :
 	m_showSceneAxisObject(true),
 	m_showMessageWhenImagesDidNotDownload(true),
 	m_loadSubsetVisualization(true),
-	m_loadSubsetVisualizationInNewInstance(true) {
+	m_loadSubsetVisualizationInNewInstance(true),
+	m_FilteredGlyphOpacity(0.5f) {
 	
 }
 
@@ -27,7 +28,8 @@ GlyphViewerOptions::GlyphViewerOptions(const GlyphViewerOptions& options) :
 #endif
 	m_showMessageWhenImagesDidNotDownload(options.m_showMessageWhenImagesDidNotDownload),
 	m_loadSubsetVisualization(options.m_loadSubsetVisualization),
-	m_loadSubsetVisualizationInNewInstance(options.m_loadSubsetVisualizationInNewInstance) {
+	m_loadSubsetVisualizationInNewInstance(options.m_loadSubsetVisualizationInNewInstance),
+	m_FilteredGlyphOpacity(options.m_FilteredGlyphOpacity) {
 
 }
 
@@ -39,6 +41,7 @@ GlyphViewerOptions& GlyphViewerOptions::operator=(const GlyphViewerOptions& opti
 
 	m_cacheDirectory = options.m_cacheDirectory;
 	m_hideUnselectedGlyphTrees = options.m_hideUnselectedGlyphTrees;
+	m_FilteredGlyphOpacity = options.m_FilteredGlyphOpacity;
 	m_showHUDAxisObject = options.m_showHUDAxisObject;
 	m_sceneAxisHUDObjectLocation = options.m_sceneAxisHUDObjectLocation;
 	m_showSceneAxisObject = options.m_showSceneAxisObject;
@@ -61,6 +64,10 @@ bool GlyphViewerOptions::operator==(const GlyphViewerOptions& options) const {
 
 	if (m_hideUnselectedGlyphTrees != options.m_hideUnselectedGlyphTrees) {
 
+		return false;
+	}
+
+	if ( m_FilteredGlyphOpacity != options.m_FilteredGlyphOpacity ) {
 		return false;
 	}
 
@@ -267,4 +274,12 @@ void GlyphViewerOptions::SetLoadSubsetVisualizationInNewInstance(bool loadSubset
 bool GlyphViewerOptions::GetLoadSubsetVisualizationInNewInstance() const {
 
 	return m_loadSubsetVisualizationInNewInstance;
+}
+
+void GlyphViewerOptions::SetFilteredGlyphOpacity(float transparency) {
+	m_FilteredGlyphOpacity = transparency;
+}
+
+float GlyphViewerOptions::GetFilteredGlyphOpacity() const {
+	return m_FilteredGlyphOpacity;
 }

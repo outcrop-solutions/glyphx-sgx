@@ -928,6 +928,8 @@ void GlyphViewerWindow::ChangeOptions(const GlyphViewerOptions& oldOptions, cons
 
 			m_showErrorFromTransform = newOptions.GetShowMessageWhenImagesDidNotDownload();
 		}
+
+		m_viewer->setFilteredGlyphOpacity( newOptions.GetFilteredGlyphOpacity() );
 	}
 
 	m_showHideHUDAxisAction->setChecked(newOptions.GetShowHUDAxisObject());

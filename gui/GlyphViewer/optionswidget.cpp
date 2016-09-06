@@ -130,6 +130,15 @@ void OptionsWidget::CreateFilteringTab() {
 	m_hideSelectedGlyphsCheckbox = new QCheckBox(tr("Hide Filtered"), this);
 	tabLayout->addWidget(m_hideSelectedGlyphsCheckbox);
 
+	QHBoxLayout* filterAlphaLayout = new QHBoxLayout( tab );
+	filterAlphaLayout->addWidget( new QLabel( tr( "Filtered Glyph Opacity:" ), tab ) );
+	m_filterAlphaSlider = new QSlider( Qt::Orientation::Horizontal, this );
+	m_filterAlphaSlider->setMinimum(0);
+	m_filterAlphaSlider->setMaximum(100);
+	m_filterAlphaSlider->setTickInterval(10);
+	filterAlphaLayout->addWidget( m_filterAlphaSlider );
+	tabLayout->addLayout( filterAlphaLayout );
+	
 	QGroupBox* createSubsetGroupBox = new QGroupBox(tr("Create Subset Options"), tab);
 	QHBoxLayout* createSubsetLayout = new QHBoxLayout(tab);
 
@@ -223,6 +232,7 @@ GlyphViewerOptions OptionsWidget::GetOptions() const {
 	options.SetHideUnselectedGlyphTrees(m_hideSelectedGlyphsCheckbox->isChecked());
 	options.SetLoadSubsetVisualization(m_loadSubsetVisualizationCheckBox->isChecked());
 	options.SetLoadSubsetVisualizationInNewInstance(m_loadSubsetVisualizationInNewInstanceCheckBox->isChecked());
+	options.SetFilteredGlyphOpacity(m_filterAlphaSlider->value() / 100.f);
 
 	//UI
 	options.SetShowMessageWhenImagesDidNotDownload(m_showDownloadedImageErrorMessages->isChecked());
@@ -253,6 +263,7 @@ void OptionsWidget::SetFilteringValues(const GlyphViewerOptions& options) {
 	m_hideSelectedGlyphsCheckbox->setChecked(options.GetHideUnselectedGlyphTrees());
 	m_loadSubsetVisualizationCheckBox->setChecked(options.GetLoadSubsetVisualization());
 	m_loadSubsetVisualizationInNewInstanceCheckBox->setChecked(options.GetLoadSubsetVisualizationInNewInstance());
+	m_filterAlphaSlider->setValue( int( options.GetFilteredGlyphOpacity() * 100.f ) );
 }
 
 void OptionsWidget::SetUIValues(const GlyphViewerOptions& options) {
