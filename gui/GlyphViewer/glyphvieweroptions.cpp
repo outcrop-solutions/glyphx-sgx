@@ -137,6 +137,7 @@ void GlyphViewerOptions::WriteToSettings() const {
 	settings.setValue("showFailedToDownloadImageMessage", m_showMessageWhenImagesDidNotDownload);
 	settings.setValue("loadSubsetVisualization", m_loadSubsetVisualization);
 	settings.setValue("loadSubsetVisualizationInNewInstance", m_loadSubsetVisualizationInNewInstance);
+	settings.setValue("filteredGlyphOpacity", m_FilteredGlyphOpacity);
 	settings.endGroup();
 
 #ifdef USE_ZSPACE
@@ -166,6 +167,7 @@ void GlyphViewerOptions::ReadFromSettings() {
 	SetShowMessageWhenImagesDidNotDownload(settings.value("showFailedToDownloadImageMessage", true).toBool());
 	SetLoadSubsetVisualization(settings.value("loadSubsetVisualization", true).toBool());
 	SetLoadSubsetVisualizationInNewInstance(settings.value("loadSubsetVisualizationInNewInstance", false).toBool());
+	SetFilteredGlyphOpacity(settings.value("filteredGlyphOpacity", 0.5f).toFloat());
 	settings.endGroup();
 
 #ifdef USE_ZSPACE
