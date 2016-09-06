@@ -28,6 +28,11 @@
 #include "orbitcameracontroller.h"
 #include "overheadcameracontroller.h"
 
+//temp
+#include <QtCore/qitemselectionmodel.h>
+#include "itemfocusselectionmodel.h"
+#include "glyphforestmodel.h"
+
 namespace SynGlyphX
 {
 	namespace
@@ -458,7 +463,7 @@ namespace SynGlyphX
 				if ( axis_names[1] != "" ) renderText( painter, ui_camera, hud_axes_origin + ( hud_axes_size + axis_name_offset ) * glm::vec3( ( hud_axes_rotation * glm::vec4( 0.f, 0.f, 1.f, 0.f ) ) ), QString::fromStdString( axis_names[1] ), hud_font );
 				if ( axis_names[2] != "" ) renderText( painter, ui_camera, hud_axes_origin - ( hud_axes_size + axis_name_offset ) * glm::vec3( ( hud_axes_rotation * glm::vec4( 0.f, 1.f, 0.f, 0.f ) ) ), QString::fromStdString( axis_names[2] ), hud_font );
 			}
-			
+
 			if ( scene_axes_enabled )
 			{
 				const float axis_name_offset = 10.f;
@@ -542,12 +547,12 @@ namespace SynGlyphX
 				if ( scene.selectionSize() > 1 )
 					hal::debug::print( "Multiple objects selected; printing hierarchy from first." );
 				if ( sel ) scene.debugPrint( sel );
-/*			case ' ':
-				if ( cur_cam_control == overhead_cam_control )
-					set_cam_control( free_cam_control );
-				else
-					set_cam_control( overhead_cam_control );
-				break;*/
+				/*			case ' ':
+								if ( cur_cam_control == overhead_cam_control )
+									set_cam_control( free_cam_control );
+								else
+									set_cam_control( overhead_cam_control );
+								break;*/
 		}
 #endif
 	}
@@ -619,7 +624,7 @@ namespace SynGlyphX
 		if ( event->button() == Qt::RightButton ) release_button( int( button::right ) );
 		if ( event->button() == Qt::MiddleButton ) release_button( int( button::middle ) );
 
-		bool selection_changed = false;
+		bool changed_selection = false;
 		if ( event->button() == Qt::MouseButton::LeftButton )
 		{
 			// Not holding shift: common case.
@@ -644,7 +649,7 @@ namespace SynGlyphX
 						else
 							scene.setSelected( g );
 					}
-					selection_changed = true;
+					changed_selection = true;
 				}
 			}
 			else  // holding shift, so we're doing a drag-select
@@ -678,13 +683,12 @@ namespace SynGlyphX
 					return true;
 				}, true );
 
-				selection_changed = true;
+				changed_selection = true;
 			}
 
-			if ( selection_changed )
+			if ( changed_selection )
 			{
-				if ( on_selection_changed ) on_selection_changed( !scene.empty() );
-				if ( !scene.selectionEmpty() && enable_fly_to_object ) orbit_cam_control->flyToTarget();
+				selection_changed();
 			}
 		}
 	}
@@ -692,7 +696,7 @@ namespace SynGlyphX
 	void SceneViewer::resetCamera()
 	{
 		scene.clearSelection();
-		if ( on_selection_changed ) on_selection_changed( !scene.empty() );
+		selection_changed();
 		camera->set_forward( glm::normalize( glm::vec3( 0.f, 1.f, -1.f ) ) );
 		camera->set_position( glm::vec3( 0.f, -345.f, 345.f ) );
 		set_cam_control( free_cam_control, true );	// force reactivate to let the controller know to update its internal state (since it has
@@ -867,5 +871,36 @@ namespace SynGlyphX
 
 		if ( cur_cam_control != cc )
 			cur_cam_control = cc;
+	}
+
+	void SceneViewer::selection_changed()
+	{
+		if ( on_selection_changed ) on_selection_changed( !scene.empty() );
+		if ( !scene.selectionEmpty() && enable_fly_to_object ) orbit_cam_control->flyToTarget();
+
+		item_focus_sm->clear();
+		QItemSelectionModel::SelectionFlags flags = QItemSelectionModel::ClearAndSelect;
+		SynGlyphX::ItemFocusSelectionModel::FocusFlags focusFlags = SynGlyphX::ItemFocusSelectionModel::FocusFlag::ClearAndFocus;
+		flags = QItemSelectionModel::Toggle;
+		focusFlags = SynGlyphX::ItemFocusSelectionModel::FocusFlag::Toggle;
+
+		std::unordered_set<int> ids;
+
+		QItemSelection selected;
+		scene.enumSelected( [&]( const Glyph3DNode& node )
+		{
+			int id = node.getRootParent()->getID();
+			if ( ids.find( id ) == ids.end() )
+			{
+				QModelIndex modelIndex = glyph_forest_model->IndexFromCSVID( node.getID() );
+				selected.select( modelIndex, modelIndex );
+				ids.insert( id );
+			}
+		} );
+
+		if ( selected.size() > 0 )
+		{
+			item_focus_sm->select( selected, flags );
+		}
 	}
 }

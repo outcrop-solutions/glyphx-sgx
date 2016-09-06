@@ -281,56 +281,23 @@ void npInitMap (void* dataRef)
 
 	//clear the node ID array
 	data->map.node = (void*) malloc (kNPnodeRootMax * sizeof(void*));
-	if (data == NULL)
-	{
-		printf ("err 4273 - malloc failed to allocate root node array\n");
-		exit(EXIT_FAILURE);
-	}
 
 	//clear the node ID array
 	data->map.sortA = (void*) malloc (kNPnodeMax * sizeof(void*));		//zzhp
-	if (data == NULL)
-	{
-		printf ("err 4274 - malloc failed to allocate sort array\n");
-		exit(EXIT_FAILURE);
-	}
 	data->map.sortB = (void*) malloc (kNPnodeMax * sizeof(void*));		//zzhp
-	if (data == NULL)
-	{
-		printf ("err 4275 - malloc failed to allocate sort array\n");
-		exit(EXIT_FAILURE);
-	}
 
 	//clear the node ID array
 	data->map.nodeID = (void*) malloc (kNPnodeMax * sizeof(void*));
-	if (data == NULL)
-	{
-		printf ("err 4276 - malloc failed to allocate nodeID array\n");
-		exit(EXIT_FAILURE);
-	}
+
+	data->map.csvID = (void*)malloc( kNPnodeMax * sizeof( void* ) );
 
 	//clear the node ID array
 	data->map.parentID = (int*) malloc (kNPnodeMax * sizeof(int*));
-	if (data == NULL)
-	{
-		printf ("err 4277 - malloc failed to allocate parentID array\n");
-		exit(EXIT_FAILURE);
-	}
 
 	data->map.sortID = (void*) malloc (kNPnodeMax * sizeof(void*));
-	if (data == NULL)
-	{
-		printf ("err 4278 - malloc failed to allocate sortID array\n");
-		exit(EXIT_FAILURE);
-	}
 
 	//clear the node ID array
 	data->map.orphanList = (int*) malloc (kNPnodeMax * sizeof(int*));
-	if (data == NULL)
-	{
-		printf ("err 4279 - malloc failed to allocate nodeID array\n");
-		exit(EXIT_FAILURE);
-	}
 
 	//clear the arrays
 	for (i=0; i < kNPnodeRootMax; i++)
@@ -339,11 +306,11 @@ void npInitMap (void* dataRef)
 		data->map.sortA[i] = NULL;					//zzhp
 		data->map.sortB[i] = NULL;					//zzhp
 	}
-	data->map.sort = data->map.node; //before first z-sort just use node array //zzhp
 									 //becomes map.sortA or B
 	for (i=0; i < kNPnodeMax; i++)
 	{
 		data->map.nodeID[i] = NULL;
+		data->map.csvID[i] = NULL;
 
 		data->map.sortID[i] = NULL;
 		data->map.parentID[i] = 0;
@@ -971,6 +938,8 @@ void* npMapNodeAdd (int id, int type, int branchLevel, int parentID,
 		nodeParent = npMapSortID (parentID, dataRef);	//if DNE return default node
 		node = npNodeNew (type, nodeParent, dataRef);
 	}
+
+	data->map.csvID[id] = node;
 
 	// add to parent lookup table for sorting orphan child nodes at end
 	npMapSortAdd (id, parentID, node, dataRef);

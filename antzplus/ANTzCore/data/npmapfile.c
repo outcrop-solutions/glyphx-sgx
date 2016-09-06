@@ -494,8 +494,8 @@ void* npReadMapNodeCSV (const char* buffer, int wordSize, int size,
 	node->chOutputID		= npstrtoi(&cursor);
 	node->chLastUpdated		= npstrtoi(&cursor);
 	
-	node->average			= npstrtoi(&cursor);
-	node->interval			= npstrtoi(&cursor);
+	int junk0			= npstrtoi(&cursor);
+	int junk1			= npstrtoi(&cursor);
 	
 	node->auxA.x			= npstrtof(&cursor);
 	node->auxA.y			= npstrtof(&cursor);
@@ -1009,8 +1009,8 @@ int npWriteNodeNewest (const char* buffer, pNPnode node, int format, void* dataR
 		node->chOutputID,	
 		node->chLastUpdated,
 
-		node->average,
-		node->interval,
+		0, //node->average,
+		0, //node->interval,
 
 		node->auxA.x,
 		node->auxA.y,
@@ -1122,7 +1122,7 @@ int npWriteNodeNewest (const char* buffer, pNPnode node, int format, void* dataR
 	);
 
 	//last group
-	n += sprintf ((nodePtr + n), ",%d,%d,%d,%d,%d,%d,%d,%d",
+	n += sprintf( ( nodePtr + n ), ",%d,%d,%d,%d,%d,%d,%d,%d",
 		node->segments.x,
 		node->segments.y,
 		node->segments.z,
@@ -1132,8 +1132,8 @@ int npWriteNodeNewest (const char* buffer, pNPnode node, int format, void* dataR
 		node->formatID,
 		node->tableID,
 		node->recordID,
-		
-		node->size 
+
+		0// node->size
 	);
 
 
@@ -2372,8 +2372,8 @@ int npWriteNode (const char* buffer, pNPnode node, int format, void* dataRef)
 		node->chOutputID,	
 		node->chLastUpdated,
 
-		node->average,
-		node->interval,
+		0, //node->average,
+		0, //node->interval,
 
 		node->auxA.x,
 		node->auxA.y,
@@ -2496,7 +2496,7 @@ int npWriteNode (const char* buffer, pNPnode node, int format, void* dataRef)
 		node->tableID,
 		node->recordID,
 		
-		node->size 
+		0 //node->size 
 	);
 
 /*
