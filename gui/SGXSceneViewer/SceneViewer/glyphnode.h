@@ -13,7 +13,7 @@ namespace SynGlyphX
 	class Glyph3DNode;
 	class PlacementPolicy;
 
-	enum class Glyph3DNodeType
+	enum class Glyph3DNodeType : unsigned int
 	{
 		GlyphElement,
 		Link,
