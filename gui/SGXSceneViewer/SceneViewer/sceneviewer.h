@@ -83,6 +83,7 @@ namespace SynGlyphX
 		void setStereoMode( bool enable ) { hal::debug::_assert( false, "stereo mode not yet implemented" ); }
 		bool stereoMode() { return false; /* not yet implemented */ }
 
+		void setFilteredGlyphOpacity( float opacity ) { filtered_glyph_opacity = opacity; }
 		void enableSceneAxes( bool enabled ) { scene_axes_enabled = enabled; }
 		void enableHUDAxes( bool enabled ) { hud_axes_enabled = enabled; }
 		void setHUDAxesLocation( HUDAxesLocation loc ) { hud_axes_location = loc; }
@@ -195,6 +196,7 @@ namespace SynGlyphX
 		render::model* logo;
 		render::model* drag_select;
 		glm::vec4 background_color;
+		float filtered_glyph_opacity;
 
 		//Navigation buttons.
 		QToolButton* m_upRotateButton;
