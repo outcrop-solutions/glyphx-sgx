@@ -844,6 +844,8 @@ namespace SynGlyphX
 		scene.clearFilter();
 		for ( auto index : results )
 			scene.setPassedFilter( index );
+		if ( scene.getFilterMode() == FilteredResultsDisplayMode::HideUnfiltered )
+			scene.clearFilteredOutFromSelection();
 	}
 
 	void SceneViewer::setAxisNames( const char* X, const char* Y, const char* Z )
