@@ -120,11 +120,10 @@ namespace SynGlyphX
 		mutable glm::vec3 visual_scale;
 
 		// flags( packed )
+		GlyphShape geometry : 4;
 		bool wireframe : 1;
 		bool root : 1;
-		bool is_link : 1;
 		Glyph3DNodeType type : 1;
-		GlyphShape geometry : 4;
 
 		friend class GlyphScene;	// so glyphscene can instantiate
 	};

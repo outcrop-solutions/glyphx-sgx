@@ -424,12 +424,18 @@ namespace SynGlyphX
 								auto pt1 = glyph1->getCachedPosition();
 								glm::vec3 origin = ( pt0 + pt1 ) * 0.5f;
 								auto translate = glm::translate( glm::mat4(), origin );
-								auto rotate = glm::orientation( glm::normalize( pt1 - pt0 ), glm::vec3( 0.f, 0.f, 1.f ) );
+								auto direction = glm::normalize( pt1 - pt0 );
+								auto up = glm::vec3( 0.f, 0.f, 1.f );
+								// workaround for glm::orientation glitch when direction is almost but not QUITE the same as up
+								// (oddly it works fine if they're exactly the same)
+								if ( fabs( glm::dot( direction, up ) ) > 0.9999f ) direction = up;
+								auto rotate = glm::orientation( direction, up );
 								float length = glm::length( pt0 - pt1 );
 								auto scale = glm::scale( glm::mat4(), glm::vec3( thickness, thickness, length ) );
 
 								Glyph3DNode* linknode = scene.allocGlyph( GetItemI( dataline, columns.id ), true, Glyph3DNodeType::Link );
 								linknode->setCachedTransform( translate * rotate * scale );
+								linknode->setVisualScale( glm::vec3( 1.f, 1.f, 1.f ) );
 								linknode->setColor( color );
 								linknode->setGeometry( profile == LinkProfile::Circle ? GlyphShape::Link_Cylinder : GlyphShape::Link_Cube );
 								linknode->setLinkTargets( glyph0, glyph1 );
