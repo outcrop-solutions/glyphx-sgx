@@ -31,6 +31,8 @@
 #include <set>
 #include "glyphrenderer.h"
 
+namespace SynGlyphXANTz { class GlyphForestModel; }
+
 namespace SynGlyphX
 {
 	namespace render { class grid_renderer; }
@@ -38,6 +40,8 @@ namespace SynGlyphX
 
 	class AxisRenderer; class BaseImageRenderer;
 	class FreeCameraController; class OrbitCameraController; class OverheadCameraController; class CameraController;
+
+	class ItemFocusSelectionModel;	//temp
 
 	enum class HUDAxesLocation : unsigned int
 	{
@@ -54,6 +58,8 @@ namespace SynGlyphX
 		SceneViewer( QWidget *parent = nullptr );
 		SceneViewer( const SceneViewer& ) = delete;
 		~SceneViewer();
+
+		void setSelectionModel( SynGlyphXANTz::GlyphForestModel* gfm, ItemFocusSelectionModel* ifsm ) { glyph_forest_model = gfm; item_focus_sm = ifsm; }
 
 		void initializeGL() override;
 		void resizeGL( int w, int h ) override;
@@ -199,5 +205,10 @@ namespace SynGlyphX
 		QToolButton* m_moveBackwardButton;
 		QToolButton* m_moveUpButton;
 		QToolButton* m_moveDownButton;
+
+		// temporary bullshit
+		SynGlyphXANTz::GlyphForestModel* glyph_forest_model;
+		ItemFocusSelectionModel* item_focus_sm;
+		void selection_changed();
 	};
 }
