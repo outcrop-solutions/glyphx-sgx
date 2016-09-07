@@ -270,6 +270,24 @@ namespace SynGlyphXANTz {
 		}
 	}
 
+	QModelIndex GlyphForestModel::IndexFromCSVID( int id ) const {
+
+		pNPnode node = static_cast<pNPnode>( m_antzData->GetData()->map.csvID[id] );
+
+		if ( node )
+		{
+			if ( node->branchLevel == 0 ) {
+				return createIndex( FindRowForRootNode( node ), 0, node );
+			}
+			else {
+				return createIndex( GetChildIndexFromParent( node ), 0, node );
+			}
+		}
+		else {
+			return QModelIndex();
+		}
+	}
+
 	QModelIndex GlyphForestModel::IndexFromANTzID(int id) const {
 
 		pNPnode node = static_cast<pNPnode>(m_antzData->GetData()->map.nodeID[id]);

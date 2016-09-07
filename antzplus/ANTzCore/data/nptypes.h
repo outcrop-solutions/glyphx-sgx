@@ -512,8 +512,8 @@ struct NPnode
 	int			chOutputID;					//node to track record channel_id
 	int			chLastUpdated;				//cycle of last channel update
 
-	int			average;					//averaging type applied to data
-	int			interval;					//the interval to be averaged
+//	int			average;					//averaging type applied to data
+//	int			interval;					//the interval to be averaged
 
 	NPfloatXYZ	auxA;						//reserved for future use
 	NPfloatXYZ	auxB;						//reserved for future use
@@ -567,7 +567,7 @@ struct NPnode
 	int			tableID;					//DB table
 	int			recordID;					//DB recordID
 
-	int			size;
+	//int			size;
 
 	//internal references and draw calculations not needed in CSV or DB file
 	pNPtag		tag;						//ptrr to the nodes own text tag
@@ -858,6 +858,7 @@ struct NPmap {
 	void**	sortB;					//double buffered async sort			//zzhp
 
 	void**	nodeID;					//maps nodeID to pNPnode, kNPnodeMax
+	void**	csvID;					//maps csvID to pNPnode, kNPnodeMax
 	void**	sortID;					//maps nodeID for sorting nodes
 
 	int*	parentID;				//maps node ID to parentID

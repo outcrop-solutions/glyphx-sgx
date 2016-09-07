@@ -6,6 +6,8 @@ namespace SynGlyphX
 	class Glyph3DNode;
 	class PlacementPolicy;
 
+	// Note: if you add shapes to this you may need to increase the number of bits
+	// in Glyph3DNode::geometry
 	enum class GlyphShape : unsigned int
 	{
 		Cube,

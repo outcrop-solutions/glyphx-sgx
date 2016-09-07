@@ -52,6 +52,9 @@ public:
 	void SetLoadSubsetVisualizationInNewInstance(bool loadSubsetVisualizationInNewInstance);
 	bool GetLoadSubsetVisualizationInNewInstance() const;
 
+	void SetFilteredGlyphOpacity(float transparency);
+	float GetFilteredGlyphOpacity() const;
+
 private:
 	//Cache options
 	QString m_cacheDirectory;
@@ -70,6 +73,7 @@ private:
 	bool m_hideUnselectedGlyphTrees;
 	bool m_loadSubsetVisualization;
 	bool m_loadSubsetVisualizationInNewInstance;
+	float m_FilteredGlyphOpacity;
 
 	//UI options
 	bool m_showMessageWhenImagesDidNotDownload;

@@ -337,13 +337,13 @@ namespace SynGlyphX
 							if ( data.is_root )
 							{
 								glm::mat4 transform = glm::translate( glm::mat4(), data.pos );
-								glm::mat4 visual_transform;
+								glm::vec3 visual_scale( 1.f, 1.f, 1.f );
 								transform = glm::rotate( transform, glm::radians( data.rot.y ), glm::vec3( 0.0f, 0.0f, -1.0f ) );
 								transform = glm::rotate( transform, glm::radians( data.rot.x ), glm::vec3( -1.0f, 0.0f, 0.0f ) );
 								transform = glm::rotate( transform, glm::radians( data.rot.z ), glm::vec3( 0.0f, 0.0f, -1.0f ) );
 								if ( data.topo == kNPtopoRod )
 								{
-									visual_transform = glm::scale( visual_transform, glm::vec3( data.ratio * 2.0f, data.ratio * 2.0f, data.scale.z * 5.f ) );
+									visual_scale = glm::vec3( data.ratio * 2.0f, data.ratio * 2.0f, data.scale.z * 5.f );
 									transform = glm::translate( transform, glm::vec3( 0.f, 0.f, 1.f ) );
 								}
 								else
@@ -361,7 +361,7 @@ namespace SynGlyphX
 								}
 
 								glyphnode->setCachedTransform( transform );
-								glyphnode->setVisualTransform( visual_transform );
+								glyphnode->setVisualScale( visual_scale );
 								++root_count;
 							}
 							else
@@ -424,12 +424,18 @@ namespace SynGlyphX
 								auto pt1 = glyph1->getCachedPosition();
 								glm::vec3 origin = ( pt0 + pt1 ) * 0.5f;
 								auto translate = glm::translate( glm::mat4(), origin );
-								auto rotate = glm::orientation( glm::normalize( pt1 - pt0 ), glm::vec3( 0.f, 0.f, 1.f ) );
+								auto direction = glm::normalize( pt1 - pt0 );
+								auto up = glm::vec3( 0.f, 0.f, 1.f );
+								// workaround for glm::orientation glitch when direction is almost but not QUITE the same as up
+								// (oddly it works fine if they're exactly the same)
+								if ( fabs( glm::dot( direction, up ) ) > 0.9999f ) direction = up;
+								auto rotate = glm::orientation( direction, up );
 								float length = glm::length( pt0 - pt1 );
 								auto scale = glm::scale( glm::mat4(), glm::vec3( thickness, thickness, length ) );
 
 								Glyph3DNode* linknode = scene.allocGlyph( GetItemI( dataline, columns.id ), true, Glyph3DNodeType::Link );
 								linknode->setCachedTransform( translate * rotate * scale );
+								linknode->setVisualScale( glm::vec3( 1.f, 1.f, 1.f ) );
 								linknode->setColor( color );
 								linknode->setGeometry( profile == LinkProfile::Circle ? GlyphShape::Link_Cylinder : GlyphShape::Link_Cube );
 								linknode->setLinkTargets( glyph0, glyph1 );

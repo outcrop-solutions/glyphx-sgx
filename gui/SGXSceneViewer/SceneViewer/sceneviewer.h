@@ -31,6 +31,8 @@
 #include <set>
 #include "glyphrenderer.h"
 
+namespace SynGlyphXANTz { class GlyphForestModel; }
+
 namespace SynGlyphX
 {
 	namespace render { class grid_renderer; }
@@ -38,6 +40,8 @@ namespace SynGlyphX
 
 	class AxisRenderer; class BaseImageRenderer;
 	class FreeCameraController; class OrbitCameraController; class OverheadCameraController; class CameraController;
+
+	class ItemFocusSelectionModel;	//temp
 
 	enum class HUDAxesLocation : unsigned int
 	{
@@ -54,6 +58,8 @@ namespace SynGlyphX
 		SceneViewer( QWidget *parent = nullptr );
 		SceneViewer( const SceneViewer& ) = delete;
 		~SceneViewer();
+
+		void setSelectionModel( SynGlyphXANTz::GlyphForestModel* gfm, ItemFocusSelectionModel* ifsm ) { glyph_forest_model = gfm; item_focus_sm = ifsm; }
 
 		void initializeGL() override;
 		void resizeGL( int w, int h ) override;
@@ -77,6 +83,7 @@ namespace SynGlyphX
 		void setStereoMode( bool enable ) { hal::debug::_assert( false, "stereo mode not yet implemented" ); }
 		bool stereoMode() { return false; /* not yet implemented */ }
 
+		void setFilteredGlyphOpacity( float opacity ) { filtered_glyph_opacity = opacity; }
 		void enableSceneAxes( bool enabled ) { scene_axes_enabled = enabled; }
 		void enableHUDAxes( bool enabled ) { hud_axes_enabled = enabled; }
 		void setHUDAxesLocation( HUDAxesLocation loc ) { hud_axes_location = loc; }
@@ -189,6 +196,7 @@ namespace SynGlyphX
 		render::model* logo;
 		render::model* drag_select;
 		glm::vec4 background_color;
+		float filtered_glyph_opacity;
 
 		//Navigation buttons.
 		QToolButton* m_upRotateButton;
@@ -199,5 +207,10 @@ namespace SynGlyphX
 		QToolButton* m_moveBackwardButton;
 		QToolButton* m_moveUpButton;
 		QToolButton* m_moveDownButton;
+
+		// temporary bullshit
+		SynGlyphXANTz::GlyphForestModel* glyph_forest_model;
+		ItemFocusSelectionModel* item_focus_sm;
+		void selection_changed();
 	};
 }

@@ -1824,9 +1824,6 @@ namespace SynGlyphXANTz {
 			SetGridLinesColor( rootGrid, Qt::blue );
 			rootGrid->segments.x = 12;
 			rootGrid->segments.y = 6;
-			rootGrid->auxA.x = 30;
-			rootGrid->auxA.y = 30;
-			rootGrid->auxA.z = 30;
 		}
 		for ( int i = 0; i < rootGrid->childCount; ++i ) {
 

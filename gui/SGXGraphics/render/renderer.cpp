@@ -66,7 +66,7 @@ namespace SynGlyphX
 
 				context->set_constant( e, "camera_data", "view", _camera->get_view() );
 				context->set_constant( e, "camera_data", "proj", _camera->get_proj() );
-				context->set_constant( e, "camera_data", "eye", _camera->get_eye() );
+				context->set_constant( e, "camera_data", "camera_pos", _camera->get_position() );
 
 				for ( auto& b : bl.second )
 				{
