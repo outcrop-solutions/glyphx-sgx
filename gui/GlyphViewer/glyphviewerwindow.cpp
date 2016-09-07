@@ -1251,16 +1251,23 @@ void GlyphViewerWindow::CreateInteractionToolbar() {
 
 	m_interactionToolbar->addSeparator();
 
+	m_enableDisableFlyToObjectAction = new QAction( tr( "Enable/Disable Fly-to-Object" ), m_interactionToolbar );
+	m_enableDisableFlyToObjectAction->setCheckable( true );
+	QIcon flyToObjectIcon;
+	flyToObjectIcon.addFile( ":SGXGUI/Resources/Icons/icon-fly-to.png", QSize(), QIcon::Normal, QIcon::Off );
+	flyToObjectIcon.addFile( ":SGXGUI/Resources/Icons/icon-fly-to-a.png", QSize(), QIcon::Normal, QIcon::On );
+	m_enableDisableFlyToObjectAction->setIcon( flyToObjectIcon );
+	//Replace with scene viewer function when available
+	QObject::connect( m_enableDisableFlyToObjectAction, &QAction::toggled, this, &GlyphViewerWindow::OnEnableDisableFlyToObjectAction );
+	m_interactionToolbar->addAction( m_enableDisableFlyToObjectAction );
+
+	m_interactionToolbar->addSeparator();
+
 	QCheckBox* cb = new QCheckBox(tr("Hide Filtered"), this);
 	m_interactionToolbar->addWidget(cb);
 	m_linkedWidgetsManager->AddFilterViewCheckbox(cb);
 
 	m_toolbarsSubMenu->addAction(m_interactionToolbar->toggleViewAction());
-
-	m_enableDisableFlyToObjectAction = new QAction( tr( "Fly To Object" ), m_interactionToolbar );
-	m_enableDisableFlyToObjectAction->setCheckable( true );
-	QObject::connect( m_enableDisableFlyToObjectAction, &QAction::toggled, this, &GlyphViewerWindow::OnEnableDisableFlyToObjectAction );
-	m_interactionToolbar->addAction( m_enableDisableFlyToObjectAction );
 }
 
 void GlyphViewerWindow::OnStereoSetup(bool stereoEnabled) {
