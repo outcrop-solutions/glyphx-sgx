@@ -208,7 +208,7 @@ namespace SynGlyphX
 		QToolButton* m_moveUpButton;
 		QToolButton* m_moveDownButton;
 
-		// temporary bullshit
+		// temporary until we move away from qt selection model
 		SynGlyphXANTz::GlyphForestModel* glyph_forest_model;
 		ItemFocusSelectionModel* item_focus_sm;
 		void selection_changed();

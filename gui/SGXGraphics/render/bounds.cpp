@@ -96,13 +96,19 @@ namespace SynGlyphX
 			// Find the line between the two centers and use it to find the two most distant points between
 			// the spheres.
 			auto a_to_b = glm::normalize( bc - ac );
-			auto b_extent = bc + ( a_to_b * b.get_radius() );
-			auto a_extent = ac + ( -a_to_b * a.get_radius() );
+
+			auto b_extent_1 = bc + ( a_to_b * b.get_radius() );
+			auto b_extent_2 = ac + ( a_to_b * a.get_radius() );
+			auto b_extent = glm::distance( b_extent_1, ac ) > glm::distance( b_extent_2, ac ) ? b_extent_1 : b_extent_2;
+
+			auto a_extent_1 = ac + ( -a_to_b * a.get_radius() );
+			auto a_extent_2 = bc + ( -a_to_b * b.get_radius() );
+			auto a_extent = glm::distance( a_extent_1, bc ) > glm::distance( a_extent_2, bc ) ? a_extent_1 : a_extent_2;
 
 			// The new center will be halfway between the most distant points on the spheres, and the
 			// new radius will be half the distance between them.
 			auto new_radius = glm::length( b_extent - a_extent ) * 0.5f;
-			auto new_center = a_extent + ( a_to_b * new_radius );
+			auto new_center = ( a_extent + b_extent ) * 0.5f;
 
 			return sphere_bound( new_center, new_radius );
 		}

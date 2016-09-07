@@ -31,15 +31,19 @@ namespace SynGlyphX
 		{
 			glm::vec3 desired_fwd = glm::normalize( orbit_target - cam_pos );
 			auto fwd = camera->get_forward();
-			auto interp = glm::normalize( glm::lerp( fwd, desired_fwd, 0.25f ) );
+			auto interp = glm::normalize( glm::lerp( fwd, desired_fwd, 0.075f ) );
 			camera->set_forward( interp );
 
 			float fly_target_dist = orbit_min_dist * 10.f;
 			glm::vec3 camera_to_object = -glm::normalize( cam_pos - orbit_target );
 			float dist_to_travel = orbit_cur_dist - fly_target_dist;
 			if ( dist_to_travel > 0.f )	// don't go backward
-				camera->set_position( camera->get_position() + camera_to_object * ( dist_to_travel * 0.05f ) );
-			if ( glm::length( camera->get_position() - orbit_target ) < ( fly_target_dist + 0.1f ) )
+				camera->set_position( camera->get_position() + camera_to_object * ( dist_to_travel * 0.1f ) );
+
+			float dist_to_target = glm::length( camera->get_position() - orbit_target );
+			float angle_to_target = acosf( glm::dot( desired_fwd, fwd ) );
+
+			if ( dist_to_target < ( fly_target_dist + 0.1f ) && angle_to_target < 0.0001f )
 				cancelFlyToTarget();
 		}
 		else if ( sliding_to_target )
@@ -96,7 +100,7 @@ namespace SynGlyphX
 	void OrbitCameraController::setOrbitTarget( const glm::vec3& pos, float min_dist, bool reset_distance )
 	{
 		setOrbitMinDistance( min_dist );
-		if ( orbit_target != pos )
+		if ( orbit_target != pos || reset_distance )
 		{
 			auto old_orbit_target = orbit_target;
 			camera_slide_origin = camera->get_position();
