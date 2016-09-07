@@ -31,7 +31,15 @@ namespace SynGlyphX
 
 		void setFilterAlpha( float alpha = 0.5f, float wire_alpha = 0.1f ) { filter_alpha = alpha; wire_filter_alpha = wire_alpha; }
 
+		enum BoundVisMode
+		{
+			Individual,
+			Combined,
+		};
+
 		void enableBoundVis( bool enable );
+		void setBoundVisMode( BoundVisMode mode );
+		BoundVisMode getBoundVisMode() { return bound_vis_mode; }
 		bool boundVisEnabled() { return bound_vis_enabled; }
 
 	private:
@@ -60,7 +68,7 @@ namespace SynGlyphX
 
 		const unsigned int FILTERED = 0u, UNFILTERED = 1u;
 		glyph_bucket solid[2], wireframe[2], blended[2], wireframe_blended[2];
-		glyph_bucket selection;
+		glyph_bucket selection, selection_wireframe;
 
 		hal::effect* glyph_effect;
 		hal::effect* selection_effect;
@@ -68,13 +76,14 @@ namespace SynGlyphX
 		unsigned int sel_transform_binding_point, sel_bound_binding_point, sel_anim_binding_point;
 		float selection_anim_max_scale;
 		bool bound_vis_enabled;
+		BoundVisMode bound_vis_mode;
 
 		void add( const GlyphScene& scene );
+		void add_bound_to_bucket( const Glyph3DNode& glyph, glyph_bucket& bucket );
 
 		void update_instances( hal::context* context );
 
 		bool global_wireframe, animation;
-
 		float filter_alpha, wire_filter_alpha;
 
 		GlyphScene* scene;

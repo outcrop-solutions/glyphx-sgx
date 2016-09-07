@@ -27,7 +27,7 @@ namespace SynGlyphX
 		assert( placement || children.size() == 0 );	// if the node has children it must also have a placement policy
 
 		auto model = getModel();
-		bound = render::transform_bound( model->get_bound(), cached_transform );
+		bound = render::transform_bound( model->get_bound(), cached_transform * getVisualTransform() );
 		if ( placement ) placement->repositionChildren( *this, cached_transform );
 		combined_bound = bound;
 		for ( auto& c : children )

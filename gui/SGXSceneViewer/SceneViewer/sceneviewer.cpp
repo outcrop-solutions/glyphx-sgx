@@ -543,11 +543,20 @@ namespace SynGlyphX
 		{
 			case 'R': hal::device::rebuild_effects(); break;
 			case 'B': glyph_renderer->enableBoundVis( !glyph_renderer->boundVisEnabled() ); break;
+			case 'M': if ( glyph_renderer->boundVisEnabled() )
+			{
+				if ( glyph_renderer->getBoundVisMode() == GlyphRenderer::BoundVisMode::Combined )
+					glyph_renderer->setBoundVisMode( GlyphRenderer::BoundVisMode::Individual );
+				else
+					glyph_renderer->setBoundVisMode( GlyphRenderer::BoundVisMode::Combined );
+				break;
+			}
 			case 'P':
 				auto sel = scene.getSingleSelection();
 				if ( scene.selectionSize() > 1 )
 					hal::debug::print( "Multiple objects selected; printing hierarchy from first." );
 				if ( sel ) scene.debugPrint( sel );
+				break;
 				/*			case ' ':
 								if ( cur_cam_control == overhead_cam_control )
 									set_cam_control( free_cam_control );
