@@ -1,0 +1,499 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Transform id="768d8a6c-7b57-4fa3-9a87-2be0a65f85db" Timestamp="1472156401">
+	<BaseObjects>
+		<BaseObject type="Local Image" filename="C:\ProgramData\SynGlyphX\GlyphEd\Notre Dame\Global Admissions\Black_Background.png">
+			<Position>
+				<X>0</X>
+				<Y>0</Y>
+				<Z>0</Z>
+			</Position>
+			<Rotation>
+				<AngleX>0</AngleX>
+				<AngleY>0</AngleY>
+				<AngleZ>0</AngleZ>
+			</Rotation>
+			<WorldSize>
+				<Width>360</Width>
+				<Height>180</Height>
+			</WorldSize>
+			<GridLines horizontal="5" vertical="11">
+				<Color>0,0,0</Color>
+			</GridLines>
+		</BaseObject>
+	</BaseObjects>
+	<Datasources>
+		<Datasource source="File" type="SQLITE3" id="719598f5-ff35-47b4-bf7a-9bdfbb30140f">
+			<Host>C:/ProgramData/SynGlyphX/GlyphEd/Notre Dame/glyphed.db</Host>
+			<Tables>
+				<Table name="GlobalAdmissions"/>
+			</Tables>
+			<Name>C:/ProgramData/SynGlyphX/GlyphEd/Notre Dame/glyphed.db</Name>
+		</Datasource>
+	</Datasources>
+	<Glyphs>
+		<Glyph label="0" merge="false" id="a1af4b56-5781-4f3d-998f-adbdb5714dea">
+			<Position>
+				<X>
+					<Min>170</Min>
+					<Difference>-340</Difference>
+					<Binding fieldId="~3684215315"/>
+					<Function type="Linear Interpolation">
+						<MinMax type="UserSpecified">
+							<Min>0</Min>
+							<Difference>18</Difference>
+						</MinMax>
+					</Function>
+				</X>
+				<Y>
+					<Min>170</Min>
+					<Difference>-340</Difference>
+					<Binding fieldId="~845529440"/>
+					<Function type="Linear Interpolation">
+						<MinMax type="UserSpecified">
+							<Min>0</Min>
+							<Difference>18</Difference>
+						</MinMax>
+					</Function>
+				</Y>
+				<Z>
+					<Min>10</Min>
+					<Difference>340</Difference>
+					<Binding fieldId="~1665799473"/>
+					<Function type="Linear Interpolation">
+						<MinMax type="UserSpecified">
+							<Min>0</Min>
+							<Difference>1600</Difference>
+						</MinMax>
+					</Function>
+				</Z>
+			</Position>
+			<Rotation>
+				<X>
+					<Min>0</Min>
+					<Function type="Linear Interpolation">
+						<MinMax type="BoundField">
+							<Min>0</Min>
+						</MinMax>
+					</Function>
+				</X>
+				<Y>
+					<Min>0</Min>
+					<Function type="Linear Interpolation">
+						<MinMax type="BoundField">
+							<Min>0</Min>
+						</MinMax>
+					</Function>
+				</Y>
+				<Z>
+					<Min>0</Min>
+					<Function type="Linear Interpolation">
+						<MinMax type="BoundField">
+							<Min>0</Min>
+						</MinMax>
+					</Function>
+				</Z>
+			</Rotation>
+			<Scale>
+				<X>
+					<Min>0</Min>
+					<Difference>1</Difference>
+					<Function type="Linear Interpolation">
+						<MinMax type="BoundField">
+							<Min>0</Min>
+						</MinMax>
+					</Function>
+				</X>
+				<Y>
+					<Min>0</Min>
+					<Difference>1</Difference>
+					<Function type="Linear Interpolation">
+						<MinMax type="BoundField">
+							<Min>0</Min>
+						</MinMax>
+					</Function>
+				</Y>
+				<Z>
+					<Min>0</Min>
+					<Difference>1</Difference>
+					<Function type="Linear Interpolation">
+						<MinMax type="BoundField">
+							<Min>0</Min>
+						</MinMax>
+					</Function>
+				</Z>
+			</Scale>
+			<Color>
+				<RGB>
+					<Min>0,0,0</Min>
+					<Difference>50,101,101</Difference>
+					<Binding fieldId="~936491198"/>
+					<Function type="Text Field To Value">
+						<Default>0,0,0</Default>
+						<KeyValuePairs>
+							<KeyValuePair>
+								<Key>Admit</Key>
+								<Value>0,170,0</Value>
+							</KeyValuePair>
+							<KeyValuePair>
+								<Key>Admit and Cancel</Key>
+								<Value>0,0,255</Value>
+							</KeyValuePair>
+							<KeyValuePair>
+								<Key>Confirm Admit</Key>
+								<Value>0,85,0</Value>
+							</KeyValuePair>
+							<KeyValuePair>
+								<Key>Defer</Key>
+								<Value>255,255,0</Value>
+							</KeyValuePair>
+							<KeyValuePair>
+								<Key>Pending Action</Key>
+								<Value>255,255,255</Value>
+							</KeyValuePair>
+							<KeyValuePair>
+								<Key>Postponed</Key>
+								<Value>0,255,255</Value>
+							</KeyValuePair>
+							<KeyValuePair>
+								<Key>Reject</Key>
+								<Value>255,0,0</Value>
+							</KeyValuePair>
+							<KeyValuePair>
+								<Key>Review Committee</Key>
+								<Value>189,255,89</Value>
+							</KeyValuePair>
+							<KeyValuePair>
+								<Key>Waitlist</Key>
+								<Value>255,127,0</Value>
+							</KeyValuePair>
+							<KeyValuePair>
+								<Key>Withdrawn</Key>
+								<Value>160,160,164</Value>
+							</KeyValuePair>
+						</KeyValuePairs>
+					</Function>
+				</RGB>
+				<Transparency>
+					<Min>0</Min>
+					<Difference>255</Difference>
+					<Function type="Linear Interpolation">
+						<MinMax type="BoundField">
+							<Min>0</Min>
+						</MinMax>
+					</Function>
+				</Transparency>
+			</Color>
+			<Tag>
+				<Value/>
+				<Binding fieldId="~2659351127"/>
+				<Function type="None"/>
+			</Tag>
+			<Description>
+				<Value/>
+				<Function type="None"/>
+			</Description>
+			<RotationRate>
+				<X>
+					<Min>0</Min>
+					<Function type="Linear Interpolation">
+						<MinMax type="BoundField">
+							<Min>0</Min>
+						</MinMax>
+					</Function>
+				</X>
+				<Y>
+					<Min>0</Min>
+					<Function type="Linear Interpolation">
+						<MinMax type="BoundField">
+							<Min>0</Min>
+						</MinMax>
+					</Function>
+				</Y>
+				<Z>
+					<Min>0</Min>
+					<Function type="Linear Interpolation">
+						<MinMax type="BoundField">
+							<Min>0</Min>
+						</MinMax>
+					</Function>
+				</Z>
+			</RotationRate>
+			<Geometry>
+				<Shape>
+					<Value>Cube</Value>
+					<Binding fieldId="~3067170828"/>
+					<Function type="Numeric Field To Value">
+						<Default>Cube</Default>
+						<KeyValuePairs>
+							<KeyValuePair>
+								<Key>2016</Key>
+								<Value>Octahedron</Value>
+							</KeyValuePair>
+						</KeyValuePairs>
+					</Function>
+				</Shape>
+				<Surface>Solid</Surface>
+				<Ratio>0.1</Ratio>
+			</Geometry>
+			<VirtualTopology>
+				<Type>
+					<Value>Pin</Value>
+					<Function type="None"/>
+				</Type>
+			</VirtualTopology>
+			<URL>
+				<Value/>
+				<Function type="None"/>
+			</URL>
+			<Children>
+				<Glyph label="1">
+					<Position>
+						<X>
+							<Min>0</Min>
+							<Difference>-140</Difference>
+							<Function type="Linear Interpolation">
+								<MinMax type="BoundField">
+									<Min>0</Min>
+								</MinMax>
+							</Function>
+						</X>
+						<Y>
+							<Min>0</Min>
+							<Function type="Linear Interpolation">
+								<MinMax type="BoundField">
+									<Min>0</Min>
+								</MinMax>
+							</Function>
+						</Y>
+						<Z>
+							<Min>0</Min>
+							<Function type="Linear Interpolation">
+								<MinMax type="BoundField">
+									<Min>0</Min>
+								</MinMax>
+							</Function>
+						</Z>
+					</Position>
+					<Rotation>
+						<X>
+							<Min>0</Min>
+							<Function type="Linear Interpolation">
+								<MinMax type="BoundField">
+									<Min>0</Min>
+								</MinMax>
+							</Function>
+						</X>
+						<Y>
+							<Min>0</Min>
+							<Function type="Linear Interpolation">
+								<MinMax type="BoundField">
+									<Min>0</Min>
+								</MinMax>
+							</Function>
+						</Y>
+						<Z>
+							<Min>0</Min>
+							<Function type="Linear Interpolation">
+								<MinMax type="BoundField">
+									<Min>0</Min>
+								</MinMax>
+							</Function>
+						</Z>
+					</Rotation>
+					<Scale>
+						<X>
+							<Min>0</Min>
+							<Difference>0.5</Difference>
+							<Binding fieldId="~936491198"/>
+							<Function type="Text Field To Value">
+								<Default>0</Default>
+								<KeyValuePairs>
+									<KeyValuePair>
+										<Key>Pending Action</Key>
+										<Value>0.5</Value>
+									</KeyValuePair>
+								</KeyValuePairs>
+							</Function>
+						</X>
+						<Y>
+							<Min>0</Min>
+							<Difference>0.5</Difference>
+							<Binding fieldId="~936491198"/>
+							<Function type="Text Field To Value">
+								<Default>0</Default>
+								<KeyValuePairs>
+									<KeyValuePair>
+										<Key>Pending Action</Key>
+										<Value>0.5</Value>
+									</KeyValuePair>
+								</KeyValuePairs>
+							</Function>
+						</Y>
+						<Z>
+							<Min>0</Min>
+							<Difference>0.5</Difference>
+							<Binding fieldId="~936491198"/>
+							<Function type="Text Field To Value">
+								<Default>0</Default>
+								<KeyValuePairs>
+									<KeyValuePair>
+										<Key>Pending Action</Key>
+										<Value>0.5</Value>
+									</KeyValuePair>
+								</KeyValuePairs>
+							</Function>
+						</Z>
+					</Scale>
+					<Color>
+						<RGB>
+							<Min>0,0,0</Min>
+							<Difference>50,101,101</Difference>
+							<Binding fieldId="~2613536239"/>
+							<Function type="Text Field To Value">
+								<Default>0,0,0</Default>
+								<KeyValuePairs>
+									<KeyValuePair>
+										<Key>Admit</Key>
+										<Value>0,170,0</Value>
+									</KeyValuePair>
+									<KeyValuePair>
+										<Key>Admit and Cancel</Key>
+										<Value>0,0,255</Value>
+									</KeyValuePair>
+									<KeyValuePair>
+										<Key>Admit with Reservation</Key>
+										<Value>62,255,107</Value>
+									</KeyValuePair>
+									<KeyValuePair>
+										<Key>Confirm Admit</Key>
+										<Value>0,85,0</Value>
+									</KeyValuePair>
+									<KeyValuePair>
+										<Key>Defer</Key>
+										<Value>255,255,0</Value>
+									</KeyValuePair>
+									<KeyValuePair>
+										<Key>Pending Action</Key>
+										<Value>255,255,255</Value>
+									</KeyValuePair>
+									<KeyValuePair>
+										<Key>Postponed</Key>
+										<Value>0,255,255</Value>
+									</KeyValuePair>
+									<KeyValuePair>
+										<Key>Reject</Key>
+										<Value>255,0,0</Value>
+									</KeyValuePair>
+									<KeyValuePair>
+										<Key>Reject with Reservation</Key>
+										<Value>255,114,114</Value>
+									</KeyValuePair>
+									<KeyValuePair>
+										<Key>Review Committee</Key>
+										<Value>189,255,89</Value>
+									</KeyValuePair>
+									<KeyValuePair>
+										<Key>Waitlist</Key>
+										<Value>255,127,0</Value>
+									</KeyValuePair>
+									<KeyValuePair>
+										<Key>Withdrawn</Key>
+										<Value>160,160,164</Value>
+									</KeyValuePair>
+								</KeyValuePairs>
+							</Function>
+						</RGB>
+						<Transparency>
+							<Min>0</Min>
+							<Difference>255</Difference>
+							<Function type="Linear Interpolation">
+								<MinMax type="BoundField">
+									<Min>0</Min>
+								</MinMax>
+							</Function>
+						</Transparency>
+					</Color>
+					<Tag>
+						<Value/>
+						<Binding fieldId="~2613536239"/>
+						<Function type="None"/>
+					</Tag>
+					<Description>
+						<Value/>
+						<Function type="None"/>
+					</Description>
+					<RotationRate>
+						<X>
+							<Min>0</Min>
+							<Function type="Linear Interpolation">
+								<MinMax type="BoundField">
+									<Min>0</Min>
+								</MinMax>
+							</Function>
+						</X>
+						<Y>
+							<Min>0</Min>
+							<Function type="Linear Interpolation">
+								<MinMax type="BoundField">
+									<Min>0</Min>
+								</MinMax>
+							</Function>
+						</Y>
+						<Z>
+							<Min>0</Min>
+							<Function type="Linear Interpolation">
+								<MinMax type="BoundField">
+									<Min>0</Min>
+								</MinMax>
+							</Function>
+						</Z>
+					</RotationRate>
+					<Geometry>
+						<Shape>
+							<Value>Sphere</Value>
+							<Function type="None"/>
+						</Shape>
+						<Surface>Wireframe</Surface>
+						<Ratio>0.1</Ratio>
+					</Geometry>
+					<VirtualTopology>
+						<Type>
+							<Value>Torus</Value>
+							<Function type="None"/>
+						</Type>
+					</VirtualTopology>
+					<URL>
+						<Value/>
+						<Function type="None"/>
+					</URL>
+				</Glyph>
+			</Children>
+			<FrontEnd>
+				<FilterField id="719598f5-ff35-47b4-bf7a-9bdfbb30140f" table="GlobalAdmissions" field="StaffAssigned" required="true" selectall="true"/>
+				<FilterField id="719598f5-ff35-47b4-bf7a-9bdfbb30140f" table="GlobalAdmissions" field="Year" required="true" selectall="true"/>
+			</FrontEnd>
+		</Glyph>
+	</Glyphs>
+	<Defaults>
+		<TagFieldDefault>Position X</TagFieldDefault>
+		<TagValueDefault>No Tag</TagValueDefault>
+		<ScaleZeroDefault remove="true"/>
+	</Defaults>
+	<SceneProperties>
+		<BackgroundColor>0,0,0</BackgroundColor>
+	</SceneProperties>
+	<FieldGroups/>
+	<Legends>
+		<Legend Title="Global Admissions Legend" Type="Image">C:\ProgramData\SynGlyphX\GlyphEd\Notre Dame\Global Admissions\General Legend Solid V3 Bubble.png</Legend>
+	</Legends>
+	<InputFields>
+		<InputField name="~3684215315" id="719598f5-ff35-47b4-bf7a-9bdfbb30140f" table="GlobalAdmissions" field="Academic_Rating" type="Real"/>
+		<InputField name="~936491198" id="719598f5-ff35-47b4-bf7a-9bdfbb30140f" table="GlobalAdmissions" field="Last_Decision_Cluster" type="Text"/>
+		<InputField name="~3067170828" id="719598f5-ff35-47b4-bf7a-9bdfbb30140f" table="GlobalAdmissions" field="Year" type="Real"/>
+		<InputField name="~2613536239" id="719598f5-ff35-47b4-bf7a-9bdfbb30140f" table="GlobalAdmissions" field="AggregatedStatus" type="Text"/>
+		<InputField name="~845529440" id="719598f5-ff35-47b4-bf7a-9bdfbb30140f" table="GlobalAdmissions" field="Non_Academic_Rating" type="Real"/>
+		<InputField name="Reader" id="719598f5-ff35-47b4-bf7a-9bdfbb30140f" table="GlobalAdmissions" field="StaffAssigned" type="Text"/>
+		<InputField name="~2659351127" id="719598f5-ff35-47b4-bf7a-9bdfbb30140f" table="GlobalAdmissions" field="Decisions_Aggregated" type="Text"/>
+		<InputField name="~1665799473" id="719598f5-ff35-47b4-bf7a-9bdfbb30140f" table="GlobalAdmissions" field="OneTest" type="Real"/>
+	</InputFields>
+</Transform>
