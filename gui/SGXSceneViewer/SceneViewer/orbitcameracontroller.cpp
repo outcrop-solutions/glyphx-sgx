@@ -96,7 +96,7 @@ namespace SynGlyphX
 	void OrbitCameraController::setOrbitTarget( const glm::vec3& pos, float min_dist, bool reset_distance )
 	{
 		setOrbitMinDistance( min_dist );
-		if ( orbit_target != pos )
+		if ( orbit_target != pos || reset_distance )
 		{
 			auto old_orbit_target = orbit_target;
 			camera_slide_origin = camera->get_position();
