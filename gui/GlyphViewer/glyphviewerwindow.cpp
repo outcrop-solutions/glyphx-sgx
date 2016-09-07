@@ -1261,6 +1261,17 @@ void GlyphViewerWindow::CreateInteractionToolbar() {
 	QObject::connect( m_enableDisableFlyToObjectAction, &QAction::toggled, this, &GlyphViewerWindow::OnEnableDisableFlyToObjectAction );
 	m_interactionToolbar->addAction( m_enableDisableFlyToObjectAction );
 
+	m_enableDisableFreeSelectionCameraAction = new QAction( tr( "Enable/Disable Orbit Selection" ), m_interactionToolbar );
+	m_enableDisableFreeSelectionCameraAction->setCheckable( true );
+	m_enableDisableFreeSelectionCameraAction->setChecked( true );
+	QIcon freeSelCamIcon;
+	freeSelCamIcon.addFile( ":SGXGUI/Resources/Icons/icon-orbit-camera.png", QSize(), QIcon::Normal, QIcon::Off );
+	freeSelCamIcon.addFile( ":SGXGUI/Resources/Icons/icon-orbit-camera-a.png", QSize(), QIcon::Normal, QIcon::On );
+	m_enableDisableFreeSelectionCameraAction->setIcon( freeSelCamIcon );
+	//Replace with scene viewer function when available
+	QObject::connect( m_enableDisableFreeSelectionCameraAction, &QAction::toggled, this, &GlyphViewerWindow::OnEnableDisableFreeSelectionCamera );
+	m_interactionToolbar->addAction( m_enableDisableFreeSelectionCameraAction );
+
 	m_interactionToolbar->addSeparator();
 
 	QCheckBox* cb = new QCheckBox(tr("Hide Filtered"), this);
@@ -1327,6 +1338,14 @@ void GlyphViewerWindow::OnEnableDisableFlyToObjectAction( bool enable )
 	if ( m_viewer )
 	{
 		m_viewer->enableFlyToObject( enable );
+	}
+}
+
+void GlyphViewerWindow::OnEnableDisableFreeSelectionCamera( bool enable )
+{
+	if ( m_viewer )
+	{
+		m_viewer->enableFreeSelectionCamera( !enable );
 	}
 }
 
