@@ -537,10 +537,10 @@ namespace SynGlyphX
 		if ( event->key() < key_states_size ) key_states[tolower( event->key() )] = true;
 		QWidget::keyPressEvent( event );
 
+#ifdef _DEBUG
 		auto key = event->key();
 		switch ( key )
 		{
-#ifdef _DEBUG
 			case 'R': hal::device::rebuild_effects(); break;
 			case 'B': glyph_renderer->enableBoundVis( !glyph_renderer->boundVisEnabled() ); break;
 			case 'M': if ( glyph_renderer->boundVisEnabled() )
@@ -559,8 +559,8 @@ namespace SynGlyphX
 				if ( sel ) scene.debugPrint( sel );
 				break;
 			}
-#endif
 		}
+#endif
 	}
 
 	void SceneViewer::keyReleaseEvent( QKeyEvent* event )
