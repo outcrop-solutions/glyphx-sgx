@@ -111,7 +111,7 @@ namespace SynGlyphX
 
 	GlyphRenderer::GlyphRenderer() : transform_binding_point( UINT_MAX ), material_binding_point( UINT_MAX ), selection_anim_max_scale( 64.f ),
 		animation( true ), global_wireframe( false ), scene( nullptr ), filter_alpha( 0.5f ), selection_animation_time( 0.f ),
-		bound_vis_enabled( false )
+		bound_vis_enabled( false ), bound_vis_mode( GlyphRenderer::BoundVisMode::Individual )
 	{
 		glyph_effect = hal::device::create_effect( "shaders/glyph.vert", nullptr, "shaders/glyph.frag" );
 		selection_effect = hal::device::create_effect( "shaders/selection.vert", nullptr, "shaders/selection.frag" );
@@ -127,6 +127,15 @@ namespace SynGlyphX
 	{
 		hal::device::release( glyph_effect );
 		hal::device::release( selection_effect );
+	}
+
+	void GlyphRenderer::add_bound_to_bucket( const Glyph3DNode& glyph, GlyphRenderer::glyph_bucket& bucket )
+	{
+		auto bound = bound_vis_mode == BoundVisMode::Combined ? glyph.getCachedCombinedBound() : glyph.getCachedBound();
+		auto sphere = GlyphGeometryDB::get( GlyphShape::Sphere );
+		auto spart = sphere->get_parts()[0];
+		auto xform = glm::translate( glm::mat4(), bound.get_center() ) * glm::scale( glm::mat4(), glm::vec3( bound.get_radius() ) );
+		bucket.add_instance( spart->get_mesh(), xform * sphere->get_transform() * spart->get_transform(), glyph.getColor(), glyph.getAnimationAxis(), 0.f );
 	}
 
 	void GlyphRenderer::add( const GlyphScene& scene )
@@ -151,13 +160,7 @@ namespace SynGlyphX
 				bucket->add_instance( part->get_mesh(), glyph.getCachedTransform() * glyph.getVisualTransform() * model->get_transform() * part->get_transform(), glyph.getColor(), glyph.getAnimationAxis(), glyph.getAnimationRate() );
 
 				if ( bound_vis_enabled )
-				{
-					auto bound = glyph.getCachedCombinedBound();
-					auto sphere = GlyphGeometryDB::get( GlyphShape::Sphere );
-					auto spart = sphere->get_parts()[0];
-					auto xform = glm::translate( glm::mat4(), bound.get_center() ) * glm::scale( glm::mat4(), glm::vec3( bound.get_radius() ) );
-					wireframe[filter].add_instance( spart->get_mesh(), xform * sphere->get_transform() * spart->get_transform(), glyph.getColor(), glyph.getAnimationAxis(), 0.f );
-				}
+					add_bound_to_bucket( glyph, wireframe[filter] );
 			}
 			return true;
 		}, false );
@@ -292,6 +295,7 @@ namespace SynGlyphX
 				selection_animation_time = selection_animation_state = 0.f;
 				hal::debug::profile_timer timer;
 				selection.clear();
+				selection_wireframe.clear();
 				scene->enumSelected( [&]( const Glyph3DNode& glyph ) {
 					auto glyph_transform = glyph.getCachedTransform() * glyph.getVisualTransform();
 					auto model = glyph.getModel( 0.f /* todo: correct LOD */ );
@@ -300,9 +304,13 @@ namespace SynGlyphX
 						// for the selection effect we don't care about instance color, so we can pack the bound into that
 						// constant buffer instead.
 						selection.add_instance( part->get_mesh(), glyph_transform * model->get_transform() * part->get_transform(), glm::vec4( glyph.getCachedBound().get_center(), glyph.getCachedBound().get_radius() ), glyph.getAnimationAxis(), glyph.getAnimationRate() );
+
+						if ( bound_vis_enabled )
+							add_bound_to_bucket( glyph, selection_wireframe );
 					}
 				} );
 				selection.update_instances( context );
+				selection_wireframe.update_instances( context );
 				scene->clearSelectionChangedFlag();
 				timer.print_ms_to_debug( "built selection instance buffers" );
 			}
@@ -320,8 +328,6 @@ namespace SynGlyphX
 
 			context->set_depth_state( hal::depth_state::read_only );
 			context->bind( selection_effect );
-			hal::rasterizer_state rast{ true, true, false };
-			context->set_rasterizer_state( rast );
 			context->set_blend_state( hal::blend_state::alpha );
 
 			context->set_constant( selection_effect, "global_data", "tint_color", render::color::yellow() );
@@ -334,11 +340,18 @@ namespace SynGlyphX
 			context->set_constant( selection_effect, "camera_data", "camera_pos", camera->get_position() );
 			context->set_constant( selection_effect, "camera_data", "upvec", camera->get_world_up() );
 
+			hal::rasterizer_state filled{ true, true, false };
+			context->set_rasterizer_state( filled );
 			selection.draw( context, sel_transform_binding_point, sel_bound_binding_point, sel_anim_binding_point );
+			hal::rasterizer_state wire{ true, true, true };
+			context->set_rasterizer_state( wire );
+			selection_wireframe.draw( context, sel_transform_binding_point, sel_bound_binding_point, sel_anim_binding_point );
+			context->set_rasterizer_state( filled );
 		}
 		else
 		{
 			selection.clear();
+			selection_wireframe.clear();
 		}
 	}
 
@@ -349,6 +362,19 @@ namespace SynGlyphX
 			bound_vis_enabled = enable;
 			clear();
 			add( *scene );
+		}
+	}
+
+	void GlyphRenderer::setBoundVisMode( BoundVisMode mode )
+	{
+		if ( mode != bound_vis_mode )
+		{
+			bound_vis_mode = mode;
+			if ( bound_vis_enabled )
+			{
+				clear();
+				add( *scene );
+			}
 		}
 	}
 }

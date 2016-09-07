@@ -222,13 +222,16 @@ namespace SynGlyphX
 
 			for ( const auto& g : glyphs )
 			{
-				auto pos = g.second->getCachedBound().get_center();
-				if ( pos.x < min.x ) min.x = pos.x;
-				if ( pos.y < min.y ) min.y = pos.y;
-				if ( pos.z < min.z ) min.z = pos.z;
-				if ( pos.x > max.x ) max.x = pos.x;
-				if ( pos.y > max.y ) max.y = pos.y;
-				if ( pos.z > max.z ) max.z = pos.z;
+				if ( g.second->isRoot() )
+				{
+					auto pos = g.second->getCachedCombinedBound().get_center();
+					if ( pos.x < min.x ) min.x = pos.x;
+					if ( pos.y < min.y ) min.y = pos.y;
+					if ( pos.z < min.z ) min.z = pos.z;
+					if ( pos.x > max.x ) max.x = pos.x;
+					if ( pos.y > max.y ) max.y = pos.y;
+					if ( pos.z > max.z ) max.z = pos.z;
+				}
 			}
 
 			cached_bound = render::box_bound( min, max );
