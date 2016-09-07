@@ -84,6 +84,7 @@ private slots:
 	void OnShowHideHUDAxis(bool show);
 	void OnShowHideSceneAxis(bool show);
 	void OnEnableDisableFlyToObjectAction( bool enable );
+	void OnEnableDisableFreeSelectionCamera( bool enable );
 	void OnOpenURLs();
 	void OnPropertiesActivated();
 	bool LoadRecentFile(const QString& filename) override;
@@ -127,6 +128,7 @@ private:
 	QAction* m_showHideHUDAxisAction;
 	QAction* m_showHideSceneAxisAction;
 	QAction* m_enableDisableFlyToObjectAction;
+	QAction* m_enableDisableFreeSelectionCameraAction;
 
 	QAction* m_openURLAction;
 	QAction* m_propertiesAction;

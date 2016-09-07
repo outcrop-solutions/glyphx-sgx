@@ -48,7 +48,7 @@ namespace SynGlyphX
 		: QOpenGLWidget( parent ), hud_font( "Arial", 12, QFont::Normal ), glyph_renderer( nullptr ),
 		renderer( nullptr ), wireframe( false ), enable_fly_to_object( false ), scene_axes_enabled( true ), wheel_delta( 0.f ),
 		hud_axes_enabled( true ), hud_axes_location( HUDAxesLocation::TopLeft ), animation_enabled( true ), background_color( render::color::black() ),
-		initialized( false ), filtered_glyph_opacity( 0.5f )
+		initialized( false ), filtered_glyph_opacity( 0.5f ), free_selection_camera( false )
 	{
 		memset( key_states, 0, sizeof( key_states ) );
 
@@ -81,11 +81,11 @@ namespace SynGlyphX
 
 		m_moveForwardButton = CreateNavigationButton( tr( "Move Forward" ), true );
 		m_moveForwardButton->setIcon( QIcon( ":SGXGUI/Resources/plus.png" ) );
-		QObject::connect( m_moveForwardButton, &QToolButton::pressed, this, [this, move]() { move( camera->get_forward(), scene.selectionEmpty() ? buttonMoveForwardBackRate : -buttonMoveForwardBackRate ); } );
+		QObject::connect( m_moveForwardButton, &QToolButton::pressed, this, [this, move]() { move( camera->get_forward(), camera_mode() == camera_mode_t::free ? buttonMoveForwardBackRate : -buttonMoveForwardBackRate ); } );
 
 		m_moveBackwardButton = CreateNavigationButton( tr( "Move Backward" ), true );
 		m_moveBackwardButton->setIcon( QIcon( ":SGXGUI/Resources/minus.png" ) );
-		QObject::connect( m_moveBackwardButton, &QToolButton::pressed, this, [this, move]() { move( camera->get_forward(), scene.selectionEmpty() ? -buttonMoveForwardBackRate : buttonMoveForwardBackRate ); } );
+		QObject::connect( m_moveBackwardButton, &QToolButton::pressed, this, [this, move]() { move( camera->get_forward(), camera_mode() == camera_mode_t::free ? -buttonMoveForwardBackRate : buttonMoveForwardBackRate ); } );
 
 		m_moveUpButton = CreateNavigationButton( tr( "Move Up" ), true );
 		m_moveUpButton->setIcon( QIcon( ":SGXGUI/Resources/up_arrow.png" ) );
@@ -552,17 +552,13 @@ namespace SynGlyphX
 				break;
 			}
 			case 'P':
+			{
 				auto sel = scene.getSingleSelection();
 				if ( scene.selectionSize() > 1 )
 					hal::debug::print( "Multiple objects selected; printing hierarchy from first." );
 				if ( sel ) scene.debugPrint( sel );
 				break;
-				/*			case ' ':
-								if ( cur_cam_control == overhead_cam_control )
-									set_cam_control( free_cam_control );
-								else
-									set_cam_control( overhead_cam_control );
-								break;*/
+			}
 		}
 #endif
 	}
@@ -749,7 +745,7 @@ namespace SynGlyphX
 				const float mouse_zoom_speed = 1.f;
 				const float wheel_zoom_speed = 0.1f;
 
-				if ( scene.selectionEmpty() )
+				if ( camera_mode() == camera_mode_t::free )
 				{
 					glm::vec3 motion;
 					if ( key_states['w'] )
@@ -920,5 +916,13 @@ namespace SynGlyphX
 		{
 			item_focus_sm->select( selected, flags );
 		}
+	}
+
+	SceneViewer::camera_mode_t SceneViewer::camera_mode()
+	{
+		if ( scene.selectionEmpty() || free_selection_camera )
+			return camera_mode_t::free;
+		else
+			return camera_mode_t::orbit;
 	}
 }

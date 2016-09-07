@@ -82,6 +82,8 @@ namespace SynGlyphX
 		bool stereoSupported() { return false; /* not yet implemented */ }
 		void setStereoMode( bool enable ) { hal::debug::_assert( false, "stereo mode not yet implemented" ); }
 		bool stereoMode() { return false; /* not yet implemented */ }
+		void enableFreeSelectionCamera( bool val ) { free_selection_camera = val; }
+		bool freeSelectionCameraEnabled() { return free_selection_camera; }
 
 		void setFilteredGlyphOpacity( float opacity ) { filtered_glyph_opacity = opacity; }
 		void enableSceneAxes( bool enabled ) { scene_axes_enabled = enabled; }
@@ -142,6 +144,14 @@ namespace SynGlyphX
 		OverheadCameraController* overhead_cam_control;
 		CameraController* cur_cam_control;
 		void set_cam_control( CameraController* cc, bool forceActivate = false );
+		bool free_selection_camera;
+
+		enum class camera_mode_t
+		{
+			free,
+			orbit,
+		};
+		camera_mode_t camera_mode();
 
 		enum class button
 		{
