@@ -50,6 +50,9 @@ public:
 	~GlyphViewerWindow();
 	void closeJVM();
 
+	bool IsUserLoggedIn();
+	void UpdateUserMenu();
+
 	static const SynGlyphX::SettingsStoredFileList& GetSubsetFileListInstance();
 	static void ClearSubsetFileList() { s_subsetFileList.ClearFiles(); }
 	static void ClearRecentFileList();
@@ -84,6 +87,7 @@ private slots:
 	void OnOpenURLs();
 	void OnPropertiesActivated();
 	bool LoadRecentFile(const QString& filename) override;
+	void Logout();
 
 private:
 	void LoadVisualization(const QString& filename, const MultiTableDistinctValueFilteringParameters& filters = MultiTableDistinctValueFilteringParameters());

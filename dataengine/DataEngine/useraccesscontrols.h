@@ -16,55 +16,42 @@
 ///
 
 #pragma once
-#ifndef DATAENGINE_H
-#define DATAENGINE_H
+#ifndef USERACCESSCONTROLS_H
+#define USERACCESSCONTROLS_H
 
 #include <jni.h>
-#include <iostream>
-#include <boost/filesystem.hpp>
-#include "georeference.h"
-#include <QtCore/QString>
-#include <QtWidgets/QWidget>
-#include "baseimage.h"
 #include "DataEngine_Exports.h"
+#include <QtCore/QString>
+#include <QtCore/QStringList>
 
 namespace DataEngine
 {
-	class DATAENGINE GlyphEngine {
+	class DATAENGINE UserAccessControls
+	{
 
 	private:
 		JNIEnv *jniEnv;
 		jclass jcls;
-		std::string sdtFile;
-		std::string baseOutputDir;
-		std::string baseImageDir;
-		std::string baseFilename;
-		std::string application;
-		const unsigned int NumberOfDefaultBaseImages = 1;
-		bool downloadComplete = true;
-		std::vector<std::string> images;
-		void prepare();
-		void createCacheDirectory();
-		void copyBaseImages();
-		bool downloadBaseImage(const SynGlyphX::BaseImage& baseImage, QString baseImageFilename);
-		void setGeoBoundingBox(std::vector<double> nw, std::vector<double> se, std::vector<double> size);
-		bool hasImageBeenUpdated();
-		std::vector<double> getNWandSE();
+
+		bool validConnection;
 
 	public:
-		GlyphEngine(){};
-		void initiate(JNIEnv *env, std::string sdtPath, std::string outDir, std::string bid, std::string bfn,std::string appName);
-		bool getDownloadedBaseImage(std::vector<SynGlyphX::BaseImage> baseImages);
-		std::vector<std::string> getBaseImages();
-		void generateGlyphs(QWidget *mainWindow);
-		bool IsUpdateNeeded() const;
-		QString JavaErrors();
-		void ClearJavaErrors();
-		QStringList DistinctValuesForField(QString id, QString table, QString field);
-		void SetQueryForDatasource(QString id, QString table, QString query);
-		int SizeOfQuery(QString id, QString table, QString query);
-		~GlyphEngine(){};
+		UserAccessControls(JNIEnv *env);
+		~UserAccessControls(){};
 
+		void InitializeConnection();
+		bool IsValidConnection();
+		void ResetConnection();
+		bool ValidateCredentials(QString username, QString password);
+		QString NameOfUser();
+		QString NameOfInstitution();
+		QString LastModified();
+		int InstitutionID();
+		QStringList VizualizationNames();
+		int FileSyncSetup(QString path);
+		int VisualizationsToSync();
+		void StartSyncingFiles();
+		int FilesSynced();
 	};
 }
-#endif // DATAENGINE_H
+#endif // USERACCESSCONTROLS_H

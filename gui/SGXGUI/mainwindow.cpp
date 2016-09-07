@@ -13,6 +13,8 @@
 #include <QtCore/QStandardPaths>
 #include <QtWidgets/QUndoStack>
 #include "singlewidgetdialog.h"
+#include <QtWidgets/QToolButton>
+#include "userlogindialog.h"
 
 namespace SynGlyphX {
 
@@ -44,6 +46,8 @@ namespace SynGlyphX {
 		m_undoStack = new QUndoStack(this);
 
 		QObject::connect(&s_recentFileList, &SettingsStoredFileList::FileListChanged, this, &MainWindow::UpdateRecentFileList);
+
+		userMenuBar = new QMenuBar(menuBar());
     }
 
     MainWindow::~MainWindow()
@@ -189,6 +193,64 @@ namespace SynGlyphX {
         m_aboutBoxAction = m_helpMenu->addAction("About " + SynGlyphX::Application::organizationName() + " " + SynGlyphX::Application::applicationName());
 		QObject::connect(m_aboutBoxAction, &QAction::triggered, this, &MainWindow::ShowAboutBox);
     }
+
+	void MainWindow::SetDataEngineConnection(DataEngine::DataEngineConnection::SharedPtr dataEngineConnection) {
+		m_dataEngineConnection = dataEngineConnection;
+	}
+
+	void MainWindow::CreateLoginMenu() {
+
+		QString user = "Log In " + QString(QChar(0x23F7));
+		//QAction* loginAction = userMenuBar->addAction(tr(user.toStdString().c_str()));
+		//QObject::connect(loginAction, &QAction::triggered, this, &MainWindow::TriggerLoginWindow);
+		menuBar()->setCornerWidget(userMenuBar, Qt::TopRightCorner);
+
+	}
+
+	void MainWindow::UpdateUserMenu(QString username){
+
+		userMenuBar->clear();
+
+		QString user = username + " " + QString(QChar(0x23F7));
+		m_loginMenu = userMenuBar->addMenu(tr(user.toStdString().c_str()));
+
+		m_userSettingsMenu = m_loginMenu->addAction("User Settings");
+		QObject::connect(m_userSettingsMenu, &QAction::triggered, this, &MainWindow::UserSettings);
+
+		m_loginMenu->addSeparator();
+
+		m_logoutMenu = m_loginMenu->addAction("Log Out");
+
+		menuBar()->setCornerWidget(userMenuBar, Qt::TopRightCorner);
+	}
+
+	QAction* MainWindow::LogoutMenu(){
+		return m_logoutMenu;
+	}
+
+	void MainWindow::UserSettings() {
+
+		QDialog* s = new QDialog(this);
+		s->setWindowTitle(tr("User Settings"));
+		QVBoxLayout* layout = new QVBoxLayout(s);
+		QWidget *placeHolder = new QWidget(s);
+		placeHolder->setMinimumSize(300, 300);
+		layout->addWidget(placeHolder);
+		s->setLayout(layout);
+		s->exec();
+	}
+
+	void MainWindow::UserLogOut(){
+
+		userMenuBar->clear();
+	}
+
+	bool MainWindow::HasOpenFile(){
+		if (m_currentFilename == ""){
+			return false;
+		}
+		return true;
+	}
 
 	void MainWindow::ShowLicensingDialog() {
 #ifdef USE_LICENSING

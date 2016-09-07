@@ -30,6 +30,9 @@
     <ClInclude Include="glyphengine.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="useraccesscontrols.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dataengineconnection.cpp">
@@ -39,6 +42,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="glyphengine.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="useraccesscontrols.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

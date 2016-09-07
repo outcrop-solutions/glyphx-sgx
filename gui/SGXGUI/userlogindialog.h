@@ -14,57 +14,42 @@
 /// LAWS AND INTERNATIONAL TREATIES.  THE RECEIPT OR POSSESSION OF  THIS SOURCE CODE AND/OR RELATED INFORMATION DOES NOT CONVEY OR IMPLY ANY RIGHTS  
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
-
 #pragma once
-#ifndef DATAENGINE_H
-#define DATAENGINE_H
+#ifndef SYNGLYPHX_USERLOGINDIALOG_H
+#define SYNGLYPHX_USERLOGINDIALOG_H
 
-#include <jni.h>
-#include <iostream>
-#include <boost/filesystem.hpp>
-#include "georeference.h"
-#include <QtCore/QString>
-#include <QtWidgets/QWidget>
-#include "baseimage.h"
-#include "DataEngine_Exports.h"
+#include "sgxgui_global.h"
+#include <QtWidgets/QFrame>
+#include <QtWidgets/QLineEdit>
+#include <QtWidgets/QCheckBox>
+#include "passwordlineedit.h"
+#include "dataengineconnection.h"
 
-namespace DataEngine
-{
-	class DATAENGINE GlyphEngine {
+class QLabel;
 
-	private:
-		JNIEnv *jniEnv;
-		jclass jcls;
-		std::string sdtFile;
-		std::string baseOutputDir;
-		std::string baseImageDir;
-		std::string baseFilename;
-		std::string application;
-		const unsigned int NumberOfDefaultBaseImages = 1;
-		bool downloadComplete = true;
-		std::vector<std::string> images;
-		void prepare();
-		void createCacheDirectory();
-		void copyBaseImages();
-		bool downloadBaseImage(const SynGlyphX::BaseImage& baseImage, QString baseImageFilename);
-		void setGeoBoundingBox(std::vector<double> nw, std::vector<double> se, std::vector<double> size);
-		bool hasImageBeenUpdated();
-		std::vector<double> getNWandSE();
+namespace SynGlyphX {
+
+	class SGXGUI_EXPORT UserLoginDialog : public QFrame
+	{
+		Q_OBJECT
 
 	public:
-		GlyphEngine(){};
-		void initiate(JNIEnv *env, std::string sdtPath, std::string outDir, std::string bid, std::string bfn,std::string appName);
-		bool getDownloadedBaseImage(std::vector<SynGlyphX::BaseImage> baseImages);
-		std::vector<std::string> getBaseImages();
-		void generateGlyphs(QWidget *mainWindow);
-		bool IsUpdateNeeded() const;
-		QString JavaErrors();
-		void ClearJavaErrors();
-		QStringList DistinctValuesForField(QString id, QString table, QString field);
-		void SetQueryForDatasource(QString id, QString table, QString query);
-		int SizeOfQuery(QString id, QString table, QString query);
-		~GlyphEngine(){};
+		UserLoginDialog(DataEngine::DataEngineConnection::SharedPtr dataEngineConnection, QWidget *parent);
+		~UserLoginDialog();
 
+		QPushButton* LoginButton();
+		bool Login();
+
+	private:
+		bool ValidateCredentials(QString username, QString password);
+
+		QPushButton* loginButton;
+		QLineEdit* m_usernameLineEdit;
+		QLineEdit* m_passwordLineEdit;
+		QCheckBox *stayLoggedInCheckBox;
+
+		std::shared_ptr<DataEngine::DataEngineConnection> m_dataEngineConnection;
 	};
 }
-#endif // DATAENGINE_H
+
+#endif // USERLOGINDIALOG_H

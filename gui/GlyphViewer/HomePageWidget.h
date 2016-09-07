@@ -20,6 +20,8 @@
 #include "sourcedatacache.h"
 #include <QtWidgets/QFrame>
 #include "dataengineconnection.h"
+#include "userlogindialog.h"
+#include "glyphviewerwindow.h"
 
 class QStackedWidget;
 class QStackedLayout;
@@ -35,6 +37,7 @@ class SharedVisualizationsWidget;
 namespace SynGlyphX {
 
 	class TitleListWidget;
+	class UserLoginDialog;
 }
 
 class HomePageWidget : public QFrame
@@ -42,8 +45,10 @@ class HomePageWidget : public QFrame
 	Q_OBJECT
 
 public:
-	HomePageWidget(DataEngine::DataEngineConnection::SharedPtr dataEngineConnection, QWidget *parent);
+	HomePageWidget(GlyphViewerWindow* mainWindow, DataEngine::DataEngineConnection::SharedPtr dataEngineConnection, QWidget *parent);
 	~HomePageWidget();
+
+	void LoggedOut();
 
 signals:
 	void LoadRecentFile(QString filename);
@@ -55,6 +60,7 @@ private slots:
 	void OnRecentListUpdated();
 	void OnSubsetListUpdated();
 	void OnRecentViewClicked(QListWidgetItem *item);
+	void Login();
 
 private:
 	void CreateHomePageOptionsWidget();
@@ -62,6 +68,7 @@ private:
 	void CreateMyViewsWidget();
 	void CreateHelpWidget();
 	void CreateDashboardWidget();
+	void SwitchDashboardLayout();
 	void SetupGlyphEdViz();
 	void ProduceGlyphEdCSV(const QString& sdtToLoad, const QString& tableInDB, unsigned int currentDataVisualization);
 
@@ -73,11 +80,19 @@ private:
 	QPushButton* m_loadVisualizationButton;
 
 	SharedVisualizationsWidget* m_allViewsFilteringWidget;
+
+	QFrame* m_dashboardWidget;
+	QGridLayout* mainDashboardLayout;
+	QLabel* lowerRightLabel;
+
 	QListWidget* m_recentViewsFilteringWidget;
 
 	SynGlyphX::TitleListWidget* m_subsetViewsFilteringWidget;
 	
-	DataEngine::DataEngineConnection::SharedPtr m_dataEngineConnection;
+	GlyphViewerWindow* m_mainWindow;
+	SynGlyphX::UserLoginDialog* loginWidget;
+
+	std::shared_ptr<DataEngine::DataEngineConnection> m_dataEngineConnection;;
 
 	//GlyphEd only.  Will get rid of ASAP
 	SourceDataCache m_sourceDataCache;

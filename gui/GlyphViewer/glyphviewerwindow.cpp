@@ -138,7 +138,7 @@ void GlyphViewerWindow::CreateLoadingScreen() {
 
 	QStackedWidget* centerWidgetsContainer = dynamic_cast<QStackedWidget*>(centralWidget());
 
-	m_homePage = new HomePageWidget(m_dataEngineConnection, centerWidgetsContainer);
+	m_homePage = new HomePageWidget(this, m_dataEngineConnection, centerWidgetsContainer);
 	m_homePage->setObjectName("home_page");
 	centerWidgetsContainer->addWidget(m_homePage);
 	QObject::connect(m_homePage, &HomePageWidget::LoadRecentFile, this, &GlyphViewerWindow::LoadRecentFile);
@@ -300,6 +300,8 @@ void GlyphViewerWindow::CreateMenus() {
 
 	m_helpMenu->insertAction(m_aboutBoxAction, openGLSettingsAction);
 	m_helpMenu->insertSeparator(m_aboutBoxAction);
+
+	SynGlyphX::MainWindow::CreateLoginMenu();
 
 	EnableLoadedVisualizationDependentActions(false);
 }
@@ -463,6 +465,59 @@ void GlyphViewerWindow::CloseVisualization() {
 
 	QStackedWidget* centerWidgetsContainer = dynamic_cast<QStackedWidget*>(centralWidget());
 	centerWidgetsContainer->setCurrentIndex(0);
+}
+
+bool GlyphViewerWindow::IsUserLoggedIn() {
+
+	if (!SynGlyphX::GlyphBuilderApplication::IsGlyphEd()) {
+		return true;
+	}
+
+	QSettings settings;
+	settings.beginGroup("Login");
+	QString user = settings.value("Username", "Guest").toString(); //For the moment not used
+	QString pass = settings.value("Password", "").toString(); //For the moment not used
+	QString name = settings.value("Name", "Guest").toString();
+	settings.endGroup();
+
+	if (m_dataEngineConnection->UserAccessControls()->IsValidConnection()){
+		return true;
+	}
+	else{
+		m_dataEngineConnection->UserAccessControls()->InitializeConnection();
+		if (name != "Guest"){
+			if (m_dataEngineConnection->UserAccessControls()->ValidateCredentials(user, pass)){
+				MainWindow::UpdateUserMenu(name);
+				UpdateUserMenu();
+				return true;
+			}
+		}
+		return false;
+	}
+}
+
+void GlyphViewerWindow::UpdateUserMenu(){
+	QObject::connect(MainWindow::LogoutMenu(), &QAction::triggered, this, &GlyphViewerWindow::Logout);
+}
+
+void GlyphViewerWindow::Logout(){
+	SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
+	MainWindow::UserLogOut();
+	if (MainWindow::HasOpenFile()){
+		CloseVisualization();
+	}
+
+	QSettings settings;
+	settings.beginGroup("Login");
+	settings.setValue("Username", "Guest");
+	settings.setValue("Password", "");
+	settings.setValue("Name", "Guest");
+	settings.endGroup();
+
+	m_dataEngineConnection->UserAccessControls()->ResetConnection();
+
+	m_homePage->LoggedOut();
+	SynGlyphX::Application::restoreOverrideCursor();
 }
 
 void GlyphViewerWindow::ClearAllData() {

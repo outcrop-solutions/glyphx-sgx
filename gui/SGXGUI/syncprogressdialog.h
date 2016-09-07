@@ -16,55 +16,44 @@
 ///
 
 #pragma once
-#ifndef DATAENGINE_H
-#define DATAENGINE_H
 
-#include <jni.h>
-#include <iostream>
-#include <boost/filesystem.hpp>
-#include "georeference.h"
-#include <QtCore/QString>
-#include <QtWidgets/QWidget>
-#include "baseimage.h"
-#include "DataEngine_Exports.h"
+#ifndef SYNCPROGRESSDIALOG_H
+#define SYNCPROGRESSDIALOG_H
 
-namespace DataEngine
-{
-	class DATAENGINE GlyphEngine {
+#include "sgxgui_global.h"
+#include <QtWidgets/QDialog>
+#include <QtCore/QTimer>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QVBoxLayout>
+#include "dataengineconnection.h"
 
-	private:
-		JNIEnv *jniEnv;
-		jclass jcls;
-		std::string sdtFile;
-		std::string baseOutputDir;
-		std::string baseImageDir;
-		std::string baseFilename;
-		std::string application;
-		const unsigned int NumberOfDefaultBaseImages = 1;
-		bool downloadComplete = true;
-		std::vector<std::string> images;
-		void prepare();
-		void createCacheDirectory();
-		void copyBaseImages();
-		bool downloadBaseImage(const SynGlyphX::BaseImage& baseImage, QString baseImageFilename);
-		void setGeoBoundingBox(std::vector<double> nw, std::vector<double> se, std::vector<double> size);
-		bool hasImageBeenUpdated();
-		std::vector<double> getNWandSE();
+namespace SynGlyphX {
+
+	class SGXGUI_EXPORT SyncProgressDialog : public QDialog
+	{
+		Q_OBJECT
 
 	public:
-		GlyphEngine(){};
-		void initiate(JNIEnv *env, std::string sdtPath, std::string outDir, std::string bid, std::string bfn,std::string appName);
-		bool getDownloadedBaseImage(std::vector<SynGlyphX::BaseImage> baseImages);
-		std::vector<std::string> getBaseImages();
-		void generateGlyphs(QWidget *mainWindow);
-		bool IsUpdateNeeded() const;
-		QString JavaErrors();
-		void ClearJavaErrors();
-		QStringList DistinctValuesForField(QString id, QString table, QString field);
-		void SetQueryForDatasource(QString id, QString table, QString query);
-		int SizeOfQuery(QString id, QString table, QString query);
-		~GlyphEngine(){};
+		SyncProgressDialog(int files2sync, DataEngine::DataEngineConnection::SharedPtr dataEngineConnection, QWidget *parent);
+		~SyncProgressDialog(){};
+
+		public slots:
+		//Slot that is called when QTimer timeouts 
+		void handleTimeOut();
+
+	private:
+		QLabel* GetSyncLabel();
+		void UpdateSyncLabel();
+
+		QVBoxLayout* layout;
+		QLabel* syncLabel;
+		QTimer *timer;
+		int value;
+		int viz_count;
+		int file_count;
+
+		std::shared_ptr<DataEngine::DataEngineConnection> m_dataEngineConnection;
 
 	};
 }
-#endif // DATAENGINE_H
+#endif
