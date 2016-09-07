@@ -760,8 +760,11 @@ namespace SynGlyphX
 					motion += cam_fwd * wheel_delta * wheel_zoom_speed;
 					if ( drag_info( button::middle ).dragging )
 					{
-						motion += cam_right * ( drag_info( button::middle ).drag_delta_x * mouse_zoom_speed );
-						motion -= camera->get_up() * ( drag_info( button::middle ).drag_delta_y * mouse_zoom_speed );
+						motion -= cam_fwd * float( drag_info( button::middle ).drag_delta_y ) * mouse_zoom_speed;
+					}
+					else if ( drag_info( button::left ).dragging && drag_info( button::right ).dragging )
+					{
+						motion -= cam_fwd * float( drag_info( button::left ).drag_delta_y ) * mouse_zoom_speed;
 					}
 
 					// Move the camera up and down along the world vertical axis. (To move along the camera's local
@@ -772,7 +775,8 @@ namespace SynGlyphX
 					else if ( key_states['e'] )
 						motion += cam_up;
 
-					free_cam_control->turn( glm::vec2( float( drag_info( button::left ).drag_delta_x ), float( drag_info( button::left ).drag_delta_y ) ) );
+					if ( !( drag_info( button::left ).dragging && drag_info( button::right ).dragging ) )	// if two-button dragging, don't turn
+						free_cam_control->turn( glm::vec2( float( drag_info( button::left ).drag_delta_x ), float( drag_info( button::left ).drag_delta_y ) ) );
 					free_cam_control->move( motion * ( fast ? 5.f : 1.f ) );
 					set_cam_control( free_cam_control );
 
