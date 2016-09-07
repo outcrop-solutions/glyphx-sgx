@@ -16,42 +16,44 @@
 ///
 
 #pragma once
-#ifndef USERACCESSCONTROLS_H
-#define USERACCESSCONTROLS_H
 
-#include <jni.h>
-#include "DataEngine_Exports.h"
-#include <QtCore/QString>
-#include <QtCore/QStringList>
+#ifndef SYNCPROGRESSDIALOG_H
+#define SYNCPROGRESSDIALOG_H
 
-namespace DataEngine
-{
-	class DATAENGINE UserAccessControls
+#include "sgxgui_global.h"
+#include <QtWidgets/QDialog>
+#include <QtCore/QTimer>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QVBoxLayout>
+#include "dataengineconnection.h"
+
+namespace SynGlyphX {
+
+	class SGXGUI_EXPORT SyncProgressDialog : public QDialog
 	{
-
-	private:
-		JNIEnv *jniEnv;
-		jclass jcls;
-
-		bool validConnection;
+		Q_OBJECT
 
 	public:
-		UserAccessControls(JNIEnv *env);
-		~UserAccessControls(){};
+		SyncProgressDialog(int files2sync, DataEngine::DataEngineConnection::SharedPtr dataEngineConnection, QWidget *parent);
+		~SyncProgressDialog(){};
 
-		void InitializeConnection();
-		bool IsValidConnection();
-		void ResetConnection();
-		bool ValidateCredentials(QString username, QString password);
-		QString NameOfUser();
-		QString NameOfInstitution();
-		QString LastModified();
-		int InstitutionID();
-		QStringList VizualizationNames();
-		int FileSyncSetup(QString path);
-		int VisualizationsToSync();
-		void StartSyncingFiles();
-		int FilesSynced();
+		public slots:
+		//Slot that is called when QTimer timeouts 
+		void handleTimeOut();
+
+	private:
+		QLabel* GetSyncLabel();
+		void UpdateSyncLabel();
+
+		QVBoxLayout* layout;
+		QLabel* syncLabel;
+		QTimer *timer;
+		int value;
+		int viz_count;
+		int file_count;
+
+		std::shared_ptr<DataEngine::DataEngineConnection> m_dataEngineConnection;
+
 	};
 }
-#endif // USERACCESSCONTROLS_H
+#endif

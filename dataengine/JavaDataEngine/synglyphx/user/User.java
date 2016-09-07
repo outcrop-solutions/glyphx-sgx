@@ -22,13 +22,13 @@ public class User {
 		syncer = new FileSyncer();
 	}
 
-	public void setInstitution(int institution_id, String institution_name){
-		institution = new Institution(institution_id, institution_name);
+	public void setInstitution(int institution_id, String institution_name, Timestamp logo_mod, Timestamp data_mod){
+		institution = new Institution(institution_id, institution_name, logo_mod, data_mod);
 	}
 
-	public void addUserFile(String file_name, String rpath, int s_group, int type){
+	public void addUserFile(String file_name, String rpath, int s_group, Timestamp last_mod, int type){
 		if(s_group == 1 || group == s_group){
-			userFiles.add(new UserFile(file_name, rpath, s_group, type));
+			userFiles.add(new UserFile(file_name, rpath, s_group, last_mod, type));
 		}
 	}
 
@@ -48,10 +48,6 @@ public class User {
 		return syncer.filesSynced();
 	}
 
-	public String getGlyphEdPath(){
-		return syncer.getGlyphEdPath();
-	}
-
 	public int getID(){
 		return id;
 	}
@@ -66,10 +62,6 @@ public class User {
 
 	public int getInstitutionID(){
 		return institution.getID();
-	}
-
-	public int getGroup(){
-		return group;
 	}
 
 	public Timestamp getLastModified(){

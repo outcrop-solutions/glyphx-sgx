@@ -22,6 +22,7 @@
 #include <QtWidgets/QMainWindow>
 #include <QtCore/QSet>
 #include "SettingsStoredFileList.h"
+#include "dataengineconnection.h"
 
 class QUndoStack;
 
@@ -71,6 +72,7 @@ namespace SynGlyphX {
 		bool HasOpenFile();
 		QAction* LogoutMenu();
 		void UserLogOut();
+		void SetDataEngineConnection(DataEngine::DataEngineConnection::SharedPtr dataEngineConnection);
 
 		QString GetFileNameOpenDialog(const QString& settingKey = "", const QString& caption = "", const QString& defaultDir = "", const QString& filter = "");
 		QStringList GetFileNamesOpenDialog(const QString& settingKey = "", const QString& caption = "", const QString& defaultDir = "", const QString& filter = "");
@@ -118,6 +120,7 @@ namespace SynGlyphX {
 		bool m_needToReadSettings;
 		unsigned int m_stateVersion;
 
+		std::shared_ptr<DataEngine::DataEngineConnection> m_dataEngineConnection;
     };
 
 } //namespace SynGlyphX

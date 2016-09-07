@@ -33,12 +33,12 @@ if not exist %package%\user mkdir %package%\user
 
 SET currdir=%cd%
 cd %outpath%
-
 %jcmd%\jar cf dataengine.jar DataEngine.class GlyphEngine.class UserAccessControls.class synglyphx\data\*.class synglyphx\glyph\*.class synglyphx\io\*.class synglyphx\util\*.class synglyphx\jdbc\*.class synglyphx\jdbc\driver\*.class synglyphx\link\*.class synglyphx\user\*.class
 
 if not "%~1"=="" (
 	if "%~1"=="run" (
 		if not "%~2"=="" (
+			if not exist %jp%\ConvertHash.dll ( xcopy %jp%\ConvertHash.dll %outpath%\ )
 			if "%~2"=="-g" %jcmd%\java -Xmx1g GlyphEngine
 			if "%~2"=="-d" %jcmd%\java DataEngine
 			if "%~2"=="-u" %jcmd%\java UserAccessControls

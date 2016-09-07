@@ -2,8 +2,6 @@
 import java.sql.*;
 import java.util.Date;
 import synglyphx.user.User;
-import synglyphx.user.PathBuilder;
-import synglyphx.io.Logger;
 import java.util.concurrent.TimeUnit;
 
 public class UserAccessControls {
@@ -28,7 +26,7 @@ public class UserAccessControls {
 		}
 	}
 	
-	public static int validateCredentials(String username, String password){
+	public static boolean validateCredentials(String username, String password){
 
 		try{
 		    String query = "SELECT * FROM ";
@@ -39,23 +37,23 @@ public class UserAccessControls {
 
 	        if(rs.next()){
 	        	loggedInUser = new User(rs.getInt("UserAccounts.ID"),rs.getString("UserAccounts.Name"),rs.getInt("UserAccounts.Group"),rs.getTimestamp("UserAccounts.LastModified"));
-				loggedInUser.setInstitution(rs.getInt("UserAccounts.Institution"),rs.getString("Institutions.Name"));
+				loggedInUser.setInstitution(rs.getInt("UserAccounts.Institution"),rs.getString("Institutions.Name"),rs.getTimestamp("Institutions.LogoModified"),rs.getTimestamp("Institutions.DataModified"));
 			}
 			rs.close();
 			pstmt.close();
 
 			if(loggedInUser == null){
-				return 0;
+				return false;
 			}
 
-			query = "SELECT VisualizationGroups.Group, Visualizations.Name, Visualizations.Path FROM ";
-			query += "(VisualizationGroups INNER JOIN Visualizations ON (VisualizationGroups.VizID=Visualizations.ID)) ";
-			query += "WHERE VisualizationGroups.Institution="+loggedInUser.getInstitutionID()+" AND VisualizationGroups.Group="+loggedInUser.getGroup()+";";
+			query = "SELECT Visualizations.Name, Visualizations.Path, Visualizations.Group, Visualizations.LastModified FROM ";
+			query += "(Institutions INNER JOIN Visualizations ON (Institutions.ID=Visualizations.Institution)) ";
+			query += "WHERE Institutions.ID="+loggedInUser.getInstitutionID()+";";
 			pstmt = conn.prepareStatement(query);
 	        rs = pstmt.executeQuery();
 
 	        while(rs.next()){
-	        	loggedInUser.addUserFile(rs.getString("Visualizations.Name"),rs.getString("Visualizations.Path"),rs.getInt("VisualizationGroups.Group"),1);
+	        	loggedInUser.addUserFile(rs.getString("Visualizations.Name"),rs.getString("Visualizations.Path"),rs.getInt("Visualizations.Group"),rs.getTimestamp("Visualizations.LastModified"),1);
 	        }
 	        rs.close();
 			pstmt.close();
@@ -63,26 +61,14 @@ public class UserAccessControls {
 			conn.close();
 
 		}catch(Exception e){
-			try{
-	            e.printStackTrace(Logger.getInstance().addError());
-	        }catch(Exception ex){}
-	        e.printStackTrace();
-			return 2;
+			e.printStackTrace();
+			return false;
 		}
-		return 1;
-	}
-
-	public static void restructureFilePaths(){
-		PathBuilder pb = new PathBuilder(getGlyphEdPath());
-		pb.resetSharedVisualizationPaths();
+		return true;
 	}
 
 	public static void logOutCurrentUser(){
 		loggedInUser = null;
-	}
-
-	public static String getGlyphEdPath(){
-		return loggedInUser.getGlyphEdPath();
 	}
 
 	public static int fileSyncSetup(final String sync_dir){
@@ -123,7 +109,6 @@ public class UserAccessControls {
 
 	public static void main(String [] args){
 
-		
 		System.out.println(UserAccessControls.initConnection());
 		System.out.println(UserAccessControls.validateCredentials("ataul","ataul"));
 		System.out.println(UserAccessControls.nameOfUser());
@@ -137,7 +122,6 @@ public class UserAccessControls {
 
 		String synced_dir = "C:/ProgramData/SynGlyphX/GlyphEd";
 		int count = UserAccessControls.fileSyncSetup(synced_dir);
-
 		int viz_count = UserAccessControls.visualizationsToSync();
 		UserAccessControls.startSyncingFiles();
 
@@ -153,9 +137,6 @@ public class UserAccessControls {
 					else if(i == viz_count+2){
 						System.out.println("Syncing Data...");
 					}
-					else if(i == viz_count+3){
-						System.out.println("Syncing Shared...");
-					}
 					else{
 						System.out.println("Visualizations synced "+i+" out of "+viz_count);
 					}
@@ -165,10 +146,7 @@ public class UserAccessControls {
 		}catch(Exception e){
 			e.printStackTrace();
 		}
-		UserAccessControls.restructureFilePaths();
 		System.out.println("Done syncing");
-		
-	
 	}
 
 }

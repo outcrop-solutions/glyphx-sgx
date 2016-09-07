@@ -14,44 +14,42 @@
 /// LAWS AND INTERNATIONAL TREATIES.  THE RECEIPT OR POSSESSION OF  THIS SOURCE CODE AND/OR RELATED INFORMATION DOES NOT CONVEY OR IMPLY ANY RIGHTS  
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
-
 #pragma once
-#ifndef USERACCESSCONTROLS_H
-#define USERACCESSCONTROLS_H
+#ifndef SYNGLYPHX_USERLOGINDIALOG_H
+#define SYNGLYPHX_USERLOGINDIALOG_H
 
-#include <jni.h>
-#include "DataEngine_Exports.h"
-#include <QtCore/QString>
-#include <QtCore/QStringList>
+#include "sgxgui_global.h"
+#include <QtWidgets/QFrame>
+#include <QtWidgets/QLineEdit>
+#include <QtWidgets/QCheckBox>
+#include "passwordlineedit.h"
+#include "dataengineconnection.h"
 
-namespace DataEngine
-{
-	class DATAENGINE UserAccessControls
+class QLabel;
+
+namespace SynGlyphX {
+
+	class SGXGUI_EXPORT UserLoginDialog : public QFrame
 	{
-
-	private:
-		JNIEnv *jniEnv;
-		jclass jcls;
-
-		bool validConnection;
+		Q_OBJECT
 
 	public:
-		UserAccessControls(JNIEnv *env);
-		~UserAccessControls(){};
+		UserLoginDialog(DataEngine::DataEngineConnection::SharedPtr dataEngineConnection, QWidget *parent);
+		~UserLoginDialog();
 
-		void InitializeConnection();
-		bool IsValidConnection();
-		void ResetConnection();
+		QPushButton* LoginButton();
+		bool Login();
+
+	private:
 		bool ValidateCredentials(QString username, QString password);
-		QString NameOfUser();
-		QString NameOfInstitution();
-		QString LastModified();
-		int InstitutionID();
-		QStringList VizualizationNames();
-		int FileSyncSetup(QString path);
-		int VisualizationsToSync();
-		void StartSyncingFiles();
-		int FilesSynced();
+
+		QPushButton* loginButton;
+		QLineEdit* m_usernameLineEdit;
+		QLineEdit* m_passwordLineEdit;
+		QCheckBox *stayLoggedInCheckBox;
+
+		std::shared_ptr<DataEngine::DataEngineConnection> m_dataEngineConnection;
 	};
 }
-#endif // USERACCESSCONTROLS_H
+
+#endif // USERLOGINDIALOG_H
