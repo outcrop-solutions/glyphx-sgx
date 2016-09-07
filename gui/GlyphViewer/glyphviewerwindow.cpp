@@ -149,7 +149,7 @@ void GlyphViewerWindow::CreateLoadingScreen() {
 void GlyphViewerWindow::CreateANTzWidget() {
 	
 	QStackedWidget* antzWidgetContainer = dynamic_cast<QStackedWidget*>(centralWidget());
-	if (m_viewer != nullptr) {
+	if (m_viewer) {
 		
 		antzWidgetContainer->removeWidget(m_viewer);
 		delete m_viewer;
@@ -1335,18 +1335,14 @@ void GlyphViewerWindow::AddSubsetVisualization(const QString& filename) {
 
 void GlyphViewerWindow::OnEnableDisableFlyToObjectAction( bool enable )
 {
-	if ( m_viewer )
-	{
+	if ( m_viewer && m_viewer->isInitialized() )
 		m_viewer->enableFlyToObject( enable );
-	}
 }
 
 void GlyphViewerWindow::OnEnableDisableFreeSelectionCamera( bool enable )
 {
-	if ( m_viewer )
-	{
+	if ( m_viewer && m_viewer->isInitialized() )
 		m_viewer->enableFreeSelectionCamera( !enable );
-	}
 }
 
 bool GlyphViewerWindow::DoesHelpExist() const {

@@ -59,6 +59,8 @@ namespace SynGlyphX
 		SceneViewer( const SceneViewer& ) = delete;
 		~SceneViewer();
 
+		bool isInitialized() { return initialized; }
+
 		void setSelectionModel( SynGlyphXANTz::GlyphForestModel* gfm, ItemFocusSelectionModel* ifsm ) { glyph_forest_model = gfm; item_focus_sm = ifsm; }
 
 		void initializeGL() override;
