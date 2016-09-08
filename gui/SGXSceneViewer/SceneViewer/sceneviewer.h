@@ -85,6 +85,7 @@ namespace SynGlyphX
 		void setStereoMode( bool enable ) { hal::debug::_assert( false, "stereo mode not yet implemented" ); }
 		bool stereoMode() { return false; /* not yet implemented */ }
 		void enableFreeSelectionCamera( bool val ) { free_selection_camera = val; }
+		void enableSelectionEffect( bool val ) { selection_effect_enabled = val; glyph_renderer->resetSelectionAnimation(); }
 		bool freeSelectionCameraEnabled() { return free_selection_camera; }
 
 		void setFilteredGlyphOpacity( float opacity ) { filtered_glyph_opacity = opacity; }
@@ -147,6 +148,7 @@ namespace SynGlyphX
 		CameraController* cur_cam_control;
 		void set_cam_control( CameraController* cc, bool forceActivate = false );
 		bool free_selection_camera;
+		bool selection_effect_enabled;
 
 		enum class camera_mode_t
 		{

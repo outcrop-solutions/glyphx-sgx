@@ -42,6 +42,9 @@ namespace SynGlyphX
 		BoundVisMode getBoundVisMode() { return bound_vis_mode; }
 		bool boundVisEnabled() { return bound_vis_enabled; }
 
+		void enableSelectionEffect( bool val ) { sel_effect_enabled = val; }
+		void resetSelectionAnimation() { selection_animation_state = 0.f; }
+
 	private:
 		class glyph_bucket
 		{
@@ -77,6 +80,7 @@ namespace SynGlyphX
 		float selection_anim_max_scale;
 		bool bound_vis_enabled;
 		BoundVisMode bound_vis_mode;
+		bool sel_effect_enabled;
 
 		void add( const GlyphScene& scene );
 		void add_bound_to_bucket( const Glyph3DNode& glyph, glyph_bucket& bucket );
