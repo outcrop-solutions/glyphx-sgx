@@ -217,7 +217,7 @@ namespace SynGlyphX
 		base_images = new BaseImageRenderer;
 
 		camera = new render::perspective_camera();
-		camera->set_clip_planes( 1.f, 2048.f );
+		camera->set_clip_planes( 0.1f, 2048.f );
 
 		free_cam_control = new FreeCameraController( camera );
 		overhead_cam_control = new OverheadCameraController( camera );
