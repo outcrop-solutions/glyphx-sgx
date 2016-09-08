@@ -123,6 +123,8 @@ GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 	centerWidgetsContainer->setCurrentIndex(0);
 
 	statusBar()->showMessage(SynGlyphX::Application::applicationName() + " Started", 3000);
+
+	EnableLoadedVisualizationDependentActions( false );
 }
 
 GlyphViewerWindow::~GlyphViewerWindow()
@@ -168,6 +170,13 @@ void GlyphViewerWindow::CreateANTzWidget() {
 	m_propertiesAction->setEnabled(false);
 	QObject::connect(m_propertiesAction, &QAction::triggered, this, &GlyphViewerWindow::OnPropertiesActivated);
 
+	m_enableDisableSelEffectActionMenu = new QAction( tr( "Enable/Disable Selection Effect" ), this );
+	m_enableDisableSelEffectActionMenu->setCheckable( true );
+	m_enableDisableSelEffectActionMenu->setChecked( true );
+	m_enableDisableSelEffectActionMenu->setEnabled( false );
+	m_loadedVisualizationDependentActions.push_back( m_enableDisableSelEffectActionMenu );
+	QObject::connect( m_enableDisableSelEffectActionMenu, &QAction::toggled, this, &GlyphViewerWindow::OnEnableDisableSelEffect );
+
 	m_viewer->addAction(m_openURLAction);
 	m_viewer->addAction(m_propertiesAction);
 	m_viewer->addAction(SynGlyphX::SharedActionList::CreateSeparator(m_viewer));
@@ -175,6 +184,7 @@ void GlyphViewerWindow::CreateANTzWidget() {
 	m_viewer->addAction(m_hideTagsAction);
 	m_viewer->addAction(m_hideAllTagsAction);
 	m_viewer->addAction(SynGlyphX::SharedActionList::CreateSeparator(m_viewer));
+	m_viewer->addAction(m_enableDisableSelEffectActionMenu);
 	m_viewer->addAction(m_clearSelectionAction);
 
 	m_viewer->setContextMenuPolicy( Qt::ActionsContextMenu );
@@ -312,8 +322,6 @@ void GlyphViewerWindow::CreateMenus() {
 
 	m_helpMenu->insertAction(m_aboutBoxAction, openGLSettingsAction);
 	m_helpMenu->insertSeparator(m_aboutBoxAction);
-
-	EnableLoadedVisualizationDependentActions(false);
 }
 
 void GlyphViewerWindow::CreateDockWidgets() {
@@ -1257,9 +1265,9 @@ void GlyphViewerWindow::CreateInteractionToolbar() {
 	flyToObjectIcon.addFile( ":SGXGUI/Resources/Icons/icon-fly-to.png", QSize(), QIcon::Normal, QIcon::Off );
 	flyToObjectIcon.addFile( ":SGXGUI/Resources/Icons/icon-fly-to-a.png", QSize(), QIcon::Normal, QIcon::On );
 	m_enableDisableFlyToObjectAction->setIcon( flyToObjectIcon );
-	//Replace with scene viewer function when available
 	QObject::connect( m_enableDisableFlyToObjectAction, &QAction::toggled, this, &GlyphViewerWindow::OnEnableDisableFlyToObjectAction );
 	m_interactionToolbar->addAction( m_enableDisableFlyToObjectAction );
+	m_loadedVisualizationDependentActions.push_back( m_enableDisableFlyToObjectAction );
 
 	m_enableDisableFreeSelectionCameraAction = new QAction( tr( "Enable/Disable Orbit Selection" ), m_interactionToolbar );
 	m_enableDisableFreeSelectionCameraAction->setCheckable( true );
@@ -1268,9 +1276,20 @@ void GlyphViewerWindow::CreateInteractionToolbar() {
 	freeSelCamIcon.addFile( ":SGXGUI/Resources/Icons/icon-orbit-camera.png", QSize(), QIcon::Normal, QIcon::Off );
 	freeSelCamIcon.addFile( ":SGXGUI/Resources/Icons/icon-orbit-camera-a.png", QSize(), QIcon::Normal, QIcon::On );
 	m_enableDisableFreeSelectionCameraAction->setIcon( freeSelCamIcon );
-	//Replace with scene viewer function when available
 	QObject::connect( m_enableDisableFreeSelectionCameraAction, &QAction::toggled, this, &GlyphViewerWindow::OnEnableDisableFreeSelectionCamera );
 	m_interactionToolbar->addAction( m_enableDisableFreeSelectionCameraAction );
+	m_loadedVisualizationDependentActions.push_back( m_enableDisableFreeSelectionCameraAction );
+
+	m_enableDisableSelEffectAction = new QAction( tr( "Enable/Disable Selection Effect" ), m_interactionToolbar );
+	m_enableDisableSelEffectAction->setCheckable( true );
+	m_enableDisableSelEffectAction->setChecked( true );
+	QIcon selEffIcon;
+	selEffIcon.addFile( ":SGXGUI/Resources/Icons/icon-sel-enable.png", QSize(), QIcon::Normal, QIcon::Off );
+	selEffIcon.addFile( ":SGXGUI/Resources/Icons/icon-sel-enable-a.png", QSize(), QIcon::Normal, QIcon::On );
+	m_enableDisableSelEffectAction->setIcon( selEffIcon );
+	QObject::connect( m_enableDisableSelEffectAction, &QAction::toggled, this, &GlyphViewerWindow::OnEnableDisableSelEffect );
+	m_interactionToolbar->addAction( m_enableDisableSelEffectAction );
+	m_loadedVisualizationDependentActions.push_back( m_enableDisableSelEffectAction );
 
 	m_interactionToolbar->addSeparator();
 
@@ -1343,6 +1362,16 @@ void GlyphViewerWindow::OnEnableDisableFreeSelectionCamera( bool enable )
 {
 	if ( m_viewer && m_viewer->isInitialized() )
 		m_viewer->enableFreeSelectionCamera( !enable );
+}
+
+void GlyphViewerWindow::OnEnableDisableSelEffect( bool enable )
+{
+	if ( m_viewer && m_viewer->isInitialized() )
+	{
+		m_viewer->enableSelectionEffect( enable );
+		m_enableDisableSelEffectActionMenu->setChecked( enable );
+		m_enableDisableSelEffectAction->setChecked( enable );
+	}
 }
 
 bool GlyphViewerWindow::DoesHelpExist() const {

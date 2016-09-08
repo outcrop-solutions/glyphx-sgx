@@ -85,6 +85,7 @@ private slots:
 	void OnShowHideSceneAxis(bool show);
 	void OnEnableDisableFlyToObjectAction( bool enable );
 	void OnEnableDisableFreeSelectionCamera( bool enable );
+	void OnEnableDisableSelEffect( bool enable );
 	void OnOpenURLs();
 	void OnPropertiesActivated();
 	bool LoadRecentFile(const QString& filename) override;
@@ -123,12 +124,14 @@ private:
 	QAction* m_clearSelectionAction;
 	QAction* m_resetCameraToDefaultPosition;
 	QAction* m_remapRootPositionMappingsAction;
+	QAction* m_enableDisableSelEffectActionMenu;
 	QList<QAction*> m_loadedVisualizationDependentActions;
 
 	QAction* m_showHideHUDAxisAction;
 	QAction* m_showHideSceneAxisAction;
 	QAction* m_enableDisableFlyToObjectAction;
 	QAction* m_enableDisableFreeSelectionCameraAction;
+	QAction* m_enableDisableSelEffectAction;
 
 	QAction* m_openURLAction;
 	QAction* m_propertiesAction;

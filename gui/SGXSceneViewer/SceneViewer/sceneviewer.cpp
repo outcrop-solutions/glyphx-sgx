@@ -48,7 +48,7 @@ namespace SynGlyphX
 		: QOpenGLWidget( parent ), hud_font( "Arial", 12, QFont::Normal ), glyph_renderer( nullptr ),
 		renderer( nullptr ), wireframe( false ), enable_fly_to_object( false ), scene_axes_enabled( true ), wheel_delta( 0.f ),
 		hud_axes_enabled( true ), hud_axes_location( HUDAxesLocation::TopLeft ), animation_enabled( true ), background_color( render::color::black() ),
-		initialized( false ), filtered_glyph_opacity( 0.5f ), free_selection_camera( false )
+		initialized( false ), filtered_glyph_opacity( 0.5f ), free_selection_camera( false ), selection_effect_enabled( true )
 	{
 		memset( key_states, 0, sizeof( key_states ) );
 
@@ -343,6 +343,7 @@ namespace SynGlyphX
 		QPainter painter( this );
 		if ( format().profile() == QSurfaceFormat::CompatibilityProfile ) painter.beginNativePainting();
 
+		glyph_renderer->enableSelectionEffect( selection_effect_enabled );
 		glyph_renderer->enableAnimation( animation_enabled );
 		glyph_renderer->setFilterAlpha( glm::lerp( 0.1f, 0.8f, filtered_glyph_opacity ) );
 
