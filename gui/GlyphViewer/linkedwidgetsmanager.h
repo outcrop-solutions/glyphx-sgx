@@ -20,14 +20,14 @@
 
 #include <QtCore/QObject>
 #include <QtWidgets/QCheckBox>
-#include "glyph3dview.h"
+#include <SceneViewer/sceneviewer.h>
 
 class LinkedWidgetsManager : public QObject
 {
 	Q_OBJECT
 
 public:
-	LinkedWidgetsManager(Glyph3DView* glyph3DView, QObject *parent = nullptr);
+	LinkedWidgetsManager(SynGlyphX::SceneViewer* viewer, QObject *parent = nullptr);
 	~LinkedWidgetsManager();
 
 	bool GetFilterView() const;
@@ -40,7 +40,7 @@ private:
 	void SetFilterViewOnCheckbox(QCheckBox* checkbox, bool set);
 
 	QList<QCheckBox*> m_filterViewCheckboxes;
-	Glyph3DView* m_glyph3DView;
+	SynGlyphX::SceneViewer* m_viewer;
 };
 
 #endif // LINKEDWIDGETSMANAGER_H

@@ -2,6 +2,7 @@
 layout(std140) uniform camera_data
 {
 	mat4 view, proj;
+	vec3 camera_pos;
 };
 
 layout(std140) uniform instance_data

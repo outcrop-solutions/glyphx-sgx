@@ -56,7 +56,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>ANTzBridge_EXPORTS;WIN32;_DEBUG;_WINDOWS;_USRDLL;ANTZBRIDGE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\..\Core\SGXUtility\;..\..\3rdParty\include\boost_1_55_0;..\ANTzCore;..\..\Core\SGXFoundation\;..\..\3rdParty\include\stlplus_3_11;..\..\3rdParty\include\glm_0_9_6_3</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\Core\SGXUtility\;..\..\3rdParty\include\boost_1_55_0;..\ANTzCore;..\..\Core\SGXFoundation\;..\..\3rdParty\include\stlplus_3_11;..\..\3rdParty\include\glm_0_9_7_5</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>
@@ -79,7 +79,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>ANTzBridge_EXPORTS;WIN32;NDEBUG;_WINDOWS;_USRDLL;ANTZBRIDGE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\..\Core\SGXUtility\;..\..\3rdParty\include\boost_1_55_0;..\ANTzCore;..\..\Core\SGXFoundation\;..\..\3rdParty\include\stlplus_3_11;..\..\3rdParty\include\glm_0_9_6_3</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\Core\SGXUtility\;..\..\3rdParty\include\boost_1_55_0;..\ANTzCore;..\..\Core\SGXFoundation\;..\..\3rdParty\include\stlplus_3_11;..\..\3rdParty\include\glm_0_9_7_5</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>

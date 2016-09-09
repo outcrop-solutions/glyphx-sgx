@@ -9,6 +9,6 @@ uniform sampler2D base_texture;
 void main()
 {
 	vec4 result = frag_color;
-	result.a *= clamp( 0.5f + 2.f * ( abs( dot( nml, eye ) ) ), 0, 1 );
+	result.a *= rim( normalize( nml ), normalize( eye ), 1, 1, 0.5 );
     outputF = result;
 }

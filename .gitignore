@@ -1,3 +1,5 @@
 /bin/
 /classes/
 /lib/
+*.vc.db
+*.vc.opendb

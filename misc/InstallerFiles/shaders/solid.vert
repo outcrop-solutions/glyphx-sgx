@@ -2,6 +2,7 @@
 layout(std140) uniform camera_data
 {
 	mat4 view, proj;
+	vec3 camera_pos;
 };
 
 layout(std140) uniform instance_data
@@ -16,5 +17,6 @@ out vec3 frag_normal;
 void main()
 {
 	frag_normal = normalize( ( world * vec4( normal, 0 ) ).xyz );
-    gl_Position = proj * view * world * vec4( position, 1 );
+	vec4 world_pos = world * vec4( position, 1 );
+    gl_Position = proj * view * world_pos;
 }

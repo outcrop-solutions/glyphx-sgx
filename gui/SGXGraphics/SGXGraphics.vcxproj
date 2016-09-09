@@ -1,0 +1,167 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{49AB85CC-8CAE-4C1B-A17F-2EFE216A601E}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>SGXGraphics</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>..\..\bin\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(Platform)\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>..\..\bin\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(Platform)\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level4</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>SGXGraphics_EXPORTS;WIN32;_DEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <TreatWarningAsError>true</TreatWarningAsError>
+      <PrecompiledHeaderFile>SGXGraphicsPCH.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>..\..\3rdParty\include\glew-1.13.0;..\..\3rdParty\include\assimp-3.1.1;..\..\3rdParty\include\glm_0_9_7_5;.</AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>4201;4251</DisableSpecificWarnings>
+      <ForcedIncludeFiles>SGXGraphicsPCH.h</ForcedIncludeFiles>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <OutputFile>$(OutDir)\$(ProjectName).dll</OutputFile>
+      <AdditionalLibraryDirectories>..\..\3rdParty\lib\$(Platform)\$(Configuration)\</AdditionalLibraryDirectories>
+      <AdditionalDependencies>assimp.lib;glew32.lib;opengl32.lib;glu32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <ImportLibrary>..\..\lib\$(Platform)\$(Configuration)\$(TargetName).lib</ImportLibrary>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level4</WarningLevel>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>SGXGraphics_EXPORTS;WIN32;NDEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <TreatWarningAsError>true</TreatWarningAsError>
+      <PrecompiledHeaderFile>SGXGraphicsPCH.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>..\..\3rdParty\include\glew-1.13.0;..\..\3rdParty\include\assimp-3.1.1;..\..\3rdParty\include\glm_0_9_7_5;.</AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>4201;4251</DisableSpecificWarnings>
+      <ForcedIncludeFiles>SGXGraphicsPCH.h</ForcedIncludeFiles>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <OutputFile>$(OutDir)\$(ProjectName).dll</OutputFile>
+      <AdditionalLibraryDirectories>..\..\3rdParty\lib\$(Platform)\$(Configuration)\</AdditionalLibraryDirectories>
+      <AdditionalDependencies>assimp.lib;glew32.lib;opengl32.lib;glu32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <ImportLibrary>..\..\lib\$(Platform)\$(Configuration)\$(TargetName).lib</ImportLibrary>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="hal\context.h" />
+    <ClInclude Include="hal\debug.h" />
+    <ClInclude Include="hal\device.h" />
+    <ClInclude Include="hal\hal.h" />
+    <ClInclude Include="hal\internal\context_internal.h" />
+    <ClInclude Include="hal\internal\device_internal.h" />
+    <ClInclude Include="hal\internal\effect.h" />
+    <ClInclude Include="hal\internal\gl.h" />
+    <ClInclude Include="hal\internal\ref_counted.h" />
+    <ClInclude Include="hal\internal\types_internal.h" />
+    <ClInclude Include="hal\log.h" />
+    <ClInclude Include="hal\readback_utils.h" />
+    <ClInclude Include="hal\types.h" />
+    <ClInclude Include="hal\vertex_format.h" />
+    <ClInclude Include="platform.h" />
+    <ClInclude Include="render\bounds.h" />
+    <ClInclude Include="render\camera.h" />
+    <ClInclude Include="render\color.h" />
+    <ClInclude Include="render\grid_renderer.h" />
+    <ClInclude Include="render\model.h" />
+    <ClInclude Include="render\model_loader.h" />
+    <ClInclude Include="render\octree.h" />
+    <ClInclude Include="render\ortho_camera.h" />
+    <ClInclude Include="render\perspective_camera.h" />
+    <ClInclude Include="render\renderer.h" />
+    <ClInclude Include="render\torus_generator.h" />
+    <ClInclude Include="render\types.h" />
+    <ClInclude Include="SGXGraphicsPCH.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="dllmain.cpp">
+      <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</CompileAsManaged>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </PrecompiledHeader>
+      <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</CompileAsManaged>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      </PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="hal\context.cpp" />
+    <ClCompile Include="hal\debug.cpp" />
+    <ClCompile Include="hal\device.cpp" />
+    <ClCompile Include="hal\internal\context_internal.cpp" />
+    <ClCompile Include="hal\internal\debug_internal.cpp" />
+    <ClCompile Include="hal\internal\device_internal.cpp" />
+    <ClCompile Include="hal\internal\effect.cpp" />
+    <ClCompile Include="hal\internal\gl.cpp" />
+    <ClCompile Include="hal\log.cpp" />
+    <ClCompile Include="hal\readback_utils.cpp" />
+    <ClCompile Include="hal\vertex_format.cpp" />
+    <ClCompile Include="render\bounds.cpp" />
+    <ClCompile Include="render\camera.cpp" />
+    <ClCompile Include="render\color.cpp" />
+    <ClCompile Include="render\grid_renderer.cpp" />
+    <ClCompile Include="render\model.cpp" />
+    <ClCompile Include="render\model_loader.cpp" />
+    <ClCompile Include="render\octree.cpp" />
+    <ClCompile Include="render\ortho_camera.cpp" />
+    <ClCompile Include="render\perspective_camera.cpp" />
+    <ClCompile Include="render\renderer.cpp" />
+    <ClCompile Include="render\torus_generator.cpp" />
+    <ClCompile Include="SGXGraphicsPCH.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+    </ClCompile>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

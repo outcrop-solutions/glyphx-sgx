@@ -8,6 +8,8 @@ SET antzzspacetemplate=ANTzzSpaceTemplate
 SET antzmactemplate=ANTzMacTemplate
 SET defaultbaseimages=DefaultBaseImages
 SET glyphtemplates=GlyphTemplates
+SET meshes=meshes
+SET shaders=shaders
 SET logo=logo.png
 SET qtdlllist=Qt5Core Qt5Gui Qt5Network Qt5OpenGL Qt5Sql Qt5Widgets Qt5WebEngineCore Qt5WebEngine Qt5WebEngineWidgets Qt5Quick Qt5WebChannel Qt5Qml
 
@@ -17,8 +19,10 @@ if not exist %basedir% (mkdir %basedir%)
 
 robocopy /z /e ..\bin\ %basedir%
 
+rem for each platform %%p
 FOR /F "tokens=*" %%p IN ('dir /b /a:d ..\bin\*') DO (
 
+	rem for each configuration %%c
 	FOR /F "tokens=*" %%c IN ('dir /b /a:d ..\bin\%%p\*') DO (
 
 		rem echo %%p 
@@ -44,7 +48,11 @@ FOR /F "tokens=*" %%p IN ('dir /b /a:d ..\bin\*') DO (
 		robocopy /z /e ..\..\Misc\InstallerFiles\%defaultbaseimages% %basedir%\%%p\%%c\%defaultbaseimages%
 		
 		robocopy /z /e ..\..\Misc\InstallerFiles\%glyphtemplates% %basedir%\%%p\%%c\%glyphtemplates%
-		
+
+		robocopy /z /e ..\..\Misc\InstallerFiles\%meshes% %basedir%\%%p\%%c\%meshes%
+		robocopy /z /e ..\..\Misc\InstallerFiles\%shaders% %basedir%\%%p\%%c\%shaders%
+		robocopy /z /e ..\..\Misc\InstallerFiles\%shaders% %basedir%\%%p\%%c\%shaders%
+
 		copy /B /Y ..\..\Misc\InstallerFiles\Images\%logo% %basedir%\%%p\%%c\%logo%
 		
 		mkdir %basedir%\%%p\%%c\jre
@@ -79,8 +87,10 @@ FOR /F "tokens=*" %%p IN ('dir /b /a:d ..\bin\*') DO (
 		robocopy /z /e "%QTDIR%\plugins" %basedir%\%%p\%%c\qt_plugins
 		
 		copy /B /Y "%QTDIR%\bin\QtWebEngineProcess.exe" "%basedir%\%%p\%%c\QtWebEngineProcess.exe"
-		
+
 		robocopy /z /e "%QTDIR%\resources" "%basedir%\%%p\%%c"
+
+		robocopy /z /e ..\tools\graphics\%%p\ %basedir%\%%p\%%c
 	)
 )
 

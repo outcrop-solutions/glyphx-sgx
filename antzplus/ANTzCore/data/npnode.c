@@ -608,8 +608,8 @@ void npInitNodeDefault (pNPnode node)
 	node->chOutputID	= 0;
 	node->chLastUpdated	= 0;
 
-	node->average		= kAverageNull;		//averaging type applied to data
-	node->interval		= 1;				//the interval to be averaged
+//	node->average		= kAverageNull;		//averaging type applied to data
+//	node->interval		= 1;				//the interval to be averaged
 
 	node->auxA.x		= 0;				//last updated channel index
 	node->auxA.y		= 0;
@@ -717,7 +717,7 @@ void npInitNodeDefault (pNPnode node)
 	node->tableID		= 0;			//stores the source table location
 	node->recordID		= 0;			//source db record
 	
-	node->size = 420;//sizeof(NPnode);		//causes problem with CSV loading, debug zz
+	//node->size = 420;//sizeof(NPnode);		//causes problem with CSV loading, debug zz
 
 	// below used for transparency and tags, not needed in CSV or DB file
 	node->tag				= NULL;
