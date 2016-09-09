@@ -16,7 +16,7 @@ namespace SynGlyphX
 	{
 	public:
 		GlyphScene() : octree( nullptr ), filter_applied( false ), selection_changed( false ), glyph_storage( nullptr ), glyph_storage_next( 0u ),
-			filter_mode( FilteredResultsDisplayMode::TranslucentUnfiltered ) { }
+			filter_mode( FilteredResultsDisplayMode::TranslucentUnfiltered ), has_animation( false ) { }
 		~GlyphScene();
 		GlyphScene( const GlyphScene& ) = delete;
 
@@ -71,6 +71,8 @@ namespace SynGlyphX
 
 		render::box_bound& get_bound() const;
 
+		bool hasAnimation() const { return has_animation; }
+
 		void debugPrint( const Glyph3DNode* node );
 
 	private:
@@ -89,6 +91,8 @@ namespace SynGlyphX
 		bool scene_changed;
 		bool selection_changed;
 		FilteredResultsDisplayMode filter_mode;
+
+		bool has_animation;
 
 		char* glyph_storage;
 		unsigned int glyph_storage_next, glyph_storage_size;

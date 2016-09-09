@@ -21,6 +21,7 @@ namespace SynGlyphX
 
 	void GlyphScene::add( Glyph3DNode* glyph )
 	{
+		if ( glyph->getAnimationRate() > 0.f ) has_animation = true;
 		glyphs.insert( std::make_pair( glyph->getID(), glyph ) );
 		glyphs_by_filtering_index.insert( std::make_pair( glyph->getFilteringIndex(), glyph ) );
 		bound_update_needed = true;
@@ -63,6 +64,7 @@ namespace SynGlyphX
 
 	void GlyphScene::clear()
 	{
+		has_animation = false;
 		bound_update_needed = true;
 		scene_changed = true;
 		if ( glyph_storage )

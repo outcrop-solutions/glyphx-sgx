@@ -26,6 +26,17 @@ namespace SynGlyphX
 	{
 		assert( placement || children.size() == 0 );	// if the node has children it must also have a placement policy
 
+		if ( parent && ( parent->animation_root || parent->animation_child ) )
+		{
+			animation_child = true;
+			animation_rate += parent->animation_rate;
+			animation_axis = parent->animation_axis;
+		}
+		else if ( animation_rate != 0.f )
+		{
+			animation_root = true;
+		}
+
 		auto model = getModel();
 		bound = render::transform_bound( model->get_bound(), cached_transform * getVisualTransform() );
 		if ( placement ) placement->repositionChildren( *this, cached_transform );
@@ -120,6 +131,25 @@ namespace SynGlyphX
 	glm::mat4 Glyph3DNode::getVisualTransform() const
 	{
 		return glm::scale( glm::mat4(), visual_scale ); 
+	}
+
+	glm::vec3 Glyph3DNode::getAnimationCenter() const
+	{
+		if ( animation_root )
+		{
+			return getCachedPosition();
+		}
+		else if ( animation_child )
+		{
+			const Glyph3DNode* n = parent;
+			while ( n && ( n->animation_root || n->animation_child ) )
+			{
+				if ( n->animation_root )
+					return n->getCachedPosition();
+				n = n->parent;
+			}
+		}
+		return glm::vec3();
 	}
 }
 

@@ -25,9 +25,15 @@ layout(std140) uniform bounds
 	vec4 bound[512];
 };
 
+struct rotation_t
+{
+	vec4 axis_rate;		// xyz = axis, w = rate
+	vec4 center;	// xyz = rotate around
+};
+
 layout(std140) uniform animation
 {
-	vec4 rotation[512];	// xyz = axis, w = rate
+	rotation_t rotation[512];
 };
 
 layout (location = 0) in vec4 position;
@@ -76,8 +82,9 @@ void main()
 {
 	mat4x4 w = world[gl_InstanceID];
 
-	vec3 rotation_axis = rotation[gl_InstanceID].xyz;
-	float rotation_rate = rotation[gl_InstanceID].w;
+	vec3 rotation_center = rotation[gl_InstanceID].center.xyz;
+	vec3 rotation_axis = rotation[gl_InstanceID].axis_rate.xyz;
+	float rotation_rate = rotation[gl_InstanceID].axis_rate.w;
 	mat3 rotation_mat = rotation_matrix( rotation_axis, elapsed_seconds * rotation_rate );
 	vec3 world_pos_noscale = vec3( w * vec4( rotation_mat * position.xyz, 1 ) );
 	eye = normalize( world_pos_noscale.xyz - camera_pos );
@@ -88,11 +95,13 @@ void main()
 	float scale = mix( 1.05, max_scale, selection_anim_state );
 	float alpha = mix( 0.8, 0, selection_anim_state );
 
-	nml = normalize( ( inverse( transpose( world[gl_InstanceID] ) ) * vec4( rotation_mat * normal, 0 )  ).xyz );
+	nml = normalize( rotation_mat * vec3( inverse( transpose( world[gl_InstanceID] ) ) * vec4( normal, 0 ) ) );
 
 	frag_color = tint_color;
 	frag_color.a = alpha;
 
-	vec3 world_pos_scaled = vec3( w * vec4( rotation_mat * ( scale * position.xyz ), 1 ) );
+	vec3 world_pos_scaled = vec3( w * vec4( scale * position.xyz, 1 ) );
+	world_pos_scaled = offset_rotation( world_pos_scaled.xyz, rotation_mat, rotation_center );
+
     gl_Position = proj * ( view * vec4( world_pos_scaled, 1 ) );
 }

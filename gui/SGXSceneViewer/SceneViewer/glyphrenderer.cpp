@@ -27,7 +27,7 @@ namespace SynGlyphX
 		}
 	}
 
-	void GlyphRenderer::glyph_bucket::add_instance( hal::mesh* mesh, const glm::mat4& transform, const glm::vec4& color_or_bound, const glm::vec3& anim_axis, const float anim_rate )
+	void GlyphRenderer::glyph_bucket::add_instance( hal::mesh* mesh, const glm::mat4& transform, const glm::vec4& color_or_bound, const glm::vec3& anim_axis, const float anim_rate, const glm::vec3& anim_center )
 	{
 		const unsigned int max_instances_per_batch = 512u;
 		if ( instances.find( mesh ) == instances.end() )
@@ -39,9 +39,13 @@ namespace SynGlyphX
 			instances[mesh].rbegin()->anim_buffer = nullptr;
 			instances[mesh].rbegin()->transform_buffer = nullptr;
 		}
+
+		auto axis = glm::vec3( anim_axis.x, anim_axis.z, anim_axis.y );
+
 		instances[mesh].rbegin()->transforms.push_back( transform );
 		instances[mesh].rbegin()->colors_or_bounds.push_back( color_or_bound );
-		instances[mesh].rbegin()->animation.push_back( glm::vec4( anim_axis, anim_rate ) );
+		instances[mesh].rbegin()->animation.push_back( glm::vec4( axis, anim_rate ) );
+		instances[mesh].rbegin()->animation.push_back( glm::vec4( anim_center, 0.f ) );
 		instances[mesh].rbegin()->dirty = true;
 	}
 
@@ -64,7 +68,7 @@ namespace SynGlyphX
 
 					size_t transform_size = id.transforms.size() * sizeof( glm::mat4 );
 					size_t color_size = id.colors_or_bounds.size() * sizeof( glm::vec4 );
-					size_t anim_size = id.animation.size() * sizeof( glm::vec4 );
+					size_t anim_size = id.animation.size() * sizeof( glm::vec4 ) * 2;
 
 					if ( id.transform_buffer ) hal::device::release( id.transform_buffer );
 					if ( id.color_bound_buffer ) hal::device::release( id.color_bound_buffer );
@@ -110,7 +114,7 @@ namespace SynGlyphX
 	}
 
 	GlyphRenderer::GlyphRenderer() : transform_binding_point( UINT_MAX ), material_binding_point( UINT_MAX ), selection_anim_max_scale( 64.f ),
-		animation( true ), global_wireframe( false ), scene( nullptr ), filter_alpha( 0.5f ), selection_animation_time( 0.f ),
+		animation( true ), global_wireframe( false ), scene( nullptr ), filter_alpha( 0.5f ), selection_animation_time( 0.f ), selection_animation_state( 0.f ),
 		bound_vis_enabled( false ), bound_vis_mode( GlyphRenderer::BoundVisMode::Individual ), sel_effect_enabled( true )
 	{
 		glyph_effect = hal::device::create_effect( "shaders/glyph.vert", nullptr, "shaders/glyph.frag" );
@@ -135,7 +139,7 @@ namespace SynGlyphX
 		auto sphere = GlyphGeometryDB::get( GlyphShape::Sphere );
 		auto spart = sphere->get_parts()[0];
 		auto xform = glm::translate( glm::mat4(), bound.get_center() ) * glm::scale( glm::mat4(), glm::vec3( bound.get_radius() ) );
-		bucket.add_instance( spart->get_mesh(), xform * sphere->get_transform() * spart->get_transform(), glyph.getColor(), glyph.getAnimationAxis(), 0.f );
+		bucket.add_instance( spart->get_mesh(), xform * sphere->get_transform() * spart->get_transform(), glyph.getColor(), glyph.getAnimationAxis(), 0.f, glyph.getAnimationCenter() );
 	}
 
 	void GlyphRenderer::add( const GlyphScene& scene )
@@ -157,7 +161,7 @@ namespace SynGlyphX
 			render::model* model = GlyphGeometryDB::get( glyph.getGeometry(), glyph.getTorusRatio() );
 			for ( auto part : model->get_parts() )
 			{
-				bucket->add_instance( part->get_mesh(), glyph.getCachedTransform() * glyph.getVisualTransform() * model->get_transform() * part->get_transform(), glyph.getColor(), glyph.getAnimationAxis(), glyph.getAnimationRate() );
+				bucket->add_instance( part->get_mesh(), glyph.getCachedTransform() * glyph.getVisualTransform() * model->get_transform() * part->get_transform(), glyph.getColor(), glyph.getAnimationAxis(), glyph.getAnimationRate(), glyph.getAnimationCenter() );
 
 				if ( bound_vis_enabled )
 					add_bound_to_bucket( glyph, wireframe[filter] );
@@ -289,15 +293,16 @@ namespace SynGlyphX
 
 		if ( scene && !scene->selectionEmpty() )
 		{
-			// Pulse starts off fast for fixed_speed_time seconds and then slows down over slowdown_time seconds.
-			const float fixed_speed_time = 0.5f;
-			const float slowdown_time = 1.5f;
-			const float min_speed = 0.5f, max_speed = 1.5f;
-			float lerp_param = glm::clamp( selection_animation_time / slowdown_time - fixed_speed_time, 0.f, 1.f );
-			float speed = glm::clamp( glm::lerp( max_speed, min_speed, lerp_param ), min_speed, max_speed );
-			selection_animation_state += speed * ( elapsed_seconds - previous_frame_time );
+			// Pulse moves through the speeds array after the number of pulses in speed_thresholds.
+			const int speed_thresholds[] = { 0, 3, 6 };
+			const float speeds[] = { 1.f, 0.5f, 0.25f };
 			float count;
 			float anim_state = modf( selection_animation_state, &count );
+			float speed = 0.f;
+			for ( unsigned int i = 0; i < 3; ++i )
+				if ( count >= float( speed_thresholds[i] ) )
+					speed = speeds[i];
+			selection_animation_state += speed * ( elapsed_seconds - previous_frame_time );
 			anim_state = sinf( anim_state * glm::pi<float>() * 0.5f );
 
 			const unsigned int maximum_count = UINT_MAX;	// change to limit number of pulses
@@ -322,7 +327,7 @@ namespace SynGlyphX
 						{
 							// for the selection effect we don't care about instance color, so we can pack the bound into that
 							// constant buffer instead.
-							selection.add_instance( part->get_mesh(), glyph_transform * model->get_transform() * part->get_transform(), glm::vec4( glyph.getCachedBound().get_center(), glyph.getCachedBound().get_radius() ), glyph.getAnimationAxis(), glyph.getAnimationRate() );
+							selection.add_instance( part->get_mesh(), glyph_transform * model->get_transform() * part->get_transform(), glm::vec4( glyph.getCachedBound().get_center(), glyph.getCachedBound().get_radius() ), glyph.getAnimationAxis(), glyph.getAnimationRate(), glyph.getAnimationCenter() );
 
 							if ( bound_vis_enabled )
 								add_bound_to_bucket( glyph, selection_wireframe );
@@ -339,7 +344,7 @@ namespace SynGlyphX
 				context->set_blend_state( hal::blend_state::alpha );
 
 				context->set_constant( selection_effect, "global_data", "tint_color", render::color::yellow() );
-				context->set_constant( selection_effect, "global_data", "elapsed_seconds", selection_animation_time );
+				context->set_constant( selection_effect, "global_data", "elapsed_seconds", elapsed_seconds );
 				context->set_constant( selection_effect, "global_data", "selection_anim_max_scale", selection_anim_max_scale );
 				context->set_constant( selection_effect, "global_data", "selection_anim_state", anim_state );
 				context->set_constant( selection_effect, "camera_data", "viewport", glm::vec2( camera->get_viewport_w(), camera->get_viewport_h() ) );

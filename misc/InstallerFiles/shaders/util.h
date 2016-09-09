@@ -1,4 +1,9 @@
 
+vec3 offset_rotation( vec3 pos, mat3 rot, vec3 offset )
+{
+    return ( rot * ( pos - offset ) ) + offset;
+}
+
 mat3 rotation_matrix(vec3 axis, float angle)
 {
     axis = normalize(axis);

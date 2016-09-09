@@ -59,7 +59,8 @@ namespace SynGlyphX
 		void setAnimationAxis( const glm::vec3& axis ) { animation_axis = axis; }
 
 		float getAnimationRate() const { return animation_rate; }
-		void setAnimationRate( float val ) { animation_rate = val; }
+		void setAnimationRate( float val ) const { animation_rate = val; }
+		glm::vec3 getAnimationCenter() const;
 
 		// additional transform that's applied during rendering and picking, but that isn't inherited by
 		// this node's children.
@@ -95,7 +96,7 @@ namespace SynGlyphX
 
 	private:
 		Glyph3DNode( unsigned int _id, bool _isRoot, Glyph3DNodeType _type, int _filtering_index ) : placement( nullptr ), id( _id ), root( _isRoot ), tag( nullptr ), animation_axis( 1.f, 0.f, 0.f ), animation_rate( 0.f ),
-			torus_ratio( 0.1f ), filtering_index( _filtering_index ), parent( nullptr ), type( _type ) { }
+			torus_ratio( 0.1f ), filtering_index( _filtering_index ), parent( nullptr ), type( _type ), animation_root( false ), animation_child( false ) { }
 
 		PlacementPolicy* placement;
 
@@ -105,8 +106,6 @@ namespace SynGlyphX
 		float torus_ratio;
 
 		render::packed_color color;
-		glm::vec3 animation_axis;
-		float animation_rate;
 		std::vector<Glyph3DNode*> children;
 		const Glyph3DNode* link_a, *link_b;
 		Glyph3DNode* parent;
@@ -118,12 +117,16 @@ namespace SynGlyphX
 		mutable glm::mat4 cached_transform;
 		mutable render::sphere_bound bound, combined_bound;
 		mutable glm::vec3 visual_scale;
+		mutable glm::vec3 animation_axis;
+		mutable float animation_rate;
 
 		// flags( packed )
 		GlyphShape geometry : 4;
 		bool wireframe : 1;
 		bool root : 1;
 		Glyph3DNodeType type : 1;
+		mutable bool animation_root : 1;
+		mutable bool animation_child : 1;
 
 		friend class GlyphScene;	// so glyphscene can instantiate
 	};

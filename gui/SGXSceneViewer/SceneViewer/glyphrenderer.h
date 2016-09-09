@@ -50,7 +50,7 @@ namespace SynGlyphX
 		{
 		public:
 			~glyph_bucket();
-			void add_instance( hal::mesh* mesh, const glm::mat4& transform, const glm::vec4& color_or_bound, const glm::vec3& anim_axis, float anim_rate );
+			void add_instance( hal::mesh* mesh, const glm::mat4& transform, const glm::vec4& color_or_bound, const glm::vec3& anim_axis, float anim_rate, const glm::vec3& anim_center );
 			void update_instances( hal::context* context );
 			void draw( hal::context* context, unsigned int transform_binding_point, unsigned int material_binding_point, unsigned int anim_binding_point );
 			void clear();
