@@ -68,7 +68,7 @@ namespace SynGlyphX
 
 					size_t transform_size = id.transforms.size() * sizeof( glm::mat4 );
 					size_t color_size = id.colors_or_bounds.size() * sizeof( glm::vec4 );
-					size_t anim_size = id.animation.size() * sizeof( glm::vec4 ) * 2;
+					size_t anim_size = id.animation.size() * sizeof( glm::vec4 );
 
 					if ( id.transform_buffer ) hal::device::release( id.transform_buffer );
 					if ( id.color_bound_buffer ) hal::device::release( id.color_bound_buffer );
