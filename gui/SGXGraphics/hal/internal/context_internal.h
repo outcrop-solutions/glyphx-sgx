@@ -27,7 +27,7 @@ namespace SynGlyphX
 			void set_constant_block( hal::effect* e, const char* block_name, const void* data, size_t size ) override;
 
 			void bind( unsigned int index, hal::cbuffer* c ) override;
-			void update_constant_block( hal::cbuffer* c, void* data, size_t data_size ) override;
+			void update_constant_block( hal::cbuffer* c, void* data, size_t data_size, hal::cbuffer_usage usage ) override;
 			unsigned int get_uniform_block_index( hal::effect* e, const char* block_name ) override;
 
 			void draw( hal::mesh* m ) override;

@@ -224,9 +224,14 @@ namespace SynGlyphX
 			forced_includes.push_back( filename );
 		}
 
-		void device_internal::set_uniform_block_external( hal::effect* e, const char* block_name )
+		void device_internal::set_cbuffer_external( hal::effect* e, const char* block_name )
 		{
-			e->set_uniform_block_external( block_name );
+			e->set_cbuffer_external( block_name );
+		}
+
+		void device_internal::set_cbuffer_usage( hal::effect* e, const char* block_name, hal::cbuffer_usage usage )
+		{
+			e->set_cbuffer_usage( block_name, usage );
 		}
 	}
 }

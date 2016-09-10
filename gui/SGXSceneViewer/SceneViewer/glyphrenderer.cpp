@@ -77,9 +77,9 @@ namespace SynGlyphX
 					id.transform_buffer = hal::device::create_cbuffer( transform_size );
 					id.color_bound_buffer = hal::device::create_cbuffer( color_size );
 					id.anim_buffer = hal::device::create_cbuffer( anim_size );
-					context->update_constant_block( id.transform_buffer, &id.transforms[0], transform_size );
-					context->update_constant_block( id.color_bound_buffer, &id.colors_or_bounds[0], color_size );
-					context->update_constant_block( id.anim_buffer, &id.animation[0], anim_size );
+					context->update_constant_block( id.transform_buffer, &id.transforms[0], transform_size, hal::cbuffer_usage::static_draw );
+					context->update_constant_block( id.color_bound_buffer, &id.colors_or_bounds[0], color_size, hal::cbuffer_usage::static_draw );
+					context->update_constant_block( id.anim_buffer, &id.animation[0], anim_size, hal::cbuffer_usage::static_draw );
 
 					++update_count;
 					id.dirty = false;
@@ -119,12 +119,12 @@ namespace SynGlyphX
 	{
 		glyph_effect = hal::device::create_effect( "shaders/glyph.vert", nullptr, "shaders/glyph.frag" );
 		selection_effect = hal::device::create_effect( "shaders/selection.vert", nullptr, "shaders/selection.frag" );
-		hal::device::set_uniform_block_external( glyph_effect, "instance_data" );
-		hal::device::set_uniform_block_external( glyph_effect, "material" );
-		hal::device::set_uniform_block_external( glyph_effect, "animation" );
-		hal::device::set_uniform_block_external( selection_effect, "instance_data" );
-		hal::device::set_uniform_block_external( selection_effect, "bounds" );
-		hal::device::set_uniform_block_external( selection_effect, "animation" );
+		hal::device::set_cbuffer_external( glyph_effect, "instance_data" );
+		hal::device::set_cbuffer_external( glyph_effect, "material" );
+		hal::device::set_cbuffer_external( glyph_effect, "animation" );
+		hal::device::set_cbuffer_external( selection_effect, "instance_data" );
+		hal::device::set_cbuffer_external( selection_effect, "bounds" );
+		hal::device::set_cbuffer_external( selection_effect, "animation" );
 	}
 
 	GlyphRenderer::~GlyphRenderer()

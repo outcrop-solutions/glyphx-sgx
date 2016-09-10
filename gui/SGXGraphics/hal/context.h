@@ -32,9 +32,9 @@ namespace SynGlyphX
 			// them seperately from effects. Since it's more complex it should only be used when necessary for performance. (Example use cases
 			// for this API would be: sharing a constant block between two effects, or issuing multiple draws with the same effect but
 			// different constant blocks (without having to repeatedly update the constant data).
-			// NOTE: you MUST call device::set_uniform_block_external on the uniform block you want in order to use this feature!
+			// NOTE: you MUST call device::set_cbuffer_external on the uniform block you want in order to use this feature!
 			virtual void bind( unsigned int index, cbuffer* c ) = 0;
-			virtual void update_constant_block( cbuffer* c, void* data, size_t data_size ) = 0;
+			virtual void update_constant_block( cbuffer* c, void* data, size_t data_size, cbuffer_usage usage ) = 0;
 			virtual unsigned int get_uniform_block_index( effect* e, const char* block_name ) = 0;
 
 			virtual void draw( mesh* m ) = 0;

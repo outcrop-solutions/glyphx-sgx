@@ -21,7 +21,8 @@ namespace SynGlyphX
 			static hal::cbuffer* create_cbuffer( unsigned int size );
 
 			static void add_forced_effect_include( const char* filename );
-			static void set_uniform_block_external( hal::effect* e, const char* block_name );
+			static void set_cbuffer_external( hal::effect* e, const char* block_name );
+			static void set_cbuffer_usage( hal::effect* e, const char* block_name, hal::cbuffer_usage usage );
 
 			static void rebuild_effects();
 

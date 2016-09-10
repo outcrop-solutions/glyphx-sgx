@@ -26,7 +26,8 @@ namespace SynGlyphX
 			// unless our needs become much more complex.
 			static void add_forced_effect_include( const char* filename );
 
-			static void set_uniform_block_external( effect* e, const char* block_name );	// see context.h for explanation
+			static void set_cbuffer_external( effect* e, const char* block_name );	// see context.h for explanation
+			static void set_cbuffer_usage( effect* e, const char* block_name, cbuffer_usage usage );
 
 			static texture* register_external_texture( void* texture_data );
 

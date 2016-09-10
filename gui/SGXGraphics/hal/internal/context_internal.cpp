@@ -160,12 +160,13 @@ namespace SynGlyphX
 			hal::check_errors();
 		}
 
-		void context_internal::update_constant_block( hal::cbuffer* c, void* data, size_t data_size )
+		void context_internal::update_constant_block( hal::cbuffer* c, void* data, size_t data_size, hal::cbuffer_usage usage )
 		{
 			assert( c );
 			assert( data );
+			assert( data_size <= c->size );
 			glBindBuffer( GL_UNIFORM_BUFFER, c->buffer );
-			glBufferData( GL_UNIFORM_BUFFER, data_size, data, GL_DYNAMIC_DRAW );
+			glBufferData( GL_UNIFORM_BUFFER, data_size, data, usage == hal::cbuffer_usage::static_draw ? GL_STATIC_DRAW : GL_DYNAMIC_DRAW );
 			glBindBuffer( GL_UNIFORM_BUFFER, 0 );
 			hal::check_errors();
 		}

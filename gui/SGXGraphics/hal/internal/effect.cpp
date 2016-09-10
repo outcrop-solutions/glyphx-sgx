@@ -219,6 +219,7 @@ namespace SynGlyphX
 				uniform_block block;
 				block.dirty = true;
 				block.external = false;
+				block.usage = cbuffer_usage::dynamic_draw;
 				block.index = glGetUniformBlockIndex( _program, name );
 				glGetActiveUniformBlockiv( _program, block.index, GL_UNIFORM_BLOCK_DATA_SIZE, &block.size );
 
@@ -322,7 +323,7 @@ namespace SynGlyphX
 						if ( block.dirty )
 						{
 							glBindBuffer( GL_UNIFORM_BUFFER, block.buffer );
-							glBufferData( GL_UNIFORM_BUFFER, block.size, block.backing_buffer, GL_DYNAMIC_DRAW );
+							glBufferData( GL_UNIFORM_BUFFER, block.size, block.backing_buffer, block.usage == hal::cbuffer_usage::dynamic_draw ? GL_DYNAMIC_DRAW : GL_STATIC_DRAW );
 							block.dirty = false;
 						}
 						glBindBufferBase( GL_UNIFORM_BUFFER, block.binding_pt, block.buffer );
@@ -332,11 +333,21 @@ namespace SynGlyphX
 			}
 		}
 
-		void effect::set_uniform_block_external( const char* block_name )
+		void effect::set_cbuffer_external( const char* block_name )
 		{
 			if ( external_uniform_block_names.find( block_name ) == external_uniform_block_names.end() )
 				external_uniform_block_names.insert( block_name );
 			setup_external_uniform_blocks();
+		}
+
+		void effect::set_cbuffer_usage( const char* block_name, cbuffer_usage usage )
+		{
+			if ( compiled() )
+			{
+				auto b = uniform_blocks.find( block_name );
+				if ( b != uniform_blocks.end() )
+					b->second.usage = usage;
+			}
 		}
 
 		void effect::setup_external_uniform_blocks()

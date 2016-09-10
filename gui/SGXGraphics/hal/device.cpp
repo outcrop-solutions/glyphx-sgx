@@ -96,9 +96,14 @@ namespace SynGlyphX
 			hal_gl::device_internal::add_forced_effect_include( filename );
 		}
 
-		void device::set_uniform_block_external( effect* e, const char* block_name )
+		void device::set_cbuffer_external( effect* e, const char* block_name )
 		{
-			hal_gl::device_internal::set_uniform_block_external( e, block_name );
+			hal_gl::device_internal::set_cbuffer_external( e, block_name );
+		}
+
+		void device::set_cbuffer_usage( effect* e, const char* block_name, cbuffer_usage usage )
+		{
+			hal_gl::device_internal::set_cbuffer_usage( e, block_name, usage );
 		}
 	}
 }

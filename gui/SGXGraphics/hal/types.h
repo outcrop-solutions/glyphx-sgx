@@ -92,5 +92,11 @@ namespace SynGlyphX
 			unsigned int vertex_count;
 			unsigned int index_count;
 		};
+
+		enum class cbuffer_usage
+		{
+			static_draw,
+			dynamic_draw,
+		};
 	}
 }

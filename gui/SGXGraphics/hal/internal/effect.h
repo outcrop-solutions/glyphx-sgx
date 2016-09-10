@@ -26,7 +26,8 @@ namespace SynGlyphX
 			void set_uniform_block( const char* block_name, const void* data, size_t size );
 			void update_uniforms();
 
-			void set_uniform_block_external( const char* block_name );
+			void set_cbuffer_usage( const char* block_name, cbuffer_usage usage );
+			void set_cbuffer_external( const char* block_name );
 			unsigned int get_uniform_block_index( const char* block_name );
 
 			void bind();
@@ -48,6 +49,7 @@ namespace SynGlyphX
 				GLuint binding_pt;
 				char* backing_buffer;
 				bool dirty, external;
+				cbuffer_usage usage;
 			};
 
 			std::hash_map<std::string, uniform_block> uniform_blocks;
