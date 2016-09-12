@@ -14,7 +14,6 @@
 #include <QtWidgets/QUndoStack>
 #include "singlewidgetdialog.h"
 #include <QtWidgets/QToolButton>
-#include "userlogindialog.h"
 
 namespace SynGlyphX {
 
@@ -193,10 +192,6 @@ namespace SynGlyphX {
         m_aboutBoxAction = m_helpMenu->addAction("About " + SynGlyphX::Application::organizationName() + " " + SynGlyphX::Application::applicationName());
 		QObject::connect(m_aboutBoxAction, &QAction::triggered, this, &MainWindow::ShowAboutBox);
     }
-
-	void MainWindow::SetDataEngineConnection(DataEngine::DataEngineConnection::SharedPtr dataEngineConnection) {
-		m_dataEngineConnection = dataEngineConnection;
-	}
 
 	void MainWindow::CreateLoginMenu() {
 

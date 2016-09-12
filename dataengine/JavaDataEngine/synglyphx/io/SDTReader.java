@@ -2,8 +2,13 @@ package synglyphx.io;
 
 import java.sql.*;
 import java.io.File;
+import java.io.Reader;
+import java.io.InputStream;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import org.xml.sax.InputSource;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -106,9 +111,14 @@ public class SDTReader {
 
 		try{
 			File file = new File(sdtPath);
+			InputStream inputStream = new FileInputStream(file);
+			Reader reader = new InputStreamReader(inputStream,"UTF-8");
+			InputSource is = new InputSource(reader);
+
 			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-			doc = dBuilder.parse(file);
+			//doc = dBuilder.parse(file);
+			doc = dBuilder.parse(is);
 			doc.getDocumentElement().normalize();
 
 			Node transform = doc.getElementsByTagName("Transform").item(0);

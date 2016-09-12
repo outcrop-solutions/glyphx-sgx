@@ -153,8 +153,10 @@ public class GlyphEngine {
 	 	//String outDir = "C:/Users/Bryan/Desktop/GlobalAdmissions20132016/GlobalAdmissions20132016/Viz";
 	 	//String sdtPath = "C:\\Users\\Bryan\\Desktop\\Test Files\\working_sqlite\\animatedrotate_planets_noscale.sdt";
 	 	//String outDir = "C:\\Users\\Bryan\\Desktop\\Test Files\\working_sqlite";
-	 	String sdtPath = "C:/Users/Bryan/Desktop/Test Files/PercentRank/percentrank.sdt";
-	 	String outDir = "C:/Users/Bryan/Desktop/Test Files/PercentRank/viz";
+	 	//String sdtPath = "C:/Users/Bryan/Desktop/Test Files/PercentRank/percentrank.sdt";
+	 	//String outDir = "C:/Users/Bryan/Desktop/Test Files/PercentRank/viz";
+	 	String sdtPath = "C:/Users/Bryan/Desktop/New folder/Sample Peru Birth Census Data.sdt";
+	 	String outDir = "C:/Users/Bryan/Desktop/New folder/Viz";
 	 	//String sdtPath = "D:\\Downloads\\Phase 3 Data Sets\\Phase 3 Data Sets\\Poppy Production and Drug Busts.sdt";
 	 	//String outDir = "D:\\Downloads\\Phase 3 Data Sets\\Phase 3 Data Sets";
 	 	//String sdtPath = "C:/Users/Bryan/Desktop/Test Files/working_sqlite/animatedrotate_planets_noscale.sdt";

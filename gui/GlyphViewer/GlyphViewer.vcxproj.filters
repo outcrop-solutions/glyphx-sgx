@@ -299,6 +299,15 @@
     <ClCompile Include="syncprogressdialog.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\Win32\Debug\moc_userlogindialog.cpp">
+      <Filter>Generated Files\Debug_Win32</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Win32\Release\moc_userlogindialog.cpp">
+      <Filter>Generated Files\Release_Win32</Filter>
+    </ClCompile>
+    <ClCompile Include="userlogindialog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="glyphviewer.qrc">
@@ -380,6 +389,9 @@
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="syncprogressdialog.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="userlogindialog.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>

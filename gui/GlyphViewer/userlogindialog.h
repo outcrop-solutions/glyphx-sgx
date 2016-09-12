@@ -29,7 +29,7 @@ class QLabel;
 
 namespace SynGlyphX {
 
-	class SGXGUI_EXPORT UserLoginDialog : public QFrame
+	class UserLoginDialog : public QFrame
 	{
 		Q_OBJECT
 
