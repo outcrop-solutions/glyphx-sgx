@@ -175,6 +175,7 @@ namespace SynGlyphX
 		};
 		mouse_drag_info drag[int(button::count)];
 		mouse_drag_info& drag_info( button b ) { return drag[int( b )]; }
+		float drag_distance( button b );
 
 		float wheel_delta;
 

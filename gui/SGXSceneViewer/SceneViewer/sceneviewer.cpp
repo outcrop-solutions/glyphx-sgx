@@ -593,6 +593,13 @@ namespace SynGlyphX
 				mouse_prev_y = event->y();
 			}
 		}
+
+		// disable context menu if we're right-dragging
+		const auto right_drag_no_context_menu_threshold = 5.f;
+		if ( drag_distance( button::right ) > right_drag_no_context_menu_threshold )
+			setContextMenuPolicy( Qt::NoContextMenu );
+		else
+			setContextMenuPolicy( Qt::ActionsContextMenu );
 	}
 
 	void SceneViewer::mousePressEvent( QMouseEvent* event )
@@ -746,27 +753,52 @@ namespace SynGlyphX
 				const float mouse_zoom_speed = 1.f;
 				const float wheel_zoom_speed = 0.1f;
 
+				glm::vec3 motion;
+
 				if ( camera_mode() == camera_mode_t::free )
 				{
-					glm::vec3 motion;
-					if ( key_states['w'] )
-						motion += cam_fwd;
-					else if ( key_states['s'] )
-						motion -= cam_fwd;
+					// right-dragging has specialized behavior
+					if ( !drag_info( button::left ).dragging && drag_info( button::right ).dragging )
+					{
+						auto proj_fwd = glm::vec3( cam_fwd.x, cam_fwd.y, 0.f );
+						if ( glm::length( proj_fwd ) > 0.f )
+						{
+							const float drag_motion_speed = 0.005f;
+							const float drag_turn_speed = 0.01f;
+							proj_fwd = glm::normalize( proj_fwd );
+							auto& drag = drag_info( button::right );
+							auto drag_motion = drag_motion_speed * glm::vec2( mouse_x - drag.drag_start_x, mouse_y - drag.drag_start_y );
+							motion = proj_fwd * -drag_motion.y * mouse_zoom_speed;
+							free_cam_control->turn( glm::vec2( drag_motion.x, 0.f ) );
+						}
+					}
+					else  // otherwise, the standard free-camera movement
+					{
+						// Forward/back along camera axis.
+						if ( key_states['w'] )
+							motion += cam_fwd;
+						else if ( key_states['s'] )
+							motion -= cam_fwd;
+
+						motion += cam_fwd * wheel_delta * wheel_zoom_speed;
+						if ( drag_info( button::middle ).dragging )
+						{
+							motion -= cam_fwd * float( drag_info( button::middle ).drag_delta_y ) * mouse_zoom_speed;
+						}
+						else if ( drag_info( button::left ).dragging && drag_info( button::right ).dragging )
+						{
+							motion -= cam_fwd * float( drag_info( button::left ).drag_delta_y ) * mouse_zoom_speed;
+						}
+
+						if ( !( drag_info( button::left ).dragging && drag_info( button::right ).dragging ) )	// if two-button dragging, don't turn
+							free_cam_control->turn( glm::vec2( float( drag_info( button::left ).drag_delta_x ), float( drag_info( button::left ).drag_delta_y ) ) );
+					}
+
+					// Left-right along camera axis.
 					if ( key_states['d'] )
 						motion += cam_right;
 					else if ( key_states['a'] )
 						motion -= cam_right;
-
-					motion += cam_fwd * wheel_delta * wheel_zoom_speed;
-					if ( drag_info( button::middle ).dragging )
-					{
-						motion -= cam_fwd * float( drag_info( button::middle ).drag_delta_y ) * mouse_zoom_speed;
-					}
-					else if ( drag_info( button::left ).dragging && drag_info( button::right ).dragging )
-					{
-						motion -= cam_fwd * float( drag_info( button::left ).drag_delta_y ) * mouse_zoom_speed;
-					}
 
 					// Move the camera up and down along the world vertical axis. (To move along the camera's local
 					// up/down axis instead, use get_up instead of get_world_up.)
@@ -776,11 +808,8 @@ namespace SynGlyphX
 					else if ( key_states['e'] )
 						motion += cam_up;
 
-					if ( !( drag_info( button::left ).dragging && drag_info( button::right ).dragging ) )	// if two-button dragging, don't turn
-						free_cam_control->turn( glm::vec2( float( drag_info( button::left ).drag_delta_x ), float( drag_info( button::left ).drag_delta_y ) ) );
 					free_cam_control->move( motion * ( fast ? 5.f : 1.f ) );
 					set_cam_control( free_cam_control );
-
 					m_moveUpButton->setEnabled( true );
 					m_moveDownButton->setEnabled( true );
 				}
@@ -929,5 +958,14 @@ namespace SynGlyphX
 			return camera_mode_t::free;
 		else
 			return camera_mode_t::orbit;
+	}
+
+	float SceneViewer::drag_distance( button b )
+	{
+		mouse_drag_info& d = drag[int( b )];
+		if ( d.dragging )
+			return glm::length( glm::vec2( d.drag_distance_x, d.drag_distance_y ) );
+		else
+			return 0.f;
 	}
 }
