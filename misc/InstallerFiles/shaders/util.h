@@ -35,7 +35,7 @@ vec3 get_lighting(vec3 surface_normal, vec3 eye, float intensity0, float intensi
 	const vec3 ambient = vec3( 0.2 );
 	vec3 color1 = vec3( intensity0 );
 	vec3 color2 = vec3( intensity1 );
-	vec3 light_dir = normalize( vec3( 1, 1, -1 ) );
+	vec3 light_dir = normalize( vec3( 1, 1, -2 ) );
     vec3 light1 = dir_light( surface_normal, -light_dir, color1 );
     vec3 light2 = dir_light( surface_normal, light_dir, color2 );
     vec3 light = clamp( ambient + ( light1 + light2 ), 0, 1 );
