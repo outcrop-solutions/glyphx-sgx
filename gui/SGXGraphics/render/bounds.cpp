@@ -94,8 +94,9 @@ namespace SynGlyphX
 			auto ac = a.get_center(), bc = b.get_center();
 
 			// Find the line between the two centers and use it to find the two most distant points between
-			// the spheres.
-			auto a_to_b = glm::normalize( bc - ac );
+			// the spheres. (Special case: if they have a common center any direction will work, so just pick
+			// one arbitrarily.)
+			auto a_to_b = ac != bc ? glm::normalize( bc - ac ) : glm::vec3( 1.f, 0.f, 0.f );
 
 			auto b_extent_1 = bc + ( a_to_b * b.get_radius() );
 			auto b_extent_2 = ac + ( a_to_b * a.get_radius() );
