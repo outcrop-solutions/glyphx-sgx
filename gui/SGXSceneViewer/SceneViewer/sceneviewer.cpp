@@ -446,9 +446,21 @@ namespace SynGlyphX
 				}
 				else
 				{
-					QString positionHUD = tr( "Object Position: X: %1, Y: %2, Z: %3" ).arg( QString::number( selection_center.x ), QString::number( selection_center.y ), QString::number( selection_center.z ) );
-					QFontMetrics hudFontMetrics( hud_font );
-					renderText( painter, ( width() / 2 ) - ( hudFontMetrics.width( positionHUD ) / 2 ), height() - 16, positionHUD, hud_font );
+#if 0	// TODO/WIP: dev-92 x/y/z text box in viewer
+					if ( scene.selectionSize() == 1 )
+					{
+						auto pos = scene.getSingleSelection()->getRootParent()->getCachedPosition();
+						QString positionHUD = tr( "%1: %2, %3: %4, %5: %6" ).arg( QString::fromStdString( axis_names[0] ), QString::number( pos.x ), QString::fromStdString( axis_names[1] ), QString::number( pos.y ), QString::fromStdString( axis_names[2] ), QString::number( pos.z ) );
+						QFontMetrics hudFontMetrics( hud_font );
+						renderText( painter, ( width() / 2 ) - ( hudFontMetrics.width( positionHUD ) / 2 ), height() - 16, positionHUD, hud_font );
+					}
+					else
+#endif
+					{
+						QString positionHUD = tr( "Selection Centered At: X: %1, Y: %2, Z: %3" ).arg( QString::number( selection_center.x ), QString::number( selection_center.y ), QString::number( selection_center.z ) );
+						QFontMetrics hudFontMetrics( hud_font );
+						renderText( painter, ( width() / 2 ) - ( hudFontMetrics.width( positionHUD ) / 2 ), height() - 16, positionHUD, hud_font );
+					}
 				}
 			}
 
@@ -594,9 +606,8 @@ namespace SynGlyphX
 			}
 		}
 
-		// disable context menu if we're right-dragging
-		const auto right_drag_no_context_menu_threshold = 5.f;
-		if ( drag_distance( button::right ) > right_drag_no_context_menu_threshold )
+		// disable context menu if we're right-dragging or L/R-dragging
+		if ( ( drag_info( button::left ).dragging || drag_info( button::right ).dragging ) )
 			setContextMenuPolicy( Qt::NoContextMenu );
 		else
 			setContextMenuPolicy( Qt::ActionsContextMenu );
@@ -617,13 +628,6 @@ namespace SynGlyphX
 		if ( event->buttons() & Qt::LeftButton ) set_button( int( button::left ) );
 		if ( event->buttons() & Qt::RightButton ) set_button( int( button::right ) );
 		if ( event->buttons() & Qt::MiddleButton ) set_button( int( button::middle ) );
-
-		// prevent context menu from coming up unless ONLY right button is clicked
-		// (otherwise it comes up when doing L/R-drag)
-		if ( event->buttons() == Qt::RightButton )
-			setContextMenuPolicy( Qt::ActionsContextMenu );
-		else
-			setContextMenuPolicy( Qt::NoContextMenu );
 	}
 
 	void SceneViewer::mouseReleaseEvent( QMouseEvent* event )
@@ -758,7 +762,7 @@ namespace SynGlyphX
 				if ( camera_mode() == camera_mode_t::free )
 				{
 					// right-dragging has specialized behavior
-					if ( !drag_info( button::left ).dragging && drag_info( button::right ).dragging )
+					if ( !drag_info( button::left ).dragging && drag_info( button::right ).dragging && drag_distance( button::right ) > 0.f )
 					{
 						auto proj_fwd = glm::vec3( cam_fwd.x, cam_fwd.y, 0.f );
 						if ( glm::length( proj_fwd ) > 0.f )
