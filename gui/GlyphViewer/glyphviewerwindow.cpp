@@ -676,6 +676,8 @@ void GlyphViewerWindow::ValidateDataMappingFile(SynGlyphX::DataTransformMapping:
 	}*/
 
 	mapping->WriteToFile(filename.toStdString());
+
+	SynGlyphX::Application::restoreOverrideCursor();
 }
 
 void GlyphViewerWindow::LoadDataTransform(const QString& filename, const MultiTableDistinctValueFilteringParameters& filters) {
