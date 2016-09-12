@@ -169,6 +169,9 @@ public class FileSyncer {
     				files_synced += 1;
     			}
     			updateTimestamps();
+    			PathBuilder pb = new PathBuilder(glyphEdPath);
+				pb.resetSharedVisualizationPaths();
+				session.disconnect();
     			doneSyncing = true;
     		}
   		};

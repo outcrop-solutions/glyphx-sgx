@@ -2,7 +2,6 @@
 import java.sql.*;
 import java.util.Date;
 import synglyphx.user.User;
-import synglyphx.user.PathBuilder;
 import java.util.concurrent.TimeUnit;
 
 public class UserAccessControls {
@@ -114,7 +113,7 @@ public class UserAccessControls {
 
 	public static void main(String [] args){
 
-		/*
+		
 		System.out.println(UserAccessControls.initConnection());
 		System.out.println(UserAccessControls.validateCredentials("ataul","ataul"));
 		System.out.println(UserAccessControls.nameOfUser());
@@ -157,9 +156,8 @@ public class UserAccessControls {
 			e.printStackTrace();
 		}
 		System.out.println("Done syncing");
-		*/
-		PathBuilder pb = new PathBuilder("C:/ProgramData/SynGlyphX/GlyphEd/Notre Dame");
-		pb.resetSharedVisualizationPaths();
+		
+	
 	}
 
 }
