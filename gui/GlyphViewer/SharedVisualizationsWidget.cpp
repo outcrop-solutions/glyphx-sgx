@@ -7,6 +7,7 @@
 #include "glyphbuilderapplication.h"
 #include "datatransformmapping.h"
 #include "stringconvert.h"
+#include <QtWidgets\QProgressBar>
 #include "glyphengine.h"
 
 void SharedVisualizationsFile::ImportFromPropertyTree(const boost::property_tree::wptree& filePropertyTree) {
@@ -48,7 +49,8 @@ void SharedVisualizationsFile::ExportToPropertyTree(boost::property_tree::wptree
 
 SharedVisualizationsWidget::SharedVisualizationsWidget(QWidget *parent)
 	: QSplitter(Qt::Horizontal, parent),
-	m_loadingFilterWidgetsStack(nullptr)
+	m_loadingFilterWidgetsStack(nullptr),
+	IsGlyphEd(false)
 {
 	setChildrenCollapsible(false);
 	setHandleWidth(1);
@@ -71,6 +73,13 @@ SharedVisualizationsWidget::~SharedVisualizationsWidget()
 
 }
 
+void SharedVisualizationsWidget::Setup(DataEngine::DataEngineConnection::SharedPtr dataEngineConnection, QProgressBar* prog){
+
+	IsGlyphEd = true;
+	progress = prog;
+	Reset(dataEngineConnection);
+}
+
 void SharedVisualizationsWidget::Reset(DataEngine::DataEngineConnection::SharedPtr dataEngineConnection) {
 
 	m_viewListWidget->blockSignals(true);
@@ -85,7 +94,8 @@ void SharedVisualizationsWidget::Reset(DataEngine::DataEngineConnection::SharedP
 	addWidget(m_loadingFilterWidgetsStack);
 
 	bool visualizationsAdded = false;
-	QString sharedVizListing = QDir::toNativeSeparators(QDir::cleanPath(SynGlyphX::GlyphBuilderApplication::GetCommonDataLocation()) + "/sharedvisualizations.xml");
+	//QString sharedVizListing = QDir::toNativeSeparators(QDir::cleanPath(SynGlyphX::GlyphBuilderApplication::GetCommonDataLocation()) + "/sharedvisualizations.xml");
+	QString sharedVizListing = QDir::toNativeSeparators(QDir::cleanPath(dataEngineConnection->UserAccessControls()->GlyphEdPath()) + "/sharedvisualizations.xml");
 	if (QFile::exists(sharedVizListing)) {
 
 		SharedVisualizationsFile sharedVisualizationsFile;
@@ -111,6 +121,10 @@ void SharedVisualizationsWidget::Reset(DataEngine::DataEngineConnection::SharedP
 				m_loadingFilterWidgetsStack->addWidget(loadingFilterWidget);
 				m_loadingFilterWidgetMap[filename] = loadingFilterWidget;
 			}
+
+			if (IsGlyphEd){
+				progress->setValue(progress->value() + (progress->maximum() / m_filenameToTitleMap.count()));
+			}
 		}
 
 		m_viewListWidget->SetItems(sharedVisualizationsFile.GetInfoTree());
@@ -126,6 +140,37 @@ void SharedVisualizationsWidget::Reset(DataEngine::DataEngineConnection::SharedP
 
 		m_loadingFilterWidgetsStack->setVisible(false);
 	}
+}
+
+void SharedVisualizationsWidget::ClearAll() {
+
+	if (m_viewListWidget != nullptr) {
+
+		delete m_viewListWidget;
+	}
+	m_viewListWidget = new SynGlyphX::TitleTreeWidget(this);
+	m_viewListWidget->setStyleSheet("background-color: #eff2f7;");
+	m_viewListWidget->SetAllowMultiselect(false);
+	m_viewListWidget->SetTitle(tr("View(s)"));
+	m_viewListWidget->layout()->setContentsMargins(0, 0, 0, 0);
+	addWidget(m_viewListWidget);
+
+	m_viewListWidget->blockSignals(true);
+
+	m_loadingFilterWidgetMap.clear();
+	m_filenameToTitleMap.clear();
+	if (m_loadingFilterWidgetsStack != nullptr) {
+
+		delete m_loadingFilterWidgetsStack;
+	}
+	m_loadingFilterWidgetsStack = new QStackedWidget(this);
+	addWidget(m_loadingFilterWidgetsStack);
+
+	bool visualizationsAdded = false;
+
+	m_viewListWidget->blockSignals(false);
+
+	m_loadingFilterWidgetsStack->setVisible(false);
 }
 
 bool SharedVisualizationsWidget::DoCurrentNecessaryFiltersHaveSelection() const {

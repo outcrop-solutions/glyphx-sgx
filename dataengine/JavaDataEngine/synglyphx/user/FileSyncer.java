@@ -2,8 +2,11 @@ package synglyphx.user;
 
 import com.jcraft.jsch.*;
 import java.io.*;
+import java.util.Map;
 import java.util.Hashtable;
 import java.util.ArrayList;
+import java.util.Vector;
+import java.sql.Timestamp;
 
 public class FileSyncer {
 
@@ -12,35 +15,43 @@ public class FileSyncer {
 	private static String USER = "ec2-user";
 	private static int PORT = 22;
 	private ArrayList<UserFile> needToSync = null;
+	private Hashtable<File, Long> toUpdateTS = null;
 	private String syncedDirPath;
+	private String glyphEdPath;
 	private JSch jsch = null;
 	private Session session = null;
 	private int needToSyncImage;
 	private int needToSyncData;
+	private int needToSyncShared;
+	private volatile boolean doneSyncing;
 	private volatile int files_synced;
 
 	public FileSyncer(){
 		needToSyncImage = 0;
+		needToSyncShared = 0;
 		needToSyncData = 0;
 		files_synced = 1;
+		doneSyncing = false;
 	}
 	
-	public int fileSyncSetup(ArrayList<UserFile> filesToSync, String syncedDirPath, Institution inst){
+	public int fileSyncSetup(ArrayList<UserFile> filesToSync, String syncedDir, Institution inst){
 
-		this.syncedDirPath = syncedDirPath;
+		filesToSync = setModifiedDates(filesToSync, syncedDir, inst);
 		needToSync = new ArrayList<UserFile>();
-
-		validateDestinationDirectory(inst.getName());
 
 		for(UserFile fileToSync : filesToSync){
 			File f = new File(syncedDirPath+fileToSync.getFormattedPath().split(".zip")[0]);
+			System.out.println(syncedDirPath+fileToSync.getFormattedPath().split(".zip")[0]);
 			if(f.exists()){
+				System.out.println(f.lastModified() + " and " + fileToSync.getLastModified().getTime());
 				if(f.lastModified() < fileToSync.getLastModified().getTime()){
 					needToSync.add(fileToSync);
+					setNewModified(f, fileToSync.getLastModified().getTime());
 				}
 			}
 			else{
 				needToSync.add(fileToSync);
+				setNewModified(f, fileToSync.getLastModified().getTime());
 			}
 		}
 
@@ -48,34 +59,53 @@ public class FileSyncer {
 		if(img.exists()){
 			if(img.lastModified() < inst.getLogoModified().getTime()){
 				needToSyncImage = 1;
-				needToSync.add(new UserFile("Logo", inst.getName().replace(" ","_")+"/customer.png", 1, inst.getLogoModified(), 2));
+				needToSync.add(new UserFile("Logo", inst.getName()+"/customer.png", 1, 2));
+				setNewModified(img, inst.getLogoModified().getTime());
 			}
 		}
 		else{
 			needToSyncImage = 1;
-			needToSync.add(new UserFile("Logo", inst.getName().replace(" ","_")+"/customer.png", 1, inst.getLogoModified(), 2));
+			needToSync.add(new UserFile("Logo", inst.getName()+"/customer.png", 1, 2));
+			setNewModified(img, inst.getLogoModified().getTime());
+		}
+		File shr = new File(syncedDirPath+inst.getName()+"/sharedvisualizations.xml");
+		if(shr.exists()){
+			if(shr.lastModified() < inst.getSharedModified().getTime()){
+				needToSyncShared = 1;
+				needToSync.add(new UserFile("Shared", inst.getName()+"/sharedvisualizations.xml", 1, 4));
+				setNewModified(shr, inst.getSharedModified().getTime());
+			}
+		}
+		else{
+			needToSyncShared = 1;
+			needToSync.add(new UserFile("Shared", inst.getName()+"/sharedvisualizations.xml", 1, 4));
+			setNewModified(shr, inst.getSharedModified().getTime());
 		}
 		File db = new File(syncedDirPath+inst.getName()+"/glyphed.db");
 		if(db.exists()){
 			if(db.lastModified() < inst.getDBModified().getTime()){
 				needToSyncData = 1;
-				needToSync.add(new UserFile("Data", inst.getName().replace(" ","_")+"/glyphed.zip", 1, inst.getDBModified(), 3));
+				needToSync.add(new UserFile("Data", inst.getName()+"/glyphed.zip", 1, 3));
+				setNewModified(db, inst.getDBModified().getTime());
 			}
 		}
 		else{
 			needToSyncData = 1;
-			needToSync.add(new UserFile("Data", inst.getName().replace(" ","_")+"/glyphed.zip", 1, inst.getDBModified(), 3));
+			needToSync.add(new UserFile("Data", inst.getName()+"/glyphed.zip", 1, 3));
+			setNewModified(db, inst.getDBModified().getTime());
 		}
 
 		return needToSync.size();
 	}
 
-	public int visualizationsToSync(){
-		return (needToSync.size() - needToSyncImage) - needToSyncData;
-	}
+	public ArrayList<UserFile> setModifiedDates(ArrayList<UserFile> filesToSync, String syncedDir, Institution inst){
+		this.syncedDirPath = syncedDir;
+		validateDestinationDirectory(inst.getName());
+		glyphEdPath = syncedDirPath+inst.getName();
 
-	public void startSyncingFiles(){
-
+		Vector list = null;
+		ChannelSftp.LsEntry lsEntry = null;
+    	SftpATTRS attrs = null;
 		try{
 			jsch=new JSch();
 		    jsch.addIdentity(KEY);
@@ -85,29 +115,68 @@ public class FileSyncer {
 		    config.put("StrictHostKeyChecking", "no");
 		    session.setConfig(config);
 		    session.connect();
+
+		    ChannelSftp chansftp = (ChannelSftp)session.openChannel("sftp");
+		    chansftp.connect();
+
+		    String rp = inst.getName()+"/";
+		    list = chansftp.ls(rp);
+
+	      	for (Object sftpFile : list) {
+                lsEntry = (ChannelSftp.LsEntry) sftpFile;
+                attrs = lsEntry.getAttrs();
+                if(lsEntry.getFilename().equals("customer.png")){
+                	inst.setLogoModified(convertTS(attrs.getMTime()));
+                }
+                else if(lsEntry.getFilename().equals("sharedvisualizations.xml")){
+                	inst.setSharedModified(convertTS(attrs.getMTime()));
+                }
+                else if(lsEntry.getFilename().equals("glyphed.zip")){
+                	inst.setDataModified(convertTS(attrs.getMTime()));
+                }else{
+                	for(UserFile fileToSync : filesToSync){
+                		if(fileToSync.getRemotePath().equals(rp+lsEntry.getFilename())){
+                			fileToSync.setLastModified(convertTS(attrs.getMTime()));
+                		}
+                	}
+                }
+            }
+            chansftp.disconnect();
+
 		}catch(Exception e){
 			e.printStackTrace();
 		}
+		return filesToSync;
+
+	}
+
+	public int visualizationsToSync(){
+		return ((needToSync.size() - needToSyncImage) - needToSyncData) - needToSyncShared;
+	}
+
+	public void startSyncingFiles(){
 
 		Thread thread = new Thread(){
     		public void run(){
     			for(int i = 0; i < needToSync.size(); i++){
     				scpFrom(syncedDirPath+needToSync.get(i).getFormattedPath(), needToSync.get(i).getRemotePath());
     				try{
-    					if(needToSync.get(i).getFileType() != 2){
+    					if(needToSync.get(i).getFileType() != 2 && needToSync.get(i).getFileType() != 4){
 				    		UnzipUtility.unzip(syncedDirPath+needToSync.get(i).getFormattedPath(), syncedDirPath+needToSync.get(i).getFormattedPath().split("/")[0],needToSync.get(i).getFileType());
 				    		UnzipUtility.delete(syncedDirPath+needToSync.get(i).getFormattedPath());
 				    	}
 			    	}catch(Exception e){e.printStackTrace();}
     				files_synced += 1;
     			}
+    			updateTimestamps();
+    			doneSyncing = true;
     		}
   		};
   		thread.start();
 	}
 
 	public int filesSynced(){
-		if(files_synced == (needToSync.size()+1)){
+		if(doneSyncing){
 			session.disconnect();
 		}
 		return files_synced;
@@ -119,6 +188,7 @@ public class FileSyncer {
 		if(!(last.equals("/") || last.equals("\\"))){
 			syncedDirPath += "/";
 		}
+		System.out.println(syncedDirPath);
 
 		File f = new File(syncedDirPath+inst_name);
 		if(!f.exists()){
@@ -137,7 +207,7 @@ public class FileSyncer {
 	      	}
 
 	      	// exec 'scp -f rfile' remotely
-	      	String command="scp -f "+rfile;
+	      	String command="scp -f \""+rfile+"\"";
 	      	Channel channel=session.openChannel("exec");
 	      	((ChannelExec)channel).setCommand(command);
 
@@ -218,6 +288,17 @@ public class FileSyncer {
 	    }
 	}
 
+	private static long convertTS(int ts){
+		String ts_str = String.valueOf(ts);
+		if(ts_str.length() < 13){
+			int l = 13-ts_str.length();
+			for(int i = 0; i < l; i++){
+				ts_str += "0";
+			}
+		}
+		return Long.parseLong(ts_str);
+	}
+
 	private static int checkAck(InputStream in) throws IOException{
 	    int b=in.read();
 	    // b may be 0 for success,
@@ -243,6 +324,25 @@ public class FileSyncer {
 	      	}
 	    }
 	    return b;
+	}
+
+	private void setNewModified(File f, long ts){
+		if(toUpdateTS == null){
+			toUpdateTS = new Hashtable<File, Long>();
+		}
+		toUpdateTS.put(f, ts);
+	}
+
+	private void updateTimestamps(){
+		if(toUpdateTS != null){
+			for(Map.Entry<File,Long> entry : toUpdateTS.entrySet()){
+				entry.getKey().setLastModified(entry.getValue());
+			}
+		}
+	}
+
+	public String getGlyphEdPath(){
+		return glyphEdPath;
 	}
 
 }

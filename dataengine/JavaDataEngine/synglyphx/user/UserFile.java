@@ -11,13 +11,16 @@ public class UserFile {
 	private int securityGroup;
 	private Timestamp lastModified;
 
-	public UserFile(String name, String rpath, int s_group, Timestamp lastmod, int type){
+	public UserFile(String name, String rpath, int s_group, int type){
 		fileType = type;
 		vizName = name;
 		remotePath = rpath;
 		securityGroup = s_group;
-		lastModified = lastmod;
 		formattedPath = rpath.replace('_',' ');
+	}
+
+	public void setLastModified(long dt){
+		this.lastModified = new Timestamp(dt);
 	}
 
 	public int getFileType(){

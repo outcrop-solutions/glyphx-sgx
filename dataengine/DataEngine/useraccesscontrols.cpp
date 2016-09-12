@@ -199,4 +199,19 @@ namespace DataEngine
 		}
 		return count;
 	}
+
+	QString UserAccessControls::GlyphEdPath(){
+
+		jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
+			"getGlyphEdPath", "()Ljava/lang/String;");
+		jstring itr = NULL;
+		if (methodId != NULL) {
+			itr = (jstring)jniEnv->CallStaticObjectMethod(jcls, methodId);
+			if (jniEnv->ExceptionCheck()) {
+				jniEnv->ExceptionDescribe();
+				jniEnv->ExceptionClear();
+			}
+		}
+		return QString(jniEnv->GetStringUTFChars(itr, JNI_FALSE));
+	}
 }

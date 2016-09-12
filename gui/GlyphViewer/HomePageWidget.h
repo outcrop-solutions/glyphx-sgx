@@ -48,6 +48,7 @@ public:
 	HomePageWidget(GlyphViewerWindow* mainWindow, DataEngine::DataEngineConnection::SharedPtr dataEngineConnection, QWidget *parent);
 	~HomePageWidget();
 
+	void ResetViews();
 	void LoggedOut();
 
 signals:

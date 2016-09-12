@@ -27,6 +27,7 @@ public class UnzipUtility {
      * @throws IOException
      */
     public static void unzip(String zipFilePath, String destDirectory, int fileType) throws IOException {
+
         File destDir = new File(destDirectory);
         if (!destDir.exists()) {
             destDir.mkdir();
@@ -37,9 +38,10 @@ public class UnzipUtility {
         if(fileType == 1){
             String subDirName = entry.getName().split("/")[0];
             File subDir = new File(destDirectory + File.separator + subDirName);
-            if(!subDir.exists()){
-                subDir.mkdir();
+            if(subDir.exists()){
+                deleteSubDir(subDir);
             }
+            subDir.mkdir();
         }
         // iterates over entries in the zip file
         while (entry != null) {
@@ -77,4 +79,39 @@ public class UnzipUtility {
         File toDelete = new File(zipFilePath);
         toDelete.delete();
     }
+
+    public static void deleteSubDir(File file)
+        throws IOException{
+
+        if(file.isDirectory()){
+            //directory is empty, then delete it
+            if(file.list().length==0){
+                file.delete();
+                //System.out.println("Directory is deleted : " + file.getAbsolutePath());
+
+            }else{
+                //list all the directory contents
+                String files[] = file.list();
+
+                for (String temp : files) {
+                    //construct the file structure
+                    File fileDelete = new File(file, temp);
+                    //recursive delete
+                    deleteSubDir(fileDelete);
+                }
+
+                //check the directory again, if empty then delete it
+                if(file.list().length==0){
+                    file.delete();
+                    //System.out.println("Directory is deleted : " + file.getAbsolutePath());
+                }
+            }
+
+        }else{
+            //if file, then delete it
+            file.delete();
+            //System.out.println("File is deleted : " + file.getAbsolutePath());
+        }
+    }
+
 }

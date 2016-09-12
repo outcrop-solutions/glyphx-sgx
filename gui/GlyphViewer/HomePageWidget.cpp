@@ -61,7 +61,7 @@ HomePageWidget::HomePageWidget(GlyphViewerWindow* mainWindow, DataEngine::DataEn
 	m_homePageWidgetsLayout->setContentsMargins(0, 0, 0, 0);
 
 	CreateDashboardWidget();
-	CreateAllViewsWidget();;
+	CreateAllViewsWidget();
 	CreateMyViewsWidget();
 	if (SynGlyphX::GlyphBuilderApplication::IsGlyphEd()) {
 
@@ -125,7 +125,7 @@ void HomePageWidget::CreateAllViewsWidget() {
 	vizAndFilterFrameLayout->setSpacing(0);
 
 	m_allViewsFilteringWidget = new SharedVisualizationsWidget(this);
-	m_allViewsFilteringWidget->Reset(m_dataEngineConnection);
+	//m_allViewsFilteringWidget->Reset(m_dataEngineConnection);
 
 	vizAndFilterFrameLayout->addWidget(m_allViewsFilteringWidget);
 	vizAndFilterFrame->setLayout(vizAndFilterFrameLayout);
@@ -326,13 +326,16 @@ void HomePageWidget::SwitchDashboardLayout(){
 		upperRightDashboardImage->setStyleSheet("QLabel{background-color: white;}");
 
 		//QString customerLogo = QDir::toNativeSeparators(QDir::cleanPath(SynGlyphX::GlyphBuilderApplication::GetCommonDataLocation()) + "/customer.png");
-		QString upperRightLogo = QDir::toNativeSeparators(QDir::cleanPath(SynGlyphX::GlyphBuilderApplication::GetCommonDataLocation()) + "/rightupper.png");
+		//QString upperRightLogo = QDir::toNativeSeparators(QDir::cleanPath(SynGlyphX::GlyphBuilderApplication::GetCommonDataLocation()) + "/rightupper.png");
+		QString upperRightLogo = QDir::toNativeSeparators(QDir::cleanPath(m_dataEngineConnection->UserAccessControls()->GlyphEdPath()) + "/customer.png");
 		if (QFileInfo::exists(upperRightLogo)) {
 
 			upperRightDashboardImage->SetPixmap(QPixmap(upperRightLogo));
 		}
 		mainDashboardLayout->addWidget(upperRightDashboardImage, 1, 1, 1, 2);
 		lowerRightCols = 2;
+
+		//m_allViewsFilteringWidget->Reset(m_dataEngineConnection);
 	}
 	else{
 
@@ -393,10 +396,10 @@ void HomePageWidget::Login(){
 		m_mainWindow->MainWindow::UpdateUserMenu(m_dataEngineConnection->UserAccessControls()->NameOfUser());
 		m_mainWindow->UpdateUserMenu();
 		int files2sync = m_dataEngineConnection->UserAccessControls()->FileSyncSetup("C:/ProgramData/SynGlyphX/GlyphEd");
-		if (files2sync > 0){
-			SynGlyphX::SyncProgressDialog *d = new SynGlyphX::SyncProgressDialog(files2sync, m_dataEngineConnection, this);
-			d->exec();
-		}
+		//if (files2sync > 0){
+		SynGlyphX::SyncProgressDialog *d = new SynGlyphX::SyncProgressDialog(files2sync, m_dataEngineConnection, m_allViewsFilteringWidget, this);
+		d->exec();
+		//}
 		LoggedOut();
 		SynGlyphX::Application::restoreOverrideCursor();
 	}
@@ -410,6 +413,10 @@ void HomePageWidget::Login(){
 		critical_error.setEscapeButton(QMessageBox::Ok);
 		critical_error.exec();
 	}
+}
+
+void HomePageWidget::ResetViews(){
+	m_allViewsFilteringWidget->ClearAll();
 }
 
 void HomePageWidget::LoggedOut(){

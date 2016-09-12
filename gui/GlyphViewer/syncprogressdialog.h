@@ -20,21 +20,24 @@
 #ifndef SYNCPROGRESSDIALOG_H
 #define SYNCPROGRESSDIALOG_H
 
-#include "sgxgui_global.h"
 #include <QtWidgets/QDialog>
 #include <QtCore/QTimer>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QVBoxLayout>
+#include <QtWidgets/QListWidget>
 #include "dataengineconnection.h"
+
+class SharedVisualizationsWidget;
+class QProgressBar;
 
 namespace SynGlyphX {
 
-	class SGXGUI_EXPORT SyncProgressDialog : public QDialog
+	class SyncProgressDialog : public QDialog
 	{
 		Q_OBJECT
 
 	public:
-		SyncProgressDialog(int files2sync, DataEngine::DataEngineConnection::SharedPtr dataEngineConnection, QWidget *parent);
+		SyncProgressDialog(int files2sync, DataEngine::DataEngineConnection::SharedPtr dataEngineConnection, SharedVisualizationsWidget* allViewsFilteringWidget, QWidget *parent);
 		~SyncProgressDialog(){};
 
 		public slots:
@@ -48,9 +51,11 @@ namespace SynGlyphX {
 		QVBoxLayout* layout;
 		QLabel* syncLabel;
 		QTimer *timer;
+		QProgressBar* progress;
 		int value;
 		int viz_count;
 		int file_count;
+		SharedVisualizationsWidget* m_allViewsFilteringWidget;
 
 		std::shared_ptr<DataEngine::DataEngineConnection> m_dataEngineConnection;
 

@@ -52,6 +52,7 @@ namespace DataEngine
 		int VisualizationsToSync();
 		void StartSyncingFiles();
 		int FilesSynced();
+		QString GlyphEdPath();
 	};
 }
 #endif // USERACCESSCONTROLS_H

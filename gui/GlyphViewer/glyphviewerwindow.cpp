@@ -516,6 +516,7 @@ void GlyphViewerWindow::Logout(){
 
 	m_dataEngineConnection->UserAccessControls()->ResetConnection();
 
+	m_homePage->ResetViews();
 	m_homePage->LoggedOut();
 	SynGlyphX::Application::restoreOverrideCursor();
 }
