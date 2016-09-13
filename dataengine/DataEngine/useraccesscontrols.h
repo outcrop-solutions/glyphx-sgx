@@ -34,6 +34,7 @@ namespace DataEngine
 		jclass jcls;
 
 		bool validConnection;
+		bool synced;
 
 	public:
 		UserAccessControls(JNIEnv *env);
@@ -53,6 +54,7 @@ namespace DataEngine
 		void StartSyncingFiles();
 		int FilesSynced();
 		QString GlyphEdPath();
+		bool HasSynced();
 	};
 }
 #endif // USERACCESSCONTROLS_H

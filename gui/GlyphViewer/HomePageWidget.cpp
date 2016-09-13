@@ -78,6 +78,10 @@ HomePageWidget::HomePageWidget(GlyphViewerWindow* mainWindow, DataEngine::DataEn
 	QObject::connect(m_optionsButtonGroup, static_cast<void (QButtonGroup::*)(int)>(&QButtonGroup::buttonClicked), this, &HomePageWidget::OnNewOptionSelected);
 	m_optionsButtonGroup->button(0)->setChecked(true);
 	OnNewOptionSelected(0);
+
+	if (loggedOn){
+		QTimer::singleShot(0, this, SLOT(SyncFilesAndLoadViews()));
+	}
 }
 
 HomePageWidget::~HomePageWidget()
@@ -294,6 +298,7 @@ void HomePageWidget::SwitchDashboardLayout(){
 	int lowerRightCols = 1;
 	if (m_mainWindow->IsUserLoggedIn()){
 
+		loggedOn = true;
 		QFrame* recentViewsWidget = new QFrame(this);
 		recentViewsWidget->setFrameStyle(QFrame::Panel | QFrame::Raised);
 		recentViewsWidget->setLineWidth(2);
@@ -327,10 +332,12 @@ void HomePageWidget::SwitchDashboardLayout(){
 
 		//QString customerLogo = QDir::toNativeSeparators(QDir::cleanPath(SynGlyphX::GlyphBuilderApplication::GetCommonDataLocation()) + "/customer.png");
 		//QString upperRightLogo = QDir::toNativeSeparators(QDir::cleanPath(SynGlyphX::GlyphBuilderApplication::GetCommonDataLocation()) + "/rightupper.png");
-		QString upperRightLogo = QDir::toNativeSeparators(QDir::cleanPath(m_dataEngineConnection->UserAccessControls()->GlyphEdPath()) + "/customer.png");
-		if (QFileInfo::exists(upperRightLogo)) {
+		if (m_dataEngineConnection->UserAccessControls()->HasSynced()){
+			QString upperRightLogo = QDir::toNativeSeparators(QDir::cleanPath(m_dataEngineConnection->UserAccessControls()->GlyphEdPath()) + "/customer.png");
+			if (QFileInfo::exists(upperRightLogo)) {
 
-			upperRightDashboardImage->SetPixmap(QPixmap(upperRightLogo));
+				upperRightDashboardImage->SetPixmap(QPixmap(upperRightLogo));
+			}
 		}
 		mainDashboardLayout->addWidget(upperRightDashboardImage, 1, 1, 1, 2);
 		lowerRightCols = 2;
@@ -339,6 +346,7 @@ void HomePageWidget::SwitchDashboardLayout(){
 	}
 	else{
 
+		loggedOn = false;
 		loginWidget = new SynGlyphX::UserLoginDialog(m_dataEngineConnection, this);
 		loginWidget->setFrameStyle(QFrame::Panel | QFrame::Raised);
 		loginWidget->setLineWidth(2);
@@ -391,20 +399,12 @@ void HomePageWidget::SwitchDashboardLayout(){
 
 void HomePageWidget::Login(){
 
-	SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
 	if (loginWidget->Login()){
 		m_mainWindow->MainWindow::UpdateUserMenu(m_dataEngineConnection->UserAccessControls()->NameOfUser());
 		m_mainWindow->UpdateUserMenu();
-		int files2sync = m_dataEngineConnection->UserAccessControls()->FileSyncSetup("C:/ProgramData/SynGlyphX/GlyphEd");
-		//if (files2sync > 0){
-		SynGlyphX::SyncProgressDialog *d = new SynGlyphX::SyncProgressDialog(files2sync, m_dataEngineConnection, m_allViewsFilteringWidget, this);
-		d->exec();
-		//}
-		LoggedOut();
-		SynGlyphX::Application::restoreOverrideCursor();
+		SyncFilesAndLoadViews();
 	}
 	else{
-		SynGlyphX::Application::restoreOverrideCursor();
 		QMessageBox critical_error(QMessageBox::Critical, tr("Failed To Login"), tr("Invalid username or password, please try again"), QMessageBox::Ok, this);
 		critical_error.setDetailedText(m_dataEngineConnection->JavaErrors());
 		critical_error.setStyleSheet("QLabel{margin-right:75px;},QTextEdit{min-width:500px;}");
@@ -413,6 +413,15 @@ void HomePageWidget::Login(){
 		critical_error.setEscapeButton(QMessageBox::Ok);
 		critical_error.exec();
 	}
+}
+
+void HomePageWidget::SyncFilesAndLoadViews(){
+
+	SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
+	SynGlyphX::SyncProgressDialog *d = new SynGlyphX::SyncProgressDialog(0, m_dataEngineConnection, m_allViewsFilteringWidget, this);
+	d->exec();
+	LoggedOut();
+	SynGlyphX::Application::restoreOverrideCursor();
 }
 
 void HomePageWidget::ResetViews(){

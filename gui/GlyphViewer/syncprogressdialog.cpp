@@ -38,17 +38,17 @@ namespace SynGlyphX {
 		}
 
 		connect(timer, SIGNAL(timeout()), this, SLOT(handleTimeOut()));
-		connect(progress, SIGNAL(valueChanged(int)), this, SLOT(setValue(int)));
+		connect(progress, SIGNAL(progress->valueChanged(int)), this, SLOT(progress->setValue(int)));
 
 		setLayout(layout);
 
+		file_count = m_dataEngineConnection->UserAccessControls()->FileSyncSetup("C:/ProgramData/SynGlyphX/GlyphEd");
 		viz_count = m_dataEngineConnection->UserAccessControls()->VisualizationsToSync();
 		m_dataEngineConnection->UserAccessControls()->StartSyncingFiles();
 	}
 
 	QLabel* SyncProgressDialog::GetSyncLabel()
 	{
-		//std::string s = "Syncing " + std::to_string(value) + " out of " + std::to_string(viz_count) + " visualizations...";
 		syncLabel = new QLabel(this);
 		syncLabel->setAlignment(Qt::AlignCenter);
 		syncLabel->setWordWrap(true);

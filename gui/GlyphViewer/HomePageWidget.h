@@ -49,6 +49,7 @@ public:
 	~HomePageWidget();
 
 	void ResetViews();
+	//void SyncFilesAndLoadViews();
 	void LoggedOut();
 
 signals:
@@ -61,6 +62,7 @@ private slots:
 	void OnRecentListUpdated();
 	void OnSubsetListUpdated();
 	void OnRecentViewClicked(QListWidgetItem *item);
+	void SyncFilesAndLoadViews();
 	void Login();
 
 private:
@@ -92,6 +94,7 @@ private:
 	
 	GlyphViewerWindow* m_mainWindow;
 	SynGlyphX::UserLoginDialog* loginWidget;
+	bool loggedOn;
 
 	std::shared_ptr<DataEngine::DataEngineConnection> m_dataEngineConnection;;
 

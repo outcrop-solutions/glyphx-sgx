@@ -4,6 +4,7 @@ namespace DataEngine
 {
 	UserAccessControls::UserAccessControls(JNIEnv *env) :
 		jniEnv(env),
+		synced(false),
 		validConnection(false)
 	{
 		jcls = jniEnv->FindClass("UserAccessControls");
@@ -32,6 +33,7 @@ namespace DataEngine
 	}
 
 	void UserAccessControls::ResetConnection(){
+		synced = false;
 		validConnection = false;
 		jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
 			"logOutCurrentUser", "()V");
@@ -146,6 +148,8 @@ namespace DataEngine
 	}
 
 	int UserAccessControls::FileSyncSetup(QString path){
+
+		synced = true;
 		jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
 			"fileSyncSetup", "(Ljava/lang/String;)I");
 		int count;
@@ -213,5 +217,10 @@ namespace DataEngine
 			}
 		}
 		return QString(jniEnv->GetStringUTFChars(itr, JNI_FALSE));
+	}
+
+	bool UserAccessControls::HasSynced(){
+
+		return synced;
 	}
 }
