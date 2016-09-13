@@ -221,6 +221,9 @@ void GlyphViewerWindow::CreateMenus() {
 	m_fileMenu->addSeparator();
 
 	QAction* refreshVisualizationAction = CreateMenuAction(m_fileMenu, tr("Refresh Visualization"), QKeySequence::Refresh);
+	QIcon refreshVizIcon;
+	refreshVizIcon.addFile( ":SGXGUI/Resources/Icons/icon-refresh.png", QSize(), QIcon::Normal, QIcon::On );
+	refreshVisualizationAction->setIcon( refreshVizIcon );
 	QObject::connect(refreshVisualizationAction, &QAction::triggered, this, &GlyphViewerWindow::RefreshVisualization);
 	m_loadedVisualizationDependentActions.push_back(refreshVisualizationAction);
 
@@ -242,6 +245,7 @@ void GlyphViewerWindow::CreateMenus() {
 	m_loadedVisualizationDependentActions.push_back(closeVisualizationAction);
 
 	m_fileToolbar->addAction(closeVisualizationAction);
+	m_fileToolbar->addAction(refreshVisualizationAction);
 
 	CreateExportToPortableVisualizationSubmenu();
 	
