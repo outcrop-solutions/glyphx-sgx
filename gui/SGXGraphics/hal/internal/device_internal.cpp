@@ -220,6 +220,7 @@ namespace SynGlyphX
 		{
 			release_refcounted( c, [c]() {
 				glDeleteBuffers( 1, &c->buffer );
+				delete c;
 			} );
 		}
 
@@ -228,6 +229,7 @@ namespace SynGlyphX
 			release_refcounted( t, [t]() {
 				if ( !t->external )
 					glDeleteTextures( 1, &t->handle );
+				delete t;
 			} );
 		}
 

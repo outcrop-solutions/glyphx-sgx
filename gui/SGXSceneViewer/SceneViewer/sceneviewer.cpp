@@ -138,10 +138,7 @@ namespace SynGlyphX
 
 		// Load textures for new scene (should eventually move into scene loader).
 		for ( auto img : baseImages )
-		{
-			auto tex = hal::device::load_texture( img.c_str() );
-			base_textures.push_back( tex );
-		}
+			base_textures.push_back( hal::device::load_texture( img.c_str() ) );
 
 		SynGlyphX::LegacySceneReader::LoadLegacyScene( getScene(), *base_images, *grids, default_base_texture, nodeFile, tagFile, base_textures );
 	}
@@ -155,6 +152,7 @@ namespace SynGlyphX
 			axis_names[i] = "";
 		for ( auto& tex : base_textures )
 			hal::device::release( tex );
+		base_textures.clear();
 	}
 
 	QToolButton* SceneViewer::CreateNavigationButton( const QString& toolTip, bool autoRepeat ) {
