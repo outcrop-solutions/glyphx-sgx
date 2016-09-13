@@ -30,12 +30,12 @@
       <file>Resources/Icons/icon-axis-hud-a.png</file>
       <file>Resources/Icons/icon-axis-scene.png</file>
       <file>Resources/Icons/icon-axis-scene-a.png</file>
-      <file>Resources/Icons/icon-fly-to.png</file>
-      <file>Resources/Icons/icon-fly-to-a.png</file>
-      <file>Resources/Icons/icon-orbit-camera.png</file>
-      <file>Resources/Icons/icon-orbit-camera-a.png</file>
-      <file>Resources/Icons/icon-sel-enable.png</file>
-      <file>Resources/Icons/icon-sel-enable-a.png</file>
+      <file>Resources/Icons/icon-flyby.png</file>
+      <file>Resources/Icons/icon-flyby-a.png</file>
+      <file>Resources/Icons/icon-orbit.png</file>
+      <file>Resources/Icons/icon-orbit-a.png</file>
+      <file>Resources/Icons/icon-blink.png</file>
+      <file>Resources/Icons/icon-blink-a.png</file>
       <file>Resources/GlyphEd/glyphed_splash.png</file>
       <file>Resources/GlyphEd/glyphed_logo_white_border.png</file>
       <file>Resources/GlyphEd/glyphed_logo_no_border.png</file>

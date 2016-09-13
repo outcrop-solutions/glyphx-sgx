@@ -1264,8 +1264,8 @@ void GlyphViewerWindow::CreateInteractionToolbar() {
 	m_enableDisableFlyToObjectAction = new QAction( tr( "Enable/Disable Fly-to-Object" ), m_interactionToolbar );
 	m_enableDisableFlyToObjectAction->setCheckable( true );
 	QIcon flyToObjectIcon;
-	flyToObjectIcon.addFile( ":SGXGUI/Resources/Icons/icon-fly-to.png", QSize(), QIcon::Normal, QIcon::Off );
-	flyToObjectIcon.addFile( ":SGXGUI/Resources/Icons/icon-fly-to-a.png", QSize(), QIcon::Normal, QIcon::On );
+	flyToObjectIcon.addFile( ":SGXGUI/Resources/Icons/icon-flyby.png", QSize(), QIcon::Normal, QIcon::Off );
+	flyToObjectIcon.addFile( ":SGXGUI/Resources/Icons/icon-flyby-a.png", QSize(), QIcon::Normal, QIcon::On );
 	m_enableDisableFlyToObjectAction->setIcon( flyToObjectIcon );
 	QObject::connect( m_enableDisableFlyToObjectAction, &QAction::toggled, this, &GlyphViewerWindow::OnEnableDisableFlyToObjectAction );
 	m_interactionToolbar->addAction( m_enableDisableFlyToObjectAction );
@@ -1275,8 +1275,8 @@ void GlyphViewerWindow::CreateInteractionToolbar() {
 	m_enableDisableFreeSelectionCameraAction->setCheckable( true );
 	m_enableDisableFreeSelectionCameraAction->setChecked( true );
 	QIcon freeSelCamIcon;
-	freeSelCamIcon.addFile( ":SGXGUI/Resources/Icons/icon-orbit-camera.png", QSize(), QIcon::Normal, QIcon::Off );
-	freeSelCamIcon.addFile( ":SGXGUI/Resources/Icons/icon-orbit-camera-a.png", QSize(), QIcon::Normal, QIcon::On );
+	freeSelCamIcon.addFile( ":SGXGUI/Resources/Icons/icon-orbit.png", QSize(), QIcon::Normal, QIcon::Off );
+	freeSelCamIcon.addFile( ":SGXGUI/Resources/Icons/icon-orbit-a.png", QSize(), QIcon::Normal, QIcon::On );
 	m_enableDisableFreeSelectionCameraAction->setIcon( freeSelCamIcon );
 	QObject::connect( m_enableDisableFreeSelectionCameraAction, &QAction::toggled, this, &GlyphViewerWindow::OnEnableDisableFreeSelectionCamera );
 	m_interactionToolbar->addAction( m_enableDisableFreeSelectionCameraAction );
@@ -1286,8 +1286,8 @@ void GlyphViewerWindow::CreateInteractionToolbar() {
 	m_enableDisableSelEffectAction->setCheckable( true );
 	m_enableDisableSelEffectAction->setChecked( true );
 	QIcon selEffIcon;
-	selEffIcon.addFile( ":SGXGUI/Resources/Icons/icon-sel-enable.png", QSize(), QIcon::Normal, QIcon::Off );
-	selEffIcon.addFile( ":SGXGUI/Resources/Icons/icon-sel-enable-a.png", QSize(), QIcon::Normal, QIcon::On );
+	selEffIcon.addFile( ":SGXGUI/Resources/Icons/icon-blink.png", QSize(), QIcon::Normal, QIcon::Off );
+	selEffIcon.addFile( ":SGXGUI/Resources/Icons/icon-blink-a.png", QSize(), QIcon::Normal, QIcon::On );
 	m_enableDisableSelEffectAction->setIcon( selEffIcon );
 	QObject::connect( m_enableDisableSelEffectAction, &QAction::toggled, this, &GlyphViewerWindow::OnEnableDisableSelEffect );
 	m_interactionToolbar->addAction( m_enableDisableSelEffectAction );
