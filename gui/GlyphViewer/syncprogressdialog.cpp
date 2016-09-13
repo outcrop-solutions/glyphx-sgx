@@ -29,6 +29,8 @@ namespace SynGlyphX {
 		progress->setValue(0);
 		progress->setStyleSheet("QProgressBar{font-size: 12.5pt; font-weight: bold;}");
 		layout->addWidget(progress);
+
+		file_count = m_dataEngineConnection->UserAccessControls()->FileSyncSetup("C:/ProgramData/SynGlyphX/GlyphEd");
 		if (file_count == 0){
 			syncLabel->setText(tr("Loading visualizations and establishing data connection..."));
 			progress->show();
@@ -42,7 +44,6 @@ namespace SynGlyphX {
 
 		setLayout(layout);
 
-		file_count = m_dataEngineConnection->UserAccessControls()->FileSyncSetup("C:/ProgramData/SynGlyphX/GlyphEd");
 		viz_count = m_dataEngineConnection->UserAccessControls()->VisualizationsToSync();
 		m_dataEngineConnection->UserAccessControls()->StartSyncingFiles();
 	}

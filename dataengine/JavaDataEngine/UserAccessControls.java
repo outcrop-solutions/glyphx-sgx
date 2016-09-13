@@ -2,6 +2,7 @@
 import java.sql.*;
 import java.util.Date;
 import synglyphx.user.User;
+import synglyphx.io.Logger;
 import java.util.concurrent.TimeUnit;
 
 public class UserAccessControls {
@@ -61,7 +62,10 @@ public class UserAccessControls {
 			conn.close();
 
 		}catch(Exception e){
-			e.printStackTrace();
+			try{
+	            e.printStackTrace(Logger.getInstance().addError());
+	        }catch(Exception ex){}
+	        e.printStackTrace();
 			return false;
 		}
 		return true;
