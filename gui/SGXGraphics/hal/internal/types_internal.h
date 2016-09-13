@@ -15,6 +15,7 @@ namespace SynGlyphX
 		{
 		public:
 			GLuint handle;
+			unsigned int w, h;
 			bool external;
 		};
 

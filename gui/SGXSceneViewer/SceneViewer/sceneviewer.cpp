@@ -120,14 +120,7 @@ namespace SynGlyphX
 			delete plane;
 			hal::device::release( tex_effect );
 			hal::device::release( drag_effect );
-			delete q_sgx_logo;
-			for ( auto& tex : base_textures )
-			{
-				hal::device::release( tex.second );
-				delete tex.first;
-			}
-			hal::device::release( default_base_texture.second );
-			delete default_base_texture.first;
+			hal::device::release( default_base_texture );
 			hal::device::shutdown();
 		}
 	}
@@ -144,15 +137,13 @@ namespace SynGlyphX
 		resetCamera();
 
 		// Load textures for new scene (should eventually move into scene loader).
-		std::vector<hal::texture*> textures;
 		for ( auto img : baseImages )
 		{
-			auto tex = load_texture( img.c_str() );
+			auto tex = hal::device::load_texture( img.c_str() );
 			base_textures.push_back( tex );
-			textures.push_back( tex.second );
 		}
 
-		SynGlyphX::LegacySceneReader::LoadLegacyScene( getScene(), *base_images, *grids, default_base_texture.second, nodeFile, tagFile, textures );
+		SynGlyphX::LegacySceneReader::LoadLegacyScene( getScene(), *base_images, *grids, default_base_texture, nodeFile, tagFile, base_textures );
 	}
 
 	void SceneViewer::clearScene()
@@ -162,16 +153,8 @@ namespace SynGlyphX
 		grids->clear();
 		for ( int i = 0; i < 3; ++i )
 			axis_names[i] = "";
-	}
-
-	std::pair<QOpenGLTexture*, hal::texture*> SceneViewer::load_texture( const char* filename )
-	{
-		// Slightly clunky way to use Qt to load textures for our renderer. Eventually should implement
-		// freeimage or similar to load textures without involving Qt at all.
-		QOpenGLTexture* qtex = new QOpenGLTexture( QImage( filename ) );
-		auto texid = qtex->textureId();
-		hal::texture* tex = hal::device::register_external_texture( &texid );
-		return std::make_pair( qtex, tex );
+		for ( auto& tex : base_textures )
+			hal::device::release( tex );
 	}
 
 	QToolButton* SceneViewer::CreateNavigationButton( const QString& toolTip, bool autoRepeat ) {
@@ -230,7 +213,7 @@ namespace SynGlyphX
 		tex_effect = hal::device::create_effect( "shaders/texture.vert", nullptr, "shaders/texture.frag" );
 		drag_effect = hal::device::create_effect( "shaders/drag_select.vert", nullptr, "shaders/drag_select.frag" );
 
-		default_base_texture = load_texture( "DefaultBaseImages/World.png" );
+		default_base_texture = hal::device::load_texture( "DefaultBaseImages/World.png" );
 
 		float square[]
 		{
@@ -248,9 +231,7 @@ namespace SynGlyphX
 		fmt.add_stream( hal::stream_info( hal::stream_type::float32, 3, hal::stream_semantic::position, 0 ) );
 		fmt.add_stream( hal::stream_info( hal::stream_type::float32, 2, hal::stream_semantic::texcoord, 0 ) );
 
-		q_sgx_logo = new QOpenGLTexture( QImage( "logo.png" ) );
-		auto logoid = q_sgx_logo->textureId();
-		sgx_logo = hal::device::register_external_texture( &logoid );
+		sgx_logo = hal::device::load_texture( "logo.png" );
 
 		auto plane_mesh = hal::device::create_mesh( fmt, hal::primitive_type::triangle_list, 4, square, 2, square_indices );
 
@@ -283,16 +264,19 @@ namespace SynGlyphX
 		camera->update_viewport_size( w, h );
 		ui_camera->update_viewport_size( w, h );
 
+		auto logo_w = hal::device::get_texture_width( sgx_logo );
+		auto logo_h = hal::device::get_texture_height( sgx_logo );
+
 		auto logo_rotate = glm::rotate( glm::mat4(), glm::half_pi<float>(), glm::vec3( 1.f, 0.f, 0.f ) );
-		auto logo_translate = glm::translate( glm::mat4(), glm::vec3( float( w - q_sgx_logo->width() ), float( q_sgx_logo->height() ), 0.f ) );
-		auto logo_scale = glm::scale( glm::mat4(), glm::vec3( q_sgx_logo->width(), q_sgx_logo->height(), 1.f ) );
+		auto logo_translate = glm::translate( glm::mat4(), glm::vec3( float( w - logo_w ), float( logo_h ), 0.f ) );
+		auto logo_scale = glm::scale( glm::mat4(), glm::vec3( logo_w, logo_h, 1.f ) );
 		auto logo_transform = logo_translate * logo_scale * logo_rotate;
 		logo->set_transform( logo_transform );
 
 		checkErrors();
 
 		unsigned int leftPosOfButtonsInHCenter = w - 10 - ( 2 * navigationButtonSize );
-		unsigned int topPositionOfButton = std::abs( q_sgx_logo->height() ) + ( 2 * 10 );
+		unsigned int topPositionOfButton = logo_h + ( 2 * 10 );
 
 		m_upRotateButton->move( QPoint( leftPosOfButtonsInHCenter, topPositionOfButton ) );
 

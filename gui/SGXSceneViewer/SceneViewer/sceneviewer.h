@@ -21,7 +21,6 @@
 #include "../platform.h"
 #include <QtWidgets/QOpenGLWidget>
 #include <QtWidgets/QToolButton>
-#include <QtGui/QOpenGLTexture>
 #include <QtGui/QOpenGLFunctions>
 #include <QtCore/QTimer>
 #include <QtCore/QElapsedTimer>
@@ -133,7 +132,6 @@ namespace SynGlyphX
 
 		// Logo texture.
 		hal::texture* sgx_logo;
-		QOpenGLTexture* q_sgx_logo;
 
 		// Input handling.
 		static const unsigned int key_states_size = 256u;
@@ -193,9 +191,8 @@ namespace SynGlyphX
 		glm::vec3 compute_scene_axis_sizes();
 		glm::vec3 compute_scene_axis_origin();
 		glm::vec3 compute_hud_axis_origin();
-		std::pair<QOpenGLTexture*, hal::texture*> load_texture( const char* filename );
-		std::pair<QOpenGLTexture*, hal::texture*> default_base_texture;
-		std::vector<std::pair<QOpenGLTexture*, hal::texture*>> base_textures;
+		hal::texture* default_base_texture;
+		std::vector<hal::texture*> base_textures;
 		GlyphRenderer* glyph_renderer;
 		AxisRenderer* axis_renderer;
 		std::string axis_names[3];

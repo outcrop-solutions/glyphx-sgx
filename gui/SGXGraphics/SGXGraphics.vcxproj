@@ -57,7 +57,7 @@
       <PreprocessorDefinitions>SGXGraphics_EXPORTS;WIN32;_DEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <TreatWarningAsError>true</TreatWarningAsError>
       <PrecompiledHeaderFile>SGXGraphicsPCH.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>..\..\3rdParty\include\glew-1.13.0;..\..\3rdParty\include\assimp-3.1.1;..\..\3rdParty\include\glm_0_9_7_5;.</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\3rdParty\include\glew-1.13.0;..\..\3rdParty\include\assimp-3.1.1;..\..\3rdParty\include\glm_0_9_7_5;..\..\3rdParty\include\stb_image;.</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4201;4251</DisableSpecificWarnings>
       <ForcedIncludeFiles>SGXGraphicsPCH.h</ForcedIncludeFiles>
     </ClCompile>
@@ -80,7 +80,7 @@
       <PreprocessorDefinitions>SGXGraphics_EXPORTS;WIN32;NDEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <TreatWarningAsError>true</TreatWarningAsError>
       <PrecompiledHeaderFile>SGXGraphicsPCH.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>..\..\3rdParty\include\glew-1.13.0;..\..\3rdParty\include\assimp-3.1.1;..\..\3rdParty\include\glm_0_9_7_5;.</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\3rdParty\include\glew-1.13.0;..\..\3rdParty\include\assimp-3.1.1;..\..\3rdParty\include\glm_0_9_7_5;..\..\3rdParty\include\stb_image;.</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4201;4251</DisableSpecificWarnings>
       <ForcedIncludeFiles>SGXGraphicsPCH.h</ForcedIncludeFiles>
     </ClCompile>

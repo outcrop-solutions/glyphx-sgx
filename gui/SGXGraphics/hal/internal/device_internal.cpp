@@ -11,6 +11,9 @@
 #include <functional>
 #include <unordered_set>
 
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
+
 namespace SynGlyphX
 {
 	namespace hal_gl
@@ -132,13 +135,38 @@ namespace SynGlyphX
 			return c;
 		}
 
-		hal::texture* device_internal::register_external_texture( void* texture_data )
+		hal::texture* device_internal::load_texture( const char* file )
 		{
-			assert( texture_data );
-			hal::texture* t = new hal::texture;
-			t->external = true;
-			t->handle = *( (GLuint*)texture_data );
-			return t;
+			assert( file );
+
+			hal::texture* tex = nullptr;
+			int w, h, depth;
+			unsigned char* data = stbi_load( file, &w, &h, &depth, 0 );
+
+			if ( data )
+			{
+				assert( depth == 3 || depth == 4 );
+				tex = new hal::texture;
+				tex->external = false;
+				tex->w = w;
+				tex->h = h;
+
+				glGenTextures( 1, &tex->handle );
+				//glActiveTexture( GL_TEXTURE0 );//todo: necessary?
+				glBindTexture( GL_TEXTURE_2D, tex->handle );
+
+				if ( depth == 3 )
+					glTexImage2D( GL_TEXTURE_2D, 0, GL_RGB, w, h, 0, GL_RGB, GL_UNSIGNED_BYTE, data );
+				else if ( depth == 4 )
+					glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, data );
+
+				glGenerateMipmap( GL_TEXTURE_2D );
+
+				glBindTexture( GL_TEXTURE_2D, 0 );
+				stbi_image_free( data );
+			}
+
+			return tex;
 		}
 
 		void device_internal::addref( hal::mesh* m )

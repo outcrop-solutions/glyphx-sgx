@@ -56,9 +56,19 @@ namespace SynGlyphX
 			return hal_gl::device_internal::create_cbuffer( size );
 		}
 
-		texture* device::register_external_texture( void* texture_data )
+		texture* device::load_texture( const char* file )
 		{
-			return hal_gl::device_internal::register_external_texture( texture_data );
+			return hal_gl::device_internal::load_texture( file );
+		}
+
+		unsigned int device::get_texture_width( texture* t )
+		{
+			return hal_gl::device_internal::get_texture_width( t );
+		}
+
+		unsigned int device::get_texture_height( texture* t )
+		{
+			return hal_gl::device_internal::get_texture_height( t );
 		}
 
 		void device::release( mesh* m )

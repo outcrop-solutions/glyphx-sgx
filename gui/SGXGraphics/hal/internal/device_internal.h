@@ -26,7 +26,9 @@ namespace SynGlyphX
 
 			static void rebuild_effects();
 
-			static hal::texture* register_external_texture( void* texture_data );
+			static hal::texture* load_texture( const char* file );
+			static unsigned int get_texture_width( hal::texture* tex ) { return tex->w; }
+			static unsigned int get_texture_height( hal::texture* tex ) { return tex->h; }
 
 			static void addref( hal::mesh* m );
 			static void addref( hal::effect* e );
