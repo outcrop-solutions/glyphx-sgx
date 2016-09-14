@@ -37,7 +37,7 @@ namespace SynGlyphX {
 		Q_OBJECT
 
 	public:
-		SyncProgressDialog(int files2sync, DataEngine::DataEngineConnection::SharedPtr dataEngineConnection, SharedVisualizationsWidget* allViewsFilteringWidget, QWidget *parent);
+		SyncProgressDialog(DataEngine::DataEngineConnection::SharedPtr dataEngineConnection, SharedVisualizationsWidget* allViewsFilteringWidget, QWidget *parent);
 		~SyncProgressDialog(){};
 
 		public slots:

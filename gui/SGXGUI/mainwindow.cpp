@@ -196,8 +196,6 @@ namespace SynGlyphX {
 	void MainWindow::CreateLoginMenu() {
 
 		QString user = "Log In " + QString(QChar(0x23F7));
-		//QAction* loginAction = userMenuBar->addAction(tr(user.toStdString().c_str()));
-		//QObject::connect(loginAction, &QAction::triggered, this, &MainWindow::TriggerLoginWindow);
 		menuBar()->setCornerWidget(userMenuBar, Qt::TopRightCorner);
 
 	}

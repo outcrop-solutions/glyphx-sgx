@@ -68,6 +68,10 @@ public class User {
 		return institution.getID();
 	}
 
+	public int getGroup(){
+		return group;
+	}
+
 	public Timestamp getLastModified(){
 		return lastModified;
 	}

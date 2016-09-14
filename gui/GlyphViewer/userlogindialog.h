@@ -41,7 +41,6 @@ namespace SynGlyphX {
 		bool Login();
 
 	private:
-		bool ValidateCredentials(QString username, QString password);
 
 		QPushButton* loginButton;
 		QLineEdit* m_usernameLineEdit;

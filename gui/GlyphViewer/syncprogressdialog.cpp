@@ -4,11 +4,10 @@
 
 namespace SynGlyphX {
 
-	SyncProgressDialog::SyncProgressDialog(int files2sync, DataEngine::DataEngineConnection::SharedPtr dataEngineConnection, SharedVisualizationsWidget* allViewsFilteringWidget, QWidget *parent) :
+	SyncProgressDialog::SyncProgressDialog(DataEngine::DataEngineConnection::SharedPtr dataEngineConnection, SharedVisualizationsWidget* allViewsFilteringWidget, QWidget *parent) :
 		QDialog(parent),
 		value(0),
 		viz_count(0),
-		file_count(files2sync),
 		m_dataEngineConnection(dataEngineConnection),
 		m_allViewsFilteringWidget(allViewsFilteringWidget)
 	{
@@ -30,7 +29,8 @@ namespace SynGlyphX {
 		progress->setStyleSheet("QProgressBar{font-size: 12.5pt; font-weight: bold;}");
 		layout->addWidget(progress);
 
-		file_count = m_dataEngineConnection->UserAccessControls()->FileSyncSetup("C:/ProgramData/SynGlyphX/GlyphEd");
+		QString ge_path = "C:/ProgramData/SynGlyphX/GlyphEd";
+		file_count = m_dataEngineConnection->UserAccessControls()->FileSyncSetup(ge_path);
 		if (file_count == 0){
 			syncLabel->setText(tr("Loading visualizations and establishing data connection..."));
 			progress->show();

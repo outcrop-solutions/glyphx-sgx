@@ -2,6 +2,7 @@
 import java.sql.*;
 import java.util.Date;
 import synglyphx.user.User;
+import synglyphx.user.PathBuilder;
 import synglyphx.io.Logger;
 import java.util.concurrent.TimeUnit;
 
@@ -27,7 +28,7 @@ public class UserAccessControls {
 		}
 	}
 	
-	public static boolean validateCredentials(String username, String password){
+	public static int validateCredentials(String username, String password){
 
 		try{
 		    String query = "SELECT * FROM ";
@@ -44,17 +45,17 @@ public class UserAccessControls {
 			pstmt.close();
 
 			if(loggedInUser == null){
-				return false;
+				return 0;
 			}
 
-			query = "SELECT Visualizations.Name, Visualizations.Path, Visualizations.Group, Visualizations.LastModified FROM ";
-			query += "(Institutions INNER JOIN Visualizations ON (Institutions.ID=Visualizations.Institution)) ";
-			query += "WHERE Institutions.ID="+loggedInUser.getInstitutionID()+";";
+			query = "SELECT VisualizationGroups.Group, Visualizations.Name, Visualizations.Path FROM ";
+			query += "(VisualizationGroups INNER JOIN Visualizations ON (VisualizationGroups.VizID=Visualizations.ID)) ";
+			query += "WHERE VisualizationGroups.Institution="+loggedInUser.getInstitutionID()+" AND VisualizationGroups.Group="+loggedInUser.getGroup()+";";
 			pstmt = conn.prepareStatement(query);
 	        rs = pstmt.executeQuery();
 
 	        while(rs.next()){
-	        	loggedInUser.addUserFile(rs.getString("Visualizations.Name"),rs.getString("Visualizations.Path"),rs.getInt("Visualizations.Group"),1);
+	        	loggedInUser.addUserFile(rs.getString("Visualizations.Name"),rs.getString("Visualizations.Path"),rs.getInt("VisualizationGroups.Group"),1);
 	        }
 	        rs.close();
 			pstmt.close();
@@ -66,9 +67,14 @@ public class UserAccessControls {
 	            e.printStackTrace(Logger.getInstance().addError());
 	        }catch(Exception ex){}
 	        e.printStackTrace();
-			return false;
+			return 2;
 		}
-		return true;
+		return 1;
+	}
+
+	public static void restructureFilePaths(){
+		PathBuilder pb = new PathBuilder(getGlyphEdPath());
+		pb.resetSharedVisualizationPaths();
 	}
 
 	public static void logOutCurrentUser(){
@@ -159,6 +165,7 @@ public class UserAccessControls {
 		}catch(Exception e){
 			e.printStackTrace();
 		}
+		UserAccessControls.restructureFilePaths();
 		System.out.println("Done syncing");
 		
 	

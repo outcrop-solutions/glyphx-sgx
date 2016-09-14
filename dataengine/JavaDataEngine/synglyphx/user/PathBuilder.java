@@ -32,8 +32,6 @@ public class PathBuilder {
 
 	public void resetSharedVisualizationPaths(){ 
 
-		updateSDTPathways();
-
 		try{
 			File file = new File(localPath+"/sharedvisualizations.xml");
 			long lastModified = file.lastModified();
@@ -72,7 +70,7 @@ public class PathBuilder {
 			String old_path = entry.getValue().getNodeValue();
 			String new_path = findFilePath(old_path, directories);
 			if(!new_path.equals("")){
-				entry.getValue().setTextContent(new_path);
+				entry.getValue().setTextContent((new File(new_path)).getPath());
 			}
 
 		}
@@ -109,11 +107,12 @@ public class PathBuilder {
 		return directories;
 	}
 
-	private void updateSDTPathways(){
+	public void updateSDTPathways(){
 
 		sdtFiles = new ArrayList<File>();
 		File base_dir = new File(localPath);
 		findSDT(base_dir, sdtFiles);
+		System.out.println(sdtFiles.size());
 		for(File file : sdtFiles){
 			System.out.println(file.toString());
 			restructureSDTInnerPaths(file);
@@ -161,11 +160,11 @@ public class PathBuilder {
 					if(((Element)datasource).getAttribute("type").equals("SQLITE3")){
 						NodeList host_nodes = ((Element)datasource).getElementsByTagName("Host").item(0).getChildNodes();
 						Node host_node = (Node) host_nodes.item(0);
-						host_node.setTextContent(localPath+File.separator+DBNAME);
+						host_node.setTextContent((new File(localPath+File.separator+DBNAME)).getPath());
 
 						NodeList name_nodes = ((Element)datasource).getElementsByTagName("Name").item(0).getChildNodes();
 						Node name_node = (Node) name_nodes.item(0);
-						name_node.setTextContent(localPath+File.separator+DBNAME);
+						name_node.setTextContent((new File(localPath+File.separator+DBNAME)).getPath());
 					}
 				}
 			}

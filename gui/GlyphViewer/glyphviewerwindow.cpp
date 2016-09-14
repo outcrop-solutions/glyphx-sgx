@@ -474,10 +474,12 @@ bool GlyphViewerWindow::IsUserLoggedIn() {
 	}
 
 	QSettings settings;
-	settings.beginGroup("Login");
-	QString user = settings.value("Username", "Guest").toString(); //For the moment not used
-	QString pass = settings.value("Password", "").toString(); //For the moment not used
+	settings.beginGroup("LoggedInUser");
+	QString user = settings.value("Username", "Guest").toString();
+	QString pass = settings.value("Password", "").toString();
 	QString name = settings.value("Name", "Guest").toString();
+	QString inst = settings.value("Institution", "").toString();
+	bool logged = settings.value("StayLogged", false).toBool();
 	settings.endGroup();
 
 	if (m_dataEngineConnection->UserAccessControls()->IsValidConnection()){
@@ -485,8 +487,10 @@ bool GlyphViewerWindow::IsUserLoggedIn() {
 	}
 	else{
 		m_dataEngineConnection->UserAccessControls()->InitializeConnection();
-		if (name != "Guest"){
-			if (m_dataEngineConnection->UserAccessControls()->ValidateCredentials(user, pass)){
+		if (logged){
+			int valid = m_dataEngineConnection->UserAccessControls()->ValidateCredentials(user, pass);
+			if (valid == 1 || valid == 2){
+				m_dataEngineConnection->UserAccessControls()->PresetLogoPath("C:/ProgramData/SynGlyphX/GlyphEd/" + inst);
 				MainWindow::UpdateUserMenu(name);
 				UpdateUserMenu();
 				return true;
@@ -508,10 +512,12 @@ void GlyphViewerWindow::Logout(){
 	}
 
 	QSettings settings;
-	settings.beginGroup("Login");
+	settings.beginGroup("LoggedInUser");
 	settings.setValue("Username", "Guest");
 	settings.setValue("Password", "");
 	settings.setValue("Name", "Guest");
+	settings.setValue("Institution", "");
+	settings.setValue("StayLogged", false);
 	settings.endGroup();
 
 	m_dataEngineConnection->UserAccessControls()->ResetConnection();

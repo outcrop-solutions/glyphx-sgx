@@ -67,7 +67,11 @@ public class FileSyncer {
 */
 	public int fileSyncSetup(ArrayList<UserFile> filesToSync, String syncedDir, Institution inst){
 
-		filesToSync = setModifiedDates(filesToSync, syncedDir, inst);
+		this.syncedDirPath = syncedDir;
+		validateDestinationDirectory(inst.getName());
+		glyphEdPath = syncedDirPath+inst.getName();
+
+		filesToSync = setModifiedDates(filesToSync, inst);
 		needToSync = new ArrayList<UserFile>();
 
 		for(UserFile fileToSync : filesToSync){
@@ -129,10 +133,7 @@ public class FileSyncer {
 		return needToSync.size();
 	}
 
-	public ArrayList<UserFile> setModifiedDates(ArrayList<UserFile> filesToSync, String syncedDir, Institution inst){
-		this.syncedDirPath = syncedDir;
-		validateDestinationDirectory(inst.getName());
-		glyphEdPath = syncedDirPath+inst.getName();
+	public ArrayList<UserFile> setModifiedDates(ArrayList<UserFile> filesToSync, Institution inst){
 
 		Vector list = null;
 		ChannelSftp.LsEntry lsEntry = null;
@@ -201,9 +202,12 @@ public class FileSyncer {
     				files_synced += 1;
     			}
     			updateTimestamps();
-    			PathBuilder pb = new PathBuilder(glyphEdPath);
-				pb.resetSharedVisualizationPaths();
 				session.disconnect();
+				PathBuilder pb = new PathBuilder(glyphEdPath);
+				if(visualizationsToSync() > 0){
+					pb.updateSDTPathways();
+				}
+				pb.resetSharedVisualizationPaths();
     			doneSyncing = true;
     		}
   		};

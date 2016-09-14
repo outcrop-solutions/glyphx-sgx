@@ -35,6 +35,10 @@ namespace DataEngine
 
 		bool validConnection;
 		bool synced;
+		int valid;
+		QString presetLogoPath;
+		QString presetName;
+		QString presetInstitution;
 
 	public:
 		UserAccessControls(JNIEnv *env);
@@ -43,7 +47,7 @@ namespace DataEngine
 		void InitializeConnection();
 		bool IsValidConnection();
 		void ResetConnection();
-		bool ValidateCredentials(QString username, QString password);
+		int ValidateCredentials(QString username, QString password);
 		QString NameOfUser();
 		QString NameOfInstitution();
 		QString LastModified();
@@ -53,6 +57,8 @@ namespace DataEngine
 		int VisualizationsToSync();
 		void StartSyncingFiles();
 		int FilesSynced();
+		void PresetLogoPath(QString path);
+		void SetUsersNameAndInstitution(QString name, QString inst);
 		QString GlyphEdPath();
 		bool HasSynced();
 	};

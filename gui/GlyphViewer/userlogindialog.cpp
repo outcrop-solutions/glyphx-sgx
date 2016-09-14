@@ -85,22 +85,50 @@ namespace SynGlyphX {
 
 		QString user = m_usernameLineEdit->text();
 		QString pass = m_passwordLineEdit->text();
-		if (ValidateCredentials(user, pass)) {
-			if (stayLoggedInCheckBox->checkState() == Qt::Checked){
-				QSettings settings;
-				settings.beginGroup("Login");
-				settings.setValue("Username", user);
-				settings.setValue("Password", pass);
-				settings.setValue("Name", m_dataEngineConnection->UserAccessControls()->NameOfUser());
-				settings.endGroup();
+		QString name;
+		QString inst;
+		bool canLogIn = false;
+		int valid = m_dataEngineConnection->UserAccessControls()->ValidateCredentials(user, pass);
+		if (valid == 2){
+			QSettings settings;
+			settings.beginGroup(user);
+			QString un = settings.value("Username", "Guest").toString();
+			QString pw = settings.value("Password", "").toString();
+			QString nm = settings.value("Name", "Guest").toString();
+			QString in = settings.value("Institution", "").toString();
+			settings.endGroup();
+			if (user == un && pass == pw){
+				m_dataEngineConnection->UserAccessControls()->SetUsersNameAndInstitution(nm, in);
+				m_dataEngineConnection->UserAccessControls()->PresetLogoPath("C:/ProgramData/SynGlyphX/GlyphEd/" + in);
+				canLogIn = true;
 			}
-			return true;
 		}
-		return false;
-	}
 
-	bool UserLoginDialog::ValidateCredentials(QString username, QString password) {
-
-		return m_dataEngineConnection->UserAccessControls()->ValidateCredentials(username, password);
+		if (valid != 0){
+			name = m_dataEngineConnection->UserAccessControls()->NameOfUser();
+			inst = m_dataEngineConnection->UserAccessControls()->NameOfInstitution();
+			if (stayLoggedInCheckBox->checkState() == Qt::Checked){
+				QSettings l_settings;
+				l_settings.beginGroup("LoggedInUser");
+				l_settings.setValue("Username", user);
+				l_settings.setValue("Password", pass);
+				l_settings.setValue("Name", name);
+				l_settings.setValue("Institution", inst);
+				l_settings.setValue("StayLogged", true);
+				l_settings.endGroup();
+			}
+		}
+		if (valid == 1) {
+			QSettings settings;
+			settings.beginGroup(user);
+			settings.setValue("Username", user);
+			settings.setValue("Password", pass);
+			settings.setValue("Name", name);
+			settings.setValue("Institution", inst);
+			settings.endGroup();
+			canLogIn = true;
+		}
+		
+		return canLogIn;
 	}
 }

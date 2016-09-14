@@ -332,13 +332,13 @@ void HomePageWidget::SwitchDashboardLayout(){
 
 		//QString customerLogo = QDir::toNativeSeparators(QDir::cleanPath(SynGlyphX::GlyphBuilderApplication::GetCommonDataLocation()) + "/customer.png");
 		//QString upperRightLogo = QDir::toNativeSeparators(QDir::cleanPath(SynGlyphX::GlyphBuilderApplication::GetCommonDataLocation()) + "/rightupper.png");
-		if (m_dataEngineConnection->UserAccessControls()->HasSynced()){
+		//if (m_dataEngineConnection->UserAccessControls()->HasSynced()){
 			QString upperRightLogo = QDir::toNativeSeparators(QDir::cleanPath(m_dataEngineConnection->UserAccessControls()->GlyphEdPath()) + "/customer.png");
 			if (QFileInfo::exists(upperRightLogo)) {
 
 				upperRightDashboardImage->SetPixmap(QPixmap(upperRightLogo));
 			}
-		}
+		//}
 		mainDashboardLayout->addWidget(upperRightDashboardImage, 1, 1, 1, 2);
 		lowerRightCols = 2;
 
@@ -418,7 +418,7 @@ void HomePageWidget::Login(){
 void HomePageWidget::SyncFilesAndLoadViews(){
 
 	SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
-	SynGlyphX::SyncProgressDialog *d = new SynGlyphX::SyncProgressDialog(0, m_dataEngineConnection, m_allViewsFilteringWidget, this);
+	SynGlyphX::SyncProgressDialog *d = new SynGlyphX::SyncProgressDialog(m_dataEngineConnection, m_allViewsFilteringWidget, this);
 	d->exec();
 	LoggedOut();
 	SynGlyphX::Application::restoreOverrideCursor();
