@@ -332,4 +332,16 @@ namespace SynGlyphX
 		}
 		return passes;
 	}
+
+	const Glyph3DNode* GlyphScene::getSingleRoot() const
+	{
+		if ( !getSingleSelection() ) return nullptr;
+
+		const Glyph3DNode* single_parent = getSingleSelection()->getRootParent();
+		for ( auto g : selection )
+			if ( g->getRootParent() != single_parent )
+				return false;
+
+		return single_parent;
+	}
 }

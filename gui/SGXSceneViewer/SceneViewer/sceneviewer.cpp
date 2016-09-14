@@ -428,9 +428,10 @@ namespace SynGlyphX
 				}
 				else
 				{
-					if ( scene.selectionSize() == 1 )
+					auto single_root = scene.getSingleRoot();
+					if ( single_root )
 					{
-						auto selectionIndex = scene.getSingleSelection()->getRootParent()->getFilteringIndex();
+						auto selectionIndex = single_root->getFilteringIndex();
 						QString positionHUD;
 						for (int i = 0; i < 3; ++i) {
 

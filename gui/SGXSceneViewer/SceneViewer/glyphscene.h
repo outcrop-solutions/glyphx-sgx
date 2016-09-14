@@ -47,6 +47,7 @@ namespace SynGlyphX
 			if ( selection.size() == 0 ) return nullptr;
 			else return *selection.begin();
 		}
+		const Glyph3DNode* getSingleRoot() const;
 		void enumSelected( std::function<void( const Glyph3DNode& glyph )> fn ) const;
 
 		void enableTag( const Glyph3DNode* glyph ) const;
