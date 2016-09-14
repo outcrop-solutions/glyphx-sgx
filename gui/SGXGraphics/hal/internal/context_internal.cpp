@@ -4,6 +4,7 @@
 #include "gl.h"
 #include "types_internal.h"
 #include "effect.h"
+#include "../debug.h"
 
 namespace SynGlyphX
 {
@@ -238,6 +239,54 @@ namespace SynGlyphX
 			assert( m );
 			assert( m->vertex_data_copy );
 			return hal::mesh_readback{ m->fmt, m->vertex_data_copy, m->index_data_copy, m->primitive_count * indices_per_primitive( m->prim ), m->vertex_count };
+		}
+
+		hal::texture* context_internal::get_glyph_texture( hal::font* f, char c )
+		{
+			assert( f );
+			hal::texture* t = nullptr;
+			auto g = f->glyphs.find( c );
+
+			// Load and render the glyph if we don't have it already.
+			if ( g == f->glyphs.end() )
+			{
+				auto idx = FT_Get_Char_Index( f->face, c );
+				hal::debug::_assert( idx != 0, "FT_GetCharIndex failed for font %s and char code %i", f->file.c_str(), c );
+				auto error = FT_Load_Glyph( f->face, idx, FT_LOAD_DEFAULT );
+				auto glyph = f->face->glyph;
+				hal::debug::_assert( error == 0, "FT_Load_Glyph failed for font %s and char code %i (char_index %i)", f->file.c_str(), c, idx );
+				if ( glyph->format != FT_GLYPH_FORMAT_BITMAP )
+				{
+					error = FT_Render_Glyph( glyph, FT_RENDER_MODE_NORMAL );
+					hal::debug::_assert( error == 0, "FT_Render_Glyph failed for font %s and char code %i (char_index %i )", f->file.c_str(), c, idx );
+				}
+				hal::font_glyph g;
+				assert( glyph->bitmap.pixel_mode == FT_PIXEL_MODE_GRAY );
+				g.texture = t = hal_gl::device_internal::create_texture( glyph->bitmap.width, glyph->bitmap.rows, hal::texture_format::r8, glyph->bitmap.buffer );
+				g.origin_x = glyph->bitmap_left;
+				g.origin_y = glyph->bitmap_top;
+				g.advance_x = ( glyph->advance.x >> 6 );
+				g.advance_y = ( glyph->advance.y >> 6 );
+				f->glyphs.insert( std::make_pair( c, g ) );
+			}
+			else  // glyph is in cache
+			{
+				t = g->second.texture;
+			}
+
+			return t;
+		}
+
+		void context_internal::draw( hal::font* f, const glm::mat4& transform, const char* text )
+		{
+			UNREFERENCED_PARAMETER( transform );
+			const char* c = text;
+			while ( *c != '\0' )
+			{
+				hal::texture* glyph_texture = get_glyph_texture( f, *c );
+				UNREFERENCED_PARAMETER( glyph_texture );
+				++c;
+			}
 		}
 	}
 }

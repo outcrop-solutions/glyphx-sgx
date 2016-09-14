@@ -103,6 +103,7 @@ namespace SynGlyphX
 		if ( initialized )
 		{
 			makeCurrent();
+			clearScene();
 			GlyphGeometryDB::clear();
 			delete glyph_renderer;
 			delete axis_renderer;
@@ -121,6 +122,8 @@ namespace SynGlyphX
 			hal::device::release( tex_effect );
 			hal::device::release( drag_effect );
 			hal::device::release( default_base_texture );
+			hal::device::release( sgx_logo );
+			hal::device::release( test_font );
 			hal::device::shutdown();
 		}
 	}
@@ -254,6 +257,8 @@ namespace SynGlyphX
 		GlyphGeometryDB::init();
 
 		initialized = true;
+
+		test_font = hal::device::load_font( "fonts/Roboto-Regular.ttf", 512 );
 	}
 
 	void SceneViewer::resizeGL( int w, int h )
@@ -262,8 +267,10 @@ namespace SynGlyphX
 		camera->update_viewport_size( w, h );
 		ui_camera->update_viewport_size( w, h );
 
-		auto logo_w = hal::device::get_texture_width( sgx_logo );
-		auto logo_h = hal::device::get_texture_height( sgx_logo );
+		//auto logo_w = hal::device::get_texture_width( sgx_logo );
+		//auto logo_h = hal::device::get_texture_height( sgx_logo );
+		auto logo_w = hal::device::get_texture_width( context->get_glyph_texture( test_font, 'b' ) );
+		auto logo_h = hal::device::get_texture_height( context->get_glyph_texture( test_font, 'b' ) );
 
 		auto logo_rotate = glm::rotate( glm::mat4(), glm::half_pi<float>(), glm::vec3( 1.f, 0.f, 0.f ) );
 		auto logo_translate = glm::translate( glm::mat4(), glm::vec3( float( w - logo_w ), float( logo_h ), 0.f ) );
@@ -405,10 +412,12 @@ namespace SynGlyphX
 
 		// draw logo
 		context->bind( tex_effect );
-		context->bind( 0u, sgx_logo );
+		//context->bind( 0u, sgx_logo );
+		context->bind( 0u, context->get_glyph_texture( test_font, 'b' ) );
 		context->set_constant( tex_effect, "material", "tint_color", glm::vec4( 1.f, 1.f, 1.f, 1.f ) );
 		renderer->add_blended_batch( logo, tex_effect );
 		renderer->render( context, ui_camera );
+		context->draw( test_font, glm::mat4(), "abcdefghijklmnopqrstuvwxyz" );
 
 		checkErrors();
 

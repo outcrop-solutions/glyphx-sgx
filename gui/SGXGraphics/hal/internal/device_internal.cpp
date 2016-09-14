@@ -15,9 +15,6 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
-#include <ft2build.h>
-#include FT_FREETYPE_H
-
 namespace SynGlyphX
 {
 	namespace hal_gl
@@ -58,6 +55,7 @@ namespace SynGlyphX
 		void device_internal::shutdown()
 		{
 			assert( default_context );
+			FT_Done_FreeType( freetype );
 			delete default_context;
 			default_context = nullptr;
 		}
@@ -142,6 +140,35 @@ namespace SynGlyphX
 			return c;
 		}
 
+		hal::texture* device_internal::create_texture( unsigned int w, unsigned int h, hal::texture_format fmt, uint8_t* data )
+		{
+			hal::texture* tex = new hal::texture;
+			tex->w = w;
+			tex->h = h;
+			tex->fmt = fmt;
+			glPixelStorei( GL_PACK_ALIGNMENT, 1 );
+			glPixelStorei( GL_UNPACK_ALIGNMENT, 1 );
+			glGenTextures( 1, &tex->handle );
+			glBindTexture( GL_TEXTURE_2D, tex->handle );
+			GLenum gl_fmt = GL_RGB, gl_internal_fmt = GL_RGB, gl_type = GL_UNSIGNED_BYTE;
+			switch ( fmt )
+			{
+				case hal::texture_format::r8:
+					gl_fmt = GL_RED; gl_internal_fmt = GL_R8; gl_type = GL_UNSIGNED_BYTE; break;
+				case hal::texture_format::rgb8:
+					gl_fmt = GL_RGB; gl_internal_fmt = GL_RGB8; gl_type = GL_UNSIGNED_BYTE; break;
+				case hal::texture_format::rgba8:
+					gl_fmt = GL_RGBA; gl_internal_fmt = GL_RGBA8; gl_type = GL_UNSIGNED_BYTE; break;
+				default:
+					hal::debug::_assert( false, "unknown texture format" );
+			}
+			glTexImage2D( GL_TEXTURE_2D, 0, gl_fmt, w, h, 0, gl_fmt, gl_type, data );
+			glGenerateMipmap( GL_TEXTURE_2D );
+			glBindTexture( GL_TEXTURE_2D, 0 );
+			hal::check_errors();
+			return tex;
+		}
+
 		hal::texture* device_internal::load_texture( const char* file )
 		{
 			assert( file );
@@ -153,23 +180,7 @@ namespace SynGlyphX
 			if ( data )
 			{
 				assert( depth == 3 || depth == 4 );
-				tex = new hal::texture;
-				tex->external = false;
-				tex->w = w;
-				tex->h = h;
-
-				glGenTextures( 1, &tex->handle );
-				//glActiveTexture( GL_TEXTURE0 );//todo: necessary?
-				glBindTexture( GL_TEXTURE_2D, tex->handle );
-
-				if ( depth == 3 )
-					glTexImage2D( GL_TEXTURE_2D, 0, GL_RGB, w, h, 0, GL_RGB, GL_UNSIGNED_BYTE, data );
-				else if ( depth == 4 )
-					glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, data );
-
-				glGenerateMipmap( GL_TEXTURE_2D );
-
-				glBindTexture( GL_TEXTURE_2D, 0 );
+				tex = create_texture( w, h, depth == 3 ? hal::texture_format::rgb8 : hal::texture_format::rgba8, data );
 				stbi_image_free( data );
 			}
 
@@ -234,9 +245,18 @@ namespace SynGlyphX
 		void device_internal::release( hal::texture* t )
 		{
 			release_refcounted( t, [t]() {
-				if ( !t->external )
-					glDeleteTextures( 1, &t->handle );
+				glDeleteTextures( 1, &t->handle );
 				delete t;
+			} );
+		}
+
+		void device_internal::release( hal::font* f )
+		{
+			release_refcounted( f, [f]() {
+				for ( auto g : f->glyphs )
+					release( g.second.texture );
+				FT_Done_Face( f->face );
+				delete f;
 			} );
 		}
 
@@ -271,10 +291,33 @@ namespace SynGlyphX
 			e->set_cbuffer_usage( block_name, usage );
 		}
 
-		hal::font* device_internal::load_font( const char* file )
+		hal::font* device_internal::load_font( const char* file, unsigned int size )
 		{
-			UNREFERENCED_PARAMETER( file );
-			return nullptr;
+			hal::font* font = nullptr;
+			FT_Face face = nullptr;
+			
+			auto error = FT_New_Face( freetype, file, 0, &face );
+			if ( !error )
+			{
+				hal::debug::_assert( face->charmap != nullptr, "font %s does not contain a unicode charmap; this is unsupported", file );
+				font = new hal::font;
+				font->face = face;
+				font->file = std::string( file );
+				font->size = size;
+			}
+			else if ( error == FT_Err_Unknown_File_Format )
+			{
+				hal::debug::_assert( false, "unknown font file format in %s", file );
+			}
+			else
+			{
+				hal::debug::_assert( false, "error %i loading font %s", error, file );
+			}
+
+			error = FT_Set_Pixel_Sizes( face, 0, size );
+			hal::debug::_assert( !error, "error %i setting pixel size %i for font %s", error, size, file );
+
+			return font;
 		}
 	}
 }

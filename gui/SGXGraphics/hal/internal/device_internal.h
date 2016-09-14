@@ -26,11 +26,12 @@ namespace SynGlyphX
 
 			static void rebuild_effects();
 
+			static hal::texture* create_texture( unsigned int w, unsigned int h, hal::texture_format fmt, uint8_t* data );
 			static hal::texture* load_texture( const char* file );
 			static unsigned int get_texture_width( hal::texture* tex ) { return tex->w; }
 			static unsigned int get_texture_height( hal::texture* tex ) { return tex->h; }
 
-			static hal::font* load_font( const char* file );
+			static hal::font* load_font( const char* file, unsigned int size );
 
 			static void addref( hal::mesh* m );
 			static void addref( hal::effect* e );
@@ -40,6 +41,7 @@ namespace SynGlyphX
 			static void release( hal::effect* e );
 			static void release( hal::cbuffer* c );
 			static void release( hal::texture* t );
+			static void release( hal::font* f );
 
 			static unsigned int maximum_constant_buffer_size();
 

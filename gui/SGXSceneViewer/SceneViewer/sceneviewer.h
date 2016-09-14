@@ -229,5 +229,8 @@ namespace SynGlyphX
 
 		//temporary until we move away from current method of source data access
 		std::vector<float> m_sourceDataLookupForPositionXYZ[3];
+
+		// temp testing
+		hal::font* test_font;
 	};
 }

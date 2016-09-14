@@ -56,6 +56,11 @@ namespace SynGlyphX
 			return hal_gl::device_internal::create_cbuffer( size );
 		}
 
+		texture* device::create_texture( unsigned int w, unsigned int h, hal::texture_format fmt, uint8_t* data )
+		{
+			return hal_gl::device_internal::create_texture( w, h, fmt, data );
+		}
+
 		texture* device::load_texture( const char* file )
 		{
 			return hal_gl::device_internal::load_texture( file );
@@ -84,6 +89,11 @@ namespace SynGlyphX
 		void device::release( texture* t )
 		{
 			hal_gl::device_internal::release( t );
+		}
+
+		void device::release( font* f )
+		{
+			hal_gl::device_internal::release( f );
 		}
 
 		void device::set_break_on_error( bool val )
@@ -116,9 +126,9 @@ namespace SynGlyphX
 			hal_gl::device_internal::set_cbuffer_usage( e, block_name, usage );
 		}
 
-		font* device::load_font( const char* file )
+		font* device::load_font( const char* file, unsigned size )
 		{
-			return hal_gl::device_internal::load_font( file );
+			return hal_gl::device_internal::load_font( file, size );
 		}
 	}
 }

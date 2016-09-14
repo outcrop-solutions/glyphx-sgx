@@ -45,6 +45,9 @@ namespace SynGlyphX
 			virtual void end_instancing() = 0;
 
 			virtual mesh_readback readback_mesh( mesh* m ) = 0;
+			
+			virtual void draw( font* f, const glm::mat4& transform, const char* text ) = 0;
+			virtual texture* get_glyph_texture( font* f, char c ) = 0;
 
 		protected:
 			virtual void reset_defaults_internal() { }

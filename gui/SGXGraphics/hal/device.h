@@ -29,11 +29,12 @@ namespace SynGlyphX
 			static void set_cbuffer_external( effect* e, const char* block_name );	// see context.h for explanation
 			static void set_cbuffer_usage( effect* e, const char* block_name, cbuffer_usage usage );
 
+			static texture* create_texture( unsigned int w, unsigned int h, texture_format fmt, uint8_t* data );
 			static texture* load_texture( const char* file );
 			static unsigned int get_texture_width( texture* t );
 			static unsigned int get_texture_height( texture* t );
 
-			static font* load_font( const char* file );
+			static font* load_font( const char* file, unsigned int size );
 
 			static void rebuild_effects();
 
@@ -45,6 +46,7 @@ namespace SynGlyphX
 			static void release( effect* e );
 			static void release( cbuffer* c );
 			static void release( texture* t );
+			static void release( font* f );
 
 			static unsigned int maximum_constant_buffer_size();
 
