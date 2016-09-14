@@ -55,14 +55,29 @@ int main(int argc, char *argv[])
     printf("after change, libraryPaths=(%s)\n", QCoreApplication::libraryPaths().join(",").toUtf8().data());
 #endif
 
-#ifdef WIN32
+	// Note: there seems to be a Qt bug on Intel chipsets where Qt's internal shaders won't compile if you specifically
+	// request a 3.3 context (even in compat profile!), causing the app to crash on startup. Instead we'll use the
+	// default (which gets us the latest available compat profile and doesn't expose the bug, for reasons that are
+	// somewhat unclear to me). This unfortunately means we can only use Core profiles in testing-- hopefully future Qt
+	// or Intel graphics driver versions will fix this.
 	QSurfaceFormat fmt = QSurfaceFormat::defaultFormat();
-	fmt.setOption( QSurfaceFormat::StereoBuffers );
-	fmt.setStereo( true );
+	//fmt.setMajorVersion( 3 );
+	//fmt.setMinorVersion( 3 );
+
+	// QPainter doesn't work with Core profiles, and we need to use QPainter to draw text. Once the bug in Qt is fixed,
+	// or we switch to another text rendering method for 3D views, this should be changed to CoreProfile (which is faster
+	// as well as being required by GPU profiling/debugging tools like nSight/renderdoc/etc).
+	fmt.setProfile( QSurfaceFormat::OpenGLContextProfile::CompatibilityProfile );
+	//fmt.setProfile( QSurfaceFormat::OpenGLContextProfile::CoreProfile );
+
+	fmt.setDepthBufferSize( 24 );
+	fmt.setSwapBehavior( QSurfaceFormat::SwapBehavior::DoubleBuffer );
+	fmt.setSamples( 4 );
+/*	fmt.setOption( QSurfaceFormat::StereoBuffers );
+	fmt.setStereo( true );*/
 	QSurfaceFormat::setDefaultFormat( fmt );
-#endif
     
-	SynGlyphX::GlyphBuilderApplication::Setup("Glyph Builder - Glyph Viewer", "0.7.58");
+	SynGlyphX::GlyphBuilderApplication::Setup("Glyph Builder - Glyph Viewer", "0.8.00");
 	SynGlyphX::GlyphBuilderApplication a(argc, argv);
 	if (SynGlyphX::GlyphBuilderApplication::IsGlyphEd()) {
 

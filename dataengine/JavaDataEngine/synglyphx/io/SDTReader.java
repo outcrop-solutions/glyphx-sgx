@@ -365,7 +365,12 @@ public class SDTReader {
 							}
 							else if(category.getNodeName().equals("Tag") && value.getNodeName().equals("Binding")){
 								try{
-									temp.setTag(directMap.get(element.getAttribute("fieldId")));
+									String f_id = element.getAttribute("fieldId");
+									//if(string.charAt(0) == '~'){
+										temp.setTag(directMap.get(f_id));
+									//}else{
+										//temp.setTag(f_id);
+									//}
 									temp.mapInput("Tag", directMap.get(element.getAttribute("fieldId")));
 								}catch(Exception e){
 									temp.setTag("");

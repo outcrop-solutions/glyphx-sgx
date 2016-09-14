@@ -148,8 +148,8 @@ void MapTrackOffset(int trackOffset, pNPnode node, char* propertyName, void* dat
 	//below are items that are not likely to be used, but maybe
 	else if (strcmp(propertyName, "selected") == 0) MapTrackToIntAttribute (trackOffset, &node->selected, data);
 	else if (strcmp(propertyName, "shader") == 0) MapTrackToIntAttribute (trackOffset, &node->shader, data);
-	else if (strcmp(propertyName, "average") == 0) MapTrackToIntAttribute (trackOffset, &node->average, data);
-	else if (strcmp(propertyName, "interval") == 0) MapTrackToIntAttribute (trackOffset, &node->interval, data);
+	//else if (strcmp(propertyName, "average") == 0) MapTrackToIntAttribute (trackOffset, &node->average, data);
+	//else if (strcmp(propertyName, "interval") == 0) MapTrackToIntAttribute (trackOffset, &node->interval, data);
 	
 	else if (strcmp(propertyName, "lineWidth") == 0) MapTrackToFloatAttribute (trackOffset, &node->lineWidth, data);
 	else if (strcmp(propertyName, "pointSize") == 0) MapTrackToFloatAttribute (trackOffset, &node->pointSize, data);

@@ -28,6 +28,7 @@
 class QPushButton;
 class QCheckBox;
 class QComboBox;
+class QSlider;
 
 namespace SynGlyphX {
 
@@ -64,6 +65,7 @@ private:
 	SynGlyphX::BrowseLineEdit* m_cacheDirectoryWidget;
 	
 	QCheckBox* m_hideSelectedGlyphsCheckbox;
+	QSlider* m_filterAlphaSlider;
 
 #ifdef USE_ZSPACE
 	SynGlyphX::ZSpaceOptionsWidget* m_zSpaceOptionsWidget;

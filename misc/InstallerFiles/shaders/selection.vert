@@ -2,7 +2,7 @@
 layout(std140) uniform camera_data
 {
 	mat4 view, proj;
-	vec3 eyevec;
+	vec3 camera_pos;
 	vec3 upvec;
 	vec2 viewport;
 };
@@ -11,6 +11,7 @@ layout(std140) uniform global_data
 {
 	float elapsed_seconds;
 	float selection_anim_max_scale;
+	float selection_anim_state;
 	vec4 tint_color;
 };
 
@@ -24,9 +25,15 @@ layout(std140) uniform bounds
 	vec4 bound[512];
 };
 
+struct rotation_t
+{
+	vec4 axis_rate;		// xyz = axis, w = rate
+	vec4 center;	// xyz = rotate around
+};
+
 layout(std140) uniform animation
 {
-	vec4 rotation[512];	// xyz = axis, w = rate
+	rotation_t rotation[512];
 };
 
 layout (location = 0) in vec4 position;
@@ -53,42 +60,48 @@ vec2 world_pt_to_window_pt( vec3 world_pt )
 	return result.xy;
 }
 
-void main()
+float compute_max_scale( vec3 eyevec )
 {
-	mat4x4 w = world[gl_InstanceID];
-
-	vec4 b = bound[gl_InstanceID];
-
 	// Figure out a maximum scale to animate to that's about desired_screen_size in screen-space.
 	// We do this by transforming a line from the center of the object to the edge of its bounding
 	// sphere, parallel to the near plane, into screen space, and using that to estimate  how much
 	// we'd need to scale the object to make that line desired_screen_size pixels long.
 	// (This computation is done on the GPU because each instance will have a different position and
 	// different bounds, so we want each one to compute its own max_scale.)
+	vec4 b = bound[gl_InstanceID];
 	float desired_screen_size = selection_anim_max_scale;
 	float max_scale = 1.24;
 	vec2 screen_pt0 = world_pt_to_window_pt( b.xyz );
-	vec2 screen_pt1 = world_pt_to_window_pt( b.xyz + normalize( cross(eyevec, upvec ) ) * b.w );
+	vec2 screen_pt1 = world_pt_to_window_pt( b.xyz + normalize( cross( eyevec, upvec ) ) * b.w );
 	float screen_size = length( screen_pt1 - screen_pt0 ) * 2;
 	float ratio = desired_screen_size / screen_size;
-	max_scale = max( max_scale, ratio );
+	return max( max_scale, ratio );
+}
+
+void main()
+{
+	mat4x4 w = world[gl_InstanceID];
+
+	vec3 rotation_center = rotation[gl_InstanceID].center.xyz;
+	vec3 rotation_axis = rotation[gl_InstanceID].axis_rate.xyz;
+	float rotation_rate = rotation[gl_InstanceID].axis_rate.w;
+	mat3 rotation_mat = rotation_matrix( rotation_axis, elapsed_seconds * rotation_rate );
+	vec3 world_pos_noscale = vec3( w * vec4( rotation_mat * position.xyz, 1 ) );
+	eye = normalize( world_pos_noscale.xyz - camera_pos );
+
+	float max_scale = compute_max_scale( eye );
 
 	// Animate selection scale and alpha.
-	float intpart;
-	float selection_anim = modf( elapsed_seconds * 2.f, intpart );
-	float scale = mix( 1.05, max_scale, selection_anim );
-	float alpha = mix( 0.8, 0, selection_anim );
+	float scale = mix( 1.05, max_scale, selection_anim_state );
+	float alpha = mix( 0.8, 0, selection_anim_state );
 
-	nml = vec3( view * w * normalize( vec4( normal, 0 ) ) );
-	eye = eyevec;
+	nml = normalize( rotation_mat * vec3( inverse( transpose( world[gl_InstanceID] ) ) * vec4( normal, 0 ) ) );
 
-	vec3 rotation_axis = rotation[gl_InstanceID].xyz;
-	float rotation_rate = rotation[gl_InstanceID].w;
-	mat3 rotation_mat = rotation_matrix( rotation_axis, elapsed_seconds * rotation_rate );
-
-	vec3 pos = rotation_mat * position.xyz;
 	frag_color = tint_color;
 	frag_color.a = alpha;
 
-    gl_Position = proj * ( view * ( w * vec4( pos * scale, 1 ) ) );
+	vec3 world_pos_scaled = vec3( w * vec4( scale * position.xyz, 1 ) );
+	world_pos_scaled = offset_rotation( world_pos_scaled.xyz, rotation_mat, rotation_center );
+
+    gl_Position = proj * ( view * vec4( world_pos_scaled, 1 ) );
 }

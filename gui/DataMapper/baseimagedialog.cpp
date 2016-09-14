@@ -70,7 +70,7 @@ BaseImageDialog::BaseImageDialog(bool enablePositionAndOrientation, bool showDow
 	m_userDefinedImageLineEdit->setContentsMargins(4, 4, 4, 4);
 
 	//For now only allowing PNG files 
-	m_userDefinedImageLineEdit->SetFilters("PNG files (*.png)");
+	m_userDefinedImageLineEdit->SetFilters("Image Files (*.png *.jpg *.bmp *.tga *.psd *.gif)");
 
 	SynGlyphX::GroupBoxSingleWidget* userDefinedGroupBox = new SynGlyphX::GroupBoxSingleWidget(tr("Image File"), m_userDefinedImageLineEdit, m_baseImageOptionsStackedWidget);
 
@@ -188,9 +188,12 @@ bool BaseImageDialog::ValidateUserImageFilename(const QString& userImageFilename
 		QMessageBox::warning(this, tr("Base Image Error"), tr("File name listed for local image is empty."));
 		return false;
 	}
-	if (userImageFilename.right(4).toLower() != ".png") {
+	if (userImageFilename.right(4).toLower() != ".png" && userImageFilename.right( 4 ).toLower() != ".bmp"
+		&& userImageFilename.right( 4 ).toLower() != ".tga" && userImageFilename.right( 4 ).toLower() != ".jpg"
+		&& userImageFilename.right( 4 ).toLower() != ".gif" && userImageFilename.right( 4 ).toLower() != ".psd"
+		) {
 
-		QMessageBox::warning(this, tr("Base Image Error"), tr("File name listed for local image is not a png file."));
+		QMessageBox::warning(this, tr("Base Image Error"), tr("File name listed for local image is not in a supported format."));
 		return false;
 	}
 	if (!QFile::exists(userImageFilename)) {

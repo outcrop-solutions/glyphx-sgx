@@ -52,6 +52,7 @@ namespace SynGlyphXANTz {
 		void Clear();
 		void LoadANTzVisualization(const SynGlyphXANTz::ANTzCSVWriter::FilenameList& filesToLoad, const QStringList& baseImageFilenames);
 
+		QModelIndex IndexFromCSVID( int id ) const;
 		QModelIndex IndexFromANTzID(int id) const;
 
 		//void SetParentGridToDefaultBaseImage();

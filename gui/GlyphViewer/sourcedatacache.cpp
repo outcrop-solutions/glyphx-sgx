@@ -1020,3 +1020,31 @@ bool SourceDataCache::ExportFilteredDataToCSV(const QString& filename, const QSt
 	csvFile.Close();
 	return wereAnyValuesWrittenToFile;
 }
+
+std::vector<float> SourceDataCache::GetNumericValuesForField(const SynGlyphX::InputField& inputField) const {
+
+	if (!inputField.IsNumeric()) {
+
+		throw std::invalid_argument("SourceDataCache can not get numeric values for a field that is not numeric.");
+	}
+
+	QString cacheTable = CreateTablename(inputField);
+
+	std::vector<float> values;
+
+	QSqlQuery query(m_db);
+	query.prepare("SELECT \"" + QString::fromStdWString(inputField.GetField()) + "\" FROM \"" + cacheTable + "\" ORDER BY \"" + IndexColumnName + "\" ASC");
+	if (query.exec()) {
+
+		while (query.next()) {
+
+			values.push_back(query.value(0).toFloat());
+		}
+
+		return values;
+	}
+	else {
+
+		throw std::runtime_error("SourceDataCache failed to get numeric values in GetNumericValuesForField.");
+	}
+}

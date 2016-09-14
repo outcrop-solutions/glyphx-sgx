@@ -91,6 +91,8 @@ public:
 	static QString CreateEscapedString(const QString& string);
 	static QString CreateInString(const QString& columnName, const QSet<QString>& values);
 
+	std::vector<float> GetNumericValuesForField(const SynGlyphX::InputField& inputField) const;
+
 protected:
 	SynGlyphX::InputField::Type GetSourceDataFieldType(QVariant::Type fieldType) const;
 	int GetLastIndexOfTable(const QString& tableName);
