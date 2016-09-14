@@ -20,7 +20,7 @@ namespace SynGlyphX
 			static mesh* create_mesh( const vertex_format& fmt, primitive_type prim, unsigned int vertex_count, void* vertices, unsigned int primitive_count, void* indices, bool support_readback = false );
 			static effect* create_effect( const char* vs, const char* gs, const char* ps );
 			static cbuffer* create_cbuffer( unsigned int size );
-			
+
 			// Basic workaround for allowing shared shader code since unlike other shader languages GLSL does not support #include.
 			// A more robust solution would be to write a GLSL preprocessor to handle #includes, but that's probably not necessary
 			// unless our needs become much more complex.
@@ -32,6 +32,8 @@ namespace SynGlyphX
 			static texture* load_texture( const char* file );
 			static unsigned int get_texture_width( texture* t );
 			static unsigned int get_texture_height( texture* t );
+
+			static font* load_font( const char* file );
 
 			static void rebuild_effects();
 
