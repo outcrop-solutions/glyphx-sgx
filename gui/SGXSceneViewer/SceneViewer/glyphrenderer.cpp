@@ -295,7 +295,7 @@ namespace SynGlyphX
 		{
 			// Pulse moves through the speeds array after the number of pulses in speed_thresholds.
 			const int speed_thresholds[] = { 0, 3, 6 };
-			const float speeds[] = { 1.f, 0.5f, 0.25f };
+			const float speeds[] = { 1.f, 0.25f, 0.15f };
 			float count;
 			float anim_state = modf( selection_animation_state, &count );
 			float speed = 0.f;
