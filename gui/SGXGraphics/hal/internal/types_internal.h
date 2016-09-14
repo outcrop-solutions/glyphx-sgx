@@ -6,6 +6,10 @@
 #include "ref_counted.h"
 #include "effect.h"
 #include "../vertex_format.h"
+#include <unordered_map>
+
+#include <ft2build.h>
+#include FT_FREETYPE_H
 
 namespace SynGlyphX
 {
@@ -16,7 +20,7 @@ namespace SynGlyphX
 		public:
 			GLuint handle;
 			unsigned int w, h;
-			bool external;
+			texture_format fmt;
 		};
 
 		class mesh : public ref_counted
@@ -35,6 +39,22 @@ namespace SynGlyphX
 		public:
 			GLuint buffer;
 			unsigned int size;
+		};
+
+		struct font_glyph
+		{
+			hal::texture* texture;
+			uint32_t origin_x, origin_y;
+			uint32_t advance_x, advance_y;
+		};
+
+		class font : public ref_counted
+		{
+		public:
+			std::string file;
+			FT_Face face;
+			unsigned int size;
+			std::unordered_map<uint32_t, font_glyph> glyphs;
 		};
 
 		inline unsigned int indices_per_primitive( primitive_type prim )

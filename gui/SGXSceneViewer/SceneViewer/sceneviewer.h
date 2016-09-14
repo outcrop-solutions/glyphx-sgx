@@ -224,5 +224,8 @@ namespace SynGlyphX
 		SynGlyphXANTz::GlyphForestModel* glyph_forest_model;
 		ItemFocusSelectionModel* item_focus_sm;
 		void selection_changed();
+
+		// temp testing
+		hal::font* test_font;
 	};
 }

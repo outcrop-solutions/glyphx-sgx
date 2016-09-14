@@ -57,6 +57,13 @@ namespace SynGlyphX
 			aniso,
 		};
 
+		enum class texture_format : unsigned int
+		{
+			r8,
+			rgb8,
+			rgba8,
+		};
+
 		enum class primitive_type : unsigned int
 		{
 			triangle_list,
