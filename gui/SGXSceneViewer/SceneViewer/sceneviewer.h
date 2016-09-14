@@ -111,6 +111,8 @@ namespace SynGlyphX
 		// todo: use Qt signals/slots mechanism for this?
 		void setOnSelectionChanged( std::function<void( bool )> fn ) { on_selection_changed = fn; }
 
+		void setSourceDataLookupForPositionXYZ(const std::vector<float>& posXData, const std::vector<float>& posYData, const std::vector<float>& posZData);
+
 	protected:
 		void renderText( QPainter& painter, int x, int y, const QString &str, const QFont & font = QFont() );
 		void renderText( QPainter& painter, const render::camera* camera, const glm::vec3& pos, const QString &str, const QFont & font = QFont( ) );
@@ -224,5 +226,8 @@ namespace SynGlyphX
 		SynGlyphXANTz::GlyphForestModel* glyph_forest_model;
 		ItemFocusSelectionModel* item_focus_sm;
 		void selection_changed();
+
+		//temporary until we move away from current method of source data access
+		std::vector<float> m_sourceDataLookupForPositionXYZ[3];
 	};
 }

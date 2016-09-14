@@ -428,16 +428,26 @@ namespace SynGlyphX
 				}
 				else
 				{
-#if 0	// TODO/WIP: dev-92 x/y/z text box in viewer
 					if ( scene.selectionSize() == 1 )
 					{
-						auto pos = scene.getSingleSelection()->getRootParent()->getCachedPosition();
-						QString positionHUD = tr( "%1: %2, %3: %4, %5: %6" ).arg( QString::fromStdString( axis_names[0] ), QString::number( pos.x ), QString::fromStdString( axis_names[1] ), QString::number( pos.y ), QString::fromStdString( axis_names[2] ), QString::number( pos.z ) );
+						auto selectionIndex = scene.getSingleSelection()->getRootParent()->getFilteringIndex();
+						QString positionHUD;
+						for (int i = 0; i < 3; ++i) {
+
+							if (!m_sourceDataLookupForPositionXYZ[i].empty()) {
+
+								if (!positionHUD.isEmpty()) {
+
+									positionHUD += ", ";
+								}
+
+								positionHUD += QString::fromStdString(axis_names[i]) + ": " + QString::number(m_sourceDataLookupForPositionXYZ[i].at(selectionIndex));
+							}
+						}
 						QFontMetrics hudFontMetrics( hud_font );
 						renderText( painter, ( width() / 2 ) - ( hudFontMetrics.width( positionHUD ) / 2 ), height() - 16, positionHUD, hud_font );
 					}
 					else
-#endif
 					{
 						QString positionHUD = tr( "Selection Centered At: X: %1, Y: %2, Z: %3" ).arg( QString::number( selection_center.x ), QString::number( selection_center.y ), QString::number( selection_center.z ) );
 						QFontMetrics hudFontMetrics( hud_font );
@@ -878,6 +888,13 @@ namespace SynGlyphX
 		axis_names[0] = std::string( "X / " ) + X;
 		axis_names[1] = std::string( "Y / " ) + Y;
 		axis_names[2] = std::string( "Z / " ) + Z;
+	}
+
+	void SceneViewer::setSourceDataLookupForPositionXYZ(const std::vector<float>& posXData, const std::vector<float>& posYData, const std::vector<float>& posZData)
+	{
+		m_sourceDataLookupForPositionXYZ[0] = posXData;
+		m_sourceDataLookupForPositionXYZ[1] = posYData;
+		m_sourceDataLookupForPositionXYZ[2] = posZData;
 	}
 
 	void SceneViewer::enableFlyToObject( bool enabled )

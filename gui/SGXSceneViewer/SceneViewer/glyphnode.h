@@ -26,7 +26,7 @@ namespace SynGlyphX
 		~Glyph3DNode();
 
 		Glyph3DNodeType getType() const { return type; }
-		int getFilteringIndex() { return filtering_index; }
+		int getFilteringIndex() const { return filtering_index; }
 
 		void setPlacementPolicy( PlacementPolicy* policy ) { placement = policy; }
 		const PlacementPolicy* const getPlacementPolicy() const { return placement; }

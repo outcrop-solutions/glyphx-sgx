@@ -768,6 +768,7 @@ void GlyphViewerWindow::LoadFilesIntoModel(const SynGlyphXANTz::ANTzCSVWriter::F
 
 	std::array<QString, 3> rootPositionFields;
 	auto ifm = std::const_pointer_cast<SynGlyphX::DataTransformMapping>(dataTransformMapping)->GetInputFieldManager();
+	std::array<std::vector<float>, 3> positionXYZData;
 	for (unsigned int i = 0; i < 3; ++i) {
 
 		const SynGlyphX::InputBinding& posInputBinding = rootGlyph->second->GetRoot()->second.GetPosition()[i].GetBinding();
@@ -785,10 +786,13 @@ void GlyphViewerWindow::LoadFilesIntoModel(const SynGlyphXANTz::ANTzCSVWriter::F
 
 				rootPositionFields[i] = QString::fromStdWString(fieldToAliasMap[field.GetField()]);
 			}
+
+			positionXYZData[i] = m_sourceDataCache->GetNumericValuesForField(field);
 		}
 	}
 	m_glyphForestModel->SetRootPosXYZMappedFields(rootPositionFields);
 	m_viewer->setAxisNames( rootPositionFields[0].toStdString().c_str(), rootPositionFields[1].toStdString().c_str(), rootPositionFields[2].toStdString().c_str() );
+	m_viewer->setSourceDataLookupForPositionXYZ(positionXYZData[0], positionXYZData[1], positionXYZData[2]);
 }
 
 void GlyphViewerWindow::ChangeMapDownloadSettings() {
