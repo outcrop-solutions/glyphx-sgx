@@ -20,6 +20,8 @@ namespace SynGlyphX
 
 		class cbuffer;
 
+		class font;
+
 		enum clear_type : unsigned int
 		{
 			color = 1u,
