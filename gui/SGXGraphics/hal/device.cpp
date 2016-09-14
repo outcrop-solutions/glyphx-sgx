@@ -115,5 +115,10 @@ namespace SynGlyphX
 		{
 			hal_gl::device_internal::set_cbuffer_usage( e, block_name, usage );
 		}
+
+		font* device::load_font( const char* file )
+		{
+			return hal_gl::device_internal::load_font( file );
+		}
 	}
 }

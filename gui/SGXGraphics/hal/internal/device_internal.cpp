@@ -5,6 +5,7 @@
 #include "effect.h"
 #include "../vertex_format.h"
 #include "../log.h"
+#include "../debug.h"
 #include <string>
 #include <fstream>
 #include <queue>
@@ -13,6 +14,9 @@
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
+
+#include <ft2build.h>
+#include FT_FREETYPE_H
 
 namespace SynGlyphX
 {
@@ -24,6 +28,7 @@ namespace SynGlyphX
 			int maximum_cbuffer_size = -1;
 			std::unordered_set<hal::effect*> effects;
 			std::vector<std::string> forced_includes;
+			FT_Library freetype;
 		}
 
 		bool device_internal::init()
@@ -45,6 +50,8 @@ namespace SynGlyphX
 			hal::check_errors();
 			glGetIntegerv( GL_MAX_UNIFORM_BLOCK_SIZE, &maximum_cbuffer_size );
 			default_context = new context_internal();
+			auto error = FT_Init_FreeType( &freetype );
+			hal::debug::_assert( !error, "error initializing freetype" );
 			return true;
 		}
 
@@ -262,6 +269,12 @@ namespace SynGlyphX
 		void device_internal::set_cbuffer_usage( hal::effect* e, const char* block_name, hal::cbuffer_usage usage )
 		{
 			e->set_cbuffer_usage( block_name, usage );
+		}
+
+		hal::font* device_internal::load_font( const char* file )
+		{
+			UNREFERENCED_PARAMETER( file );
+			return nullptr;
 		}
 	}
 }

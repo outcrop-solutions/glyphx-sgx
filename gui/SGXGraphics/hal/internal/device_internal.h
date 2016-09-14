@@ -30,6 +30,8 @@ namespace SynGlyphX
 			static unsigned int get_texture_width( hal::texture* tex ) { return tex->w; }
 			static unsigned int get_texture_height( hal::texture* tex ) { return tex->h; }
 
+			static hal::font* load_font( const char* file );
+
 			static void addref( hal::mesh* m );
 			static void addref( hal::effect* e );
 			static void addref( hal::texture* t );
