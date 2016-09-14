@@ -11,9 +11,14 @@ public class Institution {
 	private Timestamp sharedModified;
 
 	public Institution(int id,String name){
-		this.id = 2;
-		//this.name = name;
-		this.name = "Notre Dame";
+		if(id == 1){
+			this.id = 2;
+			this.name = "Notre Dame";
+		}
+		else{
+			this.id = id;
+			this.name = name;
+		}
 	}
 
 	public void setLogoModified(long dt){

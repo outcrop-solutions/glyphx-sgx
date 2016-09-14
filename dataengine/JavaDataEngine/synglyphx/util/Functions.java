@@ -41,7 +41,8 @@ public class Functions {
 			return defabove;
 		}
 		else{
-			return linearInterpolation(x1,x3,y1,y3,x2);
+			//return linearInterpolation(x1,x3,y1,y3,x2);
+			return linearInterpolation(ifbelow,ifabove,y1,y3,x2);
 		}
 	}
 
