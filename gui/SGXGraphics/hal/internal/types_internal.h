@@ -44,8 +44,9 @@ namespace SynGlyphX
 		struct font_glyph
 		{
 			hal::texture* texture;
-			uint32_t origin_x, origin_y;
-			uint32_t advance_x, advance_y;
+			hal::mesh* mesh;
+			int32_t origin_x, origin_y;
+			int32_t advance_x, advance_y;
 		};
 
 		class font : public ref_counted

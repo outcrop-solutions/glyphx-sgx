@@ -1,5 +1,6 @@
 
 #include "sceneviewer.h"
+#include <cstdarg>
 #include <ctime>
 #include <QtCore/QDebug>
 #include <QtGui/QGuiApplication>
@@ -258,7 +259,7 @@ namespace SynGlyphX
 
 		initialized = true;
 
-		test_font = hal::device::load_font( "fonts/Roboto-Regular.ttf", 512 );
+		test_font = hal::device::load_font( "fonts/arial.ttf", 16 );
 	}
 
 	void SceneViewer::resizeGL( int w, int h )
@@ -267,10 +268,8 @@ namespace SynGlyphX
 		camera->update_viewport_size( w, h );
 		ui_camera->update_viewport_size( w, h );
 
-		//auto logo_w = hal::device::get_texture_width( sgx_logo );
-		//auto logo_h = hal::device::get_texture_height( sgx_logo );
-		auto logo_w = hal::device::get_texture_width( context->get_glyph_texture( test_font, 'b' ) );
-		auto logo_h = hal::device::get_texture_height( context->get_glyph_texture( test_font, 'b' ) );
+		auto logo_w = hal::device::get_texture_width( sgx_logo );
+		auto logo_h = hal::device::get_texture_height( sgx_logo );
 
 		auto logo_rotate = glm::rotate( glm::mat4(), glm::half_pi<float>(), glm::vec3( 1.f, 0.f, 0.f ) );
 		auto logo_translate = glm::translate( glm::mat4(), glm::vec3( float( w - logo_w ), float( logo_h ), 0.f ) );
@@ -412,83 +411,79 @@ namespace SynGlyphX
 
 		// draw logo
 		context->bind( tex_effect );
-		//context->bind( 0u, sgx_logo );
-		context->bind( 0u, context->get_glyph_texture( test_font, 'b' ) );
+		context->bind( 0u, sgx_logo );
 		context->set_constant( tex_effect, "material", "tint_color", glm::vec4( 1.f, 1.f, 1.f, 1.f ) );
 		renderer->add_blended_batch( logo, tex_effect );
 		renderer->render( context, ui_camera );
-		context->draw( test_font, glm::mat4(), "abcdefghijklmnopqrstuvwxyz" );
 
 		checkErrors();
 
-		if ( format().profile() == QSurfaceFormat::CompatibilityProfile )
-		{
-			context->reset_defaults();
-			painter.endNativePainting();
+		context->reset_defaults();
+		painter.endNativePainting();
 
-			if ( !scene.empty() )
+		if ( !scene.empty() )
+		{
+			if ( scene.selectionEmpty() )
 			{
-				if ( scene.selectionEmpty() )
+				auto campos = camera->get_position();
+				QString positionHUD = tr( "Camera Position: X: %1, Y: %2, Z: %3" ).arg( QString::number( campos.x ), QString::number( campos.y ), QString::number( campos.z ) );
+				QFontMetrics hudFontMetrics( hud_font );
+				//renderText( painter, ( width() / 2 ) - ( hudFontMetrics.width( positionHUD ) / 2 ), height() - 16, positionHUD, hud_font );
+				renderText( test_font, glm::vec2( ( width() / 2 ) - ( hudFontMetrics.width( positionHUD ) / 2 ), height() - 16 ), render::color::white(), positionHUD.toStdString().c_str() );
+			}
+			else
+			{
+				auto single_root = scene.getSingleRoot();
+				if ( single_root )
 				{
-					auto campos = camera->get_position();
-					QString positionHUD = tr( "Camera Position: X: %1, Y: %2, Z: %3" ).arg( QString::number( campos.x ), QString::number( campos.y ), QString::number( campos.z ) );
+					auto selectionIndex = single_root->getFilteringIndex();
+					QString positionHUD;
+					for (int i = 0; i < 3; ++i) {
+
+						if (!m_sourceDataLookupForPositionXYZ[i].empty()) {
+
+							if (!positionHUD.isEmpty()) {
+
+								positionHUD += ", ";
+							}
+
+							positionHUD += QString::fromStdString(axis_names[i]) + ": " + QString::number(m_sourceDataLookupForPositionXYZ[i].at(selectionIndex));
+						}
+					}
 					QFontMetrics hudFontMetrics( hud_font );
-					renderText( painter, ( width() / 2 ) - ( hudFontMetrics.width( positionHUD ) / 2 ), height() - 16, positionHUD, hud_font );
+					//renderText( painter, ( width() / 2 ) - ( hudFontMetrics.width( positionHUD ) / 2 ), height() - 16, positionHUD, hud_font );
+					renderText( test_font, glm::vec2( ( width() / 2 ) - ( hudFontMetrics.width( positionHUD ) / 2 ), height() - 16 ), render::color::white(), positionHUD.toStdString().c_str() );
 				}
 				else
 				{
-					auto single_root = scene.getSingleRoot();
-					if ( single_root )
-					{
-						auto selectionIndex = single_root->getFilteringIndex();
-						QString positionHUD;
-						for (int i = 0; i < 3; ++i) {
-
-							if (!m_sourceDataLookupForPositionXYZ[i].empty()) {
-
-								if (!positionHUD.isEmpty()) {
-
-									positionHUD += ", ";
-								}
-
-								positionHUD += QString::fromStdString(axis_names[i]) + ": " + QString::number(m_sourceDataLookupForPositionXYZ[i].at(selectionIndex));
-							}
-						}
-						QFontMetrics hudFontMetrics( hud_font );
-						renderText( painter, ( width() / 2 ) - ( hudFontMetrics.width( positionHUD ) / 2 ), height() - 16, positionHUD, hud_font );
-					}
-					else
-					{
-						QString positionHUD = tr( "Selection Centered At: X: %1, Y: %2, Z: %3" ).arg( QString::number( selection_center.x ), QString::number( selection_center.y ), QString::number( selection_center.z ) );
-						QFontMetrics hudFontMetrics( hud_font );
-						renderText( painter, ( width() / 2 ) - ( hudFontMetrics.width( positionHUD ) / 2 ), height() - 16, positionHUD, hud_font );
-					}
+					QString positionHUD = tr( "Selection Centered At: X: %1, Y: %2, Z: %3" ).arg( QString::number( selection_center.x ), QString::number( selection_center.y ), QString::number( selection_center.z ) );
+					QFontMetrics hudFontMetrics( hud_font );
+					//renderText( painter, ( width() / 2 ) - ( hudFontMetrics.width( positionHUD ) / 2 ), height() - 16, positionHUD, hud_font );
+					renderText( test_font, glm::vec2( ( width() / 2 ) - ( hudFontMetrics.width( positionHUD ) / 2 ), height() - 16 ), render::color::white(), positionHUD.toStdString().c_str() );
 				}
 			}
+		}
 
-			// Draw tags.
-			scene.enumTagEnabled( [&painter, this]( const Glyph3DNode& glyph ) {
-				if ( glyph.getTag() ) renderText( painter, glyph.getCachedPosition(), glyph.getTag(), hud_font );
-			} );
+		// Draw tags.
+		scene.enumTagEnabled( [&painter, this]( const Glyph3DNode& glyph ) {
+			if ( glyph.getTag() ) renderText( painter, glyph.getCachedPosition(), glyph.getTag(), hud_font );
+		} );
 
-			// Draw axis names.
-			if ( hud_axes_enabled )
-			{
-				const float axis_name_offset = 16.f;
-				if ( axis_names[0] != "" ) renderText( painter, ui_camera, hud_axes_origin + ( hud_axes_size + axis_name_offset ) * glm::vec3( ( hud_axes_rotation * glm::vec4( 1.f, 0.f, 0.f, 0.f ) ) ), QString::fromStdString( axis_names[0] ), hud_font );
-				if ( axis_names[1] != "" ) renderText( painter, ui_camera, hud_axes_origin + ( hud_axes_size + axis_name_offset ) * glm::vec3( ( hud_axes_rotation * glm::vec4( 0.f, 0.f, 1.f, 0.f ) ) ), QString::fromStdString( axis_names[1] ), hud_font );
-				if ( axis_names[2] != "" ) renderText( painter, ui_camera, hud_axes_origin - ( hud_axes_size + axis_name_offset ) * glm::vec3( ( hud_axes_rotation * glm::vec4( 0.f, 1.f, 0.f, 0.f ) ) ), QString::fromStdString( axis_names[2] ), hud_font );
-			}
+		// Draw axis names.
+		if ( hud_axes_enabled )
+		{
+			const float axis_name_offset = 16.f;
+			if ( axis_names[0] != "" ) renderText( test_font, glm::vec2( hud_axes_origin + ( hud_axes_size + axis_name_offset ) * glm::vec3( ( hud_axes_rotation * glm::vec4( 1.f, 0.f, 0.f, 0.f ) ) ) ), render::color::white(), QString::fromStdString( axis_names[0] ).toStdString().c_str() );
+			if ( axis_names[1] != "" ) renderText( test_font, glm::vec2( hud_axes_origin + ( hud_axes_size + axis_name_offset ) * glm::vec3( ( hud_axes_rotation * glm::vec4( 0.f, 0.f, 1.f, 0.f ) ) ) ), render::color::white(), QString::fromStdString( axis_names[1] ).toStdString().c_str() );
+			if ( axis_names[2] != "" ) renderText( test_font, glm::vec2( hud_axes_origin - ( hud_axes_size + axis_name_offset ) * glm::vec3( ( hud_axes_rotation * glm::vec4( 0.f, 1.f, 0.f, 0.f ) ) ) ), render::color::white(), QString::fromStdString( axis_names[2] ).toStdString().c_str() );
+		}
 
-			if ( scene_axes_enabled )
-			{
-				const float axis_name_offset = 10.f;
-				if ( axis_names[0] != "" ) renderText( painter, camera, scene_axis_origin + ( scene_axis_sizes.x + axis_name_offset ) * glm::vec3( 1.f, 0.f, 0.f ), QString::fromStdString( axis_names[0] ), hud_font );
-				if ( axis_names[1] != "" ) renderText( painter, camera, scene_axis_origin + ( scene_axis_sizes.y + axis_name_offset ) * glm::vec3( 0.f, 1.f, 0.f ), QString::fromStdString( axis_names[1] ), hud_font );
-				if ( axis_names[2] != "" ) renderText( painter, camera, scene_axis_origin + ( scene_axis_sizes.z + axis_name_offset ) * glm::vec3( 0.f, 0.f, 1.f ), QString::fromStdString( axis_names[2] ), hud_font );
-			}
-
-			painter.end();
+		if ( scene_axes_enabled )
+		{
+			const float axis_name_offset = 10.f;
+			if ( axis_names[0] != "" ) renderText( painter, camera, scene_axis_origin + ( scene_axis_sizes.x + axis_name_offset ) * glm::vec3( 1.f, 0.f, 0.f ), QString::fromStdString( axis_names[0] ), hud_font );
+			if ( axis_names[1] != "" ) renderText( painter, camera, scene_axis_origin + ( scene_axis_sizes.y + axis_name_offset ) * glm::vec3( 0.f, 1.f, 0.f ), QString::fromStdString( axis_names[1] ), hud_font );
+			if ( axis_names[2] != "" ) renderText( painter, camera, scene_axis_origin + ( scene_axis_sizes.z + axis_name_offset ) * glm::vec3( 0.f, 0.f, 1.f ), QString::fromStdString( axis_names[2] ), hud_font );
 		}
 	}
 
@@ -519,6 +514,18 @@ namespace SynGlyphX
 	void SceneViewer::hideAllTags()
 	{
 		scene.disableAllTags();
+	}
+
+	void SceneViewer::renderText( hal::font* font, const glm::vec2& pos, const glm::vec4& color, const char* string, ... )
+	{
+		static char buf[8192u];
+		va_list args;
+		va_start( args, string );
+		vsprintf_s( buf, string, args );
+		va_end( args );
+
+		auto transform = ui_camera->get_proj() * ui_camera->get_view() * glm::translate( glm::mat4(), glm::vec3( pos, 0.f ) );
+		context->draw( font, transform, color, string );
 	}
 
 	void SceneViewer::renderText( QPainter& painter, int x, int y, const QString& str, const QFont& font )

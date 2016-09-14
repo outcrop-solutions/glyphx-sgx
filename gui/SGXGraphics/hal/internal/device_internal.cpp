@@ -25,7 +25,10 @@ namespace SynGlyphX
 			int maximum_cbuffer_size = -1;
 			std::unordered_set<hal::effect*> effects;
 			std::vector<std::string> forced_includes;
+			
+			hal::effect* text_effect = nullptr;
 			FT_Library freetype;
+			hal::vertex_format text_format;
 		}
 
 		bool device_internal::init()
@@ -49,6 +52,10 @@ namespace SynGlyphX
 			default_context = new context_internal();
 			auto error = FT_Init_FreeType( &freetype );
 			hal::debug::_assert( !error, "error initializing freetype" );
+			// todo: inline this shader once it's stable (shouldn't have to exist in app folder since it's part of the graphics library).
+			text_effect = create_effect( "shaders/text.vert", nullptr, "shaders/text.frag" );
+			text_format.add_stream( hal::stream_info( hal::stream_type::float32, 3, hal::stream_semantic::position, 0 ) );
+			text_format.add_stream( hal::stream_info( hal::stream_type::float32, 2, hal::stream_semantic::texcoord, 0 ) );
 			return true;
 		}
 
@@ -165,6 +172,8 @@ namespace SynGlyphX
 			glTexImage2D( GL_TEXTURE_2D, 0, gl_fmt, w, h, 0, gl_fmt, gl_type, data );
 			glGenerateMipmap( GL_TEXTURE_2D );
 			glBindTexture( GL_TEXTURE_2D, 0 );
+			glPixelStorei( GL_PACK_ALIGNMENT, 4 );
+			glPixelStorei( GL_UNPACK_ALIGNMENT, 4 );
 			hal::check_errors();
 			return tex;
 		}
@@ -318,6 +327,70 @@ namespace SynGlyphX
 			hal::debug::_assert( !error, "error %i setting pixel size %i for font %s", error, size, file );
 
 			return font;
+		}
+
+		hal::effect* device_internal::get_text_effect()
+		{
+			return text_effect;
+		}
+
+		const hal::font_glyph& device_internal::get_glyph( hal::font* f, char c )
+		{
+			assert( f );
+
+			// Load and render the glyph if we don't have it already.
+			if ( f->glyphs.find( c ) == f->glyphs.end() )
+			{
+				auto idx = FT_Get_Char_Index( f->face, c );
+				hal::debug::_assert( idx != 0, "FT_GetCharIndex failed for font %s and char code %i", f->file.c_str(), c );
+				auto error = FT_Load_Glyph( f->face, idx, FT_LOAD_TARGET_LIGHT );
+				auto glyph = f->face->glyph;
+				hal::debug::_assert( error == 0, "FT_Load_Glyph failed for font %s and char code %i (char_index %i)", f->file.c_str(), c, idx );
+				if ( glyph->format != FT_GLYPH_FORMAT_BITMAP )
+				{
+					error = FT_Render_Glyph( glyph, FT_RENDER_MODE_LIGHT );
+					hal::debug::_assert( error == 0, "FT_Render_Glyph failed for font %s and char code %i (char_index %i )", f->file.c_str(), c, idx );
+				}
+				hal::font_glyph g;
+				assert( glyph->bitmap.pixel_mode == FT_PIXEL_MODE_GRAY );
+				g.texture = hal_gl::device_internal::create_texture( glyph->bitmap.width, glyph->bitmap.rows, hal::texture_format::r8, glyph->bitmap.buffer );
+				g.origin_x = glyph->bitmap_left;
+				g.origin_y = glyph->bitmap_top;
+				g.advance_x = ( glyph->advance.x >> 6 );
+				g.advance_y = ( glyph->advance.y >> 6 );
+
+				float glyph_vertices[]
+				{
+					0.f, 0.f, 0.f, 0.f, 0.f,
+					float( glyph->bitmap.width ), 0.f, 0.f, 1.f, 0.f,
+					float( glyph->bitmap.width ), float( glyph->bitmap.rows ), 0.f, 1.f, 1.f,
+					0.f, float( glyph->bitmap.rows ), 0.f, 0.f, 1.f,
+				};
+				unsigned int glyph_indices[]
+				{
+					0u, 1u, 2u, 0u, 2u, 3u
+				};
+				g.mesh = create_mesh( text_format, hal::primitive_type::triangle_list, 4u, glyph_vertices, 2u, glyph_indices, false );
+
+				f->glyphs.insert( std::make_pair( c, g ) );
+			}
+
+			hal::check_errors();
+			return f->glyphs.find( c )->second;
+		}
+
+		const glm::vec2 device_internal::get_kerning( hal::font* f, char left, char right )
+		{
+			glm::vec2 result;
+			if ( FT_HAS_KERNING( f->face ) )
+			{
+				auto l = FT_Get_Char_Index( f->face, left );
+				auto r = FT_Get_Char_Index( f->face, right );
+				FT_Vector kern;
+				FT_Get_Kerning( f->face, l, r, FT_KERNING_DEFAULT, &kern );
+				result = glm::vec2( kern.x >> 6, kern.y >> 6 );
+			}
+			return result;
 		}
 	}
 }

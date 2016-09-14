@@ -118,6 +118,8 @@ namespace SynGlyphX
 		void renderText( QPainter& painter, const render::camera* camera, const glm::vec3& pos, const QString &str, const QFont & font = QFont( ) );
 		void renderText( QPainter& painter, const glm::vec3& pos, const QString &str, const QFont & font = QFont() );	// shortcut to use 3D camera
 
+		void renderText( hal::font* font, const glm::vec2& pos, const glm::vec4& color, const char* string, ... );
+
 	private slots:
 		void updateFrame();
 
