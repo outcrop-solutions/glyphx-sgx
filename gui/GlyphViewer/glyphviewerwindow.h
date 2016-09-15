@@ -69,6 +69,7 @@ protected:
 	bool DoesHelpExist() const override;
 
 private slots:
+	void OpenVisualisation();
 	void OpenProject();
 	void RefreshVisualization();
 	void CloseVisualization();
@@ -143,6 +144,7 @@ private:
 	CacheManager m_cacheManager;
 	bool m_showErrorFromTransform;
 	bool m_showHomePage;
+	QString m_defaultProject;
 
 	LinkedWidgetsManager* m_linkedWidgetsManager;
 

@@ -82,6 +82,11 @@ HomePageWidget::~HomePageWidget()
 
 }
 
+void HomePageWidget::LoadProject(const QString& project) {
+	m_allViewsFilteringWidget->Reset(m_dataEngineConnection, project);
+	
+}
+
 void HomePageWidget::CreateHomePageOptionsWidget() {
 
 	QStringList options;

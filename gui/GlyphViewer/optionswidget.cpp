@@ -172,6 +172,10 @@ void OptionsWidget::CreateUITab() {
 
 	m_showHomePage = new QCheckBox(tr("Show home page on startup"), this);
 	homePageLayout->addWidget(m_showHomePage);
+	m_defaultProjectWidget = new SynGlyphX::BrowseLineEdit(SynGlyphX::BrowseLineEdit::FileDialogType::FileOpen, true, this);
+	m_defaultProjectWidget->SetFilters("*.xdt");
+	SynGlyphX::GroupBoxSingleWidget* defaultProjectGroupBox = new SynGlyphX::GroupBoxSingleWidget(tr("Default Project"), m_defaultProjectWidget, tab);
+	homePageLayout->addWidget(defaultProjectGroupBox);
 	QHBoxLayout* clearListsLayout = new QHBoxLayout(tab);
 	homePageLayout->addLayout(clearListsLayout);
 	m_clearRecentListButton = new QPushButton(tr("Clear Recent Views"), tab);
@@ -240,6 +244,7 @@ GlyphViewerOptions OptionsWidget::GetOptions() const {
 	//UI
 	options.SetShowMessageWhenImagesDidNotDownload(m_showDownloadedImageErrorMessages->isChecked());
 	options.SetShowHomePage(m_showHomePage->isChecked());
+	options.SetDefaultProject(m_defaultProjectWidget->GetText());
 
 	return options;
 }
@@ -274,6 +279,7 @@ void OptionsWidget::SetUIValues(const GlyphViewerOptions& options) {
 
 	m_showDownloadedImageErrorMessages->setChecked(options.GetShowMessageWhenImagesDidNotDownload());
 	m_showHomePage->setChecked(options.GetShowHomePage());
+	m_defaultProjectWidget->SetText(options.GetDefaultProject());
 	m_clearRecentListButton->setEnabled(!GlyphViewerWindow::GetRecentFileListInstance().GetFiles().isEmpty());
 	m_clearSubsetListButton->setEnabled(!GlyphViewerWindow::GetSubsetFileListInstance().GetFiles().isEmpty());
 }

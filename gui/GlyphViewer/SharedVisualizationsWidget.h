@@ -66,7 +66,7 @@ public:
 	SharedVisualizationsWidget(QWidget *parent);
 	~SharedVisualizationsWidget();
 
-	void Reset(DataEngine::DataEngineConnection::SharedPtr dataEngineConnection);
+	void Reset(DataEngine::DataEngineConnection::SharedPtr dataEngineConnection, const QString& projFileName = QString());
 	
 	bool DoCurrentNecessaryFiltersHaveSelection() const;
 	QString GetCurrentFilename() const;

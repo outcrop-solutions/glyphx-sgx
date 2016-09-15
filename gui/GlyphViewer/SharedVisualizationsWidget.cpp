@@ -71,7 +71,7 @@ SharedVisualizationsWidget::~SharedVisualizationsWidget()
 
 }
 
-void SharedVisualizationsWidget::Reset(DataEngine::DataEngineConnection::SharedPtr dataEngineConnection) {
+void SharedVisualizationsWidget::Reset(DataEngine::DataEngineConnection::SharedPtr dataEngineConnection, const QString& projFileName) {
 
 	m_viewListWidget->blockSignals(true);
 
@@ -85,7 +85,12 @@ void SharedVisualizationsWidget::Reset(DataEngine::DataEngineConnection::SharedP
 	addWidget(m_loadingFilterWidgetsStack);
 
 	bool visualizationsAdded = false;
-	QString sharedVizListing = QDir::toNativeSeparators(QDir::cleanPath(SynGlyphX::GlyphBuilderApplication::GetCommonDataLocation()) + "/sharedvisualizations.xml");
+	QString sharedVizListing;
+	if (QFile::exists(projFileName))
+		sharedVizListing = projFileName;
+	else
+		sharedVizListing = QDir::toNativeSeparators(QDir::cleanPath(SynGlyphX::GlyphBuilderApplication::GetCommonDataLocation()) + "/sharedvisualizations.xml");
+
 	if (QFile::exists(sharedVizListing)) {
 
 		SharedVisualizationsFile sharedVisualizationsFile;
