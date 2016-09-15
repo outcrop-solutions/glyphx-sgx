@@ -8,29 +8,12 @@ public class Institution {
 	private String name;
 	private Timestamp logoModified;
 	private Timestamp dataModified;
-	private Timestamp sharedModified;
 
-	public Institution(int id,String name){
-		if(id == 1){
-			this.id = 2;
-			this.name = "Notre Dame";
-		}
-		else{
-			this.id = id;
-			this.name = name;
-		}
-	}
-
-	public void setLogoModified(long dt){
-		this.logoModified = new Timestamp(dt);
-	}
-
-	public void setSharedModified(long dt){
-		this.sharedModified = new Timestamp(dt);
-	}
-
-	public void setDataModified(long dt){
-		this.dataModified = new Timestamp(dt);
+	public Institution(int id,String name,Timestamp logo_mod,Timestamp data_mod){
+		this.id = id;
+		this.name = name;
+		logoModified = logo_mod;
+		dataModified = data_mod;
 	}
 
 	public int getID(){
@@ -47,10 +30,6 @@ public class Institution {
 
 	public Timestamp getDBModified(){
 		return dataModified;
-	}
-
-	public Timestamp getSharedModified(){
-		return sharedModified;
 	}
 
 }
