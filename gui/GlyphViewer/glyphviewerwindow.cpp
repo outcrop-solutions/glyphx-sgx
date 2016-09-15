@@ -32,6 +32,7 @@
 #include "downloadexception.h"
 #include "HomePageWidget.h"
 #include "remapdialog.h"
+#include <SceneViewer/sceneviewer.h>
 #include "baseimage.h"
 #include "sharedactionlist.h"
 #include "GVGlobal.h"
@@ -43,7 +44,7 @@ QMap<QString, MultiTableDistinctValueFilteringParameters> GlyphViewerWindow::s_r
 
 GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 	: SynGlyphX::MainWindow(4, parent),
-	m_glyph3DView(nullptr),
+	m_viewer( nullptr ),
 	m_showErrorFromTransform(true),
 	m_dataEngineConnection(nullptr)
 {
@@ -113,7 +114,7 @@ GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 		throw;
 	}
 
-	m_linkedWidgetsManager = new LinkedWidgetsManager(m_glyph3DView, this);
+	m_linkedWidgetsManager = new LinkedWidgetsManager(m_viewer, this);
 	m_filteringWidget->SetupLinkedWidgets(*m_linkedWidgetsManager);
 	m_pseudoTimeFilterWidget->SetupLinkedWidgets(*m_linkedWidgetsManager);
 
@@ -122,6 +123,8 @@ GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 	centerWidgetsContainer->setCurrentIndex(0);
 
 	statusBar()->showMessage(SynGlyphX::Application::applicationName() + " Started", 3000);
+
+	EnableLoadedVisualizationDependentActions( false );
 }
 
 GlyphViewerWindow::~GlyphViewerWindow()
@@ -148,15 +151,15 @@ void GlyphViewerWindow::CreateLoadingScreen() {
 void GlyphViewerWindow::CreateANTzWidget() {
 	
 	QStackedWidget* antzWidgetContainer = dynamic_cast<QStackedWidget*>(centralWidget());
-	if (m_glyph3DView != nullptr) {
+	if (m_viewer) {
 		
-		antzWidgetContainer->removeWidget(m_glyph3DView);
-		delete m_glyph3DView;
-		m_glyph3DView = nullptr;
+		antzWidgetContainer->removeWidget(m_viewer);
+		delete m_viewer;
+		m_viewer = nullptr;
 	}
 
-	m_glyph3DView = new Glyph3DView(m_glyphForestModel, m_glyphForestSelectionModel, this);
-	m_glyph3DView->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+	m_viewer = new SynGlyphX::SceneViewer( this );
+	m_viewer->setSelectionModel( m_glyphForestModel, m_glyphForestSelectionModel );
 
 	m_openURLAction = new QAction(tr("Open URL"), this);
 	m_openURLAction->setShortcut(Qt::Key_U);
@@ -167,25 +170,44 @@ void GlyphViewerWindow::CreateANTzWidget() {
 	m_propertiesAction->setEnabled(false);
 	QObject::connect(m_propertiesAction, &QAction::triggered, this, &GlyphViewerWindow::OnPropertiesActivated);
 
-	m_glyph3DView->addAction(m_openURLAction);
-	m_glyph3DView->addAction(m_propertiesAction);
-	m_glyph3DView->addAction(SynGlyphX::SharedActionList::CreateSeparator(m_glyph3DView));
-	m_glyph3DView->addAction(m_showTagsAction);
-	m_glyph3DView->addAction(m_hideTagsAction);
-	m_glyph3DView->addAction(m_hideAllTagsAction);
-	m_glyph3DView->addAction(SynGlyphX::SharedActionList::CreateSeparator(m_glyph3DView));
-	m_glyph3DView->addAction(m_clearSelectionAction);
+	m_enableDisableSelEffectActionMenu = new QAction( tr( "Enable/Disable Selection Effect" ), this );
+	m_enableDisableSelEffectActionMenu->setCheckable( true );
+	m_enableDisableSelEffectActionMenu->setChecked( true );
+	m_enableDisableSelEffectActionMenu->setEnabled( false );
+	m_loadedVisualizationDependentActions.push_back( m_enableDisableSelEffectActionMenu );
+	QObject::connect( m_enableDisableSelEffectActionMenu, &QAction::toggled, this, &GlyphViewerWindow::OnEnableDisableSelEffect );
 
-	antzWidgetContainer->addWidget(m_glyph3DView);
-	antzWidgetContainer->setCurrentWidget(m_glyph3DView);
+	m_viewer->addAction(m_openURLAction);
+	m_viewer->addAction(m_propertiesAction);
+	m_viewer->addAction(SynGlyphX::SharedActionList::CreateSeparator(m_viewer));
+	m_viewer->addAction(m_showTagsAction);
+	m_viewer->addAction(m_hideTagsAction);
+	m_viewer->addAction(m_hideAllTagsAction);
+	m_viewer->addAction(SynGlyphX::SharedActionList::CreateSeparator(m_viewer));
+	m_viewer->addAction(m_enableDisableSelEffectActionMenu);
+	m_viewer->addAction(m_clearSelectionAction);
 
-	QObject::connect(m_resetCameraToDefaultPosition, &QAction::triggered, m_glyph3DView, &Glyph3DView::ResetCamera);
-	QObject::connect(m_showAnimation, &QAction::toggled, m_glyph3DView, &SynGlyphXANTz::ANTzForestWidget::ShowAnimatedRotations);
-	QObject::connect(m_showTagsAction, &QAction::triggered, this, [this]{ m_glyph3DView->SetShowTagsOfSelectedObjects(true); });
-	QObject::connect(m_hideTagsAction, &QAction::triggered, this, [this]{ m_glyph3DView->SetShowTagsOfSelectedObjects(false); });
-	QObject::connect(m_hideAllTagsAction, &QAction::triggered, m_glyph3DView, &SynGlyphXANTz::ANTzForestWidget::ClearAllTags);
-	QObject::connect(m_filteringManager, &FilteringManager::FilterResultsChanged, m_glyph3DView, &SynGlyphXANTz::ANTzForestWidget::SetFilteredResults);
-	QObject::connect(m_glyph3DView, &Glyph3DView::StereoSetup, this, &GlyphViewerWindow::OnStereoSetup);
+	m_viewer->setContextMenuPolicy( Qt::ActionsContextMenu );
+
+	antzWidgetContainer->addWidget(m_viewer);
+	antzWidgetContainer->setCurrentWidget(m_viewer);
+	
+	QObject::connect( m_resetCameraToDefaultPosition, &QAction::triggered, this, [this]{ m_viewer->resetCamera(); } );
+	QObject::connect(m_showAnimation, &QAction::toggled, this, [this]{ m_viewer->enableAnimation( !m_viewer->animationEnabled() ); });
+	QObject::connect(m_showTagsAction, &QAction::triggered, this, [this]{ m_viewer->showTagsOfSelectedObjects(true); });
+	QObject::connect(m_hideTagsAction, &QAction::triggered, this, [this]{ m_viewer->showTagsOfSelectedObjects(false); });
+	QObject::connect( m_hideAllTagsAction, &QAction::triggered, this, [this]{ m_viewer->hideAllTags(); });
+	QObject::connect( m_filteringManager, &FilteringManager::FilterResultsChanged, this, [this]( const SynGlyphX::IndexSet& results ){ m_viewer->setFilteredResults( results ); } );
+
+	m_viewer->setOnSelectionChanged( [this]( bool selection_exists )
+	{
+		m_clearSelectionAction->setEnabled( selection_exists );
+		m_showTagsAction->setEnabled( selection_exists );
+		m_hideTagsAction->setEnabled( selection_exists );
+
+		m_openURLAction->setEnabled( selection_exists );
+		m_propertiesAction->setEnabled( selection_exists );
+	} );
 }
 
 void GlyphViewerWindow::CreateMenus() {
@@ -199,6 +221,9 @@ void GlyphViewerWindow::CreateMenus() {
 	m_fileMenu->addSeparator();
 
 	QAction* refreshVisualizationAction = CreateMenuAction(m_fileMenu, tr("Refresh Visualization"), QKeySequence::Refresh);
+	QIcon refreshVizIcon;
+	refreshVizIcon.addFile( ":SGXGUI/Resources/Icons/icon-refresh.png", QSize(), QIcon::Normal, QIcon::On );
+	refreshVisualizationAction->setIcon( refreshVizIcon );
 	QObject::connect(refreshVisualizationAction, &QAction::triggered, this, &GlyphViewerWindow::RefreshVisualization);
 	m_loadedVisualizationDependentActions.push_back(refreshVisualizationAction);
 
@@ -220,6 +245,7 @@ void GlyphViewerWindow::CreateMenus() {
 	m_loadedVisualizationDependentActions.push_back(closeVisualizationAction);
 
 	m_fileToolbar->addAction(closeVisualizationAction);
+	m_fileToolbar->addAction(refreshVisualizationAction);
 
 	CreateExportToPortableVisualizationSubmenu();
 	
@@ -258,7 +284,7 @@ void GlyphViewerWindow::CreateMenus() {
 
 	m_clearSelectionAction = CreateMenuAction(m_viewMenu, tr("Clear Selection"));
 	m_clearSelectionAction->setEnabled(false);
-	QObject::connect(m_clearSelectionAction, &QAction::triggered, m_glyphForestSelectionModel, &SynGlyphX::ItemFocusSelectionModel::ClearAll);
+	QObject::connect( m_clearSelectionAction, &QAction::triggered, this, [&]() { m_viewer->getScene().clearSelection(); } );
 
 	m_viewMenu->addSeparator();
 
@@ -304,6 +330,7 @@ void GlyphViewerWindow::CreateMenus() {
 	SynGlyphX::MainWindow::CreateLoginMenu();
 
 	EnableLoadedVisualizationDependentActions(false);
+
 }
 
 void GlyphViewerWindow::CreateDockWidgets() {
@@ -457,7 +484,6 @@ void GlyphViewerWindow::CloseVisualization() {
 	ClearAllData();
 	EnableLoadedVisualizationDependentActions(false);
 	ClearCurrentFile();
-	m_glyph3DView->SetBackgroundColor(SynGlyphX::GlyphColor::s_black);
 	if (m_legendsDockWidget->isFloating()) {
 
 		m_legendsDockWidget->hide();
@@ -465,6 +491,8 @@ void GlyphViewerWindow::CloseVisualization() {
 
 	QStackedWidget* centerWidgetsContainer = dynamic_cast<QStackedWidget*>(centralWidget());
 	centerWidgetsContainer->setCurrentIndex(0);
+	m_viewer->setBackgroundColor( SynGlyphX::render::color::black() );
+	m_viewer->clearScene();
 }
 
 bool GlyphViewerWindow::IsUserLoggedIn() {
@@ -474,10 +502,12 @@ bool GlyphViewerWindow::IsUserLoggedIn() {
 	}
 
 	QSettings settings;
-	settings.beginGroup("Login");
-	QString user = settings.value("Username", "Guest").toString(); //For the moment not used
-	QString pass = settings.value("Password", "").toString(); //For the moment not used
+	settings.beginGroup("LoggedInUser");
+	QString user = settings.value("Username", "Guest").toString();
+	QString pass = settings.value("Password", "").toString();
 	QString name = settings.value("Name", "Guest").toString();
+	QString inst = settings.value("Institution", "").toString();
+	bool logged = settings.value("StayLogged", false).toBool();
 	settings.endGroup();
 
 	if (m_dataEngineConnection->UserAccessControls()->IsValidConnection()){
@@ -485,8 +515,10 @@ bool GlyphViewerWindow::IsUserLoggedIn() {
 	}
 	else{
 		m_dataEngineConnection->UserAccessControls()->InitializeConnection();
-		if (name != "Guest"){
-			if (m_dataEngineConnection->UserAccessControls()->ValidateCredentials(user, pass)){
+		if (logged){
+			int valid = m_dataEngineConnection->UserAccessControls()->ValidateCredentials(user, pass);
+			if (valid == 1 || valid == 2){
+				m_dataEngineConnection->UserAccessControls()->PresetLogoPath("C:/ProgramData/SynGlyphX/GlyphEd/" + inst);
 				MainWindow::UpdateUserMenu(name);
 				UpdateUserMenu();
 				return true;
@@ -508,14 +540,17 @@ void GlyphViewerWindow::Logout(){
 	}
 
 	QSettings settings;
-	settings.beginGroup("Login");
+	settings.beginGroup("LoggedInUser");
 	settings.setValue("Username", "Guest");
 	settings.setValue("Password", "");
 	settings.setValue("Name", "Guest");
+	settings.setValue("Institution", "");
+	settings.setValue("StayLogged", false);
 	settings.endGroup();
 
 	m_dataEngineConnection->UserAccessControls()->ResetConnection();
 
+	m_homePage->ResetViews();
 	m_homePage->LoggedOut();
 	SynGlyphX::Application::restoreOverrideCursor();
 }
@@ -552,7 +587,7 @@ void GlyphViewerWindow::LoadVisualization(const QString& filename, const MultiTa
 	if (m_glyphForestModel->rowCount() > 0) {
 
 		ClearAllData();
-		m_glyph3DView->update();
+		// if ( m_glyph3DView ) m_glyph3DView->update();
 	}
 
 	if (extension == "sdt") {
@@ -710,6 +745,8 @@ void GlyphViewerWindow::ValidateDataMappingFile(SynGlyphX::DataTransformMapping:
 	}*/
 
 	mapping->WriteToFile(filename.toStdString());
+
+	SynGlyphX::Application::restoreOverrideCursor();
 }
 
 void GlyphViewerWindow::LoadDataTransform(const QString& filename, const MultiTableDistinctValueFilteringParameters& filters) {
@@ -749,6 +786,8 @@ void GlyphViewerWindow::LoadDataTransform(const QString& filename, const MultiTa
 		outputfiles[SynGlyphXANTz::ANTzCSVWriter::s_nodeFilenameIndex] = cacheFiles[0].toStdString();
 		outputfiles[SynGlyphXANTz::ANTzCSVWriter::s_tagFilenameIndex] = cacheFiles[1].toStdString();
 
+		m_viewer->loadLegacyScene( outputfiles[SynGlyphXANTz::ANTzCSVWriter::s_nodeFilenameIndex].c_str(), outputfiles[SynGlyphXANTz::ANTzCSVWriter::s_tagFilenameIndex].c_str(), images );
+
 		QStringList qList;
 		for (int i = 0; i < images.size(); i++){
 			qList << images.at(i).c_str();
@@ -762,7 +801,8 @@ void GlyphViewerWindow::LoadDataTransform(const QString& filename, const MultiTa
 
 		LoadFilesIntoModel(outputfiles, qList);
 		m_glyphForestModel->SetTagNotToBeShownIn3d(QString::fromStdWString(m_mappingModel->GetDataMapping()->GetDefaults().GetDefaultTagValue()));
-		m_glyph3DView->SetBackgroundColor(m_mappingModel->GetDataMapping()->GetSceneProperties().GetBackgroundColor());
+		auto bgcolor = m_mappingModel->GetDataMapping()->GetSceneProperties().GetBackgroundColor();
+		if ( m_viewer ) m_viewer->setBackgroundColor( glm::vec4( float( bgcolor[0] ) / 255.f, float( bgcolor[1] ) / 255.f, float( bgcolor[2] ) / 255.f, 1.f ) );
 		m_legendsWidget->SetLegends(m_mappingModel->GetDataMapping()->GetLegends());
 
 		//Hide in scene axes if visualization has downloaded maps
@@ -793,6 +833,7 @@ void GlyphViewerWindow::LoadFilesIntoModel(const SynGlyphXANTz::ANTzCSVWriter::F
 
 	std::array<QString, 3> rootPositionFields;
 	auto ifm = std::const_pointer_cast<SynGlyphX::DataTransformMapping>(dataTransformMapping)->GetInputFieldManager();
+	std::array<std::vector<float>, 3> positionXYZData;
 	for (unsigned int i = 0; i < 3; ++i) {
 
 		const SynGlyphX::InputBinding& posInputBinding = rootGlyph->second->GetRoot()->second.GetPosition()[i].GetBinding();
@@ -810,9 +851,13 @@ void GlyphViewerWindow::LoadFilesIntoModel(const SynGlyphXANTz::ANTzCSVWriter::F
 
 				rootPositionFields[i] = QString::fromStdWString(fieldToAliasMap[field.GetField()]);
 			}
+
+			positionXYZData[i] = m_sourceDataCache->GetNumericValuesForField(field);
 		}
 	}
 	m_glyphForestModel->SetRootPosXYZMappedFields(rootPositionFields);
+	m_viewer->setAxisNames( rootPositionFields[0].toStdString().c_str(), rootPositionFields[1].toStdString().c_str(), rootPositionFields[2].toStdString().c_str() );
+	m_viewer->setSourceDataLookupForPositionXYZ(positionXYZData[0], positionXYZData[1], positionXYZData[2]);
 }
 
 void GlyphViewerWindow::ChangeMapDownloadSettings() {
@@ -823,28 +868,25 @@ void GlyphViewerWindow::ChangeMapDownloadSettings() {
 
 void GlyphViewerWindow::ShowOpenGLSettings() {
 
-	const auto& format = m_glyph3DView->context()->format();
-	QString settings = tr("OpenGL Version = ") + QString::number(format.majorVersion()) + "." + QString::number(format.minorVersion()) + '\n';
-		
-	settings += tr("Stereo Support") + " = ";
-	if (m_glyph3DView->IsStereoSupported()) {
+	const auto& format = m_viewer->format();
+	QString settings = tr("OpenGL Version = ") + QString::number(format.majorVersion()) + "." + QString::number(format.minorVersion()) + ( ( format.profile() == QSurfaceFormat::CoreProfile ) ? " (core profile)" : " (compatibility profile)" ) + '\n';
 
-		settings += tr("enabled");
-	}
-	else {
+	settings += tr( "Stereo Support" ) + " = ";
+	if ( m_viewer->stereoSupported() )
+		settings += tr( "enabled" );
+	else
+		settings += tr( "disabled" );
 
-		settings += tr("disabled");
-	}
 	QMessageBox::information(this, tr("OpenGL Settings"), settings);
 }
 
 void GlyphViewerWindow::ChangeStereoMode() {
 
-	if (m_glyph3DView->IsStereoSupported()) {
+	if (m_viewer->stereoSupported()) {
 
 		try {
 
-			m_glyph3DView->SetStereoMode(!m_glyph3DView->IsInStereoMode());
+			m_viewer->setStereoMode(!m_viewer->stereoMode());
 		}
 		catch (const std::exception& e) {
 
@@ -928,24 +970,26 @@ void GlyphViewerWindow::ChangeOptions(const GlyphViewerOptions& oldOptions, cons
 
 		if (oldOptions.GetShowHUDAxisObject() != newOptions.GetShowHUDAxisObject()) {
 
-			m_glyph3DView->SetShowHUDAxisInfoObject(newOptions.GetShowHUDAxisObject());
+			m_viewer->enableHUDAxes(newOptions.GetShowSceneAxisObject());
 		}
 
 		if (oldOptions.GetHUDAxisObjectLocation() != newOptions.GetHUDAxisObjectLocation()) {
 
-			m_glyph3DView->SetAxisInfoObjectLocation(newOptions.GetHUDAxisObjectLocation());
+			m_viewer->setHUDAxesLocation(SynGlyphX::HUDAxesLocation(newOptions.GetHUDAxisObjectLocation()));
 		}
 
 		if (oldOptions.GetShowSceneAxisObject() != newOptions.GetShowSceneAxisObject()) {
 
-			m_glyph3DView->SetShowSceneAxisInfoObject(newOptions.GetShowSceneAxisObject());
+			m_viewer->enableSceneAxes(newOptions.GetShowSceneAxisObject());
+			
 		}
 
 #ifdef USE_ZSPACE
-		if (oldOptions.GetZSpaceOptions() != newOptions.GetZSpaceOptions()) {
+		// TODO: implement
+/*		if (oldOptions.GetZSpaceOptions() != newOptions.GetZSpaceOptions()) {
 
-			m_glyph3DView->SetZSpaceOptions(newOptions.GetZSpaceOptions());
-		}
+			m_viewer->setZSpaceOptions(newOptions.GetZSpaceOptions());
+		}*/
 #endif
 
 		if (oldOptions.GetHideUnselectedGlyphTrees() != newOptions.GetHideUnselectedGlyphTrees()) {
@@ -967,6 +1011,8 @@ void GlyphViewerWindow::ChangeOptions(const GlyphViewerOptions& oldOptions, cons
 
 			m_showErrorFromTransform = newOptions.GetShowMessageWhenImagesDidNotDownload();
 		}
+
+		m_viewer->setFilteredGlyphOpacity( newOptions.GetFilteredGlyphOpacity() );
 	}
 
 	m_showHideHUDAxisAction->setChecked(newOptions.GetShowHUDAxisObject());
@@ -1099,12 +1145,25 @@ GlyphViewerOptions GlyphViewerWindow::CollectOptions() {
 
 	options.SetCacheDirectory(QString::fromStdWString(m_cacheManager.GetBaseCacheDirectory()));
 	
-	options.SetShowHUDAxisObject(m_glyph3DView->GetShowHUDAxisInfoObject());
-	options.SetHUDAxisObjectLocation(m_glyph3DView->GetAxisInfoObjectLocation());
-	options.SetShowSceneAxisObject(m_glyph3DView->GetShowSceneAxisInfoObject());
+	if ( m_viewer )
+	{
+		auto location = m_viewer->hudAxesLocation();
+		SynGlyphXANTz::ANTzForestWidget::HUDLocation antz_location;	// todo: convert options to new enum
+		switch ( location )
+		{
+			case SynGlyphX::HUDAxesLocation::TopLeft: antz_location = SynGlyphXANTz::ANTzForestWidget::TopLeft; break;
+			case SynGlyphX::HUDAxesLocation::BottomLeft: antz_location = SynGlyphXANTz::ANTzForestWidget::BottomLeft; break;
+			case SynGlyphX::HUDAxesLocation::BottomRight: antz_location = SynGlyphXANTz::ANTzForestWidget::BottomRight; break;
+		}
+
+		options.SetShowHUDAxisObject( m_viewer->hudAxesEnabled() );
+		options.SetHUDAxisObjectLocation( antz_location );
+		options.SetShowSceneAxisObject( m_viewer->sceneAxesEnabled() );
 #ifdef USE_ZSPACE
-	options.SetZSpaceOptions(m_glyph3DView->GetZSpaceOptions());
+		// TODO 
+		// options.SetZSpaceOptions( m_glyph3DView->GetZSpaceOptions() );
 #endif
+	}
 
 	options.SetHideUnselectedGlyphTrees(m_linkedWidgetsManager->GetFilterView());
 	options.SetLoadSubsetVisualization(m_filteringWidget->GetLoadSubsetVisualization());
@@ -1257,6 +1316,7 @@ void GlyphViewerWindow::CreateInteractionToolbar() {
 	hudAxisIcon.addFile(":SGXGUI/Resources/Icons/icon-axis-hud.png", QSize(), QIcon::Normal, QIcon::Off);
 	hudAxisIcon.addFile(":SGXGUI/Resources/Icons/icon-axis-hud-a.png", QSize(), QIcon::Normal, QIcon::On);
 	m_showHideHUDAxisAction->setIcon(hudAxisIcon);
+	//Replace with scene viewer function when available
 	QObject::connect(m_showHideHUDAxisAction, &QAction::toggled, this, &GlyphViewerWindow::OnShowHideHUDAxis);
 	m_interactionToolbar->addAction(m_showHideHUDAxisAction);
 
@@ -1266,10 +1326,45 @@ void GlyphViewerWindow::CreateInteractionToolbar() {
 	sceneAxisIcon.addFile(":SGXGUI/Resources/Icons/icon-axis-scene.png", QSize(), QIcon::Normal, QIcon::Off);
 	sceneAxisIcon.addFile(":SGXGUI/Resources/Icons/icon-axis-scene-a.png", QSize(), QIcon::Normal, QIcon::On);
 	m_showHideSceneAxisAction->setIcon(sceneAxisIcon);
+	//Replace with scene viewer function when available
 	QObject::connect(m_showHideSceneAxisAction, &QAction::toggled, this, &GlyphViewerWindow::OnShowHideSceneAxis);
 	m_interactionToolbar->addAction(m_showHideSceneAxisAction);
 
 	m_interactionToolbar->addAction(m_remapRootPositionMappingsAction);
+
+	m_interactionToolbar->addSeparator();
+
+	m_enableDisableFlyToObjectAction = new QAction( tr( "Enable/Disable Fly-to-Object" ), m_interactionToolbar );
+	m_enableDisableFlyToObjectAction->setCheckable( true );
+	QIcon flyToObjectIcon;
+	flyToObjectIcon.addFile( ":SGXGUI/Resources/Icons/icon-flyby.png", QSize(), QIcon::Normal, QIcon::Off );
+	flyToObjectIcon.addFile( ":SGXGUI/Resources/Icons/icon-flyby-a.png", QSize(), QIcon::Normal, QIcon::On );
+	m_enableDisableFlyToObjectAction->setIcon( flyToObjectIcon );
+	QObject::connect( m_enableDisableFlyToObjectAction, &QAction::toggled, this, &GlyphViewerWindow::OnEnableDisableFlyToObjectAction );
+	m_interactionToolbar->addAction( m_enableDisableFlyToObjectAction );
+	m_loadedVisualizationDependentActions.push_back( m_enableDisableFlyToObjectAction );
+
+	m_enableDisableFreeSelectionCameraAction = new QAction( tr( "Enable/Disable Orbit Selection" ), m_interactionToolbar );
+	m_enableDisableFreeSelectionCameraAction->setCheckable( true );
+	m_enableDisableFreeSelectionCameraAction->setChecked( true );
+	QIcon freeSelCamIcon;
+	freeSelCamIcon.addFile( ":SGXGUI/Resources/Icons/icon-orbit.png", QSize(), QIcon::Normal, QIcon::Off );
+	freeSelCamIcon.addFile( ":SGXGUI/Resources/Icons/icon-orbit-a.png", QSize(), QIcon::Normal, QIcon::On );
+	m_enableDisableFreeSelectionCameraAction->setIcon( freeSelCamIcon );
+	QObject::connect( m_enableDisableFreeSelectionCameraAction, &QAction::toggled, this, &GlyphViewerWindow::OnEnableDisableFreeSelectionCamera );
+	m_interactionToolbar->addAction( m_enableDisableFreeSelectionCameraAction );
+	m_loadedVisualizationDependentActions.push_back( m_enableDisableFreeSelectionCameraAction );
+
+	m_enableDisableSelEffectAction = new QAction( tr( "Enable/Disable Selection Effect" ), m_interactionToolbar );
+	m_enableDisableSelEffectAction->setCheckable( true );
+	m_enableDisableSelEffectAction->setChecked( true );
+	QIcon selEffIcon;
+	selEffIcon.addFile( ":SGXGUI/Resources/Icons/icon-blink.png", QSize(), QIcon::Normal, QIcon::Off );
+	selEffIcon.addFile( ":SGXGUI/Resources/Icons/icon-blink-a.png", QSize(), QIcon::Normal, QIcon::On );
+	m_enableDisableSelEffectAction->setIcon( selEffIcon );
+	QObject::connect( m_enableDisableSelEffectAction, &QAction::toggled, this, &GlyphViewerWindow::OnEnableDisableSelEffect );
+	m_interactionToolbar->addAction( m_enableDisableSelEffectAction );
+	m_loadedVisualizationDependentActions.push_back( m_enableDisableSelEffectAction );
 
 	m_interactionToolbar->addSeparator();
 
@@ -1287,12 +1382,12 @@ void GlyphViewerWindow::OnStereoSetup(bool stereoEnabled) {
 
 void GlyphViewerWindow::OnShowHideHUDAxis(bool show) {
 
-	m_glyph3DView->SetShowHUDAxisInfoObject(show);
+	m_viewer->enableHUDAxes( show );
 }
 
 void GlyphViewerWindow::OnShowHideSceneAxis(bool show) {
 
-	m_glyph3DView->SetShowSceneAxisInfoObject(show);
+	m_viewer->enableSceneAxes( show );
 }
 
 void GlyphViewerWindow::OnOpenURLs() {
@@ -1330,6 +1425,28 @@ const SynGlyphX::SettingsStoredFileList& GlyphViewerWindow::GetSubsetFileListIns
 void GlyphViewerWindow::AddSubsetVisualization(const QString& filename) {
 
 	s_subsetFileList.AddFile(filename);
+}
+
+void GlyphViewerWindow::OnEnableDisableFlyToObjectAction( bool enable )
+{
+	if ( m_viewer && m_viewer->isInitialized() )
+		m_viewer->enableFlyToObject( enable );
+}
+
+void GlyphViewerWindow::OnEnableDisableFreeSelectionCamera( bool enable )
+{
+	if ( m_viewer && m_viewer->isInitialized() )
+		m_viewer->enableFreeSelectionCamera( !enable );
+}
+
+void GlyphViewerWindow::OnEnableDisableSelEffect( bool enable )
+{
+	if ( m_viewer && m_viewer->isInitialized() )
+	{
+		m_viewer->enableSelectionEffect( enable );
+		m_enableDisableSelEffectActionMenu->setChecked( enable );
+		m_enableDisableSelEffectAction->setChecked( enable );
+	}
 }
 
 bool GlyphViewerWindow::DoesHelpExist() const {

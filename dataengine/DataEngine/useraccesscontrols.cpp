@@ -4,6 +4,7 @@ namespace DataEngine
 {
 	UserAccessControls::UserAccessControls(JNIEnv *env) :
 		jniEnv(env),
+		synced(false),
 		validConnection(false)
 	{
 		jcls = jniEnv->FindClass("UserAccessControls");
@@ -32,6 +33,7 @@ namespace DataEngine
 	}
 
 	void UserAccessControls::ResetConnection(){
+		synced = false;
 		validConnection = false;
 		jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
 			"logOutCurrentUser", "()V");
@@ -44,12 +46,12 @@ namespace DataEngine
 		}
 	}
 
-	bool UserAccessControls::ValidateCredentials(QString username, QString password){
+	int UserAccessControls::ValidateCredentials(QString username, QString password){
 
-		bool valid = false;
+		valid = 0;
 		if (jcls != NULL) {
 			jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
-				"validateCredentials", "(Ljava/lang/String;Ljava/lang/String;)Z");
+				"validateCredentials", "(Ljava/lang/String;Ljava/lang/String;)I");
 			if (methodId != NULL) {
 				jstring un = jniEnv->NewStringUTF(username.toStdString().c_str());
 				jstring pw = jniEnv->NewStringUTF(password.toStdString().c_str());
@@ -61,11 +63,16 @@ namespace DataEngine
 				}
 			}
 		}
+
 		return valid;
+
 	}
 
 	QString UserAccessControls::NameOfUser(){
 
+		if (valid == 2){
+			return presetName;
+		}
 		jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
 			"nameOfUser", "()Ljava/lang/String;");
 		jstring itr = NULL;
@@ -80,6 +87,10 @@ namespace DataEngine
 	}
 
 	QString UserAccessControls::NameOfInstitution(){
+
+		if (valid == 2){
+			return presetInstitution;
+		}
 		jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
 			"nameOfInstitution", "()Ljava/lang/String;");
 		jstring itr = NULL;
@@ -146,6 +157,12 @@ namespace DataEngine
 	}
 
 	int UserAccessControls::FileSyncSetup(QString path){
+
+		if (valid == 2){
+			return 0;
+		}
+
+		synced = true;
 		jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
 			"fileSyncSetup", "(Ljava/lang/String;)I");
 		int count;
@@ -175,13 +192,16 @@ namespace DataEngine
 	}
 
 	void UserAccessControls::StartSyncingFiles(){
-		jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
-			"startSyncingFiles", "()V");
-		if (methodId != NULL) {
-			jniEnv->CallStaticVoidMethod(jcls, methodId);
-			if (jniEnv->ExceptionCheck()) {
-				jniEnv->ExceptionDescribe();
-				jniEnv->ExceptionClear();
+		
+		if (valid != 2){
+			jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
+				"startSyncingFiles", "()V");
+			if (methodId != NULL) {
+				jniEnv->CallStaticVoidMethod(jcls, methodId);
+				if (jniEnv->ExceptionCheck()) {
+					jniEnv->ExceptionDescribe();
+					jniEnv->ExceptionClear();
+				}
 			}
 		}
 	}
@@ -198,5 +218,38 @@ namespace DataEngine
 			}
 		}
 		return count;
+	}
+
+	QString UserAccessControls::GlyphEdPath(){
+
+		if (!synced){
+			return presetLogoPath;
+		}
+
+		jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
+			"getGlyphEdPath", "()Ljava/lang/String;");
+		jstring itr = NULL;
+		if (methodId != NULL) {
+			itr = (jstring)jniEnv->CallStaticObjectMethod(jcls, methodId);
+			if (jniEnv->ExceptionCheck()) {
+				jniEnv->ExceptionDescribe();
+				jniEnv->ExceptionClear();
+			}
+		}
+		return QString(jniEnv->GetStringUTFChars(itr, JNI_FALSE));
+	}
+
+	bool UserAccessControls::HasSynced(){
+
+		return synced;
+	}
+
+	void UserAccessControls::PresetLogoPath(QString path){
+		presetLogoPath = path;
+	}
+
+	void UserAccessControls::SetUsersNameAndInstitution(QString name, QString inst){
+		presetName = name;
+		presetInstitution = inst;
 	}
 }

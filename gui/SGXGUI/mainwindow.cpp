@@ -14,7 +14,6 @@
 #include <QtWidgets/QUndoStack>
 #include "singlewidgetdialog.h"
 #include <QtWidgets/QToolButton>
-#include "userlogindialog.h"
 
 namespace SynGlyphX {
 
@@ -194,15 +193,9 @@ namespace SynGlyphX {
 		QObject::connect(m_aboutBoxAction, &QAction::triggered, this, &MainWindow::ShowAboutBox);
     }
 
-	void MainWindow::SetDataEngineConnection(DataEngine::DataEngineConnection::SharedPtr dataEngineConnection) {
-		m_dataEngineConnection = dataEngineConnection;
-	}
-
 	void MainWindow::CreateLoginMenu() {
 
 		QString user = "Log In " + QString(QChar(0x23F7));
-		//QAction* loginAction = userMenuBar->addAction(tr(user.toStdString().c_str()));
-		//QObject::connect(loginAction, &QAction::triggered, this, &MainWindow::TriggerLoginWindow);
 		menuBar()->setCornerWidget(userMenuBar, Qt::TopRightCorner);
 
 	}

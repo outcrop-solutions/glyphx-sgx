@@ -443,24 +443,6 @@
     <ClCompile Include="GeneratedFiles\Release\moc_RowMimeData.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
-    <ClCompile Include="syncprogressdialog.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_syncprogressdialog.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="userlogindialog.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_userlogindialog.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_userlogindialog.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_syncprogressdialog.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="sgxgui_global.h">
@@ -610,12 +592,6 @@
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="RowMimeData.h">
-      <Filter>Header Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="syncprogressdialog.h">
-      <Filter>Header Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="userlogindialog.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>
