@@ -72,11 +72,6 @@ public class UserAccessControls {
 		return 1;
 	}
 
-	public static void restructureFilePaths(){
-		PathBuilder pb = new PathBuilder(getGlyphEdPath());
-		pb.resetSharedVisualizationPaths();
-	}
-
 	public static void logOutCurrentUser(){
 		loggedInUser = null;
 	}
@@ -123,7 +118,6 @@ public class UserAccessControls {
 
 	public static void main(String [] args){
 
-		
 		System.out.println(UserAccessControls.initConnection());
 		System.out.println(UserAccessControls.validateCredentials("ataul","ataul"));
 		System.out.println(UserAccessControls.nameOfUser());
@@ -165,10 +159,8 @@ public class UserAccessControls {
 		}catch(Exception e){
 			e.printStackTrace();
 		}
-		UserAccessControls.restructureFilePaths();
-		System.out.println("Done syncing");
-		
-	
-	}
 
+		System.out.println("Done syncing");
+
+	}
 }

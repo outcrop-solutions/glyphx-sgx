@@ -11,11 +11,10 @@ import synglyphx.io.Logger;
 
 public class FileSyncer {
 
-	//private static String KEY = "C:/Users/Bryan/Desktop/GlyphEd/sgxinstancekey.ppk";
 	private static String HOST = "ec2-52-42-56-15.us-west-2.compute.amazonaws.com";
 	private static String USER = "ec2-user";
 	private static int PORT = 22;
-	private String key;
+	private File ppk = null;
 	private ArrayList<UserFile> needToSync = null;
 	private Hashtable<File, Long> toUpdateTS = null;
 	private String syncedDirPath;
@@ -25,8 +24,6 @@ public class FileSyncer {
 	private int needToSyncImage;
 	private int needToSyncData;
 	private int needToSyncShared;
-	//private byte[] priv_key;
-	//private byte[] pub_key;
 	private volatile boolean doneSyncing;
 	private volatile int files_synced;
 
@@ -36,39 +33,54 @@ public class FileSyncer {
 		needToSyncData = 0;
 		files_synced = 1;
 		doneSyncing = false;
-		//setupPrivateKey();
 	}
-/*
+
 	private void setupPrivateKey(){
-		String pub = "AAAAB3NzaC1yc2EAAAADAQABAAABAQDFasQ7Wttz2u1ffCtnFvi1qT599ArvIgTZ"
-					 +"kgIBIjNTpCJ91iDJrkDehNGYrjGUf26162DxuoLoZBBOkxf33JdvmITQpksDWKw8"
-					 +"zDKCXnX9HENHLC2tQC2hL8416yK8rr0F+XUpNZFDiR5yEUVJmQtDEIx+jDGoukTY"
-					 +"70Kt6xf2XlgE/bT8GnEAq9rtUPDxJJixP+KDaUqzBKCD2M7c9A71PF1ozkqcUhIe"
-					 +"JZdeWtwSDjae9T0Q8wd3+7rCj5BHQ8m4/S6904RK0HsqU7jplnrATQkTZZmO71FU"
-					 +"6Otl8NwDicIOF1x4PQgXTDOD4j5EapljtvNcHTv5OiJrppXPY+51";
-		String priv = "AAABAGhNyrQZgw0pRHVIo53qEynX676cbBKAhNN3QzvaGAg/FkIqGlS0jm2C+0KR"
-					+"9nwhABt561SMWJH0HHGHYgiBMjmx+apL0iJIfWf5803SHsDGZ/14qAF7gSBCo871"
-					+"Fvtdz10SugY12TQ3hDB8U4FZLQwX+EL8S1h8YdfEQhSlu5lcvdJdM00hbVylO/eD"
-					+"Ym0kKcyrcamZtHgTxUFa/QCw1RmpUA/whpkeIHg6Z0iM+Wtihi97zsvMAq7irL74"
-					+"8TqfsqhWnQys6LT0rS4ogq5JL+meBgAPOn0UhWd9VYwzazzhXP8fMESzidPhkh69"
-					+"drEzVmXtL0EHjBfHEIwKxByn7xkAAACBAOEisHMFj5ozIdYmodUrgPG5XLrU73/C"
-					+"8/0BKnRaj4Fi1hdnwwnXgMbltOdYmh1bYWTv55qXvRXRq8uMRkZtOj6NvzBBiHGF"
-					+"8sYohlAQrTUe4JwqcRPdstklwDtCMYnMRMB4vvaFMm+n4VxioIeIcOSL0vBIfV/E"
-					+"/d8xPi2PEqCTAAAAgQDge0ax5R5NTU43m1lvfV924E7ukWzAHZdR3Y68uWKh3sTl"
-					+"EZ2IWnAEGCtfKZQxeDPDuafAyfRJugcKESydpoOVIoI5T9DHMiDtAy4InEH13aZV"
-					+"HiXvVxMyUUux6t77veWapoLa4ee5i/Hx/qyJRoK4yDC+4R9TswlZm1qNEveB1wAA"
-					+"AIEA4QKsjSBDWpbwnlDy2fQS/M/ohHvyCLkGCNn70vvuiuvscVtOQBtvYBOBU5nQ"
-					+"aNKIfjunrPZ3Asc0Jc3zXOKt+iXULRWuW1NRDh6FX/X7zb0+groV/AgtWvh9Iup3"
-					+"8GTl7Q35hubk/GSCKosY+wWuN0Qt34pxB/TpGHeF98W67bE=";
-		priv_key = priv.getBytes();
-		pub_key = pub.getBytes();
+		
+		String ppkey = "PuTTY-User-Key-File-2: ssh-rsa"+System.lineSeparator()
+		+"Encryption: none"+System.lineSeparator()
+		+"Comment: imported-openssh-key"+System.lineSeparator()
+		+"Public-Lines: 6"+System.lineSeparator()
+		+"AAAAB3NzaC1yc2EAAAADAQABAAABAQDFasQ7Wttz2u1ffCtnFvi1qT599ArvIgTZ"+System.lineSeparator()
+	 	+"kgIBIjNTpCJ91iDJrkDehNGYrjGUf26162DxuoLoZBBOkxf33JdvmITQpksDWKw8"+System.lineSeparator()
+	 	+"zDKCXnX9HENHLC2tQC2hL8416yK8rr0F+XUpNZFDiR5yEUVJmQtDEIx+jDGoukTY"+System.lineSeparator()
+	 	+"70Kt6xf2XlgE/bT8GnEAq9rtUPDxJJixP+KDaUqzBKCD2M7c9A71PF1ozkqcUhIe"+System.lineSeparator()
+	 	+"JZdeWtwSDjae9T0Q8wd3+7rCj5BHQ8m4/S6904RK0HsqU7jplnrATQkTZZmO71FU"+System.lineSeparator()
+	 	+"6Otl8NwDicIOF1x4PQgXTDOD4j5EapljtvNcHTv5OiJrppXPY+51"+System.lineSeparator()
+		+"Private-Lines: 14"+System.lineSeparator()
+		+"AAABAGhNyrQZgw0pRHVIo53qEynX676cbBKAhNN3QzvaGAg/FkIqGlS0jm2C+0KR"+System.lineSeparator()
+		+"9nwhABt561SMWJH0HHGHYgiBMjmx+apL0iJIfWf5803SHsDGZ/14qAF7gSBCo871"+System.lineSeparator()
+		+"Fvtdz10SugY12TQ3hDB8U4FZLQwX+EL8S1h8YdfEQhSlu5lcvdJdM00hbVylO/eD"+System.lineSeparator()
+		+"Ym0kKcyrcamZtHgTxUFa/QCw1RmpUA/whpkeIHg6Z0iM+Wtihi97zsvMAq7irL74"+System.lineSeparator()
+		+"8TqfsqhWnQys6LT0rS4ogq5JL+meBgAPOn0UhWd9VYwzazzhXP8fMESzidPhkh69"+System.lineSeparator()
+		+"drEzVmXtL0EHjBfHEIwKxByn7xkAAACBAOEisHMFj5ozIdYmodUrgPG5XLrU73/C"+System.lineSeparator()
+		+"8/0BKnRaj4Fi1hdnwwnXgMbltOdYmh1bYWTv55qXvRXRq8uMRkZtOj6NvzBBiHGF"+System.lineSeparator()
+		+"8sYohlAQrTUe4JwqcRPdstklwDtCMYnMRMB4vvaFMm+n4VxioIeIcOSL0vBIfV/E"+System.lineSeparator()
+		+"/d8xPi2PEqCTAAAAgQDge0ax5R5NTU43m1lvfV924E7ukWzAHZdR3Y68uWKh3sTl"+System.lineSeparator()
+		+"EZ2IWnAEGCtfKZQxeDPDuafAyfRJugcKESydpoOVIoI5T9DHMiDtAy4InEH13aZV"+System.lineSeparator()
+		+"HiXvVxMyUUux6t77veWapoLa4ee5i/Hx/qyJRoK4yDC+4R9TswlZm1qNEveB1wAA"+System.lineSeparator()
+		+"AIEA4QKsjSBDWpbwnlDy2fQS/M/ohHvyCLkGCNn70vvuiuvscVtOQBtvYBOBU5nQ"+System.lineSeparator()
+		+"aNKIfjunrPZ3Asc0Jc3zXOKt+iXULRWuW1NRDh6FX/X7zb0+groV/AgtWvh9Iup3"+System.lineSeparator()
+		+"8GTl7Q35hubk/GSCKosY+wWuN0Qt34pxB/TpGHeF98W67bE="+System.lineSeparator()
+		+"Private-MAC: cdb63829162a8a6bd5024f0463866472474c0383"+System.lineSeparator();
+
+		try{
+			ppk = File.createTempFile("sgxinstancekey",".ppk");
+			FileOutputStream fos = new FileOutputStream(ppk.getAbsolutePath());
+			fos.write(ppkey.getBytes());
+			fos.close();
+		}
+		catch(Exception e){
+			e.printStackTrace();
+		}
 
 	}
-*/
+
 	public int fileSyncSetup(ArrayList<UserFile> filesToSync, String syncedDir, Institution inst){
 
 		this.syncedDirPath = syncedDir;
 		validateDestinationDirectory(inst.getName());
+		setupPrivateKey();
 		glyphEdPath = syncedDirPath+inst.getName();
 
 		filesToSync = setModifiedDates(filesToSync, inst);
@@ -103,19 +115,6 @@ public class FileSyncer {
 			needToSync.add(new UserFile("Logo", inst.getName()+"/customer.png", 1, 2));
 			setNewModified(img, inst.getLogoModified().getTime());
 		}
-		File shr = new File(syncedDirPath+inst.getName()+"/sharedvisualizations.xml");
-		if(shr.exists()){
-			if(shr.lastModified() < inst.getSharedModified().getTime()){
-				needToSyncShared = 1;
-				needToSync.add(new UserFile("Shared", inst.getName()+"/sharedvisualizations.xml", 1, 4));
-				setNewModified(shr, inst.getSharedModified().getTime());
-			}
-		}
-		else{
-			needToSyncShared = 1;
-			needToSync.add(new UserFile("Shared", inst.getName()+"/sharedvisualizations.xml", 1, 4));
-			setNewModified(shr, inst.getSharedModified().getTime());
-		}
 		File db = new File(syncedDirPath+inst.getName()+"/glyphed.db");
 		if(db.exists()){
 			if(db.lastModified() < inst.getDBModified().getTime()){
@@ -130,6 +129,22 @@ public class FileSyncer {
 			setNewModified(db, inst.getDBModified().getTime());
 		}
 
+		//NEED TO MAKE HAPPEN EVERYTIME AND UPDATE WITH PERMISSION CHANGES
+		File shr = new File(syncedDirPath+inst.getName()+"/sharedvisualizations.xml");
+		if(shr.exists()){
+			if(shr.lastModified() < inst.getSharedModified().getTime()){
+				needToSyncShared = 1;
+				needToSync.add(new UserFile("Shared", inst.getName()+"/sharedvisualizations.xml", 1, 4));
+				setNewModified(shr, inst.getSharedModified().getTime());
+			}
+		}
+		else{
+			needToSyncShared = 1;
+			needToSync.add(new UserFile("Shared", inst.getName()+"/sharedvisualizations.xml", 1, 4));
+			setNewModified(shr, inst.getSharedModified().getTime());
+		}
+		//END
+
 		return needToSync.size();
 	}
 
@@ -140,8 +155,7 @@ public class FileSyncer {
     	SftpATTRS attrs = null;
 		try{
 			jsch=new JSch();
-		    jsch.addIdentity(key);
-		    //jsch.addIdentity("sgxinstancekey", priv_key, pub_key, new byte[0]);
+		    jsch.addIdentity(ppk.getAbsolutePath());
 		    session=jsch.getSession(USER, HOST, PORT);
 
 		    Hashtable<String, String> config = new Hashtable<String, String>();
@@ -203,6 +217,7 @@ public class FileSyncer {
     			}
     			updateTimestamps();
 				session.disconnect();
+
 				PathBuilder pb = new PathBuilder(glyphEdPath);
 				if(visualizationsToSync() > 0){
 					pb.updateSDTPathways();
@@ -227,8 +242,6 @@ public class FileSyncer {
 		if(!(last.equals("/") || last.equals("\\"))){
 			syncedDirPath += "/";
 		}
-		//System.out.println(syncedDirPath);
-		key = syncedDirPath+"sgxinstancekey.ppk";
 
 		File f = new File(syncedDirPath+inst_name);
 		if(!f.exists()){
