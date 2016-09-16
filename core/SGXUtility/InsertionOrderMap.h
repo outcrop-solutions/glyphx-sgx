@@ -83,6 +83,7 @@ namespace SynGlyphX {
 				if (iT->first == key) {
 
 					this->erase(iT);
+					break;
 				}
 			}
 		}
