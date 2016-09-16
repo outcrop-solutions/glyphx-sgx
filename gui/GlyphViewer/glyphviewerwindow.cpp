@@ -525,6 +525,8 @@ void GlyphViewerWindow::LoadVisualization(const QString& filename, const MultiTa
 		// if ( m_glyph3DView ) m_glyph3DView->update();
 	}
 
+	m_viewer->clearScene();
+
 	if (extension == "sdt") {
 
 		LoadDataTransform(filename, filters);

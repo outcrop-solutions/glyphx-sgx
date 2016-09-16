@@ -149,14 +149,17 @@ namespace SynGlyphX
 
 	void SceneViewer::clearScene()
 	{
-		scene.clear();
-		base_images->clear();
-		grids->clear();
-		for ( int i = 0; i < 3; ++i )
-			axis_names[i] = "";
-		for ( auto& tex : base_textures )
-			hal::device::release( tex );
-		base_textures.clear();
+		if ( initialized )
+		{
+			scene.clear();
+			base_images->clear();
+			grids->clear();
+			for ( int i = 0; i < 3; ++i )
+				axis_names[i] = "";
+			for ( auto& tex : base_textures )
+				hal::device::release( tex );
+			base_textures.clear();
+		}
 	}
 
 	QToolButton* SceneViewer::CreateNavigationButton( const QString& toolTip, bool autoRepeat ) {
