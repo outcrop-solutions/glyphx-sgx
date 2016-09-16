@@ -6,7 +6,7 @@ namespace SynGlyphX
 {
 	AxisRenderer::AxisRenderer() : body_scale( 1.f ), head_scale( glm::vec3( 2.f, 2.f, 2.f ) )
 	{
-		effect = hal::device::create_effect( "shaders/solid.vert", nullptr, "shaders/solid.frag" );
+		effect = hal::device::load_effect( "shaders/solid.vert", nullptr, "shaders/solid.frag" );
 		axis_body = render::load_model( "meshes/axis_cylinder.dae" );
 		axis_head = render::load_model( "meshes/axis_cone.dae" );
 	}

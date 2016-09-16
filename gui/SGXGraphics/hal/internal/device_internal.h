@@ -17,6 +17,7 @@ namespace SynGlyphX
 			static hal::context* get_default_context();
 
 			static hal::mesh* create_mesh( const hal::vertex_format& fmt, hal::primitive_type prim, unsigned int vertex_count, void* vertices, unsigned int primitive_count, void* indices, bool support_readback );
+			static hal::effect* load_effect( const char* vs_file, const char* gs_file, const char* ps_file );
 			static hal::effect* create_effect( const char* vs, const char* gs, const char* ps );
 			static hal::cbuffer* create_cbuffer( unsigned int size );
 

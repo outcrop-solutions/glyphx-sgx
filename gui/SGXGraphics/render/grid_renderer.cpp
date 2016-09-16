@@ -11,7 +11,7 @@ namespace SynGlyphX
 	{
 		grid_renderer::grid_renderer()
 		{
-			effect = hal::device::create_effect( "shaders/line.vert", nullptr, "shaders/line.frag" );
+			effect = hal::device::load_effect( "shaders/line.vert", nullptr, "shaders/line.frag" );
 		}
 
 		grid_renderer::~grid_renderer()

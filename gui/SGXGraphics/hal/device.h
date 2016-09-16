@@ -18,6 +18,7 @@ namespace SynGlyphX
 			static context* get_default_context();
 
 			static mesh* create_mesh( const vertex_format& fmt, primitive_type prim, unsigned int vertex_count, void* vertices, unsigned int primitive_count, void* indices, bool support_readback = false );
+			static effect* load_effect( const char* vs_file, const char* gs_file, const char* ps_file );
 			static effect* create_effect( const char* vs, const char* gs, const char* ps );
 			static cbuffer* create_cbuffer( unsigned int size );
 

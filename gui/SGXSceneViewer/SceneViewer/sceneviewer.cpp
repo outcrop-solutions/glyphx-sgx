@@ -214,8 +214,8 @@ namespace SynGlyphX
 
 		ui_camera = new render::ortho_camera( 512u, 512u, -1024.f, 1024.f );
 
-		tex_effect = hal::device::create_effect( "shaders/texture.vert", nullptr, "shaders/texture.frag" );
-		drag_effect = hal::device::create_effect( "shaders/drag_select.vert", nullptr, "shaders/drag_select.frag" );
+		tex_effect = hal::device::load_effect( "shaders/texture.vert", nullptr, "shaders/texture.frag" );
+		drag_effect = hal::device::load_effect( "shaders/drag_select.vert", nullptr, "shaders/drag_select.frag" );
 
 		default_base_texture = hal::device::load_texture( "DefaultBaseImages/World.png" );
 

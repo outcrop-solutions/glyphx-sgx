@@ -33,6 +33,32 @@ namespace SynGlyphX
 			hal::effect* text_effect = nullptr;
 			FT_Library freetype;
 			hal::vertex_format text_format;
+
+			const char* text_vert =
+				"#version 330 core\n"
+				"layout( std140 ) uniform instance_data\n"
+				"{\n"
+				"mat4 transform;\n"
+				"vec4 color;\n"
+				"};\n"
+				"layout( location = 0 ) in vec3 position;\n"
+				"layout( location = 1 ) in vec2 texcoord;\n"
+				"out vec2 _uv;\n"
+				"out vec4 _color;\n"
+				"void main() {\n"
+				"_uv = texcoord; _color = color;\n"
+				"gl_Position = transform * vec4( position, 1 );\n"
+				"}\n";
+			const char* text_frag =
+				"#version 330 core\n"
+				"layout( location = 0 ) out vec4 outputF;\n"
+				"in vec2 _uv;\n"
+				"in vec4 _color;\n"
+				"uniform sampler2D base_texture;\n"
+				"void main() {\n"
+				"float coverage = texture( base_texture, _uv ).r;\n"
+				"outputF = vec4( _color.rgb, _color.a * coverage );\n"
+				"}\n";
 		}
 
 		bool device_internal::init()
@@ -57,7 +83,7 @@ namespace SynGlyphX
 			auto error = FT_Init_FreeType( &freetype );
 			hal::debug::_assert( !error, "error initializing freetype" );
 			// todo: inline this shader once it's stable (shouldn't have to exist in app folder since it's part of the graphics library).
-			text_effect = create_effect( "shaders/text.vert", nullptr, "shaders/text.frag" );
+			text_effect = create_effect( text_vert, nullptr, text_frag );
 			text_format.add_stream( hal::stream_info( hal::stream_type::float32, 3, hal::stream_semantic::position, 0 ) );
 			text_format.add_stream( hal::stream_info( hal::stream_type::float32, 2, hal::stream_semantic::texcoord, 0 ) );
 			return true;
@@ -76,9 +102,16 @@ namespace SynGlyphX
 			return default_context;
 		}
 
+		hal::effect* device_internal::load_effect( const char* vs_file, const char* gs_file, const char* ps_file )
+		{
+			hal::effect* e = hal::effect::load( vs_file, gs_file, ps_file, forced_includes );
+			effects.insert( e );
+			return e;
+		}
+
 		hal::effect* device_internal::create_effect( const char* vs, const char* gs, const char* ps )
 		{
-			hal::effect* e = hal::effect::create( vs, gs, ps, forced_includes );
+			hal::effect* e = hal::effect::create( vs, gs, ps );
 			effects.insert( e );
 			return e;
 		}

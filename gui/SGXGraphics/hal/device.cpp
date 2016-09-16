@@ -21,6 +21,11 @@ namespace SynGlyphX
 			return hal_gl::device_internal::get_default_context();
 		}
 
+		effect* device::load_effect( const char* vs_file, const char* gs_file, const char* ps_file )
+		{
+			return hal_gl::device_internal::load_effect( vs_file, gs_file, ps_file );
+		}
+
 		effect* device::create_effect( const char* vs, const char* gs, const char* ps )
 		{
 			return hal_gl::device_internal::create_effect( vs, gs, ps );
