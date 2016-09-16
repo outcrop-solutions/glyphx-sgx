@@ -45,8 +45,9 @@ namespace SynGlyphX
 		{
 			hal::texture* texture;
 			hal::mesh* mesh;
-			int32_t origin_x, origin_y;
-			int32_t advance_x, advance_y;
+			int16_t origin_x, origin_y;
+			int16_t advance_x, advance_y;
+			uint16_t width, height;
 		};
 
 		class font : public ref_counted

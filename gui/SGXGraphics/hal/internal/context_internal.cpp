@@ -246,6 +246,37 @@ namespace SynGlyphX
 			return device_internal::get_glyph( f, c ).texture;
 		}
 
+		glm::vec2 context_internal::measure_text( hal::font* f, const char* text )
+		{
+			glm::vec2 pen;
+			glm::vec2 min( std::numeric_limits<float>::max(), std::numeric_limits<float>::max() );
+			glm::vec2 max( std::numeric_limits<float>::lowest(), std::numeric_limits<float>::lowest() );
+
+			const char* prev = nullptr;
+			const char* c = text;
+			const hal::font_glyph* glyph;
+			while ( *c != '\0' )
+			{
+				glyph = &device_internal::get_glyph( f, *c );
+
+				glm::vec2 kern;
+				if ( prev ) kern = device_internal::get_kerning( f, *prev, *c );
+				pen += kern;
+
+				glm::vec2 glyph_min( pen.x + glyph->origin_x, pen.y - glyph->origin_y );
+				glm::vec2 glyph_max( glyph_min.x + glyph->width, glyph_min.y + glyph->height );
+
+				min = glm::min( min, glyph_min );
+				max = glm::max( max, glyph_max );
+
+				pen += glm::vec2( glyph->advance_x, glyph->advance_y );
+				prev = c;
+				++c;
+			}
+
+			return max - min;
+		}
+
 		void context_internal::draw( hal::font* f, const glm::mat4& transform, const glm::vec4& color, const char* text )
 		{
 			hal::rasterizer_state rast{ false, false, false, false };
@@ -254,6 +285,7 @@ namespace SynGlyphX
 			auto effect = device_internal::get_text_effect();
 			set_blend_state( hal::blend_state::alpha );
 			bind( effect );
+			context::set_constant( effect, "instance_data", "color", color );
 
 			glm::vec2 pen;
 
@@ -269,7 +301,6 @@ namespace SynGlyphX
 				glm::vec3 origin( pen.x + glyph.origin_x, pen.y - glyph.origin_y, 0.f );
 
 				context::set_constant( effect, "instance_data", "transform", transform * glm::translate( glm::mat4(), origin ) );
-				context::set_constant( effect, "instance_data", "color", color );
 				bind( 0, glyph.texture );
 				draw( glyph.mesh );
 

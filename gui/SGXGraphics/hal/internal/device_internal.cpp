@@ -15,6 +15,10 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
+#include <ft2build.h>
+#include FT_FREETYPE_H
+#include FT_GLYPH_H
+
 namespace SynGlyphX
 {
 	namespace hal_gl
@@ -354,10 +358,18 @@ namespace SynGlyphX
 				hal::font_glyph g;
 				assert( glyph->bitmap.pixel_mode == FT_PIXEL_MODE_GRAY );
 				g.texture = hal_gl::device_internal::create_texture( glyph->bitmap.width, glyph->bitmap.rows, hal::texture_format::r8, glyph->bitmap.buffer );
-				g.origin_x = glyph->bitmap_left;
-				g.origin_y = glyph->bitmap_top;
-				g.advance_x = ( glyph->advance.x >> 6 );
-				g.advance_y = ( glyph->advance.y >> 6 );
+				g.origin_x = int16_t( glyph->bitmap_left );
+				g.origin_y = int16_t( glyph->bitmap_top );
+				g.advance_x = int16_t( glyph->advance.x >> 6 );
+				g.advance_y = int16_t( glyph->advance.y >> 6 );
+
+				FT_Glyph ftg = nullptr;
+				FT_Get_Glyph( glyph, &ftg );
+				FT_BBox bb;
+				FT_Glyph_Get_CBox( ftg, FT_GLYPH_BBOX_PIXELS, &bb );
+				FT_Done_Glyph( ftg );
+				g.width = uint16_t( bb.xMax - bb.xMin );
+				g.height = uint16_t( bb.yMax - bb.yMin );
 
 				float glyph_vertices[]
 				{

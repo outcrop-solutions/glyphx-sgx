@@ -42,6 +42,7 @@ namespace SynGlyphX
 			hal::mesh_readback readback_mesh( hal::mesh* m ) override;
 
 			void draw( hal::font* f, const glm::mat4& transform, const glm::vec4& color, const char* text ) override;
+			glm::vec2 measure_text( hal::font* f, const char* text ) override;
 			hal::texture* get_glyph_texture( hal::font* f, char c ) override;
 
 			hal::effect* get_bound_effect() { return bound_effect; }

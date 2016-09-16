@@ -47,6 +47,7 @@ namespace SynGlyphX
 			virtual mesh_readback readback_mesh( mesh* m ) = 0;
 			
 			virtual void draw( font* f, const glm::mat4& transform, const glm::vec4& color, const char* text ) = 0;
+			virtual glm::vec2 measure_text( hal::font* f, const char* text ) = 0;
 			virtual texture* get_glyph_texture( font* f, char c ) = 0;
 
 		protected:
