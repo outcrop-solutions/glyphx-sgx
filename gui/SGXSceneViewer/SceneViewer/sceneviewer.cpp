@@ -428,7 +428,6 @@ namespace SynGlyphX
 				auto campos = camera->get_position();
 				QString positionHUD = tr( "Camera Position: X: %1, Y: %2, Z: %3" ).arg( QString::number( campos.x ), QString::number( campos.y ), QString::number( campos.z ) );
 				QFontMetrics hudFontMetrics( hud_font );
-				//renderText( painter, ( width() / 2 ) - ( hudFontMetrics.width( positionHUD ) / 2 ), height() - 16, positionHUD, hud_font );
 				renderText( test_font, glm::vec2( ( width() / 2 ) - ( hudFontMetrics.width( positionHUD ) / 2 ), height() - 16 ), render::color::white(), positionHUD.toStdString().c_str() );
 			}
 			else
@@ -450,15 +449,13 @@ namespace SynGlyphX
 							positionHUD += QString::fromStdString(axis_names[i]) + ": " + QString::number(m_sourceDataLookupForPositionXYZ[i].at(selectionIndex));
 						}
 					}
-					QFontMetrics hudFontMetrics( hud_font );
-					//renderText( painter, ( width() / 2 ) - ( hudFontMetrics.width( positionHUD ) / 2 ), height() - 16, positionHUD, hud_font );
+					QFontMetrics hudFontMetrics( hud_font );	// TODO: IMPLEMENT FONT METRICS (don't use Qt's since they won't match ours)
 					renderText( test_font, glm::vec2( ( width() / 2 ) - ( hudFontMetrics.width( positionHUD ) / 2 ), height() - 16 ), render::color::white(), positionHUD.toStdString().c_str() );
 				}
 				else
 				{
 					QString positionHUD = tr( "Selection Centered At: X: %1, Y: %2, Z: %3" ).arg( QString::number( selection_center.x ), QString::number( selection_center.y ), QString::number( selection_center.z ) );
 					QFontMetrics hudFontMetrics( hud_font );
-					//renderText( painter, ( width() / 2 ) - ( hudFontMetrics.width( positionHUD ) / 2 ), height() - 16, positionHUD, hud_font );
 					renderText( test_font, glm::vec2( ( width() / 2 ) - ( hudFontMetrics.width( positionHUD ) / 2 ), height() - 16 ), render::color::white(), positionHUD.toStdString().c_str() );
 				}
 			}
@@ -466,7 +463,7 @@ namespace SynGlyphX
 
 		// Draw tags.
 		scene.enumTagEnabled( [&painter, this]( const Glyph3DNode& glyph ) {
-			if ( glyph.getTag() ) renderText( painter, glyph.getCachedPosition(), glyph.getTag(), hud_font );
+			if ( glyph.getTag() ) renderText( test_font, camera, glyph.getCachedPosition(), render::color::white(), glyph.getTag() );
 		} );
 
 		// Draw axis names.
@@ -481,9 +478,9 @@ namespace SynGlyphX
 		if ( scene_axes_enabled )
 		{
 			const float axis_name_offset = 10.f;
-			if ( axis_names[0] != "" ) renderText( painter, camera, scene_axis_origin + ( scene_axis_sizes.x + axis_name_offset ) * glm::vec3( 1.f, 0.f, 0.f ), QString::fromStdString( axis_names[0] ), hud_font );
-			if ( axis_names[1] != "" ) renderText( painter, camera, scene_axis_origin + ( scene_axis_sizes.y + axis_name_offset ) * glm::vec3( 0.f, 1.f, 0.f ), QString::fromStdString( axis_names[1] ), hud_font );
-			if ( axis_names[2] != "" ) renderText( painter, camera, scene_axis_origin + ( scene_axis_sizes.z + axis_name_offset ) * glm::vec3( 0.f, 0.f, 1.f ), QString::fromStdString( axis_names[2] ), hud_font );
+			if ( axis_names[0] != "" ) renderText( test_font, camera, scene_axis_origin + ( scene_axis_sizes.x + axis_name_offset ) * glm::vec3( 1.f, 0.f, 0.f ), render::color::white(), axis_names[0].c_str() );
+			if ( axis_names[1] != "" ) renderText( test_font, camera, scene_axis_origin + ( scene_axis_sizes.y + axis_name_offset ) * glm::vec3( 0.f, 1.f, 0.f ), render::color::white(), axis_names[1].c_str() );
+			if ( axis_names[2] != "" ) renderText( test_font, camera, scene_axis_origin + ( scene_axis_sizes.z + axis_name_offset ) * glm::vec3( 0.f, 0.f, 1.f ), render::color::white(), axis_names[2].c_str() );
 		}
 	}
 
@@ -524,34 +521,15 @@ namespace SynGlyphX
 		vsprintf_s( buf, string, args );
 		va_end( args );
 
-		auto transform = ui_camera->get_proj() * ui_camera->get_view() * glm::translate( glm::mat4(), glm::vec3( pos, 0.f ) );
+		auto transform = ui_camera->get_proj() * ui_camera->get_view() * glm::translate( glm::mat4(), glm::vec3( glm::round( pos ), 0.f ) );
 		context->draw( font, transform, color, string );
 	}
 
-	void SceneViewer::renderText( QPainter& painter, int x, int y, const QString& str, const QFont& font )
+	void SceneViewer::renderText( hal::font* font, const render::camera* camera, const glm::vec3& pos, const glm::vec4& color, const char* string, ... )
 	{
-		// QPainter doesn't support core profiles, so if we're using one we can't render text this way (it will
-		// cause OpenGL errors). But we want the option to use a core profile for GPU debugging etc.
-		if ( format().profile() == QSurfaceFormat::CompatibilityProfile )
-		{
-			painter.setPen( Qt::white );
-			painter.setFont( font );
-			painter.setRenderHints( QPainter::Antialiasing | QPainter::TextAntialiasing );
-			painter.drawText( x, y, str );
-		}
-	}
-
-	void SceneViewer::renderText( QPainter& painter, const render::camera* cam, const glm::vec3& pos, const QString& str, const QFont& font )
-	{
-		auto window_pt = cam->world_pt_to_window_pt( pos );
-
-		if ( !cam->pt_behind_camera( pos ) && window_pt.x >= 0.f && window_pt.y > 0.f && window_pt.x < float( width() ) && window_pt.y < float( height() ) )
-			renderText( painter, int( window_pt.x ), height() - int( window_pt.y ), str, font );
-	}
-
-	void SceneViewer::renderText( QPainter& painter, const glm::vec3& pos, const QString& str, const QFont& font )
-	{
-		renderText( painter, camera, pos, str, font );
+		auto window_pt = camera->world_pt_to_window_pt( pos );
+		if ( !camera->pt_behind_camera( pos ) && window_pt.x >= 0.f && window_pt.y > 0.f && window_pt.x < float( width() ) && window_pt.y < float( height() ) )
+			renderText( font, window_pt, color, string );
 	}
 
 	void SceneViewer::keyPressEvent( QKeyEvent* event )
@@ -690,7 +668,6 @@ namespace SynGlyphX
 				scene.enumGlyphs( [this, event, alt]( const Glyph3DNode& node ) {
 					auto pos = node.getCachedPosition();
 					auto pos2d = camera->world_pt_to_window_pt( pos );
-					pos2d.y = height() - pos2d.y;
 					if ( pos2d.x > std::min( drag_info( button::left ).drag_start_x, mouse_x )
 						&& pos2d.x < std::max( drag_info( button::left ).drag_start_x, mouse_x )
 						&& pos2d.y > std::min( drag_info( button::left ).drag_start_y, mouse_y )
