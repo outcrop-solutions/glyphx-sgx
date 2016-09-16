@@ -80,7 +80,7 @@ public class User {
 
 		String[] viz_names = new String[userFiles.size()];
 		for(int i = 0; i < userFiles.size(); i++){
-			viz_names[i] = userFiles.get(i).getFormattedPath();
+			viz_names[i] = userFiles.get(i).getFormattedPath().split(".zip")[0];
 		}
 		return viz_names;
 	}

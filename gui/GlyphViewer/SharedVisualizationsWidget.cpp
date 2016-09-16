@@ -102,6 +102,8 @@ void SharedVisualizationsWidget::Reset(DataEngine::DataEngineConnection::SharedP
 		sharedVisualizationsFile.ReadFromFile(sharedVizListing.toStdString());
 		m_filenameToTitleMap = sharedVisualizationsFile.GetFilenameToTitleMap();
 
+		DataEngine::GlyphEngine ge;
+
 		for (auto iT = m_filenameToTitleMap.begin(); iT != m_filenameToTitleMap.end(); ++iT) {
 			
 			visualizationsAdded = true;
@@ -112,8 +114,8 @@ void SharedVisualizationsWidget::Reset(DataEngine::DataEngineConnection::SharedP
 
 			if (!mapping.GetFrontEndFilters().empty()) {
 
-				DataEngine::GlyphEngine ge;
-				ge.initiate(dataEngineConnection->getEnv(), filename, "", "", "", "GlyphViewer");
+				//ge.initiate(dataEngineConnection->getEnv(), filename, "", "", "", "GlyphViewer");
+				ge.AddVisualization(dataEngineConnection->getEnv(), filename);
 
 				LoadingFilterWidget* loadingFilterWidget = new LoadingFilterWidget(this);
 				loadingFilterWidget->SetFilters(ge, mapping);
@@ -154,6 +156,8 @@ void SharedVisualizationsWidget::ClearAll() {
 	m_viewListWidget->SetTitle(tr("View(s)"));
 	m_viewListWidget->layout()->setContentsMargins(0, 0, 0, 0);
 	addWidget(m_viewListWidget);
+
+	QObject::connect(m_viewListWidget, &SynGlyphX::TitleTreeWidget::SelectedTooltipChanged, this, &SharedVisualizationsWidget::OnFileSelected);
 
 	m_viewListWidget->blockSignals(true);
 

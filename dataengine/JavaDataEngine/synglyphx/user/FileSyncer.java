@@ -145,6 +145,11 @@ public class FileSyncer {
 			setNewModified(shr, inst.getSharedModified().getTime());
 		}
 
+		if(needToSync.size() == 0){
+			PathBuilder pb = new PathBuilder(glyphEdPath);
+			pb.resetSharedVisualizationPaths(userFiles);
+		}
+
 		return needToSync.size();
 	}
 

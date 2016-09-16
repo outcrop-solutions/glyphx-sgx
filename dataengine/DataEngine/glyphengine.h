@@ -35,6 +35,7 @@ namespace DataEngine
 	private:
 		JNIEnv *jniEnv;
 		jclass jcls;
+		bool jniSet;
 		std::string sdtFile;
 		std::string baseOutputDir;
 		std::string baseImageDir;
@@ -52,8 +53,9 @@ namespace DataEngine
 		std::vector<double> getNWandSE();
 
 	public:
-		GlyphEngine(){};
+		GlyphEngine():jniSet(false){};
 		void initiate(JNIEnv *env, std::string sdtPath, std::string outDir, std::string bid, std::string bfn,std::string appName);
+		void AddVisualization(JNIEnv *env, std::string sdtPath);
 		bool getDownloadedBaseImage(std::vector<SynGlyphX::BaseImage> baseImages);
 		std::vector<std::string> getBaseImages();
 		void generateGlyphs(QWidget *mainWindow);
