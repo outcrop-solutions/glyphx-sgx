@@ -52,6 +52,8 @@ namespace DataEngine
 		void createJVM();
 		bool hasJVM() const;
 		QString VersionNumber();
+		void SetGlyphEdPath(QString path);
+		QString GetGlyphEdPath();
 		void loadCSV(std::string path);
 		void loadSQLite(std::string path);
 		QString encryptPassword(QString password);
@@ -111,6 +113,8 @@ namespace DataEngine
 		QStringList getRowOfSampleData(int index, int row);
 		QStringList getSchemas();
 		void setTables();
+
+		QString glyphEdPath;
 	};
 }
 #endif // DATAENGINECONNECTION_H

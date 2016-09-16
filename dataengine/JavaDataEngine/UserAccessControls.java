@@ -1,7 +1,9 @@
 
 import java.sql.*;
 import java.util.Date;
+import java.util.ArrayList;
 import synglyphx.user.User;
+import synglyphx.user.UserFile;
 import synglyphx.user.PathBuilder;
 import synglyphx.io.Logger;
 import java.util.concurrent.TimeUnit;
@@ -116,10 +118,19 @@ public class UserAccessControls {
 		return loggedInUser.getVisualizationNames();
 	}
 
+	public static void setVisualizationNames(String path, String[] names){
+		PathBuilder pb = new PathBuilder(path);
+		ArrayList<UserFile> userFiles = new ArrayList<UserFile>();
+		for(int i = 0; i < names.length; i++){
+			userFiles.add( new UserFile("",names[i],1,1));
+		}
+		pb.resetSharedVisualizationPaths(userFiles);
+	}
+
 	public static void main(String [] args){
 
 		System.out.println(UserAccessControls.initConnection());
-		System.out.println(UserAccessControls.validateCredentials("ataul","ataul"));
+		System.out.println(UserAccessControls.validateCredentials("ghbrown","ghbrown"));
 		System.out.println(UserAccessControls.nameOfUser());
 		System.out.println(UserAccessControls.nameOfInstitution());
 

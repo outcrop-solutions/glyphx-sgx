@@ -8,12 +8,11 @@ public class Institution {
 	private String name;
 	private Timestamp logoModified;
 	private Timestamp dataModified;
+	private Timestamp sharedModified;
 
-	public Institution(int id,String name,Timestamp logo_mod,Timestamp data_mod){
+	public Institution(int id,String name){
 		this.id = id;
 		this.name = name;
-		logoModified = logo_mod;
-		dataModified = data_mod;
 	}
 
 	public int getID(){
@@ -30,6 +29,22 @@ public class Institution {
 
 	public Timestamp getDBModified(){
 		return dataModified;
+	}
+
+	public Timestamp getSharedModified(){
+		return sharedModified;
+	}
+
+	public void setLogoModified(long ts){
+		logoModified = new Timestamp(ts);
+	}
+
+	public void setDataModified(long ts){
+		dataModified = new Timestamp(ts);
+	}
+
+	public void setSharedModified(long ts){
+		sharedModified = new Timestamp(ts);
 	}
 
 }

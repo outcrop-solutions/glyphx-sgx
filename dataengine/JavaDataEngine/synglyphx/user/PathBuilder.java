@@ -2,6 +2,9 @@ package synglyphx.user;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Arrays;
@@ -22,6 +25,7 @@ public class PathBuilder {
 	private static String DBNAME = "glyphed.db";
 	private HashMap<String, Node> sdtNames;
 	private ArrayList<File> sdtFiles;
+	private ArrayList<UserFile> userFiles;
 	private String localPath;
 	
 	public PathBuilder(String path){
@@ -30,9 +34,11 @@ public class PathBuilder {
 		this.localPath = path;
 	}
 
-	public void resetSharedVisualizationPaths(){ 
+	public void resetSharedVisualizationPaths(ArrayList<UserFile> userFiles){ 
 
+		this.userFiles = userFiles;
 		try{
+			Files.copy(FileSystems.getDefault().getPath(localPath+"/syncedvisualizations.xml"), FileSystems.getDefault().getPath(localPath+"/sharedvisualizations.xml"), StandardCopyOption.REPLACE_EXISTING);
 			File file = new File(localPath+"/sharedvisualizations.xml");
 			long lastModified = file.lastModified();
 
@@ -41,13 +47,23 @@ public class PathBuilder {
 			Document doc = dBuilder.parse(file);
 			doc.getDocumentElement().normalize();
 
+			ArrayList<Node> toRemove = new ArrayList<Node>();
 			NodeList vizs = doc.getElementsByTagName("Visualization");
+
 			for (int i = 0; i < vizs.getLength(); i++) {
 				Node viz = vizs.item(i);
-				sdtNames.put(((Element)viz).getAttribute("name"), viz.getChildNodes().item(0));
+				if(hasPermission(viz.getChildNodes().item(0).getNodeValue())){
+					sdtNames.put(((Element)viz).getAttribute("name"), viz.getChildNodes().item(0));
+				}else{
+					toRemove.add(viz);
+				}
 			}
 
 			setNewVisualizationPaths();
+
+			for(Node node : toRemove){
+				node.getParentNode().removeChild(node);
+			}
 
 			TransformerFactory transformerFactory = TransformerFactory.newInstance();
 			Transformer transformer = transformerFactory.newTransformer();
@@ -60,6 +76,15 @@ public class PathBuilder {
 		}catch(Exception e){
 	        e.printStackTrace();
         }
+	}
+
+	private boolean hasPermission(String path){
+		for(UserFile file : userFiles){
+			if(path.contains(new File(file.getFormattedPath().split(".zip")[0]).getPath())){
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private void setNewVisualizationPaths(){

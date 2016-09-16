@@ -133,6 +133,11 @@ namespace DataEngine
 	}
 
 	QStringList UserAccessControls::VizualizationNames(){
+
+		if (valid == 2){
+			return vizNames;
+		}
+
 		jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
 			"visualizationNames", "()[Ljava/lang/String;");
 		jobjectArray itr;
@@ -246,6 +251,29 @@ namespace DataEngine
 
 	void UserAccessControls::PresetLogoPath(QString path){
 		presetLogoPath = path;
+	}
+
+	void UserAccessControls::SetVisualizationNames(QStringList vizs){
+		
+		jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
+			"", "(Ljava/lang/String;[Ljava/lang/String;)V");
+
+		jstring fp = jniEnv->NewStringUTF(presetLogoPath.toStdString().c_str());
+		jobjectArray selected = (jobjectArray)jniEnv->NewObjectArray(vizs.size(), jniEnv->FindClass("java/lang/String"), jniEnv->NewStringUTF(""));
+
+		if (methodId != NULL) {
+
+			for (int i = 0; i < vizs.size(); i++){
+				jniEnv->SetObjectArrayElement(selected, i, jniEnv->NewStringUTF(vizs.at(i).toStdString().c_str()));
+			}
+
+			jniEnv->CallStaticObjectMethod(jcls, methodId, fp, selected);
+			if (jniEnv->ExceptionCheck()) {
+				jniEnv->ExceptionDescribe();
+				jniEnv->ExceptionClear();
+			}
+			vizNames = vizs;
+		}
 	}
 
 	void UserAccessControls::SetUsersNameAndInstitution(QString name, QString inst){

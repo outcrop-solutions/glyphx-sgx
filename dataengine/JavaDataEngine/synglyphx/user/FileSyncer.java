@@ -15,6 +15,7 @@ public class FileSyncer {
 	private static String USER = "ec2-user";
 	private static int PORT = 22;
 	private File ppk = null;
+	private ArrayList<UserFile> userFiles = null;
 	private ArrayList<UserFile> needToSync = null;
 	private Hashtable<File, Long> toUpdateTS = null;
 	private String syncedDirPath;
@@ -84,6 +85,7 @@ public class FileSyncer {
 		glyphEdPath = syncedDirPath+inst.getName();
 
 		filesToSync = setModifiedDates(filesToSync, inst);
+		userFiles = filesToSync;
 		needToSync = new ArrayList<UserFile>();
 
 		for(UserFile fileToSync : filesToSync){
@@ -129,8 +131,7 @@ public class FileSyncer {
 			setNewModified(db, inst.getDBModified().getTime());
 		}
 
-		//NEED TO MAKE HAPPEN EVERYTIME AND UPDATE WITH PERMISSION CHANGES
-		File shr = new File(syncedDirPath+inst.getName()+"/sharedvisualizations.xml");
+		File shr = new File(syncedDirPath+inst.getName()+"/syncedvisualizations.xml");
 		if(shr.exists()){
 			if(shr.lastModified() < inst.getSharedModified().getTime()){
 				needToSyncShared = 1;
@@ -143,7 +144,6 @@ public class FileSyncer {
 			needToSync.add(new UserFile("Shared", inst.getName()+"/sharedvisualizations.xml", 1, 4));
 			setNewModified(shr, inst.getSharedModified().getTime());
 		}
-		//END
 
 		return needToSync.size();
 	}
@@ -222,7 +222,7 @@ public class FileSyncer {
 				if(visualizationsToSync() > 0){
 					pb.updateSDTPathways();
 				}
-				pb.resetSharedVisualizationPaths();
+				pb.resetSharedVisualizationPaths(userFiles);
     			doneSyncing = true;
     		}
   		};

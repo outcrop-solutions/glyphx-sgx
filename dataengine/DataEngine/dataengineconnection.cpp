@@ -689,4 +689,12 @@ namespace DataEngine
 		return uac;
 	}
 
+	void DataEngineConnection::SetGlyphEdPath(QString path){
+		glyphEdPath = path;
+	}
+
+	QString DataEngineConnection::GetGlyphEdPath(){
+		return glyphEdPath;
+	}
+
 }

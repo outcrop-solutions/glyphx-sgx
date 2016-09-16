@@ -96,10 +96,12 @@ namespace SynGlyphX {
 			QString pw = settings.value("Password", "").toString();
 			QString nm = settings.value("Name", "Guest").toString();
 			QString in = settings.value("Institution", "").toString();
+			QStringList vizs = settings.value("Visualizations", "").toStringList();
 			settings.endGroup();
 			if (user == un && pass == pw){
 				m_dataEngineConnection->UserAccessControls()->SetUsersNameAndInstitution(nm, in);
-				m_dataEngineConnection->UserAccessControls()->PresetLogoPath("C:/ProgramData/SynGlyphX/GlyphEd/" + in);
+				m_dataEngineConnection->UserAccessControls()->PresetLogoPath(m_dataEngineConnection->GetGlyphEdPath() + in);
+				m_dataEngineConnection->UserAccessControls()->SetVisualizationNames(vizs);
 				canLogIn = true;
 			}
 		}
@@ -125,6 +127,7 @@ namespace SynGlyphX {
 			settings.setValue("Password", pass);
 			settings.setValue("Name", name);
 			settings.setValue("Institution", inst);
+			settings.setValue("Visualizations", m_dataEngineConnection->UserAccessControls()->VizualizationNames());
 			settings.endGroup();
 			canLogIn = true;
 		}

@@ -84,6 +84,7 @@ GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 
 			m_dataEngineConnection->createJVM();
 			de_version = m_dataEngineConnection->VersionNumber();
+			m_dataEngineConnection->SetGlyphEdPath(QDir::toNativeSeparators(QDir::cleanPath(SynGlyphX::GlyphBuilderApplication::GetCommonDataLocation()) + "/GlyphEd/"));
 		}
 	}
 	catch (const std::exception& e) {
@@ -518,7 +519,7 @@ bool GlyphViewerWindow::IsUserLoggedIn() {
 		if (logged){
 			int valid = m_dataEngineConnection->UserAccessControls()->ValidateCredentials(user, pass);
 			if (valid == 1 || valid == 2){
-				m_dataEngineConnection->UserAccessControls()->PresetLogoPath("C:/ProgramData/SynGlyphX/GlyphEd/" + inst);
+				m_dataEngineConnection->UserAccessControls()->PresetLogoPath(m_dataEngineConnection->GetGlyphEdPath() + inst);
 				MainWindow::UpdateUserMenu(name);
 				UpdateUserMenu();
 				return true;

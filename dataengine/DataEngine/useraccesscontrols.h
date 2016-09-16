@@ -39,6 +39,7 @@ namespace DataEngine
 		QString presetLogoPath;
 		QString presetName;
 		QString presetInstitution;
+		QStringList vizNames;
 
 	public:
 		UserAccessControls(JNIEnv *env);
@@ -58,6 +59,7 @@ namespace DataEngine
 		void StartSyncingFiles();
 		int FilesSynced();
 		void PresetLogoPath(QString path);
+		void SetVisualizationNames(QStringList vizs);
 		void SetUsersNameAndInstitution(QString name, QString inst);
 		QString GlyphEdPath();
 		bool HasSynced();
