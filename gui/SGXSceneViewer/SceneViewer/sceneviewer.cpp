@@ -141,7 +141,15 @@ namespace SynGlyphX
 
 		// Load textures for new scene (should eventually move into scene loader).
 		for ( auto img : baseImages )
-			base_textures.push_back( hal::device::load_texture( img.c_str() ) );
+		{
+			auto texture = hal::device::load_texture( img.c_str() );
+			if ( !texture )
+			{
+				texture = default_base_texture;
+				hal::device::addref( texture );
+			}
+			base_textures.push_back( texture );
+		}
 
 		SynGlyphX::LegacySceneReader::LoadLegacyScene( getScene(), *base_images, *grids, default_base_texture, nodeFile, tagFile, base_textures );
 	}
