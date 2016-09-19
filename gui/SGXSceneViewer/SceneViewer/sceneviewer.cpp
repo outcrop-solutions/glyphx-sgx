@@ -261,7 +261,7 @@ namespace SynGlyphX
 
 		initialized = true;
 
-		hud_font = hal::device::load_font( "fonts/arial.ttf", 16 );
+		hud_font = hal::device::load_font( "fonts/OpenSans-Regular.ttf", 16 );
 	}
 
 	void SceneViewer::resizeGL( int w, int h )
