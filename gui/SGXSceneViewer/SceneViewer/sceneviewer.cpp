@@ -132,11 +132,7 @@ namespace SynGlyphX
 	{
 		makeCurrent();
 
-		// Clear out current scene.
-		scene.clear();
-		base_images->clear();
-		grids->clear();
-		GlyphGeometryDB::reset();
+		clearScene();
 		resetCamera();
 
 		// Load textures for new scene (should eventually move into scene loader).
@@ -166,6 +162,7 @@ namespace SynGlyphX
 			for ( auto& tex : base_textures )
 				hal::device::release( tex );
 			base_textures.clear();
+			GlyphGeometryDB::reset();
 		}
 	}
 
