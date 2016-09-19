@@ -220,18 +220,25 @@ public class FileSyncer {
 			    	}catch(Exception e){e.printStackTrace();}
     				files_synced += 1;
     			}
-    			updateTimestamps();
-				session.disconnect();
+    			session.disconnect();
 
-				PathBuilder pb = new PathBuilder(glyphEdPath);
-				if(visualizationsToSync() > 0){
-					pb.updateSDTPathways();
+    			if(needToSync.size() > 0){
+	    			updateTimestamps();
+					PathBuilder pb = new PathBuilder(glyphEdPath);
+					if(visualizationsToSync() > 0){
+						pb.updateSDTPathways();
+					}
+					pb.resetSharedVisualizationPaths(userFiles);
 				}
-				pb.resetSharedVisualizationPaths(userFiles);
     			doneSyncing = true;
     		}
   		};
   		thread.start();
+
+  		if(needToSync.size() == 0){
+  			PathBuilder pb = new PathBuilder(glyphEdPath);
+			pb.resetSharedVisualizationPaths(userFiles);
+  		}
 	}
 
 	public int filesSynced(){
