@@ -121,7 +121,6 @@ namespace SynGlyphX
 					if ( frame - s.last_use > max_age )
 					{
 						release( s.instance_data );
-						hal::debug::print( "removing string '%s' from cache for font '%s'", it->first.c_str(), f->file.c_str() );
 						it = f->string_cache.erase( it );
 					}
 				}

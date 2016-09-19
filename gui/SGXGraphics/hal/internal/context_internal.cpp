@@ -297,7 +297,6 @@ namespace SynGlyphX
 			auto it = f->string_cache.find( text );
 			if ( it == f->string_cache.end() )
 			{
-				hal::debug::print( "Building string '%s'", text );
 				hal::font_string new_str;
 				new_str.length = strlen( text );
 				new_str.instance_data = device_internal::create_cbuffer( sizeof( glm::vec4 ) * new_str.length );
