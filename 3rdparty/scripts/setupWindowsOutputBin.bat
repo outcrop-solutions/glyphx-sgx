@@ -10,6 +10,7 @@ SET defaultbaseimages=DefaultBaseImages
 SET glyphtemplates=GlyphTemplates
 SET meshes=meshes
 SET shaders=shaders
+SET fonts=fonts
 SET logo=logo.png
 SET qtdlllist=Qt5Core Qt5Gui Qt5Network Qt5OpenGL Qt5Sql Qt5Widgets Qt5WebEngineCore Qt5WebEngine Qt5WebEngineWidgets Qt5Quick Qt5WebChannel Qt5Qml
 
@@ -51,7 +52,7 @@ FOR /F "tokens=*" %%p IN ('dir /b /a:d ..\bin\*') DO (
 
 		robocopy /z /e ..\..\Misc\InstallerFiles\%meshes% %basedir%\%%p\%%c\%meshes%
 		robocopy /z /e ..\..\Misc\InstallerFiles\%shaders% %basedir%\%%p\%%c\%shaders%
-		robocopy /z /e ..\..\Misc\InstallerFiles\%shaders% %basedir%\%%p\%%c\%shaders%
+		robocopy /z /e ..\..\Misc\InstallerFiles\%fonts% %basedir%\%%p\%%c\%fonts%
 
 		copy /B /Y ..\..\Misc\InstallerFiles\Images\%logo% %basedir%\%%p\%%c\%logo%
 		
@@ -72,14 +73,12 @@ FOR /F "tokens=*" %%p IN ('dir /b /a:d ..\bin\*') DO (
 			FOR %%d IN (%qtdlllist%) DO (
 			
 				copy /B /Y "%QTDIR%\bin\%%dd.dll" "%basedir%\%%p\%%c\%%dd.dll"
-				copy /B /Y "%QTDIR%\bin\%%dd.dll" "%basedir%\%%p\%%c\%%dd.dll"	
 			)
 		) ELSE (
 			
 			FOR %%d IN (%qtdlllist%) DO (
 			
 				copy /B /Y "%QTDIR%\bin\%%d.dll" "%basedir%\%%p\%%c\%%d.dll"
-				copy /B /Y "%QTDIR%\bin\%%d.dll" "%basedir%\%%p\%%c\%%d.dll"	
 			)
 		)
 		
