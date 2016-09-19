@@ -434,7 +434,7 @@ namespace SynGlyphX
 			else
 			{
 				auto single_root = scene.getSingleRoot();
-				if ( single_root )
+				if ( single_root && single_root->getType() != Glyph3DNodeType::Link )
 				{
 					auto selectionIndex = single_root->getFilteringIndex();
 					std::string positionHUD;
