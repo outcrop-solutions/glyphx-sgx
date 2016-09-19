@@ -54,6 +54,7 @@ public class FilterSetup {
 
     	try{
 
+    		String query = "SELECT DISTINCT(`"+field+"`) FROM `"+table+"`";
 			PreparedStatement pstmt = driver.getConnection().prepareStatement(query);
 	        ResultSet rs = pstmt.executeQuery();
 

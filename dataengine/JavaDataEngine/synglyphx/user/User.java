@@ -61,6 +61,9 @@ public class User {
 	}
 
 	public String getInstitutionName(){
+		if(institution.getID() == 1){
+			return "Notre Dame";
+		}
 		return institution.getName();
 	}
 
