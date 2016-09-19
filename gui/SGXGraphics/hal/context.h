@@ -22,6 +22,7 @@ namespace SynGlyphX
 			virtual void set_rasterizer_state( const rasterizer_state& state ) = 0;
 
 			virtual void bind( unsigned int index, texture* t, const sampler_state& state = sampler_state() ) = 0;
+			virtual void bind( unsigned int index, texture_array* t, const sampler_state& state = sampler_state() ) = 0;
 
 			virtual void bind( effect* e ) = 0;
 			template<typename T> void set_constant( effect* e, const char* block_name, const char* uniform_name, const T& data );
@@ -48,7 +49,6 @@ namespace SynGlyphX
 			
 			virtual void draw( font* f, const glm::mat4& transform, const glm::vec4& color, const char* text ) = 0;
 			virtual glm::vec2 measure_text( hal::font* f, const char* text ) = 0;
-			virtual texture* get_glyph_texture( font* f, char c ) = 0;
 
 		protected:
 			virtual void reset_defaults_internal() { }

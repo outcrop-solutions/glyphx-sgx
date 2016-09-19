@@ -15,6 +15,9 @@ namespace SynGlyphX
 			static bool init();
 			static void shutdown();
 
+			static void begin_frame();
+			static void end_frame();
+
 			static context* get_default_context();
 
 			static mesh* create_mesh( const vertex_format& fmt, primitive_type prim, unsigned int vertex_count, void* vertices, unsigned int primitive_count, void* indices, bool support_readback = false );
@@ -35,6 +38,10 @@ namespace SynGlyphX
 			static unsigned int get_texture_width( texture* t );
 			static unsigned int get_texture_height( texture* t );
 
+			static texture_array* create_texture_array( unsigned int w, unsigned int h, unsigned int layers, texture_format fmt );
+			static void update_array_slice( texture_array* t, unsigned int layer, uint8_t* data );
+			static void update_array_slice( texture_array* t, unsigned int layer, const pixel_rect& rect, uint8_t* data );
+
 			static font* load_font( const char* file, unsigned int size );
 
 			static void rebuild_effects();
@@ -47,6 +54,7 @@ namespace SynGlyphX
 			static void release( effect* e );
 			static void release( cbuffer* c );
 			static void release( texture* t );
+			static void release( texture_array* t );
 			static void release( font* f );
 
 			static unsigned int maximum_constant_buffer_size();

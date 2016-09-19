@@ -23,6 +23,7 @@ namespace SynGlyphX
 			void set_rasterizer_state( const hal::rasterizer_state& state ) override;
 
 			void bind( unsigned int index, hal::texture* t, const hal::sampler_state& state = hal::sampler_state() ) override;
+			void bind( unsigned int index, hal::texture_array* t, const hal::sampler_state& state = hal::sampler_state() ) override;
 
 			void bind( hal::effect* e ) override;
 			void set_constant( hal::effect* e, const char* block_name, const char* uniform_name, const void* data, size_t size ) override;
@@ -43,7 +44,6 @@ namespace SynGlyphX
 
 			void draw( hal::font* f, const glm::mat4& transform, const glm::vec4& color, const char* text ) override;
 			glm::vec2 measure_text( hal::font* f, const char* text ) override;
-			hal::texture* get_glyph_texture( hal::font* f, char c ) override;
 
 			hal::effect* get_bound_effect() { return bound_effect; }
 

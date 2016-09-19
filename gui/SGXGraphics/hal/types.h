@@ -13,6 +13,7 @@ namespace SynGlyphX
 		class context;
 
 		class texture;
+		class texture_array;
 		class mesh;
 		class effect;
 
@@ -106,6 +107,11 @@ namespace SynGlyphX
 		{
 			static_draw,
 			dynamic_draw,
+		};
+
+		struct pixel_rect
+		{
+			int x, y, w, h;
 		};
 	}
 }

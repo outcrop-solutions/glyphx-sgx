@@ -96,6 +96,11 @@ namespace SynGlyphX
 			hal_gl::device_internal::release( t );
 		}
 
+		void device::release( texture_array* t )
+		{
+			hal_gl::device_internal::release( t );
+		}
+
 		void device::release( font* f )
 		{
 			hal_gl::device_internal::release( f );
@@ -134,6 +139,31 @@ namespace SynGlyphX
 		font* device::load_font( const char* file, unsigned size )
 		{
 			return hal_gl::device_internal::load_font( file, size );
+		}
+
+		texture_array* device::create_texture_array( unsigned int w, unsigned int h, unsigned int layers, texture_format fmt )
+		{
+			return hal_gl::device_internal::create_texture_array( w, h, layers, fmt );
+		}
+
+		void device::update_array_slice( texture_array* t, unsigned int layer, uint8_t* data )
+		{
+			pixel_rect rect{ 0u, 0u, t->w, t->h };
+			return hal_gl::device_internal::update_array_slice( t, layer, rect, data );
+		}
+
+		void device::update_array_slice( texture_array* t, unsigned int layer, const pixel_rect& rect, uint8_t* data )
+		{
+			return hal_gl::device_internal::update_array_slice( t, layer, rect, data );
+		}
+
+		void device::begin_frame()
+		{
+		}
+
+		void device::end_frame()
+		{
+			hal_gl::device_internal::end_frame();
 		}
 	}
 }

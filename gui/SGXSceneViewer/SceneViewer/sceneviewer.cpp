@@ -329,6 +329,7 @@ namespace SynGlyphX
 
 	void SceneViewer::paintGL()
 	{
+		hal::device::begin_frame();
 		assert( elapsed_timer.isValid() );
 		QPainter painter( this );
 		if ( format().profile() == QSurfaceFormat::CompatibilityProfile ) painter.beginNativePainting();
@@ -479,6 +480,8 @@ namespace SynGlyphX
 			if ( axis_names[1] != "" ) renderText( hud_font, camera, scene_axis_origin + ( scene_axis_sizes.y + axis_name_offset ) * glm::vec3( 0.f, 1.f, 0.f ), render::color::white(), axis_names[1].c_str() );
 			if ( axis_names[2] != "" ) renderText( hud_font, camera, scene_axis_origin + ( scene_axis_sizes.z + axis_name_offset ) * glm::vec3( 0.f, 0.f, 1.f ), render::color::white(), axis_names[2].c_str() );
 		}
+
+		hal::device::end_frame();
 	}
 
 	void SceneViewer::checkErrors()
