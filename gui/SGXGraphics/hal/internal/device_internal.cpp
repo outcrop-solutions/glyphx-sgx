@@ -115,13 +115,17 @@ namespace SynGlyphX
 			const auto max_age = 4ull;
 			for ( const auto& f : fonts )
 			{
-				for ( auto it = f->string_cache.begin(); it != f->string_cache.end(); ++it )
+				auto it = f->string_cache.begin();
+				while ( it != f->string_cache.end() )
 				{
-					auto& s = it->second;
-					if ( frame - s.last_use > max_age )
+					if ( frame - it->second.last_use > max_age )
 					{
-						release( s.instance_data );
+						release( it->second.instance_data );
 						it = f->string_cache.erase( it );
+					}
+					else
+					{
+						++it;
 					}
 				}
 			}
@@ -502,7 +506,6 @@ namespace SynGlyphX
 				g.advance_y = int16_t( glyph->advance.y >> 6 );
 
 				g.array_slice = f->next_slice++;
-				hal::debug::print( "adding glyph '%c' to layer '%i' of font '%s'", c, g.array_slice, f->file.c_str() );
 				if ( glyph->bitmap.buffer )
 				{
 					hal::pixel_rect rect{ 0u, 0u, glyph->bitmap.width, glyph->bitmap.rows };
