@@ -5,6 +5,7 @@
 #include "effect.h"
 #include "../vertex_format.h"
 #include "../log.h"
+#include "../debug.h"
 #include <string>
 #include <fstream>
 #include <queue>
@@ -13,6 +14,10 @@
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
+
+#include <ft2build.h>
+#include FT_FREETYPE_H
+#include FT_GLYPH_H
 
 namespace SynGlyphX
 {
@@ -23,7 +28,44 @@ namespace SynGlyphX
 			context_internal* default_context = nullptr;
 			int maximum_cbuffer_size = -1;
 			std::unordered_set<hal::effect*> effects;
+			std::unordered_set<hal::font*> fonts;
 			std::vector<std::string> forced_includes;
+			uint64_t frame = 0ull;
+
+			hal::effect* text_effect = nullptr;
+			FT_Library freetype;
+			hal::vertex_format text_format;
+
+			const char* text_vert =
+				"#version 330 core\n"
+				"layout( std140 ) uniform shared_data\n"
+				"{\n"
+				"mat4 transform;\n"
+				"vec4 color;\n"
+				"};\n"
+				"layout( std140 ) uniform instance_data\n"
+				"{\n"
+				"vec4 string[1024];\n"	// x, y, array slice, unused
+				"};\n"
+				"layout( location = 0 ) in vec3 position;\n"
+				"layout( location = 1 ) in vec2 texcoord;\n"
+				"out vec3 _uv;\n"
+				"out vec4 _color;\n"
+				"void main() {\n"
+				"vec4 ch = string[gl_InstanceID];"
+				"_uv = vec3( texcoord.xy, ch.z ); _color = color;\n"
+				"gl_Position = transform * vec4( position + vec3( ch.xy, 0 ), 1 );\n"
+				"}\n";
+			const char* text_frag =
+				"#version 330 core\n"
+				"layout( location = 0 ) out vec4 outputF;\n"
+				"in vec3 _uv;\n"
+				"in vec4 _color;\n"
+				"uniform sampler2DArray base_texture_array;\n"
+				"void main() {\n"
+				"float coverage = texture( base_texture_array, _uv ).r;\n"
+				"outputF = vec4( _color.rgb, _color.a * coverage );\n"
+				"}\n";
 		}
 
 		bool device_internal::init()
@@ -45,14 +87,48 @@ namespace SynGlyphX
 			hal::check_errors();
 			glGetIntegerv( GL_MAX_UNIFORM_BLOCK_SIZE, &maximum_cbuffer_size );
 			default_context = new context_internal();
+			glPixelStorei( GL_PACK_ALIGNMENT, 1 );
+			glPixelStorei( GL_UNPACK_ALIGNMENT, 1 );
+			auto error = FT_Init_FreeType( &freetype );
+			hal::debug::_assert( !error, "error initializing freetype" );
+			// todo: inline this shader once it's stable (shouldn't have to exist in app folder since it's part of the graphics library).
+			text_effect = create_effect( text_vert, nullptr, text_frag );
+			set_cbuffer_external( text_effect, "instance_data" );
+			text_format.add_stream( hal::stream_info( hal::stream_type::float32, 3, hal::stream_semantic::position, 0 ) );
+			text_format.add_stream( hal::stream_info( hal::stream_type::float32, 2, hal::stream_semantic::texcoord, 0 ) );
 			return true;
 		}
 
 		void device_internal::shutdown()
 		{
 			assert( default_context );
+			FT_Done_FreeType( freetype );
 			delete default_context;
 			default_context = nullptr;
+		}
+
+		void device_internal::end_frame()
+		{
+			++frame;
+
+			// If we haven't used a string in a few frames, we probably won't use it again in the near future, so release it.
+			const auto max_age = 4ull;
+			for ( const auto& f : fonts )
+			{
+				auto it = f->string_cache.begin();
+				while ( it != f->string_cache.end() )
+				{
+					if ( frame - it->second.last_use > max_age )
+					{
+						release( it->second.instance_data );
+						it = f->string_cache.erase( it );
+					}
+					else
+					{
+						++it;
+					}
+				}
+			}
 		}
 
 		hal::context* device_internal::get_default_context()
@@ -60,9 +136,21 @@ namespace SynGlyphX
 			return default_context;
 		}
 
+		uint64_t device_internal::current_frame()
+		{
+			return frame;
+		}
+
+		hal::effect* device_internal::load_effect( const char* vs_file, const char* gs_file, const char* ps_file )
+		{
+			hal::effect* e = hal::effect::load( vs_file, gs_file, ps_file, forced_includes );
+			effects.insert( e );
+			return e;
+		}
+
 		hal::effect* device_internal::create_effect( const char* vs, const char* gs, const char* ps )
 		{
-			hal::effect* e = hal::effect::create( vs, gs, ps, forced_includes );
+			hal::effect* e = hal::effect::create( vs, gs, ps );
 			effects.insert( e );
 			return e;
 		}
@@ -135,6 +223,43 @@ namespace SynGlyphX
 			return c;
 		}
 
+		namespace
+		{
+			void get_gl_fmt( hal::texture_format fmt, GLenum& gl_fmt, GLenum& gl_internal_fmt, GLenum& gl_type )
+			{
+				gl_fmt = GL_RGB, gl_internal_fmt = GL_RGB, gl_type = GL_UNSIGNED_BYTE;
+				switch ( fmt )
+				{
+					case hal::texture_format::r8:
+						gl_fmt = GL_RED; gl_internal_fmt = GL_R8; gl_type = GL_UNSIGNED_BYTE; break;
+					case hal::texture_format::rgb8:
+						gl_fmt = GL_RGB; gl_internal_fmt = GL_RGB8; gl_type = GL_UNSIGNED_BYTE; break;
+					case hal::texture_format::rgba8:
+						gl_fmt = GL_RGBA; gl_internal_fmt = GL_RGBA8; gl_type = GL_UNSIGNED_BYTE; break;
+					default:
+						hal::debug::_assert( false, "unknown texture format" );
+				}
+			}
+		}
+
+		hal::texture* device_internal::create_texture( unsigned int w, unsigned int h, hal::texture_format fmt, uint8_t* data )
+		{
+			assert( data );
+			hal::texture* tex = new hal::texture;
+			tex->w = w;
+			tex->h = h;
+			tex->fmt = fmt;
+			glGenTextures( 1, &tex->handle );
+			glBindTexture( GL_TEXTURE_2D, tex->handle );
+			GLenum gl_fmt = GL_RGB, gl_internal_fmt = GL_RGB, gl_type = GL_UNSIGNED_BYTE;
+			get_gl_fmt( fmt, gl_fmt, gl_internal_fmt, gl_type );
+			glTexImage2D( GL_TEXTURE_2D, 0, gl_fmt, w, h, 0, gl_fmt, gl_type, data );
+			glGenerateMipmap( GL_TEXTURE_2D );
+			glBindTexture( GL_TEXTURE_2D, 0 );
+			hal::check_errors();
+			return tex;
+		}
+
 		hal::texture* device_internal::load_texture( const char* file )
 		{
 			assert( file );
@@ -146,27 +271,45 @@ namespace SynGlyphX
 			if ( data )
 			{
 				assert( depth == 3 || depth == 4 );
-				tex = new hal::texture;
-				tex->external = false;
-				tex->w = w;
-				tex->h = h;
-
-				glGenTextures( 1, &tex->handle );
-				//glActiveTexture( GL_TEXTURE0 );//todo: necessary?
-				glBindTexture( GL_TEXTURE_2D, tex->handle );
-
-				if ( depth == 3 )
-					glTexImage2D( GL_TEXTURE_2D, 0, GL_RGB, w, h, 0, GL_RGB, GL_UNSIGNED_BYTE, data );
-				else if ( depth == 4 )
-					glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, data );
-
-				glGenerateMipmap( GL_TEXTURE_2D );
-
-				glBindTexture( GL_TEXTURE_2D, 0 );
+				tex = create_texture( w, h, depth == 3 ? hal::texture_format::rgb8 : hal::texture_format::rgba8, data );
 				stbi_image_free( data );
 			}
 
 			return tex;
+		}
+
+		hal::texture_array* device_internal::create_texture_array( unsigned int w, unsigned int h, unsigned int layers, hal::texture_format fmt )
+		{
+			hal::texture_array* tex = new hal::texture_array;
+			tex->w = w;
+			tex->h = h;
+			tex->d = layers;
+			tex->fmt = fmt;
+
+			GLenum gl_fmt = GL_RGB, gl_internal_fmt = GL_RGB, gl_type = GL_UNSIGNED_BYTE;
+			get_gl_fmt( fmt, gl_fmt, gl_internal_fmt, gl_type );
+
+			glGenTextures( 1, &tex->handle );
+			glBindTexture( GL_TEXTURE_2D_ARRAY, tex->handle );
+			glTexStorage3D( GL_TEXTURE_2D_ARRAY, 1, gl_internal_fmt, w, h, layers );
+
+			hal::check_errors();
+			return tex;
+		}
+
+		void device_internal::update_array_slice( hal::texture_array* t, unsigned int layer, const hal::pixel_rect& rect, uint8_t* data )
+		{
+			assert( t );
+			assert( layer < t->d );
+			assert( data );
+
+			GLenum gl_fmt = GL_RGB, gl_internal_fmt = GL_RGB, gl_type = GL_UNSIGNED_BYTE;
+			get_gl_fmt( t->fmt, gl_fmt, gl_internal_fmt, gl_type );
+
+			glBindTexture( GL_TEXTURE_2D_ARRAY, t->handle );
+			glTexSubImage3D( GL_TEXTURE_2D_ARRAY, 0, rect.x, rect.y, layer, rect.w, rect.h, 1, gl_fmt, gl_type, data );
+			glBindTexture( GL_TEXTURE_2D_ARRAY, 0 );
+			hal::check_errors();
 		}
 
 		void device_internal::addref( hal::mesh* m )
@@ -227,9 +370,31 @@ namespace SynGlyphX
 		void device_internal::release( hal::texture* t )
 		{
 			release_refcounted( t, [t]() {
-				if ( !t->external )
-					glDeleteTextures( 1, &t->handle );
+				glDeleteTextures( 1, &t->handle );
 				delete t;
+			} );
+		}
+
+		void device_internal::release( hal::texture_array* t )
+		{
+			release_refcounted( t, [t]() {
+				glDeleteTextures( 1, &t->handle );
+				delete t;
+			} );
+		}
+
+		void device_internal::release( hal::font* f )
+		{
+			release_refcounted( f, [f]() {
+				release( f->textures );
+				release( f->glyph_mesh );
+				for ( auto s : f->string_cache )
+					release( s.second.instance_data );
+				FT_Done_Face( f->face );
+				auto f_it = fonts.find( f );
+				assert( f_it != fonts.end() );	// asked to release font that isn't in the list. double release?
+				fonts.erase( f_it );
+				delete f;
 			} );
 		}
 
@@ -262,6 +427,118 @@ namespace SynGlyphX
 		void device_internal::set_cbuffer_usage( hal::effect* e, const char* block_name, hal::cbuffer_usage usage )
 		{
 			e->set_cbuffer_usage( block_name, usage );
+		}
+
+		hal::font* device_internal::load_font( const char* file, unsigned int size )
+		{
+			hal::font* font = nullptr;
+			FT_Face face = nullptr;
+
+			auto error = FT_New_Face( freetype, file, 0, &face );
+			if ( !error )
+			{
+				hal::debug::_assert( face->charmap != nullptr, "font %s does not contain a unicode charmap; this is unsupported", file );
+				font = new hal::font;
+				font->face = face;
+				font->file = std::string( file );
+				font->size = size;
+			}
+			else if ( error == FT_Err_Unknown_File_Format )
+			{
+				hal::debug::_assert( false, "unknown font file format in %s", file );
+			}
+			else
+			{
+				hal::debug::_assert( false, "error %i loading font %s", error, file );
+			}
+
+			error = FT_Set_Pixel_Sizes( face, 0, size );
+			hal::debug::_assert( !error, "error %i setting pixel size %i for font %s", error, size, file );
+
+			font->textures = create_texture_array( size, size, 256, hal::texture_format::r8 );
+			font->next_slice = 0u;
+
+			float glyph_vertices[]
+			{
+				0.f, 0.f, 0.f, 0.f, 0.f,
+				float( size ), 0.f, 0.f, 1.f, 0.f,
+				float( size ), float( size ), 0.f, 1.f, 1.f,
+				0.f, float( size ), 0.f, 0.f, 1.f,
+			};
+			unsigned int glyph_indices[]
+			{
+				0u, 2u, 1u, 0u, 3u, 2u
+			};
+			font->glyph_mesh = create_mesh( text_format, hal::primitive_type::triangle_list, 4u, glyph_vertices, 2u, glyph_indices, false );
+
+			fonts.insert( font );
+
+			return font;
+		}
+
+		hal::effect* device_internal::get_text_effect()
+		{
+			return text_effect;
+		}
+
+		const hal::font_glyph& device_internal::get_glyph( hal::font* f, char c )
+		{
+			assert( f );
+
+			// Load and render the glyph if we don't have it already.
+			if ( f->glyphs.find( c ) == f->glyphs.end() )
+			{
+				auto idx = FT_Get_Char_Index( f->face, c );
+				hal::debug::_assert( idx != 0, "FT_GetCharIndex failed for font %s and char code %i", f->file.c_str(), c );
+				auto error = FT_Load_Glyph( f->face, idx, FT_LOAD_TARGET_LIGHT );
+				auto glyph = f->face->glyph;
+				hal::debug::_assert( error == 0, "FT_Load_Glyph failed for font %s and char code %i (char_index %i)", f->file.c_str(), c, idx );
+				if ( glyph->format != FT_GLYPH_FORMAT_BITMAP )
+				{
+					error = FT_Render_Glyph( glyph, FT_RENDER_MODE_LIGHT );
+					hal::debug::_assert( error == 0, "FT_Render_Glyph failed for font %s and char code %i (char_index %i )", f->file.c_str(), c, idx );
+				}
+				hal::font_glyph g;
+				assert( glyph->bitmap.pixel_mode == FT_PIXEL_MODE_GRAY );
+				g.origin_x = int16_t( glyph->bitmap_left );
+				g.origin_y = int16_t( glyph->bitmap_top );
+				g.advance_x = int16_t( glyph->advance.x >> 6 );
+				g.advance_y = int16_t( glyph->advance.y >> 6 );
+
+				g.array_slice = f->next_slice++;
+				if ( glyph->bitmap.buffer )
+				{
+					hal::pixel_rect rect{ 0u, 0u, glyph->bitmap.width, glyph->bitmap.rows };
+					update_array_slice( f->textures, g.array_slice, rect, glyph->bitmap.buffer );
+				}
+
+				FT_Glyph ftg = nullptr;
+				FT_Get_Glyph( glyph, &ftg );
+				FT_BBox bb;
+				FT_Glyph_Get_CBox( ftg, FT_GLYPH_BBOX_PIXELS, &bb );
+				FT_Done_Glyph( ftg );
+				g.width = uint16_t( bb.xMax - bb.xMin );
+				g.height = uint16_t( bb.yMax - bb.yMin );
+
+				f->glyphs.insert( std::make_pair( c, g ) );
+			}
+
+			hal::check_errors();
+			return f->glyphs.find( c )->second;
+		}
+
+		const glm::vec2 device_internal::get_kerning( hal::font* f, char left, char right )
+		{
+			glm::vec2 result;
+			if ( FT_HAS_KERNING( f->face ) )
+			{
+				auto l = FT_Get_Char_Index( f->face, left );
+				auto r = FT_Get_Char_Index( f->face, right );
+				FT_Vector kern;
+				FT_Get_Kerning( f->face, l, r, FT_KERNING_DEFAULT, &kern );
+				result = glm::vec2( kern.x >> 6, kern.y >> 6 );
+			}
+			return result;
 		}
 	}
 }

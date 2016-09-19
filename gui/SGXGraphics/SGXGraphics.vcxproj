@@ -57,7 +57,7 @@
       <PreprocessorDefinitions>SGXGraphics_EXPORTS;WIN32;_DEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <TreatWarningAsError>true</TreatWarningAsError>
       <PrecompiledHeaderFile>SGXGraphicsPCH.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>..\..\3rdParty\include\glew-1.13.0;..\..\3rdParty\include\assimp-3.1.1;..\..\3rdParty\include\glm_0_9_7_5;..\..\3rdParty\include\stb_image;.</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\3rdParty\include\glew-1.13.0;..\..\3rdParty\include\assimp-3.1.1;..\..\3rdParty\include\glm_0_9_7_5;..\..\3rdParty\include\stb_image;..\..\3rdParty\include\freetype-2.7;.</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4201;4251</DisableSpecificWarnings>
       <ForcedIncludeFiles>SGXGraphicsPCH.h</ForcedIncludeFiles>
     </ClCompile>
@@ -66,7 +66,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <OutputFile>$(OutDir)\$(ProjectName).dll</OutputFile>
       <AdditionalLibraryDirectories>..\..\3rdParty\lib\$(Platform)\$(Configuration)\</AdditionalLibraryDirectories>
-      <AdditionalDependencies>assimp.lib;glew32.lib;opengl32.lib;glu32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>assimp.lib;glew32.lib;opengl32.lib;glu32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;freetype27MT.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ImportLibrary>..\..\lib\$(Platform)\$(Configuration)\$(TargetName).lib</ImportLibrary>
     </Link>
   </ItemDefinitionGroup>
@@ -80,7 +80,7 @@
       <PreprocessorDefinitions>SGXGraphics_EXPORTS;WIN32;NDEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <TreatWarningAsError>true</TreatWarningAsError>
       <PrecompiledHeaderFile>SGXGraphicsPCH.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>..\..\3rdParty\include\glew-1.13.0;..\..\3rdParty\include\assimp-3.1.1;..\..\3rdParty\include\glm_0_9_7_5;..\..\3rdParty\include\stb_image;.</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\3rdParty\include\glew-1.13.0;..\..\3rdParty\include\assimp-3.1.1;..\..\3rdParty\include\glm_0_9_7_5;..\..\3rdParty\include\stb_image;..\..\3rdParty\include\freetype-2.7;.</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4201;4251</DisableSpecificWarnings>
       <ForcedIncludeFiles>SGXGraphicsPCH.h</ForcedIncludeFiles>
     </ClCompile>
@@ -91,7 +91,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <OutputFile>$(OutDir)\$(ProjectName).dll</OutputFile>
       <AdditionalLibraryDirectories>..\..\3rdParty\lib\$(Platform)\$(Configuration)\</AdditionalLibraryDirectories>
-      <AdditionalDependencies>assimp.lib;glew32.lib;opengl32.lib;glu32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>assimp.lib;glew32.lib;opengl32.lib;glu32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;freetype27MT.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ImportLibrary>..\..\lib\$(Platform)\$(Configuration)\$(TargetName).lib</ImportLibrary>
     </Link>
   </ItemDefinitionGroup>

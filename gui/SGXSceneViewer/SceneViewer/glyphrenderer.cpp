@@ -117,8 +117,8 @@ namespace SynGlyphX
 		animation( true ), global_wireframe( false ), scene( nullptr ), filter_alpha( 0.5f ), selection_animation_time( 0.f ), selection_animation_state( 0.f ),
 		bound_vis_enabled( false ), bound_vis_mode( GlyphRenderer::BoundVisMode::Individual ), sel_effect_enabled( true )
 	{
-		glyph_effect = hal::device::create_effect( "shaders/glyph.vert", nullptr, "shaders/glyph.frag" );
-		selection_effect = hal::device::create_effect( "shaders/selection.vert", nullptr, "shaders/selection.frag" );
+		glyph_effect = hal::device::load_effect( "shaders/glyph.vert", nullptr, "shaders/glyph.frag" );
+		selection_effect = hal::device::load_effect( "shaders/selection.vert", nullptr, "shaders/selection.frag" );
 		hal::device::set_cbuffer_external( glyph_effect, "instance_data" );
 		hal::device::set_cbuffer_external( glyph_effect, "material" );
 		hal::device::set_cbuffer_external( glyph_effect, "animation" );

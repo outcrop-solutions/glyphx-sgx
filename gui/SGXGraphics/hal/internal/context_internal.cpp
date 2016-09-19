@@ -4,6 +4,7 @@
 #include "gl.h"
 #include "types_internal.h"
 #include "effect.h"
+#include "../debug.h"
 
 namespace SynGlyphX
 {
@@ -127,6 +128,26 @@ namespace SynGlyphX
 			hal::check_errors();
 		}
 
+		void context_internal::bind( unsigned int index, hal::texture_array* t, const hal::sampler_state& state )
+		{
+			glActiveTexture( GL_TEXTURE0 + index );
+			glBindTexture( GL_TEXTURE_2D_ARRAY, t->handle );
+
+			GLenum wrap = state.wrap == hal::texture_wrap::wrap ? GL_REPEAT : GL_CLAMP_TO_EDGE;
+
+			GLenum min_filter = state.filter == hal::texture_filter::point ? GL_POINT : GL_LINEAR_MIPMAP_LINEAR;
+			GLenum mag_filter = state.filter == hal::texture_filter::point ? GL_POINT : GL_LINEAR;
+
+			glTexParameteri( GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_S, wrap );
+			glTexParameteri( GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_T, wrap );
+			glTexParameteri( GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, min_filter );
+			glTexParameteri( GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, mag_filter );
+			if ( state.filter == hal::texture_filter::aniso )
+				glTexParameterf( GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAX_ANISOTROPY_EXT, max_anisotropy );
+
+			hal::check_errors();
+		}
+
 		void context_internal::bind( hal::effect* e )
 		{
 			assert( e );
@@ -238,6 +259,89 @@ namespace SynGlyphX
 			assert( m );
 			assert( m->vertex_data_copy );
 			return hal::mesh_readback{ m->fmt, m->vertex_data_copy, m->index_data_copy, m->primitive_count * indices_per_primitive( m->prim ), m->vertex_count };
+		}
+
+		glm::vec2 context_internal::measure_text( hal::font* f, const char* text )
+		{
+			glm::vec2 pen;
+			glm::vec2 min( std::numeric_limits<float>::max(), std::numeric_limits<float>::max() );
+			glm::vec2 max( std::numeric_limits<float>::lowest(), std::numeric_limits<float>::lowest() );
+
+			const char* prev = nullptr;
+			const char* c = text;
+			const hal::font_glyph* glyph;
+			while ( *c != '\0' )
+			{
+				glyph = &device_internal::get_glyph( f, *c );
+
+				glm::vec2 kern;
+				if ( prev ) kern = device_internal::get_kerning( f, *prev, *c );
+				pen += kern;
+
+				glm::vec2 glyph_min( pen.x + glyph->origin_x, pen.y - glyph->origin_y );
+				glm::vec2 glyph_max( glyph_min.x + glyph->width, glyph_min.y + glyph->height );
+
+				min = glm::min( min, glyph_min );
+				max = glm::max( max, glyph_max );
+
+				pen += glm::vec2( glyph->advance_x, glyph->advance_y );
+				prev = c;
+				++c;
+			}
+
+			return max - min;
+		}
+
+		void context_internal::draw( hal::font* f, const glm::mat4& transform, const glm::vec4& color, const char* text )
+		{
+			auto it = f->string_cache.find( text );
+			if ( it == f->string_cache.end() )
+			{
+				hal::font_string new_str;
+				new_str.length = strlen( text );
+				new_str.instance_data = device_internal::create_cbuffer( sizeof( glm::vec4 ) * new_str.length );
+				glm::vec2 pen;
+				const char* prev = nullptr;
+				const char* c = text;
+				std::vector<glm::vec4> instances;
+				for ( unsigned int i = 0; i < new_str.length; ++i )
+				{
+					auto glyph = device_internal::get_glyph( f, *c );
+					glm::vec2 kern;
+					if ( prev ) kern = device_internal::get_kerning( f, *prev, *c );
+					pen += kern;
+					glm::vec3 origin( pen.x + glyph.origin_x, pen.y - glyph.origin_y, 0.f );
+
+					instances.push_back( glm::vec4( origin.x, origin.y, glyph.array_slice, 0.f ) );
+
+					pen += glm::vec2( glyph.advance_x, glyph.advance_y );
+					prev = c;
+					++c;
+				}
+				assert( instances.size() == new_str.length );
+				update_constant_block( new_str.instance_data, &instances[0], instances.size() * sizeof( glm::vec4 ), hal::cbuffer_usage::static_draw );
+				f->string_cache.insert( std::make_pair( text, new_str ) );
+
+				// todo: is there a way to avoid this second lookup? really clunky...
+				it = f->string_cache.find( text );
+			}
+			auto& font_str = it->second;
+			font_str.last_use = device_internal::current_frame();
+
+			hal::rasterizer_state rast{ false, true, false, false };
+			set_rasterizer_state( rast );
+
+			auto effect = device_internal::get_text_effect();
+			set_blend_state( hal::blend_state::alpha );
+			bind( effect );
+
+			bind( 0, f->textures );
+			bind( get_uniform_block_index( effect, "instance_data" ), font_str.instance_data );
+
+			context::set_constant( effect, "shared_data", "color", color );
+			context::set_constant( effect, "shared_data", "transform", transform );
+
+			draw_instanced( f->glyph_mesh, font_str.length );
 		}
 	}
 }

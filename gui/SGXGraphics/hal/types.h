@@ -13,12 +13,15 @@ namespace SynGlyphX
 		class context;
 
 		class texture;
+		class texture_array;
 		class mesh;
 		class effect;
 
 		class vertex_format;
 
 		class cbuffer;
+
+		class font;
 
 		enum clear_type : unsigned int
 		{
@@ -53,6 +56,13 @@ namespace SynGlyphX
 			point,
 			linear,
 			aniso,
+		};
+
+		enum class texture_format : unsigned int
+		{
+			r8,
+			rgb8,
+			rgba8,
 		};
 
 		enum class primitive_type : unsigned int
@@ -97,6 +107,11 @@ namespace SynGlyphX
 		{
 			static_draw,
 			dynamic_draw,
+		};
+
+		struct pixel_rect
+		{
+			int x, y, w, h;
 		};
 	}
 }

@@ -61,14 +61,14 @@ int main(int argc, char *argv[])
 	// somewhat unclear to me). This unfortunately means we can only use Core profiles in testing-- hopefully future Qt
 	// or Intel graphics driver versions will fix this.
 	QSurfaceFormat fmt = QSurfaceFormat::defaultFormat();
-	//fmt.setMajorVersion( 3 );
-	//fmt.setMinorVersion( 3 );
+	fmt.setMajorVersion( 3 );
+	fmt.setMinorVersion( 3 );
 
 	// QPainter doesn't work with Core profiles, and we need to use QPainter to draw text. Once the bug in Qt is fixed,
 	// or we switch to another text rendering method for 3D views, this should be changed to CoreProfile (which is faster
 	// as well as being required by GPU profiling/debugging tools like nSight/renderdoc/etc).
-	fmt.setProfile( QSurfaceFormat::OpenGLContextProfile::CompatibilityProfile );
-	//fmt.setProfile( QSurfaceFormat::OpenGLContextProfile::CoreProfile );
+	//fmt.setProfile( QSurfaceFormat::OpenGLContextProfile::CompatibilityProfile );
+	fmt.setProfile( QSurfaceFormat::OpenGLContextProfile::CoreProfile );
 
 	fmt.setDepthBufferSize( 24 );
 	fmt.setSwapBehavior( QSurfaceFormat::SwapBehavior::DoubleBuffer );

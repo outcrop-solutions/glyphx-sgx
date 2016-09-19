@@ -60,7 +60,7 @@ namespace SynGlyphX
 			result.y *= 0.5f;
 			result.y *= float( viewport_h );
 
-			return glm::vec2( result );
+			return glm::vec2( result.x, viewport_h - result.y );
 		}
 
 		bool perspective_camera::pt_behind_camera( const glm::vec3& world_pt ) const

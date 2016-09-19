@@ -88,19 +88,36 @@ namespace SynGlyphX
 				return( contents );
 			}
 
-			GLuint load_shader( GLenum type, const char* file, std::vector<std::string>& forced_includes )
+			GLuint load_shader( GLenum type, const char* src, const char* debug_name )
+			{
+				GLuint id = glCreateShader( type );
+				if ( id == 0 )
+				{
+					log::error( "glCreateShader() failed.", "" );
+					return 0u;
+				}
+
+				glShaderSource( id, 1, &src, nullptr );
+				glCompileShader( id );
+
+				if ( !check_compile_status( id ) )
+				{
+					log::error( "Shader failing compile: ", debug_name );
+					glDeleteShader( id );
+					id = 0;
+				}
+
+				check_errors();
+
+				return id;
+			}
+
+			GLuint load_shader_from_file( GLenum type, const char* file, std::vector<std::string>& forced_includes )
 			{
 				std::ifstream infile( file );
 				if ( !infile )
 				{
 					log::error( "Shader source file not found.", file );
-					return 0u;
-				}
-
-				GLuint id = glCreateShader( type );
-				if ( id == 0 )
-				{
-					log::error( "glCreateShader() failed.", "" );
 					return 0u;
 				}
 
@@ -114,16 +131,7 @@ namespace SynGlyphX
 				src += read_file( infile );
 				const char* csrc = src.c_str();
 
-				glShaderSource( id, 1, &csrc, nullptr );
-				glCompileShader( id );
-
-				if ( !check_compile_status( id ) )
-				{
-					log::error( "Shader failing compile: ", file );
-					glDeleteShader( id );
-					id = 0;
-				}
-
+				auto id = load_shader( type, csrc, file );
 				check_errors();
 
 				return id;
@@ -141,10 +149,15 @@ namespace SynGlyphX
 
 			bool fail = false;
 
-			auto compile_and_attach = [e, &fail]( GLenum type, const std::string& src ) {
+			auto compile_and_attach = [e, &fail]( GLenum type, const std::string& src, bool from_file ) {
 				if ( !src.empty() )
 				{
-					auto id = load_shader( type, src.c_str(), e->forced_includes );
+					GLuint id;
+					if ( from_file )
+						id = load_shader_from_file( type, src.c_str(), e->forced_includes );
+					else
+						id = load_shader( type, src.c_str(), "unnamed_effect" );
+
 					if ( id )
 						glAttachShader( e->program(), id );
 					else
@@ -157,9 +170,9 @@ namespace SynGlyphX
 				}
 			};
 
-			compile_and_attach( GL_VERTEX_SHADER, e->vs_src );
-			compile_and_attach( GL_GEOMETRY_SHADER, e->gs_src );
-			compile_and_attach( GL_FRAGMENT_SHADER, e->ps_src );
+			compile_and_attach( GL_VERTEX_SHADER, e->loaded_from_file ? e->vs_file : e->vs_src, e->loaded_from_file );
+			compile_and_attach( GL_GEOMETRY_SHADER, e->loaded_from_file ? e->gs_file : e->gs_src, e->loaded_from_file );
+			compile_and_attach( GL_FRAGMENT_SHADER, e->loaded_from_file ? e->ps_file : e->ps_src, e->loaded_from_file );
 
 			if ( fail )
 			{
@@ -185,17 +198,35 @@ namespace SynGlyphX
 			return;
 		}
 
-		effect* effect::create( const char* vs, const char* gs, const char* ps, const std::vector<std::string>& forced_header_includes )
+		effect* effect::load( const char* vs, const char* gs, const char* ps, const std::vector<std::string>& forced_header_includes )
 		{
 			effect* e = new effect;
-			e->vs_src = vs ? vs : "";
-			e->gs_src = gs ? gs : "";
-			e->ps_src = ps ? ps : "";
+			e->loaded_from_file = true;
+			e->vs_file = vs ? vs : "";
+			e->gs_file = gs ? gs : "";
+			e->ps_file = ps ? ps : "";
 			e->forced_includes = forced_header_includes;
 
 			compile( e );
 			if ( !e->compiled() ) e->release_internals();
 			
+			return e;
+		}
+
+		effect* effect::create( const char* vs, const char* gs, const char* ps )
+		{
+			effect* e = new effect;
+			e->loaded_from_file = false;
+			e->vs_file = "";
+			e->gs_file = "";
+			e->ps_file = "";
+			e->vs_src = vs ? vs : "";
+			e->gs_src = gs ? gs : "";
+			e->ps_src = ps ? ps : "";
+
+			compile( e );
+			if ( !e->compiled() ) e->release_internals();
+
 			return e;
 		}
 
