@@ -215,7 +215,7 @@ namespace SynGlyphX
 		}, true );
 	}
 
-	render::box_bound& GlyphScene::get_bound() const
+	render::box_bound& GlyphScene::getBound() const
 	{
 		if ( bound_update_needed )
 		{

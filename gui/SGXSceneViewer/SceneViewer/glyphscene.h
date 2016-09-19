@@ -70,7 +70,7 @@ namespace SynGlyphX
 		bool getSelectionChanged() { return selection_changed; }
 		void clearSelectionChangedFlag() { selection_changed = false; }
 
-		render::box_bound& get_bound() const;
+		render::box_bound& getBound() const;
 
 		bool hasAnimation() const { return has_animation; }
 

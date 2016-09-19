@@ -133,8 +133,7 @@ namespace SynGlyphX
 		makeCurrent();
 
 		clearScene();
-		resetCamera();
-
+		
 		// Load textures for new scene (should eventually move into scene loader).
 		for ( auto img : baseImages )
 		{
@@ -148,6 +147,7 @@ namespace SynGlyphX
 		}
 
 		SynGlyphX::LegacySceneReader::LoadLegacyScene( getScene(), *base_images, *grids, default_base_texture, nodeFile, tagFile, base_textures );
+		resetCamera();
 	}
 
 	void SceneViewer::clearScene()
@@ -313,13 +313,13 @@ namespace SynGlyphX
 
 	glm::vec3 SceneViewer::compute_scene_axis_sizes()
 	{
-		const render::box_bound& bound = render::combine_bounds( scene.get_bound(), base_images->get_base_image_bound( 0u ) );
+		const render::box_bound& bound = render::combine_bounds( scene.getBound(), base_images->get_base_image_bound( 0u ) );
 		return glm::vec3( bound.get_max().x - bound.get_min().x, bound.get_max().y - bound.get_min().y, bound.get_max().z - bound.get_min().z );
 	}
 
 	glm::vec3 SceneViewer::compute_scene_axis_origin()
 	{
-		const render::box_bound& bound = render::combine_bounds( scene.get_bound(), base_images->get_base_image_bound( 0u ) );
+		const render::box_bound& bound = render::combine_bounds( scene.getBound(), base_images->get_base_image_bound( 0u ) );
 		return glm::vec3( bound.get_min() );
 	}
 
@@ -720,12 +720,17 @@ namespace SynGlyphX
 
 	void SceneViewer::resetCamera()
 	{
-		scene.clearSelection();
-		selection_changed();
-		camera->set_forward( glm::normalize( glm::vec3( 0.f, 1.f, -1.f ) ) );
 		camera->set_position( glm::vec3( 0.f, -345.f, 345.f ) );
+		glm::vec3 cam_dir = glm::normalize( glm::vec3( 0.f, 1.f, -1.f ) );
+		// Point the camera at the center of the scene's bound, so we can be reasonably sure we see something when we load up.
+		if ( !scene.empty() )
+			cam_dir = glm::normalize( scene.getBound().get_center() - camera->get_position() );
+		camera->set_forward( cam_dir );
 		set_cam_control( free_cam_control, true );	// force reactivate to let the controller know to update its internal state (since it has
 													// no other way to know we changed the camera orientation directly)
+
+		scene.clearSelection();
+		selection_changed();
 	}
 
 	template <typename T> int sgn( T val ) {
