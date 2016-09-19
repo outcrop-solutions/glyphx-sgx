@@ -64,10 +64,7 @@ int main(int argc, char *argv[])
 	fmt.setMajorVersion( 3 );
 	fmt.setMinorVersion( 3 );
 
-	// QPainter doesn't work with Core profiles, and we need to use QPainter to draw text. Once the bug in Qt is fixed,
-	// or we switch to another text rendering method for 3D views, this should be changed to CoreProfile (which is faster
-	// as well as being required by GPU profiling/debugging tools like nSight/renderdoc/etc).
-	//fmt.setProfile( QSurfaceFormat::OpenGLContextProfile::CompatibilityProfile );
+	// Now that we have our own font rendering instead of relying on QPainter, we can use a core profile!
 	fmt.setProfile( QSurfaceFormat::OpenGLContextProfile::CoreProfile );
 
 	fmt.setDepthBufferSize( 24 );
