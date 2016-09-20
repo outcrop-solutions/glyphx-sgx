@@ -23,7 +23,8 @@
 HomePageWidget::HomePageWidget(GlyphViewerWindow* mainWindow, DataEngine::DataEngineConnection::SharedPtr dataEngineConnection, QWidget *parent)
 	: QFrame(parent),
 	m_mainWindow(mainWindow),
-	m_dataEngineConnection(dataEngineConnection)
+	m_dataEngineConnection(dataEngineConnection),
+	loggedOn(false)
 {
 	setFrameStyle(QFrame::Box | QFrame::Sunken);
 	
@@ -72,7 +73,7 @@ HomePageWidget::HomePageWidget(GlyphViewerWindow* mainWindow, DataEngine::DataEn
 
 	setLayout(m_mainLayout);
 
-	//QObject::connect(&GlyphViewerWindow::GetRecentFileListInstance(), &SynGlyphX::SettingsStoredFileList::FileListChanged, this, &HomePageWidget::OnRecentListUpdated);
+	QObject::connect(&GlyphViewerWindow::GetRecentFileListInstance(), &SynGlyphX::SettingsStoredFileList::FileListChanged, this, &HomePageWidget::OnRecentListUpdated);
 	QObject::connect(&GlyphViewerWindow::GetSubsetFileListInstance(), &SynGlyphX::SettingsStoredFileList::FileListChanged, this, &HomePageWidget::OnSubsetListUpdated);
 
 	QObject::connect(m_optionsButtonGroup, static_cast<void (QButtonGroup::*)(int)>(&QButtonGroup::buttonClicked), this, &HomePageWidget::OnNewOptionSelected);
@@ -245,12 +246,12 @@ void HomePageWidget::CreateDashboardWidget() {
 	m_dashboardWidget->setLineWidth(2);
 	m_dashboardWidget->setMidLineWidth(2);
 
-	mainDashboardLayout = new QGridLayout(m_dashboardWidget);
-	mainDashboardLayout->setContentsMargins(30, 20, 30, 10);
-	mainDashboardLayout->setSpacing(15);
-	mainDashboardLayout->setRowStretch(0, 1);
-	mainDashboardLayout->setRowStretch(1, 1);
-	mainDashboardLayout->setRowStretch(2, 2);
+	m_mainDashboadLayout = new QVBoxLayout(m_dashboardWidget);
+	m_mainDashboadLayout->setContentsMargins(30, 20, 30, 10);
+	m_mainDashboadLayout->setSpacing(15);
+	//mainDashboardLayout->setRowStretch(0, 1);
+	//mainDashboardLayout->setRowStretch(1, 1);
+	//mainDashboardLayout->setRowStretch(2, 2);
 
 	QFrame* welcomeWidget = new QFrame(this);
 	welcomeWidget->setFrameStyle(QFrame::Panel | QFrame::Raised);
@@ -286,77 +287,114 @@ void HomePageWidget::CreateDashboardWidget() {
 	welcomeWidgetLayout->addWidget(logoImage);
 	welcomeWidget->setLayout(welcomeWidgetLayout);
 
-	mainDashboardLayout->addWidget(welcomeWidget, 0, 0, 1, 3);
+	m_mainDashboadLayout->addWidget(welcomeWidget);
 
-	SwitchDashboardLayout();
+	CreateLowerHalfDashboardWidget();
 
 	m_homePageWidgetsLayout->addWidget(m_dashboardWidget);
+
+	SwitchDashboardLayout();
 }
 
-void HomePageWidget::SwitchDashboardLayout(){
+void HomePageWidget::SwitchDashboardLayout() {
 
-	int lowerRightCols = 1;
-	if (m_mainWindow->IsUserLoggedIn()){
+	if (m_mainWindow->IsUserLoggedIn()) {
 
 		loggedOn = true;
-		QFrame* recentViewsWidget = new QFrame(this);
-		recentViewsWidget->setFrameStyle(QFrame::Panel | QFrame::Raised);
-		recentViewsWidget->setLineWidth(2);
-		recentViewsWidget->setMidLineWidth(3);
-		recentViewsWidget->setStyleSheet("background-color: white;");
-		QVBoxLayout* recentViewsLayout = new QVBoxLayout(recentViewsWidget);
-		recentViewsLayout->setSpacing(15);
-
-		QLabel* recentViewsLabel = new QLabel(tr("Recent Views"), recentViewsWidget);
-		recentViewsLabel->setStyleSheet("font-size: 16pt; font-weight: bold; text-align: left;");
-		recentViewsLayout->addWidget(recentViewsLabel);
-
-		m_recentViewsFilteringWidget = new QListWidget(recentViewsWidget);
-		m_recentViewsFilteringWidget->setFrameStyle(QFrame::NoFrame);
-		m_recentViewsFilteringWidget->setSortingEnabled(false);
-		m_recentViewsFilteringWidget->setStyleSheet("font-size: 18px;");
-		m_recentViewsFilteringWidget->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
-		recentViewsLayout->addWidget(m_recentViewsFilteringWidget, 1);
-		recentViewsWidget->setLayout(recentViewsLayout);
-
-		mainDashboardLayout->addWidget(recentViewsWidget, 1, 0, 2, 1);
-
-		QObject::connect(m_recentViewsFilteringWidget, &QListWidget::itemClicked, this, &HomePageWidget::OnRecentViewClicked);
-
-		SynGlyphX::ResizeableImageLabel* upperRightDashboardImage = new SynGlyphX::ResizeableImageLabel(true, m_dashboardWidget);
-		upperRightDashboardImage->setAlignment(Qt::AlignCenter);
-		upperRightDashboardImage->setFrameStyle(QFrame::Panel | QFrame::Raised);
-		upperRightDashboardImage->setLineWidth(2);
-		upperRightDashboardImage->setMidLineWidth(3);
-		upperRightDashboardImage->setStyleSheet("QLabel{background-color: white;}");
-
-		//QString customerLogo = QDir::toNativeSeparators(QDir::cleanPath(SynGlyphX::GlyphBuilderApplication::GetCommonDataLocation()) + "/customer.png");
-		//QString upperRightLogo = QDir::toNativeSeparators(QDir::cleanPath(SynGlyphX::GlyphBuilderApplication::GetCommonDataLocation()) + "/rightupper.png");
-		//if (m_dataEngineConnection->UserAccessControls()->HasSynced()){
-			QString upperRightLogo = QDir::toNativeSeparators(QDir::cleanPath(m_dataEngineConnection->UserAccessControls()->GlyphEdPath()) + "/customer.png");
-			if (QFileInfo::exists(upperRightLogo)) {
-
-				upperRightDashboardImage->SetPixmap(QPixmap(upperRightLogo));
-			}
-		//}
-		mainDashboardLayout->addWidget(upperRightDashboardImage, 1, 1, 1, 2);
-		lowerRightCols = 2;
-
-		//m_allViewsFilteringWidget->Reset(m_dataEngineConnection);
+		m_stackedDashboardLayout->setCurrentIndex(0);
 	}
-	else{
+	else {
 
 		loggedOn = false;
-		loginWidget = new SynGlyphX::UserLoginDialog(m_dataEngineConnection, this);
-		loginWidget->setFrameStyle(QFrame::Panel | QFrame::Raised);
-		loginWidget->setLineWidth(2);
-		loginWidget->setMidLineWidth(3);
-		loginWidget->setMaximumWidth(500);
-		loginWidget->setStyleSheet("background-color: white;");
-		QObject::connect(loginWidget->LoginButton(), &QPushButton::clicked, this, &HomePageWidget::Login);
-
-		mainDashboardLayout->addWidget(loginWidget, 1, 1, 1, 1);
+		m_stackedDashboardLayout->setCurrentIndex(1);
+		loginWidget->Clear();
 	}
+}
+
+void HomePageWidget::CreateLowerHalfDashboardWidget() {
+
+	m_stackedDashboardLayout = new QStackedLayout(m_dashboardWidget);
+	m_stackedDashboardLayout->setContentsMargins(0, 0, 0, 0);
+	m_mainDashboadLayout->addLayout(m_stackedDashboardLayout);
+
+	QWidget* loggedInWidget = new QWidget(m_dashboardWidget);
+	QGridLayout* loggedInGridLayout = new QGridLayout(loggedInWidget);
+	loggedInGridLayout->setContentsMargins(0, 0, 0, 0);
+	loggedInGridLayout->setSpacing(15);
+	loggedInGridLayout->setRowStretch(0, 1);
+	loggedInGridLayout->setRowStretch(1, 2);
+
+	QFrame* recentViewsWidget = new QFrame(this);
+	recentViewsWidget->setFrameStyle(QFrame::Panel | QFrame::Raised);
+	recentViewsWidget->setLineWidth(2);
+	recentViewsWidget->setMidLineWidth(3);
+	recentViewsWidget->setStyleSheet("background-color: white;");
+	QVBoxLayout* recentViewsLayout = new QVBoxLayout(recentViewsWidget);
+	recentViewsLayout->setSpacing(15);
+
+	QLabel* recentViewsLabel = new QLabel(tr("Recent Views"), recentViewsWidget);
+	recentViewsLabel->setStyleSheet("font-size: 16pt; font-weight: bold; text-align: left;");
+	recentViewsLayout->addWidget(recentViewsLabel);
+
+	m_recentViewsFilteringWidget = new QListWidget(recentViewsWidget);
+	m_recentViewsFilteringWidget->setFrameStyle(QFrame::NoFrame);
+	m_recentViewsFilteringWidget->setSortingEnabled(false);
+	m_recentViewsFilteringWidget->setStyleSheet("font-size: 18px;");
+	m_recentViewsFilteringWidget->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
+	recentViewsLayout->addWidget(m_recentViewsFilteringWidget, 1);
+	recentViewsWidget->setLayout(recentViewsLayout);
+
+	loggedInGridLayout->addWidget(recentViewsWidget, 0, 0, 2, 1);
+
+	QObject::connect(m_recentViewsFilteringWidget, &QListWidget::itemClicked, this, &HomePageWidget::OnRecentViewClicked);
+
+	SynGlyphX::ResizeableImageLabel* upperRightDashboardImage = new SynGlyphX::ResizeableImageLabel(true, m_dashboardWidget);
+	upperRightDashboardImage->setAlignment(Qt::AlignCenter);
+	upperRightDashboardImage->setFrameStyle(QFrame::Panel | QFrame::Raised);
+	upperRightDashboardImage->setLineWidth(2);
+	upperRightDashboardImage->setMidLineWidth(3);
+	upperRightDashboardImage->setStyleSheet("QLabel{background-color: white;}");
+
+	//QString customerLogo = QDir::toNativeSeparators(QDir::cleanPath(SynGlyphX::GlyphBuilderApplication::GetCommonDataLocation()) + "/customer.png");
+	//QString upperRightLogo = QDir::toNativeSeparators(QDir::cleanPath(SynGlyphX::GlyphBuilderApplication::GetCommonDataLocation()) + "/rightupper.png");
+	//if (m_dataEngineConnection->UserAccessControls()->HasSynced()){
+	QString upperRightLogo = QDir::toNativeSeparators(QDir::cleanPath(m_dataEngineConnection->UserAccessControls()->GlyphEdPath()) + "/customer.png");
+	if (QFileInfo::exists(upperRightLogo)) {
+
+		upperRightDashboardImage->SetPixmap(QPixmap(upperRightLogo));
+	}
+	//}
+	loggedInGridLayout->addWidget(upperRightDashboardImage, 0, 1, 1, 2);
+	loggedInGridLayout->addWidget(CreateLowerDashboardWidget(), 1, 1, 1, 2);
+
+	loggedInWidget->setLayout(loggedInGridLayout);
+	m_stackedDashboardLayout->addWidget(loggedInWidget);
+
+	//m_allViewsFilteringWidget->Reset(m_dataEngineConnection);
+
+	QWidget* loggedOutWidget = new QWidget(m_dashboardWidget);
+	QGridLayout* loggedOutLayout = new QGridLayout(loggedOutWidget);
+	loggedOutLayout->setContentsMargins(0, 0, 0, 0);
+	loggedOutLayout->setSpacing(15);
+
+	loginWidget = new SynGlyphX::UserLoginDialog(m_dataEngineConnection, this);
+	loginWidget->setFrameStyle(QFrame::Panel | QFrame::Raised);
+	loginWidget->setLineWidth(2);
+	loginWidget->setMidLineWidth(3);
+	loginWidget->setMaximumWidth(500);
+	loginWidget->setStyleSheet("background-color: white;");
+	QObject::connect(loginWidget->LoginButton(), &QPushButton::clicked, this, &HomePageWidget::Login);
+
+	loggedOutLayout->addWidget(loginWidget, 0, 1, 1, 1);
+	loggedOutLayout->addWidget(CreateLowerDashboardWidget(), 1, 1, 2, 1);
+
+	loggedOutWidget->setLayout(loggedOutLayout);
+	m_stackedDashboardLayout->addWidget(loggedOutWidget);
+
+	m_stackedDashboardLayout->setCurrentIndex(1);
+}
+
+QWidget* HomePageWidget::CreateLowerDashboardWidget() {
 
 	if (SynGlyphX::GlyphBuilderApplication::IsGlyphEd()) {
 
@@ -375,7 +413,7 @@ void HomePageWidget::SwitchDashboardLayout(){
 			L"time to review what we are doing – and we welcome your feedback.</p>"
 			L"<p>To learn more, share feedback, or just ask questions, please feel free to contact Mark Sloan at 703.507.9788, <a href=\"mailto:mark@GlyphEd.co\">mark@GlyphEd.co</a></p>"));
 
-		mainDashboardLayout->addWidget(lowerRightLabel, 2, 1, 1, lowerRightCols);
+		return lowerRightLabel;
 	}
 	else {
 
@@ -391,10 +429,9 @@ void HomePageWidget::SwitchDashboardLayout(){
 
 			lowerRightDashboardImage->SetPixmap(QPixmap(lowerRightLogo));
 		}
-		mainDashboardLayout->addWidget(lowerRightDashboardImage, 2, 1, 1, lowerRightCols);
+		
+		return lowerRightDashboardImage;
 	}
-
-	m_dashboardWidget->setLayout(mainDashboardLayout);
 }
 
 void HomePageWidget::Login(){
@@ -429,14 +466,8 @@ void HomePageWidget::ResetViews(){
 }
 
 void HomePageWidget::LoggedOut(){
-	for (int idx = 1; idx < mainDashboardLayout->count(); idx++)
-	{
-		QLayoutItem * const item = mainDashboardLayout->itemAt(idx);
-		if (dynamic_cast<QWidgetItem *>(item))
-			item->widget()->hide();
-	}
+	
 	SwitchDashboardLayout();
-	mainDashboardLayout->update();
 }
 
 void HomePageWidget::SetupGlyphEdViz() {

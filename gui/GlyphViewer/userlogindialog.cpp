@@ -134,4 +134,10 @@ namespace SynGlyphX {
 		
 		return canLogIn;
 	}
+
+	void UserLoginDialog::Clear() {
+
+		m_usernameLineEdit->setText("");
+		m_passwordLineEdit->setText("");
+	}
 }

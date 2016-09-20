@@ -71,9 +71,11 @@ private:
 	void CreateMyViewsWidget();
 	void CreateHelpWidget();
 	void CreateDashboardWidget();
+	void CreateLowerHalfDashboardWidget();
 	void SwitchDashboardLayout();
 	void SetupGlyphEdViz();
 	void ProduceGlyphEdCSV(const QString& sdtToLoad, const QString& tableInDB, unsigned int currentDataVisualization);
+	QWidget* CreateLowerDashboardWidget();
 
 	QGridLayout* m_mainLayout;
 	QStackedLayout* m_homePageWidgetsLayout;
@@ -85,9 +87,9 @@ private:
 	SharedVisualizationsWidget* m_allViewsFilteringWidget;
 
 	QFrame* m_dashboardWidget;
-	QGridLayout* mainDashboardLayout;
-	QLabel* lowerRightLabel;
+	QVBoxLayout* m_mainDashboadLayout;
 
+	QStackedLayout* m_stackedDashboardLayout;
 	QListWidget* m_recentViewsFilteringWidget;
 
 	SynGlyphX::TitleListWidget* m_subsetViewsFilteringWidget;
@@ -96,7 +98,7 @@ private:
 	SynGlyphX::UserLoginDialog* loginWidget;
 	bool loggedOn;
 
-	std::shared_ptr<DataEngine::DataEngineConnection> m_dataEngineConnection;;
+	std::shared_ptr<DataEngine::DataEngineConnection> m_dataEngineConnection;
 
 	//GlyphEd only.  Will get rid of ASAP
 	SourceDataCache m_sourceDataCache;

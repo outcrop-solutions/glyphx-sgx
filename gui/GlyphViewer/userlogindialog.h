@@ -40,6 +40,8 @@ namespace SynGlyphX {
 		QPushButton* LoginButton();
 		bool Login();
 
+		void Clear();
+
 	private:
 
 		QPushButton* loginButton;
