@@ -31,9 +31,32 @@ namespace SynGlyphX
 			glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, 0 );
 		}
 
-		void context_internal::clear( hal::clear_type type, const glm::vec4& color )
+		void context_internal::bind( hal::render_target_set* set )
+		{
+			if ( set )
+			{
+				assert( set->color_targets.size() > 0u );
+				GLenum buffers[16];
+				for ( unsigned int i = 0u; i < set->color_targets.size(); ++i )
+					buffers[i] = GL_COLOR_ATTACHMENT0 + i;
+
+				glBindFramebuffer( GL_FRAMEBUFFER, set->fb );
+				hal::check_errors();
+				glDrawBuffers( set->color_targets.size(), buffers );
+				hal::check_errors();
+				assert( glCheckFramebufferStatus( GL_FRAMEBUFFER ) == GL_FRAMEBUFFER_COMPLETE );
+			}
+			else
+			{
+				glBindFramebuffer( GL_FRAMEBUFFER, device_internal::get_default_render_target() );
+			}
+			hal::check_errors();
+		}
+
+		void context_internal::clear( hal::clear_type type, const glm::vec4& color, float depth )
 		{
 			if ( type & hal::clear_type::color ) glClearColor( color.r, color.g, color.b, color.a );
+			if ( type & hal::clear_type::depth ) glClearDepth( depth );
 
 			GLbitfield ct = 0u;
 			if ( type & hal::clear_type::color ) ct |= GL_COLOR_BUFFER_BIT;

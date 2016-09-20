@@ -15,7 +15,8 @@ namespace SynGlyphX
 
 			void reset_defaults();
 
-			virtual void clear( clear_type type, const glm::vec4& color = glm::vec4( 0.f, 0.f, 0.f, 1.f ) ) = 0;
+			virtual void bind( render_target_set* set ) = 0;
+			virtual void clear( clear_type type, const glm::vec4& color = glm::vec4( 0.f, 0.f, 0.f, 1.f ), float depth = 1.f ) = 0;
 
 			virtual void set_depth_state( depth_state state ) = 0;
 			virtual void set_blend_state( blend_state state ) = 0;

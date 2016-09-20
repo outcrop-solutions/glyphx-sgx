@@ -14,9 +14,15 @@ namespace SynGlyphX
 			static bool init();
 			static void shutdown();
 
+			static void set_external_default_render_target( unsigned int rt );
+
 			static void end_frame();
 
 			static hal::context* get_default_context();
+
+			static hal::render_target_set* create_render_target_set( unsigned int w, unsigned int h );
+			static void add_color_target( hal::render_target_set* set, hal::texture_format fmt );
+			static void add_depth_target( hal::render_target_set* set, hal::texture_format fmt );
 
 			static hal::mesh* create_mesh( const hal::vertex_format& fmt, hal::primitive_type prim, unsigned int vertex_count, void* vertices, unsigned int primitive_count, void* indices, bool support_readback );
 			static hal::effect* load_effect( const char* vs_file, const char* gs_file, const char* ps_file );
@@ -64,6 +70,7 @@ namespace SynGlyphX
 			static const hal::font_glyph& get_glyph( hal::font* f, char c );
 			static const glm::vec2 get_kerning( hal::font* f, char left, char right );
 			static uint64_t current_frame();
+			static GLuint get_default_render_target();
 		};
 	}
 }

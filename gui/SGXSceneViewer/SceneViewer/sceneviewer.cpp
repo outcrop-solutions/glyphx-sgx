@@ -271,6 +271,8 @@ namespace SynGlyphX
 
 	void SceneViewer::resizeGL( int w, int h )
 	{
+		hal::device::set_external_default_render_target( defaultFramebufferObject() );
+
 		glm::mat4 view, proj;
 		camera->update_viewport_size( w, h );
 		ui_camera->update_viewport_size( w, h );
@@ -334,10 +336,14 @@ namespace SynGlyphX
 
 	void SceneViewer::paintGL()
 	{
+		QPainter painter( this );	// for some reason rendering breaks if I remove this, even though we're not using it anywhere except for calling the constructor.
+									// assuming there's some kind of weird opengl state setting happening in the constructor (or maybe the destructor). 
+									// todo: investigate, fix, remove. might need to look at the Qt source if all else fails.
+
 		hal::device::begin_frame();
 		assert( elapsed_timer.isValid() );
-		QPainter painter( this );
-		if ( format().profile() == QSurfaceFormat::CompatibilityProfile ) painter.beginNativePainting();
+
+		context->bind( ( hal::render_target_set* )nullptr );
 
 		glyph_renderer->enableSelectionEffect( selection_effect_enabled );
 		glyph_renderer->enableAnimation( animation_enabled );
@@ -346,7 +352,7 @@ namespace SynGlyphX
 		hal::rasterizer_state rast{ true, true, false };
 		context->set_rasterizer_state( rast );
 
-		context->clear( hal::clear_type::color, background_color );
+		context->clear( hal::clear_type::color_depth, background_color );
 
 		// Compute some axis information beforehand since we'll need it in a few places.
 		glm::vec2 cam_xy( camera->get_forward().x, camera->get_forward().y );
@@ -427,7 +433,6 @@ namespace SynGlyphX
 		checkErrors();
 
 		context->reset_defaults();
-		painter.endNativePainting();
 
 		if ( !scene.empty() )
 		{
@@ -465,7 +470,7 @@ namespace SynGlyphX
 		}
 
 		// Draw tags.
-		scene.enumTagEnabled( [&painter, this]( const Glyph3DNode& glyph ) {
+		scene.enumTagEnabled( [this]( const Glyph3DNode& glyph ) {
 			if ( glyph.getTag() ) renderText( hud_font, camera, glyph.getCachedPosition(), render::color::white(), glyph.getTag() );
 		} );
 

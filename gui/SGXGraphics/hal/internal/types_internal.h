@@ -23,6 +23,15 @@ namespace SynGlyphX
 			texture_format fmt;
 		};
 
+		class render_target_set
+		{
+		public:
+			GLuint fb;
+			unsigned int w, h;
+			std::vector<texture*> color_targets;
+			texture* depth_target;
+		};
+
 		class texture_array : public ref_counted
 		{
 		public:
@@ -102,6 +111,11 @@ namespace SynGlyphX
 			}
 			assert( false );	// invalid prim type
 			return 0u;
+		}
+
+		inline bool is_depth_format( texture_format t )
+		{
+			return ( t == texture_format::d24 );
 		}
 	}
 }

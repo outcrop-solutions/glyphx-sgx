@@ -30,6 +30,7 @@ namespace SynGlyphX
 			std::unordered_set<hal::effect*> effects;
 			std::unordered_set<hal::font*> fonts;
 			std::vector<std::string> forced_includes;
+			GLuint default_render_target;
 			uint64_t frame = 0ull;
 
 			hal::effect* text_effect = nullptr;
@@ -96,6 +97,7 @@ namespace SynGlyphX
 			set_cbuffer_external( text_effect, "instance_data" );
 			text_format.add_stream( hal::stream_info( hal::stream_type::float32, 3, hal::stream_semantic::position, 0 ) );
 			text_format.add_stream( hal::stream_info( hal::stream_type::float32, 2, hal::stream_semantic::texcoord, 0 ) );
+			default_render_target = 0u;
 			return true;
 		}
 
@@ -136,9 +138,57 @@ namespace SynGlyphX
 			return default_context;
 		}
 
+		void device_internal::set_external_default_render_target( unsigned int rt )
+		{
+			default_render_target = rt;
+		}
+
+		GLuint device_internal::get_default_render_target()
+		{
+			return default_render_target;
+		}
+
 		uint64_t device_internal::current_frame()
 		{
 			return frame;
+		}
+
+		hal::render_target_set* device_internal::create_render_target_set( unsigned int w, unsigned int h )
+		{
+			auto* set = new hal::render_target_set;
+			set->w = w; set->h = h;
+			set->depth_target = nullptr;
+			glGenFramebuffers( 1, &set->fb );
+			hal::check_errors();
+			return set;
+		}
+
+		void device_internal::add_color_target( hal::render_target_set* set, hal::texture_format fmt )
+		{
+			assert( set );
+			assert( !is_depth_format( fmt ) );
+			glBindFramebuffer( GL_FRAMEBUFFER, set->fb );
+			auto idx = set->color_targets.size();
+			assert( idx < 16u );	// theoretical maximum; todo: check ACTUAL maximum on current driver
+			hal::texture* t = create_texture( set->w, set->h, fmt, nullptr );
+			set->color_targets.push_back( t );
+			glFramebufferTexture2D( GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + idx, GL_TEXTURE_2D, t->handle, 0 );
+			assert( glCheckFramebufferStatus( GL_FRAMEBUFFER ) == GL_FRAMEBUFFER_COMPLETE );
+			glBindFramebuffer( GL_FRAMEBUFFER, 0 );
+			hal::check_errors();
+		}
+
+		void device_internal::add_depth_target( hal::render_target_set* set, hal::texture_format fmt )
+		{
+			assert( set );
+			assert( is_depth_format( fmt ) );
+			assert( !set->depth_target );
+			glBindFramebuffer( GL_FRAMEBUFFER, set->fb );
+			set->depth_target = create_texture( set->w, set->h, fmt, nullptr );
+			glFramebufferTexture2D( GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, set->depth_target->handle, 0 );
+			assert( glCheckFramebufferStatus( GL_FRAMEBUFFER ) == GL_FRAMEBUFFER_COMPLETE );
+			glBindFramebuffer( GL_FRAMEBUFFER, 0 );
+			hal::check_errors();
 		}
 
 		hal::effect* device_internal::load_effect( const char* vs_file, const char* gs_file, const char* ps_file )
@@ -236,6 +286,8 @@ namespace SynGlyphX
 						gl_fmt = GL_RGB; gl_internal_fmt = GL_RGB8; gl_type = GL_UNSIGNED_BYTE; break;
 					case hal::texture_format::rgba8:
 						gl_fmt = GL_RGBA; gl_internal_fmt = GL_RGBA8; gl_type = GL_UNSIGNED_BYTE; break;
+					case hal::texture_format::d24:
+						gl_fmt = GL_DEPTH_COMPONENT; gl_internal_fmt = GL_DEPTH_COMPONENT24; gl_type = GL_FLOAT; break;
 					default:
 						hal::debug::_assert( false, "unknown texture format" );
 				}
@@ -244,7 +296,6 @@ namespace SynGlyphX
 
 		hal::texture* device_internal::create_texture( unsigned int w, unsigned int h, hal::texture_format fmt, uint8_t* data )
 		{
-			assert( data );
 			hal::texture* tex = new hal::texture;
 			tex->w = w;
 			tex->h = h;

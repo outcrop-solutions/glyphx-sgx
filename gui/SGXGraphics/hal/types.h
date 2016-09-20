@@ -12,6 +12,8 @@ namespace SynGlyphX
 		class device;
 		class context;
 
+		class render_target_set;
+
 		class texture;
 		class texture_array;
 		class mesh;
@@ -27,6 +29,7 @@ namespace SynGlyphX
 		{
 			color = 1u,
 			depth = 2u,
+			color_depth = 3u,
 			stencil = 4u,
 		};
 
@@ -63,6 +66,7 @@ namespace SynGlyphX
 			r8,
 			rgb8,
 			rgba8,
+			d24,
 		};
 
 		enum class primitive_type : unsigned int

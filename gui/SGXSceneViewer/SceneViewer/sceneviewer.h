@@ -21,7 +21,6 @@
 #include "../platform.h"
 #include <QtWidgets/QOpenGLWidget>
 #include <QtWidgets/QToolButton>
-#include <QtGui/QOpenGLFunctions>
 #include <QtCore/QTimer>
 #include <QtCore/QElapsedTimer>
 #include <QtGui/QFont>

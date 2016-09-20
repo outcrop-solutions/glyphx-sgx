@@ -11,6 +11,11 @@ namespace SynGlyphX
 			return hal_gl::device_internal::init();
 		}
 
+		void device::set_external_default_render_target( unsigned int rt )
+		{
+			hal_gl::device_internal::set_external_default_render_target( rt );
+		}
+
 		void device::shutdown()
 		{
 			hal_gl::device_internal::shutdown();
@@ -19,6 +24,21 @@ namespace SynGlyphX
 		context* device::get_default_context()
 		{
 			return hal_gl::device_internal::get_default_context();
+		}
+
+		render_target_set* device::create_render_target_set( unsigned int w, unsigned int h )
+		{
+			return hal_gl::device_internal::create_render_target_set( w, h );
+		}
+
+		void device::add_color_target( render_target_set* set, texture_format fmt )
+		{
+			hal_gl::device_internal::add_color_target( set, fmt );
+		}
+
+		void device::add_depth_target( render_target_set* set, texture_format fmt )
+		{
+			hal_gl::device_internal::add_depth_target( set, fmt );
 		}
 
 		effect* device::load_effect( const char* vs_file, const char* gs_file, const char* ps_file )

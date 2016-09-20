@@ -16,7 +16,8 @@ namespace SynGlyphX
 			context_internal( const context_internal& ) = delete;
 			virtual ~context_internal();
 
-			void clear( hal::clear_type type, const glm::vec4& color = glm::vec4( 0.f, 0.f, 0.f, 1.f ) ) override;
+			void bind( hal::render_target_set* set ) override;
+			void clear( hal::clear_type type, const glm::vec4& color, float depth ) override;
 
 			void set_depth_state( hal::depth_state state ) override;
 			void set_blend_state( hal::blend_state state ) override;
