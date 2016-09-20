@@ -41,9 +41,7 @@ namespace SynGlyphX
 					buffers[i] = GL_COLOR_ATTACHMENT0 + i;
 
 				glBindFramebuffer( GL_FRAMEBUFFER, set->fb );
-				hal::check_errors();
 				glDrawBuffers( set->color_targets.size(), buffers );
-				hal::check_errors();
 				assert( glCheckFramebufferStatus( GL_FRAMEBUFFER ) == GL_FRAMEBUFFER_COMPLETE );
 			}
 			else

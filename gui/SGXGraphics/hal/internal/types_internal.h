@@ -23,7 +23,7 @@ namespace SynGlyphX
 			texture_format fmt;
 		};
 
-		class render_target_set
+		class render_target_set : public ref_counted
 		{
 		public:
 			GLuint fb;

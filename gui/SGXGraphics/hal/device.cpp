@@ -66,6 +66,11 @@ namespace SynGlyphX
 			hal_gl::device_internal::addref( t );
 		}
 
+		void device::release( hal::render_target_set* r )
+		{
+			return hal_gl::device_internal::release( r );
+		}
+
 		void device::release( hal::effect* e )
 		{
 			return hal_gl::device_internal::release( e );

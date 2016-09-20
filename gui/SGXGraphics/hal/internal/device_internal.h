@@ -49,6 +49,7 @@ namespace SynGlyphX
 			static void addref( hal::effect* e );
 			static void addref( hal::texture* t );
 
+			static void release( hal::render_target_set* r );
 			static void release( hal::mesh* m );
 			static void release( hal::effect* e );
 			static void release( hal::cbuffer* c );

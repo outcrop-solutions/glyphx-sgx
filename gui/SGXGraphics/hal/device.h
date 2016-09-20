@@ -56,6 +56,7 @@ namespace SynGlyphX
 			static void addref( effect* m );
 			static void addref( texture* t );
 
+			static void release( render_target_set* r );
 			static void release( mesh* m );
 			static void release( effect* e );
 			static void release( cbuffer* c );

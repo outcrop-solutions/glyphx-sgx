@@ -426,6 +426,17 @@ namespace SynGlyphX
 			} );
 		}
 
+		void device_internal::release( hal::render_target_set* r )
+		{
+			release_refcounted( r, [r]() {
+				glDeleteFramebuffers( 1, &r->fb );
+				if ( r->depth_target ) release( r->depth_target );
+				for ( auto t : r->color_targets )
+					release( t );
+				delete r;
+			} );
+		}
+
 		void device_internal::release( hal::texture_array* t )
 		{
 			release_refcounted( t, [t]() {
