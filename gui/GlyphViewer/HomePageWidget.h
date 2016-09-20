@@ -38,6 +38,7 @@ namespace SynGlyphX {
 
 	class TitleListWidget;
 	class UserLoginDialog;
+	class ResizeableImageLabel;
 }
 
 class HomePageWidget : public QFrame
@@ -76,6 +77,7 @@ private:
 	void SetupGlyphEdViz();
 	void ProduceGlyphEdCSV(const QString& sdtToLoad, const QString& tableInDB, unsigned int currentDataVisualization);
 	QWidget* CreateLowerDashboardWidget();
+	void SetCustomerLogo();
 
 	QGridLayout* m_mainLayout;
 	QStackedLayout* m_homePageWidgetsLayout;
@@ -97,6 +99,8 @@ private:
 	GlyphViewerWindow* m_mainWindow;
 	SynGlyphX::UserLoginDialog* loginWidget;
 	bool loggedOn;
+
+	SynGlyphX::ResizeableImageLabel* upperRightDashboardImage;
 
 	std::shared_ptr<DataEngine::DataEngineConnection> m_dataEngineConnection;
 

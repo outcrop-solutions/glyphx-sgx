@@ -289,11 +289,13 @@ void HomePageWidget::CreateDashboardWidget() {
 
 	m_mainDashboadLayout->addWidget(welcomeWidget);
 
+	loggedOn = m_mainWindow->IsUserLoggedIn();
+
 	CreateLowerHalfDashboardWidget();
 
 	m_homePageWidgetsLayout->addWidget(m_dashboardWidget);
 
-	SwitchDashboardLayout();
+	m_stackedDashboardLayout->setCurrentIndex(1);
 }
 
 void HomePageWidget::SwitchDashboardLayout() {
@@ -301,13 +303,14 @@ void HomePageWidget::SwitchDashboardLayout() {
 	if (m_mainWindow->IsUserLoggedIn()) {
 
 		loggedOn = true;
+		SetCustomerLogo();
 		m_stackedDashboardLayout->setCurrentIndex(0);
 	}
 	else {
 
 		loggedOn = false;
-		m_stackedDashboardLayout->setCurrentIndex(1);
 		loginWidget->Clear();
+		m_stackedDashboardLayout->setCurrentIndex(1);
 	}
 }
 
@@ -348,7 +351,7 @@ void HomePageWidget::CreateLowerHalfDashboardWidget() {
 
 	QObject::connect(m_recentViewsFilteringWidget, &QListWidget::itemClicked, this, &HomePageWidget::OnRecentViewClicked);
 
-	SynGlyphX::ResizeableImageLabel* upperRightDashboardImage = new SynGlyphX::ResizeableImageLabel(true, m_dashboardWidget);
+	upperRightDashboardImage = new SynGlyphX::ResizeableImageLabel(true, m_dashboardWidget);
 	upperRightDashboardImage->setAlignment(Qt::AlignCenter);
 	upperRightDashboardImage->setFrameStyle(QFrame::Panel | QFrame::Raised);
 	upperRightDashboardImage->setLineWidth(2);
@@ -358,11 +361,8 @@ void HomePageWidget::CreateLowerHalfDashboardWidget() {
 	//QString customerLogo = QDir::toNativeSeparators(QDir::cleanPath(SynGlyphX::GlyphBuilderApplication::GetCommonDataLocation()) + "/customer.png");
 	//QString upperRightLogo = QDir::toNativeSeparators(QDir::cleanPath(SynGlyphX::GlyphBuilderApplication::GetCommonDataLocation()) + "/rightupper.png");
 	//if (m_dataEngineConnection->UserAccessControls()->HasSynced()){
-	QString upperRightLogo = QDir::toNativeSeparators(QDir::cleanPath(m_dataEngineConnection->UserAccessControls()->GlyphEdPath()) + "/customer.png");
-	if (QFileInfo::exists(upperRightLogo)) {
 
-		upperRightDashboardImage->SetPixmap(QPixmap(upperRightLogo));
-	}
+	SetCustomerLogo();
 	//}
 	loggedInGridLayout->addWidget(upperRightDashboardImage, 0, 1, 1, 2);
 	loggedInGridLayout->addWidget(CreateLowerDashboardWidget(), 1, 1, 1, 2);
@@ -390,8 +390,15 @@ void HomePageWidget::CreateLowerHalfDashboardWidget() {
 
 	loggedOutWidget->setLayout(loggedOutLayout);
 	m_stackedDashboardLayout->addWidget(loggedOutWidget);
+}
 
-	m_stackedDashboardLayout->setCurrentIndex(1);
+void HomePageWidget::SetCustomerLogo() {
+
+	QString upperRightLogo = QDir::toNativeSeparators(QDir::cleanPath(m_dataEngineConnection->UserAccessControls()->GlyphEdPath()) + "/customer.png");
+	if (QFileInfo::exists(upperRightLogo)) {
+
+		upperRightDashboardImage->SetPixmap(QPixmap(upperRightLogo));
+	}
 }
 
 QWidget* HomePageWidget::CreateLowerDashboardWidget() {
