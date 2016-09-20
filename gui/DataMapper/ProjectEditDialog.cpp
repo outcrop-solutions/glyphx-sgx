@@ -34,14 +34,20 @@ public:
 class VisDialog : public QDialog
 {
 public:
-	VisDialog(QWidget* parent) {
+	VisDialog(QWidget* parent, QTreeWidgetItem *item) : QDialog(parent),
+		m_item(item)
+	{
+		Q_ASSERT(item);
 		QVBoxLayout* mainLayout = new QVBoxLayout(this);
-		QHBoxLayout *nameLayout = new QHBoxLayout(this);
-		mainLayout->addLayout(nameLayout);
-		nameLayout->addWidget(new QLabel("Name: ", this));
-		m_nameLineEdit = new QLineEdit(this);
-		nameLayout->addWidget(m_nameLineEdit);
+		//QHBoxLayout *nameLayout = new QHBoxLayout(this);
+		//mainLayout->addLayout(nameLayout);
+		//nameLayout->addWidget(new QLabel("Name: ", this));
+		//m_nameLineEdit = new QLineEdit(this);
+		//m_nameLineEdit->setText(item->text(0));
+		//nameLayout->addWidget(m_nameLineEdit);
 		m_fileLineEdit = new SynGlyphX::BrowseLineEdit(SynGlyphX::BrowseLineEdit::FileDialogType::FileOpen, true, this);
+		m_fileLineEdit->SetText(item->toolTip(0));
+		m_fileLineEdit->SetFilters("*.xdt");
 		QDialogButtonBox* dialogButtonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, this);
 		QObject::connect(dialogButtonBox, &QDialogButtonBox::accepted, this, &VisDialog::accept);
 		QObject::connect(dialogButtonBox, &QDialogButtonBox::rejected, this, &VisDialog::reject);
@@ -49,7 +55,15 @@ public:
 		mainLayout->addWidget(dialogButtonBox);
 		setLayout(mainLayout);
 	}
-	QLineEdit* m_nameLineEdit;
+
+	virtual void accept() override
+	{
+		//m_item->setText(0, m_nameLineEdit->text());
+		m_item->setToolTip(0, m_fileLineEdit->GetText());
+		QDialog::accept();
+	}
+	QTreeWidgetItem* m_item;
+	//QLineEdit* m_nameLineEdit;
 	BrowseLineEdit* m_fileLineEdit;
 };
 
@@ -94,21 +108,33 @@ public:
 
 	}
 
-	void OnAddCondition()
+	void OnAddVisualization()
 	{
-		QTreeWidgetItem *conditionItem = new QTreeWidgetItem();
-		SetItem(conditionItem);
-		//setItemWidget(conditionItem, 0, new StatementWidget(m_names, this));
-		resizeColumnToContents(0);
-		adjustSize();
+		QTreeWidgetItem *item = new QTreeWidgetItem();
+		item->setFlags(item->flags() | Qt::ItemIsEditable);
+		item->setText(0, tr("New Visualisation"));
+		VisDialog dlg (this, item);
+		if (dlg.exec() == QDialog::Accepted)
+		{
+			SetItem(item);
+			//setItemWidget(conditionItem, 0, new StatementWidget(m_names, this));
+			resizeColumnToContents(0);
+			adjustSize();
+		}
+		else
+		{
+			delete item;
+		}
+
 	}
 
 	void OnAddGroup()
 	{
-		QTreeWidgetItem *groupItem = new QTreeWidgetItem();
-		groupItem->setData(0, Qt::UserRole, tr("Group"));
-		SetItem(groupItem);
-		//setItemWidget(groupItem, 0, new GroupWidget(this));
+		QTreeWidgetItem *item = new QTreeWidgetItem();
+		item->setData(0, Qt::UserRole, tr("Group"));
+		item->setFlags(item->flags() | Qt::ItemIsEditable);
+		SetItem(item);
+		//setItemWidget(item, 0, new GroupWidget(this));
 		resizeColumnToContents(0);
 		adjustSize();
 	}
@@ -126,15 +152,20 @@ public:
 
 	void OnEdit()
 	{
-
+		auto selection = selectedItems();
+		VisDialog dlg(this, selection[0]);
+		dlg.exec();
+		resizeColumnToContents(0);
+		adjustSize();
 	}
 
 	void AddVisualization(QTreeWidgetItem* parent, const boost::property_tree::wptree& tree)
 	{
-		QTreeWidgetItem *widgetItem = new QTreeWidgetItem();
-		widgetItem->setText(0, QString::fromStdWString(tree.get<std::wstring>(L"<xmlattr>.name")));
-		widgetItem->setToolTip(0, QString::fromStdWString(tree.get<std::wstring>(L"")));
-		parent->addChild(widgetItem);
+		QTreeWidgetItem *item = new QTreeWidgetItem();
+		item->setText(0, QString::fromStdWString(tree.get<std::wstring>(L"<xmlattr>.name")));
+		item->setToolTip(0, QString::fromStdWString(tree.get<std::wstring>(L"")));
+		item->setFlags(item->flags() | Qt::ItemIsEditable);
+		parent->addChild(item);
 		//setItemWidget(widgetItem, 0, new StatementWidget(tree, m_names, this));
 		resizeColumnToContents(0);
 		adjustSize();
@@ -142,21 +173,22 @@ public:
 
 	void AddGroup(QTreeWidgetItem* parent, const boost::property_tree::wptree& tree)
 	{
-		QTreeWidgetItem *widgetItem = new QTreeWidgetItem();
-		widgetItem->setData(0, Qt::UserRole, tr("Group"));
-		widgetItem->setText(0, QString::fromStdWString(tree.get<std::wstring>(L"<xmlattr>.name")));
-		parent->addChild(widgetItem);
+		QTreeWidgetItem *item = new QTreeWidgetItem();
+		item->setData(0, Qt::UserRole, tr("Group"));
+		item->setText(0, QString::fromStdWString(tree.get<std::wstring>(L"<xmlattr>.name")));
+		item->setFlags(item->flags() | Qt::ItemIsEditable);
+		parent->addChild(item);
 		//setItemWidget(widgetItem, 0, new GroupWidget(tree, this));
 		resizeColumnToContents(0);
 		adjustSize();
 		for (const boost::property_tree::wptree::value_type& childItem : tree)
 		{
 			if (childItem.first == L"Group")
-				AddGroup(widgetItem, childItem.second);
+				AddGroup(item, childItem.second);
 			else if (childItem.first == L"Visualization")
-				AddVisualization(widgetItem, childItem.second);
+				AddVisualization(item, childItem.second);
 		}
-		widgetItem->setExpanded(true);
+		item->setExpanded(true);
 	}
 
 	void AddTree(QTreeWidgetItem* parent, const boost::property_tree::wptree& tree)
@@ -275,6 +307,7 @@ ProjectEditDialog::ProjectEditDialog(QWidget* parent) : QDialog(parent)
 
 	m_currentTreeWidget = new TreeWidget(this);
 	queryLayout->addWidget(m_currentTreeWidget);
+
 	//m_treeWidgets[0]->show();
 
 	//for (int i = 0; i < m_tableList.size(); ++i)
@@ -294,16 +327,31 @@ ProjectEditDialog::ProjectEditDialog(QWidget* parent) : QDialog(parent)
 	//queryLayout->removeWidget(m_treeWidget);
 
 	QPushButton* addConditionButton = new QPushButton(tr("Add Visualisation"), this);
-	QObject::connect(addConditionButton, &QPushButton::clicked, this, [=]() { m_currentTreeWidget->OnAddCondition(); });
+	QObject::connect(addConditionButton, &QPushButton::clicked, this, [=]() { m_currentTreeWidget->OnAddVisualization(); });
 	queryLayout->addWidget(addConditionButton);
 
 	QPushButton* addGroupButton = new QPushButton(tr("Add Group"), this);
 	QObject::connect(addGroupButton, &QPushButton::clicked, this, [=]() { m_currentTreeWidget->OnAddGroup(); });
 	queryLayout->addWidget(addGroupButton);
 
-	QPushButton* editButton = new QPushButton(tr("Edit"), this);
+	QPushButton* editButton = new QPushButton(tr("Change file"), this);
+	editButton->setEnabled(false);
 	QObject::connect(editButton, &QPushButton::clicked, this, [=]() { m_currentTreeWidget->OnEdit(); });
 	queryLayout->addWidget(editButton);
+
+	QObject::connect(m_currentTreeWidget, &TreeWidget::itemSelectionChanged, this, [=]()
+	{
+		auto selection = m_currentTreeWidget->selectedItems();
+		if (selection[0] && selection[0]->data(0, Qt::UserRole).toString() != tr("Group"))
+		{
+			editButton->setEnabled(true);
+		}
+		else
+		{
+			editButton->setEnabled(false);
+		}
+
+	});
 
 	QPushButton* removeButton = new QPushButton(tr("Remove"), this);
 	QObject::connect(removeButton, &QPushButton::clicked, this, [=]() { m_currentTreeWidget->OnRemove(); });
