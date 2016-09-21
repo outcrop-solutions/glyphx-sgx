@@ -23,8 +23,10 @@ namespace SynGlyphX
 			static context* get_default_context();
 
 			static render_target_set* create_render_target_set( unsigned int w, unsigned int h );
-			static void add_color_target( render_target_set* set, texture_format fmt );
+			static unsigned int add_color_target( render_target_set* set, texture_format fmt );
 			static void add_depth_target( render_target_set* set, texture_format fmt );
+			static texture* get_target_texture( render_target_set* set, unsigned int index );
+			static texture* get_target_depth_texture( render_target_set* set );
 
 			static mesh* create_mesh( const vertex_format& fmt, primitive_type prim, unsigned int vertex_count, void* vertices, unsigned int primitive_count, void* indices, bool support_readback = false );
 			static effect* load_effect( const char* vs_file, const char* gs_file, const char* ps_file );

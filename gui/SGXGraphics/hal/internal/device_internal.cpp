@@ -163,7 +163,7 @@ namespace SynGlyphX
 			return set;
 		}
 
-		void device_internal::add_color_target( hal::render_target_set* set, hal::texture_format fmt )
+		unsigned int device_internal::add_color_target( hal::render_target_set* set, hal::texture_format fmt )
 		{
 			assert( set );
 			assert( !is_depth_format( fmt ) );
@@ -176,6 +176,7 @@ namespace SynGlyphX
 			assert( glCheckFramebufferStatus( GL_FRAMEBUFFER ) == GL_FRAMEBUFFER_COMPLETE );
 			glBindFramebuffer( GL_FRAMEBUFFER, 0 );
 			hal::check_errors();
+			return idx;
 		}
 
 		void device_internal::add_depth_target( hal::render_target_set* set, hal::texture_format fmt )
@@ -189,6 +190,19 @@ namespace SynGlyphX
 			assert( glCheckFramebufferStatus( GL_FRAMEBUFFER ) == GL_FRAMEBUFFER_COMPLETE );
 			glBindFramebuffer( GL_FRAMEBUFFER, 0 );
 			hal::check_errors();
+		}
+
+		hal::texture* device_internal::get_target_texture( hal::render_target_set* set, unsigned int index )
+		{
+			assert( set );
+			assert( index < set->color_targets.size() );
+			return set->color_targets[index];
+		}
+
+		hal::texture* device_internal::get_target_depth_texture( hal::render_target_set* set )
+		{
+			assert( set );
+			return set->depth_target;
 		}
 
 		hal::effect* device_internal::load_effect( const char* vs_file, const char* gs_file, const char* ps_file )
@@ -361,6 +375,11 @@ namespace SynGlyphX
 			glTexSubImage3D( GL_TEXTURE_2D_ARRAY, 0, rect.x, rect.y, layer, rect.w, rect.h, 1, gl_fmt, gl_type, data );
 			glBindTexture( GL_TEXTURE_2D_ARRAY, 0 );
 			hal::check_errors();
+		}
+
+		void device_internal::addref( hal::render_target_set* r )
+		{
+			r->addref();
 		}
 
 		void device_internal::addref( hal::mesh* m )

@@ -11,8 +11,10 @@ namespace SynGlyphX
 	namespace hal_gl
 	{
 		context_internal::context_internal()
-			: bound_effect( nullptr ), instancing_mesh( nullptr )
+			: bound_target_set( nullptr ), bound_effect( nullptr ), instancing_mesh( nullptr )
 		{
+			for ( unsigned int i = 0; i < max_bound_textures; ++i )
+				bound_textures[i] = nullptr;
 			glGetFloatv( GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &max_anisotropy );
 
 			reset_defaults();
@@ -20,8 +22,12 @@ namespace SynGlyphX
 
 		context_internal::~context_internal()
 		{
+			if ( bound_target_set )
+				device_internal::release( bound_target_set );
 			if ( bound_effect )
 				device_internal::release( bound_effect );
+			for ( unsigned int i = 0; i < max_bound_textures; ++i )
+				if ( bound_textures[i] ) device_internal::release( bound_textures[i] );
 		}
 
 		void context_internal::reset_defaults_internal()
@@ -33,20 +39,34 @@ namespace SynGlyphX
 
 		void context_internal::bind( hal::render_target_set* set )
 		{
-			if ( set )
+			if ( bound_target_set != set )
 			{
-				assert( set->color_targets.size() > 0u );
-				GLenum buffers[16];
-				for ( unsigned int i = 0u; i < set->color_targets.size(); ++i )
-					buffers[i] = GL_COLOR_ATTACHMENT0 + i;
+				if ( bound_target_set )
+					device_internal::release( bound_target_set );
 
-				glBindFramebuffer( GL_FRAMEBUFFER, set->fb );
-				glDrawBuffers( set->color_targets.size(), buffers );
-				assert( glCheckFramebufferStatus( GL_FRAMEBUFFER ) == GL_FRAMEBUFFER_COMPLETE );
-			}
-			else
-			{
-				glBindFramebuffer( GL_FRAMEBUFFER, device_internal::get_default_render_target() );
+				if ( set )
+				{
+#ifdef _DEBUG
+					for ( unsigned int i = 0u; i < max_bound_textures; ++i )
+						for ( auto t : set->color_targets )
+							hal::debug::_assert( bound_textures[i] != t, "trying to bind a render target set, but one of its targets is bound as a texture" );
+#endif
+					device_internal::addref( set ); // make sure the target doesn't get released while bound
+					assert( set->color_targets.size() > 0u );
+					GLenum buffers[16];
+					for ( unsigned int i = 0u; i < set->color_targets.size(); ++i )
+						buffers[i] = GL_COLOR_ATTACHMENT0 + i;
+
+					glBindFramebuffer( GL_FRAMEBUFFER, set->fb );
+					glDrawBuffers( set->color_targets.size(), buffers );
+					assert( glCheckFramebufferStatus( GL_FRAMEBUFFER ) == GL_FRAMEBUFFER_COMPLETE );
+				}
+				else
+				{
+					glBindFramebuffer( GL_FRAMEBUFFER, device_internal::get_default_render_target() );
+				}
+
+				bound_target_set = set;
 			}
 			hal::check_errors();
 		}
@@ -131,21 +151,34 @@ namespace SynGlyphX
 
 		void context_internal::bind( unsigned int index, hal::texture* t, const hal::sampler_state& state )
 		{
-			glActiveTexture( GL_TEXTURE0 + index );
-			glBindTexture( GL_TEXTURE_2D, t->handle );
+			if ( bound_textures[index] != t )
+			{
+				assert( index < max_bound_textures );
+				if ( bound_textures[index] ) device_internal::release( bound_textures[index] );
+				t->addref();
+				bound_textures[index] = t;
 
-			GLenum wrap = state.wrap == hal::texture_wrap::wrap ? GL_REPEAT : GL_CLAMP_TO_EDGE;
+#ifdef _DEBUG
+				if ( bound_target_set )
+					for ( auto rt : bound_target_set->color_targets )
+						hal::debug::_assert( t != rt, "trying to bind a texture that is currently in use as a render target; this is unsupported" );
+#endif
 
-			GLenum min_filter = state.filter == hal::texture_filter::point ? GL_POINT : GL_LINEAR_MIPMAP_LINEAR;
-			GLenum mag_filter = state.filter == hal::texture_filter::point ? GL_POINT : GL_LINEAR;
+				glActiveTexture( GL_TEXTURE0 + index );
+				glBindTexture( GL_TEXTURE_2D, t->handle );
 
-			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrap );
-			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrap );
-			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, min_filter );
-			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, mag_filter );
-			if ( state.filter == hal::texture_filter::aniso )
-				glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, max_anisotropy );
+				GLenum wrap = state.wrap == hal::texture_wrap::wrap ? GL_REPEAT : GL_CLAMP_TO_EDGE;
 
+				GLenum min_filter = state.filter == hal::texture_filter::point ? GL_POINT : GL_LINEAR_MIPMAP_LINEAR;
+				GLenum mag_filter = state.filter == hal::texture_filter::point ? GL_POINT : GL_LINEAR;
+
+				glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrap );
+				glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrap );
+				glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, min_filter );
+				glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, mag_filter );
+				if ( state.filter == hal::texture_filter::aniso )
+					glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, max_anisotropy );
+			}
 			hal::check_errors();
 		}
 

@@ -52,8 +52,11 @@ namespace SynGlyphX
 			void reset_defaults_internal() override;
 
 		private:
+			hal::render_target_set* bound_target_set;
 			hal::effect* bound_effect;
 			hal::mesh* instancing_mesh;
+			static const unsigned int max_bound_textures = 16u;
+			hal::texture* bound_textures[max_bound_textures];
 			float max_anisotropy;
 		};
 	}

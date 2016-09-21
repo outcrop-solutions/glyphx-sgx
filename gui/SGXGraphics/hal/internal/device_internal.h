@@ -21,8 +21,10 @@ namespace SynGlyphX
 			static hal::context* get_default_context();
 
 			static hal::render_target_set* create_render_target_set( unsigned int w, unsigned int h );
-			static void add_color_target( hal::render_target_set* set, hal::texture_format fmt );
+			static unsigned int add_color_target( hal::render_target_set* set, hal::texture_format fmt );
 			static void add_depth_target( hal::render_target_set* set, hal::texture_format fmt );
+			static hal::texture* get_target_texture( hal::render_target_set* set, unsigned int index );
+			static hal::texture* get_target_depth_texture( hal::render_target_set* set );
 
 			static hal::mesh* create_mesh( const hal::vertex_format& fmt, hal::primitive_type prim, unsigned int vertex_count, void* vertices, unsigned int primitive_count, void* indices, bool support_readback );
 			static hal::effect* load_effect( const char* vs_file, const char* gs_file, const char* ps_file );
@@ -45,6 +47,7 @@ namespace SynGlyphX
 
 			static hal::font* load_font( const char* file, unsigned int size );
 
+			static void addref( hal::render_target_set* r );
 			static void addref( hal::mesh* m );
 			static void addref( hal::effect* e );
 			static void addref( hal::texture* t );

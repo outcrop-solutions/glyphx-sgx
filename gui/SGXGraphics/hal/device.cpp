@@ -31,14 +31,24 @@ namespace SynGlyphX
 			return hal_gl::device_internal::create_render_target_set( w, h );
 		}
 
-		void device::add_color_target( render_target_set* set, texture_format fmt )
+		unsigned int device::add_color_target( render_target_set* set, texture_format fmt )
 		{
-			hal_gl::device_internal::add_color_target( set, fmt );
+			return hal_gl::device_internal::add_color_target( set, fmt );
 		}
 
 		void device::add_depth_target( render_target_set* set, texture_format fmt )
 		{
 			hal_gl::device_internal::add_depth_target( set, fmt );
+		}
+
+		texture* device::get_target_texture( render_target_set* set, unsigned int index )
+		{
+			return hal_gl::device_internal::get_target_texture( set, index );
+		}
+
+		texture* device::get_target_depth_texture( render_target_set* set )
+		{
+			return hal_gl::device_internal::get_target_depth_texture( set );
 		}
 
 		effect* device::load_effect( const char* vs_file, const char* gs_file, const char* ps_file )
