@@ -101,9 +101,9 @@ namespace SynGlyphX
 			return hal_gl::device_internal::create_texture( w, h, fmt, data );
 		}
 
-		texture* device::load_texture( const char* file )
+		texture* device::load_texture( const char* file, bool generate_mips )
 		{
-			return hal_gl::device_internal::load_texture( file );
+			return hal_gl::device_internal::load_texture( file, generate_mips );
 		}
 
 		unsigned int device::get_texture_width( texture* t )

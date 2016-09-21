@@ -53,6 +53,7 @@ namespace SynGlyphX
 
 		protected:
 			virtual void reset_defaults_internal() { }
+			virtual void unbind_all_textures() { }
 		};
 
 		template<typename T> void context::set_constant( effect* e, const char* block_name, const char* uniform_name, const T& data )

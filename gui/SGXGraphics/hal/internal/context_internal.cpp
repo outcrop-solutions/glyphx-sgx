@@ -37,6 +37,12 @@ namespace SynGlyphX
 			glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, 0 );
 		}
 
+		void context_internal::unbind_all_textures()
+		{
+			for ( int i = 0; i < max_bound_textures; ++i )
+				bind( i, ( hal::texture* )nullptr );
+		}
+
 		void context_internal::bind( hal::render_target_set* set )
 		{
 			if ( bound_target_set != set )
@@ -155,8 +161,10 @@ namespace SynGlyphX
 			{
 				assert( index < max_bound_textures );
 				if ( bound_textures[index] ) device_internal::release( bound_textures[index] );
-				t->addref();
+				if ( t ) t->addref();
 				bound_textures[index] = t;
+
+				auto handle = t ? t->handle : 0u;
 
 #ifdef _DEBUG
 				if ( bound_target_set )
@@ -165,19 +173,22 @@ namespace SynGlyphX
 #endif
 
 				glActiveTexture( GL_TEXTURE0 + index );
-				glBindTexture( GL_TEXTURE_2D, t->handle );
+				glBindTexture( GL_TEXTURE_2D, handle );
 
-				GLenum wrap = state.wrap == hal::texture_wrap::wrap ? GL_REPEAT : GL_CLAMP_TO_EDGE;
+				if ( t )
+				{
+					GLenum wrap = state.wrap == hal::texture_wrap::wrap ? GL_REPEAT : GL_CLAMP_TO_EDGE;
 
-				GLenum min_filter = state.filter == hal::texture_filter::point ? GL_POINT : GL_LINEAR_MIPMAP_LINEAR;
-				GLenum mag_filter = state.filter == hal::texture_filter::point ? GL_POINT : GL_LINEAR;
+					GLenum min_filter = state.filter == hal::texture_filter::point ? GL_POINT : ( t->has_mipchain ? GL_LINEAR_MIPMAP_LINEAR : GL_LINEAR );
+					GLenum mag_filter = state.filter == hal::texture_filter::point ? GL_POINT : GL_LINEAR;
 
-				glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrap );
-				glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrap );
-				glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, min_filter );
-				glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, mag_filter );
-				if ( state.filter == hal::texture_filter::aniso )
-					glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, max_anisotropy );
+					glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrap );
+					glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrap );
+					glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, min_filter );
+					glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, mag_filter );
+					if ( state.filter == hal::texture_filter::aniso )
+						glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, max_anisotropy );
+				}
 			}
 			hal::check_errors();
 		}

@@ -21,6 +21,7 @@ namespace SynGlyphX
 			GLuint handle;
 			unsigned int w, h;
 			texture_format fmt;
+			bool has_mipchain;
 		};
 
 		class render_target_set : public ref_counted

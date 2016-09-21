@@ -50,6 +50,7 @@ namespace SynGlyphX
 
 		protected:
 			void reset_defaults_internal() override;
+			void unbind_all_textures() override;
 
 		private:
 			hal::render_target_set* bound_target_set;

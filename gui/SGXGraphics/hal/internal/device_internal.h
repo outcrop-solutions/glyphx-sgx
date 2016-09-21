@@ -38,7 +38,7 @@ namespace SynGlyphX
 			static void rebuild_effects();
 
 			static hal::texture* create_texture( unsigned int w, unsigned int h, hal::texture_format fmt, uint8_t* data );
-			static hal::texture* load_texture( const char* file );
+			static hal::texture* load_texture( const char* file, bool generate_mips );
 			static unsigned int get_texture_width( hal::texture* tex ) { return tex->w; }
 			static unsigned int get_texture_height( hal::texture* tex ) { return tex->h; }
 

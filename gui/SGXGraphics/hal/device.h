@@ -42,7 +42,7 @@ namespace SynGlyphX
 			static void set_cbuffer_usage( effect* e, const char* block_name, cbuffer_usage usage );
 
 			static texture* create_texture( unsigned int w, unsigned int h, texture_format fmt, uint8_t* data );
-			static texture* load_texture( const char* file );
+			static texture* load_texture( const char* file, bool generate_mips = true );
 			static unsigned int get_texture_width( texture* t );
 			static unsigned int get_texture_height( texture* t );
 

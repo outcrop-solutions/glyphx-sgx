@@ -314,18 +314,18 @@ namespace SynGlyphX
 			tex->w = w;
 			tex->h = h;
 			tex->fmt = fmt;
+			tex->has_mipchain = false;
 			glGenTextures( 1, &tex->handle );
 			glBindTexture( GL_TEXTURE_2D, tex->handle );
 			GLenum gl_fmt = GL_RGB, gl_internal_fmt = GL_RGB, gl_type = GL_UNSIGNED_BYTE;
 			get_gl_fmt( fmt, gl_fmt, gl_internal_fmt, gl_type );
 			glTexImage2D( GL_TEXTURE_2D, 0, gl_fmt, w, h, 0, gl_fmt, gl_type, data );
-			glGenerateMipmap( GL_TEXTURE_2D );
 			glBindTexture( GL_TEXTURE_2D, 0 );
 			hal::check_errors();
 			return tex;
 		}
 
-		hal::texture* device_internal::load_texture( const char* file )
+		hal::texture* device_internal::load_texture( const char* file, bool generate_mips )
 		{
 			assert( file );
 
@@ -338,6 +338,13 @@ namespace SynGlyphX
 				assert( depth == 3 || depth == 4 );
 				tex = create_texture( w, h, depth == 3 ? hal::texture_format::rgb8 : hal::texture_format::rgba8, data );
 				stbi_image_free( data );
+				if ( generate_mips )
+				{
+					glBindTexture( GL_TEXTURE_2D, tex->handle );
+					glGenerateMipmap( GL_TEXTURE_2D );
+					glBindTexture( GL_TEXTURE_2D, 0 );
+					tex->has_mipchain = true;
+				}
 			}
 
 			return tex;
