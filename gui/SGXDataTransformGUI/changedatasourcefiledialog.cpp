@@ -18,7 +18,8 @@ namespace SynGlyphX {
 
 		if (oldDatasourceFile.CanDatasourceHaveMultipleTables()) {
 
-			m_oldDatasourceTables.insert(oldDatasourceFile.GetTableNames().begin(), oldDatasourceFile.GetTableNames().end());
+			Datasource::TableNames tables = oldDatasourceFile.GetTableNames();
+			std::copy(tables.begin(), tables.end(), std::inserter(m_oldDatasourceTables, m_oldDatasourceTables.end()));
 		}
 	}
 
@@ -40,7 +41,7 @@ namespace SynGlyphX {
 
 					if (m_fileDatasource.GetFileType() == FileDatasource::FileType::SQLITE3) {
 
-						m_dataEngineConnection->connectToServer(QString("sqlite:") + QString::fromStdWString(m_fileDatasource.GetFilename()), "", "", "sqlite3");
+						m_dataEngineConnection->connectToServer(QString("sqlite:") + newDatasource, "", "", "sqlite3");
 						QStringList newTables = m_dataEngineConnection->getTables();
 						for (const std::wstring& oldTable : m_oldDatasourceTables) {
 

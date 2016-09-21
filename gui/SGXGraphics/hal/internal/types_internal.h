@@ -6,6 +6,10 @@
 #include "ref_counted.h"
 #include "effect.h"
 #include "../vertex_format.h"
+#include <unordered_map>
+
+#include <ft2build.h>
+#include FT_FREETYPE_H
 
 namespace SynGlyphX
 {
@@ -16,7 +20,25 @@ namespace SynGlyphX
 		public:
 			GLuint handle;
 			unsigned int w, h;
-			bool external;
+			texture_format fmt;
+			bool has_mipchain;
+		};
+
+		class render_target_set : public ref_counted
+		{
+		public:
+			GLuint fb;
+			unsigned int w, h;
+			std::vector<texture*> color_targets;
+			texture* depth_target;
+		};
+
+		class texture_array : public ref_counted
+		{
+		public:
+			GLuint handle;
+			unsigned int w, h, d;
+			texture_format fmt;
 		};
 
 		class mesh : public ref_counted
@@ -35,6 +57,35 @@ namespace SynGlyphX
 		public:
 			GLuint buffer;
 			unsigned int size;
+		};
+
+		struct font_glyph
+		{
+			int16_t origin_x, origin_y;
+			int16_t advance_x, advance_y;
+			uint16_t width, height;
+			uint32_t array_slice;
+		};
+
+		class font_string
+		{
+		public:
+			uint64_t last_use;
+			uint32_t length;
+			hal::cbuffer* instance_data;
+		};
+
+		class font : public ref_counted
+		{
+		public:
+			std::string file;
+			FT_Face face;
+			unsigned int size;
+			std::unordered_map<uint32_t, font_glyph> glyphs;
+			hal::texture_array* textures;
+			hal::mesh* glyph_mesh;
+			std::unordered_map<std::string, font_string> string_cache;
+			unsigned int next_slice;
 		};
 
 		inline unsigned int indices_per_primitive( primitive_type prim )
@@ -61,6 +112,11 @@ namespace SynGlyphX
 			}
 			assert( false );	// invalid prim type
 			return 0u;
+		}
+
+		inline bool is_depth_format( texture_format t )
+		{
+			return ( t == texture_format::d24 );
 		}
 	}
 }

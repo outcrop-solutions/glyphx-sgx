@@ -15,13 +15,15 @@ namespace SynGlyphX
 
 			void reset_defaults();
 
-			virtual void clear( clear_type type, const glm::vec4& color = glm::vec4( 0.f, 0.f, 0.f, 1.f ) ) = 0;
+			virtual void bind( render_target_set* set ) = 0;
+			virtual void clear( clear_type type, const glm::vec4& color = glm::vec4( 0.f, 0.f, 0.f, 1.f ), float depth = 1.f ) = 0;
 
 			virtual void set_depth_state( depth_state state ) = 0;
 			virtual void set_blend_state( blend_state state ) = 0;
 			virtual void set_rasterizer_state( const rasterizer_state& state ) = 0;
 
 			virtual void bind( unsigned int index, texture* t, const sampler_state& state = sampler_state() ) = 0;
+			virtual void bind( unsigned int index, texture_array* t, const sampler_state& state = sampler_state() ) = 0;
 
 			virtual void bind( effect* e ) = 0;
 			template<typename T> void set_constant( effect* e, const char* block_name, const char* uniform_name, const T& data );
@@ -45,9 +47,13 @@ namespace SynGlyphX
 			virtual void end_instancing() = 0;
 
 			virtual mesh_readback readback_mesh( mesh* m ) = 0;
+			
+			virtual void draw( font* f, const glm::mat4& transform, const glm::vec4& color, const char* text ) = 0;
+			virtual glm::vec2 measure_text( hal::font* f, const char* text ) = 0;
 
 		protected:
 			virtual void reset_defaults_internal() { }
+			virtual void unbind_all_textures() { }
 		};
 
 		template<typename T> void context::set_constant( effect* e, const char* block_name, const char* uniform_name, const T& data )

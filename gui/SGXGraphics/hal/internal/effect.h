@@ -14,7 +14,8 @@ namespace SynGlyphX
 		class effect : public ref_counted
 		{
 		public:
-			static effect* create( const char* vs_src, const char* gs_src, const char* ps_src, const std::vector<std::string>& forced_header_includes );
+			static effect* load( const char* vs_src, const char* gs_src, const char* ps_src, const std::vector<std::string>& forced_header_includes );
+			static effect* create( const char* vs_src, const char* gs_src, const char* ps_src );
 			~effect();
 
 			void recompile();
@@ -37,7 +38,9 @@ namespace SynGlyphX
 			effect( const effect& ) = delete;
 			void release_internals();
 
-			std::string vs_src, gs_src, ps_src;
+			bool loaded_from_file;
+			std::string vs_file, gs_file, ps_file;	// only exist if loaded_from_file == true
+			std::string vs_src, gs_src, ps_src;	// only exist if loaded_from_file == false
 			GLuint _program;
 			GLuint vs, gs, ps;
 

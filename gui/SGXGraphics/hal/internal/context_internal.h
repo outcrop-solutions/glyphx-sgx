@@ -5,6 +5,8 @@
 
 namespace SynGlyphX
 {
+	namespace hal { struct font_glyph; }
+
 	namespace hal_gl
 	{
 		class context_internal : public hal::context
@@ -14,13 +16,15 @@ namespace SynGlyphX
 			context_internal( const context_internal& ) = delete;
 			virtual ~context_internal();
 
-			void clear( hal::clear_type type, const glm::vec4& color = glm::vec4( 0.f, 0.f, 0.f, 1.f ) ) override;
+			void bind( hal::render_target_set* set ) override;
+			void clear( hal::clear_type type, const glm::vec4& color, float depth ) override;
 
 			void set_depth_state( hal::depth_state state ) override;
 			void set_blend_state( hal::blend_state state ) override;
 			void set_rasterizer_state( const hal::rasterizer_state& state ) override;
 
 			void bind( unsigned int index, hal::texture* t, const hal::sampler_state& state = hal::sampler_state() ) override;
+			void bind( unsigned int index, hal::texture_array* t, const hal::sampler_state& state = hal::sampler_state() ) override;
 
 			void bind( hal::effect* e ) override;
 			void set_constant( hal::effect* e, const char* block_name, const char* uniform_name, const void* data, size_t size ) override;
@@ -39,14 +43,21 @@ namespace SynGlyphX
 
 			hal::mesh_readback readback_mesh( hal::mesh* m ) override;
 
+			void draw( hal::font* f, const glm::mat4& transform, const glm::vec4& color, const char* text ) override;
+			glm::vec2 measure_text( hal::font* f, const char* text ) override;
+
 			hal::effect* get_bound_effect() { return bound_effect; }
 
 		protected:
 			void reset_defaults_internal() override;
+			void unbind_all_textures() override;
 
 		private:
+			hal::render_target_set* bound_target_set;
 			hal::effect* bound_effect;
 			hal::mesh* instancing_mesh;
+			static const unsigned int max_bound_textures = 16u;
+			hal::texture* bound_textures[max_bound_textures];
 			float max_anisotropy;
 		};
 	}

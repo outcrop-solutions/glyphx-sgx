@@ -11,6 +11,11 @@ namespace SynGlyphX
 			return hal_gl::device_internal::init();
 		}
 
+		void device::set_external_default_render_target( unsigned int rt )
+		{
+			hal_gl::device_internal::set_external_default_render_target( rt );
+		}
+
 		void device::shutdown()
 		{
 			hal_gl::device_internal::shutdown();
@@ -19,6 +24,36 @@ namespace SynGlyphX
 		context* device::get_default_context()
 		{
 			return hal_gl::device_internal::get_default_context();
+		}
+
+		render_target_set* device::create_render_target_set( unsigned int w, unsigned int h )
+		{
+			return hal_gl::device_internal::create_render_target_set( w, h );
+		}
+
+		unsigned int device::add_color_target( render_target_set* set, texture_format fmt )
+		{
+			return hal_gl::device_internal::add_color_target( set, fmt );
+		}
+
+		void device::add_depth_target( render_target_set* set, texture_format fmt )
+		{
+			hal_gl::device_internal::add_depth_target( set, fmt );
+		}
+
+		texture* device::get_target_texture( render_target_set* set, unsigned int index )
+		{
+			return hal_gl::device_internal::get_target_texture( set, index );
+		}
+
+		texture* device::get_target_depth_texture( render_target_set* set )
+		{
+			return hal_gl::device_internal::get_target_depth_texture( set );
+		}
+
+		effect* device::load_effect( const char* vs_file, const char* gs_file, const char* ps_file )
+		{
+			return hal_gl::device_internal::load_effect( vs_file, gs_file, ps_file );
 		}
 
 		effect* device::create_effect( const char* vs, const char* gs, const char* ps )
@@ -41,6 +76,11 @@ namespace SynGlyphX
 			hal_gl::device_internal::addref( t );
 		}
 
+		void device::release( hal::render_target_set* r )
+		{
+			return hal_gl::device_internal::release( r );
+		}
+
 		void device::release( hal::effect* e )
 		{
 			return hal_gl::device_internal::release( e );
@@ -56,9 +96,14 @@ namespace SynGlyphX
 			return hal_gl::device_internal::create_cbuffer( size );
 		}
 
-		texture* device::load_texture( const char* file )
+		texture* device::create_texture( unsigned int w, unsigned int h, hal::texture_format fmt, uint8_t* data )
 		{
-			return hal_gl::device_internal::load_texture( file );
+			return hal_gl::device_internal::create_texture( w, h, fmt, data );
+		}
+
+		texture* device::load_texture( const char* file, bool generate_mips )
+		{
+			return hal_gl::device_internal::load_texture( file, generate_mips );
 		}
 
 		unsigned int device::get_texture_width( texture* t )
@@ -84,6 +129,16 @@ namespace SynGlyphX
 		void device::release( texture* t )
 		{
 			hal_gl::device_internal::release( t );
+		}
+
+		void device::release( texture_array* t )
+		{
+			hal_gl::device_internal::release( t );
+		}
+
+		void device::release( font* f )
+		{
+			hal_gl::device_internal::release( f );
 		}
 
 		void device::set_break_on_error( bool val )
@@ -114,6 +169,36 @@ namespace SynGlyphX
 		void device::set_cbuffer_usage( effect* e, const char* block_name, cbuffer_usage usage )
 		{
 			hal_gl::device_internal::set_cbuffer_usage( e, block_name, usage );
+		}
+
+		font* device::load_font( const char* file, unsigned size )
+		{
+			return hal_gl::device_internal::load_font( file, size );
+		}
+
+		texture_array* device::create_texture_array( unsigned int w, unsigned int h, unsigned int layers, texture_format fmt )
+		{
+			return hal_gl::device_internal::create_texture_array( w, h, layers, fmt );
+		}
+
+		void device::update_array_slice( texture_array* t, unsigned int layer, uint8_t* data )
+		{
+			pixel_rect rect{ 0u, 0u, t->w, t->h };
+			return hal_gl::device_internal::update_array_slice( t, layer, rect, data );
+		}
+
+		void device::update_array_slice( texture_array* t, unsigned int layer, const pixel_rect& rect, uint8_t* data )
+		{
+			return hal_gl::device_internal::update_array_slice( t, layer, rect, data );
+		}
+
+		void device::begin_frame()
+		{
+		}
+
+		void device::end_frame()
+		{
+			hal_gl::device_internal::end_frame();
 		}
 	}
 }

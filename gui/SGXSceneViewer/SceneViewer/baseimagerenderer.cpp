@@ -16,7 +16,7 @@ namespace SynGlyphX
 
 	BaseImageRenderer::BaseImageRenderer()
 	{
-		effect = hal::device::create_effect( "shaders/texture.vert", nullptr, "shaders/texture.frag" );
+		effect = hal::device::load_effect( "shaders/texture.vert", nullptr, "shaders/texture.frag" );
 
 		// Build a unit square mesh, which we'll transform as needed to form the base images.
 		unsigned int square_indices[]

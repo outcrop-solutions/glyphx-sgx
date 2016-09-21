@@ -4,14 +4,17 @@
 #include "gl.h"
 #include "types_internal.h"
 #include "effect.h"
+#include "../debug.h"
 
 namespace SynGlyphX
 {
 	namespace hal_gl
 	{
 		context_internal::context_internal()
-			: bound_effect( nullptr ), instancing_mesh( nullptr )
+			: bound_target_set( nullptr ), bound_effect( nullptr ), instancing_mesh( nullptr )
 		{
+			for ( unsigned int i = 0; i < max_bound_textures; ++i )
+				bound_textures[i] = nullptr;
 			glGetFloatv( GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &max_anisotropy );
 
 			reset_defaults();
@@ -19,8 +22,12 @@ namespace SynGlyphX
 
 		context_internal::~context_internal()
 		{
+			if ( bound_target_set )
+				device_internal::release( bound_target_set );
 			if ( bound_effect )
 				device_internal::release( bound_effect );
+			for ( unsigned int i = 0; i < max_bound_textures; ++i )
+				if ( bound_textures[i] ) device_internal::release( bound_textures[i] );
 		}
 
 		void context_internal::reset_defaults_internal()
@@ -30,9 +37,50 @@ namespace SynGlyphX
 			glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, 0 );
 		}
 
-		void context_internal::clear( hal::clear_type type, const glm::vec4& color )
+		void context_internal::unbind_all_textures()
+		{
+			for ( int i = 0; i < max_bound_textures; ++i )
+				bind( i, ( hal::texture* )nullptr );
+		}
+
+		void context_internal::bind( hal::render_target_set* set )
+		{
+			if ( bound_target_set != set )
+			{
+				if ( bound_target_set )
+					device_internal::release( bound_target_set );
+
+				if ( set )
+				{
+#ifdef _DEBUG
+					for ( unsigned int i = 0u; i < max_bound_textures; ++i )
+						for ( auto t : set->color_targets )
+							hal::debug::_assert( bound_textures[i] != t, "trying to bind a render target set, but one of its targets is bound as a texture" );
+#endif
+					device_internal::addref( set ); // make sure the target doesn't get released while bound
+					assert( set->color_targets.size() > 0u );
+					GLenum buffers[16];
+					for ( unsigned int i = 0u; i < set->color_targets.size(); ++i )
+						buffers[i] = GL_COLOR_ATTACHMENT0 + i;
+
+					glBindFramebuffer( GL_FRAMEBUFFER, set->fb );
+					glDrawBuffers( set->color_targets.size(), buffers );
+					assert( glCheckFramebufferStatus( GL_FRAMEBUFFER ) == GL_FRAMEBUFFER_COMPLETE );
+				}
+				else
+				{
+					glBindFramebuffer( GL_FRAMEBUFFER, device_internal::get_default_render_target() );
+				}
+
+				bound_target_set = set;
+			}
+			hal::check_errors();
+		}
+
+		void context_internal::clear( hal::clear_type type, const glm::vec4& color, float depth )
 		{
 			if ( type & hal::clear_type::color ) glClearColor( color.r, color.g, color.b, color.a );
+			if ( type & hal::clear_type::depth ) glClearDepth( depth );
 
 			GLbitfield ct = 0u;
 			if ( type & hal::clear_type::color ) ct |= GL_COLOR_BUFFER_BIT;
@@ -109,20 +157,58 @@ namespace SynGlyphX
 
 		void context_internal::bind( unsigned int index, hal::texture* t, const hal::sampler_state& state )
 		{
+			if ( bound_textures[index] != t )
+			{
+				assert( index < max_bound_textures );
+				if ( bound_textures[index] ) device_internal::release( bound_textures[index] );
+				if ( t ) t->addref();
+				bound_textures[index] = t;
+
+				auto handle = t ? t->handle : 0u;
+
+#ifdef _DEBUG
+				if ( bound_target_set )
+					for ( auto rt : bound_target_set->color_targets )
+						hal::debug::_assert( t != rt, "trying to bind a texture that is currently in use as a render target; this is unsupported" );
+#endif
+
+				glActiveTexture( GL_TEXTURE0 + index );
+				glBindTexture( GL_TEXTURE_2D, handle );
+
+				if ( t )
+				{
+					GLenum wrap = state.wrap == hal::texture_wrap::wrap ? GL_REPEAT : GL_CLAMP_TO_EDGE;
+
+					GLenum min_filter = state.filter == hal::texture_filter::point ? GL_POINT : ( t->has_mipchain ? GL_LINEAR_MIPMAP_LINEAR : GL_LINEAR );
+					GLenum mag_filter = state.filter == hal::texture_filter::point ? GL_POINT : GL_LINEAR;
+
+					glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrap );
+					glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrap );
+					glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, min_filter );
+					glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, mag_filter );
+					if ( state.filter == hal::texture_filter::aniso )
+						glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, max_anisotropy );
+				}
+			}
+			hal::check_errors();
+		}
+
+		void context_internal::bind( unsigned int index, hal::texture_array* t, const hal::sampler_state& state )
+		{
 			glActiveTexture( GL_TEXTURE0 + index );
-			glBindTexture( GL_TEXTURE_2D, t->handle );
+			glBindTexture( GL_TEXTURE_2D_ARRAY, t->handle );
 
 			GLenum wrap = state.wrap == hal::texture_wrap::wrap ? GL_REPEAT : GL_CLAMP_TO_EDGE;
 
 			GLenum min_filter = state.filter == hal::texture_filter::point ? GL_POINT : GL_LINEAR_MIPMAP_LINEAR;
 			GLenum mag_filter = state.filter == hal::texture_filter::point ? GL_POINT : GL_LINEAR;
 
-			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrap );
-			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrap );
-			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, min_filter );
-			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, mag_filter );
+			glTexParameteri( GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_S, wrap );
+			glTexParameteri( GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_T, wrap );
+			glTexParameteri( GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, min_filter );
+			glTexParameteri( GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, mag_filter );
 			if ( state.filter == hal::texture_filter::aniso )
-				glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, max_anisotropy );
+				glTexParameterf( GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAX_ANISOTROPY_EXT, max_anisotropy );
 
 			hal::check_errors();
 		}
@@ -238,6 +324,89 @@ namespace SynGlyphX
 			assert( m );
 			assert( m->vertex_data_copy );
 			return hal::mesh_readback{ m->fmt, m->vertex_data_copy, m->index_data_copy, m->primitive_count * indices_per_primitive( m->prim ), m->vertex_count };
+		}
+
+		glm::vec2 context_internal::measure_text( hal::font* f, const char* text )
+		{
+			glm::vec2 pen;
+			glm::vec2 min( std::numeric_limits<float>::max(), std::numeric_limits<float>::max() );
+			glm::vec2 max( std::numeric_limits<float>::lowest(), std::numeric_limits<float>::lowest() );
+
+			const char* prev = nullptr;
+			const char* c = text;
+			const hal::font_glyph* glyph;
+			while ( *c != '\0' )
+			{
+				glyph = &device_internal::get_glyph( f, *c );
+
+				glm::vec2 kern;
+				if ( prev ) kern = device_internal::get_kerning( f, *prev, *c );
+				pen += kern;
+
+				glm::vec2 glyph_min( pen.x + glyph->origin_x, pen.y - glyph->origin_y );
+				glm::vec2 glyph_max( glyph_min.x + glyph->width, glyph_min.y + glyph->height );
+
+				min = glm::min( min, glyph_min );
+				max = glm::max( max, glyph_max );
+
+				pen += glm::vec2( glyph->advance_x, glyph->advance_y );
+				prev = c;
+				++c;
+			}
+
+			return max - min;
+		}
+
+		void context_internal::draw( hal::font* f, const glm::mat4& transform, const glm::vec4& color, const char* text )
+		{
+			auto it = f->string_cache.find( text );
+			if ( it == f->string_cache.end() )
+			{
+				hal::font_string new_str;
+				new_str.length = strlen( text );
+				new_str.instance_data = device_internal::create_cbuffer( sizeof( glm::vec4 ) * new_str.length );
+				glm::vec2 pen;
+				const char* prev = nullptr;
+				const char* c = text;
+				std::vector<glm::vec4> instances;
+				for ( unsigned int i = 0; i < new_str.length; ++i )
+				{
+					auto glyph = device_internal::get_glyph( f, *c );
+					glm::vec2 kern;
+					if ( prev ) kern = device_internal::get_kerning( f, *prev, *c );
+					pen += kern;
+					glm::vec3 origin( pen.x + glyph.origin_x, pen.y - glyph.origin_y, 0.f );
+
+					instances.push_back( glm::vec4( origin.x, origin.y, glyph.array_slice, 0.f ) );
+
+					pen += glm::vec2( glyph.advance_x, glyph.advance_y );
+					prev = c;
+					++c;
+				}
+				assert( instances.size() == new_str.length );
+				update_constant_block( new_str.instance_data, &instances[0], instances.size() * sizeof( glm::vec4 ), hal::cbuffer_usage::static_draw );
+				f->string_cache.insert( std::make_pair( text, new_str ) );
+
+				// todo: is there a way to avoid this second lookup? really clunky...
+				it = f->string_cache.find( text );
+			}
+			auto& font_str = it->second;
+			font_str.last_use = device_internal::current_frame();
+
+			hal::rasterizer_state rast{ false, true, false, false };
+			set_rasterizer_state( rast );
+
+			auto effect = device_internal::get_text_effect();
+			set_blend_state( hal::blend_state::alpha );
+			bind( effect );
+
+			bind( 0, f->textures );
+			bind( get_uniform_block_index( effect, "instance_data" ), font_str.instance_data );
+
+			context::set_constant( effect, "shared_data", "color", color );
+			context::set_constant( effect, "shared_data", "transform", transform );
+
+			draw_instanced( f->glyph_mesh, font_str.length );
 		}
 	}
 }

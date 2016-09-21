@@ -12,7 +12,10 @@ namespace SynGlyphX
 		class device;
 		class context;
 
+		class render_target_set;
+
 		class texture;
+		class texture_array;
 		class mesh;
 		class effect;
 
@@ -20,10 +23,13 @@ namespace SynGlyphX
 
 		class cbuffer;
 
+		class font;
+
 		enum clear_type : unsigned int
 		{
 			color = 1u,
 			depth = 2u,
+			color_depth = 3u,
 			stencil = 4u,
 		};
 
@@ -53,6 +59,14 @@ namespace SynGlyphX
 			point,
 			linear,
 			aniso,
+		};
+
+		enum class texture_format : unsigned int
+		{
+			r8,
+			rgb8,
+			rgba8,
+			d24,
 		};
 
 		enum class primitive_type : unsigned int
@@ -97,6 +111,11 @@ namespace SynGlyphX
 		{
 			static_draw,
 			dynamic_draw,
+		};
+
+		struct pixel_rect
+		{
+			int x, y, w, h;
 		};
 	}
 }
