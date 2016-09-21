@@ -8,6 +8,7 @@
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QLineEdit>
+#include <QtWidgets/QMenu>
 #include "DMGlobal.h"
 #include "datatransformmodel.h"
 #include "databaseserverdatasource.h"
@@ -47,7 +48,8 @@ public:
 		//nameLayout->addWidget(m_nameLineEdit);
 		m_fileLineEdit = new SynGlyphX::BrowseLineEdit(SynGlyphX::BrowseLineEdit::FileDialogType::FileOpen, true, this);
 		m_fileLineEdit->SetText(item->toolTip(0));
-		m_fileLineEdit->SetFilters("*.xdt");
+		m_fileLineEdit->SetFilters("*.sdt");
+		m_fileLineEdit->SetReadOnly(true);
 		QDialogButtonBox* dialogButtonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, this);
 		QObject::connect(dialogButtonBox, &QDialogButtonBox::accepted, this, &VisDialog::accept);
 		QObject::connect(dialogButtonBox, &QDialogButtonBox::rejected, this, &VisDialog::reject);
@@ -133,6 +135,7 @@ public:
 		QTreeWidgetItem *item = new QTreeWidgetItem();
 		item->setData(0, Qt::UserRole, tr("Group"));
 		item->setFlags(item->flags() | Qt::ItemIsEditable);
+		item->setText(0, tr("New Group"));
 		SetItem(item);
 		//setItemWidget(item, 0, new GroupWidget(this));
 		resizeColumnToContents(0);
@@ -334,7 +337,7 @@ ProjectEditDialog::ProjectEditDialog(QWidget* parent) : QDialog(parent)
 	QObject::connect(addGroupButton, &QPushButton::clicked, this, [=]() { m_currentTreeWidget->OnAddGroup(); });
 	queryLayout->addWidget(addGroupButton);
 
-	QPushButton* editButton = new QPushButton(tr("Change file"), this);
+	QPushButton* editButton = new QPushButton(tr("Change visualisation"), this);
 	editButton->setEnabled(false);
 	QObject::connect(editButton, &QPushButton::clicked, this, [=]() { m_currentTreeWidget->OnEdit(); });
 	queryLayout->addWidget(editButton);
@@ -350,6 +353,26 @@ ProjectEditDialog::ProjectEditDialog(QWidget* parent) : QDialog(parent)
 		{
 			editButton->setEnabled(false);
 		}
+
+	});
+
+	m_currentTreeWidget->setContextMenuPolicy(Qt::CustomContextMenu);
+	connect(m_currentTreeWidget, &QTreeWidget::customContextMenuRequested, [=](const QPoint &pos){
+
+		QMenu *menu = new QMenu(this);
+		connect(menu, SIGNAL(aboutToHide()), menu, SLOT(deleteLater()));;
+		QTreeWidgetItem* item = m_currentTreeWidget->itemAt(pos);
+		QAction* addVisAction = menu->addAction(tr("Add Visualization"));
+		QObject::connect(addVisAction, &QAction::triggered, [=]() {
+			m_currentTreeWidget->OnAddVisualization();
+		}
+		);
+		QAction* removeItemAction = menu->addAction(tr("Remove"));
+		QObject::connect(removeItemAction, &QAction::triggered, [=]() {
+			delete item;
+		}
+		);
+		menu->popup(m_currentTreeWidget->viewport()->mapToGlobal(pos));
 
 	});
 
