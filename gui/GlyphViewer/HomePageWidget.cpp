@@ -708,7 +708,15 @@ void HomePageWidget::OnLoadVisualization() {
 	}
 	else if (whichFilteringWidget == 2) {
 
-		fileToLoad = m_subsetViewsFilteringWidget->GetSelectedTooltips().front();
+		if ( m_subsetViewsFilteringWidget->GetSelectedTooltips().size() > 0 )
+		{
+			fileToLoad = m_subsetViewsFilteringWidget->GetSelectedTooltips().front();
+		}
+		else
+		{
+			SynGlyphX::Application::restoreOverrideCursor();
+			return;
+		}
 	}
 
 	SynGlyphX::Application::restoreOverrideCursor();
