@@ -178,7 +178,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_6069111A8A1F4E648473E41B398AB56E"
             {
-            "SourcePath" = "8:..\\..\\..\\..\\Misc\\InstallerFiles\\Images\\synglyphx_x_ED.ico"
+            "SourcePath" = "8:..\\..\\..\\misc\\InstallerFiles\\Images\\synglyphx_x_ED.ico"
             "TargetName" = "8:synglyphx_x_ED.ico"
             "Tag" = "8:"
             "Folder" = "8:_0E615F56EBCF4D4F873CE182E8B0F9E0"
@@ -283,15 +283,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:GlyphEd(TM) - Demo"
-        "ProductCode" = "8:{82FA8941-D446-4B24-B063-A9460286049D}"
-        "PackageCode" = "8:{D3F9F6B7-5CE8-4140-91CF-75A411FA4EA9}"
+        "ProductCode" = "8:{C230195D-B35E-429B-8CC2-723350FD3C9D}"
+        "PackageCode" = "8:{B61A5F83-A8D4-4032-8456-E2B44BFF16FC}"
         "UpgradeCode" = "8:{33C25C9B-616B-4934-86DD-0424BDA2D955}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:FALSE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:0.7.58"
+        "ProductVersion" = "8:0.8.01"
         "Manufacturer" = "8:SynGlyphX"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:http://www.synglyphx.com"
@@ -911,7 +911,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_2BA40FB0FE8341B0AAF44F4B8B9C1DF1"
             {
-            "SourcePath" = "8:..\\..\\..\\..\\GUI\\SGXSetupMergeModule\\Win32\\Release\\SGXSetupMergeModule.msm"
+            "SourcePath" = "8:..\\..\\..\\gui\\SGXSetupMergeModule\\Win32\\Release\\SGXSetupMergeModule.msm"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_0E615F56EBCF4D4F873CE182E8B0F9E0"
