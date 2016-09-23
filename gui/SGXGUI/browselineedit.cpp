@@ -56,6 +56,10 @@ void BrowseLineEdit::SetInitalBrowseDirectory(const QString& dir) {
      m_initialBrowseDirectory = dir;
  }
 
+void BrowseLineEdit::SetReadOnly(bool ro) { 
+	m_lineEdit->setReadOnly(ro); 
+}
+
 void BrowseLineEdit::BrowseButtonActivated() {
 
     QString text;

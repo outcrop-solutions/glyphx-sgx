@@ -44,6 +44,7 @@
 #include <QtWidgets/QUndoview>
 #include <QtCore/QStandardPaths>
 #include "FilterSetupWidget.h"
+#include "ProjectEditDialog.h"
 
 DataMapperWindow::DataMapperWindow(QWidget *parent)
     : SynGlyphX::MainWindow(0, parent),
@@ -277,6 +278,16 @@ void DataMapperWindow::CreateMenus() {
 	QObject::connect(newMappingDefaultsAction, &QAction::triggered, this, &DataMapperWindow::ChangeNewMappingDefaults);
 
 	m_toolsMenu->addSeparator();
+
+	QAction* editProjectAction = m_toolsMenu->addAction(tr("Project Editor"));
+
+	QObject::connect(editProjectAction, &QAction::triggered, [=](){
+		ProjectEditDialog dlg;
+		dlg.exec();
+
+	}
+		);
+
 
 	QAction* mapDownloadSettingsAction = m_toolsMenu->addAction(tr("Map Download Settings"));
 	QObject::connect(mapDownloadSettingsAction, &QAction::triggered, this, &DataMapperWindow::ChangeMapDownloadSettings);

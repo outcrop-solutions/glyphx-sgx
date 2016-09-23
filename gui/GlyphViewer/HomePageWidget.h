@@ -44,6 +44,8 @@ class HomePageWidget : public QFrame
 public:
 	HomePageWidget(DataEngine::DataEngineConnection::SharedPtr dataEngineConnection, QWidget *parent);
 	~HomePageWidget();
+	const QString& GetCurrentProject();
+	void LoadProject(const QString& project);
 
 signals:
 	void LoadRecentFile(QString filename);
@@ -83,6 +85,7 @@ private:
 	SourceDataCache m_sourceDataCache;
 	QStringList m_glyphEdSDTFiles;
 	QStringList m_glyphEdTablesInDB;
+	QString m_currentProject;
 };
 
 //#pragma once

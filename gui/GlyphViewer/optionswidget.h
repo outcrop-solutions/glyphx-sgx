@@ -72,7 +72,9 @@ private:
 #endif
 
 	QCheckBox* m_showDownloadedImageErrorMessages;
-	
+	QCheckBox* m_showHomePage;
+	SynGlyphX::BrowseLineEdit* m_defaultProjectWidget;
+
 	QCheckBox* m_showHUDAxisInfoObjectCheckBox;
 	QComboBox* m_axisObjectLocationComboBox;
 

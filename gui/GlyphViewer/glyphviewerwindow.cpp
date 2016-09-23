@@ -46,6 +46,7 @@ GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 	: SynGlyphX::MainWindow(4, parent),
 	m_viewer( nullptr ),
 	m_showErrorFromTransform(true),
+	m_showHomePage(false),
 	m_dataEngineConnection(nullptr)
 {
 	m_dataEngineConnection = std::make_shared<DataEngine::DataEngineConnection>();
@@ -98,6 +99,7 @@ GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 		
 		CreateANTzWidget();
 	}
+
 	catch (const std::exception& e) {
 
 		QMessageBox::critical(nullptr, tr("3D view error"), tr("3D view failed to create: ") + e.what());
@@ -215,9 +217,11 @@ void GlyphViewerWindow::CreateMenus() {
 	//Create File Menu
 	m_fileMenu = menuBar()->addMenu(tr("File"));
 
-	QAction* openProjectAction = CreateMenuAction(m_fileMenu, tr("Open Visualization"), QKeySequence::Open);
+	QAction* openVisAction = CreateMenuAction(m_fileMenu, tr("Open Visualization"), QKeySequence::Open);
+	QObject::connect(openVisAction, &QAction::triggered, this, &GlyphViewerWindow::OpenVisualisation);
+	
+	QAction* openProjectAction = CreateMenuAction(m_fileMenu, tr("Open Project"));
 	QObject::connect(openProjectAction, &QAction::triggered, this, &GlyphViewerWindow::OpenProject);
-
 	m_fileMenu->addSeparator();
 
 	QAction* refreshVisualizationAction = CreateMenuAction(m_fileMenu, tr("Refresh Visualization"), QKeySequence::Refresh);
@@ -398,6 +402,13 @@ void GlyphViewerWindow::CreateDockWidgets() {
 	bottomDockWidget->hide();}
 
 void GlyphViewerWindow::OpenProject() {
+	QString openFile = GetFileNameOpenDialog("ProjectDir", tr("Open Project"), "", tr("SynGlyphX Project Files (*.xdt)"));
+	if (!openFile.isEmpty())
+		m_homePage->LoadProject(openFile);
+
+}
+
+void GlyphViewerWindow::OpenVisualisation() {
 
 	QString openFile = GetFileNameOpenDialog("VisualizationDir", tr("Open Visualization"), "", tr("SynGlyphX Visualization Files (*.sdt *.sav);;SynGlyphX Data Transform Files (*.sdt);;SynGlyphX ANTz Visualization Files (*.sav)"));
 	if (!openFile.isEmpty()) {
@@ -488,6 +499,8 @@ void GlyphViewerWindow::CloseVisualization() {
 	centerWidgetsContainer->setCurrentIndex(0);
 	m_viewer->setBackgroundColor( SynGlyphX::render::color::black() );
 	m_viewer->clearScene();
+	if (m_showHomePage || SynGlyphX::GlyphBuilderApplication::IsGlyphEd())
+		centerWidgetsContainer->setCurrentIndex(0);
 }
 
 void GlyphViewerWindow::ClearAllData() {
@@ -950,6 +963,15 @@ void GlyphViewerWindow::ChangeOptions(const GlyphViewerOptions& oldOptions, cons
 		}
 
 		m_viewer->setFilteredGlyphOpacity( newOptions.GetFilteredGlyphOpacity() );
+		if (oldOptions.GetShowHomePage() != newOptions.GetShowHomePage()) {
+
+			m_showHomePage = newOptions.GetShowHomePage();
+		}
+
+		if (oldOptions.GetDefaultProject() != newOptions.GetDefaultProject()) {
+
+			m_defaultProject = newOptions.GetDefaultProject();
+		}
 	}
 
 	m_showHideHUDAxisAction->setChecked(newOptions.GetShowHUDAxisObject());
@@ -1023,6 +1045,13 @@ void GlyphViewerWindow::ReadSettings() {
 	options.ReadFromSettings();
 
 	ChangeOptions(CollectOptions(), options);
+	if (m_showHomePage || SynGlyphX::GlyphBuilderApplication::IsGlyphEd()) {
+		dynamic_cast<QStackedWidget*>(centralWidget())->setCurrentIndex(0); 
+		if (!options.GetDefaultProject().isEmpty())
+			m_homePage->LoadProject(options.GetDefaultProject());
+	}
+	else
+		dynamic_cast<QStackedWidget*>(centralWidget())->setCurrentIndex(1);
 }
 
 void GlyphViewerWindow::WriteSettings() {
@@ -1107,6 +1136,8 @@ GlyphViewerOptions GlyphViewerWindow::CollectOptions() {
 	options.SetLoadSubsetVisualizationInNewInstance(m_filteringWidget->GetLoadSubsetVisualizationInNewInstance());
 
 	options.SetShowMessageWhenImagesDidNotDownload(m_showErrorFromTransform);
+	options.SetShowHomePage(m_showHomePage);
+	options.SetDefaultProject(m_defaultProject);
 
 	return options;
 }

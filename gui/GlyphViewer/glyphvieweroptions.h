@@ -45,6 +45,11 @@ public:
 
 	void SetShowMessageWhenImagesDidNotDownload(bool showMessageWhenImagesDidNotDownload);
 	bool GetShowMessageWhenImagesDidNotDownload() const;
+	void SetShowHomePage(bool v) { m_showHomePage = v;  }
+	bool GetShowHomePage() const { return m_showHomePage;  }
+
+	void SetDefaultProject(const QString& proj) { m_defaultProject = proj; }
+	const QString& GetDefaultProject() const { return m_defaultProject; }
 
 	void SetLoadSubsetVisualization(bool loadSubsetVisualization);
 	bool GetLoadSubsetVisualization() const;
@@ -77,6 +82,8 @@ private:
 
 	//UI options
 	bool m_showMessageWhenImagesDidNotDownload;
+	bool m_showHomePage;
+	QString m_defaultProject;
 };
 
 #endif //GLYPHVIEWEROPTIONS_H
