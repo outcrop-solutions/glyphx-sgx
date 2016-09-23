@@ -70,15 +70,14 @@ namespace SynGlyphX {
 
 		setLayout(layout);
 
+		QObject::connect(loginButton, &QPushButton::clicked, this, &UserLoginDialog::LoginActivated);
+		QObject::connect(m_usernameLineEdit, &QLineEdit::returnPressed, this, &UserLoginDialog::LoginActivated);
+		QObject::connect(m_passwordLineEdit, &QLineEdit::returnPressed, this, &UserLoginDialog::LoginActivated);
 	}
 
 
 	UserLoginDialog::~UserLoginDialog()
 	{
-	}
-
-	QPushButton* UserLoginDialog::LoginButton() {
-		return loginButton;
 	}
 
 	bool UserLoginDialog::Login() {

@@ -37,13 +37,14 @@ namespace SynGlyphX {
 		UserLoginDialog(DataEngine::DataEngineConnection::SharedPtr dataEngineConnection, QWidget *parent);
 		~UserLoginDialog();
 
-		QPushButton* LoginButton();
 		bool Login();
 
 		void Clear();
 
-	private:
+	signals:
+		void LoginActivated();
 
+	private:
 		QPushButton* loginButton;
 		QLineEdit* m_usernameLineEdit;
 		QLineEdit* m_passwordLineEdit;

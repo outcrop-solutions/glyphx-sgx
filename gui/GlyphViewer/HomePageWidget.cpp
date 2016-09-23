@@ -383,7 +383,7 @@ void HomePageWidget::CreateLowerHalfDashboardWidget() {
 	loginWidget->setMidLineWidth(3);
 	loginWidget->setMaximumWidth(500);
 	loginWidget->setStyleSheet("background-color: white;");
-	QObject::connect(loginWidget->LoginButton(), &QPushButton::clicked, this, &HomePageWidget::Login);
+	QObject::connect(loginWidget, &SynGlyphX::UserLoginDialog::LoginActivated, this, &HomePageWidget::Login);
 
 	loggedOutLayout->addWidget(loginWidget, 0, 1, 1, 1);
 	loggedOutLayout->addWidget(CreateLowerDashboardWidget(), 1, 1, 2, 1);
