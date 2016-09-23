@@ -78,7 +78,7 @@ namespace SynGlyphX
 		hal::effect* glyph_effect;
 		hal::effect* selection_effect;
 		unsigned int transform_binding_point, material_binding_point, anim_binding_point, alt_pos_binding_point;
-		unsigned int sel_transform_binding_point, sel_bound_binding_point, sel_anim_binding_point;
+		unsigned int sel_transform_binding_point, sel_bound_binding_point, sel_anim_binding_point, sel_alt_pos_binding_point;
 		float selection_anim_max_scale;
 		bool bound_vis_enabled;
 		BoundVisMode bound_vis_mode;

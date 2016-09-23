@@ -322,6 +322,7 @@ namespace SynGlyphX
 				sel_transform_binding_point = context->get_uniform_block_index( selection_effect, "instance_data" );
 				sel_bound_binding_point = context->get_uniform_block_index( selection_effect, "bounds" );
 				sel_anim_binding_point = context->get_uniform_block_index( selection_effect, "animation" );
+				sel_alt_pos_binding_point = context->get_uniform_block_index( selection_effect, "alternate_positions" );
 
 				selection_animation_time += elapsed_seconds - previous_frame_time;
 
@@ -338,7 +339,7 @@ namespace SynGlyphX
 						{
 							// for the selection effect we don't care about instance color, so we can pack the bound into that
 							// constant buffer instead.
-							selection.add_instance( part->get_mesh(), glyph_transform * model->get_transform() * part->get_transform(), glm::vec4( glyph.getCachedBound().get_center(), glyph.getCachedBound().get_radius() ), glyph.getAnimationAxis(), glyph.getAnimationRate(), glyph.getAnimationCenter() );
+							selection.add_instance( part->get_mesh(), glyph_transform * model->get_transform() * part->get_transform(), glm::vec4( glyph.getCachedBound().get_center(), glyph.getCachedBound().get_radius() ), glyph.getAnimationAxis(), glyph.getAnimationRate(), glyph.getAnimationCenter(), glyph.getAlternatePosition(), glyph.getAlternatePositionGroup() );
 
 							if ( bound_vis_enabled )
 								add_bound_to_bucket( glyph, selection_wireframe );
@@ -358,6 +359,8 @@ namespace SynGlyphX
 				context->set_constant( selection_effect, "global_data", "elapsed_seconds", elapsed_seconds );
 				context->set_constant( selection_effect, "global_data", "selection_anim_max_scale", selection_anim_max_scale );
 				context->set_constant( selection_effect, "global_data", "selection_anim_state", anim_state );
+				context->set_constant( selection_effect, "global_data", "alternate_position_state", scene->getGroupStatus() );
+				context->set_constant( selection_effect, "global_data", "active_alternate_position_group", scene->getActiveGroup() );
 				context->set_constant( selection_effect, "camera_data", "viewport", glm::vec2( camera->get_viewport_w(), camera->get_viewport_h() ) );
 				context->set_constant( selection_effect, "camera_data", "view", camera->get_view() );
 				context->set_constant( selection_effect, "camera_data", "proj", camera->get_proj() );
@@ -366,10 +369,10 @@ namespace SynGlyphX
 
 				hal::rasterizer_state filled{ true, true, false };
 				context->set_rasterizer_state( filled );
-				selection.draw( context, sel_transform_binding_point, sel_bound_binding_point, sel_anim_binding_point, alt_pos_binding_point );
+				selection.draw( context, sel_transform_binding_point, sel_bound_binding_point, sel_anim_binding_point, sel_alt_pos_binding_point );
 				hal::rasterizer_state wire{ true, true, true };
 				context->set_rasterizer_state( wire );
-				selection_wireframe.draw( context, sel_transform_binding_point, sel_bound_binding_point, sel_anim_binding_point, alt_pos_binding_point );
+				selection_wireframe.draw( context, sel_transform_binding_point, sel_bound_binding_point, sel_anim_binding_point, sel_alt_pos_binding_point );
 				context->set_rasterizer_state( filled );
 			}
 			else

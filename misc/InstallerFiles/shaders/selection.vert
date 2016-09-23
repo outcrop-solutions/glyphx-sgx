@@ -13,6 +13,8 @@ layout(std140) uniform global_data
 	float selection_anim_max_scale;
 	float selection_anim_state;
 	vec4 tint_color;
+	float alternate_position_state;
+	float active_alternate_position_group;
 };
 
 layout(std140) uniform instance_data
@@ -110,8 +112,14 @@ void main()
 	frag_color = tint_color;
 	frag_color.a = alpha;
 
-	vec3 world_pos_scaled = vec3( w * vec4( scale * position.xyz, 1 ) );
-	world_pos_scaled = offset_rotation( world_pos_scaled.xyz, rotation_mat, rotation_center );
+	vec3 world_pos = position.xyz;
 
-    gl_Position = proj * ( view * vec4( world_pos_scaled, 1 ) );
+	world_pos = vec3( w * vec4( scale * world_pos, 1 ) );
+	world_pos = offset_rotation( world_pos.xyz, rotation_mat, rotation_center );
+
+	vec4 alt_pos = alternate_position[gl_InstanceID];
+	if ( active_alternate_position_group == alt_pos.w )
+		world_pos.xyz += mix( vec3( 0 ), alt_pos.xyz, smoothstep( 0, 1, alternate_position_state ) );
+
+    gl_Position = proj * ( view * vec4( world_pos, 1 ) );
 }

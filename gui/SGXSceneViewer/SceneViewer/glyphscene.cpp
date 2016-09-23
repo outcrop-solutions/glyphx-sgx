@@ -432,16 +432,32 @@ namespace SynGlyphX
 		while ( it != groups.end() )
 		{
 			auto& group = *it;
-			const glm::vec3 explode_axis( 1.f, 0.f, 0.f );
+			unsigned int rows = unsigned int( sqrtf( float( group.nodes.size() ) ) );
+			const glm::vec3 explode_axis_0( 1.f, 0.f, 0.f );
+			const glm::vec3 explode_axis_1( 0.f, 1.f, 0.f );
 			float count = group.nodes.size();
-			float c = 0.f;
+			float row = 0.f, col = 0.f;
+
+			// Use the largest bound's diameter to decide how to space the group.
+			float spacing = 1.f;
+			const float spacing_buffer = 1.1f;
+			for ( auto g : group.nodes )
+				spacing = glm::max( spacing, g->getCachedCombinedBound().get_radius() * 2.f );
+			spacing *= spacing_buffer;
+
 			for ( auto g : group.nodes )
 			{
 				assert( g->isRoot() );
-				float cc = c / count;
-				glm::vec3 explode = explode_axis * c * 2.5f;
+				glm::vec3 explode = explode_axis_0 * row * spacing + explode_axis_1 * col * spacing;
+				explode.x -= rows * spacing * 0.5f;
+				explode.y -= rows * spacing * 0.5f;
 				g->setAlternatePosition( groupidx, explode );
-				c += 1.f;
+				row += 1.f;
+				if ( row >= rows )
+				{
+					col += 1.f;
+					row = 0.f;
+				}
 			}
 
 			groupidx += 1.f;
@@ -451,19 +467,21 @@ namespace SynGlyphX
 
 	void GlyphScene::update( float timeDelta )
 	{
+		float direction = 0.f;
 		if ( explode_state == group_state::exploding )
 		{
-			group_status += timeDelta * 0.005f;
 			group_status = glm::clamp( group_status, 0.f, 1.f );
 			if ( group_status >= 1.f )
 				explode_state = group_state::exploded;
+			direction = 1.f;
 		}
 		else if ( explode_state == group_state::retracting )
 		{
-			group_status -= timeDelta * 0.005f;
+			direction = -1.f;
 			group_status = glm::clamp( group_status, 0.f, 1.f );
 			if ( group_status <= 0.f )
 				explode_state = group_state::retracted;
 		}
+		group_status += direction * timeDelta * 0.005f;
 	}
 }
