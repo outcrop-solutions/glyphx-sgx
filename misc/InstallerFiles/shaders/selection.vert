@@ -93,7 +93,12 @@ void main()
 
 	// Animate selection scale and alpha.
 	float scale = mix( 1.05, max_scale, selection_anim_state );
-	float alpha = mix( 0.8, 0, selection_anim_state );
+
+	// Fade the alpha up to alpha_max until alpha_crossover, then fade it back down to zero.
+	const float alpha_max = 0.8;
+	const float alpha_crossover = 0.4;
+	float alpha_start = mix( 0, alpha_max, selection_anim_state / alpha_crossover );
+	float alpha = selection_anim_state <= alpha_crossover ? alpha_start : mix( alpha_max, 0, ( selection_anim_state - alpha_crossover ) / ( 1.f - alpha_crossover ) );
 
 	nml = normalize( rotation_mat * vec3( inverse( transpose( world[gl_InstanceID] ) ) * vec4( normal, 0 ) ) );
 
