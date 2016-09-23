@@ -19,12 +19,18 @@
 #define REMAPDIALOG_H
 
 #include <QtWidgets/QDialog>
-#include "browselineedit.h"
-#include "glyphrolestablemodel.h"
 #include "datatransformmapping.h"
-#include "verticaltabordertableview.h"
 #include "dataengineconnection.h"
-#include "datastatsmodel.h"
+
+namespace SynGlyphX {
+
+	class DoubleMinMaxWidget;
+	class VerticalTabOrderTableView;
+	class BrowseLineEdit;
+	class DataStatsModel;
+	class DataTransformModel;
+}
+class GlyphRolesTableModel;
 
 class RemapDialog : public QDialog
 {
@@ -42,6 +48,10 @@ public:
 	SynGlyphX::DataTransformMapping::ConstSharedPtr GetNewMapping() const;
 
 private:
+	//These two functions are a workaround for Min & Max not be set & updated.  A better long term solution needs to be found
+	void SendMinMaxFromUIToModel();
+	void SendMinMaxFromModelToUI();
+
 	SynGlyphX::VerticalTabOrderTableView* CreateTableView();
 	void AddRowOfWidgets(SynGlyphX::VerticalTabOrderTableView* tableView, int modelRow, double min, double max, bool enable = true);
 
@@ -50,6 +60,8 @@ private:
 	GlyphRolesTableModel* m_glyphRolesModel;
 	SynGlyphX::DataTransformModel* m_dataTransformModel;
 	SynGlyphX::DataStatsModel* m_dataStatsModel;
+
+	std::vector<SynGlyphX::DoubleMinMaxWidget*> m_minMaxWidgets;
 };
 
 #endif // REMAPDIALOG_H

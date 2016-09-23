@@ -16,6 +16,10 @@
 #include "datatransformmodel.h"
 #include <QtCore/QSettings>
 #include <QtCore/QStandardPaths>
+#include "datastatsmodel.h"
+#include "browselineedit.h"
+#include "glyphrolestablemodel.h"
+#include "verticaltabordertableview.h"
 
 RemapDialog::RemapDialog(SynGlyphX::DataTransformMapping::ConstSharedPtr dataTransformMapping, DataEngine::DataEngineConnection::SharedPtr dataEngineConnection, QWidget *parent)
 	: QDialog(parent)
@@ -70,6 +74,8 @@ RemapDialog::RemapDialog(SynGlyphX::DataTransformMapping::ConstSharedPtr dataTra
 	QModelIndexList modelIndexList;
 	modelIndexList.push_back(m_dataTransformModel->index(0, 0));
 	m_glyphRolesModel->SetSelectedGlyphTreeIndexes(modelIndexList);
+
+	SendMinMaxFromModelToUI();
 }
 
 RemapDialog::~RemapDialog()
@@ -110,6 +116,8 @@ void RemapDialog::accept() {
 			return;
 		}
 	}
+
+	SendMinMaxFromUIToModel();
 
 	QFileInfo saveFilenameInfo(saveFilename);
 	QSettings settings;
@@ -167,6 +175,8 @@ void RemapDialog::AddRowOfWidgets(SynGlyphX::VerticalTabOrderTableView* tableVie
 	minMaxWidget->SetDecimals(4);
 	minMaxWidget->SetStep(0.1);
 
+	m_minMaxWidgets.push_back(minMaxWidget);
+
 	MappingFunctionWidget* mappingFunctionWidget = new MappingFunctionWidget(MappingFunctionWidget::KeyType::Numeric, m_glyphRolesModel, modelRow, tableView);
 	mappingFunctionWidget->SetDialogOutputMinMax(min, max);
 
@@ -194,6 +204,7 @@ void RemapDialog::AddRowOfWidgets(SynGlyphX::VerticalTabOrderTableView* tableVie
 	mappingFunctionWidget->layout()->setContentsMargins(cellMargins);
 	inputBindingLineEdit->layout()->setContentsMargins(cellMargins);
 
+	QObject::connect(minMaxWidget, &SynGlyphX::DoubleMinMaxWidget::ValueChanged, mappers[0], &QDataWidgetMapper::submit);
 	QObject::connect(mappingFunctionWidget, &MappingFunctionWidget::FunctionChanged, mappers[1], &QDataWidgetMapper::submit);
 	QObject::connect(mappingFunctionWidget, &MappingFunctionWidget::SupportedInputChanged, inputBindingLineEdit, &BindingLineEdit::SetAcceptedInputTypes);
 	QObject::connect(inputBindingLineEdit, &BindingLineEdit::ValueChangedByUser, mappers[2], &QDataWidgetMapper::submit);
@@ -204,7 +215,23 @@ void RemapDialog::AddRowOfWidgets(SynGlyphX::VerticalTabOrderTableView* tableVie
 	tableView->setIndexWidget(proxyModel->mapFromSource(m_glyphRolesModel->index(modelRow, GlyphRolesTableModel::s_mappingDataColumn)), mappingFunctionWidget);
 	tableView->setIndexWidget(proxyModel->mapFromSource(m_glyphRolesModel->index(modelRow, GlyphRolesTableModel::s_mappedFieldColumn)), inputBindingLineEdit);
 
-	QObject::connect(minMaxWidget, &SynGlyphX::DoubleMinMaxWidget::ValueChanged, mappers[0], &QDataWidgetMapper::submit);
-
 	minMaxWidget->setEnabled(enable);
+}
+
+void RemapDialog::SendMinMaxFromUIToModel() {
+
+	for (unsigned int i = 0; i < 3; ++i) {
+
+		QModelIndex indexToSet = m_glyphRolesModel->index(i, GlyphRolesTableModel::s_valueColumn);
+		m_glyphRolesModel->setData(indexToSet, QVariant::fromValue<SynGlyphX::DoubleMinDiff>(m_minMaxWidgets[i]->GetValue()));
+	}
+}
+
+void RemapDialog::SendMinMaxFromModelToUI() {
+
+	for (unsigned int i = 0; i < 3; ++i) {
+
+		QModelIndex indexToGet = m_glyphRolesModel->index(i, GlyphRolesTableModel::s_valueColumn);
+		m_minMaxWidgets[i]->SetValue(m_glyphRolesModel->data(indexToGet, 2).value<SynGlyphX::DoubleMinDiff>());
+	}
 }
