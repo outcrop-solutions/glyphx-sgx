@@ -17,12 +17,17 @@ layout(std140) uniform global_data
 
 layout(std140) uniform instance_data
 {
-	mat4 world[512];
+	mat4 world[max_elements];
 };
 
 layout(std140) uniform bounds
 {
-	vec4 bound[512];
+	vec4 bound[max_elements];
+};
+
+layout(std140) uniform alternate_positions
+{
+	vec4 alternate_position[max_elements];
 };
 
 struct rotation_t
@@ -33,7 +38,7 @@ struct rotation_t
 
 layout(std140) uniform animation
 {
-	rotation_t rotation[512];
+	rotation_t rotation[max_elements];
 };
 
 layout (location = 0) in vec4 position;

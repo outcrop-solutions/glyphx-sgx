@@ -61,6 +61,11 @@ namespace SynGlyphX
 			if ( g.second->isRoot() ) octree->insert( g.second, g.second->getCachedCombinedBound() );
 		octree->gather_stats_DEBUG();
 		timer1.print_ms_to_debug( "built octree" );
+
+		hal::debug::profile_timer timer3;
+		compute_groups();
+		update_groups();
+		timer3.print_ms_to_debug( "computed groups" );
 	}
 
 	void GlyphScene::clear()
@@ -78,6 +83,7 @@ namespace SynGlyphX
 		glyph_storage_next = 0u;
 		glyphs.clear();
 		glyphs_by_filtering_index.clear();
+		groups.clear();
 		selection.clear();
 		Glyph3DNode::clearTagPool();
 		delete octree;
@@ -168,6 +174,33 @@ namespace SynGlyphX
 		{
 			selection.insert( glyph );
 			selection_changed = true;
+
+			// very temp
+			if ( getSingleRoot() )
+			{
+				auto r = getSingleRoot();
+				for ( auto& g : groups )
+				{
+					for ( auto& v : g.nodes )
+					{
+						if ( r == v )
+						{
+							if ( explode_state == group_state::retracted || explode_state == group_state::retracting )
+							{
+								active_group = r->alternate_position_group;
+								hal::debug::print( "user clicked unexploded group; exploding" );
+								explode_state = group_state::exploding;
+							}
+							else if ( explode_state == group_state::exploded || explode_state == group_state::exploding )
+							{
+								active_group = r->alternate_position_group;
+								hal::debug::print( "user clicked unexploded group; exploding" );
+								explode_state = group_state::retracting;
+							}
+						}
+					}
+				}
+			}
 		}
 	}
 
@@ -344,5 +377,93 @@ namespace SynGlyphX
 				return false;
 
 		return single_parent;
+	}
+
+	void GlyphScene::compute_groups()
+	{
+		// todo: this is O(n^2) -- using the octree would make it O(nlogn)
+		// (although even in the most expensive vis I have it only takes ~50ms so maybe
+		// it's ok)
+		const float dist_threshold = 1.f;
+
+		bool added_to_group = false;
+		for ( auto& g : glyphs )
+		{
+			auto& glyph = g.second;
+			if ( glyph->isRoot() && glyph->type != Glyph3DNodeType::Link )
+			{
+				for ( unsigned int i = 0; i < groups.size(); ++i )
+				{
+					auto& group = groups[i];
+					auto test_glyph = *group.nodes.begin();
+					if ( glm::distance( glyph->getCachedPosition(), test_glyph->getCachedPosition() ) < dist_threshold )
+					{
+						group.nodes.push_back( glyph );
+						added_to_group = true;
+						break;
+					}
+				}
+
+				if ( !added_to_group )
+				{
+					superimposed_group new_group;
+					new_group.nodes.push_back( glyph );
+					groups.push_back( new_group );
+				}
+			}
+		}
+
+		auto it = groups.begin();
+		while ( it != groups.end() )
+		{
+			if ( it->nodes.size() <= 1 )
+				it = groups.erase( it );
+			else
+				++it;
+		}
+
+		hal::debug::print( "computed %i superimposed groups", groups.size() );
+	}
+
+	void GlyphScene::update_groups()
+	{
+		float groupidx = 1.f;
+		auto it = groups.begin();
+		while ( it != groups.end() )
+		{
+			auto& group = *it;
+			const glm::vec3 explode_axis( 1.f, 0.f, 0.f );
+			float count = group.nodes.size();
+			float c = 0.f;
+			for ( auto g : group.nodes )
+			{
+				assert( g->isRoot() );
+				float cc = c / count;
+				glm::vec3 explode = explode_axis * c * 2.5f;
+				g->setAlternatePosition( groupidx, explode );
+				c += 1.f;
+			}
+
+			groupidx += 1.f;
+			++it;
+		}
+	}
+
+	void GlyphScene::update( float timeDelta )
+	{
+		if ( explode_state == group_state::exploding )
+		{
+			group_status += timeDelta * 0.005f;
+			group_status = glm::clamp( group_status, 0.f, 1.f );
+			if ( group_status >= 1.f )
+				explode_state = group_state::exploded;
+		}
+		else if ( explode_state == group_state::retracting )
+		{
+			group_status -= timeDelta * 0.005f;
+			group_status = glm::clamp( group_status, 0.f, 1.f );
+			if ( group_status <= 0.f )
+				explode_state = group_state::retracted;
+		}
 	}
 }

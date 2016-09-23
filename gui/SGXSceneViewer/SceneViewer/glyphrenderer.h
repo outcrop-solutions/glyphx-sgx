@@ -50,9 +50,9 @@ namespace SynGlyphX
 		{
 		public:
 			~glyph_bucket();
-			void add_instance( hal::mesh* mesh, const glm::mat4& transform, const glm::vec4& color_or_bound, const glm::vec3& anim_axis, float anim_rate, const glm::vec3& anim_center );
+			void add_instance( hal::mesh* mesh, const glm::mat4& transform, const glm::vec4& color_or_bound, const glm::vec3& anim_axis, float anim_rate, const glm::vec3& anim_center, const glm::vec3& alt_pos = glm::vec3(), float alt_pos_group = 0.f );
 			void update_instances( hal::context* context, bool& updates_done );
-			void draw( hal::context* context, unsigned int transform_binding_point, unsigned int material_binding_point, unsigned int anim_binding_point );
+			void draw( hal::context* context, unsigned int transform_binding_point, unsigned int material_binding_point, unsigned int anim_binding_point, unsigned int alt_pos_binding_point );
 			void clear();
 		private:
 			struct instance_data
@@ -60,9 +60,11 @@ namespace SynGlyphX
 				std::vector<glm::mat4> transforms;
 				std::vector<glm::vec4> colors_or_bounds;	// colors for regular glyphs, bounds for selection effect
 				std::vector<glm::vec4> animation;
+				std::vector<glm::vec4> alternate_positions;
 				hal::cbuffer* transform_buffer;
 				hal::cbuffer* color_bound_buffer;
 				hal::cbuffer* anim_buffer;
+				hal::cbuffer* alt_pos_buffer;
 				bool dirty;
 			};
 			typedef std::vector<instance_data> instance_data_list;
@@ -75,7 +77,7 @@ namespace SynGlyphX
 
 		hal::effect* glyph_effect;
 		hal::effect* selection_effect;
-		unsigned int transform_binding_point, material_binding_point, anim_binding_point;
+		unsigned int transform_binding_point, material_binding_point, anim_binding_point, alt_pos_binding_point;
 		unsigned int sel_transform_binding_point, sel_bound_binding_point, sel_anim_binding_point;
 		float selection_anim_max_scale;
 		bool bound_vis_enabled;

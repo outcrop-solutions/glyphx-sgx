@@ -67,6 +67,10 @@ namespace SynGlyphX
 		glm::mat4 getVisualTransform() const;
 		void setVisualScale( const glm::vec3& vscale ) const { visual_scale = vscale; }
 
+		void setAlternatePosition( float group, const glm::vec3& pos ) const { alternate_position = pos; alternate_position_group = group; }
+		const glm::vec3& getAlternatePosition() const { return getRootParent()->alternate_position; }
+		const float getAlternatePositionGroup() const { return getRootParent()->alternate_position_group; }
+
 		const glm::mat4& getCachedTransform() const { return cached_transform; }
 		glm::vec3 getCachedPosition() const { return glm::vec3( cached_transform[3] ); }
 		void setCachedTransform( const glm::mat4& trans ) const { cached_transform = trans; }
@@ -117,6 +121,8 @@ namespace SynGlyphX
 		mutable glm::mat4 cached_transform;
 		mutable render::sphere_bound bound, combined_bound;
 		mutable glm::vec3 visual_scale;
+		mutable glm::vec3 alternate_position;
+		mutable float alternate_position_group;
 		mutable glm::vec3 animation_axis;
 		mutable float animation_rate;
 

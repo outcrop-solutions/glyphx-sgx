@@ -265,7 +265,7 @@ namespace SynGlyphX
 		fmt.add_stream( hal::stream_info( hal::stream_type::float32, 3, hal::stream_semantic::position, 0 ) );
 		fmt.add_stream( hal::stream_info( hal::stream_type::float32, 2, hal::stream_semantic::texcoord, 0 ) );
 
-		sgx_logo = hal::device::load_texture( "logo.png" );
+		sgx_logo = hal::device::load_texture( "textures/logo.png" );
 
 		auto plane_mesh = hal::device::create_mesh( fmt, hal::primitive_type::triangle_list, 4, square, 2, square_indices );
 
@@ -961,6 +961,8 @@ namespace SynGlyphX
 				drag[i].drag_delta_x = drag[i].drag_delta_y = 0;
 			wheel_delta = 0.f;
 		}
+
+		scene->update( 16.f );
 
 		update();
 	}

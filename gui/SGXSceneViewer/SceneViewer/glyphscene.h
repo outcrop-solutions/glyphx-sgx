@@ -17,9 +17,11 @@ namespace SynGlyphX
 	{
 	public:
 		GlyphScene( GlyphGeometryDB& _db ) : octree( nullptr ), filter_applied( false ), selection_changed( false ), glyph_storage( nullptr ), glyph_storage_next( 0u ),
-			filter_mode( FilteredResultsDisplayMode::TranslucentUnfiltered ), has_animation( false ), db( _db ) { }
+			filter_mode( FilteredResultsDisplayMode::TranslucentUnfiltered ), has_animation( false ), db( _db ), explode_state( group_state::retracted ) { }
 		~GlyphScene();
 		GlyphScene( const GlyphScene& ) = delete;
+
+		void update( float timeDelta );
 
 		Glyph3DNode* allocGlyph( unsigned int _id, bool _isRoot, Glyph3DNodeType _type, int _filtering_index = -1 );
 
@@ -75,13 +77,35 @@ namespace SynGlyphX
 
 		bool hasAnimation() const { return has_animation; }
 
+		float getGroupStatus() const { return group_status; }
+		float getActiveGroup() const { return active_group; }
+
 		void debugPrint( const Glyph3DNode* node );
 
 	private:
+		void compute_groups();
+		void update_groups();
+
 		render::octree<Glyph3DNode>* octree;
 		std::unordered_map<Glyph3DHandle, Glyph3DNode*> glyphs;
 		std::unordered_map<Glyph3DHandle, Glyph3DNode*> glyphs_by_filtering_index;
 		std::unordered_set<const Glyph3DNode*> selection;
+
+		enum class group_state
+		{
+			exploding,
+			exploded,
+			retracting,
+			retracted,
+		};
+
+		struct superimposed_group
+		{
+			std::vector< const Glyph3DNode* > nodes;
+		};
+		std::vector< superimposed_group > groups;
+		group_state explode_state;
+		float group_status, active_group;
 
 		// Temporary and cached properties that don't affect this object's logical const-ness.
 		mutable bool bound_update_needed;
