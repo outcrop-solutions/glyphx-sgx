@@ -45,6 +45,7 @@ namespace SynGlyphX {
 		virtual TreeSelection* CreateTreeSelection() { return nullptr; }
 
 		QString GetFileNameOpenDialog(const QString& settingKey = "", const QString& caption = "", const QString& defaultDir = "", const QString& filter = "");
+		QString GetFileNameSaveDialog(const QString& settingKey = "", const QString& caption = "", const QString& defaultDir = "", const QString& filter = "");
 
 		virtual void ApplyTreeSelection(const TreeSelection& selection) {}
 		virtual ~AppServices() {}

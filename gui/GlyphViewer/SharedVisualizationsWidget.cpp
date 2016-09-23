@@ -24,13 +24,15 @@ void SharedVisualizationsFile::ImportFromPropertyTree(const boost::property_tree
 	for (const boost::property_tree::wptree::value_type& propertyTreeEntry : propertyTree) {
 
 		QStringList titleAndFile;
-		//titleAndFile.push_back(QString::fromStdWString(propertyTreeEntry.second.get<std::wstring>(L"<xmlattr>.name")));
 		if (propertyTreeEntry.first == L"Visualization") {
 
 			titleAndFile.push_back(QString::fromStdWString(propertyTreeEntry.second.get<std::wstring>(L"<xmlattr>.name")));
 			titleAndFile.push_back(QString::fromStdWString(propertyTreeEntry.second.get<std::wstring>(L"")));
-			m_groupedVisualizations.append(parent, titleAndFile);
+			// change titleAndFile[1] to absolute path
+			QFileInfo finfo(QDir(m_baseDir), titleAndFile[1]);
+			titleAndFile[1] = finfo.absoluteFilePath();
 			m_filenameToTitleMap.insert(titleAndFile[1], titleAndFile[0]);
+			m_groupedVisualizations.append(parent, titleAndFile);
 		}
 		else if (propertyTreeEntry.first == L"Group") {
 
@@ -93,13 +95,18 @@ void SharedVisualizationsWidget::Reset(DataEngine::DataEngineConnection::SharedP
 
 	if (QFile::exists(sharedVizListing)) {
 
-		SharedVisualizationsFile sharedVisualizationsFile;
+		SharedVisualizationsFile sharedVisualizationsFile(QFileInfo(sharedVizListing).absoluteDir().absolutePath());
 		sharedVisualizationsFile.ReadFromFile(sharedVizListing.toStdString());
 		m_filenameToTitleMap = sharedVisualizationsFile.GetFilenameToTitleMap();
 
 		for (auto iT = m_filenameToTitleMap.begin(); iT != m_filenameToTitleMap.end(); ++iT) {
 			
 			visualizationsAdded = true;
+ 
+			//QFileInfo finfo(QFileInfo(sharedVizListing).absoluteDir(), iT.key());
+
+			//std::string filename = finfo.absoluteFilePath().toStdString();
+
 			std::string filename = iT.key().toStdString();
 
 			SynGlyphX::DataTransformMapping mapping;

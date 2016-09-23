@@ -9,12 +9,16 @@
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QLineEdit>
 #include <QtWidgets/QMenu>
+#include <QtCore/QFileInfo>
+#include <QtCore/QDir>
 #include "DMGlobal.h"
 #include "datatransformmodel.h"
 #include "databaseserverdatasource.h"
 #include "xmlpropertytreefile.h"
 #include "browselineedit.h"
 using namespace SynGlyphX;
+
+static QString s_currentFile;
 
 class ProjectFile : public SynGlyphX::XMLPropertyTreeFile // just a property tree holder
 {
@@ -50,6 +54,7 @@ public:
 		m_fileLineEdit->SetText(item->toolTip(0));
 		m_fileLineEdit->SetFilters("*.sdt");
 		m_fileLineEdit->SetReadOnly(true);
+		m_fileLineEdit->SetInitalBrowseDirectory(s_directory);
 		QDialogButtonBox* dialogButtonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, this);
 		QObject::connect(dialogButtonBox, &QDialogButtonBox::accepted, this, &VisDialog::accept);
 		QObject::connect(dialogButtonBox, &QDialogButtonBox::rejected, this, &VisDialog::reject);
@@ -60,14 +65,23 @@ public:
 
 	virtual void accept() override
 	{
-		//m_item->setText(0, m_nameLineEdit->text());
-		m_item->setToolTip(0, m_fileLineEdit->GetText());
-		QDialog::accept();
+		QString file = m_fileLineEdit->GetText();
+		if (!file.isEmpty())
+		{
+			QDir dir(QFileInfo(s_currentFile).absoluteDir()); //project directory
+			s_directory = QFileInfo(file).absoluteDir().absolutePath();
+			m_item->setToolTip(0, dir.relativeFilePath(file));
+			QDialog::accept();
+		}
+
 	}
 	QTreeWidgetItem* m_item;
 	//QLineEdit* m_nameLineEdit;
 	BrowseLineEdit* m_fileLineEdit;
+	static QString s_directory;
 };
+QString VisDialog::s_directory = QString();
+
 
 class TreeWidget : public QTreeWidget
 {
@@ -218,34 +232,19 @@ public:
 	{
 		if (item->data(0, Qt::UserRole).toString() == tr("Group"))
 		{
-			//boost::property_tree::wptree& entry = tree.add(L"Group", L"");
-			//GroupWidget* sw = qobject_cast<GroupWidget*>(itemWidget(item, 0));
-			//entry.put(L"<xmlattr>.logic", sw->m_cb->currentText().toStdWString());
-			//for (int i = 0; i < item->childCount(); i++)
-			//{
-			//	auto child = item->child(i);
-			//	ExportToPropertyTree(child, entry);
-			//}
+			boost::property_tree::wptree& entry = tree.add(L"Group", L"");
+			entry.put(L"<xmlattr>.name", item->text(0).toStdWString());
+			for (int i = 0; i < item->childCount(); i++)
+			{
+				auto child = item->child(i);
+				ExportToPropertyTree(child, entry);
+			}
 		}
 		else
 		{
-			//StatementWidget* sw = qobject_cast<StatementWidget*>(itemWidget(item, 0));
-			//if (sw)
-			//{
-			//	boost::property_tree::wptree& entry = tree.add(L"Visualization", L"");
-			//	entry.put(L"<xmlattr>.columnname", sw->m_fieldCb->currentText().toStdWString());
-			//	entry.put(L"<xmlattr>.operator", sw->m_conditionCb->currentText().toStdWString());
-			//	if (sw->m_conditionCb->currentText() == "btw")
-			//	{
-			//		entry.put(L"<xmlattr>.min", sw->m_lineEdit->text().toStdWString());
-			//		entry.put(L"<xmlattr>.max", sw->m_lineEdit2->text().toStdWString());
-			//	}
-			//	else
-			//	{
-			//		entry.put(L"<xmlattr>.value", sw->m_lineEdit->text().toStdWString());
-			//	}
-			//	
-			//}
+			boost::property_tree::wptree& entry = tree.add(L"Visualization", L"");
+			entry.put(L"<xmlattr>.name", item->text(0).toStdWString());
+			entry.put(L"", item->toolTip(0).toStdWString());
 
 		}
 		return tree;
@@ -268,66 +267,16 @@ public:
 
 ProjectEditDialog::ProjectEditDialog(QWidget* parent) : QDialog(parent)
 {
+	s_currentFile.clear();
 	QVBoxLayout* mainLayout = new QVBoxLayout(this);
-	//m_tableComboBox = new QComboBox(this);
-	//mainLayout->addWidget(m_tableComboBox, 0, Qt::AlignHCenter);
+
 	QGroupBox* queryGroupBox = new QGroupBox(tr("Project"), this);
 	QVBoxLayout* queryLayout = new QVBoxLayout(queryGroupBox);
 	mainLayout->addWidget(queryGroupBox);
 
 
-
-	//auto model = DMGlobal::Services()->GetDataTransformModel();
-	//const DataTransformMapping::DatasourceMap& datasources = model->GetDataMapping()->GetDatasources();
-	//if (datasources.size() == 0)
-	//	return;
-
-	//for (auto ds = datasources.begin(); ds != datasources.end(); ++ds)
-	//{
-	//	if (Datasource::SourceType::DatabaseServer == ds->second->GetSourceType() || ds->second->IsOriginalDatasourceADatabase())
-	//	{
-	//		auto tableNames = ds->second->GetTableNames();
-	//		for (auto tableName : tableNames)
-	//		{
-	//			QStringList names;
-	//			InputTable inputTable(ds->first, tableName);
-	//			m_tableList.push_back(inputTable);
-	//			auto stats = model->GetTableStatsMap().at(inputTable);
-	//			for (auto s : stats)
-	//				names.push_back(s[0]);
-	//			auto treeWidget = new TreeWidget(names, this);
-	//			m_treeWidgets.push_back(treeWidget);
-	//			treeWidget->SetFromTree(ds->second->GetQuery(tableName));
-	//			queryLayout->addWidget(treeWidget);
-	//			treeWidget->hide();
-	//		}
-	//		break; //currently only one database source supported 
-	//	}
-	//}
-
-	//if (m_tableList.size() == 0)
-	//	return;
-
 	m_currentTreeWidget = new TreeWidget(this);
 	queryLayout->addWidget(m_currentTreeWidget);
-
-	//m_treeWidgets[0]->show();
-
-	//for (int i = 0; i < m_tableList.size(); ++i)
-	//{
-	//	m_tableComboBox->insertItem(i, QString::fromStdWString(m_tableList[i].GetTable()));
-
-	//}
-
-	//QObject::connect(m_tableComboBox, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, [=](int index){
-	//	m_currentTreeWidget->hide();
-	//	m_currentTreeWidget = m_treeWidgets[index];
-	//	m_currentTreeWidget->show();
-	//});
-	//m_treeWidget->SetFromTree(dataSource->GetQuery(dataSource->GetTableNames()[0]));
-
-
-	//queryLayout->removeWidget(m_treeWidget);
 
 	QPushButton* addConditionButton = new QPushButton(tr("Add Visualisation"), this);
 	QObject::connect(addConditionButton, &QPushButton::clicked, this, [=]() { m_currentTreeWidget->OnAddVisualization(); });
@@ -342,10 +291,25 @@ ProjectEditDialog::ProjectEditDialog(QWidget* parent) : QDialog(parent)
 	QObject::connect(editButton, &QPushButton::clicked, this, [=]() { m_currentTreeWidget->OnEdit(); });
 	queryLayout->addWidget(editButton);
 
+	QPushButton* removeButton = new QPushButton(tr("Remove"), this);
+	QObject::connect(removeButton, &QPushButton::clicked, this, [=]() { m_currentTreeWidget->OnRemove(); });
+	queryLayout->addWidget(removeButton);
+	removeButton->setEnabled(false);
+
 	QObject::connect(m_currentTreeWidget, &TreeWidget::itemSelectionChanged, this, [=]()
 	{
 		auto selection = m_currentTreeWidget->selectedItems();
-		if (selection[0] && selection[0]->data(0, Qt::UserRole).toString() != tr("Group"))
+
+		if (selection.size() > 0)
+		{
+			removeButton->setEnabled(true);
+		}
+		else
+		{
+			removeButton->setEnabled(false);
+		}
+
+		if (selection.size() > 0 && selection[0] && selection[0]->data(0, Qt::UserRole).toString() != tr("Group"))
 		{
 			editButton->setEnabled(true);
 		}
@@ -367,18 +331,35 @@ ProjectEditDialog::ProjectEditDialog(QWidget* parent) : QDialog(parent)
 			m_currentTreeWidget->OnAddVisualization();
 		}
 		);
-		QAction* removeItemAction = menu->addAction(tr("Remove"));
-		QObject::connect(removeItemAction, &QAction::triggered, [=]() {
-			delete item;
+		QAction* addGroupAction = menu->addAction(tr("Add Group"));
+		QObject::connect(addGroupAction, &QAction::triggered, [=]() {
+			m_currentTreeWidget->OnAddGroup();
 		}
 		);
+
+		if (item && item->data(0, Qt::UserRole).toString() != tr("Group"))
+		{
+			QAction* changeAction = menu->addAction(tr("Change visualization"));
+			QObject::connect(changeAction, &QAction::triggered, [=]() {
+				m_currentTreeWidget->OnEdit();
+			}
+			);
+
+		}
+		if (item)
+		{
+			
+			QAction* removeItemAction = menu->addAction(tr("Remove"));
+			QObject::connect(removeItemAction, &QAction::triggered, [=]() {
+				delete item;
+			}
+			);
+		
+		}
+
 		menu->popup(m_currentTreeWidget->viewport()->mapToGlobal(pos));
 
 	});
-
-	QPushButton* removeButton = new QPushButton(tr("Remove"), this);
-	QObject::connect(removeButton, &QPushButton::clicked, this, [=]() { m_currentTreeWidget->OnRemove(); });
-	queryLayout->addWidget(removeButton);
 
 
 	QDialogButtonBox* dialogButtonBox = new QDialogButtonBox(QDialogButtonBox::Save | QDialogButtonBox::Cancel, this);
@@ -391,6 +372,7 @@ ProjectEditDialog::ProjectEditDialog(QWidget* parent) : QDialog(parent)
 		if (!openFile.isEmpty())
 		{
 			ProjectFile file;
+			s_currentFile = openFile;
 			file.ReadFromFile(openFile.toStdString());
 			m_currentTreeWidget->SetFromTree(file.m_propertyTree);
 		}
@@ -407,16 +389,15 @@ ProjectEditDialog::ProjectEditDialog(QWidget* parent) : QDialog(parent)
 
 void ProjectEditDialog::accept()
 {
-	//auto model = DMGlobal::Services()->GetDataTransformModel();
-	//auto dataSource = model->GetDataSource(m_tableList[0].GetDatasourceID()); //one data source is currently supported
-	//for (int i = 0; i < m_treeWidgets.size(); ++i)
-	//{
-	//	boost::property_tree::wptree  tree;
-	//	m_treeWidgets[i]->GetPropertyTree(tree);
-	//	dataSource->SetQuery(m_tableList[i].GetTable(), tree);
-	//}
-
-	//DMGlobal::Services()->SetModified(true);
+	QString saveFile = DMGlobal::Services()->GetFileNameSaveDialog("ProjectDir", tr("Save Project"), "", "SynGlyphX Project Files (*.xdt)");
+	if (!saveFile.isEmpty())
+	{
+		ProjectFile file;
+		boost::property_tree::wptree propertyTree;
+		m_currentTreeWidget->GetPropertyTree(propertyTree.add(L"SharedVisualizations", L""));
+		file.ImportFromPropertyTree(propertyTree);
+		file.WriteToFile(saveFile.toStdString());
+	}
 	QDialog::accept();
 }
 

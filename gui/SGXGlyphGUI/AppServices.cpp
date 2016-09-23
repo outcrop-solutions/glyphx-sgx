@@ -31,4 +31,9 @@ namespace SynGlyphX {
 		return m_window->GetFileNameOpenDialog(settingKey, caption, defaultDir, filter);
 	}
 
+	QString AppServices::GetFileNameSaveDialog(const QString& settingKey, const QString& caption, const QString& defaultDir, const QString& filter) {
+
+		return m_window->GetFileNameSaveDialog(settingKey, caption, defaultDir, filter);
+	}
+
 }
