@@ -41,7 +41,7 @@ class QStackedWidget;
 class SharedVisualizationsFile : public SynGlyphX::XMLPropertyTreeFile {
 
 public:
-	SharedVisualizationsFile() : SynGlyphX::XMLPropertyTreeFile() {}
+	SharedVisualizationsFile(QString baseDir = QString()) : SynGlyphX::XMLPropertyTreeFile(), m_baseDir(baseDir) {}
 	~SharedVisualizationsFile() {}
 
 	const stlplus::ntree<QStringList>& GetInfoTree() const { return m_groupedVisualizations; }
@@ -55,6 +55,7 @@ protected:
 
 	stlplus::ntree<QStringList> m_groupedVisualizations;
 	QMap<QString, QString> m_filenameToTitleMap;
+	QString m_baseDir;
 };
 
 class SharedVisualizationsWidget : public QSplitter
@@ -66,7 +67,7 @@ public:
 	SharedVisualizationsWidget(QWidget *parent);
 	~SharedVisualizationsWidget();
 
-	void Reset(DataEngine::DataEngineConnection::SharedPtr dataEngineConnection);
+	void Reset(DataEngine::DataEngineConnection::SharedPtr dataEngineConnection, const QString& projFileName = QString());
 	
 	bool DoCurrentNecessaryFiltersHaveSelection() const;
 	QString GetCurrentFilename() const;

@@ -250,6 +250,15 @@
     <ClCompile Include="GeneratedFiles\Release\moc_FilterSetupWidget.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="ProjectEditDialog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_ProjectEditDialog.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_ProjectEditDialog.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="datamapperwindow.h">
@@ -331,6 +340,15 @@
       <Filter>Generated Files\Debug</Filter>
     </CustomBuild>
     <CustomBuild Include="GeneratedFiles\Release\QueryBuilderDialog.moc">
+      <Filter>Generated Files\Release</Filter>
+    </CustomBuild>
+    <CustomBuild Include="ProjectEditDialog.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="GeneratedFiles\Debug\ProjectEditDialog.moc">
+      <Filter>Generated Files\Debug</Filter>
+    </CustomBuild>
+    <CustomBuild Include="GeneratedFiles\Release\ProjectEditDialog.moc">
       <Filter>Generated Files\Release</Filter>
     </CustomBuild>
   </ItemGroup>

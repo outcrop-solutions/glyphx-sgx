@@ -43,7 +43,7 @@ namespace SynGlyphX {
 
         void SetFilters(const QString& filters);
         void SetInitalBrowseDirectory(const QString& dir);
-
+		void SetReadOnly(bool ro);
         QString GetText() const;
 
     public slots:
