@@ -180,8 +180,12 @@ public class XMLGlyphTemplate{
 		this.label = label;
 	}
 
-	public void setTag(String tag){
-		this.tag = tag;
+	public void setTag(String tag, String tag_id){
+		if(tag_id.charAt(0) == '~'){
+			this.tag = tag;
+		}else{
+			this.tag = tag_id;
+		}
 	}
 
 	public void setDescription(String desc){
