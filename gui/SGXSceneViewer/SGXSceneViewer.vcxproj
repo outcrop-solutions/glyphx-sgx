@@ -104,6 +104,7 @@
     <ClCompile Include="SceneViewer\axisrenderer.cpp" />
     <ClCompile Include="SceneViewer\baseimagerenderer.cpp" />
     <ClCompile Include="SceneViewer\freecameracontroller.cpp" />
+    <ClCompile Include="SceneViewer\gadgetmanager.cpp" />
     <ClCompile Include="SceneViewer\glyphgeometrydb.cpp" />
     <ClCompile Include="SceneViewer\glyphnode.cpp" />
     <ClCompile Include="SceneViewer\glyphrenderer.cpp" />
@@ -126,6 +127,7 @@
     <ClInclude Include="SceneViewer\baseimagerenderer.h" />
     <ClInclude Include="SceneViewer\cameracontroller.h" />
     <ClInclude Include="SceneViewer\freecameracontroller.h" />
+    <ClInclude Include="SceneViewer\gadgetmanager.h" />
     <ClInclude Include="SceneViewer\glyphgeometrydb.h" />
     <ClInclude Include="SceneViewer\glyphnode.h" />
     <ClInclude Include="SceneViewer\glyphrenderer.h" />

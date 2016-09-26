@@ -28,6 +28,7 @@
 #include "freecameracontroller.h"
 #include "orbitcameracontroller.h"
 #include "overheadcameracontroller.h"
+#include "gadgetmanager.h"
 
 //temp
 #include <QtCore/qitemselectionmodel.h>
@@ -165,6 +166,12 @@ namespace SynGlyphX
 
 		SynGlyphX::LegacySceneReader::LoadLegacyScene( getScene(), geomDB, *base_images, *grids, default_base_texture, nodeFile, tagFile, base_textures );
 		resetCamera();
+
+		scene->enumGroups( [&]( const std::vector<const Glyph3DNode*>& nodes ) {
+			auto node_pos = nodes[0]->getCachedPosition();
+			float offset = nodes[0]->getCachedCombinedBound().get_radius();
+			gadgets->create( []() {}, node_pos + offset * glm::vec3( 0.f, 0.f, 1.f ) );
+		} );
 	}
 
 	void SceneViewer::clearScene()
@@ -172,6 +179,7 @@ namespace SynGlyphX
 		if ( initialized )
 		{
 			scene->clear();
+			gadgets->clear();
 			base_images->clear();
 			grids->clear();
 			for ( int i = 0; i < 3; ++i )
@@ -290,6 +298,8 @@ namespace SynGlyphX
 		initialized = true;
 
 		hud_font = hal::device::load_font( "fonts/OpenSans-Regular.ttf", 16 );
+
+		gadgets = new GadgetManager;
 	}
 
 	void SceneViewer::resizeGL( int w, int h )
@@ -369,7 +379,7 @@ namespace SynGlyphX
 		hal::device::begin_frame();
 		assert( elapsed_timer.isValid() );
 
-		context->bind( ( hal::render_target_set* )nullptr );
+		//context->bind( ( hal::render_target_set* )nullptr );
 
 		glyph_renderer->enableSelectionEffect( selection_effect_enabled );
 		glyph_renderer->enableAnimation( animation_enabled );
@@ -409,6 +419,8 @@ namespace SynGlyphX
 				axis_renderer->draw_axis( context, camera, render::color::green(), AxisDirection::Y, scene_axis_origin, scene_axis_sizes.y );
 				axis_renderer->draw_axis( context, camera, render::color::blue(), AxisDirection::Z, scene_axis_origin, scene_axis_sizes.z );
 			}
+
+			gadgets->render( context, camera );
 
 			// Draw the grids.
 			grids->draw( context, camera, render::color::white() );

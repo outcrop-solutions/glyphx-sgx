@@ -64,7 +64,7 @@ namespace SynGlyphX
 		void clearFilter() { filtered.clear(); scene_changed = true; filter_applied = false; }
 		bool passedFilter( const Glyph3DNode* node ) const;
 		bool filterApplied() const { return filter_applied; }	// true if any filters have been applied since clearFilter() was called
-		
+
 		Glyph3DNode* getGlyph3D( Glyph3DHandle handle );
 
 		bool getChanged() { return scene_changed; }
@@ -79,12 +79,17 @@ namespace SynGlyphX
 
 		float getGroupStatus() const { return group_status; }
 		float getActiveGroup() const { return active_group; }
+		glm::vec3 getExplodedPosition( const Glyph3DNode* node ) const;
+		glm::vec3 getExplodedPositionOffset( const Glyph3DNode* node ) const;
+		bool isExploded( const Glyph3DNode* node ) const { return node->getRootParent()->getAlternatePositionGroup() == getActiveGroup() && group_status > 0.f; }
+		void enumGroups( std::function<void( const std::vector< const Glyph3DNode* >& )> );
 
 		void debugPrint( const Glyph3DNode* node );
 
 	private:
 		void compute_groups();
 		void update_groups();
+		glm::vec3 apply_explosion_offset( const Glyph3DNode* node, const glm::vec3& pos ) const;
 
 		render::octree<Glyph3DNode>* octree;
 		std::unordered_map<Glyph3DHandle, Glyph3DNode*> glyphs;
@@ -106,6 +111,7 @@ namespace SynGlyphX
 		std::vector< superimposed_group > groups;
 		group_state explode_state;
 		float group_status, active_group;
+		const superimposed_group& get_group( unsigned int idx ) const { return groups[idx - 1]; }	// group ids are 1-based
 
 		// Temporary and cached properties that don't affect this object's logical const-ness.
 		mutable bool bound_update_needed;

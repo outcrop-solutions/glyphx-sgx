@@ -71,9 +71,10 @@ namespace SynGlyphX
 			std::unordered_map<hal::mesh*, instance_data_list> instances;
 		};
 
-		const unsigned int FILTERED = 0u, UNFILTERED = 1u;
-		glyph_bucket solid[2], wireframe[2], blended[2], wireframe_blended[2];
-		glyph_bucket selection, selection_wireframe;
+		std::unordered_map<uint32_t, glyph_bucket> buckets;
+		glyph_bucket& get_bucket( uint16_t bucket_id, uint16_t group_id );
+		void process_buckets( uint16_t flags_on, uint16_t flags_off, uint16_t group_id, std::function<void(glyph_bucket&)> fn );
+		void draw_buckets( hal::context* context, uint16_t flags, uint16_t group_id, unsigned int transform_binding_point, unsigned int material_binding_point, unsigned int anim_binding_point, unsigned int alt_pos_binding_point );
 
 		hal::effect* glyph_effect;
 		hal::effect* selection_effect;

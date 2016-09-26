@@ -115,6 +115,18 @@ namespace SynGlyphX
 				candidates.insert( node );
 		} );
 
+		// Glyphs in an exploded group won't have their temporary positions reflected in the octree, so make sure they're all
+		// in the candidate set.
+		if ( group_status > 0.f )
+		{
+			const auto& group = get_group( unsigned int( active_group ) );
+			for ( auto n : group.nodes )
+			{
+				assert( n->isRoot() );
+				candidates.insert( n );
+			}
+		}
+
 		float best_dist = FLT_MAX;
 		const Glyph3DNode* best_glyph = nullptr;
 
@@ -132,8 +144,12 @@ namespace SynGlyphX
 				auto node = q.top();
 				q.pop();
 
+				bool exploded = isExploded( node );
+
 				// First, check sphere bounds.
 				auto bound = node->getCachedBound();
+				if ( exploded )
+					bound.set_center( apply_explosion_offset( node, bound.get_center() ) );
 				auto combined_bound = node->getCachedCombinedBound();
 				float t;
 				glm::vec3 q_;
@@ -144,7 +160,10 @@ namespace SynGlyphX
 					// We intersected the sphere bound, so pick against the actual model.
 					auto model = db.get( node->getGeometry() );
 					glm::vec3 pt;
-					if ( model->pick( ray_origin, ray_dir, node->getCachedTransform() * node->getVisualTransform(), pt ) )
+					glm::mat4 transform = node->getCachedTransform() * node->getVisualTransform();
+					if ( exploded )
+						transform = glm::translate( transform, getExplodedPositionOffset( node ) );
+					if ( model->pick( ray_origin, ray_dir, transform, pt ) )
 					{
 						float dist = glm::length( ray_origin - pt );
 						if ( dist < best_dist )
@@ -156,7 +175,9 @@ namespace SynGlyphX
 				}
 
 				// Only check this object's children if its combined bound was hit (since it contains them).
-				if ( intersect_combined > 0 )
+				// Exception: if the node is part of an exploded group, the combined bound is unreliable,
+				// so we have to check the children regardless.
+				if ( intersect_combined > 0 || exploded )
 					for ( const auto& c : node->getChildren() )
 						q.push( c );
 			}
@@ -483,5 +504,30 @@ namespace SynGlyphX
 				explode_state = group_state::retracted;
 		}
 		group_status += direction * timeDelta * 0.005f;
+	}
+
+	glm::vec3 GlyphScene::getExplodedPosition( const Glyph3DNode* node ) const
+	{
+		glm::vec3 pos = node->getCachedPosition();
+		pos = apply_explosion_offset( node, pos );
+		return pos;
+	}
+
+	glm::vec3 GlyphScene::getExplodedPositionOffset( const Glyph3DNode* node ) const
+	{
+		return glm::mix( glm::vec3(), node->getAlternatePosition(), group_status );;
+	}
+
+	glm::vec3 GlyphScene::apply_explosion_offset( const Glyph3DNode* node, const glm::vec3& pos ) const
+	{
+		if ( node->getAlternatePositionGroup() == active_group )
+			return pos + getExplodedPositionOffset( node );
+		else
+			return pos;
+	}
+
+	void GlyphScene::enumGroups( std::function<void( const std::vector< const Glyph3DNode* >& )> fn )
+	{
+		for ( auto& g : groups ) fn( g.nodes );
 	}
 }

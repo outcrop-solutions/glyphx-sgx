@@ -35,7 +35,7 @@ namespace SynGlyphX
 	namespace render { class grid_renderer; }
 	typedef std::set<unsigned long> IndexSet;
 
-	class AxisRenderer; class BaseImageRenderer;
+	class AxisRenderer; class BaseImageRenderer; class GadgetManager;
 	class FreeCameraController; class OrbitCameraController; class OverheadCameraController; class CameraController;
 
 	class ItemFocusSelectionModel;	//temp
@@ -226,6 +226,7 @@ namespace SynGlyphX
 		float filtered_glyph_opacity;
 		hal::font* hud_font;
 		GlyphGeometryDB geomDB;
+		GadgetManager* gadgets;
 
 		//Navigation buttons.
 		QToolButton* m_upRotateButton;
