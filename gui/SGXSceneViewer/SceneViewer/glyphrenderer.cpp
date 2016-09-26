@@ -26,9 +26,11 @@ namespace SynGlyphX
 
 	GlyphRenderer::glyph_bucket& GlyphRenderer::get_bucket( uint16_t bucket_id, uint16_t group_id )
 	{
-		auto& it = buckets.find( bucket_id );
+		uint32_t bid = bucket_id, gid = group_id;
+		uint32_t bucket = bid | ( gid << 16 );
+		auto& it = buckets.find( bucket );
 		if ( it == buckets.end() )
-			it = buckets.insert( std::make_pair( bucket_id, glyph_bucket() ) ).first;
+			it = buckets.insert( std::make_pair( bucket, glyph_bucket() ) ).first;
 		return it->second;
 	}
 
@@ -208,7 +210,7 @@ namespace SynGlyphX
 			if ( glyph.getColor().a < 1.f )
 				bucket_id |= BLENDED;
 
-			glyph_bucket& bucket = get_bucket( bucket_id, 0u );//&solid[filter];
+			glyph_bucket& bucket = get_bucket( bucket_id, static_cast<uint16_t>( glyph.getAlternatePositionGroup() ) );
 
 			render::model* model = db.get( glyph.getGeometry(), glyph.getTorusRatio() );
 			for ( auto part : model->get_parts() )
@@ -281,15 +283,15 @@ namespace SynGlyphX
 			}
 			context->bind( glyph_effect );
 			context->set_rasterizer_state( filled );
-			draw_buckets( context, 0u, 0u, transform_binding_point, material_binding_point, anim_binding_point, alt_pos_binding_point );
+			draw_buckets( context, 0u, ALL_GROUPS, transform_binding_point, material_binding_point, anim_binding_point, alt_pos_binding_point );
 			auto filter_mode = scene->getFilterMode();
 			if ( filter_mode == FilteredResultsDisplayMode::ShowUnfiltered ) 
-				draw_buckets( context, FILTER_FAIL, 0u, transform_binding_point, material_binding_point, anim_binding_point, alt_pos_binding_point );
+				draw_buckets( context, FILTER_FAIL, ALL_GROUPS, transform_binding_point, material_binding_point, anim_binding_point, alt_pos_binding_point );
 
 			context->set_rasterizer_state( wire );
-			draw_buckets( context, WIREFRAME, 0u, transform_binding_point, material_binding_point, anim_binding_point, alt_pos_binding_point );
+			draw_buckets( context, WIREFRAME, ALL_GROUPS, transform_binding_point, material_binding_point, anim_binding_point, alt_pos_binding_point );
 			if ( filter_mode == FilteredResultsDisplayMode::ShowUnfiltered )
-				draw_buckets( context, WIREFRAME | FILTER_FAIL, 0u, transform_binding_point, material_binding_point, anim_binding_point, alt_pos_binding_point );
+				draw_buckets( context, WIREFRAME | FILTER_FAIL, ALL_GROUPS, transform_binding_point, material_binding_point, anim_binding_point, alt_pos_binding_point );
 			context->set_rasterizer_state( filled );
 		}
 	}
@@ -312,25 +314,25 @@ namespace SynGlyphX
 			context->set_constant( glyph_effect, "global_material_data", "base_alpha", 1.f );
 			context->set_rasterizer_state( filled );
 			context->bind( glyph_effect );
-			draw_buckets( context, BLENDED, 0u, transform_binding_point, material_binding_point, anim_binding_point, alt_pos_binding_point );
-			draw_buckets( context, WIREFRAME | BLENDED, 0u, transform_binding_point, material_binding_point, anim_binding_point, alt_pos_binding_point );
+			draw_buckets( context, BLENDED, ALL_GROUPS, transform_binding_point, material_binding_point, anim_binding_point, alt_pos_binding_point );
+			draw_buckets( context, WIREFRAME | BLENDED, ALL_GROUPS, transform_binding_point, material_binding_point, anim_binding_point, alt_pos_binding_point );
 			auto filter_mode = scene->getFilterMode();
 			if ( filter_mode == FilteredResultsDisplayMode::ShowUnfiltered )
 			{
-				draw_buckets( context, BLENDED | FILTER_FAIL, 0u, transform_binding_point, material_binding_point, anim_binding_point, alt_pos_binding_point );
-				draw_buckets( context, BLENDED | FILTER_FAIL | WIREFRAME, 0u, transform_binding_point, material_binding_point, anim_binding_point, alt_pos_binding_point );
+				draw_buckets( context, BLENDED | FILTER_FAIL, ALL_GROUPS, transform_binding_point, material_binding_point, anim_binding_point, alt_pos_binding_point );
+				draw_buckets( context, BLENDED | FILTER_FAIL | WIREFRAME, ALL_GROUPS, transform_binding_point, material_binding_point, anim_binding_point, alt_pos_binding_point );
 			}
 
 			if ( filter_mode == FilteredResultsDisplayMode::TranslucentUnfiltered )
 			{
 				context->set_constant( glyph_effect, "global_material_data", "base_alpha", filter_alpha );
-				draw_buckets( context, BLENDED | FILTER_FAIL, 0u, transform_binding_point, material_binding_point, anim_binding_point, alt_pos_binding_point );
-				draw_buckets( context, FILTER_FAIL, 0u, transform_binding_point, material_binding_point, anim_binding_point, alt_pos_binding_point );
+				draw_buckets( context, BLENDED | FILTER_FAIL, ALL_GROUPS, transform_binding_point, material_binding_point, anim_binding_point, alt_pos_binding_point );
+				draw_buckets( context, FILTER_FAIL, ALL_GROUPS, transform_binding_point, material_binding_point, anim_binding_point, alt_pos_binding_point );
 
 				context->set_rasterizer_state( hal::rasterizer_state{ true, false, true } );
 				context->set_constant( glyph_effect, "global_material_data", "base_alpha", wire_filter_alpha );
-				draw_buckets( context, WIREFRAME | FILTER_FAIL, 0u, transform_binding_point, material_binding_point, anim_binding_point, alt_pos_binding_point );
-				draw_buckets( context, WIREFRAME | BLENDED | FILTER_FAIL, 0u, transform_binding_point, material_binding_point, anim_binding_point, alt_pos_binding_point );
+				draw_buckets( context, WIREFRAME | FILTER_FAIL, ALL_GROUPS, transform_binding_point, material_binding_point, anim_binding_point, alt_pos_binding_point );
+				draw_buckets( context, WIREFRAME | BLENDED | FILTER_FAIL, ALL_GROUPS, transform_binding_point, material_binding_point, anim_binding_point, alt_pos_binding_point );
 				context->set_rasterizer_state( filled );
 			}
 
