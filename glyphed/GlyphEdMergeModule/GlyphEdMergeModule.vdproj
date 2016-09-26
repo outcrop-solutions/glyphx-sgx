@@ -241,7 +241,7 @@
                     "{9EF0B969-E518-4E46-987F-47570745A589}:_9135E80F657944D8A450034D924C402D"
                     {
                     "Name" = "8:SynGlyphX"
-                    "AlwaysCreate" = "11:FALSE"
+                    "AlwaysCreate" = "11:TRUE"
                     "Condition" = "8:"
                     "Transitive" = "11:FALSE"
                     "Property" = "8:_9CEC8BA4743C46D4AD0F25AA154D102F"
@@ -250,7 +250,7 @@
                             "{9EF0B969-E518-4E46-987F-47570745A589}:_933C65A8293349AD9CD273D3EBDBDF53"
                             {
                             "Name" = "8:GlyphEd"
-                            "AlwaysCreate" = "11:FALSE"
+                            "AlwaysCreate" = "11:TRUE"
                             "Condition" = "8:"
                             "Transitive" = "11:FALSE"
                             "Property" = "8:_7273D7F4271240D88F38776BD0FAA7D0"
@@ -283,7 +283,7 @@
         "Module"
         {
         "ModuleSignature" = "8:MergeModule.C0AFF3D49B1B4CD8BA400A9CC74CF7D2"
-        "Version" = "8:0.8.01.1"
+        "Version" = "8:0.8.01.2"
         "Title" = "8:GlyphEdMergeModule"
         "Subject" = "8:"
         "Author" = "8:Default Company Name"
