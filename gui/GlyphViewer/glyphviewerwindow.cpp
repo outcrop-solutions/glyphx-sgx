@@ -1006,6 +1006,8 @@ void GlyphViewerWindow::ReadSettings() {
 
 			settings.beginGroup(table);
 			QStringList datasourceTablePair = table.split(':');
+			if (datasourceTablePair.size() != 2)
+				continue;
 			SynGlyphX::InputTable inputTable(gen(datasourceTablePair[0].toStdString()), datasourceTablePair[1].toStdWString());
 
 			QStringList fieldNames = settings.childGroups();
