@@ -100,7 +100,7 @@ namespace SynGlyphX
 		}
 	}
 
-	const Glyph3DNode* GlyphScene::pick( const glm::vec3& ray_origin, const glm::vec3& ray_dir, bool include_filtered_out ) const
+	const Glyph3DNode* GlyphScene::pick( const glm::vec3& ray_origin, const glm::vec3& ray_dir, bool include_filtered_out, bool active_group_only ) const
 	{
 		// No scene yet, early out.
 		if ( empty() )
@@ -108,16 +108,19 @@ namespace SynGlyphX
 
 		hal::debug::profile_timer timer;
 
-		// Gather candidates by picking against the octree.
+		// Gather candidates by picking against the octree. (Don't do this if we're only doing the active exploded group.)
 		std::unordered_set<const Glyph3DNode*> candidates;
-		octree->pick( ray_origin, ray_dir, [&]( const Glyph3DNode* node ) {
-			if ( include_filtered_out || passedFilter( node ) )
-				candidates.insert( node );
-		} );
+		if ( !active_group_only )
+		{
+			octree->pick( ray_origin, ray_dir, [&]( const Glyph3DNode* node ) {
+				if ( include_filtered_out || passedFilter( node ) )
+					candidates.insert( node );
+			} );
+		}
 
 		// Glyphs in an exploded group won't have their temporary positions reflected in the octree, so make sure they're all
 		// in the candidate set.
-		if ( group_status > 0.f )
+		if ( active_group > 0.f && group_status > 0.f )
 		{
 			const auto& group = get_group( unsigned int( active_group ) );
 			for ( auto n : group.nodes )
@@ -191,6 +194,7 @@ namespace SynGlyphX
 
 	void GlyphScene::setSelected( const Glyph3DNode* glyph )
 	{
+		active_group = 0.f;
 		if ( selection.find( glyph ) == selection.end() )
 		{
 			selection.insert( glyph );

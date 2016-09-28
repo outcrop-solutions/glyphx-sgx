@@ -401,6 +401,8 @@ namespace SynGlyphX
 		const glm::vec3 hud_axes_offset( 100.f, 100.f, 0.f );
 		const float hud_axes_size = 48.f;
 
+		bool exploded_group = ( scene->getActiveGroup() != 0.f && scene->getGroupStatus() > 0.f );
+
 		if ( !scene->empty() )
 		{
 			base_images->draw( context, camera );
@@ -420,7 +422,8 @@ namespace SynGlyphX
 				axis_renderer->draw_axis( context, camera, render::color::blue(), AxisDirection::Z, scene_axis_origin, scene_axis_sizes.z );
 			}
 
-			gadgets->render( context, camera );
+			if ( !exploded_group )
+				gadgets->render( context, camera );
 
 			// Draw the grids.
 			grids->draw( context, camera, render::color::white() );
@@ -438,6 +441,15 @@ namespace SynGlyphX
 			}
 
 			glyph_renderer->render_blended( context, camera, float( elapsed_timer.elapsed() ) / 1000.f );
+
+			if ( exploded_group )
+			{
+				context->set_depth_state( hal::depth_state::read_write );
+				context->clear( hal::clear_type::depth );
+				glyph_renderer->render_solid( context, camera, float( elapsed_timer.elapsed() ) / 1000.f, true );
+				gadgets->render( context, camera );
+				glyph_renderer->render_blended( context, camera, float( elapsed_timer.elapsed() ) / 1000.f, true );
+			}
 		}
 
 		// States for blended overlay elements.
@@ -740,7 +752,7 @@ namespace SynGlyphX
 
 						glm::vec3 origin, dir;
 						camera->viewport_pt_to_ray( event->x(), event->y(), origin, dir );
-						const Glyph3DNode* g = scene->pick( origin, dir, scene->getFilterMode() == FilteredResultsDisplayMode::TranslucentUnfiltered );
+						const Glyph3DNode* g = scene->pick( origin, dir, scene->getFilterMode() == FilteredResultsDisplayMode::TranslucentUnfiltered, scene->getActiveGroup() > 0.f && scene->getGroupStatus() > 0.f );
 						if ( g )
 						{
 							if ( alt || ( ctrl && scene->isSelected( g ) ) )

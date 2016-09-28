@@ -23,8 +23,8 @@ namespace SynGlyphX
 		void setScene( GlyphScene* _scene ) { scene = _scene; }
 		void clear();
 
-		void render_solid( hal::context* context, render::perspective_camera* camera, float elapsed_seconds );
-		void render_blended( hal::context* context, render::perspective_camera* camera, float elapsed_seconds );
+		void render_solid( hal::context* context, render::perspective_camera* camera, float elapsed_seconds, bool active_group_only = false );
+		void render_blended( hal::context* context, render::perspective_camera* camera, float elapsed_seconds, bool active_group_only = false );
 
 		void setWireframeMode( bool val ) { global_wireframe = val; }
 		void enableAnimation( bool val ) { animation = val; }
@@ -73,8 +73,8 @@ namespace SynGlyphX
 
 		std::unordered_map<uint32_t, glyph_bucket> buckets;
 		glyph_bucket& get_bucket( uint16_t bucket_id, uint16_t group_id );
-		void process_buckets( uint16_t flags_on, uint16_t flags_off, uint16_t group_id, std::function<void(glyph_bucket&)> fn );
-		void draw_buckets( hal::context* context, uint16_t flags, uint16_t group_id, unsigned int transform_binding_point, unsigned int material_binding_point, unsigned int anim_binding_point, unsigned int alt_pos_binding_point );
+		void process_buckets( uint16_t flags_on, uint16_t flags_off, uint16_t group_id, uint16_t group_exclude, std::function<void(glyph_bucket&)> fn );
+		void draw_buckets( hal::context* context, uint16_t flags, uint16_t group_id, uint16_t group_exclude, unsigned int transform_binding_point, unsigned int material_binding_point, unsigned int anim_binding_point, unsigned int alt_pos_binding_point );
 
 		hal::effect* glyph_effect;
 		hal::effect* selection_effect;

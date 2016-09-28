@@ -62,7 +62,7 @@ void main()
 	eye = world_pos.xyz - camera_pos;	// fragment shader will normalize (has to be done there since this will be interpolated)
 
 	if ( alternate_position_state > 0 && alt_pos.w != active_alternate_position_group )
-		frag_color *= 1 - clamp( alternate_position_state * 2, 0, 1 );
+		frag_color *= clamp( 1 - clamp( alternate_position_state * 1.5, 0, 1 ), 0.25, 1 );
 
     gl_Position = proj * ( view * world_pos );
 }

@@ -6,6 +6,7 @@
 #include <render/octree.h>
 #include <unordered_set>
 #include "glyphnode.h"
+#include "glyphgeometrydb.h"
 
 namespace SynGlyphX
 {
@@ -16,8 +17,9 @@ namespace SynGlyphX
 	class SGXSCENEVIEWER_API GlyphScene
 	{
 	public:
-		GlyphScene( GlyphGeometryDB& _db ) : octree( nullptr ), filter_applied( false ), selection_changed( false ), glyph_storage( nullptr ), glyph_storage_next( 0u ),
-			filter_mode( FilteredResultsDisplayMode::TranslucentUnfiltered ), has_animation( false ), db( _db ), explode_state( group_state::retracted ) { }
+		GlyphScene(GlyphGeometryDB _db) : octree( nullptr ), filter_applied( false ), selection_changed( false ), glyph_storage( nullptr ), glyph_storage_next( 0u ),
+			filter_mode( FilteredResultsDisplayMode::TranslucentUnfiltered ), has_animation( false ), db( _db ), explode_state( group_state::retracted ),
+			active_group( 0.f ), group_status( 0.f ) { }
 		~GlyphScene();
 		GlyphScene( const GlyphScene& ) = delete;
 
@@ -32,7 +34,7 @@ namespace SynGlyphX
 
 		bool empty() const { return glyphs.empty(); }
 
-		const Glyph3DNode* pick( const glm::vec3& ray_origin, const glm::vec3& ray_dir, bool include_filtered_out = true ) const;
+		const Glyph3DNode* pick( const glm::vec3& ray_origin, const glm::vec3& ray_dir, bool include_filtered_out = true, bool active_group_only = false ) const;
 
 		void enumGlyphs( std::function<bool( const Glyph3DNode& )> fn, bool includeChildren ) const;
 
