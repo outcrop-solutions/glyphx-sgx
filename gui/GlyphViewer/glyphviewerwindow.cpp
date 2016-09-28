@@ -413,24 +413,31 @@ void GlyphViewerWindow::OpenVisualisation() {
 	QString openFile = GetFileNameOpenDialog("VisualizationDir", tr("Open Visualization"), "", tr("SynGlyphX Visualization Files (*.sdt *.sav);;SynGlyphX Data Transform Files (*.sdt);;SynGlyphX ANTz Visualization Files (*.sav)"));
 	if (!openFile.isEmpty()) {
 
-		SynGlyphX::DataTransformMapping::SharedPtr mapping = std::make_shared<SynGlyphX::DataTransformMapping>();
-		mapping->ReadFromFile(openFile.toStdString());
+		try {
 
-		ValidateDataMappingFile(mapping, openFile);
+			SynGlyphX::DataTransformMapping::SharedPtr mapping = std::make_shared<SynGlyphX::DataTransformMapping>();
+			mapping->ReadFromFile(openFile.toStdString());
 
-		MultiTableDistinctValueFilteringParameters filters;
-		if (!mapping->GetFrontEndFilters().empty()) {
+			ValidateDataMappingFile(mapping, openFile);
 
-			LoadingFilterDialog loadingFilterDialog(m_dataEngineConnection, openFile, this);
-			loadingFilterDialog.SetupFilters(*mapping);
-			if (loadingFilterDialog.exec() == QDialog::Rejected) {
+			MultiTableDistinctValueFilteringParameters filters;
+			if (!mapping->GetFrontEndFilters().empty()) {
 
-				return;
+				LoadingFilterDialog loadingFilterDialog(m_dataEngineConnection, openFile, this);
+				loadingFilterDialog.SetupFilters(*mapping);
+				if (loadingFilterDialog.exec() == QDialog::Rejected) {
+
+					return;
+				}
+				filters = loadingFilterDialog.GetFilterValues();
 			}
-			filters = loadingFilterDialog.GetFilterValues();
-		}
 
-		LoadNewVisualization(openFile, filters);
+			LoadNewVisualization(openFile, filters);
+		}
+		catch (const std::exception& e) {
+
+			QMessageBox::critical(this, tr("Visualization failed to load"), tr("Visualization failed to load: ") + e.what());
+		}
 	}
 }
 
