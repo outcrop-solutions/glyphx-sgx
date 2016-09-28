@@ -103,12 +103,14 @@ public class NewCSVWriter {
 
 	private void setAntz(){
 
+		antzHeader = "id,"+"parent_id,"+"child_id,"+"type,"+"child_count,";
 		antzHeader += "translate_x,"+"translate_y,"+"translate_z,";
 		antzHeader += "rotate_x,"+"rotate_y,"+"rotate_z,";
 		antzHeader += "scale_x,"+"scale_y,"+"scale_z,";
 		antzHeader += "color_r,"+"color_g,"+"color_b,"+"color_a,";
 		antzHeader += "geometry,"+"topo,"+"color_index,"+"ratio,";
 		antzHeader += "rotate_rate_x,"+"rotate_rate_y,"+"rotate_rate_z,";
+		antzHeader += "aux_a_x,"+"aux_a_y,"+"segments_x,"+"segments_y,"+"texture_id\n";
 	}
 
 	public void newBegin(String app){
@@ -143,6 +145,11 @@ public class NewCSVWriter {
 			//bfw.write("id,record_id,table_id,title,description\n");
 			bfw.write("record_id,title,description\n");
 	        bf.write(antzHeader);
+	        //bf.write(line1);
+	        //bf.write(line2);
+	        //bf.write(line3);
+	        //bf.write(line4);
+	        //bf.write(line5);
 	        
 	        for(int i=0; i < baseObjectLines.size(); i++){
 	        	bf.write(baseObjectLines.get(i));
@@ -460,9 +467,12 @@ public class NewCSVWriter {
 
 			out += String.valueOf(i+6)+","+parentID+",0,6,"+childCount+","; //id, parent_id, child_id, type, child_count
 			out += bo.getPosition(0)+","+bo.getPosition(1)+","+bo.getPosition(2)+","; // translate_x, translate_y, translate_z
+			out += bo.getRotation(0)+","+bo.getRotation(1)+","+bo.getRotation(2)+","; // rotate_x, rotate_y, rotate_z
 			out += "1,1,1,"; // scale_x, scale_y, scale_z
 			out += color[0]+","+color[1]+","+color[2]+",255,"; //color r, g, b, a
+			out += "0,0,0,0.1,"; //geometry, topo, color_index, ratio
 			out += "0,0,0,"; // rotate_rate_x, rotate_rate_y, rotate_rate_z
+			out += bo.getGLCount(0)+","+bo.getGLCount(1)+","+bo.getGLSegX()+","+bo.getGLSegY()+","+number; // aux_a_x, aux_b_y, segments_x, segments_y, texture_id;
 			out += "\n";
 
 			baseObjectLines.add(out);
