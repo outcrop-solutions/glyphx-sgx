@@ -824,10 +824,6 @@ namespace SynGlyphX
 		selection_changed();
 	}
 
-	template <typename T> int sgn( T val ) {
-		return ( T( 0 ) < val ) - ( val < T( 0 ) );
-	}
-
 	void SceneViewer::updateFrame()
 	{
 		bool shift = QGuiApplication::queryKeyboardModifiers() & Qt::KeyboardModifier::ShiftModifier;
