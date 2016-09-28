@@ -768,25 +768,27 @@ namespace SynGlyphX
 					bool ctrl = ( QGuiApplication::queryKeyboardModifiers() & Qt::KeyboardModifier::ControlModifier );
 					bool alt = ( QGuiApplication::queryKeyboardModifiers() & Qt::KeyboardModifier::AltModifier );
 
-					if ( !ctrl && !alt )
-						scene->clearSelection();
+					bool exploded = scene->getActiveGroup() > 0.f && scene->getGroupStatus() > 0.f;
 
-					scene->enumGlyphs( [this, event, alt]( const Glyph3DNode& node ) {
-						auto pos = node.getCachedPosition();
+					scene->enumGlyphs( [this, event, alt, exploded]( const Glyph3DNode& node ) {
+						auto pos = scene->getExplodedPosition( &node );
 						auto pos2d = camera->world_pt_to_window_pt( pos );
 						if ( pos2d.x > std::min( drag_info( button::left ).drag_start_x, mouse_x )
 							&& pos2d.x < std::max( drag_info( button::left ).drag_start_x, mouse_x )
 							&& pos2d.y > std::min( drag_info( button::left ).drag_start_y, mouse_y )
 							&& pos2d.y < std::max( drag_info( button::left ).drag_start_y, mouse_y ) )
 						{
-							if ( glm::dot( pos - camera->get_position(), camera->get_forward() ) > 0.f )	// make sure it's not behind the camera
+							if ( !exploded || ( node.getAlternatePositionGroup() == scene->getActiveGroup() ) )
 							{
-								if ( scene->getFilterMode() != FilteredResultsDisplayMode::HideUnfiltered || scene->passedFilter( &node ) )
+								if ( glm::dot( pos - camera->get_position(), camera->get_forward() ) > 0.f )	// make sure it's not behind the camera
 								{
-									if ( !alt )
-										scene->setSelected( &node );
-									else
-										scene->setUnSelected( &node );
+									if ( scene->getFilterMode() != FilteredResultsDisplayMode::HideUnfiltered || scene->passedFilter( &node ) )
+									{
+										if ( !alt )
+											scene->setSelected( &node );
+										else
+											scene->setUnSelected( &node );
+									}
 								}
 							}
 						}
