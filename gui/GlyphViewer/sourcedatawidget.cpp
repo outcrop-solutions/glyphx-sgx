@@ -69,12 +69,13 @@ void SourceDataWidget::closeEvent(QCloseEvent* event) {
 
 void SourceDataWidget::DeleteTabs() {
 
-	while (m_sourceDataTabs->count() > 0) {
+	for (unsigned int i = 0; i < m_tableViews.size(); ++i) {
 
-		QTableView* tableView = dynamic_cast<QTableView*>(m_sourceDataTabs->widget(0));
-		m_sourceDataTabs->removeTab(0);
+		QTableView* tableView = m_tableViews[i];
 		delete tableView;
 	}
+	m_sourceDataTabs->clear();
+	m_tableViews.clear();
 	
 	//The objects in this collection have already been deleted by deleting the table views so just clear this collection
 	m_sqlQueryModels.clear();
@@ -117,12 +118,11 @@ void SourceDataWidget::OnNewVisualization() {
 				headerProxyModel->setSourceModel(queryModel);
 				headerProxyModel->SetHorizontalHeaderMap(fieldToAliasMap);
 
-				SourceDataTableModel* sourceDataTableModel = new SourceDataTableModel(true, tableView);
+				SourceDataTableModel* sourceDataTableModel = new SourceDataTableModel(DoesEmptyFilterShowAll(), tableView);
 				sourceDataTableModel->setSourceModel(headerProxyModel);
 				tableView->setModel(sourceDataTableModel);
-				
-				m_sourceDataTabs->addTab(tableView, m_sourceDataCache->GetFormattedNames().at(sourceDataTablename));
 
+				m_tableViews.push_back(tableView);
 				m_sqlQueryModels.insert(sourceDataTablename, queryModel);
 			}
 		}
@@ -131,12 +131,25 @@ void SourceDataWidget::OnNewVisualization() {
 
 void SourceDataWidget::UpdateTables() {
 
-	for (unsigned int i = 0; i < m_sourceDataTabs->count(); ++i) {
+	while (m_sourceDataTabs->count() > 0) {
 
-		QTableView* tableView = dynamic_cast<QTableView*>(m_sourceDataTabs->widget(i));
+		m_sourceDataTabs->removeTab(0);
+	}
+
+	const SourceDataCache::TableNameMap& formattedNamesMap = m_sourceDataCache->GetFormattedNames();
+
+	for (unsigned int i = 0; i < m_tableViews.size(); ++i) {
+
+		QTableView* tableView = m_tableViews[i];
 		QString sourceDataTablename = tableView->objectName();
 		SourceDataTableModel* sourceDataTableModel = dynamic_cast<SourceDataTableModel*>(tableView->model());
-		sourceDataTableModel->SetFilters(GetSourceIndexesForTable(sourceDataTablename));
+		SynGlyphX::IndexSet sourceDataIndexes = GetSourceIndexesForTable(sourceDataTablename);
+		sourceDataTableModel->SetFilters(sourceDataIndexes);
+
+		if (DoesEmptyFilterShowAll() || !sourceDataIndexes.empty()) {
+
+			m_sourceDataTabs->addTab(tableView, formattedNamesMap.at(sourceDataTablename));
+		}
 	}
 }
 

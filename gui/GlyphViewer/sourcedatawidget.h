@@ -23,6 +23,8 @@
 #include <QtWidgets/QStatusBar>
 #include "datatransformmapping.h"
 
+class QTableView;
+
 class SourceDataWidget : public QWidget
 {
 	Q_OBJECT
@@ -52,6 +54,7 @@ protected slots:
 protected:
 	void closeEvent(QCloseEvent* event) override;
 	virtual SynGlyphX::IndexSet GetSourceIndexesForTable(const QString& table) = 0;
+	virtual bool DoesEmptyFilterShowAll() const = 0;
 
 	void DeleteTabs();
 	void ReadSettings();
@@ -61,6 +64,7 @@ protected:
 
 	QTabWidget* m_sourceDataTabs;
 	QStatusBar* m_statusBar;
+	std::vector<QTableView*> m_tableViews;
 	QMap<QString, QSqlQueryModel*> m_sqlQueryModels;
 	SourceDataCache::ConstSharedPtr m_sourceDataCache;
 	SynGlyphX::DataTransformMapping::ConstSharedPtr m_dataTransformMapping;

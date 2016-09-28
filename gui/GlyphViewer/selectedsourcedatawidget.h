@@ -36,6 +36,7 @@ public:
 
 protected:
 	SynGlyphX::IndexSet GetSourceIndexesForTable(const QString& table) override;
+	bool DoesEmptyFilterShowAll() const override { return false; }
 
 private slots:
 	void OnSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected);
