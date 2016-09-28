@@ -46,7 +46,7 @@ GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 	: SynGlyphX::MainWindow(4, parent),
 	m_viewer( nullptr ),
 	m_showErrorFromTransform(true),
-	m_showHomePage(false),
+	m_showHomePage(true),
 	m_dataEngineConnection(nullptr)
 {
 	m_dataEngineConnection = std::make_shared<DataEngine::DataEngineConnection>();

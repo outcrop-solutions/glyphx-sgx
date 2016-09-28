@@ -184,7 +184,7 @@ void GlyphViewerOptions::ReadFromSettings() {
 	SetHUDAxisObjectLocation(static_cast<SynGlyphXANTz::ANTzForestWidget::HUDLocation>(settings.value("axisInfoLocation").toInt()));
 	SetShowSceneAxisObject(settings.value("sceneAxisInfoShow", true).toBool());
 	SetShowMessageWhenImagesDidNotDownload(settings.value("showFailedToDownloadImageMessage", true).toBool());
-	SetShowHomePage(settings.value("showHomeScreen", false).toBool());
+	SetShowHomePage(settings.value("showHomeScreen", true).toBool());
 	SetDefaultProject(settings.value("defaultProject", "").toString());
 	SetLoadSubsetVisualization(settings.value("loadSubsetVisualization", true).toBool());
 	SetLoadSubsetVisualizationInNewInstance(settings.value("loadSubsetVisualizationInNewInstance", false).toBool());
