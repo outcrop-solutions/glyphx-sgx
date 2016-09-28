@@ -290,6 +290,15 @@
     <ClCompile Include="GeneratedFiles\Win32\Release\moc_LoadingFilterDialog.cpp">
       <Filter>Generated Files\Release_Win32</Filter>
     </ClCompile>
+    <ClCompile Include="SourceDataTableModel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Win32\Debug\moc_SourceDataTableModel.cpp">
+      <Filter>Generated Files\Debug_Win32</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Win32\Release\moc_SourceDataTableModel.cpp">
+      <Filter>Generated Files\Release_Win32</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="glyphviewer.qrc">
@@ -368,6 +377,9 @@
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="LoadingFilterDialog.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="SourceDataTableModel.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>

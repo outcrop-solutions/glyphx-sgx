@@ -17,6 +17,7 @@
 #include "glyphbuilderapplication.h"
 #include <boost/uuid/uuid_io.hpp>
 #include "HeaderProxyModel.h"
+#include "SourceDataTableModel.h"
 
 SourceDataWidget::SourceDataWidget(SourceDataCache::ConstSharedPtr sourceDataCache, SynGlyphX::DataTransformMapping::ConstSharedPtr dataTransformMapping, QWidget *parent)
 	: QWidget(parent, Qt::Window),
@@ -77,8 +78,6 @@ void SourceDataWidget::DeleteTabs() {
 	
 	//The objects in this collection have already been deleted by deleting the table views so just clear this collection
 	m_sqlQueryModels.clear();
-
-	m_tableToFieldsMap.clear();
 }
 
 void SourceDataWidget::OnNewVisualization() {
@@ -103,17 +102,28 @@ void SourceDataWidget::OnNewVisualization() {
 				tableView->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 				tableView->verticalHeader()->setVisible(false);
 
+				SourceDataCache::SharedSQLQuery query = m_sourceDataCache->CreateSelectQuery(sourceDataTablename,
+					m_sourceDataCache->GetColumnsForTable(inputTable));
+				query->exec();
+				
 				QSqlQueryModel* queryModel = new QSqlQueryModel(tableView);
+				queryModel->setQuery(*query.data());
+				if (queryModel->lastError().isValid()) {
+
+					throw std::runtime_error("Failed to set SQL query for source data widget.");
+				}
+
 				SynGlyphX::HeaderProxyModel* headerProxyModel = new SynGlyphX::HeaderProxyModel(tableView);
 				headerProxyModel->setSourceModel(queryModel);
 				headerProxyModel->SetHorizontalHeaderMap(fieldToAliasMap);
-				tableView->setModel(headerProxyModel);
+
+				SourceDataTableModel* sourceDataTableModel = new SourceDataTableModel(true, tableView);
+				sourceDataTableModel->setSourceModel(headerProxyModel);
+				tableView->setModel(sourceDataTableModel);
 				
 				m_sourceDataTabs->addTab(tableView, m_sourceDataCache->GetFormattedNames().at(sourceDataTablename));
 
-				m_sqlQueryModels[sourceDataTablename] = queryModel;
-
-				m_tableToFieldsMap[sourceDataTablename] = m_sourceDataCache->GetColumnsForTable(inputTable);
+				m_sqlQueryModels.insert(sourceDataTablename, queryModel);
 			}
 		}
 	}
@@ -125,19 +135,8 @@ void SourceDataWidget::UpdateTables() {
 
 		QTableView* tableView = dynamic_cast<QTableView*>(m_sourceDataTabs->widget(i));
 		QString sourceDataTablename = tableView->objectName();
-
-		SourceDataCache::SharedSQLQuery query = m_sourceDataCache->CreateSelectQuery(sourceDataTablename,
-			m_tableToFieldsMap[sourceDataTablename], GetSourceIndexesForTable(sourceDataTablename));
-		query->exec();
-
-		QSqlQueryModel* queryModel = m_sqlQueryModels[sourceDataTablename];
-		queryModel->query().clear();
-		queryModel->clear();
-		queryModel->setQuery(*query.data());
-		if (queryModel->lastError().isValid()) {
-
-			throw std::runtime_error("Failed to set SQL query for source data widget.");
-		}
+		SourceDataTableModel* sourceDataTableModel = dynamic_cast<SourceDataTableModel*>(tableView->model());
+		sourceDataTableModel->SetFilters(GetSourceIndexesForTable(sourceDataTablename));
 	}
 }
 

@@ -15,55 +15,26 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef SOURCEDATAWIDGET_H
-#define SOURCEDATAWIDGET_H
+#pragma once
 
-#include <QtWidgets/QTabWidget>
-#include "sourcedatacache.h"
-#include <QtWidgets/QStatusBar>
-#include "datatransformmapping.h"
+#include <QtCore/QSortFilterProxyModel>
+#include "utilitytypes.h"
 
-class SourceDataWidget : public QWidget
+class SourceDataTableModel : public QSortFilterProxyModel
 {
 	Q_OBJECT
 
 public:
-	SourceDataWidget(SourceDataCache::ConstSharedPtr sourceDataCache, SynGlyphX::DataTransformMapping::ConstSharedPtr dataTransformMapping, QWidget *parent = nullptr);
-	~SourceDataWidget();
+	SourceDataTableModel(bool doesEmptyFilterShowAll, QObject *parent);
+	~SourceDataTableModel();
 
-	void SetLoadSubsetVisualization(bool loadSubsetVisualization);
-	bool GetLoadSubsetVisualization() const;
-	void SetLoadSubsetVisualizationInNewInstance(bool loadSubsetVisualizationInNewInstance);
-	bool GetLoadSubsetVisualizationInNewInstance() const;
-
-	virtual void OnNewVisualization();
-
-signals:
-	void WindowHidden();
-	void SubsetVisualizationCreated(const QString& newSubsetVisualizationFilename);
-
-public slots:
-	void CreateSubsetVisualization();
-	void UpdateTables();
-
-protected slots:
-	void SaveCurrentTabToFile();
+	void SetFilters(const SynGlyphX::IndexSet& rowSubset);
 
 protected:
-	void closeEvent(QCloseEvent* event) override;
-	virtual SynGlyphX::IndexSet GetSourceIndexesForTable(const QString& table) = 0;
+	bool filterAcceptsRow(int source_row, const QModelIndex& source_parent) const override;
+	bool filterAcceptsColumn(int source_column, const QModelIndex& source_parent) const override;
 
-	void DeleteTabs();
-	void ReadSettings();
-	void WriteSettings();
-
-	void WriteToFile(QSqlQueryModel* queryModel, const QString& filename);
-
-	QTabWidget* m_sourceDataTabs;
-	QStatusBar* m_statusBar;
-	QMap<QString, QSqlQueryModel*> m_sqlQueryModels;
-	SourceDataCache::ConstSharedPtr m_sourceDataCache;
-	SynGlyphX::DataTransformMapping::ConstSharedPtr m_dataTransformMapping;
+	SynGlyphX::IndexSet m_rowSubset;
+	bool m_doesEmptyFilterShowAll;
 };
 
-#endif // SOURCEDATAWIDGET_H
