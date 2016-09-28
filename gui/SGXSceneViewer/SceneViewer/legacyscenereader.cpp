@@ -173,7 +173,20 @@ namespace SynGlyphX
 			std::string token;
 			while ( idx < line.size() )
 			{
+
 				auto c = line[idx];
+				if (c != ',')
+				{
+					token += c;
+				}
+				
+				if ((c == ',' || idx == line.size()-1) && token.size() > 0)
+				{
+					tokens.push_back(token);
+					token = "";
+				}
+				++idx;
+				/*
 				if ( c == ',' && token.size() > 0 )
 				{
 					tokens.push_back( token );
@@ -183,7 +196,7 @@ namespace SynGlyphX
 				{
 					token += c;
 				}
-				++idx;
+				++idx;*/
 			}
 		}
 
