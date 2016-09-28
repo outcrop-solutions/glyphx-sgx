@@ -26,3 +26,9 @@ SynGlyphX::IndexSet FilteredSourceDataWidget::GetSourceIndexesForTable(const QSt
 		return dataIndexes.at(table);
 	}
 }
+
+void FilteredSourceDataWidget::OnNewVisualization() {
+
+	SourceDataWidget::OnNewVisualization();
+	UpdateTables();
+}

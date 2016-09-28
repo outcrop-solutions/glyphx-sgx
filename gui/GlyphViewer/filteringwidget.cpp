@@ -162,7 +162,8 @@ void FilteringWidget::OnNewVisualization() {
 		m_tableComboBox->view()->setMinimumWidth(m_tableComboBox->view()->sizeHintForColumn(0));
 		m_tableComboBox->blockSignals(false);
 
-		m_filteredSourceDataWindow->UpdateTables();
+		m_filteredSourceDataWindow->OnNewVisualization();
+		m_selectedSourceDataWindow->OnNewVisualization();
 	}
 	else {
 

@@ -66,15 +66,24 @@ void SourceDataWidget::closeEvent(QCloseEvent* event) {
 	QWidget::closeEvent(event);
 }
 
-void SourceDataWidget::ClearTables() {
+void SourceDataWidget::DeleteTabs() {
 
-	m_sourceDataTabs->clear();
+	while (m_sourceDataTabs->count() > 0) {
+
+		QTableView* tableView = dynamic_cast<QTableView*>(m_sourceDataTabs->widget(0));
+		m_sourceDataTabs->removeTab(0);
+		delete tableView;
+	}
+	
+	//The objects in this collection have already been deleted by deleting the table views so just clear this collection
 	m_sqlQueryModels.clear();
+
+	m_tableToFieldsMap.clear();
 }
 
-void SourceDataWidget::UpdateTables() {
+void SourceDataWidget::OnNewVisualization() {
 
-	ClearTables();
+	DeleteTabs();
 
 	SynGlyphX::DataTransformMapping::DatasourceMap datasourceMap = m_dataTransformMapping->GetDatasourcesInUse();
 	for (auto datasource : datasourceMap) {
@@ -86,37 +95,48 @@ void SourceDataWidget::UpdateTables() {
 
 				std::unordered_map<std::wstring, std::wstring> fieldToAliasMap = m_dataTransformMapping->GetFieldToAliasMapForTable(inputTable);
 
-				SourceDataCache::TableColumns columns = m_sourceDataCache->GetColumnsForTable(inputTable);
 				QString sourceDataTablename = SourceDataCache::CreateTablename(inputTable);
-				SourceDataCache::SharedSQLQuery query = m_sourceDataCache->CreateSelectQuery(sourceDataTablename,
-					columns, GetSourceIndexesForTable(sourceDataTablename));
 
-				query->exec();
-
-				QTableView* tableView = new QTableView(this);
+				QTableView* tableView = new QTableView(m_sourceDataTabs);
 				tableView->setObjectName(sourceDataTablename);
-				QSqlQueryModel* queryModel = new QSqlQueryModel(this);
-
-				SynGlyphX::HeaderProxyModel* headerProxyModel = new SynGlyphX::HeaderProxyModel(this);
-				headerProxyModel->setSourceModel(queryModel);
-				headerProxyModel->SetHorizontalHeaderMap(fieldToAliasMap);
-
-				queryModel->setQuery(*query.data());
-				if (queryModel->lastError().isValid()) {
-
-					throw std::runtime_error("Failed to set SQL query for source data widget.");
-				}
-
+				tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+				tableView->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 				tableView->verticalHeader()->setVisible(false);
 
+				QSqlQueryModel* queryModel = new QSqlQueryModel(tableView);
+				SynGlyphX::HeaderProxyModel* headerProxyModel = new SynGlyphX::HeaderProxyModel(tableView);
+				headerProxyModel->setSourceModel(queryModel);
+				headerProxyModel->SetHorizontalHeaderMap(fieldToAliasMap);
 				tableView->setModel(headerProxyModel);
-				tableView->resizeColumnsToContents();
-				tableView->resizeRowsToContents();
-
+				
 				m_sourceDataTabs->addTab(tableView, m_sourceDataCache->GetFormattedNames().at(sourceDataTablename));
 
-				m_sqlQueryModels.push_back(queryModel);
+				m_sqlQueryModels[sourceDataTablename] = queryModel;
+
+				m_tableToFieldsMap[sourceDataTablename] = m_sourceDataCache->GetColumnsForTable(inputTable);
 			}
+		}
+	}
+}
+
+void SourceDataWidget::UpdateTables() {
+
+	for (unsigned int i = 0; i < m_sourceDataTabs->count(); ++i) {
+
+		QTableView* tableView = dynamic_cast<QTableView*>(m_sourceDataTabs->widget(i));
+		QString sourceDataTablename = tableView->objectName();
+
+		SourceDataCache::SharedSQLQuery query = m_sourceDataCache->CreateSelectQuery(sourceDataTablename,
+			m_tableToFieldsMap[sourceDataTablename], GetSourceIndexesForTable(sourceDataTablename));
+		query->exec();
+
+		QSqlQueryModel* queryModel = m_sqlQueryModels[sourceDataTablename];
+		queryModel->query().clear();
+		queryModel->clear();
+		queryModel->setQuery(*query.data());
+		if (queryModel->lastError().isValid()) {
+
+			throw std::runtime_error("Failed to set SQL query for source data widget.");
 		}
 	}
 }
@@ -151,7 +171,7 @@ void SourceDataWidget::SaveCurrentTabToFile() {
 
 		try {
 			SynGlyphX::GlyphBuilderApplication::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
-			WriteToFile(m_sqlQueryModels[m_sourceDataTabs->currentIndex()], filename);
+			WriteToFile(m_sqlQueryModels[m_sourceDataTabs->currentWidget()->objectName()], filename);
 
 			QFileInfo fileInfo(filename);
 			settings.setValue("fileSaveDir", fileInfo.absolutePath());
@@ -228,7 +248,7 @@ void SourceDataWidget::CreateSubsetVisualization() {
 			QString stdCanonicalPath = QDir::toNativeSeparators(fileInfo.absolutePath());
 
 			QString csvFileLocation = stdCanonicalPath + QDir::separator() + fileInfo.baseName() + "_selectedsourcedata.csv";
-			WriteToFile(m_sqlQueryModels[m_sourceDataTabs->currentIndex()], csvFileLocation);
+			WriteToFile(m_sqlQueryModels[m_sourceDataTabs->currentWidget()->objectName()], csvFileLocation);
 			QStringList inputTableValues = m_sourceDataTabs->widget(m_sourceDataTabs->currentIndex())->objectName().split(':');
 			boost::uuids::string_generator gen;
 			SynGlyphX::InputTable inputTable(gen(inputTableValues[0].toStdWString()), (inputTableValues.size() > 1) ? inputTableValues[1].toStdWString() : SynGlyphX::FileDatasource::SingleTableName);

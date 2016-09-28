@@ -32,11 +32,12 @@ public:
 							 QWidget *parent);
 	~SelectedSourceDataWidget();
 
+	void OnNewVisualization() override;
+
 protected:
 	SynGlyphX::IndexSet GetSourceIndexesForTable(const QString& table) override;
 
 private slots:
-	void OnNewVisualization();
 	void OnSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected);
 
 private:

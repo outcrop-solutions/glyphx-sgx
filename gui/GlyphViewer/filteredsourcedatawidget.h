@@ -29,6 +29,8 @@ public:
 	FilteredSourceDataWidget(FilteringManager* filteringManager, QWidget *parent);
 	~FilteredSourceDataWidget();
 
+	void OnNewVisualization() override;
+
 protected:
 	SynGlyphX::IndexSet GetSourceIndexesForTable(const QString& table) override;
 

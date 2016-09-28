@@ -19,6 +19,8 @@ SelectedSourceDataWidget::~SelectedSourceDataWidget()
 
 void SelectedSourceDataWidget::OnNewVisualization() {
 
+	SourceDataWidget::OnNewVisualization();
+
 	m_glyphTemplateRangeToTableMap.clear();
 
 	if (m_selectionModel->model()->rowCount() > 0) {
@@ -85,10 +87,6 @@ void SelectedSourceDataWidget::OnSelectionChanged(const QItemSelection& selected
 		}
 
 		UpdateTables();
-	}
-	else {
-
-		ClearTables();
 	}
 }
 

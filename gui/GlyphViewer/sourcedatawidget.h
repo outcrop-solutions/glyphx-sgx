@@ -36,6 +36,8 @@ public:
 	void SetLoadSubsetVisualizationInNewInstance(bool loadSubsetVisualizationInNewInstance);
 	bool GetLoadSubsetVisualizationInNewInstance() const;
 
+	virtual void OnNewVisualization();
+
 signals:
 	void WindowHidden();
 	void SubsetVisualizationCreated(const QString& newSubsetVisualizationFilename);
@@ -49,9 +51,9 @@ protected slots:
 
 protected:
 	void closeEvent(QCloseEvent* event) override;
-	void ClearTables();
 	virtual SynGlyphX::IndexSet GetSourceIndexesForTable(const QString& table) = 0;
 
+	void DeleteTabs();
 	void ReadSettings();
 	void WriteSettings();
 
@@ -59,7 +61,8 @@ protected:
 
 	QTabWidget* m_sourceDataTabs;
 	QStatusBar* m_statusBar;
-	std::vector<QSqlQueryModel*> m_sqlQueryModels;
+	QMap<QString, QSqlQueryModel*> m_sqlQueryModels;
+	QMap<QString, SourceDataCache::TableColumns> m_tableToFieldsMap;
 	SourceDataCache::ConstSharedPtr m_sourceDataCache;
 	SynGlyphX::DataTransformMapping::ConstSharedPtr m_dataTransformMapping;
 };
