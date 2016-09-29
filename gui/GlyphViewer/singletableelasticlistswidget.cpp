@@ -15,7 +15,12 @@ SingleTableElasticListsWidget::SingleTableElasticListsWidget(AliasAndFieldList a
 	for (const auto& aliasAndField : aliasAndFieldList) {
 
 		SynGlyphX::ElasticListWidget* elasticListWidget = new SynGlyphX::ElasticListWidget(this);
-		elasticListWidget->SetTitle(aliasAndField.first);
+
+		std::string cleanedField = aliasAndField.first.toStdString();
+		std::replace(cleanedField.begin(), cleanedField.end(), '_', ' ');
+		//elasticListWidget->SetTitle(aliasAndField.first);
+		elasticListWidget->SetTitle(QString(cleanedField.c_str()));
+
 		layout->addWidget(elasticListWidget);
 		m_elasticListMap[aliasAndField.second.toStdString()] = elasticListWidget;
 		QObject::connect(elasticListWidget, &SynGlyphX::ElasticListWidget::SelectionChanged, this, &SingleTableElasticListsWidget::OnElasticWidgetSelectionChanged);

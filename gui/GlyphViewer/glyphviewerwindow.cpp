@@ -374,17 +374,18 @@ void GlyphViewerWindow::CreateDockWidgets() {
 	m_showHideToolbar->addAction(textPropertiesDockWidget->toggleViewAction());
 	textPropertiesDockWidget->hide();
 
-	QDockWidget* rightDockWidget = new QDockWidget(tr("Filtering"), this);
-	m_filteringWidget = new FilteringWidget(m_columnsModel, m_filteringManager, rightDockWidget);
-	rightDockWidget->setWidget(m_filteringWidget);
-	addDockWidget(Qt::RightDockWidgetArea, rightDockWidget);
-	act = rightDockWidget->toggleViewAction();
+	m_rightDockWidget = new QDockWidget(tr("Filtering"), this);
+	m_filteringWidget = new FilteringWidget(m_columnsModel, m_filteringManager, m_rightDockWidget);
+	m_rightDockWidget->setWidget(m_filteringWidget);
+	addDockWidget(Qt::RightDockWidgetArea, m_rightDockWidget);
+	act = m_rightDockWidget->toggleViewAction();
 	QIcon filterIcon;
 	filterIcon.addFile(":SGXGUI/Resources/Icons/icon-filter.png", QSize(), QIcon::Normal, QIcon::Off);
 	filterIcon.addFile(":SGXGUI/Resources/Icons/icon-filter-a.png", QSize(), QIcon::Normal, QIcon::On);
 	act->setIcon(filterIcon);
 	m_viewMenu->addAction(act);
 	m_showHideToolbar->addAction(act);
+	m_rightDockWidget->hide();
 
 	QObject::connect(m_filteringWidget, &FilteringWidget::LoadSubsetVisualization, this, [this](QString filename){ LoadNewVisualization(filename); }, Qt::QueuedConnection);
 
@@ -488,6 +489,10 @@ void GlyphViewerWindow::CloseVisualization() {
 	if (m_legendsDockWidget->isFloating()) {
 
 		m_legendsDockWidget->hide();
+	}
+	if (m_rightDockWidget->isVisible()){
+
+		m_rightDockWidget->hide();
 	}
 
 	QStackedWidget* centerWidgetsContainer = dynamic_cast<QStackedWidget*>(centralWidget());
@@ -609,6 +614,11 @@ void GlyphViewerWindow::LoadVisualization(const QString& filename, const MultiTa
 	else if (m_legendsDockWidget->isFloating()) {
 
 		m_legendsDockWidget->hide();
+	}
+
+	if (m_rightDockWidget->isHidden()) {
+
+		m_rightDockWidget->show();
 	}
 }
 

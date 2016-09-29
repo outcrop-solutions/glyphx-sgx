@@ -93,7 +93,7 @@ HomePageWidget::~HomePageWidget()
 void HomePageWidget::CreateHomePageOptionsWidget() {
 
 	QStringList options;
-	options << tr("   Dashboard") << tr("   All Views") << tr("   My Views");
+	options << tr("   Home") << tr("   All Views") << tr("   My Views");
 	if (SynGlyphX::GlyphBuilderApplication::IsGlyphEd()) {
 
 		options << tr("   Help");
