@@ -169,6 +169,8 @@ private:
 
 	HomePageWidget* m_homePage;
 
+	QCheckBox* m_hideFilteredCheckBox;
+
 	static SynGlyphX::SettingsStoredFileList s_subsetFileList;
 	static QMap<QString, MultiTableDistinctValueFilteringParameters> s_recentFilters;
 };

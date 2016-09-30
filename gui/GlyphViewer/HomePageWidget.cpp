@@ -164,7 +164,7 @@ void HomePageWidget::OnRecentListUpdated() {
 		}
 		else {
 
-			title = QFileInfo(recentFile).fileName();
+			title = QFileInfo(recentFile).completeBaseName();
 		}
 
 		m_recentViewsFilteringWidget->addItem(title);
@@ -180,7 +180,7 @@ void HomePageWidget::OnSubsetListUpdated() {
 	for (const auto& recentFile : GlyphViewerWindow::GetSubsetFileListInstance().GetFiles()) {
 
 		filenames.push_back(recentFile);
-		titles.push_back(QFileInfo(recentFile).fileName());
+		titles.push_back(QFileInfo(recentFile).completeBaseName());
 	}
 
 	m_subsetViewsFilteringWidget->SetItems(titles, filenames);

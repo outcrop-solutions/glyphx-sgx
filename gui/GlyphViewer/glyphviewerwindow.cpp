@@ -335,9 +335,6 @@ void GlyphViewerWindow::CreateMenus() {
 	m_helpMenu->insertSeparator(m_aboutBoxAction);
 
 	SynGlyphX::MainWindow::CreateLoginMenu();
-
-	EnableLoadedVisualizationDependentActions(false);
-
 }
 
 void GlyphViewerWindow::CreateDockWidgets() {
@@ -359,6 +356,7 @@ void GlyphViewerWindow::CreateDockWidgets() {
 	QAction* act = m_legendsDockWidget->toggleViewAction();
 	//act->setIconVisibleInMenu(false);
 	act->setIcon(legendIcon);
+	m_loadedVisualizationDependentActions.push_back(act);
 	m_viewMenu->addAction(act);
 	m_showHideToolbar->addAction(act);
 	m_legendsDockWidget->move(100, 100);
@@ -371,6 +369,7 @@ void GlyphViewerWindow::CreateDockWidgets() {
 	textPropertiesDockWidget->setWidget(m_glyphPropertiesWidgetContainer->GetTextProperitesWidget());
 	addDockWidget(Qt::LeftDockWidgetArea, textPropertiesDockWidget);
 	act = textPropertiesDockWidget->toggleViewAction();
+	m_loadedVisualizationDependentActions.push_back(act);
 	QIcon textIcon;
 	textIcon.addFile(":SGXGUI/Resources/Icons/icon-text.png", QSize(), QIcon::Normal, QIcon::Off);
 	textIcon.addFile(":SGXGUI/Resources/Icons/icon-text-a.png", QSize(), QIcon::Normal, QIcon::On);
@@ -385,6 +384,7 @@ void GlyphViewerWindow::CreateDockWidgets() {
 	m_rightDockWidget->setWidget(m_filteringWidget);
 	addDockWidget(Qt::RightDockWidgetArea, m_rightDockWidget);
 	act = m_rightDockWidget->toggleViewAction();
+	m_loadedVisualizationDependentActions.push_back(act);
 	QIcon filterIcon;
 	filterIcon.addFile(":SGXGUI/Resources/Icons/icon-filter.png", QSize(), QIcon::Normal, QIcon::Off);
 	filterIcon.addFile(":SGXGUI/Resources/Icons/icon-filter-a.png", QSize(), QIcon::Normal, QIcon::On);
@@ -400,6 +400,7 @@ void GlyphViewerWindow::CreateDockWidgets() {
 	bottomDockWidget->setWidget(m_pseudoTimeFilterWidget);
 	addDockWidget(Qt::BottomDockWidgetArea, bottomDockWidget);
 	act = bottomDockWidget->toggleViewAction();
+	m_loadedVisualizationDependentActions.push_back(act);
 	QIcon filterTimeIcon;
 	filterTimeIcon.addFile(":SGXGUI/Resources/Icons/icon-filter-time.png", QSize(), QIcon::Normal, QIcon::Off);
 	filterTimeIcon.addFile(":SGXGUI/Resources/Icons/icon-filter-time-a.png", QSize(), QIcon::Normal, QIcon::On);
@@ -956,6 +957,7 @@ void GlyphViewerWindow::EnableLoadedVisualizationDependentActions(bool enable) {
 
 		m_loadedVisualizationDependentActions[i]->setEnabled(enable);
 	}
+	m_hideFilteredCheckBox->setEnabled(enable);
 
 	m_stereoAction->setEnabled(!enable);
 
@@ -1374,6 +1376,7 @@ void GlyphViewerWindow::CreateInteractionToolbar() {
 	//Replace with scene viewer function when available
 	QObject::connect(m_showHideHUDAxisAction, &QAction::toggled, this, &GlyphViewerWindow::OnShowHideHUDAxis);
 	m_interactionToolbar->addAction(m_showHideHUDAxisAction);
+	m_loadedVisualizationDependentActions.push_back(m_showHideHUDAxisAction);
 
 	m_showHideSceneAxisAction = new QAction(tr("Show/Hide Scene Axis"), m_interactionToolbar);
 	m_showHideSceneAxisAction->setCheckable(true);
@@ -1384,6 +1387,7 @@ void GlyphViewerWindow::CreateInteractionToolbar() {
 	//Replace with scene viewer function when available
 	QObject::connect(m_showHideSceneAxisAction, &QAction::toggled, this, &GlyphViewerWindow::OnShowHideSceneAxis);
 	m_interactionToolbar->addAction(m_showHideSceneAxisAction);
+	m_loadedVisualizationDependentActions.push_back(m_showHideSceneAxisAction);
 
 	m_interactionToolbar->addAction(m_remapRootPositionMappingsAction);
 
@@ -1423,9 +1427,9 @@ void GlyphViewerWindow::CreateInteractionToolbar() {
 
 	m_interactionToolbar->addSeparator();
 
-	QCheckBox* cb = new QCheckBox(tr("Hide Filtered"), this);
-	m_interactionToolbar->addWidget(cb);
-	m_linkedWidgetsManager->AddFilterViewCheckbox(cb);
+	m_hideFilteredCheckBox = new QCheckBox(tr("Hide Filtered"), this);
+	m_interactionToolbar->addWidget(m_hideFilteredCheckBox);
+	m_linkedWidgetsManager->AddFilterViewCheckbox(m_hideFilteredCheckBox);
 
 	m_toolbarsSubMenu->addAction(m_interactionToolbar->toggleViewAction());
 }
