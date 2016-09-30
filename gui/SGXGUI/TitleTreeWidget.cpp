@@ -108,15 +108,19 @@ namespace SynGlyphX {
 		for (unsigned int i = 0; i < labelsAndTooltips.children(iT); ++i) {
 
 			stlplus::ntree<QStringList>::const_iterator child = labelsAndTooltips.child(iT, i);
-			QTreeWidgetItem* item = new QTreeWidgetItem(m_treeWidget);
 
-			SetItem(child, item);
+			if (labelsAndTooltips.children(child) != 0) {
 
-			m_treeWidget->addTopLevelItem(item);
+				QTreeWidgetItem* item = new QTreeWidgetItem(m_treeWidget);
 
-			if (child->size() == 1) {
+				SetItem(child, item);
 
-				SetItems(labelsAndTooltips, child, item);
+				m_treeWidget->addTopLevelItem(item);
+
+				if (child->size() == 1) {
+
+					SetItems(labelsAndTooltips, child, item);
+				}
 			}
 		}
 	}

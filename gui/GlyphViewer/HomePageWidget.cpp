@@ -470,6 +470,7 @@ void HomePageWidget::SyncFilesAndLoadViews(){
 
 void HomePageWidget::ResetViews(){
 	m_allViewsFilteringWidget->ClearAll();
+	m_optionsButtonGroup->button(0)->click();
 }
 
 void HomePageWidget::LoggedOut(){
