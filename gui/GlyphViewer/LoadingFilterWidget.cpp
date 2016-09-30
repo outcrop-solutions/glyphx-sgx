@@ -10,6 +10,7 @@
 #include <boost/uuid/uuid_io.hpp>
 #include "datatransformmapping.h"
 #include "groupboxsinglewidget.h"
+#include <QtCore/QCollator>
 
 LoadingFilterMissingChoice::LoadingFilterMissingChoice(const std::wstring& field) :
 	std::runtime_error(""),
@@ -107,7 +108,18 @@ QSplitter* LoadingFilterWidget::AddFiltersForTable(DataEngine::GlyphEngine& glyp
 		}
 
 		QStringList distinctValues = glyphEngine.DistinctValuesForField(id, tableName, qField);
-		distinctValues.sort(Qt::CaseInsensitive);
+		
+		QCollator collator;
+		collator.setNumericMode(true);
+		collator.setCaseSensitivity(Qt::CaseInsensitive);
+		std::sort(
+			distinctValues.begin(),
+			distinctValues.end(),
+			[&collator](const QString &value1, const QString &value2)
+		{
+			return collator.compare(value1, value2) < 0;
+		});
+
 		filterWidget->SetItems(distinctValues);
 
 		splitter->addWidget(filterWidget);
