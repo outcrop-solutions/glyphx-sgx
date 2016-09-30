@@ -80,13 +80,14 @@ namespace SynGlyphX {
 
 	void TitleTreeWidget::SetItem(stlplus::ntree<QStringList>::const_iterator iT, QTreeWidgetItem* item) {
 
-		Qt::ItemFlags flags = Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+		Qt::ItemFlags flags = Qt::ItemIsEnabled;
 		if (iT->size() == 1) {
 
 			item->setToolTip(0, (*iT)[0]);
 		}
 		else {
 
+			flags |= Qt::ItemIsSelectable;
 			item->setToolTip(0, (*iT)[1]);
 
 			if (m_firstSelectableItem == nullptr) {
@@ -144,7 +145,11 @@ namespace SynGlyphX {
 	void TitleTreeWidget::OnSelectionChanged() {
 
 		QList<QTreeWidgetItem*> selection = m_treeWidget->selectedItems();
-		if (!selection.isEmpty()) {
+		if (selection.isEmpty()) {
+
+			emit SelectedTooltipChanged("");
+		}
+		else {
 
 			emit SelectedTooltipChanged(selection[0]->data(0, Qt::ToolTipRole).toString());
 		}
