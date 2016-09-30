@@ -85,6 +85,7 @@ GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 
 			m_dataEngineConnection->createJVM();
 			de_version = m_dataEngineConnection->VersionNumber();
+			m_dataEngineConnection->SetGlyphEdPath(QDir::toNativeSeparators(QDir::cleanPath(SynGlyphX::GlyphBuilderApplication::GetCommonDataLocation()) + "/GlyphEd/"));
 		}
 	}
 	catch (const std::exception& e) {
@@ -127,6 +128,8 @@ GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 	statusBar()->showMessage(SynGlyphX::Application::applicationName() + " Started", 3000);
 
 	EnableLoadedVisualizationDependentActions( false );
+
+	UpdateFilenameWindowTitle(s_noFileName);
 }
 
 GlyphViewerWindow::~GlyphViewerWindow()
@@ -143,7 +146,7 @@ void GlyphViewerWindow::CreateLoadingScreen() {
 
 	QStackedWidget* centerWidgetsContainer = dynamic_cast<QStackedWidget*>(centralWidget());
 
-	m_homePage = new HomePageWidget(m_dataEngineConnection, centerWidgetsContainer);
+	m_homePage = new HomePageWidget(this, m_dataEngineConnection, centerWidgetsContainer);
 	m_homePage->setObjectName("home_page");
 	centerWidgetsContainer->addWidget(m_homePage);
 	QObject::connect(m_homePage, &HomePageWidget::LoadRecentFile, this, &GlyphViewerWindow::LoadRecentFile);
@@ -330,6 +333,11 @@ void GlyphViewerWindow::CreateMenus() {
 
 	m_helpMenu->insertAction(m_aboutBoxAction, openGLSettingsAction);
 	m_helpMenu->insertSeparator(m_aboutBoxAction);
+
+	SynGlyphX::MainWindow::CreateLoginMenu();
+
+	EnableLoadedVisualizationDependentActions(false);
+
 }
 
 void GlyphViewerWindow::CreateDockWidgets() {
@@ -372,17 +380,18 @@ void GlyphViewerWindow::CreateDockWidgets() {
 	m_showHideToolbar->addAction(textPropertiesDockWidget->toggleViewAction());
 	textPropertiesDockWidget->hide();
 
-	QDockWidget* rightDockWidget = new QDockWidget(tr("Filtering"), this);
-	m_filteringWidget = new FilteringWidget(m_columnsModel, m_filteringManager, rightDockWidget);
-	rightDockWidget->setWidget(m_filteringWidget);
-	addDockWidget(Qt::RightDockWidgetArea, rightDockWidget);
-	act = rightDockWidget->toggleViewAction();
+	m_rightDockWidget = new QDockWidget(tr("Filtering"), this);
+	m_filteringWidget = new FilteringWidget(m_columnsModel, m_filteringManager, m_rightDockWidget);
+	m_rightDockWidget->setWidget(m_filteringWidget);
+	addDockWidget(Qt::RightDockWidgetArea, m_rightDockWidget);
+	act = m_rightDockWidget->toggleViewAction();
 	QIcon filterIcon;
 	filterIcon.addFile(":SGXGUI/Resources/Icons/icon-filter.png", QSize(), QIcon::Normal, QIcon::Off);
 	filterIcon.addFile(":SGXGUI/Resources/Icons/icon-filter-a.png", QSize(), QIcon::Normal, QIcon::On);
 	act->setIcon(filterIcon);
 	m_viewMenu->addAction(act);
 	m_showHideToolbar->addAction(act);
+	m_rightDockWidget->hide();
 
 	QObject::connect(m_filteringWidget, &FilteringWidget::LoadSubsetVisualization, this, [this](QString filename){ LoadNewVisualization(filename); }, Qt::QueuedConnection);
 
@@ -501,6 +510,10 @@ void GlyphViewerWindow::CloseVisualization() {
 
 		m_legendsDockWidget->hide();
 	}
+	if (m_rightDockWidget->isVisible()){
+
+		m_rightDockWidget->hide();
+	}
 
 	QStackedWidget* centerWidgetsContainer = dynamic_cast<QStackedWidget*>(centralWidget());
 	centerWidgetsContainer->setCurrentIndex(0);
@@ -508,6 +521,66 @@ void GlyphViewerWindow::CloseVisualization() {
 	m_viewer->clearScene();
 	if (m_showHomePage || SynGlyphX::GlyphBuilderApplication::IsGlyphEd())
 		centerWidgetsContainer->setCurrentIndex(0);
+}
+
+bool GlyphViewerWindow::IsUserLoggedIn() {
+
+	if (!SynGlyphX::GlyphBuilderApplication::IsGlyphEd()) {
+		return true;
+	}
+
+	QSettings settings;
+	settings.beginGroup("LoggedInUser");
+	QString user = settings.value("Username", "Guest").toString();
+	QString pass = settings.value("Password", "").toString();
+	QString name = settings.value("Name", "Guest").toString();
+	QString inst = settings.value("Institution", "").toString();
+	bool logged = settings.value("StayLogged", false).toBool();
+	settings.endGroup();
+
+	if (m_dataEngineConnection->UserAccessControls()->IsValidConnection()){
+		return true;
+	}
+	else{
+		m_dataEngineConnection->UserAccessControls()->InitializeConnection();
+		if (logged){
+			int valid = m_dataEngineConnection->UserAccessControls()->ValidateCredentials(user, pass);
+			if (valid == 1 || valid == 2){
+				m_dataEngineConnection->UserAccessControls()->PresetLogoPath(m_dataEngineConnection->GetGlyphEdPath() + inst);
+				MainWindow::UpdateUserMenu(name);
+				UpdateUserMenu();
+				return true;
+			}
+		}
+		return false;
+	}
+}
+
+void GlyphViewerWindow::UpdateUserMenu(){
+	QObject::connect(MainWindow::LogoutMenu(), &QAction::triggered, this, &GlyphViewerWindow::Logout);
+}
+
+void GlyphViewerWindow::Logout(){
+	SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
+	MainWindow::UserLogOut();
+	if (MainWindow::HasOpenFile()){
+		CloseVisualization();
+	}
+
+	QSettings settings;
+	settings.beginGroup("LoggedInUser");
+	settings.setValue("Username", "Guest");
+	settings.setValue("Password", "");
+	settings.setValue("Name", "Guest");
+	settings.setValue("Institution", "");
+	settings.setValue("StayLogged", false);
+	settings.endGroup();
+
+	m_dataEngineConnection->UserAccessControls()->ResetConnection();
+
+	m_homePage->ResetViews();
+	m_homePage->LoggedOut();
+	SynGlyphX::Application::restoreOverrideCursor();
 }
 
 void GlyphViewerWindow::ClearAllData() {
@@ -563,6 +636,11 @@ void GlyphViewerWindow::LoadVisualization(const QString& filename, const MultiTa
 	else if (m_legendsDockWidget->isFloating()) {
 
 		m_legendsDockWidget->hide();
+	}
+
+	if (m_rightDockWidget->isHidden()) {
+
+		m_rightDockWidget->show();
 	}
 }
 
@@ -1435,4 +1513,22 @@ void GlyphViewerWindow::ClearRecentFileList() {
 
 	SynGlyphX::MainWindow::ClearRecentFileList();
 	s_recentFilters.clear();
+}
+
+void GlyphViewerWindow::UpdateFilenameWindowTitle(const QString& title) {
+
+	QString prefix;
+	if (title != s_noFileName) {
+
+		prefix = title + " - ";
+	}
+
+	if (SynGlyphX::GlyphBuilderApplication::IsGlyphEd()) {
+
+		setWindowTitle(prefix + SynGlyphX::Application::applicationName() + " (Powered by " + SynGlyphX::Application::organizationName() + ")");
+	}
+	else {
+
+		setWindowTitle(prefix + SynGlyphX::Application::organizationName() + " " + SynGlyphX::Application::applicationName());
+	}
 }

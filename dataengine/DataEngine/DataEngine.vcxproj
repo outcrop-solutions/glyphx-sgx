@@ -128,11 +128,13 @@
     <ClInclude Include="dataengineconnection.h" />
     <ClInclude Include="dataenginestatement.h" />
     <ClInclude Include="DataEngine_Exports.h" />
+    <ClInclude Include="useraccesscontrols.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="glyphengine.cpp" />
     <ClCompile Include="dataengineconnection.cpp" />
     <ClCompile Include="dataenginestatement.cpp" />
+    <ClCompile Include="useraccesscontrols.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

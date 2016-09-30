@@ -2,6 +2,11 @@ package synglyphx.io;
 
 import java.io.File;
 import java.sql.*;
+import java.io.Reader;
+import java.io.InputStream;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
+import org.xml.sax.InputSource;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import org.w3c.dom.Document;
@@ -39,9 +44,14 @@ public class ParseXY {
 		try {
 
 			File file = new File(sdtPath);
+			InputStream inputStream = new FileInputStream(file);
+			Reader reader = new InputStreamReader(inputStream,"UTF-8");
+			InputSource is = new InputSource(reader);
+
 			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-			Document doc = dBuilder.parse(file);
+			//Document doc = dBuilder.parse(file);
+			Document doc = dBuilder.parse(is);
 			doc.getDocumentElement().normalize();
 
 			NodeList glyphs = doc.getElementsByTagName("Glyph");

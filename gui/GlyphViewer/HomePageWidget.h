@@ -20,6 +20,8 @@
 #include "sourcedatacache.h"
 #include <QtWidgets/QFrame>
 #include "dataengineconnection.h"
+#include "userlogindialog.h"
+#include "glyphviewerwindow.h"
 
 class QStackedWidget;
 class QStackedLayout;
@@ -35,6 +37,8 @@ class SharedVisualizationsWidget;
 namespace SynGlyphX {
 
 	class TitleListWidget;
+	class UserLoginDialog;
+	class ResizeableImageLabel;
 }
 
 class HomePageWidget : public QFrame
@@ -42,10 +46,14 @@ class HomePageWidget : public QFrame
 	Q_OBJECT
 
 public:
-	HomePageWidget(DataEngine::DataEngineConnection::SharedPtr dataEngineConnection, QWidget *parent);
+	HomePageWidget(GlyphViewerWindow* mainWindow, DataEngine::DataEngineConnection::SharedPtr dataEngineConnection, QWidget *parent);
 	~HomePageWidget();
 	const QString& GetCurrentProject();
 	void LoadProject(const QString& project);
+
+	void ResetViews();
+	//void SyncFilesAndLoadViews();
+	void LoggedOut();
 
 signals:
 	void LoadRecentFile(QString filename);
@@ -57,6 +65,8 @@ private slots:
 	void OnRecentListUpdated();
 	void OnSubsetListUpdated();
 	void OnRecentViewClicked(QListWidgetItem *item);
+	void SyncFilesAndLoadViews();
+	void Login();
 
 private:
 	void CreateHomePageOptionsWidget();
@@ -64,8 +74,12 @@ private:
 	void CreateMyViewsWidget();
 	void CreateHelpWidget();
 	void CreateDashboardWidget();
+	void CreateLowerHalfDashboardWidget();
+	void SwitchDashboardLayout();
 	void SetupGlyphEdViz();
 	void ProduceGlyphEdCSV(const QString& sdtToLoad, const QString& tableInDB, unsigned int currentDataVisualization);
+	QWidget* CreateLowerDashboardWidget();
+	void SetCustomerLogo();
 
 	QGridLayout* m_mainLayout;
 	QStackedLayout* m_homePageWidgetsLayout;
@@ -75,11 +89,22 @@ private:
 	QPushButton* m_loadVisualizationButton;
 
 	SharedVisualizationsWidget* m_allViewsFilteringWidget;
+
+	QFrame* m_dashboardWidget;
+	QVBoxLayout* m_mainDashboadLayout;
+
+	QStackedLayout* m_stackedDashboardLayout;
 	QListWidget* m_recentViewsFilteringWidget;
 
 	SynGlyphX::TitleListWidget* m_subsetViewsFilteringWidget;
 	
-	DataEngine::DataEngineConnection::SharedPtr m_dataEngineConnection;
+	GlyphViewerWindow* m_mainWindow;
+	SynGlyphX::UserLoginDialog* loginWidget;
+	bool loggedOn;
+
+	SynGlyphX::ResizeableImageLabel* upperRightDashboardImage;
+
+	std::shared_ptr<DataEngine::DataEngineConnection> m_dataEngineConnection;
 
 	//GlyphEd only.  Will get rid of ASAP
 	SourceDataCache m_sourceDataCache;

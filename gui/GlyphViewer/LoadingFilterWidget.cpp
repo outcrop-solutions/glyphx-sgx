@@ -49,7 +49,10 @@ void LoadingFilterWidget::SetFilters(DataEngine::GlyphEngine& glyphEngine, const
 	for (const auto& filtersForTable : filters) {
 
 		QSplitter* splitter = AddFiltersForTable(glyphEngine, mapping.GetFieldToAliasMapForTable(filtersForTable.first), filtersForTable.second, filtersForTable.first);
-		QString title = QString::fromStdWString(mapping.GetFormattedName(filtersForTable.first.GetDatasourceID(), filtersForTable.first.GetTable()));
+		//QString title = QString::fromStdWString(mapping.GetFormattedName(filtersForTable.first.GetDatasourceID(), filtersForTable.first.GetTable()));
+		std::string cleanedTitle = QString::fromStdWString(mapping.GetFormattedName(filtersForTable.first.GetDatasourceID(), filtersForTable.first.GetTable())).toStdString();
+		std::replace(cleanedTitle.begin(), cleanedTitle.end(), '_', ' ');
+		QString title(cleanedTitle.c_str());
 		if (filters.size() == 1){
 			innerWidgetLayout->addWidget(splitter);
 		} 
@@ -94,7 +97,9 @@ QSplitter* LoadingFilterWidget::AddFiltersForTable(DataEngine::GlyphEngine& glyp
 		filterWidget->ShowSelectAllButton(true);
 		if (fieldToAliasMap.count(filter.first) == 0) {
 
-			filterWidget->SetTitle(qField);
+			std::string cleanedField = qField.toStdString();
+			std::replace( cleanedField.begin(), cleanedField.end(), '_', ' ');
+			filterWidget->SetTitle(QString(cleanedField.c_str()));
 		}
 		else {
 
