@@ -6,6 +6,7 @@ import synglyphx.util.BoundingBox;
 import synglyphx.io.ParseXY;
 import synglyphx.io.Logger;
 import synglyphx.util.ErrorHandler;
+import synglyphx.user.FilterSetup;
 
 public class GlyphEngine {
 
@@ -14,11 +15,14 @@ public class GlyphEngine {
 	private static String outDir;
 	private static String app;
 	private static double[] temp;
+	private static boolean f_setup;
 
 	public static int initiate(final String sdt, final String out, final String application){
 		sdtPath = sdt;
 		outDir = out;
 		app = application;
+		f_setup = false;
+		FilterSetup.getInstance().closeDriverIfOpen();
 		try{
 			sdtReader = new SDTReader(sdtPath, outDir, application);
 		}catch(Exception e){
@@ -27,6 +31,11 @@ public class GlyphEngine {
 	        }catch(Exception er){}
 	 	}
 		return ErrorHandler.getInstance().hasErrors();
+	}
+
+	public static void filterSetup(final String sdt){
+		f_setup = true;
+		FilterSetup.getInstance().addSDTFile(sdt);
 	}
 
 	public static boolean isUpdateNeeded(){
@@ -48,7 +57,13 @@ public class GlyphEngine {
 	}
 
 	public static String[] distinctValuesForField(final String id, final String table, final String field){
-		String[] distincts = sdtReader.distinctValuesForField(id,table,field);
+
+		String[] distincts;
+		if(f_setup){
+			distincts = FilterSetup.getInstance().getDistinctValuesForField(id,table,field);
+		}else{
+			distincts = sdtReader.distinctValuesForField(id,table,field);
+		}
 		return distincts;
 	}
 
@@ -155,6 +170,8 @@ public class GlyphEngine {
 	 	//String outDir = "C:\\Users\\Bryan\\Desktop\\Test Files\\working_sqlite";
 	 	String sdtPath = "D:/Desktop Files/Test Files/Prospect HS Comp/Prospect HS Comparison Pillform.sdt";
 	 	String outDir = "D:/Desktop Files/Test Files/Prospect HS Comp/viz";
+	 	//String sdtPath = "C:/Users/Bryan/Desktop/Test Files/PercentRank/percentrank.sdt";
+	 	//String outDir = "C:/Users/Bryan/Desktop/Test Files/PercentRank/viz";
 	 	//String sdtPath = "D:\\Downloads\\Phase 3 Data Sets\\Phase 3 Data Sets\\Poppy Production and Drug Busts.sdt";
 	 	//String outDir = "D:\\Downloads\\Phase 3 Data Sets\\Phase 3 Data Sets";
 	 	//String sdtPath = "C:/Users/Bryan/Desktop/Test Files/working_sqlite/animatedrotate_planets_noscale.sdt";

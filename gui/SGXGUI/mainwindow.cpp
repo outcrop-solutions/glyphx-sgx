@@ -13,11 +13,13 @@
 #include <QtCore/QStandardPaths>
 #include <QtWidgets/QUndoStack>
 #include "singlewidgetdialog.h"
+#include <QtWidgets/QToolButton>
 
 namespace SynGlyphX {
 
 	const QString MainWindow::s_copyright = QString::fromStdWString(L"Copyright © 2013-2015 SynGlyphX Holdings Incorporated. All Rights Reserved.\n\nSynGlyphX, Glyph IT, Glyph KIT are either registered trademarks or trademarks of SynGlyphX Holdings Incorporated in the United States and/or other countries.  All other trademarks are the property of their respective owners.");
 	const QString MainWindow::s_fileDialogSettingsGroup = "FileDialogSettings";
+	const QString MainWindow::s_noFileName = "Untitled";
 
 	SettingsStoredFileList MainWindow::s_recentFileList("recentFileList", MainWindow::MaxRecentFiles);
 
@@ -44,6 +46,8 @@ namespace SynGlyphX {
 		m_undoStack = new QUndoStack(this);
 
 		QObject::connect(&s_recentFileList, &SettingsStoredFileList::FileListChanged, this, &MainWindow::UpdateRecentFileList);
+
+		userMenuBar = new QMenuBar(menuBar());
     }
 
     MainWindow::~MainWindow()
@@ -144,7 +148,7 @@ namespace SynGlyphX {
 	void MainWindow::ClearCurrentFile() {
 
 		m_currentFilename = "";
-		UpdateFilenameWindowTitle("Untitled");
+		UpdateFilenameWindowTitle(s_noFileName);
 	}
 
     void MainWindow::SetCurrentFile(const QString& filename) {
@@ -153,7 +157,7 @@ namespace SynGlyphX {
 
 		s_recentFileList.AddFile(filename);
 
-        UpdateFilenameWindowTitle(QFileInfo(filename).fileName());
+        UpdateFilenameWindowTitle(QFileInfo(filename).completeBaseName());
         setWindowModified(false);
     }
 
@@ -189,6 +193,58 @@ namespace SynGlyphX {
         m_aboutBoxAction = m_helpMenu->addAction("About " + SynGlyphX::Application::organizationName() + " " + SynGlyphX::Application::applicationName());
 		QObject::connect(m_aboutBoxAction, &QAction::triggered, this, &MainWindow::ShowAboutBox);
     }
+
+	void MainWindow::CreateLoginMenu() {
+
+		QString user = "Log In " + QString(QChar(0x23F7));
+		menuBar()->setCornerWidget(userMenuBar, Qt::TopRightCorner);
+
+	}
+
+	void MainWindow::UpdateUserMenu(QString username){
+
+		userMenuBar->clear();
+
+		QString user = username + " " + QString(QChar(0x23F7));
+		m_loginMenu = userMenuBar->addMenu(tr(user.toStdString().c_str()));
+
+		m_userSettingsMenu = m_loginMenu->addAction("User Settings");
+		QObject::connect(m_userSettingsMenu, &QAction::triggered, this, &MainWindow::UserSettings);
+
+		m_loginMenu->addSeparator();
+
+		m_logoutMenu = m_loginMenu->addAction("Log Out");
+
+		menuBar()->setCornerWidget(userMenuBar, Qt::TopRightCorner);
+	}
+
+	QAction* MainWindow::LogoutMenu(){
+		return m_logoutMenu;
+	}
+
+	void MainWindow::UserSettings() {
+
+		QDialog* s = new QDialog(this);
+		s->setWindowTitle(tr("User Settings"));
+		QVBoxLayout* layout = new QVBoxLayout(s);
+		QWidget *placeHolder = new QWidget(s);
+		placeHolder->setMinimumSize(300, 300);
+		layout->addWidget(placeHolder);
+		s->setLayout(layout);
+		s->exec();
+	}
+
+	void MainWindow::UserLogOut(){
+
+		userMenuBar->clear();
+	}
+
+	bool MainWindow::HasOpenFile(){
+		if (m_currentFilename == ""){
+			return false;
+		}
+		return true;
+	}
 
 	void MainWindow::ShowLicensingDialog() {
 #ifdef USE_LICENSING

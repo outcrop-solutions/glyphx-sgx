@@ -52,6 +52,9 @@ public:
 	~GlyphViewerWindow();
 	void closeJVM();
 
+	bool IsUserLoggedIn();
+	void UpdateUserMenu();
+
 	static const SynGlyphX::SettingsStoredFileList& GetSubsetFileListInstance();
 	static void ClearSubsetFileList() { s_subsetFileList.ClearFiles(); }
 	static void ClearRecentFileList();
@@ -67,6 +70,8 @@ protected:
 	void closeEvent(QCloseEvent* event) override;
 
 	bool DoesHelpExist() const override;
+
+	void UpdateFilenameWindowTitle(const QString& title) override;
 
 private slots:
 	void OpenVisualisation();
@@ -90,6 +95,7 @@ private slots:
 	void OnOpenURLs();
 	void OnPropertiesActivated();
 	bool LoadRecentFile(const QString& filename) override;
+	void Logout();
 
 private:
 	void LoadVisualization(const QString& filename, const MultiTableDistinctValueFilteringParameters& filters = MultiTableDistinctValueFilteringParameters());
@@ -139,6 +145,7 @@ private:
 
 	LegendsDisplayWidget* m_legendsWidget;
 	QDockWidget* m_legendsDockWidget;
+	QDockWidget* m_rightDockWidget;
 
 	SynGlyphX::DataTransformModel* m_mappingModel;
 	CacheManager m_cacheManager;

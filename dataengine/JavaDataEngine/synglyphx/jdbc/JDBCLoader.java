@@ -9,14 +9,14 @@ import synglyphx.util.ErrorHandler;
 public class JDBCLoader {
 
    private static JDBCLoader instance = null;
-   public static Driver driver = null;
-   public static Database database = null;
-   public static String connectionString = null;
-   public static String username = null;
-   public static String password = null;
-   public static String dbType;
-   public static boolean merged;
-   public static int closeCount = 1;
+   private static Driver driver = null;
+   private static Database database = null;
+   private static String connectionString = null;
+   private static String username = null;
+   private static String password = null;
+   private static String dbType;
+   private static boolean merged;
+   private static int closeCount = 1;
 
    protected JDBCLoader(){}
 

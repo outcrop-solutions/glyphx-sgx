@@ -1869,6 +1869,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_A3389E1E5B8540018555DE53EB0E2A4A"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_A39E3C1ACADE4FAABD1F046378B079F8"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -8908,6 +8914,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_A3389E1E5B8540018555DE53EB0E2A4A"
+            {
+            "SourcePath" = "8:..\\..\\dataengine\\JavaDataEngine\\database-drivers\\jsch-0.1.53.jar"
+            "TargetName" = "8:jsch-0.1.53.jar"
+            "Tag" = "8:"
+            "Folder" = "8:_10B6F7AAC886461BA7F14C41F07434A9"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_A3FA6C5AD0AA4B90B24E22021ACEA44F"
             {
             "SourcePath" = "8:..\\..\\DataEngine\\jdk\\jre\\bin\\nio.dll"
@@ -12760,7 +12786,7 @@
         "Module"
         {
         "ModuleSignature" = "8:MergeModule.E7BC5B0DA8E84115B456FD393FF63EDE"
-        "Version" = "8:0.8.0.0"
+        "Version" = "8:0.8.02.0"
         "Title" = "8:SGXSetupMergeModule"
         "Subject" = "8:"
         "Author" = "8:SynGlyphX"

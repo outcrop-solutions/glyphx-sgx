@@ -37,6 +37,7 @@ namespace DataEngine {
 
 class LoadingFilterWidget;
 class QStackedWidget;
+class QProgressBar;
 
 class SharedVisualizationsFile : public SynGlyphX::XMLPropertyTreeFile {
 
@@ -67,7 +68,9 @@ public:
 	SharedVisualizationsWidget(QWidget *parent);
 	~SharedVisualizationsWidget();
 
-	void Reset(DataEngine::DataEngineConnection::SharedPtr dataEngineConnection, const QString& projFileName = QString());
+	void Setup(DataEngine::DataEngineConnection::SharedPtr dataEngineConnection, QProgressBar* prog);
+	void Reset(DataEngine::DataEngineConnection::SharedPtr dataEngineConnection);
+	void ClearAll();
 	
 	bool DoCurrentNecessaryFiltersHaveSelection() const;
 	QString GetCurrentFilename() const;
@@ -85,6 +88,8 @@ private:
 	std::unordered_map<std::string, LoadingFilterWidget*> m_loadingFilterWidgetMap;
 	QMap<QString, QString> m_filenameToTitleMap;
 	std::string m_currentFilename;
+	QProgressBar* progress;
+	bool IsGlyphEd;
 };
 
 //#pragma once

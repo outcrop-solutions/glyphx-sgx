@@ -13,7 +13,11 @@ namespace DataEngine
 {
 	void GlyphEngine::initiate(JNIEnv *env, std::string sdtPath, std::string outDir, std::string bid, std::string bfn, std::string appName){
 
-		jniEnv = env;
+		if (!jniSet){
+			jniEnv = env;
+			jcls = jniEnv->FindClass("GlyphEngine");
+			jniSet = true;
+		}
 		sdtFile = sdtPath;
 		baseOutputDir = outDir;
 		baseImageDir = bid;
@@ -26,7 +30,7 @@ namespace DataEngine
 		myfile << appName;
 		*/
 
-		jcls = jniEnv->FindClass("GlyphEngine");
+		//jcls = jniEnv->FindClass("GlyphEngine");
 		if (jcls == NULL){
 			//myfile << "GlyphEngine class not found";
 		}
@@ -52,6 +56,30 @@ namespace DataEngine
 		}
 		//myfile.close();
 
+	}
+
+	void GlyphEngine::AddVisualization(JNIEnv *env, std::string sdtPath){
+
+		if (!jniSet){
+			jniEnv = env;
+			jcls = jniEnv->FindClass("GlyphEngine");
+			jniSet = true;
+		}
+
+		if (jcls != NULL) {
+
+			jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
+				"filterSetup", "(Ljava/lang/String;)V");
+			if (methodId != NULL) {
+				jstring str = jniEnv->NewStringUTF(sdtPath.c_str());
+				jniEnv->CallStaticVoidMethod(jcls, methodId, str);
+
+				if (jniEnv->ExceptionCheck()) {
+					jniEnv->ExceptionDescribe();
+					jniEnv->ExceptionClear();
+				}
+			}
+		}
 	}
 
 	void GlyphEngine::prepare(){

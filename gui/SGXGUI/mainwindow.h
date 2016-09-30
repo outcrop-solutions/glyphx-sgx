@@ -41,6 +41,7 @@ namespace SynGlyphX {
 
 		static const SettingsStoredFileList& GetRecentFileListInstance();
 		static void ClearRecentFileList() { s_recentFileList.ClearFiles(); }
+		void UpdateUserMenu(QString username);
 
     protected slots:
         void SwitchBetweenFullAndNormalScreen();
@@ -59,13 +60,17 @@ namespace SynGlyphX {
 		virtual bool DoesHelpExist() const;
 
 		void SaveOriginalState();
-        void UpdateFilenameWindowTitle(const QString& title);
+        virtual void UpdateFilenameWindowTitle(const QString& title);
 		void ClearCurrentFile();
         void SetCurrentFile(const QString& filename);
         QAction* CreateMenuAction(QMenu* menu, const QString& title, QKeySequence shortcut = QKeySequence());
         void CreateHelpMenu();
+		void CreateLoginMenu();
         void CreateViewMenu();
 		void CreateEditMenu();
+		bool HasOpenFile();
+		QAction* LogoutMenu();
+		void UserLogOut();
 
 		QString GetFileNameOpenDialog(const QString& settingKey = "", const QString& caption = "", const QString& defaultDir = "", const QString& filter = "");
 		QStringList GetFileNamesOpenDialog(const QString& settingKey = "", const QString& caption = "", const QString& defaultDir = "", const QString& filter = "");
@@ -78,10 +83,15 @@ namespace SynGlyphX {
 		QString de_version;
 		QMenu* m_viewMenu;
         QMenu* m_helpMenu;
+		QMenuBar* userMenuBar;
+		QMenu* m_loginMenu;
+
 		QMenu* m_editMenu;
         QAction* m_fullScreenAction;
 		QAction* m_aboutBoxAction;
 		QAction* m_fullHelpMenu;
+		QAction* m_userSettingsMenu;
+		QAction* m_logoutMenu;
 
 		QString m_glyphTemplatesDirectory;
 
@@ -96,16 +106,19 @@ namespace SynGlyphX {
 		QAction* m_redoAction;
 
 		static SettingsStoredFileList s_recentFileList;
+		static const QString s_noFileName;
 
     private slots:
         void OnRecentFileSelected();
 		void ShowLicensingDialog();
 		void ShowTutorial();
         void ShowAboutBox();
+		void UserSettings();
 
 	private:
 		bool m_needToReadSettings;
 		unsigned int m_stateVersion;
+
     };
 
 } //namespace SynGlyphX
