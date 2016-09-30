@@ -60,7 +60,7 @@ namespace SynGlyphX {
 		virtual bool DoesHelpExist() const;
 
 		void SaveOriginalState();
-        void UpdateFilenameWindowTitle(const QString& title);
+        virtual void UpdateFilenameWindowTitle(const QString& title);
 		void ClearCurrentFile();
         void SetCurrentFile(const QString& filename);
         QAction* CreateMenuAction(QMenu* menu, const QString& title, QKeySequence shortcut = QKeySequence());
@@ -106,6 +106,7 @@ namespace SynGlyphX {
 		QAction* m_redoAction;
 
 		static SettingsStoredFileList s_recentFileList;
+		static const QString s_noFileName;
 
     private slots:
         void OnRecentFileSelected();

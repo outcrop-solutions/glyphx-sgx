@@ -71,6 +71,8 @@ protected:
 
 	bool DoesHelpExist() const override;
 
+	void UpdateFilenameWindowTitle(const QString& title) override;
+
 private slots:
 	void OpenProject();
 	void RefreshVisualization();

@@ -126,6 +126,8 @@ GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 	statusBar()->showMessage(SynGlyphX::Application::applicationName() + " Started", 3000);
 
 	EnableLoadedVisualizationDependentActions( false );
+
+	UpdateFilenameWindowTitle(s_noFileName);
 }
 
 GlyphViewerWindow::~GlyphViewerWindow()
@@ -1471,4 +1473,22 @@ void GlyphViewerWindow::ClearRecentFileList() {
 
 	SynGlyphX::MainWindow::ClearRecentFileList();
 	s_recentFilters.clear();
+}
+
+void GlyphViewerWindow::UpdateFilenameWindowTitle(const QString& title) {
+
+	QString prefix;
+	if (title != s_noFileName) {
+
+		prefix = title + " - ";
+	}
+
+	if (SynGlyphX::GlyphBuilderApplication::IsGlyphEd()) {
+
+		setWindowTitle(prefix + SynGlyphX::Application::applicationName() + " (Powered by " + SynGlyphX::Application::organizationName() + ")");
+	}
+	else {
+
+		setWindowTitle(prefix + SynGlyphX::Application::organizationName() + " " + SynGlyphX::Application::applicationName());
+	}
 }
