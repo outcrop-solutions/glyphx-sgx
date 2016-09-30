@@ -220,14 +220,22 @@ MultiTableDistinctValueFilteringParameters SharedVisualizationsWidget::GetCurren
 
 void SharedVisualizationsWidget::OnFileSelected(QString filename) {
 
-	m_currentFilename = filename.toStdString();
-	if (m_loadingFilterWidgetMap.count(m_currentFilename) != 0) {
+	if (!QFileInfo(filename).exists()) {
 
-		m_loadingFilterWidgetsStack->setCurrentWidget(m_loadingFilterWidgetMap.at(m_currentFilename));
-		m_loadingFilterWidgetsStack->setVisible(true);
+		m_currentFilename = "";
+		m_loadingFilterWidgetsStack->setVisible(false);
 	}
 	else {
 
-		m_loadingFilterWidgetsStack->setVisible(false);
+		m_currentFilename = filename.toStdString();
+		if (m_loadingFilterWidgetMap.count(m_currentFilename) != 0) {
+
+			m_loadingFilterWidgetsStack->setCurrentWidget(m_loadingFilterWidgetMap.at(m_currentFilename));
+			m_loadingFilterWidgetsStack->setVisible(true);
+		}
+		else {
+
+			m_loadingFilterWidgetsStack->setVisible(false);
+		}
 	}
 }
