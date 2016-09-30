@@ -71,6 +71,7 @@ namespace SynGlyphX {
 		bool HasOpenFile();
 		QAction* LogoutMenu();
 		void UserLogOut();
+		virtual QString GetApplicationDisplayName() const;
 
 		QString GetFileNameOpenDialog(const QString& settingKey = "", const QString& caption = "", const QString& defaultDir = "", const QString& filter = "");
 		QStringList GetFileNamesOpenDialog(const QString& settingKey = "", const QString& caption = "", const QString& defaultDir = "", const QString& filter = "");

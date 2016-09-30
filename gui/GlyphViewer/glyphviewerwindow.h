@@ -72,6 +72,7 @@ protected:
 	bool DoesHelpExist() const override;
 
 	void UpdateFilenameWindowTitle(const QString& title) override;
+	QString GetApplicationDisplayName() const override;
 
 private slots:
 	void OpenVisualisation();

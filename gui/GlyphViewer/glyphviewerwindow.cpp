@@ -1524,12 +1524,17 @@ void GlyphViewerWindow::UpdateFilenameWindowTitle(const QString& title) {
 		prefix = title + " - ";
 	}
 
+	setWindowTitle(prefix + GetApplicationDisplayName());
+}
+
+QString GlyphViewerWindow::GetApplicationDisplayName() const {
+
 	if (SynGlyphX::GlyphBuilderApplication::IsGlyphEd()) {
 
-		setWindowTitle(prefix + SynGlyphX::Application::applicationName() + " (Powered by " + SynGlyphX::Application::organizationName() + ")");
+		return SynGlyphX::Application::applicationName() + " (Powered by " + SynGlyphX::Application::organizationName() + ")";
 	}
 	else {
 
-		setWindowTitle(prefix + SynGlyphX::Application::organizationName() + " " + SynGlyphX::Application::applicationName());
+		return SynGlyphX::Application::organizationName() + " " + SynGlyphX::Application::applicationName();
 	}
 }

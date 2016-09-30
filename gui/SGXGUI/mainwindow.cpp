@@ -142,8 +142,13 @@ namespace SynGlyphX {
 
 	void MainWindow::UpdateFilenameWindowTitle(const QString& title) {
 
-        setWindowTitle(title + "[*] - " + SynGlyphX::Application::organizationName() + " " + SynGlyphX::Application::applicationName());
+		setWindowTitle(title + "[*] - " + GetApplicationDisplayName());
     }
+
+	QString MainWindow::GetApplicationDisplayName() const {
+
+		return SynGlyphX::Application::organizationName() + " " + SynGlyphX::Application::applicationName();
+	}
 
 	void MainWindow::ClearCurrentFile() {
 
@@ -190,7 +195,7 @@ namespace SynGlyphX {
 
 		m_helpMenu->addSeparator();
 
-        m_aboutBoxAction = m_helpMenu->addAction("About " + SynGlyphX::Application::organizationName() + " " + SynGlyphX::Application::applicationName());
+		m_aboutBoxAction = m_helpMenu->addAction("About " + GetApplicationDisplayName());
 		QObject::connect(m_aboutBoxAction, &QAction::triggered, this, &MainWindow::ShowAboutBox);
     }
 
@@ -263,7 +268,7 @@ namespace SynGlyphX {
 
     void MainWindow::ShowAboutBox() {
 
-        QString appName = SynGlyphX::Application::organizationName() + " " + SynGlyphX::Application::applicationName();
+		QString appName = GetApplicationDisplayName();
 		QMessageBox::about(this, "About " + appName, appName + " " + SynGlyphX::Application::applicationVersion() + "\n"+de_version+"\n\n" + s_copyright);
     }
 
