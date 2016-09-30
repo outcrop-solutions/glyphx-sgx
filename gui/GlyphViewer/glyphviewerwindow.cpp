@@ -843,10 +843,7 @@ void GlyphViewerWindow::LoadDataTransform(const QString& filename, const MultiTa
 
 		//Hide in scene axes if visualization has downloaded maps
 		const auto& baseObjects = m_mappingModel->GetDataMapping()->GetBaseObjects();
-		if ((!baseObjects.empty()) && (baseObjects[0].GetType() == SynGlyphX::BaseImage::Type::DownloadedMap)) {
-
-			m_showHideSceneAxisAction->setChecked(false);
-		}
+		m_showHideSceneAxisAction->setChecked(baseObjects.empty() || (baseObjects[0].GetType() != SynGlyphX::BaseImage::Type::DownloadedMap));
 
 		SynGlyphX::Application::restoreOverrideCursor();
 	}
