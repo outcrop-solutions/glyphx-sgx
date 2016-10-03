@@ -31,6 +31,7 @@ namespace SynGlyphX {
 		Q_OBJECT
 
 	public:
+		//Order is tag, description, url in the below array
 		typedef std::array<QString, 3> GlyphTextProperties;
 
 		GlyphForestInfoModel(QObject *parent);
@@ -57,13 +58,18 @@ namespace SynGlyphX {
 	private:
 		typedef stlplus::ntree<GlyphTextProperties> GlyphInfoTree;
 		typedef GlyphInfoTree::const_iterator GlyphInfoConstIterator;
+		typedef GlyphInfoTree::iterator GlyphInfoIterator;
 		typedef stlplus::ntree_node<GlyphTextProperties> GlyphInfoNode;
 		
 		void Clear();
 		unsigned int FindHeaderIndex(const CSVFileHandler::CSVValues& headers, const std::wstring& header) const;
+		void ReadTagCSV(const QString& filename, std::unordered_map<unsigned long, GlyphTextProperties>& id2GlyphTextProperties);
+		QString GlyphForestInfoModel::GetTag(const std::wstring& title) const;
+		QString GlyphForestInfoModel::GetURL(const std::wstring& title) const;
 
 		std::vector<GlyphInfoTree> m_glyphs;
-		std::unordered_map<unsigned long, GlyphInfoConstIterator> m_csvID2GlyphNode;
+		std::unordered_map<unsigned long, GlyphInfoNode*> m_csvID2GlyphNode;
+		std::unordered_map<unsigned long, unsigned long> m_csvID2GlyphTreeIndex;
 	};
 
 } //namespace SynGlyphX

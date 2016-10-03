@@ -124,6 +124,7 @@ namespace SynGlyphX {
 
 		m_csvID2GlyphNode.clear();
 		m_glyphs.clear();
+		m_csvID2GlyphTreeIndex.clear();
 	}
 
 	void GlyphForestInfoModel::LoadGlyphForestInfoLegacy(const QString& nodeCSVFile, const QString& tagCSVFile) {
@@ -131,11 +132,11 @@ namespace SynGlyphX {
 		beginResetModel();
 		Clear();
 
-		CSVFileReader csvReaderTag(tagCSVFile.toStdString());
-		const CSVFileHandler::CSVValues& headers = csvReaderTag.GetHeaders();
+		std::unordered_map<unsigned long, GlyphTextProperties> id2GlyphTextProperties;
+		ReadTagCSV(tagCSVFile, id2GlyphTextProperties);
 
 		CSVFileReader csvReaderNode(nodeCSVFile.toStdString());
-		csvReaderNode.GetHeaders();
+		const CSVFileHandler::CSVValues& headers = csvReaderNode.GetHeaders();
 
 		unsigned int idIndex = FindHeaderIndex(headers, L"id");
 		unsigned int parentIDIndex = FindHeaderIndex(headers, L"parent_id");
@@ -145,13 +146,111 @@ namespace SynGlyphX {
 		while (!csvReaderNode.IsAtEndOfFile()) {
 
 			currentLineValues = csvReaderNode.GetValuesFromLine(true);
+			if (currentLineValues.empty()) {
+
+				continue;
+			}
 			if (currentLineValues[typeIndex] == L"5") {
 
-				//m_id2ParentIDMap[std::stoul(currentLineValues[idIndex])] = std::stoul(currentLineValues[parentIDIndex]);
+				unsigned long newID = std::stoul(currentLineValues[idIndex]);
+				unsigned long newParentID = std::stoul(currentLineValues[parentIDIndex]);
+
+				if (m_csvID2GlyphNode.count(newParentID) == 0) {
+
+					m_csvID2GlyphTreeIndex[newID] = m_glyphs.size();
+					m_glyphs.emplace_back(GlyphInfoTree());
+					GlyphInfoTree& newGlyphInfoTree = m_glyphs.back();
+					if (id2GlyphTextProperties.count(newID) > 0) {
+
+						m_csvID2GlyphNode[newID] = newGlyphInfoTree.insert(id2GlyphTextProperties[newID]).node();
+					}
+					else {
+
+						m_csvID2GlyphNode[newID] = newGlyphInfoTree.insert(GlyphTextProperties()).node();
+					}
+				}
+				else {
+
+					m_csvID2GlyphTreeIndex[newID] = m_csvID2GlyphTreeIndex.at(newParentID);
+					GlyphInfoTree& currentTree = m_glyphs[m_csvID2GlyphTreeIndex.at(newParentID)];
+					GlyphInfoIterator parentIterator = GlyphInfoIterator(m_csvID2GlyphNode.at(newParentID));
+					if (id2GlyphTextProperties.count(newID) > 0) {
+
+						m_csvID2GlyphNode[newID] = currentTree.append(parentIterator, id2GlyphTextProperties[newID]).node();
+					}
+					else {
+
+						m_csvID2GlyphNode[newID] = currentTree.append(parentIterator, GlyphTextProperties()).node();
+					}
+				}
 			}
 		}
 
 		endResetModel();
+	}
+
+	void GlyphForestInfoModel::ReadTagCSV(const QString& filename, std::unordered_map<unsigned long, GlyphTextProperties>& id2GlyphTextProperties) {
+
+		CSVFileReader csvReaderTag(filename.toStdString());
+		const CSVFileHandler::CSVValues& headers = csvReaderTag.GetHeaders();
+
+		unsigned int idIndex = FindHeaderIndex(headers, L"record_id");
+		unsigned int titleIndex = FindHeaderIndex(headers, L"title");
+		unsigned int descIndex = FindHeaderIndex(headers, L"description");
+
+		SynGlyphX::CSVFileHandler::CSVValues currentLineValues;
+		while (!csvReaderTag.IsAtEndOfFile()) {
+
+			currentLineValues = csvReaderTag.GetValuesFromLine(false);
+			if (currentLineValues.empty()) {
+
+				continue;
+			}
+			GlyphTextProperties glyphTextProperties;
+			glyphTextProperties[0] = GetTag(currentLineValues[titleIndex]);
+			glyphTextProperties[2] = GetURL(currentLineValues[titleIndex]);
+			if (descIndex < currentLineValues.size()) {
+
+				glyphTextProperties[1] = QString::fromStdWString(currentLineValues[descIndex]);
+			}
+
+			id2GlyphTextProperties[std::stoul(currentLineValues[idIndex])] = glyphTextProperties;
+		}
+	}
+
+	QString GlyphForestInfoModel::GetTag(const std::wstring& title) const {
+
+		if (title.empty()) {
+
+			return "";
+		}
+
+		if (title.substr(0, 8) == L"<a href=") {
+
+			int pos = title.find_first_of('>', 8) + 1;
+			return QString::fromStdWString(title.substr(pos, title.length() - pos - 4));
+		}
+		else {
+
+			return QString::fromStdWString(title);
+		}
+	}
+
+	QString GlyphForestInfoModel::GetURL(const std::wstring& title) const {
+
+		if (!title.empty()) {
+
+			if (title.substr(0, 8) == L"<a href=") {
+
+				std::wstring url = title.substr(8, title.find_first_of('>', 8) - 8);
+				if (url != L"nourl.html") {
+
+					return QString::fromStdWString(url);
+				}
+			}
+		}
+
+		return "";
 	}
 
 	Qt::ItemFlags GlyphForestInfoModel::flags(const QModelIndex& index) const {
@@ -200,7 +299,7 @@ namespace SynGlyphX {
 
 		if (m_csvID2GlyphNode.count(id) > 0) {
 
-			GlyphInfoConstIterator iterator = m_csvID2GlyphNode.at(id);
+			GlyphInfoConstIterator iterator(m_csvID2GlyphNode.at(id));
 			const GlyphInfoTree* currentTree = static_cast<const GlyphInfoTree*>(iterator.owner());
 			unsigned int row = 0;
 			if (iterator != currentTree->root()) {
