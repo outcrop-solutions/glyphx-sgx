@@ -124,7 +124,6 @@ namespace SynGlyphX {
 
 		m_csvID2GlyphNode.clear();
 		m_glyphs.clear();
-		m_csvID2GlyphTreeIndex.clear();
 	}
 
 	void GlyphForestInfoModel::LoadGlyphForestInfoLegacy(const QString& nodeCSVFile, const QString& tagCSVFile) {
@@ -157,30 +156,28 @@ namespace SynGlyphX {
 
 				if (m_csvID2GlyphNode.count(newParentID) == 0) {
 
-					m_csvID2GlyphTreeIndex[newID] = m_glyphs.size();
-					m_glyphs.emplace_back(GlyphInfoTree());
+					m_glyphs.push_back(GlyphInfoTree());
 					GlyphInfoTree& newGlyphInfoTree = m_glyphs.back();
 					if (id2GlyphTextProperties.count(newID) > 0) {
 
-						m_csvID2GlyphNode[newID] = newGlyphInfoTree.insert(id2GlyphTextProperties[newID]).node();
+						m_csvID2GlyphNode[newID] = newGlyphInfoTree.insert(id2GlyphTextProperties[newID]);
 					}
 					else {
 
-						m_csvID2GlyphNode[newID] = newGlyphInfoTree.insert(GlyphTextProperties()).node();
+						m_csvID2GlyphNode[newID] = newGlyphInfoTree.insert(GlyphTextProperties());
 					}
 				}
 				else {
 
-					m_csvID2GlyphTreeIndex[newID] = m_csvID2GlyphTreeIndex.at(newParentID);
-					GlyphInfoTree& currentTree = m_glyphs[m_csvID2GlyphTreeIndex.at(newParentID)];
-					GlyphInfoIterator parentIterator = GlyphInfoIterator(m_csvID2GlyphNode.at(newParentID));
+					GlyphInfoIterator parentIterator = m_csvID2GlyphNode.at(newParentID);
+					GlyphInfoTree* currentTree = const_cast<GlyphInfoTree*>(parentIterator.owner());
 					if (id2GlyphTextProperties.count(newID) > 0) {
 
-						m_csvID2GlyphNode[newID] = currentTree.append(parentIterator, id2GlyphTextProperties[newID]).node();
+						m_csvID2GlyphNode[newID] = currentTree->append(parentIterator, id2GlyphTextProperties[newID]);
 					}
 					else {
 
-						m_csvID2GlyphNode[newID] = currentTree.append(parentIterator, GlyphTextProperties()).node();
+						m_csvID2GlyphNode[newID] = currentTree->append(parentIterator, GlyphTextProperties());
 					}
 				}
 			}
@@ -299,8 +296,8 @@ namespace SynGlyphX {
 
 		if (m_csvID2GlyphNode.count(id) > 0) {
 
-			GlyphInfoConstIterator iterator(m_csvID2GlyphNode.at(id));
-			const GlyphInfoTree* currentTree = static_cast<const GlyphInfoTree*>(iterator.owner());
+			GlyphInfoConstIterator iterator = m_csvID2GlyphNode.at(id).constify();
+			const GlyphInfoTree* currentTree = iterator.owner();
 			unsigned int row = 0;
 			if (iterator != currentTree->root()) {
 

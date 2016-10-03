@@ -68,8 +68,7 @@ namespace SynGlyphX {
 		QString GlyphForestInfoModel::GetURL(const std::wstring& title) const;
 
 		std::vector<GlyphInfoTree> m_glyphs;
-		std::unordered_map<unsigned long, GlyphInfoNode*> m_csvID2GlyphNode;
-		std::unordered_map<unsigned long, unsigned long> m_csvID2GlyphTreeIndex;
+		std::unordered_map<unsigned long, GlyphInfoIterator> m_csvID2GlyphNode;
 	};
 
 } //namespace SynGlyphX
