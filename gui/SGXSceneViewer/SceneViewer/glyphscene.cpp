@@ -192,6 +192,21 @@ namespace SynGlyphX
 		return best_glyph;
 	}
 
+	void GlyphScene::toggleExplode( unsigned int group )
+	{
+		active_group = group;
+		if ( explode_state == group_state::retracted || explode_state == group_state::retracting )
+		{
+			hal::debug::print( "user clicked unexploded group; exploding" );
+			explode_state = group_state::exploding;
+		}
+		else if ( explode_state == group_state::exploded || explode_state == group_state::exploding )
+		{
+			hal::debug::print( "user clicked unexploded group; exploding" );
+			explode_state = group_state::retracting;
+		}
+	}
+
 	void GlyphScene::setSelected( const Glyph3DNode* glyph )
 	{
 		active_group = 0.f;
@@ -199,33 +214,6 @@ namespace SynGlyphX
 		{
 			selection.insert( glyph );
 			selection_changed = true;
-
-			// very temp
-			if ( getSingleRoot() )
-			{
-				auto r = getSingleRoot();
-				for ( auto& g : groups )
-				{
-					for ( auto& v : g.nodes )
-					{
-						if ( r == v )
-						{
-							if ( explode_state == group_state::retracted || explode_state == group_state::retracting )
-							{
-								active_group = r->alternate_position_group;
-								hal::debug::print( "user clicked unexploded group; exploding" );
-								explode_state = group_state::exploding;
-							}
-							else if ( explode_state == group_state::exploded || explode_state == group_state::exploding )
-							{
-								active_group = r->alternate_position_group;
-								hal::debug::print( "user clicked unexploded group; exploding" );
-								explode_state = group_state::retracting;
-							}
-						}
-					}
-				}
-			}
 		}
 	}
 
@@ -530,8 +518,12 @@ namespace SynGlyphX
 			return pos;
 	}
 
-	void GlyphScene::enumGroups( std::function<void( const std::vector< const Glyph3DNode* >& )> fn )
+	void GlyphScene::enumGroups( std::function<void( const std::vector< const Glyph3DNode* >&, unsigned int )> fn )
 	{
-		for ( auto& g : groups ) fn( g.nodes );
+		for ( auto i = 0u; i < groups.size(); ++i )
+		{
+			auto& g = groups[i];
+			fn( g.nodes, i + 1 );
+		}
 	}
 }

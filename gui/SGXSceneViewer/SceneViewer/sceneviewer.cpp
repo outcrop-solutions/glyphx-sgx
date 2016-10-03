@@ -167,10 +167,11 @@ namespace SynGlyphX
 		SynGlyphX::LegacySceneReader::LoadLegacyScene( getScene(), geomDB, *base_images, *grids, default_base_texture, nodeFile, tagFile, base_textures );
 		resetCamera();
 
-		scene->enumGroups( [&]( const std::vector<const Glyph3DNode*>& nodes ) {
+		auto scene_ptr = scene;
+		scene->enumGroups( [&, scene_ptr]( const std::vector<const Glyph3DNode*>& nodes, unsigned int group_idx ) {
 			auto node_pos = nodes[0]->getCachedPosition();
 			float offset = nodes[0]->getCachedCombinedBound().get_radius();
-			gadgets->create( []() {}, node_pos + offset * glm::vec3( 0.f, 0.f, 1.f ) );
+			gadgets->create( [scene_ptr, group_idx]() { scene_ptr->toggleExplode( group_idx ); }, node_pos + offset * glm::vec3( 0.f, 0.f, 1.f ) );
 		} );
 	}
 
@@ -738,14 +739,19 @@ namespace SynGlyphX
 			bool changed_selection = false;
 			if ( event->button() == Qt::MouseButton::LeftButton )
 			{
-				// Not holding shift: common case.
-				if ( !( QGuiApplication::queryKeyboardModifiers() & Qt::KeyboardModifier::ShiftModifier ) )
+				glm::vec3 origin, dir;
+				camera->viewport_pt_to_ray( event->x(), event->y(), origin, dir );
+				const int select_threshold = 3;
+				bool ctrl = ( QGuiApplication::queryKeyboardModifiers() & Qt::KeyboardModifier::ControlModifier );
+				bool alt = ( QGuiApplication::queryKeyboardModifiers() & Qt::KeyboardModifier::AltModifier );
+				if ( drag_info( button::left ).drag_distance_x < select_threshold
+					&& drag_info( button::left ).drag_distance_y < select_threshold )
 				{
-					const int select_threshold = 3;
-					bool ctrl = ( QGuiApplication::queryKeyboardModifiers() & Qt::KeyboardModifier::ControlModifier );
-					bool alt = ( QGuiApplication::queryKeyboardModifiers() & Qt::KeyboardModifier::AltModifier );
-					if ( drag_info( button::left ).drag_distance_x < select_threshold
-						&& drag_info( button::left ).drag_distance_y < select_threshold )
+					if ( !ctrl && !alt )
+						scene->clearSelection();
+
+					const Glyph3DNode* g = scene->pick( origin, dir, scene->getFilterMode() == FilteredResultsDisplayMode::TranslucentUnfiltered, scene->getActiveGroup() > 0.f && scene->getGroupStatus() > 0.f );
+					if ( g )
 					{
 						if ( !ctrl && !alt )
 							scene->clearSelection();
@@ -763,20 +769,27 @@ namespace SynGlyphX
 						changed_selection = true;
 					}
 				}
-				else  // holding shift, so we're doing a drag-select
-				{
-					bool ctrl = ( QGuiApplication::queryKeyboardModifiers() & Qt::KeyboardModifier::ControlModifier );
-					bool alt = ( QGuiApplication::queryKeyboardModifiers() & Qt::KeyboardModifier::AltModifier );
+				gadgets->pick( camera, origin, dir );
+			}
+			else  // holding shift, so we're doing a drag-select
+			{
+				bool ctrl = ( QGuiApplication::queryKeyboardModifiers() & Qt::KeyboardModifier::ControlModifier );
+				bool alt = ( QGuiApplication::queryKeyboardModifiers() & Qt::KeyboardModifier::AltModifier );
 
-					bool exploded = scene->getActiveGroup() > 0.f && scene->getGroupStatus() > 0.f;
+				if ( !ctrl && !alt )
+					scene->clearSelection();
 
-					scene->enumGlyphs( [this, event, alt, exploded]( const Glyph3DNode& node ) {
-						auto pos = scene->getExplodedPosition( &node );
-						auto pos2d = camera->world_pt_to_window_pt( pos );
-						if ( pos2d.x > std::min( drag_info( button::left ).drag_start_x, mouse_x )
-							&& pos2d.x < std::max( drag_info( button::left ).drag_start_x, mouse_x )
-							&& pos2d.y > std::min( drag_info( button::left ).drag_start_y, mouse_y )
-							&& pos2d.y < std::max( drag_info( button::left ).drag_start_y, mouse_y ) )
+				bool exploded = scene->getActiveGroup() > 0.f && scene->getGroupStatus() > 0.f;
+
+				scene->enumGlyphs( [this, event, alt, exploded]( const Glyph3DNode& node ) {
+					auto pos = scene->getExplodedPosition( &node );
+					auto pos2d = camera->world_pt_to_window_pt( pos );
+					if ( pos2d.x > std::min( drag_info( button::left ).drag_start_x, mouse_x )
+						&& pos2d.x < std::max( drag_info( button::left ).drag_start_x, mouse_x )
+						&& pos2d.y > std::min( drag_info( button::left ).drag_start_y, mouse_y )
+						&& pos2d.y < std::max( drag_info( button::left ).drag_start_y, mouse_y ) )
+					{
+						if ( !exploded || ( node.getAlternatePositionGroup() == scene->getActiveGroup() ) )
 						{
 							if ( !exploded || ( node.getAlternatePositionGroup() == scene->getActiveGroup() ) )
 							{
@@ -792,11 +805,11 @@ namespace SynGlyphX
 								}
 							}
 						}
-						return true;
-					}, true );
+					}
+					return true;
+				}, true );
 
-					changed_selection = true;
-				}
+				changed_selection = true;
 			}
 
 			if ( changed_selection )
@@ -1089,4 +1102,4 @@ namespace SynGlyphX
 		else
 			return 0.f;
 	}
-}
+		}

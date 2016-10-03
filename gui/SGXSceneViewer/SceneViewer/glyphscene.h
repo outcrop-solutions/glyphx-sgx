@@ -84,9 +84,11 @@ namespace SynGlyphX
 		glm::vec3 getExplodedPosition( const Glyph3DNode* node ) const;
 		glm::vec3 getExplodedPositionOffset( const Glyph3DNode* node ) const;
 		bool isExploded( const Glyph3DNode* node ) const { return node->getRootParent()->getAlternatePositionGroup() == getActiveGroup() && group_status > 0.f; }
-		void enumGroups( std::function<void( const std::vector< const Glyph3DNode* >& )> );
+		void enumGroups( std::function<void( const std::vector< const Glyph3DNode*>&, unsigned int )> );
 
 		void debugPrint( const Glyph3DNode* node );
+
+		void toggleExplode( unsigned int group );
 
 	private:
 		void compute_groups();

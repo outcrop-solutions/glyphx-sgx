@@ -16,7 +16,7 @@ namespace SynGlyphX
 		GadgetManager( const GadgetManager& ) = delete;
 		~GadgetManager();
 
-		void pick( const glm::vec3& origin, const glm::vec3& dir );
+		void pick( const render::camera* camera, const glm::vec3& origin, const glm::vec3& dir );
 		void create( std::function<void( void )> on_click, const glm::vec3& position );
 		void clear();
 
