@@ -38,6 +38,7 @@
 #include "GVGlobal.h"
 #include <boost/uuid/uuid_io.hpp>
 #include "LoadingFilterDialog.h"
+#include "GlyphForestInfoModel.h"
 
 SynGlyphX::SettingsStoredFileList GlyphViewerWindow::s_subsetFileList("subsetFileList");
 QMap<QString, MultiTableDistinctValueFilteringParameters> GlyphViewerWindow::s_recentFilters;
@@ -53,7 +54,7 @@ GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 	m_mappingModel = new SynGlyphX::DataTransformModel(this);
 	m_mappingModel->SetDataEngineConnection(m_dataEngineConnection);
 	m_sourceDataCache = std::make_shared<SourceDataCache>();
-	m_glyphForestModel = new SynGlyphXANTz::GlyphForestModel(this);
+	m_glyphForestModel = new SynGlyphX::GlyphForestInfoModel(this);
 
 	m_glyphForestSelectionModel = new SynGlyphX::ItemFocusSelectionModel(m_glyphForestModel, this);
 	m_filteringManager = new FilteringManager(m_mappingModel, m_sourceDataCache, m_glyphForestSelectionModel, this);
@@ -589,7 +590,7 @@ void GlyphViewerWindow::ClearAllData() {
 	SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
 	m_glyphForestSelectionModel->ClearAll();
 	m_sourceDataCache->Close();
-	m_glyphForestModel->Clear();
+	m_glyphForestModel->ClearAndReset();
 	m_mappingModel->ClearAndReset();
 	m_legendsWidget->ClearLegends();
 	m_filteringWidget->OnNewVisualization();
@@ -836,7 +837,7 @@ void GlyphViewerWindow::LoadDataTransform(const QString& filename, const MultiTa
 		m_filteringWidget->OnNewVisualization();
 
 		LoadFilesIntoModel(outputfiles, qList);
-		m_glyphForestModel->SetTagNotToBeShownIn3d(QString::fromStdWString(m_mappingModel->GetDataMapping()->GetDefaults().GetDefaultTagValue()));
+		
 		auto bgcolor = m_mappingModel->GetDataMapping()->GetSceneProperties().GetBackgroundColor();
 		if ( m_viewer ) m_viewer->setBackgroundColor( glm::vec4( float( bgcolor[0] ) / 255.f, float( bgcolor[1] ) / 255.f, float( bgcolor[2] ) / 255.f, 1.f ) );
 		m_legendsWidget->SetLegends(m_mappingModel->GetDataMapping()->GetLegends());
@@ -856,7 +857,7 @@ void GlyphViewerWindow::LoadDataTransform(const QString& filename, const MultiTa
 
 void GlyphViewerWindow::LoadFilesIntoModel(const SynGlyphXANTz::ANTzCSVWriter::FilenameList& filesToLoad, const QStringList& baseImageFilenames) {
 
-	m_glyphForestModel->LoadANTzVisualization(filesToLoad, baseImageFilenames);
+	m_glyphForestModel->LoadGlyphForestInfoLegacy(QString::fromStdString(filesToLoad[0]), QString::fromStdString(filesToLoad[1]));
 
 	SynGlyphX::DataTransformMapping::ConstSharedPtr dataTransformMapping = m_mappingModel->GetDataMapping();
 
@@ -888,7 +889,7 @@ void GlyphViewerWindow::LoadFilesIntoModel(const SynGlyphXANTz::ANTzCSVWriter::F
 			positionXYZData[i] = m_sourceDataCache->GetNumericValuesForField(field);
 		}
 	}
-	m_glyphForestModel->SetRootPosXYZMappedFields(rootPositionFields);
+	
 	m_viewer->setAxisNames( rootPositionFields[0].toStdString().c_str(), rootPositionFields[1].toStdString().c_str(), rootPositionFields[2].toStdString().c_str() );
 	m_viewer->setSourceDataLookupForPositionXYZ(positionXYZData[0], positionXYZData[1], positionXYZData[2]);
 }
@@ -1200,16 +1201,9 @@ GlyphViewerOptions GlyphViewerWindow::CollectOptions() {
 	if ( m_viewer )
 	{
 		auto location = m_viewer->hudAxesLocation();
-		SynGlyphXANTz::ANTzForestWidget::HUDLocation antz_location;	// todo: convert options to new enum
-		switch ( location )
-		{
-			case SynGlyphX::HUDAxesLocation::TopLeft: antz_location = SynGlyphXANTz::ANTzForestWidget::TopLeft; break;
-			case SynGlyphX::HUDAxesLocation::BottomLeft: antz_location = SynGlyphXANTz::ANTzForestWidget::BottomLeft; break;
-			case SynGlyphX::HUDAxesLocation::BottomRight: antz_location = SynGlyphXANTz::ANTzForestWidget::BottomRight; break;
-		}
 
 		options.SetShowHUDAxisObject( m_viewer->hudAxesEnabled() );
-		options.SetHUDAxisObjectLocation( antz_location );
+		options.SetHUDAxisObjectLocation( location );
 		options.SetShowSceneAxisObject( m_viewer->sceneAxesEnabled() );
 #ifdef USE_ZSPACE
 		// TODO 
@@ -1461,10 +1455,10 @@ void GlyphViewerWindow::OnPropertiesActivated() {
 	if (!selectedItems.empty()) {
 
 		const QModelIndex& index = selectedItems.back();
-		SynGlyphX::Glyph glyph = m_glyphForestModel->GetGlyphAtIndex(index);
+		const SynGlyphX::GlyphForestInfoModel::GlyphTextProperties& glyphTextProperties = m_glyphForestModel->GetGlyphTextProperties(index);
 
 		SynGlyphX::TextGlyphPropertiesWidget* glyphPropertiesWidget = new SynGlyphX::TextGlyphPropertiesWidget(this);
-		glyphPropertiesWidget->SetWidget(QString::fromStdWString(glyph.GetTag()), QString::fromStdWString(glyph.GetURL()), QString::fromStdWString(glyph.GetDescription()));
+		glyphPropertiesWidget->SetWidget(glyphTextProperties[0], glyphTextProperties[2], glyphTextProperties[1]);
 		glyphPropertiesWidget->SetReadOnly(true);
 
 		SynGlyphX::SingleWidgetDialog dialog(QDialogButtonBox::Ok, glyphPropertiesWidget, this);

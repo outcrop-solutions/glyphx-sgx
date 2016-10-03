@@ -2,11 +2,11 @@
 #define GLYPHVIEWEROPTIONS_H
 
 #include <QtCore/QString>
+#include <SceneViewer/sceneviewer.h>
 
 #ifdef USE_ZSPACE
 #include "zspaceoptions.h"
 #endif
-#include "antzforestwidget.h"
 
 class GlyphViewerOptions
 {
@@ -32,8 +32,8 @@ public:
 	void SetShowHUDAxisObject(bool show);
 	bool GetShowHUDAxisObject() const;
 
-	void SetHUDAxisObjectLocation(SynGlyphXANTz::ANTzForestWidget::HUDLocation location);
-	SynGlyphXANTz::ANTzForestWidget::HUDLocation GetHUDAxisObjectLocation() const;
+	void SetHUDAxisObjectLocation(SynGlyphX::HUDAxesLocation location);
+	SynGlyphX::HUDAxesLocation GetHUDAxisObjectLocation() const;
 
 	void SetShowSceneAxisObject(bool show);
 	bool GetShowSceneAxisObject() const;
@@ -66,7 +66,7 @@ private:
 
 	//3D options
 	bool m_showHUDAxisObject;
-	SynGlyphXANTz::ANTzForestWidget::HUDLocation m_sceneAxisHUDObjectLocation;
+	SynGlyphX::HUDAxesLocation m_sceneAxisHUDObjectLocation;
 
 	bool m_showSceneAxisObject;
 

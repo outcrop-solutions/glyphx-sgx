@@ -1,6 +1,7 @@
 #include "glyphpropertieswidgetscontainer.h"
+#include "GlyphForestInfoModel.h"
 
-GlyphPropertiesWidgetsContainer::GlyphPropertiesWidgetsContainer(SynGlyphXANTz::GlyphForestModel* model, QItemSelectionModel* selectionModel, QWidget *parent)
+GlyphPropertiesWidgetsContainer::GlyphPropertiesWidgetsContainer(SynGlyphX::GlyphForestInfoModel* model, QItemSelectionModel* selectionModel, QWidget *parent)
 	: QObject(parent),
 	m_model(model),
 	m_selectionModel(selectionModel)
@@ -44,10 +45,10 @@ void GlyphPropertiesWidgetsContainer::OnSelectionChanged(const QItemSelection& s
 	if (!selectedItems.empty()) {
 
 		const QModelIndex& index = selectedItems.back();
-		SynGlyphX::Glyph glyph = m_model->GetGlyphAtIndex(index);
+		const SynGlyphX::GlyphForestInfoModel::GlyphTextProperties& textProperties = m_model->GetGlyphTextProperties(index);
 		//m_visualPropertiesWidget->SetWidgetFromGlyph(glyph, true);
 		//m_visualPropertiesWidget->SetNumberOfChildren(m_model->rowCount(index));
-		m_textPropertiesWidget->SetWidget(QString::fromStdWString(glyph.GetTag()), QString::fromStdWString(glyph.GetURL()), QString::fromStdWString(glyph.GetDescription()));
+		m_textPropertiesWidget->SetWidget(textProperties[0], textProperties[2], textProperties[1]);
 	}
 }
 

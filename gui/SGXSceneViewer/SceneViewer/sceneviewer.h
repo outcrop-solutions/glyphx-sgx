@@ -29,8 +29,6 @@
 #include <set>
 #include "glyphrenderer.h"
 
-namespace SynGlyphXANTz { class GlyphForestModel; }
-
 namespace SynGlyphX
 {
 	namespace render { class grid_renderer; }
@@ -40,6 +38,7 @@ namespace SynGlyphX
 	class FreeCameraController; class OrbitCameraController; class OverheadCameraController; class CameraController;
 
 	class ItemFocusSelectionModel;	//temp
+	class GlyphForestInfoModel; //temp
 
 	enum class HUDAxesLocation : unsigned int
 	{
@@ -59,7 +58,7 @@ namespace SynGlyphX
 
 		bool isInitialized() { return initialized; }
 
-		void setSelectionModel( SynGlyphXANTz::GlyphForestModel* gfm, ItemFocusSelectionModel* ifsm ) { glyph_forest_model = gfm; item_focus_sm = ifsm; }
+		void setSelectionModel(SynGlyphX::GlyphForestInfoModel* gfm, ItemFocusSelectionModel* ifsm) { glyph_forest_model = gfm; item_focus_sm = ifsm; }
 
 		void initializeGL() override;
 		void resizeGL( int w, int h ) override;
@@ -228,7 +227,7 @@ namespace SynGlyphX
 		QToolButton* m_moveDownButton;
 
 		// temporary until we move away from qt selection model
-		SynGlyphXANTz::GlyphForestModel* glyph_forest_model;
+		SynGlyphX::GlyphForestInfoModel* glyph_forest_model;
 		ItemFocusSelectionModel* item_focus_sm;
 		void selection_changed();
 

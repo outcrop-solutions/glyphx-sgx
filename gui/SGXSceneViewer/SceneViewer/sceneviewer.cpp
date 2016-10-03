@@ -32,7 +32,7 @@
 //temp
 #include <QtCore/qitemselectionmodel.h>
 #include "itemfocusselectionmodel.h"
-#include "glyphforestmodel.h"
+#include "GlyphForestInfoModel.h"
 
 namespace SynGlyphX
 {

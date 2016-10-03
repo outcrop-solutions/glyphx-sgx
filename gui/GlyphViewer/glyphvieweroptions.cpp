@@ -8,7 +8,7 @@ GlyphViewerOptions::GlyphViewerOptions() :
 	m_cacheDirectory(GetDefaultCacheDirectory()),
 	m_hideUnselectedGlyphTrees(false),
 	m_showHUDAxisObject(true),
-	m_sceneAxisHUDObjectLocation(SynGlyphXANTz::ANTzForestWidget::HUDLocation::TopLeft),
+	m_sceneAxisHUDObjectLocation(SynGlyphX::HUDAxesLocation::TopLeft),
 	m_showSceneAxisObject(true),
 	m_showMessageWhenImagesDidNotDownload(true),
 	m_showHomePage(true),
@@ -149,7 +149,7 @@ void GlyphViewerOptions::WriteToSettings() const {
 	}
 	settings.setValue("hideUnselectedGlyphs", m_hideUnselectedGlyphTrees);
 	settings.setValue("axisInfoShow", m_showHUDAxisObject);
-	settings.setValue("axisInfoLocation", m_sceneAxisHUDObjectLocation);
+	settings.setValue("axisInfoLocation", static_cast<unsigned int>(m_sceneAxisHUDObjectLocation));
 	settings.setValue("sceneAxisInfoShow", m_showSceneAxisObject);
 	settings.setValue("showFailedToDownloadImageMessage", m_showMessageWhenImagesDidNotDownload);
 	settings.setValue("showHomeScreen", m_showHomePage);
@@ -181,7 +181,7 @@ void GlyphViewerOptions::ReadFromSettings() {
 	SetCacheDirectory(cacheDirectory);
 	SetHideUnselectedGlyphTrees(settings.value("hideUnselectedGlyphs", false).toBool());
 	SetShowHUDAxisObject(settings.value("axisInfoShow", true).toBool());
-	SetHUDAxisObjectLocation(static_cast<SynGlyphXANTz::ANTzForestWidget::HUDLocation>(settings.value("axisInfoLocation").toInt()));
+	SetHUDAxisObjectLocation(static_cast<SynGlyphX::HUDAxesLocation>(settings.value("axisInfoLocation").toInt()));
 	SetShowSceneAxisObject(settings.value("sceneAxisInfoShow", true).toBool());
 	SetShowMessageWhenImagesDidNotDownload(settings.value("showFailedToDownloadImageMessage", true).toBool());
 	SetShowHomePage(settings.value("showHomeScreen", true).toBool());
@@ -237,12 +237,12 @@ bool GlyphViewerOptions::GetShowHUDAxisObject() const {
 	return m_showHUDAxisObject;
 }
 
-void GlyphViewerOptions::SetHUDAxisObjectLocation(SynGlyphXANTz::ANTzForestWidget::HUDLocation location) {
+void GlyphViewerOptions::SetHUDAxisObjectLocation(SynGlyphX::HUDAxesLocation location) {
 
 	m_sceneAxisHUDObjectLocation = location;
 }
 
-SynGlyphXANTz::ANTzForestWidget::HUDLocation GlyphViewerOptions::GetHUDAxisObjectLocation() const {
+SynGlyphX::HUDAxesLocation GlyphViewerOptions::GetHUDAxisObjectLocation() const {
 
 	return m_sceneAxisHUDObjectLocation;
 }

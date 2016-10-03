@@ -21,8 +21,6 @@
 #include <QtWidgets/QMainWindow>
 #include "mainwindow.h"
 #include "datatransformmodel.h"
-#include "glyphforestmodel.h"
-#include "glyph3dview.h"
 #include "cachemanager.h"
 #include "glyphvieweroptions.h"
 #include "sourcedatacache.h"
@@ -43,7 +41,10 @@ class HomePageWidget;
 namespace SynGlyphX
 {
 	class SceneViewer;
-}class GlyphViewerWindow : public SynGlyphX::MainWindow
+	class GlyphForestInfoModel;
+}
+
+class GlyphViewerWindow : public SynGlyphX::MainWindow
 {
 	Q_OBJECT
 
@@ -156,7 +157,7 @@ private:
 
 	LinkedWidgetsManager* m_linkedWidgetsManager;
 
-	SynGlyphXANTz::GlyphForestModel* m_glyphForestModel;
+	SynGlyphX::GlyphForestInfoModel* m_glyphForestModel;
 	SynGlyphX::ItemFocusSelectionModel* m_glyphForestSelectionModel;
 	SynGlyphX::SceneViewer* m_viewer;
 	GlyphPropertiesWidgetsContainer* m_glyphPropertiesWidgetContainer;
