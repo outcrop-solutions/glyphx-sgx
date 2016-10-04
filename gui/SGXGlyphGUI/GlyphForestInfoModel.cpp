@@ -19,8 +19,8 @@ namespace SynGlyphX {
 
 		if ((role == Qt::DisplayRole) && index.isValid()) {
 
-			GlyphInfoConstIterator iterator(static_cast<GlyphInfoNode*>(index.internalPointer()));
-			return (*iterator)[0];
+			GlyphInfoNode* node = static_cast<GlyphInfoNode*>(index.internalPointer());
+			return node->m_properties[0];
 		}
 
 		return QVariant();
@@ -32,17 +32,16 @@ namespace SynGlyphX {
 
 			if (parent.isValid()) {
 
-				GlyphInfoConstIterator parentIterator(static_cast<GlyphInfoNode*>(parent.internalPointer()));
-				GlyphInfoConstIterator childIterator = parentIterator.owner()->child(parentIterator, row);
-				if (childIterator.valid()) {
+				GlyphInfoNode* parentNode = static_cast<GlyphInfoNode*>(parent.internalPointer());
+				if (row < parentNode->GetChildCount()) {
 
-					return createIndex(row, 0, static_cast<void*>(childIterator.node()));
+					return createIndex(row, 0, static_cast<void*>(parentNode->m_children[row]));
 				}
 			}
 			else {
 				
-				const GlyphInfoTree& glyphTree = m_glyphs[row];
-				return createIndex(row, 0, static_cast<void*>(glyphTree.root().node()));
+				std::shared_ptr<GlyphInfoTree> glyphTree = m_glyphs[row];
+				return createIndex(row, 0, static_cast<void*>(glyphTree->m_root));
 			}
 		}
 
@@ -53,44 +52,39 @@ namespace SynGlyphX {
 
 		if ((index.isValid()) && (index.internalPointer() != nullptr)) {
 
-			GlyphInfoConstIterator iterator(static_cast<GlyphInfoNode*>(index.internalPointer()));
-			const GlyphInfoTree* currentTree = static_cast<const GlyphInfoTree*>(iterator.owner());
-			if (iterator != currentTree->root()) {
+			GlyphInfoNode* node = static_cast<GlyphInfoNode*>(index.internalPointer());
+			
+			if (!node->IsRoot()) {
 
-				GlyphInfoConstIterator parentIterator = currentTree->parent(iterator);
-				if (parentIterator.valid()) {
+				int row = 0;
 
-					int row = 0;
+				GlyphInfoNode* parentNode = node->m_parent;
+				if (parentNode->IsRoot()) {
 
-					if (parentIterator == currentTree->root()) {
+					for (auto& tree : m_glyphs) {
 
-						for (auto tree : m_glyphs) {
+						if (parentNode == tree->m_root) {
 
-							if (currentTree->root() == tree.root().constify()) {
-
-								break;
-							}
-							++row;
+							break;
 						}
+						++row;
 					}
-					else {
-
-						GlyphInfoConstIterator grandparent = currentTree->parent(parentIterator);
-						if (grandparent.valid()) {
-
-							for (int i = 0; i < currentTree->children(grandparent); ++i) {
-
-								if (currentTree->child(grandparent, i) == parentIterator) {
-
-									row = i;
-									break;
-								}
-							}
-						}
-					}
-
-					return createIndex(row, 0, static_cast<void*>(parentIterator.node()));
 				}
+				else {
+
+					GlyphInfoNode* grandparentNode = parentNode->m_parent;
+
+					for (int i = 0; i < grandparentNode->GetChildCount(); ++i) {
+
+						if (grandparentNode->m_children[i] == parentNode) {
+
+							row = i;
+							break;
+						}
+					}
+				}
+
+				return createIndex(row, 0, static_cast<void*>(parentNode));
 			}
 		}
 
@@ -106,8 +100,8 @@ namespace SynGlyphX {
 
 		if (parent.internalPointer() != nullptr) {
 
-			GlyphInfoConstIterator iterator(static_cast<GlyphInfoNode*>(parent.internalPointer()));
-			return iterator.owner()->children(iterator);
+			GlyphInfoNode* parentNode = static_cast<GlyphInfoNode*>(parent.internalPointer());
+			return parentNode->GetChildCount();
 		}
 
 		return 0;
@@ -156,28 +150,23 @@ namespace SynGlyphX {
 
 				if (m_csvID2GlyphNode.count(newParentID) == 0) {
 
-					m_glyphs.push_back(GlyphInfoTree());
-					GlyphInfoTree& newGlyphInfoTree = m_glyphs.back();
+					std::shared_ptr<GlyphInfoTree> newGlyph(new GlyphInfoTree());
 					if (id2GlyphTextProperties.count(newID) > 0) {
 
-						m_csvID2GlyphNode[newID] = newGlyphInfoTree.insert(id2GlyphTextProperties[newID]);
+						newGlyph->m_root->m_properties = id2GlyphTextProperties[newID];
 					}
-					else {
-
-						m_csvID2GlyphNode[newID] = newGlyphInfoTree.insert(GlyphTextProperties());
-					}
+					m_csvID2GlyphNode.insert(std::pair<unsigned long, GlyphInfoNode*>(newID, newGlyph->m_root));
+					m_glyphs.push_back(newGlyph);
 				}
 				else {
 
-					GlyphInfoIterator parentIterator = m_csvID2GlyphNode.at(newParentID);
-					GlyphInfoTree* currentTree = const_cast<GlyphInfoTree*>(parentIterator.owner());
+					GlyphInfoNode* parentNode = m_csvID2GlyphNode.at(newParentID);
+					GlyphInfoNode* newNode = new GlyphInfoNode(parentNode);
+					m_csvID2GlyphNode[newID] = newNode;
+					parentNode->m_children.push_back(newNode);
 					if (id2GlyphTextProperties.count(newID) > 0) {
 
-						m_csvID2GlyphNode[newID] = currentTree->append(parentIterator, id2GlyphTextProperties[newID]);
-					}
-					else {
-
-						m_csvID2GlyphNode[newID] = currentTree->append(parentIterator, GlyphTextProperties());
+						newNode->m_properties = id2GlyphTextProperties[newID];
 					}
 				}
 			}
@@ -266,8 +255,8 @@ namespace SynGlyphX {
 		bool wereAnyURLsOpened = false;
 		for (const QModelIndex& index : indexList) {
 
-			GlyphInfoConstIterator iterator(static_cast<GlyphInfoNode*>(index.internalPointer()));
-			const QString& url = (*iterator)[2];
+			GlyphInfoNode* node = static_cast<GlyphInfoNode*>(index.internalPointer());
+			const QString& url = node->m_properties[2];
 			if ((!url.isEmpty()) && (url != "nourl.html")) {
 
 				QUrl parsedUrl = QUrl::fromUserInput(url);
@@ -296,29 +285,25 @@ namespace SynGlyphX {
 
 		if (m_csvID2GlyphNode.count(id) > 0) {
 
-			GlyphInfoConstIterator iterator = m_csvID2GlyphNode.at(id).constify();
-			const GlyphInfoTree* currentTree = iterator.owner();
+			GlyphInfoNode* node = m_csvID2GlyphNode.at(id);
 			unsigned int row = 0;
-			if (iterator != currentTree->root()) {
+			if (!node->IsRoot()) {
 
-				GlyphInfoConstIterator parentIterator = currentTree->parent(iterator);
-				if (parentIterator.valid()) {
+				GlyphInfoNode* parentNode = node->m_parent;
+				for (int i = 0; i < parentNode->GetChildCount(); ++i) {
 
-					for (int i = 0; i < currentTree->children(parentIterator); ++i) {
+					if (parentNode->m_children[i] == node) {
 
-						if (currentTree->child(parentIterator, i) == iterator) {
-
-							row = i;
-							break;
-						}
+						row = i;
+						break;
 					}
 				}
 			}
 			else {
 
-				for (auto tree : m_glyphs) {
+				for (auto& tree : m_glyphs) {
 
-					if (currentTree->root() == tree.root().constify()) {
+					if (node == tree->m_root) {
 
 						break;
 					}
@@ -326,7 +311,7 @@ namespace SynGlyphX {
 				}
 			}
 
-			return createIndex(row, 0, static_cast<void*>(iterator.node()));
+			return createIndex(row, 0, static_cast<void*>(node));
 		}
 
 		return QModelIndex();
@@ -334,8 +319,8 @@ namespace SynGlyphX {
 
 	const GlyphForestInfoModel::GlyphTextProperties& GlyphForestInfoModel::GetGlyphTextProperties(const QModelIndex& index) const {
 
-		GlyphInfoConstIterator iterator(static_cast<GlyphInfoNode*>(index.internalPointer()));
-		return (*iterator);
+		GlyphInfoNode* node = static_cast<GlyphInfoNode*>(index.internalPointer());
+		return node->m_properties;
 	}
 
 } //namespace SynGlyphX

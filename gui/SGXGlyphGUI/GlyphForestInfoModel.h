@@ -22,7 +22,7 @@
 #include <array>
 #include <unordered_map>
 #include "csvfilereader.h"
-#include <containers/ntree.hpp>
+#include <memory>
 
 namespace SynGlyphX {
 
@@ -56,10 +56,49 @@ namespace SynGlyphX {
 		const GlyphTextProperties& GetGlyphTextProperties(const QModelIndex& index) const;
 
 	private:
-		typedef stlplus::ntree<GlyphTextProperties> GlyphInfoTree;
-		typedef GlyphInfoTree::const_iterator GlyphInfoConstIterator;
-		typedef GlyphInfoTree::iterator GlyphInfoIterator;
-		typedef stlplus::ntree_node<GlyphTextProperties> GlyphInfoNode;
+		class GlyphInfoNode {
+
+		public:
+			GlyphInfoNode(GlyphInfoNode* parent = nullptr) : m_parent(parent), m_properties({ { "", "", "" } }) {}
+			GlyphInfoNode(const GlyphInfoNode& node) = delete;
+			~GlyphInfoNode() {
+
+				for (unsigned int i = 0; i < m_children.size(); ++i) {
+
+					if (m_children[i] != nullptr) {
+
+						delete m_children[i];
+					}
+				}
+			}
+
+			GlyphInfoNode& operator=(const GlyphInfoNode& node) = delete;
+
+			unsigned int GetChildCount() const { return m_children.size(); }
+			bool IsRoot() const { return (m_parent == nullptr); }
+
+			GlyphTextProperties m_properties;
+			std::vector<GlyphInfoNode*> m_children;
+			GlyphInfoNode* m_parent;
+		};
+
+		class GlyphInfoTree {
+
+		public:
+			GlyphInfoTree() : m_root(nullptr) { m_root = new GlyphInfoNode(nullptr);  }
+			GlyphInfoTree(const GlyphInfoTree& tree) = delete;
+			~GlyphInfoTree() {
+			
+				if (m_root != nullptr) {
+
+					delete m_root;
+				}
+			}
+
+			GlyphInfoTree& operator=(const GlyphInfoTree& tree) = delete;
+			
+			GlyphInfoNode* m_root;
+		};
 		
 		void Clear();
 		unsigned int FindHeaderIndex(const CSVFileHandler::CSVValues& headers, const std::wstring& header) const;
@@ -67,8 +106,8 @@ namespace SynGlyphX {
 		QString GlyphForestInfoModel::GetTag(const std::wstring& title) const;
 		QString GlyphForestInfoModel::GetURL(const std::wstring& title) const;
 
-		std::vector<GlyphInfoTree> m_glyphs;
-		std::unordered_map<unsigned long, GlyphInfoIterator> m_csvID2GlyphNode;
+		std::vector<std::shared_ptr<GlyphInfoTree>> m_glyphs;
+		std::unordered_map<unsigned long, GlyphInfoNode*> m_csvID2GlyphNode;
 	};
 
 } //namespace SynGlyphX
