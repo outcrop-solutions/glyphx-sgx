@@ -15,16 +15,7 @@ namespace SynGlyphX
 
 	GlyphRenderer::glyph_bucket::~glyph_bucket()
 	{
-		for ( auto& entry : instances )
-		{
-			auto& instance_list = entry.second;
-			for ( auto& id : instance_list )
-			{
-				hal::device::release( id.color_bound_buffer );
-				hal::device::release( id.transform_buffer );
-				hal::device::release( id.anim_buffer );
-			}
-		}
+		clear();
 	}
 
 	void GlyphRenderer::glyph_bucket::add_instance( hal::mesh* mesh, const glm::mat4& transform, const glm::vec4& color_or_bound, const glm::vec3& anim_axis, const float anim_rate, const glm::vec3& anim_center )
@@ -51,6 +42,16 @@ namespace SynGlyphX
 
 	void GlyphRenderer::glyph_bucket::clear()
 	{
+		for ( auto& entry : instances )
+		{
+			auto& instance_list = entry.second;
+			for ( auto& id : instance_list )
+			{
+				hal::device::release( id.color_bound_buffer );
+				hal::device::release( id.transform_buffer );
+				hal::device::release( id.anim_buffer );
+			}
+		}
 		instances.clear();
 	}
 
