@@ -169,9 +169,9 @@ namespace SynGlyphX
 
 		auto scene_ptr = scene;
 		scene->enumGroups( [&, scene_ptr]( const std::vector<const Glyph3DNode*>& nodes, unsigned int group_idx ) {
-			auto node_pos = nodes[0]->getCachedPosition();
-			float offset = nodes[0]->getCachedCombinedBound().get_radius();
-			gadgets->create( [scene_ptr, group_idx]() { scene_ptr->toggleExplode( group_idx ); }, node_pos + offset * glm::vec3( 0.f, 0.f, 1.f ) );
+			auto pos = nodes[0]->getCachedPosition();
+			float radius = nodes[0]->getCachedCombinedBound().get_radius();
+			gadgets->create( [scene_ptr, group_idx]() { scene_ptr->toggleExplode( group_idx ); }, group_idx, pos, radius );
 		} );
 	}
 
@@ -300,7 +300,7 @@ namespace SynGlyphX
 
 		hud_font = hal::device::load_font( "fonts/OpenSans-Regular.ttf", 16 );
 
-		gadgets = new GadgetManager;
+		gadgets = new GadgetManager( *scene );
 	}
 
 	void SceneViewer::resizeGL( int w, int h )
@@ -423,9 +423,6 @@ namespace SynGlyphX
 				axis_renderer->draw_axis( context, camera, render::color::blue(), AxisDirection::Z, scene_axis_origin, scene_axis_sizes.z );
 			}
 
-			if ( !exploded_group )
-				gadgets->render( context, camera );
-
 			// Draw the grids.
 			grids->draw( context, camera, render::color::white() );
 
@@ -451,6 +448,9 @@ namespace SynGlyphX
 				gadgets->render( context, camera );
 				glyph_renderer->render_blended( context, camera, float( elapsed_timer.elapsed() ) / 1000.f, true );
 			}
+
+			if ( !exploded_group )
+				gadgets->render( context, camera );
 		}
 
 		// States for blended overlay elements.
@@ -750,15 +750,15 @@ namespace SynGlyphX
 					if ( !ctrl && !alt )
 						scene->clearSelection();
 
-					const Glyph3DNode* g = scene->pick( origin, dir, scene->getFilterMode() == FilteredResultsDisplayMode::TranslucentUnfiltered, scene->getActiveGroup() > 0.f && scene->getGroupStatus() > 0.f );
-					if ( g )
-					{
-						if ( !ctrl && !alt )
-							scene->clearSelection();
+					auto scene_pick_result = scene->pick_with_distance( origin, dir, scene->getFilterMode() == FilteredResultsDisplayMode::TranslucentUnfiltered, scene->getActiveGroup() > 0.f && scene->getGroupStatus() > 0.f );
+					float scene_pick_dist = scene_pick_result.second;
 
-						glm::vec3 origin, dir;
-						camera->viewport_pt_to_ray( event->x(), event->y(), origin, dir );
-						const Glyph3DNode* g = scene->pick( origin, dir, scene->getFilterMode() == FilteredResultsDisplayMode::TranslucentUnfiltered, scene->getActiveGroup() > 0.f && scene->getGroupStatus() > 0.f );
+					auto gadget_pick_result = gadgets->pick( camera, origin, dir, scene_pick_dist );
+					float gadget_pick_dist = gadget_pick_result.second;
+
+					if ( scene_pick_dist < gadget_pick_dist )
+					{
+						auto g = scene_pick_result.first;
 						if ( g )
 						{
 							if ( alt || ( ctrl && scene->isSelected( g ) ) )
@@ -766,10 +766,16 @@ namespace SynGlyphX
 							else
 								scene->setSelected( g );
 						}
-						changed_selection = true;
 					}
+					else
+					{
+						auto group_idx = gadget_pick_result.first;
+						if ( group_idx > 0 )
+							scene->toggleExplode( group_idx );
+					}
+					changed_selection = true;
+
 				}
-				gadgets->pick( camera, origin, dir );
 			}
 			else  // holding shift, so we're doing a drag-select
 			{
@@ -1102,4 +1108,4 @@ namespace SynGlyphX
 		else
 			return 0.f;
 	}
-		}
+			}

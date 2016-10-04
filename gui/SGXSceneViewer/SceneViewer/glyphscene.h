@@ -35,6 +35,7 @@ namespace SynGlyphX
 		bool empty() const { return glyphs.empty(); }
 
 		const Glyph3DNode* pick( const glm::vec3& ray_origin, const glm::vec3& ray_dir, bool include_filtered_out = true, bool active_group_only = false ) const;
+		std::pair<const Glyph3DNode*, float> pick_with_distance( const glm::vec3& ray_origin, const glm::vec3& ray_dir, bool include_filtered_out = true, bool active_group_only = false ) const;
 
 		void enumGlyphs( std::function<bool( const Glyph3DNode& )> fn, bool includeChildren ) const;
 

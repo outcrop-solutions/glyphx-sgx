@@ -102,9 +102,14 @@ namespace SynGlyphX
 
 	const Glyph3DNode* GlyphScene::pick( const glm::vec3& ray_origin, const glm::vec3& ray_dir, bool include_filtered_out, bool active_group_only ) const
 	{
+		return pick_with_distance( ray_origin, ray_dir, include_filtered_out, active_group_only ).first;
+	}
+
+	std::pair<const Glyph3DNode*, float> GlyphScene::pick_with_distance( const glm::vec3& ray_origin, const glm::vec3& ray_dir, bool include_filtered_out, bool active_group_only ) const
+	{
 		// No scene yet, early out.
 		if ( empty() )
-			return nullptr;
+			return { nullptr, FLT_MAX };
 
 		hal::debug::profile_timer timer;
 
@@ -113,7 +118,8 @@ namespace SynGlyphX
 		if ( !active_group_only )
 		{
 			octree->pick( ray_origin, ray_dir, [&]( const Glyph3DNode* node ) {
-				if ( include_filtered_out || passedFilter( node ) )
+				bool invalid_group = ( group_status < 1.f && node->getAlternatePositionGroup() > 0.f );	// exclude nodes in groups if we're not exploded
+				if ( ( include_filtered_out || passedFilter( node ) ) && !invalid_group )
 					candidates.insert( node );
 			} );
 		}
@@ -189,7 +195,7 @@ namespace SynGlyphX
 
 		timer.print_ms_to_debug( "picked against octree" );
 
-		return best_glyph;
+		return { best_glyph, best_dist };
 	}
 
 	void GlyphScene::toggleExplode( unsigned int group )
@@ -209,7 +215,6 @@ namespace SynGlyphX
 
 	void GlyphScene::setSelected( const Glyph3DNode* glyph )
 	{
-		active_group = 0.f;
 		if ( selection.find( glyph ) == selection.end() )
 		{
 			selection.insert( glyph );
@@ -493,9 +498,13 @@ namespace SynGlyphX
 			direction = -1.f;
 			group_status = glm::clamp( group_status, 0.f, 1.f );
 			if ( group_status <= 0.f )
+			{
 				explode_state = group_state::retracted;
+				active_group = 0.f;
+			}
 		}
 		group_status += direction * timeDelta * 0.005f;
+		group_status = glm::clamp( group_status, 0.f, 1.f );
 	}
 
 	glm::vec3 GlyphScene::getExplodedPosition( const Glyph3DNode* node ) const
@@ -507,7 +516,7 @@ namespace SynGlyphX
 
 	glm::vec3 GlyphScene::getExplodedPositionOffset( const Glyph3DNode* node ) const
 	{
-		return glm::mix( glm::vec3(), node->getAlternatePosition(), group_status );;
+		return glm::mix( glm::vec3(), node->getAlternatePosition(), group_status );
 	}
 
 	glm::vec3 GlyphScene::apply_explosion_offset( const Glyph3DNode* node, const glm::vec3& pos ) const
