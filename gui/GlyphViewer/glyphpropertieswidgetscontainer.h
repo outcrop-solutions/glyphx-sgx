@@ -21,17 +21,21 @@
 #include <QtWidgets/QWidget>
 #include <QtWidgets/QDockWidget>
 #include <QtWidgets/QStackedWidget>
-#include "glyphforestmodel.h"
 #include <QtCore/QItemSelectionModel>
 #include "visualglyphpropertieswidget.h"
 #include "textglyphpropertieswidget.h"
+
+namespace SynGlyphX {
+
+	class GlyphForestInfoModel;
+}
 
 class GlyphPropertiesWidgetsContainer : public QObject
 {
 	Q_OBJECT
 
 public:
-	GlyphPropertiesWidgetsContainer(SynGlyphXANTz::GlyphForestModel* model, QItemSelectionModel* selectionModel, QWidget *parent);
+	GlyphPropertiesWidgetsContainer(SynGlyphX::GlyphForestInfoModel* model, QItemSelectionModel* selectionModel, QWidget *parent);
 	~GlyphPropertiesWidgetsContainer();
 
 	QStackedWidget* GetVisualProperitesWidget() const;
@@ -49,7 +53,7 @@ private:
 	SynGlyphX::VisualGlyphPropertiesWidget* m_visualPropertiesWidget;
 	SynGlyphX::TextGlyphPropertiesWidget* m_textPropertiesWidget;
 
-	SynGlyphXANTz::GlyphForestModel* m_model;
+	SynGlyphX::GlyphForestInfoModel* m_model;
 	QItemSelectionModel* m_selectionModel;
 };
 

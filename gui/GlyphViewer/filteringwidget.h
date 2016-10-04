@@ -29,7 +29,6 @@
 #include "multitableelasticlistswidget.h"
 #include "rangefilterlistwidget.h"
 #include "keywordfilterlistwidget.h"
-#include "itemfocusselectionmodel.h"
 
 class FilteringWidget : public QWidget
 {

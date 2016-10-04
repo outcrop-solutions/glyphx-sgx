@@ -227,7 +227,7 @@ GlyphViewerOptions OptionsWidget::GetOptions() const {
 	
 	//3D
 	options.SetShowHUDAxisObject(m_showHUDAxisInfoObjectCheckBox->isChecked());
-	options.SetHUDAxisObjectLocation(static_cast<SynGlyphXANTz::ANTzForestWidget::HUDLocation>(m_axisObjectLocationComboBox->currentIndex()));
+	options.SetHUDAxisObjectLocation(static_cast<SynGlyphX::HUDAxesLocation>(m_axisObjectLocationComboBox->currentIndex()));
 
 	options.SetShowSceneAxisObject(m_showSceneAxisInfoObjectCheckBox->isChecked());
 
@@ -258,7 +258,7 @@ void OptionsWidget::Set3DValues(const GlyphViewerOptions& options) {
 
 	m_showHUDAxisInfoObjectCheckBox->setChecked(options.GetShowHUDAxisObject());
 	m_axisObjectLocationComboBox->setEnabled(options.GetShowHUDAxisObject());
-	m_axisObjectLocationComboBox->setCurrentIndex(options.GetHUDAxisObjectLocation());
+	m_axisObjectLocationComboBox->setCurrentIndex(static_cast<unsigned int>(options.GetHUDAxisObjectLocation()));
 
 	m_showSceneAxisInfoObjectCheckBox->setChecked(options.GetShowSceneAxisObject());
 
