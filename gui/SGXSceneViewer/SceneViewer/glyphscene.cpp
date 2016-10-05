@@ -450,7 +450,7 @@ namespace SynGlyphX
 		while ( it != groups.end() )
 		{
 			auto& group = *it;
-			unsigned int rows = unsigned int( sqrtf( float( group.nodes.size() ) ) );
+			unsigned int rows = unsigned int( round( sqrtf( float( group.nodes.size() ) ) ) );
 			const glm::vec3 explode_axis_0( 1.f, 0.f, 0.f );
 			const glm::vec3 explode_axis_1( 0.f, 1.f, 0.f );
 			float count = group.nodes.size();
