@@ -103,7 +103,7 @@ namespace SynGlyphX {
     }
 
 	DataTransformMapping::DataTransformMapping(const DataTransformMapping& mapping) :
-		XMLPropertyTreeFile(),
+		XMLPropertyTreeFile(true),
 		m_id(UUIDGenerator::GetNewRandomUUID()),
 		m_datasources(mapping.m_datasources),
 		m_glyphTrees(mapping.m_glyphTrees), 
