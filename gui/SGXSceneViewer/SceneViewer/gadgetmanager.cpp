@@ -12,6 +12,7 @@ namespace SynGlyphX
 	namespace
 	{
 		const float size = 1.f;
+		auto color = glm::vec3( 1.f, 1.f, 1.f );
 	}
 
 	GadgetManager::GadgetManager( GlyphScene& _scene ) : scene( _scene )
@@ -84,8 +85,7 @@ namespace SynGlyphX
 		g.group = group;
 		g.on_click = on_click;
 		g.model = render::load_model( "meshes/sphere_2.dae", { true } );
-		//g.model->set_transform( glm::translate( glm::mat4(), position ) * glm::scale( glm::mat4(), glm::vec3( scale ) ) );
-		g.exploded_offset = scale * 2.f;
+		g.exploded_offset = scale * 1.5f;
 		g.scale = scale;
 		g.position = position;
 		gadgets.push_back( g );
@@ -97,8 +97,6 @@ namespace SynGlyphX
 		context->bind( effect );
 		context->bind( 0u, texture );
 
-		hal::debug::print( "group_status = %f", scene.getGroupStatus() );
-
 		for ( auto& g : gadgets )
 		{
 			float gadget_alpha = 1.f;
@@ -109,7 +107,7 @@ namespace SynGlyphX
 					gadget_alpha = 1.f - scene.getGroupStatus();
 			}
 
-			renderer.add_blended_batch( g.model, effect, gadget_transform, glm::vec4( 1.f, 1.f, 0.5f, 0.5f * gadget_alpha ) );
+			renderer.add_blended_batch( g.model, effect, gadget_transform, glm::vec4( color, 0.5f * gadget_alpha ) );
 		}
 		renderer.render( context, camera );
 	}

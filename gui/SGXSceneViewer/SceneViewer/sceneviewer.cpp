@@ -755,8 +755,18 @@ namespace SynGlyphX
 
 					auto gadget_pick_result = gadgets->pick( camera, origin, dir, scene_pick_dist );
 					float gadget_pick_dist = gadget_pick_result.second;
+					auto gadget_group_idx = gadget_pick_result.first;
+					auto active_group = scene->getActiveGroup();
 
-					if ( scene_pick_dist < gadget_pick_dist )
+					// if we hit a gadget, and it's closer than any glyphs we hit, toggle it-- but only if
+					// either there's no current exploded group or we clicked the current one (don't want to explode
+					// a group if there's already an exploded one)
+					if ( gadget_pick_dist < scene_pick_dist && ( active_group == 0 || gadget_group_idx == active_group ) )
+					{
+						if ( gadget_group_idx > 0 )
+							scene->toggleExplode( gadget_group_idx );
+					}
+					else
 					{
 						auto g = scene_pick_result.first;
 						if ( g )
@@ -766,12 +776,6 @@ namespace SynGlyphX
 							else
 								scene->setSelected( g );
 						}
-					}
-					else
-					{
-						auto group_idx = gadget_pick_result.first;
-						if ( group_idx > 0 )
-							scene->toggleExplode( group_idx );
 					}
 					changed_selection = true;
 
@@ -953,9 +957,15 @@ namespace SynGlyphX
 					if ( count > 0u ) selection_center /= static_cast<float>( count );
 					float selection_radius = 2.f * ( scene->getSingleSelection() ? scene->getSingleSelection()->getCachedBound().get_radius() : 0.f );
 
+					// account for the glyph possibly being in an exploded group
+					glm::vec3 explosion_offset;
+					auto single_selection = scene->getSingleSelection();
+					if ( single_selection && scene->isExploded( single_selection ) )
+						explosion_offset = single_selection->getAlternatePosition();
+
 					// if we only have links selected don't restrict the zoom distance (they tend to have huge bounds)
 					float orbit_min_distance = glyphs_selected ? selection_radius + largest_bound : 0.f;
-					orbit_cam_control->setOrbitTarget( selection_center, orbit_min_distance, cur_cam_control != orbit_cam_control );
+					orbit_cam_control->setOrbitTarget( selection_center + explosion_offset, orbit_min_distance, cur_cam_control != orbit_cam_control );
 
 					// Handle zooming with middle button, L/R buttons, or wheel.
 					float zoom = 0.f;

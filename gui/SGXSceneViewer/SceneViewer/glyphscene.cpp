@@ -171,7 +171,7 @@ namespace SynGlyphX
 					glm::vec3 pt;
 					glm::mat4 transform = node->getCachedTransform() * node->getVisualTransform();
 					if ( exploded )
-						transform = glm::translate( transform, getExplodedPositionOffset( node ) );
+						transform = glm::translate( glm::mat4(), getExplodedPositionOffset( node ) ) * transform;
 					if ( model->pick( ray_origin, ray_dir, transform, pt ) )
 					{
 						float dist = glm::length( ray_origin - pt );

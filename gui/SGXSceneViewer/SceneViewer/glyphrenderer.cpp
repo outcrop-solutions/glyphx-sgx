@@ -194,7 +194,7 @@ namespace SynGlyphX
 		auto sphere = db.get( GlyphShape::Sphere );
 		auto spart = sphere->get_parts()[0];
 		auto xform = glm::translate( glm::mat4(), bound.get_center() ) * glm::scale( glm::mat4(), glm::vec3( bound.get_radius() ) );
-		bucket.add_instance( spart->get_mesh(), xform * sphere->get_transform() * spart->get_transform(), glyph.getColor(), glyph.getAnimationAxis(), 0.f, glyph.getAnimationCenter() );
+		bucket.add_instance( spart->get_mesh(), xform * sphere->get_transform() * spart->get_transform(), glyph.getColor(), glyph.getAnimationAxis(), 0.f, glyph.getAnimationCenter(), glyph.getAlternatePosition(), glyph.getAlternatePositionGroup() );
 	}
 
 	void GlyphRenderer::add( const GlyphScene& scene )
@@ -218,7 +218,7 @@ namespace SynGlyphX
 			{
 				bucket.add_instance( part->get_mesh(), glyph.getCachedTransform() * glyph.getVisualTransform() * model->get_transform() * part->get_transform(), glyph.getColor(), glyph.getAnimationAxis(), glyph.getAnimationRate(), glyph.getAnimationCenter(), glyph.getAlternatePosition(), glyph.getAlternatePositionGroup() );
 				if ( bound_vis_enabled )
-					add_bound_to_bucket( glyph, get_bucket( WIREFRAME | passed_filter ? 0u : FILTER_FAIL, 0u ) );
+					add_bound_to_bucket( glyph, get_bucket( WIREFRAME | ( passed_filter ? 0u : FILTER_FAIL ), 0u ) );
 			}
 			return true;
 		}, false );
