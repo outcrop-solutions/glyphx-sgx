@@ -148,7 +148,12 @@ void SourceDataWidget::UpdateTables() {
 
 		if (DoesEmptyFilterShowAll() || !sourceDataIndexes.empty()) {
 
+			tableView->setVisible(true);
 			m_sourceDataTabs->addTab(tableView, formattedNamesMap.at(sourceDataTablename));
+		}
+		else {
+
+			tableView->setVisible(false);
 		}
 	}
 }
