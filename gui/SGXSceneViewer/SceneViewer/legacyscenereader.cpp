@@ -171,32 +171,40 @@ namespace SynGlyphX
 			std::getline( in, line );
 			unsigned int idx = 0u;
 			std::string token;
+			bool in_quotes = false;
 			while ( idx < line.size() )
 			{
+				if ( line[idx] == '<' )
+				{
+					// Ignore HTML tags.
+					while ( line[idx] != '>' )
+						++idx;
+					++idx;
+				}
+				else if ( line[idx] == '\"' )
+				{
+					// Track when we're in quotes (note that the above condition will skip over
+					// quotes that are in HTML tags, avoiding potential nesting issues with that).
+					++idx;
+					in_quotes = !in_quotes;
+				}
+				else if ( idx < line.size() )
+				{
+					auto c = line[idx];
+					if ( c != ',' || in_quotes )	// parse commas if we're in quotes
+					{
+						token += c;
+					}
 
-				auto c = line[idx];
-				if (c != ',')
-				{
-					token += c;
+					// hit an unquoted comma or end of line, token finished
+					if ( ( ( c == ',' && !in_quotes ) || idx == line.size() - 1 ) && token.size() > 0 )
+					{
+						tokens.push_back( token );
+						token = "";
+						in_quotes = false;
+					}
+					++idx;
 				}
-				
-				if ((c == ',' || idx == line.size()-1) && token.size() > 0)
-				{
-					tokens.push_back(token);
-					token = "";
-				}
-				++idx;
-				/*
-				if ( c == ',' && token.size() > 0 )
-				{
-					tokens.push_back( token );
-					token = "";
-				}
-				else
-				{
-					token += c;
-				}
-				++idx;*/
 			}
 		}
 
