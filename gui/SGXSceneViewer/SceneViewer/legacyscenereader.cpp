@@ -487,10 +487,6 @@ namespace SynGlyphX
 					ReadLine( tags, dataline );
 					if ( dataline.size() > 0 )
 					{
-						// Todo: handle commas in quotes (since apparently we allow this).
-						if ( dataline.size() != headers.size() )
-							hal::debug::print( "Quoted commas in CSV columns not yet supported." );
-						// assert( dataline.size() == headers.size() );
 						int record_id = atoi( dataline[record_id_col].c_str() );
 						auto* glyph = scene.getGlyph3D( record_id );
 						hal::debug::_assert( glyph, "could not find glyph referenced by tag" );
