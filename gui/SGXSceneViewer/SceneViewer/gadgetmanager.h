@@ -18,7 +18,7 @@ namespace SynGlyphX
 		~GadgetManager();
 
 		// returns {group id, distance}
-		std::pair<unsigned int, float> pick( const render::camera* camera, const glm::vec3& origin, const glm::vec3& dir, float max_distance );
+		std::pair<unsigned int, float> pick( const render::perspective_camera* camera, const glm::vec3& origin, const glm::vec3& dir, float max_distance );
 		void create( std::function<void( void )> on_click, unsigned int group_idx, const glm::vec3& position, float scale );
 		void clear();
 
@@ -27,7 +27,6 @@ namespace SynGlyphX
 	private:
 		struct gadget
 		{
-			render::model* model;
 			unsigned int group;
 			glm::vec3 position;
 			float scale;
@@ -37,10 +36,15 @@ namespace SynGlyphX
 		std::vector<gadget> gadgets;
 		hal::mesh* billboard_mesh;
 		hal::effect* effect;
+		hal::effect* switch_effect;
 		hal::texture* texture;
-		render::renderer renderer;
+		render::renderer renderer, switch_renderer;
 		GlyphScene& scene;
 
+		render::model* gadget_model;
+		render::model* switch_model;
+
 		glm::mat4 compute_gadget_transform( const gadget& g );
+		glm::mat4 compute_switch_transform( const render::perspective_camera* camera, const gadget& g );
 	};
 }

@@ -12,49 +12,60 @@ namespace SynGlyphX
 	namespace
 	{
 		const float size = 1.f;
+		const float switch_size = 0.2f;
 		auto color = glm::vec3( 1.f, 1.f, 1.f );
 	}
 
-	GadgetManager::GadgetManager( GlyphScene& _scene ) : scene( _scene )
+	GadgetManager::GadgetManager( GlyphScene& _scene ) : scene( _scene ), gadget_model( nullptr ), switch_model( nullptr )
 	{
 		effect = hal::device::load_effect( "shaders/solid.vert", nullptr, "shaders/solid.frag" );
+		switch_effect = hal::device::load_effect( "shaders/gadget.vert", nullptr, "shaders/gadget.frag" );
 		texture = hal::device::load_texture( "textures/superimposed.png" );
 
 		float square[]
 		{
-			-0.5f, -0.5f, 0.f, 0.f, 1.f,
-			0.5f, -0.5f, 0.f, 1.f, 1.f,
-			0.5f, 0.5f, 0.f, 1.f, 0.f,
-			-0.5f, 0.5f, 0.f, 0.f, 0.f,
+			-0.5f, 0.f, -0.5f, 0.f, 1.f,
+			0.5f, 0.f, -0.5f, 1.f, 1.f,
+			0.5f, 0.f, 0.5f, 1.f, 0.f,
+			-0.5f, 0.f, 0.5f, 0.f, 0.f,
 		};
 		unsigned int square_indices[]
 		{
-			0u, 1u, 2u, 0u, 2u, 3u
+			0u, 1u, 2u, 0u, 2u, 3u,
+			0u, 2u, 1u, 0u, 3u, 2u
 		};
 
 		hal::vertex_format fmt;
 		fmt.add_stream( hal::stream_info( hal::stream_type::float32, 3, hal::stream_semantic::position, 0 ) );
 		fmt.add_stream( hal::stream_info( hal::stream_type::float32, 2, hal::stream_semantic::texcoord, 0 ) );
 
-		billboard_mesh = hal::device::create_mesh( fmt, hal::primitive_type::triangle_list, 4, square, 2, square_indices, true );
+		billboard_mesh = hal::device::create_mesh( fmt, hal::primitive_type::triangle_list, 4, square, 4, square_indices, true );
+
+		gadget_model = render::load_model( "meshes/sphere_2.dae", { true } );
+		
+		auto switch_part = new render::model_part( billboard_mesh, glm::mat4(), "group switch" );
+		switch_model = new render::model;
+		switch_model->add_part( switch_part );
+		switch_model->set_transform( glm::scale( glm::mat4(), glm::vec3( 0.2f, 0.2f, 0.2f ) ) );
 	}
 
 	GadgetManager::~GadgetManager()
 	{
 		clear();
 		hal::device::release( effect );
+		hal::device::release( switch_effect );
 		hal::device::release( texture );
 		hal::device::release( billboard_mesh );
+		delete gadget_model;
+		delete switch_model;
 	}
 
 	void GadgetManager::clear()
 	{
-		for ( auto& g : gadgets )
-			delete g.model;
 		gadgets.clear();
 	}
 
-	std::pair<unsigned int, float> GadgetManager::pick( const render::camera* camera, const glm::vec3& origin, const glm::vec3& dir, float max_distance )
+	std::pair<unsigned int, float> GadgetManager::pick( const render::perspective_camera* camera, const glm::vec3& origin, const glm::vec3& dir, float max_distance )
 	{
 		float best_dist = FLT_MAX;
 		gadget* best_gadget = nullptr;
@@ -62,7 +73,7 @@ namespace SynGlyphX
 		{
 			auto& g = gadgets[i];
 			glm::vec3 pt;
-			if ( g.model->pick( origin, dir, compute_gadget_transform( g ), pt ) )
+			if ( switch_model->pick( origin, dir, compute_switch_transform( camera, g ), pt ) )
 			{
 				float dist = glm::distance( camera->get_position(), pt );
 				if ( dist < max_distance && dist < best_dist )
@@ -84,7 +95,6 @@ namespace SynGlyphX
 		gadget g;
 		g.group = group;
 		g.on_click = on_click;
-		g.model = render::load_model( "meshes/sphere_2.dae", { true } );
 		g.exploded_offset = scale * 1.5f;
 		g.scale = scale;
 		g.position = position;
@@ -100,16 +110,25 @@ namespace SynGlyphX
 		for ( auto& g : gadgets )
 		{
 			float gadget_alpha = 1.f;
-			glm::mat4 gadget_transform = compute_gadget_transform( g );
+			auto gadget_transform = compute_gadget_transform( g );
 			if ( scene.getGroupStatus() != 0.f )
 			{
 				if ( unsigned int( scene.getActiveGroup() ) != g.group )
 					gadget_alpha = 1.f - scene.getGroupStatus();
 			}
 
-			renderer.add_blended_batch( g.model, effect, gadget_transform, glm::vec4( color, 0.5f * gadget_alpha ) );
+			auto switch_pos = glm::normalize( camera->get_position() - g.position ) * g.scale;
+			auto switch_transform = glm::translate( glm::mat4(), switch_pos ) * gadget_transform;
+			
+			renderer.add_blended_batch( gadget_model, effect, gadget_transform, glm::vec4( color, 0.5f * gadget_alpha ) );
+			switch_renderer.add_blended_batch( switch_model, switch_effect, switch_transform, glm::vec4( color, 0.5f * gadget_alpha ) );
 		}
 		renderer.render( context, camera );
+
+		context->set_constant( switch_effect, "camera_data", "camera_pos", camera->get_position() );
+		context->set_constant( switch_effect, "camera_data", "cam_up", camera->get_up() );
+		context->set_constant( switch_effect, "camera_data", "cam_right", camera->get_right() );
+		switch_renderer.render( context, camera );
 	}
 
 	glm::mat4 GadgetManager::compute_gadget_transform( const gadget& g )
@@ -124,5 +143,13 @@ namespace SynGlyphX
 			}
 		}
 		return transform;
+	}
+
+	glm::mat4 GadgetManager::compute_switch_transform( const render::perspective_camera* camera, const gadget& g )
+	{
+		auto gadget_transform = compute_gadget_transform( g );
+		auto switch_pos = glm::normalize( camera->get_position() - g.position ) * g.scale;
+		auto switch_transform = glm::translate( glm::mat4(), switch_pos ) * gadget_transform;
+		return switch_transform;
 	}
 }
