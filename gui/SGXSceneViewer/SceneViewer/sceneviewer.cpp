@@ -439,7 +439,7 @@ namespace SynGlyphX
 			if ( scene.selectionEmpty() )
 			{
 				auto campos = camera->get_position();
-				renderTextCentered( hud_font, glm::vec2( width() / 2, height() - 16 ), CenterMode::X, render::color::white(), "Camera Position: X: %f, Y: %f, Z: %f", campos.x, campos.y, campos.z );
+				renderTextCenteredF( hud_font, glm::vec2( width() / 2, height() - 16 ), CenterMode::X, render::color::white(), "Camera Position: X: %f, Y: %f, Z: %f", campos.x, campos.y, campos.z );
 			}
 			else
 			{
@@ -460,11 +460,11 @@ namespace SynGlyphX
 							positionHUD += axis_names[i] + ": " + std::to_string( m_sourceDataLookupForPositionXYZ[i].at( selectionIndex ) );
 						}
 					}
-					renderTextCentered( hud_font, glm::vec2( width() / 2, height() - 16 ), CenterMode::X, render::color::white(), positionHUD.c_str() );
+					renderTextCenteredF( hud_font, glm::vec2( width() / 2, height() - 16 ), CenterMode::X, render::color::white(), positionHUD.c_str() );
 				}
 				else
 				{
-					renderTextCentered( hud_font, glm::vec2( width() / 2, height() - 16 ), CenterMode::X, render::color::white(), "Selection Centered At: X: %f, Y: %f, Z: %f", selection_center.x, selection_center.y, selection_center.z );
+					renderTextCenteredF( hud_font, glm::vec2( width() / 2, height() - 16 ), CenterMode::X, render::color::white(), "Selection Centered At: X: %f, Y: %f, Z: %f", selection_center.x, selection_center.y, selection_center.z );
 				}
 			}
 		}
@@ -523,7 +523,7 @@ namespace SynGlyphX
 		scene.disableAllTags();
 	}
 
-	void SceneViewer::renderText( hal::font* font, const glm::vec2& pos, const glm::vec4& color, const char* string, ... )
+	void SceneViewer::renderTextF( hal::font* font, const glm::vec2& pos, const glm::vec4& color, const char* string, ... )
 	{
 		static char buf[8192u];
 		va_list args;
@@ -535,7 +535,7 @@ namespace SynGlyphX
 		context->draw( font, transform, color, buf );
 	}
 
-	void SceneViewer::renderTextCentered( hal::font* font, const glm::vec2& pos, CenterMode mode, const glm::vec4& color, const char* string, ... )
+	void SceneViewer::renderTextCenteredF( hal::font* font, const glm::vec2& pos, CenterMode mode, const glm::vec4& color, const char* string, ... )
 	{
 		static char buf[8192u];
 		va_list args;
@@ -551,7 +551,29 @@ namespace SynGlyphX
 		context->draw( font, transform, color, buf );
 	}
 
-	void SceneViewer::renderText( hal::font* font, const render::camera* camera, const glm::vec3& pos, const glm::vec4& color, const char* string, ... )
+	void SceneViewer::renderText( hal::font* font, const glm::vec2& pos, const glm::vec4& color, const char* string )
+	{
+		auto transform = ui_camera->get_proj() * ui_camera->get_view() * glm::translate( glm::mat4(), glm::vec3( glm::round( pos ), 0.f ) );
+		context->draw( font, transform, color, string );
+	}
+
+	void SceneViewer::renderTextCentered( hal::font* font, const glm::vec2& pos, CenterMode mode, const glm::vec4& color, const char* string )
+	{
+		static char buf[8192u];
+		va_list args;
+		va_start( args, string );
+		vsprintf_s( buf, string, args );
+		va_end( args );
+
+		glm::vec2 text_size = context->measure_text( font, buf );
+		int imode = int( mode );
+		glm::vec2 adjustment( ( imode & int( CenterMode::X ) ) ? text_size.x * 0.5f : 0.f, ( imode & int( CenterMode::Y ) ) ? text_size.y * 0.5f : 0.f );
+
+		auto transform = ui_camera->get_proj() * ui_camera->get_view() * glm::translate( glm::mat4(), glm::vec3( glm::round( pos - adjustment ), 0.f ) );
+		context->draw( font, transform, color, string );
+	}
+
+	void SceneViewer::renderText( hal::font* font, const render::camera* camera, const glm::vec3& pos, const glm::vec4& color, const char* string )
 	{
 		auto window_pt = camera->world_pt_to_window_pt( pos );
 		if ( !camera->pt_behind_camera( pos ) && window_pt.x >= 0.f && window_pt.y > 0.f && window_pt.x < float( width() ) && window_pt.y < float( height() ) )

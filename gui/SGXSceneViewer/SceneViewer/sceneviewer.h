@@ -118,9 +118,12 @@ namespace SynGlyphX
 			Y = 2,
 			XY = ( X | Y ),
 		};
-		void renderText( hal::font* font, const glm::vec2& pos, const glm::vec4& color, const char* string, ... );
-		void renderText( hal::font* font, const render::camera* camera, const glm::vec3& pos, const glm::vec4& color, const char* string, ... );
-		void renderTextCentered( hal::font* font, const glm::vec2& pos, CenterMode mode, const glm::vec4& color, const char* string, ... );
+		void renderText( hal::font* font, const glm::vec2& pos, const glm::vec4& color, const char* string );
+		void renderText( hal::font* font, const render::camera* camera, const glm::vec3& pos, const glm::vec4& color, const char* string );
+		void renderTextCentered( hal::font* font, const glm::vec2& pos, CenterMode mode, const glm::vec4& color, const char* string );
+
+		void renderTextF( hal::font* font, const glm::vec2& pos, const glm::vec4& color, const char* string, ... );
+		void renderTextCenteredF( hal::font* font, const glm::vec2& pos, CenterMode mode, const glm::vec4& color, const char* string, ... );
 
 	private slots:
 		void updateFrame();
