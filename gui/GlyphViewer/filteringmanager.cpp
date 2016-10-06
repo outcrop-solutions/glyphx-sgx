@@ -213,25 +213,23 @@ void FilteringManager::ClearAllFilters() {
 
 void FilteringManager::ClearFiltersForTable(const QString& table, bool updateFocus) {
 
-	if (m_filterResultsByTable.count(table) == 0) {
+	if (m_filterResultsByTable.count(table) > 0) {
 
-		throw std::invalid_argument("Can't remove table from source data selection that isn't part of the selection");
+		QItemSelection itemSelection;
+		AddSceneIndexesFromTableToSelection(itemSelection, table);
+		ClearSourceDataSelectionForTable(itemSelection, updateFocus);
+		if (m_filterResultsPerTableFromLoadingFilter.count(table) > 0) {
+
+			m_filterResultsByTable[table] = m_filterResultsPerTableFromLoadingFilter[table];
+		}
+		else {
+
+			m_filterResultsByTable.erase(table);
+		}
+
+		m_filtersForEachTable.remove(table);
+		UpdateGlyphIndexedFilterResults();
 	}
-
-	QItemSelection itemSelection;
-	AddSceneIndexesFromTableToSelection(itemSelection, table);
-	ClearSourceDataSelectionForTable(itemSelection, updateFocus);
-	if (m_filterResultsPerTableFromLoadingFilter.count(table) > 0) {
-
-		m_filterResultsByTable[table] = m_filterResultsPerTableFromLoadingFilter[table];
-	}
-	else {
-
-		m_filterResultsByTable.erase(table);
-	}
-	
-	m_filtersForEachTable.remove(table);
-	UpdateGlyphIndexedFilterResults();
 }
 
 const FilteringManager::Table2FiltersMap& FilteringManager::GetTable2FiltersMap() const {
