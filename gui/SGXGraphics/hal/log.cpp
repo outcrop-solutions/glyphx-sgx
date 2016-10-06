@@ -31,8 +31,9 @@ namespace SynGlyphX
 		message log::next_error()
 		{
 			auto& err = errors.front();
+			auto result = message( err.first, err.second );
 			errors.pop();
-			return message( err.first, err.second );
+			return result;
 		}
 	}
 }

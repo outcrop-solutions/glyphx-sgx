@@ -32,19 +32,24 @@ namespace SynGlyphX
 			float scale;
 			float exploded_offset;
 			std::function<void( void )> on_click;
+			hal::render_target_set* texture_rt;
+			hal::texture* texture;
 		};
 		std::vector<gadget> gadgets;
 		hal::mesh* billboard_mesh;
 		hal::effect* effect;
 		hal::effect* switch_effect;
-		hal::texture* texture;
-		render::renderer renderer, switch_renderer;
+		render::renderer renderer;
 		GlyphScene& scene;
 
 		render::model* gadget_model;
 		render::model* switch_model;
 
+		hal::font* font;
+		render::ortho_camera* switch_camera;
+
 		glm::mat4 compute_gadget_transform( const gadget& g );
 		glm::mat4 compute_switch_transform( const render::perspective_camera* camera, const gadget& g );
+		void setup_texture( hal::context* context, gadget& g );
 	};
 }

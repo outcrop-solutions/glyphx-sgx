@@ -80,6 +80,7 @@ namespace SynGlyphX
 
 		bool hasAnimation() const { return has_animation; }
 
+		unsigned int getGroupSize( unsigned int group ) { return groups[group - 1].nodes.size(); }
 		float getGroupStatus() const { return group_status; }
 		float getActiveGroup() const { return active_group; }
 		glm::vec3 getExplodedPosition( const Glyph3DNode* node ) const;
