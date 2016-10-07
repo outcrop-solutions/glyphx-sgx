@@ -60,6 +60,9 @@ public:
 	const SynGlyphX::DataTransformModel* GetDataTransformModel() const;
 
 signals:
+	//FilterResultsChanged emits an index set for all glyph indexes that need to be shown, including for tables that don't have any 
+	//filters on them unless there are no filters whatsoever.  While there are several cases where this signal is connected to a slot,
+	//only SceneViewer uses glyphIndexedFilteredResults
 	void FilterResultsChanged(const SynGlyphX::IndexSet& glyphIndexedFilteredResults);
 
 private slots:

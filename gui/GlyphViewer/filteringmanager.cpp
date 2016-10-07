@@ -278,12 +278,19 @@ void FilteringManager::UpdateGlyphIndexedFilterResults() {
 
 	for (TableToGlyphTemplateRangesMap::iterator tableRange = m_tableToGlyphTreeRangesMap.begin(); tableRange != m_tableToGlyphTreeRangesMap.end(); ++tableRange) {
 
+		unsigned int min = static_cast<unsigned int>(tableRange.value().GetMin());
 		if (m_filterResultsByTable.count(tableRange.key()) > 0) {
 		
-			unsigned int min = static_cast<unsigned int>(tableRange.value().GetMin());
 			for (auto row : m_filterResultsByTable.at(tableRange.key())) {
 
 				newfilterResultsIndexedToGlyphs.insert(row + min);
+			}
+		}
+		else {
+
+			for (unsigned long i = min; i < static_cast<unsigned int>(tableRange.value().GetMax()); ++i) {
+
+				newfilterResultsIndexedToGlyphs.insert(i);
 			}
 		}
 	}
