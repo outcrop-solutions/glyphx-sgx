@@ -188,11 +188,14 @@ void FilteringManager::SetFilterIndexesForTable(const QString& table, const SynG
 
 void FilteringManager::Clear() {
 
-	ClearAllFilters();
+	m_filterResultsByTable.clear();
+	m_filtersForEachTable.clear();
 
 	m_glyphTemplateRangeToTableMap.clear();
 	m_tableToGlyphTreeRangesMap.clear();
 	m_filterResultsPerTableFromLoadingFilter.clear();
+
+	m_filterResultsIndexedToGlyphs.clear();
 }
 
 void FilteringManager::ClearAllFilters() {

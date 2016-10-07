@@ -29,6 +29,7 @@ public:
 	~SourceDataTableModel();
 
 	void SetFilters(const SynGlyphX::IndexSet& rowSubset);
+	const SynGlyphX::IndexSet& GetFilters() const { return m_rowSubset; }
 
 protected:
 	bool filterAcceptsRow(int source_row, const QModelIndex& source_parent) const override;

@@ -60,12 +60,12 @@ protected:
 	void ReadSettings();
 	void WriteSettings();
 
-	void WriteToFile(QSqlQueryModel* queryModel, const QString& filename);
+	void WriteToFile(QTableView* tableView, const QString& filename);
 
 	QTabWidget* m_sourceDataTabs;
 	QStatusBar* m_statusBar;
 	std::vector<QTableView*> m_tableViews;
-	QMap<QString, QSqlQueryModel*> m_sqlQueryModels;
+	QMap<QString, SynGlyphX::InputTable> m_tableInfoMap;
 	SourceDataCache::ConstSharedPtr m_sourceDataCache;
 	SynGlyphX::DataTransformMapping::ConstSharedPtr m_dataTransformMapping;
 };

@@ -77,8 +77,7 @@ void SourceDataWidget::DeleteTabs() {
 	m_sourceDataTabs->clear();
 	m_tableViews.clear();
 	
-	//The objects in this collection have already been deleted by deleting the table views so just clear this collection
-	m_sqlQueryModels.clear();
+	m_tableInfoMap.clear();
 }
 
 void SourceDataWidget::OnNewVisualization() {
@@ -123,7 +122,7 @@ void SourceDataWidget::OnNewVisualization() {
 				tableView->setModel(sourceDataTableModel);
 
 				m_tableViews.push_back(tableView);
-				m_sqlQueryModels.insert(sourceDataTablename, queryModel);
+				m_tableInfoMap.insert(sourceDataTablename, inputTable);
 			}
 		}
 	}
@@ -188,7 +187,7 @@ void SourceDataWidget::SaveCurrentTabToFile() {
 
 		try {
 			SynGlyphX::GlyphBuilderApplication::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
-			WriteToFile(m_sqlQueryModels[m_sourceDataTabs->currentWidget()->objectName()], filename);
+			WriteToFile(dynamic_cast<QTableView*>(m_sourceDataTabs->currentWidget()), filename);
 
 			QFileInfo fileInfo(filename);
 			settings.setValue("fileSaveDir", fileInfo.absolutePath());
@@ -205,30 +204,33 @@ void SourceDataWidget::SaveCurrentTabToFile() {
 	settings.endGroup();
 }
 
-void SourceDataWidget::WriteToFile(QSqlQueryModel* queryModel, const QString& filename) {
+void SourceDataWidget::WriteToFile(QTableView* tableView, const QString& filename) {
 
 	SynGlyphX::CSVFileWriter csvFile(filename.toStdString());
 
-	SynGlyphX::CSVFileHandler::CSVValues headers;
-	for (int i = 0; i < queryModel->columnCount(); ++i) {
+	SourceDataCache::TableColumns columns = m_sourceDataCache->GetColumnsForTable(m_tableInfoMap[tableView->objectName()]);
 
-		headers.push_back(queryModel->headerData(i, Qt::Horizontal).toString().toStdWString());
+	SynGlyphX::CSVFileHandler::CSVValues headers;
+	for (const auto& column : columns) {
+
+		headers.push_back(column.first.toStdWString());
 	}
 	csvFile.WriteLine(headers);
 
-	//QSqlQueryModel may not have loaded all rows, so force it here
-	while (queryModel->canFetchMore()) {
-	
-		queryModel->fetchMore();
+	SourceDataCache::SharedSQLQuery query = m_sourceDataCache->CreateSelectQuery(tableView->objectName(), columns, 
+		dynamic_cast<SourceDataTableModel*>(tableView->model())->GetFilters());
+	query->exec();
+	if (query->lastError().isValid()) {
+
+		throw std::runtime_error("SQL Query Failed");
 	}
 
-	for (int j = 0; j < queryModel->rowCount(); ++j) {
+	while (query->next()) {
 
 		SynGlyphX::CSVFileHandler::CSVValues lineOfValues;
-		QSqlRecord record = queryModel->record(j);
-		for (int i = 0; i < queryModel->columnCount(); ++i) {
+		for (int i = 0; i < columns.size(); ++i) {
 
-			QVariant var = record.value(i);
+			QVariant var = query->value(i);
 			if (!var.isValid()) {
 
 				lineOfValues.push_back(L"\" \"");
@@ -265,11 +267,8 @@ void SourceDataWidget::CreateSubsetVisualization() {
 			QString stdCanonicalPath = QDir::toNativeSeparators(fileInfo.absolutePath());
 
 			QString csvFileLocation = stdCanonicalPath + QDir::separator() + fileInfo.baseName() + "_selectedsourcedata.csv";
-			WriteToFile(m_sqlQueryModels[m_sourceDataTabs->currentWidget()->objectName()], csvFileLocation);
-			QStringList inputTableValues = m_sourceDataTabs->widget(m_sourceDataTabs->currentIndex())->objectName().split(':');
-			boost::uuids::string_generator gen;
-			SynGlyphX::InputTable inputTable(gen(inputTableValues[0].toStdWString()), (inputTableValues.size() > 1) ? inputTableValues[1].toStdWString() : SynGlyphX::FileDatasource::SingleTableName);
-			SynGlyphX::DataTransformMapping::ConstSharedPtr subsetDataMapping = m_dataTransformMapping->CreateSubsetMappingWithSingleTable(inputTable, csvFileLocation.toStdWString());
+			WriteToFile(dynamic_cast<QTableView*>(m_sourceDataTabs->currentWidget()), csvFileLocation);
+			SynGlyphX::DataTransformMapping::ConstSharedPtr subsetDataMapping = m_dataTransformMapping->CreateSubsetMappingWithSingleTable(m_tableInfoMap[m_sourceDataTabs->currentWidget()->objectName()], csvFileLocation.toStdWString());
 			subsetDataMapping->WriteToFile(sdtFilename.toStdString());
 			
 			settings.setValue("vizSaveDir", stdCanonicalPath);
