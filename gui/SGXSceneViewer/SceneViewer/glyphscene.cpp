@@ -87,6 +87,9 @@ namespace SynGlyphX
 		selection.clear();
 		Glyph3DNode::clearTagPool();
 		delete octree;
+		explode_state = group_state::retracted;
+		active_group = 0u;
+		group_status = 0.f;
 		octree = nullptr;
 	}
 

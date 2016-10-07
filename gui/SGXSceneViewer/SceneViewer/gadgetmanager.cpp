@@ -13,10 +13,10 @@ namespace SynGlyphX
 	namespace
 	{
 		const float size = 1.f;
-		const float switch_size = 0.2f;
+		const float switch_size = 0.5f;
 		auto color = glm::vec3( 1.f, 1.f, 1.f );
 		const float gadget_base_alpha = 0.25f;
-//		unsigned int switch_rt_size_x = 256u, switch_rt_size_y = 256u;
+		//		unsigned int switch_rt_size_x = 256u, switch_rt_size_y = 256u;
 	}
 
 	GadgetManager::GadgetManager( GlyphScene& _scene ) : scene( _scene ), gadget_model( nullptr ), switch_model( nullptr )
@@ -46,7 +46,7 @@ namespace SynGlyphX
 		billboard_mesh = hal::device::create_mesh( fmt, hal::primitive_type::triangle_list, 4, square, 2, square_indices, true );
 
 		gadget_model = render::load_model( "meshes/sphere_2.dae", { true } );
-		
+
 		auto switch_part = new render::model_part( billboard_mesh, glm::mat4(), "group switch" );
 		switch_model = new render::model;
 		switch_model->add_part( switch_part );
@@ -92,9 +92,9 @@ namespace SynGlyphX
 		}
 
 		if ( best_gadget )
-			return { best_gadget->group, best_dist };
+			return{ best_gadget->group, best_dist };
 		else
-			return { 0, FLT_MAX };
+			return{ 0, FLT_MAX };
 	}
 
 	void GadgetManager::create( std::function<void( void )> on_click, unsigned int group, const glm::vec3& position, float scale )
@@ -105,8 +105,8 @@ namespace SynGlyphX
 		g.exploded_offset = scale;
 		g.scale = scale;
 		g.position = position;
-//		g.texture = nullptr;
-//		g.texture_rt = nullptr;
+		//		g.texture = nullptr;
+		//		g.texture_rt = nullptr;
 		gadgets.push_back( g );
 	}
 
@@ -122,15 +122,9 @@ namespace SynGlyphX
 				setup_texture( context, g );
 #endif
 
-			float gadget_alpha = 1.f;
 			auto gadget_transform = compute_gadget_transform( g );
-			if ( scene.getGroupStatus() != 0.f )
-			{
-				if ( scene.getActiveGroup() != g.group )
-					gadget_alpha = 1.f - scene.getGroupStatus();
-			}
 
-			renderer.add_blended_batch( gadget_model, effect, gadget_transform, glm::vec4( color, gadget_base_alpha * gadget_alpha ) );
+			renderer.add_blended_batch( gadget_model, effect, gadget_transform, glm::vec4( color, gadget_base_alpha * compute_gadget_alpha( g ) ) );
 		}
 		renderer.render( context, camera );
 
@@ -139,7 +133,7 @@ namespace SynGlyphX
 		{
 			auto switch_transform = compute_switch_transform( camera, g );
 			context->bind( 0u, scene.isExploded( g.group ) ? collapse_icon : explode_icon );
-			renderer.add_batch( switch_model, switch_effect, switch_transform, render::color::white() );
+			renderer.add_batch( switch_model, switch_effect, switch_transform, glm::vec4( 1.f, 1.f, 1.f, compute_gadget_alpha( g ) ) );
 			renderer.render( context, camera );
 		}
 	}
@@ -156,6 +150,17 @@ namespace SynGlyphX
 			}
 		}
 		return transform;
+	}
+
+	float GadgetManager::compute_gadget_alpha( const gadget& g )
+	{
+		float gadget_alpha = 1.f;
+		if ( scene.getGroupStatus() != 0.f )
+		{
+			if ( scene.getActiveGroup() != g.group )
+				gadget_alpha = 1.f - scene.getGroupStatus();
+		}
+		return gadget_alpha;
 	}
 
 	glm::mat4 GadgetManager::compute_switch_transform( const render::perspective_camera* camera, const gadget& g )
