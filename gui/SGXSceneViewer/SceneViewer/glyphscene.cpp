@@ -121,8 +121,7 @@ namespace SynGlyphX
 		if ( !active_group_only )
 		{
 			octree->pick( ray_origin, ray_dir, [&]( const Glyph3DNode* node ) {
-				bool invalid_group = ( group_status < 1.f && node->getAlternatePositionGroup() > 0.f );	// exclude nodes in groups if we're not exploded
-				if ( ( include_filtered_out || passedFilter( node ) ) && !invalid_group )
+				if ( ( include_filtered_out || passedFilter( node ) ) )
 					candidates.insert( node );
 			} );
 		}
@@ -218,6 +217,7 @@ namespace SynGlyphX
 
 	void GlyphScene::explode( unsigned int group )
 	{
+		active_group = group;
 		if ( explode_state == group_state::retracted || explode_state == group_state::retracting )
 			explode_state = group_state::exploding;
 	}

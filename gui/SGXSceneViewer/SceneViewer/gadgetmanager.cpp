@@ -102,7 +102,7 @@ namespace SynGlyphX
 		gadget g;
 		g.group = group;
 		g.on_click = on_click;
-		g.exploded_offset = scale;
+		g.exploded_offset = scale * 2.f;
 		g.scale = scale;
 		g.position = position;
 		//		g.texture = nullptr;
@@ -140,16 +140,14 @@ namespace SynGlyphX
 
 	glm::mat4 GadgetManager::compute_gadget_transform( const gadget& g )
 	{
-		auto transform = glm::translate( glm::mat4(), g.position ) * glm::scale( glm::mat4(), glm::vec3( g.scale ) );
-		if ( scene.getGroupStatus() != 0.f )
+		auto scale = glm::scale( glm::mat4(), glm::vec3( g.scale ) );
+		auto translate = glm::translate( glm::mat4(), g.position );
+		if ( scene.getGroupStatus() != 0.f && scene.getActiveGroup() == g.group )
 		{
-			if ( scene.getActiveGroup() == g.group )
-			{
-				transform = glm::scale( transform, glm::vec3( glm::mix( 1.f, 0.5f, scene.getGroupStatus() ) ) );
-				transform = glm::translate( transform, glm::vec3( 0.f, 0.f, scene.getGroupStatus() * g.exploded_offset ) );
-			}
+			scale = glm::scale( scale, glm::vec3( glm::mix( 1.f, 0.5f, scene.getGroupStatus() ) ) );
+			translate = glm::translate( translate, glm::vec3( 0.f, 0.f, scene.getGroupStatus() * g.exploded_offset ) );
 		}
-		return transform;
+		return translate * scale;
 	}
 
 	float GadgetManager::compute_gadget_alpha( const gadget& g )
@@ -167,25 +165,11 @@ namespace SynGlyphX
 	{
 		auto gadget_to_cam = camera->get_position() - g.position;
 		float ax = atan2f( gadget_to_cam.x, gadget_to_cam.y );
-		//float ay = atan2f( gadget_to_cam.z, gadget_to_cam.y );
-		auto rotate = glm::mat4();
-		//rotate = glm::rotate( rotate, -ay, glm::vec3( 1.f, 0.f, 0.f ) );
-		rotate = glm::rotate( rotate, -ax, glm::vec3( 0.f, 0.f, 1.f ) );
-
+		auto rotate = glm::rotate( glm::mat4(), -ax, glm::vec3( 0.f, 0.f, 1.f ) );
 		auto switch_pos = glm::vec3( 0.f, 1.f, 0.f );
-		auto switch_transform = rotate * glm::translate( glm::mat4(), switch_pos );
+		auto offset = glm::translate( glm::mat4(), switch_pos );
 
-		auto transform = glm::translate( glm::mat4(), g.position ) * glm::scale( glm::mat4(), glm::vec3( g.scale ) ) * switch_transform;
-		if ( scene.getGroupStatus() != 0.f )
-		{
-			if ( scene.getActiveGroup() == g.group )
-			{
-				transform = glm::scale( transform, glm::vec3( glm::mix( 1.f, 0.5f, scene.getGroupStatus() ) ) );
-				transform = glm::translate( transform, glm::vec3( 0.f, 0.f, scene.getGroupStatus() * g.exploded_offset ) );
-			}
-		}
-
-		return transform;
+		return compute_gadget_transform( g ) * rotate * offset;
 	}
 
 	void GadgetManager::setup_texture( hal::context* context, gadget& g )
@@ -204,7 +188,7 @@ namespace SynGlyphX
 		context->set_depth_state( hal::depth_state::disabled );
 		context->set_blend_state( hal::blend_state::alpha );
 		context->draw( font, transform, render::color::white(), buf );
-		context->bind( (hal::render_target_set*)nullptr );
+		context->bind( ( hal::render_target_set* )nullptr );
 #endif
 	}
 }
