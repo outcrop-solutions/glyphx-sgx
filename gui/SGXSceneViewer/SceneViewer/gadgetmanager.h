@@ -32,8 +32,7 @@ namespace SynGlyphX
 			float scale;
 			float exploded_offset;
 			std::function<void( void )> on_click;
-			hal::render_target_set* texture_rt;
-			hal::texture* texture;
+			//hal::render_target_set* texture_rt;
 		};
 		std::vector<gadget> gadgets;
 		hal::mesh* billboard_mesh;
@@ -46,7 +45,10 @@ namespace SynGlyphX
 		render::model* switch_model;
 
 		hal::font* font;
-		render::ortho_camera* switch_camera;
+		// render::ortho_camera* switch_camera;
+
+		hal::texture* explode_icon;
+		hal::texture* collapse_icon;
 
 		glm::mat4 compute_gadget_transform( const gadget& g );
 		glm::mat4 compute_switch_transform( const render::perspective_camera* camera, const gadget& g );

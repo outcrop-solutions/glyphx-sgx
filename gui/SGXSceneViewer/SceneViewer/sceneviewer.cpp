@@ -51,7 +51,7 @@ namespace SynGlyphX
 	SceneViewer::SceneViewer( QWidget *parent, ViewerMode _mode )
 		: QOpenGLWidget( parent ), glyph_renderer( nullptr ), renderer( nullptr ), wireframe( false ), enable_fly_to_object( false ), scene_axes_enabled( true ),
 		wheel_delta( 0.f ), hud_axes_enabled( true ), hud_axes_location( HUDAxesLocation::TopLeft ), animation_enabled( true ), background_color( render::color::black() ),
-		initialized( false ), filtered_glyph_opacity( 0.5f ), free_selection_camera( false ), selection_effect_enabled( true ), item_focus_sm( nullptr ), scene( nullptr ),
+		initialized( false ), filtered_glyph_opacity( 0.5f ), free_selection_camera( false ), selection_effect_enabled( true ), item_focus_sm( nullptr ), scene( nullptr ), 
 		mode( _mode )
 	{
 		memset( key_states, 0, sizeof( key_states ) );
@@ -509,7 +509,6 @@ namespace SynGlyphX
 							if ( !m_sourceDataLookupForPositionXYZ[i].empty() ) {
 
 								if ( !positionHUD.empty() ) {
-
 									positionHUD += ", ";
 								}
 
@@ -527,6 +526,8 @@ namespace SynGlyphX
 
 			// Draw tags.
 			scene->enumTagEnabled( [this]( const Glyph3DNode& glyph ) {
+				auto pos = glyph.getCachedPosition();
+				if ( scene->isExploded( &glyph ) ) pos += glyph.getAlternatePosition();
 				if ( glyph.getTag() ) renderText( hud_font, camera, glyph.getCachedPosition(), render::color::white(), glyph.getTag() );
 			} );
 
@@ -642,10 +643,15 @@ namespace SynGlyphX
 		if ( event->key() < key_states_size ) key_states[tolower( event->key() )] = true;
 		QWidget::keyPressEvent( event );
 
-#ifdef _DEBUG
 		auto key = event->key();
 		switch ( key )
 		{
+			case Qt::Key_Escape:
+			{
+				scene->collapse( scene->getActiveGroup() );
+				break;
+			}
+#ifdef _DEBUG
 			case 'R': hal::device::rebuild_effects(); break;
 			case 'B': glyph_renderer->enableBoundVis( !glyph_renderer->boundVisEnabled() ); break;
 			case 'M': if ( glyph_renderer->boundVisEnabled() )
@@ -664,8 +670,8 @@ namespace SynGlyphX
 				if ( sel ) scene->debugPrint( sel );
 				break;
 			}
-		}
 #endif
+		}
 	}
 
 	void SceneViewer::keyReleaseEvent( QKeyEvent* event )
@@ -750,7 +756,7 @@ namespace SynGlyphX
 					if ( !ctrl && !alt )
 						scene->clearSelection();
 
-					auto scene_pick_result = scene->pick_with_distance( origin, dir, scene->getFilterMode() == FilteredResultsDisplayMode::TranslucentUnfiltered, scene->getActiveGroup() > 0.f && scene->getGroupStatus() > 0.f );
+					auto scene_pick_result = scene->pick_with_distance( origin, dir, scene->getFilterMode() == FilteredResultsDisplayMode::TranslucentUnfiltered, scene->getActiveGroup() != GlyphScene::NO_GROUP && scene->getGroupStatus() > 0.f );
 					float scene_pick_dist = scene_pick_result.second;
 
 					auto gadget_pick_result = gadgets->pick( camera, origin, dir, scene_pick_dist );

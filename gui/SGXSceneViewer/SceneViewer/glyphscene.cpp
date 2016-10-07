@@ -202,15 +202,21 @@ namespace SynGlyphX
 	{
 		active_group = group;
 		if ( explode_state == group_state::retracted || explode_state == group_state::retracting )
-		{
-			hal::debug::print( "user clicked unexploded group; exploding" );
 			explode_state = group_state::exploding;
-		}
 		else if ( explode_state == group_state::exploded || explode_state == group_state::exploding )
-		{
-			hal::debug::print( "user clicked unexploded group; exploding" );
 			explode_state = group_state::retracting;
-		}
+	}
+
+	void GlyphScene::collapse( unsigned int group )
+	{
+		if ( explode_state == group_state::exploded || explode_state == group_state::exploding )
+			explode_state = group_state::retracting;
+	}
+
+	void GlyphScene::explode( unsigned int group )
+	{
+		if ( explode_state == group_state::retracted || explode_state == group_state::retracting )
+			explode_state = group_state::exploding;
 	}
 
 	void GlyphScene::setSelected( const Glyph3DNode* glyph )
@@ -414,7 +420,7 @@ namespace SynGlyphX
 				{
 					auto& group = groups[i];
 					auto test_glyph = *group.nodes.begin();
-					if ( glm::distance( glyph->getCachedPosition(), test_glyph->getCachedPosition() ) < dist_threshold )
+					if ( glm::distance( glyph->getCachedPosition(), test_glyph->getCachedPosition() ) < test_glyph->getCachedCombinedBound().get_radius() )
 					{
 						group.nodes.push_back( glyph );
 						added_to_group = true;
@@ -430,7 +436,7 @@ namespace SynGlyphX
 				}
 			}
 		}
-
+			
 		auto it = groups.begin();
 		while ( it != groups.end() )
 		{
@@ -500,7 +506,7 @@ namespace SynGlyphX
 			if ( group_status <= 0.f )
 			{
 				explode_state = group_state::retracted;
-				active_group = 0.f;
+				active_group = 0;
 			}
 		}
 		group_status += direction * timeDelta * 0.005f;

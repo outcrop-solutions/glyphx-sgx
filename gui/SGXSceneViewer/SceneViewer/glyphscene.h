@@ -17,9 +17,9 @@ namespace SynGlyphX
 	class SGXSCENEVIEWER_API GlyphScene
 	{
 	public:
-		GlyphScene(GlyphGeometryDB _db) : octree( nullptr ), filter_applied( false ), selection_changed( false ), glyph_storage( nullptr ), glyph_storage_next( 0u ),
+		GlyphScene( GlyphGeometryDB _db ) : octree( nullptr ), filter_applied( false ), selection_changed( false ), glyph_storage( nullptr ), glyph_storage_next( 0u ),
 			filter_mode( FilteredResultsDisplayMode::TranslucentUnfiltered ), has_animation( false ), db( _db ), explode_state( group_state::retracted ),
-			active_group( 0.f ), group_status( 0.f ) { }
+			active_group( 0 ), group_status( 0.f ) { }
 		~GlyphScene();
 		GlyphScene( const GlyphScene& ) = delete;
 
@@ -82,15 +82,20 @@ namespace SynGlyphX
 
 		unsigned int getGroupSize( unsigned int group ) { return groups[group - 1].nodes.size(); }
 		float getGroupStatus() const { return group_status; }
-		float getActiveGroup() const { return active_group; }
+		unsigned int getActiveGroup() const { return active_group; }
 		glm::vec3 getExplodedPosition( const Glyph3DNode* node ) const;
 		glm::vec3 getExplodedPositionOffset( const Glyph3DNode* node ) const;
 		bool isExploded( const Glyph3DNode* node ) const { return node->getRootParent()->getAlternatePositionGroup() == getActiveGroup() && group_status > 0.f; }
+		bool isExploded( unsigned int group ) const { return group != 0 && group == active_group && group_status > 0.f; }
 		void enumGroups( std::function<void( const std::vector< const Glyph3DNode*>&, unsigned int )> );
 
 		void debugPrint( const Glyph3DNode* node );
 
 		void toggleExplode( unsigned int group );
+		void explode( unsigned int group );
+		void collapse( unsigned int group );
+
+		static const unsigned int NO_GROUP = 0u;
 
 	private:
 		void compute_groups();
@@ -116,7 +121,8 @@ namespace SynGlyphX
 		};
 		std::vector< superimposed_group > groups;
 		group_state explode_state;
-		float group_status, active_group;
+		float group_status;
+		unsigned int active_group;
 		const superimposed_group& get_group( unsigned int idx ) const { return groups[idx - 1]; }	// group ids are 1-based
 
 		// Temporary and cached properties that don't affect this object's logical const-ness.

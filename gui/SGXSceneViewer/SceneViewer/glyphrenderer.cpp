@@ -270,7 +270,7 @@ namespace SynGlyphX
 			context->set_constant( glyph_effect, "scene_data", "proj", camera->get_proj() );
 			context->set_constant( glyph_effect, "scene_data", "elapsed_seconds", animation ? elapsed_seconds : zero );
 			context->set_constant( glyph_effect, "scene_data", "alternate_position_state", scene->getGroupStatus() );
-			context->set_constant( glyph_effect, "scene_data", "active_alternate_position_group", scene->getActiveGroup() );
+			context->set_constant( glyph_effect, "scene_data", "active_alternate_position_group", float( scene->getActiveGroup() ) );
 			context->set_constant( glyph_effect, "global_material_data", "base_alpha", 1.f );
 
 			hal::rasterizer_state filled{ true, true, false };
@@ -415,7 +415,7 @@ namespace SynGlyphX
 				context->set_constant( selection_effect, "global_data", "selection_anim_max_scale", selection_anim_max_scale );
 				context->set_constant( selection_effect, "global_data", "selection_anim_state", anim_state );
 				context->set_constant( selection_effect, "global_data", "alternate_position_state", scene->getGroupStatus() );
-				context->set_constant( selection_effect, "global_data", "active_alternate_position_group", scene->getActiveGroup() );
+				context->set_constant( selection_effect, "global_data", "active_alternate_position_group", float( scene->getActiveGroup() ) );
 				context->set_constant( selection_effect, "camera_data", "viewport", glm::vec2( camera->get_viewport_w(), camera->get_viewport_h() ) );
 				context->set_constant( selection_effect, "camera_data", "view", camera->get_view() );
 				context->set_constant( selection_effect, "camera_data", "proj", camera->get_proj() );
