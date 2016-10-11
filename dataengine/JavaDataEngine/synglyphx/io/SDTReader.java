@@ -175,6 +175,14 @@ public class SDTReader {
 			Node glyphs = start.item(0);
 			NodeList roots = glyphs.getChildNodes();
 
+			boolean needsFE = true;
+			Node transform = doc.getElementsByTagName("Transform").item(0);
+			System.out.println("Front end: "+((Element)transform).getElementsByTagName("FrontEnd").getLength());
+			if(((Element)transform).getElementsByTagName("FrontEnd").getLength() != 0){
+				setFrontEnd(transform);
+				needsFE = false;
+			}
+
 			System.out.println(roots.getLength());
 			rootCount = 0;
 			for (int i = 0; i < roots.getLength(); i++) {
@@ -184,7 +192,9 @@ public class SDTReader {
 					NodeList categories = root.getChildNodes();
 					temp.setToMerge(getMergeStatus(root));
 					addNode(categories, temp, 0);
-					setFrontEnd(root);
+					if(needsFE){
+						setFrontEnd(root);
+					}
 					rootCount++;
 				}
 
