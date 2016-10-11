@@ -13,6 +13,7 @@
 
 const QString SourceDataCache::IndexColumnName = "rowid";
 const QString SourceDataCache::s_tableIndexName = "TableIndex";
+const QString SourceDataCache::s_emptyString = QChar(128);
 
 SourceDataCache::SourceDataCache() {
 

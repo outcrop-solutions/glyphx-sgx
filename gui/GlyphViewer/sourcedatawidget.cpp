@@ -231,13 +231,19 @@ void SourceDataWidget::WriteToFile(QTableView* tableView, const QString& filenam
 		for (int i = 0; i < columns.size(); ++i) {
 
 			QVariant var = query->value(i);
-			if (!var.isValid()) {
+			if ((!var.isValid()) || var.isNull()) {
 
-				lineOfValues.push_back(L"\" \"");
+				lineOfValues.push_back(L"\"\"");
 			}
 			else if ((var.type() == QVariant::Char) || (var.type() == QVariant::String)) {
 
-				lineOfValues.push_back(L"\"" + var.toString().toStdWString() + L"\"");
+				QString str = var.toString();
+				//Check if SQLite empty string.  If so, clear the string so it doesn't get passed on to the CSV file
+				if (str == SourceDataCache::s_emptyString) {
+
+					str.clear();
+				}
+				lineOfValues.push_back(L"\"" + str.toStdWString() + L"\"");
 			}
 			else {
 

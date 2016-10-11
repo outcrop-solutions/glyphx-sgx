@@ -44,6 +44,8 @@ public:
 
 	typedef std::vector<std::pair<QString, SynGlyphX::IndexSet>> DistinctValueIndexMap;
 
+	static const QString s_emptyString;
+
 	SourceDataCache();
 	SourceDataCache(const QString& filename);
 	virtual ~SourceDataCache();
