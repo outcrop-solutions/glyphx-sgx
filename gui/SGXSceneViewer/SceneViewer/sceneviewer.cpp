@@ -777,9 +777,6 @@ namespace SynGlyphX
 						auto g = scene_pick_result.first;
 						if ( g )
 						{
-							if ( g->getAlternatePositionGroup() != GlyphScene::NO_GROUP && scene->getGroupStatus() == 0.f )
-								scene->explode( g->getAlternatePositionGroup() );
-
 							if ( alt || ( ctrl && scene->isSelected( g ) ) )
 								scene->setUnSelected( g );
 							else

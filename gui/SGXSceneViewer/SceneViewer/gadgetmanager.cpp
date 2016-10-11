@@ -24,8 +24,8 @@ namespace SynGlyphX
 		effect = hal::device::load_effect( "shaders/gadget_bound.vert", nullptr, "shaders/gadget_bound.frag" );
 		switch_effect = hal::device::load_effect( "shaders/texture.vert", nullptr, "shaders/texture.frag" );
 		font = hal::device::load_font( "fonts/OpenSans-Regular.ttf", 32 );
-		explode_icon = hal::device::load_texture( "textures/superimposed_explode.png" );
-		collapse_icon = hal::device::load_texture( "textures/superimposed_collapse.png" );
+		explode_icon = hal::device::load_texture( "textures/expand-64.tga" );
+		collapse_icon = hal::device::load_texture( "textures/compress-64.tga" );
 
 		float square[]
 		{
@@ -133,9 +133,12 @@ namespace SynGlyphX
 		{
 			auto switch_transform = compute_switch_transform( camera, g );
 			context->bind( 0u, scene.isExploded( g.group ) ? collapse_icon : explode_icon );
-			renderer.add_batch( switch_model, switch_effect, switch_transform, glm::vec4( 1.f, 1.f, 1.f, compute_gadget_alpha( g ) ) );
+			renderer.add_blended_batch( switch_model, switch_effect, switch_transform, glm::vec4( 1.f, 1.f, 1.f, compute_gadget_alpha( g ) ) );
 			renderer.render( context, camera );
 		}
+
+		context->set_depth_state( hal::depth_state::read_write );
+		context->set_blend_state( hal::blend_state::disabled );
 	}
 
 	glm::mat4 GadgetManager::compute_gadget_transform( const gadget& g )
