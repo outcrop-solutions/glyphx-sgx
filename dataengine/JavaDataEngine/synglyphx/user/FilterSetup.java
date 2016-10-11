@@ -137,6 +137,7 @@ public class FilterSetup {
 
 	public static void closeDriverIfOpen(){
       
+      	if(driver == null){return;}
         try{
             if(!driver.getConnection().isClosed()){
                  driver.getConnection().close();
