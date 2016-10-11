@@ -66,6 +66,8 @@ protected:
 	QStatusBar* m_statusBar;
 	std::vector<QTableView*> m_tableViews;
 	QMap<QString, SynGlyphX::InputTable> m_tableInfoMap;
+	QMap<QString, SourceDataCache::TableColumns> m_tableColumns;
+	QMap<QString, QSqlQueryModel*> m_sqlModels;
 	SourceDataCache::ConstSharedPtr m_sourceDataCache;
 	SynGlyphX::DataTransformMapping::ConstSharedPtr m_dataTransformMapping;
 };

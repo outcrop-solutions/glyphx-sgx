@@ -78,6 +78,8 @@ void SourceDataWidget::DeleteTabs() {
 	m_tableViews.clear();
 	
 	m_tableInfoMap.clear();
+	m_sqlModels.clear();
+	m_tableColumns.clear();
 }
 
 void SourceDataWidget::OnNewVisualization() {
@@ -102,27 +104,18 @@ void SourceDataWidget::OnNewVisualization() {
 				tableView->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 				tableView->verticalHeader()->setVisible(false);
 
-				SourceDataCache::SharedSQLQuery query = m_sourceDataCache->CreateSelectQuery(sourceDataTablename,
-					m_sourceDataCache->GetColumnsForTable(inputTable));
-				query->exec();
-				
 				QSqlQueryModel* queryModel = new QSqlQueryModel(tableView);
-				queryModel->setQuery(*query.data());
-				if (queryModel->lastError().isValid()) {
-
-					throw std::runtime_error("Failed to set SQL query for source data widget.");
-				}
 
 				SynGlyphX::HeaderProxyModel* headerProxyModel = new SynGlyphX::HeaderProxyModel(tableView);
 				headerProxyModel->setSourceModel(queryModel);
 				headerProxyModel->SetHorizontalHeaderMap(fieldToAliasMap);
 
-				SourceDataTableModel* sourceDataTableModel = new SourceDataTableModel(DoesEmptyFilterShowAll(), tableView);
-				sourceDataTableModel->setSourceModel(headerProxyModel);
-				tableView->setModel(sourceDataTableModel);
+				tableView->setModel(headerProxyModel);
 
 				m_tableViews.push_back(tableView);
 				m_tableInfoMap.insert(sourceDataTablename, inputTable);
+				m_sqlModels.insert(sourceDataTablename, queryModel);
+				m_tableColumns.insert(sourceDataTablename, m_sourceDataCache->GetColumnsForTable(inputTable));
 			}
 		}
 	}
@@ -141,11 +134,19 @@ void SourceDataWidget::UpdateTables() {
 
 		QTableView* tableView = m_tableViews[i];
 		QString sourceDataTablename = tableView->objectName();
-		SourceDataTableModel* sourceDataTableModel = dynamic_cast<SourceDataTableModel*>(tableView->model());
 		SynGlyphX::IndexSet sourceDataIndexes = GetSourceIndexesForTable(sourceDataTablename);
-		sourceDataTableModel->SetFilters(sourceDataIndexes);
 
 		if (DoesEmptyFilterShowAll() || !sourceDataIndexes.empty()) {
+
+			SourceDataCache::SharedSQLQuery query = m_sourceDataCache->CreateSelectQuery(sourceDataTablename,
+				m_tableColumns[sourceDataTablename], GetSourceIndexesForTable(sourceDataTablename));
+			query->exec();
+
+			m_sqlModels[sourceDataTablename]->setQuery(*query.data());
+			if (m_sqlModels[sourceDataTablename]->lastError().isValid()) {
+
+				throw std::runtime_error("Failed to set SQL query for source data widget.");
+			}
 
 			tableView->setVisible(true);
 			m_sourceDataTabs->addTab(tableView, formattedNamesMap.at(sourceDataTablename));
