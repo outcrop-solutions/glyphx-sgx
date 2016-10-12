@@ -275,6 +275,9 @@ namespace SynGlyphX {
 				boost::uuids::uuid treeID = glyphPropertyTree.second.get<boost::uuids::uuid>(L"<xmlattr>.id");
 				m_glyphTrees.insert(std::pair<boost::uuids::uuid, DataMappingGlyphGraph::SharedPtr>(treeID, glyphGraph));
 
+
+				// moved FrontEnd section from Glyphs, keep this code here for backwards compatibility 
+				//TODO: remove in future versions
 				boost::optional<const boost::property_tree::wptree&> frontEndFieldsPropertyTree = glyphPropertyTree.second.get_child_optional(L"FrontEnd");
 				if (frontEndFieldsPropertyTree.is_initialized()) {
 
@@ -397,7 +400,29 @@ namespace SynGlyphX {
 			}
 		}
 
-    }
+		boost::optional<const boost::property_tree::wptree&> frontEndFieldsPropertyTree = dataTransformPropertyTree.get_child_optional(L"FrontEnd");
+		if (frontEndFieldsPropertyTree.is_initialized()) {
+
+			InputTable table(frontEndFieldsPropertyTree.get().get_child(L"FilterField"));
+
+			SingleTableFrontEndFilters filters;
+			for (const boost::property_tree::wptree::value_type& frontEndfieldProperties : frontEndFieldsPropertyTree.get()) {
+
+				if (frontEndfieldProperties.first == L"FilterField") {
+
+					std::wstring inputfield = frontEndfieldProperties.second.get<std::wstring>(L"<xmlattr>.field");
+					filters.Insert(inputfield, FrontEndFilterOptions(frontEndfieldProperties.second.get<bool>(L"<xmlattr>.required"),
+						frontEndfieldProperties.second.get<bool>(L"<xmlattr>.selectall")));
+				}
+			}
+
+			if (!filters.empty()) {
+
+				m_frontEndFilters[table] = filters;
+			}
+		}
+
+	}
 
 	void DataTransformMapping::ExportToPropertyTree(boost::property_tree::wptree& filePropertyTree) const {
 
@@ -423,20 +448,6 @@ namespace SynGlyphX {
 			boost::property_tree::wptree& glyphPropertyTree = glyphTree.second->ExportToPropertyTree(glyphTreesPropertyTree);
 			glyphPropertyTree.put(L"<xmlattr>.id", glyphTree.first);
 
-			InputTable table = GetInputTable(glyphTree.first);
-			if (m_frontEndFilters.count(table) != 0) {
-
-				boost::property_tree::wptree& frontEndFiltersPropertyTree = glyphPropertyTree.add(L"FrontEnd", L"");
-				for (const auto& field : m_frontEndFilters.at(table)) {
-
-					boost::property_tree::wptree& filterFieldPropertyTree = frontEndFiltersPropertyTree.add(L"FilterField", L"");
-					filterFieldPropertyTree.put(L"<xmlattr>.id", table.GetDatasourceID());
-					filterFieldPropertyTree.put(L"<xmlattr>.table", table.GetTable());
-					filterFieldPropertyTree.put(L"<xmlattr>.field", field.first);
-					filterFieldPropertyTree.put(L"<xmlattr>.required", field.second.IsRequired());
-					filterFieldPropertyTree.put(L"<xmlattr>.selectall", field.second.IsMultiselectAllowed());
-				}
-			}
 		}
 
 		m_defaults.ExportToPropertyTree(dataTransformPropertyTreeRoot);
@@ -473,6 +484,24 @@ namespace SynGlyphX {
 		{
 			boost::property_tree::wptree& inputFieldsPropertyTree = dataTransformPropertyTreeRoot.add(L"InputFields", L"");
 			m_inputFieldManager.ExportToPropertyTree(inputFieldsPropertyTree);
+		}
+
+		if (!m_frontEndFilters.empty()) {
+			boost::property_tree::wptree& frontEndFiltersPropertyTree = dataTransformPropertyTreeRoot.add(L"FrontEnd", L"");
+			for (const auto& item : m_frontEndFilters){
+				const auto& table = item.first;
+				for (const auto& field : m_frontEndFilters.at(table)) {
+
+					boost::property_tree::wptree& filterFieldPropertyTree = frontEndFiltersPropertyTree.add(L"FilterField", L"");
+					filterFieldPropertyTree.put(L"<xmlattr>.id", table.GetDatasourceID());
+					filterFieldPropertyTree.put(L"<xmlattr>.table", table.GetTable());
+					filterFieldPropertyTree.put(L"<xmlattr>.field", field.first);
+					filterFieldPropertyTree.put(L"<xmlattr>.required", field.second.IsRequired());
+					filterFieldPropertyTree.put(L"<xmlattr>.selectall", field.second.IsMultiselectAllowed());
+				}
+
+			}
+
 		}
 
     }

@@ -48,6 +48,13 @@ namespace SynGlyphX {
 
 	typedef std::unordered_map<InputTable, SingleTableFrontEndFilters, InputTableHash> MultiTableFrontEndFilters;
 
+	struct SGXDATAMAPPING_API FrontEndFilter
+	{
+		bool isRequired;
+		bool isMuliselectAllowed;
+		std::vector<InputTable> tables;
+	};
+
 } //namespace SynGlyphX
 
 //#pragma once
