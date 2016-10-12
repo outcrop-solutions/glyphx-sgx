@@ -218,8 +218,7 @@ void SourceDataWidget::WriteToFile(QTableView* tableView, const QString& filenam
 	}
 	csvFile.WriteLine(headers);
 
-	SourceDataCache::SharedSQLQuery query = m_sourceDataCache->CreateSelectQuery(tableView->objectName(), columns, 
-		dynamic_cast<SourceDataTableModel*>(tableView->model())->GetFilters());
+	SourceDataCache::SharedSQLQuery query = m_sourceDataCache->CreateSelectQuery(tableView->objectName(), columns, GetSourceIndexesForTable(tableView->objectName()));
 	query->exec();
 	if (query->lastError().isValid()) {
 
