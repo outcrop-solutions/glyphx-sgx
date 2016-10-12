@@ -249,7 +249,7 @@ namespace SynGlyphX
 	{
 		const float BASE_SCALE = 1.f;	// temporary scale to make objects more visible until topo code available
 
-		SGXSCENEVIEWER_API bool LoadLegacyScene( GlyphScene& scene, BaseImageRenderer& base_images, render::grid_renderer& grids, hal::texture* default_base_texture, const char* mainCSV, const char* tagCSV, const std::vector<hal::texture*>& base_image_textures )
+		SGXSCENEVIEWER_API bool LoadLegacyScene( GlyphScene& scene, const GlyphGeometryDB& db, BaseImageRenderer& base_images, render::grid_renderer& grids, hal::texture* default_base_texture, const char* mainCSV, const char* tagCSV, const std::vector<hal::texture*>& base_image_textures )
 		{
 			hal::debug::profile_timer timer;
 			unsigned int object_count = 0u;
@@ -439,8 +439,8 @@ namespace SynGlyphX
 							if ( glyph0 && glyph1 )
 							{
 								// need linked glyphs to have up-to-date transforms so we know where to put the link
-								glyph0->getRootParent()->updateCachedTransforms();
-								glyph1->getRootParent()->updateCachedTransforms();
+								glyph0->getRootParent()->updateCachedTransforms( db );
+								glyph1->getRootParent()->updateCachedTransforms( db );
 								auto pt0 = glyph0->getCachedPosition();
 								auto pt1 = glyph1->getCachedPosition();
 								glm::vec3 origin = ( pt0 + pt1 ) * 0.5f;

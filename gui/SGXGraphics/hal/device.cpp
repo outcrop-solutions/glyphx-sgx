@@ -26,6 +26,16 @@ namespace SynGlyphX
 			return hal_gl::device_internal::get_default_context();
 		}
 
+		context* device::get_new_context()
+		{
+			return hal_gl::device_internal::get_new_context();
+		}
+
+		void device::release_context( hal::context* c )
+		{
+			hal_gl::device_internal::release_context( c );
+		}
+
 		render_target_set* device::create_render_target_set( unsigned int w, unsigned int h )
 		{
 			return hal_gl::device_internal::create_render_target_set( w, h );

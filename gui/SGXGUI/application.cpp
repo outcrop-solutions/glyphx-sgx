@@ -26,6 +26,7 @@ namespace SynGlyphX {
 
 		//One we are on Qt 5.3 or later uncomment the following line
 		//setAttribute(Qt::AA_UseDesktopOpenGL, true);
+		setAttribute( Qt::AA_ShareOpenGLContexts, true );
 
         setOrganizationName("SynGlyphX");
         setOrganizationDomain("www.synglyphx.com");

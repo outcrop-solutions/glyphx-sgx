@@ -60,7 +60,8 @@ namespace SynGlyphX
 			{
 				auto world_transform = world * transform * part->get_transform();
 
-				// TODO: should NOT use default context here (breaks if we ever have multiple contexts)
+				// TODO: should NOT use default context here; need a way to get active context
+				// (it's fine for now as the content of readback_mesh is pretty much static, but it should be fixed in case that changes)
 				auto mesh_data = hal::device::get_default_context()->readback_mesh( part->get_mesh() );
 
 				hal::for_each_triangle( mesh_data, [&]( const glm::vec3& v0, const glm::vec3& v1, const glm::vec3& v2 ) {

@@ -88,11 +88,8 @@ namespace SynGlyphX
 			hal::check_errors();
 			glGetIntegerv( GL_MAX_UNIFORM_BLOCK_SIZE, &maximum_cbuffer_size );
 			default_context = new context_internal();
-			glPixelStorei( GL_PACK_ALIGNMENT, 1 );
-			glPixelStorei( GL_UNPACK_ALIGNMENT, 1 );
 			auto error = FT_Init_FreeType( &freetype );
 			hal::debug::_assert( !error, "error initializing freetype" );
-			// todo: inline this shader once it's stable (shouldn't have to exist in app folder since it's part of the graphics library).
 			text_effect = create_effect( text_vert, nullptr, text_frag );
 			set_cbuffer_external( text_effect, "instance_data" );
 			text_format.add_stream( hal::stream_info( hal::stream_type::float32, 3, hal::stream_semantic::position, 0 ) );
@@ -136,6 +133,16 @@ namespace SynGlyphX
 		hal::context* device_internal::get_default_context()
 		{
 			return default_context;
+		}
+		
+		hal::context* device_internal::get_new_context()
+		{
+			return new context_internal;
+		}
+
+		void device_internal::release_context( hal::context* c )
+		{
+			delete c;
 		}
 
 		void device_internal::set_external_default_render_target( unsigned int rt )
@@ -567,66 +574,6 @@ namespace SynGlyphX
 		hal::effect* device_internal::get_text_effect()
 		{
 			return text_effect;
-		}
-
-		const hal::font_glyph& device_internal::get_glyph( hal::font* f, char c )
-		{
-			assert( f );
-
-			// Load and render the glyph if we don't have it already.
-			if ( f->glyphs.find( c ) == f->glyphs.end() )
-			{
-				auto idx = FT_Get_Char_Index( f->face, c );
-				hal::debug::_assert( idx != 0, "FT_GetCharIndex failed for font %s and char code %i", f->file.c_str(), c );
-				auto error = FT_Load_Glyph( f->face, idx, FT_LOAD_TARGET_LIGHT );
-				auto glyph = f->face->glyph;
-				hal::debug::_assert( error == 0, "FT_Load_Glyph failed for font %s and char code %i (char_index %i)", f->file.c_str(), c, idx );
-				if ( glyph->format != FT_GLYPH_FORMAT_BITMAP )
-				{
-					error = FT_Render_Glyph( glyph, FT_RENDER_MODE_LIGHT );
-					hal::debug::_assert( error == 0, "FT_Render_Glyph failed for font %s and char code %i (char_index %i )", f->file.c_str(), c, idx );
-				}
-				hal::font_glyph g;
-				assert( glyph->bitmap.pixel_mode == FT_PIXEL_MODE_GRAY );
-				g.origin_x = int16_t( glyph->bitmap_left );
-				g.origin_y = int16_t( glyph->bitmap_top );
-				g.advance_x = int16_t( glyph->advance.x >> 6 );
-				g.advance_y = int16_t( glyph->advance.y >> 6 );
-
-				g.array_slice = f->next_slice++;
-				if ( glyph->bitmap.buffer )
-				{
-					hal::pixel_rect rect{ 0u, 0u, glyph->bitmap.width, glyph->bitmap.rows };
-					update_array_slice( f->textures, g.array_slice, rect, glyph->bitmap.buffer );
-				}
-
-				FT_Glyph ftg = nullptr;
-				FT_Get_Glyph( glyph, &ftg );
-				FT_BBox bb;
-				FT_Glyph_Get_CBox( ftg, FT_GLYPH_BBOX_PIXELS, &bb );
-				FT_Done_Glyph( ftg );
-				g.width = uint16_t( bb.xMax - bb.xMin );
-				g.height = uint16_t( bb.yMax - bb.yMin );
-
-				f->glyphs.insert( std::make_pair( c, g ) );
-			}
-
-			hal::check_errors();
-			return f->glyphs.find( c )->second;
-		}
-
-		const glm::vec2 device_internal::get_kerning( hal::font* f, char left, char right )
-		{
-			glm::vec2 result;
-			if ( FT_HAS_KERNING( f->face ) )
-			{
-				auto l = FT_Get_Char_Index( f->face, left );
-				auto r = FT_Get_Char_Index( f->face, right );
-				FT_Vector kern;
-				FT_Get_Kerning( f->face, l, r, FT_KERNING_DEFAULT, &kern );
-				result = glm::vec2( kern.x >> 6, kern.y >> 6 );
-			}
-			return result;
 		}
 	}
 }

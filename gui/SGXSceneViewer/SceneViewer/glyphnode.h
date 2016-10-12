@@ -11,6 +11,7 @@
 namespace SynGlyphX
 {
 	class Glyph3DNode;
+	class GlyphGeometryDB;
 	class PlacementPolicy;
 
 	enum class Glyph3DNodeType : unsigned int
@@ -30,11 +31,10 @@ namespace SynGlyphX
 
 		void setPlacementPolicy( PlacementPolicy* policy ) { placement = policy; }
 		const PlacementPolicy* const getPlacementPolicy() const { return placement; }
-		void updateCachedTransforms() const;
+		void updateCachedTransforms( const GlyphGeometryDB& db ) const;
 
 		void setGeometry( const GlyphShape& geom, bool _wireframe = false ) { geometry = geom; setWireframe( _wireframe ); }
 		GlyphShape getGeometry() const { return geometry; }
-		render::model* getModel( float dist = 0.f ) const;
 
 		void setLinkTargets( const Glyph3DNode* a, const Glyph3DNode* b ) {
 			assert( type == Glyph3DNodeType::Link );

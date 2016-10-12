@@ -21,6 +21,8 @@ namespace SynGlyphX
 			static void end_frame();
 
 			static context* get_default_context();
+			static context* get_new_context();
+			static void release_context( context* c );
 
 			static render_target_set* create_render_target_set( unsigned int w, unsigned int h );
 			static unsigned int add_color_target( render_target_set* set, texture_format fmt );

@@ -6,9 +6,6 @@
 
 namespace SynGlyphX
 {
-	std::unordered_map<GlyphShape, std::vector<GlyphGeometryDB::model_entry>> GlyphGeometryDB::models;
-	std::unordered_map<float, std::vector<GlyphGeometryDB::model_entry>> GlyphGeometryDB::torus_models;
-
 	void GlyphGeometryDB::init()
 	{
 		clear();
@@ -47,7 +44,7 @@ namespace SynGlyphX
 		models.clear();
 	}
 
-	render::model* GlyphGeometryDB::get( const GlyphShape type, float torus_ratio, float dist )
+	render::model* GlyphGeometryDB::get( const GlyphShape type, float torus_ratio, float dist ) const
 	{
 		if ( type == GlyphShape::Torus )
 			return get_torus( torus_ratio, dist );
@@ -70,7 +67,7 @@ namespace SynGlyphX
 		}
 	}
 
-	render::model* GlyphGeometryDB::get_torus( float ratio, float dist )
+	render::model* GlyphGeometryDB::get_torus( float ratio, float dist ) const
 	{
 		if ( torus_models.find( ratio ) == torus_models.end() )
 		{
@@ -127,7 +124,7 @@ namespace SynGlyphX
 		entry->second.push_back( e );
 	}
 
-	void GlyphGeometryDB::add_torus_model( float ratio, render::model* model, float lod )
+	void GlyphGeometryDB::add_torus_model( float ratio, render::model* model, float lod ) const
 	{
 		model_entry e;
 		e.model = model;

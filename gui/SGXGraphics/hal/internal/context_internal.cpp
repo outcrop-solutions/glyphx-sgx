@@ -6,6 +6,10 @@
 #include "effect.h"
 #include "../debug.h"
 
+#include <ft2build.h>
+#include FT_FREETYPE_H
+#include FT_GLYPH_H
+
 namespace SynGlyphX
 {
 	namespace hal_gl
@@ -35,6 +39,8 @@ namespace SynGlyphX
 			glBindVertexArray( 0 );
 			glBindBuffer( GL_ARRAY_BUFFER, 0 );
 			glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, 0 );
+			glPixelStorei( GL_PACK_ALIGNMENT, 1 );
+			glPixelStorei( GL_UNPACK_ALIGNMENT, 1 );
 		}
 
 		void context_internal::unbind_all_textures()
@@ -337,10 +343,10 @@ namespace SynGlyphX
 			const hal::font_glyph* glyph;
 			while ( *c != '\0' )
 			{
-				glyph = &device_internal::get_glyph( f, *c );
+				glyph = &get_glyph( f, *c );
 
 				glm::vec2 kern;
-				if ( prev ) kern = device_internal::get_kerning( f, *prev, *c );
+				if ( prev ) kern = get_kerning( f, *prev, *c );
 				pen += kern;
 
 				glm::vec2 glyph_min( pen.x + glyph->origin_x, pen.y - glyph->origin_y );
@@ -371,9 +377,9 @@ namespace SynGlyphX
 				std::vector<glm::vec4> instances;
 				for ( unsigned int i = 0; i < new_str.length; ++i )
 				{
-					auto glyph = device_internal::get_glyph( f, *c );
+					auto glyph = get_glyph( f, *c );
 					glm::vec2 kern;
-					if ( prev ) kern = device_internal::get_kerning( f, *prev, *c );
+					if ( prev ) kern = get_kerning( f, *prev, *c );
 					pen += kern;
 					glm::vec3 origin( pen.x + glyph.origin_x, pen.y - glyph.origin_y, 0.f );
 
@@ -385,10 +391,7 @@ namespace SynGlyphX
 				}
 				assert( instances.size() == new_str.length );
 				update_constant_block( new_str.instance_data, &instances[0], instances.size() * sizeof( glm::vec4 ), hal::cbuffer_usage::static_draw );
-				f->string_cache.insert( std::make_pair( text, new_str ) );
-
-				// todo: is there a way to avoid this second lookup? really clunky...
-				it = f->string_cache.find( text );
+				it = f->string_cache.insert( std::make_pair( text, new_str ) ).first;
 			}
 			auto& font_str = it->second;
 			font_str.last_use = device_internal::current_frame();
@@ -407,6 +410,66 @@ namespace SynGlyphX
 			context::set_constant( effect, "shared_data", "transform", transform );
 
 			draw_instanced( f->glyph_mesh, font_str.length );
+		}
+
+		const hal::font_glyph& context_internal::get_glyph( hal::font* f, char c )
+		{
+			assert( f );
+
+			// Load and render the glyph if we don't have it already.
+			if ( f->glyphs.find( c ) == f->glyphs.end() )
+			{
+				auto idx = FT_Get_Char_Index( f->face, c );
+				hal::debug::_assert( idx != 0, "FT_GetCharIndex failed for font %s and char code %i", f->file.c_str(), c );
+				auto error = FT_Load_Glyph( f->face, idx, FT_LOAD_TARGET_LIGHT );
+				auto glyph = f->face->glyph;
+				hal::debug::_assert( error == 0, "FT_Load_Glyph failed for font %s and char code %i (char_index %i)", f->file.c_str(), c, idx );
+				if ( glyph->format != FT_GLYPH_FORMAT_BITMAP )
+				{
+					error = FT_Render_Glyph( glyph, FT_RENDER_MODE_LIGHT );
+					hal::debug::_assert( error == 0, "FT_Render_Glyph failed for font %s and char code %i (char_index %i )", f->file.c_str(), c, idx );
+				}
+				hal::font_glyph g;
+				assert( glyph->bitmap.pixel_mode == FT_PIXEL_MODE_GRAY );
+				g.origin_x = int16_t( glyph->bitmap_left );
+				g.origin_y = int16_t( glyph->bitmap_top );
+				g.advance_x = int16_t( glyph->advance.x >> 6 );
+				g.advance_y = int16_t( glyph->advance.y >> 6 );
+
+				g.array_slice = f->next_slice++;
+				if ( glyph->bitmap.buffer )
+				{
+					hal::pixel_rect rect{ 0u, 0u, glyph->bitmap.width, glyph->bitmap.rows };
+					device_internal::update_array_slice( f->textures, g.array_slice, rect, glyph->bitmap.buffer );
+				}
+
+				FT_Glyph ftg = nullptr;
+				FT_Get_Glyph( glyph, &ftg );
+				FT_BBox bb;
+				FT_Glyph_Get_CBox( ftg, FT_GLYPH_BBOX_PIXELS, &bb );
+				FT_Done_Glyph( ftg );
+				g.width = uint16_t( bb.xMax - bb.xMin );
+				g.height = uint16_t( bb.yMax - bb.yMin );
+
+				f->glyphs.insert( std::make_pair( c, g ) );
+			}
+
+			hal::check_errors();
+			return f->glyphs.find( c )->second;
+		}
+
+		const glm::vec2 context_internal::get_kerning( hal::font* f, char left, char right )
+		{
+			glm::vec2 result;
+			if ( FT_HAS_KERNING( f->face ) )
+			{
+				auto l = FT_Get_Char_Index( f->face, left );
+				auto r = FT_Get_Char_Index( f->face, right );
+				FT_Vector kern;
+				FT_Get_Kerning( f->face, l, r, FT_KERNING_DEFAULT, &kern );
+				result = glm::vec2( kern.x >> 6, kern.y >> 6 );
+			}
+			return result;
 		}
 	}
 }

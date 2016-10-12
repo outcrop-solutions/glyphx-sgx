@@ -8,11 +8,6 @@
 
 namespace SynGlyphX
 {
-	namespace
-	{
-		bool updates_done = false;	// used to track if instance buffers have been rebuilt for profiling purposes
-	}
-
 	GlyphRenderer::glyph_bucket::~glyph_bucket()
 	{
 		clear();
@@ -55,7 +50,7 @@ namespace SynGlyphX
 		instances.clear();
 	}
 
-	void GlyphRenderer::glyph_bucket::update_instances( hal::context* context )
+	void GlyphRenderer::glyph_bucket::update_instances( hal::context* context, bool& updates_done )
 	{
 		unsigned int update_count = 0u;
 		for ( auto& entry : instances )
@@ -114,9 +109,9 @@ namespace SynGlyphX
 		}
 	}
 
-	GlyphRenderer::GlyphRenderer() : transform_binding_point( UINT_MAX ), material_binding_point( UINT_MAX ), selection_anim_max_scale( 64.f ),
+	GlyphRenderer::GlyphRenderer( GlyphGeometryDB& _db ) : transform_binding_point( UINT_MAX ), material_binding_point( UINT_MAX ), selection_anim_max_scale( 64.f ),
 		animation( true ), global_wireframe( false ), scene( nullptr ), filter_alpha( 0.5f ), selection_animation_time( 0.f ), selection_animation_state( 0.f ),
-		bound_vis_enabled( false ), bound_vis_mode( GlyphRenderer::BoundVisMode::Individual ), sel_effect_enabled( true )
+		bound_vis_enabled( false ), bound_vis_mode( GlyphRenderer::BoundVisMode::Individual ), sel_effect_enabled( true ), db( _db)
 	{
 		glyph_effect = hal::device::load_effect( "shaders/glyph.vert", nullptr, "shaders/glyph.frag" );
 		selection_effect = hal::device::load_effect( "shaders/selection.vert", nullptr, "shaders/selection.frag" );
@@ -126,18 +121,20 @@ namespace SynGlyphX
 		hal::device::set_cbuffer_external( selection_effect, "instance_data" );
 		hal::device::set_cbuffer_external( selection_effect, "bounds" );
 		hal::device::set_cbuffer_external( selection_effect, "animation" );
+		db.init();
 	}
 
 	GlyphRenderer::~GlyphRenderer()
 	{
 		hal::device::release( glyph_effect );
 		hal::device::release( selection_effect );
+		db.clear();
 	}
 
 	void GlyphRenderer::add_bound_to_bucket( const Glyph3DNode& glyph, GlyphRenderer::glyph_bucket& bucket )
 	{
 		auto bound = bound_vis_mode == BoundVisMode::Combined ? glyph.getCachedCombinedBound() : glyph.getCachedBound();
-		auto sphere = GlyphGeometryDB::get( GlyphShape::Sphere );
+		auto sphere = db.get( GlyphShape::Sphere );
 		auto spart = sphere->get_parts()[0];
 		auto xform = glm::translate( glm::mat4(), bound.get_center() ) * glm::scale( glm::mat4(), glm::vec3( bound.get_radius() ) );
 		bucket.add_instance( spart->get_mesh(), xform * sphere->get_transform() * spart->get_transform(), glyph.getColor(), glyph.getAnimationAxis(), 0.f, glyph.getAnimationCenter() );
@@ -159,7 +156,7 @@ namespace SynGlyphX
 			}
 			else if ( glyph.getColor().a < 1.0f ) bucket = &blended[filter];
 
-			render::model* model = GlyphGeometryDB::get( glyph.getGeometry(), glyph.getTorusRatio() );
+			render::model* model = db.get( glyph.getGeometry(), glyph.getTorusRatio() );
 			for ( auto part : model->get_parts() )
 			{
 				bucket->add_instance( part->get_mesh(), glyph.getCachedTransform() * glyph.getVisualTransform() * model->get_transform() * part->get_transform(), glyph.getColor(), glyph.getAnimationAxis(), glyph.getAnimationRate(), glyph.getAnimationCenter() );
@@ -188,10 +185,10 @@ namespace SynGlyphX
 		hal::debug::profile_timer timer;
 		for ( int i = 0; i < 2; ++i )
 		{
-			solid[i].update_instances( context );
-			blended[i].update_instances( context );
-			wireframe[i].update_instances( context );
-			wireframe_blended[i].update_instances( context );
+			solid[i].update_instances( context, updates_done );
+			blended[i].update_instances( context, updates_done );
+			wireframe[i].update_instances( context, updates_done );
+			wireframe_blended[i].update_instances( context, updates_done );
 		}
 
 		if ( updates_done )
@@ -323,7 +320,7 @@ namespace SynGlyphX
 					selection_wireframe.clear();
 					scene->enumSelected( [&]( const Glyph3DNode& glyph ) {
 						auto glyph_transform = glyph.getCachedTransform() * glyph.getVisualTransform();
-						auto model = glyph.getModel( 0.f /* todo: correct LOD */ );
+						auto model = db.get( glyph.getGeometry(), glyph.getTorusRatio(), 0.f );
 						for ( auto part : model->get_parts() )
 						{
 							// for the selection effect we don't care about instance color, so we can pack the bound into that
@@ -334,8 +331,8 @@ namespace SynGlyphX
 								add_bound_to_bucket( glyph, selection_wireframe );
 						}
 					} );
-					selection.update_instances( context );
-					selection_wireframe.update_instances( context );
+					selection.update_instances( context, updates_done );
+					selection_wireframe.update_instances( context, updates_done );
 					scene->clearSelectionChangedFlag();
 					timer.print_ms_to_debug( "built selection instance buffers" );
 				}

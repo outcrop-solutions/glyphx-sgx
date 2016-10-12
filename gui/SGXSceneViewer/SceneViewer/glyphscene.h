@@ -11,12 +11,13 @@ namespace SynGlyphX
 {
 	typedef unsigned int Glyph3DHandle;
 	const Glyph3DHandle INVALID_GLYPH_HANDLE = 0u;
+	class GlyphGeometryDB;
 
 	class SGXSCENEVIEWER_API GlyphScene
 	{
 	public:
-		GlyphScene() : octree( nullptr ), filter_applied( false ), selection_changed( false ), glyph_storage( nullptr ), glyph_storage_next( 0u ),
-			filter_mode( FilteredResultsDisplayMode::TranslucentUnfiltered ), has_animation( false ) { }
+		GlyphScene( GlyphGeometryDB& _db ) : octree( nullptr ), filter_applied( false ), selection_changed( false ), glyph_storage( nullptr ), glyph_storage_next( 0u ),
+			filter_mode( FilteredResultsDisplayMode::TranslucentUnfiltered ), has_animation( false ), db( _db ) { }
 		~GlyphScene();
 		GlyphScene( const GlyphScene& ) = delete;
 
@@ -95,6 +96,7 @@ namespace SynGlyphX
 
 		bool has_animation;
 
+		GlyphGeometryDB& db;
 		char* glyph_storage;
 		unsigned int glyph_storage_next, glyph_storage_size;
 	};

@@ -164,7 +164,7 @@ void GlyphViewerWindow::CreateANTzWidget() {
 		m_viewer = nullptr;
 	}
 
-	m_viewer = new SynGlyphX::SceneViewer( this );
+	m_viewer = new SynGlyphX::SceneViewer( this, SynGlyphX::ViewerMode::Full );
 	m_viewer->setSelectionModel( m_glyphForestModel, m_glyphForestSelectionModel );
 
 	m_openURLAction = new QAction(tr("Open URL"), this);

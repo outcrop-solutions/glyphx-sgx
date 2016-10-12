@@ -59,6 +59,14 @@ namespace SynGlyphX
 			static const unsigned int max_bound_textures = 16u;
 			hal::texture* bound_textures[max_bound_textures];
 			float max_anisotropy;
+
+			struct font_cache_entry
+			{
+				std::vector<glm::mat4> transforms;
+				std::vector<hal::mesh*> meshes;
+			};
+			const hal::font_glyph& get_glyph( hal::font* f, char c );
+			const glm::vec2 get_kerning( hal::font* f, char left, char right );
 		};
 	}
 }

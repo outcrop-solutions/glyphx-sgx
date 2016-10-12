@@ -2,6 +2,7 @@
 #include "glyphscene.h"
 #include <hal/debug.h>
 #include <render/model.h>
+#include "glyphgeometrydb.h"
 
 namespace SynGlyphX
 {
@@ -135,7 +136,7 @@ namespace SynGlyphX
 				if ( intersect_local > 0 )
 				{
 					// We intersected the sphere bound, so pick against the actual model.
-					auto model = node->getModel(/* todo: correct LOD? */ );
+					auto model = db.get( node->getGeometry() );
 					glm::vec3 pt;
 					if ( model->pick( ray_origin, ray_dir, node->getCachedTransform() * node->getVisualTransform(), pt ) )
 					{
@@ -206,11 +207,11 @@ namespace SynGlyphX
 			fn( *entry );
 	}
 
-	void GlyphScene::updateCachedTransforms() const
+	void GlyphScene::updateCachedTransforms( ) const
 	{
-		enumGlyphs( []( const Glyph3DNode& node ) {
+		enumGlyphs( [this]( const Glyph3DNode& node ) {
 			if ( node.isRoot() )
-				node.updateCachedTransforms();
+				node.updateCachedTransforms( db );
 			return true;
 		}, true );
 	}

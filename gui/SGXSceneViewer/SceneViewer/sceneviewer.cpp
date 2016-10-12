@@ -45,57 +45,70 @@ namespace SynGlyphX
 		const float flyToObjectDistance = 5.f;
 	}
 
-	SceneViewer::SceneViewer( QWidget *parent )
+	unsigned int SceneViewer::active_viewer_count = 0u;
+
+	SceneViewer::SceneViewer( QWidget *parent, ViewerMode _mode )
 		: QOpenGLWidget( parent ), glyph_renderer( nullptr ), renderer( nullptr ), wireframe( false ), enable_fly_to_object( false ), scene_axes_enabled( true ),
-		wheel_delta( 0.f ),	hud_axes_enabled( true ), hud_axes_location( HUDAxesLocation::TopLeft ), animation_enabled( true ), background_color( render::color::black() ),
-		initialized( false ), filtered_glyph_opacity( 0.5f ), free_selection_camera( false ), selection_effect_enabled( true )
+		wheel_delta( 0.f ), hud_axes_enabled( true ), hud_axes_location( HUDAxesLocation::TopLeft ), animation_enabled( true ), background_color( render::color::black() ),
+		initialized( false ), filtered_glyph_opacity( 0.5f ), free_selection_camera( false ), selection_effect_enabled( true ), item_focus_sm( nullptr ), scene( nullptr ),
+		mode( _mode )
 	{
 		memset( key_states, 0, sizeof( key_states ) );
 
 		setMouseTracking( true );
 		setFocusPolicy( Qt::FocusPolicy::StrongFocus );
 
-		m_upRotateButton = CreateNavigationButton( tr( "Rotate Up" ), true );
-		m_upRotateButton->setIcon( QIcon( ":GlyphViewer/Resources/rotate_up.png" ) );
-		QObject::connect( m_upRotateButton, &QToolButton::pressed, this, [this]() { cur_cam_control->turn( glm::vec2( 0.f, -buttonRotateRate ) ); } );
-
-		m_leftRotateButton = CreateNavigationButton( tr( "Rotate Left" ), true );
-		m_leftRotateButton->setIcon( QIcon( ":GlyphViewer/Resources/rotate_left.png" ) );
-		QObject::connect( m_leftRotateButton, &QToolButton::pressed, this, [this]() { cur_cam_control->turn( glm::vec2( -buttonRotateRate, 0.f ) ); } );
-
-		m_rightRotateButton = CreateNavigationButton( tr( "Rotate Right" ), true );
-		m_rightRotateButton->setIcon( QIcon( ":GlyphViewer/Resources/rotate_right.png" ) );
-		QObject::connect( m_rightRotateButton, &QToolButton::pressed, this, [this]() { cur_cam_control->turn( glm::vec2( buttonRotateRate, 0.f ) ); } );
-
-		m_downRotateButton = CreateNavigationButton( tr( "Rotate Down" ), true );
-		m_downRotateButton->setIcon( QIcon( ":GlyphViewer/Resources/rotate_down.png" ) );
-		QObject::connect( m_downRotateButton, &QToolButton::pressed, this, [this]() { cur_cam_control->turn( glm::vec2( 0.f, buttonRotateRate ) ); } );
-
-		auto move = [&]( const glm::vec3& dir, float amt )
+		if ( mode == ViewerMode::Full )
 		{
-			if ( cur_cam_control == free_cam_control )
-				cur_cam_control->move( dir * amt );
-			else if ( cur_cam_control == orbit_cam_control )
-				cur_cam_control->move( glm::vec3( 0.f, 0.f, amt ) );
-		};
+			m_upRotateButton = CreateNavigationButton( tr( "Rotate Up" ), true );
+			m_upRotateButton->setIcon( QIcon( ":GlyphViewer/Resources/rotate_up.png" ) );
+			QObject::connect( m_upRotateButton, &QToolButton::pressed, this, [this]() { cur_cam_control->turn( glm::vec2( 0.f, -buttonRotateRate ) ); } );
 
-		m_moveForwardButton = CreateNavigationButton( tr( "Move Forward" ), true );
-		m_moveForwardButton->setIcon( QIcon( ":SGXGUI/Resources/plus.png" ) );
-		QObject::connect( m_moveForwardButton, &QToolButton::pressed, this, [this, move]() { move( camera->get_forward(), camera_mode() == camera_mode_t::free ? buttonMoveForwardBackRate : -buttonMoveForwardBackRate ); } );
+			m_leftRotateButton = CreateNavigationButton( tr( "Rotate Left" ), true );
+			m_leftRotateButton->setIcon( QIcon( ":GlyphViewer/Resources/rotate_left.png" ) );
+			QObject::connect( m_leftRotateButton, &QToolButton::pressed, this, [this]() { cur_cam_control->turn( glm::vec2( -buttonRotateRate, 0.f ) ); } );
 
-		m_moveBackwardButton = CreateNavigationButton( tr( "Move Backward" ), true );
-		m_moveBackwardButton->setIcon( QIcon( ":SGXGUI/Resources/minus.png" ) );
-		QObject::connect( m_moveBackwardButton, &QToolButton::pressed, this, [this, move]() { move( camera->get_forward(), camera_mode() == camera_mode_t::free ? -buttonMoveForwardBackRate : buttonMoveForwardBackRate ); } );
+			m_rightRotateButton = CreateNavigationButton( tr( "Rotate Right" ), true );
+			m_rightRotateButton->setIcon( QIcon( ":GlyphViewer/Resources/rotate_right.png" ) );
+			QObject::connect( m_rightRotateButton, &QToolButton::pressed, this, [this]() { cur_cam_control->turn( glm::vec2( buttonRotateRate, 0.f ) ); } );
 
-		m_moveUpButton = CreateNavigationButton( tr( "Move Up" ), true );
-		m_moveUpButton->setIcon( QIcon( ":SGXGUI/Resources/up_arrow.png" ) );
-		QObject::connect( m_moveUpButton, &QToolButton::pressed, this, [this, move]() { move( camera->get_world_up(), buttonMoveUpDownRate ); } );
+			m_downRotateButton = CreateNavigationButton( tr( "Rotate Down" ), true );
+			m_downRotateButton->setIcon( QIcon( ":GlyphViewer/Resources/rotate_down.png" ) );
+			QObject::connect( m_downRotateButton, &QToolButton::pressed, this, [this]() { cur_cam_control->turn( glm::vec2( 0.f, buttonRotateRate ) ); } );
 
-		m_moveDownButton = CreateNavigationButton( tr( "Move Down" ), true );
-		m_moveDownButton->setIcon( QIcon( ":SGXGUI/Resources/down_arrow.png" ) );
-		QObject::connect( m_moveDownButton, &QToolButton::pressed, this, [this, move]() { move( camera->get_world_up(), -buttonMoveUpDownRate ); } );
+			auto move = [&]( const glm::vec3& dir, float amt )
+			{
+				if ( cur_cam_control == free_cam_control )
+					cur_cam_control->move( dir * amt );
+				else if ( cur_cam_control == orbit_cam_control )
+					cur_cam_control->move( glm::vec3( 0.f, 0.f, amt ) );
+			};
+
+			m_moveForwardButton = CreateNavigationButton( tr( "Move Forward" ), true );
+			m_moveForwardButton->setIcon( QIcon( ":SGXGUI/Resources/plus.png" ) );
+			QObject::connect( m_moveForwardButton, &QToolButton::pressed, this, [this, move]() { move( camera->get_forward(), camera_mode() == camera_mode_t::free ? buttonMoveForwardBackRate : -buttonMoveForwardBackRate ); } );
+
+			m_moveBackwardButton = CreateNavigationButton( tr( "Move Backward" ), true );
+			m_moveBackwardButton->setIcon( QIcon( ":SGXGUI/Resources/minus.png" ) );
+			QObject::connect( m_moveBackwardButton, &QToolButton::pressed, this, [this, move]() { move( camera->get_forward(), camera_mode() == camera_mode_t::free ? -buttonMoveForwardBackRate : buttonMoveForwardBackRate ); } );
+
+			m_moveUpButton = CreateNavigationButton( tr( "Move Up" ), true );
+			m_moveUpButton->setIcon( QIcon( ":SGXGUI/Resources/up_arrow.png" ) );
+			QObject::connect( m_moveUpButton, &QToolButton::pressed, this, [this, move]() { move( camera->get_world_up(), buttonMoveUpDownRate ); } );
+
+			m_moveDownButton = CreateNavigationButton( tr( "Move Down" ), true );
+			m_moveDownButton->setIcon( QIcon( ":SGXGUI/Resources/down_arrow.png" ) );
+			QObject::connect( m_moveDownButton, &QToolButton::pressed, this, [this, move]() { move( camera->get_world_up(), -buttonMoveUpDownRate ); } );
+		}
+		else
+		{
+			m_moveUpButton = m_moveDownButton = m_moveBackwardButton = m_moveForwardButton = nullptr;
+			m_upRotateButton = m_downRotateButton = m_leftRotateButton = m_rightRotateButton = nullptr;
+		}
 
 		desired_selection_dist = flyToObjectDistance;
+
+		scene = new GlyphScene( geomDB );
 	}
 
 	SceneViewer::~SceneViewer()
@@ -104,7 +117,7 @@ namespace SynGlyphX
 		{
 			makeCurrent();
 			clearScene();
-			GlyphGeometryDB::clear();
+			delete scene;
 			delete glyph_renderer;
 			delete axis_renderer;
 			delete base_images;
@@ -124,8 +137,12 @@ namespace SynGlyphX
 			hal::device::release( default_base_texture );
 			hal::device::release( sgx_logo );
 			hal::device::release( hud_font );
-			hal::device::shutdown();
+			hal::device::release_context( context );
 		}
+
+		--active_viewer_count;
+		if ( active_viewer_count == 0 )
+			hal::device::shutdown();
 	}
 
 	void SceneViewer::loadLegacyScene( const char* nodeFile, const char* tagFile, std::vector<std::string> baseImages )
@@ -133,7 +150,7 @@ namespace SynGlyphX
 		makeCurrent();
 
 		clearScene();
-		
+
 		// Load textures for new scene (should eventually move into scene loader).
 		for ( auto img : baseImages )
 		{
@@ -146,7 +163,7 @@ namespace SynGlyphX
 			base_textures.push_back( texture );
 		}
 
-		SynGlyphX::LegacySceneReader::LoadLegacyScene( getScene(), *base_images, *grids, default_base_texture, nodeFile, tagFile, base_textures );
+		SynGlyphX::LegacySceneReader::LoadLegacyScene( getScene(), geomDB, *base_images, *grids, default_base_texture, nodeFile, tagFile, base_textures );
 		resetCamera();
 	}
 
@@ -154,7 +171,7 @@ namespace SynGlyphX
 	{
 		if ( initialized )
 		{
-			scene.clear();
+			scene->clear();
 			base_images->clear();
 			grids->clear();
 			for ( int i = 0; i < 3; ++i )
@@ -162,7 +179,7 @@ namespace SynGlyphX
 			for ( auto& tex : base_textures )
 				hal::device::release( tex );
 			base_textures.clear();
-			GlyphGeometryDB::reset();
+			geomDB.reset();
 		}
 	}
 
@@ -180,12 +197,29 @@ namespace SynGlyphX
 
 	void SceneViewer::initializeGL()
 	{
-		if ( format().majorVersion() < 3 || ( format().majorVersion() == 3 && format().minorVersion() < 3 ) )
+		if ( active_viewer_count == 0u )
 		{
-			QString error = QString( "Unable to create OpenGL 3.3 or higher core context (got %1.%2)." ).arg(
-				QString::number( format().majorVersion() ), QString::number( format().minorVersion() ) );
-			QMessageBox::critical( this, "OpenGL Error", error );
+			if ( format().majorVersion() < 3 || ( format().majorVersion() == 3 && format().minorVersion() < 3 ) )
+			{
+				QString error = QString( "Unable to create OpenGL 3.3 or higher core context (got %1.%2)." ).arg(
+					QString::number( format().majorVersion() ), QString::number( format().minorVersion() ) );
+				QMessageBox::critical( this, "OpenGL Error", error );
+			}
+
+			// Global device initialization.
+			hal::device::set_break_on_error( true );
+			bool device_init_result = hal::device::init();
+			hal::device::add_forced_effect_include( "shaders/header.h" );
+			hal::device::add_forced_effect_include( "shaders/util.h" );
+			if ( !device_init_result ) qDebug() << "SynGlyphX::hal::device::init() failed.";
+			checkErrors();
 		}
+		viewer_id = active_viewer_count;
+		++active_viewer_count;
+
+		context = hal::device::get_new_context();
+
+		geomDB.init();
 
 		// Set up timer to attempt to trigger repaints at ~60fps.
 		timer.setInterval( 16 );
@@ -194,15 +228,6 @@ namespace SynGlyphX
 		timer.start();
 
 		elapsed_timer.start();
-
-		hal::device::set_break_on_error( true );
-
-		bool device_init_result = hal::device::init();
-		hal::device::add_forced_effect_include( "shaders/header.h" );
-		hal::device::add_forced_effect_include( "shaders/util.h" );
-		if ( !device_init_result ) qDebug() << "SynGlyphX::hal::device::init() failed.";
-		context = hal::device::get_default_context();
-		checkErrors();
 
 		grids = new render::grid_renderer;
 		axis_renderer = new AxisRenderer;
@@ -258,11 +283,9 @@ namespace SynGlyphX
 		drag_select = new render::model;
 		drag_select->add_part( part );
 
-		glyph_renderer = new GlyphRenderer;
-		glyph_renderer->setScene( &scene );
+		glyph_renderer = new GlyphRenderer( geomDB );
+		glyph_renderer->setScene( scene );
 		renderer = new render::renderer;
-
-		GlyphGeometryDB::init();
 
 		initialized = true;
 
@@ -277,51 +300,54 @@ namespace SynGlyphX
 		camera->update_viewport_size( w, h );
 		ui_camera->update_viewport_size( w, h );
 
-		auto logo_w = hal::device::get_texture_width( sgx_logo );
-		auto logo_h = hal::device::get_texture_height( sgx_logo );
+		if ( mode == ViewerMode::Full )
+		{
+			auto logo_w = hal::device::get_texture_width( sgx_logo );
+			auto logo_h = hal::device::get_texture_height( sgx_logo );
 
-		auto logo_rotate = glm::rotate( glm::mat4(), glm::half_pi<float>(), glm::vec3( 1.f, 0.f, 0.f ) );
-		auto logo_translate = glm::translate( glm::mat4(), glm::vec3( float( w - logo_w ), float( logo_h ), 0.f ) );
-		auto logo_scale = glm::scale( glm::mat4(), glm::vec3( logo_w, logo_h, 1.f ) );
-		auto logo_transform = logo_translate * logo_scale * logo_rotate;
-		logo->set_transform( logo_transform );
+			auto logo_rotate = glm::rotate( glm::mat4(), glm::half_pi<float>(), glm::vec3( 1.f, 0.f, 0.f ) );
+			auto logo_translate = glm::translate( glm::mat4(), glm::vec3( float( w - logo_w ), float( logo_h ), 0.f ) );
+			auto logo_scale = glm::scale( glm::mat4(), glm::vec3( logo_w, logo_h, 1.f ) );
+			auto logo_transform = logo_translate * logo_scale * logo_rotate;
+			logo->set_transform( logo_transform );
 
-		checkErrors();
+			checkErrors();
 
-		unsigned int leftPosOfButtonsInHCenter = w - 10 - ( 2 * navigationButtonSize );
-		unsigned int topPositionOfButton = logo_h + ( 2 * 10 );
+			unsigned int leftPosOfButtonsInHCenter = w - 10 - ( 2 * navigationButtonSize );
+			unsigned int topPositionOfButton = logo_h + ( 2 * 10 );
 
-		m_upRotateButton->move( QPoint( leftPosOfButtonsInHCenter, topPositionOfButton ) );
+			m_upRotateButton->move( QPoint( leftPosOfButtonsInHCenter, topPositionOfButton ) );
 
-		topPositionOfButton += navigationButtonSize;
-		m_leftRotateButton->move( QPoint( leftPosOfButtonsInHCenter - navigationButtonSize, topPositionOfButton ) );
-		m_rightRotateButton->move( QPoint( leftPosOfButtonsInHCenter + navigationButtonSize, topPositionOfButton ) );
+			topPositionOfButton += navigationButtonSize;
+			m_leftRotateButton->move( QPoint( leftPosOfButtonsInHCenter - navigationButtonSize, topPositionOfButton ) );
+			m_rightRotateButton->move( QPoint( leftPosOfButtonsInHCenter + navigationButtonSize, topPositionOfButton ) );
 
-		topPositionOfButton += navigationButtonSize;
-		m_downRotateButton->move( QPoint( leftPosOfButtonsInHCenter, topPositionOfButton ) );
+			topPositionOfButton += navigationButtonSize;
+			m_downRotateButton->move( QPoint( leftPosOfButtonsInHCenter, topPositionOfButton ) );
 
-		topPositionOfButton += ( 2 * navigationButtonSize );
-		m_moveForwardButton->move( QPoint( leftPosOfButtonsInHCenter, topPositionOfButton ) );
+			topPositionOfButton += ( 2 * navigationButtonSize );
+			m_moveForwardButton->move( QPoint( leftPosOfButtonsInHCenter, topPositionOfButton ) );
 
-		topPositionOfButton += navigationButtonSize;
-		m_moveBackwardButton->move( QPoint( leftPosOfButtonsInHCenter, topPositionOfButton ) );
+			topPositionOfButton += navigationButtonSize;
+			m_moveBackwardButton->move( QPoint( leftPosOfButtonsInHCenter, topPositionOfButton ) );
 
-		topPositionOfButton += ( 2 * navigationButtonSize );
-		m_moveUpButton->move( QPoint( leftPosOfButtonsInHCenter, topPositionOfButton ) );
+			topPositionOfButton += ( 2 * navigationButtonSize );
+			m_moveUpButton->move( QPoint( leftPosOfButtonsInHCenter, topPositionOfButton ) );
 
-		topPositionOfButton += navigationButtonSize;
-		m_moveDownButton->move( QPoint( leftPosOfButtonsInHCenter, topPositionOfButton ) );
+			topPositionOfButton += navigationButtonSize;
+			m_moveDownButton->move( QPoint( leftPosOfButtonsInHCenter, topPositionOfButton ) );
+		}
 	}
 
 	glm::vec3 SceneViewer::compute_scene_axis_sizes()
 	{
-		const render::box_bound& bound = render::combine_bounds( scene.getBound(), base_images->get_base_image_bound( 0u ) );
+		const render::box_bound& bound = render::combine_bounds( scene->getBound(), base_images->get_base_image_bound( 0u ) );
 		return glm::vec3( bound.get_max().x - bound.get_min().x, bound.get_max().y - bound.get_min().y, bound.get_max().z - bound.get_min().z );
 	}
 
 	glm::vec3 SceneViewer::compute_scene_axis_origin()
 	{
-		const render::box_bound& bound = render::combine_bounds( scene.getBound(), base_images->get_base_image_bound( 0u ) );
+		const render::box_bound& bound = render::combine_bounds( scene->getBound(), base_images->get_base_image_bound( 0u ) );
 		return glm::vec3( bound.get_min() );
 	}
 
@@ -365,7 +391,7 @@ namespace SynGlyphX
 		const glm::vec3 hud_axes_offset( 100.f, 100.f, 0.f );
 		const float hud_axes_size = 48.f;
 
-		if ( !scene.empty() )
+		if ( !scene->empty() )
 		{
 			base_images->draw( context, camera );
 
@@ -376,7 +402,7 @@ namespace SynGlyphX
 			glyph_renderer->render_solid( context, camera, float( elapsed_timer.elapsed() ) / 1000.f );
 
 			// Draw the scene axes.
-			if ( scene_axes_enabled )
+			if ( scene_axes_enabled && mode == ViewerMode::Full )
 			{
 				axis_renderer->set_scales( 2.0f, glm::vec3( 6.f, 6.f, 8.f ) );
 				axis_renderer->draw_axis( context, camera, render::color::red(), AxisDirection::X, scene_axis_origin, scene_axis_sizes.x );
@@ -390,7 +416,7 @@ namespace SynGlyphX
 			// Clear depth so it doesn't interfere with screen-space elements.
 			context->clear( hal::clear_type::depth );
 
-			if ( hud_axes_enabled )
+			if ( hud_axes_enabled && mode == ViewerMode::Full )
 			{
 				context->set_depth_state( hal::depth_state::read_write );
 				axis_renderer->set_scales( 2.f, glm::vec3( 8.f, 8.f, 12.f ) );
@@ -407,88 +433,94 @@ namespace SynGlyphX
 		context->set_blend_state( hal::blend_state::alpha );
 
 		// draw drag-select
-		if ( drag_info( button::left ).dragging && ( QGuiApplication::queryKeyboardModifiers() & Qt::KeyboardModifier::ShiftModifier ) )
+		if ( mode == ViewerMode::Full )
 		{
-			bool alt = ( QGuiApplication::queryKeyboardModifiers() & Qt::KeyboardModifier::AltModifier );
-			glm::vec3 origin( std::min( drag_info( button::left ).drag_start_x, mouse_x ), std::max( drag_info( button::left ).drag_start_y, mouse_y ), 0.f );
-			glm::vec3 size( fabs( float( mouse_x - drag_info( button::left ).drag_start_x ) ), fabs( float( mouse_y - drag_info( button::left ).drag_start_y ) ), 0.f );
-			auto drag_rotate = glm::rotate( glm::mat4(), glm::half_pi<float>(), glm::vec3( 1.f, 0.f, 0.f ) );
-			auto drag_translate = glm::translate( glm::mat4(), origin );
-			auto drag_scale = glm::scale( glm::mat4(), size );
-			drag_select->set_transform( drag_translate * drag_scale * drag_rotate );
-			context->bind( drag_effect );
-			const glm::vec4 select_color = glm::vec4( 1.f, 1.f, 1.f, 0.25f );
-			const glm::vec4 unselect_color = glm::vec4( 1.f, 0.f, 0.f, 0.25f );
-			renderer->add_blended_batch( drag_select, drag_effect, glm::mat4(), alt ? unselect_color : select_color );
+			if ( drag_info( button::left ).dragging && ( QGuiApplication::queryKeyboardModifiers() & Qt::KeyboardModifier::ShiftModifier ) )
+			{
+				bool alt = ( QGuiApplication::queryKeyboardModifiers() & Qt::KeyboardModifier::AltModifier );
+				glm::vec3 origin( std::min( drag_info( button::left ).drag_start_x, mouse_x ), std::max( drag_info( button::left ).drag_start_y, mouse_y ), 0.f );
+				glm::vec3 size( fabs( float( mouse_x - drag_info( button::left ).drag_start_x ) ), fabs( float( mouse_y - drag_info( button::left ).drag_start_y ) ), 0.f );
+				auto drag_rotate = glm::rotate( glm::mat4(), glm::half_pi<float>(), glm::vec3( 1.f, 0.f, 0.f ) );
+				auto drag_translate = glm::translate( glm::mat4(), origin );
+				auto drag_scale = glm::scale( glm::mat4(), size );
+				drag_select->set_transform( drag_translate * drag_scale * drag_rotate );
+				context->bind( drag_effect );
+				const glm::vec4 select_color = glm::vec4( 1.f, 1.f, 1.f, 0.25f );
+				const glm::vec4 unselect_color = glm::vec4( 1.f, 0.f, 0.f, 0.25f );
+				renderer->add_blended_batch( drag_select, drag_effect, glm::mat4(), alt ? unselect_color : select_color );
+				renderer->render( context, ui_camera );
+			}
+
+			// draw logo
+			context->bind( tex_effect );
+			context->bind( 0u, sgx_logo );
+			context->set_constant( tex_effect, "material", "tint_color", glm::vec4( 1.f, 1.f, 1.f, 1.f ) );
+			renderer->add_blended_batch( logo, tex_effect );
 			renderer->render( context, ui_camera );
+
+			checkErrors();
 		}
-
-		// draw logo
-		context->bind( tex_effect );
-		context->bind( 0u, sgx_logo );
-		context->set_constant( tex_effect, "material", "tint_color", glm::vec4( 1.f, 1.f, 1.f, 1.f ) );
-		renderer->add_blended_batch( logo, tex_effect );
-		renderer->render( context, ui_camera );
-
-		checkErrors();
 
 		context->reset_defaults();
 
-		if ( !scene.empty() )
+		if ( mode == ViewerMode::Full )
 		{
-			if ( scene.selectionEmpty() )
+			if ( !scene->empty() )
 			{
-				auto campos = camera->get_position();
-				renderTextCenteredF( hud_font, glm::vec2( width() / 2, height() - 16 ), CenterMode::X, render::color::white(), "Camera Position: X: %f, Y: %f, Z: %f", campos.x, campos.y, campos.z );
-			}
-			else
-			{
-				auto single_root = scene.getSingleRoot();
-				auto selectionIndex = single_root ? single_root->getFilteringIndex() : 0u;
-				if ( single_root && single_root->getType() != Glyph3DNodeType::Link && selectionIndex < m_sourceDataLookupForPositionXYZ[0].size() )
+				if ( scene->selectionEmpty() )
 				{
-					std::string positionHUD;
-					for (int i = 0; i < 3; ++i) {
-
-						if (!m_sourceDataLookupForPositionXYZ[i].empty()) {
-
-							if (!positionHUD.empty()) {
-
-								positionHUD += ", ";
-							}
-
-							positionHUD += axis_names[i] + ": " + std::to_string( m_sourceDataLookupForPositionXYZ[i].at( selectionIndex ) );
-						}
-					}
-					renderTextCenteredF( hud_font, glm::vec2( width() / 2, height() - 16 ), CenterMode::X, render::color::white(), positionHUD.c_str() );
+					auto campos = camera->get_position();
+					renderTextCenteredF( hud_font, glm::vec2( width() / 2, height() - 16 ), CenterMode::X, render::color::white(), "Camera Position: X: %f, Y: %f, Z: %f", campos.x, campos.y, campos.z );
 				}
 				else
 				{
-					renderTextCenteredF( hud_font, glm::vec2( width() / 2, height() - 16 ), CenterMode::X, render::color::white(), "Selection Centered At: X: %f, Y: %f, Z: %f", selection_center.x, selection_center.y, selection_center.z );
+					auto single_root = scene->getSingleRoot();
+					auto selectionIndex = single_root ? single_root->getFilteringIndex() : 0u;
+					if ( single_root && single_root->getType() != Glyph3DNodeType::Link && selectionIndex < m_sourceDataLookupForPositionXYZ[0].size() )
+					{
+						std::string positionHUD;
+						for ( int i = 0; i < 3; ++i ) {
+
+							if ( !m_sourceDataLookupForPositionXYZ[i].empty() ) {
+
+								if ( !positionHUD.empty() ) {
+
+									positionHUD += ", ";
+								}
+
+								positionHUD += axis_names[i] + ": " + std::to_string( m_sourceDataLookupForPositionXYZ[i].at( selectionIndex ) );
+							}
+						}
+						renderTextCenteredF( hud_font, glm::vec2( width() / 2, height() - 16 ), CenterMode::X, render::color::white(), positionHUD.c_str() );
+					}
+					else
+					{
+						renderTextCenteredF( hud_font, glm::vec2( width() / 2, height() - 16 ), CenterMode::X, render::color::white(), "Selection Centered At: X: %f, Y: %f, Z: %f", selection_center.x, selection_center.y, selection_center.z );
+					}
 				}
 			}
-		}
 
-		// Draw tags.
-		scene.enumTagEnabled( [this]( const Glyph3DNode& glyph ) {
-			if ( glyph.getTag() ) renderText( hud_font, camera, glyph.getCachedPosition(), render::color::white(), glyph.getTag() );
-		} );
+			// Draw tags.
+			scene->enumTagEnabled( [this]( const Glyph3DNode& glyph ) {
+				if ( glyph.getTag() ) renderText( hud_font, camera, glyph.getCachedPosition(), render::color::white(), glyph.getTag() );
+			} );
 
-		// Draw axis names.
-		if ( hud_axes_enabled )
-		{
-			const float axis_name_offset = 16.f;
-			if ( axis_names[0] != "" ) renderText( hud_font, glm::vec2( hud_axes_origin + ( hud_axes_size + axis_name_offset ) * glm::vec3( ( hud_axes_rotation * glm::vec4( 1.f, 0.f, 0.f, 0.f ) ) ) ), render::color::white(), axis_names[0].c_str() );
-			if ( axis_names[1] != "" ) renderText( hud_font, glm::vec2( hud_axes_origin + ( hud_axes_size + axis_name_offset ) * glm::vec3( ( hud_axes_rotation * glm::vec4( 0.f, 0.f, 1.f, 0.f ) ) ) ), render::color::white(), axis_names[1].c_str() );
-			if ( axis_names[2] != "" ) renderText( hud_font, glm::vec2( hud_axes_origin - ( hud_axes_size + axis_name_offset ) * glm::vec3( ( hud_axes_rotation * glm::vec4( 0.f, 1.f, 0.f, 0.f ) ) ) ), render::color::white(), axis_names[2].c_str() );
-		}
+			// Draw axis names.
+			if ( hud_axes_enabled )
+			{
+				const float axis_name_offset = 16.f;
+				if ( axis_names[0] != "" ) renderText( hud_font, glm::vec2( hud_axes_origin + ( hud_axes_size + axis_name_offset ) * glm::vec3( ( hud_axes_rotation * glm::vec4( 1.f, 0.f, 0.f, 0.f ) ) ) ), render::color::white(), axis_names[0].c_str() );
+				if ( axis_names[1] != "" ) renderText( hud_font, glm::vec2( hud_axes_origin + ( hud_axes_size + axis_name_offset ) * glm::vec3( ( hud_axes_rotation * glm::vec4( 0.f, 0.f, 1.f, 0.f ) ) ) ), render::color::white(), axis_names[1].c_str() );
+				if ( axis_names[2] != "" ) renderText( hud_font, glm::vec2( hud_axes_origin - ( hud_axes_size + axis_name_offset ) * glm::vec3( ( hud_axes_rotation * glm::vec4( 0.f, 1.f, 0.f, 0.f ) ) ) ), render::color::white(), axis_names[2].c_str() );
+			}
 
-		if ( scene_axes_enabled )
-		{
-			const float axis_name_offset = 10.f;
-			if ( axis_names[0] != "" ) renderText( hud_font, camera, scene_axis_origin + ( scene_axis_sizes.x + axis_name_offset ) * glm::vec3( 1.f, 0.f, 0.f ), render::color::white(), axis_names[0].c_str() );
-			if ( axis_names[1] != "" ) renderText( hud_font, camera, scene_axis_origin + ( scene_axis_sizes.y + axis_name_offset ) * glm::vec3( 0.f, 1.f, 0.f ), render::color::white(), axis_names[1].c_str() );
-			if ( axis_names[2] != "" ) renderText( hud_font, camera, scene_axis_origin + ( scene_axis_sizes.z + axis_name_offset ) * glm::vec3( 0.f, 0.f, 1.f ), render::color::white(), axis_names[2].c_str() );
+			if ( scene_axes_enabled )
+			{
+				const float axis_name_offset = 10.f;
+				if ( axis_names[0] != "" ) renderText( hud_font, camera, scene_axis_origin + ( scene_axis_sizes.x + axis_name_offset ) * glm::vec3( 1.f, 0.f, 0.f ), render::color::white(), axis_names[0].c_str() );
+				if ( axis_names[1] != "" ) renderText( hud_font, camera, scene_axis_origin + ( scene_axis_sizes.y + axis_name_offset ) * glm::vec3( 0.f, 1.f, 0.f ), render::color::white(), axis_names[1].c_str() );
+				if ( axis_names[2] != "" ) renderText( hud_font, camera, scene_axis_origin + ( scene_axis_sizes.z + axis_name_offset ) * glm::vec3( 0.f, 0.f, 1.f ), render::color::white(), axis_names[2].c_str() );
+			}
 		}
 
 		hal::device::end_frame();
@@ -510,17 +542,17 @@ namespace SynGlyphX
 
 	void SceneViewer::showTagsOfSelectedObjects( bool show )
 	{
-		scene.enumSelected( [this, show]( const Glyph3DNode& glyph ) {
+		scene->enumSelected( [this, show]( const Glyph3DNode& glyph ) {
 			if ( show )
-				scene.enableTag( &glyph );
+				scene->enableTag( &glyph );
 			else
-				scene.disableTag( &glyph );
+				scene->disableTag( &glyph );
 		} );
 	}
 
 	void SceneViewer::hideAllTags()
 	{
-		scene.disableAllTags();
+		scene->disableAllTags();
 	}
 
 	void SceneViewer::renderTextF( hal::font* font, const glm::vec2& pos, const glm::vec4& color, const char* string, ... )
@@ -601,10 +633,10 @@ namespace SynGlyphX
 			}
 			case 'P':
 			{
-				auto sel = scene.getSingleSelection();
-				if ( scene.selectionSize() > 1 )
+				auto sel = scene->getSingleSelection();
+				if ( scene->selectionSize() > 1 )
 					hal::debug::print( "Multiple objects selected; printing hierarchy from first." );
-				if ( sel ) scene.debugPrint( sel );
+				if ( sel ) scene->debugPrint( sel );
 				break;
 			}
 		}
@@ -642,7 +674,7 @@ namespace SynGlyphX
 		}
 
 		// disable context menu if we're right-dragging or L/R-dragging
-		if ( ( drag_info( button::left ).dragging || drag_info( button::right ).dragging ) )
+		if ( mode != ViewerMode::Full || ( drag_info( button::left ).dragging || drag_info( button::right ).dragging ) )
 			setContextMenuPolicy( Qt::NoContextMenu );
 		else
 			setContextMenuPolicy( Qt::ActionsContextMenu );
@@ -677,65 +709,68 @@ namespace SynGlyphX
 		if ( event->button() == Qt::RightButton ) release_button( int( button::right ) );
 		if ( event->button() == Qt::MiddleButton ) release_button( int( button::middle ) );
 
-		bool changed_selection = false;
-		if ( event->button() == Qt::MouseButton::LeftButton )
+		if ( mode == ViewerMode::Full )
 		{
-			// Not holding shift: common case.
-			if ( !( QGuiApplication::queryKeyboardModifiers() & Qt::KeyboardModifier::ShiftModifier ) )
+			bool changed_selection = false;
+			if ( event->button() == Qt::MouseButton::LeftButton )
 			{
-				const int select_threshold = 3;
-				bool ctrl = ( QGuiApplication::queryKeyboardModifiers() & Qt::KeyboardModifier::ControlModifier );
-				bool alt = ( QGuiApplication::queryKeyboardModifiers() & Qt::KeyboardModifier::AltModifier );
-				if ( drag_info( button::left ).drag_distance_x < select_threshold
-					&& drag_info( button::left ).drag_distance_y < select_threshold )
+				// Not holding shift: common case.
+				if ( !( QGuiApplication::queryKeyboardModifiers() & Qt::KeyboardModifier::ShiftModifier ) )
 				{
-					if ( !ctrl && !alt )
-						scene.clearSelection();
-
-					glm::vec3 origin, dir;
-					camera->viewport_pt_to_ray( event->x(), event->y(), origin, dir );
-					const Glyph3DNode* g = scene.pick( origin, dir, scene.getFilterMode() == FilteredResultsDisplayMode::TranslucentUnfiltered );
-					if ( g )
+					const int select_threshold = 3;
+					bool ctrl = ( QGuiApplication::queryKeyboardModifiers() & Qt::KeyboardModifier::ControlModifier );
+					bool alt = ( QGuiApplication::queryKeyboardModifiers() & Qt::KeyboardModifier::AltModifier );
+					if ( drag_info( button::left ).drag_distance_x < select_threshold
+						&& drag_info( button::left ).drag_distance_y < select_threshold )
 					{
-						if ( alt || ( ctrl && scene.isSelected( g ) ) )
-							scene.setUnSelected( g );
-						else
-							scene.setSelected( g );
-					}
-					changed_selection = true;
-				}
-			}
-			else  // holding shift, so we're doing a drag-select
-			{
-				bool ctrl = ( QGuiApplication::queryKeyboardModifiers() & Qt::KeyboardModifier::ControlModifier );
-				bool alt = ( QGuiApplication::queryKeyboardModifiers() & Qt::KeyboardModifier::AltModifier );
+						if ( !ctrl && !alt )
+							scene->clearSelection();
 
-				if ( !ctrl && !alt )
-					scene.clearSelection();
-
-				scene.enumGlyphs( [this, event, alt]( const Glyph3DNode& node ) {
-					auto pos = node.getCachedPosition();
-					auto pos2d = camera->world_pt_to_window_pt( pos );
-					if ( pos2d.x > std::min( drag_info( button::left ).drag_start_x, mouse_x )
-						&& pos2d.x < std::max( drag_info( button::left ).drag_start_x, mouse_x )
-						&& pos2d.y > std::min( drag_info( button::left ).drag_start_y, mouse_y )
-						&& pos2d.y < std::max( drag_info( button::left ).drag_start_y, mouse_y ) )
-					{
-						if ( glm::dot( pos - camera->get_position(), camera->get_forward() ) > 0.f )	// make sure it's not behind the camera
+						glm::vec3 origin, dir;
+						camera->viewport_pt_to_ray( event->x(), event->y(), origin, dir );
+						const Glyph3DNode* g = scene->pick( origin, dir, scene->getFilterMode() == FilteredResultsDisplayMode::TranslucentUnfiltered );
+						if ( g )
 						{
-							if ( scene.getFilterMode() != FilteredResultsDisplayMode::HideUnfiltered || scene.passedFilter( &node ) )
+							if ( alt || ( ctrl && scene->isSelected( g ) ) )
+								scene->setUnSelected( g );
+							else
+								scene->setSelected( g );
+						}
+						changed_selection = true;
+					}
+				}
+				else  // holding shift, so we're doing a drag-select
+				{
+					bool ctrl = ( QGuiApplication::queryKeyboardModifiers() & Qt::KeyboardModifier::ControlModifier );
+					bool alt = ( QGuiApplication::queryKeyboardModifiers() & Qt::KeyboardModifier::AltModifier );
+
+					if ( !ctrl && !alt )
+						scene->clearSelection();
+
+					scene->enumGlyphs( [this, event, alt]( const Glyph3DNode& node ) {
+						auto pos = node.getCachedPosition();
+						auto pos2d = camera->world_pt_to_window_pt( pos );
+						if ( pos2d.x > std::min( drag_info( button::left ).drag_start_x, mouse_x )
+							&& pos2d.x < std::max( drag_info( button::left ).drag_start_x, mouse_x )
+							&& pos2d.y > std::min( drag_info( button::left ).drag_start_y, mouse_y )
+							&& pos2d.y < std::max( drag_info( button::left ).drag_start_y, mouse_y ) )
+						{
+							if ( glm::dot( pos - camera->get_position(), camera->get_forward() ) > 0.f )	// make sure it's not behind the camera
 							{
-								if ( !alt )
-									scene.setSelected( &node );
-								else
-									scene.setUnSelected( &node );
+								if ( scene->getFilterMode() != FilteredResultsDisplayMode::HideUnfiltered || scene->passedFilter( &node ) )
+								{
+									if ( !alt )
+										scene->setSelected( &node );
+									else
+										scene->setUnSelected( &node );
+								}
 							}
 						}
-					}
-					return true;
-				}, true );
+						return true;
+					}, true );
 
-				changed_selection = true;
+					changed_selection = true;
+				}
 			}
 
 			if ( changed_selection )
@@ -750,13 +785,16 @@ namespace SynGlyphX
 		camera->set_position( glm::vec3( 0.f, -345.f, 345.f ) );
 		glm::vec3 cam_dir = glm::normalize( glm::vec3( 0.f, 1.f, -1.f ) );
 		// Point the camera at the center of the scene's bound, so we can be reasonably sure we see something when we load up.
-		if ( !scene.empty() )
-			cam_dir = glm::normalize( scene.getBound().get_center() - camera->get_position() );
+		if ( !scene->empty() )
+			cam_dir = glm::normalize( scene->getBound().get_center() - camera->get_position() );
 		camera->set_forward( cam_dir );
 		set_cam_control( free_cam_control, true );	// force reactivate to let the controller know to update its internal state (since it has
 													// no other way to know we changed the camera orientation directly)
 
-		scene.clearSelection();
+		if ( mode == ViewerMode::SingleGlyph )
+			set_cam_control( orbit_cam_control, true );
+
+		scene->clearSelection();
 		selection_changed();
 	}
 
@@ -772,7 +810,7 @@ namespace SynGlyphX
 		// TODO: mouse cursor hiding / resetting for infinite drag capability. tricky to manage with Qt. 
 		// see http://stackoverflow.com/questions/9774929/qt-keeping-mouse-centered
 		/*
-		if ( ( drag_info( button::left ).dragging && !shift ) || ( drag_info( button::middle ).dragging ) && !scene.selectionEmpty() )
+		if ( ( drag_info( button::left ).dragging && !shift ) || ( drag_info( button::middle ).dragging ) && !scene->selectionEmpty() )
 		{
 			auto cursor = QCursor( Qt::ArrowCursor );
 			setCursor( cursor );
@@ -783,7 +821,7 @@ namespace SynGlyphX
 		}
 		*/
 
-		if ( !scene.empty() )
+		if ( !scene->empty() )
 		{
 			// Camera update (if we're not holding down shift, in which case we're trying to drag-select).
 			if ( !shift )
@@ -853,8 +891,11 @@ namespace SynGlyphX
 
 					free_cam_control->move( motion * ( fast ? 5.f : 1.f ) );
 					set_cam_control( free_cam_control );
-					m_moveUpButton->setEnabled( true );
-					m_moveDownButton->setEnabled( true );
+					if ( mode == ViewerMode::Full )
+					{
+						m_moveUpButton->setEnabled( true );
+						m_moveDownButton->setEnabled( true );
+					}
 				}
 				else
 				{
@@ -862,14 +903,14 @@ namespace SynGlyphX
 					selection_center = glm::vec3();
 					float largest_bound = 0.f;
 					bool glyphs_selected = false;
-					scene.enumSelected( [this, &count, &largest_bound, &glyphs_selected]( const Glyph3DNode& glyph ) {
+					scene->enumSelected( [this, &count, &largest_bound, &glyphs_selected]( const Glyph3DNode& glyph ) {
 						selection_center += glyph.getCachedPosition();
 						if ( glyph.getType() != Glyph3DNodeType::Link && glyph.getCachedBound().get_radius() > largest_bound ) largest_bound = glyph.getCachedBound().get_radius();
 						if ( glyph.getType() == Glyph3DNodeType::GlyphElement ) glyphs_selected = true;
 						++count;
 					} );
-					selection_center /= static_cast<float>( count );
-					float selection_radius = 2.f * scene.getSingleSelection()->getCachedBound().get_radius();
+					if ( count > 0u ) selection_center /= static_cast<float>( count );
+					float selection_radius = 2.f * ( scene->getSingleSelection() ? scene->getSingleSelection()->getCachedBound().get_radius() : 0.f );
 
 					// if we only have links selected don't restrict the zoom distance (they tend to have huge bounds)
 					float orbit_min_distance = glyphs_selected ? selection_radius + largest_bound : 0.f;
@@ -905,8 +946,11 @@ namespace SynGlyphX
 
 					set_cam_control( orbit_cam_control );
 
-					m_moveUpButton->setEnabled( false );
-					m_moveDownButton->setEnabled( false );
+					if ( mode == ViewerMode::Full )
+					{
+						m_moveUpButton->setEnabled( false );
+						m_moveDownButton->setEnabled( false );
+					}
 				}
 
 			}
@@ -923,11 +967,11 @@ namespace SynGlyphX
 
 	void SceneViewer::setFilteredResults( const IndexSet& results )
 	{
-		scene.clearFilter();
+		scene->clearFilter();
 		for ( auto index : results )
-			scene.setPassedFilter( index );
-		if ( scene.getFilterMode() == FilteredResultsDisplayMode::HideUnfiltered )
-			scene.clearFilteredOutFromSelection();
+			scene->setPassedFilter( index );
+		if ( scene->getFilterMode() == FilteredResultsDisplayMode::HideUnfiltered )
+			scene->clearFilteredOutFromSelection();
 	}
 
 	void SceneViewer::setAxisNames( const char* X, const char* Y, const char* Z )
@@ -937,7 +981,7 @@ namespace SynGlyphX
 		axis_names[2] = std::string( "Z / " ) + Z;
 	}
 
-	void SceneViewer::setSourceDataLookupForPositionXYZ(const std::vector<float>& posXData, const std::vector<float>& posYData, const std::vector<float>& posZData)
+	void SceneViewer::setSourceDataLookupForPositionXYZ( const std::vector<float>& posXData, const std::vector<float>& posYData, const std::vector<float>& posZData )
 	{
 		m_sourceDataLookupForPositionXYZ[0] = posXData;
 		m_sourceDataLookupForPositionXYZ[1] = posYData;
@@ -956,10 +1000,10 @@ namespace SynGlyphX
 
 	void SceneViewer::setFilteredResultsDisplayMode( FilteredResultsDisplayMode mode )
 	{
-		scene.setFilterMode( mode );
+		scene->setFilterMode( mode );
 
 		if ( mode == FilteredResultsDisplayMode::HideUnfiltered )
-			scene.clearFilteredOutFromSelection();
+			scene->clearFilteredOutFromSelection();
 	}
 
 	void SceneViewer::set_cam_control( CameraController* cc, bool forceActivate )
@@ -973,38 +1017,41 @@ namespace SynGlyphX
 
 	void SceneViewer::selection_changed()
 	{
-		if ( on_selection_changed ) on_selection_changed( !scene.empty() );
-		if ( !scene.selectionEmpty() && enable_fly_to_object ) orbit_cam_control->flyToTarget();
+		if ( on_selection_changed ) on_selection_changed( !scene->empty() );
+		if ( !scene->selectionEmpty() && enable_fly_to_object ) orbit_cam_control->flyToTarget();
 
-		item_focus_sm->clear();
-		QItemSelectionModel::SelectionFlags flags = QItemSelectionModel::ClearAndSelect;
-		SynGlyphX::ItemFocusSelectionModel::FocusFlags focusFlags = SynGlyphX::ItemFocusSelectionModel::FocusFlag::ClearAndFocus;
-		flags = QItemSelectionModel::Toggle;
-		focusFlags = SynGlyphX::ItemFocusSelectionModel::FocusFlag::Toggle;
-
-		std::unordered_set<int> ids;
-
-		QItemSelection selected;
-		scene.enumSelected( [&]( const Glyph3DNode& node )
+		if ( item_focus_sm )
 		{
-			int id = node.getRootParent()->getID();
-			if ( ids.find( id ) == ids.end() )
+			item_focus_sm->clear();
+			QItemSelectionModel::SelectionFlags flags = QItemSelectionModel::ClearAndSelect;
+			SynGlyphX::ItemFocusSelectionModel::FocusFlags focusFlags = SynGlyphX::ItemFocusSelectionModel::FocusFlag::ClearAndFocus;
+			flags = QItemSelectionModel::Toggle;
+			focusFlags = SynGlyphX::ItemFocusSelectionModel::FocusFlag::Toggle;
+
+			std::unordered_set<int> ids;
+
+			QItemSelection selected;
+			scene->enumSelected( [&]( const Glyph3DNode& node )
 			{
-				QModelIndex modelIndex = glyph_forest_model->IndexFromCSVID( node.getID() );
-				selected.select( modelIndex, modelIndex );
-				ids.insert( id );
-			}
-		} );
+				int id = node.getRootParent()->getID();
+				if ( ids.find( id ) == ids.end() )
+				{
+					QModelIndex modelIndex = glyph_forest_model->IndexFromCSVID( node.getID() );
+					selected.select( modelIndex, modelIndex );
+					ids.insert( id );
+				}
+			} );
 
-		if ( selected.size() > 0 )
-		{
-			item_focus_sm->select( selected, flags );
-		}
+			if ( selected.size() > 0 )
+			{
+				item_focus_sm->select( selected, flags );
+			}
+		};
 	}
 
 	SceneViewer::camera_mode_t SceneViewer::camera_mode()
 	{
-		if ( scene.selectionEmpty() || free_selection_camera )
+		if ( ( scene->selectionEmpty() || free_selection_camera ) && mode == ViewerMode::Full )
 			return camera_mode_t::free;
 		else
 			return camera_mode_t::orbit;

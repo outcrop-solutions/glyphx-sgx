@@ -19,6 +19,8 @@ namespace SynGlyphX
 			static void end_frame();
 
 			static hal::context* get_default_context();
+			static hal::context* get_new_context();
+			static void release_context( hal::context* c );
 
 			static hal::render_target_set* create_render_target_set( unsigned int w, unsigned int h );
 			static unsigned int add_color_target( hal::render_target_set* set, hal::texture_format fmt );
@@ -64,15 +66,7 @@ namespace SynGlyphX
 
 			static void set_break_on_error( bool val );
 
-			// INTERNAL ONLY (not exposed in hal::device)
-			struct font_cache_entry
-			{
-				std::vector<glm::mat4> transforms;
-				std::vector<hal::mesh*> meshes;
-			};
 			static hal::effect* get_text_effect();
-			static const hal::font_glyph& get_glyph( hal::font* f, char c );
-			static const glm::vec2 get_kerning( hal::font* f, char left, char right );
 			static uint64_t current_frame();
 			static GLuint get_default_render_target();
 		};

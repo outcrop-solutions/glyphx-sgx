@@ -28,6 +28,7 @@
 #include <hal/hal.h>
 #include <set>
 #include "glyphrenderer.h"
+#include "glyphgeometrydb.h"
 
 namespace SynGlyphX
 {
@@ -46,13 +47,19 @@ namespace SynGlyphX
 		BottomLeft,
 		BottomRight
 	};
+	
+	enum class ViewerMode
+	{
+		Full,
+		SingleGlyph,
+	};
 
 	class SGXSCENEVIEWER_API SceneViewer : public QOpenGLWidget
 	{
 		Q_OBJECT
 
 	public:
-		SceneViewer( QWidget *parent = nullptr );
+		SceneViewer( QWidget *parent, ViewerMode mode );
 		SceneViewer( const SceneViewer& ) = delete;
 		~SceneViewer();
 
@@ -72,7 +79,7 @@ namespace SynGlyphX
 		void mouseReleaseEvent( QMouseEvent* event ) override;
 		void wheelEvent( QWheelEvent* event ) override;
 
-		GlyphScene& getScene() { return scene; }
+		GlyphScene& getScene() { return *scene; }
 
 		void resetCamera();
 		void enableFlyToObject( bool enabled );
@@ -95,7 +102,7 @@ namespace SynGlyphX
 
 		void setFilteredResults( const IndexSet& results );
 		void setFilteredResultsDisplayMode( FilteredResultsDisplayMode mode );
-		FilteredResultsDisplayMode filteredResultsDisplayMode() { return scene.getFilterMode(); }
+		FilteredResultsDisplayMode filteredResultsDisplayMode() { return scene->getFilterMode(); }
 
 		bool hudAxesEnabled() { return hud_axes_enabled; }
 		bool sceneAxesEnabled() { return scene_axes_enabled; }
@@ -133,7 +140,7 @@ namespace SynGlyphX
 		void checkErrors();
 		bool initialized;
 
-		GlyphScene scene;
+		GlyphScene* scene;
 
 		QTimer timer;
 		QElapsedTimer elapsed_timer;
@@ -218,6 +225,7 @@ namespace SynGlyphX
 		glm::vec4 background_color;
 		float filtered_glyph_opacity;
 		hal::font* hud_font;
+		GlyphGeometryDB geomDB;
 
 		//Navigation buttons.
 		QToolButton* m_upRotateButton;
@@ -236,5 +244,10 @@ namespace SynGlyphX
 
 		//temporary until we move away from current method of source data access
 		std::vector<float> m_sourceDataLookupForPositionXYZ[3];
+
+		// need to track how many viewers we have so we can manage shared init/shutdown
+		static unsigned int active_viewer_count;
+		unsigned int viewer_id;
+		ViewerMode mode;
 	};
 }

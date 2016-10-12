@@ -9,14 +9,14 @@
 
 namespace SynGlyphX
 {
-	class Glyph3DNode;
+	class Glyph3DNode; class GlyphGeomteryDB;
 	namespace hal { class context; class mesh; class effect; class cbuffer; };
 	namespace render { class perspective_camera; }
 
 	class SGXSCENEVIEWER_API GlyphRenderer
 	{
 	public:
-		GlyphRenderer();
+		GlyphRenderer( GlyphGeometryDB& db );
 		GlyphRenderer( const GlyphRenderer& ) = delete;
 		virtual ~GlyphRenderer();
 
@@ -51,7 +51,7 @@ namespace SynGlyphX
 		public:
 			~glyph_bucket();
 			void add_instance( hal::mesh* mesh, const glm::mat4& transform, const glm::vec4& color_or_bound, const glm::vec3& anim_axis, float anim_rate, const glm::vec3& anim_center );
-			void update_instances( hal::context* context );
+			void update_instances( hal::context* context, bool& updates_done );
 			void draw( hal::context* context, unsigned int transform_binding_point, unsigned int material_binding_point, unsigned int anim_binding_point );
 			void clear();
 		private:
@@ -95,5 +95,8 @@ namespace SynGlyphX
 		void renderSelection( hal::context* context, render::perspective_camera* camera, float elapsed_seconds );
 		float selection_animation_time, selection_animation_state;
 		float previous_frame_time;
+		bool updates_done = false;
+
+		GlyphGeometryDB& db;
 	};
 }

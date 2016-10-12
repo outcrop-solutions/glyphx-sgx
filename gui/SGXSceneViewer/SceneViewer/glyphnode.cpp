@@ -17,12 +17,7 @@ namespace SynGlyphX
 		delete placement;
 	}
 
-	render::model* Glyph3DNode::getModel( float dist ) const
-	{
-		return GlyphGeometryDB::get( geometry, getTorusRatio(), dist );
-	}
-
-	void Glyph3DNode::updateCachedTransforms() const
+	void Glyph3DNode::updateCachedTransforms( const GlyphGeometryDB& db ) const
 	{
 		assert( placement || children.size() == 0 );	// if the node has children it must also have a placement policy
 
@@ -37,13 +32,13 @@ namespace SynGlyphX
 			animation_root = true;
 		}
 
-		auto model = getModel();
+		auto model = db.get( getGeometry() );
 		bound = render::transform_bound( model->get_bound(), cached_transform * getVisualTransform() );
 		if ( placement ) placement->repositionChildren( *this, cached_transform );
 		combined_bound = bound;
 		for ( auto& c : children )
 		{
-			c->updateCachedTransforms();
+			c->updateCachedTransforms( db );
 			combined_bound = render::combine_bounds( combined_bound, c->combined_bound );
 		}
 	}
