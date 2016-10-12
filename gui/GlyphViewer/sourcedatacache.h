@@ -94,6 +94,7 @@ public:
 	static QString CreateInString(const QString& columnName, const QSet<QString>& values);
 
 	std::vector<float> GetNumericValuesForField(const SynGlyphX::InputField& inputField) const;
+	QList<QVariant> GetValuesForRow(const SynGlyphX::InputTable& table, const QStringList& fields, unsigned long row) const;
 
 protected:
 	SynGlyphX::InputField::Type GetSourceDataFieldType(QVariant::Type fieldType) const;

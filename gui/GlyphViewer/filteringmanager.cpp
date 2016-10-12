@@ -1,5 +1,6 @@
 #include "filteringmanager.h"
 #include "datatransformmodel.h"
+#include <boost/optional.hpp>
 
 FilteringManager::FilteringManager(SynGlyphX::DataTransformModel* DataTransformModel, SourceDataCache::SharedPtr sourceDataCache, SynGlyphX::ItemFocusSelectionModel* sceneSelectionModel, QObject *parent)
 	: QObject(parent),
@@ -323,4 +324,20 @@ SourceDataCache::ConstSharedPtr FilteringManager::GetSourceDataCache() const {
 const SynGlyphX::DataTransformModel* FilteringManager::GetDataTransformModel() const {
 
 	return m_DataTransformModel;
+}
+
+boost::optional<std::pair<unsigned int, unsigned long>> FilteringManager::GetGlyphTemplateAndTableIndex(unsigned long rootID) const {
+
+	unsigned int index = 0;
+	for (const auto& range : m_glyphTemplateRangeToTableMap) {
+
+		if (range.first.IsValueInInterval(rootID)) {
+
+			return std::pair<unsigned int, unsigned long>(index, rootID - range.first.GetMin());
+		}
+
+		++index;
+	}
+
+	return boost::none;
 }

@@ -19,6 +19,7 @@
 #define FILTERINGMANAGER_H
 
 #include <QtCore/QObject>
+#include <boost/optional/optional_fwd.hpp>
 #include "sourcedatacache.h"
 #include "inputtable.h"
 #include "itemfocusselectionmodel.h"
@@ -54,6 +55,8 @@ public:
 	const SynGlyphX::IndexSet& GetGlyphIndexedFilterResults() const;
 	const Table2FiltersMap& GetTable2FiltersMap() const;
 	const TableToGlyphTemplateRangesMap& GetTableToGlyphTemplateRangesMap() const;
+
+	boost::optional<std::pair<unsigned int, unsigned long>> GetGlyphTemplateAndTableIndex(unsigned long rootID) const;
 
 	const SynGlyphX::ItemFocusSelectionModel* GetSceneSelectionModel() const;
 	SourceDataCache::ConstSharedPtr GetSourceDataCache() const;

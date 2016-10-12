@@ -101,6 +101,24 @@ private slots:
 	void Logout();
 
 private:
+	class HUDGenerationInfo {
+
+	public:
+		HUDGenerationInfo(const SynGlyphX::InputTable& table, const QStringList& fields, const QStringList& displayNames) :
+			m_table(table), m_fields(fields), m_displayNames(displayNames) {}
+		HUDGenerationInfo(const HUDGenerationInfo& info) :
+			m_table(info.m_table), m_fields(info.m_fields), m_displayNames(info.m_displayNames) {}
+		~HUDGenerationInfo() {}
+
+		const SynGlyphX::InputTable& GetTable() const { return m_table; }
+		const QStringList& GetFields() const { return m_fields; }
+		const QStringList& GetDisplayNames() const { return m_displayNames; }
+
+	private:
+		SynGlyphX::InputTable m_table;
+		QStringList m_fields;
+		QStringList m_displayNames;
+	};
 	void LoadVisualization(const QString& filename, const MultiTableDistinctValueFilteringParameters& filters = MultiTableDistinctValueFilteringParameters());
 	void LoadANTzCompatibilityVisualization(const QString& filename);
 	void LoadDataTransform(const QString& filename, const MultiTableDistinctValueFilteringParameters& filters);
@@ -118,6 +136,7 @@ private:
 	void DownloadBaseImages(DataEngine::GlyphEngine& ge);
 	void CreateLoadingScreen();
 	void CreateInteractionToolbar();
+	void UpdateAxisNamesAndSourceDataPosition();
 
 	QMenu* m_fileMenu;
 	QMenu* m_toolsMenu;
@@ -174,6 +193,8 @@ private:
 	HomePageWidget* m_homePage;
 
 	QCheckBox* m_hideFilteredCheckBox;
+
+	std::vector<HUDGenerationInfo> m_hudGenerationInfo;
 
 	static SynGlyphX::SettingsStoredFileList s_subsetFileList;
 	static QMap<QString, MultiTableDistinctValueFilteringParameters> s_recentFilters;

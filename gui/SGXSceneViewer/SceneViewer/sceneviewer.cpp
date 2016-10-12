@@ -52,7 +52,7 @@ namespace SynGlyphX
 		: QOpenGLWidget( parent ), glyph_renderer( nullptr ), renderer( nullptr ), wireframe( false ), enable_fly_to_object( false ), scene_axes_enabled( true ),
 		wheel_delta( 0.f ), hud_axes_enabled( true ), hud_axes_location( HUDAxesLocation::TopLeft ), animation_enabled( true ), background_color( render::color::black() ),
 		initialized( false ), filtered_glyph_opacity( 0.5f ), free_selection_camera( false ), selection_effect_enabled( true ), item_focus_sm( nullptr ), scene( nullptr ),
-		mode( _mode )
+		mode( _mode ), m_overridePosition( 0.0f )
 	{
 		memset( key_states, 0, sizeof( key_states ) );
 
@@ -506,13 +506,14 @@ namespace SynGlyphX
 						std::string positionHUD;
 						for ( int i = 0; i < 3; ++i ) {
 
-							if ( !m_sourceDataLookupForPositionXYZ[i].empty() ) {
+							//4 is the size of "X / ".  If an axis name's size is only 4 then nothing is mapped to that axis.
+							if (axis_names[i].size() > 4) {
 
 								if ( !positionHUD.empty() ) {
 									positionHUD += ", ";
 								}
 
-								positionHUD += axis_names[i] + ": " + std::to_string( m_sourceDataLookupForPositionXYZ[i].at( selectionIndex ) );
+								positionHUD += axis_names[i] + ": " + std::to_string(m_overridePosition[i]);
 							}
 						}
 						renderTextCenteredF( hud_font, glm::vec2( width() / 2, height() - 16 ), CenterMode::X, render::color::white(), positionHUD.c_str() );
@@ -1053,11 +1054,9 @@ namespace SynGlyphX
 		axis_names[2] = std::string( "Z / " ) + Z;
 	}
 
-	void SceneViewer::setSourceDataLookupForPositionXYZ( const std::vector<float>& posXData, const std::vector<float>& posYData, const std::vector<float>& posZData )
+	void SceneViewer::setOverridePositionXYZ(const glm::vec3& positionOverride)
 	{
-		m_sourceDataLookupForPositionXYZ[0] = posXData;
-		m_sourceDataLookupForPositionXYZ[1] = posYData;
-		m_sourceDataLookupForPositionXYZ[2] = posZData;
+		m_overridePosition = positionOverride;
 	}
 
 	void SceneViewer::enableFlyToObject( bool enabled )

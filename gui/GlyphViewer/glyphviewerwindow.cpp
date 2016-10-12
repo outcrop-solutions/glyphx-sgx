@@ -589,6 +589,7 @@ void GlyphViewerWindow::ClearAllData() {
 
 	SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
 	m_viewer->setFilteredResults(SynGlyphX::IndexSet());
+	m_hudGenerationInfo.clear();
 	m_glyphForestSelectionModel->ClearAll();
 	m_sourceDataCache->Close();
 	m_glyphForestModel->ClearAndReset();
@@ -859,40 +860,72 @@ void GlyphViewerWindow::LoadDataTransform(const QString& filename, const MultiTa
 void GlyphViewerWindow::LoadFilesIntoModel(const SynGlyphXANTz::ANTzCSVWriter::FilenameList& filesToLoad, const QStringList& baseImageFilenames) {
 
 	m_glyphForestModel->LoadGlyphForestInfoLegacy(QString::fromStdString(filesToLoad[0]), QString::fromStdString(filesToLoad[1]));
-
+	
 	SynGlyphX::DataTransformMapping::ConstSharedPtr dataTransformMapping = m_mappingModel->GetDataMapping();
-
-	auto rootGlyph = dataTransformMapping->GetGlyphGraphs().begin();
-
-	std::unordered_map<std::wstring, std::wstring> fieldToAliasMap = dataTransformMapping->GetFieldToAliasMapForTable(dataTransformMapping->GetInputTable(rootGlyph->first));
-
-	std::array<QString, 3> rootPositionFields;
 	auto ifm = std::const_pointer_cast<SynGlyphX::DataTransformMapping>(dataTransformMapping)->GetInputFieldManager();
-	std::array<std::vector<float>, 3> positionXYZData;
-	for (unsigned int i = 0; i < 3; ++i) {
+	
+	m_hudGenerationInfo.clear();
+	for (const auto& rootGlyph : dataTransformMapping->GetGlyphGraphs()) {
 
-		const SynGlyphX::InputBinding& posInputBinding = rootGlyph->second->GetRoot()->second.GetPosition()[i].GetBinding();
-		//SynGlyphX::HashID id = posInputBinding.GetInputFieldID();
+		QStringList fields, displayNames;
+		SynGlyphX::InputTable table = dataTransformMapping->GetInputTable(rootGlyph.first);
+		std::unordered_map<std::wstring, std::wstring> fieldToAliasMap = dataTransformMapping->GetFieldToAliasMapForTable(table);
+		
+		for (unsigned int i = 0; i < 3; ++i) {
 
-		SynGlyphX::InputField field = ifm->GetInputField(posInputBinding.GetInputFieldID());
+			const SynGlyphX::InputBinding& posInputBinding = rootGlyph.second->GetRoot()->second.GetPosition()[i].GetBinding();
+			SynGlyphX::InputField field = ifm->GetInputField(posInputBinding.GetInputFieldID());
+			if (field.IsValid()) {
 
-		if (field.IsValid()) {
+				fields.push_back(QString::fromStdWString(field.GetField()));
+				if (fieldToAliasMap.count(field.GetField()) == 0) {
 
-			if (fieldToAliasMap.count(field.GetField()) == 0) {
+					displayNames.push_back(fields.last());
+				}
+				else {
 
-				rootPositionFields[i] = QString::fromStdWString(field.GetField());
+					displayNames.push_back(QString::fromStdWString(fieldToAliasMap[field.GetField()]));
+				}
+			}
+		}
+
+		m_hudGenerationInfo.push_back(HUDGenerationInfo(table, fields, displayNames));
+	}
+
+	UpdateAxisNamesAndSourceDataPosition();
+}
+	
+void GlyphViewerWindow::UpdateAxisNamesAndSourceDataPosition() {
+
+	unsigned int hudInfoIndex = 0;
+	QModelIndexList selectedIndexes = m_glyphForestSelectionModel->selectedIndexes();
+	if (!selectedIndexes.empty()) {
+
+		try {
+
+			unsigned long rootIndex = SynGlyphX::ItemFocusSelectionModel::GetRootRow(selectedIndexes.back());
+			boost::optional<std::pair<unsigned int, unsigned long>> indexes = m_filteringManager->GetGlyphTemplateAndTableIndex(rootIndex);
+
+			if (indexes == boost::none) {
+
+				throw std::runtime_error(tr("Could not get source data for position X, Y, & Z").toStdString().c_str());
 			}
 			else {
 
-				rootPositionFields[i] = QString::fromStdWString(fieldToAliasMap[field.GetField()]);
+				hudInfoIndex = indexes.get().first;
+				QList<QVariant> pos = m_sourceDataCache->GetValuesForRow(m_hudGenerationInfo[hudInfoIndex].GetTable(), 
+					m_hudGenerationInfo[hudInfoIndex].GetFields(), indexes.get().second);
+				m_viewer->setOverridePositionXYZ(glm::vec3(pos[0].toFloat(), pos[1].toFloat(), pos[2].toFloat()));
 			}
+		}
+		catch (const std::exception& e) {
 
-			positionXYZData[i] = m_sourceDataCache->GetNumericValuesForField(field);
+			QMessageBox::warning(this, tr("Source Data Error"), e.what());
 		}
 	}
-	
-	m_viewer->setAxisNames( rootPositionFields[0].toStdString().c_str(), rootPositionFields[1].toStdString().c_str(), rootPositionFields[2].toStdString().c_str() );
-	m_viewer->setSourceDataLookupForPositionXYZ(positionXYZData[0], positionXYZData[1], positionXYZData[2]);
+
+	const QStringList& displayNames = m_hudGenerationInfo[hudInfoIndex].GetDisplayNames();
+	m_viewer->setAxisNames(displayNames[0].toStdString().c_str(), displayNames[1].toStdString().c_str(), displayNames[2].toStdString().c_str());
 }
 
 void GlyphViewerWindow::ChangeMapDownloadSettings() {
@@ -1232,6 +1265,8 @@ void GlyphViewerWindow::OnSelectionChanged(const QItemSelection& selected, const
 
 	m_openURLAction->setEnabled(selectionIsNotEmpty);
 	m_propertiesAction->setEnabled(selectionIsNotEmpty);
+
+	UpdateAxisNamesAndSourceDataPosition();
 }
 
 void GlyphViewerWindow::CreateExportToPortableVisualizationSubmenu() {

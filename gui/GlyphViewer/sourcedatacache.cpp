@@ -1049,3 +1049,41 @@ std::vector<float> SourceDataCache::GetNumericValuesForField(const SynGlyphX::In
 		throw std::runtime_error("SourceDataCache failed to get numeric values in GetNumericValuesForField.");
 	}
 }
+
+QList<QVariant> SourceDataCache::GetValuesForRow(const SynGlyphX::InputTable& table, const QStringList& fields, unsigned long row) const {
+
+	QString cacheTable = CreateTablename(table);
+
+	QList<QVariant> values;
+
+	QString queryString = "SELECT ";
+	for (const auto& field : fields) {
+
+		queryString += "\"" + field + "\"";
+		if (field != fields.last()) {
+
+			queryString += ", ";
+		}
+	}
+
+	SynGlyphX::IndexSet rows;
+	rows.insert(row);
+	queryString += " FROM \"" + cacheTable + "\" " + CreateWhereString(rows);
+
+	QSqlQuery query(m_db);
+	query.prepare(queryString);
+	if (query.exec()) {
+
+		query.first();
+		for (unsigned int i = 0; i < fields.size(); ++i) {
+
+			values.push_back(query.value(i));
+		}
+
+		return values;
+	}
+	else {
+
+		throw std::runtime_error("SourceDataCache failed to get fields at given row.");
+	}
+}
