@@ -1417,12 +1417,12 @@ void GlyphViewerWindow::CreateInteractionToolbar() {
 	m_interactionToolbar->addAction( m_enableDisableSelEffectAction );
 	m_loadedVisualizationDependentActions.push_back( m_enableDisableSelEffectAction );
 
-	m_enableDisableSuperimposedGlyphGadgets = new QAction( tr( "Enable/Disable Superimposed Glyph Indicators" ), m_interactionToolbar );
+	m_enableDisableSuperimposedGlyphGadgets = new QAction( tr( "Enable/Disable Overlapping Group Indicators" ), m_interactionToolbar );
 	m_enableDisableSuperimposedGlyphGadgets->setCheckable( true );
 	m_enableDisableSuperimposedGlyphGadgets->setChecked( false );
 	QIcon sggIcon;
-	sggIcon.addFile( ":SGXGUI/Resources/Icons/icon-blink.png", QSize(), QIcon::Normal, QIcon::Off );
-	sggIcon.addFile( ":SGXGUI/Resources/Icons/icon-blink-a.png", QSize(), QIcon::Normal, QIcon::On );
+	sggIcon.addFile( ":SGXGUI/Resources/Icons/icon-show-groups.png", QSize(), QIcon::Normal, QIcon::Off );
+	sggIcon.addFile( ":SGXGUI/Resources/Icons/icon-show-groups-a.png", QSize(), QIcon::Normal, QIcon::On );
 	m_enableDisableSuperimposedGlyphGadgets->setIcon( sggIcon );
 	QObject::connect( m_enableDisableSuperimposedGlyphGadgets, &QAction::toggled, this, &GlyphViewerWindow::OnEnableDisableSuperimposedGadgets );
 	m_interactionToolbar->addAction( m_enableDisableSuperimposedGlyphGadgets );
