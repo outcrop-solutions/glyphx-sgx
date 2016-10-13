@@ -16,11 +16,13 @@ namespace SynGlyphX
 		const float switch_size = 0.5f;
 		auto color = glm::vec3( 1.f, 1.f, 1.f );
 		const float gadget_base_alpha = 0.25f;
+		glm::vec2 switch_fade_dist( 125.f, 150.f );
+		glm::vec2 bound_fade_dist( 200.f, 250.f );
 		//		unsigned int switch_rt_size_x = 256u, switch_rt_size_y = 256u;
 	}
 
 	SuperimposedGroupManager::SuperimposedGroupManager( GlyphScene& _scene ) : scene( _scene ), gadget_model( nullptr ), switch_model( nullptr ),
-		mode( SuperimposedGadgetMode::OnSelection )
+		mode( SuperimposedGadgetMode::Always )
 	{
 		effect = hal::device::load_effect( "shaders/gadget_bound.vert", nullptr, "shaders/gadget_bound.frag" );
 		switch_effect = hal::device::load_effect( "shaders/texture.vert", nullptr, "shaders/texture.frag" );
@@ -82,14 +84,17 @@ namespace SynGlyphX
 			auto& g = gadgets[i];
 			if ( scene.getGroupStatus() == 0.f || ( g.group == scene.getActiveGroup() ) )
 			{
-				glm::vec3 pt;
-				if ( switch_model->pick( origin, dir, compute_switch_transform( camera, g ), pt ) )
+				if ( compute_gadget_alpha( g, camera->get_position(), switch_fade_dist ) > 0.f )
 				{
-					float dist = glm::distance( camera->get_position(), pt );
-					if ( dist < max_distance && dist < best_dist )
+					glm::vec3 pt;
+					if ( switch_model->pick( origin, dir, compute_switch_transform( camera, g ), pt ) )
 					{
-						best_dist = dist;
-						best_gadget = &g;
+						float dist = glm::distance( camera->get_position(), pt );
+						if ( dist < max_distance && dist < best_dist )
+						{
+							best_dist = dist;
+							best_gadget = &g;
+						}
 					}
 				}
 			}
@@ -114,6 +119,15 @@ namespace SynGlyphX
 		gadgets.push_back( g );
 	}
 
+	bool SuperimposedGroupManager::groupInSelection( unsigned int group )
+	{
+		bool in_selection = false;
+		scene.enumSelected( [&in_selection, group]( const Glyph3DNode& g ) {
+			if ( g.getExplodedPositionGroup() == group ) in_selection = true;
+		} );
+		return in_selection;
+	}
+
 	void SuperimposedGroupManager::render( hal::context* context, render::perspective_camera* camera )
 	{
 		context->set_rasterizer_state( hal::rasterizer_state{ true, true, false, false } );
@@ -126,19 +140,28 @@ namespace SynGlyphX
 				setup_texture( context, g );
 #endif
 
-			auto gadget_transform = compute_gadget_transform( g );
-
-			renderer.add_blended_batch( gadget_model, effect, gadget_transform, glm::vec4( color, gadget_base_alpha * compute_gadget_alpha( g ) ) );
+			if ( mode == SuperimposedGadgetMode::Always || groupInSelection( g.group ) )
+			{
+				auto gadget_transform = compute_gadget_transform( g );
+				renderer.add_blended_batch( gadget_model, effect, gadget_transform, glm::vec4( color, gadget_base_alpha * compute_gadget_alpha( g, camera->get_position(), bound_fade_dist ) ) );
+			}
 		}
 		renderer.render( context, camera );
 
 		// temp; optimize
 		for ( auto& g : gadgets )
 		{
-			auto switch_transform = compute_switch_transform( camera, g );
-			context->bind( 0u, scene.isExploded( g.group ) ? collapse_icon : explode_icon );
-			renderer.add_blended_batch( switch_model, switch_effect, switch_transform, glm::vec4( 1.f, 1.f, 1.f, compute_gadget_alpha( g ) ) );
-			renderer.render( context, camera );
+			if ( mode == SuperimposedGadgetMode::Always || groupInSelection( g.group ) )
+			{
+				float gadget_alpha = compute_gadget_alpha( g, camera->get_position(), switch_fade_dist );
+				if ( gadget_alpha > 0.f )
+				{
+					auto switch_transform = compute_switch_transform( camera, g );
+					context->bind( 0u, scene.isExploded( g.group ) ? collapse_icon : explode_icon );
+					renderer.add_blended_batch( switch_model, switch_effect, switch_transform, glm::vec4( 1.f, 1.f, 1.f, gadget_alpha ) );
+					renderer.render( context, camera );
+				}
+			}
 		}
 
 		context->set_depth_state( hal::depth_state::read_write );
@@ -157,7 +180,7 @@ namespace SynGlyphX
 		return translate * scale;
 	}
 
-	float SuperimposedGroupManager::compute_gadget_alpha( const gadget& g )
+	float SuperimposedGroupManager::compute_gadget_alpha( const gadget& g, const glm::vec3& cam_pos, const glm::vec2& fade_dist )
 	{
 		float gadget_alpha = 1.f;
 		if ( scene.getGroupStatus() != 0.f )
@@ -165,6 +188,15 @@ namespace SynGlyphX
 			if ( scene.getActiveGroup() != g.group )
 				gadget_alpha = 1.f - scene.getGroupStatus();
 		}
+
+		if ( !groupInSelection( g.group ) )
+		{
+			const float start_fade_dist = 100.f, end_fade_dist = 120.f;
+			float dist = glm::distance( cam_pos, g.position );
+			float a = 1.f - glm::clamp( ( dist - fade_dist.x ) / ( fade_dist.y - fade_dist.x ), 0.f, 1.f );
+			gadget_alpha *= a;
+		}
+
 		return gadget_alpha;
 	}
 

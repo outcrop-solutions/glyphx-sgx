@@ -57,9 +57,10 @@ namespace SynGlyphX
 		hal::texture* collapse_icon;
 
 		SuperimposedGadgetMode mode;
+		bool groupInSelection( unsigned int group );
 
 		glm::mat4 compute_gadget_transform( const gadget& g );
-		float compute_gadget_alpha( const gadget& g );
+		float compute_gadget_alpha( const gadget& g, const glm::vec3& cam_pos, const glm::vec2& fade_dist );
 		glm::mat4 compute_switch_transform( const render::perspective_camera* camera, const gadget& g );
 		void setup_texture( hal::context* context, gadget& g );
 	};
