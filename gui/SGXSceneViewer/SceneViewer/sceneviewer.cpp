@@ -28,7 +28,7 @@
 #include "freecameracontroller.h"
 #include "orbitcameracontroller.h"
 #include "overheadcameracontroller.h"
-#include "gadgetmanager.h"
+#include "superimposedgroupmanager.h"
 
 //temp
 #include <QtCore/qitemselectionmodel.h>
@@ -51,7 +51,7 @@ namespace SynGlyphX
 	SceneViewer::SceneViewer( QWidget *parent, ViewerMode _mode )
 		: QOpenGLWidget( parent ), glyph_renderer( nullptr ), renderer( nullptr ), wireframe( false ), enable_fly_to_object( false ), scene_axes_enabled( true ),
 		wheel_delta( 0.f ), hud_axes_enabled( true ), hud_axes_location( HUDAxesLocation::TopLeft ), animation_enabled( true ), background_color( render::color::black() ),
-		initialized( false ), filtered_glyph_opacity( 0.5f ), free_selection_camera( false ), selection_effect_enabled( true ), item_focus_sm( nullptr ), scene( nullptr ), 
+		initialized( false ), filtered_glyph_opacity( 0.5f ), free_selection_camera( false ), selection_effect_enabled( true ), item_focus_sm( nullptr ), scene( nullptr ),
 		mode( _mode )
 	{
 		memset( key_states, 0, sizeof( key_states ) );
@@ -171,7 +171,7 @@ namespace SynGlyphX
 		scene->enumGroups( [&, scene_ptr]( const std::vector<const Glyph3DNode*>& nodes, unsigned int group_idx ) {
 			auto pos = nodes[0]->getCachedPosition();
 			float radius = nodes[0]->getCachedCombinedBound().get_radius();
-			gadgets->create( [scene_ptr, group_idx]() { scene_ptr->toggleExplode( group_idx ); }, group_idx, pos, radius );
+			group_manager->create( [scene_ptr, group_idx]() { scene_ptr->toggleExplode( group_idx ); }, group_idx, pos, radius );
 		} );
 	}
 
@@ -180,7 +180,7 @@ namespace SynGlyphX
 		if ( initialized )
 		{
 			scene->clear();
-			gadgets->clear();
+			group_manager->clear();
 			base_images->clear();
 			grids->clear();
 			for ( int i = 0; i < 3; ++i )
@@ -300,7 +300,7 @@ namespace SynGlyphX
 
 		hud_font = hal::device::load_font( "fonts/OpenSans-Regular.ttf", 16 );
 
-		gadgets = new GadgetManager( *scene );
+		group_manager = new SuperimposedGroupManager( *scene );
 	}
 
 	void SceneViewer::resizeGL( int w, int h )
@@ -445,12 +445,12 @@ namespace SynGlyphX
 				context->set_depth_state( hal::depth_state::read_write );
 				context->clear( hal::clear_type::depth );
 				glyph_renderer->render_solid( context, camera, float( elapsed_timer.elapsed() ) / 1000.f, true );
-				gadgets->render( context, camera );
+				group_manager->render( context, camera );
 				glyph_renderer->render_blended( context, camera, float( elapsed_timer.elapsed() ) / 1000.f, true );
 			}
 
 			if ( !exploded_group )
-				gadgets->render( context, camera );
+				group_manager->render( context, camera );
 		}
 
 		// States for blended overlay elements.
@@ -527,7 +527,7 @@ namespace SynGlyphX
 			// Draw tags.
 			scene->enumTagEnabled( [this]( const Glyph3DNode& glyph ) {
 				auto pos = glyph.getCachedPosition();
-				if ( scene->isExploded( &glyph ) ) pos += glyph.getAlternatePosition();
+				if ( scene->isExploded( &glyph ) ) pos += glyph.getExplodedPosition();
 				if ( glyph.getTag() ) renderText( hud_font, camera, glyph.getCachedPosition(), render::color::white(), glyph.getTag() );
 			} );
 
@@ -745,69 +745,69 @@ namespace SynGlyphX
 			bool changed_selection = false;
 			if ( event->button() == Qt::MouseButton::LeftButton )
 			{
-				glm::vec3 origin, dir;
-				camera->viewport_pt_to_ray( event->x(), event->y(), origin, dir );
-				const int select_threshold = 3;
-				bool ctrl = ( QGuiApplication::queryKeyboardModifiers() & Qt::KeyboardModifier::ControlModifier );
-				bool alt = ( QGuiApplication::queryKeyboardModifiers() & Qt::KeyboardModifier::AltModifier );
-				if ( drag_info( button::left ).drag_distance_x < select_threshold
-					&& drag_info( button::left ).drag_distance_y < select_threshold )
+				if ( !( QGuiApplication::queryKeyboardModifiers() & Qt::KeyboardModifier::ShiftModifier ) )
 				{
+					glm::vec3 origin, dir;
+					camera->viewport_pt_to_ray( event->x(), event->y(), origin, dir );
+					const int select_threshold = 3;
+					bool ctrl = ( QGuiApplication::queryKeyboardModifiers() & Qt::KeyboardModifier::ControlModifier );
+					bool alt = ( QGuiApplication::queryKeyboardModifiers() & Qt::KeyboardModifier::AltModifier );
+					if ( drag_info( button::left ).drag_distance_x < select_threshold
+						&& drag_info( button::left ).drag_distance_y < select_threshold )
+					{
+						if ( !ctrl && !alt )
+							scene->clearSelection();
+
+						auto scene_pick_result = scene->pick_with_distance( origin, dir, scene->getFilterMode() == FilteredResultsDisplayMode::TranslucentUnfiltered, scene->getActiveGroup() != GlyphScene::NO_GROUP && scene->getGroupStatus() > 0.f );
+						float scene_pick_dist = scene_pick_result.second;
+
+						auto gadget_pick_result = group_manager->pick( camera, origin, dir, scene_pick_dist );
+						float gadget_pick_dist = gadget_pick_result.second;
+						auto gadget_group_idx = gadget_pick_result.first;
+						auto active_group = scene->getActiveGroup();
+
+						// if we hit a gadget, and it's closer than any glyphs we hit, toggle it-- but only if
+						// either there's no current exploded group or we clicked the current one (don't want to explode
+						// a group if there's already an exploded one)
+						if ( gadget_pick_dist < scene_pick_dist && ( active_group == 0 || gadget_group_idx == active_group ) )
+						{
+							if ( gadget_group_idx > 0 )
+								scene->toggleExplode( gadget_group_idx );
+						}
+						else
+						{
+							auto g = scene_pick_result.first;
+							if ( g )
+							{
+								if ( alt || ( ctrl && scene->isSelected( g ) ) )
+									scene->setUnSelected( g );
+								else
+									scene->setSelected( g );
+							}
+						}
+						changed_selection = true;
+
+					}
+				}
+				else  // holding shift, so we're doing a drag-select
+				{
+					bool ctrl = ( QGuiApplication::queryKeyboardModifiers() & Qt::KeyboardModifier::ControlModifier );
+					bool alt = ( QGuiApplication::queryKeyboardModifiers() & Qt::KeyboardModifier::AltModifier );
+
 					if ( !ctrl && !alt )
 						scene->clearSelection();
 
-					auto scene_pick_result = scene->pick_with_distance( origin, dir, scene->getFilterMode() == FilteredResultsDisplayMode::TranslucentUnfiltered, scene->getActiveGroup() != GlyphScene::NO_GROUP && scene->getGroupStatus() > 0.f );
-					float scene_pick_dist = scene_pick_result.second;
+					bool exploded = scene->getActiveGroup() > 0.f && scene->getGroupStatus() > 0.f;
 
-					auto gadget_pick_result = gadgets->pick( camera, origin, dir, scene_pick_dist );
-					float gadget_pick_dist = gadget_pick_result.second;
-					auto gadget_group_idx = gadget_pick_result.first;
-					auto active_group = scene->getActiveGroup();
-
-					// if we hit a gadget, and it's closer than any glyphs we hit, toggle it-- but only if
-					// either there's no current exploded group or we clicked the current one (don't want to explode
-					// a group if there's already an exploded one)
-					if ( gadget_pick_dist < scene_pick_dist && ( active_group == 0 || gadget_group_idx == active_group ) )
-					{
-						if ( gadget_group_idx > 0 )
-							scene->toggleExplode( gadget_group_idx );
-					}
-					else
-					{
-						auto g = scene_pick_result.first;
-						if ( g )
+					scene->enumGlyphs( [this, event, alt, exploded]( const Glyph3DNode& node ) {
+						auto pos = scene->getExplodedPosition( &node );
+						auto pos2d = camera->world_pt_to_window_pt( pos );
+						if ( pos2d.x > std::min( drag_info( button::left ).drag_start_x, mouse_x )
+							&& pos2d.x < std::max( drag_info( button::left ).drag_start_x, mouse_x )
+							&& pos2d.y > std::min( drag_info( button::left ).drag_start_y, mouse_y )
+							&& pos2d.y < std::max( drag_info( button::left ).drag_start_y, mouse_y ) )
 						{
-							if ( alt || ( ctrl && scene->isSelected( g ) ) )
-								scene->setUnSelected( g );
-							else
-								scene->setSelected( g );
-						}
-					}
-					changed_selection = true;
-
-				}
-			}
-			else  // holding shift, so we're doing a drag-select
-			{
-				bool ctrl = ( QGuiApplication::queryKeyboardModifiers() & Qt::KeyboardModifier::ControlModifier );
-				bool alt = ( QGuiApplication::queryKeyboardModifiers() & Qt::KeyboardModifier::AltModifier );
-
-				if ( !ctrl && !alt )
-					scene->clearSelection();
-
-				bool exploded = scene->getActiveGroup() > 0.f && scene->getGroupStatus() > 0.f;
-
-				scene->enumGlyphs( [this, event, alt, exploded]( const Glyph3DNode& node ) {
-					auto pos = scene->getExplodedPosition( &node );
-					auto pos2d = camera->world_pt_to_window_pt( pos );
-					if ( pos2d.x > std::min( drag_info( button::left ).drag_start_x, mouse_x )
-						&& pos2d.x < std::max( drag_info( button::left ).drag_start_x, mouse_x )
-						&& pos2d.y > std::min( drag_info( button::left ).drag_start_y, mouse_y )
-						&& pos2d.y < std::max( drag_info( button::left ).drag_start_y, mouse_y ) )
-					{
-						if ( !exploded || ( node.getAlternatePositionGroup() == scene->getActiveGroup() ) )
-						{
-							if ( !exploded || ( node.getAlternatePositionGroup() == scene->getActiveGroup() ) )
+							if ( !exploded || ( node.getExplodedPositionGroup() == scene->getActiveGroup() ) )
 							{
 								if ( glm::dot( pos - camera->get_position(), camera->get_forward() ) > 0.f )	// make sure it's not behind the camera
 								{
@@ -821,16 +821,16 @@ namespace SynGlyphX
 								}
 							}
 						}
-					}
-					return true;
-				}, true );
+						return true;
+					}, true );
 
-				changed_selection = true;
-			}
+					changed_selection = true;
+				}
 
-			if ( changed_selection )
-			{
-				selection_changed();
+				if ( changed_selection )
+				{
+					selection_changed();
+				}
 			}
 		}
 	}
@@ -967,7 +967,7 @@ namespace SynGlyphX
 					glm::vec3 explosion_offset;
 					auto single_selection = scene->getSingleSelection();
 					if ( single_selection && scene->isExploded( single_selection ) )
-						explosion_offset = single_selection->getAlternatePosition();
+						explosion_offset = single_selection->getExplodedPosition();
 
 					// if we only have links selected don't restrict the zoom distance (they tend to have huge bounds)
 					float orbit_min_distance = glyphs_selected ? selection_radius + largest_bound : 0.f;
@@ -1124,4 +1124,4 @@ namespace SynGlyphX
 		else
 			return 0.f;
 	}
-			}
+}

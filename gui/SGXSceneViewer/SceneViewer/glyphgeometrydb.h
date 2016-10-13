@@ -9,6 +9,9 @@ namespace SynGlyphX
 	class GlyphGeometryDB
 	{
 	public:
+		GlyphGeometryDB() { };
+		GlyphGeometryDB( const GlyphGeometryDB& ) = delete;
+
 		void init();
 		void reset();	// call when loading new vis
 		void clear();
@@ -29,3 +32,4 @@ namespace SynGlyphX
 		mutable std::unordered_map<float, std::vector<GlyphGeometryDB::model_entry>> torus_models;
 	};
 }
+

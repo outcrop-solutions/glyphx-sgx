@@ -1,6 +1,6 @@
 
 #include <hal/hal.h>
-#include "gadgetmanager.h"
+#include "SuperimposedGroupManager.h"
 #include <render/model.h>
 #include <render/model_loader.h>
 #include <render/color.h>
@@ -19,7 +19,8 @@ namespace SynGlyphX
 		//		unsigned int switch_rt_size_x = 256u, switch_rt_size_y = 256u;
 	}
 
-	GadgetManager::GadgetManager( GlyphScene& _scene ) : scene( _scene ), gadget_model( nullptr ), switch_model( nullptr )
+	SuperimposedGroupManager::SuperimposedGroupManager( GlyphScene& _scene ) : scene( _scene ), gadget_model( nullptr ), switch_model( nullptr ),
+		mode( SuperimposedGadgetMode::OnSelection )
 	{
 		effect = hal::device::load_effect( "shaders/gadget_bound.vert", nullptr, "shaders/gadget_bound.frag" );
 		switch_effect = hal::device::load_effect( "shaders/texture.vert", nullptr, "shaders/texture.frag" );
@@ -56,7 +57,7 @@ namespace SynGlyphX
 		// switch_camera->update_viewport_size( switch_rt_size_x, switch_rt_size_y );
 	}
 
-	GadgetManager::~GadgetManager()
+	SuperimposedGroupManager::~SuperimposedGroupManager()
 	{
 		clear();
 		hal::device::release( effect );
@@ -67,26 +68,29 @@ namespace SynGlyphX
 		// delete switch_camera;
 	}
 
-	void GadgetManager::clear()
+	void SuperimposedGroupManager::clear()
 	{
 		gadgets.clear();
 	}
 
-	std::pair<unsigned int, float> GadgetManager::pick( const render::perspective_camera* camera, const glm::vec3& origin, const glm::vec3& dir, float max_distance )
+	std::pair<unsigned int, float> SuperimposedGroupManager::pick( const render::perspective_camera* camera, const glm::vec3& origin, const glm::vec3& dir, float max_distance )
 	{
 		float best_dist = FLT_MAX;
 		gadget* best_gadget = nullptr;
 		for ( auto i = 0u; i < gadgets.size(); ++i )
 		{
 			auto& g = gadgets[i];
-			glm::vec3 pt;
-			if ( switch_model->pick( origin, dir, compute_switch_transform( camera, g ), pt ) )
+			if ( scene.getGroupStatus() == 0.f || ( g.group == scene.getActiveGroup() ) )
 			{
-				float dist = glm::distance( camera->get_position(), pt );
-				if ( dist < max_distance && dist < best_dist )
+				glm::vec3 pt;
+				if ( switch_model->pick( origin, dir, compute_switch_transform( camera, g ), pt ) )
 				{
-					best_dist = dist;
-					best_gadget = &g;
+					float dist = glm::distance( camera->get_position(), pt );
+					if ( dist < max_distance && dist < best_dist )
+					{
+						best_dist = dist;
+						best_gadget = &g;
+					}
 				}
 			}
 		}
@@ -97,7 +101,7 @@ namespace SynGlyphX
 			return{ 0, FLT_MAX };
 	}
 
-	void GadgetManager::create( std::function<void( void )> on_click, unsigned int group, const glm::vec3& position, float scale )
+	void SuperimposedGroupManager::create( std::function<void( void )> on_click, unsigned int group, const glm::vec3& position, float scale )
 	{
 		gadget g;
 		g.group = group;
@@ -110,7 +114,7 @@ namespace SynGlyphX
 		gadgets.push_back( g );
 	}
 
-	void GadgetManager::render( hal::context* context, render::perspective_camera* camera )
+	void SuperimposedGroupManager::render( hal::context* context, render::perspective_camera* camera )
 	{
 		context->set_rasterizer_state( hal::rasterizer_state{ true, true, false, false } );
 		context->bind( effect );
@@ -141,7 +145,7 @@ namespace SynGlyphX
 		context->set_blend_state( hal::blend_state::disabled );
 	}
 
-	glm::mat4 GadgetManager::compute_gadget_transform( const gadget& g )
+	glm::mat4 SuperimposedGroupManager::compute_gadget_transform( const gadget& g )
 	{
 		auto scale = glm::scale( glm::mat4(), glm::vec3( g.scale ) );
 		auto translate = glm::translate( glm::mat4(), g.position );
@@ -153,7 +157,7 @@ namespace SynGlyphX
 		return translate * scale;
 	}
 
-	float GadgetManager::compute_gadget_alpha( const gadget& g )
+	float SuperimposedGroupManager::compute_gadget_alpha( const gadget& g )
 	{
 		float gadget_alpha = 1.f;
 		if ( scene.getGroupStatus() != 0.f )
@@ -164,7 +168,7 @@ namespace SynGlyphX
 		return gadget_alpha;
 	}
 
-	glm::mat4 GadgetManager::compute_switch_transform( const render::perspective_camera* camera, const gadget& g )
+	glm::mat4 SuperimposedGroupManager::compute_switch_transform( const render::perspective_camera* camera, const gadget& g )
 	{
 		auto gadget_to_cam = camera->get_position() - g.position;
 		float ax = atan2f( gadget_to_cam.x, gadget_to_cam.y );
@@ -175,7 +179,7 @@ namespace SynGlyphX
 		return compute_gadget_transform( g ) * rotate * offset;
 	}
 
-	void GadgetManager::setup_texture( hal::context* context, gadget& g )
+	void SuperimposedGroupManager::setup_texture( hal::context* context, gadget& g )
 	{
 #if RENDERED_GADGET_TEXTURE
 		// WIP - render glyph count

@@ -10,12 +10,18 @@ namespace SynGlyphX
 	namespace render { class model; class perspective_camera; }
 	class GlyphScene;
 
-	class GadgetManager
+	enum class SuperimposedGadgetMode
+	{
+		Always,
+		OnSelection,
+	};
+
+	class SuperimposedGroupManager
 	{
 	public:
-		GadgetManager( GlyphScene& scene );
-		GadgetManager( const GadgetManager& ) = delete;
-		~GadgetManager();
+		SuperimposedGroupManager( GlyphScene& scene );
+		SuperimposedGroupManager( const SuperimposedGroupManager& ) = delete;
+		~SuperimposedGroupManager();
 
 		// returns {group id, distance}
 		std::pair<unsigned int, float> pick( const render::perspective_camera* camera, const glm::vec3& origin, const glm::vec3& dir, float max_distance );
@@ -49,6 +55,8 @@ namespace SynGlyphX
 
 		hal::texture* explode_icon;
 		hal::texture* collapse_icon;
+
+		SuperimposedGadgetMode mode;
 
 		glm::mat4 compute_gadget_transform( const gadget& g );
 		float compute_gadget_alpha( const gadget& g );

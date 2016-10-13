@@ -194,7 +194,7 @@ namespace SynGlyphX
 		auto sphere = db.get( GlyphShape::Sphere );
 		auto spart = sphere->get_parts()[0];
 		auto xform = glm::translate( glm::mat4(), bound.get_center() ) * glm::scale( glm::mat4(), glm::vec3( bound.get_radius() ) );
-		bucket.add_instance( spart->get_mesh(), xform * sphere->get_transform() * spart->get_transform(), glyph.getColor(), glyph.getAnimationAxis(), 0.f, glyph.getAnimationCenter(), glyph.getAlternatePosition(), glyph.getAlternatePositionGroup() );
+		bucket.add_instance( spart->get_mesh(), xform * sphere->get_transform() * spart->get_transform(), glyph.getColor(), glyph.getAnimationAxis(), 0.f, glyph.getAnimationCenter(), glyph.getExplodedPosition(), glyph.getExplodedPositionGroup() );
 	}
 
 	void GlyphRenderer::add( const GlyphScene& scene )
@@ -211,12 +211,12 @@ namespace SynGlyphX
 			if ( glyph.getColor().a < 1.f )
 				bucket_id |= BLENDED;
 
-			glyph_bucket& bucket = get_bucket( bucket_id, static_cast<uint16_t>( glyph.getAlternatePositionGroup() ) );
+			glyph_bucket& bucket = get_bucket( bucket_id, static_cast<uint16_t>( glyph.getExplodedPositionGroup() ) );
 
 			render::model* model = db.get( glyph.getGeometry(), glyph.getTorusRatio() );
 			for ( auto part : model->get_parts() )
 			{
-				bucket.add_instance( part->get_mesh(), glyph.getCachedTransform() * glyph.getVisualTransform() * model->get_transform() * part->get_transform(), glyph.getColor(), glyph.getAnimationAxis(), glyph.getAnimationRate(), glyph.getAnimationCenter(), glyph.getAlternatePosition(), glyph.getAlternatePositionGroup() );
+				bucket.add_instance( part->get_mesh(), glyph.getCachedTransform() * glyph.getVisualTransform() * model->get_transform() * part->get_transform(), glyph.getColor(), glyph.getAnimationAxis(), glyph.getAnimationRate(), glyph.getAnimationCenter(), glyph.getExplodedPosition(), glyph.getExplodedPositionGroup() );
 				if ( bound_vis_enabled )
 					add_bound_to_bucket( glyph, get_bucket( WIREFRAME | ( passed_filter ? 0u : FILTER_FAIL ), 0u ) );
 			}
@@ -394,7 +394,7 @@ namespace SynGlyphX
 						{
 							// for the selection effect we don't care about instance color, so we can pack the bound into that
 							// constant buffer instead.
-							selection.add_instance( part->get_mesh(), glyph_transform * model->get_transform() * part->get_transform(), glm::vec4( glyph.getCachedBound().get_center(), glyph.getCachedBound().get_radius() ), glyph.getAnimationAxis(), glyph.getAnimationRate(), glyph.getAnimationCenter(), glyph.getAlternatePosition(), glyph.getAlternatePositionGroup() );
+							selection.add_instance( part->get_mesh(), glyph_transform * model->get_transform() * part->get_transform(), glm::vec4( glyph.getCachedBound().get_center(), glyph.getCachedBound().get_radius() ), glyph.getAnimationAxis(), glyph.getAnimationRate(), glyph.getAnimationCenter(), glyph.getExplodedPosition(), glyph.getExplodedPositionGroup() );
 
 							if ( bound_vis_enabled )
 								add_bound_to_bucket( glyph, selection_wireframe );

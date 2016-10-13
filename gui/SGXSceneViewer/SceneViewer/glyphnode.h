@@ -67,9 +67,9 @@ namespace SynGlyphX
 		glm::mat4 getVisualTransform() const;
 		void setVisualScale( const glm::vec3& vscale ) const { visual_scale = vscale; }
 
-		void setAlternatePosition( float group, const glm::vec3& pos ) const { alternate_position = pos; alternate_position_group = group; }
-		const glm::vec3& getAlternatePosition() const { return getRootParent()->alternate_position; }
-		const unsigned int getAlternatePositionGroup() const { return getRootParent()->alternate_position_group; }
+		void setExplodedPosition( float group, const glm::vec3& pos ) const { exploded_position = pos; exploded_position_group = group; }
+		const glm::vec3& getExplodedPosition() const { return getRootParent()->exploded_position; }
+		const unsigned int getExplodedPositionGroup() const { return getRootParent()->exploded_position_group; }
 
 		const glm::mat4& getCachedTransform() const { return cached_transform; }
 		glm::vec3 getCachedPosition() const { return glm::vec3( cached_transform[3] ); }
@@ -100,7 +100,7 @@ namespace SynGlyphX
 
 	private:
 		Glyph3DNode( unsigned int _id, bool _isRoot, Glyph3DNodeType _type, int _filtering_index ) : placement( nullptr ), id( _id ), root( _isRoot ), tag( nullptr ), animation_axis( 1.f, 0.f, 0.f ), animation_rate( 0.f ),
-			torus_ratio( 0.1f ), filtering_index( _filtering_index ), parent( nullptr ), type( _type ), animation_root( false ), animation_child( false ), alternate_position_group( 0.f ) { }
+			torus_ratio( 0.1f ), filtering_index( _filtering_index ), parent( nullptr ), type( _type ), animation_root( false ), animation_child( false ), exploded_position_group( 0.f ) { }
 
 		PlacementPolicy* placement;
 
@@ -121,8 +121,8 @@ namespace SynGlyphX
 		mutable glm::mat4 cached_transform;
 		mutable render::sphere_bound bound, combined_bound;
 		mutable glm::vec3 visual_scale;
-		mutable glm::vec3 alternate_position;
-		mutable unsigned int alternate_position_group;
+		mutable glm::vec3 exploded_position;
+		mutable unsigned int exploded_position_group;
 		mutable glm::vec3 animation_axis;
 		mutable float animation_rate;
 

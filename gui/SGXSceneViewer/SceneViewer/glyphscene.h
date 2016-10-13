@@ -17,7 +17,7 @@ namespace SynGlyphX
 	class SGXSCENEVIEWER_API GlyphScene
 	{
 	public:
-		GlyphScene( GlyphGeometryDB _db ) : octree( nullptr ), filter_applied( false ), selection_changed( false ), glyph_storage( nullptr ), glyph_storage_next( 0u ),
+		GlyphScene( GlyphGeometryDB& _db ) : octree( nullptr ), filter_applied( false ), selection_changed( false ), glyph_storage( nullptr ), glyph_storage_next( 0u ),
 			filter_mode( FilteredResultsDisplayMode::TranslucentUnfiltered ), has_animation( false ), db( _db ), explode_state( group_state::retracted ),
 			active_group( 0 ), group_status( 0.f ) { }
 		~GlyphScene();
@@ -85,7 +85,7 @@ namespace SynGlyphX
 		unsigned int getActiveGroup() const { return active_group; }
 		glm::vec3 getExplodedPosition( const Glyph3DNode* node ) const;
 		glm::vec3 getExplodedPositionOffset( const Glyph3DNode* node ) const;
-		bool isExploded( const Glyph3DNode* node ) const { return node->getRootParent()->getAlternatePositionGroup() == getActiveGroup() && group_status > 0.f; }
+		bool isExploded( const Glyph3DNode* node ) const { return node->getRootParent()->getExplodedPositionGroup() == getActiveGroup() && group_status > 0.f; }
 		bool isExploded( unsigned int group ) const { return group != 0 && group == active_group && group_status > 0.f; }
 		void enumGroups( std::function<void( const std::vector< const Glyph3DNode*>&, unsigned int )> );
 

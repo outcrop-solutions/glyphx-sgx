@@ -411,42 +411,64 @@ namespace SynGlyphX
 		// todo: this is O(n^2) -- using the octree would make it O(nlogn)
 		// (although even in the most expensive vis I have it only takes ~50ms so maybe
 		// it's ok)
-		const float dist_threshold = 1.f;
+		assert( groups.size() == 0 );
 
-		bool added_to_group = false;
+		std::vector<Glyph3DNode*> ungrouped_glyphs;
 		for ( auto& g : glyphs )
 		{
-			auto& glyph = g.second;
-			if ( glyph->isRoot() && glyph->type != Glyph3DNodeType::Link )
-			{
-				for ( unsigned int i = 0; i < groups.size(); ++i )
-				{
-					auto& group = groups[i];
-					auto test_glyph = *group.nodes.begin();
-					if ( glm::distance( glyph->getCachedPosition(), test_glyph->getCachedPosition() ) < test_glyph->getCachedCombinedBound().get_radius() )
-					{
-						group.nodes.push_back( glyph );
-						added_to_group = true;
-						break;
-					}
-				}
+			if ( g.second->isRoot() && g.second->getType() != Glyph3DNodeType::Link )
+				ungrouped_glyphs.push_back( g.second );
+		}
 
-				if ( !added_to_group )
+		const float dist_threshold = 1.f;
+		
+		// First pass: create initial groups.
+		auto it0 = ungrouped_glyphs.begin();
+		while ( it0 != ungrouped_glyphs.end() )
+		{
+			bool new_group = false;
+
+			auto glyph0 = *it0;
+			superimposed_group group;
+			group.nodes.push_back( glyph0 );
+
+			auto it1 = ungrouped_glyphs.begin();
+			while ( it1 != ungrouped_glyphs.end() )
+			{
+				auto glyph1 = *it1;
+				if ( glyph0 != glyph1 && glm::distance( glyph0->getCachedPosition(), glyph1->getCachedPosition() ) < dist_threshold )
 				{
-					superimposed_group new_group;
-					new_group.nodes.push_back( glyph );
-					groups.push_back( new_group );
+					group.nodes.push_back( glyph1 );
+					it1 = ungrouped_glyphs.erase( it1 );
+					new_group = true;
 				}
+				else
+					++it1;
+			}
+
+			if ( new_group )
+			{
+				groups.push_back( group );
+				it0 = ungrouped_glyphs.erase( it0 );
+			}
+			else
+			{
+				++it0;
 			}
 		}
-			
-		auto it = groups.begin();
-		while ( it != groups.end() )
+
+		// Second pass: find any glyphs whose centers fall inside one of our groups and add them as well.
+		for ( unsigned int i = 0; i < groups.size(); ++i )
 		{
-			if ( it->nodes.size() <= 1 )
-				it = groups.erase( it );
-			else
-				++it;
+			auto& group = groups[i];
+			auto test_glyph = *group.nodes.begin();
+			for ( auto g : ungrouped_glyphs )
+			{
+				if ( glm::distance( g->getCachedPosition(), test_glyph->getCachedPosition() ) < test_glyph->getCachedCombinedBound().get_radius() )
+				{
+					group.nodes.push_back( g );
+				}
+			}
 		}
 
 		hal::debug::print( "computed %i superimposed groups", groups.size() );
@@ -478,7 +500,7 @@ namespace SynGlyphX
 				glm::vec3 explode = explode_axis_0 * row * spacing + explode_axis_1 * col * spacing;
 				explode.x -= rows * spacing * 0.5f;
 				explode.y -= rows * spacing * 0.5f;
-				g->setAlternatePosition( groupidx, explode );
+				g->setExplodedPosition( groupidx, explode );
 				row += 1.f;
 				if ( row >= rows )
 				{
@@ -525,12 +547,12 @@ namespace SynGlyphX
 
 	glm::vec3 GlyphScene::getExplodedPositionOffset( const Glyph3DNode* node ) const
 	{
-		return glm::mix( glm::vec3(), node->getAlternatePosition(), group_status );
+		return glm::mix( glm::vec3(), node->getExplodedPosition(), group_status );
 	}
 
 	glm::vec3 GlyphScene::apply_explosion_offset( const Glyph3DNode* node, const glm::vec3& pos ) const
 	{
-		if ( node->getAlternatePositionGroup() == active_group )
+		if ( node->getExplodedPositionGroup() == active_group )
 			return pos + getExplodedPositionOffset( node );
 		else
 			return pos;
