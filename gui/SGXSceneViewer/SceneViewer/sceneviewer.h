@@ -99,6 +99,7 @@ namespace SynGlyphX
 		void showTagsOfSelectedObjects( bool show );
 		void setAxisNames( const char* X, const char* Y, const char* Z );
 		void hideAllTags();
+		void enableSuperimposedGlyphGadgets( bool val );
 
 		void setFilteredResults( const IndexSet& results );
 		void setFilteredResultsDisplayMode( FilteredResultsDisplayMode mode );

@@ -29,6 +29,7 @@ namespace SynGlyphX
 		void clear();
 
 		void render( hal::context* context, render::perspective_camera* camera );
+		void setMode( SuperimposedGadgetMode _mode ) { mode = _mode; }
 
 	private:
 		struct gadget

@@ -17,12 +17,12 @@ namespace SynGlyphX
 		auto color = glm::vec3( 1.f, 1.f, 1.f );
 		const float gadget_base_alpha = 0.25f;
 		glm::vec2 switch_fade_dist( 125.f, 150.f );
-		glm::vec2 bound_fade_dist( 200.f, 250.f );
+		glm::vec2 bound_fade_dist( 450.f, 500.f );
 		//		unsigned int switch_rt_size_x = 256u, switch_rt_size_y = 256u;
 	}
 
 	SuperimposedGroupManager::SuperimposedGroupManager( GlyphScene& _scene ) : scene( _scene ), gadget_model( nullptr ), switch_model( nullptr ),
-		mode( SuperimposedGadgetMode::Always )
+		mode( SuperimposedGadgetMode::OnSelection )
 	{
 		effect = hal::device::load_effect( "shaders/gadget_bound.vert", nullptr, "shaders/gadget_bound.frag" );
 		switch_effect = hal::device::load_effect( "shaders/texture.vert", nullptr, "shaders/texture.frag" );
@@ -148,21 +148,26 @@ namespace SynGlyphX
 		}
 		renderer.render( context, camera );
 
-		// temp; optimize
+		render::renderer switch_expand, switch_collapse;
 		for ( auto& g : gadgets )
 		{
-			if ( mode == SuperimposedGadgetMode::Always || groupInSelection( g.group ) )
+			if ( mode == SuperimposedGadgetMode::Always || groupInSelection( g.group ) || scene.isExploded( g.group ) )
 			{
 				float gadget_alpha = compute_gadget_alpha( g, camera->get_position(), switch_fade_dist );
 				if ( gadget_alpha > 0.f )
 				{
 					auto switch_transform = compute_switch_transform( camera, g );
-					context->bind( 0u, scene.isExploded( g.group ) ? collapse_icon : explode_icon );
-					renderer.add_blended_batch( switch_model, switch_effect, switch_transform, glm::vec4( 1.f, 1.f, 1.f, gadget_alpha ) );
-					renderer.render( context, camera );
+					if ( scene.isExploded( g.group ) )
+						switch_collapse.add_blended_batch( switch_model, switch_effect, switch_transform, glm::vec4( 1.f, 1.f, 1.f, gadget_alpha ) );
+					else
+						switch_expand.add_blended_batch( switch_model, switch_effect, switch_transform, glm::vec4( 1.f, 1.f, 1.f, gadget_alpha ) );
 				}
 			}
 		}
+		context->bind( 0u, explode_icon );
+		switch_expand.render( context, camera );
+		context->bind( 0u, collapse_icon );
+		switch_collapse.render( context, camera );
 
 		context->set_depth_state( hal::depth_state::read_write );
 		context->set_blend_state( hal::blend_state::disabled );

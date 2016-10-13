@@ -1124,4 +1124,9 @@ namespace SynGlyphX
 		else
 			return 0.f;
 	}
+
+	void SceneViewer::enableSuperimposedGlyphGadgets( bool val )
+	{
+		if ( group_manager ) group_manager->setMode( val ? SuperimposedGadgetMode::Always : SuperimposedGadgetMode::OnSelection );
+	}
 }

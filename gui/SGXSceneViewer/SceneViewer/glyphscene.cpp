@@ -420,7 +420,7 @@ namespace SynGlyphX
 				ungrouped_glyphs.push_back( g.second );
 		}
 
-		const float dist_threshold = 1.f;
+		const float dist_threshold = 0.1f;
 		
 		// First pass: create initial groups.
 		auto it0 = ungrouped_glyphs.begin();
