@@ -120,11 +120,16 @@ namespace SynGlyphX
 
 	bool SuperimposedGroupManager::groupInSelection( unsigned int group )
 	{
-		bool in_selection = false;
+		auto root = scene.getSingleRoot();
+		return root ? ( root->getExplodedPositionGroup() == group ) : false;
+
+		// This will show gadgets for *ALL* selected objects (not just if a single one is selected).
+		// Superimposed group gadget rendering will need some optimization before this is practical.
+/*		bool in_selection = false;
 		scene.enumSelected( [&in_selection, group]( const Glyph3DNode& g ) {
 			if ( g.getExplodedPositionGroup() == group ) in_selection = true;
 		} );
-		return in_selection;
+		return in_selection;*/
 	}
 
 	void SuperimposedGroupManager::render( hal::context* context, render::perspective_camera* camera )
@@ -141,7 +146,7 @@ namespace SynGlyphX
 				setup_texture( context, g );
 #endif
 
-			if ( mode == SuperimposedGadgetMode::Always || groupInSelection( g.group ) )
+			if ( g.bound_alpha > 0.f )
 			{
 				auto gadget_transform = compute_gadget_transform( g );
 				renderer.add_blended_batch( gadget_model, effect, gadget_transform, glm::vec4( color, gadget_base_alpha * g.bound_alpha ) );
@@ -152,14 +157,13 @@ namespace SynGlyphX
 		render::renderer switch_expand, switch_collapse;
 		for ( auto& g : gadgets )
 		{
-			float gadget_alpha = g.switch_alpha;
-			if ( gadget_alpha > 0.f )
+			if ( g.switch_alpha > 0.f )
 			{
 				auto switch_transform = compute_switch_transform( camera, g );
 				if ( scene.isExploded( g.group ) )
-					switch_collapse.add_blended_batch( switch_model, switch_effect, switch_transform, glm::vec4( 1.f, 1.f, 1.f, gadget_alpha ) );
+					switch_collapse.add_blended_batch( switch_model, switch_effect, switch_transform, glm::vec4( 1.f, 1.f, 1.f, g.switch_alpha ) );
 				else
-					switch_expand.add_blended_batch( switch_model, switch_effect, switch_transform, glm::vec4( 1.f, 1.f, 1.f, gadget_alpha ) );
+					switch_expand.add_blended_batch( switch_model, switch_effect, switch_transform, glm::vec4( 1.f, 1.f, 1.f, g.switch_alpha ) );
 			}
 		}
 		context->bind( 0u, explode_icon );
@@ -238,11 +242,20 @@ namespace SynGlyphX
 	{
 		for ( auto& g : gadgets )
 		{
-			if ( mode == SuperimposedGadgetMode::Always || groupInSelection( g.group ) || scene.isExploded( g.group ) )
+			if ( scene.isExploded( g.group ) || groupInSelection( g.group ) )
+			{
+				g.switch_alpha = 1.f;
+				g.bound_alpha = 1.f;
+			}
+			else if ( mode == SuperimposedGadgetMode::Always )
+			{
 				g.switch_alpha = compute_gadget_alpha( g, camera->get_position(), switch_fade_dist );
+				g.bound_alpha = compute_gadget_alpha( g, camera->get_position(), bound_fade_dist );
+			}
 			else
-				g.switch_alpha = 0.f;
-			g.bound_alpha = compute_gadget_alpha( g, camera->get_position(), bound_fade_dist );
+			{
+				g.switch_alpha = g.bound_alpha = 0.f;
+			}
 		}
 	}
 }
