@@ -79,10 +79,11 @@ namespace SynGlyphX
 	{
 		float best_dist = FLT_MAX;
 		gadget* best_gadget = nullptr;
-		for ( auto i = 0u; i < gadgets.size(); ++i )
+		for ( auto& it : gadgets )
 		{
-			auto& g = gadgets[i];
-			if ( scene.getGroupStatus() == 0.f || ( g.group == scene.getActiveGroup() ) )
+			auto group = it.first;
+			auto& g = it.second;
+			if ( scene.getGroupStatus() == 0.f || ( group == scene.getActiveGroup() ) )
 			{
 				if ( g.switch_alpha > 0.f )
 				{
@@ -115,7 +116,7 @@ namespace SynGlyphX
 		g.position = position;
 		//		g.texture = nullptr;
 		//		g.texture_rt = nullptr;
-		gadgets.push_back( g );
+		gadgets.insert( std::make_pair( group, g ) );
 	}
 
 	bool SuperimposedGroupManager::groupInSelection( unsigned int group )
@@ -132,6 +133,15 @@ namespace SynGlyphX
 		return in_selection;*/
 	}
 
+	unsigned int SuperimposedGroupManager::selectedGroup()
+	{
+		auto root = scene.getSingleRoot();
+		if ( root )
+			return root->getExplodedPositionGroup();
+		else
+			return 0u;
+	}
+
 	void SuperimposedGroupManager::render( hal::context* context, render::perspective_camera* camera )
 	{
 		update( camera );
@@ -139,6 +149,7 @@ namespace SynGlyphX
 		context->set_rasterizer_state( hal::rasterizer_state{ true, true, false, false } );
 		context->bind( effect );
 
+		render::renderer renderer;
 		for ( auto& g : gadgets )
 		{
 #if RENDERED_GADGET_TEXTURE
@@ -146,31 +157,36 @@ namespace SynGlyphX
 				setup_texture( context, g );
 #endif
 
-			if ( g.bound_alpha > 0.f )
+			if ( g.second.bound_alpha > 0.f )
 			{
-				auto gadget_transform = compute_gadget_transform( g );
-				renderer.add_blended_batch( gadget_model, effect, gadget_transform, glm::vec4( color, gadget_base_alpha * g.bound_alpha ) );
+				auto gadget_transform = compute_gadget_transform( g.second );
+				renderer.add_blended_batch( gadget_model, effect, gadget_transform, glm::vec4( color, gadget_base_alpha * g.second.bound_alpha ) );
 			}
 		}
 		renderer.render( context, camera );
 
-		// todo: optimize, we're only rendering one switch at a time now
-		render::renderer switch_expand, switch_collapse;
-		for ( auto& g : gadgets )
+		// Show expand/collapse icon for group that's exploded, or if no exploded group, group that's selected.
+		unsigned int selected_group = 0u;
+		if ( scene.isExploded( scene.getActiveGroup() ) )
+			selected_group = scene.getActiveGroup();
+		else
+			selected_group = selectedGroup();
+
+		if ( selected_group != 0u && scene.isExploded( selected_group ) || groupInSelection( selected_group ) )
 		{
-			if ( g.switch_alpha > 0.f )
+			auto& it = gadgets.find( selected_group );
+			auto& active_gadget = it->second;
+
+			if ( active_gadget.switch_alpha > 0.f )
 			{
-				auto switch_transform = compute_switch_transform( camera, g );
-				if ( scene.isExploded( g.group ) )
-					switch_collapse.add_blended_batch( switch_model, switch_effect, switch_transform, glm::vec4( 1.f, 1.f, 1.f, g.switch_alpha ) );
-				else
-					switch_expand.add_blended_batch( switch_model, switch_effect, switch_transform, glm::vec4( 1.f, 1.f, 1.f, g.switch_alpha ) );
+				auto switch_transform = compute_switch_transform( camera, active_gadget );
+				auto texture = scene.isExploded( selected_group ) ? collapse_icon : explode_icon;
+				renderer.add_blended_batch( switch_model, switch_effect, switch_transform, glm::vec4( 1.f, 1.f, 1.f, active_gadget.switch_alpha ) );
+
+				context->bind( 0u, texture );
+				renderer.render( context, camera );
 			}
 		}
-		context->bind( 0u, explode_icon );
-		switch_expand.render( context, camera );
-		context->bind( 0u, collapse_icon );
-		switch_collapse.render( context, camera );
 
 		context->set_depth_state( hal::depth_state::read_write );
 		context->set_blend_state( hal::blend_state::disabled );
@@ -241,8 +257,9 @@ namespace SynGlyphX
 
 	void SuperimposedGroupManager::update( render::perspective_camera* camera )
 	{
-		for ( auto& g : gadgets )
+		for ( auto& it : gadgets )
 		{
+			auto& g = it.second;
 			if ( scene.isExploded( g.group ) || groupInSelection( g.group ) )
 			{
 				g.switch_alpha = 1.f;

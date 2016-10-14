@@ -651,6 +651,19 @@ namespace SynGlyphX
 				scene->collapse( scene->getActiveGroup() );
 				break;
 			}
+			case 'X': 
+			{
+				if ( scene->getActiveGroup() == 0u )
+				{
+					auto root = scene->getSingleRoot();
+					if ( root )
+					{
+						auto group = root->getExplodedPositionGroup();
+						if ( group > 0 ) scene->explode( group );
+					}
+					break;
+				}
+			}
 #ifdef _DEBUG
 			case 'R': hal::device::rebuild_effects(); break;
 			case 'B': glyph_renderer->enableBoundVis( !glyph_renderer->boundVisEnabled() ); break;

@@ -2,6 +2,7 @@
 #pragma once
 
 #include <functional>
+#include <unordered_map>
 #include <render/renderer.h>
 
 namespace SynGlyphX
@@ -40,11 +41,10 @@ namespace SynGlyphX
 			float exploded_offset;
 			float bound_alpha, switch_alpha;
 		};
-		std::vector<gadget> gadgets;
+		std::unordered_map<unsigned int, gadget> gadgets;
 		hal::mesh* billboard_mesh;
 		hal::effect* effect;
 		hal::effect* switch_effect;
-		render::renderer renderer;
 		GlyphScene& scene;
 
 		render::model* gadget_model;
@@ -58,6 +58,7 @@ namespace SynGlyphX
 
 		SuperimposedGadgetMode mode;
 		bool groupInSelection( unsigned int group );
+		unsigned int selectedGroup();
 
 		glm::mat4 compute_gadget_transform( const gadget& g );
 		float compute_gadget_alpha( const gadget& g, const glm::vec3& cam_pos, const glm::vec2& fade_dist );
