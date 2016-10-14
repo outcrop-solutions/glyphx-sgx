@@ -74,6 +74,9 @@
     <ClInclude Include="SceneViewer\overheadcameracontroller.h">
       <Filter>SceneViewer\Camera Controllers</Filter>
     </ClInclude>
+    <ClInclude Include="SceneViewer\superimposedgroupmanager.h">
+      <Filter>SceneViewer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="SGXSceneViewerPCH.cpp" />
@@ -124,6 +127,9 @@
     </ClCompile>
     <ClCompile Include="SceneViewer\overheadcameracontroller.cpp">
       <Filter>SceneViewer\Camera Controllers</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneViewer\superimposedgroupmanager.cpp">
+      <Filter>SceneViewer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

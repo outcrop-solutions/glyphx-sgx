@@ -6,6 +6,7 @@
 #include <render/octree.h>
 #include <unordered_set>
 #include "glyphnode.h"
+#include "glyphgeometrydb.h"
 
 namespace SynGlyphX
 {
@@ -17,9 +18,12 @@ namespace SynGlyphX
 	{
 	public:
 		GlyphScene( GlyphGeometryDB& _db ) : octree( nullptr ), filter_applied( false ), selection_changed( false ), glyph_storage( nullptr ), glyph_storage_next( 0u ),
-			filter_mode( FilteredResultsDisplayMode::TranslucentUnfiltered ), has_animation( false ), db( _db ) { }
+			filter_mode( FilteredResultsDisplayMode::TranslucentUnfiltered ), has_animation( false ), db( _db ), explode_state( group_state::retracted ),
+			active_group( 0 ), group_status( 0.f ) { }
 		~GlyphScene();
 		GlyphScene( const GlyphScene& ) = delete;
+
+		void update( float timeDelta );
 
 		Glyph3DNode* allocGlyph( unsigned int _id, bool _isRoot, Glyph3DNodeType _type, int _filtering_index = -1 );
 
@@ -30,7 +34,8 @@ namespace SynGlyphX
 
 		bool empty() const { return glyphs.empty(); }
 
-		const Glyph3DNode* pick( const glm::vec3& ray_origin, const glm::vec3& ray_dir, bool include_filtered_out = true ) const;
+		const Glyph3DNode* pick( const glm::vec3& ray_origin, const glm::vec3& ray_dir, bool include_filtered_out = true, bool active_group_only = false ) const;
+		std::pair<const Glyph3DNode*, float> pick_with_distance( const glm::vec3& ray_origin, const glm::vec3& ray_dir, bool include_filtered_out = true, bool active_group_only = false ) const;
 
 		void enumGlyphs( std::function<bool( const Glyph3DNode& )> fn, bool includeChildren ) const;
 
@@ -62,7 +67,7 @@ namespace SynGlyphX
 		void clearFilter() { filtered.clear(); scene_changed = true; filter_applied = false; }
 		bool passedFilter( const Glyph3DNode* node ) const;
 		bool filterApplied() const { return filter_applied; }	// true if any filters have been applied since clearFilter() was called
-		
+
 		Glyph3DNode* getGlyph3D( Glyph3DHandle handle );
 
 		bool getChanged() { return scene_changed; }
@@ -75,13 +80,50 @@ namespace SynGlyphX
 
 		bool hasAnimation() const { return has_animation; }
 
+		unsigned int getGroupSize( unsigned int group ) { return groups[group - 1].nodes.size(); }
+		float getGroupStatus() const { return group_status; }
+		unsigned int getActiveGroup() const { return active_group; }
+		glm::vec3 getExplodedPosition( const Glyph3DNode* node ) const;
+		glm::vec3 getExplodedPositionOffset( const Glyph3DNode* node ) const;
+		bool isExploded( const Glyph3DNode* node ) const { return node->getRootParent()->getExplodedPositionGroup() == getActiveGroup() && group_status > 0.f; }
+		bool isExploded( unsigned int group ) const { return group != 0 && group == active_group && group_status > 0.f; }
+		void enumGroups( std::function<void( const std::vector< const Glyph3DNode*>&, unsigned int )> );
+
 		void debugPrint( const Glyph3DNode* node );
 
+		void toggleExplode( unsigned int group );
+		void explode( unsigned int group );
+		void collapse( unsigned int group );
+
+		static const unsigned int NO_GROUP = 0u;
+
 	private:
+		void compute_groups();
+		void update_groups();
+		glm::vec3 apply_explosion_offset( const Glyph3DNode* node, const glm::vec3& pos ) const;
+
 		render::octree<Glyph3DNode>* octree;
 		std::unordered_map<Glyph3DHandle, Glyph3DNode*> glyphs;
 		std::unordered_map<Glyph3DHandle, Glyph3DNode*> glyphs_by_filtering_index;
 		std::unordered_set<const Glyph3DNode*> selection;
+
+		enum class group_state
+		{
+			exploding,
+			exploded,
+			retracting,
+			retracted,
+		};
+
+		struct superimposed_group
+		{
+			std::vector< const Glyph3DNode* > nodes;
+		};
+		std::vector< superimposed_group > groups;
+		group_state explode_state;
+		float group_status;
+		unsigned int active_group;
+		const superimposed_group& get_group( unsigned int idx ) const { return groups[idx - 1]; }	// group ids are 1-based
 
 		// Temporary and cached properties that don't affect this object's logical const-ness.
 		mutable bool bound_update_needed;

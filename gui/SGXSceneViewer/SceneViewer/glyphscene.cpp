@@ -61,6 +61,11 @@ namespace SynGlyphX
 			if ( g.second->isRoot() ) octree->insert( g.second, g.second->getCachedCombinedBound() );
 		octree->gather_stats_DEBUG();
 		timer1.print_ms_to_debug( "built octree" );
+
+		hal::debug::profile_timer timer3;
+		compute_groups();
+		update_groups();
+		timer3.print_ms_to_debug( "computed groups" );
 	}
 
 	void GlyphScene::clear()
@@ -78,9 +83,13 @@ namespace SynGlyphX
 		glyph_storage_next = 0u;
 		glyphs.clear();
 		glyphs_by_filtering_index.clear();
+		groups.clear();
 		selection.clear();
 		Glyph3DNode::clearTagPool();
 		delete octree;
+		explode_state = group_state::retracted;
+		active_group = 0u;
+		group_status = 0.f;
 		octree = nullptr;
 	}
 
@@ -94,20 +103,40 @@ namespace SynGlyphX
 		}
 	}
 
-	const Glyph3DNode* GlyphScene::pick( const glm::vec3& ray_origin, const glm::vec3& ray_dir, bool include_filtered_out ) const
+	const Glyph3DNode* GlyphScene::pick( const glm::vec3& ray_origin, const glm::vec3& ray_dir, bool include_filtered_out, bool active_group_only ) const
+	{
+		return pick_with_distance( ray_origin, ray_dir, include_filtered_out, active_group_only ).first;
+	}
+
+	std::pair<const Glyph3DNode*, float> GlyphScene::pick_with_distance( const glm::vec3& ray_origin, const glm::vec3& ray_dir, bool include_filtered_out, bool active_group_only ) const
 	{
 		// No scene yet, early out.
 		if ( empty() )
-			return nullptr;
+			return { nullptr, FLT_MAX };
 
 		hal::debug::profile_timer timer;
 
-		// Gather candidates by picking against the octree.
+		// Gather candidates by picking against the octree. (Don't do this if we're only doing the active exploded group.)
 		std::unordered_set<const Glyph3DNode*> candidates;
-		octree->pick( ray_origin, ray_dir, [&]( const Glyph3DNode* node ) {
-			if ( include_filtered_out || passedFilter( node ) )
-				candidates.insert( node );
-		} );
+		if ( !active_group_only )
+		{
+			octree->pick( ray_origin, ray_dir, [&]( const Glyph3DNode* node ) {
+				if ( ( include_filtered_out || passedFilter( node ) ) )
+					candidates.insert( node );
+			} );
+		}
+
+		// Glyphs in an exploded group won't have their temporary positions reflected in the octree, so make sure they're all
+		// in the candidate set.
+		if ( active_group > 0.f && group_status > 0.f )
+		{
+			const auto& group = get_group( unsigned int( active_group ) );
+			for ( auto n : group.nodes )
+			{
+				assert( n->isRoot() );
+				candidates.insert( n );
+			}
+		}
 
 		float best_dist = FLT_MAX;
 		const Glyph3DNode* best_glyph = nullptr;
@@ -126,8 +155,12 @@ namespace SynGlyphX
 				auto node = q.top();
 				q.pop();
 
+				bool exploded = isExploded( node );
+
 				// First, check sphere bounds.
 				auto bound = node->getCachedBound();
+				if ( exploded )
+					bound.set_center( apply_explosion_offset( node, bound.get_center() ) );
 				auto combined_bound = node->getCachedCombinedBound();
 				float t;
 				glm::vec3 q_;
@@ -138,7 +171,10 @@ namespace SynGlyphX
 					// We intersected the sphere bound, so pick against the actual model.
 					auto model = db.get( node->getGeometry() );
 					glm::vec3 pt;
-					if ( model->pick( ray_origin, ray_dir, node->getCachedTransform() * node->getVisualTransform(), pt ) )
+					glm::mat4 transform = node->getCachedTransform() * node->getVisualTransform();
+					if ( exploded )
+						transform = glm::translate( glm::mat4(), getExplodedPositionOffset( node ) ) * transform;
+					if ( model->pick( ray_origin, ray_dir, transform, pt ) )
 					{
 						float dist = glm::length( ray_origin - pt );
 						if ( dist < best_dist )
@@ -150,7 +186,9 @@ namespace SynGlyphX
 				}
 
 				// Only check this object's children if its combined bound was hit (since it contains them).
-				if ( intersect_combined > 0 )
+				// Exception: if the node is part of an exploded group, the combined bound is unreliable,
+				// so we have to check the children regardless.
+				if ( intersect_combined > 0 || exploded )
 					for ( const auto& c : node->getChildren() )
 						q.push( c );
 			}
@@ -159,7 +197,29 @@ namespace SynGlyphX
 
 		timer.print_ms_to_debug( "picked against octree" );
 
-		return best_glyph;
+		return { best_glyph, best_dist };
+	}
+
+	void GlyphScene::toggleExplode( unsigned int group )
+	{
+		active_group = group;
+		if ( explode_state == group_state::retracted || explode_state == group_state::retracting )
+			explode_state = group_state::exploding;
+		else if ( explode_state == group_state::exploded || explode_state == group_state::exploding )
+			explode_state = group_state::retracting;
+	}
+
+	void GlyphScene::collapse( unsigned int group )
+	{
+		if ( explode_state == group_state::exploded || explode_state == group_state::exploding )
+			explode_state = group_state::retracting;
+	}
+
+	void GlyphScene::explode( unsigned int group )
+	{
+		active_group = group;
+		if ( explode_state == group_state::retracted || explode_state == group_state::retracting )
+			explode_state = group_state::exploding;
 	}
 
 	void GlyphScene::setSelected( const Glyph3DNode* glyph )
@@ -344,5 +404,166 @@ namespace SynGlyphX
 				return false;
 
 		return single_parent;
+	}
+
+	void GlyphScene::compute_groups()
+	{
+		// todo: this is O(n^2) -- using the octree would make it O(nlogn)
+		// (although even in the most expensive vis I have it only takes ~50ms so maybe
+		// it's ok)
+		assert( groups.size() == 0 );
+
+		std::vector<Glyph3DNode*> ungrouped_glyphs;
+		for ( auto& g : glyphs )
+		{
+			if ( g.second->isRoot() && g.second->getType() != Glyph3DNodeType::Link )
+				ungrouped_glyphs.push_back( g.second );
+		}
+
+		const float dist_threshold = 0.1f;
+		
+		// First pass: create initial groups.
+		auto it0 = ungrouped_glyphs.begin();
+		while ( it0 != ungrouped_glyphs.end() )
+		{
+			bool new_group = false;
+
+			auto glyph0 = *it0;
+			superimposed_group group;
+			group.nodes.push_back( glyph0 );
+
+			auto it1 = ungrouped_glyphs.begin();
+			while ( it1 != ungrouped_glyphs.end() )
+			{
+				auto glyph1 = *it1;
+				if ( glyph0 != glyph1 && glm::distance( glyph0->getCachedPosition(), glyph1->getCachedPosition() ) < dist_threshold )
+				{
+					group.nodes.push_back( glyph1 );
+					it1 = ungrouped_glyphs.erase( it1 );
+					new_group = true;
+				}
+				else
+					++it1;
+			}
+
+			if ( new_group )
+			{
+				groups.push_back( group );
+				it0 = ungrouped_glyphs.erase( it0 );
+			}
+			else
+			{
+				++it0;
+			}
+		}
+
+		// Second pass: find any glyphs whose centers fall inside one of our groups and add them as well.
+		for ( unsigned int i = 0; i < groups.size(); ++i )
+		{
+			auto& group = groups[i];
+			auto test_glyph = *group.nodes.begin();
+			for ( auto g : ungrouped_glyphs )
+			{
+				if ( glm::distance( g->getCachedPosition(), test_glyph->getCachedPosition() ) < test_glyph->getCachedCombinedBound().get_radius() )
+				{
+					group.nodes.push_back( g );
+				}
+			}
+		}
+
+		hal::debug::print( "computed %i superimposed groups", groups.size() );
+	}
+
+	void GlyphScene::update_groups()
+	{
+		float groupidx = 1.f;
+		auto it = groups.begin();
+		while ( it != groups.end() )
+		{
+			auto& group = *it;
+			unsigned int rows = unsigned int( round( sqrtf( float( group.nodes.size() ) ) ) );
+			const glm::vec3 explode_axis_0( 1.f, 0.f, 0.f );
+			const glm::vec3 explode_axis_1( 0.f, 1.f, 0.f );
+			float count = group.nodes.size();
+			float row = 0.f, col = 0.f;
+
+			// Use the largest bound's diameter to decide how to space the group.
+			float spacing = 1.f;
+			const float spacing_buffer = 1.1f;
+			for ( auto g : group.nodes )
+				spacing = glm::max( spacing, g->getCachedCombinedBound().get_radius() * 2.f );
+			spacing *= spacing_buffer;
+
+			for ( auto g : group.nodes )
+			{
+				assert( g->isRoot() );
+				glm::vec3 explode = explode_axis_0 * row * spacing + explode_axis_1 * col * spacing;
+				explode.x -= rows * spacing * 0.5f;
+				explode.y -= rows * spacing * 0.5f;
+				g->setExplodedPosition( groupidx, explode );
+				row += 1.f;
+				if ( row >= rows )
+				{
+					col += 1.f;
+					row = 0.f;
+				}
+			}
+
+			groupidx += 1.f;
+			++it;
+		}
+	}
+
+	void GlyphScene::update( float timeDelta )
+	{
+		float direction = 0.f;
+		if ( explode_state == group_state::exploding )
+		{
+			group_status = glm::clamp( group_status, 0.f, 1.f );
+			if ( group_status >= 1.f )
+				explode_state = group_state::exploded;
+			direction = 1.f;
+		}
+		else if ( explode_state == group_state::retracting )
+		{
+			direction = -1.f;
+			group_status = glm::clamp( group_status, 0.f, 1.f );
+			if ( group_status <= 0.f )
+			{
+				explode_state = group_state::retracted;
+				active_group = 0;
+			}
+		}
+		group_status += direction * timeDelta * 0.005f;
+		group_status = glm::clamp( group_status, 0.f, 1.f );
+	}
+
+	glm::vec3 GlyphScene::getExplodedPosition( const Glyph3DNode* node ) const
+	{
+		glm::vec3 pos = node->getCachedPosition();
+		pos = apply_explosion_offset( node, pos );
+		return pos;
+	}
+
+	glm::vec3 GlyphScene::getExplodedPositionOffset( const Glyph3DNode* node ) const
+	{
+		return glm::mix( glm::vec3(), node->getExplodedPosition(), group_status );
+	}
+
+	glm::vec3 GlyphScene::apply_explosion_offset( const Glyph3DNode* node, const glm::vec3& pos ) const
+	{
+		if ( node->getExplodedPositionGroup() == active_group )
+			return pos + getExplodedPositionOffset( node );
+		else
+			return pos;
+	}
+
+	void GlyphScene::enumGroups( std::function<void( const std::vector< const Glyph3DNode* >&, unsigned int )> fn )
+	{
+		for ( auto i = 0u; i < groups.size(); ++i )
+		{
+			auto& g = groups[i];
+			fn( g.nodes, i + 1 );
+		}
 	}
 }

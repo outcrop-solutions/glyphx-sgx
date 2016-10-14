@@ -1417,6 +1417,17 @@ void GlyphViewerWindow::CreateInteractionToolbar() {
 	m_interactionToolbar->addAction( m_enableDisableSelEffectAction );
 	m_loadedVisualizationDependentActions.push_back( m_enableDisableSelEffectAction );
 
+	m_enableDisableSuperimposedGlyphGadgets = new QAction( tr( "Enable/Disable Overlapping Group Indicators" ), m_interactionToolbar );
+	m_enableDisableSuperimposedGlyphGadgets->setCheckable( true );
+	m_enableDisableSuperimposedGlyphGadgets->setChecked( false );
+	QIcon sggIcon;
+	sggIcon.addFile( ":SGXGUI/Resources/Icons/icon-show-groups.png", QSize(), QIcon::Normal, QIcon::Off );
+	sggIcon.addFile( ":SGXGUI/Resources/Icons/icon-show-groups-a.png", QSize(), QIcon::Normal, QIcon::On );
+	m_enableDisableSuperimposedGlyphGadgets->setIcon( sggIcon );
+	QObject::connect( m_enableDisableSuperimposedGlyphGadgets, &QAction::toggled, this, &GlyphViewerWindow::OnEnableDisableSuperimposedGadgets );
+	m_interactionToolbar->addAction( m_enableDisableSuperimposedGlyphGadgets );
+	m_loadedVisualizationDependentActions.push_back( m_enableDisableSuperimposedGlyphGadgets );
+
 	m_interactionToolbar->addSeparator();
 
 	m_hideFilteredCheckBox = new QCheckBox(tr("Hide Filtered"), this);
@@ -1497,6 +1508,14 @@ void GlyphViewerWindow::OnEnableDisableSelEffect( bool enable )
 		m_viewer->enableSelectionEffect( enable );
 		m_enableDisableSelEffectActionMenu->setChecked( enable );
 		m_enableDisableSelEffectAction->setChecked( enable );
+	}
+}
+
+void GlyphViewerWindow::OnEnableDisableSuperimposedGadgets( bool enable )
+{
+	if ( m_viewer && m_viewer->isInitialized() )
+	{
+		m_viewer->enableSuperimposedGlyphGadgets( enable );
 	}
 }
 

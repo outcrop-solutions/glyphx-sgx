@@ -28,6 +28,7 @@
 #include "freecameracontroller.h"
 #include "orbitcameracontroller.h"
 #include "overheadcameracontroller.h"
+#include "superimposedgroupmanager.h"
 
 //temp
 #include <QtCore/qitemselectionmodel.h>
@@ -165,6 +166,13 @@ namespace SynGlyphX
 
 		SynGlyphX::LegacySceneReader::LoadLegacyScene( getScene(), geomDB, *base_images, *grids, default_base_texture, nodeFile, tagFile, base_textures );
 		resetCamera();
+
+		auto scene_ptr = scene;
+		scene->enumGroups( [&, scene_ptr]( const std::vector<const Glyph3DNode*>& nodes, unsigned int group_idx ) {
+			auto pos = nodes[0]->getCachedPosition();
+			float radius = nodes[0]->getCachedCombinedBound().get_radius();
+			group_manager->create( group_idx, pos, radius );
+		} );
 	}
 
 	void SceneViewer::clearScene()
@@ -172,6 +180,7 @@ namespace SynGlyphX
 		if ( initialized )
 		{
 			scene->clear();
+			group_manager->clear();
 			base_images->clear();
 			grids->clear();
 			for ( int i = 0; i < 3; ++i )
@@ -265,7 +274,7 @@ namespace SynGlyphX
 		fmt.add_stream( hal::stream_info( hal::stream_type::float32, 3, hal::stream_semantic::position, 0 ) );
 		fmt.add_stream( hal::stream_info( hal::stream_type::float32, 2, hal::stream_semantic::texcoord, 0 ) );
 
-		sgx_logo = hal::device::load_texture( "logo.png" );
+		sgx_logo = hal::device::load_texture( "textures/logo.png" );
 
 		auto plane_mesh = hal::device::create_mesh( fmt, hal::primitive_type::triangle_list, 4, square, 2, square_indices );
 
@@ -290,6 +299,8 @@ namespace SynGlyphX
 		initialized = true;
 
 		hud_font = hal::device::load_font( "fonts/OpenSans-Regular.ttf", 16 );
+
+		group_manager = new SuperimposedGroupManager( *scene );
 	}
 
 	void SceneViewer::resizeGL( int w, int h )
@@ -369,7 +380,7 @@ namespace SynGlyphX
 		hal::device::begin_frame();
 		assert( elapsed_timer.isValid() );
 
-		context->bind( ( hal::render_target_set* )nullptr );
+		//context->bind( ( hal::render_target_set* )nullptr );
 
 		glyph_renderer->enableSelectionEffect( selection_effect_enabled );
 		glyph_renderer->enableAnimation( animation_enabled );
@@ -390,6 +401,8 @@ namespace SynGlyphX
 		glm::mat4 hud_axes_rotation = glm::rotate( glm::mat4(), glm::half_pi<float>() * -0.25f, glm::vec3( 1.f, 0.f, 0.f ) ) * glm::rotate( glm::mat4(), angle, glm::vec3( 0.f, 1.f, 0.f ) );
 		const glm::vec3 hud_axes_offset( 100.f, 100.f, 0.f );
 		const float hud_axes_size = 48.f;
+
+		bool exploded_group = ( scene->getActiveGroup() != 0.f && scene->getGroupStatus() > 0.f );
 
 		if ( !scene->empty() )
 		{
@@ -426,6 +439,18 @@ namespace SynGlyphX
 			}
 
 			glyph_renderer->render_blended( context, camera, float( elapsed_timer.elapsed() ) / 1000.f );
+
+			if ( exploded_group )
+			{
+				context->set_depth_state( hal::depth_state::read_write );
+				context->clear( hal::clear_type::depth );
+				glyph_renderer->render_solid( context, camera, float( elapsed_timer.elapsed() ) / 1000.f, true );
+				group_manager->render( context, camera );
+				glyph_renderer->render_blended( context, camera, float( elapsed_timer.elapsed() ) / 1000.f, true );
+			}
+
+			if ( !exploded_group )
+				group_manager->render( context, camera );
 		}
 
 		// States for blended overlay elements.
@@ -484,7 +509,6 @@ namespace SynGlyphX
 							if ( !m_sourceDataLookupForPositionXYZ[i].empty() ) {
 
 								if ( !positionHUD.empty() ) {
-
 									positionHUD += ", ";
 								}
 
@@ -502,6 +526,8 @@ namespace SynGlyphX
 
 			// Draw tags.
 			scene->enumTagEnabled( [this]( const Glyph3DNode& glyph ) {
+				auto pos = glyph.getCachedPosition();
+				if ( scene->isExploded( &glyph ) ) pos += glyph.getExplodedPosition();
 				if ( glyph.getTag() ) renderText( hud_font, camera, glyph.getCachedPosition(), render::color::white(), glyph.getTag() );
 			} );
 
@@ -617,10 +643,15 @@ namespace SynGlyphX
 		if ( event->key() < key_states_size ) key_states[tolower( event->key() )] = true;
 		QWidget::keyPressEvent( event );
 
-#ifdef _DEBUG
 		auto key = event->key();
 		switch ( key )
 		{
+			case Qt::Key_Escape:
+			{
+				scene->collapse( scene->getActiveGroup() );
+				break;
+			}
+#ifdef _DEBUG
 			case 'R': hal::device::rebuild_effects(); break;
 			case 'B': glyph_renderer->enableBoundVis( !glyph_renderer->boundVisEnabled() ); break;
 			case 'M': if ( glyph_renderer->boundVisEnabled() )
@@ -639,8 +670,8 @@ namespace SynGlyphX
 				if ( sel ) scene->debugPrint( sel );
 				break;
 			}
-		}
 #endif
+		}
 	}
 
 	void SceneViewer::keyReleaseEvent( QKeyEvent* event )
@@ -714,9 +745,10 @@ namespace SynGlyphX
 			bool changed_selection = false;
 			if ( event->button() == Qt::MouseButton::LeftButton )
 			{
-				// Not holding shift: common case.
 				if ( !( QGuiApplication::queryKeyboardModifiers() & Qt::KeyboardModifier::ShiftModifier ) )
 				{
+					glm::vec3 origin, dir;
+					camera->viewport_pt_to_ray( event->x(), event->y(), origin, dir );
 					const int select_threshold = 3;
 					bool ctrl = ( QGuiApplication::queryKeyboardModifiers() & Qt::KeyboardModifier::ControlModifier );
 					bool alt = ( QGuiApplication::queryKeyboardModifiers() & Qt::KeyboardModifier::AltModifier );
@@ -726,17 +758,35 @@ namespace SynGlyphX
 						if ( !ctrl && !alt )
 							scene->clearSelection();
 
-						glm::vec3 origin, dir;
-						camera->viewport_pt_to_ray( event->x(), event->y(), origin, dir );
-						const Glyph3DNode* g = scene->pick( origin, dir, scene->getFilterMode() == FilteredResultsDisplayMode::TranslucentUnfiltered );
-						if ( g )
+						auto scene_pick_result = scene->pick_with_distance( origin, dir, scene->getFilterMode() == FilteredResultsDisplayMode::TranslucentUnfiltered, scene->getActiveGroup() != GlyphScene::NO_GROUP && scene->getGroupStatus() > 0.f );
+						float scene_pick_dist = scene_pick_result.second;
+
+						auto gadget_pick_result = group_manager->pick( camera, origin, dir, scene_pick_dist );
+						float gadget_pick_dist = gadget_pick_result.second;
+						auto gadget_group_idx = gadget_pick_result.first;
+						auto active_group = scene->getActiveGroup();
+
+						// if we hit a gadget, and it's closer than any glyphs we hit, toggle it-- but only if
+						// either there's no current exploded group or we clicked the current one (don't want to explode
+						// a group if there's already an exploded one)
+						if ( gadget_pick_dist < scene_pick_dist && ( active_group == 0 || gadget_group_idx == active_group ) )
 						{
-							if ( alt || ( ctrl && scene->isSelected( g ) ) )
-								scene->setUnSelected( g );
-							else
-								scene->setSelected( g );
+							if ( gadget_group_idx > 0 )
+								scene->toggleExplode( gadget_group_idx );
+						}
+						else
+						{
+							auto g = scene_pick_result.first;
+							if ( g )
+							{
+								if ( alt || ( ctrl && scene->isSelected( g ) ) )
+									scene->setUnSelected( g );
+								else
+									scene->setSelected( g );
+							}
 						}
 						changed_selection = true;
+
 					}
 				}
 				else  // holding shift, so we're doing a drag-select
@@ -747,22 +797,27 @@ namespace SynGlyphX
 					if ( !ctrl && !alt )
 						scene->clearSelection();
 
-					scene->enumGlyphs( [this, event, alt]( const Glyph3DNode& node ) {
-						auto pos = node.getCachedPosition();
+					bool exploded = scene->getActiveGroup() > 0.f && scene->getGroupStatus() > 0.f;
+
+					scene->enumGlyphs( [this, event, alt, exploded]( const Glyph3DNode& node ) {
+						auto pos = scene->getExplodedPosition( &node );
 						auto pos2d = camera->world_pt_to_window_pt( pos );
 						if ( pos2d.x > std::min( drag_info( button::left ).drag_start_x, mouse_x )
 							&& pos2d.x < std::max( drag_info( button::left ).drag_start_x, mouse_x )
 							&& pos2d.y > std::min( drag_info( button::left ).drag_start_y, mouse_y )
 							&& pos2d.y < std::max( drag_info( button::left ).drag_start_y, mouse_y ) )
 						{
-							if ( glm::dot( pos - camera->get_position(), camera->get_forward() ) > 0.f )	// make sure it's not behind the camera
+							if ( !exploded || ( node.getExplodedPositionGroup() == scene->getActiveGroup() ) )
 							{
-								if ( scene->getFilterMode() != FilteredResultsDisplayMode::HideUnfiltered || scene->passedFilter( &node ) )
+								if ( glm::dot( pos - camera->get_position(), camera->get_forward() ) > 0.f )	// make sure it's not behind the camera
 								{
-									if ( !alt )
-										scene->setSelected( &node );
-									else
-										scene->setUnSelected( &node );
+									if ( scene->getFilterMode() != FilteredResultsDisplayMode::HideUnfiltered || scene->passedFilter( &node ) )
+									{
+										if ( !alt )
+											scene->setSelected( &node );
+										else
+											scene->setUnSelected( &node );
+									}
 								}
 							}
 						}
@@ -771,11 +826,11 @@ namespace SynGlyphX
 
 					changed_selection = true;
 				}
-			}
 
-			if ( changed_selection )
-			{
-				selection_changed();
+				if ( changed_selection )
+				{
+					selection_changed();
+				}
 			}
 		}
 	}
@@ -796,10 +851,6 @@ namespace SynGlyphX
 
 		scene->clearSelection();
 		selection_changed();
-	}
-
-	template <typename T> int sgn( T val ) {
-		return ( T( 0 ) < val ) - ( val < T( 0 ) );
 	}
 
 	void SceneViewer::updateFrame()
@@ -912,9 +963,15 @@ namespace SynGlyphX
 					if ( count > 0u ) selection_center /= static_cast<float>( count );
 					float selection_radius = 2.f * ( scene->getSingleSelection() ? scene->getSingleSelection()->getCachedBound().get_radius() : 0.f );
 
+					// account for the glyph possibly being in an exploded group
+					glm::vec3 explosion_offset;
+					auto single_selection = scene->getSingleSelection();
+					if ( single_selection && scene->isExploded( single_selection ) )
+						explosion_offset = single_selection->getExplodedPosition();
+
 					// if we only have links selected don't restrict the zoom distance (they tend to have huge bounds)
 					float orbit_min_distance = glyphs_selected ? selection_radius + largest_bound : 0.f;
-					orbit_cam_control->setOrbitTarget( selection_center, orbit_min_distance, cur_cam_control != orbit_cam_control );
+					orbit_cam_control->setOrbitTarget( selection_center + explosion_offset, orbit_min_distance, cur_cam_control != orbit_cam_control );
 
 					// Handle zooming with middle button, L/R buttons, or wheel.
 					float zoom = 0.f;
@@ -961,6 +1018,8 @@ namespace SynGlyphX
 				drag[i].drag_delta_x = drag[i].drag_delta_y = 0;
 			wheel_delta = 0.f;
 		}
+
+		scene->update( 16.f );
 
 		update();
 	}
@@ -1064,5 +1123,10 @@ namespace SynGlyphX
 			return glm::length( glm::vec2( d.drag_distance_x, d.drag_distance_y ) );
 		else
 			return 0.f;
+	}
+
+	void SceneViewer::enableSuperimposedGlyphGadgets( bool val )
+	{
+		if ( group_manager ) group_manager->setMode( val ? SuperimposedGadgetMode::Always : SuperimposedGadgetMode::OnSelection );
 	}
 }

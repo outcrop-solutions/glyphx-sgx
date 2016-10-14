@@ -35,7 +35,7 @@ namespace SynGlyphX
 	namespace render { class grid_renderer; }
 	typedef std::set<unsigned long> IndexSet;
 
-	class AxisRenderer; class BaseImageRenderer;
+	class AxisRenderer; class BaseImageRenderer; class SuperimposedGroupManager;
 	class FreeCameraController; class OrbitCameraController; class OverheadCameraController; class CameraController;
 
 	class ItemFocusSelectionModel;	//temp
@@ -99,6 +99,7 @@ namespace SynGlyphX
 		void showTagsOfSelectedObjects( bool show );
 		void setAxisNames( const char* X, const char* Y, const char* Z );
 		void hideAllTags();
+		void enableSuperimposedGlyphGadgets( bool val );
 
 		void setFilteredResults( const IndexSet& results );
 		void setFilteredResultsDisplayMode( FilteredResultsDisplayMode mode );
@@ -226,6 +227,7 @@ namespace SynGlyphX
 		float filtered_glyph_opacity;
 		hal::font* hud_font;
 		GlyphGeometryDB geomDB;
+		SuperimposedGroupManager* group_manager;
 
 		//Navigation buttons.
 		QToolButton* m_upRotateButton;

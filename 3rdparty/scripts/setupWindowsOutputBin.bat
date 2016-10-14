@@ -12,7 +12,7 @@ SET glyphtemplates=GlyphTemplates
 SET meshes=meshes
 SET shaders=shaders
 SET fonts=fonts
-SET logo=logo.png
+SET textures=textures
 SET qtdlllist=Qt5Core Qt5Gui Qt5Network Qt5OpenGL Qt5Sql Qt5Widgets Qt5WebEngineCore Qt5WebEngine Qt5WebEngineWidgets Qt5Quick Qt5WebChannel Qt5Qml
 
 if "%1%." == "/h." (
@@ -64,9 +64,8 @@ FOR /F "tokens=*" %%p IN ('dir /b /a:d ..\bin\*') DO (
 		robocopy /z /e ..\..\Misc\InstallerFiles\%meshes% %basedir%\%%p\%%c\%meshes%
 		robocopy /z /e ..\..\Misc\InstallerFiles\%shaders% %basedir%\%%p\%%c\%shaders%
 		robocopy /z /e ..\..\Misc\InstallerFiles\%fonts% %basedir%\%%p\%%c\%fonts%
+		robocopy /z /e ..\..\Misc\InstallerFiles\%textures% %basedir%\%%p\%%c\%textures%
 
-		copy /B /Y ..\..\Misc\InstallerFiles\Images\%logo% %basedir%\%%p\%%c\%logo%
-		
 		mkdir %basedir%\%%p\%%c\jre
 		mkdir %basedir%\%%p\%%c\jre\bin
 		mkdir %basedir%\%%p\%%c\jre\lib

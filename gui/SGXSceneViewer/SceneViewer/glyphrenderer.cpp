@@ -8,12 +8,59 @@
 
 namespace SynGlyphX
 {
+	namespace
+	{
+		bool updates_done = false;	// used to track if instance buffers have been rebuilt for profiling purposes
+
+		enum bucket_flags
+		{
+			WIREFRAME = 1u,
+			BLENDED = 2u,
+			FILTER_FAIL = 4u,
+			SELECTION = 8u,
+
+			// bits 16-31 reserved for group id
+		};
+		uint16_t NO_GROUPS = USHRT_MAX - 1u;
+		uint16_t ALL_GROUPS = USHRT_MAX;
+	}
+
+	GlyphRenderer::glyph_bucket& GlyphRenderer::get_bucket( uint16_t bucket_id, uint16_t group_id )
+	{
+		uint32_t bid = bucket_id, gid = group_id;
+		uint32_t bucket = bid | ( gid << 16 );
+		auto& it = buckets.find( bucket );
+		if ( it == buckets.end() )
+			it = buckets.insert( std::make_pair( bucket, glyph_bucket() ) ).first;
+		return it->second;
+	}
+
+	void GlyphRenderer::process_buckets( uint16_t flags_on, uint16_t flags_off, uint16_t group_id, uint16_t group_exclude, std::function<void( glyph_bucket& )> fn )
+	{
+		for ( auto& b : buckets )
+		{
+			uint32_t bucket_flags = b.first & 0x0000ffff;	// most significant 16 bits store group index
+			uint32_t bucket_group = ( b.first & 0xffff0000 ) >> 16;
+			if ( ( group_id == ALL_GROUPS || group_id == bucket_group ) && ( group_exclude == NO_GROUPS || bucket_group != group_exclude ) )
+				if ( ( bucket_flags & flags_on ) == flags_on && ( ~bucket_flags & flags_off ) == flags_off )
+					fn( b.second );
+		}
+	}
+
+	void GlyphRenderer::draw_buckets( hal::context* context, uint16_t flags, uint16_t group_id, uint16_t group_exclude, unsigned int transform_binding_point, unsigned int material_binding_point, unsigned int anim_binding_point, unsigned int alt_pos_binding_point )
+	{
+		process_buckets( flags, ~flags, group_id, group_exclude, [=]( glyph_bucket& b )
+		{
+			b.draw( context, transform_binding_point, material_binding_point, anim_binding_point, alt_pos_binding_point );
+		} );
+	}
+
 	GlyphRenderer::glyph_bucket::~glyph_bucket()
 	{
 		clear();
 	}
 
-	void GlyphRenderer::glyph_bucket::add_instance( hal::mesh* mesh, const glm::mat4& transform, const glm::vec4& color_or_bound, const glm::vec3& anim_axis, const float anim_rate, const glm::vec3& anim_center )
+	void GlyphRenderer::glyph_bucket::add_instance( hal::mesh* mesh, const glm::mat4& transform, const glm::vec4& color_or_bound, const glm::vec3& anim_axis, const float anim_rate, const glm::vec3& anim_center, const glm::vec3& alt_pos, float alt_pos_group )
 	{
 		const unsigned int max_instances_per_batch = 512u;
 		if ( instances.find( mesh ) == instances.end() )
@@ -24,6 +71,7 @@ namespace SynGlyphX
 			instances[mesh].rbegin()->color_bound_buffer = nullptr;
 			instances[mesh].rbegin()->anim_buffer = nullptr;
 			instances[mesh].rbegin()->transform_buffer = nullptr;
+			instances[mesh].rbegin()->alt_pos_buffer = nullptr;
 		}
 
 		auto axis = glm::vec3( anim_axis.x, anim_axis.z, anim_axis.y );
@@ -32,6 +80,7 @@ namespace SynGlyphX
 		instances[mesh].rbegin()->colors_or_bounds.push_back( color_or_bound );
 		instances[mesh].rbegin()->animation.push_back( glm::vec4( axis, anim_rate ) );
 		instances[mesh].rbegin()->animation.push_back( glm::vec4( anim_center, 0.f ) );
+		instances[mesh].rbegin()->alternate_positions.push_back( glm::vec4( alt_pos, alt_pos_group ) );
 		instances[mesh].rbegin()->dirty = true;
 	}
 
@@ -45,6 +94,7 @@ namespace SynGlyphX
 				hal::device::release( id.color_bound_buffer );
 				hal::device::release( id.transform_buffer );
 				hal::device::release( id.anim_buffer );
+				hal::device::release( id.alt_pos_buffer );
 			}
 		}
 		instances.clear();
@@ -65,17 +115,21 @@ namespace SynGlyphX
 					size_t transform_size = id.transforms.size() * sizeof( glm::mat4 );
 					size_t color_size = id.colors_or_bounds.size() * sizeof( glm::vec4 );
 					size_t anim_size = id.animation.size() * sizeof( glm::vec4 );
+					size_t alt_pos_size = id.alternate_positions.size() * sizeof( glm::vec4 );
 
 					if ( id.transform_buffer ) hal::device::release( id.transform_buffer );
 					if ( id.color_bound_buffer ) hal::device::release( id.color_bound_buffer );
 					if ( id.anim_buffer ) hal::device::release( id.anim_buffer );
+					if ( id.alt_pos_buffer ) hal::device::release( id.alt_pos_buffer );
 
 					id.transform_buffer = hal::device::create_cbuffer( transform_size );
 					id.color_bound_buffer = hal::device::create_cbuffer( color_size );
 					id.anim_buffer = hal::device::create_cbuffer( anim_size );
+					id.alt_pos_buffer = hal::device::create_cbuffer( alt_pos_size );
 					context->update_constant_block( id.transform_buffer, &id.transforms[0], transform_size, hal::cbuffer_usage::static_draw );
 					context->update_constant_block( id.color_bound_buffer, &id.colors_or_bounds[0], color_size, hal::cbuffer_usage::static_draw );
 					context->update_constant_block( id.anim_buffer, &id.animation[0], anim_size, hal::cbuffer_usage::static_draw );
+					context->update_constant_block( id.alt_pos_buffer, &id.alternate_positions[0], alt_pos_size, hal::cbuffer_usage::static_draw );
 
 					++update_count;
 					id.dirty = false;
@@ -85,7 +139,7 @@ namespace SynGlyphX
 		}
 	}
 
-	void GlyphRenderer::glyph_bucket::draw( hal::context* context, unsigned int transform_binding_point, unsigned int material_binding_point, unsigned int anim_binding_point )
+	void GlyphRenderer::glyph_bucket::draw( hal::context* context, unsigned int transform_binding_point, unsigned int material_binding_point, unsigned int anim_binding_point, unsigned int alt_pos_binding_point )
 	{
 		for ( auto& entry : instances )
 		{
@@ -101,6 +155,7 @@ namespace SynGlyphX
 					context->bind( transform_binding_point, id.transform_buffer );
 					context->bind( material_binding_point, id.color_bound_buffer );
 					context->bind( anim_binding_point, id.anim_buffer );
+					context->bind( alt_pos_binding_point, id.alt_pos_buffer );
 					context->draw_instances( id.transforms.size() );
 				}
 
@@ -118,9 +173,11 @@ namespace SynGlyphX
 		hal::device::set_cbuffer_external( glyph_effect, "instance_data" );
 		hal::device::set_cbuffer_external( glyph_effect, "material" );
 		hal::device::set_cbuffer_external( glyph_effect, "animation" );
+		hal::device::set_cbuffer_external( glyph_effect, "alternate_positions" );
 		hal::device::set_cbuffer_external( selection_effect, "instance_data" );
 		hal::device::set_cbuffer_external( selection_effect, "bounds" );
 		hal::device::set_cbuffer_external( selection_effect, "animation" );
+		hal::device::set_cbuffer_external( selection_effect, "alternate_positions" );
 		db.init();
 	}
 
@@ -137,32 +194,31 @@ namespace SynGlyphX
 		auto sphere = db.get( GlyphShape::Sphere );
 		auto spart = sphere->get_parts()[0];
 		auto xform = glm::translate( glm::mat4(), bound.get_center() ) * glm::scale( glm::mat4(), glm::vec3( bound.get_radius() ) );
-		bucket.add_instance( spart->get_mesh(), xform * sphere->get_transform() * spart->get_transform(), glyph.getColor(), glyph.getAnimationAxis(), 0.f, glyph.getAnimationCenter() );
+		bucket.add_instance( spart->get_mesh(), xform * sphere->get_transform() * spart->get_transform(), glyph.getColor(), glyph.getAnimationAxis(), 0.f, glyph.getAnimationCenter(), glyph.getExplodedPosition(), glyph.getExplodedPositionGroup() );
 	}
 
 	void GlyphRenderer::add( const GlyphScene& scene )
 	{
 		scene.enumGlyphs( [this, &scene]( const Glyph3DNode& glyph )
 		{
-			int filter = scene.passedFilter( &glyph ) ? FILTERED : UNFILTERED;
+			bool passed_filter = scene.passedFilter( &glyph );
 
-			glyph_bucket* bucket = &solid[filter];
+			uint32_t bucket_id = 0u;
+			if ( !passed_filter )
+				bucket_id |= FILTER_FAIL;
 			if ( global_wireframe || glyph.getWireframe() )
-			{
-				if ( glyph.getColor().a < 1.0f )
-					bucket = &wireframe_blended[filter];
-				else
-					bucket = &wireframe[filter];
-			}
-			else if ( glyph.getColor().a < 1.0f ) bucket = &blended[filter];
+				bucket_id |= WIREFRAME;
+			if ( glyph.getColor().a < 1.f )
+				bucket_id |= BLENDED;
+
+			glyph_bucket& bucket = get_bucket( bucket_id, static_cast<uint16_t>( glyph.getExplodedPositionGroup() ) );
 
 			render::model* model = db.get( glyph.getGeometry(), glyph.getTorusRatio() );
 			for ( auto part : model->get_parts() )
 			{
-				bucket->add_instance( part->get_mesh(), glyph.getCachedTransform() * glyph.getVisualTransform() * model->get_transform() * part->get_transform(), glyph.getColor(), glyph.getAnimationAxis(), glyph.getAnimationRate(), glyph.getAnimationCenter() );
-
+				bucket.add_instance( part->get_mesh(), glyph.getCachedTransform() * glyph.getVisualTransform() * model->get_transform() * part->get_transform(), glyph.getColor(), glyph.getAnimationAxis(), glyph.getAnimationRate(), glyph.getAnimationCenter(), glyph.getExplodedPosition(), glyph.getExplodedPositionGroup() );
 				if ( bound_vis_enabled )
-					add_bound_to_bucket( glyph, wireframe[filter] );
+					add_bound_to_bucket( glyph, get_bucket( WIREFRAME | ( passed_filter ? 0u : FILTER_FAIL ), 0u ) );
 			}
 			return true;
 		}, false );
@@ -170,36 +226,32 @@ namespace SynGlyphX
 
 	void GlyphRenderer::clear()
 	{
-		for ( int i = 0; i < 2; ++i )
-		{
-			solid[i].clear();
-			blended[i].clear();
-			wireframe[i].clear();
-			wireframe_blended[i].clear();
-		}
+		for ( auto& b : buckets )
+			b.second.clear();
+		buckets.clear();
 	}
 
 	void GlyphRenderer::update_instances( hal::context* context )
 	{
 		updates_done = false;
 		hal::debug::profile_timer timer;
-		for ( int i = 0; i < 2; ++i )
-		{
-			solid[i].update_instances( context, updates_done );
-			blended[i].update_instances( context, updates_done );
-			wireframe[i].update_instances( context, updates_done );
-			wireframe_blended[i].update_instances( context, updates_done );
-		}
+		for ( auto& b : buckets )
+			b.second.update_instances( context, updates_done );
 
 		if ( updates_done )
 			timer.print_ms_to_debug( "rebuilt instance buffers" );
 	}
 
-	void GlyphRenderer::render_solid( hal::context* context, render::perspective_camera* camera, float elapsed_seconds )
+	void GlyphRenderer::render_solid( hal::context* context, render::perspective_camera* camera, float elapsed_seconds, bool active_group_only )
 	{
 		transform_binding_point = context->get_uniform_block_index( glyph_effect, "instance_data" );
 		material_binding_point = context->get_uniform_block_index( glyph_effect, "material" );
 		anim_binding_point = context->get_uniform_block_index( glyph_effect, "animation" );
+		alt_pos_binding_point = context->get_uniform_block_index( glyph_effect, "alternate_positions" );
+
+		uint16_t active_group = static_cast<uint16_t>( scene->getActiveGroup() );
+		uint16_t exclude_group = ( !active_group_only && scene->getGroupStatus() > 0.f ) ? active_group : NO_GROUPS;
+		uint16_t render_group = active_group_only ? active_group : ALL_GROUPS;
 
 		if ( scene )
 		{
@@ -217,27 +269,39 @@ namespace SynGlyphX
 			context->set_constant( glyph_effect, "scene_data", "view", camera->get_view() );
 			context->set_constant( glyph_effect, "scene_data", "proj", camera->get_proj() );
 			context->set_constant( glyph_effect, "scene_data", "elapsed_seconds", animation ? elapsed_seconds : zero );
+			context->set_constant( glyph_effect, "scene_data", "alternate_position_state", scene->getGroupStatus() );
+			context->set_constant( glyph_effect, "scene_data", "active_alternate_position_group", float( scene->getActiveGroup() ) );
+			context->set_constant( glyph_effect, "global_material_data", "base_alpha", 1.f );
 
 			hal::rasterizer_state filled{ true, true, false };
 			hal::rasterizer_state wire{ true, false, true };
 
 			context->set_depth_state( hal::depth_state::read_write );
-			context->set_blend_state( hal::blend_state::disabled );
+			if ( scene->getGroupStatus() > 0.f && !active_group_only )
+				context->set_blend_state( hal::blend_state::alpha );
+			else
+				context->set_blend_state( hal::blend_state::disabled );
 			context->bind( glyph_effect );
 			context->set_rasterizer_state( filled );
-			solid[FILTERED].draw( context, transform_binding_point, material_binding_point, anim_binding_point );
+			draw_buckets( context, 0u, render_group, exclude_group, transform_binding_point, material_binding_point, anim_binding_point, alt_pos_binding_point );
 			auto filter_mode = scene->getFilterMode();
-			if ( filter_mode == FilteredResultsDisplayMode::ShowUnfiltered ) solid[UNFILTERED].draw( context, transform_binding_point, material_binding_point, anim_binding_point );
+			if ( filter_mode == FilteredResultsDisplayMode::ShowUnfiltered ) 
+				draw_buckets( context, FILTER_FAIL, render_group, exclude_group, transform_binding_point, material_binding_point, anim_binding_point, alt_pos_binding_point );
 
 			context->set_rasterizer_state( wire );
-			wireframe[FILTERED].draw( context, transform_binding_point, material_binding_point, anim_binding_point );
-			if ( filter_mode == FilteredResultsDisplayMode::ShowUnfiltered ) wireframe[UNFILTERED].draw( context, transform_binding_point, material_binding_point, anim_binding_point );
+			draw_buckets( context, WIREFRAME, render_group, exclude_group, transform_binding_point, material_binding_point, anim_binding_point, alt_pos_binding_point );
+			if ( filter_mode == FilteredResultsDisplayMode::ShowUnfiltered )
+				draw_buckets( context, WIREFRAME | FILTER_FAIL, render_group, exclude_group, transform_binding_point, material_binding_point, anim_binding_point, alt_pos_binding_point );
 			context->set_rasterizer_state( filled );
 		}
 	}
 
-	void GlyphRenderer::render_blended( hal::context* context, render::perspective_camera* camera, float elapsed_seconds )
+	void GlyphRenderer::render_blended( hal::context* context, render::perspective_camera* camera, float elapsed_seconds, bool active_group_only )
 	{
+		uint16_t active_group = static_cast<uint16_t>( scene->getActiveGroup() );
+		uint16_t exclude_group = ( !active_group_only && scene->getGroupStatus() > 0.f ) ? active_group : NO_GROUPS;
+		uint16_t render_group = active_group_only ? active_group : ALL_GROUPS;
+
 		if ( scene )
 		{
 			const float zero = 0.f;
@@ -254,25 +318,25 @@ namespace SynGlyphX
 			context->set_constant( glyph_effect, "global_material_data", "base_alpha", 1.f );
 			context->set_rasterizer_state( filled );
 			context->bind( glyph_effect );
-			blended[FILTERED].draw( context, transform_binding_point, material_binding_point, anim_binding_point );
-			wireframe_blended[FILTERED].draw( context, transform_binding_point, material_binding_point, anim_binding_point );
+			draw_buckets( context, BLENDED, render_group, exclude_group, transform_binding_point, material_binding_point, anim_binding_point, alt_pos_binding_point );
+			draw_buckets( context, WIREFRAME | BLENDED, render_group, exclude_group, transform_binding_point, material_binding_point, anim_binding_point, alt_pos_binding_point );
 			auto filter_mode = scene->getFilterMode();
 			if ( filter_mode == FilteredResultsDisplayMode::ShowUnfiltered )
 			{
-				blended[UNFILTERED].draw( context, transform_binding_point, material_binding_point, anim_binding_point );
-				wireframe_blended[UNFILTERED].draw( context, transform_binding_point, material_binding_point, anim_binding_point );
+				draw_buckets( context, BLENDED | FILTER_FAIL, render_group, exclude_group, transform_binding_point, material_binding_point, anim_binding_point, alt_pos_binding_point );
+				draw_buckets( context, BLENDED | FILTER_FAIL | WIREFRAME, render_group, exclude_group, transform_binding_point, material_binding_point, anim_binding_point, alt_pos_binding_point );
 			}
 
 			if ( filter_mode == FilteredResultsDisplayMode::TranslucentUnfiltered )
 			{
 				context->set_constant( glyph_effect, "global_material_data", "base_alpha", filter_alpha );
-				blended[UNFILTERED].draw( context, transform_binding_point, material_binding_point, anim_binding_point );
-				solid[UNFILTERED].draw( context, transform_binding_point, material_binding_point, anim_binding_point );
+				draw_buckets( context, BLENDED | FILTER_FAIL, render_group, exclude_group, transform_binding_point, material_binding_point, anim_binding_point, alt_pos_binding_point );
+				draw_buckets( context, FILTER_FAIL, render_group, exclude_group, transform_binding_point, material_binding_point, anim_binding_point, alt_pos_binding_point );
 
 				context->set_rasterizer_state( hal::rasterizer_state{ true, false, true } );
 				context->set_constant( glyph_effect, "global_material_data", "base_alpha", wire_filter_alpha );
-				wireframe[UNFILTERED].draw( context, transform_binding_point, material_binding_point, anim_binding_point );
-				wireframe_blended[UNFILTERED].draw( context, transform_binding_point, material_binding_point, anim_binding_point );
+				draw_buckets( context, WIREFRAME | FILTER_FAIL, render_group, exclude_group, transform_binding_point, material_binding_point, anim_binding_point, alt_pos_binding_point );
+				draw_buckets( context, WIREFRAME | BLENDED | FILTER_FAIL, render_group, exclude_group, transform_binding_point, material_binding_point, anim_binding_point, alt_pos_binding_point );
 				context->set_rasterizer_state( filled );
 			}
 
@@ -284,6 +348,9 @@ namespace SynGlyphX
 
 	void GlyphRenderer::renderSelection( hal::context* context, render::perspective_camera* camera, float elapsed_seconds )
 	{
+		auto& selection = get_bucket( SELECTION, 0u );
+		auto& selection_wireframe = get_bucket( SELECTION | WIREFRAME, 0u );
+
 		if ( scene->getSelectionChanged() )
 			selection_animation_state = 0.f;
 
@@ -309,6 +376,7 @@ namespace SynGlyphX
 				sel_transform_binding_point = context->get_uniform_block_index( selection_effect, "instance_data" );
 				sel_bound_binding_point = context->get_uniform_block_index( selection_effect, "bounds" );
 				sel_anim_binding_point = context->get_uniform_block_index( selection_effect, "animation" );
+				sel_alt_pos_binding_point = context->get_uniform_block_index( selection_effect, "alternate_positions" );
 
 				selection_animation_time += elapsed_seconds - previous_frame_time;
 
@@ -316,6 +384,7 @@ namespace SynGlyphX
 				{
 					selection_animation_time = 0.f;
 					hal::debug::profile_timer timer;
+
 					selection.clear();
 					selection_wireframe.clear();
 					scene->enumSelected( [&]( const Glyph3DNode& glyph ) {
@@ -325,7 +394,7 @@ namespace SynGlyphX
 						{
 							// for the selection effect we don't care about instance color, so we can pack the bound into that
 							// constant buffer instead.
-							selection.add_instance( part->get_mesh(), glyph_transform * model->get_transform() * part->get_transform(), glm::vec4( glyph.getCachedBound().get_center(), glyph.getCachedBound().get_radius() ), glyph.getAnimationAxis(), glyph.getAnimationRate(), glyph.getAnimationCenter() );
+							selection.add_instance( part->get_mesh(), glyph_transform * model->get_transform() * part->get_transform(), glm::vec4( glyph.getCachedBound().get_center(), glyph.getCachedBound().get_radius() ), glyph.getAnimationAxis(), glyph.getAnimationRate(), glyph.getAnimationCenter(), glyph.getExplodedPosition(), glyph.getExplodedPositionGroup() );
 
 							if ( bound_vis_enabled )
 								add_bound_to_bucket( glyph, selection_wireframe );
@@ -345,6 +414,8 @@ namespace SynGlyphX
 				context->set_constant( selection_effect, "global_data", "elapsed_seconds", elapsed_seconds );
 				context->set_constant( selection_effect, "global_data", "selection_anim_max_scale", selection_anim_max_scale );
 				context->set_constant( selection_effect, "global_data", "selection_anim_state", anim_state );
+				context->set_constant( selection_effect, "global_data", "alternate_position_state", scene->getGroupStatus() );
+				context->set_constant( selection_effect, "global_data", "active_alternate_position_group", float( scene->getActiveGroup() ) );
 				context->set_constant( selection_effect, "camera_data", "viewport", glm::vec2( camera->get_viewport_w(), camera->get_viewport_h() ) );
 				context->set_constant( selection_effect, "camera_data", "view", camera->get_view() );
 				context->set_constant( selection_effect, "camera_data", "proj", camera->get_proj() );
@@ -353,10 +424,10 @@ namespace SynGlyphX
 
 				hal::rasterizer_state filled{ true, true, false };
 				context->set_rasterizer_state( filled );
-				selection.draw( context, sel_transform_binding_point, sel_bound_binding_point, sel_anim_binding_point );
+				selection.draw( context, sel_transform_binding_point, sel_bound_binding_point, sel_anim_binding_point, sel_alt_pos_binding_point );
 				hal::rasterizer_state wire{ true, true, true };
 				context->set_rasterizer_state( wire );
-				selection_wireframe.draw( context, sel_transform_binding_point, sel_bound_binding_point, sel_anim_binding_point );
+				selection_wireframe.draw( context, sel_transform_binding_point, sel_bound_binding_point, sel_anim_binding_point, sel_alt_pos_binding_point );
 				context->set_rasterizer_state( filled );
 			}
 			else

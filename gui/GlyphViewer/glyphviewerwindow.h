@@ -94,6 +94,7 @@ private slots:
 	void OnEnableDisableFlyToObjectAction( bool enable );
 	void OnEnableDisableFreeSelectionCamera( bool enable );
 	void OnEnableDisableSelEffect( bool enable );
+	void OnEnableDisableSuperimposedGadgets( bool enable );
 	void OnOpenURLs();
 	void OnPropertiesActivated();
 	bool LoadRecentFile(const QString& filename) override;
@@ -141,6 +142,7 @@ private:
 	QAction* m_enableDisableFlyToObjectAction;
 	QAction* m_enableDisableFreeSelectionCameraAction;
 	QAction* m_enableDisableSelEffectAction;
+	QAction* m_enableDisableSuperimposedGlyphGadgets;
 
 	QAction* m_openURLAction;
 	QAction* m_propertiesAction;
