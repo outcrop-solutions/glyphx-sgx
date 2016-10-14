@@ -11,5 +11,7 @@ uniform sampler2D base_texture;
 
 void main()
 {
-    outputF = tint_color * texture( base_texture, uv );
+	vec4 color = tint_color * texture( base_texture, uv );
+    if ( color.a == 0 ) discard;
+    outputF = color * color.a;
 }

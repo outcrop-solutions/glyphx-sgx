@@ -25,7 +25,7 @@ namespace SynGlyphX
 		mode( SuperimposedGadgetMode::OnSelection )
 	{
 		effect = hal::device::load_effect( "shaders/gadget_bound.vert", nullptr, "shaders/gadget_bound.frag" );
-		switch_effect = hal::device::load_effect( "shaders/texture.vert", nullptr, "shaders/texture.frag" );
+		switch_effect = hal::device::load_effect( "shaders/gadget.vert", nullptr, "shaders/gadget.frag" );
 		font = hal::device::load_font( "fonts/OpenSans-Regular.ttf", 32 );
 		explode_icon = hal::device::load_texture( "textures/expand-64.tga" );
 		collapse_icon = hal::device::load_texture( "textures/compress-64.tga" );
@@ -154,6 +154,7 @@ namespace SynGlyphX
 		}
 		renderer.render( context, camera );
 
+		// todo: optimize, we're only rendering one switch at a time now
 		render::renderer switch_expand, switch_collapse;
 		for ( auto& g : gadgets )
 		{
@@ -249,7 +250,7 @@ namespace SynGlyphX
 			}
 			else if ( mode == SuperimposedGadgetMode::Always )
 			{
-				g.switch_alpha = compute_gadget_alpha( g, camera->get_position(), switch_fade_dist );
+				g.switch_alpha = 0.f;
 				g.bound_alpha = compute_gadget_alpha( g, camera->get_position(), bound_fade_dist );
 			}
 			else
