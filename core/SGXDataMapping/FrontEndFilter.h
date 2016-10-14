@@ -21,39 +21,44 @@
 
 namespace SynGlyphX {
 
-	class SGXDATAMAPPING_API FrontEndFilterOptions {
+	//class SGXDATAMAPPING_API FrontEndFilterOptions {
 
-	public:
-		FrontEndFilterOptions();
-		FrontEndFilterOptions(bool required, bool allowMultiselect);
-		FrontEndFilterOptions(const FrontEndFilterOptions& options);
-		~FrontEndFilterOptions();
+	//public:
+	//	FrontEndFilterOptions();
+	//	FrontEndFilterOptions(bool required, bool allowMultiselect);
+	//	FrontEndFilterOptions(const FrontEndFilterOptions& options);
+	//	~FrontEndFilterOptions();
 
-		FrontEndFilterOptions& operator=(const FrontEndFilterOptions& options);
-		bool operator==(const FrontEndFilterOptions& options) const;
-		bool operator!=(const FrontEndFilterOptions& options) const;
+	//	FrontEndFilterOptions& operator=(const FrontEndFilterOptions& options);
+	//	bool operator==(const FrontEndFilterOptions& options) const;
+	//	bool operator!=(const FrontEndFilterOptions& options) const;
 
-		void SetRequired(bool required);
-		bool IsRequired() const;
+	//	void SetRequired(bool required);
+	//	bool IsRequired() const;
 
-		void SetAllowMultiselect(bool allow);
-		bool IsMultiselectAllowed() const;
+	//	void SetAllowMultiselect(bool allow);
+	//	bool IsMultiselectAllowed() const;
 
-	private:
-		bool m_isRequired;
-		bool m_muliselectAllowed;
-	};
+	//private:
+	//	bool m_isRequired;
+	//	bool m_muliselectAllowed;
+	//};
 
-	typedef InsertionOrderMap<std::wstring, FrontEndFilterOptions> SingleTableFrontEndFilters;
+	//typedef InsertionOrderMap<std::wstring, FrontEndFilterOptions> SingleTableFrontEndFilters;
 
-	typedef std::unordered_map<InputTable, SingleTableFrontEndFilters, InputTableHash> MultiTableFrontEndFilters;
+	//typedef std::unordered_map<InputTable, SingleTableFrontEndFilters, InputTableHash> MultiTableFrontEndFilters;
 
 	struct SGXDATAMAPPING_API FrontEndFilter
 	{
 		bool isRequired;
 		bool isMuliselectAllowed;
-		std::vector<InputTable> tables;
+		std::vector<InputField> fields;
+		bool operator==(const FrontEndFilter& other) const
+		{
+			return (isRequired == other.isRequired) && (isMuliselectAllowed == other.isMuliselectAllowed) && (fields == other.fields);
+		}
 	};
+	typedef std::vector<FrontEndFilter> MultiTableFrontEndFilters;
 
 } //namespace SynGlyphX
 

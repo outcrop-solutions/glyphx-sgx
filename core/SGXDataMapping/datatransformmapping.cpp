@@ -281,24 +281,20 @@ namespace SynGlyphX {
 				boost::optional<const boost::property_tree::wptree&> frontEndFieldsPropertyTree = glyphPropertyTree.second.get_child_optional(L"FrontEnd");
 				if (frontEndFieldsPropertyTree.is_initialized()) {
 
-					//Bryan needs the front end filters in the glyph, but we only need it once so if it has already been read in, skip it
-					InputTable table(frontEndFieldsPropertyTree.get().get_child(L"FilterField"));
-					if (m_frontEndFilters.count(table) == 0) {
+					// legacy single table filters
+					boost::optional<const boost::property_tree::wptree&> filterFieldPropertyTree = glyphPropertyTree.second.get_child_optional(L"FilterField");
+					if (frontEndFieldsPropertyTree.is_initialized()) {
 
-						SingleTableFrontEndFilters filters;
+						FrontEndFilter filter;
 						for (const boost::property_tree::wptree::value_type& frontEndfieldProperties : frontEndFieldsPropertyTree.get()) {
-
+							InputField field(frontEndfieldProperties.second);
 							if (frontEndfieldProperties.first == L"FilterField") {
 
 								std::wstring inputfield = frontEndfieldProperties.second.get<std::wstring>(L"<xmlattr>.field");
-								filters.Insert(inputfield, FrontEndFilterOptions(frontEndfieldProperties.second.get<bool>(L"<xmlattr>.required"),
-									frontEndfieldProperties.second.get<bool>(L"<xmlattr>.selectall")));
+								filter.fields.push_back(field);
+								filter.isRequired = frontEndfieldProperties.second.get<bool>(L"<xmlattr>.required");
+								filter.isMuliselectAllowed = frontEndfieldProperties.second.get<bool>(L"<xmlattr>.selectall");
 							}
-						}
-
-						if (!filters.empty()) {
-
-							m_frontEndFilters[table] = filters;
 						}
 					}
 				}
@@ -402,23 +398,20 @@ namespace SynGlyphX {
 
 		boost::optional<const boost::property_tree::wptree&> frontEndFieldsPropertyTree = dataTransformPropertyTree.get_child_optional(L"FrontEnd");
 		if (frontEndFieldsPropertyTree.is_initialized()) {
+			for (const boost::property_tree::wptree::value_type& frontEndFilterProperties : frontEndFieldsPropertyTree.get()) {
 
-			InputTable table(frontEndFieldsPropertyTree.get().get_child(L"FilterField"));
+				if (frontEndFilterProperties.first == L"Filter") {
+					FrontEndFilter filter;
+					filter.isRequired = frontEndFilterProperties.second.get<bool>(L"<xmlattr>.required");
+					filter.isMuliselectAllowed = frontEndFilterProperties.second.get<bool>(L"<xmlattr>.selectall");
+					for (const boost::property_tree::wptree::value_type& frontEndFieldProperties : frontEndFieldsPropertyTree.get()) {
+						if (frontEndFilterProperties.first == L"Filter") {
+							InputField field(frontEndFieldProperties.second);
+							filter.fields.push_back(field);
+						}
+					}
 
-			SingleTableFrontEndFilters filters;
-			for (const boost::property_tree::wptree::value_type& frontEndfieldProperties : frontEndFieldsPropertyTree.get()) {
-
-				if (frontEndfieldProperties.first == L"FilterField") {
-
-					std::wstring inputfield = frontEndfieldProperties.second.get<std::wstring>(L"<xmlattr>.field");
-					filters.Insert(inputfield, FrontEndFilterOptions(frontEndfieldProperties.second.get<bool>(L"<xmlattr>.required"),
-						frontEndfieldProperties.second.get<bool>(L"<xmlattr>.selectall")));
 				}
-			}
-
-			if (!filters.empty()) {
-
-				m_frontEndFilters[table] = filters;
 			}
 		}
 
@@ -488,16 +481,17 @@ namespace SynGlyphX {
 
 		if (!m_frontEndFilters.empty()) {
 			boost::property_tree::wptree& frontEndFiltersPropertyTree = dataTransformPropertyTreeRoot.add(L"FrontEnd", L"");
-			for (const auto& item : m_frontEndFilters){
-				const auto& table = item.first;
-				for (const auto& field : m_frontEndFilters.at(table)) {
+			for (const auto& filter : m_frontEndFilters){
+			
+				boost::property_tree::wptree& filterPropertyTree = frontEndFiltersPropertyTree.add(L"Filter", L"");
+				filterPropertyTree.put(L"<xmlattr>.required", filter.isRequired);
+				filterPropertyTree.put(L"<xmlattr>.selectall", filter.isMuliselectAllowed);
+				for (const auto& field : filter.fields) {
 
 					boost::property_tree::wptree& filterFieldPropertyTree = frontEndFiltersPropertyTree.add(L"FilterField", L"");
-					filterFieldPropertyTree.put(L"<xmlattr>.id", table.GetDatasourceID());
-					filterFieldPropertyTree.put(L"<xmlattr>.table", table.GetTable());
-					filterFieldPropertyTree.put(L"<xmlattr>.field", field.first);
-					filterFieldPropertyTree.put(L"<xmlattr>.required", field.second.IsRequired());
-					filterFieldPropertyTree.put(L"<xmlattr>.selectall", field.second.IsMultiselectAllowed());
+					filterFieldPropertyTree.put(L"<xmlattr>.id", field.GetDatasourceID());
+					filterFieldPropertyTree.put(L"<xmlattr>.table", field.GetTable());
+					filterFieldPropertyTree.put(L"<xmlattr>.field", field.GetField());
 				}
 
 			}

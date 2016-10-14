@@ -1161,6 +1161,7 @@ void DataMapperWindow::ChangeOptions() {
 void DataMapperWindow::ChangeFrontEndFilters() {
 
 	FilterSetupWidget* filterSetupWidget = dynamic_cast<FilterSetupWidget*>(m_frontEndFiltersSetupDialog->GetWidget());
+	//TODO
 	filterSetupWidget->SetFilters(m_dataTransformModel->GetFrontEndFilters());
 	
 	m_frontEndFiltersSetupDialog->show();
@@ -1171,6 +1172,7 @@ void DataMapperWindow::ChangeFrontEndFilters() {
 void DataMapperWindow::OnFrontEndFiltersDialogAccepted() {
 
 	FilterSetupWidget* filterSetupWidget = dynamic_cast<FilterSetupWidget*>(m_frontEndFiltersSetupDialog->GetWidget());
-	m_dataTransformModel->SetFrontEndFiltersUndoRedo(filterSetupWidget->GetFilters());
+	//TODO
+	//m_dataTransformModel->SetFrontEndFiltersUndoRedo(filterSetupWidget->GetFilters());
 	DMGlobal::Services()->SetModified();
 }

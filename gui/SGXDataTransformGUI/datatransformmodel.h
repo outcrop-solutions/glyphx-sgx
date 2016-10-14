@@ -24,6 +24,7 @@
 #include <QtCore/QAbstractItemModel>
 #include "dataengineconnection.h"
 #include "datastatsmodel.h"
+#include "FrontEndFilter.h"
 
 class DMServicesImpl;
 
@@ -173,8 +174,8 @@ namespace SynGlyphX {
 		InputFieldManager* GetInputFieldManager() { return m_dataMapping->GetInputFieldManager(); }
 
 		const MultiTableFrontEndFilters& GetFrontEndFilters() const { return m_dataMapping->GetFrontEndFilters(); }
-		void SetFrontEndFilters(const MultiTableFrontEndFilters& filters) { m_dataMapping->SetFrontEndFilters(filters); }
-		void SetFrontEndFiltersUndoRedo(const MultiTableFrontEndFilters& filters);
+		//void SetFrontEndFilters(const MultiTableFrontEndFilters& filters) { m_dataMapping->SetFrontEndFilters(filters); }
+		//void SetFrontEndFiltersUndoRedo(const MultiTableFrontEndFilters& filters);
 
 	private:
 		void Clear();
