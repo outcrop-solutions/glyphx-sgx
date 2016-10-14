@@ -171,7 +171,7 @@ namespace SynGlyphX
 		scene->enumGroups( [&, scene_ptr]( const std::vector<const Glyph3DNode*>& nodes, unsigned int group_idx ) {
 			auto pos = nodes[0]->getCachedPosition();
 			float radius = nodes[0]->getCachedCombinedBound().get_radius();
-			group_manager->create( [scene_ptr, group_idx]() { scene_ptr->toggleExplode( group_idx ); }, group_idx, pos, radius );
+			group_manager->create( group_idx, pos, radius );
 		} );
 	}
 

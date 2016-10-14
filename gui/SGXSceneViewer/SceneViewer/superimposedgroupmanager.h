@@ -25,7 +25,7 @@ namespace SynGlyphX
 
 		// returns {group id, distance}
 		std::pair<unsigned int, float> pick( const render::perspective_camera* camera, const glm::vec3& origin, const glm::vec3& dir, float max_distance );
-		void create( std::function<void( void )> on_click, unsigned int group_idx, const glm::vec3& position, float scale );
+		void create( unsigned int group_idx, const glm::vec3& position, float scale );
 		void clear();
 
 		void render( hal::context* context, render::perspective_camera* camera );
@@ -38,8 +38,7 @@ namespace SynGlyphX
 			glm::vec3 position;
 			float scale;
 			float exploded_offset;
-			std::function<void( void )> on_click;
-			//hal::render_target_set* texture_rt;
+			float bound_alpha, switch_alpha;
 		};
 		std::vector<gadget> gadgets;
 		hal::mesh* billboard_mesh;
@@ -64,5 +63,7 @@ namespace SynGlyphX
 		float compute_gadget_alpha( const gadget& g, const glm::vec3& cam_pos, const glm::vec2& fade_dist );
 		glm::mat4 compute_switch_transform( const render::perspective_camera* camera, const gadget& g );
 		void setup_texture( hal::context* context, gadget& g );
+
+		void update( render::perspective_camera* camera );
 	};
 }

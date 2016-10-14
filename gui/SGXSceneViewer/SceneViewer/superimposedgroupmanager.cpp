@@ -84,7 +84,7 @@ namespace SynGlyphX
 			auto& g = gadgets[i];
 			if ( scene.getGroupStatus() == 0.f || ( g.group == scene.getActiveGroup() ) )
 			{
-				if ( compute_gadget_alpha( g, camera->get_position(), switch_fade_dist ) > 0.f )
+				if ( g.switch_alpha > 0.f )
 				{
 					glm::vec3 pt;
 					if ( switch_model->pick( origin, dir, compute_switch_transform( camera, g ), pt ) )
@@ -106,11 +106,10 @@ namespace SynGlyphX
 			return{ 0, FLT_MAX };
 	}
 
-	void SuperimposedGroupManager::create( std::function<void( void )> on_click, unsigned int group, const glm::vec3& position, float scale )
+	void SuperimposedGroupManager::create( unsigned int group, const glm::vec3& position, float scale )
 	{
 		gadget g;
 		g.group = group;
-		g.on_click = on_click;
 		g.exploded_offset = scale * 2.f;
 		g.scale = scale;
 		g.position = position;
@@ -130,6 +129,8 @@ namespace SynGlyphX
 
 	void SuperimposedGroupManager::render( hal::context* context, render::perspective_camera* camera )
 	{
+		update( camera );
+
 		context->set_rasterizer_state( hal::rasterizer_state{ true, true, false, false } );
 		context->bind( effect );
 
@@ -143,7 +144,7 @@ namespace SynGlyphX
 			if ( mode == SuperimposedGadgetMode::Always || groupInSelection( g.group ) )
 			{
 				auto gadget_transform = compute_gadget_transform( g );
-				renderer.add_blended_batch( gadget_model, effect, gadget_transform, glm::vec4( color, gadget_base_alpha * compute_gadget_alpha( g, camera->get_position(), bound_fade_dist ) ) );
+				renderer.add_blended_batch( gadget_model, effect, gadget_transform, glm::vec4( color, gadget_base_alpha * g.bound_alpha ) );
 			}
 		}
 		renderer.render( context, camera );
@@ -151,17 +152,14 @@ namespace SynGlyphX
 		render::renderer switch_expand, switch_collapse;
 		for ( auto& g : gadgets )
 		{
-			if ( mode == SuperimposedGadgetMode::Always || groupInSelection( g.group ) || scene.isExploded( g.group ) )
+			float gadget_alpha = g.switch_alpha;
+			if ( gadget_alpha > 0.f )
 			{
-				float gadget_alpha = compute_gadget_alpha( g, camera->get_position(), switch_fade_dist );
-				if ( gadget_alpha > 0.f )
-				{
-					auto switch_transform = compute_switch_transform( camera, g );
-					if ( scene.isExploded( g.group ) )
-						switch_collapse.add_blended_batch( switch_model, switch_effect, switch_transform, glm::vec4( 1.f, 1.f, 1.f, gadget_alpha ) );
-					else
-						switch_expand.add_blended_batch( switch_model, switch_effect, switch_transform, glm::vec4( 1.f, 1.f, 1.f, gadget_alpha ) );
-				}
+				auto switch_transform = compute_switch_transform( camera, g );
+				if ( scene.isExploded( g.group ) )
+					switch_collapse.add_blended_batch( switch_model, switch_effect, switch_transform, glm::vec4( 1.f, 1.f, 1.f, gadget_alpha ) );
+				else
+					switch_expand.add_blended_batch( switch_model, switch_effect, switch_transform, glm::vec4( 1.f, 1.f, 1.f, gadget_alpha ) );
 			}
 		}
 		context->bind( 0u, explode_icon );
@@ -234,5 +232,17 @@ namespace SynGlyphX
 		context->draw( font, transform, render::color::white(), buf );
 		context->bind( ( hal::render_target_set* )nullptr );
 #endif
+	}
+
+	void SuperimposedGroupManager::update( render::perspective_camera* camera )
+	{
+		for ( auto& g : gadgets )
+		{
+			if ( mode == SuperimposedGadgetMode::Always || groupInSelection( g.group ) || scene.isExploded( g.group ) )
+				g.switch_alpha = compute_gadget_alpha( g, camera->get_position(), switch_fade_dist );
+			else
+				g.switch_alpha = 0.f;
+			g.bound_alpha = compute_gadget_alpha( g, camera->get_position(), bound_fade_dist );
+		}
 	}
 }
