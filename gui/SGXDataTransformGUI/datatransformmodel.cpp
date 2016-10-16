@@ -51,30 +51,30 @@ namespace SynGlyphX {
 		Link m_link;
 	};
 	//TODO
-	//class UpdateFrontEndFiltersCommand : public DataTransformModel::Command {
+	class UpdateFrontEndFiltersCommand : public DataTransformModel::Command {
 
-	//public:
-	//	UpdateFrontEndFiltersCommand(const MultiTableFrontEndFilters& filters, DataTransformModel* dtm) :
-	//		DataTransformModel::Command(dtm),
-	//		m_newFilters(filters) {
+	public:
+		UpdateFrontEndFiltersCommand(const MultiTableFrontEndFilters& filters, DataTransformModel* dtm) :
+			DataTransformModel::Command(dtm),
+			m_newFilters(filters) {
 
-	//		m_oldFilters = m_dtm->GetFrontEndFilters();
-	//	}
+			m_oldFilters = m_dtm->GetFrontEndFilters();
+		}
 
-	//	void undo() override {
+		void undo() override {
 
-	//		m_dtm->SetFrontEndFilters(m_oldFilters);
-	//	}
+			m_dtm->SetFrontEndFilters(m_oldFilters);
+		}
 
-	//	void redo() override {
+		void redo() override {
 
-	//		m_dtm->SetFrontEndFilters(m_newFilters);
-	//	}
+			m_dtm->SetFrontEndFilters(m_newFilters);
+		}
 
-	//private:
-	//	MultiTableFrontEndFilters m_newFilters;
-	//	MultiTableFrontEndFilters m_oldFilters;
-	//};
+	private:
+		MultiTableFrontEndFilters m_newFilters;
+		MultiTableFrontEndFilters m_oldFilters;
+	};
 
 	DataTransformModel::DataTransformModel(QObject *parent)
 		: QAbstractItemModel(parent),
@@ -1574,10 +1574,10 @@ namespace SynGlyphX {
 		m_tableStatsMap.emplace(inputTable, tableStats);
 	}
 
-	//void DataTransformModel::SetFrontEndFiltersUndoRedo(const MultiTableFrontEndFilters& filters) {
-	//	auto command = new UpdateFrontEndFiltersCommand(filters, this);
-	//	command->setText(tr("Filters Updated"));
-	//	AppGlobal::Services()->GetUndoStack()->push(command);
-	//}
+	void DataTransformModel::SetFrontEndFiltersUndoRedo(const MultiTableFrontEndFilters& filters) {
+		auto command = new UpdateFrontEndFiltersCommand(filters, this);
+		command->setText(tr("Filters Updated"));
+		AppGlobal::Services()->GetUndoStack()->push(command);
+	}
 
 } //namespace SynGlyphX

@@ -287,9 +287,9 @@ namespace SynGlyphX {
 
 						FrontEndFilter filter;
 						for (const boost::property_tree::wptree::value_type& frontEndfieldProperties : frontEndFieldsPropertyTree.get()) {
-							InputField field(frontEndfieldProperties.second);
+							
 							if (frontEndfieldProperties.first == L"FilterField") {
-
+								InputField field(frontEndfieldProperties.second);
 								std::wstring inputfield = frontEndfieldProperties.second.get<std::wstring>(L"<xmlattr>.field");
 								filter.fields.push_back(field);
 								filter.isRequired = frontEndfieldProperties.second.get<bool>(L"<xmlattr>.required");
@@ -404,13 +404,13 @@ namespace SynGlyphX {
 					FrontEndFilter filter;
 					filter.isRequired = frontEndFilterProperties.second.get<bool>(L"<xmlattr>.required");
 					filter.isMuliselectAllowed = frontEndFilterProperties.second.get<bool>(L"<xmlattr>.selectall");
-					for (const boost::property_tree::wptree::value_type& frontEndFieldProperties : frontEndFieldsPropertyTree.get()) {
-						if (frontEndFilterProperties.first == L"Filter") {
-							InputField field(frontEndFieldProperties.second);
+					for (const boost::property_tree::wptree::value_type& fieldProperties : frontEndFilterProperties.second) {
+						if (fieldProperties.first == L"FilterField") {
+							InputField field(fieldProperties.second);
 							filter.fields.push_back(field);
 						}
 					}
-
+					m_frontEndFilters.push_back(filter);
 				}
 			}
 		}
@@ -488,10 +488,12 @@ namespace SynGlyphX {
 				filterPropertyTree.put(L"<xmlattr>.selectall", filter.isMuliselectAllowed);
 				for (const auto& field : filter.fields) {
 
-					boost::property_tree::wptree& filterFieldPropertyTree = frontEndFiltersPropertyTree.add(L"FilterField", L"");
-					filterFieldPropertyTree.put(L"<xmlattr>.id", field.GetDatasourceID());
-					filterFieldPropertyTree.put(L"<xmlattr>.table", field.GetTable());
-					filterFieldPropertyTree.put(L"<xmlattr>.field", field.GetField());
+					boost::property_tree::wptree& filterFieldPropertyTree = filterPropertyTree.add(L"FilterField", L"");
+					//filterFieldPropertyTree.put(L"<xmlattr>.id", field.GetDatasourceID());
+					//filterFieldPropertyTree.put(L"<xmlattr>.table", field.GetTable());
+					//filterFieldPropertyTree.put(L"<xmlattr>.field", field.GetField());
+					//filterFieldPropertyTree.put(L"<xmlattr>.type", field.GetType());
+					field.ExportToPropertyTreeInternal(filterFieldPropertyTree);
 				}
 
 			}
@@ -582,6 +584,7 @@ namespace SynGlyphX {
 		m_legends.clear();
 		m_links.clear();
 		m_inputFieldManager.Clear();
+		m_frontEndFilters.clear();
 		m_id = UUIDGenerator::GetNewRandomUUID();
 
 		if (addADefaultBaseObjectAfterClear) {

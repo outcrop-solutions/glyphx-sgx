@@ -51,7 +51,8 @@ public:
 			formattedName += ':' + QString::fromStdWString(inputField.GetTable());
 		}
 		formattedName += ':' + QString::fromStdWString(inputField.GetField());
-		auto item = new QListWidgetItem(formattedName, this);
+		auto item = new QListWidgetItem(formattedName, NULL);
+		insertItem(count(), item);
 		QVariant var;
 		var.setValue(inputField);
 		item->setData(Qt::UserRole, var);
@@ -145,7 +146,7 @@ public:
 			{
 				listWgt->AddInputField(field);
 			}
-			qobject_cast<CbWidget*>(cellWidget(row, 2))->setChecked(filter.isRequired);
+			qobject_cast<CbWidget*>(cellWidget(row, 1))->setChecked(filter.isRequired);
 			qobject_cast<CbWidget*>(cellWidget(row, 2))->setChecked(filter.isMuliselectAllowed);
 		}
 
@@ -155,15 +156,17 @@ public:
 			auto listWgt = qobject_cast<FieldList*>(cellWidget(row, 0));
 			for (int i = 0; i < listWgt->count(); i++)
 			{
-				filter.fields.push_back(listWgt->item(row)->data(Qt::UserRole).value<InputField>());
+				auto item = listWgt->item(i);
+				filter.fields.push_back(item->data(Qt::UserRole).value<InputField>());
 			}
-			filter.isRequired = qobject_cast<CbWidget*>(cellWidget(row, 2))->isChecked();
+			filter.isRequired = qobject_cast<CbWidget*>(cellWidget(row, 1))->isChecked();
 			filter.isMuliselectAllowed = qobject_cast<CbWidget*>(cellWidget(row, 2))->isChecked();
+			return filter;
 		}
 		void AddRow(const FrontEndFilter& filter)
 		{
 			auto n = rowCount();
-			insertRow(n);
+			AddRow();
 			SetFilter(n, filter);
 		}
 		void Clear()
@@ -174,7 +177,6 @@ public:
 		{
 			
 		}
-
 
 };
 
@@ -197,7 +199,7 @@ FilterSetupWidget::FilterSetupWidget(QWidget *parent)
 	m_table->setHorizontalHeaderLabels(QStringList() << tr("Fields") << tr("Required") << tr("Multiple selection"));
 
 	mainLayout->addWidget(m_table, 1);
-	m_table->AddRow();
+	//m_table->AddRow();
 	mainLayout->addLayout(tableLayout);
 
 
@@ -269,7 +271,7 @@ void FilterSetupWidget::SetFilters(const SynGlyphX::MultiTableFrontEndFilters& f
 	}
 	else
 	{
-		m_table->AddRow();
+		//m_table->AddRow();
 	}
 }
 
@@ -278,9 +280,10 @@ SynGlyphX::MultiTableFrontEndFilters FilterSetupWidget::GetFilters() const {
 	MultiTableFrontEndFilters filters;
 	for (int i = 0; i < m_table->rowCount(); i++)
 	{
-
+		FrontEndFilter filter = m_table->GetFilter(i);
+		filters.push_back(filter);
 	}
-	//return m_filters;
+	return filters;
 	
 }
 
