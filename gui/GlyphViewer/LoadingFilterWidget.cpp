@@ -86,6 +86,8 @@ QSplitter* LoadingFilterWidget::AddFiltersForTable(DataEngine::GlyphEngine& glyp
 		"border: 1px solid #777; width: 0px; margin-top: 0px; margin-bottom: 0px; border-radius: 2px; }");
 
 	FieldToWidgetMap fieldToWidgetMap;
+	std::vector<SynGlyphX::InputTable> tables;
+
 	const SynGlyphX::MultiTableFrontEndFilters& filters = mapping.GetFrontEndFilters();
 	for (const auto& filter : filters) {
 
@@ -94,8 +96,11 @@ QSplitter* LoadingFilterWidget::AddFiltersForTable(DataEngine::GlyphEngine& glyp
 		filterWidget->SetAllowMultiselect(filter.isMultiselectAllowed);
 		filterWidget->ShowSelectAllButton(true);
 		QStringList distinctValues;
+
 		for (const auto& inputField : filter.fields){
 			SynGlyphX::InputTable table(inputField);
+			tables.push_back(table);	
+
 			QString id = QString::fromStdWString(boost::uuids::to_wstring(table.GetDatasourceID()));
 			QString tableName = QString::fromStdWString(table.GetTable());
 
@@ -111,12 +116,20 @@ QSplitter* LoadingFilterWidget::AddFiltersForTable(DataEngine::GlyphEngine& glyp
 
 				filterWidget->SetTitle(QString::fromStdWString(fieldToAliasMap.at(inputField.GetField())));
 			}
+			auto map = m_filterListWidgets.find(table);
+			if (map != m_filterListWidgets.end()) { //fieldToWidgetMap arleady exists for the table, add widget
+				m_filterListWidgets[table][inputField.GetField()] = filterWidget;
+			}
+			else {// create fieldToWidgetMap for the table
+				FieldToWidgetMap fieldToWidgetMap;
+				fieldToWidgetMap[inputField.GetField()] = filterWidget;
+				m_filterListWidgets[table] = fieldToWidgetMap;
+			}
 
-			fieldToWidgetMap[inputField.GetField()] = filterWidget;
-			m_filterListWidgets[table] = fieldToWidgetMap;
 			QStringList distinctValuesTable = glyphEngine.DistinctValuesForField(id, tableName, qField);
 			distinctValues.append(distinctValuesTable);
 		}
+		//m_filterListWidgets[table] = fieldToWidgetMap;
 		distinctValues.removeDuplicates();
 		QCollator collator;
 		collator.setNumericMode(true);
