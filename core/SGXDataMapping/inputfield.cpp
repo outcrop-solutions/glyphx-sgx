@@ -110,6 +110,14 @@ namespace SynGlyphX {
 		inputFieldPropertyTree.put(L"<xmlattr>.type", s_fieldTypeStrings.left.at(m_type));
 	}
 
+	void InputField::ExportToPropertyTreeInternal(boost::property_tree::wptree& propertyTree) const {
+
+		propertyTree.put(L"<xmlattr>.id", m_datasourceID);
+		propertyTree.put(L"<xmlattr>.table", m_table);
+		propertyTree.put(L"<xmlattr>.field", m_field);
+		propertyTree.put(L"<xmlattr>.type", s_fieldTypeStrings.left.at(m_type));
+	}
+
 	bool InputField::IsNumeric() const {
 
 		return ((m_type == Integer) || (m_type == Real));

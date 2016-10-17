@@ -351,6 +351,12 @@
     <CustomBuild Include="GeneratedFiles\Release\ProjectEditDialog.moc">
       <Filter>Generated Files\Release</Filter>
     </CustomBuild>
+    <CustomBuild Include="GeneratedFiles\Debug\FilterSetupWidget.moc">
+      <Filter>Generated Files\Debug</Filter>
+    </CustomBuild>
+    <CustomBuild Include="GeneratedFiles\Release\FilterSetupWidget.moc">
+      <Filter>Generated Files\Release</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="DataMapper.rc" />

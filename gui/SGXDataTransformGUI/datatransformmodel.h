@@ -24,6 +24,7 @@
 #include <QtCore/QAbstractItemModel>
 #include "dataengineconnection.h"
 #include "datastatsmodel.h"
+#include "FrontEndFilter.h"
 
 class DMServicesImpl;
 
