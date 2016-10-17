@@ -19,11 +19,13 @@
 
 #include "sgxglyphgui_global.h"
 #include "datamappingglyphgraph.h"
+#include <glm/glm.hpp>
 
 namespace SynGlyphX {
 
 	class Glyph3DNode;
 	class GlyphScene;
+	class PlacementPolicy;
 
 	class SGXGLYPHGUI_EXPORT Glyph3DSceneExport
 	{
@@ -35,11 +37,13 @@ namespace SynGlyphX {
 		static void ExportMinGlyphTo3DScene(const DataMappingGlyphGraph& dataMappingGlyph, GlyphScene& scene);
 
 	private:
-		static void ExportGlyphTo3DScene(const DataMappingGlyphGraph& dataMappingGlyph, 
-										 const DataMappingGlyphGraph::ConstGlyphIterator& node,
+		static void ExportGlyphTo3DScene(GlyphGraph::ConstSharedPtr glyph,
+										 const GlyphGraph::ConstGlyphIterator& node,
 										 Glyph3DNode* parent,
-										 bool isMax,
 										 GlyphScene& scene);
+		static void SetupGeometry(const GlyphGeometry& geometry, Glyph3DNode& node);
+		static glm::vec4 GetColor(const GlyphColor& color, double alpha);
+		static PlacementPolicy* ChoosePlacementPolicy(const VirtualTopologyInfo::Type& topo);
 	};
 
 } //namespace SynGlyphX

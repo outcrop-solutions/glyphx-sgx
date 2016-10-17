@@ -16,11 +16,12 @@
 ///
 #pragma once
 
+#include "../../GUI/SGXSceneViewer/platform.h"
 #include "../../GUI/SGXSceneViewer/SceneViewer/placementpolicy.h"
 
 namespace SynGlyphXANTz {
 
-	class ANTzPlacementPolicy : public SynGlyphX::PlacementPolicy {
+	class SGXSCENEVIEWER_API ANTzPlacementPolicy : public SynGlyphX::PlacementPolicy {
 
 	public:
 		ANTzPlacementPolicy() {}
@@ -53,7 +54,7 @@ namespace SynGlyphXANTz {
 		void ApplyRotation(const glm::vec3& rotation, glm::mat4& transform);
 	};
 
-	class ANTzPinPlacementPolicy : public ANTzPlacementPolicy {
+	class SGXSCENEVIEWER_API ANTzPinPlacementPolicy : public ANTzPlacementPolicy {
 
 	public:
 		ANTzPinPlacementPolicy(bool isRod) : m_isRod(isRod) {}
@@ -67,7 +68,7 @@ namespace SynGlyphXANTz {
 		bool m_isRod;
 	};
 
-	class ANTzCubePlacementPolicy : public ANTzPlacementPolicy {
+	class SGXSCENEVIEWER_API ANTzCubePlacementPolicy : public ANTzPlacementPolicy {
 
 	public:
 		ANTzCubePlacementPolicy() {}
@@ -79,7 +80,7 @@ namespace SynGlyphXANTz {
 		
 	};
 
-	class ANTzSpherePlacementPolicy : public ANTzPlacementPolicy {
+	class SGXSCENEVIEWER_API ANTzSpherePlacementPolicy : public ANTzPlacementPolicy {
 
 	public:
 		ANTzSpherePlacementPolicy(bool isPoint) : m_isPoint(isPoint) {}
@@ -93,7 +94,7 @@ namespace SynGlyphXANTz {
 		bool m_isPoint;
 	};
 
-	class ANTzCylinderPlacementPolicy : public ANTzPlacementPolicy {
+	class SGXSCENEVIEWER_API ANTzCylinderPlacementPolicy : public ANTzPlacementPolicy {
 
 	public:
 		ANTzCylinderPlacementPolicy() {}
@@ -105,7 +106,7 @@ namespace SynGlyphXANTz {
 
 	};
 
-	class ANTzTorusPlacementPolicy : public ANTzPlacementPolicy {
+	class SGXSCENEVIEWER_API ANTzTorusPlacementPolicy : public ANTzPlacementPolicy {
 
 	public:
 		ANTzTorusPlacementPolicy() {}

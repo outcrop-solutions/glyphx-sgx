@@ -330,7 +330,7 @@ void RemapDialog::Rebuild3DGlyph() {
 	m_glyph3DView->clearScene();
 
 	SynGlyphX::GlyphScene& scene = m_glyph3DView->getScene();
-	scene.beginAdding(1);
+	scene.beginAdding(idGlyphPair->second->size());
 	SynGlyphX::Glyph3DSceneExport::ExportMaxGlyphTo3DScene(*idGlyphPair->second, scene);
 	scene.finishAdding();
 }
