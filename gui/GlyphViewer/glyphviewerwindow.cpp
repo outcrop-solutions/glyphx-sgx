@@ -589,13 +589,13 @@ void GlyphViewerWindow::ClearAllData() {
 
 	SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
 	m_viewer->setFilteredResults(SynGlyphX::IndexSet());
-	m_hudGenerationInfo.clear();
 	m_glyphForestSelectionModel->ClearAll();
 	m_sourceDataCache->Close();
 	m_glyphForestModel->ClearAndReset();
 	m_mappingModel->ClearAndReset();
 	m_legendsWidget->ClearLegends();
 	m_filteringWidget->OnNewVisualization();
+	m_hudGenerationInfo.clear();
 	SynGlyphX::Application::restoreOverrideCursor();
 }
 
