@@ -40,7 +40,11 @@ namespace SynGlyphX {
 		glyphnode->setColor(GetColor(node->second.GetColor(), node->second.GetTransparency()));
 		glyphnode->setPlacementPolicy(ChoosePlacementPolicy(topo));
 
-		glm::vec3 pos(node->second.GetPosition()[0], node->second.GetPosition()[1], node->second.GetPosition()[2]);
+		glm::vec3 pos(0.f);
+		if (parent != nullptr) {
+
+			pos = glm::vec3(node->second.GetPosition()[0], node->second.GetPosition()[1], node->second.GetPosition()[2]);
+		}
 		glm::vec3 rot(node->second.GetRotation()[0], node->second.GetRotation()[1], node->second.GetRotation()[2]);
 		glm::vec3 scale(node->second.GetScale()[0], node->second.GetScale()[1], node->second.GetScale()[2]);
 
