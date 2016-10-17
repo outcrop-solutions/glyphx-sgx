@@ -155,7 +155,7 @@ namespace SynGlyphX
 		int mouse_prev_x, mouse_prev_y;
 		int mouse_x, mouse_y;
 		float selection_dist, desired_selection_dist;
-		glm::vec3 selection_center;
+		glm::vec3 orbit_center;
 		FreeCameraController* free_cam_control;
 		OrbitCameraController* orbit_cam_control;
 		OverheadCameraController* overhead_cam_control;
