@@ -1575,7 +1575,6 @@ namespace SynGlyphX {
 	}
 
 	void DataTransformModel::SetFrontEndFiltersUndoRedo(const MultiTableFrontEndFilters& filters) {
-
 		auto command = new UpdateFrontEndFiltersCommand(filters, this);
 		command->setText(tr("Filters Updated"));
 		AppGlobal::Services()->GetUndoStack()->push(command);

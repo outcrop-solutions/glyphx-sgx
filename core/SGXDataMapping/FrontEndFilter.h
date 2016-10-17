@@ -21,32 +21,17 @@
 
 namespace SynGlyphX {
 
-	class SGXDATAMAPPING_API FrontEndFilterOptions {
-
-	public:
-		FrontEndFilterOptions();
-		FrontEndFilterOptions(bool required, bool allowMultiselect);
-		FrontEndFilterOptions(const FrontEndFilterOptions& options);
-		~FrontEndFilterOptions();
-
-		FrontEndFilterOptions& operator=(const FrontEndFilterOptions& options);
-		bool operator==(const FrontEndFilterOptions& options) const;
-		bool operator!=(const FrontEndFilterOptions& options) const;
-
-		void SetRequired(bool required);
-		bool IsRequired() const;
-
-		void SetAllowMultiselect(bool allow);
-		bool IsMultiselectAllowed() const;
-
-	private:
-		bool m_isRequired;
-		bool m_muliselectAllowed;
+	struct SGXDATAMAPPING_API FrontEndFilter
+	{
+		bool isRequired;
+		bool isMultiselectAllowed;
+		std::vector<InputField> fields;
+		bool operator==(const FrontEndFilter& other) const
+		{
+			return (isRequired == other.isRequired) && (isMultiselectAllowed == other.isMultiselectAllowed) && (fields == other.fields);
+		}
 	};
-
-	typedef InsertionOrderMap<std::wstring, FrontEndFilterOptions> SingleTableFrontEndFilters;
-
-	typedef std::unordered_map<InputTable, SingleTableFrontEndFilters, InputTableHash> MultiTableFrontEndFilters;
+	typedef std::vector<FrontEndFilter> MultiTableFrontEndFilters;
 
 } //namespace SynGlyphX
 

@@ -79,8 +79,8 @@ private:
 	typedef std::unordered_map<std::wstring, SingleLoadingFilterWidget*> FieldToWidgetMap;
 	typedef std::unordered_map<SynGlyphX::InputTable, FieldToWidgetMap, SynGlyphX::InputTableHash> TableToWidgetsMap;
 
-	QSplitter* AddFiltersForTable(DataEngine::GlyphEngine& glyphEngine, const std::unordered_map<std::wstring, std::wstring>& fieldToAliasMap, const SynGlyphX::SingleTableFrontEndFilters& filters, const SynGlyphX::InputTable& table);
-	void AddFilter(const QString& name, const SynGlyphX::FrontEndFilterOptions& options, const QStringList& filterValues);
+	QSplitter* AddFiltersForTable(DataEngine::GlyphEngine& glyphEngine, const SynGlyphX::DataTransformMapping& mapping);
+	void AddFilter(const QString& name, const SynGlyphX::FrontEndFilter& filter, const QStringList& filterValues);
 
 	TableToWidgetsMap m_filterListWidgets;
 };
