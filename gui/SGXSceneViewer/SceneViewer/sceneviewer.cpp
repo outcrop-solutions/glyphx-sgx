@@ -507,20 +507,20 @@ namespace SynGlyphX
 						for ( int i = 0; i < 3; ++i ) {
 
 							//4 is the size of "X / ".  If an axis name's size is only 4 then nothing is mapped to that axis.
-							if (axis_names[i].size() > 4) {
+							if ( axis_names[i].size() > 4 ) {
 
 								if ( !positionHUD.empty() ) {
 									positionHUD += ", ";
 								}
 
-								positionHUD += axis_names[i] + ": " + std::to_string(m_overridePosition[i]);
+								positionHUD += axis_names[i] + ": " + std::to_string( m_overridePosition[i] );
 							}
 						}
 						renderTextCenteredF( hud_font, glm::vec2( width() / 2, height() - 16 ), CenterMode::X, render::color::white(), positionHUD.c_str() );
 					}
 					else
 					{
-						renderTextCenteredF( hud_font, glm::vec2( width() / 2, height() - 16 ), CenterMode::X, render::color::white(), "Selection Centered At: X: %f, Y: %f, Z: %f", selection_center.x, selection_center.y, selection_center.z );
+						renderTextCenteredF( hud_font, glm::vec2( width() / 2, height() - 16 ), CenterMode::X, render::color::white(), "Selection Centered At: X: %f, Y: %f, Z: %f", orbit_center.x, orbit_center.y, orbit_center.z );
 					}
 				}
 			}
@@ -652,7 +652,7 @@ namespace SynGlyphX
 				scene->collapse( scene->getActiveGroup() );
 				break;
 			}
-			case 'X': 
+			case 'X':
 			{
 				if ( scene->getActiveGroup() == 0u )
 				{
@@ -861,7 +861,19 @@ namespace SynGlyphX
 													// no other way to know we changed the camera orientation directly)
 
 		if ( mode == ViewerMode::SingleGlyph )
+		{
+			// Single glyph mode is locked to orbit cam, so find a better starting position for the camera.
+			float radius = 0.f;
+			glm::vec3 pos;
+			scene->enumGlyphs( [&radius, &pos]( const Glyph3DNode& glyph ) {
+				radius = glyph.getCachedCombinedBound().get_radius();
+				pos = glyph.getCachedPosition();
+				return false;
+			}, false );
+			camera->set_position( pos + glm::vec3( 0.f, 0.f, -radius * 5.f ) );
+			orbit_cam_control->setOrbitTarget( pos, radius * 3.f, true );
 			set_cam_control( orbit_cam_control, true );
+		}
 
 		scene->clearSelection();
 		selection_changed();
@@ -964,28 +976,31 @@ namespace SynGlyphX
 				}
 				else
 				{
-					unsigned int count = 0u;
-					selection_center = glm::vec3();
-					float largest_bound = 0.f;
+					orbit_center = glm::vec3();
 					bool glyphs_selected = false;
-					scene->enumSelected( [this, &count, &largest_bound, &glyphs_selected]( const Glyph3DNode& glyph ) {
-						selection_center += glyph.getCachedPosition();
-						if ( glyph.getType() != Glyph3DNodeType::Link && glyph.getCachedBound().get_radius() > largest_bound ) largest_bound = glyph.getCachedBound().get_radius();
-						if ( glyph.getType() == Glyph3DNodeType::GlyphElement ) glyphs_selected = true;
-						++count;
-					} );
-					if ( count > 0u ) selection_center /= static_cast<float>( count );
-					float selection_radius = 2.f * ( scene->getSingleSelection() ? scene->getSingleSelection()->getCachedBound().get_radius() : 0.f );
+					unsigned int count = 0u;
+					float largest_bound = 0.f;
+					float selection_radius = 0.f;
+					if ( mode == ViewerMode::Full )
+					{
+						scene->enumSelected( [this, &count, &largest_bound, &glyphs_selected]( const Glyph3DNode& glyph ) {
+							orbit_center += glyph.getCachedPosition();
+							if ( glyph.getType() != Glyph3DNodeType::Link && glyph.getCachedBound().get_radius() > largest_bound ) largest_bound = glyph.getCachedBound().get_radius();
+							if ( glyph.getType() == Glyph3DNodeType::GlyphElement ) glyphs_selected = true;
+							++count;
+						} );
+						if ( count > 0u ) orbit_center /= static_cast<float>( count );
+						selection_radius = 2.f * ( scene->getSingleSelection() ? scene->getSingleSelection()->getCachedBound().get_radius() : 0.f );
+						// account for the glyph possibly being in an exploded group
+						glm::vec3 explosion_offset;
+						auto single_selection = scene->getSingleSelection();
+						if ( single_selection && scene->isExploded( single_selection ) )
+							explosion_offset = single_selection->getExplodedPosition();
 
-					// account for the glyph possibly being in an exploded group
-					glm::vec3 explosion_offset;
-					auto single_selection = scene->getSingleSelection();
-					if ( single_selection && scene->isExploded( single_selection ) )
-						explosion_offset = single_selection->getExplodedPosition();
-
-					// if we only have links selected don't restrict the zoom distance (they tend to have huge bounds)
-					float orbit_min_distance = glyphs_selected ? selection_radius + largest_bound : 0.f;
-					orbit_cam_control->setOrbitTarget( selection_center + explosion_offset, orbit_min_distance, cur_cam_control != orbit_cam_control );
+						// if we only have links selected don't restrict the zoom distance (they tend to have huge bounds)
+						float orbit_min_distance = glyphs_selected ? selection_radius + largest_bound : 0.f;
+						orbit_cam_control->setOrbitTarget( orbit_center + explosion_offset, orbit_min_distance, cur_cam_control != orbit_cam_control );
+					}
 
 					// Handle zooming with middle button, L/R buttons, or wheel.
 					float zoom = 0.f;
@@ -1054,7 +1069,7 @@ namespace SynGlyphX
 		axis_names[2] = std::string( "Z / " ) + Z;
 	}
 
-	void SceneViewer::setOverridePositionXYZ(const glm::vec3& positionOverride)
+	void SceneViewer::setOverridePositionXYZ( const glm::vec3& positionOverride )
 	{
 		m_overridePosition = positionOverride;
 	}
