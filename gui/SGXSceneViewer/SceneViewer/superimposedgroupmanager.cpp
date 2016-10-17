@@ -175,16 +175,20 @@ namespace SynGlyphX
 		if ( selected_group != 0u && scene.isExploded( selected_group ) || groupInSelection( selected_group ) )
 		{
 			auto& it = gadgets.find( selected_group );
-			auto& active_gadget = it->second;
 
-			if ( active_gadget.switch_alpha > 0.f )
-			{
-				auto switch_transform = compute_switch_transform( camera, active_gadget );
-				auto texture = scene.isExploded( selected_group ) ? collapse_icon : explode_icon;
-				renderer.add_blended_batch( switch_model, switch_effect, switch_transform, glm::vec4( 1.f, 1.f, 1.f, active_gadget.switch_alpha ) );
+			if (it != gadgets.end()) {
 
-				context->bind( 0u, texture );
-				renderer.render( context, camera );
+				auto& active_gadget = it->second;
+
+				if (active_gadget.switch_alpha > 0.f)
+				{
+					auto switch_transform = compute_switch_transform(camera, active_gadget);
+					auto texture = scene.isExploded(selected_group) ? collapse_icon : explode_icon;
+					renderer.add_blended_batch(switch_model, switch_effect, switch_transform, glm::vec4(1.f, 1.f, 1.f, active_gadget.switch_alpha));
+
+					context->bind(0u, texture);
+					renderer.render(context, camera);
+				}
 			}
 		}
 
