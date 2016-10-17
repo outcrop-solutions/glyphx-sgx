@@ -340,4 +340,6 @@ void RemapDialog::Rebuild3DGlyph() {
 	scene.beginAdding(idGlyphPair->second->size());
 	SynGlyphX::Glyph3DSceneExport::ExportMaxGlyphTo3DScene(*idGlyphPair->second, scene);
 	scene.finishAdding();
+
+	m_glyph3DView->resetCamera();
 }
