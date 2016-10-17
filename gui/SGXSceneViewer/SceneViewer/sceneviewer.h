@@ -117,7 +117,7 @@ namespace SynGlyphX
 		// todo: use Qt signals/slots mechanism for this?
 		void setOnSelectionChanged( std::function<void( bool )> fn ) { on_selection_changed = fn; }
 
-		void setSourceDataLookupForPositionXYZ(const std::vector<float>& posXData, const std::vector<float>& posYData, const std::vector<float>& posZData);
+		void setOverridePositionXYZ(const glm::vec3& positionOverride);
 
 	protected:
 		enum class CenterMode
@@ -244,8 +244,7 @@ namespace SynGlyphX
 		ItemFocusSelectionModel* item_focus_sm;
 		void selection_changed();
 
-		//temporary until we move away from current method of source data access
-		std::vector<float> m_sourceDataLookupForPositionXYZ[3];
+		glm::vec3 m_overridePosition;
 
 		// need to track how many viewers we have so we can manage shared init/shutdown
 		static unsigned int active_viewer_count;
