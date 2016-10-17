@@ -47,13 +47,14 @@ void LoadingFilterWidget::SetFilters(DataEngine::GlyphEngine& glyphEngine, const
 	QVBoxLayout* innerWidgetLayout = new QVBoxLayout(this);
 
 	const SynGlyphX::MultiTableFrontEndFilters& filters = mapping.GetFrontEndFilters();
-	for (const auto& filtersForTable : filters) {
+	//for (const auto& filtersForTable : filters) {
 
-		QSplitter* splitter = AddFiltersForTable(glyphEngine, mapping.GetFieldToAliasMapForTable(filtersForTable.first), filtersForTable.second, filtersForTable.first);
+		QSplitter* splitter = AddFiltersForTable(glyphEngine, mapping);
 		//QString title = QString::fromStdWString(mapping.GetFormattedName(filtersForTable.first.GetDatasourceID(), filtersForTable.first.GetTable()));
-		std::string cleanedTitle = QString::fromStdWString(mapping.GetFormattedName(filtersForTable.first.GetDatasourceID(), filtersForTable.first.GetTable())).toStdString();
-		std::replace(cleanedTitle.begin(), cleanedTitle.end(), '_', ' ');
-		QString title(cleanedTitle.c_str());
+		//std::string cleanedTitle = QString::fromStdWString(mapping.GetFormattedName(filtersForTable.first.GetDatasourceID(), filtersForTable.first.GetTable())).toStdString();
+		//std::replace(cleanedTitle.begin(), cleanedTitle.end(), '_', ' ');
+		//QString title(cleanedTitle.c_str());
+		QString title = "Filters:";
 		if (filters.size() == 1){
 			innerWidgetLayout->addWidget(splitter);
 		} 
@@ -63,7 +64,7 @@ void LoadingFilterWidget::SetFilters(DataEngine::GlyphEngine& glyphEngine, const
 			groupBox->setStyleSheet("QGroupBox{font-family:'Calibri', Helvetica, Arial, Sans; font-weight: bold; text-transform: uppercase; font-size: 16px; line-height: 24px;}");
 			innerWidgetLayout->addWidget(groupBox);
 		}
-	}
+	//}
 
 	//int stretchSize = 3 - filters.size();
 	//if (stretchSize > 0) {
@@ -75,7 +76,7 @@ void LoadingFilterWidget::SetFilters(DataEngine::GlyphEngine& glyphEngine, const
 	setLayout(innerWidgetLayout);
 }
 
-QSplitter* LoadingFilterWidget::AddFiltersForTable(DataEngine::GlyphEngine& glyphEngine, const std::unordered_map<std::wstring, std::wstring>& fieldToAliasMap, const SynGlyphX::SingleTableFrontEndFilters& filters, const SynGlyphX::InputTable& table) {
+QSplitter* LoadingFilterWidget::AddFiltersForTable(DataEngine::GlyphEngine& glyphEngine, const SynGlyphX::DataTransformMapping& mapping) {
 
 	QSplitter* splitter = new QSplitter(Qt::Horizontal, this);
 
@@ -84,31 +85,39 @@ QSplitter* LoadingFilterWidget::AddFiltersForTable(DataEngine::GlyphEngine& glyp
 	splitter->setStyleSheet("QSplitter::handle:horizontal { background: qlineargradient(x1 : 0, y1 : 0, x2 : 1, y2 : 1, stop : 0 #eee, stop:1 #ccc);"
 		"border: 1px solid #777; width: 0px; margin-top: 0px; margin-bottom: 0px; border-radius: 2px; }");
 
-	QString id = QString::fromStdWString(boost::uuids::to_wstring(table.GetDatasourceID()));
-	QString tableName = QString::fromStdWString(table.GetTable());
-
 	FieldToWidgetMap fieldToWidgetMap;
+	const SynGlyphX::MultiTableFrontEndFilters& filters = mapping.GetFrontEndFilters();
 	for (const auto& filter : filters) {
 
-		QString qField = QString::fromStdWString(filter.first);
-
-		SingleLoadingFilterWidget* filterWidget = new SingleLoadingFilterWidget(filter.second.IsRequired(), this);
+		SingleLoadingFilterWidget* filterWidget = new SingleLoadingFilterWidget(filter.isRequired, this);
 		filterWidget->layout()->setContentsMargins(0, 0, 0, 0);
-		filterWidget->SetAllowMultiselect(filter.second.IsMultiselectAllowed());
+		filterWidget->SetAllowMultiselect(filter.isMultiselectAllowed);
 		filterWidget->ShowSelectAllButton(true);
-		if (fieldToAliasMap.count(filter.first) == 0) {
+		QStringList distinctValues;
+		for (const auto& inputField : filter.fields){
+			SynGlyphX::InputTable table(inputField);
+			QString id = QString::fromStdWString(boost::uuids::to_wstring(table.GetDatasourceID()));
+			QString tableName = QString::fromStdWString(table.GetTable());
 
-			std::string cleanedField = qField.toStdString();
-			std::replace( cleanedField.begin(), cleanedField.end(), '_', ' ');
-			filterWidget->SetTitle(QString(cleanedField.c_str()));
+			QString qField = QString::fromStdWString(inputField.GetField());
+			auto fieldToAliasMap = mapping.GetFieldToAliasMapForTable(table);
+			if (fieldToAliasMap.count(inputField.GetField()) == 0) {
+
+				std::string cleanedField = qField.toStdString();
+				std::replace( cleanedField.begin(), cleanedField.end(), '_', ' ');
+				filterWidget->SetTitle(QString(cleanedField.c_str()));
+			}
+			else {
+
+				filterWidget->SetTitle(QString::fromStdWString(fieldToAliasMap.at(inputField.GetField())));
+			}
+
+			fieldToWidgetMap[inputField.GetField()] = filterWidget;
+			m_filterListWidgets[table] = fieldToWidgetMap;
+			QStringList distinctValuesTable = glyphEngine.DistinctValuesForField(id, tableName, qField);
+			distinctValues.append(distinctValuesTable);
 		}
-		else {
-
-			filterWidget->SetTitle(QString::fromStdWString(fieldToAliasMap.at(filter.first)));
-		}
-
-		QStringList distinctValues = glyphEngine.DistinctValuesForField(id, tableName, qField);
-		
+		distinctValues.removeDuplicates();
 		QCollator collator;
 		collator.setNumericMode(true);
 		collator.setCaseSensitivity(Qt::CaseInsensitive);
@@ -119,14 +128,10 @@ QSplitter* LoadingFilterWidget::AddFiltersForTable(DataEngine::GlyphEngine& glyp
 		{
 			return collator.compare(value1, value2) < 0;
 		});
-
 		filterWidget->SetItems(distinctValues);
 
-		splitter->addWidget(filterWidget);
-		fieldToWidgetMap[filter.first] = filterWidget;
-	}
-
-	m_filterListWidgets[table] = fieldToWidgetMap;
+		splitter->addWidget(filterWidget);		
+	}	
 
 	return splitter;
 }

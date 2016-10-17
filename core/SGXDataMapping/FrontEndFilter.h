@@ -51,11 +51,11 @@ namespace SynGlyphX {
 	struct SGXDATAMAPPING_API FrontEndFilter
 	{
 		bool isRequired;
-		bool isMuliselectAllowed;
+		bool isMultiselectAllowed;
 		std::vector<InputField> fields;
 		bool operator==(const FrontEndFilter& other) const
 		{
-			return (isRequired == other.isRequired) && (isMuliselectAllowed == other.isMuliselectAllowed) && (fields == other.fields);
+			return (isRequired == other.isRequired) && (isMultiselectAllowed == other.isMultiselectAllowed) && (fields == other.fields);
 		}
 	};
 	typedef std::vector<FrontEndFilter> MultiTableFrontEndFilters;

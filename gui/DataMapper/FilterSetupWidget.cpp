@@ -147,7 +147,7 @@ public:
 				listWgt->AddInputField(field);
 			}
 			qobject_cast<CbWidget*>(cellWidget(row, 1))->setChecked(filter.isRequired);
-			qobject_cast<CbWidget*>(cellWidget(row, 2))->setChecked(filter.isMuliselectAllowed);
+			qobject_cast<CbWidget*>(cellWidget(row, 2))->setChecked(filter.isMultiselectAllowed);
 		}
 
 		FrontEndFilter GetFilter(int row)
@@ -160,7 +160,7 @@ public:
 				filter.fields.push_back(item->data(Qt::UserRole).value<InputField>());
 			}
 			filter.isRequired = qobject_cast<CbWidget*>(cellWidget(row, 1))->isChecked();
-			filter.isMuliselectAllowed = qobject_cast<CbWidget*>(cellWidget(row, 2))->isChecked();
+			filter.isMultiselectAllowed = qobject_cast<CbWidget*>(cellWidget(row, 2))->isChecked();
 			return filter;
 		}
 		void AddRow(const FrontEndFilter& filter)

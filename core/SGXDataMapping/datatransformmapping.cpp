@@ -285,17 +285,22 @@ namespace SynGlyphX {
 					boost::optional<const boost::property_tree::wptree&> filterFieldPropertyTree = glyphPropertyTree.second.get_child_optional(L"FilterField");
 					if (frontEndFieldsPropertyTree.is_initialized()) {
 
-						FrontEndFilter filter;
 						for (const boost::property_tree::wptree::value_type& frontEndfieldProperties : frontEndFieldsPropertyTree.get()) {
-							
+							FrontEndFilter filter;
 							if (frontEndfieldProperties.first == L"FilterField") {
-								InputField field(frontEndfieldProperties.second);
+
+								//hack to allow backards compatibility, type should not really matter for this purpose
+								auto fieldTree = frontEndfieldProperties.second;
+								fieldTree.put(L"<xmlattr>.type", L"Text");
+								InputField field(fieldTree);
 								std::wstring inputfield = frontEndfieldProperties.second.get<std::wstring>(L"<xmlattr>.field");
 								filter.fields.push_back(field);
 								filter.isRequired = frontEndfieldProperties.second.get<bool>(L"<xmlattr>.required");
-								filter.isMuliselectAllowed = frontEndfieldProperties.second.get<bool>(L"<xmlattr>.selectall");
+								filter.isMultiselectAllowed = frontEndfieldProperties.second.get<bool>(L"<xmlattr>.selectall");
 							}
+							m_frontEndFilters.push_back(filter);
 						}
+						
 					}
 				}
 			}
@@ -403,7 +408,7 @@ namespace SynGlyphX {
 				if (frontEndFilterProperties.first == L"Filter") {
 					FrontEndFilter filter;
 					filter.isRequired = frontEndFilterProperties.second.get<bool>(L"<xmlattr>.required");
-					filter.isMuliselectAllowed = frontEndFilterProperties.second.get<bool>(L"<xmlattr>.selectall");
+					filter.isMultiselectAllowed = frontEndFilterProperties.second.get<bool>(L"<xmlattr>.selectall");
 					for (const boost::property_tree::wptree::value_type& fieldProperties : frontEndFilterProperties.second) {
 						if (fieldProperties.first == L"FilterField") {
 							InputField field(fieldProperties.second);
@@ -485,7 +490,7 @@ namespace SynGlyphX {
 			
 				boost::property_tree::wptree& filterPropertyTree = frontEndFiltersPropertyTree.add(L"Filter", L"");
 				filterPropertyTree.put(L"<xmlattr>.required", filter.isRequired);
-				filterPropertyTree.put(L"<xmlattr>.selectall", filter.isMuliselectAllowed);
+				filterPropertyTree.put(L"<xmlattr>.selectall", filter.isMultiselectAllowed);
 				for (const auto& field : filter.fields) {
 
 					boost::property_tree::wptree& filterFieldPropertyTree = filterPropertyTree.add(L"FilterField", L"");
