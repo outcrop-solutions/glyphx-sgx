@@ -97,23 +97,31 @@ void BindingLineEdit::SetInputField(const QString& inputFieldID) {
 
 	auto ifm = m_model->GetSourceModel()->GetInputFieldManager();
 	m_inputFieldId = inputFieldID;
-	if (m_inputFieldId[0] == '~')
-	{
+	
+	if (m_inputFieldId.isEmpty()) {
+
+		m_lineEdit->clear();
+	}
+	else {
+
 		auto inputField = ifm->GetInputField(m_inputFieldId.toStdWString());
 		SynGlyphX::Datasource::ConstSharedPtr datasource = m_model->GetDataTransformMapping()->GetDatasources().at(inputField.GetDatasourceID());
 
 		QString text = QString::fromStdWString(datasource->GetFormattedName());
 
 		if (datasource->CanDatasourceHaveMultipleTables()) {
-		
+
 			text += ":" + QString::fromStdWString(inputField.GetTable());
 		}
-		text += ":" + QString::fromStdWString(inputField.GetField());
-		m_lineEdit->setText(text);
-	}
-	else 
-	{
-		m_lineEdit->setText(inputFieldID);
+
+		if (m_inputFieldId[0] == '~')
+		{
+			m_lineEdit->setText(text + ":" + QString::fromStdWString(inputField.GetField()));
+		}
+		else
+		{
+			m_lineEdit->setText(text + ":" + inputFieldID);
+		}
 	}
 
 	m_clearAction->setEnabled(!m_inputFieldId.isEmpty());
