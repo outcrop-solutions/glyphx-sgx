@@ -650,7 +650,8 @@ void GlyphViewerWindow::LoadVisualization(const QString& filename, const MultiTa
 
 bool GlyphViewerWindow::LoadNewVisualization(const QString& filename, const MultiTableDistinctValueFilteringParameters& filters) {
 
-	if (filename == m_currentFilename) {
+	QString nativeFilename = QDir::toNativeSeparators(filename);
+	if (nativeFilename == m_currentFilename) {
 		
 		return true;
 	}
@@ -658,7 +659,7 @@ bool GlyphViewerWindow::LoadNewVisualization(const QString& filename, const Mult
 	GVGlobal::Services()->ClearUndoStack();
 	try {
 
-		LoadVisualization(filename, filters);
+		LoadVisualization(nativeFilename, filters);
 	}
 	catch (const std::exception& e) {
 
@@ -675,14 +676,14 @@ bool GlyphViewerWindow::LoadNewVisualization(const QString& filename, const Mult
 		return false;
 	}
 
-	SetCurrentFile(filename);
+	SetCurrentFile(nativeFilename);
 	if (!filters.empty()) {
 
-		s_recentFilters[filename] = filters;
+		s_recentFilters[nativeFilename] = filters;
 	}
-	else if (s_recentFilters.contains(filename)) {
+	else if (s_recentFilters.contains(nativeFilename)) {
 
-		s_recentFilters.remove(filename);
+		s_recentFilters.remove(nativeFilename);
 	}
 	EnableLoadedVisualizationDependentActions(true);
 	
@@ -1382,7 +1383,14 @@ void GlyphViewerWindow::RemapRootPositionMappings() {
 		dataTransformMapping->WriteToFile(remapFilename.toStdString());
 		SynGlyphX::Application::restoreOverrideCursor();
 		
-		LoadNewVisualization(remapFilename);
+		if (s_recentFilters.count(m_currentFilename) > 0) {
+
+			LoadNewVisualization(remapFilename, s_recentFilters[m_currentFilename]);
+		}
+		else {
+
+			LoadNewVisualization(remapFilename);
+		}
 	}
 }
 
