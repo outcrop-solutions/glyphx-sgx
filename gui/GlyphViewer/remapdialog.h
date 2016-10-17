@@ -29,8 +29,12 @@ namespace SynGlyphX {
 	class BrowseLineEdit;
 	class DataStatsModel;
 	class DataTransformModel;
+	class SceneViewer;
 }
 class GlyphRolesTableModel;
+class QPushButton;
+class QLabel;
+class QTableView;
 
 class RemapDialog : public QDialog
 {
@@ -47,6 +51,13 @@ public:
 
 	SynGlyphX::DataTransformMapping::ConstSharedPtr GetNewMapping() const;
 
+protected:
+	void showEvent(QShowEvent* event) override;
+
+private slots:
+	void SwitchToPreviousGlyph();
+	void SwitchToNextGlyph();
+
 private:
 	//These two functions are a workaround for Min & Max not be set & updated.  A better long term solution needs to be found
 	void SendMinMaxFromUIToModel();
@@ -54,12 +65,22 @@ private:
 
 	SynGlyphX::VerticalTabOrderTableView* CreateTableView();
 	void AddRowOfWidgets(SynGlyphX::VerticalTabOrderTableView* tableView, int modelRow, double min, double max, bool enable = true);
+	QWidget* CreateGlyphSwitchWidget();
+	void CreateDataStatsModels();
+	void SwitchGlyph(unsigned int newIndex);
+	void Rebuild3DGlyph();
+
+	QPushButton* m_previousGlyphButton;
+	QPushButton* m_nextGlyphButton;
+	SynGlyphX::SceneViewer* m_glyph3DView;
+	unsigned int m_selectedGlyph;
 
 	SynGlyphX::BrowseLineEdit* m_saveFilenameEdit;
 
 	GlyphRolesTableModel* m_glyphRolesModel;
 	SynGlyphX::DataTransformModel* m_dataTransformModel;
-	SynGlyphX::DataStatsModel* m_dataStatsModel;
+	std::unordered_map<SynGlyphX::InputTable, SynGlyphX::DataStatsModel*, SynGlyphX::InputTableHash> m_dataStatsModels;
+	QTableView* m_dataStatsView;
 
 	std::vector<SynGlyphX::DoubleMinMaxWidget*> m_minMaxWidgets;
 };

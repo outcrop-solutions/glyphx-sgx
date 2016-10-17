@@ -7,6 +7,9 @@
 #include <QtCore/QDir>
 #include <QtWidgets/QHeaderView>
 #include <QtWidgets/QDataWidgetMapper>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QGroupBox>
 #include "groupboxsinglewidget.h"
 #include "tablesubsetproxymodel.h"
 #include "doubleminmaxwidget.h"
@@ -20,9 +23,12 @@
 #include "browselineedit.h"
 #include "glyphrolestablemodel.h"
 #include "verticaltabordertableview.h"
+#include "SceneViewer/sceneviewer.h"
+#include "Glyph3DSceneExport.h"
 
 RemapDialog::RemapDialog(SynGlyphX::DataTransformMapping::ConstSharedPtr dataTransformMapping, DataEngine::DataEngineConnection::SharedPtr dataEngineConnection, QWidget *parent)
-	: QDialog(parent)
+	: QDialog(parent),
+	m_selectedGlyph(std::numeric_limits<unsigned int>::max())
 {
 	setMinimumWidth(850);
 
@@ -35,33 +41,37 @@ RemapDialog::RemapDialog(SynGlyphX::DataTransformMapping::ConstSharedPtr dataTra
 
 	QVBoxLayout* mainLayout = new QVBoxLayout(this);
 
+	QHBoxLayout* horizontalLayout = new QHBoxLayout(this);
+
+	horizontalLayout->addWidget(CreateGlyphSwitchWidget());
+
+	QVBoxLayout* rightLayout = new QVBoxLayout(this);
+
 	SynGlyphX::VerticalTabOrderTableView* tableView = CreateTableView();
-	mainLayout->addWidget(tableView);
+	rightLayout->addWidget(tableView);
 
-	SynGlyphX::InputTable tableInDataStats =
-		const_cast<SynGlyphX::DataTransformMapping*>(dataTransformMapping.get())->GetInputFieldManager()->GetFieldMap().begin()->second;
-		
-		/*dataTransformMapping->GetGlyphGraphs().begin()->second->GetInputFields().begin()->second;*/
-	m_dataStatsModel = new SynGlyphX::DataStatsModel(tableInDataStats, m_dataTransformModel->GetTableStatsMap().at(tableInDataStats), this);
-	QTableView* dataStatsView = new QTableView(this);
-	dataStatsView->setModel(m_dataStatsModel);
-	dataStatsView->setSelectionMode(QAbstractItemView::SingleSelection);
-	dataStatsView->setSelectionBehavior(QAbstractItemView::SelectRows);
-	dataStatsView->setDragEnabled(true);
-	dataStatsView->setDragDropMode(QAbstractItemView::DragDrop);
-	dataStatsView->setDropIndicatorShown(true);
-	dataStatsView->setAcceptDrops(false);
-	dataStatsView->verticalHeader()->hide();
-	dataStatsView->resizeColumnsToContents();
-	dataStatsView->resizeRowsToContents();
+	m_dataStatsView = new QTableView(this);
+	m_dataStatsView->setSelectionMode(QAbstractItemView::SingleSelection);
+	m_dataStatsView->setSelectionBehavior(QAbstractItemView::SelectRows);
+	m_dataStatsView->setDragEnabled(true);
+	m_dataStatsView->setDragDropMode(QAbstractItemView::DragDrop);
+	m_dataStatsView->setDropIndicatorShown(true);
+	m_dataStatsView->setAcceptDrops(false);
+	m_dataStatsView->verticalHeader()->hide();
+	m_dataStatsView->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+	m_dataStatsView->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 
-	mainLayout->addWidget(dataStatsView);
+	rightLayout->addWidget(m_dataStatsView);
 
 	m_saveFilenameEdit = new SynGlyphX::BrowseLineEdit(SynGlyphX::BrowseLineEdit::FileDialogType::FileSave, this);
 	m_saveFilenameEdit->SetFilters("SynGlyphX Data Transform(*.sdt)");
 	m_saveFilenameEdit->setContentsMargins(4, 4, 4, 4);
 	SynGlyphX::GroupBoxSingleWidget* saveFilenameGroupBox = new SynGlyphX::GroupBoxSingleWidget(tr("Filename"), m_saveFilenameEdit, this);
-	mainLayout->addWidget(saveFilenameGroupBox);
+	rightLayout->addWidget(saveFilenameGroupBox);
+
+	horizontalLayout->addLayout(rightLayout);
+
+	mainLayout->addLayout(horizontalLayout);
 
 	QDialogButtonBox* dialogButtonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, this);
 	mainLayout->addWidget(dialogButtonBox);
@@ -71,16 +81,61 @@ RemapDialog::RemapDialog(SynGlyphX::DataTransformMapping::ConstSharedPtr dataTra
 
 	setLayout(mainLayout);
 
-	QModelIndexList modelIndexList;
-	modelIndexList.push_back(m_dataTransformModel->index(0, 0));
-	m_glyphRolesModel->SetSelectedGlyphTreeIndexes(modelIndexList);
-
-	SendMinMaxFromModelToUI();
+	CreateDataStatsModels();
 }
 
 RemapDialog::~RemapDialog()
 {
+	
+}
 
+void RemapDialog::showEvent(QShowEvent* event) {
+
+	QDialog::showEvent(event);
+	if (m_selectedGlyph == std::numeric_limits<unsigned int>::max()) {
+
+		SwitchGlyph(0);
+	}
+}
+
+void RemapDialog::CreateDataStatsModels() {
+
+	for (const auto& glyph : m_dataTransformModel->GetDataMapping()->GetGlyphGraphs()) {
+
+		SynGlyphX::InputTable table = m_dataTransformModel->GetDataMapping()->GetInputTable(glyph.first);
+		if (m_dataStatsModels.count(table) == 0) {
+
+			SynGlyphX::DataStatsModel* dataStatsModel = new SynGlyphX::DataStatsModel(table, m_dataTransformModel->GetTableStatsMap().at(table), this);
+			m_dataStatsModels[table] = dataStatsModel;
+		}
+	}
+}
+
+QWidget* RemapDialog::CreateGlyphSwitchWidget() {
+
+	QGroupBox* glyphSelectorGroupBox = new QGroupBox(tr("Glyph"), this);
+
+	QGridLayout* glyphSelectorLayout = new QGridLayout(this);
+
+	m_glyph3DView = new SynGlyphX::SceneViewer(this, SynGlyphX::ViewerMode::SingleGlyph);
+	m_glyph3DView->setMinimumSize(256, 256);
+	glyphSelectorLayout->addWidget(m_glyph3DView, 0, 0, 5, 5);
+
+	m_previousGlyphButton = new QPushButton(this);
+	m_previousGlyphButton->setToolTip(tr("Previous Glyph"));
+	m_previousGlyphButton->setIcon(QIcon(":SGXGUI/Resources/left_arrow.png"));
+	glyphSelectorLayout->addWidget(m_previousGlyphButton, 5, 0);
+	QObject::connect(m_previousGlyphButton, &QPushButton::clicked, this, &RemapDialog::SwitchToPreviousGlyph);
+
+	m_nextGlyphButton = new QPushButton(this);
+	m_nextGlyphButton->setToolTip(tr("Next Glyph"));
+	m_nextGlyphButton->setIcon(QIcon(":SGXGUI/Resources/right_arrow.png"));
+	glyphSelectorLayout->addWidget(m_nextGlyphButton, 5, 4);
+	QObject::connect(m_nextGlyphButton, &QPushButton::clicked, this, &RemapDialog::SwitchToNextGlyph);
+
+	glyphSelectorGroupBox->setLayout(glyphSelectorLayout);
+
+	return glyphSelectorGroupBox;
 }
 
 void RemapDialog::SetSaveFilename(const QString& saveFilename) {
@@ -136,6 +191,8 @@ SynGlyphX::DataTransformMapping::ConstSharedPtr RemapDialog::GetNewMapping() con
 SynGlyphX::VerticalTabOrderTableView* RemapDialog::CreateTableView() {
 
 	SynGlyphX::VerticalTabOrderTableView* tableView = new SynGlyphX::VerticalTabOrderTableView(this);
+	tableView->setMinimumWidth(700);
+	tableView->setFixedHeight(150);
 
 	SynGlyphX::TableSubsetProxyModel* proxyModel = new SynGlyphX::TableSubsetProxyModel(this);
 	proxyModel->setSourceModel(m_glyphRolesModel);
@@ -234,4 +291,55 @@ void RemapDialog::SendMinMaxFromModelToUI() {
 		QModelIndex indexToGet = m_glyphRolesModel->index(i, GlyphRolesTableModel::s_valueColumn);
 		m_minMaxWidgets[i]->SetValue(m_glyphRolesModel->data(indexToGet, 2).value<SynGlyphX::DoubleMinDiff>());
 	}
+}
+
+void RemapDialog::SwitchToPreviousGlyph() {
+
+	SwitchGlyph(m_selectedGlyph - 1);
+}
+
+void RemapDialog::SwitchToNextGlyph() {
+
+	SwitchGlyph(m_selectedGlyph + 1);
+}
+
+void RemapDialog::SwitchGlyph(unsigned int newIndex) {
+
+	SendMinMaxFromUIToModel();
+
+	m_selectedGlyph = newIndex;
+
+	Rebuild3DGlyph();
+
+	QModelIndexList modelIndexList;
+	modelIndexList.push_back(m_dataTransformModel->index(m_selectedGlyph, 0));
+	m_glyphRolesModel->SetSelectedGlyphTreeIndexes(modelIndexList);
+
+	auto iT = m_dataTransformModel->GetDataMapping()->GetGlyphGraphs().begin();
+	std::advance(iT, m_selectedGlyph);
+
+	SynGlyphX::InputTable table = m_dataTransformModel->GetDataMapping()->GetInputTable(iT->first);
+	SynGlyphX::DataStatsModel* dataStatsModel = m_dataStatsModels.at(table);
+	m_dataStatsView->setModel(dataStatsModel);
+
+	SendMinMaxFromModelToUI();
+
+	m_previousGlyphButton->setEnabled(m_selectedGlyph != 0);
+	m_nextGlyphButton->setEnabled(m_selectedGlyph < m_dataTransformModel->GetDataMapping()->GetGlyphGraphs().size() - 1);
+}
+
+void RemapDialog::Rebuild3DGlyph() {
+
+	auto idGlyphPair = m_dataTransformModel->GetDataMapping()->GetGlyphGraphs().begin();
+	std::advance(idGlyphPair, m_selectedGlyph);
+
+	m_glyph3DView->makeCurrent();
+	m_glyph3DView->clearScene();
+
+	SynGlyphX::GlyphScene& scene = m_glyph3DView->getScene();
+	scene.beginAdding(idGlyphPair->second->size());
+	SynGlyphX::Glyph3DSceneExport::ExportMaxGlyphTo3DScene(*idGlyphPair->second, scene);
+	scene.finishAdding();
+
+	m_glyph3DView->resetCamera();
 }
