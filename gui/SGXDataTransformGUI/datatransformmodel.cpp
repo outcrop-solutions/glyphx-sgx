@@ -50,7 +50,7 @@ namespace SynGlyphX {
 		int m_index;
 		Link m_link;
 	};
-	//TODO
+
 	class UpdateFrontEndFiltersCommand : public DataTransformModel::Command {
 
 	public:
