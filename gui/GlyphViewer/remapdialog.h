@@ -51,6 +51,9 @@ public:
 
 	SynGlyphX::DataTransformMapping::ConstSharedPtr GetNewMapping() const;
 
+protected:
+	void showEvent(QShowEvent* event) override;
+
 private slots:
 	void SwitchToPreviousGlyph();
 	void SwitchToNextGlyph();

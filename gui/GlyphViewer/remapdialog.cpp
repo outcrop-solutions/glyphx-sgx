@@ -28,7 +28,7 @@
 
 RemapDialog::RemapDialog(SynGlyphX::DataTransformMapping::ConstSharedPtr dataTransformMapping, DataEngine::DataEngineConnection::SharedPtr dataEngineConnection, QWidget *parent)
 	: QDialog(parent),
-	m_selectedGlyph(0)
+	m_selectedGlyph(std::numeric_limits<unsigned int>::max())
 {
 	setMinimumWidth(850);
 
@@ -82,13 +82,20 @@ RemapDialog::RemapDialog(SynGlyphX::DataTransformMapping::ConstSharedPtr dataTra
 	setLayout(mainLayout);
 
 	CreateDataStatsModels();
-
-	SwitchGlyph(0);
 }
 
 RemapDialog::~RemapDialog()
 {
 	
+}
+
+void RemapDialog::showEvent(QShowEvent* event) {
+
+	QDialog::showEvent(event);
+	if (m_selectedGlyph == std::numeric_limits<unsigned int>::max()) {
+
+		SwitchGlyph(0);
+	}
 }
 
 void RemapDialog::CreateDataStatsModels() {
