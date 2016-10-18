@@ -878,7 +878,7 @@ void GlyphViewerWindow::LoadFilesIntoModel(const SynGlyphXANTz::ANTzCSVWriter::F
 			SynGlyphX::InputField field = ifm->GetInputField(posInputBinding.GetInputFieldID());
 			if (field.IsValid()) {
 
-				fields.push_back(QString::fromStdWString(field.GetField()));
+				fields.push_back(QString::fromStdWString(field.GetField()).replace('_', ' '));
 				if (fieldToAliasMap.count(field.GetField()) == 0) {
 
 					displayNames.push_back(fields.last());
@@ -887,6 +887,11 @@ void GlyphViewerWindow::LoadFilesIntoModel(const SynGlyphXANTz::ANTzCSVWriter::F
 
 					displayNames.push_back(QString::fromStdWString(fieldToAliasMap[field.GetField()]));
 				}
+			}
+			else {
+
+				fields.push_back("");
+				displayNames.push_back("");
 			}
 		}
 
