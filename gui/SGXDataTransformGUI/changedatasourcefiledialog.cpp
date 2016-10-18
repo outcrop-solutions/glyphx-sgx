@@ -72,8 +72,13 @@ namespace SynGlyphX {
 		std::wstring stdDir = fileInfo.canonicalPath().toStdWString();
 
 		for (int i = 0; i < datasources.size(); ++i) {
+			auto dataSource = mapping->GetDatasources().at(datasources[i]);
+			std::wstring name;
+			if (dataSource->IsFile())
+				name = static_cast<FileDatasource*>(dataSource.get())->GetFilename();
+			else 
+				name = mapping->GetDatasources().at(datasources[i])->GetFormattedName();
 
-            std::wstring name = mapping->GetDatasources().at(datasources[i])->GetFormattedName();
             std::replace(name.begin(), name.end(), L'\\', L'/');      // forward slash supported on all platforms
             
 			std::wstring newpath = Filesystem::IsFileInDirectory(name, stdDir);
