@@ -38,6 +38,9 @@
     <ClInclude Include="sgxdatatransformgui_global.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Glyph3DSceneExport.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="changedatasourcefiledialog.h">
@@ -256,6 +259,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="fieldgroupwidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Glyph3DSceneExport.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

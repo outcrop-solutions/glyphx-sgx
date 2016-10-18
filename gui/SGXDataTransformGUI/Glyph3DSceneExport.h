@@ -15,6 +15,8 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
+//This file should be moved to SGXGlyphGUI once there is a new selection mechanism
+
 #pragma once
 
 #include "sgxglyphgui_global.h"
