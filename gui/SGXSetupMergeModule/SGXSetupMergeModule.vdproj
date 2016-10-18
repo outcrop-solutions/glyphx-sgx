@@ -405,6 +405,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_228B658ECF954FDB89954C2599EDDAAF"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_22C9C18323884D74AE231E591D6277DA"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -556,6 +562,12 @@
         "Entry"
         {
         "MsmKey" = "8:_2FACC7E00B714516B7BA56FA6F2F6555"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_30057444C13B4AD9A8FF6C9F6770E26C"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -1126,6 +1138,12 @@
         "Entry"
         {
         "MsmKey" = "8:_64AF8BB8A4894EAC82D18BEDA158346C"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_6505965BDD8D44A2A60BE6F27DFE8C63"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -1929,6 +1947,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_A96E836FA3FB4C759A6907514AF033F4"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_A9DD5AC0BFF248F5884D541D0D99B536"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -2085,6 +2109,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_B7ABCBC82ACD40DBBBDBDB09D3CA9D82"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_B81D2D1223F54F7F855A717C4CB504D8"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -2235,6 +2265,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_C5A000A390CA45D9B550A2B399E2C99D"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_C5E755DB2C89416EB9DAAD56E4D35C4B"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -2289,6 +2325,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_CBE795AAD23D4099B18BB7B2F9387E35"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_CC3C0323FDE7439E951BCEB04A2941F1"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -2326,6 +2368,12 @@
         "Entry"
         {
         "MsmKey" = "8:_CF53102B2E4440069F29BAABF3700D92"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_CFBFCB9D230A428496E5B01D44FFE653"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -2404,6 +2452,12 @@
         "Entry"
         {
         "MsmKey" = "8:_D8A723B20170448488EE0170A866C20A"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_D8DEDAE49DF440EFBB08E6956E04287C"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -2656,6 +2710,12 @@
         "Entry"
         {
         "MsmKey" = "8:_EE08675CA7224D5DAB45C9975EE11AEA"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_EE41D938512842D491EBC97D854287DE"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -4188,6 +4248,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_228B658ECF954FDB89954C2599EDDAAF"
+            {
+            "SourcePath" = "8:..\\..\\misc\\InstallerFiles\\textures\\compress-8.tga"
+            "TargetName" = "8:compress-8.tga"
+            "Tag" = "8:"
+            "Folder" = "8:_13F98FECA9A44B51A12303F30AF9DA70"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_22C9C18323884D74AE231E591D6277DA"
             {
             "SourcePath" = "8:..\\..\\DataEngine\\jdk\\jre\\lib\\management\\management.properties"
@@ -4654,6 +4734,26 @@
             "TargetName" = "8:Torus and 4 Spheres.sgt"
             "Tag" = "8:"
             "Folder" = "8:_B4E0754028D04DDF8AEE8716965EFFAF"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_30057444C13B4AD9A8FF6C9F6770E26C"
+            {
+            "SourcePath" = "8:..\\..\\misc\\InstallerFiles\\textures\\expand-8.tga"
+            "TargetName" = "8:expand-8.tga"
+            "Tag" = "8:"
+            "Folder" = "8:_13F98FECA9A44B51A12303F30AF9DA70"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -6534,6 +6634,26 @@
             "TargetName" = "8:win32_CopyNoDrop32x32.gif"
             "Tag" = "8:"
             "Folder" = "8:_5410669315EF4FCD9EED21777A64546B"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_6505965BDD8D44A2A60BE6F27DFE8C63"
+            {
+            "SourcePath" = "8:..\\..\\misc\\InstallerFiles\\textures\\expand-64.tga"
+            "TargetName" = "8:expand-64.tga"
+            "Tag" = "8:"
+            "Folder" = "8:_13F98FECA9A44B51A12303F30AF9DA70"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -9068,6 +9188,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_A96E836FA3FB4C759A6907514AF033F4"
+            {
+            "SourcePath" = "8:..\\..\\misc\\InstallerFiles\\textures\\compress-64.tga"
+            "TargetName" = "8:compress-64.tga"
+            "Tag" = "8:"
+            "Folder" = "8:_13F98FECA9A44B51A12303F30AF9DA70"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_A9DD5AC0BFF248F5884D541D0D99B536"
             {
             "SourcePath" = "8:..\\..\\DataEngine\\jdk\\jre\\lib\\logging.properties"
@@ -9554,6 +9694,26 @@
             "TargetName" = "8:JavaAccessBridge-32.dll"
             "Tag" = "8:"
             "Folder" = "8:_36F1FCC38D7848FBA6A0FE803EBD0AFB"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_B7ABCBC82ACD40DBBBDBDB09D3CA9D82"
+            {
+            "SourcePath" = "8:..\\..\\misc\\InstallerFiles\\textures\\compress-4.tga"
+            "TargetName" = "8:compress-4.tga"
+            "Tag" = "8:"
+            "Folder" = "8:_13F98FECA9A44B51A12303F30AF9DA70"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -10068,6 +10228,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_C5A000A390CA45D9B550A2B399E2C99D"
+            {
+            "SourcePath" = "8:..\\..\\misc\\InstallerFiles\\textures\\compress-32.tga"
+            "TargetName" = "8:compress-32.tga"
+            "Tag" = "8:"
+            "Folder" = "8:_13F98FECA9A44B51A12303F30AF9DA70"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_C5E755DB2C89416EB9DAAD56E4D35C4B"
             {
             "SourcePath" = "8:..\\..\\DataEngine\\jdk\\jre\\lib\\security\\cacerts"
@@ -10248,6 +10428,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_CBE795AAD23D4099B18BB7B2F9387E35"
+            {
+            "SourcePath" = "8:..\\..\\misc\\InstallerFiles\\textures\\expand-32.tga"
+            "TargetName" = "8:expand-32.tga"
+            "Tag" = "8:"
+            "Folder" = "8:_13F98FECA9A44B51A12303F30AF9DA70"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_CC3C0323FDE7439E951BCEB04A2941F1"
             {
             "SourcePath" = "8:..\\..\\DataEngine\\jdk\\jre\\lib\\ext\\access-bridge-32.jar"
@@ -10374,6 +10574,26 @@
             "TargetName" = "8:t_icon.jpg"
             "Tag" = "8:"
             "Folder" = "8:_E15693EAFAD340DB9B5348F69EE42D1E"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_CFBFCB9D230A428496E5B01D44FFE653"
+            {
+            "SourcePath" = "8:..\\..\\misc\\InstallerFiles\\textures\\expand-16.tga"
+            "TargetName" = "8:expand-16.tga"
+            "Tag" = "8:"
+            "Folder" = "8:_13F98FECA9A44B51A12303F30AF9DA70"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -10614,6 +10834,26 @@
             "TargetName" = "8:home.jpg"
             "Tag" = "8:"
             "Folder" = "8:_44B0D0803FFE4C72A3F75A1AD8DF9E7E"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_D8DEDAE49DF440EFBB08E6956E04287C"
+            {
+            "SourcePath" = "8:..\\..\\misc\\InstallerFiles\\textures\\expand-4.tga"
+            "TargetName" = "8:expand-4.tga"
+            "Tag" = "8:"
+            "Folder" = "8:_13F98FECA9A44B51A12303F30AF9DA70"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -11408,6 +11648,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_EE41D938512842D491EBC97D854287DE"
+            {
+            "SourcePath" = "8:..\\..\\misc\\InstallerFiles\\textures\\compress-16.tga"
+            "TargetName" = "8:compress-16.tga"
+            "Tag" = "8:"
+            "Folder" = "8:_13F98FECA9A44B51A12303F30AF9DA70"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_EF72CE7DC56148028B379DFCC15DDC02"
             {
             "SourcePath" = "8:..\\..\\3rdparty\\tools\\Qt\\win32\\qt_plugins\\bearer\\qgenericbearer.dll"
@@ -11993,6 +12253,17 @@
                     "Condition" = "8:"
                     "Transitive" = "11:FALSE"
                     "Property" = "8:_C52BEE5F60704779B53E277C9B65BF84"
+                        "Folders"
+                        {
+                        }
+                    }
+                    "{9EF0B969-E518-4E46-987F-47570745A589}:_13F98FECA9A44B51A12303F30AF9DA70"
+                    {
+                    "Name" = "8:textures"
+                    "AlwaysCreate" = "11:FALSE"
+                    "Condition" = "8:"
+                    "Transitive" = "11:FALSE"
+                    "Property" = "8:_19997C3D38344757875FDA6DF45B364D"
                         "Folders"
                         {
                         }
@@ -12780,7 +13051,7 @@
         "Module"
         {
         "ModuleSignature" = "8:MergeModule.E7BC5B0DA8E84115B456FD393FF63EDE"
-        "Version" = "8:0.8.02.1"
+        "Version" = "8:0.8.03.0"
         "Title" = "8:SGXSetupMergeModule"
         "Subject" = "8:"
         "Author" = "8:SynGlyphX"

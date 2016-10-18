@@ -15,6 +15,12 @@
     {
         "Entry"
         {
+        "MsmKey" = "8:_4E6AE60F6660411E802032D4E711CE2D"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_50C932370F0B49CFBE53A1805CB781B3"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -112,6 +118,26 @@
         }
         "File"
         {
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_4E6AE60F6660411E802032D4E711CE2D"
+            {
+            "SourcePath" = "8:..\\..\\gui\\SGXGUI\\Resources\\GlyphEd\\glyphed_logo_white_border.png"
+            "TargetName" = "8:logo.png"
+            "Tag" = "8:"
+            "Folder" = "8:_3EBB05623BD94F01BDFB4FE853943B10"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_7E454F2EC4924A92A59E8B36D6C31597"
             {
             "SourcePath" = "8:..\\..\\misc\\InstallerFiles\\Images\\synglyphx_x_ED.ico"
@@ -193,6 +219,17 @@
             "Property" = "8:NEWRETARGETABLEPROPERTY1"
                 "Folders"
                 {
+                    "{9EF0B969-E518-4E46-987F-47570745A589}:_3EBB05623BD94F01BDFB4FE853943B10"
+                    {
+                    "Name" = "8:textures"
+                    "AlwaysCreate" = "11:FALSE"
+                    "Condition" = "8:"
+                    "Transitive" = "11:FALSE"
+                    "Property" = "8:_38E276024B374EB7A937EEE896674439"
+                        "Folders"
+                        {
+                        }
+                    }
                     "{9EF0B969-E518-4E46-987F-47570745A589}:_3FBEFC8219C24FB9ACE61D490CA161DB"
                     {
                     "Name" = "8:GlyphEd"
@@ -283,7 +320,7 @@
         "Module"
         {
         "ModuleSignature" = "8:MergeModule.C0AFF3D49B1B4CD8BA400A9CC74CF7D2"
-        "Version" = "8:0.8.02.1"
+        "Version" = "8:0.8.03.0"
         "Title" = "8:GlyphEdMergeModule"
         "Subject" = "8:"
         "Author" = "8:Default Company Name"

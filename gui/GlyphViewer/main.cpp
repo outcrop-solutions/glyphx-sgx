@@ -74,7 +74,7 @@ int main(int argc, char *argv[])
 	fmt.setStereo( true );*/
 	QSurfaceFormat::setDefaultFormat( fmt );
     
-	SynGlyphX::GlyphBuilderApplication::Setup("Glyph Builder - Glyph Viewer", "0.8.02.1");
+	SynGlyphX::GlyphBuilderApplication::Setup("Glyph Builder - Glyph Viewer", "0.8.03.0");
 	SynGlyphX::GlyphBuilderApplication a(argc, argv);
 	if (SynGlyphX::GlyphBuilderApplication::IsGlyphEd()) {
 

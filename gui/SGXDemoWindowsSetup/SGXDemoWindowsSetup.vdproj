@@ -283,15 +283,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Glyph Builder (TM) - Demo"
-        "ProductCode" = "8:{95825E9B-F4FC-4236-AC61-8AE40BFFACF6}"
-        "PackageCode" = "8:{87847F5C-F561-4DFC-8D32-8B726066D36B}"
+        "ProductCode" = "8:{9D0C9752-E06D-44C7-B4F6-A06B9C0BBA76}"
+        "PackageCode" = "8:{C1177341-75CD-4EDB-8A71-FA941C20F177}"
         "UpgradeCode" = "8:{90B43CC1-6138-4D95-874C-EA2D43F5C3D6}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:FALSE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:0.8.00"
+        "ProductVersion" = "8:0.8.0030"
         "Manufacturer" = "8:SynGlyphX"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:http://www.synglyphx.com"
@@ -936,7 +936,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_36A79E10DFE7424BB9983085A3CD32DD"
             {
-            "SourcePath" = "8:..\\SGXGlyphITMergeModule\\Debug\\SGXGlyphITMergeModule.msm"
+            "SourcePath" = "8:..\\SGXGlyphITMergeModule\\Release\\SGXGlyphITMergeModule.msm"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_E711DD252EE3431A99BEF26088DA511D"
