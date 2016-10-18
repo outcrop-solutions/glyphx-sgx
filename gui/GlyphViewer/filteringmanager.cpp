@@ -290,13 +290,14 @@ void FilteringManager::UpdateGlyphIndexedFilterResults() {
 				newfilterResultsIndexedToGlyphs.insert(row + min);
 			}
 		}
-		else {
+		//Uncomment if it is decided to show other tables when a filter operates only on one table
+		/*else {
 
 			for (unsigned long i = min; i < static_cast<unsigned int>(tableRange.value().GetMax()); ++i) {
 
 				newfilterResultsIndexedToGlyphs.insert(i);
 			}
-		}
+		}*/
 	}
 
 	if (newfilterResultsIndexedToGlyphs != m_filterResultsIndexedToGlyphs) {
