@@ -6,6 +6,7 @@
 #include "ref_counted.h"
 #include "effect.h"
 #include "../vertex_format.h"
+#include <string>
 #include <unordered_map>
 
 #include <ft2build.h>

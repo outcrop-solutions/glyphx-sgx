@@ -92,17 +92,17 @@ namespace SynGlyphX
 				for ( unsigned int i = 0; i < mesh->mNumVertices; ++i )
 				{
 					unsigned char* vert_base = &meshdata[i * vertex_size];
-					memcpy_s( vert_base + pos_offset, vertex_size, &verts[i].x, float_size * 3 );
+					memcpy( vert_base + pos_offset, &verts[i].x, float_size * 3 );
 					if ( uv )
-						memcpy_s( vert_base + uv_offset, vertex_size, &uv[i].x, float_size * 2 );
+						memcpy( vert_base + uv_offset, &uv[i].x, float_size * 2 );
 					if ( colors )
-						memcpy_s( vert_base + color_offset, vertex_size, &colors[i].r, float_size * 4 );
+						memcpy( vert_base + color_offset, &colors[i].r, float_size * 4 );
 					if ( normals )
-						memcpy_s( vert_base + normal_offset, vertex_size, &normals[i].x, float_size * 3 );
+						memcpy( vert_base + normal_offset, &normals[i].x, float_size * 3 );
 					if ( bitangents )
-						memcpy_s( vert_base + bitangent_offset, vertex_size, &bitangents[i].x, float_size * 3 );
+						memcpy( vert_base + bitangent_offset, &bitangents[i].x, float_size * 3 );
 					if ( tangents )
-						memcpy_s( vert_base + tangent_offset, vertex_size, &tangents[i].x, float_size * 3 );
+						memcpy( vert_base + tangent_offset, &tangents[i].x, float_size * 3 );
 				}
 
 				bound = sphere_bound::from_points( reinterpret_cast<glm::vec3*>( &meshdata[0] ), vertex_size, vertex_count );

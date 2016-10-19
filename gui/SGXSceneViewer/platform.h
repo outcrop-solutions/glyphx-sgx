@@ -1,9 +1,8 @@
 
 #pragma once
 
-#include <QtCore/qglobal.h>
-
 #ifdef WIN32
+#include <QtCore/qglobal.h>
 #define WIN32_LEAN_AND_MEAN
 #define NOMINMAX
 #include <Windows.h>

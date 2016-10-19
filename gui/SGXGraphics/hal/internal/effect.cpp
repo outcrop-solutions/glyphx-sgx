@@ -291,7 +291,7 @@ namespace SynGlyphX
 							return;
 						}
 						glGetActiveUniformsiv( _program, 1, &index, GL_UNIFORM_OFFSET, &offset );
-						memcpy_s( block.backing_buffer + offset, size, data, size );
+						memcpy( block.backing_buffer + offset, data, size );
 						block.dirty = true;
 						check_errors();
 					}
@@ -318,7 +318,7 @@ namespace SynGlyphX
 					if ( !block.external )
 					{
 						assert( size <= size_t( block.size ) );
-						memcpy_s( block.backing_buffer, block.size, data, size );
+						memcpy( block.backing_buffer, data, size );
 						block.dirty = true;
 					}
 					else

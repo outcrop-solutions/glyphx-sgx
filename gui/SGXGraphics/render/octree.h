@@ -4,7 +4,10 @@
 #include "../platform.h"
 #include <functional>
 #include <stack>
+#include <vector>
 #include <glm/glm.hpp>
+#include "hal/debug.h"
+#include "render/bounds.h"
 
 namespace SynGlyphX
 {

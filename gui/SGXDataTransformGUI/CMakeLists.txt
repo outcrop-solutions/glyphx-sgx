@@ -3,6 +3,8 @@ CMAKE_MINIMUM_REQUIRED(VERSION 3.1.3)
 INCLUDE_DIRECTORIES(BEFORE  ${Boost_INCLUDE_DIRS}
 							${STLPLUS_INCLUDE_DIR}
 							${GLM_INCLUDE_DIR}
+							../../GUI/SGXGraphics
+							../../GUI/SGXSceneViewer
 							../../GUI/SGXGUI
 							../../GUI/SGXGlyphGUI
 							../../Core/SGXImage
@@ -33,8 +35,10 @@ TARGET_LINK_LIBRARIES(SGXDataTransformGUI ${Boost_LIBRARIES}
 							  DataEngine
 							  SGXImage 
 							  SGXUtility 
+							  SGXGraphics
 							  SGXGUI 
 							  SGXGlyphGUI
+							  SGXSceneViewer
 							  SGXFoundation
 							  SGXDataMapping)
 							 

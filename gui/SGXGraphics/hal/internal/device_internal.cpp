@@ -263,10 +263,10 @@ namespace SynGlyphX
 			if ( support_readback )
 			{
 				m->vertex_data_copy = new char[vertex_data_size];
-				memcpy_s( m->vertex_data_copy, vertex_data_size, vertices, vertex_data_size );
+				memcpy( m->vertex_data_copy, vertices, vertex_data_size );
 
 				m->index_data_copy = new char[index_data_size];
-				memcpy_s( m->index_data_copy, index_data_size, indices, index_data_size );
+				memcpy( m->index_data_copy, indices, index_data_size );
 			}
 			else
 			{
@@ -288,7 +288,7 @@ namespace SynGlyphX
 			char* zeroes = new char[size];
 			memset( zeroes, 0, size );
 			glBufferData( GL_UNIFORM_BUFFER, size, zeroes, GL_DYNAMIC_DRAW );
-			delete zeroes;
+			delete[] zeroes;
 			glBindBuffer( GL_UNIFORM_BUFFER, 0 );
 			return c;
 		}

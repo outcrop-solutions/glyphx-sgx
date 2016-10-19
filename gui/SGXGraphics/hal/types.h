@@ -115,7 +115,7 @@ namespace SynGlyphX
 
 		struct pixel_rect
 		{
-			int x, y, w, h;
+			unsigned int x, y, w, h;
 		};
 	}
 }

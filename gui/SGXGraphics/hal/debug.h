@@ -6,6 +6,10 @@
 
 // #define HAL_BREAK_ON_ASSERT
 
+#ifndef UNREFERENCED_PARAMETER
+#define UNREFERENCED_PARAMETER(P) (P)
+#endif
+
 namespace SynGlyphX
 {
 	namespace hal

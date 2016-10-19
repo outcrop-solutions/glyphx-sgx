@@ -2,6 +2,7 @@
 #include "torus_generator.h"
 #include <hal/hal.h>
 #include <hal/debug.h>
+#include <glm/gtc/constants.hpp>
 #include "model.h"
 
 namespace SynGlyphX
