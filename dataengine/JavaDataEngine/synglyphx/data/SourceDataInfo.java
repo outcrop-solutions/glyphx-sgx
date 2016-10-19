@@ -3,6 +3,7 @@ package synglyphx.data;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
+import synglyphx.util.Grid;
 import synglyphx.jdbc.driver.Driver;
 
 public class SourceDataInfo {
@@ -29,6 +30,7 @@ public class SourceDataInfo {
  	private ArrayList<String> percentRankFields = null;
  	private ArrayList<String> boundFields = null;
  	private Driver tempDriver = null;
+ 	private Grid grid = null;
  	//private ArrayList<String> inputFields;
 
  	public SourceDataInfo(){
@@ -49,6 +51,12 @@ public class SourceDataInfo {
  			percentRankFields = new ArrayList<String>();
  		}
  		this.hasPercentRank = true;
+ 	}
+
+ 	public void setupGrid(String heading){
+ 		if(this.grid == null && data != null){
+ 			this.grid = new Grid(data.getColumn(heading));
+ 		}
  	}
 
  	public void setDriver(Driver driver){
@@ -232,6 +240,10 @@ public class SourceDataInfo {
 
  	public String getID(){
  		return id;
+ 	}
+
+ 	public Grid getGrid(){
+ 		return grid;
  	}
 /*
  	public ArrayList<String> getInputFields(){

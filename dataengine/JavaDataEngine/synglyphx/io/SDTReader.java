@@ -424,6 +424,9 @@ public class SDTReader {
 									System.out.println("Percent Rank found "+dataPaths.get(temp.getDataSource()).hasPercentRank());
 									dataPaths.get(temp.getDataSource()).addPercentRankField(directMap.get(code));
 								}
+								else if(getFunction(element).equals("Grid")){
+									dataPaths.get(temp.getDataSource()).setupGrid(directMap.get(code));
+								}
 								else{
 									checkForFunctionMinMax(temp, element);
 								}

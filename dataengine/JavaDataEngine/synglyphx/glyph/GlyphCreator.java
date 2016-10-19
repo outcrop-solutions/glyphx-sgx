@@ -183,6 +183,11 @@ public class GlyphCreator {
 				System.out.println(cursor.get(input.get(fieldNames.get(i)))+": "+Functions.linearInterpolation(0,1,y1,y3,x2));
 				setValues.put(fieldNames.get(i), Functions.linearInterpolation(0,1,y1,y3,x2));
 			}
+			else if(functions.get(fieldNames.get(i)).equals("Grid")){
+				double y1 = ranges.get(fieldNames.get(i)).get(0);
+				double y3 = ranges.get(fieldNames.get(i)).get(1);
+				setValues.put(fieldNames.get(i), csvData.get(currData).getGrid().getPointValue(fieldNames.get(i), y1, y3, cursor.getCurrentIndex()));
+			}
 			else if(functions.get(fieldNames.get(i)).equals("Numeric Field To Value")){
 				setValues.put(fieldNames.get(i), Functions.numericToValue(Double.parseDouble(cursor.get(input.get(fieldNames.get(i)))),nodeTemp.getKeyValueMap().get(fieldNames.get(i))));
 			}
