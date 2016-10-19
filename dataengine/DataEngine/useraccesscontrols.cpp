@@ -118,20 +118,6 @@ namespace DataEngine
 		return QString(jniEnv->GetStringUTFChars(itr, JNI_FALSE));
 	}
 
-	int UserAccessControls::InstitutionID(){
-		jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
-			"institutionID", "()I");
-		int id;
-		if (methodId != NULL) {
-			id = (jint)jniEnv->CallStaticObjectMethod(jcls, methodId);
-			if (jniEnv->ExceptionCheck()) {
-				jniEnv->ExceptionDescribe();
-				jniEnv->ExceptionClear();
-			}
-		}
-		return id;
-	}
-
 	QStringList UserAccessControls::VizualizationNames(){
 
 		if (valid == 2){

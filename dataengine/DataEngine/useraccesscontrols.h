@@ -52,7 +52,6 @@ namespace DataEngine
 		QString NameOfUser();
 		QString NameOfInstitution();
 		QString LastModified();
-		int InstitutionID();
 		QStringList VizualizationNames();
 		int FileSyncSetup(QString path);
 		int VisualizationsToSync();
