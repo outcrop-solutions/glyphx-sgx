@@ -33,7 +33,7 @@ public:
 
 protected:
 	SynGlyphX::IndexSet GetSourceIndexesForTable(const QString& table) override;
-	bool DoesEmptyFilterShowAll() const override { return true; }
+	bool DoesEmptyFilterShowAll() const override { return m_filteringManager->GetFilterResultsByTable().empty(); }
 
 private:
 	FilteringManager* m_filteringManager;

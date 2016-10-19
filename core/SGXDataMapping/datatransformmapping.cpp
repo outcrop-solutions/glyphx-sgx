@@ -1070,11 +1070,14 @@ namespace SynGlyphX {
 		return missingImages;
 	}
 
-	DataTransformMapping::ConstSharedPtr DataTransformMapping::CreateSubsetMappingWithSingleTable(const InputTable& inputTable, const std::wstring& csvFilename) const {
+	DataTransformMapping::ConstSharedPtr DataTransformMapping::CreateSubsetMapping(const std::unordered_map<InputTable, std::wstring, InputTableHash>& inputTableToFileMap) const {
 
-		if (!HasDatasourceWithId(inputTable.GetDatasourceID())) {
+		for (const auto& inputTable : inputTableToFileMap) {
 
-			throw std::runtime_error("Can't create subset of mapping with a datasource ID that does not exist in the mapping.");
+			if (!HasDatasourceWithId(inputTable.first.GetDatasourceID())) {
+
+				throw std::runtime_error("Can't create subset of mapping with a datasource ID that does not exist in the mapping.");
+			}
 		}
 
 		SharedPtr subsetMapping(new DataTransformMapping());
@@ -1091,35 +1094,47 @@ namespace SynGlyphX {
 			subsetMapping->AddBaseObject(baseImage);
 		}
 
-		SynGlyphX::FileDatasource newDatasource(FileDatasource::FileType::CSV, csvFilename);
-		boost::uuids::uuid datasourceID = subsetMapping->AddFileDatasource(newDatasource);
+		std::unordered_map<InputTable, std::unordered_map<std::wstring, std::wstring>, InputTableHash> oldToNewFieldIDMap;
+		std::unordered_map<InputTable, boost::uuids::uuid, InputTableHash> table2DatasourceIDMap;
+		for (const auto& inputTable : inputTableToFileMap) {
+		
+			SynGlyphX::FileDatasource newDatasource(FileDatasource::FileType::CSV, inputTable.second);
+			table2DatasourceIDMap[inputTable.first] = subsetMapping->AddFileDatasource(newDatasource);
+			oldToNewFieldIDMap[inputTable.first] = std::unordered_map<std::wstring, std::wstring>();
+		}
 
 		InputFieldManager* newInputFieldManager = subsetMapping->GetInputFieldManager();
-		std::unordered_map<std::wstring, std::wstring> oldToNewFieldIDMap;
+		
 		for (const auto& field : m_inputFieldManager.GetFieldMap()) {
 
-			InputField newInputField(datasourceID, FileDatasource::SingleTableName, field.second.GetField(), field.second.GetType());
-			if (field.first[0] == '~') {
+			InputTable inputTable(field.second);
+			if (table2DatasourceIDMap.count(inputTable) > 0) {
 
-				std::wstring newFieldID = newInputFieldManager->GenerateInputFieldID(newInputField);
-				newInputFieldManager->SetInputField(newFieldID, newInputField);
-				oldToNewFieldIDMap[field.first] = newFieldID;
-			}
-			else {
+				InputField newInputField(table2DatasourceIDMap.at(inputTable), FileDatasource::SingleTableName, field.second.GetField(), field.second.GetType());
+				if (field.first[0] == '~') {
 
-				newInputFieldManager->SetInputField(field.first, newInputField);
-				oldToNewFieldIDMap[field.first] = field.first;
+					std::wstring newFieldID = newInputFieldManager->GenerateInputFieldID(newInputField);
+					newInputFieldManager->SetInputField(newFieldID, newInputField);
+					oldToNewFieldIDMap.at(inputTable)[field.first] = newFieldID;
+				}
+				else {
+
+					newInputFieldManager->SetInputField(field.first, newInputField);
+					oldToNewFieldIDMap.at(inputTable)[field.first] = field.first;
+				}
 			}
 		}
 
 		for (auto fieldGroupPair : m_fieldGroups) {
 
-			if (inputTable == *fieldGroupPair.second.begin()) {
+			InputTable inputTable = *fieldGroupPair.second.begin();
+
+			if (inputTableToFileMap.count(inputTable) > 0) {
 
 				FieldGroup fieldGroup;
 				for (auto field : fieldGroupPair.second) {
 
-					fieldGroup.insert(InputField(datasourceID, FileDatasource::SingleTableName, field.GetField(), field.GetType()));
+					fieldGroup.insert(InputField(table2DatasourceIDMap.at(inputTable), FileDatasource::SingleTableName, field.GetField(), field.GetType()));
 				}
 
 				subsetMapping->UpdateFieldGroup(fieldGroupPair.first, fieldGroup);
@@ -1128,20 +1143,31 @@ namespace SynGlyphX {
 
 		for (auto glyphGraphPair : m_glyphTrees) {
 
-			if (inputTable == GetInputTable(glyphGraphPair.first)) {
+			InputTable inputTable = GetInputTable(glyphGraphPair.first);
+
+			if (inputTableToFileMap.count(inputTable) > 0) {
 
 				DataMappingGlyphGraph::SharedPtr glyphGraph(new DataMappingGlyphGraph(*glyphGraphPair.second.get()));
-				CopyInputBindingsForSubsetMapping(glyphGraph, glyphGraph->GetRoot(), oldToNewFieldIDMap);
+				CopyInputBindingsForSubsetMapping(glyphGraph, glyphGraph->GetRoot(), oldToNewFieldIDMap.at(inputTable));
 
 				subsetMapping->AddGlyphTree(glyphGraphPair.first, glyphGraph);
 			}
 		}
 
-		subsetMapping->m_links = m_links;
-		for (auto& link : subsetMapping->m_links) {
+		for (const auto& link : m_links) {
 
-			link.m_start.m_inputFieldId = oldToNewFieldIDMap[link.m_start.m_inputFieldId];
-			link.m_end.m_inputFieldId = oldToNewFieldIDMap[link.m_end.m_inputFieldId];
+			InputTable startInputTable = GetInputTable(link.m_start.m_treeId);
+			InputTable endInputTable = GetInputTable(link.m_end.m_treeId);
+
+			if ((inputTableToFileMap.count(startInputTable) > 0) && (inputTableToFileMap.count(endInputTable) > 0)) {
+
+				Link newLink(link);
+
+				newLink.m_start.m_inputFieldId = oldToNewFieldIDMap.at(startInputTable)[link.m_start.m_inputFieldId];
+				newLink.m_end.m_inputFieldId = oldToNewFieldIDMap.at(endInputTable)[link.m_end.m_inputFieldId];
+
+				subsetMapping->m_links.push_back(newLink);
+			}
 		}
 
 		return subsetMapping;

@@ -150,7 +150,7 @@ namespace SynGlyphX {
 		std::vector<unsigned int> GetFileBaseObjectsWithInvalidFiles() const;
 		std::vector<unsigned int> GetLegendsWithInvalidFiles() const;
 
-		ConstSharedPtr CreateSubsetMappingWithSingleTable(const InputTable& inputTable, const std::wstring& csvFilename) const;
+		ConstSharedPtr CreateSubsetMapping(const std::unordered_map<InputTable, std::wstring, InputTableHash>& inputTableToFileMap) const;
 
 		void AddLegend(const Legend& legend);
 		void RemoveLegend(unsigned int index);

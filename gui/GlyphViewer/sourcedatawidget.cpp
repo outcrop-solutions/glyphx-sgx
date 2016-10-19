@@ -35,7 +35,7 @@ SourceDataWidget::SourceDataWidget(SourceDataCache::ConstSharedPtr sourceDataCac
 	buttonsLayout->addWidget(saveButton);
 	QObject::connect(saveButton, &QPushButton::clicked, this, &SourceDataWidget::SaveCurrentTabToFile);
 
-	QPushButton* createVizButton = new QPushButton(tr("Create Visualization From Current Tab"), this);
+	QPushButton* createVizButton = new QPushButton(tr("Create Visualization"), this);
 	buttonsLayout->addWidget(createVizButton);
 	QObject::connect(createVizButton, &QPushButton::clicked, this, &SourceDataWidget::CreateSubsetVisualization);
 
@@ -272,9 +272,20 @@ void SourceDataWidget::CreateSubsetVisualization() {
 			QFileInfo fileInfo(sdtFilename);
 			QString stdCanonicalPath = QDir::toNativeSeparators(fileInfo.absolutePath());
 
-			QString csvFileLocation = stdCanonicalPath + QDir::separator() + fileInfo.baseName() + "_selectedsourcedata.csv";
-			WriteToFile(dynamic_cast<QTableView*>(m_sourceDataTabs->currentWidget()), csvFileLocation);
-			SynGlyphX::DataTransformMapping::ConstSharedPtr subsetDataMapping = m_dataTransformMapping->CreateSubsetMappingWithSingleTable(m_tableInfoMap[m_sourceDataTabs->currentWidget()->objectName()], csvFileLocation.toStdWString());
+			QString csvFileDir = stdCanonicalPath + QDir::separator() + fileInfo.baseName() + "_data" + QDir::separator();
+			if (!QDir().mkpath(csvFileDir)) {
+
+				throw std::runtime_error("Failed to create directory for data files.");
+			}
+			std::unordered_map<SynGlyphX::InputTable, std::wstring, SynGlyphX::InputTableHash> inputTableToCSVMap;
+			for (unsigned int i = 0; i < m_sourceDataTabs->count(); ++i) {
+
+				QString csvFile = csvFileDir + "data" + QString::number(i) + ".csv";
+				WriteToFile(dynamic_cast<QTableView*>(m_sourceDataTabs->widget(i)), csvFile);
+				inputTableToCSVMap[m_tableInfoMap[m_sourceDataTabs->widget(i)->objectName()]] = csvFile.toStdWString();
+			}
+			
+			SynGlyphX::DataTransformMapping::ConstSharedPtr subsetDataMapping = m_dataTransformMapping->CreateSubsetMapping(inputTableToCSVMap);
 			subsetDataMapping->WriteToFile(sdtFilename.toStdString());
 			
 			settings.setValue("vizSaveDir", stdCanonicalPath);
