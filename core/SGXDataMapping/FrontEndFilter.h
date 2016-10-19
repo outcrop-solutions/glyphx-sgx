@@ -17,7 +17,6 @@
 #include "sgxdatamapping.h"
 #include <unordered_map>
 #include "inputfield.h"
-#include "InsertionOrderMap.h"
 
 namespace SynGlyphX {
 
