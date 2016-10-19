@@ -159,7 +159,7 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_0D86D0C4D34B4A9D9301D4AB50FD16CF"
+        "MsmKey" = "8:_0CD48956E118468F8E9D2AD32FDB4053"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -447,6 +447,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_23F1E74969EF4FBEBCC82F147B6CE949"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_24DCFDB5976749F99B3106276FE580C2"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -495,12 +501,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_2779DEE5C23B4E92B9BBE049192C9224"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_27CED914798745429C477BDAEA4D2F8C"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -531,12 +531,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_2B7031FB1CC24E818F1B60B81D55E550"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_2C171188B49A459AA1953A9FF10C000B"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -550,6 +544,12 @@
         "Entry"
         {
         "MsmKey" = "8:_2CBCD6CDDBF342C7AEB59091937DDEE3"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_2D1D9A747FB844D7823A2870ADDEDE29"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -610,12 +610,6 @@
         "Entry"
         {
         "MsmKey" = "8:_347DBC76B9CF48E48243DD8A335CBD68"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_353E0ECEFC0E441E9C8BCAD1B4E7E9B7"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -717,6 +711,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_3FC60C6AD1F04F3C92EF515078A8D0D5"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_4061CA281E1347C19705E451F49B87D2"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -777,13 +777,13 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_47A60C20F2024B4F9803D2A639203732"
+        "MsmKey" = "8:_47CEE8A262984DC097B91DB68FF23547"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_47CEE8A262984DC097B91DB68FF23547"
+        "MsmKey" = "8:_47FA3EEC17E04B9D86D5CC9CB47A32F2"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -814,6 +814,12 @@
         "Entry"
         {
         "MsmKey" = "8:_4A8A92C519024CF484AA55DA44B53246"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_4A98979E353C4DDBBF26D7840DC97FFA"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -903,12 +909,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_531175D52E364DF4B772186585640EFB"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_53361B606A2E4669A5E9D2E9A45ABD4D"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -963,6 +963,18 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_56E5F22A8A944D6DA4DB780B3F602C88"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_58EF4B6D4DEE4213865CD13D8E72271A"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_599EC4DCBFB44D078F71E02BA9A6C316"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -988,6 +1000,12 @@
         "Entry"
         {
         "MsmKey" = "8:_5C392F7309EC49FF94122DC84D7A8DF8"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_5CBC111E9F9548D69C8B0CAA2AF54C33"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -1155,6 +1173,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_6514D86A6C8547ACAA6CA0EBD9613BA9"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_6572AEB1BB364D20A75E240583B02083"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -1269,12 +1293,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_6E43B96B8CE046B692C041BA001F83DA"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_6E72DB8F1AE94C9B8A517000D9DDE327"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -1366,6 +1384,12 @@
         "Entry"
         {
         "MsmKey" = "8:_75A88C067B8645B9AC22C07BE8E8BB72"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_75F5FFF7D599467A8A77BDBD2AE01B99"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -1599,6 +1623,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_89E23C0399BC42A59DAE53829FE28431"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_8B65F8BBAB5F45EA8A0F5E9D556EE092"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -1719,12 +1749,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_94D73B8DE1C34864AE079D9A9DF71D9C"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_9517B072812D45DC972098645B0A29D5"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -1761,7 +1785,7 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_9A6693BCEBB14B4AAB2584336D5F5ABA"
+        "MsmKey" = "8:_9A257867406A4521BB5E03ECAD817871"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -2037,6 +2061,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_B0F395831A964220925BC167BAF592BD"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_B12CBED416A4482CAE55AC75589B614F"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -2181,12 +2211,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_BDCA4FEECAD54971A39C45C2831EA5F3"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_BE620B3F16634BFEBC6887F8E72F5D7E"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -2194,12 +2218,6 @@
         "Entry"
         {
         "MsmKey" = "8:_BF8EBA040186448F97AD600B8BBFD07F"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_C0D0597103B1461CA653C9440BBE85DA"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -2284,6 +2302,12 @@
         "Entry"
         {
         "MsmKey" = "8:_C66248FF353845A993C6586EA6090206"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_C7406DF2B282476AA090424015F1110A"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -2397,6 +2421,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_D1D4F6216C6641BA8C9F80CBF0D7983D"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_D20D4A8C09C541DEA5A46625929A5A27"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -2475,12 +2505,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_D9FBF18829F44809A8163F3CDEEC9802"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_DA99C75AC68B455CB6DB3BCD7B785FDE"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -2506,6 +2530,12 @@
         "Entry"
         {
         "MsmKey" = "8:_DCA63652FD134989A89705456B925F35"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_DD85D4BF8E6545209BAC2B78D8E0D505"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -2565,13 +2595,13 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_E5C8824A4C3E4A5CA0577135A1BA700B"
+        "MsmKey" = "8:_E5A3B7EC3E084A78BAD53081B4FC4FC4"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_E6BCD218C8AE46E89B6AD8F71FC387B4"
+        "MsmKey" = "8:_E5C8824A4C3E4A5CA0577135A1BA700B"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -2662,12 +2692,6 @@
         "Entry"
         {
         "MsmKey" = "8:_EA47C9E6D8E94823B911A984A5349735"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_EA4CFBA98F5545AD945A5AA671ACB099"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -3428,10 +3452,10 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_0D86D0C4D34B4A9D9301D4AB50FD16CF"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_0CD48956E118468F8E9D2AD32FDB4053"
             {
-            "SourcePath" = "8:..\\..\\misc\\InstallerFiles\\shaders\\util.h"
-            "TargetName" = "8:util.h"
+            "SourcePath" = "8:..\\..\\misc\\InstallerFiles\\shaders\\drag_select.frag"
+            "TargetName" = "8:drag_select.frag"
             "Tag" = "8:"
             "Folder" = "8:_83BCC985F9784FDCB4C59B9F0452FAB1"
             "Condition" = "8:"
@@ -4388,6 +4412,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_23F1E74969EF4FBEBCC82F147B6CE949"
+            {
+            "SourcePath" = "8:..\\..\\misc\\InstallerFiles\\shaders\\texture.frag"
+            "TargetName" = "8:texture.frag"
+            "Tag" = "8:"
+            "Folder" = "8:_83BCC985F9784FDCB4C59B9F0452FAB1"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_24DCFDB5976749F99B3106276FE580C2"
             {
             "SourcePath" = "8:..\\..\\Misc\\Help\\images\\updownarrows.png"
@@ -4528,26 +4572,6 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_2779DEE5C23B4E92B9BBE049192C9224"
-            {
-            "SourcePath" = "8:..\\..\\misc\\InstallerFiles\\shaders\\glyph.frag"
-            "TargetName" = "8:glyph.frag"
-            "Tag" = "8:"
-            "Folder" = "8:_83BCC985F9784FDCB4C59B9F0452FAB1"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_27CED914798745429C477BDAEA4D2F8C"
             {
             "SourcePath" = "8:..\\..\\ANTzPlus\\ANTzMacTemplate\\release_2014-06-29.txt"
@@ -4648,26 +4672,6 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_2B7031FB1CC24E818F1B60B81D55E550"
-            {
-            "SourcePath" = "8:..\\..\\misc\\InstallerFiles\\shaders\\solid.frag"
-            "TargetName" = "8:solid.frag"
-            "Tag" = "8:"
-            "Folder" = "8:_83BCC985F9784FDCB4C59B9F0452FAB1"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_2C171188B49A459AA1953A9FF10C000B"
             {
             "SourcePath" = "8:..\\..\\Misc\\Help\\images\\homeheader.jpg"
@@ -4714,6 +4718,26 @@
             "TargetName" = "8:npt.dll"
             "Tag" = "8:"
             "Folder" = "8:_36F1FCC38D7848FBA6A0FE803EBD0AFB"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_2D1D9A747FB844D7823A2870ADDEDE29"
+            {
+            "SourcePath" = "8:..\\..\\misc\\InstallerFiles\\shaders\\texture.vert"
+            "TargetName" = "8:texture.vert"
+            "Tag" = "8:"
+            "Folder" = "8:_83BCC985F9784FDCB4C59B9F0452FAB1"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -4894,26 +4918,6 @@
             "TargetName" = "8:Solar System.sgt"
             "Tag" = "8:"
             "Folder" = "8:_B4E0754028D04DDF8AEE8716965EFFAF"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_353E0ECEFC0E441E9C8BCAD1B4E7E9B7"
-            {
-            "SourcePath" = "8:..\\..\\misc\\InstallerFiles\\shaders\\texture.frag"
-            "TargetName" = "8:texture.frag"
-            "Tag" = "8:"
-            "Folder" = "8:_83BCC985F9784FDCB4C59B9F0452FAB1"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -5248,6 +5252,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_3FC60C6AD1F04F3C92EF515078A8D0D5"
+            {
+            "SourcePath" = "8:..\\..\\misc\\InstallerFiles\\shaders\\util.h"
+            "TargetName" = "8:util.h"
+            "Tag" = "8:"
+            "Folder" = "8:_83BCC985F9784FDCB4C59B9F0452FAB1"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_4061CA281E1347C19705E451F49B87D2"
             {
             "SourcePath" = "8:..\\..\\DataEngine\\jdk\\jre\\bin\\java_crw_demo.dll"
@@ -5448,12 +5472,12 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_47A60C20F2024B4F9803D2A639203732"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_47CEE8A262984DC097B91DB68FF23547"
             {
-            "SourcePath" = "8:..\\..\\misc\\InstallerFiles\\shaders\\glyph.vert"
-            "TargetName" = "8:glyph.vert"
+            "SourcePath" = "8:..\\..\\Misc\\Help\\images\\dynamicxyz.png"
+            "TargetName" = "8:dynamicxyz.png"
             "Tag" = "8:"
-            "Folder" = "8:_83BCC985F9784FDCB4C59B9F0452FAB1"
+            "Folder" = "8:_44B0D0803FFE4C72A3F75A1AD8DF9E7E"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -5468,12 +5492,12 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_47CEE8A262984DC097B91DB68FF23547"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_47FA3EEC17E04B9D86D5CC9CB47A32F2"
             {
-            "SourcePath" = "8:..\\..\\Misc\\Help\\images\\dynamicxyz.png"
-            "TargetName" = "8:dynamicxyz.png"
+            "SourcePath" = "8:..\\..\\misc\\InstallerFiles\\shaders\\line.vert"
+            "TargetName" = "8:line.vert"
             "Tag" = "8:"
-            "Folder" = "8:_44B0D0803FFE4C72A3F75A1AD8DF9E7E"
+            "Folder" = "8:_83BCC985F9784FDCB4C59B9F0452FAB1"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -5574,6 +5598,26 @@
             "TargetName" = "8:image027.png"
             "Tag" = "8:"
             "Folder" = "8:_44B0D0803FFE4C72A3F75A1AD8DF9E7E"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_4A98979E353C4DDBBF26D7840DC97FFA"
+            {
+            "SourcePath" = "8:..\\..\\misc\\InstallerFiles\\shaders\\gadget.vert"
+            "TargetName" = "8:gadget.vert"
+            "Tag" = "8:"
+            "Folder" = "8:_83BCC985F9784FDCB4C59B9F0452FAB1"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -5848,26 +5892,6 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_531175D52E364DF4B772186585640EFB"
-            {
-            "SourcePath" = "8:..\\..\\misc\\InstallerFiles\\shaders\\drag_select.frag"
-            "TargetName" = "8:drag_select.frag"
-            "Tag" = "8:"
-            "Folder" = "8:_83BCC985F9784FDCB4C59B9F0452FAB1"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_53361B606A2E4669A5E9D2E9A45ABD4D"
             {
             "SourcePath" = "8:..\\..\\DataEngine\\jdk\\jre\\bin\\management.dll"
@@ -6048,6 +6072,46 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_56E5F22A8A944D6DA4DB780B3F602C88"
+            {
+            "SourcePath" = "8:..\\..\\misc\\InstallerFiles\\shaders\\glyph.vert"
+            "TargetName" = "8:glyph.vert"
+            "Tag" = "8:"
+            "Folder" = "8:_83BCC985F9784FDCB4C59B9F0452FAB1"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_58EF4B6D4DEE4213865CD13D8E72271A"
+            {
+            "SourcePath" = "8:..\\..\\misc\\InstallerFiles\\shaders\\selection.frag"
+            "TargetName" = "8:selection.frag"
+            "Tag" = "8:"
+            "Folder" = "8:_83BCC985F9784FDCB4C59B9F0452FAB1"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_599EC4DCBFB44D078F71E02BA9A6C316"
             {
             "SourcePath" = "8:..\\..\\DataEngine\\JavaDataEngine\\database-drivers\\opencsv-3.7.jar"
@@ -6134,6 +6198,26 @@
             "TargetName" = "8:link_cube.dae"
             "Tag" = "8:"
             "Folder" = "8:_7036383F94E740348A496DA8D576AA5C"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_5CBC111E9F9548D69C8B0CAA2AF54C33"
+            {
+            "SourcePath" = "8:..\\..\\misc\\InstallerFiles\\shaders\\header.h"
+            "TargetName" = "8:header.h"
+            "Tag" = "8:"
+            "Folder" = "8:_83BCC985F9784FDCB4C59B9F0452FAB1"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -6688,6 +6772,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_6514D86A6C8547ACAA6CA0EBD9613BA9"
+            {
+            "SourcePath" = "8:..\\..\\misc\\InstallerFiles\\shaders\\gadget.frag"
+            "TargetName" = "8:gadget.frag"
+            "Tag" = "8:"
+            "Folder" = "8:_83BCC985F9784FDCB4C59B9F0452FAB1"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_6572AEB1BB364D20A75E240583B02083"
             {
             "SourcePath" = "8:..\\..\\DataEngine\\jdk\\jre\\lib\\jvm.hprof.txt"
@@ -7008,26 +7112,6 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_6E43B96B8CE046B692C041BA001F83DA"
-            {
-            "SourcePath" = "8:..\\..\\misc\\InstallerFiles\\shaders\\line.frag"
-            "TargetName" = "8:line.frag"
-            "Tag" = "8:"
-            "Folder" = "8:_83BCC985F9784FDCB4C59B9F0452FAB1"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_6E72DB8F1AE94C9B8A517000D9DDE327"
             {
             "SourcePath" = "8:..\\..\\DataEngine\\jdk\\jre\\lib\\deploy\\messages_ko.properties"
@@ -7334,6 +7418,26 @@
             "TargetName" = "8:plugin.jar"
             "Tag" = "8:"
             "Folder" = "8:_DEF6FEA099BF435B9C8EC59DED77C589"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_75F5FFF7D599467A8A77BDBD2AE01B99"
+            {
+            "SourcePath" = "8:..\\..\\misc\\InstallerFiles\\shaders\\drag_select.vert"
+            "TargetName" = "8:drag_select.vert"
+            "Tag" = "8:"
+            "Folder" = "8:_83BCC985F9784FDCB4C59B9F0452FAB1"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -8088,6 +8192,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_89E23C0399BC42A59DAE53829FE28431"
+            {
+            "SourcePath" = "8:..\\..\\misc\\InstallerFiles\\shaders\\glyph.frag"
+            "TargetName" = "8:glyph.frag"
+            "Tag" = "8:"
+            "Folder" = "8:_83BCC985F9784FDCB4C59B9F0452FAB1"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_8B65F8BBAB5F45EA8A0F5E9D556EE092"
             {
             "SourcePath" = "8:..\\..\\Misc\\Help\\pages\\Legends\\legend_cc.htm"
@@ -8468,26 +8592,6 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_94D73B8DE1C34864AE079D9A9DF71D9C"
-            {
-            "SourcePath" = "8:..\\..\\misc\\InstallerFiles\\shaders\\header.h"
-            "TargetName" = "8:header.h"
-            "Tag" = "8:"
-            "Folder" = "8:_83BCC985F9784FDCB4C59B9F0452FAB1"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_9517B072812D45DC972098645B0A29D5"
             {
             "SourcePath" = "8:..\\..\\Misc\\InstallerFiles\\DefaultBaseImages\\WorldGrayscale.png"
@@ -8608,10 +8712,10 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_9A6693BCEBB14B4AAB2584336D5F5ABA"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_9A257867406A4521BB5E03ECAD817871"
             {
-            "SourcePath" = "8:..\\..\\misc\\InstallerFiles\\shaders\\selection.frag"
-            "TargetName" = "8:selection.frag"
+            "SourcePath" = "8:..\\..\\misc\\InstallerFiles\\shaders\\gadget_bound.frag"
+            "TargetName" = "8:gadget_bound.frag"
             "Tag" = "8:"
             "Folder" = "8:_83BCC985F9784FDCB4C59B9F0452FAB1"
             "Condition" = "8:"
@@ -9488,6 +9592,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_B0F395831A964220925BC167BAF592BD"
+            {
+            "SourcePath" = "8:..\\..\\misc\\InstallerFiles\\shaders\\gadget_bound.vert"
+            "TargetName" = "8:gadget_bound.vert"
+            "Tag" = "8:"
+            "Folder" = "8:_83BCC985F9784FDCB4C59B9F0452FAB1"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_B12CBED416A4482CAE55AC75589B614F"
             {
             "SourcePath" = "8:..\\..\\DataEngine\\jdk\\jre\\bin\\jfr.dll"
@@ -9948,26 +10072,6 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_BDCA4FEECAD54971A39C45C2831EA5F3"
-            {
-            "SourcePath" = "8:..\\..\\misc\\InstallerFiles\\shaders\\texture.vert"
-            "TargetName" = "8:texture.vert"
-            "Tag" = "8:"
-            "Folder" = "8:_83BCC985F9784FDCB4C59B9F0452FAB1"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_BE620B3F16634BFEBC6887F8E72F5D7E"
             {
             "SourcePath" = "8:..\\..\\classes\\dataengine.jar"
@@ -9994,26 +10098,6 @@
             "TargetName" = "8:qsqlmysql.dll"
             "Tag" = "8:"
             "Folder" = "8:_DD9EE1F6F695490989F51B76AD23DC4D"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_C0D0597103B1461CA653C9440BBE85DA"
-            {
-            "SourcePath" = "8:..\\..\\misc\\InstallerFiles\\shaders\\line.vert"
-            "TargetName" = "8:line.vert"
-            "Tag" = "8:"
-            "Folder" = "8:_83BCC985F9784FDCB4C59B9F0452FAB1"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -10294,6 +10378,26 @@
             "TargetName" = "8:qtga.dll"
             "Tag" = "8:"
             "Folder" = "8:_7E19FBC6548E446FA427B3EC570C927A"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_C7406DF2B282476AA090424015F1110A"
+            {
+            "SourcePath" = "8:..\\..\\misc\\InstallerFiles\\shaders\\line.frag"
+            "TargetName" = "8:line.frag"
+            "Tag" = "8:"
+            "Folder" = "8:_83BCC985F9784FDCB4C59B9F0452FAB1"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -10668,6 +10772,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_D1D4F6216C6641BA8C9F80CBF0D7983D"
+            {
+            "SourcePath" = "8:..\\..\\misc\\InstallerFiles\\shaders\\solid.frag"
+            "TargetName" = "8:solid.frag"
+            "Tag" = "8:"
+            "Folder" = "8:_83BCC985F9784FDCB4C59B9F0452FAB1"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_D20D4A8C09C541DEA5A46625929A5A27"
             {
             "SourcePath" = "8:..\\..\\DataEngine\\jdk\\jre\\bin\\eula.dll"
@@ -10908,26 +11032,6 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_D9FBF18829F44809A8163F3CDEEC9802"
-            {
-            "SourcePath" = "8:..\\..\\misc\\InstallerFiles\\shaders\\selection.vert"
-            "TargetName" = "8:selection.vert"
-            "Tag" = "8:"
-            "Folder" = "8:_83BCC985F9784FDCB4C59B9F0452FAB1"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_DA99C75AC68B455CB6DB3BCD7B785FDE"
             {
             "SourcePath" = "8:..\\..\\DataEngine\\jdk\\jre\\bin\\java-rmi.exe"
@@ -10994,6 +11098,26 @@
             "TargetName" = "8:Qt5Quick.dll"
             "Tag" = "8:"
             "Folder" = "8:_0FD992B69CC74D489682A631FA99B364"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_DD85D4BF8E6545209BAC2B78D8E0D505"
+            {
+            "SourcePath" = "8:..\\..\\misc\\InstallerFiles\\shaders\\solid.vert"
+            "TargetName" = "8:solid.vert"
+            "Tag" = "8:"
+            "Folder" = "8:_83BCC985F9784FDCB4C59B9F0452FAB1"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -11188,12 +11312,12 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_E5C8824A4C3E4A5CA0577135A1BA700B"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_E5A3B7EC3E084A78BAD53081B4FC4FC4"
             {
-            "SourcePath" = "8:..\\..\\DataEngine\\jdk\\jre\\lib\\cmm\\sRGB.pf"
-            "TargetName" = "8:sRGB.pf"
+            "SourcePath" = "8:..\\..\\misc\\InstallerFiles\\shaders\\selection.vert"
+            "TargetName" = "8:selection.vert"
             "Tag" = "8:"
-            "Folder" = "8:_C9E65F04227B4E4CB32BCA6889605315"
+            "Folder" = "8:_83BCC985F9784FDCB4C59B9F0452FAB1"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -11208,12 +11332,12 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_E6BCD218C8AE46E89B6AD8F71FC387B4"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_E5C8824A4C3E4A5CA0577135A1BA700B"
             {
-            "SourcePath" = "8:..\\..\\misc\\InstallerFiles\\shaders\\drag_select.vert"
-            "TargetName" = "8:drag_select.vert"
+            "SourcePath" = "8:..\\..\\DataEngine\\jdk\\jre\\lib\\cmm\\sRGB.pf"
+            "TargetName" = "8:sRGB.pf"
             "Tag" = "8:"
-            "Folder" = "8:_83BCC985F9784FDCB4C59B9F0452FAB1"
+            "Folder" = "8:_C9E65F04227B4E4CB32BCA6889605315"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -11474,26 +11598,6 @@
             "TargetName" = "8:Plane.sgt"
             "Tag" = "8:"
             "Folder" = "8:_B4E0754028D04DDF8AEE8716965EFFAF"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_EA4CFBA98F5545AD945A5AA671ACB099"
-            {
-            "SourcePath" = "8:..\\..\\misc\\InstallerFiles\\shaders\\solid.vert"
-            "TargetName" = "8:solid.vert"
-            "Tag" = "8:"
-            "Folder" = "8:_83BCC985F9784FDCB4C59B9F0452FAB1"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
