@@ -6,33 +6,11 @@ INCLUDE_DIRECTORIES(BEFORE  ${Boost_INCLUDE_DIRS}
 							../../Core/SGXFoundation
 							../../Core/SGXImage)
 
-SET(SRC_ALL 	datamappingdefaults.cpp
-				datamappingfunction.cpp
-				datamappingglyph.cpp
-				datamappingglyphfile.cpp
-				datamappingglyphgeometry.cpp
-				datamappingglyphgraph.cpp
-				datamappingproperty.cpp
-				datamappingvirtualtopology.cpp
-				databaseserverdatasource.cpp
-				datasource.cpp
-				datasourcetable.cpp
-				datatransformmapping.cpp
-				filedatasource.cpp
-				inputbinding.cpp
-				inputcombinationfunction.cpp
-				inputfield.cpp
-				inputtable.cpp
-				interpolationmappingfunction.cpp
-				mindiff.cpp
-				sceneproperties.cpp
-				stringconcatmappingfunction.cpp
-				stringinputcombinationfunction.cpp
-				legend.cpp
-				link.cpp
-				valuemappingfile.cpp
-				valuemappingrange.cpp
-				valuemappingfunction.cpp)
+
+file(GLOB SRC_ALL
+	"*.h"
+	"*.cpp"
+)
 
 ADD_LIBRARY(SGXDataMapping SHARED ${SRC_ALL})
 TARGET_LINK_LIBRARIES(SGXDataMapping ${Boost_LIBRARIES} SGXImage SGXUtility SGXFoundation)

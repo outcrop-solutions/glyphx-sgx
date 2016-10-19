@@ -11,7 +11,7 @@ function (Set_Windows_Properties target)
 	ENDIF()
 endfunction()
 
-SET(CMAKE_CXX_STANDARD 11)
+SET(CMAKE_CXX_STANDARD 14)
 SET(BUILD_SHARED_LIBS ON) 
 
 #Setup general platform specific values 
@@ -26,7 +26,7 @@ IF (${WIN32})
 		SET(ARCH_DIR Win64)
 	ENDIF()
 	#Suppress warnings in Windows about using non-secure standard library functions
-	add_definitions(-D_CRT_SECURE_NO_WARNINGS -DUNICODE)
+	#add_definitions(-D_CRT_SECURE_NO_WARNINGS -DUNICODE)
 	#Suppress C4251 'needs to have dll-interface' warnings
 	add_definitions( "/wd4251" )
 	SET(GUI_TYPE WIN32)
@@ -101,6 +101,11 @@ FIND_PACKAGE(Qt5Widgets)
 FIND_PACKAGE(Qt5OpenGL)
 FIND_PACKAGE(Qt5Network)
 FIND_PACKAGE(Qt5Sql)
+FIND_PACKAGE(Qt5WebEngine)
+FIND_PACKAGE(Qt5WebEngineWidgets)
+FIND_PACKAGE(Qt5WebChannel)
+FIND_PACKAGE(Qt5Quick)
+FIND_PACKAGE(Qt5Qml)
 
 SET(STLPLUS_INCLUDE_DIR ${THIRDPARTYDIR}/include/stlplus_3_11)
 SET(GLM_INCLUDE_DIR ${THIRDPARTYDIR}/include/glm_0_9_6_3)
@@ -153,7 +158,6 @@ ENDIF()
 #Libraries
 ADD_SUBDIRECTORY(${DEVELOPMENT_TOP_DIR}/ANTzPlus/ANTzBridge "${CMAKE_CURRENT_BINARY_DIR}/ANTzBridge")
 ADD_SUBDIRECTORY(${DEVELOPMENT_TOP_DIR}/ANTzPlus/ANTzCore "${CMAKE_CURRENT_BINARY_DIR}/ANTzCore")
-ADD_SUBDIRECTORY(${DEVELOPMENT_TOP_DIR}/ANTzPlus/ANTzGUI "${CMAKE_CURRENT_BINARY_DIR}/ANTzGUI")
 ADD_SUBDIRECTORY(${DEVELOPMENT_TOP_DIR}/ANTzPlus/ANTzSingleGlyphGUI "${CMAKE_CURRENT_BINARY_DIR}/ANTzSingleGlyphGUI")
 
 ADD_SUBDIRECTORY(${DEVELOPMENT_TOP_DIR}/Core/SGXDataMapping "${CMAKE_CURRENT_BINARY_DIR}/SGXDataMapping")

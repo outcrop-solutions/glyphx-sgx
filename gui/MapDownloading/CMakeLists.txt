@@ -6,11 +6,11 @@ INCLUDE_DIRECTORIES(BEFORE  ${Boost_INCLUDE_DIRS}
 							../../Core/SGXImage
 							../../Core/SGXUtility)
 
-SET(SRC_ALL 	downloadedmap.cpp
-				downloadexception.cpp
-				downloadoptionsdialog.cpp
-				mapoptionswidget.cpp
-				networkdownloader.cpp)
+
+file(GLOB SRC_ALL
+	"*.h"
+	"*.cpp"
+)
 
 ADD_LIBRARY(MapDownloading SHARED ${SRC_ALL})
 TARGET_LINK_LIBRARIES(MapDownloading ${Boost_LIBRARIES} 

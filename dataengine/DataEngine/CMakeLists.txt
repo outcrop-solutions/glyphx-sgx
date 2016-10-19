@@ -14,9 +14,10 @@ INCLUDE_DIRECTORIES(BEFORE  ${Boost_INCLUDE_DIRS}
 LINK_DIRECTORIES(${JAVA_LINK_DIRS})
 #message("JAVA_LINK_DIRS = ${JAVA_LINK_DIRS}")
 
-SET(SRC_ALL 	dataengineconnection.cpp
-				dataenginestatement.cpp
-				glyphengine.cpp)
+file(GLOB SRC_ALL
+	"*.h"
+	"*.cpp"
+)
 
 ADD_LIBRARY(DataEngine SHARED ${SRC_ALL})
 TARGET_LINK_LIBRARIES(DataEngine ${Boost_LIBRARIES} 

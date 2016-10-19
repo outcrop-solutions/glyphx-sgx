@@ -4,11 +4,11 @@ INCLUDE_DIRECTORIES(BEFORE  ${Boost_INCLUDE_DIRS}
 							../../Core/SGXFoundation
 							../../Core/SGXUtility)
 
-SET(SRC_ALL 	baseimage.cpp
-				baseimageproperties.cpp
-				defaultbaseimageproperties.cpp
-				downloadedmapproperties.cpp
-				userdefinedbaseimageproperties.cpp)
+
+file(GLOB SRC_ALL
+	"*.h"
+	"*.cpp"
+)
 
 ADD_LIBRARY(SGXImage SHARED ${SRC_ALL})
 TARGET_LINK_LIBRARIES(SGXImage ${Boost_LIBRARIES} SGXUtility SGXFoundation)

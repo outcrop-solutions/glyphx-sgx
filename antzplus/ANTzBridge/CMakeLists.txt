@@ -7,13 +7,11 @@ INCLUDE_DIRECTORIES(BEFORE ${Boost_INCLUDE_DIRS}
 							../ANTzCore
 							../../Core/SGXFoundation)
 
-SET(SRC_COMMON 	antzboundingbox.cpp
-				antzcsvwriter.cpp
-				antzdata.cpp
-				antzgrid.cpp
-				antzobject.cpp
-				antzvisualizationfilelisting.cpp
-				glyphnodeconverter.cpp)
+
+file(GLOB SRC_COMMON
+	"*.h"
+	"*.cpp"
+)
 				
 IF (${WIN32})
 	SET(SRC_ALL stdafx.cpp

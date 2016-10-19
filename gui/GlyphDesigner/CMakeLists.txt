@@ -18,11 +18,10 @@ IF (${BREAKPAD_FOUND})
 	add_definitions(-DUSE_BREAKPAD)
 ENDIF()
 
-SET(SRC_ALL 	glyphdesignerwindow.cpp
-				glyphtreeview.cpp
-				main.cpp
-				modalglyphwidget.cpp)
-
+file(GLOB SRC_ALL
+	"*.h"
+	"*.cpp"
+)
 				
 #SET(RESOURCES_SRC glyphdesignerwindow.qrc)
 IF (${WIN32})
@@ -35,7 +34,7 @@ TARGET_LINK_LIBRARIES(GlyphDesigner ${Boost_LIBRARIES}
 									Qt5::Core 
 									Qt5::Gui 
 									Qt5::OpenGL 
-									Qt5::Widgets 
+									Qt5::Widgets
 									ANTzCore 
 									ANTzBridge 
 									ANTzSingleGlyphGUI 

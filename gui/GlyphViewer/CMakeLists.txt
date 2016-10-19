@@ -37,35 +37,10 @@ IF (${LICENSING_FOUND})
 	add_definitions(-DUSE_LICENSING)
 ENDIF()
 
-SET(SRC_ALL 	antzimportdialog.cpp
-				cachemanager.cpp
-				datamappingloadingfiltermodel.cpp
-				glyphpropertieswidgetscontainer.cpp
-				glyphtreelistview.cpp
-				glyphvieweroptions.cpp
-				glyphviewerwindow.cpp
-				glyph3dview.cpp
-				filteringwidget.cpp
-				filteringmanager.cpp
-				filteringparameters.cpp
-				filteredsourcedatawidget.cpp
-				rangefilterlistwidget.cpp
-				keywordfilter.cpp
-				keywordfilterwidget.cpp
-				keywordfilterlistwidget.cpp
-				linkedwidgetsmanager.cpp
-				loadingscreenwidget.cpp
-				legendsdisplaywidget.cpp
-				main.cpp
-				multitableelasticlistswidget.cpp
-				optionswidget.cpp
-				remapdialog.cpp
-				pseudotimefilterwidget.cpp
-				singletableelasticlistswidget.cpp
-				selectedsourcedatawidget.cpp
-				sourcedatacache.cpp
-				sourcedatainfomodel.cpp
-				sourcedatawidget.cpp)
+file(GLOB SRC_ALL
+	"*.h"
+	"*.cpp"
+)
 				
 #SET(RESOURCES_SRC glyphviewer.qrc)
 IF (${WIN32})
