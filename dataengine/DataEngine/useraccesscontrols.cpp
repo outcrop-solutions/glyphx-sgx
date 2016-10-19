@@ -159,7 +159,7 @@ namespace DataEngine
 		int count;
 		if (methodId != NULL) {
 			jstring fp = jniEnv->NewStringUTF(path.toStdString().c_str());
-			count = (jint)jniEnv->CallStaticObjectMethod(jcls, methodId, fp);
+			count = (jint)jniEnv->CallStaticIntMethod(jcls, methodId, fp);
 			if (jniEnv->ExceptionCheck()) {
 				jniEnv->ExceptionDescribe();
 				jniEnv->ExceptionClear();
@@ -173,7 +173,7 @@ namespace DataEngine
 			"visualizationsToSync", "()I");
 		int count;
 		if (methodId != NULL) {
-			count = (jint)jniEnv->CallStaticObjectMethod(jcls, methodId);
+			count = (jint)jniEnv->CallStaticIntMethod(jcls, methodId);
 			if (jniEnv->ExceptionCheck()) {
 				jniEnv->ExceptionDescribe();
 				jniEnv->ExceptionClear();
@@ -202,7 +202,7 @@ namespace DataEngine
 			"filesSynced", "()I");
 		int count;
 		if (methodId != NULL) {
-			count = (jint)jniEnv->CallStaticObjectMethod(jcls, methodId);
+			count = (jint)jniEnv->CallStaticIntMethod(jcls, methodId);
 			if (jniEnv->ExceptionCheck()) {
 				jniEnv->ExceptionDescribe();
 				jniEnv->ExceptionClear();
