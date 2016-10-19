@@ -111,8 +111,11 @@ set(STLPLUS_INCLUDE_DIR ${THIRDPARTYDIR}/include/stlplus_3_11)
 set(GLM_INCLUDE_DIR ${THIRDPARTYDIR}/include/glm_0_9_6_3)
 set(ASSIMP_INCLUDE_DIR ${THIRDPARTYDIR}/include/assimp-3.1.1)
 set(STB_IMAGE_INCLUDE_DIR ${THIRDPARTYDIR}/include/stb_image)
-set(GLEW_INCLUDE_DIR ${THIRDPARTYDIR}/include/glew-1.13.0)
+set(GLEW_INCLUDE_DIR ${THIRDPARTYDIR}/include/glew-2.0.0)
 set(FREETYPE_INCLUDE_DIR ${THIRDPARTYDIR}/include/freetype-2.7)
+
+SET(GFXLIBS_LINK_DIR ${THIRDPARTYDIR}/tools/graphics/${ARCH_DIR})
+LINK_DIRECTORIES(${GFXLIBS_LINK_DIR})
 
 #Java
 # Note we don't actually need to link against Java since we're loading it dynamically.

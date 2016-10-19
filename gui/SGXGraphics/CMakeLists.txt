@@ -24,6 +24,6 @@ file(GLOB SRC_ALL
 )
 
 ADD_LIBRARY(SGXGraphics SHARED ${SRC_ALL})
-#TARGET_LINK_LIBRARIES(SGXGraphics ${Boost_LIBRARIES} ${QT_LIBRARIES} SGXUtility SGXFoundation SGXDataMapping SGXImage SGXGUI)
+TARGET_LINK_LIBRARIES(SGXGraphics GLEW)
 
 Set_Windows_Properties(SGXGraphics)

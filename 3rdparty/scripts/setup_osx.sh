@@ -9,7 +9,7 @@
 
 build=None
 app=None
-java=7
+java=8
 qt=5.6
 appcount=0
 
@@ -80,6 +80,7 @@ echo Setting up $app bundle [$build] with JVM $java...
 echo Moving libraries into app bundle...
 mkdir -p ../../cmake/bin/OSX64/$build/$app.app/Contents/Frameworks
 mv ../../cmake/bin/OSX64/$build/*.dylib ../../cmake/bin/OSX64/$build/$app.app/Contents/Frameworks 2>/dev/null
+mv ../tools/graphics/OSX64/*.dylib ../../cmake/bin/OSX64/$build/$app.app/Contents/Frameworks 2>/dev/null
 
 # NOTE: We're piping all the macdeployqt output to /dev/null. It spams a LOT of unnecessary text. Run it
 # from the console if you need to see its output for some reason (or remove the two redirections starting
