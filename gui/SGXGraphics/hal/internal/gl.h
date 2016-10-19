@@ -20,6 +20,6 @@ namespace SynGlyphX
 		// Check for OpenGL errors. Should be called at the end of every function that calls OpenGL API functions.
 		// On release builds this does nothing.
 		// Pass ignore=true to work around known GL errors in libraries etc (e.g., glewInit causing a bad enum error).
-		void check_errors( bool ignore = false );
+		void check_errors();
 	}
 }

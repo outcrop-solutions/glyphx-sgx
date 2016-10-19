@@ -12,24 +12,20 @@ namespace SynGlyphX
 			bool break_on_error = false;
 		}
 
-		void check_errors( bool ignore )
+		void check_errors()
 		{
-			UNREFERENCED_PARAMETER( ignore );
 #ifdef _DEBUG
 			// OpenGL errors.
 			while ( auto error = glGetError() )
 			{
-				if ( !ignore )
+				const char* errstr = reinterpret_cast<const char*>( gluErrorString( error ) );
+				hal::log::error( "OpenGL Error: ", errstr );
+				if ( break_on_error )
 				{
-					const char* errstr = reinterpret_cast<const char*>( gluErrorString( error ) );
-					hal::log::error( "OpenGL Error: ", errstr );
-					if ( break_on_error )
-					{
-						debug::print( "OpenGL Error: " );
-						debug::print( errstr );
-						debug::print( "\n" );
-						debug::debug_break();
-					}
+					debug::print( "OpenGL Error: " );
+					debug::print( errstr );
+					debug::print( "\n" );
+					debug::debug_break();
 				}
 			}
 #endif // DEBUG

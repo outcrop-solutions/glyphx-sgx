@@ -73,7 +73,6 @@ namespace SynGlyphX
 		{
 			glewExperimental = GL_TRUE;
 			auto glew_result = glewInit();
-			hal::check_errors( true );
 			if ( glew_result != GLEW_OK )
 			{
 				hal::log::error( "Failed to initialize GLEW.", reinterpret_cast<const char*>( glewGetErrorString( glew_result ) ) );
