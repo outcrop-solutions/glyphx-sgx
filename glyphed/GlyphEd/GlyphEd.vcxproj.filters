@@ -35,9 +35,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="GeneratedFiles\qrc_glyphed.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\gui\GlyphViewer\antzimportdialog.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -308,11 +305,11 @@
     <ClCompile Include="..\..\gui\GlyphViewer\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\qrc_glyphviewer.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="glyphed.qrc">
-      <Filter>Resource Files</Filter>
-    </CustomBuild>
     <CustomBuild Include="..\..\gui\GlyphViewer\antzimportdialog.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
@@ -393,6 +390,9 @@
     </CustomBuild>
     <CustomBuild Include="..\..\gui\GlyphViewer\userlogindialog.h">
       <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\..\gui\GlyphViewer\glyphviewer.qrc">
+      <Filter>Resource Files</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
