@@ -253,7 +253,7 @@ namespace SynGlyphX
 				auto& stream = fmt.get_stream_info( i );
 				assert( stream.data_type == hal::stream_type::float32 );	// only support 4-byte floats for now
 				glEnableVertexAttribArray( i );
-				glVertexAttribPointer( i, stream.count, GL_FLOAT, GL_FALSE, fmt.vertex_size_in_bytes(), (GLvoid*)offset );
+				glVertexAttribPointer( i, stream.count, GL_FLOAT, GL_FALSE, fmt.vertex_size_in_bytes(), reinterpret_cast<GLvoid*>( offset ) );
 
 				offset += fmt.element_size_in_bytes( stream.data_type ) * stream.count;
 			}

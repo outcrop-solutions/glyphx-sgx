@@ -98,7 +98,7 @@ namespace SynGlyphX
 			mesh_readback( vertex_format& _fmt, char* _vertex_data, char* _index_data,
 				unsigned int _index_count, unsigned int _vertex_count )
 				: fmt( _fmt ), vertex_data( _vertex_data ), index_data( _index_data ),
-				index_count( _index_count ), vertex_count( _vertex_count ) { }
+				vertex_count( _vertex_count ), index_count( _index_count ) { }
 			mesh_readback& operator=( const mesh_readback& ) = delete;
 			vertex_format& fmt;
 			char* vertex_data;

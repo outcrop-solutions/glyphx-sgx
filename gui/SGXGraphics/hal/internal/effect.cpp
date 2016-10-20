@@ -263,7 +263,7 @@ namespace SynGlyphX
 				glGenBuffers( 1, &block.buffer );
 				glBindBuffer( GL_UNIFORM_BUFFER, block.buffer );
 				block.backing_buffer = new char[block.size];
-				memset( block.backing_buffer, 0, sizeof( block.backing_buffer ) );
+				memset( block.backing_buffer, 0, sizeof( block.size ) );
 				glBufferData( GL_UNIFORM_BUFFER, block.size, block.backing_buffer, GL_DYNAMIC_DRAW );
 				glBindBuffer( GL_UNIFORM_BUFFER, 0 );
 

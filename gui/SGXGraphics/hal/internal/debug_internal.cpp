@@ -27,7 +27,7 @@ namespace SynGlyphX
 #ifdef WIN32
 					OutputDebugStringA( str );
 #else
-					printf( str );
+					printf( "%s", str );
 #endif
 				}
 
@@ -116,7 +116,7 @@ namespace SynGlyphX
 				va_end( args );
 
 				char buf1[buf_size];
-				sprintf_s( buf1, "%s: %i ms\n", buf0, elapsed_ms() );
+				sprintf( buf1, "%s: %i ms\n", buf0, elapsed_ms() );
 				debug_print( buf1 );
 			}
 		}
