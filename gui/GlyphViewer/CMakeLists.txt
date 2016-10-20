@@ -44,10 +44,9 @@ file(GLOB SRC_ALL
 	"*.cpp"
 )
 				
-#SET(RESOURCES_SRC glyphviewer.qrc)
+SET(RESOURCES_SRC glyphviewer.qrc)
 IF (${WIN32})
-#	LIST(APPEND ${RESOURCES_SRC} GlyphViewer.rc)
-	SET(RESOURCES_SRC GlyphViewer.rc)
+	LIST(APPEND ${RESOURCES_SRC} GlyphViewer.rc)
 ENDIF()
 
 ADD_EXECUTABLE(GlyphViewer ${GUI_TYPE} ${SRC_ALL} ${RESOURCES_SRC})
