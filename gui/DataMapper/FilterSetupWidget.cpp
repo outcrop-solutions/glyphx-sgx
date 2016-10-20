@@ -120,9 +120,7 @@ public:
 		//FilterTableWidget(QWidget* parent) : QTableWidget(parent) {}
 		FilterTableWidget(int rows, int columns, QWidget *parent) : QTableWidget(rows, columns, parent) 
 		{
-			//setDragDropMode(DragDrop);
-
-
+			setDragDropMode(DragDrop);
 		}
 		void AddRow()
 		{
@@ -173,11 +171,44 @@ public:
 		{
 			while (rowCount() > 0) removeRow(rowCount() - 1);
 		}
+
 		void RemoveField()
 		{
 			
 		}
+		void dragEnterEvent(QDragEnterEvent *event) override
+		{
+			const InputFieldMimeData* mimeData = qobject_cast<const InputFieldMimeData*>(event->mimeData());
+			if (mimeData == nullptr)
+			{
+				return;
+			}
 
+			event->acceptProposedAction();
+
+		}
+
+		void dragMoveEvent(QDragMoveEvent *event)
+		{
+			int row = rowAt(event->pos().y());
+			if (row == -1)
+				event->accept();
+			else
+				event->ignore();
+		}
+
+		void dropEvent(QDropEvent *event) override
+		{
+			const InputFieldMimeData* mimeData = qobject_cast<const InputFieldMimeData*>(event->mimeData());
+			if (mimeData != nullptr)
+			{
+				auto inputField = mimeData->GetInputField();
+				FrontEndFilter filter;
+				filter.fields.push_back(inputField);
+				AddRow(filter);
+			}
+
+		}
 };
 
 
@@ -281,7 +312,8 @@ SynGlyphX::MultiTableFrontEndFilters FilterSetupWidget::GetFilters() const {
 	for (int i = 0; i < m_table->rowCount(); i++)
 	{
 		FrontEndFilter filter = m_table->GetFilter(i);
-		filters.push_back(filter);
+		if (filter.fields.size() > 0)
+			filters.push_back(filter);
 	}
 	return filters;
 	
