@@ -59,7 +59,7 @@ namespace SynGlyphX {
 		class GlyphInfoNode {
 
 		public:
-			GlyphInfoNode(GlyphInfoNode* parent = nullptr) : m_parent(parent), m_properties({ { "", "", "" } }) {}
+			GlyphInfoNode(GlyphInfoNode* parent = nullptr) : m_properties({ { "", "", "" } }), m_parent(parent) {}
 			GlyphInfoNode(const GlyphInfoNode& node) = delete;
 			~GlyphInfoNode() {
 

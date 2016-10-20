@@ -13,8 +13,6 @@ namespace SynGlyphX
 {
 	namespace
 	{
-		const float size = 1.f;
-		const float switch_size = 0.5f;
 		auto color = glm::vec3( 1.f, 1.f, 1.f );
 		const float gadget_base_alpha = 0.25f;
 		glm::vec2 switch_fade_dist( 125.f, 150.f );
@@ -220,7 +218,6 @@ namespace SynGlyphX
 
 		if ( !groupInSelection( g.group ) )
 		{
-			const float start_fade_dist = 100.f, end_fade_dist = 120.f;
 			float dist = glm::distance( cam_pos, g.position );
 			float a = 1.f - glm::clamp( ( dist - fade_dist.x ) / ( fade_dist.y - fade_dist.x ), 0.f, 1.f );
 			gadget_alpha *= a;

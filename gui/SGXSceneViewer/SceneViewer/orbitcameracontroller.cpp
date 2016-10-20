@@ -8,7 +8,7 @@
 namespace SynGlyphX
 {
 	OrbitCameraController::OrbitCameraController( render::perspective_camera* _camera )
-		: camera( _camera ), turn_speed( 32.f ), move_speed( 32.f ), flying_to_target( false ), sliding_to_target( false ), orbit_max_dist( 1000.f )
+		: camera( _camera ), orbit_max_dist( 1000.f ), flying_to_target( false ), move_speed( 32.f ), turn_speed( 32.f ), sliding_to_target( false )
 	{
 	}
 

@@ -485,7 +485,6 @@ namespace SynGlyphX
 			unsigned int rows = static_cast<unsigned int>( round( sqrtf( float( group.nodes.size() ) ) ) );
 			const glm::vec3 explode_axis_0( 1.f, 0.f, 0.f );
 			const glm::vec3 explode_axis_1( 0.f, 1.f, 0.f );
-			float count = group.nodes.size();
 			float row = 0.f, col = 0.f;
 
 			// Use the largest bound's diameter to decide how to space the group.

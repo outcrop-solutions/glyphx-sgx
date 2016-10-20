@@ -165,9 +165,9 @@ namespace SynGlyphX
 		}
 	}
 
-	GlyphRenderer::GlyphRenderer( GlyphGeometryDB& _db ) : transform_binding_point( UINT_MAX ), material_binding_point( UINT_MAX ), selection_anim_max_scale( 64.f ),
-		animation( true ), global_wireframe( false ), scene( nullptr ), filter_alpha( 0.5f ), selection_animation_time( 0.f ), selection_animation_state( 0.f ),
-		bound_vis_enabled( false ), bound_vis_mode( GlyphRenderer::BoundVisMode::Individual ), sel_effect_enabled( true ), db( _db)
+	GlyphRenderer::GlyphRenderer( GlyphGeometryDB& _db ) : selection_anim_max_scale( 64.f ), bound_vis_enabled( false ), bound_vis_mode( GlyphRenderer::BoundVisMode::Individual ),
+        sel_effect_enabled( true ),global_wireframe( false ), animation( true ), filter_alpha( 0.5f ), scene( nullptr ), selection_animation_time( 0.f ), selection_animation_state( 0.f ),
+        db( _db)
 	{
 		glyph_effect = hal::device::load_effect( "shaders/glyph.vert", nullptr, "shaders/glyph.frag" );
 		selection_effect = hal::device::load_effect( "shaders/selection.vert", nullptr, "shaders/selection.frag" );

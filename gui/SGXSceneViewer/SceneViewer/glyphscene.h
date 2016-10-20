@@ -17,9 +17,9 @@ namespace SynGlyphX
 	class SGXSCENEVIEWER_API GlyphScene
 	{
 	public:
-		GlyphScene( GlyphGeometryDB& _db ) : octree( nullptr ), filter_applied( false ), selection_changed( false ), glyph_storage( nullptr ), glyph_storage_next( 0u ),
-			filter_mode( FilteredResultsDisplayMode::TranslucentUnfiltered ), has_animation( false ), db( _db ), explode_state( group_state::retracted ),
-			active_group( 0 ), group_status( 0.f ) { }
+		GlyphScene( GlyphGeometryDB& _db ) : octree( nullptr ), explode_state( group_state::retracted ), group_status( 0.f ), active_group( 0 ), filter_applied( false ),
+            scene_changed( true ), selection_changed( false ), filter_mode( FilteredResultsDisplayMode::TranslucentUnfiltered ), has_animation( false ), db( _db ),
+            glyph_storage( nullptr ), glyph_storage_next( 0u ) { }
 		~GlyphScene();
 		GlyphScene( const GlyphScene& ) = delete;
 
