@@ -7,6 +7,7 @@
 #ifdef WIN32
 #include <mmsystem.h>
 #pragma comment(lib, "winmm.lib")
+#pragma warning(disable: 4996)		// windows wants us to use strcat_s but osx doesn't have it
 #endif
 
 namespace SynGlyphX
@@ -135,3 +136,7 @@ namespace SynGlyphX
 		}
 	}
 }
+
+#ifdef WIN32
+#pragma warning(default: 4996)
+#endif
