@@ -24,6 +24,6 @@ file(GLOB SRC_ALL
 )
 
 ADD_LIBRARY(SGXGraphics SHARED ${SRC_ALL})
-TARGET_LINK_LIBRARIES(SGXGraphics GLEW)
+TARGET_LINK_LIBRARIES(SGXGraphics GLEW assimp freetype z ${OPENGL_LIBRARIES})
 
 Set_Windows_Properties(SGXGraphics)

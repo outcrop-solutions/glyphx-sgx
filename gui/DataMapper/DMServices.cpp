@@ -145,7 +145,7 @@ public:
 		return s;
 	}
 
-	void GetSelectedOnLevel(const TreeSelection* s, QItemSelection* qs, QModelIndex& index)
+	void GetSelectedOnLevel(const TreeSelection* s, QItemSelection* qs, const QModelIndex& index)
 	{
 		SynGlyphX::DataMappingGlyphGraph::Node* treeNode = static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(index.internalPointer());
 		if (treeNode)

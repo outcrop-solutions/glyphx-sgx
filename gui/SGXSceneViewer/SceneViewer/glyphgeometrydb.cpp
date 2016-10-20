@@ -1,5 +1,9 @@
 
 #include "glyphgeometrydb.h"
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/constants.hpp>
+#include <hal/hal.h>
+#include <render/model.h>
 #include <render/model_loader.h>
 #include <render/torus_generator.h>
 #include "placementpolicy.h"

@@ -2,10 +2,16 @@
 #pragma once
 
 #include "../platform.h"
+#include <vector>
+#include <unordered_map>
+#include <cfloat>
+#include <glm/glm.hpp>
 #include "types.h"
 
 namespace SynGlyphX
 {
+    namespace render { class model; }
+    
 	class GlyphGeometryDB
 	{
 	public:

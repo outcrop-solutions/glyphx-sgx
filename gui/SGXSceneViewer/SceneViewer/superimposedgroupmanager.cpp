@@ -1,6 +1,7 @@
 
-#include <hal/hal.h>
 #include "SuperimposedGroupManager.h"
+#include <glm/gtc/matrix_transform.hpp>
+#include <hal/hal.h>
 #include <render/model.h>
 #include <render/model_loader.h>
 #include <render/color.h>
@@ -172,9 +173,9 @@ namespace SynGlyphX
 		else
 			selected_group = selectedGroup();
 
-		if ( selected_group != 0u && scene.isExploded( selected_group ) || groupInSelection( selected_group ) )
+		if ( ( selected_group != 0u && scene.isExploded( selected_group ) ) || groupInSelection( selected_group ) )
 		{
-			auto& it = gadgets.find( selected_group );
+			auto it = gadgets.find( selected_group );
 
 			if (it != gadgets.end()) {
 

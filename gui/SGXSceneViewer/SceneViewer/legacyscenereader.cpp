@@ -409,7 +409,7 @@ namespace SynGlyphX
 							rotate = glm::rotate( rotate, rotatev.z, glm::vec3( 0.f, 0.f, -1.f ) );
 							glm::vec4 grid_color = GetItemColor( dataline, columns.r );
 
-							unsigned int tex_id = unsigned int( GetItemI( dataline, columns.texture_id ) );
+							unsigned int tex_id = static_cast<unsigned int>( GetItemI( dataline, columns.texture_id ) );
 							if ( tex_id != 0 )
 							{
 								hal::texture* tex = default_base_texture;

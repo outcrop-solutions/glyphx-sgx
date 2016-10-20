@@ -11,6 +11,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/euler_angles.hpp>
 #include <glm/gtx/color_space.hpp>
+#include <glm/gtx/compatibility.hpp>
 #include "hal/hal.h"
 #include "hal/vertex_format.h"
 #include "render/perspective_camera.h"
@@ -584,10 +585,15 @@ namespace SynGlyphX
 
 	void SceneViewer::renderTextF( hal::font* font, const glm::vec2& pos, const glm::vec4& color, const char* string, ... )
 	{
-		static char buf[8192u];
+        const unsigned int buf_size = 8192u;
+		static char buf[buf_size];
 		va_list args;
 		va_start( args, string );
+#ifdef WIN32
 		vsprintf_s( buf, string, args );
+#else
+        vsnprintf( buf, buf_size, string, args );
+#endif
 		va_end( args );
 
 		auto transform = ui_camera->get_proj() * ui_camera->get_view() * glm::translate( glm::mat4(), glm::vec3( glm::round( pos ), 0.f ) );
@@ -596,11 +602,16 @@ namespace SynGlyphX
 
 	void SceneViewer::renderTextCenteredF( hal::font* font, const glm::vec2& pos, CenterMode mode, const glm::vec4& color, const char* string, ... )
 	{
-		static char buf[8192u];
+        const unsigned int buf_size = 8192u;
+		static char buf[buf_size];
 		va_list args;
 		va_start( args, string );
+#ifdef WIN32
 		vsprintf_s( buf, string, args );
-		va_end( args );
+#else
+        vsnprintf( buf, buf_size, string, args );
+#endif
+        va_end( args );
 
 		glm::vec2 text_size = context->measure_text( font, buf );
 		int imode = int( mode );
@@ -618,13 +629,7 @@ namespace SynGlyphX
 
 	void SceneViewer::renderTextCentered( hal::font* font, const glm::vec2& pos, CenterMode mode, const glm::vec4& color, const char* string )
 	{
-		static char buf[8192u];
-		va_list args;
-		va_start( args, string );
-		vsprintf_s( buf, string, args );
-		va_end( args );
-
-		glm::vec2 text_size = context->measure_text( font, buf );
+		glm::vec2 text_size = context->measure_text( font, string );
 		int imode = int( mode );
 		glm::vec2 adjustment( ( imode & int( CenterMode::X ) ) ? text_size.x * 0.5f : 0.f, ( imode & int( CenterMode::Y ) ) ? text_size.y * 0.5f : 0.f );
 

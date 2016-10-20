@@ -1,5 +1,6 @@
 
 #include "glyphscene.h"
+#include <glm/gtc/matrix_transform.hpp>
 #include <hal/debug.h>
 #include <render/model.h>
 #include "glyphgeometrydb.h"
@@ -130,7 +131,7 @@ namespace SynGlyphX
 		// in the candidate set.
 		if ( active_group > 0.f && group_status > 0.f )
 		{
-			const auto& group = get_group( unsigned int( active_group ) );
+			const auto& group = get_group( static_cast<unsigned int>( active_group ) );
 			for ( auto n : group.nodes )
 			{
 				assert( n->isRoot() );
@@ -401,7 +402,7 @@ namespace SynGlyphX
 		const Glyph3DNode* single_parent = getSingleSelection()->getRootParent();
 		for ( auto g : selection )
 			if ( g->getRootParent() != single_parent )
-				return false;
+				return nullptr;
 
 		return single_parent;
 	}
@@ -481,7 +482,7 @@ namespace SynGlyphX
 		while ( it != groups.end() )
 		{
 			auto& group = *it;
-			unsigned int rows = unsigned int( round( sqrtf( float( group.nodes.size() ) ) ) );
+			unsigned int rows = static_cast<unsigned int>( round( sqrtf( float( group.nodes.size() ) ) ) );
 			const glm::vec3 explode_axis_0( 1.f, 0.f, 0.f );
 			const glm::vec3 explode_axis_1( 0.f, 1.f, 0.f );
 			float count = group.nodes.size();

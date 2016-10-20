@@ -1,7 +1,9 @@
 
 #include "orbitcameracontroller.h"
 #include <render/perspective_camera.h>
+#include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/euler_angles.hpp>
+#include <glm/gtx/compatibility.hpp>
 
 namespace SynGlyphX
 {

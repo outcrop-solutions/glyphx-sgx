@@ -6,6 +6,7 @@
 #include <render/bounds.h>
 #include <render/color.h>
 #include <functional>
+#include <vector>
 #include "types.h"
 
 namespace SynGlyphX

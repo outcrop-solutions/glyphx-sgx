@@ -424,9 +424,9 @@ QWidget* HomePageWidget::CreateLowerDashboardWidget() {
 		lowerRightLabel->setOpenExternalLinks(true);
 		lowerRightLabel->setStyleSheet("font-size: 12pt; background-color: white;");
 
-		lowerRightLabel->setText(QString::fromStdWString(L"<p>Welcome to GlyphEd™.  GlyphEd™ is data visualization software designed to help the Enrollment Management "
+		lowerRightLabel->setText(QString::fromStdWString(L"<p>Welcome to GlyphEd\u2122.  GlyphEd\u2122 is data visualization software designed to help the Enrollment Management "
 			L"Office more quickly make sense of all the available data.  You are viewing a Beta version of the software.  We appreciate you taking the "
-			L"time to review what we are doing – and we welcome your feedback.</p>"
+			L"time to review what we are doing - and we welcome your feedback.</p>"
 			L"<p>To learn more, share feedback, or just ask questions, please feel free to contact Mark Sloan at 703.507.9788, <a href=\"mailto:mark@GlyphEd.co\">mark@GlyphEd.co</a></p>"));
 
 		return lowerRightLabel;
@@ -687,7 +687,7 @@ void HomePageWidget::OnLoadVisualization() {
 
 			if (fileToLoad.endsWith("Global Dashboard.sdt")) {
 
-				auto& singleTableFilters = filteringParameters.begin();
+				auto singleTableFilters = filteringParameters.begin();
 				QSet<QString> readers;
 				if (!filteringParameters.empty()) {
 

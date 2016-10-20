@@ -12,6 +12,8 @@ INCLUDE_DIRECTORIES(BEFORE  ${Boost_INCLUDE_DIRS}
 							../../Core/SGXDataTransform
 							../../Core/SGXImage
 							../../Core/SGXGeospatial
+							../../GUI/SGXGraphics
+							../../GUI/SGXSceneViewer
 							../../GUI/SGXGUI
 							../../GUI/SGXGlyphGUI
 							../../GUI/SGXDataTransformGUI
@@ -57,7 +59,6 @@ TARGET_LINK_LIBRARIES(GlyphViewer ${Boost_LIBRARIES}
 									Qt5::Sql
 									ANTzCore 
 									ANTzBridge 
-									ANTzGUI 
 									SGXUtility 
 									SGXFoundation 
 									SGXDataMapping 
@@ -66,6 +67,8 @@ TARGET_LINK_LIBRARIES(GlyphViewer ${Boost_LIBRARIES}
 									SGXGlyphGUI
 									SGXDataTransformGUI
 									SGXGeospatial
+									SGXGraphics
+									SGXSceneViewer
 									MapDownloading
 									DataEngine)
 

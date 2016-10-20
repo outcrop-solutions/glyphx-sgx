@@ -2,12 +2,14 @@
 #pragma once
 
 #include "../platform.h"
+#include <vector>
 
 namespace SynGlyphX
 {
 	class GlyphScene;
 	class GlyphGeometryDB;
 	class BaseImageRenderer;
+    namespace hal { class texture; }
 	namespace render { class grid_renderer; }
 
 	namespace LegacySceneReader

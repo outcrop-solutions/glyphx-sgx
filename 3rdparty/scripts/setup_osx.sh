@@ -73,14 +73,16 @@ if [ $quit = true ]; then
 fi
 
 echo Setting up $app bundle [$build] with JVM $java...
+mkdir -p ../../cmake/bin/OSX64/$build/$app.app/Contents/Frameworks
+
+echo Copying 3rd-party libraries into app bundle... 
+cp ../tools/graphics/OSX64/*.dylib ../../cmake/bin/OSX64/$build/$app.app/Contents/Frameworks 2>/dev/null
 
 # This shouldn't be necessary but I haven't been able to figure out how to get cmake to set up xcode
 # to drop the libraries in the bundle and link the app against them properly. So just moving them into
 # it before running macdeployqt does the trick.
-echo Moving libraries into app bundle...
-mkdir -p ../../cmake/bin/OSX64/$build/$app.app/Contents/Frameworks
-mv ../../cmake/bin/OSX64/$build/*.dylib ../../cmake/bin/OSX64/$build/$app.app/Contents/Frameworks 2>/dev/null
-mv ../tools/graphics/OSX64/*.dylib ../../cmake/bin/OSX64/$build/$app.app/Contents/Frameworks 2>/dev/null
+echo Copying sgx libraries into app bundle...
+cp ../../cmake/bin/OSX64/$build/*.dylib ../../cmake/bin/OSX64/$build/$app.app/Contents/Frameworks 2>/dev/null
 
 # NOTE: We're piping all the macdeployqt output to /dev/null. It spams a LOT of unnecessary text. Run it
 # from the console if you need to see its output for some reason (or remove the two redirections starting

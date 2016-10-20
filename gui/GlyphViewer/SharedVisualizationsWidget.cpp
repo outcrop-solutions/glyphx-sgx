@@ -7,7 +7,7 @@
 #include "glyphbuilderapplication.h"
 #include "datatransformmapping.h"
 #include "stringconvert.h"
-#include <QtWidgets\QProgressBar>
+#include <QtWidgets/QProgressBar>
 #include "glyphengine.h"
 
 void SharedVisualizationsFile::ImportFromPropertyTree(const boost::property_tree::wptree& filePropertyTree) {
