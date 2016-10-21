@@ -78,14 +78,18 @@ public class SQLiteWriter {
 	        boolean created = stmt.execute(query);
 	        stmt.close();
 
+	        ArrayList<String> written = new ArrayList<String>();
 			PreparedStatement pstmt = conn.prepareStatement("INSERT INTO TableIndex VALUES(?,?,?);");
 			for(int i = 0; i < toPrint.size(); i++){
 				SourceDataInfo sdi = dataframes.get(toPrint.get(i));
 				File file = new File(sdi.getPath());
-				pstmt.setString(1, sdi.getFormattedID());
-				pstmt.setString(2, sdi.getFormattedName());
-				pstmt.setLong(3, file.lastModified());
-				pstmt.addBatch();
+				if(!written.contains(sdi.getFormattedID())){
+					pstmt.setString(1, sdi.getFormattedID());
+					pstmt.setString(2, sdi.getFormattedName());
+					pstmt.setLong(3, file.lastModified());
+					pstmt.addBatch();
+				}
+				written.add(sdi.getFormattedID());
 			} 
 			int[] updates = pstmt.executeBatch();
 			pstmt.close();
@@ -104,10 +108,14 @@ public class SQLiteWriter {
 
 		try{
 			conn.setAutoCommit(false);
+			ArrayList<String> written = new ArrayList<String>();
 			for(int i = 0; i < toPrint.size(); i++){
 				SourceDataInfo sdi = dataframes.get(toPrint.get(i));
-				Logger.getInstance().addT(sdi.getTable());
-				writeTable(sdi);
+				if(!written.contains(sdi.getFormattedID())){
+					Logger.getInstance().addT(sdi.getTable());
+					writeTable(sdi);
+				}
+				written.add(sdi.getFormattedID());
 			}
 
 		}catch(Exception e){
