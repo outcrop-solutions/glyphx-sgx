@@ -312,6 +312,18 @@ namespace SynGlyphX
 						hal::debug::_assert( false, "unknown texture format" );
 				}
 			}
+            
+            unsigned int get_fmt_size( hal::texture_format fmt )
+            {
+                switch ( fmt )
+                {
+                    case hal::texture_format::r8: return 1u; break;
+                    case hal::texture_format::rgb8: return 3u; break;
+                    case hal::texture_format::rgba8: return 4u; break;
+                    case hal::texture_format::d24: return 3u; break;
+                    default: hal::debug::_assert( false, "unknown texture format" );
+                }
+            }
 		}
 
 		hal::texture* device_internal::create_texture( unsigned int w, unsigned int h, hal::texture_format fmt, uint8_t* data )
@@ -389,6 +401,33 @@ namespace SynGlyphX
 			glBindTexture( GL_TEXTURE_2D_ARRAY, 0 );
 			hal::check_errors();
 		}
+        
+        void device_internal::clear_array_slice( hal::texture_array* t, unsigned int layer )
+        {
+            assert( t );
+            assert( layer < t->d );
+            
+            const unsigned int stack_limit = 512;
+            unsigned int size = t->w * t->h * get_fmt_size( t->fmt );
+            bool heap_allocated = false;
+            unsigned char* mem = nullptr;
+            
+            if ( size > stack_limit )
+            {
+                heap_allocated = true;
+                mem = new unsigned char[size];
+            }
+            else
+            {
+                mem = static_cast<unsigned char*>( alloca( size ) );
+            }
+            memset( mem, 0, size );
+            
+            update_array_slice( t, layer, { 0u, 0u, t->w, t->h }, mem );
+            
+            if ( heap_allocated )
+                delete [] mem;
+        }
 
 		void device_internal::addref( hal::render_target_set* r )
 		{

@@ -27,7 +27,7 @@ namespace SynGlyphX
 #ifdef WIN32
 					OutputDebugStringA( str );
 #else
-					printf( "%s", str );
+					fprintf( stderr, "%s", str );
 #endif
 				}
 
