@@ -15,13 +15,13 @@
     {
         "Entry"
         {
-        "MsmKey" = "8:_4E6AE60F6660411E802032D4E711CE2D"
+        "MsmKey" = "8:_03CE616C53864A68BE92EB45D3EEF470"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_50C932370F0B49CFBE53A1805CB781B3"
+        "MsmKey" = "8:_4E6AE60F6660411E802032D4E711CE2D"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -187,11 +187,11 @@
             "Description" = "8:SynGlyphX Data Transform"
             "Extensions" = "8:.sdt"
             "MIME" = "8:"
-            "Icon" = "8:"
+            "Icon" = "8:_7E454F2EC4924A92A59E8B36D6C31597"
             "IconIndex" = "3:0"
                 "Command"
                 {
-                "Command" = "8:_50C932370F0B49CFBE53A1805CB781B3"
+                "Command" = "8:_03CE616C53864A68BE92EB45D3EEF470"
                 }
                 "Verbs"
                 {
@@ -335,9 +335,9 @@
         }
         "ProjectOutput"
         {
-            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_50C932370F0B49CFBE53A1805CB781B3"
+            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_03CE616C53864A68BE92EB45D3EEF470"
             {
-            "SourcePath" = "8:..\\..\\bin\\Win32\\Release\\GlyphViewer.exe"
+            "SourcePath" = "8:..\\..\\bin\\Win32\\Release\\GlyphEd.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_23B5202A640147BA80ACDCDE8DA5A397"
@@ -357,7 +357,7 @@
             "ProjectOutputGroupRegister" = "3:1"
             "OutputConfiguration" = "8:"
             "OutputGroupCanonicalName" = "8:Built"
-            "OutputProjectGuid" = "8:{B12702AD-ABFB-343A-A199-8E24837244A3}"
+            "OutputProjectGuid" = "8:{A763199F-B5E3-4614-A6B5-EC216D81FB31}"
             "ShowKeyOutput" = "11:TRUE"
                 "ExcludeFilters"
                 {
@@ -399,7 +399,7 @@
         }
         "Shortcut"
         {
-            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_1F239DC56F6843C0AF27D0821952C46C"
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_24C017623F9048B18A02C7A2B27CC45B"
             {
             "Name" = "8:GlyphEd"
             "Arguments" = "8:"
@@ -407,13 +407,13 @@
             "ShowCmd" = "3:1"
             "IconIndex" = "3:0"
             "Transitive" = "11:FALSE"
-            "Target" = "8:_50C932370F0B49CFBE53A1805CB781B3"
-            "Folder" = "8:_5CD2F921481E428FA7C959CB3557A530"
+            "Target" = "8:_03CE616C53864A68BE92EB45D3EEF470"
+            "Folder" = "8:_B831FA3E35C54040A728931765B208AA"
             "WorkingFolder" = "8:_23B5202A640147BA80ACDCDE8DA5A397"
             "Icon" = "8:_7E454F2EC4924A92A59E8B36D6C31597"
             "Feature" = "8:"
             }
-            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_89495D7655384DCCB85B1F9DE9ED8450"
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_3DDC436DDF204F259B472F71140113E3"
             {
             "Name" = "8:GlyphEd"
             "Arguments" = "8:"
@@ -421,8 +421,8 @@
             "ShowCmd" = "3:1"
             "IconIndex" = "3:0"
             "Transitive" = "11:FALSE"
-            "Target" = "8:_50C932370F0B49CFBE53A1805CB781B3"
-            "Folder" = "8:_B831FA3E35C54040A728931765B208AA"
+            "Target" = "8:_03CE616C53864A68BE92EB45D3EEF470"
+            "Folder" = "8:_5CD2F921481E428FA7C959CB3557A530"
             "WorkingFolder" = "8:_23B5202A640147BA80ACDCDE8DA5A397"
             "Icon" = "8:_7E454F2EC4924A92A59E8B36D6C31597"
             "Feature" = "8:"
